@@ -12,6 +12,11 @@ import type { ModuleDef, StepText } from '../types';
 const fmt = (x: number) => formatNumber(x);
 /** A power's value as the page shows it: a fraction for a negative exponent (1/125). */
 const fmtP = (x: number) => formatNumber(x, { fraction: 1000000 });
+/** A base as written under an exponent: 2, (0.87), (5/2). */
+const bt = (b: number) => {
+  const t = formatNumber(b, { fraction: 12 });
+  return /[/.]/.test(t) ? `(${t})` : t;
+};
 /** A number in scientific notation, bracketed so it reads as one number in a line. */
 const sci = (x: number) => `(${formatNumber(x, { scientific: true })})`;
 /** Rounded to 12 significant figures, so 0.1 + 0.2 is 0.3 when a value is worked out. */
@@ -93,16 +98,23 @@ function exponentRule(rule: 'product' | 'quotient' | 'power') {
   const { display, op, solve, steps } = rules[rule];
   return {
     variables: [
-      whole('b', 'b', 'Base', 1, 10),
+      // Any positive base, whole, decimal or fraction: 0.87⁵ ÷ 0.87³, (5/2)⁸ ÷ (5/2)⁶.
+      { id: 'b', symbol: 'b', name: 'Base', min: 0.01, max: 20, step: 0.01, fraction: 12 },
       whole('m', 'm', rule === 'power' ? 'Inside exponent' : 'First exponent', 0, 12),
       whole('n', 'n', rule === 'power' ? 'Outside exponent' : 'Second exponent', 0, 12),
-      whole('k', 'k', 'Exponent of the answer', rule === 'quotient' ? -12 : 0, 24),
+      whole(
+        'k',
+        'k',
+        'Exponent of the answer',
+        rule === 'quotient' ? -12 : 0,
+        rule === 'power' ? 144 : 24,
+      ),
       {
         id: 'P',
         symbol: 'P',
         name: 'Value of the answer',
         min: 0,
-        max: 1e25,
+        max: 1e300,
         fraction: 1000000,
         derived: true,
       },
@@ -117,7 +129,7 @@ function exponentRule(rule: 'product' | 'quotient' | 'power') {
       },
       {
         ...derive('P = b^k', 'P', ['b', 'k'], '{P} = {b}^{k}', (v) => v.b! ** v.k!),
-        check: (v: Values) => `${v.b}${sup(v.k!)} = ${fmtP(v.P!)}`,
+        check: (v: Values) => `${bt(v.b!)}${sup(v.k!)} = ${fmtP(v.P!)}`,
       },
     ] satisfies Relation[],
     steps: {
@@ -1202,15 +1214,15 @@ export const MATH_8_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('a', 'a', 'x-blocks on the left', -10, 10),
-      whole('b', 'b', 'Counters on the left', -15, 15),
+      whole('b', 'b', 'Counters on the left', -100, 100),
       whole('c', 'c', 'x-blocks on the right', -10, 10),
-      whole('d', 'd', 'Counters on the right', -15, 15),
+      whole('d', 'd', 'Counters on the right', -100, 100),
       {
         id: 'x',
         symbol: 'x',
         name: 'Weight of one x-block',
-        min: -50,
-        max: 50,
+        min: -200,
+        max: 200,
         fraction: 20,
         derived: true,
       },
@@ -1238,10 +1250,10 @@ export const MATH_8_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('a', 'a', 'x on the left', -10, 10),
-      whole('b', 'b', 'Number on the left', -15, 15),
+      whole('b', 'b', 'Number on the left', -100, 100),
       whole('c', 'c', 'x on the right', -10, 10),
-      whole('d', 'd', 'Number on the right', -15, 15),
-      { id: 'x', symbol: 'x', name: 'x', min: -50, max: 50, fraction: 20, derived: true },
+      whole('d', 'd', 'Number on the right', -100, 100),
+      { id: 'x', symbol: 'x', name: 'x', min: -200, max: 200, fraction: 20, derived: true },
     ],
     relations: [bothSides('a', 'b', 'c', 'd')],
     steps: bothSidesSteps('a', 'b', 'c', 'd'),

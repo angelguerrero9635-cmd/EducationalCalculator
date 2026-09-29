@@ -1598,7 +1598,6 @@ export function repIssues(
       if (p !== undefined && q !== undefined) {
         const want = rep.rule === 'product' ? p + q : rep.rule === 'quotient' ? p - q : p * q;
         if (r !== undefined && r !== want) out.push(`${rep.rule} of ${p} and ${q} shows ${r}`);
-        if (rep.rule === 'power' && p * q > 24) out.push(`${q} rows of ${p} is past 24 factors`);
       }
       break;
     }
@@ -1609,8 +1608,9 @@ export function repIssues(
         if (k !== undefined && (k !== Math.round(k) || Math.abs(k) > 10))
           out.push(`${k} x-blocks on a pan (whole, up to 10)`);
       for (const n of [n1, n2])
-        if (n !== undefined && (n !== Math.round(n) || Math.abs(n) > 15))
-          out.push(`${n} unit counters on a pan (whole, up to 15)`);
+        // (past 15 the counters are tens and ones)
+        if (n !== undefined && (n !== Math.round(n) || Math.abs(n) > 100))
+          out.push(`${n} unit counters on a pan (whole, up to 100)`);
       break;
     }
     case 'powerScale': {

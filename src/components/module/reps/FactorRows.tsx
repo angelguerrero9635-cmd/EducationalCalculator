@@ -35,8 +35,9 @@ export const sup = (x: number | string) =>
 
 /** A base as written in a power: a negative or a fraction base goes in brackets. */
 const baseText = (b: number) => {
-  const t = formatNumber(b);
-  return b < 0 ? `(${t})` : t;
+  const t = formatNumber(b, { fraction: 12 });
+  // A negative, a fraction or a decimal base is bracketed under its exponent: (5/2)⁸.
+  return b < 0 || /[/.]/.test(t) ? `(${t})` : t;
 };
 
 type Tone = 'first' | 'second' | 'plain';
@@ -149,8 +150,9 @@ export function FactorRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
             })),
             {
               key: 'r',
-              label: `${b}${resultKnown ? sup(r) : '?'}`,
-              count: both ? p * q : 0,
+              // Past 36 factors the row is too long to count: it names the count instead.
+              label: `${b}${resultKnown ? sup(r) : '?'}${both && p * q > 36 ? `: ${p} × ${q} = ${p * q} factors` : ''}`,
+              count: both && p * q <= 36 ? p * q : 0,
               tone: (i: number): Tone => (p > 0 && Math.floor(i / p) % 2 ? 'second' : 'first'),
               faded: !resultKnown,
               rule: 'join',

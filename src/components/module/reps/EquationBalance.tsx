@@ -15,6 +15,16 @@ type Spec = Extract<Representation, { kind: 'equationBalance' }>;
 /** Balloons in a row above a pan. */
 const BALLOONS = 6;
 
+/**
+ * The counters for n units: ones up to 15, past that tens and ones (42 → four 10s and two 1s),
+ * so a pan holds up to 100.
+ */
+const tokens = (n: number): number[] => {
+  const m = Math.abs(n);
+  if (m <= 15) return Array<number>(m).fill(1);
+  return [...Array<number>(Math.floor(m / 10)).fill(10), ...Array<number>(m % 10).fill(1)];
+};
+
 /** "3x", "x", "−x", "−2x". */
 const term = (k: number, x: string) =>
   k === 1 ? x : k === -1 ? `−${x}` : `${formatNumber(k)}${x}`;
@@ -54,7 +64,11 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
       : Math.max(-1, Math.min(1, (R - L) / Math.max(3, 0.25 * (Math.abs(L) + Math.abs(R))))) * 14;
   // What the two pans share, crossed out on both (same sign on both sides only).
   const sameX = spec.cancel && a * cc > 0 ? Math.sign(a) * Math.min(Math.abs(a), Math.abs(cc)) : 0;
-  const sameU = spec.cancel && b * d > 0 ? Math.sign(b) * Math.min(Math.abs(b), Math.abs(d)) : 0;
+  // (counters grouped in tens are not crossed out one by one)
+  const sameU =
+    spec.cancel && b * d > 0 && Math.abs(b) <= 15 && Math.abs(d) <= 15
+      ? Math.sign(b) * Math.min(Math.abs(b), Math.abs(d))
+      : 0;
 
   const blockW = 21;
   const blockH = 26;
@@ -63,7 +77,9 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
   const rows = (n: number, per: number) => Math.ceil(Math.abs(n) / per);
   const stackH = (k: number, n: number) =>
     Math.max(0, k) > 0 || Math.max(0, n) > 0
-      ? rows(Math.max(0, k), perX) * (blockH + 2) + rows(Math.max(0, n), perU) * 16 + 6
+      ? rows(Math.max(0, k), perX) * (blockH + 2) +
+        rows(tokens(Math.max(0, n)).length, perU) * 16 +
+        6
       : 0;
   // The pans hang low enough for the tallest stack; balloons need room above the beam.
   const hang = Math.max(46, stackH(a, b) + 14, stackH(cc, d) + 14);
@@ -72,7 +88,7 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
     ...[
       [a, b],
       [cc, d],
-    ].map(([k, n]) => Math.ceil((Math.max(0, -k!) + Math.max(0, -n!)) / BALLOONS)),
+    ].map(([k, n]) => Math.ceil((Math.max(0, -k!) + tokens(Math.max(0, -n!)).length) / BALLOONS)),
   );
   const pivot = balloonRows > 0 ? 62 + (balloonRows - 1) * 24 : 22;
 
@@ -128,7 +144,8 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
     }
     // Unit counters above the blocks, rows of 7.
     const base = floor - rows(xs, perX) * (blockH + 2);
-    const us = Math.max(0, n);
+    const ts = tokens(Math.max(0, n));
+    const us = ts.length;
     for (let i = 0; i < us; i++) {
       const row = Math.floor(i / perU);
       const inRow = Math.min(perU, us - row * perU);
@@ -153,7 +170,7 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
             textAnchor="middle"
             fill={c.coinInk}
           >
-            1
+            {String(ts[i])}
           </ChartText>
           {out_ ? cross(ux - 6.5, uy - 6.5, 13, 13, `${key}uc${i}`) : null}
         </G>,
@@ -162,7 +179,7 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
     // Negatives: balloons tied to the pan's rim, pulling it up.
     const negs = [
       ...Array.from({ length: Math.max(0, -k) }, (_, i) => ({ big: true, i })),
-      ...Array.from({ length: Math.max(0, -n) }, (_, i) => ({ big: false, i })),
+      ...tokens(Math.max(0, -n)).map((t, i) => ({ big: false, i, t })),
     ];
     const top = floor - stackH(k, n) - 26;
     // Rows of up to 6 balloons, each row higher than the last, staggered a little.
@@ -190,7 +207,7 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
             textAnchor="middle"
             fill={c.onBlock}
           >
-            {g.big ? `−${xSym}` : '−1'}
+            {g.big ? `−${xSym}` : `−${'t' in g ? g.t : 1}`}
           </ChartText>
           {crossed ? cross(bx - rx + 2, by - ry + 2, 2 * rx - 4, 2 * ry - 4, `${key}nc${j}`) : null}
         </G>,
