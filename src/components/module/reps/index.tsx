@@ -135,6 +135,7 @@ import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
+import { HsiRep } from './hsi';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -167,6 +168,8 @@ export const representationTitle = (r: Representation) =>
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'unitChain':
+      return <HsiRep spec={spec} calc={calc} />;
     case 'unitCircle':
       return <UnitCircle spec={spec} calc={calc} />;
     case 'matrixGrid':

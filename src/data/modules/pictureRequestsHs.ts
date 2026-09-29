@@ -610,12 +610,27 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   ),
 
   // ── E. Chemistry ──
-  ask(
-    'H43',
-    'unitChain',
-    'Conversion factors in a chain with units crossed out; a ruler read to the estimated digit; accuracy and precision targets',
-    ['s.10.measurement'],
-  ),
+  {
+    ...ask(
+      'H43',
+      'unitChain',
+      'Conversion factors in a chain with units crossed out; a ruler read to the estimated digit; accuracy and precision targets',
+      ['s.10.measurement'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-measurement-chain',
+      'g.s10-measurement-rate',
+      'g.s10-measurement-chain-long',
+      'g.s10-measurement-ruler',
+      'g.s10-measurement-ruler-coarse',
+      'g.s10-measurement-accurate-precise',
+      'g.s10-measurement-precise-not-accurate',
+      'g.s10-measurement-neither',
+    ],
+    notes:
+      "Drawn (group HI): kind unitChain (typesHsi.ts, reps/UnitChain.tsx), three modes. mode 'chain' { start, unit, per? (a rate's bottom unit), factors: { top, topUnit, bottom, bottomUnit }[] (1–4, numbers or variables), result }: the given quantity times each factor as a stacked fraction, = the result lit; a unit on a top and an equal one on a bottom are struck through, and the unit left is the answer's (checked: result = start × tops ÷ bottoms). mode 'ruler' { start? (default 0), end, length? (end − start, checked), division (smallest mark: 1, 0.1 …), unit, span? (ruler length) }: a wooden ruler, a metal rod from start to end, and a close-up of the rod's end between two marks with the tenths imagined; the caption gives the certain digits, the estimated digit and the length's significant figures (readings must have one digit past the marks). mode 'target' { trials (2–6), accepted, unit?, mean?, error? (percent error, checked), ring? (percent per ring, default 1) }: each trial a dot, right of the bullseye when high, left when low, spread up and down by its distance from the mean; accurate when the mean is inside the first ring, precise when the spread is within one ring. Give the page `unitSystems: ['metric']` (the units are drawn as written). Examples: { kind: 'unitChain', mode: 'chain', start: 'd', unit: 'km', factors: [{ top: 1000, topUnit: 'm', bottom: 1, bottomUnit: 'km' }, { top: 100, topUnit: 'cm', bottom: 1, bottomUnit: 'm' }], result: 'c' }; { kind: 'unitChain', mode: 'ruler', start: 's', end: 'e', length: 'L', division: 0.1, unit: 'cm', span: 10 }; { kind: 'unitChain', mode: 'target', trials: ['a', 'b', 'c'], accepted: 't', unit: 'm/s²', mean: 'm', error: 'e' }.",
+  },
   ask(
     'H44',
     'atomModel',

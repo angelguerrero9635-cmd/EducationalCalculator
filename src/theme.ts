@@ -244,6 +244,8 @@ const light = {
   ladderWallDark: '#8A4632',
   /** Statistics pictures (HS group B): a rejection region, an interval that misses the mean. */
   normalReject: '#D93B3B',
+  /** Chemistry (HS group I): a unit struck through when it cancels in a chain. */
+  unitCancel: '#D9480F',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -419,6 +421,7 @@ const dark: Palette = {
   ladderWall: '#8C4B37',
   ladderWallDark: '#5E3023',
   normalReject: '#F0716B',
+  unitCancel: '#F08A4B',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',
