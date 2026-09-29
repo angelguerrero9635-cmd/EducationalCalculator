@@ -141,3 +141,73 @@ filed under Grade 12 because the book is a Precalculus course.
 | Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots | MB |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | 12 | 12 | 73 | 920 | 482 | 438 | 701 | 56 | 40 | 0.53 |
+
+## Introductory Statistics 2e (`openstax-statistics-2e`)
+
+<https://openstax.org/books/introductory-statistics-2e/pages/preface>. 13 chapters, 80 sections,
+filed under Grade 12. The book is laid out differently: exercises are not at the end of each
+section but on chapter pages "Practice" (`N-practice`), "Homework" and "Bringing It Together",
+numbered through the chapter. The Practice page groups its exercises by section (a link to the
+section starts each block), so the sample is: per section, every **Try It** (numbered through
+the chapter, e.g. "Try It 2.13"; `exercise.kind` "Try It") and the **first 6 Practice exercises
+for that section** (`exercise.kind` "Practice", `n` is the book's chapter-wide number). Homework
+and Bringing It Together pages were not sampled.
+
+- **Context:** most Practice exercises follow "Use the following information to answer the next
+  N exercises" with data or a table; that text (and any table or figure between it and the
+  exercise) is prefixed to `question` and kept in `exercise.instruction`.
+- **Answers:** from the chapter "Solutions" page (`N-solutions`), matched by page and exercise id
+  (ids repeat between the Practice and Homework pages). The key covers odd-numbered exercises
+  and a few even ones. **Try It problems in this book have no published answers** (`answer: null`).
+- Some Try It boxes hold several lettered exercises (e.g. Try It 10.10 a–j); they are separate
+  records (`…-TI10-10`, `…-TI10-10b`, …) and the shared stem is in the first.
+- One figure's alt text on the page is in Spanish ("Gráfico de dispersión…", 12.6); it is kept as
+  published.
+- 145 problems carry a picture or table; most are HTML data tables (in the text, no screenshot);
+  30 have image figures (histograms, box plots, normal and chi-square curves, scatter plots, tree
+  diagrams) and are screenshotted.
+
+**Skill mapping (the loosest of the three books):** the taxonomy has few statistics skills in
+Grades 9–12 (`m.9.regression`, `m.10.conditional-probability`, `m.11.normal-distribution`,
+`m.12.probability-distributions`, `m.12.hypothesis-testing`). Chapter 1 (sampling and data) maps to
+`m.7.sampling`; Chapter 2 (descriptive statistics, graphs, quartiles, box plots, standard
+deviation) to `m.6.center-spread` and `m.11.normal-distribution`; Chapter 3 to conditional
+probability; 4–5 (discrete and continuous distributions) to `m.12.probability-distributions`; 6–8
+(normal, central limit theorem, confidence intervals) to `m.11.normal-distribution`; 9–11 and 13
+(one- and two-sample tests, chi-square, ANOVA) to `m.12.hypothesis-testing`; 12 (regression) to
+`m.9.regression`.
+
+| Grade | Chapters | Sections | Problems | Try It | Practice exercises | With answer | With a picture or table | Screenshots | MB |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 12 | 13 | 80 | 558 | 242 | 316 | 164 | 145 | 30 | 0.42 |
+
+(Lab sections such as 1.5 "Data Collection Experiment" have no Practice exercises or Try Its.)
+
+## Other OpenStax books: checked, not used
+
+Found in the OpenStax sitemap index (<https://openstax.org/rex/sitemaps/index.xml>); each page's
+license panel quoted as above (CC BY-NC-SA 4.0 unless noted).
+
+- **Elementary Algebra 2e** (`elementary-algebra-2e`, Grade 9 fit) and **Intermediate Algebra 2e**
+  (`intermediate-algebra-2e`, Grade 11 fit): see below.
+- **Algebra 1** (`algebra-1`): an OpenStax high-school Algebra 1 course (977 pages: units of
+  mini-lessons, reviews, "Desmos" activities). Same CC BY-NC-SA license. Not used this round: it is
+  a different page structure (unit overviews, mini-lessons, no numbered section exercises with an
+  answer key); worth a separate pass for Grade 9.
+- **Statistics** (`statistics`): a high-school statistics book whose license panel reads "This book
+  uses the Creative Commons Attribution License, which means that you can reuse and modify the
+  material only for noncommercial purposes, must attribute Texas Education Agency (TEA)…" (the
+  panel mixes CC BY and noncommercial wording). Its chapters match Introductory Statistics 2e, so it
+  was not duplicated.
+- College Algebra 2e, Prealgebra 2e, Calculus: outside this group's list.
+
+## Taxonomy gaps noticed
+
+- No Grade 9–12 skill for **descriptive statistics** (graphs of data, quartiles, box plots,
+  standard deviation), **sampling and study design**, **confidence intervals**, the **central
+  limit theorem**, **chi-square/ANOVA**, **function notation, domain and range**, **transformations
+  of functions**, **systems in three variables**, **partial fractions**, **rotation of axes**, or
+  **derivatives** (Precalculus 12.4). They map to the nearest skill with a note.
+- `m.12.binomial-theorem` covers combinatorics too; counting principles (13.5/11.5) map there.
+- Real numbers, integer exponents and one-variable linear equations open both algebra books but
+  exist only as Grade 8 skills.
