@@ -299,12 +299,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Chi-square: observed and expected counts side by side. DRAWN. Spec (typesHse.ts TwoWaySpec): table takes twoWay instead of sweep/output (a union member, so the sweep tables are unchanged): { rows: [names], cols: [names], cells: [[id or number, …], …], totals? (default true; a one-row table has no totals row), lit? { row?, col? } (a cell, a whole row or a whole column), of? 'total' | 'row' | 'col' (joint or marginal out of the grand total, or conditional out of the lit row or column; the whole is outlined and the caption writes P(A | B) = part/whole), frequency? (the value, checked to 0.005), bar? 'rows' | 'cols' (a segmented 100% bar per row or column with a key), expected? 'independence' | [[ids]] (each cell's expected count in brackets under the observed one; given counts must add to the observed total), chiSquare? (the statistic's value, checked; the caption works the first term and the degrees of freedom) }. Example (m.10.conditional-probability): representation: { kind: 'table', twoWay: { rows: ['Late', 'On time'], cols: ['Bus', 'Walk', 'Car'], cells: [['a', 'b', 'g'], ['d', 'e', 'h']], lit: { row: 0, col: 0 }, of: 'col', frequency: 'p', bar: 'cols' } }; (m.12.chi-square): { kind: 'table', twoWay: { rows: [...], cols: [...], cells: [['a', 'b'], ['c', 'd']], expected: 'independence', chiSquare: 'X' } }.",
   },
-  ask(
-    'H21',
-    'treeDiagram',
-    'Branches with their own probabilities (not all 1/n), P(B | A) on the second stage',
-    ['m.10.conditional-probability', 'm.10.probability-rules'],
-  ),
+  {
+    ...ask(
+      'H21',
+      'treeDiagram',
+      'Branches with their own probabilities (not all 1/n), P(B | A) on the second stage',
+      ['m.10.conditional-probability', 'm.10.probability-rules'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-conditional-probability-tree',
+      'g.m10-probability-rules-without-replacement',
+      'g.m10-conditional-probability-independent',
+    ],
+    notes:
+      "DRAWN. Spec (typesHse.ts TreeChances): treeDiagram takes chances instead of first/second counts (a union member; the equally-likely trees are unchanged): { first: [ids or numbers], second: [[…] per first outcome], names: [[first outcomes], [second outcomes]] (2 to 4 a stage), stages?, path? [i, j], chance?, totalOf?, total? }. A stage's list may leave out its last chance, drawn as the complement 1 − the others. Each first branch reads P(A) = p, the lit path's second branch P(B | A) = p in full (the others keep to numbers so the branches stay visible), and each leaf its product (0.3 × 0.4 = 0.12, 3/8 × 2/7 = 3/28). The caption checks every node adds to 1, works P(A and B) = P(A) × P(B | A), P(B) over every path (totalOf), then P(A | B) (fraction ≈ decimal), and says when the stages are independent (the same P(B | A) on every first branch). The harness checks the sums, the path product and the total. Example (m.10.conditional-probability): representation: { kind: 'treeDiagram', chances: { first: ['r'], second: [['a'], ['b']], names: [['Rain', 'Dry'], ['Late', 'On time']], stages: ['Weather', 'Arrival'], path: [0, 0], chance: 'j', totalOf: 0, total: 't' } }.",
+  },
   ask(
     'H22',
     'venn',

@@ -14,7 +14,7 @@ import {
 } from '@/components/module/reps/stats';
 
 import type { Representation } from '../types';
-import type { TwoWaySpec } from '../typesHse';
+import type { TreeChances, TwoWaySpec } from '../typesHse';
 
 type Val = (x: string | number) => number | undefined;
 type Of<K extends Representation['kind']> = Extract<Representation, { kind: K }>;
@@ -190,6 +190,60 @@ export function twoWayIssues(t: TwoWaySpec, val: Val): string[] {
       if (Math.abs(x - want) > 0.0051 + 1e-6 * want)
         out.push(`chi-square shows ${x}, the counts give ${want.toFixed(4)}`);
     }
+  }
+  return out;
+}
+
+/** The variable ids a probability tree names (for the module tests). */
+export const treeChanceVars = (t: TreeChances) =>
+  ids(...t.first, ...t.second.flat(), t.chance, t.total);
+
+/**
+ * H21: every node's branches add to 1 (a branch left out is the complement), the lit path's
+ * chance is the product along it, and the total adds one second outcome over every path.
+ */
+export function treeChanceIssues(t: TreeChances, val: Val): string[] {
+  const out: string[] = [];
+  const [A, B] = [t.names[0].length, t.names[1].length];
+  if (A < 2 || B < 2 || A > 4 || B > 4) out.push(`a tree of ${A} × ${B} outcomes (2 to 4 a stage)`);
+  const fits = (n: number, k: number) => n === k || n === k - 1;
+  if (!fits(t.first.length, A)) out.push(`${t.first.length} first chances for ${A} outcomes`);
+  if (t.second.length !== A) out.push(`${t.second.length} second-stage rows for ${A} outcomes`);
+  t.second.forEach((r, i) => {
+    if (!fits(r.length, B)) out.push(`${r.length} chances after outcome ${i} for ${B} outcomes`);
+  });
+  if (t.path && !(t.path[0] < A && t.path[1] < B))
+    out.push(`path ${t.path.join(', ')} is not a branch`);
+  if (t.totalOf !== undefined && !(t.totalOf >= 0 && t.totalOf < B))
+    out.push(`no second outcome ${t.totalOf}`);
+  if (t.total && t.totalOf === undefined) out.push('a total needs the outcome it adds (totalOf)');
+  const full = (xs: (number | undefined)[], k: number) =>
+    xs.every((x) => x !== undefined)
+      ? xs.length === k - 1
+        ? [...(xs as number[]), 1 - (xs as number[]).reduce((a, b) => a + b, 0)]
+        : (xs as number[])
+      : undefined;
+  const pA = full(t.first.map(val), A);
+  const pB = t.second.map((r) => full(r.map(val), B));
+  for (const xs of [pA, ...pB]) {
+    if (!xs) continue;
+    if (xs.some((p) => p < -1e-9 || p > 1 + 1e-9))
+      out.push(`a branch chance outside 0 to 1: ${xs.join(', ')}`);
+    else if (Math.abs(xs.reduce((a, b) => a + b, 0) - 1) > 1e-6)
+      out.push(`branches add to ${xs.reduce((a, b) => a + b, 0)}, not 1`);
+  }
+  if (!pA || pB.some((r) => !r)) return out;
+  const leaf = (i: number, j: number) => pA[i]! * pB[i]![j]!;
+  if (t.path && t.chance) {
+    const x = val(t.chance);
+    const want = leaf(t.path[0], t.path[1]);
+    if (x !== undefined && !close(x, want))
+      out.push(`path chance shows ${x}, the branches give ${want}`);
+  }
+  if (t.totalOf !== undefined && t.total) {
+    const x = val(t.total);
+    const want = pA.reduce((s, _, i) => s + leaf(i, t.totalOf!), 0);
+    if (x !== undefined && !close(x, want)) out.push(`total shows ${x}, the paths give ${want}`);
   }
   return out;
 }

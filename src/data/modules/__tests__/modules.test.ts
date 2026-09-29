@@ -14,7 +14,7 @@ import { chemSpecVars } from '../typesChem';
 import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { isStandIn, pages } from '../harness/scope';
-import { twoWayVars } from '../harness/picturesHse';
+import { treeChanceVars, twoWayVars } from '../harness/picturesHse';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -312,6 +312,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
+      if ('chances' in r) return treeChanceVars(r.chances);
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];

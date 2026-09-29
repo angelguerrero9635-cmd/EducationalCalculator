@@ -91,6 +91,7 @@ import { CoordinatePlane } from './CoordinatePlane';
 import { BoxPlot } from './BoxPlot';
 import { BoxPlotPair } from './BoxPlotPair';
 import { TwoWayTable } from './TwoWayTable';
+import { ChanceTree } from './ChanceTree';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -394,7 +395,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'diceGrid':
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
-      return <TreeDiagram spec={spec} calc={calc} />;
+      return 'chances' in spec ? (
+        <ChanceTree spec={spec.chances} calc={calc} />
+      ) : (
+        <TreeDiagram spec={spec} calc={calc} />
+      );
     case 'marbles':
       return <Marbles spec={spec} calc={calc} />;
     case 'energyPyramid':

@@ -14,7 +14,7 @@ import type { ChemSpec } from './typesChem';
 import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 import type { Physics8Spec } from './typesPhysics8';
 import type { CardIcon } from './layouts/types';
-import type { TwoWaySpec } from './typesHse';
+import type { TreeChances, TwoWaySpec } from './typesHse';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1406,6 +1406,8 @@ export type Representation =
       path?: number[];
       chance?: string;
     }
+  /** Grades 9–12 (H21): a probability tree, a chance on every branch (spec in `typesHse.ts`). */
+  | { kind: 'treeDiagram'; chances: TreeChances }
   /**
    * A clear bag of marbles: `parts` are how many of each color (40 in all at most), in
    * `colors` and named by `names` (the color names by default). The event is color `pick`

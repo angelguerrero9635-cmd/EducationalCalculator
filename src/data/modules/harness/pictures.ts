@@ -24,7 +24,13 @@ import { chemIssues } from './chemPictures';
 import { placeParts } from '../helpers';
 import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
-import { boxPlotIssues, dotPlotSdIssues, scatterIssues, twoWayIssues } from './picturesHse';
+import {
+  boxPlotIssues,
+  dotPlotSdIssues,
+  scatterIssues,
+  treeChanceIssues,
+  twoWayIssues,
+} from './picturesHse';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1394,6 +1400,10 @@ export function repIssues(
       break;
     }
     case 'treeDiagram': {
+      if ('chances' in rep) {
+        out.push(...treeChanceIssues(rep.chances, val));
+        break;
+      }
       // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
       count(rep.first, 'first-stage outcomes', 6);
       count(rep.second, 'second-stage outcomes', 6);

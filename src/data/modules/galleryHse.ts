@@ -1517,11 +1517,224 @@ const H20_MODULES: ModuleDef[] = [
   }),
 ];
 
+// ── H21: probability trees with a chance on every branch ──
+
+/** A probability typed on a branch (0 to 1, in hundredths). */
+const chanceVar = (id: string, symbol: string, name: string) => ({
+  id,
+  symbol,
+  name,
+  min: 0,
+  max: 1,
+  step: 0.01,
+});
+/** A probability the rules work out. */
+const chanceOut = (id: string, symbol: string, name: string) => ({
+  id,
+  symbol,
+  name,
+  min: 0,
+  max: 1,
+  derived: true,
+});
+
+const H21_MODULES: ModuleDef[] = [
+  page({
+    id: 'g.m10-conditional-probability-tree',
+    title: 'Probability tree: conditional branches',
+    use: 'Use this for P(A and B) = P(A) × P(B | A), and for P(B) added over every path.',
+    assumptions: [
+      'The first branches are P(Rain) and P(Dry); they add to 1.',
+      'Each second branch is conditional: P(Late | Rain) is the chance of being late when it rains.',
+      'Multiply along a path; add the paths that end in Late for P(Late).',
+    ],
+    variables: [
+      chanceVar('r', 'P(R)', 'P(Rain)'),
+      chanceVar('a', 'P(L | R)', 'P(Late | Rain)'),
+      chanceVar('b', 'P(L | D)', 'P(Late | Dry)'),
+      chanceOut('j', 'P(R and L)', 'P(Rain and Late)'),
+      chanceOut('t', 'P(L)', 'P(Late)'),
+    ],
+    rules: [
+      rule(
+        'P(R and L) = P(R) × P(L | R)',
+        '{j} = {r} × {a}',
+        ['j', 'r', 'a'],
+        (v) => v.j! - v.r! * v.a!,
+        {
+          j: [(v) => v.r! * v.a!, '{r} × {a}', 'Multiply along the path: rain, then late.'],
+          a: [(v) => div(v.j!, v.r!), '{j} ÷ {r}', 'Divide the path by the first branch.'],
+        },
+      ),
+      rule(
+        'P(L) = P(R)P(L | R) + (1 − P(R))P(L | D)',
+        '{t} = {r} × {a} + (1 − {r}) × {b}',
+        ['t', 'r', 'a', 'b'],
+        (v) => v.t! - (v.r! * v.a! + (1 - v.r!) * v.b!),
+        {
+          t: [
+            (v) => v.r! * v.a! + (1 - v.r!) * v.b!,
+            '{r} × {a} + (1 − {r}) × {b}',
+            'Add the two paths that end in Late: rain then late, and dry then late.',
+          ],
+        },
+      ),
+    ],
+    example: { r: 0.3, a: 0.4, b: 0.1, j: 0.12, t: 0.19 },
+    startWith: ['r', 'a', 'b'],
+    representation: {
+      kind: 'treeDiagram',
+      chances: {
+        first: ['r'],
+        second: [['a'], ['b']],
+        names: [
+          ['Rain', 'Dry'],
+          ['Late', 'On time'],
+        ],
+        stages: ['Weather', 'Arrival'],
+        path: [0, 0],
+        chance: 'j',
+        totalOf: 0,
+        total: 't',
+      },
+    },
+  }),
+  page({
+    id: 'g.m10-probability-rules-without-replacement',
+    title: 'Two draws without replacement',
+    use: 'Use this for two draws without putting the first back: the second branch changes.',
+    assumptions: [
+      'The first draw is red with chance r ÷ n.',
+      'Without replacement, one marble is gone: after a red, r − 1 reds are left of n − 1.',
+      'Multiply along the path for P(Red, then Red).',
+    ],
+    variables: [
+      { ...count('rd', 'Red marbles'), symbol: 'r', min: 1, max: 20 },
+      { ...count('n', 'Marbles in all'), symbol: 'n', min: 2, max: 40 },
+      chanceOut('p1', 'P(R)', 'P(Red first)'),
+      chanceOut('p2', 'P(R | R)', 'P(Red second | Red first)'),
+      chanceOut('p3', 'P(R | B)', 'P(Red second | Blue first)'),
+      chanceOut('pp', 'P(R, R)', 'P(Red, then Red)'),
+    ],
+    rules: [
+      rule('P(R) = r ÷ n', '{p1} = {rd} ÷ {n}', ['p1', 'rd', 'n'], (v) => v.p1! * v.n! - v.rd!, {
+        p1: [(v) => div(v.rd!, v.n!), '{rd} ÷ {n}', 'Reds out of all the marbles.'],
+      }),
+      rule(
+        'P(R | R) = (r − 1) ÷ (n − 1)',
+        '{p2} = ({rd} − 1) ÷ ({n} − 1)',
+        ['p2', 'rd', 'n'],
+        (v) => v.p2! * (v.n! - 1) - (v.rd! - 1),
+        {
+          p2: [
+            (v) => div(v.rd! - 1, v.n! - 1),
+            '({rd} − 1) ÷ ({n} − 1)',
+            'One red and one marble fewer after a red.',
+          ],
+        },
+      ),
+      rule(
+        'P(R | B) = r ÷ (n − 1)',
+        '{p3} = {rd} ÷ ({n} − 1)',
+        ['p3', 'rd', 'n'],
+        (v) => v.p3! * (v.n! - 1) - v.rd!,
+        {
+          p3: [(v) => div(v.rd!, v.n! - 1), '{rd} ÷ ({n} − 1)', 'Every red is left after a blue.'],
+        },
+      ),
+      rule(
+        'P(R, R) = P(R) × P(R | R)',
+        '{pp} = {p1} × {p2}',
+        ['pp', 'p1', 'p2'],
+        (v) => v.pp! - v.p1! * v.p2!,
+        {
+          pp: [(v) => v.p1! * v.p2!, '{p1} × {p2}', 'Multiply along the path.'],
+        },
+      ),
+    ],
+    example: { rd: 3, n: 8, p1: 3 / 8, p2: 2 / 7, p3: 3 / 7, pp: 3 / 28 },
+    startWith: ['rd', 'n'],
+    representation: {
+      kind: 'treeDiagram',
+      chances: {
+        first: ['p1'],
+        second: [['p2'], ['p3']],
+        names: [
+          ['Red', 'Blue'],
+          ['Red', 'Blue'],
+        ],
+        stages: ['First draw', 'Second draw'],
+        path: [0, 0],
+        chance: 'pp',
+      },
+    },
+  }),
+  // The edge: three first outcomes, and a second stage that does not depend on them.
+  page({
+    id: 'g.m10-conditional-probability-independent',
+    title: 'Independent stages on a tree',
+    use: 'Use this for checking independence: P(B | A) is the same on every first branch.',
+    assumptions: [
+      'The spinner lands on red, blue or green; its three chances add to 1.',
+      'The coin’s chance of heads is the same whatever the spinner shows: independent.',
+      'Then P(Blue and Heads) = P(Blue) × P(Heads).',
+    ],
+    variables: [
+      chanceVar('r', 'P(R)', 'P(Red)'),
+      chanceVar('u', 'P(U)', 'P(Blue)'),
+      chanceOut('g', 'P(G)', 'P(Green)'),
+      chanceVar('h', 'P(H)', 'P(Heads)'),
+      chanceOut('j', 'P(U and H)', 'P(Blue and Heads)'),
+    ],
+    rules: [
+      rule(
+        'P(G) = 1 − P(R) − P(U)',
+        '{g} = 1 − {r} − {u}',
+        ['g', 'r', 'u'],
+        (v) => v.g! - (1 - v.r! - v.u!),
+        {
+          g: [
+            (v) => (1 - v.r! - v.u! >= -1e-9 ? 1 - v.r! - v.u! : undefined),
+            '1 − {r} − {u}',
+            'The three chances add to 1.',
+          ],
+        },
+      ),
+      rule(
+        'P(U and H) = P(U) × P(H)',
+        '{j} = {u} × {h}',
+        ['j', 'u', 'h'],
+        (v) => v.j! - v.u! * v.h!,
+        {
+          j: [(v) => v.u! * v.h!, '{u} × {h}', 'Independent: multiply the two chances.'],
+        },
+      ),
+    ],
+    example: { r: 0.5, u: 0.3, g: 0.2, h: 0.5, j: 0.15 },
+    startWith: ['r', 'u', 'h'],
+    representation: {
+      kind: 'treeDiagram',
+      chances: {
+        first: ['r', 'u'],
+        second: [['h'], ['h'], ['h']],
+        names: [
+          ['Red', 'Blue', 'Green'],
+          ['Heads', 'Tails'],
+        ],
+        stages: ['Spinner', 'Coin'],
+        path: [1, 0],
+        chance: 'j',
+      },
+    },
+  }),
+];
+
 export const HSE_GALLERY_MODULES: ModuleDef[] = [
   ...H16_MODULES,
   ...H17_MODULES,
   ...H18_MODULES,
   ...H19_MODULES,
   ...H20_MODULES,
+  ...H21_MODULES,
 ];
 export const HSE_GALLERY_LAYOUTS: LayoutDef[] = [];
