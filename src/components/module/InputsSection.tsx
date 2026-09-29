@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Platform, StyleSheet, TextInput, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
@@ -13,6 +13,13 @@ import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext'
 import { getUnit } from '@/engine/units';
 import { font, radius, space, usePalette } from '@/theme';
 
+import {
+  equationIds,
+  equationLines,
+  equationParts,
+  type EquationPart,
+  type Slot,
+} from './equationTemplate';
 import type { Calculator } from './useCalculator';
 
 /**
@@ -248,8 +255,10 @@ function EquationBox({
     tight ? 40 : 56,
     (shown.length || 1) * (tight ? 11 : 13) + (tight ? 14 : 20),
   );
-  const box = (
+  const ref = useRef<TextInput>(null);
+  const input = (
     <TextInput
+      ref={ref}
       testID={`input-${variable.id}`}
       accessibilityLabel={variable.name}
       value={shown}
@@ -276,6 +285,20 @@ function EquationBox({
       ]}
     />
   );
+  // A small box (an exponent, a script) is 32 px tall: a margin it doesn't take up in the
+  // layout makes its tap target 44 px, a tap there focusing the box.
+  const box = small ? (
+    <Pressable
+      accessible={false}
+      focusable={false}
+      onPress={() => ref.current?.focus()}
+      style={styles.eqHit}
+    >
+      {input}
+    </Pressable>
+  ) : (
+    input
+  );
   if (!letter) return box;
   return (
     <View style={styles.eqLettered}>
@@ -284,95 +307,6 @@ function EquationBox({
     </View>
   );
 }
-
-/** A box ({a}) or a fixed number (the 1 of 1/{b}) in the equation. */
-type Slot = { id: string } | { text: string };
-
-/**
- * A template split into its pieces: boxes, fractions, mixed numbers, powers and the text between.
- * A text piece written against its neighbour (`{p}x`, `{a}°`, `f({x})`) is `tight` on that
- * side and is drawn touching it.
- */
-type EquationPart =
-  | { kind: 'box'; id: string }
-  | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
-  | { kind: 'power'; base: Slot; exponent: Slot }
-  | { kind: 'text'; text: string; tightBefore?: boolean; tightAfter?: boolean };
-
-const SLOT = String.raw`\{(\w+)\}|(\d+)`;
-const slot = (id: string | undefined, text: string | undefined): Slot =>
-  id !== undefined ? { id } : { text: text! };
-
-/**
- * `{a}/{b}` and `1/{b}` are stacked fractions, `{w} {a}/{b}` a mixed number, `{b}^{n}`,
- * `10^{n}` and `{a}^2` powers; any other `{id}` is a box, and the rest is text (÷, =, %, :).
- * Only one line: `equationLines` splits a template at its line breaks.
- */
-export function equationParts(template: string): EquationPart[] {
-  const re = new RegExp(
-    String.raw`(?:\{(\w+)\} )?(?:${SLOT})\/(?:${SLOT})|(?:${SLOT})\^(?:${SLOT})|\{(\w+)\}`,
-    'g',
-  );
-  const parts: EquationPart[] = [];
-  let last = 0;
-  // Text is split into words, so a line can break between them; only the first word can touch
-  // the piece before it and only the last the piece after.
-  const pushText = (raw: string, before: boolean, after: boolean) => {
-    const words = raw.trim().split(/\s+/).filter(Boolean);
-    words.forEach((text, k) =>
-      parts.push({
-        kind: 'text',
-        text,
-        ...(k === 0 && before && !/^\s/.test(raw) ? { tightBefore: true } : {}),
-        ...(k === words.length - 1 && after && !/\s$/.test(raw) ? { tightAfter: true } : {}),
-      }),
-    );
-  };
-  for (const m of template.matchAll(re)) {
-    pushText(template.slice(last, m.index), parts.length > 0, true);
-    const [, whole, topId, topText, bottomId, bottomText, baseId, baseText, expId, expText, box] =
-      m;
-    if (box) parts.push({ kind: 'box', id: box });
-    else if (baseId !== undefined || baseText !== undefined)
-      parts.push({
-        kind: 'power',
-        base: slot(baseId, baseText),
-        exponent: slot(expId, expText),
-      });
-    else
-      parts.push({
-        kind: 'fraction',
-        top: slot(topId, topText),
-        bottom: slot(bottomId, bottomText),
-        ...(whole ? { whole } : {}),
-      });
-    last = m.index! + m[0].length;
-  }
-  pushText(template.slice(last), parts.length > 0, false);
-  return parts;
-}
-
-/** A template's lines: a system of equations is written one equation a line. */
-export const equationLines = (template: string): string[] =>
-  template.split('\n').map((l) => l.trim());
-
-/** Every value's id in the template, in order. */
-export const equationIds = (template: string): string[] =>
-  equationLines(template).flatMap((line) =>
-    equationParts(line).flatMap((p) =>
-      p.kind === 'box'
-        ? [p.id]
-        : p.kind === 'power'
-          ? [p.base, p.exponent].flatMap((s) => ('id' in s ? [s.id] : []))
-          : p.kind === 'fraction'
-            ? [
-                p.whole,
-                'id' in p.top ? p.top.id : undefined,
-                'id' in p.bottom ? p.bottom.id : undefined,
-              ].filter((x): x is string => !!x)
-            : [],
-    ),
-  );
 
 /** The equation with a box for each value, so the numbers go where the problem writes them. */
 function EquationInput({ template, calc }: { template: string; calc: Calculator }) {
@@ -387,15 +321,8 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
   const lines = equationLines(template).map(equationParts);
   // Long equations use smaller boxes, so a phone fits them on one line: more than 6 values,
   // or more than 4 columns side by side on a line (a box, a fraction or a power is one; a
-  // mixed number two), as in 3(2 + x) = 6 + 12.
-  const columns = Math.max(
-    ...lines.map((parts) =>
-      parts.reduce(
-        (n, p) => n + (p.kind === 'text' ? 0 : p.kind === 'fraction' && p.whole ? 2 : 1),
-        0,
-      ),
-    ),
-  );
+  // mixed number two; an expression slot its boxes side by side), as in 3(2 + x) = 6 + 12.
+  const columns = Math.max(...lines.map((parts) => columnsOf(parts)));
   const compact = equationIds(template).length > 6 || columns > 4;
   const box = (id: string, key: string, small = false, letter = lettered(id)) => (
     <EquationBox
@@ -410,6 +337,11 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
   const slotView = (s: Slot, key: string, small = false) =>
     'id' in s ? (
       box(s.id, key, small, false)
+    ) : 'parts' in s ? (
+      // An expression slot (x − μ over σ, n − 1 up in an exponent): its pieces in one row.
+      <View key={key} style={small ? styles.eqSlotSmall : styles.eqSlot}>
+        {row(s.parts, key, small)}
+      </View>
     ) : (
       <Text
         key={key}
@@ -425,12 +357,13 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
       ? [`${byId.get(id)!.name}: ${early ? kidMessage(e) : limitMessage(e, calc.module)}`]
       : [];
   });
-  const piece = (p: EquationPart, i: string) =>
+  const piece = (p: EquationPart, i: string, small = false, nested = false) =>
     p.kind === 'text' ? (
       <Text
         key={i}
         style={[
           styles.eqText,
+          small && styles.eqTextSmall,
           // Written against a box: closer than the box's padding lets it look (3x, 40°).
           p.tightBefore && styles.eqTightBefore,
           p.tightAfter && styles.eqTightAfter,
@@ -440,21 +373,32 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
         {p.text}
       </Text>
     ) : p.kind === 'box' ? (
-      box(p.id, `b${i}`)
+      box(p.id, `b${i}`, small, small ? false : undefined)
     ) : p.kind === 'power' ? (
-      <View key={i} style={styles.eqPower}>
-        {slotView(p.base, `p${i}`)}
+      <View key={i} style={[styles.eqPower, nested && styles.eqPowerNested]}>
+        {slotView(p.base, `p${i}`, small)}
         <View style={styles.eqExponent}>{slotView(p.exponent, `e${i}`, true)}</View>
       </View>
     ) : (
       <View key={i} style={styles.eqMixed}>
-        {p.whole ? box(p.whole, `w${i}`, false, false) : null}
+        {p.whole ? box(p.whole, `w${i}`, small, false) : null}
         <View style={styles.eqFraction}>
-          {slotView(p.top, `t${i}`)}
+          {slotView(p.top, `t${i}`, small)}
           <View style={[styles.eqBar, { backgroundColor: c.text }]} />
-          {slotView(p.bottom, `d${i}`)}
+          {slotView(p.bottom, `d${i}`, small)}
         </View>
       </View>
+    );
+  // Pieces in a row, those written against each other touching.
+  const row = (parts: EquationPart[], key: string, small = false) =>
+    clusters(parts.map((p, i) => ({ p, i }))).map((cluster, k) =>
+      cluster.length === 1 ? (
+        piece(cluster[0]!.p, `${key}-${cluster[0]!.i}`, small, true)
+      ) : (
+        <View key={`${key}c${k}`} style={styles.eqTight}>
+          {cluster.map(({ p, i }) => piece(p, `${key}-${i}`, small, true))}
+        </View>
+      ),
     );
   return (
     <View style={styles.equation} testID="equation">
@@ -481,6 +425,26 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
         </Text>
       ))}
     </View>
+  );
+}
+
+/**
+ * Columns side by side: a box, a fraction or a power is one, a mixed number two; an expression
+ * slot counts its own (a z-score's top, x − μ, is two).
+ */
+function columnsOf(parts: EquationPart[]): number {
+  const slot = (s: Slot) => ('parts' in s ? Math.max(1, columnsOf(s.parts)) : 1);
+  return parts.reduce(
+    (n, p) =>
+      n +
+      (p.kind === 'text'
+        ? 0
+        : p.kind === 'fraction'
+          ? (p.whole ? 1 : 0) + Math.max(slot(p.top), slot(p.bottom))
+          : p.kind === 'power'
+            ? slot(p.base)
+            : 1),
+    0,
   );
 }
 
@@ -649,6 +613,8 @@ const styles = StyleSheet.create({
   eqGroup: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   eqMixed: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   eqPower: { flexDirection: 'row', alignItems: 'flex-start' },
+  // Inside a fraction or a group, room above for the exponent so it clears the bar.
+  eqPowerNested: { paddingTop: 12 },
   eqExponent: { marginTop: -14, marginLeft: 2 },
   eqLettered: { alignItems: 'center', gap: 2 },
   eqLetter: { fontSize: font.caption, fontStyle: 'italic' },
@@ -658,6 +624,10 @@ const styles = StyleSheet.create({
   eqTightBefore: { marginLeft: -3 },
   eqTightAfter: { marginRight: -3 },
   eqBoxSmall: { minHeight: 32, fontSize: font.caption + 2 },
+  eqHit: { padding: 6, margin: -6 },
+  eqTextSmall: { fontSize: font.body, lineHeight: 24 },
+  eqSlot: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  eqSlotSmall: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   eqBox: {
     fontFamily: font.family,
     minHeight: 44,

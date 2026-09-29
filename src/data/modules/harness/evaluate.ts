@@ -317,6 +317,11 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/×/g, '*')
     .replace(/÷/g, '/')
     .replace(/·/g, '*')
+    // Grades 9–12: the sine, cosine or tangent of degrees (sin 40°), and e to a power (e^(0.5)).
+    .replace(/\b(sin|cos|tan) \(?(-?\d+(?:\.\d+)?)°\)?/g, (_, f: 'sin' | 'cos' | 'tan', d) =>
+      String(Math[f]((Number(d) * Math.PI) / 180)),
+    )
+    .replace(/(?<![\w.])e\^/g, `(${Math.E})^`)
     // Symbols from Grade 6 on: π, ½, squares and cubes, square roots.
     // 36π is 36 × π.
     // (bracketed, so 90 ÷ 9π is 90 ÷ (9 × π), as it is written)

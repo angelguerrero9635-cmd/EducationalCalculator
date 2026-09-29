@@ -585,19 +585,33 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     'Solar system page: nebula to planets as sequence stages.',
   ),
   // ── H. Equation inputs (docs/RENDERINGS_HS_EQUATIONS.md, docs/EQUATION_INPUTS.md) ──
-  ask(
-    'H81',
-    'equationInput',
-    'Expression slots: a fraction part or an exponent mixing boxes, text and signs',
-    [
-      'm.10.law-sines-cosines',
-      'm.11.normal-distribution',
-      'm.12.conics',
-      's.10.measurement',
-      'm.9.sequences',
-      'm.11.exp-log-equations',
+  {
+    ...ask(
+      'H81',
+      'equationInput',
+      'Expression slots: a fraction part or an exponent mixing boxes, text and signs',
+      [
+        'm.10.law-sines-cosines',
+        'm.11.normal-distribution',
+        'm.12.conics',
+        's.10.measurement',
+        'm.9.sequences',
+        'm.11.exp-log-equations',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-law-sines-cosines-sines',
+      'g.m11-normal-distribution-z',
+      'g.m9-sequences-geometric',
+      'g.m11-exp-log-equations-continuous',
+      'g.s10-measurement-factor',
+      'g.s10-mole-factor',
+      'g.m12-conics-ellipse',
     ],
-  ),
+    notes:
+      'Template syntax: a group in braces (anything but a lone {id}) is an expression slot, as a fraction’s top or bottom or an exponent: `{z} = {{x} − {m}}/{s}`, `{a}/{sin({A}°)} = {b}/{sin({B}°)}`, `{a} km × {1000 m}/{1 km} = {b} m`, `{m} g × {1 mol}/{{M} g} = {n} mol`, `aₙ = {a1} × {r}^{{n} − 1} = {an}`, `{A} = {P}e^{{r}{t}}`, `{({x} − {h})²}/{a}^2 + {({y} − {k})²}/{b}^2 = 1`. A bare word after ^ stays text (`{b}^x`, `e^rt`); a letter or number before ^ is a base (`e^`, `10^`). The exponent binds before the bar. The step harness now reads sin/cos/tan of degrees and e^.',
+  },
   ask(
     'H82',
     'equationInput',

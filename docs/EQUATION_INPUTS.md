@@ -38,6 +38,7 @@ Keep rows for:
 | `{w} {a}/{b}`                          | A mixed number.                                          |
 | `{b}^{n}`, `10^{n}`, `{a}^2`           | A power (the base or exponent can be a fixed number).    |
 | `{p}x + {q}`, `{a}°`, `{p}%`, `f({x})` | Text written against a box touches it: no space between. |
+| `{{x} − {m}}/{s}`, `{r}^{{n} − 1}`     | A group in braces: an expression slot (boxes, text).     |
 | A line break (`\n`)                    | A second equation under the first (a system).            |
 
 Line breaks and brackets:
@@ -115,14 +116,14 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.9.inequality-systems                  | two lines, `{a}x + {b}y = {c}` and `{d}x + {e}y = {f}`            | today; inequalities need the sign box                    |
 | m.9.radicals                            | `√{n} = {k}√{r}`; `{b}^{p/q}`                                     | **must**: radical bar; fraction exponent                 |
 | m.9.exponential-functions               | `y = {a}({b})^x`; `A = {P}(1 + {r})^{t}`                          | **must**: exponent on a bracket, a letter exponent       |
-| m.9.sequences                           | `aₙ = {a1} + ({n} − 1){d}`; `aₙ = {a1} × {r}^{n − 1}`             | arithmetic today; geometric needs an expression exponent |
+| m.9.sequences                           | `aₙ = {a1} + ({n} − 1){d}`; `aₙ = {a1} × {r}^{{n} − 1} = {an}`    | today; the geometric term uses H81’s expression exponent |
 | m.9.polynomial-operations               | `({a}x + {b})({c}x + {d}) = {p}x² + {q}x + {r}`                   | today                                                    |
 | m.9.factoring                           | `x² + {b}x + {c} = (x + {p})(x + {q})`                            | today                                                    |
 | m.9.quadratic-functions                 | `y = {a}(x − {h})² + {k}`; `y = {a}x² + {b}x + {c}`               | today                                                    |
 | m.9.quadratic-formula                   | `{a}x² + {b}x + {c} = 0`; the two roots as rows                   | today                                                    |
 | m.10.special-right-triangles            | `{a}^2 + {b}^2 = {c}^2` (fixed unit); `{s}√2`                     | radical bar                                              |
 | m.10.right-triangle-trig                | `sin({A}°) = {o}/{h}` (cos, tan the same)                         | today                                                    |
-| m.10.law-sines-cosines                  | `{a}/sin({A}°) = {b}/sin({B}°)`                                   | **must**: text in a fraction slot                        |
+| m.10.law-sines-cosines                  | `{a}/{sin({A}°)} = {b}/{sin({B}°)}`                               | today (H81: a group as a fraction slot)                  |
 | m.10.circle-equations                   | `(x − {h})² + (y − {k})² = {r}^2`                                 | today                                                    |
 | m.10.probability-rules                  | `C({n}, {r}) = {c}`, `P({n}, {r}) = {c}`                          | today                                                    |
 | m.10.conditional-probability            | `P(A \| B) = {ab}/{b}`                                            | today                                                    |
@@ -132,22 +133,22 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.11.binomial-theorem                   | `({a}x + {b})^{n}`; term: `C({n}, {k})`                           | exponent on a bracket                                    |
 | m.11.radical-functions                  | `√({a}x + {b}) = {c}`                                             | **must**: radical bar over a group                       |
 | m.11.logarithms                         | `log_{b}({x}) = {y}` beside `{b}^{y} = {x}`                       | **must**: subscript box                                  |
-| m.11.exp-log-equations                  | `{a} × {b}^x = {c}`; `A = {P}e^{rt}`                              | **must**: a letter or expression exponent                |
+| m.11.exp-log-equations                  | `{a} × {b}^x = {c}`; `{A} = {P}e^{{r}{t}}`                        | today (H81: letter or group exponent)                    |
 | m.11.unit-circle                        | `{d}° = {p}/{q}π`                                                 | today                                                    |
 | m.11.pythagorean-identities             | `({s})^2 + ({c})^2 = 1`                                           | exponent on a bracket                                    |
-| m.11.normal-distribution                | `z = ({x} − {m})/{s}` stacked                                     | **must**: expression in a fraction slot                  |
+| m.11.normal-distribution                | `{z} = {{x} − {m}}/{s}` stacked                                   | today (H81: a group as a fraction slot)                  |
 | m.12.inverse-trig                       | `sin⁻¹({x}) = {A}°`                                               | today                                                    |
 | m.12.vectors                            | `⟨{a}, {b}⟩ · ⟨{c}, {d}⟩ = {p}`                                   | today                                                    |
 | m.12.polar                              | `{r}(cos {t}° + i sin {t}°) = {a} + {b}i`                         | today                                                    |
 | m.12.matrices                           | 2 × 2 and 3 × 3 grids; a three-variable system on three lines     | **must**: matrix grid                                    |
-| m.12.conics                             | `(x − {h})²/{a}^2 + (y − {k})²/{b}^2 = 1`                         | **must**: expression in a fraction slot                  |
+| m.12.conics                             | `{(x − {h})²}/{a}^2 + {(y − {k})²}/{b}^2 = 1`                     | today (H81: a group as a fraction slot)                  |
 | m.12.confidence-intervals               | `{x} ± {z} × {s}/√{n}`                                            | radical bar, expression slot                             |
 | s.10.reaction-types, s.10.stoichiometry | `{a} H₂ + {b} O₂ → {c} H₂O`                                       | today (a coefficient of 1 shows "1")                     |
 | s.10.mole                               | `{m} g ÷ {M} g/mol = {n} mol`                                     | today (fixed units)                                      |
 | s.10.molarity                           | `{c} M = {n} mol ÷ {V} L`                                         | today (fixed units)                                      |
-| s.10.acids-bases                        | `pH = −log({h})`; `[H⁺] = 10^{−p}`                                | expression exponent                                      |
+| s.10.acids-bases                        | `pH = −log({h})`; `[H⁺] = 10^{−{p}}`                              | today (H81: expression exponent)                         |
 | s.10.nuclear-chemistry                  | isotope boxes in a nuclear equation; `(1/2)^{t/T}`                | **must**: stacked scripts on the left                    |
-| s.10.measurement                        | `{a} km × 1000 m/1 km = {b} m`                                    | **must**: text in a fraction slot                        |
+| s.10.measurement                        | `{a} km × {1000 m}/{1 km} = {b} m`                                | today (H81: text in a fraction slot)                     |
 | s.11.circuits                           | `{V} V = {I} A × {R} Ω` (SI only)                                 | a unit after a box that follows the unit menu (better)   |
 
 Everything else in Grades 9–12 stays rows:
