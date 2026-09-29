@@ -302,6 +302,44 @@ const bothSidesSteps = (
   },
 });
 
+/** (x, y) turned r degrees (a multiple of 90) about (0, 0), counterclockwise when positive. */
+const quarter = (r: number) => (((r / 90) % 4) + 4) % 4;
+const turned = (x: number, y: number, r: number): [number, number] =>
+  !Number.isInteger(r / 90)
+    ? [NaN, NaN]
+    : ([
+        [x, y],
+        [-y, x],
+        [-x, -y],
+        [y, -x],
+      ][quarter(r)] as [number, number]);
+const neg = (x: number) => (x < 0 ? `−(${fmt(x)})` : `−${fmt(x)}`);
+const turnedText = (x: number, y: number, r: number): [string, string] =>
+  (
+    [
+      [fmt(x), fmt(y)],
+      [neg(y), fmt(x)],
+      [neg(x), neg(y)],
+      [fmt(y), neg(x)],
+    ] as [string, string][]
+  )[quarter(r)]!;
+const turnedExpr = (r: number): [string, string] =>
+  (
+    [
+      ['{ax}', '{ay}'],
+      ['−{ay}', '{ax}'],
+      ['−{ax}', '−{ay}'],
+      ['{ay}', '−{ax}'],
+    ] as [string, string][]
+  )[quarter(r)]!;
+const turnRule = (r: number) =>
+  [
+    'A whole turn leaves the point where it was.',
+    'A quarter turn counterclockwise: (x, y) → (−y, x).',
+    'A half turn: (x, y) → (−x, −y).',
+    'Three quarter turns counterclockwise (a quarter turn clockwise): (x, y) → (y, −x).',
+  ][quarter(r)]!;
+
 export const MATH_8_MODULES: ModuleDef[] = [
   // ── Square roots, cube roots and irrational numbers (8.NS.1–2, 8.EE.2) ──
   {
@@ -1582,6 +1620,655 @@ export const MATH_8_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  // ── Functions (8.F.1–2, 8.F.5) ──
+  {
+    id: 'm.8.functions-intro',
+    assumptions: [
+      'A function gives exactly one output for each input.',
+      'The machine divides the input by d, then adds a.',
+      'Given the output, undo the steps in reverse order: subtract a, then multiply by d.',
+      'Tap an input in the table to send it through.',
+    ],
+    variables: [
+      signed('x', 'x', 'Input', 1, 100),
+      { ...signed('d', 'd', 'Divide by', 1, 12), min: 1 },
+      signed('a', 'a', 'Add', 1, 20),
+      { id: 'y', symbol: 'y', name: 'Output', min: -200, max: 200, fraction: 12 },
+    ],
+    relations: [
+      {
+        id: 'y = x ÷ d + a',
+        display: '{y} = {x} ÷ {d} + {a}',
+        vars: ['y', 'x', 'd', 'a'],
+        residual: (v: Values) => v.y! * v.d! - (v.x! + v.a! * v.d!),
+        solve: {
+          y: (v: Values) => exact(div(v.x!, v.d!)! + v.a!),
+          x: (v: Values) => exact((v.y! - v.a!) * v.d!),
+          a: (v: Values) => exact(v.y! - div(v.x!, v.d!)!),
+          d: (v: Values) => div(v.x!, v.y! - v.a!),
+        },
+      },
+    ],
+    steps: {
+      'y = x ÷ d + a': {
+        y: { expr: '{x} ÷ {d} + {a}', how: 'Divide the input by d, then add a.' },
+        x: {
+          expr: '({y} − {a}) × {d}',
+          how: 'Undo the steps in reverse: subtract a, then multiply by d.',
+        },
+        a: { expr: '{y} − {x} ÷ {d}', how: 'The output less what the division gave.' },
+        d: { expr: '{x} ÷ ({y} − {a})', how: 'The input divided by what the division must give.' },
+      },
+    },
+    example: { x: 6, d: 2, a: 5, y: 8 },
+    startWith: ['x', 'd', 'a'],
+    representation: {
+      kind: 'functionMachine',
+      input: 'x',
+      output: 'y',
+      rule: [
+        { op: '÷', by: 'd' },
+        { op: '+', by: 'a' },
+      ],
+      table: [0, 2, 4, 6, 8, 10],
+    },
+  },
+  {
+    id: 'm.8.functions-intro~mapping',
+    title: 'Is it a function? Mapping diagram',
+    use: 'Use this for “Each input is its output squared. Is the output a function of the input?”',
+    assumptions: [
+      'Each pair is an input and an output. Here each input is its output times itself.',
+      'A function gives each input exactly one output.',
+      'If one input has two arrows (4 → 2 and 4 → −2), it is not a function.',
+      'On the graph, no vertical line crosses a function twice.',
+    ],
+    standalone: {
+      vars: ['y2', 'x2', 'y3', 'x3', 'y4', 'x4'],
+      why: 'Each pair stands alone; the picture tests whether the pairs make a function.',
+    },
+    variables: [1, 2, 3, 4].flatMap((i) => [
+      signed(`y${i}`, `y${'₁₂₃₄'[i - 1]}`, `Output ${i}`),
+      { ...signed(`x${i}`, `x${'₁₂₃₄'[i - 1]}`, `Input ${i}`, 1, 100), derived: true },
+    ]),
+    relations: [1, 2, 3, 4].map((i) =>
+      derive(
+        `x${i} = y${i} × y${i}`,
+        `x${i}`,
+        [`y${i}`],
+        `{x${i}} = {y${i}} × {y${i}}`,
+        (v) => v[`y${i}`]! * v[`y${i}`]!,
+      ),
+    ),
+    steps: Object.fromEntries(
+      [1, 2, 3, 4].map((i) => [
+        `x${i} = y${i} × y${i}`,
+        { [`x${i}`]: { expr: `{y${i}} × {y${i}}`, how: 'The input is the output times itself.' } },
+      ]),
+    ),
+    example: { y1: 2, x1: 4, y2: -2, x2: 4, y3: 3, x3: 9, y4: 1, x4: 1 },
+    startWith: ['y1', 'y2', 'y3', 'y4'],
+    representation: {
+      kind: 'mapping',
+      pairs: [1, 2, 3, 4].map((i) => ({ x: `x${i}`, y: `y${i}` })),
+    },
+  },
+
+  // ── Linear functions (8.F.3–4) ──
+  {
+    id: 'm.8.linear-functions',
+    assumptions: [
+      'The graph is a straight line, so y changes at a constant rate.',
+      'm is the slope: the change in y for every 1 more x.',
+      'b is the y-intercept: y when x = 0.',
+      'A negative m makes the line fall to the right.',
+    ],
+    variables: [
+      signed('x', 'x', 'Input x', 0.5),
+      { id: 'y', symbol: 'y', name: 'Output y', min: -110, max: 110, step: 0.5 },
+      signed('m', 'm', 'Slope', 0.5),
+      signed('b', 'b', 'y-intercept', 0.5),
+    ],
+    relations: [
+      {
+        id: 'y = mx + b',
+        display: '{y} = {m} × {x} + {b}',
+        vars: ['y', 'm', 'x', 'b'],
+        residual: (v: Values) => v.y! - (v.m! * v.x! + v.b!),
+        solve: {
+          y: (v: Values) => exact(v.m! * v.x! + v.b!),
+          b: (v: Values) => exact(v.y! - v.m! * v.x!),
+          m: (v: Values) => div(v.y! - v.b!, v.x!),
+          x: (v: Values) => div(v.y! - v.b!, v.m!),
+        },
+      },
+    ],
+    steps: {
+      'y = mx + b': {
+        y: {
+          expr: '{m} × {x} + {b}',
+          how: 'Start at b, then add the slope once for every step of x.',
+        },
+        b: { expr: '{y} − {m} × {x}', how: 'Take the slope times x away from y.' },
+        m: { expr: '({y} − {b}) ÷ {x}', how: 'The rise from the intercept, divided by x.' },
+        x: { expr: '({y} − {b}) ÷ {m}', how: 'Take away the intercept, then divide by the slope.' },
+      },
+    },
+    example: { m: 2, b: 1, x: 3, y: 7 },
+    startWith: ['x', 'm', 'b'],
+    representation: {
+      kind: 'linearFunction',
+      slope: 'm',
+      intercept: 'b',
+      point: { x: 'x', y: 'y' },
+      extent: 10,
+    },
+  },
+  {
+    id: 'm.8.linear-functions~two-points',
+    title: 'The equation from two points',
+    use: 'Use this for “A line passes through (1, 3) and (2, 5). What is its equation?”',
+    assumptions: [
+      'The slope is the change in y divided by the change in x between the two points.',
+      'Then b = y − m × x at either point: go back along the line to x = 0.',
+      'The equation is y = mx + b.',
+    ],
+    variables: [
+      { id: 'x1', symbol: 'x₁', name: 'First x', min: -50, max: 50, step: 0.5 },
+      { id: 'y1', symbol: 'y₁', name: 'First y', min: -100, max: 100, step: 0.5 },
+      { id: 'x2', symbol: 'x₂', name: 'Second x', min: -50, max: 50, step: 0.5 },
+      { id: 'y2', symbol: 'y₂', name: 'Second y', min: -100, max: 100, step: 0.5 },
+      { id: 'm', symbol: 'm', name: 'Slope', min: -400, max: 400, fraction: 20, derived: true },
+      {
+        id: 'b',
+        symbol: 'b',
+        name: 'y-intercept',
+        min: -20000,
+        max: 20000,
+        fraction: 20,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'x₁ ≠ x₂',
+        constraint: true,
+        display: 'The two points have different x: {x1} and {x2}',
+        vars: ['x1', 'x2'],
+        residual: (v: Values) => (v.x1 !== v.x2 ? 0 : 1),
+        solve: {},
+      },
+      derive(
+        'm = (y₂ − y₁) ÷ (x₂ − x₁)',
+        'm',
+        ['y2', 'y1', 'x2', 'x1'],
+        '{m} = ({y2} − {y1}) ÷ ({x2} − {x1})',
+        (v) => div(v.y2! - v.y1!, v.x2! - v.x1!),
+      ),
+      derive(
+        'b = y₁ − m × x₁',
+        'b',
+        ['y1', 'm', 'x1'],
+        '{b} = {y1} − {m} × {x1}',
+        (v) => v.y1! - v.m! * v.x1!,
+      ),
+    ],
+    steps: {
+      'x₁ ≠ x₂': {},
+      'm = (y₂ − y₁) ÷ (x₂ − x₁)': {
+        m: {
+          expr: '({y2} − {y1}) ÷ ({x2} − {x1})',
+          how: 'The rise over the run between the two points.',
+        },
+      },
+      'b = y₁ − m × x₁': {
+        b: {
+          expr: '{y1} − {m} × {x1}',
+          how: 'From the first point, go back x₁ steps of the slope to x = 0.',
+        },
+      },
+    },
+    example: { x1: 1, y1: 3, x2: 2, y2: 5, m: 2, b: 1 },
+    startWith: ['x1', 'y1', 'x2', 'y2'],
+    representation: {
+      kind: 'linearFunction',
+      slope: 'm',
+      intercept: 'b',
+      point: { x: 'x2', y: 'y2' },
+      extent: 6,
+    },
+  },
+  {
+    id: 'm.8.linear-functions~context',
+    title: 'Slope and intercept in a story',
+    use: 'Use this for “A rental costs $10 plus $5 an hour. What does 6 hours cost, and what do the 10 and the 5 mean?”',
+    assumptions: [
+      'The fee is where the line starts (the intercept); the hourly cost is its slope.',
+      'A negative slope means the amount goes down each step: a tank emptying 50 gallons an hour.',
+      'The intercept is the amount at 0: the cost before any hours.',
+    ],
+    variables: [
+      { ...whole('r', 'r', 'Change each hour', -100, 100) },
+      { ...whole('f', 'f', 'Amount at the start', 0, 1000) },
+      { id: 'h', symbol: 'h', name: 'Hours', min: 0, max: 100, step: 0.5 },
+      { id: 'c', symbol: 'C', name: 'Amount after h hours', min: -10000, max: 20000, step: 0.5 },
+    ],
+    relations: [
+      {
+        id: 'C = r × h + f',
+        display: '{c} = {r} × {h} + {f}',
+        vars: ['c', 'r', 'h', 'f'],
+        residual: (v: Values) => v.c! - (v.r! * v.h! + v.f!),
+        solve: {
+          c: (v: Values) => exact(v.r! * v.h! + v.f!),
+          f: (v: Values) => exact(v.c! - v.r! * v.h!),
+          r: (v: Values) => div(v.c! - v.f!, v.h!),
+          h: (v: Values) => div(v.c! - v.f!, v.r!),
+        },
+      },
+    ],
+    steps: {
+      'C = r × h + f': {
+        c: { expr: '{r} × {h} + {f}', how: 'The change over the hours, plus the start.' },
+        f: { expr: '{c} − {r} × {h}', how: 'Take the change over the hours from the total.' },
+        r: { expr: '({c} − {f}) ÷ {h}', how: 'Take away the start, then share it over the hours.' },
+        h: {
+          expr: '({c} − {f}) ÷ {r}',
+          how: 'Take away the start, then divide by the change each hour.',
+        },
+      },
+    },
+    example: { r: 5, f: 10, h: 6, c: 40 },
+    startWith: ['h', 'r', 'f'],
+    representation: {
+      kind: 'linearFunction',
+      slope: 'r',
+      intercept: 'f',
+      point: { x: 'h', y: 'c' },
+      extent: { x: 10, y: 80 },
+      quadrants: 1,
+      axes: { x: 'Hours', y: 'Amount' },
+    },
+  },
+  {
+    id: 'm.8.linear-functions~standard-form',
+    title: 'Lines written ax + by = c',
+    use: 'Use this for “Bananas cost $1.50 a pound and guavas $3; $12 in all” or “(4, k) is on 3x + 2y = 12.”',
+    assumptions: [
+      'ax + by = c is a line too. Put in x and solve for y.',
+      'Rearranged, y = −(a ÷ b)x + c ÷ b: slope −a ÷ b, intercept c ÷ b.',
+      'Each point (x, y) on the line is a mix that makes c.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'x’s number', min: -50, max: 50, step: 0.01 },
+      { id: 'b', symbol: 'b', name: 'y’s number', min: -50, max: 50, step: 0.01 },
+      { id: 'c', symbol: 'c', name: 'Right side', min: -500, max: 500, step: 0.01 },
+      { id: 'x', symbol: 'x', name: 'x', min: -50, max: 50, step: 0.5 },
+      { id: 'y', symbol: 'y', name: 'y', min: -100000, max: 100000, fraction: 12, derived: true },
+      { id: 'm', symbol: 'm', name: 'Slope', min: -10000, max: 10000, fraction: 12, derived: true },
+      {
+        id: 'k',
+        symbol: 'k',
+        name: 'y-intercept',
+        min: -100000,
+        max: 100000,
+        fraction: 12,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'b ≠ 0',
+        constraint: true,
+        display: 'y is in the equation: {b} is not 0',
+        vars: ['b'],
+        residual: (v: Values) => (v.b !== 0 ? 0 : 1),
+        solve: {},
+      },
+      derive(
+        'y = (c − a × x) ÷ b',
+        'y',
+        ['c', 'a', 'x', 'b'],
+        '{y} = ({c} − {a} × {x}) ÷ {b}',
+        (v) => div(v.c! - v.a! * v.x!, v.b!),
+      ),
+      derive('m = −a ÷ b', 'm', ['a', 'b'], '{m} = −{a} ÷ {b}', (v) => div(-v.a!, v.b!)),
+      derive('k = c ÷ b', 'k', ['c', 'b'], '{k} = {c} ÷ {b}', (v) => div(v.c!, v.b!)),
+    ],
+    steps: {
+      'b ≠ 0': {},
+      'y = (c − a × x) ÷ b': {
+        y: {
+          expr: '({c} − {a} × {x}) ÷ {b}',
+          how: 'Take a × x from both sides, then divide by b.',
+        },
+      },
+      'm = −a ÷ b': { m: { expr: '−{a} ÷ {b}', how: 'The slope of the same line: −a ÷ b.' } },
+      'k = c ÷ b': { k: { expr: '{c} ÷ {b}', how: 'Its y-intercept: y when x = 0.' } },
+    },
+    example: { a: 1.5, b: 3, c: 12, x: 2, y: 3, m: -0.5, k: 4 },
+    startWith: ['a', 'b', 'c', 'x'],
+    representation: {
+      kind: 'linearFunction',
+      slope: 'm',
+      intercept: 'k',
+      point: { x: 'x', y: 'y' },
+      extent: 10,
+    },
+  },
+
+  // ── Transformations (8.G.1–4) ──
+  {
+    id: 'm.8.transformations',
+    assumptions: [
+      'A translation slides every point the same distance the same way.',
+      'h is the slide right (left when negative), k the slide up (down when negative).',
+      'Lengths and angles do not change: the image is congruent.',
+      'Drag A′ to change the slide.',
+    ],
+    standalone: {
+      vars: ['ay', 'k', 'py'],
+      why: 'The slide up is worked out on its own, apart from the slide across.',
+    },
+    variables: [
+      signed('ax', 'x', 'A across'),
+      signed('ay', 'y', 'A up'),
+      signed('h', 'h', 'Right'),
+      signed('k', 'k', 'Up'),
+      { ...signed('px', 'x′', 'A′ across', 1, 20) },
+      { ...signed('py', 'y′', 'A′ up', 1, 20) },
+    ],
+    relations: [
+      {
+        id: 'x′ = x + h',
+        display: '{px} = {ax} + {h}',
+        vars: ['px', 'ax', 'h'],
+        residual: (v: Values) => v.px! - v.ax! - v.h!,
+        solve: {
+          px: (v: Values) => v.ax! + v.h!,
+          ax: (v: Values) => v.px! - v.h!,
+          h: (v: Values) => v.px! - v.ax!,
+        },
+      },
+      {
+        id: 'y′ = y + k',
+        display: '{py} = {ay} + {k}',
+        vars: ['py', 'ay', 'k'],
+        residual: (v: Values) => v.py! - v.ay! - v.k!,
+        solve: {
+          py: (v: Values) => v.ay! + v.k!,
+          ay: (v: Values) => v.py! - v.k!,
+          k: (v: Values) => v.py! - v.ay!,
+        },
+      },
+    ],
+    steps: {
+      'x′ = x + h': {
+        px: { expr: '{ax} + {h}', how: 'Slide A across by h.' },
+        ax: { expr: '{px} − {h}', how: 'Slide A′ back by h.' },
+        h: { expr: '{px} − {ax}', how: 'How far across A moved.' },
+      },
+      'y′ = y + k': {
+        py: { expr: '{ay} + {k}', how: 'Slide A up by k.' },
+        ay: { expr: '{py} − {k}', how: 'Slide A′ back down by k.' },
+        k: { expr: '{py} − {ay}', how: 'How far up A moved.' },
+      },
+    },
+    example: { ax: -6, ay: 2, h: 7, k: -4, px: 1, py: -2 },
+    startWith: ['ax', 'ay', 'h', 'k'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [-2, 2],
+        [-5, 5],
+      ],
+      image: { x: 'px', y: 'py' },
+      move: 'translate',
+      right: 'h',
+      up: 'k',
+    },
+  },
+  {
+    id: 'm.8.transformations~reflect',
+    title: 'Reflection',
+    use: 'Use this for “(3, 7) is reflected over the y-axis. Where is its image?”',
+    assumptions: [
+      'A reflection flips the figure over the mirror line x = a (the y-axis is a = 0).',
+      'Each corner and its image are the same distance from the line.',
+      'Over the y-axis, x changes sign; over the x-axis, y would change sign instead.',
+    ],
+    standalone: {
+      vars: ['ay', 'py'],
+      why: 'A flip across an up-and-down line keeps each height as it was.',
+    },
+    variables: [
+      signed('ax', 'x', 'A across'),
+      signed('ay', 'y', 'A up'),
+      signed('a', 'a', 'Mirror line x ='),
+      { ...signed('px', 'x′', 'A′ across', 1, 30) },
+      signed('py', 'y′', 'A′ up'),
+    ],
+    relations: [
+      {
+        id: 'x′ = 2a − x',
+        display: '{px} = 2 × {a} − {ax}',
+        vars: ['px', 'a', 'ax'],
+        residual: (v: Values) => v.px! - (2 * v.a! - v.ax!),
+        solve: {
+          px: (v: Values) => 2 * v.a! - v.ax!,
+          ax: (v: Values) => 2 * v.a! - v.px!,
+          a: (v: Values) => (v.px! + v.ax!) / 2,
+        },
+      },
+      {
+        id: 'y′ = y',
+        display: '{py} = {ay}',
+        vars: ['py', 'ay'],
+        residual: (v: Values) => v.py! - v.ay!,
+        solve: { py: (v: Values) => v.ay!, ay: (v: Values) => v.py! },
+      },
+    ],
+    steps: {
+      'x′ = 2a − x': {
+        px: { expr: '2 × {a} − {ax}', how: 'As far past the line as A is before it.' },
+        ax: { expr: '2 × {a} − {px}', how: 'As far before the line as A′ is past it.' },
+        a: { expr: '({px} + {ax}) ÷ 2', how: 'The line is halfway between A and A′.' },
+      },
+      'y′ = y': {
+        py: { expr: '{ay}', how: 'A flip across an up-and-down line keeps the height.' },
+        ay: { expr: '{py}', how: 'A flip across an up-and-down line keeps the height.' },
+      },
+    },
+    example: { ax: 3, ay: 7, a: 0, px: -3, py: 7 },
+    startWith: ['ax', 'ay', 'a'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [6, 2],
+        [2, 2],
+      ],
+      image: { x: 'px', y: 'py' },
+      move: 'reflect',
+      mirror: { x: 'a' },
+    },
+  },
+  {
+    id: 'm.8.transformations~rotate',
+    title: 'Rotation about the origin',
+    use: 'Use this for “Rotate (3, 1) by 90° counterclockwise about (0, 0).”',
+    assumptions: [
+      'A rotation turns the figure about the center; a positive angle turns counterclockwise.',
+      'A quarter turn swaps the coordinates and changes one sign: (x, y) → (−y, x).',
+      'A half turn changes both signs: (x, y) → (−x, −y).',
+    ],
+    variables: [
+      signed('ax', 'x', 'A across'),
+      signed('ay', 'y', 'A up'),
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Angle',
+        unit: '°',
+        min: -270,
+        max: 270,
+        allowed: [-270, -180, -90, 90, 180, 270],
+      },
+      { ...signed('px', 'x′', 'A′ across'), derived: true },
+      { ...signed('py', 'y′', 'A′ up'), derived: true },
+    ],
+    relations: [
+      {
+        ...derive(
+          'x′ after the turn',
+          'px',
+          ['ax', 'ay', 'r'],
+          '{px} = across of ({ax}, {ay}) turned {r}°',
+          (v) => turned(v.ax!, v.ay!, v.r!)[0],
+        ),
+        check: (v: Values) => `${fmt(v.px!)} = ${turnedText(v.ax!, v.ay!, v.r!)[0]}`,
+      },
+      {
+        ...derive(
+          'y′ after the turn',
+          'py',
+          ['ax', 'ay', 'r'],
+          '{py} = up of ({ax}, {ay}) turned {r}°',
+          (v) => turned(v.ax!, v.ay!, v.r!)[1],
+        ),
+        check: (v: Values) => `${fmt(v.py!)} = ${turnedText(v.ax!, v.ay!, v.r!)[1]}`,
+      },
+    ],
+    steps: {
+      'x′ after the turn': {
+        px: {
+          expr: (v: Values) => turnedExpr(v.r!)[0],
+          how: (v: Values) => turnRule(v.r!),
+        },
+      },
+      'y′ after the turn': {
+        py: {
+          expr: (v: Values) => turnedExpr(v.r!)[1],
+          how: (v: Values) => turnRule(v.r!),
+        },
+      },
+    },
+    example: { ax: 3, ay: 1, r: 90, px: -1, py: 3 },
+    startWith: ['ax', 'ay', 'r'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [6, 1],
+        [3, 4],
+      ],
+      image: { x: 'px', y: 'py' },
+      move: 'rotate',
+      angle: 'r',
+    },
+  },
+  {
+    id: 'm.8.transformations~dilate',
+    title: 'Dilation',
+    use: 'Use this for “Dilate (1, 1) from the origin by a scale factor of 3.”',
+    assumptions: [
+      'A dilation from (0, 0) multiplies every coordinate by the scale factor k.',
+      'A factor above 1 enlarges the figure; between 0 and 1 it shrinks it.',
+      'The image is similar: the same angles, every length k times as long.',
+    ],
+    variables: [
+      signed('ax', 'x', 'A across'),
+      signed('ay', 'y', 'A up'),
+      { id: 'k', symbol: 'k', name: 'Scale factor', min: 0.25, max: 4, step: 0.25 },
+      { ...signed('px', 'x′', 'A′ across', 0.01, 40), derived: true },
+      { ...signed('py', 'y′', 'A′ up', 0.01, 40), derived: true },
+    ],
+    relations: [
+      derive('x′ = kx', 'px', ['k', 'ax'], '{px} = {k} × {ax}', (v) => v.k! * v.ax!),
+      derive('y′ = ky', 'py', ['k', 'ay'], '{py} = {k} × {ay}', (v) => v.k! * v.ay!),
+    ],
+    steps: {
+      'x′ = kx': { px: { expr: '{k} × {ax}', how: 'Multiply the across by the scale factor.' } },
+      'y′ = ky': { py: { expr: '{k} × {ay}', how: 'Multiply the up by the scale factor.' } },
+    },
+    example: { ax: 1, ay: 1, k: 3, px: 3, py: 3 },
+    startWith: ['ax', 'ay', 'k'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [3, 1],
+        [1, 2],
+      ],
+      image: { x: 'px', y: 'py' },
+      move: 'dilate',
+      factor: 'k',
+    },
+  },
+  {
+    id: 'm.8.transformations~similar',
+    title: 'Similar triangles',
+    use: 'Use this for “These triangles are similar. Sides 10, 15, b and 4, a, 9: find a and b.”',
+    assumptions: [
+      'Similar triangles have the same angles; each side of the second is k times its match.',
+      'Find k from one pair of matching sides: second ÷ first.',
+      'Multiply by k to go from the first to the second; divide by k to go back.',
+    ],
+    variables: [
+      { id: 'a1', symbol: 'a₁', name: 'A side of the first', min: 0.5, max: 100, step: 0.5 },
+      { id: 'a2', symbol: 'a₂', name: 'Its match on the second', min: 0.5, max: 100, step: 0.5 },
+      {
+        id: 'k',
+        symbol: 'k',
+        name: 'Scale factor',
+        min: 0.005,
+        max: 200,
+        fraction: 20,
+        derived: true,
+      },
+      { id: 'b1', symbol: 'b₁', name: 'Another side of the first', min: 0.5, max: 100, step: 0.5 },
+      {
+        id: 'b2',
+        symbol: 'b₂',
+        name: 'Its match on the second',
+        min: 0,
+        max: 20000,
+        derived: true,
+      },
+      { id: 'c1', symbol: 'c₁', name: 'Third side of the first', min: 0, max: 20000, step: 0.5 },
+      { id: 'c2', symbol: 'c₂', name: 'Its match on the second', min: 0, max: 20000, step: 0.5 },
+    ],
+    relations: [
+      derive('k = a₂ ÷ a₁', 'k', ['a2', 'a1'], '{k} = {a2} ÷ {a1}', (v) => div(v.a2!, v.a1!)),
+      derive('b₂ = k × b₁', 'b2', ['k', 'b1'], '{b2} = {k} × {b1}', (v) => v.k! * v.b1!),
+      {
+        id: 'c₂ = k × c₁',
+        display: '{c2} = {k} × {c1}',
+        vars: ['c2', 'k', 'c1'],
+        residual: (v: Values) => v.c2! - v.k! * v.c1!,
+        solve: {
+          c2: (v: Values) => exact(v.k! * v.c1!),
+          c1: (v: Values) => div(v.c2!, v.k!),
+          k: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'k = a₂ ÷ a₁': { k: { expr: '{a2} ÷ {a1}', how: 'The second side divided by its match.' } },
+      'b₂ = k × b₁': {
+        b2: { expr: '{k} × {b1}', how: 'Multiply the first triangle’s side by k.' },
+      },
+      'c₂ = k × c₁': {
+        c2: { expr: '{k} × {c1}', how: 'Multiply the first triangle’s side by k.' },
+        c1: { expr: '{c2} ÷ {k}', how: 'Go back: divide the second triangle’s side by k.' },
+      },
+    },
+    example: { a1: 10, a2: 4, k: 0.4, b1: 15, b2: 6, c2: 9, c1: 22.5 },
+    startWith: ['a1', 'a2', 'b1', 'c2'],
+    pictureLabels: ['c1', 'c2'],
+    representation: { kind: 'doubleNumberLine', top: 'b1', bottom: 'b2', per: 'k', ticks: 4 },
+  },
   {
     id: 'm.8.pythagorean',
     assumptions: [
@@ -1626,57 +2313,5 @@ export const MATH_8_MODULES: ModuleDef[] = [
     example: { a: 3, b: 4, c: 5 },
     startWith: ['a', 'b'],
     representation: { kind: 'rightTriangle', a: 'a', b: 'b', c: 'c', extent: 5 },
-  },
-  {
-    id: 'm.8.linear-functions',
-    assumptions: [
-      'The graph is a straight line, so y changes at a constant rate.',
-      'm is the slope: how much y changes when x increases by 1 (rise over run).',
-      'b is the y-intercept: the value of y when x = 0.',
-    ],
-    variables: [
-      { id: 'x', symbol: 'x', name: 'Input x', min: -10, max: 10, step: 0.5 },
-      { id: 'y', symbol: 'y', name: 'Output y', min: -110, max: 110 },
-      { id: 'm', symbol: 'm', name: 'Slope', min: -10, max: 10, step: 0.5 },
-      { id: 'b', symbol: 'b', name: 'y-intercept', min: -10, max: 10, step: 0.5 },
-    ],
-    relations: [
-      {
-        id: 'y = mx + b',
-        display: '{y} = {m} × {x} + {b}',
-        vars: ['y', 'm', 'x', 'b'],
-        residual: (v) => v.y! - (v.m! * v.x! + v.b!),
-        solve: {
-          y: (v) => v.m! * v.x! + v.b!,
-          b: (v) => v.y! - v.m! * v.x!,
-          m: (v) => div(v.y! - v.b!, v.x!),
-          x: (v) => div(v.y! - v.b!, v.m!),
-        },
-      },
-    ],
-    steps: {
-      'y = mx + b': {
-        y: {
-          expr: '{m} × {x} + {b}',
-          how: 'Start at b, then add the slope once for every step of x.',
-        },
-        b: { expr: '{y} − {m} × {x}', how: 'Subtract m·x from both sides.' },
-        m: { expr: '({y} − {b}) ÷ {x}', how: 'Subtract b from both sides, then divide by x.' },
-        x: {
-          expr: '({y} − {b}) ÷ {m}',
-          how: 'Subtract b from both sides, then divide by the slope.',
-        },
-      },
-    },
-    example: { m: 2, b: 1, x: 3, y: 7 },
-    startWith: ['x', 'm', 'b'],
-    representation: {
-      kind: 'plot',
-      x: { var: 'x', min: -10, max: 10 },
-      y: { var: 'y', min: -20, max: 20 },
-      params: ['m', 'b'],
-      slopeTriangle: 'm',
-      intercept: 'b',
-    },
   },
 ];
