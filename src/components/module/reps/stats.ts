@@ -88,3 +88,25 @@ export function twoPlaces(x: number) {
   const r = Number(x.toFixed(2));
   return { value: r, exact: Math.abs(r - x) < 1e-9 };
 }
+
+/** The four regions of a two-set Venn diagram of probabilities. */
+export function vennRegions(a: number, b: number, both: number) {
+  return {
+    aOnly: a - both,
+    both,
+    bOnly: b - both,
+    neither: 1 - (a + b - both),
+    union: a + b - both,
+  };
+}
+
+/** The probability a `shade` lights. */
+export function shadedChance(
+  shade: 'and' | 'or' | 'notA' | 'aOnly' | 'neither',
+  a: number,
+  b: number,
+  both: number,
+) {
+  const r = vennRegions(a, b, both);
+  return { and: both, or: r.union, notA: 1 - a, aOnly: r.aOnly, neither: r.neither }[shade];
+}

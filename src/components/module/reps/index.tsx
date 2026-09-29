@@ -92,6 +92,7 @@ import { BoxPlot } from './BoxPlot';
 import { BoxPlotPair } from './BoxPlotPair';
 import { TwoWayTable } from './TwoWayTable';
 import { ChanceTree } from './ChanceTree';
+import { VennChance } from './VennChance';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -375,7 +376,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'fractionFit':
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':
-      return <Venn spec={spec} calc={calc} />;
+      return 'chances' in spec ? (
+        <VennChance spec={spec.chances} calc={calc} />
+      ) : (
+        <Venn spec={spec} calc={calc} />
+      );
     case 'baseHeight':
       return <BaseHeight spec={spec} calc={calc} />;
     case 'net':

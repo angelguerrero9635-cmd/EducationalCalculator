@@ -315,12 +315,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "DRAWN. Spec (typesHse.ts TreeChances): treeDiagram takes chances instead of first/second counts (a union member; the equally-likely trees are unchanged): { first: [ids or numbers], second: [[…] per first outcome], names: [[first outcomes], [second outcomes]] (2 to 4 a stage), stages?, path? [i, j], chance?, totalOf?, total? }. A stage's list may leave out its last chance, drawn as the complement 1 − the others. Each first branch reads P(A) = p, the lit path's second branch P(B | A) = p in full (the others keep to numbers so the branches stay visible), and each leaf its product (0.3 × 0.4 = 0.12, 3/8 × 2/7 = 3/28). The caption checks every node adds to 1, works P(A and B) = P(A) × P(B | A), P(B) over every path (totalOf), then P(A | B) (fraction ≈ decimal), and says when the stages are independent (the same P(B | A) on every first branch). The harness checks the sums, the path product and the total. Example (m.10.conditional-probability): representation: { kind: 'treeDiagram', chances: { first: ['r'], second: [['a'], ['b']], names: [['Rain', 'Dry'], ['Late', 'On time']], stages: ['Weather', 'Arrival'], path: [0, 0], chance: 'j', totalOf: 0, total: 't' } }.",
   },
-  ask(
-    'H22',
-    'venn',
-    'Venn diagram with probabilities: A and B, A or B, mutually exclusive, the complement shaded',
-    ['m.10.probability-rules', 'm.10.conditional-probability'],
-  ),
+  {
+    ...ask(
+      'H22',
+      'venn',
+      'Venn diagram with probabilities: A and B, A or B, mutually exclusive, the complement shaded',
+      ['m.10.probability-rules', 'm.10.conditional-probability'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-probability-rules-union',
+      'g.m10-probability-rules-exclusive',
+      'g.m10-probability-rules-complement',
+      'g.m10-conditional-probability-venn',
+      'g.m10-probability-rules-neither',
+    ],
+    notes:
+      "DRAWN. Spec (typesHse.ts VennChances): venn takes chances instead of first/second/list (a union member; the GCF Venn is unchanged): { a, b, both (ids or numbers: P(A), P(B), P(A and B)), names? [A, B], shade? 'and' | 'or' | 'notA' | 'aOnly' | 'neither', exclusive?, result? }. The sample space is a rectangle (1), each region labelled with its own probability (A only, both, B only, neither), the shaded region in the soft accent; mutually exclusive events (exclusive, or P(A and B) = 0) draw apart. Probabilities print as decimals or simple fractions (1/6). The caption works the addition rule, the complement, A only, neither, and with 'and' also P(B | A) = P(A ∩ B) ÷ P(A). The harness checks P(A and B) ≤ P(A), P(B), P(A or B) ≤ 1, exclusive means 0, and result equals the shaded region; demo pages carry the same constraints as relations. Example (m.10.probability-rules): representation: { kind: 'venn', chances: { a: 'a', b: 'b', both: 'ab', names: ['Band', 'Sport'], shade: 'or', result: 's' } }; exclusive: { kind: 'venn', chances: { a: 'a', b: 'b', both: 0, names: [...], shade: 'or', exclusive: true, result: 's' } }.",
+  },
   ask(
     'H23',
     'transformation',

@@ -1729,6 +1729,237 @@ const H21_MODULES: ModuleDef[] = [
   }),
 ];
 
+// ── H22: Venn diagrams of probabilities ──
+
+/** A constraint between probabilities (no solving): the diagram can only be drawn if it holds. */
+const fitsRule = (id: string, display: string, vars: string[], ok: (v: Values) => boolean) => ({
+  relation: {
+    id,
+    constraint: true as const,
+    display,
+    vars,
+    residual: (v: Values) => (ok(v) ? 0 : 1),
+    solve: {},
+  },
+  steps: {},
+});
+
+/** The probabilities fit one diagram: the overlap is in both, and nothing adds past 1. */
+const vennFits = (exclusive: boolean) =>
+  exclusive
+    ? [
+        fitsRule(
+          'P(A) + P(B) ≤ 1',
+          '{a} + {b} is at most 1',
+          ['a', 'b'],
+          (v) => v.a! + v.b! <= 1 + 1e-9,
+        ),
+      ]
+    : [
+        fitsRule(
+          'P(A ∩ B) ≤ P(A)',
+          '{ab} is at most {a}',
+          ['ab', 'a'],
+          (v) => v.ab! <= v.a! + 1e-9,
+        ),
+        fitsRule(
+          'P(A ∩ B) ≤ P(B)',
+          '{ab} is at most {b}',
+          ['ab', 'b'],
+          (v) => v.ab! <= v.b! + 1e-9,
+        ),
+        fitsRule(
+          'P(A ∪ B) ≤ 1',
+          '{a} + {b} − {ab} is at most 1',
+          ['a', 'b', 'ab'],
+          (v) => v.a! + v.b! - v.ab! <= 1 + 1e-9,
+        ),
+      ];
+
+/** P(A), P(B), P(A and B) and one shaded probability worked from them. */
+function vennPage(
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  names: [string, string],
+  shade: 'and' | 'or' | 'notA' | 'aOnly' | 'neither',
+  result: {
+    symbol: string;
+    name: string;
+    display: string;
+    fn: (v: Values) => number;
+    expr: string;
+    how: string;
+    vars: string[];
+  },
+  example: Values,
+  exclusive = false,
+): ModuleDef {
+  return page({
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      chanceVar('a', `P(${names[0]})`, `P(${names[0]})`),
+      chanceVar('b', `P(${names[1]})`, `P(${names[1]})`),
+      ...(exclusive
+        ? []
+        : [chanceVar('ab', `P(${names[0]} ∩ ${names[1]})`, `P(${names[0]} and ${names[1]})`)]),
+      chanceOut('s', result.symbol, result.name),
+    ],
+    rules: [
+      ...vennFits(exclusive),
+      rule(
+        result.display.replace(/[{}]/g, ''),
+        result.display,
+        ['s', ...result.vars],
+        (v) => v.s! - result.fn(v),
+        {
+          s: [
+            (v) => {
+              const x = result.fn(v);
+              return x >= -1e-9 && x <= 1 + 1e-9 ? x : undefined;
+            },
+            result.expr,
+            result.how,
+          ],
+        },
+      ),
+    ],
+    example,
+    startWith: exclusive ? ['a', 'b'] : ['a', 'b', 'ab'],
+    representation: {
+      kind: 'venn',
+      chances: {
+        a: 'a',
+        b: 'b',
+        both: exclusive ? 0 : 'ab',
+        names,
+        shade,
+        ...(exclusive ? { exclusive: true } : {}),
+        result: 's',
+      },
+    },
+  });
+}
+
+const H22_MODULES: ModuleDef[] = [
+  vennPage(
+    'g.m10-probability-rules-union',
+    'The addition rule on a Venn diagram',
+    'Use this for P(A or B) = P(A) + P(B) − P(A and B).',
+    [
+      'P(A) and P(B) both count the overlap, so it is taken off once.',
+      'Each region shows its own probability; the whole rectangle is 1.',
+      'The shaded union is every outcome in A, in B or in both.',
+    ],
+    ['Band', 'Sport'],
+    'or',
+    {
+      symbol: 'P(Band ∪ Sport)',
+      name: 'P(Band or Sport)',
+      display: '{s} = {a} + {b} − {ab}',
+      fn: (v) => v.a! + v.b! - v.ab!,
+      expr: '{a} + {b} − {ab}',
+      how: 'Add the two, then take off the overlap counted twice.',
+      vars: ['a', 'b', 'ab'],
+    },
+    { a: 0.3, b: 0.45, ab: 0.15, s: 0.6 },
+  ),
+  vennPage(
+    'g.m10-probability-rules-exclusive',
+    'Mutually exclusive events',
+    'Use this for P(A or B) = P(A) + P(B) when A and B cannot happen together.',
+    [
+      'Mutually exclusive events share no outcome: P(A and B) = 0.',
+      'Their circles do not overlap, so nothing is counted twice.',
+      'The shaded union is just the two added.',
+    ],
+    ['Rolls 1', 'Rolls 6'],
+    'or',
+    {
+      symbol: 'P(1 ∪ 6)',
+      name: 'P(Rolls 1 or 6)',
+      display: '{s} = {a} + {b}',
+      fn: (v) => v.a! + v.b!,
+      expr: '{a} + {b}',
+      how: 'Nothing is shared, so just add the two.',
+      vars: ['a', 'b'],
+    },
+    { a: 1 / 6, b: 1 / 6, s: 1 / 3 },
+    true,
+  ),
+  vennPage(
+    'g.m10-probability-rules-complement',
+    'The complement rule',
+    'Use this for P(not A) = 1 − P(A).',
+    [
+      'Everything outside A is the complement of A, written A′ or “not A”.',
+      'A and not A together fill the rectangle, whose probability is 1.',
+      'So the shaded part is 1 − P(A).',
+    ],
+    ['Rain', 'Wind'],
+    'notA',
+    {
+      symbol: 'P(not Rain)',
+      name: 'P(not Rain)',
+      display: '{s} = 1 − {a}',
+      fn: (v) => 1 - v.a!,
+      expr: '1 − {a}',
+      how: 'Everything outside A: take P(A) from 1.',
+      vars: ['a'],
+    },
+    { a: 0.35, b: 0.4, ab: 0.2, s: 0.65 },
+  ),
+  vennPage(
+    'g.m10-conditional-probability-venn',
+    'Conditional probability on a Venn diagram',
+    'Use this for P(A and B) from a Venn diagram, and P(B | A) = P(A and B) ÷ P(A).',
+    [
+      'The overlap is the outcomes in both A and B.',
+      'Given A, only the A circle counts: P(B | A) = P(A and B) ÷ P(A).',
+      'The caption works P(B | A) from the shaded overlap.',
+    ],
+    ['Math club', 'Science club'],
+    'and',
+    {
+      symbol: 'P(M ∩ S)',
+      name: 'P(Math club and Science club)',
+      display: '{s} = {ab}',
+      fn: (v) => v.ab!,
+      expr: '{ab}',
+      how: 'The overlap is the probability of both.',
+      vars: ['ab'],
+    },
+    { a: 0.4, b: 0.3, ab: 0.12, s: 0.12 },
+  ),
+  // The edge: the region outside both circles.
+  vennPage(
+    'g.m10-probability-rules-neither',
+    'Neither event',
+    'Use this for P(neither A nor B) = 1 − P(A or B).',
+    [
+      'Outside both circles is neither A nor B.',
+      'First find P(A or B) by the addition rule.',
+      'Then the rest of the rectangle is 1 − P(A or B).',
+    ],
+    ['Cat', 'Dog'],
+    'neither',
+    {
+      symbol: 'P(neither)',
+      name: 'P(neither)',
+      display: '{s} = 1 − ({a} + {b} − {ab})',
+      fn: (v) => 1 - (v.a! + v.b! - v.ab!),
+      expr: '1 − ({a} + {b} − {ab})',
+      how: 'Everything outside the union: take P(A or B) from 1.',
+      vars: ['a', 'b', 'ab'],
+    },
+    { a: 0.35, b: 0.5, ab: 0.15, s: 0.3 },
+  ),
+];
+
 export const HSE_GALLERY_MODULES: ModuleDef[] = [
   ...H16_MODULES,
   ...H17_MODULES,
@@ -1736,5 +1967,6 @@ export const HSE_GALLERY_MODULES: ModuleDef[] = [
   ...H19_MODULES,
   ...H20_MODULES,
   ...H21_MODULES,
+  ...H22_MODULES,
 ];
 export const HSE_GALLERY_LAYOUTS: LayoutDef[] = [];

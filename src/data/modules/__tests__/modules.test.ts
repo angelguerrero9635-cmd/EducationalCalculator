@@ -14,7 +14,7 @@ import { chemSpecVars } from '../typesChem';
 import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { isStandIn, pages } from '../harness/scope';
-import { treeChanceVars, twoWayVars } from '../harness/picturesHse';
+import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -300,6 +300,7 @@ function representationVars(r: Representation): string[] {
         ...(r.quotient ? [r.quotient] : []),
       ];
     case 'venn':
+      if ('chances' in r) return vennChanceVars(r.chances);
       return [r.first, r.second, ...[r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'baseHeight':
       return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];

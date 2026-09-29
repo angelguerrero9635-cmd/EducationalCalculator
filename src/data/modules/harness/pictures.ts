@@ -30,6 +30,7 @@ import {
   scatterIssues,
   treeChanceIssues,
   twoWayIssues,
+  vennChanceIssues,
 } from './picturesHse';
 import type { ModuleDef, Representation } from '../types';
 
@@ -1293,6 +1294,10 @@ export function repIssues(
       break;
     }
     case 'venn':
+      if ('chances' in rep) {
+        out.push(...vennChanceIssues(rep.chances, val));
+        break;
+      }
       count(rep.first, 'Venn number', 1000);
       count(rep.second, 'Venn number', 1000);
       break;

@@ -10,11 +10,12 @@ import {
   fences,
   leastSquares,
   quartile,
+  shadedChance,
   standardDeviation,
 } from '@/components/module/reps/stats';
 
 import type { Representation } from '../types';
-import type { TreeChances, TwoWaySpec } from '../typesHse';
+import type { TreeChances, TwoWaySpec, VennChances } from '../typesHse';
 
 type Val = (x: string | number) => number | undefined;
 type Of<K extends Representation['kind']> = Extract<Representation, { kind: K }>;
@@ -244,6 +245,35 @@ export function treeChanceIssues(t: TreeChances, val: Val): string[] {
     const x = val(t.total);
     const want = pA.reduce((s, _, i) => s + leaf(i, t.totalOf!), 0);
     if (x !== undefined && !close(x, want)) out.push(`total shows ${x}, the paths give ${want}`);
+  }
+  return out;
+}
+
+/** The variable ids a Venn diagram of probabilities names (for the module tests). */
+export const vennChanceVars = (v: VennChances) => ids(v.a, v.b, v.both, v.result);
+
+/**
+ * H22: the probabilities fit together (P(A and B) at most either, P(A or B) at most 1),
+ * mutually exclusive events share nothing, and the shaded result is the shaded region's.
+ */
+export function vennChanceIssues(v: VennChances, val: Val): string[] {
+  const out: string[] = [];
+  const [a, b, both] = [val(v.a), val(v.b), val(v.both)];
+  if (v.result && !v.shade) out.push('a Venn result with nothing shaded');
+  if (a === undefined || b === undefined || both === undefined) return out;
+  for (const [name, x] of [
+    ['P(A)', a],
+    ['P(B)', b],
+    ['P(A and B)', both],
+  ] as const)
+    if (x < -1e-9 || x > 1 + 1e-9) out.push(`${name} = ${x} is not between 0 and 1`);
+  if (both > Math.min(a, b) + 1e-9) out.push(`P(A and B) = ${both} is more than P(A) or P(B)`);
+  if (a + b - both > 1 + 1e-9) out.push(`P(A or B) = ${a + b - both} is more than 1`);
+  if (v.exclusive && Math.abs(both) > 1e-9) out.push(`mutually exclusive events share ${both}`);
+  const r = v.result ? val(v.result) : undefined;
+  if (v.shade && r !== undefined) {
+    const want = shadedChance(v.shade, a, b, v.exclusive ? 0 : both);
+    if (!close(r, want)) out.push(`shaded ${v.shade} is ${want}, result shows ${r}`);
   }
   return out;
 }

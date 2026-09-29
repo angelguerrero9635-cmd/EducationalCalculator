@@ -14,7 +14,7 @@ import type { ChemSpec } from './typesChem';
 import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 import type { Physics8Spec } from './typesPhysics8';
 import type { CardIcon } from './layouts/types';
-import type { TreeChances, TwoWaySpec } from './typesHse';
+import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1288,6 +1288,8 @@ export type Representation =
       gcf?: string;
       lcm?: string;
     }
+  /** Grades 9–12 (H22): a Venn diagram of probabilities (spec in `typesHse.ts`). */
+  | { kind: 'venn'; chances: VennChances }
   /**
    * A parallelogram, triangle, trapezoid or house with its base thick and its height dashed
    * (drag the top to lean it). `top` is the trapezoid's top base or the house's roof height.

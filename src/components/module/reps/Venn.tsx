@@ -8,7 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { Steppers } from './Steppers';
 
-type Spec = Extract<Representation, { kind: 'venn' }>;
+type Spec = Extract<Representation, { kind: 'venn'; list: string }>;
 
 export const factorsOf = (n: number) =>
   n < 1 ? [] : Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0);
