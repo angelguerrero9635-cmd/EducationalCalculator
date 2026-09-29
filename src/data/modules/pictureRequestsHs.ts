@@ -234,12 +234,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Also elimination: the two equations and their sum drawn as three lines through one point. DRAWN. Spec (typesGraphs.ts), all optional, no change to Grade 8 pages: each line of lineSystem takes shade '<' | '≤' | '>' | '≥' (y (sign) mx + b; its half-plane shaded in the line's color, above for > and ≥; dashed boundary for < and >, solid for ≤ and ≥; with two shaded lines the overlap is labelled 'both true', and parallel lines shading apart say 'No solution'); test { x, y } (a point tested in both, each check worked in the caption); sum { x, y, c, label? } (elimination: the coefficients of the sum a·x + b·y = c after multiplying, drawn as a third line through the crossing, upright when y cancels; the harness checks it is a sum of the two equations); fixed (no handles, for lines worked out from standard-form coefficients). linearFunction takes shade too, for one inequality. Example (m.9.inequality-systems): representation: { kind: 'lineSystem', lines: [{ slope: 'm1', intercept: 'b1', shade: '>' }, { slope: 'm2', intercept: 'b2', shade: '≤' }], solution: { x: 'x', y: 'y' }, test: { x: 'tx', y: 'ty' }, extent: 10 }; elimination: { kind: 'lineSystem', lines: [{ slope: 'm1', intercept: 'i1' }, { slope: 'm2', intercept: 'i2' }], solution: { x: 'x', y: 'y' }, sum: { x: 'p', y: 'q', c: 'r' }, fixed: true }; one inequality (m.9.linear-inequalities): { kind: 'linearFunction', slope: 'm', intercept: 'b', shade: '<', keep: ['B'] }. Signs are fixed per page (a page for Ax + By < C with B < 0 passes the flipped sign). Boundaries are y = mx + b only: an upright boundary x ≥ k is not drawn yet.",
   },
-  ask(
-    'H17',
-    'integerLine',
-    'Compound inequalities (and, or) and absolute value as a distance on the number line',
-    ['m.9.linear-inequalities', 'm.9.absolute-value'],
-  ),
+  {
+    ...ask(
+      'H17',
+      'integerLine',
+      'Compound inequalities (and, or) and absolute value as a distance on the number line',
+      ['m.9.linear-inequalities', 'm.9.absolute-value'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-linear-inequalities-and',
+      'g.m9-linear-inequalities-or',
+      'g.m9-linear-inequalities-or-all',
+      'g.m9-absolute-value-within',
+      'g.m9-absolute-value-beyond',
+    ],
+    notes:
+      "DRAWN. Spec (types.ts, integerLine), optional; other integerLine pages unchanged: compound { join: 'and' | 'or', closed?: [lower, upper] (default both open), center?, radius?, letter?, test? } with value (the lower bound) and second (the upper bound). 'and' draws the stretch between the bounds (both parts true; bounds past each other say no solution); 'or' draws two rays outward (either part; rays that meet or pass take in every number). With center and radius it is |x − c| < d ('and') or > d ('or'): the center a diamond, the distance d bracketed to each bound, c − d and c + d worked in the caption; the harness checks value = c − d and second = c + d. test is a number marked true or false, each part worked in the caption. Handles: the two bounds, or the center and the upper bound (the radius), and the test number. Example (m.9.linear-inequalities, −3 ≤ 2x + 1 < 7): representation: { kind: 'integerLine', value: 'L', second: 'U', min: -5, max: 5, compound: { join: 'and', closed: [true, false], test: 't' } }; (m.9.absolute-value, |x − 1| ≤ 3): { kind: 'integerLine', value: 'L', second: 'U', min: -5, max: 5, compound: { join: 'and', closed: [true, true], center: 'c', radius: 'd', test: 't' } }. The demos solve ax + b with a > 0; a page dividing by a negative passes the flipped closed pair.",
+  },
   ask(
     'H18',
     'scatter',

@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { CompoundLine } from './CompoundLine';
 import { InequalityLine } from './Inequality';
 import { SignedJump } from './SignedJump';
 import { Steppers } from './Steppers';
@@ -33,7 +34,9 @@ export function tickStep(span: number, most = 20): number {
  * `inequality`, an inequality's solutions instead (Inequality.tsx).
  */
 export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
-  return spec.inequality ? (
+  return spec.compound ? (
+    <CompoundLine spec={spec} calc={calc} />
+  ) : spec.inequality ? (
     <InequalityLine spec={spec} calc={calc} />
   ) : spec.jump ? (
     <SignedJump spec={spec} calc={calc} />

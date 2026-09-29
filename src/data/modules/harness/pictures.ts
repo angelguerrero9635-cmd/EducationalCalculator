@@ -1181,6 +1181,21 @@ export function repIssues(
         if (rep.vertical) out.push('signed jumps are drawn across, not vertical');
         if (rep.inequality) out.push('a line shows a jump or an inequality, not both');
       }
+      if (rep.compound) {
+        // H17: two bounds, the lower first; |x − c| (sign) d has its bounds at c ∓ d.
+        const { center, radius } = rep.compound;
+        if (!rep.second) out.push('a compound inequality needs its second bound');
+        if (rep.vertical || rep.inequality || rep.jump)
+          out.push('a compound inequality is drawn across, alone');
+        if (!center !== !radius) out.push('a distance needs both its center and its radius');
+        const [c, r] = [center, radius].map((x) => (x ? val(x) : undefined));
+        if (c !== undefined && r !== undefined) {
+          if (a !== undefined && Math.abs(a - (c - r)) > 1e-6 * Math.max(1, Math.abs(a)))
+            out.push(`|x − ${c}| with radius ${r} has its lower bound at ${c - r}, not ${a}`);
+          if (b !== undefined && Math.abs(b - (c + r)) > 1e-6 * Math.max(1, Math.abs(b)))
+            out.push(`|x − ${c}| with radius ${r} has its upper bound at ${c + r}, not ${b}`);
+        }
+      }
       break;
     }
     case 'percentBar': {

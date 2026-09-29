@@ -271,6 +271,9 @@ function representationVars(r: Representation): string[] {
         ...(r.inequality?.twoStep
           ? [r.inequality.twoStep.times, r.inequality.twoStep.plus, r.inequality.twoStep.total]
           : []),
+        ...[r.compound?.center, r.compound?.radius, r.compound?.test].filter(
+          (x): x is string => !!x,
+        ),
       ];
     case 'percentBar':
       return [

@@ -1183,6 +1183,22 @@ export type Representation =
        * subtracting jumps the other way (adding the opposite). Drag the start or the end.
        */
       jump?: { by: string; result: string; op?: '+' | '−' };
+      /**
+       * Grades 9–12 (H17): a compound inequality with `value` and `second` as its bounds (value
+       * the lower). 'and': value < x < second, the stretch between them; 'or': x < value or
+       * x > second, two rays outward. `closed` includes a bound (≤, ≥; default both open).
+       * With `center` and `radius` it is |x − center| < radius ('and') or > radius ('or'): the
+       * center marked and the distance bracketed to each bound (value = center − radius,
+       * second = center + radius). `test` is a number checked in both parts.
+       */
+      compound?: {
+        join: 'and' | 'or';
+        closed?: [boolean, boolean];
+        center?: string;
+        radius?: string;
+        letter?: string;
+        test?: string;
+      };
     }
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {

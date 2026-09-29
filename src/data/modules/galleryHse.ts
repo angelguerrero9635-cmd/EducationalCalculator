@@ -42,16 +42,19 @@ function rule(
   display: string,
   vars: string[],
   residual: (v: Values) => number,
-  parts: Record<string, [Solver, StepText['expr'], StepText['how']]>,
+  parts: Record<string, [Solver, StepText['expr'], StepText['how']] | [Solver, StepText]>,
+  /** The check line as plain arithmetic, for a rule whose display is not a number sentence. */
+  check?: (v: Values) => string,
 ) {
   const solve: Record<string, Solver> = {};
   const steps: Record<string, StepText> = {};
   for (const v of vars) {
-    const [fn, expr, how] = parts[v] ?? none;
+    const part = parts[v] ?? none;
+    const fn = part[0];
     solve[v] = fn;
-    if (fn.length > 0) steps[v] = { expr, how };
+    if (fn.length > 0) steps[v] = part.length === 2 ? part[1] : { expr: part[1], how: part[2] };
   }
-  return { relation: { id, display, vars, residual, solve }, steps };
+  return { relation: { id, display, vars, residual, solve, ...(check ? { check } : {}) }, steps };
 }
 
 /** A page from its rules: the relations and the steps keyed by relation. */
@@ -176,7 +179,7 @@ function inequalitySystem(
   });
 }
 
-export const HSE_GALLERY_MODULES: ModuleDef[] = [
+const H16_MODULES: ModuleDef[] = [
   inequalitySystem('g.m9-inequality-systems-shade', 'System of linear inequalities', ['>', '≤'], {
     m1: 1,
     b1: -2,
@@ -368,4 +371,300 @@ export const HSE_GALLERY_MODULES: ModuleDef[] = [
     },
   }),
 ];
+
+// ── H17: compound inequalities and absolute value as a distance ──
+
+/** 1 when a test holds, else 0; its check line. */
+const truth = (b: boolean) => (b ? 1 : 0);
+/** A worked number without float noise; a negative one in brackets after an operator. */
+const clean = (x: number) => Number(x.toFixed(9));
+const inner = (x: number) => (x < 0 ? `(${clean(x)})` : `${clean(x)}`);
+
+/**
+ * lo (s) a·x + b (s) hi ('and'), or a·x + b (s) lo or a·x + b (s) hi ('or'), solved to two
+ * bounds on x (a > 0 keeps the signs), with a test number checked in the written form.
+ */
+function compoundPage(
+  id: string,
+  title: string,
+  join: 'and' | 'or',
+  closed: [boolean, boolean],
+  example: Values,
+): ModuleDef {
+  const and = join === 'and';
+  const [sLo, sHi] = and
+    ? [closed[0] ? '≤' : '<', closed[1] ? '≤' : '<']
+    : [closed[0] ? '≤' : '<', closed[1] ? '≥' : '>'];
+  const at = (v: Values) => v.a! * v.t! + v.b!;
+  const holds = (v: Values) => {
+    const m = at(v);
+    const lo = closed[0] ? (and ? m >= v.lo! : m <= v.lo!) : and ? m > v.lo! : m < v.lo!;
+    const hi = closed[1] ? (and ? m <= v.hi! : m >= v.hi!) : and ? m < v.hi! : m > v.hi!;
+    return and ? lo && hi : lo || hi;
+  };
+  const written = and ? `lo ${sLo} ax + b ${sHi} hi` : `ax + b ${sLo} lo or ax + b ${sHi} hi`;
+  return page({
+    id,
+    title,
+    use: and
+      ? 'Use this for solving a compound inequality with “and”: the numbers between two bounds.'
+      : 'Use this for solving a compound inequality with “or”: two rays, either part true.',
+    assumptions: [
+      and
+        ? `${written}: both parts true at once, so x is between the two bounds.`
+        : `${written}: either part true, so x is past one bound or the other.`,
+      'Take b from every part, then divide every part by a (a > 0 keeps the signs).',
+      'A closed circle (≤, ≥) takes in its bound; an open one (<, >) leaves it out.',
+    ],
+    variables: [
+      num('a', 'a', 'x-coefficient', 1, 10, 1),
+      num('b', 'b', 'Added to ax', -20, 20, 1),
+      num('lo', and ? 'p' : 'p', and ? 'Left side' : 'First right side', -50, 50, 1),
+      num('hi', 'q', and ? 'Right side' : 'Second right side', -50, 50, 1),
+      out('L', 'L', 'Lower bound on x'),
+      out('U', 'U', 'Upper bound on x'),
+      num('t', 't', 'Test number'),
+      { ...out('h', 'h', 'Test holds (1 true, 0 false)', 1), min: 0, integer: true },
+    ],
+    rules: [
+      rule(
+        'L = (p − b) ÷ a',
+        '{L} = ({lo} − {b}) ÷ {a}',
+        ['L', 'lo', 'b', 'a'],
+        (v) => v.L! * v.a! - (v.lo! - v.b!),
+        {
+          L: [
+            (v) => div(v.lo! - v.b!, v.a!),
+            '({lo} − {b}) ÷ {a}',
+            'Take b from both sides of that part, then divide by a.',
+          ],
+          lo: [
+            (v) => v.L! * v.a! + v.b!,
+            '{L} × {a} + {b}',
+            'Undo the steps: multiply by a, add b.',
+          ],
+        },
+      ),
+      rule(
+        'U = (q − b) ÷ a',
+        '{U} = ({hi} − {b}) ÷ {a}',
+        ['U', 'hi', 'b', 'a'],
+        (v) => v.U! * v.a! - (v.hi! - v.b!),
+        {
+          U: [
+            (v) => div(v.hi! - v.b!, v.a!),
+            '({hi} − {b}) ÷ {a}',
+            'The same steps on the other part: take b, then divide by a.',
+          ],
+          hi: [
+            (v) => v.U! * v.a! + v.b!,
+            '{U} × {a} + {b}',
+            'Undo the steps: multiply by a, add b.',
+          ],
+        },
+      ),
+      rule(
+        'h = test',
+        and
+          ? `test {t} in {lo} ${sLo} {a}x + {b} ${sHi} {hi}: {h}`
+          : `test {t} in {a}x + {b} ${sLo} {lo} or {a}x + {b} ${sHi} {hi}: {h}`,
+        ['h', 't', 'a', 'b', 'lo', 'hi'],
+        (v) => v.h! - truth(holds(v)),
+        {
+          h: [
+            (v) => truth(holds(v)),
+            {
+              expr: (v) => `${truth(holds(v))}`,
+              how: `Put the test number in for x. ${and ? 'Both parts' : 'One part'} must be true: 1 is true, 0 is false.`,
+              work: (v) => {
+                const pt = clean(v.a! * v.t!);
+                const m = clean(at(v));
+                return [
+                  `${v.a} × ${inner(v.t!)} = ${pt}`,
+                  `${inner(pt)} ${v.b! < 0 ? '−' : '+'} ${Math.abs(v.b!)} = ${m}`,
+                  and
+                    ? `${v.lo} ${sLo} ${m} ${sHi} ${v.hi} is ${holds(v)}`
+                    : `${m} ${sLo} ${v.lo} or ${m} ${sHi} ${v.hi} is ${holds(v)}`,
+                ];
+              },
+              written: false,
+            },
+          ],
+        },
+        (v) => `${truth(holds(v))} = ${v.h}`,
+      ),
+    ],
+    example,
+    startWith: ['a', 'b', 'lo', 'hi', 't'],
+    representation: {
+      kind: 'integerLine',
+      value: 'L',
+      second: 'U',
+      min: -5,
+      max: 5,
+      compound: { join, closed, test: 't' },
+    },
+  });
+}
+
+/** |x − c| (sign) d as a distance: the bounds c − d and c + d, a test number's distance. */
+function distancePage(
+  id: string,
+  title: string,
+  join: 'and' | 'or',
+  closed: boolean,
+  example: Values,
+): ModuleDef {
+  const and = join === 'and';
+  const sign = and ? (closed ? '≤' : '<') : closed ? '≥' : '>';
+  const holds = (v: Values) => {
+    const e = Math.abs(v.t! - v.c!);
+    return and ? (closed ? e <= v.d! : e < v.d!) : closed ? e >= v.d! : e > v.d!;
+  };
+  return page({
+    id,
+    title,
+    use: and
+      ? `Use this for solving |x − c| ${sign} d: the numbers within d of c, between two bounds.`
+      : `Use this for solving |x − c| ${sign} d: the numbers farther than d from c, two rays.`,
+    assumptions: [
+      '|x − c| is the distance from x to c on the number line.',
+      and
+        ? `|x − c| ${sign} d: within d of c, so c − d ${closed ? '≤' : '<'} x ${closed ? '≤' : '<'} c + d.`
+        : `|x − c| ${sign} d: farther than d from c, so x ${closed ? '≤' : '<'} c − d or x ${sign} c + d.`,
+      'Drag the center, the upper bound (the distance) or the test number.',
+    ],
+    variables: [
+      num('c', 'c', 'Center'),
+      num('d', 'd', 'Distance', 0, 20),
+      out('L', 'L', 'Lower bound'),
+      out('U', 'U', 'Upper bound'),
+      num('t', 't', 'Test number'),
+      out('e', 'e', 'Test distance from c'),
+      { ...out('h', 'h', 'Test holds (1 true, 0 false)', 1), min: 0, integer: true },
+    ],
+    rules: [
+      rule('L = c − d', '{L} = {c} − {d}', ['L', 'c', 'd'], (v) => v.L! - (v.c! - v.d!), {
+        L: [(v) => v.c! - v.d!, '{c} − {d}', 'Go the distance d to the left of the center.'],
+        c: [(v) => v.L! + v.d!, '{L} + {d}', 'Add d to both sides.'],
+        d: [(v) => v.c! - v.L!, '{c} − {L}', 'The distance from the lower bound up to c.'],
+      }),
+      rule('U = c + d', '{U} = {c} + {d}', ['U', 'c', 'd'], (v) => v.U! - (v.c! + v.d!), {
+        U: [(v) => v.c! + v.d!, '{c} + {d}', 'Go the distance d to the right of the center.'],
+      }),
+      rule(
+        'e = |t − c|',
+        '{e} = |{t} − {c}|',
+        ['e', 't', 'c'],
+        (v) => v.e! - Math.abs(v.t! - v.c!),
+        {
+          e: [(v) => Math.abs(v.t! - v.c!), '|{t} − {c}|', 'The test number’s distance from c.'],
+        },
+      ),
+      rule(
+        'h = test',
+        `test: {e} ${sign} {d} gives {h}`,
+        ['h', 'e', 'd'],
+        (v) =>
+          v.h! -
+          truth(and ? (closed ? v.e! <= v.d! : v.e! < v.d!) : closed ? v.e! >= v.d! : v.e! > v.d!),
+        {
+          h: [
+            (v) =>
+              truth(
+                and ? (closed ? v.e! <= v.d! : v.e! < v.d!) : closed ? v.e! >= v.d! : v.e! > v.d!,
+              ),
+            {
+              expr: (v) => `${truth(holds(v))}`,
+              how: `Compare the test number’s distance with d: 1 is true, 0 is false.`,
+              work: (v) => [`${clean(v.e!)} ${sign} ${v.d} is ${holds(v)}`],
+              written: false,
+            },
+          ],
+        },
+        (v) => `${truth(holds(v))} = ${v.h}`,
+      ),
+    ],
+    example,
+    startWith: ['c', 'd', 't'],
+    representation: {
+      kind: 'integerLine',
+      value: 'L',
+      second: 'U',
+      min: -5,
+      max: 5,
+      compound: { join, closed: [closed, closed], center: 'c', radius: 'd', test: 't' },
+    },
+  });
+}
+
+const H17_MODULES: ModuleDef[] = [
+  // −3 ≤ 2x + 1 < 7: −2 ≤ x < 3.
+  compoundPage(
+    'g.m9-linear-inequalities-and',
+    'Compound inequality with and',
+    'and',
+    [true, false],
+    {
+      a: 2,
+      b: 1,
+      lo: -3,
+      hi: 7,
+      L: -2,
+      U: 3,
+      t: 1,
+      h: 1,
+    },
+  ),
+  // 2x + 1 < −3 or 2x + 1 ≥ 7: x < −2 or x ≥ 3.
+  compoundPage('g.m9-linear-inequalities-or', 'Compound inequality with or', 'or', [false, true], {
+    a: 2,
+    b: 1,
+    lo: -3,
+    hi: 7,
+    L: -2,
+    U: 3,
+    t: 1,
+    h: 0,
+  }),
+  // The edge: 2x + 1 < 9 or 2x + 1 ≥ 3 overlap, x < 4 or x ≥ 1: every number.
+  compoundPage(
+    'g.m9-linear-inequalities-or-all',
+    'Compound inequality: every number',
+    'or',
+    [false, true],
+    {
+      a: 2,
+      b: 1,
+      lo: 9,
+      hi: 3,
+      L: 4,
+      U: 1,
+      t: 6,
+      h: 1,
+    },
+  ),
+  // |x − 1| ≤ 3: −2 ≤ x ≤ 4.
+  distancePage('g.m9-absolute-value-within', 'Absolute value inequality: within', 'and', true, {
+    c: 1,
+    d: 3,
+    L: -2,
+    U: 4,
+    t: 5,
+    e: 4,
+    h: 0,
+  }),
+  // |x + 2.5| > 1.5: x < −4 or x > −1.
+  distancePage('g.m9-absolute-value-beyond', 'Absolute value inequality: beyond', 'or', false, {
+    c: -2.5,
+    d: 1.5,
+    L: -4,
+    U: -1,
+    t: 0.5,
+    e: 3,
+    h: 1,
+  }),
+];
+
+export const HSE_GALLERY_MODULES: ModuleDef[] = [...H16_MODULES, ...H17_MODULES];
 export const HSE_GALLERY_LAYOUTS: LayoutDef[] = [];

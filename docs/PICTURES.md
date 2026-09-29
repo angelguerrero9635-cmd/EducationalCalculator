@@ -150,6 +150,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `dotPlot`          | `second`, `labels`, `difference`         | a second sample's dot plot under the first, same scale; the gap between means |
 | `lineSystem`       | `shade` (a line), `test`, `sum`, `fixed` | inequalities: half-planes, dashed < >, overlap; elimination sum line (H16)    |
 | `linearFunction`   | `shade`                                  | one inequality y < mx + b: its half-plane shaded, the boundary dashed (H16)   |
+| `integerLine`      | `compound: { join, closed?, center? }`   | and / or between two bounds; abs(x − c) < d as a distance from c (H17)        |
 | `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |
 | `force`            | `object: 'cart'`, `block`                | a lab cart with the mass as metal blocks, pulled by a rope; F = m × a         |
 | `tenFrame`         | `takeAway`; `crossOut`                   | taken counters filled and crossed out; b crossed out inside the full ten      |
