@@ -210,12 +210,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     'Matrices in brackets: a row times a column lit for multiplication, row operations, a 3 × 3 system',
     ['m.12.matrices'],
   ),
-  ask(
-    'H15',
-    'termsChart',
-    'Terms of a sequence as bars or points, with the running sum approaching its limit',
-    ['m.9.sequences', 'm.11.series'],
-  ),
+  {
+    ...ask(
+      'H15',
+      'termsChart',
+      'Terms of a sequence as bars or points, with the running sum approaching its limit',
+      ['m.9.sequences', 'm.11.series'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-sequences-arithmetic',
+      'g.m9-sequences-geometric',
+      'g.m11-series-arithmetic-sum',
+      'g.m11-series-geometric-infinite',
+      'g.m11-series-alternating',
+    ],
+    notes:
+      'Drawn (group HB). Fields: type ("arithmetic" | "geometric"), first (a₁), step (d or r), count (n, 1–30), as? ("bars", the default, or "points"), sums? (the partial sums Sₙ as a stepped line), limit? (true, or the id of S: an infinite geometric series\' sum a₁ ÷ (1 − r) dashed, when |r| < 1; otherwise faded with the reason), term? (the id of aₙ), sum? (the id of Sₙ). No handles: the values have sliders. The harness checks every term and partial sum against the rule, the typed aₙ, Sₙ and S, and the gap |S − Sₙ| = |a₁rⁿ ÷ (1 − r)|. Examples: { kind: "termsChart", type: "arithmetic", first: "a", step: "d", count: "n", as: "points", term: "an" }; { kind: "termsChart", type: "geometric", first: "a", step: "r", count: "n", sums: true, limit: "S", sum: "Sn" }.',
+  },
 
   // ── B. Changes to existing math pictures ──
   ask(

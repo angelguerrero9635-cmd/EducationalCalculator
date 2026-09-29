@@ -1170,6 +1170,239 @@ const combinations: ModuleDef = {
   },
 };
 
+// ── H15 termsChart ──
+
+const TERM_N = V('n', 'n', 'Term number', { integer: true, min: 1, max: 30 });
+
+/** aₙ = a₁ + (n − 1) × d. */
+const arithmeticTerm: Rel = {
+  relation: {
+    id: 'aₙ = a₁ + (n − 1) × d',
+    display: '{an} = {a} + ({n} − 1) × {d}',
+    vars: ['an', 'a', 'n', 'd'],
+    residual: (v: Values) => v.an! - (v.a! + (v.n! - 1) * v.d!),
+    solve: {
+      an: (v: Values) => v.a! + (v.n! - 1) * v.d!,
+      a: (v: Values) => v.an! - (v.n! - 1) * v.d!,
+      d: (v: Values) => div(v.an! - v.a!, v.n! - 1),
+      n: (v: Values) => {
+        const q = div(v.an! - v.a!, v.d!);
+        return q === undefined ? undefined : q + 1;
+      },
+    },
+  },
+  steps: {
+    an: { expr: '{a} + ({n} − 1) × {d}', how: 'From the first term, n − 1 steps of d.' },
+    a: { expr: '{an} − ({n} − 1) × {d}', how: 'Go back n − 1 steps of d.' },
+    d: { expr: '({an} − {a}) ÷ ({n} − 1)', how: 'The rise from a₁ to aₙ, over n − 1 steps.' },
+    n: { expr: '({an} − {a}) ÷ {d} + 1', how: 'How many steps of d, plus the first term.' },
+  },
+};
+
+/** aₙ = a₁ × r^(n − 1). */
+const geometricTerm: Rel = {
+  relation: {
+    id: 'aₙ = a₁ × r^(n − 1)',
+    display: '{an} = {a} × {r}^({n} − 1)',
+    vars: ['an', 'a', 'r', 'n'],
+    residual: (v: Values) => v.an! - v.a! * v.r! ** (v.n! - 1),
+    solve: {
+      an: (v: Values) => v.a! * v.r! ** (v.n! - 1),
+      a: (v: Values) => div(v.an!, v.r! ** (v.n! - 1)),
+    },
+  },
+  steps: {
+    an: { expr: '{a} × {r}^({n} − 1)', how: 'From the first term, multiply by r, n − 1 times.' },
+    a: { expr: '{an} ÷ {r}^({n} − 1)', how: 'Divide out the n − 1 factors of r.' },
+  },
+};
+
+const arithmeticSeq: ModuleDef = {
+  id: 'g.m9-sequences-arithmetic',
+  title: 'Arithmetic sequence: the nth term',
+  use: 'Use this for the nth term of an arithmetic sequence, aₙ = a₁ + (n − 1)d.',
+  assumptions: [
+    'Each term is the one before plus the same common difference d.',
+    'The terms lie on a line: d is its slope.',
+  ],
+  variables: [
+    V('a', 'a₁', 'First term', { min: -1000, max: 1000, step: 1 }),
+    V('d', 'd', 'Common difference', { min: -100, max: 100, step: 0.5 }),
+    TERM_N,
+    V('an', 'aₙ', 'nth term', { min: -1e5, max: 1e5, step: 1 }),
+  ],
+  ...rels(arithmeticTerm),
+  example: { a: 3, d: 4, n: 8, an: 31 },
+  startWith: ['a', 'd', 'n'],
+  sliders: true,
+  representation: {
+    kind: 'termsChart',
+    type: 'arithmetic',
+    first: 'a',
+    step: 'd',
+    count: 'n',
+    as: 'points',
+    term: 'an',
+  },
+};
+
+const geometricSeq: ModuleDef = {
+  id: 'g.m9-sequences-geometric',
+  title: 'Geometric sequence: the nth term',
+  use: 'Use this for the nth term of a geometric sequence, aₙ = a₁ × rⁿ⁻¹.',
+  assumptions: [
+    'Each term is the one before times the same common ratio r.',
+    'With r above 1 the terms grow faster and faster.',
+  ],
+  variables: [
+    V('a', 'a₁', 'First term', { min: -1000, max: 1000, step: 0.5 }),
+    V('r', 'r', 'Common ratio', { min: -5, max: 5, step: 0.1 }),
+    { ...TERM_N, max: 12 },
+    V('an', 'aₙ', 'nth term', { min: -1e9, max: 1e9, step: 0.01 }),
+  ],
+  ...rels(geometricTerm),
+  example: { a: 2, r: 3, n: 6, an: 486 },
+  startWith: ['a', 'r', 'n'],
+  sliders: true,
+  representation: {
+    kind: 'termsChart',
+    type: 'geometric',
+    first: 'a',
+    step: 'r',
+    count: 'n',
+    term: 'an',
+  },
+};
+
+const arithmeticSeries: ModuleDef = {
+  id: 'g.m11-series-arithmetic-sum',
+  title: 'Arithmetic series: the partial sum',
+  use: 'Use this for Sₙ = n × (a₁ + aₙ) ÷ 2, the sum of the first n terms.',
+  assumptions: [
+    'The terms go up by the same d each time.',
+    'Pairing the first and last terms, the second and second-to-last, … gives n ÷ 2 pairs of a₁ + aₙ.',
+  ],
+  variables: [
+    V('a', 'a₁', 'First term', { min: -1000, max: 1000, step: 1 }),
+    V('d', 'd', 'Common difference', { min: -100, max: 100, step: 0.5 }),
+    TERM_N,
+    V('an', 'aₙ', 'nth term', { min: -1e5, max: 1e5, step: 1 }),
+    V('S', 'Sₙ', 'Sum of the first n terms', { min: -1e7, max: 1e7, step: 1 }),
+  ],
+  ...rels(arithmeticTerm, {
+    relation: {
+      id: 'Sₙ = n × (a₁ + aₙ) ÷ 2',
+      display: '{S} = {n} × ({a} + {an}) ÷ 2',
+      vars: ['S', 'n', 'a', 'an'],
+      residual: (v: Values) => v.S! - (v.n! * (v.a! + v.an!)) / 2,
+      solve: {
+        S: (v: Values) => (v.n! * (v.a! + v.an!)) / 2,
+        an: (v: Values) => div(2 * v.S!, v.n!)! - v.a!,
+        a: (v: Values) => div(2 * v.S!, v.n!)! - v.an!,
+      },
+    },
+    steps: {
+      S: { expr: '{n} × ({a} + {an}) ÷ 2', how: 'n ÷ 2 pairs, each adding to a₁ + aₙ.' },
+      an: { expr: '2 × {S} ÷ {n} − {a}', how: 'Each pair adds to 2Sₙ ÷ n; take away a₁.' },
+      a: { expr: '2 × {S} ÷ {n} − {an}', how: 'Each pair adds to 2Sₙ ÷ n; take away aₙ.' },
+    },
+  }),
+  example: { a: 3, d: 4, n: 8, an: 31, S: 136 },
+  startWith: ['a', 'd', 'n'],
+  sliders: true,
+  representation: {
+    kind: 'termsChart',
+    type: 'arithmetic',
+    first: 'a',
+    step: 'd',
+    count: 'n',
+    sums: true,
+    term: 'an',
+    sum: 'S',
+  },
+};
+
+/** S = a₁ ÷ (1 − r), with the partial sums closing in on it. */
+function infiniteDemo(
+  id: string,
+  title: string,
+  ex: { a: number; r: number; n: number },
+): ModuleDef {
+  const { a, r, n } = ex;
+  return {
+    id,
+    title,
+    use: 'Use this for the sum of an infinite geometric series, S = a₁ ÷ (1 − r), when |r| < 1.',
+    assumptions: [
+      'Each term is the one before times r, with r between −1 and 1.',
+      'The partial sums Sₙ = a₁ × (1 − rⁿ) ÷ (1 − r) close in on S as rⁿ shrinks to 0.',
+    ],
+    variables: [
+      V('a', 'a₁', 'First term', { min: -100, max: 100, step: 0.5 }),
+      V('r', 'r', 'Common ratio', { min: -0.95, max: 0.95, step: 0.05 }),
+      TERM_N,
+      V('Sn', 'Sₙ', 'Sum of the first n terms', {
+        min: -1e5,
+        max: 1e5,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('S', 'S', 'Sum of the series', { min: -1e5, max: 1e5, step: 0.01 }),
+    ],
+    ...rels(
+      {
+        relation: {
+          id: 'Sₙ = a₁ × (1 − rⁿ) ÷ (1 − r)',
+          display: '{Sn} = {a} × (1 − {r}^{n}) ÷ (1 − {r})',
+          vars: ['Sn', 'a', 'r', 'n'],
+          residual: (v: Values) => v.Sn! - (v.a! * (1 - v.r! ** v.n!)) / (1 - v.r!),
+          solve: { Sn: (v: Values) => div(v.a! * (1 - v.r! ** v.n!), 1 - v.r!) },
+        },
+        steps: {
+          Sn: {
+            expr: '{a} × (1 − {r}^{n}) ÷ (1 − {r})',
+            how: 'The first n terms of a geometric series.',
+          },
+        },
+      },
+      {
+        relation: {
+          id: 'S = a₁ ÷ (1 − r)',
+          display: '{S} = {a} ÷ (1 − {r})',
+          vars: ['S', 'a', 'r'],
+          residual: (v: Values) => v.S! * (1 - v.r!) - v.a!,
+          solve: {
+            S: (v: Values) => div(v.a!, 1 - v.r!),
+            a: (v: Values) => v.S! * (1 - v.r!),
+            r: (v: Values) => {
+              const q = div(v.a!, v.S!);
+              return q === undefined ? undefined : 1 - q;
+            },
+          },
+        },
+        steps: {
+          S: { expr: '{a} ÷ (1 − {r})', how: 'As n grows, rⁿ goes to 0, leaving a₁ ÷ (1 − r).' },
+          a: { expr: '{S} × (1 − {r})', how: 'Undo the division by 1 − r.' },
+          r: { expr: '1 − {a} ÷ {S}', how: 'Then 1 − r = a₁ ÷ S.' },
+        },
+      },
+    ),
+    example: { a, r, n, Sn: (a * (1 - r ** n)) / (1 - r), S: a / (1 - r) },
+    startWith: ['a', 'r', 'n'],
+    sliders: true,
+    representation: {
+      kind: 'termsChart',
+      type: 'geometric',
+      first: 'a',
+      step: 'r',
+      count: 'n',
+      sums: true,
+      limit: 'S',
+      sum: 'Sn',
+    },
+  };
+}
+
 export const HSB_GALLERY_MODULES: ModuleDef[] = [
   normalLeft,
   normalBetween,
@@ -1201,5 +1434,18 @@ export const HSB_GALLERY_MODULES: ModuleDef[] = [
   pascalDemo('g.m11-binomial-theorem-row-12', 'Pascal’s triangle: row 12', 12, 6),
   permutations,
   combinations,
+  arithmeticSeq,
+  geometricSeq,
+  arithmeticSeries,
+  infiniteDemo('g.m11-series-geometric-infinite', 'Infinite geometric series: r = 0.5', {
+    a: 1,
+    r: 0.5,
+    n: 8,
+  }),
+  infiniteDemo('g.m11-series-alternating', 'Infinite geometric series: r = −0.8', {
+    a: 4,
+    r: -0.8,
+    n: 30,
+  }),
 ];
 export const HSB_GALLERY_LAYOUTS: LayoutDef[] = [];

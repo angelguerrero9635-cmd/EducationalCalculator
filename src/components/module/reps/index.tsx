@@ -123,6 +123,7 @@ import { EnergyTrack } from './EnergyTrack';
 import { NormalCurve } from './NormalCurve';
 import { Histogram } from './Histogram';
 import { PascalTriangle } from './PascalTriangle';
+import { TermsChart } from './TermsChart';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -147,6 +148,7 @@ export const representationTitle = (r: Representation) =>
           'motionGraph',
           'normalCurve',
           'histogram',
+          'termsChart',
         ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
@@ -165,6 +167,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Histogram spec={spec} calc={calc} />;
     case 'pascalTriangle':
       return <PascalTriangle spec={spec} calc={calc} />;
+    case 'termsChart':
+      return <TermsChart spec={spec} calc={calc} />;
     case 'skaters':
       return <Skaters spec={spec} calc={calc} />;
     case 'energyTrack':

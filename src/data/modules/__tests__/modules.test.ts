@@ -439,6 +439,7 @@ function representationVars(r: Representation): string[] {
     case 'normalCurve':
     case 'histogram':
     case 'pascalTriangle':
+    case 'termsChart':
       return hsbSpecVars(r);
   }
 }

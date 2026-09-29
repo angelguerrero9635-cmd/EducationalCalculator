@@ -99,7 +99,28 @@ export interface PascalTriangleSpec {
   expand?: { a: string; b: string };
 }
 
-export type HsbSpec = NormalCurveSpec | HistogramSpec | PascalTriangleSpec;
+/**
+ * The terms of an arithmetic (aₙ = a₁ + (n − 1)d) or geometric (aₙ = a₁ × rⁿ⁻¹) sequence over
+ * n = 1, 2, …, `count` (up to 30), as bars or points, the last one lit. `sums` draws the partial
+ * sums Sₙ as a stepped line; `limit` draws an infinite geometric series' sum S = a₁ ÷ (1 − r)
+ * dashed (when |r| < 1), the partial sums closing in on it. `term`, `sum` and `limit` (as a
+ * variable id) are checked against the rule. No handles: the values have sliders.
+ */
+export interface TermsChartSpec {
+  kind: 'termsChart';
+  type: 'arithmetic' | 'geometric';
+  first: NumOrVar;
+  /** The common difference d, or the common ratio r. */
+  step: NumOrVar;
+  count: NumOrVar;
+  as?: 'bars' | 'points';
+  sums?: boolean;
+  limit?: true | string;
+  term?: string;
+  sum?: string;
+}
+
+export type HsbSpec = NormalCurveSpec | HistogramSpec | PascalTriangleSpec | TermsChartSpec;
 
 /** Every variable id one of these pictures refers to. */
 export function hsbSpecVars(r: HsbSpec): string[] {
@@ -151,5 +172,7 @@ export function hsbSpecVars(r: HsbSpec): string[] {
       );
     case 'pascalTriangle':
       return v(r.n, r.k, r.slots?.r, r.slots?.result);
+    case 'termsChart':
+      return v(r.first, r.step, r.count, r.limit === true ? undefined : r.limit, r.term, r.sum);
   }
 }

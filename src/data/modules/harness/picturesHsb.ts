@@ -6,6 +6,7 @@
 import { histModel } from '@/components/module/reps/histModel';
 import { normalModel, type Span } from '@/components/module/reps/normalModel';
 import { pascalRows, slotsOf } from '@/components/module/reps/pascal';
+import { termsModel } from '@/components/module/reps/termsModel';
 import { binomialPmf, choose, simpson } from '@/components/module/reps/statMath';
 
 import type { NumOrVar } from '../typesGraphs';
@@ -197,6 +198,48 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
         const typed = get(rep.slots.result);
         if (typed !== undefined && r <= n && typed !== s.value)
           out.push(`slots give ${s.value}, but the value is ${typed}`);
+      }
+      break;
+    }
+    case 'termsChart': {
+      const a = get(rep.first);
+      const d = get(rep.step);
+      const n = get(rep.count);
+      if (a === undefined || d === undefined || n === undefined) break;
+      if (n < 1 || n > 30 || !Number.isInteger(n)) out.push(`${n} terms (whole, 1 to 30)`);
+      const m = termsModel(rep, get);
+      if (m.problem) {
+        out.push(`terms chart: ${m.problem}`);
+        break;
+      }
+      const tol = (x: number) => 1e-9 * Math.max(1, Math.abs(x));
+      m.terms.forEach((t, i) => {
+        const want = rep.type === 'arithmetic' ? a + i * d : a * d ** i;
+        if (!near(t, want, tol(want))) out.push(`term ${i + 1} is ${t}, not ${want}`);
+        const s = m.terms.slice(0, i + 1).reduce((x, y) => x + y, 0);
+        if (!near(m.sums[i]!, s, tol(s))) out.push(`partial sum ${i + 1} is ${m.sums[i]}`);
+      });
+      const last = m.terms[m.terms.length - 1]!;
+      const typed = get(rep.term);
+      if (typed !== undefined && !near(typed, last, 1e-6 * Math.max(1, Math.abs(last))))
+        out.push(`term ${typed} is not the last term drawn, ${last}`);
+      const S = get(rep.sum);
+      const Sn = m.sums[m.sums.length - 1]!;
+      if (S !== undefined && !near(S, Sn, 1e-6 * Math.max(1, Math.abs(Sn))))
+        out.push(`sum ${S} is not the partial sum drawn, ${Sn}`);
+      const lim = typeof rep.limit === 'string' ? get(rep.limit) : undefined;
+      if (
+        lim !== undefined &&
+        m.limit !== undefined &&
+        !near(lim, m.limit, 1e-6 * Math.max(1, Math.abs(lim)))
+      )
+        out.push(`S ${lim} is not a₁ ÷ (1 − r) = ${m.limit}`);
+      // The partial sums close in on the limit: |S − Sₙ| = |a rⁿ ÷ (1 − r)|.
+      if (m.limit !== undefined) {
+        const gap = Math.abs(m.limit - Sn);
+        const want = Math.abs((a * d ** m.terms.length) / (1 - d));
+        if (!near(gap, want, 1e-9 * Math.max(1, Math.abs(m.limit))))
+          out.push(`gap to S is ${gap}, not ${want}`);
       }
       break;
     }
