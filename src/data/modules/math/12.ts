@@ -2821,7 +2821,7 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
     assumptions: [
       'sin(A/2) = ±√((1 − cos A) ÷ 2) and cos(A/2) = ±√((1 + cos A) ÷ 2).',
       'The signs come from the quadrant of A/2, not of A: the sine is positive in I and II, the cosine in I and IV.',
-      'For A from 0° to 360°, A/2 is from 0° to 180°: quadrant I or II.',
+      'For A from 0° to 360°, A/2 is in quadrant I or II; a larger or negative A can put it in III or IV.',
     ],
     variables: [
       unitValue('c', 'c', 'cos A'),
