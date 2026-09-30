@@ -2,7 +2,14 @@
  * Grade 9 science layout pages (explore, sort, sequence, observe), by skill in taxonomy order.
  * The calculators are in `../science/9.ts`. Data only: no UI code.
  */
+import type { DivisionStage } from '../typesHsg';
 import type { LayoutDef } from './types';
+
+/** A stage card: its name and the cell drawn at that stage, 2n = 4. */
+const division = (label: string, stage: DivisionStage) => ({
+  label,
+  figure: { kind: 'cellDivision' as const, stage, diploid: 4 },
+});
 
 const INHERITANCE: LayoutDef[] = [
   // ── Mendelian and non-Mendelian inheritance (HS-LS3-2, HS-LS3-3) ──
@@ -480,9 +487,118 @@ const MEMBRANE: LayoutDef[] = [
   },
 ];
 
+const DIVISION: LayoutDef[] = [
+  // ── The cell cycle, mitosis and meiosis (HS-LS1-4, HS-LS3-2) ──
+  {
+    kind: 'sequence',
+    id: 's.9.mitosis-meiosis',
+    assumptions: [
+      'DNA is copied in interphase, so each chromosome enters mitosis as two sister chromatids.',
+      'This cell has 2n = 4 chromosomes: two pairs, one of each pair from each parent (red and blue).',
+      'The two daughter cells match the parent cell: 4 chromosomes each.',
+    ],
+    question: 'Put the stages of mitosis in order, from interphase.',
+    stages: [
+      division('Interphase', 'interphase'),
+      division('Prophase', 'prophase'),
+      division('Metaphase', 'metaphase'),
+      division('Anaphase', 'anaphase'),
+      division('Telophase', 'telophase'),
+      division('Cytokinesis', 'cytokinesis'),
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.mitosis-meiosis~cell-cycle',
+    title: 'The cell cycle and how long each phase takes',
+    use: 'Use this for “In which phase of the cell cycle is DNA replicated?”',
+    assumptions: [
+      'Interphase is G1, S and G2: the cell spends most of its life there, growing and copying its DNA.',
+      'The times are typical for a human cell dividing in a dish, and they vary from cell to cell.',
+    ],
+    question: 'Put the phases of the cell cycle in order.',
+    stages: [
+      { label: 'G1: the cell grows', span: 11 },
+      { label: 'S: the DNA is replicated', span: 8 },
+      { label: 'G2: the copies are checked', span: 4 },
+      { label: 'M: mitosis and cytokinesis', span: 1 },
+    ],
+    unit: 'hours',
+    totalLabel: 'One cycle of a dividing human cell',
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.mitosis-meiosis~meiosis',
+    title: 'Meiosis I and II',
+    use: 'Use this for “What are the final products of meiosis?”',
+    assumptions: [
+      'Homologous chromosomes pair up and cross over in prophase I, swapping pieces.',
+      'Anaphase I separates the homologs; anaphase II separates the sister chromatids.',
+      'The result is four haploid cells, n = 2, and no two alike.',
+    ],
+    question: 'Put the stages of meiosis in order, from interphase.',
+    stages: [
+      division('Interphase', 'interphase'),
+      division('Prophase I', 'prophase I'),
+      division('Metaphase I', 'metaphase I'),
+      division('Anaphase I', 'anaphase I'),
+      division('Telophase I', 'telophase I'),
+      division('Prophase II', 'prophase II'),
+      division('Metaphase II', 'metaphase II'),
+      division('Anaphase II', 'anaphase II'),
+      division('Telophase II', 'telophase II'),
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.mitosis-meiosis~compare',
+    title: 'Mitosis, meiosis or both?',
+    use: 'Use this for “Why do offspring from sexual reproduction vary more than those from mitosis?”',
+    assumptions: [
+      'Mitosis copies a body cell; meiosis makes gametes with half the chromosomes.',
+      'Crossing over and the random sorting of homologs make every gamete different, so sexual reproduction adds variation.',
+    ],
+    question: 'Does it happen in mitosis, meiosis or both?',
+    bins: [
+      { id: 'mitosis', label: 'Mitosis', why: 'One division: two cells identical to the parent.' },
+      {
+        id: 'meiosis',
+        label: 'Meiosis',
+        why: 'Two divisions: four haploid gametes, each different.',
+      },
+      {
+        id: 'both',
+        label: 'Both',
+        why: 'Each starts from copied chromosomes and pulls sisters apart.',
+      },
+    ],
+    cards: [
+      { label: 'Makes 2 identical cells', bin: 'mitosis' },
+      { label: 'Body growth and wound repair', bin: 'mitosis' },
+      { label: 'Daughter cells are diploid', bin: 'mitosis' },
+      { label: 'Makes 4 cells with half the chromosomes', bin: 'meiosis' },
+      {
+        label: 'Homologous chromosomes pair and cross over',
+        bin: 'meiosis',
+        figure: { kind: 'cellDivision', stage: 'prophase I', diploid: 4 },
+      },
+      { label: 'Makes eggs and sperm', bin: 'meiosis' },
+      { label: 'Two divisions in a row', bin: 'meiosis' },
+      { label: 'Gametes differ from one another', bin: 'meiosis' },
+      { label: 'DNA is copied beforehand', bin: 'both' },
+      {
+        label: 'Sister chromatids separate',
+        bin: 'both',
+        figure: { kind: 'cellDivision', stage: 'anaphase', diploid: 4 },
+      },
+    ],
+  },
+];
+
 export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
   ...POPULATION,
   ...MEMBRANE,
+  ...DIVISION,
 ];

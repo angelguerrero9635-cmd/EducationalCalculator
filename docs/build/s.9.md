@@ -12,8 +12,14 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   ~limiting-factors sort; ~growth-phases sequence).
 - `s.9.membrane-transport`: 4 (main diffusion and ~pump calculators; ~transport-types and
   ~tonicity sorts).
+- `s.9.mitosis-meiosis`: 4 (main mitosis sequence; ~cell-cycle and ~meiosis sequences; ~compare
+  sort).
 
 ## Waiting
+
+- `s.9.mitosis-meiosis~chromosome-count` (calculator): Engine need 3, `cellDivision` as a
+  calculator picture with `diploid` from a value (2–8 drawn, past 8 one pair and the count).
+  Allowed [2, 4, 6] would hide the human 2n = 46 case the page is for.
 
 ## Changed from the plan
 
