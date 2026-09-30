@@ -139,4 +139,92 @@ const DNA: ModuleDef[] = [
 
 export const HS3D_GALLERY_MODULES: ModuleDef[] = [...DNA];
 
-export const HS3D_GALLERY_LAYOUTS: LayoutDef[] = [];
+// ─── Part 2: `gel` as an explore figure (s.9.biotechnology~fingerprint) ───────────────
+
+const FINGERPRINT: LayoutDef = {
+  kind: 'explore',
+  id: 'g.s9-biotechnology-fingerprint',
+  title: 'DNA fingerprinting',
+  use: 'Use this for “Which suspect’s DNA matches the evidence?” or “Could this man be the father?”',
+  assumptions: [
+    'Restriction enzymes cut DNA at set sequences; the lengths of the pieces differ from person to person.',
+    'Only identical twins share every band; a child gets each band from the mother or the father.',
+    'The pieces run through a gel toward +, the shorter ones farther.',
+  ],
+  figure: {
+    kind: 'gel',
+    ladder: [10000, 5000, 2000, 1000, 500, 250],
+    lanes: [
+      { label: 'Evidence', bands: [8200, 4100, 2300, 900] },
+      { label: 'Suspect 1', bands: [7000, 4100, 1600, 600] },
+      { label: 'Suspect 2', bands: [8200, 4100, 2300, 900] },
+      { label: 'Suspect 3', bands: [9000, 3000, 2300, 450] },
+      { label: 'Mother', bands: [6500, 3600, 1800, 700] },
+      { label: 'Child', bands: [6500, 2800, 1800, 400] },
+      { label: 'Man A', bands: [5200, 2800, 1200, 400] },
+      { label: 'Man B', bands: [5200, 3200, 1100, 550] },
+    ],
+  },
+  scenes: [
+    {
+      label: 'The gel',
+      lines: [
+        'DNA from blood at the scene and from three suspects is cut by the same enzyme and run side by side.',
+        'The ladder’s pieces of known length give the scale.',
+      ],
+      gel: { lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'] },
+    },
+    {
+      label: 'Compare',
+      lines: [
+        'Dashed lines carry the evidence’s bands across the gel.',
+        'Suspects 1 and 3 share one band each with it: many people share a band or two, so that is not a match.',
+      ],
+      gel: {
+        lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'],
+        lit: ['Suspect 1', 'Suspect 2', 'Suspect 3'],
+        compare: 'Evidence',
+      },
+    },
+    {
+      label: 'A match',
+      lines: [
+        'Suspect 2 matches the evidence in every band.',
+        'Real tests compare 20 or so places in the DNA, so a full match is very unlikely by chance.',
+      ],
+      gel: {
+        lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'],
+        lit: ['Suspect 2'],
+        compare: 'Evidence',
+      },
+    },
+    {
+      label: 'A family',
+      lines: [
+        'The child’s bands that match the mother are red; the rest must come from the father.',
+        'Man A has both of the others, in blue, so he could be the father.',
+      ],
+      gel: {
+        lanes: ['Mother', 'Child', 'Man A', 'Man B'],
+        lit: ['Child'],
+        compare: 'Child',
+        parents: ['Mother', 'Man A'],
+      },
+    },
+    {
+      label: 'Ruled out',
+      lines: [
+        'Two of the child’s bands are in neither the mother nor Man B.',
+        'So Man B is ruled out as the father, whatever bands he shares with Man A.',
+      ],
+      gel: {
+        lanes: ['Mother', 'Child', 'Man A', 'Man B'],
+        lit: ['Child'],
+        compare: 'Child',
+        parents: ['Mother', 'Man B'],
+      },
+    },
+  ],
+};
+
+export const HS3D_GALLERY_LAYOUTS: LayoutDef[] = [FINGERPRINT];

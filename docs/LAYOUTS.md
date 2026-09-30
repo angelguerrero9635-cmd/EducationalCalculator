@@ -76,6 +76,11 @@ Also H100 (`layouts/dichotomousKeyFigure.tsx`): `dichotomousKey`, `{ kind: 'dich
 `steps: { question, yes, no }[]` (an answer is the next question's index or a name), drawn as a
 tree down the page, each question's Yes then No indented under it; a scene's `key: { specimen?,
 step? }` traces one name's path (answers lit, the name filled) or rings one question.
+H109 (`layouts/gelFigure.tsx`): `gel`, `{ kind: 'gel', lanes: { label, bands }[], ladder? }`, a
+painted gel of fixed samples (up to 8 lanes, 6 a scene) on one log scale; a scene's `gel: { lanes?,
+lit?, compare?, parents? }` picks and rings lanes, carries the compared lane's bands across as
+dashed lines (matching bands lit, counted in the caption) or, with `parents: [mother, father]`,
+colors each of the child's bands by its parent and rings one from neither ("ruled out").
 
 Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,

@@ -9,6 +9,7 @@ import type { LayoutDef } from '../layouts';
 import { studyFigureIssues } from './layoutFiguresHsb';
 import { hs2bFigureIssues } from './layoutFiguresHs2b';
 import { hs2eFigureIssues } from './layoutFiguresHs2e';
+import { hs3dFigureIssues } from './layoutFiguresHs3d';
 import { hsgFigureIssues } from './layoutFiguresHsg';
 import { hshFigureIssues } from './layoutFiguresHsh';
 import { galvanicFigureIssues } from './layoutFiguresHsj';
@@ -89,6 +90,7 @@ export function layoutFigureIssues(l: LayoutDef): string[] {
   }
   out.push(...studyFigureIssues(l));
   out.push(...hsgFigureIssues(l), ...hs2bFigureIssues(l), ...hs2eFigureIssues(l));
+  out.push(...hs3dFigureIssues(l));
   out.push(...hshFigureIssues(l));
   out.push(...galvanicFigureIssues(l));
   out.push(...hslFigureIssues(l));

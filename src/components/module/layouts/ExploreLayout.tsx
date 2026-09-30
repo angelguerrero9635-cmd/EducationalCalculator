@@ -41,6 +41,7 @@ import { CellFigure, Particles } from './figuresR4h';
 import { ConeFigure } from './coneFigure';
 import { MacroFigure } from './macroFigure';
 import { OrganelleFigure } from './organelleFigure';
+import { GelFigure } from './gelFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -214,6 +215,8 @@ function FigureView({
       return <GeneExpressionFigure gene={scene.gene ?? { control: 'repressor' }} />;
     case 'dichotomousKey':
       return <DichotomousKeyFigure steps={figure.steps} scene={scene.key ?? {}} />;
+    case 'gel':
+      return <GelFigure figure={figure} scene={scene.gel ?? {}} />;
   }
 }
 

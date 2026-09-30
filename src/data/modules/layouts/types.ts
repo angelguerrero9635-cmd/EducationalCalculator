@@ -21,6 +21,7 @@ import type {
 } from '../typesHsl';
 import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
+import type { GelScene, Hs3dFigure } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
 
@@ -272,6 +273,8 @@ export type Figure =
   | HslFigure
   /** Earth and space round 2, group H2F (`typesHs2f.ts`): spectra side by side. */
   | Hs2fFigure
+  /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
+  | Hs3dFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
@@ -544,6 +547,8 @@ export interface Scene {
   gene?: GeneScene;
   /** The name traced and the question ringed (a `dichotomousKey` figure; `typesHs2e.ts`). */
   key?: KeyScene;
+  /** The lanes shown, ringed and compared (a `gel` figure; `typesHs3d.ts`, H109). */
+  gel?: GelScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**
