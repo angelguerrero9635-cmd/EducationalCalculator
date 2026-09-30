@@ -185,6 +185,30 @@ potentials as `allowed`, a limit that the cathode is higher, a line naming the c
 
 Now 90 pages: 68 calculators, 22 layouts.
 
+### Lesson review of the added skills
+
+Report: `.review/new-sci/lesson-report.md`. Fixed:
+
+- Phase-colligative main: a dilute-solution assumption; b to 6 mol/kg, ΔTf to 35, Tf from −35,
+  ΔTb to 10, Tb to 110 °C (no −111 °C freezing points); g (grams) and M (g/mol) with n = g ÷ M,
+  opening on g, M, w, i, so molality from grams and a molar mass from ΔT both solve; i may be 4
+  (FeCl₃). Example: 27.75 g of CaCl₂ (111 g/mol) = 0.25 mol.
+- ~vapor-pressure: a limit that x is at least 0.5 ("Raoult’s law is for solutions that are
+  mostly water"; a limit rather than `min`, so the reason shows); the assumption "dilute and
+  ideal"; ΔP = n₂/n × P° ahead of ΔP = P° − P, so the forward solve no longer subtracts
+  near-equal rounded values; the use line has numbers.
+- ~boiling-point: the Lowers bin says food cooks more slowly (NAEP-2005-12S13-#6).
+- Entropy main and ~crossover: the middle line is back ("ΔG = 50 − 60", "T = 60,000/150") and the
+  verdict is a note after the answer; the ~crossover how is rewritten; Tc to 10,000 K; ΔH ±10,000
+  kJ/mol (octane and sucrose combustion), ΔG ±40,000 to match.
+- New page `s.10.entropy-free-energy~from-tables` "ΔS° from a table, then ΔG°" (`integerLine`
+  from S°reactants to S°products): ΔS° = S°p − S°r, then ΔG° = ΔH° − TΔS°. Changed from the
+  report: the ΔG°f sums (ΔG° = ΔG°f p − ΔG°f r) would be a second, unconnected pair on the page
+  (the modules test asks for one connected lesson), so the assumptions say ΔG°f subtracts the
+  same way and the page links ΔS° to ΔG° through ΔH° instead.
+- Waiting: `s.10.phase-colligative~phase-diagram` (explore) on the H108 phase-diagram figure
+  (P20, open).
+
 ## Shared needs (lesson review)
 
 1. **Tracker, `pictureRequestsHs.ts` H49:** lists `s.10.reaction-types~combustion`, which now
