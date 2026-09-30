@@ -42,6 +42,38 @@ and each strand's skills sit together within a grade.
 6. **Layout kinds are not a taxonomy field.** Sorts, sequences, explorations and observations
    are marked by the page data (`src/data/modules/layouts/`), not the skill row.
 
+7. **Grades 9–12: topics the textbooks teach that no skill holds (from the eight direction plans,
+   `docs/plans/`).** Logged for the owner, to add after Grades 9–12 are built; the builders plan
+   no pages for them.
+   - **Math:**
+     - density and modeling with solids (G-MG.2);
+     - proof by induction;
+     - symmetry counting (patterns up to rotation);
+     - linear transformations as matrices;
+     - 3-D vectors and the cross product;
+     - rotation of axes and polar conics;
+     - the area problem and limits of sequences;
+     - inference for regression, ANOVA and the F distribution;
+     - partial fractions.
+   - **Math, taught but held by another skill's title:** average rate of change (under
+     m.9.function-notation); parallel and perpendicular lines (m.9.linear-modeling,
+     m.10.parallel-lines); rational and irrational sums (m.9.radicals); the zero-product property
+     (m.9.quadratic-formula); sum and difference of cubes (m.11.polynomial-equations).
+   - **Biology:** reproduction and development (NAEP-2005-12S14-#13 has no skill); plants;
+     nervous and sensory systems; cell-cycle control and cancer; biomes.
+   - **Chemistry:** predicting products; vapor pressure and boiling point (NAEP-2005-12S13-#6);
+     colligative properties; electrolysis and corrosion; polymers; entropy and free energy.
+   - **Physics:** electric potential and capacitors; simple harmonic motion; torque and rotation;
+     which skill owns E = mc² (modern physics or nuclear chemistry). Kepler's laws are taught in
+     Grade 11 but sit in s.12.solar-system (a Refresh link for now).
+   - **Earth and space:** engineering tradeoffs for human impacts (3 NAEP items) and experimental
+     design (1); parallax and distances; black holes; the Milky Way; the interstellar medium;
+     quasars; life in the universe; exoplanet detection; early Earth's atmosphere.
+   - **Crosswalk:** Tarbuck 13 (the ocean floor) should also map to s.12.ocean-atmosphere, and
+     m.10.circle-equations to Big Ideas 10.7 and IM 6.4–6.6.
+   - **Question data:** 45 released questions were refiled to the skill that teaches them, from
+     the plans' lists (`research/questions`, COVERAGE.md regenerated).
+
 ## Resolved
 
 ### Each college course in one field
