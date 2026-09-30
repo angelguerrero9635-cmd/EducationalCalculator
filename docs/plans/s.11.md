@@ -546,13 +546,13 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   torque); Glencoe 8 (Rotational Motion; titles only).
 - **Tests ask:** no released items. Common types:
 
-  | Question type                                      | Page                    | Mark   |
-  | -------------------------------------------------- | ----------------------- | ------ |
-  | torque from a force at an angle on a wrench, door  | main                    | Solves |
-  | where to sit to balance a seesaw; the pivot's push | ~seesaw                 | Solves |
-  | rpm to rad/s, rim speed of a wheel                 | ~angular-speed          | Solves |
-  | a wheel speeding up: ω, angle turned, turns        | ~angular-acceleration   | Solves |
-  | τ = Iα for a hoop, disk or sphere                  | ~rotational-inertia     | Solves |
+  | Question type                                      | Page                  | Mark   |
+  | -------------------------------------------------- | --------------------- | ------ |
+  | torque from a force at an angle on a wrench, door  | main                  | Solves |
+  | where to sit to balance a seesaw; the pivot's push | ~seesaw               | Solves |
+  | rpm to rad/s, rim speed of a wheel                 | ~angular-speed        | Solves |
+  | a wheel speeding up: ω, angle turned, turns        | ~angular-acceleration | Solves |
+  | τ = Iα for a hoop, disk or sphere                  | ~rotational-inertia   | Solves |
 
 - **Main — BUILD `s.11.rotation`:** `vectorDiagram`, one force by size and direction with
   `components: true`, the lever arm along the x-axis (axes "along the arm", "across the arm", unit
@@ -597,7 +597,7 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   | ---------------------------------------------- | --------- | ------ |
   | period and frequency of a mass on a spring     | main      | Solves |
   | amplitude, top speed, energy of the oscillator | main      | Solves |
-  | spring constant from a hung mass; energy      | ~hooke    | Solves |
+  | spring constant from a hung mass; energy       | ~hooke    | Solves |
   | pendulum length for a period; on the Moon      | ~pendulum | Solves |
 
 - **Main — BUILD `s.11.oscillations`:** `functionGraph` cos, x = A cos(ωt), time from 0, marks
@@ -626,13 +626,13 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   Savvas Experience 10.1 (electric potential); Glencoe 21 (Electric Fields; titles only).
 - **Tests ask:** no released items. Common types:
 
-  | Question type                                        | Page              | Mark   |
-  | ---------------------------------------------------- | ----------------- | ------ |
-  | potential near a point charge; energy of a 2nd charge | main              | Solves |
-  | energy (eV, J) and speed of an electron through ΔV    | ~voltage-energy   | Solves |
-  | charge and energy on a capacitor                      | ~capacitor        | Solves |
-  | capacitance of two plates, with a dielectric          | ~parallel-plate   | Solves |
-  | field between plates, E = V/d                         | electrostatics~plates (⏳ need 10) | — |
+  | Question type                                         | Page                               | Mark   |
+  | ----------------------------------------------------- | ---------------------------------- | ------ |
+  | potential near a point charge; energy of a 2nd charge | main                               | Solves |
+  | energy (eV, J) and speed of an electron through ΔV    | ~voltage-energy                    | Solves |
+  | charge and energy on a capacitor                      | ~capacitor                         | Solves |
+  | capacitance of two plates, with a dielectric          | ~parallel-plate                    | Solves |
+  | field between plates, E = V/d                         | electrostatics~plates (⏳ need 10) | —      |
 
 - **Main — BUILD `s.11.electric-potential`:** `charges` one charge at r (the `~field` picture).
   Values: charge q (μC), distance r (m), potential V (V), second charge q₀ (μC), its potential

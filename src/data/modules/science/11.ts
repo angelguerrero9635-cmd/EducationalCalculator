@@ -4557,6 +4557,13 @@ const periodRule = (sym: string, a: string, b: string, hows: [string, string, st
     },
   );
 
+/** `periodRule` with the square root worked out first on the step for T. */
+const periodWithWork = (sym: string, a: string, b: string, hows: [string, string, string]) =>
+  withWork(periodRule(sym, a, b, hows), 'T', (v) => {
+    const x = v[a]! / v[b]!;
+    return [`√(${sci(x)}) = ${sci(Math.sqrt(x))}`];
+  });
+
 /** f = 1/T. */
 const frequencyRule = rule('f = 1/T', '{f} = 1/{T}', (v) => v.f! * v.T! - 1, {
   f: [(v) => div(1, v.T!), '1/{T}', 'The frequency is how many swings fit in one second.'],
@@ -4590,7 +4597,7 @@ const oscillationPages: ModuleDef[] = [
         q('E', 'E', 'Energy', 'J', 0, 1e8, 0.0001),
       ],
       ...rules(
-        periodRule('T = 2π√(m/k)', 'm', 'k', [
+        periodWithWork('T = 2π√(m/k)', 'm', 'k', [
           'A heavier mass swings more slowly; a stiffer spring, faster.',
           'Undo the square root: square T ÷ 2π, then multiply by k.',
           'Undo the square root: square T ÷ 2π, then divide the mass by it.',
@@ -4715,7 +4722,7 @@ const oscillationPages: ModuleDef[] = [
         FREQUENCY,
       ],
       ...rules(
-        periodRule('T = 2π√(L/g)', 'L', 'g', [
+        periodWithWork('T = 2π√(L/g)', 'L', 'g', [
           'A longer string swings more slowly; stronger gravity, faster.',
           'Undo the square root: square T ÷ 2π, then multiply by g.',
           'Undo the square root: square T ÷ 2π, then divide the length by it.',
@@ -4736,6 +4743,267 @@ const oscillationPages: ModuleDef[] = [
   })(),
 ];
 
+// ─── s.11.electric-potential ────────────────────────────────────────────────
+
+/** The charge of one electron or proton, C (also the joules in 1 eV). */
+const E_CHARGE = 1.602e-19;
+
+const potentialPages: ModuleDef[] = [
+  (() => {
+    const [a, r, t] = [4, 0.5, 2];
+    const V = (8.99e3 * a) / r;
+    return {
+      id: 's.11.electric-potential',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Potential V is energy per coulomb, counted from far away, where V = 0: V = kq/r.',
+        'V takes the charge’s sign and has no direction, so potentials add as plain numbers.',
+        'A second charge there has potential energy U = q₀V: like charges give U > 0, the work done to push them together.',
+      ],
+      variables: [
+        charge('a', 'q', 'Charge'),
+        q('r', 'r', 'Distance', 'm', 0.001, 100, 0.001),
+        q('V', 'V', 'Potential', 'V', -1e13, 1e13, 0.01, { scientific: true }),
+        charge('t', 'q₀', 'Second charge'),
+        q('U', 'U', 'Potential energy', 'J', -1e10, 1e10, 0.0001),
+      ],
+      ...rules(
+        withWork(
+          rule(
+            'V = kq/r',
+            '{V} = 8.99 × 10⁹ × {a} × 10⁻⁶/{r}',
+            (v) => v.V! * v.r! - 8.99e3 * v.a!,
+            {
+              V: [
+                (v) => div(8.99e3 * v.a!, v.r!),
+                '8.99 × 10⁹ × {a} × 10⁻⁶/{r}',
+                'k = 8.99 × 10⁹ N·m²/C² times the charge in coulombs, over r (not r²).',
+              ],
+              a: [(v) => (v.V! * v.r!) / 8.99e3, '{V} × {r}/(8.99 × 10³)', 'Solve for the charge.'],
+              r: [
+                (v) => {
+                  const x = div(8.99e3 * v.a!, v.V!);
+                  return x === undefined || x <= 0 ? undefined : x;
+                },
+                '8.99 × 10⁹ × {a} × 10⁻⁶/{V}',
+                'Swap r and V: kq over the potential.',
+              ],
+            },
+          ),
+          'V',
+          (v) => [`q = ${sci(v.a!)} μC = ${sci(v.a! * 1e-6)} C`],
+        ),
+        rule('U = q₀V', '{U} = {t} × 10⁻⁶ × {V}', (v) => v.U! - v.t! * 1e-6 * v.V!, {
+          U: [
+            (v) => v.t! * 1e-6 * v.V!,
+            '{t} × 10⁻⁶ × {V}',
+            'The potential is joules per coulomb: times the second charge in coulombs.',
+          ],
+          t: [
+            (v) => div(v.U!, 1e-6 * v.V!),
+            '{U}/({V} × 10⁻⁶)',
+            'Divide the energy by the potential.',
+          ],
+          V: [
+            (v) => div(v.U!, v.t! * 1e-6),
+            '{U}/({t} × 10⁻⁶)',
+            'The potential is the energy on each coulomb of the second charge.',
+          ],
+        }),
+      ),
+      example: { a, r, V, t, U: t * 1e-6 * V },
+      startWith: ['a', 'r', 't'],
+      representation: { kind: 'charges', charges: ['a'], distance: 'r' },
+      pictureLabels: ['V', 't', 'U'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [n, V, m] = [1, 100, 9.109e-31];
+    return {
+      id: 's.11.electric-potential~voltage-energy',
+      title: 'Speeding a charge through a voltage',
+      use: 'Use this for “An electron starts at rest and crosses a 100 V potential difference. How much energy does it gain, in eV and in joules, and how fast does it go?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'It starts at rest and only the electric force does work on it: K = qΔV.',
+        '1 eV is the energy one electron charge gains through 1 V: 1 eV = 1.602 × 10⁻¹⁹ J.',
+        'Electron 9.109 × 10⁻³¹ kg, proton 1.673 × 10⁻²⁷ kg; speeds past a tenth of light’s need relativity.',
+      ],
+      variables: [
+        q('q', 'q', 'Charge', 'e', 1, 10, 1, { integer: true }),
+        q('V', 'ΔV', 'Potential difference', 'V', 0.001, 1e6, 0.001),
+        q('K', 'K', 'Energy gained', 'eV', 0.001, 1e7, 0.001),
+        q('m', 'm', 'Mass', 'kg', 9.109e-31, 1.673e-27, 1e-34, {
+          scientific: true,
+          allowed: [9.109e-31, 1.673e-27],
+        }),
+        q('v', 'v', 'Speed', 'm/s', 0, 3e7, 1, { scientific: true, units: ['m/s'] }),
+      ],
+      ...rules(
+        product('K', 'q', 'V', 'K = qΔV', [
+          'Each electron charge gains 1 eV for every volt it crosses.',
+          'Divide the energy by the potential difference.',
+          'Divide the energy by the charge.',
+        ]),
+        withWork(
+          rule(
+            'v = √(2K/m)',
+            `{v} = √(2 × {K} × 1.602 × 10⁻¹⁹/{m})`,
+            (v) => (v.K! >= 0 && v.m! > 0 ? v.v! - Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : 1),
+            {
+              v: [
+                (v) =>
+                  v.K! >= 0 && v.m! > 0 ? Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : undefined,
+                '√(2 × {K} × 1.602 × 10⁻¹⁹/{m})',
+                'Change eV to joules, then solve K = ½mv² for v.',
+              ],
+              K: [
+                (v) => (v.m! * v.v! * v.v!) / (2 * E_CHARGE),
+                '{m} × {v}²/(2 × 1.602 × 10⁻¹⁹)',
+                'K = ½mv² in joules, then divide by 1.602 × 10⁻¹⁹ J for each eV.',
+              ],
+              m: null,
+            },
+          ),
+          'v',
+          (v) => [`K = ${sci(v.K!)} eV × 1.602 × 10⁻¹⁹ = ${sci(v.K! * E_CHARGE)} J`],
+        ),
+      ),
+      example: { q: n, V, K: n * V, m, v: Math.sqrt((2 * n * V * E_CHARGE) / m) },
+      startWith: ['V', 'q', 'm'],
+      representation: {
+        kind: 'table',
+        sweep: 'V',
+        output: 'v',
+        params: ['q', 'm'],
+        rows: [1, 10, 100, 1000],
+      },
+      pictureLabels: ['K'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [C, V] = [470, 9];
+    return {
+      id: 's.11.electric-potential~capacitor',
+      title: 'Charge and energy on a capacitor',
+      use: 'Use this for “A 470 μF capacitor is charged to 9 V. How much charge does it hold, and how much energy does it store?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Q is the charge on each plate, +Q on one and −Q on the other: Q = CV.',
+        'The energy is stored in the field between the plates: U = ½CV², so twice the voltage stores four times the energy.',
+        '1 μF = 10⁻⁶ F, so μF × V gives μC.',
+      ],
+      variables: [
+        q('C', 'C', 'Capacitance', 'μF', 0.001, 1e6, 0.001),
+        q('V', 'V', 'Voltage', 'V', 0.001, 1e5, 0.001),
+        q('Q', 'Q', 'Charge', 'μC', 0, 1e11, 0.001),
+        q('U', 'U', 'Stored energy', 'J', 0, 1e10, 0.000001),
+      ],
+      ...rules(
+        product('Q', 'C', 'V', 'Q = CV', [
+          'Each volt puts C more microcoulombs on each plate.',
+          'Divide the charge by the voltage.',
+          'Divide the charge by the capacitance.',
+        ]),
+        rule('U = ½CV²', '{U} = ½ × {C} × 10⁻⁶ × {V}²', (v) => v.U! - 0.5e-6 * v.C! * v.V! * v.V!, {
+          U: [
+            (v) => 0.5e-6 * v.C! * v.V! * v.V!,
+            '½ × {C} × 10⁻⁶ × {V}²',
+            'Half the capacitance in farads times the voltage squared.',
+          ],
+          C: [
+            (v) => div(v.U!, 0.5e-6 * v.V! * v.V!),
+            '2 × {U}/({V}² × 10⁻⁶)',
+            'Double the energy and divide by V², in microfarads.',
+          ],
+          V: [
+            (v) => (v.U! >= 0 && v.C! > 0 ? Math.sqrt(v.U! / (0.5e-6 * v.C!)) : undefined),
+            '√(2 × {U}/({C} × 10⁻⁶))',
+            'Double the energy, divide by C in farads, take the square root.',
+          ],
+        }),
+      ),
+      example: { C, V, Q: C * V, U: 0.5e-6 * C * V * V },
+      startWith: ['C', 'V'],
+      representation: {
+        kind: 'table',
+        sweep: 'V',
+        output: 'U',
+        params: ['C'],
+        rows: [3, 6, 9, 12],
+      },
+      pictureLabels: ['Q'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [k, A, d, V] = [1, 0.01, 1, 12];
+    const C = (8.85 * k * A) / (d * 1e-3);
+    return {
+      id: 's.11.electric-potential~parallel-plate',
+      title: 'A parallel-plate capacitor',
+      use: 'Use this for “Two 0.01 m² plates sit 1 mm apart in air. What is the capacitance, and what charge does 12 V put on it?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The gap is small next to the plates, so the field between them is even: C = κε₀A/d.',
+        'ε₀ = 8.85 × 10⁻¹² F/m, which is 8.85 pF/m; κ = 1 for air, and an insulator between the plates raises C κ times.',
+        'Bigger plates or a smaller gap hold more charge at the same voltage.',
+      ],
+      variables: [
+        q('k', 'κ', 'Dielectric constant', undefined, 1, 100, 0.1),
+        q('A', 'A', 'Plate area', 'm²', 0.000001, 100, 0.000001, { units: ['m²'] }),
+        q('d', 'd', 'Gap', 'mm', 0.001, 1000, 0.001, { units: ['mm'] }),
+        q('C', 'C', 'Capacitance', 'pF', 0, 1e12, 0.001),
+        q('V', 'V', 'Voltage', 'V', 0.001, 1e5, 0.001),
+        q('Q', 'Q', 'Charge', 'pC', 0, 1e17, 0.001),
+      ],
+      ...rules(
+        rule(
+          'C = κε₀A/d',
+          '{C} = {k} × 8.85 × {A}/({d} × 10⁻³)',
+          (v) => v.C! * v.d! * 1e-3 - 8.85 * v.k! * v.A!,
+          {
+            C: [
+              (v) => div(8.85 * v.k! * v.A!, v.d! * 1e-3),
+              '{k} × 8.85 × {A}/({d} × 10⁻³)',
+              'κ times ε₀ = 8.85 pF/m times the area, over the gap in meters.',
+            ],
+            A: [
+              (v) => (v.C! * v.d! * 1e-3) / (8.85 * v.k!),
+              '{C} × {d} × 10⁻³/(8.85 × {k})',
+              'Solve for the area: C times the gap, over κε₀.',
+            ],
+            d: [
+              (v) => div(8.85 * v.k! * v.A!, v.C! * 1e-3),
+              '{k} × 8.85 × {A}/({C} × 10⁻³)',
+              'Swap d and C: κε₀A over the capacitance, in millimeters.',
+            ],
+            k: [
+              (v) => (v.C! * v.d! * 1e-3) / (8.85 * v.A!),
+              '{C} × {d} × 10⁻³/(8.85 × {A})',
+              'How many times the air value the capacitance is.',
+            ],
+          },
+        ),
+        product('Q', 'C', 'V', 'Q = CV', [
+          'Each volt puts C more picocoulombs on each plate.',
+          'Divide the charge by the voltage.',
+          'Divide the charge by the capacitance.',
+        ]),
+      ),
+      example: { k, A, d, C, V, Q: C * V },
+      startWith: ['k', 'A', 'd', 'V'],
+      representation: {
+        kind: 'table',
+        sweep: 'd',
+        output: 'C',
+        params: ['k', 'A'],
+        rows: [0.5, 1, 2, 4],
+      },
+      pictureLabels: ['V', 'Q'],
+    } satisfies ModuleDef;
+  })(),
+];
+
 export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...kinematicsPages,
   ...projectilePages,
@@ -4749,6 +5017,7 @@ export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...soundPages,
   ...opticsPages,
   ...electroPages,
+  ...potentialPages,
   ...circuitPages,
   ...inductionPages,
   ...modernPages,
