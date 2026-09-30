@@ -1518,10 +1518,153 @@ const SPECIAL: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.arc-sector ─────────────────────────────────────────────────────────
+
+const radius = len('r', 'r', 'Radius', 1000, { unit: 'cm' });
+const arcLength = len('s', 's', 'Arc length', 1e4, { unit: 'cm', pi: true });
+const sectorArea = len('A', 'A', 'Sector area', 4e6, { unit: 'cm²', pi: true });
+
+const ARC_SECTOR: ModuleDef[] = [
+  page({
+    id: 'm.10.arc-sector',
+    assumptions: [
+      'A central angle of θ° cuts off θ/360 of the circle.',
+      'The arc is that share of the circumference 2πr; the sector is that share of the area πr².',
+      'An angle over 180° gives a major arc and a sector bigger than half the circle.',
+    ],
+    variables: [radius, deg('t', 'θ', 'Central angle', 0.1, 360), arcLength, sectorArea],
+    rules: [
+      rule(
+        's = θ/360 × 2πr',
+        '{s} = {t} ÷ 360 × 2 × π × {r}',
+        {
+          s: [
+            (v) => (v.t! / 360) * 2 * Math.PI * v.r!,
+            '{t} ÷ 360 × 2 × π × {r}',
+            'The arc is the angle’s share of the whole circumference.',
+          ],
+          t: [
+            (v) => quot(360 * v.s!, 2 * Math.PI * v.r!),
+            '360 × {s} ÷ (2 × π × {r})',
+            'The arc’s share of the circumference, as a share of 360°.',
+          ],
+          r: [
+            (v) => quot(360 * v.s!, 2 * Math.PI * v.t!),
+            '360 × {s} ÷ (2 × π × {t})',
+            'Undo the share of the circumference.',
+          ],
+        },
+        (v) => v.s! - (v.t! / 360) * 2 * Math.PI * v.r!,
+      ),
+      rule(
+        'A = θ/360 × πr²',
+        '{A} = {t} ÷ 360 × π × {r}²',
+        {
+          A: [
+            (v) => (v.t! / 360) * Math.PI * v.r! ** 2,
+            '{t} ÷ 360 × π × {r}²',
+            'The sector is the angle’s share of the whole circle’s area.',
+          ],
+          t: [
+            (v) => quot(360 * v.A!, Math.PI * v.r! ** 2),
+            '360 × {A} ÷ (π × {r}²)',
+            'The sector’s share of the area, as a share of 360°.',
+          ],
+          r: [
+            (v) => root(quot(360 * v.A!, Math.PI * v.t!) ?? NaN),
+            '√(360 × {A} ÷ (π × {t}))',
+            'Undo the share, then the square.',
+          ],
+        },
+        (v) => v.A! - (v.t! / 360) * Math.PI * v.r! ** 2,
+      ),
+    ],
+    example: { r: 6, t: 150, s: 5 * Math.PI, A: 15 * Math.PI },
+    startWith: ['r', 't'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'circle',
+      radius: 'r',
+      extent: 1,
+      sector: { angle: 't', unit: 'degrees', arc: 's', area: 'A' },
+    },
+  }),
+  page({
+    id: 'm.10.arc-sector~radians',
+    title: 'Arc length and sector area in radians',
+    use: 'Use this for “A sector has radius 4 cm and central angle 2.5 radians. Find its arc length and area.”',
+    assumptions: [
+      'One radian is the angle whose arc is one radius long; a full turn is 2π radians, or 360°.',
+      'In radians the arc is s = rθ and the sector’s area is A = r²θ ÷ 2.',
+      'To change radians to degrees, multiply by 180/π.',
+    ],
+    variables: [
+      radius,
+      num('t', 'θ', 'Central angle (radians)', 0.01, 6.28),
+      arcLength,
+      sectorArea,
+      der(deg('d', 'θ°', 'Central angle in degrees', 0, 360)),
+    ],
+    rules: [
+      rule(
+        's = rθ',
+        '{s} = {r} × {t}',
+        {
+          s: [(v) => v.r! * v.t!, '{r} × {t}', 'In radians the arc is the radius times the angle.'],
+          t: [(v) => quot(v.s!, v.r!), '{s} ÷ {r}', 'How many radius-lengths the arc is.'],
+          r: [(v) => quot(v.s!, v.t!), '{s} ÷ {t}', 'Undo multiplying by the angle.'],
+        },
+        (v) => v.s! - v.r! * v.t!,
+      ),
+      rule(
+        'A = r²θ/2',
+        '{A} = {r}² × {t} ÷ 2',
+        {
+          A: [
+            (v) => (v.r! ** 2 * v.t!) / 2,
+            '{r}² × {t} ÷ 2',
+            'The angle’s share of πr²: θ ÷ 2π × πr² is r²θ ÷ 2.',
+          ],
+          t: [
+            (v) => quot(2 * v.A!, v.r! ** 2),
+            '2 × {A} ÷ {r}²',
+            'Undo the halving, then divide by r².',
+          ],
+          r: [
+            (v) => root(quot(2 * v.A!, v.t!) ?? NaN),
+            '√(2 × {A} ÷ {t})',
+            'Undo the halving and the angle, then the square.',
+          ],
+        },
+        (v) => v.A! - (v.r! ** 2 * v.t!) / 2,
+      ),
+      derive(
+        'θ° = θ × 180/π',
+        '{d} = {t} × 180 ÷ π',
+        'd',
+        (v) => (v.t! * 180) / Math.PI,
+        '{t} × 180 ÷ π',
+        'π radians is 180°.',
+      ),
+    ],
+    example: { r: 4, t: 2.5, s: 10, A: 20, d: 450 / Math.PI },
+    startWith: ['r', 't'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'circle',
+      radius: 'r',
+      extent: 1,
+      views: ['radian', 'sector'],
+      sector: { angle: 't', unit: 'radians', arc: 's', area: 'A' },
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...SIMILARITY,
   ...SPECIAL,
   ...TRIG,
   ...COORDINATES,
+  ...ARC_SECTOR,
   ...CONDITIONAL,
 ];
