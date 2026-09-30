@@ -96,6 +96,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | `lewisStructure`   | electron dots: molecules, ions, ionic transfer, metals, hydrocarbons  | Chemistry bonding, organic (H47)    |
 | `vsepr`            | ball-and-stick VSEPR shapes, bond angle, dipoles; hydrogen bonds      | Chemistry molecular shape (H48)     |
 | `moleMap`          | grams, moles, particles, liters at STP; each factor; a mole ratio     | Chemistry mole, stoichiometry (H50) |
+| `gasPiston`        | gas under a piston: particles by n, trails ∝ √T, a gauge and scale    | Grade 10 gas laws (H51)             |
+| `energyProfile`    | reaction energy: levels, Eₐ hump, ΔH, catalyst dashed; calorimeter    | Grade 10 thermochemistry (H53)      |
+| `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift       | Grade 10 equilibrium (H54)          |
+| `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve           | Grade 10 acids and bases (H55)      |
+| `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced   | Grades 10, 12 nuclear, dating (H57) |
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
@@ -207,6 +212,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `energyPyramid`    | `measure: 'biomass' \| 'numbers'`        | biomass or numbers: no share passed up unless `percent`; can be upside down   |
 | `periodicTable`    | `trend: { property, value, compare }`    | a trend shaded (radius, ionization, electronegativity), arrows, a key         |
 | `reaction`         | `limiting: { amounts, made, left }`      | particles on hand before; after: products made, the leftover ringed           |
+| `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

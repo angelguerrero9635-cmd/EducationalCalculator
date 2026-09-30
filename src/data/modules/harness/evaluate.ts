@@ -10,6 +10,7 @@ import { HSB_PHRASES } from './phrasesHsb';
 import { HSF_PHRASES } from './phrasesHsf';
 import { HSG_PHRASES } from './phrasesHsg';
 import { HSI_PHRASES } from './phrasesHsi';
+import { HSJ_PHRASES } from './phrasesHsj';
 
 /** How many prime factors (with repeats) a whole number has: 24 → 4, 7 → 1. */
 export const primeFactorCount = (n: number) => {
@@ -62,6 +63,7 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`log_(${NUM})\\s*\\(?(${NUM})\\)?`), (b, x) => Math.log(x) / Math.log(b)],
   // Grades 9–12 statistics and counting (group HB).
   ...HSB_PHRASES,
+  ...HSJ_PHRASES,
   ...HSF_PHRASES,
   ...HSG_PHRASES,
   ...HSI_PHRASES,

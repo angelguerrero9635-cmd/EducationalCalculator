@@ -48,6 +48,7 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   nitrogenCycle: 'nitrogen',
   feedbackLoop: 'loop',
   immuneStages: 'immune',
+  electrochemicalCell: 'galvanic',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */

@@ -1044,49 +1044,132 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn (group HI): kind moleMap (typesHsi.ts, reps/MoleMap.tsx, constants and molar masses in reps/moles.ts). Fields: moles, mass?, molarMass? (or formula, whose molar mass is worked out to 2 decimals: H₂O 18.02), particles? (× 6.022 × 10²³), volume? (gas at STP, × 22.4 L), formula?, second? { formula?, ratio: [coefficient of the first, of the second], moles, mass?, molarMass? } for stoichiometry. Moles sit in the middle with mass above, particles below and the gas volume (or the second substance, joined by the mole-ratio arrow) beside it; each arrow carries its factor both ways (÷ 18.02 g/mol, × 18.02 g/mol); the value the student typed is filled, values worked from it are outlined, unknowns dashed, and arrows between known values lit. Every value is checked against moles. Give the page `unitSystems: ['metric']` (grams and liters are drawn as written) and particles `scientific: true` with a minimum near 6 × 10¹⁹. Examples: { kind: 'moleMap', formula: 'O2', moles: 'n', mass: 'm', particles: 'N', volume: 'V' } with m = 32 × n, N = 6.022 × 10²³ × n, V = 22.4 × n; { kind: 'moleMap', formula: 'H2', moles: 'n', mass: 'm', second: { formula: 'H2O', ratio: [2, 2], moles: 'p', mass: 'q' } }.",
   },
-  ask(
-    'H51',
-    'gasPiston',
-    'Cylinder with a piston, particles moving by temperature, a pressure gauge and a volume scale',
-    ['s.10.gas-laws'],
-  ),
-  ask(
-    'H52',
-    'beaker',
-    'Solute particles per volume, dilution as two beakers (M₁V₁ = M₂V₂); a solubility curve',
-    ['s.10.molarity'],
-  ),
-  ask(
-    'H53',
-    'energyProfile',
-    'Reaction energy diagram: reactant and product levels, ΔH, activation energy, the catalyst path dashed',
-    ['s.10.thermochemistry', 's.10.rates-equilibrium'],
-    'Also a coffee-cup calorimeter (q = mcΔT) for thermochemistry and thermodynamics.',
-  ),
-  ask(
-    'H54',
-    'equilibriumChart',
-    'Concentrations against time leveling off, and the shift after a change (Le Châtelier)',
-    ['s.10.rates-equilibrium'],
-  ),
-  ask(
-    'H55',
-    'phScale',
-    'pH scale 0–14 in indicator colors with the value marked and [H⁺] as a power of ten; a titration curve',
-    ['s.10.acids-bases'],
-  ),
-  ask(
-    'H56',
-    'electrochemicalCell',
-    'Explore figure: galvanic cell with two electrodes, a salt bridge and electrons flowing through the wire',
-    ['s.10.redox'],
-  ),
-  ask(
-    'H57',
-    'decayChart',
-    'Half-life: a grid of atoms decaying, what is left after n half-lives, the decay curve; nuclear equations',
-    ['s.10.nuclear-chemistry', 's.12.radiometric-dating'],
-  ),
+  {
+    ...ask(
+      'H51',
+      'gasPiston',
+      'Cylinder with a piston, particles moving by temperature, a pressure gauge and a volume scale',
+      ['s.10.gas-laws'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-gas-laws-boyle',
+      'g.s10-gas-laws-charles',
+      'g.s10-gas-laws-gay-lussac',
+      'g.s10-gas-laws-combined',
+      'g.s10-gas-laws-ideal',
+      'g.s10-gas-laws-ideal-hot',
+    ],
+    notes:
+      "Drawn: kind gasPiston (typesHsj.ts). A glass cylinder and a metal piston whose height is the volume on the scale up the glass, a gauge on a pipe for the pressure, a thermometer in kelvins, and the gas as particles with speed trails ∝ √T (the caption compares the speeds). Fields: law ('boyle' | 'charles' | 'gayLussac' | 'combined' | 'ideal'); the gas now as pressure, volume, temperature (numbers or variables); before { pressure?, volume?, temperature? } for a two-state law, drawn beside it (a held value is left out of both and named “T₁ held”; 'gayLussac' pins the piston); moles (ideal: one particle per 0.1, 0.2, 0.5 … mol, key in the caption; two-state pages draw the same 20); R (default 0.0821, checked); keep; fixed. Drag the piston of the gas now: its volume changes and the law's other value moves. Examples: { kind: 'gasPiston', law: 'boyle', before: { pressure: 'P1', volume: 'V1' }, pressure: 'P2', volume: 'V2', keep: ['P1', 'V1'] }; { kind: 'gasPiston', law: 'ideal', pressure: 'P', volume: 'V', temperature: 'T', moles: 'n', keep: ['n', 'T'] }.",
+  },
+  {
+    ...ask(
+      'H52',
+      'beaker',
+      'Solute particles per volume, dilution as two beakers (M₁V₁ = M₂V₂); a solubility curve',
+      ['s.10.molarity'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-molarity-moles-volume',
+      'g.s10-molarity-from-grams',
+      'g.s10-molarity-concentrated',
+      'g.s10-molarity-dilution',
+      'g.s10-molarity-solubility',
+      'g.s10-molarity-solubility-excess',
+    ],
+    notes:
+      "Drawn: beaker takes solution (typesHsj.ts BeakerSolution); pages without it draw exactly as before. mode 'molarity' { moles, volume (L or mL), molarity? (checked as n ÷ V), solute? }: a glass beaker filled to the volume on its printed scale, the solute as dots spread through the liquid (one dot per 0.01, 0.02, 0.05 … mol, the key in the caption). mode 'dilution' { stock: { molarity, volume }, diluted: { molarity, volume }, water? (checked as V₂ − V₁), solute? }: the stock beside the diluted solution, the beakers sized to their capacities, the same dots in both and the tint paler as it is weaker. mode 'solubility' { salt ('KNO3' | 'NaNO3' | 'NaCl' | 'KCl' | 'NH4Cl' | 'KClO3'), temperature (°C), amount? (g per 100 g of water), solubility? (checked against the curve), others? }: the curve from the standard tables (read in straight lines between every 10 °C), others faint, the point and its verdict (unsaturated, saturated, or how much settles out). Step text can say “solubility of KNO₃ at {T} °C” (harness phrase in phrasesHsj.ts). Examples: { kind: 'beaker', solution: { mode: 'molarity', moles: 'n', volume: 'V', molarity: 'M', solute: 'NaCl' } }; { kind: 'beaker', solution: { mode: 'dilution', stock: { molarity: 'M1', volume: 'V1' }, diluted: { molarity: 'M2', volume: 'V2' }, water: 'w', solute: 'CuSO₄' } }; { kind: 'beaker', solution: { mode: 'solubility', salt: 'KNO3', temperature: 'T', amount: 'm', solubility: 's', others: ['NaCl', 'KCl'] } }.",
+  },
+  {
+    ...ask(
+      'H53',
+      'energyProfile',
+      'Reaction energy diagram: reactant and product levels, ΔH, activation energy, the catalyst path dashed',
+      ['s.10.thermochemistry', 's.10.rates-equilibrium'],
+      'Also a coffee-cup calorimeter (q = mcΔT) for thermochemistry and thermodynamics.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-thermochemistry-exothermic',
+      'g.s10-thermochemistry-endothermic',
+      'g.s10-rates-equilibrium-catalyst',
+      'g.s10-rates-equilibrium-reverse',
+      'g.s10-thermochemistry-calorimeter',
+      'g.s10-thermochemistry-cold-pack',
+      'g.s11-thermodynamics-specific-heat',
+    ],
+    notes:
+      "Drawn: kind energyProfile (typesHsj.ts). The profile (no mode) { reactants, products, activation (numbers or variables, kJ from the variable's unit), deltaH? (checked as products − reactants), reverse? (the reverse barrier, checked as Eₐ − ΔH), catalyst? (Eₐ with a catalyst: a lower dashed hump between the same levels), names? { reactants, products } ('2H₂O₂'), keep?, fixed? }: flat levels, a smooth hump to the peak at r + Eₐ, arrows for Eₐ, ΔH (red when negative) and the reverse barrier; a peak under the products draws faded with the reason; drag the peak to change Eₐ. mode 'calorimeter' { mass, heat (J/(g·°C)), start, end, change? (ΔT, checked), q? (checked as mcΔT), metal? { name, mass, start, heat? (checked against the heat the water took in) } }: two nested foam cups with a lid and stirrer, the water, a thermometer read from T₁ (dashed) to T₂ with the ΔT arrow, and a metal block when a hot metal is dropped in (physics' specific heat). Examples: { kind: 'energyProfile', reactants: 'Hr', products: 'Hp', activation: 'Ea', deltaH: 'dH', catalyst: 'Ec', names: { reactants: '2H₂O₂', products: '2H₂O + O₂' }, keep: ['Hr', 'Hp'] }; { kind: 'energyProfile', mode: 'calorimeter', mass: 'm', heat: 'c', start: 'T1', end: 'T2', change: 'dT', q: 'q' }. Also for s.11.thermodynamics (g.s11-thermodynamics-specific-heat).",
+  },
+  {
+    ...ask(
+      'H54',
+      'equilibriumChart',
+      'Concentrations against time leveling off, and the shift after a change (Le Châtelier)',
+      ['s.10.rates-equilibrium'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-rates-equilibrium-ice',
+      'g.s10-rates-equilibrium-nearly-complete',
+      'g.s10-rates-equilibrium-add',
+      'g.s10-rates-equilibrium-volume',
+      'g.s10-rates-equilibrium-heat',
+    ],
+    notes:
+      "Drawn: kind equilibriumChart (typesHsj.ts). Concentration (mol/L) against time: each substance's line moves by the reaction's extent (reactants down, products up, by their coefficients, so the stoichiometry holds at every moment) to the level where Q = K, solved by bisection, and levels off; named at its right end with its level. Fields: species [{ formula ('N₂O₄'), coef, side ('reactant' | 'product'), start (number or variable), eq? (the first equilibrium's level, checked) }]; K? (left out when the page starts at equilibrium: read from the start values); stress? { add?: { species (index), amount (negative removes) }, scale? (every concentration times it: 2 when the volume is halved), K? (the new K after a temperature change), Q? (the quotient just after, checked), label ('Add H₂') }: a dashed line halfway, the jump and the move to the new equilibrium; the caption compares Q with K and says which way it shifts. Examples: { kind: 'equilibriumChart', species: [{ formula: 'N₂O₄', coef: 1, side: 'reactant', start: 'A0', eq: 'A' }, { formula: 'NO₂', coef: 2, side: 'product', start: 0, eq: 'B' }], K: 'K' }; { kind: 'equilibriumChart', species: [{ formula: 'H₂', coef: 1, side: 'reactant', start: 'h' }, { formula: 'I₂', coef: 1, side: 'reactant', start: 'i' }, { formula: 'HI', coef: 2, side: 'product', start: 'p' }], K: 'K', stress: { add: { species: 0, amount: 'a' }, Q: 'Q', label: 'Add H₂' } }. The line's shape between the levels is a plain approach (no rate law); the levels are exact.",
+  },
+  {
+    ...ask(
+      'H55',
+      'phScale',
+      'pH scale 0–14 in indicator colors with the value marked and [H⁺] as a power of ten; a titration curve',
+      ['s.10.acids-bases'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-acids-bases-ph',
+      'g.s10-acids-bases-hydrogen',
+      'g.s10-acids-bases-base',
+      'g.s10-acids-bases-titration',
+      'g.s10-acids-bases-weak-titration',
+    ],
+    notes:
+      "Drawn: kind phScale (typesHsj.ts). The scale (no mode) { pH, hydrogen? ([H⁺], checked as 10^−pH), hydroxide? ([OH⁻], checked), pOH? (checked as 14 − pH), examples? (lemon juice, coffee, pure water, baking soda, ammonia marked above), keep?, fixed? }: fifteen cells 0–14 in universal-indicator colors (red through green at 7 to violet), the pH marked through the bar with a pointer (drag it), [H⁺] as 10⁰ … 10⁻¹⁴ under every other number, acidic, neutral and basic named. mode 'titration' { acid: { concentration, volume, Ka? (left out: strong), name? }, base: { concentration, name? }, added, equivalence? (checked as the acid's concentration × volume ÷ the base's concentration; the demo's symbols are C₁, V₁ for the acid and C₂, V₂, Vₑ for the base, since there is no subscript b), keep?, fixed? }: the pH against the base added from the exact charge balance of a monoprotic acid and a strong base (no buffer shortcuts), the indicator's colors up the pH axis, the equivalence point (pH 7 for a strong acid, above 7 for a weak one), the half-way point (pH = pKₐ for a weak acid) and the point at `added`, dragged along the curve. Examples: { kind: 'phScale', pH: 'p', hydrogen: 'h', examples: true }; { kind: 'phScale', mode: 'titration', acid: { concentration: 'Ca', volume: 'Va', Ka: 'Ka', name: 'acetic acid' }, base: { concentration: 'Cb', name: 'NaOH' }, added: 'Vb', equivalence: 'Ve', keep: ['Ca', 'Va', 'Cb', 'Ka'] }. Step text for [H⁺] from pH reads 1/(10^pH), so no negative number is substituted.",
+  },
+  {
+    ...ask(
+      'H56',
+      'electrochemicalCell',
+      'Explore figure: galvanic cell with two electrodes, a salt bridge and electrons flowing through the wire',
+      ['s.10.redox'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s10-redox-galvanic-cell'],
+    notes:
+      "Drawn: explore figure { kind: 'electrochemicalCell' } (layouts/galvanicFigure.tsx; scene type GalvanicScene in typesHsj.ts). Two metal electrodes, each in a glass beaker of its own ion's solution (Cu²⁺ blue, Ni²⁺ and Fe²⁺ green, the others clear), a copper wire through a voltmeter or a bulb, and a KNO₃ salt bridge. From the standard reduction potentials (Mg, Al, Zn, Fe, Ni, Pb, Cu, Ag) the figure works out the anode (the lower E°), sends electrons along the wire from it to the cathode, drifts NO₃⁻ toward the anode and K⁺ toward the cathode in the bridge, writes both half-reactions under the beakers (oxidation, reduction) and reads E° = E°cathode − E°anode on the meter; the anode is eaten away at its foot and the cathode wears a coat of its metal. Scene field: galvanic { metals: [left, right], meter? ('voltmeter' | 'bulb'), lit? ('electrons' | 'anode' | 'cathode' | 'bridge' | 'meter') }. Example: figure { kind: 'electrochemicalCell' }, scenes [{ label: 'Electrons', galvanic: { metals: ['Zn', 'Cu'], lit: 'electrons' }, lines: ['…'] }, { label: 'Copper as anode', galvanic: { metals: ['Ag', 'Cu'], lit: 'anode' }, lines: ['…'] }]. Harness (layoutFiguresHsj.ts): two different known metals, the anode the lower E°, the voltage positive and E°cathode − E°anode.",
+  },
+  {
+    ...ask(
+      'H57',
+      'decayChart',
+      'Half-life: a grid of atoms decaying, what is left after n half-lives, the decay curve; nuclear equations',
+      ['s.10.nuclear-chemistry', 's.12.radiometric-dating'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-nuclear-chemistry-decay-grid',
+      'g.s12-radiometric-dating-carbon',
+      'g.s12-radiometric-dating-uranium',
+      'g.s10-nuclear-chemistry-equation-alpha',
+      'g.s10-nuclear-chemistry-equation-beta',
+      'g.s10-nuclear-chemistry-fission',
+    ],
+    notes:
+      "Drawn: kind decayChart (typesHsj.ts). The decay (no mode) { halfLife, time, start (numbers or variables; the time unit from the variable: days, years), left? (checked as start × (1/2)^(t ÷ T)), halves? (checked as t ÷ T), parent? ('C-14'), daughter? ('N-14'), keep?, fixed? }: a 10 × 10 grid of parent atoms where 100 × (1/2)^(t ÷ T) (rounded) are left and the rest have turned to the daughter, which ones from a fixed random order; a key with both counts; and the decay curve of the amount left with every half-life dashed to both axes (x ticks at multiples of T, big times as 4.47 × 10⁹) and the point at `time`, dragged along the curve. mode 'equation' { left: Nuclide[], right: Nuclide[] }, a Nuclide { mass, atomic, symbol? (from the atomic number when left out, so the daughter's symbol follows the student's Z), count? } or { particle: 'alpha' | 'beta' | 'positron' | 'neutron' | 'gamma', count? }: each mass number over its atomic number beside the symbol, and both sums under the equation (checked to balance). Radiometric dating reuses the decay mode with start 100 and left as a percent. Examples: { kind: 'decayChart', halfLife: 'T', time: 't', start: 'N0', left: 'N', halves: 'n', parent: 'I-131', daughter: 'Xe-131', keep: ['T', 'N0'] }; { kind: 'decayChart', halfLife: 'T', time: 't', start: 100, left: 'p', halves: 'n', parent: 'C-14', daughter: 'N-14' }; { kind: 'decayChart', mode: 'equation', left: [{ mass: 'A', atomic: 'Z' }], right: [{ mass: 'A2', atomic: 'Z2' }, { particle: 'alpha' }] }. Step text writes the power as 0.5^(n) so a tiny n in scientific notation stays one exponent.",
+  },
 
   // ── F. Physics ──
   ask(

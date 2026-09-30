@@ -226,6 +226,23 @@ const light = {
   atomInk: '#1B1E28',
   onAtom: '#FFFFFF',
   atomBond: '#9AA1AC',
+  /**
+   * Chemistry pictures (HS group J): gas particles, dissolved solute, the catalyst's path, a
+   * foam-cup calorimeter, zinc, the blue of copper(II) and green of nickel(II) solutions, a
+   * salt bridge's paste, and parent and daughter atoms in a decay grid.
+   */
+  gasParticle: '#3D7DD8',
+  soluteParticle: '#8E44AD',
+  energyCatalyst: '#0F8A5F',
+  foamCup: '#F7F5EF',
+  foamCupEdge: '#C4BDAC',
+  zinc: '#B4BDC9',
+  zincDark: '#6F7B8A',
+  copperIon: '#6FB3EA',
+  nickelIon: '#8CCF9A',
+  saltBridge: '#F1EDE2',
+  decayParent: '#2F9E6A',
+  decayDaughter: '#C5CAD3',
   /** Periodic-table families (flat fills): metals, metalloids, nonmetals, noble gases. */
   tableMetal: '#D7E4F7',
   tableMetalloid: '#DCEFD2',
@@ -482,6 +499,18 @@ const dark: Palette = {
   atomInk: '#14171D',
   onAtom: '#FFFFFF',
   atomBond: '#7B828E',
+  gasParticle: '#6EA2EE',
+  soluteParticle: '#B780E0',
+  energyCatalyst: '#34C38F',
+  foamCup: '#3A3F4B',
+  foamCupEdge: '#727888',
+  zinc: '#7D8795',
+  zincDark: '#454D59',
+  copperIon: '#2F6FA6',
+  nickelIon: '#3F7F50',
+  saltBridge: '#4A4E58',
+  decayParent: '#3FBF84',
+  decayDaughter: '#555C69',
   tableMetal: '#22324A',
   tableMetalloid: '#253A26',
   tableNonmetal: '#43381C',

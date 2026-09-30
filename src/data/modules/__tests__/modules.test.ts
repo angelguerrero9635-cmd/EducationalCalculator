@@ -21,6 +21,7 @@ import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
+import { hsjSpecVars, solutionVars } from '../typesHsj';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -173,7 +174,7 @@ function representationVars(r: Representation): string[] {
         r.total,
       ];
     case 'beaker':
-      return [...r.parts, r.total];
+      return 'solution' in r ? solutionVars(r.solution) : [...r.parts, r.total];
     case 'quadrilateral':
       return [r.first, r.second, r.rightAngles];
     case 'rectilinear':
@@ -520,6 +521,12 @@ function representationVars(r: Representation): string[] {
     case 'vsepr':
     case 'moleMap':
       return hsiSpecVars(r);
+    case 'gasPiston':
+    case 'energyProfile':
+    case 'equilibriumChart':
+    case 'phScale':
+    case 'decayChart':
+      return hsjSpecVars(r);
   }
 }
 

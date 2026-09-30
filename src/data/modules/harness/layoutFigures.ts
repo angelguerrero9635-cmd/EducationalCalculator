@@ -9,6 +9,7 @@ import type { LayoutDef } from '../layouts';
 import { studyFigureIssues } from './layoutFiguresHsb';
 import { hsgFigureIssues } from './layoutFiguresHsg';
 import { hshFigureIssues } from './layoutFiguresHsh';
+import { galvanicFigureIssues } from './layoutFiguresHsj';
 
 /** The number in a column label ("20 cm" → 20). */
 const numberIn = (label: string) => {
@@ -84,6 +85,7 @@ export function layoutFigureIssues(l: LayoutDef): string[] {
   out.push(...studyFigureIssues(l));
   out.push(...hsgFigureIssues(l));
   out.push(...hshFigureIssues(l));
+  out.push(...galvanicFigureIssues(l));
   if (l.kind === 'sort' && l.header?.kind === 'offspring') {
     const animals = l.header.animals;
     if (animals.length < 2 || animals.length > 4) {

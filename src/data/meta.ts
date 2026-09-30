@@ -146,6 +146,11 @@ const PICTURE_NAMES: Record<string, string> = {
   lewisStructure: 'Lewis structure or bonding diagram',
   vsepr: 'molecule shape with its bond angle',
   moleMap: 'mole map: grams, moles, particles, liters',
+  gasPiston: 'gas in a cylinder under a piston',
+  energyProfile: 'reaction energy diagram or calorimeter',
+  equilibriumChart: 'concentrations reaching equilibrium',
+  phScale: 'pH scale or titration curve',
+  decayChart: 'atoms decaying and the half-life curve',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

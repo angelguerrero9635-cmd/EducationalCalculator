@@ -9,6 +9,7 @@ import type {
   LoopScene,
   NitrogenProcess,
 } from '../typesHsh';
+import type { GalvanicScene } from '../typesHsj';
 import type { Round3Icon } from './icons';
 
 /**
@@ -346,7 +347,9 @@ export type Figure =
   /** A feedback loop: stimulus, sensor, control center, effector, response, and back (H41). */
   | { kind: 'feedbackLoop' }
   /** The immune response: antigen, helper T, B and plasma cells, antibodies, killer T, memory (H42). */
-  | { kind: 'immuneStages' };
+  | { kind: 'immuneStages' }
+  /** A galvanic cell: two electrodes, a salt bridge and electrons along the wire (H56). */
+  | { kind: 'electrochemicalCell' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -487,6 +490,8 @@ export interface Scene {
   immune?: { stage?: ImmuneStage };
   /** The conic the plane cuts (a `doubleCone` figure). */
   cone?: ConeCut;
+  /** The two metals and the part lit (an `electrochemicalCell` figure). */
+  galvanic?: GalvanicScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

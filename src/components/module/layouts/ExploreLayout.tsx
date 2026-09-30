@@ -26,6 +26,7 @@ import { CladogramFigure } from './cladogramFigure';
 import { NitrogenCycleFigure } from './nitrogenCycleFigure';
 import { FeedbackLoopFigure } from './feedbackLoopFigure';
 import { ImmuneStagesFigure } from './immuneStagesFigure';
+import { GalvanicFigure } from './galvanicFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -196,6 +197,8 @@ function FigureView({
       return <FeedbackLoopFigure loop={scene.loop ?? { steps: [], sign: 'negative' }} />;
     case 'immuneStages':
       return <ImmuneStagesFigure stage={scene.immune?.stage} />;
+    case 'electrochemicalCell':
+      return <GalvanicFigure scene={scene.galvanic ?? { metals: ['Zn', 'Cu'] }} />;
   }
 }
 
