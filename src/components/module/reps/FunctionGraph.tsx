@@ -41,7 +41,9 @@ import {
   type Tok,
   type Window,
 } from './functionGraphMath';
+import { SignBand, SignFill, signCaption } from './FunctionSign';
 import { usePaintIds, url } from './paint';
+import { signOf } from './signBox';
 
 const MINUS = '−';
 /** Legend text size and its raised or lowered parts. */
@@ -352,6 +354,10 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
   const sec = spec.secant ? { x: get(spec.secant.x, 1), h: get(spec.secant.h, 1) } : undefined;
   const limX = spec.limit ? get(spec.limit.x, 0) : undefined;
   const shade = spec.shade;
+  // H90: f(x) (sign) 0, the sign from a sign box.
+  const ineq = spec.inequality
+    ? signOf(spec.inequality, (id) => (rep.known(id) ? rep.shown(id) : undefined))
+    : undefined;
   const shadeRange =
     typeof shade === 'object'
       ? [get(shade.from, 0), get(shade.to, 1)].sort((a, b) => a - b)
@@ -1150,6 +1156,9 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                   </>
                 )}
                 <G clipPath={url(ids.clip)}>
+                  {ineq && allKnown ? (
+                    <SignFill curve={main} sign={ineq} sx={sx} sy={sy} win={win} />
+                  ) : null}
                   {/* Shading: an inequality above or below, or between x values. */}
                   {shade ? (
                     <Path
@@ -1358,6 +1367,9 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                     />
                   ) : null}
                 </G>
+                {ineq && allKnown ? (
+                  <SignBand curve={main} sign={ineq} sx={sx} sy={sy} win={win} />
+                ) : null}
                 {marks.has('domain') && allKnown ? bracket(main.domain, 'x') : null}
                 {marks.has('range') && allKnown && main.range ? bracket(main.range, 'y') : null}
                 {perBox ? <Chip box={perBox} text={perText} color={c.fnSecond} /> : null}
@@ -1567,6 +1579,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       lines.push(
         `Shaded: the points ${shade} the curve, y ${shade === 'above' ? '>' : '<'} ${fName}(${xName})`,
       );
+    if (spec.inequality) lines.push(signCaption(main, ineq, fName, xName));
     if (spec.inverse) lines.push(`The inverse is the reflection across the line y = ${xName}`);
     if (spec.parent && parent) lines.push(`The parent y = ${plain(parent.text)} is dashed`);
     if (limX !== undefined) {

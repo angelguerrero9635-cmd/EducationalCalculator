@@ -4,6 +4,7 @@
  * number or a variable id.
  */
 
+import type { LineSystemHs2a, ShadeSign } from './typesHs2a';
 import { secondMoveVars, type SecondMove } from './typesHsf';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
@@ -35,7 +36,7 @@ export interface LinearFunctionSpec {
   /** No handles: every value on the line is worked out from points the student typed. */
   fixed?: boolean;
   /** Grades 9–12: the inequality y (sign) mx + b, its half-plane shaded (see `LineOf.shade`). */
-  shade?: InequalitySign;
+  shade?: ShadeSign;
 }
 
 /**
@@ -43,7 +44,7 @@ export interface LinearFunctionSpec {
  * (none when parallel; the same line twice is every point). Each line's intercept (and a
  * slope point, when the slope is a variable) drags.
  */
-export interface LineSystemSpec {
+export interface LineSystemSpec extends LineSystemHs2a {
   kind: 'lineSystem';
   lines: [LineOf, LineOf];
   /** The solution's x and y, when the module solves for them (the crossing is labelled). */
@@ -82,7 +83,7 @@ export interface LineOf {
    * (above for > and ≥, below for < and ≤), the boundary dashed for < and > (left out) and
    * solid for ≤ and ≥; two shaded lines show their overlap, the system's solutions.
    */
-  shade?: InequalitySign;
+  shade?: ShadeSign;
 }
 
 /** One step of a function rule: add, subtract, multiply or divide by a number. */

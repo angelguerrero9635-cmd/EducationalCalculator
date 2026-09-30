@@ -4,6 +4,7 @@
  * a variable id; every value is in the variable's shown units.
  */
 import type { NumOrVar } from './typesGraphs';
+import type { SignOf } from './typesHs2a';
 
 /**
  * A normal curve over mean μ and standard deviation σ, with an x axis (ticks at μ + kσ, the
@@ -41,7 +42,8 @@ export interface NormalCurveSpec {
   sample?: { n: NumOrVar; se?: string };
   interval?: { center: NumOrVar; margin: NumOrVar; level?: NumOrVar };
   intervals?: { count: number; n: NumOrVar; level: NumOrVar; seed?: number };
-  test?: { stat: NumOrVar; alpha: NumOrVar; tail: 'left' | 'right' | 'two'; p?: string };
+  /** `tail` from a sign box (H90): Hₐ's sign, 1 < or 2 ≤ left, 3 > or 4 ≥ right, 6 ≠ both. */
+  test?: { stat: NumOrVar; alpha: NumOrVar; tail: 'left' | 'right' | 'two' | SignOf; p?: string };
   chiSquare?: { df: NumOrVar; stat?: NumOrVar; alpha?: NumOrVar; p?: string };
   /** Typed values held while a handle is dragged. */
   keep?: string[];

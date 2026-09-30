@@ -16,6 +16,7 @@ import {
   normalPdf,
   zStar,
 } from './statMath';
+import { tailOf } from './signBox';
 
 export type Span = [number, number];
 
@@ -171,8 +172,9 @@ export function normalModel(spec: NormalCurveSpec, val: Val): NormalModel {
     const z = val(spec.test.stat);
     const alpha = val(spec.test.alpha);
     const x = (k: number) => mu + k * sigma;
-    const tail = spec.test.tail;
-    if (alpha !== undefined && alpha > 0 && alpha < 1) {
+    // H90: Hₐ's sign box gives the tail; none drawn until a sign is chosen.
+    const tail = tailOf(spec.test.tail, (id) => val(id));
+    if (tail && alpha !== undefined && alpha > 0 && alpha < 1) {
       const zc = tail === 'two' ? invPhi(1 - alpha / 2) : invPhi(1 - alpha);
       out.critical = tail === 'two' ? [x(-zc), x(zc)] : [x(tail === 'left' ? -zc : zc)];
       out.reject =
@@ -188,6 +190,8 @@ export function normalModel(spec: NormalCurveSpec, val: Val): NormalModel {
     if (z !== undefined) {
       out.stat = x(z);
       grow(out.stat);
+    }
+    if (tail && z !== undefined) {
       const az = Math.abs(z);
       out.pRegions =
         tail === 'left'
