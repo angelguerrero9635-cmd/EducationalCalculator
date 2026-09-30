@@ -986,12 +986,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Orbit: Kepler ellipse with foci and equal-area sectors for the solar system page. Drawn (group HK, reps/CircularMotion.tsx; Kepler\'s equation and swept areas in hskMath.ts). Kepler\'s ellipse is drawn as a mode of circularMotion rather than as an option on the Grade 8 orbit picture: orbit requires distance and pull variables a Kepler page doesn\'t have, and the orbit page stays as it is. Calculator picture { kind: "circularMotion", mode: "string" | "car" | "gravity" | "kepler", fixed?: true, and per mode: string and car: radius, speed, mass?, acceleration? (v²/r), force? (mv²/r), period? (2πr/v); gravity: masses: [m₁, m₂], distance, force? (Gm₁m₂/r², G = 6.674 × 10⁻¹¹); kepler: semiMajor (AU), eccentricity (0 to 0.95), perihelion?, aphelion?, period? (years, T² = a³) }; every field a number or variable. String: a ball on a string seen from above, the velocity tangent (drag its tip for the speed), the centripetal acceleration toward the center, the dashed straight path it would take if let go. Car: a car on a curved road, friction toward the center. Gravity: two lit spheres sized by the cube root of their masses, equal and opposite pull arrows (drag the second mass: the arrows follow the inverse square), r bracketed, not to scale. Kepler: the ellipse with the sun at one focus, the empty focus, perihelion and aphelion, and two sectors each swept in 1/8 of the period (positions from Kepler\'s equation) with equal areas. The harness checks v²/r, mv²/r, 2πr/v, Gm₁m₂/r², a(1 ± e), T² = a³ and that both sectors are 1/8 of the ellipse\'s area. Example: representation: { kind: "circularMotion", mode: "string", radius: "r", speed: "v", mass: "m", acceleration: "a", force: "F", period: "T" }; { kind: "circularMotion", mode: "kepler", semiMajor: "a", eccentricity: "e", perihelion: "q", aphelion: "Q", period: "T" } (for s.12.solar-system).',
   },
-  ask(
-    'H62',
-    'collision',
-    'Carts on a track before and after, momentum arrows, sticking together or bouncing',
-    ['s.11.momentum'],
-  ),
+  {
+    ...ask(
+      'H62',
+      'collision',
+      'Carts on a track before and after, momentum arrows, sticking together or bouncing',
+      ['s.11.momentum'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-momentum-stick',
+      'g.s11-momentum-head-on',
+      'g.s11-momentum-elastic',
+      'g.s11-momentum-explode',
+    ],
+    notes:
+      'Drawn (group HK, reps/Collision.tsx; the velocities after in hskMath.ts collisionOf). Calculator picture { kind: "collision", type: "stick" | "elastic" | "explode", masses: [m₁, m₂], before: [v₁, v₂] (signed, + to the right; "explode" takes one shared velocity), after?: [v₁′, v₂′] (stick: [v′]; explode: [v₁′ (given), v₂′]), momentum?: total p, energy?: [KE before, KE after], fixed?: true }. Two rows, Before and After: painted carts with wheels on a metal track, their masses on them, each cart’s momentum p = mv as an arrow on one scale (arrows kept inside the canvas), velocities under the carts, and the total momentum tip to tail in each row (the same before and after). Stick: the carts coupled after, one arrow and v′. Explode: coupled before, pushed apart after. Drag the first cart’s momentum arrow to change v₁. The caption works the momentum before and after and the kinetic energy (lost, kept, or given by the spring). The harness checks v′ from the momentum, the elastic formulas, the total momentum, the kinetic energies and that an elastic collision keeps kinetic energy. Example: representation: { kind: "collision", type: "stick", masses: ["m", "n"], before: ["v", "w"], after: ["u"], momentum: "p" }.',
+  },
   ask(
     'H63',
     'simpleMachine',

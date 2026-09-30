@@ -157,10 +157,37 @@ export interface CircularMotionSpec {
   fixed?: boolean;
 }
 
+// ─── H62 collision ───────────────────────────────────────────────────────────
+
+/**
+ * Two carts on a track, before and after (velocities signed, + to the right), each with its
+ * velocity and its momentum p = mv as arrows on one scale, and the total momentum built tip to
+ * tail in each row (the same before and after).
+ *
+ * - `stick`: they couple and move on together at (m₁v₁ + m₂v₂)/(m₁ + m₂) (kinetic energy lost);
+ * - `elastic`: they bounce apart with the kinetic energy kept;
+ * - `explode`: they start together at `before[0]` and a spring pushes them apart; `after[0]`
+ *   is the first cart's velocity, the second's follows from the momentum.
+ *
+ * `after` names the values the page solves for (one for `stick`, two otherwise); the picture
+ * works them out from the masses and the velocities before, and the harness checks the page's.
+ */
+export interface CollisionSpec {
+  kind: 'collision';
+  type: 'stick' | 'elastic' | 'explode';
+  masses: [NumOrVar, NumOrVar];
+  before: [NumOrVar, NumOrVar?];
+  after?: [NumOrVar, NumOrVar?];
+  /** The total momentum, and the kinetic energy before and after, when the page names them. */
+  momentum?: string;
+  energy?: [string, string];
+  fixed?: boolean;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
-export type HskSpec = ProjectileSpec | FreeBodySpec | CircularMotionSpec;
+export type HskSpec = ProjectileSpec | FreeBodySpec | CircularMotionSpec | CollisionSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
@@ -198,6 +225,8 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.perihelion,
         r.aphelion,
       );
+    case 'collision':
+      return ids(...r.masses, ...r.before, ...(r.after ?? []), r.momentum, ...(r.energy ?? []));
   }
 }
 

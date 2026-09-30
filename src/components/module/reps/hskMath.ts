@@ -117,3 +117,27 @@ export function freeBodyOf(inp: {
   const net = { x: tidy(sum.x), y: tidy(sum.y) };
   return { W, N, fUsed, isStatic, driving, forces, net, netSize: Math.hypot(net.x, net.y) };
 }
+
+/**
+ * Velocities after a collision on a line (+ to the right). `stick`: one shared velocity.
+ * `elastic`: momentum and kinetic energy both kept. `explode`: the pair moving together at
+ * v₁ splits, the first cart leaving at `first`; the second's velocity keeps the momentum.
+ */
+export function collisionOf(
+  type: 'stick' | 'elastic' | 'explode',
+  m1: number,
+  m2: number,
+  v1: number,
+  v2: number,
+  first = 0,
+): [number, number] {
+  const M = m1 + m2;
+  if (!(M > 0)) return [0, 0];
+  if (type === 'stick') {
+    const v = (m1 * v1 + m2 * v2) / M;
+    return [v, v];
+  }
+  if (type === 'elastic')
+    return [((m1 - m2) * v1 + 2 * m2 * v2) / M, ((m2 - m1) * v2 + 2 * m1 * v1) / M];
+  return [first, m2 > 0 ? (M * v1 - m1 * first) / m2 : 0];
+}

@@ -35,7 +35,9 @@ const rule = (
   relation: {
     id,
     display,
-    vars: Object.keys(parts),
+    vars: [
+      ...new Set([...Object.keys(parts), ...[...display.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!)]),
+    ],
     residual,
     solve: Object.fromEntries(
       Object.entries(parts).flatMap(([k, p]) => (p ? [[k, p[0]]] : [])),
@@ -1082,10 +1084,233 @@ const CIRCULAR_DEMOS: ModuleDef[] = [
   })),
 ];
 
+// ─── H62 collision ───────────────────────────────────────────────────────────
+
+const M1 = q('m', 'm₁', 'Mass of cart 1', 'kg', 0.1, 100, 0.1);
+const M2 = q('n', 'm₂', 'Mass of cart 2', 'kg', 0.1, 100, 0.1);
+const V1 = q('v', 'v₁', 'Velocity of cart 1 before', 'm/s', -50, 50, 0.1);
+const V2 = q('w', 'v₂', 'Velocity of cart 2 before', 'm/s', -50, 50, 0.1);
+const P = q('p', 'p', 'Total momentum', 'kg·m/s', -10000, 10000, 0.1);
+
+/** p = m₁v₁ + m₂v₂. */
+const momentumRule = rule(
+  'p = m₁v₁ + m₂v₂',
+  '{p} = {m} × {v} + {n} × {w}',
+  (v) => v.p! - v.m! * v.v! - v.n! * v.w!,
+  {
+    p: [
+      (v) => v.m! * v.v! + v.n! * v.w!,
+      '{m} × {v} + {n} × {w}',
+      'Add the carts’ momenta, signs and all: + to the right.',
+    ],
+    v: [
+      (v) => div(v.p! - v.n! * v.w!, v.m!),
+      '({p} − {n} × {w})/{m}',
+      'Take cart 2’s momentum from the total, divide by m₁.',
+    ],
+    w: [
+      (v) => div(v.p! - v.m! * v.v!, v.n!),
+      '({p} − {m} × {v})/{n}',
+      'Take cart 1’s momentum from the total, divide by m₂.',
+    ],
+    m: [
+      (v) => div(v.p! - v.n! * v.w!, v.v!),
+      '({p} − {n} × {w})/{v}',
+      'Cart 1’s momentum over its velocity.',
+    ],
+    n: [
+      (v) => div(v.p! - v.m! * v.v!, v.w!),
+      '({p} − {m} × {v})/{w}',
+      'Cart 2’s momentum over its velocity.',
+    ],
+  },
+);
+
+const stickDemo = (
+  id: string,
+  title: string,
+  use: string,
+  ex: { m: number; n: number; v: number; w: number },
+): ModuleDef => {
+  const p = ex.m * ex.v + ex.n * ex.w;
+  const u = p / (ex.m + ex.n);
+  return {
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions: [
+      'No friction on the track: the carts’ total momentum is the same before and after.',
+      'Velocity to the right is +, to the left −.',
+      'They couple and move on together: a perfectly inelastic collision. Kinetic energy is lost to heat and sound.',
+    ],
+    variables: [M1, M2, V1, V2, P, q('u', 'v′', 'Velocity together after', 'm/s', -50, 50, 0.01)],
+    ...rules(
+      momentumRule,
+      rule('v′ = p/(m₁ + m₂)', '{u} = {p}/({m} + {n})', (v) => v.u! * (v.m! + v.n!) - v.p!, {
+        u: [
+          (v) => div(v.p!, v.m! + v.n!),
+          '{p}/({m} + {n})',
+          'The same momentum now carried by both masses together.',
+        ],
+        p: [
+          (v) => v.u! * (v.m! + v.n!),
+          '{u} × ({m} + {n})',
+          'Both masses at the shared velocity.',
+        ],
+      }),
+    ),
+    example: { ...ex, p, u },
+    startWith: ['m', 'n', 'v', 'w'],
+    representation: {
+      kind: 'collision',
+      type: 'stick',
+      masses: ['m', 'n'],
+      before: ['v', 'w'],
+      after: ['u'],
+      momentum: 'p',
+    },
+  };
+};
+
+const COLLISION_DEMOS: ModuleDef[] = [
+  stickDemo(
+    'g.s11-momentum-stick',
+    'Carts that stick together',
+    'Use this for “A 2 kg cart at 3 m/s hits a 1 kg cart at rest and they stick. How fast do they move off?”',
+    { m: 2, n: 1, v: 3, w: 0.5 },
+  ),
+  stickDemo(
+    'g.s11-momentum-head-on',
+    'A head-on crash',
+    'Use this for “A 3 kg cart at 2 m/s meets a 2 kg cart coming the other way at 4 m/s. They lock together. Which way do they go?”',
+    { m: 3, n: 2, v: 2, w: -4 },
+  ),
+  {
+    id: 'g.s11-momentum-elastic',
+    title: 'An elastic collision',
+    use: 'Use this for “A 1 kg cart at 4 m/s bounces off a 3 kg cart moving at 1 m/s. What are their velocities after?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Magnets on the carts: they bounce apart without touching, keeping both momentum and kinetic energy.',
+      'v₁′ = ((m₁ − m₂)v₁ + 2m₂v₂)/(m₁ + m₂) and v₂′ = ((m₂ − m₁)v₂ + 2m₁v₁)/(m₁ + m₂).',
+    ],
+    variables: [
+      M1,
+      M2,
+      V1,
+      V2,
+      q('a', 'v₁′', 'Velocity of cart 1 after', 'm/s', -100, 100, 0.01),
+      q('b', 'v₂′', 'Velocity of cart 2 after', 'm/s', -100, 100, 0.01),
+    ],
+    ...rules(
+      rule(
+        'v₁′ = ((m₁ − m₂)v₁ + 2m₂v₂)/(m₁ + m₂)',
+        '{a} = (({m} − {n}) × {v} + 2 × {n} × {w})/({m} + {n})',
+        (v) => v.a! * (v.m! + v.n!) - ((v.m! - v.n!) * v.v! + 2 * v.n! * v.w!),
+        {
+          a: [
+            (v) => div((v.m! - v.n!) * v.v! + 2 * v.n! * v.w!, v.m! + v.n!),
+            '(({m} − {n}) × {v} + 2 × {n} × {w})/({m} + {n})',
+            'Momentum and kinetic energy both kept: this is cart 1’s velocity after.',
+          ],
+          w: [
+            (v) => div(v.a! * (v.m! + v.n!) - (v.m! - v.n!) * v.v!, 2 * v.n!),
+            '({a} × ({m} + {n}) − ({m} − {n}) × {v})/(2 × {n})',
+            'Undo the formula for v₂.',
+          ],
+        },
+      ),
+      rule(
+        'v₂′ = ((m₂ − m₁)v₂ + 2m₁v₁)/(m₁ + m₂)',
+        '{b} = (({n} − {m}) × {w} + 2 × {m} × {v})/({m} + {n})',
+        (v) => v.b! * (v.m! + v.n!) - ((v.n! - v.m!) * v.w! + 2 * v.m! * v.v!),
+        {
+          b: [
+            (v) => div((v.n! - v.m!) * v.w! + 2 * v.m! * v.v!, v.m! + v.n!),
+            '(({n} − {m}) × {w} + 2 × {m} × {v})/({m} + {n})',
+            'The same rule with the carts swapped.',
+          ],
+          v: [
+            (v) => div(v.b! * (v.m! + v.n!) - (v.n! - v.m!) * v.w!, 2 * v.m!),
+            '({b} × ({m} + {n}) − ({n} − {m}) × {w})/(2 × {m})',
+            'Undo the formula for v₁.',
+          ],
+        },
+      ),
+    ),
+    example: { m: 1, n: 3, v: 4, w: 1, a: -0.5, b: 2.5 },
+    startWith: ['m', 'n', 'v', 'w'],
+    representation: {
+      kind: 'collision',
+      type: 'elastic',
+      masses: ['m', 'n'],
+      before: ['v', 'w'],
+      after: ['a', 'b'],
+    },
+  },
+  {
+    id: 'g.s11-momentum-explode',
+    title: 'Pushed apart by a spring',
+    use: 'Use this for “Two carts, 2 kg and 3 kg, roll together at 1 m/s. A spring pushes them apart and the 2 kg cart leaves at 2 m/s backward. How fast is the other?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The spring pushes both carts equally and oppositely, so the total momentum doesn’t change.',
+      'The spring’s stored energy becomes extra kinetic energy.',
+    ],
+    variables: [
+      M1,
+      M2,
+      q('v', 'v', 'Velocity together before', 'm/s', -50, 50, 0.1),
+      P,
+      q('a', 'v₁′', 'Velocity of cart 1 after', 'm/s', -100, 100, 0.1),
+      q('b', 'v₂′', 'Velocity of cart 2 after', 'm/s', -100, 100, 0.01),
+    ],
+    ...rules(
+      rule('p = (m₁ + m₂)v', '{p} = ({m} + {n}) × {v}', (v) => v.p! - (v.m! + v.n!) * v.v!, {
+        p: [(v) => (v.m! + v.n!) * v.v!, '({m} + {n}) × {v}', 'Both masses moving together at v.'],
+        v: [
+          (v) => div(v.p!, v.m! + v.n!),
+          '{p}/({m} + {n})',
+          'Share the momentum over both masses.',
+        ],
+      }),
+      rule(
+        'v₂′ = (p − m₁v₁′)/m₂',
+        '{b} = ({p} − {m} × {a})/{n}',
+        (v) => v.b! * v.n! - (v.p! - v.m! * v.a!),
+        {
+          b: [
+            (v) => div(v.p! - v.m! * v.a!, v.n!),
+            '({p} − {m} × {a})/{n}',
+            'The momentum cart 1 doesn’t carry is cart 2’s.',
+          ],
+          a: [
+            (v) => div(v.p! - v.n! * v.b!, v.m!),
+            '({p} − {n} × {b})/{m}',
+            'The momentum cart 2 doesn’t carry is cart 1’s.',
+          ],
+        },
+      ),
+    ),
+    example: { m: 2, n: 3, v: 1, p: 5, a: -2, b: 3 },
+    startWith: ['m', 'n', 'v', 'a'],
+    representation: {
+      kind: 'collision',
+      type: 'explode',
+      masses: ['m', 'n'],
+      before: ['v'],
+      after: ['a', 'b'],
+      momentum: 'p',
+    },
+  },
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
   ...FREE_BODY_DEMOS,
   ...CIRCULAR_DEMOS,
+  ...COLLISION_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

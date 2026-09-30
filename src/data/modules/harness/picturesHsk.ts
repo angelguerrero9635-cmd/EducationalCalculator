@@ -4,10 +4,12 @@
  * Values are read in the shown units; pages built on these pictures use SI units.
  */
 import type { VariableDef } from '@/engine/types';
-import { freeBodyOf, G_NEWTON, projectileOf, sweptArea } from '@/components/module/reps/hskMath';
+import * as hm from '@/components/module/reps/hskMath';
 
 import type { MotionGraphSpec } from '../typesMechanics';
 import type { HskSpec } from '../typesHsk';
+
+const { collisionOf, freeBodyOf, G_NEWTON, projectileOf, sweptArea } = hm;
 
 /** Equal to 1e-6 of the larger (values are rounded to 9 places when shown). */
 const near = (a: number, b: number) =>
@@ -162,6 +164,30 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       same(rep.acceleration, (v * v) / r, 'centripetal acceleration v²/r');
       same(rep.force, (m * v * v) / r, 'centripetal force mv²/r');
       if (v > 0) same(rep.period, (2 * Math.PI * r) / v, 'period 2πr/v');
+      break;
+    }
+    case 'collision': {
+      const [m1, m2] = rep.masses.map((x) => read(si, x));
+      const v1 = read(si, rep.before[0]);
+      const v2 = rep.type === 'explode' ? v1 : read(si, rep.before[1]);
+      const first = rep.type === 'explode' ? read(si, rep.after?.[0]) : 0;
+      if ([m1, m2, v1, v2, first].some((x) => x === undefined)) break;
+      if (m1! <= 0 || m2! <= 0) {
+        out.push('collision: a cart with no mass');
+        break;
+      }
+      const [u1, u2] = collisionOf(rep.type, m1!, m2!, v1!, v2!, first);
+      const a = rep.after ?? [];
+      if (rep.type !== 'explode') same(typeof a[0] === 'string' ? a[0] : undefined, u1, 'v₁ after');
+      same(typeof a[1] === 'string' ? a[1] : undefined, u2, 'v₂ after');
+      same(rep.momentum, m1! * v1! + m2! * v2!, 'total momentum');
+      if (!near(m1! * u1 + m2! * u2, m1! * v1! + m2! * v2!))
+        out.push('collision: momentum after is not momentum before');
+      const ke = (m: number, v: number) => (m * v * v) / 2;
+      same(rep.energy?.[0], ke(m1!, v1!) + ke(m2!, v2!), 'kinetic energy before');
+      same(rep.energy?.[1], ke(m1!, u1) + ke(m2!, u2), 'kinetic energy after');
+      if (rep.type === 'elastic' && !near(ke(m1!, u1) + ke(m2!, u2), ke(m1!, v1!) + ke(m2!, v2!)))
+        out.push('collision: an elastic collision lost kinetic energy');
       break;
     }
   }
