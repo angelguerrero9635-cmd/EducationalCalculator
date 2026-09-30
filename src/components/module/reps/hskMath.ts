@@ -143,6 +143,33 @@ export function collisionOf(
 }
 
 /**
+ * A standing wave of harmonic n in a length L (H65): its wavelength, and the nodes and
+ * antinodes as fractions of L (pipes: the air's displacement). A closed pipe has odd n only.
+ */
+export function standingOf(medium: 'string' | 'open' | 'closed', n: number, L: number) {
+  const whole = Number.isInteger(n) && n >= 1;
+  const valid = whole && (medium !== 'closed' || n % 2 === 1);
+  const lambda = medium === 'closed' ? (4 * L) / n : (2 * L) / n;
+  const upTo = (step: number, start: number) => {
+    const out: number[] = [];
+    for (let x = start; x <= 1 + 1e-9; x += step) out.push(Number(x.toFixed(12)));
+    return out;
+  };
+  const h = 1 / n;
+  const nodes =
+    medium === 'string' ? upTo(h, 0) : medium === 'open' ? upTo(h, h / 2) : upTo(2 * h, 0);
+  const antinodes =
+    medium === 'string' ? upTo(h, h / 2) : medium === 'open' ? upTo(h, 0) : upTo(2 * h, h);
+  return { valid, lambda, nodes: valid ? nodes : [], antinodes: valid ? antinodes : [] };
+}
+
+/** The Doppler frequencies for a source moving at vₛ through still air (observers at rest). */
+export const dopplerOf = (f: number, v: number, vs: number) => ({
+  ahead: v > vs ? (f * v) / (v - vs) : Infinity,
+  behind: (f * v) / (v + vs),
+});
+
+/**
  * A heat engine's flows (J) and efficiency, or a refrigerator's. Engine: Q_C = Q_H − W,
  * e = W/Q_H, Carnot 1 − T_C/T_H. Refrigerator: Q_H = Q_C + W, COP = Q_C/W, Carnot COP
  * T_C/(T_H − T_C).

@@ -259,6 +259,37 @@ export interface HeatEngineSpec {
   carnot?: string;
 }
 
+// ─── H65 wave options: standing waves and the Doppler effect ────────────────
+
+/**
+ * A `wave` option: the standing wave of `harmonic` n on a string fixed at both ends, or in a
+ * pipe open at both ends or closed at one, of `length` L. The envelope is drawn at both
+ * extremes, nodes (N) and antinodes (A) marked and counted, a half wavelength bracketed; the
+ * wave's `wavelength` is 2L/n (string, open pipe) or 4L/n (closed pipe, odd n only; an even n
+ * draws faded). With the wave `speed`, `frequency` f = v/λ. Pipes show the air's displacement:
+ * an antinode at each open end, a node at a closed end.
+ */
+export interface StandingWave {
+  medium: 'string' | 'open' | 'closed';
+  harmonic: NumOrVar;
+  length: NumOrVar;
+  speed?: NumOrVar;
+}
+
+/**
+ * A `wave` option: a source moving at `sourceSpeed` through still air sends out wavefronts at
+ * `waveSpeed`, one each period (6 drawn), each centered where the source was when it left:
+ * bunched ahead, spread behind; at or past the wave speed they pile into a shock cone. The
+ * frequency heard ahead is f v/(v − vₛ) and behind f v/(v + vₛ) (`ahead`, `behind`).
+ */
+export interface DopplerWave {
+  sourceSpeed: NumOrVar;
+  waveSpeed: NumOrVar;
+  frequency: NumOrVar;
+  ahead?: string;
+  behind?: string;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
@@ -333,6 +364,14 @@ export function hskOptionVars(r: { kind: string }): string[] {
   if (r.kind === 'motionGraph' && o.kinematics) {
     const k = o.kinematics as MotionKinematics;
     return ids(k.at, k.slope, k.position);
+  }
+  if (r.kind === 'wave' && o.standing) {
+    const w = o.standing as StandingWave;
+    return ids(w.harmonic, w.length, w.speed);
+  }
+  if (r.kind === 'wave' && o.doppler) {
+    const d = o.doppler as DopplerWave;
+    return ids(d.sourceSpeed, d.waveSpeed, d.frequency, d.ahead, d.behind);
   }
   if (r.kind === 'energyTrack' && o.spring) {
     const e = o.spring as EnergySpring;

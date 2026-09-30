@@ -45,7 +45,7 @@ import {
   transformationHsfIssues,
 } from './picturesHsf';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
-import { energySpringIssues, hskIssues, motionKinematicsIssues } from './picturesHsk';
+import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1144,6 +1144,7 @@ export function repIssues(
       break;
     }
     case 'wave': {
+      out.push(...hsk.waveHsIssues(rep, (id) => hsk.mapSi(val(id), byId.get(id)?.unitFactor)));
       if (typeof rep.extent === 'string') count(rep.extent, 'waves drawn', 12);
       const [A, L] = [rep.amplitude ? val(rep.amplitude) : undefined, val(rep.wavelength)];
       if (A !== undefined && A < 0) out.push(`negative amplitude ${A}`);
@@ -1983,7 +1984,7 @@ export function repIssues(
         const x = val(id);
         return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
       };
-      out.push(...energySpringIssues(rep, (id) => f(id)));
+      out.push(...hsk.energySpringIssues(rep, (id) => f(id)));
       const g = rep.g ?? 9.8;
       const [h, pe, ke, total, top, m, v] = [
         rep.height,
@@ -2048,7 +2049,7 @@ export function repIssues(
           out.push(`motion graph ends at ${end}, not start + slope × time = ${want}`);
       }
       if (rep.graph === 'speed') {
-        out.push(...motionKinematicsIssues(rep, (id) => fv(id)));
+        out.push(...hsk.motionKinematicsIssues(rep, (id) => fv(id)));
         for (const v of rep.kinematics ? [] : [start, end])
           if (v !== undefined && v < 0) out.push(`speed ${v} is below 0 on a speed-time graph`);
         const d = rep.distance ? fv(rep.distance) : undefined;
@@ -2105,7 +2106,7 @@ export function repIssues(
     case 'collision':
     case 'circularMotion':
     case 'freeBody':
-      out.push(...hskIssues(rep, (id) => val(id), byId));
+      out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
       break;
     case 'table':
       if ('twoWay' in rep) {

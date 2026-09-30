@@ -272,6 +272,7 @@ function representationVars(r: Representation): string[] {
         ...(typeof r.extent === 'string' ? [r.extent] : []),
         r.wavelength,
         ...(r.frequency ? [r.frequency] : []),
+        ...hskOptionVars(r),
       ];
     case 'punnettSquare':
       return [

@@ -18,7 +18,7 @@ import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
 import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
 import type { HsgSpec, PunnettInheritance } from './typesHsg';
-import type { HskSpec } from './typesHsk';
+import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 
@@ -1537,6 +1537,9 @@ export type Representation =
       /** Wavelengths drawn across: a number, or a value (the waves counted along a rope). */
       extent: number | string;
       frequency?: string;
+      /** Grades 9–12 (H65): a standing wave, or Doppler wavefronts (`typesHsk.ts`). */
+      standing?: StandingWave;
+      doppler?: DopplerWave;
     }
   /**
    * Punnett square: each parent's count of dominant alleles (0–2) sets its two alleles; the

@@ -7,9 +7,20 @@ import type { VariableDef } from '@/engine/types';
 import * as hm from '@/components/module/reps/hskMath';
 
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
+import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
 
-const { collisionOf, freeBodyOf, G_NEWTON, heatEngineOf, machineOf, projectileOf, sweptArea } = hm;
+const {
+  collisionOf,
+  dopplerOf,
+  freeBodyOf,
+  G_NEWTON,
+  heatEngineOf,
+  machineOf,
+  projectileOf,
+  standingOf,
+  sweptArea,
+} = hm;
 
 /** Equal to 1e-6 of the larger (values are rounded to 9 places when shown). */
 const near = (a: number, b: number) =>
@@ -271,3 +282,40 @@ export function energySpringIssues(rep: EnergyTrackSpec, si: Val): string[] {
   if (ke >= 0) check(rep.kinetic, ke, 'kinetic energy');
   return out;
 }
+
+type WaveSpec = Extract<Representation, { kind: 'wave' }>;
+
+/** H65: a standing wave's λ (2L/n, 4L/n with odd n) and f = v/λ; the Doppler frequencies. */
+export function waveHsIssues(rep: WaveSpec, si: Val): string[] {
+  const out: string[] = [];
+  const check = (id: string | undefined, want: number, what: string) => {
+    const v = id ? si(id) : undefined;
+    if (v !== undefined && Number.isFinite(want) && !near(v, want))
+      out.push(`wave: ${what} ${v}, the picture draws ${want}`);
+  };
+  if (rep.standing) {
+    const w = rep.standing;
+    const [n, L, v] = [read(si, w.harmonic, 1), read(si, w.length, 1), read(si, w.speed)];
+    if (n === undefined || L === undefined) return out;
+    if (!Number.isInteger(n) || n < 1 || n > 12)
+      out.push(`wave: harmonic ${n} is not a whole number 1 to 12`);
+    const st = standingOf(w.medium, n, L);
+    if (Number.isInteger(n) && n >= 1 && st.valid) {
+      check(rep.wavelength, st.lambda, 'wavelength');
+      if (v !== undefined) check(rep.frequency, v / st.lambda, 'frequency v/λ');
+    }
+  }
+  if (rep.doppler) {
+    const d = rep.doppler;
+    const [vs, v, f] = [read(si, d.sourceSpeed), read(si, d.waveSpeed), read(si, d.frequency)];
+    if (vs === undefined || v === undefined || f === undefined) return out;
+    if (vs < 0 || v <= 0) out.push('wave: a negative source speed or wave speed');
+    const h = dopplerOf(f, v, vs);
+    if (vs < v) check(d.ahead, h.ahead, 'frequency ahead');
+    check(d.behind, h.behind, 'frequency behind');
+  }
+  return out;
+}
+
+/** A shown value in formula (SI) units, or undefined for a "?". */
+export const mapSi = (x: number | undefined, factor = 1) => (x === undefined ? x : x * factor);

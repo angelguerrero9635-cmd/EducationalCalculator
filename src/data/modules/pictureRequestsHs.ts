@@ -1037,12 +1037,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK, reps/HeatEngine.tsx; flows in hskMath.ts heatEngineOf). Calculator picture { kind: "heatEngine", mode?: "engine" | "refrigerator" (default engine), work: W, hotHeat: Q_H (given for an engine, else worked out), coldHeat: Q_L (given for a refrigerator, else worked out), hot?: T_H and cold?: T_L (K), efficiency?: percent (engine) or the COP (refrigerator), carnot?: the Carnot limit (percent, or the Carnot COP) }. The hot reservoir (red) over the engine (a metal cylinder and piston) over the cold reservoir (blue); the energy flows as bands as wide as their size, Q_H = W + Q_L, arrowheads showing the way heat moves (reversed for a refrigerator, work in); a bar of the efficiency (or COP) with the Carnot limit marked. Work more than the heat in, a cold reservoir hotter than the hot one, or an efficiency past the Carnot limit draws faded, the caption naming the law it breaks. Captions write Qₕ, Qₗ, Tₕ, Tₗ (H for hot, L for low). The harness checks Q_L or Q_H, the efficiency or COP and the Carnot limit. Example: representation: { kind: "heatEngine", hotHeat: "Q", work: "W", coldHeat: "C", efficiency: "e", hot: "H", cold: "L", carnot: "c" }.',
   },
-  ask(
-    'H65',
-    'wave',
-    'Standing waves on a string and in pipes (harmonic n, nodes and antinodes); Doppler wavefronts from a moving source',
-    ['s.11.sound-waves'],
-  ),
+  {
+    ...ask(
+      'H65',
+      'wave',
+      'Standing waves on a string and in pipes (harmonic n, nodes and antinodes); Doppler wavefronts from a moving source',
+      ['s.11.sound-waves'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-sound-waves-string',
+      'g.s11-sound-waves-open-pipe',
+      'g.s11-sound-waves-closed-pipe',
+      'g.s11-sound-waves-doppler',
+      'g.s11-sound-waves-sonic-boom',
+    ],
+    notes:
+      'Drawn (group HK) as two options on the Grade 8 wave, so every current wave page is unchanged: reps/WaveStanding.tsx and reps/WaveDoppler.tsx, the physics in hskMath.ts (standingOf, dopplerOf). The wave spec keeps its required wavelength and extent (pass extent: 1). Standing: { kind: "wave", wavelength: λ, frequency?: f, extent: 1, standing: { medium: "string" | "open" | "closed", harmonic: n, length: L, speed?: v } } — a string between two metal posts, or a glass pipe (a metal cap on a closed end); the envelope at both extremes (solid and dashed), every node (N, dot on the axis) and antinode (A) marked and counted from the harmonic, half a wavelength bracketed, L and n below; λ = 2L/n (string, open pipe) or 4L/n (closed pipe, odd n only; an even n draws faded with the reason), f = v/λ. Pipes show the air’s displacement: antinodes at open ends, a node at a closed end. Doppler: { kind: "wave", wavelength: λ at rest, frequency: f, extent: 1, doppler: { sourceSpeed: vₛ, waveSpeed: v, frequency: f, ahead?: f′ ahead, behind?: f′ behind } } — six wavefronts, one per period, each a circle centered where the source was when it left (its centers dotted), bunched ahead and spread behind with λ bracketed on each side, the source a lit ball with its velocity; at or past the wave speed the fronts pile into a shock cone (half-angle arcsin(v/vₛ)) drawn in red. The harness checks λ, f = v/λ, odd closed-pipe harmonics and f v/(v ∓ vₛ). Example: representation: { kind: "wave", wavelength: "l", frequency: "f", extent: 1, standing: { medium: "closed", harmonic: "n", length: "L", speed: "v" } }.',
+  },
   ask(
     'H66',
     'rayDiagram',

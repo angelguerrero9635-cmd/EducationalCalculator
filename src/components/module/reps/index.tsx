@@ -145,6 +145,8 @@ import { PunnettHs } from './PunnettHs';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { EnergySpring } from './EnergySpring';
+import { WaveDoppler } from './WaveDoppler';
+import { WaveStanding } from './WaveStanding';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -419,6 +421,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'protractor':
       return <Protractor spec={spec} calc={calc} />;
     case 'wave':
+      if (spec.standing) return <WaveStanding spec={spec} s={spec.standing} calc={calc} />;
+      if (spec.doppler) return <WaveDoppler d={spec.doppler} calc={calc} />;
       return <Wave spec={spec} calc={calc} />;
     case 'punnettSquare':
       return spec.inheritance ? (

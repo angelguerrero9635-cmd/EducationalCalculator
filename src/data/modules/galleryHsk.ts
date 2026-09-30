@@ -1722,6 +1722,232 @@ const HEAT_ENGINE_DEMOS: ModuleDef[] = [
   },
 ];
 
+// ─── H65 wave: standing waves and the Doppler effect ────────────────────────
+
+const WAVE_SPEED = q('v', 'v', 'Wave speed', 'm/s', 1, 10000, 1);
+const LAMBDA = q('l', 'λ', 'Wavelength', 'm', 0.001, 1000, 0.0001);
+const FREQ = q('f', 'f', 'Frequency', 'Hz', 0.01, 1e6, 0.01);
+
+/** f = v/λ. */
+const freqRule = rule('f = v/λ', '{f} = {v}/{l}', (v) => v.f! * v.l! - v.v!, {
+  f: [
+    (v) => div(v.v!, v.l!),
+    '{v}/{l}',
+    'Waves pass at v; each is λ long: v/λ of them each second.',
+  ],
+  v: [(v) => v.f! * v.l!, '{f} × {l}', 'The frequency times the wavelength.'],
+  l: [(v) => div(v.v!, v.f!), '{v}/{f}', 'The speed over the frequency.'],
+});
+
+const standingDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  medium: 'string' | 'open' | 'closed',
+  ex: { n: number; L: number; v: number },
+): ModuleDef => {
+  const k = medium === 'closed' ? 4 : 2;
+  const l = (k * ex.L) / ex.n;
+  return {
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions,
+    variables: [
+      medium === 'closed'
+        ? q('n', 'n', 'Harmonic (odd)', undefined, 1, 11, 2, {
+            integer: true,
+            allowed: [1, 3, 5, 7, 9, 11],
+          })
+        : q('n', 'n', 'Harmonic', undefined, 1, 12, 1, { integer: true }),
+      q('L', 'L', medium === 'string' ? 'String length' : 'Pipe length', 'm', 0.01, 100, 0.01),
+      LAMBDA,
+      WAVE_SPEED,
+      FREQ,
+    ],
+    ...rules(
+      rule(`λ = ${k}L/n`, `{l} = ${k} × {L}/{n}`, (v) => v.l! * v.n! - k * v.L!, {
+        l: [
+          (v) => div(k * v.L!, v.n!),
+          `${k} × {L}/{n}`,
+          medium === 'closed'
+            ? 'Harmonic n fits n quarter wavelengths in the pipe.'
+            : 'Harmonic n fits n half wavelengths in the length.',
+        ],
+        L: [
+          (v) => (v.l! * v.n!) / k,
+          `{l} × {n}/${k}`,
+          `n ${medium === 'closed' ? 'quarter' : 'half'} wavelengths make the length.`,
+        ],
+        n: [
+          (v) => div(k * v.L!, v.l!),
+          `${k} × {L}/{l}`,
+          `How many ${medium === 'closed' ? 'quarter' : 'half'} wavelengths fit.`,
+        ],
+      }),
+      freqRule,
+    ),
+    example: { ...ex, l, f: ex.v / l },
+    startWith: ['n', 'L', 'v'],
+    representation: {
+      kind: 'wave',
+      wavelength: 'l',
+      frequency: 'f',
+      extent: 1,
+      standing: { medium, harmonic: 'n', length: 'L', speed: 'v' },
+    },
+  };
+};
+
+const WAVE_DEMOS: ModuleDef[] = [
+  standingDemo(
+    'g.s11-sound-waves-string',
+    'A standing wave on a string',
+    'Use this for “A 1.2 m guitar string vibrates in its third harmonic; waves travel on it at 240 m/s. What is the frequency?”',
+    [
+      'Both ends are fixed, so they are nodes: harmonic n fits n half wavelengths, λ = 2L/n.',
+      'Nodes (N) never move; antinodes (A) swing the most, between the solid and dashed shapes.',
+    ],
+    'string',
+    { n: 3, L: 1.2, v: 240 },
+  ),
+  standingDemo(
+    'g.s11-sound-waves-open-pipe',
+    'An open pipe',
+    'Use this for “A 0.85 m pipe open at both ends sounds its second harmonic. What note (frequency) is it? Sound travels at 343 m/s.”',
+    [
+      'The curves show how far the air moves: both open ends are antinodes.',
+      'Harmonic n fits n half wavelengths: λ = 2L/n, every harmonic allowed.',
+    ],
+    'open',
+    { n: 2, L: 0.85, v: 343 },
+  ),
+  standingDemo(
+    'g.s11-sound-waves-closed-pipe',
+    'A pipe closed at one end',
+    'Use this for “A 0.5 m tube closed at the bottom sounds its third harmonic. What is its frequency?”',
+    [
+      'The closed end is a node, the open end an antinode: odd numbers of quarter wavelengths fit, λ = 4L/n.',
+      'Only odd harmonics: 1, 3, 5, …',
+    ],
+    'closed',
+    { n: 3, L: 0.5, v: 343 },
+  ),
+  ...[
+    {
+      id: 'g.s11-sound-waves-doppler',
+      title: 'The Doppler effect',
+      use: 'Use this for “An ambulance siren at 700 Hz drives past at 30 m/s. What pitch do you hear as it comes and as it goes?”',
+      ex: { s: 30, v: 343, f: 700 },
+    },
+    {
+      id: 'g.s11-sound-waves-sonic-boom',
+      title: 'Faster than sound',
+      use: 'Use this for “A jet flies at 412 m/s through air where sound goes 343 m/s. What happens to its sound?”',
+      ex: { s: 412, v: 343, f: 100 },
+    },
+  ].map(({ id, title, use, ex }): ModuleDef => {
+    const fast = ex.s >= ex.v;
+    return {
+      id,
+      title,
+      use,
+      unitSystems: ['metric'],
+      assumptions: [
+        'The source sends out one wavefront each period, from wherever it is then; the air carries each one out at the speed of sound.',
+        fast
+          ? 'A source as fast as its waves catches up with them: they pile into one shock front, a sonic boom.'
+          : 'Ahead the fronts bunch up: a higher frequency. Behind they spread out: a lower one.',
+      ],
+      variables: [
+        fast
+          ? q('s', 'vₛ', 'Speed of the source', 'm/s', 350, 2000, 0.1)
+          : q('s', 'vₛ', 'Speed of the source', 'm/s', 0.1, 200, 0.1),
+        fast ? { ...WAVE_SPEED, min: 250, max: 345 } : { ...WAVE_SPEED, min: 300, max: 2000 },
+        q('f', 'f', 'Frequency sent out', 'Hz', 1, 1e5, 1),
+        q('l', 'λ', 'Wavelength at rest', 'm', 0.0001, 1000, 0.0001),
+        ...(fast ? [] : [q('a', 'f′₁', 'Frequency heard ahead', 'Hz', 0.01, 1e6, 0.01)]),
+        q('b', 'f′₂', 'Frequency heard behind', 'Hz', 0.01, 1e6, 0.01),
+      ],
+      ...rules(
+        rule('λ = v/f', '{l} = {v}/{f}', (v) => v.l! * v.f! - v.v!, {
+          l: [(v) => div(v.v!, v.f!), '{v}/{f}', 'At rest the waves are v/f apart.'],
+          f: [(v) => div(v.v!, v.l!), '{v}/{l}', 'The speed over the wavelength.'],
+        }),
+        ...(fast
+          ? []
+          : [
+              rule(
+                'f′ = fv/(v − vₛ)',
+                '{a} = {f} × {v}/({v} − {s})',
+                (v) => v.a! * (v.v! - v.s!) - v.f! * v.v!,
+                {
+                  a: [
+                    (v) => div(v.f! * v.v!, v.v! - v.s!),
+                    '{f} × {v}/({v} − {s})',
+                    'Ahead the fronts are only (v − vₛ)/f apart.',
+                  ],
+                  f: [
+                    (v) => div(v.a! * (v.v! - v.s!), v.v!),
+                    '{a} × ({v} − {s})/{v}',
+                    'Undo the Doppler shift.',
+                  ],
+                  s: [
+                    (v) => v.v! - div(v.f! * v.v!, v.a!)!,
+                    '{v} − {f} × {v}/{a}',
+                    'Solve the Doppler formula for vₛ.',
+                  ],
+                },
+              ),
+            ]),
+        rule(
+          'f′ = fv/(v + vₛ)',
+          '{b} = {f} × {v}/({v} + {s})',
+          (v) => v.b! * (v.v! + v.s!) - v.f! * v.v!,
+          {
+            b: [
+              (v) => div(v.f! * v.v!, v.v! + v.s!),
+              '{f} × {v}/({v} + {s})',
+              'Behind the fronts are (v + vₛ)/f apart.',
+            ],
+            ...(fast
+              ? {
+                  f: [
+                    (v: Values) => div(v.b! * (v.v! + v.s!), v.v!),
+                    '{b} × ({v} + {s})/{v}',
+                    'Undo the Doppler shift.',
+                  ] as [Solve, string, string],
+                }
+              : {}),
+          },
+        ),
+      ),
+      example: {
+        ...ex,
+        l: ex.v / ex.f,
+        ...(fast ? {} : { a: (ex.f * ex.v) / (ex.v - ex.s) }),
+        b: (ex.f * ex.v) / (ex.v + ex.s),
+      },
+      startWith: ['s', 'v', 'f'],
+      representation: {
+        kind: 'wave',
+        wavelength: 'l',
+        frequency: 'f',
+        extent: 1,
+        doppler: {
+          sourceSpeed: 's',
+          waveSpeed: 'v',
+          frequency: 'f',
+          ...(fast ? {} : { ahead: 'a' }),
+          behind: 'b',
+        },
+      },
+    };
+  }),
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
@@ -1730,5 +1956,6 @@ export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...COLLISION_DEMOS,
   ...MACHINE_DEMOS,
   ...HEAT_ENGINE_DEMOS,
+  ...WAVE_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];
