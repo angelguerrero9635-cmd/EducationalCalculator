@@ -595,7 +595,15 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     // Already found from newer input: keep it only if it matches or another possible value
     // fits it (e.g. the other answer to a difference); otherwise newer input wins.
     const determined = g.id in known;
-    if (determined && closeTo(normalizeValue(variable, g.value), known[g.id]!)) {
+    // A typed value that is the worked-out one rounded to the box's step (d = 463.6 against
+    // z × σ = 463.601) agrees with it.
+    const typed = normalizeValue(variable, g.value);
+    const rounded =
+      determined &&
+      !variable.integer &&
+      variable.step !== undefined &&
+      Math.abs(typed - known[g.id]!) <= variable.step / 2 + 1e-12;
+    if (determined && (closeTo(typed, known[g.id]!) || rounded)) {
       dropped.push(g.id);
       continue;
     }
