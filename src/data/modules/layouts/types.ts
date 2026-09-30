@@ -1,5 +1,6 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
+import type { Hs2bCard } from '../typesHs2b';
 import type { CellDivisionCard, EnergyScene, MacroScene } from '../typesHsg';
 import type {
   CladeScene,
@@ -161,6 +162,8 @@ export type CardFigure =
   | { kind: 'molecule'; formula: string }
   /** One stage of mitosis or meiosis, its chromosomes counted from 2n (HS group G). */
   | CellDivisionCard
+  /** Geometry cards (H2B, `typesHs2b.ts`): marked triangles, construction stages, cross sections. */
+  | Hs2bCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';

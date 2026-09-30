@@ -21,6 +21,7 @@ import {
 } from './common';
 import { DistanceLegs, distanceCaption } from './DistanceLegs';
 import { planeGeometry, planeGeometryCaption, PlaneGeometryMarks } from './CoordinatePlaneHsf';
+import { fitExtent } from './coordinateFit';
 import { SlopeLegs } from './SlopeLegs';
 import { Steppers } from './Steppers';
 
@@ -60,7 +61,22 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
     ...pts.flatMap((p) => [Math.abs(p.px), Math.abs(p.py)]),
     ...(hs ? planeGeometry(spec, rep).coords.map(Math.abs) : []),
   );
-  const ext = useFrozen(biggest > spec.extent ? niceCeil(biggest) : spec.extent);
+  // Grades 9–12 `fit` (coordinateFit.ts): sized to the points, 5, 10 or 20.
+  const reach = Math.max(
+    0,
+    ...pts.flatMap((p) => [Math.abs(p.px), Math.abs(p.py)]),
+    ...(hs ? planeGeometry(spec, rep).coords.map(Math.abs) : []),
+    ...(spec.rect ? [spec.rect.left, spec.rect.right, spec.rect.bottom, spec.rect.top] : []).map(
+      (id) => (rep.known(id) ? Math.abs(rep.shown(id)) : 0),
+    ),
+  );
+  const ext = useFrozen(
+    biggest > spec.extent
+      ? niceCeil(biggest)
+      : spec.fit
+        ? fitExtent(reach, spec.extent)
+        : spec.extent,
+  );
   const E = ext.value;
   const lo = spec.quadrants === 4 ? -E : 0;
   const step = E <= 10 ? 1 : E <= 20 ? 2 : E <= 50 ? 5 : niceCeil(E / 10);

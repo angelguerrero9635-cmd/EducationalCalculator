@@ -45,6 +45,7 @@ import {
   scaleCopyHsfIssues,
   transformationHsfIssues,
 } from './picturesHsf';
+import { hs2bIssues } from './picturesHs2b';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
@@ -846,7 +847,7 @@ export function repIssues(
       break;
     }
     case 'coordinatePlane': {
-      out.push(...planeGeometryIssues(rep, val));
+      out.push(...planeGeometryIssues(rep, val), ...hs2bIssues(rep, (id) => val(id)));
       // Plotting draws its path from 0 across then up, in the first quadrant only.
       if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
       if (rep.plot && rep.second) out.push('plotting places one point, not two');
@@ -2100,7 +2101,7 @@ export function repIssues(
     case 'triangleSolver':
     case 'markedFigure':
     case 'circleTheorems':
-      out.push(...hscIssues(rep, (id) => val(id)));
+      out.push(...hscIssues(rep, (id) => val(id)), ...hs2bIssues(rep, (id) => val(id)));
       break;
     case 'normalCurve':
     case 'histogram':
