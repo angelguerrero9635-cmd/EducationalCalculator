@@ -3081,6 +3081,308 @@ const MATH_12_PARAMETRIC: ModuleDef[] = [
   },
 ];
 
+// ── Limits ──
+
+const quad = (v: Values, x: number) => v.a! * x ** 2 + v.b! * x + v.c!;
+
+const MATH_12_LIMITS: ModuleDef[] = [
+  // ── m.12.limits-intro (AP Calculus AB 1.2–2.2) ──
+  {
+    id: 'm.12.limits-intro',
+    assumptions: [
+      'The limit is the value f(x) approaches as x gets close to a, not the value f(a).',
+      'Here f has no value at x = a (a hole in the graph), but the limit exists.',
+      'Cancelling the common factor x − a is allowed because x never equals a on the way.',
+    ],
+    variables: [
+      real('a', 'a', 'x approaches', -10, 10),
+      real('b', 'b', 'The other zero', -10, 10),
+      V('L', 'L', 'The limit', { min: -20, max: 20, step: 0.01, derived: true }),
+      real('x', 'x', 'An x close to a', -30, 30),
+      real('y', 'f(x)', 'f(x) there', -60, 60),
+    ],
+    ...rels(
+      limit('b ≠ a', 'The other zero {b} is not {a}', ['a', 'b'], (v) => v.a !== v.b),
+      limit(
+        'x ≠ a',
+        'f has no value at x = {a}, so {x} is not {a}',
+        ['x', 'a'],
+        (v) => v.x !== v.a,
+      ),
+      withStep(
+        derive(
+          'L = a − b',
+          '{L} = {a} − {b}',
+          'L',
+          ['a', 'b'],
+          (v) => v.a! - v.b!,
+          '{a} − {b}',
+          'Cancel x − a: f(x) = x − b away from a, and x − b heads to a − b as x → a.',
+        ),
+        'L',
+        {
+          work: (v) =>
+            [-0.1, -0.01, 0.01].map(
+              (d) =>
+                `x = ${fmt(v.a! + d)}: f(x) = ${fmt(v.a! + d)} − ${v.b! < 0 ? `(${fmt(v.b!)})` : fmt(v.b!)} = ${fmt(v.a! + d - v.b!)}`,
+            ),
+        },
+      ),
+      rel('f(x) = x − b', '{y} = {x} − {b}', ['y', 'x', 'b'], (v) => v.y! - v.x! + v.b!, {
+        y: [(v) => v.x! - v.b!, '{x} − {b}', 'For x ≠ a, (x − a)(x − b) ÷ (x − a) is just x − b.'],
+        x: [(v) => v.y! + v.b!, '{y} + {b}', 'Add b to f(x).'],
+      }),
+    ),
+    example: { a: 3, b: -3, L: 6, x: 2.9, y: 5.9 },
+    startWith: ['a', 'b', 'x'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      zeros: ['a', 'b'],
+      poles: ['a'],
+      limit: { x: 'a' },
+      at: { x: 'x', y: 'y' },
+    },
+  },
+  {
+    id: 'm.12.limits-intro~one-sided',
+    title: 'One-sided limits and continuity',
+    use: 'Use this for “f(x) = x + 1 for x < 2 and 2x − 3 for x ≥ 2. Is f continuous at 2?”',
+    assumptions: [
+      'Left of c the rule is m₁x + b₁; from c on it is m₂x + b₂, so f(c) = m₂c + b₂.',
+      'The limit at c exists only when the left and right limits are equal (J = 0).',
+      'f is continuous at c when the limit exists and equals f(c).',
+    ],
+    variables: [
+      real('m1', 'm₁', 'Slope left of c', -20, 20),
+      real('b1', 'b₁', 'Intercept left of c', -50, 50),
+      real('m2', 'm₂', 'Slope from c on', -20, 20),
+      real('b2', 'b₂', 'Intercept from c on', -50, 50),
+      real('c', 'c', 'Where the rule changes', -10, 10),
+      real('L1', 'L⁻', 'Limit from the left', -300, 300),
+      real('L2', 'L⁺', 'Limit from the right, f(c)', -300, 300),
+      V('J', 'J', 'Jump, L⁺ − L⁻', { min: -600, max: 600, step: 0.01, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'L⁻ = m₁c + b₁',
+        '{L1} = {m1} × {c} + {b1}',
+        ['L1', 'm1', 'c', 'b1'],
+        (v) => v.L1! - v.m1! * v.c! - v.b1!,
+        {
+          L1: [
+            (v) => v.m1! * v.c! + v.b1!,
+            '{m1} × {c} + {b1}',
+            'From the left the left rule applies: put in x = c.',
+          ],
+          b1: [(v) => v.L1! - v.m1! * v.c!, '{L1} − {m1} × {c}', 'Take m₁c from the left limit.'],
+        },
+      ),
+      rel(
+        'L⁺ = m₂c + b₂',
+        '{L2} = {m2} × {c} + {b2}',
+        ['L2', 'm2', 'c', 'b2'],
+        (v) => v.L2! - v.m2! * v.c! - v.b2!,
+        {
+          L2: [
+            (v) => v.m2! * v.c! + v.b2!,
+            '{m2} × {c} + {b2}',
+            'From the right (and at c) the right rule applies: put in x = c.',
+          ],
+          b2: [(v) => v.L2! - v.m2! * v.c!, '{L2} − {m2} × {c}', 'Take m₂c from the right limit.'],
+        },
+      ),
+      withStep(
+        derive(
+          'J = L⁺ − L⁻',
+          '{J} = {L2} − {L1}',
+          'J',
+          ['L2', 'L1'],
+          (v) => v.L2! - v.L1!,
+          '{L2} − {L1}',
+          'How far the graph jumps at c: 0 means the two sides meet.',
+        ),
+        'J',
+        {
+          note: (v) =>
+            v.J === undefined
+              ? ''
+              : v.J === 0
+                ? '→ the limit exists and equals f(c): continuous at c'
+                : '→ the sides differ: no limit at c, so not continuous',
+        },
+      ),
+    ),
+    example: { m1: 1, b1: 1, m2: 2, b2: -3, c: 2, L1: 3, L2: 1, J: -2 },
+    startWith: ['m1', 'b1', 'm2', 'b2', 'c'],
+    pictureLabels: ['L1', 'L2', 'J'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'piecewise',
+      pieces: [
+        { f: { family: 'linear', m: 'm1', b: 'b1' }, to: 'c', ends: '()' },
+        { f: { family: 'linear', m: 'm2', b: 'b2' }, from: 'c', ends: '[)' },
+      ],
+      limit: { x: 'c' },
+    },
+  },
+  {
+    id: 'm.12.limits-intro~derivative',
+    title: 'From a secant slope to the derivative',
+    use: 'Use this for “Find the slope of the secant of x² from 3 to 3.1, then the derivative at 3.”',
+    assumptions: [
+      'The secant through (x, f(x)) and (x + h, f(x + h)) has slope (f(x + h) − f(x)) ÷ h.',
+      'For f(x) = ax² + bx + c that slope is 2ax + b + ah.',
+      'As h → 0 the secant turns into the tangent, and its slope into the derivative 2ax + b.',
+    ],
+    variables: [
+      real('a', 'a', 'Number before x²', -10, 10),
+      real('b', 'b', 'Number before x', -50, 50),
+      real('c', 'c', 'Constant', -100, 100),
+      real('x', 'x', 'The point’s x', -10, 10),
+      real('h', 'h', 'Step to the second point', -5, 5),
+      V('m', 'm', 'Secant slope', { min: -10000, max: 10000, step: 0.0001, derived: true }),
+      V('d', 'f′(x)', 'Derivative, the tangent’s slope', {
+        min: -10000,
+        max: 10000,
+        step: 0.0001,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      limit('h ≠ 0', 'The step {h} is not 0', ['h'], (v) => v.h !== 0),
+      withStep(
+        derive(
+          'm = (f(x + h) − f(x)) ÷ h',
+          '{m} = (f({x} + {h}) − f({x})) ÷ {h}, with f(x) = {a}x² + {b}x + {c}',
+          'm',
+          ['a', 'b', 'c', 'x', 'h'],
+          (v) => div(quad(v, v.x! + v.h!) - quad(v, v.x!), v.h!),
+          '(({a} × ({x} + {h})² + {b} × ({x} + {h}) + {c}) − ({a} × {x}² + {b} × {x} + {c})) ÷ {h}',
+          'The rise from (x, f(x)) to (x + h, f(x + h)) over the run h.',
+        ),
+        'm',
+        {
+          work: (v) => [
+            `f(${fmt(v.x! + v.h!)}) − f(${fmt(v.x!)}) = ${fmt(quad(v, v.x! + v.h!))} − ${fmt(quad(v, v.x!))} = ${fmt(quad(v, v.x! + v.h!) - quad(v, v.x!))}`,
+          ],
+        },
+      ),
+      derive(
+        'f′(x) = 2ax + b',
+        '{d} = 2 × {a} × {x} + {b}',
+        'd',
+        ['a', 'x', 'b'],
+        (v) => 2 * v.a! * v.x! + v.b!,
+        '2 × {a} × {x} + {b}',
+        'The secant slope is 2ax + b + ah; let h shrink to 0.',
+      ),
+    ),
+    example: { a: 1, b: 0, c: 0, x: 3, h: 0.1, m: 6.1, d: 6 },
+    startWith: ['a', 'b', 'c', 'x', 'h'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 'a',
+      b: 'b',
+      c: 'c',
+      secant: { x: 'x', h: 'h', slope: 'm' },
+    },
+  },
+  {
+    id: 'm.12.limits-intro~infinity',
+    title: 'Limits at infinity',
+    use: 'Use this for “Find the limit of (2x + 1) ÷ (x − 3) as x → ∞.”',
+    assumptions: [
+      'For (px + q) ÷ (rx + s), far out the x terms swamp the constants: f(x) approaches p ÷ r.',
+      'So y = p ÷ r is a horizontal asymptote; x = −s ÷ r is a vertical one.',
+      'Try x = 1000: f(1000) is already close to the limit.',
+    ],
+    variables: [
+      real('p', 'p', 'Number before x on top', -50, 50),
+      real('q', 'q', 'Constant on top', -100, 100),
+      real('r', 'r', 'Number before x below', -50, 50),
+      real('s', 's', 'Constant below', -100, 100),
+      V('z', 'z', 'Zero, −q ÷ p', { min: -10000, max: 10000, step: 0.0001, derived: true }),
+      V('v', 'v', 'Vertical asymptote, −s ÷ r', {
+        min: -10000,
+        max: 10000,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('L', 'L', 'Limit as x → ∞', { min: -10000, max: 10000, step: 0.0001, derived: true }),
+      real('x', 'x', 'A large x', -1000000, 1000000),
+      real('y', 'f(x)', 'f(x) there', -1e9, 1e9),
+    ],
+    ...rels(
+      limit('p, r ≠ 0', 'Both {p} and {r} are not 0', ['p', 'r'], (v) => v.p !== 0 && v.r !== 0),
+      limit(
+        'no common factor',
+        'The zero −{q} ÷ {p} is not the pole −{s} ÷ {r}',
+        ['p', 'q', 'r', 's'],
+        (v) => v.q! * v.r! !== v.s! * v.p!,
+      ),
+      limit(
+        'x ≠ v',
+        'f has no value at x = −{s} ÷ {r}, so {x} is not there',
+        ['x', 'r', 's'],
+        (v) => v.r! * v.x! + v.s! !== 0,
+      ),
+      derive(
+        'z = −q ÷ p',
+        '{z} = −{q} ÷ {p}',
+        'z',
+        ['q', 'p'],
+        (v) => div(-v.q!, v.p!),
+        '−{q} ÷ {p}',
+        'The top is 0 there: px + q = 0.',
+      ),
+      derive(
+        'v = −s ÷ r',
+        '{v} = −{s} ÷ {r}',
+        'v',
+        ['s', 'r'],
+        (v) => div(-v.s!, v.r!),
+        '−{s} ÷ {r}',
+        'The bottom is 0 there: rx + s = 0.',
+      ),
+      derive(
+        'L = p ÷ r',
+        '{L} = {p} ÷ {r}',
+        'L',
+        ['p', 'r'],
+        (v) => div(v.p!, v.r!),
+        '{p} ÷ {r}',
+        'Divide top and bottom by x: q ÷ x and s ÷ x go to 0, leaving p ÷ r.',
+      ),
+      rel(
+        'f(x) = (px + q) ÷ (rx + s)',
+        '{y} = ({p} × {x} + {q}) ÷ ({r} × {x} + {s})',
+        ['y', 'p', 'x', 'q', 'r', 's'],
+        (v) => v.y! * (v.r! * v.x! + v.s!) - (v.p! * v.x! + v.q!),
+        {
+          y: [
+            (v) => div(v.p! * v.x! + v.q!, v.r! * v.x! + v.s!),
+            '({p} × {x} + {q}) ÷ ({r} × {x} + {s})',
+            'Put x into the function.',
+          ],
+        },
+      ),
+    ),
+    example: { p: 2, q: 1, r: 1, s: -3, z: -0.5, v: 3, L: 2, x: 1000, y: 2001 / 997 },
+    startWith: ['p', 'q', 'r', 's', 'x'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      a: 'L',
+      zeros: ['z'],
+      poles: ['v'],
+      shows: { ha: 'L' },
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
@@ -3088,6 +3390,7 @@ export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_POLAR,
   ...MATH_12_PARAMETRIC,
   ...MATH_12_MATRICES,
+  ...MATH_12_LIMITS,
   ...MATH_12_CONICS,
   ...MATH_12_STATS,
 ];

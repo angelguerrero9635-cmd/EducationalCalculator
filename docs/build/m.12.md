@@ -24,6 +24,7 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 - `m.12.polar` (6): main (polar point), `~complex-form`, `~product`, `~de-moivre`, `~rose`,
   `~limacon`.
 - `m.12.parametric` (3): main (a line), `~ellipse`, `~projectile`.
+- `m.12.limits-intro` (4): main (a hole), `~one-sided`, `~derivative`, `~infinity`.
 
 ## Waiting
 
@@ -95,6 +96,14 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   value with a unit (it would pass any unit check), so the example is 20 m/s at 30° from 1 m:
   at t = 1 s, x ≈ 17.32 m and y = 1 + 10 − 4.9 = 6.1 m; it lands at
   T = (10 + √119.6) ÷ 9.8 ≈ 2.14 s. From the ground (h = 0) T = 20 ÷ 9.8 ≈ 2.04 s, as planned.
+
+- **`~infinity` keeps z and v (need 11 interim).** The rational graph is drawn from its zero,
+  pole and stretch L, so z = −q ÷ p and v = −s ÷ r are worked out; the page adds limits that p
+  and r are not 0 and that the zero is not the pole.
+- **The table of values is work lines.** The main limits page lists f(x) at x = a − 0.1,
+  a − 0.01 and a + 0.01 under the limit's step (2.9, 2.99, 3.01 in the example).
+- **`~one-sided` says whether f is continuous** in a note after J (0: continuous; else no
+  limit).
 
 ## Shared needs found while building
 
