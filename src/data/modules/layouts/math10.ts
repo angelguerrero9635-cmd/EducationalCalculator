@@ -4,6 +4,96 @@
  */
 import type { LayoutDef } from './types';
 
+// ── Constructions (G-CO.1, G-CO.12, G-CO.13) ──
+const CONSTRUCTIONS: LayoutDef[] = [
+  {
+    kind: 'sequence',
+    id: 'm.10.constructions~bisector-steps',
+    title: 'Construct a perpendicular bisector',
+    use: 'Use this for “What is the next step in constructing the perpendicular bisector of AB?”',
+    assumptions: [
+      'Only a compass and a straightedge: no ruler marks and no protractor.',
+      'Every point where the arcs cross is the same distance from A and from B.',
+      'The line through two such points is the perpendicular bisector.',
+    ],
+    question: 'Put the steps in order, first step first.',
+    stages: [
+      { label: 'Open the compass to more than half of AB' },
+      { label: 'Draw an arc from A across the segment' },
+      { label: 'Keep the same opening and draw an arc from B' },
+      { label: 'Mark where the two arcs cross, above and below' },
+      { label: 'Draw the line through the two crossings' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'm.10.constructions~angle-bisector-steps',
+    title: 'Bisect an angle',
+    use: 'Use this for “Put the steps for bisecting ∠AOB with a compass in order.”',
+    assumptions: [
+      'The first arc makes OA = OB; the two equal arcs from A and B make AP = BP.',
+      'So △AOP ≅ △BOP by SSS, and ray OP splits the angle into two equal halves.',
+    ],
+    question: 'Put the steps in order, first step first.',
+    stages: [
+      { label: 'Draw an arc from O that crosses both sides, at A and B' },
+      { label: 'From A, draw an arc inside the angle' },
+      { label: 'With the same opening, draw an arc from B that crosses it at P' },
+      { label: 'Draw ray OP' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.10.constructions~angle-bisector-facts',
+    title: 'What the angle bisector construction guarantees',
+    use: 'Use this for “After bisecting ∠AOB with a compass, which statements must be true?”',
+    assumptions: [
+      'The first arc from O cuts the sides at A and B; the equal arcs from A and B cross at P.',
+      'Only what the equal compass openings make equal is guaranteed.',
+    ],
+    question: 'Is the statement always true after the construction?',
+    bins: [
+      {
+        id: 'always',
+        label: 'Always true',
+        why: 'The compass openings make it so, whatever the angle.',
+      },
+      {
+        id: 'not',
+        label: 'Not always true',
+        why: 'It depends on the angle or on how wide the compass was opened.',
+      },
+    ],
+    cards: [
+      { label: 'OA = OB', bin: 'always' },
+      { label: 'AP = BP', bin: 'always' },
+      { label: 'm∠AOP = m∠BOP', bin: 'always' },
+      { label: '△AOP ≅ △BOP', bin: 'always' },
+      { label: 'AB = BP', bin: 'not' },
+      { label: 'OB = BP', bin: 'not' },
+      { label: 'OP = AB', bin: 'not' },
+      { label: '∠AOB is a right angle', bin: 'not' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'm.10.constructions~find-center',
+    title: 'Find the center of a circle',
+    use: 'Use this for “How can you find the center of a circle with a compass and straightedge?”',
+    assumptions: [
+      'The perpendicular bisector of any chord passes through the center.',
+      'Two bisectors that aren’t parallel cross at exactly one point: the center.',
+    ],
+    question: 'Put the steps in order, first step first.',
+    stages: [
+      { label: 'Draw two chords that aren’t parallel' },
+      { label: 'Construct the perpendicular bisector of each chord' },
+      { label: 'Mark where the two bisectors cross: the center' },
+      { label: 'Check: the center is the same distance from every point on the circle' },
+    ],
+  },
+];
+
 // ── Similarity (G-SRT.2–5) ──
 const SIMILARITY: LayoutDef[] = [
   {
@@ -130,4 +220,4 @@ const VOLUME: LayoutDef[] = [
   },
 ];
 
-export const MATH_10_LAYOUTS: LayoutDef[] = [...SIMILARITY, ...VOLUME];
+export const MATH_10_LAYOUTS: LayoutDef[] = [...CONSTRUCTIONS, ...SIMILARITY, ...VOLUME];

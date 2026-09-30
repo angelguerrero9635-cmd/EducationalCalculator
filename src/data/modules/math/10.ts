@@ -5,6 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md, docs/build/m.10.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math10.ts`.
  */
+import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { ModuleDef, StepText } from '../types';
@@ -2973,7 +2974,220 @@ const PROBABILITY_RULES: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.constructions ──────────────────────────────────────────────────────
+
+/** p·x + q = r·x + s solved for x (the letter on both sides). */
+const bothSides = (x: string) => {
+  const r = rule(
+    `${x}: px + q = rx + s`,
+    `{p} × {${x}} + {q} = {r} × {${x}} + {s}`,
+    {
+      [x]: [
+        (v) => quot(v.s! - v.q!, v.p! - v.r!),
+        '({s} − {q}) ÷ ({p} − {r})',
+        'Take the same x and the same number from both sides, then divide by the x left.',
+      ],
+    },
+    (v) => v.p! * v[x]! + v.q! - (v.r! * v[x]! + v.s!),
+    {
+      message: (v: Values) =>
+        v.p === v.r && v.p !== undefined
+          ? 'The x terms are the same on both sides, so no single x makes them equal.'
+          : undefined,
+    },
+  );
+  const fmt = (n: number) => formatNumber(n);
+  // "3x", "x", "−x"; a negative is added back ("Add 7"), never "Take −7".
+  const xs = (k: number) => (k === 1 ? 'x' : k === -1 ? '−x' : `${fmt(k)}x`);
+  const move = (k: number, text: (n: number) => string) =>
+    k < 0 ? `Add ${text(-k)} to both sides` : `Take ${text(k)} from both sides`;
+  r.steps[x]!.work = (v: Values) => {
+    const left = v.p! - v.r!;
+    const plus = v.q! < 0 ? ` − ${fmt(-v.q!)}` : v.q! > 0 ? ` + ${fmt(v.q!)}` : '';
+    return [
+      `${move(v.r!, xs)}: ${xs(left)}${plus} = ${fmt(v.s!)}`,
+      ...(v.q ? [`${move(v.q!, fmt)}: ${xs(left)} = ${fmt(v.s! - v.q!)}`] : []),
+    ];
+  };
+  r.steps[x]!.written = false;
+  return r;
+};
+const coefficient = (id: string, name: string) =>
+  num(id, id, name, 1, 20, { step: 1, integer: true });
+const constant = (id: string, name: string, lim: number) =>
+  num(id, id, name, -lim, lim, { step: 1, integer: true });
+
+const CONSTRUCTIONS: ModuleDef[] = [
+  page({
+    id: 'm.10.constructions',
+    assumptions: [
+      'B is on segment AC, between A and C.',
+      'Then the two parts add to the whole: AB + BC = AC (the Segment Addition Postulate).',
+      'Lengths add only along one line: with B off the line, AB + BC is more than AC.',
+    ],
+    variables: [
+      len('ab', 'AB', 'AB', 1000, { unit: 'cm', min: 0.1 }),
+      len('bc', 'BC', 'BC', 1000, { unit: 'cm', min: 0.1 }),
+      len('ac', 'AC', 'AC', 2000, { unit: 'cm', min: 0.2 }),
+    ],
+    rules: [sum('ac', 'ab', 'bc', 'The two parts of the segment add to the whole.')],
+    example: { ab: 4.5, bc: 7, ac: 11.5 },
+    startWith: ['ab', 'bc'],
+    representation: {
+      kind: 'markedFigure',
+      points: { A: [0, 0], B: ['ab', 0], C: ['ac', 0] },
+      parts: [
+        { segment: 'AC' },
+        { label: 'AB', value: 'ab' },
+        { label: 'BC', value: 'bc' },
+        { label: 'AC', value: 'ac', inCaption: true },
+      ],
+    },
+  }),
+  page({
+    id: 'm.10.constructions~midpoint',
+    title: 'Midpoint with an unknown',
+    use: 'Use this for “M is the midpoint of AC, AM = 3x + 1 and MC = 5x − 7. Find x, AM and AC.”',
+    assumptions: [
+      'M is the midpoint, so AM = MC: set the two expressions equal and solve for x.',
+      'Put x back into AM, then AC is twice AM.',
+      'A length can’t be 0 or less, so check AM is positive.',
+    ],
+    variables: [
+      coefficient('p', 'x coefficient of AM'),
+      constant('q', 'Number in AM', 50),
+      coefficient('r', 'x coefficient of MC'),
+      constant('s', 'Number in MC', 50),
+      der(num('x', 'x', 'x', -1000, 1000)),
+      der(num('am', 'AM', 'AM', 0.001, 100000)),
+      der(num('ac', 'AC', 'AC', 0.002, 200000)),
+    ],
+    rules: [
+      bothSides('x'),
+      derive(
+        'AM = px + q',
+        '{am} = {p} × {x} + {q}',
+        'am',
+        (v) => v.p! * v.x! + v.q!,
+        '{p} × {x} + {q}',
+        'Put x back into AM.',
+      ),
+      limit(
+        'AM > 0',
+        '{am} is more than 0',
+        (v) => v.am! > 0,
+        'A length can’t be 0 or less: this x gives no segment.',
+      ),
+      derive(
+        'AC = 2 × AM',
+        '{ac} = 2 × {am}',
+        'ac',
+        (v) => 2 * v.am!,
+        '2 × {am}',
+        'M is the middle, so AC is twice AM.',
+      ),
+    ],
+    example: { p: 3, q: 1, r: 5, s: -7, x: 4, am: 13, ac: 26 },
+    startWith: ['p', 'q', 'r', 's'],
+    equation: '{p}x + {q} = {r}x + {s}',
+    representation: {
+      kind: 'markedFigure',
+      points: { A: [0, 0], M: ['am', 0], C: ['ac', 0] },
+      parts: [
+        { segment: 'AC' },
+        { ticks: 'AM', count: 1 },
+        { ticks: 'MC', count: 1 },
+        { label: 'AM', value: 'am' },
+        { label: 'AC', value: 'ac', inCaption: true },
+      ],
+    },
+  }),
+  page({
+    id: 'm.10.constructions~angle-addition',
+    title: 'Angle addition',
+    use: 'Use this for “m∠AOB = 38° and m∠BOC = 47°. Find m∠AOC.”',
+    assumptions: [
+      'Ray OB is inside ∠AOC, so the two angles add to the whole: m∠AOB + m∠BOC = m∠AOC.',
+      'A bisector cuts the angle into two equal halves: then m∠AOB = m∠BOC.',
+    ],
+    variables: [
+      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 359.9),
+      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 359.9),
+      deg('c', 'm∠AOC', 'm∠AOC', 0.2, 360),
+    ],
+    rules: [sum('c', 'a', 'b', 'The two angles side by side add to the whole angle.')],
+    example: { a: 38, b: 47, c: 85 },
+    startWith: ['a', 'b'],
+    equation: '{a}° + {b}° = {c}°',
+    representation: { kind: 'angles', parts: ['a', 'b'], whole: 'c' },
+  }),
+  page({
+    id: 'm.10.constructions~perpendicular-bisector',
+    title: 'Construct a perpendicular bisector',
+    use: 'Use this for “Construct the perpendicular bisector of a 6 cm segment with the compass open to 4 cm.”',
+    assumptions: [
+      'Open the compass wider than half of AB; draw an arc from A and one from B.',
+      'The arcs cross at P, the same distance r from A and B. The line through P at right angles to AB bisects it at M.',
+      'P is h above M, and the right triangle AMP gives h² + AM² = r².',
+    ],
+    variables: [
+      len('ab', 'AB', 'Segment AB', 1000, { unit: 'cm', min: 0.1 }),
+      len('r', 'r', 'Compass opening r', 1000, { unit: 'cm', min: 0.1 }),
+      der(len('m', 'AM', 'AM', 500, { unit: 'cm' })),
+      der(len('h', 'MP', 'MP', 1000, { unit: 'cm' })),
+    ],
+    rules: [
+      derive(
+        'AM = AB/2',
+        '{m} = {ab} ÷ 2',
+        'm',
+        (v) => v.ab! / 2,
+        '{ab} ÷ 2',
+        'M is the middle of AB.',
+      ),
+      limit(
+        'r > AM',
+        '{r} is more than {m}',
+        (v) => v.r! > v.m!,
+        'The compass must open more than half of AB, or the arcs miss each other.',
+      ),
+      derive(
+        'MP² = r² − AM²',
+        '{h}² = {r}² − {m}²',
+        'h',
+        (v) => root(v.r! ** 2 - v.m! ** 2),
+        '√({r}² − {m}²)',
+        'The right triangle AMP: the compass opening r is its hypotenuse.',
+      ),
+    ],
+    example: { ab: 6, r: 4, m: 3, h: Math.sqrt(7) },
+    startWith: ['ab', 'r'],
+    representation: {
+      kind: 'markedFigure',
+      points: { A: [0, 0], B: ['ab', 0], M: ['m', 0], P: ['m', 'h'] },
+      parts: [
+        { circle: 'A', through: 'P', dashed: true },
+        { circle: 'B', through: 'P', dashed: true },
+        { segment: 'AB' },
+        { segment: 'AP', dashed: true },
+        { segment: 'BP', dashed: true },
+        { line: 'MP' },
+        { ticks: 'AM', count: 1 },
+        { ticks: 'MB', count: 1 },
+        { ticks: 'AP', count: 2 },
+        { ticks: 'BP', count: 2 },
+        { right: 'PMB' },
+        { label: 'AB', value: 'ab', inCaption: true },
+        { label: 'AM', value: 'm' },
+        { label: 'MP', value: 'h', inCaption: true },
+        { label: 'AP', value: 'r' },
+      ],
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
+  ...CONSTRUCTIONS,
   ...SIMILARITY,
   ...SPECIAL,
   ...TRIG,
