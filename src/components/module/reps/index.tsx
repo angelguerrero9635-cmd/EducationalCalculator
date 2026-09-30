@@ -142,6 +142,7 @@ import { AlgebraTiles } from './AlgebraTiles';
 import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
 import { PunnettHs } from './PunnettHs';
+import { MotionGraphHs } from './MotionGraphHs';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -199,6 +200,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'functionGraph':
       return <FunctionGraph spec={spec} calc={calc} />;
     case 'motionGraph':
+      if (spec.kinematics && spec.graph === 'speed')
+        return <MotionGraphHs spec={spec} k={spec.kinematics} calc={calc} />;
       return <MotionGraph spec={spec} calc={calc} />;
     case 'normalCurve':
       return <NormalCurve spec={spec} calc={calc} />;

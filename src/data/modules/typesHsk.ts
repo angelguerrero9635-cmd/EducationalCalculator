@@ -1,0 +1,60 @@
+/**
+ * Picture specs for the Grades 9–12 physics pictures of group HK (H58–H70 in
+ * `pictureRequestsHs.ts`), kept apart from `types.ts` so that file's union only names them. A
+ * `NumOrVar` field is a fixed number or a variable id; every other string is a variable id.
+ */
+import type { NumOrVar } from './typesGraphs';
+
+const ids = (...xs: (NumOrVar | undefined)[]) =>
+  xs.filter((x): x is string => typeof x === 'string');
+
+// ─── H58 motionGraph (an option on the Grade 8 speed graph) ─────────────────
+
+/**
+ * High-school kinematics on a `motionGraph` with `graph: 'speed'` (its `start` is v₀, `speed`
+ * the velocity v at the end of `time`, `acceleration` a and `distance` the displacement Δx).
+ * Velocities are signed: a line that crosses the time axis turns the object round.
+ *
+ * - `view: 'velocity'`: v against t; the area between the line and the axis is shaded as the
+ *   displacement, above the axis +, below it −, each part labelled, the net Δx and the distance
+ *   travelled (the parts' sizes added) in the caption.
+ * - `view: 'position'`: x against t, the curve x = x₀ + v₀t + ½at², and its tangent at time
+ *   `at` whose slope is the velocity then (`slope`, v = v₀ + a × t₁), with a rise/run triangle.
+ *   Drag the tangent point along the curve.
+ *
+ * Above either graph a strobe motion diagram dots the object's position at equal times, an
+ * arrow on each dot for its velocity (the way back on a second row). `fixed` leaves out the
+ * handles.
+ */
+export interface MotionKinematics {
+  view: 'velocity' | 'position';
+  /** The tangent's time t₁ (position view). */
+  at?: string;
+  /** The velocity at t₁: the tangent's slope. */
+  slope?: string;
+  /** The position at time 0 (default 0). */
+  position?: NumOrVar;
+  /** `false` leaves out the strobe diagram. */
+  strobe?: boolean;
+  fixed?: boolean;
+}
+
+// ─── The union and the variables each picture reads ──────────────────────────
+
+/** New picture kinds of group HK. */
+export type HskSpec = never;
+
+/** Every variable id a group-HK picture reads (for modules.test.ts). */
+export function hskSpecVars(r: HskSpec): string[] {
+  return ids(r);
+}
+
+/** The variable ids the group-HK options on older kinds read (motionGraph, …). */
+export function hskOptionVars(r: { kind: string }): string[] {
+  const o = r as unknown as Record<string, unknown>;
+  if (r.kind === 'motionGraph' && o.kinematics) {
+    const k = o.kinematics as MotionKinematics;
+    return ids(k.at, k.slope, k.position);
+  }
+  return [];
+}

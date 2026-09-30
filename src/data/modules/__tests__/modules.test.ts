@@ -19,6 +19,7 @@ import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
+import { hskOptionVars } from '../typesHsk';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -481,7 +482,7 @@ function representationVars(r: Representation): string[] {
     case 'motionGraph':
     case 'skaters':
     case 'energyTrack':
-      return mechanicsSpecVars(r);
+      return [...mechanicsSpecVars(r), ...hskOptionVars(r)];
     case 'spectrum':
     case 'circuit':
     case 'electromagnet':

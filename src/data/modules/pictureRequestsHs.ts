@@ -916,12 +916,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   ),
 
   // ── F. Physics ──
-  ask(
-    'H58',
-    'motionGraph',
-    'Area under velocity–time shaded as displacement, the tangent slope, a strobe motion diagram',
-    ['s.11.kinematics-1d'],
-  ),
+  {
+    ...ask(
+      'H58',
+      'motionGraph',
+      'Area under velocity–time shaded as displacement, the tangent slope, a strobe motion diagram',
+      ['s.11.kinematics-1d'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-kinematics-1d-velocity',
+      'g.s11-kinematics-1d-turn',
+      'g.s11-kinematics-1d-braking',
+      'g.s11-kinematics-1d-tangent',
+    ],
+    notes:
+      'Drawn (group HK, reps/MotionGraphHs.tsx) as an option on the Grade 8 speed graph, so every current motionGraph page is unchanged. Calculator picture { kind: "motionGraph", graph: "speed", time, acceleration, speed (the velocity v at the end), start (v₀, number or variable), distance? (the displacement Δx), kinematics: { view: "velocity" | "position", at?: t₁ (the tangent’s time, position view), slope?: v₁ (the tangent’s slope), position?: x₀ (default 0), strobe?: false, fixed?: true } }. Velocities are signed. Velocity view: the v–t line, the area to the axis shaded + above and − below, each part labelled; where the line crosses the axis the object turns round (an open dot) and the caption gives the displacement and the distance travelled. Position view: x = x₀ + v₀t + ½at², the tangent at t₁ with a rise/run triangle, its slope = v₀ + at₁; drag the tangent point. Above either: a strobe motion diagram, the position every Δt (1, 2 or 5 × 10ⁿ s) with a velocity arrow on each dot, the way back on a second row. Drawn in SI (m, s, m/s) whatever units the boxes show. The harness checks slope = v₀ + at₁ and Δx = (v₀ + v)/2 × t with signed velocities. Example: representation: { kind: "motionGraph", graph: "speed", time: "t", acceleration: "a", speed: "v", start: "u", distance: "d", kinematics: { view: "velocity" } }.',
+  },
   ask(
     'H59',
     'projectile',

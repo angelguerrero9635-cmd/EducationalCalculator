@@ -3,6 +3,7 @@
  * file's union only lists them). A `NumOrVar` field is a fixed number or a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
+import type { MotionKinematics } from './typesHsk';
 
 /**
  * A motion graph with time across. `graph: 'distance'`: distance against time, a straight line
@@ -19,6 +20,8 @@ export type MotionGraphSpec = {
   extent?: { time: number; value: number };
   /** `false` leaves out the strip of positions. */
   strip?: boolean;
+  /** Grades 9–12 (H58): signed velocity, displacement areas, a tangent (`typesHsk.ts`). */
+  kinematics?: MotionKinematics;
 } & (
   | {
       graph: 'distance';

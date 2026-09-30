@@ -45,6 +45,7 @@ import {
   transformationHsfIssues,
 } from './picturesHsf';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
+import { motionKinematicsIssues } from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2046,7 +2047,8 @@ export function repIssues(
           out.push(`motion graph ends at ${end}, not start + slope × time = ${want}`);
       }
       if (rep.graph === 'speed') {
-        for (const v of [start, end])
+        out.push(...motionKinematicsIssues(rep, (id) => fv(id)));
+        for (const v of rep.kinematics ? [] : [start, end])
           if (v !== undefined && v < 0) out.push(`speed ${v} is below 0 on a speed-time graph`);
         const d = rep.distance ? fv(rep.distance) : undefined;
         if (d !== undefined && [t, start, end].every((x) => x !== undefined)) {
