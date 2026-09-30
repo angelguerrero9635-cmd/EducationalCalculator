@@ -682,6 +682,235 @@ const ECOSYSTEMS: LayoutDef[] = [
   },
 ];
 
+const HOMEOSTASIS: LayoutDef[] = [
+  // ── Body systems, homeostasis and feedback loops (HS-LS1-2, HS-LS1-3) ──
+  {
+    kind: 'explore',
+    id: 's.9.homeostasis',
+    assumptions: [
+      'Homeostasis keeps conditions inside the body near a set point, such as about 37 °C.',
+      'Negative feedback undoes the change and switches off once the set point returns.',
+      'Positive feedback makes the change grow until an event ends it.',
+    ],
+    figure: { kind: 'feedbackLoop' },
+    scenes: [
+      {
+        label: 'Too hot',
+        lines: [
+          'During exercise the rise in temperature is the stimulus, and sweating is the response.',
+          'The response undoes the stimulus, so this is negative feedback.',
+        ],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 2,
+          steps: [
+            {
+              role: 'Stimulus',
+              text: 'Body temperature rises above its set point during exercise.',
+            },
+            { role: 'Sensor', text: 'Nerve endings in the skin and brain detect the rise.' },
+            { role: 'Control center', text: 'The hypothalamus compares it with the set point.' },
+            { role: 'Effector', text: 'Sweat glands release sweat; skin blood vessels widen.' },
+            {
+              role: 'Response',
+              text: 'Sweat evaporates and blood sheds heat, so temperature falls.',
+            },
+          ],
+        },
+      },
+      {
+        label: 'Too cold',
+        lines: ['The same control center answers a drop: now the effectors make and keep heat.'],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 3,
+          steps: [
+            { role: 'Stimulus', text: 'Body temperature falls below its set point.' },
+            { role: 'Sensor', text: 'Nerve endings in the skin and brain detect the drop.' },
+            { role: 'Control center', text: 'The hypothalamus signals the body to save heat.' },
+            { role: 'Effector', text: 'Muscles shiver; skin blood vessels narrow.' },
+            { role: 'Response', text: 'More heat is made and less is lost, so temperature rises.' },
+          ],
+        },
+      },
+      {
+        label: 'Blood sugar high',
+        lines: [
+          'After a meal the pancreas releases insulin, and glucose leaves the blood.',
+          'Once glucose is back near normal, insulin release slows: negative feedback.',
+        ],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 2,
+          steps: [
+            { role: 'Stimulus', text: 'Blood glucose rises after a meal.' },
+            { role: 'Sensor', text: 'Beta cells in the pancreas detect the high glucose.' },
+            { role: 'Control center', text: 'The pancreas releases insulin into the blood.' },
+            {
+              role: 'Effector',
+              text: 'Body cells take in glucose; the liver stores it as glycogen.',
+            },
+            { role: 'Response', text: 'Blood glucose falls back toward normal.' },
+          ],
+        },
+      },
+      {
+        label: 'Blood sugar low',
+        lines: ['Between meals, glucagon tells the liver to release the glucose it stored.'],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 3,
+          steps: [
+            { role: 'Stimulus', text: 'Blood glucose falls between meals.' },
+            { role: 'Sensor', text: 'Alpha cells in the pancreas detect the low glucose.' },
+            { role: 'Control center', text: 'The pancreas releases glucagon into the blood.' },
+            { role: 'Effector', text: 'The liver breaks down glycogen and releases glucose.' },
+            { role: 'Response', text: 'Blood glucose rises back toward normal.' },
+          ],
+        },
+      },
+      {
+        label: 'Water balance',
+        lines: [
+          'When blood is too concentrated, ADH tells the kidneys to return more water to the blood.',
+          'The urine becomes darker and smaller in amount until the balance returns.',
+        ],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 3,
+          steps: [
+            { role: 'Stimulus', text: 'The blood becomes too concentrated, as after sweating.' },
+            { role: 'Sensor', text: 'Cells in the hypothalamus detect the change.' },
+            { role: 'Control center', text: 'The pituitary gland releases ADH.' },
+            { role: 'Effector', text: 'The kidneys return more water to the blood.' },
+            { role: 'Response', text: 'The blood is diluted back toward normal.' },
+          ],
+        },
+      },
+      {
+        label: 'Childbirth',
+        lines: [
+          'Each contraction brings a stronger one: the response adds to the stimulus.',
+          'This positive feedback grows until the baby is born, which ends it.',
+        ],
+        loop: {
+          sign: 'positive',
+          back: 'positive feedback',
+          steps: [
+            { role: 'Stimulus', text: 'The baby’s head stretches the cervix.' },
+            { role: 'Sensor', text: 'Stretch receptors send signals to the brain.' },
+            { role: 'Control center', text: 'The pituitary gland releases oxytocin.' },
+            { role: 'Effector', text: 'The muscles of the uterus contract harder.' },
+            { role: 'Response', text: 'The head stretches the cervix more.' },
+          ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.homeostasis~systems',
+    title: 'Which body system does it?',
+    use: 'Use this for “Which organ system filters the blood and controls the water in it?”',
+    assumptions: [
+      'The nervous and endocrine systems coordinate the rest: nerves by fast signals, glands by hormones in the blood.',
+      'Body systems work together to keep homeostasis.',
+    ],
+    question: 'Which system does the job?',
+    bins: [
+      { id: 'nervous', label: 'Nervous', why: 'Neurons carry fast electrical signals.' },
+      { id: 'endocrine', label: 'Endocrine', why: 'Glands release hormones into the blood.' },
+      { id: 'circulatory', label: 'Circulatory', why: 'Blood carries gases, food and heat.' },
+      { id: 'respiratory', label: 'Respiratory', why: 'The lungs trade O₂ and CO₂ with the air.' },
+      {
+        id: 'excretory',
+        label: 'Excretory',
+        why: 'The kidneys remove wastes and set the blood’s water.',
+      },
+      { id: 'digestive', label: 'Digestive', why: 'Food is broken down and absorbed.' },
+    ],
+    cards: [
+      { label: 'Neurons carry signals from sense receptors', bin: 'nervous' },
+      { label: 'A reflex pulls a hand away from heat', bin: 'nervous' },
+      { label: 'The pancreas releases insulin', bin: 'endocrine' },
+      { label: 'Adrenal glands release adrenaline', bin: 'endocrine' },
+      { label: 'Red blood cells carry oxygen', bin: 'circulatory' },
+      { label: 'Skin blood vessels widen to release heat', bin: 'circulatory' },
+      { label: 'Alveoli exchange O₂ and CO₂', bin: 'respiratory' },
+      { label: 'Faster breathing removes extra CO₂', bin: 'respiratory' },
+      { label: 'Kidneys filter urea from the blood', bin: 'excretory' },
+      { label: 'Kidneys adjust the water in urine', bin: 'excretory' },
+      { label: 'Enzymes break food into small molecules', bin: 'digestive' },
+      { label: 'The small intestine absorbs glucose', bin: 'digestive' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.homeostasis~feedback-types',
+    title: 'Negative or positive feedback?',
+    use: 'Use this for “Once blood sodium is normal, the hormone stops. What kind of feedback is it?”',
+    assumptions: [
+      'Negative feedback works against a change and stops when the set point returns.',
+      'Positive feedback adds to a change until an event, such as a birth, ends it.',
+    ],
+    question: 'Does the response undo the change or add to it?',
+    bins: [
+      {
+        id: 'negative',
+        label: 'Negative feedback',
+        why: 'The response undoes the change, keeping a value near its set point.',
+      },
+      {
+        id: 'positive',
+        label: 'Positive feedback',
+        why: 'The response makes the change bigger, until something ends it.',
+      },
+    ],
+    cards: [
+      { label: 'Sweating when hot', bin: 'negative' },
+      { label: 'Shivering when cold', bin: 'negative' },
+      { label: 'Insulin after a meal', bin: 'negative' },
+      { label: 'Glucagon between meals', bin: 'negative' },
+      { label: 'ADH when dehydrated', bin: 'negative' },
+      { label: 'Aldosterone stops once blood sodium is normal', bin: 'negative' },
+      { label: 'Contractions during childbirth', bin: 'positive' },
+      { label: 'Platelets calling more platelets to a cut', bin: 'positive' },
+      { label: 'Ripe fruit releasing ethylene that ripens nearby fruit', bin: 'positive' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.homeostasis~blood-glucose',
+    title: 'Blood glucose after a meal',
+    use: 'Use this to record or read blood glucose after a meal and see insulin bring it back.',
+    assumptions: [
+      'A healthy fasting level is about 70–99 mg/dL; these values are typical, not a diagnosis.',
+      'Insulin from the pancreas lets cells take in glucose, so the level falls back.',
+    ],
+    columns: ['0 min', '30 min', '60 min', '90 min', '120 min', '150 min'],
+    rowLabel: 'Blood glucose',
+    unit: 'mg/dL',
+    max: 200,
+    step: 5,
+    initial: [85, 135, 120, 100, 90, 85],
+    pattern: (v) => {
+      const peak = Math.max(...v);
+      const at = v.indexOf(peak);
+      const last = v[v.length - 1]!;
+      if (at > 0 && at < v.length - 1 && last < peak)
+        return `Glucose peaks at ${peak} mg/dL ${at * 30} minutes after the meal, then insulin brings it back near ${last}.`;
+      if (v.every((x) => x === v[0]))
+        return 'The level stayed flat; after a real meal it rises first, then falls back.';
+      return 'A healthy curve rises after the meal, peaks, then falls back as insulin acts.';
+    },
+  },
+];
+
 export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
@@ -689,4 +918,5 @@ export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...MEMBRANE,
   ...DIVISION,
   ...ECOSYSTEMS,
+  ...HOMEOSTASIS,
 ];

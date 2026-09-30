@@ -16,6 +16,8 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   sort).
 - `s.9.ecosystem-dynamics`: 4 (main trophic-efficiency and ~biodiversity calculators;
   ~succession sequence; ~nitrogen explore).
+- `s.9.homeostasis`: 4 (main feedback-loop explore with 6 scenes; ~systems and ~feedback-types
+  sorts; ~blood-glucose observe).
 
 ## Waiting
 
