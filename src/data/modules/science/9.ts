@@ -429,6 +429,114 @@ const MEMBRANE: ModuleDef[] = [
   },
 ];
 
+const DIVISION: ModuleDef[] = [
+  // ── The cell cycle and its control (HS-LS1-4) ──
+  {
+    id: 's.9.mitosis-meiosis~mitotic-index',
+    title: 'Mitotic index',
+    use: 'Use this for “20 of 100 root-tip cells are in mitosis. How long does mitosis last in a 24-hour cycle?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The cells are counted in one field of a root tip under a microscope, each in the phase it was in when fixed.',
+      'Cells divide at random times, so the share of cells in a phase is the share of the cycle spent in it.',
+      'The mitotic index is the percent of cells in mitosis; a fast-growing tissue, or a tumor, has a high one.',
+    ],
+    variables: [
+      count('I', 'I', 'Cells in interphase', 0, 1000),
+      count('P', 'P', 'Cells in prophase', 0, 500),
+      count('M', 'M', 'Cells in metaphase', 0, 500),
+      count('A', 'A', 'Cells in anaphase', 0, 500),
+      count('T', 'T', 'Cells in telophase', 0, 500),
+      count('N', 'N', 'Cells counted', 1, 3000, true),
+      count('m', 'm', 'Cells in mitosis', 0, 2000, true),
+      {
+        id: 'x',
+        symbol: 'x',
+        name: 'Mitotic index',
+        unit: '%',
+        min: 0,
+        max: 100,
+        step: 0.1,
+        derived: true,
+      },
+      {
+        id: 'h',
+        symbol: 'h',
+        name: 'Length of one cycle',
+        unit: 'h',
+        units: ['h'],
+        min: 1,
+        max: 100,
+        step: 0.5,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time in mitosis',
+        unit: 'h',
+        units: ['h'],
+        min: 0,
+        max: 100,
+        step: 0.01,
+        derived: true,
+      },
+    ],
+    ...rules(
+      forward(
+        'N = I + P + M + A + T',
+        '{N} = {I} + {P} + {M} + {A} + {T}',
+        'N',
+        ['I', 'P', 'M', 'A', 'T'],
+        (v) => v.I! + v.P! + v.M! + v.A! + v.T!,
+        '{I} + {P} + {M} + {A} + {T}',
+        'Every cell counted is in interphase or in one phase of mitosis.',
+      ),
+      forward(
+        'm = P + M + A + T',
+        '{m} = {P} + {M} + {A} + {T}',
+        'm',
+        ['P', 'M', 'A', 'T'],
+        (v) => v.P! + v.M! + v.A! + v.T!,
+        '{P} + {M} + {A} + {T}',
+        'The cells in any of the four phases of mitosis.',
+      ),
+      forward(
+        'x = 100 × m ÷ N',
+        '{x} = 100 × {m} ÷ {N}',
+        'x',
+        ['m', 'N'],
+        (v) => div(100 * v.m!, v.N!),
+        '100 × {m} ÷ {N}',
+        'The cells in mitosis as a percent of all the cells counted.',
+      ),
+      forward(
+        't = m × h ÷ N',
+        '{t} = {m} × {h} ÷ {N}',
+        't',
+        ['m', 'h', 'N'],
+        (v) => div(v.m! * v.h!, v.N!),
+        '{m} × {h} ÷ {N}',
+        'The share of cells in mitosis, m ÷ N, is the share of the cycle spent in mitosis.',
+      ),
+      limit(
+        'N ≥ 1',
+        '{N} is at least 1',
+        ['N'],
+        (v) => v.N! >= 1,
+        'Count at least one cell: the index is a share of the cells counted.',
+      ),
+    ),
+    example: { I: 80, P: 10, M: 5, A: 3, T: 2, N: 100, m: 20, x: 20, h: 24, t: 4.8 },
+    startWith: ['I', 'P', 'M', 'A', 'T', 'h'],
+    representation: {
+      kind: 'pieChart',
+      parts: ['I', 'P', 'M', 'A', 'T'],
+      total: 'N',
+      group: { id: 'm', parts: ['P', 'M', 'A', 'T'] },
+    },
+  },
+];
+
 const INHERITANCE: ModuleDef[] = [
   // ── Mendelian and non-Mendelian inheritance (HS-LS3-2, HS-LS3-3) ──
   {
@@ -1207,6 +1315,67 @@ const EVOLUTION: ModuleDef[] = [
   },
 ];
 
+const PLANTS: ModuleDef[] = [
+  // ── Plants: water transport (HS-LS1-2) ──
+  {
+    id: 's.9.plant-biology~transpiration',
+    title: 'Transpiration rate',
+    use: 'Use this for “A leafy shoot in a potometer takes up 4.8 mL of water in 6 hours. What is its rate?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A potometer measures the water a cut shoot takes up; nearly all of it leaves the leaves as vapor.',
+      'The rate is steady over the time measured: the light, heat, wind and humidity stay the same.',
+      'More light, heat or wind, or drier air, raises the rate; closing the stomata lowers it.',
+    ],
+    variables: [
+      {
+        id: 'W',
+        symbol: 'W',
+        name: 'Water taken up',
+        unit: 'mL',
+        units: ['mL'],
+        min: 0,
+        max: 100,
+        step: 0.1,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time measured',
+        unit: 'h',
+        units: ['h'],
+        min: 0.5,
+        max: 48,
+        step: 0.5,
+      },
+      {
+        id: 'R',
+        symbol: 'R',
+        name: 'Water taken up each hour',
+        unit: 'mL',
+        units: ['mL'],
+        min: 0,
+        max: 20,
+        step: 0.01,
+      },
+    ],
+    ...rules(
+      both('W = R × t', '{W} = {R} × {t}', ['W', 'R', 't'], (v) => v.W! - v.R! * v.t!, {
+        R: [(v) => div(v.W!, v.t!), '{W} ÷ {t}', 'Share the water over the hours measured.'],
+        W: [(v) => v.R! * v.t!, '{R} × {t}', 'Each hour takes up R mL: multiply by the hours.'],
+        t: [
+          (v) => (v.R! > 0 ? v.W! / v.R! : undefined),
+          '{W} ÷ {R}',
+          'Count how many hours of R mL fit in the water taken up.',
+        ],
+      }),
+    ),
+    example: { W: 4.8, t: 6, R: 0.8 },
+    startWith: ['W', 't'],
+    representation: { kind: 'doubleNumberLine', top: 't', bottom: 'W', per: 'R', ticks: 6 },
+  },
+];
+
 const POPULATION: ModuleDef[] = [
   // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
   {
@@ -1263,6 +1432,12 @@ const POPULATION: ModuleDef[] = [
             work: (v) => {
               const A = (v.K! - v.N0!) / v.N0!;
               const E = Math.exp(v.r! * v.t!);
+              if (v.r! * v.t! > 40)
+                return [
+                  `A = (${fmt(v.K!)} − ${fmt(v.N0!)}) ÷ ${fmt(v.N0!)} = ${fmt(A)}`,
+                  `e^(${fmt(v.r!)} × ${fmt(v.t!)}) = e^${fmt(v.r! * v.t!)}, so large that A ÷ e^(rt) is nearly 0`,
+                  `N = ${fmt(v.K!)} ÷ (1 + 0)`,
+                ];
               return [
                 `A = (${fmt(v.K!)} − ${fmt(v.N0!)}) ÷ ${fmt(v.N0!)} = ${fmt(A)}`,
                 `e^(${fmt(v.r!)} × ${fmt(v.t!)}) = e^${fmt(v.r! * v.t!)} ≈ ${fmt(E)}`,
@@ -1559,6 +1734,95 @@ const ECOSYSTEMS: ModuleDef[] = [
   },
 ];
 
+const NERVOUS: ModuleDef[] = [
+  // ── The nervous system: how fast an impulse travels (HS-LS1-2) ──
+  {
+    id: 's.9.nervous-system~impulse-speed',
+    title: 'How fast a nerve impulse travels',
+    use: 'Use this for “An impulse travels 1 m from the toe to the spinal cord at 50 m/s. How long does it take?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The impulse moves along the axon at a steady speed.',
+      'Axons wrapped in myelin carry impulses fastest, up to about 120 m/s; thin axons without it, about 1 m/s.',
+      'The time is in milliseconds: 1,000 ms is 1 s.',
+    ],
+    variables: [
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Length of the axon',
+        unit: 'm',
+        units: ['m'],
+        min: 0.01,
+        max: 3,
+        step: 0.01,
+      },
+      {
+        id: 'v',
+        symbol: 'v',
+        name: 'Impulse speed',
+        unit: 'm/s',
+        units: ['m/s'],
+        min: 0.5,
+        max: 120,
+        step: 0.5,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time to travel',
+        unit: 'ms',
+        units: ['ms'],
+        min: 0,
+        max: 6000,
+        step: 0.1,
+      },
+      {
+        id: 'k',
+        symbol: 'k',
+        name: 'Milliseconds per meter',
+        min: 0,
+        max: 2000,
+        step: 0.01,
+        derived: true,
+        hidden: true,
+      },
+    ],
+    ...rules(
+      both(
+        't = 1,000 × d ÷ v',
+        '{t} = 1,000 × {d} ÷ {v}',
+        ['t', 'd', 'v'],
+        (v) => v.t! - (1000 * v.d!) / v.v!,
+        {
+          t: [
+            (v) => div(1000 * v.d!, v.v!),
+            '1,000 × {d} ÷ {v}',
+            'Distance ÷ speed is the time in seconds; 1,000 times that is the time in ms.',
+          ],
+          d: [
+            (v) => (v.v! * v.t!) / 1000,
+            '{v} × {t} ÷ 1,000',
+            'Speed × time, with the ms turned into seconds.',
+          ],
+          v: [
+            (v) => div(1000 * v.d!, v.t!),
+            '1,000 × {d} ÷ {t}',
+            'Distance ÷ time, with the ms turned into seconds.',
+          ],
+        },
+      ),
+      hide(
+        forward('k = 1,000 ÷ v', '{k} = 1,000 ÷ {v}', 'k', ['v'], (v) => div(1000, v.v!), '', ''),
+      ),
+    ),
+    example: { d: 1, v: 50, t: 20, k: 20 },
+    startWith: ['d', 'v'],
+    pictureLabels: ['v'],
+    representation: { kind: 'doubleNumberLine', top: 'd', bottom: 't', per: 'k', ticks: 3 },
+  },
+];
+
 const IMMUNE: ModuleDef[] = [
   // ── Disease and the immune system (HS-LS1-2, HS-LS1-3) ──
   {
@@ -1752,11 +2016,14 @@ const IMMUNE: ModuleDef[] = [
 
 export const SCIENCE_9_MODULES: ModuleDef[] = [
   ...MEMBRANE,
+  ...DIVISION,
   ...INHERITANCE,
   ...DNA,
   ...BIOTECH,
   ...EVOLUTION,
+  ...PLANTS,
   ...POPULATION,
   ...ECOSYSTEMS,
+  ...NERVOUS,
   ...IMMUNE,
 ];

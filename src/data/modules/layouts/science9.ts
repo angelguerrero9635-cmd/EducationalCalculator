@@ -1383,6 +1383,160 @@ const CLASSIFICATION: LayoutDef[] = [
   },
 ];
 
+const PLANTS: LayoutDef[] = [
+  // ── Plants: structure, transport, growth and reproduction (HS-LS1-2, HS-LS1-5) ──
+  {
+    kind: 'explore',
+    id: 's.9.plant-biology',
+    assumptions: [
+      'A flowering plant’s organs are its roots, stem, leaves and flowers; tap one to read its job.',
+      'Xylem carries water and minerals up from the roots; phloem carries sugar from the leaves to where it is used.',
+    ],
+    figure: {
+      kind: 'parts',
+      drawing: 'plant',
+      parts: [
+        {
+          name: 'Roots',
+          job: 'Anchor the plant and take in water and minerals through root hairs.',
+        },
+        { name: 'Stem', job: 'Holds up the leaves; its xylem and phloem carry water and sugar.' },
+        {
+          name: 'Leaves',
+          job: 'Make sugar by photosynthesis; stomata let CO₂ in and water vapor out.',
+        },
+        {
+          name: 'Flower',
+          job: 'Makes pollen and eggs; after fertilization it forms seeds and fruit.',
+        },
+      ],
+    },
+    scenes: [
+      {
+        label: 'Roots',
+        part: 'Roots',
+        lines: [
+          'Thousands of root hairs give the root a huge surface for taking in water and minerals.',
+          'Water enters by osmosis, because the root’s cells hold more dissolved minerals than the soil water.',
+        ],
+      },
+      {
+        label: 'Stem',
+        part: 'Stem',
+        lines: [
+          'Xylem tubes are made of dead cells that carry water and minerals up, one way.',
+          'Living phloem cells carry sugar both ways: down to the roots and up to new leaves and fruit.',
+        ],
+      },
+      {
+        label: 'Leaves',
+        part: 'Leaves',
+        lines: [
+          'Guard cells open the stomata to let CO₂ in, and water vapor escapes: transpiration.',
+          'Water evaporating from the leaves pulls the next water up the xylem, since water molecules cling together.',
+        ],
+      },
+      {
+        label: 'Flower',
+        part: 'Flower',
+        lines: [
+          'The anthers make pollen; the ovary holds the ovules, each with an egg.',
+          'After fertilization each ovule becomes a seed, and the ovary becomes the fruit.',
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.plant-biology~xylem-phloem',
+    title: 'Xylem or phloem?',
+    use: 'Use this for “Which tissue carries sugar from the leaves to the roots?”',
+    assumptions: [
+      'Xylem and phloem run side by side in bundles through the roots, stem and leaves.',
+      'Transpiration pulls water up the xylem; sugar is pushed through the phloem from a source to a sink.',
+    ],
+    question: 'Is it xylem or phloem?',
+    bins: [
+      {
+        id: 'xylem',
+        label: 'Xylem',
+        why: 'Hollow tubes of dead cells carry water and minerals up from the roots.',
+      },
+      {
+        id: 'phloem',
+        label: 'Phloem',
+        why: 'Living cells carry sugar from where it is made to where it is used or stored.',
+      },
+    ],
+    cards: [
+      { label: 'Carries water from the roots to the leaves', bin: 'xylem' },
+      { label: 'Carries minerals such as nitrate up the plant', bin: 'xylem' },
+      { label: 'Made of dead cells with thick walls', bin: 'xylem' },
+      { label: 'Forms most of the wood of a tree', bin: 'xylem' },
+      { label: 'Carries sugar from the leaves to the roots', bin: 'phloem' },
+      { label: 'Carries sugar up to a growing fruit', bin: 'phloem' },
+      { label: 'Made of living sieve-tube cells', bin: 'phloem' },
+      { label: 'Maple syrup is made from its sugary sap', bin: 'phloem' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.plant-biology~tropisms',
+    title: 'Which tropism is it?',
+    use: 'Use this for “Why does a houseplant bend toward the window?”',
+    assumptions: [
+      'A tropism is growth toward or away from a stimulus.',
+      'The hormone auxin collects on one side of a shoot, where the cells lengthen, so the shoot bends.',
+    ],
+    question: 'Which stimulus is the plant responding to?',
+    bins: [
+      {
+        id: 'photo',
+        label: 'Phototropism (light)',
+        why: 'Auxin gathers on the shaded side, which grows longer, so the shoot bends toward light.',
+      },
+      {
+        id: 'gravi',
+        label: 'Gravitropism (gravity)',
+        why: 'Roots grow down with gravity and shoots grow up against it.',
+      },
+      {
+        id: 'thigmo',
+        label: 'Thigmotropism (touch)',
+        why: 'Contact with an object makes the plant grow around it.',
+      },
+    ],
+    cards: [
+      { label: 'A houseplant bends toward the window', bin: 'photo' },
+      { label: 'Sunflower seedlings lean toward the light', bin: 'photo' },
+      { label: 'A seed’s root grows down however it is planted', bin: 'gravi' },
+      { label: 'A pot on its side: the stem turns upward', bin: 'gravi' },
+      { label: 'A pea tendril coils around a stick', bin: 'thigmo' },
+      { label: 'A vine climbs by wrapping around a fence', bin: 'thigmo' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.plant-biology~life-cycle',
+    title: 'A flowering plant’s life cycle',
+    use: 'Use this for “Put these in order: pollination, fertilization, seed dispersal, germination.”',
+    assumptions: [
+      'Pollen carries the sperm; the egg is in an ovule inside the flower’s ovary.',
+      'A seed holds an embryo and its food; the fruit around it helps spread it.',
+    ],
+    question: 'Put the stages in order, starting at the flower.',
+    stages: [
+      { label: 'Pollination: pollen lands on a stigma' },
+      { label: 'A pollen tube grows down to an ovule' },
+      { label: 'Fertilization: a sperm joins the egg' },
+      { label: 'The ovule becomes a seed, and the ovary a fruit' },
+      { label: 'Seed dispersal by wind, water or animals' },
+      { label: 'Germination: the root and shoot break out' },
+      { label: 'The seedling grows and flowers' },
+    ],
+  },
+];
+
 const POPULATION: LayoutDef[] = [
   // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
   {
@@ -1584,6 +1738,149 @@ const ECOSYSTEMS: LayoutDef[] = [
         carbon: { process: 'dissolving' },
       },
     ],
+  },
+];
+
+const BIOMES: LayoutDef[] = [
+  // ── Biomes and aquatic ecosystems (HS-LS2-1, HS-LS2-2) ──
+  {
+    kind: 'explore',
+    id: 's.9.biomes',
+    assumptions: [
+      'A biome is a large region with a similar climate, and so similar plants and animals.',
+      'Temperature and rainfall decide the biome; both change with latitude, and temperature with height.',
+    ],
+    figure: { kind: 'greenhouse' },
+    scenes: [
+      {
+        label: 'Tropical',
+        lines: [
+          'Near the equator it is warm all year. With heavy rain all year: tropical rainforest, the most species of any biome.',
+          'With a long dry season: savanna, grassland with scattered trees.',
+        ],
+        greenhouse: { view: 'zones', lit: 'tropical' },
+      },
+      {
+        label: 'Deserts',
+        lines: [
+          'Near 30° north and south, dry air sinks, so the great deserts lie at the edge of the tropics.',
+          'Deserts get under 25 cm of rain a year; cacti store water, and many animals come out at night.',
+        ],
+        greenhouse: { view: 'zones' },
+      },
+      {
+        label: 'Temperate',
+        lines: [
+          'Warm summers and cold winters. With steady rain: temperate deciduous forest, whose trees drop their leaves in fall.',
+          'With less rain: grassland, or prairie, whose deep roots survive drought and fire.',
+          'Farther toward the poles: taiga, forests of conifers that keep their needles through long, cold winters.',
+        ],
+        greenhouse: { view: 'zones', lit: 'temperate' },
+      },
+      {
+        label: 'Polar',
+        lines: [
+          'Tundra: too cold for trees. Only the top of the soil thaws in summer, above permafrost.',
+          'Mosses, lichens and low shrubs grow in the short summer.',
+        ],
+        greenhouse: { view: 'zones', lit: 'polar' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.biomes~land',
+    title: 'Which biome is it?',
+    use: 'Use this for “Which biome has permafrost and no trees?”',
+    assumptions: [
+      'Each card describes a biome’s climate, its plants or its animals.',
+      'Plants and animals have adaptations that suit their biome’s temperature and rainfall.',
+    ],
+    question: 'Which biome does it describe?',
+    bins: [
+      { id: 'rainforest', label: 'Tropical rainforest', why: 'Warm and wet all year.' },
+      { id: 'desert', label: 'Desert', why: 'Under 25 cm of rain a year, hot or cold.' },
+      { id: 'grassland', label: 'Grassland', why: 'Too dry for many trees; grasses and fires.' },
+      {
+        id: 'deciduous',
+        label: 'Temperate deciduous forest',
+        why: 'Four seasons and steady rain; broad leaves fall in autumn.',
+      },
+      { id: 'taiga', label: 'Taiga', why: 'Long, cold winters; conifer forest.' },
+      { id: 'tundra', label: 'Tundra', why: 'Very cold, no trees, permafrost below.' },
+    ],
+    cards: [
+      { label: 'Layers of canopy trees, vines and orchids', bin: 'rainforest' },
+      { label: 'Poor soil: dead leaves decay and are taken up fast', bin: 'rainforest' },
+      { label: 'A cactus stores water in its thick stem', bin: 'desert' },
+      { label: 'A kangaroo rat never needs to drink', bin: 'desert' },
+      { label: 'Bison graze on the prairie', bin: 'grassland' },
+      { label: 'Fires sweep through, and the grasses regrow from their roots', bin: 'grassland' },
+      { label: 'Oaks and maples drop their leaves in fall', bin: 'deciduous' },
+      { label: 'Spruce and fir forest with deep snow', bin: 'taiga' },
+      { label: 'Moose and lynx through a long winter', bin: 'taiga' },
+      { label: 'Permafrost lies under a thin summer soil', bin: 'tundra' },
+      { label: 'Caribou graze lichens where no trees grow', bin: 'tundra' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.biomes~aquatic',
+    title: 'Which aquatic ecosystem is it?',
+    use: 'Use this for “Where does fresh water mix with salt water?”',
+    assumptions: [
+      'Aquatic ecosystems are sorted by how salty the water is, how deep it is and how fast it moves.',
+      'Sunlight reaches only the top 200 m or so of water, so producers live near the surface or the shore.',
+    ],
+    question: 'Which ecosystem does it describe?',
+    bins: [
+      { id: 'lake', label: 'Lake or pond', why: 'Still fresh water.' },
+      { id: 'river', label: 'River or stream', why: 'Moving fresh water.' },
+      { id: 'wetland', label: 'Wetland', why: 'Shallow water over soil for part of the year.' },
+      { id: 'estuary', label: 'Estuary', why: 'Where a river’s fresh water meets the sea.' },
+      { id: 'reef', label: 'Coral reef', why: 'Warm, clear, shallow sea water.' },
+      { id: 'deep', label: 'Deep ocean', why: 'Salt water too deep for sunlight to reach.' },
+    ],
+    cards: [
+      { label: 'Still water with lily pads and frogs', bin: 'lake' },
+      { label: 'Trout in cold, fast-flowing water', bin: 'river' },
+      { label: 'A marsh of cattails that filters runoff', bin: 'wetland' },
+      { label: 'Brackish water where salmon pass from sea to river', bin: 'estuary' },
+      { label: 'Oysters and young fish in a salt marsh at a river mouth', bin: 'estuary' },
+      { label: 'Colonies of tiny animals build limestone in warm, clear water', bin: 'reef' },
+      { label: 'Anglerfish in total darkness', bin: 'deep' },
+      { label: 'Life around hot vents, fed by bacteria rather than sunlight', bin: 'deep' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.biomes~rainfall',
+    title: 'Rainfall by month',
+    use: 'Use this to record a place’s rainfall each month and see which biome it suits.',
+    assumptions: [
+      'Rainfall is in millimeters: 10 mm is 1 cm of water over the ground.',
+      'Temperature matters too: a cold place with little rain is tundra or a cold desert.',
+    ],
+    columns: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    rowLabel: 'Rainfall',
+    unit: 'mm',
+    max: 400,
+    step: 10,
+    initial: [80, 70, 90, 90, 100, 100, 110, 100, 90, 80, 90, 90],
+    pattern: (v) => {
+      const total = v.reduce((a, b) => a + b, 0);
+      const wet = v.filter((x) => x >= 100).length;
+      const dry = v.filter((x) => x < 20).length;
+      const cm = Math.round(total / 10);
+      if (total < 250) return `About ${cm} cm a year: dry enough for a desert.`;
+      if (total >= 2000 && dry === 0)
+        return `About ${cm} cm a year, wet every month: a tropical rainforest, if it is warm all year.`;
+      if (dry >= 3 && wet >= 3)
+        return `About ${cm} cm a year with a long dry season: a savanna, if it is warm all year.`;
+      if (total < 750)
+        return `About ${cm} cm a year: enough for grassland, but dry for most forests.`;
+      return `About ${cm} cm a year, spread through the year: enough for a forest, deciduous where winters are mild, taiga where they are long.`;
+    },
   },
 ];
 
@@ -1816,6 +2113,128 @@ const HOMEOSTASIS: LayoutDef[] = [
   },
 ];
 
+const NERVOUS: LayoutDef[] = [
+  // ── The nervous system and the senses (HS-LS1-2, HS-LS1-3) ──
+  {
+    kind: 'sequence',
+    id: 's.9.nervous-system',
+    assumptions: [
+      'A neuron receives signals on its dendrites and sends an impulse along its axon to the next cell.',
+      'In a reflex the spinal cord answers before the brain knows: that saves time.',
+    ],
+    question: 'Put the steps of a reflex in order: a hand touches a hot pan.',
+    stages: [
+      { label: 'Receptors in the skin detect the heat' },
+      { label: 'A sensory neuron carries the impulse to the spinal cord' },
+      { label: 'An interneuron in the spinal cord passes it on' },
+      { label: 'A motor neuron carries the impulse to an arm muscle' },
+      { label: 'The muscle contracts and pulls the hand away' },
+      { label: 'The message reaches the brain, and you feel the pain' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.nervous-system~action-potential',
+    title: 'A nerve impulse',
+    use: 'Use this for “What makes the inside of a neuron positive during an impulse?”',
+    assumptions: [
+      'At rest the inside of a neuron is about −70 mV, more negative than the outside.',
+      'The Na⁺/K⁺ pump keeps more Na⁺ outside and more K⁺ inside, ready for the next impulse.',
+      'Each patch of axon triggers the next, so the impulse travels along it one way.',
+    ],
+    question: 'Put the steps of an action potential in order, from rest.',
+    stages: [
+      { label: 'Resting: the inside is at −70 mV' },
+      { label: 'A stimulus raises it to the threshold, about −55 mV' },
+      { label: 'Na⁺ channels open and Na⁺ rushes in: the inside turns positive' },
+      { label: 'K⁺ channels open and K⁺ flows out: the inside turns negative again' },
+      { label: 'The inside dips just below −70 mV' },
+      { label: 'The pump restores the ions: resting again' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.nervous-system~divisions',
+    title: 'Which part of the nervous system?',
+    use: 'Use this for “Which part of the nervous system speeds up the heart in an emergency?”',
+    assumptions: [
+      'The central nervous system is the brain and spinal cord; every nerve outside them is peripheral.',
+      'The peripheral system has a somatic part (the muscles you choose to move) and an autonomic part (the organs).',
+    ],
+    question: 'Which part of the nervous system is it?',
+    bins: [
+      {
+        id: 'cns',
+        label: 'Central (brain and spinal cord)',
+        why: 'It takes in the signals, makes sense of them and decides a response.',
+      },
+      {
+        id: 'somatic',
+        label: 'Somatic (voluntary)',
+        why: 'Motor nerves to skeletal muscles, which you control.',
+      },
+      {
+        id: 'autonomic',
+        label: 'Autonomic (involuntary)',
+        why: 'Nerves to the heart, gut and glands, working without thought.',
+      },
+    ],
+    cards: [
+      { label: 'The cerebrum plans a move and stores memories', bin: 'cns' },
+      { label: 'The cerebellum keeps your balance', bin: 'cns' },
+      { label: 'The brainstem keeps you breathing', bin: 'cns' },
+      { label: 'You decide to kick a ball', bin: 'somatic' },
+      { label: 'Fingers typing a message', bin: 'somatic' },
+      { label: 'The heart speeds up when you are frightened', bin: 'autonomic' },
+      { label: 'The stomach churns food after a meal', bin: 'autonomic' },
+      { label: 'The pupils narrow in bright light', bin: 'autonomic' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.nervous-system~senses',
+    title: 'Which receptor detects it?',
+    use: 'Use this for “Which receptors in the eye respond to light?”',
+    assumptions: [
+      'A sensory receptor turns a stimulus into nerve impulses; the brain decides what they mean.',
+      'Each kind of receptor responds best to one kind of stimulus.',
+    ],
+    question: 'Which kind of receptor detects it?',
+    bins: [
+      {
+        id: 'photo',
+        label: 'Photoreceptors',
+        why: 'Rods and cones in the retina respond to light.',
+      },
+      {
+        id: 'mechano',
+        label: 'Mechanoreceptors',
+        why: 'Respond to pressure, stretch or vibration: touch, hearing and balance.',
+      },
+      {
+        id: 'chemo',
+        label: 'Chemoreceptors',
+        why: 'Respond to chemicals: taste, smell and the blood’s CO₂.',
+      },
+      {
+        id: 'thermo',
+        label: 'Thermoreceptors',
+        why: 'Respond to warming and cooling of the skin.',
+      },
+    ],
+    cards: [
+      { label: 'Cones tell red from green', bin: 'photo' },
+      { label: 'Rods let you see in dim light', bin: 'photo' },
+      { label: 'Hair cells in the ear bend with sound', bin: 'mechano' },
+      { label: 'Fluid in the inner ear tells which way is up', bin: 'mechano' },
+      { label: 'A light touch on the skin', bin: 'mechano' },
+      { label: 'Taste buds detect sweet and salty', bin: 'chemo' },
+      { label: 'The nose picks up the smell of smoke', bin: 'chemo' },
+      { label: 'Stepping into a cold pool', bin: 'thermo' },
+    ],
+  },
+];
+
 const IMMUNE: LayoutDef[] = [
   // ── Disease and the immune system (HS-LS1-2, HS-LS1-3) ──
   {
@@ -1972,8 +2391,11 @@ export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...BIOTECH,
   ...EVOLUTION,
   ...CLASSIFICATION,
+  ...PLANTS,
   ...POPULATION,
   ...ECOSYSTEMS,
+  ...BIOMES,
   ...HOMEOSTASIS,
+  ...NERVOUS,
   ...IMMUNE,
 ];
