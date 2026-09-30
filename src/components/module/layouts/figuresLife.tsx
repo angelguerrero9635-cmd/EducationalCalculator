@@ -609,6 +609,47 @@ const CARBON: {
   },
 ];
 
+/** The volcano's outgassing: up the right edge from its crater to the air (H103). */
+const VOLCANO: (typeof CARBON)[number] = {
+  process: 'volcano',
+  a: [352, 172],
+  b: [352, 50],
+  label: 'volcanoes',
+  at: [344, 66],
+  anchor: 'end',
+};
+
+/**
+ * A volcanic island at the ocean's right edge (H103): its cone above the water, lava at the
+ * crater, and the magma chamber in the rock below the seafloor that feeds it.
+ */
+function Volcano({ c }: { c: Palette }) {
+  const sea = 212;
+  const floor = 274;
+  return (
+    <G>
+      <Ellipse cx={338} cy={312} rx={20} ry={9} fill={c.landMagma} opacity={0.9} />
+      {/* The island rises from the seafloor; the water covers its lower slopes. */}
+      <Path
+        d={`M 332 ${floor} L 344 176 L 352 176 L ${BOARD} 188 L ${BOARD} ${floor} Z`}
+        fill={c.landBasalt}
+        stroke={c.soilDark}
+        strokeWidth={0.8}
+      />
+      <Path d="M 338 304 L 342 260 L 348 178" stroke={c.landMagma} strokeWidth={3} fill="none" />
+      <Rect
+        x={332}
+        y={sea}
+        width={BOARD - 332}
+        height={floor - sea}
+        fill={c.waterDeep}
+        opacity={0.45}
+      />
+      <Path d="M 344 176 Q 348 182 352 176" stroke={c.landLava} strokeWidth={3} fill="none" />
+    </G>
+  );
+}
+
 /**
  * The carbon cycle over a meadow: carbon dioxide in the air; a tree that takes it in and
  * gives it back; a rabbit that eats and breathes; dead matter and the mushrooms that break it
@@ -618,9 +659,12 @@ const CARBON: {
 export function CarbonCycleFigure({
   carbon,
   c,
+  volcano,
 }: {
   carbon: NonNullable<Scene['carbon']>;
   c: Palette;
+  /** H103: a volcanic island in the ocean and its outgassing (off unless the figure sets it). */
+  volcano?: boolean;
 }) {
   const ids = usePaintIds(
     'sun',
@@ -757,14 +801,16 @@ export function CarbonCycleFigure({
         ].map(([sx, sy, r]) => (
           <Circle key={sx} cx={sx} cy={sy} r={r} fill={c.chartMuted} opacity={0.5} />
         ))}
-        {CARBON.map((f, i) => (
+        {volcano ? <Volcano c={c} /> : null}
+        {(volcano ? [...CARBON, VOLCANO] : CARBON).map((f, i) => (
           <Flow
             key={i}
             a={f.a}
             b={f.b}
             bend={f.bend}
             label={f.label}
-            at={f.at}
+            // With the volcano's arrow up the right edge, the ocean's label moves in from it.
+            at={volcano && f.process === 'dissolving' && f.at ? [f.at[0] - 12, f.at[1]] : f.at}
             anchor={f.anchor}
             dashed={f.dashed}
             ground={f.ground}

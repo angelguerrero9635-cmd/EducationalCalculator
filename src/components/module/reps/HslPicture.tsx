@@ -11,6 +11,7 @@ import { EarthLayers } from './EarthLayers';
 import { OceanProfile } from './OceanProfile';
 import { AtmosphereLayers } from './AtmosphereLayers';
 import { HrDiagram } from './HrDiagram';
+import { HrMass } from './HrMass';
 import { ExpandingUniverse } from './ExpandingUniverse';
 import { RockLayersDated } from './RockLayersDated';
 
@@ -23,6 +24,7 @@ export function HslPicture({ spec, calc }: { spec: HslSpec; calc: Calculator }):
     case 'atmosphereLayers':
       return <AtmosphereLayers spec={spec} calc={calc} />;
     case 'hrDiagram':
+      if ('mass' in spec) return <HrMass spec={spec} calc={calc} />;
       return <HrDiagram spec={spec} calc={calc} />;
     case 'expandingUniverse':
       return <ExpandingUniverse spec={spec} calc={calc} />;

@@ -20,6 +20,7 @@ import type {
   MohsScene,
 } from '../typesHsl';
 import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
+import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
 
@@ -269,6 +270,8 @@ export interface SequenceLayout extends LayoutBase {
 export type Figure =
   /** Earth and space, group HL (`typesHsl.ts`): Mohs scale, landforms, currents, greenhouse. */
   | HslFigure
+  /** Earth and space round 2, group H2F (`typesHs2f.ts`): spectra side by side. */
+  | Hs2fFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
@@ -338,7 +341,14 @@ export type Figure =
    * The carbon cycle: the air's carbon dioxide, a tree, an animal, the dead matter and its
    * decomposers, fossil fuels, a factory and the ocean, with the processes as arrows (Grade 7).
    */
-  | { kind: 'carbonCycle' }
+  | {
+      kind: 'carbonCycle';
+      /**
+       * H103: a volcanic island in the ocean over a magma chamber, its outgassing an arrow up
+       * to the air (the `volcano` process). Off unless set.
+       */
+      volcano?: boolean;
+    }
   /**
    * A family's pedigree chart in the standard symbols: squares are males, circles females,
    * filled has the trait, half-filled carries it; a line joins parents, their children hang
@@ -414,7 +424,9 @@ export type CarbonProcess =
   | 'decomposition'
   | 'burning'
   | 'dissolving'
-  | 'burial';
+  | 'burial'
+  /** Volcanoes giving off carbon dioxide (a `carbonCycle` figure with `volcano`). */
+  | 'volcano';
 
 /** A substance in a `molecules` scene: its formula ("H2O") and how many (default 1). */
 export interface MoleculeItem {
@@ -488,6 +500,8 @@ export interface Scene {
   landform?: LandformScene;
   currents?: CurrentsScene;
   greenhouse?: GreenhouseScene;
+  /** A `spectra` figure (`typesHs2f.ts`): the star's elements, one lab strip lit. */
+  spectra?: SpectraScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** Where the ball is (a `position` figure). */

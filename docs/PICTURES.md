@@ -108,6 +108,8 @@ search or the sitemap, but the module tests and the harness run over it):
 | `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides  | Earth science ocean (H75)           |
 | `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds    | Earth science atmosphere (H76)      |
 | `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted   | Earth science stars (H79)           |
+| `streamChannel`    | a channel to scale, w × d, and the water passing in 1 s: Q = A × v    | Earth science streams (H103)        |
+| `reserve`          | a reserve as a bar cut into each year's use; empty after Q ÷ r years  | Earth science resources (H103)      |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |
@@ -268,6 +270,12 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `freeBody`         | `displacement`, `work` (floor)           | d bracketed, F cos θ dashed; W = Fd cos θ in the caption (H102)               |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
+| `earthLayers`      | `mode: 'magnitude'`, `m1`, `m2`, …       | two seismograms to one scale; bars on a magnitude scale, 10^ΔM marked (H103)  |
+| `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | a ridge from above: polarity stripes mirrored, a rock at x km and t Ma (H103) |
+| `atmosphereLayers` | `mode: 'parcel'`, `temperature`, …       | a parcel cooling 10 °C/km, dew point 2 °C/km, meeting at a cloud base (H103)  |
+| `atmosphereLayers` | `mode: 'balance'`, `albedo`, `sunlight`  | S ÷ 4 in, α reflected, F absorbed and sent out as σTₑ⁴; a thermometer (H103)  |
+| `rockLayers`       | `dating.sample.second: { name, share }`  | a parent that decays two ways: the decayed atoms split by share (K-40) (H103) |
+| `hrDiagram`        | `mass`, `luminosity?`, `lifetime?`       | a main-sequence star placed by mass, L = M^3.5; 3, 10, 30 M☉ marked (H103)    |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

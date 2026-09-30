@@ -23,6 +23,7 @@ import type { HshSpec } from './typesHsh';
 import type { HsiSpec } from './typesHsi';
 import type { HslSpec } from './typesHsl';
 import type { ChemDiagramSpec } from './typesHs2d';
+import type { Hs2fKindSpec } from './typesHs2f';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { Hs2cSpec } from './typesHs2c';
 import type { CardIcon } from './layouts/types';
@@ -1100,6 +1101,8 @@ export type Representation =
   | HscSpec
   /** Grades 9–12 earth and space, group HL (specs in `typesHsl.ts`). */
   | HslSpec
+  /** Grades 9–12 round 2 earth and space, group H2F: stream, reserve (`typesHs2f.ts`). */
+  | Hs2fKindSpec
   /** Grades 9–12 statistics and counting, group HB (specs in `typesHsb.ts`). */
   | HsbSpec
   /** Grades 9–12 group D: unit circle, algebra tiles, vectors, … (specs in `typesHsd.ts`). */

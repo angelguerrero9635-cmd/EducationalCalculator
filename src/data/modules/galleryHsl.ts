@@ -578,7 +578,7 @@ const halfLife: ModuleDef = {
   use: 'Use this for an ash bed’s age from the share of its parent isotope left.',
   assumptions: [
     'A radioactive parent isotope decays to a stable daughter at a steady rate: half of it is left after each half-life.',
-    'Potassium-40 decays to argon-40 with a half-life of 1,250 million years; the argon stays trapped once volcanic ash cools.',
+    'Potassium-40 has a half-life of 1,250 million years: 89.3% of it decays to calcium-40 and 10.7% to argon-40, a gas that stays trapped once volcanic ash cools.',
     'Layers lie in order: younger above, older below. Fossils above the ash bed are younger than it, and those below are older.',
   ],
   variables: [
@@ -628,6 +628,7 @@ const halfLife: ModuleDef = {
         parentName: 'potassium-40',
         daughterName: 'argon-40',
         halfLives: 'n',
+        second: { name: 'calcium-40', share: 89.3 },
       },
     },
   },
@@ -654,6 +655,7 @@ const halfLifeYoung: ModuleDef = {
         parentName: 'potassium-40',
         daughterName: 'argon-40',
         halfLives: 'n',
+        second: { name: 'calcium-40', share: 89.3 },
       },
     },
   },

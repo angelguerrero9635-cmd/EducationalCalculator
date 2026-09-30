@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { View } from 'react-native';
 import Svg, { Circle, ClipPath, Defs, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
@@ -27,8 +27,8 @@ const BASE = 272;
 const lt = (t: number) => Math.log10(t);
 const LT_HOT = lt(HR_WINDOW.tHot);
 const LT_COOL = lt(HR_WINDOW.tCool);
-const X = (t: number) => L + ((LT_HOT - lt(t)) / (LT_HOT - LT_COOL)) * (R - L);
-const Y = (l: number) => BASE - ((Math.log10(l) + 4) / 10) * (BASE - TOP);
+export const X = (t: number) => L + ((LT_HOT - lt(t)) / (LT_HOT - LT_COOL)) * (R - L);
+export const Y = (l: number) => BASE - ((Math.log10(l) + 4) / 10) * (BASE - TOP);
 const tOf = (x: number) => 10 ** (LT_HOT - ((x - L) / (R - L)) * (LT_HOT - LT_COOL));
 const lOf = (y: number) => 10 ** (((BASE - y) / (BASE - TOP)) * 10 - 4);
 
@@ -55,7 +55,19 @@ const tenTo = (i: number) => (i === 2 ? '1' : `10${POW[i]}`);
  * and luminosity up on log scales, the regions where stars gather, lines of equal radius, the Sun,
  * and the star from the values in its own color.
  */
-export function HrDiagram({ spec, calc }: { spec: HrDiagramSpec; calc: Calculator }) {
+export function HrDiagram({
+  spec,
+  calc,
+  extra,
+  caption,
+}: {
+  spec: HrDiagramSpec;
+  calc: Calculator;
+  /** Drawn over the plot in its coordinates (X, Y), before the star (H103: the mass marks). */
+  extra?: ReactNode;
+  /** A caption in place of the star's own (H103: the lifetime by mass). */
+  caption?: string;
+}) {
   const c = usePalette();
   const rep = useRep(calc);
   const ids = usePaintIds('clip');
@@ -270,6 +282,7 @@ export function HrDiagram({ spec, calc }: { spec: HrDiagramSpec; calc: Calculato
                   >
                     Luminosity (Sun = 1)
                   </ChartText>
+                  {extra}
                   {/* The star. */}
                   <G opacity={on ? 1 : 0.4}>
                     <Circle cx={X(t)} cy={Y(l)} r={11} fill={starColor(c, t)} opacity={0.3} />
@@ -314,13 +327,15 @@ export function HrDiagram({ spec, calc }: { spec: HrDiagramSpec; calc: Calculato
         }}
       </Canvas>
       <Caption>
-        {on
-          ? `${spec.name ?? 'The star'}: ${formatNumber(Math.round(t))} K and ${formatNumber(Number(l.toPrecision(3)))} times the Sun’s luminosity, so about ${formatNumber(Number(radiusOf(l, t).toPrecision(3)))} times its radius. ${
-              kind
-                ? `It lies ${kind === 'main sequence' ? 'on the main sequence' : `among the ${kind}s`}.`
-                : ''
-            }`
-          : 'Type the temperature and luminosity to plot the star.'}
+        {caption !== undefined
+          ? caption
+          : on
+            ? `${spec.name ?? 'The star'}: ${formatNumber(Math.round(t))} K and ${formatNumber(Number(l.toPrecision(3)))} times the Sun’s luminosity, so about ${formatNumber(Number(radiusOf(l, t).toPrecision(3)))} times its radius. ${
+                kind
+                  ? `It lies ${kind === 'main sequence' ? 'on the main sequence' : `among the ${kind}s`}.`
+                  : ''
+              }`
+            : 'Type the temperature and luminosity to plot the star.'}
       </Caption>
     </View>
   );

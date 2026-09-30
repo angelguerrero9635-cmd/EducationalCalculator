@@ -10,12 +10,14 @@ import { HaloText } from '../layouts/earthKit';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
 import { depthAt, SEAFLOOR, shipAt, SUN_TIDE, tideAt, tideFactor } from './earthModel';
+import { OceanStripes } from './OceanStripes';
 import { Ball, Deepen, url, usePaintIds } from './paint';
 
 const BW = 360;
 
 /** The seafloor, or the tides (see `OceanProfileSpec` in typesHsl.ts). */
 export function OceanProfile({ spec, calc }: { spec: OceanProfileSpec; calc: Calculator }) {
+  if (spec.mode === 'stripes') return <OceanStripes spec={spec} calc={calc} />;
   return spec.mode === 'profile' ? (
     <Sonar spec={spec} calc={calc} />
   ) : (

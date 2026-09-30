@@ -9,10 +9,12 @@ import { LAYOUTS, gradeOf, moduleOwner } from '..';
 import type { Figure, LayoutDef, Scene } from '../layouts';
 import { isStandIn, pages } from '../harness/scope';
 import { HSL_SCENE_FIELD } from '../typesHsl';
+import { HS2F_SCENE_FIELD } from '../typesHs2f';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   ...HSL_SCENE_FIELD,
+  ...HS2F_SCENE_FIELD,
   parts: 'part',
   position: 'position',
   clock: 'time',

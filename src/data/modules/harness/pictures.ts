@@ -53,6 +53,7 @@ import { chemDiagramIssues, chemHs2dIssues, filledChem, moleMapHs2dIssues } from
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
 import { barFlowIssues, hs2eIssues, percentSecondIssues, reactionManyIssues } from './picturesHs2e';
+import { hs2fIssues } from './picturesHs2f';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import type { ModuleDef, Representation } from '../types';
@@ -1754,6 +1755,7 @@ export function repIssues(
     case 'rockLayers':
       if ('dating' in rep) {
         out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+        out.push(...hs2fIssues(rep, (id) => val(id)));
         break;
       }
       count(rep.fossils[0], 'layers', 12);
@@ -2164,6 +2166,11 @@ export function repIssues(
     case 'expandingUniverse':
       // In formula units (km, s), as the picture draws them.
       out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'streamChannel':
+    case 'reserve':
+      out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'projectile':
     case 'induction':
