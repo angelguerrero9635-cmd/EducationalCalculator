@@ -2696,6 +2696,860 @@ const opticsPages: ModuleDef[] = [
   })(),
 ];
 
+// ─── s.11.thermodynamics ────────────────────────────────────────────────────
+
+/** Water's specific heat, J/(kg·°C). */
+const C_WATER = 4180;
+const celsius = (id: string, symbol: string, name: string): VariableDef =>
+  q(id, symbol, name, '°C', -50, 1000, 0.1);
+const kilograms = (id: string, symbol: string, name: string): VariableDef =>
+  q(id, symbol, name, 'kg', 0.001, 1000, 0.001, { units: ['kg'] });
+const specificHeat = (id: string, symbol: string, name: string, allowed: number[]): VariableDef =>
+  q(id, symbol, name, 'J/(kg·°C)', Math.min(...allowed), Math.max(...allowed), 1, { allowed });
+const TH = q('H', 'Tₕ', 'Hot reservoir temperature', 'K', 1, 5000, 1);
+const TL = q('L', 'T_c', 'Cold reservoir temperature', 'K', 1, 5000, 1);
+const WORK = q('W', 'W', 'Work', 'J', 0.1, 1e9, 0.1);
+
+const thermoPages: ModuleDef[] = [
+  (() => {
+    const [w, a, m, c, b] = [0.25, 20, 0.15, 900, 90];
+    const F = (w * C_WATER * a + m * c * b) / (w * C_WATER + m * c);
+    return {
+      id: 's.11.thermodynamics',
+      unitSystems: ['metric'],
+      assumptions: [
+        'No heat leaves the cup: the heat the metal gives off is the heat the water takes in.',
+        'Heat flows from hot to cold until both are at one temperature T_f (thermal equilibrium).',
+        'Water’s specific heat is 4180 J/(kg·°C); aluminum 900, iron 450, copper 385.',
+      ],
+      variables: [
+        kilograms('w', 'm_w', 'Mass of water'),
+        celsius('a', 'T_w', 'Water’s starting temperature'),
+        kilograms('m', 'mₘ', 'Mass of the metal'),
+        specificHeat('c', 'cₘ', 'Specific heat of the metal', [385, 450, 900]),
+        celsius('b', 'Tₘ', 'Metal’s starting temperature'),
+        celsius('F', 'T_f', 'Final temperature'),
+        q('q', 'q', 'Heat the water takes in', 'J', -1e9, 1e9, 0.1),
+      ],
+      ...rules(
+        rule(
+          'T_f = (m_w c_w T_w + mₘcₘTₘ)/(m_w c_w + mₘcₘ)',
+          '{F} = ({w} × 4180 × {a} + {m} × {c} × {b})/({w} × 4180 + {m} × {c})',
+          (v) =>
+            v.F! * (v.w! * C_WATER + v.m! * v.c!) - (v.w! * C_WATER * v.a! + v.m! * v.c! * v.b!),
+          {
+            F: [
+              (v) => div(v.w! * C_WATER * v.a! + v.m! * v.c! * v.b!, v.w! * C_WATER + v.m! * v.c!),
+              '({w} × 4180 × {a} + {m} × {c} × {b})/({w} × 4180 + {m} × {c})',
+              'Set the heat the metal loses equal to the heat the water gains and solve for T_f.',
+            ],
+            w: null,
+            a: null,
+            m: null,
+            c: null,
+            b: null,
+          },
+        ),
+        rule(
+          'q = m_w c_w (T_f − T_w)',
+          '{q} = {w} × 4180 × ({F} − {a})',
+          (v) => v.q! - v.w! * C_WATER * (v.F! - v.a!),
+          {
+            q: [
+              (v) => v.w! * C_WATER * (v.F! - v.a!),
+              '{w} × 4180 × ({F} − {a})',
+              'The water’s heat: its mass times 4180 J/(kg·°C) times how much it warmed.',
+            ],
+            w: [
+              (v) => div(v.q!, C_WATER * (v.F! - v.a!)),
+              '{q}/(4180 × ({F} − {a}))',
+              'Divide the heat by c_w times the rise.',
+            ],
+            a: [
+              (v) => v.F! - v.q! / (v.w! * C_WATER),
+              '{F} − {q}/({w} × 4180)',
+              'Take the water’s rise off the final temperature.',
+            ],
+          },
+        ),
+        rule(
+          'q = mₘcₘ(Tₘ − T_f)',
+          '{q} = {m} × {c} × ({b} − {F})',
+          (v) => v.q! - v.m! * v.c! * (v.b! - v.F!),
+          {
+            m: [
+              (v) => div(v.q!, v.c! * (v.b! - v.F!)),
+              '{q}/({c} × ({b} − {F}))',
+              'The metal gave off the water’s heat: divide by cₘ times its drop.',
+            ],
+            c: [
+              (v) => div(v.q!, v.m! * (v.b! - v.F!)),
+              '{q}/({m} × ({b} − {F}))',
+              'The metal gave off the water’s heat: divide by its mass times its drop.',
+            ],
+            b: [
+              (v) => v.F! + div(v.q!, v.m! * v.c!)!,
+              '{F} + {q}/({m} × {c})',
+              'Add the metal’s drop to the final temperature.',
+            ],
+          },
+        ),
+      ),
+      example: { w, a, m, c, b, F, q: w * C_WATER * (F - a) },
+      startWith: ['w', 'a', 'm', 'c', 'b'],
+      representation: {
+        kind: 'energyProfile',
+        mode: 'calorimeter',
+        mass: 'w',
+        heat: C_WATER,
+        start: 'a',
+        end: 'F',
+        q: 'q',
+        metal: { name: 'metal', mass: 'm', start: 'b', heat: 'c' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, c, a, b] = [2, 4180, 15, 65];
+    return {
+      id: 's.11.thermodynamics~specific-heat',
+      title: 'Heat to warm something: Q = mcΔT',
+      use: 'Use this for “How much heat warms 2 kg of water from 15 °C to 65 °C?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The specific heat c is the heat that warms 1 kg by 1 °C: water 4180 J/(kg·°C), aluminum 900, iron 450, copper 385.',
+        'Nothing melts or boils between T₁ and T₂.',
+        'A negative Q means heat was given off as it cooled.',
+      ],
+      variables: [
+        kilograms('m', 'm', 'Mass'),
+        specificHeat('c', 'c', 'Specific heat', [385, 450, 900, 4180]),
+        celsius('a', 'T₁', 'Starting temperature'),
+        celsius('b', 'T₂', 'Final temperature'),
+        q('d', 'ΔT', 'Change in temperature', '°C', -1000, 1000, 0.1),
+        q('Q', 'Q', 'Heat', 'J', -1e10, 1e10, 0.1),
+      ],
+      ...rules(
+        difference(
+          'd',
+          'b',
+          'a',
+          'ΔT = T₂ − T₁',
+          'The change is the final temperature less the first.',
+        ),
+        rule('Q = mcΔT', '{Q} = {m} × {c} × {d}', (v) => v.Q! - v.m! * v.c! * v.d!, {
+          Q: [
+            (v) => v.m! * v.c! * v.d!,
+            '{m} × {c} × {d}',
+            'Heat is the mass times the specific heat times the change in temperature.',
+          ],
+          m: [(v) => div(v.Q!, v.c! * v.d!), '{Q}/({c} × {d})', 'Divide the heat by cΔT.'],
+          c: [(v) => div(v.Q!, v.m! * v.d!), '{Q}/({m} × {d})', 'Divide the heat by mΔT.'],
+          d: [(v) => div(v.Q!, v.m! * v.c!), '{Q}/({m} × {c})', 'Divide the heat by mc.'],
+        }),
+      ),
+      example: { m, c, a, b, d: b - a, Q: m * c * (b - a) },
+      startWith: ['m', 'c', 'a', 'b'],
+      representation: {
+        kind: 'energyProfile',
+        mode: 'calorimeter',
+        mass: 'm',
+        heat: 'c',
+        start: 'a',
+        end: 'b',
+        change: 'd',
+        q: 'Q',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, P] = [0.5, 500];
+    const f = m * 334;
+    const v = m * 2260;
+    return {
+      id: 's.11.thermodynamics~latent-heat',
+      title: 'Melting and boiling: latent heat',
+      use: 'Use this for “How much heat melts 0.5 kg of ice at 0 °C, and how long does a 500 W heater take? How long to boil it all away?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'While ice melts or water boils the temperature stays put: the heat breaks bonds, Q = mL.',
+        'Ice melts with L_f = 334 kJ/kg; water boils away with L_v = 2260 kJ/kg.',
+        'The heater gives P joules each second, all of it to the water: t = Q ÷ P.',
+      ],
+      variables: [
+        kilograms('m', 'm', 'Mass of ice'),
+        q('P', 'P', 'Heater power', 'W', 1, 1e6, 1),
+        q('f', 'Q_f', 'Heat to melt it', 'kJ', 0, 1e7, 0.01),
+        q('a', 't_f', 'Time to melt', 's', 0, 1e9, 0.01),
+        q('w', 't_w', 'Time to warm the water to 100 °C', 's', 0, 1e9, 0.01, { derived: true }),
+        q('v', 'Q_v', 'Heat to boil it away', 'kJ', 0, 1e8, 0.01),
+        q('b', 't_v', 'Time to boil', 's', 0, 1e9, 0.01),
+      ],
+      ...rules(
+        product('f', 'm', 334, 'Q_f = mL_f', [
+          'Each kilogram of ice takes 334 kJ to melt.',
+          'Divide the heat by 334 kJ/kg.',
+        ]),
+        rule('t_f = Q_f ÷ P', '{a} = 1000 × {f}/{P}', (v) => v.a! * v.P! - 1000 * v.f!, {
+          a: [
+            (v) => div(1000 * v.f!, v.P!),
+            '1000 × {f}/{P}',
+            'A watt is a joule each second: the heat in joules over the power.',
+          ],
+          f: [(v) => (v.a! * v.P!) / 1000, '{a} × {P}/1000', 'The power times the time, in kJ.'],
+          P: [(v) => div(1000 * v.f!, v.a!), '1000 × {f}/{a}', 'The heat in joules over the time.'],
+        }),
+        rule(
+          't_w = m × 4180 × 100 ÷ P',
+          '{w} = {m} × 418000/{P}',
+          (v) => v.w! * v.P! - v.m! * 418000,
+          {
+            w: [
+              (v) => div(v.m! * 418000, v.P!),
+              '{m} × 418000/{P}',
+              'Warming the water 100 °C takes m × 4180 × 100 J; divide by the power.',
+            ],
+          },
+        ),
+        product('v', 'm', 2260, 'Q_v = mL_v', [
+          'Each kilogram of water takes 2260 kJ to boil away.',
+          'Divide the heat by 2260 kJ/kg.',
+        ]),
+        rule('t_v = Q_v ÷ P', '{b} = 1000 × {v}/{P}', (v) => v.b! * v.P! - 1000 * v.v!, {
+          b: [
+            (v) => div(1000 * v.v!, v.P!),
+            '1000 × {v}/{P}',
+            'The heat in joules over the power: boiling takes much longer than melting.',
+          ],
+          v: [(v) => (v.b! * v.P!) / 1000, '{b} × {P}/1000', 'The power times the time, in kJ.'],
+        }),
+      ),
+      example: {
+        m,
+        P,
+        f,
+        a: (1000 * f) / P,
+        w: (m * 418000) / P,
+        v,
+        b: (1000 * v) / P,
+      },
+      startWith: ['m', 'P'],
+      representation: {
+        kind: 'heatingCurve',
+        start: 0,
+        melt: 0,
+        boil: 100,
+        spans: [0, 'a', 'w', 'b'],
+        units: { time: 's', temp: '°C' },
+        formula: 'H2O',
+      },
+      pictureLabels: ['f', 'v'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [Q, W, H, L] = [2000, 500, 600, 300];
+    const e = (100 * W) / Q;
+    const c = 100 * (1 - L / H);
+    return {
+      id: 's.11.thermodynamics~engine',
+      title: 'A heat engine and the Carnot limit',
+      use: 'Use this for “An engine takes in 2000 J from a 600 K source and does 500 J of work. How much heat goes to the 300 K sink, and how efficient is it compared with the most it could be?”',
+      assumptions: [
+        'First law: the heat taken in becomes work plus the heat given out, Qₕ = W + Q_c.',
+        'Second law: some heat always goes to the cold reservoir.',
+        'The best possible efficiency is the Carnot limit, 1 − T_c/Tₕ, with temperatures in kelvins.',
+      ],
+      variables: [
+        q('Q', 'Qₕ', 'Heat in from the hot reservoir', 'J', 0.1, 1e9, 0.1),
+        WORK,
+        q('C', 'Q_c', 'Heat out to the cold reservoir', 'J', 0, 1e9, 0.1),
+        q('e', 'e', 'Efficiency', '%', 0, 100, 0.1),
+        TH,
+        TL,
+        q('c', 'e_C', 'Carnot limit', '%', 0, 100, 0.1),
+        q('r', 'r', 'Share of the Carnot limit', '%', 0, 100, 0.1),
+      ],
+      ...rules(
+        difference(
+          'C',
+          'Q',
+          'W',
+          'Q_c = Qₕ − W',
+          'The heat not turned into work goes to the cold reservoir.',
+        ),
+        rule('e = W/Qₕ', '{e} = 100 × {W}/{Q}', (v) => v.e! * v.Q! - 100 * v.W!, {
+          e: [
+            (v) => div(100 * v.W!, v.Q!),
+            '100 × {W}/{Q}',
+            'The share of the heat that became work, as a percent.',
+          ],
+          W: [(v) => (v.e! * v.Q!) / 100, '{e}/100 × {Q}', 'The efficiency times the heat in.'],
+          Q: [(v) => div(100 * v.W!, v.e!), '100 × {W}/{e}', 'The work over the efficiency.'],
+        }),
+        rule(
+          'e_C = 1 − T_c/Tₕ',
+          '{c} = 100 × (1 − {L}/{H})',
+          (v) => v.c! - 100 * (1 - v.L! / v.H!),
+          {
+            c: [
+              (v) => 100 * (1 - v.L! / v.H!),
+              '100 × (1 − {L}/{H})',
+              'No engine between these temperatures can beat 1 − T_c/Tₕ (in kelvins).',
+            ],
+            L: [
+              (v) => v.H! * (1 - v.c! / 100),
+              '{H} × (1 − {c}/100)',
+              'Undo the Carnot formula for T_c.',
+            ],
+            H: [
+              (v) => div(v.L!, 1 - v.c! / 100),
+              '{L}/(1 − {c}/100)',
+              'Undo the Carnot formula for Tₕ.',
+            ],
+          },
+        ),
+        rule('r = e/e_C', '{r} = 100 × {e}/{c}', (v) => v.r! * v.c! - 100 * v.e!, {
+          r: [
+            (v) => div(100 * v.e!, v.c!),
+            '100 × {e}/{c}',
+            'How close the engine comes to the best possible: e over the Carnot limit.',
+          ],
+          e: [(v) => (v.r! * v.c!) / 100, '{r}/100 × {c}', 'The share times the limit.'],
+          c: [(v) => div(100 * v.e!, v.r!), '100 × {e}/{r}', 'The efficiency over the share.'],
+        }),
+      ),
+      example: { Q, W, C: Q - W, e, H, L, c, r: (100 * e) / c },
+      startWith: ['Q', 'W', 'H', 'L'],
+      representation: {
+        kind: 'heatEngine',
+        hotHeat: 'Q',
+        work: 'W',
+        coldHeat: 'C',
+        efficiency: 'e',
+        hot: 'H',
+        cold: 'L',
+        carnot: 'c',
+      },
+      pictureLabels: ['r'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [C, W, H, L] = [900, 300, 300, 270];
+    const k = C / W;
+    const m = L / (H - L);
+    return {
+      id: 's.11.thermodynamics~refrigerator',
+      title: 'A refrigerator',
+      use: 'Use this for “A fridge removes 900 J from its 270 K inside using 300 J of work. How much heat reaches the 300 K kitchen, and what are its COP and the best possible COP?”',
+      assumptions: [
+        'Heat flows from hot to cold by itself; moving it the other way takes work.',
+        'The kitchen gets the heat from inside plus the work: Qₕ = Q_c + W.',
+        'COP = Q_c/W; the best possible (Carnot) COP is T_c/(Tₕ − T_c), in kelvins.',
+      ],
+      variables: [
+        q('C', 'Q_c', 'Heat taken from inside', 'J', 0.1, 1e9, 0.1),
+        WORK,
+        q('Q', 'Qₕ', 'Heat given to the room', 'J', 0.1, 1e9, 0.1),
+        q('k', 'COP', 'Coefficient of performance', undefined, 0, 1000, 0.01),
+        TH,
+        TL,
+        q('m', 'COP_C', 'Carnot COP', undefined, 0, 10000, 0.01),
+        q('r', 'r', 'Share of the Carnot COP', '%', 0, 100, 0.1),
+      ],
+      ...rules(
+        rule('Qₕ = Q_c + W', '{Q} = {C} + {W}', (v) => v.Q! - v.C! - v.W!, {
+          Q: [(v) => v.C! + v.W!, '{C} + {W}', 'The room gets the heat from inside plus the work.'],
+          C: [(v) => v.Q! - v.W!, '{Q} − {W}', 'Take the work from the heat given out.'],
+          W: [(v) => v.Q! - v.C!, '{Q} − {C}', 'The extra heat given out is the work put in.'],
+        }),
+        product('C', 'k', 'W', 'COP = Q_c/W', [
+          'The heat moved is the COP times the work.',
+          'Divide the heat moved by the work.',
+          'Divide the heat moved by the COP.',
+        ]),
+        rule(
+          'COP_C = T_c/(Tₕ − T_c)',
+          '{m} = {L}/({H} − {L})',
+          (v) => v.m! * (v.H! - v.L!) - v.L!,
+          {
+            m: [
+              (v) => div(v.L!, v.H! - v.L!),
+              '{L}/({H} − {L})',
+              'The Carnot COP: the cold temperature over the difference, in kelvins.',
+            ],
+            H: [(v) => v.L! + div(v.L!, v.m!)!, '{L} + {L}/{m}', 'Undo the Carnot COP for Tₕ.'],
+          },
+        ),
+        rule('r = COP/COP_C', '{r} = 100 × {k}/{m}', (v) => v.r! * v.m! - 100 * v.k!, {
+          r: [
+            (v) => div(100 * v.k!, v.m!),
+            '100 × {k}/{m}',
+            'How close the fridge comes to the best possible.',
+          ],
+          k: [(v) => (v.r! * v.m!) / 100, '{r}/100 × {m}', 'The share times the Carnot COP.'],
+          m: [(v) => div(100 * v.k!, v.r!), '100 × {k}/{r}', 'The COP over the share.'],
+        }),
+      ),
+      example: { C, W, Q: C + W, k, H, L, m, r: (100 * k) / m },
+      startWith: ['C', 'W', 'H', 'L'],
+      representation: {
+        kind: 'heatEngine',
+        mode: 'refrigerator',
+        coldHeat: 'C',
+        work: 'W',
+        hotHeat: 'Q',
+        efficiency: 'k',
+        hot: 'H',
+        cold: 'L',
+        carnot: 'm',
+      },
+      pictureLabels: ['r'],
+    } satisfies ModuleDef;
+  })(),
+];
+
+// ─── s.11.electrostatics ────────────────────────────────────────────────────
+
+const charge = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'μC', -1000, 1000, 0.01);
+
+const electroPages: ModuleDef[] = [
+  (() => {
+    const [a, b, r] = [3, -5, 0.2];
+    return {
+      id: 's.11.electrostatics',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Point charges: each is small next to the distance r between them.',
+        'Like charges repel (F > 0); unlike charges attract (F < 0). 1 μC = 10⁻⁶ C.',
+        'F = kq₁q₂/r² with k = 8.99 × 10⁹ N·m²/C²: doubling r gives a quarter of the force.',
+      ],
+      variables: [
+        charge('a', 'q₁', 'First charge'),
+        charge('b', 'q₂', 'Second charge'),
+        q('r', 'r', 'Distance apart', 'm', 0.001, 100, 0.001),
+        q('F', 'F', 'Force (+ repel, − attract)', 'N', -1e10, 1e10, 0.0001),
+      ],
+      ...rules(
+        rule(
+          'F = kq₁q₂/r²',
+          '{F} = 8.99 × 10⁹ × {a} × {b} × 10⁻¹²/({r}²)',
+          (v) => v.F! * v.r! * v.r! - 8.99e-3 * v.a! * v.b!,
+          {
+            F: [
+              (v) => div(8.99e-3 * v.a! * v.b!, v.r! * v.r!),
+              '8.99 × 10⁹ × {a} × {b} × 10⁻¹²/({r}²)',
+              'Coulomb’s law: k times the two charges (each μC is 10⁻⁶ C), over the distance squared.',
+            ],
+            r: [
+              (v) => {
+                const x = div(8.99e-3 * v.a! * v.b!, v.F!);
+                return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+              },
+              '√(8.99 × 10⁹ × {a} × {b} × 10⁻¹²/{F})',
+              'Solve Coulomb’s law for r², then take the square root.',
+            ],
+            a: [
+              (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.b!),
+              '{F} × {r}²/(8.99 × 10⁻³ × {b})',
+              'Solve Coulomb’s law for q₁.',
+            ],
+            b: [
+              (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.a!),
+              '{F} × {r}²/(8.99 × 10⁻³ × {a})',
+              'Solve Coulomb’s law for q₂.',
+            ],
+          },
+        ),
+      ),
+      example: { a, b, r, F: (8.99e-3 * a * b) / (r * r) },
+      startWith: ['a', 'b', 'r'],
+      representation: { kind: 'charges', charges: ['a', 'b'], distance: 'r', force: 'F' },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [a, r, t] = [2, 0.3, 1];
+    const E = (8.99e3 * a) / (r * r);
+    return {
+      id: 's.11.electrostatics~field',
+      title: 'The field of a point charge',
+      use: 'Use this for “What is the electric field 0.30 m from a +2 μC charge, and the force on a 1 μC test charge there?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The field is the force on each coulomb of a small test charge: E = kq/r².',
+        'It points away from a + charge and toward a − charge (E < 0 here).',
+        'A test charge q₀ there feels F = q₀E; a negative q₀ is pushed against the field.',
+      ],
+      variables: [
+        charge('a', 'q', 'Charge'),
+        q('r', 'r', 'Distance', 'm', 0.001, 100, 0.001),
+        q('E', 'E', 'Field (− toward the charge)', 'N/C', -1e13, 1e13, 1, { scientific: true }),
+        charge('t', 'q₀', 'Test charge'),
+        q('F', 'F', 'Force on the test charge', 'N', -1e10, 1e10, 0.0001),
+      ],
+      ...rules(
+        rule(
+          'E = kq/r²',
+          '{E} = 8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
+          (v) => v.E! * v.r! * v.r! - 8.99e3 * v.a!,
+          {
+            E: [
+              (v) => div(8.99e3 * v.a!, v.r! * v.r!),
+              '8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
+              'k times the charge in coulombs, over r².',
+            ],
+            a: [
+              (v) => (v.E! * v.r! * v.r!) / 8.99e3,
+              '{E} × {r}²/(8.99 × 10³)',
+              'Solve for the charge.',
+            ],
+            r: [
+              (v) => {
+                const x = div(8.99e3 * v.a!, v.E!);
+                return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+              },
+              '√(8.99 × 10⁹ × {a} × 10⁻⁶/{E})',
+              'Solve for r², then take the square root.',
+            ],
+          },
+        ),
+        rule('F = q₀E', '{F} = {t} × 10⁻⁶ × {E}', (v) => v.F! - v.t! * 1e-6 * v.E!, {
+          F: [
+            (v) => v.t! * 1e-6 * v.E!,
+            '{t} × 10⁻⁶ × {E}',
+            'The field is newtons per coulomb: times the test charge in coulombs.',
+          ],
+          t: [(v) => div(v.F!, 1e-6 * v.E!), '{F}/({E} × 10⁻⁶)', 'Divide the force by the field.'],
+        }),
+      ),
+      example: { a, r, E, t, F: t * 1e-6 * E },
+      startWith: ['a', 'r', 't'],
+      representation: { kind: 'charges', charges: ['a'], distance: 'r', field: 'E' },
+      pictureLabels: ['t', 'F'],
+    } satisfies ModuleDef;
+  })(),
+];
+
+// ─── s.11.electromagnetism ──────────────────────────────────────────────────
+
+const inductionPages: ModuleDef[] = [
+  (() => {
+    const [N, f, t] = [50, 0.012, 0.2];
+    return {
+      id: 's.11.electromagnetism',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Only a changing magnetic flux through the coil induces an emf: a magnet held still makes none.',
+        'Faraday’s law: emf = NΔΦ/Δt, so more turns or a faster change give a bigger emf.',
+        'Lenz’s law: the current’s own field opposes the change, so pulling the magnet out swings the meter the other way.',
+      ],
+      variables: [
+        q('N', 'N', 'Turns', undefined, 1, 10000, 1, { integer: true }),
+        // Ranges as wide as each other in powers of ten, so any two values typed leave room
+        // for the other two.
+        q('f', 'ΔΦ', 'Change in flux', 'Wb', 0.0001, 1, 0.0001),
+        q('t', 'Δt', 'Time', 's', 0.001, 10, 0.001),
+        q('e', 'emf', 'Induced emf', 'V', 0.1, 1000, 0.0001),
+      ],
+      ...rules(
+        rule('emf = NΔΦ/Δt', '{e} = {N} × {f}/{t}', (v) => v.e! * v.t! - v.N! * v.f!, {
+          e: [
+            (v) => div(v.N! * v.f!, v.t!),
+            '{N} × {f}/{t}',
+            'Each turn gets ΔΦ/Δt; N turns add up.',
+          ],
+          f: [(v) => div(v.e! * v.t!, v.N!), '{e} × {t}/{N}', 'Solve Faraday’s law for ΔΦ.'],
+          t: [(v) => div(v.N! * v.f!, v.e!), '{N} × {f}/{e}', 'Solve Faraday’s law for Δt.'],
+          N: [
+            (v) => div(v.e! * v.t!, v.f!),
+            '{e} × {t}/{f}',
+            'Solve Faraday’s law for the number of turns.',
+          ],
+        }),
+      ),
+      example: { N, f, t, e: (N * f) / t },
+      startWith: ['N', 'f', 't'],
+      representation: {
+        kind: 'induction',
+        mode: 'coil',
+        turns: 'N',
+        flux: 'f',
+        time: 't',
+        emf: 'e',
+        direction: 'in',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [B, I, L, t] = [0.4, 5, 0.25, 90];
+    return {
+      id: 's.11.electromagnetism~force',
+      title: 'The force on a current in a magnetic field',
+      use: 'Use this for “A 0.25 m wire carrying 5 A crosses a 0.40 T field at 90°. What force acts on it? What if the angle is 30°?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'A current in a magnetic field feels F = BIL sin θ, θ the angle between the wire and the field.',
+        'The force is greatest at 90° and zero along the field; its direction comes from the right-hand rule.',
+        'This push on a current is what turns an electric motor.',
+      ],
+      variables: [
+        q('B', 'B', 'Magnetic field', 'T', 0.0001, 10, 0.0001),
+        q('I', 'I', 'Current', 'A', 0.01, 1000, 0.01),
+        q('L', 'L', 'Length in the field', 'm', 0.01, 100, 0.01),
+        q('q', 'θ', 'Angle to the field', '°', 1, 179, 1),
+        q('F', 'F', 'Force', 'N', 0, 1e6, 0.0001),
+      ],
+      ...rules(
+        rule(
+          'F = BIL sin θ',
+          '{F} = {B} × {I} × {L} × sin({q})',
+          (v) => v.F! - v.B! * v.I! * v.L! * Math.sin(v.q! * RAD),
+          {
+            F: [
+              (v) => v.B! * v.I! * v.L! * Math.sin(v.q! * RAD),
+              '{B} × {I} × {L} × sin({q})',
+              'Multiply the field, current, length and sin θ.',
+            ],
+            B: [
+              (v) => div(v.F!, v.I! * v.L! * Math.sin(v.q! * RAD)),
+              '{F} ÷ (sin({q}) × {I} × {L})',
+              'Divide the force by sin θ, the current and the length.',
+            ],
+            I: [
+              (v) => div(v.F!, v.B! * v.L! * Math.sin(v.q! * RAD)),
+              '{F} ÷ (sin({q}) × {B} × {L})',
+              'Divide the force by sin θ, the field and the length.',
+            ],
+            L: [
+              (v) => div(v.F!, v.B! * v.I! * Math.sin(v.q! * RAD)),
+              '{F} ÷ (sin({q}) × {B} × {I})',
+              'Divide the force by sin θ, the field and the current.',
+            ],
+          },
+        ),
+      ),
+      example: { B, I, L, q: t, F: B * I * L * Math.sin(t * RAD) },
+      startWith: ['B', 'I', 'L', 'q'],
+      representation: {
+        kind: 'induction',
+        mode: 'force',
+        field: 'B',
+        current: 'I',
+        length: 'L',
+        angle: 'q',
+        force: 'F',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [p, s, V, I] = [400, 20, 120, 0.1];
+    return {
+      id: 's.11.electromagnetism~transformer',
+      title: 'A transformer',
+      use: 'Use this for “A transformer steps 120 V down with 400 primary turns and 20 secondary turns. What voltage comes out, and what current if 0.1 A goes in?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'An alternating current makes a changing flux in the iron core, which induces a voltage in the secondary coil.',
+        'The voltage per turn is the same in both coils: Vₛ/Vₚ = Nₛ/Nₚ.',
+        'An ideal transformer keeps the power, VₚIₚ = VₛIₛ: stepping the voltage down steps the current up.',
+      ],
+      variables: [
+        q('p', 'Nₚ', 'Primary turns', undefined, 1, 100000, 1, { integer: true }),
+        q('s', 'Nₛ', 'Secondary turns', undefined, 1, 100000, 1, { integer: true }),
+        q('V', 'Vₚ', 'Primary voltage', 'V', 0.1, 1e6, 0.1),
+        q('W', 'Vₛ', 'Secondary voltage', 'V', 0, 1e8, 0.001),
+        q('I', 'Iₚ', 'Primary current', 'A', 0.001, 10000, 0.001),
+        q('J', 'Iₛ', 'Secondary current', 'A', 0, 1e6, 0.0001),
+      ],
+      ...rules(
+        rule('Vₛ = Vₚ Nₛ/Nₚ', '{W} = {V} × {s}/{p}', (v) => v.W! * v.p! - v.V! * v.s!, {
+          W: [
+            (v) => div(v.V! * v.s!, v.p!),
+            '{V} × {s}/{p}',
+            'The same voltage per turn: multiply by the turns ratio.',
+          ],
+          V: [(v) => div(v.W! * v.p!, v.s!), '{W} × {p}/{s}', 'Undo the turns ratio.'],
+          s: [(v) => div(v.W! * v.p!, v.V!), '{W} × {p}/{V}', 'Solve for Nₛ.'],
+        }),
+        rule('Iₛ = Iₚ Nₚ/Nₛ', '{J} = {I} × {p}/{s}', (v) => v.J! * v.s! - v.I! * v.p!, {
+          J: [
+            (v) => div(v.I! * v.p!, v.s!),
+            '{I} × {p}/{s}',
+            'Power kept: the current changes the other way from the voltage.',
+          ],
+          I: [(v) => div(v.J! * v.s!, v.p!), '{J} × {s}/{p}', 'Undo the turns ratio.'],
+        }),
+      ),
+      example: { p, s, V, W: (V * s) / p, I, J: (I * p) / s },
+      startWith: ['p', 's', 'V', 'I'],
+      representation: {
+        kind: 'induction',
+        mode: 'transformer',
+        primary: 'p',
+        secondary: 's',
+        voltage: 'V',
+        output: 'W',
+        current: 'I',
+        outputCurrent: 'J',
+      },
+    } satisfies ModuleDef;
+  })(),
+];
+
+// ─── s.11.modern-physics ────────────────────────────────────────────────────
+
+/** Hydrogen's photon between levels u and l (eV). */
+const hydrogenEnergy = (u: number, l: number) => 13.6 * (1 / (l * l) - 1 / (u * u));
+
+const modernPages: ModuleDef[] = [
+  (() => {
+    const l = 532;
+    const f = 3e8 / (l * 1e-9);
+    const E = 6.626e-34 * f;
+    return {
+      id: 's.11.modern-physics',
+      assumptions: [
+        'Light comes in photons, each with energy E = hf, h = 6.626 × 10⁻³⁴ J·s.',
+        'A shorter wavelength means a higher frequency and more energy per photon; c = fλ = 3.00 × 10⁸ m/s.',
+        'Brighter light has more photons, not more energetic ones. 1 eV = 1.602 × 10⁻¹⁹ J.',
+      ],
+      variables: [
+        q('l', 'λ', 'Wavelength', 'nm', 0.01, 1e6, 0.01),
+        q('f', 'f', 'Frequency', 'Hz', 3e11, 3e19, 1, { scientific: true }),
+        q('E', 'E_J', 'Photon energy in joules', 'J', 6.626e-34 * 3e11, 6.626e-34 * 3e19, 1e-25, {
+          scientific: true,
+          derived: true,
+        }),
+        q(
+          'e',
+          'E',
+          'Photon energy',
+          'eV',
+          (6.626e-34 * 3e11) / 1.602e-19,
+          (6.626e-34 * 3e19) / 1.602e-19,
+          0.0001,
+        ),
+      ],
+      ...rules(
+        rule('f = c/λ', '{f} = 3 × 10⁸/({l} × 10⁻⁹)', (v) => v.l! - 3e17 / v.f!, {
+          f: [
+            (v) => div(3e8, v.l! * 1e-9),
+            '3 × 10⁸/({l} × 10⁻⁹)',
+            'c = fλ: the speed of light over the wavelength in meters (1 nm = 10⁻⁹ m).',
+          ],
+          l: [
+            (v) => div(3e8, v.f! * 1e-9),
+            '3 × 10⁸/({f} × 10⁻⁹)',
+            'The speed of light over the frequency, in nm.',
+          ],
+        }),
+        // f and eV first in these two: the solver checks a relation by its first rearrangement,
+        // and joules this small would pass any check.
+        rule('E_J = hf', '{E} = 6.626 × 10⁻³⁴ × {f}', (v) => v.f! - v.E! / 6.626e-34, {
+          f: [(v) => v.E! / 6.626e-34, '{E}/(6.626 × 10⁻³⁴)', 'The energy over Planck’s constant.'],
+          E: [
+            (v) => 6.626e-34 * v.f!,
+            '6.626 × 10⁻³⁴ × {f}',
+            'Planck’s constant times the frequency, in joules.',
+          ],
+        }),
+        rule(
+          'E = E_J/(1.602 × 10⁻¹⁹)',
+          '{e} = {E}/(1.602 × 10⁻¹⁹)',
+          (v) => v.e! - v.E! / 1.602e-19,
+          {
+            e: [
+              (v) => v.E! / 1.602e-19,
+              '{E}/(1.602 × 10⁻¹⁹)',
+              'Each electronvolt is 1.602 × 10⁻¹⁹ J.',
+            ],
+            E: [
+              (v) => v.e! * 1.602e-19,
+              '{e} × 1.602 × 10⁻¹⁹',
+              'Each electronvolt is 1.602 × 10⁻¹⁹ J.',
+            ],
+          },
+        ),
+      ),
+      example: { l, f, E, e: E / 1.602e-19 },
+      startWith: ['l'],
+      representation: {
+        kind: 'spectrum',
+        wavelength: 'l',
+        meters: 1e-9,
+        photon: { frequency: 'f', energy: 'E', electronVolts: 'e' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [u, l] = [3, 2];
+    const E = hydrogenEnergy(u, l);
+    return {
+      id: 's.11.modern-physics~hydrogen-lines',
+      title: 'Hydrogen’s spectral lines',
+      use: 'Use this for “An electron in hydrogen drops from n = 3 to n = 2. What are the photon’s energy and wavelength?”',
+      assumptions: [
+        'Hydrogen’s levels have energies Eₙ = −13.6/n² eV; the electron can only be on a level.',
+        'A drop from the upper level to the lower one gives off one photon with the difference in energy.',
+        'Drops to n = 1 are ultraviolet, to n = 2 visible, to n = 3 infrared. λ = 1240/E nm.',
+      ],
+      variables: [
+        q('u', 'n_u', 'Upper level', undefined, 2, 8, 1, { integer: true }),
+        q('l', 'n_l', 'Lower level', undefined, 1, 7, 1, { integer: true }),
+        q('E', 'E', 'Photon energy', 'eV', 0.01, 13.6, 0.0001),
+        q('w', 'λ', 'Wavelength', 'nm', 50, 20000, 0.1),
+      ],
+      ...rules(
+        rule(
+          'E = 13.6(1/n_l² − 1/n_u²)',
+          '{E} = 13.6 × (1/{l}^2 − 1/{u}^2)',
+          (v) => v.E! - hydrogenEnergy(v.u!, v.l!),
+          {
+            E: [
+              (v) => hydrogenEnergy(v.u!, v.l!),
+              '13.6 × (1/{l}^2 − 1/{u}^2)',
+              'The photon carries the energy between the two levels.',
+            ],
+            u: [
+              (v) => {
+                const k = 1 / v.l! ** 2 - v.E! / 13.6;
+                return k > 0 ? 1 / Math.sqrt(k) : undefined;
+              },
+              '1/√(1/{l}^2 − {E}/13.6)',
+              'Solve the level formula for the upper level.',
+            ],
+            l: [
+              (v) => 1 / Math.sqrt(v.E! / 13.6 + 1 / v.u! ** 2),
+              '1/√({E}/13.6 + 1/{u}^2)',
+              'Solve the level formula for the lower level.',
+            ],
+          },
+        ),
+        rule('λ = 1240/E', '{w} = 1240/{E}', (v) => v.w! * v.E! - 1240, {
+          w: [
+            (v) => div(1240, v.E!),
+            '1240/{E}',
+            'hc = 1240 eV·nm, so the wavelength in nm is 1240 divided by the energy in eV.',
+          ],
+          E: [(v) => div(1240, v.w!), '1240/{w}', 'Divide 1240 eV·nm by the wavelength.'],
+        }),
+      ),
+      example: { u, l, E, w: 1240 / E },
+      startWith: ['u', 'l'],
+      sliders: true,
+      representation: {
+        kind: 'orbitalDiagram',
+        mode: 'ladder',
+        upper: 'u',
+        lower: 'l',
+        energy: 'E',
+        wavelength: 'w',
+        levels: 8,
+      },
+    } satisfies ModuleDef;
+  })(),
+];
+
 // ─── s.11.circuits ───────────────────────────────────────────────────────────
 
 const VOLTS = q('V', 'V', 'Battery voltage', 'V', 0.01, 10000, 0.01);
@@ -3017,7 +3871,11 @@ export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...circularPages,
   ...momentumPages,
   ...energyPages,
+  ...thermoPages,
   ...soundPages,
   ...opticsPages,
+  ...electroPages,
   ...circuitPages,
+  ...inductionPages,
+  ...modernPages,
 ];
