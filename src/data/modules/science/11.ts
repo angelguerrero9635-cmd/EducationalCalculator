@@ -44,7 +44,7 @@ const rule = (
   id: string,
   display: string,
   residual: (v: Values) => number,
-  parts: Record<string, [Solve, string, string] | undefined | null>,
+  parts: Record<string, [Solve, StepText['expr'], string] | undefined | null>,
 ): Rule => ({
   relation: {
     id,
@@ -898,6 +898,7 @@ const dynamicsPages: ModuleDef[] = [
         'The push is level, and the block is already sliding, so friction is kinetic.',
         'Up and down nothing moves: the normal force balances the weight.',
         'Friction points against the motion; the net force is the push minus friction.',
+        'If friction is more than the push, a < 0: the sliding block slows down.',
       ],
       variables: [
         MASS,
@@ -917,6 +918,7 @@ const dynamicsPages: ModuleDef[] = [
             '{W}',
             'Nothing else pushes up or down, so the floor pushes up with the weight.',
           ],
+          W: [(v) => v.N!, '{N}', 'The weight balances the normal force.'],
         }),
         frictionRule,
         difference('n', 'F', 'f', 'F_net = F − f', 'The push forward less friction backward.'),
@@ -953,7 +955,7 @@ const dynamicsPages: ModuleDef[] = [
       assumptions: [
         'Tilt the axes with the slope: the weight splits into W sin θ down it and W cos θ into it.',
         'Into the slope nothing moves, so F_N = W cos θ.',
-        'The block is sliding down, so kinetic friction acts up the slope.',
+        'The block is sliding down, so kinetic friction acts up the slope; if friction wins, a < 0 and it slows.',
       ],
       variables: [
         MASS,
@@ -1050,7 +1052,7 @@ const dynamicsPages: ModuleDef[] = [
       assumptions: [
         'The rope’s tension has a part across, T cos α, and a part up, T sin α.',
         'The part up lifts a little, so the ground pushes up less: F_N = W − T sin α.',
-        'Less normal force means less friction; the sled is already sliding.',
+        'Less normal force means less friction; the sled is already sliding, and a < 0 means it slows.',
       ],
       variables: [
         MASS,
@@ -1153,7 +1155,15 @@ const dynamicsPages: ModuleDef[] = [
       ...rules(
         weightRule,
         newtonRule,
-        difference('n', 'T', 'W', 'F_net = T − W', 'Up is +: the tension up less the weight down.'),
+        rule('F_net = T − W', '{n} = {T} − {W}', (v) => v.n! - (v.T! - v.W!), {
+          n: [(v) => v.T! - v.W!, '{T} − {W}', 'Up is +: the tension up less the weight down.'],
+          T: [
+            (v) => v.n! + v.W!,
+            '{n} + {W}',
+            'The cord holds up the weight and also gives the net force.',
+          ],
+          W: [(v) => v.T! - v.n!, '{T} − {n}', 'The tension less the net force is the weight.'],
+        }),
       ),
       example: { m, a, W, T: W + m * a, n: m * a },
       startWith: ['m', 'a'],
@@ -1186,11 +1196,11 @@ const dynamicsPages: ModuleDef[] = [
       variables: [
         q('p', 'F₁', 'First force', 'N', 0, 1e5, 0.1),
         q('b', 'F₂', 'Second force', 'N', 0, 1e5, 0.1),
-        q('t', 'θ', 'Angle of F₂', '°', 0, 90, 1),
-        q('x', 'Fₓ', 'Net force east', 'N', 0, 2e5, 0.01, { derived: true }),
+        q('t', 'θ', 'Angle of F₂', '°', 0, 180, 1),
+        q('x', 'Fₓ', 'Net force east', 'N', -1e5, 2e5, 0.01, { derived: true }),
         q('y', 'F_y', 'Net force north', 'N', 0, 1e5, 0.01, { derived: true }),
         q('F', 'F', 'Net force', 'N', 0, 2e5, 0.01),
-        q('d', 'φ', 'Direction, from east', '°', 0, 90, 0.1, { derived: true }),
+        q('d', 'φ', 'Direction, from east', '°', 0, 180, 0.1, { derived: true }),
         MASS,
         { ...ACC, min: 0 },
       ],
@@ -1221,14 +1231,19 @@ const dynamicsPages: ModuleDef[] = [
           'The parts are at right angles: add them by Pythagoras.',
         ),
         rule(
-          'φ = arctan(F_y/Fₓ)',
-          '{d} = arctan({y}/{x})',
-          (v) => Math.tan(v.d! * RAD) * v.x! - v.y!,
+          'tan φ = F_y/Fₓ',
+          'tan({d}) = {y}/{x}',
+          (v) => Math.sin(v.d! * RAD) * v.x! - Math.cos(v.d! * RAD) * v.y!,
           {
             d: [
               (v) => Math.atan2(v.y!, v.x!) / RAD,
-              'arctan({y}/{x})',
-              'The tangent of the direction is the north part over the east part.',
+              (v) =>
+                Math.abs(v.x!) < 1e-9
+                  ? '90'
+                  : v.x! < 0
+                    ? '180 + arctan({y}/{x})'
+                    : 'arctan({y}/{x})',
+              'The direction from east: the angle whose tangent is north over east, in the right quarter.',
             ],
           },
         ),
@@ -1238,7 +1253,7 @@ const dynamicsPages: ModuleDef[] = [
             '{F}/{m}',
             'Newton’s second law: the net force over the mass.',
           ],
-          F: [(v) => v.a! * v.m!, '{a} × {m}', 'The net force is the mass times the acceleration.'],
+          F: [(v) => v.a! * v.m!, '{m} × {a}', 'The net force is the mass times the acceleration.'],
           m: [(v) => div(v.F!, v.a!), '{F}/{a}', 'Divide the net force by the acceleration.'],
         }),
       ),
@@ -1255,7 +1270,7 @@ const dynamicsPages: ModuleDef[] = [
         unit: 'N',
         axes: { x: 'east', y: 'north' },
       },
-      pictureLabels: ['m'],
+      pictureLabels: ['m', 'a'],
     } satisfies ModuleDef;
   })(),
 ];
