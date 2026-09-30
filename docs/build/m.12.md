@@ -6,10 +6,10 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 
 ## Built
 
-- `m.12.hypothesis-testing` (4): main (one-proportion, two-sided), `~mean` (left-tailed),
-  `~two-sample`, `~errors` (sort).
-- `m.12.confidence-intervals` (4): main (mean, σ known), `~proportion`, `~sample-size`,
-  `~capture`.
+- `m.12.hypothesis-testing` (5): main (one-proportion, two-sided), `~mean` (left-tailed z),
+  `~t-test` (one mean, σ unknown), `~two-sample` (t), `~errors` (sort).
+- `m.12.confidence-intervals` (5): main (mean, σ known), `~t-interval`, `~proportion`,
+  `~sample-size`, `~capture`.
 - `m.12.sampling-distributions` (3): main (x̄), `~proportion` (p̂), `~counts` (binomial).
 - `m.12.chi-square` (2): main (goodness of fit, 3 categories), `~independence` (2 × 3 table).
 - `m.12.conics` (5): main (ellipse), `~parabola`, `~hyperbola`, `~identify` (sort), `~cone`
@@ -31,9 +31,6 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 Every page the plan marks BUILD is built (50, one per plan line; the interims are under
 "Changed from the plan"). These pages wait on an engine or picture need and are not built:
 
-- `m.12.confidence-intervals~t-interval` and `m.12.hypothesis-testing~t-test` — need 1 (the t
-  distribution: `normalCurve` `t: { df }`, invT and tcdf phrases). `~two-sample` then switches
-  from z to t.
 - `m.12.trig-formulas-equations~quadratic` (2 sin²x − sin x − 1 = 0) — need 7 (`unitCircle`
   solutions for two values of sin x).
 - `m.12.polar~roots` (the cube roots of 8i) — need 8 (`complexPlane` `roots: n`).
@@ -42,6 +39,10 @@ Every page the plan marks BUILD is built (50, one per plan line; the interims ar
 - `m.12.vectors~cross` (3-D vectors and the cross product) — need 10 (3-D axes).
 
 Built with an interim, to change when the need lands:
+
+- P11 (a t curve on `normalCurve`): `~t-interval`, `~t-test` and `~two-sample` draw the normal
+  sampling curve with the interval or the sample's mark only (no shaded areas, since the
+  picture's areas and p-values are normal ones); t⋆, tcdf and the p-value are in the steps.
 
 - Need 2 (tail from a typed Hₐ): `m.12.hypothesis-testing` is two-sided and `~mean`
   left-tailed.
@@ -121,6 +122,13 @@ Built with an interim, to change when the need lands:
   a − 0.01 and a + 0.01 under the limit's step (2.9, 2.99, 3.01 in the example).
 - **`~one-sided` says whether f is continuous** in a note after J (0: continuous; else no
   limit).
+
+- **The t pages (need 1, E10).** `~t-interval` (x̄ = 52, s = 8, n = 10, 95%: df = 9,
+  t⋆ ≈ 2.262, E ≈ 5.72) and `~t-test` (μ₀ = 500 g, s = 8 g, n = 16, x̄ = 496 g: SE = 2,
+  t = −2, df = 15, P ≈ 0.064, fail to reject at 0.05, unlike the z page) are new. `~two-sample`
+  is now a t-test with df = the smaller n − 1 (the by-hand choice); its example gives t ≈ 2.12,
+  df = 35, P ≈ 0.041. The step text writes invT(0.975, 9) and tcdf(|t|, df), taught to the
+  harness in `phrasesM12.ts`. t, df, SE and P are worked out, never typed.
 
 ## Shared needs found while building
 
