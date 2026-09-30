@@ -1588,8 +1588,192 @@ const MATH_12_MATRICES: ModuleDef[] = [
   },
 ];
 
+// ── Trigonometry ──
+
+const RAD = Math.PI / 180;
+/** Degrees to a y axis: sin⁻¹ and tan⁻¹ graphs stretched by 180/π read in degrees. */
+const DEG = 180 / Math.PI;
+const deg = (id: string, symbol: string, name: string, min: number, max: number, extra = {}) =>
+  V(id, symbol, name, { unit: '°', min, max, step: 0.01, ...extra });
+const unitValue = (id: string, symbol: string, name: string, extra = {}) =>
+  V(id, symbol, name, { min: -1, max: 1, step: 0.0001, ...extra });
+
+/** t = A × π/180, the same angle in radians. */
+const toRadians = (t: string, A: string) =>
+  derive(
+    `${t} = ${A} × π/180`,
+    `{${t}} = {${A}} × π/180`,
+    t,
+    [A],
+    (v) => v[A]! * RAD,
+    `{${A}} × π/180`,
+    'A half turn, 180°, is π radians: multiply by π/180.',
+  );
+const radians = (id: string, min: number, max: number) =>
+  V(id, 't', 'The angle in radians', { min, max, step: 0.0001, derived: true });
+
+/** A = f⁻¹(x) on the inverse's range, and x = f(A) back. */
+function inverse(fn: 'sin' | 'cos' | 'tan', A: string, x: string, how: string): Rel {
+  const inv = fn === 'sin' ? Math.asin : fn === 'cos' ? Math.acos : Math.atan;
+  const f = fn === 'sin' ? Math.sin : fn === 'cos' ? Math.cos : Math.tan;
+  return rel(
+    `${A} = ${fn}⁻¹(${x})`,
+    `{${A}} = ${fn}⁻¹({${x}})`,
+    [A, x],
+    (v) => f(v[A]! * RAD) - v[x]!,
+    {
+      [A]: [
+        (v) => (fn !== 'tan' && Math.abs(v[x]!) > 1 ? undefined : inv(v[x]!) / RAD),
+        `${fn}⁻¹({${x}})`,
+        how,
+      ],
+      [x]: [
+        (v) => f(v[A]! * RAD),
+        `${fn}({${A}}°)`,
+        `Take the ${fn === 'sin' ? 'sine' : fn === 'cos' ? 'cosine' : 'tangent'} of both sides.`,
+      ],
+    },
+  );
+}
+
+const MATH_12_TRIG: ModuleDef[] = [
+  // ── m.12.inverse-trig (F-TF.6, F-TF.7) ──
+  {
+    id: 'm.12.inverse-trig',
+    assumptions: [
+      'sin⁻¹(x) is the one angle from −90° to 90° whose sine is x.',
+      'The sine is one-to-one only on −90° to 90°, so the range is restricted there.',
+      'x must be from −1 to 1: no angle has a sine of 1.5.',
+      'sin⁻¹(x) is the inverse function, not 1 ÷ sin(x).',
+    ],
+    variables: [
+      unitValue('x', 'x', 'The sine'),
+      deg('A', 'A', 'The angle', -90, 90),
+      radians('t', -Math.PI / 2, Math.PI / 2),
+    ],
+    ...rels(
+      inverse('sin', 'A', 'x', 'The one angle from −90° to 90° whose sine is x.'),
+      toRadians('t', 'A'),
+    ),
+    example: { x: 0.5, A: 30, t: Math.PI / 6 },
+    startWith: ['x'],
+    equation: 'sin⁻¹({x}) = {A}°',
+    representation: {
+      kind: 'functionGraph',
+      family: 'arcsin',
+      a: DEG,
+      at: { x: 'x', y: 'A' },
+      marks: ['domain', 'range'],
+      axes: { x: 'x', y: 'A (°)' },
+    },
+  },
+  {
+    id: 'm.12.inverse-trig~arccos',
+    title: 'Inverse cosine',
+    use: 'Use this for “Find cos⁻¹(−1/2) in degrees and radians.”',
+    assumptions: [
+      'cos⁻¹(x) is the one angle from 0° to 180° whose cosine is x (the shaded half).',
+      'The cosine is one-to-one there, so that is the range; x must be from −1 to 1.',
+      'A negative x gives an angle past 90°, in the second quadrant.',
+    ],
+    variables: [
+      unitValue('x', 'x', 'The cosine'),
+      deg('A', 'A', 'The angle', 0, 180),
+      radians('t', 0, Math.PI),
+    ],
+    ...rels(
+      inverse('cos', 'A', 'x', 'The one angle from 0° to 180° whose cosine is x.'),
+      toRadians('t', 'A'),
+    ),
+    example: { x: -0.5, A: 120, t: (2 * Math.PI) / 3 },
+    startWith: ['x'],
+    equation: 'cos⁻¹({x}) = {A}°',
+    representation: {
+      kind: 'unitCircle',
+      angle: 'A',
+      fixed: true,
+      solutions: { fn: 'cos', value: 'x', angles: ['A'], principal: true },
+    },
+  },
+  {
+    id: 'm.12.inverse-trig~arctan',
+    title: 'Inverse tangent: the angle of a slope',
+    use: 'Use this for “A ramp rises 5 m over 2 m of ground. What angle does it make?”',
+    assumptions: [
+      'The angle of a slope is tan⁻¹ of rise over run.',
+      'tan⁻¹(x) is the one angle between −90° and 90° whose tangent is x; every x has one.',
+      'The curve nears ±90° but never reaches them: those are asymptotes.',
+    ],
+    variables: [
+      V('r', 'rise', 'Rise', { unit: 'm', min: -100000, max: 100000, step: 0.01 }),
+      V('u', 'run', 'Run', { unit: 'm', min: 0.001, max: 100000, step: 0.01 }),
+      V('x', 'x', 'Rise over run', { min: -100000, max: 100000, step: 0.0001, derived: true }),
+      deg('A', 'A', 'Angle of the slope', -89.99, 89.99),
+    ],
+    ...rels(
+      rel('x = rise ÷ run', '{x} = {r} ÷ {u}', ['x', 'r', 'u'], (v) => v.x! * v.u! - v.r!, {
+        x: [(v) => div(v.r!, v.u!), '{r} ÷ {u}', 'The slope is the rise for each 1 of run.'],
+        r: [(v) => v.x! * v.u!, '{x} × {u}', 'The rise is the slope times the run.'],
+        u: [(v) => div(v.r!, v.x!), '{r} ÷ {x}', 'Divide the rise by the slope.'],
+      }),
+      inverse('tan', 'A', 'x', 'The angle between −90° and 90° whose tangent is rise over run.'),
+    ),
+    example: { r: 5, u: 2, x: 2.5, A: Math.atan(2.5) / RAD },
+    startWith: ['r', 'u'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'arctan',
+      a: DEG,
+      at: { x: 'x', y: 'A' },
+      marks: ['asymptotes', 'range'],
+      axes: { x: 'Rise over run x', y: 'A (°)' },
+    },
+  },
+  {
+    id: 'm.12.inverse-trig~compose',
+    title: 'The cosine of an inverse sine',
+    use: 'Use this for “Find the exact value of cos(sin⁻¹(3/5)).”',
+    assumptions: [
+      'Let A = sin⁻¹(x): an angle from −90° to 90° with sin A = x.',
+      'Then cos A = √(1 − x²), from sin²A + cos²A = 1.',
+      'The root is positive because A is from −90° to 90°, where the cosine is not negative.',
+    ],
+    variables: [
+      unitValue('x', 'x', 'The sine, sin A'),
+      deg('A', 'A', 'The angle sin⁻¹(x)', -90, 90, { derived: true }),
+      unitValue('y', 'y', 'cos(sin⁻¹(x))', { min: 0 }),
+    ],
+    ...rels(
+      inverse('sin', 'A', 'x', 'The one angle from −90° to 90° whose sine is x.'),
+      rel(
+        'y = cos A = √(1 − x²)',
+        '{y} = √(1 − {x}²)',
+        ['y', 'x'],
+        (v) => v.y! - Math.sqrt(1 - v.x! ** 2),
+        {
+          y: [
+            (v) => (Math.abs(v.x!) > 1 ? undefined : Math.sqrt(1 - v.x! ** 2)),
+            '√(1 − {x}²)',
+            'cos A = √(1 − sin²A), and sin A = x; the root is positive since A is from −90° to 90°.',
+          ],
+          x: [
+            (v) => (v.y! > 1 ? undefined : [Math.sqrt(1 - v.y! ** 2), -Math.sqrt(1 - v.y! ** 2)]),
+            '±√(1 − {y}²)',
+            'sin²A = 1 − cos²A; the sine can be either sign between −90° and 90°.',
+          ],
+        },
+      ),
+    ),
+    example: { x: 0.6, A: Math.asin(0.6) / RAD, y: 0.8 },
+    startWith: ['x'],
+    equation: 'cos(sin⁻¹({x})) = {y}',
+    representation: { kind: 'unitCircle', angle: 'A', sin: 'x', cos: 'y', fixed: true },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_STATS,
   ...MATH_12_CONICS,
   ...MATH_12_MATRICES,
+  ...MATH_12_TRIG,
 ];

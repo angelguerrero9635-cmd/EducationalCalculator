@@ -16,6 +16,7 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   (explore).
 - `m.12.matrices` (5): main (row reduction, right sides typed), `~multiply`, `~determinant`
   (3 × 3), `~inverse`, `~cramer`.
+- `m.12.inverse-trig` (4): main (sin⁻¹), `~arccos`, `~arctan` (rise over run), `~compose`.
 
 ## Waiting
 
@@ -53,6 +54,12 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   changes (D moves by ae − bd each step), and `~cramer` plots the solution (x, y) where the two
   lines cross. Both switch to the determinant picture when need 5 lands.
 - **`~inverse` keeps rows (need 4 interim)**; its picture multiplies A by A⁻¹ to show I.
+
+- **Inverse-trig graphs read in degrees.** `functionGraph` draws sin⁻¹ and tan⁻¹ in radians, so
+  the main page and `~arctan` stretch them by a = 180/π and label the axis "A (°)": the traced
+  point is the degree value the page types. The radian value t is worked out beside it.
+- **`~compose` works y = √(1 − x²) directly** (the plan's "shown as"); A = sin⁻¹(x) is the
+  angle the unit circle draws.
 
 ## Shared needs found while building
 
