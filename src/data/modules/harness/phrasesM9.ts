@@ -52,4 +52,9 @@ export const M9_PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // Whole-number answers to an inequality: at most rounds down, at least rounds up.
   [new RegExp(`(${NUM}) rounded down to a whole number`), (n) => Math.floor(n + 1e-9)],
   [new RegExp(`(${NUM}) rounded up to a whole number`), (n) => Math.ceil(n - 1e-9)],
+  // Significant figures: a calculated product rounded to the fewer figures of its factors.
+  [
+    new RegExp(`(${NUM}) rounded to (${NUM}) significant figures?`),
+    (x, n) => Number(x.toPrecision(Math.min(21, Math.max(1, Math.round(n))))),
+  ],
 ];

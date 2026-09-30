@@ -5539,9 +5539,312 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
   }),
 ];
 
+// ── Units, accuracy and precision (N-Q.1–3) ──
+
+/** x rounded to n significant figures. */
+const toFigures = (x: number, n: number) => Number(x.toPrecision(Math.min(21, Math.max(1, n))));
+/** Whether x is a whole number of steps of u (a reading to the nearest u). */
+const onStep = (x: number, u: number) => Math.abs(x / u - Math.round(x / u)) < 1e-6;
+
+const UNITS_PRECISION: ModuleDef[] = [
+  page({
+    id: 'm.9.units-precision',
+    use: 'Use this for “A car goes 45 miles per hour. How many feet per second is that?”',
+    assumptions: [
+      '1 mi = 5280 ft and 1 h = 3600 s exactly, so each conversion factor equals 1.',
+      'Write each factor with the unit to cancel on the other side of the fraction bar.',
+      'The units left after cancelling are the answer’s unit: a check that the setup is right.',
+    ],
+    variables: [
+      // No unit menu: the chain draws mi/h and ft/s as written, so the values stay in them.
+      num('v', 'v', 'Speed in miles per hour', 0, 600, { step: 0.1 }),
+      num('u', 'u', 'Speed in feet per second', 0, 880),
+    ],
+    rules: [
+      rule(
+        'u = v × 5280/3600',
+        '{u} = {v} × 5280/3600',
+        ['u', 'v'],
+        (v) => v.u! - (v.v! * 5280) / 3600,
+        {
+          u: [
+            (v) => exact((v.v! * 5280) / 3600),
+            '{v} × 5280/3600',
+            'Multiply by 5280 ft per mi and by 1 h per 3600 s: mi and h cancel, leaving ft/s.',
+          ],
+          v: [
+            (v) => exact((v.u! * 3600) / 5280),
+            '{u} × 3600/5280',
+            'Run the chain backwards: multiply by 3600 s per h and by 1 mi per 5280 ft.',
+          ],
+        },
+      ),
+    ],
+    example: { v: 45, u: 66 },
+    startWith: ['v'],
+    representation: {
+      kind: 'unitChain',
+      mode: 'chain',
+      start: 'v',
+      unit: 'mi',
+      per: 'h',
+      factors: [
+        { top: 5280, topUnit: 'ft', bottom: 1, bottomUnit: 'mi' },
+        { top: 1, topUnit: 'h', bottom: 3600, bottomUnit: 's' },
+      ],
+      result: 'u',
+    },
+  }),
+  page({
+    id: 'm.9.units-precision~area-units',
+    title: 'Square units and a cost',
+    use: 'Use this for “Carpet costs $30 a square yard. What does it cost for a 12 ft by 15 ft room?”',
+    assumptions: [
+      '1 yd = 3 ft, so 1 yd² = 3 ft × 3 ft = 9 ft²: square the length factor.',
+      'The price is per square yard, so change the area to square yards before multiplying.',
+    ],
+    variables: [
+      // No unit menu: the chain draws ft² and yd² as written, so the values stay in them.
+      num('l', 'l', 'Length in feet', 0.1, 500, { step: 0.1 }),
+      num('w', 'w', 'Width in feet', 0.1, 500, { step: 0.1 }),
+      num('F', 'A_ft', 'Area in square feet', 0.01, 250000),
+      num('Y', 'A_yd', 'Area in square yards', 0.001, 27778),
+      num('p', 'p', 'Price per square yard', 0.01, 100, { unit: '$', step: 0.01 }),
+      num('C', 'C', 'Cost', 0, 3000000, { unit: '$' }),
+    ],
+    rules: [
+      rule('A_ft = l × w', '{F} = {l} × {w}', ['F', 'l', 'w'], (v) => v.F! - v.l! * v.w!, {
+        F: [
+          (v) => exact(v.l! * v.w!),
+          '{l} × {w}',
+          'The floor’s area is its length times its width.',
+        ],
+        l: [(v) => fin(v.F! / v.w!), '{F} ÷ {w}', 'Divide the area by the width.'],
+        w: [(v) => fin(v.F! / v.l!), '{F} ÷ {l}', 'Divide the area by the length.'],
+      }),
+      rule('A_yd = A_ft ÷ 9', '{Y} = {F} × 1/9', ['Y', 'F'], (v) => v.Y! - v.F! / 9, {
+        Y: [
+          (v) => exact(v.F! / 9),
+          '{F} ÷ 9',
+          'Multiply by 1 yd² per 9 ft²: the ft² cancel, leaving square yards.',
+        ],
+        F: [(v) => exact(v.Y! * 9), '{Y} × 9', 'Each square yard is 9 square feet.'],
+      }),
+      rule('C = p × A_yd', '{C} = {p} × {Y}', ['C', 'p', 'Y'], (v) => v.C! - v.p! * v.Y!, {
+        C: [
+          (v) => exact(v.p! * v.Y!),
+          '{p} × {Y}',
+          'Dollars per square yard times square yards: the yd² cancel, leaving dollars.',
+        ],
+        p: [(v) => fin(v.C! / v.Y!), '{C} ÷ {Y}', 'Divide the cost by the square yards.'],
+        Y: [(v) => fin(v.C! / v.p!), '{C} ÷ {p}', 'Divide the cost by the price per square yard.'],
+      }),
+    ],
+    example: { l: 15, w: 12, F: 180, Y: 20, p: 30, C: 600 },
+    startWith: ['l', 'w', 'p'],
+    representation: {
+      kind: 'unitChain',
+      mode: 'chain',
+      start: 'F',
+      unit: 'ft²',
+      factors: [{ top: 1, topUnit: 'yd²', bottom: 9, bottomUnit: 'ft²' }],
+      result: 'Y',
+    },
+  }),
+  page({
+    id: 'm.9.units-precision~formula-units',
+    title: 'Units in a formula: d = rt',
+    use: 'Use this for “A cyclist rides at 18 km per hour for 40 minutes. How far does she go?”',
+    assumptions: [
+      'The rate is per hour, so the time must be in hours before multiplying.',
+      'Divide minutes by 60 to get hours: 30 min is 1/2 h.',
+      'Kilometers per hour times hours leaves kilometers: the hours cancel.',
+    ],
+    variables: [
+      num('r', 'r', 'Rate', 0.1, 300, { unit: 'km/h', units: ['km/h', 'mph'], step: 0.1 }),
+      num('t', 't', 'Time in minutes', 1, 600, { unit: 'min', units: ['min'], step: 1 }),
+      num('h', 'h', 'Time in hours', 1 / 60, 10, {
+        unit: 'h',
+        units: ['h'],
+        derived: true,
+        fraction: 60,
+      }),
+      num('d', 'd', 'Distance', 0, 3000, { unit: 'km', units: ['km', 'mi'] }),
+    ],
+    rules: [
+      rule('h = t ÷ 60', '{h} = {t} ÷ 60', ['h', 't'], (v) => v.h! - v.t! / 60, {
+        h: [
+          (v) => exact(v.t! / 60),
+          '{t} ÷ 60',
+          'An hour is 60 minutes, so divide by 60 to write the time in hours, as the rate is.',
+        ],
+        t: [(v) => exact(v.h! * 60), '{h} × 60', 'Each hour is 60 minutes.'],
+      }),
+      rule('d = r × h', '{d} = {r} × {h}', ['d', 'r', 'h'], (v) => v.d! - v.r! * v.h!, {
+        d: [
+          (v) => exact(v.r! * v.h!),
+          '{r} × {h}',
+          'Distance per hour times hours: the hours cancel, leaving the distance.',
+        ],
+        r: [(v) => fin(v.d! / v.h!), '{d} ÷ {h}', 'Divide the distance by the time in hours.'],
+        h: [(v) => fin(v.d! / v.r!), '{d} ÷ {r}', 'Divide the distance by the rate.'],
+      }),
+    ],
+    example: { r: 18, t: 40, h: 2 / 3, d: 12 },
+    startWith: ['r', 't'],
+    representation: { kind: 'doubleNumberLine', top: 'h', bottom: 'd', per: 'r', ticks: 1 },
+  }),
+  page({
+    id: 'm.9.units-precision~bounds',
+    title: 'Precision: least and greatest possible area',
+    use: 'Use this for “A rectangle measures 8 cm by 5 cm to the nearest centimeter. What are the least and greatest possible areas?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A length measured to the nearest u is off by at most half of u, the greatest possible error.',
+      'The true sides lie between l − e and l + e, so the true area lies between the two products.',
+      'A finer tool (a smaller u) narrows the range of possible areas.',
+    ],
+    variables: [
+      num('l', 'l', 'Length as measured', 0.1, 1000, { unit: 'cm', units: ['cm'], step: 0.1 }),
+      num('w', 'w', 'Width as measured', 0.1, 1000, { unit: 'cm', units: ['cm'], step: 0.1 }),
+      num('u', 'u', 'Measured to the nearest', 0.1, 10, {
+        unit: 'cm',
+        units: ['cm'],
+        allowed: [0.1, 0.5, 1, 10],
+      }),
+      num('e', 'e', 'Greatest possible error', 0.05, 5, {
+        unit: 'cm',
+        units: ['cm'],
+        derived: true,
+      }),
+      num('A', 'A', 'Area as measured', 0.01, 1000000, { unit: 'cm²', units: ['cm²'] }),
+      num('lo', 'A_min', 'Least possible area', 0, 1000000, {
+        unit: 'cm²',
+        units: ['cm²'],
+        derived: true,
+      }),
+      num('hi', 'A_max', 'Greatest possible area', 0, 1100000, {
+        unit: 'cm²',
+        units: ['cm²'],
+        derived: true,
+      }),
+    ],
+    rules: [
+      constraint(
+        'l to the nearest u',
+        'The length {l} is a multiple of {u}, as a reading to the nearest {u} is',
+        ['l', 'u'],
+        (v) => !onStep(v.l!, v.u!),
+      ),
+      constraint(
+        'w to the nearest u',
+        'The width {w} is a multiple of {u}, as a reading to the nearest {u} is',
+        ['w', 'u'],
+        (v) => !onStep(v.w!, v.u!),
+      ),
+      derive(
+        'e = u ÷ 2',
+        'e',
+        ['u'],
+        '{e} = {u} ÷ 2',
+        (v) => v.u! / 2,
+        '{u} ÷ 2',
+        'A reading to the nearest u can be off by up to half of u either way.',
+      ),
+      rule('A = l × w', '{A} = {l} × {w}', ['A', 'l', 'w'], (v) => v.A! - v.l! * v.w!, {
+        A: [(v) => exact(v.l! * v.w!), '{l} × {w}', 'The area from the measured sides.'],
+        l: [(v) => fin(v.A! / v.w!), '{A} ÷ {w}', 'Divide the area by the width.'],
+        w: [(v) => fin(v.A! / v.l!), '{A} ÷ {l}', 'Divide the area by the length.'],
+      }),
+      derive(
+        'A_min = (l − e)(w − e)',
+        'lo',
+        ['l', 'w', 'e'],
+        '{lo} = ({l} − {e}) × ({w} − {e})',
+        (v) => (v.l! - v.e!) * (v.w! - v.e!),
+        '({l} − {e}) × ({w} − {e})',
+        'The shortest sides the readings allow give the least area.',
+      ),
+      derive(
+        'A_max = (l + e)(w + e)',
+        'hi',
+        ['l', 'w', 'e'],
+        '{hi} = ({l} + {e}) × ({w} + {e})',
+        (v) => (v.l! + v.e!) * (v.w! + v.e!),
+        '({l} + {e}) × ({w} + {e})',
+        'The longest sides the readings allow give the greatest area.',
+      ),
+    ],
+    example: { l: 8, w: 5, u: 1, e: 0.5, A: 40, lo: 33.75, hi: 46.75 },
+    startWith: ['u', 'l', 'w'],
+    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 10 },
+  }),
+  page({
+    id: 'm.9.units-precision~significant-figures',
+    title: 'A product to the right significant figures',
+    use: 'Use this for “A table is 4.25 m by 3.1 m. Give its area to the right number of significant figures.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A product is no more precise than its least precise factor.',
+      'Count the significant figures in each measurement; round the answer to the fewer.',
+      'Type the counts yourself: 3.10 has 3 significant figures, though its box shows 3.1.',
+    ],
+    variables: [
+      num('l', 'l', 'Length', 1, 500, { unit: 'm', units: ['m'], step: 0.001 }),
+      num('w', 'w', 'Width', 1, 500, { unit: 'm', units: ['m'], step: 0.001 }),
+      int('n1', 'n₁', 'Significant figures in l', 1, 5),
+      int('n2', 'n₂', 'Significant figures in w', 1, 5),
+      int('n', 'n', 'Significant figures in the answer', 1, 5, { derived: true }),
+      num('P', 'P', 'Area as calculated', 1, 250000, { unit: 'm²', units: ['m²'] }),
+      num('R', 'A', 'Area, rounded', 1, 250000, { unit: 'm²', units: ['m²'], derived: true }),
+    ],
+    rules: [
+      constraint(
+        'l has n₁ figures',
+        'The length {l} can be written with {n1} significant figures',
+        ['l', 'n1'],
+        (v) => Math.abs(toFigures(v.l!, v.n1!) - v.l!) > 1e-9 * v.l!,
+      ),
+      constraint(
+        'w has n₂ figures',
+        'The width {w} can be written with {n2} significant figures',
+        ['w', 'n2'],
+        (v) => Math.abs(toFigures(v.w!, v.n2!) - v.w!) > 1e-9 * v.w!,
+      ),
+      rule('P = l × w', '{P} = {l} × {w}', ['P', 'l', 'w'], (v) => v.P! - v.l! * v.w!, {
+        P: [(v) => exact(v.l! * v.w!), '{l} × {w}', 'Multiply the measurements as they are.'],
+        l: [(v) => fin(v.P! / v.w!), '{P} ÷ {w}', 'Divide the area by the width.'],
+        w: [(v) => fin(v.P! / v.l!), '{P} ÷ {l}', 'Divide the area by the length.'],
+      }),
+      derive(
+        'n = the smaller of n₁ and n₂',
+        'n',
+        ['n1', 'n2'],
+        '{n} = the smaller of {n1} and {n2}',
+        (v) => Math.min(v.n1!, v.n2!),
+        'the smaller of {n1} and {n2}',
+        'The answer keeps as many significant figures as the less precise measurement.',
+      ),
+      derive(
+        'A = P to n figures',
+        'R',
+        ['P', 'n'],
+        '{R} = {P} rounded to {n} significant figures',
+        (v) => toFigures(v.P!, v.n!),
+        '{P} rounded to {n} significant figures',
+        'Round the calculated area; the digits past n are not known from these measurements.',
+      ),
+    ],
+    example: { l: 4.25, w: 3.1, n1: 3, n2: 2, n: 2, P: 13.175, R: 13 },
+    startWith: ['l', 'w', 'n1', 'n2'],
+    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'R', extent: 5 },
+  }),
+];
+
 /** Every Grade 9 math calculator, by skill in taxonomy order. */
 export const MATH_9_MODULES: ModuleDef[] = [
   ...SOLVING_EQUATIONS,
+  ...UNITS_PRECISION,
   ...LINEAR_INEQUALITIES,
   ...LINEAR_INEQUALITIES_MORE,
   ...ABSOLUTE_VALUE,

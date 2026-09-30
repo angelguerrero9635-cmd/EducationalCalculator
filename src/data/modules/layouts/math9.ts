@@ -46,6 +46,47 @@ export const MATH_9_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Units and precision: choosing a level of accuracy (N-Q.3) ──
+  {
+    kind: 'sort',
+    id: 'm.9.units-precision~level-of-accuracy',
+    title: 'Choosing a level of accuracy',
+    use: 'Use this for “Which unit and how much accuracy fit this measurement?”',
+    assumptions: [
+      'Measure only as precisely as the use needs: a part that must fit needs millimeters, a trip needs kilometers.',
+      'A finer unit than the job needs adds digits nobody can use; a coarser one leaves out what matters.',
+    ],
+    question: 'To what accuracy would you measure it?',
+    bins: [
+      {
+        id: 'mm',
+        label: 'To the nearest millimeter',
+        why: 'The piece must fit or match, so a millimeter makes a difference.',
+      },
+      {
+        id: 'm',
+        label: 'To the nearest meter',
+        why: 'Room- or field-sized lengths: a few centimeters don’t change what you do.',
+      },
+      {
+        id: 'km',
+        label: 'To the nearest kilometer',
+        why: 'Long distances for travel or maps: a few meters are lost in the total.',
+      },
+    ],
+    cards: [
+      { label: 'A bolt for a bicycle frame', bin: 'mm' },
+      { label: 'The thickness of a phone case', bin: 'mm' },
+      { label: 'A floor tile cut to fit against a wall', bin: 'mm' },
+      { label: 'The height of a school building', bin: 'm' },
+      { label: 'A soccer field’s length', bin: 'm' },
+      { label: 'The rope needed to fence off a garden', bin: 'm' },
+      { label: 'The drive between two cities', bin: 'km' },
+      { label: 'A plane’s flight distance', bin: 'km' },
+      { label: 'The length of a river on a map', bin: 'km' },
+    ],
+  },
+
   // ── Regression: the direction of a correlation (S-ID.8) ──
   {
     kind: 'sort',
