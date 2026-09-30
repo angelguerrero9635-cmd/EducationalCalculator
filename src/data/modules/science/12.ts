@@ -543,6 +543,143 @@ const tides: ModuleDef = {
   representation: { kind: 'oceanProfile', mode: 'tides', angle: 'A', range: 'R' },
 };
 
+// ── The atmosphere: structure, air pressure, wind and severe weather ──
+
+const lapse: ModuleDef = {
+  id: 's.12.atmosphere-weather',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Air is 78 % nitrogen and 21 % oxygen.',
+    'The troposphere cools about 6.5 °C per km up to about 11 km.',
+    'Above that, ozone in the stratosphere absorbs the Sun’s UV and warms the air.',
+  ],
+  variables: [
+    V('T0', 'T₀', 'Temperature at the ground', { unit: '°C', min: -40, max: 50, step: 0.1 }),
+    V('h', 'h', 'Altitude', { unit: 'km', min: 0, max: 11, step: 0.1 }),
+    V('T', 'T', 'Temperature at h', { unit: '°C', min: -90, max: 50, step: 0.1 }),
+  ],
+  ...rels(
+    rule('T = T₀ − 6.5 × h', '{T} = {T0} − 6.5 × {h}', (v) => v.T! - (v.T0! - 6.5 * v.h!), {
+      T: [(v) => v.T0! - 6.5 * v.h!, '{T0} − 6.5 × {h}', 'Take off 6.5 °C for each km of height.'],
+      T0: [(v) => v.T! + 6.5 * v.h!, '{T} + 6.5 × {h}', 'Add back the 6.5 °C lost for each km.'],
+      h: [
+        (v) => (v.T0! - v.T!) / 6.5,
+        '({T0} − {T}) ÷ 6.5',
+        'How many 6.5 °C drops make the difference.',
+      ],
+    }),
+  ),
+  example: { T0: 20, h: 8, T: -32 },
+  startWith: ['T0', 'h'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'profile',
+    altitude: 'h',
+    temperature: 'T',
+    ground: 'T0',
+  },
+};
+
+const pressureMap: ModuleDef = {
+  id: 's.12.atmosphere-weather~pressure',
+  title: 'Highs, lows and the pressure gradient',
+  use: 'Use this for “Where on the map is the wind strongest, and which way does it blow round the low?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Wind blows from high to low, faster where isobars are closer.',
+    'The Coriolis effect turns it right in the Northern Hemisphere, so it circles a low counterclockwise.',
+    'Friction near the ground turns it partway back toward the low.',
+  ],
+  variables: [
+    V('H', 'H', 'Pressure at the high', { unit: 'hPa', min: 1000, max: 1050, step: 1 }),
+    V('Lw', 'L', 'Pressure at the low', { unit: 'hPa', min: 900, max: 1020, step: 1 }),
+    V('dP', 'ΔP', 'Pressure difference', {
+      unit: 'hPa',
+      min: 0.1,
+      max: 150,
+      step: 1,
+      derived: true,
+    }),
+    V('D', 'D', 'Distance between the centers', { unit: 'km', min: 100, max: 3000, step: 10 }),
+    V('G', 'G', 'Pressure gradient', {
+      unit: 'hPa per 100 km',
+      min: 0.001,
+      max: 150,
+      step: 0.01,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    below('Lw', 'H', 'L < H', 'the low {Lw} is below the high {H}'),
+    difference('dP', 'H', 'Lw', 'ΔP = H − L', [
+      'How much higher the pressure is at the high.',
+      'The high is the difference above the low.',
+      'The low is the difference below the high.',
+    ]),
+    rule('G = ΔP ÷ D × 100', '{G} = {dP} ÷ {D} × 100', (v) => v.G! * v.D! - v.dP! * 100, {
+      G: [
+        (v) => div(v.dP! * 100, v.D!),
+        '{dP} ÷ {D} × 100',
+        'The pressure change per km, times 100 km.',
+      ],
+      dP: [
+        (v) => (v.G! * v.D!) / 100,
+        '{G} × {D} ÷ 100',
+        'The change per 100 km, times the hundreds of km.',
+      ],
+      D: [
+        (v) => div(v.dP! * 100, v.G!),
+        '{dP} ÷ {G} × 100',
+        'How many 100 km steps the difference takes.',
+      ],
+    }),
+  ),
+  example: { H: 1024, Lw: 996, dP: 28, D: 700, G: 4 },
+  startWith: ['H', 'Lw', 'D'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'pressure',
+    high: 'H',
+    low: 'Lw',
+    distance: 'D',
+  },
+};
+
+const humidity: ModuleDef = {
+  id: 's.12.atmosphere-weather~humidity',
+  title: 'Relative humidity',
+  use: 'Use this for “Air holds 6 g of water vapor per kg and could hold 15 g. What is its relative humidity?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Warm air can hold more water vapor than cold air.',
+    'Cooling the air raises RH without adding water.',
+    'At 100 % the air is at its dew point.',
+  ],
+  variables: [
+    V('w', 'w', 'Water vapor', { unit: 'g/kg', min: 0, max: 40, step: 0.1 }),
+    V('ws', 'wₛ', 'Capacity at this temperature', { unit: 'g/kg', min: 0.1, max: 40, step: 0.1 }),
+    V('RH', 'RH', 'Relative humidity', { unit: '%', min: 0, max: 100, step: 0.1 }),
+  ],
+  ...rels(
+    rule('RH = w ÷ wₛ × 100', '{RH} = {w} ÷ {ws} × 100', (v) => v.RH! * v.ws! - v.w! * 100, {
+      RH: [
+        (v) => div(v.w! * 100, v.ws!),
+        '{w} ÷ {ws} × 100',
+        'The vapor the air holds as a percent of what it could hold.',
+      ],
+      w: [(v) => (v.RH! * v.ws!) / 100, '{RH} ÷ 100 × {ws}', 'That percent of the capacity.'],
+      ws: [
+        (v) => div(v.w! * 100, v.RH!),
+        '{w} ÷ {RH} × 100',
+        'The vapor is RH percent of the capacity: divide back.',
+      ],
+    }),
+  ),
+  example: { w: 6, ws: 15, RH: 40 },
+  startWith: ['w', 'ws'],
+  representation: { kind: 'percentBar', percent: 'RH', part: 'w', whole: 'ws', ticks: 10 },
+};
+
 export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
@@ -552,4 +689,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   bracket,
   sonar,
   tides,
+  lapse,
+  pressureMap,
+  humidity,
 ];

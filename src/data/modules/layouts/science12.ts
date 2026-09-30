@@ -194,4 +194,83 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'Warm, moist air over the equator', bin: 'rises' },
     ],
   },
+
+  // ── The atmosphere: structure, air pressure, wind and severe weather (HS-ESS2-4, HS-ESS3-1) ──
+  {
+    kind: 'sequence',
+    id: 's.12.atmosphere-weather~hurricane',
+    title: 'How a hurricane grows and dies',
+    use: 'Use this for “Put the stages of a hurricane in order. Why does it weaken over land?”',
+    assumptions: [
+      'Warm ocean water is the fuel: water vapor gives off heat as it condenses in the storm.',
+      'The wind speeds are sustained winds, not gusts.',
+    ],
+    question: 'Put the stages of a hurricane in order.',
+    stages: [
+      { label: 'Thunderstorms cluster over ocean water warmer than about 27 °C' },
+      { label: 'Tropical depression: winds circle a low, under 63 km/h' },
+      { label: 'Tropical storm: winds 63–118 km/h; it gets a name' },
+      { label: 'Hurricane: winds of 119 km/h or more; an eye forms' },
+      { label: 'Landfall: cut off from warm water, it weakens' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.atmosphere-weather~air-masses',
+    title: 'Which air mass is it?',
+    use: 'Use this for “Which air mass brings hot, humid summer weather to the southeastern United States?”',
+    assumptions: [
+      'An air mass takes on the temperature and moisture of the land or sea it forms over.',
+      'Continental means dry, maritime means moist; polar means cold, tropical means warm.',
+    ],
+    question: 'Which air mass is this?',
+    bins: [
+      {
+        id: 'cP',
+        label: 'Continental polar (cP)',
+        why: 'It forms over cold northern land, so it is cold and dry.',
+      },
+      {
+        id: 'mP',
+        label: 'Maritime polar (mP)',
+        why: 'It forms over cold northern seas, so it is cool and damp.',
+      },
+      {
+        id: 'mT',
+        label: 'Maritime tropical (mT)',
+        why: 'It forms over warm seas, so it is warm and humid.',
+      },
+      {
+        id: 'cT',
+        label: 'Continental tropical (cT)',
+        why: 'It forms over hot deserts, so it is hot and dry.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Cold and dry, from northern Canada',
+        bin: 'cP',
+        figure: { kind: 'map', area: 'northAmerica', region: 'northern canada' },
+      },
+      { label: 'Brings lake-effect snow', bin: 'cP' },
+      {
+        label: 'Cool and damp, from the North Pacific',
+        bin: 'mP',
+        figure: { kind: 'map', area: 'northAmerica', region: 'north pacific' },
+      },
+      { label: 'Brings drizzle to the Pacific Northwest', bin: 'mP' },
+      {
+        label: 'Warm and humid, from the Gulf of Mexico',
+        bin: 'mT',
+        figure: { kind: 'map', area: 'northAmerica', region: 'gulf of mexico' },
+      },
+      { label: 'Brings summer thunderstorms to the Southeast', bin: 'mT' },
+      {
+        label: 'Hot and dry, from the deserts of northern Mexico',
+        bin: 'cT',
+        figure: { kind: 'map', area: 'northAmerica', region: 'northern mexico' },
+      },
+      { label: 'Brings heat waves to the southern Plains', bin: 'cT' },
+    ],
+  },
 ];
