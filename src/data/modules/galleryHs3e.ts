@@ -65,6 +65,24 @@ const phaseDiagram = fromPage(
   },
 );
 
-export const HS3E_GALLERY_MODULES: ModuleDef[] = [ionicCharges, phaseDiagram];
+// ─── Part 4: a concentration–time curve and its secant ───────────────────────
+
+/** s.10.rates-equilibrium~average-rate on a curve through the two readings. */
+const averageRate = fromPage(
+  's.10.rates-equilibrium~average-rate',
+  'g.s10-rates-equilibrium-average-rate-curve',
+  'Average rate on a concentration–time curve',
+  {
+    kind: 'chemDiagram',
+    mode: 'rate',
+    times: ['t1', 't2'],
+    concentrations: ['A1', 'A2'],
+    span: 'dt',
+    change: 'dA',
+    rate: 'r',
+  },
+);
+
+export const HS3E_GALLERY_MODULES: ModuleDef[] = [ionicCharges, phaseDiagram, averageRate];
 
 export const HS3E_GALLERY_LAYOUTS: LayoutDef[] = [];
