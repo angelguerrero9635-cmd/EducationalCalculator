@@ -60,6 +60,7 @@ function demo(d: {
   example: Values;
   startWith: string[];
   representation: Representation;
+  equation?: string;
 }): ModuleDef {
   return {
     id: d.id,
@@ -72,6 +73,7 @@ function demo(d: {
     example: d.example,
     startWith: d.startWith,
     representation: d.representation,
+    ...(d.equation ? { equation: d.equation } : {}),
   };
 }
 
@@ -157,6 +159,137 @@ const REGULAR: ModuleDef[] = [
   ),
 ];
 
-export const HS2B_GALLERY_MODULES: ModuleDef[] = [...REGULAR];
+// ─── Part 2: circleTheorems cyclic and arcAngle (m.10.circle-theorems) ────────
+
+/** x + y = 180°, solved for either. */
+const supplement = (x: string, y: string, how: string) =>
+  rule(
+    `${x} + ${y} = 180`,
+    `{${x}} + {${y}} = 180`,
+    {
+      [x]: [(v) => 180 - v[y]!, `180 − {${y}}`, how],
+      [y]: [(v) => 180 - v[x]!, `180 − {${x}}`, how],
+    },
+    (v) => v[x]! + v[y]! - 180,
+  );
+
+const cyclicDemo = (id: string, title: string, use: string, a: number) =>
+  demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'ABCD is inscribed: all four corners are on the circle.',
+      'Each angle is half the arc across from it; the arcs across from A and from C make the whole circle.',
+      'So opposite angles add to 180°: m∠A + m∠C = 180° and m∠B + m∠D = 180°.',
+    ],
+    variables: [deg('a', 'a', 'm∠A'), deg('c', 'c', 'm∠C')],
+    rules: [supplement('a', 'c', 'Opposite angles of an inscribed quadrilateral add to 180°.')],
+    example: { a, c: 180 - a },
+    startWith: ['a'],
+    representation: {
+      kind: 'circleTheorems',
+      theorem: 'cyclic',
+      cyclic: { A: 'a', C: 'c' },
+    },
+  });
+
+/** x = (p ± q) ÷ 2, the sign from the + − box o (1 +, 2 −). */
+// 3 − 2o: 1 for + (o = 1), −1 for − (o = 2); a product, so the solver never reads the
+// relation as a straight-line sum while o is still open.
+const sgn = (v: Values) => 3 - 2 * v.o!;
+const op = (v: Values) => (v.o === 2 ? '−' : '+');
+const arcAngleRule: Rule = {
+  relation: {
+    id: 'x = (p ± q)/2',
+    display: '{x} = ({p} + (3 − 2 × {o}) × {q}) ÷ 2',
+    vars: ['x', 'p', 'q', 'o'],
+    residual: (v) => 2 * v.x! - (v.p! + sgn(v) * v.q!),
+    solve: {
+      x: (v) => (v.p! + sgn(v) * v.q!) / 2,
+      p: (v) => 2 * v.x! - sgn(v) * v.q!,
+      q: (v) => sgn(v) * (2 * v.x! - v.p!),
+      // The + − box is typed, never worked out.
+      o: () => undefined,
+    },
+  },
+  steps: {
+    x: {
+      expr: (v: Values) => `({p} ${op(v)} {q}) ÷ 2`,
+      how: (v: Values) =>
+        v.o === 2
+          ? 'Outside the circle: half the far arc minus the near arc.'
+          : 'Inside the circle: half the sum of the two arcs.',
+    },
+    p: {
+      expr: (v: Values) => (v.o === 2 ? '2 × {x} + {q}' : '2 × {x} − {q}'),
+      how: 'Double the angle, then undo the other arc.',
+    },
+    q: {
+      expr: (v: Values) => (v.o === 2 ? '{p} − 2 × {x}' : '2 × {x} − {p}'),
+      how: 'Double the angle, then undo the first arc.',
+    },
+  },
+};
+const arcAngleDemo = (
+  id: string,
+  title: string,
+  use: string,
+  ex: { p: number; q: number; o: 1 | 2 },
+) =>
+  demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Two chords crossing inside the circle (+): the angle is half the sum of its arc and its vertical angle’s arc.',
+      'Two secants meeting outside (−): the angle is half the far arc minus the near arc.',
+      'p is arc AC inside, or the far arc outside; q is the other arc.',
+    ],
+    variables: [
+      deg('p', 'p', 'First arc (far arc outside)', 0.1, 359.9),
+      deg('q', 'q', 'Second arc (near arc outside)', 0.1, 359.9),
+      V('o', 'o', 'Inside (1, +) or outside (2, −)', 1, 2, { allowed: [1, 2], integer: true }),
+      deg('x', 'x', 'The angle'),
+    ],
+    rules: [arcAngleRule],
+    example: { ...ex, x: (ex.p + (ex.o === 2 ? -1 : 1) * ex.q) / 2 },
+    startWith: ['p', 'o', 'q'],
+    equation: '{x}° = ({p}° {o:op} {q}°) ÷ 2',
+    representation: {
+      kind: 'circleTheorems',
+      theorem: 'arcAngle',
+      arcAngle: { arcs: ['p', 'q'], angle: 'x', where: 'o' },
+    },
+  });
+
+const CIRCLES: ModuleDef[] = [
+  cyclicDemo(
+    'g.m10-circle-theorems-cyclic-quadrilateral',
+    'Opposite angles of an inscribed quadrilateral',
+    'Use this for “ABCD is inscribed in a circle and m∠A = 84°. Find m∠C.”',
+    84,
+  ),
+  cyclicDemo(
+    'g.m10-circle-theorems-cyclic-narrow',
+    'An inscribed quadrilateral with a narrow angle',
+    'Use this for “ABCD is inscribed in a circle and m∠A = 15°. Find m∠C.”',
+    15,
+  ),
+  arcAngleDemo(
+    'g.m10-circle-theorems-chord-angle',
+    'Angles from arcs',
+    'Use this for “Two chords cross inside a circle, cutting off arcs of 70° and 110°. Find the angle.”',
+    { p: 70, q: 110, o: 1 },
+  ),
+  arcAngleDemo(
+    'g.m10-circle-theorems-chord-angle-outside',
+    'An angle outside a circle from its arcs',
+    'Use this for “Two secants from P cut off arcs of 140° and 50°. Find the angle at P.”',
+    { p: 140, q: 50, o: 2 },
+  ),
+];
+
+export const HS2B_GALLERY_MODULES: ModuleDef[] = [...REGULAR, ...CIRCLES];
 
 export const HS2B_GALLERY_LAYOUTS: LayoutDef[] = [];

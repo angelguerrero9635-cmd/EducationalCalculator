@@ -129,6 +129,7 @@ import { TriangleSolver } from './TriangleSolver';
 import { MarkedFigure } from './MarkedFigure';
 import { RegularPolygon } from './RegularPolygon';
 import { CircleTheorems } from './CircleTheorems';
+import { CircleAngles } from './CircleAngles';
 import { NormalCurve } from './NormalCurve';
 import { Histogram } from './Histogram';
 import { PascalTriangle } from './PascalTriangle';
@@ -541,6 +542,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       if (spec.regular) return <RegularPolygon spec={spec} calc={calc} />;
       return <MarkedFigure spec={spec} calc={calc} />;
     case 'circleTheorems':
+      if (spec.theorem === 'cyclic' || spec.theorem === 'arcAngle')
+        return <CircleAngles spec={spec} calc={calc} />;
       return <CircleTheorems spec={spec} calc={calc} />;
   }
 }

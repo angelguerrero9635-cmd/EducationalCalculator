@@ -5,7 +5,7 @@
  * string is a variable id; a number is a fixed value the page doesn't ask for.
  */
 
-import { regularVars, type RegularPolygon } from './typesHs2b';
+import { circleHs2bVars, regularVars, type CircleHs2b, type RegularPolygon } from './typesHs2b';
 
 /** A triangle's parts: sides a, b, c opposite the angles A, B, C (degrees). */
 export type TriPart = 'a' | 'b' | 'c' | 'A' | 'B' | 'C';
@@ -162,9 +162,18 @@ export interface MarkedFigureSpec {
  * A figure the values can't make (an inscribed angle that isn't half its arc, products that
  * differ) draws faded with the reason in the caption.
  */
-export interface CircleTheoremsSpec {
+export interface CircleTheoremsSpec extends CircleHs2b {
   kind: 'circleTheorems';
-  theorem: 'inscribed' | 'semicircle' | 'tangent' | 'chords' | 'secants' | 'secantTangent';
+  /** `cyclic` and `arcAngle`: group H2B (`typesHs2b.ts`, CircleAngles.tsx). */
+  theorem:
+    | 'inscribed'
+    | 'semicircle'
+    | 'tangent'
+    | 'chords'
+    | 'secants'
+    | 'secantTangent'
+    | 'cyclic'
+    | 'arcAngle';
   central?: string;
   inscribed?: string;
   angle?: string;
@@ -221,6 +230,7 @@ export function hscSpecVars(r: HscSpec): string[] {
         r.distance,
         ...(r.segments ?? []),
         r.product,
+        ...circleHs2bVars(r),
       ]);
   }
 }

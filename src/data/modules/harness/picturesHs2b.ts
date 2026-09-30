@@ -3,6 +3,7 @@
  * agree with the values. Called from `repIssues` in `pictures.ts` beside the kind's own check.
  * Test-only.
  */
+import { angleDeg, buildAngles } from '@/components/module/reps/circleAnglesGeo';
 import { angleAt, buildRegular } from '@/components/module/reps/regularGeo';
 
 import type { Representation } from '../types';
@@ -40,6 +41,40 @@ export function hs2bIssues(rep: Representation, val: (id: string) => number | un
     check(r.labels?.sum, fig.sum, 'interior sum');
     check(r.labels?.interior, fig.interior, 'interior angle');
     check(r.labels?.exterior, fig.exterior, 'exterior angle');
+  }
+  if (rep.kind === 'circleTheorems' && (rep.theorem === 'cyclic' || rep.theorem === 'arcAngle')) {
+    // Every corner on the circle; the drawn angles are the values and keep the theorem.
+    const f = buildAngles(rep, num);
+    if (f.reason) return [`~circle angles can't be drawn: ${f.reason}`];
+    for (const k of f.onCircle) {
+      const r = Math.hypot(...f.pts[k]!);
+      if (!near(r, 1)) out.push(`${k} is off the circle`);
+    }
+    if (rep.theorem === 'cyclic') {
+      const g = f.angles!;
+      for (const k of ['A', 'B', 'C', 'D'] as const) {
+        const x = num(rep.cyclic?.[k]);
+        if (x !== undefined && !near(g[k], x)) out.push(`angle ${k} drawn ${g[k]} for ${x}`);
+      }
+      if (!near(g.A + g.C, 180) || !near(g.B + g.D, 180))
+        out.push('opposite angles are not drawn adding to 180°');
+    } else {
+      const a = rep.arcAngle!;
+      const [a1, a2] = f.arcs!;
+      // The central angle on each drawn arc is the arc (or 360° less it, past a half turn).
+      const central = (p: string, q: string) => angleDeg([0, 0], f.pts[p]!, f.pts[q]!);
+      const [far, near2] =
+        f.where === 1
+          ? [central('A', 'C'), central('B', 'D')]
+          : [central('B', 'D'), central('A', 'C')];
+      if (!near(far, Math.min(a1, 360 - a1))) out.push(`the first arc is drawn ${far} for ${a1}`);
+      if (!near(near2, Math.min(a2, 360 - a2)))
+        out.push(`the second arc is drawn ${near2} for ${a2}`);
+      const want = (a1 + (f.where ?? 1) * a2) / 2;
+      if (!near(f.angle!, want)) out.push(`the angle is drawn ${f.angle} for ${want}`);
+      const x = a.angle ? val(a.angle) : undefined;
+      if (x !== undefined && !near(x, want)) out.push(`angle ${x} is not ${want}`);
+    }
   }
   return out;
 }
