@@ -928,7 +928,7 @@ student would compare) and names the picture it wants under "Added needs" (12–
     2,300; animals with shells 540; the dinosaurs die out 66; our species 0.3.
   - startWith A.
 - **~day-length — BUILD:** calculator, "Day length from fossil coral", picture `table`
-  { sweep: 'N', output: 'D', rows: [365, 380, 400, 420, 440] } (interim; need 13).
+  { sweep: 'N', output: 'D', rows: [365.25, 380, 400, 420, 440] } (interim; need 13).
   - Values:
     - n, daily growth lines counted, 1–5,000;
     - b, yearly bands they span, 1–10;

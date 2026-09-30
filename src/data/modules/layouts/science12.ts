@@ -1383,4 +1383,81 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'Today (13.8 billion years)' },
     ],
   },
+
+  // ── Exoplanets and the search for life (HS-ESS1-4, HS-ESS1-1) ──
+  {
+    kind: 'sort',
+    id: 's.12.exoplanets~methods',
+    title: 'How exoplanets are found',
+    use: 'Use this for “Which planets are easiest to find by transits, by the Doppler wobble or by imaging?”',
+    assumptions: [
+      'A planet is far fainter than its star, so most are found by what they do to the star.',
+      'Big planets close to their star are the easiest to find by transits and by wobble.',
+    ],
+    question: 'Which method is it?',
+    bins: [
+      {
+        id: 'transit',
+        label: 'Transit (the star dims)',
+        why: 'The planet passes in front of the star and blocks a little of its light.',
+      },
+      {
+        id: 'wobble',
+        label: 'Radial velocity (the star wobbles)',
+        why: 'The planet’s pull swings the star toward and away from us, shifting its lines.',
+      },
+      {
+        id: 'image',
+        label: 'Direct imaging',
+        why: 'A telescope blocks the star and records the planet’s own light.',
+      },
+    ],
+    cards: [
+      { label: 'Gives the planet’s size', bin: 'transit' },
+      { label: 'Needs the orbit edge-on to us', bin: 'transit' },
+      { label: 'The star dims on a regular schedule', bin: 'transit' },
+      { label: 'Gives a lowest possible mass for the planet', bin: 'wobble' },
+      { label: 'The star’s lines shift red, then blue', bin: 'wobble' },
+      { label: 'Measures the star’s speed toward and away from us', bin: 'wobble' },
+      { label: 'Blocks the star’s glare to catch the planet’s own light', bin: 'image' },
+      { label: 'Works best for big, young planets far from their star', bin: 'image' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.exoplanets~life',
+    title: 'Searching for life',
+    use: 'Use this for “Which findings would show a world could hold life, and which would show life itself?”',
+    assumptions: [
+      'Life as we know it needs liquid water, energy and carbon-based chemistry.',
+      'A world that could hold life is not proof that it does.',
+    ],
+    question: 'What does this finding tell us?',
+    bins: [
+      {
+        id: 'habitable',
+        label: 'Habitable: life could live there',
+        why: 'These make a world able to hold life, but no life has been found yet.',
+      },
+      {
+        id: 'bio',
+        label: 'Biosignature: a sign of life',
+        why: 'Living things leave these, and they are hard to explain without life.',
+      },
+      {
+        id: 'techno',
+        label: 'Technosignature: a sign of technology',
+        why: 'Only a technology would send these; SETI listens and looks for them.',
+      },
+    ],
+    cards: [
+      { label: 'Liquid water on its surface', bin: 'habitable' },
+      { label: 'An orbit inside the habitable zone', bin: 'habitable' },
+      { label: 'A rocky surface under a thick enough atmosphere', bin: 'habitable' },
+      { label: 'Oxygen and methane together in its air', bin: 'bio' },
+      { label: 'Fossil microbes in a rock', bin: 'bio' },
+      { label: 'A narrow radio signal no natural source makes', bin: 'techno' },
+      { label: 'Laser flashes repeating in a pattern', bin: 'techno' },
+    ],
+  },
 ];

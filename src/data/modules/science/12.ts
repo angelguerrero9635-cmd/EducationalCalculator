@@ -1549,6 +1549,209 @@ const stretch: ModuleDef = {
   },
 };
 
+// ── Exoplanets and the search for life ──
+
+/** Earth radii in the Sun's radius (696,000 km ÷ 6,371 km, rounded). */
+const RE_PER_RSUN = 109;
+const depthOf = (r: number, R: number) => 100 * (r / (RE_PER_RSUN * R)) ** 2;
+
+/** Planets of the solar system by radius (Earth radii), for the transit table. */
+const TRANSIT_ROWS: [number, string][] = [
+  [0.53, 'Mars'],
+  [1, 'Earth'],
+  [3.88, 'Neptune'],
+  [9.45, 'Saturn'],
+  [11.21, 'Jupiter'],
+];
+
+const transit: ModuleDef = {
+  id: 's.12.exoplanets',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The dip is the share of the star’s disk the planet covers.',
+    'The orbit must be nearly edge-on to us, or there is no transit.',
+    'Repeated dips a period apart confirm a planet.',
+    '1 R☉ = 109 R⊕: the Sun is 109 Earths wide.',
+  ],
+  variables: [
+    V('R', 'R', 'Star’s radius', { unit: 'R☉', min: 0.1, max: 10, step: 0.001 }),
+    V('r', 'r', 'Planet’s radius', { unit: 'R⊕', min: 0.3, max: 25, step: 0.01 }),
+    V('d', 'δ', 'Transit depth', { unit: '%', min: 1e-6, max: 100, step: 1e-6, sigFigs: 4 }),
+  ],
+  ...rels(
+    {
+      relation: {
+        id: 'r < 109 × R',
+        constraint: true,
+        display: '{r} is less than 109 × {R}',
+        vars: ['r', 'R'],
+        residual: (v: Values) => (v.r! < RE_PER_RSUN * v.R! ? 0 : 1),
+        solve: {},
+        message: () => 'A planet is smaller than its star, so it blocks only part of the light.',
+      },
+      steps: {},
+    },
+    rule(
+      'δ = 100 × (r ÷ (109 × R))²',
+      '{d} = 100 × ({r} ÷ (109 × {R}))²',
+      (v) => v.d! - depthOf(v.r!, v.R!),
+      {
+        d: [
+          (v) => depthOf(v.r!, v.R!),
+          '100 × ({r} ÷ (109 × {R}))²',
+          'The planet’s disk over the star’s disk: the ratio of their radii, squared.',
+        ],
+        r: [
+          (v) => (v.d! >= 0 ? RE_PER_RSUN * v.R! * Math.sqrt(v.d! / 100) : undefined),
+          '109 × {R} × √({d} ÷ 100)',
+          'Undo the square: the radius ratio is the square root of the dip’s share.',
+        ],
+        R: [
+          (v) => (v.d! > 0 ? v.r! / (RE_PER_RSUN * Math.sqrt(v.d! / 100)) : undefined),
+          '{r} ÷ (109 × √({d} ÷ 100))',
+          'The star is as many times wider as the square root of the share is small.',
+        ],
+      },
+    ),
+  ),
+  example: { R: 1, r: 10.9, d: 1 },
+  startWith: ['d', 'R'],
+  representation: {
+    kind: 'table',
+    sweep: 'r',
+    output: 'd',
+    params: ['R'],
+    rows: TRANSIT_ROWS.map(([r]) => r),
+    rowNames: TRANSIT_ROWS.map(([, name]) => name),
+  },
+};
+
+const exoOrbit: ModuleDef = {
+  id: 's.12.exoplanets~orbit',
+  title: 'An exoplanet’s orbit from its period',
+  use: 'Use this for “A planet circles a star of 0.8 solar masses every 36.5 days. How far is it from its star?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The planet’s mass is tiny beside its star’s.',
+    'With M = 1 this is the solar system’s T² = a³.',
+    'A heavier star pulls harder, so the same period means a wider orbit.',
+  ],
+  variables: [
+    V('M', 'M', 'Star’s mass', { unit: 'M☉', min: 0.1, max: 5, step: 0.01 }),
+    V('P', 'P', 'Period in days', { unit: 'days', min: 0.2, max: 10000, step: 0.001 }),
+    V('T', 'T', 'Period in years', { unit: 'years', min: 0.0005, max: 27.4, step: 0.0001 }),
+    V('a', 'a', 'Orbit size', { unit: 'AU', min: 0.001, max: 20, step: 0.0001 }),
+  ],
+  ...rels(
+    rule('T = P ÷ 365.25', '{T} = {P} ÷ 365.25', (v) => v.T! - v.P! / 365.25, {
+      T: [(v) => v.P! / 365.25, '{P} ÷ 365.25', 'A year is 365.25 days: count the years.'],
+      P: [(v) => v.T! * 365.25, '{T} × 365.25', 'Each year is 365.25 days: multiply.'],
+    }),
+    rule('a³ = M × T²', '{a}³ = {M} × {T}²', (v) => v.a! ** 3 - v.M! * v.T! * v.T!, {
+      a: [
+        (v) => Math.cbrt(v.M! * v.T! * v.T!),
+        '∛({M} × {T}²)',
+        'Kepler’s third law with the star’s mass: a is the cube root of M × T².',
+      ],
+      M: [(v) => div(v.a! ** 3, v.T! * v.T!), '{a}³ ÷ {T}²', 'Divide a³ by T².'],
+      T: [
+        (v) => (v.M! > 0 ? Math.sqrt(v.a! ** 3 / v.M!) : undefined),
+        '√({a}³ ÷ {M})',
+        'T² is a³ over the star’s mass; take the square root.',
+      ],
+    }),
+  ),
+  example: { M: 0.8, P: 36.525, T: 0.1, a: 0.2 },
+  startWith: ['P', 'M'],
+  representation: {
+    kind: 'table',
+    sweep: 'P',
+    output: 'a',
+    params: ['M'],
+    rows: [1, 10, 36.525, 100, 365.25],
+  },
+  pictureLabels: ['T'],
+};
+
+const habTemp = (L: number, a: number) => (278 * L ** 0.25) / Math.sqrt(a);
+
+const habitable: ModuleDef = {
+  id: 's.12.exoplanets~habitable-zone',
+  title: 'The habitable zone and a planet’s temperature',
+  use: 'Use this for “A star gives off 0.25 times the Sun’s light. Where is its habitable zone, and is a planet at 0.5 AU in it?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Between d₁ and d₂ a planet like Earth could keep liquid water.',
+    'Light spreads out as the square of distance, so the zone moves out as √L.',
+    'T leaves out clouds and greenhouse gases: it gives Earth 278 K, but Earth averages about 288 K.',
+  ],
+  variables: [
+    V('L', 'L', 'Star’s luminosity', { unit: 'L☉', min: 0.001, max: 100, step: 0.001 }),
+    V('d1', 'd₁', 'Inner edge of the zone', {
+      unit: 'AU',
+      min: 0.03,
+      max: 9.5,
+      step: 0.001,
+      derived: true,
+    }),
+    V('d2', 'd₂', 'Outer edge of the zone', {
+      unit: 'AU',
+      min: 0.043,
+      max: 13.7,
+      step: 0.001,
+      derived: true,
+    }),
+    V('a', 'a', 'Planet’s orbit', { unit: 'AU', min: 0.01, max: 100, step: 0.001 }),
+    V('T', 'T', 'Planet’s temperature', { unit: 'K', min: 1, max: 10000, step: 0.1 }),
+  ],
+  ...rels(
+    rule('d₁ = 0.95 × √L', '{d1} = 0.95 × √({L})', (v) => v.d1! - 0.95 * Math.sqrt(v.L!), {
+      d1: [
+        (v) => 0.95 * Math.sqrt(v.L!),
+        '0.95 × √({L})',
+        'Nearer than this, a planet like Earth grows too hot and loses its water.',
+      ],
+      L: [(v) => (v.d1! / 0.95) ** 2, '({d1} ÷ 0.95)²', 'Undo the square root: square d₁ ÷ 0.95.'],
+    }),
+    rule('d₂ = 1.37 × √L', '{d2} = 1.37 × √({L})', (v) => v.d2! - 1.37 * Math.sqrt(v.L!), {
+      d2: [(v) => 1.37 * Math.sqrt(v.L!), '1.37 × √({L})', 'Farther than this, its water freezes.'],
+      L: [(v) => (v.d2! / 1.37) ** 2, '({d2} ÷ 1.37)²', 'Undo the square root: square d₂ ÷ 1.37.'],
+    }),
+    rule(
+      'T = 278 × L^(1/4) ÷ √a',
+      '{T} = 278 × ({L})^(1/4) ÷ √({a})',
+      (v) => v.T! - habTemp(v.L!, v.a!),
+      {
+        T: [
+          (v) => habTemp(v.L!, v.a!),
+          '278 × ({L})^(1/4) ÷ √({a})',
+          'A planet at 1 AU from the Sun comes to 278 K; more light warms it, more distance cools it.',
+        ],
+        a: [
+          (v) => (v.T! > 0 ? ((278 * v.L! ** 0.25) / v.T!) ** 2 : undefined),
+          '(278 × ({L})^(1/4) ÷ {T})²',
+          'Undo the square root of the distance: square the ratio.',
+        ],
+        L: [
+          (v) => ((v.T! * Math.sqrt(v.a!)) / 278) ** 4,
+          '({T} × √({a}) ÷ 278)⁴',
+          'Undo the fourth root of the light: raise to the fourth power.',
+        ],
+      },
+    ),
+  ),
+  example: { L: 0.25, d1: 0.475, d2: 0.685, a: 0.5, T: 278 },
+  startWith: ['L', 'a'],
+  representation: {
+    kind: 'table',
+    sweep: 'a',
+    output: 'T',
+    params: ['L'],
+    rows: [0.25, 0.5, 0.75, 1, 1.5, 2],
+  },
+  pictureLabels: ['d1', 'd2'],
+};
+
 export const SCIENCE_12_MODULES: ModuleDef[] = [
   mineralDensity,
   earthInterior,
@@ -1575,4 +1778,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   hubble,
   redshift,
   stretch,
+  transit,
+  exoOrbit,
+  habitable,
 ];
