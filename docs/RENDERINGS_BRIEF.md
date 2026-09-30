@@ -475,3 +475,15 @@ and solubility on `beaker` (`solution`), energy profiles and calorimetry (`energ
 equilibrium and its shifts (`equilibriumChart`), pH and titration curves (`phScale`), the
 `electrochemicalCell` explore figure and radioactive decay (`decayChart`). Each entry's notes
 give the fields and an example; the demos are in `galleryHsi.ts` and `galleryHsj.ts`.
+
+### Grades 9–12, earth and space (2026-09-30): H71–H80
+
+H71–H80 are `drawn`: mineral card icons and the `mohsScale` explore figure, Earth's interior
+with shadow zones, a seismogram and an epicenter (`earthLayers`), the `landforms` explore
+figure, dated layers on `rockLayers` (`dating`), the seafloor and the tides (`oceanProfile`)
+with the `oceanCurrents` figure, the atmosphere's layers and a pressure map
+(`atmosphereLayers`), the `greenhouse` explore figure, solar panel and oil rig icons beside the
+round 3 energy icons, the HR diagram with star life-cycle icons (`hrDiagram`), and the expanding
+universe with galaxy and solar-system formation icons (`expandingUniverse`, a calculator kind
+rather than an explore figure, because both of its parts are driven by values). Each entry's
+notes give the fields and an example; the demos are in `galleryHsl.ts`.
