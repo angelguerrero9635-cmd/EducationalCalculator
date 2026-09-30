@@ -41,7 +41,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'm.11.polynomial-functions',
         'm.11.polynomial-equations',
         'm.11.inverse-functions',
-        'm.11.radical-functions',
+        'm.11.radical-functions~extraneous',
+        'm.11.radical-functions~graph',
         'm.11.logarithms',
         'm.11.exp-log-equations',
         'm.11.rational-functions',
@@ -103,7 +104,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'm.12.chi-square',
       ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m11-normal-distribution-left',
       'g.m11-normal-distribution-between',
@@ -126,9 +127,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H03',
       'histogram',
       'Histogram with bins from the data, and probability bars with the expected value',
-      ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
+      ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions~counts'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m9-data-displays-histogram',
       'g.m9-data-displays-frequency',
@@ -146,7 +147,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'triangleSolver',
       'Any triangle to scale from three given parts, sides and angles labelled',
       [
-        'm.10.congruence',
+        'm.10.congruence~corresponding-parts',
         'm.10.special-right-triangles',
         'm.10.right-triangle-trig',
         'm.10.law-sines-cosines',
@@ -157,7 +158,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'Options: `congruence: {}` (the copy D, E, F below with ticks and arcs; the criterion comes from the given parts, or `criterion`; SSA draws the two triangles SSA allows), `similar: { scale: "k", sides: { a: "d", b: "e", c: "f" } }`, `trig: { angle: "A" }` (right angle at C; opposite, adjacent, hypotenuse named; sin, cos, tan worked), `special: "45-45-90" | "30-60-90"` (sides as radicals, 5√2), `scene: { kind: "ramp" | "ladder" | "sight", eye?: "e" }`, `given`, `keep`, `fixed` (the default drag moves the vertex at the end of a given base side). ' +
         'Demos: the laws of sines and cosines in galleryHsc.ts (relations `cosines`, `sines`, `angleSum`, `triangleCloses`) are ready to promote. Step text uses sin(40), cos⁻¹(…), taught to harness/evaluate.ts.',
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-law-sines-cosines-sas',
       'g.m10-law-sines-cosines-ssa',
@@ -185,10 +186,14 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Geometry figure with congruence ticks, arcs, right-angle and parallel marks, from a point list',
       [
         'm.10.constructions',
-        'm.10.proofs',
+        'm.10.proofs~isosceles',
         'm.10.parallel-lines',
         'm.10.triangle-relationships',
-        'm.10.quadrilaterals',
+        'm.10.quadrilaterals~parallelogram',
+        'm.10.quadrilaterals~rectangle',
+        'm.10.quadrilaterals~rhombus',
+        'm.10.quadrilaterals~trapezoid',
+        'm.10.quadrilaterals~kite',
       ],
       'Parallel lines cut by a transversal with the eight angles; triangle centers (centroid, incenter, circumcenter, orthocenter) with medians, bisectors and altitudes; midsegments; quadrilateral families with diagonals; a proof figure whose given and proved parts light up by step. ' +
         'Drawn (spec in typesHsc.ts; every mark is placed from the drawn figure and the harness checks each claim and each labelled length or angle). Presets: `transversal: { angle: "x", second?: "y", highlight: [3, 6], labels: { 1: "a", 3: "x" } }` (angles 1–8, 1 top left at the upper crossing; `second` = angle 5 tilts line 2 when it differs, the parallel arrows only when equal; the caption names the pair, e.g. alternate interior; the transversal drags angle 1); ' +
@@ -196,7 +201,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         '`quadrilateral: { family, width, height?, angle?, top?, diagonals: true, labels: { AC: "d", DAB: "A" } }` (parallelogram, rectangle, rhombus, square, trapezoid (isosceles marks when its base angles are equal), kite); or `points: { A: [0, 0], B: ["ab", 0] }` with `parts` (segment, ray, line, ticks, arcs, right, parallel, circle, label with `inCaption`). ' +
         '`proof: { step: "k", steps: [{ given: ["AB"], proved: ["△ABD"], text }] }` lights the step’s given parts yellow and the proved parts blue (refs: segment AB, angle ABC, triangle △ABD). A figure the values can’t make draws faded with the reason.',
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-parallel-lines-corresponding',
       'g.m10-parallel-lines-alternate-interior',
@@ -227,7 +232,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'm.11.unit-circle',
         'm.11.trig-graphs',
         'm.11.pythagorean-identities',
-        'm.12.inverse-trig',
+        'm.12.inverse-trig~arccos',
+        'm.12.inverse-trig~compose',
         'm.12.trig-formulas-equations',
       ],
     ),
@@ -257,10 +263,10 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'm.9.solving-equations',
         'm.9.polynomial-operations',
         'm.9.factoring',
-        'm.9.quadratic-formula',
+        'm.9.quadratic-formula~complete-square',
       ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m9-polynomial-operations-add',
       'g.m9-polynomial-operations-multiply',
@@ -281,9 +287,14 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H08',
       'vectorDiagram',
       'Vectors as arrows on a grid: components, sums, scalar multiples, the angle between',
-      ['m.12.vectors', 's.11.kinematics-2d', 's.11.dynamics-vectors'],
+      [
+        'm.12.vectors',
+        's.11.kinematics-2d~boat',
+        's.11.kinematics-2d~components',
+        's.11.dynamics-vectors~force-sum',
+      ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m12-vectors-tip-to-tail',
       'g.m12-vectors-parallelogram',
@@ -301,9 +312,14 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H09',
       'complexPlane',
       'Complex plane: a + bi as a point and arrow, conjugate, sum, modulus and argument',
-      ['m.11.complex-numbers', 'm.12.polar'],
+      [
+        'm.11.complex-numbers',
+        'm.12.polar~complex-form',
+        'm.12.polar~product',
+        'm.12.polar~de-moivre',
+      ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m11-complex-numbers-plot',
       'g.m11-complex-numbers-negative',
@@ -321,7 +337,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Polar grid with a point (r, θ) and polar curves (circle, rose, cardioid, spiral)',
       ['m.12.polar', 'm.12.parametric'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m12-polar-point',
       'g.m12-polar-rose',
@@ -343,7 +359,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Circle, parabola, ellipse and hyperbola from their equations, with center, foci, directrix, asymptotes',
       ['m.10.circle-equations', 'm.12.conics'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-circle-equations-center',
       'g.m10-circle-equations-origin',
@@ -368,7 +384,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'Drawn (spec in typesHsc.ts): `{ kind: "circleTheorems", theorem, … }` with theorem `inscribed` (`central`, `inscribed`: the arc heavy, P dragged along the far arc with the angle unchanged, B dragged to change the arc; arcs past 180° work), `semicircle` (`angle` at A, `other` at B; P dragged), `tangent` (`radius`, `tangent`, `distance`; P dragged along the tangent), `chords` (`segments: [AE, EB, CE, ED]`), `secants` (`segments: [PA, PB, PC, PD]`, outside parts and whole secants), `secantTangent` (`segments: [PT, PA, PB]`); `fixed` drops the handles. ' +
         'Lengths are drawn to scale (the circle chosen to fit); values that break the theorem, or a “?” length, draw faded with the reason. The harness checks the points are on the circle, each drawn length is its value and the angle relations hold on the drawing.',
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-circle-theorems-inscribed',
       'g.m10-circle-theorems-inscribed-major',
@@ -384,9 +400,14 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H13',
       'pascalTriangle',
       "Pascal's triangle with row n and entry k lit, and the counting slots n × (n − 1) × …",
-      ['m.10.probability-rules', 'm.11.binomial-theorem'],
+      [
+        'm.10.probability-rules~permutations',
+        'm.10.probability-rules~combinations',
+        'm.10.probability-rules~counting-probability',
+        'm.11.binomial-theorem',
+      ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m11-binomial-theorem-pascal',
       'g.m11-binomial-theorem-row-12',
@@ -403,7 +424,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Matrices in brackets: a row times a column lit for multiplication, row operations, a 3 × 3 system',
       ['m.12.matrices'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m12-matrices-multiply',
       'g.m12-matrices-multiply-2x3',
@@ -420,7 +441,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Terms of a sequence as bars or points, with the running sum approaching its limit',
       ['m.9.sequences', 'm.11.series'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m9-sequences-arithmetic',
       'g.m9-sequences-geometric',
@@ -457,7 +478,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Compound inequalities (and, or) and absolute value as a distance on the number line',
       ['m.9.linear-inequalities', 'm.9.absolute-value'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m9-linear-inequalities-and',
       'g.m9-linear-inequalities-or',
@@ -475,7 +496,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Residual segments, a residual plot below, the correlation r and the least-squares line',
       ['m.9.regression'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.m9-regression-residuals', 'g.m9-regression-least-squares', 'g.m9-regression-weak'],
     notes:
       "DRAWN. Spec (types.ts, scatter), optional; Grade 8 scatter pages unchanged: residuals 'segments' | 'plot' (each residual, actual − predicted, as a segment to the line; 'plot' adds a residual plot under the chart, residuals over x about 0, and the caption counts positive and negative residuals and gives the sum of their squares); r: true (worked out from the points, ≈ to two places, with its strength in words) or a value id (checked against the points to 0.005); leastSquares 'beside' (the least-squares line dashed beside the dragged line, with its sum of squares, the least any line gives) or 'fit' (slope and intercept are the least-squares line, checked to the cent, no handles; slope and intercept may now be numbers, the calculator's rounded values); residualOf { point, residual? } (one point's residual labelled and worked, its value checked). Example (m.9.regression): representation: { kind: 'scatter', x: { label: 'Hours studied', min: 0, max: 9 }, y: { label: 'Quiz score', min: 40, max: 100 }, points: [...], slope: 'm', intercept: 'b', at: { x: 'x', y: 'y' }, residuals: 'plot', residualOf: { point: 3, residual: 'e' } }; given line: { ..., slope: -0.65, intercept: 47.87, r: true, residuals: 'segments', leastSquares: 'fit' }.",
@@ -485,9 +506,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H19',
       'boxPlot',
       'Outliers past 1.5 × IQR fences, and two box plots on one scale; a dot plot with mean ± 1 SD',
-      ['m.9.data-displays'],
+      ['m.9.data-displays~outliers', 'm.9.data-displays~compare'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m9-data-displays-outliers',
       'g.m9-data-displays-compare',
@@ -502,9 +523,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H20',
       'table',
       'Two-way table with totals and a lit cell, row or column, its relative frequency, and a segmented bar',
-      ['m.9.two-way-tables', 'm.10.conditional-probability', 'm.12.chi-square'],
+      ['m.9.two-way-tables', 'm.10.conditional-probability', 'm.12.chi-square~independence'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m9-two-way-tables-joint',
       'g.m9-two-way-tables-marginal',
@@ -520,9 +541,14 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H21',
       'treeDiagram',
       'Branches with their own probabilities (not all 1/n), P(B | A) on the second stage',
-      ['m.10.conditional-probability', 'm.10.probability-rules'],
+      [
+        'm.10.conditional-probability~tree',
+        'm.10.conditional-probability~independent',
+        'm.10.conditional-probability~dependent',
+        'm.10.probability-rules~sample-space',
+      ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-conditional-probability-tree',
       'g.m10-probability-rules-without-replacement',
@@ -536,9 +562,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H22',
       'venn',
       'Venn diagram with probabilities: A and B, A or B, mutually exclusive, the complement shaded',
-      ['m.10.probability-rules', 'm.10.conditional-probability'],
+      ['m.10.probability-rules', 'm.10.conditional-probability~venn'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-probability-rules-union',
       'g.m10-probability-rules-exclusive',
@@ -574,9 +600,14 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H24',
       'scaleCopy',
       'Dilation from any center with rays, scale factors under 1, the side-splitter (parallel line in a triangle)',
-      ['m.10.similarity'],
+      [
+        'm.10.similarity~dilation',
+        'm.10.similarity~side-splitter',
+        'm.10.similarity~splitter-base',
+        'm.10.similarity~scale-area',
+      ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-similarity-dilation-shrink',
       'g.m10-similarity-dilation-enlarge',
@@ -595,7 +626,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Segment with midpoint and a point that partitions it in a ratio; distance as a right triangle; side slopes',
       ['m.10.coordinate-geometry'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-coordinate-geometry-midpoint',
       'g.m10-coordinate-geometry-partition',
@@ -632,7 +663,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       ['m.10.volume-derivations'],
       'crossSection: a plane through a cube, cylinder or cone, the section drawn beside it.',
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.m10-volume-derivations-cylinder-net',
       'g.m10-volume-derivations-cone-net',
@@ -652,7 +683,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Pairs of equal factors circled, coming out of the root: √72 = 6√2',
       ['m.9.radicals'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.m9-radicals-simplify', 'g.m9-radicals-cube-root', 'g.m9-radicals-perfect-square'],
     notes:
       'Drawn (group HF). New optional field on factorTree (types.ts; drawn by FactorTreeHsf.tsx, math in rootSplit.ts): root { index?: 2 | 3, outside?, inside? } (value ids). Under the tree\'s foot row of primes each pair of equal primes (each three for index 3) is ringed and arrowed down to the one it brings out; the leftover primes are arrowed into the radical; the line reads 2 × 3 × √2 = 6√2 (∛ for a cube root; a perfect power ends whole, = 24). The caption writes √72 = √(2 × 2 × 2 × 3 × 3), the pairs coming out, and the result, or says the root is already simplest. The harness checks outside^index × inside = value and that inside has no group left. Step text "largest perfect square factor of N" (and cube) is taught to the harness (harness/phrasesHsf.ts). Make a and b derived (worked out, not typed) with a constraint that b has no square factor but 1 (see rootDemo in galleryHsf.ts). Example: { kind: "factorTree", value: "n", root: { index: 2, outside: "a", inside: "b" } } with a = √(largest perfect square factor of n) and n = a² × b.',
@@ -662,9 +693,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H29',
       'powerScale',
       'A log mode: the exponent read off the ruler, log₁₀ 470,000 ≈ 5.67',
-      ['m.11.logarithms'],
+      ['m.11.logarithms~common-log'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.m11-logarithms-ruler', 'g.m11-logarithms-small'],
     notes:
       'Drawn (group HF). New optional field on powerScale (types.ts; drawn by PowerScaleHsf.tsx): log (a value id, log₁₀ of the number, checked to 5e-4). Under the 1–10 ruler a log₁₀ scale from 0 to 1 (a slide rule\'s L scale) reads the mantissa\'s log: the point drops to 0.67 for 4.7. The caption works log₁₀ 470,000 = 5 + log₁₀ 4.7 ≈ 5 + 0.672 = 5.6721, negative exponents with a true minus (−3 + 0.477). Make the log derived and pass fixed: true (the log is worked out, not dragged). Step text "log₁₀({N})" is taught to the harness (harness/phrasesHsf.ts). Example: { kind: "powerScale", number: "N", mantissa: "a", exponent: "n", log: "L", fixed: true } with N = a × 10ⁿ, n = exponent of the power of ten at or below N and L = log₁₀(N).',
@@ -678,7 +709,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Explore figure: population to sample to randomly assigned groups; survey, observational study, experiment',
       ['m.11.study-design'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.m11-study-design', 'g.m11-study-design-sampling'],
     notes:
       'Card figures for the sampling methods: simple random, stratified, cluster, systematic, convenience. Drawn (group HB). Explore figure { kind: "studyDesign" }; each scene sets study: { design: "survey" | "observational" | "experiment", method?: "simple random" | "stratified" | "cluster" | "systematic" | "convenience" (default simple random), sample?: 6–24 (default 12), groups?: [two names] (default Treatment and Control, or Group A and B), lit?: "population" | "sample" | "groups" }. The population is 48 people; the picks come from a fixed seed (studyMath.ts) and the harness checks each method (every band in a stratified sample, whole blocks in a cluster sample, equal gaps in a systematic one, the two groups splitting the sample). The five sampling methods are card icons for sort cards: { kind: "icon", icon: "stratified sample" } (also "simple random sample", "cluster sample", "systematic sample", "convenience sample"), 36 dots with the 9 picked. Example scene: { label: "Experiment", lines: [...], study: { design: "experiment", groups: ["New drug", "Placebo"], lit: "groups" } }.',
@@ -692,7 +723,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Explore figure: monomers joining into polymers (sugars to starch, amino acids to a protein, nucleotides, fats)',
       ['s.9.biomolecules'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.s9-biomolecules-polymers'],
     notes:
       'Drawn (group HG, layouts/macroFigure.tsx). Explore figure { kind: "macromolecules" }; each scene sets macro: { kind: "carbohydrate" | "protein" | "nucleicAcid" | "lipid", count?: 2–4 monomers (default 3; a lipid is always glycerol + 3 fatty acids), split?: true for hydrolysis (the polymer on top, water added) }. Monomers sit on separate cards with the groups that join lit (OH and H, carboxyl and amine, the 3′ OH and the next phosphate); the polymer shows its new bonds lit and named (glycosidic, peptide, sugar–phosphate, 3 ester bonds); the water molecules are drawn and counted (n − 1, or 3 for a fat). Names follow the count: 2 glucose make maltose, 2 amino acids a dipeptide. The protein chain is shown folding. The harness checks the count and that a line counting water says the figure’s number. Example scene: { label: "Proteins", lines: ["Amino acids join end to end by peptide bonds."], macro: { kind: "protein", count: 4 } }.',
@@ -704,7 +735,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Membrane with particles on each side, counts from the values, arrows high to low; cells in hypotonic, isotonic and hypertonic water',
       ['s.9.membrane-transport'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-membrane-transport-diffusion',
       'g.s9-membrane-transport-facilitated',
@@ -724,7 +755,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Explore figure: chloroplast and mitochondrion, glucose, oxygen, carbon dioxide, water and ATP cycling between them',
       ['s.9.cellular-energy'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.s9-cellular-energy-organelles'],
     notes:
       'Drawn (group HG, layouts/organelleFigure.tsx). Explore figure { kind: "organelleEnergy" }; each scene sets energy: { process?: "cycle" (default) | "photosynthesis" | "respiration" | "lightReactions" | "calvinCycle" | "glycolysis" | "krebsCycle" | "electronTransport", lit?: "light" | "CO₂" | "H₂O" | "glucose" | "O₂" | "ATP" }. A chloroplast (double membrane, grana, stroma) and a mitochondrion (cristae, matrix) in the cytoplasm; glucose and O₂ flow to the mitochondrion over the top, CO₂ and H₂O back underneath, light in from the sun and ATP out to the cell’s work. A process lights its part (thylakoids, stroma, matrix, inner membrane, cytoplasm), its arrows and its equation under the drawing (6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂; glycolysis 2 ATP, Krebs 2 ATP, electron transport most ATP; no single total is printed, since textbooks give 30 to 38). The harness checks that a ringed substance flows in the lit process. Example scene: { label: "Calvin cycle", lines: ["In the stroma, ATP and NADPH power the building of glucose from CO₂."], energy: { process: "calvinCycle", lit: "CO₂" } }.',
@@ -736,7 +767,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Sequence stage figures: the cell cycle, mitosis phases and meiosis I and II with chromosomes by parent color, crossing over',
       ['s.9.mitosis-meiosis'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-mitosis-meiosis-mitosis',
       'g.s9-mitosis-meiosis-meiosis',
@@ -752,7 +783,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Dihybrid 4 × 4 square, incomplete dominance and codominance colors, sex-linked alleles on X',
       ['s.9.inheritance-patterns'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-inheritance-patterns-dihybrid',
       'g.s9-inheritance-patterns-dihybrid-pure',
@@ -771,7 +802,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'DNA ladder from a base sequence, its complement, the mRNA, codons and the amino acids',
       ['s.9.dna-protein-synthesis', 's.9.biotechnology'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-dna-protein-synthesis-chargaff',
       'g.s9-dna-protein-synthesis-codons',
@@ -788,9 +819,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H37',
       'gel',
       'Gel electrophoresis: bands placed by fragment size, a ladder lane; PCR copies doubling each cycle',
-      ['s.9.biotechnology'],
+      ['s.9.biotechnology~gel', 's.9.biotechnology~pcr', 's.9.biotechnology~tools'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-biotechnology-gel',
       'g.s9-biotechnology-gel-map',
@@ -808,7 +839,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Hardy–Weinberg: p and q as beads in a population, genotype bars p², 2pq, q²',
       ['s.9.evolution-evidence'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-evolution-evidence-hardy-weinberg',
       'g.s9-evolution-evidence-rare-allele',
@@ -823,9 +854,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H39',
       'cladogram',
       'Cladogram with shared traits on the branches; domain and kingdom card icons',
-      ['s.9.classification', 's.9.evolution-evidence'],
+      ['s.9.classification', 's.9.evolution-evidence~common-ancestry'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-classification-cladogram',
       'g.s9-evolution-evidence-cladogram',
@@ -841,7 +872,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Pyramids of energy, biomass and numbers; succession stages; the nitrogen cycle as an explore figure',
       ['s.9.ecosystem-dynamics'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-ecosystem-dynamics-biomass',
       'g.s9-ecosystem-dynamics-numbers',
@@ -857,9 +888,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H41',
       'feedbackLoop',
       'Explore figure: stimulus, sensor, control center, effector, response; body temperature and blood sugar',
-      ['s.9.homeostasis', 's.12.climate-systems'],
+      ['s.9.homeostasis', 's.12.climate-systems~feedbacks'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.s9-homeostasis-feedback', 'g.s12-climate-systems-feedback'],
     notes:
       'The climate page uses the same loop for the ice-albedo and water-vapor feedbacks. Drawn (group HH). Explore figure { kind: "feedbackLoop" }; every word is the scene’s: loop: { steps: [{ role?: "Stimulus", text }] (3 to 6 boxes, each text at most 90 characters), sign: "negative" | "positive" (the arrow back from the response marked − or +), lit?: step index, back?: label on the arrow back ("negative feedback") }. Climate loops leave out the roles. Example scene: { label: "Too hot", lines: [...], loop: { sign: "negative", back: "negative feedback", lit: 2, steps: [{ role: "Stimulus", text: "Body temperature rises above its set point." }, …] } }.',
@@ -871,7 +902,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Pathogen card icons (virus, bacterium, fungus, parasite); the immune response in stages; antibody levels after a first and second exposure',
       ['s.9.immune-disease'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s9-immune-disease-antibodies',
       'g.s9-immune-disease-booster',
@@ -890,7 +921,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Conversion factors in a chain with units crossed out; a ruler read to the estimated digit; accuracy and precision targets',
       ['s.10.measurement'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-measurement-chain',
       'g.s10-measurement-rate',
@@ -928,9 +959,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H45',
       'orbitalDiagram',
       'Orbital boxes filled in Aufbau order with up and down arrows, the energy ladder, and emission lines from jumps',
-      ['s.10.electrons-in-atoms', 's.11.modern-physics'],
+      ['s.10.electrons-in-atoms', 's.11.modern-physics~hydrogen-lines'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-electrons-in-atoms-oxygen',
       'g.s10-electrons-in-atoms-iron',
@@ -951,7 +982,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'A trend as shading across the table (radius, ionization energy, electronegativity) with arrows',
       ['s.10.periodic-trends'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-periodic-trends-radius',
       'g.s10-periodic-trends-ionization',
@@ -968,7 +999,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Electron-dot structures, electron transfer in ionic bonds, the sea of electrons; hydrocarbons from n carbons',
       ['s.10.bonding', 's.10.organic'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-bonding-water',
       'g.s10-bonding-ammonia',
@@ -995,7 +1026,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Ball-and-stick shapes with bond angles and dipole arrows; hydrogen bonds between water molecules',
       ['s.10.molecular-shape'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-molecular-shape-water',
       'g.s10-molecular-shape-ammonia',
@@ -1014,9 +1045,14 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H49',
       'reaction',
       'Coefficients set the molecule counts and an atom tally; leftover reactant lit (limiting reactant); reaction-type card figures',
-      ['s.10.reaction-types', 's.10.stoichiometry'],
+      [
+        's.10.reaction-types~combustion',
+        's.10.reaction-types~synthesis',
+        's.10.reaction-types~replacement',
+        's.10.stoichiometry~limiting',
+      ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-stoichiometry-limiting-water',
       'g.s10-stoichiometry-limiting-ammonia',
@@ -1033,7 +1069,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Grams ↔ moles ↔ particles ↔ liters of gas, each arrow with its factor, the current value lit',
       ['s.10.mole', 's.10.stoichiometry'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-mole-map-grams',
       'g.s10-mole-map-gas',
@@ -1051,7 +1087,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Cylinder with a piston, particles moving by temperature, a pressure gauge and a volume scale',
       ['s.10.gas-laws'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-gas-laws-boyle',
       'g.s10-gas-laws-charles',
@@ -1070,7 +1106,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Solute particles per volume, dilution as two beakers (M₁V₁ = M₂V₂); a solubility curve',
       ['s.10.molarity'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-molarity-moles-volume',
       'g.s10-molarity-from-grams',
@@ -1087,10 +1123,10 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H53',
       'energyProfile',
       'Reaction energy diagram: reactant and product levels, ΔH, activation energy, the catalyst path dashed',
-      ['s.10.thermochemistry', 's.10.rates-equilibrium'],
+      ['s.10.thermochemistry', 's.10.rates-equilibrium~catalyst'],
       'Also a coffee-cup calorimeter (q = mcΔT) for thermochemistry and thermodynamics.',
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-thermochemistry-exothermic',
       'g.s10-thermochemistry-endothermic',
@@ -1110,7 +1146,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Concentrations against time leveling off, and the shift after a change (Le Châtelier)',
       ['s.10.rates-equilibrium'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-rates-equilibrium-ice',
       'g.s10-rates-equilibrium-nearly-complete',
@@ -1128,7 +1164,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'pH scale 0–14 in indicator colors with the value marked and [H⁺] as a power of ten; a titration curve',
       ['s.10.acids-bases'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-acids-bases-ph',
       'g.s10-acids-bases-hydrogen',
@@ -1146,7 +1182,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Explore figure: galvanic cell with two electrodes, a salt bridge and electrons flowing through the wire',
       ['s.10.redox'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.s10-redox-galvanic-cell'],
     notes:
       "Drawn: explore figure { kind: 'electrochemicalCell' } (layouts/galvanicFigure.tsx; scene type GalvanicScene in typesHsj.ts). Two metal electrodes, each in a glass beaker of its own ion's solution (Cu²⁺ blue, Ni²⁺ and Fe²⁺ green, the others clear), a copper wire through a voltmeter or a bulb, and a KNO₃ salt bridge. From the standard reduction potentials (Mg, Al, Zn, Fe, Ni, Pb, Cu, Ag) the figure works out the anode (the lower E°), sends electrons along the wire from it to the cathode, drifts NO₃⁻ toward the anode and K⁺ toward the cathode in the bridge, writes both half-reactions under the beakers (oxidation, reduction) and reads E° = E°cathode − E°anode on the meter; the anode is eaten away at its foot and the cathode wears a coat of its metal. Scene field: galvanic { metals: [left, right], meter? ('voltmeter' | 'bulb'), lit? ('electrons' | 'anode' | 'cathode' | 'bridge' | 'meter') }. Example: figure { kind: 'electrochemicalCell' }, scenes [{ label: 'Electrons', galvanic: { metals: ['Zn', 'Cu'], lit: 'electrons' }, lines: ['…'] }, { label: 'Copper as anode', galvanic: { metals: ['Ag', 'Cu'], lit: 'anode' }, lines: ['…'] }]. Harness (layoutFiguresHsj.ts): two different known metals, the anode the lower E°, the voltage positive and E°cathode − E°anode.",
@@ -1158,7 +1194,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Half-life: a grid of atoms decaying, what is left after n half-lives, the decay curve; nuclear equations',
       ['s.10.nuclear-chemistry', 's.12.radiometric-dating'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s10-nuclear-chemistry-decay-grid',
       'g.s12-radiometric-dating-carbon',
@@ -1179,7 +1215,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Area under velocity–time shaded as displacement, the tangent slope, a strobe motion diagram',
       ['s.11.kinematics-1d'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-kinematics-1d-velocity',
       'g.s11-kinematics-1d-turn',
@@ -1194,9 +1230,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H59',
       'projectile',
       'Trajectory from launch speed, angle and height, velocity components along it, maximum height and range',
-      ['s.11.kinematics-2d', 'm.12.parametric'],
+      ['s.11.kinematics-2d', 'm.12.parametric~projectile'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-kinematics-2d-level',
       'g.s11-kinematics-2d-cliff',
@@ -1211,9 +1247,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H60',
       'freeBody',
       'Free-body diagram with scaled force arrows (weight, normal, friction, tension, applied); an incline with components',
-      ['s.11.dynamics-vectors', 's.11.circular-gravitation'],
+      ['s.11.dynamics-vectors', 's.11.circular-gravitation~swing'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-dynamics-vectors-push',
       'g.s11-dynamics-vectors-rope',
@@ -1231,7 +1267,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Object on a circle with velocity tangent and acceleration toward the center; two masses and the pull between them',
       ['s.11.circular-gravitation'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-circular-gravitation-string',
       'g.s11-circular-gravitation-car',
@@ -1249,7 +1285,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Carts on a track before and after, momentum arrows, sticking together or bouncing',
       ['s.11.momentum'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-momentum-stick',
       'g.s11-momentum-head-on',
@@ -1264,9 +1300,13 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H63',
       'simpleMachine',
       'Lever, pulley system and inclined plane with effort, load and mechanical advantage from the values',
-      ['s.11.work-energy-power'],
+      [
+        's.11.work-energy-power~lever',
+        's.11.work-energy-power~pulley',
+        's.11.work-energy-power~ramp',
+      ],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-work-energy-power-lever',
       'g.s11-work-energy-power-pulley',
@@ -1282,9 +1322,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H64',
       'heatEngine',
       'Hot reservoir, engine, work out and heat to the cold reservoir, with the efficiency',
-      ['s.11.thermodynamics'],
+      ['s.11.thermodynamics~engine', 's.11.thermodynamics~refrigerator'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-thermodynamics-engine',
       'g.s11-thermodynamics-carnot',
@@ -1300,7 +1340,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Standing waves on a string and in pipes (harmonic n, nodes and antinodes); Doppler wavefronts from a moving source',
       ['s.11.sound-waves'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-sound-waves-string',
       'g.s11-sound-waves-open-pipe',
@@ -1316,9 +1356,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H66',
       'rayDiagram',
       'Lenses and mirrors with principal rays, object and image from 1/f = 1/d₀ + 1/dᵢ; refraction with the normal and angles',
-      ['s.11.optics', 's.12.starlight-spectra'],
+      ['s.11.optics', 's.12.starlight-spectra~telescope'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-optics-lens-real',
       'g.s11-optics-magnifier',
@@ -1341,7 +1381,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Point charges with field lines and the Coulomb force arrows scaled by q₁, q₂ and r',
       ['s.11.electrostatics'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-electrostatics-attract',
       'g.s11-electrostatics-repel',
@@ -1356,9 +1396,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H68',
       'circuit',
       'Mixed series-parallel circuits, meter readings at each resistor, power',
-      ['s.11.circuits'],
+      ['s.11.circuits~parallel', 's.11.circuits~mixed', 's.11.circuits~power'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-circuits-series-parallel',
       'g.s11-circuits-parallel-series',
@@ -1374,7 +1414,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Magnet moving through a coil with a meter; force on a current in a field (right-hand rule); a transformer by turns',
       ['s.11.electromagnetism'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-electromagnetism-coil',
       'g.s11-electromagnetism-coil-out',
@@ -1391,9 +1431,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H70',
       'spectrum',
       'Emission and absorption lines of H, He, Na; the lines shifted red; photon energy from frequency',
-      ['s.11.modern-physics', 's.12.starlight-spectra', 's.12.cosmology'],
+      ['s.11.modern-physics', 's.12.starlight-spectra', 's.12.cosmology~redshift'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s11-modern-physics-hydrogen',
       'g.s11-modern-physics-helium',
@@ -1430,7 +1470,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Cross-section of Earth with P and S wave paths and the shadow zone; a seismogram; locating an epicenter from three stations',
       ['s.12.earth-interior'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s12-earth-interior-shadow-zone',
       'g.s12-earth-interior-shadow-direct',
@@ -1450,7 +1490,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Explore figures: volcano types, folds and faults, a U- and a V-shaped valley, a meandering river, an aquifer and water table, dunes',
       ['s.12.volcanoes-mountains', 's.12.surface-processes'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s12-volcanoes-mountains-volcanoes',
       'g.s12-volcanoes-mountains-deformation',
@@ -1464,9 +1504,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H74',
       'rockLayers',
       'Absolute ages on layers, an igneous intrusion cutting across, index fossils',
-      ['s.12.radiometric-dating'],
+      ['s.12.radiometric-dating~bracket'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s12-radiometric-dating-half-life',
       'g.s12-radiometric-dating-young',
@@ -1482,7 +1522,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Ocean floor profile (shelf, slope, ridge, trench); surface currents and gyres on a map; the deep conveyor; tides from the moon and sun',
       ['s.12.ocean-atmosphere'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s12-ocean-atmosphere-sonar',
       'g.s12-ocean-atmosphere-sonar-ridge',
@@ -1502,7 +1542,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Layers of the atmosphere with the temperature profile; a pressure map with highs, lows and wind arrows turned by Coriolis',
       ['s.12.atmosphere-weather'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s12-atmosphere-weather-layers',
       'g.s12-atmosphere-weather-tropopause',
@@ -1521,7 +1561,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Explore figure: sunlight in, infrared out and back; climate zones by latitude',
       ['s.12.climate-systems'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.s12-climate-systems-greenhouse', 'g.s12-climate-systems-zones'],
     notes:
       'Drawn (group HL) as an explore figure: { kind: "greenhouse" }, each scene greenhouse: { view: "energy", co2?: "none" | "preindustrial" | "today" } (sunlight in, some bounced off a cloud; infrared out from the ground as four wavy rays, 0, 2 or 3 of them absorbed by CO₂ molecules and sent back down; 0, 4 or 6 molecules; a thermometer at the mean surface temperature, −18, 14 or 15.2 °C) or { view: "zones", lit?: "tropical" | "temperate" | "polar" } (Earth at an equinox lit from the left, zones bounded at 23.5° and 66.5°, the night half shaded, one beam of sunlight on the equator and the same beam at 50° N spread over 1 ÷ cos 50° ≈ 1.6 times the area). Example scenes: { label: "Today", lines: [...], greenhouse: { view: "energy", co2: "today" } }, { label: "Polar", lines: [...], greenhouse: { view: "zones", lit: "polar" } }. The climate page’s feedback loops use the existing feedbackLoop figure (H41). The harness checks a zone is lit only on the zones view and CO₂ is set only on the energy view.',
@@ -1549,7 +1589,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H–R diagram (temperature against luminosity, log scales) with the main sequence, giants and white dwarfs; star life-cycle stages',
       ['s.12.stellar-evolution'],
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s12-stellar-evolution-hr',
       'g.s12-stellar-evolution-giant',
