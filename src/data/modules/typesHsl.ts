@@ -4,7 +4,13 @@
  * explore figures. A `NumOrVar` field is a fixed number or a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
-import { hs2fSpecVars, type MagnitudeSpec, type ParcelSpec, type StripesSpec } from './typesHs2f';
+import {
+  hs2fSpecVars,
+  type BalanceSpec,
+  type MagnitudeSpec,
+  type ParcelSpec,
+  type StripesSpec,
+} from './typesHs2f';
 
 // ── Calculator pictures ──
 
@@ -172,7 +178,8 @@ export interface PressureMapSpec {
   hemisphere?: 'north' | 'south';
 }
 
-export type AtmosphereLayersSpec = AtmosphereProfileSpec | PressureMapSpec | ParcelSpec;
+export type AtmosphereLayersSpec =
+  AtmosphereProfileSpec | PressureMapSpec | ParcelSpec | BalanceSpec;
 
 /**
  * The Hertzsprung–Russell diagram (H79): surface temperature (K) across, hot on the left, and
@@ -253,7 +260,7 @@ export function hslSpecVars(r: HslSpec): string[] {
         ? ids([r.scale, r.distance, r.after])
         : ids([r.distance, r.speed, r.constant]);
     case 'atmosphereLayers':
-      if (r.mode === 'parcel') return hs2fSpecVars(r);
+      if (r.mode === 'parcel' || r.mode === 'balance') return hs2fSpecVars(r);
       return r.mode === 'profile'
         ? ids([r.altitude, r.temperature, r.ground])
         : ids([r.high, r.low, r.distance]);

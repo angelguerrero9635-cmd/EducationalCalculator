@@ -65,6 +65,27 @@ export interface ParcelSpec {
 }
 
 /**
+ * `atmosphereLayers` mode `balance` (H103 part 5): Earth's energy balance with no greenhouse
+ * effect, as the `greenhouse` figure's energy view draws it but driven by values. Sunlight in,
+ * averaged over the globe (S ÷ 4), splits at the surface into the part reflected (the albedo α)
+ * and the part absorbed, F = S(1 − α) ÷ 4; in balance the ground sends F back out as infrared,
+ * σTₑ⁴ = F, and a thermometer reads Tₑ. Band widths are to scale (the sunlight in is the full
+ * width).
+ */
+export interface BalanceSpec {
+  kind: 'atmosphereLayers';
+  mode: 'balance';
+  /** The albedo, 0–1: the share of sunlight reflected. */
+  albedo: NumOrVar;
+  /** The sunlight at the top of the atmosphere, W/m² (default 1,361, the solar constant). */
+  sunlight?: NumOrVar;
+  /** The sunlight absorbed per square metre, averaged over the globe, when the page names it. */
+  absorbed?: NumOrVar;
+  /** The balance temperature Tₑ, K, when the page names it. */
+  temperature?: NumOrVar;
+}
+
+/**
  * `streamChannel` (H103 part 3, a new kind): a stream's channel seen in cross-section and in
  * perspective, drawn to scale: the water `width` m wide and `depth` m deep (A = w × d), and the
  * slab of water that passes in one second, `speed` m long, so its volume is the discharge
@@ -86,7 +107,7 @@ export interface StreamChannelSpec {
 export type Hs2fKindSpec = StreamChannelSpec;
 
 /** Every group F spec. */
-export type Hs2fSpec = MagnitudeSpec | StripesSpec | ParcelSpec | Hs2fKindSpec;
+export type Hs2fSpec = MagnitudeSpec | StripesSpec | ParcelSpec | BalanceSpec | Hs2fKindSpec;
 
 /** The variable ids a group F spec names (for the module tests). */
 export function hs2fSpecVars(r: Hs2fSpec): string[] {
@@ -100,5 +121,7 @@ export function hs2fSpecVars(r: Hs2fSpec): string[] {
       return ids([r.distance, r.age, r.rate, r.full]);
     case 'parcel':
       return ids([r.temperature, r.dewPoint, r.base]);
+    case 'balance':
+      return ids([r.albedo, r.sunlight, r.absorbed, r.temperature]);
   }
 }

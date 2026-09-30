@@ -9,6 +9,9 @@ import {
   MAGNITUDE_RANGE,
   STRIPE_RECORD,
   cloudBase,
+  absorbedOf,
+  balanceTemp,
+  SOLAR_CONSTANT,
 } from '@/components/module/reps/earthModelHs2f';
 
 import type { Representation } from '../types';
@@ -62,6 +65,21 @@ export function hs2fIssues(rep: Representation, val: (id: string) => number | un
     const h = num(rep.base);
     if (h !== undefined && !near(h, cloudBase(t, td), 1e-4))
       out.push(`cloud base ${h} km, but the lines meet at ${cloudBase(t, td)} km`);
+  }
+  if (rep.kind === 'atmosphereLayers' && rep.mode === 'balance') {
+    const a = num(rep.albedo);
+    const s = num(rep.sunlight, SOLAR_CONSTANT);
+    if (a !== undefined && (a < 0 || a > 1)) out.push(`albedo ${a} is not 0–1`);
+    if (s !== undefined && s <= 0) out.push(`sunlight ${s} W/m² is not positive`);
+    if (a === undefined || s === undefined) return out;
+    // The bands split S ÷ 4 into α and 1 − α; the infrared out equals what is absorbed.
+    const f = num(rep.absorbed);
+    if (f !== undefined && !near(f, absorbedOf(s, a), 1e-4))
+      out.push(`absorbed ${f}, but ${s} × (1 − ${a}) ÷ 4 = ${absorbedOf(s, a)}`);
+    const t = num(rep.temperature);
+    const want = balanceTemp(f ?? absorbedOf(s, a));
+    if (t !== undefined && !near(t, want, 1e-4))
+      out.push(`Tₑ ${t} K, but σTₑ⁴ = F gives ${want} K`);
   }
   if (rep.kind === 'streamChannel') {
     const w = num(rep.width);

@@ -348,7 +348,106 @@ const cloudBaseDry: ModuleDef = {
   example: { T: 38, Td: 2, h: 4.5 },
 };
 
+// ── Part 5: the energy balance as a calculator (atmosphereLayers mode `balance`) ──
+
+const SIGMA = 5.67e-8;
+
+const energyBalance: ModuleDef = {
+  id: 'g.s12-climate-systems-energy-balance',
+  unitSystems: ['metric'],
+  title: 'Earth’s energy balance',
+  use: 'Use this for “If Earth reflects 30 % of sunlight and has no greenhouse gases, how warm is it?”',
+  assumptions: [
+    'Sunlight falls on Earth’s disk but spreads over the whole globe, 4 times the disk’s area, so each square metre gets S ÷ 4 on average.',
+    'The albedo α is the share reflected by clouds, ice and land; the rest is absorbed.',
+    'In balance the ground sends out as infrared what it absorbs: σTₑ⁴ = F, with σ = 5.67 × 10⁻⁸ W/m² per K⁴.',
+  ],
+  variables: [
+    V('S', 'S', 'Sunlight at the top of the atmosphere', {
+      unit: 'W/m²',
+      min: 1,
+      max: 3000,
+      step: 1,
+    }),
+    V('a', 'α', 'Albedo', { min: 0, max: 0.99, step: 0.01 }),
+    V('F', 'F', 'Sunlight absorbed', {
+      unit: 'W/m²',
+      min: 0,
+      max: 750,
+      step: 0.1,
+      derived: true,
+    }),
+    V('T', 'Tₑ', 'Balance temperature', { unit: 'K', min: 0, max: 400, step: 0.1, derived: true }),
+  ],
+  ...rels(
+    rule('F = S(1 − α) ÷ 4', '{F} = {S} × (1 − {a}) ÷ 4', (v) => 4 * v.F! - v.S! * (1 - v.a!), {
+      F: [
+        (v) => (v.S! * (1 - v.a!)) / 4,
+        '{S} × (1 − {a}) ÷ 4',
+        'The share not reflected, spread over 4 times the disk’s area.',
+      ],
+      S: [
+        (v) => div(4 * v.F!, 1 - v.a!),
+        '4 × {F} ÷ (1 − {a})',
+        'The sunlight that leaves F absorbed after reflection.',
+      ],
+      a: [
+        (v) => (v.S! > 0 ? 1 - (4 * v.F!) / v.S! : undefined),
+        '1 − 4 × {F} ÷ {S}',
+        'The share of the sunlight not absorbed.',
+      ],
+    }),
+    rule(
+      'Tₑ = (F ÷ σ)^(1/4)',
+      '{T} = ({F} ÷ (5.67 × 10⁻⁸))^(1/4)',
+      (v) => v.T! - (Math.max(0, v.F!) / SIGMA) ** 0.25,
+      {
+        T: [
+          (v) => (v.F! >= 0 ? (v.F! / SIGMA) ** 0.25 : undefined),
+          '({F} ÷ (5.67 × 10⁻⁸))^(1/4)',
+          'The temperature whose infrared, σTₑ⁴, carries away F.',
+        ],
+        F: [(v) => SIGMA * v.T! ** 4, '5.67 × 10⁻⁸ × {T}^4', 'A surface at Tₑ sends out σTₑ⁴.'],
+      },
+    ),
+  ),
+  example: {
+    S: 1361,
+    a: 0.3,
+    F: (1361 * 0.7) / 4,
+    T: ((1361 * 0.7) / 4 / SIGMA) ** 0.25,
+  },
+  startWith: ['S', 'a'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'balance',
+    sunlight: 'S',
+    albedo: 'a',
+    absorbed: 'F',
+    temperature: 'T',
+  },
+};
+
+const energyBalanceIce: ModuleDef = {
+  ...energyBalance,
+  id: 'g.s12-climate-systems-energy-balance-ice',
+  title: 'A snowball Earth',
+  use: 'Use this for an icy Earth that reflects most of the sunlight.',
+  example: { S: 1361, a: 0.6, F: (1361 * 0.4) / 4, T: ((1361 * 0.4) / 4 / SIGMA) ** 0.25 },
+};
+
+const energyBalanceMars: ModuleDef = {
+  ...energyBalance,
+  id: 'g.s12-climate-systems-energy-balance-mars',
+  title: 'The balance on Mars',
+  use: 'Use this for another planet: Mars gets 586 W/m² and reflects about 25 %.',
+  example: { S: 586, a: 0.25, F: (586 * 0.75) / 4, T: ((586 * 0.75) / 4 / SIGMA) ** 0.25 },
+};
+
 export const HS2F_GALLERY_MODULES: ModuleDef[] = [
+  energyBalance,
+  energyBalanceIce,
+  energyBalanceMars,
   cloudBase,
   cloudBaseHumid,
   cloudBaseDry,

@@ -101,3 +101,17 @@ export function parcelDewAt(z: number, t: number, td: number): number {
   const h = Math.max(0, cloudBase(t, td));
   return z <= h ? td - DEW_LAPSE * z : parcelTempAt(z, t, td);
 }
+
+// ── Earth's energy balance ──
+
+/** The Stefan–Boltzmann constant, W/m² per K⁴. */
+export const SIGMA = 5.67e-8;
+
+/** Sunlight at the top of Earth's atmosphere, W/m² (the solar constant). */
+export const SOLAR_CONSTANT = 1361;
+
+/** Sunlight absorbed per square metre of the globe: S(1 − α) ÷ 4 (a sphere has 4 × its disk). */
+export const absorbedOf = (s: number, albedo: number) => (s * (1 - albedo)) / 4;
+
+/** The temperature that sends F back out as infrared: σT⁴ = F. */
+export const balanceTemp = (f: number) => (Math.max(0, f) / SIGMA) ** 0.25;
