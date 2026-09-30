@@ -540,6 +540,7 @@ function representationVars(r: Representation): string[] {
     case 'expandingUniverse':
       return hslSpecVars(r);
     case 'streamChannel':
+    case 'reserve':
       return hs2fSpecVars(r);
     case 'projectile':
     case 'induction':

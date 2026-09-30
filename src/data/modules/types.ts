@@ -1094,7 +1094,7 @@ export type Representation =
   | HscSpec
   /** Grades 9–12 earth and space, group HL (specs in `typesHsl.ts`). */
   | HslSpec
-  /** Grades 9–12 round 2 earth and space, group H2F: a stream channel (`typesHs2f.ts`). */
+  /** Grades 9–12 round 2 earth and space, group H2F: stream, reserve (`typesHs2f.ts`). */
   | Hs2fKindSpec
   /** Grades 9–12 statistics and counting, group HB (specs in `typesHsb.ts`). */
   | HsbSpec

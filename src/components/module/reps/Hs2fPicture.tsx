@@ -7,11 +7,14 @@ import type { ReactNode } from 'react';
 import type { Hs2fKindSpec } from '@/data/modules/typesHs2f';
 
 import type { Calculator } from '../useCalculator';
+import { Reserve } from './Reserve';
 import { StreamChannel } from './StreamChannel';
 
 export function Hs2fPicture({ spec, calc }: { spec: Hs2fKindSpec; calc: Calculator }): ReactNode {
   switch (spec.kind) {
     case 'streamChannel':
       return <StreamChannel spec={spec} calc={calc} />;
+    case 'reserve':
+      return <Reserve spec={spec} calc={calc} />;
   }
 }

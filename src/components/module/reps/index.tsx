@@ -245,6 +245,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'expandingUniverse':
       return <HslPicture spec={spec} calc={calc} />;
     case 'streamChannel':
+    case 'reserve':
       return <Hs2fPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;

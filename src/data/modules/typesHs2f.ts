@@ -103,8 +103,23 @@ export interface StreamChannelSpec {
   discharge?: NumOrVar;
 }
 
+/**
+ * `reserve` (H103 part 6, a new kind): a reserve drawn down. A bar as long as the reserve Q, cut
+ * into the slices used each year (r each), the first slice lit; a years axis under it, and the
+ * bar empty after y = Q ÷ r years (the last slice may be part of a year). Flat, like a tape.
+ */
+export interface ReserveSpec {
+  kind: 'reserve';
+  /** The reserve, in the page's unit (billion barrels, tonnes). */
+  reserve: NumOrVar;
+  /** The amount used each year, in the same unit per year. */
+  rate: NumOrVar;
+  /** The years it lasts, when the page works it out. */
+  years?: NumOrVar;
+}
+
 /** The group F picture kinds of their own (listed in `types.ts`). */
-export type Hs2fKindSpec = StreamChannelSpec;
+export type Hs2fKindSpec = StreamChannelSpec | ReserveSpec;
 
 /** Every group F spec. */
 export type Hs2fSpec = MagnitudeSpec | StripesSpec | ParcelSpec | BalanceSpec | Hs2fKindSpec;
@@ -114,6 +129,7 @@ export function hs2fSpecVars(r: Hs2fSpec): string[] {
   const ids = (xs: (NumOrVar | undefined)[]) =>
     xs.filter((x): x is string => typeof x === 'string');
   if (r.kind === 'streamChannel') return ids([r.width, r.depth, r.speed, r.area, r.discharge]);
+  if (r.kind === 'reserve') return ids([r.reserve, r.rate, r.years]);
   switch (r.mode) {
     case 'magnitude':
       return ids([r.m1, r.m2, r.amplitude, r.energy]);

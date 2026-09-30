@@ -1938,6 +1938,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s12-climate-systems-energy-balance',
       'g.s12-climate-systems-energy-balance-ice',
       'g.s12-climate-systems-energy-balance-mars',
+      'g.s12-resource-management-reserves',
+      'g.s12-resource-management-reserves-field',
+      'g.s12-resource-management-reserves-long',
     ],
     notes: [
       'P15: docs/plans/s.12.md needs 2–11, drawn part by part (group H2F, demos in galleryHs2f.ts, checks in harness/picturesHs2f.ts).',
@@ -1946,6 +1949,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       "Need 4 (s.12.surface-processes~discharge): a new kind `streamChannel`, { kind: 'streamChannel', width: 'w', depth: 'd', speed: 'v', area?: 'A', discharge?: 'Q' }: the channel cut into its soil banks, in perspective and to one scale, the water's front face w × d and, shaded, the slab of water v m long that passes in one second (too thin to see on a very wide river, and the key then says so), the flow arrow labeled v, brackets for w and d, and the caption working A = w × d and Q = A × v. The harness checks w, d, v > 0, A = w × d and Q = A × v. Example: w = 12 m, d = 1.5 m, v = 0.8 m/s → A = 18 m², Q = 14.4 m³/s (demo g.s12-surface-processes-discharge).",
       "Need 5 (s.12.atmosphere-weather~cloud-base): `atmosphereLayers` mode `parcel`, { kind: 'atmosphereLayers', mode: 'parcel', temperature: 'T', dewPoint: 'Td', base?: 'h' }: temperature (across) against altitude (up), the parcel's temperature falling 10 °C per km and its dew point 2 °C per km (dashed) to where they meet at h = (T − T_d) ÷ 8 km, then together at about 6 °C per km (saturated); the cloud base dashed across the chart and a scene beside it on the same altitude scale, the parcel rising as bubbles to a cumulus cloud whose flat base is at h. The caption works h and the temperature there. The harness checks T_d ≤ T and h = (T − T_d) ÷ 8; the page needs a constraint T_d ≤ T. Example: T = 24 °C, T_d = 12 °C → h = 1.5 km, 9 °C at the base (demo g.s12-atmosphere-weather-cloud-base).",
       "Need 6 (s.12.climate-systems~energy-balance): the greenhouse figure's energy view as a calculator picture, `atmosphereLayers` mode `balance`, { kind: 'atmosphereLayers', mode: 'balance', albedo: 'a', sunlight?: 'S' (default 1,361), absorbed?: 'F', temperature?: 'T' }: space, the air and the ground as in the figure, the sunlight in (S ÷ 4, the full band) splitting into the part reflected (α of it, turned back up) and the part absorbed (F = S(1 − α) ÷ 4, into the ground), the infrared out from the ground as wide as F, each band numbered in W/m², and a thermometer at Tₑ = (F ÷ σ)^(1/4) in K and °C. The harness checks 0 ≤ α ≤ 1, F = S(1 − α) ÷ 4 and σTₑ⁴ = F. Example: S = 1,361 W/m², α = 0.3 → F = 238 W/m², Tₑ = 255 K (−18 °C) (demo g.s12-climate-systems-energy-balance).",
+      "Need 7 (s.12.resource-management~reserves): a new kind `reserve` (flat, like a tape), { kind: 'reserve', reserve: 'Q', rate: 'r', years?: 'y' }: a bar as long as the reserve, bracketed and named, cut into slices of r (one a year, the cuts drawn while they stay 3 px apart), the first year's slice lit and labeled r, a years-from-now axis, and the end marked \"empty after y = Q ÷ r years\" (a last slice that is part of a year shows as one). The caption works Q ÷ r. The harness checks Q, r > 0 and y = Q ÷ r. Example: Q = 400 billion barrels, r = 12.5 billion barrels a year → y = 32 years (demo g.s12-resource-management-reserves).",
     ].join(' '),
   },
   ask(

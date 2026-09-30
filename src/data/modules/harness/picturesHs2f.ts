@@ -81,6 +81,16 @@ export function hs2fIssues(rep: Representation, val: (id: string) => number | un
     if (t !== undefined && !near(t, want, 1e-4))
       out.push(`Tₑ ${t} K, but σTₑ⁴ = F gives ${want} K`);
   }
+  if (rep.kind === 'reserve') {
+    const q = num(rep.reserve);
+    const r = num(rep.rate);
+    if (q !== undefined && q <= 0) out.push(`reserve ${q} is not positive`);
+    if (r !== undefined && r <= 0) out.push(`use ${r} a year is not positive`);
+    // The bar is cut into slices of r: it empties after Q ÷ r of them.
+    const y = num(rep.years);
+    if (q !== undefined && r !== undefined && r > 0 && y !== undefined && !near(y, q / r, 1e-4))
+      out.push(`lasts ${y} years, but ${q} ÷ ${r} = ${q / r}`);
+  }
   if (rep.kind === 'streamChannel') {
     const w = num(rep.width);
     const d = num(rep.depth);
