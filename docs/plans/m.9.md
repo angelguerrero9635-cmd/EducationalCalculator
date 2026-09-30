@@ -872,3 +872,91 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 
 Total: 66 pages: 17 main pages and 49 problem types, 4 of them sorts. Of the 66, 64 can be built now;
 ~box and ~compare wait on needs 7 and 9. The standard-form sign-box systems page (need 2) is not counted.
+
+## Added skills
+
+Skills added to the taxonomy after Grade 9 was built (TAXONOMY_ISSUES.md, "Grades 9–12 topics
+without a skill"). Same format as above; every example is original and worked by hand.
+
+### 18. m.9.units-precision — Units, accuracy and precision in measurement and modeling
+
+- **Standard:** N-Q.1 (units to guide a solution, units in formulas), N-Q.2 (define the quantities of a
+  model), N-Q.3 (a level of accuracy that fits the limits of measurement).
+- **Textbooks:** Big Ideas 9.1 (1.3 Modeling Quantities, 1.4 Accuracy with Measurements); Reveal 9.1
+  (1-6 Descriptive Modeling and Accuracy); Into Math 1.3 (Precision and Accuracy in Calculations).
+  The common problems: a rate converted by unit analysis (mi/h to ft/s), square units (ft² to yd²,
+  then a cost), a formula whose units disagree (a rate per hour, a time in minutes), the least and
+  greatest possible value of a measurement to the nearest unit, significant digits in a product, and
+  choosing the unit or accuracy a situation needs. `m.6.unit-rates` is the Refresh; the metric chain,
+  the ruler's estimated digit and percent error are Chemistry's (`s.10.measurement`), linked, not repeated.
+- **Tests ask:** no released questions are filed for the skill (`research/questions/COVERAGE.md`: 0).
+
+  | Question                                          | Page                 | Mark   |
+  | ------------------------------------------------- | -------------------- | ------ |
+  | Common: convert a speed, mi/h to ft/s             | main                 | Solves |
+  | Common: square units and a cost per square yard   | ~area-units          | Solves |
+  | Common: a formula whose units disagree            | ~formula-units       | Solves |
+  | Common: least and greatest possible area          | ~bounds              | Solves |
+  | Common: a product to the right significant digits | ~significant-figures | Solves |
+  | Common: which unit or accuracy fits               | ~level-of-accuracy   | Solves |
+
+- **Main — BUILD `m.9.units-precision` (Converting a rate with unit analysis):**
+  - Picture: `unitChain` mode 'chain', unit 'mi' per 'h', factors 5280 ft/1 mi and 1 h/3600 s, from
+    `g.s10-measurement-rate` (US units instead of meters).
+  - Values: v, speed in mi/h (0.1–500, units pinned); u, speed in ft/s. `unitSystems: ['us']`.
+  - Relation u = v × 5280/3600, solved both ways.
+  - Assumptions:
+    - 1 mi = 5280 ft and 1 h = 3600 s exactly, so each factor equals 1.
+    - Put the unit to cancel on the other side of the fraction bar.
+    - The units left after cancelling are the answer's unit: a check the setup is right.
+  - Example: 45 mi/h × 5280 ft/1 mi × 1 h/3600 s = 237,600/3600 = 66 ft/s.
+  - `startWith: ['v']`. Use line: "Use this for “A car goes 45 miles per hour. How many feet per
+    second is that?”"
+- **~area-units — BUILD (square units and a cost):**
+  - Picture: `unitChain` chain, start F in ft², one factor 1 yd²/9 ft².
+  - Values: length l and width w (ft), area F (ft²), area Y (yd²), price p ($ per yd²), cost C ($).
+  - Relations F = l × w, Y = F ÷ 9, C = p × Y.
+  - Assumptions: 1 yd = 3 ft, so 1 yd² = 3 ft × 3 ft = 9 ft² (square the length factor); the price is per
+    square yard, so change the area to square yards before multiplying.
+  - Example: 12 ft × 15 ft = 180 ft²; 180 ÷ 9 = 20 yd²; 20 × $30 = $600.
+  - `startWith: ['l', 'w', 'p']`. Use line: "Use this for “Carpet costs $30 a square yard. What does
+    it cost for a 12 ft by 15 ft room?”"
+- **~formula-units — BUILD (units in d = rt):**
+  - Picture: `doubleNumberLine`, top hours h, bottom miles d, per r.
+  - Values: rate r (mi/h), time t (min), time h (hours, worked out, as a fraction), distance d (mi).
+  - Relations h = t ÷ 60, d = r × h.
+  - Assumptions: the rate is per hour, so the time goes in hours; divide minutes by 60.
+  - Example: 12 mi/h for 40 min: h = 40/60 = 2/3 h; d = 12 × 2/3 = 8 mi.
+  - `startWith: ['r', 't']`. Use line: "Use this for “A cyclist rides at 12 miles per hour for 40
+    minutes. How far?”"
+- **~bounds — BUILD (precision: least and greatest possible area):**
+  - Picture: `rectangle` l by w, the area A inside. The inner and outer rectangles (l ∓ e by w ∓ e)
+    would show the bounds: a shared picture need; interim, the plain rectangle.
+  - Values: length l, width w (cm), precision u (the nearest cm, 0.1 cm …), greatest possible error
+    e = u ÷ 2, area A, least area A_min, greatest area A_max.
+  - Relations e = u ÷ 2; A = l × w; A_min = (l − e)(w − e); A_max = (l + e)(w + e). Limits: each side
+    is a whole number of u (read to the nearest u) and more than e.
+  - Assumptions: a length to the nearest u is off by at most half of u; the true sides lie between
+    l − e and l + e, so the area lies between the two products.
+  - Example: 8 cm by 5 cm, to the nearest 1 cm: e = 0.5 cm; A = 40 cm²; A_min = 7.5 × 4.5 = 33.75 cm²;
+    A_max = 8.5 × 5.5 = 46.75 cm².
+  - `startWith: ['u', 'l', 'w']`.
+- **~significant-figures — BUILD (a product to the fewest significant figures):**
+  - Picture: `rectangle` l by w, the rounded area R inside.
+  - Values: l, w (m); n₁, n₂, their significant figures (typed, 1–6); n, the fewer; P, the product as
+    calculated; R, P rounded to n significant figures.
+  - Relations P = l × w; n = the smaller of n₁ and n₂; R = P rounded to n significant figures. Limit:
+    a measurement needs at least the figures it shows (4.25 can't have 2).
+  - Assumptions: a product is no more precise than its least precise factor; count the significant
+    figures in each measurement, then round the answer to the fewer.
+  - Example: 4.25 m (3) × 3.1 m (2) = 13.175 m²; n = 2; R = 13 m².
+  - `startWith: ['l', 'w', 'n1', 'n2']`.
+- **~level-of-accuracy — BUILD (sort):**
+  - Bins: "To the nearest millimeter", "To the nearest meter", "To the nearest kilometer".
+  - Cards (9): a bolt for an engine, a phone's thickness, a tile cut to fit (millimeter); a
+    swimming pool's length, a room's length for carpet, a soccer field (meter); the drive between
+    two cities, a flight's distance, a river's length (kilometer).
+  - Sentence: "Measure only as precisely as the use needs: a part that must fit needs millimeters,
+    a trip needs kilometers."
+- **Verdict:** 6 pages (5 calculators, 1 sort); every common textbook type Solved. Graph scale and
+  origin (N-Q.1) are left to the graphing pages.

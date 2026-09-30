@@ -148,3 +148,49 @@ and the ~special symbol were done by the lead first; E8–E11 by the engine.
 - The dump could print rule messages and mark `note:` lines (reviewer, E7).
 - Two-way tables: a page that fills the table from totals needs typed totals in `twoWayTable`.
 - The fixed-sign interims (~compound, ~or, half-planes, the inequalities) still wait on need 2.
+
+## Added skills
+
+Built from `docs/plans/m.9.md` "Added skills". `MODULE_IDS=m.9.units-precision`: module,
+standards, layouts and sampling suites pass (deep run `SAMPLES=100 SEQUENCES=15 UNIT_CASES=10`
+clean); `src/data/__tests__` and `units.test.ts` pass.
+
+### Built
+
+| Skill               | Pages | Calculators                                                                     | Sorts              |
+| ------------------- | ----- | ------------------------------------------------------------------------------- | ------------------ |
+| m.9.units-precision | 6     | main (mi/h to ft/s), ~area-units, ~formula-units, ~bounds, ~significant-figures | ~level-of-accuracy |
+
+Interims: ~bounds and ~significant-figures draw the plain `rectangle` (shared needs below).
+
+### Waiting
+
+None.
+
+### Changed from the plan
+
+- **Main and ~area-units carry no unit menu.** Their values are named in their units ("Speed in
+  miles per hour", "Area in square feet"), as `g.s10-measurement-rate` does: the `unitChain`
+  chain draws its units as written, and a page's metric system is always offered (even with
+  `unitSystems: ['us']` and pinned `units`), which would convert the numbers under the US chain.
+  The main page's title is the skill's.
+- **~formula-units is in km/h and km** (18 km/h for 40 min = 12 km), with mph and mi on the unit
+  menu: the default system is metric, and the lesson (minutes to hours before d = rt) holds in
+  either. t stays in minutes and h in hours (pinned).
+- **~area-units price up to $100 a square yard** (cost under $3,000,000): dollar answers past
+  $10,000,000 are drawn in scientific notation and the check line then reads them wrong.
+- **~bounds and ~significant-figures are metric only** (`unitSystems: ['metric']`), so the
+  precision u (0.1, 0.5, 1 or 10 cm) and the typed counts keep their meaning. ~bounds refuses a
+  side that is not a multiple of u; ~significant-figures refuses a count too small for the
+  number (4.25 with 2 figures).
+
+### Shared needs found while building
+
+- **Picture: `rectangle` bounds** — the measured rectangle with the least (l − e by w − e) and
+  greatest (l + e by w + e) rectangles dashed inside and outside it, the band between shaded;
+  driven by l, w, e, A_min, A_max. Page: m.9.units-precision~bounds.
+- **Engine: significant figures of a typed value** — keep the figures a student types (3.10, 250.)
+  so n₁ and n₂ are read, not typed, and show a worked-out value to n figures from a value id
+  (`sigFigs: 'n'`), so 13.0 shows its zero. Page: m.9.units-precision~significant-figures.
+- **Engine: a US-only page** — `unitSystems: ['us']` with pinned `units` still offers metric and
+  converts; honoring it would let the main page and ~area-units show mph, ft/s, ft², yd² as units.
