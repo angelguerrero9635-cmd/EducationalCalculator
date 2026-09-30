@@ -438,6 +438,134 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Weathering, erosion, groundwater, glaciers and wind (HS-ESS2-1, HS-ESS2-5) ──
+  {
+    kind: 'explore',
+    id: 's.12.surface-processes',
+    assumptions: [
+      'Weathering breaks rock in place; erosion carries it away.',
+      'Water, ice and wind each leave their own shapes.',
+    ],
+    figure: { kind: 'landforms' },
+    scenes: [
+      {
+        label: 'River valley',
+        lines: [
+          'A stream cuts down into its bed, and the slopes slide in.',
+          'The valley is a narrow V.',
+        ],
+        landform: { kind: 'vValley' },
+      },
+      {
+        label: 'Glacial valley',
+        lines: [
+          'A glacier scrapes the valley’s floor and walls wide.',
+          'When the ice melts, a U shape with steep walls is left.',
+        ],
+        landform: { kind: 'uValley' },
+      },
+      {
+        label: 'Meander',
+        lines: [
+          'The fastest water erodes the cut bank on the outside of a bend; slow water drops a point bar inside.',
+          'A cut-off loop leaves an oxbow lake.',
+        ],
+        landform: { kind: 'meander' },
+      },
+      {
+        label: 'Aquifer',
+        lines: [
+          'Water fills the pores in the rock below the water table.',
+          'Pumping faster than rain refills it lowers the table, and a shallow well goes dry.',
+        ],
+        landform: { kind: 'aquifer' },
+      },
+      {
+        label: 'Dunes',
+        lines: [
+          'Wind bounces sand up the gentle side of the dune.',
+          'At the top the sand slides down the 33° slip face, so the dune creeps downwind.',
+        ],
+        landform: { kind: 'dunes' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.surface-processes~weathering',
+    title: 'Mechanical or chemical weathering?',
+    use: 'Use this for “Is frost wedging mechanical or chemical weathering? What about rust?”',
+    assumptions: [
+      'Mechanical weathering breaks rock into smaller pieces of the same minerals.',
+      'Chemical weathering changes the minerals into new substances, faster where it is warm and wet.',
+    ],
+    question: 'How does this break rock down?',
+    bins: [
+      {
+        id: 'mechanical',
+        label: 'Mechanical (pieces, same minerals)',
+        why: 'A force pries or splits the rock, but what it is made of stays the same.',
+      },
+      {
+        id: 'chemical',
+        label: 'Chemical (new substances)',
+        why: 'Water, acids and oxygen react with the minerals and make new ones.',
+      },
+    ],
+    cards: [
+      { label: 'Frost wedging', bin: 'mechanical' },
+      { label: 'Roots growing in cracks', bin: 'mechanical' },
+      { label: 'Salt crystals growing', bin: 'mechanical' },
+      { label: 'Sheets peeling off as rock above erodes', bin: 'mechanical' },
+      { label: 'Carbonic acid dissolving limestone', bin: 'chemical' },
+      { label: 'Iron minerals rusting', bin: 'chemical' },
+      { label: 'Feldspar turning to clay', bin: 'chemical' },
+      { label: 'Acid rain on marble', bin: 'chemical' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.surface-processes~agents',
+    title: 'Water, ice or wind?',
+    use: 'Use this for “Which agent of erosion carved a U-shaped valley?”',
+    assumptions: [
+      'Each agent erodes and drops sediment in its own way.',
+      'Water sorts sediment by size; ice drops it all mixed together.',
+    ],
+    question: 'What made this landform?',
+    bins: [
+      {
+        id: 'water',
+        label: 'Running water or groundwater',
+        why: 'Streams cut down and drop sediment where they slow; groundwater dissolves limestone.',
+      },
+      {
+        id: 'ice',
+        label: 'Glacier ice',
+        why: 'Moving ice scrapes and plucks rock, then drops it in unsorted heaps.',
+      },
+      {
+        id: 'wind',
+        label: 'Wind',
+        why: 'Wind lifts only fine grains, piling sand and dust and blasting rock with them.',
+      },
+    ],
+    cards: [
+      { label: 'V-shaped valley', bin: 'water' },
+      { label: 'Delta', bin: 'water' },
+      { label: 'Oxbow lake', bin: 'water' },
+      { label: 'Limestone cave', bin: 'water' },
+      { label: 'U-shaped valley', bin: 'ice' },
+      { label: 'Moraine', bin: 'ice' },
+      { label: 'Cirque', bin: 'ice' },
+      { label: 'Erratic boulder', bin: 'ice' },
+      { label: 'Sand dune', bin: 'wind' },
+      { label: 'Loess', bin: 'wind' },
+      { label: 'Desert pavement', bin: 'wind' },
+      { label: 'Ventifact', bin: 'wind' },
+    ],
+  },
+
   // ── Geologic time and radiometric dating (HS-ESS1-5, HS-ESS1-6) ──
   {
     kind: 'sequence',

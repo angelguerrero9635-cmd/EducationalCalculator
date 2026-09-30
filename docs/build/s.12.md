@@ -10,6 +10,7 @@ priority order of their main pages.
 - s.12.earth-interior: 5 (main, ~epicenter, ~shadow-zone; sorts ~wave-types, ~heat-sources)
 - s.12.volcanoes-mountains: 4 (main volcano explore, ~deformation and ~mountain-building explores,
   sort ~magma)
+- s.12.surface-processes: 3 (main landforms explore; sorts ~weathering, ~agents)
 - s.12.radiometric-dating: 5 (main C-14, ~uranium, ~bracket; sequences ~relative-order, ~time-scale)
 - s.12.ocean-atmosphere: 4 (main sonar, ~tides; explore ~currents, sort ~density)
 - s.12.atmosphere-weather: 5 (main lapse rate, ~pressure, ~humidity; sequence ~hurricane, sort ~air-masses)
