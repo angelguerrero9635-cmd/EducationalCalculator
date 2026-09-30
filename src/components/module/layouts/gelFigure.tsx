@@ -6,7 +6,7 @@
  * lanes, rings some, and compares one lane's bands with the rest: dashed lines across the gel at
  * its bands, the bands of other lanes at the same size lit, the matches counted in the caption.
  * With `parents`, each of the child's bands takes the color of the parent it matches (maternal
- * red, paternal blue), and a band found in neither is ringed with a "?".
+ * red, paternal blue), and a band found in neither is ringed, dashed.
  */
 import { Defs, G, Line, Rect } from 'react-native-svg';
 
@@ -149,7 +149,7 @@ export function GelFigure({ figure, scene }: { figure: GelFig; scene: GelScene }
                 x2={x1 - 2}
                 y1={yOf(bp)}
                 y2={yOf(bp)}
-                stroke={bandColor(ref.label, bp) ?? c.chartHighlight}
+                stroke={bandColor(ref.label, bp) ?? (mom && dad ? c.chartMuted : c.chartHighlight)}
                 strokeWidth={1.2}
                 strokeDasharray={chart.dashFine}
                 opacity={0.9}
@@ -261,28 +261,17 @@ function Lane({
               fillOpacity={ladder ? 0.7 : 0.95}
             />
             {odd ? (
-              <G>
-                <Rect
-                  x={x - bandW / 2 - 4}
-                  y={y - 8}
-                  width={bandW + 8}
-                  height={16}
-                  rx={5}
-                  fill="none"
-                  stroke={c.chartHighlight}
-                  strokeWidth={chart.strokeHeavy}
-                  strokeDasharray={chart.dashFine}
-                />
-                <ChartText
-                  x={x + bandW / 2 + 6}
-                  y={y + 5}
-                  fontSize={chart.value}
-                  fontWeight="800"
-                  fill={c.chartHighlight}
-                >
-                  ?
-                </ChartText>
-              </G>
+              <Rect
+                x={x - bandW / 2 - 4}
+                y={y - 8}
+                width={bandW + 8}
+                height={16}
+                rx={5}
+                fill="none"
+                stroke={c.chartHighlight}
+                strokeWidth={chart.strokeHeavy}
+                strokeDasharray={chart.dashFine}
+              />
             ) : null}
             {ladder ? (
               <ChartText

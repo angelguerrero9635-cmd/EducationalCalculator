@@ -291,7 +291,7 @@ function captionOf(
   const oldCodon = transcribe(template).slice(3 * k, 3 * k + 3);
   const newCodon = transcribe(shown).slice(3 * k, 3 * k + 3);
   if (effect === 'start-lost')
-    return `A ${mut.type} at ${where}. Start lost: the start codon AUG becomes ${transcribe(shown).slice(0, 3)}, so the ribosome can’t start here and no protein is made.`;
+    return `${mut.type === 'substitution' ? 'A' : 'An'} ${mut.type} at ${where}. Start lost: the start codon AUG becomes ${transcribe(shown).slice(0, 3)}, so the ribosome can’t start here and no protein is made.`;
   if (effect === 'before-start')
     return `An insertion before base 1, ahead of the start codon. The ribosome still starts at AUG, one base later, so the protein is the same: ${chain}.`;
   if (effect === 'stop-lost')
