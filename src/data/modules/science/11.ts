@@ -4535,6 +4535,207 @@ const rotationPages: ModuleDef[] = [
   })(),
 ];
 
+// ─── s.11.oscillations ──────────────────────────────────────────────────────
+
+/** T = 2π√(a/b), each way: a spring's m over k, a pendulum's L over g. */
+const periodRule = (sym: string, a: string, b: string, hows: [string, string, string]): Rule =>
+  rule(
+    sym,
+    `{T} = 2π × √({${a}}/{${b}})`,
+    (v) => (v[a]! / v[b]! >= 0 ? v.T! - 2 * Math.PI * Math.sqrt(v[a]! / v[b]!) : 1),
+    {
+      T: [
+        (v) => {
+          const x = div(v[a]!, v[b]!);
+          return x === undefined || x < 0 ? undefined : 2 * Math.PI * Math.sqrt(x);
+        },
+        `2π × √({${a}}/{${b}})`,
+        hows[0],
+      ],
+      [a]: [(v) => v[b]! * (v.T! / (2 * Math.PI)) ** 2, `{${b}} × ({T}/(2π))²`, hows[1]],
+      [b]: [(v) => div(v[a]!, (v.T! / (2 * Math.PI)) ** 2), `{${a}}/(({T}/(2π))²)`, hows[2]],
+    },
+  );
+
+/** f = 1/T. */
+const frequencyRule = rule('f = 1/T', '{f} = 1/{T}', (v) => v.f! * v.T! - 1, {
+  f: [(v) => div(1, v.T!), '1/{T}', 'The frequency is how many swings fit in one second.'],
+  T: [(v) => div(1, v.f!), '1/{f}', 'The period is the time for one swing: 1 over f.'],
+});
+
+const PERIOD = q('T', 'T', 'Period', 's', 0.0001, 1e4, 0.0001);
+const FREQUENCY = q('f', 'f', 'Frequency', 'Hz', 0.0001, 1e4, 0.0001);
+
+const oscillationPages: ModuleDef[] = [
+  (() => {
+    const [m, k, A] = [0.5, 200, 0.1];
+    const T = 2 * Math.PI * Math.sqrt(m / k);
+    const w = (2 * Math.PI) / T;
+    return {
+      id: 's.11.oscillations',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The spring obeys Hooke’s law (F = −kx) and nothing rubs, so the swing never dies down.',
+        'The period depends only on m and k: pulling it farther (a bigger A) doesn’t change T.',
+        'It moves fastest through the middle and stops for an instant at each end.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass', 'kg', 0.001, 1000, 0.001),
+        q('k', 'k', 'Spring constant', 'N/m', 0.1, 1e6, 0.1),
+        { ...PERIOD, units: ['s'] },
+        FREQUENCY,
+        q('w', 'ω', 'Angular frequency', 'rad/s', 0.001, 1e5, 0.001),
+        q('A', 'A', 'Amplitude', 'm', 0.001, 10, 0.001),
+        q('v', 'v_max', 'Top speed', 'm/s', 0, 1e5, 0.001),
+        q('E', 'E', 'Energy', 'J', 0, 1e8, 0.0001),
+      ],
+      ...rules(
+        periodRule('T = 2π√(m/k)', 'm', 'k', [
+          'A heavier mass swings more slowly; a stiffer spring, faster.',
+          'Undo the square root: square T ÷ 2π, then multiply by k.',
+          'Undo the square root: square T ÷ 2π, then divide the mass by it.',
+        ]),
+        frequencyRule,
+        rule('ω = 2π/T', '{w} = 2π/{T}', (v) => v.w! * v.T! - 2 * Math.PI, {
+          w: [
+            (v) => div(2 * Math.PI, v.T!),
+            '2π/{T}',
+            'One full swing is 2π radians of the cycle, done in one period.',
+          ],
+          T: [(v) => div(2 * Math.PI, v.w!), '2π/{w}', 'Divide 2π by the angular frequency.'],
+        }),
+        product('v', 'A', 'w', 'v_max = Aω', [
+          'Through the middle it moves fastest: the amplitude times ω.',
+          'Divide the top speed by ω.',
+          'Divide the top speed by the amplitude.',
+        ]),
+        rule('E = ½kA²', '{E} = ½ × {k} × {A}²', (v) => v.E! - 0.5 * v.k! * v.A! * v.A!, {
+          E: [
+            (v) => 0.5 * v.k! * v.A! * v.A!,
+            '½ × {k} × {A}²',
+            'At each end it is all spring energy, stretched by A.',
+          ],
+          A: [
+            (v) => (v.E! >= 0 && v.k! > 0 ? Math.sqrt((2 * v.E!) / v.k!) : undefined),
+            '√(2 × {E}/{k})',
+            'Double the energy, divide by k, take the square root.',
+          ],
+        }),
+      ),
+      example: { m, k, T, f: 1 / T, w, A, v: A * w, E: 0.5 * k * A * A },
+      startWith: ['m', 'k', 'A'],
+      representation: {
+        kind: 'functionGraph',
+        family: 'cos',
+        a: 'A',
+        b: 'w',
+        name: 'x',
+        input: 't',
+        shows: { amplitude: 'A', period: 'T' },
+        marks: ['amplitude', 'period'],
+        xMin: 0,
+        axes: { x: 'Time t (s)', y: 'Position x (m)' },
+      },
+      pictureLabels: ['m', 'k', 'f', 'v', 'E'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, x] = [2, 0.08];
+    const F = m * G;
+    const k = F / x;
+    return {
+      id: 's.11.oscillations~hooke',
+      title: 'Hooke’s law: a spring’s stiffness',
+      use: 'Use this for “A 2 kg mass hung on a spring stretches it 8 cm. What is k, and how much energy does the stretched spring store?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The spring pulls back in proportion to the stretch: F = kx, until it is overstretched.',
+        'A hung mass at rest stretches it until the spring’s pull equals the weight mg.',
+        'The stored energy is the area under the F–x line: ½kx².',
+      ],
+      variables: [
+        q('m', 'm', 'Hung mass', 'kg', 0.001, 10000, 0.001),
+        q('F', 'F', 'Force', 'N', 0, 1e6, 0.001, { units: ['N'] }),
+        q('x', 'x', 'Stretch', 'm', 0.0001, 10, 0.0001, { units: ['m'] }),
+        q('k', 'k', 'Spring constant', 'N/m', 0.1, 1e7, 0.1),
+        q('U', 'U', 'Stored energy', 'J', 0, 1e8, 0.0001),
+      ],
+      ...rules(
+        product('F', 'm', G, 'F = mg', [
+          'At rest, the spring holds up the weight: 9.8 N for each kilogram.',
+          'Divide the force by 9.8 N/kg.',
+        ]),
+        product('F', 'k', 'x', 'F = kx', [
+          'Hooke’s law: k newtons for each meter of stretch.',
+          'Divide the force by the stretch.',
+          'Divide the force by the spring constant.',
+        ]),
+        rule('U = ½kx²', '{U} = ½ × {k} × {x}²', (v) => v.U! - 0.5 * v.k! * v.x! * v.x!, {
+          U: [
+            (v) => 0.5 * v.k! * v.x! * v.x!,
+            '½ × {k} × {x}²',
+            'The triangle under the F–x line: half the stretch times the force.',
+          ],
+        }),
+      ),
+      example: { m, F, x, k, U: 0.5 * k * x * x },
+      startWith: ['m', 'x'],
+      representation: {
+        kind: 'functionGraph',
+        family: 'linear',
+        m: 'k',
+        b: 0,
+        name: 'F',
+        input: 'x',
+        at: { x: 'x', y: 'F' },
+        shade: { from: 0, to: 'x' },
+        xMin: 0,
+        axes: { x: 'Stretch x (m)', y: 'Force F (N)' },
+      },
+      pictureLabels: ['m', 'U'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [L, g] = [0.8, 9.8];
+    const T = 2 * Math.PI * Math.sqrt(L / g);
+    return {
+      id: 's.11.oscillations~pendulum',
+      title: 'A simple pendulum',
+      use: 'Use this for “How long is a pendulum that swings once every 2 s? What would its period be on the Moon?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Small swings, under about 15°: then the period doesn’t depend on how far it swings.',
+        'The bob’s mass doesn’t change the period; only the length and gravity do.',
+        'g is 9.8 m/s² on Earth and 1.62 m/s² on the Moon.',
+      ],
+      variables: [
+        q('L', 'L', 'Length', 'm', 0.001, 1000, 0.001),
+        q('g', 'g', 'Gravity', 'm/s²', 0.1, 30, 0.01),
+        PERIOD,
+        FREQUENCY,
+      ],
+      ...rules(
+        periodRule('T = 2π√(L/g)', 'L', 'g', [
+          'A longer string swings more slowly; stronger gravity, faster.',
+          'Undo the square root: square T ÷ 2π, then multiply by g.',
+          'Undo the square root: square T ÷ 2π, then divide the length by it.',
+        ]),
+        frequencyRule,
+      ),
+      example: { L, g, T, f: 1 / T },
+      startWith: ['L', 'g'],
+      representation: {
+        kind: 'table',
+        sweep: 'L',
+        output: 'T',
+        params: ['g'],
+        rows: [0.25, 0.5, 1, 2, 4],
+      },
+      pictureLabels: ['f'],
+    } satisfies ModuleDef;
+  })(),
+];
+
 export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...kinematicsPages,
   ...projectilePages,
@@ -4543,6 +4744,7 @@ export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...rotationPages,
   ...momentumPages,
   ...energyPages,
+  ...oscillationPages,
   ...thermoPages,
   ...soundPages,
   ...opticsPages,
