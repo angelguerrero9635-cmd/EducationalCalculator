@@ -4319,6 +4319,320 @@ const TWO_WAY_TABLES: ModuleDef[] = [
   }),
 ];
 
+// ── Piecewise, step and absolute value functions ──
+
+const STEP_HOURS = [1, 2, 3, 4];
+
+const PIECEWISE_FUNCTIONS: ModuleDef[] = [
+  page({
+    id: 'm.9.piecewise-functions',
+    assumptions: [
+      'Use the piece whose condition x meets.',
+      'At the break, the closed dot is the value; the open dot is only where the other piece heads.',
+      'The pieces need not meet.',
+    ],
+    variables: [
+      num('p', 'p', 'Break', -10, 10, { step: 0.5 }),
+      num('m1', 'm₁', 'Left piece’s slope', -10, 10, { step: 0.5 }),
+      num('b1', 'b₁', 'Left piece’s y-intercept', -20, 20, { step: 0.5 }),
+      num('m2', 'm₂', 'Right piece’s slope', -10, 10, { step: 0.5 }),
+      num('b2', 'b₂', 'Right piece’s y-intercept', -20, 20, { step: 0.5 }),
+      num('x', 'x', 'Input', -20, 20, { step: 0.5 }),
+      num('y', 'f(x)', 'Output', -500, 500),
+      num('L', 'L', 'Left piece’s end at the break', -500, 500, { derived: true }),
+      num('R', 'f(p)', 'Value at the break', -500, 500, { derived: true }),
+    ],
+    rules: [
+      rule(
+        'f(x) = m₁x + b₁ (x < p), m₂x + b₂ (x ≥ p)',
+        '{y} = {m1} × {x} + {b1} if {x} < {p}, {m2} × {x} + {b2} if {x} ≥ {p}',
+        ['y', 'x', 'p', 'm1', 'b1', 'm2', 'b2'],
+        (v) => v.y! - (v.x! < v.p! ? v.m1! * v.x! + v.b1! : v.m2! * v.x! + v.b2!),
+        {
+          y: [
+            (v) => exact(v.x! < v.p! ? v.m1! * v.x! + v.b1! : v.m2! * v.x! + v.b2!),
+            (v) => (v.x! < v.p! ? '{m1} × {x} + {b1}' : '{m2} × {x} + {b2}'),
+            (v) =>
+              v.x! < v.p!
+                ? 'x is left of the break (x < p): use the left piece.'
+                : 'x is at the break or right of it (x ≥ p): use the right piece.',
+          ],
+        },
+        {
+          check: (v) =>
+            v.x! < v.p!
+              ? `${fmt(v.y!)} = ${fmt(v.m1!)} × ${sg(v.x!)} + ${sg(v.b1!)}`
+              : `${fmt(v.y!)} = ${fmt(v.m2!)} × ${sg(v.x!)} + ${sg(v.b2!)}`,
+        },
+      ),
+      derive(
+        'L = m₁p + b₁',
+        'L',
+        ['m1', 'p', 'b1'],
+        '{L} = {m1} × {p} + {b1}',
+        (v) => v.m1! * v.p! + v.b1!,
+        '{m1} × {p} + {b1}',
+        'The left piece heads here at the break, but x < p leaves it out: an open dot.',
+      ),
+      derive(
+        'f(p) = m₂p + b₂',
+        'R',
+        ['m2', 'p', 'b2'],
+        '{R} = {m2} × {p} + {b2}',
+        (v) => v.m2! * v.p! + v.b2!,
+        '{m2} × {p} + {b2}',
+        'x ≥ p takes the break into the right piece: the closed dot is f(p).',
+      ),
+    ],
+    example: { p: 1, m1: 1, b1: 2, m2: -2, b2: 7, x: 3, y: 1, L: 3, R: 5 },
+    startWith: ['x', 'p', 'm1', 'b1', 'm2', 'b2'],
+    pictureLabels: ['L', 'R'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'piecewise',
+      pieces: [
+        { f: { family: 'linear', m: 'm1', b: 'b1' }, to: 'p', ends: '()' },
+        { f: { family: 'linear', m: 'm2', b: 'b2' }, from: 'p', ends: '[)' },
+      ],
+      at: { x: 'x', y: 'y' },
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.piecewise-functions~context',
+    title: 'A phone plan with extra data',
+    use: 'Use this for “$30 a month covers 5 GB; each GB past that costs $8. What does 8 GB cost?”',
+    assumptions: [
+      'Up to the included amount the cost is the plan fee: a flat piece.',
+      'Past it, each unit more adds the extra rate: C = F + r(u − L).',
+      'To find the use from a cost above the fee, undo the second piece.',
+    ],
+    variables: [
+      num('F', 'F', 'Plan fee', 0, 1000, { unit: '$', step: 0.01 }),
+      num('L', 'L', 'Included data (GB)', 0, 100, { step: 0.5 }),
+      num('r', 'r', 'Extra rate per GB', 0.01, 100, { unit: '$', step: 0.01 }),
+      num('u', 'u', 'Data used (GB)', 0, 200, { step: 0.5 }),
+      num('C', 'C', 'Cost', 0, 100000, { unit: '$' }),
+      num('B', 'B', 'Where the rising piece meets the y-axis', -100000, 1000, {
+        unit: '$',
+        derived: true,
+      }),
+    ],
+    rules: [
+      rule(
+        'C = F + r × (u − L) past L',
+        '{C} = {F} if {u} ≤ {L}, {F} + {r} × ({u} − {L}) if {u} > {L}',
+        ['C', 'F', 'r', 'u', 'L'],
+        (v) => v.C! - (v.F! + v.r! * Math.max(0, v.u! - v.L!)),
+        {
+          C: [
+            (v) => exact(v.F! + v.r! * Math.max(0, v.u! - v.L!)),
+            (v) => (v.u! > v.L! ? '{F} + {r} × ({u} − {L})' : '{F}'),
+            (v) =>
+              v.u! > v.L!
+                ? 'Past the included data: the fee plus the rate for each GB over.'
+                : 'Within the included data: just the plan fee.',
+          ],
+          u: [
+            (v) => (v.C! > v.F! && v.r ? exact(v.L! + (v.C! - v.F!) / v.r!) : undefined),
+            '{L} + ({C} − {F}) ÷ {r}',
+            'The cost is above the fee, so it is on the rising piece: take the fee away, divide by the rate, add L.',
+          ],
+        },
+        {
+          check: (v) =>
+            v.u! > v.L!
+              ? `${fmt(v.C!)} = ${fmt(v.F!)} + ${fmt(v.r!)} × (${fmt(v.u!)} − ${fmt(v.L!)})`
+              : `${fmt(v.C!)} = ${fmt(v.F!)}`,
+          message: (v) =>
+            known(v, 'C', 'F') && v.C! < v.F!
+              ? 'The cost can’t be less than the plan fee.'
+              : undefined,
+        },
+      ),
+      derive(
+        'B = F − rL',
+        'B',
+        ['F', 'r', 'L'],
+        '{B} = {F} − {r} × {L}',
+        (v) => v.F! - v.r! * v.L!,
+        '{F} − {r} × {L}',
+        'For the graph: the rising piece written as y = rx + B.',
+      ),
+    ],
+    example: { F: 30, L: 5, r: 8, u: 8, C: 54, B: -10 },
+    startWith: ['u', 'F', 'L', 'r'],
+    pictureLabels: ['B'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'piecewise',
+      name: 'C',
+      pieces: [
+        { f: { family: 'linear', m: 0, b: 'F' }, from: 0, to: 'L', ends: '[]' },
+        { f: { family: 'linear', m: 'r', b: 'B' }, from: 'L', ends: '()' },
+      ],
+      at: { x: 'u', y: 'C' },
+      xMin: 0,
+      axes: { x: 'Data used u (GB)', y: 'Cost C ($)' },
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.piecewise-functions~step',
+    title: 'A step function: pay by the started hour',
+    use: 'Use this for “Parking is $4 for each hour or part of an hour. What do 2.5 hours cost?”',
+    assumptions: [
+      'Each started hour is charged in full, so the hours are rounded up.',
+      'The graph is a staircase: flat, then a jump at each whole hour.',
+      'Each step includes its right end (closed) but not its left end (open).',
+    ],
+    variables: [
+      num('R', 'R', 'Rate per started hour', 0.01, 100, { unit: '$', step: 0.01 }),
+      num('h', 'h', 'Hours parked', 0.1, 4, { step: 0.1 }),
+      int('H', 'H', 'Hours charged', 1, 4, { derived: true }),
+      num('C', 'C', 'Cost', 0, 400, { unit: '$', derived: true }),
+      ...STEP_HOURS.map((k) =>
+        num(`S${k}`, `C${sub(k)}`, `Cost for ${k} hour${k > 1 ? 's' : ''}`, 0, 400, {
+          unit: '$',
+          derived: true,
+        }),
+      ),
+    ],
+    rules: [
+      derive(
+        'H = h rounded up',
+        'H',
+        ['h'],
+        '{H} = {h} rounded up to a whole number',
+        (v) => Math.ceil(v.h! - 1e-9),
+        '{h} rounded up to a whole number',
+        'A started hour counts as a whole hour.',
+      ),
+      derive(
+        'C = R × H',
+        'C',
+        ['R', 'H'],
+        '{C} = {R} × {H}',
+        (v) => v.R! * v.H!,
+        '{R} × {H}',
+        'Pay the rate for each hour charged.',
+      ),
+      ...STEP_HOURS.map((k) =>
+        derive(
+          `C${k} = ${k}R`,
+          `S${k}`,
+          ['R'],
+          `{S${k}} = ${k} × {R}`,
+          (v) => k * v.R!,
+          `${k} × {R}`,
+          `For the graph: the height of step ${k}.`,
+        ),
+      ),
+    ],
+    example: { R: 4, h: 2.5, H: 3, C: 12, S1: 4, S2: 8, S3: 12, S4: 16 },
+    startWith: ['h', 'R'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'piecewise',
+      name: 'C',
+      pieces: STEP_HOURS.map((k) => ({
+        f: { family: 'linear' as const, m: 0, b: `S${k}` },
+        from: k - 1,
+        to: k,
+        ends: '(]' as const,
+      })),
+      at: { x: 'h', y: 'C' },
+      axes: { x: 'Hours h', y: 'Cost C ($)' },
+      window: { x: [0, 5] },
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.piecewise-functions~absolute-function',
+    title: 'Absolute value function',
+    use: 'Use this for “Graph y = −2|x − 1| + 6: its vertex, which way it opens, and its zeros.”',
+    assumptions: [
+      'y = a|x − h| + k is a V with its vertex at (h, k).',
+      'a > 0 opens up, a < 0 opens down; a bigger |a| is steeper.',
+      'The zeros solve a|x − h| + k = 0: |x − h| = −k ÷ a.',
+    ],
+    variables: [
+      num('a', 'a', 'Stretch', -5, 5, { step: 0.5 }),
+      num('h', 'h', 'Vertex x', -10, 10, { step: 0.5 }),
+      num('k', 'k', 'Vertex y', -10, 10, { step: 0.5 }),
+      num('x1', 'x₁', 'Left zero', -40, 40, { derived: true }),
+      num('x2', 'x₂', 'Right zero', -40, 40, { derived: true }),
+      num('x', 'x', 'Input', -20, 20, { step: 0.5 }),
+      num('y', 'y', 'Output', -300, 300),
+    ],
+    rules: [
+      nonzero('a', 'The stretch'),
+      rule(
+        'y = a|x − h| + k',
+        '{y} = {a} × |{x} − {h}| + {k}',
+        ['y', 'a', 'x', 'h', 'k'],
+        (v) => v.y! - (v.a! * Math.abs(v.x! - v.h!) + v.k!),
+        {
+          y: [
+            (v) => exact(v.a! * Math.abs(v.x! - v.h!) + v.k!),
+            '{a} × |{x} − {h}| + {k}',
+            'Take the distance from x to h, multiply by a, then add k.',
+          ],
+          x: [
+            (v) => {
+              const s = v.a ? (v.y! - v.k!) / v.a! : -1;
+              return s < 0 ? undefined : [exact(v.h! - s), exact(v.h! + s)];
+            },
+            '{h} ± ({y} − {k}) ÷ {a}',
+            'Take k away and divide by a to get |x − h|; x is that far from h on either side.',
+          ],
+        },
+      ),
+      ...(
+        [
+          ['x1', -1],
+          ['x2', 1],
+        ] as const
+      ).map(([id, sign]) =>
+        derive(
+          `${id} = h ${sign < 0 ? '−' : '+'} (−k ÷ a)`,
+          id,
+          ['h', 'k', 'a'],
+          `{${id}} = {h} ${sign < 0 ? '−' : '+'} (−{k} ÷ {a})`,
+          (v) => {
+            const s = v.a ? -v.k! / v.a! : -1;
+            return s < 0 ? undefined : v.h! + sign * s;
+          },
+          `{h} ${sign < 0 ? '−' : '+'} (−{k} ÷ {a})`,
+          sign < 0
+            ? 'Set y = 0: |x − h| = −k ÷ a. The left zero is that far left of h.'
+            : 'And the right zero is as far right of h.',
+          {},
+          {
+            message: (v) =>
+              known(v, 'a', 'k') && v.a && -v.k! / v.a! < 0
+                ? 'The V never reaches the x-axis: there are no zeros.'
+                : undefined,
+          },
+        ),
+      ),
+    ],
+    example: { a: -2, h: 1, k: 6, x1: -2, x2: 4, x: 0, y: 4 },
+    startWith: ['x', 'a', 'h', 'k'],
+    equation: 'y = {a}|x − {h}| + {k}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'absolute',
+      a: 'a',
+      h: 'h',
+      k: 'k',
+      at: { x: 'x', y: 'y' },
+      shows: { vertex: { x: 'h', y: 'k' }, zeros: ['x1', 'x2'] },
+      marks: ['vertex', 'zeros'],
+    },
+  }),
+];
+
 /** Every Grade 9 math calculator, by skill in taxonomy order. */
 export const MATH_9_MODULES: ModuleDef[] = [
   ...EXPONENTIAL,
@@ -4339,4 +4653,5 @@ export const MATH_9_MODULES: ModuleDef[] = [
   ...REGRESSION,
   ...DATA_DISPLAYS,
   ...TWO_WAY_TABLES,
+  ...PIECEWISE_FUNCTIONS,
 ];
