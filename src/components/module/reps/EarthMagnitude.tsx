@@ -117,7 +117,7 @@ export function EarthMagnitude({ spec, calc }: { spec: MagnitudeSpec; calc: Calc
                     );
                   })}
                   {/* The magnitude scale: a bar to each quake, each whole step 10 times more. */}
-                  <ChartText x={X0} y={198} fontSize={chart.label} fill={c.chartMuted}>
+                  <ChartText x={X0} y={192} fontSize={chart.label} fill={c.chartMuted}>
                     Each step of magnitude: 10 × the shaking
                   </ChartText>
                   {both && Math.abs(dm) > 1e-9 ? (

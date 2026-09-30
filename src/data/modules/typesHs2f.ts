@@ -26,12 +26,38 @@ export interface MagnitudeSpec {
   fixed?: boolean;
 }
 
+/**
+ * `oceanProfile` mode `stripes` (H103 part 2): a mid-ocean ridge seen from above, the seafloor
+ * on both sides striped by the polarity it cooled in (normal dark, reversed light, from the
+ * polarity time scale to 12 million years), the same stripes mirrored about the ridge. A rock
+ * `distance` km from the ridge is `age` million years old, so the stripes sit at the half rate
+ * v = distance ÷ age; ages run along the top, kilometres along the bottom, the plates' arrows
+ * below.
+ */
+export interface StripesSpec {
+  kind: 'oceanProfile';
+  mode: 'stripes';
+  /** The rock's distance from the ridge, km. */
+  distance: NumOrVar;
+  /** Its age, million years (0–12). */
+  age: NumOrVar;
+  /** The half spreading rate, km per million years (= mm per year), when the page names it. */
+  rate?: NumOrVar;
+  /** The full spreading rate, 2 × the half rate, when the page names it. */
+  full?: NumOrVar;
+}
+
+/** Every group F spec. */
+export type Hs2fSpec = MagnitudeSpec | StripesSpec;
+
 /** The variable ids a group F spec names (for the module tests). */
-export function hs2fSpecVars(r: MagnitudeSpec): string[] {
+export function hs2fSpecVars(r: Hs2fSpec): string[] {
   const ids = (xs: (NumOrVar | undefined)[]) =>
     xs.filter((x): x is string => typeof x === 'string');
   switch (r.mode) {
     case 'magnitude':
       return ids([r.m1, r.m2, r.amplitude, r.energy]);
+    case 'stripes':
+      return ids([r.distance, r.age, r.rate, r.full]);
   }
 }

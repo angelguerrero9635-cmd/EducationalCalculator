@@ -305,6 +305,9 @@ const light = {
   earthInnerCore: '#FBE38A',
   quakeP: '#2563EB',
   quakeS: '#C2410C',
+  /** Magnetic stripes on the seafloor (H103): rock of normal and of reversed polarity. */
+  magNormal: '#3E4A61',
+  magReversed: '#E3E7EE',
   /** Landforms (H73): lava and its glow, basalt, ash, cinders, magma, dune sand, clay, grass. */
   landLava: '#E8612C',
   landLavaGlow: '#F9A03F',
@@ -646,6 +649,8 @@ const dark: Palette = {
   earthInnerCore: '#D8BE5C',
   quakeP: '#6EA0FF',
   quakeS: '#F08A3C',
+  magNormal: '#8C9AB5',
+  magReversed: '#2A2F3B',
   landLava: '#D5582A',
   landLavaGlow: '#E08A34',
   landBasalt: '#45403E',

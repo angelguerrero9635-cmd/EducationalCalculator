@@ -4,7 +4,7 @@
  * explore figures. A `NumOrVar` field is a fixed number or a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
-import { hs2fSpecVars, type MagnitudeSpec } from './typesHs2f';
+import { hs2fSpecVars, type MagnitudeSpec, type StripesSpec } from './typesHs2f';
 
 // ── Calculator pictures ──
 
@@ -137,7 +137,7 @@ export interface TidesSpec {
   fixed?: boolean;
 }
 
-export type OceanProfileSpec = OceanSonarSpec | TidesSpec;
+export type OceanProfileSpec = OceanSonarSpec | TidesSpec | StripesSpec;
 
 /**
  * The atmosphere (H76), `profile` mode: temperature against altitude to 120 km, the troposphere,
@@ -244,6 +244,7 @@ export function hslSpecVars(r: HslSpec): string[] {
       if (r.mode === 'magnitude') return hs2fSpecVars(r);
       return ids(r.stations.map((s) => s.r));
     case 'oceanProfile':
+      if (r.mode === 'stripes') return hs2fSpecVars(r);
       return r.mode === 'profile' ? ids([r.depth]) : ids([r.angle, r.range]);
     case 'hrDiagram':
       return ids([r.temperature, r.luminosity, r.radius]);

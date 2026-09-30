@@ -74,6 +74,7 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'oceanProfile': {
+      if (rep.mode === 'stripes') break; // picturesHs2f.ts
       if (rep.mode === 'profile') {
         const d = num(rep.depth);
         if (d === undefined) break;

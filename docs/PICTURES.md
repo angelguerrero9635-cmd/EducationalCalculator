@@ -245,6 +245,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
 | `spectrum`         | `lines`, `photon`                        | H, He, Na lines, emission or absorption, shifted by z; E = hf (H70)           |
 | `earthLayers`      | `mode: 'magnitude'`, `m1`, `m2`, …       | two seismograms to one scale; bars on a magnitude scale, 10^ΔM marked (H103)  |
+| `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | a ridge from above: polarity stripes mirrored, a rock at x km and t Ma (H103) |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
