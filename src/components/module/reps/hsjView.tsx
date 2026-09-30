@@ -8,6 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { EnergyProfile } from './EnergyProfile';
 import { EquilibriumChart } from './EquilibriumChart';
 import { GasPiston } from './GasPiston';
+import { PhScale } from './PhScale';
 
 export function HsjView({ spec, calc }: { spec: HsjSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -17,5 +18,7 @@ export function HsjView({ spec, calc }: { spec: HsjSpec; calc: Calculator }) {
       return <EnergyProfile spec={spec} calc={calc} />;
     case 'equilibriumChart':
       return <EquilibriumChart spec={spec} calc={calc} />;
+    case 'phScale':
+      return <PhScale spec={spec} calc={calc} />;
   }
 }

@@ -181,7 +181,46 @@ export interface EquilibriumChartSpec {
   };
 }
 
-export type HsjSpec = GasPistonSpec | EnergyProfileSpec | EquilibriumChartSpec;
+// ─── H55 phScale ─────────────────────────────────────────────────────────────
+
+/**
+ * Acids and bases (H55).
+ *
+ * - The scale (no `mode`): 0 to 14 in universal-indicator colors, `pH` marked (drag it), the
+ *   [H⁺] under every other number as a power of ten, acidic and basic either side of 7.
+ *   `hydrogen` ([H⁺]), `hydroxide` ([OH⁻]) and `pOH` name the page's values (checked against
+ *   pH). `examples` marks everyday things (lemon juice, coffee, pure water, baking soda,
+ *   ammonia). `keep` pins typed values while dragging; `fixed` has no handle.
+ * - 'titration': a monoprotic acid (`acid`: concentration, volume, `Ka` for a weak acid, left
+ *   out for a strong one) titrated with a strong base (`base`: concentration). The pH against
+ *   the base added, from the exact charge balance, colored by the indicator along the pH axis;
+ *   the equivalence point (`equivalence` names its volume, checked) and, for a weak acid, the
+ *   half-equivalence point where pH = pKₐ. `added` is the point on the curve (drag it along).
+ */
+export type PhScaleSpec =
+  | {
+      kind: 'phScale';
+      mode?: 'scale';
+      pH: NumOrVar;
+      hydrogen?: NumOrVar;
+      hydroxide?: NumOrVar;
+      pOH?: NumOrVar;
+      examples?: boolean;
+      keep?: string[];
+      fixed?: boolean;
+    }
+  | {
+      kind: 'phScale';
+      mode: 'titration';
+      acid: { concentration: NumOrVar; volume: NumOrVar; Ka?: NumOrVar; name?: string };
+      base: { concentration: NumOrVar; name?: string };
+      added: NumOrVar;
+      equivalence?: NumOrVar;
+      keep?: string[];
+      fixed?: boolean;
+    };
+
+export type HsjSpec = GasPistonSpec | EnergyProfileSpec | EquilibriumChartSpec | PhScaleSpec;
 
 /** Every variable id a group J picture refers to (for the module tests). */
 export function hsjSpecVars(r: HsjSpec): string[] {
@@ -221,5 +260,16 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.stress?.K,
         r.stress?.Q,
       );
+    case 'phScale':
+      return r.mode === 'titration'
+        ? ids(
+            r.acid.concentration,
+            r.acid.volume,
+            r.acid.Ka,
+            r.base.concentration,
+            r.added,
+            r.equivalence,
+          )
+        : ids(r.pH, r.hydrogen, r.hydroxide, r.pOH);
   }
 }

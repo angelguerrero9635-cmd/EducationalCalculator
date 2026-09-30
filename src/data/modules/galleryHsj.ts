@@ -1463,5 +1463,270 @@ const EQUILIBRIUM: ModuleDef[] = [
   },
 ];
 
-export const HSJ_GALLERY_MODULES: ModuleDef[] = [...GAS, ...SOLUTIONS, ...ENERGY, ...EQUILIBRIUM];
+// ─── H55 phScale ─────────────────────────────────────────────────────────────
+
+const phVar = (id: string, symbol: string, name: string): VariableDef => ({
+  id,
+  symbol,
+  name,
+  min: 0,
+  max: 14,
+  step: 0.01,
+});
+const ionVar = (id: string, symbol: string, name: string): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'mol/L',
+  min: 1e-14,
+  max: 1,
+  step: 1e-15,
+  scientific: true,
+});
+
+/** pH = −log₁₀[H⁺] (and back: [H⁺] = 10^−pH). */
+const phRule = (p = 'p', h = 'h', ion = 'H⁺'): Rule => ({
+  relation: {
+    id: `p = −log₁₀[${ion}] (${p})`,
+    display: `{${p}} = −log₁₀({${h}})`,
+    vars: [p, h],
+    residual: (v) => v[p]! + Math.log10(v[h]!),
+    solve: {
+      [p]: (v) => (v[h]! > 0 ? -Math.log10(v[h]!) : undefined),
+      [h]: (v) => 10 ** -v[p]!,
+    },
+  },
+  steps: {
+    [p]: {
+      expr: `−log₁₀({${h}})`,
+      how: `Each step of 1 on the scale is ten times the [${ion}]: the log counts the powers of ten.`,
+    },
+    [h]: { expr: `1/(10^{${p}})`, how: 'Undo the log: one over 10 to the power of the value.' },
+  },
+});
+
+/** pH + pOH = 14. */
+const pohRule: Rule = {
+  relation: {
+    id: 'pH + pOH = 14',
+    display: '{p} + {q} = 14',
+    vars: ['p', 'q'],
+    residual: (v) => v.p! + v.q! - 14,
+    solve: { p: (v) => 14 - v.q!, q: (v) => 14 - v.p! },
+  },
+  steps: {
+    p: { expr: '14 − {q}', how: 'In water at 25 °C, pH and pOH add to 14.' },
+    q: { expr: '14 − {p}', how: 'In water at 25 °C, pH and pOH add to 14.' },
+  },
+};
+
+const PH_ASSUMPTIONS = [
+  'The water is at 25 °C, where [H⁺][OH⁻] = 1 × 10⁻¹⁴ and pH + pOH = 14.',
+  'Concentrations are in mol/L.',
+];
+
+const titrationVars = (weak: boolean): VariableDef[] => [
+  { ...conc('Ca', 'C₁', 'Acid concentration'), max: 10 },
+  {
+    id: 'Va',
+    symbol: 'V₁',
+    name: 'Acid volume',
+    unit: 'mL',
+    units: ['mL'],
+    min: 1,
+    max: 1000,
+    step: 0.1,
+  },
+  { ...conc('Cb', 'C₂', 'Base concentration'), max: 10 },
+  {
+    id: 'Vb',
+    symbol: 'V₂',
+    name: 'Base added',
+    unit: 'mL',
+    units: ['mL'],
+    min: 0,
+    max: 2000,
+    step: 0.1,
+  },
+  {
+    id: 'Ve',
+    symbol: 'Vₑ',
+    name: 'Base at the equivalence point',
+    unit: 'mL',
+    units: ['mL'],
+    min: 0.01,
+    max: 100000,
+    step: 0.01,
+  },
+  {
+    id: 'r',
+    symbol: 'r',
+    name: 'Share of the way to equivalence',
+    min: 0,
+    max: 100,
+    step: 0.0001,
+  },
+  ...(weak
+    ? [
+        {
+          ...constant('Ka', 'Kₐ', 'Acid dissociation constant'),
+          min: 1e-12,
+          max: 1,
+          scientific: true,
+        },
+        { ...phVar('pKa', 'pKₐ', 'pKₐ'), max: 14 },
+      ]
+    : []),
+];
+const titrationRules = (weak: boolean): Rule[] => [
+  {
+    relation: {
+      id: 'Vₑ = C₁V₁/C₂',
+      display: '{Ve} = ({Ca} × {Va})/{Cb}',
+      vars: ['Ve', 'Ca', 'Va', 'Cb'],
+      residual: (v) => v.Ve! * v.Cb! - v.Ca! * v.Va!,
+      solve: {
+        Ve: (v) => div(v.Ca! * v.Va!, v.Cb!),
+        Ca: (v) => div(v.Ve! * v.Cb!, v.Va!),
+        Va: (v) => div(v.Ve! * v.Cb!, v.Ca!),
+        Cb: (v) => div(v.Ca! * v.Va!, v.Ve!),
+      },
+    },
+    steps: {
+      Ve: {
+        expr: '({Ca} × {Va})/{Cb}',
+        how: 'At equivalence the moles of base equal the moles of acid: C₂Vₑ = C₁V₁.',
+      },
+      Ca: { expr: '({Ve} × {Cb})/{Va}', how: 'The acid’s moles are the base’s at equivalence.' },
+      Va: { expr: '({Ve} × {Cb})/{Ca}', how: 'Divide the base’s moles by the acid’s molarity.' },
+      Cb: { expr: '({Ca} × {Va})/{Ve}', how: 'Divide the acid’s moles by the volume of base.' },
+    },
+  },
+  {
+    relation: {
+      id: 'r = V₂/Vₑ',
+      display: '{r} = {Vb}/{Ve}',
+      vars: ['r', 'Vb', 'Ve'],
+      residual: (v) => v.r! * v.Ve! - v.Vb!,
+      solve: { r: (v) => div(v.Vb!, v.Ve!), Vb: (v) => v.r! * v.Ve! },
+    },
+    steps: {
+      r: { expr: '{Vb}/{Ve}', how: 'Compare the base added with the base equivalence takes.' },
+      Vb: { expr: '{r} × {Ve}', how: 'Take that share of the equivalence volume.' },
+    },
+  },
+  ...(weak ? [phRule('pKa', 'Ka', 'Kₐ')] : []),
+];
+
+const ACIDS: ModuleDef[] = [
+  {
+    id: 'g.s10-acids-bases-ph',
+    title: 'pH from [H⁺]',
+    use: 'Use this for “A solution has [H⁺] = 0.001 M. What is its pH?”',
+    unitSystems: ['metric'],
+    assumptions: PH_ASSUMPTIONS,
+    variables: [phVar('p', 'pH', 'pH'), ionVar('h', '[H⁺]', 'Hydrogen ion concentration')],
+    ...rules(phRule()),
+    example: { p: 3, h: 0.001 },
+    startWith: ['h'],
+    representation: { kind: 'phScale', pH: 'p', hydrogen: 'h', examples: true },
+  },
+  {
+    id: 'g.s10-acids-bases-hydrogen',
+    title: '[H⁺] from pH',
+    use: 'Use this for “Coffee has a pH of 5.2. What is its [H⁺]?”',
+    unitSystems: ['metric'],
+    assumptions: PH_ASSUMPTIONS,
+    variables: [phVar('p', 'pH', 'pH'), ionVar('h', '[H⁺]', 'Hydrogen ion concentration')],
+    ...rules(phRule()),
+    example: { p: 5.2, h: 10 ** -5.2 },
+    startWith: ['p'],
+    representation: { kind: 'phScale', pH: 'p', hydrogen: 'h' },
+  },
+  {
+    id: 'g.s10-acids-bases-base',
+    title: 'A strong base: pOH and pH',
+    use: 'Use this for “A solution has [OH⁻] = 0.5 M. What are its pOH and pH?”',
+    unitSystems: ['metric'],
+    assumptions: PH_ASSUMPTIONS,
+    variables: [
+      phVar('p', 'pH', 'pH'),
+      phVar('q', 'pOH', 'pOH'),
+      ionVar('o', '[OH⁻]', 'Hydroxide ion concentration'),
+    ],
+    ...rules(phRule('q', 'o', 'OH⁻'), pohRule),
+    example: { p: 14 + Math.log10(0.5), q: -Math.log10(0.5), o: 0.5 },
+    startWith: ['o'],
+    representation: { kind: 'phScale', pH: 'p', pOH: 'q', hydroxide: 'o' },
+  },
+  {
+    id: 'g.s10-acids-bases-titration',
+    title: 'Titrating a strong acid',
+    use: 'Use this for “25 mL of 0.1 M HCl is titrated with 0.1 M NaOH. Where is the equivalence point?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      ...PH_ASSUMPTIONS,
+      'Each mole of NaOH uses up one mole of HCl; the pH is worked from every ion in the flask.',
+    ],
+    variables: titrationVars(false),
+    ...rules(...titrationRules(false)),
+    example: { Ca: 0.1, Va: 25, Cb: 0.1, Vb: 10, Ve: 25, r: 0.4 },
+    startWith: ['Ca', 'Va', 'Cb', 'Vb'],
+    representation: {
+      kind: 'phScale',
+      mode: 'titration',
+      acid: { concentration: 'Ca', volume: 'Va', name: 'HCl' },
+      base: { concentration: 'Cb', name: 'NaOH' },
+      added: 'Vb',
+      equivalence: 'Ve',
+      keep: ['Ca', 'Va', 'Cb'],
+    },
+    pictureLabels: ['r'],
+  },
+  {
+    id: 'g.s10-acids-bases-weak-titration',
+    title: 'Titrating a weak acid',
+    use: 'Use this for “25 mL of 0.1 M acetic acid (Kₐ = 1.8 × 10⁻⁵) is titrated with 0.1 M NaOH.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      ...PH_ASSUMPTIONS,
+      'Halfway to equivalence, half the acid is turned to its partner base, so pH = pKₐ.',
+    ],
+    variables: titrationVars(true),
+    ...rules(...titrationRules(true)),
+    example: {
+      Ca: 0.1,
+      Va: 25,
+      Cb: 0.1,
+      Vb: 12.5,
+      Ve: 25,
+      r: 0.5,
+      Ka: 1.8e-5,
+      pKa: -Math.log10(1.8e-5),
+    },
+    startWith: ['Ca', 'Va', 'Cb', 'Vb', 'Ka'],
+    representation: {
+      kind: 'phScale',
+      mode: 'titration',
+      acid: { concentration: 'Ca', volume: 'Va', Ka: 'Ka', name: 'acetic acid' },
+      base: { concentration: 'Cb', name: 'NaOH' },
+      added: 'Vb',
+      equivalence: 'Ve',
+      keep: ['Ca', 'Va', 'Cb', 'Ka'],
+    },
+    pictureLabels: ['r', 'pKa'],
+    standalone: {
+      vars: ['Ka', 'pKa'],
+      why: 'The acid’s Kₐ shapes the curve but no volume depends on it: the picture draws it.',
+    },
+  },
+];
+
+export const HSJ_GALLERY_MODULES: ModuleDef[] = [
+  ...GAS,
+  ...SOLUTIONS,
+  ...ENERGY,
+  ...EQUILIBRIUM,
+  ...ACIDS,
+];
 export const HSJ_GALLERY_LAYOUTS: LayoutDef[] = [];

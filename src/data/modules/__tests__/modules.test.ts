@@ -501,6 +501,7 @@ function representationVars(r: Representation): string[] {
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':
+    case 'phScale':
       return hsjSpecVars(r);
   }
 }

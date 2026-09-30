@@ -10,6 +10,11 @@ import type { SaltName } from '../typesHsj';
 const NUM = String.raw`-?\d+(?:\.\d+)?(?:e[-+]?\d+)?`;
 
 export const HSJ_PHRASES: [RegExp, (...xs: number[]) => number][] = [
+  // pH from a concentration written in scientific notation: log₁₀(1.1 × 10⁻¹⁴) (H55).
+  [
+    new RegExp(`log₁₀ ?\\(?(${NUM}) \\* 10\\*\\* ?\\(?(-?\\d+)\\)?\\)?`),
+    (a, e) => Math.log10(a) + e,
+  ],
   // Solubility curves (H52): grams per 100 g of water at a temperature, one phrase per salt.
   ...(Object.keys(SOLUBILITY) as SaltName[]).map(
     (salt) =>

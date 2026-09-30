@@ -889,12 +889,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn: kind equilibriumChart (typesHsj.ts). Concentration (mol/L) against time: each substance's line moves by the reaction's extent (reactants down, products up, by their coefficients, so the stoichiometry holds at every moment) to the level where Q = K, solved by bisection, and levels off; named at its right end with its level. Fields: species [{ formula ('N₂O₄'), coef, side ('reactant' | 'product'), start (number or variable), eq? (the first equilibrium's level, checked) }]; K? (left out when the page starts at equilibrium: read from the start values); stress? { add?: { species (index), amount (negative removes) }, scale? (every concentration times it: 2 when the volume is halved), K? (the new K after a temperature change), Q? (the quotient just after, checked), label ('Add H₂') }: a dashed line halfway, the jump and the move to the new equilibrium; the caption compares Q with K and says which way it shifts. Examples: { kind: 'equilibriumChart', species: [{ formula: 'N₂O₄', coef: 1, side: 'reactant', start: 'A0', eq: 'A' }, { formula: 'NO₂', coef: 2, side: 'product', start: 0, eq: 'B' }], K: 'K' }; { kind: 'equilibriumChart', species: [{ formula: 'H₂', coef: 1, side: 'reactant', start: 'h' }, { formula: 'I₂', coef: 1, side: 'reactant', start: 'i' }, { formula: 'HI', coef: 2, side: 'product', start: 'p' }], K: 'K', stress: { add: { species: 0, amount: 'a' }, Q: 'Q', label: 'Add H₂' } }. The line's shape between the levels is a plain approach (no rate law); the levels are exact.",
   },
-  ask(
-    'H55',
-    'phScale',
-    'pH scale 0–14 in indicator colors with the value marked and [H⁺] as a power of ten; a titration curve',
-    ['s.10.acids-bases'],
-  ),
+  {
+    ...ask(
+      'H55',
+      'phScale',
+      'pH scale 0–14 in indicator colors with the value marked and [H⁺] as a power of ten; a titration curve',
+      ['s.10.acids-bases'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-acids-bases-ph',
+      'g.s10-acids-bases-hydrogen',
+      'g.s10-acids-bases-base',
+      'g.s10-acids-bases-titration',
+      'g.s10-acids-bases-weak-titration',
+    ],
+    notes:
+      "Drawn: kind phScale (typesHsj.ts). The scale (no mode) { pH, hydrogen? ([H⁺], checked as 10^−pH), hydroxide? ([OH⁻], checked), pOH? (checked as 14 − pH), examples? (lemon juice, coffee, pure water, baking soda, ammonia marked above), keep?, fixed? }: fifteen cells 0–14 in universal-indicator colors (red through green at 7 to violet), the pH marked through the bar with a pointer (drag it), [H⁺] as 10⁰ … 10⁻¹⁴ under every other number, acidic, neutral and basic named. mode 'titration' { acid: { concentration, volume, Ka? (left out: strong), name? }, base: { concentration, name? }, added, equivalence? (checked as CₐVₐ ÷ C_b), keep?, fixed? }: the pH against the base added from the exact charge balance of a monoprotic acid and a strong base (no buffer shortcuts), the indicator's colors up the pH axis, the equivalence point (pH 7 for a strong acid, above 7 for a weak one), the half-way point (pH = pKₐ for a weak acid) and the point at `added`, dragged along the curve. Examples: { kind: 'phScale', pH: 'p', hydrogen: 'h', examples: true }; { kind: 'phScale', mode: 'titration', acid: { concentration: 'Ca', volume: 'Va', Ka: 'Ka', name: 'acetic acid' }, base: { concentration: 'Cb', name: 'NaOH' }, added: 'Vb', equivalence: 'Ve', keep: ['Ca', 'Va', 'Cb', 'Ka'] }. Step text for [H⁺] from pH reads 1/(10^pH), so no negative number is substituted.",
+  },
   ask(
     'H56',
     'electrochemicalCell',

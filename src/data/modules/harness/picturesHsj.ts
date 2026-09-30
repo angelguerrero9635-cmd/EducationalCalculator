@@ -10,6 +10,7 @@ import {
 } from '@/components/module/reps/gasModel';
 import { PEAK, profileAt } from '@/components/module/reps/energyModel';
 import { quotient, stages } from '@/components/module/reps/equilibriumModel';
+import { equivalenceVolume, titrationPH } from '@/components/module/reps/phModel';
 import { solubilityAt } from '@/components/module/reps/solubility';
 import type { VariableDef } from '@/engine/types';
 import { convert, getUnit } from '@/engine/units';
@@ -148,6 +149,50 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       if (q !== undefined && s.Q2 !== undefined && !near(q, s.Q2, 2e-3))
         out.push(`Q after the stress is ${s.Q2}, not ${q}`);
       if (rep.species.some((sp) => sp.coef <= 0)) out.push('a coefficient is not positive');
+      break;
+    }
+    case 'phScale': {
+      if (rep.mode === 'titration') {
+        const [ca, va, cb] = [
+          num(rep.acid.concentration),
+          num(rep.acid.volume),
+          num(rep.base.concentration),
+        ];
+        if (ca === undefined || va === undefined || cb === undefined) break;
+        const ka = num(rep.acid.Ka);
+        if (rep.acid.Ka !== undefined && ka === undefined) break;
+        const veq = equivalenceVolume(ca, va, cb);
+        const named = num(rep.equivalence);
+        if (named !== undefined && !near(named, veq, 1e-3))
+          out.push(`equivalence ${named} is not CₐVₐ ÷ C_b = ${veq}`);
+        // The curve rises, a strong acid's equivalence is neutral and a weak acid's half-way
+        // point is at its pKₐ.
+        const at = (v: number) => titrationPH(ca, va, cb, v, ka);
+        for (let k = 1; k <= 20; k++)
+          if (at((veq * 2 * k) / 20) < at((veq * 2 * (k - 1)) / 20) - 1e-6)
+            out.push('the titration curve falls');
+        if (ka === undefined && Math.abs(at(veq) - 7) > 1e-3)
+          out.push(`strong acid at equivalence: pH ${at(veq)}, not 7`);
+        if (
+          ka !== undefined &&
+          ca > 1e3 * ka &&
+          ka >= 1e-9 &&
+          Math.abs(at(veq / 2) + Math.log10(ka)) > 0.05
+        )
+          out.push(`half-way pH ${at(veq / 2)} is not pKₐ ${-Math.log10(ka)}`);
+        break;
+      }
+      const ph = num(rep.pH);
+      if (ph === undefined) break;
+      if (ph < 0 || ph > 14) out.push(`pH ${ph} is off the 0–14 scale`);
+      const h = num(rep.hydrogen);
+      if (h !== undefined && !near(h, 10 ** -ph, 5e-3)) out.push(`[H⁺] ${h} is not 10^−${ph}`);
+      const poh = num(rep.pOH);
+      if (poh !== undefined && Math.abs(poh - (14 - ph)) > 1e-3)
+        out.push(`pOH ${poh} is not 14 − ${ph}`);
+      const oh = num(rep.hydroxide);
+      if (oh !== undefined && !near(oh, 10 ** (ph - 14), 5e-3))
+        out.push(`[OH⁻] ${oh} is not 10^(${ph} − 14)`);
       break;
     }
   }

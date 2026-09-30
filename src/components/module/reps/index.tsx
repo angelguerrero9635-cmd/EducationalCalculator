@@ -180,6 +180,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':
+    case 'phScale':
       return <HsjView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;
