@@ -59,6 +59,7 @@ import { hs2gIssues } from './picturesHs2g';
 import { hs2hIssues } from './picturesHs2h';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
+import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2193,12 +2194,20 @@ export function repIssues(
     case 'circularMotion':
     case 'freeBody':
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
+      out.push(...hs3aOptionIssues(rep, siOf(val, byId)));
       break;
     case 'impulse':
     case 'powerLift':
     case 'photoelectric':
     case 'lightClock':
       out.push(...hs2cIssues(rep, siOf(val, byId)));
+      break;
+    case 'torque':
+    case 'rotor':
+    case 'oscillator':
+    case 'pendulum':
+    case 'capacitor':
+      out.push(...hs3aIssues(rep, siOf(val, byId)));
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));

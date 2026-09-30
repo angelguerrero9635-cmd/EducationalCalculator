@@ -5,6 +5,16 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type { PlanetName } from './typesPhysics8';
+import {
+  equipotentialVars,
+  launchVars,
+  movingChargeVars,
+  seesawVars,
+  type ChargeEquipotentials,
+  type MovingCharge,
+  type PlateLaunch,
+  type SeesawOption,
+} from './typesHs3a';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -239,6 +249,8 @@ export interface SimpleMachineSpec {
   efficiency?: NumOrVar;
   effortDistance?: string;
   loadDistance?: string;
+  /** H107: a balanced seesaw (lever only; `typesHs3a.ts`). */
+  seesaw?: SeesawOption;
   fixed?: boolean;
 }
 
@@ -394,6 +406,8 @@ export interface ChargesSpec {
   force?: string;
   field?: string;
   point?: NumOrVar;
+  /** H107: equal-potential circles round one charge (`typesHs3a.ts`). */
+  equipotentials?: ChargeEquipotentials;
   fixed?: boolean;
 }
 
@@ -407,10 +421,13 @@ export interface ChargePlatesSpec {
   kind: 'charges';
   mode: 'plates';
   voltage: NumOrVar;
-  gap: NumOrVar;
+  /** Needed for the field; a `launch` may leave it out. */
+  gap?: NumOrVar;
   field?: string;
   charge?: NumOrVar;
   force?: string;
+  /** H107: a charge let go at one plate, speeding across (`typesHs3a.ts`). */
+  launch?: PlateLaunch;
   fixed?: boolean;
 }
 
@@ -477,6 +494,8 @@ export type InductionSpec = { kind: 'induction'; fixed?: boolean } & (
       current?: NumOrVar;
       outputCurrent?: string;
     }
+  /** H107: a moving charge in the field (`typesHs3a.ts`). */
+  | MovingCharge
 );
 
 // ─── H70 spectrum options: spectral lines, redshift, photons ────────────────
@@ -591,13 +610,17 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.efficiency,
         r.effortDistance,
         r.loadDistance,
+        ...seesawVars(r.seesaw),
       );
     case 'heatEngine':
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
     case 'charges':
       return r.mode === 'plates'
-        ? ids(r.voltage, r.gap, r.field, r.charge, r.force)
-        : ids(...r.charges, r.distance, r.force, r.field, r.point);
+        ? [...ids(r.voltage, r.gap, r.field, r.charge, r.force), ...launchVars(r.launch)]
+        : [
+            ...ids(...r.charges, r.distance, r.force, r.field, r.point),
+            ...equipotentialVars(r.equipotentials),
+          ];
     case 'induction':
       switch (r.mode) {
         case 'coil':
@@ -606,6 +629,8 @@ export function hskSpecVars(r: HskSpec): string[] {
           return ids(r.field, r.current, r.length, r.angle, r.force);
         case 'transformer':
           return ids(r.primary, r.secondary, r.voltage, r.output, r.current, r.outputCurrent);
+        case 'charge':
+          return movingChargeVars(r);
       }
       break;
     case 'rayDiagram':

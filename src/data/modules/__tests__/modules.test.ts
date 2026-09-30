@@ -30,6 +30,7 @@ import { hslSpecVars } from '../typesHsl';
 import { hs2fSpecVars } from '../typesHs2f';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { hs2cSpecVars } from '../typesHs2c';
+import { hs3aSpecVars } from '../typesHs3a';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -569,6 +570,12 @@ function representationVars(r: Representation): string[] {
     case 'photoelectric':
     case 'lightClock':
       return hs2cSpecVars(r);
+    case 'torque':
+    case 'rotor':
+    case 'oscillator':
+    case 'pendulum':
+    case 'capacitor':
+      return hs3aSpecVars(r);
   }
 }
 
