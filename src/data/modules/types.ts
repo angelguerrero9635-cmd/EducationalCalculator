@@ -23,6 +23,7 @@ import type { HshSpec } from './typesHsh';
 import type { HsiSpec } from './typesHsi';
 import type { HslSpec } from './typesHsl';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
+import type { Hs2cSpec } from './typesHs2c';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1109,6 +1110,8 @@ export type Representation =
   | HsjSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
+  /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
+  | Hs2cSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

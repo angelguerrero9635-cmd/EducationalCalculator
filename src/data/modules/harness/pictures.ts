@@ -52,6 +52,7 @@ import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
 import * as hsk from './picturesHsk';
+import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2141,6 +2142,7 @@ export function repIssues(
     case 'phScale':
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
+      if (rep.kind === 'gasPiston') out.push(...gasEnergyIssues(rep, siOf(val, byId)));
       break;
     case 'earthLayers':
     case 'oceanProfile':
@@ -2160,6 +2162,12 @@ export function repIssues(
     case 'circularMotion':
     case 'freeBody':
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
+      break;
+    case 'impulse':
+    case 'powerLift':
+    case 'photoelectric':
+    case 'lightClock':
+      out.push(...hs2cIssues(rep, siOf(val, byId)));
       break;
     case 'table':
       if ('twoWay' in rep) {

@@ -9,6 +9,13 @@ import * as hm from '@/components/module/reps/hskMath';
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
+import {
+  freeBodyWorkIssues,
+  platesIssues,
+  pointFieldIssues,
+  satelliteIssues,
+  strobeColumnIssues,
+} from './picturesHs2c';
 
 const {
   collisionOf,
@@ -42,6 +49,7 @@ export function motionKinematicsIssues(rep: MotionGraphSpec, val: Val): string[]
   const t1 = k.at ? val(k.at) : undefined;
   const v1 = k.slope ? val(k.slope) : undefined;
   if (k.view === 'position' && !k.at) out.push('a position view needs the tangent time `at`');
+  if (k.strobe === 'vertical') out.push(...strobeColumnIssues(val(rep.time)));
   if (t1 !== undefined && t1 < 0) out.push(`tangent time ${t1} is before the start`);
   if (t1 !== undefined && v1 !== undefined && a !== undefined && v0 !== undefined)
     if (!near(v1, v0 + a * t1)) out.push(`tangent slope ${v1} is not v₀ + a t₁ = ${v0 + a * t1}`);
@@ -86,6 +94,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'freeBody': {
+      out.push(...freeBodyWorkIssues(rep, si));
       const m = si(rep.mass);
       if (m !== undefined && m < 0) out.push(`freeBody: mass ${m} is negative`);
       const th = read(si, rep.incline, 0);
@@ -140,6 +149,10 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'circularMotion': {
+      if (rep.mode === 'satellite') {
+        out.push(...satelliteIssues(rep, si));
+        break;
+      }
       if (rep.mode === 'gravity') {
         const [m1, m2] = (rep.masses ?? [1, 1]).map((x) => read(si, x));
         const d = read(si, rep.distance);
@@ -181,7 +194,8 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       const [m1, m2] = rep.masses.map((x) => read(si, x));
       const v1 = read(si, rep.before[0]);
       const v2 = rep.type === 'explode' ? v1 : read(si, rep.before[1]);
-      const first = rep.type === 'explode' ? read(si, rep.after?.[0]) : 0;
+      const given = rep.type === 'explode' || rep.type === 'general';
+      const first = given ? read(si, rep.after?.[0]) : 0;
       if ([m1, m2, v1, v2, first].some((x) => x === undefined)) break;
       if (m1! <= 0 || m2! <= 0) {
         out.push('collision: a cart with no mass');
@@ -189,7 +203,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       }
       const [u1, u2] = collisionOf(rep.type, m1!, m2!, v1!, v2!, first);
       const a = rep.after ?? [];
-      if (rep.type !== 'explode') same(typeof a[0] === 'string' ? a[0] : undefined, u1, 'v₁ after');
+      if (!given) same(typeof a[0] === 'string' ? a[0] : undefined, u1, 'v₁ after');
       same(typeof a[1] === 'string' ? a[1] : undefined, u2, 'v₂ after');
       same(rep.momentum, m1! * v1! + m2! * v2!, 'total momentum');
       if (!near(m1! * u1 + m2! * u2, m1! * v1! + m2! * v2!))
@@ -197,6 +211,11 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       const ke = (m: number, v: number) => (m * v * v) / 2;
       same(rep.energy?.[0], ke(m1!, v1!) + ke(m2!, v2!), 'kinetic energy before');
       same(rep.energy?.[1], ke(m1!, u1) + ke(m2!, u2), 'kinetic energy after');
+      same(
+        rep.lost,
+        ke(m1!, v1!) + ke(m2!, v2!) - ke(m1!, u1) - ke(m2!, u2),
+        'kinetic energy lost',
+      );
       if (rep.type === 'elastic' && !near(ke(m1!, u1) + ke(m2!, u2), ke(m1!, v1!) + ke(m2!, v2!)))
         out.push('collision: an elastic collision lost kinetic energy');
       break;
@@ -265,6 +284,11 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'charges': {
+      if (rep.mode === 'plates') {
+        out.push(...platesIssues(rep, si));
+        break;
+      }
+      out.push(...pointFieldIssues(rep, si));
       const [q1, q2] = rep.charges.map((x) => (x === undefined ? undefined : read(si, x)));
       const r = read(si, rep.distance);
       if (q1 === undefined || r === undefined) break;

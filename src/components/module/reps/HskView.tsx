@@ -5,8 +5,10 @@
 import type { HskSpec } from '@/data/modules/typesHsk';
 
 import type { Calculator } from '../useCalculator';
+import { ChargePlates } from './ChargePlates';
 import { Charges } from './Charges';
 import { CircularMotion } from './CircularMotion';
+import { CircularSatellite } from './CircularSatellite';
 import { Collision } from './Collision';
 import { FreeBody } from './FreeBody';
 import { HeatEngine } from './HeatEngine';
@@ -23,6 +25,7 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
     case 'freeBody':
       return <FreeBody spec={spec} calc={calc} />;
     case 'circularMotion':
+      if (spec.mode === 'satellite') return <CircularSatellite spec={spec} calc={calc} />;
       return <CircularMotion spec={spec} calc={calc} />;
     case 'collision':
       return <Collision spec={spec} calc={calc} />;
@@ -31,6 +34,7 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
     case 'heatEngine':
       return <HeatEngine spec={spec} calc={calc} />;
     case 'charges':
+      if (spec.mode === 'plates') return <ChargePlates spec={spec} calc={calc} />;
       return <Charges spec={spec} calc={calc} />;
     case 'induction':
       return <Induction spec={spec} calc={calc} />;

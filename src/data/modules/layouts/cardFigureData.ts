@@ -4,6 +4,7 @@
  * every few degrees), the shaded regions, and a check that a figure fits what is drawn.
  */
 import type { CardFigure, CellPart, Constellation, MapArea, MapRegion } from './types';
+import { strobeCardProblems } from './strobeCard';
 
 type LonLat = [number, number];
 
@@ -1152,6 +1153,9 @@ export const CELL_PARTS: Record<'plant' | 'animal' | 'bacterium', CellPart[]> = 
 export function cardFigureProblems(f: CardFigure): string[] {
   const out: string[] = [];
   switch (f.kind) {
+    case 'strobe':
+      out.push(...strobeCardProblems(f));
+      break;
     case 'dotPlot': {
       if (f.values.length < 2 || f.values.length > 12)
         out.push(`dot plot of ${f.values.length} values (2 to 12 fit)`);

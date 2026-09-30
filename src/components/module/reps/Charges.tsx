@@ -9,7 +9,8 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
 import { arrowAt, pathOf, traceLine, type Pole } from './fieldLines';
 import { arrowHead } from './graphKit';
-import { coulombOf, fieldOf, K_COULOMB } from './hskMath';
+import { coulombOf, fieldAtPoint, fieldOf, K_COULOMB } from './hskMath';
+import { PointField } from './chargesPoint';
 import { sig, SubLabel, Vec } from './hskKit';
 import { Ball, url, usePaintIds } from './paint';
 
@@ -37,7 +38,11 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
   const E = fieldOf(q1, r);
   const all = [...spec.charges, spec.distance].every(known);
   const ref = useFrozen(two ? co.F : E);
-  const lines = captionLines();
+  // H102: the field at a point x along the line of two charges (the forces are left out).
+  const at = two && spec.point !== undefined ? si(spec.point) : undefined;
+  const fp = at === undefined ? undefined : fieldAtPoint(q1, q2, r, at);
+  const lines =
+    fp && at !== undefined ? [...captionLines().slice(2), ...pointLines()] : captionLines();
 
   return (
     <View>
@@ -105,7 +110,15 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
                       </G>
                     );
                   })}
-                  {two ? (
+                  {fp && at !== undefined ? (
+                    <PointField
+                      x={A.x + (D * at) / r}
+                      y={mid}
+                      field={fp}
+                      w={w}
+                      faded={!known(spec.point)}
+                    />
+                  ) : two ? (
                     <G>
                       <Vec
                         x1={A.x + dirA * (R + 2)}
@@ -218,6 +231,16 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );
+
+  /** H102: each charge's field at the point and their sum, + toward q₂'s side. */
+  function pointLines(): string[] {
+    if (!fp || at === undefined) return [];
+    return [
+      `At x = ${sig(at)} m: E₁ = kq₁/x² = ${sig(fp.E1)} N/C and E₂ = kq₂/(x − r)² = ${sig(fp.E2)} N/C, each + pointing toward q₂’s side.`,
+      `E = E₁ + E₂ = ${sig(fp.E1)} + ${fp.E2 < 0 ? `(${sig(fp.E2)})` : sig(fp.E2)} = ${sig(fp.E)} N/C`,
+      'Each charge’s field points away from it if +, toward it if −; the fields add as arrows.',
+    ];
+  }
 
   function captionLines(): string[] {
     const k = `${sig(K_COULOMB)}`;

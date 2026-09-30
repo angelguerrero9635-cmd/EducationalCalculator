@@ -10,6 +10,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { freeBodyOf, G_EARTH, type Force } from './hskMath';
 import { RAD, sig, SubLabel, Vec } from './hskKit';
+import { FreeBodyWork } from './freeBodyWork';
 import { BoxShadow, TopLight, url, usePaintIds } from './paint';
 
 const [BW, BH] = [62, 46];
@@ -68,7 +69,13 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
     tension: `T ${sig(si(spec.tension))} N`,
     applied: `F ${sig(si(spec.applied))} N`,
   };
-  const lines = captionLines();
+  // H102: a floor block moved d to the right, and the pull's part along it.
+  const moved = spec.support === 'floor' && spec.displacement !== undefined;
+  const pullF = si(spec.applied) ? si(spec.applied) : si(spec.tension);
+  const pullA = si(spec.applied) ? si(spec.appliedAngle) : si(spec.tensionAngle);
+  const pullAlong = pullF * Math.cos(pullA * RAD);
+  const dist = si(spec.displacement);
+  const lines = moved ? [...captionLines(), ...workLines()] : captionLines();
 
   return (
     <View>
@@ -326,6 +333,17 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                     </G>
                   );
                 })}
+                {moved ? (
+                  <FreeBodyWork
+                    C={C}
+                    along={pullAlong * k}
+                    floorY={floorY}
+                    w={w}
+                    text={`F cos θ ${sig(pullAlong)} N`}
+                    d={`d = ${sig(dist)} m`}
+                    faded={!all || !known(spec.displacement)}
+                  />
+                ) : null}
                 <Circle cx={C.x} cy={C.y} r={3.5} fill={c.chartInk} />
                 {/* The net force, beside the block. */}
                 <G opacity={all ? 1 : 0.4}>
@@ -390,6 +408,15 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );
+
+  /** H102: the work the pull does over the displacement. */
+  function workLines(): string[] {
+    const phi = formatNumber(Number(pullA.toFixed(2)));
+    return [
+      `Work done by the pull: W = Fd cos θ = ${sig(pullF)} × ${sig(dist)} × cos ${phi}° = ${sig(pullF * dist * Math.cos(pullA * RAD))} J`,
+      'Only the part of the pull along the motion does work; the weight and the normal force are at right angles to it and do none.',
+    ];
+  }
 
   function captionLines(): string[] {
     const v = (id: string | number | undefined, x: number) =>

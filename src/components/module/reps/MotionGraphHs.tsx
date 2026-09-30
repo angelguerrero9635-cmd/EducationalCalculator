@@ -16,6 +16,8 @@ type SpeedSpec = Extract<MotionGraphSpec, { graph: 'speed' }>;
 
 /** Height of the strobe diagram above the graph: one row, or two when the object turns round. */
 const strobeHeight = (rows: number) => (rows === 2 ? 84 : 66);
+/** Width of a vertical strobe column left of the graph (H102). */
+const SIDE = 66;
 
 /** A signed number in brackets when negative, for substituting into a formula: (−9.8). */
 const par = (text: string) => (text.startsWith('−') ? `(${text})` : text);
@@ -74,8 +76,11 @@ export function MotionGraphHs({
   const steps = t > 0 ? Math.floor(t / dt + 1e-9) : 0;
   const shots = Array.from({ length: steps + 1 }, (_, i) => i * dt);
   const rows = turns && shots.some((s) => s > tc + 1e-9) ? 2 : 1;
-  const showStrobe = k.strobe !== false;
+  // A vertical strobe (H102) stands in a column left of the graph instead of above it.
+  const vertical = k.strobe === 'vertical';
+  const showStrobe = k.strobe !== false && !vertical;
   const top = showStrobe ? strobeHeight(rows) : 0;
+  const side = vertical ? SIDE + (rows - 1) * 18 : 0;
 
   // Windows (frozen during a drag so the grid does not rescale under the finger).
   const live = (() => {
@@ -103,17 +108,23 @@ export function MotionGraphHs({
 
   return (
     <View>
-      <Canvas aspect={(w) => (top + Math.min(0.66 * w, 300)) / w}>
+      <Canvas aspect={(w) => (top + Math.min((vertical ? 0.8 : 0.66) * w, 300)) / w}>
         {({ w, h }) => {
           const base = makeFrame(
-            w,
+            w - side,
             h - top,
             [win.value.x.lo, win.value.x.hi],
             [win.value.y.lo, win.value.y.hi],
             false,
             true,
           );
-          const f: Frame = { ...base, sy: (y) => top + base.sy(y), h };
+          const f: Frame = {
+            ...base,
+            sx: (x) => side + base.sx(x),
+            sy: (y) => top + base.sy(y),
+            w,
+            h,
+          };
           const names = {
             x: withUnit(sym(spec.time), tU ? `(${tU})` : undefined),
             y: position
@@ -124,6 +135,7 @@ export function MotionGraphHs({
             <>
               <Svg width={w} height={h}>
                 {showStrobe ? strobe(w) : null}
+                {vertical ? strobeColumn(h) : null}
                 <HsdGrid f={f} step={{ x: win.value.x.step, y: win.value.y.step }} names={names} />
                 {position ? positionView(f, w, h) : velocityView(f, w, h)}
               </Svg>
@@ -199,6 +211,76 @@ export function MotionGraphHs({
     );
   }
 
+  /**
+   * The strobe stood up (H102): a column left of the graph, + up, the position at each step
+   * and a velocity arrow beside each dot; after a turn, a second column.
+   */
+  function strobeColumn(h: number) {
+    const xs = shots.map(xAt);
+    let lo = Math.min(...xs, x0);
+    let hi = Math.max(...xs, x0);
+    if (hi - lo < 1e-9) [lo, hi] = [lo - 1, hi + 1];
+    const [st, sb] = [56, h - 44];
+    const py = (x: number) => st + ((hi - x) / (hi - lo)) * (sb - st);
+    const vmax = Math.max(1e-9, ...shots.map((s) => Math.abs(vAt(s))));
+    const colX = (r: number) => 22 + r * 18;
+    const trackX = colX(rows - 1) + 12;
+    const marks = [hi, lo, ...(lo < -1e-9 && hi > 1e-9 ? [0] : [])];
+    return (
+      <G opacity={all ? 1 : 0.4}>
+        <ChartText x={4} y={14} fontSize={chart.label} fill={c.chartMuted}>
+          Every
+        </ChartText>
+        <ChartText x={4} y={29} fontSize={chart.label} fill={c.chartMuted}>
+          {withUnit(sig(dt), tU)}
+        </ChartText>
+        <Line x1={trackX} y1={st} x2={trackX} y2={sb} stroke={c.chartGrid} strokeWidth={2} />
+        {marks.map((m, i) => (
+          <G key={i}>
+            <Line x1={trackX - 4} y1={py(m)} x2={trackX + 4} y2={py(m)} stroke={c.chartMuted} />
+            {i < 2 ? (
+              <ChartText
+                x={4}
+                y={i === 0 ? py(m) - 7 : h - 8}
+                fontSize={chart.label}
+                fill={c.chartMuted}
+              >
+                {withUnit(sig(m), xU)}
+              </ChartText>
+            ) : null}
+          </G>
+        ))}
+        {shots.map((s, i) => {
+          const r = turns && s > tc + 1e-9 ? rows - 1 : 0;
+          const cx = colX(r);
+          const cy = py(xAt(s));
+          const len = (18 * vAt(s)) / vmax;
+          return (
+            <G key={i}>
+              <Vec
+                x1={cx - 11}
+                y1={cy}
+                x2={cx - 11}
+                y2={cy - len}
+                color={c.chartInk}
+                width={1.75}
+                head={6}
+              />
+              <Circle
+                cx={cx}
+                cy={cy}
+                r={4.5}
+                fill={i === 0 ? c.card : c.chartHighlight}
+                stroke={c.chartHighlight}
+                strokeWidth={1.5}
+              />
+            </G>
+          );
+        })}
+      </G>
+    );
+  }
+
   /** v against t: the line, the areas above (+) and below (−) the axis, their sizes. */
   function velocityView(f: Frame, w: number, h: number) {
     const y0 = f.sy(0);
@@ -209,6 +291,8 @@ export function MotionGraphHs({
         ]
       : [[0, v0, t, v]];
     const aText = rep.value(spec.acceleration);
+    // Beside a vertical strobe (H102) a falling line leaves the bottom left empty.
+    const low = vertical && a < 0 && v0 <= 0;
     return (
       <G>
         {parts.map(([ta, va, tb, vb], i) => {
@@ -251,10 +335,10 @@ export function MotionGraphHs({
         <Circle cx={f.sx(0)} cy={f.sy(v0)} r={4} fill={c.chartHighlight} />
         {/* In the empty top corner: top left over a rising line, top right over a falling one. */}
         <Chip
-          x={a >= 0 ? f.sx(0) + 8 : f.sx(win.value.x.hi) - 4}
-          y={f.sy(win.value.y.hi) + (a >= 0 ? 34 : 16)}
+          x={a >= 0 || low ? f.sx(0) + 8 : f.sx(win.value.x.hi) - 4}
+          y={low ? f.sy(win.value.y.lo) - 10 : f.sy(win.value.y.hi) + (a >= 0 ? 34 : 16)}
           text={`slope = ${sym(spec.acceleration)} = ${aText}`}
-          anchor={a >= 0 ? 'start' : 'end'}
+          anchor={a >= 0 || low ? 'start' : 'end'}
           w={w}
           h={h}
           size={chart.label}

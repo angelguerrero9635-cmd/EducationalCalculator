@@ -421,6 +421,7 @@ const light = {
   physCartB: '#E5484D',
   physResistor: '#E6D3B0',
   physIron: '#8D949E',
+  satellitePanel: '#2B4C8C',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -738,6 +739,7 @@ const dark: Palette = {
   physCartB: '#DD5357',
   physResistor: '#8A7A5C',
   physIron: '#626A75',
+  satellitePanel: '#3D5FA3',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

@@ -8,12 +8,14 @@ import type { Calculator } from '../useCalculator';
 import { DecayChart } from './DecayChart';
 import { EnergyProfile } from './EnergyProfile';
 import { EquilibriumChart } from './EquilibriumChart';
+import { GasFirstLaw } from './GasFirstLaw';
 import { GasPiston } from './GasPiston';
 import { PhScale } from './PhScale';
 
 export function HsjView({ spec, calc }: { spec: HsjSpec; calc: Calculator }) {
   switch (spec.kind) {
     case 'gasPiston':
+      if (spec.energy) return <GasFirstLaw spec={spec} calc={calc} />;
       return <GasPiston spec={spec} calc={calc} />;
     case 'energyProfile':
       return <EnergyProfile spec={spec} calc={calc} />;

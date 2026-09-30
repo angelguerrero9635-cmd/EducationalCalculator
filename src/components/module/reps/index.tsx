@@ -155,6 +155,7 @@ import { ReactionLimiting } from './ReactionLimiting';
 import { HslPicture } from './HslPicture';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
+import { Hs2cView } from './Hs2cView';
 import { EnergySpring } from './EnergySpring';
 import { WaveDoppler } from './WaveDoppler';
 import { CircuitMixed } from './CircuitMixed';
@@ -223,6 +224,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'circularMotion':
     case 'freeBody':
       return <HskView spec={spec} calc={calc} />;
+    case 'impulse':
+    case 'powerLift':
+    case 'photoelectric':
+    case 'lightClock':
+      return <Hs2cView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':

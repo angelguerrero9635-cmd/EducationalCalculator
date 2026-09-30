@@ -28,6 +28,8 @@ import {
 } from './cardFiguresR3h';
 import { DIVISION_H, DIVISION_W, DivisionCard } from './divisionCard';
 import { Hs2bCardView, hs2bFigureSize } from './cardFiguresHs2b';
+import { StrobeCardView } from './strobeCard';
+import { STROBE_W } from '@/data/modules/layouts/strobeCard';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -64,6 +66,8 @@ export function figureWidth(f: Spec): number {
       return 72;
     case 'cellDivision':
       return DIVISION_W;
+    case 'strobe':
+      return STROBE_W;
     default:
       return S;
   }
@@ -202,6 +206,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
     case 'construction':
     case 'solidCut':
       return <Hs2bCardView f={f} ink={ink} shade={shade} />;
+    case 'strobe':
+      return <StrobeCardView f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;
