@@ -290,6 +290,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `energyProfile`    | `mode: 'ladder'`                         | enthalpy levels to scale, ΔH steps, a reversed one, the total (H101)          |
 | `lewisStructure`   | hydrocarbon `branches: number[]`         | methyl groups on an alkane’s chain, named: 2,2-dimethylpropane (H101)         |
 | `lewisStructure`   | ionic `charges: { metal, nonmetal }`     | the ions from their charges 1–3: Na⁺ Mg²⁺ Al³⁺, Cl⁻ O²⁻ N³⁻ → Al₂O₃ (H108)    |
+| `chemDiagram`      | `mode: 'phase'`, `freezing`, `boiling`   | water's phase diagram, the solution's lines dashed at Tf and Tb (H108)        |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |

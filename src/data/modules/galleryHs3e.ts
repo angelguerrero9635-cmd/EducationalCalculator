@@ -48,6 +48,23 @@ const ionicCharges = fromPage(
   },
 );
 
-export const HS3E_GALLERY_MODULES: ModuleDef[] = [ionicCharges];
+// ─── Part 3: a phase diagram with the solution's lines shifted ───────────────
+
+/** s.10.phase-colligative on water's phase diagram: the solution's lines dashed, shifted. */
+const phaseDiagram = fromPage(
+  's.10.phase-colligative',
+  'g.s10-phase-colligative-diagram',
+  'Freezing and boiling points on the phase diagram',
+  {
+    kind: 'chemDiagram',
+    mode: 'phase',
+    freezing: 'Tf',
+    boiling: 'Tb',
+    drop: 'dTf',
+    rise: 'dTb',
+  },
+);
+
+export const HS3E_GALLERY_MODULES: ModuleDef[] = [ionicCharges, phaseDiagram];
 
 export const HS3E_GALLERY_LAYOUTS: LayoutDef[] = [];

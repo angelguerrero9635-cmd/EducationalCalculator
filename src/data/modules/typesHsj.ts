@@ -6,6 +6,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import { ladderVars, type EnergyLadderSpec } from './typesHs2d';
+import { gasMixtureVars, type GasMixture } from './typesHs3e';
 
 // ─── H51 gasPiston ───────────────────────────────────────────────────────────
 
@@ -46,6 +47,8 @@ export interface GasPistonSpec extends GasState {
    * ΔU = Q − W (`change`) in a waterfall beside the cylinder.
    */
   energy?: { heat: NumOrVar; work: NumOrVar; change?: string };
+  /** Round 3: a gas mixture colored by gas (`typesHs3e.ts`, H108 part 6). */
+  mixture?: GasMixture;
 }
 
 // ─── H52 beaker: solutions ───────────────────────────────────────────────────
@@ -306,6 +309,7 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.energy?.heat,
         r.energy?.work,
         r.energy?.change,
+        ...gasMixtureVars(r.mixture),
       );
     case 'energyProfile':
       if (r.mode === 'ladder') return ladderVars(r);

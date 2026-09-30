@@ -59,6 +59,7 @@ import { hs2gIssues } from './picturesHs2g';
 import { hs2hIssues } from './picturesHs2h';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
+import { gasMixtureIssues } from './picturesHs3e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2166,6 +2167,8 @@ export function repIssues(
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
       if (rep.kind === 'gasPiston') out.push(...gasEnergyIssues(rep, siOf(val, byId)));
+      if (rep.kind === 'gasPiston')
+        out.push(...gasMixtureIssues(rep.mixture, (x) => (x === undefined ? undefined : val(x))));
       break;
     case 'chemDiagram':
       out.push(...chemDiagramIssues(rep, (id) => val(id)));

@@ -7,6 +7,7 @@
 import { formulaVars } from '@/components/module/reps/chemHs2d';
 
 import type { NumOrVar } from './typesGraphs';
+import { chemDiagramHs3eVars, type ChemDiagramHs3eSpec } from './typesHs3e';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -217,7 +218,8 @@ export type ChemDiagramSpec =
       after: MassPart[];
       defect?: NumOrVar;
       energy?: NumOrVar;
-    };
+    }
+  | ChemDiagramHs3eSpec;
 
 /** The variables a chemDiagram names (for the module tests). */
 export function chemDiagramVars(r: ChemDiagramSpec): string[] {
@@ -230,6 +232,8 @@ export function chemDiagramVars(r: ChemDiagramSpec): string[] {
       return [...formulaVars(r.formula), ...ids(...Object.values(r.numbers), r.charge)];
     case 'massDefect':
       return ids(...[...r.before, ...r.after].map((p) => p.mass), r.defect, r.energy);
+    default:
+      return chemDiagramHs3eVars(r);
   }
 }
 

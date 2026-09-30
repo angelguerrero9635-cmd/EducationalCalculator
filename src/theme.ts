@@ -371,6 +371,14 @@ const light = {
   /** The water pie chart (round 4, group F): ice, and liquid fresh water beside the salt sea. */
   ice: '#DDF1F7',
   freshWater: '#38B2A4',
+  /** H108 (round 3, group E): phase diagram regions, and a gas mixture's gases (He, O₂, N₂, …). */
+  phaseSolid: '#DCEBF7',
+  phaseLiquid: '#BFE0F2',
+  phaseGas: '#FBF1DF',
+  gasMixA: '#E0A81E',
+  gasMixB: '#D8413A',
+  gasMixC: '#3563C9',
+  gasMixD: '#2A9D7C',
   /** The brick wall a ladder leans on (triangleSolver's ladder scene) and its mortar lines. */
   ladderWall: '#B5654A',
   ladderWallDark: '#8A4632',
@@ -720,6 +728,13 @@ const dark: Palette = {
   sandbag: '#9B8558',
   ice: '#B7D6E0',
   freshWater: '#2E9488',
+  phaseSolid: '#243447',
+  phaseLiquid: '#1C3A52',
+  phaseGas: '#3A3222',
+  gasMixA: '#E6B43A',
+  gasMixB: '#E2605A',
+  gasMixC: '#5B86E0',
+  gasMixD: '#3DB894',
   ladderWall: '#8C4B37',
   ladderWallDark: '#5E3023',
   normalReject: '#F0716B',
