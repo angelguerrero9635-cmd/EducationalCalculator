@@ -146,3 +146,39 @@ need 8's `particles` option would draw (the energy view has no aerosol particles
   1° to avoid it).
 - The time-scale span prints "4059 million years" without a separator
   (s.12.radiometric-dating~time-scale).
+
+## Added skills (plan "Added skills", sections 14 and 15)
+
+### Built
+
+- s.12.earth-history: 5 (main one-day clock and ~day-length calculators; sequences ~oxygen and
+  ~life, sort ~atmosphere)
+- s.12.exoplanets: 5 (main transit, ~orbit and ~habitable-zone calculators; sorts ~methods and
+  ~life)
+
+10 pages, none waiting. Every calculator is built with the planned interim: a `table` of the
+page's own formula (event rows, days-per-year rows, the solar system's planets across the star,
+periods, orbit distances), the values it doesn't draw as `pictureLabels`.
+
+### Changed from the plan
+
+- Earth-history main: the first-life row is 3,500 million years ago (the plan's draft said 3,800;
+  the plan now says 3,500, the widely agreed age of the oldest fossil microbes).
+- ~day-length: the table's first row is 365.25 days (today's day of exactly 24 h), not 365.
+- Units stay fixed labels (million years, minutes, hours, days, R☉, R⊕, M☉, L☉, AU, K). Minutes
+  and hours are written out, not the registry's `min` and `h`, so the one-day clock's 24 and
+  1,440 stay in the formula's own units.
+
+### Shared needs (pictures)
+
+- `geologicClock` (new kind, or a `timeline` mode): a 24-hour dial with Earth's formation at
+  midnight, the event at `A` marked at clock time `t` and the last `m` minutes shaded
+  (s.12.earth-history).
+- `coralSection` (new kind): a fossil coral cut open, `n` fine daily lines across `b` yearly
+  bands, the day's length `D` beside today's 24 h (s.12.earth-history~day-length).
+- `transit` (new kind, or a `spectrum`-style star option): the star's disk of radius `R` with the
+  planet of radius `r` crossing it to scale, and the light curve dipping by `δ` (s.12.exoplanets).
+- `habitableZone` (new kind, or a `circularMotion` option): the star at the center sized by `L`
+  or `M`, the zone from `d₁` to `d₂` shaded green, the planet's orbit at `a` with `T`
+  (s.12.exoplanets~habitable-zone, ~orbit). The `kepler` mode can't serve ~orbit: its caption
+  always states T² = a³, true only round the Sun; a `starMass` option would fix it.
