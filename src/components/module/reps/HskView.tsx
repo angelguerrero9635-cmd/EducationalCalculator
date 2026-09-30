@@ -7,6 +7,8 @@ import type { HskSpec } from '@/data/modules/typesHsk';
 import type { Calculator } from '../useCalculator';
 import { ChargePlates } from './ChargePlates';
 import { Charges } from './Charges';
+import { ChargesPotential } from './ChargesPotential';
+import { PlatesLaunch } from './PlatesLaunch';
 import { CircularMotion } from './CircularMotion';
 import { CircularSatellite } from './CircularSatellite';
 import { Collision } from './Collision';
@@ -16,6 +18,7 @@ import { Induction } from './Induction';
 import { Projectile } from './Projectile';
 import { RayLens } from './RayLens';
 import { RayRefraction, RaySlits, RayTelescope } from './RayOptics';
+import { Seesaw } from './Seesaw';
 import { SimpleMachine } from './SimpleMachine';
 
 export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
@@ -30,11 +33,18 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
     case 'collision':
       return <Collision spec={spec} calc={calc} />;
     case 'simpleMachine':
+      if (spec.seesaw && spec.machine === 'lever') return <Seesaw spec={spec} calc={calc} />;
       return <SimpleMachine spec={spec} calc={calc} />;
     case 'heatEngine':
       return <HeatEngine spec={spec} calc={calc} />;
     case 'charges':
-      if (spec.mode === 'plates') return <ChargePlates spec={spec} calc={calc} />;
+      if (spec.mode === 'plates')
+        return spec.launch ? (
+          <PlatesLaunch spec={spec} calc={calc} />
+        ) : (
+          <ChargePlates spec={spec} calc={calc} />
+        );
+      if (spec.equipotentials) return <ChargesPotential spec={spec} calc={calc} />;
       return <Charges spec={spec} calc={calc} />;
     case 'induction':
       return <Induction spec={spec} calc={calc} />;
