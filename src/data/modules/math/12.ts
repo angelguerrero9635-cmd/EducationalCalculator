@@ -887,7 +887,7 @@ const MATH_12_STATS: ModuleDef[] = [
       'The interval estimates the population mean μ, not where single values fall.',
     ],
     variables: [
-      V('x', 'x̄', 'Sample mean', { min: -1000000, max: 1000000, step: 0.1 }),
+      V('x', 'x̄', 'Sample mean', { min: -10000000, max: 10000000, step: 0.1 }),
       V('s', 'σ', 'Population standard deviation', { min: 0.001, max: 100000, step: 0.1 }),
       V('n', 'n', 'Sample size', { integer: true, min: 2, max: 1000000 }),
       V('C', 'C', 'Confidence level', {
@@ -942,7 +942,7 @@ const MATH_12_STATS: ModuleDef[] = [
       'A random sample from a population close to normal (or n ≥ 30).',
     ],
     variables: [
-      V('x', 'x̄', 'Sample mean', { min: -1000000, max: 1000000, step: 0.1 }),
+      V('x', 'x̄', 'Sample mean', { min: -10000000, max: 10000000, step: 0.1 }),
       V('s', 's', 'Sample standard deviation', { min: 0.001, max: 100000, step: 0.1 }),
       V('n', 'n', 'Sample size', { integer: true, min: 2, max: 1000 }),
       V('C', 'C', 'Confidence level', {
