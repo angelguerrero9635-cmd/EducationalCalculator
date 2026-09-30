@@ -6,6 +6,7 @@ import { ELEMENTS, parseFormula } from '@/components/module/reps/chem';
 import {
   atomsInOrder,
   averageMass,
+  branchProblem,
   defectEnergy,
   drawableChain,
   fillFormula,
@@ -25,6 +26,18 @@ type Val = (x: string | number) => number | undefined;
 
 const near = (a: number, b: number, rel = 1e-3) =>
   Math.abs(a - b) <= rel * Math.max(1, Math.abs(a), Math.abs(b));
+
+/** `branches` on a lewisStructure hydrocarbon (H101 part 9b): methyls on an alkane's chain. */
+export function branchIssues(branches: number[], bond: string, n: number | undefined): string[] {
+  const out: string[] = [];
+  if (bond !== 'single') out.push('methyl branches are drawn on alkanes (single bonds) only');
+  if (branches.length > 4) out.push(`${branches.length} methyl groups (up to 4 drawn)`);
+  if (n !== undefined) {
+    const p = branchProblem(n, branches);
+    if (p) out.push(`branches ${branches.join(', ')} on ${n} carbons: ${p}`);
+  }
+  return out;
+}
 
 /**
  * A chemistry spec with every formula template filled from the values (C{x}H{y} → C3H8), so the

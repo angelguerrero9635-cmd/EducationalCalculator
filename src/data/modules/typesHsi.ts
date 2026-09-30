@@ -188,6 +188,8 @@ export type LewisStructureSpec = { kind: 'lewisStructure' } & (
       carbons: NumOrVar;
       bond?: 'single' | 'double' | 'triple';
       hydrogens?: string;
+      /** Round 2: methyl branches on an alkane (`typesHs2d.ts`, H101 part 9b). */
+      branches?: number[];
     }
 );
 

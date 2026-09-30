@@ -915,6 +915,74 @@ const massDefect: ModuleDef = {
   },
 };
 
+// ─── Part 9b: branched alkanes (lewisStructure hydrocarbon branches) ─────────
+
+/**
+ * An alkane with methyl groups on its main chain: the main chain's carbons n, the carbons in all
+ * (n + the methyl groups) and the hydrogens (2 × carbons + 2), so isomers of one formula can be
+ * compared (butane and 2-methylpropane are both C₄H₁₀).
+ */
+const isomer = (id: string, title: string, branches: number[]): ModuleDef => {
+  const b = branches.length;
+  const least = Math.max(3, ...branches.map((p) => p + 1));
+  return {
+    id,
+    title,
+    use: 'Use this for “Draw an isomer of pentane” or “How many hydrogens does 2-methylbutane have?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The main chain is the longest chain of carbons; a methyl group, CH₃, hangs off it.',
+      'Isomers have the same formula but different structures.',
+    ],
+    variables: [
+      whole('n', 'n', 'Carbons in the main chain', least, 7),
+      { ...whole('c', 'c', 'Carbons in all', least + b, 7 + b), derived: true },
+      { ...whole('h', 'h', 'Hydrogen atoms', 2 * (least + b) + 2, 2 * (7 + b) + 2), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: `c = n + ${b}`,
+          display: `{c} = {n} + ${b}`,
+          vars: ['c', 'n'],
+          residual: (v) => v.c! - v.n! - b,
+          solve: { c: (v) => v.n! + b, n: (v) => v.c! - b },
+        },
+        steps: {
+          c: {
+            expr: `{n} + ${b}`,
+            how: 'Each methyl group adds one carbon to the main chain’s carbons.',
+          },
+          n: { expr: `{c} − ${b}`, how: 'Take the methyl carbons away.' },
+        },
+      },
+      {
+        relation: {
+          id: 'h = 2c + 2',
+          display: '{h} = 2 × {c} + 2',
+          vars: ['h', 'c'],
+          residual: (v) => v.h! - (2 * v.c! + 2),
+          solve: { h: (v) => 2 * v.c! + 2, c: (v) => (v.h! - 2) / 2 },
+        },
+        steps: {
+          h: { expr: '2 × {c} + 2', how: 'Any alkane, branched or not, is CₙH₂ₙ₊₂.' },
+          c: { expr: '({h} − 2)/2', how: 'Undo 2 × carbons + 2.' },
+        },
+      },
+    ),
+    // Both demos draw an isomer of pentane: 2-methylbutane and 2,2-dimethylpropane.
+    example: { n: 5 - b, c: 5, h: 12 },
+    startWith: ['n'],
+    representation: {
+      kind: 'lewisStructure',
+      mode: 'hydrocarbon',
+      carbons: 'n',
+      hydrogens: 'h',
+      branches,
+    },
+  };
+};
+
 export const HS2D_GALLERY_MODULES: ModuleDef[] = [
   combustionGeneral,
   replacementIons,
@@ -927,6 +995,175 @@ export const HS2D_GALLERY_MODULES: ModuleDef[] = [
   oxidationSulfur,
   oxidationPermanganate,
   massDefect,
+  isomer('g.s10-organic-isomer-methyl', 'A branched alkane: one methyl group', [2]),
+  isomer('g.s10-organic-isomer-dimethyl', 'A branched alkane: two methyl groups', [2, 2]),
 ];
 
-export const HS2D_GALLERY_LAYOUTS: LayoutDef[] = [];
+// ─── Part 10: hydration (a molecules explore scene) ──────────────────────────
+
+/** Stands in for s.10.molecular-shape~water, its third scene: salt dissolving in water. */
+const waterSalt: LayoutDef = {
+  kind: 'explore',
+  id: 'g.s10-molecular-shape-water-salt',
+  title: 'Why water dissolves salt',
+  use: 'Use this for “Why does water dissolve many substances, such as table salt?”',
+  assumptions: [
+    'Water is polar: its O is partly negative (δ−) and its H atoms partly positive (δ+).',
+    'Opposite charges attract.',
+  ],
+  figure: { kind: 'molecules' },
+  scenes: [
+    {
+      label: 'Salt in water',
+      molecules: {
+        items: [{ formula: 'NaCl' }],
+        hydration: { ions: ['Na+', 'Cl-'], crystal: true },
+      },
+      lines: [
+        'Water’s O ends face each Na⁺ and its H ends face each Cl⁻.',
+        'Many of these attractions pull the ions out of the crystal, one at a time.',
+      ],
+    },
+    {
+      label: 'A doubly charged ion',
+      molecules: { items: [{ formula: 'Mg' }], hydration: { ions: ['Mg2+'], waters: 6 } },
+      lines: [
+        'Mg²⁺ has twice the charge of Na⁺, so it holds its ring of water more tightly.',
+        'Six water molecules sit around it, each with its O facing in.',
+      ],
+    },
+  ],
+};
+
+// ─── Part 9: molecule and organic cards ──────────────────────────────────────
+
+/** Stands in for s.10.molecular-shape~polarity: the formulas the molecule card now draws. */
+const polarityCards: LayoutDef = {
+  kind: 'sort',
+  id: 'g.s10-molecular-shape-polarity-cards',
+  title: 'Polar or nonpolar: every card drawn',
+  use: 'Use this for “Is carbon tetrachloride polar, even though its bonds are?”',
+  assumptions: [
+    'Polar bonds in a symmetric shape cancel.',
+    'A lone pair on the central atom, or different outer atoms, usually leaves a net dipole.',
+  ],
+  question: 'Is the molecule polar?',
+  bins: [
+    {
+      id: 'polar',
+      label: 'Polar',
+      why: 'The bond dipoles don’t cancel: one end is partly negative.',
+    },
+    {
+      id: 'nonpolar',
+      label: 'Nonpolar',
+      why: 'The shape is symmetric, so the bond dipoles cancel.',
+    },
+  ],
+  cards: [
+    {
+      label: 'CHCl₃ (tetrahedral, one H)',
+      bin: 'polar',
+      figure: { kind: 'molecule', formula: 'CHCl3' },
+    },
+    {
+      label: 'CH₂O (trigonal planar)',
+      bin: 'polar',
+      figure: { kind: 'molecule', formula: 'CH2O' },
+    },
+    {
+      label: 'BF₃ (trigonal planar)',
+      bin: 'nonpolar',
+      figure: { kind: 'molecule', formula: 'BF3' },
+    },
+    { label: 'CCl₄ (tetrahedral)', bin: 'nonpolar', figure: { kind: 'molecule', formula: 'CCl4' } },
+  ],
+};
+
+/** Stands in for s.10.organic~functional-groups: condensed formulas with the group lit. */
+const functionalGroupCards: LayoutDef = {
+  kind: 'sort',
+  id: 'g.s10-organic-functional-groups-cards',
+  title: 'Functional groups, lit',
+  use: 'Use this for “Which functional group does ethyl acetate have?”',
+  assumptions: [
+    'A functional group is the part of an organic molecule that reacts; the rest is a carbon chain.',
+    'The lit part of each formula is its functional group.',
+  ],
+  question: 'Which functional group does the molecule have?',
+  bins: [
+    { id: 'alcohol', label: 'Alcohol (–OH)', why: 'An –OH on a carbon chain.' },
+    { id: 'acid', label: 'Carboxylic acid (–COOH)', why: 'A carbon with a C=O and an –OH on it.' },
+    { id: 'ester', label: 'Ester (–COO–)', why: 'A C=O whose oxygen links to another chain.' },
+    { id: 'amine', label: 'Amine (–NH₂)', why: 'A nitrogen on a carbon chain.' },
+    { id: 'ketone', label: 'Ketone (C=O)', why: 'A C=O between two carbons.' },
+  ],
+  cards: (
+    [
+      ['Methanol', 'CH3-OH', 'alcohol'],
+      ['Ethanol', 'CH3-CH2-OH', 'alcohol'],
+      ['Acetic acid', 'CH3-C(=O)-OH', 'acid'],
+      ['Formic acid', 'H-C(=O)-OH', 'acid'],
+      ['Ethyl acetate', 'CH3-C(=O)-O-CH2-CH3', 'ester'],
+      ['Methyl butanoate', 'CH3-CH2-CH2-C(=O)-O-CH3', 'ester'],
+      ['Methylamine', 'CH3-NH2', 'amine'],
+      ['Ethylamine', 'CH3-CH2-NH2', 'amine'],
+      ['Acetone', 'CH3-C(=O)-CH3', 'ketone'],
+      ['2-Butanone', 'CH3-C(=O)-CH2-CH3', 'ketone'],
+    ] as const
+  ).map(([label, formula, group]) => ({
+    label,
+    bin: group,
+    figure: { kind: 'condensed', formula, group },
+  })),
+};
+
+// ─── Part 13: atomic model icons ─────────────────────────────────────────────
+
+/** Stands in for s.10.atomic-structure~models: each model's icon on its stage. */
+const atomModels: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.s10-atomic-structure-models-icons',
+  title: 'Models of the atom, drawn',
+  use: 'Use this for “How did the model of the atom change, and what evidence changed it?”',
+  assumptions: [
+    'Each span is how many years the model stood before the next one replaced it.',
+    'A new model came from new evidence: the electron, the gold-foil experiment, the lines in hydrogen’s spectrum.',
+  ],
+  question: 'Put the models of the atom in the order they were proposed.',
+  stages: [
+    {
+      label: 'Dalton (1803): atoms are solid spheres that can’t be split',
+      span: 94,
+      figure: { kind: 'icon', icon: 'Dalton atom model' },
+    },
+    {
+      label: 'Thomson (1897): electrons stuck in a positive ball like plums in a pudding',
+      span: 14,
+      figure: { kind: 'icon', icon: 'Thomson atom model' },
+    },
+    {
+      label: 'Rutherford (1911): a tiny, dense, positive nucleus',
+      span: 2,
+      figure: { kind: 'icon', icon: 'Rutherford atom model' },
+    },
+    {
+      label: 'Bohr (1913): electrons on fixed energy levels',
+      span: 13,
+      figure: { kind: 'icon', icon: 'Bohr atom model' },
+    },
+    {
+      label: 'Quantum model (1926): electrons in clouds of probability',
+      figure: { kind: 'icon', icon: 'quantum atom model' },
+    },
+  ],
+  unit: 'years',
+  totalLabel: 'From Dalton to the quantum model',
+};
+
+export const HS2D_GALLERY_LAYOUTS: LayoutDef[] = [
+  waterSalt,
+  polarityCards,
+  functionalGroupCards,
+  atomModels,
+];

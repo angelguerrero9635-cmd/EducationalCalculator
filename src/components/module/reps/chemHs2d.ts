@@ -6,6 +6,38 @@
  * - Ionic compounds drawn as a cluster of ions (a formula unit).
  */
 import { atomColor, atomRadius, parseFormula, type Atom, type Molecule } from './chem';
+import { chainHydrogens, hydrocarbonName } from './lewis';
+
+// ─── Branched alkanes (lewisStructure hydrocarbon `branches`) ────────────────
+
+/** Methyl groups on each carbon of a main chain of n, from 1-based positions. */
+export const branchCounts = (n: number, branches: number[]) =>
+  Array.from({ length: n }, (_, i) => branches.filter((p) => p === i + 1).length);
+
+/** Hydrogens left on each main-chain carbon once its methyl groups take a bond each. */
+export const branchedHydrogens = (n: number, branches: number[]) => {
+  const k = branchCounts(n, branches);
+  return chainHydrogens(n, 'single').map((h, i) => h - k[i]!);
+};
+
+/** Why methyl groups at these positions don't make a drawable branched alkane, or undefined. */
+export function branchProblem(n: number, branches: number[]): string | undefined {
+  if (branches.some((p) => !Number.isInteger(p) || p < 2 || p > n - 1))
+    return `a methyl group must sit on carbons 2 to ${n - 1} (on an end it lengthens the chain)`;
+  if (branchCounts(n, branches).some((k) => k > 2)) return 'at most 2 methyl groups on a carbon';
+  return undefined;
+}
+
+/** The IUPAC name: the lowest locants, "2,2-dimethylpropane", "2,3-dimethylbutane". */
+export function branchedName(n: number, branches: number[]): string {
+  if (branches.length === 0) return hydrocarbonName(n, 'single');
+  const a = [...branches].sort((x, y) => x - y);
+  const b = branches.map((p) => n + 1 - p).sort((x, y) => x - y);
+  const firstDiff = a.findIndex((x, i) => x !== b[i]);
+  const locants = firstDiff >= 0 && b[firstDiff]! < a[firstDiff]! ? b : a;
+  const mult = ['', 'di', 'tri', 'tetra'][branches.length - 1] ?? '';
+  return `${locants.join(',')}-${mult}methyl${hydrocarbonName(n, 'single')}`;
+}
 
 // ─── Formulas from values ────────────────────────────────────────────────────
 
