@@ -28,6 +28,7 @@ import type { Hs2cSpec } from './typesHs2c';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
+import type { BarFlows, Hs2eSpec } from './typesHs2e';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -486,6 +487,8 @@ export type Representation =
       scale?: number | string;
       /** No number on top of each bar: read its height against the scale (scaled graphs). */
       readScale?: boolean;
+      /** Grade 9 (H100): the bars between the first and last are flows in or out (`typesHs2e.ts`). */
+      flows?: BarFlows;
     }
   /** Picture graph: one column of icons per category; tap a cell to set that count. */
   | {
@@ -1115,6 +1118,8 @@ export type Representation =
   | HskSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
   | Hs2cSpec
+  /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
+  | Hs2eSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
@@ -1320,6 +1325,8 @@ export type Representation =
        * (a negative percent or a smaller total is down) unless it is given.
        */
       change?: { total: string; direction?: 'up' | 'down'; bars?: 2 | 3 };
+      /** Grade 9 (H104): a second percent (a value id) marked on the same bar, its own band. */
+      second?: string;
     }
   /**
    * A table of equivalent ratios: the parts `first` : `second`, rows 1–4 times them (or `rows`)

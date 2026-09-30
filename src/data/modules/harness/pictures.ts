@@ -52,6 +52,7 @@ import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { chemDiagramIssues, chemHs2dIssues, filledChem, moleMapHs2dIssues } from './picturesHs2d';
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
+import { barFlowIssues, hs2eIssues, percentSecondIssues, reactionManyIssues } from './picturesHs2e';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import type { ModuleDef, Representation } from '../types';
@@ -1270,6 +1271,7 @@ export function repIssues(
         if (up === 'down' && p !== undefined && Math.abs(p) > 100)
           out.push(`a ${Math.abs(p)}% decrease takes more than the whole`);
       }
+      out.push(...percentSecondIssues(rep, val));
       break;
     }
     case 'ratioTable': {
@@ -1924,6 +1926,7 @@ export function repIssues(
       );
       out.push(...chemHsiIssues(filledChem(rep, val), (x) => val(x)));
       out.push(...chemHs2dIssues(rep, (x) => val(x)));
+      if (rep.kind === 'reaction' && rep.many) out.push(...reactionManyIssues());
       break;
     case 'lineSystem': {
       out.push(...hs2aIssues(rep, val));
@@ -2125,6 +2128,10 @@ export function repIssues(
     case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
       break;
+    case 'macromolecules':
+    case 'cellDivision':
+      out.push(...hs2eIssues(rep, (id) => val(id)));
+      break;
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':
@@ -2174,6 +2181,9 @@ export function repIssues(
     case 'photoelectric':
     case 'lightClock':
       out.push(...hs2cIssues(rep, siOf(val, byId)));
+      break;
+    case 'bars':
+      out.push(...barFlowIssues(rep, val));
       break;
     case 'table':
       if ('twoWay' in rep) {

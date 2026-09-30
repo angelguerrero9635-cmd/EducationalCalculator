@@ -387,6 +387,13 @@ const light = {
   moss: '#6FA63A',
   rootNodule: '#E9A7A0',
   antibodySecond: '#C2570C',
+  /** Card icons H2E (H100, H104): veins, kidneys, a gland, nerves; A and B antigens on red cells. */
+  h2eVein: '#4C7FD9',
+  h2eKidney: '#A8483E',
+  h2eGland: '#E9B35A',
+  h2eNerve: '#E8B923',
+  h2eAntigenA: '#2E9E5B',
+  h2eAntigenB: '#E08A1C',
   /** Chemistry (HS group I): a unit struck through when it cancels in a chain. */
   unitCancel: '#D9480F',
   /** Bohr models: protons, neutrons and electrons. */
@@ -714,6 +721,12 @@ const dark: Palette = {
   moss: '#78B044',
   rootNodule: '#D98F88',
   antibodySecond: '#F08A3C',
+  h2eVein: '#6F9CF0',
+  h2eKidney: '#C9675B',
+  h2eGland: '#D9A04A',
+  h2eNerve: '#F2CC4A',
+  h2eAntigenA: '#4CC07A',
+  h2eAntigenB: '#F2A64A',
   unitCancel: '#F08A4B',
   atomProton: '#D9573F',
   atomNeutron: '#7D8693',

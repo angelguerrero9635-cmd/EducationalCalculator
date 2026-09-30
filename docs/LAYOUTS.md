@@ -65,6 +65,15 @@ metals in their ions' solutions, a wire through a voltmeter or bulb and a KNO₃
 scene's `galvanic: { metals, meter?, lit? }` picks the metals (the anode, E° and both
 half-reactions are worked out from the reduction potentials) and rings the electrons, anode,
 cathode, bridge or meter.
+Grade 9 biology (H100, `layouts/geneExpressionFigure.tsx`): `geneExpression`, a stretch of DNA with a
+promoter, a gene and its switch, RNA polymerase and, when the gene is read, its mRNA; a scene's
+`gene: { control: 'repressor' | 'activator', signal?, lit? }` sets the switch: a repressor sits on
+the operator unless its signal (an inducer) pulls it off, an activator binds only with its
+signal, so the gene is on exactly when the signal is there.
+Also H100 (`layouts/dichotomousKeyFigure.tsx`): `dichotomousKey`, `{ kind: 'dichotomousKey', steps }` with
+`steps: { question, yes, no }[]` (an answer is the next question's index or a name), drawn as a
+tree down the page, each question's Yes then No indented under it; a scene's `key: { specimen?,
+step? }` traces one name's path (answers lit, the name filled) or rings one question.
 
 Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,
@@ -99,6 +108,10 @@ light in and ATP out; `energy: { process?, lit? }` lights the whole `cycle`, `ph
 `{ kind: 'cellDivision', stage, diploid? }` draws interphase, prophase … cytokinesis, or
 prophase I … telophase II, the chromosomes counted from 2n (2, 4 or 6), maternal red and paternal
 blue, crossed-over tips from prophase I, four different cells of n after telophase II.
+Card figure `replication` (H100, `layouts/replicationCard.tsx`, 112 × 76, for sequence stages):
+`{ kind: 'replication', stage }` draws `unzip` (helicase at the fork), `pair` (free nucleotides
+pairing with each old strand), `join` (DNA polymerase and the new strand) or `copies` (two
+helices, each one old strand, dark, and one new, lit: semiconservative).
 
 Grade 11 physics (H102, group H2C): card figure `strobe` (`layouts/strobeCard.tsx`, 140 × 48):
 `{ kind: 'strobe', gaps, dir?, ramp? }` dots the object's place every second, the `gaps` (m)
@@ -150,12 +163,24 @@ scale, with the sun on the line over the stick's top (higher for a shorter shado
 `layouts/observeFigures.tsx`: `thermometer`, `plantHeight` (a potted plant beside a cm ruler),
 `ramp` (`heights` per column; the cup slid the value), `flashlight` (`distances` per column;
 the lit circle side on and face on) and `cup` (an open cup, the first column's level dashed).
+An observation can count a second row in the same columns, `second: { rowLabel, initial }`
+(H100, two species a day): its bars beside the first's, a row of its own in the table, a key,
+and `pattern(first, second)` reading both.
 
 Drawn explore figures: a `parts` figure with `drawing: 'plant' | 'animal' | 'body'`
 (`layouts/partsDrawings.tsx`) draws the thing, labels every part and lights the scene's part;
 a `dots` scene with `animal: 'deer' | 'penguin'` draws a herd or huddle
 (`layouts/animalFigures.tsx`). A sort can set `header: { kind: 'offspring', animals }`: the
 parents and young (cats or deer) above the cards.
+H104: a sort can set `intro`, a sentence above the cards (what the groups share, or a fact the
+sort needs), and a bin can set `figure` (any card figure, usually `{ kind: 'icon', icon }`), drawn
+beside its name; the harness wants every bin or none with a figure, and no card wearing another
+bin's icon. Grade 9 card icons (H100, H104, `layouts/icons/h2e.tsx`): membrane transport (`simple
+diffusion`, `channel protein`, `carrier protein`, `aquaporin`, `protein pump`, `vesicle
+transport`), ABO blood types (`blood type A`, `blood type B`, `blood type AB`, `blood type O`:
+a red cell with its A wedges, B knobs, both or none) and body systems (`nervous system`,
+`endocrine system`, `heart and blood vessels`, `respiratory system`, `excretory system`,
+`digestive system`).
 
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`

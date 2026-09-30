@@ -31,6 +31,7 @@ import { DIVISION_H, DIVISION_W, DivisionCard } from './divisionCard';
 import { Hs2bCardView, hs2bFigureSize } from './cardFiguresHs2b';
 import { StrobeCardView } from './strobeCard';
 import { STROBE_W } from '@/data/modules/layouts/strobeCard';
+import { REPLICATION_H, REPLICATION_W, ReplicationCard } from './replicationCard';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -71,6 +72,8 @@ export function figureWidth(f: Spec): number {
       return STROBE_W;
     case 'condensed':
       return condensedWidth(f);
+    case 'replication':
+      return REPLICATION_W;
     default:
       return S;
   }
@@ -96,7 +99,9 @@ export function CardFigureView({
       ? MARKED
       : figure.kind === 'cellDivision'
         ? DIVISION_H
-        : S);
+        : figure.kind === 'replication'
+          ? REPLICATION_H
+          : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -211,6 +216,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <Hs2bCardView f={f} ink={ink} shade={shade} />;
     case 'strobe':
       return <StrobeCardView f={f} ink={ink} />;
+    case 'replication':
+      return <ReplicationCard f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;

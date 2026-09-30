@@ -51,6 +51,7 @@ import { Tape } from './Tape';
 import { TapeEquation } from './TapeEquation';
 import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
+import { BarsFlows } from './BarsFlows';
 import { CircleDiagram } from './CircleDiagram';
 import { ScaleCopy } from './ScaleCopy';
 import { ForceDiagram } from './ForceDiagram';
@@ -145,6 +146,7 @@ import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
 import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
+import { Hs2eView } from './Hs2eView';
 import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
 import { AlleleFrequencies } from './AlleleFrequencies';
@@ -153,6 +155,7 @@ import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
 import { ReactionLimiting } from './ReactionLimiting';
 import { ChemDiagram } from './ChemDiagram';
+import { ReactionMany } from './ReactionMany';
 import { HslPicture } from './HslPicture';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -209,6 +212,9 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Membrane spec={spec} calc={calc} />;
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
+    case 'macromolecules':
+    case 'cellDivision':
+      return <Hs2eView spec={spec} calc={calc} />;
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':
@@ -349,7 +355,9 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'molecules':
       return <Molecules spec={spec} calc={calc} />;
     case 'reaction':
-      return spec.limiting ? (
+      return spec.many && !spec.limiting ? (
+        <ReactionMany spec={spec} calc={calc} />
+      ) : spec.limiting ? (
         <ReactionLimiting spec={spec} calc={calc} />
       ) : (
         <Reaction spec={spec} calc={calc} />
@@ -394,7 +402,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'partnerList':
       return <PartnerList spec={spec} calc={calc} />;
     case 'bars':
-      return <Bars spec={spec} calc={calc} />;
+      return spec.flows ? <BarsFlows spec={spec} calc={calc} /> : <Bars spec={spec} calc={calc} />;
     case 'rectangle':
       return <RectangleDiagram spec={spec} calc={calc} />;
     case 'grid100':

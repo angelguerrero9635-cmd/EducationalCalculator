@@ -51,6 +51,8 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   feedbackLoop: 'loop',
   immuneStages: 'immune',
   electrochemicalCell: 'galvanic',
+  geneExpression: 'gene',
+  dichotomousKey: 'key',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */
@@ -87,6 +89,7 @@ function studentText(l: LayoutDef): { where: string; text: string; prose: boolea
   switch (l.kind) {
     case 'sort':
       out.push({ where: 'question', text: l.question, prose: true });
+      if (l.intro) out.push({ where: 'intro', text: l.intro, prose: true });
       l.bins.forEach((b) => {
         out.push({ where: `bin ${b.id}`, text: b.label, prose: false });
         out.push({ where: `bin ${b.id} why`, text: b.why, prose: true });
@@ -111,7 +114,7 @@ function studentText(l: LayoutDef): { where: string; text: string; prose: boolea
       }
       break;
     case 'observe':
-      out.push({ where: 'pattern', text: l.pattern(l.initial), prose: true });
+      out.push({ where: 'pattern', text: l.pattern(l.initial, l.second?.initial), prose: true });
       out.push({ where: 'pattern (equal)', text: l.pattern(l.initial.map(() => 10)), prose: true });
       l.columns.forEach((col) => out.push({ where: `column ${col}`, text: col, prose: false }));
       break;
@@ -185,7 +188,8 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
         break;
       case 'observe':
         expect(l.initial).toHaveLength(l.columns.length);
-        for (const x of l.initial) {
+        if (l.second) expect(l.second.initial).toHaveLength(l.columns.length);
+        for (const x of [...l.initial, ...(l.second?.initial ?? [])]) {
           expect(x).toBeGreaterThanOrEqual(0);
           expect(x).toBeLessThanOrEqual(l.max);
           expect(x % l.step).toBe(0);

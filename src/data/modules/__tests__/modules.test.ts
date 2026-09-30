@@ -18,6 +18,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hs2aSpecVars } from '../typesHs2a';
+import { hs2eSpecVars } from '../typesHs2e';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
@@ -313,6 +314,7 @@ function representationVars(r: Representation): string[] {
         r.whole,
         ...(r.onePercent ? [r.onePercent] : []),
         ...(r.change ? [r.change.total] : []),
+        ...(r.second ? [r.second] : []),
       ];
     case 'ratioTable':
       return [r.first, r.second, r.times, ...r.amounts];
@@ -517,6 +519,9 @@ function representationVars(r: Representation): string[] {
     case 'membrane':
     case 'dnaStrand':
       return hsgSpecVars(r);
+    case 'macromolecules':
+    case 'cellDivision':
+      return hs2eSpecVars(r);
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':

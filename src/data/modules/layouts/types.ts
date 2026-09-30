@@ -19,6 +19,7 @@ import type {
   LandformScene,
   MohsScene,
 } from '../typesHsl';
+import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
 
@@ -50,10 +51,14 @@ export interface SortLayout extends LayoutBase {
     label: string;
     /** One sentence about the property, shown when the group is full. */
     why: string;
+    /** H104: a small drawing beside the group's name (a card figure, often an icon). */
+    figure?: CardFigure;
   }[];
   cards: { label: string; bin: string; figure?: CardFigure }[];
   /** A picture above the cards, so they can be judged by looking (`layouts/offspringFigure.tsx`). */
   header?: SortHeader;
+  /** H104: a sentence above the cards (what the groups have in common, or what to look for). */
+  intro?: string;
 }
 
 /**
@@ -170,6 +175,8 @@ export type CardFigure =
   | StrobeCard
   /** An organic molecule's condensed formula, its functional group lit (`typesHs2d.ts`, H101). */
   | CondensedCard
+  /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
+  | ReplicationCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -367,7 +374,11 @@ export type Figure =
   /** The immune response: antigen, helper T, B and plasma cells, antibodies, killer T, memory (H42). */
   | { kind: 'immuneStages' }
   /** A galvanic cell: two electrodes, a salt bridge and electrons along the wire (H56). */
-  | { kind: 'electrochemicalCell' };
+  | { kind: 'electrochemicalCell' }
+  /** A gene with its promoter and a repressor or activator switch, read into mRNA or not (H100). */
+  | { kind: 'geneExpression' }
+  /** A branching yes-or-no key from questions to names (H100, `typesHs2e.ts`). */
+  | { kind: 'dichotomousKey'; steps: KeyStep[] };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -515,6 +526,10 @@ export interface Scene {
   cone?: ConeCut;
   /** The two metals and the part lit (an `electrochemicalCell` figure). */
   galvanic?: GalvanicScene;
+  /** The switch, the signal and the part lit (a `geneExpression` figure; `typesHs2e.ts`). */
+  gene?: GeneScene;
+  /** The name traced and the question ringed (a `dichotomousKey` figure; `typesHs2e.ts`). */
+  key?: KeyScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**
@@ -694,11 +709,13 @@ export interface ObserveLayout extends LayoutBase {
   /** The opening values, one per column. */
   initial: number[];
   /** The pattern in a sentence, from the current values. */
-  pattern: (values: number[]) => string;
+  pattern: (values: number[], second?: number[]) => string;
   /** Columns are intervals of one number line: the bars touch, with a count scale beside. */
   histogram?: boolean;
   /** A picture of the column last tapped, above the chart (`ObserveFigure`). */
   figure?: ObserveFigure;
+  /** H100: a second row counted in the same columns, its bars beside the first (`typesHs2e.ts`). */
+  second?: ObserveSecond;
 }
 
 /**

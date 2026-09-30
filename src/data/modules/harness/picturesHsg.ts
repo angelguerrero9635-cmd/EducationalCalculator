@@ -19,6 +19,7 @@ import {
 } from '@/components/module/reps/punnettMath';
 
 import type { Representation } from '../types';
+import { dnaGeneIssues } from './picturesHs2e';
 import type { HsgSpec } from '../typesHsg';
 
 const whole = (x: number) => Math.abs(x - Math.round(x)) < 1e-9;
@@ -198,6 +199,7 @@ function dnaIssues(
     }
     return out;
   }
+  if (rep.gene) return [...out, ...dnaGeneIssues(rep, num)];
   const seq = rep.sequence ?? '';
   if (!/^[ATGC]{1,12}$/.test(seq)) out.push(`dna: sequence "${seq}" is not 1–12 bases`);
   const len = num(rep.length) ?? seq.length;

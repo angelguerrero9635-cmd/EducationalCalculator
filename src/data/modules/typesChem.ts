@@ -45,6 +45,8 @@ export interface ReactionSpec extends ReactionHs2d {
   atoms?: Record<string, [string, string]>;
   /** Grades 9–12: amounts on hand, the limiting reactant and the leftover (`typesHsi.ts`, H49). */
   limiting?: ReactionLimiting;
+  /** Grade 9 (H100): up to 18 molecules a formula, in rows; glucose as its ring (`ReactionMany.tsx`). */
+  many?: boolean;
 }
 
 /**

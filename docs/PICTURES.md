@@ -88,6 +88,8 @@ search or the sitemap, but the module tests and the harness run over it):
 | `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
 | `membrane`         | a bilayer, particles counted on each side; channel, aquaporin or pump | Grade 9 membrane transport (H32)    |
 | `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff        | Grade 9 DNA, mutations (H36)        |
+| `macromolecules`   | monomers into a chain by a value, "…" past 4; bonds and water counted | Grade 9 biomolecules (H100)         |
+| `cellDivision`     | body cell 2n, gamete n, egg + sperm = zygote; one pair past 2n = 8    | Grade 9 chromosome counts (H100)    |
 | `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
 | `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
 | `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target    | Chemistry measurement (H43)         |
@@ -213,6 +215,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `integerLine`      | `fit`, `ticks`                           | the line spans its values (344–356 g → 340–360), not 0; a tick every 5 (H89)  |
 | `integerLine`      | `compound: { join: 'equal', center, … }` | abs(x − c) = d: two closed dots at c ± d, distances bracketed, no band (H91)  |
 | `normalCurve`      | `test.tail: { sign }`                    | Hₐ's sign box: 1 < 2 ≤ left, 3 > 4 ≥ right, 6 ≠ both tails (H90)              |
+| `dnaStrand`        | `gene: { bases, stop? }`                 | a long gene: its first 12 bases, "…" and its stop; codons b ÷ 3 (H100)        |
+| `reaction`         | `many: true`                             | up to 18 molecules a formula in blocks; glucose as its 24-atom ring (H100)    |
+| `bars`             | `flows: { out: [ids] }`                  | start, flows in (+, green) and out (−, red) as steps, end; axis cut (H100)    |
+| `percentBar`       | `second: id`                             | a second percent on the bar: a band, a dashed line, its label (H104)          |
 | `scatter`          | `residuals`, `r`, `leastSquares`, …      | residual segments and plot, r, the least-squares line beside or given (H18)   |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |

@@ -9,7 +9,9 @@
  */
 import Svg, { Circle, G, Line, Path, Rect } from 'react-native-svg';
 
+import { geneShown } from '@/data/modules/typesHs2e';
 import type { DnaStrandSpec } from '@/data/modules/typesHsg';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette, type Palette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -81,8 +83,15 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
   }
 
   const full = spec.sequence ?? '';
-  const len = Math.max(0, Math.min(12, Math.round(num(spec.length) ?? full.length)));
-  const template = full.slice(0, len);
+  // H100 `gene`: a long gene drawn as its first bases, "…" and its stop codon.
+  const geneBases = spec.gene ? Math.max(6, Math.round(num(spec.gene.bases) ?? 6)) : undefined;
+  const long =
+    spec.gene && geneBases !== undefined ? geneShown(full, spec.gene, geneBases) : undefined;
+  const gap = long?.gap ?? -1;
+  const len = long
+    ? long.template.length
+    : Math.max(0, Math.min(12, Math.round(num(spec.length) ?? full.length)));
+  const template = long ? long.template : full.slice(0, len);
   const m = spec.mutation;
   const at = m ? Math.round(num(m.at) ?? 1) : undefined;
   const mut: Mutation | undefined =
@@ -92,15 +101,28 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
   const mrna = transcribe(shown);
   const protein = translate(mrna);
   const before = mut ? translate(transcribe(template)) : undefined;
-  const bw = Math.min(26, (W - X0 - 8) / Math.max(1, shown.length));
-  const x = (i: number) => X0 + i * bw;
+  const bw = Math.min(26, (W - X0 - 8) / Math.max(1, shown.length + (gap >= 0 ? 1 : 0)));
+  const x = (i: number) => X0 + (i + (gap >= 0 && i >= gap ? 1 : 0)) * bw;
+  /** The "…" standing for the gene's middle, in a row at y. */
+  const dots = (y: number) =>
+    gap >= 0 ? (
+      <ChartText
+        x={x(gap - 1) + 1.5 * bw}
+        y={y}
+        fontSize={chart.emphasis}
+        fontWeight="800"
+        textAnchor="middle"
+      >
+        …
+      </ChartText>
+    ) : null;
   const litAt = mut ? mut.at - 1 : -1;
   const ladderH = 118;
   const rnaY = ladderH + 20;
   const protY = rnaY + 60;
   const rows = show.includes('protein') ? (before ? 2 : 1) : 0;
   const H = (show.includes('mrna') ? protY : ladderH + 10) + rows * 30 + 6;
-  const allKnown = known(spec.length) && (!m || known(m.at));
+  const allKnown = known(spec.length) && (!m || known(m.at)) && known(spec.gene?.bases);
   const effect = mut ? effectOf(template, mut) : undefined;
   const changed = (i: number) =>
     !!before &&
@@ -118,6 +140,7 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
                 c={c}
                 bw={bw}
                 lit={mut?.type === 'deletion' ? -1 : litAt}
+                gap={gap}
               />
               {mut?.type === 'deletion' ? (
                 // Where the base was taken out: a caret between its neighbors.
@@ -146,6 +169,7 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
                   >
                     mRNA 5′ (from the template)
                   </ChartText>
+                  {dots(rnaY + 15)}
                   {[...mrna].map((b, i) => (
                     <Base
                       key={i}
@@ -159,7 +183,7 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
                   ))}
                   {protein.map((p, k) => {
                     const x1 = x(3 * k) + 2;
-                    const x2 = x(3 * k + 3) - 2;
+                    const x2 = x(3 * k + 2) + bw - 2;
                     return (
                       <G key={k}>
                         <Path
@@ -184,6 +208,7 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
               ) : null}
               {show.includes('protein') ? (
                 <G>
+                  {dots(protY + 16)}
                   {before ? (
                     <ProteinRow label="Before" chain={before} y={protY} x={x} bw={bw} c={c} />
                   ) : null}
@@ -202,12 +227,32 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
           </Svg>
         )}
       </Canvas>
-      <Caption>{captionOf(template, shown, protein, mut, effect, spec, rep)}</Caption>
+      <Caption>
+        {geneBases !== undefined
+          ? geneCaption(geneBases, protein, known(spec.gene?.bases), spec, rep)
+          : captionOf(template, shown, protein, mut, effect, spec, rep)}
+      </Caption>
     </>
   );
 }
 
 const fmt = (x: number) => String(Math.round(x * 100) / 100);
+
+/** A long gene: b bases, b ÷ 3 codons, the last the stop, so b ÷ 3 − 1 amino acids. */
+function geneCaption(
+  b: number,
+  protein: { aa: string }[],
+  ok: boolean,
+  spec: DnaStrandSpec,
+  rep: ReturnType<typeof useRep>,
+): string {
+  if (!ok) return 'Type the bases in the gene to read it.';
+  const c = b / 3;
+  const codons = spec.codons && rep.known(spec.codons) ? ` ${rep.named(spec.codons)}.` : '';
+  const first = protein.filter((p) => p.aa !== 'Stop').map((p) => p.aa);
+  const chain = b > 15 ? `${first.join('–')}, and on to the stop` : first.join('–');
+  return `${formatNumber(b)} bases ÷ 3 = ${formatNumber(c)} codons.${codons} The last is the stop codon, so the chain has ${formatNumber(c)} − 1 = ${formatNumber(c - 1)} amino acids: ${chain}.`;
+}
 
 function captionOf(
   template: string,
@@ -299,16 +344,19 @@ function Ladder({
   c,
   bw = Math.min(26, (W - X0 - 8) / Math.max(1, top.length)),
   lit = -1,
+  gap = -1,
 }: {
   top: string;
   y: number;
   c: Palette;
   bw?: number;
   lit?: number;
+  /** H100: a gap before base `gap` with "…" (a long gene's middle). */
+  gap?: number;
 }) {
   const bottom = complement(top);
-  const x = (i: number) => X0 + i * bw;
-  const end = x(top.length);
+  const x = (i: number) => X0 + (i + (gap >= 0 && i >= gap ? 1 : 0)) * bw;
+  const end = x(top.length - 1) + bw;
   const rail = (yy: number) => (
     <G>
       <Line
@@ -329,6 +377,20 @@ function Ladder({
   const botY = topY + 20 + 24;
   return (
     <G>
+      {gap >= 0
+        ? [topY + 15, botY + 15].map((yy) => (
+            <ChartText
+              key={yy}
+              x={x(gap - 1) + 1.5 * bw}
+              y={yy}
+              fontSize={chart.emphasis}
+              fontWeight="800"
+              textAnchor="middle"
+            >
+              …
+            </ChartText>
+          ))
+        : null}
       <ChartText x={4} y={y} fontSize={chart.label} fontWeight="700" fill={c.chartMuted}>
         {'3′'}
       </ChartText>
