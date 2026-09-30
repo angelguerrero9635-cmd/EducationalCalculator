@@ -66,6 +66,26 @@ export interface RationalByCoefficients {
   s: NumOrVar;
 }
 
+/**
+ * H95: two more `algebraTiles` modes. `box`: a generic rectangle for a product past the tiles,
+ * one factor's terms across the top and the other's down the side (coefficients, highest power
+ * first), every cell their product, each diagonal of like terms in its own tint and collected
+ * under the box; `product` names the product's coefficients (checked). `monomial`: a·xᵐ ÷ b·xⁿ
+ * written out as factors, x·x·x… over x·x, the pairs that cancel struck, a negative exponent's
+ * factors on the other side of the bar; `c` and `k` name the answer c·xᵏ (checked).
+ */
+export type AlgebraTilesHs2g =
+  | { mode: 'box'; top: NumOrVar[]; side: NumOrVar[]; product?: string[] }
+  | {
+      mode: 'monomial';
+      a: NumOrVar;
+      m: NumOrVar;
+      b: NumOrVar;
+      n: NumOrVar;
+      c?: string;
+      k?: string;
+    };
+
 /** Every variable id these options name (for the module tests). */
 export function hs2gSpecVars(r: Representation): string[] {
   const ids = (...xs: (NumOrVar | boolean | undefined)[]): string[] =>
@@ -75,6 +95,12 @@ export function hs2gSpecVars(r: Representation): string[] {
       return ids(r.plus, r.lit, r.litTerm);
     case 'functionGraph':
       return ids(r.horizontal, r.restrict?.from, r.restrict?.to);
+    case 'algebraTiles':
+      return r.mode === 'box'
+        ? ids(...r.top, ...r.side, ...(r.product ?? []))
+        : r.mode === 'monomial'
+          ? ids(r.a, r.m, r.b, r.n, r.c, r.k)
+          : [];
     default:
       return [];
   }

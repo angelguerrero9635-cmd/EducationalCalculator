@@ -141,6 +141,7 @@ import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
+import { AlgebraTilesHs2g } from './AlgebraTilesHs2g';
 import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
 import { PunnettHs } from './PunnettHs';
@@ -230,7 +231,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'vectorDiagram':
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':
-      return <AlgebraTiles spec={spec} calc={calc} />;
+      return spec.mode === 'box' || spec.mode === 'monomial' ? (
+        <AlgebraTilesHs2g spec={spec} calc={calc} />
+      ) : (
+        <AlgebraTiles spec={spec} calc={calc} />
+      );
     case 'gel':
       return <Gel spec={spec} calc={calc} />;
     case 'alleleFrequencies':

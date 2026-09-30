@@ -1826,13 +1826,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'P6 (docs/plans/m.9.md need 6, m.11.md needs 4 and 5, m.12.md need 11). Four options on `functionGraph`, off unless set; the picture and the harness reshape the same curve (functionGraphHs2g.ts). `abs: true` draws |f(x)| for any family: the parts below the x-axis reflected up, the curve before it dashed, the formula in bars, no handles (sliders); a traced point reads |f(x)|. m.9.piecewise-functions~absolute-function (the |f(x)| item): { kind: "functionGraph", family: "quadratic", form: "standard", a: "a", b: "b", c: "c", abs: true, at: { x: "x", y: "y" }, marks: ["zeros"] } with y = |f(x)|. `horizontal: "b"` on the absolute, root, exponential and log families draws y = a·f(b(x − h)) + k, written "√(2x)", "|2(x − 3)|", "√(−(x − 2))"; the graph squeezed toward x = h (stretched for |b| < 1), flipped across it for b < 0; `parent: true` keeps f(x) dashed; handles at x = h stay, the stretch handle moves to h + 1/b. m.11.function-transformations~horizontal: { kind: "functionGraph", family: "root", index: 2, h: "h", horizontal: "b", parent: true, input: "x", at: { x: "X", y: "Y" } } (X = h + p ÷ b, Y = √p). `restrict: { from?, to? }` (numbers or value ids) keeps the domain x ≥ from (x ≤ to): the rest dashed, closed end dots, and with `inverse` only the kept part is reflected; a vertex-form parabola kept on x ≥ h writes f⁻¹(x) = h + √((x − k)/a). `xMin` keeps its meaning (the window’s left edge). m.11.inverse-functions~restrict-domain: { kind: "functionGraph", family: "quadratic", form: "vertex", a: "a", h: "h", k: "k", restrict: { from: "h" }, inverse: true, at: { x: "x", y: "y" } }. Rational by coefficients: `family: "rational", p, q, r, s` draws (px + q) ÷ (rx + s) written as typed, its asymptotes x = −s ÷ r and y = p ÷ r (no handles). m.12.limits-intro~infinity: { kind: "functionGraph", family: "rational", p: "p", q: "q", r: "r", s: "s", shows: { ha: "L" } }, so z and v can go.',
   },
-  ask(
-    'H95',
-    'algebraTiles',
-    'An area box for polynomial products past the tiles; a monomial picture with factors struck',
-    ['m.9.polynomial-operations', 'm.9.radicals'],
-    'P7: docs/plans/m.9.md needs 7 and 8.',
-  ),
+  {
+    ...ask(
+      'H95',
+      'algebraTiles',
+      'An area box for polynomial products past the tiles; a monomial picture with factors struck',
+      ['m.9.polynomial-operations', 'm.9.radicals'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-polynomial-operations-box',
+      'g.m9-radicals-monomials-factors',
+      'g.m9-radicals-monomials-negative',
+    ],
+    notes:
+      'P7 (docs/plans/m.9.md needs 7 and 8). Two new `algebraTiles` modes; the other modes are unchanged. `mode: "box"`: the area box (a generic rectangle, not to scale) with `side` (the left factor’s coefficients, highest power first, 1–3 terms) down the left and `top` (1–4 terms) across the top, each cell the row term times the column term, each diagonal of like terms in its own tint (theme `areaBoxBand1`–`6`) and collected in a key under the box ("−3x² + 2x² = −x²"); `product` names the product’s coefficients, highest first (checked). m.9.polynomial-operations~box: { kind: "algebraTiles", mode: "box", side: ["a", "b"], top: ["c", "d", "e"], product: ["p", "q", "r", "t"] } for ({a}x + {b})({c}x² + {d}x + {e}) = {p}x³ + {q}x² + {r}x + {t} (9 values; example (x + 2)(x² − 3x + 4) = x³ − x² − 2x + 8). `mode: "monomial"`: a·xᵐ ÷ b·xⁿ written as a · x · x · … over b · x · …, the pairs that cancel struck, a negative exponent’s factors moved across the bar (in orange, the caption says why), the answer c·xᵏ under it ("= 4x⁵", "= (3/2)x⁵", "= 2/x³ = 2x⁻³"); `c` and `k` are checked (c = a ÷ b, k = m − n). m.9.radicals~monomials: { kind: "algebraTiles", mode: "monomial", a: "a", m: "m", b: "b", n: "n", c: "c", k: "k" } in place of the table (the check value x and y can go).',
+  },
   ask(
     'H96',
     'markedFigure',

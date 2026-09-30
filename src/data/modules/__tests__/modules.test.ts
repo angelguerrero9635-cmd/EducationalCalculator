@@ -512,7 +512,7 @@ function representationVars(r: Representation): string[] {
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      return hsdSpecVars(r);
+      return [...hsdSpecVars(r), ...hs2gSpecVars(r)];
     case 'membrane':
     case 'dnaStrand':
       return hsgSpecVars(r);

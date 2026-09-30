@@ -2120,7 +2120,7 @@ export function repIssues(
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      out.push(...hsdIssues(rep, (id) => val(id)));
+      out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       break;
     case 'membrane':
     case 'dnaStrand':

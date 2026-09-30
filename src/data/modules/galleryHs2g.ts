@@ -385,6 +385,109 @@ const GRAPHS: ModuleDef[] = [
   ratio,
 ];
 
-export const HS2G_GALLERY_MODULES: ModuleDef[] = [...TERMS, ...GRAPHS];
+// ── H95: an area box past the tiles; a monomial quotient as factors ──
+
+/** (ax + b)(cx² + dx + e) in an area box: six cells, like terms on the diagonals. */
+const areaBox = page({
+  id: 'g.m9-polynomial-operations-box',
+  title: 'Binomial times trinomial: the area box',
+  use: 'Use this for “Multiply (x + 2)(x² − 3x + 4).”',
+  assumptions: [
+    'Each term of one factor multiplies each term of the other: 2 × 3 = 6 products.',
+    'Each cell of the box holds one product: its row term times its column term.',
+    'Like terms sit on the same diagonal: add them to finish.',
+  ],
+  variables: [
+    num('a', 'a', 'x in the first factor', -10, 10),
+    num('b', 'b', 'Number in the first factor', -10, 10),
+    num('c', 'c', 'x² in the second factor', -10, 10),
+    num('d', 'd', 'x in the second factor', -10, 10),
+    num('e', 'e', 'Number in the second factor', -10, 10),
+    num('p', 'p', 'x³ in the product', -100, 100, { derived: true }),
+    num('q', 'q', 'x² in the product', -200, 200, { derived: true }),
+    num('r', 'r', 'x in the product', -200, 200, { derived: true }),
+    num('t', 't', 'Number in the product', -100, 100, { derived: true }),
+  ],
+  rules: [
+    derive(
+      'p = ac',
+      'p',
+      ['a', 'c'],
+      '{p} = {a} × {c}',
+      (v) => v.a! * v.c!,
+      '{a} × {c}',
+      'Only x times x² makes x³.',
+    ),
+    derive(
+      'q = ad + bc',
+      'q',
+      ['a', 'd', 'b', 'c'],
+      '{q} = {a} × {d} + {b} × {c}',
+      (v) => v.a! * v.d! + v.b! * v.c!,
+      '{a} × {d} + {b} × {c}',
+      'Two cells make x²: x times the x term, and the number times x².',
+    ),
+    derive(
+      'r = ae + bd',
+      'r',
+      ['a', 'e', 'b', 'd'],
+      '{r} = {a} × {e} + {b} × {d}',
+      (v) => v.a! * v.e! + v.b! * v.d!,
+      '{a} × {e} + {b} × {d}',
+      'Two cells make x: x times the number, and the number times the x term.',
+    ),
+    derive(
+      't = be',
+      't',
+      ['b', 'e'],
+      '{t} = {b} × {e}',
+      (v) => v.b! * v.e!,
+      '{b} × {e}',
+      'The two numbers multiply to the number term.',
+    ),
+  ],
+  example: { a: 1, b: 2, c: 1, d: -3, e: 4, p: 1, q: -1, r: -2, t: 8 },
+  startWith: ['a', 'b', 'c', 'd', 'e'],
+  equation: '({a}x + {b})({c}x² + {d}x + {e}) = {p}x³ + {q}x² + {r}x + {t}',
+  representation: {
+    kind: 'algebraTiles',
+    mode: 'box',
+    side: ['a', 'b'],
+    top: ['c', 'd', 'e'],
+    product: ['p', 'q', 'r', 't'],
+  },
+});
+
+const MONOMIAL: Representation = {
+  kind: 'algebraTiles',
+  mode: 'monomial',
+  a: 'a',
+  m: 'm',
+  b: 'b',
+  n: 'n',
+  c: 'c',
+  k: 'k',
+};
+
+const MONOMIALS: ModuleDef[] = [
+  fromPage(
+    'm.9.radicals~monomials',
+    'g.m9-radicals-monomials-factors',
+    'Divide monomials',
+    MONOMIAL,
+  ),
+  fromPage(
+    'm.9.radicals~monomials',
+    'g.m9-radicals-monomials-negative',
+    'Divide monomials: a negative exponent',
+    MONOMIAL,
+    {
+      use: 'Use this for “Simplify 6x² ÷ 4x⁻³.”',
+      example: { a: 6, m: 2, b: 4, n: -3, c: 1.5, k: 5, x: 2, y: 48 },
+    },
+  ),
+];
+
+export const HS2G_GALLERY_MODULES: ModuleDef[] = [...TERMS, ...GRAPHS, areaBox, ...MONOMIALS];
 
 export const HS2G_GALLERY_LAYOUTS: LayoutDef[] = [];

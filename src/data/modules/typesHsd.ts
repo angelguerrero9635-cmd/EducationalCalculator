@@ -4,6 +4,7 @@
  * apart from `types.ts` so that file's union only lists them. A `NumOrVar` field is a fixed
  * number or a variable id.
  */
+import type { AlgebraTilesHs2g } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
 
 /** A trig function of the unit circle. */
@@ -88,6 +89,7 @@ export type AlgebraTilesSpec = { kind: 'algebraTiles' } & (
       right: { x: NumOrVar; unit: NumOrVar };
       solution?: string;
     }
+  | AlgebraTilesHs2g // H95: 'box' and 'monomial'
 );
 
 /**
@@ -292,6 +294,8 @@ export function hsdSpecVars(r: HsdSpec): string[] {
           return ids(r.b, r.c, r.k, r.missing);
         case 'equation':
           return ids(r.left.x, r.left.unit, r.right.x, r.right.unit, r.solution);
+        default:
+          return []; // H95's modes: hs2gSpecVars
       }
     }
     case 'vectorDiagram':

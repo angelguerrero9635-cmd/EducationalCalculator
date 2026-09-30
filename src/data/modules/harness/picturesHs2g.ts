@@ -4,6 +4,7 @@
  * probability, unit-circle, statistics and complex-number options. Called from each kind's case
  * in `pictures.ts`.
  */
+import { boxProduct, monomialModel } from '@/components/module/reps/algebraBox';
 import { curveOf } from '@/components/module/reps/functionGraphMath';
 import { termsModel } from '@/components/module/reps/termsModel';
 
@@ -77,6 +78,38 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
         const steps = fin.slice(1).map((y, i) => y - fin[i]!);
         if (steps.some((d) => d > 1e-9) && steps.some((d) => d < -1e-9))
           out.push('the kept part is not one-to-one, so its inverse is not a function');
+      }
+      break;
+    }
+    case 'algebraTiles': {
+      if (rep.mode === 'box') {
+        // H95: up to a cubic across the top and a trinomial down the side; the product checked.
+        if (rep.top.length < 1 || rep.top.length > 4 || rep.side.length < 1 || rep.side.length > 3)
+          out.push(`area box ${rep.side.length} × ${rep.top.length} (1–3 rows, 1–4 columns)`);
+        const top = rep.top.map(get);
+        const side = rep.side.map(get);
+        if (top.some((x) => x === undefined) || side.some((x) => x === undefined)) break;
+        const want = boxProduct(top as number[], side as number[]);
+        if (rep.product && rep.product.length !== want.length)
+          out.push(`area box: ${rep.product.length} product terms, not ${want.length}`);
+        (rep.product ?? []).forEach((id, i) => {
+          const v = get(id);
+          if (v !== undefined && !near(v, want[i]!))
+            out.push(`area box: product term ${i + 1} is ${v}, not ${want[i]}`);
+        });
+      } else if (rep.mode === 'monomial') {
+        const [a, m, b, n] = [rep.a, rep.m, rep.b, rep.n].map(get);
+        if ([a, m, b, n].some((x) => x === undefined)) break;
+        for (const e of [m!, n!])
+          if (!Number.isInteger(e) || Math.abs(e) > 10)
+            out.push(`exponent ${e} (whole, −10 to 10)`);
+        const model = monomialModel(a!, m!, b!, n!);
+        if (model.over - model.under !== model.k) out.push('the factors left are not m − n');
+        const [c, k] = [get(rep.c), get(rep.k)];
+        if (c !== undefined && Number.isFinite(model.c) && !near(c, model.c))
+          out.push(`monomial: c ${c} is not a ÷ b = ${model.c}`);
+        if (k !== undefined && k !== model.k)
+          out.push(`monomial: k ${k} is not m − n = ${model.k}`);
       }
       break;
     }
