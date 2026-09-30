@@ -475,6 +475,52 @@ const candidateWork = (v: Values, sign: 1 | -1) => {
 /** The share within 1, 2 or 3 standard deviations, in percent, by the 68–95–99.7 rule. */
 const EMPIRICAL: Record<number, number> = { 1: 68, 2: 95, 3: 99.7 };
 
+/**
+ * (x − a)/(x − b) times the second fraction, flipped when t = −1: the value ids of the factors
+ * left on top and bottom once equal ones cancel, and the cancelled factors as written.
+ */
+const flipFactors = (v: Values) => {
+  const top = ['a', v.sg === -1 ? 'd' : 'c'];
+  const bottom = ['b', v.sg === -1 ? 'c' : 'd'];
+  const gone: string[] = [];
+  for (const id of [...top]) {
+    const i = bottom.findIndex((b) => v[b] === v[id]);
+    if (i < 0) continue;
+    gone.push(lin(v[id]!));
+    top.splice(top.indexOf(id), 1);
+    bottom.splice(i, 1);
+  }
+  return { top, bottom, gone };
+};
+/** Every factor cancels: the product is 1 wherever it has a value. */
+const flipCancelsAll = (v: Values) => flipFactors(v).top.length === 0;
+/** What is left after cancelling, as a step's right side: ({x} − {a}) ÷ ({x} − {d}). */
+const flipExpr = (v: Values) => {
+  const { top, bottom } = flipFactors(v);
+  const f = (ids: string[]) => ids.map((id) => `({x} − {${id}})`).join(' × ');
+  const t = top.length ? f(top) : '1';
+  if (!bottom.length) return t;
+  return `${t} ÷ ${bottom.length > 1 ? `(${f(bottom)})` : f(bottom)}`;
+};
+/** The product written out, the cancelling and the x left out, as the step explains it. */
+const flipHow = (v: Values) => {
+  const [a, b, c, d] = [v.a!, v.b!, v.c!, v.d!];
+  const [m, n] = v.sg === -1 ? [d, c] : [c, d];
+  const { top, bottom, gone } = flipFactors(v);
+  const side = (ids: string[]) =>
+    ids.length === 0 ? '1' : ids.map((id) => `(${lin(v[id]!)})`).join('');
+  const out = [...new Set(v.sg === -1 ? [b, c, d] : [b, d])].sort((p, q) => p - q).map(fmt);
+  const product = `(${lin(a)})(${lin(m)}) ÷ ((${lin(b)})(${lin(n)}))`;
+  const kept = `${side(top)} ÷ ${bottom.length > 1 ? `(${side(bottom)})` : side(bottom)}`;
+  return [
+    v.sg === -1 ? `Flip the second fraction and multiply: ${product}.` : `Multiply: ${product}.`,
+    gone.length
+      ? `Cancel ${gone.join(' and ')} to get ${kept}, with x ≠ ${out.join(', ')}.`
+      : `Nothing cancels; x ≠ ${out.join(', ')}.`,
+    'Then put x in.',
+  ].join(' ');
+};
+
 export const MATH_11_MODULES: ModuleDef[] = [
   // ── Normal distributions, z-scores and margin of error (S-ID.4, S-IC.4) ──
   page({
@@ -3193,6 +3239,122 @@ export const MATH_11_MODULES: ModuleDef[] = [
       a: 'A',
       zeros: ['Z'],
       poles: ['p', 'q'],
+      marks: ['zeros', 'asymptotes'],
+    },
+  }),
+  page({
+    id: 'm.11.rational-functions~multiply-divide',
+    title: 'Multiply or divide rational expressions',
+    use: 'Use this for “Simplify (x − 4)/(x + 1) × (x + 1)/(x − 6)” or a quotient of two such fractions.',
+    assumptions: [
+      'To divide, flip the second fraction and multiply: its power becomes −1.',
+      'Multiply the tops and the bottoms, then cancel a factor that is on both.',
+      'x can’t make any bottom 0, even one that cancels: those x stay left out.',
+    ],
+    variables: [
+      V('a', 'a', 'First top is x − a', { integer: true, min: -20, max: 20 }),
+      V('b', 'b', 'First bottom is x − b', { integer: true, min: -20, max: 20 }),
+      V('sg', 't', 'Multiply (1) or divide (−1)', { allowed: [-1, 1], min: -1, max: 1 }),
+      V('c', 'c', 'Second top is x − c', { integer: true, min: -20, max: 20 }),
+      V('d', 'd', 'Second bottom is x − d', { integer: true, min: -20, max: 20 }),
+      // The flipped second fraction and the left-out x place the picture's zeros and poles.
+      V('m', 'm', 'Second top after the flip', { min: -20, max: 20, derived: true, hidden: true }),
+      V('n', 'n', 'Second bottom after the flip', {
+        min: -20,
+        max: 20,
+        derived: true,
+        hidden: true,
+      }),
+      V('h', 'h', 'Left-out x drawn as a hole', { min: -20, max: 20, derived: true, hidden: true }),
+      V('x', 'x', 'Input', { min: -40, max: 40, step: 0.5 }),
+      V('y', 'y', 'Value of the product', { min: -1e5, max: 1e5, fraction: 40, derived: true }),
+    ],
+    rules: [
+      limit(
+        'a ≠ b',
+        '{a} is not {b}',
+        ['a', 'b'],
+        (v) => v.a !== v.b,
+        'With a = b the first fraction is just 1: use different numbers top and bottom.',
+      ),
+      limit(
+        'c ≠ d',
+        '{c} is not {d}',
+        ['c', 'd'],
+        (v) => v.c !== v.d,
+        'With c = d the second fraction is just 1: use different numbers top and bottom.',
+      ),
+      limit(
+        'not everything cancels',
+        '({a}, {b}) and ({c}, {d}) with {sg} leave a factor',
+        ['a', 'b', 'c', 'd', 'sg'],
+        (v) => !flipCancelsAll(v),
+        'Every factor cancels, so the answer is 1 wherever it has a value.',
+      ),
+      limit(
+        'x ≠ b, d',
+        '{x} is not {b} or {d}',
+        ['x', 'b', 'd'],
+        (v) => v.x !== v.b && v.x !== v.d,
+        'At x = b or x = d a bottom is 0: the expression has no value there.',
+      ),
+      limit(
+        'x ≠ c when dividing',
+        '{x} is not {c} when {sg} = −1',
+        ['x', 'c', 'sg'],
+        (v) => v.sg !== -1 || v.x !== v.c,
+        'At x = c the second fraction is 0, and nothing can be divided by 0.',
+      ),
+      derive(
+        'm = the flipped top',
+        'm',
+        ['c', 'd', 'sg'],
+        '{m} = ((1 + {sg}) × {c} + (1 − {sg}) × {d}) ÷ 2',
+        (v) => ((1 + v.sg!) * v.c! + (1 - v.sg!) * v.d!) / 2,
+        '{c}',
+        'The top of the second fraction once it is flipped.',
+        { hidden: true },
+      ),
+      derive(
+        'n = the flipped bottom',
+        'n',
+        ['c', 'd', 'sg'],
+        '{n} = ((1 + {sg}) × {d} + (1 − {sg}) × {c}) ÷ 2',
+        (v) => ((1 + v.sg!) * v.d! + (1 - v.sg!) * v.c!) / 2,
+        '{d}',
+        'The bottom of the second fraction once it is flipped.',
+        { hidden: true },
+      ),
+      derive(
+        'h = the left-out x',
+        'h',
+        ['b', 'd', 'sg'],
+        '{h} = ((1 + {sg}) × {b} + (1 − {sg}) × {d}) ÷ 2',
+        (v) => ((1 + v.sg!) * v.b! + (1 - v.sg!) * v.d!) / 2,
+        '{b}',
+        'An x the divisor’s own bottom leaves out.',
+        { hidden: true },
+      ),
+      derive(
+        'y = (x − a) ÷ (x − b) × ((x − c) ÷ (x − d))ᵗ',
+        'y',
+        ['x', 'a', 'b', 'c', 'd', 'sg'],
+        '{y} = ({x} − {a}) ÷ ({x} − {b}) × (({x} − {c}) ÷ ({x} − {d}))^{sg}',
+        (v) => ((v.x! - v.a!) / (v.x! - v.b!)) * ((v.x! - v.c!) / (v.x! - v.d!)) ** v.sg!,
+        (v) => flipExpr(v),
+        (v) => flipHow(v),
+      ),
+    ],
+    example: { a: 4, b: -1, sg: 1, c: -1, d: 6, m: -1, n: 6, h: -1, x: 2, y: 0.5 },
+    startWith: ['a', 'b', 'sg', 'c', 'd', 'x'],
+    equation: '{x − {a}}/{x − {b}} × ({x − {c}}/{x − {d}})^{sg}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      a: 1,
+      zeros: ['a', 'm', 'h'],
+      poles: ['b', 'n', 'h'],
+      at: { x: 'x', y: 'y' },
       marks: ['zeros', 'asymptotes'],
     },
   }),
