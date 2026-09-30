@@ -151,5 +151,7 @@ ray, line or point), `net` (six squares), `inequality` (an open or closed circle
 arrow), `scatter` (dots that rise, fall, scatter or curve), `cell` (a small cell) and `rock` (a texture); a `polygon` can mark its `base`, a
 `dashed` height and the base `extend`ed. Geometry cards (`layouts/cardFiguresHs2b.tsx`):
 `markedTriangles` (two triangles from their sides at one scale, with ticks, arcs, right-angle
-marks and side lengths that mean what they say). Every figure and card figure has a page at
+marks and side lengths that mean what they say) and `construction` (named points with segments,
+compass arcs, ticks, arcs and angle numbers, a stage's new parts `lit`). Every figure and card
+figure has a page at
 `/gallery`.

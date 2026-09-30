@@ -5,8 +5,9 @@
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
-import type { LayoutDef } from './layouts';
+import type { CardFigure, LayoutDef } from './layouts';
 import type { ModuleDef, Representation, StepText } from './types';
+import type { CardPart } from './typesHs2b';
 
 type Solve = (v: Values) => number | undefined;
 interface Rule {
@@ -767,4 +768,320 @@ const SIMILARITY_CARDS: LayoutDef = {
   ],
 };
 
-export const HS2B_GALLERY_LAYOUTS: LayoutDef[] = [CONGRUENCE_CARDS, SIMILARITY_CARDS];
+// ─── Part 6: construction and proof stages (constructions, proofs, congruence) ─
+
+type P2 = [number, number];
+/** A point `r` from c at `deg` degrees (counterclockwise from right; the box's y is down). */
+const polar = (c: P2, r: number, deg: number): P2 => [
+  c[0] + r * Math.cos(deg * RAD),
+  c[1] - r * Math.sin(deg * RAD),
+];
+/** Card parts, with the stage's figure built from them. */
+const card = (
+  points: Record<string, P2>,
+  parts: CardPart[],
+  lit: string[],
+  named: string[],
+): CardFigure => ({ kind: 'construction', points, parts, lit, named });
+
+// Perpendicular bisector of AB: equal arcs from A and B cross at P and Q.
+const bis = (() => {
+  const A: P2 = [20, 55];
+  const B: P2 = [80, 55];
+  const h = Math.sqrt(40 ** 2 - 30 ** 2);
+  return {
+    A,
+    B,
+    P: [50, 55 - h] as P2,
+    Q: [50, 55 + h] as P2,
+    R: polar(A, 40, 35),
+    M: [50, 55] as P2,
+  };
+})();
+const bisStage = (k: number): CardFigure => {
+  const parts: CardPart[] = [{ segment: 'AB' }];
+  if (k === 1) parts.push({ segment: 'AR', dashed: true, id: 'open' });
+  if (k >= 2) parts.push({ compass: 'A', from: 'P', to: 'Q', id: 'arcA' });
+  if (k >= 3) parts.push({ compass: 'B', from: 'Q', to: 'P', id: 'arcB' });
+  if (k >= 4) parts.push({ dot: 'P', id: 'p' }, { dot: 'Q', id: 'q' });
+  if (k >= 5)
+    parts.push(
+      { line: 'PQ', id: 'pq' },
+      { right: 'BMP', id: 'right' },
+      { ticks: 'AM', count: 1, id: 't1' },
+      { ticks: 'MB', count: 1, id: 't2' },
+    );
+  const lit = [[], ['open'], ['arcA'], ['arcB'], ['p', 'q'], ['pq', 'right', 't1', 't2']][k]!;
+  return card(bis, parts, lit, k >= 4 ? ['A', 'B', 'P', 'Q'] : ['A', 'B']);
+};
+
+// Angle bisector of ∠AOB: an arc from O, equal arcs from A and B crossing at P.
+const ang = (() => {
+  const O: P2 = [12, 84];
+  const half = 27.5;
+  const [r1, r2] = [40, 30];
+  const c = Math.cos(half * RAD);
+  const d = r1 * c + Math.sqrt((r1 * c) ** 2 - (r1 * r1 - r2 * r2));
+  return {
+    O,
+    X: polar(O, 86, 0),
+    Y: polar(O, 86, 55),
+    A: polar(O, r1, 0),
+    B: polar(O, r1, 55),
+    P: polar(O, d, half),
+  };
+})();
+const angStage = (k: number): CardFigure => {
+  const parts: CardPart[] = [
+    { ray: 'OX' },
+    { ray: 'OY' },
+    { compass: 'O', from: 'A', to: 'B', id: 'arcO' },
+  ];
+  if (k >= 2) parts.push({ compass: 'A', through: 'P', span: 44, id: 'arcA' });
+  if (k >= 3)
+    parts.push({ compass: 'B', through: 'P', span: 44, id: 'arcB' }, { dot: 'P', id: 'p' });
+  if (k >= 4)
+    parts.push(
+      { ray: 'OP', id: 'op' },
+      { arcs: 'AOP', count: 1, id: 'h1' },
+      { arcs: 'POB', count: 1, id: 'h2' },
+    );
+  const lit = [[], ['arcO'], ['arcA'], ['arcB', 'p'], ['op', 'h1', 'h2']][k]!;
+  return card(ang, parts, lit, k >= 3 ? ['O', 'A', 'B', 'P'] : ['O', 'A', 'B']);
+};
+
+// The center of a circle: the perpendicular bisectors of two chords cross at it.
+const ctr = (() => {
+  const O: P2 = [50, 50];
+  const R = 36;
+  const [K, L, M, N] = [150, 250, 285, 25].map((d) => polar(O, R, d)) as [P2, P2, P2, P2];
+  /** The two crossings of equal arcs from a chord's ends (compass 0.6 of the chord). */
+  const cross = (p: P2, q: P2): [P2, P2] => {
+    const len = Math.hypot(q[0] - p[0], q[1] - p[1]);
+    const m: P2 = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
+    const t = Math.sqrt((0.6 * len) ** 2 - (len / 2) ** 2);
+    const n: P2 = [-(q[1] - p[1]) / len, (q[0] - p[0]) / len];
+    return [
+      [m[0] + n[0] * t, m[1] + n[1] * t],
+      [m[0] - n[0] * t, m[1] - n[1] * t],
+    ];
+  };
+  const [E, F] = cross(K, L);
+  const [G, H] = cross(M, N);
+  return { O, K, L, M, N, E, F, G, H, T: polar(O, R, 90) };
+})();
+const ctrStage = (k: number): CardFigure => {
+  const parts: CardPart[] = [
+    { circle: 'O', through: 'K' },
+    { segment: 'KL', id: 'c1' },
+    { segment: 'MN', id: 'c2' },
+  ];
+  if (k >= 2)
+    parts.push(
+      { compass: 'K', from: 'E', to: 'F', id: 'a1' },
+      { compass: 'L', from: 'E', to: 'F', id: 'a2' },
+      { compass: 'M', from: 'G', to: 'H', id: 'a3' },
+      { compass: 'N', from: 'G', to: 'H', id: 'a4' },
+      { line: 'EF', id: 'b1' },
+      { line: 'GH', id: 'b2' },
+    );
+  if (k >= 3) parts.push({ dot: 'O', id: 'o' });
+  if (k >= 4)
+    parts.push(
+      { segment: 'OK', dashed: true, id: 'r1' },
+      { segment: 'OM', dashed: true, id: 'r2' },
+      { segment: 'OT', dashed: true, id: 'r3' },
+      { ticks: 'OK', count: 1, id: 'k1' },
+      { ticks: 'OM', count: 1, id: 'k2' },
+      { ticks: 'OT', count: 1, id: 'k3' },
+    );
+  const lit = [
+    [],
+    ['c1', 'c2'],
+    ['a1', 'a2', 'a3', 'a4', 'b1', 'b2'],
+    ['o'],
+    ['r1', 'r2', 'r3', 'k1', 'k2', 'k3'],
+  ][k]!;
+  return card(ctr, parts, lit, k >= 3 ? ['O'] : []);
+};
+
+// Vertical angles: lines ℓ (AC) and m (BD) cross at X; angles 1, 2, 3 in a row.
+const vert: Record<string, P2> = { A: [6, 68], C: [94, 32], B: [20, 12], D: [80, 88], X: [50, 50] };
+const vertStage = (k: number): CardFigure => {
+  const parts: CardPart[] = [
+    { line: 'AC', id: 'l' },
+    { line: 'BD', id: 'm' },
+    { text: 'ℓ', at: 'C', id: 'l' },
+    { text: 'm', at: 'D', id: 'm' },
+    { text: '1', at: 'AXB', id: 'a1' },
+    { text: '2', at: 'BXC', id: 'a2' },
+    { text: '3', at: 'CXD', id: 'a3' },
+  ];
+  if (k >= 5) parts.push({ arcs: 'AXB', count: 1, id: 'a1' }, { arcs: 'CXD', count: 1, id: 'a3' });
+  const lit = [[], ['l', 'm'], ['a1', 'a2', 'a3'], ['a2'], ['a1', 'a3'], ['a1', 'a3']][k]!;
+  return card(vert, parts, lit, []);
+};
+
+// The triangle sum: line ℓ (DE) through B parallel to AC.
+const tsum: Record<string, P2> = { A: [10, 86], C: [92, 86], B: [40, 26], D: [4, 26], E: [96, 26] };
+const tsumStage = (k: number): CardFigure => {
+  const parts: CardPart[] = [
+    { segment: 'AB' },
+    { segment: 'BC' },
+    { segment: 'CA' },
+    { line: 'DE', id: 'l' },
+    { text: '1', at: 'DBA', id: 't' },
+    { text: '2', at: 'ABC', id: 't' },
+    { text: '3', at: 'CBE', id: 't' },
+  ];
+  if (k >= 2) parts.push({ arcs: 'BAC', count: 1, id: 'x' }, { arcs: 'BCA', count: 2, id: 'x' });
+  const lit = [[], ['l'], ['x'], ['t']][k]!;
+  return card(tsum, parts, lit, ['A', 'B', 'C']);
+};
+
+// M is the midpoint of PQ and of RS, so △PMR ≅ △QMS and PR ≅ QS.
+const mid: Record<string, P2> = { P: [12, 20], Q: [88, 80], M: [50, 50], R: [16, 86], S: [84, 14] };
+const midStage = (k: number): CardFigure => {
+  const parts: CardPart[] = [];
+  if (k >= 3) parts.push({ fill: 'PMR', id: 'f' }, { fill: 'QMS', id: 'f' });
+  parts.push(
+    { segment: 'PQ' },
+    { segment: 'RS' },
+    { segment: 'PR', id: 'c' },
+    { segment: 'QS', id: 'c' },
+    { ticks: 'PM', count: 1, id: 'm' },
+    { ticks: 'MQ', count: 1, id: 'm' },
+    { ticks: 'RM', count: 2, id: 'm' },
+    { ticks: 'MS', count: 2, id: 'm' },
+  );
+  if (k >= 2) parts.push({ arcs: 'PMR', count: 1, id: 'v' }, { arcs: 'QMS', count: 1, id: 'v' });
+  if (k >= 4) parts.push({ ticks: 'PR', count: 3, id: 'c' }, { ticks: 'QS', count: 3, id: 'c' });
+  const lit = [[], ['m'], ['v'], ['f'], ['c']][k]!;
+  return card(mid, parts, lit, ['P', 'Q', 'M', 'R', 'S']);
+};
+
+const STEPS = 'Put the steps in order, first step first.';
+const CONSTRUCTION_STAGES: LayoutDef[] = [
+  {
+    kind: 'sequence',
+    id: 'g.m10-constructions-bisector-steps',
+    title: 'Construct a perpendicular bisector',
+    use: 'Use this for “What is the next step in constructing the perpendicular bisector of AB?”',
+    assumptions: [
+      'Only a compass and a straightedge: no ruler marks and no protractor.',
+      'Every point where the arcs cross is the same distance from A and from B.',
+    ],
+    question: STEPS,
+    stages: [
+      { label: 'Open the compass to more than half of AB', figure: bisStage(1) },
+      { label: 'Draw an arc from A across the segment', figure: bisStage(2) },
+      { label: 'Keep the same opening and draw an arc from B', figure: bisStage(3) },
+      { label: 'Mark where the two arcs cross, above and below', figure: bisStage(4) },
+      { label: 'Draw the line through the two crossings', figure: bisStage(5) },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'g.m10-constructions-angle-bisector-steps',
+    title: 'Bisect an angle',
+    use: 'Use this for “Put the steps for bisecting ∠AOB with a compass in order.”',
+    assumptions: [
+      'The first arc makes OA = OB; the two equal arcs from A and B make AP = BP.',
+      'So △AOP ≅ △BOP by SSS, and ray OP splits the angle into two equal halves.',
+    ],
+    question: STEPS,
+    stages: [
+      { label: 'Draw an arc from O that crosses both sides, at A and B', figure: angStage(1) },
+      { label: 'From A, draw an arc inside the angle', figure: angStage(2) },
+      {
+        label: 'With the same opening, draw an arc from B that crosses it at P',
+        figure: angStage(3),
+      },
+      { label: 'Draw ray OP', figure: angStage(4) },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'g.m10-constructions-find-center',
+    title: 'Find the center of a circle',
+    use: 'Use this for “How can you find the center of a circle with a compass and straightedge?”',
+    assumptions: [
+      'The perpendicular bisector of any chord passes through the center.',
+      'Two bisectors that aren’t parallel cross at exactly one point: the center.',
+    ],
+    question: STEPS,
+    stages: [
+      { label: 'Draw two chords that aren’t parallel', figure: ctrStage(1) },
+      { label: 'Construct the perpendicular bisector of each chord', figure: ctrStage(2) },
+      { label: 'Mark where the two bisectors cross: the center', figure: ctrStage(3) },
+      {
+        label: 'Check: the center is the same distance from every point on the circle',
+        figure: ctrStage(4),
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'g.m10-proofs-vertical-angles',
+    title: 'Vertical angles are congruent',
+    use: 'Use this for “Prove that vertical angles are congruent.”',
+    assumptions: [
+      'Each line of a proof is a statement and its reason.',
+      'Linear pairs are two angles that make a straight line: they add to 180°.',
+    ],
+    question: 'Put the proof that vertical angles are congruent in order.',
+    stages: [
+      { label: 'Lines ℓ and m cross, making ∠1, ∠2 and ∠3 in a row (Given)', figure: vertStage(1) },
+      {
+        label: 'm∠1 + m∠2 = 180° and m∠2 + m∠3 = 180° (Linear pairs are supplementary)',
+        figure: vertStage(2),
+      },
+      { label: 'm∠1 + m∠2 = m∠2 + m∠3 (Substitution)', figure: vertStage(3) },
+      { label: 'm∠1 = m∠3 (Subtraction Property of Equality)', figure: vertStage(4) },
+      { label: '∠1 ≅ ∠3 (Definition of congruent angles)', figure: vertStage(5) },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'g.m10-parallel-lines-triangle-sum-proof',
+    title: 'Why a triangle’s angles add to 180°',
+    use: 'Use this for “Prove that the angles of a triangle add to 180°.”',
+    assumptions: [
+      'Through a point not on a line there is exactly one parallel line (the Parallel Postulate).',
+      'Parallel lines make alternate interior angles congruent.',
+    ],
+    question: 'Put the proof in order.',
+    stages: [
+      { label: 'Draw line ℓ through B parallel to AC (Parallel Postulate)', figure: tsumStage(1) },
+      { label: '∠1 ≅ ∠A and ∠3 ≅ ∠C (Alternate interior angles)', figure: tsumStage(2) },
+      {
+        label:
+          'm∠A + m∠B + m∠C = m∠1 + m∠2 + m∠3 = 180° (Substitution; ∠1, ∠2 and ∠3 make a straight angle)',
+        figure: tsumStage(3),
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'g.m10-congruence-cpctc-proof',
+    title: 'Prove two segments congruent',
+    use: 'Use this for “M is the midpoint of PQ and of RS. Prove PR ≅ QS.”',
+    assumptions: [
+      'Given: M is the midpoint of PQ and of RS. Prove: PR ≅ QS.',
+      'Prove two triangles congruent first; then their corresponding parts are congruent.',
+    ],
+    question: 'Put the proof in order.',
+    stages: [
+      { label: 'PM ≅ QM and RM ≅ SM (M is the midpoint of both: given)', figure: midStage(1) },
+      { label: '∠PMR ≅ ∠QMS (Vertical angles)', figure: midStage(2) },
+      { label: '△PMR ≅ △QMS (SAS)', figure: midStage(3) },
+      { label: 'PR ≅ QS (Corresponding parts of congruent triangles)', figure: midStage(4) },
+    ],
+  },
+];
+
+export const HS2B_GALLERY_LAYOUTS: LayoutDef[] = [
+  CONGRUENCE_CARDS,
+  SIMILARITY_CARDS,
+  ...CONSTRUCTION_STAGES,
+];

@@ -59,3 +59,28 @@ export function layTriangles(f: MarkedTrianglesCard): [Q, Q, Q][] | undefined {
     return t.map(([x, y]) => [left + (x - b.x0) * s, bottom - (y - b.y0) * s]) as [Q, Q, Q];
   });
 }
+
+/** Side of a construction card: its 0–100 box with a 2 px margin. */
+export const BOX = 104;
+
+/** The one-letter point names in a part ('ABC' → A, B, C). */
+export const partPoints = (s: string) => [...s];
+
+/**
+ * An SVG arc about c (y down) from the direction of p to the direction of q the short way,
+ * run on `over` degrees past each end; with p = q, `over` degrees either side of p.
+ */
+export function arcPath(c: Q, p: Q, q: Q, over: number): string {
+  const r = Math.hypot(p[0] - c[0], p[1] - c[1]);
+  const a0 = Math.atan2(p[1] - c[1], p[0] - c[0]);
+  let sw = Math.atan2(q[1] - c[1], q[0] - c[0]) - a0;
+  while (sw <= -Math.PI) sw += 2 * Math.PI;
+  while (sw > Math.PI) sw -= 2 * Math.PI;
+  const o = (over * Math.PI) / 180;
+  const dir = sw >= 0 ? 1 : -1;
+  const s = a0 - dir * o;
+  const e = a0 + sw + dir * o;
+  const at = (t: number) => `${c[0] + r * Math.cos(t)} ${c[1] + r * Math.sin(t)}`;
+  const large = Math.abs(e - s) > Math.PI ? 1 : 0;
+  return `M ${at(s)} A ${r} ${r} 0 ${large} ${dir > 0 ? 1 : 0} ${at(e)}`;
+}

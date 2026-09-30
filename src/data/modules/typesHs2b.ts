@@ -87,5 +87,45 @@ export interface MarkedTrianglesCard {
   names?: boolean;
 }
 
+/**
+ * A part of a construction card, by one-letter point names: 'AB' a segment, ray or line, 'ABC'
+ * the angle at B. `id` names it for `lit`.
+ */
+export type CardPart = { id?: string } & (
+  | { segment: string; dashed?: boolean }
+  | { ray: string }
+  | { line: string; dashed?: boolean }
+  /** A circle about a center through a point. */
+  | { circle: string; through: string }
+  /** A compass arc about `compass` from one point to another (the short way, run on a little). */
+  | { compass: string; from: string; to: string }
+  /** A short compass arc about `compass` through a point, `span` degrees long (default 50). */
+  | { compass: string; through: string; span?: number }
+  /** A point drawn as a dot (its letter if it is named). */
+  | { dot: string }
+  /** A triangle filled ('PMR'). */
+  | { fill: string }
+  | { ticks: string; count: number }
+  | { arcs: string; count: number }
+  | { right: string }
+  /** A short text (an angle's number, a line's name): in the angle 'ABC', or beside point 'A'. */
+  | { text: string; at: string }
+);
+
+/**
+ * A construction or proof figure for a sequence stage (or a sort card), 104 × 104: named points
+ * in a 0–100 box (y down) and the parts drawn on them, the stage's new or used parts `lit` in
+ * the highlight. Compass arcs, ticks, arcs and right marks are checked against the points.
+ */
+export interface ConstructionCard {
+  kind: 'construction';
+  points: Record<string, [number, number]>;
+  parts: CardPart[];
+  /** The points whose letters show (default: every point). */
+  named?: string[];
+  /** Part ids drawn in the highlight. */
+  lit?: string[];
+}
+
 /** The card figures group H2B adds (`components/module/layouts/cardFiguresHs2b.tsx`). */
-export type Hs2bCard = MarkedTrianglesCard;
+export type Hs2bCard = MarkedTrianglesCard | ConstructionCard;

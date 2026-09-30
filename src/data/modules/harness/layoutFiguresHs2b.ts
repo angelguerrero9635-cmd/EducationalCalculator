@@ -35,6 +35,58 @@ export function hs2bCardIssues(f: CardFigure): string[] {
       for (const k of [0, 1])
         if (Math.abs(angle(k, n) - 90) > 1e-4) out.push(`right mark at ${n} on ${angle(k, n)}°`);
   }
+  if (f.kind === 'construction') {
+    const pts = f.points;
+    // Named in 0.5 of a 100 box, or 1° apart: the eye can't tell less.
+    const close = (x: number, y: number, tol: number) => Math.abs(x - y) <= tol;
+    const d = (a: string, b: string) =>
+      Math.hypot(pts[a]![0] - pts[b]![0], pts[a]![1] - pts[b]![1]);
+    const ang = (s: string) => {
+      const [p, v, q] = [...s].map((n) => pts[n]!);
+      const a = Math.atan2(p![1] - v![1], p![0] - v![0]);
+      const b = Math.atan2(q![1] - v![1], q![0] - v![0]);
+      let x = Math.abs(a - b);
+      if (x > Math.PI) x = 2 * Math.PI - x;
+      return (x * 180) / Math.PI;
+    };
+    for (const n of Object.keys(pts))
+      if ([...n].length !== 1) out.push(`point "${n}" is not one letter`);
+    const ids = new Set<string>();
+    const tick = new Map<number, number[]>();
+    const arc = new Map<number, number[]>();
+    for (const part of f.parts) {
+      if (part.id) ids.add(part.id);
+      const names = Object.entries(part)
+        .filter(([k]) => !['id', 'dashed', 'count', 'span', 'text'].includes(k))
+        .flatMap(([, v]) => [...String(v)]);
+      const missing = names.filter((n) => !(n in pts));
+      if (missing.length) {
+        out.push(`a part names points ${missing.join(', ')} that aren't placed`);
+        continue;
+      }
+      if (
+        'compass' in part &&
+        'from' in part &&
+        !close(d(part.compass, part.from), d(part.compass, part.to), 0.5)
+      )
+        out.push(
+          `compass arc about ${part.compass} doesn't reach both ${part.from} and ${part.to}`,
+        );
+      if ('ticks' in part) {
+        const [a, b] = [...part.ticks];
+        tick.set(part.count, [...(tick.get(part.count) ?? []), d(a!, b!)]);
+      }
+      if ('arcs' in part) arc.set(part.count, [...(arc.get(part.count) ?? []), ang(part.arcs)]);
+      if ('right' in part && !close(ang(part.right), 90, 1))
+        out.push(`right mark on ${ang(part.right)}°`);
+    }
+    for (const ls of tick.values())
+      if (ls.some((l) => !close(l, ls[0]!, 0.5)))
+        out.push(`ticks on unequal sides ${ls.join(', ')}`);
+    for (const as of arc.values())
+      if (as.some((a) => !close(a, as[0]!, 1))) out.push(`arcs on unequal angles ${as.join(', ')}`);
+    for (const id of f.lit ?? []) if (!ids.has(id)) out.push(`lit part "${id}" is not drawn`);
+  }
   return out;
 }
 
