@@ -63,6 +63,8 @@ describe('unit conversions (exact definitions)', () => {
       'J/(mol·K)',
       'mol/(L·s)',
       'g/L',
+      'people',
+      'people per km²',
       'per 1,000',
       'years',
       'cubes',
