@@ -549,6 +549,8 @@ function representationVars(r: Representation): string[] {
       return hskSpecVars(r);
     case 'impulse':
     case 'powerLift':
+    case 'photoelectric':
+    case 'lightClock':
       return hs2cSpecVars(r);
   }
 }

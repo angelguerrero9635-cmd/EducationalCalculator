@@ -111,6 +111,8 @@ search or the sitemap, but the module tests and the harness run over it):
 | `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce  | Physics momentum (H62)              |
 | `impulse`          | p₀, p and Δp arrows; F–t rectangle of area Δp; a slower stop dashed   | Physics momentum (H102)             |
 | `powerLift`        | a crate hauled up h in t: stopwatch, W = mgh cut into J/s pieces      | Physics power (H102)                |
+| `photoelectric`    | light of λ on a metal: E = 1240/λ, electrons with E − φ, λ₀ strip     | Physics modern (H102)               |
+| `lightClock`       | light clock at rest and moving: the slant cΔt/2, γ; a rod L₀/γ        | Physics relativity (H102)           |
 | `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA     | Physics simple machines (H63)       |
 | `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot   | Physics thermodynamics (H64)        |
 | `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits   | Physics optics, telescopes (H66)    |

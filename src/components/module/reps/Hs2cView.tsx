@@ -6,6 +6,8 @@ import type { Hs2cSpec } from '@/data/modules/typesHs2c';
 
 import type { Calculator } from '../useCalculator';
 import { Impulse } from './Impulse';
+import { LightClock } from './LightClock';
+import { Photoelectric } from './Photoelectric';
 import { PowerLift } from './PowerLift';
 
 export function Hs2cView({ spec, calc }: { spec: Hs2cSpec; calc: Calculator }) {
@@ -14,5 +16,9 @@ export function Hs2cView({ spec, calc }: { spec: Hs2cSpec; calc: Calculator }) {
       return <Impulse spec={spec} calc={calc} />;
     case 'powerLift':
       return <PowerLift spec={spec} calc={calc} />;
+    case 'photoelectric':
+      return <Photoelectric spec={spec} calc={calc} />;
+    case 'lightClock':
+      return <LightClock spec={spec} calc={calc} />;
   }
 }

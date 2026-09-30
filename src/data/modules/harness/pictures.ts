@@ -2159,6 +2159,8 @@ export function repIssues(
       break;
     case 'impulse':
     case 'powerLift':
+    case 'photoelectric':
+    case 'lightClock':
       out.push(...hs2cIssues(rep, siOf(val, byId)));
       break;
     case 'table':

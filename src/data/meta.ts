@@ -152,6 +152,8 @@ const PICTURE_NAMES: Record<string, string> = {
   freeBody: 'free-body diagram with scaled force arrows',
   impulse: 'momentum change and the force–time rectangle',
   powerLift: 'a crate lifted in a time: work, a stopwatch and J/s',
+  photoelectric: 'light on a metal plate freeing electrons',
+  lightClock: 'a light clock at rest and moving: time dilation',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',
   complexPlane: 'complex number in the plane',

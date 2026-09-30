@@ -1873,6 +1873,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       ],
       'P14: docs/plans/s.11.md needs 1–12.',
     ),
+    status: 'drawn',
     gallery: [
       'g.s11-momentum-one-after',
       'g.s11-momentum-impulse',
@@ -1884,6 +1885,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s11-thermodynamics-first-law',
       'g.s11-electrostatics-plates',
       'g.s11-electrostatics-point-field',
+      'g.s11-modern-physics-photoelectric',
+      'g.s11-modern-physics-relativity',
     ],
     notes: [
       'P14: docs/plans/s.11.md needs 1–12, drawn part by part.',
@@ -1897,6 +1900,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       "8 (~first-law): gasPiston energy { heat, work, change } draws the first law instead of a gas law: Q in or out and W by or on the gas as bands, the piston up or down, and a Q, −W, ΔU waterfall. { kind: 'gasPiston', law: 'ideal', energy: { heat: 'Q', work: 'W', change: 'U' } } (no gas state).",
       '9 (~latent-heat): no change: heatingCurve spans already take variables (s.11.thermodynamics~latent-heat draws its melt, warm and boil spans from Q ÷ P).',
       "10 (~plates): charges mode 'plates' { kind: 'charges', mode: 'plates', voltage: 'V', gap: 'd', field: 'E', charge: 'q', force: 'F' } (q in C, F signed, E and F need scientific; F with units: ['N']). 10b (MCAS #11): two charges with point (x m from q₁) draw E₁, E₂ dashed and E there; field is signed + toward q₂. { kind: 'charges', charges: ['a', 'b'], distance: 'r', point: 'x', field: 'E' }.",
+      "11 (~photoelectric): new kind photoelectric (λ in nm, φ in eV, hc = 1240 eV·nm): rays in the light's color (grey dashed outside the visible), electrons with arrows as long as their speed, none below the threshold, an E = φ + Kₘₐₓ bar and a λ strip with λ₀; drag λ. { kind: 'photoelectric', wavelength: 'l', workFunction: 'p', energy: 'E', kinetic: 'K', threshold: 'z' }.",
+      "12 (~relativity): new kind lightClock: the clock at rest and moving at β, the half-tick triangle cΔt₀/2, vΔt/2, cΔt/2, γ and Δt, and a rod L₀ and L₀/γ; drag the slant for β. { kind: 'lightClock', speed: 'b', gamma: 'g', proper: 's', dilated: 't', length: 'L', contracted: 'm' }. β up to 0.99 (γ 7.09): past that the step check can't recompute γ from a 4-decimal β.",
     ].join(' '),
   },
   ask(

@@ -224,6 +224,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <HskView spec={spec} calc={calc} />;
     case 'impulse':
     case 'powerLift':
+    case 'photoelectric':
+    case 'lightClock':
       return <Hs2cView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;

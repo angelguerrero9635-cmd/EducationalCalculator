@@ -59,7 +59,13 @@ export function PointField({
       ))}
       <Vec x1={px} y1={y} x2={px + field.E * k} y2={y} color={c.forceNet} head={9} />
       <Circle cx={px} cy={y} r={4.5} fill={c.chartInk} stroke={c.card} strokeWidth={1.5} />
-      <SubLabel x={px} y={y + 50} text={`E ${sig(field.E)} N/C`} color={c.forceNet} w={w} />
+      <SubLabel
+        x={px + (field.E * k) / 2}
+        y={y - 40}
+        text={`E ${sig(field.E)} N/C`}
+        color={c.forceNet}
+        w={w}
+      />
     </G>
   );
 }

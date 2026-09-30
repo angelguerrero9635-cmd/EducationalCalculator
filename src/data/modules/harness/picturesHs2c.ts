@@ -65,6 +65,38 @@ export function hs2cIssues(rep: Hs2cSpec, val: Val): string[] {
       if (t !== undefined && t > 0) same(rep.power, W / t, 'power W/t');
       break;
     }
+    case 'photoelectric': {
+      // In nm and eV, as the picture reads them (hc = 1240 eV·nm).
+      const [lam, phi] = [read(val, rep.wavelength), read(val, rep.workFunction)];
+      if (lam !== undefined && lam <= 0)
+        out.push(`photoelectric: wavelength ${lam} is not positive`);
+      if (phi !== undefined && phi < 0) out.push(`photoelectric: work function ${phi} is negative`);
+      if (lam !== undefined && lam > 0) same(rep.energy, 1240 / lam, 'photon energy 1240/λ');
+      if (phi !== undefined && phi > 0) same(rep.threshold, 1240 / phi, 'threshold 1240/φ');
+      if (lam !== undefined && lam > 0 && phi !== undefined) {
+        const K = 1240 / lam - phi;
+        const named = rep.kinetic ? val(rep.kinetic) : undefined;
+        // Below the threshold no electron leaves: K_max is 0 or left unsolved, never negative.
+        if (named !== undefined && K > 0) same(rep.kinetic, K, 'K_max E − φ');
+        if (named !== undefined && named < 0) out.push(`photoelectric: K_max ${named} is negative`);
+      }
+      break;
+    }
+    case 'lightClock': {
+      const b = read(val, rep.speed);
+      if (b === undefined) break;
+      if (b < 0 || b >= 1) {
+        out.push(`lightClock: speed ${b} c is not from 0 to below 1`);
+        break;
+      }
+      const g = 1 / Math.sqrt(1 - b * b);
+      same(rep.gamma, g, 'γ');
+      const t0 = read(val, rep.proper);
+      if (t0 !== undefined) same(rep.dilated, g * t0, 'Δt = γΔt₀');
+      const L0 = read(val, rep.length);
+      if (L0 !== undefined) same(rep.contracted, L0 / g, 'L = L₀/γ');
+      break;
+    }
   }
   return out;
 }
