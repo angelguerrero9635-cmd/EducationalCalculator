@@ -1108,12 +1108,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as one explore figure: { kind: "landforms" }, each scene landform: { kind } with kind one of "shield", "composite", "cinderCone" (volcanoes in cross-section: a broad basalt dome with thin flows; a steep concave cone of lava and ash layers with its vent, side vent and ash cloud; a small cone of cinders at 33°, lava from its base), "folds" (anticline and syncline, squeezed), "normalFault", "reverseFault" (layered blocks on a fault dipping left, the hanging wall dropped or pushed up, stress arrows and half arrows), "strikeSlip" (seen from above, a stream and a fence offset), "vValley", "uValley" (the glacier’s former ice dashed), "meander" (seen from above: cut banks, point bars, an oxbow lake), "aquifer" (unsaturated zone, water table, saturated sand and gravel on clay, a well and a lake) or "dunes" (gentle windward side, 33° slip face, sand bouncing). The part names are drawn; the scene’s lines explain. Example scene: { label: "Normal fault", lines: [...], landform: { kind: "normalFault" } }.',
   },
-  ask(
-    'H74',
-    'rockLayers',
-    'Absolute ages on layers, an igneous intrusion cutting across, index fossils',
-    ['s.12.radiometric-dating'],
-  ),
+  {
+    ...ask(
+      'H74',
+      'rockLayers',
+      'Absolute ages on layers, an igneous intrusion cutting across, index fossils',
+      ['s.12.radiometric-dating'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-radiometric-dating-half-life',
+      'g.s12-radiometric-dating-young',
+      'g.s12-radiometric-dating-bracket',
+    ],
+    notes:
+      'Drawn (group HL) as an optional `dating` field on rockLayers (the Grade 3 fossils page is unchanged; a spec with `dating` draws the dated cliff instead): { kind: "rockLayers", dating: { layers: [{ rock: "sandstone" | "shale" | "limestone" | "siltstone" | "conglomerate" | "ash" | "lava", age?: id or number (million years), fossil?: "trilobite" | "ammonite" | "fern" }] (top to bottom, 3 to 8), intrusion?: { through: index of the highest layer the dike cuts, age? }, bracket?: index of the layer whose age is bracketed by the nearest ages above and below (a dike that cuts it makes it older than the dike; one that stops below makes it younger), sample?: { parent: percent id, layer: index (−1 for the dike), parentName, daughterName, halfLives?: id } } }; the sample is 100 atoms, parent and daughter counted from the rounded percent. Example: layers [{ rock: "sandstone", fossil: "ammonite" }, { rock: "shale" }, { rock: "ash", age: "t" }, { rock: "limestone", fossil: "trilobite" }, { rock: "siltstone" }], sample { parent: "P", layer: 2, parentName: "potassium-40", daughterName: "argon-40", halfLives: "n" } with P = 100 × (1/2)^n and t = n × T. The harness checks superposition (dated ages rise downward), cross-cutting (the dike is younger than what it cuts and older than what it doesn’t reach), a non-empty bracket and P against the half-lives; pages keep the ages in order with constraint rules.',
+  },
   ask(
     'H75',
     'oceanProfile',

@@ -298,6 +298,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'periodicTable':
       return <PeriodicTable spec={spec} calc={calc} />;
     case 'rockLayers':
+      if ('dating' in spec) return <HslPicture spec={spec} calc={calc} />;
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':
       return <Pushes spec={spec} calc={calc} />;

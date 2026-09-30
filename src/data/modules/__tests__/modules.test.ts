@@ -426,7 +426,7 @@ function representationVars(r: Representation): string[] {
     case 'thermometers':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'rockLayers':
-      return [...r.fossils, r.difference];
+      return 'dating' in r ? hslSpecVars(r) : [...r.fossils, r.difference];
     case 'grassSlope':
       return [r.bare, r.grass, ...(r.difference ? [r.difference] : [])];
     case 'flashlights':

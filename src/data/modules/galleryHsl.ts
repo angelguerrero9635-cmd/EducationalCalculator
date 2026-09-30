@@ -554,7 +554,159 @@ const landformLayouts: LayoutDef[] = [
   },
 ];
 
+// ── H74: dated rock layers ──
+
+const my = (id: string, symbol: string, name: string, derived = false) =>
+  V(id, symbol, name, { unit: 'million years', min: 0, max: 4600, step: 0.1, derived });
+
+/** A < B, checked only (a rule the values must keep). */
+const younger = (a: string, b: string, display: string): Rel => ({
+  relation: {
+    id: `${a} < ${b}`,
+    constraint: true,
+    display,
+    vars: [a, b],
+    residual: (v: Values) => (v[a]! < v[b]! ? 0 : 1),
+    solve: {},
+  },
+  steps: {},
+});
+
+const halfLife: ModuleDef = {
+  id: 'g.s12-radiometric-dating-half-life',
+  title: 'Dating an ash bed by half-lives',
+  use: 'Use this for an ash bed’s age from the share of its parent isotope left.',
+  assumptions: [
+    'A radioactive parent isotope decays to a stable daughter at a steady rate: half of it is left after each half-life.',
+    'Potassium-40 decays to argon-40 with a half-life of 1,250 million years; the argon stays trapped once volcanic ash cools.',
+    'Layers lie in order: younger above, older below. Fossils above the ash bed are younger than it, and those below are older.',
+  ],
+  variables: [
+    V('P', 'P', 'Parent left', { unit: '%', min: 0.001, max: 100, step: 0.01, derived: true }),
+    V('n', 'n', 'Half-lives gone by', { min: 0, max: 20, step: 0.01 }),
+    my('T', 'T', 'Half-life'),
+    my('t', 't', 'Age of the ash bed', true),
+  ],
+  ...rels(
+    {
+      relation: {
+        id: 'P = 100 × (1/2)^n',
+        display: '{P} = 100 × (1/2)^{n}',
+        vars: ['P', 'n'],
+        residual: (v: Values) => v.P! - 100 * 0.5 ** v.n!,
+        solve: {
+          P: (v: Values) => 100 * 0.5 ** v.n!,
+          n: (v: Values) => (v.P! > 0 ? Math.log2(100 / v.P!) : undefined),
+        },
+      },
+      steps: {
+        P: { expr: '100 × (1/2)^{n}', how: 'Each half-life halves what is left.' },
+        n: { expr: 'log_2(100 ÷ {P})', how: 'How many halvings take 100% down to P.' },
+      },
+    },
+    product('t', 'n', 'T', [
+      'The age is the half-lives gone by times the length of one.',
+      'Half-lives gone by: the age over the half-life.',
+      'The half-life: the age over the half-lives gone by.',
+    ]),
+  ),
+  example: { P: 100 * 0.5 ** 0.2, n: 0.2, T: 1250, t: 250 },
+  startWith: ['n', 'T'],
+  representation: {
+    kind: 'rockLayers',
+    dating: {
+      layers: [
+        { rock: 'sandstone', fossil: 'ammonite' },
+        { rock: 'shale' },
+        { rock: 'ash', age: 't' },
+        { rock: 'limestone', fossil: 'trilobite' },
+        { rock: 'siltstone' },
+      ],
+      sample: {
+        parent: 'P',
+        layer: 2,
+        parentName: 'potassium-40',
+        daughterName: 'argon-40',
+        halfLives: 'n',
+      },
+    },
+  },
+};
+
+const halfLifeYoung: ModuleDef = {
+  ...halfLife,
+  id: 'g.s12-radiometric-dating-young',
+  title: 'A young ash bed: little decay yet',
+  use: 'Use this for a young rock, where only a sliver of the parent has decayed.',
+  example: { P: 100 * 0.5 ** 0.02, n: 0.02, T: 1250, t: 25 },
+  representation: {
+    kind: 'rockLayers',
+    dating: {
+      layers: [
+        { rock: 'conglomerate' },
+        { rock: 'sandstone', fossil: 'fern' },
+        { rock: 'ash', age: 't' },
+        { rock: 'shale' },
+      ],
+      sample: {
+        parent: 'P',
+        layer: 2,
+        parentName: 'potassium-40',
+        daughterName: 'argon-40',
+        halfLives: 'n',
+      },
+    },
+  },
+};
+
+const bracket: ModuleDef = {
+  id: 'g.s12-radiometric-dating-bracket',
+  title: 'Bracketing a fossil layer’s age',
+  use: 'Use this for the age range of an undated layer from dated rocks above, below and across it.',
+  assumptions: [
+    'Superposition: a layer is younger than the layers under it and older than those on top.',
+    'Cross-cutting: a dike is younger than every layer it cuts, and older than the layers it does not reach.',
+    'Sediment can’t be dated directly, so its age is bracketed by the ash beds and dikes around it.',
+  ],
+  variables: [
+    my('a', 'a', 'Age of the upper ash bed'),
+    my('i', 'i', 'Age of the dike'),
+    my('b', 'b', 'Age of the lower ash bed'),
+    my('w', 'w', 'Width of the bracket', true),
+  ],
+  ...rels(
+    younger('a', 'i', 'the upper ash bed {a} is younger than the dike {i}'),
+    younger('i', 'b', 'the dike {i} is younger than the lower ash bed {b}'),
+    younger('a', 'b', 'the upper ash bed {a} is younger than the lower ash bed {b}'),
+    difference('w', 'i', 'a', [
+      'The shale is younger than the dike and older than the upper ash bed.',
+      'The dike is the bracket’s width older than the upper ash bed.',
+      'The upper ash bed is the bracket’s width younger than the dike.',
+    ]),
+  ),
+  example: { a: 150, i: 180, b: 200, w: 30 },
+  startWith: ['a', 'i', 'b'],
+  representation: {
+    kind: 'rockLayers',
+    dating: {
+      layers: [
+        { rock: 'sandstone' },
+        { rock: 'ash', age: 'a' },
+        { rock: 'shale', fossil: 'ammonite' },
+        { rock: 'limestone' },
+        { rock: 'ash', age: 'b' },
+        { rock: 'siltstone' },
+      ],
+      intrusion: { through: 3, age: 'i' },
+      bracket: 2,
+    },
+  },
+};
+
 export const HSL_GALLERY_MODULES: ModuleDef[] = [
+  halfLife,
+  halfLifeYoung,
+  bracket,
   shadowZone,
   shadowDirect,
   shadowCore,

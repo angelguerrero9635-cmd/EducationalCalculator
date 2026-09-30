@@ -5,8 +5,10 @@
  */
 import {
   arrivals,
+  bracketOf,
   EARTH,
   mantleRay,
+  parentLeft,
   QUAKE_DEFAULTS,
   SHADOW,
 } from '@/components/module/reps/earthModel';
@@ -58,6 +60,48 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
         const [a, b, c] = rep.stations;
         if ((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y) === 0)
           out.push('the three stations are in a line: no single epicenter');
+      }
+      break;
+    }
+    case 'rockLayers': {
+      const d = rep.dating;
+      const n = d.layers.length;
+      if (n < 3 || n > 8) out.push(`${n} layers (3 to 8 are drawn)`);
+      const ages = d.layers.map((l) => num(l.age));
+      // Superposition: every dated layer is older than the dated layers above it.
+      let above: number | undefined;
+      ages.forEach((a, i) => {
+        if (a === undefined) return;
+        if (above !== undefined && a <= above)
+          out.push(`layer ${i} (${a}) is not older than above`);
+        above = a;
+      });
+      const intr = d.intrusion;
+      const ia = intr ? num(intr.age) : undefined;
+      if (intr && (intr.through < 0 || intr.through >= n))
+        out.push(`the intrusion reaches layer ${intr.through}, not one of 0–${n - 1}`);
+      if (intr && ia !== undefined)
+        ages.forEach((a, i) => {
+          if (a === undefined) return;
+          if (i >= intr.through && ia >= a) out.push(`the intrusion (${ia}) cuts older rock ${a}`);
+          if (i < intr.through && ia <= a)
+            out.push(`the intrusion (${ia}) is younger than ${a} above it`);
+        });
+      if (d.bracket !== undefined) {
+        if (d.bracket < 0 || d.bracket >= n) out.push(`bracket layer ${d.bracket} is not drawn`);
+        const b = bracketOf(ages, d.bracket, intr && { through: intr.through, age: ia });
+        if (b.younger !== undefined && b.older !== undefined && b.younger >= b.older)
+          out.push(`bracket ${b.younger} to ${b.older} is empty`);
+      }
+      if (d.sample) {
+        const { layer } = d.sample;
+        if (layer < -1 || layer >= n || (layer === -1 && !intr))
+          out.push(`sample from layer ${layer}, which is not drawn`);
+        const p = num(d.sample.parent);
+        const hl = num(d.sample.halfLives);
+        if (p !== undefined && (p < 0 || p > 100)) out.push(`parent ${p}% is not 0–100`);
+        if (p !== undefined && hl !== undefined && !near(p, parentLeft(hl), 1e-4))
+          out.push(`parent ${p}% after ${hl} half-lives, not ${parentLeft(hl)}%`);
       }
       break;
     }

@@ -200,6 +200,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `powerScale`       | `log`                                    | a log₁₀ scale under the 1–10 ruler: log₁₀ 470,000 = 5 + 0.672                 |
 | `punnettSquare`    | `inheritance` (Grade 9)                  | dihybrid 4 × 4 by phenotype; incomplete, codominant; X-linked with carriers   |
 | `energyPyramid`    | `measure: 'biomass' \| 'numbers'`        | biomass or numbers: no share passed up unless `percent`; can be upside down   |
+| `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

@@ -141,3 +141,28 @@ export function epicenterOf(st: { x: number; y: number; r: number }[]): {
 
 /** Circles meet at one point when the worst misses by at most this share of the largest radius. */
 export const EPICENTER_TOLERANCE = 0.03;
+
+/**
+ * The ages that bracket layer `k` (0 is the top) by superposition and cross-cutting: the nearest
+ * dated layer above is younger and the nearest below older; an intrusion that cuts the layer is
+ * younger than it, and one that stops below it is older.
+ */
+export function bracketOf(
+  ages: (number | undefined)[],
+  k: number,
+  intrusion?: { through: number; age?: number },
+): { younger?: number; older?: number } {
+  let younger: number | undefined;
+  let older: number | undefined;
+  for (let i = k - 1; i >= 0 && younger === undefined; i--) younger = ages[i];
+  for (let i = k + 1; i < ages.length && older === undefined; i++) older = ages[i];
+  const a = intrusion?.age;
+  if (a !== undefined && intrusion) {
+    if (k >= intrusion.through) younger = younger === undefined ? a : Math.max(younger, a);
+    else older = older === undefined ? a : Math.min(older, a);
+  }
+  return { younger, older };
+}
+
+/** Percent of parent atoms left after n half-lives. */
+export const parentLeft = (n: number) => 100 * 0.5 ** n;

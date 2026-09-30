@@ -63,7 +63,52 @@ export interface EpicenterSpec {
 
 export type EarthLayersSpec = EarthSectionSpec | SeismogramSpec | EpicenterSpec;
 
-export type HslSpec = EarthLayersSpec;
+/** The rocks a dated cliff draws: sediments, a volcanic ash bed and a lava flow. */
+export type DatedRock =
+  | 'sandstone'
+  | 'shale'
+  | 'limestone'
+  | 'siltstone'
+  | 'conglomerate'
+  | 'ash'
+  | 'lava';
+
+/** An index fossil drawn in a layer. */
+export type IndexFossil = 'trilobite' | 'ammonite' | 'fern';
+
+/**
+ * Geologic time on a cliff (H74, an extension of `rockLayers`): layers top to bottom, each dated
+ * layer (an ash bed or lava flow) labeled with its absolute age, index fossils in their layers, an
+ * igneous intrusion cutting up through the lower layers (younger than every layer it cuts, older
+ * than the ones it doesn't reach), a layer's age bracketed between the nearest ages above and
+ * below it, and a radiometric sample of 100 atoms, parent and daughter counted from the values.
+ */
+export interface RockDatingSpec {
+  kind: 'rockLayers';
+  dating: {
+    /** Top to bottom (3 to 8). `age`: million years, typed or worked out. */
+    layers: { rock: DatedRock; age?: NumOrVar; fossil?: IndexFossil }[];
+    /** A dike from the bottom up through layer `through` (0 is the top), with its age. */
+    intrusion?: { through: number; age?: NumOrVar };
+    /** A layer whose age is bracketed by the nearest ages above and below it. */
+    bracket?: number;
+    /**
+     * 100 atoms from a dated layer (`layer`) or the intrusion (`layer: -1`): `parent`, the
+     * percent of parent atoms left, drawn as that many (rounded) of 100; `parentName` and
+     * `daughterName` in the key ("potassium-40", "argon-40").
+     */
+    sample?: {
+      parent: NumOrVar;
+      layer: number;
+      parentName: string;
+      daughterName: string;
+      /** Half-lives gone by, when the page names them (parent = 100 × (1/2)ⁿ). */
+      halfLives?: NumOrVar;
+    };
+  };
+}
+
+export type HslSpec = EarthLayersSpec | RockDatingSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hslSpecVars(r: HslSpec): string[] {
@@ -74,6 +119,13 @@ export function hslSpecVars(r: HslSpec): string[] {
       if (r.mode === 'section') return ids([r.distance]);
       if (r.mode === 'seismogram') return ids([r.km, r.vp, r.vs, r.lag]);
       return ids(r.stations.map((s) => s.r));
+    case 'rockLayers':
+      return ids([
+        ...r.dating.layers.map((l) => l.age),
+        r.dating.intrusion?.age,
+        r.dating.sample?.parent,
+        r.dating.sample?.halfLives,
+      ]);
   }
 }
 
