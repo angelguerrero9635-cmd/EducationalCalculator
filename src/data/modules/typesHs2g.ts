@@ -36,6 +36,36 @@ export interface TermsChartHs2g {
   powers?: true;
 }
 
+/** H94: `functionGraph` reflected, stretched sideways and cut at a value. */
+export interface FunctionGraphHs2g {
+  /**
+   * |f(x)|: the parts of the curve below the x-axis reflected up, the curve before it dashed,
+   * the formula in bars. No handles: the values have sliders.
+   */
+  abs?: true;
+  /**
+   * A horizontal factor b on the absolute, root, exponential and log families:
+   * y = a·f(b(x − h)) + k, the graph squeezed toward x = h by 1/|b| and flipped across it when b
+   * is negative. The parent (with `parent`) stays f(x).
+   */
+  horizontal?: NumOrVar;
+  /**
+   * The domain kept, x ≥ `from` (and x ≤ `to`): the curve drawn there with closed ends, the rest
+   * dashed; with `inverse` only the kept part is reflected, and a vertex-form parabola kept on
+   * x ≥ h writes its inverse h + √((x − k) ÷ a).
+   */
+  restrict?: { from?: NumOrVar; to?: NumOrVar };
+}
+
+/** H94: a rational function by its coefficients, (px + q) ÷ (rx + s). */
+export interface RationalByCoefficients {
+  family: 'rational';
+  p: NumOrVar;
+  q: NumOrVar;
+  r: NumOrVar;
+  s: NumOrVar;
+}
+
 /** Every variable id these options name (for the module tests). */
 export function hs2gSpecVars(r: Representation): string[] {
   const ids = (...xs: (NumOrVar | boolean | undefined)[]): string[] =>
@@ -43,6 +73,8 @@ export function hs2gSpecVars(r: Representation): string[] {
   switch (r.kind) {
     case 'termsChart':
       return ids(r.plus, r.lit, r.litTerm);
+    case 'functionGraph':
+      return ids(r.horizontal, r.restrict?.from, r.restrict?.to);
     default:
       return [];
   }

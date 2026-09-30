@@ -1803,18 +1803,29 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'P5 (docs/plans/m.9.md needs 5 and 11, m.11.md need 10). Three options on `termsChart`, off unless set. `far: true`: `count` may run to 10,000; past 30 the chart draws the first six terms, a break on the axis ("…"), then the nth term lit, and the caption says where it skips; at 30 or fewer it draws every term as before (partial sums are drawn only without a break). m.9.sequences main: add `far: true` and let n run 1–1000 (example 7, 11, 15, … → a₁₀₀ = 403): { kind: "termsChart", type: "arithmetic", first: "a1", step: "d", count: "n", as: "points", term: "an", far: true }. `type: "recursive"` with `step` the multiplier k and `plus` the added c (default 0): aₙ = k × aₙ₋₁ + c, each term worked out from the one before, an arrow from each term to the next (up to 12 terms), the caption "a₄ = 3 × 14 − 1 = 41"; m.9.sequences~recursive: { kind: "termsChart", type: "recursive", first: "a1", step: "k", plus: "c", count: "n", term: "an" } in place of the table. `lit` (a term number, value id or number) lights a second term in the second colour with its label, the chart running on to it when it is past `count` (up to 30); `litTerm` names the value it equals (checked); `powers: true` (geometric with r = a₁) writes the terms as powers, "2² = 4", the axis "exponent n". m.11.exp-log-equations~same-base: { kind: "termsChart", type: "geometric", first: "g", step: "g", count: "q", term: "B2", lit: "p", litTerm: "B1", powers: true }.',
   },
-  ask(
-    'H94',
-    'functionGraph',
-    '|f(x)| reflected; a horizontal factor b; xMin from a value; rational by coefficients',
-    [
-      'm.9.piecewise-functions',
-      'm.11.function-transformations',
-      'm.11.inverse-functions',
-      'm.12.limits-intro',
+  {
+    ...ask(
+      'H94',
+      'functionGraph',
+      '|f(x)| reflected; a horizontal factor b; xMin from a value; rational by coefficients',
+      [
+        'm.9.piecewise-functions',
+        'm.11.function-transformations',
+        'm.11.inverse-functions',
+        'm.12.limits-intro',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-piecewise-functions-abs',
+      'g.m11-function-transformations-horizontal',
+      'g.m11-function-transformations-horizontal-flip',
+      'g.m11-inverse-functions-restrict-domain',
+      'g.m12-limits-intro-infinity-coefficients',
     ],
-    'P6: docs/plans/m.9.md need 6, m.11.md needs 4 and 5, m.12.md need 11.',
-  ),
+    notes:
+      'P6 (docs/plans/m.9.md need 6, m.11.md needs 4 and 5, m.12.md need 11). Four options on `functionGraph`, off unless set; the picture and the harness reshape the same curve (functionGraphHs2g.ts). `abs: true` draws |f(x)| for any family: the parts below the x-axis reflected up, the curve before it dashed, the formula in bars, no handles (sliders); a traced point reads |f(x)|. m.9.piecewise-functions~absolute-function (the |f(x)| item): { kind: "functionGraph", family: "quadratic", form: "standard", a: "a", b: "b", c: "c", abs: true, at: { x: "x", y: "y" }, marks: ["zeros"] } with y = |f(x)|. `horizontal: "b"` on the absolute, root, exponential and log families draws y = a·f(b(x − h)) + k, written "√(2x)", "|2(x − 3)|", "√(−(x − 2))"; the graph squeezed toward x = h (stretched for |b| < 1), flipped across it for b < 0; `parent: true` keeps f(x) dashed; handles at x = h stay, the stretch handle moves to h + 1/b. m.11.function-transformations~horizontal: { kind: "functionGraph", family: "root", index: 2, h: "h", horizontal: "b", parent: true, input: "x", at: { x: "X", y: "Y" } } (X = h + p ÷ b, Y = √p). `restrict: { from?, to? }` (numbers or value ids) keeps the domain x ≥ from (x ≤ to): the rest dashed, closed end dots, and with `inverse` only the kept part is reflected; a vertex-form parabola kept on x ≥ h writes f⁻¹(x) = h + √((x − k)/a). `xMin` keeps its meaning (the window’s left edge). m.11.inverse-functions~restrict-domain: { kind: "functionGraph", family: "quadratic", form: "vertex", a: "a", h: "h", k: "k", restrict: { from: "h" }, inverse: true, at: { x: "x", y: "y" } }. Rational by coefficients: `family: "rational", p, q, r, s` draws (px + q) ÷ (rx + s) written as typed, its asymptotes x = −s ÷ r and y = p ÷ r (no handles). m.12.limits-intro~infinity: { kind: "functionGraph", family: "rational", p: "p", q: "q", r: "r", s: "s", shows: { ha: "L" } }, so z and v can go.',
+  },
   ask(
     'H95',
     'algebraTiles',

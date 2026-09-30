@@ -13,6 +13,7 @@ import type {
 import { formatNumber } from '@/engine/format';
 
 import { toFraction } from './exact';
+import { ratioCurve, reshape } from './functionGraphHs2g';
 
 // ─── Exact numbers ─────────────────────────────────────────────────────────────
 
@@ -934,6 +935,7 @@ export function buildCurve(
       };
     }
     case 'rational': {
+      if ('p' in fam) return ratioCurve(fam, get, say, x, (g, l) => buildCurve(g, get, say, l));
       const a = get(fam.a, 1);
       const k = get(fam.k, 0);
       const zs = fam.zeros.map((z) => get(z, 0));
@@ -1519,5 +1521,9 @@ export function curveOf(
   val: (v: NumOrVar) => number | undefined,
 ) {
   const get: Get = (v, fallback) => (v === undefined ? fallback : (val(v) ?? fallback));
-  return buildCurve(spec, get, (v, d) => numText(get(v, d)));
+  const say = (v: NumOrVar | undefined, d: number) => numText(get(v, d));
+  // H94: |f(x)|, a horizontal factor and a kept domain, as the picture draws them.
+  return 'kind' in spec
+    ? reshape(spec, get, say, 'x', (f, x) => buildCurve(f, get, say, x)).curve
+    : buildCurve(spec, get, say);
 }

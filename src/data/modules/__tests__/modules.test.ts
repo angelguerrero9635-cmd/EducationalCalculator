@@ -478,7 +478,7 @@ function representationVars(r: Representation): string[] {
     case 'transformation':
       return [...graphSpecVars(r), ...hs2aSpecVars(r)];
     case 'functionGraph':
-      return [...functionGraphVars(r), ...hs2aSpecVars(r)];
+      return [...functionGraphVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r)];
     case 'energyPyramid':
     case 'generations':
       return lifeSpecVars(r);

@@ -1826,7 +1826,7 @@ export function repIssues(
       break;
     }
     case 'functionGraph':
-      out.push(...functionGraphIssues(rep, val), ...hs2aIssues(rep, val));
+      out.push(...functionGraphIssues(rep, val), ...hs2aIssues(rep, val), ...hs2gIssues(rep, val));
       break;
     case 'linearFunction': {
       out.push(...hs2aIssues(rep, val));

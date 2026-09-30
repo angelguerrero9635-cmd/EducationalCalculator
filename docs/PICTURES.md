@@ -204,6 +204,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `lineSystem`       | `upright: [{ x, shade? }]`               | upright boundaries x ≥ k; with them only the overlap is shaded (a box) (H92)  |
 | `lineSystem`       | `marks`, `given: { x, y }`               | arrows if parallel, a square if perpendicular; the given point marked (H92)   |
 | `functionGraph`    | `inequality: { sign }`                   | f(x) (sign) 0 shaded to the x-axis; the solutions on it, open or closed (H90) |
+| `functionGraph`    | `abs`                                    | abs(f(x)): the parts below the x-axis reflected up, f(x) dashed (H94)         |
+| `functionGraph`    | `horizontal: b`                          | y = a·f(b(x − h)) + k: squeezed toward x = h, flipped for b < 0 (H94)         |
+| `functionGraph`    | `restrict: { from?, to? }`               | the domain kept from a value, the rest dashed; the inverse of it (H94)        |
+| `functionGraph`    | `family: 'rational'`, `p, q, r, s`       | (px + q) ÷ (rx + s) from its coefficients, asymptotes marked (H94)            |
 | `integerLine`      | `compound.closed: [id, id]`              | each bound's circle from a sign box: 2 ≤, 4 ≥ closed; 1 <, 3 > open (H90)     |
 | `integerLine`      | `fit`, `ticks`                           | the line spans its values (344–356 g → 340–360), not 0; a tick every 5 (H89)  |
 | `integerLine`      | `compound: { join: 'equal', center, … }` | abs(x − c) = d: two closed dots at c ± d, distances bracketed, no band (H91)  |

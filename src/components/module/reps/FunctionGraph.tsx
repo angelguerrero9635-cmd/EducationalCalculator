@@ -42,6 +42,7 @@ import {
   type Window,
 } from './functionGraphMath';
 import { SignBand, SignFill, signCaption } from './FunctionSign';
+import { reshape, reshapeCaption, reshapeVars } from './functionGraphHs2g';
 import { usePaintIds, url } from './paint';
 import { signOf } from './signBox';
 
@@ -341,8 +342,10 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
   const fName = spec.name ?? 'f';
   /** The output's letter on a context graph (N, h), else y. */
   const dep = spec.axes && spec.name ? spec.name : 'y';
-  const main = buildCurve(spec, get, say, xName);
-  const allKnown = familyVars(spec).every((id) => rep.known(id));
+  // H94: |f(x)|, a horizontal factor and a kept domain reshape the family's curve.
+  const shaped = reshape(spec, get, say, xName, (f, l) => buildCurve(f, get, say, l));
+  const main = shaped.curve;
+  const allKnown = [...familyVars(spec), ...reshapeVars(spec)].every((id) => rep.known(id));
   const other = spec.other ? buildCurve(spec.other, get, say, xName) : undefined;
   const gName = spec.other?.name ?? 'g';
   const parent =
@@ -417,6 +420,8 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       : []),
     ...(main.piY ? main.range!.flatMap((r) => [r.lo, r.hi]) : []),
     ...(main.inflection ? [main.inflection.y] : []),
+    // H94: room for the curve before |f(x)| or the cut, drawn dashed.
+    ...(shaped.ghost?.key ? [shaped.ghost.key.y] : []),
     ...(main.family === 'linear' ||
     main.family === 'absolute' ||
     main.family === 'exponential' ||
@@ -432,8 +437,8 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     ...(spec.inverse
       ? [
           {
-            toks: main.inverse ?? [{ t: 'the reflection across y = x' }],
-            name: main.inverse ? `${fName}⁻¹(${xName}) = ` : `${fName}⁻¹: `,
+            toks: shaped.inverse ?? main.inverse ?? [{ t: 'the reflection across y = x' }],
+            name: (shaped.inverse ?? main.inverse) ? `${fName}⁻¹(${xName}) = ` : `${fName}⁻¹: `,
             color: c.fnSecond,
             dash: chart.dash,
           },
@@ -1206,6 +1211,15 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                       strokeDasharray={d.dash}
                     />
                   ))}
+                  {shaped.ghost ? (
+                    <Path
+                      d={pathOf(shaped.ghost)}
+                      stroke={c.chartMuted}
+                      strokeWidth={chart.stroke}
+                      strokeDasharray={chart.dash}
+                      fill="none"
+                    />
+                  ) : null}
                   {parent ? (
                     <Path
                       d={pathOf(parent)}
@@ -1580,6 +1594,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
         `Shaded: the points ${shade} the curve, y ${shade === 'above' ? '>' : '<'} ${fName}(${xName})`,
       );
     if (spec.inequality) lines.push(signCaption(main, ineq, fName, xName));
+    lines.push(...reshapeCaption(spec, shaped, fName, xName));
     if (spec.inverse) lines.push(`The inverse is the reflection across the line y = ${xName}`);
     if (spec.parent && parent) lines.push(`The parent y = ${plain(parent.text)} is dashed`);
     if (limX !== undefined) {
