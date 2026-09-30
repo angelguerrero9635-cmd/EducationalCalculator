@@ -108,3 +108,64 @@ already reads.
   place the drawing, and only the base-angle rule is shown.
 - `m.10.quadrilaterals~parallelogram`: built with the drawing's width and height as fixed
   numbers (the picture takes them), so the page is the angles alone: ∠B = 180° − ∠A, ∠C = ∠A.
+
+## After the lesson review (`.review/hs-m.10/lesson-report.md`)
+
+**Built:** six new pages, 108 in all. Calculators: `similarity~splitter-converse` (the two
+ratios and a sign box; a `markedFigure` from points, AC drawn at 60° to AB through figure-only
+values, no parallel marks since DE isn't always parallel), `quadrilaterals~regular-area`
+(n 3–12, θ = 180° ÷ n, apothem, K = ½aP on the `polygon` picture), `volume-derivations~pyramid-surface`
+(the square pyramid `net`), `volume-derivations~density` (a `curvedSolid` cylinder, ρ = m ÷ V).
+Sorts: `triangle-relationships~angle-side-order`, `proofs~reasoning`.
+
+**Rebuilt:** `law-sines-cosines~ambiguous-case` is its own page: h = b sin A, the triangle count
+n with the case in its how and the comparison after it, B by the law of sines, B₂ = 180° − B,
+C, C₂, c, c₂. The second triangle's values are left blank when fewer than two fit; A is acute
+(1°–89°). `triangleSolver` already draws the second SSA triangle dashed.
+
+**Changed from the report:**
+
+- `bothSides` (midpoint, parallel-lines algebra, corresponding parts): the smaller x term is
+  taken first, then the number, then a divide line (“Take 3x … 1 = 2x − 7”, “Add 7 … 8 = 2x”,
+  “Divide both sides by 2: x = 4”). The rearranged line (x = (q − s) ÷ (r − p)) stays: the
+  engine always prints it; it is now written in the same direction as the balancing.
+- Counting pages: n to 60, r to 14, and a limit of 10¹² ways (P, C, C(n, r)) with its own
+  message; the factors are written out (P = 8 × 7 × 6; C = (8 × 7 × 6) ÷ (3 × 2 × 1), 336 ÷ 6).
+  `pascalTriangle` can't skip the triangle past row 12, so these pages show the slots only.
+- Right-triangle trig pages open in metric (7.5 m ladder, 0.5 m over 6 m, 36 m and 1.5 m).
+- `right-triangle-trig` main: s, k, t (fraction up to /100) named “Sine of A” …; the three
+  ratio rules are listed as s = a ÷ c (sin A) and so on, apart from the law rules.
+- `probability-rules~complement` keeps P(Wind) and P(Rain and Wind): the `venn` picture has
+  no one-circle form. Only the how changed.
+- `rigid-motions~symmetry`: r, u, a, b are figure-only; f keeps 1 and 0 with “(yes)” or “(no)”
+  after it.
+- `quadrilaterals~regular-area` draws no perimeter under the polygon: the harness check of
+  sides × length against it has an absolute tolerance, which 12-figure values miss.
+- `volume-derivations~density`: V is a plain decimal (a π volume's check shows a cm³ multiple
+  under mm³, the unit-menu need above).
+- `conditional-probability` main: N is replaced by the late total L; e and h (on time by walk
+  or car) are standalone table cells.
+
+**Waiting:** none of the report's new pages.
+
+**Shared needs from the review:**
+
+- Engine: step lines drop the repeated answer of a pick rule (“L = 2”, then “→ L = 2”):
+  `rigid-motions~symmetry`, the ambiguous case's n.
+- Engine 7, exact radicals (“l = 5√3 ≈ 8.6603”, “b = √52 = 2√13”): special-right-triangles
+  ~45-45-90, ~30-60-90, `similarity~right-altitude`.
+- Engine 10, one π stage (“56 × π” then “56π”): every volume page.
+- Engine: a fraction substituted into a later line switches to a decimal (3 − (−1/2) × 4, then
+  3 − (−0.5) × 4): `parallel-lines~perpendicular-line`.
+- Engine 3: the step heading repeats a name that holds its symbol (“Find side d (EF): d”):
+  `similarity`, the probability pages.
+- Engine: a value symbol P(…) is probability notation, not an expression; the new symbol test
+  should allow it (every probability page).
+- Picture: `pascalTriangle` draws the triangle only when n ≤ 12 and the slots alone past it:
+  `probability-rules~combinations`, `~counting-probability`.
+- Picture: `venn` with one event (no B circle): `probability-rules~complement`.
+- Picture: `polygon` with its apothem drawn and labelled: `quadrilaterals~regular-area`.
+- Picture: `transformation` symmetry of a parallelogram (a 180° turn about its center):
+  `rigid-motions~symmetry`.
+- Harness: the `polygon` perimeter check needs a relative tolerance:
+  `quadrilaterals~regular-area`.
