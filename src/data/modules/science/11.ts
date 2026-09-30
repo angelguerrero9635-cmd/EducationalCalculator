@@ -2142,8 +2142,8 @@ const WAVE_SPEED = q('v', 'v', 'Wave speed', 'm/s', 0.1, 10000, 0.1);
 const LAMBDA = q('l', 'λ', 'Wavelength', 'm', 0.0001, 1e5, 0.0001);
 const FREQ = q('f', 'f', 'Frequency', 'Hz', 0.1, 1e6, 0.1);
 
-/** f = v ÷ λ. */
-const freqRule = rule('f = v/λ', '{f} = {v}/{l}', (v) => v.f! * v.l! - v.v!, {
+/** v = fλ. */
+const freqRule = rule('v = fλ', '{v} = {f} × {l}', (v) => v.f! * v.l! - v.v!, {
   f: [
     (v) => div(v.v!, v.l!),
     '{v}/{l}',
@@ -2290,7 +2290,7 @@ const soundPages: ModuleDef[] = [
       assumptions: [
         'The source sends out one wavefront each period, from wherever it is then; the air carries each out at v.',
         'Ahead the fronts bunch up: a higher frequency. Behind they spread out: a lower one.',
-        'The listener stands still; the source moves slower than sound.',
+        'The listener stands still (one moving toward a still source hears f(v + v_L)/v); the source moves slower than sound.',
       ],
       variables: [
         q('s', 'vₛ', 'Speed of the source', 'm/s', 0.1, 300, 0.1),
@@ -2304,6 +2304,7 @@ const soundPages: ModuleDef[] = [
         rule('λ = v/f', '{l} = {v}/{f}', (v) => v.l! * v.f! - v.v!, {
           l: [(v) => div(v.v!, v.f!), '{v}/{f}', 'At rest the waves are v/f apart.'],
           f: [(v) => div(v.v!, v.l!), '{v}/{l}', 'The speed over the wavelength.'],
+          v: [(v) => v.l! * v.f!, '{l} × {f}', 'The speed is the wavelength times the frequency.'],
         }),
         rule(
           'f′ = fv/(v − vₛ)',
@@ -2337,6 +2338,16 @@ const soundPages: ModuleDef[] = [
               '{f} × {v}/({v} + {s})',
               'Behind the fronts are (v + vₛ)/f apart: a lower pitch.',
             ],
+            f: [
+              (v) => div(v.b! * (v.v! + v.s!), v.v!),
+              '{b} × ({v} + {s})/{v}',
+              'Undo the Doppler shift.',
+            ],
+            s: [
+              (v) => div(v.f! * v.v!, v.b!)! - v.v!,
+              '{f} × {v}/{b} − {v}',
+              'Solve the Doppler formula for vₛ.',
+            ],
           },
         ),
       ),
@@ -2363,37 +2374,41 @@ const soundPages: ModuleDef[] = [
         'Each power of ten in intensity adds 10 dB: ten times the intensity, 10 dB louder.',
       ],
       variables: [
-        q('I', 'I', 'Intensity', 'W/m²', 1e-12, 100, 1e-12, { full: true }),
+        q('I', 'I', 'Intensity', 'W/m²', 1e-12, 100, 1e-12, { scientific: true }),
         q('a', 'a', 'Number in front (1 to 10)', undefined, 1, 9.999, 0.001, {
           derived: true,
+          hidden: true,
         }),
-        q('n', 'n', 'Power of ten', undefined, -12, 2, 1, { integer: true, derived: true }),
-        q('L', 'log I', 'Log of the intensity', undefined, -12, 2, 0.001, { derived: true }),
+        q('n', 'n', 'Power of ten', undefined, -12, 2, 1, {
+          integer: true,
+          derived: true,
+          hidden: true,
+        }),
+        q('L', 'L', 'Log of the intensity', undefined, -12, 2, 0.001, { derived: true }),
         q('B', 'β', 'Sound level', 'dB', 0, 140, 0.01),
       ],
       ...rules(
-        rule('I = a × 10^n', '{I} = {a} × 10^{n}', (v) => v.I! - v.a! * 10 ** v.n!, {
-          I: [
-            (v) => v.a! * 10 ** v.n!,
-            '{a} × 10^{n}',
-            'The number in front times the power of ten.',
-          ],
-          a: [(v) => v.I! / 10 ** v.n!, '{I} ÷ 10^{n}', 'Divide by the power of ten.'],
-        }),
-        rule(
-          'n from I',
-          '{n} = exponent of the power of ten at or below {I}',
-          (v) => v.n! - Math.floor(Math.log10(v.I!) + 1e-9),
-          {
-            n: [
-              (v) => (v.I! > 0 ? Math.floor(Math.log10(v.I!) + 1e-9) : undefined),
-              'exponent of the power of ten at or below {I}',
-              'The whole part of the log: the power of ten the intensity sits at.',
-            ],
-            I: null,
-          },
+        hide(
+          rule('I = a × 10^n', '{I} = {a} × 10^{n}', (v) => v.I! - v.a! * 10 ** v.n!, {
+            a: [(v) => v.I! / 10 ** v.n!, '{I} ÷ 10^{n}', ''],
+          }),
         ),
-        rule('log I = log₁₀ I', '{L} = log₁₀({I})', (v) => v.L! - Math.log10(v.I!), {
+        hide(
+          rule(
+            'n from I',
+            '{n} = exponent of the power of ten at or below {I}',
+            (v) => v.n! - Math.floor(Math.log10(v.I!) + 1e-9),
+            {
+              n: [
+                (v) => (v.I! > 0 ? Math.floor(Math.log10(v.I!) + 1e-9) : undefined),
+                'exponent of the power of ten at or below {I}',
+                'The whole part of the log: the power of ten the intensity sits at.',
+              ],
+              I: null,
+            },
+          ),
+        ),
+        rule('L = log₁₀ I', '{L} = log₁₀({I})', (v) => v.L! - Math.log10(v.I!), {
           L: [
             (v) => (v.I! > 0 ? Math.log10(v.I!) : undefined),
             'log₁₀({I})',
@@ -2401,7 +2416,7 @@ const soundPages: ModuleDef[] = [
           ],
           I: [(v) => 10 ** v.L!, '10^{L}', 'Undo the log: 10 to that power.'],
         }),
-        rule('β = 10 × (log I + 12)', '{B} = 10 × ({L} + 12)', (v) => v.B! - 10 * (v.L! + 12), {
+        rule('β = 10 × (L + 12)', '{B} = 10 × ({L} + 12)', (v) => v.B! - 10 * (v.L! + 12), {
           B: [
             (v) => 10 * (v.L! + 12),
             '10 × ({L} + 12)',
