@@ -141,6 +141,7 @@ import { BeakerSolution } from './BeakerSolution';
 import { ConicGraph } from './ConicGraph';
 import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
+import { ComplexPowers } from './ComplexPowers';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
 import { AlgebraTilesHs2g } from './AlgebraTilesHs2g';
@@ -233,7 +234,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'polarGrid':
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
-      return <ComplexPlane spec={spec} calc={calc} />;
+      return spec.power !== undefined || spec.roots !== undefined ? (
+        <ComplexPowers spec={spec} calc={calc} />
+      ) : (
+        <ComplexPlane spec={spec} calc={calc} />
+      );
     case 'vectorDiagram':
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':

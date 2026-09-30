@@ -4,7 +4,12 @@
  * apart from `types.ts` so that file's union only lists them. A `NumOrVar` field is a fixed
  * number or a variable id.
  */
-import type { AlgebraTilesHs2g, SolutionsAlso, UnitCircleHs2g } from './typesHs2g';
+import type {
+  AlgebraTilesHs2g,
+  ComplexPlaneHs2g,
+  SolutionsAlso,
+  UnitCircleHs2g,
+} from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
 
 /** A trig function of the unit circle. */
@@ -144,7 +149,7 @@ export type ComplexOf = { re: NumOrVar; im: NumOrVar } | { modulus: NumOrVar; ar
  * `argument` mark |z| and arg z (variables checked); `polar` writes z = r(cos θ + i sin θ).
  * Drag z's point.
  */
-export interface ComplexPlaneSpec {
+export interface ComplexPlaneSpec extends ComplexPlaneHs2g {
   kind: 'complexPlane';
   z: ComplexOf;
   conjugate?: boolean;

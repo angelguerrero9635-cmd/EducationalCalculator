@@ -148,6 +148,17 @@ export interface SolutionsAlso {
   also?: NumOrVar;
 }
 
+/**
+ * H99: `complexPlane` powers and roots (drawn by `ComplexPowers.tsx`; no handle). `power: n`
+ * marks z, z², …, zⁿ joined in turn (each turns by arg z and stretches by |z|), zⁿ lit;
+ * `result` is zⁿ (checked). `roots: n` marks the n nth roots of z on the circle of radius
+ * |z|^(1/n), a regular polygon, the first at arg z ÷ n; `result` is that first root (checked).
+ */
+export interface ComplexPlaneHs2g {
+  power?: NumOrVar;
+  roots?: NumOrVar;
+}
+
 /** Every variable id these options name (for the module tests). */
 export function hs2gSpecVars(r: Representation): string[] {
   const ids = (...xs: (NumOrVar | boolean | undefined)[]): string[] =>
@@ -169,6 +180,8 @@ export function hs2gSpecVars(r: Representation): string[] {
       return 'chances' in r ? ids(...(r.chances.third ?? []).flat(2)) : [];
     case 'pascalTriangle':
       return ids(r.fraction?.n, r.fraction?.k, r.fraction?.count, r.fraction?.chance);
+    case 'complexPlane':
+      return ids(r.power, r.roots);
     case 'unitCircle':
       return ids(r.through?.x, r.through?.y, r.through?.r, r.pair?.a, r.pair?.b, r.solutions?.also);
     default:

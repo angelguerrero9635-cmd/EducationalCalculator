@@ -5,6 +5,7 @@
  * in `pictures.ts`.
  */
 import { boxProduct, monomialModel } from '@/components/module/reps/algebraBox';
+import { powersOf, rootsOf } from '@/components/module/reps/complexPowers';
 import { curveOf } from '@/components/module/reps/functionGraphMath';
 import { toDegrees } from '@/components/module/reps/hsdKit';
 import { choose } from '@/components/module/reps/statMath';
@@ -227,6 +228,40 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
         if (Math.abs(wrap(deg - C)) > 1e-6)
           out.push(
             `the angle ${deg}° is not A ${rep.pair.op === 'difference' ? '−' : '+'} B = ${C}°`,
+          );
+      }
+      break;
+    }
+    case 'complexPlane': {
+      // H99: zⁿ, or the first nth root, is the result.
+      if (rep.power === undefined && rep.roots === undefined) break;
+      if (rep.power !== undefined && rep.roots !== undefined) out.push('power and roots together');
+      const n = get(rep.roots ?? rep.power);
+      if (n === undefined) break;
+      const lo = rep.roots !== undefined ? 2 : 1;
+      if (!Number.isInteger(n) || n < lo || n > 12) out.push(`n = ${n} (whole, ${lo} to 12)`);
+      const RAD = Math.PI / 180;
+      const [a, b] =
+        'modulus' in rep.z
+          ? (() => {
+              const [r, t] = [get(rep.z.modulus), get(rep.z.argument)];
+              return r === undefined || t === undefined
+                ? [undefined, undefined]
+                : [r * Math.cos(t * RAD), r * Math.sin(t * RAD)];
+            })()
+          : [get(rep.z.re), get(rep.z.im)];
+      if (a === undefined || b === undefined) break;
+      const pts = rep.roots !== undefined ? rootsOf(a, b, n) : powersOf(a, b, n);
+      const want = rep.roots !== undefined ? pts[0] : pts[pts.length - 1];
+      if (!want) break;
+      for (const [id, v, what] of [
+        [rep.result?.re, want.a, 'real'],
+        [rep.result?.im, want.b, 'imaginary'],
+      ] as const) {
+        const got = get(id);
+        if (got !== undefined && Math.abs(got - v) > 1e-3 * Math.max(1, Math.abs(v)))
+          out.push(
+            `the ${rep.roots !== undefined ? 'first root' : `power ${n}`}'s ${what} part is ${got}, the picture gives ${v}`,
           );
       }
       break;

@@ -3,6 +3,7 @@
  * docs/HS_NEEDS.md). Each demo shows one option or part in a page stand-in. Spread into
  * gallery.ts.
  */
+import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -58,10 +59,17 @@ function derive(
   f: (v: Values) => number | undefined,
   expr: StepText['expr'],
   how: StepText['how'],
+  more: Partial<StepText> = {},
+  rel: Partial<Relation> = {},
 ): Rule {
-  return rule(id, display, [x, ...inputs], (v) => v[x]! - (f(v) ?? NaN), {
-    [x]: [(v: Values) => f(v), expr, how],
-  });
+  return rule(
+    id,
+    display,
+    [x, ...inputs],
+    (v) => v[x]! - (f(v) ?? NaN),
+    { [x]: [(v: Values) => f(v), expr, how, more] },
+    rel,
+  );
 }
 
 /** A rule the values must keep (b ≠ 0), with the message when they don't. */
@@ -883,6 +891,117 @@ const twoValues = page({
 
 const CIRCLES: ModuleDef[] = [pointOnSide, sumPair, differencePair, twoValues];
 
+// ── H99: complexPlane powers and roots ──
+
+const powers = fromPage(
+  'm.12.polar~de-moivre',
+  'g.m12-polar-de-moivre-powers',
+  'Powers by De Moivre’s theorem, step by step',
+  {
+    kind: 'complexPlane',
+    z: { re: 'a', im: 'b' },
+    power: 'n',
+    result: { re: 'p', im: 'q' },
+  },
+);
+
+const cubeRoots = page({
+  id: 'g.m12-polar-roots',
+  title: 'The nth roots of a complex number',
+  use: 'Use this for “Find the cube roots of 8i.”',
+  assumptions: [
+    'Write z in polar form: modulus r and argument θ.',
+    'Every nth root has modulus the nth root of r, and argument (θ + 360°k) ÷ n.',
+    'So the n roots are spaced 360° ÷ n apart on one circle: a regular polygon.',
+  ],
+  variables: [
+    num('a', 'a', 'Real part of z', -100, 100, { step: 0.5 }),
+    num('b', 'b', 'Imaginary part of z', -100, 100, { step: 0.5 }),
+    num('n', 'n', 'Which root', 2, 12, { step: 1, integer: true }),
+    num('A', 'arg z', 'Argument of z', 0, 360, { derived: true, unit: '°' }),
+    num('m', 'ρ', 'Modulus of each root', 0, 20, { derived: true }),
+    num('t', 'θ₀', 'Argument of the first root', 0, 180, { derived: true, unit: '°' }),
+    num('p', 'p', 'Real part of the first root', -20, 20, { derived: true }),
+    num('q', 'q', 'Imaginary part of the first root', -20, 20, { derived: true }),
+  ],
+  rules: [
+    limit('z ≠ 0', '{a} + {b}i is not 0', (v) => v.a !== 0 || v.b !== 0, 'Every root of 0 is 0.'),
+    derive(
+      'ρ = |z|^(1/n)',
+      'm',
+      ['a', 'b', 'n'],
+      '{m} = √({a}² + {b}²)^(1 ÷ {n})',
+      (v) => fin(Math.hypot(v.a!, v.b!) ** (1 / v.n!)),
+      '√({a}² + {b}²)^(1 ÷ {n})',
+      'The modulus of z, then its nth root.',
+    ),
+    derive(
+      'A = arg z',
+      'A',
+      ['a', 'b'],
+      'tan {A} = {b} ÷ {a}, {A} in the quadrant of ({a}, {b})',
+      (v) => {
+        const d = (Math.atan2(v.b!, v.a!) * 180) / Math.PI;
+        return v.a === 0 && v.b === 0 ? undefined : fin(d < 0 ? d + 360 : d);
+      },
+      (v: Values) => {
+        const d = (Math.atan2(v.b!, v.a!) * 180) / Math.PI;
+        const deg = d < 0 ? d + 360 : d;
+        if (v.a === 0) return String(deg);
+        // tan⁻¹ gives −90° to 90°; the rest is a whole number of half turns.
+        const off = Math.round((deg - (Math.atan(v.b! / v.a!) * 180) / Math.PI) / 180) * 180;
+        return off === 0 ? 'tan⁻¹({b} ÷ {a})' : `${off} + tan⁻¹({b} ÷ {a})`;
+      },
+      'tan⁻¹ gives −90° to 90°; add half turns to reach the quadrant of z.',
+      {},
+      {
+        check: (v: Values) => {
+          const f = (x: number) => formatNumber(x);
+          return v.a === 0
+            ? `0 = ${f(Math.abs(v.b!))} × cos(${f(v.A!)}°)`
+            : `tan(${f(v.A!)}°) = ${f(v.b!)} ÷ ${v.a! < 0 ? `(${f(v.a!)})` : f(v.a!)}`;
+        },
+      },
+    ),
+    derive(
+      'θ₀ = A ÷ n',
+      't',
+      ['A', 'n'],
+      '{t} = {A} ÷ {n}',
+      (v) => fin(v.A! / v.n!),
+      '{A} ÷ {n}',
+      'The argument of z, shared among n equal turns; the others are 360° ÷ n apart.',
+    ),
+    derive(
+      'p = ρ cos θ₀',
+      'p',
+      ['m', 't'],
+      '{p} = {m} × cos({t}°)',
+      (v) => fin(v.m! * Math.cos((v.t! * Math.PI) / 180)),
+      '{m} × cos({t}°)',
+      'Back to a + bi: the real part.',
+    ),
+    derive(
+      'q = ρ sin θ₀',
+      'q',
+      ['m', 't'],
+      '{q} = {m} × sin({t}°)',
+      (v) => fin(v.m! * Math.sin((v.t! * Math.PI) / 180)),
+      '{m} × sin({t}°)',
+      'And the imaginary part.',
+    ),
+  ],
+  example: { a: 0, b: 8, n: 3, A: 90, m: 2, t: 30, p: Math.sqrt(3), q: 1 },
+  startWith: ['a', 'b', 'n'],
+  representation: {
+    kind: 'complexPlane',
+    z: { re: 'a', im: 'b' },
+    roots: 'n',
+    result: { re: 'p', im: 'q' },
+    fixed: true,
+  },
+});
+
 export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   ...TERMS,
   ...GRAPHS,
@@ -890,6 +1009,8 @@ export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   ...MONOMIALS,
   ...CHANCES,
   ...CIRCLES,
+  powers,
+  cubeRoots,
 ];
 
 export const HS2G_GALLERY_LAYOUTS: LayoutDef[] = [];

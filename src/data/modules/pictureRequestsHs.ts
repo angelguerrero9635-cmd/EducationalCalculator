@@ -1893,20 +1893,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'P10 (docs/plans/m.11.md need 6, m.12.md needs 6 and 7). Three options on `unitCircle`, off unless set (UnitCircleHs2g.tsx draws them; no handle). `through: { x, y, r? }`: the point (x, y) off the circle, the dashed circle of radius r through it, the legs x and y in the cosine and sine colours, r along the ray, θ’s arc, and the unit circle with its point (x ÷ r, y ÷ r) where the ray crosses it; `cos`, `sin`, `tan` are x ÷ r, y ÷ r, y ÷ x and `r` √(x² + y²) (checked); `angle` is not read (0), or θ’s id (checked against the point). m.11.unit-circle~point-on-side: { kind: "unitCircle", angle: 0, through: { x: "x", y: "y", r: "r" }, sin: "s", cos: "c", tan: "t", fixed: true } (example (−3, 4): r = 5, sin θ = 4/5). `pair: { a, b, op? }` (op "sum", the default, or "difference"): A’s arc from the x-axis, then B’s from A on (back for a difference) to A ± B, which is `angle` (checked); the key names A and B in their colours (theme `unitCircleAngleA`, `unitCircleAngleB`) and the caption works the formula with exact values at multiples of 15° ((√6 + √2)/4). m.12.trig-formulas-equations: add `pair: { a: "A", b: "B" }` to its picture; ~difference: `pair: { a: "A", b: "B", op: "difference" }`. `solutions.also`: a second value, both lines drawn and every angle marked in its value’s colour, the caption listing them and the count (sin x = −1/2 or 1: 210°, 330° and 90°, three solutions); `angles` may hold them all. m.12.trig-formulas-equations~quadratic: { kind: "unitCircle", angle: 0, fixed: true, solutions: { fn: "sin", value: "s1", also: "s2" } } with s₁ and s₂ the roots of a·s² + b·s + c = 0.',
   },
-  ask(
-    'H99',
-    'normalCurve',
-    'Statistics and complex numbers: a t curve over the normal; histogram lit range; a CLT simulation; complexPlane powers and roots; a determinant picture',
-    [
-      'm.11.probability-distributions',
-      'm.12.polar',
-      'm.12.sampling-distributions',
-      'm.12.confidence-intervals',
-      'm.12.hypothesis-testing',
-      'm.12.matrices',
-    ],
-    'P11: docs/plans/m.11.md need 7, m.12.md needs 1, 5, 8, 9. The t math is in statMath (tPdf, tCdf, invT, tStar).',
-  ),
+  {
+    ...ask(
+      'H99',
+      'normalCurve',
+      'Statistics and complex numbers: a t curve over the normal; histogram lit range; a CLT simulation; complexPlane powers and roots; a determinant picture',
+      [
+        'm.11.probability-distributions',
+        'm.12.polar',
+        'm.12.sampling-distributions',
+        'm.12.confidence-intervals',
+        'm.12.hypothesis-testing',
+        'm.12.matrices',
+      ],
+    ),
+    gallery: ['g.m12-polar-de-moivre-powers', 'g.m12-polar-roots'],
+    notes:
+      'P11 (docs/plans/m.11.md need 7, m.12.md needs 1, 5, 8, 9). Drawn part by part. (1) `complexPlane` `power` and `roots` (ComplexPowers.tsx, no handle), off unless set: `power: n` (1–12) marks z, z², …, zⁿ joined in turn by a dashed path, arg z’s arc, z and zⁿ labelled, and the caption "each power turns θ more and stretches by |z|: z⁸ = (√2)⁸(cos 360° + i sin 360°) = 16"; `roots: n` (2–12) marks the n roots on the dashed circle of radius |z|^(1/n), a regular polygon, the first root’s argument arc, z as an arrow; `result` is zⁿ or the first root (checked). m.12.polar~de-moivre: { kind: "complexPlane", z: { re: "a", im: "b" }, power: "n", result: { re: "p", im: "q" } }; m.12.polar~roots: { kind: "complexPlane", z: { re: "a", im: "b" }, roots: "n", result: { re: "p", im: "q" }, fixed: true } (the cube roots of 8i: 2 at 30°, 150°, 270°).',
+  },
   ask(
     'H100',
     'macromolecules',
