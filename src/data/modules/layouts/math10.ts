@@ -332,6 +332,44 @@ const TRIANGLE_RELATIONSHIPS: LayoutDef[] = [
   },
 ];
 
+// ── Quadrilaterals (G-CO.11) ──
+const QUADRILATERALS: LayoutDef[] = [
+  {
+    kind: 'sort',
+    id: 'm.10.quadrilaterals~name-it',
+    title: 'Name it exactly',
+    use: 'Use this for “A parallelogram has perpendicular diagonals. What is the most exact name for it?”',
+    assumptions: [
+      'Give the most exact name: a square is also a rectangle and a rhombus, but “square” says more.',
+      'A rectangle is a parallelogram with a right angle; a rhombus is one with four equal sides.',
+    ],
+    question: 'What is the most exact name?',
+    bins: [
+      {
+        id: 'parallelogram',
+        label: 'Parallelogram',
+        why: 'Both pairs of opposite sides parallel, nothing more.',
+      },
+      { id: 'rectangle', label: 'Rectangle', why: 'A parallelogram with right angles.' },
+      { id: 'rhombus', label: 'Rhombus', why: 'A parallelogram with four equal sides.' },
+      { id: 'square', label: 'Square', why: 'Both a rectangle and a rhombus.' },
+      { id: 'trapezoid', label: 'Trapezoid', why: 'Exactly one pair of parallel sides.' },
+      { id: 'kite', label: 'Kite', why: 'Two pairs of equal sides next to each other.' },
+    ],
+    cards: [
+      { label: 'Both pairs of opposite sides parallel', bin: 'parallelogram' },
+      { label: 'A parallelogram with a right angle', bin: 'rectangle' },
+      { label: 'A parallelogram with equal diagonals', bin: 'rectangle' },
+      { label: 'A parallelogram with perpendicular diagonals', bin: 'rhombus' },
+      { label: 'A parallelogram whose diagonals bisect its angles', bin: 'rhombus' },
+      { label: 'A rectangle with two equal adjacent sides', bin: 'square' },
+      { label: 'A rhombus with a right angle', bin: 'square' },
+      { label: 'Exactly one pair of parallel sides', bin: 'trapezoid' },
+      { label: 'Two pairs of equal adjacent sides, not all four equal', bin: 'kite' },
+    ],
+  },
+];
+
 // ── Similarity (G-SRT.2–5) ──
 const SIMILARITY: LayoutDef[] = [
   {
@@ -465,6 +503,7 @@ export const MATH_10_LAYOUTS: LayoutDef[] = [
   ...RIGID_MOTIONS,
   ...CONGRUENCE,
   ...TRIANGLE_RELATIONSHIPS,
+  ...QUADRILATERALS,
   ...SIMILARITY,
   ...VOLUME,
 ];
