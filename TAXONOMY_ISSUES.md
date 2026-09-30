@@ -22,13 +22,12 @@ and each strand's skills sit together within a grade.
    a saved "Recently viewed" entry points to. Give topics stable ids when they get lessons, since
    that will be the first time reordering could lose a student's place.
 
-3. **Standards with no page yet (from the K–3 and Grade 4 reviews).** 4.OA.5 (patterns),
-   4.MD.4 (line plots with fractions), 4.NF.6 (decimals past 1 on a number line), 4.MD.6
-   (a protractor, as an explore figure); K.CC.2 (count on from a number other
-   than 1) beyond "one more"; K.G.5 (build shapes from sticks and clay); 1.G.2 (compose
-   shapes); 2.MD.3 (estimate lengths); 3.G.2 (equal parts of an area); K-PS2-2 (change a
-   push's direction); 3-PS2-4 (electric forces). 3.NBT.2 is taught on the Grade 2 page
-   `m.2.add-sub-1000` by the one-definition rule.
+3. **Standards with no page (checked again after Grades 9–12).** Only K.G.5 (build shapes from
+   sticks and clay) has none, since it is a hands-on activity; `m.K.compose-shapes` covers
+   composing (K.G.6, and 1.G.2's idea). The rest of the earlier list now has pages: 4.MD.4
+   (`m.4` line plots in eighths), 4.NF.6 (decimals on a number line), 4.MD.6
+   (`m.4.angles~protractor`), K-PS2-2 and 3-PS2-4 (the pushes and magnets pages). 3.NBT.2 is
+   taught on `m.2.add-sub-1000` by the one-definition rule.
 
 4. **Duplicate pairs across grades.** `m.K.classify-count` and `m.1.data-3-categories`;
    `m.K.shapes-2d-3d`, `m.1.shape-attributes` and `m.2.thirds-polygons~polygons`;
