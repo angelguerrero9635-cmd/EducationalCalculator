@@ -552,3 +552,275 @@ true`, at 't', x 'X', y 'Y', time 'T'). Values v (m/s), θ (°), h (m), t (s), X
 3. Trig: inverse-trig (4), trig-formulas-equations (5).
 4. Vectors (5), polar (6), parametric (3), limits-intro (4).
 5. Engine needs 1 and 2 (t and the typed tail), then 3 (matrix values), then 6 and 8.
+
+## Added skills
+
+Eight skills added to the taxonomy after Grade 12 was built (TAXONOMY_ISSUES.md, "Grades 9–12
+topics without a skill"). None has a released question in `research/questions/` (COVERAGE.md
+lists 0 for each), so each lists the common textbook items in our own words. No gallery demo
+exists for any of them: the pictures are the nearest kinds already drawn, and the missing ones
+are listed under "Shared needs" in `docs/build/m.12.md`. Examples are original and worked by
+hand. Build order: the precalculus skills in taxonomy order, then the two statistics skills.
+
+### 13. m.12.vectors-3d — Vectors in three dimensions: dot and cross products
+
+- **Standard:** N-VM.4 (+), N-VM.5 (+) carried into space; no CCSS code for the cross product.
+- **Textbooks:** Larson Precalculus unit 11 (11.1 the 3-D system, 11.2 vectors in space, 11.3
+  the cross product); Eureka Precalculus module 2 B and D (points and vectors in space).
+- **Tests ask:** no released questions. Common items:
+
+  | Item (our words)                                  | Page    | Mark                          |
+  | ------------------------------------------------- | ------- | ----------------------------- |
+  | u · v and the angle between two 3-D vectors       | main    | Solves                        |
+  | Are two 3-D vectors perpendicular?                | main    | Solves (u · v = 0)            |
+  | u × v, a vector perpendicular to both             | ~cross  | Solves                        |
+  | Area of the parallelogram (triangle) u and v span | ~cross  | Solves (the triangle: half)   |
+  | Volume of the box (parallelepiped) u, v, w span   | ~triple | Solves                        |
+  | Lines and planes in space                         | none    | No (Larson 11.4; not planned) |
+
+- **Main — BUILD `m.12.vectors-3d`:** picture `matrixGrid` multiply (u as a row times v as a
+  column, the one entry u · v lit; 3-D axes are need 10). Values a, b, c (u, one group), d, e,
+  f (v, one group), p (u · v), m1 (|u|), m2 (|v|), θ (0 to 180 °); the last four derived.
+  Relations p = ad + be + cf; m1 = √(a² + b² + c²); m2 = √(d² + e² + f²);
+  θ = cos⁻¹(p ÷ (m1·m2)). Assumptions: multiply matching components and add;
+  cos θ = u · v ÷ (|u||v|); u · v = 0 means perpendicular. Example: ⟨1, 2, 2⟩ · ⟨4, 0, 3⟩ =
+  4 + 0 + 6 = 10; |u| = 3, |v| = 5; cos θ = 10/15 = 2/3, θ ≈ 48.19°. startWith: a–f.
+- **~cross — BUILD:** picture `table` (|u × v| as v's last component f changes: 0 when v is
+  parallel to u) until need 10. Values a–f (two groups), x, y, z (u × v, one group), A
+  (|u × v|). Relations x = bf − ce; y = cd − af; z = ae − bd; A = √(x² + y² + z²).
+  Assumptions: u × v is perpendicular to both (its dot product with each is 0); |u × v| is the
+  parallelogram's area, half of it the triangle's; v × u = −(u × v). Example: ⟨1, 2, 3⟩ ×
+  ⟨2, 0, 1⟩ = ⟨2 − 0, 6 − 1, 0 − 4⟩ = ⟨2, 5, −4⟩; A = √45 ≈ 6.708. Use: “Find u × v for
+  u = ⟨1, 2, 3⟩ and v = ⟨2, 0, 1⟩, and the area of the parallelogram they span.”
+- **~triple — BUILD:** picture `table` (the volume as w's last component changes), as on
+  `m.12.matrices~determinant`. Values u, v, w (three groups of 3), T (u · (v × w)), V (|T|).
+  Relations T = the 3 × 3 determinant with rows u, v, w (first-row expansion); V = |T|.
+  Example: u = ⟨1, 2, 0⟩, v = ⟨0, 1, 3⟩, w = ⟨2, 0, 1⟩: T = 1(1 − 0) − 2(0 − 6) + 0(0 − 2) =
+  13, V = 13. Assumption: T = 0 means the three vectors lie in one plane.
+- **Verdict:** 3 pages; 5 of 6 common items Solve.
+
+### 14. m.12.matrix-transformations — Matrices as transformations of the plane
+
+- **Standard:** N-VM.12 (+) (2 × 2 matrices as transformations, |det| as the area factor);
+  AP Precalculus 4.12–4.14.
+- **Textbooks:** Eureka Precalculus module 1 C (lessons 21–30: matrix notation, rotations,
+  reversing a transformation) and module 2 B (linear transformations as matrices,
+  composition). No other unit maps to the skill (CROSSWALK.md).
+- **Tests ask:** no released questions. Common items:
+
+  | Item (our words)                                      | Page      | Mark   |
+  | ----------------------------------------------------- | --------- | ------ |
+  | Image of (3, 1) after a 90° rotation about the origin | main      | Solves |
+  | Image of a point under `[[2, 1], [1, 1]]`; undo it    | ~image    | Solves |
+  | How a matrix changes a figure's area                  | ~area     | Solves |
+  | Rotate by 30°, then by 60°: one matrix for both       | ~compose  | Solves |
+  | Which transformation does `[[0, 1], [1, 0]]` do?      | ~identify | Solves |
+
+- **Main — BUILD `m.12.matrix-transformations`:** picture `transformation` (move 'rotate'
+  about the origin: the segment from A = (x, y) to O, its image A′ = (X, Y)). Values θ (−360
+  to 360 °), x, y, c (cos θ, derived), s (sin θ, derived), X, Y. Relations c = cos θ;
+  s = sin θ; X = cx − sy; Y = sx + cy (and back: x = cX + sY, y = −sX + cY). Assumptions: the
+  rotation matrix is `[[cos θ, −sin θ], [sin θ, cos θ]]`; its columns are where (1, 0) and
+  (0, 1) land; a positive θ turns counterclockwise. Example: θ = 90°: c = 0, s = 1,
+  (3, 1) → (0 − 1, 3 + 0) = (−1, 3). startWith: θ, x, y.
+- **~image — BUILD:** picture `matrixGrid` multiply (A times the column (x, y)). Values a, b,
+  c, d (one group), x, y, X, Y, D (ad − bc, derived). Relations X = ax + by; Y = cx + dy;
+  D = ad − bc; typed X and Y undo the move: x = (dX − bY) ÷ D, y = (aY − cX) ÷ D (limit
+  D ≠ 0: the matrix flattens the plane onto a line, so it can't be undone). Example:
+  `[[2, 1], [1, 1]]` times (3, −1) is (5, 2); D = 1. startWith: x, y, a, b, c, d.
+- **~area — BUILD:** picture `coordinatePlane` polygon: the unit square's image, the
+  parallelogram (0, 0), (a, c), (a + b, c + d), (b, d) (the two sums hidden), its corner
+  (a, c) the point dragged. Values a, b, c, d (one group), D, S (area before), T (area after).
+  Relations D = ad − bc; T = (the size of D) × S. Example: `[[3, 1], [1, 2]]`: D = 5; a
+  figure of area 4 becomes 20. Assumption: a negative D also flips the figure over.
+- **~compose — BUILD:** picture `transformation` rotate α then rotate β (`then`), A″ = (X, Y).
+  Values α, β, γ (α + β, derived), x, y, X, Y. Relations γ = α + β; X = x cos γ − y sin γ;
+  Y = x sin γ + y cos γ. Example: α = 30°, β = 60°: γ = 90°; (4, 2) → (−2, 4). Assumption:
+  the matrix of “α then β” is R(β)R(α) = R(α + β); for other moves the order matters.
+- **~identify — BUILD (sort):** eight matrices into rotation, reflection, dilation:
+  `[[0, −1], [1, 0]]`, `[[−1, 0], [0, −1]]`, `[[0, 1], [−1, 0]]`; `[[1, 0], [0, −1]]`,
+  `[[−1, 0], [0, 1]]`, `[[0, 1], [1, 0]]`; `[[2, 0], [0, 2]]`, `[[0.5, 0], [0, 0.5]]`.
+- **Verdict:** 5 pages; the common items Solve.
+
+### 15. m.12.polar-conics — Polar equations of conics and rotation of axes
+
+- **Standard:** no CCSS code; G-GPE.3 (+) carried on.
+- **Textbooks:** Larson Precalculus 10.5 (rotation of conics) and 10.9 (polar equations of
+  conics); OpenStax Precalculus 10.4–10.5; OpenStax Algebra and Trigonometry 12.4–12.5.
+- **Tests ask:** no released questions. Common items:
+
+  | Item (our words)                                         | Page      | Mark                  |
+  | -------------------------------------------------------- | --------- | --------------------- |
+  | Identify r = 6 ÷ (2 − cos θ): e and the conic            | main      | Solves                |
+  | Vertices, center and axes of a polar ellipse             | ~ellipse  | Solves                |
+  | Vertex and directrix of r = 4 ÷ (1 − cos θ)              | ~parabola | Solves                |
+  | The angle that removes the xy term; classify by B² − 4AC | ~rotation | Solves                |
+  | Rewrite the equation in x′ and y′                        | none      | No (symbolic algebra) |
+
+- **Main — BUILD `m.12.polar-conics`:** picture `polarGrid` point (r, θ) (the conic itself is
+  a picture need). Values k, m (both positive), n (not 0) in r = k ÷ (m − n cos θ), e (|n| ÷ m,
+  derived), d (k ÷ |n|, derived), θ, r. Relations e = |n| ÷ m; d = k ÷ |n|;
+  r = k ÷ (m − n cos θ). The e step ends with the conic (e < 1 an ellipse, e = 1 a parabola,
+  e > 1 a hyperbola). Assumptions: divide top and bottom by m to reach r = ed ÷ (1 − e cos θ);
+  the focus is at the pole; the directrix is x = −d (x = d when the sign is +). Example:
+  r = 6 ÷ (2 − cos θ): e = 1/2, an ellipse; d = 6; at θ = 60°, r = 6 ÷ 1.5 = 4.
+  startWith: k, m, n, θ.
+- **~ellipse — BUILD:** picture `conicGraph` ellipse, center (c, 0), so one focus is the pole.
+  Values e (0 to 1), d, R (r at 0°), S (r at 180°), a, c, b. Relations R = ed ÷ (1 − e);
+  S = ed ÷ (1 + e); a = (R + S) ÷ 2; c = (R − S) ÷ 2; b = √(RS). Example: e = 1/2, d = 6:
+  R = 6, S = 2, a = 4, c = 2, b = √12 ≈ 3.464; vertices (6, 0) and (−2, 0), center (2, 0).
+- **~parabola — BUILD:** picture `conicGraph` parabola opening right, vertex (−p, 0) (hidden),
+  the point at θ on it. Values d, p (d ÷ 2), θ, r, x, y. Relations p = d ÷ 2;
+  r = d ÷ (1 − cos θ) (θ not 0°); x = r cos θ; y = r sin θ. Example: d = 4: p = 2, vertex
+  (−2, 0), directrix x = −4; θ = 90°: r = 4, the point (0, 4) (check: 4² = 8(0 + 2)).
+- **~rotation — BUILD:** picture `unitCircle` (the angle θ from the x-axis to the x′-axis; a
+  turned conic is a picture need). Values A, B (not 0), C, D (B² − 4AC), θ (0 to 90 °).
+  Relations D = B² − 4AC (its note names the conic); 2θ = tan⁻¹(B ÷ (A − C)), plus 180° when
+  negative (90° when A = C). Example: 4x² + 2xy + 2y² = 1: D = 4 − 32 = −28, an ellipse;
+  2θ = tan⁻¹(2 ÷ 2) = 45°, θ = 22.5°.
+- **Verdict:** 4 pages; 4 of 5 common items Solve.
+
+### 16. m.12.partial-fractions — Partial fraction decomposition
+
+- **Standard:** A-APR.7 (+) carried on; no CCSS code.
+- **Textbooks:** OpenStax Precalculus 9.4, OpenStax Algebra and Trigonometry 11.4, Larson
+  Precalculus 7.4.
+- **Tests ask:** no released questions. Common items:
+
+  | Item (our words)                                 | Page       | Mark                          |
+  | ------------------------------------------------ | ---------- | ----------------------------- |
+  | (5x + 1) ÷ ((x − 1)(x + 2)) as two fractions     | main       | Solves                        |
+  | A repeated factor: (3x − 1) ÷ (x − 2)²           | ~repeated  | Solves                        |
+  | A quadratic factor: … ÷ ((x − 1)(x² + 1))        | ~quadratic | Solves                        |
+  | A number alone on top: 4 ÷ ((x − 1)(x + 3))      | none yet   | No (picture need; a ≠ 0 here) |
+  | Top's degree at least the bottom's: divide first | none       | No (m.11 polynomial division) |
+
+- **Main — BUILD `m.12.partial-fractions`:** picture `functionGraph` rational (the top's zero
+  z hidden; the poles p and q, whose asymptotes are the two denominators). Values a (not 0),
+  b, p, q (p ≠ q), A, B. Relations (cover-up) A = (ap + b) ÷ (p − q); B = (aq + b) ÷ (q − p).
+  Assumptions: one fraction per linear factor; cover up (x − p) and put x = p to find A; check
+  by adding the fractions back. Example: a = 5, b = 1, p = 1, q = −2: A = 6 ÷ 3 = 2,
+  B = −9 ÷ (−3) = 3; 2(x + 2) + 3(x − 1) = 5x + 1. startWith: a, b, p, q.
+- **~repeated — BUILD:** picture `functionGraph` rational (poles p, p). Values a (not 0), b, p,
+  A, B. Relations A = a; B = ap + b (from ax + b = A(x − p) + B). Example: (3x − 1) ÷
+  (x − 2)²: A = 3, B = 6 − 1 = 5.
+- **~quadratic — BUILD:** picture `table` of f(x) at five x (the top's zeros can be complex,
+  so no graph by zeros). Values a, b, c (top), p, k (x² + k, k > 0), A, B, C, x, y. Relations
+  A = (ap² + bp + c) ÷ (p² + k); B = a − A; C = b + Bp; y = f(x). Example: (3x² − 2x + 3) ÷
+  ((x − 1)(x² + 1)): A = 4 ÷ 2 = 2, B = 1, C = −1; check c = Ak − Cp = 2 + 1 = 3.
+- **Verdict:** 3 pages; 3 of 5 common items Solve.
+
+### 17. m.12.induction — Mathematical induction
+
+- **Standard:** no CCSS code.
+- **Textbooks:** Larson Precalculus 9.4 (mathematical induction, sums of powers).
+- **Tests ask:** no released questions. Common items:
+
+  | Item (our words)                          | Page     | Mark                         |
+  | ----------------------------------------- | -------- | ---------------------------- |
+  | Prove 1 + 2 + … + n = n(n + 1)/2          | main     | Partly (the step in numbers) |
+  | Prove 1 + 3 + … + (2n − 1) = n²           | ~odd     | Partly                       |
+  | Prove 1 + r + … + rⁿ⁻¹ = (rⁿ − 1)/(r − 1) | ~powers  | Partly                       |
+  | The sum of the first n squares            | ~squares | Partly                       |
+  | The parts of an induction proof, in order | ~steps   | Solves (sequence)            |
+
+- **Main — BUILD `m.12.induction`:** picture `termsChart` arithmetic 1, 1 with the partial
+  sums (up to 30 terms). Values n (1 to 30), S (n(n + 1)/2), a (the next term, n + 1), T
+  (S + a), F ((n + 1)(n + 2)/2); T and F are worked out and agree: the inductive step in
+  numbers. Assumptions: base case n = 1; if the formula holds at k, adding the next term k + 1
+  gives (k + 1)(k + 2)/2; a table of cases is not a proof. Example: n = 4: S = 10, a = 5,
+  T = 15, F = 5 × 6 ÷ 2 = 15. startWith: n.
+- **~odd — BUILD:** `termsChart` arithmetic 1, 2. S = n², a = 2n + 1, T = S + a, F = (n + 1)².
+  Example n = 5: 25 + 11 = 36 = 6².
+- **~powers — BUILD:** `termsChart` geometric 1, r. Values r (2 to 10), n, S = (rⁿ − 1)/(r − 1),
+  a = rⁿ, T, F. Example r = 2, n = 5: S = 31, a = 32, T = 63 = 2⁶ − 1.
+- **~squares — BUILD:** `table` of S by n (no chart of squares). S = n(n + 1)(2n + 1)/6,
+  a = (n + 1)², T, F. Example n = 3: S = 14, a = 16, T = 30, F = 4 × 5 × 9 ÷ 6 = 30.
+- **~steps — BUILD (sequence):** base case, hypothesis, inductive step, conclusion.
+- **Verdict:** 5 pages; a proof is written work, so the calculators check the step in numbers
+  (Partly) and the sequence page orders the proof.
+
+### 18. m.12.area-under-curve — Limits of sequences and the area under a curve
+
+- **Standard:** no CCSS code; AP Precalculus previews it.
+- **Textbooks:** Larson Precalculus 12.4 (limits at infinity, limits of sequences) and 12.5
+  (the area problem).
+- **Tests ask:** no released questions. Common items:
+
+  | Item (our words)                                            | Page      | Mark   |
+  | ----------------------------------------------------------- | --------- | ------ |
+  | Area under y = x² from 0 to 3 with n rectangles, then n → ∞ | main      | Solves |
+  | Area under a line with rectangles; check with a trapezoid   | ~line     | Solves |
+  | The limit of aₙ = (3n + 1) ÷ (2n − 1)                       | ~sequence | Solves |
+
+- **Main — BUILD `m.12.area-under-curve`:** picture `functionGraph` quadratic y = cx², the area
+  from 0 to b shaded (the rectangles are a picture need). Values c (> 0), b (> 0), n (1 to
+  1,000), w (b ÷ n), S (the right-endpoint sum), A (the exact area). Relations w = b ÷ n;
+  S = c·w³·n(n + 1)(2n + 1) ÷ 6 (from Σi² = n(n + 1)(2n + 1)/6); A = cb³ ÷ 3. Example c = 1,
+  b = 3, n = 6: w = 0.5, S = 0.125 × 6 × 7 × 13 ÷ 6 = 11.375, A = 9. startWith: c, b, n.
+- **~line — BUILD:** `functionGraph` linear y = mx + k shaded from 0 to b. Values m, k, b, n,
+  w, S, A. S = m·w²·n(n + 1) ÷ 2 + kb; A = mb² ÷ 2 + kb; a limit keeps y ≥ 0 on [0, b].
+  Example m = 2, k = 1, b = 4, n = 8: w = 0.5, S = 18 + 4 = 22, A = 16 + 4 = 20 (a trapezoid
+  with heights 1 and 9).
+- **~sequence — BUILD:** `table` of aₙ at n = 1, 10, 100, 1,000, 10,000. Values p, q, r, s, n,
+  a, L. Relations a = (pn + q) ÷ (rn + s); L = p ÷ r. Example (3n + 1) ÷ (2n − 1):
+  a₁₀ = 31/19 ≈ 1.632, L = 1.5.
+- **Verdict:** 3 pages; the common items Solve.
+
+### 19. m.12.regression-inference — Inference for the slope of a regression line
+
+- **Standard:** S-ID.8 carried on; AP Statistics unit 9. No textbook unit maps to it in
+  CROSSWALK.md; OpenStax Statistics 12.4 (testing the correlation) and Larson–Farber 9.3 are the
+  nearest.
+- **Tests ask:** no released questions. Common items (AP style, from computer output):
+
+  | Item (our words)                        | Page            | Mark   |
+  | --------------------------------------- | --------------- | ------ |
+  | Test H₀: β = 0 from b and SE_b          | main            | Solves |
+  | A 95% confidence interval for the slope | ~interval       | Solves |
+  | Is r = 0.6 with n = 18 significant?     | ~correlation    | Solves |
+  | SE_b from s, sₓ and n                   | ~standard-error | Solves |
+
+- **Main — BUILD `m.12.regression-inference`:** picture `normalCurve` (the null curve of b,
+  mean 0 and spread SE_b, b marked; a t curve is need 1's interim, as on the t pages). Values b,
+  E (SE_b), n, df (n − 2), t, P, α. Relations df = n − 2; t = b ÷ SE_b;
+  P = 2(1 − tcdf(|t|, df)), the decision after it. Example b = 0.8, SE_b = 0.25, n = 20:
+  t = 3.2, df = 18, P ≈ 0.0050: reject H₀ at 0.05. startWith: b, E, n, α.
+- **~interval — BUILD:** `normalCurve` with the interval b ± E. Values b, SE_b, n, C, df, t⋆,
+  E, L, U. Example: 95%, df 18: t⋆ ≈ 2.101, E ≈ 0.525, (0.275, 1.325).
+- **~correlation — BUILD:** `normalCurve` (standard, t marked). Values r, n, df, t, P, α.
+  t = r√(n − 2) ÷ √(1 − r²). Example r = 0.6, n = 18: t = 0.6 × 4 ÷ 0.8 = 3, df = 16,
+  P ≈ 0.0085.
+- **~standard-error — BUILD:** `normalCurve` as on the main page. Values s, sₓ, n, E, b, t, df,
+  P, α. SE_b = s ÷ (sₓ√(n − 1)). Example s = 2, sₓ = 1.5, n = 10: SE_b = 2 ÷ 4.5 ≈ 0.4444;
+  b = 1.2: t = 2.7, df = 8, P ≈ 0.027.
+- **Verdict:** 4 pages; the common items Solve.
+
+### 20. m.12.anova — Analysis of variance (ANOVA) and the F distribution
+
+- **Standard:** no CCSS code (college statistics; AP Statistics does not test it).
+- **Textbooks:** OpenStax Statistics unit 13 (13.1–13.4), Larson–Farber 10.3–10.4.
+- **Tests ask:** no released questions. Common items:
+
+  | Item (our words)                                    | Page           | Mark   |
+  | --------------------------------------------------- | -------------- | ------ |
+  | F and P from an ANOVA table (SS between and within) | main           | Solves |
+  | Do three groups' means differ? (n, means, SDs)      | ~groups        | Solves |
+  | A test of two variances                             | ~two-variances | Solves |
+  | Which test fits the question?                       | ~which-test    | Solves |
+
+- **Main — BUILD `m.12.anova`:** picture `table` of P by F at the page's df (the F curve is a
+  picture need). Values k (groups), N (total), B (SS between), W (SS within), M₁ (MS between),
+  M₂ (MS within), F, P, α. Relations M₁ = B ÷ (k − 1); M₂ = W ÷ (N − k); F = M₁ ÷ M₂;
+  P = Fcdf(F, ∞, k − 1, N − k) (a phrase in `phrasesM12.ts`). Example k = 3, N = 15, B = 60,
+  W = 72: M₁ = 30, M₂ = 6, F = 5; with df 2 and 12, P = (1 + 2F/12)⁻⁶ = (6/11)⁶ ≈ 0.0263:
+  reject H₀ at 0.05. startWith: k, N, B, W, α.
+- **~groups — BUILD:** picture `bars` (the three group means). Values n (each group), x̄₁–x̄₃
+  (a group), s₁–s₃ (a group), M₁, M₂, F, P, α. Grand mean in the work; M₁ = nΣ(x̄ᵢ − x̄)² ÷ 2,
+  M₂ = (s₁² + s₂² + s₃²) ÷ 3. Example n = 5, means 10, 14, 12, SDs 2, 3, 2: M₁ = 5 × 8 ÷ 2 =
+  20, M₂ = 17/3, F ≈ 3.529, df 2 and 12, P ≈ 0.062: fail to reject at 0.05.
+- **~two-variances — BUILD:** `table` of P by F. Values s₁, s₂, n₁, n₂, F (s₁² ÷ s₂², the
+  larger on top), P (two-sided), α. Example s₁ = 6, s₂ = 4, n₁ = n₂ = 16: F = 2.25, df 15 and 15.
+- **~which-test — BUILD (sort):** questions into one-way ANOVA, two-sample t, chi-square test
+  of independence, t-test for the slope.
+- **Verdict:** 4 pages; the common items Solve.

@@ -203,3 +203,78 @@ another way or left for shared work.
   calls every input infeasible; `~two-proportion` got past it by naming its limits with k₁ and
   k₂ (the ids seed the probes). A pass/fail relation should never be read as affine.
 - The matcher corpus (`scripts/build-match-corpus.mjs`) to rerun for the five new pages.
+
+## Added skills (plan sections 13–20)
+
+Built from `docs/plans/m.12.md`, "Added skills". No gallery demo existed for any of them, so
+every page starts from the nearest picture already drawn.
+
+### Built
+
+- `m.12.vectors-3d` (3): main (u · v and the angle), `~cross`, `~triple`.
+- `m.12.matrix-transformations` (5): main (rotation matrix), `~image` (any 2 × 2 matrix, and
+  undoing it), `~area` (|D| as the area factor), `~compose` (two turns), `~identify` (sort).
+- `m.12.polar-conics` (4): main (e and d from r = k ÷ (m − n cos θ)), `~ellipse`,
+  `~parabola`, `~rotation` (the angle that removes the xy term; B² − 4AC).
+- `m.12.partial-fractions` (3): main (cover-up, two linear factors), `~repeated`,
+  `~quadratic`.
+- `m.12.induction` (5): main (1 + 2 + … + n), `~odd`, `~powers`, `~squares`, `~steps`
+  (sequence).
+- `m.12.area-under-curve` (3): main (right rectangles under y = cx²), `~line`, `~sequence`.
+- `m.12.regression-inference` (4): main (t for the slope), `~interval`, `~correlation`,
+  `~standard-error`.
+- `m.12.anova` (4): main (the ANOVA table), `~groups` (three equal groups from means and SDs),
+  `~two-variances`, `~which-test` (sort).
+
+### Waiting
+
+None: every planned page is built, some with an interim picture (below).
+
+### Changed from the plan
+
+- **ANOVA main types the df.** The page takes SSB, df₁, SSW and df₂ (the ANOVA table's
+  columns) instead of k and N, so the p-value step reads Fcdf(5, ∞, 2, 12) with plain numbers;
+  the assumption says df₁ = k − 1 and df₂ = N − k. `~groups` adds the grand mean and df₂ as
+  values for the same reason (10 values; the means and the SDs are two groups).
+- **Worked out, not typed:** MSB, MSW and F on the ANOVA main page, and the margin and ends on
+  the slope interval. With them typable the module test's input combinations left two unknowns
+  in one relation and the solver searched for minutes.
+- **Regression n is 3 to 1,000** (df to 998), as on the t pages: the brute-force search walks
+  every whole n with a t evaluation each.
+- **Induction n is 1 to 30** on the three chart pages (the terms chart draws at most 30 terms);
+  `~powers` keeps n to 20 (10²⁰ is the largest sum). `~squares` (a table) goes to 1,000.
+- **Deep run:** `m.12.polar-conics~parabola` takes θ from 10° to 350° with x and y worked out
+  (near 0° the point runs off to 10⁹ and the curve check loses its precision);
+  `~standard-error` takes s ≥ 0.001 and sₓ ≤ 10,000 so SE_b stays in range.
+- **The F distribution** is `fTail` in `math/12.ts` (an incomplete beta, a copy of statMath's
+  private one), exported for the Fcdf phrase in `phrasesM12.ts`.
+- **Partial fractions need an x term on top (a ≠ 0)** on the two graph pages: the rational
+  graph is drawn from the top's zero. A number alone on top waits on a picture need (below).
+
+### Shared needs found while building
+
+- **3-D axes (`vectorDiagram` in space, plan need 10):** u, v and u × v as arrows on x, y, z
+  axes, the parallelogram shaded; the box of `~triple`. Values: the components, u × v, A, V.
+  Pages: `m.12.vectors-3d` (now `matrixGrid` row times column), `~cross`, `~triple` (now tables).
+- **`polarGrid` curve 'conic':** r = ed ÷ (1 − e cos θ) (and + and sin forms), the focus at the
+  pole, the directrix dashed; driven by e, d and the point's θ. Pages: `m.12.polar-conics` (now
+  the point alone).
+- **`conicGraph` turned by θ:** a conic with an xy term, the x′ and y′ axes at θ. Driven by A,
+  B, C (or a, b and θ). Page: `m.12.polar-conics~rotation` (now `unitCircle` with θ).
+- **`functionGraph` rational by coefficients** (plan need 11, widened): the top as
+  coefficients, so a number alone on top (4 ÷ ((x − 1)(x + 3))) and a quadratic top with
+  complex zeros can be drawn. Pages: `m.12.partial-fractions` and `~repeated` (a ≠ 0 limit),
+  `~quadratic` (now a table).
+- **`functionGraph` rectangles (a Riemann sum):** n right-endpoint rectangles from 0 to b
+  under the curve, their sum S in the caption. Driven by n and b. Pages:
+  `m.12.area-under-curve`, `~line` (now the shaded area only).
+- **`termsChart` squares:** terms n² (or any power), for `m.12.induction~squares` (now a table).
+- **`normalCurve` `f: { df1, df2 }`:** the F curve, the right tail past F shaded as the p-value,
+  the critical value for α marked. Pages: `m.12.anova`, `~two-variances` (now tables of P by F),
+  `~groups` (now `bars` of the three means; side-by-side dot plots of three groups would be the
+  second picture).
+- **A t curve (plan need 1's P11):** `m.12.regression-inference` and `~standard-error` draw the
+  normal null curve of b with b marked; `~correlation` marks t on the standard normal curve.
+- **statMath: export `betaI` (or an `fCdf`)** so the grade file need not copy it.
+- Engine 5 again: `~powers` prints S = (r^n − 1) ÷ (r − 1) with carets.
+- The matcher corpus to rerun for the 31 new pages.

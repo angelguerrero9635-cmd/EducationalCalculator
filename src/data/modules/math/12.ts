@@ -4563,14 +4563,2250 @@ const MATH_12_LIMITS: ModuleDef[] = [
   },
 ];
 
+// ── Vectors in space (added skill 13) ──
+
+/** One component of a 3-D vector, one of a group of three (they count as one value). */
+const comp3 = (id: string, symbol: string, name: string, group: string, range = 1000) =>
+  V(id, symbol, name, { min: -range, max: range, step: 0.01, group });
+
+/** The six components of u = ⟨a, b, c⟩ and v = ⟨d, e, f⟩. */
+const UV: VariableDef[] = [
+  comp3('a', 'u₁', 'x-component of u', 'u'),
+  comp3('b', 'u₂', 'y-component of u', 'u'),
+  comp3('c', 'u₃', 'z-component of u', 'u'),
+  comp3('d', 'v₁', 'x-component of v', 'v'),
+  comp3('e', 'v₂', 'y-component of v', 'v'),
+  comp3('f', 'v₃', 'z-component of v', 'v'),
+];
+
+/** Each 3-D component's symbol, for the formulas' names. */
+const SYM3: Record<string, string> = {
+  a: 'u₁',
+  b: 'u₂',
+  c: 'u₃',
+  d: 'v₁',
+  e: 'v₂',
+  f: 'v₃',
+  g: 'w₁',
+  h: 'w₂',
+  k: 'w₃',
+  x: 'w₁',
+  y: 'w₂',
+  z: 'w₃',
+};
+
+/** m = √(x² + y² + z²), a 3-D vector's length. */
+const length3 = (m: string, [x, y, z]: string[], name: string) =>
+  derive(
+    `|${name}| = √(${SYM3[x!]}² + ${SYM3[y!]}² + ${SYM3[z!]}²)`,
+    `{${m}} = √({${x}}² + {${y}}² + {${z}}²)`,
+    m,
+    [x!, y!, z!],
+    (v) => Math.hypot(v[x!]!, v[y!]!, v[z!]!),
+    `√({${x}}² + {${y}}² + {${z}}²)`,
+    `The Pythagorean theorem twice: across the floor, then up. That is ${name}’s length.`,
+  );
+
+/** One component of u × v: the other two components crossed, first times second minus … */
+const crossPart = (out: string, p: string, q: string, r: string, s: string, which: string) =>
+  derive(
+    `${SYM3[out]} = ${SYM3[p]}${SYM3[q]} − ${SYM3[r]}${SYM3[s]}`,
+    `{${out}} = {${p}} × {${q}} − {${r}} × {${s}}`,
+    out,
+    [p, q, r, s],
+    (v) => v[p]! * v[q]! - v[r]! * v[s]!,
+    `{${p}} × {${q}} − {${r}} × {${s}}`,
+    `The ${which}-component: cover the ${which} column and take the 2 × 2 determinant of what is left${which === 'y' ? ', with its sign changed' : ''}.`,
+  );
+
+const MATH_12_VECTORS_3D: ModuleDef[] = [
+  // ── m.12.vectors-3d (N-VM.4, N-VM.5 in space) ──
+  {
+    id: 'm.12.vectors-3d',
+    assumptions: [
+      'A vector in space has three components, ⟨x, y, z⟩; u · v multiplies matching components and adds.',
+      'cos θ = u · v ÷ (|u||v|), with θ from 0° to 180°.',
+      'A dot product of 0 means the vectors are perpendicular.',
+    ],
+    variables: [
+      ...UV,
+      V('p', 'u · v', 'Dot product', { min: -3000000, max: 3000000, step: 0.01, derived: true }),
+      V('m1', '|u|', 'Magnitude of u', { min: 0, max: 1800, step: 0.01, derived: true }),
+      V('m2', '|v|', 'Magnitude of v', { min: 0, max: 1800, step: 0.01, derived: true }),
+      deg('t', 'θ', 'Angle between u and v', 0, 180, { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'u · v = u₁v₁ + u₂v₂ + u₃v₃',
+        '{p} = {a} × {d} + {b} × {e} + {c} × {f}',
+        'p',
+        ['a', 'd', 'b', 'e', 'c', 'f'],
+        (v) => v.a! * v.d! + v.b! * v.e! + v.c! * v.f!,
+        '{a} × {d} + {b} × {e} + {c} × {f}',
+        'Multiply matching components and add: the row u times the column v.',
+      ),
+      length3('m1', ['a', 'b', 'c'], 'u'),
+      length3('m2', ['d', 'e', 'f'], 'v'),
+      derive(
+        'θ = cos⁻¹(u · v ÷ (|u||v|))',
+        '{t} = cos⁻¹({p} ÷ ({m1} × {m2}))',
+        't',
+        ['p', 'm1', 'm2'],
+        (v) => {
+          const q = div(v.p!, v.m1! * v.m2!);
+          return q === undefined ? undefined : Math.acos(Math.max(-1, Math.min(1, q))) / RAD;
+        },
+        'cos⁻¹({p} ÷ ({m1} × {m2}))',
+        'The cosine of the angle is the dot product over the product of the magnitudes.',
+      ),
+    ),
+    example: { a: 1, b: 2, c: 2, d: 4, e: 0, f: 3, p: 10, m1: 3, m2: 5, t: Math.acos(2 / 3) / RAD },
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
+    equation: '⟨{a}, {b}, {c}⟩ · ⟨{d}, {e}, {f}⟩ = {p}',
+    pictureLabels: ['m1', 'm2', 't'],
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'multiply',
+      a: [['a', 'b', 'c']],
+      b: [['d'], ['e'], ['f']],
+      product: [['p']],
+    },
+  },
+  {
+    id: 'm.12.vectors-3d~cross',
+    title: 'The cross product',
+    use: 'Use this for “Find u × v for u = ⟨1, 2, 3⟩ and v = ⟨2, 0, 1⟩, and the area of the parallelogram they span.”',
+    assumptions: [
+      'u × v is a vector perpendicular to both u and v: its dot product with each is 0.',
+      '|u × v| is the area of the parallelogram u and v span; the triangle is half of it.',
+      'Order matters: v × u points the opposite way, −(u × v).',
+    ],
+    variables: [
+      ...UV,
+      comp3('x', 'w₁', 'x-component of u × v', 'w', 2000000),
+      comp3('y', 'w₂', 'y-component of u × v', 'w', 2000000),
+      comp3('z', 'w₃', 'z-component of u × v', 'w', 2000000),
+      V('A', 'A', 'Area of the parallelogram, |u × v|', {
+        min: 0,
+        max: 4000000,
+        step: 0.01,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      crossPart('x', 'b', 'f', 'c', 'e', 'x'),
+      crossPart('y', 'c', 'd', 'a', 'f', 'y'),
+      crossPart('z', 'a', 'e', 'b', 'd', 'z'),
+      length3('A', ['x', 'y', 'z'], 'u × v'),
+    ),
+    example: { a: 1, b: 2, c: 3, d: 2, e: 0, f: 1, x: 2, y: 5, z: -4, A: Math.sqrt(45) },
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
+    equation: '⟨{a}, {b}, {c}⟩ × ⟨{d}, {e}, {f}⟩ = ⟨{x}, {y}, {z}⟩',
+    representation: {
+      kind: 'table',
+      sweep: 'f',
+      output: 'A',
+      params: ['a', 'b', 'c', 'd', 'e'],
+      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.f ?? 1) + i),
+    },
+  },
+  {
+    id: 'm.12.vectors-3d~triple',
+    title: 'Volume from the triple product',
+    use: 'Use this for “Find the volume of the box that u = ⟨1, 2, 0⟩, v = ⟨0, 1, 3⟩ and w = ⟨2, 0, 1⟩ span.”',
+    assumptions: [
+      'u · (v × w) is the 3 × 3 determinant with rows u, v and w.',
+      'The volume of the slanted box (parallelepiped) the three vectors span is its absolute value.',
+      'A triple product of 0 means the three vectors lie in one plane.',
+    ],
+    variables: [
+      comp3('a', 'u₁', 'x-component of u', 'u', 100),
+      comp3('b', 'u₂', 'y-component of u', 'u', 100),
+      comp3('c', 'u₃', 'z-component of u', 'u', 100),
+      comp3('d', 'v₁', 'x-component of v', 'v', 100),
+      comp3('e', 'v₂', 'y-component of v', 'v', 100),
+      comp3('f', 'v₃', 'z-component of v', 'v', 100),
+      comp3('g', 'w₁', 'x-component of w', 'w', 100),
+      comp3('h', 'w₂', 'y-component of w', 'w', 100),
+      comp3('k', 'w₃', 'z-component of w', 'w', 100),
+      V('T', 'T', 'Triple product u · (v × w)', {
+        min: -10000000,
+        max: 10000000,
+        step: 0.01,
+        derived: true,
+      }),
+      V('Vol', 'V', 'Volume', { min: 0, max: 10000000, step: 0.01, derived: true }),
+    ],
+    ...rels(
+      derive(
+        'u · (v × w) = u₁(v₂w₃ − v₃w₂) − u₂(v₁w₃ − v₃w₁) + u₃(v₁w₂ − v₂w₁)',
+        `{T} = ${DET3}`,
+        'T',
+        ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
+        det3,
+        DET3,
+        'Expand the determinant along u’s row: each entry times the 2 × 2 determinant left, signs +, −, +.',
+      ),
+      derive(
+        'V = |u · (v × w)|',
+        '{Vol} = |{T}|',
+        'Vol',
+        ['T'],
+        (v) => Math.abs(v.T!),
+        '|{T}|',
+        'A volume is never negative: the sign only says which way the three vectors turn.',
+      ),
+    ),
+    example: { a: 1, b: 2, c: 0, d: 0, e: 1, f: 3, g: 2, h: 0, k: 1, T: 13, Vol: 13 },
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
+    equation: '||{a}, {b}, {c}; {d}, {e}, {f}; {g}, {h}, {k}|| = {T}',
+    representation: {
+      kind: 'table',
+      sweep: 'k',
+      output: 'Vol',
+      params: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.k ?? 1) + i),
+    },
+  },
+];
+
+// ── Matrices as transformations (added skill 14) ──
+
+const coord = (id: string, symbol: string, name: string, range = 1000, extra = {}) =>
+  V(id, symbol, name, { min: -range, max: range, step: 0.01, ...extra });
+
+/** A rotation's matrix entry: c = cos θ or s = sin θ. */
+const trigOf = (out: string, fn: 'cos' | 'sin', t: string, which: string) =>
+  derive(
+    `${out} = ${fn} ${t === 'g' ? 'γ' : 'θ'}`,
+    `{${out}} = ${fn}({${t}}°)`,
+    out,
+    [t],
+    (v) => (fn === 'cos' ? cosd(v[t]!) : sind(v[t]!)),
+    `${fn}({${t}}°)`,
+    which,
+  );
+
+const MATH_12_TRANSFORMS: ModuleDef[] = [
+  // ── m.12.matrix-transformations (N-VM.12) ──
+  {
+    id: 'm.12.matrix-transformations',
+    assumptions: [
+      'Turning by θ about the origin is the matrix [[cos θ, −sin θ], [sin θ, cos θ]]; a positive θ turns counterclockwise.',
+      'Its columns are where (1, 0) and (0, 1) land: (cos θ, sin θ) and (−sin θ, cos θ).',
+      'Multiply the matrix by the point as a column: each row times the column gives one coordinate.',
+    ],
+    variables: [
+      deg('t', 'θ', 'Angle of turn', -360, 360),
+      coord('x', 'x', 'x of the point'),
+      coord('y', 'y', 'y of the point'),
+      V('c', 'c', 'cos θ', { min: -1, max: 1, step: 0.0001, derived: true }),
+      V('s', 's', 'sin θ', { min: -1, max: 1, step: 0.0001, derived: true }),
+      coord('X', 'x′', 'x of the image', 1500),
+      coord('Y', 'y′', 'y of the image', 1500),
+    ],
+    ...rels(
+      trigOf('c', 'cos', 't', 'The first column is where (1, 0) lands: (cos θ, sin θ).'),
+      trigOf('s', 'sin', 't', 'The same column’s second entry.'),
+      rel(
+        'x′ = cx − sy',
+        '{X} = {c} × {x} − {s} × {y}',
+        ['X', 'c', 'x', 's', 'y'],
+        (v) => v.X! - (v.c! * v.x! - v.s! * v.y!),
+        {
+          X: [
+            (v) => v.c! * v.x! - v.s! * v.y!,
+            '{c} × {x} − {s} × {y}',
+            'The first row [cos θ, −sin θ] times the column (x, y).',
+          ],
+        },
+      ),
+      rel(
+        'y′ = sx + cy',
+        '{Y} = {s} × {x} + {c} × {y}',
+        ['Y', 's', 'x', 'c', 'y'],
+        (v) => v.Y! - (v.s! * v.x! + v.c! * v.y!),
+        {
+          Y: [
+            (v) => v.s! * v.x! + v.c! * v.y!,
+            '{s} × {x} + {c} × {y}',
+            'The second row [sin θ, cos θ] times the column (x, y).',
+          ],
+        },
+      ),
+      rel(
+        'x = cx′ + sy′',
+        '{x} = {c} × {X} + {s} × {Y}',
+        ['x', 'c', 'X', 's', 'Y'],
+        (v) => v.x! - (v.c! * v.X! + v.s! * v.Y!),
+        {
+          x: [
+            (v) => v.c! * v.X! + v.s! * v.Y!,
+            '{c} × {X} + {s} × {Y}',
+            'Undo the turn: turning back by θ is the matrix [[cos θ, sin θ], [−sin θ, cos θ]].',
+          ],
+        },
+      ),
+      rel(
+        'y = −sx′ + cy′',
+        '{y} = −{s} × {X} + {c} × {Y}',
+        ['y', 's', 'X', 'c', 'Y'],
+        (v) => v.y! - (-v.s! * v.X! + v.c! * v.Y!),
+        {
+          y: [
+            (v) => -v.s! * v.X! + v.c! * v.Y!,
+            '−{s} × {X} + {c} × {Y}',
+            'The second row of the turn back times the column (x′, y′).',
+          ],
+        },
+      ),
+    ),
+    example: { t: 90, x: 3, y: 1, c: 0, s: 1, X: -1, Y: 3 },
+    startWith: ['t', 'x', 'y'],
+    pictureLabels: ['c', 's'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['x', 'y'],
+        [0, 0],
+      ],
+      move: 'rotate',
+      angle: 't',
+      center: [0, 0],
+      image: { x: 'X', y: 'Y' },
+      extent: 6,
+      quadrants: 4,
+    },
+  },
+  {
+    id: 'm.12.matrix-transformations~image',
+    title: 'The image of a point, and undoing it',
+    use: 'Use this for “Where does [[2, 1], [1, 1]] send (3, −1)? Which point does it send to (5, 2)?”',
+    assumptions: [
+      'The matrix [[a, b], [c, d]] sends (x, y) to (ax + by, cx + dy).',
+      'Type x′ and y′ to undo it: the inverse matrix sends the image back, when D = ad − bc is not 0.',
+      'D = 0 flattens the whole plane onto a line or a point, so the move can’t be undone.',
+    ],
+    variables: [
+      { ...entry('a', 'a', 'Row 1, column 1', 100), group: 'A' },
+      { ...entry('b', 'b', 'Row 1, column 2', 100), group: 'A' },
+      { ...entry('c', 'c', 'Row 2, column 1', 100), group: 'A' },
+      { ...entry('d', 'd', 'Row 2, column 2', 100), group: 'A' },
+      coord('x', 'x', 'x of the point'),
+      coord('y', 'y', 'y of the point'),
+      coord('X', 'x′', 'x of the image', 200000),
+      coord('Y', 'y′', 'y of the image', 200000),
+      { ...entry('D', 'D', 'Determinant', 20000), derived: true },
+    ],
+    ...rels(
+      rel(
+        'x′ = ax + by',
+        '{X} = {a} × {x} + {b} × {y}',
+        ['X', 'a', 'x', 'b', 'y'],
+        (v) => v.X! - (v.a! * v.x! + v.b! * v.y!),
+        {
+          X: [
+            (v) => v.a! * v.x! + v.b! * v.y!,
+            '{a} × {x} + {b} × {y}',
+            'Row 1 times the column (x, y).',
+          ],
+          x: [
+            (v) => div(v.X! - v.b! * v.y!, v.a!),
+            '({X} − {b} × {y}) ÷ {a}',
+            'Take by from x′, then divide by a.',
+          ],
+          y: [
+            (v) => div(v.X! - v.a! * v.x!, v.b!),
+            '({X} − {a} × {x}) ÷ {b}',
+            'Take ax from x′, then divide by b.',
+          ],
+        },
+      ),
+      rel(
+        'y′ = cx + dy',
+        '{Y} = {c} × {x} + {d} × {y}',
+        ['Y', 'c', 'x', 'd', 'y'],
+        (v) => v.Y! - (v.c! * v.x! + v.d! * v.y!),
+        {
+          Y: [
+            (v) => v.c! * v.x! + v.d! * v.y!,
+            '{c} × {x} + {d} × {y}',
+            'Row 2 times the column (x, y).',
+          ],
+          x: [
+            (v) => div(v.Y! - v.d! * v.y!, v.c!),
+            '({Y} − {d} × {y}) ÷ {c}',
+            'Take dy from y′, then divide by c.',
+          ],
+          y: [
+            (v) => div(v.Y! - v.c! * v.x!, v.d!),
+            '({Y} − {c} × {x}) ÷ {d}',
+            'Take cx from y′, then divide by d.',
+          ],
+        },
+      ),
+      derive(
+        'D = ad − bc',
+        '{D} = {a} × {d} − {b} × {c}',
+        'D',
+        ['a', 'd', 'b', 'c'],
+        (v) => v.a! * v.d! - v.b! * v.c!,
+        '{a} × {d} − {b} × {c}',
+        'The determinant says whether the move can be undone: not when it is 0.',
+      ),
+      rel(
+        'x = (dx′ − by′) ÷ D',
+        '{x} = ({d} × {X} − {b} × {Y}) ÷ {D}',
+        ['x', 'd', 'X', 'b', 'Y', 'D'],
+        (v) => v.x! * v.D! - (v.d! * v.X! - v.b! * v.Y!),
+        {
+          x: [
+            (v) => div(v.d! * v.X! - v.b! * v.Y!, v.D!),
+            '({d} × {X} − {b} × {Y}) ÷ {D}',
+            'The inverse (1/D)[[d, −b], [−c, a]] times (x′, y′): its first row.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.D === 0
+              ? 'D = 0: the matrix flattens the plane onto a line, so many points share this image, or none has it.'
+              : undefined,
+        },
+      ),
+      rel(
+        'y = (ay′ − cx′) ÷ D',
+        '{y} = ({a} × {Y} − {c} × {X}) ÷ {D}',
+        ['y', 'a', 'Y', 'c', 'X', 'D'],
+        (v) => v.y! * v.D! - (v.a! * v.Y! - v.c! * v.X!),
+        {
+          y: [
+            (v) => div(v.a! * v.Y! - v.c! * v.X!, v.D!),
+            '({a} × {Y} − {c} × {X}) ÷ {D}',
+            'The inverse’s second row times (x′, y′).',
+          ],
+        },
+      ),
+    ),
+    example: { a: 2, b: 1, c: 1, d: 1, x: 3, y: -1, X: 5, Y: 2, D: 1 },
+    startWith: ['x', 'y', 'a', 'b', 'c', 'd'],
+    equation: '[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] = [[{X}; {Y}]]',
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'multiply',
+      a: [
+        ['a', 'b'],
+        ['c', 'd'],
+      ],
+      b: [['x'], ['y']],
+      product: [['X'], ['Y']],
+    },
+  },
+  {
+    id: 'm.12.matrix-transformations~area',
+    title: 'How a matrix changes area',
+    use: 'Use this for “A shape of area 4 is transformed by [[3, 1], [1, 2]]. What is the new area?”',
+    assumptions: [
+      'The unit square lands on the parallelogram with sides (a, c) and (b, d), the matrix’s columns.',
+      'Its area is |D| = |ad − bc|, and every area is multiplied by the same |D|.',
+      'A negative D also flips the figure over; D = 0 squashes it flat.',
+    ],
+    variables: [
+      { ...entry('a', 'a', 'Row 1, column 1', 100), group: 'A' },
+      { ...entry('b', 'b', 'Row 1, column 2', 100), group: 'A' },
+      { ...entry('c', 'c', 'Row 2, column 1', 100), group: 'A' },
+      { ...entry('d', 'd', 'Row 2, column 2', 100), group: 'A' },
+      { ...entry('D', 'D', 'Determinant', 20000), derived: true },
+      V('S', 'S', 'Area before', { min: 0, max: 100000, step: 0.01 }),
+      V('T', 'T', 'Area after', { min: 0, max: 2000000000, step: 0.01 }),
+      { ...entry('p', 'p', 'a + b', 200), derived: true, hidden: true },
+      { ...entry('q', 'q', 'c + d', 200), derived: true, hidden: true },
+    ],
+    ...rels(
+      derive(
+        'D = ad − bc',
+        '{D} = {a} × {d} − {b} × {c}',
+        'D',
+        ['a', 'd', 'b', 'c'],
+        (v) => v.a! * v.d! - v.b! * v.c!,
+        '{a} × {d} − {b} × {c}',
+        'The area of the unit square’s image, with a sign for flipping.',
+      ),
+      rel(
+        'T = |D| × S',
+        '{T} = |{D}| × {S}',
+        ['T', 'D', 'S'],
+        (v) => v.T! - Math.abs(v.D!) * v.S!,
+        {
+          T: [
+            (v) => Math.abs(v.D!) * v.S!,
+            '|{D}| × {S}',
+            'Every unit square becomes a parallelogram of area |D|, so every area is multiplied by |D|.',
+          ],
+          S: [
+            (v) => div(v.T!, Math.abs(v.D!)),
+            '{T} ÷ |{D}|',
+            'Undo the stretch: divide the new area by |D|.',
+          ],
+        },
+      ),
+      hide(
+        derive(
+          'p = a + b',
+          '{p} = {a} + {b}',
+          'p',
+          ['a', 'b'],
+          (v) => v.a! + v.b!,
+          '{a} + {b}',
+          'The far corner of the parallelogram, to draw it.',
+        ),
+      ),
+      hide(
+        derive(
+          'q = c + d',
+          '{q} = {c} + {d}',
+          'q',
+          ['c', 'd'],
+          (v) => v.c! + v.d!,
+          '{c} + {d}',
+          'The far corner of the parallelogram, to draw it.',
+        ),
+      ),
+    ),
+    example: { a: 3, b: 1, c: 1, d: 2, D: 5, S: 4, T: 20, p: 4, q: 3 },
+    startWith: ['a', 'b', 'c', 'd', 'S'],
+    pictureLabels: ['D', 'S', 'T'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'a',
+      y: 'c',
+      polygon: [
+        ['a', 'c'],
+        ['p', 'q'],
+        ['b', 'd'],
+        [0, 0],
+      ],
+      extent: 6,
+      quadrants: 4,
+    },
+  },
+  {
+    id: 'm.12.matrix-transformations~compose',
+    title: 'Two turns in a row',
+    use: 'Use this for “Turn (4, 2) by 30° and then by 60°. Which single matrix does both?”',
+    assumptions: [
+      'Doing α and then β is the product R(β)R(α), the later move written on the left.',
+      'For two turns about the origin the product is one turn by γ = α + β.',
+      'For most other pairs of moves the order changes the answer.',
+    ],
+    variables: [
+      deg('a', 'α', 'First turn', -360, 360),
+      deg('b', 'β', 'Second turn', -360, 360),
+      deg('g', 'γ', 'Both turns', -720, 720, { derived: true }),
+      coord('x', 'x', 'x of the point'),
+      coord('y', 'y', 'y of the point'),
+      coord('X', 'x″', 'x of the final image', 1500),
+      coord('Y', 'y″', 'y of the final image', 1500),
+    ],
+    ...rels(
+      derive(
+        'γ = α + β',
+        '{g} = {a} + {b}',
+        'g',
+        ['a', 'b'],
+        (v) => v.a! + v.b!,
+        '{a} + {b}',
+        'R(β)R(α) = R(α + β): multiplying the two matrices adds the angles (the sum formulas).',
+      ),
+      rel(
+        'x″ = x cos γ − y sin γ',
+        '{X} = {x} × cos({g}°) − {y} × sin({g}°)',
+        ['X', 'x', 'y', 'g'],
+        (v) => v.X! - (v.x! * cosd(v.g!) - v.y! * sind(v.g!)),
+        {
+          X: [
+            (v) => v.x! * cosd(v.g!) - v.y! * sind(v.g!),
+            '{x} × cos({g}°) − {y} × sin({g}°)',
+            'The first row of R(γ), [cos γ, −sin γ], times the column (x, y).',
+          ],
+        },
+      ),
+      rel(
+        'y″ = x sin γ + y cos γ',
+        '{Y} = {x} × sin({g}°) + {y} × cos({g}°)',
+        ['Y', 'x', 'y', 'g'],
+        (v) => v.Y! - (v.x! * sind(v.g!) + v.y! * cosd(v.g!)),
+        {
+          Y: [
+            (v) => v.x! * sind(v.g!) + v.y! * cosd(v.g!),
+            '{x} × sin({g}°) + {y} × cos({g}°)',
+            'The second row of R(γ), [sin γ, cos γ], times the column (x, y).',
+          ],
+        },
+      ),
+    ),
+    example: { a: 30, b: 60, g: 90, x: 4, y: 2, X: -2, Y: 4 },
+    startWith: ['a', 'b', 'x', 'y'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['x', 'y'],
+        [0, 0],
+      ],
+      move: 'rotate',
+      angle: 'a',
+      center: [0, 0],
+      then: { move: 'rotate', angle: 'b', center: [0, 0] },
+      image2: { x: 'X', y: 'Y' },
+      extent: 6,
+      quadrants: 4,
+    },
+  },
+];
+
+// ── Polar equations of conics, rotation of axes (added skill 15) ──
+
+/** The conic an eccentricity gives. */
+const conicOf = (e: number) =>
+  Math.abs(e - 1) < 1e-9 ? 'a parabola' : e < 1 ? 'an ellipse' : 'a hyperbola';
+/** The conic a discriminant B² − 4AC gives (the degenerate cases aside). */
+const conicByDiscriminant = (D: number) =>
+  D < 0 ? 'an ellipse (or a circle)' : D === 0 ? 'a parabola' : 'a hyperbola';
+
+const MATH_12_POLAR_CONICS: ModuleDef[] = [
+  // ── m.12.polar-conics (G-GPE.3 carried on) ──
+  {
+    id: 'm.12.polar-conics',
+    assumptions: [
+      'Divide the top and bottom by m to reach r = ed ÷ (1 − e cos θ): the eccentricity e and the directrix distance d.',
+      'e < 1 is an ellipse, e = 1 a parabola, e > 1 a hyperbola; the focus is at the pole.',
+      'With − cos θ the directrix is x = −d; with + cos θ it is x = d.',
+    ],
+    variables: [
+      V('k', 'k', 'Top number', { min: 0.01, max: 1000, step: 0.01 }),
+      V('m', 'm', 'Number in the bottom', { min: 0.01, max: 1000, step: 0.01 }),
+      V('n', 'n', 'Number before cos θ', { min: -1000, max: 1000, step: 0.01 }),
+      V('e', 'e', 'Eccentricity', { min: 0, max: 100000, step: 0.0001, derived: true }),
+      V('d', 'd', 'Distance from the focus to the directrix', {
+        min: 0,
+        max: 100000,
+        step: 0.01,
+        derived: true,
+      }),
+      deg('t', 'θ', 'Angle', -360, 360),
+      V('r', 'r', 'Distance from the pole', { min: -1000000, max: 1000000, step: 0.01 }),
+    ],
+    ...rels(
+      withStep(
+        derive(
+          'e = |n| ÷ m',
+          '{e} = |{n}| ÷ {m}',
+          'e',
+          ['n', 'm'],
+          (v) => (v.n === 0 ? undefined : div(Math.abs(v.n!), v.m!)),
+          '|{n}| ÷ {m}',
+          'Dividing the bottom by m leaves 1 − e cos θ, so e is the number before cos θ over m.',
+        ),
+        'e',
+        { note: (v) => (v.e === undefined ? '' : `→ ${conicOf(v.e)}`) },
+      ),
+      derive(
+        'd = k ÷ |n|',
+        '{d} = {k} ÷ |{n}|',
+        'd',
+        ['k', 'n'],
+        (v) => (v.n === 0 ? undefined : div(v.k!, Math.abs(v.n!))),
+        '{k} ÷ |{n}|',
+        'The top over m is ed, and e is |n| ÷ m, so d = k ÷ |n|.',
+      ),
+      rel(
+        'r = k ÷ (m − n cos θ)',
+        '{r} = {k} ÷ ({m} − {n} × cos({t}°))',
+        ['r', 'k', 'm', 'n', 't'],
+        (v) => v.r! * (v.m! - v.n! * cosd(v.t!)) - v.k!,
+        {
+          r: [
+            (v) => div(v.k!, v.m! - v.n! * cosd(v.t!)),
+            '{k} ÷ ({m} − {n} × cos({t}°))',
+            'Put the angle into the equation: the point on the conic in that direction.',
+          ],
+          k: [
+            (v) => v.r! * (v.m! - v.n! * cosd(v.t!)),
+            '{r} × ({m} − {n} × cos({t}°))',
+            'Multiply both sides by the bottom.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.m !== undefined &&
+            v.n !== undefined &&
+            v.t !== undefined &&
+            Math.abs(v.m - v.n * cosd(v.t)) < 1e-12
+              ? 'The bottom is 0 at this angle: the conic never reaches this direction (it runs off parallel to it).'
+              : undefined,
+        },
+      ),
+    ),
+    example: { k: 6, m: 2, n: 1, e: 0.5, d: 6, t: 60, r: 4 },
+    startWith: ['k', 'm', 'n', 't'],
+    equation: '{r} = {k}/{{m} − {n} cos {t}°}',
+    representation: {
+      kind: 'polarGrid',
+      point: { r: 'r', theta: 't' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.polar-conics~ellipse',
+    title: 'A polar ellipse: vertices and axes',
+    use: 'Use this for “For r = 3 ÷ (1 − 0.5 cos θ), find the vertices, the center and the lengths of the axes.”',
+    assumptions: [
+      'r = ed ÷ (1 − e cos θ) with 0 < e < 1 is an ellipse with one focus at the pole.',
+      'Its vertices are at θ = 0° and θ = 180°; the major axis 2a is the sum of their distances.',
+      'The center is c = ae from the focus, and b² = a² − c².',
+    ],
+    variables: [
+      V('e', 'e', 'Eccentricity', { min: 0.01, max: 0.99, step: 0.01 }),
+      V('d', 'd', 'Distance from the focus to the directrix', { min: 0.01, max: 1000, step: 0.01 }),
+      V('R', 'R', 'Distance to the vertex at 0°', { min: 0.001, max: 200000, step: 0.01 }),
+      V('S', 'S', 'Distance to the vertex at 180°', { min: 0.001, max: 1000, step: 0.01 }),
+      V('a', 'a', 'Half the major axis', { min: 0.001, max: 200000, step: 0.01 }),
+      V('c', 'c', 'Distance from the center to the focus', { min: 0, max: 200000, step: 0.01 }),
+      V('b', 'b', 'Half the minor axis', { min: 0, max: 200000, step: 0.01, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'R = ed ÷ (1 − e)',
+        '{R} = {e} × {d} ÷ (1 − {e})',
+        ['R', 'e', 'd'],
+        (v) => v.R! * (1 - v.e!) - v.e! * v.d!,
+        {
+          R: [
+            (v) => div(v.e! * v.d!, 1 - v.e!),
+            '{e} × {d} ÷ (1 − {e})',
+            'At θ = 0°, cos θ = 1: the bottom is 1 − e.',
+          ],
+          d: [
+            (v) => div(v.R! * (1 - v.e!), v.e!),
+            '{R} × (1 − {e}) ÷ {e}',
+            'Multiply by 1 − e, then divide by e.',
+          ],
+        },
+      ),
+      rel(
+        'S = ed ÷ (1 + e)',
+        '{S} = {e} × {d} ÷ (1 + {e})',
+        ['S', 'e', 'd'],
+        (v) => v.S! * (1 + v.e!) - v.e! * v.d!,
+        {
+          S: [
+            (v) => div(v.e! * v.d!, 1 + v.e!),
+            '{e} × {d} ÷ (1 + {e})',
+            'At θ = 180°, cos θ = −1: the bottom is 1 + e.',
+          ],
+          d: [
+            (v) => div(v.S! * (1 + v.e!), v.e!),
+            '{S} × (1 + {e}) ÷ {e}',
+            'Multiply by 1 + e, then divide by e.',
+          ],
+        },
+      ),
+      rel(
+        'a = (R + S) ÷ 2',
+        '{a} = ({R} + {S}) ÷ 2',
+        ['a', 'R', 'S'],
+        (v) => 2 * v.a! - v.R! - v.S!,
+        {
+          a: [
+            (v) => (v.R! + v.S!) / 2,
+            '({R} + {S}) ÷ 2',
+            'The vertices are on opposite sides of the focus: the major axis 2a is R + S.',
+          ],
+          R: [(v) => 2 * v.a! - v.S!, '2 × {a} − {S}', 'The major axis minus the near distance.'],
+        },
+      ),
+      rel(
+        'c = (R − S) ÷ 2',
+        '{c} = ({R} − {S}) ÷ 2',
+        ['c', 'R', 'S'],
+        (v) => 2 * v.c! - (v.R! - v.S!),
+        {
+          c: [
+            (v) => (v.R! - v.S!) / 2,
+            '({R} − {S}) ÷ 2',
+            'The center is halfway between the vertices, (R − S) ÷ 2 from the focus.',
+          ],
+        },
+      ),
+      derive(
+        'b = √(RS)',
+        '{b} = √({R} × {S})',
+        'b',
+        ['R', 'S'],
+        (v) => Math.sqrt(v.R! * v.S!),
+        '√({R} × {S})',
+        'b² = a² − c² = (a + c)(a − c), and a + c = R, a − c = S.',
+      ),
+    ),
+    example: { e: 0.5, d: 6, R: 6, S: 2, a: 4, c: 2, b: Math.sqrt(12) },
+    startWith: ['e', 'd'],
+    representation: {
+      kind: 'conicGraph',
+      conic: 'ellipse',
+      h: 'c',
+      k: 0,
+      a: 'a',
+      b: 'b',
+      c: 'c',
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.polar-conics~parabola',
+    title: 'A polar parabola',
+    use: 'Use this for “Find the vertex and the directrix of r = 4 ÷ (1 − cos θ), and the point at θ = 90°.”',
+    assumptions: [
+      'r = d ÷ (1 − cos θ) has e = 1: a parabola with its focus at the pole and directrix x = −d.',
+      'Every point is as far from the focus as from the directrix.',
+      'The vertex is halfway between them, at θ = 180°: r = d ÷ 2.',
+    ],
+    variables: [
+      V('d', 'd', 'Distance from the focus to the directrix', { min: 0.01, max: 1000, step: 0.01 }),
+      V('p', 'p', 'Distance from the vertex to the focus', {
+        min: 0.005,
+        max: 500,
+        step: 0.01,
+        derived: true,
+      }),
+      deg('t', 'θ', 'Angle', 10, 350),
+      V('r', 'r', 'Distance from the pole', { min: 0, max: 100000, step: 0.01 }),
+      coord('x', 'x', 'x of the point', 100000, { derived: true }),
+      coord('y', 'y', 'y of the point', 100000, { derived: true }),
+      V('h', 'h', 'x of the vertex', {
+        min: -500,
+        max: 0,
+        step: 0.01,
+        derived: true,
+        hidden: true,
+      }),
+    ],
+    ...rels(
+      derive(
+        'p = d ÷ 2',
+        '{p} = {d} ÷ 2',
+        'p',
+        ['d'],
+        (v) => v.d! / 2,
+        '{d} ÷ 2',
+        'The vertex is halfway from the focus to the directrix.',
+      ),
+      hide(
+        derive(
+          'h = −p',
+          '{h} = −{p}',
+          'h',
+          ['p'],
+          (v) => -v.p!,
+          '−{p}',
+          'The vertex, to draw the parabola.',
+        ),
+      ),
+      rel(
+        'r = d ÷ (1 − cos θ)',
+        '{r} = {d} ÷ (1 − cos({t}°))',
+        ['r', 'd', 't'],
+        (v) => v.r! * (1 - cosd(v.t!)) - v.d!,
+        {
+          r: [
+            (v) => div(v.d!, 1 - cosd(v.t!)),
+            '{d} ÷ (1 − cos({t}°))',
+            'Put the angle into the equation.',
+          ],
+          d: [
+            (v) => v.r! * (1 - cosd(v.t!)),
+            '{r} × (1 − cos({t}°))',
+            'Multiply both sides by the bottom.',
+          ],
+        },
+      ),
+      polarPart('x', 'r', 't', 'cos', 'Across: r times the cosine of the angle.'),
+      polarPart('y', 'r', 't', 'sin', 'Up: r times the sine of the angle.'),
+    ),
+    example: { d: 4, p: 2, t: 90, r: 4, x: 0, y: 4, h: -2 },
+    startWith: ['d', 't'],
+    representation: {
+      kind: 'conicGraph',
+      conic: 'parabola',
+      axis: 'horizontal',
+      h: 'h',
+      k: 0,
+      p: 'p',
+      point: { x: 'x', y: 'y' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.polar-conics~rotation',
+    title: 'Rotating the axes',
+    use: 'Use this for “Through what angle should the axes turn to remove the xy term of 4x² + 2xy + 2y² = 1? Which conic is it?”',
+    assumptions: [
+      'In Ax² + Bxy + Cy² + Dx + Ey + F = 0, turning the axes by θ with cot 2θ = (A − C) ÷ B removes the xy term.',
+      'Take 2θ from 0° to 180°, so θ is from 0° to 90°; A = C gives θ = 45°.',
+      'B² − 4AC names the conic: below 0 an ellipse, 0 a parabola, above 0 a hyperbola.',
+    ],
+    variables: [
+      V('A', 'A', 'Number before x²', { min: -1000, max: 1000, step: 0.01 }),
+      V('B', 'B', 'Number before xy', { min: -1000, max: 1000, step: 0.01 }),
+      V('C', 'C', 'Number before y²', { min: -1000, max: 1000, step: 0.01 }),
+      V('D', 'Δ', 'Discriminant B² − 4AC', {
+        min: -5000000,
+        max: 5000000,
+        step: 0.01,
+        derived: true,
+      }),
+      deg('t', 'θ', 'Angle to turn the axes', 0, 90, { derived: true }),
+    ],
+    ...rels(
+      withStep(
+        derive(
+          'Δ = B² − 4AC',
+          '{D} = {B}² − 4 × {A} × {C}',
+          'D',
+          ['B', 'A', 'C'],
+          (v) => v.B! ** 2 - 4 * v.A! * v.C!,
+          '{B}² − 4 × {A} × {C}',
+          'Turning the axes changes A, B and C but not B² − 4AC, so it names the conic.',
+        ),
+        'D',
+        { note: (v) => (v.D === undefined ? '' : `→ ${conicByDiscriminant(v.D)}`) },
+      ),
+      withCheck(
+        derive(
+          'tan 2θ = B ÷ (A − C)',
+          'tan(2 × {t}°) = {B} ÷ ({A} − {C})',
+          't',
+          ['A', 'B', 'C'],
+          (v) => {
+            if (v.B === 0) return undefined;
+            if (v.A === v.C) return 45;
+            const w = Math.atan(v.B! / (v.A! - v.C!)) / RAD;
+            return (w < 0 ? w + 180 : w) / 2;
+          },
+          (v: Values) =>
+            v.A === v.C
+              ? '90 ÷ 2'
+              : v.B! / (v.A! - v.C!) < 0
+                ? '(180 + tan⁻¹({B} ÷ ({A} − {C}))) ÷ 2'
+                : 'tan⁻¹({B} ÷ ({A} − {C})) ÷ 2',
+          'tan 2θ = B ÷ (A − C) is cot 2θ = (A − C) ÷ B turned over; add 180° to a negative 2θ, then halve.',
+        ),
+        (v) =>
+          v.A === v.C
+            ? `cos(2 × ${fmt(v.t!)}°) = 0`
+            : `tan(2 × ${fmt(v.t!)}°) = ${fmt(v.B!)} ÷ (${fmt(v.A!)} − ${par(v.C!)})`,
+      ),
+      limit(
+        'B ≠ 0',
+        'The xy term {B} is not 0',
+        ['B'],
+        (v) => v.B !== 0,
+        'B = 0: there is no xy term, so the axes need no turning.',
+      ),
+    ),
+    example: { A: 4, B: 2, C: 2, D: -28, t: 22.5 },
+    startWith: ['A', 'B', 'C'],
+    representation: { kind: 'unitCircle', angle: 't', fixed: true },
+  },
+];
+
+// ── Partial fractions (added skill 16) ──
+
+const coef = (id: string, symbol: string, name: string, range = 1000, extra = {}) =>
+  V(id, symbol, name, { min: -range, max: range, step: 0.01, ...extra });
+
+/** The top's zero z = −b ÷ a, worked out only to draw the graph. */
+const topZero = hide(
+  derive(
+    'z = −b ÷ a',
+    '{z} = −{b} ÷ {a}',
+    'z',
+    ['b', 'a'],
+    (v) => div(-v.b!, v.a!),
+    '−{b} ÷ {a}',
+    'Where the top is 0, to draw the graph.',
+  ),
+);
+const zeroVar = V('z', 'z', 'Zero of the top', {
+  min: -1e9,
+  max: 1e9,
+  step: 0.0001,
+  derived: true,
+  hidden: true,
+});
+/** a ≠ 0 (the graph is drawn from the top's zero). */
+const topHasX = limit(
+  'a ≠ 0',
+  'The top {a}x + b has an x term',
+  ['a'],
+  (v) => v.a !== 0,
+  'This page draws the graph from the zero of the top, so the top needs an x term (a not 0).',
+);
+
+const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
+  // ── m.12.partial-fractions (A-APR.7 carried on) ──
+  {
+    id: 'm.12.partial-fractions',
+    assumptions: [
+      '(ax + b) ÷ ((x − p)(x − q)) = A ÷ (x − p) + B ÷ (x − q): one fraction for each linear factor.',
+      'Cover-up: multiply by (x − p) and put x = p, so the B term drops out and A is left.',
+      'Check by adding the two fractions back over the common bottom.',
+    ],
+    variables: [
+      coef('a', 'a', 'Number before x on top'),
+      coef('b', 'b', 'Number on top'),
+      coef('p', 'p', 'Zero of the first factor', 100),
+      coef('q', 'q', 'Zero of the second factor', 100),
+      coef('A', 'A', 'Top of the first fraction', 1000000),
+      coef('B', 'B', 'Top of the second fraction', 1000000),
+      zeroVar,
+    ],
+    ...rels(
+      rel(
+        'A = (ap + b) ÷ (p − q)',
+        '{A} = ({a} × {p} + {b}) ÷ ({p} − {q})',
+        ['A', 'a', 'p', 'b', 'q'],
+        (v) => v.A! * (v.p! - v.q!) - (v.a! * v.p! + v.b!),
+        {
+          A: [
+            (v) => div(v.a! * v.p! + v.b!, v.p! - v.q!),
+            '({a} × {p} + {b}) ÷ ({p} − {q})',
+            'Cover up (x − p) on the left and put x = p into what is left.',
+          ],
+          b: [
+            (v) => v.A! * (v.p! - v.q!) - v.a! * v.p!,
+            '{A} × ({p} − {q}) − {a} × {p}',
+            'Multiply by p − q, then take ap away.',
+          ],
+        },
+      ),
+      rel(
+        'B = (aq + b) ÷ (q − p)',
+        '{B} = ({a} × {q} + {b}) ÷ ({q} − {p})',
+        ['B', 'a', 'q', 'b', 'p'],
+        (v) => v.B! * (v.q! - v.p!) - (v.a! * v.q! + v.b!),
+        {
+          B: [
+            (v) => div(v.a! * v.q! + v.b!, v.q! - v.p!),
+            '({a} × {q} + {b}) ÷ ({q} − {p})',
+            'Cover up (x − q) and put x = q into what is left.',
+          ],
+          a: [
+            (v) => div(v.B! * (v.q! - v.p!) - v.b!, v.q!),
+            '({B} × ({q} − {p}) − {b}) ÷ {q}',
+            'Multiply by q − p, take b away, then divide by q.',
+          ],
+        },
+      ),
+      limit(
+        'p ≠ q',
+        'The two factors {p} and {q} differ',
+        ['p', 'q'],
+        (v) => v.p !== v.q,
+        'p = q is a repeated factor, (x − p)²: it needs A ÷ (x − p) + B ÷ (x − p)², the repeated-factor page.',
+      ),
+      topHasX,
+      topZero,
+    ),
+    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3, z: -0.2 },
+    startWith: ['a', 'b', 'p', 'q'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      a: 'a',
+      zeros: ['z'],
+      poles: ['p', 'q'],
+      marks: ['asymptotes'],
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.partial-fractions~repeated',
+    title: 'A repeated factor',
+    use: 'Use this for “Write (3x − 1) ÷ (x − 2)² as partial fractions.”',
+    assumptions: [
+      'A squared factor gets a fraction for each power: A ÷ (x − p) + B ÷ (x − p)².',
+      'Multiply through by (x − p)²: ax + b = A(x − p) + B.',
+      'Match the x terms for A, then put x = p for B.',
+    ],
+    variables: [
+      coef('a', 'a', 'Number before x on top'),
+      coef('b', 'b', 'Number on top'),
+      coef('p', 'p', 'Zero of the factor', 100),
+      coef('A', 'A', 'Top over (x − p)'),
+      coef('B', 'B', 'Top over (x − p)²', 200000),
+      zeroVar,
+    ],
+    ...rels(
+      rel('A = a', '{A} = {a}', ['A', 'a'], (v) => v.A! - v.a!, {
+        A: [(v) => v.a!, '{a}', 'The x terms match: A(x − p) gives Ax, and the left has ax.'],
+        a: [(v) => v.A!, '{A}', 'The x terms match.'],
+      }),
+      rel(
+        'B = ap + b',
+        '{B} = {a} × {p} + {b}',
+        ['B', 'a', 'p', 'b'],
+        (v) => v.B! - (v.a! * v.p! + v.b!),
+        {
+          B: [
+            (v) => v.a! * v.p! + v.b!,
+            '{a} × {p} + {b}',
+            'Put x = p into ax + b = A(x − p) + B: the A term is 0, leaving B.',
+          ],
+          b: [(v) => v.B! - v.a! * v.p!, '{B} − {a} × {p}', 'Take ap from B.'],
+          p: [(v) => div(v.B! - v.b!, v.a!), '({B} − {b}) ÷ {a}', 'Take b from B, divide by a.'],
+        },
+      ),
+      topHasX,
+      topZero,
+    ),
+    example: { a: 3, b: -1, p: 2, A: 3, B: 5, z: 1 / 3 },
+    startWith: ['a', 'b', 'p'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      a: 'a',
+      zeros: ['z'],
+      poles: ['p', 'p'],
+      marks: ['asymptotes'],
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.partial-fractions~quadratic',
+    title: 'A quadratic factor',
+    use: 'Use this for “Write (3x² − 2x + 3) ÷ ((x − 1)(x² + 1)) as partial fractions.”',
+    assumptions: [
+      'A factor x² + k that doesn’t split gets a linear top: A ÷ (x − p) + (Bx + C) ÷ (x² + k).',
+      'Cover up (x − p) and put x = p for A; then match the x² and x terms for B and C.',
+      'The number terms must match too: Ak − Cp = c is the check.',
+    ],
+    variables: [
+      coef('a', 'a', 'Number before x² on top'),
+      coef('b', 'b', 'Number before x on top'),
+      coef('c', 'c', 'Number on top'),
+      coef('p', 'p', 'Zero of the linear factor', 100),
+      V('k', 'k', 'Number in x² + k', { min: 0.01, max: 100, step: 0.01 }),
+      coef('A', 'A', 'Top over (x − p)', 1000000),
+      coef('B', 'B', 'Number before x over x² + k', 1000000),
+      coef('C', 'C', 'Number over x² + k', 100000000),
+      coef('x', 'x', 'An x to check', 100),
+      coef('y', 'y', 'The fraction’s value at x', 1e12, { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'A = (ap² + bp + c) ÷ (p² + k)',
+        '{A} = ({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {k})',
+        'A',
+        ['a', 'p', 'b', 'c', 'k'],
+        (v) => div(v.a! * v.p! ** 2 + v.b! * v.p! + v.c!, v.p! ** 2 + v.k!),
+        '({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {k})',
+        'Cover up (x − p) and put x = p: the top over what is left of the bottom.',
+      ),
+      derive(
+        'B = a − A',
+        '{B} = {a} − {A}',
+        'B',
+        ['a', 'A'],
+        (v) => v.a! - v.A!,
+        '{a} − {A}',
+        'The x² terms: A(x² + k) + (Bx + C)(x − p) has (A + B)x², so A + B = a.',
+      ),
+      withStep(
+        derive(
+          'C = b + Bp',
+          '{C} = {b} + {B} × {p}',
+          'C',
+          ['b', 'B', 'p'],
+          (v) => v.b! + v.B! * v.p!,
+          '{b} + {B} × {p}',
+          'The x terms: (Bx + C)(x − p) gives (C − Bp)x, so C − Bp = b.',
+        ),
+        'C',
+        {
+          note: (v) =>
+            [v.A, v.k, v.C, v.p, v.c].some((x) => x === undefined)
+              ? ''
+              : `→ check: ${fmt(v.A!)} × ${par(v.k!)} − ${par(v.C!)} × ${par(v.p!)} = ${fmt(v.c!)}`,
+        },
+      ),
+      withStep(
+        rel(
+          'y = (ax² + bx + c) ÷ ((x − p)(x² + k))',
+          '{y} = ({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {k}))',
+          ['y', 'a', 'x', 'b', 'c', 'p', 'k'],
+          (v) =>
+            v.y! * (v.x! - v.p!) * (v.x! ** 2 + v.k!) - (v.a! * v.x! ** 2 + v.b! * v.x! + v.c!),
+          {
+            y: [
+              (v) => div(v.a! * v.x! ** 2 + v.b! * v.x! + v.c!, (v.x! - v.p!) * (v.x! ** 2 + v.k!)),
+              '({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {k}))',
+              'The fraction at one x; the two partial fractions add to the same number there.',
+            ],
+          },
+          {
+            message: (v) =>
+              v.x !== undefined && v.x === v.p
+                ? 'At x = p the bottom is 0: pick another x to check.'
+                : undefined,
+          },
+        ),
+        'y',
+        {
+          note: (v) =>
+            [v.A, v.B, v.C, v.x, v.p, v.k].some((x) => x === undefined)
+              ? ''
+              : `→ the partial fractions: ${fmt(v.A!)} ÷ ${par(v.x! - v.p!)} + ${par(v.B! * v.x! + v.C!)} ÷ ${fmt(v.x! ** 2 + v.k!)} = ${fmt(v.A! / (v.x! - v.p!) + (v.B! * v.x! + v.C!) / (v.x! ** 2 + v.k!))}`,
+        },
+      ),
+    ),
+    example: { a: 3, b: -2, c: 3, p: 1, k: 1, A: 2, B: 1, C: -1, x: 2, y: 11 / 5 },
+    startWith: ['a', 'b', 'c', 'p', 'k', 'x'],
+    representation: {
+      kind: 'table',
+      sweep: 'x',
+      output: 'y',
+      params: ['a', 'b', 'c', 'p', 'k'],
+      rows: (v: Values) => [-2, -1, 0, 1, 2, 3, 4].filter((x) => x !== v.p).slice(0, 5),
+    },
+  },
+];
+
+// ── Mathematical induction (added skill 17) ──
+
+/**
+ * The inductive step in numbers for a sum formula S(n): the formula at n, the next term, their
+ * sum T, and the formula at n + 1, F. T = F is the step; the two are worked out separately.
+ */
+interface SumFormula {
+  /** S(n) as the page writes it, with {n} (and {r}). */
+  S: [display: string, f: (v: Values) => number, back?: [Solver, string, string]];
+  /** The next term, a(n + 1). */
+  a: [display: string, f: (v: Values) => number];
+  /** S(n + 1). */
+  F: [display: string, f: (v: Values) => number];
+  /** What the formula is, for the steps. */
+  what: string;
+  /** The next term in words. */
+  term: string;
+  /** Extra inputs (the ratio r). */
+  more?: string[];
+}
+function inductionRels({ S, a, F, what, term, more = [] }: SumFormula): Rel[] {
+  const sym = (d: string) => d.replace(/\{(\w+)\}/g, '$1');
+  return [
+    rel(`S = ${sym(S[0])}`, `{S} = ${S[0]}`, ['S', 'n', ...more], (v) => v.S! - S[1](v), {
+      S: [S[1], S[0], `The formula at n: ${what}.`],
+      ...(S[2] ? { n: S[2] } : {}),
+    }),
+    derive(
+      `a = ${sym(a[0])}`,
+      `{a} = ${a[0]}`,
+      'a',
+      ['n', ...more],
+      a[1],
+      a[0],
+      `The next term, number n + 1: ${term}.`,
+    ),
+    derive(
+      'T = S + a',
+      '{T} = {S} + {a}',
+      'T',
+      ['S', 'a'],
+      (v) => v.S! + v.a!,
+      '{S} + {a}',
+      'If the formula holds at n, the sum through term n + 1 is S plus the next term.',
+    ),
+    withStep(
+      derive(
+        `F = ${sym(F[0])}`,
+        `{F} = ${F[0]}`,
+        'F',
+        ['n', ...more],
+        F[1],
+        F[0],
+        'The formula with n + 1 in place of n.',
+      ),
+      'F',
+      {
+        note: (v) =>
+          v.T === undefined || v.F === undefined
+            ? ''
+            : Math.abs(v.T - v.F) < 1e-9 * Math.max(1, Math.abs(v.F))
+              ? `→ T = F = ${fmt(v.F)}: adding the next term gives the formula at n + 1`
+              : `→ T = ${fmt(v.T)} is not F: the formula fails`,
+      },
+    ),
+  ];
+}
+
+const count = (max: number) => V('n', 'n', 'Number of terms', { integer: true, min: 1, max });
+const sumVar = (max: number, extra = {}) =>
+  V('S', 'S', 'Sum of the first n terms', { integer: true, min: 1, max, ...extra });
+const inductionVars = (max: number) => [
+  V('a', 'a', 'Next term', { min: 1, max, step: 1, derived: true }),
+  V('T', 'T', 'S plus the next term', { min: 1, max, step: 1, derived: true }),
+  V('F', 'F', 'The formula at n + 1', { min: 1, max, step: 1, derived: true }),
+];
+const INDUCTION_WHY = [
+  'Base case: check the formula at n = 1.',
+  'Step: assume it holds at n = k; adding term k + 1 must give the formula at k + 1.',
+];
+
+const MATH_12_INDUCTION: ModuleDef[] = [
+  // ── m.12.induction (Larson 9.4) ──
+  {
+    id: 'm.12.induction',
+    assumptions: [
+      ...INDUCTION_WHY,
+      'Here: k(k + 1)/2 + (k + 1) = (k + 1)(k + 2)/2. Numbers check one case; the algebra proves every case.',
+    ],
+    variables: [count(30), sumVar(500), ...inductionVars(600)],
+    ...rels(
+      ...inductionRels({
+        S: [
+          '{n} × ({n} + 1) ÷ 2',
+          (v) => (v.n! * (v.n! + 1)) / 2,
+          [
+            (v) => (Math.sqrt(1 + 8 * v.S!) - 1) / 2,
+            '(√(1 + 8 × {S}) − 1) ÷ 2',
+            'Solve n² + n = 2S for the positive n.',
+          ],
+        ],
+        a: ['{n} + 1', (v) => v.n! + 1],
+        F: ['({n} + 1) × ({n} + 2) ÷ 2', (v) => ((v.n! + 1) * (v.n! + 2)) / 2],
+        what: '1 + 2 + … + n = n(n + 1)/2',
+        term: 'the number n + 1 itself',
+      }),
+    ),
+    example: { n: 4, S: 10, a: 5, T: 15, F: 15 },
+    startWith: ['n'],
+    representation: {
+      kind: 'termsChart',
+      type: 'arithmetic',
+      first: 1,
+      step: 1,
+      count: 'n',
+      as: 'bars',
+      sums: true,
+      sum: 'S',
+    },
+  },
+  {
+    id: 'm.12.induction~odd',
+    title: 'The sum of odd numbers',
+    use: 'Use this for “Prove 1 + 3 + 5 + … + (2n − 1) = n² by induction.”',
+    assumptions: [
+      ...INDUCTION_WHY,
+      'Here: k² + (2k + 1) = (k + 1)², so the step holds for every k.',
+    ],
+    variables: [count(30), sumVar(900), ...inductionVars(1000)],
+    ...rels(
+      ...inductionRels({
+        S: [
+          '{n}²',
+          (v) => v.n! ** 2,
+          [(v) => Math.sqrt(v.S!), '√{S}', 'The square root of the sum.'],
+        ],
+        a: ['2 × {n} + 1', (v) => 2 * v.n! + 1],
+        F: ['({n} + 1)²', (v) => (v.n! + 1) ** 2],
+        what: '1 + 3 + … + (2n − 1) = n²',
+        term: '2(n + 1) − 1 = 2n + 1',
+      }),
+    ),
+    example: { n: 5, S: 25, a: 11, T: 36, F: 36 },
+    startWith: ['n'],
+    representation: {
+      kind: 'termsChart',
+      type: 'arithmetic',
+      first: 1,
+      step: 2,
+      count: 'n',
+      as: 'bars',
+      sums: true,
+      sum: 'S',
+    },
+  },
+  {
+    id: 'm.12.induction~powers',
+    title: 'A geometric sum',
+    use: 'Use this for “Prove 1 + 2 + 4 + … + 2ⁿ⁻¹ = 2ⁿ − 1 by induction.”',
+    assumptions: [
+      ...INDUCTION_WHY,
+      'Here: (rᵏ − 1)/(r − 1) + rᵏ = (rᵏ⁺¹ − 1)/(r − 1), since rᵏ(r − 1) = rᵏ⁺¹ − rᵏ.',
+    ],
+    variables: [
+      V('r', 'r', 'Ratio', { integer: true, min: 2, max: 10 }),
+      count(20),
+      sumVar(2e20, { integer: false, step: 1 }),
+      V('a', 'a', 'Next term', { min: 1, max: 1e21, step: 1, derived: true }),
+      V('T', 'T', 'S plus the next term', { min: 1, max: 1e21, step: 1, derived: true }),
+      V('F', 'F', 'The formula at n + 1', { min: 1, max: 1e21, step: 1, derived: true }),
+    ],
+    ...rels(
+      ...inductionRels({
+        S: ['({r}^{n} − 1) ÷ ({r} − 1)', (v) => (v.r! ** v.n! - 1) / (v.r! - 1)],
+        a: ['{r}^{n}', (v) => v.r! ** v.n!],
+        F: ['({r}^({n} + 1) − 1) ÷ ({r} − 1)', (v) => (v.r! ** (v.n! + 1) - 1) / (v.r! - 1)],
+        what: '1 + r + … + rⁿ⁻¹ = (rⁿ − 1)/(r − 1)',
+        term: 'r to the power n',
+        more: ['r'],
+      }),
+    ),
+    example: { r: 2, n: 5, S: 31, a: 32, T: 63, F: 63 },
+    startWith: ['r', 'n'],
+    representation: {
+      kind: 'termsChart',
+      type: 'geometric',
+      first: 1,
+      step: 'r',
+      count: 'n',
+      as: 'bars',
+      sums: true,
+      sum: 'S',
+    },
+  },
+  {
+    id: 'm.12.induction~squares',
+    title: 'The sum of squares',
+    use: 'Use this for “Prove 1² + 2² + … + n² = n(n + 1)(2n + 1)/6 by induction.”',
+    assumptions: [
+      ...INDUCTION_WHY,
+      'Here: k(k + 1)(2k + 1)/6 + (k + 1)² = (k + 1)(k + 2)(2k + 3)/6; factor out k + 1 to see it.',
+    ],
+    variables: [count(1000), sumVar(400000000), ...inductionVars(500000000)],
+    ...rels(
+      ...inductionRels({
+        S: ['{n} × ({n} + 1) × (2 × {n} + 1) ÷ 6', (v) => (v.n! * (v.n! + 1) * (2 * v.n! + 1)) / 6],
+        a: ['({n} + 1)²', (v) => (v.n! + 1) ** 2],
+        F: [
+          '({n} + 1) × ({n} + 2) × (2 × {n} + 3) ÷ 6',
+          (v) => ((v.n! + 1) * (v.n! + 2) * (2 * v.n! + 3)) / 6,
+        ],
+        what: '1² + 2² + … + n² = n(n + 1)(2n + 1)/6',
+        term: '(n + 1)²',
+      }),
+    ),
+    example: { n: 3, S: 14, a: 16, T: 30, F: 30 },
+    startWith: ['n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'S',
+      params: [],
+      rows: (v: Values) => [1, 2, 3, 4, 5].map((i) => Math.max(0, (v.n ?? 3) - 3) + i),
+    },
+  },
+];
+
+// ── The area under a curve, limits of sequences (added skill 18) ──
+
+const rectangles = V('n', 'n', 'Number of rectangles', { integer: true, min: 1, max: 1000 });
+const widthOf = derive(
+  'w = b ÷ n',
+  '{w} = {b} ÷ {n}',
+  'w',
+  ['b', 'n'],
+  (v) => div(v.b!, v.n!),
+  '{b} ÷ {n}',
+  'Cut 0 to b into n strips of equal width.',
+);
+/** After the rectangles' sum: the more of them, the closer to the exact area. */
+const towardA = (v: Values) =>
+  v.S === undefined || v.A === undefined
+    ? ''
+    : `→ ${v.S > v.A ? 'above' : v.S < v.A ? 'below' : 'equal to'} the exact area; more rectangles bring S closer to it`;
+
+const MATH_12_AREA: ModuleDef[] = [
+  // ── m.12.area-under-curve (Larson 12.4–12.5) ──
+  {
+    id: 'm.12.area-under-curve',
+    assumptions: [
+      'Cut 0 to b into n strips of width w = b ÷ n; each rectangle is as tall as the curve at its right edge, x = iw.',
+      'The heights add with Σi² = n(n + 1)(2n + 1)/6, so S = cw³ × n(n + 1)(2n + 1)/6.',
+      'As n → ∞, S → cb³/3: the exact area under y = cx² from 0 to b.',
+    ],
+    variables: [
+      V('c', 'c', 'Number before x²', { min: 0.01, max: 1000, step: 0.01 }),
+      V('b', 'b', 'Right end', { min: 0.01, max: 100, step: 0.01 }),
+      rectangles,
+      V('w', 'w', 'Width of each rectangle', { min: 0, max: 100, step: 0.0001, derived: true }),
+      V('S', 'S', 'Sum of the rectangles', {
+        min: 0,
+        max: 1e12,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('A', 'A', 'Exact area', { min: 0, max: 1e12, step: 0.0001 }),
+    ],
+    ...rels(
+      widthOf,
+      withStep(
+        derive(
+          'S = cw³ × n(n + 1)(2n + 1) ÷ 6',
+          '{S} = {c} × {w}³ × {n} × ({n} + 1) × (2 × {n} + 1) ÷ 6',
+          'S',
+          ['c', 'w', 'n'],
+          (v) => (v.c! * v.w! ** 3 * v.n! * (v.n! + 1) * (2 * v.n! + 1)) / 6,
+          '{c} × {w}³ × {n} × ({n} + 1) × (2 × {n} + 1) ÷ 6',
+          'Each rectangle is w wide and c(iw)² tall; adding them gives cw³(1² + 2² + … + n²).',
+        ),
+        'S',
+        { note: towardA },
+      ),
+      rel(
+        'A = cb³ ÷ 3',
+        '{A} = {c} × {b}³ ÷ 3',
+        ['A', 'c', 'b'],
+        (v) => v.A! - (v.c! * v.b! ** 3) / 3,
+        {
+          A: [
+            (v) => (v.c! * v.b! ** 3) / 3,
+            '{c} × {b}³ ÷ 3',
+            'The limit as n → ∞: n(n + 1)(2n + 1) ÷ n³ goes to 2, so S goes to cb³ × 2 ÷ 6.',
+          ],
+          b: [
+            (v) => Math.cbrt((3 * v.A!) / v.c!),
+            '∛(3 × {A} ÷ {c})',
+            'Multiply by 3, divide by c, then take the cube root.',
+          ],
+          c: [(v) => div(3 * v.A!, v.b! ** 3), '3 × {A} ÷ {b}³', 'Multiply by 3, divide by b³.'],
+        },
+      ),
+    ),
+    example: { c: 1, b: 3, n: 6, w: 0.5, S: 11.375, A: 9 },
+    startWith: ['c', 'b', 'n'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'vertex',
+      a: 'c',
+      h: 0,
+      k: 0,
+      shade: { from: 0, to: 'b' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.area-under-curve~line',
+    title: 'The area under a line',
+    use: 'Use this for “Estimate the area under y = 2x + 1 from 0 to 4 with 8 rectangles, then find it exactly.”',
+    assumptions: [
+      'Right-edge rectangles of width w = b ÷ n: heights m(iw) + k, for i = 1 to n.',
+      'Σi = n(n + 1)/2 adds them: S = mw² × n(n + 1)/2 + kb.',
+      'As n → ∞, S → mb²/2 + kb, the trapezoid’s area; the line stays on or above the x-axis here.',
+    ],
+    variables: [
+      V('m', 'm', 'Slope', { min: -100, max: 100, step: 0.01 }),
+      V('k', 'k', 'y-intercept', { min: 0, max: 1000, step: 0.01 }),
+      V('b', 'b', 'Right end', { min: 0.01, max: 100, step: 0.01 }),
+      rectangles,
+      V('w', 'w', 'Width of each rectangle', { min: 0, max: 100, step: 0.0001, derived: true }),
+      V('S', 'S', 'Sum of the rectangles', {
+        min: 0,
+        max: 1e9,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('A', 'A', 'Exact area', { min: 0, max: 1e9, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      widthOf,
+      withStep(
+        derive(
+          'S = mw² × n(n + 1) ÷ 2 + kb',
+          '{S} = {m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+          'S',
+          ['m', 'w', 'n', 'k', 'b'],
+          (v) => (v.m! * v.w! ** 2 * v.n! * (v.n! + 1)) / 2 + v.k! * v.b!,
+          '{m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+          'Each rectangle is w by m(iw) + k; the m parts add to mw²(1 + 2 + … + n), the k parts to kb.',
+        ),
+        'S',
+        { note: towardA },
+      ),
+      derive(
+        'A = mb² ÷ 2 + kb',
+        '{A} = {m} × {b}² ÷ 2 + {k} × {b}',
+        'A',
+        ['m', 'b', 'k'],
+        (v) => (v.m! * v.b! ** 2) / 2 + v.k! * v.b!,
+        '{m} × {b}² ÷ 2 + {k} × {b}',
+        'The limit: n(n + 1) ÷ n² goes to 1. It is also the trapezoid with heights k and mb + k.',
+      ),
+      limit(
+        'mb + k ≥ 0',
+        'The line is on or above the x-axis at b: {m} × {b} + {k} ≥ 0',
+        ['m', 'b', 'k'],
+        (v) => v.m! * v.b! + v.k! >= 0,
+        'The line dips below the x-axis before b: this page adds areas above the axis only.',
+      ),
+    ),
+    example: { m: 2, k: 1, b: 4, n: 8, w: 0.5, S: 22, A: 20 },
+    startWith: ['m', 'k', 'b', 'n'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'k',
+      shade: { from: 0, to: 'b' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.area-under-curve~sequence',
+    title: 'The limit of a sequence',
+    use: 'Use this for “Find the limit of aₙ = (3n + 1) ÷ (2n − 1) as n → ∞.”',
+    assumptions: [
+      'Divide the top and bottom by n: (p + q/n) ÷ (r + s/n).',
+      'As n grows, q/n and s/n go to 0, so aₙ → p ÷ r.',
+      'The table shows the terms closing in on the limit.',
+    ],
+    variables: [
+      coef('p', 'p', 'Number before n on top', 100),
+      coef('q', 'q', 'Number on top', 1000),
+      coef('r', 'r', 'Number before n in the bottom', 100),
+      coef('s', 's', 'Number in the bottom', 1000),
+      V('n', 'n', 'Term number', { integer: true, min: 1, max: 1000000 }),
+      coef('a', 'aₙ', 'Term n', 1e9),
+      coef('L', 'L', 'Limit', 1e6, { derived: true }),
+    ],
+    ...rels(
+      rel(
+        'aₙ = (pn + q) ÷ (rn + s)',
+        '{a} = ({p} × {n} + {q}) ÷ ({r} × {n} + {s})',
+        ['a', 'p', 'n', 'q', 'r', 's'],
+        (v) => v.a! * (v.r! * v.n! + v.s!) - (v.p! * v.n! + v.q!),
+        {
+          a: [
+            (v) => div(v.p! * v.n! + v.q!, v.r! * v.n! + v.s!),
+            '({p} × {n} + {q}) ÷ ({r} × {n} + {s})',
+            'Put n into the rule.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.r !== undefined && v.n !== undefined && v.s !== undefined && v.r * v.n + v.s === 0
+              ? 'The bottom is 0 for this n: that term doesn’t exist.'
+              : undefined,
+        },
+      ),
+      derive(
+        'L = p ÷ r',
+        '{L} = {p} ÷ {r}',
+        'L',
+        ['p', 'r'],
+        (v) => div(v.p!, v.r!),
+        '{p} ÷ {r}',
+        'Divide the top and bottom by n: q ÷ n and s ÷ n go to 0, leaving p ÷ r.',
+      ),
+      limit(
+        'r ≠ 0',
+        'The bottom has an n term: {r} is not 0',
+        ['r'],
+        (v) => v.r !== 0,
+        'With r = 0 the bottom stays s while the top grows: the terms have no limit (unless p = 0).',
+      ),
+    ),
+    example: { p: 3, q: 1, r: 2, s: -1, n: 10, a: 31 / 19, L: 1.5 },
+    startWith: ['p', 'q', 'r', 's', 'n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'a',
+      params: ['p', 'q', 'r', 's'],
+      rows: [1, 10, 100, 1000, 10000],
+    },
+  },
+];
+
+// ── Inference for the slope of a regression line (added skill 19) ──
+
+/** df = n − 2: the line's slope and intercept use up two degrees of freedom. */
+const dfLine = derive(
+  'df = n − 2',
+  '{df} = {n} − 2',
+  'df',
+  ['n'],
+  (v) => v.n! - 2,
+  '{n} − 2',
+  'The fitted line uses up two degrees of freedom, its slope and its intercept.',
+);
+const pointsVar = V('n', 'n', 'Number of data points', { integer: true, min: 3, max: 1000 });
+const dfVar = V('df', 'df', 'Degrees of freedom', {
+  integer: true,
+  min: 1,
+  max: 998,
+  derived: true,
+});
+const slopeVar = V('b', 'b', 'Sample slope', { min: -1000000, max: 1000000, step: 0.001 });
+const seSlope = (extra = {}) =>
+  V('E', 'SE_b', 'Standard error of the slope', {
+    min: 0.000001,
+    max: 1000000,
+    step: 0.001,
+    ...extra,
+  });
+/** t = b ÷ SE_b: how many standard errors the slope is from 0. */
+const tSlope = rel('t = b ÷ SE_b', '{t} = {b} ÷ {E}', ['t', 'b', 'E'], (v) => v.t! * v.E! - v.b!, {
+  t: [
+    (v) => div(v.b!, v.E!),
+    '{b} ÷ {E}',
+    'How many standard errors the sample slope is from 0, the slope H₀ claims.',
+  ],
+  b: [(v) => v.t! * v.E!, '{t} × {E}', 'Go t standard errors from 0.'],
+});
+const slopeCurve = {
+  kind: 'normalCurve',
+  mean: 0,
+  sd: 'E',
+  axis: 'Sample slope b if β = 0',
+  mark: { x: 'b' },
+  fixed: true,
+} as const;
+
+const MATH_12_REGRESSION: ModuleDef[] = [
+  // ── m.12.regression-inference (S-ID.8 carried on; AP Statistics unit 9) ──
+  {
+    id: 'm.12.regression-inference',
+    assumptions: [
+      'H₀: β = 0 (no linear relationship) and Hₐ: β ≠ 0; b and SE_b come from the computer output.',
+      't = b ÷ SE_b follows a t curve with df = n − 2.',
+      'The points scatter evenly about a straight line, with residuals close to normal and independent.',
+    ],
+    variables: [
+      slopeVar,
+      seSlope(),
+      pointsVar,
+      dfVar,
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(dfLine, tSlope, decided(tTwoTail('P', 't', 'df'))),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      b: 0.8,
+      E: 0.25,
+      n: 20,
+      df: 18,
+      t: 3.2,
+      P: 2 * (1 - tCdf(3.2, 18)),
+      a: 0.05,
+    },
+    startWith: ['b', 'E', 'n', 'a'],
+    representation: slopeCurve,
+  },
+  {
+    id: 'm.12.regression-inference~interval',
+    title: 'Confidence interval for the slope',
+    use: 'Use this for “b = 0.8 and SE_b = 0.25 from 20 points. Find a 95% confidence interval for the slope.”',
+    assumptions: [
+      'The interval is b ± t⋆ × SE_b, with t⋆ from the t curve with df = n − 2.',
+      'An interval that doesn’t hold 0 means the slope is not 0 at that level.',
+      'The same conditions as the test: a straight-line pattern, even scatter, close to normal residuals.',
+    ],
+    variables: [
+      slopeVar,
+      V('SE', 'SE_b', 'Standard error of the slope', {
+        min: 0.000001,
+        max: 1000000,
+        step: 0.001,
+      }),
+      pointsVar,
+      V('C', 'C', 'Confidence level', {
+        allowed: [0.9, 0.95, 0.99],
+        min: 0.9,
+        max: 0.99,
+        multipleOf: 0.01,
+      }),
+      dfVar,
+      V('ts', 't⋆', 'Critical value', { min: 0.1, max: 700, step: 0.001, derived: true }),
+      V('E', 'E', 'Margin of error', { min: 0.000001, max: 1000000, step: 0.001, derived: true }),
+      V('lo', 'L', 'Lower end', { min: -1000000, max: 1000000, step: 0.001, derived: true }),
+      V('hi', 'U', 'Upper end', { min: -1000000, max: 1000000, step: 0.001, derived: true }),
+    ],
+    ...rels(
+      dfLine,
+      tCritical,
+      rel('E = t⋆ × SE_b', '{E} = {ts} × {SE}', ['E', 'ts', 'SE'], (v) => v.E! - v.ts! * v.SE!, {
+        E: [(v) => v.ts! * v.SE!, '{ts} × {SE}', 'The margin of error is t⋆ standard errors.'],
+        SE: [(v) => div(v.E!, v.ts!), '{E} ÷ {ts}', 'Divide the margin by t⋆.'],
+      }),
+      end('lo', 'b', 'E', -1),
+      end('hi', 'b', 'E', 1),
+      ordered,
+    ),
+    example: {
+      b: 0.8,
+      SE: 0.25,
+      n: 20,
+      C: 0.95,
+      df: 18,
+      ts: tStar(0.95, 18),
+      E: tStar(0.95, 18) * 0.25,
+      lo: 0.8 - tStar(0.95, 18) * 0.25,
+      hi: 0.8 + tStar(0.95, 18) * 0.25,
+    },
+    startWith: ['b', 'SE', 'n', 'C'],
+    equation: '{b} ± {ts} × {SE}',
+    representation: {
+      kind: 'normalCurve',
+      mean: 'b',
+      sd: 'SE',
+      axis: 'Sample slope b',
+      interval: { center: 'b', margin: 'E' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.regression-inference~correlation',
+    title: 'Is the correlation significant?',
+    use: 'Use this for “r = 0.6 for 18 pairs of data. Is the correlation significant at 0.05?”',
+    assumptions: [
+      'H₀: ρ = 0 (no linear relationship in the population) and Hₐ: ρ ≠ 0.',
+      't = r√(n − 2) ÷ √(1 − r²), with df = n − 2: the same t as the slope test.',
+      'The pairs are a random sample and the scatter follows a straight-line pattern.',
+    ],
+    variables: [
+      V('r', 'r', 'Correlation coefficient', { min: -0.9999, max: 0.9999, step: 0.0001 }),
+      pointsVar,
+      dfVar,
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      dfLine,
+      rel(
+        't = r√df ÷ √(1 − r²)',
+        '{t} = {r} × √{df} ÷ √(1 − {r}²)',
+        ['t', 'r', 'df'],
+        (v) => v.t! * Math.sqrt(1 - v.r! ** 2) - v.r! * Math.sqrt(v.df!),
+        {
+          t: [
+            (v) => div(v.r! * Math.sqrt(v.df!), Math.sqrt(1 - v.r! ** 2)),
+            '{r} × √{df} ÷ √(1 − {r}²)',
+            'A strong r or many points make t large; √(1 − r²) shrinks as r nears ±1.',
+          ],
+        },
+      ),
+      decided(tTwoTail('P', 't', 'df')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: { r: 0.6, n: 18, df: 16, t: 3, P: 2 * (1 - tCdf(3, 16)), a: 0.05 },
+    startWith: ['r', 'n', 'a'],
+    representation: {
+      kind: 'normalCurve',
+      axis: 'Test statistic t if ρ = 0',
+      mark: { x: 't' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.regression-inference~standard-error',
+    title: 'The standard error of the slope',
+    use: 'Use this for “The residuals have s = 2, the x values have sₓ = 1.5 and n = 10. Is b = 1.2 significant?”',
+    assumptions: [
+      'SE_b = s ÷ (sₓ√(n − 1)): s is the spread of the residuals, sₓ the spread of the x values.',
+      'Points spread widely in x pin the slope down well, so SE_b is small.',
+      'Then t = b ÷ SE_b with df = n − 2, as in the slope test.',
+    ],
+    variables: [
+      V('s', 's', 'Standard deviation of the residuals', {
+        min: 0.001,
+        max: 1000000,
+        step: 0.001,
+      }),
+      V('sx', 'sₓ', 'Standard deviation of x', { min: 0.001, max: 10000, step: 0.001 }),
+      pointsVar,
+      seSlope({ min: 1e-10, derived: true }),
+      slopeVar,
+      dfVar,
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      derive(
+        'SE_b = s ÷ (sₓ√(n − 1))',
+        '{E} = {s} ÷ ({sx} × √({n} − 1))',
+        'E',
+        ['s', 'sx', 'n'],
+        (v) => div(v.s!, v.sx! * Math.sqrt(v.n! - 1)),
+        '{s} ÷ ({sx} × √({n} − 1))',
+        'The residuals’ spread over the x values’ spread, shrinking as n grows.',
+      ),
+      tSlope,
+      dfLine,
+      decided(tTwoTail('P', 't', 'df')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      s: 2,
+      sx: 1.5,
+      n: 10,
+      E: 2 / 4.5,
+      b: 1.2,
+      df: 8,
+      t: 2.7,
+      P: 2 * (1 - tCdf(2.7, 8)),
+      a: 0.05,
+    },
+    startWith: ['s', 'sx', 'n', 'b', 'a'],
+    representation: slopeCurve,
+  },
+];
+
+// ── ANOVA and the F distribution (added skill 20) ──
+
+/** ln Γ(x) (Lanczos), for the F distribution below (statMath keeps its own private). */
+function lnGamma(x: number): number {
+  const g = [
+    676.5203681218851, -1259.1392167224028, 771.3234287776531, -176.6150291621406,
+    12.507343278686905, -0.13857109526572012, 9.984369578019572e-6, 1.5056327351493116e-7,
+  ];
+  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lnGamma(1 - x);
+  const y = x - 1;
+  let a = 0.9999999999998099;
+  const t = y + 7.5;
+  g.forEach((c, i) => (a += c / (y + i + 1)));
+  return 0.5 * Math.log(2 * Math.PI) + (y + 0.5) * Math.log(t) - t + Math.log(a);
+}
+/** The continued fraction of the incomplete beta function (modified Lentz). */
+function betaFraction(a: number, b: number, x: number): number {
+  const tiny = 1e-300;
+  const fix = (z: number) => (Math.abs(z) < tiny ? tiny : z);
+  let c = 1;
+  let d = 1 / fix(1 - ((a + b) * x) / (a + 1));
+  let h = d;
+  for (let m = 1; m < 500; m++) {
+    const m2 = 2 * m;
+    let aa = (m * (b - m) * x) / ((a + m2 - 1) * (a + m2));
+    d = 1 / fix(1 + aa * d);
+    c = fix(1 + aa / c);
+    h *= d * c;
+    aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + m2 + 1));
+    d = 1 / fix(1 + aa * d);
+    c = fix(1 + aa / c);
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < 1e-15) break;
+  }
+  return h;
+}
+/** The regularized incomplete beta function I_x(a, b). */
+function betaI(x: number, a: number, b: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const front = Math.exp(
+    lnGamma(a + b) - lnGamma(a) - lnGamma(b) + a * Math.log(x) + b * Math.log(1 - x),
+  );
+  return x < (a + 1) / (a + b + 2)
+    ? (front * betaFraction(a, b, x)) / a
+    : 1 - (front * betaFraction(b, a, 1 - x)) / b;
+}
+/** P(F ≥ f) with d1 and d2 degrees of freedom: a calculator's Fcdf(f, ∞, d1, d2). */
+export const fTail = (f: number, d1: number, d2: number) =>
+  f <= 0 ? 1 : 1 - betaI((d1 * f) / (d1 * f + d2), d1 / 2, d2 / 2);
+
+const ssVar = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { min: 0.0001, max: 1e9, step: 0.01 });
+const msVar = (id: string, symbol: string, name: string, extra = {}) =>
+  V(id, symbol, name, { min: 1e-9, max: 1e9, step: 0.0001, ...extra });
+const fVar = (extra = {}) =>
+  V('F', 'F', 'F statistic', { min: 0, max: 1e18, step: 0.0001, ...extra });
+const dfOf = (id: string, symbol: string, name: string, extra = {}) =>
+  V(id, symbol, name, { integer: true, min: 1, max: 10000, ...extra });
+/** P = Fcdf(F, ∞, d1, d2): the right tail past F. */
+const fTailRel = (d1: string | number, d2: string) =>
+  derive(
+    `P = Fcdf(F, ∞, ${typeof d1 === 'number' ? d1 : 'df₁'}, df₂)`,
+    `{P} = Fcdf({F}, ∞, ${typeof d1 === 'number' ? d1 : `{${d1}}`}, {${d2}})`,
+    'P',
+    ['F', ...(typeof d1 === 'number' ? [] : [d1]), d2],
+    (v) => fTail(v.F!, typeof d1 === 'number' ? d1 : v[d1]!, v[d2]!),
+    `Fcdf({F}, ∞, ${typeof d1 === 'number' ? d1 : `{${d1}}`}, {${d2}})`,
+    'The area under the F curve past the statistic: a large F, means far apart for their spread, leaves little.',
+  );
+/** F = M₁ ÷ M₂, between-group spread over within-group spread. */
+const fRatio = rel(
+  'F = MSB ÷ MSW',
+  '{F} = {M1} ÷ {M2}',
+  ['F', 'M1', 'M2'],
+  (v) => v.F! * v.M2! - v.M1!,
+  {
+    F: [
+      (v) => div(v.M1!, v.M2!),
+      '{M1} ÷ {M2}',
+      'How much the group means spread compared with the spread inside the groups.',
+    ],
+    M1: [(v) => v.F! * v.M2!, '{F} × {M2}', 'Undo the division by MSW.'],
+  },
+);
+const fTable = (params: string[], rows: number[]) =>
+  ({ kind: 'table', sweep: 'F', output: 'P', params, rows }) as const;
+
+const MATH_12_ANOVA: ModuleDef[] = [
+  // ── m.12.anova (OpenStax Statistics 13) ──
+  {
+    id: 'm.12.anova',
+    assumptions: [
+      'H₀: every group has the same mean; Hₐ: at least one mean differs.',
+      'df₁ = k − 1 for k groups and df₂ = N − k for N values in all; each mean square is SS ÷ df.',
+      'The groups are independent random samples from normal populations with equal spreads.',
+    ],
+    variables: [
+      ssVar('B', 'SSB', 'Sum of squares between groups'),
+      dfOf('d1', 'df₁', 'Degrees of freedom between groups'),
+      ssVar('W', 'SSW', 'Sum of squares within groups'),
+      dfOf('d2', 'df₂', 'Degrees of freedom within groups'),
+      msVar('M1', 'MSB', 'Mean square between groups', { derived: true }),
+      msVar('M2', 'MSW', 'Mean square within groups', { derived: true }),
+      fVar({ derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      rel('MSB = SSB ÷ df₁', '{M1} = {B} ÷ {d1}', ['M1', 'B', 'd1'], (v) => v.M1! * v.d1! - v.B!, {
+        M1: [
+          (v) => div(v.B!, v.d1!),
+          '{B} ÷ {d1}',
+          'A mean square is a sum of squares over its df.',
+        ],
+        B: [(v) => v.M1! * v.d1!, '{M1} × {d1}', 'Undo the division by df₁.'],
+      }),
+      derive(
+        'MSW = SSW ÷ df₂',
+        '{M2} = {W} ÷ {d2}',
+        'M2',
+        ['W', 'd2'],
+        (v) => div(v.W!, v.d2!),
+        '{W} ÷ {d2}',
+        'The spread inside the groups, pooled: SSW over its df.',
+      ),
+      fRatio,
+      decided(fTailRel('d1', 'd2')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      B: 60,
+      d1: 2,
+      W: 72,
+      d2: 12,
+      M1: 30,
+      M2: 6,
+      F: 5,
+      P: fTail(5, 2, 12),
+      a: 0.05,
+    },
+    startWith: ['B', 'd1', 'W', 'd2', 'a'],
+    representation: fTable(['d1', 'd2'], [1, 2, 3, 4, 5, 6, 8, 10]),
+  },
+  {
+    id: 'm.12.anova~groups',
+    title: 'Three groups from their means and SDs',
+    use: 'Use this for “Three groups of 5 have means 10, 14 and 12 and SDs 2, 3 and 2. Do the means differ?”',
+    assumptions: [
+      'Three groups of the same size n: MSB = n × Σ(x̄ᵢ − x̄)² ÷ 2, where x̄ is the grand mean.',
+      'MSW = (s₁² + s₂² + s₃²) ÷ 3, the average of the three variances.',
+      'df₁ = 3 − 1 = 2 and df₂ = 3n − 3; the groups are independent, normal and equally spread.',
+    ],
+    variables: [
+      V('n', 'n', 'Size of each group', { integer: true, min: 2, max: 3000 }),
+      V('m1', 'x̄₁', 'Mean of group 1', { min: 0, max: 1000000, step: 0.01, group: 'm' }),
+      V('m2', 'x̄₂', 'Mean of group 2', { min: 0, max: 1000000, step: 0.01, group: 'm' }),
+      V('m3', 'x̄₃', 'Mean of group 3', { min: 0, max: 1000000, step: 0.01, group: 'm' }),
+      V('s1', 's₁', 'SD of group 1', { min: 0.001, max: 100000, step: 0.01, group: 's' }),
+      V('s2', 's₂', 'SD of group 2', { min: 0.001, max: 100000, step: 0.01, group: 's' }),
+      V('s3', 's₃', 'SD of group 3', { min: 0.001, max: 100000, step: 0.01, group: 's' }),
+      V('g', 'x̄', 'Grand mean', { min: 0, max: 1000000, step: 0.0001, derived: true }),
+      dfOf('d2', 'df₂', 'Degrees of freedom within groups', { max: 9000, derived: true }),
+      msVar('M1', 'MSB', 'Mean square between groups', { min: 0, derived: true }),
+      msVar('M2', 'MSW', 'Mean square within groups', { derived: true }),
+      fVar({ derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      derive(
+        'x̄ = (x̄₁ + x̄₂ + x̄₃) ÷ 3',
+        '{g} = ({m1} + {m2} + {m3}) ÷ 3',
+        'g',
+        ['m1', 'm2', 'm3'],
+        (v) => (v.m1! + v.m2! + v.m3!) / 3,
+        '({m1} + {m2} + {m3}) ÷ 3',
+        'The groups are the same size, so the grand mean is the mean of the three means.',
+      ),
+      derive(
+        'df₂ = 3n − 3',
+        '{d2} = 3 × {n} − 3',
+        'd2',
+        ['n'],
+        (v) => 3 * v.n! - 3,
+        '3 × {n} − 3',
+        'N − k: 3n values in all, less one for each group’s mean.',
+      ),
+      derive(
+        'MSB = nΣ(x̄ᵢ − x̄)² ÷ 2',
+        '{M1} = {n} × (({m1} − {g})² + ({m2} − {g})² + ({m3} − {g})²) ÷ 2',
+        'M1',
+        ['n', 'm1', 'm2', 'm3', 'g'],
+        (v) => (v.n! * ((v.m1! - v.g!) ** 2 + (v.m2! - v.g!) ** 2 + (v.m3! - v.g!) ** 2)) / 2,
+        '{n} × (({m1} − {g})² + ({m2} − {g})² + ({m3} − {g})²) ÷ 2',
+        'Each group’s mean is n values away from the grand mean; divide by df₁ = 2.',
+      ),
+      derive(
+        'MSW = (s₁² + s₂² + s₃²) ÷ 3',
+        '{M2} = ({s1}² + {s2}² + {s3}²) ÷ 3',
+        'M2',
+        ['s1', 's2', 's3'],
+        (v) => (v.s1! ** 2 + v.s2! ** 2 + v.s3! ** 2) / 3,
+        '({s1}² + {s2}² + {s3}²) ÷ 3',
+        'Equal groups: the pooled variance is the average of the three variances.',
+      ),
+      fRatio,
+      decided(fTailRel(2, 'd2')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      n: 5,
+      m1: 10,
+      m2: 14,
+      m3: 12,
+      s1: 2,
+      s2: 3,
+      s3: 2,
+      g: 12,
+      d2: 12,
+      M1: 20,
+      M2: 17 / 3,
+      F: 60 / 17,
+      P: fTail(60 / 17, 2, 12),
+      a: 0.05,
+    },
+    startWith: ['n', 'm1', 'm2', 'm3', 's1', 's2', 's3', 'a'],
+    representation: {
+      kind: 'bars',
+      bars: [{ var: 'm1' }, { var: 'm2' }, { var: 'm3' }],
+      min: 0,
+      max: 20,
+    },
+  },
+  {
+    id: 'm.12.anova~two-variances',
+    title: 'Comparing two variances',
+    use: 'Use this for “Two samples of 16 have SDs 6 and 4. Are the population variances different?”',
+    assumptions: [
+      'H₀: σ₁² = σ₂² and Hₐ: σ₁² ≠ σ₂²; put the larger SD first so F = s₁² ÷ s₂² ≥ 1.',
+      'F has df₁ = n₁ − 1 on top and df₂ = n₂ − 1 underneath; the p-value doubles the tail past F.',
+      'Both populations must be normal: this test is very sensitive to skew.',
+    ],
+    variables: [
+      V('s1', 's₁', 'Larger sample SD', { min: 0.001, max: 100000, step: 0.01 }),
+      V('s2', 's₂', 'Smaller sample SD', { min: 0.001, max: 100000, step: 0.01 }),
+      V('n1', 'n₁', 'First sample size', { integer: true, min: 2, max: 10000 }),
+      V('n2', 'n₂', 'Second sample size', { integer: true, min: 2, max: 10000 }),
+      dfOf('d1', 'df₁', 'Degrees of freedom on top', { derived: true }),
+      dfOf('d2', 'df₂', 'Degrees of freedom underneath', { derived: true }),
+      fVar({ derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      derive(
+        'df₁ = n₁ − 1',
+        '{d1} = {n1} − 1',
+        'd1',
+        ['n1'],
+        (v) => v.n1! - 1,
+        '{n1} − 1',
+        'The first sample’s variance has n₁ − 1 degrees of freedom.',
+      ),
+      derive(
+        'df₂ = n₂ − 1',
+        '{d2} = {n2} − 1',
+        'd2',
+        ['n2'],
+        (v) => v.n2! - 1,
+        '{n2} − 1',
+        'The second sample’s variance has n₂ − 1 degrees of freedom.',
+      ),
+      derive(
+        'F = s₁² ÷ s₂²',
+        '{F} = {s1}² ÷ {s2}²',
+        'F',
+        ['s1', 's2'],
+        (v) => div(v.s1! ** 2, v.s2! ** 2),
+        '{s1}² ÷ {s2}²',
+        'The ratio of the variances: near 1 when the spreads match.',
+      ),
+      decided(
+        derive(
+          'P = 2 × Fcdf(F, ∞, df₁, df₂)',
+          '{P} = 2 × Fcdf({F}, ∞, {d1}, {d2})',
+          'P',
+          ['F', 'd1', 'd2'],
+          (v) => {
+            const q = fTail(v.F!, v.d1!, v.d2!);
+            return 2 * Math.min(q, 1 - q);
+          },
+          (v: Values) =>
+            fTail(v.F!, v.d1!, v.d2!) > 0.5
+              ? '2 × (1 − Fcdf({F}, ∞, {d1}, {d2}))'
+              : '2 × Fcdf({F}, ∞, {d1}, {d2})',
+          'Hₐ says “not equal”, so double the smaller tail of the F curve at F.',
+        ),
+      ),
+      limit(
+        's₁ ≥ s₂',
+        'The larger SD {s1} is first: at least {s2}',
+        ['s1', 's2'],
+        (v) => v.s1! >= v.s2!,
+        'Put the larger standard deviation first, so F is at least 1 (swap the samples).',
+      ),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      s1: 6,
+      s2: 4,
+      n1: 16,
+      n2: 16,
+      d1: 15,
+      d2: 15,
+      F: 2.25,
+      P: 2 * fTail(2.25, 15, 15),
+      a: 0.05,
+    },
+    startWith: ['s1', 's2', 'n1', 'n2', 'a'],
+    representation: fTable(['d1', 'd2'], [1, 1.5, 2, 2.5, 3, 4]),
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
   ...MATH_12_VECTORS,
+  ...MATH_12_VECTORS_3D,
   ...MATH_12_POLAR,
   ...MATH_12_PARAMETRIC,
   ...MATH_12_MATRICES,
+  ...MATH_12_TRANSFORMS,
   ...MATH_12_LIMITS,
+  ...MATH_12_AREA,
   ...MATH_12_CONICS,
+  ...MATH_12_INDUCTION,
+  ...MATH_12_PARTIAL_FRACTIONS,
+  ...MATH_12_POLAR_CONICS,
   ...MATH_12_STATS,
+  ...MATH_12_REGRESSION,
+  ...MATH_12_ANOVA,
 ];

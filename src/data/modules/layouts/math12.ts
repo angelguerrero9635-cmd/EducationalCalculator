@@ -5,6 +5,47 @@
 import type { LayoutDef } from './types';
 
 export const MATH_12_LAYOUTS: LayoutDef[] = [
+  // ── Matrices as transformations (N-VM.12) ──
+  {
+    kind: 'sort',
+    id: 'm.12.matrix-transformations~identify',
+    title: 'Which move does the matrix make?',
+    use: 'Use this for “Describe the transformation [[0, 1], [1, 0]] makes.”',
+    assumptions: [
+      'The first column is where (1, 0) lands and the second where (0, 1) lands: sketch the two.',
+      'A turn keeps lengths and the order of the corners; a reflection keeps lengths but flips the order.',
+      'A dilation [[k, 0], [0, k]] keeps every direction and multiplies every length by k.',
+    ],
+    question: 'Where do (1, 0) and (0, 1) land: turned, flipped, or stretched?',
+    bins: [
+      {
+        id: 'turn',
+        label: 'Rotation',
+        why: 'Both columns are turned by the same angle, and D = 1.',
+      },
+      {
+        id: 'flip',
+        label: 'Reflection',
+        why: 'The columns keep length 1 but swap their turning order, and D = −1.',
+      },
+      {
+        id: 'grow',
+        label: 'Dilation',
+        why: 'Both columns keep their direction and are multiplied by the same k.',
+      },
+    ],
+    cards: [
+      { label: '[[0, −1], [1, 0]]', bin: 'turn' },
+      { label: '[[−1, 0], [0, −1]]', bin: 'turn' },
+      { label: '[[0, 1], [−1, 0]]', bin: 'turn' },
+      { label: '[[1, 0], [0, −1]]', bin: 'flip' },
+      { label: '[[−1, 0], [0, 1]]', bin: 'flip' },
+      { label: '[[0, 1], [1, 0]]', bin: 'flip' },
+      { label: '[[2, 0], [0, 2]]', bin: 'grow' },
+      { label: '[[0.5, 0], [0, 0.5]]', bin: 'grow' },
+    ],
+  },
+
   // ── Conic sections (G-GPE.3) ──
   {
     kind: 'sort',
@@ -79,6 +120,29 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Mathematical induction (Larson 9.4) ──
+  {
+    kind: 'sequence',
+    id: 'm.12.induction~steps',
+    title: 'The steps of a proof by induction',
+    use: 'Use this for “Prove by induction that 1 + 3 + 5 + … + (2n − 1) = n² for every n ≥ 1.”',
+    assumptions: [
+      'Induction proves a statement for every whole number n ≥ 1, like a line of falling dominoes.',
+      'The base case knocks over the first domino; the step shows each one knocks over the next.',
+      'Both parts are needed: a step with no base case proves nothing.',
+    ],
+    question: 'Put the parts of the proof that 1 + 3 + … + (2n − 1) = n² in order.',
+    stages: [
+      { label: 'Base case: for n = 1 the left side is 1 and the right side is 1² = 1' },
+      { label: 'Hypothesis: assume 1 + 3 + … + (2k − 1) = k² for some k ≥ 1' },
+      { label: 'Add the next odd number, 2k + 1, to both sides' },
+      { label: 'Simplify: k² + 2k + 1 = (k + 1)², the statement for n = k + 1' },
+      {
+        label: 'Conclusion: true for n = 1, and each case gives the next, so true for every n ≥ 1',
+      },
+    ],
+  },
+
   // ── Hypothesis tests (S-IC.5) ──
   {
     kind: 'sort',
@@ -143,6 +207,50 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
       },
       { label: 'H₀: the batch is fine; a fine batch is thrown out', bin: 'one' },
       { label: 'H₀: the batch is fine; a bad batch is thrown out', bin: 'right' },
+    ],
+  },
+  // ── ANOVA (OpenStax Statistics 13) ──
+  {
+    kind: 'sort',
+    id: 'm.12.anova~which-test',
+    title: 'Which test fits the question?',
+    use: 'Use this for “Do the mean scores of three classes differ? Which test do you use?”',
+    assumptions: [
+      'Means of three or more groups: one-way ANOVA. Means of exactly two groups: a two-sample t-test.',
+      'Two categorical variables in a table: a chi-square test of independence.',
+      'Two quantitative variables with a straight-line pattern: a t-test for the slope.',
+    ],
+    question: 'What is compared: means of groups, counts in a table, or a line through pairs?',
+    bins: [
+      {
+        id: 'anova',
+        label: 'One-way ANOVA',
+        why: 'It compares the means of three or more groups.',
+      },
+      { id: 't2', label: 'Two-sample t-test', why: 'It compares the means of two groups.' },
+      {
+        id: 'chi',
+        label: 'Chi-square test of independence',
+        why: 'It asks whether two categorical variables are related, from counts.',
+      },
+      {
+        id: 'slope',
+        label: 't-test for the slope',
+        why: 'It asks whether one quantitative variable changes linearly with another.',
+      },
+    ],
+    cards: [
+      { label: 'Do mean plant heights differ under four kinds of light?', bin: 'anova' },
+      { label: 'Do three brands of battery last the same time on average?', bin: 'anova' },
+      { label: 'Do boys and girls sleep the same number of hours on average?', bin: 't2' },
+      { label: 'Does a new diet change mean weight loss compared with the old one?', bin: 't2' },
+      { label: 'Is favorite sport related to grade level, from a table of counts?', bin: 'chi' },
+      { label: 'Is voting yes or no related to age group?', bin: 'chi' },
+      { label: 'Does study time predict test score along a straight line?', bin: 'slope' },
+      {
+        label: 'Does a car’s weight predict its fuel use in a straight-line pattern?',
+        bin: 'slope',
+      },
     ],
   },
 ];
