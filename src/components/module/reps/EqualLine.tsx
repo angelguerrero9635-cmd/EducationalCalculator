@@ -61,7 +61,7 @@ export function EqualLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
       ? `${statement}: a distance is never negative, so no number is ${n(radius)} from ${n(center)}. No solution.`
       : radius === 0
         ? `${statement}: only ${n(center)} itself is 0 from ${n(center)}. So ${x} = ${n(center)}.`
-        : `${statement}: the numbers exactly ${n(radius)} from ${n(center)} · ${n(center)} − ${paren(radius)} = ${n(lo)} · ${n(center)} + ${paren(radius)} = ${n(hi)} · So ${x} = ${n(lo)} or ${x} = ${n(hi)}. Nothing between them is a solution.`;
+        : `${statement}: the numbers exactly ${n(radius)} from ${n(center)} · ${n(center)} − ${paren(radius)} = ${n(lo)} · ${n(center)} + ${paren(radius)} = ${n(hi)} · The solutions are ${n(lo)} and ${n(hi)}; nothing between them is one.`;
   const testLine =
     test === undefined || !known
       ? ''
@@ -69,7 +69,7 @@ export function EqualLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => 206 / w}>
+      <Canvas aspect={(w) => (cp.test ? 206 : 150) / w}>
         {({ w, h }) => {
           const pad = 28;
           const px = (v: number) => pad + ((v - from) / (to - from)) * (w - 2 * pad);
