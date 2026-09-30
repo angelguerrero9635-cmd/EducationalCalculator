@@ -450,3 +450,16 @@ moves and symmetry (`transformation`), dilation from a center and the side split
 (`circle`), nets, Cavalieri and round cross sections (`curvedSolid`, `crossSection`), roots
 from a factor tree (`factorTree`) and a log ruler (`powerScale`). Each entry's notes give the
 fields and an example; the demos are in `galleryHse.ts` and `galleryHsf.ts`.
+
+### Grades 9–12, biology (2026-09-30): H31–H42
+
+H31–H42 are `drawn`: monomers into polymers (`macromolecules` explore figure), membrane
+transport with tonicity card icons (`membrane`), the chloroplast and mitochondrion
+(`organelleEnergy` explore figure), mitosis and meiosis stages (`cellDivision` card), Grade 9
+inheritance on `punnettSquare` (`inheritance`), DNA to protein with mutations (`dnaStrand`),
+gel electrophoresis and PCR (`gel`), Hardy–Weinberg beads (`alleleFrequencies`), the
+`cladogram` explore figure with domain and kingdom icons, biomass and numbers pyramids
+(`energyPyramid` `measure`) with succession icons and the `nitrogenCycle` figure, the
+`feedbackLoop` figure, and the immune response (`immuneResponse`, `immuneStages`, pathogen
+icons). Each entry's notes give the fields and an example; the demos are in `galleryHsg.ts` and
+`galleryHsh.ts`.
