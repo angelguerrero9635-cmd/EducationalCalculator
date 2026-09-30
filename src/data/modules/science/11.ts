@@ -1577,6 +1577,31 @@ const keRule = (out: string, x: string, y: string, sym: string, when: string): R
     },
   );
 
+/** p = m₁v₁ + m₂v₂, the total momentum before. */
+const momentumRule = rule(
+  'p = m₁v₁ + m₂v₂',
+  '{p} = {m} × {v} + {n} × {w}',
+  (v) => v.p! - v.m! * v.v! - v.n! * v.w!,
+  {
+    p: [
+      (v) => v.m! * v.v! + v.n! * v.w!,
+      '{m} × {v} + {n} × {w}',
+      'Add the carts’ momenta, signs and all.',
+    ],
+    v: [
+      (v) => div(v.p! - v.n! * v.w!, v.m!),
+      '({p} − {n} × {w})/{m}',
+      'Take cart 2’s momentum from the total, divide by m₁.',
+    ],
+    w: [
+      (v) => div(v.p! - v.m! * v.v!, v.n!),
+      '({p} − {m} × {v})/{n}',
+      'Take cart 1’s momentum from the total, divide by m₂.',
+    ],
+  },
+);
+const MOMENTUM = q('p', 'p', 'Total momentum', 'kg·m/s', -1e7, 1e7, 0.01);
+
 const momentumPages: ModuleDef[] = [
   (() => {
     const [m, n, v, w] = [2, 1, 3, -3];
@@ -1595,34 +1620,13 @@ const momentumPages: ModuleDef[] = [
         M2,
         V1B,
         V2B,
-        q('p', 'p', 'Total momentum', 'kg·m/s', -1e7, 1e7, 0.01),
+        MOMENTUM,
         q('u', 'v′', 'Velocity together after', 'm/s', -100, 100, 0.0001),
         KE('K', 'KE', 'Kinetic energy before'),
         KE('L', 'KE′', 'Kinetic energy after'),
       ],
       ...rules(
-        rule(
-          'p = m₁v₁ + m₂v₂',
-          '{p} = {m} × {v} + {n} × {w}',
-          (v) => v.p! - v.m! * v.v! - v.n! * v.w!,
-          {
-            p: [
-              (v) => v.m! * v.v! + v.n! * v.w!,
-              '{m} × {v} + {n} × {w}',
-              'Add the carts’ momenta, signs and all.',
-            ],
-            v: [
-              (v) => div(v.p! - v.n! * v.w!, v.m!),
-              '({p} − {n} × {w})/{m}',
-              'Take cart 2’s momentum from the total, divide by m₁.',
-            ],
-            w: [
-              (v) => div(v.p! - v.m! * v.v!, v.n!),
-              '({p} − {m} × {v})/{n}',
-              'Take cart 1’s momentum from the total, divide by m₂.',
-            ],
-          },
-        ),
+        momentumRule,
         rule('v′ = p/(m₁ + m₂)', '{u} = {p}/({m} + {n})', (v) => v.u! * (v.m! + v.n!) - v.p!, {
           u: [
             (v) => div(v.p!, v.m! + v.n!),
@@ -1646,6 +1650,7 @@ const momentumPages: ModuleDef[] = [
               '½ × ({m} + {n}) × {u}²',
               'After, both masses move together at v′.',
             ],
+            u: null,
           },
         ),
       ),
@@ -1672,7 +1677,7 @@ const momentumPages: ModuleDef[] = [
       use: 'Use this for “A 1 kg cart at 4 m/s meets a 3 kg cart coming the other way at 2 m/s. They bounce apart elastically. What are their velocities after?”',
       unitSystems: ['metric'],
       assumptions: [
-        'Elastic: the carts bounce apart keeping both the total momentum and the total kinetic energy.',
+        'Elastic: the carts bounce apart keeping both the total momentum p and the total kinetic energy.',
         '+ is to the right; a cart moving left has a negative velocity.',
         'Magnets or springy bumpers make a collision close to elastic.',
       ],
@@ -1683,10 +1688,12 @@ const momentumPages: ModuleDef[] = [
         V2B,
         V1A,
         V2A,
+        { ...MOMENTUM, derived: true },
         KE('K', 'KE', 'Kinetic energy before'),
         KE('L', 'KE′', 'Kinetic energy after'),
       ],
       ...rules(
+        momentumRule,
         rule(
           'v₁′ = ((m₁ − m₂)v₁ + 2m₂v₂)/(m₁ + m₂)',
           '{a} = (({m} − {n}) × {v} + 2 × {n} × {w})/({m} + {n})',
@@ -1731,6 +1738,7 @@ const momentumPages: ModuleDef[] = [
         w,
         a,
         b,
+        p: m * v + n * w,
         K: 0.5 * m * v * v + 0.5 * n * w * w,
         L: 0.5 * m * a * a + 0.5 * n * b * b,
       },
@@ -1741,6 +1749,7 @@ const momentumPages: ModuleDef[] = [
         masses: ['m', 'n'],
         before: ['v', 'w'],
         after: ['a', 'b'],
+        momentum: 'p',
         energy: ['K', 'L'],
       },
     } satisfies ModuleDef;
