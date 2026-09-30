@@ -135,6 +135,7 @@ const PICTURE_NAMES: Record<string, string> = {
   immuneResponse: 'antibody levels after two exposures',
   earthLayers: 'Earth’s layers, seismic waves or an epicenter',
   oceanProfile: 'the seafloor, or the tides',
+  atmosphereLayers: 'the atmosphere’s layers, or a pressure map',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

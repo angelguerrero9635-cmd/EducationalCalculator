@@ -258,3 +258,121 @@ export const tideFactor = (deg: number) =>
 /** The ocean's height at direction `phi` (radians) round Earth: the Moon's and Sun's bulges. */
 export const tideAt = (phi: number, moon: number, sun: number) =>
   Math.cos(2 * (phi - moon)) + SUN_TIDE * Math.cos(2 * (phi - sun));
+
+// ── The atmosphere (H76) ──
+
+/** The troposphere's cooling, °C per km, and the tropopause's height, km. */
+export const LAPSE_RATE = 6.5;
+export const TROPOPAUSE = 11;
+
+/**
+ * The standard atmosphere above the tropopause [km, °C]: steady to 20 km, warming through the
+ * ozone of the stratosphere to −2.5 °C at 47–51 km, cooling through the mesosphere to about
+ * −86 °C near 86–91 km, and heating fast in the thermosphere.
+ */
+const UPPER: [number, number][] = [
+  [20, -56.5],
+  [32, -44.5],
+  [47, -2.5],
+  [51, -2.5],
+  [71, -58.5],
+  [86, -86.3],
+  [91, -86.3],
+  [100, -78],
+  [110, -33],
+  [120, 87],
+];
+
+export const ATMO_LAYERS: { name: string; from: number; to: number }[] = [
+  { name: 'troposphere', from: 0, to: 11 },
+  { name: 'stratosphere', from: 11, to: 50 },
+  { name: 'mesosphere', from: 50, to: 85 },
+  { name: 'thermosphere', from: 85, to: 120 },
+];
+
+/**
+ * The profile's corners [km, °C] for a ground temperature: the troposphere cools 6.5 °C per km
+ * from the ground to the tropopause, then the standard values.
+ */
+export function atmoProfile(ground = 15): [number, number][] {
+  return [[0, ground], [TROPOPAUSE, ground - LAPSE_RATE * TROPOPAUSE], ...UPPER];
+}
+
+/** Temperature (°C) at altitude h (km). */
+export function atmoTempAt(h: number, ground = 15): number {
+  const pts = atmoProfile(ground);
+  const i = pts.findIndex(([k]) => k >= h);
+  if (i < 0) return pts[pts.length - 1]![1];
+  if (i === 0) return pts[0]![1];
+  const [h0, t0] = pts[i - 1]!;
+  const [h1, t1] = pts[i]!;
+  return t0 + ((t1 - t0) * (h - h0)) / (h1 - h0);
+}
+
+/**
+ * A pressure field (hPa) with a high and a low centred at `hi` and `lo` (map units), each a
+ * bell of width `s`, sized so the centres are exactly `high` and `low`.
+ */
+export function pressureField(
+  high: number,
+  low: number,
+  hi: [number, number],
+  lo: [number, number],
+  s: number,
+) {
+  const base = (high + low) / 2;
+  const e = Math.exp(-((hi[0] - lo[0]) ** 2 + (hi[1] - lo[1]) ** 2) / (s * s));
+  // a + b·e = high − base and a·e + b = low − base.
+  const det = 1 - e * e;
+  const a = (high - base - e * (low - base)) / det;
+  const b = (low - base - e * (high - base)) / det;
+  return (x: number, y: number) =>
+    base +
+    a * Math.exp(-((x - hi[0]) ** 2 + (y - hi[1]) ** 2) / (s * s)) +
+    b * Math.exp(-((x - lo[0]) ** 2 + (y - lo[1]) ** 2) / (s * s));
+}
+
+/**
+ * The surface wind at (x, y) of a field (y north, up): along the isobars with low pressure on
+ * its left in the north (right in the south), the Coriolis effect's turn, then turned 30° in
+ * toward the low by friction with the ground. Returns [east, north], proportional to the
+ * pressure gradient.
+ */
+export function windAt(
+  p: (x: number, y: number) => number,
+  x: number,
+  y: number,
+  north: boolean,
+): [number, number] {
+  const d = 0.5;
+  const gx = (p(x + d, y) - p(x - d, y)) / (2 * d);
+  const gy = (p(x, y + d) - p(x, y - d)) / (2 * d);
+  // Geostrophic: k × ∇p in the north, the other way in the south.
+  const [ux, uy] = north ? [-gy, gx] : [gy, -gx];
+  // Friction turns it 30° toward the low: left in the north, right in the south.
+  const t = ((north ? 1 : -1) * 30 * Math.PI) / 180;
+  return [ux * Math.cos(t) - uy * Math.sin(t), ux * Math.sin(t) + uy * Math.cos(t)];
+}
+
+/** Where a pressure map puts its high and low (map units, y north), and the bells' width. */
+export const PRESSURE_MAP = {
+  hi: [100, 118] as [number, number],
+  lo: [262, 106] as [number, number],
+  s: 105,
+  /** The isobar spacing, hPa. */
+  step: 4,
+};
+
+/** The isobar spacing a map uses: 4 hPa, doubled until at most 16 isobars fit between. */
+export function isobarStep(high: number, low: number): number {
+  let step = PRESSURE_MAP.step;
+  while ((high - low) / step > 16) step *= 2;
+  return step;
+}
+
+/** The isobars a map draws: every multiple of the step strictly between the low and the high. */
+export function isobarLevels(high: number, low: number, step = isobarStep(high, low)): number[] {
+  const out: number[] = [];
+  for (let p = Math.floor(low / step + 1) * step; p < high; p += step) out.push(p);
+  return out;
+}

@@ -870,7 +870,172 @@ const currentsLayouts: LayoutDef[] = [
   },
 ];
 
+// ── H76: the atmosphere ──
+
+const lapse: ModuleDef = {
+  id: 'g.s12-atmosphere-weather-layers',
+  title: 'Temperature through the atmosphere',
+  use: 'Use this for the air temperature at a height in the troposphere, and the layers above it.',
+  assumptions: [
+    'The atmosphere has four layers, set apart by how temperature changes with height.',
+    'In the troposphere, where weather happens, air cools about 6.5 °C for each km up, to the tropopause near 11 km.',
+    'Ozone absorbs ultraviolet light, so the stratosphere warms with height; the mesosphere cools again, and the thin thermosphere heats up.',
+  ],
+  variables: [
+    V('T0', 'T₀', 'Temperature at the ground', { unit: '°C', min: -40, max: 50, step: 0.1 }),
+    V('h', 'h', 'Height', { unit: 'km', min: 0.01, max: 11, step: 0.1 }),
+    V('T', 'T', 'Temperature at that height', {
+      unit: '°C',
+      min: -120,
+      max: 50,
+      step: 0.1,
+      derived: true,
+    }),
+  ],
+  ...rels({
+    relation: {
+      id: 'T = T₀ − 6.5 × h',
+      display: '{T} = {T0} − 6.5 × {h}',
+      vars: ['T', 'T0', 'h'],
+      residual: (v: Values) => v.T! - (v.T0! - 6.5 * v.h!),
+      solve: {
+        T: (v: Values) => v.T0! - 6.5 * v.h!,
+        T0: (v: Values) => v.T! + 6.5 * v.h!,
+        h: (v: Values) => (v.T0! - v.T!) / 6.5,
+      },
+    },
+    steps: {
+      T: { expr: '{T0} − 6.5 × {h}', how: 'Take off 6.5 °C for each km of height.' },
+      T0: { expr: '{T} + 6.5 × {h}', how: 'Add back the 6.5 °C lost for each km.' },
+      h: { expr: '({T0} − {T}) ÷ 6.5', how: 'How many 6.5 °C drops make the difference.' },
+    },
+  }),
+  example: { T0: 15, h: 8, T: -37 },
+  startWith: ['T0', 'h'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'profile',
+    altitude: 'h',
+    temperature: 'T',
+    ground: 'T0',
+  },
+};
+
+const lapseTop: ModuleDef = {
+  ...lapse,
+  id: 'g.s12-atmosphere-weather-tropopause',
+  title: 'At the tropopause',
+  use: 'Use this for the top of the troposphere, where the cooling with height stops.',
+  example: { T0: 15, h: 11, T: 15 - 6.5 * 11 },
+};
+
+const lapseHot: ModuleDef = {
+  ...lapse,
+  id: 'g.s12-atmosphere-weather-hot-day',
+  title: 'A hot day: the air a few km up',
+  use: 'Use this for a warm ground temperature and the air above it.',
+  example: { T0: 30, h: 3, T: 30 - 6.5 * 3 },
+};
+
+const hpa = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { unit: 'hPa', min: 900, max: 1080, step: 1 });
+
+const pressureMap: ModuleDef = {
+  id: 'g.s12-atmosphere-weather-pressure',
+  title: 'Highs, lows and the wind',
+  use: 'Use this for the pressure difference and gradient between a high and a low, and how the wind blows between them.',
+  assumptions: [
+    'Isobars join places of equal air pressure; here they are drawn every 4 hPa (every 8 or more when the difference is large).',
+    'Air is pushed from high toward low pressure, harder where the isobars crowd together.',
+    'Earth’s turning deflects moving air (the Coriolis effect): to the right in the Northern Hemisphere, to the left in the Southern.',
+    'Friction with the ground slows the wind, so it crosses the isobars into the low.',
+  ],
+  variables: [
+    hpa('H', 'H', 'Pressure at the high'),
+    hpa('Lw', 'L', 'Pressure at the low'),
+    V('D', 'D', 'Distance between them', { unit: 'km', min: 50, max: 5000, step: 10 }),
+    V('dP', 'ΔP', 'Pressure difference', {
+      unit: 'hPa',
+      min: 0.1,
+      max: 180,
+      step: 1,
+      derived: true,
+    }),
+    V('G', 'G', 'Pressure gradient', {
+      unit: 'hPa per 100 km',
+      min: 0.001,
+      max: 100,
+      step: 0.01,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    younger('Lw', 'H', 'the low {Lw} is below the high {H}'),
+    difference('dP', 'H', 'Lw', [
+      'How much higher the pressure is at the high.',
+      'The high is the difference above the low.',
+      'The low is the difference below the high.',
+    ]),
+    {
+      relation: {
+        id: 'G = ΔP ÷ D × 100',
+        display: '{G} = {dP} ÷ {D} × 100',
+        vars: ['G', 'dP', 'D'],
+        residual: (v: Values) => v.G! * v.D! - v.dP! * 100,
+        solve: {
+          G: (v: Values) => div(v.dP! * 100, v.D!),
+          dP: (v: Values) => (v.G! * v.D!) / 100,
+          D: (v: Values) => div(v.dP! * 100, v.G!),
+        },
+      },
+      steps: {
+        G: { expr: '{dP} ÷ {D} × 100', how: 'The pressure change per km, times 100 km.' },
+        dP: { expr: '{G} × {D} ÷ 100', how: 'The change per 100 km, times the hundreds of km.' },
+        D: { expr: '{dP} ÷ {G} × 100', how: 'How many 100 km steps the difference takes.' },
+      },
+    },
+  ),
+  example: { H: 1028, Lw: 988, D: 800, dP: 40, G: 5 },
+  startWith: ['H', 'Lw', 'D'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'pressure',
+    high: 'H',
+    low: 'Lw',
+    distance: 'D',
+  },
+};
+
+const pressureSouth: ModuleDef = {
+  ...pressureMap,
+  id: 'g.s12-atmosphere-weather-pressure-south',
+  title: 'Highs and lows south of the equator',
+  use: 'Use this for winds in the Southern Hemisphere, where the Coriolis effect turns them the other way.',
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'pressure',
+    high: 'H',
+    low: 'Lw',
+    distance: 'D',
+    hemisphere: 'south',
+  },
+};
+
+const pressureWeak: ModuleDef = {
+  ...pressureMap,
+  id: 'g.s12-atmosphere-weather-pressure-weak',
+  title: 'A weak pressure gradient',
+  use: 'Use this for widely spaced isobars and light winds.',
+  example: { H: 1016, Lw: 1008, D: 1000, dP: 8, G: 0.8 },
+};
+
 export const HSL_GALLERY_MODULES: ModuleDef[] = [
+  lapse,
+  lapseTop,
+  lapseHot,
+  pressureMap,
+  pressureSouth,
+  pressureWeak,
   sonar,
   sonarRidge,
   sonarTrench,

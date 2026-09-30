@@ -2111,6 +2111,7 @@ export function repIssues(
       break;
     case 'earthLayers':
     case 'oceanProfile':
+    case 'atmosphereLayers':
       // In formula units (km, s), as the picture draws them.
       out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;

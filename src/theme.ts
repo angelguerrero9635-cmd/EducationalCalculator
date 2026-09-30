@@ -300,6 +300,14 @@ const light = {
   currentWarm: '#D93A3A',
   currentCold: '#2F6FD0',
   seafloor: '#9C8A77',
+  /** The atmosphere (H76): its four layers as bands, the ozone layer, and highs and lows. */
+  atmoTropo: '#DCEFFB',
+  atmoStrato: '#E6E9FB',
+  atmoMeso: '#EFE6F8',
+  atmoThermo: '#FBE9E3',
+  atmoOzone: '#9BD3C0',
+  pressureHigh: '#1D5FD1',
+  pressureLow: '#D12F2F',
   /** Grades 9–12 group D: sine and cosine legs on the unit circle, algebra tiles (positive and
    * negative), and a resultant vector. */
   unitCircleSine: '#D9480F',
@@ -570,6 +578,13 @@ const dark: Palette = {
   currentWarm: '#F0625A',
   currentCold: '#5B9BFF',
   seafloor: '#6B5D50',
+  atmoTropo: '#1C3446',
+  atmoStrato: '#232A48',
+  atmoMeso: '#2D2442',
+  atmoThermo: '#3C2A28',
+  atmoOzone: '#3E7C68',
+  pressureHigh: '#6EA0FF',
+  pressureLow: '#FF6B6B',
   unitCircleSine: '#FF8A5C',
   unitCircleCosine: '#3CCFAE',
   tilePositive: '#2F5F86',

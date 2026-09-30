@@ -204,6 +204,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <ImmuneResponse spec={spec} calc={calc} />;
     case 'earthLayers':
     case 'oceanProfile':
+    case 'atmosphereLayers':
       return <HslPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;

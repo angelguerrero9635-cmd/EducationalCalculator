@@ -9,6 +9,7 @@ import type { HslSpec } from '@/data/modules/typesHsl';
 import type { Calculator } from '../useCalculator';
 import { EarthLayers } from './EarthLayers';
 import { OceanProfile } from './OceanProfile';
+import { AtmosphereLayers } from './AtmosphereLayers';
 import { RockLayersDated } from './RockLayersDated';
 
 export function HslPicture({ spec, calc }: { spec: HslSpec; calc: Calculator }): ReactNode {
@@ -17,6 +18,8 @@ export function HslPicture({ spec, calc }: { spec: HslSpec; calc: Calculator }):
       return <EarthLayers spec={spec} calc={calc} />;
     case 'oceanProfile':
       return <OceanProfile spec={spec} calc={calc} />;
+    case 'atmosphereLayers':
+      return <AtmosphereLayers spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayersDated spec={spec} calc={calc} />;
   }

@@ -1144,12 +1144,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as a calculator kind in two modes and an explore figure. Seafloor: { kind: "oceanProfile", mode: "profile", depth?: id (m), over?: "shelf" | "slope" | "rise" | "plain" | "ridge" | "trench" }: a profile from a continent to an island arc with typical depths (shelf to 200 m, abyssal plain 4,500–5,000 m, ridge crest 2,500 m with its rift, trench to 10,900 m) on a stretched depth axis; a sonar ship sits where the floor is that deep (within `over`) and pings down to it; with no such place it says so. Example: { kind: "oceanProfile", mode: "profile", depth: "d", over: "plain" } with d = v × t ÷ 2. Tides: { kind: "oceanProfile", mode: "tides", angle: id (the Moon’s angle from the Sun, 0°–180°), range?: id, fixed? }: Earth from above the North Pole with its two bulges from the Moon’s and Sun’s pulls (the Sun’s 0.46 of the Moon’s), spring or neap named, the Moon dragged round its orbit. Example: { kind: "oceanProfile", mode: "tides", angle: "A", range: "R" } with R = m × √(1 + 0.46² + 2 × 0.46 × cos(2θ)). Currents (explore figure): { kind: "oceanCurrents" }, each scene currents: { view: "gyres" | "conveyor" } on a world map with the Pacific in the middle: the five gyres (warm on each basin’s west side, cold on the east) and the Antarctic Circumpolar Current, or the conveyor’s warm surface and cold deep flows with where it sinks and rises. The harness checks the ship sits over its depth and the bulge points nearer the Moon than the Sun.',
   },
-  ask(
-    'H76',
-    'atmosphereLayers',
-    'Layers of the atmosphere with the temperature profile; a pressure map with highs, lows and wind arrows turned by Coriolis',
-    ['s.12.atmosphere-weather'],
-  ),
+  {
+    ...ask(
+      'H76',
+      'atmosphereLayers',
+      'Layers of the atmosphere with the temperature profile; a pressure map with highs, lows and wind arrows turned by Coriolis',
+      ['s.12.atmosphere-weather'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-atmosphere-weather-layers',
+      'g.s12-atmosphere-weather-tropopause',
+      'g.s12-atmosphere-weather-hot-day',
+      'g.s12-atmosphere-weather-pressure',
+      'g.s12-atmosphere-weather-pressure-south',
+      'g.s12-atmosphere-weather-pressure-weak',
+    ],
+    notes:
+      'Drawn (group HL) as a calculator kind in two modes. Layers: { kind: "atmosphereLayers", mode: "profile", altitude?: id (km), temperature?: id (°C), ground?: id or number (°C, default 15) }: temperature against altitude to 120 km (standard atmosphere, the troposphere cooling 6.5 °C per km from the ground’s temperature to 11 km), the troposphere, stratosphere with its ozone layer, mesosphere and thermosphere as bands, a point at the altitude dragged up and down. Example: { kind: "atmosphereLayers", mode: "profile", altitude: "h", temperature: "T", ground: "T0" } with T = T₀ − 6.5 × h (h up to 11 km). Pressure map: { kind: "atmosphereLayers", mode: "pressure", high: id, low: id (hPa), distance?: id (km, a scale bar between the centres), hemisphere?: "north" | "south" }: H and L with their pressures, isobars every 4 hPa (doubled until at most 16 fit), surface winds from high to low turned by the Coriolis effect (right in the north, left in the south) and 30° back toward the low by friction. Example: { kind: "atmosphereLayers", mode: "pressure", high: "H", low: "Lw", distance: "D" } with ΔP = H − L and G = ΔP ÷ D × 100. The harness checks the point sits on the line, the centres are the typed pressures, and the winds turn and cross the isobars the right way round the high and the low in each hemisphere.',
+  },
   ask(
     'H77',
     'greenhouse',

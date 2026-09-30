@@ -5,15 +5,20 @@
  */
 import {
   arrivals,
+  atmoTempAt,
   bracketOf,
   depthAt,
   EARTH,
+  isobarLevels,
   mantleRay,
   parentLeft,
+  PRESSURE_MAP,
+  pressureField,
   QUAKE_DEFAULTS,
   SHADOW,
   shipAt,
   tideAt,
+  windAt,
 } from '@/components/module/reps/earthModel';
 
 import type { HslSpec } from '../typesHsl';
@@ -90,6 +95,53 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
           ((((best - moon + Math.PI / 2) % Math.PI) + Math.PI) % Math.PI) - Math.PI / 2,
         );
         if (off > Math.PI / 4 + 1e-6) out.push(`the bulge points ${off} rad from the Moon`);
+      }
+      break;
+    }
+    case 'atmosphereLayers': {
+      if (rep.mode === 'profile') {
+        const h = num(rep.altitude);
+        const t = num(rep.temperature);
+        const g = num(rep.ground, 15);
+        if (h !== undefined && (h < 0 || h > 120)) out.push(`altitude ${h} km is off the chart`);
+        // The point sits on the drawn temperature line.
+        if (
+          h !== undefined &&
+          t !== undefined &&
+          g !== undefined &&
+          !near(atmoTempAt(h, g), t, 1e-6)
+        )
+          out.push(`${t} °C at ${h} km, but the line is at ${atmoTempAt(h, g)} °C`);
+      } else {
+        const high = num(rep.high);
+        const low = num(rep.low);
+        if (high === undefined || low === undefined) break;
+        if (high <= low) {
+          out.push(`the high ${high} hPa is not above the low ${low}`);
+          break;
+        }
+        const levels = isobarLevels(high, low);
+        if (levels.length > 16) out.push(`${levels.length} isobars, too many to draw apart`);
+        const { hi, lo, s } = PRESSURE_MAP;
+        const p = pressureField(high, low, hi, lo, s);
+        if (!near(p(...hi), high) || !near(p(...lo), low))
+          out.push('the centres are not the typed pressures');
+        // Round the low: counterclockwise and inward in the north (clockwise in the south);
+        // round the high: the other way, and outward.
+        const north = rep.hemisphere !== 'south';
+        for (const [c, inward] of [
+          [lo, true],
+          [hi, false],
+        ] as const) {
+          const r: [number, number] = [20, 8];
+          const w = windAt(p, c[0] + r[0], c[1] + r[1], north);
+          const turn = r[0] * w[1] - r[1] * w[0];
+          const out_ = r[0] * w[0] + r[1] * w[1];
+          if (turn > 0 !== (north === inward))
+            out.push(`wind turns the wrong way round the ${inward ? 'low' : 'high'}`);
+          if (out_ < 0 !== inward)
+            out.push(`wind blows the wrong way across the ${inward ? 'low' : 'high'}'s isobars`);
+        }
       }
       break;
     }

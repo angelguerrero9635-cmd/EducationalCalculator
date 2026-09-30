@@ -138,7 +138,42 @@ export interface TidesSpec {
 
 export type OceanProfileSpec = OceanSonarSpec | TidesSpec;
 
-export type HslSpec = EarthLayersSpec | RockDatingSpec | OceanProfileSpec;
+/**
+ * The atmosphere (H76), `profile` mode: temperature against altitude to 120 km, the troposphere,
+ * stratosphere (with the ozone layer), mesosphere and thermosphere as bands, the troposphere
+ * cooling 6.5 °C per km from the ground's temperature, and a point at `altitude`.
+ */
+export interface AtmosphereProfileSpec {
+  kind: 'atmosphereLayers';
+  mode: 'profile';
+  /** Altitude of the point, km. */
+  altitude?: NumOrVar;
+  /** Its temperature, °C (as the page works it out). */
+  temperature?: NumOrVar;
+  /** The ground's temperature, °C (default 15, the standard atmosphere). */
+  ground?: NumOrVar;
+}
+
+/**
+ * The atmosphere, `pressure` mode: a weather map with a high and a low, isobars every 4 hPa
+ * between them, and surface winds that blow from high to low turned by the Coriolis effect (to
+ * the right in the north, the left in the south) and partly back by friction: out of a high
+ * clockwise and into a low counterclockwise in the north.
+ */
+export interface PressureMapSpec {
+  kind: 'atmosphereLayers';
+  mode: 'pressure';
+  /** The centres' pressures, hPa. */
+  high: NumOrVar;
+  low: NumOrVar;
+  /** The distance between the centres, km (a scale bar). */
+  distance?: NumOrVar;
+  hemisphere?: 'north' | 'south';
+}
+
+export type AtmosphereLayersSpec = AtmosphereProfileSpec | PressureMapSpec;
+
+export type HslSpec = EarthLayersSpec | RockDatingSpec | OceanProfileSpec | AtmosphereLayersSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hslSpecVars(r: HslSpec): string[] {
@@ -151,6 +186,10 @@ export function hslSpecVars(r: HslSpec): string[] {
       return ids(r.stations.map((s) => s.r));
     case 'oceanProfile':
       return r.mode === 'profile' ? ids([r.depth]) : ids([r.angle, r.range]);
+    case 'atmosphereLayers':
+      return r.mode === 'profile'
+        ? ids([r.altitude, r.temperature, r.ground])
+        : ids([r.high, r.low, r.distance]);
     case 'rockLayers':
       return ids([
         ...r.dating.layers.map((l) => l.age),
