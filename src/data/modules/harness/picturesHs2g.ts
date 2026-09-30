@@ -7,6 +7,8 @@
 import { boxProduct, monomialModel } from '@/components/module/reps/algebraBox';
 import { powersOf, rootsOf } from '@/components/module/reps/complexPowers';
 import { curveOf } from '@/components/module/reps/functionGraphMath';
+import { histModel } from '@/components/module/reps/histModel';
+import { rangeOf } from '@/components/module/reps/histRange';
 import { toDegrees } from '@/components/module/reps/hsdKit';
 import { choose } from '@/components/module/reps/statMath';
 import { shadedChance } from '@/components/module/reps/stats';
@@ -264,6 +266,20 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
             `the ${rep.roots !== undefined ? 'first root' : `power ${n}`}'s ${what} part is ${got}, the picture gives ${v}`,
           );
       }
+      break;
+    }
+    case 'histogram': {
+      // H99: the lit range's sum.
+      if (!rep.range) break;
+      const model = histModel(rep, (x) => get(x));
+      if (model.problem) break;
+      const r = rangeOf(rep, model, (x) => get(x), model.mode === 'probability');
+      const [from, to] = [get(rep.range.from), get(rep.range.to)];
+      if (from !== undefined && to !== undefined && from > to)
+        out.push(`range ${from} to ${to} is backwards`);
+      const total = get(rep.range.total);
+      if (r && total !== undefined && !near(total, r.sum))
+        out.push(`the lit bars add to ${r.sum}, but the total is ${total}`);
       break;
     }
     default:

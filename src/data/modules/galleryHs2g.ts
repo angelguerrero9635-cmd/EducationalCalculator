@@ -1002,6 +1002,81 @@ const cubeRoots = page({
   },
 });
 
+// ── H99: histogram lit range ──
+
+/** C(n, k), exactly for the small n here. */
+const nCk = (n: number, k: number) => {
+  let c = 1;
+  for (let i = 1; i <= k; i++) c = (c * (n - k + i)) / i;
+  return Math.round(c);
+};
+const atLeastTerms = (n: number, p: number, k: number) =>
+  Array.from({ length: Math.max(0, n - k + 1) }, (_, i) => k + i);
+
+const atLeast = page({
+  id: 'g.m11-probability-distributions-at-least',
+  title: 'Binomial: at least k successes',
+  use: 'Use this for “A fair coin is tossed 5 times. What is the chance of at least 4 heads?”',
+  assumptions: [
+    'At least k means k, or k + 1, … up to n: add those bars.',
+    'Each bar is C(n, j) × p^j × (1 − p)^(n − j).',
+    'For a small k it is quicker to take the rest from 1: P(X ≥ k) = 1 − P(X < k).',
+  ],
+  variables: [
+    num('n', 'n', 'Trials', 1, 12, { step: 1, integer: true }),
+    num('p', 'p', 'Chance of success on each trial', 0, 1, { step: 0.01 }),
+    num('k', 'k', 'At least this many successes', 0, 12, { step: 1, integer: true }),
+    num('P', 'P', 'P(X ≥ k)', 0, 1, { derived: true }),
+  ],
+  rules: [
+    limit(
+      'k ≤ n',
+      '{k} is at most {n}',
+      (v) => v.k! <= v.n!,
+      'There can’t be more successes than trials.',
+    ),
+    derive(
+      'P(X ≥ k) = P(k) + … + P(n)',
+      'P',
+      ['n', 'p', 'k'],
+      '{P} = P(X ≥ {k}) for {n} trials at {p}',
+      (v) =>
+        v.k! > v.n!
+          ? undefined
+          : fin(
+              atLeastTerms(v.n!, v.p!, v.k!).reduce(
+                (s, j) => s + nCk(v.n!, j) * v.p! ** j * (1 - v.p!) ** (v.n! - j),
+                0,
+              ),
+            ),
+      (v: Values) =>
+        atLeastTerms(v.n!, v.p!, v.k!)
+          .map((j) => `${nCk(v.n!, j)} × {p}^${j} × (1 − {p})^${v.n! - j}`)
+          .join(' + '),
+      'Add the bars from k up to n: each is the orders of j successes times their chance.',
+      {},
+      {
+        check: (v: Values) =>
+          `${formatNumber(v.P!)} = ${atLeastTerms(v.n!, v.p!, v.k!)
+            .map(
+              (j) =>
+                `${nCk(v.n!, j)} × ${formatNumber(v.p!)}^${j} × (1 − ${formatNumber(v.p!)})^${v.n! - j}`,
+            )
+            .join(' + ')}`,
+      },
+    ),
+  ],
+  example: { n: 5, p: 0.5, k: 4, P: 0.1875 },
+  startWith: ['n', 'p', 'k'],
+  sliders: true,
+  representation: {
+    kind: 'histogram',
+    binomial: { n: 'n', p: 'p' },
+    range: { from: 'k', total: 'P' },
+    axis: 'Successes (k)',
+  },
+});
+
 export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   ...TERMS,
   ...GRAPHS,
@@ -1011,6 +1086,7 @@ export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   ...CIRCLES,
   powers,
   cubeRoots,
+  atLeast,
 ];
 
 export const HS2G_GALLERY_LAYOUTS: LayoutDef[] = [];

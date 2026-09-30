@@ -5,7 +5,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type { SignOf } from './typesHs2a';
-import type { PascalFraction, TermsChartHs2g } from './typesHs2g';
+import type { HistogramHs2g, PascalFraction, TermsChartHs2g } from './typesHs2g';
 
 /**
  * A normal curve over mean μ and standard deviation σ, with an x axis (ticks at μ + kσ, the
@@ -64,7 +64,7 @@ export interface NormalCurveSpec {
  * value k. Count and probability bars drag by their tops when they are variables, holding
  * `keep`.
  */
-export interface HistogramSpec {
+export interface HistogramSpec extends HistogramHs2g {
   kind: 'histogram';
   data?: NumOrVar[];
   counts?: NumOrVar[];

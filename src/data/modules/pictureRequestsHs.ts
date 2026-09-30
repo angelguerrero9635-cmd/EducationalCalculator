@@ -1907,9 +1907,13 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'm.12.matrices',
       ],
     ),
-    gallery: ['g.m12-polar-de-moivre-powers', 'g.m12-polar-roots'],
+    gallery: [
+      'g.m12-polar-de-moivre-powers',
+      'g.m12-polar-roots',
+      'g.m11-probability-distributions-at-least',
+    ],
     notes:
-      'P11 (docs/plans/m.11.md need 7, m.12.md needs 1, 5, 8, 9). Drawn part by part. (1) `complexPlane` `power` and `roots` (ComplexPowers.tsx, no handle), off unless set: `power: n` (1–12) marks z, z², …, zⁿ joined in turn by a dashed path, arg z’s arc, z and zⁿ labelled, and the caption "each power turns θ more and stretches by |z|: z⁸ = (√2)⁸(cos 360° + i sin 360°) = 16"; `roots: n` (2–12) marks the n roots on the dashed circle of radius |z|^(1/n), a regular polygon, the first root’s argument arc, z as an arrow; `result` is zⁿ or the first root (checked). m.12.polar~de-moivre: { kind: "complexPlane", z: { re: "a", im: "b" }, power: "n", result: { re: "p", im: "q" } }; m.12.polar~roots: { kind: "complexPlane", z: { re: "a", im: "b" }, roots: "n", result: { re: "p", im: "q" }, fixed: true } (the cube roots of 8i: 2 at 30°, 150°, 270°).',
+      'P11 (docs/plans/m.11.md need 7, m.12.md needs 1, 5, 8, 9). Drawn part by part. (1) `complexPlane` `power` and `roots` (ComplexPowers.tsx, no handle), off unless set: `power: n` (1–12) marks z, z², …, zⁿ joined in turn by a dashed path, arg z’s arc, z and zⁿ labelled, and the caption "each power turns θ more and stretches by |z|: z⁸ = (√2)⁸(cos 360° + i sin 360°) = 16"; `roots: n` (2–12) marks the n roots on the dashed circle of radius |z|^(1/n), a regular polygon, the first root’s argument arc, z as an arrow; `result` is zⁿ or the first root (checked). m.12.polar~de-moivre: { kind: "complexPlane", z: { re: "a", im: "b" }, power: "n", result: { re: "p", im: "q" } }; m.12.polar~roots: { kind: "complexPlane", z: { re: "a", im: "b" }, roots: "n", result: { re: "p", im: "q" }, fixed: true } (the cube roots of 8i: 2 at 30°, 150°, 270°). (2) `histogram` `range: { from?, to?, total? }`, off unless set: the probability bars from k = from to to (a side left out runs to the end; bins by number for counts) lit, the caption "P(X ≥ 4) = P(4) + P(5) = 0.1563 + 0.0313 = 0.1875", `total` the sum (checked); `lit` still lights one bar. m.11.probability-distributions~at-least: { kind: "histogram", binomial: { n: "n", p: "p" }, range: { from: "k", total: "P" }, axis: "Successes (k)" } (the demo’s step writes the terms, 5 × 0.5^4 × (1 − 0.5)^1 + 1 × 0.5^5 × (1 − 0.5)^0, until the binomcdf phrase lands).',
   },
   ask(
     'H100',

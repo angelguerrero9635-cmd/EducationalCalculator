@@ -159,6 +159,15 @@ export interface ComplexPlaneHs2g {
   roots?: NumOrVar;
 }
 
+/**
+ * H99: `histogram` bars lit as a range: the probability bars from `from` to `to` (values k; a
+ * side left out runs to the end), or the bins from `from` to `to` (1-based) of counts. The
+ * caption adds them, "P(X ≥ 4) = P(4) + P(5)"; `total` names the sum (checked).
+ */
+export interface HistogramHs2g {
+  range?: { from?: NumOrVar; to?: NumOrVar; total?: string };
+}
+
 /** Every variable id these options name (for the module tests). */
 export function hs2gSpecVars(r: Representation): string[] {
   const ids = (...xs: (NumOrVar | boolean | undefined)[]): string[] =>
@@ -182,6 +191,8 @@ export function hs2gSpecVars(r: Representation): string[] {
       return ids(r.fraction?.n, r.fraction?.k, r.fraction?.count, r.fraction?.chance);
     case 'complexPlane':
       return ids(r.power, r.roots);
+    case 'histogram':
+      return ids(r.range?.from, r.range?.to, r.range?.total);
     case 'unitCircle':
       return ids(r.through?.x, r.through?.y, r.through?.r, r.pair?.a, r.pair?.b, r.solutions?.also);
     default:
