@@ -121,6 +121,28 @@ function page(d: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
     ),
   };
 }
+/** A value picked by a rule with no arithmetic (a count of lines): its check line is itself. */
+const pick = (
+  id: string,
+  display: string,
+  x: string,
+  f: (v: Values) => number,
+  how: (v: Values) => string,
+): Rule => {
+  const vars = [...new Set([...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!))];
+  return {
+    relation: {
+      id,
+      display,
+      vars,
+      check: (v: Values) => `${f(v)} = ${v[x]}`,
+      residual: (v: Values) => v[x]! - f(v),
+      solve: Object.fromEntries(vars.map((k) => [k, k === x ? f : () => undefined])),
+    },
+    steps: { [x]: { expr: (v: Values) => `${f(v)}`, how } },
+  };
+};
+
 /** x² + y² = z², solved for any one. */
 const pythagoras = (x: string, y: string, z: string, why: string) =>
   rule(
@@ -2460,6 +2482,17 @@ const cosines = (x: string, y: string, z: string, X: string) =>
     },
     (v) => v[x]! ** 2 - (v[y]! ** 2 + v[z]! ** 2 - 2 * v[y]! * v[z]! * cos(v[X]!)),
   );
+/**
+ * How many triangles fit side a across from the acute angle A, with side b next to A: none
+ * when a is shorter than the height b sin A, one when a is the height or at least b, else two.
+ */
+function ssaCount(a: number, b: number, A: number) {
+  const h = b * sin(A);
+  const tol = 1e-9 * Math.max(1, h);
+  if (a < h - tol) return 0;
+  if (Math.abs(a - h) <= tol || a >= b) return 1;
+  return 2;
+}
 /** The angle X from its sine: sin⁻¹, or 180° − sin⁻¹ when the angle is obtuse. */
 const inverseSine = (X: string, inner: string): [StepText['expr'], StepText['how']] => [
   (v) => (v[X]! > 90 ? `180 − sin⁻¹(${inner})` : `sin⁻¹(${inner})`),
@@ -2618,21 +2651,133 @@ const LAW_SINES_COSINES: ModuleDef[] = [
     example: fromSss(5, 7, 9),
     startWith: ['a', 'b', 'c'],
   }),
-  anyTriangle({
+  page({
     id: 'm.10.law-sines-cosines~ambiguous-case',
     title: 'The ambiguous case (SSA)',
     use: 'Use this for “A = 30°, a = 6 and b = 10. How many triangles fit, and what is B?”',
     assumptions: [
-      ...LAWS,
-      'Two sides and an angle across from one of them can fit two triangles, one or none.',
-      'a ≥ b gives one triangle; a less than b × sin A gives none.',
+      'Side a is across from the acute angle A, and b is the other side next to A.',
+      'Acute A: a < b × sin A fits none, a = b × sin A or a ≥ b fits one, anything between fits two.',
+      'Two triangles share the same sin B: B and 180° − B.',
+    ],
+    variables: [
+      len('a', 'a', 'Side a (across from A)', 1000, { min: 0.1 }),
+      len('b', 'b', 'Side b', 1000, { min: 0.1 }),
+      deg('A', 'A', 'Angle A', 1, 89),
+      der(len('h', 'h', 'Height b × sin A', 1000, { min: 0.001 })),
+      der(num('n', 'n', 'Triangles that fit', 0, 2, { integer: true })),
+      der(deg('B', 'B', 'Angle B', 0.001, 179.999)),
+      der(deg('B2', 'B₂', 'Second B, 180° − B', 0.001, 179.999)),
+      der(deg('C', 'C', 'Angle C', 0.001, 179.999)),
+      der(deg('C2', 'C₂', 'Second C', 0.001, 179.999)),
+      der(len('c', 'c', 'Side c', 2000, { min: 1e-6 })),
+      der(len('c2', 'c₂', 'Second c', 2000, { min: 1e-6 })),
+    ],
+    rules: [
+      derive(
+        'h = b sin A',
+        '{h} = {b} × sin({A}°)',
+        'h',
+        (v) => v.b! * sin(v.A!),
+        '{b} × sin({A}°)',
+        'The height from C to the line of side c: b is its hypotenuse.',
+      ),
+      (() => {
+        const r = pick(
+          'n from a, h and b',
+          '{n} = the triangles side {a} makes with height {h} and side {b}',
+          'n',
+          (v) => ssaCount(v.a!, v.b!, v.A!),
+          (v) =>
+            [
+              'a is shorter than the height h: it can’t reach the base line, so none fits.',
+              v.a! < v.b!
+                ? 'a equals the height h: it just reaches the base line, a right angle at B.'
+                : 'a is at least b: the second place a could land is behind A, so one fits.',
+              'a is between h and b: it reaches the base line in two places, so two fit.',
+            ][ssaCount(v.a!, v.b!, v.A!)]!,
+        );
+        // The comparison behind the count: (5 < 6 < 10).
+        r.steps.n!.note = (v: Values) => {
+          const [a, h, b] = [v.a!, v.h!, v.b!].map((x) => formatNumber(x));
+          return [`(a < h: ${a} < ${h})`, v.a! < v.b! ? `(a = h = ${a})` : `(a ≥ b: ${a} ≥ ${b})`, `(h < a < b: ${h} < ${a} < ${b})`][
+            ssaCount(v.a!, v.b!, v.A!)
+          ]!;
+        };
+        return r;
+      })(),
+      derive(
+        'sin B = b sin A ÷ a',
+        '{B} = sin⁻¹({b} × sin({A}°) ÷ {a})',
+        'B',
+        (v) => (ssaCount(v.a!, v.b!, v.A!) ? asinD((v.b! * sin(v.A!)) / v.a!) : undefined),
+        'sin⁻¹({b} × sin({A}°) ÷ {a})',
+        'Law of sines, solved for sin B, then the inverse sine.',
+      ),
+      derive(
+        'B₂ = 180° − B',
+        '{B2} = 180 − {B}',
+        'B2',
+        (v) => (ssaCount(v.a!, v.b!, v.A!) === 2 ? 180 - v.B! : undefined),
+        '180 − {B}',
+        'The same sine fits the obtuse angle too.',
+      ),
+      derive(
+        'C = 180° − A − B',
+        '{C} = 180 − {A} − {B}',
+        'C',
+        (v) => 180 - v.A! - v.B!,
+        '180 − {A} − {B}',
+        'The angles of a triangle add to 180°.',
+      ),
+      derive(
+        'C₂ = 180° − A − B₂',
+        '{C2} = 180 − {A} − {B2}',
+        'C2',
+        (v) => 180 - v.A! - v.B2!,
+        '180 − {A} − {B2}',
+        'The angles of the second triangle add to 180° too.',
+      ),
+      derive(
+        'c = a sin C ÷ sin A',
+        '{c} = {a} × sin({C}°) ÷ sin({A}°)',
+        'c',
+        (v) => quot(v.a! * sin(v.C!), sin(v.A!)),
+        '{a} × sin({C}°) ÷ sin({A}°)',
+        'Law of sines: c ÷ sin C = a ÷ sin A.',
+      ),
+      derive(
+        'c₂ = a sin C₂ ÷ sin A',
+        '{c2} = {a} × sin({C2}°) ÷ sin({A}°)',
+        'c2',
+        (v) => quot(v.a! * sin(v.C2!), sin(v.A!)),
+        '{a} × sin({C2}°) ÷ sin({A}°)',
+        'Law of sines again, with the second triangle’s angle C₂.',
+      ),
     ],
     example: (() => {
       const B = asinD((10 * sin(30)) / 6)!;
-      const C = 180 - 30 - B;
-      return { a: 6, b: 10, A: 30, B, C, c: (6 * sin(C)) / sin(30) };
+      const [C, C2] = [150 - B, B - 30];
+      return {
+        a: 6,
+        b: 10,
+        A: 30,
+        h: 5,
+        n: 2,
+        B,
+        B2: 180 - B,
+        C,
+        C2,
+        c: (6 * sin(C)) / sin(30),
+        c2: (6 * sin(C2)) / sin(30),
+      };
     })(),
     startWith: ['a', 'b', 'A'],
+    representation: {
+      kind: 'triangleSolver',
+      parts: { a: 'a', b: 'b', c: 'c', A: 'A', B: 'B', C: 'C' },
+      given: ['a', 'b', 'A'],
+    },
   }),
   page({
     id: 'm.10.law-sines-cosines~area',
@@ -3702,28 +3847,6 @@ const carry = (to: string, from: string, how: string, sign = 1) =>
     },
     (v) => v[to]! - sign * v[from]!,
   );
-/** A value picked by a rule with no arithmetic (a count of lines): its check line is itself. */
-const pick = (
-  id: string,
-  display: string,
-  x: string,
-  f: (v: Values) => number,
-  how: (v: Values) => string,
-): Rule => {
-  const vars = [...new Set([...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!))];
-  return {
-    relation: {
-      id,
-      display,
-      vars,
-      check: (v: Values) => `${f(v)} = ${v[x]}`,
-      residual: (v: Values) => v[x]! - f(v),
-      solve: Object.fromEntries(vars.map((k) => [k, k === x ? f : () => undefined])),
-    },
-    steps: { [x]: { expr: (v: Values) => `${f(v)}`, how } },
-  };
-};
-
 const RIGID_MOTIONS: ModuleDef[] = [
   page({
     id: 'm.10.rigid-motions',
