@@ -2312,7 +2312,6 @@ const tested = (h: number, t: number) => (h - t) * (1 + h * h);
 const holdsVar = (id = 'h') =>
   int(id, id, 'Test is true (1) or false (0)', 0, 1, { derived: true });
 /** A signed number bracketed after an operation sign: 3 × (−2). */
-const inner = (x: number) => (x < 0 ? `(${fmt(x)})` : fmt(x));
 
 /** A test number put into both sides: 3 × (−6) − 4 = −22 and 5 × (−6) + 6 = −24. */
 const sideLines = (k: number, t: number, n: number) => {
@@ -3363,6 +3362,425 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
   }),
 ];
 
+// ── Radicals and exponents ──
+
+/** The largest perfect square (index 2) or cube (3) that divides n. */
+function largestPower(n: number, index: 2 | 3): number {
+  let best = 1;
+  for (let k = 1; k ** index <= n; k++) if (n % k ** index === 0) best = k ** index;
+  return best;
+}
+/** Whether n has no factor that is a perfect square (or cube) but 1. */
+const powerFree = (n: number, index: 2 | 3) => largestPower(n, index) === 1;
+
+/** √n = k√r (or ∛): the number outside from the largest perfect power factor, and what is left. */
+function rootRules(n: string, index: 2 | 3, k = 'k', r = 'r'): Rule[] {
+  const sign = index === 3 ? '∛' : '√';
+  const word = index === 3 ? 'cube' : 'square';
+  const pow = index === 3 ? '³' : '²';
+  return [
+    constraint(
+      'nothing more comes out',
+      `{${r}} has no factor that is a perfect ${word} but 1`,
+      [r],
+      (v) => !powerFree(v[r]!, index),
+    ),
+    derive(
+      `${k} = ${sign}(largest perfect ${word} factor of ${n})`,
+      k,
+      [n],
+      `{${k}} = ${sign}(largest perfect ${word} factor of {${n}})`,
+      (v) => Math.round(largestPower(v[n]!, index) ** (1 / index)),
+      `${sign}(largest perfect ${word} factor of {${n}})`,
+      `Each ${index === 3 ? 'group of three' : 'pair'} of equal prime factors brings one out: together they make the ${sign} of the largest perfect ${word} factor.`,
+    ),
+    derive(
+      `${r} = ${n} ÷ ${k}${pow}`,
+      r,
+      [n, k],
+      `{${r}} = {${n}} ÷ {${k}}${pow}`,
+      (v) => div(v[n]!, v[k]! ** index),
+      `{${n}} ÷ {${k}}${pow}`,
+      'What is left under the root: divide out the perfect factor.',
+    ),
+  ];
+}
+
+const RADICALS: ModuleDef[] = [
+  page({
+    id: 'm.9.radicals',
+    assumptions: [
+      '√(ab) = √a × √b for a, b ≥ 0.',
+      'Each pair of equal prime factors comes out as one.',
+      'The radical is simplest when no square factor but 1 is left inside.',
+    ],
+    variables: [
+      int('n', 'n', 'Number under the root', 2, 1000),
+      int('k', 'k', 'Number outside', 1, 40, { derived: true }),
+      int('r', 'r', 'Number left inside', 1, 1000, { derived: true }),
+    ],
+    rules: rootRules('n', 2),
+    example: { n: 180, k: 6, r: 5 },
+    startWith: ['n'],
+    equation: '√{n} = {k:coef}√{r}',
+    representation: {
+      kind: 'factorTree',
+      value: 'n',
+      root: { index: 2, outside: 'k', inside: 'r' },
+    },
+  }),
+  page({
+    id: 'm.9.radicals~cube-root',
+    title: 'Simplify a cube root',
+    use: 'Use this for “Simplify ∛54.”',
+    assumptions: [
+      '∛(ab) = ∛a × ∛b, for any numbers.',
+      'Each three equal prime factors come out as one.',
+      'The cube root is simplest when no cube factor but 1 is left inside.',
+    ],
+    variables: [
+      int('n', 'n', 'Number under the root', 2, 1000),
+      int('k', 'k', 'Number outside', 1, 10, { derived: true }),
+      int('r', 'r', 'Number left inside', 1, 1000, { derived: true }),
+    ],
+    rules: rootRules('n', 3),
+    example: { n: 54, k: 3, r: 2 },
+    startWith: ['n'],
+    equation: '∛{n} = {k:coef}∛{r}',
+    representation: {
+      kind: 'factorTree',
+      value: 'n',
+      root: { index: 3, outside: 'k', inside: 'r' },
+    },
+  }),
+  page({
+    id: 'm.9.radicals~rational-exponent',
+    title: 'Rational exponents',
+    use: 'Use this for “Evaluate 27^(2/3)” or “16^(3/2)”.',
+    assumptions: [
+      'b^(1/q) is the qth root of b: 27^(1/3) = ∛27 = 3.',
+      'b^(p/q) is that root raised to the power p: take the root first, the numbers stay small.',
+      'A negative p means 1 over the power.',
+    ],
+    variables: [
+      num('b', 'b', 'Base', 1, 1000, { step: 1 }),
+      int('p', 'p', 'Top of the exponent', -6, 6),
+      int('q', 'q', 'Bottom of the exponent', 2, 4, { allowed: [2, 3, 4] }),
+      num('w', 'w', 'The qth root of b', 1, 32, { derived: true }),
+      num('v', 'v', 'Value', 0, 1e18, { derived: true, fraction: 1000 }),
+    ],
+    rules: [
+      derive(
+        'w = b^(1/q)',
+        'w',
+        ['b', 'q'],
+        '{w} = {b}^(1 ÷ {q})',
+        (v) => v.b! ** (1 / v.q!),
+        '{b}^(1 ÷ {q})',
+        'The bottom of the exponent is the root: find the number that, used q times as a factor, makes b.',
+      ),
+      derive(
+        'v = w^p',
+        'v',
+        ['w', 'p'],
+        '{v} = {w}^{p}',
+        (v) => v.w! ** v.p!,
+        '{w}^{p}',
+        'The top of the exponent is the power: raise the root to it.',
+      ),
+    ],
+    example: { b: 27, p: 2, q: 3, w: 3, v: 9 },
+    startWith: ['b', 'p', 'q'],
+    equation: '{b}^{{p}/{q}} = {v}',
+    pictureLabels: ['w'],
+    representation: {
+      kind: 'table',
+      sweep: 'p',
+      output: 'v',
+      params: ['b', 'q'],
+      rows: [1, 2, 3, 4],
+    },
+  }),
+  page({
+    id: 'm.9.radicals~monomials',
+    title: 'Divide monomials',
+    use: 'Use this for “Simplify 12x⁷ ÷ 3x².”',
+    assumptions: [
+      'Divide the numbers in front, and subtract the exponents of x: xᵐ ÷ xⁿ = xᵐ⁻ⁿ.',
+      'A negative exponent means 1 over the power: x⁻² = 1/x².',
+      'The table checks both sides at a few values of x.',
+    ],
+    variables: [
+      int('a', 'a', 'Number in front, top', -50, 50),
+      int('m', 'm', 'Exponent on top', -10, 10),
+      int('b', 'b', 'Number in front, bottom', -50, 50),
+      int('n', 'n', 'Exponent on the bottom', -10, 10),
+      num('c', 'c', 'Number in front of the answer', -50, 50, { derived: true, fraction: 50 }),
+      int('k', 'k', 'Exponent of the answer', -20, 20, { derived: true }),
+      int('x', 'x', 'Value of x to check', 1, 3),
+      num('y', 'y', 'Both sides at x', -1e12, 1e12, { derived: true, fraction: 100000 }),
+    ],
+    rules: [
+      nonzero('b', 'The number in front on the bottom'),
+      derive(
+        'c = a ÷ b',
+        'c',
+        ['a', 'b'],
+        '{c} = {a} ÷ {b}',
+        (v) => div(v.a!, v.b!),
+        '{a} ÷ {b}',
+        'Divide the numbers in front.',
+      ),
+      derive(
+        'k = m − n',
+        'k',
+        ['m', 'n'],
+        '{k} = {m} − {n}',
+        (v) => v.m! - v.n!,
+        '{m} − {n}',
+        'Dividing powers of x subtracts the exponents.',
+      ),
+      derive(
+        'y = c × x^k',
+        'y',
+        ['c', 'x', 'k'],
+        '{y} = {c} × {x}^{k}',
+        (v) => v.c! * v.x! ** v.k!,
+        '{c} × {x}^{k}',
+        'Check: put x into the answer; the first expression gives the same value there.',
+      ),
+    ],
+    example: { a: 12, m: 7, b: 3, n: 2, c: 4, k: 5, x: 2, y: 128 },
+    startWith: ['a', 'm', 'b', 'n', 'x'],
+    equation: '{a}x^{m} ÷ {b}x^{n} = {c}x^{k}',
+    representation: {
+      kind: 'table',
+      sweep: 'x',
+      output: 'y',
+      params: ['a', 'm', 'b', 'n'],
+      rows: [1, 2, 3],
+    },
+  }),
+  page({
+    id: 'm.9.radicals~multiply',
+    title: 'Multiply square roots',
+    use: 'Use this for “Simplify √6 × √15.”',
+    assumptions: [
+      '√a × √b = √(ab) for a, b ≥ 0: multiply under one root.',
+      'Then take out the largest perfect square factor.',
+    ],
+    variables: [
+      int('a', 'a', 'First number under a root', 1, 100),
+      int('b', 'b', 'Second number under a root', 1, 100),
+      int('p', 'p', 'Product under one root', 1, 10000, { derived: true }),
+      int('k', 'k', 'Number outside', 1, 100, { derived: true }),
+      int('r', 'r', 'Number left inside', 1, 10000, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'p = a × b',
+        'p',
+        ['a', 'b'],
+        '{p} = {a} × {b}',
+        (v) => v.a! * v.b!,
+        '{a} × {b}',
+        'Multiply the numbers under one root.',
+      ),
+      ...rootRules('p', 2),
+    ],
+    example: { a: 6, b: 15, p: 90, k: 3, r: 10 },
+    startWith: ['a', 'b'],
+    equation: '√{a} × √{b} = √{p} = {k:coef}√{r}',
+    representation: {
+      kind: 'factorTree',
+      value: 'p',
+      root: { index: 2, outside: 'k', inside: 'r' },
+    },
+  }),
+];
+
+// ── Sequences ──
+
+/** The first n terms of a₁, then k × (the one before) + c. */
+function terms(a1: number, k: number, c: number, n: number): number[] {
+  const out = [a1];
+  while (out.length < n) out.push(exact(k * out.at(-1)! + c));
+  return out;
+}
+const SUB = '₀₁₂₃₄₅₆₇₈₉';
+/** A whole number as subscript digits: 12 → "₁₂". */
+const sub = (n: number) => [...String(n)].map((ch) => SUB[Number(ch)]).join('');
+
+const SEQUENCES: ModuleDef[] = [
+  page({
+    id: 'm.9.sequences',
+    assumptions: [
+      'Each term adds the same difference d to the one before.',
+      'n counts the terms from 1, so the nth term is n − 1 steps past the first.',
+      'An arithmetic sequence is a linear function of n, with slope d.',
+    ],
+    variables: [
+      num('a1', 'a₁', 'First term', -100, 100, { step: 0.5 }),
+      num('d', 'd', 'Common difference', -50, 50, { step: 0.5 }),
+      // The chart draws 30 terms; past that waits on need 5 (docs/build/m.9.md).
+      int('n', 'n', 'Term number', 1, 30),
+      num('an', 'aₙ', 'nth term', -100000, 100000),
+    ],
+    rules: [
+      rule(
+        'aₙ = a₁ + (n − 1) × d',
+        '{an} = {a1} + ({n} − 1) × {d}',
+        ['an', 'a1', 'n', 'd'],
+        (v) => v.an! - (v.a1! + (v.n! - 1) * v.d!),
+        {
+          an: [
+            (v) => exact(v.a1! + (v.n! - 1) * v.d!),
+            '{a1} + ({n} − 1) × {d}',
+            'Start at the first term and add n − 1 differences.',
+          ],
+          a1: [
+            (v) => exact(v.an! - (v.n! - 1) * v.d!),
+            '{an} − ({n} − 1) × {d}',
+            'Take the n − 1 differences back off.',
+          ],
+          d: [
+            (v) => (v.n === 1 ? undefined : exact((v.an! - v.a1!) / (v.n! - 1))),
+            '({an} − {a1}) ÷ ({n} − 1)',
+            'Share the change from a₁ to aₙ over the n − 1 steps.',
+          ],
+          n: [
+            (v) => {
+              if (!v.d) return undefined;
+              const n = exact(1 + (v.an! - v.a1!) / v.d);
+              return Number.isInteger(n) && n >= 1 ? n : undefined;
+            },
+            '1 + ({an} − {a1}) ÷ {d}',
+            'Count the steps of d from a₁ to aₙ, then add 1 for the first term.',
+          ],
+        },
+        {
+          message: (v) =>
+            known(v, 'an', 'a1', 'd') && v.d && !Number.isInteger(exact(1 + (v.an! - v.a1!) / v.d!))
+              ? 'That value is not a term: no whole number of steps of d reaches it.'
+              : undefined,
+        },
+      ),
+    ],
+    example: { a1: 7, d: 4, n: 20, an: 83 },
+    startWith: ['n', 'a1', 'd'],
+    equation: 'aₙ = {a1} + ({n} − 1){d} = {an}',
+    representation: {
+      kind: 'termsChart',
+      type: 'arithmetic',
+      first: 'a1',
+      step: 'd',
+      count: 'n',
+      as: 'points',
+      term: 'an',
+    },
+  }),
+  page({
+    id: 'm.9.sequences~geometric',
+    title: 'Geometric sequence: the nth term',
+    use: 'Use this for “3, 6, 12, … What is the 8th term?”',
+    assumptions: [
+      'Each term multiplies the one before by the same ratio r.',
+      'The nth term is the first times r, n − 1 times: a₁ × rⁿ⁻¹.',
+      'A geometric sequence is an exponential function of n.',
+    ],
+    variables: [
+      num('a1', 'a₁', 'First term', -1000, 1000, { step: 0.5 }),
+      num('r', 'r', 'Common ratio', -10, 10, { step: 0.5 }),
+      int('n', 'n', 'Term number', 1, 20),
+      num('an', 'aₙ', 'nth term', -1e15, 1e15),
+    ],
+    rules: [
+      nonzero('r', 'The ratio'),
+      rule(
+        'aₙ = a₁ × r^(n − 1)',
+        '{an} = {a1} × {r}^({n} − 1)',
+        ['an', 'a1', 'r', 'n'],
+        (v) => v.an! - v.a1! * v.r! ** (v.n! - 1),
+        {
+          an: [
+            (v) => fin(v.a1! * v.r! ** (v.n! - 1)),
+            '{a1} × {r}^({n} − 1)',
+            'Start at the first term and multiply by r, n − 1 times.',
+          ],
+          a1: [
+            (v) => fin(v.an! / v.r! ** (v.n! - 1)),
+            '{an} ÷ {r}^({n} − 1)',
+            'Divide out the n − 1 factors of r.',
+          ],
+        },
+      ),
+    ],
+    example: { a1: 3, r: 2, n: 8, an: 384 },
+    startWith: ['n', 'a1', 'r'],
+    equation: 'aₙ = {a1} × {r}^{{n} − 1} = {an}',
+    representation: {
+      kind: 'termsChart',
+      type: 'geometric',
+      first: 'a1',
+      step: 'r',
+      count: 'n',
+      term: 'an',
+    },
+  }),
+  page({
+    id: 'm.9.sequences~recursive',
+    title: 'Recursive rule',
+    use: 'Use this for “a₁ = 2 and each term is 3 times the one before, minus 1. Find a₄.”',
+    assumptions: [
+      'A recursive rule gives the first term and how each term comes from the one before.',
+      'Here aₙ = k × aₙ₋₁ + c: multiply the term before by k, then add c.',
+      'Work out the terms in order; the table lists the first eight.',
+    ],
+    variables: [
+      num('a1', 'a₁', 'First term', -100, 100, { step: 0.5 }),
+      num('k', 'k', 'Multiply by', -5, 5, { step: 0.5 }),
+      num('c', 'c', 'Then add', -100, 100, { step: 0.5 }),
+      int('n', 'n', 'Term number', 1, 10),
+      num('an', 'aₙ', 'nth term', -1e9, 1e9, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'aₙ from the rule',
+        'an',
+        ['a1', 'k', 'c', 'n'],
+        '{an} = term {n} of {a1}, each term {k} × the one before + {c}',
+        (v) => terms(v.a1!, v.k!, v.c!, v.n!).at(-1),
+        (v) => {
+          const t = terms(v.a1!, v.k!, v.c!, v.n!);
+          return t.length < 2 ? '{a1}' : `{k} × ${sg(t.at(-2)!)} + {c}`;
+        },
+        'Each term is k times the one before, plus c: the last term before it, worked out below.',
+        {
+          work: (v) => terms(v.a1!, v.k!, v.c!, v.n!).map((x, i) => `a${sub(i + 1)} = ${fmt(x)}`),
+          written: false,
+        },
+        {
+          check: (v) => {
+            const t = terms(v.a1!, v.k!, v.c!, v.n!);
+            return t.length < 2
+              ? `${fmt(v.an!)} = ${fmt(v.a1!)}`
+              : `${fmt(v.an!)} = ${fmt(v.k!)} × ${sg(t.at(-2)!)} + ${sg(v.c!)}`;
+          },
+        },
+      ),
+    ],
+    example: { a1: 2, k: 3, c: -1, n: 4, an: 41 },
+    startWith: ['a1', 'k', 'c', 'n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'an',
+      params: ['a1', 'k', 'c'],
+      rows: [1, 2, 3, 4, 5, 6, 7, 8],
+    },
+  }),
+];
+
 /** Every Grade 9 math calculator, by skill in taxonomy order. */
 export const MATH_9_MODULES: ModuleDef[] = [
   ...EXPONENTIAL,
@@ -3378,4 +3796,6 @@ export const MATH_9_MODULES: ModuleDef[] = [
   ...LINEAR_INEQUALITIES_MORE,
   ...ABSOLUTE_VALUE,
   ...INEQUALITY_SYSTEMS,
+  ...RADICALS,
+  ...SEQUENCES,
 ];

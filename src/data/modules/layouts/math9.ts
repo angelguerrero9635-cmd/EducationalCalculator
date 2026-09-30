@@ -46,6 +46,43 @@ export const MATH_9_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Radicals: rational and irrational numbers (N-RN.3) ──
+  {
+    kind: 'sort',
+    id: 'm.9.radicals~rational-or-irrational',
+    title: 'Rational or irrational?',
+    use: 'Use this for “Which of these are irrational: √49, 5√2, √8 × √2, π ÷ 2?”',
+    assumptions: [
+      'A sum or product of two rational numbers is rational; a rational number (not 0) times an irrational one is irrational.',
+      'Simplify first: √8 × √2 = √16 = 4 is rational.',
+      'A rational number plus an irrational one is irrational.',
+    ],
+    question: 'Is the number rational or irrational?',
+    bins: [
+      {
+        id: 'rational',
+        label: 'Rational',
+        why: 'It simplifies to a fraction of whole numbers: its decimal ends or repeats.',
+      },
+      {
+        id: 'irrational',
+        label: 'Irrational',
+        why: 'An irrational part is left after simplifying: its decimal never ends or repeats.',
+      },
+    ],
+    cards: [
+      { label: '√49', bin: 'rational' },
+      { label: '−7/4', bin: 'rational' },
+      { label: '0.3̅', bin: 'rational' },
+      { label: '√8 × √2', bin: 'rational' },
+      { label: '√12 ÷ √3', bin: 'rational' },
+      { label: '√12', bin: 'irrational' },
+      { label: '5√2', bin: 'irrational' },
+      { label: '3 + √5', bin: 'irrational' },
+      { label: 'π ÷ 2', bin: 'irrational' },
+    ],
+  },
+
   // ── Exponential functions (F-LE.1) ──
   {
     kind: 'sort',
