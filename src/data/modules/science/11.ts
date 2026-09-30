@@ -4232,17 +4232,792 @@ const circuitPages: ModuleDef[] = [
   })(),
 ];
 
+// ─── s.11.rotation ──────────────────────────────────────────────────────────
+
+const TORQUE = q('t', 'τ', 'Torque', 'N·m', 0, 1e7, 0.001);
+
+const rotationPages: ModuleDef[] = [
+  (() => {
+    const [r, F, a] = [0.25, 80, 30];
+    const p = F * Math.sin(a * RAD);
+    return {
+      id: 's.11.rotation',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The lever arm r runs from the pivot to where the force pushes.',
+        'Only the part of F at right angles to the arm turns it: all of F at 90°, none at 0°.',
+        'The same force turns harder on a longer arm: τ = rF sin θ.',
+      ],
+      variables: [
+        q('r', 'r', 'Lever arm', 'm', 0.001, 100, 0.001),
+        q('F', 'F', 'Force', 'N', 0, 1e5, 0.01),
+        q('a', 'θ', 'Angle between arm and force', '°', 0, 180, 1),
+        q('p', 'F⊥', 'Force across the arm', 'N', 0, 1e5, 0.01),
+        TORQUE,
+      ],
+      ...rules(
+        componentOf(
+          'p',
+          'F',
+          'a',
+          'sin',
+          'F⊥ = F sin θ',
+          'The part of the force across the arm is F times sin θ.',
+        ),
+        product('t', 'r', 'p', 'τ = rF⊥', [
+          'Torque is the lever arm times the force across it.',
+          'Divide the torque by the force across the arm.',
+          'Divide the torque by the lever arm.',
+        ]),
+      ),
+      example: { r, F, a, p, t: r * p },
+      startWith: ['r', 'F', 'a'],
+      representation: {
+        kind: 'vectorDiagram',
+        vectors: [{ name: 'F', magnitude: 'F', direction: 'a' }],
+        components: true,
+        unit: 'N',
+        axes: { x: 'Along the arm', y: 'Across the arm' },
+      },
+      pictureLabels: ['r', 'p', 't'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [W, l, F] = [300, 2, 400];
+    return {
+      id: 's.11.rotation~seesaw',
+      title: 'Balancing a seesaw',
+      use: 'Use this for “A 300 N child sits 2 m from the pivot. Where must a 400 N child sit to balance, and how hard does the pivot push up?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Balanced means no net torque and no net force: the two torques match, and the pivot holds up both weights.',
+        'Each torque is a weight times its distance from the pivot.',
+        'The plank’s own weight acts at the pivot, so it adds no torque.',
+      ],
+      variables: [
+        q('W', 'F₁', 'First weight', 'N', 0.01, 1e5, 0.01),
+        q('l', 'd₁', 'First distance', 'm', 0.01, 100, 0.01),
+        q('F', 'F₂', 'Second weight', 'N', 0.01, 1e5, 0.01),
+        q('e', 'd₂', 'Second distance', 'm', 0.01, 100, 0.01),
+        TORQUE,
+        q('P', 'F_p', 'Pivot force', 'N', 0, 2e5, 0.01),
+      ],
+      ...rules(
+        product('t', 'W', 'l', 'τ = F₁d₁', [
+          'The first child’s torque: weight times distance from the pivot.',
+          'Divide the torque by the distance.',
+          'Divide the torque by the weight.',
+        ]),
+        product('t', 'F', 'e', 'τ = F₂d₂', [
+          'Balanced, the second torque equals the first.',
+          'Divide the torque by the distance.',
+          'Divide the torque by the weight: the heavier child sits closer.',
+        ]),
+        sum(
+          'P',
+          'W',
+          'F',
+          'F_p = F₁ + F₂',
+          'No net force: the pivot pushes up as hard as both weights push down.',
+        ),
+      ),
+      example: { W, l, F, e: (W * l) / F, t: W * l, P: W + F },
+      startWith: ['W', 'l', 'F'],
+      representation: {
+        kind: 'simpleMachine',
+        machine: 'lever',
+        load: 'W',
+        loadArm: 'l',
+        effortArm: 'e',
+        effort: 'F',
+      },
+      pictureLabels: ['t', 'P'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [r, N] = [0.3, 120];
+    const w = (2 * Math.PI * N) / 60;
+    return {
+      id: 's.11.rotation~angular-speed',
+      title: 'Angular speed and rim speed',
+      use: 'Use this for “A 0.30 m wheel turns at 120 rpm. What is its angular speed in rad/s, and how fast does its rim move?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'One turn is 2π radians, so N turns a minute is 2πN/60 radians a second.',
+        'Every point on the wheel has the same ω, but points farther out move faster: v = rω.',
+        'The rim’s velocity is along the tangent; the angle must be in radians for v = rω.',
+      ],
+      variables: [
+        q('r', 'r', 'Radius', 'm', 0.001, 1000, 0.001),
+        q('N', 'N', 'Turning rate', 'rpm', 0.01, 1e5, 0.01),
+        q('w', 'ω', 'Angular speed', 'rad/s', 0.001, 1e4, 0.001),
+        q('T', 'T', 'Period', 's', 0.0001, 1e5, 0.0001),
+        q('v', 'v', 'Rim speed', 'm/s', 0, 1e5, 0.001),
+      ],
+      ...rules(
+        rule('ω = 2πN/60', '{w} = 2π × {N}/60', (v) => 60 * v.w! - 2 * Math.PI * v.N!, {
+          w: [
+            (v) => (2 * Math.PI * v.N!) / 60,
+            '2π × {N}/60',
+            'Each turn is 2π radians, and a minute is 60 seconds.',
+          ],
+          N: [
+            (v) => (60 * v.w!) / (2 * Math.PI),
+            '60 × {w}/(2π)',
+            'Radians a second times 60, over 2π radians a turn.',
+          ],
+        }),
+        rule('T = 2π/ω', '{T} = 2π/{w}', (v) => v.T! * v.w! - 2 * Math.PI, {
+          T: [
+            (v) => div(2 * Math.PI, v.w!),
+            '2π/{w}',
+            'One turn, 2π radians, at ω radians a second.',
+          ],
+          w: [(v) => div(2 * Math.PI, v.T!), '2π/{T}', 'One turn, 2π radians, in one period.'],
+        }),
+        product('v', 'r', 'w', 'v = rω', [
+          'Each radian turned moves the rim one radius along.',
+          'Divide the rim speed by the angular speed.',
+          'Divide the rim speed by the radius.',
+        ]),
+      ),
+      example: { r, N, w, T: (2 * Math.PI) / w, v: r * w },
+      startWith: ['r', 'N'],
+      representation: {
+        kind: 'circularMotion',
+        mode: 'string',
+        radius: 'r',
+        speed: 'v',
+        period: 'T',
+      },
+      pictureLabels: ['N', 'w'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [u, a, t] = [3, 2, 4];
+    const d = u * t + 0.5 * a * t * t;
+    return {
+      id: 's.11.rotation~angular-acceleration',
+      title: 'A wheel speeding up',
+      use: 'Use this for “A fan turning at 3 rad/s speeds up at 2 rad/s² for 4 s. How fast is it turning, and how many turns does it make?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The angular acceleration α is constant.',
+        'These are the straight-line motion equations with θ, ω and α in place of x, v and a.',
+        'The area under the ω–t line is the angle turned; one turn is 2π radians.',
+      ],
+      variables: [
+        q('u', 'ω₀', 'Starting angular speed', 'rad/s', -1000, 1000, 0.01),
+        q('a', 'α', 'Angular acceleration', 'rad/s²', -500, 500, 0.01),
+        q('t', 't', 'Time', 's', 0.01, 600, 0.01),
+        q('w', 'ω', 'Angular speed', 'rad/s', -1e5, 1e5, 0.01),
+        q('d', 'Δθ', 'Angle turned', 'rad', -1e7, 1e7, 0.01),
+        q('n', 'n', 'Turns', undefined, -1e6, 1e6, 0.001),
+      ],
+      ...rules(
+        rule('ω = ω₀ + αt', '{w} = {u} + {a} × {t}', (v) => v.w! - v.u! - v.a! * v.t!, {
+          w: [
+            (v) => v.u! + v.a! * v.t!,
+            '{u} + {a} × {t}',
+            'Start at ω₀ and add α for every second.',
+          ],
+          u: [(v) => v.w! - v.a! * v.t!, '{w} − {a} × {t}', 'Take off α for every second.'],
+          a: [
+            (v) => div(v.w! - v.u!, v.t!),
+            '({w} − {u})/{t}',
+            'The slope of the ω–t line: the change in angular speed over the time.',
+          ],
+          t: [
+            (v) => div(v.w! - v.u!, v.a!),
+            '({w} − {u})/{a}',
+            'Divide the change in angular speed by the change each second.',
+          ],
+        }),
+        rule(
+          'Δθ = ω₀t + ½αt²',
+          '{d} = {u} × {t} + ½ × {a} × {t}²',
+          (v) => v.d! - v.u! * v.t! - 0.5 * v.a! * v.t! * v.t!,
+          {
+            d: [
+              (v) => v.u! * v.t! + 0.5 * v.a! * v.t! * v.t!,
+              '{u} × {t} + ½ × {a} × {t}²',
+              'The angle at the starting speed, plus the extra the steady α adds.',
+            ],
+            u: [
+              (v) => div(v.d! - 0.5 * v.a! * v.t! * v.t!, v.t!),
+              '({d} − ½ × {a} × {t}²)/{t}',
+              'Take off what α added, then divide by the time.',
+            ],
+            a: [
+              (v) => div(2 * (v.d! - v.u! * v.t!), v.t! * v.t!),
+              '2 × ({d} − {u} × {t})/({t}²)',
+              'Take off the angle at ω₀, then undo ½t².',
+            ],
+          },
+        ),
+        rule('n = Δθ/2π', '{n} = {d}/(2π)', (v) => 2 * Math.PI * v.n! - v.d!, {
+          n: [(v) => v.d! / (2 * Math.PI), '{d}/(2π)', 'Each turn is 2π radians.'],
+          d: [(v) => 2 * Math.PI * v.n!, '2π × {n}', 'Each turn is 2π radians.'],
+        }),
+      ),
+      example: { u, a, t, w: u + a * t, d, n: d / (2 * Math.PI) },
+      startWith: ['u', 'a', 't'],
+      representation: {
+        kind: 'motionGraph',
+        graph: 'speed',
+        time: 't',
+        acceleration: 'a',
+        speed: 'w',
+        start: 'u',
+        distance: 'd',
+        kinematics: { view: 'velocity', strobe: false },
+      },
+      pictureLabels: ['n'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [c, m, r, t] = [0.5, 2, 0.5, 3];
+    const I = c * m * r * r;
+    return {
+      id: 's.11.rotation~rotational-inertia',
+      title: 'Torque and rotational inertia',
+      use: 'Use this for “A 3 N·m torque turns a 2 kg disk of radius 0.5 m. What is its angular acceleration? What if it were a hoop?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Rotational inertia I is how hard a body is to spin up: mass farther from the axis counts more.',
+        'I = cmr² about the center: c = 1 for a hoop, ½ for a solid disk, 0.4 for a solid ball.',
+        'Newton’s second law for turning: τ = Iα, with α in rad/s².',
+      ],
+      variables: [
+        q('c', 'c', 'Shape factor', undefined, 0.4, 1, 0.1, { allowed: [1, 0.5, 0.4] }),
+        q('m', 'm', 'Mass', 'kg', 0.001, 1e5, 0.001),
+        q('r', 'r', 'Radius', 'm', 0.001, 100, 0.001),
+        q('I', 'I', 'Rotational inertia', 'kg·m²', 0, 1e9, 0.0001),
+        TORQUE,
+        q('a', 'α', 'Angular acceleration', 'rad/s²', 0, 1e6, 0.001),
+      ],
+      ...rules(
+        rule('I = cmr²', '{I} = {c} × {m} × {r}²', (v) => v.I! - v.c! * v.m! * v.r! * v.r!, {
+          I: [
+            (v) => v.c! * v.m! * v.r! * v.r!,
+            '{c} × {m} × {r}²',
+            'The shape factor times the mass times the radius squared.',
+          ],
+          m: [(v) => div(v.I!, v.c! * v.r! * v.r!), '{I}/({c} × {r}²)', 'Divide I by c × r².'],
+          r: [
+            (v) => {
+              const x = div(v.I!, v.c! * v.m!);
+              return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+            },
+            '√({I}/({c} × {m}))',
+            'Divide I by c × m, then take the square root.',
+          ],
+          c: [(v) => div(v.I!, v.m! * v.r! * v.r!), '{I}/({m} × {r}²)', 'Divide I by m × r².'],
+        }),
+        product('t', 'I', 'a', 'τ = Iα', [
+          'The torque is the rotational inertia times the angular acceleration.',
+          'Divide the torque by the angular acceleration.',
+          'Divide the torque by the rotational inertia: a bigger I spins up more slowly.',
+        ]),
+      ),
+      example: { c, m, r, I, t, a: t / I },
+      startWith: ['c', 'm', 'r', 't'],
+      representation: {
+        kind: 'table',
+        sweep: 'c',
+        output: 'a',
+        params: ['m', 'r', 't'],
+        rows: [1, 0.5, 0.4],
+        rowNames: ['Hoop', 'Solid disk', 'Solid ball'],
+      },
+      pictureLabels: ['I'],
+    } satisfies ModuleDef;
+  })(),
+];
+
+// ─── s.11.oscillations ──────────────────────────────────────────────────────
+
+/** T = 2π√(a/b), each way: a spring's m over k, a pendulum's L over g. */
+const periodRule = (sym: string, a: string, b: string, hows: [string, string, string]): Rule =>
+  rule(
+    sym,
+    `{T} = 2π × √({${a}}/{${b}})`,
+    (v) => (v[a]! / v[b]! >= 0 ? v.T! - 2 * Math.PI * Math.sqrt(v[a]! / v[b]!) : 1),
+    {
+      T: [
+        (v) => {
+          const x = div(v[a]!, v[b]!);
+          return x === undefined || x < 0 ? undefined : 2 * Math.PI * Math.sqrt(x);
+        },
+        `2π × √({${a}}/{${b}})`,
+        hows[0],
+      ],
+      [a]: [(v) => v[b]! * (v.T! / (2 * Math.PI)) ** 2, `{${b}} × ({T}/(2π))²`, hows[1]],
+      [b]: [(v) => div(v[a]!, (v.T! / (2 * Math.PI)) ** 2), `{${a}}/(({T}/(2π))²)`, hows[2]],
+    },
+  );
+
+/** `periodRule` with the square root worked out first on the step for T. */
+const periodWithWork = (sym: string, a: string, b: string, hows: [string, string, string]) =>
+  withWork(periodRule(sym, a, b, hows), 'T', (v) => {
+    const x = v[a]! / v[b]!;
+    return [`√(${sci(x)}) = ${sci(Math.sqrt(x))}`];
+  });
+
+/** f = 1/T. */
+const frequencyRule = rule('f = 1/T', '{f} = 1/{T}', (v) => v.f! * v.T! - 1, {
+  f: [(v) => div(1, v.T!), '1/{T}', 'The frequency is how many swings fit in one second.'],
+  T: [(v) => div(1, v.f!), '1/{f}', 'The period is the time for one swing: 1 over f.'],
+});
+
+const PERIOD = q('T', 'T', 'Period', 's', 0.0001, 1e4, 0.0001);
+const FREQUENCY = q('f', 'f', 'Frequency', 'Hz', 0.0001, 1e4, 0.0001);
+
+const oscillationPages: ModuleDef[] = [
+  (() => {
+    const [m, k, A] = [0.5, 200, 0.1];
+    const T = 2 * Math.PI * Math.sqrt(m / k);
+    const w = (2 * Math.PI) / T;
+    return {
+      id: 's.11.oscillations',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The spring obeys Hooke’s law (F = −kx) and nothing rubs, so the swing never dies down.',
+        'The period depends only on m and k: pulling it farther (a bigger A) doesn’t change T.',
+        'It moves fastest through the middle and stops for an instant at each end.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass', 'kg', 0.001, 1000, 0.001),
+        q('k', 'k', 'Spring constant', 'N/m', 0.1, 1e6, 0.1),
+        { ...PERIOD, units: ['s'] },
+        FREQUENCY,
+        q('w', 'ω', 'Angular frequency', 'rad/s', 0.001, 1e5, 0.001),
+        q('A', 'A', 'Amplitude', 'm', 0.001, 10, 0.001),
+        q('v', 'v_max', 'Top speed', 'm/s', 0, 1e5, 0.001),
+        q('E', 'E', 'Energy', 'J', 0, 1e8, 0.0001),
+      ],
+      ...rules(
+        periodWithWork('T = 2π√(m/k)', 'm', 'k', [
+          'A heavier mass swings more slowly; a stiffer spring, faster.',
+          'Undo the square root: square T ÷ 2π, then multiply by k.',
+          'Undo the square root: square T ÷ 2π, then divide the mass by it.',
+        ]),
+        frequencyRule,
+        rule('ω = 2π/T', '{w} = 2π/{T}', (v) => v.w! * v.T! - 2 * Math.PI, {
+          w: [
+            (v) => div(2 * Math.PI, v.T!),
+            '2π/{T}',
+            'One full swing is 2π radians of the cycle, done in one period.',
+          ],
+          T: [(v) => div(2 * Math.PI, v.w!), '2π/{w}', 'Divide 2π by the angular frequency.'],
+        }),
+        product('v', 'A', 'w', 'v_max = Aω', [
+          'Through the middle it moves fastest: the amplitude times ω.',
+          'Divide the top speed by ω.',
+          'Divide the top speed by the amplitude.',
+        ]),
+        rule('E = ½kA²', '{E} = ½ × {k} × {A}²', (v) => v.E! - 0.5 * v.k! * v.A! * v.A!, {
+          E: [
+            (v) => 0.5 * v.k! * v.A! * v.A!,
+            '½ × {k} × {A}²',
+            'At each end it is all spring energy, stretched by A.',
+          ],
+          A: [
+            (v) => (v.E! >= 0 && v.k! > 0 ? Math.sqrt((2 * v.E!) / v.k!) : undefined),
+            '√(2 × {E}/{k})',
+            'Double the energy, divide by k, take the square root.',
+          ],
+        }),
+      ),
+      example: { m, k, T, f: 1 / T, w, A, v: A * w, E: 0.5 * k * A * A },
+      startWith: ['m', 'k', 'A'],
+      representation: {
+        kind: 'functionGraph',
+        family: 'cos',
+        a: 'A',
+        b: 'w',
+        name: 'x',
+        input: 't',
+        shows: { amplitude: 'A', period: 'T' },
+        marks: ['amplitude', 'period'],
+        xMin: 0,
+        axes: { x: 'Time t (s)', y: 'Position x (m)' },
+      },
+      pictureLabels: ['m', 'k', 'f', 'v', 'E'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, x] = [2, 0.08];
+    const F = m * G;
+    const k = F / x;
+    return {
+      id: 's.11.oscillations~hooke',
+      title: 'Hooke’s law: a spring’s stiffness',
+      use: 'Use this for “A 2 kg mass hung on a spring stretches it 8 cm. What is k, and how much energy does the stretched spring store?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The spring pulls back in proportion to the stretch: F = kx, until it is overstretched.',
+        'A hung mass at rest stretches it until the spring’s pull equals the weight mg.',
+        'The stored energy is the area under the F–x line: ½kx².',
+      ],
+      variables: [
+        q('m', 'm', 'Hung mass', 'kg', 0.001, 10000, 0.001),
+        q('F', 'F', 'Force', 'N', 0, 1e6, 0.001, { units: ['N'] }),
+        q('x', 'x', 'Stretch', 'm', 0.0001, 10, 0.0001, { units: ['m'] }),
+        q('k', 'k', 'Spring constant', 'N/m', 0.1, 1e7, 0.1),
+        q('U', 'U', 'Stored energy', 'J', 0, 1e8, 0.0001),
+      ],
+      ...rules(
+        product('F', 'm', G, 'F = mg', [
+          'At rest, the spring holds up the weight: 9.8 N for each kilogram.',
+          'Divide the force by 9.8 N/kg.',
+        ]),
+        product('F', 'k', 'x', 'F = kx', [
+          'Hooke’s law: k newtons for each meter of stretch.',
+          'Divide the force by the stretch.',
+          'Divide the force by the spring constant.',
+        ]),
+        rule('U = ½kx²', '{U} = ½ × {k} × {x}²', (v) => v.U! - 0.5 * v.k! * v.x! * v.x!, {
+          U: [
+            (v) => 0.5 * v.k! * v.x! * v.x!,
+            '½ × {k} × {x}²',
+            'The triangle under the F–x line: half the stretch times the force.',
+          ],
+        }),
+      ),
+      example: { m, F, x, k, U: 0.5 * k * x * x },
+      startWith: ['m', 'x'],
+      representation: {
+        kind: 'functionGraph',
+        family: 'linear',
+        m: 'k',
+        b: 0,
+        name: 'F',
+        input: 'x',
+        at: { x: 'x', y: 'F' },
+        shade: { from: 0, to: 'x' },
+        xMin: 0,
+        axes: { x: 'Stretch x (m)', y: 'Force F (N)' },
+      },
+      pictureLabels: ['m', 'U'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [L, g] = [0.8, 9.8];
+    const T = 2 * Math.PI * Math.sqrt(L / g);
+    return {
+      id: 's.11.oscillations~pendulum',
+      title: 'A simple pendulum',
+      use: 'Use this for “How long is a pendulum that swings once every 2 s? What would its period be on the Moon?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Small swings, under about 15°: then the period doesn’t depend on how far it swings.',
+        'The bob’s mass doesn’t change the period; only the length and gravity do.',
+        'g is 9.8 m/s² on Earth and 1.62 m/s² on the Moon.',
+      ],
+      variables: [
+        q('L', 'L', 'Length', 'm', 0.001, 1000, 0.001),
+        q('g', 'g', 'Gravity', 'm/s²', 0.1, 30, 0.01),
+        PERIOD,
+        FREQUENCY,
+      ],
+      ...rules(
+        periodWithWork('T = 2π√(L/g)', 'L', 'g', [
+          'A longer string swings more slowly; stronger gravity, faster.',
+          'Undo the square root: square T ÷ 2π, then multiply by g.',
+          'Undo the square root: square T ÷ 2π, then divide the length by it.',
+        ]),
+        frequencyRule,
+      ),
+      example: { L, g, T, f: 1 / T },
+      startWith: ['L', 'g'],
+      representation: {
+        kind: 'table',
+        sweep: 'L',
+        output: 'T',
+        params: ['g'],
+        rows: [0.25, 0.5, 1, 2, 4],
+      },
+      pictureLabels: ['f'],
+    } satisfies ModuleDef;
+  })(),
+];
+
+// ─── s.11.electric-potential ────────────────────────────────────────────────
+
+/** The charge of one electron or proton, C (also the joules in 1 eV). */
+const E_CHARGE = 1.602e-19;
+
+const potentialPages: ModuleDef[] = [
+  (() => {
+    const [a, r, t] = [4, 0.5, 2];
+    const V = (8.99e3 * a) / r;
+    return {
+      id: 's.11.electric-potential',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Potential V is energy per coulomb, counted from far away, where V = 0: V = kq/r.',
+        'V takes the charge’s sign and has no direction, so potentials add as plain numbers.',
+        'A second charge there has potential energy U = q₀V: like charges give U > 0, the work done to push them together.',
+      ],
+      variables: [
+        charge('a', 'q', 'Charge'),
+        q('r', 'r', 'Distance', 'm', 0.001, 100, 0.001),
+        q('V', 'V', 'Potential', 'V', -1e13, 1e13, 0.01, { scientific: true }),
+        charge('t', 'q₀', 'Second charge'),
+        q('U', 'U', 'Potential energy', 'J', -1e10, 1e10, 0.0001),
+      ],
+      ...rules(
+        withWork(
+          rule(
+            'V = kq/r',
+            '{V} = 8.99 × 10⁹ × {a} × 10⁻⁶/{r}',
+            (v) => v.V! * v.r! - 8.99e3 * v.a!,
+            {
+              V: [
+                (v) => div(8.99e3 * v.a!, v.r!),
+                '8.99 × 10⁹ × {a} × 10⁻⁶/{r}',
+                'k = 8.99 × 10⁹ N·m²/C² times the charge in coulombs, over r (not r²).',
+              ],
+              a: [(v) => (v.V! * v.r!) / 8.99e3, '{V} × {r}/(8.99 × 10³)', 'Solve for the charge.'],
+              r: [
+                (v) => {
+                  const x = div(8.99e3 * v.a!, v.V!);
+                  return x === undefined || x <= 0 ? undefined : x;
+                },
+                '8.99 × 10⁹ × {a} × 10⁻⁶/{V}',
+                'Swap r and V: kq over the potential.',
+              ],
+            },
+          ),
+          'V',
+          (v) => [`q = ${sci(v.a!)} μC = ${sci(v.a! * 1e-6)} C`],
+        ),
+        rule('U = q₀V', '{U} = {t} × 10⁻⁶ × {V}', (v) => v.U! - v.t! * 1e-6 * v.V!, {
+          U: [
+            (v) => v.t! * 1e-6 * v.V!,
+            '{t} × 10⁻⁶ × {V}',
+            'The potential is joules per coulomb: times the second charge in coulombs.',
+          ],
+          t: [
+            (v) => div(v.U!, 1e-6 * v.V!),
+            '{U}/({V} × 10⁻⁶)',
+            'Divide the energy by the potential.',
+          ],
+          V: [
+            (v) => div(v.U!, v.t! * 1e-6),
+            '{U}/({t} × 10⁻⁶)',
+            'The potential is the energy on each coulomb of the second charge.',
+          ],
+        }),
+      ),
+      example: { a, r, V, t, U: t * 1e-6 * V },
+      startWith: ['a', 'r', 't'],
+      representation: { kind: 'charges', charges: ['a'], distance: 'r' },
+      pictureLabels: ['V', 't', 'U'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [n, V, m] = [1, 100, 9.109e-31];
+    return {
+      id: 's.11.electric-potential~voltage-energy',
+      title: 'Speeding a charge through a voltage',
+      use: 'Use this for “An electron starts at rest and crosses a 100 V potential difference. How much energy does it gain, in eV and in joules, and how fast does it go?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'It starts at rest and only the electric force does work on it: K = qΔV.',
+        '1 eV is the energy one electron charge gains through 1 V: 1 eV = 1.602 × 10⁻¹⁹ J.',
+        'Electron 9.109 × 10⁻³¹ kg, proton 1.673 × 10⁻²⁷ kg; speeds past a tenth of light’s need relativity.',
+      ],
+      variables: [
+        q('q', 'q', 'Charge', 'e', 1, 10, 1, { integer: true }),
+        q('V', 'ΔV', 'Potential difference', 'V', 0.001, 1e6, 0.001),
+        q('K', 'K', 'Energy gained', 'eV', 0.001, 1e7, 0.001),
+        q('m', 'm', 'Mass', 'kg', 9.109e-31, 1.673e-27, 1e-34, {
+          scientific: true,
+          allowed: [9.109e-31, 1.673e-27],
+        }),
+        q('v', 'v', 'Speed', 'm/s', 0, 3e7, 1, { scientific: true, units: ['m/s'] }),
+      ],
+      ...rules(
+        product('K', 'q', 'V', 'K = qΔV', [
+          'Each electron charge gains 1 eV for every volt it crosses.',
+          'Divide the energy by the potential difference.',
+          'Divide the energy by the charge.',
+        ]),
+        withWork(
+          rule(
+            'v = √(2K/m)',
+            `{v} = √(2 × {K} × 1.602 × 10⁻¹⁹/{m})`,
+            (v) => (v.K! >= 0 && v.m! > 0 ? v.v! - Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : 1),
+            {
+              v: [
+                (v) =>
+                  v.K! >= 0 && v.m! > 0 ? Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : undefined,
+                '√(2 × {K} × 1.602 × 10⁻¹⁹/{m})',
+                'Change eV to joules, then solve K = ½mv² for v.',
+              ],
+              K: [
+                (v) => (v.m! * v.v! * v.v!) / (2 * E_CHARGE),
+                '{m} × {v}²/(2 × 1.602 × 10⁻¹⁹)',
+                'K = ½mv² in joules, then divide by 1.602 × 10⁻¹⁹ J for each eV.',
+              ],
+              m: null,
+            },
+          ),
+          'v',
+          (v) => [`K = ${sci(v.K!)} eV × 1.602 × 10⁻¹⁹ = ${sci(v.K! * E_CHARGE)} J`],
+        ),
+      ),
+      example: { q: n, V, K: n * V, m, v: Math.sqrt((2 * n * V * E_CHARGE) / m) },
+      startWith: ['V', 'q', 'm'],
+      representation: {
+        kind: 'table',
+        sweep: 'V',
+        output: 'v',
+        params: ['q', 'm'],
+        rows: [1, 10, 100, 1000],
+      },
+      pictureLabels: ['K'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [C, V] = [470, 9];
+    return {
+      id: 's.11.electric-potential~capacitor',
+      title: 'Charge and energy on a capacitor',
+      use: 'Use this for “A 470 μF capacitor is charged to 9 V. How much charge does it hold, and how much energy does it store?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Q is the charge on each plate, +Q on one and −Q on the other: Q = CV.',
+        'The energy is stored in the field between the plates: U = ½CV², so twice the voltage stores four times the energy.',
+        '1 μF = 10⁻⁶ F, so μF × V gives μC.',
+      ],
+      variables: [
+        q('C', 'C', 'Capacitance', 'μF', 0.001, 1e6, 0.001),
+        q('V', 'V', 'Voltage', 'V', 0.001, 1e5, 0.001),
+        q('Q', 'Q', 'Charge', 'μC', 0, 1e11, 0.001),
+        q('U', 'U', 'Stored energy', 'J', 0, 1e10, 0.000001),
+      ],
+      ...rules(
+        product('Q', 'C', 'V', 'Q = CV', [
+          'Each volt puts C more microcoulombs on each plate.',
+          'Divide the charge by the voltage.',
+          'Divide the charge by the capacitance.',
+        ]),
+        rule('U = ½CV²', '{U} = ½ × {C} × 10⁻⁶ × {V}²', (v) => v.U! - 0.5e-6 * v.C! * v.V! * v.V!, {
+          U: [
+            (v) => 0.5e-6 * v.C! * v.V! * v.V!,
+            '½ × {C} × 10⁻⁶ × {V}²',
+            'Half the capacitance in farads times the voltage squared.',
+          ],
+          C: [
+            (v) => div(v.U!, 0.5e-6 * v.V! * v.V!),
+            '2 × {U}/({V}² × 10⁻⁶)',
+            'Double the energy and divide by V², in microfarads.',
+          ],
+          V: [
+            (v) => (v.U! >= 0 && v.C! > 0 ? Math.sqrt(v.U! / (0.5e-6 * v.C!)) : undefined),
+            '√(2 × {U}/({C} × 10⁻⁶))',
+            'Double the energy, divide by C in farads, take the square root.',
+          ],
+        }),
+      ),
+      example: { C, V, Q: C * V, U: 0.5e-6 * C * V * V },
+      startWith: ['C', 'V'],
+      representation: {
+        kind: 'table',
+        sweep: 'V',
+        output: 'U',
+        params: ['C'],
+        rows: [3, 6, 9, 12],
+      },
+      pictureLabels: ['Q'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [k, A, d, V] = [1, 0.01, 1, 12];
+    const C = (8.85 * k * A) / (d * 1e-3);
+    return {
+      id: 's.11.electric-potential~parallel-plate',
+      title: 'A parallel-plate capacitor',
+      use: 'Use this for “Two 0.01 m² plates sit 1 mm apart in air. What is the capacitance, and what charge does 12 V put on it?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The gap is small next to the plates, so the field between them is even: C = κε₀A/d.',
+        'ε₀ = 8.85 × 10⁻¹² F/m, which is 8.85 pF/m; κ = 1 for air, and an insulator between the plates raises C κ times.',
+        'Bigger plates or a smaller gap hold more charge at the same voltage.',
+      ],
+      variables: [
+        q('k', 'κ', 'Dielectric constant', undefined, 1, 100, 0.1),
+        q('A', 'A', 'Plate area', 'm²', 0.000001, 100, 0.000001, { units: ['m²'] }),
+        q('d', 'd', 'Gap', 'mm', 0.001, 1000, 0.001, { units: ['mm'] }),
+        q('C', 'C', 'Capacitance', 'pF', 0, 1e12, 0.001),
+        q('V', 'V', 'Voltage', 'V', 0.001, 1e5, 0.001),
+        q('Q', 'Q', 'Charge', 'pC', 0, 1e17, 0.001),
+      ],
+      ...rules(
+        rule(
+          'C = κε₀A/d',
+          '{C} = {k} × 8.85 × {A}/({d} × 10⁻³)',
+          (v) => v.C! * v.d! * 1e-3 - 8.85 * v.k! * v.A!,
+          {
+            C: [
+              (v) => div(8.85 * v.k! * v.A!, v.d! * 1e-3),
+              '{k} × 8.85 × {A}/({d} × 10⁻³)',
+              'κ times ε₀ = 8.85 pF/m times the area, over the gap in meters.',
+            ],
+            A: [
+              (v) => (v.C! * v.d! * 1e-3) / (8.85 * v.k!),
+              '{C} × {d} × 10⁻³/(8.85 × {k})',
+              'Solve for the area: C times the gap, over κε₀.',
+            ],
+            d: [
+              (v) => div(8.85 * v.k! * v.A!, v.C! * 1e-3),
+              '{k} × 8.85 × {A}/({C} × 10⁻³)',
+              'Swap d and C: κε₀A over the capacitance, in millimeters.',
+            ],
+            k: [
+              (v) => (v.C! * v.d! * 1e-3) / (8.85 * v.A!),
+              '{C} × {d} × 10⁻³/(8.85 × {A})',
+              'How many times the air value the capacitance is.',
+            ],
+          },
+        ),
+        product('Q', 'C', 'V', 'Q = CV', [
+          'Each volt puts C more picocoulombs on each plate.',
+          'Divide the charge by the voltage.',
+          'Divide the charge by the capacitance.',
+        ]),
+      ),
+      example: { k, A, d, C, V, Q: C * V },
+      startWith: ['k', 'A', 'd', 'V'],
+      representation: {
+        kind: 'table',
+        sweep: 'd',
+        output: 'C',
+        params: ['k', 'A'],
+        rows: [0.5, 1, 2, 4],
+      },
+      pictureLabels: ['V', 'Q'],
+    } satisfies ModuleDef;
+  })(),
+];
+
 export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...kinematicsPages,
   ...projectilePages,
   ...dynamicsPages,
   ...circularPages,
+  ...rotationPages,
   ...momentumPages,
   ...energyPages,
+  ...oscillationPages,
   ...thermoPages,
   ...soundPages,
   ...opticsPages,
   ...electroPages,
+  ...potentialPages,
   ...circuitPages,
   ...inductionPages,
   ...modernPages,
