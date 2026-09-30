@@ -19,6 +19,7 @@ import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
+import { hs2gSpecVars } from '../typesHs2g';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
@@ -331,7 +332,7 @@ function representationVars(r: Representation): string[] {
         ...(r.quotient ? [r.quotient] : []),
       ];
     case 'venn':
-      if ('chances' in r) return vennChanceVars(r.chances);
+      if ('chances' in r) return [...vennChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'baseHeight':
       return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];
@@ -344,7 +345,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
-      if ('chances' in r) return treeChanceVars(r.chances);
+      if ('chances' in r) return [...treeChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];
@@ -482,7 +483,7 @@ function representationVars(r: Representation): string[] {
     case 'transformation':
       return [...graphSpecVars(r), ...hs2aSpecVars(r)];
     case 'functionGraph':
-      return [...functionGraphVars(r), ...hs2aSpecVars(r)];
+      return [...functionGraphVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r)];
     case 'energyPyramid':
     case 'generations':
       return lifeSpecVars(r);
@@ -508,7 +509,7 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return [...hsbSpecVars(r), ...hs2aSpecVars(r)];
+      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r)];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':
@@ -516,7 +517,7 @@ function representationVars(r: Representation): string[] {
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      return hsdSpecVars(r);
+      return [...hsdSpecVars(r), ...hs2gSpecVars(r)];
     case 'membrane':
     case 'dnaStrand':
       return hsgSpecVars(r);

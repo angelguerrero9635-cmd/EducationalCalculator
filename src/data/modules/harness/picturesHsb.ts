@@ -49,10 +49,11 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
         spans.reduce((t, [a, b]) => {
           const lo = chi ? Math.max(a, 0) : Math.max(a, m.m - 12 * m.s);
           const hi = chi ? Math.min(b, 200) : Math.min(b, m.m + 12 * m.s);
-          if (!(hi > lo)) return t;
+          if (!(hi > lo)) return t + (m.tails?.(a, b) ?? 0);
           // Near 0 a chi-square density with df 1 is unbounded: integrate the rest and subtract.
           if (chi && lo < 1e-9) return t + 1 - simpson(m.pdf, hi, 200, 20000);
-          return t + simpson(m.pdf, lo, hi, 20000);
+          // H99: a t curve's heavy tails past ±12 scales are added exactly.
+          return t + simpson(m.pdf, lo, hi, 20000) + (m.tails?.(a, b) ?? 0);
         }, 0);
       if (m.area !== undefined) {
         const drawn = integrate(m.regions);
@@ -206,7 +207,8 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
       const d = get(rep.step);
       const n = get(rep.count);
       if (a === undefined || d === undefined || n === undefined) break;
-      if (n < 1 || n > 30 || !Number.isInteger(n)) out.push(`${n} terms (whole, 1 to 30)`);
+      const most = rep.far ? 10000 : 30; // H93: `far` draws past 30
+      if (n < 1 || n > most || !Number.isInteger(n)) out.push(`${n} terms (whole, 1 to ${most})`);
       const m = termsModel(rep, get);
       if (m.problem) {
         out.push(`terms chart: ${m.problem}`);
@@ -214,17 +216,24 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
       }
       const tol = (x: number) => 1e-9 * Math.max(1, Math.abs(x));
       m.terms.forEach((t, i) => {
-        const want = rep.type === 'arithmetic' ? a + i * d : a * d ** i;
+        const want =
+          rep.type === 'arithmetic'
+            ? a + i * d
+            : rep.type === 'recursive' // H93: k × the term before + c
+              ? i
+                ? d * m.terms[i - 1]! + (get(rep.plus) ?? 0)
+                : a
+              : a * d ** i;
         if (!near(t, want, tol(want))) out.push(`term ${i + 1} is ${t}, not ${want}`);
         const s = m.terms.slice(0, i + 1).reduce((x, y) => x + y, 0);
         if (!near(m.sums[i]!, s, tol(s))) out.push(`partial sum ${i + 1} is ${m.sums[i]}`);
       });
-      const last = m.terms[m.terms.length - 1]!;
+      const last = m.terms[m.count - 1]!;
       const typed = get(rep.term);
       if (typed !== undefined && !near(typed, last, 1e-6 * Math.max(1, Math.abs(last))))
         out.push(`term ${typed} is not the last term drawn, ${last}`);
       const S = get(rep.sum);
-      const Sn = m.sums[m.sums.length - 1]!;
+      const Sn = m.sums[m.count - 1]!;
       if (S !== undefined && !near(S, Sn, 1e-6 * Math.max(1, Math.abs(Sn))))
         out.push(`sum ${S} is not the partial sum drawn, ${Sn}`);
       const lim = typeof rep.limit === 'string' ? get(rep.limit) : undefined;
@@ -237,7 +246,7 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
       // The partial sums close in on the limit: |S − Sₙ| = |a rⁿ ÷ (1 − r)|.
       if (m.limit !== undefined) {
         const gap = Math.abs(m.limit - Sn);
-        const want = Math.abs((a * d ** m.terms.length) / (1 - d));
+        const want = Math.abs((a * d ** m.count) / (1 - d));
         if (!near(gap, want, 1e-9 * Math.max(1, Math.abs(m.limit))))
           out.push(`gap to S is ${gap}, not ${want}`);
       }

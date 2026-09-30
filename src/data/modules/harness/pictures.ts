@@ -54,6 +54,7 @@ import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
 import { barFlowIssues, hs2eIssues, percentSecondIssues, reactionManyIssues } from './picturesHs2e';
 import { hs2fIssues } from './picturesHs2f';
+import { hs2gIssues } from './picturesHs2g';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import type { ModuleDef, Representation } from '../types';
@@ -1339,7 +1340,7 @@ export function repIssues(
     }
     case 'venn':
       if ('chances' in rep) {
-        out.push(...vennChanceIssues(rep.chances, val));
+        out.push(...vennChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;
       }
       count(rep.first, 'Venn number', 1000);
@@ -1455,7 +1456,7 @@ export function repIssues(
     }
     case 'treeDiagram': {
       if ('chances' in rep) {
-        out.push(...treeChanceIssues(rep.chances, val));
+        out.push(...treeChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;
       }
       // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
@@ -1832,7 +1833,7 @@ export function repIssues(
       break;
     }
     case 'functionGraph':
-      out.push(...functionGraphIssues(rep, val), ...hs2aIssues(rep, val));
+      out.push(...functionGraphIssues(rep, val), ...hs2aIssues(rep, val), ...hs2gIssues(rep, val));
       break;
     case 'linearFunction': {
       out.push(...hs2aIssues(rep, val));
@@ -2115,7 +2116,11 @@ export function repIssues(
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      out.push(...hsbIssues(rep, (id) => val(id)), ...hs2aIssues(rep, val));
+      out.push(
+        ...hsbIssues(rep, (id) => val(id)),
+        ...hs2aIssues(rep, val),
+        ...hs2gIssues(rep, val),
+      );
       break;
     case 'unitCircle':
     case 'algebraTiles':
@@ -2124,7 +2129,7 @@ export function repIssues(
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      out.push(...hsdIssues(rep, (id) => val(id)));
+      out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       break;
     case 'membrane':
     case 'dnaStrand':

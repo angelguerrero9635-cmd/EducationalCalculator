@@ -235,7 +235,7 @@ export function treeChanceIssues(t: TreeChances, val: Val): string[] {
   }
   if (!pA || pB.some((r) => !r)) return out;
   const leaf = (i: number, j: number) => pA[i]! * pB[i]![j]!;
-  if (t.path && t.chance) {
+  if (t.path && t.chance && !t.third) {
     const x = val(t.chance);
     const want = leaf(t.path[0], t.path[1]);
     if (x !== undefined && !close(x, want))
@@ -260,6 +260,7 @@ export function vennChanceIssues(v: VennChances, val: Val): string[] {
   const out: string[] = [];
   const [a, b, both] = [val(v.a), val(v.b), val(v.both)];
   if (v.result && !v.shade) out.push('a Venn result with nothing shaded');
+  if (v.counts) return out; // H97: counts, checked in picturesHs2g.ts
   if (a === undefined || b === undefined || both === undefined) return out;
   for (const [name, x] of [
     ['P(A)', a],

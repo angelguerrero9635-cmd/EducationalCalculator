@@ -10,6 +10,7 @@ import { probText } from './ChanceTree';
 import { reader } from './graphKit';
 import { usePaintIds } from './paint';
 import { vennRegions } from './stats';
+import { countText, countsCaption } from './VennCounts';
 
 /** A probability as written: 0.35, 1/6 (see ChanceTree). */
 const p4 = probText;
@@ -27,8 +28,12 @@ export function VennChance({ spec, calc }: { spec: VennChances; calc: Calculator
   const read = reader(rep);
   const ids = usePaintIds('clipA');
   const [A, B, AB] = [read(spec.a), read(spec.b), read(spec.both)];
-  const known = A.known && B.known && AB.known;
-  const [a, b, both] = [A.value, B.value, spec.exclusive ? 0 : AB.value];
+  // H97: counts out of a total; the regions read as counts, the rules as chances.
+  const total = spec.counts ? read(spec.counts.total) : undefined;
+  const N = total ? total.value : 1;
+  const known = A.known && B.known && AB.known && (!total || total.known);
+  const [a, b, both] = [A.value / N, B.value / N, spec.exclusive ? 0 : AB.value / N];
+  const say = spec.counts ? (x: number) => countText(x, N) : p4;
   const apart = !!spec.exclusive || both === 0;
   const r = vennRegions(a, b, both);
   const [nA, nB] = spec.names ?? ['A', 'B'];
@@ -40,6 +45,7 @@ export function VennChance({ spec, calc }: { spec: VennChances; calc: Calculator
   const shade = spec.shade;
 
   const caption = (() => {
+    if (spec.counts) return countsCaption(spec, known, valid, a, b, both, N);
     if (!known) return 'Type the probabilities to fill the diagram.';
     if (!valid)
       return `These can't all be true: P(${nA} and ${nB}) is at most the smaller of P(${nA}) and P(${nB}), and everything adds to at most 1.`;
@@ -164,7 +170,7 @@ export function VennChance({ spec, calc }: { spec: VennChances; calc: Calculator
               />
               {/* Names over the circles, the whole space in the corner. */}
               <ChartText x={pad} y={16} fontSize={chart.label} fontWeight="700">
-                {'All outcomes: 1'}
+                {spec.counts ? `All: ${countText(1, N)}` : 'All outcomes: 1'}
               </ChartText>
               <ChartText
                 x={Math.max(box.x + 4, xA - R)}
@@ -173,7 +179,7 @@ export function VennChance({ spec, calc }: { spec: VennChances; calc: Calculator
                 fontWeight="700"
                 fill={c.chartHighlight}
               >
-                {`${nA}: ${p4(a)}`}
+                {`${nA}: ${say(a)}`}
               </ChartText>
               <ChartText
                 x={Math.min(box.x + box.w - 4, xB + R)}
@@ -182,13 +188,13 @@ export function VennChance({ spec, calc }: { spec: VennChances; calc: Calculator
                 fontWeight="700"
                 textAnchor="end"
               >
-                {`${nB}: ${p4(b)}`}
+                {`${nB}: ${say(b)}`}
               </ChartText>
               {/* Each region's own probability. */}
-              {label(apart ? xA : xA - R * 0.45, cy + 5, p4(r.aOnly))}
-              {label(apart ? xB : xB + R * 0.45, cy + 5, p4(r.bOnly))}
-              {apart ? null : label(w / 2, cy + 5, p4(both))}
-              {label(box.x + box.w - 44, box.y + box.h - 10, `neither ${p4(r.neither)}`, false)}
+              {label(apart ? xA : xA - R * 0.45, cy + 5, say(r.aOnly))}
+              {label(apart ? xB : xB + R * 0.45, cy + 5, say(r.bOnly))}
+              {apart ? null : label(w / 2, cy + 5, say(both))}
+              {label(box.x + box.w - 44, box.y + box.h - 10, `neither ${say(r.neither)}`, false)}
             </Svg>
           );
         }}
