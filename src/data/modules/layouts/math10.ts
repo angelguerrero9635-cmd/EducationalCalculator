@@ -94,6 +94,82 @@ const CONSTRUCTIONS: LayoutDef[] = [
   },
 ];
 
+// ── Reasoning and proof (G-CO.9, G-CO.10) ──
+const PROOFS: LayoutDef[] = [
+  {
+    kind: 'sequence',
+    id: 'm.10.proofs',
+    assumptions: [
+      'Each line of a proof is a statement and its reason: a given, a definition, a postulate or a theorem proved before.',
+      'A line can only use lines above it.',
+      'Linear pairs are two angles that make a straight line: they add to 180°.',
+    ],
+    question: 'Put the proof that vertical angles are congruent in order.',
+    stages: [
+      { label: 'Lines ℓ and m cross, making ∠1, ∠2 and ∠3 in a row (Given)' },
+      {
+        label: 'm∠1 + m∠2 = 180° and m∠2 + m∠3 = 180° (Linear pairs are supplementary)',
+      },
+      { label: 'm∠1 + m∠2 = m∠2 + m∠3 (Substitution)' },
+      { label: 'm∠1 = m∠3 (Subtraction Property of Equality)' },
+      { label: '∠1 ≅ ∠3 (Definition of congruent angles)' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.10.proofs~conditional',
+    title: 'Conditional, converse, inverse, contrapositive',
+    use: 'Use this for “Write the converse of ‘If two angles are vertical, then they are congruent.’ Is it true?”',
+    assumptions: [
+      'Converse: swap the if and the then. Inverse: say “not” to both. Contrapositive: do both.',
+      'A statement and its contrapositive are true together; so are the converse and the inverse.',
+      'One counterexample is enough to show a statement is false.',
+    ],
+    question: 'Is the statement always true, or does it have a counterexample?',
+    bins: [
+      { id: 'true', label: 'Always true', why: 'No example breaks it.' },
+      {
+        id: 'false',
+        label: 'Has a counterexample',
+        why: 'An example meets the if part but not the then part.',
+      },
+    ],
+    cards: [
+      { label: 'If two angles are vertical, then they are congruent', bin: 'true' },
+      { label: 'If two angles are congruent, then they are vertical', bin: 'false' },
+      { label: 'If two angles are not vertical, then they are not congruent', bin: 'false' },
+      { label: 'If two angles are not congruent, then they are not vertical', bin: 'true' },
+      { label: 'If a figure is a square, then it has four right angles', bin: 'true' },
+      { label: 'If a figure has four right angles, then it is a square', bin: 'false' },
+      {
+        label: 'If a figure is not a square, then it doesn’t have four right angles',
+        bin: 'false',
+      },
+      {
+        label: 'If a figure doesn’t have four right angles, then it is not a square',
+        bin: 'true',
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'm.10.proofs~algebraic-proof',
+    title: 'Reasons in an algebraic proof',
+    use: 'Use this for “Solve 2(x − 3) = 14 and give a reason for each step.”',
+    assumptions: [
+      'Each step of solving an equation is a property of equality or of numbers.',
+      'Doing the same to both sides keeps them equal.',
+    ],
+    question: 'Put the steps of the proof in order.',
+    stages: [
+      { label: '2(x − 3) = 14 (Given)' },
+      { label: '2x − 6 = 14 (Distributive Property)' },
+      { label: '2x = 20 (Addition Property of Equality)' },
+      { label: 'x = 10 (Division Property of Equality)' },
+    ],
+  },
+];
+
 // ── Similarity (G-SRT.2–5) ──
 const SIMILARITY: LayoutDef[] = [
   {
@@ -220,4 +296,4 @@ const VOLUME: LayoutDef[] = [
   },
 ];
 
-export const MATH_10_LAYOUTS: LayoutDef[] = [...CONSTRUCTIONS, ...SIMILARITY, ...VOLUME];
+export const MATH_10_LAYOUTS: LayoutDef[] = [...CONSTRUCTIONS, ...PROOFS, ...SIMILARITY, ...VOLUME];

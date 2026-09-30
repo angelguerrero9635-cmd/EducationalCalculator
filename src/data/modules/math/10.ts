@@ -3186,8 +3186,46 @@ const CONSTRUCTIONS: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.proofs ─────────────────────────────────────────────────────────────
+
+const PROOFS: ModuleDef[] = [
+  page({
+    id: 'm.10.proofs~exterior-angle',
+    title: 'Triangle angle sum and exterior angle',
+    use: 'Use this for “Side BC is extended to D. m∠A = 52° and m∠B = 71°. Find m∠ACD and m∠ACB.”',
+    assumptions: [
+      'The three angles of a triangle add to 180°.',
+      'The exterior angle ∠ACD and ∠ACB make a straight line, so they add to 180°.',
+      'So the exterior angle equals the two remote interior angles added: m∠ACD = m∠A + m∠B.',
+    ],
+    variables: [
+      deg('a', 'm∠A', 'm∠A', 0.1, 179.8),
+      deg('b', 'm∠B', 'm∠B', 0.1, 179.8),
+      deg('c', 'm∠ACB', 'm∠ACB', 0.1, 179.8),
+      deg('d', 'm∠ACD', 'm∠ACD', 0.2, 179.9),
+    ],
+    rules: [
+      rule(
+        'A + B + ACB = 180°',
+        '{a} + {b} + {c} = 180',
+        {
+          c: [(v) => 180 - v.a! - v.b!, '180 − {a} − {b}', 'The angles of a triangle add to 180°.'],
+          a: [(v) => 180 - v.b! - v.c!, '180 − {b} − {c}', 'The angles of a triangle add to 180°.'],
+          b: [(v) => 180 - v.a! - v.c!, '180 − {a} − {c}', 'The angles of a triangle add to 180°.'],
+        },
+        (v) => v.a! + v.b! + v.c! - 180,
+      ),
+      sum('d', 'a', 'b', 'The exterior angle equals the two remote interior angles added.'),
+    ],
+    example: { a: 52, b: 71, c: 57, d: 123 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'angles', parts: ['a', 'b'], whole: 'd', triangle: { third: 'c' } },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...CONSTRUCTIONS,
+  ...PROOFS,
   ...SIMILARITY,
   ...SPECIAL,
   ...TRIG,
