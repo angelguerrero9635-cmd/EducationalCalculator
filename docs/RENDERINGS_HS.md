@@ -456,8 +456,10 @@ Each change is an optional field:
 - Set it to `status: 'drawn'` and list its gallery ids.
 - In `notes`, give the spec fields a page passes, with an example. This is the lesson chat's
   instruction for placing it.
-- Commit after each kind with a clear message, and push to your branch. Before each push, run
-  `pnpm check`, build, and take 390 px shots of the demos in light and dark.
+- Commit after each kind with a clear message. Push once per group (A, B, D, …), after
+  `node scripts/ci-test.mjs`. While drawing, run only the tests for the kind's pages and demos
+  ("Testing" in `docs/RENDERINGS_BRIEF.md`), never `pnpm check`. Build only the pages in scope
+  and take 390 px shots of the demos in light and dark.
 
 When A and B are drawn, add a dated line under "Done" in `docs/RENDERINGS_BRIEF.md`. Do the same
 after each later group, so the lesson chat knows which courses it can start. The lesson chat

@@ -130,10 +130,11 @@ describe('reachability through Browse', () => {
     expect([...reached].sort()).toEqual(COURSES.map((c) => c.id).sort());
   });
 
-  it('every course is cross-listed only under fields that exist in HE_FIELDS', () => {
+  it('every course is listed under one field that exists in HE_FIELDS', () => {
     for (const c of COURSES) {
       const known = HE_FIELDS[c.division].map((f) => f.id);
       expect(c.fields.filter((f) => !known.includes(f))).toEqual([]);
+      expect([c.id, c.fields.length]).toEqual([c.id, 1]);
     }
   });
 });
@@ -228,17 +229,15 @@ describe('nodeContext', () => {
     expect(nodeContext(getNode('he.math.calc-1')!)).toBe('Math');
     expect(nodeContext(getNode('he.chemistry.organic-1')!)).toBe('Science · Chemistry');
     expect(nodeContext(getNode('he.engineering.statics')!)).toBe(
-      'Engineering · Classical (Engineering Mechanics), Aerospace +3',
+      'Engineering · Classical (Engineering Mechanics)',
     );
   });
 });
 
 describe('courseSummary', () => {
-  it('counts topics and cross-listings', () => {
+  it('counts topics', () => {
     expect(courseSummary(getNode('he.math.calc-1') as never)).toBe('5 topics');
-    expect(courseSummary(getNode('he.engineering.statics') as never)).toBe(
-      '5 topics · cross-listed in 5 fields',
-    );
+    expect(courseSummary(getNode('he.engineering.statics') as never)).toBe('5 topics');
   });
 });
 

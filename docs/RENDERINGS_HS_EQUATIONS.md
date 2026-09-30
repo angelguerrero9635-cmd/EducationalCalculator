@@ -94,3 +94,11 @@ Tracker entries `H81`–`H88` in `src/data/modules/pictureRequestsHs.ts`:
   the same commit.
 - `equationIds` must still list every box (the module test "draws its equation from declared
   values only" relies on it). Add parser cases to a test.
+- Test as "Testing" in `docs/RENDERINGS_BRIEF.md` says, never `pnpm check`. For the input,
+  that means:
+  - your parser test;
+  - `pnpm test src/components src/data/__tests__`;
+  - the module tests of the pages whose template uses the new part
+    (`grep -rln "equation:" src/data/modules`, then `MODULE_IDS=<those ids> pnpm test src/data/modules`).
+
+  Run `node scripts/ci-test.mjs` once before each push.

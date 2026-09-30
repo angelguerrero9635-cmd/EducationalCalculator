@@ -93,11 +93,9 @@ export const getCourse = (id: string): Course | undefined => {
   return node && !isSkill(node) ? node : undefined;
 };
 
-/** Field titles for a course, e.g. "Aerospace, Mechanical +3". */
-export function fieldsSummary(course: Course, max = 2): string {
-  const titles = course.fields.map((f) => getField(course.division, f)?.title ?? f);
-  const shown = titles.slice(0, max).join(', ');
-  return titles.length > max ? `${shown} +${titles.length - max}` : shown;
+/** A course's field title, e.g. "Mechanical" (every course belongs to one field). */
+export function fieldsSummary(course: Course): string {
+  return course.fields.map((f) => getField(course.division, f)?.title ?? f).join(', ');
 }
 
 /** Short context line for a node, e.g. "Grade 8 · Math" or "Science · Chemistry". */
@@ -146,12 +144,9 @@ export function nodeRoute(id: string): RouteTarget | undefined {
   return isSkill(node) ? skillRoute(node.id) : courseRoute(node.id);
 }
 
-/** Course list subtitle, e.g. "5 topics · cross-listed in 5 fields". */
+/** Course list subtitle, e.g. "5 topics". */
 export function courseSummary(course: Course): string {
-  const topics = countLabel(course.topics.length, 'topic');
-  return course.fields.length > 1
-    ? `${topics} · cross-listed in ${course.fields.length} fields`
-    : topics;
+  return countLabel(course.topics.length, 'topic');
 }
 
 // ─── Browse: K–12 ────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 # Module plan
 
-664 skill and topic modules in total: 241 K–12 skills plus 423 college course topics (cross-listed engineering
-courses count once). They are written in sections.
+664 skill and topic modules in total: 241 K–12 skills plus 423 college course topics (each
+course is in one field). They are written in sections.
 Each section goes through the review process in [MODULE_GUIDE.md](MODULE_GUIDE.md) (tests plus an
 independent AI review), and the next section starts only after the owner approves it.
 
