@@ -215,6 +215,67 @@ const spreadingYoung: ModuleDef = {
   example: { x: 9, t: 0.6, v: 15, w: 30 },
 };
 
+// ── Part 3: a stream channel (new kind `streamChannel`) ──
+
+const m = (id: string, symbol: string, name: string, unit: string, derived = false) =>
+  V(id, symbol, name, { unit, min: 0.01, max: 100000, step: 0.01, derived });
+
+const discharge: ModuleDef = {
+  id: 'g.s12-surface-processes-discharge',
+  title: 'A stream’s discharge',
+  use: 'Use this for “A stream is 12 m wide and 1.5 m deep and flows at 0.8 m/s. What is its discharge?”',
+  assumptions: [
+    'Discharge is the volume of water that flows past a point each second.',
+    'The channel is taken as a rectangle, and the speed is the average across it.',
+    'A stream carries more sediment, and erodes faster, when its discharge rises in a flood.',
+  ],
+  variables: [
+    m('w', 'w', 'Width of the water', 'm'),
+    m('d', 'd', 'Depth of the water', 'm'),
+    m('v', 'v', 'Flow speed', 'm/s'),
+    m('A', 'A', 'Cross-section area', 'm²', true),
+    m('Q', 'Q', 'Discharge', 'm³/s', true),
+  ],
+  ...rels(
+    product('A', 'w', 'd', [
+      'The cross-section is a rectangle, width by depth.',
+      'Width: the area over the depth.',
+      'Depth: the area over the width.',
+    ]),
+    product('Q', 'A', 'v', [
+      'Each second a slab of water v metres long and A square metres across passes.',
+      'The area: the discharge over the speed.',
+      'The speed: the discharge over the area.',
+    ]),
+  ),
+  example: { w: 12, d: 1.5, v: 0.8, A: 18, Q: 14.4 },
+  startWith: ['w', 'd', 'v'],
+  representation: {
+    kind: 'streamChannel',
+    width: 'w',
+    depth: 'd',
+    speed: 'v',
+    area: 'A',
+    discharge: 'Q',
+  },
+};
+
+const dischargeCreek: ModuleDef = {
+  ...discharge,
+  id: 'g.s12-surface-processes-discharge-creek',
+  title: 'A small, fast creek',
+  use: 'Use this for a narrow creek, deep for its width and flowing fast.',
+  example: { w: 2, d: 0.8, v: 1.5, A: 1.6, Q: 2.4 },
+};
+
+const dischargeRiver: ModuleDef = {
+  ...discharge,
+  id: 'g.s12-surface-processes-discharge-river',
+  title: 'A wide, slow river',
+  use: 'Use this for a big river, far wider than it is deep.',
+  example: { w: 400, d: 6, v: 1.2, A: 2400, Q: 2880 },
+};
+
 export const HS2F_GALLERY_MODULES: ModuleDef[] = [
   magnitude,
   magnitudeHalf,
@@ -222,6 +283,9 @@ export const HS2F_GALLERY_MODULES: ModuleDef[] = [
   spreading,
   spreadingFast,
   spreadingYoung,
+  discharge,
+  dischargeCreek,
+  dischargeRiver,
 ];
 
 export const HS2F_GALLERY_LAYOUTS: LayoutDef[] = [];

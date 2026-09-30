@@ -52,5 +52,24 @@ export function hs2fIssues(rep: Representation, val: (id: string) => number | un
     if (f !== undefined && half !== undefined && !near(f, 2 * half, 1e-4))
       out.push(`full rate ${f}, but 2 × ${half} = ${2 * half}`);
   }
+  if (rep.kind === 'streamChannel') {
+    const w = num(rep.width);
+    const d = num(rep.depth);
+    const v = num(rep.speed);
+    for (const [name, x] of [
+      ['width', w],
+      ['depth', d],
+      ['speed', v],
+    ] as const)
+      if (x !== undefined && x <= 0) out.push(`stream ${name} ${x} is not positive`);
+    // The front face is w × d and the slab behind it v long: A = w × d, Q = A × v.
+    const a = num(rep.area);
+    if (a !== undefined && w !== undefined && d !== undefined && !near(a, w * d, 1e-4))
+      out.push(`area ${a}, but ${w} × ${d} = ${w * d}`);
+    const q = num(rep.discharge);
+    const area = a ?? (w !== undefined && d !== undefined ? w * d : undefined);
+    if (q !== undefined && area !== undefined && v !== undefined && !near(q, area * v, 1e-4))
+      out.push(`discharge ${q}, but ${area} × ${v} = ${area * v}`);
+  }
   return out;
 }

@@ -2151,6 +2151,9 @@ export function repIssues(
       out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
+    case 'streamChannel':
+      out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
     case 'projectile':
     case 'induction':
     case 'charges':

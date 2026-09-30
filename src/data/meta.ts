@@ -138,6 +138,7 @@ const PICTURE_NAMES: Record<string, string> = {
   atmosphereLayers: 'the atmosphere’s layers, or a pressure map',
   hrDiagram: 'an H–R diagram with a star plotted',
   expandingUniverse: 'galaxies as space stretches, or a Hubble plot',
+  streamChannel: 'a stream channel: width, depth and the water passing each second',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

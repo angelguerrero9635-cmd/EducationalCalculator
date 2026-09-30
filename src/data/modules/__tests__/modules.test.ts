@@ -24,6 +24,7 @@ import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
 import { hslSpecVars } from '../typesHsl';
+import { hs2fSpecVars } from '../typesHs2f';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
@@ -538,6 +539,8 @@ function representationVars(r: Representation): string[] {
     case 'hrDiagram':
     case 'expandingUniverse':
       return hslSpecVars(r);
+    case 'streamChannel':
+      return hs2fSpecVars(r);
     case 'projectile':
     case 'induction':
     case 'charges':

@@ -151,6 +151,7 @@ import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
 import { ReactionLimiting } from './ReactionLimiting';
 import { HslPicture } from './HslPicture';
+import { Hs2fPicture } from './Hs2fPicture';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { EnergySpring } from './EnergySpring';
@@ -243,6 +244,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'hrDiagram':
     case 'expandingUniverse':
       return <HslPicture spec={spec} calc={calc} />;
+    case 'streamChannel':
+      return <Hs2fPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

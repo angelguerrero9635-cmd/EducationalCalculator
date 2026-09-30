@@ -47,13 +47,35 @@ export interface StripesSpec {
   full?: NumOrVar;
 }
 
+/**
+ * `streamChannel` (H103 part 3, a new kind): a stream's channel seen in cross-section and in
+ * perspective, drawn to scale: the water `width` m wide and `depth` m deep (A = w × d), and the
+ * slab of water that passes in one second, `speed` m long, so its volume is the discharge
+ * Q = A × v in m³/s. Soil banks either side, the flow arrow along the channel.
+ */
+export interface StreamChannelSpec {
+  kind: 'streamChannel';
+  /** The water's width and depth, m. */
+  width: NumOrVar;
+  depth: NumOrVar;
+  /** The mean flow speed, m/s. */
+  speed: NumOrVar;
+  /** The cross-section's area, m², and the discharge, m³/s, when the page works them out. */
+  area?: NumOrVar;
+  discharge?: NumOrVar;
+}
+
+/** The group F picture kinds of their own (listed in `types.ts`). */
+export type Hs2fKindSpec = StreamChannelSpec;
+
 /** Every group F spec. */
-export type Hs2fSpec = MagnitudeSpec | StripesSpec;
+export type Hs2fSpec = MagnitudeSpec | StripesSpec | Hs2fKindSpec;
 
 /** The variable ids a group F spec names (for the module tests). */
 export function hs2fSpecVars(r: Hs2fSpec): string[] {
   const ids = (xs: (NumOrVar | undefined)[]) =>
     xs.filter((x): x is string => typeof x === 'string');
+  if (r.kind === 'streamChannel') return ids([r.width, r.depth, r.speed, r.area, r.discharge]);
   switch (r.mode) {
     case 'magnitude':
       return ids([r.m1, r.m2, r.amplitude, r.energy]);

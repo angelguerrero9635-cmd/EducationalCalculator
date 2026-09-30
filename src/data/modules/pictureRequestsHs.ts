@@ -1929,11 +1929,15 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s12-earth-interior-spreading-rate',
       'g.s12-earth-interior-spreading-fast',
       'g.s12-earth-interior-spreading-young',
+      'g.s12-surface-processes-discharge',
+      'g.s12-surface-processes-discharge-creek',
+      'g.s12-surface-processes-discharge-river',
     ],
     notes: [
       'P15: docs/plans/s.12.md needs 2–11, drawn part by part (group H2F, demos in galleryHs2f.ts, checks in harness/picturesHs2f.ts).',
       "Need 2 (s.12.earth-interior~magnitude): `earthLayers` mode `magnitude`, { kind: 'earthLayers', mode: 'magnitude', m1: 'M1', m2: 'M2', amplitude?: 'A', energy?: 'E', fixed? }: the two seismograms to one amplitude scale (a trace too small to see says so), then a bar to each magnitude on a whole-number magnitude scale with the gap bracketed as 10^ΔM = A × the shaking; the caption works ΔM, A = 10^ΔM and E = 10^(1.5 ΔM). Drag either bar's end. The harness checks both magnitudes are 0–10 and A and E against 10^ΔM and 10^(1.5 ΔM). Relations: ΔM = M₂ − M₁, A = 10^ΔM, E = 10^(1.5 × ΔM) (demo g.s12-earth-interior-magnitude, M₁ = 4, M₂ = 6 → A = 100, E = 1,000).",
       "Need 3 (s.12.earth-interior~spreading-rate): `oceanProfile` mode `stripes`, { kind: 'oceanProfile', mode: 'stripes', distance: 'x', age: 't', rate?: 'v', full?: 'w' }: the ridge from above with its rift, the seafloor striped normal (dark) and reversed (light) from the polarity time scale (GTS2012 chrons to 12 Ma), mirrored both sides; ages along the top, km along the bottom at the half rate v = x ÷ t (the page's v when given), the rock at x km with its bracket and its twin across the ridge, the plates' arrows labeled v mm/yr, and the caption working v and w = 2v. The harness checks 0 < t ≤ 12, v = x ÷ t and w = 2v. Example: x = 100 km, t = 4 million years → v = 25 mm/yr, w = 50 mm/yr (demo g.s12-earth-interior-spreading-rate; t must stay within 0.1–12 million years).",
+      "Need 4 (s.12.surface-processes~discharge): a new kind `streamChannel`, { kind: 'streamChannel', width: 'w', depth: 'd', speed: 'v', area?: 'A', discharge?: 'Q' }: the channel cut into its soil banks, in perspective and to one scale, the water's front face w × d and, shaded, the slab of water v m long that passes in one second (too thin to see on a very wide river, and the key then says so), the flow arrow labeled v, brackets for w and d, and the caption working A = w × d and Q = A × v. The harness checks w, d, v > 0, A = w × d and Q = A × v. Example: w = 12 m, d = 1.5 m, v = 0.8 m/s → A = 18 m², Q = 14.4 m³/s (demo g.s12-surface-processes-discharge).",
     ].join(' '),
   },
   ask(
