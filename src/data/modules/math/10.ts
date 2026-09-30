@@ -1045,4 +1045,331 @@ const CONDITIONAL: ModuleDef[] = [
   }),
 ];
 
-export const MATH_10_MODULES: ModuleDef[] = [...SIMILARITY, ...TRIG, ...CONDITIONAL];
+// ─── m.10.coordinate-geometry ────────────────────────────────────────────────
+
+/** A coordinate from −20 to 20. */
+const coord = (id: string, symbol: string, name: string, step = 0.5) =>
+  num(id, symbol, name, -20, 20, { step });
+/** c = (a + b) ÷ 2, solved for any one. */
+const half = (c: string, a: string, b: string, what: string) =>
+  rule(
+    `${c} = (${a} + ${b})/2`,
+    `{${c}} = ({${a}} + {${b}}) ÷ 2`,
+    {
+      [c]: [
+        (v) => (v[a]! + v[b]!) / 2,
+        `({${a}} + {${b}}) ÷ 2`,
+        `The midpoint’s ${what} is the average of the ends’.`,
+      ],
+      [a]: [
+        (v) => 2 * v[c]! - v[b]!,
+        `2 × {${c}} − {${b}}`,
+        'The midpoint is halfway, so A is as far on the other side.',
+      ],
+      [b]: [
+        (v) => 2 * v[c]! - v[a]!,
+        `2 × {${c}} − {${a}}`,
+        'The midpoint is halfway, so B is as far on the other side.',
+      ],
+    },
+    (v) => 2 * v[c]! - v[a]! - v[b]!,
+  );
+/** d = √((x₂ − x₁)² + (y₂ − y₁)²), worked out from two points. */
+const distance = (d: string, x1: string, y1: string, x2: string, y2: string, name = '') =>
+  derive(
+    `${d} = √((${x2} − ${x1})² + (${y2} − ${y1})²)`,
+    `{${d}} = √(({${x2}} − {${x1}})² + ({${y2}} − {${y1}})²)`,
+    d,
+    (v) => Math.hypot(v[x2]! - v[x1]!, v[y2]! - v[y1]!),
+    `√(({${x2}} − {${x1}})² + ({${y2}} − {${y1}})²)`,
+    `${name}The distance formula: the change across and the change up are the legs of a right triangle.`,
+  );
+/** The slope of side PQ from its corners (none for a vertical side). */
+const sideSlope = (m: string, p: string, q: string) => {
+  const [px, py, qx, qy] = [`${p}x`, `${p}y`, `${q}x`, `${q}y`];
+  const f = (v: Values) => (v[qx]! === v[px]! ? undefined : (v[qy]! - v[py]!) / (v[qx]! - v[px]!));
+  return rule(
+    `m${p}${q} = (${q}y − ${p}y)/(${q}x − ${p}x)`,
+    `{${m}} = ({${qy}} − {${py}}) ÷ ({${qx}} − {${px}})`,
+    {
+      [m]: [
+        f,
+        `({${qy}} − {${py}}) ÷ ({${qx}} − {${px}})`,
+        `Rise over run from ${p.toUpperCase()} to ${q.toUpperCase()}.`,
+      ],
+    },
+    (v) => (v[qx]! === v[px]! ? 1 : v[m]! - f(v)!),
+  );
+};
+/** Corner P's coordinates. */
+const corner = (p: string) => [
+  coord(`${p}x`, `x${p.toUpperCase()}`, `x of ${p.toUpperCase()}`, 1),
+  coord(`${p}y`, `y${p.toUpperCase()}`, `y of ${p.toUpperCase()}`, 1),
+];
+const slopeOut = (id: string, side: string) =>
+  der(num(id, `m${side}`, `Slope of ${side}`, -1000, 1000));
+
+const COORDINATES: ModuleDef[] = [
+  page({
+    id: 'm.10.coordinate-geometry',
+    assumptions: [
+      'The segment AB is the hypotenuse of a right triangle whose legs go straight across and straight up.',
+      'The legs are x₂ − x₁ and y₂ − y₁, so d = √((x₂ − x₁)² + (y₂ − y₁)²).',
+      'Squaring makes a negative change positive: the order of the points doesn’t matter.',
+    ],
+    variables: [
+      coord('x1', 'x₁', 'x of A'),
+      coord('y1', 'y₁', 'y of A'),
+      coord('x2', 'x₂', 'x of B'),
+      coord('y2', 'y₂', 'y of B'),
+      der(num('d', 'd', 'Distance AB', 0, 60)),
+    ],
+    rules: [distance('d', 'x1', 'y1', 'x2', 'y2')],
+    example: { x1: -3, y1: 2, x2: 5, y2: 8, d: 10 },
+    startWith: ['x1', 'y1', 'x2', 'y2'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x1',
+      y: 'y1',
+      second: { x: 'x2', y: 'y2' },
+      segment: true,
+      legs: true,
+      distance: 'd',
+      extent: 20,
+      quadrants: 4,
+    },
+  }),
+  page({
+    id: 'm.10.coordinate-geometry~midpoint',
+    title: 'The midpoint of a segment',
+    use: 'Use this for “Find the midpoint of the segment from (−4, 3) to (8, −5)” or “M is the midpoint; find the other end.”',
+    assumptions: [
+      'The midpoint M is halfway from A to B, across and up.',
+      'Its coordinates are the averages: ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2).',
+      'Given M and one end, the other end is as far past M: x₂ = 2x − x₁.',
+    ],
+    standalone: {
+      vars: ['x1', 'x2', 'mx'],
+      why: 'The x-coordinates are worked out apart from the y-coordinates.',
+    },
+    variables: [
+      coord('x1', 'x₁', 'x of A'),
+      coord('y1', 'y₁', 'y of A'),
+      coord('x2', 'x₂', 'x of B'),
+      coord('y2', 'y₂', 'y of B'),
+      num('mx', 'x', 'x of M', -20, 20, { step: 0.25 }),
+      num('my', 'y', 'y of M', -20, 20, { step: 0.25 }),
+    ],
+    rules: [half('mx', 'x1', 'x2', 'x'), half('my', 'y1', 'y2', 'y')],
+    example: { x1: -4, y1: 3, x2: 8, y2: -5, mx: 2, my: -1 },
+    startWith: ['x1', 'y1', 'x2', 'y2'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x1',
+      y: 'y1',
+      second: { x: 'x2', y: 'y2' },
+      segment: true,
+      midpoint: { x: 'mx', y: 'my' },
+      extent: 20,
+      quadrants: 4,
+    },
+  }),
+  page({
+    id: 'm.10.coordinate-geometry~partition',
+    title: 'The point that splits a segment in a ratio',
+    use: 'Use this for “Find the point P on AB, A(−2, 1) and B(10, 7), with AP:PB = 1:2.”',
+    assumptions: [
+      'P is on AB with AP:PB = m:n.',
+      'Cut AB into m + n equal pieces; P is m pieces from A, the fraction m ÷ (m + n) of the way.',
+      'Take that fraction of the change across and of the change up, starting from A.',
+    ],
+    variables: [
+      coord('x1', 'x₁', 'x of A'),
+      coord('y1', 'y₁', 'y of A'),
+      coord('x2', 'x₂', 'x of B'),
+      coord('y2', 'y₂', 'y of B'),
+      num('m', 'm', 'Pieces from A to P', 1, 10, { step: 1, integer: true }),
+      num('n', 'n', 'Pieces from P to B', 1, 10, { step: 1, integer: true }),
+      der(num('px', 'x', 'x of P', -20, 20)),
+      der(num('py', 'y', 'y of P', -20, 20)),
+    ],
+    rules: (['x', 'y'] as const).map((c) =>
+      derive(
+        `P${c} = A${c} + m/(m + n) × (B${c} − A${c})`,
+        `{p${c}} = {${c}1} + {m} ÷ ({m} + {n}) × ({${c}2} − {${c}1})`,
+        `p${c}`,
+        (v) => v[`${c}1`]! + (v.m! / (v.m! + v.n!)) * (v[`${c}2`]! - v[`${c}1`]!),
+        `{${c}1} + {m} ÷ ({m} + {n}) × ({${c}2} − {${c}1})`,
+        `Start at A and go m of the m + n equal pieces of the change in ${c}.`,
+      ),
+    ),
+    example: { x1: -2, y1: 1, x2: 10, y2: 7, m: 1, n: 2, px: 2, py: 3 },
+    startWith: ['x1', 'y1', 'x2', 'y2', 'm', 'n'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x1',
+      y: 'y1',
+      second: { x: 'x2', y: 'y2' },
+      segment: true,
+      partition: { ratio: ['m', 'n'], x: 'px', y: 'py' },
+      extent: 20,
+      quadrants: 4,
+    },
+  }),
+  page({
+    id: 'm.10.coordinate-geometry~parallelogram',
+    title: 'Prove a parallelogram with slopes',
+    use: 'Use this for “Show that A(−3, −1), B(−1, 3), C(5, 4), D(3, 0) is a parallelogram.”',
+    assumptions: [
+      'Sides with equal slopes are parallel.',
+      'Both pairs of opposite sides parallel: the quadrilateral is a parallelogram.',
+      'Two sides are perpendicular when their slopes multiply to −1.',
+    ],
+    variables: [
+      ...['a', 'b', 'c', 'd'].flatMap(corner),
+      slopeOut('mab', 'AB'),
+      slopeOut('mbc', 'BC'),
+      slopeOut('mdc', 'DC'),
+      slopeOut('mad', 'AD'),
+    ],
+    rules: [
+      sideSlope('mab', 'a', 'b'),
+      sideSlope('mbc', 'b', 'c'),
+      sideSlope('mdc', 'd', 'c'),
+      sideSlope('mad', 'a', 'd'),
+    ],
+    example: {
+      ax: -3,
+      ay: -1,
+      bx: -1,
+      by: 3,
+      cx: 5,
+      cy: 4,
+      dx: 3,
+      dy: 0,
+      mab: 2,
+      mbc: 1 / 6,
+      mdc: 2,
+      mad: 1 / 6,
+    },
+    startWith: ['ax', 'ay', 'bx', 'by', 'cx', 'cy', 'dx', 'dy'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'ax',
+      y: 'ay',
+      polygon: [
+        ['ax', 'ay'],
+        ['bx', 'by'],
+        ['cx', 'cy'],
+        ['dx', 'dy'],
+      ],
+      slopes: true,
+      extent: 20,
+      quadrants: 4,
+    },
+  }),
+  page({
+    id: 'm.10.coordinate-geometry~right-triangle',
+    title: 'Prove a right triangle with slopes',
+    use: 'Use this for “Is the triangle A(−1, 1), B(1, 5), C(5, 3) a right triangle?”',
+    assumptions: [
+      'Two sides are perpendicular when their slopes multiply to −1.',
+      'A vertical side has no slope; it is perpendicular to a level side (slope 0).',
+      'A right angle at B makes AB and BC perpendicular.',
+    ],
+    variables: [
+      ...['a', 'b', 'c'].flatMap(corner),
+      slopeOut('mab', 'AB'),
+      slopeOut('mbc', 'BC'),
+      slopeOut('mac', 'AC'),
+      der(num('p', 'p', 'Slope of AB × slope of BC', -1e6, 1e6)),
+    ],
+    rules: [
+      sideSlope('mab', 'a', 'b'),
+      sideSlope('mbc', 'b', 'c'),
+      sideSlope('mac', 'a', 'c'),
+      derive(
+        'p = mAB × mBC',
+        '{p} = {mab} × {mbc}',
+        'p',
+        (v) => v.mab! * v.mbc!,
+        '{mab} × {mbc}',
+        'Multiply the two slopes at B: −1 means a right angle.',
+      ),
+    ],
+    example: { ax: -1, ay: 1, bx: 1, by: 5, cx: 5, cy: 3, mab: 2, mbc: -0.5, mac: 1 / 3, p: -1 },
+    startWith: ['ax', 'ay', 'bx', 'by', 'cx', 'cy'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'ax',
+      y: 'ay',
+      polygon: [
+        ['ax', 'ay'],
+        ['bx', 'by'],
+        ['cx', 'cy'],
+      ],
+      slopes: true,
+      extent: 20,
+      quadrants: 4,
+    },
+  }),
+  page({
+    id: 'm.10.coordinate-geometry~perimeter',
+    title: 'Perimeter and area on the grid',
+    use: 'Use this for “Find the perimeter and area of the triangle A(0, 0), B(6, 0), C(3, 4).”',
+    assumptions: [
+      'Each side’s length comes from the distance formula.',
+      'Side AB is level, so it is the base and the height is how far C is above or below it.',
+      'Area = ½ × base × height.',
+    ],
+    variables: [
+      ...['a', 'b', 'c'].flatMap(corner),
+      der(num('ab', 'AB', 'Side AB', 0, 60)),
+      der(num('bc', 'BC', 'Side BC', 0, 60)),
+      der(num('ca', 'CA', 'Side CA', 0, 60)),
+      der(num('P', 'P', 'Perimeter', 0, 180)),
+      der(num('K', 'K', 'Area', 0, 1000)),
+    ],
+    rules: [
+      limit(
+        'side AB is level',
+        '{ay} = {by}: side AB is level',
+        (v) => v.ay! === v.by!,
+        'Put A and B at the same height, so AB is a level base.',
+      ),
+      distance('ab', 'ax', 'ay', 'bx', 'by', 'AB: '),
+      distance('bc', 'bx', 'by', 'cx', 'cy', 'BC: '),
+      distance('ca', 'cx', 'cy', 'ax', 'ay', 'CA: '),
+      total('P', ['ab', 'bc', 'ca'], 'Add the three sides.'),
+      derive(
+        'K = ½ × |xB − xA| × |yC − yA|',
+        '{K} = |{bx} − {ax}| × |{cy} − {ay}| ÷ 2',
+        'K',
+        (v) => (Math.abs(v.bx! - v.ax!) * Math.abs(v.cy! - v.ay!)) / 2,
+        '|{bx} − {ax}| × |{cy} − {ay}| ÷ 2',
+        'Half of base times height: the base along the level side, the height straight up to C.',
+      ),
+    ],
+    example: { ax: 0, ay: 0, bx: 6, by: 0, cx: 3, cy: 4, ab: 6, bc: 5, ca: 5, P: 16, K: 12 },
+    startWith: ['ax', 'ay', 'bx', 'by', 'cx', 'cy'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'ax',
+      y: 'ay',
+      polygon: [
+        ['ax', 'ay'],
+        ['bx', 'by'],
+        ['cx', 'cy'],
+      ],
+      extent: 20,
+      quadrants: 4,
+    },
+  }),
+];
+
+export const MATH_10_MODULES: ModuleDef[] = [
+  ...SIMILARITY,
+  ...TRIG,
+  ...COORDINATES,
+  ...CONDITIONAL,
+];
