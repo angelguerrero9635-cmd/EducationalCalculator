@@ -10,6 +10,8 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   and ~mechanisms sorts; ~common-ancestry explore; ~resistance and ~speciation sequences).
 - `s.9.population-ecology`: 5 (main logistic, ~rates and ~doubling calculators;
   ~limiting-factors sort; ~growth-phases sequence).
+- `s.9.membrane-transport`: 4 (main diffusion and ~pump calculators; ~transport-types and
+  ~tonicity sorts).
 
 ## Waiting
 
@@ -30,5 +32,13 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   but not which flows add and which take away (Engine need 8 still stands).
 - `~doubling`: time t is 0–1,440 min (a day) and doublings g at most 40, so N stays a finite
   number; the plan's 0–10,000 min would overflow 2ᵍ.
+
+- `s.9.membrane-transport` main: the limit m ≤ d ÷ 2 reads as 0 when the gradient is not above 0
+  (O₂ then moves out or not at all, so none moves in). The after-counts o₂ and i₂ are labelled
+  under the picture, which draws the counts before.
+- `~pump`: added the limit i < o (Na⁺ is lower inside): the pump's arrow runs from fewer to more,
+  so with more Na⁺ inside the picture would pump it in. K⁺ and the after-counts are labelled
+  under the picture.
+- `~transport-types`: text cards (Engine need 10, transport icons, would add pictures).
 
 ## Shared needs found while building

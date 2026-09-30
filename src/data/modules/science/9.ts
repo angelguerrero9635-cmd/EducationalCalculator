@@ -571,6 +571,19 @@ const below = (small: string, big: string): Rule => ({
   steps: {},
 });
 
+/** A page limit the story sets (not a formula): `ok` says whether the values keep to it. */
+const limit = (id: string, display: string, vars: string[], ok: (v: Values) => boolean): Rule => ({
+  relation: {
+    id,
+    constraint: true,
+    display,
+    vars,
+    residual: (v: Values) => (ok(v) ? 0 : 1),
+    solve: {},
+  },
+  steps: {},
+});
+
 /** The logistic curve N = K ÷ (1 + Ae^(−rt)), A = (K − N₀) ÷ N₀. */
 const logistic = (v: Values) => v.K! / (1 + ((v.K! - v.N0!) / v.N0!) * Math.exp(-v.r! * v.t!));
 
@@ -799,4 +812,130 @@ const POPULATION: ModuleDef[] = [
   },
 ];
 
-export const SCIENCE_9_MODULES: ModuleDef[] = [...INHERITANCE, ...EVOLUTION, ...POPULATION];
+/** out = a ± b both ways, for counts after particles cross. */
+const plusMinus = (out: string, a: string, b: string, sign: 1 | -1, how: string): Rule =>
+  both(
+    `${out} = ${a} ${sign > 0 ? '+' : '−'} ${b}`,
+    `{${out}} = {${a}} ${sign > 0 ? '+' : '−'} {${b}}`,
+    [out, a, b],
+    (v) => v[out]! - (v[a]! + sign * v[b]!),
+    {
+      [out]: [(v) => v[a]! + sign * v[b]!, `{${a}} ${sign > 0 ? '+' : '−'} {${b}}`, how],
+    },
+  );
+
+const MEMBRANE: ModuleDef[] = [
+  // ── Cell membranes and transport (HS-LS1-2, HS-LS1-3) ──
+  {
+    id: 's.9.membrane-transport',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Particles move both ways at random, so the net flow runs from the side with more to the side with fewer.',
+      'Small nonpolar molecules such as O₂ and CO₂ cross the bilayer with no protein and no ATP.',
+      'At equal counts particles still cross, but the net movement is zero: dynamic equilibrium.',
+    ],
+    variables: [
+      count('o', 'o', 'O₂ outside', 0, 40),
+      count('i', 'i', 'O₂ inside', 0, 40),
+      count('m', 'm', 'O₂ moving in now', 0, 12),
+      count('d', 'd', 'Gradient (outside − inside)', -40, 40, true),
+      count('o2', 'o₂', 'O₂ outside after', 0, 40, true),
+      count('i2', 'i₂', 'O₂ inside after', 0, 40, true),
+    ],
+    ...rules(
+      forward(
+        'd = o − i',
+        '{d} = {o} − {i}',
+        'd',
+        ['o', 'i'],
+        (v) => v.o! - v.i!,
+        '{o} − {i}',
+        'The gradient is the difference across the membrane: outside minus inside.',
+      ),
+      plusMinus('o2', 'o', 'm', -1, 'The particles that cross in leave the outside.'),
+      plusMinus('i2', 'i', 'm', 1, 'The particles that cross in join the inside.'),
+      limit(
+        '2m ≤ d',
+        '{m} is at most half of {d}, or 0',
+        ['m', 'd'],
+        (v) => 2 * v.m! <= Math.max(0, v.d!) + 1e-9,
+      ),
+    ),
+    example: { o: 20, i: 8, m: 6, d: 12, o2: 14, i2: 14 },
+    startWith: ['o', 'i', 'm'],
+    pictureLabels: ['o2', 'i2'],
+    representation: {
+      kind: 'membrane',
+      outside: 'o',
+      inside: 'i',
+      transport: 'diffusion',
+      particle: 'O₂',
+      moved: 'm',
+      gradient: 'd',
+    },
+  },
+  {
+    id: 's.9.membrane-transport~pump',
+    title: 'The sodium–potassium pump',
+    use: 'Use this for “How many Na⁺ and K⁺ ions does the pump move for 2 ATP?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each cycle, the pump splits one ATP to move 3 Na⁺ out of the cell and 2 K⁺ in.',
+      'It moves Na⁺ from the side with fewer to the side with more, against the gradient: that needs energy.',
+      'Only the Na⁺ counts are drawn; the K⁺ move the opposite way.',
+    ],
+    variables: [
+      count('o', 'o', 'Na⁺ outside', 0, 40),
+      count('i', 'i', 'Na⁺ inside', 0, 40),
+      count('c', 'c', 'Pump cycles', 1, 4),
+      count('s', 's', 'Na⁺ pumped out', 3, 12, true),
+      count('k', 'k', 'K⁺ pumped in', 2, 8, true),
+      count('a', 'a', 'ATP used', 1, 4, true),
+      count('o2', 'o₂', 'Na⁺ outside after', 0, 40, true),
+      count('i2', 'i₂', 'Na⁺ inside after', 0, 40, true),
+    ],
+    ...rules(
+      forward(
+        's = 3c',
+        '{s} = 3 × {c}',
+        's',
+        ['c'],
+        (v) => 3 * v.c!,
+        '3 × {c}',
+        'Each cycle moves 3 Na⁺ out of the cell.',
+      ),
+      forward(
+        'k = 2c',
+        '{k} = 2 × {c}',
+        'k',
+        ['c'],
+        (v) => 2 * v.c!,
+        '2 × {c}',
+        'Each cycle brings 2 K⁺ into the cell.',
+      ),
+      forward('a = c', '{a} = {c}', 'a', ['c'], (v) => v.c!, '{c}', 'Each cycle splits one ATP.'),
+      plusMinus('o2', 'o', 's', 1, 'The Na⁺ pumped out join the outside.'),
+      plusMinus('i2', 'i', 's', -1, 'The Na⁺ pumped out leave the inside.'),
+      below('i', 'o'),
+    ),
+    example: { o: 20, i: 8, c: 2, s: 6, k: 4, a: 2, o2: 26, i2: 2 },
+    startWith: ['o', 'i', 'c'],
+    pictureLabels: ['k', 'o2', 'i2'],
+    representation: {
+      kind: 'membrane',
+      outside: 'o',
+      inside: 'i',
+      transport: 'active',
+      particle: 'Na⁺',
+      moved: 's',
+      atp: 'a',
+    },
+  },
+];
+
+export const SCIENCE_9_MODULES: ModuleDef[] = [
+  ...INHERITANCE,
+  ...EVOLUTION,
+  ...POPULATION,
+  ...MEMBRANE,
+];

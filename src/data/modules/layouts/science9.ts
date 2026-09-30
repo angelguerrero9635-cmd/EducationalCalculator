@@ -363,4 +363,126 @@ const POPULATION: LayoutDef[] = [
   },
 ];
 
-export const SCIENCE_9_LAYOUTS: LayoutDef[] = [...INHERITANCE, ...EVOLUTION, ...POPULATION];
+const MEMBRANE: LayoutDef[] = [
+  // ── Cell membranes and transport (HS-LS1-2, HS-LS1-3) ──
+  {
+    kind: 'sort',
+    id: 's.9.membrane-transport~transport-types',
+    title: 'Which kind of transport is it?',
+    use: 'Use this for “Is it passive or active transport, and does it need a protein?”',
+    assumptions: [
+      'Passive transport runs from more to fewer and uses no ATP; active transport runs the other way and spends ATP.',
+      'Facilitated diffusion and osmosis are passive but go through a channel or carrier protein.',
+    ],
+    question: 'How does it cross the membrane?',
+    bins: [
+      {
+        id: 'simple',
+        label: 'Simple diffusion',
+        why: 'Small nonpolar molecules slip between the phospholipids, from more to fewer.',
+      },
+      {
+        id: 'facilitated',
+        label: 'Facilitated diffusion',
+        why: 'A channel or carrier protein lets it through, still from more to fewer, with no ATP.',
+      },
+      {
+        id: 'osmosis',
+        label: 'Osmosis',
+        why: 'Water crosses, through aquaporins, toward the side with more solute.',
+      },
+      {
+        id: 'active',
+        label: 'Active transport',
+        why: 'A pump moves it from fewer to more, against the gradient, spending ATP.',
+      },
+      {
+        id: 'bulk',
+        label: 'Bulk transport',
+        why: 'Large particles or many molecules move inside vesicles made from membrane.',
+      },
+    ],
+    cards: [
+      { label: 'O₂ enters a lung cell', bin: 'simple' },
+      { label: 'CO₂ leaves a muscle cell', bin: 'simple' },
+      { label: 'Glucose enters a red blood cell through a carrier protein', bin: 'facilitated' },
+      { label: 'K⁺ leaves through an open channel, high to low', bin: 'facilitated' },
+      { label: 'Water enters a root cell through aquaporins', bin: 'osmosis' },
+      { label: 'The Na⁺/K⁺ pump spends ATP', bin: 'active' },
+      { label: 'Root cells take in minerals from soil that has fewer of them', bin: 'active' },
+      { label: 'A white blood cell engulfs a bacterium', bin: 'bulk' },
+      { label: 'A gland cell releases insulin in vesicles', bin: 'bulk' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.membrane-transport~tonicity',
+    title: 'Cells in hypotonic, isotonic and hypertonic water',
+    use: 'Use this for “Onion cells in salt water shrink from their walls. Why?”',
+    assumptions: [
+      'Water moves by osmosis toward the side with more solute.',
+      'A red blood cell has no wall: it swells and can burst, or shrivels. A plant cell’s wall holds it firm, or its membrane pulls away.',
+    ],
+    question: 'Which way does water move?',
+    bins: [
+      {
+        id: 'in',
+        label: 'Into the cell (hypotonic water)',
+        why: 'The water has less solute than the cell, so water moves in.',
+      },
+      {
+        id: 'none',
+        label: 'No net movement (isotonic water)',
+        why: 'The same solute on both sides: water crosses both ways equally.',
+      },
+      {
+        id: 'out',
+        label: 'Out of the cell (hypertonic water)',
+        why: 'The water has more solute than the cell, so water moves out.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Red blood cell swollen round',
+        bin: 'in',
+        figure: { kind: 'icon', icon: 'red blood cell in hypotonic water' },
+      },
+      {
+        label: 'Red blood cell, a dimpled disc',
+        bin: 'none',
+        figure: { kind: 'icon', icon: 'red blood cell in isotonic water' },
+      },
+      {
+        label: 'Red blood cell shriveled',
+        bin: 'out',
+        figure: { kind: 'icon', icon: 'red blood cell in hypertonic water' },
+      },
+      {
+        label: 'Plant cell firm (turgid)',
+        bin: 'in',
+        figure: { kind: 'icon', icon: 'plant cell in hypotonic water' },
+      },
+      {
+        label: 'Plant cell limp (flaccid)',
+        bin: 'none',
+        figure: { kind: 'icon', icon: 'plant cell in isotonic water' },
+      },
+      {
+        label: 'Plant cell, membrane pulled from the wall',
+        bin: 'out',
+        figure: { kind: 'icon', icon: 'plant cell in hypertonic water' },
+      },
+      { label: 'Wilted lettuce in fresh water turns crisp', bin: 'in' },
+      { label: 'Red blood cells in 0.9% saline', bin: 'none' },
+      { label: 'Celery in salty water goes limp', bin: 'out' },
+      { label: 'Red onion skin in salt water shrinks from its wall', bin: 'out' },
+    ],
+  },
+];
+
+export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
+  ...INHERITANCE,
+  ...EVOLUTION,
+  ...POPULATION,
+  ...MEMBRANE,
+];
