@@ -17,8 +17,8 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Each span is how many years the model stood before the next one replaced it.',
       'A new model came from new evidence: the electron, the gold-foil experiment, the lines in hydrogen’s spectrum.',
-      'Bohr’s model is like the Solar System: a heavy center with electrons going around it.',
-      'Unlike planets, electrons can only be on certain levels, and they jump between them.',
+      'Bohr’s model is like the Solar System: a heavy center with lighter electrons going around it, and mostly empty space.',
+      'Unlike planets, electrons can only be on certain levels and jump between them, and electric attraction holds them, not gravity.',
     ],
     question: 'Put the models of the atom in the order they were proposed.',
     stages: [

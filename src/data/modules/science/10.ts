@@ -523,7 +523,8 @@ const PHOTON_RULES: Rule[] = [
       id: 'f = c/λ',
       display: '{f} = (3.00 × 10⁸)/({l} × 10⁻⁹)',
       vars: ['f', 'l'],
-      residual: (v) => (v.f! * v.l! * 1e-9) / 3e8 - 1,
+      // Not written as f·λ − c: at the harness's small probe values that looks like a constant.
+      residual: (v) => v.f! - 3e17 / v.l!,
       solve: {
         f: (v) => (v.l! > 0 ? 3e8 / (v.l! * 1e-9) : undefined),
         l: (v) => (v.f! > 0 ? 3e8 / v.f! / 1e-9 : undefined),
@@ -546,7 +547,8 @@ const PHOTON_RULES: Rule[] = [
       display: '{E} = 6.626 × 10⁻³⁴ × {f}',
       vars: ['E', 'f'],
       residual: (v) => v.E! / (6.626e-34 * v.f!) - 1,
-      solve: { E: (v) => 6.626e-34 * v.f!, f: (v) => v.E! / 6.626e-34 },
+      // f first: `holds` re-solves the first entry, and a check on E (10⁻¹⁹ J) would pass anything.
+      solve: { f: (v) => v.E! / 6.626e-34, E: (v) => 6.626e-34 * v.f! },
     },
     steps: {
       E: {
