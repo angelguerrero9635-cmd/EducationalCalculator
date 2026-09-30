@@ -11,6 +11,7 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 - `m.12.confidence-intervals` (4): main (mean, σ known), `~proportion`, `~sample-size`,
   `~capture`.
 - `m.12.sampling-distributions` (3): main (x̄), `~proportion` (p̂), `~counts` (binomial).
+- `m.12.chi-square` (2): main (goodness of fit, 3 categories), `~independence` (2 × 3 table).
 
 ## Waiting
 
@@ -31,6 +32,11 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 - **`~capture` draws 100 intervals; N is not a value.** `normalCurve` takes the number of
   intervals as a fixed number, not a variable, so N (20, 50, 100) would not move the picture:
   the page fixes 100 and K = 100 × C. The sample size n is standalone (it sets the widths only).
+
+- **Chi-square contexts.** The goodness-of-fit page counts red, pink and white flowers against
+  a 1 : 2 : 1 ratio; the independence table is grade (11, 12) by how students get to school
+  (walk, bus, car). The expected counts are shown in the steps' work lines, not as values (the
+  10-value limit).
 
 ## Shared needs found while building
 

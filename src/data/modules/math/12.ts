@@ -6,6 +6,7 @@
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math12.ts`.
  */
 import { chiCdf, invPhi, Phi } from '@/components/module/reps/statMath';
+import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -89,6 +90,12 @@ function derive(
     ],
   });
 }
+
+/** A relation with more said under one of its steps (work lines, a note). */
+const withStep = (r: Rel, id: string, more: Partial<StepText>): Rel => ({
+  ...r,
+  steps: { ...r.steps, [id]: { ...r.steps[id]!, ...more } },
+});
 
 /** 0 < p < 1, or undefined. */
 const inOpen = (p: number) => (p > 0 && p < 1 ? p : undefined);
@@ -279,6 +286,29 @@ const chiTail2 = derive(
   'χ²cdf({X}, ∞, 2)',
   'The area under the chi-square curve with df 2 past the statistic.',
 );
+
+/** A number as the steps show it (at most 4 decimals). */
+const fmt = (x: number) => formatNumber(Number(x.toFixed(4)));
+
+/** The 2 × 3 table of the independence test, row by row. */
+const CELLS = [
+  ['a', 'b', 'e'],
+  ['c', 'd', 'f'],
+] as const;
+const ALL_CELLS: string[] = CELLS.flat();
+/** Each cell's expected count if the variables are independent: row × column ÷ grand total. */
+function expectedCounts(v: Values): { id: string; O: number; E: number }[] {
+  const N = ALL_CELLS.reduce((t, id) => t + v[id]!, 0);
+  const row = CELLS.map((r) => r.reduce((t, id) => t + v[id]!, 0));
+  const col = CELLS[0].map((id, j) => v[id]! + v[CELLS[1][j]!]!);
+  return CELLS.flatMap((r, i) => r.map((id, j) => ({ id, O: v[id]!, E: (row[i]! * col[j]!) / N })));
+}
+const chiOfTable = (v: Values) => {
+  const cells = expectedCounts(v);
+  return cells.every((c) => c.E > 0)
+    ? cells.reduce((t, c) => t + (c.O - c.E) ** 2 / c.E, 0)
+    : undefined;
+};
 
 const MATH_12_STATS: ModuleDef[] = [
   // ── m.12.hypothesis-testing (S-IC.5, S-IC.6) ──
@@ -795,6 +825,178 @@ const MATH_12_STATS: ModuleDef[] = [
       kind: 'histogram',
       binomial: { n: 'n', p: 'p', mean: 'M', sd: 'S' },
       axis: 'Successes',
+    },
+  },
+
+  // ── m.12.chi-square (AP Statistics unit 8) ──
+  {
+    id: 'm.12.chi-square',
+    assumptions: [
+      'Use counts, not percents; every expected count n × p should be at least 5.',
+      'H₀: the shares are p₁, p₂ and p₃; df = categories − 1 = 2.',
+      'A large X² (a small p-value) means the counts don’t fit the shares.',
+    ],
+    variables: [
+      V('O1', 'O₁', 'Red flowers counted', { integer: true, min: 0, max: 100000 }),
+      V('O2', 'O₂', 'Pink flowers counted', { integer: true, min: 0, max: 100000 }),
+      V('O3', 'O₃', 'White flowers counted', { integer: true, min: 0, max: 100000 }),
+      V('p1', 'p₁', 'Expected share of red', { min: 0.01, max: 0.98, step: 0.01 }),
+      V('p2', 'p₂', 'Expected share of pink', { min: 0.01, max: 0.98, step: 0.01 }),
+      V('p3', 'p₃', 'Expected share of white', {
+        min: 0.01,
+        max: 0.98,
+        step: 0.01,
+        derived: true,
+      }),
+      V('n', 'n', 'Flowers in all', { integer: true, min: 1, max: 300000, derived: true }),
+      V('X', 'X²', 'Chi-square statistic', { min: 0, max: 10000000, step: 0.01, derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'p₃ = 1 − p₁ − p₂',
+        '{p3} = 1 − {p1} − {p2}',
+        'p3',
+        ['p1', 'p2'],
+        (v) => 1 - v.p1! - v.p2!,
+        '1 − {p1} − {p2}',
+        'The three shares make up the whole, 1.',
+      ),
+      derive(
+        'n = O₁ + O₂ + O₃',
+        '{n} = {O1} + {O2} + {O3}',
+        'n',
+        ['O1', 'O2', 'O3'],
+        (v) => v.O1! + v.O2! + v.O3!,
+        '{O1} + {O2} + {O3}',
+        'Add the counts for the size of the sample.',
+      ),
+      withStep(
+        derive(
+          'X² = Σ(O − E)² ÷ E',
+          '{X} = ({O1} − {n} × {p1})² ÷ ({n} × {p1}) + ({O2} − {n} × {p2})² ÷ ({n} × {p2}) + ({O3} − {n} × {p3})² ÷ ({n} × {p3})',
+          'X',
+          ['O1', 'O2', 'O3', 'n', 'p1', 'p2', 'p3'],
+          (v) =>
+            (v.O1! - v.n! * v.p1!) ** 2 / (v.n! * v.p1!) +
+            (v.O2! - v.n! * v.p2!) ** 2 / (v.n! * v.p2!) +
+            (v.O3! - v.n! * v.p3!) ** 2 / (v.n! * v.p3!),
+          '({O1} − {n} × {p1})² ÷ ({n} × {p1}) + ({O2} − {n} × {p2})² ÷ ({n} × {p2}) + ({O3} − {n} × {p3})² ÷ ({n} × {p3})',
+          'Each expected count is E = n × p; add (O − E)² ÷ E over the three categories.',
+        ),
+        'X',
+        {
+          work: (v) => {
+            const E = [v.p1!, v.p2!, v.p3!].map((p) => v.n! * p);
+            const O = [v.O1!, v.O2!, v.O3!];
+            const terms = O.map((o, i) => (o - E[i]!) ** 2 / E[i]!);
+            return [
+              `Expected counts E = n × p: ${E.map(fmt).join(', ')}`,
+              `${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`,
+            ];
+          },
+        },
+      ),
+      chiTail2,
+    ),
+    example: {
+      O1: 22,
+      O2: 54,
+      O3: 24,
+      p1: 0.25,
+      p2: 0.5,
+      p3: 0.25,
+      n: 100,
+      X: 0.72,
+      P: Math.exp(-0.36),
+    },
+    startWith: ['O1', 'O2', 'O3', 'p1', 'p2'],
+    representation: {
+      kind: 'normalCurve',
+      chiSquare: { df: 2, stat: 'X', p: 'P' },
+    },
+  },
+  {
+    id: 'm.12.chi-square~independence',
+    title: 'Chi-square test of independence',
+    use: 'Use this for “Is the way students get to school independent of their grade?” from a 2 × 3 table.',
+    assumptions: [
+      'H₀: the two variables are independent; each cell then expects row total × column total ÷ grand total.',
+      'Every expected count should be at least 5; df = (2 − 1)(3 − 1) = 2.',
+      'A test of homogeneity (do two groups share one distribution?) uses the same arithmetic.',
+    ],
+    variables: [
+      V('a', 'a', 'Grade 11, walk', { integer: true, min: 0, max: 100000 }),
+      V('b', 'b', 'Grade 11, bus', { integer: true, min: 0, max: 100000 }),
+      V('e', 'e', 'Grade 11, car', { integer: true, min: 0, max: 100000 }),
+      V('c', 'c', 'Grade 12, walk', { integer: true, min: 0, max: 100000 }),
+      V('d', 'd', 'Grade 12, bus', { integer: true, min: 0, max: 100000 }),
+      V('f', 'f', 'Grade 12, car', { integer: true, min: 0, max: 100000 }),
+      V('X', 'X²', 'Chi-square statistic', { min: 0, max: 10000000, step: 0.01, derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+    ],
+    ...rels(
+      {
+        relation: {
+          id: 'X² = Σ(O − E)² ÷ E',
+          display: '{X} = Σ(O − E)² ÷ E over the cells {a}, {b}, {e}, {c}, {d}, {f}',
+          vars: ['X', ...ALL_CELLS],
+          residual: (v) => v.X! - (chiOfTable(v) ?? NaN),
+          solve: {
+            X: (v) => {
+              const x = chiOfTable(v);
+              return x === undefined ? undefined : exact(x);
+            },
+            ...Object.fromEntries(ALL_CELLS.map((id) => [id, () => undefined])),
+          },
+          check: (v) =>
+            `${expectedCounts(v)
+              .map((c) => `(${fmt(c.O)} − ${fmt(c.E)})² ÷ ${fmt(c.E)}`)
+              .join(' + ')} = ${fmt(v.X!)}`,
+        },
+        steps: {
+          X: {
+            expr: (v) =>
+              expectedCounts(v)
+                .map((c) => `({${c.id}} − ${fmt(c.E)})² ÷ ${fmt(c.E)}`)
+                .join(' + '),
+            how: 'Each cell expects row total × column total ÷ grand total; add (O − E)² ÷ E over the six cells.',
+            work: (v) => {
+              const cells = expectedCounts(v);
+              const terms = cells.map((c) => (c.O - c.E) ** 2 / c.E);
+              return [
+                `Expected counts, row by row: ${cells.map((c) => fmt(c.E)).join(', ')}`,
+                `${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`,
+              ];
+            },
+          },
+        },
+      },
+      chiTail2,
+    ),
+    example: {
+      a: 20,
+      b: 30,
+      e: 50,
+      c: 30,
+      d: 20,
+      f: 50,
+      X: 4,
+      P: Math.exp(-2),
+    },
+    startWith: ['a', 'b', 'e', 'c', 'd', 'f'],
+    representation: {
+      kind: 'table',
+      twoWay: {
+        rows: ['Grade 11', 'Grade 12'],
+        cols: ['Walk', 'Bus', 'Car'],
+        cells: [
+          ['a', 'b', 'e'],
+          ['c', 'd', 'f'],
+        ],
+        expected: 'independence',
+        chiSquare: 'X',
+      },
     },
   },
 ];
