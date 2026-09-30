@@ -1325,8 +1325,8 @@ const dynamicsPages: ModuleDef[] = [
 
 const RADIUS = q('r', 'r', 'Radius', 'm', 0.01, 10000, 0.01);
 const SPEED = q('v', 'v', 'Speed', 'm/s', 0.01, 10000, 0.01);
-const AC = q('a', 'a_c', 'Centripetal acceleration', 'm/s²', 0, 1e9, 0.01);
-const FC = q('F', 'F_c', 'Centripetal force', 'N', 0, 1e12, 0.01);
+const AC = q('a', 'a_c', 'Centripetal acceleration', 'm/s²', 0.001, 1e9, 0.001);
+const FC = q('F', 'F_c', 'Centripetal force', 'N', 0.001, 1e12, 0.001);
 
 /** a_c = v² ÷ r. */
 const centripetalRule = rule('a_c = v²/r', '{a} = {v}²/{r}', (v) => v.a! * v.r! - v.v! * v.v!, {
@@ -2507,7 +2507,23 @@ const opticsPage = (
       q('h', 'hₒ', 'Object height', 'cm', 0.1, 1000, 0.1),
       q('k', 'hᵢ', 'Image height', 'cm', -1e6, 1e6, 0.01),
     ],
-    ...rules(
+    ...withChecks(
+      [
+        {
+          // Closer than a tenth of the focal length, 1/dₒ and 1/dᵢ nearly cancel and a printed
+          // line can't add up to the answer; no textbook object sits that close.
+          id: '|f| ≤ 10 dₒ',
+          constraint: true,
+          display: '|{f}| ≤ 10 × {o}',
+          vars: ['f', 'o'],
+          residual: (v) => (Math.abs(v.f!) <= 10 * v.o! + 1e-9 ? 0 : 1),
+          solve: {},
+          message: (v) =>
+            Math.abs(v.f!) <= 10 * v.o! + 1e-9
+              ? undefined
+              : `The object is too close to the ${mode} for this page: keep it at least |f| ÷ 10 = ${Math.abs(v.f! / 10)} cm away.`,
+        },
+      ],
       rule('1/f = 1/dₒ + 1/dᵢ', '1/{f} = 1/{o} + 1/{i}', (v) => 1 / v.f! - 1 / v.o! - 1 / v.i!, {
         i: [
           (v) => div(1, 1 / v.f! - 1 / v.o!),

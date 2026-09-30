@@ -304,7 +304,13 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
         if (n1 < 1 || n2 < 1) out.push('rayDiagram: an index of refraction below 1');
         if (th < 0 || th >= 90) out.push(`rayDiagram: angle ${th}° is not from 0° to 90°`);
         const sn = hm.snellOf(n1, n2, th);
-        if (sn.refracted !== undefined) same(rep.refracted, sn.refracted, 'refracted angle');
+        // Compared by their sines: near 90° a hair in sin θ₂ is a visible hundredth of a degree.
+        const r = rep.refracted ? si(rep.refracted) : undefined;
+        const sin = (d: number) => Math.sin((d * Math.PI) / 180);
+        if (sn.refracted !== undefined && r !== undefined && !near(sin(r), sin(sn.refracted)))
+          out.push(
+            `rayDiagram: refracted angle ${rep.refracted} = ${r}, the picture draws ${sn.refracted}`,
+          );
         if (sn.critical !== undefined) same(rep.critical, sn.critical, 'critical angle');
       } else if (rep.mode === 'doubleSlit') {
         const [l, d, L] = [read(si, rep.wavelength), read(si, rep.spacing), read(si, rep.screen)];
