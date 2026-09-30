@@ -5,7 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math12.ts`.
  */
-import { chiCdf, invPhi, Phi } from '@/components/module/reps/statMath';
+import { chiCdf, invPhi, Phi, tCdf, tStar } from '@/components/module/reps/statMath';
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -76,7 +76,7 @@ function derive(
   x: string,
   inputs: string[],
   f: (v: Values) => number | undefined,
-  expr: string,
+  expr: StepText['expr'],
   how: string,
 ): Rel {
   return rel(id, display, [x, ...inputs], (v) => v[x]! - (f(v) ?? NaN), {
@@ -95,6 +95,12 @@ function derive(
 const withStep = (r: Rel, id: string, more: Partial<StepText>): Rel => ({
   ...r,
   steps: { ...r.steps, [id]: { ...r.steps[id]!, ...more } },
+});
+
+/** A relation with its check line written out. */
+const withCheck = (r: Rel, check: (v: Values) => string): Rel => ({
+  ...r,
+  relation: { ...r.relation, check },
 });
 
 /** 0 < p < 1, or undefined. */
@@ -276,6 +282,49 @@ function end(a: string, b: string, c: string, sign: 1 | -1): Rel {
   );
 }
 
+// ── The t distribution (engine need 1) ──
+
+const tVar = () =>
+  V('t', 't', 'Test statistic', { min: -1000, max: 1000, step: 0.01, derived: true });
+
+/** df = n − 1. */
+const degreesOfFreedom = (df: string, n: string) =>
+  derive(
+    `${df} = ${n} − 1`,
+    `{${df}} = {${n}} − 1`,
+    df,
+    [n],
+    (v) => v[n]! - 1,
+    `{${n}} − 1`,
+    'One less than the sample size: the mean uses up one degree of freedom.',
+  );
+
+/** P = 2(1 − tcdf(|t|, df)): both tails of the t curve past |t|. */
+const tTwoTail = (P: string, t: string, df: string) =>
+  derive(
+    `${P} = 2(1 − tcdf(|${t}|, ${df}))`,
+    `{${P}} = 2 × (1 − tcdf(|{${t}}|, {${df}}))`,
+    P,
+    [t, df],
+    (v) => 2 * (1 - tCdf(Math.abs(v[t]!), v[df]!)),
+    `2 × (1 − tcdf(|{${t}}|, {${df}}))`,
+    'Hₐ says “not equal”, so both tails of the t curve past |t| count; tcdf(t, df) is the area left of t.',
+  );
+
+/** t⋆ = invT(1 − (1 − C) ÷ 2, df), the critical value for confidence C. */
+const tCritical = withCheck(
+  derive(
+    't⋆ = invT(1 − (1 − C) ÷ 2, df)',
+    '{ts} = invT(1 − (1 − {C}) ÷ 2, {df})',
+    'ts',
+    ['C', 'df'],
+    (v) => tStar(v.C!, v.df!),
+    (v: Values) => `invT(${fmt(1 - (1 - v.C!) / 2)}, {df})`,
+    'The middle C of the t curve lies within ±t⋆, so the area left of t⋆ is 1 − (1 − C) ÷ 2.',
+  ),
+  (v) => `${fmt(v.ts!)} = invT(${fmt(1 - (1 - v.C!) / 2)}, ${fmt(v.df!)})`,
+);
+
 /** χ² p-value, df 2: the right tail past X. */
 const chiTail2 = derive(
   'P = χ²cdf(X, ∞, 2)',
@@ -286,6 +335,10 @@ const chiTail2 = derive(
   'χ²cdf({X}, ∞, 2)',
   'The area under the chi-square curve with df 2 past the statistic.',
 );
+
+const FIVE = [1, 2, 3, 4, 5];
+const SUB = '₀₁₂₃₄₅₆₇₈₉';
+const FIVE_TERMS = FIVE.map((i) => `({O${i}} − {n} × {p${i}})² ÷ ({n} × {p${i}})`).join(' + ');
 
 /** A number as the steps show it (at most 4 decimals). */
 const fmt = (x: number) => formatNumber(Number(x.toFixed(4)));
@@ -395,21 +448,108 @@ const MATH_12_STATS: ModuleDef[] = [
     },
   },
   {
+    id: 'm.12.hypothesis-testing~t-test',
+    title: 'One-mean t-test',
+    use: 'Use this for “A sample of 16 has mean 496 g and s = 8 g. Is the mean different from 500 g?”',
+    assumptions: [
+      'H₀: μ = μ₀ and Hₐ: μ ≠ μ₀; σ is unknown, so the sample’s s stands in for it.',
+      'With s in place of σ the statistic follows a t curve with df = n − 1, wider in the tails than the normal.',
+      'The sample is random and the population close to normal (or n ≥ 30).',
+    ],
+    variables: [
+      V('m', 'μ₀', 'Mean if H₀ is true', { unit: 'g', min: 0.1, max: 100000, step: 0.5 }),
+      V('s', 's', 'Sample standard deviation', { unit: 'g', min: 0.01, max: 10000, step: 0.1 }),
+      V('n', 'n', 'Sample size', { integer: true, min: 2, max: 1000 }),
+      V('x', 'x̄', 'Sample mean', { unit: 'g', min: 0.1, max: 100000, step: 0.1 }),
+      V('df', 'df', 'Degrees of freedom', { integer: true, min: 1, max: 999, derived: true }),
+      V('E', 'SE', 'Standard error', {
+        unit: 'g',
+        min: 0.0001,
+        max: 10000,
+        step: 0.01,
+        derived: true,
+      }),
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      degreesOfFreedom('df', 'n'),
+      derive(
+        'SE = s ÷ √n',
+        '{E} = {s} ÷ √{n}',
+        'E',
+        ['s', 'n'],
+        (v) => div(v.s!, Math.sqrt(v.n!)),
+        '{s} ÷ √{n}',
+        'The sample’s s stands in for σ: divide it by the root of n.',
+      ),
+      rel(
+        't = (x̄ − μ₀) ÷ SE',
+        '{t} = ({x} − {m}) ÷ {E}',
+        ['t', 'x', 'm', 'E'],
+        (v) => v.t! * v.E! - (v.x! - v.m!),
+        {
+          t: [
+            (v) => div(v.x! - v.m!, v.E!),
+            '({x} − {m}) ÷ {E}',
+            'How many standard errors x̄ is from the value H₀ claims.',
+          ],
+          x: [
+            (v) => v.m! + v.t! * v.E!,
+            '{m} + {t} × {E}',
+            'Start at the H₀ value and go t standard errors.',
+          ],
+        },
+      ),
+      tTwoTail('P', 't', 'df'),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      m: 500,
+      s: 8,
+      n: 16,
+      x: 496,
+      df: 15,
+      E: 2,
+      t: -2,
+      P: 2 * (1 - tCdf(2, 15)),
+      a: 0.05,
+    },
+    startWith: ['m', 's', 'n', 'x', 'a'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'normalCurve',
+      mean: 'm',
+      sd: 'E',
+      axis: 'Sample mean x̄ (g) if H₀ is true',
+      mark: { x: 'x' },
+      fixed: true,
+    },
+  },
+  {
     id: 'm.12.hypothesis-testing~two-sample',
-    title: 'Two-sample z-test for means',
-    use: 'Use this for “Do two groups have different means?” from two samples of 30 or more.',
+    title: 'Two-sample t-test for means',
+    use: 'Use this for “Do two groups have different means?” from two independent samples.',
     assumptions: [
       'Two independent random samples, or two groups assigned at random; H₀: μ₁ = μ₂, Hₐ: μ₁ ≠ μ₂.',
-      'Each sample has 30 or more, so z is close to the t-test a statistics class uses.',
+      'The statistic follows a t curve; by hand, df is the smaller sample size minus 1 (a safe, low choice).',
       'With random assignment, a significant difference is evidence the treatment caused it.',
     ],
     variables: [
       V('x1', 'x̄₁', 'Mean of sample 1', { unit: 'cm', min: -10000, max: 10000, step: 0.1 }),
       V('s1', 's₁', 'Standard deviation 1', { unit: 'cm', min: 0.01, max: 10000, step: 0.1 }),
-      V('n1', 'n₁', 'Size of sample 1', { integer: true, min: 2, max: 100000 }),
+      V('n1', 'n₁', 'Size of sample 1', { integer: true, min: 2, max: 1000 }),
       V('x2', 'x̄₂', 'Mean of sample 2', { unit: 'cm', min: -10000, max: 10000, step: 0.1 }),
       V('s2', 's₂', 'Standard deviation 2', { unit: 'cm', min: 0.01, max: 10000, step: 0.1 }),
-      V('n2', 'n₂', 'Size of sample 2', { integer: true, min: 2, max: 100000 }),
+      V('n2', 'n₂', 'Size of sample 2', { integer: true, min: 2, max: 1000 }),
+      V('d', 'x̄₁ − x̄₂', 'Difference of the means', {
+        unit: 'cm',
+        min: -20000,
+        max: 20000,
+        step: 0.1,
+        derived: true,
+      }),
       V('E', 'SE', 'Standard error of x̄₁ − x̄₂', {
         unit: 'cm',
         min: 0.0001,
@@ -417,11 +557,21 @@ const MATH_12_STATS: ModuleDef[] = [
         step: 0.01,
         derived: true,
       }),
-      zVar(),
-      prob('P', 'P', 'p-value'),
+      V('df', 'df', 'Degrees of freedom', { integer: true, min: 1, max: 999, derived: true }),
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
     ...rels(
+      derive(
+        'd = x̄₁ − x̄₂',
+        '{d} = {x1} − {x2}',
+        'd',
+        ['x1', 'x2'],
+        (v) => v.x1! - v.x2!,
+        '{x1} − {x2}',
+        'The difference the samples show.',
+      ),
       derive(
         'SE = √(s₁²/n₁ + s₂²/n₂)',
         '{E} = √({s1}² ÷ {n1} + {s2}² ÷ {n2})',
@@ -431,26 +581,26 @@ const MATH_12_STATS: ModuleDef[] = [
         '√({s1}² ÷ {n1} + {s2}² ÷ {n2})',
         'The variances of two independent means add; the root gives the spread of the difference.',
       ),
-      rel(
-        'z = (x̄₁ − x̄₂) ÷ SE',
-        '{z} = ({x1} − {x2}) ÷ {E}',
-        ['z', 'x1', 'x2', 'E'],
-        (v) => v.z! * v.E! - (v.x1! - v.x2!),
-        {
-          z: [
-            (v) => div(v.x1! - v.x2!, v.E!),
-            '({x1} − {x2}) ÷ {E}',
-            'H₀ says the difference is 0: count how many standard errors it is from 0.',
-          ],
-          x1: [(v) => v.x2! + v.z! * v.E!, '{x2} + {z} × {E}', 'Go z standard errors from x̄₂.'],
-          x2: [
-            (v) => v.x1! - v.z! * v.E!,
-            '{x1} − {z} × {E}',
-            'Go back z standard errors from x̄₁.',
-          ],
-        },
+      withCheck(
+        derive(
+          'df = smaller n − 1',
+          '{df} = min({n1}, {n2}) − 1',
+          'df',
+          ['n1', 'n2'],
+          (v) => Math.min(v.n1!, v.n2!) - 1,
+          (v: Values) => (v.n1! <= v.n2! ? '{n1} − 1' : '{n2} − 1'),
+          'Use one less than the smaller sample: fewer degrees of freedom, a wider curve, a safe p-value.',
+        ),
+        (v) => `${fmt(v.df!)} = ${fmt(Math.min(v.n1!, v.n2!))} − 1`,
       ),
-      twoTail('P', 'z'),
+      rel('t = (x̄₁ − x̄₂) ÷ SE', '{t} = {d} ÷ {E}', ['t', 'd', 'E'], (v) => v.t! * v.E! - v.d!, {
+        t: [
+          (v) => div(v.d!, v.E!),
+          '{d} ÷ {E}',
+          'H₀ says the difference is 0: count how many standard errors it is from 0.',
+        ],
+      }),
+      tTwoTail('P', 't', 'df'),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
@@ -460,9 +610,11 @@ const MATH_12_STATS: ModuleDef[] = [
       x2: 49,
       s2: 6,
       n2: 36,
+      d: 3,
       E: Math.SQRT2,
-      z: 3 / Math.SQRT2,
-      P: 2 * (1 - Phi(3 / Math.SQRT2)),
+      df: 35,
+      t: 3 / Math.SQRT2,
+      P: 2 * (1 - tCdf(3 / Math.SQRT2, 35)),
       a: 0.05,
     },
     startWith: ['x1', 's1', 'n1', 'x2', 's2', 'n2', 'a'],
@@ -472,7 +624,7 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 0,
       sd: 'E',
       axis: 'Difference x̄₁ − x̄₂ (cm) if H₀ is true',
-      test: { stat: 'z', alpha: 'a', tail: 'two', p: 'P' },
+      mark: { x: 'd' },
       fixed: true,
     },
   },
@@ -527,6 +679,73 @@ const MATH_12_STATS: ModuleDef[] = [
       sd: 'SE',
       axis: 'Sample mean x̄',
       interval: { center: 'x', margin: 'E', level: 'C' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.confidence-intervals~t-interval',
+    title: 'Confidence interval for a mean, σ unknown',
+    use: 'Use this for “10 plants average 52 cm with s = 8 cm. Find a 95% confidence interval for μ.”',
+    assumptions: [
+      'σ is unknown, so the sample’s s stands in for it and t⋆ replaces z⋆, with df = n − 1.',
+      't⋆ is larger than z⋆ for small samples, so the interval is wider; they agree as n grows.',
+      'A random sample from a population close to normal (or n ≥ 30).',
+    ],
+    variables: [
+      V('x', 'x̄', 'Sample mean', { min: -1000000, max: 1000000, step: 0.1 }),
+      V('s', 's', 'Sample standard deviation', { min: 0.001, max: 100000, step: 0.1 }),
+      V('n', 'n', 'Sample size', { integer: true, min: 2, max: 1000 }),
+      V('C', 'C', 'Confidence level', {
+        allowed: [0.9, 0.95, 0.99],
+        min: 0.9,
+        max: 0.99,
+        multipleOf: 0.01,
+      }),
+      V('df', 'df', 'Degrees of freedom', { integer: true, min: 1, max: 999, derived: true }),
+      V('ts', 't⋆', 'Critical value', { min: 0.1, max: 700, step: 0.001, derived: true }),
+      V('SE', 'SE', 'Standard error', { min: 0.000001, max: 100000, step: 0.01, derived: true }),
+      V('E', 'E', 'Margin of error', { min: 0.000001, max: 1000000, step: 0.01 }),
+      V('lo', 'L', 'Lower end', { min: -3000000, max: 3000000, step: 0.01 }),
+      V('hi', 'U', 'Upper end', { min: -3000000, max: 3000000, step: 0.01 }),
+    ],
+    ...rels(
+      degreesOfFreedom('df', 'n'),
+      tCritical,
+      derive(
+        'SE = s ÷ √n',
+        '{SE} = {s} ÷ √{n}',
+        'SE',
+        ['s', 'n'],
+        (v) => div(v.s!, Math.sqrt(v.n!)),
+        '{s} ÷ √{n}',
+        'The sample’s s stands in for σ: divide it by the root of n.',
+      ),
+      rel('E = t⋆ × SE', '{E} = {ts} × {SE}', ['E', 'ts', 'SE'], (v) => v.E! - v.ts! * v.SE!, {
+        E: [(v) => v.ts! * v.SE!, '{ts} × {SE}', 'The margin of error is t⋆ standard errors.'],
+      }),
+      end('lo', 'x', 'E', -1),
+      end('hi', 'x', 'E', 1),
+    ),
+    example: {
+      x: 52,
+      s: 8,
+      n: 10,
+      C: 0.95,
+      df: 9,
+      ts: tStar(0.95, 9),
+      SE: 8 / Math.sqrt(10),
+      E: (tStar(0.95, 9) * 8) / Math.sqrt(10),
+      lo: 52 - (tStar(0.95, 9) * 8) / Math.sqrt(10),
+      hi: 52 + (tStar(0.95, 9) * 8) / Math.sqrt(10),
+    },
+    startWith: ['x', 's', 'n', 'C'],
+    equation: '{x} ± {ts} × {s}/√{n}',
+    representation: {
+      kind: 'normalCurve',
+      mean: 'x',
+      sd: 'SE',
+      axis: 'Sample mean x̄',
+      interval: { center: 'x', margin: 'E' },
       fixed: true,
     },
   },
@@ -915,6 +1134,115 @@ const MATH_12_STATS: ModuleDef[] = [
       kind: 'normalCurve',
       chiSquare: { df: 2, stat: 'X', p: 'P' },
     },
+  },
+  {
+    id: 'm.12.chi-square~five-categories',
+    title: 'Goodness of fit with five categories',
+    use: 'Use this for “Do 200 lunch choices fit the shares 30%, 25%, 20%, 15% and 10%?”',
+    assumptions: [
+      'H₀: the five shares are p₁ to p₅; they add to 1, so p₅ is what is left.',
+      'Every expected count n × p should be at least 5; df = 5 − 1 = 4.',
+      'A large X² (a small p-value) means the counts don’t fit the shares.',
+    ],
+    variables: [
+      ...FIVE.map((i) =>
+        V(`O${i}`, `O${SUB[i]}`, `Count for choice ${i}`, {
+          integer: true,
+          min: 0,
+          max: 100000,
+          group: 'O',
+        }),
+      ),
+      ...FIVE.slice(0, 4).map((i) =>
+        V(`p${i}`, `p${SUB[i]}`, `Expected share of choice ${i}`, {
+          min: 0.01,
+          max: 0.96,
+          step: 0.01,
+          group: 'p',
+        }),
+      ),
+      V('p5', 'p₅', 'Expected share of choice 5', {
+        min: 0.01,
+        max: 0.96,
+        step: 0.01,
+        derived: true,
+      }),
+      V('n', 'n', 'Choices in all', { integer: true, min: 1, max: 500000, derived: true }),
+      V('X', 'X²', 'Chi-square statistic', { min: 0, max: 10000000, step: 0.01, derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'p₅ = 1 − p₁ − p₂ − p₃ − p₄',
+        '{p5} = 1 − {p1} − {p2} − {p3} − {p4}',
+        'p5',
+        ['p1', 'p2', 'p3', 'p4'],
+        (v) => 1 - v.p1! - v.p2! - v.p3! - v.p4!,
+        '1 − {p1} − {p2} − {p3} − {p4}',
+        'The five shares make up the whole, 1.',
+      ),
+      derive(
+        'n = O₁ + … + O₅',
+        '{n} = {O1} + {O2} + {O3} + {O4} + {O5}',
+        'n',
+        FIVE.map((i) => `O${i}`),
+        (v) => FIVE.reduce((t, i) => t + v[`O${i}`]!, 0),
+        '{O1} + {O2} + {O3} + {O4} + {O5}',
+        'Add the counts for the size of the sample.',
+      ),
+      withStep(
+        derive(
+          'X² = Σ(O − E)² ÷ E, 5 categories',
+          `{X} = ${FIVE_TERMS}`,
+          'X',
+          ['n', ...FIVE.flatMap((i) => [`O${i}`, `p${i}`])],
+          (v) =>
+            FIVE.reduce(
+              (t, i) => t + (v[`O${i}`]! - v.n! * v[`p${i}`]!) ** 2 / (v.n! * v[`p${i}`]!),
+              0,
+            ),
+          FIVE_TERMS,
+          'Each expected count is E = n × p; add (O − E)² ÷ E over the five choices.',
+        ),
+        'X',
+        {
+          work: (v) => {
+            const E = FIVE.map((i) => v.n! * v[`p${i}`]!);
+            const terms = FIVE.map((i, k) => (v[`O${i}`]! - E[k]!) ** 2 / E[k]!);
+            return [
+              `Expected counts E = n × p: ${E.map(fmt).join(', ')}`,
+              `${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`,
+            ];
+          },
+        },
+      ),
+      derive(
+        'P = χ²cdf(X, ∞, 4)',
+        '{P} = χ²cdf({X}, ∞, 4)',
+        'P',
+        ['X'],
+        (v) => 1 - chiCdf(v.X!, 4),
+        'χ²cdf({X}, ∞, 4)',
+        'The area under the chi-square curve with df 4 past the statistic.',
+      ),
+    ),
+    example: {
+      O1: 66,
+      O2: 44,
+      O3: 40,
+      O4: 36,
+      O5: 14,
+      p1: 0.3,
+      p2: 0.25,
+      p3: 0.2,
+      p4: 0.15,
+      p5: 0.1,
+      n: 200,
+      X: 4.32,
+      P: 1 - chiCdf(4.32, 4),
+    },
+    startWith: ['O1', 'O2', 'O3', 'O4', 'O5', 'p1', 'p2', 'p3', 'p4'],
+    representation: { kind: 'normalCurve', chiSquare: { df: 4, stat: 'X', p: 'P' } },
   },
   {
     id: 'm.12.chi-square~independence',
@@ -1514,6 +1842,7 @@ const MATH_12_MATRICES: ModuleDef[] = [
     ),
     example: { a: 4, b: 7, c: 2, d: 6, D: 10, e: 0.6, f: -0.7, g: -0.2, h: 0.4 },
     startWith: ['a', 'b', 'c', 'd'],
+    equation: '[[{a}, {b}; {c}, {d}]]^{−1} = [[{e}, {f}; {g}, {h}]]',
     representation: {
       kind: 'matrixGrid',
       mode: 'multiply',

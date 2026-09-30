@@ -6,12 +6,13 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 
 ## Built
 
-- `m.12.hypothesis-testing` (4): main (one-proportion, two-sided), `~mean` (left-tailed),
-  `~two-sample`, `~errors` (sort).
-- `m.12.confidence-intervals` (4): main (mean, σ known), `~proportion`, `~sample-size`,
-  `~capture`.
+- `m.12.hypothesis-testing` (5): main (one-proportion, two-sided), `~mean` (left-tailed z),
+  `~t-test` (one mean, σ unknown), `~two-sample` (t), `~errors` (sort).
+- `m.12.confidence-intervals` (5): main (mean, σ known), `~t-interval`, `~proportion`,
+  `~sample-size`, `~capture`.
 - `m.12.sampling-distributions` (3): main (x̄), `~proportion` (p̂), `~counts` (binomial).
-- `m.12.chi-square` (2): main (goodness of fit, 3 categories), `~independence` (2 × 3 table).
+- `m.12.chi-square` (3): main (goodness of fit, 3 categories), `~five-categories` (the counts
+  and shares each a group, E7), `~independence` (2 × 3 table).
 - `m.12.conics` (5): main (ellipse), `~parabola`, `~hyperbola`, `~identify` (sort), `~cone`
   (explore).
 - `m.12.matrices` (5): main (row reduction, right sides typed), `~multiply`, `~determinant`
@@ -31,9 +32,6 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 Every page the plan marks BUILD is built (50, one per plan line; the interims are under
 "Changed from the plan"). These pages wait on an engine or picture need and are not built:
 
-- `m.12.confidence-intervals~t-interval` and `m.12.hypothesis-testing~t-test` — need 1 (the t
-  distribution: `normalCurve` `t: { df }`, invT and tcdf phrases). `~two-sample` then switches
-  from z to t.
 - `m.12.trig-formulas-equations~quadratic` (2 sin²x − sin x − 1 = 0) — need 7 (`unitCircle`
   solutions for two values of sin x).
 - `m.12.polar~roots` (the cube roots of 8i) — need 8 (`complexPlane` `roots: n`).
@@ -43,11 +41,18 @@ Every page the plan marks BUILD is built (50, one per plan line; the interims ar
 
 Built with an interim, to change when the need lands:
 
+- P11 (a t curve on `normalCurve`): `~t-interval`, `~t-test` and `~two-sample` draw the normal
+  sampling curve with the interval or the sample's mark only (no shaded areas, since the
+  picture's areas and p-values are normal ones); t⋆, tcdf and the p-value are in the steps.
+
 - Need 2 (tail from a typed Hₐ): `m.12.hypothesis-testing` is two-sided and `~mean`
   left-tailed.
-- Need 3 (more than 10 values): `m.12.matrices` keeps its coefficients fixed (right sides
-  typed); goodness of fit has 3 categories.
-- Need 4 (`[[…]]^{−1}`): `m.12.matrices~inverse` keeps rows.
+- Need 3 (E7, groups): done for chi-square (`~five-categories`, 5 counts and 4 shares as two
+  groups: 200 lunch choices against 30%, 25%, 20%, 15%, 10%: X² = 4.32, df 4, P ≈ 0.36).
+  `m.12.matrices` still keeps its coefficients fixed: its `rowReduce` picture takes fixed row
+  operations (`RowOp` numbers), so typed coefficients would draw the wrong eliminations. It
+  needs row operations worked out from the values (a picture need) before the boxes go in.
+- Need 4 (E8): done; `~inverse` is now `[[{a}, {b}; {c}, {d}]]^{−1} = [[{e}, {f}; {g}, {h}]]`.
 - Need 5 (determinant picture): `~determinant` shows a table of D against k; `~cramer` plots
   the solution point.
 - Need 6 (two arcs on `unitCircle`): the sum and difference pages draw A ± B only.
@@ -122,6 +127,13 @@ Built with an interim, to change when the need lands:
 - **`~one-sided` says whether f is continuous** in a note after J (0: continuous; else no
   limit).
 
+- **The t pages (need 1, E10).** `~t-interval` (x̄ = 52, s = 8, n = 10, 95%: df = 9,
+  t⋆ ≈ 2.262, E ≈ 5.72) and `~t-test` (μ₀ = 500 g, s = 8 g, n = 16, x̄ = 496 g: SE = 2,
+  t = −2, df = 15, P ≈ 0.064, fail to reject at 0.05, unlike the z page) are new. `~two-sample`
+  is now a t-test with df = the smaller n − 1 (the by-hand choice); its example gives t ≈ 2.12,
+  df = 35, P ≈ 0.041. The step text writes invT(0.975, 9) and tcdf(|t|, df), taught to the
+  harness in `phrasesM12.ts`. t, df, SE and P are worked out, never typed.
+
 ## Shared needs found while building
 
 - **An `allowed` list of decimals needs `min`, `max` and `multipleOf`.** The solver's
@@ -135,6 +147,8 @@ Built with an interim, to change when the need lands:
   the equation alone, would let such a page show its equation without a placeholder picture.
 - **`normalCurve` `intervals.count` from a variable** (20, 50 or 100 typed), so the capture page
   can take N as the plan planned (`m.12.confidence-intervals~capture`).
+- **`matrixGrid` `rowReduce` with row operations from the values** (or worked out by the
+  picture), so the main matrices page can type its coefficients (`m.12.matrices`).
 - **`functionGraph` inverse trig in degrees** (a `degrees` option for arcsin, arccos, arctan),
   so a page need not stretch the curve by 180/π to read its angle in degrees
   (`m.12.inverse-trig`, `~arctan`).
