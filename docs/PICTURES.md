@@ -231,6 +231,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `unitCircle`       | `solutions.also`                         | two values (sin x = −1/2 or 1): both lines, every solution marked (H98)       |
 | `complexPlane`     | `power: n`; `roots: n`                   | z, z², …, zⁿ in turn; the n nth roots on a circle, a regular n-gon (H99)      |
 | `histogram`        | `range: { from?, to?, total? }`          | bars k = from to to lit and added: P(X ≥ 4) = P(4) + P(5) (H99)               |
+| `histogram`        | `clt: { mean, n, samples, se? }`         | CLT: a skewed population, the means of m samples, the normal σ/√n (H99)       |
 | `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |
 | `force`            | `object: 'cart'`, `block`                | a lab cart with the mass as metal blocks, pulled by a rope; F = m × a         |
 | `tenFrame`         | `takeAway`; `crossOut`                   | taken counters filled and crossed out; b crossed out inside the full ten      |

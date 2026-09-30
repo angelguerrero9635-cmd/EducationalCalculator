@@ -130,6 +130,7 @@ import { TriangleSolver } from './TriangleSolver';
 import { MarkedFigure } from './MarkedFigure';
 import { CircleTheorems } from './CircleTheorems';
 import { NormalCurve } from './NormalCurve';
+import { CltHistogram } from './CltHistogram';
 import { Histogram } from './Histogram';
 import { PascalTriangle } from './PascalTriangle';
 import { TermsChart } from './TermsChart';
@@ -272,7 +273,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'normalCurve':
       return <NormalCurve spec={spec} calc={calc} />;
     case 'histogram':
-      return <Histogram spec={spec} calc={calc} />;
+      return spec.clt ? (
+        <CltHistogram spec={spec} calc={calc} />
+      ) : (
+        <Histogram spec={spec} calc={calc} />
+      );
     case 'pascalTriangle':
       return <PascalTriangle spec={spec} calc={calc} />;
     case 'termsChart':

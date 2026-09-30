@@ -6,6 +6,7 @@
  */
 import { boxProduct, monomialModel } from '@/components/module/reps/algebraBox';
 import { powersOf, rootsOf } from '@/components/module/reps/complexPowers';
+import { cltModel } from '@/components/module/reps/cltModel';
 import { curveOf } from '@/components/module/reps/functionGraphMath';
 import { histModel } from '@/components/module/reps/histModel';
 import { rangeOf } from '@/components/module/reps/histRange';
@@ -269,6 +270,25 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
       break;
     }
     case 'histogram': {
+      if (rep.clt) {
+        // H99: the CLT simulation: every mean counted once, σ/√n, and the means near μ.
+        const [mu, n, m] = [get(rep.clt.mean), get(rep.clt.n), get(rep.clt.samples)];
+        if (mu === undefined || n === undefined || m === undefined) break;
+        const model = cltModel(mu, n, m, rep.clt.seed);
+        if (model.problem) {
+          out.push(`CLT: ${model.problem}`);
+          break;
+        }
+        const counted = model.counts.reduce((a, b) => a + b, 0);
+        if (counted !== m) out.push(`CLT: ${counted} means counted, not ${m}`);
+        const se = get(rep.clt.se);
+        if (se !== undefined && !near(se, mu / Math.sqrt(n)))
+          out.push(`CLT: σ/√n is ${mu / Math.sqrt(n)}, but the value is ${se}`);
+        // Far past chance (6 standard errors of the mean of the means) would be a bug.
+        if (Math.abs(model.meanOfMeans - mu) > (6 * model.se) / Math.sqrt(m))
+          out.push(`CLT: the means average ${model.meanOfMeans}, far from μ = ${mu}`);
+        break;
+      }
       // H99: the lit range's sum.
       if (!rep.range) break;
       const model = histModel(rep, (x) => get(x));

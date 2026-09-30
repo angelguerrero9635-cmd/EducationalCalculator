@@ -1077,6 +1077,53 @@ const atLeast = page({
   },
 });
 
+// ── H99: a CLT simulation ──
+
+const clt = page({
+  id: 'g.m12-sampling-distributions-clt',
+  title: 'The central limit theorem, simulated',
+  use: 'Use this for “Wait times are skewed right with mean 4 minutes. How are the means of samples of 30 spread?”',
+  assumptions: [
+    'The population is skewed right: most waits are short, a few are long; here σ = μ.',
+    'The mean of many sample means is μ, and their spread is σ/√n.',
+    'For n of about 30 or more the sample means are close to normal, whatever the population’s shape.',
+  ],
+  variables: [
+    num('mu', 'μ', 'Population mean (min)', 0.5, 60, { step: 0.5 }),
+    num('n', 'n', 'Sample size', 1, 100, { step: 1, integer: true }),
+    num('m', 'm', 'Samples taken', 10, 2000, { step: 10, integer: true }),
+    num('E', 'σ/√n', 'Spread of the sample means (min)', 0, 60, { derived: true }),
+    num('N', 'N', 'Waits drawn in all', 10, 200000, { derived: true }),
+  ],
+  rules: [
+    derive(
+      'N = n × m',
+      'N',
+      ['n', 'm'],
+      '{N} = {n} × {m}',
+      (v) => v.n! * v.m!,
+      '{n} × {m}',
+      'Each of the m samples draws n waits from the population.',
+    ),
+    derive(
+      'σ/√n',
+      'E',
+      ['mu', 'n'],
+      '{E} = {mu} ÷ √{n}',
+      (v) => fin(v.mu! / Math.sqrt(v.n!)),
+      '{mu} ÷ √{n}',
+      'Here σ = μ; divide it by √n, the square root of the sample size.',
+    ),
+  ],
+  example: { mu: 4, n: 30, m: 1000, E: 4 / Math.sqrt(30), N: 30000 },
+  startWith: ['mu', 'n', 'm'],
+  sliders: true,
+  representation: {
+    kind: 'histogram',
+    clt: { mean: 'mu', n: 'n', samples: 'm', se: 'E' },
+  },
+});
+
 export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   ...TERMS,
   ...GRAPHS,
@@ -1087,6 +1134,7 @@ export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   powers,
   cubeRoots,
   atLeast,
+  clt,
 ];
 
 export const HS2G_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -166,6 +166,14 @@ export interface ComplexPlaneHs2g {
  */
 export interface HistogramHs2g {
   range?: { from?: NumOrVar; to?: NumOrVar; total?: string };
+  /**
+   * H99: a central limit theorem simulation (drawn by `CltHistogram.tsx`, in place of the
+   * data): `samples` random samples of size `n` from a right-skewed population with mean and
+   * standard deviation `mean` (wait times, exponential), the population's shape on top and the
+   * sample means as a histogram under it on the same axis, the normal curve with mean μ and
+   * spread σ/√n over them. `se` names σ/√n (checked). Seeded: the same values, the same bars.
+   */
+  clt?: { mean: NumOrVar; n: NumOrVar; samples: NumOrVar; se?: string; seed?: number };
 }
 
 /** Every variable id these options name (for the module tests). */
@@ -192,7 +200,15 @@ export function hs2gSpecVars(r: Representation): string[] {
     case 'complexPlane':
       return ids(r.power, r.roots);
     case 'histogram':
-      return ids(r.range?.from, r.range?.to, r.range?.total);
+      return ids(
+        r.range?.from,
+        r.range?.to,
+        r.range?.total,
+        r.clt?.mean,
+        r.clt?.n,
+        r.clt?.samples,
+        r.clt?.se,
+      );
     case 'unitCircle':
       return ids(r.through?.x, r.through?.y, r.through?.r, r.pair?.a, r.pair?.b, r.solutions?.also);
     default:
