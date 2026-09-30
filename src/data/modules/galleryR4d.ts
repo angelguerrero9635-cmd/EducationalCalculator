@@ -13,7 +13,7 @@ import { MATH_3_MODULES } from './math/3';
 import { MATH_4_MODULES } from './math/4';
 import { MATH_5_MODULES } from './math/5';
 import { MATH_6_MODULES } from './math/6';
-import { PILOT_MODULES } from './pilots';
+import { MATH_9_MODULES } from './math/9';
 import { SCIENCE_6_MODULES } from './science/6';
 import type { ModuleDef } from './types';
 
@@ -25,7 +25,7 @@ const PAGES = [
   ...MATH_5_MODULES,
   ...MATH_6_MODULES,
   ...SCIENCE_6_MODULES,
-  ...PILOT_MODULES,
+  ...MATH_9_MODULES,
 ];
 
 /** The page `pageId` as a gallery demo `id`, with its own picture unless `extra` changes it. */
@@ -141,7 +141,7 @@ export const R4D_GALLERY_MODULES: ModuleDef[] = [
   demo('m.4.unit-conversion', 'g.r4d-table', 'Table: feet and inches'),
   demo('m.6.expressions-variables~exponents', 'g.r4d-table-powers', 'Table: powers of a base'),
   demo('s.6.body-systems~heart-output', 'g.r4d-table-heart', 'Table: seven heart rates'),
-  demo('m.9.exponential-functions', 'g.r4d-table-growth', 'Table: eleven rows of growth'),
+  demo('m.9.exponential-functions~decay', 'g.r4d-table-growth', 'Table: eleven rows of decay'),
   demo('s.6.cells~magnification', 'g.r4d-table-no-pattern', 'Table: no single pattern'),
 ];
 

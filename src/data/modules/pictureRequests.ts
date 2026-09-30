@@ -2428,7 +2428,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.6.cells~magnification',
       's.6.cells~why-small',
       's.6.body-systems~heart-output',
-      'm.9.exponential-functions',
+      'm.9.exponential-functions~decay',
     ],
     status: 'placed',
     gallery: ['g.r4d-table'],

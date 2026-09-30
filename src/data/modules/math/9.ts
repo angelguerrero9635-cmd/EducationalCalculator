@@ -195,7 +195,7 @@ function percentChange(up: boolean): Rule[] {
 }
 
 /** The exponential main page (moved from the pilot; see docs/build/m.9.md). */
-export const EXPONENTIAL_MAIN = page({
+const EXPONENTIAL_MAIN = page({
   id: 'm.9.exponential-functions',
   assumptions: [
     'a is the value at x = 0, the y-intercept.',
@@ -224,6 +224,7 @@ export const EXPONENTIAL_MAIN = page({
 
 const EXPONENTIAL: ModuleDef[] = [
   // ── Exponential functions: growth and decay (F-LE.1–3, F-LE.5, F-IF.8b) ──
+  EXPONENTIAL_MAIN,
   page({
     id: 'm.9.exponential-functions~percent-growth',
     title: 'Growth by a percent',
