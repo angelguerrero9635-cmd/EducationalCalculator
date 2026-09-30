@@ -292,7 +292,7 @@ const quadWork = (a: number, b: number, c: number, sign: 1 | -1) => {
 };
 
 /** A number as a fraction when it is one with a bottom up to `most` (the page's `fraction`). */
-const fr = (x: number, most = 12) => formatNumber(x, { fraction: most });
+const fr = (x: number, most = 12) => formatNumber(x, { fraction: most, improper: true });
 /**
  * Terms joined with their signs, zero terms left out, a 1 before a letter left off:
  * [[2, 'x²'], [−3, 'x'], [1, '']] → "2x² − 3x + 1".
