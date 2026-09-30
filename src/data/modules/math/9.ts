@@ -15,7 +15,7 @@ type Solver = (v: Values) => number | number[] | undefined;
 
 const fmt = (x: number) => formatNumber(x);
 /** A value as a fraction or mixed number with a denominator up to `most`, as its box shows it. */
-const fr = (x: number, most = 12) => formatNumber(x, { fraction: most });
+const fr = (x: number, most = 12) => formatNumber(x, { fraction: most, improper: true });
 /** Rounded to 12 significant figures, so 0.1 + 0.2 is 0.3 when a value is worked out. */
 const exact = (x: number) => Number(x.toPrecision(12));
 /** A finite result, or nothing. */
