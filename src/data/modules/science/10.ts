@@ -3205,7 +3205,7 @@ const titrationRules = (weak: boolean): Rule[] => [
   ...(weak
     ? [
         phRule('pKa', 'Ka', 'Kₐ'),
-        <Rule>{
+        {
           relation: {
             id: 'V½ = Vₑ/2',
             display: '{Vh} = {Ve}/2',
@@ -3220,7 +3220,7 @@ const titrationRules = (weak: boolean): Rule[] => [
             },
             Ve: { expr: '2 × {Vh}', how: 'Equivalence takes twice the half-way volume.' },
           },
-        },
+        } as Rule,
       ]
     : []),
 ];
