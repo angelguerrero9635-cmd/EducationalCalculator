@@ -41,15 +41,15 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   1–9); big-ideas-hs 10.1 (Basics of Geometry), 10.6 (bisectors); envision-aga 10.1; reveal-hs 10.1.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1992-12M15-#4 (what the angle-bisector construction guarantees) | ~angle-bisector-facts | Solves |
-  | NAEP-1996-12M10-#10 (locate a circle's center) | ~find-center | Solves |
-  | NAEP-1996-12M13-#2 (parallelogram with perpendicular diagonals) | m.10.quadrilaterals~name-it | Solves |
-  | NAEP-1996-12M13-#8 (perpendicular through P, angle between lines) | ~angle-addition (90° − x) | Partly (a protractor drawing) |
-  | NAEP-2005-12M3-#4 (8, 8 and 40°: another angle) | m.10.proofs~isosceles | Solves |
-  | MCAS-2026-G10M-#16 (second step of a perpendicular bisector) | ~bisector-steps | Solves |
-  | Common: segment addition with an unknown; midpoint with 3x + 1 = 5x − 7 | main, ~midpoint | Solves |
+  | Question                                                                | Page                        | Mark                          |
+  | ----------------------------------------------------------------------- | --------------------------- | ----------------------------- |
+  | NAEP-1992-12M15-#4 (what the angle-bisector construction guarantees)    | ~angle-bisector-facts       | Solves                        |
+  | NAEP-1996-12M10-#10 (locate a circle's center)                          | ~find-center                | Solves                        |
+  | NAEP-1996-12M13-#2 (parallelogram with perpendicular diagonals)         | m.10.quadrilaterals~name-it | Solves                        |
+  | NAEP-1996-12M13-#8 (perpendicular through P, angle between lines)       | ~angle-addition (90° − x)   | Partly (a protractor drawing) |
+  | NAEP-2005-12M3-#4 (8, 8 and 40°: another angle)                         | m.10.proofs~isosceles       | Solves                        |
+  | MCAS-2026-G10M-#16 (second step of a perpendicular bisector)            | ~bisector-steps             | Solves                        |
+  | Common: segment addition with an unknown; midpoint with 3x + 1 = 5x − 7 | main, ~midpoint             | Solves                        |
 
 - **Main — BUILD `m.10.constructions`** "Segment addition": picture `markedFigure` with
   `points: { A: [0, 0], B: ['ab', 0], C: ['ac', 0] }`, parts segment AC, labels AB, BC, AC.
@@ -95,14 +95,14 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   10.1, 10.2, 10.5, 10.6; reveal-hs 10.3, 10.6, 10.7.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2009-12M7-#7 (right triangles, midpoint, prove sides congruent) | m.10.congruence~cpctc-proof | Partly (same shape, vertical angles + midpoint, but ASA, not SAS) |
-  | NAEP-2009-12M2-#12 (justify a parallelogram from coordinates) | m.10.coordinate-geometry~parallelogram | Solves |
-  | MCAS-2026-G10M-#22 (exterior angle, find ∠L) | ~exterior-angle | Solves |
-  | Common: converse, inverse, contrapositive true or false | ~conditional | Solves |
-  | Common: give the reason for each line solving an equation | ~algebraic-proof | Solves |
-  | Common: base angles of an isosceles triangle | ~isosceles | Solves |
+  | Question                                                             | Page                                   | Mark                                                              |
+  | -------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------- |
+  | NAEP-2009-12M7-#7 (right triangles, midpoint, prove sides congruent) | m.10.congruence~cpctc-proof            | Partly (same shape, vertical angles + midpoint, but ASA, not SAS) |
+  | NAEP-2009-12M2-#12 (justify a parallelogram from coordinates)        | m.10.coordinate-geometry~parallelogram | Solves                                                            |
+  | MCAS-2026-G10M-#22 (exterior angle, find ∠L)                         | ~exterior-angle                        | Solves                                                            |
+  | Common: converse, inverse, contrapositive true or false              | ~conditional                           | Solves                                                            |
+  | Common: give the reason for each line solving an equation            | ~algebraic-proof                       | Solves                                                            |
+  | Common: base angles of an isosceles triangle                         | ~isosceles                             | Solves                                                            |
 
 - **Main — BUILD `m.10.proofs` (sequence)** "Vertical angles are congruent": question "Put the
   proof in order." Stages: 1 "Lines ℓ and m cross, making ∠1, ∠2 and ∠3 in a row (Given)."
@@ -141,14 +141,14 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   10.2; hmh-into-hs 10.2; reveal-hs 10.3.
 - **Tests ask:** no released questions; common types:
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | ∠1 given, find a corresponding angle | main | Solves |
-  | Alternate interior, same-side interior pairs | ~alternate-interior, ~same-side | Solves |
-  | Angles as expressions, find x | ~algebra | Solves |
-  | Are the lines parallel? (converse) | ~converse | Solves |
+  | Question                                                       | Page                                | Mark   |
+  | -------------------------------------------------------------- | ----------------------------------- | ------ |
+  | ∠1 given, find a corresponding angle                           | main                                | Solves |
+  | Alternate interior, same-side interior pairs                   | ~alternate-interior, ~same-side     | Solves |
+  | Angles as expressions, find x                                  | ~algebra                            | Solves |
+  | Are the lines parallel? (converse)                             | ~converse                           | Solves |
   | Line through a point parallel or perpendicular to a given line | ~parallel-line, ~perpendicular-line | Solves |
-  | Prove the triangle angle sum | ~triangle-sum-proof | Solves |
+  | Prove the triangle angle sum                                   | ~triangle-sum-proof                 | Solves |
 
 - **Main — BUILD (promote `g.m10-parallel-lines-corresponding`)** "Corresponding angles":
   `transversal: { angle: 'x', highlight: [1, 5] }`; values x m∠1, y m∠5 (°, 0.1–179.9, y
@@ -164,7 +164,7 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
 - **~algebra — BUILD** "Angle expressions": `equation: '({p}x + {q})° = ({r}x + {s})°'`
   (corresponding or alternate interior); values p, r (1–20), q, s (−100–100), x derived,
   `t` angle derived (0.1–179.9, constraint). Picture `transversal: { angle: 't', highlight:
-  [3, 6] }`. Example 4x + 12 = 2x + 50, x = 19, angle 88°.
+[3, 6] }`. Example 4x + 12 = 2x + 50, x = 19, angle 88°.
 - **~parallel-line — BUILD** "A parallel line through a point": `equation: 'y = {m}x + {b}'`
   for the answer; values m slope (−20–20), b1 given intercept, point x0, y0 (−20–20), b2 =
   y0 − m × x0 (derived). Picture `lineSystem` (Engine need 10 for arrows). Example parallel to
@@ -185,14 +185,14 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   10.3; hmh-into-hs 10.3; reveal-hs 10.2, 10.4.
 - **Tests ask:** no released questions of its own; common types, plus one filed elsewhere:
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-G10M-#41 (rotations that carry a parallelogram onto itself) | ~symmetry | Partly (rectangle figure; needs a parallelogram about its center, Engine need 14) |
-  | Reflect, then rotate: where does A end up? | main | Solves |
-  | Translate then reflect (glide reflection) | ~glide | Solves |
-  | Rotate about a point other than the origin | ~rotate-point | Solves |
-  | Reflect across y = x or y = −x | ~reflect-line | Solves |
-  | Which rule is a rigid motion? | ~which-motion | Solves |
+  | Question                                                              | Page          | Mark                                                                              |
+  | --------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------- |
+  | MCAS-2026-G10M-#41 (rotations that carry a parallelogram onto itself) | ~symmetry     | Partly (rectangle figure; needs a parallelogram about its center, Engine need 14) |
+  | Reflect, then rotate: where does A end up?                            | main          | Solves                                                                            |
+  | Translate then reflect (glide reflection)                             | ~glide        | Solves                                                                            |
+  | Rotate about a point other than the origin                            | ~rotate-point | Solves                                                                            |
+  | Reflect across y = x or y = −x                                        | ~reflect-line | Solves                                                                            |
+  | Which rule is a rigid motion?                                         | ~which-motion | Solves                                                                            |
 
 - **Main — BUILD (promote `g.m10-rigid-motions-compose`)** "Composing two rigid motions":
   `transformation` with `then: { move: 'rotate', angle: 90 }`, `image2`. Values ax, ay (−7–7),
@@ -224,13 +224,13 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   (Congruent Triangles); envision-aga 10.3, 10.4; hmh-into-hs 10.4; reveal-hs 10.4, 10.5.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2009-12M7-#7 (two-column proof with CPCTC) | ~cpctc-proof | Partly (the page proves by SAS; the item needs ASA with right angles) |
-  | MCAS-2026-G10M-#15 (which parts must be congruent from △… ≅ △…) | ~correspondence | Solves |
-  | MCAS-2026-G10M-#41 (rotation onto itself) | m.10.rigid-motions~symmetry | Partly |
-  | Common: name the criterion from marked parts | main | Solves |
-  | Common: congruent parts as expressions, find x | ~corresponding-parts | Solves |
+  | Question                                                        | Page                        | Mark                                                                  |
+  | --------------------------------------------------------------- | --------------------------- | --------------------------------------------------------------------- |
+  | NAEP-2009-12M7-#7 (two-column proof with CPCTC)                 | ~cpctc-proof                | Partly (the page proves by SAS; the item needs ASA with right angles) |
+  | MCAS-2026-G10M-#15 (which parts must be congruent from △… ≅ △…) | ~correspondence             | Solves                                                                |
+  | MCAS-2026-G10M-#41 (rotation onto itself)                       | m.10.rigid-motions~symmetry | Partly                                                                |
+  | Common: name the criterion from marked parts                    | main                        | Solves                                                                |
+  | Common: congruent parts as expressions, find x                  | ~corresponding-parts        | Solves                                                                |
 
 - **Main — BUILD `m.10.congruence` (sort)** "Which criterion?": bins "SSS", "SAS", "ASA", "AAS",
   "HL", "Not enough". Cards (△ABC and △DEF): "AB = DE, BC = EF, CA = FD" (SSS); "AB = DE,
@@ -240,7 +240,7 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   triangles (Engine need 6); text until then. The ambiguous SSA pair is drawn on
   m.10.law-sines-cosines~ambiguous-case.
 - **~corresponding-parts — BUILD** "Congruent parts with an unknown": `equation: '{p}x + {q} =
-  {r}x + {s}'`; values p, r (1–20), q, s (−100–100), x derived, L = AB (derived; constraint
+{r}x + {s}'`; values p, r (1–20), q, s (−100–100), x derived, L = AB (derived; constraint
   4 < L < 28 so it closes with the fixed BC = 16, AC = 12). Picture `triangleSolver` from demo
   `g.m10-congruence-sss` with `parts: { c: 'L', a: 16, b: 12 }`, `congruence: {}`. Example
   △ABC ≅ △DEF, AB = 3x + 2, DE = x + 14: 2x = 12, x = 6, AB = DE = 20.
@@ -263,14 +263,14 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   hmh-into-hs 10.5; reveal-hs 10.1, 10.6.
 - **Tests ask:** none released for this skill; one filed under similarity, then common types:
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2024-12M11-#14 (midsegment from a perimeter) | main | Partly (the side comes from 7x = 84 first) |
-  | Midsegment length and x | main | Solves |
-  | Centroid splits a median 2 : 1 | ~centroid | Solves |
-  | Incenter distance, circumcenter radius | ~incenter, ~circumcenter | Solves (right triangles) / Partly (others) |
-  | Third side's range | ~inequality | Solves |
-  | Which center? | ~which-center | Solves |
+  | Question                                          | Page                     | Mark                                       |
+  | ------------------------------------------------- | ------------------------ | ------------------------------------------ |
+  | NAEP-2024-12M11-#14 (midsegment from a perimeter) | main                     | Partly (the side comes from 7x = 84 first) |
+  | Midsegment length and x                           | main                     | Solves                                     |
+  | Centroid splits a median 2 : 1                    | ~centroid                | Solves                                     |
+  | Incenter distance, circumcenter radius            | ~incenter, ~circumcenter | Solves (right triangles) / Partly (others) |
+  | Third side's range                                | ~inequality              | Solves                                     |
+  | Which center?                                     | ~which-center            | Solves                                     |
 
 - **Main — BUILD (promote `g.m10-triangle-relationships-midsegment`)** "The midsegment":
   values a BC, b CA, c AB (cm, 0.1–1000, closing constraint), m DE = a ÷ 2 (derived).
@@ -305,14 +305,14 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   envision-aga 10.6, 10.9; reveal-hs 10.7.
 - **Tests ask:** none released for this skill; filed elsewhere and common types:
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-G10M-#36 (inscribed pentagon, two equal angles) | main | Partly (sum 540°, then (540 − 330) ÷ 2) |
-  | NAEP-1996-12M13-#2 (parallelogram with perpendicular diagonals) | ~name-it | Solves |
-  | Interior sum, each angle of a regular n-gon, n from an exterior angle | main | Solves |
-  | Consecutive angles of a parallelogram | ~parallelogram | Solves |
-  | Rhombus side from its diagonals | ~rhombus | Solves |
-  | Trapezoid midsegment | ~trapezoid | Solves |
+  | Question                                                              | Page           | Mark                                    |
+  | --------------------------------------------------------------------- | -------------- | --------------------------------------- |
+  | MCAS-2026-G10M-#36 (inscribed pentagon, two equal angles)             | main           | Partly (sum 540°, then (540 − 330) ÷ 2) |
+  | NAEP-1996-12M13-#2 (parallelogram with perpendicular diagonals)       | ~name-it       | Solves                                  |
+  | Interior sum, each angle of a regular n-gon, n from an exterior angle | main           | Solves                                  |
+  | Consecutive angles of a parallelogram                                 | ~parallelogram | Solves                                  |
+  | Rhombus side from its diagonals                                       | ~rhombus       | Solves                                  |
+  | Trapezoid midsegment                                                  | ~trapezoid     | Solves                                  |
 
 - **Main — BUILD `m.10.quadrilaterals`** "Polygon angle sums": values n sides (3–30, integer),
   S interior sum (°, derived), e each interior angle of a regular polygon (derived), x each
@@ -349,17 +349,17 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   10.6; reveal-hs 10.8, 10.9.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1992-12M14-#9 (similar triangles, find x) | main | Solves |
-  | NAEP-1996-12M12-#1 (DE ∥ BC, find DE) | ~splitter-base | Solves |
-  | NAEP-2005-12M12-#1 (which pairs must be similar) | ~similar-or-not | Solves |
-  | NAEP-2005-12M12-#3 (enlargement keeps proportions?) | ~scale-area | Partly (compare two factors by hand) |
-  | NAEP-2024-12M11-#14 (midsegment) | m.10.triangle-relationships | Partly |
-  | NAEP-1992-12M5-#16 (altitude in a right triangle with 60°) | ~right-altitude | Partly; Solves with m.10.special-right-triangles~30-60-90 twice |
-  | MCAS-2026-G10M-#7 (circle dilated by 2: circumference) | ~scale-area | Solves |
-  | MCAS-2026-G10M-#30 (two angles congruent) | ~similar-or-not | Solves |
-  | MCAS-2026-G10M-#33 (which is true: KM ∥ JN) | ~side-splitter | Partly (the converse is an assumption, not a check) |
+  | Question                                                   | Page                        | Mark                                                            |
+  | ---------------------------------------------------------- | --------------------------- | --------------------------------------------------------------- |
+  | NAEP-1992-12M14-#9 (similar triangles, find x)             | main                        | Solves                                                          |
+  | NAEP-1996-12M12-#1 (DE ∥ BC, find DE)                      | ~splitter-base              | Solves                                                          |
+  | NAEP-2005-12M12-#1 (which pairs must be similar)           | ~similar-or-not             | Solves                                                          |
+  | NAEP-2005-12M12-#3 (enlargement keeps proportions?)        | ~scale-area                 | Partly (compare two factors by hand)                            |
+  | NAEP-2024-12M11-#14 (midsegment)                           | m.10.triangle-relationships | Partly                                                          |
+  | NAEP-1992-12M5-#16 (altitude in a right triangle with 60°) | ~right-altitude             | Partly; Solves with m.10.special-right-triangles~30-60-90 twice |
+  | MCAS-2026-G10M-#7 (circle dilated by 2: circumference)     | ~scale-area                 | Solves                                                          |
+  | MCAS-2026-G10M-#30 (two angles congruent)                  | ~similar-or-not             | Solves                                                          |
+  | MCAS-2026-G10M-#33 (which is true: KM ∥ JN)                | ~side-splitter              | Partly (the converse is an assumption, not a check)             |
 
 - **Main — BUILD (promote the `triangleSolver` similar demo `g.m10-similarity-scale`)**
   "Similar triangles": values a, b, c (0.1–1000, closing), k scale factor (0.01–100), d, e, f
@@ -374,8 +374,7 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
 - **~splitter-base — BUILD (promote `g.m10-similarity-side-splitter-base`)**: k = AD ÷ AB,
   DE = k × BC. Example AD = 3, AB = 12, BC = 20: k = 0.25, DE = 5.
 - **~scale-area — BUILD** "Scale factor, perimeter and area": `scaleCopy` with `area: ['A',
-  'A2']`; values w, h, k, P, P2 = kP, A, A2 = k²A. Example 3 by 4, k = 2.5: P 14 → 35, A 12 →
-  75. Assumption: every length (a circumference too) scales by k, every area by k².
+'A2']`; values w, h, k, P, P2 = kP, A, A2 = k²A. Example 3 by 4, k = 2.5: P 14 → 35, A 12 → 75. Assumption: every length (a circumference too) scales by k, every area by k².
 - **~right-altitude — BUILD** "Altitude to the hypotenuse": `markedFigure` points with the
   right angle and the foot D; values p = AD, q = DB, h = √(pq), c = p + q, legs √(pc), √(qc).
   Example p = 4, q = 9: h = 6, c = 13, legs √52 ≈ 7.21 and √117 ≈ 10.82.
@@ -392,13 +391,13 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   openstax precalculus 12.5; big-ideas-hs 10.9 (9.1–9.2); hmh-into-hs 10.7; reveal-hs 10.9.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1992-12M5-#16 (60°, AC = 12, find BD) | ~30-60-90 | Solves in two passes (AB = 6, then BD = 3√3) |
-  | NAEP-2005-12M4-#13 (which could NOT be 30-60-90) | ~30-60-90 | Partly (the page doesn't test a given pair) |
-  | NAEP-2009-12M2-#2 (short leg 8 at 60°, find h) | ~30-60-90 | Solves |
-  | MCAS-2026-G10M-#20 (sin B = √3/2) | ~30-60-90 + m.10.right-triangle-trig | Partly |
-  | Common: right, acute or obtuse from three sides | main | Solves |
+  | Question                                         | Page                                 | Mark                                         |
+  | ------------------------------------------------ | ------------------------------------ | -------------------------------------------- |
+  | NAEP-1992-12M5-#16 (60°, AC = 12, find BD)       | ~30-60-90                            | Solves in two passes (AB = 6, then BD = 3√3) |
+  | NAEP-2005-12M4-#13 (which could NOT be 30-60-90) | ~30-60-90                            | Partly (the page doesn't test a given pair)  |
+  | NAEP-2009-12M2-#2 (short leg 8 at 60°, find h)   | ~30-60-90                            | Solves                                       |
+  | MCAS-2026-G10M-#20 (sin B = √3/2)                | ~30-60-90 + m.10.right-triangle-trig | Partly                                       |
+  | Common: right, acute or obtuse from three sides  | main                                 | Solves                                       |
 
 - **Main — BUILD `m.10.special-right-triangles`** "Right, acute or obtuse?":
   `equation: '{a}^2 + {b}^2 {r:relation} {c}^2'` (the relation worked out, as on
@@ -421,15 +420,15 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   hmh-into-hs 10.7; larson precalculus 12.4; reveal-hs 10.9.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1992-12M12-#8 (angle in a pyramid, tan = 15/12) | ~find-angle | Partly (the right triangle is inside a solid) |
-  | NAEP-1992-12M15-#10 (cos A from legs 3 and 4) | main | Solves |
-  | NAEP-2005-12M12-#15 (50 ft, 40°: height) | ~elevation (eye 0) | Solves |
-  | NAEP-2009-12M7-#11 (200 ft, 21°) | ~elevation | Solves |
-  | MCAS-2026-G10M-#20 (sin B = √3/2) | main at 30°–60° | Solves |
-  | MCAS-2026-G10M-#39 (sail height; sin x = h/34) | ~find-side | Solves |
-  | Common: sin A = cos(90° − A) | ~complement | Solves |
+  | Question                                             | Page               | Mark                                          |
+  | ---------------------------------------------------- | ------------------ | --------------------------------------------- |
+  | NAEP-1992-12M12-#8 (angle in a pyramid, tan = 15/12) | ~find-angle        | Partly (the right triangle is inside a solid) |
+  | NAEP-1992-12M15-#10 (cos A from legs 3 and 4)        | main               | Solves                                        |
+  | NAEP-2005-12M12-#15 (50 ft, 40°: height)             | ~elevation (eye 0) | Solves                                        |
+  | NAEP-2009-12M7-#11 (200 ft, 21°)                     | ~elevation         | Solves                                        |
+  | MCAS-2026-G10M-#20 (sin B = √3/2)                    | main at 30°–60°    | Solves                                        |
+  | MCAS-2026-G10M-#39 (sail height; sin x = h/34)       | ~find-side         | Solves                                        |
+  | Common: sin A = cos(90° − A)                         | ~complement        | Solves                                        |
 
 - **Main — BUILD (promote `g.m10-right-triangle-trig-sohcahtoa`)** "Sine, cosine and tangent":
   `trig: { angle: 'A' }`, C = 90. Values a opposite, b adjacent, c hypotenuse (0.01–10000),
@@ -437,13 +436,13 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   tan A = a/b, a² + b² = c². Example 5, 12, 13: sin A = 5/13 ≈ 0.3846, cos A = 12/13 ≈ 0.9231,
   tan A = 5/12 ≈ 0.4167, A ≈ 22.62°. `startWith: ['a', 'b']`.
 - **~find-side — BUILD (promote `g.m10-right-triangle-trig-ladder`)**: `equation:
-  'sin({A}°) = {o}/{h}'`, the adjacent side in a row with cos. Example ladder 25 ft at 38°:
+'sin({A}°) = {o}/{h}'`, the adjacent side in a row with cos. Example ladder 25 ft at 38°:
   25 sin(38°) ≈ 15.39 ft up, 25 cos(38°) ≈ 19.70 ft out.
 - **~find-angle — BUILD (promote `g.m10-right-triangle-trig-ramp`)**: `equation:
-  'tan({A}°) = {o}/{a}'` solved for A with tan⁻¹. Example rise 2 ft, run 24 ft:
+'tan({A}°) = {o}/{a}'` solved for A with tan⁻¹. Example rise 2 ft, run 24 ft:
   A = tan⁻¹(0.0833) ≈ 4.76°.
 - **~elevation — BUILD (promote `g.m10-right-triangle-trig-elevation`)**: `scene: { kind:
-  'sight', eye: 'e' }`; values distance d (0.1–10000 ft), angle A, eye height e (0–10 ft),
+'sight', eye: 'e' }`; values distance d (0.1–10000 ft), angle A, eye height e (0–10 ft),
   height H = d tan A + e. Example d = 120 ft, A = 28°, e = 5 ft: 63.81 + 5 = 68.81 ft.
   Distances reach 10000 ft so the 200 ft item fits.
 - **~complement — BUILD** "Sine and cosine of complementary angles": values A, B = 90° − A,
@@ -459,14 +458,14 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   reveal-hs 10.9.
 - **Tests ask:** no released questions; common types:
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | Two angles and a side (AAS, ASA) | main | Solves |
-  | Two sides and the included angle | ~sas | Solves |
-  | Three sides, find an angle | ~sss | Solves |
-  | Two sides and a non-included angle: 0, 1 or 2 triangles | ~ambiguous-case | Solves |
-  | Area from two sides and the included angle | ~area | Solves |
-  | NAEP-2005-12M3-#4 (8, 8, 40°), filed under constructions | ~sas | Solves |
+  | Question                                                 | Page            | Mark   |
+  | -------------------------------------------------------- | --------------- | ------ |
+  | Two angles and a side (AAS, ASA)                         | main            | Solves |
+  | Two sides and the included angle                         | ~sas            | Solves |
+  | Three sides, find an angle                               | ~sss            | Solves |
+  | Two sides and a non-included angle: 0, 1 or 2 triangles  | ~ambiguous-case | Solves |
+  | Area from two sides and the included angle               | ~area           | Solves |
+  | NAEP-2005-12M3-#4 (8, 8, 40°), filed under constructions | ~sas            | Solves |
 
 - **Main — BUILD (promote `g.m10-law-sines-cosines-sines`)** "The law of sines":
   `equation: '{a}/{sin({A}°)} = {b}/{sin({B}°)}'`; values A, B, C (°), a, b, c; relations
@@ -491,14 +490,14 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   10.9; hmh-into-hs 10.1, 10.2, 10.8; reveal-hs 10.1, 10.3, 10.5, 10.10.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1992-12M7-#7 (distance, (2, 10) and (−4, 2)) | main | Solves |
-  | NAEP-2024-12M4-#16 (midpoint of (−6, −11) and (14, −3)) | ~midpoint | Solves once coordinates reach ±20 |
-  | NAEP-2009-12M2-#12 (justify a parallelogram) | ~parallelogram | Solves |
-  | MCAS-2026-G10M-#23 (C twice as far from A as from B) | ~partition | Solves |
-  | NAEP-1992-12M7-#10 (line y = 4 meets x² + y² = 25) | m.10.circle-equations~point | Partly |
-  | Common: perimeter and area of a polygon on the grid | ~perimeter | Solves |
+  | Question                                                | Page                        | Mark                              |
+  | ------------------------------------------------------- | --------------------------- | --------------------------------- |
+  | NAEP-1992-12M7-#7 (distance, (2, 10) and (−4, 2))       | main                        | Solves                            |
+  | NAEP-2024-12M4-#16 (midpoint of (−6, −11) and (14, −3)) | ~midpoint                   | Solves once coordinates reach ±20 |
+  | NAEP-2009-12M2-#12 (justify a parallelogram)            | ~parallelogram              | Solves                            |
+  | MCAS-2026-G10M-#23 (C twice as far from A as from B)    | ~partition                  | Solves                            |
+  | NAEP-1992-12M7-#10 (line y = 4 meets x² + y² = 25)      | m.10.circle-equations~point | Partly                            |
+  | Common: perimeter and area of a polygon on the grid     | ~perimeter                  | Solves                            |
 
 - **Main — BUILD (promote `g.m10-coordinate-geometry-distance`)** "Distance between two
   points": values x1, y1, x2, y2 (−20–20, step 0.5), d = √((x₂ − x₁)² + (y₂ − y₁)²). Picture
@@ -526,13 +525,13 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   (Circles, 10.1–10.6); envision-aga 10.10; hmh-into-hs 10.8; reveal-hs 10.10.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2009-12M7-#4 (inscribed right angle: BD is a diameter) | ~semicircle | Partly (the converse is in the assumptions) |
-  | NAEP-1996-12M10-#10 (find the center) | m.10.constructions~find-center | Solves |
-  | MCAS-2026-G10M-#36 (inscribed pentagon) | m.10.quadrilaterals main | Partly |
-  | Common: inscribed from central angle; tangent ⟂ radius; chord, secant products | main and types | Solves |
-  | Common: opposite angles of an inscribed quadrilateral | ~cyclic-quadrilateral | Solves (after Engine need 7) |
+  | Question                                                                       | Page                           | Mark                                        |
+  | ------------------------------------------------------------------------------ | ------------------------------ | ------------------------------------------- |
+  | NAEP-2009-12M7-#4 (inscribed right angle: BD is a diameter)                    | ~semicircle                    | Partly (the converse is in the assumptions) |
+  | NAEP-1996-12M10-#10 (find the center)                                          | m.10.constructions~find-center | Solves                                      |
+  | MCAS-2026-G10M-#36 (inscribed pentagon)                                        | m.10.quadrilaterals main       | Partly                                      |
+  | Common: inscribed from central angle; tangent ⟂ radius; chord, secant products | main and types                 | Solves                                      |
+  | Common: opposite angles of an inscribed quadrilateral                          | ~cyclic-quadrilateral          | Solves (after Engine need 7)                |
 
 - **Main — BUILD (promote `g.m10-circle-theorems-inscribed`)** "Inscribed angles": values
   central angle (°, 0.1–359.9), inscribed = central ÷ 2. Example arc 130°: inscribed 65°.
@@ -561,12 +560,12 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   Plane) and im-hs 10.6 (lessons 4–6), which the crosswalk files elsewhere.
 - **Tests ask:** none filed here; two belong here:
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-G10M-#5 (center and radius of (x + 4)² + (y − 2)² = 9), filed under m.12.conics | main | Solves (after Engine need 2) |
-  | NAEP-1992-12M7-#10 (circle r = 5 meets y = 4) | ~point | Partly (one root; the mirror point in the assumptions) |
-  | Common: write the equation from center and radius | main | Solves |
-  | Common: complete the square to find center and radius | ~general-form | Solves |
+  | Question                                                                                  | Page          | Mark                                                   |
+  | ----------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------ |
+  | MCAS-2026-G10M-#5 (center and radius of (x + 4)² + (y − 2)² = 9), filed under m.12.conics | main          | Solves (after Engine need 2)                           |
+  | NAEP-1992-12M7-#10 (circle r = 5 meets y = 4)                                             | ~point        | Partly (one root; the mirror point in the assumptions) |
+  | Common: write the equation from center and radius                                         | main          | Solves                                                 |
+  | Common: complete the square to find center and radius                                     | ~general-form | Solves                                                 |
 
 - **Main — BUILD (promote `g.m10-circle-equations-center`; `-origin` is the same page at
   h = k = 0)**: `equation: '(x − {h})² + (y − {k})² = {r}^2'`; values h, k (−20–20), r
@@ -587,13 +586,13 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   hmh-into-hs 10.8; reveal-hs 10.10, 10.11.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1990-12M9-#14 (three semicircles on a triangle of side 1) | main (180°, r = 0.5) | Partly (× 3 by hand) |
-  | NAEP-1996-12M13-#7 (an arc of 235°) | main (major arcs to 360°) | Partly (a protractor drawing) |
-  | MCAS-2026-G10M-#25 (90° turn sweeps 3π cm: radius) | main solved for r | Solves (typing 3π needs Engine need 3; 9.42 works now) |
-  | Common: sector area in degrees | main | Solves |
-  | Common: s = rθ, degrees to radians | ~radians | Solves |
+  | Question                                                       | Page                      | Mark                                                   |
+  | -------------------------------------------------------------- | ------------------------- | ------------------------------------------------------ |
+  | NAEP-1990-12M9-#14 (three semicircles on a triangle of side 1) | main (180°, r = 0.5)      | Partly (× 3 by hand)                                   |
+  | NAEP-1996-12M13-#7 (an arc of 235°)                            | main (major arcs to 360°) | Partly (a protractor drawing)                          |
+  | MCAS-2026-G10M-#25 (90° turn sweeps 3π cm: radius)             | main solved for r         | Solves (typing 3π needs Engine need 3; 9.42 works now) |
+  | Common: sector area in degrees                                 | main                      | Solves                                                 |
+  | Common: s = rθ, degrees to radians                             | ~radians                  | Solves                                                 |
 
 - **Main — BUILD (promote `g.m10-arc-sector-degrees`; `-major` is the same page past 180°)**:
   `circle` with `sector: { angle: 't', arc: 's', area: 'A' }`; values r (0.01–1000), θ (°,
@@ -611,15 +610,15 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   (Surface Area and Volume); envision-aga 10.11; hmh-into-hs 10.9; reveal-hs 10.11.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1990-12M9-#11 (plane through a prism: pentagon) | ~cross-section-shapes | Partly (a pentagon card; the item's figure isn't drawn) |
-  | NAEP-1992-12M15-#9 (three cylinders, order the volumes) | main | Partly (three runs) |
-  | NAEP-2005-12M12-#18 (sphere r = 2: surface area) | ~sphere | Solves |
-  | NAEP-2005-12M4-#12 (folds into a square pyramid) | ~pyramid (`net` squarePyramid) | Partly |
-  | NAEP-2013-12M99-#2, #3, #4 (folded card angles) | none | No (a 3D fold; Engine need 15) |
-  | MCAS-2026-G10M-#7 (circle dilated: circumference) | m.10.similarity~scale-area | Solves |
-  | MCAS-2026-G10M-#27 (can's volume, cone scoops) | main + ~cone | Partly (two pages) |
+  | Question                                                | Page                           | Mark                                                    |
+  | ------------------------------------------------------- | ------------------------------ | ------------------------------------------------------- |
+  | NAEP-1990-12M9-#11 (plane through a prism: pentagon)    | ~cross-section-shapes          | Partly (a pentagon card; the item's figure isn't drawn) |
+  | NAEP-1992-12M15-#9 (three cylinders, order the volumes) | main                           | Partly (three runs)                                     |
+  | NAEP-2005-12M12-#18 (sphere r = 2: surface area)        | ~sphere                        | Solves                                                  |
+  | NAEP-2005-12M4-#12 (folds into a square pyramid)        | ~pyramid (`net` squarePyramid) | Partly                                                  |
+  | NAEP-2013-12M99-#2, #3, #4 (folded card angles)         | none                           | No (a 3D fold; Engine need 15)                          |
+  | MCAS-2026-G10M-#7 (circle dilated: circumference)       | m.10.similarity~scale-area     | Solves                                                  |
+  | MCAS-2026-G10M-#27 (can's volume, cone scoops)          | main + ~cone                   | Partly (two pages)                                      |
 
 - **Main — BUILD (promote `g.m10-volume-derivations-cavalieri`)** "Cylinder volume and
   Cavalieri's principle": values r, h (0.01–1000 cm), V = πr²h. Example r = 3 cm, h = 8 cm:
@@ -659,14 +658,14 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   precalculus 12.1, 12.9; reveal-hs 10.12.
 - **Tests ask:** none filed here; two belong here, then common types:
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1990-12M9-#17 (three coins, two heads) | ~sample-space | Solves |
-  | NAEP-2024-12M4-#18 (gym Venn from counts) | ~neither | Partly (counts, Engine need 8) |
-  | P(A or B) with overlap | main | Solves |
-  | Mutually exclusive; complement | ~exclusive, ~complement | Solves |
-  | Arrangements and committees | ~permutations, ~combinations | Solves |
-  | Probability by counting | ~counting-probability | Solves |
+  | Question                                    | Page                         | Mark                           |
+  | ------------------------------------------- | ---------------------------- | ------------------------------ |
+  | NAEP-1990-12M9-#17 (three coins, two heads) | ~sample-space                | Solves                         |
+  | NAEP-2024-12M4-#18 (gym Venn from counts)   | ~neither                     | Partly (counts, Engine need 8) |
+  | P(A or B) with overlap                      | main                         | Solves                         |
+  | Mutually exclusive; complement              | ~exclusive, ~complement      | Solves                         |
+  | Arrangements and committees                 | ~permutations, ~combinations | Solves                         |
+  | Probability by counting                     | ~counting-probability        | Solves                         |
 
 - **Main — BUILD (promote `g.m10-probability-rules-union`)** "The addition rule": `venn` with
   `shade: 'or'`; values P(A), P(B), P(A and B) (0–1), P(A or B) derived. Relation P(A or B) =
@@ -699,17 +698,17 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
   reveal-hs 10.12.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1990-12M9-#17 (three coins) | m.10.probability-rules~sample-space | Solves |
-  | NAEP-2005-12M12-#2 (puppies: P(male given brown)) | main | Solves |
-  | NAEP-2005-12M12-#9 (0.9 twice) | ~independent | Solves |
-  | NAEP-2009-12M7-#12 (three on-time chances) | ~independent | Partly (three stages, Engine need 9) |
-  | NAEP-2024-12M4-#18 (gym Venn, counts) | m.10.probability-rules~neither | Partly |
-  | NAEP-2024-12M9-#18 (allergy test) | ~tree | Solves |
-  | MCAS-2026-G10M-#9 (lunch table: fraction of a column) | main | Solves (cells to 1000) |
-  | MCAS-2026-G10M-#29 (independent, P(A or B)) | ~independent | Solves |
-  | MCAS-2026-G10M-#34 (beverage Venn, counts) | ~venn | Partly (counts) |
+  | Question                                              | Page                                | Mark                                 |
+  | ----------------------------------------------------- | ----------------------------------- | ------------------------------------ |
+  | NAEP-1990-12M9-#17 (three coins)                      | m.10.probability-rules~sample-space | Solves                               |
+  | NAEP-2005-12M12-#2 (puppies: P(male given brown))     | main                                | Solves                               |
+  | NAEP-2005-12M12-#9 (0.9 twice)                        | ~independent                        | Solves                               |
+  | NAEP-2009-12M7-#12 (three on-time chances)            | ~independent                        | Partly (three stages, Engine need 9) |
+  | NAEP-2024-12M4-#18 (gym Venn, counts)                 | m.10.probability-rules~neither      | Partly                               |
+  | NAEP-2024-12M9-#18 (allergy test)                     | ~tree                               | Solves                               |
+  | MCAS-2026-G10M-#9 (lunch table: fraction of a column) | main                                | Solves (cells to 1000)               |
+  | MCAS-2026-G10M-#29 (independent, P(A or B))           | ~independent                        | Solves                               |
+  | MCAS-2026-G10M-#34 (beverage Venn, counts)            | ~venn                               | Partly (counts)                      |
 
 - **Main — BUILD (promote `g.m10-conditional-probability-table`)** "Conditional probability
   from a two-way table": `equation: 'P(A | B) = {ab}/{b}'`; `table` `twoWay` 2 × 3 with

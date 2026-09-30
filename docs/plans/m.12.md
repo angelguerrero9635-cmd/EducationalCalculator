@@ -33,13 +33,13 @@ items (written here in our own words) and whether its pages solve them.
   module 4 topic C (lessons 11–14, modeling with inverse trig).
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | Exact value of sin⁻¹(√2/2) | main | Solves |
-  | Why sin⁻¹(1.5) has no value | main (rejected: "x is between −1 and 1") | Solves |
-  | cos⁻¹(−1/2) in degrees and radians | ~arccos | Solves |
-  | Angle of a ramp that rises 1 m in 8 m | ~arctan | Solves |
-  | Exact value of cos(sin⁻¹(3/5)) | ~compose | Solves |
+  | Item (our words)                            | Page                                       | Mark   |
+  | ------------------------------------------- | ------------------------------------------ | ------ |
+  | Exact value of sin⁻¹(√2/2)                  | main                                       | Solves |
+  | Why sin⁻¹(1.5) has no value                 | main (rejected: "x is between −1 and 1")   | Solves |
+  | cos⁻¹(−1/2) in degrees and radians          | ~arccos                                    | Solves |
+  | Angle of a ramp that rises 1 m in 8 m       | ~arctan                                    | Solves |
+  | Exact value of cos(sin⁻¹(3/5))              | ~compose                                   | Solves |
   | Solve sin θ = 0.4 for every θ in [0°, 360°) | m.12.trig-formulas-equations~sine-equation | Solves |
 
 - **Main — BUILD `m.12.inverse-trig`:** picture `functionGraph` arcsin (demo
@@ -73,15 +73,15 @@ items (written here in our own words) and whether its pages solve them.
   enVision A2 11.8, Larson unit 5 (5.3–5.5), Reveal 11.11–11.12.
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | Exact value of sin 75° | main | Solves |
-  | Exact value of cos 15° | ~difference | Solves |
-  | sin A = 3/5, A in Quadrant II: find sin 2A and cos 2A | ~double-angle | Solves |
-  | Solve 2 sin x + 3 = 4 on [0°, 360°) | ~sine-equation | Solves |
-  | Solve 3 tan x + 1 = 4 on [0°, 360°) | ~tangent-equation | Solves |
-  | Solve 2 sin²x − sin x − 1 = 0 on [0°, 360°) | none | No (engine need 7) |
-  | Verify an identity | none | No (proof; not a calculator) |
+  | Item (our words)                                      | Page              | Mark                         |
+  | ----------------------------------------------------- | ----------------- | ---------------------------- |
+  | Exact value of sin 75°                                | main              | Solves                       |
+  | Exact value of cos 15°                                | ~difference       | Solves                       |
+  | sin A = 3/5, A in Quadrant II: find sin 2A and cos 2A | ~double-angle     | Solves                       |
+  | Solve 2 sin x + 3 = 4 on [0°, 360°)                   | ~sine-equation    | Solves                       |
+  | Solve 3 tan x + 1 = 4 on [0°, 360°)                   | ~tangent-equation | Solves                       |
+  | Solve 2 sin²x − sin x − 1 = 0 on [0°, 360°)           | none              | No (engine need 7)           |
+  | Verify an identity                                    | none              | No (proof; not a calculator) |
 
 - **Main — BUILD `m.12.trig-formulas-equations`:** picture `unitCircle` (`angle: 'C'`,
   `sin: 'S'`; engine need 6 draws A and B as two arcs). Values A (0 to 360 °), B (0 to 360 °),
@@ -119,15 +119,15 @@ items (written here in our own words) and whether its pages solve them.
   unit 10, OpenStax Precalculus 8.8, enVision A2 11.10, Larson 6.3–6.4 and unit 11 (3-D vectors).
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | Components of a 10-unit vector at 30° | main | Solves |
-  | Magnitude and direction of ⟨−3, 4⟩ | main | Solves |
-  | u + v, and its length | ~add | Solves |
-  | −2u, and a unit vector along u | ~scalar | Solves |
-  | Angle between ⟨2, 1⟩ and ⟨1, 3⟩; are two vectors perpendicular | ~dot | Solves |
-  | Resultant of two forces | ~resultant | Solves |
-  | Cross product of two 3-D vectors | none | No (engine need 10; Larson unit 11) |
+  | Item (our words)                                               | Page       | Mark                                |
+  | -------------------------------------------------------------- | ---------- | ----------------------------------- |
+  | Components of a 10-unit vector at 30°                          | main       | Solves                              |
+  | Magnitude and direction of ⟨−3, 4⟩                             | main       | Solves                              |
+  | u + v, and its length                                          | ~add       | Solves                              |
+  | −2u, and a unit vector along u                                 | ~scalar    | Solves                              |
+  | Angle between ⟨2, 1⟩ and ⟨1, 3⟩; are two vectors perpendicular | ~dot       | Solves                              |
+  | Resultant of two forces                                        | ~resultant | Solves                              |
+  | Cross product of two 3-D vectors                               | none       | No (engine need 10; Larson unit 11) |
 
 - **Main — BUILD `m.12.vectors`:** picture `vectorDiagram` (demo
   `g.m12-vectors-magnitude-direction`, `components: true`). Values m (|v|, 0 to 1000), θ
@@ -164,15 +164,15 @@ items (written here in our own words) and whether its pages solve them.
   Larson 6.5–6.6 and 10.7–10.8.
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | Rectangular form of the polar point (4, 150°) | main | Solves |
-  | Polar form of (−1, 1) | main | Solves |
-  | Write 2(cos 60° + i sin 60°) as a + bi | ~complex-form | Solves |
-  | Product of two complex numbers in polar form | ~product | Solves |
-  | (1 + i)⁸ by De Moivre's theorem | ~de-moivre | Solves |
-  | Number of petals of r = 4 cos 2θ | ~rose | Solves |
-  | Cube roots of 8i | none | No (engine need 8) |
+  | Item (our words)                              | Page          | Mark               |
+  | --------------------------------------------- | ------------- | ------------------ |
+  | Rectangular form of the polar point (4, 150°) | main          | Solves             |
+  | Polar form of (−1, 1)                         | main          | Solves             |
+  | Write 2(cos 60° + i sin 60°) as a + bi        | ~complex-form | Solves             |
+  | Product of two complex numbers in polar form  | ~product      | Solves             |
+  | (1 + i)⁸ by De Moivre's theorem               | ~de-moivre    | Solves             |
+  | Number of petals of r = 4 cos 2θ              | ~rose         | Solves             |
+  | Cube roots of 8i                              | none          | No (engine need 8) |
 
 - **Main — BUILD `m.12.polar`:** picture `polarGrid` (demo `g.m12-polar-point`, point
   { r: 'r', theta: 'θ', x: 'x', y: 'y' }). Values r (−20 to 20), θ (−360 to 720 °), x, y.
@@ -209,13 +209,13 @@ items (written here in our own words) and whether its pages solve them.
   10.6.
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | Point at t = 2 on x = 1 + 2t, y = 3 − t | main | Solves |
-  | Eliminate the parameter (a line) | main | Solves |
-  | Eliminate the parameter (x = h + a cos t, y = k + b sin t) | ~ellipse | Solves |
-  | A ball's position after 1 s, and when it lands | ~projectile | Solves |
-  | Direction of motion as t increases | main (the picture's arrows) | Solves |
+  | Item (our words)                                           | Page                        | Mark   |
+  | ---------------------------------------------------------- | --------------------------- | ------ |
+  | Point at t = 2 on x = 1 + 2t, y = 3 − t                    | main                        | Solves |
+  | Eliminate the parameter (a line)                           | main                        | Solves |
+  | Eliminate the parameter (x = h + a cos t, y = k + b sin t) | ~ellipse                    | Solves |
+  | A ball's position after 1 s, and when it lands             | ~projectile                 | Solves |
+  | Direction of motion as t increases                         | main (the picture's arrows) | Solves |
 
 - **Main — BUILD `m.12.parametric`:** picture `polarGrid` parametric line (demo
   `g.m12-parametric-line`, range [−5, 5]). Values x0, y0, a, b, t, x, y, m (slope, derived).
@@ -228,7 +228,7 @@ items (written here in our own words) and whether its pages solve them.
   ((x − h)/a)² + ((y − k)/b)² = 1 in the steps. Example: h = 1, k = −2, a = 3, b = 2, t = 60°:
   x = 2.5, y = −2 + √3 ≈ −0.27.
 - **~projectile — BUILD:** picture `projectile` (demo `g.m12-parametric-launch`, `parametric:
-  true`, at 't', x 'X', y 'Y', time 'T'). Values v (m/s), θ (°), h (m), t (s), X, Y (m), T (s).
+true`, at 't', x 'X', y 'Y', time 'T'). Values v (m/s), θ (°), h (m), t (s), X, Y (m), T (s).
   Relations X = v cos θ · t; Y = h + v sin θ · t − 4.9t²; T from Y = 0 (the positive root).
   Example: v = 20 m/s, θ = 30°, h = 0, t = 1 s: X ≈ 17.32 m, Y = 10 − 4.9 = 5.1 m; T = 20/9.8
   ≈ 2.04 s. Assumption: no air resistance; g = 9.8 m/s².
@@ -242,39 +242,37 @@ items (written here in our own words) and whether its pages solve them.
   OpenStax Precalculus 9.2 and 9.5–9.8, Big Ideas 11.12, enVision A2 11.10, Larson unit 8.
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | Solve a 3-variable system by row reduction | main | Partly (coefficients fixed until engine need 3) |
-  | Multiply a 2 × 2 matrix by a vector | ~multiply | Solves |
-  | 3 × 3 determinant | ~determinant | Solves |
-  | Inverse of a 2 × 2 matrix | ~inverse | Solves |
-  | Solve a 2 × 2 system by Cramer's rule | ~cramer | Solves |
-  | Add or scale matrices; multiply two 2 × 2 matrices | none | Partly (engine need 3: 12 values) |
-  | A matrix as a rotation or reflection | none | No (see Not in the taxonomy) |
+  | Item (our words)                                   | Page         | Mark                                            |
+  | -------------------------------------------------- | ------------ | ----------------------------------------------- |
+  | Solve a 3-variable system by row reduction         | main         | Partly (coefficients fixed until engine need 3) |
+  | Multiply a 2 × 2 matrix by a vector                | ~multiply    | Solves                                          |
+  | 3 × 3 determinant                                  | ~determinant | Solves                                          |
+  | Inverse of a 2 × 2 matrix                          | ~inverse     | Solves                                          |
+  | Solve a 2 × 2 system by Cramer's rule              | ~cramer      | Solves                                          |
+  | Add or scale matrices; multiply two 2 × 2 matrices | none         | Partly (engine need 3: 12 values)               |
+  | A matrix as a rotation or reflection               | none         | No (see Not in the taxonomy)                    |
 
 - **Main — BUILD `m.12.matrices`:** picture `matrixGrid` rowReduce (demo
-  `g.m12-matrices-row-reduce`; system [[1, 1, 1, 'd1'], [2, −1, 1, 'd2'], [1, 2, −1, 'd3']],
-  steps: { add: 2, from: 1, times: −2 }, { add: 3, from: 1, times: −1 }, { swap: [2, 3] },
-  { add: 3, from: 2, times: 3 }, { scale: 3, by: −1/7 }; solution ['x', 'y', 'z']). Values d1,
-  d2, d3, x, y, z. Relations: the three equations. Assumptions: each row operation keeps the
-  same solutions; the goal is zeros under the diagonal, then back-substitution; a row
-  0 = nonzero means no solution. Example: x + y + z = 6, 2x − y + z = 3, x + 2y − z = 2 → after
-  the steps −7z = −21, z = 3, y = −4 + 2(3) = 2, x = 6 − 2 − 3 = 1. startWith: d1, d2, d3. When
-  engine need 3 lands, the coefficients become boxes: `[[{a}, {b}, {c} | {p}; …]]`.
+  `g.m12-matrices-row-reduce`) with the system
+  `[[1, 1, 1, 'd1'], [2, −1, 1, 'd2'], [1, 2, −1, 'd3']]`, the steps
+  `{ add: 2, from: 1, times: −2 }, { add: 3, from: 1, times: −1 }, { swap: [2, 3] }, { add: 3, from: 2, times: 3 }, { scale: 3, by: −1/7 }`
+  and the solution `['x', 'y', 'z']`. Values d1, d2, d3, x, y, z. Relations: the three equations.
+  Assumptions: each row operation keeps the same solutions; the goal is zeros under the diagonal,
+  then back-substitution; a row 0 = nonzero means no solution. Example: x + y + z = 6,
+  2x − y + z = 3, x + 2y − z = 2 → after the steps −7z = −21, z = 3, y = −4 + 2(3) = 2,
+  x = 6 − 2 − 3 = 1. startWith: d1, d2, d3. When engine need 3 lands, the coefficients become
+  boxes: `[[{a}, {b}, {c} | {p}; …]]`.
 - **~multiply — BUILD:** picture `matrixGrid` multiply (demo `g.m12-matrices-multiply`, b a 2 × 1
-  column); equation from `g.m12-matrices-times-vector`: `[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] =
-  [[{p}; {q}]]`. Values a, b, c, d, x, y, p, q. Relations p = ax + by; q = cx + dy. Example:
-  [[2, 1], [3, 4]] [[5], [−1]] = [[9], [11]]. Assumption: row times column; the columns of A
+  column); equation from `g.m12-matrices-times-vector`: `[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] = [[{p}; {q}]]`. Values a, b, c, d, x, y, p, q. Relations p = ax + by; q = cx + dy. Example:
+  `[[2, 1], [3, 4]] [[5], [−1]]` = `[[9], [11]]`. Assumption: row times column; the columns of A
   must match the rows of the vector.
 - **~determinant — BUILD:** equation (demo `g.m12-matrices-determinant`, 3 × 3):
   `||{a}, {b}, {c}; {d}, {e}, {f}; {g}, {h}, {k}|| = {D}` (10 values). Picture: none drawn;
-  engine need 5. Relation D = a(ek − fh) − b(dk − fg) + c(dh − eg). Example: [[2, 0, 1],
-  [1, 3, 2], [1, 1, 4]]: 2(12 − 2) − 0 + 1(1 − 3) = 20 − 2 = 18. Assumption: D = 0 means no
+  engine need 5. Relation D = a(ek − fh) − b(dk − fg) + c(dh − eg). Example: `[[2, 0, 1], [1, 3, 2], [1, 1, 4]]`: 2(12 − 2) − 0 + 1(1 − 3) = 20 − 2 = 18. Assumption: D = 0 means no
   inverse and no single solution.
 - **~inverse — BUILD:** picture `matrixGrid` multiply (a = A, b = A⁻¹'s derived entries: the
   product shows I). Values a, b, c, d, D, e, f, g, h (A⁻¹). Relations D = ad − bc; e = d/D,
-  f = −b/D, g = −c/D, h = a/D. Rows until engine need 4 (`[[…]]^{−1}`). Example: A = [[4, 7],
-  [2, 6]]: D = 10, A⁻¹ = [[0.6, −0.7], [−0.2, 0.4]] (check row 1 × column 1: 2.4 − 1.4 = 1).
+  f = −b/D, g = −c/D, h = a/D. Rows until engine need 4 (`[[…]]^{−1}`). Example: A = `[[4, 7], [2, 6]]`: D = 10, A⁻¹ = `[[0.6, −0.7], [−0.2, 0.4]]` (check row 1 × column 1: 2.4 − 1.4 = 1).
 - **~cramer — BUILD:** equation `{a}x + {b}y = {p}\n{c}x + {d}y = {q}`. Picture `matrixGrid`
   none fits (engine need 5 draws D, Dx, Dy side by side); until then the equation only. Values
   a, b, c, d, p, q, D, x, y. Relations D = ad − bc; x = (pd − bq)/D; y = (aq − pc)/D. Example:
@@ -289,15 +287,15 @@ items (written here in our own words) and whether its pages solve them.
   10.1–10.3, Big Ideas 10.10 and 11.2, enVision 10.9 and 11.9, Larson 10.2–10.4, Reveal 10.10.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
+  | Question                                                                     | Page                            | Mark                                                                                          |
+  | ---------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------- |
   | NAEP-1992-12M7-#10 (a horizontal line meets a circle centered at the origin) | m.10.circle-equations (refresh) | Partly: the page gives one x for a y; both ±x need its point on the curve for the second root |
-  | MCAS-2026-G10M-#5 (center and radius from (x + h)² + (y − k)² = r²) | m.10.circle-equations (refresh) | Solves |
-  | (our words) Foci of an ellipse from its equation | main | Solves |
-  | (our words) Focus and directrix of (x − 2)² = 8(y + 1) | ~parabola | Solves |
-  | (our words) Asymptotes of a hyperbola | ~hyperbola | Solves |
-  | (our words) Which conic is 4x² − 9y² = 36 | ~identify | Solves |
-  | (our words) Standard form by completing the square | none | Partly (m.9 completing the square; no conic page) |
+  | MCAS-2026-G10M-#5 (center and radius from (x + h)² + (y − k)² = r²)          | m.10.circle-equations (refresh) | Solves                                                                                        |
+  | (our words) Foci of an ellipse from its equation                             | main                            | Solves                                                                                        |
+  | (our words) Focus and directrix of (x − 2)² = 8(y + 1)                       | ~parabola                       | Solves                                                                                        |
+  | (our words) Asymptotes of a hyperbola                                        | ~hyperbola                      | Solves                                                                                        |
+  | (our words) Which conic is 4x² − 9y² = 36                                    | ~identify                       | Solves                                                                                        |
+  | (our words) Standard form by completing the square                           | none                            | Partly (m.9 completing the square; no conic page)                                             |
 
 - **Main — BUILD `m.12.conics`:** picture `conicGraph` ellipse (demo `g.m12-conics-ellipse`,
   h 'h', k 'k', c 'c'); equation (same demo) `{(x − {h})²}/{a}^2 + {(y − {k})²}/{b}^2 = 1`.
@@ -333,14 +331,14 @@ items (written here in our own words) and whether its pages solve them.
   area problem is not covered).
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | lim (x² − 9)/(x − 3) as x → 3 | main | Solves |
-  | Left and right limits of a piecewise function; continuous or not | ~one-sided | Solves |
-  | Slope of a secant, then the derivative of x² at 3 | ~derivative | Solves |
-  | lim (2x + 1)/(x − 3) as x → ∞ | ~infinity | Solves |
-  | A table of values approaching a limit | main (steps list x = 2.9, 2.99) | Solves |
-  | Area under a curve by rectangles | none | No (Larson 12.5; see Not in the taxonomy) |
+  | Item (our words)                                                 | Page                            | Mark                                      |
+  | ---------------------------------------------------------------- | ------------------------------- | ----------------------------------------- |
+  | lim (x² − 9)/(x − 3) as x → 3                                    | main                            | Solves                                    |
+  | Left and right limits of a piecewise function; continuous or not | ~one-sided                      | Solves                                    |
+  | Slope of a secant, then the derivative of x² at 3                | ~derivative                     | Solves                                    |
+  | lim (2x + 1)/(x − 3) as x → ∞                                    | ~infinity                       | Solves                                    |
+  | A table of values approaching a limit                            | main (steps list x = 2.9, 2.99) | Solves                                    |
+  | Area under a curve by rectangles                                 | none                            | No (Larson 12.5; see Not in the taxonomy) |
 
 - **Main — BUILD `m.12.limits-intro`:** picture `functionGraph` rational with a hole (demo
   `g.m12-limits-intro-hole`: zeros ['a', 'b'], poles ['a'], `limit: { x: 'a' }`, at { x: 'x',
@@ -370,14 +368,14 @@ items (written here in our own words) and whether its pages solve them.
 - **Textbooks:** OpenStax Statistics unit 7 (7.1–7.3), Larson–Farber 5.4–5.5.
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | Mean and standard error of x̄ for n = 25 | main | Solves |
-  | P(x̄ < a value) | main | Solves |
-  | P(p̂ > a value) and the large-counts check | ~proportion | Solves |
-  | Mean and spread of a binomial count; is it close to normal | ~counts | Solves |
-  | Why larger samples give narrower distributions | main (drag n) | Solves |
-  | CLT from a skewed population | none | Partly (engine need 9) |
+  | Item (our words)                                           | Page          | Mark                   |
+  | ---------------------------------------------------------- | ------------- | ---------------------- |
+  | Mean and standard error of x̄ for n = 25                    | main          | Solves                 |
+  | P(x̄ < a value)                                             | main          | Solves                 |
+  | P(p̂ > a value) and the large-counts check                  | ~proportion   | Solves                 |
+  | Mean and spread of a binomial count; is it close to normal | ~counts       | Solves                 |
+  | Why larger samples give narrower distributions             | main (drag n) | Solves                 |
+  | CLT from a skewed population                               | none          | Partly (engine need 9) |
 
 - **Main — BUILD `m.12.sampling-distributions`:** picture `normalCurve` (demo
   `g.m12-sampling-distributions-mean`: mean 'μ', sd 'σ', sample { n: 'n', se: 'E' }, shade
@@ -403,13 +401,13 @@ items (written here in our own words) and whether its pages solve them.
   for a variance, is not covered).
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | 95% interval for a mean, σ known | main | Solves |
-  | 95% interval for a proportion from 240 of 400 | ~proportion | Solves |
-  | Sample size for a 3-point margin | ~sample-size | Solves |
-  | What "95% confident" means | ~capture | Solves |
-  | Interval for a mean, σ unknown (t) | none | No (engine need 1) |
+  | Item (our words)                              | Page         | Mark               |
+  | --------------------------------------------- | ------------ | ------------------ |
+  | 95% interval for a mean, σ known              | main         | Solves             |
+  | 95% interval for a proportion from 240 of 400 | ~proportion  | Solves             |
+  | Sample size for a 3-point margin              | ~sample-size | Solves             |
+  | What "95% confident" means                    | ~capture     | Solves             |
+  | Interval for a mean, σ unknown (t)            | none         | No (engine need 1) |
 
 - **Main — BUILD `m.12.confidence-intervals`:** picture `normalCurve` interval (demo
   `g.m12-confidence-intervals-mean`, interval { center: 'x', margin: 'E', level: 'C' }); equation
@@ -440,19 +438,19 @@ items (written here in our own words) and whether its pages solve them.
   (and 11, 13), Big Ideas 11.9, enVision 11.11, HMH 11.9, Larson–Farber units 7–8.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
+  | Question                                                                       | Page                                          | Mark                                                                                                    |
+  | ------------------------------------------------------------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
   | NAEP-2024-12M2-#11 (a randomized two-group experiment; which conclusions hold) | ~two-sample, with m.11.study-design (refresh) | Partly: the page tests the difference; the "cause, from random assignment" statements are the refresh's |
-  | (our words) One-proportion z test from 60 of 100 | main | Solves |
-  | (our words) One-mean z test, left-tailed | ~mean | Solves |
-  | (our words) Name a Type I and a Type II error in context | ~errors | Solves |
-  | (our words) Two-sample test for a difference of means | ~two-sample | Solves (z; t waits on engine need 1) |
-  | (our words) Right-tailed alternative typed by the student | none | Partly (engine need 2) |
+  | (our words) One-proportion z test from 60 of 100                               | main                                          | Solves                                                                                                  |
+  | (our words) One-mean z test, left-tailed                                       | ~mean                                         | Solves                                                                                                  |
+  | (our words) Name a Type I and a Type II error in context                       | ~errors                                       | Solves                                                                                                  |
+  | (our words) Two-sample test for a difference of means                          | ~two-sample                                   | Solves (z; t waits on engine need 1)                                                                    |
+  | (our words) Right-tailed alternative typed by the student                      | none                                          | Partly (engine need 2)                                                                                  |
 
 - **Main — BUILD `m.12.hypothesis-testing`:** picture `normalCurve` test (demo
   `g.m12-hypothesis-testing-two`, test { stat: 'z', alpha: 'α', tail: 'two', p: 'P' }). Values
   p0, n, k (successes), p (p̂, derived), E (standard error), z, P, α (`allowed: [0.01, 0.05,
-  0.1]`). Relations p = k ÷ n; E = √(p0(1 − p0)/n); z = (p − p0) ÷ E; P = 2(1 − Φ(|z|)).
+0.1]`). Relations p = k ÷ n; E = √(p0(1 − p0)/n); z = (p − p0) ÷ E; P = 2(1 − Φ(|z|)).
   Assumptions: H₀: p = p0, Hₐ: p ≠ p0; np0 ≥ 10 and n(1 − p0) ≥ 10; reject H₀ when P < α;
   "fail to reject" never proves H₀. Example: p0 = 0.5, 60 of 100: p̂ = 0.6, E = 0.05, z = 2,
   P = 2(1 − 0.9772) = 0.0455 < 0.05: reject H₀. startWith: p0, n, k, α.
@@ -480,13 +478,13 @@ items (written here in our own words) and whether its pages solve them.
 - **Textbooks:** OpenStax Statistics unit 11 (11.1–11.5), Larson–Farber 10.1–10.2.
 - **Tests ask:** no released questions. Common items:
 
-  | Item (our words) | Page | Mark |
-  | --- | --- | --- |
-  | Does a 1 : 2 : 1 ratio fit the counts? | main | Solves |
-  | Expected counts from row and column totals | ~independence | Solves |
-  | χ², df and P for a 2 × 3 table | ~independence | Solves |
-  | Test of homogeneity | ~independence (same arithmetic; the assumption says so) | Solves |
-  | Goodness of fit with 5 or more categories | none | Partly (10-value limit; engine need 3) |
+  | Item (our words)                           | Page                                                    | Mark                                   |
+  | ------------------------------------------ | ------------------------------------------------------- | -------------------------------------- |
+  | Does a 1 : 2 : 1 ratio fit the counts?     | main                                                    | Solves                                 |
+  | Expected counts from row and column totals | ~independence                                           | Solves                                 |
+  | χ², df and P for a 2 × 3 table             | ~independence                                           | Solves                                 |
+  | Test of homogeneity                        | ~independence (same arithmetic; the assumption says so) | Solves                                 |
+  | Goodness of fit with 5 or more categories  | none                                                    | Partly (10-value limit; engine need 3) |
 
 - **Main — BUILD `m.12.chi-square`:** picture `normalCurve` chiSquare (demo
   `g.m12-chi-square-gof`, chiSquare { df: 2, stat: 'X', p: 'P' }). Values O1, O2, O3 (counts),
@@ -497,9 +495,9 @@ items (written here in our own words) and whether its pages solve them.
   E = 25, 50, 25; X = 0.36 + 0.32 + 0.04 = 0.72; P = e^(−0.36) ≈ 0.698: the ratio fits.
   startWith: O1, O2, O3, p1, p2.
 - **~independence — BUILD:** picture `table` twoWay (demo `g.m12-chi-square-independence`, 2 × 3
-  cells [['a', 'b', 'e'], ['c', 'd', 'f']], expected 'independence', chiSquare 'X'). Values a, b,
+  cells `[['a', 'b', 'e'], ['c', 'd', 'f']]`, expected 'independence', chiSquare 'X'). Values a, b,
   e, c, d, f, X, P. Relations E = row total × column total ÷ grand total (steps); X = Σ(O − E)²/E;
-  df = (2 − 1)(3 − 1) = 2; P = χ²cdf(X, ∞, 2). Example: [[20, 30, 50], [30, 20, 50]]: expected
+  df = (2 − 1)(3 − 1) = 2; P = χ²cdf(X, ∞, 2). Example: `[[20, 30, 50], [30, 20, 50]]`: expected
   25, 25, 50 in each row; X = 1 + 1 + 0 + 1 + 1 + 0 = 4; P = e^(−2) ≈ 0.135: not significant at
   0.05.
 - **Verdict:** 2 pages; 4 of 5 common items Solve.

@@ -44,14 +44,14 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** OpenStax Algebra & Trig 9.2; Elementary Algebra 9.2; Intermediate Algebra 11.2; Big Ideas 9.1, 9.5; enVision 9.1, 11.1; Reveal 9.2, 11.2.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2024-12M2-#2 (filed under inequality-systems: which has exactly one solution) | ~how-many-solutions | Solves |
-  | Common: variable on both sides | main | Solves |
-  | Common: distribute first, then both sides | ~distribute | Solves |
-  | Common: solve a formula for one letter | ~literal | Solves (perimeter); Partly for other formulas |
-  | Common: fraction or decimal coefficients | main (decimals typed) | Partly: the tiles need whole numbers; Refresh m.8.multi-step-equations~fraction-coefficient |
-  | Common: name the property used in each step | main steps (`how`) | Partly |
+  | Question                                                                           | Page                  | Mark                                                                                        |
+  | ---------------------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------- |
+  | NAEP-2024-12M2-#2 (filed under inequality-systems: which has exactly one solution) | ~how-many-solutions   | Solves                                                                                      |
+  | Common: variable on both sides                                                     | main                  | Solves                                                                                      |
+  | Common: distribute first, then both sides                                          | ~distribute           | Solves                                                                                      |
+  | Common: solve a formula for one letter                                             | ~literal              | Solves (perimeter); Partly for other formulas                                               |
+  | Common: fraction or decimal coefficients                                           | main (decimals typed) | Partly: the tiles need whole numbers; Refresh m.8.multi-step-equations~fraction-coefficient |
+  | Common: name the property used in each step                                        | main steps (`how`)    | Partly                                                                                      |
 
 - **Main — BUILD `m.9.solving-equations`:**
   - Picture: `algebraTiles` mode 'equation', from `g.m9-solving-equations-tiles`. A negative start uses
@@ -97,13 +97,13 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** OpenStax A&T 9.2; Elementary 9.2–9.4; Intermediate 11.2–11.3; Big Ideas 9.2, 9.5, 11.5; enVision 9.1, 9.4, 11.1; Reveal 9.6, 11.1, 11.2, 11.7.
 - **Tests ask:** (none filed here; these are mis-filed under inequality-systems)
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1990-12M7-#7 (least whole number with 2x > 11) | ~whole-number-answers | Solves |
-  | NAEP-2013-12M99-#1 (x > −3 AND x < 5 vs OR) | ~compound, ~or | Solves (the 'or' rays meet: every number) |
-  | MCAS-2026-G10M-#3 (0 ≤ x − 10 ≤ 20) | ~compound | Partly: bounds reach 30, past the fixed −10..10 line (need 1) |
-  | Common: both sides, dividing by a negative | main | Solves |
-  | Common: graph y < mx + b | ~two-variables | Solves |
+  | Question                                            | Page                  | Mark                                                          |
+  | --------------------------------------------------- | --------------------- | ------------------------------------------------------------- |
+  | NAEP-1990-12M7-#7 (least whole number with 2x > 11) | ~whole-number-answers | Solves                                                        |
+  | NAEP-2013-12M99-#1 (x > −3 AND x < 5 vs OR)         | ~compound, ~or        | Solves (the 'or' rays meet: every number)                     |
+  | MCAS-2026-G10M-#3 (0 ≤ x − 10 ≤ 20)                 | ~compound             | Partly: bounds reach 30, past the fixed −10..10 line (need 1) |
+  | Common: both sides, dividing by a negative          | main                  | Solves                                                        |
+  | Common: graph y < mx + b                            | ~two-variables        | Solves                                                        |
 
 - **Main — BUILD `m.9.linear-inequalities`:**
   - Picture: `integerLine` with `inequality: { sign, test }`.
@@ -154,13 +154,13 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.3; IM 9.4; OpenStax A&T 9.2, 9.3; Intermediate 11.2–11.3; Precalc 12.1; Big Ideas 9.1–9.3, 11.1; enVision 9.1, 9.5, 11.1; HMH 9.3, 11.1; Reveal 9.2, 9.4, 9.6, 11.2.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12M3-#15 (graph of \|2x − 5\| ≥ 3) | ~inequality | Solves: x ≤ 1 or x ≥ 4, both closed |
-  | NAEP-1992-12M15-#8 (graph of y = \|f(x)\|) | m.9.piecewise-functions~absolute-function | No: needs \|f(x)\| drawn (need 6) |
-  | Common: \|ax + b\| = c, two solutions | main | Solves |
-  | Common: c < 0 (no solution) or c = 0 (one) | main | Solves |
-  | Common: tolerance ("within 4 g of 500 g") | ~tolerance | Solves once need 1 lands |
+  | Question                                     | Page                                      | Mark                                |
+  | -------------------------------------------- | ----------------------------------------- | ----------------------------------- |
+  | NAEP-2005-12M3-#15 (graph of \|2x − 5\| ≥ 3) | ~inequality                               | Solves: x ≤ 1 or x ≥ 4, both closed |
+  | NAEP-1992-12M15-#8 (graph of y = \|f(x)\|)   | m.9.piecewise-functions~absolute-function | No: needs \|f(x)\| drawn (need 6)   |
+  | Common: \|ax + b\| = c, two solutions        | main                                      | Solves                              |
+  | Common: c < 0 (no solution) or c = 0 (one)   | main                                      | Solves                              |
+  | Common: tolerance ("within 4 g of 500 g")    | ~tolerance                                | Solves once need 1 lands            |
 
 - **Main — BUILD `m.9.absolute-value`:**
   - Picture: `integerLine` compound with a center and radius. It needs the `join: 'equal'` variant:
@@ -194,14 +194,14 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** IM 9.4; OpenStax A&T 9.3; Intermediate 11.3; Precalc 12.1; Big Ideas 9.3; enVision 9.3, 11.1, 11.5; Larson 12.1; Reveal 9.3, 11.1, 11.6.
 - **Tests ask:** (no released questions; common types)
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | Evaluate f(4) for a linear f | main | Solves |
-  | Solve f(x) = 13 | main | Solves |
-  | Evaluate a quadratic f(−2) (also NAEP-1992-12M7-#9, filed under quadratic-functions) | ~evaluate | Solves |
-  | Domain and range from a graph or a story | ~domain-range | Solves for a line segment; Partly for curves |
-  | MCAS-2026-G10M-#42 (domain from a story, filed under linear-modeling) | ~domain-range | Partly: the answer is a story domain in words |
-  | Average rate of change on an interval | ~rate-of-change | Solves |
+  | Question                                                                             | Page            | Mark                                          |
+  | ------------------------------------------------------------------------------------ | --------------- | --------------------------------------------- |
+  | Evaluate f(4) for a linear f                                                         | main            | Solves                                        |
+  | Solve f(x) = 13                                                                      | main            | Solves                                        |
+  | Evaluate a quadratic f(−2) (also NAEP-1992-12M7-#9, filed under quadratic-functions) | ~evaluate       | Solves                                        |
+  | Domain and range from a graph or a story                                             | ~domain-range   | Solves for a line segment; Partly for curves  |
+  | MCAS-2026-G10M-#42 (domain from a story, filed under linear-modeling)                | ~domain-range   | Partly: the answer is a story domain in words |
+  | Average rate of change on an interval                                                | ~rate-of-change | Solves                                        |
 
 - **Main — BUILD `m.9.function-notation`:**
   - Picture: `functionGraph` linear with `at: { x, y }`, from `g.m9-function-notation-linear`.
@@ -237,18 +237,18 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.1, 9.3, 9.5; IM 9.2, 9.3; OpenStax A&T 9.2, 9.4; Elementary 9.2–9.5; Intermediate 11.2–11.4; Precalc 12.2; Statistics 12.12; Big Ideas 9.3, 9.4, 11.1; enVision 9.2, 9.3, 11.1; HMH 9.2, 9.9; Larson 12.1; Reveal 9.4, 9.5, 11.1.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12M12-#17 (increase over 2 years from C = 2.50y + 13) | ~context | Solves (change = m × Δx) |
-  | NAEP-2024-12M9-#2 (height from a linear model, decimals) | ~context | Solves |
-  | MCAS-2026-G10M-#18 (T = 65 + 5h: meaning, value) | ~context | Solves |
-  | MCAS-2026-G10M-#35 (C(x) = 1700 + 2.50x: fixed part, total) | ~context | Solves |
-  | MCAS-2026-G10M-#14 (rental over 100 miles) | m.9.piecewise-functions~context | Solves |
-  | MCAS-2026-G10M-#42 (domain of a story) | m.9.function-notation~domain-range | Partly (mis-filed) |
-  | NAEP-2024-12M11-#10 (compare a with c and b with d on two lines) | m.8.systems-linear picture | Partly |
-  | NAEP-2009-12M2-#9 (two runners: intercepts, slopes, crossing) | m.8.systems-linear~context | Partly (clock-time axis) |
-  | NAEP-1992-12M12-#9 (tax plan, two rates) | ~context | Partly (piecewise with two rates) |
-  | NAEP-1992-12M15-#11 (path on a grid with a change of slope) | — | No |
+  | Question                                                         | Page                               | Mark                              |
+  | ---------------------------------------------------------------- | ---------------------------------- | --------------------------------- |
+  | NAEP-2005-12M12-#17 (increase over 2 years from C = 2.50y + 13)  | ~context                           | Solves (change = m × Δx)          |
+  | NAEP-2024-12M9-#2 (height from a linear model, decimals)         | ~context                           | Solves                            |
+  | MCAS-2026-G10M-#18 (T = 65 + 5h: meaning, value)                 | ~context                           | Solves                            |
+  | MCAS-2026-G10M-#35 (C(x) = 1700 + 2.50x: fixed part, total)      | ~context                           | Solves                            |
+  | MCAS-2026-G10M-#14 (rental over 100 miles)                       | m.9.piecewise-functions~context    | Solves                            |
+  | MCAS-2026-G10M-#42 (domain of a story)                           | m.9.function-notation~domain-range | Partly (mis-filed)                |
+  | NAEP-2024-12M11-#10 (compare a with c and b with d on two lines) | m.8.systems-linear picture         | Partly                            |
+  | NAEP-2009-12M2-#9 (two runners: intercepts, slopes, crossing)    | m.8.systems-linear~context         | Partly (clock-time axis)          |
+  | NAEP-1992-12M12-#9 (tax plan, two rates)                         | ~context                           | Partly (piecewise with two rates) |
+  | NAEP-1992-12M15-#11 (path on a grid with a change of slope)      | —                                  | No                                |
 
 - **Main — BUILD `m.9.linear-modeling`:**
   - Picture: `functionGraph` linear with `at: { x: 'x1', y: 'y1' }` and marks ['intercept'], from
@@ -285,14 +285,14 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.2; IM 9.3, 11.5; OpenStax A&T 9.4, 11.6; Precalc 12.2, 12.4; Statistics 12.12; Big Ideas 9.4; enVision 9.3; HMH 9.3, 9.6; Larson–Farber 12.9; Larson Precalc 12.13; Reveal 9.5.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2009-12M2-#3 (which equation fits the scatter) | main | Partly: the page fits a line to its own data, not a chosen list |
-  | NAEP-2009-12M2-#4 (prediction from the scatter) | ~correlation | Solves |
-  | NAEP-2009-12M7-#9 (R negative, S positive) | ~correlation (sort) | Solves |
-  | NAEP-2013-12M99-#7 (read a point's y) | main (`at`) | Solves |
-  | Common: residual of one point | main | Solves |
-  | Common: r's sign and strength | ~correlation-r | Solves |
+  | Question                                            | Page                | Mark                                                            |
+  | --------------------------------------------------- | ------------------- | --------------------------------------------------------------- |
+  | NAEP-2009-12M2-#3 (which equation fits the scatter) | main                | Partly: the page fits a line to its own data, not a chosen list |
+  | NAEP-2009-12M2-#4 (prediction from the scatter)     | ~correlation        | Solves                                                          |
+  | NAEP-2009-12M7-#9 (R negative, S positive)          | ~correlation (sort) | Solves                                                          |
+  | NAEP-2013-12M99-#7 (read a point's y)               | main (`at`)         | Solves                                                          |
+  | Common: residual of one point                       | main                | Solves                                                          |
+  | Common: r's sign and strength                       | ~correlation-r      | Solves                                                          |
 
 - **Main — BUILD `m.9.regression`:**
   - Picture: `scatter` with `residuals: 'plot'` and `residualOf`, from `g.m9-regression-residuals`.
@@ -331,13 +331,13 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.1, 10.4; IM 9.2; OpenStax A&T 9.2, 12.11; Elementary 9.2–9.5; Intermediate 11.2–11.4, 11.9; Precalc 12.9; Big Ideas 9.2, 9.5; enVision 9.1, 9.4; HMH 9.1, 9.4; Larson 12.7; Reveal 9.6, 9.7, 11.2.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2024-12M11-#11 (−1 ≤ x ≤ 1 and −2 ≤ y ≤ 2 shaded) | main | No: upright boundaries not drawn (need 4) |
-  | NAEP-2005-12M3-#15, NAEP-1990-12M7-#7, NAEP-2013-12M99-#1, NAEP-2024-12M2-#2, MCAS-2026-G10M-#3 | mis-filed; see skills 1–3 | — |
-  | Common: solve by elimination | ~elimination | Solves |
-  | Common: is a point a solution of the system | main (test point) | Solves |
-  | Common: a budget and count story with two inequalities | ~modeling | Solves |
+  | Question                                                                                        | Page                      | Mark                                      |
+  | ----------------------------------------------------------------------------------------------- | ------------------------- | ----------------------------------------- |
+  | NAEP-2024-12M11-#11 (−1 ≤ x ≤ 1 and −2 ≤ y ≤ 2 shaded)                                          | main                      | No: upright boundaries not drawn (need 4) |
+  | NAEP-2005-12M3-#15, NAEP-1990-12M7-#7, NAEP-2013-12M99-#1, NAEP-2024-12M2-#2, MCAS-2026-G10M-#3 | mis-filed; see skills 1–3 | —                                         |
+  | Common: solve by elimination                                                                    | ~elimination              | Solves                                    |
+  | Common: is a point a solution of the system                                                     | main (test point)         | Solves                                    |
+  | Common: a budget and count story with two inequalities                                          | ~modeling                 | Solves                                    |
 
 - **Main — BUILD `m.9.inequality-systems`:**
   - Picture: `lineSystem` with two shaded lines, a crossing and a test point, from
@@ -373,13 +373,13 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Big Ideas 9.4; enVision 9.5, 11.1; Reveal 9.4.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-G10M-#14 (rental: fee, then a rate past 100 miles; filed under linear-modeling) | ~context | Solves |
-  | NAEP-1992-12M15-#8 (y = \|f(x)\|, filed under absolute-value) | ~absolute-function | No (need 6) |
-  | Common: evaluate a piecewise f at a break | main | Solves |
-  | Common: a step (per started hour) cost | ~step | Solves |
-  | Common: vertex and zeros of a\|x − h\| + k | ~absolute-function | Solves |
+  | Question                                                                                  | Page               | Mark        |
+  | ----------------------------------------------------------------------------------------- | ------------------ | ----------- |
+  | MCAS-2026-G10M-#14 (rental: fee, then a rate past 100 miles; filed under linear-modeling) | ~context           | Solves      |
+  | NAEP-1992-12M15-#8 (y = \|f(x)\|, filed under absolute-value)                             | ~absolute-function | No (need 6) |
+  | Common: evaluate a piecewise f at a break                                                 | main               | Solves      |
+  | Common: a step (per started hour) cost                                                    | ~step              | Solves      |
+  | Common: vertex and zeros of a\|x − h\| + k                                                | ~absolute-function | Solves      |
 
 - **Main — BUILD `m.9.piecewise-functions`:**
   - Picture: `functionGraph` piecewise, from `g.m9-piecewise-functions-pieces`: two pieces, open end at
@@ -414,14 +414,14 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 10.2, 11.1, 11.3; IM 9.7, 11.3; OpenStax A&T 9.1, 9.2, 11.5; Elementary 9.9; Intermediate 11.8; Precalc 12.3; Big Ideas 9.6, 9.9, 9.10, 11.5; enVision 9.6, 9.10, 11.5; HMH 9.1, 11.3; Reveal 9.8, 11.6.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2013-12M99-#9 (16^(3/2)) | ~rational-exponent | Solves (= 64) |
-  | NAEP-2024-12M4-#1 ((√2 + √3)²) | ~multiply | Partly: the page multiplies two radicals; the square of a sum needs the cross term 2√6 |
-  | MCAS-2026-G10M-#32 (4x⁸/x², x²/x⁻²) | ~monomials | Solves |
-  | MCAS-2026-G10M-#13 (which are irrational; rational + rational) | ~rational-or-irrational | Solves |
-  | NAEP-1990-12M9-#16 (integers between √15 and √63) | m.8.roots-irrationals (`rootSquare` between) | Partly |
-  | NAEP-1992-12M12-#7 (√8·N = 3⁵) | — | No: a one-step equation with a radical coefficient |
+  | Question                                                       | Page                                         | Mark                                                                                   |
+  | -------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------- |
+  | NAEP-2013-12M99-#9 (16^(3/2))                                  | ~rational-exponent                           | Solves (= 64)                                                                          |
+  | NAEP-2024-12M4-#1 ((√2 + √3)²)                                 | ~multiply                                    | Partly: the page multiplies two radicals; the square of a sum needs the cross term 2√6 |
+  | MCAS-2026-G10M-#32 (4x⁸/x², x²/x⁻²)                            | ~monomials                                   | Solves                                                                                 |
+  | MCAS-2026-G10M-#13 (which are irrational; rational + rational) | ~rational-or-irrational                      | Solves                                                                                 |
+  | NAEP-1990-12M9-#16 (integers between √15 and √63)              | m.8.roots-irrationals (`rootSquare` between) | Partly                                                                                 |
+  | NAEP-1992-12M12-#7 (√8·N = 3⁵)                                 | —                                            | No: a one-step equation with a radical coefficient                                     |
 
 - **Main — BUILD `m.9.radicals`:**
   - Picture: `factorTree` with `root: { index: 2, outside: 'k', inside: 'r' }`, from
@@ -467,17 +467,17 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.3, 9.5, 11.3; IM 9.5, 11.4; OpenStax A&T 11.6; Intermediate 11.10; Precalc 12.4; Big Ideas 9.6, 11.6; enVision 9.6, 11.6; HMH 9.5, 9.6, 9.9, 11.4; Larson 12.3; Reveal 9.8, 9.9, 11.7.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12M12-#14 (initial value of 500(2^t)) | main | Solves |
-  | NAEP-2024-12M9-#10 (6, 12, 24 → 6(2ⁿ)) | main | Solves |
-  | NAEP-1990-12M9-#15 (1% a month for 6 months) | ~percent-growth | Solves ($1,061.52) |
-  | MCAS-2026-G10M-#40 (500(1.015)^t) | ~percent-growth | Solves |
-  | NAEP-2009-12M7-#3 (P = 50,000(1 + r)^t: start; the rate from a doubling in 11 years) | ~percent-growth | Solves (r ≈ 6.5%, by the t-th root) |
-  | NAEP-2005-12M12-#12 (first year a car is worth under half) | ~decay (table) | Solves |
-  | NAEP-1992-12M5-#15 (doubling every 28 minutes) | ~doubling | Solves |
-  | NAEP-2024-12M9-#13 and MCAS-2026-G10M-#28 (which model fits) | ~linear-or-exponential | Solves |
-  | NAEP-1992-12M7-#6 (8¹² = 16^x; filed to m.11.exp-log-equations) | — | No (Grade 11) |
+  | Question                                                                             | Page                   | Mark                                |
+  | ------------------------------------------------------------------------------------ | ---------------------- | ----------------------------------- |
+  | NAEP-2005-12M12-#14 (initial value of 500(2^t))                                      | main                   | Solves                              |
+  | NAEP-2024-12M9-#10 (6, 12, 24 → 6(2ⁿ))                                               | main                   | Solves                              |
+  | NAEP-1990-12M9-#15 (1% a month for 6 months)                                         | ~percent-growth        | Solves ($1,061.52)                  |
+  | MCAS-2026-G10M-#40 (500(1.015)^t)                                                    | ~percent-growth        | Solves                              |
+  | NAEP-2009-12M7-#3 (P = 50,000(1 + r)^t: start; the rate from a doubling in 11 years) | ~percent-growth        | Solves (r ≈ 6.5%, by the t-th root) |
+  | NAEP-2005-12M12-#12 (first year a car is worth under half)                           | ~decay (table)         | Solves                              |
+  | NAEP-1992-12M5-#15 (doubling every 28 minutes)                                       | ~doubling              | Solves                              |
+  | NAEP-2024-12M9-#13 and MCAS-2026-G10M-#28 (which model fits)                         | ~linear-or-exponential | Solves                              |
+  | NAEP-1992-12M7-#6 (8¹² = 16^x; filed to m.11.exp-log-equations)                      | —                      | No (Grade 11)                       |
 
 - **Main — MOVE with changes `m.9.exponential-functions`** (from `pilots.ts`; see Decisions):
   - Picture: `functionGraph` exponential with `at` and marks ['intercept', 'asymptotes'], from
@@ -523,15 +523,15 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.3; IM 11.1; OpenStax A&T 12.13; Intermediate 11.12; Precalc 12.11; Big Ideas 9.4, 9.6, 11.11; enVision 9.3, 9.6; HMH 9.3, 9.6, 11.6; Larson 12.9; Reveal 9.4, 9.9.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1990-12M7-#16 (3, 5, 7, 9 dots → 100th figure) | main | Partly: n = 100 is past `termsChart` count 30 (need 5) |
-  | NAEP-2005-12M12-#5 (twice the previous plus 1) | ~recursive | Solves |
-  | NAEP-2005-12M3-#17 (3, 5, 9, 17, 33) | ~recursive (aₙ = 2aₙ₋₁ − 1) | Solves |
-  | NAEP-1992-12M12-#2 (+9, −2 alternating) | — | No (a pattern with two steps) |
-  | NAEP-2009-12M7-#8 (half the sum of the two before) | — | No (a two-term recursion) |
-  | NAEP-1990-12M9-#20 (aₙ₊₁ = √aₙ + 1) | — | No |
-  | NAEP-1996-12M13-#9 (tile figures, the 20th) | main | Partly: depends on the figure growth |
+  | Question                                            | Page                        | Mark                                                   |
+  | --------------------------------------------------- | --------------------------- | ------------------------------------------------------ |
+  | NAEP-1990-12M7-#16 (3, 5, 7, 9 dots → 100th figure) | main                        | Partly: n = 100 is past `termsChart` count 30 (need 5) |
+  | NAEP-2005-12M12-#5 (twice the previous plus 1)      | ~recursive                  | Solves                                                 |
+  | NAEP-2005-12M3-#17 (3, 5, 9, 17, 33)                | ~recursive (aₙ = 2aₙ₋₁ − 1) | Solves                                                 |
+  | NAEP-1992-12M12-#2 (+9, −2 alternating)             | —                           | No (a pattern with two steps)                          |
+  | NAEP-2009-12M7-#8 (half the sum of the two before)  | —                           | No (a two-term recursion)                              |
+  | NAEP-1990-12M9-#20 (aₙ₊₁ = √aₙ + 1)                 | —                           | No                                                     |
+  | NAEP-1996-12M13-#9 (tile figures, the 20th)         | main                        | Partly: depends on the figure growth                   |
 
 - **Main — BUILD `m.9.sequences`:**
   - Picture: `termsChart` arithmetic with points, from `g.m9-sequences-arithmetic`.
@@ -561,13 +561,13 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.1; IM 9.6; OpenStax A&T 9.1; Elementary 9.6; Intermediate 11.5; Big Ideas 9.7; enVision 9.7; HMH 9.7; Reveal 9.10.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-G10M-#19 ((2x − 5)(3x + 1)) | main | Solves: 6x² − 13x − 5 |
-  | NAEP-2005-12M12-#11 (area picture of (x + 2)(x + 4)) | main (tiles rectangle) | Solves |
-  | NAEP-2009-12M2-#5 ((a + b)(x + y) not equivalent) | — | Partly: the tiles use one letter |
-  | NAEP-1992-12M14-#10 ((10n + 5)² = 100n(n + 1) + 25) | ~square | Partly (a proof) |
-  | Common: subtract two trinomials | ~add-subtract | Solves |
+  | Question                                             | Page                   | Mark                             |
+  | ---------------------------------------------------- | ---------------------- | -------------------------------- |
+  | MCAS-2026-G10M-#19 ((2x − 5)(3x + 1))                | main                   | Solves: 6x² − 13x − 5            |
+  | NAEP-2005-12M12-#11 (area picture of (x + 2)(x + 4)) | main (tiles rectangle) | Solves                           |
+  | NAEP-2009-12M2-#5 ((a + b)(x + y) not equivalent)    | —                      | Partly: the tiles use one letter |
+  | NAEP-1992-12M14-#10 ((10n + 5)² = 100n(n + 1) + 25)  | ~square                | Partly (a proof)                 |
+  | Common: subtract two trinomials                      | ~add-subtract          | Solves                           |
 
 - **Main — BUILD `m.9.polynomial-operations`:**
   - Picture: `algebraTiles` 'rectangle' with `given: 'factors'`, from
@@ -600,14 +600,14 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.4; IM 9.6, 9.7; OpenStax A&T 9.1, 9.2; Elementary 9.7; Intermediate 11.6; Big Ideas 9.7; enVision 9.7, 9.9; HMH 9.8; Reveal 9.10, 9.11.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-G10M-#10 (x² − x − 12) | main | Solves: (x + 3)(x − 4) |
-  | MCAS-2026-G10M-#8 (which form shows the x-intercepts) | m.9.quadratic-functions~factored-form | Solves (re-file) |
-  | NAEP-2005-12M4-#16 (x² + 7x + 6 ≥ 0) | m.9.quadratic-formula~inequality | Solves once need 2 lands (re-file) |
-  | NAEP-2005-12M12-#11 (area of (x + 2)(x + 4)) | m.9.polynomial-operations | Solves |
-  | Common: a ≠ 1 trinomial | ~leading-coefficient | Solves |
-  | Common: GCF; difference of squares | ~gcf, ~special | Solves |
+  | Question                                              | Page                                  | Mark                               |
+  | ----------------------------------------------------- | ------------------------------------- | ---------------------------------- |
+  | MCAS-2026-G10M-#10 (x² − x − 12)                      | main                                  | Solves: (x + 3)(x − 4)             |
+  | MCAS-2026-G10M-#8 (which form shows the x-intercepts) | m.9.quadratic-functions~factored-form | Solves (re-file)                   |
+  | NAEP-2005-12M4-#16 (x² + 7x + 6 ≥ 0)                  | m.9.quadratic-formula~inequality      | Solves once need 2 lands (re-file) |
+  | NAEP-2005-12M12-#11 (area of (x + 2)(x + 4))          | m.9.polynomial-operations             | Solves                             |
+  | Common: a ≠ 1 trinomial                               | ~leading-coefficient                  | Solves                             |
+  | Common: GCF; difference of squares                    | ~gcf, ~special                        | Solves                             |
 
 - **Main — BUILD `m.9.factoring`:**
   - Picture: `algebraTiles` rectangle with `given: 'product'`, from `g.m9-factoring-trinomial`.
@@ -643,15 +643,15 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.4, 9.5; IM 9.6, 9.7, 11.5; OpenStax A&T 9.3, 11.5; Elementary 9.7, 9.10; Intermediate 11.9; Precalc 12.1, 12.3; Big Ideas 9.8, 9.9, 11.2; enVision 9.8, 9.9, 11.2; HMH 9.8, 9.9, 11.1; Larson 12.2; Reveal 9.11, 11.3.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-G10M-#21 (vertex of −(x − 2)² − 5) | main | Solves |
-  | NAEP-2024-12M2-#10 (vertex (−3, 6), y-intercept 2 → graph) | main | Solves: typing the intercept solves a = −4/9 |
-  | MCAS-2026-G10M-#38 (range from a graph) | main (marks range) | Solves |
-  | NAEP-2024-12M11-#1 (y-intercept of x² − 2x − 3) | ~standard-form | Solves |
-  | NAEP-1992-12M7-#9 (f(3.5), decimals) | ~standard-form (`at`) | Solves |
-  | MCAS-2026-G10M-#8 (which form shows the zeros) | ~factored-form | Solves |
-  | NAEP-2005-12M4-#16 (x² + 7x + 6 ≥ 0) | m.9.quadratic-formula~inequality | Solves after need 2 |
+  | Question                                                   | Page                             | Mark                                         |
+  | ---------------------------------------------------------- | -------------------------------- | -------------------------------------------- |
+  | MCAS-2026-G10M-#21 (vertex of −(x − 2)² − 5)               | main                             | Solves                                       |
+  | NAEP-2024-12M2-#10 (vertex (−3, 6), y-intercept 2 → graph) | main                             | Solves: typing the intercept solves a = −4/9 |
+  | MCAS-2026-G10M-#38 (range from a graph)                    | main (marks range)               | Solves                                       |
+  | NAEP-2024-12M11-#1 (y-intercept of x² − 2x − 3)            | ~standard-form                   | Solves                                       |
+  | NAEP-1992-12M7-#9 (f(3.5), decimals)                       | ~standard-form (`at`)            | Solves                                       |
+  | MCAS-2026-G10M-#8 (which form shows the zeros)             | ~factored-form                   | Solves                                       |
+  | NAEP-2005-12M4-#16 (x² + 7x + 6 ≥ 0)                       | m.9.quadratic-formula~inequality | Solves after need 2                          |
 
 - **Main — BUILD `m.9.quadratic-functions`:**
   - Picture: `functionGraph` quadratic vertex form with marks ['vertex', 'zeros', 'intercept', 'range']
@@ -691,13 +691,13 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.4; IM 9.7; OpenStax A&T 9.2; Elementary 9.10; Intermediate 11.9; Big Ideas 9.9, 11.3; enVision 9.9, 11.2; HMH 9.8, 11.1; Reveal 9.11, 11.3.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-1990-12M7-#21 (roots of 2x² + 5x + 1 = 0) | main | Solves, if the answer is written (−5 ± √17)/4 before ≈ −0.22, −2.28 |
-  | NAEP-2005-12M4-#16 (x² + 7x + 6 ≥ 0) | ~inequality | Solves after need 2 |
-  | Common: solve by square roots | ~square-roots | Solves |
-  | Common: complete the square | ~complete-square | Solves |
-  | Common: number of solutions from the discriminant | main | Solves |
+  | Question                                          | Page             | Mark                                                                |
+  | ------------------------------------------------- | ---------------- | ------------------------------------------------------------------- |
+  | NAEP-1990-12M7-#21 (roots of 2x² + 5x + 1 = 0)    | main             | Solves, if the answer is written (−5 ± √17)/4 before ≈ −0.22, −2.28 |
+  | NAEP-2005-12M4-#16 (x² + 7x + 6 ≥ 0)              | ~inequality      | Solves after need 2                                                 |
+  | Common: solve by square roots                     | ~square-roots    | Solves                                                              |
+  | Common: complete the square                       | ~complete-square | Solves                                                              |
+  | Common: number of solutions from the discriminant | main             | Solves                                                              |
 
 - **Main — BUILD `m.9.quadratic-formula`:**
   - Picture: `functionGraph` quadratic standard, marks zeros, from `g.m9-quadratic-formula-zeros`.
@@ -731,13 +731,13 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** Eureka HS 9.2; IM 9.1; OpenStax Statistics 12.2, 12.4, 12.10, 12.12; Big Ideas 9.11, 11.9; enVision 9.11, 11.11; HMH 9.10; Larson–Farber 12.2, 12.6; Reveal 9.12.
 - **Tests ask:** (no released questions; common types)
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | Shape of a histogram, and mean against median | main | Solves |
-  | 1.5 × IQR outliers | ~outliers | Solves |
-  | Standard deviation of a small data set | ~standard-deviation | Solves |
-  | Compare two groups' box plots (center and spread) | ~compare | Partly (need 9) |
-  | Effect of an outlier on mean and median | ~outliers caption | Partly |
+  | Question                                          | Page                | Mark            |
+  | ------------------------------------------------- | ------------------- | --------------- |
+  | Shape of a histogram, and mean against median     | main                | Solves          |
+  | 1.5 × IQR outliers                                | ~outliers           | Solves          |
+  | Standard deviation of a small data set            | ~standard-deviation | Solves          |
+  | Compare two groups' box plots (center and spread) | ~compare            | Partly (need 9) |
+  | Effect of an outlier on mean and median           | ~outliers caption   | Partly          |
 
 - **Main — BUILD `m.9.data-displays`:**
   - Rows. Picture: `histogram` with `counts`, from `g.m9-data-displays-frequency`, with mean: true and
@@ -774,12 +774,12 @@ projectile, interest and standard-deviation numbers were rechecked with a script
 - **Textbooks:** OpenStax Statistics 12.1; Big Ideas 9.11, 10.13, 11.8; enVision 9.11; Reveal 10.12.
 - **Tests ask:** (no released questions; common types)
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | Joint relative frequency of a cell | main | Solves |
-  | Marginal relative frequency | ~marginal | Solves |
-  | Conditional relative frequency by row; is there an association | ~conditional | Solves |
-  | Fill in a missing cell from the totals | main | Solves (a total is typed) |
+  | Question                                                       | Page         | Mark                      |
+  | -------------------------------------------------------------- | ------------ | ------------------------- |
+  | Joint relative frequency of a cell                             | main         | Solves                    |
+  | Marginal relative frequency                                    | ~marginal    | Solves                    |
+  | Conditional relative frequency by row; is there an association | ~conditional | Solves                    |
+  | Fill in a missing cell from the totals                         | main         | Solves (a total is typed) |
 
 - **Main — BUILD `m.9.two-way-tables`:**
   - Rows. Picture: `table` `twoWay`, from `g.m9-two-way-tables-joint`: rows Grade 9 and Grade 10;
