@@ -209,7 +209,11 @@ export function asFraction(x: number, most: number): string | undefined {
 }
 
 /** A shown number as dollars: cents are two digits ("$7.50", not "$7.5"). */
-export const dollars = (num: string) => `$${num.replace(/(\.\d)$/, '$10')}`;
+export const dollars = (num: string) => {
+  // A negative amount is written with its sign first: −$10, not $−10.
+  const neg = /^[−-]/.test(num);
+  return `${neg ? '−' : ''}$${num.replace(/^[−-]/, '').replace(/(\.\d)$/, '$10')}`;
+};
 
 /**
  * Money that isn't a whole number of cents ($10 for 3 is $3.3333… each) as the price a store
@@ -219,7 +223,7 @@ export const dollarsOf = (x: number, num: string) => {
   const cents = Math.round(x * 100);
   if (Math.abs(x * 100 - cents) < 1e-6) return dollars(num);
   if (Math.abs(x) < 0.005) return 'less than 1 cent';
-  return `about ${dollars((cents / 100).toFixed(2))}`;
+  return `about ${dollars(withSeparators((cents / 100).toFixed(2)))}`;
 };
 
 /** Thousands separators from 1,000 ("12,500.5"), the way students read numbers in class. */
@@ -335,8 +339,11 @@ export function renderTemplate(
     // power; alone, first in a line or in an ordered pair it reads as itself: (−4, 3), |−4|.
     const before = template.slice(0, at).trimEnd();
     const after = template.slice(at + id.length + 2);
-    const needs = /[+−×÷·\-*/]$/.test(before) || /^[\^²³⁰¹⁴-⁹]/.test(after);
-    // Scientific notation reads as one number only in brackets there too: ÷ (3 × 10⁻⁴).
+    const power = /^[\^²³⁰¹⁴-⁹]/.test(after);
+    const needs = /[+−×÷·\-*/]$/.test(before) || power;
+    // Scientific notation reads as one number only in brackets there too: ÷ (3 × 10⁻⁴); a
+    // fraction or mixed number is raised whole: (5/7)², not 5/7².
+    if (power && /[/ ]/.test(s)) return `(${s})`;
     return (x < 0 || s.includes(' × 10')) && needs ? `(${s})` : s;
   });
   if (!values) return filled;
@@ -347,8 +354,8 @@ export function renderTemplate(
 
 /** Whole-number exponents after a caret written as superscript digits: "10^3" → "10³". */
 export function superscript(text: string): string {
-  return text.replace(/\^(-?)(\d+)(?![\d.])/g, (_, sign: string, d: string) =>
-    raised(Number(`${sign}${d}`)),
+  return text.replace(/\^([-−]?)(\d+)(?![\d.])/g, (_, sign: string, d: string) =>
+    raised(Number(`${sign ? '-' : ''}${d}`)),
   );
 }
 

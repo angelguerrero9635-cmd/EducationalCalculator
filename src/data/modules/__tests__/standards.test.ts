@@ -335,4 +335,17 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
     if (limit !== undefined)
       expect(held.filter((v) => !v.group).length + groups.size).toBeLessThanOrEqual(limit);
   });
+
+  it('names each value with a symbol a student can read aloud', () => {
+    // A symbol that is an expression (−q) reads "−q = −q" in its own step; a Greek look-alike
+    // subscript (ᵦ, U+1D66) reads "beta", not "B".
+    const bad = m.variables.flatMap((v) =>
+      /^[−+×÷=-]/.test(v.symbol)
+        ? [`${v.id}: "${v.symbol}" starts with an operator`]
+        : /[ᵦᵨᵩᵪ]/.test(v.symbol)
+          ? [`${v.id}: "${v.symbol}" has a Greek subscript`]
+          : [],
+    );
+    expect(bad).toEqual([]);
+  });
 });

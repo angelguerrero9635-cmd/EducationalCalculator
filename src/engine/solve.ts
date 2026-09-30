@@ -622,10 +622,26 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         const r = wholeSolutions(system, propagated.values, previous, 1);
         return !r.exhausted && r.solutions.length === 0;
       })();
+    // A rule's own sentence explains a conflict better than the generic one (an absolute value
+    // is never negative), when one speaks for these numbers.
+    const said = () => {
+      const values = propagated.ok
+        ? propagated.values
+        : { ...givens, [g.id]: normalizeValue(variable, g.value) };
+      for (const r of system.relations) {
+        try {
+          const text = r.message?.(values);
+          if (text) return text;
+        } catch {
+          // A message that needs values not known yet stays quiet.
+        }
+      }
+      return undefined;
+    };
     const trial: Propagation = unreachable
-      ? { ok: false, reason: unreachable }
+      ? { ok: false, reason: said() ?? unreachable }
       : none
-        ? { ok: false, reason: 'These numbers can’t all be true together' }
+        ? { ok: false, reason: said() ?? 'These numbers can’t all be true together' }
         : propagated;
     if (trial.ok) {
       known = trial.values;

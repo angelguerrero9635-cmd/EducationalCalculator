@@ -196,7 +196,8 @@ const describe_ = (sys: System, vals: Values | readonly Given[]) => {
  */
 function resultNumber(result: string, exp = false): number {
   // "about $3.33": a price rounded to the cent.
-  const rhs = (result.split(' = ')[1] ?? '').replace(/^about /, '');
+  // A negative amount of money is written with its sign first (−$10).
+  const rhs = (result.split(' = ')[1] ?? '').replace(/^about /, '').replace(/^[−-]\$/, '-');
   const mixed = /^(-?)(?:(\d+) )?(\d+)\/(\d+)(?![\d.])/.exec(rhs);
   if (mixed) {
     const x = Number(mixed[2] ?? 0) + Number(mixed[3]) / Number(mixed[4]);

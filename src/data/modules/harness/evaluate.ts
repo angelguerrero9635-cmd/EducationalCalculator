@@ -296,10 +296,7 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // Grade 6 factors and multiples (6.NS.4).
   [
     new RegExp(`(?:greatest common factor|shared prime factors) of (${NUM}) and (${NUM})`),
-    (a, b) => {
-      const gcd = (x: number, y: number): number => (y === 0 ? x : gcd(y, x % y));
-      return gcd(a, b);
-    },
+    (a, b) => gcd(a, b),
   ],
   [
     new RegExp(`least common multiple of (${NUM}) and (${NUM})`),

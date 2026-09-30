@@ -239,7 +239,7 @@ const EXPONENTIAL: ModuleDef[] = [
       num('r', 'r', 'Rate per period', 0.1, 50, { unit: '%', step: 0.1 }),
       int('t', 't', 'Periods', 0, 100),
       num('g', 'g', 'Growth factor', 1.001, 1.5, { derived: true }),
-      num('A', 'A', 'Amount after t periods', 0.01, 999999999, { unit: '$' }),
+      num('A', 'A', 'Amount after t periods', 0.01, 9999999.99, { unit: '$' }),
     ],
     rules: percentChange(true),
     example: { P: 800, r: 3, t: 4, g: 1.03, A: 900.407048 },
@@ -3283,17 +3283,17 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
         'And the s-intercept: all student tickets.',
       ),
       derive(
-        'a = (N − i₁) ÷ (m₁ + 1)',
+        'a = (M − SN) ÷ (A − S)',
         'cx',
-        ['N', 'i1', 'm1'],
-        '{cx} = ({N} − {i1}) ÷ ({m1} + 1)',
-        (v) => div(v.N! - v.i1!, v.m1! + 1),
-        '({N} − {i1}) ÷ ({m1} + 1)',
-        'Where the lines cross: set m₁a + i₁ equal to −a + N and solve for a.',
+        ['M', 'S', 'N', 'A'],
+        '{cx} = ({M} − {S} × {N}) ÷ ({A} − {S})',
+        (v) => div(v.M! - v.S! * v.N!, v.A! - v.S!),
+        '({M} − {S} × {N}) ÷ ({A} − {S})',
+        'Where the lines cross: put s = N − a into Aa + Ss = M, so (A − S)a = M − SN.',
         {},
         {
           message: (v) =>
-            v.m1 === -1 ? 'The two prices are equal: the lines are parallel.' : undefined,
+            v.A === v.S ? 'The two prices are equal: the lines are parallel.' : undefined,
         },
       ),
       derive(
@@ -4125,17 +4125,17 @@ const DATA_DISPLAYS: ModuleDef[] = [
     ],
     variables: [
       ...FIVE.map((id, i) =>
-        num(`${id}A`, `${FIVE_SYMBOLS[i]}ₐ`, `Class A ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
+        num(`${id}A`, `${FIVE_SYMBOLS[i]} (A)`, `Class A ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
           step: 0.5,
         }),
       ),
       ...FIVE.map((id, i) =>
-        num(`${id}B`, `${FIVE_SYMBOLS[i]}ᵦ`, `Class B ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
+        num(`${id}B`, `${FIVE_SYMBOLS[i]} (B)`, `Class B ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
           step: 0.5,
         }),
       ),
-      num('IA', 'IQRₐ', 'Class A interquartile range', 0, 100, { derived: true }),
-      num('IB', 'IQRᵦ', 'Class B interquartile range', 0, 100, { derived: true }),
+      num('IA', 'IQR (A)', 'Class A interquartile range', 0, 100, { derived: true }),
+      num('IB', 'IQR (B)', 'Class B interquartile range', 0, 100, { derived: true }),
       num('D', 'D', 'Difference of the medians (B − A)', -100, 100, { derived: true }),
     ],
     rules: [

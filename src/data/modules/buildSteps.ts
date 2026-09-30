@@ -81,6 +81,21 @@ export interface Walkthrough {
 }
 
 /** A line with brackets or words after "x =": the work lines say it better for K–2. */
+/**
+ * Grades 9–12 add a list at once: "(10 + 75 + 200) ÷ 25" goes straight to "285 ÷ 25", not
+ * through "85 + 200". A stage that only adds two numbers is dropped when the next one does too.
+ */
+const sumsAtOnce = (lines: string[], start: string, grade: string) => {
+  if (!['9', '10', '11', '12'].includes(grade)) return lines;
+  const ops = (l: string) => l.replace(/[^×÷√^²³·]/g, '').length;
+  const adds = (l: string) => l.match(/ [+−] /g)?.length ?? 0;
+  const adding = (from: string, to: string) => ops(from) === ops(to) && adds(to) === adds(from) - 1;
+  return lines.filter((l, i) => {
+    const next = lines[i + 1];
+    return !(next && adding(lines[i - 1] ?? start, l) && adding(l, next));
+  });
+};
+
 const wordy = (line: string) => /[(]|[a-z]{3,}/i.test(line.replace(/^\S+ = /, ''));
 
 // An acronym keeps its capitals: "MAD of class A" stays, it never reads "mAD".
@@ -390,7 +405,7 @@ export function buildSteps(
     const chain =
       shownWork?.length || written || !showSubstituted
         ? []
-        : simplifyChain(bare)
+        : sumsAtOnce(simplifyChain(bare), bare, grade ?? '')
             .slice(0, -1)
             .map((line) => plain(`${v.symbol} = ${line}`, t.id, false));
     return {

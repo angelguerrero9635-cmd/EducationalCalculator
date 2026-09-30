@@ -1135,13 +1135,13 @@ const H19_MODULES: ModuleDef[] = [
     ],
     variables: [
       ...['a1', 'b1', 'c1', 'd1', 'e1'].map((x, i) =>
-        num(x, `${['min', 'Q₁', 'M', 'Q₃', 'max'][i]}ₐ`, `Class A ${NAMES5[i]}`, 0, 100, 1),
+        num(x, `${['min', 'Q₁', 'M', 'Q₃', 'max'][i]} (A)`, `Class A ${NAMES5[i]}`, 0, 100, 1),
       ),
       ...['a2', 'b2', 'c2', 'd2', 'e2'].map((x, i) =>
-        num(x, `${['min', 'Q₁', 'M', 'Q₃', 'max'][i]}ᵦ`, `Class B ${NAMES5[i]}`, 0, 100, 1),
+        num(x, `${['min', 'Q₁', 'M', 'Q₃', 'max'][i]} (B)`, `Class B ${NAMES5[i]}`, 0, 100, 1),
       ),
-      out('I1', 'IQRₐ', 'Class A interquartile range'),
-      out('I2', 'IQRᵦ', 'Class B interquartile range'),
+      out('I1', 'IQR (A)', 'Class A interquartile range'),
+      out('I2', 'IQR (B)', 'Class B interquartile range'),
       out('D', 'D', 'Difference of medians (B − A)'),
     ],
     rules: [
