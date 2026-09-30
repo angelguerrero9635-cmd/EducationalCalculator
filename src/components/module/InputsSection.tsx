@@ -34,7 +34,7 @@ function keyboardFor(v: {
   integer?: boolean;
   min?: number;
   fraction?: number;
-  pi?: boolean;
+  pi?: boolean | 'fraction';
   scientific?: boolean;
   repeating?: boolean;
 }) {

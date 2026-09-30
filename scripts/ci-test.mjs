@@ -66,7 +66,9 @@ for (const file of changed) {
 
 const run = (label, cmdArgs, env = {}) => {
   console.log(`▶ ${label}`);
-  const r = spawnSync('npx', ['jest', ...cmdArgs], {
+  // JEST_WORKERS=2 when the machine is shared (builders running in parallel).
+  const workers = process.env.JEST_WORKERS ? [`--maxWorkers=${process.env.JEST_WORKERS}`] : [];
+  const r = spawnSync('npx', ['jest', ...workers, ...cmdArgs], {
     stdio: 'inherit',
     env: { ...process.env, ...env },
   });
