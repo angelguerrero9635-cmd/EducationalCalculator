@@ -115,3 +115,94 @@ Built with the plan's interim (the need would improve them):
    seconds.
 5. **Units (need 3):** atm, kJ, kJ/mol, J, mol, mol/L, Hz, pm and days are fixed labels.
 6. **`docs/build/`** did not exist in the worktree; this file creates it.
+
+## Lesson review fixes (`.review/hs-s.10/lesson-report.md`)
+
+12 errors, 27 improvements, 2 layout proposals, 2 merge/trim, 5 new pages.
+
+**Errors.** Fixed: 3 (bonding main: b = (2h + 8(c + n + o) − V) ÷ 2, and the undrawn counts
+now solve), 4 and 5 (`~ionic` takes the two ion charges: t = lcm, a = t ÷ c₊, b = t ÷ c₋, a line
+naming the formula; the names are "Metal ions in the formula" and "Nonmetal ions in the
+formula", so no element symbol is lowercased), 6 (electronegativity 0–4, the difference ±4),
+7 (rebuilt, below), 8 (a line comparing Q with K and naming the shift), 9 (solve entries for
+[H₂], [I₂], [HI] from Q and for Vₑ from r), 10 (heating-curve names are "Heat to …"),
+11 (`~ruler` use line and a sig-fig assumption), 12 (the card is 2Na + Cl₂ → 2NaCl, also in the
+plan). Left to the lead's engine work: 1 (`simplify.ts` and `10²³`) and 2 (stale values after a
+clear).
+
+- **7, changed differently:** the `reaction` picture takes a fixed formula, so a CₓHᵧ page
+  can't draw it. `~combustion` is now any alkane (x carbons, y = 2x + 2, a = 1 or 2, c = ax,
+  d = ay/2, b = c + d/2) with the `lewisStructure` hydrocarbon picture drawing the fuel, and
+  `~combustion-alkene` (y = 2x; example C₅H₁₀: 2, 15, 10, 10) covers the released item's
+  kind (an alkene needing 2). x is 1–8 (no cap: the picture draws the fuel, not 25 O₂).
+
+**Improvements.** Fixed as proposed: `~factor` units (km, m); `~ruler` start 1.25 cm (not 1)
+and L ≥ 0.01; `~ions` keeps p, e, q only; the configuration line on the unpaired and valence
+steps ("Z = 8 (oxygen): 1s² 2s² 2p⁴", "Shell 2 holds 2 + 4 = 6") and displays "of element {p}";
+`~emission` works 1/4 − 1/9 = 5/36; `~photon` λ in two lines (meters, then nm); trend pages name
+each element's period and group and give the trend reasoning (or say the table goes against
+it); `~polarity` classifies the bond and names the δ− atom; the shape name and "like H₂O" on the
+angle step, and the angles called measured ones; `~synthesis`/`~replacement` lowest-whole-number
+assumption, {a}/2 and 3 × {c}/2, "formula units"; the sort assumption; the mole ranges
+(n 10⁻⁶–10⁵ mol, N 6 × 10¹⁷–6 × 10²⁸); `~factor` units g, g/mol, mol with the unit-factor line;
+`~empirical` n = %C ÷ 12.01 with "40% of 100 g is 40 g of C"; no brackets around a plain number
+after "/" in this file's rules, and 16.00 in the %O rule; `~limiting` names the limiting
+reactant, r is "Times the reaction happens"; Boyle's and Charles's own assumptions; °C values
+(T = t + 273) on the gas main page and `~charles`, P min 0.001 atm; the saturation line on
+`~solubility`; molarity min 10⁻⁶; the "gave off" line on `~calorimetry`; the ice's start
+temperature as a value on `~heating-curve`; the pKₐ how; [H⁺] = 10^−pH; compound names on the
+organic pages; the nucleus named on `~alpha`, `~beta`, `~fission` (Z′ = 90 is thorium: Th-234);
+`~beta` A′ = A with a mass-number-0 how and −1 with a true minus; (1/2)ⁿ on the half-life page
+(N₀ = N × 2ⁿ back); `~fission` limit N₁ ≥ Z₁ with its message; the fusion sentence and the
+nuclear cards with atomic numbers; the model years moved to the total's label.
+
+- **Not done (engine):** `~rate` and pH show 4 decimals, not 4 significant figures (the report's
+  engine item); `10^−8.5` is not raised for a decimal exponent (the harness reads a bracketed
+  negative, `10^(−8.5)`, as a negative count on an all-positive page).
+- **Optional, not done:** the organic merge (three pages into one with a bond value: the
+  `lewisStructure` hydrocarbon picture takes a fixed `bond`), and `~metallic` as an explore
+  (the plan's calculator stays, as the report allows).
+
+**New pages (5, all built):** `s.10.rates-equilibrium~average-rate` (a `functionGraph` line
+through the two readings with the secant marked; a straight line, as no curve family fits any
+two readings), `~ksp` (AgCl: Ksp = s², grams per liter; `equilibriumChart` with the two ions),
+`s.10.gas-laws~partial-pressure` (`pieChart` of three partial pressures, the mole fraction),
+`s.10.molarity~percent-mass` (`percentBar`), `s.10.redox~cell-voltage` (the eight table
+potentials as `allowed`, a limit that the cathode is higher, a line naming the cell; a vertical
+`integerLine` from E°anode to E°cathode, the jump E°cell).
+
+## Added skills (built)
+
+- `s.10.phase-colligative`: main (freezing and boiling points: b, i, ΔTf, Tf, ΔTb, Tb;
+  `heatingCurve` with the plateaus at Tf and Tb), `~vapor-pressure` (Raoult; `pieChart`),
+  `~boiling-point` and `~phase-heat` (sorts). NAEP-2005-12S13-#6 (the egg on a mountain) →
+  `~boiling-point`.
+- `s.10.entropy-free-energy`: main (ΔG = ΔH − TΔS with a spontaneity line; `functionGraph`
+  ΔG against T), `~crossover` (T = 1000ΔH ÷ ΔS, a same-sign limit; the line's zero marked),
+  `~entropy-sign` and `~spontaneity` (sorts).
+- Widened titles: `s.10.reaction-types~activity-series`, `s.10.redox~electrolysis`,
+  `s.10.organic~polymers` (sorts).
+
+Now 90 pages: 68 calculators, 22 layouts.
+
+## Shared needs (lesson review)
+
+1. **Tracker, `pictureRequestsHs.ts` H49:** lists `s.10.reaction-types~combustion`, which now
+   draws `lewisStructure` (hydrocarbon); move it to H47 with `~combustion-alkene`
+   (`pictureRequests.test.ts` fails on it until then).
+2. **`reaction` picture:** a formula from values (CₓHᵧ) and more than 8 molecules a term, so the
+   combustion pages can show the atom tally again (`~combustion`, `~combustion-alkene`).
+3. **`lewisStructure` ionic:** the metal and nonmetal from the charges (Al³⁺ with O²⁻), so
+   `s.10.bonding~ionic` draws every pair it solves (it draws MgCl₂ only; others fade).
+4. **Engine display:** 4 significant figures on scientific pages (`~rate` 277.7778 m/s, pH
+   3.6021) and a raised decimal exponent (10^−8.5) (`s.10.acids-bases`, `~from-ph`, `~base`,
+   `~weak-titration`).
+5. **Pictures wanted for the added skills:** a phase diagram with the solution's lines shifted
+   (`s.10.phase-colligative`, it now uses the heating curve); a concentration–time curve through
+   two readings with the secant (`~average-rate`, now a straight line); a galvanic cell as a
+   calculator picture (`s.10.redox~cell-voltage`, now a number line of potentials); a gas
+   mixture in the piston colored by gas (`~partial-pressure`, now a pie).
+6. **Question refiles (the lead's):** NAEP-2005-12S14-#7 now fits `~combustion-alkene`.
+7. **Engine, a value in an exponent:** a power whose exponent shows in scientific notation is not
+   bracketed (`2^4.8292 × 10⁻⁵`), so the step and check read wrong at tiny half-life counts
+   (`s.10.nuclear-chemistry`, deep run only; the page writes (1/2)^n as the report asked).
