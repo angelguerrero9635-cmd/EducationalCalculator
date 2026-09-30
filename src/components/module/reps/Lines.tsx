@@ -8,6 +8,16 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { toFraction } from './exact';
+import {
+  allMeet,
+  GivenPoint,
+  LineMarks,
+  marksWords,
+  uprightShadeWords,
+  UprightLines,
+  uprightsOf,
+  uprightTest,
+} from './LineSystemMarks';
 import { shadeSaid, shadeSign } from './signBox';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import {
@@ -459,17 +469,28 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   // Grades 9–12: a tested point and elimination's sum line (a·x + b·y = c).
   const test = spec.test ? { x: read(spec.test.x), y: read(spec.test.y) } : undefined;
   const testIn = test && test.x.known && test.y.known ? test : undefined;
+  // H92: upright boundaries x (sign) k and the given point.
+  const ups = uprightsOf(spec, read, readId);
+  const given = spec.given ? { x: read(spec.given.x), y: read(spec.given.y) } : undefined;
+  const givenIn =
+    given && given.x.known && given.y.known ? { x: given.x.value, y: given.y.value } : undefined;
   const sum = spec.sum
     ? { a: read(spec.sum.x), b: read(spec.sum.y), c: read(spec.sum.c) }
     : undefined;
   const sumKnown = !!sum && sum.a.known && sum.b.known && sum.c.known;
   const grid = useGrid(
     spec,
-    [...(cross && !far ? [cross.x] : []), ...(testIn ? [testIn.x.value] : [])],
+    [
+      ...(cross && !far ? [cross.x] : []),
+      ...(testIn ? [testIn.x.value] : []),
+      ...ups.map((u) => u.k.value),
+      ...(givenIn ? [givenIn.x] : []),
+    ],
     [
       ...lines.map((l) => l.b.value),
       ...(cross && !far ? [cross.y] : []),
       ...(testIn ? [testIn.y.value] : []),
+      ...(givenIn ? [givenIn.y] : []),
     ],
   );
   const start = useRef({ m: 0, b: 0 });
@@ -478,9 +499,9 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   const y = spec.solution ? rep.variable(spec.solution.y).symbol : 'y';
   const eqs = lines.map((l) => withSign(lineEquation(l.m, l.b, x, y), l.said));
   // Inequalities: each shaded line as a boundary.
-  const bounds = lines.flatMap((l) =>
-    l.shade ? [{ m: l.m.value, b: l.b.value, sign: l.shade } as Bound] : [],
-  );
+  const bounds = lines
+    .flatMap((l) => (l.shade ? [{ m: l.m.value, b: l.b.value, sign: l.shade } as Bound] : []))
+    .concat(ups.flatMap((u) => (u.bound ? [u.bound] : [])));
   const sumName =
     spec.sum?.label ??
     (sum && sumKnown ? standardText(sum.a.value, sum.b.value, sum.c.value, x, y) : 'Sum');
@@ -492,9 +513,12 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   let result: string;
   if (!known) result = 'Type both slopes and both intercepts to draw the lines.';
   else if (bounds.length > 0) {
-    const both = bounds.length === 2;
-    const meet = !both || overlaps(bounds[0]!, bounds[1]!);
-    const shaded = lines.find((l) => l.shade)!;
+    const both = bounds.length >= 2;
+    const many = bounds.length > 2;
+    const meet =
+      !both ||
+      (bounds.length === 2 && !ups.length ? overlaps(bounds[0]!, bounds[1]!) : allMeet(bounds));
+    const shaded = lines.find((l) => l.shade);
     const tested = testIn
       ? lines.flatMap((l) =>
           l.shade
@@ -504,19 +528,32 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
             : [],
         )
       : [];
+    // H92: with upright boundaries, one line for the test: each side against its bound.
+    if (testIn && ups.length)
+      tested.splice(0, tested.length, uprightTest(bounds, testIn.x.value, testIn.y.value));
     const inAll = testIn && bounds.every((q) => holds(q, testIn.x.value, testIn.y.value));
     result = [
-      both
+      many
         ? meet
-          ? 'Where both sides are shaded, both inequalities are true: those points are the solutions.'
-          : 'The shaded sides never meet: no point makes both true. No solution.'
-        : shadeWords(bounds[0]!.sign, y, lineEquation(shaded.m, shaded.b, x, y).split(' = ')[1]!),
+          ? `Where all ${bounds.length} shadings overlap, all ${bounds.length} inequalities are true: those points are the solutions.`
+          : 'The shadings never all meet: no point makes them all true. No solution.'
+        : both
+          ? meet
+            ? 'Where both sides are shaded, both inequalities are true: those points are the solutions.'
+            : 'The shaded sides never meet: no point makes both true. No solution.'
+          : bounds[0]!.upright || !shaded
+            ? uprightShadeWords(bounds[0]!, x)
+            : shadeWords(
+                bounds[0]!.sign,
+                y,
+                lineEquation(shaded.m, shaded.b, x, y).split(' = ')[1]!,
+              ),
       ...(both
         ? [
             bounds.every((q) => strict(q.sign))
-              ? 'Both lines are dashed: points on them are left out.'
+              ? `${many ? 'All the' : 'Both'} lines are dashed: points on them are left out.`
               : bounds.every((q) => !strict(q.sign))
-                ? 'Both lines are solid: points on them are included.'
+                ? `${many ? 'All the' : 'Both'} lines are solid: points on them are included.`
                 : 'A dashed line is left out; a solid line is included.',
           ]
         : []),
@@ -547,6 +584,21 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   } else if (cross)
     result = `They cross at ${pointText(cross.x, cross.y)}${far ? ', off this grid' : ''}. ${lines.map((l) => worked(l.m.value, cross.x, l.b.value)).join(' · ')}`;
   else result = '';
+  // H92: with arrows or a given point the parallel lines are not a system with no solution.
+  if (parallel && !bounds.length && (spec.marks || spec.given))
+    result = spec.marks ? '' : `Both slopes are ${coef(p.m.value)}: the lines are parallel`;
+  if (known && (spec.marks || givenIn))
+    result = [
+      result,
+      ...marksWords(
+        spec,
+        lines.map((l) => ({ m: l.m.value, b: l.b.value })),
+        names,
+        givenIn,
+      ),
+    ]
+      .filter(Boolean)
+      .join(' · ');
   if (sum && known) {
     const [a, b, cc] = [sum.a.value, sum.b.value, sum.c.value];
     const said = `${spec.sum!.label ?? 'Adding the equations'}: ${sumKnown ? standardText(a, b, cc, x, y) : '?'}`;
@@ -635,9 +687,10 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
           // Two inequalities: "both true" inside their overlap, at the spot farthest from the
           // lines, the axes, the crossing and the names (none when nowhere has room).
           const overlap = (() => {
-            if (!known || bounds.length !== 2) return undefined;
+            if (!known || bounds.length < 2) return undefined;
             const axisX = f.sx(Math.min(f.x[1], Math.max(f.x[0], 0)));
             const lineGap = (q: Bound, px: number, py: number) => {
+              if (q.upright) return Math.abs(px - f.sx(q.b));
               const [x1, y1, x2, y2] = [f.sx(0), f.sy(q.b), f.sx(1), f.sy(q.m + q.b)];
               return (
                 Math.abs((x2 - x1) * (y1 - py) - (x1 - px) * (y2 - y1)) /
@@ -774,7 +827,7 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
               <Svg width={w} height={h}>
                 <GridAxes f={f} names={spec.axes} />
                 {lines.map((l, i) =>
-                  l.shade ? (
+                  l.shade && !ups.length ? (
                     <Path
                       key={`s${i}`}
                       d={regionPath(region([{ m: l.m.value, b: l.b.value, sign: l.shade }], f), f)}
@@ -783,11 +836,14 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                     />
                   ) : null,
                 )}
+                {ups.length ? (
+                  <UprightLines ups={ups} bounds={bounds} known={known} f={f} w={w} h={h} />
+                ) : null}
                 {overlap ? (
                   <Chip
                     x={overlap.x}
                     y={overlap.y + 5}
-                    text="both true"
+                    text={bounds.length > 2 ? 'all true' : 'both true'}
                     w={w}
                     h={h}
                     color={c.chartInk}
@@ -835,6 +891,18 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                     />
                   ) : null,
                 )}
+                {spec.marks && known ? (
+                  <LineMarks
+                    lines={lines.map((l) => ({ m: l.m.value, b: l.b.value }))}
+                    cross={cross && !far ? cross : undefined}
+                    f={f}
+                    labelAngle={gap}
+                    avoid={[
+                      ...(givenIn ? [[f.sx(givenIn.x), f.sy(givenIn.y)] as [number, number]] : []),
+                      ...lines.map((l) => [f.sx(0), f.sy(l.b.value)] as [number, number]),
+                    ]}
+                  />
+                ) : null}
                 {lines.map((l, i) =>
                   l.b.value >= f.y[0] && l.b.value <= f.y[1] && f.x[0] <= 0 ? (
                     <Circle
@@ -891,6 +959,16 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                       />
                     )}
                   </G>
+                ) : null}
+                {givenIn ? (
+                  <GivenPoint
+                    x={givenIn.x}
+                    y={givenIn.y}
+                    f={f}
+                    w={w}
+                    h={h}
+                    avoid={crossBox ? [crossBox] : []}
+                  />
                 ) : null}
                 {testIn ? (
                   <G>
@@ -992,6 +1070,7 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
       <Caption>
         {[
           ...eqs.map((e, i) => (spec.lines[i]!.label ? `${spec.lines[i]!.label}: ${e}` : e)),
+          ...ups.map((u) => u.text),
           result,
         ]
           .filter(Boolean)

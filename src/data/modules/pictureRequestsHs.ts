@@ -1771,13 +1771,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'P3 (docs/plans/m.9.md need 3). `compound: { join: "equal", center, radius, letter?, test? }` draws |x − c| = d: closed dots at c − d and c + d (`value` and `second`, in either order, so x₁ and x₂ can stay as the page solves them for a negative a), the center marked, d bracketed to each dot, nothing shaded between; d = 0 draws one dot at c ("x = c"), a negative d none and the caption says no number is a negative distance away. `center` and `radius` are required (the harness checks {value, second} = {c − d, c + d}); `fit` and `ticks` (H89) work here too. m.9.absolute-value main: { kind: "integerLine", value: "x1", second: "x2", min: -20, max: 20, compound: { join: "equal", center: "h", radius: "d" } } with its h and d as they are (the labels under the picture can go).',
   },
-  ask(
-    'H92',
-    'lineSystem',
-    'Upright boundaries (x ≥ k); parallel arrows and right-angle marks; the given point',
-    ['m.9.inequality-systems', 'm.10.parallel-lines'],
-    'P4: docs/plans/m.9.md need 4, m.10.md need 10.',
-  ),
+  {
+    ...ask(
+      'H92',
+      'lineSystem',
+      'Upright boundaries (x ≥ k); parallel arrows and right-angle marks; the given point',
+      ['m.9.inequality-systems', 'm.10.parallel-lines'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-inequality-systems-box',
+      'g.m10-parallel-lines-parallel-line-marks',
+      'g.m10-parallel-lines-perpendicular-line-marks',
+    ],
+    notes:
+      'P4 (docs/plans/m.9.md need 4, m.10.md need 10). Three options on `lineSystem`, off unless set. `upright: [{ x, shade?, label? }]`: upright lines x = k (a number or a value id) in their own colour (theme `lineUpright`), or boundaries x (sign) k with `shade` (a sign, or a sign box as in H90), dashed when strict; with any upright line only the overlap of every boundary is shaded (four half-planes on top of each other would muddy it), the caption says where all of them overlap and tests the point against each in one line. The box a ≤ x ≤ b, c ≤ y ≤ d (NAEP-2024-12M11-#11 on m.9.inequality-systems): { kind: "lineSystem", lines: [{ slope: 0, intercept: "c", shade: "≥" }, { slope: 0, intercept: "d", shade: "≤" }], upright: [{ x: "a", shade: "≥" }, { x: "b", shade: "≤" }], test: { x: "tx", y: "ty" }, extent: 10, fixed: true }. `marks: true`: one arrow on each line when the slopes are equal, a right-angle square at the crossing when they multiply to −1 (in the quarter away from the crossing’s label), with a caption line (“The arrows mark them parallel: both slopes are 3”, “The square marks a right angle: 2 × (−1/2) = −1”). `given: { x, y }`: the point the second line goes through, filled and labelled, and “(2, 7) is on Parallel: 3 × 2 + 1 = 7” (the harness checks it is on that line). m.10.parallel-lines~parallel-line and ~perpendicular-line: add `marks: true, given: { x: "x0", y: "y0" }` to their pictures (no other change).',
+  },
   ask(
     'H93',
     'termsChart',

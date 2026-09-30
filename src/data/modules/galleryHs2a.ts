@@ -9,6 +9,7 @@ import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from './helpers';
 import type { LayoutDef } from './layouts';
+import { MATH_10_MODULES } from './math/10';
 import { MATH_9_MODULES } from './math/9';
 import type { ModuleDef, StepText } from './types';
 
@@ -241,7 +242,7 @@ const halfPlane = page({
 const standardSystem = page({
   id: 'g.m9-inequality-systems-standard-form',
   title: 'System of inequalities in standard form',
-  use: 'Use this for “Graph x − 2y < 2 and 2x + y ≤ 4 and test (−2, 1).”',
+  use: 'Use this for “Graph x − 2y < 2 and 2x + y ≤ 4 and test (−6, 2).”',
   assumptions: [
     'Solve each for y: divide by the y term, flipping the sign when it is negative.',
     'Dashed lines (< or >) are left out; solid ones (≤ or ≥) are included.',
@@ -348,8 +349,8 @@ const standardSystem = page({
     b1: -1,
     m2: -2,
     b2: 4,
-    tx: -2,
-    ty: 1,
+    tx: -6,
+    ty: 2,
     h1: 1,
     h2: 1,
   },
@@ -804,7 +805,131 @@ const [equalTwo, equalOne] = (
   };
 });
 
+// ── H92: upright boundaries, parallel arrows and right angles, the given point ──
+
+/** a ≤ x ≤ b and c ≤ y ≤ d: two upright boundaries and two flat ones make a box. */
+const box = page({
+  id: 'g.m9-inequality-systems-box',
+  title: 'A box of points: a ≤ x ≤ b and c ≤ y ≤ d',
+  use: 'Use this for “Shade the points with −3 ≤ x ≤ 2 and −1 ≤ y ≤ 4.”',
+  assumptions: [
+    'a ≤ x ≤ b is the strip between two upright lines, x = a and x = b.',
+    'c ≤ y ≤ d is the strip between two flat lines, y = c and y = d.',
+    'Where the strips overlap is a box: every point in it makes all four true.',
+  ],
+  variables: [
+    num('a', 'a', 'Least x', -10, 10, { step: 0.5 }),
+    num('b', 'b', 'Greatest x', -10, 10, { step: 0.5 }),
+    num('c', 'c', 'Least y', -10, 10, { step: 0.5 }),
+    num('d', 'd', 'Greatest y', -10, 10, { step: 0.5 }),
+    num('W', 'W', 'Width of the box', -20, 20, { derived: true }),
+    num('H', 'H', 'Height of the box', -20, 20, { derived: true }),
+    num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
+    num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
+    holdsVar(),
+  ],
+  rules: [
+    derive(
+      'W = b − a',
+      'W',
+      ['b', 'a'],
+      '{W} = {b} − {a}',
+      (v) => exact(v.b! - v.a!),
+      '{b} − {a}',
+      'The box runs from x = a to x = b: its width is b − a.',
+      {},
+      {
+        message: (v) =>
+          v.a !== undefined && v.b !== undefined && v.a > v.b
+            ? 'a is past b: no x is between them, so there is no box.'
+            : undefined,
+      },
+    ),
+    derive(
+      'H = d − c',
+      'H',
+      ['d', 'c'],
+      '{H} = {d} − {c}',
+      (v) => exact(v.d! - v.c!),
+      '{d} − {c}',
+      'And from y = c up to y = d: its height is d − c.',
+    ),
+    rule(
+      'h = test in the box',
+      'test ({tx}, {ty}) in {a} ≤ x ≤ {b} and {c} ≤ y ≤ {d}: {h}',
+      ['h', 'tx', 'ty', 'a', 'b', 'c', 'd'],
+      (v) => tested(v.h!, truth(v.a! <= v.tx! && v.tx! <= v.b! && v.c! <= v.ty! && v.ty! <= v.d!)),
+      {
+        h: [
+          (v) => truth(v.a! <= v.tx! && v.tx! <= v.b! && v.c! <= v.ty! && v.ty! <= v.d!),
+          (v) => `${truth(v.a! <= v.tx! && v.tx! <= v.b! && v.c! <= v.ty! && v.ty! <= v.d!)}`,
+          'Check x₀ between a and b, and y₀ between c and d: 1 when all four are true.',
+          {
+            work: (v) => [
+              `${fmt(v.a!)} ≤ ${fmt(v.tx!)} ≤ ${fmt(v.b!)} is ${v.a! <= v.tx! && v.tx! <= v.b! ? 'true' : 'false'}`,
+              `${fmt(v.c!)} ≤ ${fmt(v.ty!)} ≤ ${fmt(v.d!)} is ${v.c! <= v.ty! && v.ty! <= v.d! ? 'true' : 'false'}`,
+            ],
+            written: false,
+          },
+        ],
+      },
+      {
+        check: (v) =>
+          `${truth(v.a! <= v.tx! && v.tx! <= v.b! && v.c! <= v.ty! && v.ty! <= v.d!)} = ${v.h}`,
+      },
+    ),
+  ],
+  example: { a: -3, b: 2, c: -1, d: 4, W: 5, H: 5, tx: 1, ty: 2, h: 1 },
+  startWith: ['a', 'b', 'c', 'd', 'tx', 'ty'],
+  equation: '{a} ≤ x ≤ {b}\n{c} ≤ y ≤ {d}',
+  representation: {
+    kind: 'lineSystem',
+    lines: [
+      { slope: 0, intercept: 'c', shade: '≥' },
+      { slope: 0, intercept: 'd', shade: '≤' },
+    ],
+    upright: [
+      { x: 'a', shade: '≥' },
+      { x: 'b', shade: '≤' },
+    ],
+    test: { x: 'tx', y: 'ty' },
+    extent: 10,
+    fixed: true,
+  },
+});
+
+/** A Grade 10 page as a gallery demo `id`, with the picture option it waits on. */
+function from10(pageId: string, id: string, title: string) {
+  const found = MATH_10_MODULES.find((m) => m.id === pageId);
+  if (!found || found.representation.kind !== 'lineSystem')
+    throw new Error(`galleryHs2a: no line-system page ${pageId}`);
+  return {
+    ...found,
+    id,
+    title,
+    representation: {
+      ...found.representation,
+      marks: true,
+      given: { x: 'x0', y: 'y0' },
+    },
+  };
+}
+
+const parallelMarks = from10(
+  'm.10.parallel-lines~parallel-line',
+  'g.m10-parallel-lines-parallel-line-marks',
+  'A parallel line through a point, marked',
+);
+const perpendicularMarks = from10(
+  'm.10.parallel-lines~perpendicular-line',
+  'g.m10-parallel-lines-perpendicular-line-marks',
+  'A perpendicular line through a point, marked',
+);
+
 export const HS2A_GALLERY_MODULES: ModuleDef[] = [
+  box,
+  parallelMarks,
+  perpendicularMarks,
   equalTwo!,
   equalOne!,
   ticksBy5,
