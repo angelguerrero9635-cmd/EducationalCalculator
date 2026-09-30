@@ -5,6 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md, docs/build/s.10.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/science10.ts`.
  */
+import { CELL_METALS } from '@/components/module/layouts/galvanic';
 import { trendValue } from '@/components/module/reps/chemTrends';
 import {
   configuration,
@@ -35,7 +36,10 @@ interface Rule {
 /** Gathers rules into a module's `relations` and `steps`. */
 const rules = (...rs: Rule[]) => ({
   relations: rs.map((r) => r.relation),
-  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+  // A figure-only (hidden) relation places the drawing and has no steps.
+  steps: Object.fromEntries(
+    rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+  ),
 });
 
 /** A factor after a division sign: a plain number as it is (/22.4), anything else bracketed. */
@@ -3841,10 +3845,10 @@ const nucleon = (id: string, symbol: string, name: string, min: number, max: num
   whole(id, symbol, name, min, max);
 
 /** "Z = 90 is thorium: Th-234", the nucleus an atomic number (and mass number) name. */
-function nucleusName(z: number, a: number | undefined): string {
+function nucleusName(z: number, a: number | undefined, label: string): string {
   const e = element(z);
-  if (!e) return `Z = ${z}`;
-  return `Z = ${z} is ${e.name.toLowerCase()}${a === undefined ? '' : `: ${e.symbol}-${a}`}`;
+  if (!e) return `${label} = ${z}`;
+  return `${label} = ${z} is ${e.name.toLowerCase()}${a === undefined ? '' : `: ${e.symbol}-${a}`}`;
 }
 
 /** A decay's daughter nucleus: the mass and atomic numbers left after the particle leaves. */
@@ -3932,7 +3936,7 @@ function decayPage(
             charge < 0
               ? `The ${particle.name} has atomic number −1: a neutron became a proton.`
               : `The ${particle.name} takes ${charge} of the atomic number.`,
-          work: (v) => [nucleusName(v.Z2!, v.A2)],
+          work: (v) => [nucleusName(v.Z2!, v.A2, 'Z′')],
         },
         Z: { expr: plus('Z2', charge), how: `Add back the ${particle.name}’s atomic number.` },
       },
@@ -4094,7 +4098,7 @@ const NUCLEAR: ModuleDef[] = [
           Z2: {
             expr: '92 − {Z1}',
             how: 'Uranium’s 92 protons are shared by the two fragments; neutrons carry none.',
-            work: (v) => [nucleusName(v.Z2!, v.A2)],
+            work: (v) => [nucleusName(v.Z2!, v.A2, 'Z₂')],
           },
           Z1: { expr: '92 − {Z2}', how: 'The first fragment has the protons the second lacks.' },
         },
@@ -4145,6 +4149,396 @@ const NUCLEAR: ModuleDef[] = [
   },
 ];
 
+// ─── Pages the lesson review added ───────────────────────────────────────────
+
+/** Standard reduction potentials the cell page takes (volts, 25 °C), from the cell figure's table. */
+const POTENTIALS = Object.values(CELL_METALS).map((m) => m.potential);
+const metalAt = (e: number) =>
+  Object.values(CELL_METALS)
+    .find((m) => Math.abs(m.potential - e) < 1e-9)
+    ?.name.toLowerCase();
+
+const ADDED: ModuleDef[] = [
+  {
+    id: 's.10.rates-equilibrium~average-rate',
+    title: 'Average reaction rate',
+    use: 'Use this for “[A] falls from 1.20 mol/L at 30 s to 0.75 mol/L at 120 s. What is the average rate?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A reactant is used up, so its concentration falls: the rate is −Δ[A]/Δt, a positive number.',
+      'It is an average: the line through the two readings has slope Δ[A]/Δt, though the true curve is steepest at the start.',
+    ],
+    variables: [
+      conc('A1', '[A]₁', 'Concentration at the first time'),
+      conc('A2', '[A]₂', 'Concentration at the second time'),
+      quantity('t1', 't₁', 'First time', 's', 0, 100000, 0.1),
+      quantity('t2', 't₂', 'Second time', 's', 0.1, 100000, 0.1),
+      quantity('dt', 'Δt', 'Time between', 's', 0.1, 100000, 0.1),
+      quantity('dA', 'Δ[A]', 'Change in concentration', 'mol/L', -100, 0, 0.0001),
+      quantity('r', 'r', 'Average rate', 'mol/(L·s)', 0, 1000, 0.000001),
+      {
+        ...quantity('m', 'm', 'Slope of the line', undefined, -1000, 0, 0.000001),
+        derived: true,
+        hidden: true,
+      },
+      {
+        ...quantity('b0', 'b', 'Where the line meets the axis', undefined, -1e7, 1e7, 0.000001),
+        derived: true,
+        hidden: true,
+      },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Δt = t₂ − t₁',
+          display: '{dt} = {t2} − {t1}',
+          vars: ['dt', 't2', 't1'],
+          residual: (v) => v.dt! - (v.t2! - v.t1!),
+          solve: { dt: (v) => v.t2! - v.t1!, t2: (v) => v.t1! + v.dt!, t1: (v) => v.t2! - v.dt! },
+          message: (v) =>
+            v.t2! > v.t1! ? undefined : 'The second time must come after the first.',
+        },
+        steps: {
+          dt: { expr: '{t2} − {t1}', how: 'The time between the two readings.' },
+          t2: { expr: '{t1} + {dt}', how: 'Add the time between to the first time.' },
+          t1: { expr: '{t2} − {dt}', how: 'Take the time between off the second time.' },
+        },
+      },
+      {
+        relation: {
+          id: 'Δ[A] = [A]₂ − [A]₁',
+          display: '{dA} = {A2} − {A1}',
+          vars: ['dA', 'A2', 'A1'],
+          residual: (v) => v.dA! - (v.A2! - v.A1!),
+          solve: { dA: (v) => v.A2! - v.A1!, A2: (v) => v.A1! + v.dA!, A1: (v) => v.A2! - v.dA! },
+          message: (v) =>
+            v.A2! <= v.A1! ? undefined : 'A reactant is used up: [A]₂ can’t be more than [A]₁.',
+        },
+        steps: {
+          dA: {
+            expr: '{A2} − {A1}',
+            how: 'Last minus first: negative, since the reactant is used up.',
+          },
+          A2: { expr: '{A1} + {dA}', how: 'Add the (negative) change to the first reading.' },
+          A1: { expr: '{A2} − {dA}', how: 'Take the change back off the second reading.' },
+        },
+      },
+      {
+        relation: {
+          id: 'rate = −Δ[A]/Δt',
+          display: '{r} = −{dA}/{dt}',
+          vars: ['r', 'dA', 'dt'],
+          residual: (v) => v.r! * v.dt! + v.dA!,
+          solve: {
+            r: (v) => div(-v.dA!, v.dt!),
+            dA: (v) => -v.r! * v.dt!,
+            dt: (v) => div(-v.dA!, v.r!),
+          },
+        },
+        steps: {
+          r: {
+            expr: '−{dA}/{dt}',
+            how: 'The drop in concentration per second: the minus sign makes the rate positive.',
+          },
+          dA: { expr: '−{r} × {dt}', how: 'The concentration drops by the rate times the time.' },
+          dt: { expr: '−{dA}/{r}', how: 'Divide the drop by the rate.' },
+        },
+      },
+      {
+        relation: {
+          id: 'slope of the line',
+          hidden: true,
+          display: '{m} = {dA}/{dt}',
+          vars: ['m', 'dA', 'dt'],
+          residual: (v) => v.m! * v.dt! - v.dA!,
+          solve: { m: (v) => div(v.dA!, v.dt!) },
+        },
+        steps: { m: { expr: '{dA}/{dt}', how: 'Rise over run between the two readings.' } },
+      },
+      {
+        relation: {
+          id: 'line through the first reading',
+          hidden: true,
+          display: '{b0} = {A1} − {m} × {t1}',
+          vars: ['b0', 'A1', 'm', 't1'],
+          residual: (v) => v.b0! - (v.A1! - v.m! * v.t1!),
+          solve: { b0: (v) => v.A1! - v.m! * v.t1! },
+        },
+        steps: {
+          b0: { expr: '{A1} − {m} × {t1}', how: 'The line passes through the first reading.' },
+        },
+      },
+    ),
+    example: {
+      A1: 1.2,
+      A2: 0.75,
+      t1: 30,
+      t2: 120,
+      dt: 90,
+      dA: -0.45,
+      r: 0.005,
+      m: -0.005,
+      b0: 1.35,
+    },
+    startWith: ['A1', 'A2', 't1', 't2'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'b0',
+      secant: { x: 't1', h: 'dt' },
+      xMin: 0,
+      axes: { x: 'Time t (s)', y: 'Concentration [A] (mol/L)' },
+      fixed: true,
+    },
+  },
+  {
+    id: 's.10.rates-equilibrium~ksp',
+    title: 'Solubility product',
+    use: 'Use this for a salt such as AgCl that barely dissolves: its Ksp from its molar solubility, or the solubility from Ksp.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'AgCl(s) ⇌ Ag⁺ + Cl⁻: each unit that dissolves gives one of each ion, so both are s mol/L.',
+      'The solid is left out: Ksp = [Ag⁺][Cl⁻] = s². At 25 °C, AgCl’s Ksp is 1.8 × 10⁻¹⁰.',
+      'Silver chloride’s molar mass is 143.32 g/mol.',
+    ],
+    variables: [
+      quantity('K', 'Ksp', 'Solubility product', undefined, 1e-24, 1, 1e-26, { scientific: true }),
+      quantity('s', 's', 'Molar solubility', 'mol/L', 1e-12, 1, 1e-14, { scientific: true }),
+      quantity('g', 'S', 'Solubility in grams per liter', 'g/L', 1e-10, 200, 1e-12, {
+        scientific: true,
+      }),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Ksp = s²',
+          display: '{K} = {s}^2',
+          vars: ['K', 's'],
+          residual: (v) => v.K! / v.s! ** 2 - 1,
+          // s first: `holds` re-solves the first entry, and a check on Ksp (10⁻¹⁰) passes anything.
+          solve: { s: (v) => Math.sqrt(Math.max(0, v.K!)), K: (v) => v.s! ** 2 },
+        },
+        steps: {
+          s: { expr: '√({K})', how: 'Ksp is s times s, so s is its square root.' },
+          K: { expr: '{s}^2', how: 'Both ions are at s mol/L, and Ksp is their product.' },
+        },
+      },
+      {
+        relation: {
+          id: 'S = 143.32 × s',
+          display: '{g} = {s} × 143.32',
+          vars: ['g', 's'],
+          residual: (v) => v.g! / (143.32 * v.s!) - 1,
+          solve: { s: (v) => v.g! / 143.32, g: (v) => v.s! * 143.32 },
+        },
+        steps: {
+          g: { expr: '{s} × 143.32', how: 'Each mole of AgCl that dissolves is 143.32 g.' },
+          s: { expr: '{g}/143.32', how: 'Divide the grams by the grams in one mole.' },
+        },
+      },
+    ),
+    example: { K: 1.8e-10, s: Math.sqrt(1.8e-10), g: Math.sqrt(1.8e-10) * 143.32 },
+    startWith: ['K'],
+    representation: {
+      kind: 'equilibriumChart',
+      species: [
+        { formula: 'Ag⁺', coef: 1, side: 'product', start: 0, eq: 's' },
+        { formula: 'Cl⁻', coef: 1, side: 'product', start: 0, eq: 's' },
+      ],
+      K: 'K',
+    },
+  },
+  {
+    id: 's.10.gas-laws~partial-pressure',
+    title: 'Dalton’s law of partial pressures',
+    use: 'Use this for a mixture of gases: the total pressure from each gas’s partial pressure, and one gas’s mole fraction.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A tank holds helium, oxygen and nitrogen, all ideal and at one temperature.',
+      'Each gas pushes as if it were alone, so the total pressure is the sum of the partial pressures.',
+      'A gas’s share of the pressure is its share of the particles: its mole fraction.',
+    ],
+    variables: [
+      { ...pressure('1'), name: 'Pressure of helium' },
+      { ...pressure('2'), name: 'Pressure of oxygen' },
+      { ...pressure('2'), id: 'P3', symbol: 'P₃', name: 'Pressure of nitrogen' },
+      { ...pressure(''), name: 'Total pressure', max: 600 },
+      { id: 'x', symbol: 'x₁', name: 'Mole fraction of helium', min: 0, max: 1, step: 0.0001 },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'P = P₁ + P₂ + P₃',
+          display: '{P} = {P1} + {P2} + {P3}',
+          vars: ['P', 'P1', 'P2', 'P3'],
+          residual: (v) => v.P! - (v.P1! + v.P2! + v.P3!),
+          solve: {
+            P: (v) => v.P1! + v.P2! + v.P3!,
+            P1: (v) => v.P! - v.P2! - v.P3!,
+            P2: (v) => v.P! - v.P1! - v.P3!,
+            P3: (v) => v.P! - v.P1! - v.P2!,
+          },
+        },
+        steps: {
+          P: { expr: '{P1} + {P2} + {P3}', how: 'Each gas adds its own push to the total.' },
+          P1: { expr: '{P} − {P2} − {P3}', how: 'Take the other gases’ pressures from the total.' },
+          P2: { expr: '{P} − {P1} − {P3}', how: 'Take the other gases’ pressures from the total.' },
+          P3: { expr: '{P} − {P1} − {P2}', how: 'Take the other gases’ pressures from the total.' },
+        },
+      },
+      {
+        relation: {
+          id: 'x₁ = P₁/P',
+          display: '{x} = {P1}/{P}',
+          vars: ['x', 'P1', 'P'],
+          residual: (v) => v.x! * v.P! - v.P1!,
+          solve: { x: (v) => div(v.P1!, v.P!), P1: (v) => v.x! * v.P!, P: (v) => div(v.P1!, v.x!) },
+        },
+        steps: {
+          x: {
+            expr: '{P1}/{P}',
+            how: 'Helium’s share of the pressure is its share of the particles.',
+          },
+          P1: { expr: '{x} × {P}', how: 'Take helium’s share of the total pressure.' },
+          P: {
+            expr: '{P1}/{x}',
+            how: 'Helium’s pressure is that share of the total: scale it up.',
+          },
+        },
+      },
+    ),
+    example: { P1: 2, P2: 0.5, P3: 1.5, P: 4, x: 0.5 },
+    startWith: ['P1', 'P2', 'P3'],
+    representation: { kind: 'pieChart', parts: ['P1', 'P2', 'P3'], total: 'P' },
+  },
+  {
+    id: 's.10.molarity~percent-mass',
+    title: 'Percent by mass',
+    use: 'Use this for “15 g of sugar is dissolved in 135 g of water. What is the percent sugar by mass?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The solution’s mass is the solute’s and the solvent’s together.',
+      'Percent by mass is the solute’s share of the solution’s mass, not of the water’s.',
+    ],
+    variables: [
+      { ...saltGrams('m1', 'm₁', 'Mass of solute', 0.001), max: 10000, step: 0.001 },
+      { ...saltGrams('m2', 'm₂', 'Mass of solvent', 0.001), max: 10000, step: 0.001 },
+      { ...saltGrams('m', 'm', 'Mass of solution', 0.002), max: 20000, step: 0.001 },
+      quantity('p', 'p', 'Percent by mass', '%', 0, 100, 0.0001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'm = m₁ + m₂',
+          display: '{m} = {m1} + {m2}',
+          vars: ['m', 'm1', 'm2'],
+          residual: (v) => v.m! - (v.m1! + v.m2!),
+          solve: { m: (v) => v.m1! + v.m2!, m1: (v) => v.m! - v.m2!, m2: (v) => v.m! - v.m1! },
+        },
+        steps: {
+          m: {
+            expr: '{m1} + {m2}',
+            how: 'Dissolving loses no mass: add the solute and the solvent.',
+          },
+          m1: { expr: '{m} − {m2}', how: 'Take the solvent’s mass from the solution’s.' },
+          m2: { expr: '{m} − {m1}', how: 'Take the solute’s mass from the solution’s.' },
+        },
+      },
+      {
+        relation: {
+          id: 'p = m₁/m × 100',
+          display: '{p} = {m1}/{m} × 100',
+          vars: ['p', 'm1', 'm'],
+          residual: (v) => v.p! * v.m! - 100 * v.m1!,
+          solve: {
+            p: (v) => div(100 * v.m1!, v.m!),
+            m1: (v) => (v.p! * v.m!) / 100,
+            m: (v) => div(100 * v.m1!, v.p!),
+          },
+        },
+        steps: {
+          p: {
+            expr: '{m1}/{m} × 100',
+            how: 'The solute’s share of the whole solution, as a percent.',
+          },
+          m1: { expr: '{p} × {m}/100', how: 'Take that percent of the solution’s mass.' },
+          m: {
+            expr: '{m1} × 100/{p}',
+            how: 'The solute is p percent of the solution: scale it up.',
+          },
+        },
+      },
+    ),
+    example: { m1: 15, m2: 135, m: 150, p: 10 },
+    startWith: ['m1', 'm2'],
+    representation: { kind: 'percentBar', percent: 'p', part: 'm1', whole: 'm' },
+  },
+  {
+    id: 's.10.redox~cell-voltage',
+    title: 'Standard cell voltage',
+    use: 'Use this for “What voltage does a zinc–copper cell give?”: E°cell from the two metals’ reduction potentials.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each metal stands in a 1 M solution of its own ion at 25 °C; the potentials are the standard table’s.',
+      'The metal with the higher reduction potential is the cathode, where reduction happens.',
+      'E°cell = E°cathode − E°anode, and it is positive for a working cell.',
+    ],
+    variables: [
+      {
+        ...quantity('Ec', 'E°cathode', 'Reduction potential of the cathode', 'V', -3, 1, 0.01),
+        allowed: POTENTIALS,
+      },
+      {
+        ...quantity('Ea', 'E°anode', 'Reduction potential of the anode', 'V', -3, 1, 0.01),
+        allowed: POTENTIALS,
+      },
+      quantity('E', 'E°cell', 'Cell voltage', 'V', 0, 4, 0.01),
+    ],
+    ...rules({
+      relation: {
+        id: 'E°cell = E°cathode − E°anode',
+        display: '{E} = {Ec} − {Ea}',
+        vars: ['E', 'Ec', 'Ea'],
+        residual: (v) => v.E! - (v.Ec! - v.Ea!),
+        solve: { E: (v) => v.Ec! - v.Ea!, Ec: (v) => v.E! + v.Ea!, Ea: (v) => v.Ec! - v.E! },
+        message: (v) =>
+          v.Ec! > v.Ea!
+            ? undefined
+            : 'The cathode has the higher reduction potential: swap the two metals.',
+      },
+      steps: {
+        E: {
+          expr: '{Ec} − {Ea}',
+          how: 'The cathode’s pull for electrons minus the anode’s: the bigger the gap, the bigger the voltage.',
+          work: (v) => {
+            const [c, a] = [metalAt(v.Ec!), metalAt(v.Ea!)];
+            return c && a
+              ? [
+                  `${fmt(v.Ec!)} V is ${c}’s and ${fmt(v.Ea!)} V is ${a}’s: a ${a}–${c} cell with ${a} the anode`,
+                ]
+              : [];
+          },
+        },
+        Ec: { expr: '{E} + {Ea}', how: 'Add the anode’s potential to the cell voltage.' },
+        Ea: { expr: '{Ec} − {E}', how: 'Take the cell voltage from the cathode’s potential.' },
+      },
+    }),
+    example: { Ec: 0.34, Ea: -0.76, E: 1.1 },
+    startWith: ['Ec', 'Ea'],
+    representation: {
+      kind: 'integerLine',
+      value: 'Ea',
+      second: 'Ec',
+      change: 'E',
+      min: -3,
+      max: 1,
+      vertical: true,
+      unit: 'V',
+    },
+  },
+];
+
 export const SCIENCE_10_MODULES: ModuleDef[] = [
   ...MEASUREMENT,
   ...ATOMS,
@@ -4162,4 +4556,5 @@ export const SCIENCE_10_MODULES: ModuleDef[] = [
   ...ACIDS,
   ...ORGANIC,
   ...NUCLEAR,
+  ...ADDED,
 ];
