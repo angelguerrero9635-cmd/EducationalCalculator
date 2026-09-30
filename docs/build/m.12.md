@@ -10,6 +10,7 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   `~two-sample`, `~errors` (sort).
 - `m.12.confidence-intervals` (4): main (mean, σ known), `~proportion`, `~sample-size`,
   `~capture`.
+- `m.12.sampling-distributions` (3): main (x̄), `~proportion` (p̂), `~counts` (binomial).
 
 ## Waiting
 

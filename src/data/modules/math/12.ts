@@ -108,23 +108,24 @@ const ALPHA_WHY =
   'The significance level is chosen before the test; the picture compares the p-value with it.';
 
 /** z = (x − m) ÷ s: how many standard errors the estimate is from the H₀ value. */
-function zScore(z: string, x: string, m: string, s: string): Rel {
+function zScore(
+  z: string,
+  x: string,
+  m: string,
+  s: string,
+  how = [
+    'How many standard errors the estimate is from the value H₀ claims.',
+    'Start at the H₀ value and go z standard errors.',
+  ],
+): Rel {
   return rel(
     `${z} = (${x} − ${m}) ÷ ${s}`,
     `{${z}} = ({${x}} − {${m}}) ÷ {${s}}`,
     [z, x, m, s],
     (v) => v[z]! * v[s]! - (v[x]! - v[m]!),
     {
-      [z]: [
-        (v) => div(v[x]! - v[m]!, v[s]!),
-        `({${x}} − {${m}}) ÷ {${s}}`,
-        'How many standard errors the estimate is from the value H₀ claims.',
-      ],
-      [x]: [
-        (v) => v[m]! + v[z]! * v[s]!,
-        `{${m}} + {${z}} × {${s}}`,
-        'Start at the H₀ value and go z standard errors.',
-      ],
+      [z]: [(v) => div(v[x]! - v[m]!, v[s]!), `({${x}} − {${m}}) ÷ {${s}}`, how[0]!],
+      [x]: [(v) => v[m]! + v[z]! * v[s]!, `{${m}} + {${z}} × {${s}}`, how[1]!],
     },
   );
 }
@@ -142,9 +143,13 @@ const twoTail = (P: string, z: string) =>
   );
 
 /** P = Φ(z): the tail left of z. */
-const leftTail = (P: string, z: string) =>
+const leftTail = (
+  P: string,
+  z: string,
+  how = 'Hₐ says “less”, so the p-value is the area left of z.',
+) =>
   rel(`${P} = Φ(${z})`, `{${P}} = Φ({${z}})`, [P, z], (v) => v[P]! - Phi(v[z]!), {
-    [P]: [(v) => Phi(v[z]!), `Φ({${z}})`, 'Hₐ says “less”, so the p-value is the area left of z.'],
+    [P]: [(v) => Phi(v[z]!), `Φ({${z}})`, how],
     [z]: [
       (v) => (inOpen(v[P]!) === undefined ? undefined : invPhi(v[P]!)),
       `invNorm({${P}})`,
@@ -667,6 +672,129 @@ const MATH_12_STATS: ModuleDef[] = [
       sd: 10,
       axis: 'Sample mean x̄',
       intervals: { count: 100, n: 'n', level: 'C' },
+    },
+  },
+
+  // ── m.12.sampling-distributions (S-IC.1, S-IC.4) ──
+  {
+    id: 'm.12.sampling-distributions',
+    assumptions: [
+      'The sample means x̄ center on the population mean μ and spread by σ ÷ √n.',
+      'x̄ is close to normal when the population is normal or n ≥ 30 (the central limit theorem).',
+      'Samples are random and less than 10% of the population.',
+    ],
+    variables: [
+      V('m', 'μ', 'Population mean', { unit: 'cm', min: 0.1, max: 100000, step: 0.5 }),
+      V('s', 'σ', 'Population standard deviation', {
+        unit: 'cm',
+        min: 0.01,
+        max: 10000,
+        step: 0.1,
+      }),
+      V('n', 'n', 'Sample size', { integer: true, min: 2, max: 1000 }),
+      V('E', 'SE', 'Standard error of x̄', { unit: 'cm', min: 0.0001, max: 10000, step: 0.01 }),
+      V('x', 'x̄', 'A sample mean', { unit: 'cm', min: 0.1, max: 100000, step: 0.1 }),
+      V('z', 'z', 'z-score of x̄', { min: -50, max: 50, step: 0.01 }),
+      prob('P', 'P', 'Chance the sample mean is at most x̄'),
+    ],
+    ...rels(
+      seMean('E', 's', 'n'),
+      zScore('z', 'x', 'm', 'E', [
+        'How many standard errors x̄ is from μ.',
+        'Start at μ and go z standard errors.',
+      ]),
+      leftTail('P', 'z', 'Φ(z) is the area under the standard normal curve left of z.'),
+    ),
+    example: { m: 170, s: 10, n: 25, E: 2, x: 173, z: 1.5, P: Phi(1.5) },
+    startWith: ['m', 's', 'n', 'x'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'normalCurve',
+      mean: 'm',
+      sd: 's',
+      axis: 'Height (cm)',
+      sample: { n: 'n', se: 'E' },
+      shade: { to: 'x', area: 'P' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.sampling-distributions~proportion',
+    title: 'Sampling distribution of a proportion',
+    use: 'Use this for “40% of voters agree. In a sample of 150, what is P(p̂ > 0.46)?”',
+    assumptions: [
+      'The sample proportions p̂ center on the population proportion p.',
+      'They spread by √(p(1 − p) ÷ n) and are close to normal when np ≥ 10 and n(1 − p) ≥ 10.',
+      'Samples are random and less than 10% of the population.',
+    ],
+    variables: [
+      V('p', 'p', 'Population proportion', { min: 0.01, max: 0.99, step: 0.01 }),
+      V('n', 'n', 'Sample size', { integer: true, min: 2, max: 100000 }),
+      V('E', 'SE', 'Standard error of p̂', { min: 0.00001, max: 1, step: 0.0001 }),
+      V('x', 'p̂', 'A sample proportion', { min: 0, max: 1, step: 0.01 }),
+      V('z', 'z', 'z-score of p̂', { min: -50, max: 50, step: 0.01 }),
+      prob('P', 'P', 'Chance the sample proportion is more than p̂'),
+    ],
+    ...rels(
+      seProportion('E', 'p', 'n', 'Proportions of n people spread by √(p(1 − p) ÷ n).'),
+      zScore('z', 'x', 'p', 'E', [
+        'How many standard errors p̂ is from p.',
+        'Start at p and go z standard errors.',
+      ]),
+      rightTail('P', 'z', 'The whole area is 1; take away the area left of z.'),
+    ),
+    example: { p: 0.4, n: 150, E: 0.04, x: 0.46, z: 1.5, P: 1 - Phi(1.5) },
+    startWith: ['p', 'n', 'x'],
+    representation: {
+      kind: 'normalCurve',
+      mean: 'p',
+      sd: 'E',
+      axis: 'Sample proportion p̂',
+      shade: { from: 'x', area: 'P' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.sampling-distributions~counts',
+    title: 'Mean and spread of a binomial count',
+    use: 'Use this for “In 40 trials with p = 0.25, find the mean and standard deviation of the count.”',
+    assumptions: [
+      'n independent trials, each a success with the same chance p; X counts the successes.',
+      'X has mean np and standard deviation √(np(1 − p)).',
+      'X is close to normal when np ≥ 10 and n(1 − p) ≥ 10.',
+    ],
+    variables: [
+      V('n', 'n', 'Trials', { integer: true, min: 1, max: 40 }),
+      V('p', 'p', 'Chance of success', { min: 0.01, max: 0.99, step: 0.01 }),
+      V('M', 'μ', 'Mean count', { min: 0, max: 40, step: 0.01 }),
+      V('S', 'σ', 'Standard deviation of the count', {
+        min: 0,
+        max: 10,
+        step: 0.0001,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      rel('μ = np', '{M} = {n} × {p}', ['M', 'n', 'p'], (v) => v.M! - v.n! * v.p!, {
+        M: [(v) => v.n! * v.p!, '{n} × {p}', 'On average, the share p of the n trials succeed.'],
+        p: [(v) => div(v.M!, v.n!), '{M} ÷ {n}', 'The mean count per trial.'],
+      }),
+      derive(
+        'σ = √(np(1 − p))',
+        '{S} = √({n} × {p} × (1 − {p}))',
+        'S',
+        ['n', 'p'],
+        (v) => Math.sqrt(v.n! * v.p! * (1 - v.p!)),
+        '√({n} × {p} × (1 − {p}))',
+        'Each trial adds p(1 − p) to the variance; the root is the spread of the count.',
+      ),
+    ),
+    example: { n: 40, p: 0.25, M: 10, S: Math.sqrt(7.5) },
+    startWith: ['n', 'p'],
+    representation: {
+      kind: 'histogram',
+      binomial: { n: 'n', p: 'p', mean: 'M', sd: 'S' },
+      axis: 'Successes',
     },
   },
 ];
