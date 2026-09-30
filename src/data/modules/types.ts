@@ -1317,6 +1317,8 @@ export type Representation =
        * (a negative percent or a smaller total is down) unless it is given.
        */
       change?: { total: string; direction?: 'up' | 'down'; bars?: 2 | 3 };
+      /** Grade 9 (H104): a second percent (a value id) marked on the same bar, its own band. */
+      second?: string;
     }
   /**
    * A table of equivalent ratios: the parts `first` : `second`, rows 1–4 times them (or `rows`)

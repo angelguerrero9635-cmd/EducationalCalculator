@@ -312,6 +312,7 @@ function representationVars(r: Representation): string[] {
         r.whole,
         ...(r.onePercent ? [r.onePercent] : []),
         ...(r.change ? [r.change.total] : []),
+        ...(r.second ? [r.second] : []),
       ];
     case 'ratioTable':
       return [r.first, r.second, r.times, ...r.amounts];

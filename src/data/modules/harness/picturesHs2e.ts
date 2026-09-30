@@ -42,6 +42,23 @@ export function barFlowIssues(
 }
 
 /**
+ * `percentBar` with `second` (H104): the second percent is not negative and fits the bar (at
+ * most 100%, or the main percent when that runs past it).
+ */
+export function percentSecondIssues(
+  rep: Extract<Representation, { kind: 'percentBar' }>,
+  val: (x: string | number) => number | undefined,
+): string[] {
+  if (!rep.second) return [];
+  const s = val(rep.second);
+  const p = val(rep.percent);
+  if (s === undefined) return [];
+  if (s < 0) return [`percentBar second ${s}% is below 0`];
+  if (s > Math.max(100, p ?? 0)) return [`percentBar second ${s}% runs past the bar`];
+  return [];
+}
+
+/**
  * `reaction` with `many` (H100): the glucose it draws is C₆H₁₂O₆, 24 atoms, every bond between
  * two of them, each carbon with 4 bonds, each oxygen 2 and each hydrogen 1, all in one piece.
  */

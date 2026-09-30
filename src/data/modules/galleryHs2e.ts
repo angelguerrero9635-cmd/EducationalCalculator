@@ -882,6 +882,85 @@ const SAMPLING_SORT = iconSort(
   ],
 );
 
+// ─── H104 part 3: percentBar with a second mark ──────────────────────────────
+
+const pct = (id: string, symbol: string, name: string, min: number, step: number): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: '%',
+  min,
+  max: 100,
+  step,
+});
+
+/** The herd-immunity page: H and C on one bar, C shaded over the community P. */
+const herdDemo = (id: string, title: string, R0: number, e: number, P: number): ModuleDef => {
+  const H = 100 * (1 - 1 / R0);
+  const C = (100 * H) / e;
+  return {
+    id,
+    title,
+    use: 'Use this for “Each case of a disease infects 5 people. What share must be vaccinated to stop it spreading?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'R₀ is how many people one case infects when no one is immune; it differs by disease, about 12–18 for measles.',
+      'Spread stops once each case infects fewer than one more: a share H = 1 − 1 ÷ R₀ must be immune.',
+      'A vaccine that works in e% of people means more must be vaccinated; everyone is assumed to mix evenly.',
+    ],
+    variables: [
+      { id: 'R0', symbol: 'R₀', name: 'People one case infects', min: 1.1, max: 20, step: 0.1 },
+      { ...pct('H', 'H', 'Share immune to stop spread', 0, 0.1), derived: true },
+      pct('e', 'e', 'Vaccine effectiveness', 50, 1),
+      { ...pct('C', 'C', 'Share to vaccinate', 0, 0.1), derived: true },
+      count('P', 'P', 'People in the community', 100, 10000000),
+      {
+        id: 'V',
+        symbol: 'V',
+        name: 'People to vaccinate',
+        min: 0,
+        max: 10000000,
+        step: 1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      forward(
+        'H',
+        '{H} = 100 × (1 − 1 ÷ {R0})',
+        ['R0'],
+        (v) => 100 * (1 - 1 / v.R0!),
+        '100 × (1 − 1 ÷ {R0})',
+        'Each case must infect fewer than one person, so all but 1 in R₀ must be immune.',
+      ),
+      forward(
+        'C',
+        '{C} = 100 × {H} ÷ {e}',
+        ['H', 'e'],
+        (v) => (100 * v.H!) / v.e!,
+        '100 × {H} ÷ {e}',
+        'Only e% of those vaccinated become immune, so divide the share needed by e%.',
+      ),
+      forward(
+        'V',
+        '{V} = {P} × {C} ÷ 100',
+        ['P', 'C'],
+        (v) => (v.P! * v.C!) / 100,
+        '{P} × {C} ÷ 100',
+        'That percent of the people in the community.',
+      ),
+    ),
+    example: { R0, H, e, C, P, V: (P * C) / 100 },
+    startWith: ['R0', 'e', 'P'],
+    representation: { kind: 'percentBar', percent: 'C', part: 'V', whole: 'P', second: 'H' },
+  };
+};
+
+const HERD_DEMOS: ModuleDef[] = [
+  herdDemo('g.s9-immune-disease-herd-immunity', 'Herd immunity', 5, 95, 19000),
+  herdDemo('g.s9-immune-disease-herd-immunity-measles', 'Herd immunity for measles', 15, 97, 30000),
+];
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /** The chromosome-count page: 2n in a body cell → n, chromatids, the zygote, 2ⁿ gametes. */
@@ -968,6 +1047,7 @@ export const HS2E_GALLERY_MODULES: ModuleDef[] = [
   ...DIVISION_DEMOS,
   PHOTOSYNTHESIS,
   ...RATES_DEMOS,
+  ...HERD_DEMOS,
 ];
 
 export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [

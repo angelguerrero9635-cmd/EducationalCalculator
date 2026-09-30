@@ -1874,7 +1874,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.9.cellular-energy',
       ],
     ),
-    status: 'requested',
+    status: 'drawn',
     gallery: [
       'g.s9-biomolecules-dehydration',
       'g.s9-biomolecules-dehydration-long',
@@ -1960,17 +1960,21 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Sorts: header text and bin icons (blood types, body systems, pathogens, domains, sampling methods); sort bins with figures; percentBar with a second mark',
       ['s.9.immune-disease', 's.9.homeostasis', 's.9.classification', 'm.11.study-design'],
     ),
-    status: 'requested',
+    status: 'drawn',
     gallery: [
       'g.s9-inheritance-patterns-blood-types',
       'g.s9-homeostasis-systems',
       'g.s9-immune-disease-pathogens-bins',
       'g.s9-classification-domains-bins',
       'g.m11-study-design-sampling-bins',
+      'g.s9-immune-disease-herd-immunity',
+      'g.s9-immune-disease-herd-immunity-measles',
     ],
     notes: [
       'P16: docs/build/s.9.md and m.11.md, "Shared needs".',
       'Part 1, header text and bin icons (layouts/types.ts, off unless set): a sort’s `intro` is a sentence above the cards; a bin’s `figure` is any card figure, drawn beside its name (kept whole beside a long name). New icons (layouts/icons/h2e.tsx): `blood type A`, `blood type B`, `blood type AB`, `blood type O` (a red cell with A wedges, B knobs, both, none); `nervous system`, `endocrine system`, `heart and blood vessels`, `respiratory system`, `excretory system`, `digestive system`. Pathogen and domain icons (hh) and sampling icons (hb) are reused. The harness wants every bin or none with a figure and no card wearing another bin’s icon; layouts.test reads `intro` at the grade level. Pages: s.9.inheritance-patterns~blood-types intro "Three alleles: Iᴬ and Iᴮ are codominant, and i is recessive to both." with bins { …, figure: { kind: "icon", icon: "blood type A" } }; s.9.homeostasis~systems intro "The nervous and endocrine systems coordinate the rest." and the six system icons; s.9.immune-disease~pathogens intro "Antibiotics work on bacteria only: they do nothing to viruses." with the virus, bacterium, fungus and parasite icons on the bins (the "A virus" icon cards can go); s.9.classification~domains intro "Viruses are not cells, so they are not placed in any domain." with the domain icons on the bins (the card icons can go); m.11.study-design~sampling-methods the five sampling icons on the bins and the plan’s sentence as intro.',
+      'Part 2, sort bins with figures: the same `figure` on a bin takes any card figure, not only icons (a cellDivision card, a molecule), drawn beside the name at its own size.',
+      'Part 3, `percentBar` with a second mark: `second: "H"` (a value id holding a percent; off unless set) draws that percent on the same bar as a band along its bottom in chartSecond, a dashed line through the bar and its label ("H = 80%") above the percent scale; the caption adds "The line marks H = 80%." The bar runs on past 100% for it as for the main percent; the harness checks it is not negative and fits the bar. s.9.immune-disease~herd-immunity: { kind: "percentBar", percent: "C", part: "V", whole: "P", second: "H" }.',
     ].join(' '),
   },
   ask(

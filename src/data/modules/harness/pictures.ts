@@ -50,7 +50,7 @@ import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
-import { barFlowIssues, hs2eIssues, reactionManyIssues } from './picturesHs2e';
+import { barFlowIssues, hs2eIssues, percentSecondIssues, reactionManyIssues } from './picturesHs2e';
 import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
@@ -1268,6 +1268,7 @@ export function repIssues(
         if (up === 'down' && p !== undefined && Math.abs(p) > 100)
           out.push(`a ${Math.abs(p)}% decrease takes more than the whole`);
       }
+      out.push(...percentSecondIssues(rep, val));
       break;
     }
     case 'ratioTable': {
