@@ -384,6 +384,9 @@ const fmt = (x: number) => formatNumber(Number(x.toFixed(4)));
 /** A value as its box shows it (4 significant figures below 1), bracketed when negative. */
 const shown = (x: number) => formatNumber(x);
 const par = (x: number) => (x < 0 ? `(${shown(x)})` : shown(x));
+/** x − h with the sign folded in: x − 2, x + 3. */
+const minus = (x: string, h: number) => (h < 0 ? `${x} + ${fmt(-h)}` : `${x} − ${fmt(h)}`);
+const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
 
 /** The 2 × 3 table of the independence test, row by row. */
 const CELLS = [
@@ -1444,6 +1447,28 @@ const MATH_12_STATS: ModuleDef[] = [
 const real = (id: string, symbol: string, name: string, min: number, max: number) =>
   V(id, symbol, name, { min, max, step: 0.01 });
 
+/** b/a as a slope: a whole number, a fraction (4/3) or a decimal. */
+const slopeText = (b: number, a: number) => {
+  const s = b / a;
+  if (Number.isInteger(s)) return s === 1 ? '' : `${s}`;
+  if (Number.isInteger(b) && Number.isInteger(a)) {
+    const g = gcd(b, a);
+    return `(${b / g}/${a / g})`;
+  }
+  return fmt(s);
+};
+/** (x, y) as the steps write a point. */
+const pt = (x: number, y: number) => `(${fmt(x)}, ${fmt(y)})`;
+/** The ellipse's foci and vertices, on its long axis. */
+const ellipsePoints = (v: Values) => {
+  if ([v.h, v.k, v.a, v.b, v.c].some((x) => x === undefined)) return '';
+  const { h, k, a, b, c } = v as Required<Values>;
+  const wide = a! >= b!;
+  const ends = (d: number) =>
+    wide ? `${pt(h! - d, k!)} and ${pt(h! + d, k!)}` : `${pt(h!, k! - d)} and ${pt(h!, k! + d)}`;
+  return `→ foci ${ends(c!)}; vertices ${ends(Math.max(a!, b!))}`;
+};
+
 const CENTER_WHY = 'The center only places the curve; its shape, c and the rest come from a and b.';
 
 const MATH_12_CONICS: ModuleDef[] = [
@@ -1464,18 +1489,22 @@ const MATH_12_CONICS: ModuleDef[] = [
       V('e', 'e', 'Eccentricity', { min: 0, max: 1, step: 0.0001, derived: true }),
     ],
     ...rels(
-      rel(
-        'c = √|a² − b²|',
-        '{c} = √(|{a}² − {b}²|)',
-        ['c', 'a', 'b'],
-        (v) => v.c! - Math.sqrt(Math.abs(v.a! ** 2 - v.b! ** 2)),
-        {
-          c: [
-            (v) => Math.sqrt(Math.abs(v.a! ** 2 - v.b! ** 2)),
-            (v: Values) => (v.a! >= v.b! ? '√({a}² − {b}²)' : '√({b}² − {a}²)'),
-            'The long half-axis squared is c² plus the short one squared: take the smaller square from the larger.',
-          ],
-        },
+      withStep(
+        rel(
+          'c = √|a² − b²|',
+          '{c} = √(|{a}² − {b}²|)',
+          ['c', 'a', 'b'],
+          (v) => v.c! - Math.sqrt(Math.abs(v.a! ** 2 - v.b! ** 2)),
+          {
+            c: [
+              (v) => Math.sqrt(Math.abs(v.a! ** 2 - v.b! ** 2)),
+              (v: Values) => (v.a! >= v.b! ? '√({a}² − {b}²)' : '√({b}² − {a}²)'),
+              'The long half-axis squared is c² plus the short one squared: take the smaller square from the larger.',
+            ],
+          },
+        ),
+        'c',
+        { note: ellipsePoints },
       ),
       {
         relation: {
@@ -1525,7 +1554,7 @@ const MATH_12_CONICS: ModuleDef[] = [
     variables: [
       real('h', 'h', 'Vertex, x', -100, 100),
       real('k', 'k', 'Vertex, y', -100, 100),
-      V('q', '4p', 'Number before (y − k)', { min: -100, max: 100, step: 0.01 }),
+      V('q', 'q', 'Number before (y − k), which is 4p', { min: -100, max: 100, step: 0.01 }),
       V('p', 'p', 'Vertex to focus', { min: -25, max: 25, step: 0.01, derived: true }),
       real('F', 'F', 'Focus, y', -200, 200),
       real('L', 'L', 'Directrix y =', -200, 200),
@@ -1533,7 +1562,14 @@ const MATH_12_CONICS: ModuleDef[] = [
       real('y', 'y', 'Point, y', -100000, 100000),
     ],
     ...rels(
-      rel('p = 4p ÷ 4', '{p} = {q} ÷ 4', ['p', 'q'], (v) => 4 * v.p! - v.q!, {
+      limit(
+        '4p ≠ 0',
+        'The number before (y − k), {q}, is not 0',
+        ['q'],
+        (v) => v.q !== 0,
+        'The number before (y − k) is not 0: with 4p = 0 there is no parabola.',
+      ),
+      rel('p = (number before (y − k)) ÷ 4', '{p} = {q} ÷ 4', ['p', 'q'], (v) => 4 * v.p! - v.q!, {
         p: [(v) => v.q! / 4, '{q} ÷ 4', 'The number before (y − k) is 4p: divide it by 4.'],
       }),
       rel('F = k + p', '{F} = {k} + {p}', ['F', 'k', 'p'], (v) => v.F! - v.k! - v.p!, {
@@ -1598,26 +1634,52 @@ const MATH_12_CONICS: ModuleDef[] = [
       real('a', 'a', 'Center to vertex', 0.5, 20),
       real('b', 'b', 'Half the box’s height', 0.5, 20),
       V('c', 'c', 'Center to each focus', { min: 0, max: 30, step: 0.01, derived: true }),
-      V('s', 's', 'Asymptote slope (±)', { min: 0, max: 40, step: 0.0001, derived: true }),
+      V('s', 's', 'Asymptote slope (±)', {
+        min: 0,
+        max: 40,
+        step: 0.0001,
+        derived: true,
+        fraction: 100,
+      }),
     ],
     ...rels(
-      derive(
-        'c = √(a² + b²)',
-        '{c} = √({a}² + {b}²)',
+      withStep(
+        derive(
+          'c = √(a² + b²)',
+          '{c} = √({a}² + {b}²)',
+          'c',
+          ['a', 'b'],
+          (v) => Math.hypot(v.a!, v.b!),
+          '√({a}² + {b}²)',
+          'For a hyperbola, c² is the sum of the squares.',
+        ),
         'c',
-        ['a', 'b'],
-        (v) => Math.hypot(v.a!, v.b!),
-        '√({a}² + {b}²)',
-        'For a hyperbola, c² is the sum of the squares.',
+        {
+          note: (v) =>
+            [v.h, v.k, v.c].some((x) => x === undefined)
+              ? ''
+              : `→ foci ${pt(v.h! - v.c!, v.k!)} and ${pt(v.h! + v.c!, v.k!)}`,
+        },
       ),
-      derive(
-        's = b ÷ a',
-        '{s} = {b} ÷ {a}',
+      withStep(
+        derive(
+          's = b ÷ a',
+          '{s} = {b} ÷ {a}',
+          's',
+          ['b', 'a'],
+          (v) => div(v.b!, v.a!),
+          '{b} ÷ {a}',
+          'The asymptotes are the diagonals of the a-by-b box: rise b over run a.',
+        ),
         's',
-        ['b', 'a'],
-        (v) => div(v.b!, v.a!),
-        '{b} ÷ {a}',
-        'The asymptotes are the diagonals of the a-by-b box: rise b over run a.',
+        {
+          note: (v) =>
+            [v.h, v.k, v.b, v.a].some((x) => x === undefined)
+              ? ''
+              : `→ asymptotes ${v.k === 0 ? 'y' : minus('y', v.k!)} = ±${slopeText(v.b!, v.a!)}${
+                  v.h === 0 ? 'x' : `(${minus('x', v.h!)})`
+                }`,
+        },
       ),
     ),
     standalone: { vars: ['h', 'k'], why: CENTER_WHY },
@@ -2243,7 +2305,6 @@ const SIN_EXACT: Record<number, [number, number]> = {
 };
 /** The angles the sum and difference pages take: those with exact values. */
 const SPECIAL_ANGLES = [...Object.keys(SIN_EXACT).map(Number), 360];
-const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
 const lowest = ({ n, k, d }: Surd): Surd => {
   if (n === 0) return { n: 0, k: 1, d: 1 };
   const g = gcd(Math.abs(n), d);
@@ -3552,7 +3613,7 @@ const MATH_12_PARAMETRIC: ModuleDef[] = [
     assumptions: [
       't is an angle from 0° to 360°; the point goes around once, counterclockwise.',
       'cos t = (x − h) ÷ a and sin t = (y − k) ÷ b, and cos²t + sin²t = 1.',
-      'So ((x − h) ÷ a)² + ((y − k) ÷ b)² = 1: an ellipse with center (h, k), a circle when a = b.',
+      'So (x − h)²/a² + (y − k)²/b² = 1: an ellipse with center (h, k), a circle when a = b.',
     ],
     variables: [
       real('h', 'h', 'Center, x', -20, 20),
@@ -3598,7 +3659,7 @@ const MATH_12_PARAMETRIC: ModuleDef[] = [
           note: (v) =>
             [v.h, v.k, v.a, v.b].some((x) => x === undefined)
               ? ''
-              : `→ ((x ${minusOf(v.h!)}) ÷ ${fmt(v.a!)})² + ((y ${minusOf(v.k!)}) ÷ ${fmt(v.b!)})² = 1`,
+              : `→ (x ${minusOf(v.h!)})²/${fmt(v.a! ** 2)} + (y ${minusOf(v.k!)})²/${fmt(v.b! ** 2)} = 1`,
         },
       ),
     ),
@@ -3634,10 +3695,17 @@ const MATH_12_PARAMETRIC: ModuleDef[] = [
       V('h', 'h', 'Launch height', { unit: 'm', min: 0, max: 200, step: 0.5 }),
       V('t', 't', 'Time', { unit: 's', min: 0, max: 60, step: 0.01 }),
       V('X', 'x', 'Distance across at t', { unit: 'm', min: 0, max: 6000, step: 0.01 }),
-      V('Y', 'y', 'Height at t', { unit: 'm', min: -20000, max: 1000, step: 0.01 }),
+      V('Y', 'y', 'Height at t', { unit: 'm', min: 0, max: 1000, step: 0.01 }),
       V('T', 'T', 'Time to land', { unit: 's', min: 0, max: 60, step: 0.01, derived: true }),
     ],
     ...rels(
+      limit(
+        't ≤ T',
+        'The ball is still in the air: {t} is at most {T}',
+        ['t', 'T'],
+        (v) => v.t! <= v.T! + 1e-9,
+        'The ball has landed by then: pick a time t no later than the landing time T.',
+      ),
       rel(
         'x = v cos θ · t',
         '{X} = {v} × cos({q}°) × {t}',
@@ -3674,14 +3742,24 @@ const MATH_12_PARAMETRIC: ModuleDef[] = [
           ],
         },
       ),
-      derive(
-        'T: y = 0',
-        '0 = {h} + {v} × sin({q}°) × {T} − 4.9 × {T}²',
+      withStep(
+        derive(
+          'T: y = 0',
+          '0 = {h} + {v} × sin({q}°) × {T} − 4.9 × {T}²',
+          'T',
+          ['v', 'q', 'h'],
+          flightTime,
+          '({v} × sin({q}°) + √(({v} × sin({q}°))² + 19.6 × {h})) ÷ 9.8',
+          'Set y = 0 and use the quadratic formula; the positive root is when it lands.',
+        ),
         'T',
-        ['v', 'q', 'h'],
-        flightTime,
-        '({v} × sin({q}°) + √(({v} × sin({q}°))² + 19.6 × {h})) ÷ 9.8',
-        'Set y = 0 and use the quadratic formula; the positive root is when it lands.',
+        {
+          // The quadratic's a, b and c named before the simplified formula.
+          how: (v) =>
+            `Set y = 0: −4.9T² + ${fmt(v.v! * sind(v.q!))}T + ${fmt(v.h!)} = 0, so a = −4.9, b = v sin θ = ${fmt(
+              v.v! * sind(v.q!),
+            )} and c = h = ${fmt(v.h!)}. The quadratic formula’s positive root is when it lands.`,
+        },
       ),
     ),
     example: {
