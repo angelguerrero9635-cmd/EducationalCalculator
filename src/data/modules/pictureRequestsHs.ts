@@ -1720,13 +1720,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   },
   // ── Round 2 (H89–H103): what the eight direction plans still need (docs/HS_NEEDS.md P1–P15;
   // brief docs/RENDERINGS_HS_ROUND_2.md) ──
-  ask(
-    'H89',
-    'integerLine',
-    'A number line window that fits its values (10 ≤ x ≤ 30; 344–356 g), ticks by 5 or 10',
-    ['m.9.linear-inequalities', 'm.9.absolute-value'],
-    'P1: see docs/HS_NEEDS.md and docs/plans/m.9.md need 1.',
-  ),
+  {
+    ...ask(
+      'H89',
+      'integerLine',
+      'A number line window that fits its values (10 ≤ x ≤ 30; 344–356 g), ticks by 5 or 10',
+      ['m.9.linear-inequalities', 'm.9.absolute-value'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-linear-inequalities-ticks',
+      'g.m9-linear-inequalities-compound-fit',
+      'g.m9-absolute-value-tolerance',
+    ],
+    notes:
+      'P1 (docs/plans/m.9.md need 1). Two options on `integerLine`, off unless set, for every mode (a point, an inequality, a compound): `fit: true` spans the line over its own values (the bounds, the center, the test number) with a quarter of their spread each side and at least 10 across, rounded out to its ticks, instead of 0 and min–max (min and max are then unused): 344 ≤ w ≤ 356 draws 340 to 360 by 2 (335 to 360 by 5 with a 343 g test), 10 < x ≤ 18 draws 5 to 20; `ticks: 5` (or 10) fixes the tick step (at most 40 ticks, else the usual step): the main page at ±20 by 5s. m.9.linear-inequalities: `ticks: 5` (no other change); ~compound: `fit: true, ticks: 5` lets l and r go past ±50 (the demo keeps the page’s ranges); m.9.absolute-value~tolerance: rows T, d, w (g), L = T − d and U = T + d worked out, k = |w − T| and the truth value; picture { kind: "integerLine", value: "L", second: "U", min: 0, max: 10, unit: "g", fit: true, compound: { join: "and", closed: [true, true], center: "T", radius: "d", letter: "w", test: "w" } } (example 350 g within 6 g, a 343 g box is out).',
+  },
   {
     ...ask(
       'H90',

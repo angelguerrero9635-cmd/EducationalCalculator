@@ -3,6 +3,7 @@
  * the number line's fitted window and ticks, the equal compound, and the line system's upright
  * boundaries and given point. Called from each kind's case in `pictures.ts`.
  */
+import { lineStep, lineWindow } from '@/components/module/reps/integerLineWindow';
 import { SIGN_CODES } from '@/components/module/reps/signBox';
 
 import type { Representation } from '../types';
@@ -54,6 +55,24 @@ export function hs2aIssues(rep: Representation, val: Val): string[] {
       (rep.compound?.closed ?? []).forEach((e, i) => {
         if (typeof e === 'string') code({ sign: e }, [1, 2, 3, 4], `bound ${i + 1}'s`);
       });
+      if (rep.ticks !== undefined && !(rep.ticks > 0)) out.push(`ticks every ${rep.ticks}`);
+      // H89: the window takes in every value drawn, with at most 40 ticks.
+      const pts = [
+        rep.value,
+        rep.second,
+        rep.compound?.center,
+        rep.compound?.test,
+        rep.inequality?.test,
+      ]
+        .map((id) => (id ? val(id) : undefined))
+        .filter((v): v is number => v !== undefined);
+      if (rep.fit || rep.ticks) {
+        const [lo, hi] = lineWindow(rep, pts, 1);
+        const step = lineStep(rep, lo, hi);
+        if (pts.some((p) => p < lo || p > hi))
+          out.push(`the line ${lo} to ${hi} leaves out ${pts.join(', ')}`);
+        if ((hi - lo) / step > 40) out.push(`${(hi - lo) / step} ticks from ${lo} to ${hi}`);
+      }
       break;
     }
     default:

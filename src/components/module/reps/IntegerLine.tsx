@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { lineStep, lineWindow } from './integerLineWindow';
 import { CompoundLine } from './CompoundLine';
 import { InequalityLine } from './Inequality';
 import { SignedJump } from './SignedJump';
@@ -15,17 +16,8 @@ import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'integerLine' }>;
 
-/** A tick spacing that gives at most `most` ticks over `span`: 1, 2, 5, 10, 20, 25, 50, … */
-export function tickStep(span: number, most = 20): number {
-  for (const base of [1, 10, 100, 1000]) {
-    // No 2.5 below 10: a line counts by 1, 2 or 5 there, never by 2.5.
-    for (const k of base === 1 ? [1, 2, 5] : [1, 2, 2.5, 5]) {
-      const s = k * base;
-      if (span / s <= most) return s;
-    }
-  }
-  return 10000;
-}
+// The tick step and the window live in integerLineWindow.ts (H89), so the harness reads them.
+export { tickStep } from './integerLineWindow';
 
 /**
  * A number line through 0 (across, or up and down for temperatures and heights): the number
@@ -55,16 +47,10 @@ function PointLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const num = (x: number) => `${formatNumber(x)}${unit ? ` ${unit}` : ''}`;
   // The line runs from min to max, growing to take in the points (and the opposite).
   const extent = useFrozen(
-    (() => {
-      const pts = [a, ...(spec.opposite ? [-a] : []), ...(b === undefined ? [] : [b])];
-      const lo = Math.min(spec.min, ...pts);
-      const hi = Math.max(spec.max, ...pts);
-      const s = tickStep(hi - lo);
-      return [Math.floor(lo / s) * s, Math.ceil(hi / s) * s] as [number, number];
-    })(),
+    lineWindow(spec, [a, ...(spec.opposite ? [-a] : []), ...(b === undefined ? [] : [b])], 0),
   );
   const [lo, hi] = extent.value;
-  const step = tickStep(hi - lo);
+  const step = lineStep(spec, lo, hi);
   const vertical = !!spec.vertical;
   // A cleared number is drawn faded, with no handle and no jump to or from it.
   const aKnown = rep.known(spec.value);

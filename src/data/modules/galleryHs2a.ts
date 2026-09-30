@@ -9,6 +9,7 @@ import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from './helpers';
 import type { LayoutDef } from './layouts';
+import { MATH_9_MODULES } from './math/9';
 import type { ModuleDef, StepText } from './types';
 
 type Solver = (v: Values) => number | number[] | undefined;
@@ -636,7 +637,144 @@ const tailSign = page({
   },
 });
 
+// ── H89: a number line window from its values, ticks by 5 or 10 ──
+
+/** A Grade 9 page as a gallery demo `id`, with the picture option it waits on. */
+function fromPage(pageId: string, id: string, title: string, extra: Partial<ModuleDef>) {
+  const found = MATH_9_MODULES.find((m) => m.id === pageId);
+  if (!found) throw new Error(`galleryHs2a: no page ${pageId}`);
+  return { ...found, id, title, ...extra };
+}
+
+/** The line at ±20, a tick every 5 (the main page's range). */
+const ticksBy5 = (() => {
+  const base = fromPage(
+    'm.9.linear-inequalities',
+    'g.m9-linear-inequalities-ticks',
+    'Inequality on a line at ±20, ticks by 5',
+    {},
+  );
+  return {
+    ...base,
+    use: 'Use this for “Solve 3x − 4 > 5x + 6 and graph it”, the line from −20 to 20 by 5s.',
+    representation: {
+      ...(base.representation as Extract<ModuleDef['representation'], { kind: 'integerLine' }>),
+      ticks: 5,
+    },
+  };
+})();
+
+/** 12 < 2x − 8 ≤ 28: the line fits 10 to 18 (5 to 20), ticks by 5. */
+const compoundFit = (() => {
+  const base = fromPage(
+    'm.9.linear-inequalities~compound',
+    'g.m9-linear-inequalities-compound-fit',
+    'Compound inequality far from 0, the line fitted',
+    {},
+  );
+  return {
+    ...base,
+    use: 'Use this for “Solve 12 < 2x − 8 ≤ 28”: the line runs 5 to 20, where the answers are.',
+    example: { l: 12, a: 2, b: -8, r: 28, L: 10, U: 18, t: 15, h: 1 },
+    representation: {
+      ...(base.representation as Extract<ModuleDef['representation'], { kind: 'integerLine' }>),
+      fit: true,
+      ticks: 5,
+    },
+  };
+})();
+
+/** Within d grams of a target: T − d ≤ w ≤ T + d on a line around T. */
+const tolerance = page({
+  id: 'g.m9-absolute-value-tolerance',
+  title: 'Tolerance: within d grams of a target',
+  use: 'Use this for “A 350 g box may be off by 6 g. Is a 343 g box all right?”',
+  assumptions: [
+    'Within d of the target T means |w − T| ≤ d: the weight is at most d from T.',
+    'So T − d ≤ w ≤ T + d, both ends allowed.',
+    'A weight is all right when its distance from T is at most d.',
+  ],
+  variables: [
+    num('T', 'T', 'Target weight (g)', 1, 100000, { step: 0.5 }),
+    num('d', 'd', 'Allowed difference (g)', 0, 10000, { step: 0.5 }),
+    num('L', 'L', 'Lowest allowed weight (g)', -10000, 110000, { derived: true }),
+    num('U', 'U', 'Highest allowed weight (g)', -10000, 110000, { derived: true }),
+    num('w', 'w', 'Weight measured (g)', 0, 110000, { step: 0.5 }),
+    num('k', 'k', 'Distance from the target (g)', 0, 110000, { derived: true }),
+    holdsVar(),
+  ],
+  rules: [
+    derive(
+      'L = T − d',
+      'L',
+      ['T', 'd'],
+      '{L} = {T} − {d}',
+      (v) => exact(v.T! - v.d!),
+      '{T} − {d}',
+      'The lightest box allowed: d below the target.',
+    ),
+    derive(
+      'U = T + d',
+      'U',
+      ['T', 'd'],
+      '{U} = {T} + {d}',
+      (v) => exact(v.T! + v.d!),
+      '{T} + {d}',
+      'The heaviest box allowed: d above the target.',
+    ),
+    derive(
+      'k = |w − T|',
+      'k',
+      ['w', 'T'],
+      '{k} = |{w} − {T}|',
+      (v) => exact(Math.abs(v.w! - v.T!)),
+      '|{w} − {T}|',
+      'How far the weight is from the target, as a distance (never negative).',
+    ),
+    rule(
+      'h = (k ≤ d)',
+      'test: {k} ≤ {d} gives {h}',
+      ['h', 'k', 'd'],
+      (v) => tested(v.h!, truth(v.k! <= v.d!)),
+      {
+        h: [
+          (v) => truth(v.k! <= v.d!),
+          (v) => `${truth(v.k! <= v.d!)}`,
+          'Compare the distance with the allowed difference: 1 is all right, 0 is not.',
+          {
+            work: (v) => [`${fmt(v.k!)} ≤ ${fmt(v.d!)} is ${v.k! <= v.d! ? 'true' : 'false'}`],
+            written: false,
+          },
+        ],
+      },
+      { check: (v) => `${truth(v.k! <= v.d!)} = ${v.h}` },
+    ),
+  ],
+  example: { T: 350, d: 6, L: 344, U: 356, w: 343, k: 7, h: 0 },
+  startWith: ['T', 'd', 'w'],
+  representation: {
+    kind: 'integerLine',
+    value: 'L',
+    second: 'U',
+    min: 0,
+    max: 10,
+    unit: 'g',
+    fit: true,
+    compound: {
+      join: 'and',
+      closed: [true, true],
+      center: 'T',
+      radius: 'd',
+      letter: 'w',
+      test: 'w',
+    },
+  },
+});
+
 export const HS2A_GALLERY_MODULES: ModuleDef[] = [
+  ticksBy5,
+  compoundFit,
+  tolerance,
   halfPlane,
   standardSystem,
   quadraticSign,

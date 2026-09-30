@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
-import { tickStep } from './IntegerLine';
+import { lineStep, lineWindow } from './integerLineWindow';
 import { closedEnd } from './signBox';
 
 type Spec = Extract<Representation, { kind: 'integerLine' }>;
@@ -63,16 +63,14 @@ export function CompoundLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
       : `${x} ${signLo} ${n(lo)} or ${x} ${signHi} ${n(hi)}`;
 
   const extent = useFrozen(
-    (() => {
-      const pts = [lo, hi, ...(test === undefined ? [] : [test])];
-      const a = Math.min(spec.min, ...pts.map((p) => p - 1));
-      const b = Math.max(spec.max, ...pts.map((p) => p + 1));
-      const s = tickStep(b - a);
-      return [Math.floor(a / s) * s, Math.ceil(b / s) * s] as [number, number];
-    })(),
+    lineWindow(
+      spec,
+      [lo, hi, ...(center === undefined ? [] : [center]), ...(test === undefined ? [] : [test])],
+      1,
+    ),
   );
   const [from, to] = extent.value;
-  const step = tickStep(to - from);
+  const step = lineStep(spec, from, to);
   const H = distance ? 206 : 170;
 
   /** The sentence for the test number. */
