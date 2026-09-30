@@ -6228,6 +6228,569 @@ const MATH_12_AREA: ModuleDef[] = [
   },
 ];
 
+// ── Inference for the slope of a regression line (added skill 19) ──
+
+/** df = n − 2: the line's slope and intercept use up two degrees of freedom. */
+const dfLine = derive(
+  'df = n − 2',
+  '{df} = {n} − 2',
+  'df',
+  ['n'],
+  (v) => v.n! - 2,
+  '{n} − 2',
+  'The fitted line uses up two degrees of freedom, its slope and its intercept.',
+);
+const pointsVar = V('n', 'n', 'Number of data points', { integer: true, min: 3, max: 1000 });
+const dfVar = V('df', 'df', 'Degrees of freedom', {
+  integer: true,
+  min: 1,
+  max: 998,
+  derived: true,
+});
+const slopeVar = V('b', 'b', 'Sample slope', { min: -1000000, max: 1000000, step: 0.001 });
+const seSlope = (extra = {}) =>
+  V('E', 'SE_b', 'Standard error of the slope', {
+    min: 0.000001,
+    max: 1000000,
+    step: 0.001,
+    ...extra,
+  });
+/** t = b ÷ SE_b: how many standard errors the slope is from 0. */
+const tSlope = rel('t = b ÷ SE_b', '{t} = {b} ÷ {E}', ['t', 'b', 'E'], (v) => v.t! * v.E! - v.b!, {
+  t: [
+    (v) => div(v.b!, v.E!),
+    '{b} ÷ {E}',
+    'How many standard errors the sample slope is from 0, the slope H₀ claims.',
+  ],
+  b: [(v) => v.t! * v.E!, '{t} × {E}', 'Go t standard errors from 0.'],
+});
+const slopeCurve = {
+  kind: 'normalCurve',
+  mean: 0,
+  sd: 'E',
+  axis: 'Sample slope b if β = 0',
+  mark: { x: 'b' },
+  fixed: true,
+} as const;
+
+const MATH_12_REGRESSION: ModuleDef[] = [
+  // ── m.12.regression-inference (S-ID.8 carried on; AP Statistics unit 9) ──
+  {
+    id: 'm.12.regression-inference',
+    assumptions: [
+      'H₀: β = 0 (no linear relationship) and Hₐ: β ≠ 0; b and SE_b come from the computer output.',
+      't = b ÷ SE_b follows a t curve with df = n − 2.',
+      'The points scatter evenly about a straight line, with residuals close to normal and independent.',
+    ],
+    variables: [
+      slopeVar,
+      seSlope(),
+      pointsVar,
+      dfVar,
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(dfLine, tSlope, decided(tTwoTail('P', 't', 'df'))),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      b: 0.8,
+      E: 0.25,
+      n: 20,
+      df: 18,
+      t: 3.2,
+      P: 2 * (1 - tCdf(3.2, 18)),
+      a: 0.05,
+    },
+    startWith: ['b', 'E', 'n', 'a'],
+    representation: slopeCurve,
+  },
+  {
+    id: 'm.12.regression-inference~interval',
+    title: 'Confidence interval for the slope',
+    use: 'Use this for “b = 0.8 and SE_b = 0.25 from 20 points. Find a 95% confidence interval for the slope.”',
+    assumptions: [
+      'The interval is b ± t⋆ × SE_b, with t⋆ from the t curve with df = n − 2.',
+      'An interval that doesn’t hold 0 means the slope is not 0 at that level.',
+      'The same conditions as the test: a straight-line pattern, even scatter, close to normal residuals.',
+    ],
+    variables: [
+      slopeVar,
+      V('SE', 'SE_b', 'Standard error of the slope', {
+        min: 0.000001,
+        max: 1000000,
+        step: 0.001,
+      }),
+      pointsVar,
+      V('C', 'C', 'Confidence level', {
+        allowed: [0.9, 0.95, 0.99],
+        min: 0.9,
+        max: 0.99,
+        multipleOf: 0.01,
+      }),
+      dfVar,
+      V('ts', 't⋆', 'Critical value', { min: 0.1, max: 700, step: 0.001, derived: true }),
+      V('E', 'E', 'Margin of error', { min: 0.000001, max: 1000000, step: 0.001, derived: true }),
+      V('lo', 'L', 'Lower end', { min: -1000000, max: 1000000, step: 0.001, derived: true }),
+      V('hi', 'U', 'Upper end', { min: -1000000, max: 1000000, step: 0.001, derived: true }),
+    ],
+    ...rels(
+      dfLine,
+      tCritical,
+      rel('E = t⋆ × SE_b', '{E} = {ts} × {SE}', ['E', 'ts', 'SE'], (v) => v.E! - v.ts! * v.SE!, {
+        E: [(v) => v.ts! * v.SE!, '{ts} × {SE}', 'The margin of error is t⋆ standard errors.'],
+        SE: [(v) => div(v.E!, v.ts!), '{E} ÷ {ts}', 'Divide the margin by t⋆.'],
+      }),
+      end('lo', 'b', 'E', -1),
+      end('hi', 'b', 'E', 1),
+      ordered,
+    ),
+    example: {
+      b: 0.8,
+      SE: 0.25,
+      n: 20,
+      C: 0.95,
+      df: 18,
+      ts: tStar(0.95, 18),
+      E: tStar(0.95, 18) * 0.25,
+      lo: 0.8 - tStar(0.95, 18) * 0.25,
+      hi: 0.8 + tStar(0.95, 18) * 0.25,
+    },
+    startWith: ['b', 'SE', 'n', 'C'],
+    equation: '{b} ± {ts} × {SE}',
+    representation: {
+      kind: 'normalCurve',
+      mean: 'b',
+      sd: 'SE',
+      axis: 'Sample slope b',
+      interval: { center: 'b', margin: 'E' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.regression-inference~correlation',
+    title: 'Is the correlation significant?',
+    use: 'Use this for “r = 0.6 for 18 pairs of data. Is the correlation significant at 0.05?”',
+    assumptions: [
+      'H₀: ρ = 0 (no linear relationship in the population) and Hₐ: ρ ≠ 0.',
+      't = r√(n − 2) ÷ √(1 − r²), with df = n − 2: the same t as the slope test.',
+      'The pairs are a random sample and the scatter follows a straight-line pattern.',
+    ],
+    variables: [
+      V('r', 'r', 'Correlation coefficient', { min: -0.9999, max: 0.9999, step: 0.0001 }),
+      pointsVar,
+      dfVar,
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      dfLine,
+      rel(
+        't = r√df ÷ √(1 − r²)',
+        '{t} = {r} × √{df} ÷ √(1 − {r}²)',
+        ['t', 'r', 'df'],
+        (v) => v.t! * Math.sqrt(1 - v.r! ** 2) - v.r! * Math.sqrt(v.df!),
+        {
+          t: [
+            (v) => div(v.r! * Math.sqrt(v.df!), Math.sqrt(1 - v.r! ** 2)),
+            '{r} × √{df} ÷ √(1 − {r}²)',
+            'A strong r or many points make t large; √(1 − r²) shrinks as r nears ±1.',
+          ],
+        },
+      ),
+      decided(tTwoTail('P', 't', 'df')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: { r: 0.6, n: 18, df: 16, t: 3, P: 2 * (1 - tCdf(3, 16)), a: 0.05 },
+    startWith: ['r', 'n', 'a'],
+    representation: {
+      kind: 'normalCurve',
+      axis: 'Test statistic t if ρ = 0',
+      mark: { x: 't' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.regression-inference~standard-error',
+    title: 'The standard error of the slope',
+    use: 'Use this for “The residuals have s = 2, the x values have sₓ = 1.5 and n = 10. Is b = 1.2 significant?”',
+    assumptions: [
+      'SE_b = s ÷ (sₓ√(n − 1)): s is the spread of the residuals, sₓ the spread of the x values.',
+      'Points spread widely in x pin the slope down well, so SE_b is small.',
+      'Then t = b ÷ SE_b with df = n − 2, as in the slope test.',
+    ],
+    variables: [
+      V('s', 's', 'Standard deviation of the residuals', {
+        min: 0.000001,
+        max: 1000000,
+        step: 0.001,
+      }),
+      V('sx', 'sₓ', 'Standard deviation of x', { min: 0.000001, max: 1000000, step: 0.001 }),
+      pointsVar,
+      seSlope({ derived: true }),
+      slopeVar,
+      dfVar,
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      derive(
+        'SE_b = s ÷ (sₓ√(n − 1))',
+        '{E} = {s} ÷ ({sx} × √({n} − 1))',
+        'E',
+        ['s', 'sx', 'n'],
+        (v) => div(v.s!, v.sx! * Math.sqrt(v.n! - 1)),
+        '{s} ÷ ({sx} × √({n} − 1))',
+        'The residuals’ spread over the x values’ spread, shrinking as n grows.',
+      ),
+      tSlope,
+      dfLine,
+      decided(tTwoTail('P', 't', 'df')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      s: 2,
+      sx: 1.5,
+      n: 10,
+      E: 2 / 4.5,
+      b: 1.2,
+      df: 8,
+      t: 2.7,
+      P: 2 * (1 - tCdf(2.7, 8)),
+      a: 0.05,
+    },
+    startWith: ['s', 'sx', 'n', 'b', 'a'],
+    representation: slopeCurve,
+  },
+];
+
+// ── ANOVA and the F distribution (added skill 20) ──
+
+/** ln Γ(x) (Lanczos), for the F distribution below (statMath keeps its own private). */
+function lnGamma(x: number): number {
+  const g = [
+    676.5203681218851, -1259.1392167224028, 771.3234287776531, -176.6150291621406,
+    12.507343278686905, -0.13857109526572012, 9.984369578019572e-6, 1.5056327351493116e-7,
+  ];
+  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lnGamma(1 - x);
+  const y = x - 1;
+  let a = 0.9999999999998099;
+  const t = y + 7.5;
+  g.forEach((c, i) => (a += c / (y + i + 1)));
+  return 0.5 * Math.log(2 * Math.PI) + (y + 0.5) * Math.log(t) - t + Math.log(a);
+}
+/** The continued fraction of the incomplete beta function (modified Lentz). */
+function betaFraction(a: number, b: number, x: number): number {
+  const tiny = 1e-300;
+  const fix = (z: number) => (Math.abs(z) < tiny ? tiny : z);
+  let c = 1;
+  let d = 1 / fix(1 - ((a + b) * x) / (a + 1));
+  let h = d;
+  for (let m = 1; m < 500; m++) {
+    const m2 = 2 * m;
+    let aa = (m * (b - m) * x) / ((a + m2 - 1) * (a + m2));
+    d = 1 / fix(1 + aa * d);
+    c = fix(1 + aa / c);
+    h *= d * c;
+    aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + m2 + 1));
+    d = 1 / fix(1 + aa * d);
+    c = fix(1 + aa / c);
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < 1e-15) break;
+  }
+  return h;
+}
+/** The regularized incomplete beta function I_x(a, b). */
+function betaI(x: number, a: number, b: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const front = Math.exp(
+    lnGamma(a + b) - lnGamma(a) - lnGamma(b) + a * Math.log(x) + b * Math.log(1 - x),
+  );
+  return x < (a + 1) / (a + b + 2)
+    ? (front * betaFraction(a, b, x)) / a
+    : 1 - (front * betaFraction(b, a, 1 - x)) / b;
+}
+/** P(F ≥ f) with d1 and d2 degrees of freedom: a calculator's Fcdf(f, ∞, d1, d2). */
+export const fTail = (f: number, d1: number, d2: number) =>
+  f <= 0 ? 1 : 1 - betaI((d1 * f) / (d1 * f + d2), d1 / 2, d2 / 2);
+
+const ssVar = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { min: 0.0001, max: 1e9, step: 0.01 });
+const msVar = (id: string, symbol: string, name: string, extra = {}) =>
+  V(id, symbol, name, { min: 1e-9, max: 1e9, step: 0.0001, ...extra });
+const fVar = (extra = {}) =>
+  V('F', 'F', 'F statistic', { min: 0, max: 1e18, step: 0.0001, ...extra });
+const dfOf = (id: string, symbol: string, name: string, extra = {}) =>
+  V(id, symbol, name, { integer: true, min: 1, max: 10000, ...extra });
+/** P = Fcdf(F, ∞, d1, d2): the right tail past F. */
+const fTailRel = (d1: string | number, d2: string) =>
+  derive(
+    `P = Fcdf(F, ∞, ${typeof d1 === 'number' ? d1 : 'df₁'}, df₂)`,
+    `{P} = Fcdf({F}, ∞, ${typeof d1 === 'number' ? d1 : `{${d1}}`}, {${d2}})`,
+    'P',
+    ['F', ...(typeof d1 === 'number' ? [] : [d1]), d2],
+    (v) => fTail(v.F!, typeof d1 === 'number' ? d1 : v[d1]!, v[d2]!),
+    `Fcdf({F}, ∞, ${typeof d1 === 'number' ? d1 : `{${d1}}`}, {${d2}})`,
+    'The area under the F curve past the statistic: a large F, means far apart for their spread, leaves little.',
+  );
+/** F = M₁ ÷ M₂, between-group spread over within-group spread. */
+const fRatio = rel(
+  'F = MSB ÷ MSW',
+  '{F} = {M1} ÷ {M2}',
+  ['F', 'M1', 'M2'],
+  (v) => v.F! * v.M2! - v.M1!,
+  {
+    F: [
+      (v) => div(v.M1!, v.M2!),
+      '{M1} ÷ {M2}',
+      'How much the group means spread compared with the spread inside the groups.',
+    ],
+    M1: [(v) => v.F! * v.M2!, '{F} × {M2}', 'Undo the division by MSW.'],
+  },
+);
+const fTable = (params: string[], rows: number[]) =>
+  ({ kind: 'table', sweep: 'F', output: 'P', params, rows }) as const;
+
+const MATH_12_ANOVA: ModuleDef[] = [
+  // ── m.12.anova (OpenStax Statistics 13) ──
+  {
+    id: 'm.12.anova',
+    assumptions: [
+      'H₀: every group has the same mean; Hₐ: at least one mean differs.',
+      'df₁ = k − 1 for k groups and df₂ = N − k for N values in all; each mean square is SS ÷ df.',
+      'The groups are independent random samples from normal populations with equal spreads.',
+    ],
+    variables: [
+      ssVar('B', 'SSB', 'Sum of squares between groups'),
+      dfOf('d1', 'df₁', 'Degrees of freedom between groups'),
+      ssVar('W', 'SSW', 'Sum of squares within groups'),
+      dfOf('d2', 'df₂', 'Degrees of freedom within groups'),
+      msVar('M1', 'MSB', 'Mean square between groups', { derived: true }),
+      msVar('M2', 'MSW', 'Mean square within groups', { derived: true }),
+      fVar({ derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      rel('MSB = SSB ÷ df₁', '{M1} = {B} ÷ {d1}', ['M1', 'B', 'd1'], (v) => v.M1! * v.d1! - v.B!, {
+        M1: [
+          (v) => div(v.B!, v.d1!),
+          '{B} ÷ {d1}',
+          'A mean square is a sum of squares over its df.',
+        ],
+        B: [(v) => v.M1! * v.d1!, '{M1} × {d1}', 'Undo the division by df₁.'],
+      }),
+      derive(
+        'MSW = SSW ÷ df₂',
+        '{M2} = {W} ÷ {d2}',
+        'M2',
+        ['W', 'd2'],
+        (v) => div(v.W!, v.d2!),
+        '{W} ÷ {d2}',
+        'The spread inside the groups, pooled: SSW over its df.',
+      ),
+      fRatio,
+      decided(fTailRel('d1', 'd2')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      B: 60,
+      d1: 2,
+      W: 72,
+      d2: 12,
+      M1: 30,
+      M2: 6,
+      F: 5,
+      P: fTail(5, 2, 12),
+      a: 0.05,
+    },
+    startWith: ['B', 'd1', 'W', 'd2', 'a'],
+    representation: fTable(['d1', 'd2'], [1, 2, 3, 4, 5, 6, 8, 10]),
+  },
+  {
+    id: 'm.12.anova~groups',
+    title: 'Three groups from their means and SDs',
+    use: 'Use this for “Three groups of 5 have means 10, 14 and 12 and SDs 2, 3 and 2. Do the means differ?”',
+    assumptions: [
+      'Three groups of the same size n: MSB = n × Σ(x̄ᵢ − x̄)² ÷ 2, where x̄ is the grand mean.',
+      'MSW = (s₁² + s₂² + s₃²) ÷ 3, the average of the three variances.',
+      'df₁ = 3 − 1 = 2 and df₂ = 3n − 3; the groups are independent, normal and equally spread.',
+    ],
+    variables: [
+      V('n', 'n', 'Size of each group', { integer: true, min: 2, max: 3000 }),
+      V('m1', 'x̄₁', 'Mean of group 1', { min: 0, max: 1000000, step: 0.01, group: 'm' }),
+      V('m2', 'x̄₂', 'Mean of group 2', { min: 0, max: 1000000, step: 0.01, group: 'm' }),
+      V('m3', 'x̄₃', 'Mean of group 3', { min: 0, max: 1000000, step: 0.01, group: 'm' }),
+      V('s1', 's₁', 'SD of group 1', { min: 0.001, max: 100000, step: 0.01, group: 's' }),
+      V('s2', 's₂', 'SD of group 2', { min: 0.001, max: 100000, step: 0.01, group: 's' }),
+      V('s3', 's₃', 'SD of group 3', { min: 0.001, max: 100000, step: 0.01, group: 's' }),
+      V('g', 'x̄', 'Grand mean', { min: 0, max: 1000000, step: 0.0001, derived: true }),
+      dfOf('d2', 'df₂', 'Degrees of freedom within groups', { max: 9000, derived: true }),
+      msVar('M1', 'MSB', 'Mean square between groups', { min: 0, derived: true }),
+      msVar('M2', 'MSW', 'Mean square within groups', { derived: true }),
+      fVar({ derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      derive(
+        'x̄ = (x̄₁ + x̄₂ + x̄₃) ÷ 3',
+        '{g} = ({m1} + {m2} + {m3}) ÷ 3',
+        'g',
+        ['m1', 'm2', 'm3'],
+        (v) => (v.m1! + v.m2! + v.m3!) / 3,
+        '({m1} + {m2} + {m3}) ÷ 3',
+        'The groups are the same size, so the grand mean is the mean of the three means.',
+      ),
+      derive(
+        'df₂ = 3n − 3',
+        '{d2} = 3 × {n} − 3',
+        'd2',
+        ['n'],
+        (v) => 3 * v.n! - 3,
+        '3 × {n} − 3',
+        'N − k: 3n values in all, less one for each group’s mean.',
+      ),
+      derive(
+        'MSB = nΣ(x̄ᵢ − x̄)² ÷ 2',
+        '{M1} = {n} × (({m1} − {g})² + ({m2} − {g})² + ({m3} − {g})²) ÷ 2',
+        'M1',
+        ['n', 'm1', 'm2', 'm3', 'g'],
+        (v) => (v.n! * ((v.m1! - v.g!) ** 2 + (v.m2! - v.g!) ** 2 + (v.m3! - v.g!) ** 2)) / 2,
+        '{n} × (({m1} − {g})² + ({m2} − {g})² + ({m3} − {g})²) ÷ 2',
+        'Each group’s mean is n values away from the grand mean; divide by df₁ = 2.',
+      ),
+      derive(
+        'MSW = (s₁² + s₂² + s₃²) ÷ 3',
+        '{M2} = ({s1}² + {s2}² + {s3}²) ÷ 3',
+        'M2',
+        ['s1', 's2', 's3'],
+        (v) => (v.s1! ** 2 + v.s2! ** 2 + v.s3! ** 2) / 3,
+        '({s1}² + {s2}² + {s3}²) ÷ 3',
+        'Equal groups: the pooled variance is the average of the three variances.',
+      ),
+      fRatio,
+      decided(fTailRel(2, 'd2')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      n: 5,
+      m1: 10,
+      m2: 14,
+      m3: 12,
+      s1: 2,
+      s2: 3,
+      s3: 2,
+      g: 12,
+      d2: 12,
+      M1: 20,
+      M2: 17 / 3,
+      F: 60 / 17,
+      P: fTail(60 / 17, 2, 12),
+      a: 0.05,
+    },
+    startWith: ['n', 'm1', 'm2', 'm3', 's1', 's2', 's3', 'a'],
+    representation: {
+      kind: 'bars',
+      bars: [{ var: 'm1' }, { var: 'm2' }, { var: 'm3' }],
+      min: 0,
+      max: 20,
+    },
+  },
+  {
+    id: 'm.12.anova~two-variances',
+    title: 'Comparing two variances',
+    use: 'Use this for “Two samples of 16 have SDs 6 and 4. Are the population variances different?”',
+    assumptions: [
+      'H₀: σ₁² = σ₂² and Hₐ: σ₁² ≠ σ₂²; put the larger SD first so F = s₁² ÷ s₂² ≥ 1.',
+      'F has df₁ = n₁ − 1 on top and df₂ = n₂ − 1 underneath; the p-value doubles the tail past F.',
+      'Both populations must be normal: this test is very sensitive to skew.',
+    ],
+    variables: [
+      V('s1', 's₁', 'Larger sample SD', { min: 0.001, max: 100000, step: 0.01 }),
+      V('s2', 's₂', 'Smaller sample SD', { min: 0.001, max: 100000, step: 0.01 }),
+      V('n1', 'n₁', 'First sample size', { integer: true, min: 2, max: 10000 }),
+      V('n2', 'n₂', 'Second sample size', { integer: true, min: 2, max: 10000 }),
+      dfOf('d1', 'df₁', 'Degrees of freedom on top', { derived: true }),
+      dfOf('d2', 'df₂', 'Degrees of freedom underneath', { derived: true }),
+      fVar({ derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      derive(
+        'df₁ = n₁ − 1',
+        '{d1} = {n1} − 1',
+        'd1',
+        ['n1'],
+        (v) => v.n1! - 1,
+        '{n1} − 1',
+        'The first sample’s variance has n₁ − 1 degrees of freedom.',
+      ),
+      derive(
+        'df₂ = n₂ − 1',
+        '{d2} = {n2} − 1',
+        'd2',
+        ['n2'],
+        (v) => v.n2! - 1,
+        '{n2} − 1',
+        'The second sample’s variance has n₂ − 1 degrees of freedom.',
+      ),
+      derive(
+        'F = s₁² ÷ s₂²',
+        '{F} = {s1}² ÷ {s2}²',
+        'F',
+        ['s1', 's2'],
+        (v) => div(v.s1! ** 2, v.s2! ** 2),
+        '{s1}² ÷ {s2}²',
+        'The ratio of the variances: near 1 when the spreads match.',
+      ),
+      decided(
+        derive(
+          'P = 2 × Fcdf(F, ∞, df₁, df₂)',
+          '{P} = 2 × Fcdf({F}, ∞, {d1}, {d2})',
+          'P',
+          ['F', 'd1', 'd2'],
+          (v) => {
+            const q = fTail(v.F!, v.d1!, v.d2!);
+            return 2 * Math.min(q, 1 - q);
+          },
+          (v: Values) =>
+            fTail(v.F!, v.d1!, v.d2!) > 0.5
+              ? '2 × (1 − Fcdf({F}, ∞, {d1}, {d2}))'
+              : '2 × Fcdf({F}, ∞, {d1}, {d2})',
+          'Hₐ says “not equal”, so double the smaller tail of the F curve at F.',
+        ),
+      ),
+      limit(
+        's₁ ≥ s₂',
+        'The larger SD {s1} is first: at least {s2}',
+        ['s1', 's2'],
+        (v) => v.s1! >= v.s2!,
+        'Put the larger standard deviation first, so F is at least 1 (swap the samples).',
+      ),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      s1: 6,
+      s2: 4,
+      n1: 16,
+      n2: 16,
+      d1: 15,
+      d2: 15,
+      F: 2.25,
+      P: 2 * fTail(2.25, 15, 15),
+      a: 0.05,
+    },
+    startWith: ['s1', 's2', 'n1', 'n2', 'a'],
+    representation: fTable(['d1', 'd2'], [1, 1.5, 2, 2.5, 3, 4]),
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
@@ -6244,4 +6807,6 @@ export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_PARTIAL_FRACTIONS,
   ...MATH_12_POLAR_CONICS,
   ...MATH_12_STATS,
+  ...MATH_12_REGRESSION,
+  ...MATH_12_ANOVA,
 ];

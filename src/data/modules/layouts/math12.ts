@@ -209,4 +209,48 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
       { label: 'H₀: the batch is fine; a bad batch is thrown out', bin: 'right' },
     ],
   },
+  // ── ANOVA (OpenStax Statistics 13) ──
+  {
+    kind: 'sort',
+    id: 'm.12.anova~which-test',
+    title: 'Which test fits the question?',
+    use: 'Use this for “Do the mean scores of three classes differ? Which test do you use?”',
+    assumptions: [
+      'Means of three or more groups: one-way ANOVA. Means of exactly two groups: a two-sample t-test.',
+      'Two categorical variables in a table: a chi-square test of independence.',
+      'Two quantitative variables with a straight-line pattern: a t-test for the slope.',
+    ],
+    question: 'What is compared: means of groups, counts in a table, or a line through pairs?',
+    bins: [
+      {
+        id: 'anova',
+        label: 'One-way ANOVA',
+        why: 'It compares the means of three or more groups.',
+      },
+      { id: 't2', label: 'Two-sample t-test', why: 'It compares the means of two groups.' },
+      {
+        id: 'chi',
+        label: 'Chi-square test of independence',
+        why: 'It asks whether two categorical variables are related, from counts.',
+      },
+      {
+        id: 'slope',
+        label: 't-test for the slope',
+        why: 'It asks whether one quantitative variable changes linearly with another.',
+      },
+    ],
+    cards: [
+      { label: 'Do mean plant heights differ under four kinds of light?', bin: 'anova' },
+      { label: 'Do three brands of battery last the same time on average?', bin: 'anova' },
+      { label: 'Do boys and girls sleep the same number of hours on average?', bin: 't2' },
+      { label: 'Does a new diet change mean weight loss compared with the old one?', bin: 't2' },
+      { label: 'Is favorite sport related to grade level, from a table of counts?', bin: 'chi' },
+      { label: 'Is voting yes or no related to age group?', bin: 'chi' },
+      { label: 'Does study time predict test score along a straight line?', bin: 'slope' },
+      {
+        label: 'Does a car’s weight predict its fuel use in a straight-line pattern?',
+        bin: 'slope',
+      },
+    ],
+  },
 ];

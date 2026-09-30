@@ -5,6 +5,11 @@
  */
 import { invT, tCdf } from '@/components/module/reps/statMath';
 
+import { fTail } from '../math/12';
+
+/** A number in scientific notation as `evaluate` leaves it (5.9 × 10⁸ reads 5.9 * 10**(8)). */
+const SCI = String.raw`-?\d+(?:\.\d+)?(?:e[-+]?\d+)?(?: \* 10\*\* ?\(?-?\d+\)?)?`;
+
 /** A bare number, as `evaluate` leaves one by the time phrases run. */
 const NUM = String.raw`-?\d+(?:\.\d+)?(?:e[-+]?\d+)?`;
 
@@ -14,4 +19,9 @@ export const M12_PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`tcdf\\(abs\\((${NUM})\\), (${NUM})\\)`), (t, df) => tCdf(Math.abs(t), df)],
   [new RegExp(`tcdf\\((${NUM}), (${NUM})\\)`), (t, df) => tCdf(t, df)],
   [new RegExp(`invT\\((${NUM}), (${NUM})\\)`), (p, df) => invT(p, df)],
+  // The F distribution's right tail, Fcdf(F, ∞, df₁, df₂) (ANOVA and two variances).
+  [
+    new RegExp(`Fcdf\\( ?(${SCI}) ?, ∞, (${NUM}) ?, (${NUM}) ?\\)`),
+    (f, d1, d2) => fTail(f, d1, d2),
+  ],
 ];
