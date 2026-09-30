@@ -65,7 +65,9 @@ Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mo
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,
 between?, absolute? }` lights a rank, shades an unknown's range or bars absolute hardness. Mineral
 icons (`layouts/icons/hl.tsx`): `quartz`, `feldspar`, `mica`, `calcite`, `halite`, `pyrite`,
-`hematite`.
+`hematite`. `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
+composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
+valley, a meander, an aquifer or a dune, its parts labeled.
 
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per

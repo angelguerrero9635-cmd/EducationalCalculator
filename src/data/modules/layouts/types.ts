@@ -9,7 +9,7 @@ import type {
   LoopScene,
   NitrogenProcess,
 } from '../typesHsh';
-import type { HslFigure, MohsScene } from '../typesHsl';
+import type { HslFigure, LandformScene, MohsScene } from '../typesHsl';
 import type { Round3Icon } from './icons';
 
 /**
@@ -454,8 +454,9 @@ export interface Scene {
   label: string;
   /** What to read about this scene, one sentence per line. */
   lines: string[];
-  /** Group HL figures (`typesHsl.ts`): `mohsScale`. */
+  /** Group HL figures (`typesHsl.ts`): `mohsScale`, `landforms`. */
   mohs?: MohsScene;
+  landform?: LandformScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** Where the ball is (a `position` figure). */

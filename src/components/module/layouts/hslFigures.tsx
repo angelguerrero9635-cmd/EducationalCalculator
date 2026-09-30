@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import type { Figure, Scene } from '@/data/modules/layouts';
 import type { HslFigure } from '@/data/modules/typesHsl';
 
+import { LandformsFigure } from './landformsFigure';
 import { MohsFigure } from './mohsFigure';
 
 export function HslFigureView({
@@ -19,5 +20,7 @@ export function HslFigureView({
   switch (figure.kind) {
     case 'mohsScale':
       return <MohsFigure mohs={scene.mohs ?? {}} />;
+    case 'landforms':
+      return <LandformsFigure kind={scene.landform?.kind ?? 'shield'} />;
   }
 }

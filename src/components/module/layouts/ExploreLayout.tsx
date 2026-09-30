@@ -105,6 +105,7 @@ function FigureView({
 }) {
   switch (figure.kind) {
     case 'mohsScale':
+    case 'landforms':
       return <HslFigureView figure={figure} scene={scene} />;
     case 'parts':
       if (figure.drawing) {

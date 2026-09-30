@@ -413,6 +413,147 @@ const epicenter: ModuleDef = {
   },
 };
 
+// ── H73: landforms ──
+
+const landformLayouts: LayoutDef[] = [
+  {
+    id: 'g.s12-volcanoes-mountains-volcanoes',
+    title: 'Three kinds of volcano',
+    kind: 'explore',
+    use: 'Use this for telling shield volcanoes, composite volcanoes and cinder cones apart by shape and eruption.',
+    assumptions: [
+      'A volcano’s shape depends on its magma: runny, low-silica basalt flows far; thick, silica-rich magma traps gas and explodes.',
+      'Each drawing is a cross-section, not to the same scale: shields are the widest, cinder cones the smallest.',
+    ],
+    figure: { kind: 'landforms' },
+    scenes: [
+      {
+        label: 'Shield volcano',
+        lines: [
+          'Runny basalt lava flows far before it cools, building a broad dome with gentle slopes.',
+          'Eruptions are mostly quiet lava flows, as in Hawaii.',
+        ],
+        landform: { kind: 'shield' },
+      },
+      {
+        label: 'Composite volcano',
+        lines: [
+          'Thick, gassy magma erupts explosively, then as lava: layers of ash and lava build a tall, steep cone.',
+          'Composite volcanoes, such as Mount St. Helens, are the most dangerous.',
+        ],
+        landform: { kind: 'composite' },
+      },
+      {
+        label: 'Cinder cone',
+        lines: [
+          'Gas-rich lava blasts into the air and falls as cinders, piling up at their steepest stable slope.',
+          'Cinder cones are small and often erupt only once; lava may leak out from the base.',
+        ],
+        landform: { kind: 'cinderCone' },
+      },
+    ],
+  },
+  {
+    id: 'g.s12-volcanoes-mountains-deformation',
+    title: 'Folds and faults',
+    kind: 'explore',
+    use: 'Use this for matching folds and faults to the stress that made them.',
+    assumptions: [
+      'Stress on rock is compression (squeezing), tension (pulling apart) or shear (sliding past).',
+      'Rock deep and warm bends into folds; rock near the surface breaks along faults.',
+      'On a sloping fault, the hanging wall is the block above the fault and the footwall the block below.',
+    ],
+    figure: { kind: 'landforms' },
+    scenes: [
+      {
+        label: 'Folds',
+        lines: [
+          'Compression bends layers into arches (anticlines) and troughs (synclines).',
+          'Eroded down, an anticline shows its oldest rock in the middle.',
+        ],
+        landform: { kind: 'folds' },
+      },
+      {
+        label: 'Normal fault',
+        lines: [
+          'Tension pulls the crust apart, and the hanging wall slips down the fault.',
+          'Normal faults form at divergent boundaries and rift valleys.',
+        ],
+        landform: { kind: 'normalFault' },
+      },
+      {
+        label: 'Reverse fault',
+        lines: [
+          'Compression pushes the hanging wall up the fault, stacking older rock on younger.',
+          'Reverse faults form where plates collide and build mountains.',
+        ],
+        landform: { kind: 'reverseFault' },
+      },
+      {
+        label: 'Strike-slip fault',
+        lines: [
+          'Shear slides the blocks past each other sideways, offsetting streams, fences and roads.',
+          'The San Andreas Fault is a strike-slip fault at a transform boundary.',
+        ],
+        landform: { kind: 'strikeSlip' },
+      },
+    ],
+  },
+  {
+    id: 'g.s12-surface-processes-landforms',
+    title: 'Landforms shaped by water, ice and wind',
+    kind: 'explore',
+    use: 'Use this for recognizing the landforms rivers, glaciers, groundwater and wind leave behind.',
+    assumptions: [
+      'Weathering breaks rock down; erosion carries the pieces away; deposition drops them.',
+      'Each agent leaves its own shapes, so a landform tells what made it.',
+    ],
+    figure: { kind: 'landforms' },
+    scenes: [
+      {
+        label: 'V-shaped valley',
+        lines: [
+          'A river cuts down into its bed, and the sides wear back into a narrow V.',
+          'V-shaped valleys are common in young mountain streams.',
+        ],
+        landform: { kind: 'vValley' },
+      },
+      {
+        label: 'U-shaped valley',
+        lines: [
+          'A valley glacier scrapes its sides and floor, widening a V into a U with steep walls.',
+          'When the ice melts, the broad flat floor is left behind.',
+        ],
+        landform: { kind: 'uValley' },
+      },
+      {
+        label: 'Meandering river',
+        lines: [
+          'On flat land a river swings in loops: fast water on the outside of a bend erodes the cut bank.',
+          'Slow water on the inside drops sand in a point bar; a cut-off loop becomes an oxbow lake.',
+        ],
+        landform: { kind: 'meander' },
+      },
+      {
+        label: 'Aquifer',
+        lines: [
+          'Rain soaks down to the water table; below it, water fills the spaces in the rock.',
+          'A permeable layer that holds and passes water is an aquifer; a well must reach below the water table.',
+        ],
+        landform: { kind: 'aquifer' },
+      },
+      {
+        label: 'Sand dune',
+        lines: [
+          'Wind bounces sand up the gentle windward side; at the crest it slides down the steep slip face.',
+          'Grain by grain, the dune creeps downwind.',
+        ],
+        landform: { kind: 'dunes' },
+      },
+    ],
+  },
+];
+
 export const HSL_GALLERY_MODULES: ModuleDef[] = [
   shadowZone,
   shadowDirect,
@@ -422,4 +563,4 @@ export const HSL_GALLERY_MODULES: ModuleDef[] = [
   seismogramNear,
   epicenter,
 ];
-export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [...mineralLayouts];
+export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [...mineralLayouts, ...landformLayouts];

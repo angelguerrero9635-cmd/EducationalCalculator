@@ -1092,12 +1092,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as one calculator kind in three modes. Cross-section: { kind: "earthLayers", mode: "section", distance?: id or number (the station’s angle from the focus, 0°–180°), fixed? }: layers to scale (crust, mantle, liquid outer core from 2,890 km, solid inner core from 5,150 km), P paths on the left curving to 104° and through the core to 140°–180°, S paths on the right stopping at the outer core, the shadow zones as bands; the station is drawn on both halves, filled where that wave arrives, and dragged round the surface. Example: { kind: "earthLayers", mode: "section", distance: "D" } with s = Δ × π × 6371 ÷ 180. Seismogram: { kind: "earthLayers", mode: "seismogram", km: id, vp?: id or number (default 6 km/s), vs?: (default 3.5), lag?: id }: the trace with P at d ÷ vₚ, S at d ÷ vₛ, surface waves after, the S − P lag bracketed; give the page a constraint vₛ < vₚ. Example: { kind: "earthLayers", mode: "seismogram", km: "d", vp: "vp", vs: "vs", lag: "L" }. Epicenter: { kind: "earthLayers", mode: "epicenter", stations: [{ name, x, y (km), r: distance id } ×3] }: circles on a km grid, the epicenter starred where all three meet; circles that miss draw faded with the reason. Example: stations [{ name: "1", x: 0, y: 0, r: "d1" }, { name: "2", x: 168, y: 210, r: "d2" }, { name: "3", x: 336, y: 0, r: "d3" }] with d = k × L, k = 8.4 km per second of lag. The harness checks the rays (the 104° ray grazes the core, none dips into it), the lag against the trace, and that stations aren’t in a line.',
   },
-  ask(
-    'H73',
-    'landforms',
-    'Explore figures: volcano types, folds and faults, a U- and a V-shaped valley, a meandering river, an aquifer and water table, dunes',
-    ['s.12.volcanoes-mountains', 's.12.surface-processes'],
-  ),
+  {
+    ...ask(
+      'H73',
+      'landforms',
+      'Explore figures: volcano types, folds and faults, a U- and a V-shaped valley, a meandering river, an aquifer and water table, dunes',
+      ['s.12.volcanoes-mountains', 's.12.surface-processes'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-volcanoes-mountains-volcanoes',
+      'g.s12-volcanoes-mountains-deformation',
+      'g.s12-surface-processes-landforms',
+    ],
+    notes:
+      'Drawn (group HL) as one explore figure: { kind: "landforms" }, each scene landform: { kind } with kind one of "shield", "composite", "cinderCone" (volcanoes in cross-section: a broad basalt dome with thin flows; a steep concave cone of lava and ash layers with its vent, side vent and ash cloud; a small cone of cinders at 33°, lava from its base), "folds" (anticline and syncline, squeezed), "normalFault", "reverseFault" (layered blocks on a fault dipping left, the hanging wall dropped or pushed up, stress arrows and half arrows), "strikeSlip" (seen from above, a stream and a fence offset), "vValley", "uValley" (the glacier’s former ice dashed), "meander" (seen from above: cut banks, point bars, an oxbow lake), "aquifer" (unsaturated zone, water table, saturated sand and gravel on clay, a well and a lake) or "dunes" (gentle windward side, 33° slip face, sand bouncing). The part names are drawn; the scene’s lines explain. Example scene: { label: "Normal fault", lines: [...], landform: { kind: "normalFault" } }.',
+  },
   ask(
     'H74',
     'rockLayers',

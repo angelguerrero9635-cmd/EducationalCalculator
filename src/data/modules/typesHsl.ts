@@ -89,10 +89,31 @@ export interface MohsScene {
   absolute?: boolean;
 }
 
+/** The landforms a `landforms` figure draws, each in cross-section or seen from above. */
+export type LandformKind =
+  | 'shield'
+  | 'composite'
+  | 'cinderCone'
+  | 'folds'
+  | 'normalFault'
+  | 'reverseFault'
+  | 'strikeSlip'
+  | 'vValley'
+  | 'uValley'
+  | 'meander'
+  | 'aquifer'
+  | 'dunes';
+
+/** A `landforms` scene: the landform drawn, its parts labeled. */
+export interface LandformScene {
+  kind: LandformKind;
+}
+
 /** The explore figures of group L (listed in `layouts/types.ts`). */
-export type HslFigure = { kind: 'mohsScale' };
+export type HslFigure = { kind: 'mohsScale' } | { kind: 'landforms' };
 
 /** The scene field each group L figure reads (for the layout tests). */
 export const HSL_SCENE_FIELD = {
   mohsScale: 'mohs',
+  landforms: 'landform',
 } as const satisfies Record<HslFigure['kind'], string>;
