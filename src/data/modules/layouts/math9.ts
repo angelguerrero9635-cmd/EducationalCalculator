@@ -37,10 +37,10 @@ export const MATH_9_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: '5x − 2 = 3x + 8', bin: 'one' },
       { label: '6x + 4 = 2x', bin: 'one' },
-      { label: '2n + 1 = 9', bin: 'one' },
+      { label: '4x − 3 = x + 9', bin: 'one' },
       { label: '4x + 1 = 4x + 6', bin: 'none' },
       { label: '3x = 3x + 0.5', bin: 'none' },
-      { label: '2n + 1 = 2n', bin: 'none' },
+      { label: '3x + 2 = 3x − 5', bin: 'none' },
       { label: '2(x + 3) = 2x + 6', bin: 'every' },
       { label: '7 − x = −x + 7', bin: 'every' },
     ],
@@ -157,8 +157,50 @@ export const MATH_9_LAYOUTS: LayoutDef[] = [
       { label: 'Doubles every 20 minutes', bin: 'exponential' },
       { label: 'Loses 8% of its value each year', bin: 'exponential' },
       { label: 'y: 5, 15, 45, 135', bin: 'exponential' },
-      { label: 'y = 4(3)^x', bin: 'exponential' },
+      { label: 'y = 4(3)ˣ', bin: 'exponential' },
       { label: 'Each person passes a note to 4 new people', bin: 'exponential' },
+    ],
+  },
+
+  // ── Quadratic functions: linear, quadratic or exponential (F-LE.3, F-IF.6) ──
+  {
+    kind: 'sort',
+    id: 'm.9.quadratic-functions~compare-models',
+    title: 'Linear, quadratic or exponential?',
+    use: 'Use this for “Which kind of function fits this table: linear, quadratic or exponential?”',
+    assumptions: [
+      'Use x-values that go up by the same step, then look at how y changes.',
+      'Equal first differences: linear. Equal second differences: quadratic. Equal ratios: exponential.',
+      'An exponential one always overtakes a linear or quadratic one in the end.',
+    ],
+    question: 'Which kind of function is it?',
+    bins: [
+      {
+        id: 'linear',
+        label: 'Linear',
+        why: 'The first differences are all the same: y changes by one fixed amount each step.',
+      },
+      {
+        id: 'quadratic',
+        label: 'Quadratic',
+        why: 'The first differences change, but the second differences are all the same.',
+      },
+      {
+        id: 'exponential',
+        label: 'Exponential',
+        why: 'Each y is the one before times the same ratio.',
+      },
+    ],
+    cards: [
+      { label: 'y: 3, 7, 11, 15', bin: 'linear' },
+      { label: 'y = 2x − 5', bin: 'linear' },
+      { label: 'A taxi: $3 plus $2 a mile', bin: 'linear' },
+      { label: 'y: 2, 3, 6, 11, 18', bin: 'quadratic' },
+      { label: 'y = x² − 4x + 1', bin: 'quadratic' },
+      { label: 'The area of a square as its side grows', bin: 'quadratic' },
+      { label: 'y: 2, 6, 18, 54', bin: 'exponential' },
+      { label: 'y = 5(2)ˣ', bin: 'exponential' },
+      { label: 'A colony that doubles every hour', bin: 'exponential' },
     ],
   },
 ];

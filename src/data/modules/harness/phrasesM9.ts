@@ -20,6 +20,35 @@ export const M9_PHRASES: [RegExp, (...xs: number[]) => number][] = [
       return (x * y) / gcd(x, y);
     },
   ],
+  // Factoring: the number of the pair that multiplies to c (or a × c) and adds to b, the larger
+  // one unless it is 0 (pairFor in math/9.ts).
+  [
+    new RegExp(`the number in the pair of (${NUM})(?: \\* (${NUM}))? that adds to (${NUM})`),
+    (c1, c2, b) => {
+      const c = Number.isNaN(c2) ? c1 : c1 * c2;
+      const r = Math.sqrt(b * b - 4 * c);
+      return (b + r) / 2 === 0 ? (b - r) / 2 : (b + r) / 2;
+    },
+  ],
+  // Same base: the smallest base two numbers are powers of, and the power that makes one.
+  [
+    new RegExp(`the common base of (${NUM}) and (${NUM})`),
+    (p, q) => {
+      const power = (b: number, n: number) => {
+        const k = Math.round(Math.log(n) / Math.log(b));
+        return b ** k === n;
+      };
+      for (let b = 2; b <= Math.max(p, q); b++) if (power(b, p) && power(b, q)) return b;
+      return NaN;
+    },
+  ],
+  [
+    new RegExp(`the power of (${NUM}) that makes (${NUM})`),
+    (b, n) => Math.round(Math.log(n) / Math.log(b)),
+  ],
+  // Rational exponents: the fourth root and the fifth root of the base.
+  [new RegExp(`∜(${NUM})`), (b) => b ** (1 / 4)],
+  [new RegExp(`the fifth root of (${NUM})`), (b) => b ** (1 / 5)],
   // Whole-number answers to an inequality: at most rounds down, at least rounds up.
   [new RegExp(`(${NUM}) rounded down to a whole number`), (n) => Math.floor(n + 1e-9)],
   [new RegExp(`(${NUM}) rounded up to a whole number`), (n) => Math.ceil(n - 1e-9)],
