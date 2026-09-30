@@ -82,6 +82,37 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
   // ── Hypothesis tests (S-IC.5) ──
   {
     kind: 'sort',
+    id: 'm.12.hypothesis-testing~hypotheses',
+    title: 'Which alternative hypothesis?',
+    use: 'Use this for “Write H₀ and Hₐ for the claim that the new bulbs last longer.”',
+    assumptions: [
+      'H₀ always says “equal”: the mean is still μ₀. Hₐ is what the study hopes to show.',
+      'Words like “more”, “longer” or “increased” give Hₐ: μ > μ₀; “less”, “fewer” or “shorter” give μ < μ₀.',
+      '“Changed”, “different” or “no longer” with no direction give Hₐ: μ ≠ μ₀, a two-sided test.',
+    ],
+    question: 'Which Hₐ does the claim call for?',
+    bins: [
+      { id: 'less', label: 'Hₐ: μ < μ₀', why: 'The claim says the mean went down.' },
+      { id: 'more', label: 'Hₐ: μ > μ₀', why: 'The claim says the mean went up.' },
+      {
+        id: 'differs',
+        label: 'Hₐ: μ ≠ μ₀',
+        why: 'The claim says the mean changed but not which way.',
+      },
+    ],
+    cards: [
+      { label: 'The new bulbs last longer than 1,000 hours on average', bin: 'more' },
+      { label: 'The machine no longer fills bags with 500 g on average', bin: 'differs' },
+      { label: 'The new route cuts the mean trip below 25 minutes', bin: 'less' },
+      { label: 'Students sleep less than 8 hours a night on average', bin: 'less' },
+      { label: 'The mean wait at the clinic has changed from 20 minutes', bin: 'differs' },
+      { label: 'The fertilizer makes the plants taller than 30 cm on average', bin: 'more' },
+      { label: 'The average battery charge differs from 12 hours', bin: 'differs' },
+      { label: 'After the change, customers spend more than $40 on average', bin: 'more' },
+    ],
+  },
+  {
+    kind: 'sort',
     id: 'm.12.hypothesis-testing~errors',
     title: 'Type I or Type II error?',
     use: 'Use this for “Name a Type I and a Type II error for this test.”',

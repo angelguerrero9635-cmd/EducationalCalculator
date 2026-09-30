@@ -6,8 +6,9 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 
 ## Built
 
-- `m.12.hypothesis-testing` (5): main (one-proportion, two-sided), `~mean` (left-tailed z),
-  `~t-test` (one mean, σ unknown), `~two-sample` (t), `~errors` (sort).
+- `m.12.hypothesis-testing` (8): main (one-proportion, two-sided), `~mean` (left-tailed z),
+  `~t-test` (one mean, σ unknown), `~paired` (matched pairs t), `~two-proportion` (pooled z),
+  `~two-sample` (t), `~hypotheses` (sort: which Hₐ), `~errors` (sort).
 - `m.12.confidence-intervals` (5): main (mean, σ known), `~t-interval`, `~proportion`,
   `~sample-size`, `~capture`.
 - `m.12.sampling-distributions` (3): main (x̄), `~proportion` (p̂), `~counts` (binomial).
@@ -15,11 +16,11 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   and shares each a group, E7), `~independence` (2 × 3 table).
 - `m.12.conics` (5): main (ellipse), `~parabola`, `~hyperbola`, `~identify` (sort), `~cone`
   (explore).
-- `m.12.matrices` (5): main (row reduction, right sides typed), `~multiply`, `~determinant`
-  (3 × 3), `~inverse`, `~cramer`.
+- `m.12.matrices` (6): main (row reduction, right sides typed), `~multiply`, `~determinant`
+  (3 × 3), `~inverse`, `~inverse-system` (X = A⁻¹B), `~cramer`.
 - `m.12.inverse-trig` (4): main (sin⁻¹), `~arccos`, `~arctan` (rise over run), `~compose`.
-- `m.12.trig-formulas-equations` (5): main (sin(A + B)), `~difference` (cos(A − B)),
-  `~double-angle`, `~sine-equation`, `~tangent-equation`.
+- `m.12.trig-formulas-equations` (6): main (sin(A + B)), `~difference` (cos(A − B)),
+  `~double-angle`, `~half-angle`, `~sine-equation`, `~tangent-equation`.
 - `m.12.vectors` (5): main (components, length and direction), `~add`, `~scalar`, `~dot`,
   `~resultant`.
 - `m.12.polar` (6): main (polar point), `~complex-form`, `~product`, `~de-moivre`, `~rose`,
@@ -53,8 +54,8 @@ Built with an interim, to change when the need lands:
   operations (`RowOp` numbers), so typed coefficients would draw the wrong eliminations. It
   needs row operations worked out from the values (a picture need) before the boxes go in.
 - Need 4 (E8): done; `~inverse` is now `[[{a}, {b}; {c}, {d}]]^{−1} = [[{e}, {f}; {g}, {h}]]`.
-- Need 5 (determinant picture): `~determinant` shows a table of D against k; `~cramer` plots
-  the solution point.
+- Need 5 (determinant picture): `~determinant` shows a table of D against k; `~cramer` draws
+  its two lines crossing at the solution (`lineSystem`, slopes and intercepts hidden).
 - Need 6 (two arcs on `unitCircle`): the sum and difference pages draw A ± B only.
 - Need 8 (powers on `complexPlane`): `~de-moivre` draws zⁿ only.
 - Need 11 (rational by coefficients): `~infinity` works out its zero z and pole v.
@@ -87,8 +88,8 @@ Built with an interim, to change when the need lands:
   the steps read as back-substitution: z, then y, then x. The coefficients stay fixed (need 3).
 - **Interim pictures for the determinant and Cramer pages (need 5).** A page must have a
   picture, and "none drawn" is not a kind: `~determinant` shows a table of D as the last entry k
-  changes (D moves by ae − bd each step), and `~cramer` plots the solution (x, y) where the two
-  lines cross. Both switch to the determinant picture when need 5 lands.
+  changes (D moves by ae − bd each step), and `~cramer` draws the two lines crossing at (x, y).
+  Both can switch to the determinant picture when need 5 lands.
 - **`~inverse` keeps rows (need 4 interim)**; its picture multiplies A by A⁻¹ to show I.
 - **Inverse-trig graphs read in degrees.** `functionGraph` draws sin⁻¹ and tan⁻¹ in radians, so
   the main page and `~arctan` stretch them by a = 180/π and label the axis "A (°)": the traced
@@ -152,3 +153,53 @@ Built with an interim, to change when the need lands:
 - **`functionGraph` inverse trig in degrees** (a `degrees` option for arcsin, arccos, arctan),
   so a page need not stretch the curve by 180/π to read its angle in degrees
   (`m.12.inverse-trig`, `~arctan`).
+
+## Lesson review (`.review/hs-m.12/lesson-report.md`)
+
+All 14 errors and 22 improvements are fixed in the pages; the notes below are the ones done
+another way or left for shared work.
+
+- **Decisions (1).** Every test and chi-square p-value step ends with the decision
+  ("→ 0.03767 < α = 0.05: reject H₀"); the chi-square pages take α (standalone), and their
+  pictures shade it.
+- **Plain symbols (2, 4, 5, 6 and the new standards rule).** d, C, k, s, c, S, K replace
+  "x̄₁ − x̄₂", "A + B", "sin x", "sin A" and the rest; also |u + v| → |s| (the sum s = u + v),
+  f(x) → y, f′(x) → f′, 4p → q ("the number before (y − k), which is 4p"). "u · v" stays (no
+  operator the rule lists).
+- **Exact values (3).** The sum and difference pages take the multiples of 30° and 45° only and
+  work sin 45° = √2/2 … √6/4 + √2/4 = (√6 + √2)/4 ≈ 0.9659.
+- **Limits with reasons (8–10, harness).** `~projectile` t ≤ T and y ≥ 0; `~proportion` 10
+  successes and 10 failures; `~parabola` q ≠ 0; the interval pages L < U with x̄, L and U on one
+  range (±1,000,000); every earlier limit now says why.
+- **Deep run**: `~independence` now needs every expected count to be at least 5 (a 0.015
+  expected count made the rounded terms disagree); `~arctan` takes a run of at least 0.1 m.
+- **`~vectors~resultant`**: forces 0.1 N to 10,000 N, so the direction no longer rounds to 0°.
+- **Checks through the function (17)**: sin(30°) = 0.5 on the four inverse pages.
+- **`~polar~product` (18)** hides w's parts (figure-only) and answers zw as p + qi.
+- **`~de-moivre` (19)**: R = (a² + b²)^(n ÷ 2), no rounded r: (1² + 1²)⁴, 2⁴ = 16.
+- **Conics (20, 21)**: foci and vertices as points, asymptotes as equations (y = ±(4/3)x).
+- **`~cramer` (24)**: Dₓ and Dᵧ as work lines, and the picture is now the two lines
+  (`lineSystem`).
+- **`~inverse` (25)**: entries as fractions (3/5, −7/10), and `A⁻¹ = (1/10)[[6, −7], [−2, 4]]`
+  after D.
+- **`~counts` (33)** states "up to 40 trials" in its use line rather than a larger n (the
+  histogram's limit).
+- **Radians (15, 36)**: `pi: 'fraction'` on every radian value; the equation pages add t₁ and t₂
+  (π/6, 5π/6) and say "one solution" when k = ±1.
+- **New pages**: `~half-angle` (cos A = 7/25 → sin(A/2) = 0.6, cos(A/2) = 0.8),
+  `~inverse-system` (3x + 2y = 7, 5x + 4y = 13 → (1, 2)), `~paired` (d̄ = 2.5, s = 3.2, n = 12:
+  t ≈ 2.71, P ≈ 0.020), `~two-proportion` (84 of 150 against 66 of 150: z ≈ 2.08, P ≈ 0.038),
+  `~hypotheses` (sort: eight claims into Hₐ: μ <, >, ≠ μ₀). The numbers are original.
+
+### Shared needs from the review
+
+- Engine 6: typed values that push a derived value past its range are kept silently
+  (`m.12.confidence-intervals`: U = −1,000,000 with SE = 95,096 forces x̄ below its range).
+- Harness (the lead's change d): a superscript exponent before ° (`tan(8 × 10⁻⁶°)`,
+  `m.12.inverse-trig~arctan`).
+- Engine 5: a symbolic power line prints a caret, "R = (a² + b²)^4" (`m.12.polar~de-moivre`).
+- Engine (a): 4/3 shows as 1 1/3 in Grades 9–12 (`m.12.conics~hyperbola` s).
+- Harness: `affineOf` reads a pass/fail limit as a constant when all 16 probes fail it, and then
+  calls every input infeasible; `~two-proportion` got past it by naming its limits with k₁ and
+  k₂ (the ids seed the probes). A pass/fail relation should never be read as affine.
+- The matcher corpus (`scripts/build-match-corpus.mjs`) to rerun for the five new pages.
