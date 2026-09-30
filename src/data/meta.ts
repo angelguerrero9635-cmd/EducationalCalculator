@@ -150,6 +150,7 @@ const PICTURE_NAMES: Record<string, string> = {
   collision: 'carts before and after a collision, with momentum arrows',
   circularMotion: 'circular motion or gravity between two masses',
   freeBody: 'free-body diagram with scaled force arrows',
+  impulse: 'momentum change and the force–time rectangle',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',
   complexPlane: 'complex number in the plane',

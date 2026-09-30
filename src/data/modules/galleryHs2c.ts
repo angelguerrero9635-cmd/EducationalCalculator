@@ -162,6 +162,152 @@ const oneAfter: ModuleDef = (() => {
   };
 })();
 
-export const HS2C_GALLERY_MODULES: ModuleDef[] = [oneAfter];
+// ─── H102.2 impulse: the force–time rectangle, and a slower stop ─────────────
+
+const impulse: ModuleDef = (() => {
+  const [m, u, v, t] = [0.2, 25, -15, 0.05];
+  const P = m * (v - u);
+  return {
+    id: 'g.s11-momentum-impulse',
+    title: 'Impulse: force × time = change in momentum',
+    use: 'Use this for “A 0.2 kg ball at 25 m/s is stopped by a glove in 0.05 s. What average force acts on it? Why does pulling the glove back help?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      '+ is the way the object first moves; a force against it is negative.',
+      'F is the average force over the time Δt.',
+      'The dashed rectangle is the same change in momentum spread over 0.2 s.',
+    ],
+    variables: [
+      q('m', 'm', 'Mass', 'kg', 0.001, 1e5, 0.001),
+      q('u', 'v₀', 'Velocity before', 'm/s', -300, 300, 0.1),
+      q('v', 'v', 'Velocity after', 'm/s', -300, 300, 0.1),
+      q('P', 'Δp', 'Change in momentum', 'kg·m/s', -1e7, 1e7, 0.001),
+      q('t', 'Δt', 'Time of the push', 's', 0.0001, 100, 0.001),
+      q('F', 'F', 'Average force', 'N', -1e9, 1e9, 0.01),
+    ],
+    ...rules(
+      rule('Δp = m(v − v₀)', '{P} = {m} × ({v} − {u})', (x) => x.P! - x.m! * (x.v! - x.u!), {
+        P: [
+          (x) => x.m! * (x.v! - x.u!),
+          '{m} × ({v} − {u})',
+          'The momentum after less the momentum before.',
+        ],
+        m: [
+          (x) => div(x.P!, x.v! - x.u!),
+          '{P}/({v} − {u})',
+          'Divide Δp by the change in velocity.',
+        ],
+        v: [
+          (x) => div(x.P! + x.m! * x.u!, x.m!),
+          '{u} + {P}/{m}',
+          'Add Δp/m to the velocity before.',
+        ],
+        u: [
+          (x) => div(x.m! * x.v! - x.P!, x.m!),
+          '{v} − {P}/{m}',
+          'Take Δp/m from the velocity after.',
+        ],
+      }),
+      rule('F = Δp/Δt', '{F} = {P}/{t}', (x) => x.F! * x.t! - x.P!, {
+        F: [(x) => div(x.P!, x.t!), '{P}/{t}', 'The change in momentum per second.'],
+        P: [(x) => x.F! * x.t!, '{F} × {t}', 'The impulse: force × time.'],
+        t: [(x) => div(x.P!, x.F!), '{P}/{F}', 'How long the force must push for this Δp.'],
+      }),
+    ),
+    example: { m, u, v, P, t, F: P / t },
+    startWith: ['m', 'u', 'v', 't'],
+    representation: {
+      kind: 'impulse',
+      mass: 'm',
+      before: 'u',
+      after: 'v',
+      time: 't',
+      change: 'P',
+      force: 'F',
+      compare: 0.2,
+    },
+  };
+})();
+
+// ─── H102.3 circularMotion `satellite`: v = √(GM/r), T = 2πr/v ──────────────
+
+const GRAV = 6.674e-11;
+
+const orbit: ModuleDef = (() => {
+  const [M, r] = [5.97e24, 7.0e6];
+  const v = Math.sqrt((GRAV * M) / r);
+  return {
+    id: 'g.s11-circular-gravitation-orbit',
+    title: 'A satellite in orbit',
+    use: 'Use this for “A satellite circles Earth (5.97 × 10²⁴ kg) 7.0 × 10⁶ m from its center. How fast does it go, and how long is one orbit?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The orbit is a circle, and gravity is the only force: it supplies the centripetal force.',
+      'GMm/r² = mv²/r, so v = √(GM/r), with G = 6.674 × 10⁻¹¹ N·m²/kg²; the satellite’s mass cancels.',
+      'r is measured from the center of the planet, not from its surface.',
+    ],
+    variables: [
+      q('M', 'M', 'Central mass', 'kg', 1e10, 1e32, 1, { scientific: true }),
+      q('r', 'r', 'Orbit radius', 'm', 1, 1e13, 1, { scientific: true }),
+      q('v', 'v', 'Orbital speed', 'm/s', 1e-3, 1e7, 0.1),
+      q('T', 'T', 'Period', 's', 1, 1e11, 1, { scientific: true, units: ['s'] }),
+    ],
+    ...rules(
+      rule(
+        'v = √(GM/r)',
+        '{v} = √(6.674 × 10⁻¹¹ × {M}/{r})',
+        (x) => (x.v! * x.v! * x.r!) / (GRAV * x.M!) - 1,
+        {
+          v: [
+            (x) => Math.sqrt(Math.max(0, div(GRAV * x.M!, x.r!) ?? 0)),
+            '√(6.674 × 10⁻¹¹ × {M}/{r})',
+            'G times the central mass, over r, then the square root.',
+          ],
+          r: [
+            (x) => div(GRAV * x.M!, x.v! * x.v!),
+            '6.674 × 10⁻¹¹ × {M}/({v}²)',
+            'Square both sides: r = GM/v².',
+          ],
+          M: [
+            (x) => div(x.v! * x.v! * x.r!, GRAV),
+            '{v}² × {r}/(6.674 × 10⁻¹¹)',
+            'Square both sides: M = v²r/G.',
+          ],
+        },
+      ),
+      rule('T = 2πr/v', '{T} = 2π × {r}/{v}', (x) => (x.T! * x.v!) / (2 * Math.PI * x.r!) - 1, {
+        T: [
+          (x) => div(2 * Math.PI * x.r!, x.v!),
+          '2π × {r}/{v}',
+          'Once round the circle, 2πr, at speed v.',
+        ],
+        v: [
+          (x) => div(2 * Math.PI * x.r!, x.T!),
+          '2π × {r}/{T}',
+          'Once round the circle in one period.',
+        ],
+        r: [
+          (x) => (x.v! * x.T!) / (2 * Math.PI),
+          '{v} × {T}/(2π)',
+          'The distance in one period is 2πr.',
+        ],
+      }),
+    ),
+    example: { M, r, v, T: (2 * Math.PI * r) / v },
+    startWith: ['M', 'r'],
+    representation: {
+      kind: 'circularMotion',
+      mode: 'satellite',
+      central: 'M',
+      radius: 'r',
+      speed: 'v',
+      period: 'T',
+      body: 'earth',
+      bodyRadius: 6.371e6,
+    },
+  };
+})();
+
+export const HS2C_GALLERY_MODULES: ModuleDef[] = [oneAfter, impulse, orbit];
 
 export const HS2C_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -4,6 +4,7 @@
  * `NumOrVar` field is a fixed number or a variable id; every other string is a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
+import type { PlanetName } from './typesPhysics8';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -131,11 +132,16 @@ export interface FreeBodySpec {
  *   F = Gm₁m₂/r² (drag the second mass for r: the arrows follow the inverse square);
  * - `kepler`: an orbit as an ellipse of `semiMajor` (AU) and `eccentricity`, the sun at one
  *   focus and the empty focus marked, perihelion and aphelion, and two sectors swept in equal
- *   times (1/8 of the period each, from Kepler's equation) with equal areas; T² = a³.
+ *   times (1/8 of the period each, from Kepler's equation) with equal areas; T² = a³;
+ * - `satellite` (H102): a satellite on a circular orbit of `radius` r (m) round a `central`
+ *   mass M (kg): v = √(GM/r) along the orbit, GM/r² toward the center, the period T = 2πr/v
+ *   (`speed`, `acceleration` and `period` name them). The central `body` is drawn in its
+ *   colors (default Earth), to scale when its `bodyRadius` (m) is given. Drag the satellite
+ *   for r.
  */
 export interface CircularMotionSpec {
   kind: 'circularMotion';
-  mode: 'string' | 'car' | 'gravity' | 'kepler';
+  mode: 'string' | 'car' | 'gravity' | 'kepler' | 'satellite';
   radius?: NumOrVar;
   speed?: NumOrVar;
   mass?: NumOrVar;
@@ -154,6 +160,10 @@ export interface CircularMotionSpec {
   /** Kepler: the closest and farthest distances from the sun (AU). */
   perihelion?: string;
   aphelion?: string;
+  /** Satellite: the central mass (kg), its look and its radius (m) for drawing to scale. */
+  central?: NumOrVar;
+  body?: PlanetName | 'sun';
+  bodyRadius?: NumOrVar;
   fixed?: boolean;
 }
 
@@ -518,6 +528,8 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.eccentricity,
         r.perihelion,
         r.aphelion,
+        r.central,
+        r.bodyRadius,
       );
     case 'collision':
       return ids(

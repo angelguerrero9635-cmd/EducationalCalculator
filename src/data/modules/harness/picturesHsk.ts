@@ -9,6 +9,7 @@ import * as hm from '@/components/module/reps/hskMath';
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
+import { satelliteIssues } from './picturesHs2c';
 
 const {
   collisionOf,
@@ -140,6 +141,10 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'circularMotion': {
+      if (rep.mode === 'satellite') {
+        out.push(...satelliteIssues(rep, si));
+        break;
+      }
       if (rep.mode === 'gravity') {
         const [m1, m2] = (rep.masses ?? [1, 1]).map((x) => read(si, x));
         const d = read(si, rep.distance);

@@ -24,6 +24,7 @@ import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
 import { hslSpecVars } from '../typesHsl';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
+import { hs2cSpecVars } from '../typesHs2c';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -546,6 +547,8 @@ function representationVars(r: Representation): string[] {
     case 'circularMotion':
     case 'freeBody':
       return hskSpecVars(r);
+    case 'impulse':
+      return hs2cSpecVars(r);
   }
 }
 

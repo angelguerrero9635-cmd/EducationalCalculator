@@ -109,6 +109,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |
 | `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce  | Physics momentum (H62)              |
+| `impulse`          | p₀, p and Δp arrows; F–t rectangle of area Δp; a slower stop dashed   | Physics momentum (H102)             |
 | `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA     | Physics simple machines (H63)       |
 | `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot   | Physics thermodynamics (H64)        |
 | `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits   | Physics optics, telescopes (H66)    |
@@ -236,6 +237,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
 | `spectrum`         | `lines`, `photon`                        | H, He, Na lines, emission or absorption, shifted by z; E = hf (H70)           |
 | `collision`        | `type: 'general'`, `lost`                | v₁′ given, v₂′ from momentum; each cart's KE; KE lost (H102)                  |
+| `circularMotion`   | `mode: 'satellite'`, `central`           | orbit of r round M: v = √(GM/r), GM/r², T = 2πr/v; body to scale (H102)       |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
