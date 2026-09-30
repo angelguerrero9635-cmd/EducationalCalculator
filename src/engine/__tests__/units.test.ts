@@ -57,6 +57,8 @@ describe('unit conversions (exact definitions)', () => {
   it('module content only uses registered units or fixed labels', () => {
     const fixed = [
       '%',
+      'bp',
+      'per day',
       'per 1,000',
       'years',
       'cubes',
@@ -101,13 +103,28 @@ describe('unit conversions (exact definitions)', () => {
       'amp-turns',
       'turns',
       'clips',
+      // Grades 9–12 science labels (no conversion offered)
+      'mol/L',
+      'g/mol',
+      'μC',
+      'kJ/mol',
+      'pm',
+      'kg·m/s',
+      'dB',
+      'Wb',
+      'W/m²',
+      'T',
+      'N/m',
+      'N/C',
     ];
-    for (const m of MODULES) {
-      for (const v of m.variables) {
-        if (v.unit)
-          expect([v.unit, !!getUnit(v.unit) || fixed.includes(v.unit)]).toEqual([v.unit, true]);
-      }
-    }
+    const unknown = new Set(
+      MODULES.flatMap((m) =>
+        m.variables.flatMap((v) =>
+          v.unit && !getUnit(v.unit) && !fixed.includes(v.unit) ? [`${m.id}: ${v.unit}`] : [],
+        ),
+      ),
+    );
+    expect([...unknown]).toEqual([]);
   });
 });
 

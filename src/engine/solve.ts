@@ -148,6 +148,19 @@ function affineOf(rel: Relation): Affine | undefined {
     const x = at(p);
     ok = Math.abs(x - lin) <= 1e-9 * (1 + Math.abs(lin));
   }
+  // A huge constant hides a product at those small points (f·λ − 3 × 10¹⁷ looks flat): a
+  // straight-line sum has f(p + q) − f(p) − f(q) + f(0) = 0 at any size, a product does not.
+  for (const size of [1e3, 1e6]) {
+    if (!ok) break;
+    const p = Object.fromEntries(rel.vars.map((id, k) => [id, size * (k + 1)]));
+    const q = Object.fromEntries(rel.vars.map((id, k) => [id, size * (2 * k + 3)]));
+    const pq = Object.fromEntries(rel.vars.map((id) => [id, p[id]! + q[id]!]));
+    const [a, b, ab] = [at(p), at(q), at(pq)];
+    const second = ab - a - b + c0;
+    ok =
+      Number.isFinite(second) &&
+      Math.abs(second) <= 1e-9 * (Math.abs(ab) + Math.abs(a) + Math.abs(b) + Math.abs(c0));
+  }
   const out = ok ? { c0, coef } : null;
   affineCache.set(rel, out);
   return out ?? undefined;
