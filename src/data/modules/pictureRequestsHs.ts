@@ -715,12 +715,27 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn (group HI): kind lewisStructure (typesHsi.ts, reps/LewisStructure.tsx, data in reps/lewis.ts), four modes. 'molecule' { atoms? ({ H: 'h', O: 'o' }: the structure is looked up from the counts), charge?, formula? (fixed instead, \"H2O\", \"NH4+\"), valence?, bonding? (shared pairs), lone? (lone pairs), dots? (shared pairs as dots) }: symbols with shared pairs as lit lines and lone pairs as dots, an ion in brackets with its charge; drawn: H₂, H₂O, CO₂, NH₃, CH₄, O₂, N₂, F₂, Cl₂, HF, HCl, CH₂O, HCN, NH₄⁺, H₃O⁺, OH⁻, CN⁻ (other counts name these in the caption); every atom's octet (hydrogen's 2) and the valence total are checked. 'ionic' { metal (groups 1, 2, Al), nonmetal (F, Cl, Br, I, O, S, N, P), metals?, nonmetals? (ion counts), transferred? }: the atoms with their valence dots, arrows carrying each metal electron to a nonmetal, then the ions in brackets with charges, the gained electrons lit, and the formula; counts whose charges don't balance (or past 6 ions) draw the formula unit faded with the reason. 'metallic' { element, atoms (1–24), electrons? }: metal ions (Na⁺, Al³⁺ …) with every freed electron scattered among them. 'hydrocarbon' { carbons (1–8), bond? ('single' | 'double' | 'triple', between the first two carbons), hydrogens? }: the structural formula with every H, named (propane, 1-butene, ethyne). No handles: give the page `sliders: true`. Examples: { kind: 'lewisStructure', mode: 'molecule', atoms: { H: 'h', O: 'o' }, valence: 'V' } with V = h + 6 × o; { kind: 'lewisStructure', mode: 'ionic', metal: 'Mg', nonmetal: 'Cl', metals: 'a', nonmetals: 'b', transferred: 't' }; { kind: 'lewisStructure', mode: 'metallic', element: 'Na', atoms: 'n', electrons: 'e' }; { kind: 'lewisStructure', mode: 'hydrocarbon', carbons: 'n', bond: 'double', hydrogens: 'h' }.",
   },
-  ask(
-    'H48',
-    'vsepr',
-    'Ball-and-stick shapes with bond angles and dipole arrows; hydrogen bonds between water molecules',
-    ['s.10.molecular-shape'],
-  ),
+  {
+    ...ask(
+      'H48',
+      'vsepr',
+      'Ball-and-stick shapes with bond angles and dipole arrows; hydrogen bonds between water molecules',
+      ['s.10.molecular-shape'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-molecular-shape-water',
+      'g.s10-molecular-shape-ammonia',
+      'g.s10-molecular-shape-methane',
+      'g.s10-molecular-shape-trigonal-planar',
+      'g.s10-molecular-shape-linear',
+      'g.s10-molecular-shape-bent-three-domains',
+      'g.s10-molecular-shape-hydrogen-bonds',
+      'g.s10-molecular-shape-hydrogen-bonds-four',
+    ],
+    notes:
+      "Drawn (group HI): kind vsepr (typesHsi.ts, reps/Vsepr.tsx, geometry in reps/vseprGeo.ts). mode 'shape' (default) { bonded (2–4), lone (0–2; 2 to 4 domains in all), angle? (checked), polar? }: a ball-and-stick example molecule for the shape (linear CO₂ 180°, trigonal planar BF₃ 120°, bent SO₂ 119°, tetrahedral CH₄ 109.5°, trigonal pyramidal NH₃ 107°, bent H₂O 104.5°), lone pairs as lobes with their two dots, the angle as a true 3-D arc between two bonds, four-domain shapes turned a little so no atom hides another; with polar, crossed bond-dipole arrows toward the more electronegative atom and the net dipole beside the molecule (none when the dipoles cancel; the caption says polar or nonpolar). mode 'hbonds' { molecules (2–5), bonds? (checked, molecules − 1) }: water molecules around a middle one, dotted hydrogen bonds from an H to an O's lone pair (two accepted, two donated), δ− and δ+ on the middle molecule. The step phrase \"bond angle with {b} bonded atoms and {l} lone pairs\" is taught to the harness. No handles: give the page `sliders: true`. Examples: { kind: 'vsepr', bonded: 'b', lone: 'l', angle: 'a', polar: true } with d = b + l; { kind: 'vsepr', mode: 'hbonds', molecules: 'n', bonds: 'k' }.",
+  },
   ask(
     'H49',
     'reaction',

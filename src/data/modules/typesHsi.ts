@@ -176,7 +176,28 @@ export type LewisStructureSpec = { kind: 'lewisStructure' } & (
     }
 );
 
-export type HsiSpec = UnitChainSpec | AtomModelSpec | OrbitalDiagramSpec | LewisStructureSpec;
+/**
+ * Molecular shape (H48). `shape` (the default): a ball-and-stick molecule from the `bonded`
+ * atoms (2–4) and `lone` pairs (0–2) on the central atom, 2 to 4 domains in all: linear,
+ * trigonal planar, bent, tetrahedral or trigonal pyramidal, drawn as an example molecule (CO₂,
+ * BF₃, SO₂, CH₄, NH₃, H₂O) with its lone pairs as lobes and the bond angle marked; `angle` is
+ * checked; `polar` adds the bond dipoles and the net dipole. `hbonds`: `molecules` water
+ * molecules (2–5) around one in the middle, joined by dotted hydrogen bonds (`bonds`, checked:
+ * one fewer than the molecules).
+ */
+export type VseprSpec =
+  | {
+      kind: 'vsepr';
+      mode?: 'shape';
+      bonded: NumOrVar;
+      lone: NumOrVar;
+      angle?: string;
+      polar?: boolean;
+    }
+  | { kind: 'vsepr'; mode: 'hbonds'; molecules: NumOrVar; bonds?: string };
+
+export type HsiSpec =
+  UnitChainSpec | AtomModelSpec | OrbitalDiagramSpec | LewisStructureSpec | VseprSpec;
 
 /** Every variable id a group I spec refers to (for the module tests). */
 export function hsiSpecVars(r: HsiSpec): string[] {
@@ -194,6 +215,8 @@ export function hsiSpecVars(r: HsiSpec): string[] {
       return r.mode === 'boxes'
         ? ids(r.element, r.electrons, r.unpaired)
         : ids(r.upper, r.lower, r.energy, r.wavelength);
+    case 'vsepr':
+      return r.mode === 'hbonds' ? ids(r.molecules, r.bonds) : ids(r.bonded, r.lone, r.angle);
     case 'lewisStructure':
       switch (r.mode) {
         case 'molecule':

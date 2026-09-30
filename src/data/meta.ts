@@ -139,6 +139,7 @@ const PICTURE_NAMES: Record<string, string> = {
   atomModel: 'Bohr model of an atom',
   orbitalDiagram: 'orbital boxes or energy levels',
   lewisStructure: 'Lewis structure or bonding diagram',
+  vsepr: 'molecule shape with its bond angle',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

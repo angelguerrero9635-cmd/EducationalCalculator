@@ -33,6 +33,8 @@ import {
   valenceElectrons,
 } from '@/components/module/reps/lewis';
 
+import { hydrogenBonds, shapeOf } from '@/components/module/reps/vseprGeo';
+
 import type { ChemSpec } from '../typesChem';
 import type { HsiSpec } from '../typesHsi';
 
@@ -152,6 +154,28 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       const lam = num(rep.wavelength);
       if (lam !== undefined && !near(lam, photonWavelength(en ?? E), 1e-3))
         out.push(`wavelength ${photonWavelength(en ?? E)} nm, the value shows ${lam}`);
+      break;
+    }
+    case 'vsepr': {
+      if (rep.mode === 'hbonds') {
+        const n = num(rep.molecules);
+        if (n !== undefined && (n !== Math.round(n) || n < 2 || n > 5))
+          out.push(`${n} water molecules (whole, 2 to 5 drawn)`);
+        const k = num(rep.bonds);
+        if (n !== undefined && k !== undefined && k !== hydrogenBonds(n))
+          out.push(`${hydrogenBonds(n)} hydrogen bonds drawn, the value shows ${k}`);
+        break;
+      }
+      const [b, l] = [num(rep.bonded), num(rep.lone)];
+      if (b === undefined || l === undefined) break;
+      const shape = shapeOf(b, l);
+      if (!shape || b !== Math.round(b) || l !== Math.round(l)) {
+        out.push(`${b} bonded atoms and ${l} lone pairs: no shape drawn (2 to 4 domains)`);
+        break;
+      }
+      const a = num(rep.angle);
+      if (a !== undefined && !near(a, shape.angle, 1e-9))
+        out.push(`${shape.name} is drawn at ${shape.angle}°, the value shows ${a}`);
       break;
     }
     case 'lewisStructure': {

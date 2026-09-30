@@ -9,6 +9,7 @@ import { AtomModel } from './AtomModel';
 import { LewisStructure } from './LewisStructure';
 import { OrbitalDiagram } from './OrbitalDiagram';
 import { UnitChain } from './UnitChain';
+import { Vsepr } from './Vsepr';
 
 export function HsiRep({ spec, calc }: { spec: HsiSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -20,5 +21,7 @@ export function HsiRep({ spec, calc }: { spec: HsiSpec; calc: Calculator }) {
       return <OrbitalDiagram spec={spec} calc={calc} />;
     case 'lewisStructure':
       return <LewisStructure spec={spec} calc={calc} />;
+    case 'vsepr':
+      return <Vsepr spec={spec} calc={calc} />;
   }
 }

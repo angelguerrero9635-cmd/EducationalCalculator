@@ -253,6 +253,8 @@ const light = {
   /** A periodic trend's shading (darker for more) and the symbols on its darkest cells. */
   trendShade: '#0F766E',
   onTrendShade: '#FFFFFF',
+  /** A bond dipole's crossed arrow. */
+  dipole: '#C2410C',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -434,6 +436,7 @@ const dark: Palette = {
   atomElectron: '#5B9BF8',
   trendShade: '#2DD4BF',
   onTrendShade: '#0D0F14',
+  dipole: '#FB923C',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

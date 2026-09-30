@@ -90,6 +90,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `atomModel`        | Bohr model: every proton and neutron, electrons on shells; ions       | Chemistry atoms, isotopes (H44)     |
 | `orbitalDiagram`   | orbital boxes by Aufbau and Hund; hydrogen levels and emission lines  | Chemistry electrons, spectra (H45)  |
 | `lewisStructure`   | electron dots: molecules, ions, ionic transfer, metals, hydrocarbons  | Chemistry bonding, organic (H47)    |
+| `vsepr`            | ball-and-stick VSEPR shapes, bond angle, dipoles; hydrogen bonds      | Chemistry molecular shape (H48)     |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

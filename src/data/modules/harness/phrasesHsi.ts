@@ -3,6 +3,7 @@
  * (`evaluate.ts`). By the time they run, × is *, − is - and superscripts are powers. Test-only.
  */
 import { trendValue } from '@/components/module/reps/chemTrends';
+import { shapeOf } from '@/components/module/reps/vseprGeo';
 import { configuration, unpaired, valenceOf } from '@/components/module/reps/electrons';
 
 const NUM = String.raw`-?\d+(?:\.\d+)?(?:e[-+]?\d+)?`;
@@ -17,6 +18,11 @@ export const HSI_PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ],
   [new RegExp(`unpaired electrons of Z = (${NUM})`), (z) => unpaired(configuration(z))],
   // Periodic-trend values, looked up by atomic number.
+  // The VSEPR bond angle from the bonded atoms and lone pairs on the central atom.
+  [
+    new RegExp(`bond angle with (${NUM}) bonded atoms and (${NUM}) lone pairs`),
+    (b, l) => shapeOf(b, l)?.angle ?? NaN,
+  ],
   [new RegExp(`atomic radius of Z = (${NUM})`), (z) => trendValue('radius', z) ?? NaN],
   [new RegExp(`ionization energy of Z = (${NUM})`), (z) => trendValue('ionization', z) ?? NaN],
   [

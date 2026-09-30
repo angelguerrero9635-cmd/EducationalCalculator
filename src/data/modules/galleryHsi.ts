@@ -12,6 +12,7 @@ import {
 } from '@/components/module/reps/electrons';
 import { trendValue } from '@/components/module/reps/chemTrends';
 import { hydrogensOf, ionic, valenceElectrons } from '@/components/module/reps/lewis';
+import { shapeOf } from '@/components/module/reps/vseprGeo';
 import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -1365,11 +1366,194 @@ BONDING.push(
   ),
 );
 
+// ─── H48 vsepr ───────────────────────────────────────────────────────────────
+
+/** d = b + l electron domains, and the bond angle from b and l (worked forward only). */
+const SHAPE_RULES: Rule[] = [
+  {
+    relation: {
+      id: 'domains',
+      display: '{d} = {b} + {l}',
+      vars: ['d', 'b', 'l'],
+      residual: (v) => v.d! - v.b! - v.l!,
+      solve: { d: (v) => v.b! + v.l!, b: (v) => v.d! - v.l!, l: (v) => v.d! - v.b! },
+    },
+    steps: {
+      d: {
+        expr: '{b} + {l}',
+        how: 'Every bonded atom and every lone pair is one electron domain.',
+      },
+      b: { expr: '{d} − {l}', how: 'Take the lone pairs away from the domains.' },
+      l: { expr: '{d} − {b}', how: 'Take the bonded atoms away from the domains.' },
+    },
+  },
+  {
+    relation: {
+      id: 'bond angle',
+      display: '{a} = bond angle with {b} bonded atoms and {l} lone pairs',
+      vars: ['a', 'b', 'l'],
+      residual: (v) => v.a! - (shapeOf(v.b!, v.l!)?.angle ?? NaN),
+      solve: { a: (v) => shapeOf(v.b!, v.l!)?.angle, b: () => undefined, l: () => undefined },
+    },
+    steps: {
+      a: {
+        expr: 'bond angle with {b} bonded atoms and {l} lone pairs',
+        how: 'The domains spread as far apart as they can; lone pairs take more room and squeeze the bonds together.',
+      },
+    },
+  },
+];
+
+const shapeDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  b: number,
+  l: number,
+  polar = true,
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions,
+  variables: [
+    whole('b', 'b', 'Bonded atoms on the central atom', 2, 4),
+    whole('l', 'l', 'Lone pairs on the central atom', 0, 2),
+    whole('d', 'd', 'Electron domains', 2, 4),
+    quantity('a', 'θ', 'Bond angle', '°', 90, 180, 0.1),
+  ],
+  ...rules(...SHAPE_RULES),
+  example: { b, l, d: b + l, a: shapeOf(b, l)!.angle },
+  startWith: ['b', 'l'],
+  sliders: true,
+  representation: {
+    kind: 'vsepr',
+    bonded: 'b',
+    lone: 'l',
+    angle: 'a',
+    ...(polar ? { polar } : {}),
+  },
+});
+
+const SHAPES_DEMOS: ModuleDef[] = [
+  shapeDemo(
+    'g.s10-molecular-shape-water',
+    'Bent: water',
+    'Use this to predict a molecule’s shape and bond angle from its bonded atoms and lone pairs.',
+    [
+      'Count the atoms bonded to the central atom and its lone pairs.',
+      'A double bond counts as one domain, like a single bond.',
+    ],
+    2,
+    2,
+  ),
+  shapeDemo(
+    'g.s10-molecular-shape-ammonia',
+    'Trigonal pyramidal: ammonia',
+    'Use this for a central atom with three bonds and one lone pair.',
+    [
+      'The lone pair takes the fourth corner of a tetrahedron.',
+      'It pushes the three bonds down to 107°.',
+    ],
+    3,
+    1,
+  ),
+  shapeDemo(
+    'g.s10-molecular-shape-methane',
+    'Tetrahedral: methane',
+    'Use this for four bonds and no lone pairs: the tetrahedron.',
+    [
+      'Four domains point to the corners of a tetrahedron, 109.5° apart.',
+      'Wedge-shaped views show two bonds in the page.',
+    ],
+    4,
+    0,
+  ),
+  shapeDemo(
+    'g.s10-molecular-shape-trigonal-planar',
+    'Trigonal planar: boron trifluoride',
+    'Use this for three bonds and no lone pairs: flat, 120° apart.',
+    ['Three domains spread out flat around the central atom.', 'The equal B–F dipoles cancel.'],
+    3,
+    0,
+  ),
+  shapeDemo(
+    'g.s10-molecular-shape-linear',
+    'Linear: carbon dioxide',
+    'Use this for two domains: a straight molecule, which is nonpolar when both ends match.',
+    ['Two domains point opposite ways, 180° apart.', 'Each C=O bond is polar, but the two cancel.'],
+    2,
+    0,
+  ),
+  shapeDemo(
+    'g.s10-molecular-shape-bent-three-domains',
+    'Bent with three domains: sulfur dioxide',
+    'Use this for two bonds and one lone pair: bent, a little under 120°.',
+    [
+      'Three domains are trigonal planar; the lone pair is one of them.',
+      'The molecule is bent and polar.',
+    ],
+    2,
+    1,
+  ),
+];
+
+const hbondDemo = (id: string, title: string, use: string, n: number): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions: [
+    'Water is bent and polar: its O is partly negative and its H atoms partly positive.',
+    'A hydrogen bond is an attraction between molecules, much weaker than a covalent bond.',
+  ],
+  variables: [whole('n', 'n', 'Water molecules', 2, 5), whole('k', 'k', 'Hydrogen bonds', 1, 4)],
+  ...rules({
+    relation: {
+      id: 'k = n − 1',
+      display: '{k} = {n} − 1',
+      vars: ['k', 'n'],
+      residual: (v) => v.k! - (v.n! - 1),
+      solve: { k: (v) => v.n! - 1, n: (v) => v.k! + 1 },
+    },
+    steps: {
+      k: {
+        expr: '{n} − 1',
+        how: 'Each molecule around the middle one is held to it by one hydrogen bond.',
+      },
+      n: {
+        expr: '{k} + 1',
+        how: 'One molecule for each hydrogen bond, and the one in the middle.',
+      },
+    },
+  }),
+  example: { n, k: n - 1 },
+  startWith: ['n'],
+  sliders: true,
+  representation: { kind: 'vsepr', mode: 'hbonds', molecules: 'n', bonds: 'k' },
+});
+
+SHAPES_DEMOS.push(
+  hbondDemo(
+    'g.s10-molecular-shape-hydrogen-bonds',
+    'Hydrogen bonds between water molecules',
+    'Use this to see hydrogen bonds: the attraction between water molecules.',
+    3,
+  ),
+  hbondDemo(
+    'g.s10-molecular-shape-hydrogen-bonds-four',
+    'Four hydrogen bonds on one molecule',
+    'Use this for the most hydrogen bonds one water molecule can make: four.',
+    5,
+  ),
+);
+
 export const HSI_GALLERY_MODULES: ModuleDef[] = [
   ...MEASUREMENT,
   ...ATOMS,
   ...ORBITALS,
   ...TRENDS_DEMOS,
   ...BONDING,
+  ...SHAPES_DEMOS,
 ];
 export const HSI_GALLERY_LAYOUTS: LayoutDef[] = [];
