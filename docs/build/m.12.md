@@ -12,6 +12,8 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   `~capture`.
 - `m.12.sampling-distributions` (3): main (x̄), `~proportion` (p̂), `~counts` (binomial).
 - `m.12.chi-square` (2): main (goodness of fit, 3 categories), `~independence` (2 × 3 table).
+- `m.12.conics` (5): main (ellipse), `~parabola`, `~hyperbola`, `~identify` (sort), `~cone`
+  (explore).
 
 ## Waiting
 
@@ -37,6 +39,9 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   a 1 : 2 : 1 ratio; the independence table is grade (11, 12) by how students get to school
   (walk, bus, car). The expected counts are shown in the steps' work lines, not as values (the
   10-value limit).
+
+- **Conic centers are standalone.** On the ellipse and hyperbola pages h and k only place the
+  curve (c, e and the slope come from a and b), so they are marked `standalone`.
 
 ## Shared needs found while building
 

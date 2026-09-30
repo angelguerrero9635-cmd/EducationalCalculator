@@ -43,7 +43,7 @@ function rel(
   display: string,
   vars: string[],
   residual: (v: Values) => number,
-  solves: Record<string, [Solver, string, string]>,
+  solves: Record<string, [Solver, StepText['expr'], string]>,
   extra: Partial<Relation> & { search?: string[] } = {},
 ): Rel {
   const { search = [], ...more } = extra;
@@ -1001,4 +1001,202 @@ const MATH_12_STATS: ModuleDef[] = [
   },
 ];
 
-export const MATH_12_MODULES: ModuleDef[] = [...MATH_12_STATS];
+// ── Conics ──
+
+const real = (id: string, symbol: string, name: string, min: number, max: number) =>
+  V(id, symbol, name, { min, max, step: 0.01 });
+
+const CENTER_WHY = 'The center only places the curve; its shape, c and the rest come from a and b.';
+
+const MATH_12_CONICS: ModuleDef[] = [
+  // ── m.12.conics (G-GPE.3) ──
+  {
+    id: 'm.12.conics',
+    assumptions: [
+      'a goes with x and b with y: a > b is a wide ellipse, a < b a tall one.',
+      'The foci lie on the long axis, c from the center, with c² = a² − b² (the larger square first).',
+      'From any point on the ellipse, the distances to the two foci add to the long axis, 2a or 2b.',
+    ],
+    variables: [
+      real('h', 'h', 'Center, x', -100, 100),
+      real('k', 'k', 'Center, y', -100, 100),
+      real('a', 'a', 'Half-width', 0.5, 20),
+      real('b', 'b', 'Half-height', 0.5, 20),
+      V('c', 'c', 'Center to each focus', { min: 0, max: 20, step: 0.01, derived: true }),
+      V('e', 'e', 'Eccentricity', { min: 0, max: 1, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'c = √|a² − b²|',
+        '{c} = √(|{a}² − {b}²|)',
+        ['c', 'a', 'b'],
+        (v) => v.c! - Math.sqrt(Math.abs(v.a! ** 2 - v.b! ** 2)),
+        {
+          c: [
+            (v) => Math.sqrt(Math.abs(v.a! ** 2 - v.b! ** 2)),
+            (v: Values) => (v.a! >= v.b! ? '√({a}² − {b}²)' : '√({b}² − {a}²)'),
+            'The long half-axis squared is c² plus the short one squared: take the smaller square from the larger.',
+          ],
+        },
+      ),
+      {
+        relation: {
+          id: 'e = c ÷ long half-axis',
+          display: '{e} = {c} ÷ max({a}, {b})',
+          vars: ['e', 'c', 'a', 'b'],
+          residual: (v) => v.e! * Math.max(v.a!, v.b!) - v.c!,
+          solve: {
+            e: (v) => div(v.c!, Math.max(v.a!, v.b!)),
+            c: () => undefined,
+            a: () => undefined,
+            b: () => undefined,
+          },
+          check: (v) => `${fmt(v.e!)} = ${fmt(v.c!)} ÷ ${fmt(Math.max(v.a!, v.b!))}`,
+        },
+        steps: {
+          e: {
+            expr: (v) => (v.a! >= v.b! ? '{c} ÷ {a}' : '{c} ÷ {b}'),
+            how: 'Eccentricity is c over the long half-axis: 0 is a circle, near 1 very flat.',
+          },
+        },
+      },
+    ),
+    standalone: { vars: ['h', 'k'], why: CENTER_WHY },
+    example: { h: 1, k: -2, a: 5, b: 3, c: 4, e: 0.8 },
+    startWith: ['h', 'k', 'a', 'b'],
+    equation: '{(x − {h})²}/{a}^2 + {(y − {k})²}/{b}^2 = 1',
+    representation: {
+      kind: 'conicGraph',
+      conic: 'ellipse',
+      h: 'h',
+      k: 'k',
+      a: 'a',
+      b: 'b',
+      c: 'c',
+    },
+  },
+  {
+    id: 'm.12.conics~parabola',
+    title: 'Parabola: focus and directrix',
+    use: 'Use this for “Find the focus and directrix of (x − 2)² = 8(y + 1).”',
+    assumptions: [
+      'In (x − h)² = 4p(y − k), the vertex is (h, k) and the number before (y − k) is 4p.',
+      'The focus is p above the vertex and the directrix p below it (p < 0 opens down).',
+      'Every point on the parabola is as far from the focus as from the directrix.',
+    ],
+    variables: [
+      real('h', 'h', 'Vertex, x', -100, 100),
+      real('k', 'k', 'Vertex, y', -100, 100),
+      V('q', '4p', 'Number before (y − k)', { min: -100, max: 100, step: 0.01 }),
+      V('p', 'p', 'Vertex to focus', { min: -25, max: 25, step: 0.01, derived: true }),
+      real('F', 'F', 'Focus, y', -200, 200),
+      real('L', 'L', 'Directrix y =', -200, 200),
+      real('x', 'x', 'Point, x', -1000, 1000),
+      real('y', 'y', 'Point, y', -100000, 100000),
+    ],
+    ...rels(
+      rel('p = 4p ÷ 4', '{p} = {q} ÷ 4', ['p', 'q'], (v) => 4 * v.p! - v.q!, {
+        p: [(v) => v.q! / 4, '{q} ÷ 4', 'The number before (y − k) is 4p: divide it by 4.'],
+      }),
+      rel('F = k + p', '{F} = {k} + {p}', ['F', 'k', 'p'], (v) => v.F! - v.k! - v.p!, {
+        F: [(v) => v.k! + v.p!, '{k} + {p}', 'The focus is p from the vertex, along the axis.'],
+      }),
+      rel('L = k − p', '{L} = {k} − {p}', ['L', 'k', 'p'], (v) => v.L! - v.k! + v.p!, {
+        L: [
+          (v) => v.k! - v.p!,
+          '{k} − {p}',
+          'The directrix is p from the vertex on the other side.',
+        ],
+      }),
+      rel(
+        '(x − h)² = 4p(y − k)',
+        '({x} − {h})² = {q} × ({y} − {k})',
+        ['y', 'x', 'h', 'q', 'k'],
+        (v) => (v.x! - v.h!) ** 2 - v.q! * (v.y! - v.k!),
+        {
+          y: [
+            (v) => (v.q === 0 ? undefined : v.k! + (v.x! - v.h!) ** 2 / v.q!),
+            '{k} + ({x} − {h})² ÷ {q}',
+            'Divide both sides by 4p, then add k.',
+          ],
+          x: [
+            (v) => {
+              const r = v.q! * (v.y! - v.k!);
+              return r < 0 ? undefined : [v.h! + Math.sqrt(r), v.h! - Math.sqrt(r)];
+            },
+            '{h} ± √({q} × ({y} − {k}))',
+            'Take the square root of both sides (two points share each y), then add h.',
+          ],
+        },
+      ),
+    ),
+    example: { h: 2, k: -1, q: 8, p: 2, F: 1, L: -3, x: 6, y: 1 },
+    startWith: ['x', 'h', 'k', 'q'],
+    equation: '(x − {h})² = {q}(y − {k})',
+    pictureLabels: ['F', 'L'],
+    representation: {
+      kind: 'conicGraph',
+      conic: 'parabola',
+      axis: 'vertical',
+      h: 'h',
+      k: 'k',
+      p: 'p',
+      c: 'p',
+      point: { x: 'x', y: 'y' },
+    },
+  },
+  {
+    id: 'm.12.conics~hyperbola',
+    title: 'Hyperbola: foci and asymptotes',
+    use: 'Use this for “Find the foci and asymptotes of x²/9 − y²/16 = 1.”',
+    assumptions: [
+      'The x term is positive, so the hyperbola opens left and right; the vertices are a from the center.',
+      'The foci are c from the center, with c² = a² + b².',
+      'The asymptotes pass through the center with slopes ±b/a; the branches get closer and closer to them.',
+    ],
+    variables: [
+      real('h', 'h', 'Center, x', -100, 100),
+      real('k', 'k', 'Center, y', -100, 100),
+      real('a', 'a', 'Center to vertex', 0.5, 20),
+      real('b', 'b', 'Half the box’s height', 0.5, 20),
+      V('c', 'c', 'Center to each focus', { min: 0, max: 30, step: 0.01, derived: true }),
+      V('s', 's', 'Asymptote slope (±)', { min: 0, max: 40, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      derive(
+        'c = √(a² + b²)',
+        '{c} = √({a}² + {b}²)',
+        'c',
+        ['a', 'b'],
+        (v) => Math.hypot(v.a!, v.b!),
+        '√({a}² + {b}²)',
+        'For a hyperbola, c² is the sum of the squares.',
+      ),
+      derive(
+        's = b ÷ a',
+        '{s} = {b} ÷ {a}',
+        's',
+        ['b', 'a'],
+        (v) => div(v.b!, v.a!),
+        '{b} ÷ {a}',
+        'The asymptotes are the diagonals of the a-by-b box: rise b over run a.',
+      ),
+    ),
+    standalone: { vars: ['h', 'k'], why: CENTER_WHY },
+    example: { h: 0, k: 0, a: 3, b: 4, c: 5, s: 4 / 3 },
+    startWith: ['h', 'k', 'a', 'b'],
+    equation: '{(x − {h})²}/{a}^2 − {(y − {k})²}/{b}^2 = 1',
+    representation: {
+      kind: 'conicGraph',
+      conic: 'hyperbola',
+      axis: 'horizontal',
+      h: 'h',
+      k: 'k',
+      a: 'a',
+      b: 'b',
+      c: 'c',
+    },
+  },
+];
+
+export const MATH_12_MODULES: ModuleDef[] = [...MATH_12_STATS, ...MATH_12_CONICS];
