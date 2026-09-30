@@ -749,4 +749,300 @@ const SIMILARITY: ModuleDef[] = [
   }),
 ];
 
-export const MATH_10_MODULES: ModuleDef[] = [...SIMILARITY, ...TRIG];
+// ─── m.10.conditional-probability ────────────────────────────────────────────
+
+/** A count in a table (whole, 0 to 1000). */
+const count = (id: string, name: string, max = 1000) =>
+  num(id, id, name, 0, max, { step: 1, integer: true });
+/** A probability typed (0 to 1). */
+const chance = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0, 1, { step: 0.01 });
+/** A probability worked out. */
+const chanceOut = (id: string, symbol: string, name: string) => der(num(id, symbol, name, 0, 1));
+/** total = the parts added. */
+const total = (t: string, ids: string[], how: string) =>
+  derive(
+    `${t} = ${ids.join(' + ')}`,
+    `{${t}} = ${ids.map((x) => `{${x}}`).join(' + ')}`,
+    t,
+    (v) => ids.reduce((s, x) => s + v[x]!, 0),
+    ids.map((x) => `{${x}}`).join(' + '),
+    how,
+  );
+/** f = part ÷ whole. */
+const share = (f: string, part: string, whole: string, how: string) =>
+  derive(
+    `${f} = ${part} ÷ ${whole}`,
+    `{${f}} = {${part}} ÷ {${whole}}`,
+    f,
+    (v) => quot(v[part]!, v[whole]!),
+    `{${part}} ÷ {${whole}}`,
+    how,
+  );
+/** The chances on a Venn diagram fit: the overlap is in both, and the union is at most 1. */
+const vennFits = [
+  limit('P(A ∩ B) ≤ P(A)', '{ab} is at most {a}', (v) => v.ab! <= v.a! + 1e-9),
+  limit('P(A ∩ B) ≤ P(B)', '{ab} is at most {b}', (v) => v.ab! <= v.b! + 1e-9),
+  limit(
+    'P(A ∪ B) ≤ 1',
+    '{a} + {b} − {ab} is at most 1',
+    (v) => v.a! + v.b! - v.ab! <= 1 + 1e-9,
+    'P(A) + P(B) − P(A and B) can’t be more than 1.',
+  ),
+];
+
+const CONDITIONAL: ModuleDef[] = [
+  page({
+    id: 'm.10.conditional-probability',
+    assumptions: [
+      'P(Late | Bus) looks only at the bus column: those late out of everyone who took the bus.',
+      'The whole is the column total, not the grand total.',
+      'P(Bus | Late) looks at the late row instead: the order of the events matters.',
+    ],
+    variables: [
+      count('a', 'Late, bus'),
+      count('b', 'Late, walk'),
+      count('g', 'Late, car'),
+      count('d', 'On time, bus'),
+      count('e', 'On time, walk'),
+      count('h', 'On time, car'),
+      der(num('B', 'B', 'Bus total', 0, 2000)),
+      chanceOut('p', 'P(L | B)', 'P(Late | Bus)'),
+      chanceOut('q', 'P(B | L)', 'P(Bus | Late)'),
+      der(num('N', 'N', 'Grand total', 0, 6000)),
+    ],
+    rules: [
+      total('B', ['a', 'd'], 'Add the bus column.'),
+      share('p', 'a', 'B', 'Late among the bus riders only: the cell over its column total.'),
+      derive(
+        'P(Bus | Late) = a ÷ (a + b + g)',
+        '{q} = {a} ÷ ({a} + {b} + {g})',
+        'q',
+        (v) => quot(v.a!, v.a! + v.b! + v.g!),
+        '{a} ÷ ({a} + {b} + {g})',
+        'Bus riders among the late students: the cell over its row total.',
+      ),
+      total('N', ['a', 'b', 'g', 'd', 'e', 'h'], 'Add all six counts: everyone in the table.'),
+    ],
+    example: { a: 12, b: 4, g: 9, d: 48, e: 36, h: 51, B: 60, p: 0.2, q: 0.48, N: 160 },
+    startWith: ['a', 'b', 'g', 'd', 'e', 'h'],
+    equation: 'P(Late | Bus) = {a}/{B} = {p}',
+    representation: {
+      kind: 'table',
+      twoWay: {
+        rows: ['Late', 'On time'],
+        cols: ['Bus', 'Walk', 'Car'],
+        cells: [
+          ['a', 'b', 'g'],
+          ['d', 'e', 'h'],
+        ],
+        lit: { row: 0, col: 0 },
+        of: 'col',
+        frequency: 'p',
+        bar: 'cols',
+      },
+    },
+  }),
+  page({
+    id: 'm.10.conditional-probability~tree',
+    title: 'A tree with conditional branches',
+    use: 'Use this for “P(Rain) = 0.3, P(Late | Rain) = 0.4, P(Late | Dry) = 0.1. Find P(Late) and P(Rain | Late).”',
+    assumptions: [
+      'Each second branch is conditional: P(Late | Rain) is the chance of being late when it rains.',
+      'Multiply along a path; add the paths that end in Late for P(Late).',
+      'Then P(Rain | Late) is the rain path’s share of P(Late).',
+    ],
+    variables: [
+      chance('r', 'P(R)', 'P(Rain)'),
+      chance('a', 'P(L | R)', 'P(Late | Rain)'),
+      chance('b', 'P(L | D)', 'P(Late | Dry)'),
+      chanceOut('j', 'P(R and L)', 'P(Rain and Late)'),
+      chanceOut('t', 'P(L)', 'P(Late)'),
+      chanceOut('q', 'P(R | L)', 'P(Rain | Late)'),
+    ],
+    rules: [
+      derive(
+        'P(R and L) = P(R) × P(L | R)',
+        '{j} = {r} × {a}',
+        'j',
+        (v) => v.r! * v.a!,
+        '{r} × {a}',
+        'Multiply along the path: rain, then late.',
+      ),
+      derive(
+        'P(L) = P(R)P(L | R) + (1 − P(R))P(L | D)',
+        '{t} = {j} + (1 − {r}) × {b}',
+        't',
+        (v) => v.j! + (1 - v.r!) * v.b!,
+        '{j} + (1 − {r}) × {b}',
+        'Add the two paths that end in Late: rain then late, and dry then late.',
+      ),
+      share('q', 'j', 't', 'The rain path’s share of all the ways to be late.'),
+    ],
+    example: { r: 0.3, a: 0.4, b: 0.1, j: 0.12, t: 0.19, q: 0.12 / 0.19 },
+    startWith: ['r', 'a', 'b'],
+    representation: {
+      kind: 'treeDiagram',
+      chances: {
+        first: ['r'],
+        second: [['a'], ['b']],
+        names: [
+          ['Rain', 'Dry'],
+          ['Late', 'On time'],
+        ],
+        stages: ['Weather', 'Arrival'],
+        path: [0, 0],
+        chance: 'j',
+        totalOf: 0,
+        total: 't',
+      },
+    },
+  }),
+  page({
+    id: 'm.10.conditional-probability~independent',
+    title: 'Independent events',
+    use: 'Use this for “A and B are independent, P(A) = 0.6 and P(B) = 0.3. Find P(A and B) and P(A or B).”',
+    assumptions: [
+      'A and B are independent: P(B | A) is the same as P(B), on every first branch.',
+      'So P(A and B) = P(A) × P(B).',
+      'The addition rule then gives P(A or B) = P(A) + P(B) − P(A and B).',
+    ],
+    variables: [
+      chance('a', 'P(A)', 'P(A)'),
+      chance('b', 'P(B)', 'P(B)'),
+      chanceOut('j', 'P(A and B)', 'P(A and B)'),
+      chanceOut('o', 'P(A or B)', 'P(A or B)'),
+    ],
+    rules: [
+      derive(
+        'P(A and B) = P(A) × P(B)',
+        '{j} = {a} × {b}',
+        'j',
+        (v) => v.a! * v.b!,
+        '{a} × {b}',
+        'Independent: multiply the two chances.',
+      ),
+      derive(
+        'P(A or B) = P(A) + P(B) − P(A and B)',
+        '{o} = {a} + {b} − {j}',
+        'o',
+        (v) => v.a! + v.b! - v.j!,
+        '{a} + {b} − {j}',
+        'Add the two, then take off the overlap counted twice.',
+      ),
+    ],
+    example: { a: 0.6, b: 0.3, j: 0.18, o: 0.72 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'treeDiagram',
+      chances: {
+        first: ['a'],
+        second: [['b'], ['b']],
+        names: [
+          ['A', 'Not A'],
+          ['B', 'Not B'],
+        ],
+        stages: ['First event', 'Second event'],
+        path: [0, 0],
+        chance: 'j',
+      },
+    },
+  }),
+  page({
+    id: 'm.10.conditional-probability~dependent',
+    title: 'Two draws without replacement',
+    use: 'Use this for “A bag has 5 red and 3 blue marbles. Two are drawn without putting the first back. Find P(red, then red).”',
+    assumptions: [
+      'The first draw is red with chance r ÷ n.',
+      'Without replacement one marble is gone: after a red, r − 1 reds are left of n − 1.',
+      'The second draw depends on the first. Multiply along the path.',
+    ],
+    variables: [
+      num('rd', 'r', 'Red marbles', 1, 50, { step: 1, integer: true }),
+      num('n', 'n', 'Marbles in all', 2, 100, { step: 1, integer: true }),
+      chanceOut('p1', 'P(R)', 'P(Red first)'),
+      chanceOut('p2', 'P(R | R)', 'P(Red second | Red first)'),
+      chanceOut('p3', 'P(R | B)', 'P(Red second | Blue first)'),
+      chanceOut('pp', 'P(R, R)', 'P(Red, then Red)'),
+    ],
+    rules: [
+      limit(
+        'r ≤ n',
+        '{rd} is at most {n}',
+        (v) => v.rd! <= v.n!,
+        'There can’t be more red marbles than marbles in all.',
+      ),
+      share('p1', 'rd', 'n', 'Reds out of all the marbles.'),
+      derive(
+        'P(R | R) = (r − 1) ÷ (n − 1)',
+        '{p2} = ({rd} − 1) ÷ ({n} − 1)',
+        'p2',
+        (v) => quot(v.rd! - 1, v.n! - 1),
+        '({rd} − 1) ÷ ({n} − 1)',
+        'One red and one marble fewer after a red.',
+      ),
+      derive(
+        'P(R | B) = r ÷ (n − 1)',
+        '{p3} = {rd} ÷ ({n} − 1)',
+        'p3',
+        (v) => (v.rd! <= v.n! - 1 ? quot(v.rd!, v.n! - 1) : 0),
+        '{rd} ÷ ({n} − 1)',
+        'Every red is left after a blue.',
+      ),
+      derive(
+        'P(R, R) = P(R) × P(R | R)',
+        '{pp} = {p1} × {p2}',
+        'pp',
+        (v) => v.p1! * v.p2!,
+        '{p1} × {p2}',
+        'Multiply along the path.',
+      ),
+    ],
+    example: { rd: 5, n: 8, p1: 5 / 8, p2: 4 / 7, p3: 5 / 7, pp: 5 / 14 },
+    startWith: ['rd', 'n'],
+    representation: {
+      kind: 'treeDiagram',
+      chances: {
+        first: ['p1'],
+        second: [['p2'], ['p3']],
+        names: [
+          ['Red', 'Blue'],
+          ['Red', 'Blue'],
+        ],
+        stages: ['First draw', 'Second draw'],
+        path: [0, 0],
+        chance: 'pp',
+      },
+    },
+  }),
+  page({
+    id: 'm.10.conditional-probability~venn',
+    title: 'Conditional probability on a Venn diagram',
+    use: 'Use this for “P(A) = 0.5, P(B) = 0.4 and P(A and B) = 0.15. Find P(B | A). Are A and B independent?”',
+    assumptions: [
+      'Given A, only the A circle counts: P(B | A) = P(A and B) ÷ P(A).',
+      'A and B are independent only when P(B | A) = P(B).',
+      'Here 0.3 is not 0.4, so knowing A changes the chance of B.',
+    ],
+    variables: [
+      chance('a', 'P(A)', 'P(A)'),
+      chance('b', 'P(B)', 'P(B)'),
+      chance('ab', 'P(A ∩ B)', 'P(A and B)'),
+      chanceOut('c', 'P(B | A)', 'P(B | A)'),
+      chanceOut('d', 'P(A | B)', 'P(A | B)'),
+    ],
+    rules: [
+      ...vennFits,
+      share('c', 'ab', 'a', 'Only the A circle counts: the overlap’s share of A.'),
+      share('d', 'ab', 'b', 'Only the B circle counts: the overlap’s share of B.'),
+    ],
+    example: { a: 0.5, b: 0.4, ab: 0.15, c: 0.3, d: 0.375 },
+    startWith: ['a', 'b', 'ab'],
+    representation: {
+      kind: 'venn',
+      chances: { a: 'a', b: 'b', both: 'ab', names: ['A', 'B'], shade: 'and' },
+    },
+  }),
+];
+
+export const MATH_10_MODULES: ModuleDef[] = [...SIMILARITY, ...TRIG, ...CONDITIONAL];
