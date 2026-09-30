@@ -48,6 +48,23 @@ export interface StripesSpec {
 }
 
 /**
+ * `atmosphereLayers` mode `parcel` (H103 part 4): a parcel of air rising from the ground. On a
+ * temperature (across) against altitude (up) chart, the parcel cools 10 °C per km (dry) and its
+ * dew point falls 2 °C per km, so they meet at the cloud base h = (T − T_d) ÷ 8 km; above it the
+ * parcel is saturated and cools about 6 °C per km with its dew point. Beside the chart, the
+ * parcel rises to a cumulus cloud whose flat base is at h, on the same altitude scale.
+ */
+export interface ParcelSpec {
+  kind: 'atmosphereLayers';
+  mode: 'parcel';
+  /** The air's temperature and dew point at the ground, °C. */
+  temperature: NumOrVar;
+  dewPoint: NumOrVar;
+  /** The cloud base, km, when the page works it out (else worked out). */
+  base?: NumOrVar;
+}
+
+/**
  * `streamChannel` (H103 part 3, a new kind): a stream's channel seen in cross-section and in
  * perspective, drawn to scale: the water `width` m wide and `depth` m deep (A = w × d), and the
  * slab of water that passes in one second, `speed` m long, so its volume is the discharge
@@ -69,7 +86,7 @@ export interface StreamChannelSpec {
 export type Hs2fKindSpec = StreamChannelSpec;
 
 /** Every group F spec. */
-export type Hs2fSpec = MagnitudeSpec | StripesSpec | Hs2fKindSpec;
+export type Hs2fSpec = MagnitudeSpec | StripesSpec | ParcelSpec | Hs2fKindSpec;
 
 /** The variable ids a group F spec names (for the module tests). */
 export function hs2fSpecVars(r: Hs2fSpec): string[] {
@@ -81,5 +98,7 @@ export function hs2fSpecVars(r: Hs2fSpec): string[] {
       return ids([r.m1, r.m2, r.amplitude, r.energy]);
     case 'stripes':
       return ids([r.distance, r.age, r.rate, r.full]);
+    case 'parcel':
+      return ids([r.temperature, r.dewPoint, r.base]);
   }
 }

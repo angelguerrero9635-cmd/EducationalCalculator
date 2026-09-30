@@ -78,3 +78,26 @@ export function stripeWindow(age: number): number {
   const nice = [1, 1.5, 2, 3, 4, 5, 6, 8, 10, STRIPE_RECORD];
   return nice.find((n) => n >= want) ?? STRIPE_RECORD;
 }
+
+// ── A rising parcel of air ──
+
+/** Unsaturated air cools 10 °C per km as it rises; its dew point falls 2 °C per km. */
+export const DRY_LAPSE = 10;
+export const DEW_LAPSE = 2;
+/** Saturated air cools more slowly, about 6 °C per km, as condensing vapor releases heat. */
+export const MOIST_LAPSE = 6;
+
+/** The cloud base, km: where the parcel's temperature meets its dew point. */
+export const cloudBase = (t: number, td: number) => (t - td) / (DRY_LAPSE - DEW_LAPSE);
+
+/** The parcel's temperature at altitude z km: dry to the cloud base, then saturated. */
+export function parcelTempAt(z: number, t: number, td: number): number {
+  const h = Math.max(0, cloudBase(t, td));
+  return z <= h ? t - DRY_LAPSE * z : t - DRY_LAPSE * h - MOIST_LAPSE * (z - h);
+}
+
+/** Its dew point at z: falling 2 °C per km to the base, then equal to the temperature. */
+export function parcelDewAt(z: number, t: number, td: number): number {
+  const h = Math.max(0, cloudBase(t, td));
+  return z <= h ? td - DEW_LAPSE * z : parcelTempAt(z, t, td);
+}

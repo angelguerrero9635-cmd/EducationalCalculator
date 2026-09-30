@@ -276,7 +276,82 @@ const dischargeRiver: ModuleDef = {
   example: { w: 400, d: 6, v: 1.2, A: 2400, Q: 2880 },
 };
 
+// ── Part 4: a rising air parcel (atmosphereLayers mode `parcel`) ──
+
+const cloudBase: ModuleDef = {
+  id: 'g.s12-atmosphere-weather-cloud-base',
+  unitSystems: ['metric'],
+  title: 'The height of a cloud’s base',
+  use: 'Use this for “The air is 24 °C with a dew point of 12 °C. How high is the cloud base?”',
+  assumptions: [
+    'Rising air expands and cools about 10 °C per km until it is saturated.',
+    'Its dew point falls only about 2 °C per km, so the two close 8 °C per km.',
+    'Where they meet, water vapor condenses: the flat base of a cumulus cloud.',
+  ],
+  variables: [
+    V('T', 'T', 'Temperature at the ground', { unit: '°C', min: -40, max: 50, step: 0.1 }),
+    V('Td', 'T_d', 'Dew point at the ground', { unit: '°C', min: -60, max: 50, step: 0.1 }),
+    V('h', 'h', 'Height of the cloud base', {
+      unit: 'km',
+      min: 0,
+      max: 15,
+      step: 0.001,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    rule('h = (T − Td) ÷ 8', '{h} = ({T} − {Td}) ÷ 8', (v) => 8 * v.h! - (v.T! - v.Td!), {
+      h: [
+        (v) => (v.T! - v.Td!) / 8,
+        '({T} − {Td}) ÷ 8',
+        'The gap closes 10 − 2 = 8 °C for each km the parcel rises.',
+      ],
+      T: [(v) => v.Td! + 8 * v.h!, '{Td} + 8 × {h}', 'The dew point plus 8 °C for each km.'],
+      Td: [(v) => v.T! - 8 * v.h!, '{T} − 8 × {h}', 'The temperature less 8 °C for each km.'],
+    }),
+    {
+      relation: {
+        id: 'Td ≤ T',
+        constraint: true,
+        display: 'the dew point {Td} is at most the temperature {T}',
+        vars: ['Td', 'T'],
+        residual: (v: Values) => (v.Td! <= v.T! ? 0 : 1),
+        solve: {},
+      },
+      steps: {},
+    },
+  ),
+  example: { T: 24, Td: 12, h: 1.5 },
+  startWith: ['T', 'Td'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'parcel',
+    temperature: 'T',
+    dewPoint: 'Td',
+    base: 'h',
+  },
+};
+
+const cloudBaseHumid: ModuleDef = {
+  ...cloudBase,
+  id: 'g.s12-atmosphere-weather-cloud-base-humid',
+  title: 'Low clouds on a humid day',
+  use: 'Use this for humid air, where the dew point is close to the temperature.',
+  example: { T: 30, Td: 26, h: 0.5 },
+};
+
+const cloudBaseDry: ModuleDef = {
+  ...cloudBase,
+  id: 'g.s12-atmosphere-weather-cloud-base-dry',
+  title: 'High clouds over a desert',
+  use: 'Use this for dry air, where the dew point is far below the temperature.',
+  example: { T: 38, Td: 2, h: 4.5 },
+};
+
 export const HS2F_GALLERY_MODULES: ModuleDef[] = [
+  cloudBase,
+  cloudBaseHumid,
+  cloudBaseDry,
   magnitude,
   magnitudeHalf,
   magnitudeFar,

@@ -8,6 +8,7 @@ import {
   energyRatio,
   MAGNITUDE_RANGE,
   STRIPE_RECORD,
+  cloudBase,
 } from '@/components/module/reps/earthModelHs2f';
 
 import type { Representation } from '../types';
@@ -51,6 +52,16 @@ export function hs2fIssues(rep: Representation, val: (id: string) => number | un
     const half = v ?? (x !== undefined && t !== undefined && t > 0 ? x / t : undefined);
     if (f !== undefined && half !== undefined && !near(f, 2 * half, 1e-4))
       out.push(`full rate ${f}, but 2 × ${half} = ${2 * half}`);
+  }
+  if (rep.kind === 'atmosphereLayers' && rep.mode === 'parcel') {
+    const t = num(rep.temperature);
+    const td = num(rep.dewPoint);
+    if (t === undefined || td === undefined) return out;
+    if (td > t) out.push(`dew point ${td} °C is above the temperature ${t} °C`);
+    // The lines drawn meet at (T − T_d) ÷ 8 km: the page's cloud base must be there.
+    const h = num(rep.base);
+    if (h !== undefined && !near(h, cloudBase(t, td), 1e-4))
+      out.push(`cloud base ${h} km, but the lines meet at ${cloudBase(t, td)} km`);
   }
   if (rep.kind === 'streamChannel') {
     const w = num(rep.width);

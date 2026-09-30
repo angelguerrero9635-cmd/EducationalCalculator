@@ -102,6 +102,7 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'atmosphereLayers': {
+      if (rep.mode === 'parcel') break; // picturesHs2f.ts
       if (rep.mode === 'profile') {
         const h = num(rep.altitude);
         const t = num(rep.temperature);
