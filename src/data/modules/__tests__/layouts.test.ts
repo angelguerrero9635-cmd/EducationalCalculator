@@ -52,6 +52,7 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   immuneStages: 'immune',
   electrochemicalCell: 'galvanic',
   geneExpression: 'gene',
+  dichotomousKey: 'key',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */

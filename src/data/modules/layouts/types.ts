@@ -17,7 +17,7 @@ import type {
   LandformScene,
   MohsScene,
 } from '../typesHsl';
-import type { GeneScene, ObserveSecond, ReplicationCard } from '../typesHs2e';
+import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Round3Icon } from './icons';
 
 /**
@@ -363,7 +363,9 @@ export type Figure =
   /** A galvanic cell: two electrodes, a salt bridge and electrons along the wire (H56). */
   | { kind: 'electrochemicalCell' }
   /** A gene with its promoter and a repressor or activator switch, read into mRNA or not (H100). */
-  | { kind: 'geneExpression' };
+  | { kind: 'geneExpression' }
+  /** A branching yes-or-no key from questions to names (H100, `typesHs2e.ts`). */
+  | { kind: 'dichotomousKey'; steps: KeyStep[] };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -513,6 +515,8 @@ export interface Scene {
   galvanic?: GalvanicScene;
   /** The switch, the signal and the part lit (a `geneExpression` figure; `typesHs2e.ts`). */
   gene?: GeneScene;
+  /** The name traced and the question ringed (a `dichotomousKey` figure; `typesHs2e.ts`). */
+  key?: KeyScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

@@ -70,6 +70,10 @@ promoter, a gene and its switch, RNA polymerase and, when the gene is read, its 
 `gene: { control: 'repressor' | 'activator', signal?, lit? }` sets the switch: a repressor sits on
 the operator unless its signal (an inducer) pulls it off, an activator binds only with its
 signal, so the gene is on exactly when the signal is there.
+Also H100 (`layouts/dichotomousKeyFigure.tsx`): `dichotomousKey`, `{ kind: 'dichotomousKey', steps }` with
+`steps: { question, yes, no }[]` (an answer is the next question's index or a name), drawn as a
+tree down the page, each question's Yes then No indented under it; a scene's `key: { specimen?,
+step? }` traces one name's path (answers lit, the name filled) or rings one question.
 
 Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,

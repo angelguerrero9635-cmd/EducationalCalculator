@@ -24,6 +24,7 @@ import { MagnetsFigure, PlanetsFigure } from './figures8';
 import { StudyDesignFigure } from './studyDesignFigure';
 import { CladogramFigure } from './cladogramFigure';
 import { NitrogenCycleFigure } from './nitrogenCycleFigure';
+import { DichotomousKeyFigure } from './dichotomousKeyFigure';
 import { FeedbackLoopFigure } from './feedbackLoopFigure';
 import { GeneExpressionFigure } from './geneExpressionFigure';
 import { ImmuneStagesFigure } from './immuneStagesFigure';
@@ -208,6 +209,8 @@ function FigureView({
       return <GalvanicFigure scene={scene.galvanic ?? { metals: ['Zn', 'Cu'] }} />;
     case 'geneExpression':
       return <GeneExpressionFigure gene={scene.gene ?? { control: 'repressor' }} />;
+    case 'dichotomousKey':
+      return <DichotomousKeyFigure steps={figure.steps} scene={scene.key ?? {}} />;
   }
 }
 

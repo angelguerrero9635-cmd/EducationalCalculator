@@ -117,11 +117,11 @@ export function GeneExpressionFigure({ gene }: { gene: GeneScene }) {
         strokeWidth={gene.lit === 'polymerase' ? chart.strokeHeavy : 1.2}
       />
       <ChartText
-        x={polX}
-        y={polY - 22}
+        x={on ? polX + 28 : polX}
+        y={on ? polY + 4 : polY - 22}
         fontSize={chart.label}
         fontWeight="700"
-        textAnchor="middle"
+        textAnchor={on ? 'start' : 'middle'}
         fill={c.chartInk}
       >
         RNA polymerase

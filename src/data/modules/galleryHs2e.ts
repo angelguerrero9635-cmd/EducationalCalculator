@@ -549,6 +549,51 @@ const GENE_EXPRESSION: LayoutDef = {
   ],
 };
 
+// ─── H100 part 12: the dichotomous key ───────────────────────────────────────
+
+const KEY: LayoutDef = {
+  kind: 'explore',
+  id: 'g.s9-classification-key',
+  title: 'A dichotomous key',
+  use: 'Use this for “Use the key to name the animal: it has no backbone and a segmented body.”',
+  assumptions: [
+    'A dichotomous key asks one yes-or-no question at a time about a trait you can see.',
+    'Each answer leads to the next question or to a name, so every path ends at one organism.',
+  ],
+  figure: {
+    kind: 'dichotomousKey',
+    steps: [
+      { question: 'Does it have a backbone?', yes: 1, no: 2 },
+      { question: 'Does it have hair?', yes: 'Human', no: 'Fish' },
+      { question: 'Does it have true tissues?', yes: 3, no: 'Sponge' },
+      { question: 'Is its body divided into segments?', yes: 'Earthworm', no: 4 },
+      { question: 'Does it have stinging tentacles?', yes: 'Jellyfish', no: 'Sea star' },
+    ],
+  },
+  scenes: [
+    {
+      label: 'The first question',
+      lines: ['Every animal starts at the top: a backbone or not splits the six into two groups.'],
+      key: { step: 0 },
+    },
+    {
+      label: 'Earthworm',
+      lines: ['No backbone, true tissues, a segmented body: three answers lead to the earthworm.'],
+      key: { specimen: 'Earthworm' },
+    },
+    {
+      label: 'Sea star',
+      lines: ['No backbone, true tissues, no segments and no stinging tentacles: a sea star.'],
+      key: { specimen: 'Sea star' },
+    },
+    {
+      label: 'Human',
+      lines: ['A backbone and hair: two questions are enough for a mammal.'],
+      key: { specimen: 'Human' },
+    },
+  ],
+};
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /** The chromosome-count page: 2n in a body cell → n, chromatids, the zygote, 2ⁿ gametes. */
@@ -637,4 +682,4 @@ export const HS2E_GALLERY_MODULES: ModuleDef[] = [
   ...RATES_DEMOS,
 ];
 
-export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [COMPETITION, REPLICATION, GENE_EXPRESSION];
+export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [COMPETITION, REPLICATION, GENE_EXPRESSION, KEY];

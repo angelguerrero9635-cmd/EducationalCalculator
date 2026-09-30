@@ -106,6 +106,61 @@ export interface GeneScene {
 /** Whether a `geneExpression` scene's gene is read: its signal pulls the repressor off, or puts the activator on. */
 export const geneIsOn = (g: GeneScene) => !!g.signal;
 
+// ─── H100 part 12: the dichotomous key ───────────────────────────────────────
+
+/**
+ * One couplet of a dichotomous key: a yes-or-no question, and where each answer leads: the
+ * index of the next question, or the name the key ends at.
+ */
+export interface KeyStep {
+  question: string;
+  yes: number | string;
+  no: number | string;
+}
+
+/**
+ * A `dichotomousKey` scene: `specimen` traces one name's path from the first question, each
+ * answer taken lit; `step` rings one question (its index).
+ */
+export interface KeyScene {
+  specimen?: string;
+  step?: number;
+}
+
+/** A key's rows top to bottom (question then its yes branch, then its no), with depth. */
+export function keyRows(steps: KeyStep[]) {
+  const rows: {
+    node: number | string;
+    depth: number;
+    answer?: 'Yes' | 'No';
+    parent?: number;
+  }[] = [];
+  const visit = (node: number | string, depth: number, answer?: 'Yes' | 'No', parent?: number) => {
+    rows.push({ node, depth, answer, parent });
+    if (typeof node !== 'number' || depth > steps.length) return;
+    const s = steps[node];
+    if (!s) return;
+    visit(s.yes, depth + 1, 'Yes', node);
+    visit(s.no, depth + 1, 'No', node);
+  };
+  visit(0, 0);
+  return rows;
+}
+
+/** The questions and answers from the first question to a name, or undefined if it is not in the key. */
+export function keyPath(steps: KeyStep[], name: string) {
+  const find = (node: number | string, seen: number[]): [number, 'yes' | 'no'][] | undefined => {
+    if (typeof node === 'string') return node === name ? [] : undefined;
+    if (seen.includes(node) || !steps[node]) return undefined;
+    for (const a of ['yes', 'no'] as const) {
+      const rest = find(steps[node]![a], [...seen, node]);
+      if (rest) return [[node, a], ...rest];
+    }
+    return undefined;
+  };
+  return find(0, []);
+}
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /**
