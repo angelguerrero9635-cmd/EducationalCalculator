@@ -909,7 +909,7 @@
           "n": "21",
           "title": "The Birth of Stars and the Discovery of Planets outside the Solar System",
           "url": "https://openstax.org/books/astronomy-2e/pages/21-1-star-formation",
-          "skills": ["s.12.solar-system", "s.12.stellar-evolution"],
+          "skills": ["s.12.exoplanets", "s.12.solar-system", "s.12.stellar-evolution"],
           "notes": "Star formation (21.1-21.3); exoplanets (21.4-21.6) have no skill.",
           "lessons": [
             {
@@ -1329,7 +1329,7 @@
           "n": "30",
           "title": "Life in the Universe",
           "url": "https://openstax.org/books/astronomy-2e/pages/30-1-the-cosmic-context-for-life",
-          "skills": [],
+          "skills": ["s.12.exoplanets"],
           "notes": "Life in the universe; no taxonomy skill.",
           "lessons": [
             {

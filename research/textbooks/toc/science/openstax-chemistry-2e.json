@@ -350,7 +350,7 @@
           "n": "10",
           "title": "Liquids and Solids",
           "url": "https://openstax.org/books/chemistry-2e/pages/10-1-intermolecular-forces",
-          "skills": ["s.10.molecular-shape", "s.10.bonding"],
+          "skills": ["s.10.phase-colligative", "s.10.molecular-shape", "s.10.bonding"],
           "notes": "Intermolecular forces (10.1) follow from bonding; phase changes and solids: nearest s.7.phase-changes (loose).",
           "lessons": [
             {
@@ -390,7 +390,7 @@
           "n": "11",
           "title": "Solutions and Colloids",
           "url": "https://openstax.org/books/chemistry-2e/pages/11-1-the-dissolution-process",
-          "skills": ["s.10.molarity"],
+          "skills": ["s.10.phase-colligative", "s.10.molarity"],
           "notes": "Solution process, solubility and colligative properties (loose fit to the molarity skill).",
           "lessons": [
             {
@@ -569,7 +569,7 @@
           "n": "16",
           "title": "Thermodynamics",
           "url": "https://openstax.org/books/chemistry-2e/pages/16-1-spontaneity",
-          "skills": ["s.10.thermochemistry"],
+          "skills": ["s.10.entropy-free-energy", "s.10.thermochemistry"],
           "notes": "Entropy and Gibbs free energy (beyond the taxonomy skill).",
           "lessons": [
             {
@@ -599,7 +599,7 @@
           "n": "17",
           "title": "Electrochemistry",
           "url": "https://openstax.org/books/chemistry-2e/pages/17-1-review-of-redox-chemistry",
-          "skills": ["s.10.redox"],
+          "skills": ["s.10.entropy-free-energy", "s.10.redox"],
           "notes": "Electrochemistry; no taxonomy skill (redox is the nearest, s.10.stoichiometry for balancing).",
           "lessons": [
             {

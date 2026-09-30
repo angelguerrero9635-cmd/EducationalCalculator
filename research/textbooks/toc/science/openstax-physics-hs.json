@@ -190,7 +190,7 @@
           "n": "5",
           "title": "Motion in Two Dimensions",
           "url": "https://openstax.org/books/physics/pages/5-1-vector-addition-and-subtraction-graphical-methods",
-          "skills": ["s.11.kinematics-2d", "s.11.dynamics-vectors"],
+          "skills": ["s.11.oscillations", "s.11.kinematics-2d", "s.11.dynamics-vectors"],
           "notes": "Vectors and projectile motion (5.1-5.3); inclined planes (5.4); simple harmonic motion (5.5) has no skill.",
           "lessons": [
             {
@@ -238,7 +238,7 @@
           "n": "6",
           "title": "Circular and Rotational Motion",
           "url": "https://openstax.org/books/physics/pages/6-1-angle-of-rotation-and-angular-velocity",
-          "skills": ["s.11.circular-gravitation"],
+          "skills": ["s.11.rotation", "s.11.circular-gravitation"],
           "notes": "Uniform circular motion and centripetal force; rotational motion.",
           "lessons": [
             {
@@ -683,7 +683,7 @@
           "n": "18",
           "title": "Static Electricity",
           "url": "https://openstax.org/books/physics/pages/18-1-electrical-charges-conservation-of-charge-and-transfer-of-charge",
-          "skills": ["s.11.electrostatics", "s.11.electromagnetism"],
+          "skills": ["s.11.electric-potential", "s.11.electrostatics", "s.11.electromagnetism"],
           "notes": "Electric charge, Coulomb's law, electric fields and potential.",
           "lessons": [
             {

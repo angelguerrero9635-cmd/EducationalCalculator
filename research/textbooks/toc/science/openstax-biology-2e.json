@@ -421,7 +421,7 @@
           "title": "Meiosis and Sexual Reproduction",
           "url": "https://openstax.org/books/biology-2e/pages/11-1-the-process-of-meiosis",
           "part": "Genetics",
-          "skills": ["s.9.mitosis-meiosis"],
+          "skills": ["s.9.reproduction-development", "s.9.mitosis-meiosis"],
           "lessons": [
             {
               "n": "11.1",
@@ -1153,7 +1153,7 @@
           "title": "Plant Form and Physiology",
           "url": "https://openstax.org/books/biology-2e/pages/30-1-the-plant-body",
           "part": "Plant Structure and Function",
-          "skills": ["s.9.classification"],
+          "skills": ["s.9.plant-biology", "s.9.nervous-system", "s.9.classification"],
           "notes": "Plant form and physiology; no taxonomy skill.",
           "lessons": [
             {
@@ -1200,7 +1200,7 @@
           "title": "Soil and Plant Nutrition",
           "url": "https://openstax.org/books/biology-2e/pages/31-1-nutritional-requirements-of-plants",
           "part": "Plant Structure and Function",
-          "skills": ["s.9.classification"],
+          "skills": ["s.9.plant-biology", "s.9.classification"],
           "notes": "Soil and plant nutrition; no taxonomy skill.",
           "lessons": [
             {
@@ -1232,7 +1232,7 @@
           "title": "Plant Reproduction",
           "url": "https://openstax.org/books/biology-2e/pages/32-1-reproductive-development-and-structure",
           "part": "Plant Structure and Function",
-          "skills": [],
+          "skills": ["s.9.plant-biology", "s.9.reproduction-development"],
           "notes": "Plant reproduction; no taxonomy skill.",
           "lessons": [
             {
@@ -1333,7 +1333,7 @@
           "title": "The Nervous System",
           "url": "https://openstax.org/books/biology-2e/pages/35-1-neurons-and-glial-cells",
           "part": "Animal Structure and Function",
-          "skills": [],
+          "skills": ["s.9.nervous-system"],
           "notes": "Nervous system; nearest is s.6.body-systems.",
           "lessons": [
             {
@@ -1375,7 +1375,7 @@
           "title": "Sensory Systems",
           "url": "https://openstax.org/books/biology-2e/pages/36-1-sensory-processes",
           "part": "Animal Structure and Function",
-          "skills": [],
+          "skills": ["s.9.nervous-system"],
           "notes": "Sensory systems; no taxonomy skill.",
           "lessons": [
             {
@@ -1649,7 +1649,7 @@
           "title": "Animal Reproduction and Development",
           "url": "https://openstax.org/books/biology-2e/pages/43-1-reproduction-methods",
           "part": "Animal Structure and Function",
-          "skills": [],
+          "skills": ["s.9.reproduction-development"],
           "notes": "Animal reproduction and development; no taxonomy skill.",
           "lessons": [
             {
@@ -1701,7 +1701,7 @@
           "title": "Ecology and the Biosphere",
           "url": "https://openstax.org/books/biology-2e/pages/44-1-the-scope-of-ecology",
           "part": "Ecology",
-          "skills": ["s.9.ecosystem-dynamics", "s.12.climate-systems"],
+          "skills": ["s.9.biomes", "s.9.ecosystem-dynamics", "s.12.climate-systems"],
           "notes": "Section 44.5 climate and global climate change (grade 12 skill); biomes have no skill.",
           "lessons": [
             {

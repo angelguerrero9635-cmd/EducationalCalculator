@@ -114,7 +114,7 @@
           "n": "13",
           "title": "The Ocean Floor",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.6.plate-tectonics"],
+          "skills": ["s.12.ocean-atmosphere", "s.6.plate-tectonics"],
           "part": "Part 5: The Global Ocean",
           "notes": "Sea-floor spreading and ocean-floor features."
         },

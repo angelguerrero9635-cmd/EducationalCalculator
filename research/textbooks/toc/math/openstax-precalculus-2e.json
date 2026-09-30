@@ -435,6 +435,7 @@
           "title": "Systems of Equations and Inequalities",
           "url": "https://openstax.org/books/precalculus-2e/pages/9-introduction-to-systems-of-equations-and-inequalities",
           "skills": [
+            "m.12.partial-fractions",
             "m.8.systems-linear",
             "m.9.inequality-systems",
             "m.12.matrices",
@@ -465,7 +466,7 @@
               "n": "9.4",
               "title": "Partial Fractions",
               "url": "https://openstax.org/books/precalculus-2e/pages/9-4-partial-fractions",
-              "skills": ["m.11.rational-functions"],
+              "skills": ["m.12.partial-fractions", "m.11.rational-functions"],
               "notes": "partial fractions: nearest is rational functions"
             },
             {
@@ -498,7 +499,7 @@
           "n": "10",
           "title": "Analytic Geometry",
           "url": "https://openstax.org/books/precalculus-2e/pages/10-introduction-to-analytic-geometry",
-          "skills": ["m.12.conics", "m.12.polar"],
+          "skills": ["m.12.polar-conics", "m.12.conics", "m.12.polar"],
           "lessons": [
             {
               "n": "10.1",
@@ -522,7 +523,7 @@
               "n": "10.4",
               "title": "Rotation of Axes",
               "url": "https://openstax.org/books/precalculus-2e/pages/10-4-rotation-of-axes",
-              "skills": ["m.12.conics"]
+              "skills": ["m.12.polar-conics", "m.12.conics"]
             },
             {
               "n": "10.5",
