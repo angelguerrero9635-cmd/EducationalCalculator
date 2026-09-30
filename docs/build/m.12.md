@@ -23,6 +23,7 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   `~resultant`.
 - `m.12.polar` (6): main (polar point), `~complex-form`, `~product`, `~de-moivre`, `~rose`,
   `~limacon`.
+- `m.12.parametric` (3): main (a line), `~ellipse`, `~projectile`.
 
 ## Waiting
 
@@ -86,6 +87,14 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   d are worked out from r₂ and θ₂ (derived), as the plan says.
 - **The polar point's θ relation knows the sign of r.** A negative r turns the direction half a
   turn, so typing x and y back gives the θ that goes with the r shown.
+
+- **The eliminated equation is a note after the answer.** On the parametric line page the
+  slope step ends "→ y − 3 = −0.5(x − 1)"; on `~ellipse` the y step ends with
+  ((x − h) ÷ a)² + ((y − k) ÷ b)² = 1 in numbers.
+- **`~projectile` launches from h = 1 m, not 0.** The module tests refuse a 0 example for a
+  value with a unit (it would pass any unit check), so the example is 20 m/s at 30° from 1 m:
+  at t = 1 s, x ≈ 17.32 m and y = 1 + 10 − 4.9 = 6.1 m; it lands at
+  T = (10 + √119.6) ÷ 9.8 ≈ 2.14 s. From the ground (h = 0) T = 20 ÷ 9.8 ≈ 2.04 s, as planned.
 
 ## Shared needs found while building
 

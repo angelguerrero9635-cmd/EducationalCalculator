@@ -2822,11 +2822,271 @@ const MATH_12_POLAR: ModuleDef[] = [
   },
 ];
 
+// ── Parametric equations ──
+
+/** out = start + rate × t, solvable each way. */
+const moveBy = (out: string, start: string, rate: string, t: string, which: string) =>
+  rel(
+    `${out} = ${start} + ${rate}t`,
+    `{${out}} = {${start}} + {${rate}} × {${t}}`,
+    [out, start, rate, t],
+    (v) => v[out]! - v[start]! - v[rate]! * v[t]!,
+    {
+      [out]: [
+        (v) => v[start]! + v[rate]! * v[t]!,
+        `{${start}} + {${rate}} × {${t}}`,
+        `Start at ${which}₀ and move ${rate} for each 1 of t.`,
+      ],
+      [start]: [
+        (v) => v[out]! - v[rate]! * v[t]!,
+        `{${out}} − {${rate}} × {${t}}`,
+        'Take the move from the position.',
+      ],
+      [t]: [
+        (v) => div(v[out]! - v[start]!, v[rate]!),
+        `({${out}} − {${start}}) ÷ {${rate}}`,
+        `Solve for t: the move in ${which} divided by ${rate}.`,
+      ],
+    },
+  );
+
+/** "− 3" for 3 and "+ 3" for −3: a number taken away, as written after a letter. */
+const minusOf = (x: number) => (x < 0 ? `+ ${fmt(-x)}` : `− ${fmt(x)}`);
+
+/** 4.9 m/s² is half of g = 9.8 m/s². */
+const flightTime = (v: Values) => {
+  const up = v.v! * sind(v.q!);
+  return (up + Math.sqrt(up ** 2 + 19.6 * v.h!)) / 9.8;
+};
+
+const MATH_12_PARAMETRIC: ModuleDef[] = [
+  // ── m.12.parametric (AP Precalculus 4.1–4.7) ──
+  {
+    id: 'm.12.parametric',
+    assumptions: [
+      't is the input; x and y are both outputs, and the point (x, y) moves as t grows.',
+      'The arrows show the direction the point moves as t increases.',
+      'To eliminate t, solve one equation for t and put it into the other: here a line of slope b ÷ a.',
+    ],
+    variables: [
+      V('t', 't', 'Parameter', { min: -5, max: 5, step: 0.1 }),
+      real('p', 'x₀', 'x at t = 0', -20, 20),
+      real('q', 'y₀', 'y at t = 0', -20, 20),
+      real('a', 'a', 'Change in x for each 1 of t', -10, 10),
+      real('b', 'b', 'Change in y for each 1 of t', -10, 10),
+      real('x', 'x', 'x at t', -100, 100),
+      real('y', 'y', 'y at t', -100, 100),
+      V('m', 'm', 'Slope of the line', { min: -10000, max: 10000, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      moveBy('x', 'p', 'a', 't', 'x'),
+      moveBy('y', 'q', 'b', 't', 'y'),
+      withStep(
+        derive(
+          'm = b ÷ a',
+          '{m} = {b} ÷ {a}',
+          'm',
+          ['b', 'a'],
+          (v) => div(v.b!, v.a!),
+          '{b} ÷ {a}',
+          'Each 1 of t moves a across and b up, so the path’s slope is b over a.',
+        ),
+        'm',
+        {
+          note: (v) =>
+            v.p === undefined || v.q === undefined || v.m === undefined
+              ? ''
+              : `→ y ${minusOf(v.q)} = ${fmt(v.m)}(x ${minusOf(v.p)})`,
+        },
+      ),
+    ),
+    example: { t: 2, p: 1, q: 3, a: 2, b: -1, x: 5, y: 1, m: -0.5 },
+    startWith: ['t', 'p', 'q', 'a', 'b'],
+    representation: {
+      kind: 'polarGrid',
+      parametric: {
+        family: 'line',
+        x0: 'p',
+        y0: 'q',
+        a: 'a',
+        b: 'b',
+        t: 't',
+        range: [-5, 5],
+        x: 'x',
+        y: 'y',
+      },
+    },
+  },
+  {
+    id: 'm.12.parametric~ellipse',
+    title: 'An ellipse traced by an angle',
+    use: 'Use this for “Eliminate the parameter from x = 1 + 3 cos t, y = −2 + 2 sin t.”',
+    assumptions: [
+      't is an angle from 0° to 360°; the point goes around once, counterclockwise.',
+      'cos t = (x − h) ÷ a and sin t = (y − k) ÷ b, and cos²t + sin²t = 1.',
+      'So ((x − h) ÷ a)² + ((y − k) ÷ b)² = 1: an ellipse with center (h, k), a circle when a = b.',
+    ],
+    variables: [
+      real('h', 'h', 'Center, x', -20, 20),
+      real('k', 'k', 'Center, y', -20, 20),
+      real('a', 'a', 'Half-width', 0.5, 20),
+      real('b', 'b', 'Half-height', 0.5, 20),
+      deg('t', 't', 'Parameter (an angle)', 0, 360),
+      real('x', 'x', 'x at t', -50, 50),
+      real('y', 'y', 'y at t', -50, 50),
+    ],
+    ...rels(
+      rel(
+        'x = h + a cos t',
+        '{x} = {h} + {a} × cos({t}°)',
+        ['x', 'h', 'a', 't'],
+        (v) => v.x! - v.h! - v.a! * cosd(v.t!),
+        {
+          x: [
+            (v) => exact(v.h! + v.a! * cosd(v.t!)),
+            '{h} + {a} × cos({t}°)',
+            'Start at the center and go a cos t across.',
+          ],
+          h: [(v) => v.x! - v.a! * cosd(v.t!), '{x} − {a} × cos({t}°)', 'Take a cos t from x.'],
+        },
+      ),
+      withStep(
+        rel(
+          'y = k + b sin t',
+          '{y} = {k} + {b} × sin({t}°)',
+          ['y', 'k', 'b', 't'],
+          (v) => v.y! - v.k! - v.b! * sind(v.t!),
+          {
+            y: [
+              (v) => exact(v.k! + v.b! * sind(v.t!)),
+              '{k} + {b} × sin({t}°)',
+              'Start at the center and go b sin t up.',
+            ],
+            k: [(v) => v.y! - v.b! * sind(v.t!), '{y} − {b} × sin({t}°)', 'Take b sin t from y.'],
+          },
+        ),
+        'y',
+        {
+          note: (v) =>
+            [v.h, v.k, v.a, v.b].some((x) => x === undefined)
+              ? ''
+              : `→ ((x ${minusOf(v.h!)}) ÷ ${fmt(v.a!)})² + ((y ${minusOf(v.k!)}) ÷ ${fmt(v.b!)})² = 1`,
+        },
+      ),
+    ),
+    example: { h: 1, k: -2, a: 3, b: 2, t: 60, x: 2.5, y: -2 + Math.sqrt(3) },
+    startWith: ['t', 'h', 'k', 'a', 'b'],
+    representation: {
+      kind: 'polarGrid',
+      parametric: {
+        family: 'ellipse',
+        h: 'h',
+        k: 'k',
+        a: 'a',
+        b: 'b',
+        t: 't',
+        range: [0, 360],
+        x: 'x',
+        y: 'y',
+      },
+    },
+  },
+  {
+    id: 'm.12.parametric~projectile',
+    title: 'A launch as parametric equations',
+    use: 'Use this for “A ball is thrown at 20 m/s, 30° up. Where is it after 1 s, and when does it land?”',
+    assumptions: [
+      'No air resistance; g = 9.8 m/s², so the fall is 4.9t² metres.',
+      'x = (v cos θ)t and y = h + (v sin θ)t − 4.9t²: the parameter t is the time.',
+      'It lands when y = 0: the positive root of that quadratic in t.',
+    ],
+    variables: [
+      V('v', 'v', 'Launch speed', { unit: 'm/s', min: 0.5, max: 100, step: 0.5 }),
+      deg('q', 'θ', 'Launch angle', 0, 90),
+      V('h', 'h', 'Launch height', { unit: 'm', min: 0, max: 200, step: 0.5 }),
+      V('t', 't', 'Time', { unit: 's', min: 0, max: 60, step: 0.01 }),
+      V('X', 'x', 'Distance across at t', { unit: 'm', min: 0, max: 6000, step: 0.01 }),
+      V('Y', 'y', 'Height at t', { unit: 'm', min: -20000, max: 1000, step: 0.01 }),
+      V('T', 'T', 'Time to land', { unit: 's', min: 0, max: 60, step: 0.01, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'x = v cos θ · t',
+        '{X} = {v} × cos({q}°) × {t}',
+        ['X', 'v', 'q', 't'],
+        (v) => v.X! - v.v! * cosd(v.q!) * v.t!,
+        {
+          X: [
+            (v) => v.v! * cosd(v.q!) * v.t!,
+            '{v} × cos({q}°) × {t}',
+            'Across, the speed stays v cos θ the whole flight.',
+          ],
+          t: [
+            (v) => div(v.X!, v.v! * cosd(v.q!)),
+            '{X} ÷ ({v} × cos({q}°))',
+            'Divide the distance across by the speed across.',
+          ],
+        },
+      ),
+      rel(
+        'y = h + v sin θ · t − 4.9t²',
+        '{Y} = {h} + {v} × sin({q}°) × {t} − 4.9 × {t}²',
+        ['Y', 'h', 'v', 'q', 't'],
+        (v) => v.Y! - v.h! - v.v! * sind(v.q!) * v.t! + 4.9 * v.t! ** 2,
+        {
+          Y: [
+            (v) => v.h! + v.v! * sind(v.q!) * v.t! - 4.9 * v.t! ** 2,
+            '{h} + {v} × sin({q}°) × {t} − 4.9 × {t}²',
+            'Start at h, rise at v sin θ, and fall 4.9t².',
+          ],
+          h: [
+            (v) => v.Y! - v.v! * sind(v.q!) * v.t! + 4.9 * v.t! ** 2,
+            '{Y} − {v} × sin({q}°) × {t} + 4.9 × {t}²',
+            'Undo the rise and the fall.',
+          ],
+        },
+      ),
+      derive(
+        'T: y = 0',
+        '0 = {h} + {v} × sin({q}°) × {T} − 4.9 × {T}²',
+        'T',
+        ['v', 'q', 'h'],
+        flightTime,
+        '({v} × sin({q}°) + √(({v} × sin({q}°))² + 19.6 × {h})) ÷ 9.8',
+        'Set y = 0 and use the quadratic formula; the positive root is when it lands.',
+      ),
+    ),
+    example: {
+      v: 20,
+      q: 30,
+      h: 1,
+      t: 1,
+      X: 20 * cosd(30),
+      Y: 6.1,
+      T: (10 + Math.sqrt(119.6)) / 9.8,
+    },
+    startWith: ['t', 'v', 'q', 'h'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'projectile',
+      speed: 'v',
+      angle: 'q',
+      height: 'h',
+      at: 't',
+      x: 'X',
+      y: 'Y',
+      time: 'T',
+      parametric: true,
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
   ...MATH_12_VECTORS,
   ...MATH_12_POLAR,
+  ...MATH_12_PARAMETRIC,
   ...MATH_12_MATRICES,
   ...MATH_12_CONICS,
   ...MATH_12_STATS,
