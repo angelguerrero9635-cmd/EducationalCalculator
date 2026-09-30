@@ -2009,6 +2009,11 @@ function bothSides(
         v[b] !== v[d]
           ? sameX(v[b]!, v[d]!)
           : undefined,
+      // Every number solves it when b = d too: said, never refusing an input.
+      explain: (v) =>
+        v[a] !== undefined && v[a] === v[c] && v[b] !== undefined && v[b] === v[d]
+          ? sameX(v[b]!, v[d]!)
+          : undefined,
       ...(check ? { check } : {}),
     },
   );

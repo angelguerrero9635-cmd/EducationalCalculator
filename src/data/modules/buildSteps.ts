@@ -510,9 +510,19 @@ export function buildSteps(
     ...(missing.length
       ? {
           nextHint:
-            band === 'standard'
+            // A rule that says why its value can't be found speaks first.
+            module.relations
+              .map((r) => {
+                try {
+                  return r.explain?.(result.values);
+                } catch {
+                  return undefined;
+                }
+              })
+              .find((t) => t) ??
+            (band === 'standard'
               ? `Type one more number (${missing.map((q) => q.symbol).join(', ')}) to keep going.`
-              : `Type one more number: ${missing.map((q) => q.ask).join(', ')}.`,
+              : `Type one more number: ${missing.map((q) => q.ask).join(', ')}.`),
         }
       : {}),
     checkFail: early ? '≠  try another number' : '✗',

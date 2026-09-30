@@ -141,4 +141,10 @@ export interface Relation {
    * returns a sentence, the sentence is the reason shown under the box.
    */
   message?: (v: Values) => string | undefined;
+  /**
+   * Why a value this rule would find stays unknown with these numbers, without refusing any of
+   * them ("Both sides are the same for every x: every number is a solution."). Shown in place of
+   * "Type one more number" while values are still missing.
+   */
+  explain?: (v: Values) => string | undefined;
 }
