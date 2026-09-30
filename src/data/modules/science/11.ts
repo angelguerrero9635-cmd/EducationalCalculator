@@ -7,6 +7,8 @@
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
+import { scientific } from '@/engine/format';
+
 import { atLeast } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 
@@ -21,7 +23,19 @@ interface Rule {
 /** Gathers rules into a module's `relations` and `steps`. */
 const rules = (...rs: Rule[]) => ({
   relations: rs.map((r) => r.relation),
-  steps: Object.fromEntries(rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps])),
+  steps: Object.fromEntries(
+    rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+  ),
+});
+
+/** A number for a work line: plain from 1 to 999, else in scientific notation (4.388 × 10⁴⁷). */
+const sci = (x: number) =>
+  Math.abs(x) >= 1 && Math.abs(x) < 1000 ? String(Number(x.toPrecision(5))) : scientific(x);
+
+/** A rule with work lines (the parts worked out first) on the step for `id`. */
+const withWork = (r: Rule, id: string, work: StepText['work']): Rule => ({
+  relation: r.relation,
+  steps: { ...r.steps, [id]: { ...r.steps[id]!, work } },
 });
 
 /** A rule that only places the picture: solved like any other, never shown as a step. */
@@ -1320,7 +1334,7 @@ const circularPages: ModuleDef[] = [
         SPEED,
         AC,
         FC,
-        q('T', 'T', 'Period (time for one turn)', 's', 0.0001, 1e7, 0.0001),
+        q('T', 'T', 'Period', 's', 0.0001, 1e7, 0.0001),
       ],
       ...rules(
         centripetalRule,
@@ -1446,6 +1460,7 @@ const circularPages: ModuleDef[] = [
             'The net force up is the mass times the centripetal acceleration.',
           ],
           m: [(v) => div(v.n!, v.a!), '{n}/{a}', 'Divide the net force by the acceleration.'],
+          a: [(v) => div(v.n!, v.m!), '{n}/{m}', 'Divide the net force by the mass.'],
         }),
         sum(
           'T',
@@ -1488,32 +1503,40 @@ const circularPages: ModuleDef[] = [
         q('F', 'F', 'Pull of gravity', 'N', 0, 1e45, 1, { scientific: true }),
       ],
       ...rules(
-        rule(
-          'F = Gm₁m₂/r²',
-          '{F} = 6.674 × 10⁻¹¹ × {M} × {n}/{d}²',
-          (v) => v.F! / ((6.674e-11 * v.M! * v.n!) / (v.d! * v.d!)) - 1,
-          {
-            F: [
-              (v) => div(6.674e-11 * v.M! * v.n!, v.d! * v.d!),
-              '6.674 × 10⁻¹¹ × {M} × {n}/({d}²)',
-              'Multiply G by both masses and divide by the distance squared.',
-            ],
-            d: [
-              (v) => Math.sqrt(Math.max(0, div(6.674e-11 * v.M! * v.n!, v.F!) ?? 0)),
-              '√(6.674 × 10⁻¹¹ × {M} × {n}/{F})',
-              'Solve for r²: G m₁ m₂ over F, then take the square root.',
-            ],
-            M: [
-              (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.n!),
-              '{F} × {d}²/(6.674 × 10⁻¹¹ × {n})',
-              'Undo the formula for m₁.',
-            ],
-            n: [
-              (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.M!),
-              '{F} × {d}²/(6.674 × 10⁻¹¹ × {M})',
-              'Undo the formula for m₂.',
-            ],
-          },
+        withWork(
+          rule(
+            'F = Gm₁m₂/r²',
+            '{F} = 6.674 × 10⁻¹¹ × {M} × {n}/{d}²',
+            (v) => v.F! / ((6.674e-11 * v.M! * v.n!) / (v.d! * v.d!)) - 1,
+            {
+              F: [
+                (v) => div(6.674e-11 * v.M! * v.n!, v.d! * v.d!),
+                '6.674 × 10⁻¹¹ × {M} × {n}/({d}²)',
+                'G = 6.674 × 10⁻¹¹ N·m²/kg²: multiply G by both masses and divide by the distance squared.',
+              ],
+              d: [
+                (v) => Math.sqrt(Math.max(0, div(6.674e-11 * v.M! * v.n!, v.F!) ?? 0)),
+                '√(6.674 × 10⁻¹¹ × {M} × {n}/{F})',
+                'Solve for r²: G m₁ m₂ over F, then take the square root.',
+              ],
+              M: [
+                (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.n!),
+                '{F} × {d}²/(6.674 × 10⁻¹¹ × {n})',
+                'Undo the formula for m₁.',
+              ],
+              n: [
+                (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.M!),
+                '{F} × {d}²/(6.674 × 10⁻¹¹ × {M})',
+                'Undo the formula for m₂.',
+              ],
+            },
+          ),
+          'F',
+          (v) => [
+            `m₁ × m₂ = (${sci(v.M!)}) × (${sci(v.n!)}) = ${sci(v.M! * v.n!)} kg²`,
+            `r² = (${sci(v.d!)})² = ${sci(v.d! * v.d!)} m²`,
+            `F = 6.674 × 10⁻¹¹ × (${sci(v.M! * v.n!)})/(${sci(v.d! * v.d!)})`,
+          ],
         ),
       ),
       example: { M, n, d, F: (6.674e-11 * M * n) / (d * d) },
