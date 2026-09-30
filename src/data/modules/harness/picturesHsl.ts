@@ -164,6 +164,26 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
         out.push(`L ${l}, but R ${r} at ${t} K gives ${luminosityOf(r, t)}`);
       break;
     }
+    case 'expandingUniverse': {
+      if (rep.mode === 'stretch') {
+        const a = num(rep.scale);
+        const d = num(rep.distance);
+        const D = num(rep.after);
+        if (a !== undefined && (a < 1 || a > 4)) out.push(`scale ${a} is outside the 1–4 drawn`);
+        // The marked galaxy is drawn at a × d.
+        if (a !== undefined && d !== undefined && D !== undefined && !near(a * d, D, 1e-6))
+          out.push(`after ${D}, but ${a} × ${d} = ${a * d}`);
+      } else {
+        const d = num(rep.distance);
+        const v = num(rep.speed);
+        const h = num(rep.constant, 70);
+        if (d !== undefined && d < 0) out.push(`distance ${d} is negative`);
+        // The galaxy sits on the line v = H₀d.
+        if (d !== undefined && v !== undefined && h !== undefined && !near(v, h * d, 1e-6))
+          out.push(`speed ${v}, but ${h} × ${d} = ${h * d}`);
+      }
+      break;
+    }
     case 'rockLayers': {
       const d = rep.dating;
       const n = d.layers.length;

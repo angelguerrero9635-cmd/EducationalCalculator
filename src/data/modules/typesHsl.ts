@@ -192,8 +192,45 @@ export interface HrDiagramSpec {
   fixed?: boolean;
 }
 
+/**
+ * The expanding universe (H80), `stretch` mode: the same patch of galaxies before and after space
+ * stretches by `scale`, our galaxy in the middle; every galaxy moves away from every other, the
+ * far ones farther, and one marked galaxy's distance grows from `distance` to `after`.
+ */
+export interface StretchSpec {
+  kind: 'expandingUniverse';
+  mode: 'stretch';
+  /** How many times larger space has grown (the scale factor). */
+  scale: NumOrVar;
+  /** The marked galaxy's distance before and after (the page's unit). */
+  distance?: NumOrVar;
+  after?: NumOrVar;
+}
+
+/**
+ * `hubble` mode: galaxies' recession speed (km/s) against distance (Mpc), the line v = H₀d
+ * through the origin with its slope, a scatter of other galaxies about it, and the page's galaxy.
+ */
+export interface HubbleSpec {
+  kind: 'expandingUniverse';
+  mode: 'hubble';
+  /** The galaxy's distance, Mpc. */
+  distance: NumOrVar;
+  /** Its speed away from us, km/s. */
+  speed: NumOrVar;
+  /** The Hubble constant, km/s per Mpc (default 70). */
+  constant?: NumOrVar;
+}
+
+export type ExpandingUniverseSpec = StretchSpec | HubbleSpec;
+
 export type HslSpec =
-  EarthLayersSpec | RockDatingSpec | OceanProfileSpec | AtmosphereLayersSpec | HrDiagramSpec;
+  | ExpandingUniverseSpec
+  | EarthLayersSpec
+  | RockDatingSpec
+  | OceanProfileSpec
+  | AtmosphereLayersSpec
+  | HrDiagramSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hslSpecVars(r: HslSpec): string[] {
@@ -208,6 +245,10 @@ export function hslSpecVars(r: HslSpec): string[] {
       return r.mode === 'profile' ? ids([r.depth]) : ids([r.angle, r.range]);
     case 'hrDiagram':
       return ids([r.temperature, r.luminosity, r.radius]);
+    case 'expandingUniverse':
+      return r.mode === 'stretch'
+        ? ids([r.scale, r.distance, r.after])
+        : ids([r.distance, r.speed, r.constant]);
     case 'atmosphereLayers':
       return r.mode === 'profile'
         ? ids([r.altitude, r.temperature, r.ground])

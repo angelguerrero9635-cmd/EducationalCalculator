@@ -11,6 +11,7 @@ import { EarthLayers } from './EarthLayers';
 import { OceanProfile } from './OceanProfile';
 import { AtmosphereLayers } from './AtmosphereLayers';
 import { HrDiagram } from './HrDiagram';
+import { ExpandingUniverse } from './ExpandingUniverse';
 import { RockLayersDated } from './RockLayersDated';
 
 export function HslPicture({ spec, calc }: { spec: HslSpec; calc: Calculator }): ReactNode {
@@ -23,6 +24,8 @@ export function HslPicture({ spec, calc }: { spec: HslSpec; calc: Calculator }):
       return <AtmosphereLayers spec={spec} calc={calc} />;
     case 'hrDiagram':
       return <HrDiagram spec={spec} calc={calc} />;
+    case 'expandingUniverse':
+      return <ExpandingUniverse spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayersDated spec={spec} calc={calc} />;
   }

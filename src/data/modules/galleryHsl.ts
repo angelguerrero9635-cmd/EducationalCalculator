@@ -1431,7 +1431,150 @@ const lifeLayouts: LayoutDef[] = [
   },
 ];
 
+// ── H80: the expanding universe, galaxies and the forming solar system ──
+
+const stretch: ModuleDef = {
+  id: 'g.s12-cosmology-stretch',
+  title: 'Space stretching: every galaxy moves apart',
+  use: 'Use this for how a galaxy’s distance grows as space stretches.',
+  assumptions: [
+    'The universe is expanding: space itself stretches, carrying galaxies apart.',
+    'Every distance grows by the same factor, so from any galaxy the others all seem to move away, and none is at the center.',
+    'Distances are in millions of light-years (Mly).',
+  ],
+  variables: [
+    V('a', 'a', 'Stretch factor', { min: 1, max: 4, step: 0.01 }),
+    V('d', 'd', 'Distance before', { unit: 'Mly', min: 1, max: 10000, step: 1 }),
+    V('D', 'D', 'Distance after', { unit: 'Mly', min: 1, max: 40000, step: 1, derived: true }),
+  ],
+  ...rels(
+    product('D', 'a', 'd', [
+      'Every distance grows by the stretch factor.',
+      'How many times the distance grew.',
+      'Undo the stretch: divide by the factor.',
+    ]),
+  ),
+  example: { a: 2, d: 100, D: 200 },
+  startWith: ['a', 'd'],
+  representation: {
+    kind: 'expandingUniverse',
+    mode: 'stretch',
+    scale: 'a',
+    distance: 'd',
+    after: 'D',
+  },
+};
+
+const stretchFar: ModuleDef = {
+  ...stretch,
+  id: 'g.s12-cosmology-stretch-far',
+  title: 'Space stretched four times',
+  use: 'Use this for a large stretch, as between the early universe and today.',
+  example: { a: 4, d: 100, D: 400 },
+};
+
+const hubble: ModuleDef = {
+  id: 'g.s12-cosmology-hubble',
+  title: 'Hubble’s law',
+  use: 'Use this for a galaxy’s speed away from us from its distance, v = H₀ × d.',
+  assumptions: [
+    'The light of distant galaxies is redshifted: they are moving away from us.',
+    'Hubble’s law: a galaxy’s speed away is proportional to its distance. The slope is the Hubble constant, about 70 km/s per megaparsec (Mpc).',
+    'One megaparsec is about 3.26 million light-years.',
+  ],
+  variables: [
+    V('H', 'H₀', 'Hubble constant', { unit: 'km/s per Mpc', min: 50, max: 90, step: 0.1 }),
+    V('d', 'd', 'Distance', { unit: 'Mpc', min: 0.1, max: 5000, step: 0.1 }),
+    V('v', 'v', 'Speed away', { unit: 'km/s', min: 1, max: 450000, step: 1, derived: true }),
+  ],
+  ...rels(
+    product('v', 'H', 'd', [
+      'Each megaparsec of distance adds H₀ km/s of speed.',
+      'The speed per megaparsec: the slope of the Hubble plot.',
+      'How many megaparsecs give that speed.',
+    ]),
+  ),
+  example: { H: 70, d: 100, v: 7000 },
+  startWith: ['H', 'd'],
+  representation: {
+    kind: 'expandingUniverse',
+    mode: 'hubble',
+    distance: 'd',
+    speed: 'v',
+    constant: 'H',
+  },
+};
+
+const hubbleFar: ModuleDef = {
+  ...hubble,
+  id: 'g.s12-cosmology-hubble-far',
+  title: 'Hubble’s law for a distant galaxy',
+  use: 'Use this for a galaxy a billion light-years and more away.',
+  example: { H: 70, d: 400, v: 28000 },
+};
+
+const cosmosLayouts: LayoutDef[] = [
+  {
+    id: 'g.s12-cosmology-galaxies',
+    title: 'Kinds of galaxies',
+    kind: 'sort',
+    use: 'Use this for sorting galaxies by shape: spiral, elliptical or irregular.',
+    assumptions: [
+      'Spiral galaxies have a bulge and a flat disk with arms where new stars form; many, like the Milky Way, have a bar across the middle.',
+      'Elliptical galaxies are smooth balls of mostly old stars, with little gas.',
+      'Irregular galaxies have no clear shape.',
+    ],
+    question: 'What shape is the galaxy?',
+    bins: [
+      {
+        id: 'spiral',
+        label: 'Spiral',
+        why: 'A central bulge with arms winding out in a flat disk.',
+      },
+      { id: 'elliptical', label: 'Elliptical', why: 'A smooth oval of old stars, with no arms.' },
+      {
+        id: 'irregular',
+        label: 'Irregular',
+        why: 'Patchy clumps of stars and gas, with no set shape.',
+      },
+    ],
+    cards: [
+      { label: 'Andromeda Galaxy', bin: 'spiral', figure: { kind: 'icon', icon: 'spiral galaxy' } },
+      { label: 'Milky Way', bin: 'spiral', figure: { kind: 'icon', icon: 'barred spiral galaxy' } },
+      { label: 'M87', bin: 'elliptical', figure: { kind: 'icon', icon: 'elliptical galaxy' } },
+      {
+        label: 'Large Magellanic Cloud',
+        bin: 'irregular',
+        figure: { kind: 'icon', icon: 'irregular galaxy' },
+      },
+    ],
+  },
+  {
+    id: 'g.s12-solar-system-formation',
+    title: 'How the solar system formed',
+    kind: 'sequence',
+    use: 'Use this for the stages of the solar system’s formation, from a nebula to planets.',
+    assumptions: [
+      'About 4.6 billion years ago, a cloud of gas and dust began to collapse under its own gravity.',
+      'As it shrank it spun faster and flattened into a disk; the center became the Sun.',
+      'In the disk, dust stuck into planetesimals, which collided and grew into planets: rocky near the Sun, giants of gas and ice farther out.',
+    ],
+    question: 'Put the stages of the solar system’s formation in order.',
+    stages: [
+      { label: 'Solar nebula', figure: { kind: 'icon', icon: 'solar nebula' } },
+      { label: 'Spinning disk', figure: { kind: 'icon', icon: 'spinning disk' } },
+      { label: 'Protosun', figure: { kind: 'icon', icon: 'protosun' } },
+      { label: 'Planetesimals', figure: { kind: 'icon', icon: 'planetesimals' } },
+      { label: 'Planets', figure: { kind: 'icon', icon: 'young planets' } },
+    ],
+  },
+];
+
 export const HSL_GALLERY_MODULES: ModuleDef[] = [
+  stretch,
+  stretchFar,
+  hubble,
+  hubbleFar,
   hr,
   hrGiant,
   hrSupergiant,
@@ -1468,4 +1611,5 @@ export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [
   ...climateLayouts,
   ...energyLayouts,
   ...lifeLayouts,
+  ...cosmosLayouts,
 ];

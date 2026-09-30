@@ -1211,13 +1211,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as a calculator kind and card icons. H–R diagram: { kind: "hrDiagram", temperature: id (K), luminosity: id (L☉), radius?: id (R☉), name?: "Sirius A", fixed? }: temperature 40,000–2,500 K (hot on the left) against luminosity 10⁻⁴–10⁶ L☉, both log; the main sequence (from the spectral-type tables), giants, supergiants and white dwarfs as regions, dashed lines of 0.01, 1 and 100 R☉, the Sun, and the star in its temperature’s color, named by the region it falls in (the caption gives its radius); drag the star to change T and L. Example: { kind: "hrDiagram", temperature: "T", luminosity: "L", radius: "R", name: "Sirius A" } with L = R² × (T ÷ 5772)⁴ (demos: Sirius A, Aldebaran, Betelgeuse, Sirius B). Life-cycle card icons, each on night sky: "stellar nebula", "protostar", "Sun-like star", "massive star", "red giant", "red supergiant", "planetary nebula", "white dwarf", "supernova", "neutron star", "black hole"; sequences nebula → protostar → Sun-like star → red giant → planetary nebula → white dwarf, and → massive star → red supergiant → supernova → neutron star (or black hole). The harness checks the star is in the window and L = R²(T ÷ 5772)⁴.',
   },
-  ask(
-    'H80',
-    'expandingUniverse',
-    'Explore figure: galaxies spreading apart as space stretches; Hubble plot of speed against distance; galaxy type card figures',
-    ['s.12.cosmology', 's.12.solar-system'],
-    'Solar system page: nebula to planets as sequence stages.',
-  ),
+  {
+    ...ask(
+      'H80',
+      'expandingUniverse',
+      'Explore figure: galaxies spreading apart as space stretches; Hubble plot of speed against distance; galaxy type card figures',
+      ['s.12.cosmology', 's.12.solar-system'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-cosmology-stretch',
+      'g.s12-cosmology-stretch-far',
+      'g.s12-cosmology-hubble',
+      'g.s12-cosmology-hubble-far',
+      'g.s12-cosmology-galaxies',
+      'g.s12-solar-system-formation',
+    ],
+    notes:
+      'Solar system page: nebula to planets as sequence stages. Drawn (group HL) as a calculator kind with two modes, where the spec asked for an explore figure: the stretch and the Hubble plot are both driven by values (a stretch factor; H₀ and a distance), so a page can type them and drag. Stretch: { kind: "expandingUniverse", mode: "stretch", scale: id (1–4), distance?: id, after?: id }: the same patch of galaxies before and after space stretches, our galaxy ringed in the middle, each galaxy’s old place a faint dot with an arrow to its new one (the far ones move farther), a marked neighbor with its distance before and after. Example: { kind: "expandingUniverse", mode: "stretch", scale: "a", distance: "d", after: "D" } with D = a × d. Hubble plot: { kind: "expandingUniverse", mode: "hubble", distance: id (Mpc), speed: id (km/s), constant?: id or number (default 70) }: speed against distance with the line v = H₀d and its slope, a scatter of other galaxies about it, the page’s galaxy dragged along the distance axis. Example: { kind: "expandingUniverse", mode: "hubble", distance: "d", speed: "v", constant: "H" } with v = H₀ × d. Card icons (night sky): "spiral galaxy", "barred spiral galaxy", "elliptical galaxy", "irregular galaxy"; the solar system page’s sequence stages "solar nebula", "spinning disk", "protosun", "planetesimals", "young planets". The harness checks D = a × d, v = H₀ × d, and the stretch within 1–4.',
+  },
   // ── H. Equation inputs (docs/RENDERINGS_HS_EQUATIONS.md, docs/EQUATION_INPUTS.md) ──
   {
     ...ask(

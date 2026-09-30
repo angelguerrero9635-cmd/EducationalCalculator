@@ -9,6 +9,10 @@
  * supernova's burst; a neutron star, tiny, beaming as a pulsar; a black hole, a dark disk in its
  * glowing ring. Sizes grow and shrink in order, not to scale (a red supergiant is some 100,000
  * times as wide as a white dwarf).
+ *
+ * Galaxies: a spiral, a barred spiral, an elliptical and an irregular galaxy. The forming solar
+ * system: the solar nebula; the cloud flattened into a spinning disk; the protosun lit in its
+ * disk; planetesimals clumping; young planets on their orbits.
  */
 import type { ReactNode } from 'react';
 import { Circle, Defs, Ellipse, G, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
@@ -192,6 +196,194 @@ export function HLStarIcon({ icon, ink }: IconProps): ReactNode {
           <Circle cx={24} cy={24} r={8.5} fill={c.starOrange} opacity={0.9} />
           <Circle cx={24} cy={24} r={7} fill={c.shade} />
           <Path d="M 5 25 C 12 28 36 28 43 25" stroke={c.starYellow} strokeWidth={2} fill="none" />
+        </G>
+      );
+    // ── Galaxies (H80) ──
+    case 'spiral galaxy':
+    case 'barred spiral galaxy': {
+      const barred = icon === 'barred spiral galaxy';
+      // Two arms winding out from the bulge (or from the ends of a bar), seen tilted.
+      const arm = (turn: number) => {
+        let d = '';
+        for (let i = 0; i <= 30; i++) {
+          const t = i / 30;
+          const a = turn + t * Math.PI * 1.3;
+          const r = (barred ? 7 : 3) + t * 15;
+          d += `${i ? 'L' : 'M'} ${(24 + r * Math.cos(a)).toFixed(1)} ${(24 + r * Math.sin(a) * 0.6).toFixed(1)} `;
+        }
+        return d;
+      };
+      return (
+        <G>
+          {sky}
+          {dust}
+          <Defs>{glow(ids.glow, c.starYellow)}</Defs>
+          <Path
+            d={arm(0)}
+            stroke={c.nebulaBlue}
+            strokeWidth={4}
+            fill="none"
+            strokeLinecap="round"
+            opacity={0.85}
+          />
+          <Path
+            d={arm(Math.PI)}
+            stroke={c.nebulaBlue}
+            strokeWidth={4}
+            fill="none"
+            strokeLinecap="round"
+            opacity={0.85}
+          />
+          <Path d={arm(0)} stroke={c.starWhite} strokeWidth={1} fill="none" opacity={0.7} />
+          <Path d={arm(Math.PI)} stroke={c.starWhite} strokeWidth={1} fill="none" opacity={0.7} />
+          {barred ? (
+            <Rect x={16} y={22} width={16} height={4} rx={2} fill={c.starYellow} opacity={0.9} />
+          ) : null}
+          <Ellipse cx={24} cy={24} rx={7} ry={5} fill={url(ids.glow)} />
+        </G>
+      );
+    }
+    case 'elliptical galaxy':
+      return (
+        <G>
+          {sky}
+          {dust}
+          <Defs>{glow(ids.glow, c.starOrange, c.starYellow)}</Defs>
+          <Ellipse
+            cx={24}
+            cy={24}
+            rx={19}
+            ry={12}
+            fill={url(ids.glow)}
+            transform="rotate(-20 24 24)"
+          />
+        </G>
+      );
+    case 'irregular galaxy':
+      return (
+        <G>
+          {sky}
+          {dust}
+          <Defs>
+            {glow(ids.glow, c.nebulaBlue)}
+            {glow(ids.glow2, c.nebulaPink, c.nebulaPink)}
+          </Defs>
+          <Ellipse cx={18} cy={20} rx={11} ry={8} fill={url(ids.glow)} />
+          <Ellipse cx={30} cy={28} rx={10} ry={7} fill={url(ids.glow)} />
+          <Ellipse cx={26} cy={17} rx={6} ry={4} fill={url(ids.glow2)} />
+          {[
+            [15, 22],
+            [22, 26],
+            [31, 29],
+            [27, 17],
+            [34, 24],
+          ].map(([x, y]) => (
+            <Circle key={`${x}${y}`} cx={x} cy={y} r={1.1} fill={c.starWhite} />
+          ))}
+        </G>
+      );
+    // ── The forming solar system (H80) ──
+    case 'solar nebula':
+      return (
+        <G>
+          {sky}
+          <Defs>{glow(ids.glow2, c.nebulaPink, c.nebulaPink)}</Defs>
+          <Ellipse cx={24} cy={24} rx={21} ry={17} fill={url(ids.glow2)} />
+          {Array.from({ length: 22 }, (_, i) => (
+            <Circle
+              key={i}
+              cx={8 + ((i * 37) % 32)}
+              cy={10 + ((i * 23) % 28)}
+              r={0.9}
+              fill={c.starOrange}
+              opacity={0.8}
+            />
+          ))}
+          {dust}
+        </G>
+      );
+    case 'spinning disk':
+      return (
+        <G>
+          {sky}
+          <Defs>{glow(ids.glow2, c.nebulaPink, c.starOrange)}</Defs>
+          <Ellipse cx={24} cy={24} rx={21} ry={7} fill={url(ids.glow2)} />
+          <Path
+            d="M 6 18 A 20 7 0 0 1 42 18"
+            stroke={c.starWhite}
+            strokeWidth={1.2}
+            fill="none"
+            opacity={0.7}
+          />
+          <Path
+            d="M 40 16 l 3 2.5 l -3.8 0.8"
+            stroke={c.starWhite}
+            strokeWidth={1.2}
+            fill="none"
+            opacity={0.7}
+          />
+          {dust}
+        </G>
+      );
+    case 'protosun':
+      return (
+        <G>
+          {sky}
+          <Defs>{glow(ids.glow2, c.nebulaPink, c.nebulaPink)}</Defs>
+          <Ellipse cx={24} cy={24} rx={21} ry={6} fill={url(ids.glow2)} />
+          {star(6, c.starYellow, 2)}
+          {dust}
+        </G>
+      );
+    case 'planetesimals':
+      return (
+        <G>
+          {sky}
+          <Defs>{glow(ids.glow2, c.nebulaPink, c.nebulaPink)}</Defs>
+          <Ellipse cx={24} cy={24} rx={21} ry={6} fill={url(ids.glow2)} opacity={0.6} />
+          {star(5, c.starYellow, 2)}
+          {[
+            [8, 25, 1.6],
+            [13, 21, 1.2],
+            [35, 27, 1.8],
+            [40, 22, 1.3],
+            [17, 28, 1.1],
+            [31, 20, 1.4],
+          ].map(([x, y, r]) => (
+            <Circle
+              key={`${x}`}
+              cx={x}
+              cy={y}
+              r={r}
+              fill={c.rock5}
+              stroke={c.starWhite}
+              strokeWidth={0.3}
+            />
+          ))}
+        </G>
+      );
+    case 'young planets':
+      return (
+        <G>
+          {sky}
+          {dust}
+          {star(5, c.starYellow, 2)}
+          {[9, 14, 19].map((r) => (
+            <Ellipse
+              key={r}
+              cx={24}
+              cy={24}
+              rx={r}
+              ry={r * 0.35}
+              fill="none"
+              stroke={c.starWhite}
+              strokeWidth={0.5}
+              opacity={0.5}
+            />
+          ))}
+          <Circle cx={33} cy={24.5} r={1.8} fill={c.planetMars} />
+          <Circle cx={12} cy={21} r={2} fill={c.water} />
+          <Circle cx={31} cy={30.5} r={3.4} fill={c.planetJupiter} />
         </G>
       );
     default:

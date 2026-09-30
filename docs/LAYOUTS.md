@@ -68,7 +68,9 @@ icons (`layouts/icons/hl.tsx`): `quartz`, `feldspar`, `mica`, `calcite`, `halite
 `hematite`; energy icons `solar panel` and `oil rig` (beside round 3's wind turbine, dam, coal,
 oil pump, gas flame and nuclear power plant). A star's life, on night sky: `stellar nebula`, `protostar`,
 `Sun-like star`, `massive star`, `red giant`, `red supergiant`, `planetary nebula`, `white dwarf`,
-`supernova`, `neutron star`, `black hole`. `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
+`supernova`, `neutron star`, `black hole`. Galaxies: `spiral galaxy`, `barred spiral galaxy`, `elliptical
+galaxy`, `irregular galaxy`; the forming solar system: `solar nebula`, `spinning disk`, `protosun`,
+`planetesimals`, `young planets`. `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
 composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
 valley, a meander, an aquifer or a dune, its parts labeled. `oceanCurrents`
 (`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map. `greenhouse`

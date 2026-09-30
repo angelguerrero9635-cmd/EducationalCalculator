@@ -24,4 +24,14 @@ export const HL_ICONS = [
   'supernova',
   'neutron star',
   'black hole',
+  // Galaxies and the forming solar system (H80).
+  'spiral galaxy',
+  'barred spiral galaxy',
+  'elliptical galaxy',
+  'irregular galaxy',
+  'solar nebula',
+  'spinning disk',
+  'protosun',
+  'planetesimals',
+  'young planets',
 ] as const;

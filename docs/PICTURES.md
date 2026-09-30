@@ -98,6 +98,9 @@ search or the sitemap, but the module tests and the harness run over it):
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
 
+`expandingUniverse` (H80): galaxies spreading as space stretches by a factor, each old place
+arrowed to its new one; or a Hubble plot, v = H₀d, for Earth science cosmology.
+
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
 | Kind               | Option                                   | Draws                                                                         |
