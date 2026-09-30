@@ -2115,10 +2115,416 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
   },
 ];
 
+// ── Vectors ──
+
+/**
+ * θ = the direction of (x, y), 0° to 360° from the positive x-axis: tan⁻¹(y ÷ x) put into the
+ * arrow's quadrant (engine need 12, kept here).
+ */
+const directionOf = (x: number, y: number) =>
+  x === 0 && y === 0 ? undefined : (((Math.atan2(y, x) / RAD + 360) % 360) as number);
+function direction(t: string, x: string, y: string, what = 'arrow'): Rel {
+  return rel(
+    `${t} = direction of (${x}, ${y})`,
+    `tan {${t}} = {${y}} ÷ {${x}}, {${t}} in the quadrant of ({${x}}, {${y}})`,
+    [t, x, y],
+    (v) => {
+      const d = directionOf(v[x]!, v[y]!);
+      if (d === undefined) return NaN;
+      const gap = Math.abs(d - v[t]!) % 360;
+      return Math.min(gap, 360 - gap);
+    },
+    {
+      [t]: [
+        (v) => directionOf(v[x]!, v[y]!),
+        (v: Values) =>
+          v[x]! > 0
+            ? v[y]! >= 0
+              ? `tan⁻¹({${y}} ÷ {${x}})`
+              : `360 + tan⁻¹({${y}} ÷ {${x}})`
+            : v[x]! < 0
+              ? `180 + tan⁻¹({${y}} ÷ {${x}})`
+              : v[y]! > 0
+                ? '90'
+                : '270',
+        `tan⁻¹ gives an angle from −90° to 90°; add 180° when the ${what} points left, 360° when it points down and right.`,
+      ],
+    },
+    {
+      check: (v) =>
+        v[x] === 0
+          ? `${fmt(v[x]!)} = ${fmt(Math.hypot(v[x]!, v[y]!))} × cos(${fmt(v[t]!)}°)`
+          : `tan(${fmt(v[t]!)}°) = ${fmt(v[y]!)} ÷ ${v[x]! < 0 ? `(${fmt(v[x]!)})` : fmt(v[x]!)}`,
+    },
+  );
+}
+
+/** m = √(x² + y²), and a missing component back from the length. */
+const lengthOf = (
+  m: string,
+  x: string,
+  y: string,
+  how = 'The Pythagorean theorem on the components.',
+) =>
+  rel(
+    `${m} = √(${x}² + ${y}²)`,
+    `{${m}} = √({${x}}² + {${y}}²)`,
+    [m, x, y],
+    (v) => v[m]! - Math.hypot(v[x]!, v[y]!),
+    {
+      [m]: [(v) => Math.hypot(v[x]!, v[y]!), `√({${x}}² + {${y}}²)`, how],
+      [x]: [
+        (v) =>
+          v[m]! < Math.abs(v[y]!)
+            ? undefined
+            : [Math.sqrt(v[m]! ** 2 - v[y]! ** 2), -Math.sqrt(v[m]! ** 2 - v[y]! ** 2)],
+        `±√({${m}}² − {${y}}²)`,
+        'Take the other component’s square from the length’s square, then the root (either sign).',
+      ],
+      [y]: [
+        (v) =>
+          v[m]! < Math.abs(v[x]!)
+            ? undefined
+            : [Math.sqrt(v[m]! ** 2 - v[x]! ** 2), -Math.sqrt(v[m]! ** 2 - v[x]! ** 2)],
+        `±√({${m}}² − {${x}}²)`,
+        'Take the other component’s square from the length’s square, then the root (either sign).',
+      ],
+    },
+  );
+
+/** s = a + b for one component. */
+const sumOf = (s: string, a: string, b: string, which: string) =>
+  rel(`${s} = ${a} + ${b}`, `{${s}} = {${a}} + {${b}}`, [s, a, b], (v) => v[s]! - v[a]! - v[b]!, {
+    [s]: [(v) => v[a]! + v[b]!, `{${a}} + {${b}}`, `Add the ${which}-components.`],
+    [a]: [(v) => v[s]! - v[b]!, `{${s}} − {${b}}`, `Take v’s ${which}-component from the sum’s.`],
+    [b]: [(v) => v[s]! - v[a]!, `{${s}} − {${a}}`, `Take u’s ${which}-component from the sum’s.`],
+  });
+
+/** w = k × u for one component. */
+const scaled = (w: string, k: string, u: string, which: string) =>
+  rel(`${w} = ${k} × ${u}`, `{${w}} = {${k}} × {${u}}`, [w, k, u], (v) => v[w]! - v[k]! * v[u]!, {
+    [w]: [(v) => v[k]! * v[u]!, `{${k}} × {${u}}`, `Multiply the ${which}-component by k.`],
+    [k]: [
+      (v) => div(v[w]!, v[u]!),
+      `{${w}} ÷ {${u}}`,
+      `Divide the new ${which}-component by the old one.`,
+    ],
+    [u]: [(v) => div(v[w]!, v[k]!), `{${w}} ÷ {${k}}`, `Divide the new ${which}-component by k.`],
+  });
+
+const comp = (id: string, symbol: string, name: string, range = 1000, extra = {}) =>
+  V(id, symbol, name, { min: -range, max: range, step: 0.01, ...extra });
+
+const MATH_12_VECTORS: ModuleDef[] = [
+  // ── m.12.vectors (N-VM.1–5) ──
+  {
+    id: 'm.12.vectors',
+    assumptions: [
+      'The direction θ is measured counterclockwise from the positive x-axis.',
+      'A vector has a length and a direction but no fixed place: move it and it is the same vector.',
+      'tan⁻¹(vy ÷ vx) alone gives the wrong quadrant when vx < 0: add 180°.',
+    ],
+    variables: [
+      V('m', '|v|', 'Length', { min: 0, max: 1000, step: 0.01 }),
+      deg('t', 'θ', 'Direction', 0, 360),
+      comp('vx', 'vₓ', 'x-component'),
+      comp('vy', 'vᵧ', 'y-component'),
+    ],
+    ...rels(
+      rel(
+        'vₓ = |v| cos θ',
+        '{vx} = {m} × cos({t}°)',
+        ['vx', 'm', 't'],
+        (v) => v.vx! - v.m! * cosd(v.t!),
+        {
+          vx: [
+            (v) => v.m! * cosd(v.t!),
+            '{m} × cos({t}°)',
+            'The x-component is the length times the cosine of the direction.',
+          ],
+        },
+      ),
+      rel(
+        'vᵧ = |v| sin θ',
+        '{vy} = {m} × sin({t}°)',
+        ['vy', 'm', 't'],
+        (v) => v.vy! - v.m! * sind(v.t!),
+        {
+          vy: [
+            (v) => v.m! * sind(v.t!),
+            '{m} × sin({t}°)',
+            'The y-component is the length times the sine of the direction.',
+          ],
+        },
+      ),
+      lengthOf('m', 'vx', 'vy'),
+      direction('t', 'vx', 'vy'),
+    ),
+    example: { m: 10, t: 30, vx: 10 * cosd(30), vy: 5 },
+    startWith: ['m', 't'],
+    pictureLabels: ['vx', 'vy'],
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [{ name: 'v', magnitude: 'm', direction: 't' }],
+      components: true,
+    },
+  },
+  {
+    id: 'm.12.vectors~add',
+    title: 'Adding vectors',
+    use: 'Use this for “Find u + v for u = ⟨3, 1⟩ and v = ⟨1, 2⟩, and its length.”',
+    assumptions: [
+      'Add vectors by adding matching components.',
+      'Tip to tail: start v where u ends; u + v runs from u’s tail to v’s tip.',
+      'The length of the sum is not the sum of the lengths.',
+    ],
+    variables: [
+      comp('ux', 'u₁', 'x-component of u'),
+      comp('uy', 'u₂', 'y-component of u'),
+      comp('vx', 'v₁', 'x-component of v'),
+      comp('vy', 'v₂', 'y-component of v'),
+      comp('sx', 's₁', 'x-component of u + v', 2000),
+      comp('sy', 's₂', 'y-component of u + v', 2000),
+      V('r', '|u + v|', 'Length of u + v', { min: 0, max: 3000, step: 0.01 }),
+    ],
+    ...rels(
+      sumOf('sx', 'ux', 'vx', 'x'),
+      sumOf('sy', 'uy', 'vy', 'y'),
+      derive(
+        '|u + v| = √(s₁² + s₂²)',
+        '{r} = √({sx}² + {sy}²)',
+        'r',
+        ['sx', 'sy'],
+        (v) => Math.hypot(v.sx!, v.sy!),
+        '√({sx}² + {sy}²)',
+        'The Pythagorean theorem on the sum’s components.',
+      ),
+    ),
+    example: { ux: 3, uy: 1, vx: 1, vy: 2, sx: 4, sy: 3, r: 5 },
+    startWith: ['ux', 'uy', 'vx', 'vy'],
+    equation: '⟨{ux}, {uy}⟩ + ⟨{vx}, {vy}⟩ = ⟨{sx}, {sy}⟩',
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'ux', y: 'uy' },
+        { name: 'v', x: 'vx', y: 'vy' },
+      ],
+      sum: 'tipToTail',
+      result: { name: 'u + v', x: 'sx', y: 'sy', magnitude: 'r' },
+    },
+  },
+  {
+    id: 'm.12.vectors~scalar',
+    title: 'A scalar times a vector',
+    use: 'Use this for “Find −2u for u = ⟨3, 4⟩” or a unit vector along u.',
+    assumptions: [
+      'k multiplies each component, so ku is |k| times as long.',
+      'A negative k reverses the direction.',
+      'k = 1 ÷ |u| gives the unit vector along u: ⟨3, 4⟩ becomes ⟨0.6, 0.8⟩.',
+    ],
+    variables: [
+      V('k', 'k', 'Scalar', { min: -1000, max: 1000, step: 0.01 }),
+      comp('ux', 'u₁', 'x-component of u'),
+      comp('uy', 'u₂', 'y-component of u'),
+      comp('x', 'w₁', 'x-component of ku', 1000000),
+      comp('y', 'w₂', 'y-component of ku', 1000000),
+      V('m', '|u|', 'Length of u', { min: 0, max: 1500, step: 0.01, derived: true }),
+      V('M', '|ku|', 'Length of ku', { min: 0, max: 2000000, step: 0.01 }),
+    ],
+    ...rels(
+      scaled('x', 'k', 'ux', 'x'),
+      scaled('y', 'k', 'uy', 'y'),
+      derive(
+        '|u| = √(u₁² + u₂²)',
+        '{m} = √({ux}² + {uy}²)',
+        'm',
+        ['ux', 'uy'],
+        (v) => Math.hypot(v.ux!, v.uy!),
+        '√({ux}² + {uy}²)',
+        'The Pythagorean theorem on u’s components.',
+      ),
+      rel(
+        '|ku| = |k| × |u|',
+        '{M} = |{k}| × {m}',
+        ['M', 'k', 'm'],
+        (v) => v.M! - Math.abs(v.k!) * v.m!,
+        {
+          M: [
+            (v) => Math.abs(v.k!) * v.m!,
+            '|{k}| × {m}',
+            'Scaling by k scales the length by |k|; a negative k only turns it around.',
+          ],
+        },
+      ),
+    ),
+    example: { k: -2, ux: 3, uy: 4, x: -6, y: -8, m: 5, M: 10 },
+    startWith: ['k', 'ux', 'uy'],
+    equation: '{k}⟨{ux}, {uy}⟩ = ⟨{x}, {y}⟩',
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [{ name: 'u', x: 'ux', y: 'uy' }],
+      scalar: { k: 'k', x: 'x', y: 'y' },
+    },
+  },
+  {
+    id: 'm.12.vectors~dot',
+    title: 'The dot product and the angle between vectors',
+    use: 'Use this for “Find the angle between ⟨2, 1⟩ and ⟨1, 3⟩” or “Are these vectors perpendicular?”',
+    assumptions: [
+      'u · v = ac + bd: multiply matching components and add.',
+      'cos θ = u · v ÷ (|u||v|), with θ from 0° to 180°.',
+      'A dot product of 0 means perpendicular: ⟨3, 4⟩ · ⟨4, −3⟩ = 0.',
+    ],
+    variables: [
+      comp('a', 'a', 'x-component of u'),
+      comp('b', 'b', 'y-component of u'),
+      comp('c', 'c', 'x-component of v'),
+      comp('d', 'd', 'y-component of v'),
+      V('p', 'u · v', 'Dot product', { min: -2000000, max: 2000000, step: 0.01, derived: true }),
+      V('m1', '|u|', 'Length of u', { min: 0, max: 1500, step: 0.01, derived: true }),
+      V('m2', '|v|', 'Length of v', { min: 0, max: 1500, step: 0.01, derived: true }),
+      deg('t', 'θ', 'Angle between u and v', 0, 180, { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'u · v = ac + bd',
+        '{p} = {a} × {c} + {b} × {d}',
+        'p',
+        ['a', 'c', 'b', 'd'],
+        (v) => v.a! * v.c! + v.b! * v.d!,
+        '{a} × {c} + {b} × {d}',
+        'Multiply matching components and add.',
+      ),
+      derive(
+        '|u| = √(a² + b²)',
+        '{m1} = √({a}² + {b}²)',
+        'm1',
+        ['a', 'b'],
+        (v) => Math.hypot(v.a!, v.b!),
+        '√({a}² + {b}²)',
+        'The Pythagorean theorem on u’s components.',
+      ),
+      derive(
+        '|v| = √(c² + d²)',
+        '{m2} = √({c}² + {d}²)',
+        'm2',
+        ['c', 'd'],
+        (v) => Math.hypot(v.c!, v.d!),
+        '√({c}² + {d}²)',
+        'The Pythagorean theorem on v’s components.',
+      ),
+      derive(
+        'θ = cos⁻¹(u · v ÷ (|u||v|))',
+        '{t} = cos⁻¹({p} ÷ ({m1} × {m2}))',
+        't',
+        ['p', 'm1', 'm2'],
+        (v) => {
+          const q = div(v.p!, v.m1! * v.m2!);
+          return q === undefined ? undefined : Math.acos(Math.max(-1, Math.min(1, q))) / RAD;
+        },
+        'cos⁻¹({p} ÷ ({m1} × {m2}))',
+        'The cosine of the angle is the dot product over the product of the lengths.',
+      ),
+    ),
+    example: { a: 2, b: 1, c: 1, d: 3, p: 5, m1: Math.sqrt(5), m2: Math.sqrt(10), t: 45 },
+    startWith: ['a', 'b', 'c', 'd'],
+    equation: '⟨{a}, {b}⟩ · ⟨{c}, {d}⟩ = {p}',
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'a', y: 'b' },
+        { name: 'v', x: 'c', y: 'd' },
+      ],
+      angle: { value: 't', dot: 'p' },
+    },
+  },
+  {
+    id: 'm.12.vectors~resultant',
+    title: 'The resultant of two forces',
+    use: 'Use this for “Forces of 30 N at 0° and 40 N at 60° pull on a ring. Find the resultant.”',
+    assumptions: [
+      'F₁ points along the positive x-axis; F₂ makes angle a with it.',
+      'Add the components: the resultant is the diagonal of the parallelogram the forces make.',
+      'Its direction φ is measured from F₁, counterclockwise.',
+    ],
+    variables: [
+      V('f1', 'F₁', 'First force', { unit: 'N', min: 0.01, max: 100000, step: 0.1 }),
+      V('f2', 'F₂', 'Second force', { unit: 'N', min: 0.01, max: 100000, step: 0.1 }),
+      deg('a', 'a', 'Angle of F₂', 0, 360),
+      V('fx', 'Fₓ', 'x-component of the resultant', {
+        unit: 'N',
+        min: -200000,
+        max: 200000,
+        step: 0.01,
+      }),
+      V('fy', 'Fᵧ', 'y-component of the resultant', {
+        unit: 'N',
+        min: -200000,
+        max: 200000,
+        step: 0.01,
+      }),
+      V('F', 'F', 'Resultant', { unit: 'N', min: 0, max: 300000, step: 0.01 }),
+      deg('p', 'φ', 'Direction of the resultant', 0, 360),
+    ],
+    ...rels(
+      rel(
+        'Fₓ = F₁ + F₂ cos a',
+        '{fx} = {f1} + {f2} × cos({a}°)',
+        ['fx', 'f1', 'f2', 'a'],
+        (v) => v.fx! - v.f1! - v.f2! * cosd(v.a!),
+        {
+          fx: [
+            (v) => v.f1! + v.f2! * cosd(v.a!),
+            '{f1} + {f2} × cos({a}°)',
+            'F₁ is all x; F₂ adds its x-component, F₂ cos a.',
+          ],
+        },
+      ),
+      rel(
+        'Fᵧ = F₂ sin a',
+        '{fy} = {f2} × sin({a}°)',
+        ['fy', 'f2', 'a'],
+        (v) => v.fy! - v.f2! * sind(v.a!),
+        {
+          fy: [
+            (v) => v.f2! * sind(v.a!),
+            '{f2} × sin({a}°)',
+            'Only F₂ has a y-component, F₂ sin a.',
+          ],
+        },
+      ),
+      lengthOf('F', 'fx', 'fy', 'The resultant is the hypotenuse of its components.'),
+      direction('p', 'fx', 'fy', 'resultant'),
+    ),
+    example: {
+      f1: 30,
+      f2: 40,
+      a: 60,
+      fx: 30 + 40 * cosd(60),
+      fy: 40 * sind(60),
+      F: Math.hypot(30 + 40 * cosd(60), 40 * sind(60)),
+      p: Math.atan2(40 * sind(60), 30 + 40 * cosd(60)) / RAD,
+    },
+    startWith: ['f1', 'f2', 'a'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'F₁', magnitude: 'f1', direction: 0 },
+        { name: 'F₂', magnitude: 'f2', direction: 'a' },
+      ],
+      sum: 'parallelogram',
+      result: { name: 'F', x: 'fx', y: 'fy', magnitude: 'F', direction: 'p' },
+      unit: 'N',
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
-  ...MATH_12_TRIG_EQUATIONS,
-  ...MATH_12_STATS,
-  ...MATH_12_CONICS,
-  ...MATH_12_MATRICES,
   ...MATH_12_TRIG,
+  ...MATH_12_TRIG_EQUATIONS,
+  ...MATH_12_VECTORS,
+  ...MATH_12_MATRICES,
+  ...MATH_12_CONICS,
+  ...MATH_12_STATS,
 ];

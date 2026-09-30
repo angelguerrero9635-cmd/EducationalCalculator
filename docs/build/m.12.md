@@ -19,6 +19,8 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 - `m.12.inverse-trig` (4): main (sin⁻¹), `~arccos`, `~arctan` (rise over run), `~compose`.
 - `m.12.trig-formulas-equations` (5): main (sin(A + B)), `~difference` (cos(A − B)),
   `~double-angle`, `~sine-equation`, `~tangent-equation`.
+- `m.12.vectors` (5): main (components, length and direction), `~add`, `~scalar`, `~dot`,
+  `~resultant`.
 
 ## Waiting
 
@@ -70,6 +72,11 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   derived: a typed value has many A and B.
 - **Checks written as sin(x₁°) = k.** On the equation pages the check says the solution's sine
   (tangent) is k, since sin⁻¹(k) alone is not x₁ once 360° or 180° is added.
+
+- **Direction from components without a new phrase (need 12, done in the grade file).** The
+  direction relation puts tan⁻¹(y ÷ x) into the arrow's quadrant (`direction` at the top of
+  `math/12.ts`), and its step reads `180 + tan⁻¹(4 ÷ (−3))` or `360 + tan⁻¹(…)`, which the
+  harness already evaluates; no phrase was needed. Its check line is tan φ = y ÷ x.
 
 ## Shared needs found while building
 
