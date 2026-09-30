@@ -554,6 +554,196 @@ const DIVISION: LayoutDef[] = [
       },
     ],
   },
+  {
+    kind: 'sort',
+    id: 's.9.mitosis-meiosis~checkpoints',
+    title: 'Which checkpoint stops it?',
+    use: 'Use this for “A cell’s DNA is damaged before it is copied. Where in the cycle is it stopped?”',
+    assumptions: [
+      'Checkpoints are proteins that check the cell before it moves on to the next phase.',
+      'A cell that fails a check pauses to repair the problem, or destroys itself by apoptosis.',
+    ],
+    question: 'Which checkpoint catches it?',
+    bins: [
+      {
+        id: 'g1',
+        label: 'G1 checkpoint (before S)',
+        why: 'Checks the cell’s size, nutrients, growth signals and DNA before it is copied.',
+      },
+      {
+        id: 'g2',
+        label: 'G2 checkpoint (before M)',
+        why: 'Checks that all the DNA was copied, and copied without damage.',
+      },
+      {
+        id: 'm',
+        label: 'M checkpoint (at metaphase)',
+        why: 'Checks that every chromosome is attached to the spindle before sisters separate.',
+      },
+    ],
+    cards: [
+      { label: 'The cell is still too small to divide', bin: 'g1' },
+      { label: 'No growth factor has signaled the cell to divide', bin: 'g1' },
+      { label: 'Sunlight damaged the DNA before it was copied', bin: 'g1' },
+      { label: 'Part of one chromosome was not replicated', bin: 'g2' },
+      { label: 'A copying error was left in the new DNA', bin: 'g2' },
+      { label: 'One chromosome is not attached to spindle fibers', bin: 'm' },
+      { label: 'The chromosomes are not all lined up at the middle', bin: 'm' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.mitosis-meiosis~cancer',
+    title: 'Normal cell or cancer cell?',
+    use: 'Use this for “How does a cancer cell differ from a normal body cell?”',
+    assumptions: [
+      'Cancer starts when mutations damage the genes that control the cell cycle.',
+      'A mutated proto-oncogene acts like a stuck accelerator; a broken tumor-suppressor gene, like failed brakes.',
+      'Mutations add up over time, so most cancers need several of them.',
+    ],
+    question: 'Does it describe a normal cell or a cancer cell?',
+    bins: [
+      {
+        id: 'normal',
+        label: 'Normal cell',
+        why: 'Its checkpoints and signals control when it divides and when it dies.',
+      },
+      {
+        id: 'cancer',
+        label: 'Cancer cell',
+        why: 'It divides out of control and ignores the signals and checks that stop other cells.',
+      },
+    ],
+    cards: [
+      { label: 'Stops dividing when crowded by its neighbors', bin: 'normal' },
+      { label: 'Divides only when a growth factor signals it', bin: 'normal' },
+      { label: 'Destroys itself when its DNA is badly damaged', bin: 'normal' },
+      { label: 'Stays in its own tissue', bin: 'normal' },
+      { label: 'Keeps dividing and piles up into a tumor', bin: 'cancer' },
+      { label: 'Divides with no growth factor signal', bin: 'cancer' },
+      { label: 'Keeps dividing although its DNA is damaged', bin: 'cancer' },
+      { label: 'Spreads through the blood to other organs', bin: 'cancer' },
+    ],
+  },
+];
+
+const REPRODUCTION: LayoutDef[] = [
+  // ── Reproduction and development (HS-LS1-4, HS-LS3-2) ──
+  {
+    kind: 'sequence',
+    id: 's.9.reproduction-development',
+    assumptions: [
+      'An egg and a sperm are haploid; together they make a diploid zygote, which divides by mitosis.',
+      'Every cell has the same DNA, but different cells turn on different genes: they differentiate.',
+    ],
+    question: 'Put the stages of animal development in order, from fertilization.',
+    stages: [
+      { label: 'Fertilization: a sperm joins an egg, making a zygote' },
+      { label: 'Cleavage: the zygote divides into a solid ball of cells' },
+      { label: 'Blastula: a hollow ball of cells forms' },
+      { label: 'Gastrulation: the cells fold in to form three germ layers' },
+      { label: 'Organogenesis: the germ layers form tissues and organs' },
+      { label: 'The fetus grows until birth or hatching' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.reproduction-development~sexual-asexual',
+    title: 'Sexual or asexual reproduction?',
+    use: 'Use this for “Why do offspring from sexual reproduction differ from both parents?”',
+    assumptions: [
+      'Asexual reproduction needs one parent, and the offspring are clones: their DNA matches the parent’s.',
+      'Sexual reproduction joins two gametes made by meiosis, so each offspring gets a new mix of both parents’ DNA.',
+    ],
+    question: 'Is it sexual or asexual reproduction?',
+    bins: [
+      {
+        id: 'asexual',
+        label: 'Asexual',
+        why: 'One parent, mitosis or splitting: offspring identical to the parent.',
+      },
+      {
+        id: 'sexual',
+        label: 'Sexual',
+        why: 'An egg and a sperm join: offspring differ from each parent and each other.',
+      },
+    ],
+    cards: [
+      { label: 'A bacterium splits in two', bin: 'asexual' },
+      { label: 'A hydra grows a bud that breaks off', bin: 'asexual' },
+      { label: 'A strawberry plant sends out runners', bin: 'asexual' },
+      { label: 'A piece of a flatworm regrows into a whole worm', bin: 'asexual' },
+      { label: 'Frogs release eggs and sperm into a pond', bin: 'sexual' },
+      { label: 'Pollen carried to another flower’s stigma', bin: 'sexual' },
+      { label: 'Siblings with different eye colors', bin: 'sexual' },
+      { label: 'Offspring vary, so some may survive a new disease', bin: 'sexual' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.reproduction-development~germ-layers',
+    title: 'Which germ layer forms it?',
+    use: 'Use this for “Which germ layer forms the brain and spinal cord?”',
+    assumptions: [
+      'Gastrulation folds the early embryo into three germ layers: outer, middle and inner.',
+      'Each layer’s cells differentiate into its own set of tissues and organs.',
+    ],
+    question: 'Which germ layer does it come from?',
+    bins: [
+      {
+        id: 'ecto',
+        label: 'Ectoderm (outer)',
+        why: 'The outer layer makes the skin’s surface and the whole nervous system.',
+      },
+      {
+        id: 'meso',
+        label: 'Mesoderm (middle)',
+        why: 'The middle layer makes muscle, bone, blood, the heart and the kidneys.',
+      },
+      {
+        id: 'endo',
+        label: 'Endoderm (inner)',
+        why: 'The inner layer lines the gut and the lungs, and makes the liver and pancreas.',
+      },
+    ],
+    cards: [
+      { label: 'Brain and spinal cord', bin: 'ecto' },
+      { label: 'Outer layer of the skin', bin: 'ecto' },
+      { label: 'Lens of the eye', bin: 'ecto' },
+      { label: 'Heart and blood vessels', bin: 'meso' },
+      { label: 'Bones and skeletal muscle', bin: 'meso' },
+      { label: 'Kidneys', bin: 'meso' },
+      { label: 'Lining of the stomach and intestines', bin: 'endo' },
+      { label: 'Lining of the lungs', bin: 'endo' },
+      { label: 'Liver and pancreas', bin: 'endo' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.reproduction-development~menstrual-cycle',
+    title: 'The menstrual cycle',
+    use: 'Use this for “Why does menstruation stop during pregnancy?”',
+    assumptions: [
+      'Hormones from the brain (FSH and LH) and the ovary (estrogen and progesterone) run the cycle.',
+      'If an embryo implants, it makes the hormone hCG, which keeps progesterone high, so the lining stays and menstruation stops.',
+      'The days are for a typical 28-day cycle; real cycles vary.',
+    ],
+    question: 'Put the phases of the menstrual cycle in order, from day 1.',
+    stages: [
+      { label: 'Menstruation: progesterone is low, so the uterine lining is shed', span: 5 },
+      {
+        label: 'Follicle phase: FSH grows a follicle, whose estrogen rebuilds the lining',
+        span: 8,
+      },
+      { label: 'Ovulation: a surge of LH releases the egg', span: 1 },
+      {
+        label: 'Luteal phase: the empty follicle makes progesterone, which keeps the lining',
+        span: 14,
+      },
+    ],
+    unit: 'days',
+    totalLabel: 'One typical cycle',
+  },
 ];
 
 const INHERITANCE: LayoutDef[] = [
@@ -1776,6 +1966,7 @@ export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...MEMBRANE,
   ...ENERGY,
   ...DIVISION,
+  ...REPRODUCTION,
   ...INHERITANCE,
   ...DNA,
   ...BIOTECH,
