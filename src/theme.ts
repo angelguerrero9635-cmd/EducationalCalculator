@@ -314,6 +314,14 @@ const light = {
   zoneTropical: '#F4B860',
   /** Energy sources (H78): a solar panel's cells. */
   solarCell: '#22407A',
+  /** Stars (H79–H80) by surface temperature, hot blue to cool red, and a nebula's glow. */
+  starBlue: '#9DB8FF',
+  starWhite: '#F2F4FF',
+  starYellow: '#FFE27A',
+  starOrange: '#FFB05C',
+  starRed: '#F0643C',
+  nebulaPink: '#E48BC0',
+  nebulaBlue: '#7FB3E8',
   /** Grades 9–12 group D: sine and cosine legs on the unit circle, algebra tiles (positive and
    * negative), and a resultant vector. */
   unitCircleSine: '#D9480F',
@@ -595,6 +603,13 @@ const dark: Palette = {
   airBand: '#1E3A50',
   zoneTropical: '#B9812F',
   solarCell: '#2B4E8F',
+  starBlue: '#9DB8FF',
+  starWhite: '#F2F4FF',
+  starYellow: '#FFE27A',
+  starOrange: '#FFB05C',
+  starRed: '#F0643C',
+  nebulaPink: '#C66EA2',
+  nebulaBlue: '#5E93CC',
   unitCircleSine: '#FF8A5C',
   unitCircleCosine: '#3CCFAE',
   tilePositive: '#2F5F86',

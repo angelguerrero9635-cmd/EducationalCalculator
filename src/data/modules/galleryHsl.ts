@@ -1261,7 +1261,181 @@ const energyLayouts: LayoutDef[] = [
   },
 ];
 
+// ── H79: the H–R diagram and a star's life ──
+
+const SUN_K = 5772;
+const lum = (r: number, t: number) => r * r * (t / SUN_K) ** 4;
+
+const hr: ModuleDef = {
+  id: 'g.s12-stellar-evolution-hr',
+  title: 'Placing a star on the H–R diagram',
+  use: 'Use this for a star’s luminosity from its temperature and size, and where it falls on the H–R diagram.',
+  assumptions: [
+    'The H–R diagram plots stars by surface temperature (hot on the left) and luminosity, both on log scales.',
+    'A star’s luminosity grows with its surface area and the fourth power of its temperature: L = R² × (T ÷ 5772)⁴ in Suns, where 5772 K is the Sun’s temperature.',
+    'Most stars, fusing hydrogen in their cores, lie on the main sequence; giants and supergiants are swollen, white dwarfs tiny.',
+  ],
+  variables: [
+    V('T', 'T', 'Surface temperature', { unit: 'K', min: 2500, max: 40000, step: 10 }),
+    V('R', 'R', 'Radius', { unit: 'R☉', min: 0.005, max: 1500, step: 0.001 }),
+    V('L', 'L', 'Luminosity', {
+      unit: 'L☉',
+      min: 0.0001,
+      max: 1000000,
+      step: 0.0001,
+      derived: true,
+    }),
+  ],
+  ...rels({
+    relation: {
+      id: 'L = R² × (T ÷ 5772)^4',
+      display: '{L} = {R}² × ({T} ÷ 5772)^4',
+      vars: ['L', 'R', 'T'],
+      residual: (v: Values) => v.L! - lum(v.R!, v.T!),
+      solve: {
+        L: (v: Values) => lum(v.R!, v.T!),
+        R: (v: Values) => (v.L! > 0 ? Math.sqrt(v.L!) * (SUN_K / v.T!) ** 2 : undefined),
+        T: (v: Values) => (v.L! > 0 && v.R! > 0 ? SUN_K * (v.L! / v.R! ** 2) ** 0.25 : undefined),
+      },
+    },
+    steps: {
+      L: {
+        expr: '{R}^2 × ({T} ÷ 5772)^4',
+        how: 'Surface area grows as R squared; each square metre shines as T to the fourth.',
+      },
+      R: {
+        expr: '√({L}) × (5772 ÷ {T})^2',
+        how: 'Undo the fourth power of the temperature, then the square of the radius.',
+      },
+      T: {
+        expr: '5772 × ({L} ÷ {R}^2)^(1/4)',
+        how: 'The light per unit of surface, then its fourth root.',
+      },
+    },
+  }),
+  example: { T: 9940, R: 1.71, L: lum(1.71, 9940) },
+  startWith: ['T', 'R'],
+  representation: {
+    kind: 'hrDiagram',
+    temperature: 'T',
+    luminosity: 'L',
+    radius: 'R',
+    name: 'Sirius A',
+  },
+};
+
+const hrStar = (id: string, title: string, use: string, name: string, T: number, R: number) =>
+  ({
+    ...hr,
+    id,
+    title,
+    use,
+    example: { T, R, L: lum(R, T) },
+    representation: { kind: 'hrDiagram', temperature: 'T', luminosity: 'L', radius: 'R', name },
+  }) satisfies ModuleDef;
+
+const hrGiant = hrStar(
+  'g.s12-stellar-evolution-giant',
+  'A red giant: Aldebaran',
+  'Use this for a cool but huge star above the main sequence.',
+  'Aldebaran',
+  3900,
+  45,
+);
+const hrSupergiant = hrStar(
+  'g.s12-stellar-evolution-supergiant',
+  'A red supergiant: Betelgeuse',
+  'Use this for one of the largest stars, near the top right of the diagram.',
+  'Betelgeuse',
+  3600,
+  760,
+);
+const hrDwarf = hrStar(
+  'g.s12-stellar-evolution-white-dwarf',
+  'A white dwarf: Sirius B',
+  'Use this for a hot but tiny star, below the main sequence.',
+  'Sirius B',
+  25000,
+  0.0084,
+);
+
+const lifeLayouts: LayoutDef[] = [
+  {
+    id: 'g.s12-stellar-evolution-sunlike',
+    title: 'The life of a Sun-like star',
+    kind: 'sequence',
+    use: 'Use this for the stages of a star up to about 8 times the Sun’s mass.',
+    assumptions: [
+      'A star’s mass sets its life: low-mass stars live long and end quietly.',
+      'On the main sequence a star fuses hydrogen into helium in its core; when the core’s hydrogen runs out, the star swells into a red giant.',
+      'The giant sheds its outer layers as a planetary nebula, leaving its hot core as a white dwarf about the size of Earth.',
+    ],
+    question: 'Put the stages of a Sun-like star’s life in order.',
+    stages: [
+      { label: 'Nebula', figure: { kind: 'icon', icon: 'stellar nebula' } },
+      { label: 'Protostar', figure: { kind: 'icon', icon: 'protostar' } },
+      { label: 'Main sequence', figure: { kind: 'icon', icon: 'Sun-like star' } },
+      { label: 'Red giant', figure: { kind: 'icon', icon: 'red giant' } },
+      { label: 'Planetary nebula', figure: { kind: 'icon', icon: 'planetary nebula' } },
+      { label: 'White dwarf', figure: { kind: 'icon', icon: 'white dwarf' } },
+    ],
+  },
+  {
+    id: 'g.s12-stellar-evolution-massive',
+    title: 'The life of a massive star',
+    kind: 'sequence',
+    use: 'Use this for the stages of a star of more than about 8 times the Sun’s mass.',
+    assumptions: [
+      'Massive stars burn hot and fast, living only millions of years.',
+      'They swell into red supergiants, fusing elements up to iron, then the core collapses and the star explodes as a supernova.',
+      'The core left behind is a neutron star, or, for the most massive stars (above about 20 Suns), a black hole.',
+    ],
+    question: 'Put the stages of a massive star’s life in order.',
+    stages: [
+      { label: 'Nebula', figure: { kind: 'icon', icon: 'stellar nebula' } },
+      { label: 'Protostar', figure: { kind: 'icon', icon: 'protostar' } },
+      { label: 'Massive star', figure: { kind: 'icon', icon: 'massive star' } },
+      { label: 'Red supergiant', figure: { kind: 'icon', icon: 'red supergiant' } },
+      { label: 'Supernova', figure: { kind: 'icon', icon: 'supernova' } },
+      { label: 'Neutron star', figure: { kind: 'icon', icon: 'neutron star' } },
+    ],
+  },
+  {
+    id: 'g.s12-stellar-evolution-remnants',
+    title: 'What a star leaves behind',
+    kind: 'sort',
+    use: 'Use this for matching a star’s end to its mass.',
+    assumptions: [
+      'Up to about 8 Suns: a white dwarf. About 8 to 20 Suns: a neutron star. Above about 20 Suns: a black hole.',
+    ],
+    question: 'Which kind of star leaves it behind?',
+    bins: [
+      {
+        id: 'low',
+        label: 'Sun-like star',
+        why: 'It sheds its layers gently and leaves a white dwarf.',
+      },
+      {
+        id: 'high',
+        label: 'Massive star',
+        why: 'It explodes as a supernova and its core collapses into a neutron star or a black hole.',
+      },
+    ],
+    cards: [
+      { label: 'Planetary nebula', bin: 'low', figure: { kind: 'icon', icon: 'planetary nebula' } },
+      { label: 'White dwarf', bin: 'low', figure: { kind: 'icon', icon: 'white dwarf' } },
+      { label: 'Supernova', bin: 'high', figure: { kind: 'icon', icon: 'supernova' } },
+      { label: 'Neutron star', bin: 'high', figure: { kind: 'icon', icon: 'neutron star' } },
+      { label: 'Black hole', bin: 'high', figure: { kind: 'icon', icon: 'black hole' } },
+    ],
+  },
+];
+
 export const HSL_GALLERY_MODULES: ModuleDef[] = [
+  hr,
+  hrGiant,
+  hrSupergiant,
+  hrDwarf,
   electricityMix,
   worldMix,
   lapse,
@@ -1293,4 +1467,5 @@ export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [
   ...currentsLayouts,
   ...climateLayouts,
   ...energyLayouts,
+  ...lifeLayouts,
 ];

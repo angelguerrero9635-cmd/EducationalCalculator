@@ -7,6 +7,8 @@ import {
   arrivals,
   atmoTempAt,
   bracketOf,
+  HR_WINDOW,
+  luminosityOf,
   depthAt,
   EARTH,
   isobarLevels,
@@ -143,6 +145,23 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
             out.push(`wind blows the wrong way across the ${inward ? 'low' : 'high'}'s isobars`);
         }
       }
+      break;
+    }
+    case 'hrDiagram': {
+      const t = num(rep.temperature);
+      const l = num(rep.luminosity);
+      const r = num(rep.radius);
+      const w = HR_WINDOW;
+      if (t !== undefined && (t > w.tHot || t < w.tCool)) out.push(`${t} K is off the diagram`);
+      if (l !== undefined && (l < w.lLow || l > w.lHigh)) out.push(`${l} L☉ is off the diagram`);
+      // Stefan–Boltzmann: the dot sits where L = R²(T ÷ 5772)⁴.
+      if (
+        t !== undefined &&
+        l !== undefined &&
+        r !== undefined &&
+        !near(luminosityOf(r, t), l, 1e-4)
+      )
+        out.push(`L ${l}, but R ${r} at ${t} K gives ${luminosityOf(r, t)}`);
       break;
     }
     case 'rockLayers': {

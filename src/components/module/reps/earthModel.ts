@@ -376,3 +376,64 @@ export function isobarLevels(high: number, low: number, step = isobarStep(high, 
   for (let p = Math.floor(low / step + 1) * step; p < high; p += step) out.push(p);
   return out;
 }
+
+// ── Stars (H79) ──
+
+/** The Sun's surface temperature, K (IAU nominal). */
+export const SUN_T = 5772;
+
+/** Luminosity (L☉) of a star of radius r (R☉) and surface temperature t (K): L = R²(T ÷ T☉)⁴. */
+export const luminosityOf = (r: number, t: number) => r * r * (t / SUN_T) ** 4;
+
+/** Radius (R☉) of a star of luminosity l and temperature t. */
+export const radiusOf = (l: number, t: number) => Math.sqrt(l) * (SUN_T / t) ** 2;
+
+/** The H–R diagram's window: temperature (K, hot on the left) and luminosity (L☉), both log. */
+export const HR_WINDOW = { tHot: 40000, tCool: 2500, lLow: 1e-4, lHigh: 1e6 };
+
+/**
+ * The zero-age main sequence [T (K), L (L☉)] by spectral type, rounded from the usual tables:
+ * O5, B0, B5, A0, F0, G2 (the Sun), K0, K5, M0, M5, M8.
+ */
+export const MAIN_SEQUENCE: [number, number][] = [
+  [40000, 4e5],
+  [30000, 5e4],
+  [15400, 800],
+  [9700, 40],
+  [7300, 6.5],
+  [5772, 1],
+  [5250, 0.4],
+  [4400, 0.15],
+  [3850, 0.07],
+  [3050, 0.003],
+  [2570, 0.0005],
+];
+
+/** The main sequence's luminosity at temperature t, interpolated on log scales. */
+export function mainSequenceL(t: number): number {
+  const lt = Math.log10(t);
+  const pts = MAIN_SEQUENCE.map(([a, b]) => [Math.log10(a), Math.log10(b)] as const);
+  for (let i = 1; i < pts.length; i++) {
+    const [t0, l0] = pts[i - 1]!;
+    const [t1, l1] = pts[i]!;
+    if (lt <= t0 && lt >= t1) return 10 ** (l0 + ((l1 - l0) * (lt - t0)) / (t1 - t0));
+  }
+  const [t0, l0] =
+    lt > pts[0]![0] ? [pts[0]!, pts[1]!] : [pts[pts.length - 2]!, pts[pts.length - 1]!];
+  const slope = (l0[1] - t0[1]) / (l0[0] - t0[0]);
+  return 10 ** (t0[1] + slope * (lt - t0[0]));
+}
+
+export type StarClass = 'main sequence' | 'giant' | 'supergiant' | 'white dwarf';
+
+/**
+ * Where a star falls: within half a power of ten of the main sequence; well above it a giant, or
+ * a supergiant from 10,000 L☉; well below it, and under a twentieth of the Sun's size, a white
+ * dwarf. Anything else is left unnamed.
+ */
+export function classifyStar(t: number, l: number): StarClass | undefined {
+  const d = Math.log10(l) - Math.log10(mainSequenceL(t));
+  if (Math.abs(d) <= 0.5) return 'main sequence';
+  if (d > 0) return l >= 1e4 ? 'supergiant' : 'giant';
+  return radiusOf(l, t) < 0.05 ? 'white dwarf' : undefined;
+}

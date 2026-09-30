@@ -516,6 +516,7 @@ function representationVars(r: Representation): string[] {
     case 'earthLayers':
     case 'oceanProfile':
     case 'atmosphereLayers':
+    case 'hrDiagram':
       return hslSpecVars(r);
   }
 }

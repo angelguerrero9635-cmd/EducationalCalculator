@@ -173,7 +173,27 @@ export interface PressureMapSpec {
 
 export type AtmosphereLayersSpec = AtmosphereProfileSpec | PressureMapSpec;
 
-export type HslSpec = EarthLayersSpec | RockDatingSpec | OceanProfileSpec | AtmosphereLayersSpec;
+/**
+ * The Hertzsprung–Russell diagram (H79): surface temperature (K) across, hot on the left, and
+ * luminosity (L☉) up, both on log scales; the main sequence, giants, supergiants and white dwarfs
+ * as regions, dashed lines of equal radius (0.01, 1, 100 R☉), the Sun marked, and a star plotted
+ * from its values in its color, named by the region it falls in. Drag the star (unless `fixed`).
+ */
+export interface HrDiagramSpec {
+  kind: 'hrDiagram';
+  /** Surface temperature, K. */
+  temperature: NumOrVar;
+  /** Luminosity, in Suns. */
+  luminosity: NumOrVar;
+  /** Radius, in Suns (the caption checks L = R²(T ÷ 5772)⁴). */
+  radius?: NumOrVar;
+  /** The star's name by its dot ("Sirius A"). */
+  name?: string;
+  fixed?: boolean;
+}
+
+export type HslSpec =
+  EarthLayersSpec | RockDatingSpec | OceanProfileSpec | AtmosphereLayersSpec | HrDiagramSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hslSpecVars(r: HslSpec): string[] {
@@ -186,6 +206,8 @@ export function hslSpecVars(r: HslSpec): string[] {
       return ids(r.stations.map((s) => s.r));
     case 'oceanProfile':
       return r.mode === 'profile' ? ids([r.depth]) : ids([r.angle, r.range]);
+    case 'hrDiagram':
+      return ids([r.temperature, r.luminosity, r.radius]);
     case 'atmosphereLayers':
       return r.mode === 'profile'
         ? ids([r.altitude, r.temperature, r.ground])

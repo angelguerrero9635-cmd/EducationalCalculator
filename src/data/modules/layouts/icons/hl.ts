@@ -12,4 +12,16 @@ export const HL_ICONS = [
   // flame and nuclear power plant (r3f.ts).
   'solar panel',
   'oil rig',
+  // A star's life (H79).
+  'stellar nebula',
+  'protostar',
+  'Sun-like star',
+  'massive star',
+  'red giant',
+  'red supergiant',
+  'planetary nebula',
+  'white dwarf',
+  'supernova',
+  'neutron star',
+  'black hole',
 ] as const;

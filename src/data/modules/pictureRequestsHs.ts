@@ -1191,12 +1191,26 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as card icons plus existing charts. Round 3 already draws a wind turbine, a dam, lumps of coal, an oil pump, a gas stove flame and a nuclear power plant (r3f), so this adds the two missing: { kind: "icon", icon: "solar panel" } (blue cells on a tilted stand) and "oil rig" (an offshore platform and derrick). The energy mix uses the existing bars (an icon under each bar) or pieChart (colors that mean something): { kind: "bars", bars: [{ var: "g", icon: "gas stove flame" }, { var: "n", icon: "nuclear power plant" }, { var: "k", icon: "lumps of coal" }, { var: "w", icon: "wind turbine" }, { var: "h", icon: "dam" }, { var: "s", icon: "solar panel" }], min: 0, max: 50, total: "T", scale: 10 } (US electricity, about 2023: 43, 19, 16, 10, 6, 4 and 2 other); { kind: "pieChart", parts: ["F", "n", "r"], total: "T", colors: ["rubber", "purple", "landGrass"] } (the world’s energy: fossil 81, nuclear 4, renewable 15; keep part names short, the pie’s labels sit on the wedges). Sort: renewable or nonrenewable with the seven icons.',
   },
-  ask(
-    'H79',
-    'hrDiagram',
-    'H–R diagram (temperature against luminosity, log scales) with the main sequence, giants and white dwarfs; star life-cycle stages',
-    ['s.12.stellar-evolution'],
-  ),
+  {
+    ...ask(
+      'H79',
+      'hrDiagram',
+      'H–R diagram (temperature against luminosity, log scales) with the main sequence, giants and white dwarfs; star life-cycle stages',
+      ['s.12.stellar-evolution'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-stellar-evolution-hr',
+      'g.s12-stellar-evolution-giant',
+      'g.s12-stellar-evolution-supergiant',
+      'g.s12-stellar-evolution-white-dwarf',
+      'g.s12-stellar-evolution-sunlike',
+      'g.s12-stellar-evolution-massive',
+      'g.s12-stellar-evolution-remnants',
+    ],
+    notes:
+      'Drawn (group HL) as a calculator kind and card icons. H–R diagram: { kind: "hrDiagram", temperature: id (K), luminosity: id (L☉), radius?: id (R☉), name?: "Sirius A", fixed? }: temperature 40,000–2,500 K (hot on the left) against luminosity 10⁻⁴–10⁶ L☉, both log; the main sequence (from the spectral-type tables), giants, supergiants and white dwarfs as regions, dashed lines of 0.01, 1 and 100 R☉, the Sun, and the star in its temperature’s color, named by the region it falls in (the caption gives its radius); drag the star to change T and L. Example: { kind: "hrDiagram", temperature: "T", luminosity: "L", radius: "R", name: "Sirius A" } with L = R² × (T ÷ 5772)⁴ (demos: Sirius A, Aldebaran, Betelgeuse, Sirius B). Life-cycle card icons, each on night sky: "stellar nebula", "protostar", "Sun-like star", "massive star", "red giant", "red supergiant", "planetary nebula", "white dwarf", "supernova", "neutron star", "black hole"; sequences nebula → protostar → Sun-like star → red giant → planetary nebula → white dwarf, and → massive star → red supergiant → supernova → neutron star (or black hole). The harness checks the star is in the window and L = R²(T ÷ 5772)⁴.',
+  },
   ask(
     'H80',
     'expandingUniverse',

@@ -205,6 +205,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'earthLayers':
     case 'oceanProfile':
     case 'atmosphereLayers':
+    case 'hrDiagram':
       return <HslPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
