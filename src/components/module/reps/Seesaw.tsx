@@ -186,7 +186,7 @@ export function Seesaw({ spec, calc }: { spec: SimpleMachineSpec; calc: Calculat
                 <SubLabel
                   x={8}
                   y={22}
-                  text={`F_1d_1 = ${num(t1)} ${uT}`}
+                  text={`F₁d₁ = ${num(t1)} ${uT}`}
                   anchor="start"
                   color={c.physCartA}
                   w={w}
@@ -194,7 +194,7 @@ export function Seesaw({ spec, calc }: { spec: SimpleMachineSpec; calc: Calculat
                 <SubLabel
                   x={w - 8}
                   y={22}
-                  text={`F_2d_2 = ${num(t2)} ${uT}`}
+                  text={`F₂d₂ = ${num(t2)} ${uT}`}
                   anchor="end"
                   color={c.physCartB}
                   w={w}

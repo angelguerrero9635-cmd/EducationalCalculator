@@ -56,8 +56,8 @@ export function ChargesPotential({ spec, calc }: { spec: ChargesSpec; calc: Calc
                 </Defs>
                 <G opacity={all(spec.charges[0], spec.distance, o.test) ? 1 : 0.4}>
                   {/* Field lines, out of + and into −. */}
-                  {Array.from({ length: 12 }, (_, i) => {
-                    const a = (i * Math.PI) / 6 + Math.PI / 12;
+                  {Array.from({ length: 8 }, (_, i) => {
+                    const a = (i * Math.PI) / 4 + Math.PI / 8;
                     const p1 = onCircle(O.x, O.y, R + 3, a);
                     const p2 = onCircle(O.x, O.y, w, a);
                     const m = onCircle(O.x, O.y, unit * 1.5, a);
@@ -71,7 +71,7 @@ export function ChargesPotential({ spec, calc }: { spec: ChargesSpec; calc: Calc
                           y2={p2.y}
                           stroke={c.physField}
                           strokeWidth={1.2}
-                          strokeOpacity={0.7}
+                          strokeOpacity={0.45}
                         />
                         <Path
                           d={arrowHead(m.x, m.y, d * Math.cos(a), -d * Math.sin(a), 7)}
@@ -94,7 +94,7 @@ export function ChargesPotential({ spec, calc }: { spec: ChargesSpec; calc: Calc
                     />
                   ))}
                   {RINGS.map((k) => {
-                    const p = onCircle(O.x, O.y, unit * k, k === 2 ? 0.42 : k === 1 ? 0.9 : 1.9);
+                    const p = onCircle(O.x, O.y, unit * k, k === 2 ? -0.9 : k === 1 ? 0.9 : 1.9);
                     const label =
                       k === 1
                         ? `V = ${text(o.potential, V, 'V')}`

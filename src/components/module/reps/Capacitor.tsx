@@ -38,14 +38,13 @@ export function Capacitor({ spec, calc }: { spec: CapacitorSpec; calc: Calculato
   const { Q, U } = capacitorOf(C, V, farads);
   const [uC, uQ] = [unit(spec.capacitance, 'F'), unit(spec.charge, 'C')];
   const uU = unit(spec.energy, 'J');
-  const field = d !== undefined && d > 0 ? V / (d * (spec.meters ?? 1)) : undefined;
 
   return (
     <View>
-      <Canvas aspect={(W) => 380 / W}>
+      <Canvas aspect={(W) => 330 / W}>
         {({ w, h }) => {
           const [xl, xr] = [w * 0.44, w * 0.78];
-          const [top, bottom] = [44, 188];
+          const [top, bottom] = [40, 160];
           const skew = 14;
           const ys = Array.from(
             { length: LINES },
@@ -55,7 +54,7 @@ export function Capacitor({ spec, calc }: { spec: CapacitorSpec; calc: Calculato
           const plate = (x: number) =>
             `${x - 4},${top + skew} ${x + 4},${top} ${x + 4},${bottom - skew} ${x - 4},${bottom}`;
           const bat = { x: w * 0.12, y: (top + bottom) / 2 };
-          const g = { x0: 52, x1: w - 20, y0: 238, y1: h - 36 };
+          const g = { x0: 52, x1: w - 20, y0: 222, y1: h - 36 };
           const wv = zeroWindow(V, 4);
           const wq = zeroWindow(Q, 4);
           const GX = (x: number) => g.x0 + ((g.x1 - g.x0) * x) / wv.hi;
@@ -264,13 +263,7 @@ export function Capacitor({ spec, calc }: { spec: CapacitorSpec; calc: Calculato
                 <ChartText x={4} y={g.y0 - 6} fontSize={chart.label}>
                   {`Q (${uQ})`}
                 </ChartText>
-                <ChartText
-                  x={g.x1}
-                  y={g.y1 + 18}
-                  textAnchor="end"
-                  fontSize={chart.label}
-                  fill={c.chartMuted}
-                >
+                <ChartText x={g.x0 + 4} y={g.y1 + 18} fontSize={chart.label} fill={c.chartMuted}>
                   V (V)
                 </ChartText>
                 <ChartText
@@ -332,10 +325,9 @@ export function Capacitor({ spec, calc }: { spec: CapacitorSpec; calc: Calculato
       );
     out.push(`Q = CV = ${num(C)} × ${num(V)} = ${num(Q)} ${uQ}`);
     out.push(`U = ½CV² = ½ × ${num(C * farads)} F × ${num(V)}² = ${num(U)} J`);
-    if (field !== undefined) out.push(`Between the plates E = V/d = ${num(field)} V/m.`);
     out.push(
       kappa > 1 + 1e-9
-        ? 'The slab’s faces take charge the other way, so the plates hold κ times the charge at the same V.'
+        ? 'The slab’s faces take charge the other way: κ times the charge at the same V.'
         : 'Twice the voltage: twice the charge and four times the energy.',
     );
     return out;

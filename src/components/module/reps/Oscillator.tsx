@@ -47,13 +47,13 @@ function Sliding({ spec, calc }: { spec: Swing; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(W) => 404 / W}>
+      <Canvas aspect={(W) => 356 / W}>
         {({ w, h }) => {
-          const floor = 104;
+          const floor = 100;
           const x0 = w * 0.52;
           const Apx = w * 0.3;
           const X = (p: number) => x0 + (Apx * p) / A;
-          const g = { x0: 48, x1: w - 14, mid: 206, amp: 50 };
+          const g = { x0: 48, x1: w - 14, mid: 188, amp: 38 };
           const tMax = 2 * s.T;
           const TX = (t: number) => g.x0 + ((g.x1 - g.x0) * t) / tMax;
           const TY = (p: number) => g.mid - (g.amp * p) / A;
@@ -61,7 +61,7 @@ function Sliding({ spec, calc }: { spec: Swing; calc: Calculator }) {
             const t = (tMax * i) / 120;
             return `${i ? 'L' : 'M'} ${TX(t)} ${TY(A * Math.cos(s.w * t))}`;
           }).join(' ');
-          const bar = { x: 16, y: 332, w: w - 32, h: 22 };
+          const bar = { x: 16, y: 286, w: w - 32, h: 20 };
           const split = bar.w * (s.E > 0 ? s.U / s.E : 0);
           return (
             <Svg width={w} height={h}>
@@ -269,8 +269,7 @@ function Sliding({ spec, calc }: { spec: Swing; calc: Calculator }) {
         {[
           `T = 2π√(m/k) = 2π × √(${num(m)}/${num(k)}) = ${num(s.T)} s`,
           `v_max = Aω = ${num(A)} × ${num(s.w)} = ${num(s.top)} m/s`,
-          `At x: ½kx² + ½mv² = ${num(s.U)} + ${num(s.K)} = ½kA² = ${num(s.E)} J`,
-          'It stops for an instant at ±A and moves fastest through x = 0; a bigger A leaves T the same.',
+          'It stops at ±A and moves fastest through x = 0; a bigger A leaves T the same.',
         ].join(' · ')}
       </Caption>
     </View>

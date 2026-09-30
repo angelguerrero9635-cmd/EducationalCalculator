@@ -45,7 +45,7 @@ export function PlatesLaunch({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
           const [xl, xr] = [w * 0.12, w * 0.88];
           const [top, bottom] = [40, 186];
           const mid = (top + bottom) / 2 + 8;
-          const gap = xr - xl - 40;
+          const gap = xr - xl - 84;
           const ys = Array.from(
             { length: LINES },
             (_, i) => top + 12 + (i * (bottom - top - 24)) / (LINES - 1),

@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle } from './common';
 import { num } from './CircularSatellite';
-import { CurvedArrow, onCircle, useReader } from './hs3aKit';
+import { CurvedArrow, useReader } from './hs3aKit';
 import { RAD, SubLabel, Vec } from './hskKit';
 import { Metal, TopLight, url, usePaintIds } from './paint';
 
@@ -39,16 +39,15 @@ export function Torque({ spec, calc }: { spec: TorqueSpec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={0.8}>
+      <Canvas aspect={0.62}>
         {({ w, h }) => {
-          const P = { x: w * 0.2, y: h * 0.58 };
+          const P = { x: w * 0.2, y: h * 0.6 };
           const A = { x: w * 0.72, y: P.y };
           const tip = { x: A.x + FORCE * Math.cos(th * RAD), y: A.y - FORCE * Math.sin(th * RAD) };
           const perpY = A.y - FORCE * Math.sin(th * RAD);
           const alongX = A.x + FORCE * Math.cos(th * RAD);
           // The turn: counterclockwise for F⊥ up (always, θ from 0° to 180°), sweep ∝ sin θ.
           const sweep = 1.5 * Math.PI * Math.sin(th * RAD);
-          const tauLabel = onCircle(P.x, P.y, 44, Math.PI / 2 + 0.2);
           return (
             <>
               <Svg width={w} height={h}>
@@ -119,8 +118,10 @@ export function Torque({ spec, calc }: { spec: TorqueSpec; calc: Calculator }) {
                     />
                   ) : null}
                   <SubLabel
-                    x={A.x + 34 * Math.cos((th / 2) * RAD) + 4}
-                    y={A.y - 34 * Math.sin((th / 2) * RAD) + (th < 30 ? 14 : 4)}
+                    x={th > 60 ? A.x + 26 : A.x + 34 * Math.cos((th / 2) * RAD) + 4}
+                    y={
+                      th > 60 ? A.y + 24 : A.y - 34 * Math.sin((th / 2) * RAD) + (th < 30 ? 14 : 4)
+                    }
                     text={`θ = ${text(spec.angle, th, '°')}`}
                     anchor="start"
                     size={chart.label}
@@ -145,8 +146,8 @@ export function Torque({ spec, calc }: { spec: TorqueSpec; calc: Calculator }) {
                     color={c.physWork}
                   />
                   <SubLabel
-                    x={Math.max(8, tauLabel.x - 4)}
-                    y={tauLabel.y - 10}
+                    x={8}
+                    y={P.y + 70}
                     text={`τ = ${text(spec.torque, tau, uT)}`}
                     anchor="start"
                     color={c.physWork}

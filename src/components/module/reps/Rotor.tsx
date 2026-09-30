@@ -75,7 +75,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
     typeof spec.acceleration === 'string' && !has(spec.torque) ? spec.acceleration : undefined,
   );
   const top = 250;
-  const extra = (compare ? 128 : 0) + (spin ? 196 : 0);
+  const extra = (compare ? 128 : 0) + (spin ? 236 : 0);
 
   return (
     <View>

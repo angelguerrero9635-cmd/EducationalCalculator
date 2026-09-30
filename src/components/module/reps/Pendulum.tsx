@@ -157,7 +157,13 @@ export function Pendulum({ spec, calc }: { spec: PendulumSpec; calc: Calculator 
                     strokeDasharray="2 3"
                     opacity={Math.cos(swing * RAD) > 0 ? 1 : 0}
                   />
-                  <ChartText x={ruleX + 12} y={P.y - 8} fontSize={chart.label} fill={c.chartMuted}>
+                  <ChartText
+                    x={ruleX - 12}
+                    y={P.y + 8}
+                    textAnchor="end"
+                    fontSize={chart.label}
+                    fill={c.chartMuted}
+                  >
                     m
                   </ChartText>
                   <SubLabel
