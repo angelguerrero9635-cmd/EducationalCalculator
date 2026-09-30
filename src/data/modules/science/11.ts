@@ -1812,20 +1812,30 @@ const momentumPages: ModuleDef[] = [
 const LOAD = q('W', 'F_L', 'Load', 'N', 1, 1e6, 1);
 const EFFORT = q('F', 'F_E', 'Effort', 'N', 0, 1e6, 0.01);
 const MA = q('A', 'MA', 'Mechanical advantage', undefined, 0.01, 1000, 0.01);
+const IMA = { ...MA, symbol: 'IMA', name: 'Ideal mechanical advantage' };
 const EFFICIENCY = q('p', 'e', 'Efficiency', '%', 1, 100, 1);
 
-/** F_E = F_L ÷ (MA × e): the actual effort. */
+/** F_E = F_L ÷ (IMA × e): the actual effort. */
 const effortRule = rule(
-  'F_E = F_L/(MA × e)',
+  'F_E = F_L/(IMA × e)',
   '{F} = {W}/({A} × {p}/100)',
   (v) => (v.F! * v.A! * v.p!) / 100 - v.W!,
   {
     F: [
       (v) => div(100 * v.W!, v.A! * v.p!),
       '{W}/({A} × {p}/100)',
-      'The ideal effort is the load over MA; friction makes it bigger: divide by the efficiency too.',
+      'The ideal effort is the load over IMA; friction makes it bigger: divide by the efficiency too.',
     ],
-    W: [(v) => (v.F! * v.A! * v.p!) / 100, '{F} × {A} × {p}/100', 'Undo the division.'],
+    W: [
+      (v) => (v.F! * v.A! * v.p!) / 100,
+      '{F} × {A} × {p}/100',
+      'The load is the effort times IMA, times the efficiency.',
+    ],
+    A: [
+      (v) => div(100 * v.W!, v.F! * v.p!),
+      '100 × {W}/({F} × {p})',
+      'Load over effort is the actual advantage; divide by the efficiency for the ideal one.',
+    ],
     p: [
       (v) => div(100 * v.W!, v.F! * v.A!),
       '100 × {W}/({F} × {A})',
@@ -1962,29 +1972,29 @@ const energyPages: ModuleDef[] = [
       use: 'Use this for “Four strands hold up an 800 N crate and the pulleys are 80% efficient. What pull lifts it, and how much rope do you pull to lift it 0.5 m?”',
       unitSystems: ['metric'],
       assumptions: [
-        'Each supporting strand holds an equal share of the load: the ideal MA is the number of strands.',
-        'Less force, more distance: pull the rope MA times as far as the load rises.',
+        'Each supporting strand holds an equal share of the load: the ideal mechanical advantage IMA is the number of strands.',
+        'Less force, more distance: pull the rope IMA times as far as the load rises.',
         'Friction in the pulleys wastes some work: divide the ideal effort by the efficiency.',
       ],
       variables: [
         LOAD,
         q('n', 'n', 'Supporting strands', undefined, 1, 6, 1, { integer: true }),
-        MA,
+        IMA,
         EFFICIENCY,
         EFFORT,
         q('h', 'd_L', 'Load lifted', 'm', 0.01, 100, 0.01),
         q('d', 'd_E', 'Rope pulled', 'm', 0.01, 1000, 0.01),
       ],
       ...rules(
-        rule('MA = n', '{A} = {n}', (v) => v.A! - v.n!, {
+        rule('IMA = n', '{A} = {n}', (v) => v.A! - v.n!, {
           A: [(v) => v.n!, '{n}', 'Count the strands holding up the moving pulley.'],
-          n: [(v) => v.A!, '{A}', 'The strands are the mechanical advantage.'],
+          n: [(v) => v.A!, '{A}', 'The strands are the ideal mechanical advantage.'],
         }),
         effortRule,
-        product('d', 'A', 'h', 'd_E = MA × d_L', [
-          'Each strand shortens by the lift, so pull MA times as much rope.',
+        product('d', 'A', 'h', 'd_E = IMA × d_L', [
+          'Each strand shortens by the lift, so pull IMA times as much rope.',
           'Divide the rope pulled by the lift.',
-          'Divide the rope pulled by the mechanical advantage.',
+          'Divide the rope pulled by the ideal mechanical advantage.',
         ]),
       ),
       example: { W, n, A: n, p, F: (100 * W) / (n * p), h, d: n * h },
@@ -2005,7 +2015,7 @@ const energyPages: ModuleDef[] = [
   {
     id: 's.11.work-energy-power~ramp',
     title: 'A ramp',
-    use: 'Use this for “A 900 N crate is pushed up a 3 m ramp onto a 1 m platform. What is the mechanical advantage and the effort? What if the ramp is 75% efficient?”',
+    use: 'Use this for “A 900 N crate is pushed up a 3 m ramp onto a 1 m platform. What is the ideal mechanical advantage and the effort? What if the ramp is 75% efficient?”',
     unitSystems: ['metric'],
     assumptions: [
       'The ideal mechanical advantage of a ramp is its length over its height.',
@@ -2017,14 +2027,14 @@ const energyPages: ModuleDef[] = [
       q('L', 'L', 'Ramp length', 'm', 0.1, 1000, 0.1),
       q('h', 'h', 'Ramp height', 'm', 0.01, 1000, 0.01),
       EFFICIENCY,
-      MA,
+      IMA,
       EFFORT,
     ],
     ...rules(
-      rule('MA = L/h', '{A} = {L}/{h}', (v) => v.A! * v.h! - v.L!, {
+      rule('IMA = L/h', '{A} = {L}/{h}', (v) => v.A! * v.h! - v.L!, {
         A: [(v) => div(v.L!, v.h!), '{L}/{h}', 'The ramp’s length over its height.'],
-        L: [(v) => v.A! * v.h!, '{A} × {h}', 'The mechanical advantage times the height.'],
-        h: [(v) => div(v.L!, v.A!), '{L}/{A}', 'The length over the mechanical advantage.'],
+        L: [(v) => v.A! * v.h!, '{A} × {h}', 'The ideal mechanical advantage times the height.'],
+        h: [(v) => div(v.L!, v.A!), '{L}/{A}', 'The length over the ideal mechanical advantage.'],
       }),
       effortRule,
     ),
