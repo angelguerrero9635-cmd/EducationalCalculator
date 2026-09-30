@@ -4539,6 +4539,388 @@ const ADDED: ModuleDef[] = [
   },
 ];
 
+// ─── Phase changes, vapor pressure and colligative properties ───────────────
+
+/** ΔT = i × K × b for a solvent constant K (1.86 °C·kg/mol freezing, 0.512 boiling, water). */
+const colligativeRule = (dT: string, k: number, kText: string, what: string): Rule => ({
+  relation: {
+    id: `${dT} = i × ${kText} × b`,
+    display: `{${dT}} = {i} × ${kText} × {b}`,
+    vars: [dT, 'i', 'b'],
+    residual: (v) => v[dT]! - v.i! * k * v.b!,
+    solve: {
+      [dT]: (v) => v.i! * k * v.b!,
+      b: (v) => div(v[dT]!, v.i! * k),
+      i: (v) => div(v[dT]!, k * v.b!),
+    },
+  },
+  steps: {
+    [dT]: {
+      expr: `{i} × ${kText} × {b}`,
+      how: `Water’s ${what} changes ${kText} °C for each mole of particles per kilogram.`,
+    },
+    b: { expr: `{${dT}}/({i} × ${kText})`, how: 'Divide the change by i times the constant.' },
+    i: { expr: `{${dT}}/(${kText} × {b})`, how: 'Divide the change by the constant times b.' },
+  },
+});
+
+const PHASE: ModuleDef[] = [
+  {
+    id: 's.10.phase-colligative',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The solvent is water: it freezes at 0 °C and boils at 100 °C, with Kf = 1.86 and Kb = 0.512 °C·kg/mol.',
+      'Only the number of dissolved particles matters: i is 1 for sugar, 2 for NaCl, 3 for CaCl₂.',
+      'Molality b is moles of solute per kilogram of water, not per liter of solution.',
+    ],
+    variables: [
+      quantity('n', 'n', 'Moles of solute', 'mol', 0.001, 50, 0.001),
+      quantity('w', 'w', 'Mass of water', 'kg', 0.01, 100, 0.001),
+      quantity('b', 'b', 'Molality', 'mol/kg', 0.0001, 20, 0.0001),
+      {
+        ...whole('i', 'i', 'Particles each unit gives (van ’t Hoff factor)', 1, 3),
+        allowed: [1, 2, 3],
+      },
+      quantity('dTf', 'ΔTf', 'Freezing point drop', '°C', 0, 120, 0.0001),
+      quantity('Tf', 'Tf', 'Freezing point of the solution', '°C', -120, 0, 0.0001),
+      quantity('dTb', 'ΔTb', 'Boiling point rise', '°C', 0, 40, 0.0001),
+      quantity('Tb', 'Tb', 'Boiling point of the solution', '°C', 100, 140, 0.0001),
+      {
+        ...quantity('T0', 'T₀', 'Where the curve starts', '°C', -130, -10, 0.0001),
+        derived: true,
+        hidden: true,
+      },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'b = n/w',
+          display: '{b} = {n}/{w}',
+          vars: ['b', 'n', 'w'],
+          residual: (v) => v.b! * v.w! - v.n!,
+          solve: { b: (v) => div(v.n!, v.w!), n: (v) => v.b! * v.w!, w: (v) => div(v.n!, v.b!) },
+        },
+        steps: {
+          b: { expr: '{n}/{w}', how: 'Molality is moles of solute per kilogram of water.' },
+          n: { expr: '{b} × {w}', how: 'Multiply the moles in each kilogram by the kilograms.' },
+          w: { expr: '{n}/{b}', how: 'Divide the moles by the moles in each kilogram.' },
+        },
+      },
+      colligativeRule('dTf', 1.86, '1.86', 'freezing point'),
+      {
+        relation: {
+          id: 'Tf = 0 − ΔTf',
+          display: '{Tf} = 0 − {dTf}',
+          vars: ['Tf', 'dTf'],
+          residual: (v) => v.Tf! + v.dTf!,
+          solve: { Tf: (v) => -v.dTf!, dTf: (v) => -v.Tf! },
+        },
+        steps: {
+          Tf: { expr: '0 − {dTf}', how: 'Pure water freezes at 0 °C; the solute pushes it lower.' },
+          dTf: { expr: '0 − {Tf}', how: 'How far below 0 °C the solution freezes.' },
+        },
+      },
+      colligativeRule('dTb', 0.512, '0.512', 'boiling point'),
+      {
+        relation: {
+          id: 'Tb = 100 + ΔTb',
+          display: '{Tb} = 100 + {dTb}',
+          vars: ['Tb', 'dTb'],
+          residual: (v) => v.Tb! - (100 + v.dTb!),
+          solve: { Tb: (v) => 100 + v.dTb!, dTb: (v) => v.Tb! - 100 },
+        },
+        steps: {
+          Tb: {
+            expr: '100 + {dTb}',
+            how: 'Pure water boils at 100 °C; the solute pushes it higher.',
+          },
+          dTb: { expr: '{Tb} − 100', how: 'How far above 100 °C the solution boils.' },
+        },
+      },
+      {
+        relation: {
+          id: 'curve start',
+          hidden: true,
+          display: '{T0} = {Tf} − 10',
+          vars: ['T0', 'Tf'],
+          residual: (v) => v.T0! - (v.Tf! - 10),
+          solve: { T0: (v) => v.Tf! - 10 },
+        },
+        steps: {},
+      },
+    ),
+    example: {
+      n: 0.25,
+      w: 0.5,
+      b: 0.5,
+      i: 3,
+      dTf: 3 * 1.86 * 0.5,
+      Tf: -3 * 1.86 * 0.5,
+      dTb: 3 * 0.512 * 0.5,
+      Tb: 100 + 3 * 0.512 * 0.5,
+      T0: -3 * 1.86 * 0.5 - 10,
+    },
+    startWith: ['n', 'w', 'i'],
+    representation: {
+      kind: 'heatingCurve',
+      start: 'T0',
+      melt: 'Tf',
+      boil: 'Tb',
+      spans: [4, 8, 10, 20],
+      names: ['ice', 'solution', 'steam'],
+      formula: 'H2O',
+    },
+  },
+  {
+    id: 's.10.phase-colligative~vapor-pressure',
+    title: 'Vapor pressure of a solution',
+    use: 'Use this for “Glucose is dissolved in water. How much does the vapor pressure drop?”: Raoult’s law.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The solute does not evaporate, so only water molecules at the surface escape (Raoult’s law).',
+      'The vapor pressure is the pure water’s times water’s mole fraction; at 25 °C pure water’s is 23.8 mmHg.',
+      'Count particles: a salt that splits into ions counts each ion.',
+    ],
+    variables: [
+      quantity('n1', 'n₁', 'Moles of water', 'mol', 0.01, 1000, 0.001),
+      quantity('n2', 'n₂', 'Moles of solute particles', 'mol', 0, 1000, 0.001),
+      quantity('n', 'n', 'Moles in all', 'mol', 0.01, 2000, 0.001),
+      { id: 'x', symbol: 'x', name: 'Mole fraction of water', min: 0, max: 1, step: 0.0001 },
+      quantity('P0', 'P°', 'Vapor pressure of pure water', 'mmHg', 0.1, 800, 0.01),
+      quantity('P', 'P', 'Vapor pressure of the solution', 'mmHg', 0, 800, 0.0001),
+      quantity('dP', 'ΔP', 'Drop in vapor pressure', 'mmHg', 0, 800, 0.0001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'n = n₁ + n₂',
+          display: '{n} = {n1} + {n2}',
+          vars: ['n', 'n1', 'n2'],
+          residual: (v) => v.n! - (v.n1! + v.n2!),
+          solve: { n: (v) => v.n1! + v.n2!, n1: (v) => v.n! - v.n2!, n2: (v) => v.n! - v.n1! },
+        },
+        steps: {
+          n: { expr: '{n1} + {n2}', how: 'Add the water’s moles and the solute particles’.' },
+          n1: { expr: '{n} − {n2}', how: 'Take the solute particles from the total.' },
+          n2: { expr: '{n} − {n1}', how: 'Take the water from the total.' },
+        },
+      },
+      {
+        relation: {
+          id: 'x = n₁/n',
+          display: '{x} = {n1}/{n}',
+          vars: ['x', 'n1', 'n'],
+          residual: (v) => v.x! * v.n! - v.n1!,
+          solve: { x: (v) => div(v.n1!, v.n!), n1: (v) => v.x! * v.n!, n: (v) => div(v.n1!, v.x!) },
+        },
+        steps: {
+          x: { expr: '{n1}/{n}', how: 'Water’s share of all the particles.' },
+          n1: { expr: '{x} × {n}', how: 'Take water’s share of all the moles.' },
+          n: { expr: '{n1}/{x}', how: 'The water is that share of the whole: scale it up.' },
+        },
+      },
+      {
+        relation: {
+          id: 'P = x × P°',
+          display: '{P} = {x} × {P0}',
+          vars: ['P', 'x', 'P0'],
+          residual: (v) => v.P! - v.x! * v.P0!,
+          solve: { P: (v) => v.x! * v.P0!, x: (v) => div(v.P!, v.P0!), P0: (v) => div(v.P!, v.x!) },
+        },
+        steps: {
+          P: {
+            expr: '{x} × {P0}',
+            how: 'Only the water’s share of the surface escapes, so the pressure drops by that share.',
+          },
+          x: { expr: '{P}/{P0}', how: 'Compare the solution’s vapor pressure with pure water’s.' },
+          P0: { expr: '{P}/{x}', how: 'The solution has that share of pure water’s pressure.' },
+        },
+      },
+      {
+        relation: {
+          id: 'ΔP = P° − P',
+          display: '{dP} = {P0} − {P}',
+          vars: ['dP', 'P0', 'P'],
+          residual: (v) => v.dP! - (v.P0! - v.P!),
+          solve: { dP: (v) => v.P0! - v.P!, P0: (v) => v.dP! + v.P!, P: (v) => v.P0! - v.dP! },
+        },
+        steps: {
+          dP: { expr: '{P0} − {P}', how: 'The drop is pure water’s pressure less the solution’s.' },
+          P0: { expr: '{dP} + {P}', how: 'Add the drop back to the solution’s pressure.' },
+          P: { expr: '{P0} − {dP}', how: 'Take the drop off pure water’s pressure.' },
+        },
+      },
+    ),
+    example: { n1: 9.5, n2: 0.5, n: 10, x: 0.95, P0: 23.8, P: 22.61, dP: 1.19 },
+    startWith: ['n1', 'n2', 'P0'],
+    representation: { kind: 'pieChart', parts: ['n1', 'n2'], total: 'n' },
+  },
+];
+
+// ─── Entropy, free energy and spontaneity ────────────────────────────────────
+
+/** ΔG against T is a line: slope −ΔS/1000 (kJ per kelvin), meeting the axis at ΔH. */
+const slopeRule: Rule = {
+  relation: {
+    id: 'slope of ΔG against T',
+    hidden: true,
+    display: '{m} = −{dS}/1000',
+    vars: ['m', 'dS'],
+    residual: (v) => v.m! + v.dS! / 1000,
+    solve: { m: (v) => -v.dS! / 1000 },
+  },
+  steps: {},
+};
+const freeVars = (): VariableDef[] => [
+  quantity('dH', 'ΔH', 'Enthalpy change', 'kJ/mol', -5000, 5000, 0.01),
+  quantity('dS', 'ΔS', 'Entropy change', 'J/(mol·K)', -5000, 5000, 0.01),
+  {
+    ...quantity('m', 'm', 'Slope of the line', undefined, -5, 5, 0.000001),
+    derived: true,
+    hidden: true,
+  },
+];
+const FREE_AXES = { x: 'Temperature T (K)', y: 'ΔG (kJ/mol)' };
+
+const FREE: ModuleDef[] = [
+  {
+    id: 's.10.entropy-free-energy',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A reaction is spontaneous, able to go on its own, when ΔG is below 0.',
+      'ΔG = ΔH − TΔS, with T in kelvins; ΔS is in J/(mol·K), so divide it by 1000 to match ΔH’s kJ.',
+      'Spontaneous says nothing about speed: diamond turning to graphite is spontaneous but far too slow to see.',
+    ],
+    variables: [
+      ...freeVars(),
+      quantity('T', 'T', 'Temperature', 'K', 1, 5000, 0.1),
+      quantity('dG', 'ΔG', 'Free energy change', 'kJ/mol', -30000, 30000, 0.0001),
+    ],
+    ...rules(slopeRule, {
+      relation: {
+        id: 'ΔG = ΔH − TΔS',
+        display: '{dG} = {dH} − {T} × {dS}/1000',
+        vars: ['dG', 'dH', 'T', 'dS'],
+        residual: (v) => v.dG! - (v.dH! - (v.T! * v.dS!) / 1000),
+        solve: {
+          dG: (v) => v.dH! - (v.T! * v.dS!) / 1000,
+          dH: (v) => v.dG! + (v.T! * v.dS!) / 1000,
+          T: (v) => div(1000 * (v.dH! - v.dG!), v.dS!),
+          dS: (v) => div(1000 * (v.dH! - v.dG!), v.T!),
+        },
+      },
+      steps: {
+        dG: {
+          expr: '{dH} − {T} × {dS}/1000',
+          how: 'The heat given off pushes a reaction forward; spreading out (ΔS) pushes it more at high T.',
+          work: (v) =>
+            v.dG === 0
+              ? ['ΔG = 0: the reaction is at equilibrium']
+              : v.dG! < 0
+                ? [`ΔG is below 0, so the reaction is spontaneous at ${fmt(v.T!)} K`]
+                : [`ΔG is above 0, so the reaction is not spontaneous at ${fmt(v.T!)} K`],
+        },
+        dH: { expr: '{dG} + {T} × {dS}/1000', how: 'Add TΔS back to ΔG.' },
+        T: {
+          expr: '1000 × ({dH} − {dG})/{dS}',
+          how: 'TΔS is what ΔH and ΔG differ by: divide it by ΔS.',
+        },
+        dS: {
+          expr: '1000 × ({dH} − {dG})/{T}',
+          how: 'TΔS is what ΔH and ΔG differ by: divide it by T.',
+        },
+      },
+    }),
+    example: { dH: 50, dS: 200, m: -0.2, T: 300, dG: -10 },
+    startWith: ['dH', 'dS', 'T'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'dH',
+      at: { x: 'T', y: 'dG' },
+      xMin: 0,
+      axes: FREE_AXES,
+      fixed: true,
+    },
+  },
+  {
+    id: 's.10.entropy-free-energy~crossover',
+    title: 'The temperature where it turns spontaneous',
+    use: 'Use this for “Above what temperature is a reaction with ΔH = 60 kJ/mol and ΔS = 150 J/(mol·K) spontaneous?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'ΔG = ΔH − TΔS is 0 where the reaction switches: T = ΔH ÷ ΔS, with ΔS changed to kJ.',
+      'Both positive: spontaneous above that temperature. Both negative: spontaneous below it.',
+      'With opposite signs ΔG never changes sign, so there is no switch.',
+    ],
+    variables: [
+      ...freeVars(),
+      quantity('Tc', 'T', 'Temperature where ΔG = 0', 'K', 1, 100000, 0.01),
+    ],
+    ...rules(
+      slopeRule,
+      {
+        relation: {
+          id: 'ΔH and ΔS share a sign',
+          constraint: true,
+          display: '{dH} and {dS} have the same sign',
+          vars: ['dH', 'dS'],
+          residual: (v) => (v.dH! * v.dS! > 0 ? 0 : 1),
+          solve: {},
+          message: (v) =>
+            v.dH! * v.dS! > 0
+              ? undefined
+              : 'ΔH and ΔS need the same sign: otherwise ΔG never changes sign, and there is no switching temperature.',
+        },
+        steps: {},
+      },
+      {
+        relation: {
+          id: 'T = ΔH/ΔS',
+          display: '{Tc} = 1000 × {dH}/{dS}',
+          vars: ['Tc', 'dH', 'dS'],
+          residual: (v) => v.Tc! * v.dS! - 1000 * v.dH!,
+          solve: {
+            Tc: (v) => div(1000 * v.dH!, v.dS!),
+            dH: (v) => (v.Tc! * v.dS!) / 1000,
+            dS: (v) => div(1000 * v.dH!, v.Tc!),
+          },
+          message: (v) =>
+            v.dH! * v.dS! > 0
+              ? undefined
+              : 'ΔH and ΔS have opposite signs, so ΔG never changes sign: there is no switching temperature.',
+        },
+        steps: {
+          Tc: {
+            expr: '1000 × {dH}/{dS}',
+            how: 'Set ΔG = 0: then ΔH = TΔS, so T is ΔH over ΔS (in kJ, so times 1000).',
+            work: (v) =>
+              v.dS! > 0
+                ? [`ΔH and ΔS are both positive: spontaneous above ${fmt(v.Tc!)} K`]
+                : [`ΔH and ΔS are both negative: spontaneous below ${fmt(v.Tc!)} K`],
+          },
+          dH: { expr: '{Tc} × {dS}/1000', how: 'At the switch ΔH equals TΔS.' },
+          dS: { expr: '1000 × {dH}/{Tc}', how: 'At the switch ΔS is ΔH over T.' },
+        },
+      },
+    ),
+    example: { dH: 60, dS: 150, m: -0.15, Tc: 400 },
+    startWith: ['dH', 'dS'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'dH',
+      shows: { zeros: ['Tc'] },
+      marks: ['zeros'],
+      xMin: 0,
+      axes: FREE_AXES,
+      fixed: true,
+    },
+  },
+];
+
 export const SCIENCE_10_MODULES: ModuleDef[] = [
   ...MEASUREMENT,
   ...ATOMS,
@@ -4556,5 +4938,7 @@ export const SCIENCE_10_MODULES: ModuleDef[] = [
   ...ACIDS,
   ...ORGANIC,
   ...NUCLEAR,
+  ...PHASE,
+  ...FREE,
   ...ADDED,
 ];

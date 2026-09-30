@@ -338,6 +338,193 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  {
+    kind: 'sort',
+    id: 's.10.reaction-types~activity-series',
+    title: 'Predicting a single replacement',
+    use: 'Use this for “Does zinc react with copper(II) sulfate, and what does it make?”',
+    assumptions: [
+      'A metal replaces another in a compound only when it is higher on the activity series: Mg, Al, Zn, Fe, Ni, Pb, H, Cu, Ag.',
+      'When it does, the metals trade places: Zn + CuSO₄ → ZnSO₄ + Cu.',
+      'A metal above hydrogen replaces it from an acid, giving H₂ gas.',
+    ],
+    question: 'Does the reaction happen?',
+    bins: [
+      {
+        id: 'reacts',
+        label: 'Reacts',
+        why: 'The free metal is more active, so it takes the other’s place.',
+      },
+      {
+        id: 'none',
+        label: 'No reaction',
+        why: 'The free metal is less active than the one in the compound.',
+      },
+    ],
+    cards: [
+      { label: 'Zn + CuSO₄', bin: 'reacts' },
+      { label: 'Fe + CuSO₄', bin: 'reacts' },
+      { label: 'Cu + AgNO₃', bin: 'reacts' },
+      { label: 'Mg + HCl', bin: 'reacts' },
+      { label: 'Al + FeCl₃', bin: 'reacts' },
+      { label: 'Cu + ZnSO₄', bin: 'none' },
+      { label: 'Ag + CuSO₄', bin: 'none' },
+      { label: 'Cu + HCl', bin: 'none' },
+      { label: 'Pb + MgCl₂', bin: 'none' },
+    ],
+  },
+
+  // ── Phase changes, vapor pressure and colligative properties (HS-PS1-3) ──
+  {
+    kind: 'sort',
+    id: 's.10.phase-colligative~boiling-point',
+    title: 'What moves the boiling point?',
+    use: 'Use this for “Why does an egg take longer to cook in boiling water high on a mountain?”',
+    assumptions: [
+      'Water boils when its vapor pressure matches the air pressure pushing on it.',
+      'Less air pressure: it boils sooner, at a lower temperature. More pressure: later, hotter.',
+      'A dissolved solute lowers the vapor pressure, so the water must get hotter before it boils.',
+    ],
+    question: 'Does the change raise or lower the temperature the water boils at?',
+    bins: [
+      {
+        id: 'raise',
+        label: 'Raises it',
+        why: 'The water must reach a higher vapor pressure, or its vapor pressure was lowered.',
+      },
+      {
+        id: 'lower',
+        label: 'Lowers it',
+        why: 'Less pressure pushes on the water, so it boils at a lower temperature.',
+      },
+      {
+        id: 'same',
+        label: 'No change',
+        why: 'It changes how fast the water heats, not the temperature it boils at.',
+      },
+    ],
+    cards: [
+      { label: 'Stirring salt into the pot', bin: 'raise' },
+      { label: 'Stirring sugar into the pot', bin: 'raise' },
+      { label: 'Cooking in a sealed pressure cooker', bin: 'raise' },
+      { label: 'Cooking high on a mountain', bin: 'lower' },
+      { label: 'Pumping air out of a jar of water', bin: 'lower' },
+      { label: 'Turning up the burner', bin: 'same' },
+      { label: 'Using a bigger pot of the same water', bin: 'same' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.10.phase-colligative~phase-heat',
+    title: 'Phase changes: heat in or heat out?',
+    use: 'Use this for “Is freezing endothermic or exothermic?”',
+    assumptions: [
+      'Pulling particles apart takes energy: melting, evaporating and sublimation take heat in.',
+      'Particles coming together give that energy back: freezing, condensing and deposition give heat off.',
+    ],
+    question: 'Does the change take heat in or give heat off?',
+    bins: [
+      {
+        id: 'in',
+        label: 'Takes heat in (endothermic)',
+        why: 'The particles pull apart into a freer state.',
+      },
+      {
+        id: 'out',
+        label: 'Gives heat off (exothermic)',
+        why: 'The particles settle closer together into a more ordered state.',
+      },
+    ],
+    cards: [
+      { label: 'Melting: ice in a drink', bin: 'in' },
+      { label: 'Evaporation: sweat drying on skin', bin: 'in' },
+      { label: 'Sublimation: dry ice turning straight to gas', bin: 'in' },
+      { label: 'Boiling: water in a kettle', bin: 'in' },
+      { label: 'Freezing: water in an ice tray', bin: 'out' },
+      { label: 'Condensation: steam fogging a mirror', bin: 'out' },
+      { label: 'Deposition: frost forming on a window', bin: 'out' },
+    ],
+  },
+
+  // ── Entropy, free energy and spontaneity (HS-PS3-4) ──
+  {
+    kind: 'sort',
+    id: 's.10.entropy-free-energy~entropy-sign',
+    title: 'Does entropy go up or down?',
+    use: 'Use this for “Predict the sign of ΔS when a gas forms from a solid.”',
+    assumptions: [
+      'Entropy measures how spread out the particles and their energy are: gas, then liquid, then solid.',
+      'More gas molecules after the arrow than before usually means entropy goes up.',
+    ],
+    question: 'Is ΔS positive or negative?',
+    bins: [
+      {
+        id: 'up',
+        label: 'Increases (ΔS > 0)',
+        why: 'The particles end up more spread out or freer to move.',
+      },
+      {
+        id: 'down',
+        label: 'Decreases (ΔS < 0)',
+        why: 'The particles end up more ordered or packed together.',
+      },
+    ],
+    cards: [
+      { label: 'Ice melts', bin: 'up' },
+      { label: 'Salt dissolves in water', bin: 'up' },
+      { label: 'Perfume spreads through a room', bin: 'up' },
+      { label: 'CaCO₃(s) → CaO(s) + CO₂(g)', bin: 'up' },
+      { label: '2H₂O₂(l) → 2H₂O(l) + O₂(g)', bin: 'up' },
+      { label: 'Water vapor condenses', bin: 'down' },
+      { label: 'A gas is squeezed into a smaller volume', bin: 'down' },
+      { label: 'N₂(g) + 3H₂(g) → 2NH₃(g)', bin: 'down' },
+      { label: 'Ag⁺(aq) + Cl⁻(aq) → AgCl(s)', bin: 'down' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.10.entropy-free-energy~spontaneity',
+    title: 'When is it spontaneous?',
+    use: 'Use this for “A reaction has ΔH > 0 and ΔS > 0. When is it spontaneous?”',
+    assumptions: [
+      'ΔG = ΔH − TΔS, and a reaction is spontaneous when ΔG is below 0.',
+      'The signs of ΔH and ΔS decide; when they pull opposite ways, the temperature settles it.',
+    ],
+    question: 'When is the change spontaneous?',
+    bins: [
+      {
+        id: 'always',
+        label: 'At every temperature',
+        why: 'ΔH < 0 and ΔS > 0: both terms make ΔG negative.',
+      },
+      {
+        id: 'never',
+        label: 'At no temperature',
+        why: 'ΔH > 0 and ΔS < 0: both terms make ΔG positive.',
+      },
+      {
+        id: 'low',
+        label: 'Only at low temperature',
+        why: 'ΔH < 0 and ΔS < 0: −TΔS grows with T until it outweighs ΔH.',
+      },
+      {
+        id: 'high',
+        label: 'Only at high temperature',
+        why: 'ΔH > 0 and ΔS > 0: −TΔS must grow big enough to beat ΔH.',
+      },
+    ],
+    cards: [
+      { label: 'ΔH < 0, ΔS > 0', bin: 'always' },
+      { label: 'Wood burning to gases (gives off heat, makes gas)', bin: 'always' },
+      { label: 'ΔH > 0, ΔS < 0', bin: 'never' },
+      { label: 'Oxygen turning to ozone, 3O₂ → 2O₃ (takes in heat)', bin: 'never' },
+      { label: 'ΔH < 0, ΔS < 0', bin: 'low' },
+      { label: 'Water freezing', bin: 'low' },
+      { label: 'ΔH > 0, ΔS > 0', bin: 'high' },
+      { label: 'Ice melting', bin: 'high' },
+    ],
+  },
+
   // ── Reaction rates and chemical equilibrium (HS-PS1-5, HS-PS1-6) ──
   {
     kind: 'sort',
@@ -554,6 +741,39 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  {
+    kind: 'sort',
+    id: 's.10.redox~electrolysis',
+    title: 'Galvanic or electrolytic cell?',
+    use: 'Use this for “How is an electrolytic cell different from a battery?”',
+    assumptions: [
+      'In both cells oxidation happens at the anode and reduction at the cathode.',
+      'A galvanic cell runs a spontaneous reaction and makes electricity; an electrolytic cell uses electricity to drive one that would not go by itself.',
+    ],
+    question: 'Which kind of cell is it?',
+    bins: [
+      {
+        id: 'galvanic',
+        label: 'Galvanic (makes electricity)',
+        why: 'A reaction that goes by itself pushes electrons through the wire.',
+      },
+      {
+        id: 'electrolytic',
+        label: 'Electrolytic (uses electricity)',
+        why: 'A power supply pushes electrons the uphill way.',
+      },
+    ],
+    cards: [
+      { label: 'A flashlight battery running', bin: 'galvanic' },
+      { label: 'A zinc–copper cell lighting a bulb', bin: 'galvanic' },
+      { label: 'E°cell is positive', bin: 'galvanic' },
+      { label: 'Recharging a phone battery', bin: 'electrolytic' },
+      { label: 'Splitting water into H₂ and O₂', bin: 'electrolytic' },
+      { label: 'Silver-plating a spoon', bin: 'electrolytic' },
+      { label: 'Making aluminum from molten Al₂O₃', bin: 'electrolytic' },
+      { label: 'Needs an outside power supply', bin: 'electrolytic' },
+    ],
+  },
   // ── Organic chemistry: hydrocarbons and functional groups ──
   {
     kind: 'sort',
@@ -590,6 +810,40 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  {
+    kind: 'sort',
+    id: 's.10.organic~polymers',
+    title: 'Addition or condensation polymer?',
+    use: 'Use this for “Is nylon an addition polymer or a condensation polymer?”',
+    assumptions: [
+      'A polymer is a long chain of small units, monomers, joined end to end.',
+      'Addition: monomers with a C=C double bond open it and link up, losing nothing.',
+      'Condensation: two groups join and give off a small molecule, usually water.',
+    ],
+    question: 'How are the monomers joined?',
+    bins: [
+      {
+        id: 'addition',
+        label: 'Addition polymer',
+        why: 'Each monomer’s double bond opens to link to the next; every atom stays.',
+      },
+      {
+        id: 'condensation',
+        label: 'Condensation polymer',
+        why: 'Each link gives off a small molecule such as water.',
+      },
+    ],
+    cards: [
+      { label: 'Polyethylene, from ethene (CH₂=CH₂)', bin: 'addition' },
+      { label: 'PVC, from vinyl chloride (CH₂=CHCl)', bin: 'addition' },
+      { label: 'Polystyrene, from styrene', bin: 'addition' },
+      { label: 'Teflon, from CF₂=CF₂', bin: 'addition' },
+      { label: 'Nylon, from a diamine and a diacid', bin: 'condensation' },
+      { label: 'Polyester (PET), from an acid and an alcohol', bin: 'condensation' },
+      { label: 'A protein, from amino acids', bin: 'condensation' },
+      { label: 'Starch, from glucose', bin: 'condensation' },
+    ],
+  },
   // ── Nuclear chemistry (HS-PS1-8) ──
   {
     kind: 'sort',
