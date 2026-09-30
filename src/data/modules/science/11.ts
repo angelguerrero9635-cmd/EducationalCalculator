@@ -7,6 +7,8 @@
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
+import { scientific } from '@/engine/format';
+
 import { atLeast } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 
@@ -21,13 +23,60 @@ interface Rule {
 /** Gathers rules into a module's `relations` and `steps`. */
 const rules = (...rs: Rule[]) => ({
   relations: rs.map((r) => r.relation),
-  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+  steps: Object.fromEntries(
+    rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+  ),
 });
+
+/** A number for a work line: plain from 0.001 to 9,999, else in scientific notation (4.388 × 10⁴⁷). */
+const sci = (x: number) =>
+  Math.abs(x) >= 0.001 && Math.abs(x) < 10000
+    ? String(Number(x.toPrecision(5))).replace('-', '−')
+    : scientific(x);
+
+/** A number for a work line written out with separators (167,000). */
+const plain = (x: number) =>
+  Number(x.toPrecision(8)).toLocaleString('en-US', { maximumFractionDigits: 6 });
+
+/** A rule with work lines (the parts worked out first) on the step for `id`. */
+const withWork = (r: Rule, id: string, work: StepText['work']): Rule => ({
+  relation: r.relation,
+  steps: { ...r.steps, [id]: { ...r.steps[id]!, work } },
+});
+
+/** A rule that only places the picture: solved like any other, never shown as a step. */
+const hide = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, steps: {} });
 
 /** `rules`, with an order the story fixes (the top is at least the height now) first. */
 const withOrder = (order: Relation, ...rs: Rule[]) => {
   const r = rules(...rs);
   return { relations: [order, ...r.relations], steps: { [order.id]: {}, ...r.steps } };
+};
+
+/**
+ * A check that two values are at least `gap` apart (a difference the steps divide by), with the
+ * reason shown when they aren't.
+ */
+const apart = (a: string, b: string, gap: number, message: string): Relation => {
+  const ok = (v: Values) => Math.abs(v[a]! - v[b]!) >= gap - 1e-9;
+  return {
+    id: `|${a} − ${b}| ≥ ${gap}`,
+    constraint: true,
+    display: `{${a}} is at least ${gap} from {${b}}`,
+    vars: [a, b],
+    residual: (v) => (ok(v) ? 0 : 1),
+    solve: {},
+    message: (v) => (ok(v) ? undefined : message),
+  };
+};
+
+/** `rules`, with checks (`apart`, `atLeast`) first. */
+const withChecks = (checks: Relation[], ...rs: Rule[]) => {
+  const r = rules(...rs);
+  return {
+    relations: [...checks, ...r.relations],
+    steps: { ...Object.fromEntries(checks.map((c) => [c.id, {}])), ...r.steps },
+  };
 };
 
 type Solve = (v: Values) => number | number[] | undefined;
@@ -41,7 +90,7 @@ const rule = (
   id: string,
   display: string,
   residual: (v: Values) => number,
-  parts: Record<string, [Solve, string, string] | undefined | null>,
+  parts: Record<string, [Solve, StepText['expr'], string] | undefined | null>,
 ): Rule => ({
   relation: {
     id,
@@ -278,23 +327,27 @@ const kinematicsPages: ModuleDef[] = [
         'Up is +, so the velocity is negative on the way down; the drop d is how far it fell.',
       ],
       variables: [
-        { ...ACC1, name: 'Acceleration of gravity', derived: true },
+        { ...ACC1, name: 'Acceleration of gravity', derived: true, hidden: true },
         { ...TIME, max: 30 },
-        { ...V1, name: 'Velocity (− is down)', min: -300, max: 0, derived: true },
+        { ...V1, name: 'Velocity', min: -300, max: 0, derived: true },
         q('d', 'd', 'Drop', 'm', 0, 5000, 0.01),
       ],
       ...rules(
-        fixed(
-          'a',
-          'a',
-          -G,
-          'Near Earth’s surface gravity speeds a falling object up by 9.8 m/s each second, downward.',
+        hide(
+          rule('a = v/t', '{a} = {v}/{t}', (v) => v.a! * v.t! - v.v!, {
+            a: [(v) => div(v.v!, v.t!), '{v}/{t}', ''],
+          }),
         ),
-        rule('v = at', '{v} = {a} × {t}', (v) => v.v! - v.a! * v.t!, {
+        rule('v = −gt', '{v} = −9.8 × {t}', (v) => v.v! + G * v.t!, {
           v: [
-            (v) => v.a! * v.t!,
-            '{a} × {t}',
-            'From rest, the velocity is the acceleration times the time.',
+            (v) => -G * v.t!,
+            '−9.8 × {t}',
+            'From rest, the velocity is g times the time, downward.',
+          ],
+          t: [
+            (v) => div(v.v!, -G),
+            '{v}/(−9.8)',
+            'Divide the velocity by −9.8 m/s² to count the seconds.',
           ],
         }),
         rule('d = ½gt²', '{d} = ½ × 9.8 × {t}²', (v) => v.d! - 0.5 * G * v.t! * v.t!, {
@@ -336,7 +389,13 @@ const kinematicsPages: ModuleDef[] = [
         'v² = v₀² + 2aΔx needs no time: use it when the time is not given.',
         'A stop is v = 0.',
       ],
-      variables: [{ ...V0, min: 0 }, { ...V1, min: 0, max: 100 }, ACC1, { ...DX, min: 0 }, TIME],
+      variables: [
+        { ...V0, min: 0 },
+        { ...V1, min: 0, max: 100 },
+        { ...ACC1, max: -0.1 },
+        { ...DX, min: 0 },
+        TIME,
+      ],
       ...rules(
         rule(
           'v² = v₀² + 2aΔx',
@@ -398,20 +457,20 @@ const kinematicsPages: ModuleDef[] = [
       assumptions: [
         'With a steady acceleration the position is x = x₀ + v₀t + ½at², a parabola against time.',
         'The slope of the tangent at a moment is the velocity at that moment.',
-        'Where the tangent is flat, the object stops for an instant and turns round.',
+        'Where the tangent is flat, it stops for an instant and turns round: type v₁ = 0 to find when.',
       ],
       variables: [
         q('p', 'x₀', 'Starting position', 'm', -1e4, 1e4, 0.1),
         V0,
         ACC1,
         { ...TIME, name: 'Time shown on the graph' },
-        V1,
+        { ...V1, derived: true, hidden: true },
         q('s', 't₁', 'Time of the tangent', 's', 0, 120, 0.1),
         q('w', 'v₁', 'Velocity at t₁ (the slope)', 'm/s', -500, 500, 0.01),
         q('x', 'x₁', 'Position at t₁', 'm', -1e5, 1e5, 0.01),
       ],
       ...rules(
-        velocityRule,
+        hide(velocityRule),
         rule('v₁ = v₀ + at₁', '{w} = {u} + {a} × {s}', (v) => v.w! - v.u! - v.a! * v.s!, {
           w: [
             (v) => v.u! + v.a! * v.s!,
@@ -630,6 +689,11 @@ const projectilePages: ModuleDef[] = [
               '{H} − {y}²/(2 × 9.8)',
               'Take the height gained from the top.',
             ],
+            y: [
+              (v) => (v.H! >= v.h! ? Math.sqrt(2 * G * (v.H! - v.h!)) : undefined),
+              '√(2 × 9.8 × ({H} − {h}))',
+              'At the top v_y is 0, so v_y² = 2g(H − h).',
+            ],
           },
         ),
       ),
@@ -662,7 +726,7 @@ const projectilePages: ModuleDef[] = [
         'No air resistance, and g = 9.8 m/s².',
       ],
       variables: [
-        { ...LAUNCH_ANGLE, derived: true },
+        { ...LAUNCH_ANGLE, derived: true, hidden: true },
         { ...LAUNCH_V, name: 'Speed off the edge' },
         { ...LAUNCH_H, name: 'Height of the ledge', min: 0.01 },
         FLIGHT,
@@ -673,7 +737,7 @@ const projectilePages: ModuleDef[] = [
         why: 'The launch is level on this page: θ = 0 is drawn but never changes.',
       },
       ...rules(
-        fixed('q', 'θ', 0, 'Rolled straight off the edge, the launch is level.'),
+        hide(fixed('q', 'θ', 0, 'Rolled straight off the edge, the launch is level.')),
         rule('T = √(2h/g)', '{T} = √(2 × {h}/9.8)', (v) => v.T! - Math.sqrt((2 * v.h!) / G), {
           T: [
             (v) => (v.h! >= 0 ? Math.sqrt((2 * v.h!) / G) : undefined),
@@ -808,7 +872,7 @@ const projectilePages: ModuleDef[] = [
       ],
       variables: [
         q('m', 'v', 'Speed', 'm/s', 0, 1000, 0.01),
-        q('t', 'θ', 'Angle above level', '°', 0, 360, 1),
+        q('t', 'θ', 'Direction, from east', '°', 0, 360, 1),
         q('x', 'vₓ', 'Horizontal velocity', 'm/s', -1000, 1000, 0.01),
         q('y', 'v_y', 'Vertical velocity', 'm/s', -1000, 1000, 0.01),
       ],
@@ -864,7 +928,7 @@ const frictionRule = product('f', 'k', 'N', 'f = μₖF_N', [
 ]);
 const newtonRule = rule('a = F_net ÷ m', '{a} = {n}/{m}', (v) => v.a! * v.m! - v.n!, {
   a: [(v) => div(v.n!, v.m!), '{n}/{m}', 'Newton’s second law: the net force over the mass.'],
-  n: [(v) => v.a! * v.m!, '{a} × {m}', 'The net force is the mass times the acceleration.'],
+  n: [(v) => v.a! * v.m!, '{m} × {a}', 'The net force is the mass times the acceleration.'],
   m: [(v) => div(v.n!, v.a!), '{n}/{a}', 'Divide the net force by the acceleration.'],
 });
 
@@ -880,6 +944,7 @@ const dynamicsPages: ModuleDef[] = [
         'The push is level, and the block is already sliding, so friction is kinetic.',
         'Up and down nothing moves: the normal force balances the weight.',
         'Friction points against the motion; the net force is the push minus friction.',
+        'If friction is more than the push, a < 0: the sliding block slows down.',
       ],
       variables: [
         MASS,
@@ -899,6 +964,7 @@ const dynamicsPages: ModuleDef[] = [
             '{W}',
             'Nothing else pushes up or down, so the floor pushes up with the weight.',
           ],
+          W: [(v) => v.N!, '{N}', 'The weight balances the normal force.'],
         }),
         frictionRule,
         difference('n', 'F', 'f', 'F_net = F − f', 'The push forward less friction backward.'),
@@ -935,7 +1001,7 @@ const dynamicsPages: ModuleDef[] = [
       assumptions: [
         'Tilt the axes with the slope: the weight splits into W sin θ down it and W cos θ into it.',
         'Into the slope nothing moves, so F_N = W cos θ.',
-        'The block is sliding down, so kinetic friction acts up the slope.',
+        'The block is sliding down, so kinetic friction acts up the slope; if friction wins, a < 0 and it slows.',
       ],
       variables: [
         MASS,
@@ -1032,7 +1098,7 @@ const dynamicsPages: ModuleDef[] = [
       assumptions: [
         'The rope’s tension has a part across, T cos α, and a part up, T sin α.',
         'The part up lifts a little, so the ground pushes up less: F_N = W − T sin α.',
-        'Less normal force means less friction; the sled is already sliding.',
+        'Less normal force means less friction; the sled is already sliding, and a < 0 means it slows.',
       ],
       variables: [
         MASS,
@@ -1135,7 +1201,15 @@ const dynamicsPages: ModuleDef[] = [
       ...rules(
         weightRule,
         newtonRule,
-        difference('n', 'T', 'W', 'F_net = T − W', 'Up is +: the tension up less the weight down.'),
+        rule('F_net = T − W', '{n} = {T} − {W}', (v) => v.n! - (v.T! - v.W!), {
+          n: [(v) => v.T! - v.W!, '{T} − {W}', 'Up is +: the tension up less the weight down.'],
+          T: [
+            (v) => v.n! + v.W!,
+            '{n} + {W}',
+            'The cord holds up the weight and also gives the net force.',
+          ],
+          W: [(v) => v.T! - v.n!, '{T} − {n}', 'The tension less the net force is the weight.'],
+        }),
       ),
       example: { m, a, W, T: W + m * a, n: m * a },
       startWith: ['m', 'a'],
@@ -1168,11 +1242,11 @@ const dynamicsPages: ModuleDef[] = [
       variables: [
         q('p', 'F₁', 'First force', 'N', 0, 1e5, 0.1),
         q('b', 'F₂', 'Second force', 'N', 0, 1e5, 0.1),
-        q('t', 'θ', 'Angle of F₂', '°', 0, 90, 1),
-        q('x', 'Fₓ', 'Net force east', 'N', 0, 2e5, 0.01, { derived: true }),
+        q('t', 'θ', 'Angle of F₂', '°', 0, 180, 1),
+        q('x', 'Fₓ', 'Net force east', 'N', -1e5, 2e5, 0.01, { derived: true }),
         q('y', 'F_y', 'Net force north', 'N', 0, 1e5, 0.01, { derived: true }),
         q('F', 'F', 'Net force', 'N', 0, 2e5, 0.01),
-        q('d', 'φ', 'Direction, from east', '°', 0, 90, 0.1, { derived: true }),
+        q('d', 'φ', 'Direction, from east', '°', 0, 180, 0.1, { derived: true }),
         MASS,
         { ...ACC, min: 0 },
       ],
@@ -1203,14 +1277,19 @@ const dynamicsPages: ModuleDef[] = [
           'The parts are at right angles: add them by Pythagoras.',
         ),
         rule(
-          'φ = arctan(F_y/Fₓ)',
-          '{d} = arctan({y}/{x})',
-          (v) => Math.tan(v.d! * RAD) * v.x! - v.y!,
+          'tan φ = F_y/Fₓ',
+          'tan({d}) = {y}/{x}',
+          (v) => Math.sin(v.d! * RAD) * v.x! - Math.cos(v.d! * RAD) * v.y!,
           {
             d: [
               (v) => Math.atan2(v.y!, v.x!) / RAD,
-              'arctan({y}/{x})',
-              'The tangent of the direction is the north part over the east part.',
+              (v) =>
+                Math.abs(v.x!) < 1e-9
+                  ? '90'
+                  : v.x! < 0
+                    ? '180 + arctan({y}/{x})'
+                    : 'arctan({y}/{x})',
+              'The direction from east: the angle whose tangent is north over east, in the right quarter.',
             ],
           },
         ),
@@ -1220,7 +1299,7 @@ const dynamicsPages: ModuleDef[] = [
             '{F}/{m}',
             'Newton’s second law: the net force over the mass.',
           ],
-          F: [(v) => v.a! * v.m!, '{a} × {m}', 'The net force is the mass times the acceleration.'],
+          F: [(v) => v.a! * v.m!, '{m} × {a}', 'The net force is the mass times the acceleration.'],
           m: [(v) => div(v.F!, v.a!), '{F}/{a}', 'Divide the net force by the acceleration.'],
         }),
       ),
@@ -1237,7 +1316,7 @@ const dynamicsPages: ModuleDef[] = [
         unit: 'N',
         axes: { x: 'east', y: 'north' },
       },
-      pictureLabels: ['m'],
+      pictureLabels: ['m', 'a'],
     } satisfies ModuleDef;
   })(),
 ];
@@ -1287,7 +1366,7 @@ const circularPages: ModuleDef[] = [
         SPEED,
         AC,
         FC,
-        q('T', 'T', 'Period (time for one turn)', 's', 0.0001, 1e7, 0.0001),
+        q('T', 'T', 'Period', 's', 0.0001, 1e7, 0.0001),
       ],
       ...rules(
         centripetalRule,
@@ -1413,6 +1492,7 @@ const circularPages: ModuleDef[] = [
             'The net force up is the mass times the centripetal acceleration.',
           ],
           m: [(v) => div(v.n!, v.a!), '{n}/{a}', 'Divide the net force by the acceleration.'],
+          a: [(v) => div(v.n!, v.m!), '{n}/{m}', 'Divide the net force by the mass.'],
         }),
         sum(
           'T',
@@ -1455,32 +1535,40 @@ const circularPages: ModuleDef[] = [
         q('F', 'F', 'Pull of gravity', 'N', 0, 1e45, 1, { scientific: true }),
       ],
       ...rules(
-        rule(
-          'F = Gm₁m₂/r²',
-          '{F} = 6.674 × 10⁻¹¹ × {M} × {n}/{d}²',
-          (v) => v.F! / ((6.674e-11 * v.M! * v.n!) / (v.d! * v.d!)) - 1,
-          {
-            F: [
-              (v) => div(6.674e-11 * v.M! * v.n!, v.d! * v.d!),
-              '6.674 × 10⁻¹¹ × {M} × {n}/({d}²)',
-              'Multiply G by both masses and divide by the distance squared.',
-            ],
-            d: [
-              (v) => Math.sqrt(Math.max(0, div(6.674e-11 * v.M! * v.n!, v.F!) ?? 0)),
-              '√(6.674 × 10⁻¹¹ × {M} × {n}/{F})',
-              'Solve for r²: G m₁ m₂ over F, then take the square root.',
-            ],
-            M: [
-              (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.n!),
-              '{F} × {d}²/(6.674 × 10⁻¹¹ × {n})',
-              'Undo the formula for m₁.',
-            ],
-            n: [
-              (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.M!),
-              '{F} × {d}²/(6.674 × 10⁻¹¹ × {M})',
-              'Undo the formula for m₂.',
-            ],
-          },
+        withWork(
+          rule(
+            'F = Gm₁m₂/r²',
+            '{F} = 6.674 × 10⁻¹¹ × {M} × {n}/{d}²',
+            (v) => v.F! / ((6.674e-11 * v.M! * v.n!) / (v.d! * v.d!)) - 1,
+            {
+              F: [
+                (v) => div(6.674e-11 * v.M! * v.n!, v.d! * v.d!),
+                '6.674 × 10⁻¹¹ × {M} × {n}/({d}²)',
+                'G = 6.674 × 10⁻¹¹ N·m²/kg²: multiply G by both masses and divide by the distance squared.',
+              ],
+              d: [
+                (v) => Math.sqrt(Math.max(0, div(6.674e-11 * v.M! * v.n!, v.F!) ?? 0)),
+                '√(6.674 × 10⁻¹¹ × {M} × {n}/{F})',
+                'Solve for r²: G m₁ m₂ over F, then take the square root.',
+              ],
+              M: [
+                (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.n!),
+                '{F} × {d}²/(6.674 × 10⁻¹¹ × {n})',
+                'Undo the formula for m₁.',
+              ],
+              n: [
+                (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.M!),
+                '{F} × {d}²/(6.674 × 10⁻¹¹ × {M})',
+                'Undo the formula for m₂.',
+              ],
+            },
+          ),
+          'F',
+          (v) => [
+            `m₁ × m₂ = (${sci(v.M!)}) × (${sci(v.n!)}) = ${sci(v.M! * v.n!)} kg²`,
+            `r² = (${sci(v.d!)})² = ${sci(v.d! * v.d!)} m²`,
+            `F = 6.674 × 10⁻¹¹ × (${sci(v.M! * v.n!)})/(${sci(v.d! * v.d!)})`,
+          ],
         ),
       ),
       example: { M, n, d, F: (6.674e-11 * M * n) / (d * d) },
@@ -1521,6 +1609,31 @@ const keRule = (out: string, x: string, y: string, sym: string, when: string): R
     },
   );
 
+/** p = m₁v₁ + m₂v₂, the total momentum before. */
+const momentumRule = rule(
+  'p = m₁v₁ + m₂v₂',
+  '{p} = {m} × {v} + {n} × {w}',
+  (v) => v.p! - v.m! * v.v! - v.n! * v.w!,
+  {
+    p: [
+      (v) => v.m! * v.v! + v.n! * v.w!,
+      '{m} × {v} + {n} × {w}',
+      'Add the carts’ momenta, signs and all.',
+    ],
+    v: [
+      (v) => div(v.p! - v.n! * v.w!, v.m!),
+      '({p} − {n} × {w})/{m}',
+      'Take cart 2’s momentum from the total, divide by m₁.',
+    ],
+    w: [
+      (v) => div(v.p! - v.m! * v.v!, v.n!),
+      '({p} − {m} × {v})/{n}',
+      'Take cart 1’s momentum from the total, divide by m₂.',
+    ],
+  },
+);
+const MOMENTUM = q('p', 'p', 'Total momentum', 'kg·m/s', -1e7, 1e7, 0.01);
+
 const momentumPages: ModuleDef[] = [
   (() => {
     const [m, n, v, w] = [2, 1, 3, -3];
@@ -1539,34 +1652,13 @@ const momentumPages: ModuleDef[] = [
         M2,
         V1B,
         V2B,
-        q('p', 'p', 'Total momentum', 'kg·m/s', -1e7, 1e7, 0.01),
+        MOMENTUM,
         q('u', 'v′', 'Velocity together after', 'm/s', -100, 100, 0.0001),
         KE('K', 'KE', 'Kinetic energy before'),
         KE('L', 'KE′', 'Kinetic energy after'),
       ],
       ...rules(
-        rule(
-          'p = m₁v₁ + m₂v₂',
-          '{p} = {m} × {v} + {n} × {w}',
-          (v) => v.p! - v.m! * v.v! - v.n! * v.w!,
-          {
-            p: [
-              (v) => v.m! * v.v! + v.n! * v.w!,
-              '{m} × {v} + {n} × {w}',
-              'Add the carts’ momenta, signs and all.',
-            ],
-            v: [
-              (v) => div(v.p! - v.n! * v.w!, v.m!),
-              '({p} − {n} × {w})/{m}',
-              'Take cart 2’s momentum from the total, divide by m₁.',
-            ],
-            w: [
-              (v) => div(v.p! - v.m! * v.v!, v.n!),
-              '({p} − {m} × {v})/{n}',
-              'Take cart 1’s momentum from the total, divide by m₂.',
-            ],
-          },
-        ),
+        momentumRule,
         rule('v′ = p/(m₁ + m₂)', '{u} = {p}/({m} + {n})', (v) => v.u! * (v.m! + v.n!) - v.p!, {
           u: [
             (v) => div(v.p!, v.m! + v.n!),
@@ -1590,6 +1682,7 @@ const momentumPages: ModuleDef[] = [
               '½ × ({m} + {n}) × {u}²',
               'After, both masses move together at v′.',
             ],
+            u: null,
           },
         ),
       ),
@@ -1616,7 +1709,7 @@ const momentumPages: ModuleDef[] = [
       use: 'Use this for “A 1 kg cart at 4 m/s meets a 3 kg cart coming the other way at 2 m/s. They bounce apart elastically. What are their velocities after?”',
       unitSystems: ['metric'],
       assumptions: [
-        'Elastic: the carts bounce apart keeping both the total momentum and the total kinetic energy.',
+        'Elastic: the carts bounce apart keeping both the total momentum p and the total kinetic energy.',
         '+ is to the right; a cart moving left has a negative velocity.',
         'Magnets or springy bumpers make a collision close to elastic.',
       ],
@@ -1627,10 +1720,12 @@ const momentumPages: ModuleDef[] = [
         V2B,
         V1A,
         V2A,
+        { ...MOMENTUM, derived: true },
         KE('K', 'KE', 'Kinetic energy before'),
         KE('L', 'KE′', 'Kinetic energy after'),
       ],
       ...rules(
+        momentumRule,
         rule(
           'v₁′ = ((m₁ − m₂)v₁ + 2m₂v₂)/(m₁ + m₂)',
           '{a} = (({m} − {n}) × {v} + 2 × {n} × {w})/({m} + {n})',
@@ -1675,6 +1770,7 @@ const momentumPages: ModuleDef[] = [
         w,
         a,
         b,
+        p: m * v + n * w,
         K: 0.5 * m * v * v + 0.5 * n * w * w,
         L: 0.5 * m * a * a + 0.5 * n * b * b,
       },
@@ -1685,6 +1781,7 @@ const momentumPages: ModuleDef[] = [
         masses: ['m', 'n'],
         before: ['v', 'w'],
         after: ['a', 'b'],
+        momentum: 'p',
         energy: ['K', 'L'],
       },
     } satisfies ModuleDef;
@@ -1747,20 +1844,30 @@ const momentumPages: ModuleDef[] = [
 const LOAD = q('W', 'F_L', 'Load', 'N', 1, 1e6, 1);
 const EFFORT = q('F', 'F_E', 'Effort', 'N', 0, 1e6, 0.01);
 const MA = q('A', 'MA', 'Mechanical advantage', undefined, 0.01, 1000, 0.01);
+const IMA = { ...MA, symbol: 'IMA', name: 'Ideal mechanical advantage' };
 const EFFICIENCY = q('p', 'e', 'Efficiency', '%', 1, 100, 1);
 
-/** F_E = F_L ÷ (MA × e): the actual effort. */
+/** F_E = F_L ÷ (IMA × e): the actual effort. */
 const effortRule = rule(
-  'F_E = F_L/(MA × e)',
+  'F_E = F_L/(IMA × e)',
   '{F} = {W}/({A} × {p}/100)',
   (v) => (v.F! * v.A! * v.p!) / 100 - v.W!,
   {
     F: [
       (v) => div(100 * v.W!, v.A! * v.p!),
       '{W}/({A} × {p}/100)',
-      'The ideal effort is the load over MA; friction makes it bigger: divide by the efficiency too.',
+      'The ideal effort is the load over IMA; friction makes it bigger: divide by the efficiency too.',
     ],
-    W: [(v) => (v.F! * v.A! * v.p!) / 100, '{F} × {A} × {p}/100', 'Undo the division.'],
+    W: [
+      (v) => (v.F! * v.A! * v.p!) / 100,
+      '{F} × {A} × {p}/100',
+      'The load is the effort times IMA, times the efficiency.',
+    ],
+    A: [
+      (v) => div(100 * v.W!, v.F! * v.p!),
+      '100 × {W}/({F} × {p})',
+      'Load over effort is the actual advantage; divide by the efficiency for the ideal one.',
+    ],
     p: [
       (v) => div(100 * v.W!, v.F! * v.A!),
       '100 × {W}/({F} × {A})',
@@ -1897,29 +2004,29 @@ const energyPages: ModuleDef[] = [
       use: 'Use this for “Four strands hold up an 800 N crate and the pulleys are 80% efficient. What pull lifts it, and how much rope do you pull to lift it 0.5 m?”',
       unitSystems: ['metric'],
       assumptions: [
-        'Each supporting strand holds an equal share of the load: the ideal MA is the number of strands.',
-        'Less force, more distance: pull the rope MA times as far as the load rises.',
+        'Each supporting strand holds an equal share of the load: the ideal mechanical advantage IMA is the number of strands.',
+        'Less force, more distance: pull the rope IMA times as far as the load rises.',
         'Friction in the pulleys wastes some work: divide the ideal effort by the efficiency.',
       ],
       variables: [
         LOAD,
         q('n', 'n', 'Supporting strands', undefined, 1, 6, 1, { integer: true }),
-        MA,
+        IMA,
         EFFICIENCY,
         EFFORT,
         q('h', 'd_L', 'Load lifted', 'm', 0.01, 100, 0.01),
         q('d', 'd_E', 'Rope pulled', 'm', 0.01, 1000, 0.01),
       ],
       ...rules(
-        rule('MA = n', '{A} = {n}', (v) => v.A! - v.n!, {
+        rule('IMA = n', '{A} = {n}', (v) => v.A! - v.n!, {
           A: [(v) => v.n!, '{n}', 'Count the strands holding up the moving pulley.'],
-          n: [(v) => v.A!, '{A}', 'The strands are the mechanical advantage.'],
+          n: [(v) => v.A!, '{A}', 'The strands are the ideal mechanical advantage.'],
         }),
         effortRule,
-        product('d', 'A', 'h', 'd_E = MA × d_L', [
-          'Each strand shortens by the lift, so pull MA times as much rope.',
+        product('d', 'A', 'h', 'd_E = IMA × d_L', [
+          'Each strand shortens by the lift, so pull IMA times as much rope.',
           'Divide the rope pulled by the lift.',
-          'Divide the rope pulled by the mechanical advantage.',
+          'Divide the rope pulled by the ideal mechanical advantage.',
         ]),
       ),
       example: { W, n, A: n, p, F: (100 * W) / (n * p), h, d: n * h },
@@ -1940,7 +2047,7 @@ const energyPages: ModuleDef[] = [
   {
     id: 's.11.work-energy-power~ramp',
     title: 'A ramp',
-    use: 'Use this for “A 900 N crate is pushed up a 3 m ramp onto a 1 m platform. What is the mechanical advantage and the effort? What if the ramp is 75% efficient?”',
+    use: 'Use this for “A 900 N crate is pushed up a 3 m ramp onto a 1 m platform. What is the ideal mechanical advantage and the effort? What if the ramp is 75% efficient?”',
     unitSystems: ['metric'],
     assumptions: [
       'The ideal mechanical advantage of a ramp is its length over its height.',
@@ -1952,14 +2059,14 @@ const energyPages: ModuleDef[] = [
       q('L', 'L', 'Ramp length', 'm', 0.1, 1000, 0.1),
       q('h', 'h', 'Ramp height', 'm', 0.01, 1000, 0.01),
       EFFICIENCY,
-      MA,
+      IMA,
       EFFORT,
     ],
     ...rules(
-      rule('MA = L/h', '{A} = {L}/{h}', (v) => v.A! * v.h! - v.L!, {
+      rule('IMA = L/h', '{A} = {L}/{h}', (v) => v.A! * v.h! - v.L!, {
         A: [(v) => div(v.L!, v.h!), '{L}/{h}', 'The ramp’s length over its height.'],
-        L: [(v) => v.A! * v.h!, '{A} × {h}', 'The mechanical advantage times the height.'],
-        h: [(v) => div(v.L!, v.A!), '{L}/{A}', 'The length over the mechanical advantage.'],
+        L: [(v) => v.A! * v.h!, '{A} × {h}', 'The ideal mechanical advantage times the height.'],
+        h: [(v) => div(v.L!, v.A!), '{L}/{A}', 'The length over the ideal mechanical advantage.'],
       }),
       effortRule,
     ),
@@ -2067,8 +2174,8 @@ const WAVE_SPEED = q('v', 'v', 'Wave speed', 'm/s', 0.1, 10000, 0.1);
 const LAMBDA = q('l', 'λ', 'Wavelength', 'm', 0.0001, 1e5, 0.0001);
 const FREQ = q('f', 'f', 'Frequency', 'Hz', 0.1, 1e6, 0.1);
 
-/** f = v ÷ λ. */
-const freqRule = rule('f = v/λ', '{f} = {v}/{l}', (v) => v.f! * v.l! - v.v!, {
+/** v = fλ. */
+const freqRule = rule('v = fλ', '{v} = {f} × {l}', (v) => v.f! * v.l! - v.v!, {
   f: [
     (v) => div(v.v!, v.l!),
     '{v}/{l}',
@@ -2215,7 +2322,7 @@ const soundPages: ModuleDef[] = [
       assumptions: [
         'The source sends out one wavefront each period, from wherever it is then; the air carries each out at v.',
         'Ahead the fronts bunch up: a higher frequency. Behind they spread out: a lower one.',
-        'The listener stands still; the source moves slower than sound.',
+        'The listener stands still (one moving toward a still source hears f(v + v_L)/v); the source moves slower than sound.',
       ],
       variables: [
         q('s', 'vₛ', 'Speed of the source', 'm/s', 0.1, 300, 0.1),
@@ -2229,6 +2336,7 @@ const soundPages: ModuleDef[] = [
         rule('λ = v/f', '{l} = {v}/{f}', (v) => v.l! * v.f! - v.v!, {
           l: [(v) => div(v.v!, v.f!), '{v}/{f}', 'At rest the waves are v/f apart.'],
           f: [(v) => div(v.v!, v.l!), '{v}/{l}', 'The speed over the wavelength.'],
+          v: [(v) => v.l! * v.f!, '{l} × {f}', 'The speed is the wavelength times the frequency.'],
         }),
         rule(
           'f′ = fv/(v − vₛ)',
@@ -2262,6 +2370,16 @@ const soundPages: ModuleDef[] = [
               '{f} × {v}/({v} + {s})',
               'Behind the fronts are (v + vₛ)/f apart: a lower pitch.',
             ],
+            f: [
+              (v) => div(v.b! * (v.v! + v.s!), v.v!),
+              '{b} × ({v} + {s})/{v}',
+              'Undo the Doppler shift.',
+            ],
+            s: [
+              (v) => div(v.f! * v.v!, v.b!)! - v.v!,
+              '{f} × {v}/{b} − {v}',
+              'Solve the Doppler formula for vₛ.',
+            ],
           },
         ),
       ),
@@ -2288,37 +2406,41 @@ const soundPages: ModuleDef[] = [
         'Each power of ten in intensity adds 10 dB: ten times the intensity, 10 dB louder.',
       ],
       variables: [
-        q('I', 'I', 'Intensity', 'W/m²', 1e-12, 100, 1e-12, { full: true }),
+        q('I', 'I', 'Intensity', 'W/m²', 1e-12, 100, 1e-12, { scientific: true }),
         q('a', 'a', 'Number in front (1 to 10)', undefined, 1, 9.999, 0.001, {
           derived: true,
+          hidden: true,
         }),
-        q('n', 'n', 'Power of ten', undefined, -12, 2, 1, { integer: true, derived: true }),
-        q('L', 'log I', 'Log of the intensity', undefined, -12, 2, 0.001, { derived: true }),
+        q('n', 'n', 'Power of ten', undefined, -12, 2, 1, {
+          integer: true,
+          derived: true,
+          hidden: true,
+        }),
+        q('L', 'L', 'Log of the intensity', undefined, -12, 2, 0.001, { derived: true }),
         q('B', 'β', 'Sound level', 'dB', 0, 140, 0.01),
       ],
       ...rules(
-        rule('I = a × 10^n', '{I} = {a} × 10^{n}', (v) => v.I! - v.a! * 10 ** v.n!, {
-          I: [
-            (v) => v.a! * 10 ** v.n!,
-            '{a} × 10^{n}',
-            'The number in front times the power of ten.',
-          ],
-          a: [(v) => v.I! / 10 ** v.n!, '{I} ÷ 10^{n}', 'Divide by the power of ten.'],
-        }),
-        rule(
-          'n from I',
-          '{n} = exponent of the power of ten at or below {I}',
-          (v) => v.n! - Math.floor(Math.log10(v.I!) + 1e-9),
-          {
-            n: [
-              (v) => (v.I! > 0 ? Math.floor(Math.log10(v.I!) + 1e-9) : undefined),
-              'exponent of the power of ten at or below {I}',
-              'The whole part of the log: the power of ten the intensity sits at.',
-            ],
-            I: null,
-          },
+        hide(
+          rule('I = a × 10^n', '{I} = {a} × 10^{n}', (v) => v.I! - v.a! * 10 ** v.n!, {
+            a: [(v) => v.I! / 10 ** v.n!, '{I} ÷ 10^{n}', ''],
+          }),
         ),
-        rule('log I = log₁₀ I', '{L} = log₁₀({I})', (v) => v.L! - Math.log10(v.I!), {
+        hide(
+          rule(
+            'n from I',
+            '{n} = exponent of the power of ten at or below {I}',
+            (v) => v.n! - Math.floor(Math.log10(v.I!) + 1e-9),
+            {
+              n: [
+                (v) => (v.I! > 0 ? Math.floor(Math.log10(v.I!) + 1e-9) : undefined),
+                'exponent of the power of ten at or below {I}',
+                'The whole part of the log: the power of ten the intensity sits at.',
+              ],
+              I: null,
+            },
+          ),
+        ),
+        rule('L = log₁₀ I', '{L} = log₁₀({I})', (v) => v.L! - Math.log10(v.I!), {
           L: [
             (v) => (v.I! > 0 ? Math.log10(v.I!) : undefined),
             'log₁₀({I})',
@@ -2326,7 +2448,7 @@ const soundPages: ModuleDef[] = [
           ],
           I: [(v) => 10 ** v.L!, '10^{L}', 'Undo the log: 10 to that power.'],
         }),
-        rule('β = 10 × (log I + 12)', '{B} = 10 × ({L} + 12)', (v) => v.B! - 10 * (v.L! + 12), {
+        rule('β = 10 × (L + 12)', '{B} = 10 × ({L} + 12)', (v) => v.B! - 10 * (v.L! + 12), {
           B: [
             (v) => 10 * (v.L! + 12),
             '10 × ({L} + 12)',
@@ -2379,9 +2501,9 @@ const opticsPage = (
       positive
         ? q('f', 'f', 'Focal length', 'cm', 1, 500, 0.1)
         : q('f', 'f', 'Focal length (negative)', 'cm', -500, -1, 0.1),
-      q('o', 'dₒ', 'Object distance', 'cm', 0.1, 10000, 0.1),
+      q('o', 'dₒ', 'Object distance', 'cm', 1, 10000, 0.1),
       q('i', 'dᵢ', 'Image distance', 'cm', -1e6, 1e6, 0.01),
-      q('m', 'm', 'Magnification', undefined, -1e4, 1e4, 0.001),
+      q('m', 'm', 'Magnification', undefined, -100, 100, 0.001),
       q('h', 'hₒ', 'Object height', 'cm', 0.1, 1000, 0.1),
       q('k', 'hᵢ', 'Image height', 'cm', -1e6, 1e6, 0.01),
     ],
@@ -2414,6 +2536,7 @@ const opticsPage = (
           'The magnification: negative means the image is upside down.',
         ],
         i: [(v) => -v.m! * v.o!, '−{m} × {o}', 'Undo m = −dᵢ/dₒ for dᵢ.'],
+        o: [(v) => div(-v.i!, v.m!), '−{i}/{m}', 'Divide the image distance by −m.'],
       }),
       product('k', 'm', 'h', 'hᵢ = m hₒ', [
         'The image is m times as tall as the object.',
@@ -2447,8 +2570,8 @@ const opticsPages: ModuleDef[] = [
     undefined,
     [
       'A thin converging lens: f > 0, and distances are measured from the lens.',
-      'A real image forms on the far side of the lens; a virtual one (dᵢ < 0) on the object’s side.',
-      SIGNS,
+      'dᵢ > 0: a real image on the far side, where light really meets; dᵢ < 0: a virtual one on the object’s side.',
+      'm < 0 means the image is upside down.',
     ],
     'lens',
     'converging',
@@ -2472,7 +2595,7 @@ const opticsPages: ModuleDef[] = [
     'A concave mirror',
     'Use this for “A candle is 45 cm from a concave mirror with f = 15 cm. Where does its image form, and how big is it?”',
     [
-      'A concave mirror brings light together: f > 0, and a real image forms in front of it.',
+      'A concave mirror brings light together: f > 0. Beyond F the image is real, in front; inside F it is virtual, behind the mirror.',
       'Rays: parallel then through F, through F then parallel, and through C straight back.',
       SIGNS,
     ],
@@ -2510,7 +2633,7 @@ const opticsPages: ModuleDef[] = [
         q('a', 'n₁', 'Index of the first medium', undefined, 1, 2.42, 0.01),
         q('b', 'n₂', 'Index of the second medium', undefined, 1, 2.42, 0.01),
         q('t', 'θ₁', 'Angle in', '°', 0, 89, 1),
-        q('s', 'sin θ₂', 'Sine of the angle out', undefined, 0, 1, 0.0001),
+        q('s', 's', 'Sine of the angle out', undefined, 0, 1, 0.0001),
         q('r', 'θ₂', 'Angle out', '°', 0, 90, 0.01),
         q('w', 'v₂', 'Speed in the second medium', 'm/s', 1e8, 3e8, 1, {
           scientific: true,
@@ -2519,7 +2642,7 @@ const opticsPages: ModuleDef[] = [
       ],
       ...rules(
         rule(
-          'sin θ₂ = (n₁/n₂) sin θ₁',
+          's = (n₁/n₂) sin θ₁',
           '{s} = {a} ÷ {b} × sin({t})',
           (v) => v.s! * v.b! - v.a! * Math.sin(v.t! * RAD),
           {
@@ -2527,6 +2650,14 @@ const opticsPages: ModuleDef[] = [
               (v) => div(v.a! * Math.sin(v.t! * RAD), v.b!),
               '{a} ÷ {b} × sin({t})',
               'Snell’s law n₁ sin θ₁ = n₂ sin θ₂, solved for sin θ₂.',
+            ],
+            t: [
+              (v) => {
+                const r = (v.b! * v.s!) / v.a!;
+                return r > 1 ? undefined : Math.asin(r) / RAD;
+              },
+              'arcsin({b} × {s}/{a})',
+              'Snell’s law solved for sin θ₁, then the angle with that sine.',
             ],
             b: [
               (v) => div(v.a! * Math.sin(v.t! * RAD), v.s!),
@@ -2540,7 +2671,7 @@ const opticsPages: ModuleDef[] = [
             ],
           },
         ),
-        rule('θ₂ = arcsin(sin θ₂)', 'sin({r}) = {s}', (v) => Math.sin(v.r! * RAD) - v.s!, {
+        rule('θ₂ = arcsin(s)', '{r} = arcsin({s})', (v) => Math.sin(v.r! * RAD) - v.s!, {
           r: [
             (v) => (v.s! > 1 ? undefined : Math.asin(v.s!) / RAD),
             'arcsin({s})',
@@ -2588,7 +2719,7 @@ const opticsPages: ModuleDef[] = [
         q('b', 'n₂', 'Index of the second medium', undefined, 1, 2.42, 0.01),
         q('t', 'θ₁', 'Angle in', '°', 0, 89, 1),
         q('c', 'θc', 'Critical angle', '°', 0, 90, 0.01),
-        q('s', 'sin θ₂', 'What sin θ₂ would be', undefined, 0, 5, 0.0001),
+        q('s', 's', 'What sin θ₂ would be', undefined, 0, 5, 0.0001),
       ],
       ...rules(
         rule('sin θc = n₂/n₁', 'sin({c}) = {b}/{a}', (v) => Math.sin(v.c! * RAD) * v.a! - v.b!, {
@@ -2605,7 +2736,7 @@ const opticsPages: ModuleDef[] = [
           ],
         }),
         rule(
-          'sin θ₂ = n₁ sin θ₁/n₂',
+          's = n₁ sin θ₁/n₂',
           '{s} = {a} ÷ {b} × sin({t})',
           (v) => v.s! * v.b! - v.a! * Math.sin(v.t! * RAD),
           {
@@ -2613,6 +2744,14 @@ const opticsPages: ModuleDef[] = [
               (v) => div(v.a! * Math.sin(v.t! * RAD), v.b!),
               '{a} ÷ {b} × sin({t})',
               'Snell’s law solved for sin θ₂: more than 1 means no ray gets out.',
+            ],
+            t: [
+              (v) => {
+                const r = (v.b! * v.s!) / v.a!;
+                return r > 1 ? undefined : Math.asin(r) / RAD;
+              },
+              'arcsin({b} × {s}/{a})',
+              'Snell’s law solved for sin θ₁, then the angle with that sine.',
             ],
             b: [
               (v) => div(v.a! * Math.sin(v.t! * RAD), v.s!),
@@ -2654,32 +2793,40 @@ const opticsPages: ModuleDef[] = [
         q('y', 'Δy', 'Fringe spacing', 'mm', 0.0001, 10000, 0.001),
       ],
       ...rules(
-        rule(
-          'Δy = λL/d',
-          '{y} = {l} × 10⁻⁹ × {L}/({d} × 10⁻³) × 1000',
-          (v) => v.y! * v.d! - (v.l! * v.L!) / 1000,
-          {
-            y: [
-              (v) => div((v.l! * v.L!) / 1000, v.d!),
-              '{l} × {L}/{d}/1000',
-              'λL/d, with λ in nm and d in mm: divide by 1,000 for mm.',
-            ],
-            l: [
-              (v) => div(1000 * v.y! * v.d!, v.L!),
-              '1000 × {y} × {d}/{L}',
-              'Undo Δy = λL/d for λ.',
-            ],
-            d: [
-              (v) => div((v.l! * v.L!) / 1000, v.y!),
-              '{l} × {L}/{y}/1000',
-              'Undo Δy = λL/d for d.',
-            ],
-            L: [
-              (v) => div(1000 * v.y! * v.d!, v.l!),
-              '1000 × {y} × {d}/{l}',
-              'Undo Δy = λL/d for L.',
-            ],
-          },
+        withWork(
+          rule(
+            'Δy = λL/d',
+            '{y} = {l} × 10⁻⁹ × {L}/({d} × 10⁻³) × 1000',
+            (v) => v.y! * v.d! - (v.l! * v.L!) / 1000,
+            {
+              y: [
+                (v) => div((v.l! * v.L!) / 1000, v.d!),
+                '{l} × 10⁻⁹ × {L}/({d} × 10⁻³) × 1000',
+                'λL/d in meters (1 nm = 10⁻⁹ m, 1 mm = 10⁻³ m), then × 1,000 for mm.',
+              ],
+              l: [
+                (v) => div(1000 * v.y! * v.d!, v.L!),
+                '1000 × {y} × {d}/{L}',
+                'Undo Δy = λL/d for λ.',
+              ],
+              d: [
+                (v) => div((v.l! * v.L!) / 1000, v.y!),
+                '{l} × {L}/{y}/1000',
+                'Undo Δy = λL/d for d.',
+              ],
+              L: [
+                (v) => div(1000 * v.y! * v.d!, v.l!),
+                '1000 × {y} × {d}/{l}',
+                'Undo Δy = λL/d for L.',
+              ],
+            },
+          ),
+          'y',
+          (v) => [
+            `λ = ${sci(v.l!)} nm = ${sci(v.l! * 1e-9)} m`,
+            `d = ${sci(v.d!)} mm = ${sci(v.d! * 1e-3)} m`,
+            `Δy = ${sci(v.l! * 1e-9)} × ${sci(v.L!)}/(${sci(v.d! * 1e-3)}) = ${sci((v.l! * 1e-9 * v.L!) / (v.d! * 1e-3))} m`,
+          ],
         ),
       ),
       example: { l, d, L, y: (l * L) / 1000 / d },
@@ -2702,10 +2849,13 @@ const opticsPages: ModuleDef[] = [
 const C_WATER = 4180;
 const celsius = (id: string, symbol: string, name: string): VariableDef =>
   q(id, symbol, name, '°C', -50, 1000, 0.1);
+/** A temperature of liquid water: nothing on the page freezes or boils. */
+const waterCelsius = (id: string, symbol: string, name: string): VariableDef =>
+  q(id, symbol, name, '°C', 0, 100, 0.1);
 const kilograms = (id: string, symbol: string, name: string): VariableDef =>
   q(id, symbol, name, 'kg', 0.001, 1000, 0.001, { units: ['kg'] });
-const specificHeat = (id: string, symbol: string, name: string, allowed: number[]): VariableDef =>
-  q(id, symbol, name, 'J/(kg·°C)', Math.min(...allowed), Math.max(...allowed), 1, { allowed });
+const specificHeat = (id: string, symbol: string, name: string): VariableDef =>
+  q(id, symbol, name, 'J/(kg·°C)', 100, 5000, 1);
 const TH = q('H', 'Tₕ', 'Hot reservoir temperature', 'K', 1, 5000, 1);
 const TL = q('L', 'T_c', 'Cold reservoir temperature', 'K', 1, 5000, 1);
 const WORK = q('W', 'W', 'Work', 'J', 0.1, 1e9, 0.1);
@@ -2723,18 +2873,32 @@ const thermoPages: ModuleDef[] = [
         'Water’s specific heat is 4180 J/(kg·°C); aluminum 900, iron 450, copper 385.',
       ],
       variables: [
-        kilograms('w', 'm_w', 'Mass of water'),
-        celsius('a', 'T_w', 'Water’s starting temperature'),
+        { ...kilograms('w', 'm_w', 'Mass of water'), max: 10 },
+        waterCelsius('a', 'T_w', 'Water’s starting temperature'),
         kilograms('m', 'mₘ', 'Mass of the metal'),
-        specificHeat('c', 'cₘ', 'Specific heat of the metal', [385, 450, 900]),
+        specificHeat('c', 'cₘ', 'Specific heat of the metal'),
         celsius('b', 'Tₘ', 'Metal’s starting temperature'),
-        celsius('F', 'T_f', 'Final temperature'),
+        waterCelsius('F', 'T_f', 'Final temperature'),
         q('q', 'q', 'Heat the water takes in', 'J', -1e9, 1e9, 0.1),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          apart(
+            'b',
+            'F',
+            0.5,
+            'The metal must start at least 0.5 °C from the final temperature, or too little heat moves to measure.',
+          ),
+          apart(
+            'F',
+            'a',
+            0.1,
+            'The water must warm or cool by at least 0.1 °C, or too little heat moves to measure.',
+          ),
+        ],
         rule(
-          'T_f = (m_w c_w T_w + mₘcₘTₘ)/(m_w c_w + mₘcₘ)',
-          '{F} = ({w} × 4180 × {a} + {m} × {c} × {b})/({w} × 4180 + {m} × {c})',
+          'm_w c_w (T_f − T_w) = mₘcₘ(Tₘ − T_f)',
+          '{w} × 4180 × ({F} − {a}) = {m} × {c} × ({b} − {F})',
           (v) =>
             v.F! * (v.w! * C_WATER + v.m! * v.c!) - (v.w! * C_WATER * v.a! + v.m! * v.c! * v.b!),
           {
@@ -2770,6 +2934,11 @@ const thermoPages: ModuleDef[] = [
               '{F} − {q}/({w} × 4180)',
               'Take the water’s rise off the final temperature.',
             ],
+            F: [
+              (v) => v.a! + div(v.q!, v.w! * C_WATER)!,
+              '{a} + {q}/({w} × 4180)',
+              'Add the water’s rise to its starting temperature.',
+            ],
           },
         ),
         rule(
@@ -2777,6 +2946,16 @@ const thermoPages: ModuleDef[] = [
           '{q} = {m} × {c} × ({b} − {F})',
           (v) => v.q! - v.m! * v.c! * (v.b! - v.F!),
           {
+            q: [
+              (v) => v.m! * v.c! * (v.b! - v.F!),
+              '{m} × {c} × ({b} − {F})',
+              'The metal’s heat: its mass times cₘ times how much it cooled.',
+            ],
+            F: [
+              (v) => v.b! - div(v.q!, v.m! * v.c!)!,
+              '{b} − {q}/({m} × {c})',
+              'Take the metal’s drop off its starting temperature.',
+            ],
             m: [
               (v) => div(v.q!, v.c! * (v.b! - v.F!)),
               '{q}/({c} × ({b} − {F}))',
@@ -2823,7 +3002,7 @@ const thermoPages: ModuleDef[] = [
       ],
       variables: [
         kilograms('m', 'm', 'Mass'),
-        specificHeat('c', 'c', 'Specific heat', [385, 450, 900, 4180]),
+        specificHeat('c', 'c', 'Specific heat'),
         celsius('a', 'T₁', 'Starting temperature'),
         celsius('b', 'T₂', 'Final temperature'),
         q('d', 'ΔT', 'Change in temperature', '°C', -1000, 1000, 0.1),
@@ -2865,15 +3044,35 @@ const thermoPages: ModuleDef[] = [
   (() => {
     const [m, P] = [0.5, 500];
     const f = m * 334;
+    const qw = m * 418;
     const v = m * 2260;
+    /** t = 1000Q ÷ P: the heat in kJ as joules, over the power. */
+    const timeRule = (t: string, heat: string, sym: string, how: string): Rule =>
+      withWork(
+        rule(sym, `{${t}} = 1000 × {${heat}}/{P}`, (x) => x[t]! * x.P! - 1000 * x[heat]!, {
+          [t]: [(x) => div(1000 * x[heat]!, x.P!), `1000 × {${heat}}/{P}`, how],
+          [heat]: [
+            (x) => (x[t]! * x.P!) / 1000,
+            `{${t}} × {P}/1000`,
+            'The power times the time, in kJ.',
+          ],
+          P: [
+            (x) => div(1000 * x[heat]!, x[t]!),
+            `1000 × {${heat}}/{${t}}`,
+            'The heat in joules over the time.',
+          ],
+        }),
+        t,
+        (x) => [`${plain(x[heat]!)} kJ = ${plain(1000 * x[heat]!)} J`],
+      );
     return {
       id: 's.11.thermodynamics~latent-heat',
       title: 'Melting and boiling: latent heat',
-      use: 'Use this for “How much heat melts 0.5 kg of ice at 0 °C, and how long does a 500 W heater take? How long to boil it all away?”',
+      use: 'Use this for “How much heat turns 0.5 kg of ice at 0 °C into steam at 100 °C, and how long does each stage take with a 500 W heater?”',
       unitSystems: ['metric'],
       assumptions: [
         'While ice melts or water boils the temperature stays put: the heat breaks bonds, Q = mL.',
-        'Ice melts with L_f = 334 kJ/kg; water boils away with L_v = 2260 kJ/kg.',
+        'Ice melts with L_f = 334 kJ/kg; water boils away with L_v = 2260 kJ/kg; warming water takes 4.18 kJ/(kg·°C).',
         'The heater gives P joules each second, all of it to the water: t = Q ÷ P.',
       ],
       variables: [
@@ -2881,57 +3080,80 @@ const thermoPages: ModuleDef[] = [
         q('P', 'P', 'Heater power', 'W', 1, 1e6, 1),
         q('f', 'Q_f', 'Heat to melt it', 'kJ', 0, 1e7, 0.01),
         q('a', 't_f', 'Time to melt', 's', 0, 1e9, 0.01),
-        q('w', 't_w', 'Time to warm the water to 100 °C', 's', 0, 1e9, 0.01, { derived: true }),
+        q('q', 'Q_w', 'Heat to warm the water to 100 °C', 'kJ', 0, 1e7, 0.01),
+        q('w', 't_w', 'Time to warm the water', 's', 0, 1e9, 0.01),
         q('v', 'Q_v', 'Heat to boil it away', 'kJ', 0, 1e8, 0.01),
         q('b', 't_v', 'Time to boil', 's', 0, 1e9, 0.01),
+        q('Q', 'Q_total', 'Heat from ice to steam', 'kJ', 0, 1e8, 0.01),
       ],
       ...rules(
         product('f', 'm', 334, 'Q_f = mL_f', [
           'Each kilogram of ice takes 334 kJ to melt.',
           'Divide the heat by 334 kJ/kg.',
         ]),
-        rule('t_f = Q_f ÷ P', '{a} = 1000 × {f}/{P}', (v) => v.a! * v.P! - 1000 * v.f!, {
-          a: [
-            (v) => div(1000 * v.f!, v.P!),
-            '1000 × {f}/{P}',
-            'A watt is a joule each second: the heat in joules over the power.',
-          ],
-          f: [(v) => (v.a! * v.P!) / 1000, '{a} × {P}/1000', 'The power times the time, in kJ.'],
-          P: [(v) => div(1000 * v.f!, v.a!), '1000 × {f}/{a}', 'The heat in joules over the time.'],
-        }),
-        rule(
-          't_w = m × 4180 × 100 ÷ P',
-          '{w} = {m} × 418000/{P}',
-          (v) => v.w! * v.P! - v.m! * 418000,
-          {
-            w: [
-              (v) => div(v.m! * 418000, v.P!),
-              '{m} × 418000/{P}',
-              'Warming the water 100 °C takes m × 4180 × 100 J; divide by the power.',
-            ],
-          },
+        timeRule(
+          'a',
+          'f',
+          't_f = Q_f ÷ P',
+          'A watt is a joule each second: the heat in joules over the power.',
         ),
+        rule('Q_w = m × 4.18 × 100', '{q} = {m} × 4.18 × 100', (x) => x.q! - x.m! * 418, {
+          q: [
+            (x) => x.m! * 418,
+            '{m} × 4.18 × 100',
+            'Warming the melted water from 0 °C to 100 °C: mcΔT with c = 4.18 kJ/(kg·°C).',
+          ],
+          m: [(x) => x.q! / 418, '{q}/(4.18 × 100)', 'Divide the heat by cΔT.'],
+        }),
+        timeRule('w', 'q', 't_w = Q_w ÷ P', 'The heat in joules over the power.'),
         product('v', 'm', 2260, 'Q_v = mL_v', [
           'Each kilogram of water takes 2260 kJ to boil away.',
           'Divide the heat by 2260 kJ/kg.',
         ]),
-        rule('t_v = Q_v ÷ P', '{b} = 1000 × {v}/{P}', (v) => v.b! * v.P! - 1000 * v.v!, {
-          b: [
-            (v) => div(1000 * v.v!, v.P!),
-            '1000 × {v}/{P}',
-            'The heat in joules over the power: boiling takes much longer than melting.',
-          ],
-          v: [(v) => (v.b! * v.P!) / 1000, '{b} × {P}/1000', 'The power times the time, in kJ.'],
-        }),
+        timeRule(
+          'b',
+          'v',
+          't_v = Q_v ÷ P',
+          'The heat in joules over the power: boiling takes much longer than melting.',
+        ),
+        rule(
+          'Q_total = Q_f + Q_w + Q_v',
+          '{Q} = {f} + {q} + {v}',
+          (x) => x.Q! - x.f! - x.q! - x.v!,
+          {
+            Q: [
+              (x) => x.f! + x.q! + x.v!,
+              '{f} + {q} + {v}',
+              'Add the heat for each stage: melt, warm, boil.',
+            ],
+            f: [
+              (x) => x.Q! - x.q! - x.v!,
+              '{Q} − {q} − {v}',
+              'Take the other two stages from the total.',
+            ],
+            q: [
+              (x) => x.Q! - x.f! - x.v!,
+              '{Q} − {f} − {v}',
+              'Take the other two stages from the total.',
+            ],
+            v: [
+              (x) => x.Q! - x.f! - x.q!,
+              '{Q} − {f} − {q}',
+              'Take the other two stages from the total.',
+            ],
+          },
+        ),
       ),
       example: {
         m,
         P,
         f,
         a: (1000 * f) / P,
-        w: (m * 418000) / P,
+        q: qw,
+        w: (1000 * qw) / P,
         v,
         b: (1000 * v) / P,
+        Q: f + qw + v,
       },
       startWith: ['m', 'P'],
       representation: {
@@ -2943,7 +3165,7 @@ const thermoPages: ModuleDef[] = [
         units: { time: 's', temp: '°C' },
         formula: 'H2O',
       },
-      pictureLabels: ['f', 'v'],
+      pictureLabels: ['m', 'P', 'f', 'q', 'v', 'Q'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -2966,7 +3188,7 @@ const thermoPages: ModuleDef[] = [
         q('e', 'e', 'Efficiency', '%', 0, 100, 0.1),
         TH,
         TL,
-        q('c', 'e_C', 'Carnot limit', '%', 0, 100, 0.1),
+        q('c', 'e_C', 'Carnot limit', '%', 0.1, 100, 0.1),
         q('r', 'r', 'Share of the Carnot limit', '%', 0, 100, 0.1),
       ],
       ...rules(
@@ -3050,10 +3272,10 @@ const thermoPages: ModuleDef[] = [
         q('C', 'Q_c', 'Heat taken from inside', 'J', 0.1, 1e9, 0.1),
         WORK,
         q('Q', 'Qₕ', 'Heat given to the room', 'J', 0.1, 1e9, 0.1),
-        q('k', 'COP', 'Coefficient of performance', undefined, 0, 1000, 0.01),
+        q('k', 'COP', 'Coefficient of performance', undefined, 0.01, 100, 0.01),
         TH,
         TL,
-        q('m', 'COP_C', 'Carnot COP', undefined, 0, 10000, 0.01),
+        q('m', 'COP_C', 'Carnot COP', undefined, 0.01, 100, 0.01),
         q('r', 'r', 'Share of the Carnot COP', '%', 0, 100, 0.1),
       ],
       ...rules(
@@ -3062,11 +3284,11 @@ const thermoPages: ModuleDef[] = [
           C: [(v) => v.Q! - v.W!, '{Q} − {W}', 'Take the work from the heat given out.'],
           W: [(v) => v.Q! - v.C!, '{Q} − {C}', 'The extra heat given out is the work put in.'],
         }),
-        product('C', 'k', 'W', 'COP = Q_c/W', [
-          'The heat moved is the COP times the work.',
-          'Divide the heat moved by the work.',
-          'Divide the heat moved by the COP.',
-        ]),
+        rule('COP = Q_c/W', '{k} = {C}/{W}', (v) => v.C! - v.k! * v.W!, {
+          k: [(v) => div(v.C!, v.W!), '{C}/{W}', 'Divide the heat moved by the work.'],
+          C: [(v) => v.k! * v.W!, '{k} × {W}', 'The heat moved is the COP times the work.'],
+          W: [(v) => div(v.C!, v.k!), '{C}/{k}', 'Divide the heat moved by the COP.'],
+        }),
         rule(
           'COP_C = T_c/(Tₕ − T_c)',
           '{m} = {L}/({H} − {L})',
@@ -3078,6 +3300,11 @@ const thermoPages: ModuleDef[] = [
               'The Carnot COP: the cold temperature over the difference, in kelvins.',
             ],
             H: [(v) => v.L! + div(v.L!, v.m!)!, '{L} + {L}/{m}', 'Undo the Carnot COP for Tₕ.'],
+            L: [
+              (v) => (v.m! * v.H!) / (1 + v.m!),
+              '{m} × {H}/(1 + {m})',
+              'Solve COP_C × (Tₕ − T_c) = T_c for T_c.',
+            ],
           },
         ),
         rule('r = COP/COP_C', '{r} = 100 × {k}/{m}', (v) => v.r! * v.m! - 100 * v.k!, {
@@ -3128,38 +3355,45 @@ const electroPages: ModuleDef[] = [
         charge('a', 'q₁', 'First charge'),
         charge('b', 'q₂', 'Second charge'),
         q('r', 'r', 'Distance apart', 'm', 0.001, 100, 0.001),
-        q('F', 'F', 'Force (+ repel, − attract)', 'N', -1e10, 1e10, 0.0001),
+        q('F', 'F', 'Force', 'N', -1e10, 1e10, 0.0001),
       ],
       ...rules(
-        rule(
-          'F = kq₁q₂/r²',
-          '{F} = 8.99 × 10⁹ × {a} × {b} × 10⁻¹²/({r}²)',
-          (v) => v.F! * v.r! * v.r! - 8.99e-3 * v.a! * v.b!,
-          {
-            F: [
-              (v) => div(8.99e-3 * v.a! * v.b!, v.r! * v.r!),
-              '8.99 × 10⁹ × {a} × {b} × 10⁻¹²/({r}²)',
-              'Coulomb’s law: k times the two charges (each μC is 10⁻⁶ C), over the distance squared.',
-            ],
-            r: [
-              (v) => {
-                const x = div(8.99e-3 * v.a! * v.b!, v.F!);
-                return x === undefined || x < 0 ? undefined : Math.sqrt(x);
-              },
-              '√(8.99 × 10⁹ × {a} × {b} × 10⁻¹²/{F})',
-              'Solve Coulomb’s law for r², then take the square root.',
-            ],
-            a: [
-              (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.b!),
-              '{F} × {r}²/(8.99 × 10⁻³ × {b})',
-              'Solve Coulomb’s law for q₁.',
-            ],
-            b: [
-              (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.a!),
-              '{F} × {r}²/(8.99 × 10⁻³ × {a})',
-              'Solve Coulomb’s law for q₂.',
-            ],
-          },
+        withWork(
+          rule(
+            'F = kq₁q₂/r²',
+            '{F} = 8.99 × 10⁹ × {a} × 10⁻⁶ × {b} × 10⁻⁶/({r}²)',
+            (v) => v.F! * v.r! * v.r! - 8.99e-3 * v.a! * v.b!,
+            {
+              F: [
+                (v) => div(8.99e-3 * v.a! * v.b!, v.r! * v.r!),
+                '8.99 × 10⁹ × {a} × 10⁻⁶ × {b} × 10⁻⁶/({r}²)',
+                'Coulomb’s law: k = 8.99 × 10⁹ N·m²/C² times the two charges in coulombs (1 μC = 10⁻⁶ C), over r².',
+              ],
+              r: [
+                (v) => {
+                  const x = div(8.99e-3 * v.a! * v.b!, v.F!);
+                  return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+                },
+                '√(8.99 × 10⁹ × {a} × 10⁻⁶ × {b} × 10⁻⁶/{F})',
+                'Solve Coulomb’s law for r², then take the square root.',
+              ],
+              a: [
+                (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.b!),
+                '{F} × {r}²/(8.99 × 10⁻³ × {b})',
+                'Solve Coulomb’s law for q₁.',
+              ],
+              b: [
+                (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.a!),
+                '{F} × {r}²/(8.99 × 10⁻³ × {a})',
+                'Solve Coulomb’s law for q₂.',
+              ],
+            },
+          ),
+          'F',
+          (v) => [
+            `q₁ × q₂ = (${sci(v.a! * 1e-6)}) × (${sci(v.b! * 1e-6)}) = ${sci(v.a! * v.b! * 1e-12)} C²`,
+            `r² = (${sci(v.r!)})² = ${sci(v.r! * v.r!)} m²`,
+          ],
         ),
       ),
       example: { a, b, r, F: (8.99e-3 * a * b) / (r * r) },
@@ -3183,35 +3417,42 @@ const electroPages: ModuleDef[] = [
       variables: [
         charge('a', 'q', 'Charge'),
         q('r', 'r', 'Distance', 'm', 0.001, 100, 0.001),
-        q('E', 'E', 'Field (− toward the charge)', 'N/C', -1e13, 1e13, 1, { scientific: true }),
+        q('E', 'E', 'Field', 'N/C', -1e13, 1e13, 1, { scientific: true }),
         charge('t', 'q₀', 'Test charge'),
         q('F', 'F', 'Force on the test charge', 'N', -1e10, 1e10, 0.0001),
       ],
       ...rules(
-        rule(
-          'E = kq/r²',
-          '{E} = 8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
-          (v) => v.E! * v.r! * v.r! - 8.99e3 * v.a!,
-          {
-            E: [
-              (v) => div(8.99e3 * v.a!, v.r! * v.r!),
-              '8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
-              'k times the charge in coulombs, over r².',
-            ],
-            a: [
-              (v) => (v.E! * v.r! * v.r!) / 8.99e3,
-              '{E} × {r}²/(8.99 × 10³)',
-              'Solve for the charge.',
-            ],
-            r: [
-              (v) => {
-                const x = div(8.99e3 * v.a!, v.E!);
-                return x === undefined || x < 0 ? undefined : Math.sqrt(x);
-              },
-              '√(8.99 × 10⁹ × {a} × 10⁻⁶/{E})',
-              'Solve for r², then take the square root.',
-            ],
-          },
+        withWork(
+          rule(
+            'E = kq/r²',
+            '{E} = 8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
+            (v) => v.E! * v.r! * v.r! - 8.99e3 * v.a!,
+            {
+              E: [
+                (v) => div(8.99e3 * v.a!, v.r! * v.r!),
+                '8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
+                'k = 8.99 × 10⁹ N·m²/C² times the charge in coulombs, over r².',
+              ],
+              a: [
+                (v) => (v.E! * v.r! * v.r!) / 8.99e3,
+                '{E} × {r}²/(8.99 × 10³)',
+                'Solve for the charge.',
+              ],
+              r: [
+                (v) => {
+                  const x = div(8.99e3 * v.a!, v.E!);
+                  return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+                },
+                '√(8.99 × 10⁹ × {a} × 10⁻⁶/{E})',
+                'Solve for r², then take the square root.',
+              ],
+            },
+          ),
+          'E',
+          (v) => [
+            `q = ${sci(v.a!)} μC = ${sci(v.a! * 1e-6)} C`,
+            `r² = (${sci(v.r!)})² = ${sci(v.r! * v.r!)} m²`,
+          ],
         ),
         rule('F = q₀E', '{F} = {t} × 10⁻⁶ × {E}', (v) => v.F! - v.t! * 1e-6 * v.E!, {
           F: [
@@ -3220,6 +3461,11 @@ const electroPages: ModuleDef[] = [
             'The field is newtons per coulomb: times the test charge in coulombs.',
           ],
           t: [(v) => div(v.F!, 1e-6 * v.E!), '{F}/({E} × 10⁻⁶)', 'Divide the force by the field.'],
+          E: [
+            (v) => div(v.F!, v.t! * 1e-6),
+            '{F}/({t} × 10⁻⁶)',
+            'The field is the force on each coulomb of test charge.',
+          ],
         }),
       ),
       example: { a, r, E, t, F: t * 1e-6 * E },
@@ -3281,6 +3527,88 @@ const inductionPages: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
+    const [N, b, c, A, t] = [200, 0.1, 0.5, 0.02, 0.1];
+    const f = (c - b) * A;
+    return {
+      id: 's.11.electromagnetism~flux-change',
+      title: 'Flux from a changing field',
+      use: 'Use this for “A 200-turn coil of area 0.02 m² sits in a field that grows from 0.1 T to 0.5 T in 0.1 s. What emf is induced?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The field is square to the coil’s face, so the flux is Φ = BA.',
+        'The area stays the same, so the flux changes by ΔΦ = (B₂ − B₁)A.',
+        'The field grows here; a shrinking one gives the same size emf the other way (Lenz’s law).',
+      ],
+      variables: [
+        q('N', 'N', 'Turns', undefined, 1, 10000, 1, { integer: true }),
+        q('b', 'B₁', 'Field at the start', 'T', 0, 10, 0.0001),
+        q('c', 'B₂', 'Field at the end', 'T', 0.001, 10, 0.0001),
+        q('A', 'A', 'Area of the coil', 'm²', 0.0001, 10, 0.0001),
+        q('f', 'ΔΦ', 'Change in flux', 'Wb', 0, 100, 0.0001, { derived: true }),
+        q('t', 'Δt', 'Time', 's', 0.001, 10, 0.001),
+        q('e', 'emf', 'Induced emf', 'V', 0, 1e10, 0.0001, { derived: true }),
+      ],
+      ...withChecks(
+        [
+          apart(
+            'c',
+            'b',
+            0.001,
+            'The field must change by at least 0.001 T: with no change in flux there is no emf.',
+          ),
+        ],
+        rule('ΔΦ = (B₂ − B₁)A', '{f} = ({c} − {b}) × {A}', (v) => v.f! - (v.c! - v.b!) * v.A!, {
+          f: [
+            (v) => (v.c! - v.b!) * v.A!,
+            '({c} − {b}) × {A}',
+            'The change in the field times the area it passes through.',
+          ],
+          A: [
+            (v) => div(v.f!, v.c! - v.b!),
+            '{f}/({c} − {b})',
+            'Divide the change in flux by the change in the field.',
+          ],
+          c: [
+            (v) => div(v.f!, v.A!)! + v.b!,
+            '{b} + {f}/{A}',
+            'Add the change in the field to B₁.',
+          ],
+          b: [
+            (v) => v.c! - div(v.f!, v.A!)!,
+            '{c} − {f}/{A}',
+            'Take the change in the field from B₂.',
+          ],
+        }),
+        rule('emf = NΔΦ/Δt', '{e} = {N} × {f}/{t}', (v) => v.e! * v.t! - v.N! * v.f!, {
+          e: [
+            (v) => div(v.N! * v.f!, v.t!),
+            '{N} × {f}/{t}',
+            'Each turn gets ΔΦ/Δt; N turns add up.',
+          ],
+          f: [(v) => div(v.e! * v.t!, v.N!), '{e} × {t}/{N}', 'Solve Faraday’s law for ΔΦ.'],
+          t: [(v) => div(v.N! * v.f!, v.e!), '{N} × {f}/{e}', 'Solve Faraday’s law for Δt.'],
+          N: [
+            (v) => div(v.e! * v.t!, v.f!),
+            '{e} × {t}/{f}',
+            'Solve Faraday’s law for the number of turns.',
+          ],
+        }),
+      ),
+      example: { N, b, c, A, f, t, e: (N * f) / t },
+      startWith: ['N', 'b', 'c', 'A', 't'],
+      representation: {
+        kind: 'induction',
+        mode: 'coil',
+        turns: 'N',
+        flux: 'f',
+        time: 't',
+        emf: 'e',
+        direction: 'in',
+      },
+      pictureLabels: ['b', 'c', 'A'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
     const [B, I, L, t] = [0.4, 5, 0.25, 90];
     return {
       id: 's.11.electromagnetism~force',
@@ -3324,6 +3652,14 @@ const inductionPages: ModuleDef[] = [
               (v) => div(v.F!, v.B! * v.I! * Math.sin(v.q! * RAD)),
               '{F} ÷ (sin({q}) × {B} × {I})',
               'Divide the force by sin θ, the field and the current.',
+            ],
+            q: [
+              (v) => {
+                const r = div(v.F!, v.B! * v.I! * v.L!);
+                return r === undefined || r > 1 ? undefined : Math.asin(r) / RAD;
+              },
+              'arcsin({F}/({B} × {I} × {L}))',
+              'Divide F by BIL, then take arcsin (θ or 180° − θ).',
             ],
           },
         ),
@@ -3416,33 +3752,29 @@ const modernPages: ModuleDef[] = [
       variables: [
         q('l', 'λ', 'Wavelength', 'nm', 0.01, 1e6, 0.01),
         q('f', 'f', 'Frequency', 'Hz', 3e11, 3e19, 1, { scientific: true }),
-        q('E', 'E_J', 'Photon energy in joules', 'J', 6.626e-34 * 3e11, 6.626e-34 * 3e19, 1e-25, {
+        q('E', 'E_J', 'Photon energy in joules', 'J', 1e-22, 2e-14, 1e-25, {
           scientific: true,
           derived: true,
         }),
-        q(
-          'e',
-          'E',
-          'Photon energy',
-          'eV',
-          (6.626e-34 * 3e11) / 1.602e-19,
-          (6.626e-34 * 3e19) / 1.602e-19,
-          0.0001,
-        ),
+        q('e', 'E', 'Photon energy', 'eV', 0.001, 130000, 0.0001),
       ],
       ...rules(
-        rule('f = c/λ', '{f} = 3 × 10⁸/({l} × 10⁻⁹)', (v) => v.l! - 3e17 / v.f!, {
-          f: [
-            (v) => div(3e8, v.l! * 1e-9),
-            '3 × 10⁸/({l} × 10⁻⁹)',
-            'c = fλ: the speed of light over the wavelength in meters (1 nm = 10⁻⁹ m).',
-          ],
-          l: [
-            (v) => div(3e8, v.f! * 1e-9),
-            '3 × 10⁸/({f} × 10⁻⁹)',
-            'The speed of light over the frequency, in nm.',
-          ],
-        }),
+        withWork(
+          rule('f = c/λ', '{f} = 3 × 10⁸/({l} × 10⁻⁹)', (v) => v.l! - 3e17 / v.f!, {
+            f: [
+              (v) => div(3e8, v.l! * 1e-9),
+              '3 × 10⁸/({l} × 10⁻⁹)',
+              'c = fλ: the speed of light over the wavelength in meters (1 nm = 10⁻⁹ m).',
+            ],
+            l: [
+              (v) => div(3e8, v.f! * 1e-9),
+              '3 × 10⁸/({f} × 10⁻⁹)',
+              'The speed of light over the frequency, in nm.',
+            ],
+          }),
+          'f',
+          (v) => [`λ = ${sci(v.l!)} nm = ${sci(v.l! * 1e-9)} m`],
+        ),
         // f and eV first in these two: the solver checks a relation by its first rearrangement,
         // and joules this small would pass any check.
         rule('E_J = hf', '{E} = 6.626 × 10⁻³⁴ × {f}', (v) => v.f! - v.E! / 6.626e-34, {
@@ -3499,15 +3831,29 @@ const modernPages: ModuleDef[] = [
         q('E', 'E', 'Photon energy', 'eV', 0.01, 13.6, 0.0001),
         q('w', 'λ', 'Wavelength', 'nm', 50, 20000, 0.1),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          {
+            id: 'n_u > n_l',
+            constraint: true,
+            display: '{u} is more than {l}',
+            vars: ['u', 'l'],
+            residual: (v) => (v.u! > v.l! ? 0 : 1),
+            solve: {},
+            message: (v) =>
+              v.u! > v.l!
+                ? undefined
+                : 'The electron drops from a higher level: n_u must be more than n_l.',
+          },
+        ],
         rule(
           'E = 13.6(1/n_l² − 1/n_u²)',
-          '{E} = 13.6 × (1/{l}^2 − 1/{u}^2)',
+          '{E} = 13.6 × (1/{l}² − 1/{u}²)',
           (v) => v.E! - hydrogenEnergy(v.u!, v.l!),
           {
             E: [
               (v) => hydrogenEnergy(v.u!, v.l!),
-              '13.6 × (1/{l}^2 − 1/{u}^2)',
+              '13.6 × (1/{l}² − 1/{u}²)',
               'The photon carries the energy between the two levels.',
             ],
             u: [
@@ -3515,12 +3861,12 @@ const modernPages: ModuleDef[] = [
                 const k = 1 / v.l! ** 2 - v.E! / 13.6;
                 return k > 0 ? 1 / Math.sqrt(k) : undefined;
               },
-              '1/√(1/{l}^2 − {E}/13.6)',
+              '1/√(1/{l}² − {E}/13.6)',
               'Solve the level formula for the upper level.',
             ],
             l: [
               (v) => 1 / Math.sqrt(v.E! / 13.6 + 1 / v.u! ** 2),
-              '1/√({E}/13.6 + 1/{u}^2)',
+              '1/√({E}/13.6 + 1/{u}²)',
               'Solve the level formula for the lower level.',
             ],
           },
@@ -3585,10 +3931,10 @@ const circuitPages: ModuleDef[] = [
         V: [(v) => v.I! * v.R!, '{I} × {R}', 'The voltage is the current times the resistance.'],
         I: [
           (v) => div(v.V!, v.R!),
-          '{V} ÷ {R}',
+          '{V}/{R}',
           'Divide the voltage by the resistance: more resistance, less current.',
         ],
-        R: [(v) => div(v.V!, v.I!), '{V} ÷ {I}', 'Divide the voltage by the current.'],
+        R: [(v) => div(v.V!, v.I!), '{V}/{I}', 'Divide the voltage by the current.'],
       }),
     ),
     example: { V: 9, I: 0.45, R: 20 },
@@ -3676,7 +4022,7 @@ const circuitPages: ModuleDef[] = [
         amps('i', 'I₁', 'Current in R₁'),
         amps('j', 'I₂', 'Current in R₂'),
         amps('k', 'I₃', 'Current in R₃'),
-        amps('I', 'I', 'Total current', true),
+        amps('I', 'I', 'Total current'),
         resistor('R', 'R', 'Equivalent resistance'),
       ],
       ...rules(
@@ -3689,17 +4035,39 @@ const circuitPages: ModuleDef[] = [
             '{i} + {j} + {k}',
             'The branch currents join again: add them.',
           ],
+          i: [
+            (v) => v.I! - v.j! - v.k!,
+            '{I} − {j} − {k}',
+            'Take the other branches from the total.',
+          ],
+          j: [
+            (v) => v.I! - v.i! - v.k!,
+            '{I} − {i} − {k}',
+            'Take the other branches from the total.',
+          ],
+          k: [
+            (v) => v.I! - v.i! - v.j!,
+            '{I} − {i} − {j}',
+            'Take the other branches from the total.',
+          ],
         }),
-        rule(
-          '1/R = 1/R₁ + 1/R₂ + 1/R₃',
-          '1/{R} = 1/{a} + 1/{b} + 1/{c}',
-          (v) => 1 / v.R! - 1 / v.a! - 1 / v.b! - 1 / v.c!,
-          {
-            R: [
-              (v) => div(1, 1 / v.a! + 1 / v.b! + 1 / v.c!),
-              '1/(1/{a} + 1/{b} + 1/{c})',
-              'Add the reciprocals of the branch resistances, then flip the sum.',
-            ],
+        withWork(
+          rule(
+            '1/R = 1/R₁ + 1/R₂ + 1/R₃',
+            '1/{R} = 1/{a} + 1/{b} + 1/{c}',
+            (v) => 1 / v.R! - 1 / v.a! - 1 / v.b! - 1 / v.c!,
+            {
+              R: [
+                (v) => div(1, 1 / v.a! + 1 / v.b! + 1 / v.c!),
+                '1/(1/{a} + 1/{b} + 1/{c})',
+                'Add the reciprocals of the branch resistances, then flip the sum.',
+              ],
+            },
+          ),
+          'R',
+          (v) => {
+            const [x, y, z] = [1 / v.a!, 1 / v.b!, 1 / v.c!].map((n) => Number(n.toPrecision(4)));
+            return [`1/R = ${x} + ${y} + ${z} = ${Number((x! + y! + z!).toPrecision(4))}`];
           },
         ),
       ),
@@ -3824,9 +4192,9 @@ const circuitPages: ModuleDef[] = [
       ],
       variables: [
         VOLTS,
-        amps('I', 'I', 'Current'),
+        { ...amps('I', 'I', 'Current'), min: 0.001 },
         resistor('R', 'R', 'Resistance'),
-        q('P', 'P', 'Power', 'W', 0, 1e7, 0.01),
+        q('P', 'P', 'Power', 'W', 0.001, 1e7, 0.01),
         q('t', 't', 'Time', 's', 0.01, 1e7, 0.01),
         q('E', 'E', 'Energy used', 'J', 0, 1e12, 0.01),
       ],

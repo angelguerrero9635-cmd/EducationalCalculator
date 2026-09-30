@@ -3,7 +3,7 @@
 Built from `.review/plans/s.11/plan.md` in its priority order: the calculators with drawn demos
 first, then the layout pages. Every page passes `MODULE_IDS=s.11. pnpm test src/data/modules`.
 
-## Built: 64 pages (56 calculators, 8 layouts)
+## Built: 65 pages (57 calculators, 8 layouts)
 
 | Skill                       | Pages | Which                                                                                    |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------- |
@@ -18,25 +18,26 @@ first, then the layout pages. Every page passes `MODULE_IDS=s.11. pnpm test src/
 | `s.11.optics`               | 8     | main, diverging, concave, convex, refraction, critical, double-slit; sort wave-behaviors |
 | `s.11.electrostatics`       | 3     | main, field; sort charging                                                               |
 | `s.11.circuits`             | 5     | main, series, parallel, mixed, power                                                     |
-| `s.11.electromagnetism`     | 5     | main, force, transformer; sort motor-generator; explore magnet-poles                     |
+| `s.11.electromagnetism`     | 6     | main, flux-change, force, transformer; sort motor-generator; explore magnet-poles        |
 | `s.11.modern-physics`       | 2     | main, hydrogen-lines                                                                     |
 
 No new step-text phrases were needed: `harness/phrasesS11.ts` stays empty.
 
-## Waiting: 10 pages
+## Waiting: 11 pages
 
-| Page                                 | Need | What it waits on                                                             |
-| ------------------------------------ | ---- | ---------------------------------------------------------------------------- |
-| `s.11.kinematics-1d~motion-diagrams` | 5    | Card figure `strobe` (dots every second with a gap pattern and direction)    |
-| `s.11.circular-gravitation~orbit`    | 3    | `circularMotion` mode `satellite` (v = √(GM/r), T = 2πr/v)                   |
-| `s.11.momentum~one-after`            | 1    | `collision` type `general`: both after-velocities given, each cart's KE      |
-| `s.11.momentum~impulse`              | 2    | Impulse picture: force–time rectangle with area Δp, a slower stop beside     |
-| `s.11.work-energy-power~work`        | 6    | `freeBody` displacement bracket and the dashed F cos θ component             |
-| `s.11.work-energy-power~power`       | 7    | Power picture: a mass lifted h in time t, a timer and a J/s bar              |
-| `s.11.thermodynamics~first-law`      | 8    | `gasPiston` energy option: Q in, W out as bands, a ΔU bar                    |
-| `s.11.electrostatics~plates`         | 10   | `charges` mode `plates`: two plates, a uniform field, a charge and its force |
-| `s.11.modern-physics~photoelectric`  | 11   | Photoelectric picture: light on a plate, electrons out with K_max            |
-| `s.11.modern-physics~relativity`     | 12   | Relativity light clock (a moving clock's diagonal path, γ)                   |
+| Page                                  | Need | What it waits on                                                                                         |
+| ------------------------------------- | ---- | -------------------------------------------------------------------------------------------------------- |
+| `s.11.kinematics-1d~motion-diagrams`  | 5    | Card figure `strobe` (dots every second with a gap pattern and direction)                                |
+| `s.11.circular-gravitation~orbit`     | 3    | `circularMotion` mode `satellite` (v = √(GM/r), T = 2πr/v)                                               |
+| `s.11.momentum~one-after`             | 1    | `collision` type `general`: both after-velocities given, each cart's KE                                  |
+| `s.11.momentum~impulse`               | 2    | Impulse picture: force–time rectangle with area Δp, a slower stop beside                                 |
+| `s.11.work-energy-power~work`         | 6    | `freeBody` displacement bracket and the dashed F cos θ component                                         |
+| `s.11.work-energy-power~power`        | 7    | Power picture: a mass lifted h in time t, a timer and a J/s bar                                          |
+| `s.11.thermodynamics~first-law`       | 8    | `gasPiston` energy option: Q in, W out as bands, a ΔU bar                                                |
+| `s.11.electrostatics~plates`          | 10   | `charges` mode `plates`: two plates, a uniform field, a charge and its force                             |
+| `s.11.modern-physics~photoelectric`   | 11   | Photoelectric picture: light on a plate, electrons out with K_max                                        |
+| `s.11.modern-physics~relativity`      | 12   | Relativity light clock (a moving clock's diagonal path, γ)                                               |
+| `s.11.electromagnetism~moving-charge` | —    | `induction` force mode with a moving charge in place of the wire (F = qvB sin θ; from the lesson review) |
 
 Built although the plan marked them ⏳: `s.11.thermodynamics` (need 14; the calorimeter picture
 is unit-agnostic, so the page works in kg with `units: ['kg']`; only the g ↔ kg menu waits) and
@@ -82,6 +83,38 @@ files and are not done.
 - Kinematics times start at 0.01 s: at t = 0 the displacement is left undetermined.
 - `~pogo-energy`: the still instant at the top has a span of 0 s; one bounce is 1.2 s.
 
+## Lesson review fixes (`.review/hs-s.11/lesson-report.md`)
+
+All 19 errors and 31 improvements are fixed in these files, except as listed here.
+
+- **Changed differently.**
+  - `~gravitation` and the Coulomb pages keep the constant as a number in the rule line: the
+    rule line is also the check line, and a letter G or k there can't be evaluated. The how names
+    G (k), and work lines give m₁m₂ (q₁q₂ in C) and r² before the answer.
+  - `~double-slit` keeps nm and mm with the conversion in the rule (no nm unit in the registry);
+    the step is written in meters with work lines "633 nm = 6.33 × 10⁻⁷ m" and Δy in m.
+  - `~doppler` moving listener: noted in the assumption (f(v + v_L)/v), no listener value.
+  - `electromagnetism` flux from B and A: a new page `~flux-change` (N, B₁, B₂, A, Δt; ΔΦ and
+    emf worked out), not three more values on the main page, whose ranges are balanced for four.
+  - `thermodynamics` main: the balance m_w c_w(T_f − T_w) = mₘcₘ(Tₘ − T_f) is now the rule line,
+    so it comes before the rearranged T_f line.
+  - `~parallel` sum of reciprocals: a work line "1/R = 0.025 + 0.01667 + 0.008333 = 0.05".
+  - `~force-sum` direction: the rule is tan φ = F_y/Fₓ (the check reads right for φ > 90°); the
+    step writes 180 + arctan(F_y/Fₓ) when Fₓ < 0.
+- **Near-singular differences** (harness errors): calorimeter checks |Tₘ − T_f| ≥ 0.5 °C and
+  |T_f − T_w| ≥ 0.1 °C with messages; lens and mirror |m| ≤ 100 (and dₒ ≥ 1 cm).
+- **Symbols that were expressions**: `log I` → L (`~sound-level`), `sin θ₂` → s (`~refraction`,
+  `~critical`).
+- **Also renamed**: IMA on `~pulley` and `~ramp`; names without a bracketed gloss (Velocity,
+  Period, Force, Field).
+- **Picture-only values hidden**: `~free-fall` a, `~cliff` θ, `~position-graph` v,
+  `~sound-level` a and n.
+- **Not done here (engine or harness)**: E8 (Carnot capitals), E10 (1/(1/15) brackets), the
+  `~diverging`/`~convex` near-cancelling 1/(1/1 + 1/(−0.994)) at dₒ = 1 cm (deep run, ×1 each),
+  `~refraction` θ₂ = 90 drawn as 89.9999 (harness tolerance), `circular-gravitation` F = 0.01
+  drawn as 0.0063 (deep run ×1; no lesson cause found), the kinematics quadratic walkthrough,
+  "1 × 10⁰".
+
 ## Shared needs found while building
 
 - **Engine, `affineOf` (`src/engine/solve.ts`).** A product whose residual is dwarfed by a
@@ -101,3 +134,10 @@ files and are not done.
   spec's docs say g and J/(g·°C); it works in any consistent units (need 14 is only the menu).
 - **Gallery helper.** The group HK `rule` helper has no way to say "never worked out from this
   relation" (the Grade 9–12 `R` helpers' `null`); this grade's copy adds it.
+- **Engine, from the lesson review.** A named constant in a rule line (G, k, h) that the check
+  line substitutes (`~gravitation`, `electrostatics`, `~field`, `modern-physics`); an nm unit and
+  a page default shown unit, so λ and d can be SI in the relation (`~double-slit`,
+  `modern-physics`); more digits carried into a near-cancelling sum (`~diverging`, `~convex`);
+  a quadratic-formula step for t from Δx, v₀ and a (`s.11.kinematics-1d`).
+- **Picture.** `induction` force mode with a moving charge (q, v) in place of the wire, for
+  `s.11.electromagnetism~moving-charge`.
