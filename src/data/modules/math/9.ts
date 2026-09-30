@@ -4588,6 +4588,7 @@ const TWO_WAY_TABLES: ModuleDef[] = [
 
 // ── Piecewise, step and absolute value functions ──
 
+/** The four steps drawn: the last one holds the hours charged (hours 1–4 up to 4 hours). */
 const STEP_HOURS = [1, 2, 3, 4];
 
 const PIECEWISE_FUNCTIONS: ModuleDef[] = [
@@ -4682,7 +4683,7 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
       num('C', 'C', 'Cost', 0, 100000, { unit: '$' }),
       num('B', 'B', 'Where the rising piece meets the y-axis', -100000, 1000, {
         unit: '$',
-        derived: true,
+        ...pictureOnly,
       }),
     ],
     rules: [
@@ -4717,19 +4718,20 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
               : undefined,
         },
       ),
-      derive(
-        'B = F − rL',
-        'B',
-        ['F', 'r', 'L'],
-        '{B} = {F} − {r} × {L}',
-        (v) => v.F! - v.r! * v.L!,
-        '{F} − {r} × {L}',
-        'For the graph: the rising piece written as y = rx + B.',
+      figure(
+        derive(
+          'B = F − rL',
+          'B',
+          ['F', 'r', 'L'],
+          '{B} = {F} − {r} × {L}',
+          (v) => v.F! - v.r! * v.L!,
+          '{F} − {r} × {L}',
+          'For the graph: the rising piece written as y = rx + B.',
+        ),
       ),
     ],
     example: { F: 30, L: 5, r: 8, u: 8, C: 54, B: -10 },
     startWith: ['u', 'F', 'L', 'r'],
-    pictureLabels: ['B'],
     representation: {
       kind: 'functionGraph',
       family: 'piecewise',
@@ -4755,14 +4757,13 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
     ],
     variables: [
       num('R', 'R', 'Rate per started hour', 0.01, 100, { unit: '$', step: 0.01 }),
-      num('h', 'h', 'Hours parked', 0.1, 4, { step: 0.1 }),
-      int('H', 'H', 'Hours charged', 1, 4, { derived: true }),
-      num('C', 'C', 'Cost', 0, 400, { unit: '$', derived: true }),
+      num('h', 'h', 'Hours parked', 0.1, 24, { step: 0.1 }),
+      int('H', 'H', 'Hours charged', 1, 24, { derived: true }),
+      num('C', 'C', 'Cost', 0, 2400, { unit: '$', derived: true }),
+      // The drawn steps' ends (T₀ … T₄) and heights (C₁ … C₄), for the graph only.
+      ...[0, ...STEP_HOURS].map((k) => int(`T${k}`, `T${sub(k)}`, `End of step ${k}`, 0, 24, pictureOnly)),
       ...STEP_HOURS.map((k) =>
-        num(`S${k}`, `C${sub(k)}`, `Cost for ${k} hour${k > 1 ? 's' : ''}`, 0, 400, {
-          unit: '$',
-          derived: true,
-        }),
+        num(`S${k}`, `C${sub(k)}`, `Height of step ${k}`, 0, 2400, { unit: '$', ...pictureOnly }),
       ),
     ],
     rules: [
@@ -4784,19 +4785,59 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
         '{R} × {H}',
         'Pay the rate for each hour charged.',
       ),
-      ...STEP_HOURS.map((k) =>
+      figure(
         derive(
-          `C${k} = ${k}R`,
-          `S${k}`,
-          ['R'],
-          `{S${k}} = ${k} × {R}`,
-          (v) => k * v.R!,
-          `${k} × {R}`,
-          `For the graph: the height of step ${k}.`,
+          'T₀ = H − 4, at least 0',
+          'T0',
+          ['H'],
+          '{T0} = {H} − 4, at least 0',
+          (v) => Math.max(0, v.H! - 4),
+          '{H} − 4',
+          'For the graph: the four steps drawn end at the hours charged.',
+        ),
+      ),
+      ...STEP_HOURS.map((k) =>
+        figure(
+          derive(
+            `T${k} = T0 + ${k}`,
+            `T${k}`,
+            ['T0'],
+            `{T${k}} = {T0} + ${k}`,
+            (v) => v.T0! + k,
+            `{T0} + ${k}`,
+            `For the graph: the end of step ${k}.`,
+          ),
+        ),
+      ),
+      ...STEP_HOURS.map((k) =>
+        figure(
+          derive(
+            `C${k} = R × T${k}`,
+            `S${k}`,
+            ['R', `T${k}`],
+            `{S${k}} = {R} × {T${k}}`,
+            (v) => v.R! * v[`T${k}`]!,
+            `{R} × {T${k}}`,
+            `For the graph: the height of step ${k}.`,
+          ),
         ),
       ),
     ],
-    example: { R: 4, h: 2.5, H: 3, C: 12, S1: 4, S2: 8, S3: 12, S4: 16 },
+    example: {
+      R: 4,
+      h: 2.5,
+      H: 3,
+      C: 12,
+      T0: 0,
+      T1: 1,
+      T2: 2,
+      T3: 3,
+      T4: 4,
+      S1: 4,
+      S2: 8,
+      S3: 12,
+      S4: 16,
+    },
     startWith: ['h', 'R'],
     representation: {
       kind: 'functionGraph',
@@ -4804,13 +4845,13 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
       name: 'C',
       pieces: STEP_HOURS.map((k) => ({
         f: { family: 'linear' as const, m: 0, b: `S${k}` },
-        from: k - 1,
-        to: k,
+        from: `T${k - 1}`,
+        to: `T${k}`,
         ends: '(]' as const,
       })),
       at: { x: 'h', y: 'C' },
       axes: { x: 'Hours h', y: 'Cost C ($)' },
-      window: { x: [0, 5] },
+      xMin: 0,
       fixed: true,
     },
   }),
@@ -4844,6 +4885,15 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
             (v) => exact(v.a! * Math.abs(v.x! - v.h!) + v.k!),
             '{a} × |{x} − {h}| + {k}',
             'Take the distance from x to h, multiply by a, then add k.',
+            {
+              work: (v) => {
+                const d = exact(Math.abs(v.x! - v.h!));
+                return [
+                  `y = ${fmt(v.a!)} × ${fmt(d)} + ${sg(v.k!)}`,
+                  `y = ${fmt(exact(v.a! * d))} + ${sg(v.k!)}`,
+                ];
+              },
+            },
           ],
           x: [
             (v) => {
