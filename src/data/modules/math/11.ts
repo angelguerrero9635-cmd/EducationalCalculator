@@ -11,6 +11,7 @@ import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { atLeast, div } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
+import { syntheticDivision } from '../written';
 
 // ── Toolkit ──
 
@@ -66,10 +67,10 @@ function derive(
   f: (v: Values) => number | undefined,
   expr: StepText['expr'],
   how: StepText['how'],
-  extra: Partial<Relation> & { work?: StepText['work'] } = {},
+  extra: Partial<Relation> & { work?: StepText['work']; written?: StepText['written'] } = {},
 ): Rule {
-  const { work, ...more } = extra;
-  return rule(
+  const { work, written, ...more } = extra;
+  const r = rule(
     id,
     display,
     [x, ...inputs],
@@ -80,6 +81,8 @@ function derive(
     },
     { ...more, ...(work ? { work: { [x]: work } } : {}) },
   );
+  if (written !== undefined) r.steps[x] = { ...r.steps[x]!, written };
+  return r;
 }
 
 /**
@@ -234,6 +237,28 @@ const formulaWork = (b: number, c: number, sign: 1 | -1) => {
   const D = b ** 2 - 4 * c;
   const op = sign > 0 ? '+' : '−';
   return [`(${fmt(-b)} ${op} √${par(D)}) ÷ 2`, `(${fmt(-b)} ${op} ${fmt(Math.sqrt(D))}) ÷ 2`];
+};
+
+const PI = Math.PI;
+/** The greatest common factor of two whole numbers (gcd(0, n) is n). */
+const gcd = (a: number, b: number): number => {
+  let [x, y] = [Math.abs(Math.round(a)), Math.abs(Math.round(b))];
+  while (y) [x, y] = [y, x % y];
+  return x;
+};
+/** A root of ax² + bx + c = 0 by the quadratic formula (sign +1 or −1), or nothing. */
+const rootOf = (a: number, b: number, c: number, sign: 1 | -1) => {
+  const D = b ** 2 - 4 * a * c;
+  return a === 0 || D < -1e-9 ? undefined : (-b + sign * Math.sqrt(Math.max(0, D))) / (2 * a);
+};
+/** The quadratic formula worked with numbers, −b written as its value: (−3 + √25) ÷ 4. */
+const quadWork = (a: number, b: number, c: number, sign: 1 | -1) => {
+  const D = Math.max(0, b ** 2 - 4 * a * c);
+  const op = sign > 0 ? '+' : '−';
+  return [
+    `(${fmt(-b)} ${op} √${par(D)}) ÷ ${par(2 * a)}`,
+    `(${fmt(-b)} ${op} ${fmt(Math.sqrt(D))}) ÷ ${par(2 * a)}`,
+  ];
 };
 
 /** The vertical factors a transformation page offers. */
@@ -2838,5 +2863,987 @@ export const MATH_11_MODULES: ModuleDef[] = [
       shows: { zeros: ['x1', 'x2'] },
       marks: ['zeros'],
     },
+  }),
+
+  // ── Complex numbers: powers of i and division (N-CN.2, N-CN.3) ──
+  page({
+    id: 'm.11.complex-numbers~powers-of-i',
+    title: 'Powers of i',
+    use: 'Use this for “Simplify i²⁷.”',
+    assumptions: [
+      'The powers of i repeat every 4: i, −1, −i, 1, then i again.',
+      'So iⁿ = iʳ, where r is the remainder of n ÷ 4.',
+      'On the plane each power of i is a quarter turn more around the unit circle.',
+    ],
+    variables: [
+      W('n', 'n', 'Power of i', 0, 100),
+      W('r', 'r', 'Remainder of n ÷ 4', 0, 3),
+      V('A', 'θ', 'Turn from 1', { unit: '°', integer: true, min: 0, max: 270, derived: true }),
+      V('p', 'p', 'Real part', { integer: true, min: -1, max: 1, derived: true }),
+      V('q', 'q', 'Imaginary part', { integer: true, min: -1, max: 1, derived: true }),
+    ],
+    rules: [
+      derive(
+        'r = n mod 4',
+        'r',
+        ['n'],
+        '{r} = {n} mod 4',
+        (v) => v.n! % 4,
+        '{n} mod 4',
+        'Every 4 factors of i make i⁴ = 1, so only the remainder of n ÷ 4 counts.',
+      ),
+      derive(
+        'θ = 90r',
+        'A',
+        ['r'],
+        '{A} = 90 × {r}',
+        (v) => 90 * v.r!,
+        '90 × {r}',
+        'Each factor of i turns a quarter turn, 90°, around the unit circle.',
+      ),
+      derive(
+        'p = cos θ',
+        'p',
+        ['A'],
+        '{p} = cos({A}°)',
+        (v) => Math.round(Math.cos((v.A! * Math.PI) / 180)),
+        'cos({A}°)',
+        'The point on the unit circle at that turn: its across part is the real part.',
+      ),
+      derive(
+        'q = sin θ',
+        'q',
+        ['A'],
+        '{q} = sin({A}°)',
+        (v) => Math.round(Math.sin((v.A! * Math.PI) / 180)),
+        'sin({A}°)',
+        'Its up part is the imaginary part.',
+      ),
+    ],
+    example: { n: 27, r: 3, A: 270, p: 0, q: -1 },
+    startWith: ['n'],
+    pictureLabels: ['n', 'r'],
+    representation: {
+      kind: 'complexPlane',
+      z: { modulus: 1, argument: 'A' },
+      polar: true,
+    },
+  }),
+  page({
+    id: 'm.11.complex-numbers~divide',
+    title: 'Divide complex numbers',
+    use: 'Use this for “Divide (3 + 4i) ÷ (1 + 2i).”',
+    assumptions: [
+      'Multiply the top and the bottom by the conjugate of the bottom, c − di.',
+      'The bottom becomes (c + di)(c − di) = c² + d², a real number.',
+      'Check: the answer times c + di gives back a + bi.',
+    ],
+    variables: [
+      V('a', 'a', 'Real part of the top', { integer: true, min: -10, max: 10 }),
+      V('b', 'b', 'Imaginary part of the top', { integer: true, min: -10, max: 10 }),
+      V('c', 'c', 'Real part of the bottom', { integer: true, min: -10, max: 10 }),
+      V('d', 'd', 'Imaginary part of the bottom', { integer: true, min: -10, max: 10 }),
+      V('m', '|c + di|', 'Size of the bottom', { min: 0, max: 15, derived: true }),
+      V('p', 'p', 'Real part of the answer', { min: -200, max: 200, fraction: 200, derived: true }),
+      V('q', 'q', 'Imaginary part of the answer', {
+        min: -200,
+        max: 200,
+        fraction: 200,
+        derived: true,
+      }),
+    ],
+    rules: [
+      limit(
+        'c + di ≠ 0',
+        '{c} and {d} are not both 0',
+        ['c', 'd'],
+        (v) => v.c !== 0 || v.d !== 0,
+        'Dividing by 0 has no answer.',
+      ),
+      derive(
+        '|c + di| = √(c² + d²)',
+        'm',
+        ['c', 'd'],
+        '{m} = √({c}² + {d}²)',
+        (v) => Math.sqrt(v.c! ** 2 + v.d! ** 2),
+        '√({c}² + {d}²)',
+        'Its distance from 0 on the plane: c² + d² is the new bottom.',
+      ),
+      derive(
+        'p = (ac + bd) ÷ (c² + d²)',
+        'p',
+        ['a', 'c', 'b', 'd'],
+        '{p} = ({a} × {c} + {b} × {d}) ÷ ({c}² + {d}²)',
+        (v) => div(v.a! * v.c! + v.b! * v.d!, v.c! ** 2 + v.d! ** 2),
+        '({a} × {c} + {b} × {d}) ÷ ({c}² + {d}²)',
+        'The real part of (a + bi)(c − di) is ac + bd, since −bd × i² = bd.',
+        {
+          work: (v) => [
+            `(${fmt(v.a! * v.c!)} + ${par(v.b! * v.d!)}) ÷ ${fmt(v.c! ** 2 + v.d! ** 2)}`,
+            `${fmt(v.a! * v.c! + v.b! * v.d!)} ÷ ${fmt(v.c! ** 2 + v.d! ** 2)}`,
+          ],
+        },
+      ),
+      derive(
+        'q = (bc − ad) ÷ (c² + d²)',
+        'q',
+        ['b', 'c', 'a', 'd'],
+        '{q} = ({b} × {c} − {a} × {d}) ÷ ({c}² + {d}²)',
+        (v) => div(v.b! * v.c! - v.a! * v.d!, v.c! ** 2 + v.d! ** 2),
+        '({b} × {c} − {a} × {d}) ÷ ({c}² + {d}²)',
+        'The imaginary part: bc from bi × c and −ad from a × (−di).',
+        {
+          work: (v) => [
+            `(${fmt(v.b! * v.c!)} − ${par(v.a! * v.d!)}) ÷ ${fmt(v.c! ** 2 + v.d! ** 2)}`,
+            `${fmt(v.b! * v.c! - v.a! * v.d!)} ÷ ${fmt(v.c! ** 2 + v.d! ** 2)}`,
+          ],
+        },
+      ),
+    ],
+    example: { a: 3, b: 4, c: 1, d: 2, m: Math.sqrt(5), p: 2.2, q: -0.4 },
+    startWith: ['a', 'b', 'c', 'd'],
+    equation: '{{a} + {b}i}/{{c} + {d}i} = {p} + {q}i',
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'c', im: 'd' },
+      conjugate: true,
+      modulus: 'm',
+    },
+  }),
+
+  // ── Division and the remainder theorem (A-APR.2, A-APR.6) ──
+  page({
+    id: 'm.11.polynomial-functions~divide',
+    title: 'Synthetic division and the remainder theorem',
+    use: 'Use this for “Divide 2x³ − 3x² + x − 5 by x − 2” or “Find P(2) by the remainder theorem.”',
+    assumptions: [
+      'Divide P(x) = ax³ + bx² + cx + d by x − r: bring down a, then multiply by r and add, column by column.',
+      'The last sum is the remainder R, and R = P(r) (the remainder theorem).',
+      'R = 0 exactly when x − r is a factor (the factor theorem).',
+    ],
+    variables: [
+      V('a', 'a', 'x³ coefficient', { integer: true, min: -10, max: 10 }),
+      V('b', 'b', 'x² coefficient', { integer: true, min: -10, max: 10 }),
+      V('c', 'c', 'x coefficient', { integer: true, min: -10, max: 10 }),
+      V('d', 'd', 'Constant', { integer: true, min: -10, max: 10 }),
+      V('r', 'r', 'Divide by x − r', { integer: true, min: -10, max: 10 }),
+      V('q2', 'q₂', 'Quotient’s x² coefficient', { min: -10, max: 10, derived: true }),
+      V('q1', 'q₁', 'Quotient’s x coefficient', { min: -200, max: 200, derived: true }),
+      V('q0', 'q₀', 'Quotient’s constant', { min: -3000, max: 3000, derived: true }),
+      V('R', 'R', 'Remainder, P(r)', { min: -40000, max: 40000, derived: true }),
+    ],
+    rules: [
+      limit('a ≠ 0', '{a} is not 0', ['a'], (v) => v.a !== 0, 'With a = 0, P is not a cubic.'),
+      derive(
+        'q₂ = a',
+        'q2',
+        ['a'],
+        '{q2} = {a}',
+        (v) => v.a!,
+        '{a}',
+        'Bring down the leading coefficient.',
+      ),
+      derive(
+        'q₁ = b + r × q₂',
+        'q1',
+        ['b', 'r', 'q2'],
+        '{q1} = {b} + {r} × {q2}',
+        (v) => v.b! + v.r! * v.q2!,
+        '{b} + {r} × {q2}',
+        'Multiply by r and add to the next coefficient.',
+      ),
+      derive(
+        'q₀ = c + r × q₁',
+        'q0',
+        ['c', 'r', 'q1'],
+        '{q0} = {c} + {r} × {q1}',
+        (v) => v.c! + v.r! * v.q1!,
+        '{c} + {r} × {q1}',
+        'Again: multiply by r and add.',
+      ),
+      derive(
+        'R = d + r × q₀',
+        'R',
+        ['d', 'r', 'q0'],
+        '{R} = {d} + {r} × {q0}',
+        (v) => v.d! + v.r! * v.q0!,
+        '{d} + {r} × {q0}',
+        'The last sum is the remainder, which is P(r).',
+        {
+          // The grid only while P(r) ≥ 0: the harness can't yet read a written line ending in
+          // a negative number (docs/build/m.11.md, shared needs).
+          written: (v) =>
+            v.R! >= 0 ? syntheticDivision([v.a!, v.b!, v.c!, v.d!], v.r!) : undefined,
+        },
+      ),
+    ],
+    example: { a: 2, b: -3, c: 1, d: -5, r: 2, q2: 2, q1: 1, q0: 3, R: 1 },
+    startWith: ['a', 'b', 'c', 'd', 'r'],
+    equation: 'P({r}) = {R}',
+    pictureLabels: ['q2', 'q1', 'q0'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      coefficients: ['a', 'b', 'c', 'd'],
+      name: 'P',
+      at: { x: 'r', y: 'R' },
+      marks: ['zeros'],
+    },
+  }),
+
+  // ── Rational roots and the fundamental theorem of algebra (A-APR.3, N-CN.9) ──
+  page({
+    id: 'm.11.polynomial-equations',
+    assumptions: [
+      'Any rational root is ±(a factor of d) ÷ (a factor of a): test these candidates as r.',
+      'Synthetic division by x − r leaves remainder 0 exactly when r is a root.',
+      'The quotient is a quadratic, qx² + q₁x + q₀ with q = a, which the quadratic formula finishes.',
+    ],
+    variables: [
+      V('a', 'a', 'x³ coefficient', { min: -20, max: 20, step: 1 }),
+      V('b', 'b', 'x² coefficient', { min: -20, max: 20, step: 1 }),
+      V('c', 'c', 'x coefficient', { min: -20, max: 20, step: 1 }),
+      V('d', 'd', 'Constant', { min: -20, max: 20, step: 1 }),
+      V('r', 'r', 'Root tested', { min: -20, max: 20, step: 0.5, fraction: 12 }),
+      V('q1', 'q₁', 'Quotient’s x coefficient', {
+        min: -1000,
+        max: 1000,
+        fraction: 12,
+        derived: true,
+      }),
+      V('q0', 'q₀', 'Quotient’s constant', { min: -1e5, max: 1e5, fraction: 12, derived: true }),
+      V('R', 'R', 'Remainder', { min: -1e6, max: 1e6, fraction: 12, derived: true }),
+      V('x2', 'x₂', 'Larger other root', { min: -1000, max: 1000, fraction: 12, derived: true }),
+      V('x3', 'x₃', 'Smaller other root', { min: -1000, max: 1000, fraction: 12, derived: true }),
+    ],
+    rules: [
+      limit(
+        'a ≠ 0',
+        '{a} is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 the equation is not a cubic.',
+      ),
+      limit(
+        'R = 0',
+        'The remainder {R} is 0',
+        ['R'],
+        (v) => Math.abs(v.R!) < 1e-9,
+        'r is not a root: the remainder is not 0. Try another ±p/q.',
+      ),
+      limit(
+        'q₁² − 4aq₀ ≥ 0',
+        '{q1}² − 4 × {a} × {q0} is 0 or more',
+        ['q1', 'a', 'q0'],
+        (v) => v.q1! ** 2 - 4 * v.a! * v.q0! >= -1e-9,
+        'The other two roots are complex: see “A polynomial from its zeros”.',
+      ),
+      derive(
+        'q₁ = b + r × a',
+        'q1',
+        ['b', 'r', 'a'],
+        '{q1} = {b} + {r} × {a}',
+        (v) => v.b! + v.r! * v.a!,
+        '{b} + {r} × {a}',
+        'Bring down a, multiply by r and add to b.',
+      ),
+      derive(
+        'q₀ = c + r × q₁',
+        'q0',
+        ['c', 'r', 'q1'],
+        '{q0} = {c} + {r} × {q1}',
+        (v) => v.c! + v.r! * v.q1!,
+        '{c} + {r} × {q1}',
+        'Multiply by r and add to c.',
+      ),
+      derive(
+        'R = d + r × q₀',
+        'R',
+        ['d', 'r', 'q0'],
+        '{R} = {d} + {r} × {q0}',
+        (v) => v.d! + v.r! * v.q0!,
+        '{d} + {r} × {q0}',
+        'The last sum is the remainder: 0 means x − r is a factor.',
+        { written: (v) => syntheticDivision([v.a!, v.b!, v.c!, v.d!], v.r!) },
+      ),
+      derive(
+        'x₂ = (−q₁ + √(q₁² − 4aq₀)) ÷ (2a)',
+        'x2',
+        ['q1', 'a', 'q0'],
+        '{x2} = (−{q1} + √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
+        (v) => rootOf(v.a!, v.q1!, v.q0!, 1),
+        '(−{q1} + √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
+        'The quadratic formula on the quotient, with the plus sign.',
+        { work: (v) => quadWork(v.a!, v.q1!, v.q0!, 1) },
+      ),
+      derive(
+        'x₃ = (−q₁ − √(q₁² − 4aq₀)) ÷ (2a)',
+        'x3',
+        ['q1', 'a', 'q0'],
+        '{x3} = (−{q1} − √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
+        (v) => rootOf(v.a!, v.q1!, v.q0!, -1),
+        '(−{q1} − √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
+        'The same formula with the minus sign.',
+        { work: (v) => quadWork(v.a!, v.q1!, v.q0!, -1) },
+      ),
+    ],
+    example: { a: 2, b: -3, c: -11, d: 6, r: 3, q1: 3, q0: -2, R: 0, x2: 0.5, x3: -2 },
+    startWith: ['a', 'b', 'c', 'd', 'r'],
+    equation: '{a}x³ + {b}x² + {c}x + {d} = 0',
+    pictureLabels: ['q1', 'q0', 'R'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      coefficients: ['a', 'b', 'c', 'd'],
+      shows: { zeros: ['r', 'x2', 'x3'] },
+      marks: ['zeros'],
+    },
+  }),
+
+  // ── The unit circle and radian measure (F-TF.1, F-TF.2) ──
+  page({
+    id: 'm.11.unit-circle',
+    assumptions: [
+      'The point at angle θ is (cos θ, sin θ), because the radius is 1.',
+      'The reference angle and the quadrant give the value and its sign.',
+      'One turn is 2π radians, 360°.',
+    ],
+    variables: [
+      V('t', 'θ', 'Angle (radians)', { pi: 'fraction', min: -4 * PI, max: 4 * PI, step: PI / 12 }),
+      V('d', 'θ°', 'Angle in degrees', { min: -720, max: 720, derived: true }),
+      V('x', 'x', 'cos θ', { min: -1, max: 1, derived: true }),
+      V('y', 'y', 'sin θ', { min: -1, max: 1, derived: true }),
+      V('m', 'tan θ', 'tan θ', { min: -1e6, max: 1e6, derived: true }),
+    ],
+    rules: [
+      limit(
+        'cos θ ≠ 0',
+        'cos({t}) is not 0',
+        ['t'],
+        (v) => Math.abs(Math.cos(v.t!)) > 1e-9,
+        'At π/2 and 3π/2 the point is on the y-axis: x = 0, so tan θ = y ÷ x has no value.',
+      ),
+      derive(
+        'θ° = 180θ ÷ π',
+        'd',
+        ['t'],
+        '{d} = 180 × {t} ÷ π',
+        (v) => (180 * v.t!) / PI,
+        '180 × {t} ÷ π',
+        'π radians is 180°.',
+      ),
+      derive(
+        'x = cos θ',
+        'x',
+        ['t'],
+        '{x} = cos({t})',
+        (v) => Math.cos(v.t!),
+        'cos({t})',
+        'The across part of the point on the circle.',
+      ),
+      derive(
+        'y = sin θ',
+        'y',
+        ['t'],
+        '{y} = sin({t})',
+        (v) => Math.sin(v.t!),
+        'sin({t})',
+        'The up part of the point on the circle.',
+      ),
+      derive(
+        'tan θ = y ÷ x',
+        'm',
+        ['y', 'x'],
+        '{m} = {y} ÷ {x}',
+        (v) => div(v.y!, v.x!),
+        '{y} ÷ {x}',
+        'The tangent is the sine over the cosine: rise over run.',
+      ),
+    ],
+    example: {
+      t: (5 * PI) / 6,
+      d: 150,
+      x: Math.cos((5 * PI) / 6),
+      y: 0.5,
+      m: Math.tan((5 * PI) / 6),
+    },
+    startWith: ['t'],
+    representation: {
+      kind: 'unitCircle',
+      angle: 't',
+      measure: 'radians',
+      cos: 'x',
+      sin: 'y',
+      tan: 'm',
+    },
+  }),
+  page({
+    id: 'm.11.unit-circle~convert',
+    title: 'Degrees and radians',
+    use: 'Use this for “Convert 225° to radians” or “Convert 7π/6 to degrees.”',
+    assumptions: [
+      '180° = π radians, so d° is d/180 of π; write the fraction in lowest terms.',
+      'One radian is the angle whose arc equals the radius.',
+      'Going back, pπ/q is p × (180 ÷ q) degrees: 7π/6 = 7 × 30° = 210°.',
+    ],
+    variables: [
+      V('d', 'd', 'Angle in degrees', { unit: '°', integer: true, min: -720, max: 720 }),
+      W('g', 'g', 'Greatest common factor of d and 180', 1, 180),
+      W('p', 'p', 'Top of the fraction of π', -720, 720),
+      W('q', 'q', 'Bottom of the fraction of π', 1, 180),
+    ],
+    rules: [
+      rule(
+        'g = gcd(d, 180)',
+        '{g} = gcd({d}, 180)',
+        ['g', 'd'],
+        (v) => v.g! - gcd(v.d!, 180),
+        {
+          g: [
+            (v) => gcd(v.d!, 180),
+            'gcd({d}, 180)',
+            'The greatest common factor puts d/180 in lowest terms.',
+          ],
+          d: [() => undefined],
+        },
+        {
+          message: (v) =>
+            v.g !== undefined && v.d !== undefined && v.g !== gcd(v.d, 180)
+              ? 'Write p/q in lowest terms, with q a factor of 180.'
+              : undefined,
+        },
+      ),
+      rule('p = d ÷ g', '{p} = {d} ÷ {g}', ['p', 'd', 'g'], (v) => v.p! * v.g! - v.d!, {
+        p: [(v) => fin(div(v.d!, v.g!)), '{d} ÷ {g}', 'Divide the top, d, by the common factor.'],
+        d: [(v) => exact(v.p! * v.g!), '{p} × {g}', 'Each 1/q of π is g degrees.'],
+        g: [() => undefined],
+      }),
+      rule('q = 180 ÷ g', '{q} = 180 ÷ {g}', ['q', 'g'], (v) => v.q! * v.g! - 180, {
+        q: [
+          (v) => fin(div(180, v.g!)),
+          '180 ÷ {g}',
+          'Divide the bottom, 180, by the common factor.',
+        ],
+        g: [(v) => fin(div(180, v.q!)), '180 ÷ {q}', 'π/q is 180 ÷ q degrees.'],
+      }),
+    ],
+    example: { d: 225, g: 45, p: 5, q: 4 },
+    startWith: ['d'],
+    equation: '{d}° = {p}/{q}π',
+    representation: { kind: 'unitCircle', angle: 'd', show: 'radians', fixed: true },
+  }),
+  page({
+    id: 'm.11.unit-circle~coterminal',
+    title: 'Coterminal and reference angles',
+    use: 'Use this for “Find the coterminal angle of −495° from 0° to 360°, its quadrant and its reference angle.”',
+    assumptions: [
+      'Adding or taking away whole turns of 360° ends on the same side: a coterminal angle.',
+      'The reference angle is the acute angle to the x-axis; the quadrant gives the signs.',
+      'An angle on an axis has no quadrant, so this page takes the others.',
+    ],
+    variables: [
+      V('d', 'θ', 'Angle', { unit: '°', min: -1080, max: 1080, step: 1 }),
+      V('c', 'c', 'Coterminal angle from 0° to 360°', {
+        unit: '°',
+        min: 0,
+        max: 360,
+        derived: true,
+      }),
+      V('Q', 'Q', 'Quadrant', { integer: true, min: 1, max: 4, derived: true }),
+      V('R', 'R', 'Reference angle', { unit: '°', min: 0, max: 90, derived: true }),
+    ],
+    rules: [
+      limit(
+        'θ is not on an axis',
+        '{d} is not a multiple of 90',
+        ['d'],
+        (v) => Math.abs(v.d! / 90 - Math.round(v.d! / 90)) > 1e-9,
+        'The side lies on an axis, between quadrants: its sine and cosine are 0, 1 or −1.',
+      ),
+      derive(
+        'c = θ − 360⌊θ ÷ 360⌋',
+        'c',
+        ['d'],
+        '{c} = {d} − 360 × ⌊{d} ÷ 360⌋',
+        (v) => v.d! - 360 * Math.floor(v.d! / 360),
+        '{d} − 360 × ⌊{d} ÷ 360⌋',
+        '⌊θ ÷ 360⌋ counts the whole turns (down to the next whole number); take them away.',
+      ),
+      derive(
+        'Q = ⌊c ÷ 90⌋ + 1',
+        'Q',
+        ['c'],
+        '{Q} = ⌊{c} ÷ 90⌋ + 1',
+        (v) => Math.floor(v.c! / 90) + 1,
+        '⌊{c} ÷ 90⌋ + 1',
+        'Each quadrant is 90° wide, counted from the positive x-axis.',
+      ),
+      derive(
+        'R = reference angle of c',
+        'R',
+        ['c', 'Q'],
+        '{R} = |{c} − 180 × ⌊{Q} ÷ 2⌋|',
+        (v) => [v.c!, 180 - v.c!, v.c! - 180, 360 - v.c!][v.Q! - 1],
+        (v) => ['{c}', '180 − {c}', '{c} − 180', '360 − {c}'][v.Q! - 1]!,
+        (v) =>
+          [
+            'In quadrant I the angle is its own reference angle.',
+            'In quadrant II, measure back to 180°.',
+            'In quadrant III, measure past 180°.',
+            'In quadrant IV, measure on to 360°.',
+          ][v.Q! - 1]!,
+      ),
+    ],
+    example: { d: -495, c: 225, Q: 3, R: 45 },
+    startWith: ['d'],
+    pictureLabels: ['c', 'Q', 'R'],
+    representation: { kind: 'unitCircle', angle: 'd' },
+  }),
+
+  // ── Graphs of sine, cosine and tangent (F-IF.7e, F-TF.5) ──
+  page({
+    id: 'm.11.trig-graphs',
+    assumptions: [
+      'The midline is y = k; the graph rises and falls A = |a| above and below it.',
+      'b fits b cycles into every 2π, so the period is P = 2π ÷ b.',
+      'h slides the start of the cycle to x = h; x is in radians.',
+    ],
+    variables: [
+      V('a', 'a', 'Vertical factor', { min: -10, max: 10, step: 0.5 }),
+      V('b', 'b', 'Cycles in 2π', { min: 0.25, max: 6, step: 0.25 }),
+      V('h', 'h', 'Shift right', { pi: 'fraction', min: -2 * PI, max: 2 * PI, step: PI / 12 }),
+      V('k', 'k', 'Midline', { min: -10, max: 10, step: 0.5 }),
+      V('A', 'A', 'Amplitude', { min: 0, max: 10, derived: true }),
+      V('P', 'P', 'Period', { pi: true, min: 0, max: 8 * PI, derived: true }),
+      V('x', 'x', 'Input (radians)', { pi: 'fraction', min: -20, max: 20, step: PI / 12 }),
+      V('y', 'y', 'Output', { min: -30, max: 30, derived: true }),
+    ],
+    rules: [
+      limit(
+        'a ≠ 0',
+        '{a} is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 the graph is the flat line y = k.',
+      ),
+      derive(
+        'A = |a|',
+        'A',
+        ['a'],
+        '{A} = |{a}|',
+        (v) => Math.abs(v.a!),
+        '|{a}|',
+        'The amplitude is a distance, so it is never negative.',
+      ),
+      derive(
+        'P = 2π ÷ b',
+        'P',
+        ['b'],
+        '{P} = 2π ÷ {b}',
+        (v) => (2 * PI) / v.b!,
+        '2π ÷ {b}',
+        'One full turn, 2π, shared among b cycles.',
+      ),
+      derive(
+        'y = a sin(b(x − h)) + k',
+        'y',
+        ['a', 'b', 'x', 'h', 'k'],
+        '{y} = {a} × sin({b} × ({x} − {h})) + {k}',
+        (v) => v.a! * Math.sin(v.b! * (v.x! - v.h!)) + v.k!,
+        '{a} × sin({b} × ({x} − {h})) + {k}',
+        'Shift x by h, multiply by b, take the sine, stretch by a, then add k.',
+      ),
+    ],
+    example: {
+      a: 3,
+      b: 2,
+      h: PI / 4,
+      k: 1,
+      A: 3,
+      P: PI,
+      x: PI / 2,
+      y: 4,
+    },
+    startWith: ['a', 'b', 'h', 'k', 'x'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'sin',
+      a: 'a',
+      b: 'b',
+      h: 'h',
+      k: 'k',
+      at: { x: 'x', y: 'y' },
+      shows: { amplitude: 'A', period: 'P' },
+      marks: ['amplitude', 'period', 'midline', 'extrema'],
+    },
+  }),
+  page({
+    id: 'm.11.trig-graphs~from-features',
+    title: 'The equation from the graph’s features',
+    use: 'Use this for “Write a cosine with amplitude 4, period π/2 and midline y = −1.”',
+    assumptions: [
+      'y = A cos(bx) + k starts a cycle at its top when x = 0.',
+      'The period P is 2π ÷ b, so b = 2π ÷ P.',
+      'A is the height above the midline y = k.',
+    ],
+    variables: [
+      V('A', 'A', 'Amplitude', { min: 0.1, max: 20, step: 0.5 }),
+      V('P', 'P', 'Period', { pi: 'fraction', min: PI / 12, max: 8 * PI, step: PI / 12 }),
+      V('k', 'k', 'Midline', { min: -20, max: 20, step: 0.5 }),
+      V('b', 'b', 'Cycles in 2π', { min: 0.25, max: 24, fraction: 12, derived: true }),
+      V('x', 'x', 'Input (radians)', { pi: 'fraction', min: -20, max: 20, step: PI / 12 }),
+      V('y', 'y', 'Output', { min: -50, max: 50, derived: true }),
+    ],
+    rules: [
+      derive(
+        'b = 2π ÷ P',
+        'b',
+        ['P'],
+        '{b} = 2π ÷ ({P})',
+        (v) => (2 * PI) / v.P!,
+        '2π ÷ ({P})',
+        'One turn, 2π, holds b periods.',
+      ),
+      derive(
+        'y = A cos(bx) + k',
+        'y',
+        ['A', 'b', 'x', 'k'],
+        '{y} = {A} × cos({b} × {x}) + {k}',
+        (v) => v.A! * Math.cos(v.b! * v.x!) + v.k!,
+        '{A} × cos({b} × {x}) + {k}',
+        'Check a point: multiply x by b, take the cosine, stretch by A and add k.',
+      ),
+    ],
+    example: { A: 4, P: PI / 2, k: -1, b: 4, x: PI / 8, y: 4 * Math.cos(PI / 2) - 1 },
+    startWith: ['A', 'P', 'k', 'x'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'cos',
+      a: 'A',
+      b: 'b',
+      k: 'k',
+      at: { x: 'x', y: 'y' },
+      shows: { amplitude: 'A', period: 'P' },
+      marks: ['amplitude', 'period', 'midline'],
+    },
+  }),
+  page({
+    id: 'm.11.trig-graphs~tangent',
+    title: 'Graph of tangent',
+    use: 'Use this for “Find the period and asymptotes of y = 2 tan(x/2).”',
+    assumptions: [
+      'tan x repeats every π, so y = a tan(bx) has period P = π ÷ b.',
+      'It has no value where cos(bx) = 0: asymptotes at x = π ÷ (2b), then every period.',
+      'x is in radians.',
+    ],
+    variables: [
+      V('a', 'a', 'Vertical factor', { min: -10, max: 10, step: 0.5 }),
+      V('b', 'b', 'Frequency', { min: 0.25, max: 4, step: 0.25 }),
+      V('P', 'P', 'Period', { pi: true, min: 0, max: 4 * PI, derived: true }),
+      V('Va', 'V', 'First asymptote right of 0', {
+        pi: true,
+        min: 0,
+        max: 2 * PI,
+        derived: true,
+      }),
+      V('x', 'x', 'Input (radians)', { pi: 'fraction', min: -20, max: 20, step: PI / 12 }),
+      V('y', 'y', 'Output', { min: -1e6, max: 1e6, derived: true }),
+    ],
+    rules: [
+      limit(
+        'cos(bx) ≠ 0',
+        'cos({b} × {x}) is not 0',
+        ['b', 'x'],
+        (v) => Math.abs(Math.cos(v.b! * v.x!)) > 1e-9,
+        'x is on an asymptote: tangent has no value there.',
+      ),
+      derive(
+        'P = π ÷ b',
+        'P',
+        ['b'],
+        '{P} = π ÷ {b}',
+        (v) => PI / v.b!,
+        'π ÷ {b}',
+        'Tangent repeats every π; b squeezes that by b.',
+      ),
+      derive(
+        'V = π ÷ (2b)',
+        'Va',
+        ['b'],
+        '{Va} = π ÷ (2 × {b})',
+        (v) => PI / (2 * v.b!),
+        'π ÷ (2 × {b})',
+        'cos(bx) = 0 first at bx = π/2.',
+      ),
+      derive(
+        'y = a tan(bx)',
+        'y',
+        ['a', 'b', 'x'],
+        '{y} = {a} × tan({b} × {x})',
+        (v) => v.a! * Math.tan(v.b! * v.x!),
+        '{a} × tan({b} × {x})',
+        'Multiply x by b, take the tangent, then stretch by a.',
+      ),
+    ],
+    example: { a: 2, b: 0.5, P: 2 * PI, Va: PI, x: PI / 2, y: 2 },
+    startWith: ['a', 'b', 'x'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'tan',
+      a: 'a',
+      b: 'b',
+      at: { x: 'x', y: 'y' },
+      shows: { period: 'P', va: 'Va' },
+      marks: ['asymptotes', 'period'],
+    },
+  }),
+  page({
+    id: 'm.11.trig-graphs~model',
+    title: 'Model a turning wheel',
+    use: 'Use this for “A Ferris wheel is 42 m at the top, 2 m at the bottom and turns once in 8 min. How high is a rider after 2 min?”',
+    assumptions: [
+      'The rider starts at the bottom, so h = k − A cos(Bt): the cosine flipped.',
+      'The midline k is halfway between top and bottom; A is half the distance between them.',
+      'One turn takes T minutes, so B = 2π ÷ T; the top comes at H = T ÷ 2.',
+    ],
+    variables: [
+      V('top', 'top', 'Top height (m)', { min: 0, max: 200, step: 1 }),
+      V('bot', 'bottom', 'Bottom height (m)', { min: 0, max: 200, step: 1 }),
+      V('T', 'T', 'Minutes per turn', { min: 0.5, max: 60, step: 0.5 }),
+      V('A', 'A', 'Amplitude (m)', { min: 0, max: 100, derived: true }),
+      V('k', 'k', 'Midline (m)', { min: 0, max: 200, derived: true }),
+      V('B', 'B', 'Radians per minute', { pi: true, min: 0, max: 13, derived: true }),
+      V('H', 'H', 'Minutes to the top', { min: 0, max: 30, derived: true }),
+      V('t', 't', 'Time (min)', { min: 0, max: 120, step: 0.5 }),
+      V('y', 'h', 'Height (m)', { min: 0, max: 200, derived: true }),
+    ],
+    rules: [
+      limit(
+        'top > bottom',
+        '{top} is more than {bot}',
+        ['top', 'bot'],
+        (v) => v.top! > v.bot!,
+        'The top of the wheel must be higher than the bottom.',
+      ),
+      derive(
+        'A = (top − bottom) ÷ 2',
+        'A',
+        ['top', 'bot'],
+        '{A} = ({top} − {bot}) ÷ 2',
+        (v) => (v.top! - v.bot!) / 2,
+        '({top} − {bot}) ÷ 2',
+        'The radius: half the distance from bottom to top.',
+      ),
+      derive(
+        'k = (top + bottom) ÷ 2',
+        'k',
+        ['top', 'bot'],
+        '{k} = ({top} + {bot}) ÷ 2',
+        (v) => (v.top! + v.bot!) / 2,
+        '({top} + {bot}) ÷ 2',
+        'The height of the center: halfway.',
+      ),
+      derive(
+        'B = 2π ÷ T',
+        'B',
+        ['T'],
+        '{B} = 2π ÷ {T}',
+        (v) => (2 * PI) / v.T!,
+        '2π ÷ {T}',
+        'One turn is 2π radians in T minutes.',
+      ),
+      derive(
+        'H = T ÷ 2',
+        'H',
+        ['T'],
+        '{H} = {T} ÷ 2',
+        (v) => v.T! / 2,
+        '{T} ÷ 2',
+        'Half a turn from the bottom is the top.',
+      ),
+      derive(
+        'h = k − A cos(Bt)',
+        'y',
+        ['k', 'A', 'B', 't'],
+        '{y} = {k} − {A} × cos({B} × {t})',
+        (v) => v.k! - v.A! * Math.cos(v.B! * v.t!),
+        '{k} − {A} × cos({B} × {t})',
+        'At t = 0 the cosine is 1, so the rider starts at k − A, the bottom.',
+      ),
+    ],
+    example: { top: 42, bot: 2, T: 8, A: 20, k: 22, B: PI / 4, H: 4, t: 2, y: 22 },
+    startWith: ['top', 'bot', 'T', 't'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'cos',
+      a: 'A',
+      b: 'B',
+      h: 'H',
+      k: 'k',
+      at: { x: 't', y: 'y' },
+      axes: { x: 'Time t (min)', y: 'Height h (m)' },
+      xMin: 0,
+      marks: ['midline', 'amplitude', 'period'],
+    },
+  }),
+
+  // ── Pythagorean trigonometric identities (F-TF.8) ──
+  page({
+    id: 'm.11.pythagorean-identities',
+    assumptions: [
+      'The point (cos θ, sin θ) is on the circle x² + y² = 1, so sin²θ + cos²θ = 1.',
+      'The square root gives the size; the quadrant gives the sign.',
+      'It holds for every angle, 3x as well as θ.',
+    ],
+    variables: [
+      V('s', 'sin θ', 'Sine', { min: -1, max: 1, step: 0.01, fraction: 100 }),
+      V('Q', 'Q', 'Quadrant', { allowed: [1, 2, 3, 4], min: 1, max: 4 }),
+      V('c', 'cos θ', 'Cosine', { min: -1, max: 1, fraction: 100, derived: true }),
+      V('m', 'tan θ', 'Tangent', { min: -1e6, max: 1e6, fraction: 100, derived: true }),
+      V('t', 'θ', 'Angle', { unit: '°', min: 0, max: 360, derived: true }),
+    ],
+    rules: [
+      limit(
+        'sin θ matches the quadrant',
+        'The sign of {s} fits quadrant {Q}',
+        ['s', 'Q'],
+        (v) => (v.Q! <= 2 ? v.s! >= 0 : v.s! <= 0) && Math.abs(v.s!) < 1,
+        'Sine is positive in quadrants I and II and negative in III and IV (and ±1 only on an axis).',
+      ),
+      derive(
+        'cos θ = ±√(1 − sin²θ)',
+        'c',
+        ['s', 'Q'],
+        '{c} = (−1)^⌊{Q} ÷ 2⌋ × √(1 − ({s})²)',
+        (v) => (v.Q === 1 || v.Q === 4 ? 1 : -1) * Math.sqrt(1 - v.s! ** 2),
+        (v) => (v.Q === 1 || v.Q === 4 ? '√(1 − ({s})²)' : '−√(1 − ({s})²)'),
+        (v) =>
+          v.Q === 1 || v.Q === 4
+            ? 'cos²θ = 1 − sin²θ; cosine is positive in this quadrant.'
+            : 'cos²θ = 1 − sin²θ; cosine is negative in quadrants II and III.',
+      ),
+      derive(
+        'tan θ = sin θ ÷ cos θ',
+        'm',
+        ['s', 'c'],
+        '{m} = {s} ÷ {c}',
+        (v) => div(v.s!, v.c!),
+        '{s} ÷ {c}',
+        'Tangent is sine over cosine.',
+      ),
+      derive(
+        'θ from sin θ and the quadrant',
+        't',
+        ['s', 'Q'],
+        '{t} = 180 × ⌊{Q} ÷ 2⌋ + (−1)^⌊{Q} ÷ 2⌋ × sin⁻¹({s})',
+        (v) => {
+          const a = (Math.asin(v.s!) * 180) / PI;
+          return v.Q === 1 ? a : v.Q === 4 ? 360 + a : 180 - a;
+        },
+        (v) => (v.Q === 1 ? 'sin⁻¹({s})' : v.Q === 4 ? '360 + sin⁻¹({s})' : '180 − sin⁻¹({s})'),
+        (v) =>
+          v.Q === 1
+            ? 'In quadrant I the inverse sine gives θ.'
+            : v.Q === 4
+              ? 'sin⁻¹ gives a negative angle; a full turn on lands in quadrant IV.'
+              : 'Mirror the inverse sine across the y-axis into quadrants II and III.',
+      ),
+    ],
+    example: {
+      s: 0.6,
+      Q: 2,
+      c: -0.8,
+      m: -0.75,
+      t: 180 - (Math.asin(0.6) * 180) / PI,
+    },
+    startWith: ['s', 'Q'],
+    equation: '({s})^2 + ({c})^2 = 1',
+    pictureLabels: ['Q'],
+    representation: { kind: 'unitCircle', angle: 't', cos: 'c', sin: 's', tan: 'm', fixed: true },
+  }),
+  page({
+    id: 'm.11.pythagorean-identities~tangent',
+    title: 'From tangent to secant',
+    use: 'Use this for “tan θ = −12/5 in quadrant IV. Find sec θ and cos θ.”',
+    assumptions: [
+      'Divide sin²θ + cos²θ = 1 by cos²θ: tan²θ + 1 = sec²θ.',
+      'sec θ = 1 ÷ cos θ has the sign of cos θ: positive in quadrants I and IV.',
+      'Then cos θ = 1 ÷ sec θ and sin θ = tan θ × cos θ.',
+    ],
+    variables: [
+      V('m', 'tan θ', 'Tangent', { min: -100, max: 100, step: 0.01, fraction: 100 }),
+      V('Q', 'Q', 'Quadrant', { allowed: [1, 2, 3, 4], min: 1, max: 4 }),
+      V('S', 'sec θ', 'Secant', { min: -1e4, max: 1e4, fraction: 100, derived: true }),
+      V('c', 'cos θ', 'Cosine', { min: -1, max: 1, fraction: 100, derived: true }),
+      V('s', 'sin θ', 'Sine', { min: -1, max: 1, fraction: 100, derived: true }),
+      V('t', 'θ', 'Angle', { unit: '°', min: 0, max: 360, derived: true }),
+    ],
+    rules: [
+      limit(
+        'tan θ matches the quadrant',
+        'The sign of {m} fits quadrant {Q}',
+        ['m', 'Q'],
+        (v) => (v.Q === 1 || v.Q === 3 ? v.m! >= 0 : v.m! <= 0),
+        'Tangent is positive in quadrants I and III and negative in II and IV.',
+      ),
+      derive(
+        'sec θ = ±√(1 + tan²θ)',
+        'S',
+        ['m', 'Q'],
+        '{S} = (−1)^⌊{Q} ÷ 2⌋ × √(1 + ({m})²)',
+        (v) => (v.Q === 1 || v.Q === 4 ? 1 : -1) * Math.sqrt(1 + v.m! ** 2),
+        (v) => (v.Q === 1 || v.Q === 4 ? '√(1 + ({m})²)' : '−√(1 + ({m})²)'),
+        (v) =>
+          v.Q === 1 || v.Q === 4
+            ? 'sec²θ = 1 + tan²θ; secant is positive in this quadrant.'
+            : 'sec²θ = 1 + tan²θ; secant is negative in quadrants II and III.',
+      ),
+      derive(
+        'cos θ = 1 ÷ sec θ',
+        'c',
+        ['S'],
+        '{c} = 1 ÷ {S}',
+        (v) => div(1, v.S!),
+        '1 ÷ {S}',
+        'Cosine is the reciprocal of secant.',
+      ),
+      derive(
+        'sin θ = tan θ × cos θ',
+        's',
+        ['m', 'c'],
+        '{s} = {m} × {c}',
+        (v) => v.m! * v.c!,
+        '{m} × {c}',
+        'tan θ = sin θ ÷ cos θ, so multiply by cos θ.',
+      ),
+      derive(
+        'θ from tan θ and the quadrant',
+        't',
+        ['m', 'Q'],
+        '{t} = 180 × ⌊{Q} ÷ 2⌋ + tan⁻¹({m})',
+        (v) => {
+          const a = (Math.atan(v.m!) * 180) / PI;
+          return v.Q === 1 ? a : v.Q === 4 ? 360 + a : 180 + a;
+        },
+        (v) => (v.Q === 1 ? 'tan⁻¹({m})' : v.Q === 4 ? '360 + tan⁻¹({m})' : '180 + tan⁻¹({m})'),
+        (v) =>
+          v.Q === 1
+            ? 'In quadrant I the inverse tangent gives θ.'
+            : v.Q === 4
+              ? 'tan⁻¹ gives a negative angle; a full turn on lands in quadrant IV.'
+              : 'Tangent repeats every 180°: half a turn on from the inverse tangent.',
+      ),
+    ],
+    example: {
+      m: -2.4,
+      Q: 4,
+      S: 2.6,
+      c: 5 / 13,
+      s: -12 / 13,
+      t: 360 + (Math.atan(-2.4) * 180) / PI,
+    },
+    startWith: ['m', 'Q'],
+    pictureLabels: ['Q', 'S'],
+    representation: { kind: 'unitCircle', angle: 't', cos: 'c', sin: 's', tan: 'm', fixed: true },
   }),
 ];
