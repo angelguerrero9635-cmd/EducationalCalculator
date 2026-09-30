@@ -23,6 +23,7 @@ import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
+import { chemDiagramVars } from '../typesHs2d';
 import { hslSpecVars } from '../typesHsl';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { hs2cSpecVars } from '../typesHs2c';
@@ -533,6 +534,8 @@ function representationVars(r: Representation): string[] {
     case 'phScale':
     case 'decayChart':
       return hsjSpecVars(r);
+    case 'chemDiagram':
+      return chemDiagramVars(r);
     case 'earthLayers':
     case 'oceanProfile':
     case 'atmosphereLayers':

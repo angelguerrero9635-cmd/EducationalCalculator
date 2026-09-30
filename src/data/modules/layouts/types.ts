@@ -11,6 +11,7 @@ import type {
   NitrogenProcess,
 } from '../typesHsh';
 import type { GalvanicScene } from '../typesHsj';
+import type { CondensedCard, HydrationScene } from '../typesHs2d';
 import type {
   CurrentsScene,
   GreenhouseScene,
@@ -167,6 +168,8 @@ export type CardFigure =
   | Hs2bCard
   /** A motion diagram: dots one second apart, gaps to scale (H102, `strobeCard.ts`). */
   | StrobeCard
+  /** An organic molecule's condensed formula, its functional group lit (`typesHs2d.ts`, H101). */
+  | CondensedCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -643,6 +646,8 @@ export interface Scene {
     state?: 'solid' | 'liquid' | 'gas';
     after?: MoleculeItem[];
     afterState?: 'solid' | 'liquid' | 'gas';
+    /** Round 2: ions ringed by water, turned by charge (`typesHs2d.ts`, H101). */
+    hydration?: HydrationScene;
   };
   /**
    * The state lit on a `phases` figure and the change lit among its arrows (melting and

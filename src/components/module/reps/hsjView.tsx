@@ -6,6 +6,7 @@ import type { HsjSpec } from '@/data/modules/typesHsj';
 
 import type { Calculator } from '../useCalculator';
 import { DecayChart } from './DecayChart';
+import { EnergyLadder } from './EnergyLadder';
 import { EnergyProfile } from './EnergyProfile';
 import { EquilibriumChart } from './EquilibriumChart';
 import { GasFirstLaw } from './GasFirstLaw';
@@ -18,7 +19,11 @@ export function HsjView({ spec, calc }: { spec: HsjSpec; calc: Calculator }) {
       if (spec.energy) return <GasFirstLaw spec={spec} calc={calc} />;
       return <GasPiston spec={spec} calc={calc} />;
     case 'energyProfile':
-      return <EnergyProfile spec={spec} calc={calc} />;
+      return spec.mode === 'ladder' ? (
+        <EnergyLadder spec={spec} calc={calc} />
+      ) : (
+        <EnergyProfile spec={spec} calc={calc} />
+      );
     case 'equilibriumChart':
       return <EquilibriumChart spec={spec} calc={calc} />;
     case 'phScale':

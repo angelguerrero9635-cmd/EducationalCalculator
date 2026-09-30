@@ -49,6 +49,7 @@ import { hs2bIssues } from './picturesHs2b';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
+import { chemDiagramIssues, chemHs2dIssues, filledChem, moleMapHs2dIssues } from './picturesHs2d';
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
 import * as hsk from './picturesHsk';
@@ -1916,12 +1917,13 @@ export function repIssues(
       // Chemistry pictures draw fixed numbers in formula units (a time in hours still meets
       // spans in minutes), so they read every value in formula units.
       out.push(
-        ...chemIssues(rep, (x) => {
+        ...chemIssues(filledChem(rep, val), (x) => {
           const y = val(x);
           return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
         }),
       );
-      out.push(...chemHsiIssues(rep, (x) => val(x)));
+      out.push(...chemHsiIssues(filledChem(rep, val), (x) => val(x)));
+      out.push(...chemHs2dIssues(rep, (x) => val(x)));
       break;
     case 'lineSystem': {
       out.push(...hs2aIssues(rep, val));
@@ -2135,6 +2137,7 @@ export function repIssues(
     case 'vsepr':
     case 'moleMap':
       out.push(...hsiIssues(rep, (id) => val(id)));
+      if (rep.kind === 'moleMap') out.push(...moleMapHs2dIssues(rep, (id) => val(id)));
       break;
     case 'gasPiston':
     case 'energyProfile':
@@ -2143,6 +2146,9 @@ export function repIssues(
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
       if (rep.kind === 'gasPiston') out.push(...gasEnergyIssues(rep, siOf(val, byId)));
+      break;
+    case 'chemDiagram':
+      out.push(...chemDiagramIssues(rep, (id) => val(id)));
       break;
     case 'earthLayers':
     case 'oceanProfile':

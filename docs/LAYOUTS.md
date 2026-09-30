@@ -132,6 +132,17 @@ Chemistry reaction types (H49) are card icons in `layouts/icons/hi.tsx`: `synthe
 `decomposition reaction`, `single replacement reaction`, `double replacement reaction` and
 `combustion reaction`, lit atom balls with the reactants above an arrow and the products below.
 
+Grade 10 chemistry, round 2 (H101): a `molecules` scene's `hydration: { ions, waters?, crystal? }`
+(`layouts/hydrationFigure.tsx`) draws each ion ("Na+", "Cl-", "Mg2+") ringed by 4 to 8 water
+molecules turned by its charge (O toward a positive ion, an H toward a negative one, δ− and δ+
+marked), `crystal` adding the salt's lattice with its corner ions pulled off. Card figure
+`condensed` (`layouts/condensedCard.tsx`): `{ kind: 'condensed', formula, group }`, a condensed
+formula written with dashes ("CH3-C(=O)-O-CH2-CH3", the carbonyl's O drawn above) with its
+functional group lit (`alcohol`, `acid`, `ester`, `amine`, `ketone`, `aldehyde`, `ether`,
+`halide`). The `molecule` card now draws BF₃, CCl₄, CHCl₃ and CH₂O (`reps/chemLayoutsHs2d.ts`).
+Card icons for the models of the atom (`layouts/icons/h2d.tsx`): `Dalton atom model`, `Thomson
+atom model`, `Rutherford atom model`, `Bohr atom model`, `quantum atom model`.
+
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
 scale, with the sun on the line over the stick's top (higher for a shorter shadow); `sides`

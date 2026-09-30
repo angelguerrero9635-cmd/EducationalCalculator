@@ -169,6 +169,7 @@ const PICTURE_NAMES: Record<string, string> = {
   equilibriumChart: 'concentrations reaching equilibrium',
   phScale: 'pH scale or titration curve',
   decayChart: 'atoms decaying and the half-life curve',
+  chemDiagram: 'effusion, isotope abundance, oxidation numbers or a mass defect',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

@@ -19,6 +19,7 @@ import { convert, getUnit } from '@/engine/units';
 
 import type { BeakerSolution, GasState, HsjSpec, Nuclide } from '../typesHsj';
 import type { NumOrVar } from '../typesGraphs';
+import { ladderIssues } from './picturesHs2d';
 
 /** Equal to display rounding (values are read as shown, 4 decimals or 4 significant figures). */
 const near = (a: number, b: number, tol = 2e-3) =>
@@ -79,6 +80,10 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'energyProfile': {
+      if (rep.mode === 'ladder') {
+        out.push(...ladderIssues(rep, num));
+        break;
+      }
       if (rep.mode === 'calorimeter') {
         const [m, c, t1, t2] = [num(rep.mass), num(rep.heat), num(rep.start), num(rep.end)];
         if (m === undefined || c === undefined || t1 === undefined || t2 === undefined) break;

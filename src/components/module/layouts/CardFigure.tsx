@@ -18,6 +18,7 @@ import { MaterialIcon, inMaterials } from './cardIcons';
 import { Round3Icon } from './icons';
 import { isRound3Icon } from '@/data/modules/layouts/icons';
 import { MoleculeCard } from './chemFigures';
+import { CondensedCardView, condensedWidth } from './condensedCard';
 import {
   CellPartsCard,
   DotPlotCard,
@@ -68,6 +69,8 @@ export function figureWidth(f: Spec): number {
       return DIVISION_W;
     case 'strobe':
       return STROBE_W;
+    case 'condensed':
+      return condensedWidth(f);
     default:
       return S;
   }
@@ -334,6 +337,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <RockFigure texture={f.texture} ink={ink} shade={shade} />;
     case 'molecule':
       return <MoleculeCard formula={f.formula} w={w} h={S} />;
+    case 'condensed':
+      return <CondensedCardView f={f} ink={ink} shade={shade} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;

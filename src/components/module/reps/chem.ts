@@ -5,6 +5,8 @@
  * harness can use it too.
  */
 
+import { EXTRA_LAYOUTS } from './chemLayoutsHs2d';
+
 /**
  * Every element in order of atomic number: [symbol, name, standard atomic mass]. Masses are
  * the rounded standard values; a mass in brackets is the mass number of the longest-lived
@@ -475,7 +477,7 @@ const keyOf = (formula: string) =>
  * each bonded to its nearest neighbor inward, so the particle has the right atoms in it.
  */
 export function moleculeOf(formula: string): Molecule {
-  const known = LAYOUTS[keyOf(formula)] ?? LAYOUTS[formula];
+  const known = LAYOUTS[keyOf(formula)] ?? LAYOUTS[formula] ?? EXTRA_LAYOUTS[keyOf(formula)];
   if (known) return known;
   const atoms = parseFormula(formula).flatMap(({ el, n }) => Array<string>(n).fill(el));
   if (atoms.length === 0) return { atoms: [], bonds: [] };

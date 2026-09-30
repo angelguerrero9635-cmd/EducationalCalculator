@@ -17,6 +17,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { chargeSup } from './AtomModel';
+import { BranchedAlkane } from './BranchedAlkane';
 import { elementName, subscript } from './chem';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { reader } from './graphKit';
@@ -44,7 +45,11 @@ export function LewisStructure({ spec, calc }: { spec: LewisStructureSpec; calc:
     case 'metallic':
       return <Metallic spec={spec} calc={calc} />;
     case 'hydrocarbon':
-      return <Hydrocarbon spec={spec} calc={calc} />;
+      return spec.branches?.length ? (
+        <BranchedAlkane spec={spec} calc={calc} />
+      ) : (
+        <Hydrocarbon spec={spec} calc={calc} />
+      );
     default:
       return <Molecule spec={spec} calc={calc} />;
   }
