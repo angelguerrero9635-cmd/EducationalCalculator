@@ -93,11 +93,34 @@ const cellVoltage = fromPage(
   { kind: 'chemDiagram', mode: 'cell', cathode: 'Ec', anode: 'Ea', voltage: 'E' },
 );
 
+// ─── Part 6: a gas mixture colored by gas ────────────────────────────────────
+
+/** s.10.gas-laws~partial-pressure with the tank's gases drawn in their own colors. */
+const partialPressure = fromPage(
+  's.10.gas-laws~partial-pressure',
+  'g.s10-gas-laws-partial-pressure-mixture',
+  'Partial pressures in a gas mixture',
+  {
+    kind: 'gasPiston',
+    law: 'ideal',
+    mixture: {
+      gases: [
+        { formula: 'He', pressure: 'P1' },
+        { formula: 'O2', pressure: 'P2' },
+        { formula: 'N2', pressure: 'P3' },
+      ],
+      total: 'P',
+      fraction: 'x',
+    },
+  },
+);
+
 export const HS3E_GALLERY_MODULES: ModuleDef[] = [
   ionicCharges,
   phaseDiagram,
   averageRate,
   cellVoltage,
+  partialPressure,
 ];
 
 export const HS3E_GALLERY_LAYOUTS: LayoutDef[] = [];

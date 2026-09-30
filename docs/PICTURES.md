@@ -309,6 +309,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `projectile`       | `angle: 0` (a number)                    | a launch angle that never changes (level off a ledge): no handle (H105)       |
 | `freeBody`         | `displacement`, `work` (floor)           | d bracketed, F cos θ dashed; W = Fd cos θ in the caption (H102)               |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
+| `gasPiston`        | `mixture: { gases, total?, fraction? }`  | 24 particles shared by partial pressure, colored by gas; stacked P bar (H108) |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
 | `earthLayers`      | `mode: 'magnitude'`, `m1`, `m2`, …       | two seismograms to one scale; bars on a magnitude scale, 10^ΔM marked (H103)  |
 | `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | a ridge from above: polarity stripes mirrored, a rock at x km and t Ma (H103) |
