@@ -1029,6 +1029,85 @@ const pressureWeak: ModuleDef = {
   example: { H: 1016, Lw: 1008, D: 1000, dP: 8, G: 0.8 },
 };
 
+// ── H77: the greenhouse effect and climate zones ──
+
+const climateLayouts: LayoutDef[] = [
+  {
+    id: 'g.s12-climate-systems-greenhouse',
+    title: 'The greenhouse effect',
+    kind: 'explore',
+    use: 'Use this for how greenhouse gases keep Earth warm, and why more CO₂ warms it further.',
+    assumptions: [
+      'Sunlight is mostly visible light, which passes through the air; the ground absorbs it and warms.',
+      'The warm ground gives off infrared. Greenhouse gases such as water vapor, CO₂ and methane absorb infrared and send some back down.',
+      'Temperatures are Earth’s average at the surface.',
+    ],
+    figure: { kind: 'greenhouse' },
+    scenes: [
+      {
+        label: 'No greenhouse gases',
+        lines: [
+          'With no gases to absorb it, all the infrared escapes to space.',
+          'Earth’s surface would average about −18 °C, frozen over.',
+        ],
+        greenhouse: { view: 'energy', co2: 'none' },
+      },
+      {
+        label: 'Before 1750',
+        lines: [
+          'Greenhouse gases absorb some infrared and send it back down, warming the surface.',
+          'With about 280 ppm of CO₂, the surface averaged about 14 °C.',
+        ],
+        greenhouse: { view: 'energy', co2: 'preindustrial' },
+      },
+      {
+        label: 'Today',
+        lines: [
+          'Burning fossil fuels has raised CO₂ to about 420 ppm, so more infrared is sent back.',
+          'The surface has warmed about 1.2 °C since 1850.',
+        ],
+        greenhouse: { view: 'energy', co2: 'today' },
+      },
+    ],
+  },
+  {
+    id: 'g.s12-climate-systems-zones',
+    title: 'Climate zones by latitude',
+    kind: 'explore',
+    use: 'Use this for why it is warmer near the equator than near the poles.',
+    assumptions: [
+      'Near the equator the Sun is high, so its light falls on a small area; toward the poles the same light spreads over more.',
+      'The tropics lie between 23.5° N and 23.5° S, the polar zones beyond 66.5°, and the temperate zones between them.',
+    ],
+    figure: { kind: 'greenhouse' },
+    scenes: [
+      {
+        label: 'Two beams',
+        lines: [
+          'Each beam carries the same sunlight.',
+          'At 50° N it spreads over about 1.6 times the area it covers at the equator, so each square metre gets less.',
+        ],
+        greenhouse: { view: 'zones' },
+      },
+      {
+        label: 'Tropical',
+        lines: ['The Sun is high all year: warm every month.'],
+        greenhouse: { view: 'zones', lit: 'tropical' },
+      },
+      {
+        label: 'Temperate',
+        lines: ['The Sun’s height changes with the seasons: warm summers and cool winters.'],
+        greenhouse: { view: 'zones', lit: 'temperate' },
+      },
+      {
+        label: 'Polar',
+        lines: ['The Sun is always low, and absent for part of the winter: cold all year.'],
+        greenhouse: { view: 'zones', lit: 'polar' },
+      },
+    ],
+  },
+];
+
 export const HSL_GALLERY_MODULES: ModuleDef[] = [
   lapse,
   lapseTop,
@@ -1057,4 +1136,5 @@ export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [
   ...mineralLayouts,
   ...landformLayouts,
   ...currentsLayouts,
+  ...climateLayouts,
 ];

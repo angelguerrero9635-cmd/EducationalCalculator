@@ -238,11 +238,30 @@ export interface CurrentsScene {
   view: 'gyres' | 'conveyor';
 }
 
-export type HslFigure = { kind: 'mohsScale' } | { kind: 'landforms' } | { kind: 'oceanCurrents' };
+/**
+ * A `greenhouse` scene. `energy`: sunlight in, infrared out and some sent back by greenhouse
+ * gases, as many CO₂ molecules drawn as the `co2` level and the surface's mean temperature on a
+ * thermometer; `zones`: Earth at an equinox with the climate zones by latitude, the same beam of
+ * sunlight on a small patch at the equator and a large one near a pole.
+ */
+export interface GreenhouseScene {
+  view: 'energy' | 'zones';
+  /** No greenhouse gases, the air before 1750 (280 ppm CO₂), or today’s (about 420 ppm). */
+  co2?: 'none' | 'preindustrial' | 'today';
+  /** The zone lit (a `zones` view). */
+  lit?: 'tropical' | 'temperate' | 'polar';
+}
+
+export type HslFigure =
+  | { kind: 'mohsScale' }
+  | { kind: 'landforms' }
+  | { kind: 'oceanCurrents' }
+  | { kind: 'greenhouse' };
 
 /** The scene field each group L figure reads (for the layout tests). */
 export const HSL_SCENE_FIELD = {
   mohsScale: 'mohs',
   landforms: 'landform',
   oceanCurrents: 'currents',
+  greenhouse: 'greenhouse',
 } as const satisfies Record<HslFigure['kind'], string>;

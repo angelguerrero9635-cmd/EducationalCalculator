@@ -107,6 +107,7 @@ function FigureView({
     case 'mohsScale':
     case 'landforms':
     case 'oceanCurrents':
+    case 'greenhouse':
       return <HslFigureView figure={figure} scene={scene} />;
     case 'parts':
       if (figure.drawing) {

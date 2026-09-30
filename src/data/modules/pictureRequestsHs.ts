@@ -1163,12 +1163,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as a calculator kind in two modes. Layers: { kind: "atmosphereLayers", mode: "profile", altitude?: id (km), temperature?: id (°C), ground?: id or number (°C, default 15) }: temperature against altitude to 120 km (standard atmosphere, the troposphere cooling 6.5 °C per km from the ground’s temperature to 11 km), the troposphere, stratosphere with its ozone layer, mesosphere and thermosphere as bands, a point at the altitude dragged up and down. Example: { kind: "atmosphereLayers", mode: "profile", altitude: "h", temperature: "T", ground: "T0" } with T = T₀ − 6.5 × h (h up to 11 km). Pressure map: { kind: "atmosphereLayers", mode: "pressure", high: id, low: id (hPa), distance?: id (km, a scale bar between the centres), hemisphere?: "north" | "south" }: H and L with their pressures, isobars every 4 hPa (doubled until at most 16 fit), surface winds from high to low turned by the Coriolis effect (right in the north, left in the south) and 30° back toward the low by friction. Example: { kind: "atmosphereLayers", mode: "pressure", high: "H", low: "Lw", distance: "D" } with ΔP = H − L and G = ΔP ÷ D × 100. The harness checks the point sits on the line, the centres are the typed pressures, and the winds turn and cross the isobars the right way round the high and the low in each hemisphere.',
   },
-  ask(
-    'H77',
-    'greenhouse',
-    'Explore figure: sunlight in, infrared out and back; climate zones by latitude',
-    ['s.12.climate-systems'],
-  ),
+  {
+    ...ask(
+      'H77',
+      'greenhouse',
+      'Explore figure: sunlight in, infrared out and back; climate zones by latitude',
+      ['s.12.climate-systems'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s12-climate-systems-greenhouse', 'g.s12-climate-systems-zones'],
+    notes:
+      'Drawn (group HL) as an explore figure: { kind: "greenhouse" }, each scene greenhouse: { view: "energy", co2?: "none" | "preindustrial" | "today" } (sunlight in, some bounced off a cloud; infrared out from the ground as four wavy rays, 0, 2 or 3 of them absorbed by CO₂ molecules and sent back down; 0, 4 or 6 molecules; a thermometer at the mean surface temperature, −18, 14 or 15.2 °C) or { view: "zones", lit?: "tropical" | "temperate" | "polar" } (Earth at an equinox lit from the left, zones bounded at 23.5° and 66.5°, the night half shaded, one beam of sunlight on the equator and the same beam at 50° N spread over 1 ÷ cos 50° ≈ 1.6 times the area). Example scenes: { label: "Today", lines: [...], greenhouse: { view: "energy", co2: "today" } }, { label: "Polar", lines: [...], greenhouse: { view: "zones", lit: "polar" } }. The climate page’s feedback loops use the existing feedbackLoop figure (H41). The harness checks a zone is lit only on the zones view and CO₂ is set only on the energy view.',
+  },
   ask(
     'H78',
     'energySources',

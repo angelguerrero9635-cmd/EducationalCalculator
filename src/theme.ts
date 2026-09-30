@@ -308,6 +308,10 @@ const light = {
   atmoOzone: '#9BD3C0',
   pressureHigh: '#1D5FD1',
   pressureLow: '#D12F2F',
+  /** The greenhouse figure (H77): space, the air, and the tropical band. */
+  space: '#1E2340',
+  airBand: '#CFE7F7',
+  zoneTropical: '#F4B860',
   /** Grades 9–12 group D: sine and cosine legs on the unit circle, algebra tiles (positive and
    * negative), and a resultant vector. */
   unitCircleSine: '#D9480F',
@@ -585,6 +589,9 @@ const dark: Palette = {
   atmoOzone: '#3E7C68',
   pressureHigh: '#6EA0FF',
   pressureLow: '#FF6B6B',
+  space: '#0C0F22',
+  airBand: '#1E3A50',
+  zoneTropical: '#B9812F',
   unitCircleSine: '#FF8A5C',
   unitCircleCosine: '#3CCFAE',
   tilePositive: '#2F5F86',

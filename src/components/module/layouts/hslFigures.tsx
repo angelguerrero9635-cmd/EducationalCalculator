@@ -10,6 +10,7 @@ import type { HslFigure } from '@/data/modules/typesHsl';
 import { LandformsFigure } from './landformsFigure';
 import { MohsFigure } from './mohsFigure';
 import { CurrentsFigure } from './currentsFigure';
+import { GreenhouseFigure } from './greenhouseFigure';
 
 export function HslFigureView({
   figure,
@@ -25,5 +26,7 @@ export function HslFigureView({
       return <LandformsFigure kind={scene.landform?.kind ?? 'shield'} />;
     case 'oceanCurrents':
       return <CurrentsFigure view={scene.currents?.view ?? 'gyres'} />;
+    case 'greenhouse':
+      return <GreenhouseFigure scene={scene.greenhouse ?? { view: 'energy' }} />;
   }
 }

@@ -68,7 +68,9 @@ icons (`layouts/icons/hl.tsx`): `quartz`, `feldspar`, `mica`, `calcite`, `halite
 `hematite`. `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
 composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
 valley, a meander, an aquifer or a dune, its parts labeled. `oceanCurrents`
-(`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map.
+(`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map. `greenhouse`
+(`layouts/greenhouseFigure.tsx`): `greenhouse: { view: 'energy', co2? }` (sunlight in, infrared out
+and back, a thermometer) or `{ view: 'zones', lit? }` (climate zones by latitude).
 
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
