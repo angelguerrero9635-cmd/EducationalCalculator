@@ -21,8 +21,11 @@ interface Rule {
 /** Gathers rules into a module's `relations` and `steps`. */
 const rules = (...rs: Rule[]) => ({
   relations: rs.map((r) => r.relation),
-  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+  steps: Object.fromEntries(rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps])),
 });
+
+/** A rule that only places the picture: solved like any other, never shown as a step. */
+const hide = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, steps: {} });
 
 /** `rules`, with an order the story fixes (the top is at least the height now) first. */
 const withOrder = (order: Relation, ...rs: Rule[]) => {
@@ -278,23 +281,27 @@ const kinematicsPages: ModuleDef[] = [
         'Up is +, so the velocity is negative on the way down; the drop d is how far it fell.',
       ],
       variables: [
-        { ...ACC1, name: 'Acceleration of gravity', derived: true },
+        { ...ACC1, name: 'Acceleration of gravity', derived: true, hidden: true },
         { ...TIME, max: 30 },
-        { ...V1, name: 'Velocity (− is down)', min: -300, max: 0, derived: true },
+        { ...V1, name: 'Velocity', min: -300, max: 0, derived: true },
         q('d', 'd', 'Drop', 'm', 0, 5000, 0.01),
       ],
       ...rules(
-        fixed(
-          'a',
-          'a',
-          -G,
-          'Near Earth’s surface gravity speeds a falling object up by 9.8 m/s each second, downward.',
+        hide(
+          rule('a = v/t', '{a} = {v}/{t}', (v) => v.a! * v.t! - v.v!, {
+            a: [(v) => div(v.v!, v.t!), '{v}/{t}', ''],
+          }),
         ),
-        rule('v = at', '{v} = {a} × {t}', (v) => v.v! - v.a! * v.t!, {
+        rule('v = −gt', '{v} = −9.8 × {t}', (v) => v.v! + G * v.t!, {
           v: [
-            (v) => v.a! * v.t!,
-            '{a} × {t}',
-            'From rest, the velocity is the acceleration times the time.',
+            (v) => -G * v.t!,
+            '−9.8 × {t}',
+            'From rest, the velocity is g times the time, downward.',
+          ],
+          t: [
+            (v) => div(v.v!, -G),
+            '{v}/(−9.8)',
+            'Divide the velocity by −9.8 m/s² to count the seconds.',
           ],
         }),
         rule('d = ½gt²', '{d} = ½ × 9.8 × {t}²', (v) => v.d! - 0.5 * G * v.t! * v.t!, {
@@ -336,7 +343,13 @@ const kinematicsPages: ModuleDef[] = [
         'v² = v₀² + 2aΔx needs no time: use it when the time is not given.',
         'A stop is v = 0.',
       ],
-      variables: [{ ...V0, min: 0 }, { ...V1, min: 0, max: 100 }, ACC1, { ...DX, min: 0 }, TIME],
+      variables: [
+        { ...V0, min: 0 },
+        { ...V1, min: 0, max: 100 },
+        { ...ACC1, max: -0.1 },
+        { ...DX, min: 0 },
+        TIME,
+      ],
       ...rules(
         rule(
           'v² = v₀² + 2aΔx',
@@ -398,20 +411,20 @@ const kinematicsPages: ModuleDef[] = [
       assumptions: [
         'With a steady acceleration the position is x = x₀ + v₀t + ½at², a parabola against time.',
         'The slope of the tangent at a moment is the velocity at that moment.',
-        'Where the tangent is flat, the object stops for an instant and turns round.',
+        'Where the tangent is flat, it stops for an instant and turns round: type v₁ = 0 to find when.',
       ],
       variables: [
         q('p', 'x₀', 'Starting position', 'm', -1e4, 1e4, 0.1),
         V0,
         ACC1,
         { ...TIME, name: 'Time shown on the graph' },
-        V1,
+        { ...V1, derived: true, hidden: true },
         q('s', 't₁', 'Time of the tangent', 's', 0, 120, 0.1),
         q('w', 'v₁', 'Velocity at t₁ (the slope)', 'm/s', -500, 500, 0.01),
         q('x', 'x₁', 'Position at t₁', 'm', -1e5, 1e5, 0.01),
       ],
       ...rules(
-        velocityRule,
+        hide(velocityRule),
         rule('v₁ = v₀ + at₁', '{w} = {u} + {a} × {s}', (v) => v.w! - v.u! - v.a! * v.s!, {
           w: [
             (v) => v.u! + v.a! * v.s!,
@@ -630,6 +643,11 @@ const projectilePages: ModuleDef[] = [
               '{H} − {y}²/(2 × 9.8)',
               'Take the height gained from the top.',
             ],
+            y: [
+              (v) => (v.H! >= v.h! ? Math.sqrt(2 * G * (v.H! - v.h!)) : undefined),
+              '√(2 × 9.8 × ({H} − {h}))',
+              'At the top v_y is 0, so v_y² = 2g(H − h).',
+            ],
           },
         ),
       ),
@@ -662,7 +680,7 @@ const projectilePages: ModuleDef[] = [
         'No air resistance, and g = 9.8 m/s².',
       ],
       variables: [
-        { ...LAUNCH_ANGLE, derived: true },
+        { ...LAUNCH_ANGLE, derived: true, hidden: true },
         { ...LAUNCH_V, name: 'Speed off the edge' },
         { ...LAUNCH_H, name: 'Height of the ledge', min: 0.01 },
         FLIGHT,
@@ -673,7 +691,7 @@ const projectilePages: ModuleDef[] = [
         why: 'The launch is level on this page: θ = 0 is drawn but never changes.',
       },
       ...rules(
-        fixed('q', 'θ', 0, 'Rolled straight off the edge, the launch is level.'),
+        hide(fixed('q', 'θ', 0, 'Rolled straight off the edge, the launch is level.')),
         rule('T = √(2h/g)', '{T} = √(2 × {h}/9.8)', (v) => v.T! - Math.sqrt((2 * v.h!) / G), {
           T: [
             (v) => (v.h! >= 0 ? Math.sqrt((2 * v.h!) / G) : undefined),
@@ -808,7 +826,7 @@ const projectilePages: ModuleDef[] = [
       ],
       variables: [
         q('m', 'v', 'Speed', 'm/s', 0, 1000, 0.01),
-        q('t', 'θ', 'Angle above level', '°', 0, 360, 1),
+        q('t', 'θ', 'Direction, from east', '°', 0, 360, 1),
         q('x', 'vₓ', 'Horizontal velocity', 'm/s', -1000, 1000, 0.01),
         q('y', 'v_y', 'Vertical velocity', 'm/s', -1000, 1000, 0.01),
       ],
@@ -864,7 +882,7 @@ const frictionRule = product('f', 'k', 'N', 'f = μₖF_N', [
 ]);
 const newtonRule = rule('a = F_net ÷ m', '{a} = {n}/{m}', (v) => v.a! * v.m! - v.n!, {
   a: [(v) => div(v.n!, v.m!), '{n}/{m}', 'Newton’s second law: the net force over the mass.'],
-  n: [(v) => v.a! * v.m!, '{a} × {m}', 'The net force is the mass times the acceleration.'],
+  n: [(v) => v.a! * v.m!, '{m} × {a}', 'The net force is the mass times the acceleration.'],
   m: [(v) => div(v.n!, v.a!), '{n}/{a}', 'Divide the net force by the acceleration.'],
 });
 
