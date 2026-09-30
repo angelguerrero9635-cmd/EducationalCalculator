@@ -967,6 +967,73 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     },
   },
 
+  // ── Human impacts and resource management (HS-ESS3-1, HS-ESS3-2) ──
+  {
+    kind: 'sort',
+    id: 's.12.resource-management',
+    assumptions: [
+      'Renewable resources are replaced as fast as we use them.',
+      'Fossil fuels took millions of years to form.',
+    ],
+    question: 'Can people use it up?',
+    bins: [
+      {
+        id: 'renewable',
+        label: 'Renewable',
+        why: 'Sunlight, wind, rain, Earth’s heat and regrown trees keep coming as we use them.',
+      },
+      {
+        id: 'nonrenewable',
+        label: 'Nonrenewable',
+        why: 'Coal, oil, gas and uranium are dug or pumped from the ground, and there is a limited amount.',
+      },
+    ],
+    cards: [
+      { label: 'Solar panels', bin: 'renewable', figure: { kind: 'icon', icon: 'solar panel' } },
+      { label: 'Wind turbine', bin: 'renewable', figure: { kind: 'icon', icon: 'wind turbine' } },
+      { label: 'Hydroelectric dam', bin: 'renewable', figure: { kind: 'icon', icon: 'dam' } },
+      { label: 'Heat from deep underground', bin: 'renewable' },
+      { label: 'Wood from a replanted forest', bin: 'renewable' },
+      { label: 'Coal', bin: 'nonrenewable', figure: { kind: 'icon', icon: 'lumps of coal' } },
+      {
+        label: 'Oil from an oil rig',
+        bin: 'nonrenewable',
+        figure: { kind: 'icon', icon: 'oil rig' },
+      },
+      {
+        label: 'Natural gas',
+        bin: 'nonrenewable',
+        figure: { kind: 'icon', icon: 'gas stove flame' },
+      },
+      {
+        label: 'Nuclear power: uranium is mined and runs out',
+        bin: 'nonrenewable',
+        figure: { kind: 'icon', icon: 'nuclear power plant' },
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.12.resource-management~fossil-fuels',
+    title: 'How coal forms',
+    use: 'Use this for “Describe how fossil fuels such as coal form.”',
+    assumptions: [
+      'Oil and gas form the same way from tiny sea organisms buried in mud.',
+      'Each step takes millions of years, so fossil fuels are nonrenewable.',
+    ],
+    question: 'Put the steps in the formation of coal in order.',
+    stages: [
+      { label: 'Swamp plants die and sink into water with little oxygen' },
+      { label: 'Sediment buries them; they pack into peat' },
+      { label: 'Heat and pressure turn peat into lignite' },
+      { label: 'Deeper burial makes bituminous coal' },
+      {
+        label: 'Folding and more heat make anthracite',
+        figure: { kind: 'icon', icon: 'lumps of coal' },
+      },
+    ],
+  },
+
   // ── The solar system: formation, planets and small bodies (HS-ESS1-4, HS-ESS1-6) ──
   {
     kind: 'sequence',

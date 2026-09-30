@@ -718,6 +718,112 @@ const humidity: ModuleDef = {
   representation: { kind: 'percentBar', percent: 'RH', part: 'w', whole: 'ws', ticks: 10 },
 };
 
+// ── Human impacts and resource management (the main page is a sort) ──
+
+const pct = (id: string, symbol: string, name: string, derived = false) =>
+  V(id, symbol, name, { unit: '%', min: 0, max: 100, step: 1, integer: true, derived });
+
+/** t = the parts added, each way round. */
+const sumRel = (t: string, parts: string[], id: string, what: string): Rel => {
+  const rest = (p: string) => parts.filter((x) => x !== p);
+  return rule(
+    id,
+    `{${t}} = ${parts.map((p) => `{${p}}`).join(' + ')}`,
+    (v) => v[t]! - parts.reduce((s, p) => s + v[p]!, 0),
+    Object.fromEntries([
+      [
+        t,
+        [
+          (v: Values) => parts.reduce((s, p) => s + v[p]!, 0),
+          parts.map((p) => `{${p}}`).join(' + '),
+          `Add up the ${what} shares.`,
+        ],
+      ],
+      ...parts.map((p) => [
+        p,
+        [
+          (v: Values) => v[t]! - rest(p).reduce((s, q) => s + v[q]!, 0),
+          `{${t}} − ${rest(p)
+            .map((q) => `{${q}}`)
+            .join(' − ')}`,
+          `Take the other ${what} shares from the total.`,
+        ],
+      ]),
+    ]),
+  );
+};
+
+const energyMix: ModuleDef = {
+  id: 's.12.resource-management~energy-mix',
+  title: 'Where electricity comes from',
+  use: 'Use this for “What share of US electricity comes from fossil fuels, and what share is renewable?”',
+  assumptions: [
+    'Shares of US electricity in about 2023, rounded.',
+    'Oil makes almost no electricity; it fuels transport.',
+    'Biomass and geothermal are in other.',
+  ],
+  variables: [
+    pct('g', 'g', 'Natural gas'),
+    pct('n', 'n', 'Nuclear'),
+    pct('k', 'k', 'Coal'),
+    pct('w', 'w', 'Wind'),
+    pct('h', 'h', 'Hydroelectric'),
+    pct('s', 's', 'Solar'),
+    pct('o', 'o', 'Other sources', true),
+    pct('F', 'F', 'Fossil fuels', true),
+    pct('R', 'R', 'Renewable: wind, water and sun', true),
+  ],
+  ...rels(
+    sumRel('F', ['g', 'k'], 'F = g + k', 'fossil'),
+    sumRel('R', ['w', 'h', 's'], 'R = w + h + s', 'renewable'),
+    rule(
+      'o = 100 − F − n − R',
+      '{o} = 100 − {F} − {n} − {R}',
+      (v) => v.o! - (100 - v.F! - v.n! - v.R!),
+      {
+        o: [
+          (v) => 100 - v.F! - v.n! - v.R!,
+          '100 − {F} − {n} − {R}',
+          'Whatever is not fossil, nuclear or wind, water and sun is other.',
+        ],
+        F: [
+          (v) => 100 - v.o! - v.n! - v.R!,
+          '100 − {o} − {n} − {R}',
+          'Take the other sources from 100 %.',
+        ],
+        n: [
+          (v) => 100 - v.o! - v.F! - v.R!,
+          '100 − {o} − {F} − {R}',
+          'Take the other sources from 100 %.',
+        ],
+        R: [
+          (v) => 100 - v.o! - v.F! - v.n!,
+          '100 − {o} − {F} − {n}',
+          'Take the other sources from 100 %.',
+        ],
+      },
+    ),
+  ),
+  example: { g: 43, n: 19, k: 16, w: 10, h: 6, s: 4, o: 2, F: 59, R: 20 },
+  startWith: ['g', 'n', 'k', 'w', 'h', 's'],
+  pictureLabels: ['F', 'R'],
+  representation: {
+    kind: 'bars',
+    bars: [
+      { var: 'g', icon: 'gas stove flame' },
+      { var: 'n', icon: 'nuclear power plant' },
+      { var: 'k', icon: 'lumps of coal' },
+      { var: 'w', icon: 'wind turbine' },
+      { var: 'h', icon: 'dam' },
+      { var: 's', icon: 'solar panel' },
+      { var: 'o' },
+    ],
+    min: 0,
+    max: 50,
+    scale: 10,
+  },
+};
+
 // ── The solar system: formation, planets and small bodies ──
 
 const kepler: ModuleDef = {
@@ -1220,6 +1326,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   lapse,
   pressureMap,
   humidity,
+  energyMix,
   kepler,
   wien,
   doppler,

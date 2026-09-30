@@ -16,10 +16,16 @@ priority order of their main pages.
 - s.12.atmosphere-weather: 5 (main lapse rate, ~pressure, ~humidity; sequence ~hurricane, sort ~air-masses)
 - s.12.climate-systems: 5 (main greenhouse explore, ~zones and ~feedbacks explores, sort ~carbon,
   observe ~co2-record)
+- s.12.resource-management: 3 (main renewable sort, ~energy-mix, sequence ~fossil-fuels)
 - s.12.solar-system: 3 (main Kepler; sequence ~formation, sort ~planet-types)
 - s.12.starlight-spectra: 4 (main Wien, ~doppler, ~telescope; sort ~space-telescopes)
 - s.12.stellar-evolution: 5 (main H–R diagram, ~fusion; sequences ~sunlike, ~massive; sort ~elements)
 - s.12.cosmology: 5 (main Hubble’s law, ~redshift, ~stretch; sort ~galaxies, sequence ~big-bang)
+
+57 pages: 22 calculators (8 mains, 14 problem types) and 35 layouts (5 mains, 30 problem types).
+The order of work was the plan's priority order of the mains (the 8 calculator mains, then the
+5 layout mains), each skill finished and committed before the next; both files list the pages
+in taxonomy order.
 
 ## Waiting
 
@@ -27,8 +33,19 @@ priority order of their main pages.
   `magnitude`).
 - s.12.earth-interior~spreading-rate: need 3 (a ridge with magnetic stripes, `oceanProfile` mode
   `stripes`).
+- s.12.surface-processes~discharge: need 4 (a stream channel cross-section: width × depth with
+  the flow speed as an arrow).
+- s.12.atmosphere-weather~cloud-base: need 5 (a rising air parcel, `atmosphereLayers` mode
+  `parcel`).
+- s.12.climate-systems~energy-balance: need 6 (the `greenhouse` energy view as a calculator,
+  driven by S and α).
+- s.12.resource-management~reserves: need 7 (a reserve drawn down year by year).
 - s.12.starlight-spectra~lines: need 8 (spectra side by side: the star’s strip over the H, He
   and Na reference strips).
+- s.12.stellar-evolution~lifetime: need 10 (`hrDiagram` option `mass`).
+
+Built with a planned interim: the climate main's "Ash and smoke" scene says in its lines what
+need 8's `particles` option would draw (the energy view has no aerosol particles yet).
 
 ## Changed from the plan
 
@@ -67,6 +84,15 @@ priority order of their main pages.
   and λ from 600 nm. The page works d = v ÷ H₀, which gives a negative distance for a
   blueshift; blueshifts stay on ~doppler. H₀ is an input (50–100, opening at 70), not a fixed
   value, for the reason under ~uranium.
+- s.12.stellar-evolution~fusion: the `decayChart` equation mode has no `fixed` option; the
+  equation 4 ¹H → ⁴He + 2 e⁺ is drawn from constants, and L, m and H are `pictureLabels`.
+- s.12.resource-management~energy-mix: o (other) is worked out, like F and R, from
+  o = 100 − F − n − R; a bar for it joins the six icon bars.
+- Sort cards, sequence stages and scene lines follow the plan; where the plan gave only a
+  label, the bins' `why` sentences, scene lines and the second assumption the layout test asks
+  of each problem type (~deformation, ~mountain-building) are new.
+- Units stay fixed labels (km/s, hPa, °C, K, years, million years, AU, Mpc, L☉, R☉), as the plan
+  decided (need 1).
 
 ## Shared needs found while building
 
