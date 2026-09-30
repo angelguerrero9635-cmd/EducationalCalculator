@@ -207,8 +207,9 @@ span: 10`). start s (0–9 cm, `multipleOf: 0.01`), end e (0.01–10 cm, `multip
 - **Main — BUILD `s.10.bonding`:** lewisStructure molecule, g.s10-bonding-water, `atoms: { H: 'h',
 C: 'c', N: 'n', O: 'o' }`, `valence: 'V', bonding: 'b', lone: 'l'`, `sliders: true`. Values: H
   atoms h (0–4), C atoms c (0–1), N atoms n (0–2), O atoms o (0–2), valence electrons
-  V = h + 4c + 5n + 6o, shared pairs b and lone pairs l (derived from the drawn structure),
-  relation V = 2 × (b + l). Assumptions: "Each atom but hydrogen ends with 8 electrons around it;
+  V = h + 4c + 5n + 6o, shared pairs b = (2h + 8(c + n + o) − V) ÷ 2 (electrons needed minus
+  electrons on hand, halved; the lesson review's change from a lookup of the drawn structure),
+  lone pairs l, relation V = 2 × (b + l). Assumptions: "Each atom but hydrogen ends with 8 electrons around it;
   hydrogen with 2." "A shared pair counts for both atoms." "Two or three shared pairs make a
   double or triple bond." Example H₂O: h 2, o 1 → V 8, b 2, l 2. Other drawn counts: NH₃ (V 8, b 3,
   l 1), CH₄ (8, 4, 0), CO₂ (16, 4, 4), HCN (10, 4, 1). Counts with no drawing wait on need 12.
@@ -285,10 +286,13 @@ nonmetal: 'Cl', metals: 'a', nonmetals: 'b', transferred: 't'`). Values a (1–3
 
 - **Main — BUILD `s.10.reaction-types` (sort):** promote g.s10-reaction-types-sort. Bins synthesis,
   decomposition, single replacement, double replacement, combustion, each card `{ kind: 'icon',
-icon: '<bin> reaction' }` as the demo, plus equation cards: 2Mg + O₂ → 2MgO; 2H₂O₂ → 2H₂O + O₂;
+icon: '<bin> reaction' }` as the demo, plus equation cards: 2Na + Cl₂ → 2NaCl (not 2Mg + O₂ → 2MgO, which is also a combustion); 2H₂O₂ → 2H₂O + O₂;
   Fe + CuSO₄ → FeSO₄ + Cu; AgNO₃ + NaCl → AgCl + NaNO₃; C₂H₅OH + 3O₂ → 2CO₂ + 3H₂O (each
   balanced, checked). Sentence: "The pattern of what joins, splits or swaps names the type."
-- **~combustion — BUILD:** equationInput `{a:coef} C₃H₈ + {b:coef} O₂ → {c:coef} CO₂ + {d:coef}
+- **~combustion — REBUILT after the lesson review** as the general alkane page (x carbons,
+  y = 2x + 2, a = 1 or 2, c = ax, d = ay/2, b = c + d/2; `lewisStructure` hydrocarbon picture),
+  with `~combustion-alkene` beside it (y = 2x; C₅H₁₀: 2, 15, 10, 10). The original propane page:
+- **~combustion (first build) — BUILD:** equationInput `{a:coef} C₃H₈ + {b:coef} O₂ → {c:coef} CO₂ + {d:coef}
 H₂O` (g.s10-reaction-types-coefficient-one) and reaction picture with the atom tally. Value a
   (1–6, integer), b = 5a, c = 3a, d = 4a. Steps balance C, then H, then O last. Example a 1:
   C₃H₈ + 5O₂ → 3CO₂ + 4H₂O (C 3 = 3, H 8 = 8, O 10 = 6 + 4). After need 1: carbons x (1–8),
@@ -726,3 +730,53 @@ bond: 'single', hydrogens: 'h'`), `sliders: true`. Values n (1–8), h = 2n + 2.
    12, 13.
 4. Then the lesson review (`pnpm review -- --prefix s.10. --stage lesson`) with the NAEP refiles
    applied, so each question is checked against the page it belongs to.
+
+## Added skills
+
+Two skills added to the taxonomy after the plan (`TAXONOMY_ISSUES.md`, "Grades 9–12 topics
+without a skill"), and pages for the three widened titles. Built in `science/10.ts` and
+`layouts/science10.ts` with pictures that exist; wanted pictures are in `docs/build/s.10.md`.
+
+### 18. s.10.phase-colligative — Phase changes, vapor pressure and colligative properties
+
+- **Standard:** HS-PS1-3 (bulk properties from the forces between particles).
+- **Textbooks:** OpenStax Chemistry 2e 10.3–10.4 (phase transitions, phase diagrams) and 11.4
+  (colligative properties); Savvas Experience 10.4. Practice: molality from a percent, a boiling
+  point rise with K_b, a molar mass from ΔT.
+- **Released questions:** NAEP-2005-12S13-#6 (an egg boiled high on a mountain) → the
+  boiling-point sort.
+- **Main page, "Freezing and boiling points of a solution":** n (mol), w (kg of water),
+  b = n ÷ w (mol/kg), i (1, 2 or 3), ΔTf = i × 1.86 × b, Tf = 0 − ΔTf, ΔTb = i × 0.512 × b,
+  Tb = 100 + ΔTb. Example by hand: 0.25 mol CaCl₂ in 0.5 kg → b = 0.5; ΔTf = 3 × 1.86 × 0.5 =
+  2.79, Tf = −2.79 °C; ΔTb = 3 × 0.512 × 0.5 = 0.768, Tb = 100.768 °C. Picture: `heatingCurve`
+  with the plateaus at Tf and Tb (a hidden start 10 °C below Tf). No `use` line (main page).
+- **`~vapor-pressure`, "Vapor pressure of a solution":** n = n₁ + n₂, x = n₁ ÷ n,
+  P = x × P°, ΔP = P° − P. Example: 9.5 mol water + 0.5 mol glucose → x = 0.95;
+  P = 0.95 × 23.8 = 22.61 mmHg; ΔP = 1.19 mmHg. Picture: `pieChart` of the moles. Use: “Glucose
+  is dissolved in water. How much does the vapor pressure drop?”
+- **`~boiling-point` (sort):** raises / lowers / no change (salt, sugar, a pressure cooker, a
+  mountain, a vacuum jar, a bigger burner, a bigger pot).
+- **`~phase-heat` (sort):** takes heat in / gives heat off, one card per phase change.
+
+### 19. s.10.entropy-free-energy — Entropy, free energy and spontaneity
+
+- **Standard:** HS-PS3-4 (energy spreads out), with HS-PS1-4.
+- **Textbooks:** OpenStax Chemistry 2e ch. 16 (spontaneity, entropy, the second law, free
+  energy) and 17.4; Savvas Experience 12.4. Practice: predict the sign of ΔS, ΔG and spontaneity.
+- **Released questions:** none.
+- **Main page, "ΔG = ΔH − TΔS":** ΔH (kJ/mol), ΔS (J/(mol·K)), T (K), ΔG = ΔH − T × ΔS ÷ 1000;
+  a work line says spontaneous or not. Example by hand: 50 − 300 × 200 ÷ 1000 = 50 − 60 =
+  −10 kJ/mol, spontaneous. Picture: `functionGraph`, the line ΔG against T (slope −ΔS ÷ 1000,
+  hidden) with the point at T.
+- **`~crossover`, "The temperature where it turns spontaneous":** T = 1000 × ΔH ÷ ΔS, a limit
+  that ΔH and ΔS share a sign. Example: 1000 × 60 ÷ 150 = 400 K, spontaneous above it. Picture:
+  the same line with its zero marked.
+- **`~entropy-sign` (sort):** ΔS up or down (melting, dissolving, gas made or used up).
+- **`~spontaneity` (sort):** the four sign cases of ΔH and ΔS.
+
+### Widened titles
+
+- **`s.10.reaction-types~activity-series` (sort):** predicting a single replacement from the
+  activity series (reacts / no reaction).
+- **`s.10.redox~electrolysis` (sort):** galvanic or electrolytic cell.
+- **`s.10.organic~polymers` (sort):** addition or condensation polymer.

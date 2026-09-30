@@ -22,20 +22,17 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
     question: 'Put the models of the atom in the order they were proposed.',
     stages: [
-      { label: 'Dalton (1803): atoms are solid spheres that can’t be split', span: 94 },
+      { label: 'Dalton: atoms are solid spheres that can’t be split', span: 94 },
       {
-        label: 'Thomson (1897): electrons found, stuck in a positive ball like plums in a pudding',
+        label: 'Thomson: electrons found, stuck in a positive ball like plums in a pudding',
         span: 14,
       },
-      {
-        label: 'Rutherford (1911): gold foil shows a tiny, dense, positive nucleus',
-        span: 2,
-      },
-      { label: 'Bohr (1913): electrons on fixed energy levels around the nucleus', span: 13 },
-      { label: 'Quantum model (1926): electrons in clouds of probability, still used today' },
+      { label: 'Rutherford: gold foil shows a tiny, dense, positive nucleus', span: 2 },
+      { label: 'Bohr: electrons on fixed energy levels around the nucleus', span: 13 },
+      { label: 'Quantum model: electrons in clouds of probability, still used today' },
     ],
     unit: 'years',
-    totalLabel: 'From Dalton to the quantum model',
+    totalLabel: 'From Dalton (1803) to the quantum model (1926)',
   },
 
   // ── The periodic table and periodic trends (HS-PS1-1, HS-PS1-2) ──
@@ -295,7 +292,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.10.reaction-types',
     assumptions: [
-      'Tap a card, then a group.',
+      'A fuel burning in oxygen makes carbon dioxide and water.',
       'Each colored ball is an atom; balls side by side are bonded.',
       'The pattern of what joins, splits or swaps names the type.',
     ],
@@ -333,11 +330,198 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
         bin,
         figure: { kind: 'icon' as const, icon: icon as CardIcon },
       })),
-      { label: '2Mg + O₂ → 2MgO', bin: 'synthesis' },
+      { label: '2Na + Cl₂ → 2NaCl', bin: 'synthesis' },
       { label: '2H₂O₂ → 2H₂O + O₂', bin: 'decomposition' },
       { label: 'Fe + CuSO₄ → FeSO₄ + Cu', bin: 'single' },
       { label: 'AgNO₃ + NaCl → AgCl + NaNO₃', bin: 'double' },
       { label: 'C₂H₅OH + 3O₂ → 2CO₂ + 3H₂O', bin: 'combustion' },
+    ],
+  },
+
+  {
+    kind: 'sort',
+    id: 's.10.reaction-types~activity-series',
+    title: 'Predicting a single replacement',
+    use: 'Use this for “Does zinc react with copper(II) sulfate, and what does it make?”',
+    assumptions: [
+      'A metal replaces another in a compound only when it is higher on the activity series: Mg, Al, Zn, Fe, Ni, Pb, H, Cu, Ag.',
+      'When it does, the metals trade places: Zn + CuSO₄ → ZnSO₄ + Cu.',
+      'A metal above hydrogen replaces it from an acid, giving H₂ gas.',
+    ],
+    question: 'Does the reaction happen?',
+    bins: [
+      {
+        id: 'reacts',
+        label: 'Reacts',
+        why: 'The free metal is more active, so it takes the other’s place.',
+      },
+      {
+        id: 'none',
+        label: 'No reaction',
+        why: 'The free metal is less active than the one in the compound.',
+      },
+    ],
+    cards: [
+      { label: 'Zn + CuSO₄', bin: 'reacts' },
+      { label: 'Fe + CuSO₄', bin: 'reacts' },
+      { label: 'Cu + AgNO₃', bin: 'reacts' },
+      { label: 'Mg + HCl', bin: 'reacts' },
+      { label: 'Al + FeCl₃', bin: 'reacts' },
+      { label: 'Cu + ZnSO₄', bin: 'none' },
+      { label: 'Ag + CuSO₄', bin: 'none' },
+      { label: 'Cu + HCl', bin: 'none' },
+      { label: 'Pb + MgCl₂', bin: 'none' },
+    ],
+  },
+
+  // ── Phase changes, vapor pressure and colligative properties (HS-PS1-3) ──
+  {
+    kind: 'sort',
+    id: 's.10.phase-colligative~boiling-point',
+    title: 'What moves the boiling point?',
+    use: 'Use this for “Why does an egg take longer to cook in boiling water high on a mountain?”',
+    assumptions: [
+      'Water boils when its vapor pressure matches the air pressure pushing on it.',
+      'Less air pressure: it boils sooner, at a lower temperature. More pressure: later, hotter.',
+      'A dissolved solute lowers the vapor pressure, so the water must get hotter before it boils.',
+    ],
+    question: 'Does the change raise or lower the temperature the water boils at?',
+    bins: [
+      {
+        id: 'raise',
+        label: 'Raises it',
+        why: 'The water must reach a higher vapor pressure, or its vapor pressure was lowered.',
+      },
+      {
+        id: 'lower',
+        label: 'Lowers it',
+        why: 'Less pressure pushes on the water, so it boils at a lower temperature.',
+      },
+      {
+        id: 'same',
+        label: 'No change',
+        why: 'It changes how fast the water heats, not the temperature it boils at.',
+      },
+    ],
+    cards: [
+      { label: 'Stirring salt into the pot', bin: 'raise' },
+      { label: 'Stirring sugar into the pot', bin: 'raise' },
+      { label: 'Cooking in a sealed pressure cooker', bin: 'raise' },
+      { label: 'Cooking high on a mountain', bin: 'lower' },
+      { label: 'Pumping air out of a jar of water', bin: 'lower' },
+      { label: 'Turning up the burner', bin: 'same' },
+      { label: 'Using a bigger pot of the same water', bin: 'same' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.10.phase-colligative~phase-heat',
+    title: 'Phase changes: heat in or heat out?',
+    use: 'Use this for “Is freezing endothermic or exothermic?”',
+    assumptions: [
+      'Pulling particles apart takes energy: melting, evaporating and sublimation take heat in.',
+      'Particles coming together give that energy back: freezing, condensing and deposition give heat off.',
+    ],
+    question: 'Does the change take heat in or give heat off?',
+    bins: [
+      {
+        id: 'in',
+        label: 'Takes heat in (endothermic)',
+        why: 'The particles pull apart into a freer state.',
+      },
+      {
+        id: 'out',
+        label: 'Gives heat off (exothermic)',
+        why: 'The particles settle closer together into a more ordered state.',
+      },
+    ],
+    cards: [
+      { label: 'Melting: ice in a drink', bin: 'in' },
+      { label: 'Evaporation: sweat drying on skin', bin: 'in' },
+      { label: 'Sublimation: dry ice turning straight to gas', bin: 'in' },
+      { label: 'Boiling: water in a kettle', bin: 'in' },
+      { label: 'Freezing: water in an ice tray', bin: 'out' },
+      { label: 'Condensation: steam fogging a mirror', bin: 'out' },
+      { label: 'Deposition: frost forming on a window', bin: 'out' },
+    ],
+  },
+
+  // ── Entropy, free energy and spontaneity (HS-PS3-4) ──
+  {
+    kind: 'sort',
+    id: 's.10.entropy-free-energy~entropy-sign',
+    title: 'Does entropy go up or down?',
+    use: 'Use this for “Predict the sign of ΔS when a gas forms from a solid.”',
+    assumptions: [
+      'Entropy measures how spread out the particles and their energy are: gas, then liquid, then solid.',
+      'More gas molecules after the arrow than before usually means entropy goes up.',
+    ],
+    question: 'Is ΔS positive or negative?',
+    bins: [
+      {
+        id: 'up',
+        label: 'Increases (ΔS > 0)',
+        why: 'The particles end up more spread out or freer to move.',
+      },
+      {
+        id: 'down',
+        label: 'Decreases (ΔS < 0)',
+        why: 'The particles end up more ordered or packed together.',
+      },
+    ],
+    cards: [
+      { label: 'Ice melts', bin: 'up' },
+      { label: 'Salt dissolves in water', bin: 'up' },
+      { label: 'Perfume spreads through a room', bin: 'up' },
+      { label: 'CaCO₃(s) → CaO(s) + CO₂(g)', bin: 'up' },
+      { label: '2H₂O₂(l) → 2H₂O(l) + O₂(g)', bin: 'up' },
+      { label: 'Water vapor condenses', bin: 'down' },
+      { label: 'A gas is squeezed into a smaller volume', bin: 'down' },
+      { label: 'N₂(g) + 3H₂(g) → 2NH₃(g)', bin: 'down' },
+      { label: 'Ag⁺(aq) + Cl⁻(aq) → AgCl(s)', bin: 'down' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.10.entropy-free-energy~spontaneity',
+    title: 'When is it spontaneous?',
+    use: 'Use this for “A reaction has ΔH > 0 and ΔS > 0. When is it spontaneous?”',
+    assumptions: [
+      'ΔG = ΔH − TΔS, and a reaction is spontaneous when ΔG is below 0.',
+      'The signs of ΔH and ΔS decide; when they pull opposite ways, the temperature settles it.',
+    ],
+    question: 'When is the change spontaneous?',
+    bins: [
+      {
+        id: 'always',
+        label: 'At every temperature',
+        why: 'ΔH < 0 and ΔS > 0: both terms make ΔG negative.',
+      },
+      {
+        id: 'never',
+        label: 'At no temperature',
+        why: 'ΔH > 0 and ΔS < 0: both terms make ΔG positive.',
+      },
+      {
+        id: 'low',
+        label: 'Only at low temperature',
+        why: 'ΔH < 0 and ΔS < 0: −TΔS grows with T until it outweighs ΔH.',
+      },
+      {
+        id: 'high',
+        label: 'Only at high temperature',
+        why: 'ΔH > 0 and ΔS > 0: −TΔS must grow big enough to beat ΔH.',
+      },
+    ],
+    cards: [
+      { label: 'ΔH < 0, ΔS > 0', bin: 'always' },
+      { label: 'Wood burning to gases (gives off heat, makes gas)', bin: 'always' },
+      { label: 'ΔH > 0, ΔS < 0', bin: 'never' },
+      { label: 'Oxygen turning to ozone, 3O₂ → 2O₃ (takes in heat)', bin: 'never' },
+      { label: 'ΔH < 0, ΔS < 0', bin: 'low' },
+      { label: 'Water freezing', bin: 'low' },
+      { label: 'ΔH > 0, ΔS > 0', bin: 'high' },
+      { label: 'Ice melting', bin: 'high' },
     ],
   },
 
@@ -557,6 +741,39 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  {
+    kind: 'sort',
+    id: 's.10.redox~electrolysis',
+    title: 'Galvanic or electrolytic cell?',
+    use: 'Use this for “How is an electrolytic cell different from a battery?”',
+    assumptions: [
+      'In both cells oxidation happens at the anode and reduction at the cathode.',
+      'A galvanic cell runs a spontaneous reaction and makes electricity; an electrolytic cell uses electricity to drive one that would not go by itself.',
+    ],
+    question: 'Which kind of cell is it?',
+    bins: [
+      {
+        id: 'galvanic',
+        label: 'Galvanic (makes electricity)',
+        why: 'A reaction that goes by itself pushes electrons through the wire.',
+      },
+      {
+        id: 'electrolytic',
+        label: 'Electrolytic (uses electricity)',
+        why: 'A power supply pushes electrons the uphill way.',
+      },
+    ],
+    cards: [
+      { label: 'A flashlight battery running', bin: 'galvanic' },
+      { label: 'A zinc–copper cell lighting a bulb', bin: 'galvanic' },
+      { label: 'E°cell is positive', bin: 'galvanic' },
+      { label: 'Recharging a phone battery', bin: 'electrolytic' },
+      { label: 'Splitting water into H₂ and O₂', bin: 'electrolytic' },
+      { label: 'Silver-plating a spoon', bin: 'electrolytic' },
+      { label: 'Making aluminum from molten Al₂O₃', bin: 'electrolytic' },
+      { label: 'Needs an outside power supply', bin: 'electrolytic' },
+    ],
+  },
   // ── Organic chemistry: hydrocarbons and functional groups ──
   {
     kind: 'sort',
@@ -593,6 +810,40 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  {
+    kind: 'sort',
+    id: 's.10.organic~polymers',
+    title: 'Addition or condensation polymer?',
+    use: 'Use this for “Is nylon an addition polymer or a condensation polymer?”',
+    assumptions: [
+      'A polymer is a long chain of small units, monomers, joined end to end.',
+      'Addition: monomers with a C=C double bond open it and link up, losing nothing.',
+      'Condensation: two groups join and give off a small molecule, usually water.',
+    ],
+    question: 'How are the monomers joined?',
+    bins: [
+      {
+        id: 'addition',
+        label: 'Addition polymer',
+        why: 'Each monomer’s double bond opens to link to the next; every atom stays.',
+      },
+      {
+        id: 'condensation',
+        label: 'Condensation polymer',
+        why: 'Each link gives off a small molecule such as water.',
+      },
+    ],
+    cards: [
+      { label: 'Polyethylene, from ethene (CH₂=CH₂)', bin: 'addition' },
+      { label: 'PVC, from vinyl chloride (CH₂=CHCl)', bin: 'addition' },
+      { label: 'Polystyrene, from styrene', bin: 'addition' },
+      { label: 'Teflon, from CF₂=CF₂', bin: 'addition' },
+      { label: 'Nylon, from a diamine and a diacid', bin: 'condensation' },
+      { label: 'Polyester (PET), from an acid and an alcohol', bin: 'condensation' },
+      { label: 'A protein, from amino acids', bin: 'condensation' },
+      { label: 'Starch, from glucose', bin: 'condensation' },
+    ],
+  },
   // ── Nuclear chemistry (HS-PS1-8) ──
   {
     kind: 'sort',
@@ -601,7 +852,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     use: 'Use this for “Which equation shows fission?” and “Why is fusion a cleaner source of energy than fission?”',
     assumptions: [
       'Mass numbers and atomic numbers balance in every nuclear equation.',
-      'Fusion’s fuel is hydrogen from water and it leaves little long-lived waste; fission leaves radioactive waste.',
+      'Fusion’s fuel, deuterium, comes from seawater, and it leaves little long-lived waste; fission leaves waste that stays radioactive for thousands of years.',
     ],
     question: 'What kind of nuclear change is it?',
     bins: [
@@ -615,14 +866,14 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       { id: 'fusion', label: 'Fusion', why: 'Light nuclei join into a heavier one.' },
     ],
     cards: [
-      { label: '²²⁶Ra → ²²²Rn + ⁴He', bin: 'alpha' },
+      { label: '²²⁶₈₈Ra → ²²²₈₆Rn + ⁴₂He', bin: 'alpha' },
       { label: 'Gives off a helium-4 nucleus', bin: 'alpha' },
-      { label: '³H → ³He + e⁻', bin: 'beta' },
+      { label: '³₁H → ³₂He + ⁰₋₁e', bin: 'beta' },
       { label: 'A neutron becomes a proton', bin: 'beta' },
-      { label: '²³⁵U + n → ¹⁴⁴Ba + ⁸⁹Kr + 3n', bin: 'fission' },
+      { label: '²³⁵₉₂U + ¹₀n → ¹⁴⁴₅₆Ba + ⁸⁹₃₆Kr + 3¹₀n', bin: 'fission' },
       { label: 'A heavy nucleus splits', bin: 'fission' },
       { label: 'Runs today’s nuclear power plants', bin: 'fission' },
-      { label: '²H + ³H → ⁴He + n', bin: 'fusion' },
+      { label: '²₁H + ³₁H → ⁴₂He + ¹₀n', bin: 'fusion' },
       { label: 'Light nuclei join', bin: 'fusion' },
       { label: 'Powers the Sun', bin: 'fusion' },
     ],
