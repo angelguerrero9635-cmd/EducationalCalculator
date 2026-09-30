@@ -14,6 +14,8 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 - `m.12.chi-square` (2): main (goodness of fit, 3 categories), `~independence` (2 × 3 table).
 - `m.12.conics` (5): main (ellipse), `~parabola`, `~hyperbola`, `~identify` (sort), `~cone`
   (explore).
+- `m.12.matrices` (5): main (row reduction, right sides typed), `~multiply`, `~determinant`
+  (3 × 3), `~inverse`, `~cramer`.
 
 ## Waiting
 
@@ -42,6 +44,15 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 
 - **Conic centers are standalone.** On the ellipse and hyperbola pages h and k only place the
   curve (c, e and the slope come from a and b), so they are marked `standalone`.
+
+- **Row reduction as the reduced rows.** The main matrices page's three relations are the rows
+  after the plan's row operations (x + y + z = d₁, y − 2z = d₃ − d₁, −7z = d₂ − 5d₁ + 3d₃), so
+  the steps read as back-substitution: z, then y, then x. The coefficients stay fixed (need 3).
+- **Interim pictures for the determinant and Cramer pages (need 5).** A page must have a
+  picture, and "none drawn" is not a kind: `~determinant` shows a table of D as the last entry k
+  changes (D moves by ae − bd each step), and `~cramer` plots the solution (x, y) where the two
+  lines cross. Both switch to the determinant picture when need 5 lands.
+- **`~inverse` keeps rows (need 4 interim)**; its picture multiplies A by A⁻¹ to show I.
 
 ## Shared needs found while building
 

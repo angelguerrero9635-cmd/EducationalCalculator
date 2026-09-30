@@ -1199,4 +1199,397 @@ const MATH_12_CONICS: ModuleDef[] = [
   },
 ];
 
-export const MATH_12_MODULES: ModuleDef[] = [...MATH_12_STATS, ...MATH_12_CONICS];
+// ── Matrices ──
+
+const entry = (id: string, symbol: string, name: string, range = 1000) =>
+  V(id, symbol, name, { min: -range, max: range, step: 0.01 });
+
+/** The 3 × 3 determinant expanded along the first row. */
+const det3 = (v: Values) =>
+  v.a! * (v.e! * v.k! - v.f! * v.h!) -
+  v.b! * (v.d! * v.k! - v.f! * v.g!) +
+  v.c! * (v.d! * v.h! - v.e! * v.g!);
+const DET3 =
+  '{a} × ({e} × {k} − {f} × {h}) − {b} × ({d} × {k} − {f} × {g}) + {c} × ({d} × {h} − {e} × {g})';
+
+const MATH_12_MATRICES: ModuleDef[] = [
+  // ── m.12.matrices (A-REI.8, A-REI.9, N-VM.6–12) ──
+  {
+    id: 'm.12.matrices',
+    assumptions: [
+      'The system x + y + z = d₁, 2x − y + z = d₂, x + 2y − z = d₃ as an augmented matrix; type the right sides.',
+      'Each row operation keeps the same solutions; the goal is zeros under the diagonal, then back-substitution.',
+      'A row that reads 0 = a number that is not 0 means the system has no solution.',
+    ],
+    variables: [
+      real('d1', 'd₁', 'First right side', -1000, 1000),
+      real('d2', 'd₂', 'Second right side', -1000, 1000),
+      real('d3', 'd₃', 'Third right side', -1000, 1000),
+      real('x', 'x', 'x', -10000, 10000),
+      real('y', 'y', 'y', -10000, 10000),
+      real('z', 'z', 'z', -10000, 10000),
+    ],
+    ...rels(
+      rel(
+        'Row 3: −7z = d₂ − 5d₁ + 3d₃',
+        '−7 × {z} = {d2} − 5 × {d1} + 3 × {d3}',
+        ['z', 'd1', 'd2', 'd3'],
+        (v) => -7 * v.z! - (v.d2! - 5 * v.d1! + 3 * v.d3!),
+        {
+          z: [
+            (v) => (v.d2! - 5 * v.d1! + 3 * v.d3!) / -7,
+            '({d2} − 5 × {d1} + 3 × {d3}) ÷ (−7)',
+            'After the row operations the last row has only z: divide by −7.',
+          ],
+          d1: [
+            (v) => (v.d2! + 3 * v.d3! + 7 * v.z!) / 5,
+            '({d2} + 3 × {d3} + 7 × {z}) ÷ 5',
+            'Solve the last row for d₁.',
+          ],
+          d2: [
+            (v) => 5 * v.d1! - 3 * v.d3! - 7 * v.z!,
+            '5 × {d1} − 3 × {d3} − 7 × {z}',
+            'Solve the last row for d₂.',
+          ],
+          d3: [
+            (v) => (-7 * v.z! - v.d2! + 5 * v.d1!) / 3,
+            '(−7 × {z} − {d2} + 5 × {d1}) ÷ 3',
+            'Solve the last row for d₃.',
+          ],
+        },
+      ),
+      rel(
+        'Row 2: y − 2z = d₃ − d₁',
+        '{y} − 2 × {z} = {d3} − {d1}',
+        ['y', 'z', 'd1', 'd3'],
+        (v) => v.y! - 2 * v.z! - (v.d3! - v.d1!),
+        {
+          y: [
+            (v) => v.d3! - v.d1! + 2 * v.z!,
+            '{d3} − {d1} + 2 × {z}',
+            'Put z into the second row (after the swap) and add 2z to both sides.',
+          ],
+          z: [
+            (v) => (v.y! - v.d3! + v.d1!) / 2,
+            '({y} − {d3} + {d1}) ÷ 2',
+            'Solve the second row for z.',
+          ],
+          d3: [
+            (v) => v.y! - 2 * v.z! + v.d1!,
+            '{y} − 2 × {z} + {d1}',
+            'Solve the second row for d₃.',
+          ],
+        },
+      ),
+      rel(
+        'Row 1: x + y + z = d₁',
+        '{x} + {y} + {z} = {d1}',
+        ['x', 'y', 'z', 'd1'],
+        (v) => v.x! + v.y! + v.z! - v.d1!,
+        {
+          x: [
+            (v) => v.d1! - v.y! - v.z!,
+            '{d1} − {y} − {z}',
+            'Put y and z into the first row and take them from both sides.',
+          ],
+          d1: [(v) => v.x! + v.y! + v.z!, '{x} + {y} + {z}', 'Add the three unknowns.'],
+          z: [(v) => v.d1! - v.x! - v.y!, '{d1} − {x} − {y}', 'Take x and y from d₁.'],
+        },
+      ),
+    ),
+    example: { d1: 6, d2: 3, d3: 2, x: 1, y: 2, z: 3 },
+    startWith: ['d1', 'd2', 'd3'],
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'rowReduce',
+      system: [
+        [1, 1, 1, 'd1'],
+        [2, -1, 1, 'd2'],
+        [1, 2, -1, 'd3'],
+      ],
+      steps: [
+        { add: 2, from: 1, times: -2 },
+        { add: 3, from: 1, times: -1 },
+        { swap: [2, 3] },
+        { add: 3, from: 2, times: 3 },
+        { scale: 3, by: -1 / 7 },
+      ],
+      solution: ['x', 'y', 'z'],
+    },
+  },
+  {
+    id: 'm.12.matrices~multiply',
+    title: 'A matrix times a vector',
+    use: 'Use this for “Multiply [[2, 1], [3, 4]] by the column (5, −1).”',
+    assumptions: [
+      'Each row of the matrix times the column gives one entry: across the row, down the column.',
+      'The matrix must have as many columns as the vector has rows.',
+    ],
+    variables: [
+      entry('a', 'a', 'Row 1, column 1'),
+      entry('b', 'b', 'Row 1, column 2'),
+      entry('c', 'c', 'Row 2, column 1'),
+      entry('d', 'd', 'Row 2, column 2'),
+      entry('x', 'x', 'Vector, top'),
+      entry('y', 'y', 'Vector, bottom'),
+      entry('p', 'p', 'Answer, top', 2000000),
+      entry('q', 'q', 'Answer, bottom', 2000000),
+    ],
+    ...rels(
+      rel(
+        'p = ax + by',
+        '{p} = {a} × {x} + {b} × {y}',
+        ['p', 'a', 'x', 'b', 'y'],
+        (v) => v.p! - (v.a! * v.x! + v.b! * v.y!),
+        {
+          p: [
+            (v) => v.a! * v.x! + v.b! * v.y!,
+            '{a} × {x} + {b} × {y}',
+            'Row 1 times the column: multiply entry by entry, then add.',
+          ],
+        },
+      ),
+      rel(
+        'q = cx + dy',
+        '{q} = {c} × {x} + {d} × {y}',
+        ['q', 'c', 'x', 'd', 'y'],
+        (v) => v.q! - (v.c! * v.x! + v.d! * v.y!),
+        {
+          q: [
+            (v) => v.c! * v.x! + v.d! * v.y!,
+            '{c} × {x} + {d} × {y}',
+            'Row 2 times the column: multiply entry by entry, then add.',
+          ],
+        },
+      ),
+    ),
+    example: { a: 2, b: 1, c: 3, d: 4, x: 5, y: -1, p: 9, q: 11 },
+    startWith: ['a', 'b', 'c', 'd', 'x', 'y'],
+    equation: '[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] = [[{p}; {q}]]',
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'multiply',
+      a: [
+        ['a', 'b'],
+        ['c', 'd'],
+      ],
+      b: [['x'], ['y']],
+      product: [['p'], ['q']],
+    },
+  },
+  {
+    id: 'm.12.matrices~determinant',
+    title: 'Determinant of a 3 × 3 matrix',
+    use: 'Use this for “Find the determinant of [[2, 0, 1], [1, 3, 2], [1, 1, 4]].”',
+    assumptions: [
+      'Expand along the first row: each entry times the 2 × 2 determinant left when its row and column are crossed out.',
+      'The signs go +, −, + along the row.',
+      'D = 0 means the matrix has no inverse and its system has no single solution.',
+    ],
+    variables: [
+      entry('a', 'a', 'Row 1, column 1', 100),
+      entry('b', 'b', 'Row 1, column 2', 100),
+      entry('c', 'c', 'Row 1, column 3', 100),
+      entry('d', 'd', 'Row 2, column 1', 100),
+      entry('e', 'e', 'Row 2, column 2', 100),
+      entry('f', 'f', 'Row 2, column 3', 100),
+      entry('g', 'g', 'Row 3, column 1', 100),
+      entry('h', 'h', 'Row 3, column 2', 100),
+      entry('k', 'k', 'Row 3, column 3', 100),
+      { ...entry('D', 'D', 'Determinant', 10000000), derived: true },
+    ],
+    ...rels(
+      rel(
+        'D = a(ek − fh) − b(dk − fg) + c(dh − eg)',
+        `{D} = ${DET3}`,
+        ['D', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
+        (v) => v.D! - det3(v),
+        {
+          D: [det3, DET3, 'Each first-row entry times its 2 × 2 minor, with signs +, −, +.'],
+        },
+      ),
+    ),
+    example: { a: 2, b: 0, c: 1, d: 1, e: 3, f: 2, g: 1, h: 1, k: 4, D: 18 },
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
+    equation: '||{a}, {b}, {c}; {d}, {e}, {f}; {g}, {h}, {k}|| = {D}',
+    representation: {
+      kind: 'table',
+      sweep: 'k',
+      output: 'D',
+      params: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.k ?? 4) + i),
+    },
+  },
+  {
+    id: 'm.12.matrices~inverse',
+    title: 'Inverse of a 2 × 2 matrix',
+    use: 'Use this for “Find the inverse of [[4, 7], [2, 6]].”',
+    assumptions: [
+      'For A = [[a, b], [c, d]], swap a and d, change the signs of b and c, then divide by D = ad − bc.',
+      'A times its inverse is the identity [[1, 0], [0, 1]]: the picture multiplies them.',
+      'D = 0 means there is no inverse.',
+    ],
+    variables: [
+      entry('a', 'a', 'A, row 1, column 1'),
+      entry('b', 'b', 'A, row 1, column 2'),
+      entry('c', 'c', 'A, row 2, column 1'),
+      entry('d', 'd', 'A, row 2, column 2'),
+      V('D', 'D', 'Determinant ad − bc', {
+        min: -2000000,
+        max: 2000000,
+        step: 0.01,
+        derived: true,
+      }),
+      V('e', 'e', 'A⁻¹, row 1, column 1', {
+        min: -1000000,
+        max: 1000000,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('f', 'f', 'A⁻¹, row 1, column 2', {
+        min: -1000000,
+        max: 1000000,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('g', 'g', 'A⁻¹, row 2, column 1', {
+        min: -1000000,
+        max: 1000000,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('h', 'h', 'A⁻¹, row 2, column 2', {
+        min: -1000000,
+        max: 1000000,
+        step: 0.0001,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      derive(
+        'D = ad − bc',
+        '{D} = {a} × {d} − {b} × {c}',
+        'D',
+        ['a', 'd', 'b', 'c'],
+        (v) => v.a! * v.d! - v.b! * v.c!,
+        '{a} × {d} − {b} × {c}',
+        'Multiply down the main diagonal and take away the other diagonal.',
+      ),
+      derive(
+        'e = d ÷ D',
+        '{e} = {d} ÷ {D}',
+        'e',
+        ['d', 'D'],
+        (v) => div(v.d!, v.D!),
+        '{d} ÷ {D}',
+        'Swap a and d: the top left of the inverse is d over D.',
+      ),
+      derive(
+        'f = −b ÷ D',
+        '{f} = −{b} ÷ {D}',
+        'f',
+        ['b', 'D'],
+        (v) => div(-v.b!, v.D!),
+        '−{b} ÷ {D}',
+        'Change the sign of b, then divide by D.',
+      ),
+      derive(
+        'g = −c ÷ D',
+        '{g} = −{c} ÷ {D}',
+        'g',
+        ['c', 'D'],
+        (v) => div(-v.c!, v.D!),
+        '−{c} ÷ {D}',
+        'Change the sign of c, then divide by D.',
+      ),
+      derive(
+        'h = a ÷ D',
+        '{h} = {a} ÷ {D}',
+        'h',
+        ['a', 'D'],
+        (v) => div(v.a!, v.D!),
+        '{a} ÷ {D}',
+        'Swap a and d: the bottom right of the inverse is a over D.',
+      ),
+    ),
+    example: { a: 4, b: 7, c: 2, d: 6, D: 10, e: 0.6, f: -0.7, g: -0.2, h: 0.4 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'multiply',
+      a: [
+        ['a', 'b'],
+        ['c', 'd'],
+      ],
+      b: [
+        ['e', 'f'],
+        ['g', 'h'],
+      ],
+    },
+  },
+  {
+    id: 'm.12.matrices~cramer',
+    title: 'Cramer’s rule for two equations',
+    use: 'Use this for “Solve 2x + 3y = 13 and x − y = −1 by Cramer’s rule.”',
+    assumptions: [
+      'D is the determinant of the coefficients, ad − bc; it must not be 0.',
+      'For x, put the right sides in the x column: x = (pd − bq) ÷ D. For y, in the y column: y = (aq − pc) ÷ D.',
+      'The point (x, y) is where the two lines cross.',
+    ],
+    variables: [
+      entry('a', 'a', 'x in the first'),
+      entry('b', 'b', 'y in the first'),
+      entry('p', 'p', 'Right side of the first'),
+      entry('c', 'c', 'x in the second'),
+      entry('d', 'd', 'y in the second'),
+      entry('q', 'q', 'Right side of the second'),
+      V('D', 'D', 'Determinant ad − bc', {
+        min: -2000000,
+        max: 2000000,
+        step: 0.01,
+        derived: true,
+      }),
+      V('x', 'x', 'Solution x', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
+      V('y', 'y', 'Solution y', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      derive(
+        'D = ad − bc',
+        '{D} = {a} × {d} − {b} × {c}',
+        'D',
+        ['a', 'd', 'b', 'c'],
+        (v) => v.a! * v.d! - v.b! * v.c!,
+        '{a} × {d} − {b} × {c}',
+        'The determinant of the coefficients: down the main diagonal, take away the other.',
+      ),
+      derive(
+        'x = (pd − bq) ÷ D',
+        '{x} = ({p} × {d} − {b} × {q}) ÷ {D}',
+        'x',
+        ['p', 'd', 'b', 'q', 'D'],
+        (v) => div(v.p! * v.d! - v.b! * v.q!, v.D!),
+        '({p} × {d} − {b} × {q}) ÷ {D}',
+        'Dx puts the right sides in the x column; divide it by D.',
+      ),
+      derive(
+        'y = (aq − pc) ÷ D',
+        '{y} = ({a} × {q} − {p} × {c}) ÷ {D}',
+        'y',
+        ['a', 'q', 'p', 'c', 'D'],
+        (v) => div(v.a! * v.q! - v.p! * v.c!, v.D!),
+        '({a} × {q} − {p} × {c}) ÷ {D}',
+        'Dy puts the right sides in the y column; divide it by D.',
+      ),
+    ),
+    example: { a: 2, b: 3, p: 13, c: 1, d: -1, q: -1, D: -5, x: 2, y: 3 },
+    startWith: ['a', 'b', 'p', 'c', 'd', 'q'],
+    equation: '{a}x + {b}y = {p}\n{c}x + {d}y = {q}',
+    representation: { kind: 'coordinatePlane', x: 'x', y: 'y', extent: 10, quadrants: 4 },
+  },
+];
+
+export const MATH_12_MODULES: ModuleDef[] = [
+  ...MATH_12_STATS,
+  ...MATH_12_CONICS,
+  ...MATH_12_MATRICES,
+];
