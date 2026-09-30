@@ -143,6 +143,10 @@ const pick = (
   };
 };
 
+/** The sign between two numbers as a relation box: 1 <, 3 >, 5 = (equal to 9 digits). */
+const signOf = (x: number, y: number) =>
+  Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(y)) ? 5 : x < y ? 1 : 3;
+const SIGN_TEXT: Record<number, string> = { 1: '<', 3: '>', 5: '=' };
 /** x² + y² = z², solved for any one. */
 const pythagoras = (x: string, y: string, z: string, why: string) =>
   rule(
@@ -650,6 +654,122 @@ const SIMILARITY: ModuleDef[] = [
       width: 'ab',
       height: 'ac',
       splitter: { base: ['de', 'bc'] },
+    },
+  }),
+  page({
+    id: 'm.10.similarity~splitter-converse',
+    title: 'Is DE parallel to BC?',
+    use: 'Use this for “D is on AB and E is on AC; AD = 4, DB = 6, AE = 6 and EC = 9. Is DE parallel to BC?”',
+    assumptions: [
+      'D is on side AB and E is on side AC.',
+      'Converse of the side-splitter theorem: DE ∥ BC exactly when AD ÷ DB = AE ÷ EC.',
+      'Unequal ratios mean DE tilts toward BC and would meet it.',
+    ],
+    variables: [
+      len('ad', 'AD', 'AD'),
+      len('db', 'DB', 'DB'),
+      len('ae', 'AE', 'AE'),
+      len('ec', 'EC', 'EC'),
+      der(len('ab', 'AB', 'Side AB', 2000)),
+      der(len('ac', 'AC', 'Side AC', 2000)),
+      der(num('u', 'u', 'Ratio AD ÷ DB', 0, 1e5, { fraction: 100 })),
+      der(num('w', 'w', 'Ratio AE ÷ EC', 0, 1e5, { fraction: 100 })),
+      der(num('g', 'g', 'Sign (1 <, 3 >, 5 =)', 1, 5, { step: 1, integer: true })),
+      // Where C and E sit: side AC drawn at 60° to AB.
+      ...['cx', 'cy', 'ex', 'ey'].map((id) => ({
+        ...num(id, id, id, -1e4, 1e4),
+        derived: true,
+        hidden: true,
+      })),
+    ],
+    rules: [
+      sum('ab', 'ad', 'db', 'Side AB is AD and DB put together.'),
+      sum('ac', 'ae', 'ec', 'Side AC is AE and EC put together.'),
+      derive(
+        'u = AD ÷ DB',
+        '{u} = {ad} ÷ {db}',
+        'u',
+        (v) => quot(v.ad!, v.db!),
+        '{ad} ÷ {db}',
+        'How many times DB fits in AD.',
+      ),
+      derive(
+        'w = AE ÷ EC',
+        '{w} = {ae} ÷ {ec}',
+        'w',
+        (v) => quot(v.ae!, v.ec!),
+        '{ae} ÷ {ec}',
+        'How many times EC fits in AE.',
+      ),
+      {
+        relation: {
+          id: 'g = sign between u and w',
+          display: 'sign {g} between {u} and {w}',
+          vars: ['g', 'u', 'w'],
+          check: (v: Values) => `${signOf(v.u!, v.w!)} = ${v.g}`,
+          residual: (v: Values) => v.g! - signOf(v.u!, v.w!),
+          solve: { g: (v: Values) => signOf(v.u!, v.w!), u: () => undefined, w: () => undefined },
+        },
+        steps: {
+          g: {
+            expr: (v: Values) => `${signOf(v.u!, v.w!)}`,
+            how: (v: Values) =>
+              signOf(v.u!, v.w!) === 5
+                ? 'The ratios are equal, so DE is parallel to BC: the converse of the side-splitter theorem.'
+                : 'The ratios differ, so DE is not parallel to BC.',
+            note: (v: Values) => `(${SIGN_TEXT[signOf(v.u!, v.w!)]})`,
+          },
+        },
+      },
+      ...(
+        [
+          ['cx', 'ac', 0.5],
+          ['cy', 'ac', Math.sqrt(3) / 2],
+          ['ex', 'ae', 0.5],
+          ['ey', 'ae', Math.sqrt(3) / 2],
+        ] as const
+      ).map(([x, side, f]) =>
+        rule(
+          `${x} = ${f} ${side}`,
+          `{${x}} = ${f} × {${side}}`,
+          { [x]: [(v: Values) => f * v[side]!, '', ''] },
+          (v) => v[x]! - f * v[side]!,
+          {
+            hidden: true,
+          },
+        ),
+      ),
+    ],
+    example: {
+      ad: 4,
+      db: 6,
+      ae: 6,
+      ec: 9,
+      ab: 10,
+      ac: 15,
+      u: 2 / 3,
+      w: 2 / 3,
+      g: 5,
+      cx: 7.5,
+      cy: 7.5 * Math.sqrt(3),
+      ex: 3,
+      ey: 3 * Math.sqrt(3),
+    },
+    startWith: ['ad', 'db', 'ae', 'ec'],
+    equation: '{ad}/{db} {g:relation} {ae}/{ec}',
+    representation: {
+      kind: 'markedFigure',
+      points: { A: [0, 0], B: ['ab', 0], C: ['cx', 'cy'], D: ['ad', 0], E: ['ex', 'ey'] },
+      parts: [
+        { segment: 'AB' },
+        { segment: 'AC' },
+        { segment: 'BC' },
+        { segment: 'DE' },
+        { label: 'AD', value: 'ad' },
+        { label: 'DB', value: 'db' },
+        { label: 'AE', value: 'ae' },
+        { label: 'EC', value: 'ec' },
+      ],
     },
   }),
   page({
@@ -1466,11 +1586,6 @@ const COORDINATES: ModuleDef[] = [
 
 // ─── m.10.special-right-triangles ────────────────────────────────────────────
 
-/** The sign between two numbers as a relation box: 1 <, 3 >, 5 = (equal to 9 digits). */
-const signOf = (x: number, y: number) =>
-  Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(y)) ? 5 : x < y ? 1 : 3;
-const SIGN_TEXT: Record<number, string> = { 1: '<', 3: '>', 5: '=' };
-
 const SPECIAL: ModuleDef[] = [
   page({
     id: 'm.10.special-right-triangles',
@@ -2128,6 +2243,111 @@ const VOLUME: ModuleDef[] = [
       area: 'A',
     },
   }),
+  page({
+    id: 'm.10.volume-derivations~pyramid-surface',
+    title: 'Surface area of a pyramid',
+    use: 'Use this for “A square pyramid has base side 6 cm and height 4 cm. Find its slant height and surface area.”',
+    assumptions: [
+      'The base is a square with side b; the four side faces are equal triangles.',
+      'The slant height ℓ is each triangle’s height: the hypotenuse of legs h and b ÷ 2.',
+      'So S = b² + 4 × ½ × b × ℓ = b² + 2bℓ.',
+    ],
+    variables: [
+      cm('b', 'b', 'Base side'),
+      cm('h', 'h', 'Height'),
+      cm('l', 'ℓ', 'Slant height', 1500),
+      num('S', 'S', 'Surface area', 0, 1e8, { unit: 'cm²', units: ['mm²', 'cm²', 'm²'] }),
+    ],
+    rules: [
+      rule(
+        'ℓ² = h² + (b/2)²',
+        '{l}² = {h}² + ({b} ÷ 2)²',
+        {
+          l: [
+            (v) => Math.hypot(v.h!, v.b! / 2),
+            '√({h}² + ({b} ÷ 2)²)',
+            'The slant height is the hypotenuse over the middle of a base edge.',
+          ],
+          h: [
+            (v) => root(v.l! ** 2 - (v.b! / 2) ** 2),
+            '√({l}² − ({b} ÷ 2)²)',
+            'The height is a leg of the right triangle under the slant height.',
+          ],
+        },
+        (v) => v.l! ** 2 - v.h! ** 2 - (v.b! / 2) ** 2,
+      ),
+      rule(
+        'S = b² + 2bℓ',
+        '{S} = {b}² + 2 × {b} × {l}',
+        {
+          S: [
+            (v) => v.b! ** 2 + 2 * v.b! * v.l!,
+            '{b}² + 2 × {b} × {l}',
+            'The square base and four triangles, each ½ × b × ℓ.',
+          ],
+          l: [
+            (v) => quot(v.S! - v.b! ** 2, 2 * v.b!),
+            '({S} − {b}²) ÷ (2 × {b})',
+            'Take away the base; the four triangles are 2bℓ.',
+          ],
+        },
+        (v) => v.S! - v.b! ** 2 - 2 * v.b! * v.l!,
+      ),
+    ],
+    example: { b: 6, h: 4, l: 5, S: 96 },
+    startWith: ['b', 'h'],
+    unitSystems: ['metric'],
+    representation: { kind: 'net', solid: 'squarePyramid', length: 'b', slant: 'l', total: 'S' },
+  }),
+  page({
+    id: 'm.10.volume-derivations~density',
+    title: 'Density and modeling',
+    use: 'Use this for “A metal cylinder has radius 2 cm, height 5 cm and mass 170 g. Find its density.”',
+    assumptions: [
+      'Density is mass per unit of volume: ρ = m ÷ V.',
+      'Model the object as a solid you know: here a cylinder, V = πr²h.',
+      'One material has one density at any size, so ρ names the material: aluminum is about 2.7 g/cm³.',
+    ],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      cm('h', 'h', 'Height'),
+      num('V', 'V', 'Volume', 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'] }),
+      num('m', 'm', 'Mass', 0.001, 1e9, { unit: 'g', units: ['g', 'kg'] }),
+      num('rho', 'ρ', 'Density', 0.0001, 100, { unit: 'g/cm³', units: ['g/cm³', 'kg/m³'] }),
+    ],
+    rules: [
+      cylinderVolume,
+      rule(
+        'ρ = m ÷ V',
+        '{rho} = {m} ÷ {V}',
+        {
+          rho: [
+            (v) => quot(v.m!, v.V!),
+            '{m} ÷ {V}',
+            'Density is the mass in each cubic centimeter.',
+          ],
+          m: [(v) => v.rho! * v.V!, '{rho} × {V}', 'Each cubic centimeter has ρ grams: multiply.'],
+          V: [
+            (v) => quot(v.m!, v.rho!),
+            '{m} ÷ {rho}',
+            'How many cubic centimeters hold that mass.',
+          ],
+        },
+        (v) => v.rho! * v.V! - v.m!,
+      ),
+    ],
+    example: { r: 2, h: 5, V: 20 * Math.PI, m: 170, rho: 170 / (20 * Math.PI) },
+    startWith: ['r', 'h', 'm'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cylinder',
+      radius: 'r',
+      height: 'h',
+      volume: 'V',
+      extent: 6,
+    },
+  }),
 ];
 
 // ─── m.10.circle-theorems ────────────────────────────────────────────────────
@@ -2773,9 +2993,11 @@ const LAW_SINES_COSINES: ModuleDef[] = [
         // The comparison behind the count: (5 < 6 < 10).
         r.steps.n!.note = (v: Values) => {
           const [a, h, b] = [v.a!, v.h!, v.b!].map((x) => formatNumber(x));
-          return [`(a < h: ${a} < ${h})`, v.a! < v.b! ? `(a = h = ${a})` : `(a ≥ b: ${a} ≥ ${b})`, `(h < a < b: ${h} < ${a} < ${b})`][
-            ssaCount(v.a!, v.b!, v.A!)
-          ]!;
+          return [
+            `(a < h: ${a} < ${h})`,
+            v.a! < v.b! ? `(a = h = ${a})` : `(a ≥ b: ${a} ≥ ${b})`,
+            `(h < a < b: ${h} < ${a} < ${b})`,
+          ][ssaCount(v.a!, v.b!, v.A!)]!;
         };
         return r;
       })(),
@@ -3309,7 +3531,8 @@ const bothSides = (x: string) => {
     const [small, big, keep, gone] = left(v) ? [v.r!, v.p!, v.q!, v.s!] : [v.p!, v.r!, v.s!, v.q!];
     const k = big - small;
     // The x side and the number side, written in the equation's own order.
-    const eq = (xSide: string, n: number) => (left(v) ? `${xSide} = ${fmt(n)}` : `${fmt(n)} = ${xSide}`);
+    const eq = (xSide: string, n: number) =>
+      left(v) ? `${xSide} = ${fmt(n)}` : `${fmt(n)} = ${xSide}`;
     return [
       `${move(small, xs)}: ${eq(`${xs(k)}${plus(keep)}`, gone)}`,
       ...(keep ? [`${move(keep, fmt)}: ${eq(xs(k), gone - keep)}`] : []),
@@ -4139,7 +4362,11 @@ const RIGID_MOTIONS: ModuleDef[] = [
       num('h', 'h', 'Height', 1, 8, { step: 1, integer: true }),
       num('t', 't', 'Turn', 90, 360, { unit: '°', allowed: [90, 180, 270, 360] }),
       // The drawing's corners and center only place the rectangle on the grid.
-      { ...num('r', 'r', 'Right side at x =', 2, 9, { integer: true }), derived: true, hidden: true },
+      {
+        ...num('r', 'r', 'Right side at x =', 2, 9, { integer: true }),
+        derived: true,
+        hidden: true,
+      },
       { ...num('u', 'u', 'Top side at y =', 2, 9, { integer: true }), derived: true, hidden: true },
       { ...num('a', 'a', 'x of the center', 1.5, 5), derived: true, hidden: true },
       { ...num('b', 'b', 'y of the center', 1.5, 5), derived: true, hidden: true },
@@ -4190,15 +4417,15 @@ const RIGID_MOTIONS: ModuleDef[] = [
       ),
       (() => {
         const r = pick(
-        'f from t and n',
-        '{f}: does a turn of {t} carry it onto itself, order {n}',
-        'f',
-        (v) => (Math.round(v.t! * v.n!) % 360 === 0 ? 1 : 0),
-        (v) =>
-          Math.round(v.t! * v.n!) % 360 === 0
-            ? 'The turn is a whole number of 360° ÷ n steps: the figure lands on itself.'
-            : 'The turn is not a whole number of 360° ÷ n steps: the figure lands turned.',
-      );
+          'f from t and n',
+          '{f}: does a turn of {t} carry it onto itself, order {n}',
+          'f',
+          (v) => (Math.round(v.t! * v.n!) % 360 === 0 ? 1 : 0),
+          (v) =>
+            Math.round(v.t! * v.n!) % 360 === 0
+              ? 'The turn is a whole number of 360° ÷ n steps: the figure lands on itself.'
+              : 'The turn is not a whole number of 360° ÷ n steps: the figure lands turned.',
+        );
         r.steps.f!.note = (v: Values) => (v.f ? '(yes)' : '(no)');
         return r;
       })(),
@@ -4520,11 +4747,7 @@ const QUADRILATERALS: ModuleDef[] = [
       'Angles next to each other add to 180°, because the sides are parallel.',
       'Opposite angles are equal: m∠C = m∠A and m∠D = m∠B.',
     ],
-    variables: [
-      deg('A', 'm∠A', 'm∠A'),
-      der(deg('B', 'm∠B', 'm∠B')),
-      der(deg('C', 'm∠C', 'm∠C')),
-    ],
+    variables: [deg('A', 'm∠A', 'm∠A'), der(deg('B', 'm∠B', 'm∠B')), der(deg('C', 'm∠C', 'm∠C'))],
     rules: [
       supplement('A', 'B', 'Angles next to each other in a parallelogram add to 180°.'),
       equal('A', 'C', 'Opposite angles of a parallelogram are equal.'),
@@ -4742,6 +4965,63 @@ const QUADRILATERALS: ModuleDef[] = [
         labels: { AB: 's' },
       },
     },
+  }),
+  page({
+    id: 'm.10.quadrilaterals~regular-area',
+    title: 'Area of a regular polygon',
+    use: 'Use this for “A regular hexagon has sides of 4 cm. Find its apothem and its area.”',
+    assumptions: [
+      'A regular polygon has n equal sides; the apothem a runs from the center to a side’s midpoint, at right angles.',
+      'Lines to the corners cut it into n triangles of base s and height a, so K = ½ × a × P.',
+      'Each triangle’s angle at the center is 360° ÷ n; the apothem halves it: θ = 180° ÷ n.',
+    ],
+    variables: [
+      num('n', 'n', 'Number of sides', 3, 12, { step: 1, integer: true }),
+      len('s', 's', 'Side', 1000, { unit: 'cm', units: ['mm', 'cm', 'm'], min: 0.1 }),
+      len('P', 'P', 'Perimeter', 12000, { unit: 'cm', units: ['mm', 'cm', 'm'] }),
+      der(deg('t', 'θ', 'Half the angle at the center', 15, 60)),
+      der(len('a', 'a', 'Apothem', 5000, { unit: 'cm', units: ['mm', 'cm', 'm'] })),
+      der(num('K', 'K', 'Area', 0, 1e8, { unit: 'cm²', units: ['mm²', 'cm²', 'm²'] })),
+    ],
+    rules: [
+      rule(
+        'P = ns',
+        '{P} = {n} × {s}',
+        {
+          P: [(v) => v.n! * v.s!, '{n} × {s}', 'The perimeter is n equal sides of length s.'],
+          s: [(v) => quot(v.P!, v.n!), '{P} ÷ {n}', 'Share the perimeter among the n equal sides.'],
+        },
+        (v) => v.P! - v.n! * v.s!,
+      ),
+      derive(
+        'θ = 180° ÷ n',
+        '{t} = 180 ÷ {n}',
+        't',
+        (v) => 180 / v.n!,
+        '180 ÷ {n}',
+        'The n angles at the center make 360°, and the apothem cuts each in half.',
+      ),
+      derive(
+        'a = s ÷ (2 tan θ)',
+        '{a} = {s} ÷ (2 × tan({t}°))',
+        'a',
+        (v) => quot(v.s!, 2 * tan(v.t!)),
+        '{s} ÷ (2 × tan({t}°))',
+        'In the right triangle at the center, tan θ is half a side over the apothem.',
+      ),
+      derive(
+        'K = ½aP',
+        '{K} = {a} × {P} ÷ 2',
+        'K',
+        (v) => (v.a! * v.P!) / 2,
+        '{a} × {P} ÷ 2',
+        'The n triangles together: ½ × apothem × all their bases.',
+      ),
+    ],
+    example: { n: 6, s: 4, P: 24, t: 30, a: 2 * Math.sqrt(3), K: 24 * Math.sqrt(3) },
+    startWith: ['n', 's'],
+    unitSystems: ['metric'],
+    representation: { kind: 'polygon', sides: 'n', side: 's' },
   }),
 ];
 

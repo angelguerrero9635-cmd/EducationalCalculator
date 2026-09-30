@@ -152,6 +152,60 @@ const PROOFS: LayoutDef[] = [
     ],
   },
   {
+    kind: 'sort',
+    id: 'm.10.proofs~reasoning',
+    title: 'Inductive or deductive?',
+    use: 'Use this for “Is this conclusion reached by inductive or deductive reasoning?”',
+    assumptions: [
+      'Inductive reasoning sees a pattern in examples and guesses a rule: a conjecture, not yet proved.',
+      'Deductive reasoning starts from facts, definitions and rules already proved, so its conclusion must be true.',
+      'A proof is deductive; one counterexample is enough to break an inductive guess.',
+    ],
+    question: 'Which kind of reasoning reached the conclusion?',
+    bins: [
+      {
+        id: 'inductive',
+        label: 'Inductive (a pattern)',
+        why: 'It generalizes from the examples seen, so it could still fail.',
+      },
+      {
+        id: 'deductive',
+        label: 'Deductive (from facts and rules)',
+        why: 'Each step follows from a fact or rule, so the conclusion must hold.',
+      },
+    ],
+    cards: [
+      {
+        label:
+          'The angles of the five triangles Mia measured added to 180°, so every triangle’s do',
+        bin: 'inductive',
+      },
+      { label: '1, 4, 9, 16 are squares, so the next number in the list is 25', bin: 'inductive' },
+      {
+        label: 'The bus was late the last four Mondays, so it will be late next Monday',
+        bin: 'inductive',
+      },
+      {
+        label: 'Every odd number Leo tried, times itself, was odd, so every odd square is odd',
+        bin: 'inductive',
+      },
+      {
+        label: 'Vertical angles are congruent and ∠1 and ∠3 are vertical, so ∠1 ≅ ∠3',
+        bin: 'deductive',
+      },
+      {
+        label: 'A square is a rectangle and ABCD is a square, so ABCD is a rectangle',
+        bin: 'deductive',
+      },
+      { label: '2x + 3 = 11, so 2x = 8 (take 3 from both sides) and x = 4', bin: 'deductive' },
+      {
+        label:
+          'The angles of a triangle add to 180° and two of them are 50° and 60°, so the third is 70°',
+        bin: 'deductive',
+      },
+    ],
+  },
+  {
     kind: 'sequence',
     id: 'm.10.proofs~algebraic-proof',
     title: 'Reasons in an algebraic proof',
@@ -333,6 +387,31 @@ const TRIANGLE_RELATIONSHIPS: LayoutDef[] = [
       { label: 'Same distance from all three corners', bin: 'circumcenter' },
       { label: 'Center of the circle through the corners', bin: 'circumcenter' },
       { label: 'Altitudes meet', bin: 'orthocenter' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.10.triangle-relationships~angle-side-order',
+    title: 'Which angle is largest?',
+    use: 'Use this for “A triangle has sides 5, 7 and 9. Which angle is the largest? The smallest?”',
+    assumptions: [
+      'In a triangle, the largest angle is across from the longest side.',
+      'The smallest angle is across from the shortest side, and the middle one across from the middle side.',
+      'It works the other way too: the longest side is across from the largest angle.',
+    ],
+    question: 'Where does the angle rank in its triangle?',
+    bins: [
+      { id: 'largest', label: 'Largest angle', why: 'It is across from the longest side.' },
+      { id: 'middle', label: 'Middle angle', why: 'It is across from the middle side.' },
+      { id: 'smallest', label: 'Smallest angle', why: 'It is across from the shortest side.' },
+    ],
+    cards: [
+      { label: 'Sides 5, 7 and 9: the angle across from 9', bin: 'largest' },
+      { label: 'Sides 5, 7 and 9: the angle across from 7', bin: 'middle' },
+      { label: 'Sides 5, 7 and 9: the angle across from 5', bin: 'smallest' },
+      { label: 'Sides 4, 10 and 8: the angle across from 10', bin: 'largest' },
+      { label: 'Sides 4, 10 and 8: the angle across from 8', bin: 'middle' },
+      { label: 'Sides 4, 10 and 8: the angle across from 4', bin: 'smallest' },
     ],
   },
 ];
