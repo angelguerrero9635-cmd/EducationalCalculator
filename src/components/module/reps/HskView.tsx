@@ -10,6 +10,8 @@ import { Collision } from './Collision';
 import { FreeBody } from './FreeBody';
 import { HeatEngine } from './HeatEngine';
 import { Projectile } from './Projectile';
+import { RayLens } from './RayLens';
+import { RayRefraction, RaySlits, RayTelescope } from './RayOptics';
 import { SimpleMachine } from './SimpleMachine';
 
 export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
@@ -26,5 +28,18 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
       return <SimpleMachine spec={spec} calc={calc} />;
     case 'heatEngine':
       return <HeatEngine spec={spec} calc={calc} />;
+    case 'rayDiagram':
+      switch (spec.mode) {
+        case 'lens':
+        case 'mirror':
+          return <RayLens spec={spec} calc={calc} />;
+        case 'refraction':
+          return <RayRefraction spec={spec} calc={calc} />;
+        case 'doubleSlit':
+          return <RaySlits spec={spec} calc={calc} />;
+        case 'telescope':
+          return <RayTelescope spec={spec} calc={calc} />;
+      }
+      return null;
   }
 }

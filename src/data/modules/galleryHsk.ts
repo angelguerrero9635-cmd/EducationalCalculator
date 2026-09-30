@@ -1948,6 +1948,361 @@ const WAVE_DEMOS: ModuleDef[] = [
   }),
 ];
 
+// ─── H66 rayDiagram ──────────────────────────────────────────────────────────
+
+/** A lens or mirror page: 1/f = 1/dₒ + 1/dᵢ, m = −dᵢ/dₒ, hᵢ = m hₒ (f signed). */
+const opticsDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  mode: 'lens' | 'mirror',
+  shape: 'converging' | 'diverging' | 'concave' | 'convex',
+  ex: { f: number; o: number; h: number },
+): ModuleDef => {
+  const i = 1 / (1 / ex.f - 1 / ex.o);
+  const m = -i / ex.o;
+  const positive = shape === 'converging' || shape === 'concave';
+  return {
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions: [
+      ...assumptions,
+      'Signs: f is + for a converging lens or concave mirror, − for a diverging lens or convex mirror; dᵢ is + for a real image, − for a virtual one.',
+    ],
+    variables: [
+      positive
+        ? q('f', 'f', 'Focal length', 'cm', 0.1, 500, 0.1)
+        : q('f', 'f', 'Focal length (negative)', 'cm', -500, -0.1, 0.1),
+      q('o', 'dₒ', 'Object distance', 'cm', 1, 1000, 0.1),
+      q('i', 'dᵢ', 'Image distance', 'cm', -100000, 100000, 0.01),
+      q('m', 'm', 'Magnification', undefined, -1000, 1000, 0.001),
+      q('h', 'hₒ', 'Object height', 'cm', 0.1, 100, 0.1),
+      q('k', 'hᵢ', 'Image height', 'cm', -100000, 100000, 0.01),
+    ],
+    ...rules(
+      rule('1/f = 1/dₒ + 1/dᵢ', '1/{f} = 1/{o} + 1/{i}', (v) => 1 / v.f! - 1 / v.o! - 1 / v.i!, {
+        i: [
+          (v) => div(1, 1 / v.f! - 1 / v.o!),
+          '1/(1/{f} − 1/{o})',
+          'Take 1/dₒ from 1/f, then flip.',
+        ],
+        o: [
+          (v) => div(1, 1 / v.f! - 1 / v.i!),
+          '1/(1/{f} − 1/{i})',
+          'Take 1/dᵢ from 1/f, then flip.',
+        ],
+        f: [
+          (v) => div(1, 1 / v.o! + 1 / v.i!),
+          '1/(1/{o} + 1/{i})',
+          'Add 1/dₒ and 1/dᵢ, then flip.',
+        ],
+      }),
+      rule('m = −dᵢ/dₒ', '{m} = −{i}/{o}', (v) => v.m! * v.o! + v.i!, {
+        m: [
+          (v) => div(-v.i!, v.o!),
+          '−{i}/{o}',
+          'The magnification: negative means the image is upside down.',
+        ],
+        i: [(v) => -v.m! * v.o!, '−{m} × {o}', 'Undo m = −dᵢ/dₒ for dᵢ.'],
+      }),
+      product('k', 'm', 'h', 'hᵢ = m hₒ', [
+        'The image is m times as tall as the object.',
+        'Divide the image height by the object height.',
+        'Divide the image height by the magnification.',
+      ]),
+    ),
+    example: { ...ex, i, m, k: m * ex.h },
+    startWith: ['f', 'o', 'h'],
+    representation: {
+      kind: 'rayDiagram',
+      mode,
+      shape,
+      focal: 'f',
+      objectDistance: 'o',
+      objectHeight: 'h',
+      imageDistance: 'i',
+      magnification: 'm',
+      imageHeight: 'k',
+    },
+  };
+};
+
+const RAY_DEMOS: ModuleDef[] = [
+  opticsDemo(
+    'g.s11-optics-lens-real',
+    'A converging lens: a real image',
+    'Use this for “An object 30 cm from a lens with f = 10 cm: where is the image, and how big?”',
+    [
+      'Three rays from the object’s tip: parallel then through F′, straight through the center, and through F then parallel.',
+    ],
+    'lens',
+    'converging',
+    { f: 10, o: 30, h: 2 },
+  ),
+  opticsDemo(
+    'g.s11-optics-magnifier',
+    'A magnifying glass: a virtual image',
+    'Use this for “A coin 6 cm from a magnifying glass (f = 10 cm): what do you see?”',
+    [
+      'Inside the focal point the rays leave spreading apart: traced back, they meet behind the object in a bigger, upright, virtual image.',
+    ],
+    'lens',
+    'converging',
+    { f: 10, o: 6, h: 1 },
+  ),
+  opticsDemo(
+    'g.s11-optics-diverging',
+    'A diverging lens',
+    'Use this for “An object 20 cm from a diverging lens with f = −10 cm: where is the image?”',
+    [
+      'A diverging lens spreads rays out: its image is always virtual, upright and smaller, between F and the lens.',
+    ],
+    'lens',
+    'diverging',
+    { f: -10, o: 20, h: 2 },
+  ),
+  opticsDemo(
+    'g.s11-optics-concave',
+    'A concave mirror',
+    'Use this for “A candle 25 cm from a concave mirror with f = 10 cm: where does its image form?”',
+    [
+      'Rays: parallel then through F, through F then parallel, and through C (the center of curvature) straight back.',
+    ],
+    'mirror',
+    'concave',
+    { f: 10, o: 25, h: 2 },
+  ),
+  opticsDemo(
+    'g.s11-optics-convex',
+    'A convex mirror',
+    'Use this for “A car 20 cm from a convex mirror (f = −15 cm): how does it look?”',
+    [
+      'A convex mirror spreads light out: the image is behind it, virtual, upright and smaller, showing a wide view.',
+    ],
+    'mirror',
+    'convex',
+    { f: -15, o: 20, h: 2 },
+  ),
+  {
+    id: 'g.s11-optics-refraction',
+    title: 'Refraction: Snell’s law',
+    use: 'Use this for “Light enters water (n = 1.33) from air at 40° from the normal. At what angle does it travel in the water?”',
+    assumptions: [
+      'Light slows in glass or water; crossing at an angle, it bends.',
+      'n₁ sin θ₁ = n₂ sin θ₂, with angles measured from the normal (dashed).',
+    ],
+    variables: [
+      q('a', 'n₁', 'Index of the first medium', undefined, 1, 3, 0.01),
+      q('b', 'n₂', 'Index of the second medium', undefined, 1, 3, 0.01),
+      q('t', 'θ₁', 'Angle in', '°', 0, 89, 1),
+      q('s', 'sin θ₂', 'Sine of the angle out', undefined, 0, 1, 0.0001),
+      q('r', 'θ₂', 'Angle out', '°', 0, 90, 0.01),
+    ],
+    ...rules(
+      rule(
+        'sin θ₂ = (n₁/n₂) sin θ₁',
+        '{s} = {a}/{b} × sin({t})',
+        (v) => v.s! * v.b! - v.a! * Math.sin(v.t! * RAD),
+        {
+          s: [
+            (v) => div(v.a! * Math.sin(v.t! * RAD), v.b!),
+            '{a}/{b} × sin({t})',
+            'Snell’s law n₁ sin θ₁ = n₂ sin θ₂, solved for sin θ₂.',
+          ],
+          b: [(v) => div(v.a! * Math.sin(v.t! * RAD), v.s!), '{a}/{s} × sin({t})', 'Solve for n₂.'],
+          a: [(v) => div(v.b! * v.s!, Math.sin(v.t! * RAD)), '{b} × {s}/sin({t})', 'Solve for n₁.'],
+        },
+      ),
+      rule('θ₂ = arcsin(sin θ₂)', 'sin({r}) = {s}', (v) => Math.sin(v.r! * RAD) - v.s!, {
+        r: [
+          (v) => (v.s! > 1 ? undefined : Math.asin(v.s!) / RAD),
+          'arcsin({s})',
+          'The angle whose sine it is.',
+        ],
+        s: [(v) => Math.sin(v.r! * RAD), 'sin({r})', 'The sine of the angle out.'],
+      }),
+    ),
+    example: {
+      a: 1,
+      b: 1.33,
+      t: 40,
+      s: Math.sin(40 * RAD) / 1.33,
+      r: Math.asin(Math.sin(40 * RAD) / 1.33) / RAD,
+    },
+    startWith: ['a', 'b', 't'],
+    pictureLabels: ['s'],
+    representation: {
+      kind: 'rayDiagram',
+      mode: 'refraction',
+      n1: 'a',
+      n2: 'b',
+      angle: 't',
+      refracted: 'r',
+      media: ['air', 'water'],
+    },
+  },
+  {
+    id: 'g.s11-optics-total-internal',
+    title: 'Total internal reflection',
+    use: 'Use this for “Light in water hits the surface at 55°. Does any get out into the air?”',
+    assumptions: [
+      'Going into a faster medium the ray bends away from the normal; at the critical angle it skims the surface.',
+      'Past the critical angle sin θ₂ would be more than 1: all the light reflects. Optical fibers work this way.',
+    ],
+    variables: [
+      q('a', 'n₁', 'Index of the water', undefined, 1.01, 3, 0.01),
+      q('b', 'n₂', 'Index of the air', undefined, 1, 3, 0.01),
+      q('t', 'θ₁', 'Angle in', '°', 0, 89, 1),
+      q('c', 'θc', 'Critical angle', '°', 0, 90, 0.01),
+      q('s', 'sin θ₂', 'What sin θ₂ would be', undefined, 0, 5, 0.0001),
+    ],
+    ...rules(
+      rule('sin θc = n₂/n₁', 'sin({c}) = {b}/{a}', (v) => Math.sin(v.c! * RAD) * v.a! - v.b!, {
+        c: [
+          (v) => (v.b! > v.a! ? undefined : Math.asin(v.b! / v.a!) / RAD),
+          'arcsin({b}/{a})',
+          'At the critical angle θ₂ = 90°: sin θc = n₂/n₁.',
+        ],
+        b: [(v) => v.a! * Math.sin(v.c! * RAD), '{a} × sin({c})', 'Undo sin θc = n₂/n₁ for n₂.'],
+        a: [(v) => div(v.b!, Math.sin(v.c! * RAD)), '{b}/sin({c})', 'Undo sin θc = n₂/n₁ for n₁.'],
+      }),
+      rule(
+        'sin θ₂ = n₁ sin θ₁/n₂',
+        '{s} = {a}/{b} × sin({t})',
+        (v) => v.s! * v.b! - v.a! * Math.sin(v.t! * RAD),
+        {
+          s: [
+            (v) => div(v.a! * Math.sin(v.t! * RAD), v.b!),
+            '{a}/{b} × sin({t})',
+            'Snell’s law solved for sin θ₂: more than 1 means no ray gets out.',
+          ],
+          b: [(v) => div(v.a! * Math.sin(v.t! * RAD), v.s!), '{a}/{s} × sin({t})', 'Solve for n₂.'],
+        },
+      ),
+    ),
+    example: { a: 1.33, b: 1, t: 55, c: Math.asin(1 / 1.33) / RAD, s: 1.33 * Math.sin(55 * RAD) },
+    startWith: ['a', 'b', 't'],
+    representation: {
+      kind: 'rayDiagram',
+      mode: 'refraction',
+      n1: 'a',
+      n2: 'b',
+      angle: 't',
+      critical: 'c',
+      media: ['water', 'air'],
+    },
+  },
+  {
+    id: 'g.s11-optics-double-slit',
+    title: 'Double-slit interference',
+    use: 'Use this for “Red light (650 nm) passes two slits 0.25 mm apart onto a screen 2 m away. How far apart are the bright fringes?”',
+    assumptions: [
+      'Light from the two slits overlaps: bright where the waves arrive in step, dark where they cancel.',
+      'Bright fringes are Δy = λL/d apart (the screen far away compared with the slit spacing).',
+    ],
+    variables: [
+      q('l', 'λ', 'Wavelength', 'nm', 100, 2000, 1),
+      q('d', 'd', 'Slit spacing', 'mm', 0.01, 10, 0.01),
+      q('L', 'L', 'Distance to the screen', 'm', 0.1, 20, 0.1),
+      q('y', 'Δy', 'Fringe spacing', 'mm', 0.0001, 10000, 0.001),
+    ],
+    ...rules(
+      rule(
+        'Δy = λL/d',
+        '{y} = {l} × 10⁻⁹ × {L}/({d} × 10⁻³) × 1000',
+        (v) => v.y! * v.d! - (v.l! * v.L!) / 1000,
+        {
+          y: [
+            (v) => div((v.l! * v.L!) / 1000, v.d!),
+            '{l} × {L}/{d}/1000',
+            'λL/d, with λ in nm and d in mm: divide by 1,000 for mm.',
+          ],
+          l: [
+            (v) => div(1000 * v.y! * v.d!, v.L!),
+            '1000 × {y} × {d}/{L}',
+            'Undo Δy = λL/d for λ.',
+          ],
+          d: [
+            (v) => div((v.l! * v.L!) / 1000, v.y!),
+            '{l} × {L}/{y}/1000',
+            'Undo Δy = λL/d for d.',
+          ],
+          L: [
+            (v) => div(1000 * v.y! * v.d!, v.l!),
+            '1000 × {y} × {d}/{l}',
+            'Undo Δy = λL/d for L.',
+          ],
+        },
+      ),
+    ),
+    example: { l: 650, d: 0.25, L: 2, y: 5.2 },
+    startWith: ['l', 'd', 'L'],
+    representation: {
+      kind: 'rayDiagram',
+      mode: 'doubleSlit',
+      wavelength: 'l',
+      spacing: 'd',
+      screen: 'L',
+      fringe: 'y',
+    },
+  },
+  ...(['refracting', 'reflecting'] as const).map((design): ModuleDef => ({
+    id: `g.s12-starlight-spectra-${design === 'refracting' ? 'refractor' : 'reflector'}`,
+    title: design === 'refracting' ? 'A refracting telescope' : 'A reflecting telescope',
+    use:
+      design === 'refracting'
+        ? 'Use this for “A telescope has a 900 mm objective and a 25 mm eyepiece. What is its magnification?”'
+        : 'Use this for “A Newtonian telescope’s mirror has f = 1,200 mm; with a 10 mm eyepiece, what is the magnification?”',
+    assumptions: [
+      design === 'refracting'
+        ? 'The objective lens brings starlight to a focus; the eyepiece, one focal length past it, sends it on parallel at a larger angle.'
+        : 'A curved mirror brings the light to a focus; a flat mirror at 45° turns it up and out the side to the eyepiece.',
+      'Magnification M = fₒ/fₑ. Big mirrors are easier to build than big lenses, so the largest telescopes are reflectors.',
+    ],
+    variables: [
+      q(
+        'o',
+        'fₒ',
+        design === 'refracting' ? 'Objective focal length' : 'Mirror focal length',
+        'mm',
+        10,
+        100000,
+        1,
+      ),
+      q('e', 'fₑ', 'Eyepiece focal length', 'mm', 1, 1000, 0.1),
+      q('M', 'M', 'Magnification', undefined, 0.01, 100000, 0.01),
+    ],
+    ...rules(
+      rule('M = fₒ/fₑ', '{M} = {o}/{e}', (v) => v.M! * v.e! - v.o!, {
+        M: [(v) => div(v.o!, v.e!), '{o}/{e}', 'The objective’s focal length over the eyepiece’s.'],
+        o: [
+          (v) => v.M! * v.e!,
+          '{M} × {e}',
+          'The magnification times the eyepiece’s focal length.',
+        ],
+        e: [
+          (v) => div(v.o!, v.M!),
+          '{o}/{M}',
+          'The objective’s focal length over the magnification.',
+        ],
+      }),
+    ),
+    example: design === 'refracting' ? { o: 900, e: 25, M: 36 } : { o: 1200, e: 10, M: 120 },
+    startWith: ['o', 'e'],
+    representation: {
+      kind: 'rayDiagram',
+      mode: 'telescope',
+      design,
+      objective: 'o',
+      eyepiece: 'e',
+      magnification: 'M',
+    },
+  })),
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
@@ -1957,5 +2312,6 @@ export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...MACHINE_DEMOS,
   ...HEAT_ENGINE_DEMOS,
   ...WAVE_DEMOS,
+  ...RAY_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

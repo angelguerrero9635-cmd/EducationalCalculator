@@ -290,6 +290,63 @@ export interface DopplerWave {
   behind?: string;
 }
 
+// ─── H66 rayDiagram ──────────────────────────────────────────────────────────
+
+/**
+ * Light as rays:
+ *
+ * - `lens` (`converging` or `diverging`) and `mirror` (`concave` or `convex`): the object arrow
+ *   at `objectDistance` dₒ, the focal points (and 2F) at `focal` f (a positive length; the
+ *   shape gives its sign), the three principal rays, and the image from 1/f = 1/dₒ + 1/dᵢ:
+ *   real (solid, the rays meet) or virtual (dashed, the rays only seem to come from it),
+ *   upright or inverted, magnification m = −dᵢ/dₒ; drag the object;
+ * - `refraction`: a ray from a medium of index `n1` into `n2` at `angle` θ₁ from the normal,
+ *   bent to θ₂ by Snell's law n₁ sin θ₁ = n₂ sin θ₂; past the critical angle, total internal
+ *   reflection; drag the incoming ray;
+ * - `doubleSlit`: light of `wavelength` (nm) through two slits `spacing` (mm) apart onto a
+ *   screen `screen` (m) away: bright fringes Δy = λL/d apart (mm), not to scale across;
+ * - `telescope`: a refracting telescope (objective and eyepiece lenses, f_o + f_e apart) or a
+ *   reflecting one (a concave mirror and a flat diagonal), rays from a distant star; the
+ *   magnification f_o/f_e.
+ */
+export type RayDiagramSpec = { kind: 'rayDiagram'; fixed?: boolean } & (
+  | {
+      mode: 'lens' | 'mirror';
+      shape: 'converging' | 'diverging' | 'concave' | 'convex';
+      focal: NumOrVar;
+      objectDistance: NumOrVar;
+      objectHeight?: NumOrVar;
+      imageDistance?: string;
+      imageHeight?: string;
+      magnification?: string;
+    }
+  | {
+      mode: 'refraction';
+      n1: NumOrVar;
+      n2: NumOrVar;
+      angle: NumOrVar;
+      refracted?: string;
+      critical?: string;
+      /** Names of the two media, top then bottom (default "air", "water"). */
+      media?: [string, string];
+    }
+  | {
+      mode: 'doubleSlit';
+      wavelength: NumOrVar;
+      spacing: NumOrVar;
+      screen: NumOrVar;
+      fringe?: string;
+    }
+  | {
+      mode: 'telescope';
+      design: 'refracting' | 'reflecting';
+      objective: NumOrVar;
+      eyepiece: NumOrVar;
+      magnification?: string;
+      length?: string;
+    }
+);
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
@@ -299,7 +356,8 @@ export type HskSpec =
   | CircularMotionSpec
   | CollisionSpec
   | SimpleMachineSpec
-  | HeatEngineSpec;
+  | HeatEngineSpec
+  | RayDiagramSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
@@ -355,6 +413,26 @@ export function hskSpecVars(r: HskSpec): string[] {
       );
     case 'heatEngine':
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
+    case 'rayDiagram':
+      switch (r.mode) {
+        case 'lens':
+        case 'mirror':
+          return ids(
+            r.focal,
+            r.objectDistance,
+            r.objectHeight,
+            r.imageDistance,
+            r.imageHeight,
+            r.magnification,
+          );
+        case 'refraction':
+          return ids(r.n1, r.n2, r.angle, r.refracted, r.critical);
+        case 'doubleSlit':
+          return ids(r.wavelength, r.spacing, r.screen, r.fringe);
+        case 'telescope':
+          return ids(r.objective, r.eyepiece, r.magnification, r.length);
+      }
+      break;
   }
 }
 

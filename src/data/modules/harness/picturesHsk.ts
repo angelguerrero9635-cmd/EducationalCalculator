@@ -232,6 +232,45 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
         out.push(`simpleMachine: effort moves ${de}, not MA × ${dl}`);
       break;
     }
+    case 'rayDiagram': {
+      if (rep.mode === 'lens' || rep.mode === 'mirror') {
+        const [f, dO, hO] = [
+          read(si, rep.focal),
+          read(si, rep.objectDistance),
+          read(si, rep.objectHeight, 1),
+        ];
+        if (f === undefined || dO === undefined || hO === undefined) break;
+        if (dO <= 0) out.push(`rayDiagram: object distance ${dO} is not in front`);
+        const signed = rep.shape === 'converging' || rep.shape === 'concave';
+        if (f < 0 === signed) out.push(`rayDiagram: a ${rep.shape} element with f = ${f}`);
+        const L = hm.thinLensOf(rep.shape, Math.abs(f), dO, hO);
+        if (!Number.isFinite(L.dI)) break;
+        same(rep.imageDistance, L.dI, 'image distance');
+        same(rep.magnification, L.m, 'magnification');
+        same(rep.imageHeight, L.hI, 'image height');
+      } else if (rep.mode === 'refraction') {
+        const [n1, n2, th] = [read(si, rep.n1), read(si, rep.n2), read(si, rep.angle)];
+        if (n1 === undefined || n2 === undefined || th === undefined) break;
+        if (n1 < 1 || n2 < 1) out.push('rayDiagram: an index of refraction below 1');
+        if (th < 0 || th >= 90) out.push(`rayDiagram: angle ${th}° is not from 0° to 90°`);
+        const sn = hm.snellOf(n1, n2, th);
+        if (sn.refracted !== undefined) same(rep.refracted, sn.refracted, 'refracted angle');
+        if (sn.critical !== undefined) same(rep.critical, sn.critical, 'critical angle');
+      } else if (rep.mode === 'doubleSlit') {
+        const [l, d, L] = [read(si, rep.wavelength), read(si, rep.spacing), read(si, rep.screen)];
+        if (l === undefined || d === undefined || L === undefined) break;
+        same(rep.fringe, hm.fringeOf(l, d, L), 'fringe spacing');
+      } else if (rep.mode === 'telescope') {
+        const [fo, fe] = [read(si, rep.objective), read(si, rep.eyepiece)];
+        if (fo === undefined || fe === undefined) break;
+        if (fo <= 0 || fe <= 0) out.push('rayDiagram: a focal length that is not positive');
+        else {
+          same(rep.magnification, fo / fe, 'magnification');
+          same(rep.length, fo + fe, 'tube length');
+        }
+      }
+      break;
+    }
     case 'heatEngine': {
       const mode = rep.mode ?? 'engine';
       const heat = read(si, mode === 'engine' ? rep.hotHeat : rep.coldHeat);

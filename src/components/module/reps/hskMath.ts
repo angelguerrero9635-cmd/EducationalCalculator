@@ -163,6 +163,38 @@ export function standingOf(medium: 'string' | 'open' | 'closed', n: number, L: n
   return { valid, lambda, nodes: valid ? nodes : [], antinodes: valid ? antinodes : [] };
 }
 
+/**
+ * A thin lens or mirror (H66): f is positive for a converging lens or concave mirror and
+ * negative for a diverging lens or convex mirror; 1/f = 1/dₒ + 1/dᵢ gives dᵢ (+ real, − virtual;
+ * infinite with the object at the focal point), m = −dᵢ/dₒ and hᵢ = m hₒ.
+ */
+export function thinLensOf(
+  shape: 'converging' | 'diverging' | 'concave' | 'convex',
+  focal: number,
+  dO: number,
+  hO: number,
+) {
+  const f = shape === 'converging' || shape === 'concave' ? focal : -focal;
+  const inv = 1 / f - 1 / dO;
+  const dI = Math.abs(inv) < 1e-12 ? Infinity : 1 / inv;
+  const m = Number.isFinite(dI) ? -dI / dO : Infinity;
+  return { f, dI, m, hI: m * hO };
+}
+
+/** Snell's law n₁ sin θ₁ = n₂ sin θ₂ (degrees); past the critical angle, total reflection. */
+export function snellOf(n1: number, n2: number, deg: number) {
+  const s = (n1 * Math.sin((deg * Math.PI) / 180)) / n2;
+  const critical = n1 > n2 ? (Math.asin(n2 / n1) * 180) / Math.PI : undefined;
+  return {
+    refracted: Math.abs(s) <= 1 ? (Math.asin(s) * 180) / Math.PI : undefined,
+    critical,
+    total: Math.abs(s) > 1,
+  };
+}
+
+/** Double-slit fringe spacing Δy = λL/d, with λ in nm, d in mm, L in m: Δy in mm. */
+export const fringeOf = (nm: number, mm: number, m: number) => (mm > 0 ? (nm * m) / mm / 1000 : 0);
+
 /** The Doppler frequencies for a source moving at vₛ through still air (observers at rest). */
 export const dopplerOf = (f: number, v: number, vs: number) => ({
   ahead: v > vs ? (f * v) / (v - vs) : Infinity,

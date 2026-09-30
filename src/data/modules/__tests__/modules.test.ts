@@ -510,6 +510,7 @@ function representationVars(r: Representation): string[] {
     case 'dnaStrand':
       return hsgSpecVars(r);
     case 'projectile':
+    case 'rayDiagram':
     case 'heatEngine':
     case 'simpleMachine':
     case 'collision':

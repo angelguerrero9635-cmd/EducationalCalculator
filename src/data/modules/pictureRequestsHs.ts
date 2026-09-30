@@ -1055,13 +1055,29 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK) as two options on the Grade 8 wave, so every current wave page is unchanged: reps/WaveStanding.tsx and reps/WaveDoppler.tsx, the physics in hskMath.ts (standingOf, dopplerOf). The wave spec keeps its required wavelength and extent (pass extent: 1). Standing: { kind: "wave", wavelength: λ, frequency?: f, extent: 1, standing: { medium: "string" | "open" | "closed", harmonic: n, length: L, speed?: v } } — a string between two metal posts, or a glass pipe (a metal cap on a closed end); the envelope at both extremes (solid and dashed), every node (N, dot on the axis) and antinode (A) marked and counted from the harmonic, half a wavelength bracketed, L and n below; λ = 2L/n (string, open pipe) or 4L/n (closed pipe, odd n only; an even n draws faded with the reason), f = v/λ. Pipes show the air’s displacement: antinodes at open ends, a node at a closed end. Doppler: { kind: "wave", wavelength: λ at rest, frequency: f, extent: 1, doppler: { sourceSpeed: vₛ, waveSpeed: v, frequency: f, ahead?: f′ ahead, behind?: f′ behind } } — six wavefronts, one per period, each a circle centered where the source was when it left (its centers dotted), bunched ahead and spread behind with λ bracketed on each side, the source a lit ball with its velocity; at or past the wave speed the fronts pile into a shock cone (half-angle arcsin(v/vₛ)) drawn in red. The harness checks λ, f = v/λ, odd closed-pipe harmonics and f v/(v ∓ vₛ). Example: representation: { kind: "wave", wavelength: "l", frequency: "f", extent: 1, standing: { medium: "closed", harmonic: "n", length: "L", speed: "v" } }.',
   },
-  ask(
-    'H66',
-    'rayDiagram',
-    'Lenses and mirrors with principal rays, object and image from 1/f = 1/d₀ + 1/dᵢ; refraction with the normal and angles',
-    ['s.11.optics', 's.12.starlight-spectra'],
-    'Total internal reflection past the critical angle; double-slit fringes; telescopes for the Earth and space page.',
-  ),
+  {
+    ...ask(
+      'H66',
+      'rayDiagram',
+      'Lenses and mirrors with principal rays, object and image from 1/f = 1/d₀ + 1/dᵢ; refraction with the normal and angles',
+      ['s.11.optics', 's.12.starlight-spectra'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-optics-lens-real',
+      'g.s11-optics-magnifier',
+      'g.s11-optics-diverging',
+      'g.s11-optics-concave',
+      'g.s11-optics-convex',
+      'g.s11-optics-refraction',
+      'g.s11-optics-total-internal',
+      'g.s11-optics-double-slit',
+      'g.s12-starlight-spectra-refractor',
+      'g.s12-starlight-spectra-reflector',
+    ],
+    notes:
+      'Total internal reflection past the critical angle; double-slit fringes; telescopes for the Earth and space page. Drawn (group HK, reps/RayLens.tsx and reps/RayOptics.tsx; thin lens, Snell and fringe math in hskMath.ts). Calculator picture { kind: "rayDiagram", fixed?: true, and one mode }: lens or mirror: { mode: "lens" | "mirror", shape: "converging" | "diverging" | "concave" | "convex", focal: f (a length; the page may pass it signed, − for diverging or convex: the shape sets the sign), objectDistance: dₒ, objectHeight?: hₒ, imageDistance?: dᵢ, imageHeight?: hᵢ, magnification?: m } — a glass lens (biconvex or biconcave) or a silvered mirror on the axis, F, F′, 2F (C for a mirror) marked, the object arrow, the three principal rays in three colors (parallel then through F, through the center or vertex, through F then parallel), each continued to where it meets the others: a real image (solid, the rays meet) or a virtual one (dashed back-extensions), from 1/f = 1/dₒ + 1/dᵢ; the two drawing scales are affine so the rays meet at the image exactly; an object at F sends parallel rays and no image; drag the object. Refraction: { mode: "refraction", n1, n2, angle: θ₁ (degrees from the normal), refracted?: θ₂, critical?: θc, media?: [top, bottom names] } — two media shaded by their index, the normal dashed, the ray bent by n₁ sin θ₁ = n₂ sin θ₂ with its faint reflection, angle arcs, the critical angle dashed red; past it, total internal reflection (the reflection full strength, no ray out); drag the incoming ray. Double slit: { mode: "doubleSlit", wavelength (nm), spacing (mm), screen (m), fringe?: Δy (mm) } — light in its color (grey outside 380–750 nm) through two slits onto a screen, cos² brightness, bright fringes m = −2 … 2 labelled, Δy = λL/d bracketed, the paths to m = 1 dashed; not to scale across. Telescope: { mode: "telescope", design: "refracting" | "reflecting", objective: fₒ, eyepiece: fₑ, magnification?: M, length? (fₒ + fₑ) } — refracting: objective and eyepiece lenses fₒ + fₑ apart, starlight focused in the shared focal plane and sent out parallel at a larger angle; reflecting (Newtonian): a parabolic mirror and a 45° flat turning the focus up to the eyepiece; M = fₒ/fₑ. Step text must write a divisor before a sine (n₁/n₂ × sin θ₁): the harness reads sin(55)/2.7 as sin(55/2.7). The harness checks dᵢ, m, hᵢ, the sign of f against the shape, θ₂, θc, Δy and M. Example: representation: { kind: "rayDiagram", mode: "lens", shape: "converging", focal: "f", objectDistance: "o", objectHeight: "h", imageDistance: "i", magnification: "m", imageHeight: "k" }.',
+  },
   ask(
     'H67',
     'charges',
