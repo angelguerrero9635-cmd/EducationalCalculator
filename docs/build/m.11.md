@@ -1,8 +1,10 @@
 # Build notes: math grade 11 (Algebra 2)
 
-Built from `.review/plans/m.11/plan.md`, in its Priority order. 48 of the plan's 65 pages are
-built (40 calculators in `src/data/modules/math/11.ts`, 8 layout pages in
-`src/data/modules/layouts/math11.ts`); 17 wait on engine or picture needs.
+Built from `.review/plans/m.11/plan.md`, in its Priority order. 61 of the plan's 65 pages are
+built (53 calculators in `src/data/modules/math/11.ts`, 8 layout pages in
+`src/data/modules/layouts/math11.ts`); 4 wait on picture needs. The second round (after the
+merge of E2–E4 and E6, `docs/HS_NEEDS.md`) built the 13 pages that waited on needs 1, 2, 3
+and 11.
 
 ## Built
 
@@ -16,44 +18,31 @@ built (40 calculators in `src/data/modules/math/11.ts`, 8 layout pages in
 | series                    | 4     | main, ~arithmetic, ~sigma (rows, interim), ~infinite           |
 | study-design              | 4     | main (explore), ~sampling-methods, ~study-type, ~bias (sorts)  |
 | function-transformations  | 3     | main, ~point, ~name-the-move (sort)                            |
-| complex-numbers           | 3     | main, ~add-subtract, ~quadratic                                |
+| complex-numbers           | 5     | main, ~add-subtract, ~quadratic, ~powers-of-i, ~divide         |
 | inverse-functions         | 3     | main, ~operations, ~inverse                                    |
 | radical-functions         | 3     | main, ~extraneous, ~graph                                      |
 | rational-functions        | 4     | main, ~add-subtract, ~solve, ~variation                        |
-| polynomial-functions      | 2     | main, ~end-behavior (sort)                                     |
-| polynomial-equations      | 2     | ~complex-pair, ~quadratic-form                                 |
-| pythagorean-identities    | 1     | ~simplify (sort)                                               |
+| polynomial-functions      | 3     | main, ~divide, ~end-behavior (sort)                            |
+| polynomial-equations      | 3     | main, ~complex-pair, ~quadratic-form                           |
+| unit-circle               | 3     | main, ~convert, ~coterminal                                    |
+| trig-graphs               | 4     | main, ~from-features, ~tangent, ~model                         |
+| pythagorean-identities    | 3     | main, ~tangent, ~simplify (sort)                               |
 
 Phrases added to `harness/phrasesM11.ts`: "share within k standard deviations" (the
 68–95–99.7 rule) and C(n − 1, k − 1), C(n − 1, k) (Pascal's rule). Common logs are written
-`log₁₀ 20`, which the HF phrase already reads.
+`log₁₀ 20`, which the HF phrase already reads; gcd, mod and ⌊ ⌋ come from E3.
 
 ## Waiting
 
-| Page                                     | Need | Why                                                           |
-| ---------------------------------------- | ---- | ------------------------------------------------------------- |
-| m.11.trig-graphs (main)                  | 1    | Values as multiples of π and radian step text                 |
-| m.11.trig-graphs~from-features           | 1    | The period typed as a multiple of π                           |
-| m.11.trig-graphs~tangent                 | 1    | Period and asymptotes as multiples of π                       |
-| m.11.trig-graphs~model                   | 1    | Radian step text (cos(π/2))                                   |
-| m.11.unit-circle (main)                  | 1    | k as a multiple of π, exact sin and cos in the steps          |
-| m.11.unit-circle~convert                 | 2    | gcd in a relation, with a step phrase                         |
-| m.11.unit-circle~coterminal              | 2    | floor (d − 360⌊d/360⌋) and the quadrant in relations          |
-| m.11.unit-circle~point-on-side           | 6    | unitCircle `through: { x, y }` for a point off the circle     |
-| m.11.pythagorean-identities (main)       | 2    | The quadrant's sign in a relation                             |
-| m.11.pythagorean-identities~tangent      | 2    | The quadrant's sign in a relation                             |
-| m.11.complex-numbers~powers-of-i         | 2    | n mod 4 in a relation, with a step phrase                     |
-| m.11.complex-numbers~divide              | 11   | Exact fractions for derived complex parts (11/5 − 2/5 i)      |
-| m.11.polynomial-functions~divide         | 3    | The synthetic division grid in `written.ts`                   |
-| m.11.polynomial-equations (main)         | 3    | The synthetic division grid in `written.ts`                   |
-| m.11.function-transformations~horizontal | 4    | functionGraph horizontal factor b (y = f(b(x − h)))           |
-| m.11.inverse-functions~restrict-domain   | 5    | functionGraph `xMin` as a value, the inverse of the kept half |
-| m.11.probability-distributions~at-least  | 7    | A binomcdf relation and histogram `lit` as a range            |
+| Page                                     | Need | Why                                                                |
+| ---------------------------------------- | ---- | ------------------------------------------------------------------ |
+| m.11.unit-circle~point-on-side           | 6    | unitCircle `through: { x, y }` for a point off the circle (P10)    |
+| m.11.function-transformations~horizontal | 4    | functionGraph horizontal factor b (y = f(b(x − h))) (P6)           |
+| m.11.inverse-functions~restrict-domain   | 5    | functionGraph `xMin` as a value, the inverse of the kept half (P6) |
+| m.11.probability-distributions~at-least  | 7    | A binomcdf relation and histogram `lit` as a range (P11)           |
 
-Need 9 (limits with a reason) is met by the existing mechanism: a `constraint: true` relation
-with a `message` (the `limit` helper at the top of `11.ts`) rejects values across several
-values (b ≠ 1, r ≠ 1, |r| < 1, b² − 4ac < 0, x ≥ h, u ≥ 0) with a sentence a student can read,
-and the harness samples them. Need 8 (Σ) and need 10 (termsChart second term) have their
+Need 9 (limits with a reason) is met by a `constraint: true` relation with a `message` (the
+`limit` helper at the top of `11.ts`). Needs 8 (Σ) and 10 (termsChart second term) have their
 planned interims built.
 
 ## Changed from the plan
@@ -120,6 +109,35 @@ planned interims built.
   inverse's n, the rational add-subtract B, S and Z, and the quadratic-form u's, to dodge the
   two simplifying bugs below.
 
+### Second round (needs 1, 2, 3, 11)
+
+- **Worked-out π values** (the periods P, the asymptote V, the wheel's B) use `pi: true`
+  (0.25π, 2π, or a decimal) instead of `pi: 'fraction'`: the sampling test reads an answer
+  "π/3" as π (see shared needs). Typed angles (θ, h, x, the typed period) use `pi: 'fraction'`.
+- **unit-circle main:** θ is typed in radians (`pi: 'fraction'`, measure 'radians'), with
+  degrees, cos, sin and tan worked out; a limit rejects θ where cos θ = 0 (tan has no value).
+  The values are decimals (−0.866), not √3/2.
+- **unit-circle~convert:** d, p and q are all typable (225° → 5π/4, and 7π/6 → 210°): g = gcd(d,
+  180), p = d ÷ g, q = 180 ÷ g; a p/q not in lowest terms (or q not a factor of 180) is
+  rejected with that reason. The picture is the unit circle at d with radian labels.
+- **unit-circle~coterminal:** angles on an axis are rejected (no quadrant); the reference angle
+  is |c − 180⌊Q ÷ 2⌋|, its step picking the quadrant's form (180 − c, c − 180, …).
+- **trig-graphs~from-features:** x and y (a point on the curve) are values too, so A, P and k
+  connect through a formula (the module test requires it); the period is typed with brackets,
+  2π ÷ (π/2).
+- **trig-graphs~tangent:** a limit rejects x on an asymptote.
+- **trig-graphs~model:** the picture is A cos(B(t − H)) + k with H = T ÷ 2 (the top), which is
+  k − A cos(Bt); functionGraph can't take −A. Heights and minutes are in the names, not units.
+- **pythagorean-identities main and ~tangent:** the quadrant's sign is written (−1)^⌊Q ÷ 2⌋ in
+  the rule and θ is 180⌊Q ÷ 2⌋ ± sin⁻¹ (or + tan⁻¹); the steps show the quadrant's own form. The
+  sign of s (or tan θ) must fit the quadrant (0 allowed), and |sin θ| < 1.
+- **complex-numbers~powers-of-i:** r = n mod 4, the turn θ = 90r°, and p, q as cos θ, sin θ
+  (the quarter turns); the picture is the unit point at θ. Fractions show up to /200 on ~divide.
+- **polynomial-functions~divide:** a to d and r are whole numbers (the grid's work is checked);
+  the grid is drawn only while P(r) ≥ 0 (see shared needs).
+- **polynomial-equations main:** the remainder R is a value (10 values), with the limit R = 0
+  ("r is not a root … try another ±p/q") and the grid under its step.
+
 ## Shared needs found while building
 
 1. **Simplifying drops a negative base's bracket** (`simplify.ts`): `(−3)^(5 − 3)` becomes
@@ -140,3 +158,11 @@ planned interims built.
    Page: m.11.logarithms~common-log (range narrowed).
 8. **Values with `allowed` need `min` and `max`** too, or the whole-number search has NaN
    bounds and rejects every entry: worth a module test or a default from the list.
+9. **Answers written as a fraction of π** (`resultNumber` in `sampling.test.ts`): "π/3" reads as
+   π, so a worked-out value can't use `pi: 'fraction'`. Pages: trig-graphs main, ~tangent,
+   ~model (periods shown as 0.25π or decimals meanwhile).
+10. **Written work ending in a negative number** (`sampling.test.ts`, the `plain` pattern
+    `= (\d+…)`): a synthetic division with P(r) < 0 is flagged wrong though it is right. Page:
+    polynomial-functions~divide (the grid is hidden when P(r) < 0).
+11. **Simplifying − −** (need 2 above) also hits a product with a negative factor after a minus,
+    (4 × 1 − −10 × 2); complex ~divide works around it with work lines.
