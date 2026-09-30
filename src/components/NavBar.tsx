@@ -7,9 +7,12 @@ import { Text } from '@/components/Text';
 import { parentOf, screenTitle } from '@/data/selectors';
 import { font, space, usePalette } from '@/theme';
 
+/** Lesson pages: their title is the first thing on the page, so the bar doesn't repeat it. */
+const UNTITLED = new Set(['skill/[id]', 'course/[id]/topic/[index]', 'gallery/[id]']);
+
 /**
- * Navigation bar for every stacked page: a back button, the page's name, and Home, Search and
- * the lessons menu. Back returns to the previous page; with no history (opened from a link or a
+ * Navigation bar for every stacked page: a back button, the page's name (not on lesson pages),
+ * and Home, Search and the lessons menu. Back returns to the previous page; with no history (opened from a link or a
  * reload) it goes one level up instead, e.g. from a skill to its grade.
  */
 export function NavBar({ navigation, route, options, back }: NativeStackHeaderProps) {
@@ -20,6 +23,7 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
   const params = (route.params ?? {}) as Record<string, unknown>;
   // The route's own name first (known before the page renders, so it's right in pre-rendered
   // HTML), then the screen's title option.
+  const untitled = UNTITLED.has(route.name);
   const title =
     screenTitle(route.name, params) ??
     (typeof options.title === 'string' ? options.title : route.name);
@@ -51,20 +55,28 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
           accessibilityLabel={modal ? 'Close' : `Back to ${backLabel}`}
           onPress={goBack}
           hitSlop={8}
-          style={({ pressed }) => [styles.back, { opacity: pressed ? 0.5 : 1 }]}
+          style={({ pressed }) => [
+            styles.back,
+            untitled && styles.backWide,
+            { opacity: pressed ? 0.5 : 1 },
+          ]}
         >
           {modal ? null : <Text style={[styles.chevron, { color: c.accent }]}>‹</Text>}
           <Text style={[styles.backLabel, { color: c.accent }]} numberOfLines={1}>
             {backLabel}
           </Text>
         </Pressable>
-        <Text
-          accessibilityRole="header"
-          style={[styles.title, { color: c.text }]}
-          numberOfLines={1}
-        >
-          {title}
-        </Text>
+        {untitled ? (
+          <View style={styles.title} />
+        ) : (
+          <Text
+            accessibilityRole="header"
+            style={[styles.title, { color: c.text }]}
+            numberOfLines={1}
+          >
+            {title}
+          </Text>
+        )}
         {/* Home, Search and the lessons menu. */}
         <View style={styles.side}>{modal ? null : <HeaderActions />}</View>
       </View>
@@ -90,6 +102,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 2,
   },
+  // With no title beside it, the back label can use the room (sized to its text).
+  backWide: { width: 'auto', flexShrink: 1, paddingRight: space.sm },
   chevron: { fontSize: 30, lineHeight: 32, marginTop: -3 },
   backLabel: { flexShrink: 1, fontSize: font.body, fontWeight: '500' },
   title: { flex: 1, textAlign: 'center', fontSize: font.body + 1, fontWeight: '700' },
