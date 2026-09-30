@@ -31,6 +31,11 @@ import { H2E_ICONS } from '@/data/modules/layouts/icons/h2e';
 import { H2F_ICONS } from '@/data/modules/layouts/icons/h2f';
 import { H2G_ICONS } from '@/data/modules/layouts/icons/h2g';
 import { H2H_ICONS } from '@/data/modules/layouts/icons/h2h';
+import { H3A_ICONS } from '@/data/modules/layouts/icons/h3a';
+import { H3B_ICONS } from '@/data/modules/layouts/icons/h3b';
+import { H3C_ICONS } from '@/data/modules/layouts/icons/h3c';
+import { H3D_ICONS } from '@/data/modules/layouts/icons/h3d';
+import { H3E_ICONS } from '@/data/modules/layouts/icons/h3e';
 
 import { R3AIcon } from './r3a';
 import { R3BIcon } from './r3b';
@@ -62,6 +67,11 @@ import { H2EIcon } from './h2e';
 import { H2FIcon } from './h2f';
 import { H2GIcon } from './h2g';
 import { H2HIcon } from './h2h';
+import { H3AIcon } from './h3a';
+import { H3BIcon } from './h3b';
+import { H3CIcon } from './h3c';
+import { H3DIcon } from './h3d';
+import { H3EIcon } from './h3e';
 import type { IconProps } from './types';
 
 const GROUPS: [readonly string[], ComponentType<IconProps>][] = [
@@ -95,6 +105,11 @@ const GROUPS: [readonly string[], ComponentType<IconProps>][] = [
   [H2F_ICONS, H2FIcon],
   [H2G_ICONS, H2GIcon],
   [H2H_ICONS, H2HIcon],
+  [H3A_ICONS, H3AIcon],
+  [H3B_ICONS, H3BIcon],
+  [H3C_ICONS, H3CIcon],
+  [H3D_ICONS, H3DIcon],
+  [H3E_ICONS, H3EIcon],
 ];
 
 export function Round3Icon({ icon, ink }: IconProps): ReactNode {
