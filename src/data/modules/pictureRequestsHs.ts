@@ -753,12 +753,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn (group HI): an optional `limiting` on the existing reaction (typesChem.ts; drawn by reps/ReactionLimiting.tsx, math in reps/limiting.ts). Pages without it draw exactly as before (molecules from the coefficients, the atom tally on each side). limiting { amounts (particles of each reactant at the start, in the reactants' order, 0–12), runs? (whole runs, checked), made? (per product, checked), left? (per reactant, checked) }: the balanced equation, then Before: every particle on hand, the reactant that runs out first tagged \"limiting\"; After n runs: every product particle made and the leftover reactant particles ringed in yellow. An unbalanced equation draws faded with the reason. The step phrase \"smaller of {a} ÷ p and {b} ÷ q, rounded down\" is taught to the harness. Reaction-type card icons (layouts/icons/hi.ts): 'synthesis reaction', 'decomposition reaction', 'single replacement reaction', 'double replacement reaction', 'combustion reaction' (colored atom balls, reactants above an arrow, products below; combustion over a flame), sorted in the demo g.s10-reaction-types-sort as { label, bin, figure: { kind: 'icon', icon: 'synthesis reaction' } }. Example: { kind: 'reaction', reactants: [{ formula: 'H2', count: 2 }, { formula: 'O2', count: 1 }], products: [{ formula: 'H2O', count: 2 }], limiting: { amounts: ['a', 'b'], runs: 'r', made: ['m1'], left: ['x', 'y'] } } with m1 = 2 × r, x = a − 2 × r, y = b − r.",
   },
-  ask(
-    'H50',
-    'moleMap',
-    'Grams ↔ moles ↔ particles ↔ liters of gas, each arrow with its factor, the current value lit',
-    ['s.10.mole', 's.10.stoichiometry'],
-  ),
+  {
+    ...ask(
+      'H50',
+      'moleMap',
+      'Grams ↔ moles ↔ particles ↔ liters of gas, each arrow with its factor, the current value lit',
+      ['s.10.mole', 's.10.stoichiometry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-mole-map-grams',
+      'g.s10-mole-map-gas',
+      'g.s10-mole-map-all',
+      'g.s10-mole-map-large',
+      'g.s10-stoichiometry-grams-to-grams',
+    ],
+    notes:
+      "Drawn (group HI): kind moleMap (typesHsi.ts, reps/MoleMap.tsx, constants and molar masses in reps/moles.ts). Fields: moles, mass?, molarMass? (or formula, whose molar mass is worked out to 2 decimals: H₂O 18.02), particles? (× 6.022 × 10²³), volume? (gas at STP, × 22.4 L), formula?, second? { formula?, ratio: [coefficient of the first, of the second], moles, mass?, molarMass? } for stoichiometry. Moles sit in the middle with mass above, particles below and the gas volume (or the second substance, joined by the mole-ratio arrow) beside it; each arrow carries its factor both ways (÷ 18.02 g/mol, × 18.02 g/mol); the value the student typed is filled, values worked from it are outlined, unknowns dashed, and arrows between known values lit. Every value is checked against moles. Give the page `unitSystems: ['metric']` (grams and liters are drawn as written) and particles `scientific: true` with a minimum near 6 × 10¹⁹. Examples: { kind: 'moleMap', formula: 'O2', moles: 'n', mass: 'm', particles: 'N', volume: 'V' } with m = 32 × n, N = 6.022 × 10²³ × n, V = 22.4 × n; { kind: 'moleMap', formula: 'H2', moles: 'n', mass: 'm', second: { formula: 'H2O', ratio: [2, 2], moles: 'p', mass: 'q' } }.",
+  },
   ask(
     'H51',
     'gasPiston',

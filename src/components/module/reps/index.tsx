@@ -175,6 +175,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'orbitalDiagram':
     case 'lewisStructure':
     case 'vsepr':
+    case 'moleMap':
       return <HsiRep spec={spec} calc={calc} />;
     case 'unitCircle':
       return <UnitCircle spec={spec} calc={calc} />;

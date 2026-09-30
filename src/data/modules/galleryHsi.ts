@@ -14,6 +14,8 @@ import { trendValue } from '@/components/module/reps/chemTrends';
 import { hydrogensOf, ionic, valenceElectrons } from '@/components/module/reps/lewis';
 import { shapeOf } from '@/components/module/reps/vseprGeo';
 import { subscript } from '@/components/module/reps/chem';
+import { molarMassOf } from '@/components/module/reps/moles';
+import { formatNumber } from '@/engine/format';
 import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { CardIcon, LayoutDef } from './layouts';
@@ -1750,6 +1752,174 @@ const REACTION_TYPES: LayoutDef = {
   })),
 };
 
+// ─── H50 moleMap ─────────────────────────────────────────────────────────────
+
+/** out = k × n, one arrow of the mole map (kText is how the steps write k). */
+const perMole = (
+  out: string,
+  n: string,
+  k: number,
+  kText: string,
+  how: string,
+  back: string,
+): Rule => ({
+  relation: {
+    id: `${out} = ${kText} × ${n}`,
+    display: `{${out}} = ${kText} × {${n}}`,
+    vars: [out, n],
+    residual: (v) => v[out]! - k * v[n]!,
+    solve: { [out]: (v) => k * v[n]!, [n]: (v) => v[out]! / k },
+  },
+  steps: {
+    [out]: { expr: `${kText} × {${n}}`, how },
+    [n]: { expr: `{${out}}/(${kText})`, how: back },
+  },
+});
+
+const massRuleFor = (formula: string, m = 'm', n = 'n') => {
+  const M = molarMassOf(formula)!;
+  return perMole(
+    m,
+    n,
+    M,
+    formatNumber(M),
+    `One mole of ${subscript(formula)} has a mass of ${formatNumber(M)} g.`,
+    'Divide the grams by the molar mass: the grams cancel, leaving moles.',
+  );
+};
+const PARTICLE_RULE = perMole(
+  'N',
+  'n',
+  6.022e23,
+  '6.022 × 10²³',
+  'One mole is 6.022 × 10²³ particles.',
+  'Divide the particles by 6.022 × 10²³ per mole.',
+);
+const VOLUME_RULE = perMole(
+  'V',
+  'n',
+  22.4,
+  '22.4',
+  'At STP one mole of any gas takes up 22.4 L.',
+  'Divide the liters by 22.4 L per mole.',
+);
+
+const MOLES = quantity('n', 'n', 'Amount', 'mol', 0.0001, 1000, 0.0001);
+const PARTICLE_COUNT = quantity('N', 'N', 'Particles', undefined, 6.022e19, 1e27, 1e18, {
+  scientific: true,
+});
+const grams = (id = 'm', name = 'Mass') => quantity(id, id, name, 'g', 0, 100000, 0.01);
+const LITERS = quantity('V', 'V', 'Volume at STP', 'L', 0, 22400, 0.01);
+
+const MOLE_MAPS: ModuleDef[] = [
+  {
+    id: 'g.s10-mole-map-grams',
+    title: 'Grams to moles to particles',
+    use: 'Use this to change a mass to moles and to a number of particles.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The molar mass of water is 18.02 g/mol (2 × 1.008 + 16.00).',
+      'Every conversion goes through moles.',
+    ],
+    variables: [grams(), MOLES, PARTICLE_COUNT],
+    ...rules(massRuleFor('H2O'), PARTICLE_RULE),
+    example: { m: 36.04, n: 2, N: 2 * 6.022e23 },
+    startWith: ['m'],
+    representation: { kind: 'moleMap', formula: 'H2O', moles: 'n', mass: 'm', particles: 'N' },
+  },
+  {
+    id: 'g.s10-mole-map-gas',
+    title: 'Liters of gas to grams',
+    use: 'Use this to change a volume of gas at STP to moles and grams.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'At STP (0 °C and 1 atm) one mole of any gas takes up 22.4 L.',
+      'The molar mass of carbon dioxide is 44.01 g/mol.',
+    ],
+    variables: [LITERS, MOLES, grams()],
+    ...rules(VOLUME_RULE, massRuleFor('CO2')),
+    example: { V: 11.2, n: 0.5, m: 22.005 },
+    startWith: ['V'],
+    representation: { kind: 'moleMap', formula: 'CO2', moles: 'n', mass: 'm', volume: 'V' },
+  },
+  {
+    id: 'g.s10-mole-map-all',
+    title: 'The whole mole map',
+    use: 'Use this to go between grams, moles, particles and liters of a gas in any direction.',
+    unitSystems: ['metric'],
+    assumptions: ['Oxygen gas, O₂, has a molar mass of 32.00 g/mol.', 'The gas is at STP.'],
+    variables: [grams(), MOLES, PARTICLE_COUNT, LITERS],
+    ...rules(massRuleFor('O2'), PARTICLE_RULE, VOLUME_RULE),
+    example: { N: 3.011e23, n: 0.5, m: 16, V: 11.2 },
+    startWith: ['N'],
+    representation: {
+      kind: 'moleMap',
+      formula: 'O2',
+      moles: 'n',
+      mass: 'm',
+      particles: 'N',
+      volume: 'V',
+    },
+  },
+  {
+    id: 'g.s10-mole-map-large',
+    title: 'A large amount: a kilogram of sugar',
+    use: 'Use this for large amounts, where the particles run to 10²⁴ and more.',
+    unitSystems: ['metric'],
+    assumptions: ['Glucose, C₆H₁₂O₆, has a molar mass of 180.16 g/mol.', '1 kg is 1000 g.'],
+    variables: [grams(), MOLES, PARTICLE_COUNT],
+    ...rules(massRuleFor('C6H12O6'), PARTICLE_RULE),
+    example: { m: 1000, n: 1000 / 180.16, N: (1000 / 180.16) * 6.022e23 },
+    startWith: ['m'],
+    representation: { kind: 'moleMap', formula: 'C6H12O6', moles: 'n', mass: 'm', particles: 'N' },
+  },
+  {
+    id: 'g.s10-stoichiometry-grams-to-grams',
+    title: 'Grams of one substance to grams of another',
+    use: 'Use this for the mass of product from a mass of reactant: grams to moles, the mole ratio, then grams.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The balanced equation is 2 H₂ + O₂ → 2 H₂O, so 2 mol of H₂ make 2 mol of H₂O.',
+      'Hydrogen is 2.02 g/mol and water 18.02 g/mol.',
+    ],
+    variables: [
+      grams('m', 'Mass of H₂'),
+      quantity('n', 'n₁', 'Moles of H₂', 'mol', 0, 1000, 0.0001),
+      quantity('p', 'n₂', 'Moles of H₂O', 'mol', 0, 1000, 0.0001),
+      grams('q', 'Mass of H₂O'),
+    ],
+    ...rules(
+      massRuleFor('H2'),
+      {
+        relation: {
+          id: 'mole ratio',
+          display: '{p} = {n} × 2/2',
+          vars: ['p', 'n'],
+          residual: (v) => v.p! - v.n!,
+          solve: { p: (v) => v.n!, n: (v) => v.p! },
+        },
+        steps: {
+          p: {
+            expr: '{n} × 2/2',
+            how: 'The equation makes 2 mol of water for every 2 mol of hydrogen.',
+          },
+          n: { expr: '{p} × 2/2', how: 'Turn the mole ratio over.' },
+        },
+      },
+      massRuleFor('H2O', 'q', 'p'),
+    ),
+    example: { m: 4.04, n: 2, p: 2, q: 36.04 },
+    startWith: ['m'],
+    representation: {
+      kind: 'moleMap',
+      formula: 'H2',
+      moles: 'n',
+      mass: 'm',
+      second: { formula: 'H2O', ratio: [2, 2], moles: 'p', mass: 'q' },
+    },
+  },
+];
+
 export const HSI_GALLERY_MODULES: ModuleDef[] = [
   ...MEASUREMENT,
   ...ATOMS,
@@ -1758,5 +1928,6 @@ export const HSI_GALLERY_MODULES: ModuleDef[] = [
   ...BONDING,
   ...SHAPES_DEMOS,
   ...LIMITING,
+  ...MOLE_MAPS,
 ];
 export const HSI_GALLERY_LAYOUTS: LayoutDef[] = [REACTION_TYPES];

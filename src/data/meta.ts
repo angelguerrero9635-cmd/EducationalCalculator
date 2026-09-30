@@ -140,6 +140,7 @@ const PICTURE_NAMES: Record<string, string> = {
   orbitalDiagram: 'orbital boxes or energy levels',
   lewisStructure: 'Lewis structure or bonding diagram',
   vsepr: 'molecule shape with its bond angle',
+  moleMap: 'mole map: grams, moles, particles, liters',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

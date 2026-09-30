@@ -210,8 +210,33 @@ export type VseprSpec =
     }
   | { kind: 'vsepr'; mode: 'hbonds'; molecules: NumOrVar; bonds?: string };
 
+/**
+ * The mole map (H50): the `moles` of a substance in the middle, joined to its `mass` (× the
+ * molar mass, `molarMass`, or worked out from `formula`), its `particles` (× 6.022 × 10²³) and
+ * the `volume` of a gas at STP (× 22.4 L). Each arrow carries its factor; the value the student
+ * typed is filled, the ones worked from it outlined, and the arrows between known values lit.
+ * `second` adds a second substance of a balanced reaction: its moles by the mole ratio
+ * (`ratio`: [coefficient of the first, of the second]) and its mass. Every value is checked.
+ */
+export interface MoleMapSpec {
+  kind: 'moleMap';
+  moles: NumOrVar;
+  mass?: NumOrVar;
+  molarMass?: NumOrVar;
+  particles?: NumOrVar;
+  volume?: NumOrVar;
+  formula?: string;
+  second?: {
+    formula?: string;
+    ratio: [NumOrVar, NumOrVar];
+    moles: NumOrVar;
+    mass?: NumOrVar;
+    molarMass?: NumOrVar;
+  };
+}
+
 export type HsiSpec =
-  UnitChainSpec | AtomModelSpec | OrbitalDiagramSpec | LewisStructureSpec | VseprSpec;
+  UnitChainSpec | AtomModelSpec | OrbitalDiagramSpec | LewisStructureSpec | VseprSpec | MoleMapSpec;
 
 /** Every variable id a group I spec refers to (for the module tests). */
 export function hsiSpecVars(r: HsiSpec): string[] {
@@ -229,6 +254,15 @@ export function hsiSpecVars(r: HsiSpec): string[] {
       return r.mode === 'boxes'
         ? ids(r.element, r.electrons, r.unpaired)
         : ids(r.upper, r.lower, r.energy, r.wavelength);
+    case 'moleMap':
+      return ids(
+        r.moles,
+        r.mass,
+        r.molarMass,
+        r.particles,
+        r.volume,
+        ...(r.second ? [...r.second.ratio, r.second.moles, r.second.mass, r.second.molarMass] : []),
+      );
     case 'vsepr':
       return r.mode === 'hbonds' ? ids(r.molecules, r.bonds) : ids(r.bonded, r.lone, r.angle);
     case 'lewisStructure':

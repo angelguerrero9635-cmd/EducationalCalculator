@@ -465,6 +465,7 @@ function representationVars(r: Representation): string[] {
     case 'orbitalDiagram':
     case 'lewisStructure':
     case 'vsepr':
+    case 'moleMap':
       return hsiSpecVars(r);
   }
 }

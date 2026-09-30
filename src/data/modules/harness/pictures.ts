@@ -2020,6 +2020,7 @@ export function repIssues(
     case 'orbitalDiagram':
     case 'lewisStructure':
     case 'vsepr':
+    case 'moleMap':
       out.push(...hsiIssues(rep, (id) => val(id)));
       break;
     case 'table':

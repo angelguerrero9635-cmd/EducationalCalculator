@@ -34,6 +34,7 @@ import {
 } from '@/components/module/reps/lewis';
 
 import { MAX_PARTICLES, balanced, limitingOutcome } from '@/components/module/reps/limiting';
+import { AVOGADRO, MOLAR_VOLUME, molarMassOf } from '@/components/module/reps/moles';
 import { hydrogenBonds, shapeOf } from '@/components/module/reps/vseprGeo';
 
 import type { ChemSpec } from '../typesChem';
@@ -155,6 +156,39 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       const lam = num(rep.wavelength);
       if (lam !== undefined && !near(lam, photonWavelength(en ?? E), 1e-3))
         out.push(`wavelength ${photonWavelength(en ?? E)} nm, the value shows ${lam}`);
+      break;
+    }
+    case 'moleMap': {
+      const n = num(rep.moles);
+      const M = num(rep.molarMass) ?? (rep.formula ? molarMassOf(rep.formula) : undefined);
+      const fromFormula = rep.formula ? molarMassOf(rep.formula) : undefined;
+      if (rep.formula && fromFormula === undefined) out.push(`no molar mass for ${rep.formula}`);
+      const Mv = num(rep.molarMass);
+      if (Mv !== undefined && fromFormula !== undefined && !near(Mv, fromFormula, 1e-3))
+        out.push(`${rep.formula} has a molar mass of ${fromFormula}, the value shows ${Mv}`);
+      const check = (id: string | number | undefined, want: number | undefined, what: string) => {
+        const v = num(id);
+        if (v !== undefined && want !== undefined && !near(v, want, 1e-3))
+          out.push(`${what} should be ${want}, the value shows ${v}`);
+      };
+      if (n === undefined) break;
+      check(rep.mass, M === undefined ? undefined : n * M, 'mass');
+      check(rep.particles, n * AVOGADRO, 'particles');
+      check(rep.volume, n * MOLAR_VOLUME, 'volume');
+      if (rep.second) {
+        const [a, b] = rep.second.ratio.map(num);
+        if (a === undefined || b === undefined) break;
+        const n2 = (n * b) / a;
+        check(rep.second.moles, n2, 'moles of the second substance');
+        const M2 =
+          num(rep.second.molarMass) ??
+          (rep.second.formula ? molarMassOf(rep.second.formula) : undefined);
+        check(
+          rep.second.mass,
+          M2 === undefined ? undefined : n2 * M2,
+          'mass of the second substance',
+        );
+      }
       break;
     }
     case 'vsepr': {
