@@ -113,7 +113,254 @@ const showing = (out: string, a: string, b: string, trait: string): Rule =>
     `Only boxes with a recessive allele from both parents lack the ${trait} trait; the rest of the 4 show it.`,
   );
 
-// ─── The pages ───────────────────────────────────────────────────────────────
+/** A frequency or share, 0 to 1. */
+const freq = (id: string, symbol: string, name: string, derived = false): VariableDef => ({
+  id,
+  symbol,
+  name,
+  min: 0,
+  max: 1,
+  step: 0.0001,
+  ...(derived ? { derived: true } : {}),
+});
+
+/** Expected people with a genotype: N × its share (one way). */
+const expected = (out: string, share: string, what: string): Rule =>
+  forward(
+    `${out} = N × ${share}`,
+    `{${out}} = {N} × {${share}}`,
+    out,
+    ['N', share],
+    (v) => v.N! * v[share]!,
+    `{N} × {${share}}`,
+    `The ${what} share of the N people.`,
+  );
+
+/** A value the story keeps strictly below another (a start below the carrying capacity). */
+const below = (small: string, big: string): Rule => ({
+  relation: {
+    id: `${small} < ${big}`,
+    constraint: true,
+    display: `{${small}} is less than {${big}}`,
+    vars: [small, big],
+    residual: (v: Values) => (v[small]! < v[big]! ? 0 : 1),
+    solve: {},
+  },
+  steps: {},
+});
+
+/** A page limit the story sets (not a formula): `ok` says whether the values keep to it. */
+const limit = (id: string, display: string, vars: string[], ok: (v: Values) => boolean): Rule => ({
+  relation: {
+    id,
+    constraint: true,
+    display,
+    vars,
+    residual: (v: Values) => (ok(v) ? 0 : 1),
+    solve: {},
+  },
+  steps: {},
+});
+
+/** The logistic curve N = K ÷ (1 + Ae^(−rt)), A = (K − N₀) ÷ N₀. */
+const logistic = (v: Values) => v.K! / (1 + ((v.K! - v.N0!) / v.N0!) * Math.exp(-v.r! * v.t!));
+
+/** out = a ± b both ways, for counts after particles cross. */
+const plusMinus = (out: string, a: string, b: string, sign: 1 | -1, how: string): Rule =>
+  both(
+    `${out} = ${a} ${sign > 0 ? '+' : '−'} ${b}`,
+    `{${out}} = {${a}} ${sign > 0 ? '+' : '−'} {${b}}`,
+    [out, a, b],
+    (v) => v[out]! - (v[a]! + sign * v[b]!),
+    {
+      [out]: [(v) => v[a]! + sign * v[b]!, `{${a}} ${sign > 0 ? '+' : '−'} {${b}}`, how],
+    },
+  );
+
+/** Energy at a feeding level, in kilocalories. */
+const kcal = (id: string, symbol: string, name: string): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'kcal',
+  min: 0.001,
+  max: 10000000,
+  step: 0.01,
+});
+
+/** Level `up` keeps p% of level `down`: up = down × p ÷ 100, every way. */
+const passUp = (up: string, down: string, what: string): Rule =>
+  both(
+    `${up} = ${down} × p ÷ 100`,
+    `{${up}} = {${down}} × {p} ÷ 100`,
+    [up, down, 'p'],
+    (v) => v[up]! - (v[down]! * v.p!) / 100,
+    {
+      [up]: [
+        (v) => (v[down]! * v.p!) / 100,
+        `{${down}} × {p} ÷ 100`,
+        `Only p% of the energy ${what} is stored in the level above.`,
+      ],
+      [down]: [
+        (v) => div(v[up]! * 100, v.p!),
+        `{${up}} × 100 ÷ {p}`,
+        'Undo taking the percent: multiply by 100 and divide by p.',
+      ],
+      p: [
+        (v) => div(v[up]! * 100, v[down]!),
+        `100 × {${up}} ÷ {${down}}`,
+        'The energy passed up as a percent of the level below.',
+      ],
+    },
+  );
+
+/** One species’ share squared, (n ÷ N)², in Simpson’s index. */
+const share2 = (n: string) => `({${n}} ÷ {N})^2`;
+
+/** A short gene's template strand: mRNA AUG GCC AAG UAA, Met–Ala–Lys–Stop. */
+const GENE = 'TACCGGTTCATT';
+
+/** k = ⌈p ÷ 3⌉: the codon a base falls in (one way). */
+const codonOf = (k: string, p: string): Rule =>
+  forward(
+    `${k} = ⌈${p} ÷ 3⌉`,
+    `{${k}} = ⌈{${p}} ÷ 3⌉`,
+    k,
+    [p],
+    (v) => Math.ceil(v[p]! / 3 - 1e-9),
+    `the codon holding base {${p}}`,
+    'Bases 1 to 3 are codon 1, bases 4 to 6 codon 2, and so on: divide by 3 and round up.',
+  );
+
+/** y = x, both ways. */
+const same = (y: string, x: string, how: string): Rule =>
+  both(`${y} = ${x}`, `{${y}} = {${x}}`, [y, x], (v) => v[y]! - v[x]!, {
+    [y]: [(v) => v[x]!, `{${x}}`, how],
+    [x]: [(v) => v[y]!, `{${y}}`, how],
+  });
+
+/** A length of DNA in base pairs. */
+const bp = (id: string, symbol: string, name: string, min: number, max: number): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'bp',
+  min,
+  max,
+  step: 10,
+  integer: true,
+});
+
+// ─── The pages, in taxonomy order ───────────────────────────────────────────
+
+const MEMBRANE: ModuleDef[] = [
+  // ── Cell membranes and transport (HS-LS1-2, HS-LS1-3) ──
+  {
+    id: 's.9.membrane-transport',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Particles move both ways at random, so the net flow runs from the side with more to the side with fewer.',
+      'Small nonpolar molecules such as O₂ and CO₂ cross the bilayer with no protein and no ATP.',
+      'At equal counts particles still cross, but the net movement is zero: dynamic equilibrium.',
+    ],
+    variables: [
+      count('o', 'o', 'O₂ outside', 0, 40),
+      count('i', 'i', 'O₂ inside', 0, 40),
+      count('m', 'm', 'O₂ moving in now', 0, 12),
+      count('d', 'd', 'Gradient (outside − inside)', -40, 40, true),
+      count('o2', 'o₂', 'O₂ outside after', 0, 40, true),
+      count('i2', 'i₂', 'O₂ inside after', 0, 40, true),
+    ],
+    ...rules(
+      forward(
+        'd = o − i',
+        '{d} = {o} − {i}',
+        'd',
+        ['o', 'i'],
+        (v) => v.o! - v.i!,
+        '{o} − {i}',
+        'The gradient is the difference across the membrane: outside minus inside.',
+      ),
+      plusMinus('o2', 'o', 'm', -1, 'The particles that cross in leave the outside.'),
+      plusMinus('i2', 'i', 'm', 1, 'The particles that cross in join the inside.'),
+      limit(
+        '2m ≤ d',
+        '{m} is at most half of {d}, or 0',
+        ['m', 'd'],
+        (v) => 2 * v.m! <= Math.max(0, v.d!) + 1e-9,
+      ),
+    ),
+    example: { o: 20, i: 8, m: 6, d: 12, o2: 14, i2: 14 },
+    startWith: ['o', 'i', 'm'],
+    pictureLabels: ['o2', 'i2'],
+    representation: {
+      kind: 'membrane',
+      outside: 'o',
+      inside: 'i',
+      transport: 'diffusion',
+      particle: 'O₂',
+      moved: 'm',
+      gradient: 'd',
+    },
+  },
+  {
+    id: 's.9.membrane-transport~pump',
+    title: 'The sodium–potassium pump',
+    use: 'Use this for “How many Na⁺ and K⁺ ions does the pump move for 2 ATP?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each cycle, the pump splits one ATP to move 3 Na⁺ out of the cell and 2 K⁺ in.',
+      'It moves Na⁺ from the side with fewer to the side with more, against the gradient: that needs energy.',
+      'Only the Na⁺ counts are drawn; the K⁺ move the opposite way.',
+    ],
+    variables: [
+      count('o', 'o', 'Na⁺ outside', 0, 40),
+      count('i', 'i', 'Na⁺ inside', 0, 40),
+      count('c', 'c', 'Pump cycles', 1, 4),
+      count('s', 's', 'Na⁺ pumped out', 3, 12, true),
+      count('k', 'k', 'K⁺ pumped in', 2, 8, true),
+      count('a', 'a', 'ATP used', 1, 4, true),
+      count('o2', 'o₂', 'Na⁺ outside after', 0, 40, true),
+      count('i2', 'i₂', 'Na⁺ inside after', 0, 40, true),
+    ],
+    ...rules(
+      forward(
+        's = 3c',
+        '{s} = 3 × {c}',
+        's',
+        ['c'],
+        (v) => 3 * v.c!,
+        '3 × {c}',
+        'Each cycle moves 3 Na⁺ out of the cell.',
+      ),
+      forward(
+        'k = 2c',
+        '{k} = 2 × {c}',
+        'k',
+        ['c'],
+        (v) => 2 * v.c!,
+        '2 × {c}',
+        'Each cycle brings 2 K⁺ into the cell.',
+      ),
+      forward('a = c', '{a} = {c}', 'a', ['c'], (v) => v.c!, '{c}', 'Each cycle splits one ATP.'),
+      plusMinus('o2', 'o', 's', 1, 'The Na⁺ pumped out join the outside.'),
+      plusMinus('i2', 'i', 's', -1, 'The Na⁺ pumped out leave the inside.'),
+      below('i', 'o'),
+    ),
+    example: { o: 20, i: 8, c: 2, s: 6, k: 4, a: 2, o2: 26, i2: 2 },
+    startWith: ['o', 'i', 'c'],
+    pictureLabels: ['k', 'o2', 'i2'],
+    representation: {
+      kind: 'membrane',
+      outside: 'o',
+      inside: 'i',
+      transport: 'active',
+      particle: 'Na⁺',
+      moved: 's',
+      atp: 'a',
+    },
+  },
+];
 
 const INHERITANCE: ModuleDef[] = [
   // ── Mendelian and non-Mendelian inheritance (HS-LS3-2, HS-LS3-3) ──
@@ -390,701 +637,6 @@ const INHERITANCE: ModuleDef[] = [
     },
   },
 ];
-
-/** A frequency or share, 0 to 1. */
-const freq = (id: string, symbol: string, name: string, derived = false): VariableDef => ({
-  id,
-  symbol,
-  name,
-  min: 0,
-  max: 1,
-  step: 0.0001,
-  ...(derived ? { derived: true } : {}),
-});
-
-/** Expected people with a genotype: N × its share (one way). */
-const expected = (out: string, share: string, what: string): Rule =>
-  forward(
-    `${out} = N × ${share}`,
-    `{${out}} = {N} × {${share}}`,
-    out,
-    ['N', share],
-    (v) => v.N! * v[share]!,
-    `{N} × {${share}}`,
-    `The ${what} share of the N people.`,
-  );
-
-const EVOLUTION: ModuleDef[] = [
-  // ── Evidence for evolution, population genetics and speciation (HS-LS4-1 to 4-5) ──
-  {
-    id: 's.9.evolution-evidence',
-    unitSystems: ['metric'],
-    assumptions: [
-      'Hardy–Weinberg holds in a large population with random mating, no mutation, no migration and no selection.',
-      'Only aa shows the recessive trait, so start from its share q²: q is its square root.',
-      'Carriers (Aa) show nothing but make up 2pq, and p² + 2pq + q² = 1.',
-    ],
-    variables: [
-      freq('Q2', 'q²', 'Share with the recessive trait (aa)'),
-      freq('q', 'q', 'Frequency of allele a'),
-      freq('p', 'p', 'Frequency of allele A'),
-      freq('P2', 'p²', 'Share that is AA'),
-      freq('H', '2pq', 'Share of carriers (Aa)'),
-      count('N', 'N', 'People in the population', 2, 1000000),
-      { ...freq('nAA', 'n_AA', 'Expected AA people', true), max: 1000000, step: 1 },
-      { ...freq('nAa', 'n_Aa', 'Expected carriers', true), max: 1000000, step: 1 },
-      { ...freq('naa', 'n_aa', 'Expected aa people', true), max: 1000000, step: 1 },
-    ],
-    ...rules(
-      both('q² = q^2', '{Q2} = {q}^2', ['Q2', 'q'], (v) => v.Q2! - v.q! ** 2, {
-        Q2: [(v) => v.q! ** 2, '{q}^2', 'Two a alleles meet with chance q × q.'],
-        q: [
-          (v) => (v.Q2! >= 0 ? Math.sqrt(v.Q2!) : undefined),
-          '√{Q2}',
-          'Only aa shows the recessive trait, so q is the square root of its share.',
-        ],
-      }),
-      both('p = 1 − q', '{p} = 1 − {q}', ['p', 'q'], (v) => v.p! + v.q! - 1, {
-        p: [(v) => 1 - v.q!, '1 − {q}', 'The two alleles’ frequencies add to 1.'],
-        q: [(v) => 1 - v.p!, '1 − {p}', 'The two alleles’ frequencies add to 1.'],
-      }),
-      both('p² = p^2', '{P2} = {p}^2', ['P2', 'p'], (v) => v.P2! - v.p! ** 2, {
-        P2: [(v) => v.p! ** 2, '{p}^2', 'Two A alleles meet with chance p × p.'],
-        p: [
-          (v) => (v.P2! >= 0 ? Math.sqrt(v.P2!) : undefined),
-          '√{P2}',
-          'p is the square root of the AA share.',
-        ],
-      }),
-      both(
-        '2pq = 2 × p × q',
-        '{H} = 2 × {p} × {q}',
-        ['H', 'p', 'q'],
-        (v) => v.H! - 2 * v.p! * v.q!,
-        {
-          H: [
-            (v) => 2 * v.p! * v.q!,
-            '2 × {p} × {q}',
-            'A from one parent and a from the other, or the other way round: twice p × q.',
-          ],
-          p: [(v) => div(v.H!, 2 * v.q!), '{H} ÷ (2 × {q})', 'Divide the carrier share by 2q.'],
-          q: [(v) => div(v.H!, 2 * v.p!), '{H} ÷ (2 × {p})', 'Divide the carrier share by 2p.'],
-        },
-      ),
-      expected('nAA', 'P2', 'AA'),
-      expected('nAa', 'H', 'carrier'),
-      expected('naa', 'Q2', 'aa'),
-    ),
-    example: { Q2: 0.16, q: 0.4, p: 0.6, P2: 0.36, H: 0.48, N: 500, nAA: 180, nAa: 240, naa: 80 },
-    startWith: ['Q2', 'N'],
-    representation: {
-      kind: 'alleleFrequencies',
-      p: 'p',
-      q: 'q',
-      genotypes: ['P2', 'H', 'Q2'],
-      keep: ['N'],
-    },
-  },
-  {
-    id: 's.9.evolution-evidence~allele-counts',
-    title: 'Allele frequencies from genotype counts',
-    use: 'Use this for “A sample has 49 AA, 42 Aa and 9 aa. What are p and q?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'Each individual carries two alleles: AA has two A, Aa one of each, aa two a.',
-      'So N individuals carry 2N alleles, and p is the share of them that are A.',
-      'Counting alleles works for any population, whether or not it is in Hardy–Weinberg equilibrium.',
-    ],
-    variables: [
-      count('nAA', 'n_AA', 'Individuals AA', 0, 10000),
-      count('nAa', 'n_Aa', 'Individuals Aa', 0, 10000),
-      count('naa', 'n_aa', 'Individuals aa', 0, 10000),
-      count('N', 'N', 'Individuals in all', 1, 30000, true),
-      count('A', 'A', 'A alleles counted', 0, 60000, true),
-      count('a', 'a', 'a alleles counted', 0, 60000, true),
-      freq('p', 'p', 'Frequency of allele A', true),
-      freq('q', 'q', 'Frequency of allele a', true),
-    ],
-    ...rules(
-      forward(
-        'N = n_AA + n_Aa + n_aa',
-        '{N} = {nAA} + {nAa} + {naa}',
-        'N',
-        ['nAA', 'nAa', 'naa'],
-        (v) => v.nAA! + v.nAa! + v.naa!,
-        '{nAA} + {nAa} + {naa}',
-        'Add the three genotype counts.',
-      ),
-      forward(
-        'A = 2n_AA + n_Aa',
-        '{A} = 2 × {nAA} + {nAa}',
-        'A',
-        ['nAA', 'nAa'],
-        (v) => 2 * v.nAA! + v.nAa!,
-        '2 × {nAA} + {nAa}',
-        'Two A in each AA individual and one in each Aa.',
-      ),
-      forward(
-        'a = 2n_aa + n_Aa',
-        '{a} = 2 × {naa} + {nAa}',
-        'a',
-        ['naa', 'nAa'],
-        (v) => 2 * v.naa! + v.nAa!,
-        '2 × {naa} + {nAa}',
-        'Two a in each aa individual and one in each Aa.',
-      ),
-      forward(
-        'p = A ÷ 2N',
-        '{p} = {A} ÷ (2 × {N})',
-        'p',
-        ['A', 'N'],
-        (v) => div(v.A!, 2 * v.N!),
-        '{A} ÷ (2 × {N})',
-        'The A alleles out of all 2N alleles.',
-      ),
-      forward(
-        'q = a ÷ 2N',
-        '{q} = {a} ÷ (2 × {N})',
-        'q',
-        ['a', 'N'],
-        (v) => div(v.a!, 2 * v.N!),
-        '{a} ÷ (2 × {N})',
-        'The a alleles out of all 2N alleles.',
-      ),
-    ),
-    example: { nAA: 49, nAa: 42, naa: 9, N: 100, A: 140, a: 60, p: 0.7, q: 0.3 },
-    startWith: ['nAA', 'nAa', 'naa'],
-    representation: { kind: 'alleleFrequencies', p: 'p', q: 'q', fixed: true },
-  },
-];
-
-/** A value the story keeps strictly below another (a start below the carrying capacity). */
-const below = (small: string, big: string): Rule => ({
-  relation: {
-    id: `${small} < ${big}`,
-    constraint: true,
-    display: `{${small}} is less than {${big}}`,
-    vars: [small, big],
-    residual: (v: Values) => (v[small]! < v[big]! ? 0 : 1),
-    solve: {},
-  },
-  steps: {},
-});
-
-/** A page limit the story sets (not a formula): `ok` says whether the values keep to it. */
-const limit = (id: string, display: string, vars: string[], ok: (v: Values) => boolean): Rule => ({
-  relation: {
-    id,
-    constraint: true,
-    display,
-    vars,
-    residual: (v: Values) => (ok(v) ? 0 : 1),
-    solve: {},
-  },
-  steps: {},
-});
-
-/** The logistic curve N = K ÷ (1 + Ae^(−rt)), A = (K − N₀) ÷ N₀. */
-const logistic = (v: Values) => v.K! / (1 + ((v.K! - v.N0!) / v.N0!) * Math.exp(-v.r! * v.t!));
-
-const POPULATION: ModuleDef[] = [
-  // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
-  {
-    id: 's.9.population-ecology',
-    unitSystems: ['metric'],
-    assumptions: [
-      'While N is small, food and space are plentiful and growth is nearly exponential.',
-      'Growth G = rN(K − N) ÷ K is fastest at N = K ÷ 2, then slows as resources run short.',
-      'The population levels off at the carrying capacity K, the most the habitat can support.',
-    ],
-    variables: [
-      { id: 't', symbol: 't', name: 'Time', unit: 'days', min: 0, max: 1000, step: 0.5 },
-      count('K', 'K', 'Carrying capacity', 10, 1000000),
-      count('N0', 'N₀', 'Starting population', 1, 1000000),
-      { id: 'r', symbol: 'r', name: 'Growth rate', unit: 'per day', min: 0.01, max: 5, step: 0.01 },
-      { id: 'N', symbol: 'N', name: 'Population', min: 0, max: 1000000, step: 1 },
-      {
-        id: 'G',
-        symbol: 'G',
-        name: 'Growth now',
-        unit: 'per day',
-        min: 0,
-        max: 2000000,
-        step: 0.01,
-        derived: true,
-      },
-    ],
-    ...rules(
-      both(
-        'N = K ÷ (1 + ((K − N₀) ÷ N₀)e^(−rt))',
-        '{N} = {K} ÷ (1 + (({K} − {N0}) ÷ {N0}) × e^(−{r}{t}))',
-        ['N', 'K', 'N0', 'r', 't'],
-        (v) => v.N! - logistic(v),
-        {
-          N: [
-            logistic,
-            '{K} ÷ (1 + (({K} − {N0}) ÷ {N0}) ÷ e^({r} × {t}))',
-            'Work out A = (K − N₀) ÷ N₀, then K ÷ (1 + A ÷ e^(rt)): N₀ at t = 0, K after a long time.',
-          ],
-          t: [
-            (v) => {
-              const q = (((v.K! - v.N0!) / v.N0!) * v.N!) / (v.K! - v.N!);
-              return q > 0 && Number.isFinite(q) ? Math.log(q) / v.r! : undefined;
-            },
-            'ln((({K} − {N0}) ÷ {N0}) × {N} ÷ ({K} − {N})) ÷ {r}',
-            'Solve 1 + Ae^(−rt) = K ÷ N for e^(−rt), then take the natural log and divide by −r.',
-          ],
-        },
-      ),
-      forward(
-        'G = rN(K − N) ÷ K',
-        '{G} = {r} × {N} × ({K} − {N}) ÷ {K}',
-        'G',
-        ['r', 'N', 'K'],
-        (v) => (v.r! * v.N! * (v.K! - v.N!)) / v.K!,
-        '{r} × {N} × ({K} − {N}) ÷ {K}',
-        'The exponential rate rN, slowed by the share of K still unused, (K − N) ÷ K.',
-      ),
-      below('N0', 'K'),
-    ),
-    example: {
-      t: 6,
-      K: 1000,
-      N0: 100,
-      r: 0.5,
-      N: 1000 / (1 + 9 * Math.exp(-3)),
-      G: (0.5 * (1000 / (1 + 9 * Math.exp(-3))) * (1000 - 1000 / (1 + 9 * Math.exp(-3)))) / 1000,
-    },
-    startWith: ['t', 'K', 'N0', 'r'],
-    representation: {
-      kind: 'functionGraph',
-      family: 'logistic',
-      K: 'K',
-      start: 'N0',
-      r: 'r',
-      name: 'N',
-      at: { x: 't', y: 'N' },
-      axes: { x: 'Time t (days)', y: 'Population N' },
-      marks: ['asymptotes', 'extrema'],
-    },
-  },
-  {
-    id: 's.9.population-ecology~rates',
-    title: 'Births, deaths and migration',
-    use: 'Use this for “A herd of 500 deer has 90 births, 40 deaths, 10 arrivals and 20 departures in a year. What is its new size?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'Births and immigrants add to a population; deaths and emigrants take away.',
-      'The per-capita growth rate counts births minus deaths for each individual, as a percent.',
-      'All four counts are over the same time, here one year.',
-    ],
-    variables: [
-      count('N', 'N', 'Population at the start', 1, 1000000),
-      count('B', 'B', 'Births', 0, 1000000),
-      count('D', 'D', 'Deaths', 0, 1000000),
-      count('I', 'I', 'Immigrants', 0, 1000000),
-      count('E', 'E', 'Emigrants', 0, 1000000),
-      count('dN', 'ΔN', 'Change in population', -2000000, 2000000, true),
-      count('N1', 'N₁', 'Population a year later', 0, 3000000, true),
-      {
-        id: 'r',
-        symbol: 'r',
-        name: 'Per-capita growth rate',
-        unit: '%',
-        min: -100,
-        max: 100000000,
-        step: 0.1,
-        derived: true,
-      },
-    ],
-    ...rules(
-      forward(
-        'ΔN = B − D + I − E',
-        '{dN} = {B} − {D} + {I} − {E}',
-        'dN',
-        ['B', 'D', 'I', 'E'],
-        (v) => v.B! - v.D! + v.I! - v.E!,
-        '{B} − {D} + {I} − {E}',
-        'Births and immigrants come in; deaths and emigrants go out.',
-      ),
-      forward(
-        'N₁ = N + ΔN',
-        '{N1} = {N} + {dN}',
-        'N1',
-        ['N', 'dN'],
-        (v) => v.N! + v.dN!,
-        '{N} + {dN}',
-        'Add the change to the starting population.',
-      ),
-      forward(
-        'r = 100 × (B − D) ÷ N',
-        '{r} = 100 × ({B} − {D}) ÷ {N}',
-        'r',
-        ['B', 'D', 'N'],
-        (v) => div(100 * (v.B! - v.D!), v.N!),
-        '100 × ({B} − {D}) ÷ {N}',
-        'Births minus deaths for each individual at the start, as a percent.',
-      ),
-    ),
-    example: { N: 500, B: 90, D: 40, I: 10, E: 20, dN: 40, N1: 540, r: 10 },
-    startWith: ['N', 'B', 'D', 'I', 'E'],
-    representation: {
-      kind: 'bars',
-      bars: [{ var: 'N' }, { var: 'B' }, { var: 'D' }, { var: 'I' }, { var: 'E' }, { var: 'N1' }],
-      min: 0,
-      max: 600,
-    },
-  },
-  {
-    id: 's.9.population-ecology~doubling',
-    title: 'Doubling time',
-    use: 'Use this for “Bacteria double every 20 minutes. How many are there after 2 hours, starting from 100?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'With plenty of food and space, a population doubles every doubling time d: exponential growth.',
-      'After t minutes it has doubled g = t ÷ d times, so N = N₀ × 2ᵍ.',
-      'Real populations slow down as food runs out; this is the early, exponential part.',
-    ],
-    variables: [
-      count('N0', 'N₀', 'Starting population', 1, 1000000),
-      {
-        id: 'd',
-        symbol: 'd',
-        name: 'Doubling time',
-        unit: 'min',
-        units: ['min'],
-        min: 1,
-        max: 600,
-        step: 1,
-      },
-      {
-        id: 't',
-        symbol: 't',
-        name: 'Time',
-        unit: 'min',
-        units: ['min'],
-        min: 0,
-        max: 1440,
-        step: 1,
-      },
-      { id: 'g', symbol: 'g', name: 'Doublings', min: 0, max: 40, step: 0.01, derived: true },
-      {
-        id: 'N',
-        symbol: 'N',
-        name: 'Population after t',
-        min: 1,
-        max: 1e18,
-        step: 1,
-        derived: true,
-      },
-    ],
-    ...rules(
-      forward(
-        'g = t ÷ d',
-        '{g} = {t} ÷ {d}',
-        'g',
-        ['t', 'd'],
-        (v) => div(v.t!, v.d!),
-        '{t} ÷ {d}',
-        'How many doubling times fit into the time.',
-      ),
-      forward(
-        'N = N₀ × 2^g',
-        '{N} = {N0} × 2^{g}',
-        'N',
-        ['N0', 'g'],
-        (v) => v.N0! * 2 ** v.g!,
-        '{N0} × 2^{g}',
-        'Each doubling multiplies the population by 2: g doublings multiply it by 2ᵍ.',
-      ),
-    ),
-    example: { N0: 100, d: 20, t: 120, g: 6, N: 6400 },
-    startWith: ['N0', 'd', 't'],
-    representation: {
-      kind: 'functionGraph',
-      family: 'exponential',
-      a: 'N0',
-      b: 2,
-      name: 'N',
-      at: { x: 'g', y: 'N' },
-      axes: { x: 'Doublings g', y: 'Population N' },
-    },
-  },
-];
-
-/** out = a ± b both ways, for counts after particles cross. */
-const plusMinus = (out: string, a: string, b: string, sign: 1 | -1, how: string): Rule =>
-  both(
-    `${out} = ${a} ${sign > 0 ? '+' : '−'} ${b}`,
-    `{${out}} = {${a}} ${sign > 0 ? '+' : '−'} {${b}}`,
-    [out, a, b],
-    (v) => v[out]! - (v[a]! + sign * v[b]!),
-    {
-      [out]: [(v) => v[a]! + sign * v[b]!, `{${a}} ${sign > 0 ? '+' : '−'} {${b}}`, how],
-    },
-  );
-
-const MEMBRANE: ModuleDef[] = [
-  // ── Cell membranes and transport (HS-LS1-2, HS-LS1-3) ──
-  {
-    id: 's.9.membrane-transport',
-    unitSystems: ['metric'],
-    assumptions: [
-      'Particles move both ways at random, so the net flow runs from the side with more to the side with fewer.',
-      'Small nonpolar molecules such as O₂ and CO₂ cross the bilayer with no protein and no ATP.',
-      'At equal counts particles still cross, but the net movement is zero: dynamic equilibrium.',
-    ],
-    variables: [
-      count('o', 'o', 'O₂ outside', 0, 40),
-      count('i', 'i', 'O₂ inside', 0, 40),
-      count('m', 'm', 'O₂ moving in now', 0, 12),
-      count('d', 'd', 'Gradient (outside − inside)', -40, 40, true),
-      count('o2', 'o₂', 'O₂ outside after', 0, 40, true),
-      count('i2', 'i₂', 'O₂ inside after', 0, 40, true),
-    ],
-    ...rules(
-      forward(
-        'd = o − i',
-        '{d} = {o} − {i}',
-        'd',
-        ['o', 'i'],
-        (v) => v.o! - v.i!,
-        '{o} − {i}',
-        'The gradient is the difference across the membrane: outside minus inside.',
-      ),
-      plusMinus('o2', 'o', 'm', -1, 'The particles that cross in leave the outside.'),
-      plusMinus('i2', 'i', 'm', 1, 'The particles that cross in join the inside.'),
-      limit(
-        '2m ≤ d',
-        '{m} is at most half of {d}, or 0',
-        ['m', 'd'],
-        (v) => 2 * v.m! <= Math.max(0, v.d!) + 1e-9,
-      ),
-    ),
-    example: { o: 20, i: 8, m: 6, d: 12, o2: 14, i2: 14 },
-    startWith: ['o', 'i', 'm'],
-    pictureLabels: ['o2', 'i2'],
-    representation: {
-      kind: 'membrane',
-      outside: 'o',
-      inside: 'i',
-      transport: 'diffusion',
-      particle: 'O₂',
-      moved: 'm',
-      gradient: 'd',
-    },
-  },
-  {
-    id: 's.9.membrane-transport~pump',
-    title: 'The sodium–potassium pump',
-    use: 'Use this for “How many Na⁺ and K⁺ ions does the pump move for 2 ATP?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'Each cycle, the pump splits one ATP to move 3 Na⁺ out of the cell and 2 K⁺ in.',
-      'It moves Na⁺ from the side with fewer to the side with more, against the gradient: that needs energy.',
-      'Only the Na⁺ counts are drawn; the K⁺ move the opposite way.',
-    ],
-    variables: [
-      count('o', 'o', 'Na⁺ outside', 0, 40),
-      count('i', 'i', 'Na⁺ inside', 0, 40),
-      count('c', 'c', 'Pump cycles', 1, 4),
-      count('s', 's', 'Na⁺ pumped out', 3, 12, true),
-      count('k', 'k', 'K⁺ pumped in', 2, 8, true),
-      count('a', 'a', 'ATP used', 1, 4, true),
-      count('o2', 'o₂', 'Na⁺ outside after', 0, 40, true),
-      count('i2', 'i₂', 'Na⁺ inside after', 0, 40, true),
-    ],
-    ...rules(
-      forward(
-        's = 3c',
-        '{s} = 3 × {c}',
-        's',
-        ['c'],
-        (v) => 3 * v.c!,
-        '3 × {c}',
-        'Each cycle moves 3 Na⁺ out of the cell.',
-      ),
-      forward(
-        'k = 2c',
-        '{k} = 2 × {c}',
-        'k',
-        ['c'],
-        (v) => 2 * v.c!,
-        '2 × {c}',
-        'Each cycle brings 2 K⁺ into the cell.',
-      ),
-      forward('a = c', '{a} = {c}', 'a', ['c'], (v) => v.c!, '{c}', 'Each cycle splits one ATP.'),
-      plusMinus('o2', 'o', 's', 1, 'The Na⁺ pumped out join the outside.'),
-      plusMinus('i2', 'i', 's', -1, 'The Na⁺ pumped out leave the inside.'),
-      below('i', 'o'),
-    ),
-    example: { o: 20, i: 8, c: 2, s: 6, k: 4, a: 2, o2: 26, i2: 2 },
-    startWith: ['o', 'i', 'c'],
-    pictureLabels: ['k', 'o2', 'i2'],
-    representation: {
-      kind: 'membrane',
-      outside: 'o',
-      inside: 'i',
-      transport: 'active',
-      particle: 'Na⁺',
-      moved: 's',
-      atp: 'a',
-    },
-  },
-];
-
-/** Energy at a feeding level, in kilocalories. */
-const kcal = (id: string, symbol: string, name: string): VariableDef => ({
-  id,
-  symbol,
-  name,
-  unit: 'kcal',
-  min: 0.001,
-  max: 10000000,
-  step: 0.01,
-});
-
-/** Level `up` keeps p% of level `down`: up = down × p ÷ 100, every way. */
-const passUp = (up: string, down: string, what: string): Rule =>
-  both(
-    `${up} = ${down} × p ÷ 100`,
-    `{${up}} = {${down}} × {p} ÷ 100`,
-    [up, down, 'p'],
-    (v) => v[up]! - (v[down]! * v.p!) / 100,
-    {
-      [up]: [
-        (v) => (v[down]! * v.p!) / 100,
-        `{${down}} × {p} ÷ 100`,
-        `Only p% of the energy ${what} is stored in the level above.`,
-      ],
-      [down]: [
-        (v) => div(v[up]! * 100, v.p!),
-        `{${up}} × 100 ÷ {p}`,
-        'Undo taking the percent: multiply by 100 and divide by p.',
-      ],
-      p: [
-        (v) => div(v[up]! * 100, v[down]!),
-        `100 × {${up}} ÷ {${down}}`,
-        'The energy passed up as a percent of the level below.',
-      ],
-    },
-  );
-
-/** One species’ share squared, (n ÷ N)², in Simpson’s index. */
-const share2 = (n: string) => `({${n}} ÷ {N})^2`;
-
-const ECOSYSTEMS: ModuleDef[] = [
-  // ── Ecosystems: energy pyramids, matter cycles, succession, biodiversity (HS-LS2-2 to 2-7) ──
-  {
-    id: 's.9.ecosystem-dynamics',
-    unitSystems: ['metric'],
-    assumptions: [
-      'The trophic efficiency p varies, about 5–20%; the rest of the energy is used in respiration or lost as heat.',
-      'Biomass pyramids usually follow the energy pyramid, but a numbers pyramid can stand upside down: one oak feeds thousands of caterpillars.',
-      'Energy flows one way through the levels; matter cycles.',
-    ],
-    variables: [
-      kcal('E1', 'E₁', 'Energy in the grasses'),
-      kcal('E2', 'E₂', 'Energy in the grasshoppers'),
-      { id: 'p', symbol: 'p', name: 'Trophic efficiency', unit: '%', min: 1, max: 25, step: 0.1 },
-      kcal('E3', 'E₃', 'Energy in the shrews'),
-      kcal('E4', 'E₄', 'Energy in the owls'),
-    ],
-    ...rules(
-      passUp('E2', 'E1', 'in the grasses'),
-      passUp('E3', 'E2', 'in the grasshoppers'),
-      passUp('E4', 'E3', 'in the shrews'),
-    ),
-    example: { E1: 12000, E2: 960, p: 8, E3: 76.8, E4: 6.144 },
-    startWith: ['E1', 'E2'],
-    representation: {
-      kind: 'energyPyramid',
-      measure: 'energy',
-      levels: ['E1', 'E2', 'E3', 'E4'],
-      percent: 'p',
-      names: ['grasses', 'grasshoppers', 'shrews', 'owls'],
-    },
-  },
-  {
-    id: 's.9.ecosystem-dynamics~biodiversity',
-    title: 'Simpson’s diversity index',
-    use: 'Use this for “Which pond community is more diverse: 25, 5, 5, 5 or 10, 10, 10, 10?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'S is the chance that two individuals picked at random belong to different species.',
-      'More species, and more even counts of each, raise S toward 1; one species alone gives 0.',
-      'Here a pond survey counts four species.',
-    ],
-    variables: [
-      count('n1', 'n₁', 'Water striders', 0, 1000),
-      count('n2', 'n₂', 'Pond snails', 0, 1000),
-      count('n3', 'n₃', 'Dragonfly nymphs', 0, 1000),
-      count('n4', 'n₄', 'Tadpoles', 0, 1000),
-      count('N', 'N', 'Individuals in all', 1, 4000, true),
-      freq('S', 'S', 'Simpson’s index', true),
-    ],
-    ...rules(
-      forward(
-        'N = n₁ + n₂ + n₃ + n₄',
-        '{N} = {n1} + {n2} + {n3} + {n4}',
-        'N',
-        ['n1', 'n2', 'n3', 'n4'],
-        (v) => v.n1! + v.n2! + v.n3! + v.n4!,
-        '{n1} + {n2} + {n3} + {n4}',
-        'Add the counts of the four species.',
-      ),
-      forward(
-        'S = 1 − ((n₁ ÷ N)² + (n₂ ÷ N)² + (n₃ ÷ N)² + (n₄ ÷ N)²)',
-        `{S} = 1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
-        'S',
-        ['n1', 'n2', 'n3', 'n4', 'N'],
-        (v) =>
-          v.N! > 0
-            ? 1 - [v.n1!, v.n2!, v.n3!, v.n4!].reduce((t, n) => t + (n / v.N!) ** 2, 0)
-            : undefined,
-        `1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
-        'Each (n ÷ N)² is the chance two picks are both that species; 1 minus their sum is the chance they differ.',
-      ),
-    ),
-    example: { n1: 25, n2: 5, n3: 5, n4: 5, N: 40, S: 0.5625 },
-    startWith: ['n1', 'n2', 'n3', 'n4'],
-    representation: { kind: 'pieChart', parts: ['n1', 'n2', 'n3', 'n4'], total: 'N' },
-  },
-];
-
-/** A short gene's template strand: mRNA AUG GCC AAG UAA, Met–Ala–Lys–Stop. */
-const GENE = 'TACCGGTTCATT';
-
-/** k = ⌈p ÷ 3⌉: the codon a base falls in (one way). */
-const codonOf = (k: string, p: string): Rule =>
-  forward(
-    `${k} = ⌈${p} ÷ 3⌉`,
-    `{${k}} = ⌈{${p}} ÷ 3⌉`,
-    k,
-    [p],
-    (v) => Math.ceil(v[p]! / 3 - 1e-9),
-    `the codon holding base {${p}}`,
-    'Bases 1 to 3 are codon 1, bases 4 to 6 codon 2, and so on: divide by 3 and round up.',
-  );
-
-/** y = x, both ways. */
-const same = (y: string, x: string, how: string): Rule =>
-  both(`${y} = ${x}`, `{${y}} = {${x}}`, [y, x], (v) => v[y]! - v[x]!, {
-    [y]: [(v) => v[x]!, `{${x}}`, how],
-    [x]: [(v) => v[y]!, `{${y}}`, how],
-  });
-
-/** A length of DNA in base pairs. */
-const bp = (id: string, symbol: string, name: string, min: number, max: number): VariableDef => ({
-  id,
-  symbol,
-  name,
-  unit: 'bp',
-  min,
-  max,
-  step: 10,
-  integer: true,
-});
 
 const DNA: ModuleDef[] = [
   // ── DNA structure, replication and protein synthesis (HS-LS1-1, HS-LS3-1) ──
@@ -1394,6 +946,454 @@ const BIOTECH: ModuleDef[] = [
   },
 ];
 
+const EVOLUTION: ModuleDef[] = [
+  // ── Evidence for evolution, population genetics and speciation (HS-LS4-1 to 4-5) ──
+  {
+    id: 's.9.evolution-evidence',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Hardy–Weinberg holds in a large population with random mating, no mutation, no migration and no selection.',
+      'Only aa shows the recessive trait, so start from its share q²: q is its square root.',
+      'Carriers (Aa) show nothing but make up 2pq, and p² + 2pq + q² = 1.',
+    ],
+    variables: [
+      freq('Q2', 'q²', 'Share with the recessive trait (aa)'),
+      freq('q', 'q', 'Frequency of allele a'),
+      freq('p', 'p', 'Frequency of allele A'),
+      freq('P2', 'p²', 'Share that is AA'),
+      freq('H', '2pq', 'Share of carriers (Aa)'),
+      count('N', 'N', 'People in the population', 2, 1000000),
+      { ...freq('nAA', 'n_AA', 'Expected AA people', true), max: 1000000, step: 1 },
+      { ...freq('nAa', 'n_Aa', 'Expected carriers', true), max: 1000000, step: 1 },
+      { ...freq('naa', 'n_aa', 'Expected aa people', true), max: 1000000, step: 1 },
+    ],
+    ...rules(
+      both('q² = q^2', '{Q2} = {q}^2', ['Q2', 'q'], (v) => v.Q2! - v.q! ** 2, {
+        Q2: [(v) => v.q! ** 2, '{q}^2', 'Two a alleles meet with chance q × q.'],
+        q: [
+          (v) => (v.Q2! >= 0 ? Math.sqrt(v.Q2!) : undefined),
+          '√{Q2}',
+          'Only aa shows the recessive trait, so q is the square root of its share.',
+        ],
+      }),
+      both('p = 1 − q', '{p} = 1 − {q}', ['p', 'q'], (v) => v.p! + v.q! - 1, {
+        p: [(v) => 1 - v.q!, '1 − {q}', 'The two alleles’ frequencies add to 1.'],
+        q: [(v) => 1 - v.p!, '1 − {p}', 'The two alleles’ frequencies add to 1.'],
+      }),
+      both('p² = p^2', '{P2} = {p}^2', ['P2', 'p'], (v) => v.P2! - v.p! ** 2, {
+        P2: [(v) => v.p! ** 2, '{p}^2', 'Two A alleles meet with chance p × p.'],
+        p: [
+          (v) => (v.P2! >= 0 ? Math.sqrt(v.P2!) : undefined),
+          '√{P2}',
+          'p is the square root of the AA share.',
+        ],
+      }),
+      both(
+        '2pq = 2 × p × q',
+        '{H} = 2 × {p} × {q}',
+        ['H', 'p', 'q'],
+        (v) => v.H! - 2 * v.p! * v.q!,
+        {
+          H: [
+            (v) => 2 * v.p! * v.q!,
+            '2 × {p} × {q}',
+            'A from one parent and a from the other, or the other way round: twice p × q.',
+          ],
+          p: [(v) => div(v.H!, 2 * v.q!), '{H} ÷ (2 × {q})', 'Divide the carrier share by 2q.'],
+          q: [(v) => div(v.H!, 2 * v.p!), '{H} ÷ (2 × {p})', 'Divide the carrier share by 2p.'],
+        },
+      ),
+      expected('nAA', 'P2', 'AA'),
+      expected('nAa', 'H', 'carrier'),
+      expected('naa', 'Q2', 'aa'),
+    ),
+    example: { Q2: 0.16, q: 0.4, p: 0.6, P2: 0.36, H: 0.48, N: 500, nAA: 180, nAa: 240, naa: 80 },
+    startWith: ['Q2', 'N'],
+    representation: {
+      kind: 'alleleFrequencies',
+      p: 'p',
+      q: 'q',
+      genotypes: ['P2', 'H', 'Q2'],
+      keep: ['N'],
+    },
+  },
+  {
+    id: 's.9.evolution-evidence~allele-counts',
+    title: 'Allele frequencies from genotype counts',
+    use: 'Use this for “A sample has 49 AA, 42 Aa and 9 aa. What are p and q?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each individual carries two alleles: AA has two A, Aa one of each, aa two a.',
+      'So N individuals carry 2N alleles, and p is the share of them that are A.',
+      'Counting alleles works for any population, whether or not it is in Hardy–Weinberg equilibrium.',
+    ],
+    variables: [
+      count('nAA', 'n_AA', 'Individuals AA', 0, 10000),
+      count('nAa', 'n_Aa', 'Individuals Aa', 0, 10000),
+      count('naa', 'n_aa', 'Individuals aa', 0, 10000),
+      count('N', 'N', 'Individuals in all', 1, 30000, true),
+      count('A', 'A', 'A alleles counted', 0, 60000, true),
+      count('a', 'a', 'a alleles counted', 0, 60000, true),
+      freq('p', 'p', 'Frequency of allele A', true),
+      freq('q', 'q', 'Frequency of allele a', true),
+    ],
+    ...rules(
+      forward(
+        'N = n_AA + n_Aa + n_aa',
+        '{N} = {nAA} + {nAa} + {naa}',
+        'N',
+        ['nAA', 'nAa', 'naa'],
+        (v) => v.nAA! + v.nAa! + v.naa!,
+        '{nAA} + {nAa} + {naa}',
+        'Add the three genotype counts.',
+      ),
+      forward(
+        'A = 2n_AA + n_Aa',
+        '{A} = 2 × {nAA} + {nAa}',
+        'A',
+        ['nAA', 'nAa'],
+        (v) => 2 * v.nAA! + v.nAa!,
+        '2 × {nAA} + {nAa}',
+        'Two A in each AA individual and one in each Aa.',
+      ),
+      forward(
+        'a = 2n_aa + n_Aa',
+        '{a} = 2 × {naa} + {nAa}',
+        'a',
+        ['naa', 'nAa'],
+        (v) => 2 * v.naa! + v.nAa!,
+        '2 × {naa} + {nAa}',
+        'Two a in each aa individual and one in each Aa.',
+      ),
+      forward(
+        'p = A ÷ 2N',
+        '{p} = {A} ÷ (2 × {N})',
+        'p',
+        ['A', 'N'],
+        (v) => div(v.A!, 2 * v.N!),
+        '{A} ÷ (2 × {N})',
+        'The A alleles out of all 2N alleles.',
+      ),
+      forward(
+        'q = a ÷ 2N',
+        '{q} = {a} ÷ (2 × {N})',
+        'q',
+        ['a', 'N'],
+        (v) => div(v.a!, 2 * v.N!),
+        '{a} ÷ (2 × {N})',
+        'The a alleles out of all 2N alleles.',
+      ),
+    ),
+    example: { nAA: 49, nAa: 42, naa: 9, N: 100, A: 140, a: 60, p: 0.7, q: 0.3 },
+    startWith: ['nAA', 'nAa', 'naa'],
+    representation: { kind: 'alleleFrequencies', p: 'p', q: 'q', fixed: true },
+  },
+];
+
+const POPULATION: ModuleDef[] = [
+  // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
+  {
+    id: 's.9.population-ecology',
+    unitSystems: ['metric'],
+    assumptions: [
+      'While N is small, food and space are plentiful and growth is nearly exponential.',
+      'Growth G = rN(K − N) ÷ K is fastest at N = K ÷ 2, then slows as resources run short.',
+      'The population levels off at the carrying capacity K, the most the habitat can support.',
+    ],
+    variables: [
+      { id: 't', symbol: 't', name: 'Time', unit: 'days', min: 0, max: 1000, step: 0.5 },
+      count('K', 'K', 'Carrying capacity', 10, 1000000),
+      count('N0', 'N₀', 'Starting population', 1, 1000000),
+      { id: 'r', symbol: 'r', name: 'Growth rate', unit: 'per day', min: 0.01, max: 5, step: 0.01 },
+      { id: 'N', symbol: 'N', name: 'Population', min: 0, max: 1000000, step: 1 },
+      {
+        id: 'G',
+        symbol: 'G',
+        name: 'Growth now',
+        unit: 'per day',
+        min: 0,
+        max: 2000000,
+        step: 0.01,
+        derived: true,
+      },
+    ],
+    ...rules(
+      both(
+        'N = K ÷ (1 + ((K − N₀) ÷ N₀)e^(−rt))',
+        '{N} = {K} ÷ (1 + (({K} − {N0}) ÷ {N0}) × e^(−{r}{t}))',
+        ['N', 'K', 'N0', 'r', 't'],
+        (v) => v.N! - logistic(v),
+        {
+          N: [
+            logistic,
+            '{K} ÷ (1 + (({K} − {N0}) ÷ {N0}) ÷ e^({r} × {t}))',
+            'Work out A = (K − N₀) ÷ N₀, then K ÷ (1 + A ÷ e^(rt)): N₀ at t = 0, K after a long time.',
+          ],
+          t: [
+            (v) => {
+              const q = (((v.K! - v.N0!) / v.N0!) * v.N!) / (v.K! - v.N!);
+              return q > 0 && Number.isFinite(q) ? Math.log(q) / v.r! : undefined;
+            },
+            'ln((({K} − {N0}) ÷ {N0}) × {N} ÷ ({K} − {N})) ÷ {r}',
+            'Solve 1 + Ae^(−rt) = K ÷ N for e^(−rt), then take the natural log and divide by −r.',
+          ],
+        },
+      ),
+      forward(
+        'G = rN(K − N) ÷ K',
+        '{G} = {r} × {N} × ({K} − {N}) ÷ {K}',
+        'G',
+        ['r', 'N', 'K'],
+        (v) => (v.r! * v.N! * (v.K! - v.N!)) / v.K!,
+        '{r} × {N} × ({K} − {N}) ÷ {K}',
+        'The exponential rate rN, slowed by the share of K still unused, (K − N) ÷ K.',
+      ),
+      below('N0', 'K'),
+    ),
+    example: {
+      t: 6,
+      K: 1000,
+      N0: 100,
+      r: 0.5,
+      N: 1000 / (1 + 9 * Math.exp(-3)),
+      G: (0.5 * (1000 / (1 + 9 * Math.exp(-3))) * (1000 - 1000 / (1 + 9 * Math.exp(-3)))) / 1000,
+    },
+    startWith: ['t', 'K', 'N0', 'r'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'logistic',
+      K: 'K',
+      start: 'N0',
+      r: 'r',
+      name: 'N',
+      at: { x: 't', y: 'N' },
+      axes: { x: 'Time t (days)', y: 'Population N' },
+      marks: ['asymptotes', 'extrema'],
+    },
+  },
+  {
+    id: 's.9.population-ecology~rates',
+    title: 'Births, deaths and migration',
+    use: 'Use this for “A herd of 500 deer has 90 births, 40 deaths, 10 arrivals and 20 departures in a year. What is its new size?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Births and immigrants add to a population; deaths and emigrants take away.',
+      'The per-capita growth rate counts births minus deaths for each individual, as a percent.',
+      'All four counts are over the same time, here one year.',
+    ],
+    variables: [
+      count('N', 'N', 'Population at the start', 1, 1000000),
+      count('B', 'B', 'Births', 0, 1000000),
+      count('D', 'D', 'Deaths', 0, 1000000),
+      count('I', 'I', 'Immigrants', 0, 1000000),
+      count('E', 'E', 'Emigrants', 0, 1000000),
+      count('dN', 'ΔN', 'Change in population', -2000000, 2000000, true),
+      count('N1', 'N₁', 'Population a year later', 0, 3000000, true),
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Per-capita growth rate',
+        unit: '%',
+        min: -100,
+        max: 100000000,
+        step: 0.1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      forward(
+        'ΔN = B − D + I − E',
+        '{dN} = {B} − {D} + {I} − {E}',
+        'dN',
+        ['B', 'D', 'I', 'E'],
+        (v) => v.B! - v.D! + v.I! - v.E!,
+        '{B} − {D} + {I} − {E}',
+        'Births and immigrants come in; deaths and emigrants go out.',
+      ),
+      forward(
+        'N₁ = N + ΔN',
+        '{N1} = {N} + {dN}',
+        'N1',
+        ['N', 'dN'],
+        (v) => v.N! + v.dN!,
+        '{N} + {dN}',
+        'Add the change to the starting population.',
+      ),
+      forward(
+        'r = 100 × (B − D) ÷ N',
+        '{r} = 100 × ({B} − {D}) ÷ {N}',
+        'r',
+        ['B', 'D', 'N'],
+        (v) => div(100 * (v.B! - v.D!), v.N!),
+        '100 × ({B} − {D}) ÷ {N}',
+        'Births minus deaths for each individual at the start, as a percent.',
+      ),
+    ),
+    example: { N: 500, B: 90, D: 40, I: 10, E: 20, dN: 40, N1: 540, r: 10 },
+    startWith: ['N', 'B', 'D', 'I', 'E'],
+    representation: {
+      kind: 'bars',
+      bars: [{ var: 'N' }, { var: 'B' }, { var: 'D' }, { var: 'I' }, { var: 'E' }, { var: 'N1' }],
+      min: 0,
+      max: 600,
+    },
+  },
+  {
+    id: 's.9.population-ecology~doubling',
+    title: 'Doubling time',
+    use: 'Use this for “Bacteria double every 20 minutes. How many are there after 2 hours, starting from 100?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'With plenty of food and space, a population doubles every doubling time d: exponential growth.',
+      'After t minutes it has doubled g = t ÷ d times, so N = N₀ × 2ᵍ.',
+      'Real populations slow down as food runs out; this is the early, exponential part.',
+    ],
+    variables: [
+      count('N0', 'N₀', 'Starting population', 1, 1000000),
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Doubling time',
+        unit: 'min',
+        units: ['min'],
+        min: 1,
+        max: 600,
+        step: 1,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time',
+        unit: 'min',
+        units: ['min'],
+        min: 0,
+        max: 1440,
+        step: 1,
+      },
+      { id: 'g', symbol: 'g', name: 'Doublings', min: 0, max: 40, step: 0.01, derived: true },
+      {
+        id: 'N',
+        symbol: 'N',
+        name: 'Population after t',
+        min: 1,
+        max: 1e18,
+        step: 1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      forward(
+        'g = t ÷ d',
+        '{g} = {t} ÷ {d}',
+        'g',
+        ['t', 'd'],
+        (v) => div(v.t!, v.d!),
+        '{t} ÷ {d}',
+        'How many doubling times fit into the time.',
+      ),
+      forward(
+        'N = N₀ × 2^g',
+        '{N} = {N0} × 2^{g}',
+        'N',
+        ['N0', 'g'],
+        (v) => v.N0! * 2 ** v.g!,
+        '{N0} × 2^{g}',
+        'Each doubling multiplies the population by 2: g doublings multiply it by 2ᵍ.',
+      ),
+    ),
+    example: { N0: 100, d: 20, t: 120, g: 6, N: 6400 },
+    startWith: ['N0', 'd', 't'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'exponential',
+      a: 'N0',
+      b: 2,
+      name: 'N',
+      at: { x: 'g', y: 'N' },
+      axes: { x: 'Doublings g', y: 'Population N' },
+    },
+  },
+];
+
+const ECOSYSTEMS: ModuleDef[] = [
+  // ── Ecosystems: energy pyramids, matter cycles, succession, biodiversity (HS-LS2-2 to 2-7) ──
+  {
+    id: 's.9.ecosystem-dynamics',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The trophic efficiency p varies, about 5–20%; the rest of the energy is used in respiration or lost as heat.',
+      'Biomass pyramids usually follow the energy pyramid, but a numbers pyramid can stand upside down: one oak feeds thousands of caterpillars.',
+      'Energy flows one way through the levels; matter cycles.',
+    ],
+    variables: [
+      kcal('E1', 'E₁', 'Energy in the grasses'),
+      kcal('E2', 'E₂', 'Energy in the grasshoppers'),
+      { id: 'p', symbol: 'p', name: 'Trophic efficiency', unit: '%', min: 1, max: 25, step: 0.1 },
+      kcal('E3', 'E₃', 'Energy in the shrews'),
+      kcal('E4', 'E₄', 'Energy in the owls'),
+    ],
+    ...rules(
+      passUp('E2', 'E1', 'in the grasses'),
+      passUp('E3', 'E2', 'in the grasshoppers'),
+      passUp('E4', 'E3', 'in the shrews'),
+    ),
+    example: { E1: 12000, E2: 960, p: 8, E3: 76.8, E4: 6.144 },
+    startWith: ['E1', 'E2'],
+    representation: {
+      kind: 'energyPyramid',
+      measure: 'energy',
+      levels: ['E1', 'E2', 'E3', 'E4'],
+      percent: 'p',
+      names: ['grasses', 'grasshoppers', 'shrews', 'owls'],
+    },
+  },
+  {
+    id: 's.9.ecosystem-dynamics~biodiversity',
+    title: 'Simpson’s diversity index',
+    use: 'Use this for “Which pond community is more diverse: 25, 5, 5, 5 or 10, 10, 10, 10?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'S is the chance that two individuals picked at random belong to different species.',
+      'More species, and more even counts of each, raise S toward 1; one species alone gives 0.',
+      'Here a pond survey counts four species.',
+    ],
+    variables: [
+      count('n1', 'n₁', 'Water striders', 0, 1000),
+      count('n2', 'n₂', 'Pond snails', 0, 1000),
+      count('n3', 'n₃', 'Dragonfly nymphs', 0, 1000),
+      count('n4', 'n₄', 'Tadpoles', 0, 1000),
+      count('N', 'N', 'Individuals in all', 1, 4000, true),
+      freq('S', 'S', 'Simpson’s index', true),
+    ],
+    ...rules(
+      forward(
+        'N = n₁ + n₂ + n₃ + n₄',
+        '{N} = {n1} + {n2} + {n3} + {n4}',
+        'N',
+        ['n1', 'n2', 'n3', 'n4'],
+        (v) => v.n1! + v.n2! + v.n3! + v.n4!,
+        '{n1} + {n2} + {n3} + {n4}',
+        'Add the counts of the four species.',
+      ),
+      forward(
+        'S = 1 − ((n₁ ÷ N)² + (n₂ ÷ N)² + (n₃ ÷ N)² + (n₄ ÷ N)²)',
+        `{S} = 1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
+        'S',
+        ['n1', 'n2', 'n3', 'n4', 'N'],
+        (v) =>
+          v.N! > 0
+            ? 1 - [v.n1!, v.n2!, v.n3!, v.n4!].reduce((t, n) => t + (n / v.N!) ** 2, 0)
+            : undefined,
+        `1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
+        'Each (n ÷ N)² is the chance two picks are both that species; 1 minus their sum is the chance they differ.',
+      ),
+    ),
+    example: { n1: 25, n2: 5, n3: 5, n4: 5, N: 40, S: 0.5625 },
+    startWith: ['n1', 'n2', 'n3', 'n4'],
+    representation: { kind: 'pieChart', parts: ['n1', 'n2', 'n3', 'n4'], total: 'N' },
+  },
+];
+
 const IMMUNE: ModuleDef[] = [
   // ── Disease and the immune system (HS-LS1-2, HS-LS1-3) ──
   {
@@ -1571,12 +1571,12 @@ const IMMUNE: ModuleDef[] = [
 ];
 
 export const SCIENCE_9_MODULES: ModuleDef[] = [
-  ...INHERITANCE,
-  ...EVOLUTION,
-  ...POPULATION,
   ...MEMBRANE,
-  ...ECOSYSTEMS,
+  ...INHERITANCE,
   ...DNA,
   ...BIOTECH,
+  ...EVOLUTION,
+  ...POPULATION,
+  ...ECOSYSTEMS,
   ...IMMUNE,
 ];

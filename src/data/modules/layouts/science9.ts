@@ -11,6 +11,544 @@ const division = (label: string, stage: DivisionStage) => ({
   figure: { kind: 'cellDivision' as const, stage, diploid: 4 },
 });
 
+// ─── The pages, in taxonomy order ───────────────────────────────────────────
+
+const BIOMOLECULES: LayoutDef[] = [
+  // ── The chemistry of life: water and biomolecules (HS-LS1-6, HS-LS1-1) ──
+  {
+    kind: 'explore',
+    id: 's.9.biomolecules',
+    assumptions: [
+      'Monomers join by dehydration synthesis: each new bond gives off one water molecule.',
+      'Hydrolysis runs it backward: one water molecule added breaks each bond, as in digestion.',
+      'A fat is not a true polymer: glycerol always takes exactly three fatty acids.',
+    ],
+    figure: { kind: 'macromolecules' },
+    scenes: [
+      {
+        label: 'Carbohydrates',
+        lines: [
+          'Two glucose join into maltose, a disaccharide; one water molecule leaves.',
+          'Sugars are made of carbon, hydrogen and oxygen only.',
+        ],
+        macro: { kind: 'carbohydrate', count: 2 },
+      },
+      {
+        label: 'Starch',
+        lines: [
+          'Four glucose units join by 3 bonds and give off 3 water molecules.',
+          'Real starch, glycogen and cellulose chains are thousands of glucose units long.',
+        ],
+        macro: { kind: 'carbohydrate', count: 4 },
+      },
+      {
+        label: 'Proteins',
+        lines: [
+          'Amino acids join end to end by peptide bonds. Each carries an amine group, so proteins hold nitrogen.',
+          'Each has its own side chain R, and the chain folds into the protein’s shape.',
+        ],
+        macro: { kind: 'protein', count: 4 },
+      },
+      {
+        label: 'Nucleic acids',
+        lines: [
+          'Nucleotides join sugar to phosphate, so the bases hang off a sugar–phosphate backbone.',
+          'DNA and RNA store and carry the instructions for making proteins.',
+        ],
+        macro: { kind: 'nucleicAcid', count: 3 },
+      },
+      {
+        label: 'Fats',
+        lines: [
+          'Glycerol takes three fatty acids by 3 ester bonds, giving off 3 water molecules.',
+          'Fats store twice as much energy per gram as sugars.',
+        ],
+        macro: { kind: 'lipid' },
+      },
+      {
+        label: 'Digestion',
+        lines: [
+          'Hydrolysis adds water back: 2 water molecules split a chain of 3 amino acids into its monomers.',
+        ],
+        macro: { kind: 'protein', count: 3, split: true },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.biomolecules~classes',
+    title: 'Which class of biomolecule is it?',
+    use: 'Use this for “Antibodies are made of which kind of molecule?”',
+    assumptions: [
+      'The four classes are carbohydrates, lipids, proteins and nucleic acids.',
+      'Enzymes, antibodies and hemoglobin are proteins: chains of amino acids folded into a shape.',
+    ],
+    question: 'Which class of biomolecule is it?',
+    bins: [
+      {
+        id: 'carbohydrates',
+        label: 'Carbohydrates',
+        why: 'Sugars and chains of sugars: quick energy and plant structure.',
+      },
+      {
+        id: 'lipids',
+        label: 'Lipids',
+        why: 'Fats, oils, phospholipids and steroids: they do not mix with water.',
+      },
+      {
+        id: 'proteins',
+        label: 'Proteins',
+        why: 'Chains of amino acids that do most of the cell’s work.',
+      },
+      {
+        id: 'nucleic',
+        label: 'Nucleic acids',
+        why: 'Chains of nucleotides that store and carry genetic information.',
+      },
+    ],
+    cards: [
+      { label: 'Glucose', bin: 'carbohydrates' },
+      { label: 'Starch', bin: 'carbohydrates' },
+      { label: 'Cellulose', bin: 'carbohydrates' },
+      { label: 'Glycogen', bin: 'carbohydrates' },
+      { label: 'Fatty acid', bin: 'lipids' },
+      { label: 'Triglyceride (fat)', bin: 'lipids' },
+      { label: 'Phospholipid', bin: 'lipids' },
+      { label: 'Cholesterol', bin: 'lipids' },
+      { label: 'Amino acid', bin: 'proteins' },
+      { label: 'Enzyme (amylase)', bin: 'proteins' },
+      { label: 'Antibody', bin: 'proteins' },
+      { label: 'Hemoglobin', bin: 'proteins' },
+      { label: 'Nucleotide', bin: 'nucleic' },
+      { label: 'DNA', bin: 'nucleic' },
+      { label: 'RNA', bin: 'nucleic' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.biomolecules~water',
+    title: 'Which property of water explains it?',
+    use: 'Use this for “Why can an insect stand on the surface of a pond?”',
+    assumptions: [
+      'Water is polar: its oxygen end is slightly negative and its hydrogen ends slightly positive.',
+      'Hydrogen bonds between water molecules cause all four properties here.',
+    ],
+    question: 'Which property of water explains it?',
+    bins: [
+      {
+        id: 'cohesion',
+        label: 'Cohesion (surface tension)',
+        why: 'Water molecules cling to each other, so the surface holds together.',
+      },
+      {
+        id: 'heat',
+        label: 'High specific heat',
+        why: 'Breaking hydrogen bonds takes a lot of energy, so water warms and cools slowly.',
+      },
+      {
+        id: 'solvent',
+        label: 'Good solvent',
+        why: 'Polar water surrounds ions and other polar molecules and pulls them apart.',
+      },
+      {
+        id: 'ice',
+        label: 'Ice floats',
+        why: 'Hydrogen bonds hold ice in an open lattice, less dense than liquid water.',
+      },
+    ],
+    cards: [
+      { label: 'An insect stands on a pond', bin: 'cohesion' },
+      { label: 'Water beads into round drops on a leaf', bin: 'cohesion' },
+      { label: 'A lake warms slowly in spring', bin: 'heat' },
+      { label: 'Seaside towns have milder winters than inland towns', bin: 'heat' },
+      { label: 'Salt disappears when stirred into water', bin: 'solvent' },
+      { label: 'Blood carries dissolved glucose', bin: 'solvent' },
+      { label: 'Ponds freeze from the top down', bin: 'ice' },
+      { label: 'Fish live all winter under lake ice', bin: 'ice' },
+    ],
+  },
+];
+
+const MEMBRANE: LayoutDef[] = [
+  // ── Cell membranes and transport (HS-LS1-2, HS-LS1-3) ──
+  {
+    kind: 'sort',
+    id: 's.9.membrane-transport~transport-types',
+    title: 'Which kind of transport is it?',
+    use: 'Use this for “Is it passive or active transport, and does it need a protein?”',
+    assumptions: [
+      'Passive transport runs from more to fewer and uses no ATP; active transport runs the other way and spends ATP.',
+      'Facilitated diffusion and osmosis are passive but go through a channel or carrier protein.',
+    ],
+    question: 'How does it cross the membrane?',
+    bins: [
+      {
+        id: 'simple',
+        label: 'Simple diffusion',
+        why: 'Small nonpolar molecules slip between the phospholipids, from more to fewer.',
+      },
+      {
+        id: 'facilitated',
+        label: 'Facilitated diffusion',
+        why: 'A channel or carrier protein lets it through, still from more to fewer, with no ATP.',
+      },
+      {
+        id: 'osmosis',
+        label: 'Osmosis',
+        why: 'Water crosses, through aquaporins, toward the side with more solute.',
+      },
+      {
+        id: 'active',
+        label: 'Active transport',
+        why: 'A pump moves it from fewer to more, against the gradient, spending ATP.',
+      },
+      {
+        id: 'bulk',
+        label: 'Bulk transport',
+        why: 'Large particles or many molecules move inside vesicles made from membrane.',
+      },
+    ],
+    cards: [
+      { label: 'O₂ enters a lung cell', bin: 'simple' },
+      { label: 'CO₂ leaves a muscle cell', bin: 'simple' },
+      { label: 'Glucose enters a red blood cell through a carrier protein', bin: 'facilitated' },
+      { label: 'K⁺ leaves through an open channel, high to low', bin: 'facilitated' },
+      { label: 'Water enters a root cell through aquaporins', bin: 'osmosis' },
+      { label: 'The Na⁺/K⁺ pump spends ATP', bin: 'active' },
+      { label: 'Root cells take in minerals from soil that has fewer of them', bin: 'active' },
+      { label: 'A white blood cell engulfs a bacterium', bin: 'bulk' },
+      { label: 'A gland cell releases insulin in vesicles', bin: 'bulk' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.membrane-transport~tonicity',
+    title: 'Cells in hypotonic, isotonic and hypertonic water',
+    use: 'Use this for “Onion cells in salt water shrink from their walls. Why?”',
+    assumptions: [
+      'Water moves by osmosis toward the side with more solute.',
+      'A red blood cell has no wall: it swells and can burst, or shrivels. A plant cell’s wall holds it firm, or its membrane pulls away.',
+    ],
+    question: 'Which way does water move?',
+    bins: [
+      {
+        id: 'in',
+        label: 'Into the cell (hypotonic water)',
+        why: 'The water has less solute than the cell, so water moves in.',
+      },
+      {
+        id: 'none',
+        label: 'No net movement (isotonic water)',
+        why: 'The same solute on both sides: water crosses both ways equally.',
+      },
+      {
+        id: 'out',
+        label: 'Out of the cell (hypertonic water)',
+        why: 'The water has more solute than the cell, so water moves out.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Red blood cell swollen round',
+        bin: 'in',
+        figure: { kind: 'icon', icon: 'red blood cell in hypotonic water' },
+      },
+      {
+        label: 'Red blood cell, a dimpled disc',
+        bin: 'none',
+        figure: { kind: 'icon', icon: 'red blood cell in isotonic water' },
+      },
+      {
+        label: 'Red blood cell shriveled',
+        bin: 'out',
+        figure: { kind: 'icon', icon: 'red blood cell in hypertonic water' },
+      },
+      {
+        label: 'Plant cell firm (turgid)',
+        bin: 'in',
+        figure: { kind: 'icon', icon: 'plant cell in hypotonic water' },
+      },
+      {
+        label: 'Plant cell limp (flaccid)',
+        bin: 'none',
+        figure: { kind: 'icon', icon: 'plant cell in isotonic water' },
+      },
+      {
+        label: 'Plant cell, membrane pulled from the wall',
+        bin: 'out',
+        figure: { kind: 'icon', icon: 'plant cell in hypertonic water' },
+      },
+      { label: 'Wilted lettuce in fresh water turns crisp', bin: 'in' },
+      { label: 'Red blood cells in 0.9% saline', bin: 'none' },
+      { label: 'Celery in salty water goes limp', bin: 'out' },
+      { label: 'Red onion skin in salt water shrinks from its wall', bin: 'out' },
+    ],
+  },
+];
+
+const ENERGY: LayoutDef[] = [
+  // ── Cellular energy: ATP, photosynthesis and cellular respiration (HS-LS1-5, 1-7, 2-3, 2-5) ──
+  {
+    kind: 'explore',
+    id: 's.9.cellular-energy',
+    assumptions: [
+      'ATP carries the energy a cell spends; the cell remakes it from ADP and phosphate.',
+      'Plant cells have chloroplasts and mitochondria; animal cells have only mitochondria.',
+      'Textbooks give 30 to 38 ATP for each glucose respired, so no single total is stated here.',
+    ],
+    figure: { kind: 'organelleEnergy' },
+    scenes: [
+      {
+        label: 'The cycle',
+        lines: [
+          'The products of each process are the reactants of the other: matter cycles, while energy flows in as light and out as work and heat.',
+        ],
+        energy: {},
+      },
+      {
+        label: 'Photosynthesis',
+        lines: [
+          'In the chloroplast, light energy turns carbon dioxide and water into glucose, giving off oxygen.',
+        ],
+        energy: { process: 'photosynthesis' },
+      },
+      {
+        label: 'Light reactions',
+        lines: [
+          'In the thylakoids, light splits water: O₂ is given off, and the energy is stored in ATP and NADPH.',
+        ],
+        energy: { process: 'lightReactions', lit: 'light' },
+      },
+      {
+        label: 'Calvin cycle',
+        lines: [
+          'In the stroma, ATP and NADPH power the fixing of carbon from CO₂ into sugar.',
+          'So the carbon atoms in glucose come from carbon dioxide in the air.',
+        ],
+        energy: { process: 'calvinCycle', lit: 'CO₂' },
+      },
+      {
+        label: 'Respiration',
+        lines: [
+          'In the mitochondrion, glucose and oxygen become carbon dioxide and water, and the energy is stored in ATP.',
+        ],
+        energy: { process: 'respiration' },
+      },
+      {
+        label: 'Glycolysis',
+        lines: [
+          'In the cytoplasm, glucose splits into 2 pyruvate for a net gain of 2 ATP. It needs no oxygen.',
+        ],
+        energy: { process: 'glycolysis', lit: 'glucose' },
+      },
+      {
+        label: 'Krebs cycle',
+        lines: [
+          'In the matrix, pyruvate is broken down to CO₂, making 2 ATP and loading carriers with electrons.',
+        ],
+        energy: { process: 'krebsCycle', lit: 'CO₂' },
+      },
+      {
+        label: 'Electron transport',
+        lines: [
+          'Along the folded inner membrane, electrons pass to oxygen, which takes them and becomes water.',
+          'Most of the ATP is made here.',
+        ],
+        energy: { process: 'electronTransport', lit: 'O₂' },
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.cellular-energy~stages',
+    title: 'The stages of cellular respiration',
+    use: 'Use this for “Where does each stage of respiration happen, and which makes the most ATP?”',
+    assumptions: [
+      'Glycolysis happens in the cytoplasm; the rest happens in the mitochondrion.',
+      'Oxygen is needed only at the last stage, where it takes the electrons.',
+    ],
+    question: 'Put the stages of cellular respiration in order.',
+    stages: [
+      { label: 'Glycolysis splits glucose into 2 pyruvate in the cytoplasm' },
+      { label: 'Pyruvate enters the mitochondrion and gives off CO₂' },
+      { label: 'The Krebs cycle gives off CO₂ and loads NADH' },
+      { label: 'The electron transport chain uses O₂ and makes most of the ATP' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.cellular-energy~processes',
+    title: 'Photosynthesis, respiration or fermentation?',
+    use: 'Use this for “Which process makes bread dough rise?”',
+    assumptions: [
+      'Photosynthesis stores light energy in glucose; aerobic respiration and fermentation release it.',
+      'Fermentation needs no oxygen but makes only 2 ATP per glucose.',
+    ],
+    question: 'Which process is it?',
+    bins: [
+      {
+        id: 'photosynthesis',
+        label: 'Photosynthesis',
+        why: 'Light, CO₂ and water make glucose and oxygen, in chloroplasts.',
+      },
+      {
+        id: 'aerobic',
+        label: 'Aerobic respiration',
+        why: 'Glucose and oxygen give CO₂, water and the most ATP, in mitochondria.',
+      },
+      {
+        id: 'fermentation',
+        label: 'Fermentation',
+        why: 'Glycolysis with no oxygen, then lactic acid or alcohol and CO₂.',
+      },
+    ],
+    cards: [
+      { label: 'Uses light energy', bin: 'photosynthesis' },
+      { label: 'Gives off O₂', bin: 'photosynthesis' },
+      { label: 'Happens in chloroplasts', bin: 'photosynthesis' },
+      { label: 'Happens in mitochondria', bin: 'aerobic' },
+      { label: 'Uses O₂ to release the most ATP', bin: 'aerobic' },
+      { label: 'Yeast makes bread dough rise with no O₂', bin: 'fermentation' },
+      { label: 'Sprinting muscles make lactic acid', bin: 'fermentation' },
+      { label: 'Makes only 2 ATP per glucose, with no O₂', bin: 'fermentation' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.cellular-energy~enzymes',
+    title: 'Enzyme activity by temperature',
+    use: 'Use this to record or read how fast an enzyme works at each temperature.',
+    assumptions: [
+      'A human enzyme: it lowers the activation energy of a reaction and is not used up.',
+      'Warmth speeds the molecules up, but too much heat changes the enzyme’s shape so its active site no longer fits.',
+    ],
+    columns: ['10 °C', '20 °C', '30 °C', '37 °C', '45 °C', '55 °C'],
+    rowLabel: 'Reaction rate',
+    unit: '% of the fastest',
+    max: 100,
+    step: 5,
+    initial: [20, 45, 80, 100, 60, 10],
+    pattern: (v) => {
+      const temps = [10, 20, 30, 37, 45, 55];
+      const peak = Math.max(...v);
+      const at = v.indexOf(peak);
+      if (at > 0 && at < v.length - 1 && v[v.length - 1]! < peak)
+        return `Activity rises to a peak near ${temps[at]} °C, then falls as heat changes the enzyme’s shape: it denatures.`;
+      if (v.every((x) => x === v[0]))
+        return 'The rate stayed the same at every temperature; a real enzyme speeds up, peaks, then falls.';
+      return 'A real enzyme speeds up with warmth, peaks at its best temperature, then falls as it denatures.';
+    },
+  },
+];
+
+const DIVISION: LayoutDef[] = [
+  // ── The cell cycle, mitosis and meiosis (HS-LS1-4, HS-LS3-2) ──
+  {
+    kind: 'sequence',
+    id: 's.9.mitosis-meiosis',
+    assumptions: [
+      'DNA is copied in interphase, so each chromosome enters mitosis as two sister chromatids.',
+      'This cell has 2n = 4 chromosomes: two pairs, one of each pair from each parent (red and blue).',
+      'The two daughter cells match the parent cell: 4 chromosomes each.',
+    ],
+    question: 'Put the stages of mitosis in order, from interphase.',
+    stages: [
+      division('Interphase', 'interphase'),
+      division('Prophase', 'prophase'),
+      division('Metaphase', 'metaphase'),
+      division('Anaphase', 'anaphase'),
+      division('Telophase', 'telophase'),
+      division('Cytokinesis', 'cytokinesis'),
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.mitosis-meiosis~cell-cycle',
+    title: 'The cell cycle and how long each phase takes',
+    use: 'Use this for “In which phase of the cell cycle is DNA replicated?”',
+    assumptions: [
+      'Interphase is G1, S and G2: the cell spends most of its life there, growing and copying its DNA.',
+      'The times are typical for a human cell dividing in a dish, and they vary from cell to cell.',
+    ],
+    question: 'Put the phases of the cell cycle in order.',
+    stages: [
+      { label: 'G1: the cell grows', span: 11 },
+      { label: 'S: the DNA is replicated', span: 8 },
+      { label: 'G2: the copies are checked', span: 4 },
+      { label: 'M: mitosis and cytokinesis', span: 1 },
+    ],
+    unit: 'hours',
+    totalLabel: 'One cycle of a dividing human cell',
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.mitosis-meiosis~meiosis',
+    title: 'Meiosis I and II',
+    use: 'Use this for “What are the final products of meiosis?”',
+    assumptions: [
+      'Homologous chromosomes pair up and cross over in prophase I, swapping pieces.',
+      'Anaphase I separates the homologs; anaphase II separates the sister chromatids.',
+      'The result is four haploid cells, n = 2, and no two alike.',
+    ],
+    question: 'Put the stages of meiosis in order, from interphase.',
+    stages: [
+      division('Interphase', 'interphase'),
+      division('Prophase I', 'prophase I'),
+      division('Metaphase I', 'metaphase I'),
+      division('Anaphase I', 'anaphase I'),
+      division('Telophase I', 'telophase I'),
+      division('Prophase II', 'prophase II'),
+      division('Metaphase II', 'metaphase II'),
+      division('Anaphase II', 'anaphase II'),
+      division('Telophase II', 'telophase II'),
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.mitosis-meiosis~compare',
+    title: 'Mitosis, meiosis or both?',
+    use: 'Use this for “Why do offspring from sexual reproduction vary more than those from mitosis?”',
+    assumptions: [
+      'Mitosis copies a body cell; meiosis makes gametes with half the chromosomes.',
+      'Crossing over and the random sorting of homologs make every gamete different, so sexual reproduction adds variation.',
+    ],
+    question: 'Does it happen in mitosis, meiosis or both?',
+    bins: [
+      { id: 'mitosis', label: 'Mitosis', why: 'One division: two cells identical to the parent.' },
+      {
+        id: 'meiosis',
+        label: 'Meiosis',
+        why: 'Two divisions: four haploid gametes, each different.',
+      },
+      {
+        id: 'both',
+        label: 'Both',
+        why: 'Each starts from copied chromosomes and pulls sisters apart.',
+      },
+    ],
+    cards: [
+      { label: 'Makes 2 identical cells', bin: 'mitosis' },
+      { label: 'Body growth and wound repair', bin: 'mitosis' },
+      { label: 'Daughter cells are diploid', bin: 'mitosis' },
+      { label: 'Makes 4 cells with half the chromosomes', bin: 'meiosis' },
+      {
+        label: 'Homologous chromosomes pair and cross over',
+        bin: 'meiosis',
+        figure: { kind: 'cellDivision', stage: 'prophase I', diploid: 4 },
+      },
+      { label: 'Makes eggs and sperm', bin: 'meiosis' },
+      { label: 'Two divisions in a row', bin: 'meiosis' },
+      { label: 'Gametes differ from one another', bin: 'meiosis' },
+      { label: 'DNA is copied beforehand', bin: 'both' },
+      {
+        label: 'Sister chromatids separate',
+        bin: 'both',
+        figure: { kind: 'cellDivision', stage: 'anaphase', diploid: 4 },
+      },
+    ],
+  },
+];
+
 const INHERITANCE: LayoutDef[] = [
   // ── Mendelian and non-Mendelian inheritance (HS-LS3-2, HS-LS3-3) ──
   {
@@ -113,6 +651,93 @@ const INHERITANCE: LayoutDef[] = [
         ],
         family: { lit: ['d1', 'c1'], ask: 'd1' },
       },
+    ],
+  },
+];
+
+const DNA: LayoutDef[] = [
+  // ── DNA structure, replication and protein synthesis (HS-LS1-1, HS-LS3-1) ──
+  {
+    kind: 'sequence',
+    id: 's.9.dna-protein-synthesis~replication',
+    title: 'DNA replication',
+    use: 'Use this for “How does base pairing let a cell copy its DNA before it divides?”',
+    assumptions: [
+      'Each old strand is a template: A pairs with T and G with C, so the new strand’s order is fixed.',
+      'Replication is semiconservative: each new DNA molecule keeps one old strand.',
+    ],
+    question: 'Put the steps of DNA replication in order.',
+    stages: [
+      { label: 'Helicase unzips the double helix at an origin' },
+      { label: 'Free nucleotides pair with each old strand, A with T and G with C' },
+      { label: 'DNA polymerase joins the new nucleotides into a strand' },
+      { label: 'Two DNA molecules, each one old strand and one new' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.dna-protein-synthesis~protein-synthesis',
+    title: 'From gene to protein',
+    use: 'Use this for “Put the steps of protein synthesis in order, from the gene in the nucleus.”',
+    assumptions: [
+      'Transcription copies a gene into mRNA in the nucleus; translation builds the protein at a ribosome.',
+      'Each tRNA carries one amino acid and pairs with one codon by its anticodon.',
+    ],
+    question: 'Put the steps of protein synthesis in order.',
+    stages: [
+      { label: 'RNA polymerase copies a gene into mRNA in the nucleus' },
+      { label: 'The mRNA leaves through a nuclear pore' },
+      { label: 'A ribosome reads the mRNA from the start codon AUG' },
+      { label: 'tRNAs bring the amino acids that match each codon' },
+      { label: 'Peptide bonds link the amino acids' },
+      { label: 'A stop codon releases the chain, which folds into a protein' },
+    ],
+  },
+];
+
+const BIOTECH: LayoutDef[] = [
+  // ── Mutations, gene expression and biotechnology (HS-LS3-1, HS-LS3-2, HS-LS1-1) ──
+  {
+    kind: 'sort',
+    id: 's.9.biotechnology~tools',
+    title: 'Which DNA tool is it?',
+    use: 'Use this for “Which technique would make millions of copies of DNA from one hair?”',
+    assumptions: [
+      'PCR copies DNA, gel electrophoresis sorts it by size, and enzymes cut it at chosen sequences.',
+      'Genetic engineering moves a gene into another organism, which then makes that gene’s protein.',
+    ],
+    question: 'Which tool or technique is it?',
+    bins: [
+      {
+        id: 'pcr',
+        label: 'PCR (copies DNA)',
+        why: 'Each cycle of heating and cooling doubles the DNA.',
+      },
+      {
+        id: 'gel',
+        label: 'Gel electrophoresis (sorts by size)',
+        why: 'An electric field pulls DNA through a gel; short pieces run farthest.',
+      },
+      {
+        id: 'cut',
+        label: 'Cutting DNA',
+        why: 'Restriction enzymes and CRISPR–Cas9 cut only at a matching sequence.',
+      },
+      {
+        id: 'engineering',
+        label: 'Genetic engineering (moves a gene)',
+        why: 'A gene from one organism is put into another, which makes its protein.',
+      },
+    ],
+    cards: [
+      { label: 'Millions of copies from one hair’s DNA', bin: 'pcr' },
+      { label: 'Heat, cool and warm again 30 times', bin: 'pcr' },
+      { label: 'Shorter pieces travel farther toward +', bin: 'gel' },
+      { label: 'A child’s bands compared with each parent’s', bin: 'gel' },
+      { label: 'An enzyme cuts only at GAATTC', bin: 'cut' },
+      { label: 'Cas9 led to a gene by a guide RNA', bin: 'cut' },
+      { label: 'Bacteria given the human insulin gene', bin: 'engineering' },
+      { label: 'Corn with a bacterial gene that kills caterpillars', bin: 'engineering' },
     ],
   },
 ];
@@ -314,6 +939,201 @@ const EVOLUTION: LayoutDef[] = [
   },
 ];
 
+const CLASSIFICATION: LayoutDef[] = [
+  // ── Classification and the diversity of life (HS-LS4-1) ──
+  {
+    kind: 'explore',
+    id: 's.9.classification',
+    assumptions: [
+      'A cladogram groups organisms by shared derived traits: new features passed on to every descendant.',
+      'Branch order, not branch length, shows relationship; each branch point is a common ancestor.',
+      'A clade is an ancestor and all of its descendants.',
+    ],
+    figure: {
+      kind: 'cladogram',
+      tree: ['Sponge', ['Jellyfish', ['Earthworm', ['Sea star', ['Fish', 'Human']]]]],
+      traits: [
+        { name: 'True tissues', taxa: ['Jellyfish', 'Earthworm', 'Sea star', 'Fish', 'Human'] },
+        { name: 'Bilateral symmetry', taxa: ['Earthworm', 'Sea star', 'Fish', 'Human'] },
+        { name: 'Deuterostome embryo', taxa: ['Sea star', 'Fish', 'Human'] },
+        { name: 'Backbone', taxa: ['Fish', 'Human'] },
+        { name: 'Hair', taxa: ['Human'] },
+      ],
+    },
+    scenes: [
+      {
+        label: 'True tissues',
+        lines: [
+          'A sponge’s cells are not organized into tissues; every other animal here inherited tissues.',
+        ],
+        clade: { lit: 'True tissues' },
+      },
+      {
+        label: 'Bilateral symmetry',
+        lines: [
+          'A left and a right side, a front and a back: the jellyfish, round like a wheel, split off before this.',
+        ],
+        clade: { lit: 'Bilateral symmetry' },
+      },
+      {
+        label: 'Deuterostome embryo',
+        lines: [
+          'In the sea star, fish and human embryo, the first opening becomes the anus, not the mouth.',
+          'The young sea star is two-sided; only the adult grows five arms.',
+        ],
+        clade: { lit: 'Deuterostome embryo' },
+      },
+      {
+        label: 'Backbone',
+        lines: ['The fish and the human share a backbone, so they share the most recent ancestor.'],
+        clade: { lit: 'Backbone' },
+      },
+      {
+        label: 'Hair',
+        lines: ['Only the human has hair here: a trait of one branch groups nothing else.'],
+        clade: { lit: 'Hair' },
+      },
+      {
+        label: 'A clade',
+        lines: [
+          'The sea star, fish and human are an ancestor’s whole family: a clade.',
+          'Any group that sits above one branch point is a clade.',
+        ],
+        clade: { ring: ['Sea star', 'Fish', 'Human'] },
+      },
+      {
+        label: 'Not a clade',
+        lines: [
+          'The jellyfish and the earthworm share an ancestor, but so do the sea star, fish and human.',
+          'A group that leaves out some of its ancestor’s descendants is not a clade.',
+        ],
+        clade: { ring: ['Jellyfish', 'Earthworm'] },
+      },
+      {
+        label: 'Reading the nodes',
+        lines: [
+          'The last common ancestor of any two taxa sits at the branch point where their lines meet.',
+          'The earthworm and the human meet lower down than the fish and the human, so they are less closely related.',
+        ],
+        clade: {},
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.classification~domains',
+    title: 'The three domains',
+    use: 'Use this for “Methane-making microbes live in a cow’s stomach. Which domain are they in?”',
+    assumptions: [
+      'Bacteria and archaea are single cells with no nucleus; archaea differ in their walls, membranes and genes, and many live in extreme places.',
+      'Eukarya have cells with a nucleus: protists, fungi, plants and animals.',
+      'Viruses are not cells, so they are not placed in any domain.',
+    ],
+    question: 'Which domain does it belong to?',
+    bins: [
+      {
+        id: 'bacteria',
+        label: 'Bacteria',
+        why: 'Prokaryotes with cell walls made of peptidoglycan.',
+      },
+      {
+        id: 'archaea',
+        label: 'Archaea',
+        why: 'Prokaryotes whose walls and membranes are built differently from bacteria’s.',
+      },
+      { id: 'eukarya', label: 'Eukarya', why: 'Every cell has a nucleus inside a membrane.' },
+    ],
+    cards: [
+      {
+        label: 'E. coli in the gut',
+        bin: 'bacteria',
+        figure: { kind: 'icon', icon: 'domain Bacteria' },
+      },
+      { label: 'Streptococcus that causes strep throat', bin: 'bacteria' },
+      { label: 'Cyanobacteria in a pond', bin: 'bacteria' },
+      {
+        label: 'Methane-making microbes in a cow’s stomach',
+        bin: 'archaea',
+        figure: { kind: 'icon', icon: 'domain Archaea' },
+      },
+      { label: 'Halobacterium in a salt pond', bin: 'archaea' },
+      {
+        label: 'Paramecium (protist)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Protista' },
+      },
+      {
+        label: 'Mushrooms (fungi)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Fungi' },
+      },
+      { label: 'A leafy plant', bin: 'eukarya', figure: { kind: 'icon', icon: 'kingdom Plantae' } },
+      {
+        label: 'A fish (animal)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Animalia' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.classification~kingdoms',
+    title: 'The kingdoms of Eukarya',
+    use: 'Use this for “Is yeast a plant, a fungus or a protist?”',
+    assumptions: [
+      'Plants make their own food by photosynthesis and have cell walls of cellulose.',
+      'Fungi absorb food and have walls of chitin; animals eat food and have no cell walls.',
+      'Protists are the eukaryotes that are not plants, fungi or animals: most are single cells.',
+    ],
+    question: 'Which kingdom does it belong to?',
+    bins: [
+      {
+        id: 'protists',
+        label: 'Protists',
+        why: 'Mostly single cells, some plant-like, some animal-like.',
+      },
+      { id: 'fungi', label: 'Fungi', why: 'They absorb food from what they grow on.' },
+      { id: 'plants', label: 'Plants', why: 'Many-celled producers that make food from light.' },
+      { id: 'animals', label: 'Animals', why: 'Many-celled consumers with no cell walls.' },
+    ],
+    cards: [
+      { label: 'Amoeba', bin: 'protists' },
+      { label: 'Paramecium', bin: 'protists' },
+      { label: 'Kelp', bin: 'protists' },
+      { label: 'Yeast', bin: 'fungi' },
+      { label: 'Bread mold', bin: 'fungi' },
+      { label: 'Mushroom', bin: 'fungi' },
+      { label: 'Moss', bin: 'plants' },
+      { label: 'Fern', bin: 'plants' },
+      { label: 'Pine tree', bin: 'plants' },
+      { label: 'Sponge', bin: 'animals' },
+      { label: 'Jellyfish', bin: 'animals' },
+      { label: 'Earthworm', bin: 'animals' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.classification~ranks',
+    title: 'The ranks of classification',
+    use: 'Use this for “Which rank is the most specific: family, genus or order?”',
+    assumptions: [
+      'Each rank holds fewer, more closely related organisms than the one above it.',
+      'The scientific name is the genus and the species, written in italics: Homo sapiens.',
+    ],
+    question: 'Order the ranks for humans, from broadest to most specific.',
+    stages: [
+      { label: 'Domain Eukarya' },
+      { label: 'Kingdom Animalia' },
+      { label: 'Phylum Chordata' },
+      { label: 'Class Mammalia' },
+      { label: 'Order Primates' },
+      { label: 'Family Hominidae' },
+      { label: 'Genus Homo' },
+      { label: 'Species Homo sapiens' },
+    ],
+  },
+];
+
 const POPULATION: LayoutDef[] = [
   // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
   {
@@ -366,231 +1186,6 @@ const POPULATION: LayoutDef[] = [
       { label: 'Exponential: doubling at a steady rate' },
       { label: 'Stationary: births equal deaths as food runs low' },
       { label: 'Death: wastes build up and deaths exceed births' },
-    ],
-  },
-];
-
-const MEMBRANE: LayoutDef[] = [
-  // ── Cell membranes and transport (HS-LS1-2, HS-LS1-3) ──
-  {
-    kind: 'sort',
-    id: 's.9.membrane-transport~transport-types',
-    title: 'Which kind of transport is it?',
-    use: 'Use this for “Is it passive or active transport, and does it need a protein?”',
-    assumptions: [
-      'Passive transport runs from more to fewer and uses no ATP; active transport runs the other way and spends ATP.',
-      'Facilitated diffusion and osmosis are passive but go through a channel or carrier protein.',
-    ],
-    question: 'How does it cross the membrane?',
-    bins: [
-      {
-        id: 'simple',
-        label: 'Simple diffusion',
-        why: 'Small nonpolar molecules slip between the phospholipids, from more to fewer.',
-      },
-      {
-        id: 'facilitated',
-        label: 'Facilitated diffusion',
-        why: 'A channel or carrier protein lets it through, still from more to fewer, with no ATP.',
-      },
-      {
-        id: 'osmosis',
-        label: 'Osmosis',
-        why: 'Water crosses, through aquaporins, toward the side with more solute.',
-      },
-      {
-        id: 'active',
-        label: 'Active transport',
-        why: 'A pump moves it from fewer to more, against the gradient, spending ATP.',
-      },
-      {
-        id: 'bulk',
-        label: 'Bulk transport',
-        why: 'Large particles or many molecules move inside vesicles made from membrane.',
-      },
-    ],
-    cards: [
-      { label: 'O₂ enters a lung cell', bin: 'simple' },
-      { label: 'CO₂ leaves a muscle cell', bin: 'simple' },
-      { label: 'Glucose enters a red blood cell through a carrier protein', bin: 'facilitated' },
-      { label: 'K⁺ leaves through an open channel, high to low', bin: 'facilitated' },
-      { label: 'Water enters a root cell through aquaporins', bin: 'osmosis' },
-      { label: 'The Na⁺/K⁺ pump spends ATP', bin: 'active' },
-      { label: 'Root cells take in minerals from soil that has fewer of them', bin: 'active' },
-      { label: 'A white blood cell engulfs a bacterium', bin: 'bulk' },
-      { label: 'A gland cell releases insulin in vesicles', bin: 'bulk' },
-    ],
-  },
-  {
-    kind: 'sort',
-    id: 's.9.membrane-transport~tonicity',
-    title: 'Cells in hypotonic, isotonic and hypertonic water',
-    use: 'Use this for “Onion cells in salt water shrink from their walls. Why?”',
-    assumptions: [
-      'Water moves by osmosis toward the side with more solute.',
-      'A red blood cell has no wall: it swells and can burst, or shrivels. A plant cell’s wall holds it firm, or its membrane pulls away.',
-    ],
-    question: 'Which way does water move?',
-    bins: [
-      {
-        id: 'in',
-        label: 'Into the cell (hypotonic water)',
-        why: 'The water has less solute than the cell, so water moves in.',
-      },
-      {
-        id: 'none',
-        label: 'No net movement (isotonic water)',
-        why: 'The same solute on both sides: water crosses both ways equally.',
-      },
-      {
-        id: 'out',
-        label: 'Out of the cell (hypertonic water)',
-        why: 'The water has more solute than the cell, so water moves out.',
-      },
-    ],
-    cards: [
-      {
-        label: 'Red blood cell swollen round',
-        bin: 'in',
-        figure: { kind: 'icon', icon: 'red blood cell in hypotonic water' },
-      },
-      {
-        label: 'Red blood cell, a dimpled disc',
-        bin: 'none',
-        figure: { kind: 'icon', icon: 'red blood cell in isotonic water' },
-      },
-      {
-        label: 'Red blood cell shriveled',
-        bin: 'out',
-        figure: { kind: 'icon', icon: 'red blood cell in hypertonic water' },
-      },
-      {
-        label: 'Plant cell firm (turgid)',
-        bin: 'in',
-        figure: { kind: 'icon', icon: 'plant cell in hypotonic water' },
-      },
-      {
-        label: 'Plant cell limp (flaccid)',
-        bin: 'none',
-        figure: { kind: 'icon', icon: 'plant cell in isotonic water' },
-      },
-      {
-        label: 'Plant cell, membrane pulled from the wall',
-        bin: 'out',
-        figure: { kind: 'icon', icon: 'plant cell in hypertonic water' },
-      },
-      { label: 'Wilted lettuce in fresh water turns crisp', bin: 'in' },
-      { label: 'Red blood cells in 0.9% saline', bin: 'none' },
-      { label: 'Celery in salty water goes limp', bin: 'out' },
-      { label: 'Red onion skin in salt water shrinks from its wall', bin: 'out' },
-    ],
-  },
-];
-
-const DIVISION: LayoutDef[] = [
-  // ── The cell cycle, mitosis and meiosis (HS-LS1-4, HS-LS3-2) ──
-  {
-    kind: 'sequence',
-    id: 's.9.mitosis-meiosis',
-    assumptions: [
-      'DNA is copied in interphase, so each chromosome enters mitosis as two sister chromatids.',
-      'This cell has 2n = 4 chromosomes: two pairs, one of each pair from each parent (red and blue).',
-      'The two daughter cells match the parent cell: 4 chromosomes each.',
-    ],
-    question: 'Put the stages of mitosis in order, from interphase.',
-    stages: [
-      division('Interphase', 'interphase'),
-      division('Prophase', 'prophase'),
-      division('Metaphase', 'metaphase'),
-      division('Anaphase', 'anaphase'),
-      division('Telophase', 'telophase'),
-      division('Cytokinesis', 'cytokinesis'),
-    ],
-  },
-  {
-    kind: 'sequence',
-    id: 's.9.mitosis-meiosis~cell-cycle',
-    title: 'The cell cycle and how long each phase takes',
-    use: 'Use this for “In which phase of the cell cycle is DNA replicated?”',
-    assumptions: [
-      'Interphase is G1, S and G2: the cell spends most of its life there, growing and copying its DNA.',
-      'The times are typical for a human cell dividing in a dish, and they vary from cell to cell.',
-    ],
-    question: 'Put the phases of the cell cycle in order.',
-    stages: [
-      { label: 'G1: the cell grows', span: 11 },
-      { label: 'S: the DNA is replicated', span: 8 },
-      { label: 'G2: the copies are checked', span: 4 },
-      { label: 'M: mitosis and cytokinesis', span: 1 },
-    ],
-    unit: 'hours',
-    totalLabel: 'One cycle of a dividing human cell',
-  },
-  {
-    kind: 'sequence',
-    id: 's.9.mitosis-meiosis~meiosis',
-    title: 'Meiosis I and II',
-    use: 'Use this for “What are the final products of meiosis?”',
-    assumptions: [
-      'Homologous chromosomes pair up and cross over in prophase I, swapping pieces.',
-      'Anaphase I separates the homologs; anaphase II separates the sister chromatids.',
-      'The result is four haploid cells, n = 2, and no two alike.',
-    ],
-    question: 'Put the stages of meiosis in order, from interphase.',
-    stages: [
-      division('Interphase', 'interphase'),
-      division('Prophase I', 'prophase I'),
-      division('Metaphase I', 'metaphase I'),
-      division('Anaphase I', 'anaphase I'),
-      division('Telophase I', 'telophase I'),
-      division('Prophase II', 'prophase II'),
-      division('Metaphase II', 'metaphase II'),
-      division('Anaphase II', 'anaphase II'),
-      division('Telophase II', 'telophase II'),
-    ],
-  },
-  {
-    kind: 'sort',
-    id: 's.9.mitosis-meiosis~compare',
-    title: 'Mitosis, meiosis or both?',
-    use: 'Use this for “Why do offspring from sexual reproduction vary more than those from mitosis?”',
-    assumptions: [
-      'Mitosis copies a body cell; meiosis makes gametes with half the chromosomes.',
-      'Crossing over and the random sorting of homologs make every gamete different, so sexual reproduction adds variation.',
-    ],
-    question: 'Does it happen in mitosis, meiosis or both?',
-    bins: [
-      { id: 'mitosis', label: 'Mitosis', why: 'One division: two cells identical to the parent.' },
-      {
-        id: 'meiosis',
-        label: 'Meiosis',
-        why: 'Two divisions: four haploid gametes, each different.',
-      },
-      {
-        id: 'both',
-        label: 'Both',
-        why: 'Each starts from copied chromosomes and pulls sisters apart.',
-      },
-    ],
-    cards: [
-      { label: 'Makes 2 identical cells', bin: 'mitosis' },
-      { label: 'Body growth and wound repair', bin: 'mitosis' },
-      { label: 'Daughter cells are diploid', bin: 'mitosis' },
-      { label: 'Makes 4 cells with half the chromosomes', bin: 'meiosis' },
-      {
-        label: 'Homologous chromosomes pair and cross over',
-        bin: 'meiosis',
-        figure: { kind: 'cellDivision', stage: 'prophase I', diploid: 4 },
-      },
-      { label: 'Makes eggs and sperm', bin: 'meiosis' },
-      { label: 'Two divisions in a row', bin: 'meiosis' },
-      { label: 'Gametes differ from one another', bin: 'meiosis' },
-      { label: 'DNA is copied beforehand', bin: 'both' },
-      {
-        label: 'Sister chromatids separate',
-        bin: 'both',
-        figure: { kind: 'cellDivision', stage: 'anaphase', diploid: 4 },
-      },
     ],
   },
 ];
@@ -911,248 +1506,6 @@ const HOMEOSTASIS: LayoutDef[] = [
   },
 ];
 
-const DNA: LayoutDef[] = [
-  // ── DNA structure, replication and protein synthesis (HS-LS1-1, HS-LS3-1) ──
-  {
-    kind: 'sequence',
-    id: 's.9.dna-protein-synthesis~replication',
-    title: 'DNA replication',
-    use: 'Use this for “How does base pairing let a cell copy its DNA before it divides?”',
-    assumptions: [
-      'Each old strand is a template: A pairs with T and G with C, so the new strand’s order is fixed.',
-      'Replication is semiconservative: each new DNA molecule keeps one old strand.',
-    ],
-    question: 'Put the steps of DNA replication in order.',
-    stages: [
-      { label: 'Helicase unzips the double helix at an origin' },
-      { label: 'Free nucleotides pair with each old strand, A with T and G with C' },
-      { label: 'DNA polymerase joins the new nucleotides into a strand' },
-      { label: 'Two DNA molecules, each one old strand and one new' },
-    ],
-  },
-  {
-    kind: 'sequence',
-    id: 's.9.dna-protein-synthesis~protein-synthesis',
-    title: 'From gene to protein',
-    use: 'Use this for “Put the steps of protein synthesis in order, from the gene in the nucleus.”',
-    assumptions: [
-      'Transcription copies a gene into mRNA in the nucleus; translation builds the protein at a ribosome.',
-      'Each tRNA carries one amino acid and pairs with one codon by its anticodon.',
-    ],
-    question: 'Put the steps of protein synthesis in order.',
-    stages: [
-      { label: 'RNA polymerase copies a gene into mRNA in the nucleus' },
-      { label: 'The mRNA leaves through a nuclear pore' },
-      { label: 'A ribosome reads the mRNA from the start codon AUG' },
-      { label: 'tRNAs bring the amino acids that match each codon' },
-      { label: 'Peptide bonds link the amino acids' },
-      { label: 'A stop codon releases the chain, which folds into a protein' },
-    ],
-  },
-];
-
-const BIOTECH: LayoutDef[] = [
-  // ── Mutations, gene expression and biotechnology (HS-LS3-1, HS-LS3-2, HS-LS1-1) ──
-  {
-    kind: 'sort',
-    id: 's.9.biotechnology~tools',
-    title: 'Which DNA tool is it?',
-    use: 'Use this for “Which technique would make millions of copies of DNA from one hair?”',
-    assumptions: [
-      'PCR copies DNA, gel electrophoresis sorts it by size, and enzymes cut it at chosen sequences.',
-      'Genetic engineering moves a gene into another organism, which then makes that gene’s protein.',
-    ],
-    question: 'Which tool or technique is it?',
-    bins: [
-      {
-        id: 'pcr',
-        label: 'PCR (copies DNA)',
-        why: 'Each cycle of heating and cooling doubles the DNA.',
-      },
-      {
-        id: 'gel',
-        label: 'Gel electrophoresis (sorts by size)',
-        why: 'An electric field pulls DNA through a gel; short pieces run farthest.',
-      },
-      {
-        id: 'cut',
-        label: 'Cutting DNA',
-        why: 'Restriction enzymes and CRISPR–Cas9 cut only at a matching sequence.',
-      },
-      {
-        id: 'engineering',
-        label: 'Genetic engineering (moves a gene)',
-        why: 'A gene from one organism is put into another, which makes its protein.',
-      },
-    ],
-    cards: [
-      { label: 'Millions of copies from one hair’s DNA', bin: 'pcr' },
-      { label: 'Heat, cool and warm again 30 times', bin: 'pcr' },
-      { label: 'Shorter pieces travel farther toward +', bin: 'gel' },
-      { label: 'A child’s bands compared with each parent’s', bin: 'gel' },
-      { label: 'An enzyme cuts only at GAATTC', bin: 'cut' },
-      { label: 'Cas9 led to a gene by a guide RNA', bin: 'cut' },
-      { label: 'Bacteria given the human insulin gene', bin: 'engineering' },
-      { label: 'Corn with a bacterial gene that kills caterpillars', bin: 'engineering' },
-    ],
-  },
-];
-
-const ENERGY: LayoutDef[] = [
-  // ── Cellular energy: ATP, photosynthesis and cellular respiration (HS-LS1-5, 1-7, 2-3, 2-5) ──
-  {
-    kind: 'explore',
-    id: 's.9.cellular-energy',
-    assumptions: [
-      'ATP carries the energy a cell spends; the cell remakes it from ADP and phosphate.',
-      'Plant cells have chloroplasts and mitochondria; animal cells have only mitochondria.',
-      'Textbooks give 30 to 38 ATP for each glucose respired, so no single total is stated here.',
-    ],
-    figure: { kind: 'organelleEnergy' },
-    scenes: [
-      {
-        label: 'The cycle',
-        lines: [
-          'The products of each process are the reactants of the other: matter cycles, while energy flows in as light and out as work and heat.',
-        ],
-        energy: {},
-      },
-      {
-        label: 'Photosynthesis',
-        lines: [
-          'In the chloroplast, light energy turns carbon dioxide and water into glucose, giving off oxygen.',
-        ],
-        energy: { process: 'photosynthesis' },
-      },
-      {
-        label: 'Light reactions',
-        lines: [
-          'In the thylakoids, light splits water: O₂ is given off, and the energy is stored in ATP and NADPH.',
-        ],
-        energy: { process: 'lightReactions', lit: 'light' },
-      },
-      {
-        label: 'Calvin cycle',
-        lines: [
-          'In the stroma, ATP and NADPH power the fixing of carbon from CO₂ into sugar.',
-          'So the carbon atoms in glucose come from carbon dioxide in the air.',
-        ],
-        energy: { process: 'calvinCycle', lit: 'CO₂' },
-      },
-      {
-        label: 'Respiration',
-        lines: [
-          'In the mitochondrion, glucose and oxygen become carbon dioxide and water, and the energy is stored in ATP.',
-        ],
-        energy: { process: 'respiration' },
-      },
-      {
-        label: 'Glycolysis',
-        lines: [
-          'In the cytoplasm, glucose splits into 2 pyruvate for a net gain of 2 ATP. It needs no oxygen.',
-        ],
-        energy: { process: 'glycolysis', lit: 'glucose' },
-      },
-      {
-        label: 'Krebs cycle',
-        lines: [
-          'In the matrix, pyruvate is broken down to CO₂, making 2 ATP and loading carriers with electrons.',
-        ],
-        energy: { process: 'krebsCycle', lit: 'CO₂' },
-      },
-      {
-        label: 'Electron transport',
-        lines: [
-          'Along the folded inner membrane, electrons pass to oxygen, which takes them and becomes water.',
-          'Most of the ATP is made here.',
-        ],
-        energy: { process: 'electronTransport', lit: 'O₂' },
-      },
-    ],
-  },
-  {
-    kind: 'sequence',
-    id: 's.9.cellular-energy~stages',
-    title: 'The stages of cellular respiration',
-    use: 'Use this for “Where does each stage of respiration happen, and which makes the most ATP?”',
-    assumptions: [
-      'Glycolysis happens in the cytoplasm; the rest happens in the mitochondrion.',
-      'Oxygen is needed only at the last stage, where it takes the electrons.',
-    ],
-    question: 'Put the stages of cellular respiration in order.',
-    stages: [
-      { label: 'Glycolysis splits glucose into 2 pyruvate in the cytoplasm' },
-      { label: 'Pyruvate enters the mitochondrion and gives off CO₂' },
-      { label: 'The Krebs cycle gives off CO₂ and loads NADH' },
-      { label: 'The electron transport chain uses O₂ and makes most of the ATP' },
-    ],
-  },
-  {
-    kind: 'sort',
-    id: 's.9.cellular-energy~processes',
-    title: 'Photosynthesis, respiration or fermentation?',
-    use: 'Use this for “Which process makes bread dough rise?”',
-    assumptions: [
-      'Photosynthesis stores light energy in glucose; aerobic respiration and fermentation release it.',
-      'Fermentation needs no oxygen but makes only 2 ATP per glucose.',
-    ],
-    question: 'Which process is it?',
-    bins: [
-      {
-        id: 'photosynthesis',
-        label: 'Photosynthesis',
-        why: 'Light, CO₂ and water make glucose and oxygen, in chloroplasts.',
-      },
-      {
-        id: 'aerobic',
-        label: 'Aerobic respiration',
-        why: 'Glucose and oxygen give CO₂, water and the most ATP, in mitochondria.',
-      },
-      {
-        id: 'fermentation',
-        label: 'Fermentation',
-        why: 'Glycolysis with no oxygen, then lactic acid or alcohol and CO₂.',
-      },
-    ],
-    cards: [
-      { label: 'Uses light energy', bin: 'photosynthesis' },
-      { label: 'Gives off O₂', bin: 'photosynthesis' },
-      { label: 'Happens in chloroplasts', bin: 'photosynthesis' },
-      { label: 'Happens in mitochondria', bin: 'aerobic' },
-      { label: 'Uses O₂ to release the most ATP', bin: 'aerobic' },
-      { label: 'Yeast makes bread dough rise with no O₂', bin: 'fermentation' },
-      { label: 'Sprinting muscles make lactic acid', bin: 'fermentation' },
-      { label: 'Makes only 2 ATP per glucose, with no O₂', bin: 'fermentation' },
-    ],
-  },
-  {
-    kind: 'observe',
-    id: 's.9.cellular-energy~enzymes',
-    title: 'Enzyme activity by temperature',
-    use: 'Use this to record or read how fast an enzyme works at each temperature.',
-    assumptions: [
-      'A human enzyme: it lowers the activation energy of a reaction and is not used up.',
-      'Warmth speeds the molecules up, but too much heat changes the enzyme’s shape so its active site no longer fits.',
-    ],
-    columns: ['10 °C', '20 °C', '30 °C', '37 °C', '45 °C', '55 °C'],
-    rowLabel: 'Reaction rate',
-    unit: '% of the fastest',
-    max: 100,
-    step: 5,
-    initial: [20, 45, 80, 100, 60, 10],
-    pattern: (v) => {
-      const temps = [10, 20, 30, 37, 45, 55];
-      const peak = Math.max(...v);
-      const at = v.indexOf(peak);
-      if (at > 0 && at < v.length - 1 && v[v.length - 1]! < peak)
-        return `Activity rises to a peak near ${temps[at]} °C, then falls as heat changes the enzyme’s shape: it denatures.`;
-      if (v.every((x) => x === v[0]))
-        return 'The rate stayed the same at every temperature; a real enzyme speeds up, peaks, then falls.';
-      return 'A real enzyme speeds up with warmth, peaks at its best temperature, then falls as it denatures.';
-    },
-  },
-];
-
 const IMMUNE: LayoutDef[] = [
   // ── Disease and the immune system (HS-LS1-2, HS-LS1-3) ──
   {
@@ -1298,212 +1651,18 @@ const IMMUNE: LayoutDef[] = [
   },
 ];
 
-const CLASSIFICATION: LayoutDef[] = [
-  // ── Classification and the diversity of life (HS-LS4-1) ──
-  {
-    kind: 'explore',
-    id: 's.9.classification',
-    assumptions: [
-      'A cladogram groups organisms by shared derived traits: new features passed on to every descendant.',
-      'Branch order, not branch length, shows relationship; each branch point is a common ancestor.',
-      'A clade is an ancestor and all of its descendants.',
-    ],
-    figure: {
-      kind: 'cladogram',
-      tree: ['Sponge', ['Jellyfish', ['Earthworm', ['Sea star', ['Fish', 'Human']]]]],
-      traits: [
-        { name: 'True tissues', taxa: ['Jellyfish', 'Earthworm', 'Sea star', 'Fish', 'Human'] },
-        { name: 'Bilateral symmetry', taxa: ['Earthworm', 'Sea star', 'Fish', 'Human'] },
-        { name: 'Deuterostome embryo', taxa: ['Sea star', 'Fish', 'Human'] },
-        { name: 'Backbone', taxa: ['Fish', 'Human'] },
-        { name: 'Hair', taxa: ['Human'] },
-      ],
-    },
-    scenes: [
-      {
-        label: 'True tissues',
-        lines: [
-          'A sponge’s cells are not organized into tissues; every other animal here inherited tissues.',
-        ],
-        clade: { lit: 'True tissues' },
-      },
-      {
-        label: 'Bilateral symmetry',
-        lines: [
-          'A left and a right side, a front and a back: the jellyfish, round like a wheel, split off before this.',
-        ],
-        clade: { lit: 'Bilateral symmetry' },
-      },
-      {
-        label: 'Deuterostome embryo',
-        lines: [
-          'In the sea star, fish and human embryo, the first opening becomes the anus, not the mouth.',
-          'The young sea star is two-sided; only the adult grows five arms.',
-        ],
-        clade: { lit: 'Deuterostome embryo' },
-      },
-      {
-        label: 'Backbone',
-        lines: ['The fish and the human share a backbone, so they share the most recent ancestor.'],
-        clade: { lit: 'Backbone' },
-      },
-      {
-        label: 'Hair',
-        lines: ['Only the human has hair here: a trait of one branch groups nothing else.'],
-        clade: { lit: 'Hair' },
-      },
-      {
-        label: 'A clade',
-        lines: [
-          'The sea star, fish and human are an ancestor’s whole family: a clade.',
-          'Any group that sits above one branch point is a clade.',
-        ],
-        clade: { ring: ['Sea star', 'Fish', 'Human'] },
-      },
-      {
-        label: 'Not a clade',
-        lines: [
-          'The jellyfish and the earthworm share an ancestor, but so do the sea star, fish and human.',
-          'A group that leaves out some of its ancestor’s descendants is not a clade.',
-        ],
-        clade: { ring: ['Jellyfish', 'Earthworm'] },
-      },
-      {
-        label: 'Reading the nodes',
-        lines: [
-          'The last common ancestor of any two taxa sits at the branch point where their lines meet.',
-          'The earthworm and the human meet lower down than the fish and the human, so they are less closely related.',
-        ],
-        clade: {},
-      },
-    ],
-  },
-  {
-    kind: 'sort',
-    id: 's.9.classification~domains',
-    title: 'The three domains',
-    use: 'Use this for “Methane-making microbes live in a cow’s stomach. Which domain are they in?”',
-    assumptions: [
-      'Bacteria and archaea are single cells with no nucleus; archaea differ in their walls, membranes and genes, and many live in extreme places.',
-      'Eukarya have cells with a nucleus: protists, fungi, plants and animals.',
-      'Viruses are not cells, so they are not placed in any domain.',
-    ],
-    question: 'Which domain does it belong to?',
-    bins: [
-      {
-        id: 'bacteria',
-        label: 'Bacteria',
-        why: 'Prokaryotes with cell walls made of peptidoglycan.',
-      },
-      {
-        id: 'archaea',
-        label: 'Archaea',
-        why: 'Prokaryotes whose walls and membranes are built differently from bacteria’s.',
-      },
-      { id: 'eukarya', label: 'Eukarya', why: 'Every cell has a nucleus inside a membrane.' },
-    ],
-    cards: [
-      {
-        label: 'E. coli in the gut',
-        bin: 'bacteria',
-        figure: { kind: 'icon', icon: 'domain Bacteria' },
-      },
-      { label: 'Streptococcus that causes strep throat', bin: 'bacteria' },
-      { label: 'Cyanobacteria in a pond', bin: 'bacteria' },
-      {
-        label: 'Methane-making microbes in a cow’s stomach',
-        bin: 'archaea',
-        figure: { kind: 'icon', icon: 'domain Archaea' },
-      },
-      { label: 'Halobacterium in a salt pond', bin: 'archaea' },
-      {
-        label: 'Paramecium (protist)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Protista' },
-      },
-      {
-        label: 'Mushrooms (fungi)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Fungi' },
-      },
-      { label: 'A leafy plant', bin: 'eukarya', figure: { kind: 'icon', icon: 'kingdom Plantae' } },
-      {
-        label: 'A fish (animal)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Animalia' },
-      },
-    ],
-  },
-  {
-    kind: 'sort',
-    id: 's.9.classification~kingdoms',
-    title: 'The kingdoms of Eukarya',
-    use: 'Use this for “Is yeast a plant, a fungus or a protist?”',
-    assumptions: [
-      'Plants make their own food by photosynthesis and have cell walls of cellulose.',
-      'Fungi absorb food and have walls of chitin; animals eat food and have no cell walls.',
-      'Protists are the eukaryotes that are not plants, fungi or animals: most are single cells.',
-    ],
-    question: 'Which kingdom does it belong to?',
-    bins: [
-      {
-        id: 'protists',
-        label: 'Protists',
-        why: 'Mostly single cells, some plant-like, some animal-like.',
-      },
-      { id: 'fungi', label: 'Fungi', why: 'They absorb food from what they grow on.' },
-      { id: 'plants', label: 'Plants', why: 'Many-celled producers that make food from light.' },
-      { id: 'animals', label: 'Animals', why: 'Many-celled consumers with no cell walls.' },
-    ],
-    cards: [
-      { label: 'Amoeba', bin: 'protists' },
-      { label: 'Paramecium', bin: 'protists' },
-      { label: 'Kelp', bin: 'protists' },
-      { label: 'Yeast', bin: 'fungi' },
-      { label: 'Bread mold', bin: 'fungi' },
-      { label: 'Mushroom', bin: 'fungi' },
-      { label: 'Moss', bin: 'plants' },
-      { label: 'Fern', bin: 'plants' },
-      { label: 'Pine tree', bin: 'plants' },
-      { label: 'Sponge', bin: 'animals' },
-      { label: 'Jellyfish', bin: 'animals' },
-      { label: 'Earthworm', bin: 'animals' },
-    ],
-  },
-  {
-    kind: 'sequence',
-    id: 's.9.classification~ranks',
-    title: 'The ranks of classification',
-    use: 'Use this for “Which rank is the most specific: family, genus or order?”',
-    assumptions: [
-      'Each rank holds fewer, more closely related organisms than the one above it.',
-      'The scientific name is the genus and the species, written in italics: Homo sapiens.',
-    ],
-    question: 'Order the ranks for humans, from broadest to most specific.',
-    stages: [
-      { label: 'Domain Eukarya' },
-      { label: 'Kingdom Animalia' },
-      { label: 'Phylum Chordata' },
-      { label: 'Class Mammalia' },
-      { label: 'Order Primates' },
-      { label: 'Family Hominidae' },
-      { label: 'Genus Homo' },
-      { label: 'Species Homo sapiens' },
-    ],
-  },
-];
-
 export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
-  ...INHERITANCE,
-  ...EVOLUTION,
-  ...POPULATION,
+  ...BIOMOLECULES,
   ...MEMBRANE,
+  ...ENERGY,
   ...DIVISION,
-  ...ECOSYSTEMS,
-  ...HOMEOSTASIS,
+  ...INHERITANCE,
   ...DNA,
   ...BIOTECH,
-  ...ENERGY,
-  ...IMMUNE,
+  ...EVOLUTION,
   ...CLASSIFICATION,
+  ...POPULATION,
+  ...ECOSYSTEMS,
+  ...HOMEOSTASIS,
+  ...IMMUNE,
 ];
