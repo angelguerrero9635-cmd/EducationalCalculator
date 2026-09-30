@@ -9,6 +9,7 @@ import {
   particleCount,
 } from '@/components/module/reps/gasModel';
 import { PEAK, profileAt } from '@/components/module/reps/energyModel';
+import { quotient, stages } from '@/components/module/reps/equilibriumModel';
 import { solubilityAt } from '@/components/module/reps/solubility';
 import type { VariableDef } from '@/engine/types';
 import { convert, getUnit } from '@/engine/units';
@@ -106,6 +107,47 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
         out.push(`the reverse barrier ${rev} is not Eₐ − ΔH`);
       const cat = num(rep.catalyst);
       if (cat !== undefined && cat > ea + 1e-9) out.push(`the catalyst's Eₐ ${cat} is above ${ea}`);
+      break;
+    }
+    case 'equilibriumChart': {
+      const species = rep.species.map((s) => ({
+        coef: s.coef,
+        sign: s.side === 'product' ? (1 as const) : (-1 as const),
+      }));
+      const c0 = rep.species.map((s) => num(s.start));
+      if (c0.some((x) => x === undefined)) break;
+      const K = rep.K === undefined ? quotient(species, c0 as number[]) : num(rep.K);
+      if (K === undefined || !(K > 0)) break;
+      const st = rep.stress;
+      const amount = num(st?.add?.amount);
+      const scale = num(st?.scale);
+      const K2 = num(st?.K);
+      if (st?.add && amount === undefined) break;
+      const s = stages(
+        species,
+        c0 as number[],
+        K,
+        st
+          ? {
+              ...(st.add ? { add: { index: st.add.species, amount: amount! } } : {}),
+              ...(scale !== undefined ? { scale } : {}),
+              ...(K2 !== undefined ? { K: K2 } : {}),
+            }
+          : undefined,
+      );
+      // Each level drawn is an equilibrium (Q = K), and the page's named levels are those.
+      if (!near(quotient(species, s.eq1), K, 1e-6)) out.push(`first levels give Q ≠ K = ${K}`);
+      rep.species.forEach((sp, i) => {
+        const e = num(sp.eq);
+        if (e !== undefined && !near(e, s.eq1[i]!, 2e-3) && Math.abs(e - s.eq1[i]!) > 1e-4)
+          out.push(`[${sp.formula}] = ${e} but the chart levels at ${s.eq1[i]}`);
+      });
+      if (s.eq2 && s.K2 !== undefined && !near(quotient(species, s.eq2), s.K2, 1e-6))
+        out.push('the levels after the stress are not at equilibrium');
+      const q = num(st?.Q);
+      if (q !== undefined && s.Q2 !== undefined && !near(q, s.Q2, 2e-3))
+        out.push(`Q after the stress is ${s.Q2}, not ${q}`);
+      if (rep.species.some((sp) => sp.coef <= 0)) out.push('a coefficient is not positive');
       break;
     }
   }

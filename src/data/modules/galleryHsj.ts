@@ -1135,5 +1135,333 @@ const ENERGY: ModuleDef[] = [
   },
 ];
 
-export const HSJ_GALLERY_MODULES: ModuleDef[] = [...GAS, ...SOLUTIONS, ...ENERGY];
+// ─── H54 equilibriumChart ────────────────────────────────────────────────────
+
+const conc = (id: string, symbol: string, name: string, derived = false): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'mol/L',
+  min: 0.0001,
+  max: 100,
+  step: 0.0001,
+  ...(derived ? { derived: true } : {}),
+});
+const constant = (id: string, symbol: string, name: string): VariableDef => ({
+  id,
+  symbol,
+  name,
+  min: 0.000001,
+  max: 1000000,
+  step: 0.0001,
+});
+
+/** An ICE table for N₂O₄ ⇌ 2NO₂: x = [NO₂] ÷ 2, [N₂O₄] = start − x, K = [NO₂]² ÷ [N₂O₄]. */
+const iceRules = (): Rule[] => [
+  {
+    relation: {
+      id: 'x = [NO₂]/2',
+      display: '{x} = {B}/2',
+      vars: ['x', 'B'],
+      residual: (v) => v.x! - v.B! / 2,
+      solve: { x: (v) => v.B! / 2, B: (v) => 2 * v.x! },
+    },
+    steps: {
+      x: { expr: '{B}/2', how: 'Each N₂O₄ that reacts makes two NO₂, so x is half the NO₂.' },
+      B: { expr: '2 × {x}', how: 'Two NO₂ form for each N₂O₄ that reacts.' },
+    },
+  },
+  {
+    relation: {
+      id: '[N₂O₄] = start − x',
+      display: '{A} = {A0} − {x}',
+      vars: ['A', 'A0', 'x'],
+      residual: (v) => v.A! - (v.A0! - v.x!),
+      solve: { A: (v) => v.A0! - v.x!, A0: (v) => v.A! + v.x!, x: (v) => v.A0! - v.A! },
+    },
+    steps: {
+      A: { expr: '{A0} − {x}', how: 'The N₂O₄ left is what there was, less what reacted.' },
+      A0: { expr: '{A} + {x}', how: 'Add back what reacted.' },
+      x: { expr: '{A0} − {A}', how: 'What reacted is the drop in N₂O₄.' },
+    },
+  },
+  {
+    relation: {
+      id: 'K = [NO₂]²/[N₂O₄]',
+      display: '{K} = {B}^2/{A}',
+      vars: ['K', 'B', 'A'],
+      residual: (v) => v.K! * v.A! - v.B! ** 2,
+      solve: {
+        K: (v) => div(v.B! ** 2, v.A!),
+        B: (v) => Math.sqrt(Math.max(0, v.K! * v.A!)),
+        A: (v) => div(v.B! ** 2, v.K!),
+      },
+    },
+    steps: {
+      K: {
+        expr: '{B}^2/{A}',
+        how: 'Products over reactants at equilibrium, each to the power of its coefficient.',
+      },
+      B: { expr: '√({K} × {A})', how: 'Multiply K by [N₂O₄], then take the square root.' },
+      A: { expr: '{B}^2/{K}', how: 'Divide [NO₂]² by K.' },
+    },
+  },
+];
+
+const EQ_ASSUMPTIONS = [
+  'The reaction runs in a closed container at one temperature, so K stays the same.',
+  'Concentrations are in mol/L; K has no unit here.',
+];
+
+const iceDemo = (
+  id: string,
+  title: string,
+  use: string,
+  example: Record<string, number>,
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  unitSystems: ['metric'],
+  assumptions: [...EQ_ASSUMPTIONS, 'The flask starts with N₂O₄ only.'],
+  variables: [
+    conc('A0', '[N₂O₄]₀', 'N₂O₄ at the start'),
+    conc('B', '[NO₂]', 'NO₂ at equilibrium'),
+    conc('x', 'x', 'N₂O₄ that reacted'),
+    conc('A', '[N₂O₄]', 'N₂O₄ at equilibrium'),
+    constant('K', 'K', 'Equilibrium constant'),
+  ],
+  ...rules(...iceRules()),
+  example,
+  startWith: ['A0', 'B'],
+  pictureLabels: ['x'],
+  representation: {
+    kind: 'equilibriumChart',
+    species: [
+      { formula: 'N₂O₄', coef: 1, side: 'reactant', start: 'A0', eq: 'A' },
+      { formula: 'NO₂', coef: 2, side: 'product', start: 0, eq: 'B' },
+    ],
+    K: 'K',
+  },
+});
+
+const EQUILIBRIUM: ModuleDef[] = [
+  iceDemo(
+    'g.s10-rates-equilibrium-ice',
+    'Reaching equilibrium: K from an ICE table',
+    'Use this for “0.1 M N₂O₄ comes to equilibrium with 0.04 M NO₂. What is K?”',
+    { A0: 0.1, B: 0.04, x: 0.02, A: 0.08, K: 0.02 },
+  ),
+  iceDemo(
+    'g.s10-rates-equilibrium-nearly-complete',
+    'A reaction that nearly finishes',
+    'Use this for a large K: “0.1 M N₂O₄ leaves 0.19 M NO₂ at equilibrium. What is K?”',
+    { A0: 0.1, B: 0.19, x: 0.095, A: 0.005, K: 7.22 },
+  ),
+  {
+    id: 'g.s10-rates-equilibrium-add',
+    title: 'Le Châtelier: adding a reactant',
+    use: 'Use this for “H₂ is added to H₂ + I₂ ⇌ 2HI at equilibrium. Which way does it shift?”',
+    unitSystems: ['metric'],
+    assumptions: [...EQ_ASSUMPTIONS, 'The H₂ is added all at once; nothing else changes.'],
+    variables: [
+      conc('h', '[H₂]', 'H₂ at equilibrium'),
+      conc('i', '[I₂]', 'I₂ at equilibrium'),
+      conc('p', '[HI]', 'HI at equilibrium'),
+      constant('K', 'K', 'Equilibrium constant'),
+      conc('a', 'a', 'H₂ added'),
+      constant('Q', 'Q', 'Reaction quotient just after'),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'K = [HI]²/([H₂][I₂])',
+          display: '{K} = {p}^2/({h} × {i})',
+          vars: ['K', 'p', 'h', 'i'],
+          residual: (v) => v.K! * v.h! * v.i! - v.p! ** 2,
+          solve: {
+            K: (v) => div(v.p! ** 2, v.h! * v.i!),
+            p: (v) => Math.sqrt(Math.max(0, v.K! * v.h! * v.i!)),
+            h: (v) => div(v.p! ** 2, v.K! * v.i!),
+            i: (v) => div(v.p! ** 2, v.K! * v.h!),
+          },
+        },
+        steps: {
+          K: { expr: '{p}^2/({h} × {i})', how: 'Products over reactants at equilibrium.' },
+          p: { expr: '√({K} × {h} × {i})', how: 'Multiply out, then take the square root.' },
+          h: { expr: '{p}^2/({K} × {i})', how: 'Divide [HI]² by K[I₂].' },
+          i: { expr: '{p}^2/({K} × {h})', how: 'Divide [HI]² by K[H₂].' },
+        },
+      },
+      {
+        relation: {
+          id: 'Q = [HI]²/(([H₂] + a)[I₂])',
+          display: '{Q} = {p}^2/(({h} + {a}) × {i})',
+          vars: ['Q', 'p', 'h', 'a', 'i'],
+          residual: (v) => v.Q! * (v.h! + v.a!) * v.i! - v.p! ** 2,
+          solve: {
+            Q: (v) => div(v.p! ** 2, (v.h! + v.a!) * v.i!),
+            a: (v) => (v.Q! * v.i! === 0 ? undefined : v.p! ** 2 / (v.Q! * v.i!) - v.h!),
+          },
+        },
+        steps: {
+          Q: {
+            expr: '{p}^2/(({h} + {a}) × {i})',
+            how: 'Just after the H₂ goes in, only [H₂] has changed. Compare Q with K.',
+          },
+          a: { expr: '{p}^2/({Q} × {i}) − {h}', how: 'Find [H₂] from Q, then take the old [H₂].' },
+        },
+      },
+    ),
+    example: { h: 0.02, i: 0.02, p: 0.14, K: 49, a: 0.08, Q: 9.8 },
+    startWith: ['h', 'i', 'p', 'a'],
+    representation: {
+      kind: 'equilibriumChart',
+      species: [
+        { formula: 'H₂', coef: 1, side: 'reactant', start: 'h' },
+        { formula: 'I₂', coef: 1, side: 'reactant', start: 'i' },
+        { formula: 'HI', coef: 2, side: 'product', start: 'p' },
+      ],
+      K: 'K',
+      stress: { add: { species: 0, amount: 'a' }, Q: 'Q', label: 'Add H₂' },
+    },
+  },
+  {
+    id: 'g.s10-rates-equilibrium-volume',
+    title: 'Le Châtelier: squeezing the container',
+    use: 'Use this for “N₂ + 3H₂ ⇌ 2NH₃ is squeezed to half its volume. Which way does it shift?”',
+    unitSystems: ['metric'],
+    assumptions: [...EQ_ASSUMPTIONS, 'Halving the volume doubles every concentration at once.'],
+    variables: [
+      conc('N', '[N₂]', 'N₂ at equilibrium'),
+      conc('H', '[H₂]', 'H₂ at equilibrium'),
+      conc('A', '[NH₃]', 'NH₃ at equilibrium'),
+      constant('K', 'K', 'Equilibrium constant'),
+      { ...constant('f', 'f', 'Times the concentrations grow'), min: 0.01, max: 100 },
+      constant('Q', 'Q', 'Reaction quotient just after'),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'K = [NH₃]²/([N₂][H₂]³)',
+          display: '{K} = {A}^2/({N} × {H}^3)',
+          vars: ['K', 'A', 'N', 'H'],
+          residual: (v) => v.K! * v.N! * v.H! ** 3 - v.A! ** 2,
+          solve: {
+            K: (v) => div(v.A! ** 2, v.N! * v.H! ** 3),
+            A: (v) => Math.sqrt(Math.max(0, v.K! * v.N! * v.H! ** 3)),
+            N: (v) => div(v.A! ** 2, v.K! * v.H! ** 3),
+          },
+        },
+        steps: {
+          K: { expr: '{A}^2/({N} × {H}^3)', how: 'Products over reactants, each to its power.' },
+          A: { expr: '√({K} × {N} × {H}^3)', how: 'Multiply out, then take the square root.' },
+          N: { expr: '{A}^2/({K} × {H}^3)', how: 'Divide [NH₃]² by K[H₂]³.' },
+        },
+      },
+      {
+        relation: {
+          id: 'Q = K/f²',
+          display: '{Q} = {K}/({f}^2)',
+          vars: ['Q', 'K', 'f'],
+          residual: (v) => v.Q! * v.f! ** 2 - v.K!,
+          solve: {
+            Q: (v) => div(v.K!, v.f! ** 2),
+            K: (v) => v.Q! * v.f! ** 2,
+            f: (v) => (v.Q! > 0 ? Math.sqrt(v.K! / v.Q!) : undefined),
+          },
+        },
+        steps: {
+          Q: {
+            expr: '{K}/({f}^2)',
+            how: 'Every concentration grows f times: the top by f², the bottom by f⁴, so Q = K ÷ f².',
+          },
+          K: { expr: '{Q} × {f}^2', how: 'Multiply Q by f².' },
+          f: { expr: '√({K}/{Q})', how: 'Divide K by Q and take the square root.' },
+        },
+      },
+    ),
+    example: { N: 0.5, H: 1, A: 0.5, K: 0.5, f: 2, Q: 0.125 },
+    startWith: ['N', 'H', 'A', 'f'],
+    representation: {
+      kind: 'equilibriumChart',
+      species: [
+        { formula: 'N₂', coef: 1, side: 'reactant', start: 'N' },
+        { formula: 'H₂', coef: 3, side: 'reactant', start: 'H' },
+        { formula: 'NH₃', coef: 2, side: 'product', start: 'A' },
+      ],
+      K: 'K',
+      stress: { scale: 'f', Q: 'Q', label: 'Volume halved' },
+    },
+  },
+  {
+    id: 'g.s10-rates-equilibrium-heat',
+    title: 'Le Châtelier: heating an endothermic reaction',
+    use: 'Use this for “N₂O₄ ⇌ 2NO₂ takes in heat. When it is heated, K grows from 0.02 to 0.1. What happens?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      ...EQ_ASSUMPTIONS.slice(1),
+      'The forward reaction takes in heat, so heating it raises K.',
+    ],
+    variables: [
+      conc('A', '[N₂O₄]', 'N₂O₄ at equilibrium'),
+      conc('B', '[NO₂]', 'NO₂ at equilibrium'),
+      constant('K1', 'K₁', 'K before heating'),
+      constant('K2', 'K₂', 'K after heating'),
+      constant('g', 'g', 'Times K grows'),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'K₁ = [NO₂]²/[N₂O₄]',
+          display: '{K1} = {B}^2/{A}',
+          vars: ['K1', 'B', 'A'],
+          residual: (v) => v.K1! * v.A! - v.B! ** 2,
+          solve: {
+            K1: (v) => div(v.B! ** 2, v.A!),
+            B: (v) => Math.sqrt(Math.max(0, v.K1! * v.A!)),
+            A: (v) => div(v.B! ** 2, v.K1!),
+          },
+        },
+        steps: {
+          K1: { expr: '{B}^2/{A}', how: 'Products over reactants at the first equilibrium.' },
+          B: { expr: '√({K1} × {A})', how: 'Multiply K by [N₂O₄] and take the square root.' },
+          A: { expr: '{B}^2/{K1}', how: 'Divide [NO₂]² by K.' },
+        },
+      },
+      {
+        relation: {
+          id: 'g = K₂/K₁',
+          display: '{g} = {K2}/{K1}',
+          vars: ['g', 'K2', 'K1'],
+          residual: (v) => v.g! * v.K1! - v.K2!,
+          solve: {
+            g: (v) => div(v.K2!, v.K1!),
+            K2: (v) => v.g! * v.K1!,
+            K1: (v) => div(v.K2!, v.g!),
+          },
+        },
+        steps: {
+          g: { expr: '{K2}/{K1}', how: 'Compare the new K with the old one.' },
+          K2: { expr: '{g} × {K1}', how: 'Multiply the old K by how much it grows.' },
+          K1: { expr: '{K2}/{g}', how: 'Divide the new K by how much it grew.' },
+        },
+      },
+    ),
+    example: { A: 0.08, B: 0.04, K1: 0.02, K2: 0.1, g: 5 },
+    startWith: ['A', 'B', 'K2'],
+    pictureLabels: ['g'],
+    representation: {
+      kind: 'equilibriumChart',
+      species: [
+        { formula: 'N₂O₄', coef: 1, side: 'reactant', start: 'A' },
+        { formula: 'NO₂', coef: 2, side: 'product', start: 'B' },
+      ],
+      K: 'K1',
+      stress: { K: 'K2', label: 'Heated' },
+    },
+  },
+];
+
+export const HSJ_GALLERY_MODULES: ModuleDef[] = [...GAS, ...SOLUTIONS, ...ENERGY, ...EQUILIBRIUM];
 export const HSJ_GALLERY_LAYOUTS: LayoutDef[] = [];

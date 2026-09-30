@@ -500,6 +500,7 @@ function representationVars(r: Representation): string[] {
       return hsdSpecVars(r);
     case 'gasPiston':
     case 'energyProfile':
+    case 'equilibriumChart':
       return hsjSpecVars(r);
   }
 }

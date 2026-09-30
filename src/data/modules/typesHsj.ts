@@ -143,7 +143,45 @@ export type EnergyProfileSpec =
       metal?: { name: string; mass: NumOrVar; start: NumOrVar; heat?: NumOrVar };
     };
 
-export type HsjSpec = GasPistonSpec | EnergyProfileSpec;
+// ─── H54 equilibriumChart ────────────────────────────────────────────────────
+
+/** One substance in an equilibrium: its formula, coefficient, side and starting concentration. */
+export interface EquilibriumSpecies {
+  formula: string;
+  coef: number;
+  side: 'reactant' | 'product';
+  /** The concentration (mol/L) the chart starts from. */
+  start: NumOrVar;
+  /** A variable holding its concentration at the first equilibrium (checked). */
+  eq?: NumOrVar;
+}
+
+/**
+ * Concentrations against time (H54): each substance's line from its `start` to equilibrium,
+ * where Q = K, all moving together by the reaction's extent (so the coefficients hold at every
+ * moment); the lines level off. `K` is the equilibrium constant (a page that starts at
+ * equilibrium can leave it out: it is read from the starting values).
+ *
+ * `stress` then disturbs it halfway along: `add` a substance (by its index; a negative amount
+ * removes it), `scale` every concentration (2 when the volume is halved) or a new `K` (a change
+ * of temperature). The lines jump, and move to the new equilibrium; `Q` names the reaction
+ * quotient just after the stress (checked), and the caption says which way it shifts. `label`
+ * names the stress on the chart ("Add H₂").
+ */
+export interface EquilibriumChartSpec {
+  kind: 'equilibriumChart';
+  species: EquilibriumSpecies[];
+  K?: NumOrVar;
+  stress?: {
+    add?: { species: number; amount: NumOrVar };
+    scale?: NumOrVar;
+    K?: NumOrVar;
+    Q?: NumOrVar;
+    label: string;
+  };
+}
+
+export type HsjSpec = GasPistonSpec | EnergyProfileSpec | EquilibriumChartSpec;
 
 /** Every variable id a group J picture refers to (for the module tests). */
 export function hsjSpecVars(r: HsjSpec): string[] {
@@ -174,5 +212,14 @@ export function hsjSpecVars(r: HsjSpec): string[] {
             r.metal?.heat,
           )
         : ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst);
+    case 'equilibriumChart':
+      return ids(
+        ...r.species.flatMap((s) => [s.start, s.eq]),
+        r.K,
+        r.stress?.add?.amount,
+        r.stress?.scale,
+        r.stress?.K,
+        r.stress?.Q,
+      );
   }
 }

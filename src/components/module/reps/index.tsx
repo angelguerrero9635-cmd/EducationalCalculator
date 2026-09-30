@@ -179,6 +179,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <MatrixGrid spec={spec} calc={calc} />;
     case 'gasPiston':
     case 'energyProfile':
+    case 'equilibriumChart':
       return <HsjView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;

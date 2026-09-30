@@ -88,6 +88,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
 | `gasPiston`        | gas under a piston: particles by n, trails ∝ √T, a gauge and scale    | Grade 10 gas laws (H51)             |
 | `energyProfile`    | reaction energy: levels, Eₐ hump, ΔH, catalyst dashed; calorimeter    | Grade 10 thermochemistry (H53)      |
+| `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift       | Grade 10 equilibrium (H54)          |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

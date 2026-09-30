@@ -871,12 +871,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn: kind energyProfile (typesHsj.ts). The profile (no mode) { reactants, products, activation (numbers or variables, kJ from the variable's unit), deltaH? (checked as products − reactants), reverse? (the reverse barrier, checked as Eₐ − ΔH), catalyst? (Eₐ with a catalyst: a lower dashed hump between the same levels), names? { reactants, products } ('2H₂O₂'), keep?, fixed? }: flat levels, a smooth hump to the peak at r + Eₐ, arrows for Eₐ, ΔH (red when negative) and the reverse barrier; a peak under the products draws faded with the reason; drag the peak to change Eₐ. mode 'calorimeter' { mass, heat (J/(g·°C)), start, end, change? (ΔT, checked), q? (checked as mcΔT), metal? { name, mass, start, heat? (checked against the heat the water took in) } }: two nested foam cups with a lid and stirrer, the water, a thermometer read from T₁ (dashed) to T₂ with the ΔT arrow, and a metal block when a hot metal is dropped in (physics' specific heat). Examples: { kind: 'energyProfile', reactants: 'Hr', products: 'Hp', activation: 'Ea', deltaH: 'dH', catalyst: 'Ec', names: { reactants: '2H₂O₂', products: '2H₂O + O₂' }, keep: ['Hr', 'Hp'] }; { kind: 'energyProfile', mode: 'calorimeter', mass: 'm', heat: 'c', start: 'T1', end: 'T2', change: 'dT', q: 'q' }. Also for s.11.thermodynamics (g.s11-thermodynamics-specific-heat).",
   },
-  ask(
-    'H54',
-    'equilibriumChart',
-    'Concentrations against time leveling off, and the shift after a change (Le Châtelier)',
-    ['s.10.rates-equilibrium'],
-  ),
+  {
+    ...ask(
+      'H54',
+      'equilibriumChart',
+      'Concentrations against time leveling off, and the shift after a change (Le Châtelier)',
+      ['s.10.rates-equilibrium'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-rates-equilibrium-ice',
+      'g.s10-rates-equilibrium-nearly-complete',
+      'g.s10-rates-equilibrium-add',
+      'g.s10-rates-equilibrium-volume',
+      'g.s10-rates-equilibrium-heat',
+    ],
+    notes:
+      "Drawn: kind equilibriumChart (typesHsj.ts). Concentration (mol/L) against time: each substance's line moves by the reaction's extent (reactants down, products up, by their coefficients, so the stoichiometry holds at every moment) to the level where Q = K, solved by bisection, and levels off; named at its right end with its level. Fields: species [{ formula ('N₂O₄'), coef, side ('reactant' | 'product'), start (number or variable), eq? (the first equilibrium's level, checked) }]; K? (left out when the page starts at equilibrium: read from the start values); stress? { add?: { species (index), amount (negative removes) }, scale? (every concentration times it: 2 when the volume is halved), K? (the new K after a temperature change), Q? (the quotient just after, checked), label ('Add H₂') }: a dashed line halfway, the jump and the move to the new equilibrium; the caption compares Q with K and says which way it shifts. Examples: { kind: 'equilibriumChart', species: [{ formula: 'N₂O₄', coef: 1, side: 'reactant', start: 'A0', eq: 'A' }, { formula: 'NO₂', coef: 2, side: 'product', start: 0, eq: 'B' }], K: 'K' }; { kind: 'equilibriumChart', species: [{ formula: 'H₂', coef: 1, side: 'reactant', start: 'h' }, { formula: 'I₂', coef: 1, side: 'reactant', start: 'i' }, { formula: 'HI', coef: 2, side: 'product', start: 'p' }], K: 'K', stress: { add: { species: 0, amount: 'a' }, Q: 'Q', label: 'Add H₂' } }. The line's shape between the levels is a plain approach (no rate law); the levels are exact.",
+  },
   ask(
     'H55',
     'phScale',
