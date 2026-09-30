@@ -184,29 +184,6 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                     />
                   </G>
                 ) : null}
-                {ticks(Math.max(0, W.x0), W.x1)
-                  .filter((x) => x > 0)
-                  .map((x) => (
-                    <ChartText
-                      key={`nx${x}`}
-                      x={sx(x)}
-                      y={ground + 28}
-                      fontSize={chart.label}
-                      fill={c.chartMuted}
-                      textAnchor="middle"
-                    >
-                      {formatNumber(x)}
-                    </ChartText>
-                  ))}
-                <ChartText
-                  x={sx(W.x1)}
-                  y={ground + 42}
-                  fontSize={chart.label}
-                  fill={c.chartMuted}
-                  textAnchor="end"
-                >
-                  {spec.parametric ? `x (${lenU})` : `distance (${lenU})`}
-                </ChartText>
                 {/* Maximum height and range. */}
                 {tTop !== undefined && tTop < p.T ? (
                   <G opacity={known ? 1 : 0.4}>
@@ -228,7 +205,7 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                     />
                     <SubLabel
                       x={sx(pos(tTop).x) + 6}
-                      y={sy(p.H) + (ground - sy(p.H)) * 0.3 + 8}
+                      y={sy(p.H) + (ground - sy(p.H)) * 0.5 + 6}
                       text={`H = ${withUnit(sig(p.H), lenU)}`}
                       anchor="start"
                       w={w}
@@ -336,6 +313,31 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                     </G>
                   );
                 })}
+                {/* Distances along the ground, on chips over any arrow that passes them. */}
+                {ticks(Math.max(0, W.x0), W.x1)
+                  .filter((x) => x > 0)
+                  .map((x) => (
+                    <SubLabel
+                      key={`nx${x}`}
+                      x={sx(x)}
+                      y={ground + 30}
+                      text={formatNumber(x)}
+                      size={chart.label}
+                      bold={false}
+                      color={c.chartMuted}
+                      w={w}
+                    />
+                  ))}
+                <SubLabel
+                  x={sx(W.x0) + 2}
+                  y={ground + 30}
+                  text={spec.parametric ? `x (${lenU})` : `distance (${lenU})`}
+                  anchor="start"
+                  size={chart.label}
+                  bold={false}
+                  color={c.chartMuted}
+                  w={w}
+                />
                 {/* Labels at the launch. */}
                 <SubLabel
                   x={launch.x + p.vx * k + 4}
