@@ -2366,6 +2366,275 @@ const CIRCLE_EQUATIONS: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.law-sines-cosines ──────────────────────────────────────────────────
+
+/** Both angles (degrees, under 180°) with a sine of x. */
+const asinBoth = (x: number) => {
+  if (!(x > 0 && x <= 1 + 1e-12)) return undefined;
+  const d = Math.asin(Math.min(1, x)) / RAD;
+  return Math.abs(d - 90) < 1e-9 ? d : [d, 180 - d];
+};
+/** The angles with a sine that leave room for the angle `other` (under 180° together). */
+function fitAngle(xs: number | number[] | undefined, other: number) {
+  if (xs === undefined) return undefined;
+  const ok = (Array.isArray(xs) ? xs : [xs]).filter((d) => d + other < 180 - 1e-9);
+  return ok.length ? ok : undefined;
+}
+/** The side beside angle X from the side x across from it and the other side y beside it. */
+function beside(x: number, y: number, X: number) {
+  const d = x * x - (y * sin(X)) ** 2;
+  if (d < -1e-12) return undefined;
+  const r = Math.sqrt(Math.max(0, d));
+  const out = [y * cos(X) + r, y * cos(X) - r].filter((s, i) => s > 1e-9 && (i === 0 || r > 1e-9));
+  return out.length ? out : undefined;
+}
+/** x² = y² + z² − 2yz cos X, for the side x across from angle X between sides y and z. */
+const cosines = (x: string, y: string, z: string, X: string) =>
+  rule(
+    `${x}² = ${y}² + ${z}² − 2${y}${z} cos ${X}`,
+    `{${x}}² = {${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}})`,
+    {
+      [x]: [
+        (v) => root(v[y]! ** 2 + v[z]! ** 2 - 2 * v[y]! * v[z]! * cos(v[X]!)),
+        `√({${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}}))`,
+        `Law of cosines: the two sides beside ${X} and the angle between them give the side across from it.`,
+      ],
+      [X]: [
+        (v) => acosD((v[y]! ** 2 + v[z]! ** 2 - v[x]! ** 2) / (2 * v[y]! * v[z]!)),
+        `cos⁻¹(({${y}}² + {${z}}² − {${x}}²) ÷ (2 × {${y}} × {${z}}))`,
+        `Law of cosines turned round: three sides give the angle ${X}.`,
+      ],
+      [y]: [
+        (v) => beside(v[x]!, v[z]!, v[X]!),
+        `{${z}} × cos({${X}}) ± √({${x}}² − ({${z}} × sin({${X}}))²)`,
+        `Law of cosines as a quadratic in ${y}: two lengths fit when both come out positive.`,
+      ],
+      [z]: [
+        (v) => beside(v[x]!, v[y]!, v[X]!),
+        `{${y}} × cos({${X}}) ± √({${x}}² − ({${y}} × sin({${X}}))²)`,
+        `Law of cosines as a quadratic in ${z}: two lengths fit when both come out positive.`,
+      ],
+    },
+    (v) => v[x]! ** 2 - (v[y]! ** 2 + v[z]! ** 2 - 2 * v[y]! * v[z]! * cos(v[X]!)),
+  );
+/** The angle X from its sine: sin⁻¹, or 180° − sin⁻¹ when the angle is obtuse. */
+const inverseSine = (X: string, inner: string): [StepText['expr'], StepText['how']] => [
+  (v) => (v[X]! > 90 ? `180 − sin⁻¹(${inner})` : `sin⁻¹(${inner})`),
+  (v) =>
+    v[X]! > 90
+      ? 'Law of sines for the sine. The obtuse angle with that sine is 180° minus the inverse sine.'
+      : 'Law of sines for the sine, then the inverse sine. An obtuse angle has the same sine: check which fits.',
+];
+/** x ÷ sin X = y ÷ sin Y. */
+const sines = (x: string, X: string, y: string, Y: string): Rule => {
+  const r = rule(
+    `${x}/sin ${X} = ${y}/sin ${Y}`,
+    `{${x}} ÷ sin({${X}}) = {${y}} ÷ sin({${Y}})`,
+    {
+      [x]: [
+        (v) => quot(v[y]! * sin(v[X]!), sin(v[Y]!)),
+        `{${y}} × sin({${X}}) ÷ sin({${Y}})`,
+        'Law of sines: multiply both sides by the sine of the angle across from the side.',
+      ],
+      [y]: [
+        (v) => quot(v[x]! * sin(v[Y]!), sin(v[X]!)),
+        `{${x}} × sin({${Y}}) ÷ sin({${X}})`,
+        'Law of sines: multiply both sides by the sine of the angle across from the side.',
+      ],
+      [X]: [
+        (v) => fitAngle(asinBoth((v[x]! * sin(v[Y]!)) / v[y]!), v[Y]!),
+        ...inverseSine(X, `{${x}} × sin({${Y}}) ÷ {${y}}`),
+      ],
+      [Y]: [
+        (v) => fitAngle(asinBoth((v[y]! * sin(v[X]!)) / v[x]!), v[X]!),
+        ...inverseSine(Y, `{${y}} × sin({${X}}) ÷ {${x}}`),
+      ],
+    },
+    (v) => v[x]! * sin(v[Y]!) - v[y]! * sin(v[X]!),
+  );
+  r.relation.message = (v: Values) => {
+    const [s, t, T] = v[X] === undefined ? [x, y, Y] : [y, x, X];
+    if (v[t] === undefined || v[T] === undefined || v[s] === undefined) return undefined;
+    return v[s]! * sin(v[T]!) > v[t]! + 1e-9
+      ? `${s} × sin ${T} is longer than ${t}: ${t} can’t reach the third side, so no triangle fits.`
+      : undefined;
+  };
+  return r;
+};
+const angleSum = rule(
+  'A + B + C = 180°',
+  '{A} + {B} + {C} = 180',
+  {
+    A: [(v) => 180 - v.B! - v.C!, '180 − {B} − {C}', 'The angles of a triangle add to 180°.'],
+    B: [(v) => 180 - v.A! - v.C!, '180 − {A} − {C}', 'The angles of a triangle add to 180°.'],
+    C: [(v) => 180 - v.A! - v.B!, '180 − {A} − {B}', 'The angles of a triangle add to 180°.'],
+  },
+  (v) => v.A! + v.B! + v.C! - 180,
+);
+const TRIANGLE_VARS: VariableDef[] = [
+  len('a', 'a', 'Side a', 1000, { min: 0.1 }),
+  len('b', 'b', 'Side b', 1000, { min: 0.1 }),
+  len('c', 'c', 'Side c', 1000, { min: 0.1 }),
+  deg('A', 'A', 'Angle A', 1, 178),
+  deg('B', 'B', 'Angle B', 1, 178),
+  deg('C', 'C', 'Angle C', 1, 178),
+];
+const LAWS = [
+  'The sides a, b and c are across from the angles A, B and C.',
+  'Law of sines: a ÷ sin A = b ÷ sin B = c ÷ sin C. Law of cosines: c² = a² + b² − 2ab cos C.',
+];
+/** A triangle solved from any three parts with a side among them. */
+const anyTriangle = (d: {
+  id: string;
+  title: string;
+  use: string;
+  assumptions: string[];
+  example: Values;
+  startWith: string[];
+}) =>
+  page({
+    ...d,
+    variables: TRIANGLE_VARS,
+    rules: [
+      angleSum,
+      closes('a', 'b', 'c'),
+      cosines('a', 'b', 'c', 'A'),
+      cosines('b', 'a', 'c', 'B'),
+      cosines('c', 'a', 'b', 'C'),
+      sines('a', 'A', 'b', 'B'),
+      sines('b', 'B', 'c', 'C'),
+      sines('a', 'A', 'c', 'C'),
+    ],
+    representation: {
+      kind: 'triangleSolver',
+      parts: { a: 'a', b: 'b', c: 'c', A: 'A', B: 'B', C: 'C' },
+    },
+  });
+/** A consistent triangle from two sides and the angle between them, or from three sides. */
+function fromSas(b: number, c: number, A: number): Values {
+  const a = Math.sqrt(b * b + c * c - 2 * b * c * cos(A));
+  const B = Math.acos((a * a + c * c - b * b) / (2 * a * c)) / RAD;
+  return { a, b, c, A, B, C: 180 - A - B };
+}
+function fromSss(a: number, b: number, c: number): Values {
+  const A = Math.acos((b * b + c * c - a * a) / (2 * b * c)) / RAD;
+  const B = Math.acos((a * a + c * c - b * b) / (2 * a * c)) / RAD;
+  return { a, b, c, A, B, C: 180 - A - B };
+}
+
+const LAW_SINES_COSINES: ModuleDef[] = [
+  page({
+    id: 'm.10.law-sines-cosines',
+    assumptions: [
+      'Each side is across from the angle with the same letter.',
+      'A side divided by the sine of its angle is the same for all three sides.',
+      'Two angles and any side (AAS or ASA): find the third angle from 180° first.',
+    ],
+    variables: TRIANGLE_VARS,
+    rules: [
+      angleSum,
+      closes('a', 'b', 'c'),
+      sines('a', 'A', 'b', 'B'),
+      sines('b', 'B', 'c', 'C'),
+      sines('a', 'A', 'c', 'C'),
+    ],
+    example: {
+      A: 35,
+      B: 80,
+      C: 65,
+      a: 9,
+      b: (9 * sin(80)) / sin(35),
+      c: (9 * sin(65)) / sin(35),
+    },
+    startWith: ['a', 'A', 'B'],
+    equation: '{a}/{sin({A}°)} = {b}/{sin({B}°)}',
+    representation: {
+      kind: 'triangleSolver',
+      parts: { a: 'a', b: 'b', c: 'c', A: 'A', B: 'B', C: 'C' },
+    },
+  }),
+  anyTriangle({
+    id: 'm.10.law-sines-cosines~sas',
+    title: 'Two sides and the angle between them',
+    use: 'Use this for “b = 7, c = 10 and A = 50°. Find a.”',
+    assumptions: [
+      ...LAWS,
+      'Two sides and the angle between them: the law of cosines gives the third side first.',
+    ],
+    example: fromSas(7, 10, 50),
+    startWith: ['b', 'c', 'A'],
+  }),
+  anyTriangle({
+    id: 'm.10.law-sines-cosines~sss',
+    title: 'Three sides: find an angle',
+    use: 'Use this for “The sides are 5, 7 and 9. Find the largest angle.”',
+    assumptions: [
+      ...LAWS,
+      'Three sides: turn the law of cosines round, cos C = (a² + b² − c²) ÷ (2ab).',
+    ],
+    example: fromSss(5, 7, 9),
+    startWith: ['a', 'b', 'c'],
+  }),
+  anyTriangle({
+    id: 'm.10.law-sines-cosines~ambiguous-case',
+    title: 'The ambiguous case (SSA)',
+    use: 'Use this for “A = 30°, a = 6 and b = 10. How many triangles fit, and what is B?”',
+    assumptions: [
+      ...LAWS,
+      'Two sides and an angle across from one of them can fit two triangles, one or none.',
+      'a ≥ b gives one triangle; a less than b × sin A gives none.',
+    ],
+    example: (() => {
+      const B = asinD((10 * sin(30)) / 6)!;
+      const C = 180 - 30 - B;
+      return { a: 6, b: 10, A: 30, B, C, c: (6 * sin(C)) / sin(30) };
+    })(),
+    startWith: ['a', 'b', 'A'],
+  }),
+  page({
+    id: 'm.10.law-sines-cosines~area',
+    title: 'Area from two sides and the angle between them',
+    use: 'Use this for “Two sides of a triangle are 8 and 11 with a 40° angle between them. Find its area.”',
+    assumptions: [
+      'The height to side a is b × sin C, so the area is ½ × a × b × sin C.',
+      'C must be the angle between the two sides.',
+    ],
+    variables: [
+      len('a', 'a', 'Side a', 1000, { min: 0.1 }),
+      len('b', 'b', 'Side b', 1000, { min: 0.1 }),
+      deg('C', 'C', 'Angle C between them', 1, 178),
+      num('K', 'K', 'Area', 0.0001, 1e6),
+    ],
+    rules: [
+      rule(
+        'K = ½ab sin C',
+        '{K} = {a} × {b} × sin({C}) ÷ 2',
+        {
+          K: [
+            (v) => (v.a! * v.b! * sin(v.C!)) / 2,
+            '{a} × {b} × sin({C}) ÷ 2',
+            'Half the base times the height, and the height is b × sin C.',
+          ],
+          a: [
+            (v) => quot(2 * v.K!, v.b! * sin(v.C!)),
+            '2 × {K} ÷ ({b} × sin({C}))',
+            'Undo the half, then divide by b × sin C.',
+          ],
+          b: [
+            (v) => quot(2 * v.K!, v.a! * sin(v.C!)),
+            '2 × {K} ÷ ({a} × sin({C}))',
+            'Undo the half, then divide by a × sin C.',
+          ],
+        },
+        (v) => v.K! - (v.a! * v.b! * sin(v.C!)) / 2,
+      ),
+    ],
+    example: { a: 8, b: 11, C: 40, K: 44 * sin(40) },
+    startWith: ['a', 'b', 'C'],
+    representation: { kind: 'triangleSolver', parts: { a: 'a', b: 'b', C: 'C' } },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...SIMILARITY,
   ...SPECIAL,
@@ -2375,5 +2644,6 @@ export const MATH_10_MODULES: ModuleDef[] = [
   ...VOLUME,
   ...CIRCLE_THEOREMS,
   ...CIRCLE_EQUATIONS,
+  ...LAW_SINES_COSINES,
   ...CONDITIONAL,
 ];
