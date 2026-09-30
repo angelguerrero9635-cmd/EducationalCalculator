@@ -882,3 +882,163 @@
 
 Totals: 65 pages. 29 calculators (8 mains, 21 problem types) and 36 layouts (5 mains, 31 problem
 types). 57 can be built now and 8 wait on a picture.
+
+## Added skills
+
+Two skills added to the taxonomy after Grades 9–12 were built (TAXONOMY_ISSUES.md, "Grades 9–12
+topics without a skill"). Same rules as above: rows, fixed unit labels, original text. No drawn
+picture fits their calculators yet, so each uses a `table` of the page's own formula (the rows a
+student would compare) and names the picture it wants under "Added needs" (12–15).
+
+### 14. s.12.earth-history — Earth's history: the early Earth, its atmosphere and the history of life
+
+- **Standard:** HS-ESS2-7 (Earth's systems and life change together), HS-ESS1-6, HS-ESS1-5.
+- **Textbooks:** no crosswalk row yet. tarbuck 12 (Earth's Evolution Through Geologic Time),
+  mapped to radiometric-dating, teaches this skill: the early atmosphere from outgassing, the
+  rise of oxygen, banded iron and red beds, and the history of life by era. openstax-astronomy
+  14 (the Moon slowing Earth's spin) and 30.1 (the cosmic context for life) touch it.
+- **Tests ask:**
+
+  | Question                                                 | Page        |        |
+  | -------------------------------------------------------- | ----------- | ------ |
+  | NAEP-2019-12S7-#7 (oxygen and red beds)                  | ~oxygen     | Solves |
+  | (common) Earth's history as one day: when did X happen?  | main        | Solves |
+  | (common) What was the early atmosphere made of?          | ~atmosphere | Solves |
+  | (common) Order the major steps in the history of life    | ~life       | Solves |
+  | (common) Fossil corals show 400 days a year: day length? | ~day-length | Solves |
+
+  NAEP-2019-12S7-#7 is filed under radiometric-dating (its ~time-scale names red beds):
+  `[data] → s.12.earth-history`. NAEP-2009-12S9-#3 (meteorites) and NAEP-2005-12S11-#3 (index
+  fossils) stay on radiometric-dating's pages.
+
+- **Main — BUILD `s.12.earth-history`:** calculator, "Earth's history in one day", picture
+  `table` { sweep: 'A', output: 't', rows: the events below, rowNames } (interim; need 12).
+  - Values:
+    - A, how long ago, million years, 0–4,600;
+    - p, share of Earth's history since then, %, derived;
+    - m, minutes before midnight on the one-day clock, 0–1,440;
+    - t, clock time, hours after the midnight Earth formed, 0–24.
+  - Relations: p = A ÷ 4,600 × 100; m = p ÷ 100 × 1,440; t = 24 − m ÷ 60.
+  - Assumptions: "Earth formed about 4,600 million years ago: midnight at the start of the day."
+    "Today is the next midnight, so each hour stands for about 192 million years." "Event ages
+    are rounded; new finds move them."
+  - Example: A = 2,300 (oxygen building up in the air) → p = 50 %, m = 720 minutes, t = 12 h,
+    noon. Check: dinosaurs gone, A = 66 → m = 20.7 minutes, t = 23.66 h (about 11:40 pm).
+  - Table rows (million years ago): Earth forms 4,600; first life 3,800; oxygen in the air
+    2,300; animals with shells 540; the dinosaurs die out 66; our species 0.3.
+  - startWith A.
+- **~day-length — BUILD:** calculator, "Day length from fossil coral", picture `table`
+  { sweep: 'N', output: 'D', rows: [365, 380, 400, 420, 440] } (interim; need 13).
+  - Values:
+    - n, daily growth lines counted, 1–5,000;
+    - b, yearly bands they span, 1–10;
+    - N, days in a year, 360–450;
+    - D, day length, hours.
+  - Relations: N = n ÷ b; D = 8,766 ÷ N (365.25 days × 24 hours in a year).
+  - Assumptions: "A coral adds one thin growth line a day and one band a year." "The year's
+    length in hours has not changed; the Moon's tides slow Earth's spin." "So long ago there
+    were more, shorter days in a year."
+  - Example: n = 1,200 lines over b = 3 bands → N = 400 days, D = 21.9 h.
+  - startWith n, b.
+- **~oxygen — BUILD:** sequence, "How oxygen filled the air". Question: "Put the changes to
+  Earth's early air and oceans in order." Stages:
+  1. "Volcanoes release water vapor, carbon dioxide and nitrogen";
+  2. "Water vapor condenses, and rain fills the first oceans";
+  3. "Cyanobacteria in the sea release oxygen by photosynthesis";
+  4. "The oxygen rusts dissolved iron into banded iron layers on the seafloor" (rock `layers`);
+  5. "Oxygen builds up in the air, and iron rusts on land into red beds" (rock `grains`);
+  6. "An ozone layer forms and blocks UV, so life can move onto land".
+  - Assumptions: "Oxygen first reacted with iron; only after the iron was used up did it build
+    up in the air." "Red beds need oxygen in the air, so they date its rise."
+- **~atmosphere — BUILD:** sort. Question: "Early Earth's air or today's air?"
+  - Bins: "Early Earth (about 4 billion years ago)" and "Today".
+  - Cards: "Almost no free oxygen", "Far more carbon dioxide", "No ozone layer, so UV reaches the
+    ground", "Rich in water vapor that later rained out" → early; "About 21 % oxygen", "Mostly
+    nitrogen and oxygen", "An ozone layer blocks most UV", "Its oxygen was made by photosynthesis"
+    → today.
+- **~life — BUILD:** sequence, "The history of life". Stages: first single-celled life in the
+  sea; cells with a nucleus, after oxygen builds up; soft-bodied many-celled animals on the
+  seafloor; the Cambrian burst of animals with shells and skeletons; plants, then animals, move
+  onto land; dinosaurs and the first mammals; an asteroid ends the dinosaurs and mammals spread;
+  humans appear.
+  - Assumptions: "Each step built on the ones before." "Mass extinctions cleared the way for new
+    groups." Different from radiometric ~time-scale: that page orders the eras and their spans;
+    this one orders the steps of life.
+- **Verdict:** 5 pages (2 calculators, 3 layouts). The one released item Solves; covers the
+  common types.
+
+### 15. s.12.exoplanets — Exoplanets and the search for life
+
+- **Standard:** HS-ESS1-4 (orbits), HS-ESS1-1, HS-PS4-3.
+- **Textbooks:** openstax-astronomy 21.4 (search and discovery), 21.5 (exoplanets everywhere),
+  30.1–30.4 (life in the universe, astrobiology, the search for life, SETI); tarbuck 24.
+- **Tests ask:** no released questions. The textbook's review questions and common types:
+
+  | Question                                                    | Page            |        |
+  | ----------------------------------------------------------- | --------------- | ------ |
+  | (common) A star dims 1 %: how big is the planet?            | main            | Solves |
+  | (common) Period 36.5 days round a 0.8 M☉ star: how far out? | ~orbit          | Solves |
+  | (common) Is the planet in its star's habitable zone?        | ~habitable-zone | Solves |
+  | (textbook) Which planets do Doppler and transits find best? | ~methods        | Solves |
+  | (textbook) Why are young Jupiters easier to image?          | ~methods        | Solves |
+  | (common) Habitable, sign of life or sign of technology?     | ~life           | Solves |
+
+- **Main — BUILD `s.12.exoplanets`:** calculator, "The transit method", picture `table`
+  { sweep: 'r', output: 'd', params: ['R'], rows: Mars 0.53, Earth 1, Neptune 3.88, Saturn
+  9.45, Jupiter 11.21 } (interim; need 14).
+  - Values: R, star's radius, R☉, 0.1–10; r, planet's radius, R⊕ (Earth radii), 0.3–25;
+    δ, transit depth, %.
+  - Relation: δ = 100 × (r ÷ (109 × R))², with 1 R☉ = 109 R⊕. Limit: r < 109 × R, with the
+    reason "a planet is smaller than its star, so it blocks only part of it".
+  - Assumptions: "The dip is the share of the star's disk the planet covers." "The orbit must be
+    nearly edge-on to us, or there is no transit." "Repeated dips a period apart confirm a planet."
+  - Example: R = 1, δ = 1.00 % → r = 10.9 R⊕, about Jupiter's size. An Earth across the Sun dims
+    it only 0.0084 %.
+  - startWith δ, R.
+- **~orbit — BUILD:** calculator, "An exoplanet's orbit from its period", picture `table`
+  { sweep: 'P', output: 'a', params: ['M'] } (interim; need 15: the `kepler` picture's caption
+  states T² = a³, true only round the Sun).
+  - Values: M, star's mass, M☉, 0.1–5; P, period, days, 0.2–10,000; T, period, years; a,
+    orbit size, AU.
+  - Relations: T = P ÷ 365.25; a³ = M × T² (Kepler's third law with the star's mass).
+  - Assumptions: "The planet's mass is tiny beside its star's." "With M = 1 this is the solar
+    system's T² = a³." "A heavier star pulls harder, so the same period means a wider orbit."
+  - Example: M = 0.8, P = 36.525 days → T = 0.1 years, a³ = 0.008, a = 0.2 AU.
+  - startWith P, M.
+- **~habitable-zone — BUILD:** calculator, picture `table` { sweep: 'a', output: 'T', params:
+  ['L'], rows: [0.25, 0.5, 0.75, 1, 1.5, 2] } (interim; need 15).
+  - Values: L, star's luminosity, L☉, 0.001–100; d₁, inner edge, AU; d₂, outer edge, AU; a,
+    planet's orbit, AU, 0.01–100; T, planet's temperature, K.
+  - Relations: d₁ = 0.95 × √L; d₂ = 1.37 × √L; T = 278 × L^(1/4) ÷ √a.
+  - Assumptions: "Between d₁ and d₂ a planet like Earth could keep liquid water." "Light spreads
+    out as the square of distance, so the zone moves out as √L." "T leaves out clouds and
+    greenhouse gases: it gives Earth 278 K, but Earth averages about 288 K."
+  - Example: L = 0.25 → d₁ = 0.475 AU, d₂ = 0.685 AU; a = 0.5 AU → T = 278 K, inside the zone.
+  - startWith L, a.
+- **~methods — BUILD:** sort. Question: "Which method is it?"
+  - Bins: "Transit (the star dims)", "Radial velocity (the star wobbles)", "Direct imaging".
+  - Cards: "Gives the planet's size", "Needs the orbit edge-on to us", "The star dims on a regular
+    schedule" → transit; "Gives a lowest possible mass for the planet", "The star's lines shift
+    red, then blue", "Measures the star's speed toward and away from us" → radial velocity;
+    "Blocks the star's glare to catch the planet's own light", "Works best for big, young planets
+    far from their star" → imaging.
+- **~life — BUILD:** sort. Question: "What does this finding tell us?"
+  - Bins: "Habitable: life could live there", "Biosignature: a sign of life", "Technosignature:
+    a sign of technology".
+  - Cards: "Liquid water on its surface", "An orbit inside the habitable zone", "A rocky surface
+    under a thick enough atmosphere" → habitable; "Oxygen and methane together in its air",
+    "Fossil microbes in a rock" → biosignature; "A narrow radio signal no natural source makes",
+    "Laser flashes repeating in a pattern" → technosignature.
+- **Verdict:** 5 pages (3 calculators, 2 sorts). No released questions; covers the common types
+  and the textbook's review questions.
+
+### Added needs
+
+12. **Geologic clock** (earth-history main): a 24-hour dial with Earth's formation at midnight,
+    the event at `A` marked at clock time `t`, the last `m` minutes shaded.
+13. **Coral growth lines** (earth-history ~day-length): a coral section with `n` daily lines
+    across `b` yearly bands, and the day's length `D` beside today's 24 h.
+14. **Transit light curve** (exoplanets main): the star's disk with the planet crossing it (radii
+    `R` and `r` to scale), and the brightness dipping by `δ`.
+15. **Star, habitable zone and orbit** (exoplanets ~orbit, ~habitable-zone): the star at the
+    center scaled by `L` or `M`, the zone from `d₁` to `d₂` shaded, the planet's orbit at `a`.
