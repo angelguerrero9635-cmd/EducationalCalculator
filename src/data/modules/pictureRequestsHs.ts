@@ -1130,12 +1130,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK, reps/Induction.tsx). Calculator picture { kind: "induction", fixed?: true, and one mode }: coil: { mode: "coil", turns: N, flux: ΔΦ (Wb), time: Δt (s), emf?: NΔΦ/Δt, direction?: "in" | "out" } — a painted bar magnet (S blue, N red) pushed in or pulled out, its field lines traced, a copper coil with one loop per turn (up to 20, the count labelled), leads to a center-zero galvanometer whose needle swings by the emf, right going in and left coming out (Lenz’s law); force: { mode: "force", field: B (T), current: I (A), length: L (m), angle?: θ (degrees; given, B runs along the paper and the wire is drawn at θ to it, the force into or out of the page ⊗/⊙), force?: F, currentDir?: "right" | "left", fieldDir?: "in" | "out" (× or • marks) } — a copper wire with its current arrow, the force arrow on one scale, direction from F = IL × B (right-hand rule in the caption); transformer: { mode: "transformer", primary: Nₚ, secondary: Nₛ, voltage: Vₚ, output?: Vₛ, current?: Iₚ, outputCurrent?: Iₛ } — a laminated iron core, both windings with one loop per turn (up to 20, counts labelled), an AC source and a lamp, step-up or step-down named; Vₛ = Vₚ Nₛ/Nₚ and Iₛ = Iₚ Nₚ/Nₛ (power kept). Step text must put a sine first inside a bracket ({F}/(sin({q}) × {I} × {L})): the harness can’t read N/(N × N × sin(N)). The harness checks the emf, BIL sin θ, Vₛ and Iₛ. Example: representation: { kind: "induction", mode: "transformer", primary: "p", secondary: "s", voltage: "V", output: "W", current: "I", outputCurrent: "J" }.',
   },
-  ask(
-    'H70',
-    'spectrum',
-    'Emission and absorption lines of H, He, Na; the lines shifted red; photon energy from frequency',
-    ['s.11.modern-physics', 's.12.starlight-spectra', 's.12.cosmology'],
-  ),
+  {
+    ...ask(
+      'H70',
+      'spectrum',
+      'Emission and absorption lines of H, He, Na; the lines shifted red; photon energy from frequency',
+      ['s.11.modern-physics', 's.12.starlight-spectra', 's.12.cosmology'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-modern-physics-hydrogen',
+      'g.s11-modern-physics-helium',
+      'g.s11-modern-physics-photon',
+      'g.s12-starlight-spectra-absorption',
+      'g.s12-cosmology-redshift',
+      'g.s12-cosmology-blueshift',
+    ],
+    notes:
+      'Drawn (group HK, reps/SpectrumLines.tsx; the line list and photon math in hskMath.ts) as two options on the Grade 8 spectrum, so every current spectrum page is unchanged. The line wavelengths are the standard measured values in air: H 656.3 (Hα), 486.1, 434.0, 410.2 nm; He 587.6, 447.1, 471.3, 492.2, 501.6, 667.8, 706.5 nm; Na 589.0 and 589.6 (the D doublet), 568.8, 615.4 nm. Lines: { kind: "spectrum", wavelength: λ (with meters: 1e-9 for nm), lines: { element: "H" | "He" | "Na", mode: "emission" | "absorption", redshift?: z (number or variable), line?: the reference line’s index (default the first: Hα, He 587.6, Na D₂), rest?: its lab wavelength, velocity?: v ≈ cz in km/s } } — the visible spectrum 380–750 nm as bright lines in their colors on black (emission) or dark lines across the rainbow (absorption), Hα–Hδ and D named, ticks every 100 nm; without a redshift the page’s λ may be any of the element’s lines (give the variable `allowed` the list) and is marked under the strip; with z, a second strip at λ(1 + z), each line joined to its lab line, lines past 750 nm noted; λ is then the observed reference line. Photon: { kind: "spectrum", wavelength: λ, meters: 1e-9, photon: { frequency: f, hertz?: Hz per unit (1e12 for THz), energy?: E in J, electronVolts?: E in eV } } — the wave in its color with more cycles for a higher frequency, its place on the visible strip (UV, IR, radio or X-ray named past it), λ = c/f and E = hf in J and eV in the caption. The harness checks the observed λ₀(1 + z), cz, that an unshifted λ is one of the element’s lines, and λ = c/f, hf and eV. Example: representation: { kind: "spectrum", wavelength: "l", meters: 1e-9, lines: { element: "H", mode: "absorption", redshift: "z", velocity: "v" } }.',
+  },
 
   // ── G. Earth and space ──
   ask(

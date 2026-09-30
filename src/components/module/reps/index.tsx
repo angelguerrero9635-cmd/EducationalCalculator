@@ -147,6 +147,7 @@ import { HskView } from './HskView';
 import { EnergySpring } from './EnergySpring';
 import { WaveDoppler } from './WaveDoppler';
 import { CircuitMixed } from './CircuitMixed';
+import { PhotonView, SpectrumLinesView } from './SpectrumLines';
 import { WaveStanding } from './WaveStanding';
 
 /** Section title for each representation kind. */
@@ -283,6 +284,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       if (spec.mixed) return <CircuitMixed spec={spec} m={spec.mixed} calc={calc} />;
       return <Circuit spec={spec} calc={calc} />;
     case 'spectrum':
+      if (spec.lines) return <SpectrumLinesView spec={spec} l={spec.lines} calc={calc} />;
+      if (spec.photon) return <PhotonView spec={spec} p={spec.photon} calc={calc} />;
       return <Spectrum spec={spec} calc={calc} />;
     case 'curvedSolid':
       return <CurvedSolid spec={spec} calc={calc} />;

@@ -2766,6 +2766,208 @@ const INDUCTION_DEMOS: ModuleDef[] = [
   ),
 ];
 
+// ─── H70 spectrum: lines, redshift, photons ─────────────────────────────────
+
+/** One of an element's lines and its photon's energy E = hc/λ = 1240/λ eV (λ in nm). */
+const lineDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  element: 'H' | 'He' | 'Na',
+  mode: 'emission' | 'absorption',
+  lines: number[],
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions: [
+    ...assumptions,
+    'Each line is a photon of one energy: an electron jumping between two energy levels. E = hc/λ ≈ 1240/λ eV with λ in nm.',
+  ],
+  variables: [
+    q('l', 'λ', 'Wavelength of a line', 'nm', Math.min(...lines), Math.max(...lines), 0.1, {
+      allowed: lines,
+    }),
+    q('E', 'E', 'Photon energy', 'eV', 1, 4, 0.0001),
+  ],
+  ...rules(
+    rule('E = hc/λ', '{E} = 1240/{l}', (v) => v.E! * v.l! - 1240, {
+      E: [(v) => div(1240, v.l!), '1240/{l}', 'hc = 1240 eV·nm: divide by the wavelength.'],
+      l: [(v) => div(1240, v.E!), '1240/{E}', 'Divide 1240 eV·nm by the energy.'],
+    }),
+  ),
+  example: { l: lines[0]!, E: 1240 / lines[0]! },
+  startWith: ['l'],
+  pictureLabels: ['E'],
+  representation: {
+    kind: 'spectrum',
+    wavelength: 'l',
+    meters: 1e-9,
+    lines: { element, mode },
+  },
+});
+
+const redshiftDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  z: number,
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions: [
+    ...assumptions,
+    'The lab wavelength of hydrogen’s Hα line is 656.3 nm; the observed one is 656.3 × (1 + z).',
+    'For small z the speed is v ≈ cz, c = 300,000 km/s.',
+  ],
+  variables: [
+    q('z', 'z', 'Redshift', undefined, -0.1, 0.3, 0.0001),
+    q('l', 'λ', 'Observed wavelength of Hα', 'nm', 500, 900, 0.01),
+    q('v', 'v', 'Speed (+ away)', 'km/s', -30000, 90000, 1),
+    ...(z > 0 ? [q('d', 'd', 'Distance (Hubble’s law)', 'Mpc', 0.1, 2000, 0.1)] : []),
+  ],
+  ...rules(
+    rule('λ = 656.3(1 + z)', '{l} = 656.3 × (1 + {z})', (v) => v.l! - 656.3 * (1 + v.z!), {
+      l: [(v) => 656.3 * (1 + v.z!), '656.3 × (1 + {z})', 'Stretch the lab wavelength by 1 + z.'],
+      z: [
+        (v) => v.l! / 656.3 - 1,
+        '{l}/656.3 − 1',
+        'How much longer than in the lab, as a fraction.',
+      ],
+    }),
+    product('v', 'z', 300000, 'v = cz', [
+      'Multiply the redshift by the speed of light.',
+      'Divide the speed by c.',
+    ]),
+    ...(z > 0
+      ? [
+          rule('d = v/H₀', '{d} = {v}/70', (v) => v.d! * 70 - v.v!, {
+            d: [
+              (v) => v.v! / 70,
+              '{v}/70',
+              'Hubble’s law with H₀ = 70 km/s per Mpc: farther galaxies recede faster.',
+            ],
+            v: [(v) => v.d! * 70, '70 × {d}', 'The distance times H₀.'],
+          }),
+        ]
+      : []),
+  ),
+  example: {
+    z,
+    l: 656.3 * (1 + z),
+    v: 300000 * z,
+    ...(z > 0 ? { d: (300000 * z) / 70 } : {}),
+  },
+  startWith: ['z'],
+  representation: {
+    kind: 'spectrum',
+    wavelength: 'l',
+    meters: 1e-9,
+    lines: { element: 'H', mode: 'absorption', redshift: 'z', velocity: 'v' },
+  },
+  ...(z > 0 ? { pictureLabels: ['d'] } : {}),
+});
+
+const SPECTRUM_DEMOS: ModuleDef[] = [
+  lineDemo(
+    'g.s11-modern-physics-hydrogen',
+    'Hydrogen’s emission lines',
+    'Use this for “Hydrogen gas glows red at 656.3 nm. How much energy does each photon of that line carry?”',
+    ['A hot, thin gas glows only at its own wavelengths: bright lines on black.'],
+    'H',
+    'emission',
+    [656.3, 486.1, 434, 410.2],
+  ),
+  lineDemo(
+    'g.s11-modern-physics-helium',
+    'Helium’s lines',
+    'Use this for “Helium shows a yellow line at 587.6 nm. How much energy does each photon carry?”',
+    ['Helium was found in the sun’s spectrum (from its lines) before it was found on Earth.'],
+    'He',
+    'emission',
+    [587.6, 447.1, 471.3, 492.2, 501.6, 667.8, 706.5],
+  ),
+  lineDemo(
+    'g.s12-starlight-spectra-absorption',
+    'Absorption lines in starlight',
+    'Use this for “Dark lines at 589 and 589.6 nm cross the sun’s spectrum. Which element makes them?”',
+    [
+      'Cooler gas in front of a hot star absorbs its own wavelengths: dark lines across the rainbow, at the same places as that gas’s bright lines.',
+    ],
+    'Na',
+    'absorption',
+    [589, 589.6, 568.8, 615.4],
+  ),
+  {
+    id: 'g.s11-modern-physics-photon',
+    title: 'The energy of a photon',
+    use: 'Use this for “What is the energy of a photon of green light, f = 600 THz (6 × 10¹⁴ Hz), in electronvolts?”',
+    assumptions: [
+      'Light comes in photons of energy E = hf, h = 6.626 × 10⁻³⁴ J·s; 1 eV = 1.602 × 10⁻¹⁹ J.',
+      '1 THz = 10¹² Hz. λ = c/f with c = 3 × 10⁸ m/s.',
+    ],
+    variables: [
+      q('f', 'f', 'Frequency', 'THz', 1, 1000000, 1),
+      q('l', 'λ', 'Wavelength', 'nm', 0.3, 300000, 0.0001),
+      q('e', 'E', 'Energy', 'eV', 6.626e-22 / 1.602e-19, 6.626e-16 / 1.602e-19, 0.0001),
+    ],
+    ...rules(
+      rule('λ = c/f', '{l} = 300000/{f}', (v) => (v.f! * v.l!) / 300000 - 1, {
+        l: [
+          (v) => div(300000, v.f!),
+          '300000/{f}',
+          'c/f with f in THz gives nm: 3 × 10⁸/(f × 10¹²) m = 300,000/f nm.',
+        ],
+        f: [(v) => div(300000, v.l!), '300000/{l}', 'The same the other way.'],
+      }),
+      rule(
+        'E = hf',
+        '{e} = 6.626 × 10⁻³⁴ × {f} × 10¹²/(1.602 × 10⁻¹⁹)',
+        (v) => v.e! / ((6.626e-22 * v.f!) / 1.602e-19) - 1,
+        {
+          e: [
+            (v) => (6.626e-22 * v.f!) / 1.602e-19,
+            '6.626 × 10⁻³⁴ × {f} × 10¹²/(1.602 × 10⁻¹⁹)',
+            'Planck’s constant times the frequency in Hz gives joules; divide by 1.602 × 10⁻¹⁹ J for eV.',
+          ],
+          f: [
+            (v) => (v.e! * 1.602e-19) / 6.626e-22,
+            '{e} × 1.602 × 10⁻¹⁹/(6.626 × 10⁻²²)',
+            'The energy in joules over Planck’s constant, in THz.',
+          ],
+        },
+      ),
+    ),
+    example: { f: 600, l: 500, e: (6.626e-22 * 600) / 1.602e-19 },
+    startWith: ['f'],
+    representation: {
+      kind: 'spectrum',
+      wavelength: 'l',
+      meters: 1e-9,
+      photon: { frequency: 'f', hertz: 1e12, electronVolts: 'e' },
+    },
+  },
+  redshiftDemo(
+    'g.s12-cosmology-redshift',
+    'A galaxy’s redshift',
+    'Use this for “A galaxy’s Hα line is at 689.1 nm instead of 656.3 nm. How fast is it moving away, and how far is it?”',
+    [
+      'Space stretching as light travels stretches its wavelength: every line moves toward the red end.',
+    ],
+    0.05,
+  ),
+  redshiftDemo(
+    'g.s12-cosmology-blueshift',
+    'A blueshift: coming toward us',
+    'Use this for “The Andromeda galaxy’s lines are shifted by z = −0.001. Is it coming or going, and how fast?”',
+    ['A few nearby galaxies move toward us: their lines shift to the blue, and z is negative.'],
+    -0.001,
+  ),
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
@@ -2779,5 +2981,6 @@ export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...CHARGE_DEMOS,
   ...CIRCUIT_DEMOS,
   ...INDUCTION_DEMOS,
+  ...SPECTRUM_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

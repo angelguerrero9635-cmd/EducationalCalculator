@@ -222,6 +222,47 @@ export function mixedOf(
   return { Req, I, V: Vs, I3: Is, P: [Vs[0] * Is[0], Vs[1] * Is[1], Vs[2] * Is[2]] as const };
 }
 
+/**
+ * Visible spectral lines (nm, in air, from the standard atomic tables) with their names, the
+ * reference line first: hydrogen's Balmer series (Hα to Hδ), helium's brightest visible lines,
+ * sodium's D doublet and its weaker lines.
+ */
+export const SPECTRAL_LINES: Record<'H' | 'He' | 'Na', { nm: number; name: string }[]> = {
+  H: [
+    { nm: 656.3, name: 'Hα' },
+    { nm: 486.1, name: 'Hβ' },
+    { nm: 434.0, name: 'Hγ' },
+    { nm: 410.2, name: 'Hδ' },
+  ],
+  He: [
+    { nm: 587.6, name: '587.6' },
+    { nm: 447.1, name: '447.1' },
+    { nm: 471.3, name: '471.3' },
+    { nm: 492.2, name: '492.2' },
+    { nm: 501.6, name: '501.6' },
+    { nm: 667.8, name: '667.8' },
+    { nm: 706.5, name: '706.5' },
+  ],
+  Na: [
+    { nm: 589.0, name: 'D₂' },
+    { nm: 589.6, name: 'D₁' },
+    { nm: 568.8, name: '568.8' },
+    { nm: 615.4, name: '615.4' },
+  ],
+};
+
+/** Planck's constant (J·s), the speed of light (m/s) and the electronvolt (J). */
+export const H_PLANCK = 6.626e-34;
+export const C_LIGHT = 3e8;
+export const EV = 1.602e-19;
+
+/** A photon of frequency f (Hz): its wavelength in nm and its energy in J and eV. */
+export const photonOf = (f: number) => ({
+  nm: f > 0 ? (C_LIGHT / f) * 1e9 : Infinity,
+  J: H_PLANCK * f,
+  eV: (H_PLANCK * f) / EV,
+});
+
 /** Coulomb's constant, N·m²/C². */
 export const K_COULOMB = 8.99e9;
 

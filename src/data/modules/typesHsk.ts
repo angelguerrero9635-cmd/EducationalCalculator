@@ -431,6 +431,39 @@ export type InductionSpec = { kind: 'induction'; fixed?: boolean } & (
     }
 );
 
+// ─── H70 spectrum options: spectral lines, redshift, photons ────────────────
+
+/**
+ * A `spectrum` option: the visible spectrum (380–750 nm) with an element's lines at their
+ * measured wavelengths (hydrogen's Balmer lines, helium, sodium's D doublet): bright lines on
+ * black (`emission`) or dark lines across the rainbow (`absorption`). With `redshift` z a second
+ * strip shows the same lines at λ(1 + z), each joined to its lab line, the shift to the red (or
+ * blue, z < 0); the spectrum's `wavelength` is then the observed wavelength of line `line`
+ * (default the element's first listed: Hα, He 587.6, Na D). `rest` names the lab wavelength,
+ * `velocity` v ≈ cz (km/s, small z).
+ */
+export interface SpectrumLines {
+  element: 'H' | 'He' | 'Na';
+  mode: 'emission' | 'absorption';
+  redshift?: NumOrVar;
+  line?: number;
+  rest?: string;
+  velocity?: string;
+}
+
+/**
+ * A `spectrum` option: one photon of `frequency` (Hz): its wave in its color (or grey outside
+ * the visible), its wavelength λ = c/f (the spectrum's `wavelength`, in nm with `meters: 1e-9`)
+ * and its energy E = hf in joules (`energy`) and electronvolts (`electronVolts`).
+ */
+export interface PhotonEnergy {
+  frequency: NumOrVar;
+  /** Hz in one of the frequency's units (1e12 when the page counts terahertz). Default 1. */
+  hertz?: number;
+  energy?: string;
+  electronVolts?: string;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
@@ -548,6 +581,11 @@ export function hskOptionVars(r: { kind: string }): string[] {
   if (r.kind === 'wave' && o.doppler) {
     const d = o.doppler as DopplerWave;
     return ids(d.sourceSpeed, d.waveSpeed, d.frequency, d.ahead, d.behind);
+  }
+  if (r.kind === 'spectrum' && (o.lines || o.photon)) {
+    const l = o.lines as SpectrumLines | undefined;
+    const p = o.photon as PhotonEnergy | undefined;
+    return ids(l?.redshift, l?.rest, l?.velocity, p?.frequency, p?.energy, p?.electronVolts);
   }
   if (r.kind === 'circuit' && o.mixed) {
     const m = o.mixed as MixedCircuit;

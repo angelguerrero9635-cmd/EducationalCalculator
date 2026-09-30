@@ -18,6 +18,12 @@ type Rep = ReturnType<typeof useRep>;
 export const sig = (x: number, digits = 3): string =>
   !Number.isFinite(x) ? '?' : formatNumber(Number(x.toPrecision(digits)) || 0);
 
+/** A number in scientific notation to `digits` significant figures: 6 × 10¹⁴. */
+export const sci = (x: number, digits = 3): string =>
+  !Number.isFinite(x)
+    ? '?'
+    : formatNumber(Number(x.toPrecision(digits)) || 0, { scientific: true });
+
 /** A number with its unit after a space ("12 m", "−9.8 m/s²"); ° goes straight after. */
 export const withUnit = (text: string, unit?: string) =>
   !unit ? text : unit === '°' ? `${text}°` : `${text} ${unit}`;

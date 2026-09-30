@@ -415,7 +415,9 @@ type Physics8 = Extract<
 >;
 
 /** Whether a Grade 8 physics picture carries a group-HK option (checked here instead). */
-export const physicsHsOption = (rep: Physics8) => rep.kind === 'circuit' && !!rep.mixed;
+export const physicsHsOption = (rep: Physics8) =>
+  (rep.kind === 'circuit' && !!rep.mixed) ||
+  (rep.kind === 'spectrum' && (!!rep.lines || !!rep.photon));
 
 /** Equal, or equal up to a unit prefix (a value shown in mA or kΩ is 10³ from the formula's). */
 const nearUnit = (a: number, b: number) => {
@@ -428,6 +430,7 @@ const nearUnit = (a: number, b: number) => {
 /** H68: a mixed circuit's R_eq, total current, power and each resistor's readings. */
 export function physicsHsIssues(rep: Physics8, val: Val): string[] {
   const out: string[] = [];
+  if (rep.kind === 'spectrum') return spectrumHsIssues(rep, val);
   if (rep.kind !== 'circuit' || !rep.mixed) return out;
   const m = rep.mixed;
   const Rs = m.resistors.map((x) => read(val, x));
@@ -449,5 +452,45 @@ export function physicsHsIssues(rep: Physics8, val: Val): string[] {
     check(m.currents?.[i], c.I3[i]!, `current through R${i + 1}`);
     check(m.powers?.[i], c.P[i]!, `power of R${i + 1}`);
   });
+  return out;
+}
+
+/** H70: the observed line at λ₀(1 + z), v ≈ cz; a photon's λ = c/f and E = hf. */
+function spectrumHsIssues(rep: Extract<Physics8, { kind: 'spectrum' }>, val: Val): string[] {
+  const out: string[] = [];
+  const check = (id: string | undefined, want: number, what: string) => {
+    const x = id ? val(id) : undefined;
+    if (x !== undefined && Number.isFinite(want) && !near(x, want))
+      out.push(`spectrum: ${what} ${x}, the picture draws ${want}`);
+  };
+  const m = rep.meters ?? 1;
+  if (rep.lines) {
+    const l = rep.lines;
+    const lab = hm.SPECTRAL_LINES[l.element];
+    const ref = lab[Math.min(lab.length - 1, Math.max(0, l.line ?? 0))]!.nm;
+    const z = read(val, l.redshift, 0);
+    if (z === undefined) return out;
+    if (z <= -1) out.push(`spectrum: redshift ${z} is not above −1`);
+    check(l.rest, ref, 'lab wavelength');
+    // Without a redshift the wavelength may be any of the element's lines.
+    const lam = val(rep.wavelength);
+    if (l.redshift !== undefined)
+      check(rep.wavelength, (ref * (1 + z) * 1e-9) / m, 'observed wavelength');
+    else if (lam !== undefined && !lab.some((q) => near((lam * m) / 1e-9, q.nm)))
+      out.push(`spectrum: ${lam} is not one of the ${l.element} lines`);
+    check(l.velocity, 300000 * z, 'speed cz');
+  }
+  if (rep.photon) {
+    const f0 = read(val, rep.photon.frequency);
+    const f = f0 === undefined ? undefined : f0 * (rep.photon.hertz ?? 1);
+    if (f === undefined) return out;
+    if (f <= 0) out.push(`spectrum: frequency ${f} is not positive`);
+    else {
+      const ph = hm.photonOf(f);
+      check(rep.wavelength, (ph.nm * 1e-9) / m, 'wavelength c/f');
+      check(rep.photon.energy, ph.J, 'energy hf');
+      check(rep.photon.electronVolts, ph.eV, 'energy in eV');
+    }
+  }
   return out;
 }
