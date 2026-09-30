@@ -99,7 +99,7 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
                 ) : null}
                 <SubLabel
                   x={8}
-                  y={qy - qb / 2 - 16}
+                  y={qy - qb / 2 - 24}
                   text={`Q = ${sig(Q.value)} ${unit} ${qIn ? 'in' : 'out'}`}
                   anchor="start"
                   color={qIn ? c.physHot : c.physCold}
