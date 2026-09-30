@@ -124,7 +124,7 @@ export function freeBodyOf(inp: {
  * v₁ splits, the first cart leaving at `first`; the second's velocity keeps the momentum.
  */
 export function collisionOf(
-  type: 'stick' | 'elastic' | 'explode',
+  type: 'stick' | 'elastic' | 'explode' | 'general',
   m1: number,
   m2: number,
   v1: number,
@@ -139,6 +139,8 @@ export function collisionOf(
   }
   if (type === 'elastic')
     return [((m1 - m2) * v1 + 2 * m2 * v2) / M, ((m2 - m1) * v2 + 2 * m1 * v1) / M];
+  // General: the first cart's velocity after is given, the second's from the momentum.
+  if (type === 'general') return [first, m2 > 0 ? (m1 * v1 + m2 * v2 - m1 * first) / m2 : 0];
   return [first, m2 > 0 ? (M * v1 - m1 * first) / m2 : 0];
 }
 

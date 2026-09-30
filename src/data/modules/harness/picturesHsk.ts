@@ -181,7 +181,8 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       const [m1, m2] = rep.masses.map((x) => read(si, x));
       const v1 = read(si, rep.before[0]);
       const v2 = rep.type === 'explode' ? v1 : read(si, rep.before[1]);
-      const first = rep.type === 'explode' ? read(si, rep.after?.[0]) : 0;
+      const given = rep.type === 'explode' || rep.type === 'general';
+      const first = given ? read(si, rep.after?.[0]) : 0;
       if ([m1, m2, v1, v2, first].some((x) => x === undefined)) break;
       if (m1! <= 0 || m2! <= 0) {
         out.push('collision: a cart with no mass');
@@ -189,7 +190,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       }
       const [u1, u2] = collisionOf(rep.type, m1!, m2!, v1!, v2!, first);
       const a = rep.after ?? [];
-      if (rep.type !== 'explode') same(typeof a[0] === 'string' ? a[0] : undefined, u1, 'v₁ after');
+      if (!given) same(typeof a[0] === 'string' ? a[0] : undefined, u1, 'v₁ after');
       same(typeof a[1] === 'string' ? a[1] : undefined, u2, 'v₂ after');
       same(rep.momentum, m1! * v1! + m2! * v2!, 'total momentum');
       if (!near(m1! * u1 + m2! * u2, m1! * v1! + m2! * v2!))
@@ -197,6 +198,11 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       const ke = (m: number, v: number) => (m * v * v) / 2;
       same(rep.energy?.[0], ke(m1!, v1!) + ke(m2!, v2!), 'kinetic energy before');
       same(rep.energy?.[1], ke(m1!, u1) + ke(m2!, u2), 'kinetic energy after');
+      same(
+        rep.lost,
+        ke(m1!, v1!) + ke(m2!, v2!) - ke(m1!, u1) - ke(m2!, u2),
+        'kinetic energy lost',
+      );
       if (rep.type === 'elastic' && !near(ke(m1!, u1) + ke(m2!, u2), ke(m1!, v1!) + ke(m2!, v2!)))
         out.push('collision: an elastic collision lost kinetic energy');
       break;

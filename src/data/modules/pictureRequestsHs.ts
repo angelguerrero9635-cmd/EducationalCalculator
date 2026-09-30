@@ -1857,21 +1857,28 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ],
     'P13: docs/plans/s.10.md needs 1, 4–10, 13, 14.',
   ),
-  ask(
-    'H102',
-    'collision',
-    'Physics: collision general; impulse; circularMotion satellite; vertical strobe and strobe cards; freeBody displacement; power; gasPiston energy; heatingCurve span from values; charges plates; photoelectric; a light clock',
-    [
-      's.11.momentum',
-      's.11.circular-gravitation',
-      's.11.kinematics-1d',
-      's.11.work-energy-power',
-      's.11.thermodynamics',
-      's.11.electrostatics',
-      's.11.modern-physics',
-    ],
-    'P14: docs/plans/s.11.md needs 1–12.',
-  ),
+  {
+    ...ask(
+      'H102',
+      'collision',
+      'Physics: collision general; impulse; circularMotion satellite; vertical strobe and strobe cards; freeBody displacement; power; gasPiston energy; heatingCurve span from values; charges plates; photoelectric; a light clock',
+      [
+        's.11.momentum',
+        's.11.circular-gravitation',
+        's.11.kinematics-1d',
+        's.11.work-energy-power',
+        's.11.thermodynamics',
+        's.11.electrostatics',
+        's.11.modern-physics',
+      ],
+      'P14: docs/plans/s.11.md needs 1–12.',
+    ),
+    gallery: ['g.s11-momentum-one-after'],
+    notes: [
+      'P14: docs/plans/s.11.md needs 1–12, drawn part by part.',
+      "1 (~one-after): collision type 'general' with after [v₁′, v₂′] (v₁′ given, v₂′ from the momentum) and lost (the KE lost); each cart's KE is labelled. { kind: 'collision', type: 'general', masses: ['m', 'n'], before: ['v', 'w'], after: ['a', 'b'], lost: 'X' }.",
+    ].join(' '),
+  },
   ask(
     'H103',
     'earthLayers',

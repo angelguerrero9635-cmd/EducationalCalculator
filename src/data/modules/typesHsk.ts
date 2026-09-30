@@ -167,20 +167,25 @@ export interface CircularMotionSpec {
  * - `stick`: they couple and move on together at (m₁v₁ + m₂v₂)/(m₁ + m₂) (kinetic energy lost);
  * - `elastic`: they bounce apart with the kinetic energy kept;
  * - `explode`: they start together at `before[0]` and a spring pushes them apart; `after[0]`
- *   is the first cart's velocity, the second's follows from the momentum.
+ *   is the first cart's velocity, the second's follows from the momentum;
+ * - `general` (H102): any collision, `after[0]` the first cart's velocity after (given), the
+ *   second's from the momentum; each cart's kinetic energy is labelled, and `lost` names the
+ *   kinetic energy lost (before − after).
  *
  * `after` names the values the page solves for (one for `stick`, two otherwise); the picture
  * works them out from the masses and the velocities before, and the harness checks the page's.
  */
 export interface CollisionSpec {
   kind: 'collision';
-  type: 'stick' | 'elastic' | 'explode';
+  type: 'stick' | 'elastic' | 'explode' | 'general';
   masses: [NumOrVar, NumOrVar];
   before: [NumOrVar, NumOrVar?];
   after?: [NumOrVar, NumOrVar?];
   /** The total momentum, and the kinetic energy before and after, when the page names them. */
   momentum?: string;
   energy?: [string, string];
+  /** `general`: the kinetic energy lost, before − after (H102). */
+  lost?: string;
   fixed?: boolean;
 }
 
@@ -515,7 +520,14 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.aphelion,
       );
     case 'collision':
-      return ids(...r.masses, ...r.before, ...(r.after ?? []), r.momentum, ...(r.energy ?? []));
+      return ids(
+        ...r.masses,
+        ...r.before,
+        ...(r.after ?? []),
+        r.momentum,
+        ...(r.energy ?? []),
+        r.lost,
+      );
     case 'simpleMachine':
       return ids(
         r.load,
