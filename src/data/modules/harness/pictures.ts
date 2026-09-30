@@ -46,6 +46,7 @@ import {
 } from './picturesHsf';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
+import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1902,6 +1903,7 @@ export function repIssues(
           return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
         }),
       );
+      out.push(...chemHsiIssues(rep, (x) => val(x)));
       break;
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
@@ -2103,6 +2105,14 @@ export function repIssues(
     case 'alleleFrequencies':
     case 'immuneResponse':
       out.push(...hshIssues(rep, (id) => val(id)));
+      break;
+    case 'unitChain':
+    case 'atomModel':
+    case 'orbitalDiagram':
+    case 'lewisStructure':
+    case 'vsepr':
+    case 'moleMap':
+      out.push(...hsiIssues(rep, (id) => val(id)));
       break;
     case 'table':
       if ('twoWay' in rep) {

@@ -883,54 +883,167 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   },
 
   // ── E. Chemistry ──
-  ask(
-    'H43',
-    'unitChain',
-    'Conversion factors in a chain with units crossed out; a ruler read to the estimated digit; accuracy and precision targets',
-    ['s.10.measurement'],
-  ),
-  ask(
-    'H44',
-    'atomModel',
-    'Bohr model from protons, neutrons and electrons: isotopes and ions change the picture',
-    ['s.10.atomic-structure', 's.10.electrons-in-atoms', 's.10.nuclear-chemistry'],
-  ),
-  ask(
-    'H45',
-    'orbitalDiagram',
-    'Orbital boxes filled in Aufbau order with up and down arrows, the energy ladder, and emission lines from jumps',
-    ['s.10.electrons-in-atoms', 's.11.modern-physics'],
-  ),
-  ask(
-    'H46',
-    'periodicTable',
-    'A trend as shading across the table (radius, ionization energy, electronegativity) with arrows',
-    ['s.10.periodic-trends'],
-  ),
-  ask(
-    'H47',
-    'lewisStructure',
-    'Electron-dot structures, electron transfer in ionic bonds, the sea of electrons; hydrocarbons from n carbons',
-    ['s.10.bonding', 's.10.organic'],
-  ),
-  ask(
-    'H48',
-    'vsepr',
-    'Ball-and-stick shapes with bond angles and dipole arrows; hydrogen bonds between water molecules',
-    ['s.10.molecular-shape'],
-  ),
-  ask(
-    'H49',
-    'reaction',
-    'Coefficients set the molecule counts and an atom tally; leftover reactant lit (limiting reactant); reaction-type card figures',
-    ['s.10.reaction-types', 's.10.stoichiometry'],
-  ),
-  ask(
-    'H50',
-    'moleMap',
-    'Grams ↔ moles ↔ particles ↔ liters of gas, each arrow with its factor, the current value lit',
-    ['s.10.mole', 's.10.stoichiometry'],
-  ),
+  {
+    ...ask(
+      'H43',
+      'unitChain',
+      'Conversion factors in a chain with units crossed out; a ruler read to the estimated digit; accuracy and precision targets',
+      ['s.10.measurement'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-measurement-chain',
+      'g.s10-measurement-rate',
+      'g.s10-measurement-chain-long',
+      'g.s10-measurement-ruler',
+      'g.s10-measurement-ruler-coarse',
+      'g.s10-measurement-accurate-precise',
+      'g.s10-measurement-precise-not-accurate',
+      'g.s10-measurement-neither',
+    ],
+    notes:
+      "Drawn (group HI): kind unitChain (typesHsi.ts, reps/UnitChain.tsx), three modes. mode 'chain' { start, unit, per? (a rate's bottom unit), factors: { top, topUnit, bottom, bottomUnit }[] (1–4, numbers or variables), result }: the given quantity times each factor as a stacked fraction, = the result lit; a unit on a top and an equal one on a bottom are struck through, and the unit left is the answer's (checked: result = start × tops ÷ bottoms). mode 'ruler' { start? (default 0), end, length? (end − start, checked), division (smallest mark: 1, 0.1 …), unit, span? (ruler length) }: a wooden ruler, a metal rod from start to end, and a close-up of the rod's end between two marks with the tenths imagined; the caption gives the certain digits, the estimated digit and the length's significant figures (readings must have one digit past the marks). mode 'target' { trials (2–6), accepted, unit?, mean?, error? (percent error, checked), ring? (percent per ring, default 1) }: each trial a dot, right of the bullseye when high, left when low, spread up and down by its distance from the mean; accurate when the mean is inside the first ring, precise when the spread is within one ring. Give the page `unitSystems: ['metric']` (the units are drawn as written). Examples: { kind: 'unitChain', mode: 'chain', start: 'd', unit: 'km', factors: [{ top: 1000, topUnit: 'm', bottom: 1, bottomUnit: 'km' }, { top: 100, topUnit: 'cm', bottom: 1, bottomUnit: 'm' }], result: 'c' }; { kind: 'unitChain', mode: 'ruler', start: 's', end: 'e', length: 'L', division: 0.1, unit: 'cm', span: 10 }; { kind: 'unitChain', mode: 'target', trials: ['a', 'b', 'c'], accepted: 't', unit: 'm/s²', mean: 'm', error: 'e' }.",
+  },
+  {
+    ...ask(
+      'H44',
+      'atomModel',
+      'Bohr model from protons, neutrons and electrons: isotopes and ions change the picture',
+      ['s.10.atomic-structure', 's.10.electrons-in-atoms', 's.10.nuclear-chemistry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-atomic-structure-carbon',
+      'g.s10-atomic-structure-isotope',
+      'g.s10-atomic-structure-cation',
+      'g.s10-atomic-structure-anion',
+      'g.s10-electrons-in-atoms-valence',
+      'g.s10-nuclear-chemistry-iodine',
+    ],
+    notes:
+      "Drawn (group HI): kind atomModel (typesHsi.ts, reps/AtomModel.tsx; electron shells from reps/electrons.ts). Fields: protons (Z, 1–54), neutrons? (0–90), electrons? (default = protons, 0–54), mass? (A = Z + N, checked), charge? (Z − e, checked), valence? (the outer shell's electrons, checked; the outer shell and its electrons lit). Every proton (red) and neutron (grey) is drawn in the nucleus, mixed evenly; the electrons sit on shells filled from the ground-state configuration (iron 2, 8, 14, 2; iodine 2, 8, 18, 18, 7), a positive ion losing from the outer shell first. The nuclide symbol (³⁵₁₇Cl with its charge) is at the top left and a key counts each particle. An isotope changes only the neutrons; an ion only the electrons. No handles: give the page `sliders: true`. The step phrase \"valence electrons of Z = {p}\" is taught to the harness (phrasesHsi.ts). Examples: { kind: 'atomModel', protons: 'p', neutrons: 'n', electrons: 'e', mass: 'A', charge: 'q' } with A = Z + N and q = Z − e; valence: { kind: 'atomModel', protons: 'p', neutrons: 'n', mass: 'A', valence: 'v' }.",
+  },
+  {
+    ...ask(
+      'H45',
+      'orbitalDiagram',
+      'Orbital boxes filled in Aufbau order with up and down arrows, the energy ladder, and emission lines from jumps',
+      ['s.10.electrons-in-atoms', 's.11.modern-physics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-electrons-in-atoms-oxygen',
+      'g.s10-electrons-in-atoms-iron',
+      'g.s10-electrons-in-atoms-chromium',
+      'g.s10-electrons-in-atoms-xenon',
+      'g.s10-electrons-in-atoms-ion',
+      'g.s10-electrons-in-atoms-balmer',
+      'g.s11-modern-physics-lyman',
+      'g.s11-modern-physics-paschen',
+    ],
+    notes:
+      "Drawn (group HI): kind orbitalDiagram (typesHsi.ts, reps/OrbitalDiagram.tsx; configurations from reps/electrons.ts). mode 'boxes' { element? (atomic number, names the atom), electrons? (default = element; fewer for a positive ion, which loses its highest shell first: Fe³⁺ is [Ar] 3d⁵), unpaired? (checked) }: every subshell up to the highest filled one as boxes at its energy (4s below 3d, columns by shell), up arrows in each box before any pair (Hund), pairs up and down (Pauli), single arrows lit; the configuration above (1s² 2s² 2p⁴), noble-gas shorthand in the caption, and the neutral exceptions through xenon (Cr, Cu, Nb, Mo, Ru, Rh, Pd, Ag) drawn as they are and named. Through 54 electrons. mode 'ladder' { upper, lower, energy? (eV, checked), wavelength? (nm, 1240 ÷ E, checked), levels? (default 6, up to 8) }: hydrogen's levels to scale (Eₙ = −13.6/n² eV), the drop as an arrow, the photon as a wave in its color, and the line on a 380–750 nm spectrum (an arrow to ultraviolet or infrared off it); the series named. Step phrases \"unpaired electrons of Z = {p}\" and \"… with {e} electrons\" are taught to the harness. No handles: give the page `sliders: true`. Examples: { kind: 'orbitalDiagram', mode: 'boxes', element: 'p', unpaired: 'u' }; an ion: { kind: 'orbitalDiagram', mode: 'boxes', element: 'p', electrons: 'e', unpaired: 'u' }; { kind: 'orbitalDiagram', mode: 'ladder', upper: 'u', lower: 'l', energy: 'E', wavelength: 'w' } with E = 13.6 × (1/l² − 1/u²) and λ = 1240/E.",
+  },
+  {
+    ...ask(
+      'H46',
+      'periodicTable',
+      'A trend as shading across the table (radius, ionization energy, electronegativity) with arrows',
+      ['s.10.periodic-trends'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-periodic-trends-radius',
+      'g.s10-periodic-trends-ionization',
+      'g.s10-periodic-trends-electronegativity',
+      'g.s10-periodic-trends-extremes',
+    ],
+    notes:
+      "Drawn (group HI): an optional `trend` on the existing periodicTable (typesChem.ts; drawn by reps/PeriodicTrend.tsx, data in reps/chemTrends.ts). Pages without `trend` draw exactly as before. trend { property: 'radius' | 'ionization' | 'electronegativity', value? (the element's value, checked), compare? (a second atomic number, ringed in yellow), compareValue? (checked) }: every element shaded by its value (the stronger the shade, the larger; dashed where there is no value), a key from the smallest to the largest, an arrow across the top (\"decreases across a period\" for radius, \"increases\" for the other two) and one down the side (\"increases/decreases down a group\"); the page's `element` is outlined with its name and value on a card in the gap, and every cell can be tapped to choose it. Data: covalent radii (pm, Pyykkö), first ionization energies (kJ/mol), Pauling electronegativities (none for He, Ne, Ar). Step phrases \"atomic radius of Z = {p}\", \"ionization energy of Z = {p}\" and \"electronegativity of Z = {p}\" are taught to the harness; give the atomic-number variables `allowed` values that have data (the demos do). Example: { kind: 'periodicTable', element: 'p', trend: { property: 'radius', value: 'r', compare: 'c', compareValue: 's' } } with r = atomic radius of Z = p.",
+  },
+  {
+    ...ask(
+      'H47',
+      'lewisStructure',
+      'Electron-dot structures, electron transfer in ionic bonds, the sea of electrons; hydrocarbons from n carbons',
+      ['s.10.bonding', 's.10.organic'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-bonding-water',
+      'g.s10-bonding-ammonia',
+      'g.s10-bonding-double',
+      'g.s10-bonding-triple-dots',
+      'g.s10-bonding-polyatomic-ion',
+      'g.s10-bonding-ionic-sodium-chloride',
+      'g.s10-bonding-ionic-magnesium-chloride',
+      'g.s10-bonding-ionic-aluminum-oxide',
+      'g.s10-bonding-metallic',
+      'g.s10-bonding-metallic-aluminum',
+      'g.s10-organic-alkane',
+      'g.s10-organic-alkene',
+      'g.s10-organic-alkyne',
+      'g.s10-organic-octane',
+    ],
+    notes:
+      "Drawn (group HI): kind lewisStructure (typesHsi.ts, reps/LewisStructure.tsx, data in reps/lewis.ts), four modes. 'molecule' { atoms? ({ H: 'h', O: 'o' }: the structure is looked up from the counts), charge?, formula? (fixed instead, \"H2O\", \"NH4+\"), valence?, bonding? (shared pairs), lone? (lone pairs), dots? (shared pairs as dots) }: symbols with shared pairs as lit lines and lone pairs as dots, an ion in brackets with its charge; drawn: H₂, H₂O, CO₂, NH₃, CH₄, O₂, N₂, F₂, Cl₂, HF, HCl, CH₂O, HCN, NH₄⁺, H₃O⁺, OH⁻, CN⁻ (other counts name these in the caption); every atom's octet (hydrogen's 2) and the valence total are checked. 'ionic' { metal (groups 1, 2, Al), nonmetal (F, Cl, Br, I, O, S, N, P), metals?, nonmetals? (ion counts), transferred? }: the atoms with their valence dots, arrows carrying each metal electron to a nonmetal, then the ions in brackets with charges, the gained electrons lit, and the formula; counts whose charges don't balance (or past 6 ions) draw the formula unit faded with the reason. 'metallic' { element, atoms (1–24), electrons? }: metal ions (Na⁺, Al³⁺ …) with every freed electron scattered among them. 'hydrocarbon' { carbons (1–8), bond? ('single' | 'double' | 'triple', between the first two carbons), hydrogens? }: the structural formula with every H, named (propane, 1-butene, ethyne). No handles: give the page `sliders: true`. Examples: { kind: 'lewisStructure', mode: 'molecule', atoms: { H: 'h', O: 'o' }, valence: 'V' } with V = h + 6 × o; { kind: 'lewisStructure', mode: 'ionic', metal: 'Mg', nonmetal: 'Cl', metals: 'a', nonmetals: 'b', transferred: 't' }; { kind: 'lewisStructure', mode: 'metallic', element: 'Na', atoms: 'n', electrons: 'e' }; { kind: 'lewisStructure', mode: 'hydrocarbon', carbons: 'n', bond: 'double', hydrogens: 'h' }.",
+  },
+  {
+    ...ask(
+      'H48',
+      'vsepr',
+      'Ball-and-stick shapes with bond angles and dipole arrows; hydrogen bonds between water molecules',
+      ['s.10.molecular-shape'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-molecular-shape-water',
+      'g.s10-molecular-shape-ammonia',
+      'g.s10-molecular-shape-methane',
+      'g.s10-molecular-shape-trigonal-planar',
+      'g.s10-molecular-shape-linear',
+      'g.s10-molecular-shape-bent-three-domains',
+      'g.s10-molecular-shape-hydrogen-bonds',
+      'g.s10-molecular-shape-hydrogen-bonds-four',
+    ],
+    notes:
+      "Drawn (group HI): kind vsepr (typesHsi.ts, reps/Vsepr.tsx, geometry in reps/vseprGeo.ts). mode 'shape' (default) { bonded (2–4), lone (0–2; 2 to 4 domains in all), angle? (checked), polar? }: a ball-and-stick example molecule for the shape (linear CO₂ 180°, trigonal planar BF₃ 120°, bent SO₂ 119°, tetrahedral CH₄ 109.5°, trigonal pyramidal NH₃ 107°, bent H₂O 104.5°), lone pairs as lobes with their two dots, the angle as a true 3-D arc between two bonds, four-domain shapes turned a little so no atom hides another; with polar, crossed bond-dipole arrows toward the more electronegative atom and the net dipole beside the molecule (none when the dipoles cancel; the caption says polar or nonpolar). mode 'hbonds' { molecules (2–5), bonds? (checked, molecules − 1) }: water molecules around a middle one, dotted hydrogen bonds from an H to an O's lone pair (two accepted, two donated), δ− and δ+ on the middle molecule. The step phrase \"bond angle with {b} bonded atoms and {l} lone pairs\" is taught to the harness. No handles: give the page `sliders: true`. Examples: { kind: 'vsepr', bonded: 'b', lone: 'l', angle: 'a', polar: true } with d = b + l; { kind: 'vsepr', mode: 'hbonds', molecules: 'n', bonds: 'k' }.",
+  },
+  {
+    ...ask(
+      'H49',
+      'reaction',
+      'Coefficients set the molecule counts and an atom tally; leftover reactant lit (limiting reactant); reaction-type card figures',
+      ['s.10.reaction-types', 's.10.stoichiometry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-stoichiometry-limiting-water',
+      'g.s10-stoichiometry-limiting-ammonia',
+      'g.s10-stoichiometry-limiting-methane',
+      'g.s10-reaction-types-sort',
+    ],
+    notes:
+      "Drawn (group HI): an optional `limiting` on the existing reaction (typesChem.ts; drawn by reps/ReactionLimiting.tsx, math in reps/limiting.ts). Pages without it draw exactly as before (molecules from the coefficients, the atom tally on each side). limiting { amounts (particles of each reactant at the start, in the reactants' order, 0–12), runs? (whole runs, checked), made? (per product, checked), left? (per reactant, checked) }: the balanced equation, then Before: every particle on hand, the reactant that runs out first tagged \"limiting\"; After n runs: every product particle made and the leftover reactant particles ringed in yellow. An unbalanced equation draws faded with the reason. The step phrase \"smaller of {a} ÷ p and {b} ÷ q, rounded down\" is taught to the harness. Reaction-type card icons (layouts/icons/hi.ts): 'synthesis reaction', 'decomposition reaction', 'single replacement reaction', 'double replacement reaction', 'combustion reaction' (colored atom balls, reactants above an arrow, products below; combustion over a flame), sorted in the demo g.s10-reaction-types-sort as { label, bin, figure: { kind: 'icon', icon: 'synthesis reaction' } }. Example: { kind: 'reaction', reactants: [{ formula: 'H2', count: 2 }, { formula: 'O2', count: 1 }], products: [{ formula: 'H2O', count: 2 }], limiting: { amounts: ['a', 'b'], runs: 'r', made: ['m1'], left: ['x', 'y'] } } with m1 = 2 × r, x = a − 2 × r, y = b − r.",
+  },
+  {
+    ...ask(
+      'H50',
+      'moleMap',
+      'Grams ↔ moles ↔ particles ↔ liters of gas, each arrow with its factor, the current value lit',
+      ['s.10.mole', 's.10.stoichiometry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-mole-map-grams',
+      'g.s10-mole-map-gas',
+      'g.s10-mole-map-all',
+      'g.s10-mole-map-large',
+      'g.s10-stoichiometry-grams-to-grams',
+    ],
+    notes:
+      "Drawn (group HI): kind moleMap (typesHsi.ts, reps/MoleMap.tsx, constants and molar masses in reps/moles.ts). Fields: moles, mass?, molarMass? (or formula, whose molar mass is worked out to 2 decimals: H₂O 18.02), particles? (× 6.022 × 10²³), volume? (gas at STP, × 22.4 L), formula?, second? { formula?, ratio: [coefficient of the first, of the second], moles, mass?, molarMass? } for stoichiometry. Moles sit in the middle with mass above, particles below and the gas volume (or the second substance, joined by the mole-ratio arrow) beside it; each arrow carries its factor both ways (÷ 18.02 g/mol, × 18.02 g/mol); the value the student typed is filled, values worked from it are outlined, unknowns dashed, and arrows between known values lit. Every value is checked against moles. Give the page `unitSystems: ['metric']` (grams and liters are drawn as written) and particles `scientific: true` with a minimum near 6 × 10¹⁹. Examples: { kind: 'moleMap', formula: 'O2', moles: 'n', mass: 'm', particles: 'N', volume: 'V' } with m = 32 × n, N = 6.022 × 10²³ × n, V = 22.4 × n; { kind: 'moleMap', formula: 'H2', moles: 'n', mass: 'm', second: { formula: 'H2O', ratio: [2, 2], moles: 'p', mass: 'q' } }.",
+  },
   ask(
     'H51',
     'gasPiston',

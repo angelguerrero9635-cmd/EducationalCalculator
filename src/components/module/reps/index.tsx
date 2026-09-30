@@ -145,6 +145,9 @@ import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
 import { AlleleFrequencies } from './AlleleFrequencies';
 import { ImmuneResponse } from './ImmuneResponse';
+import { HsiRep } from './hsi';
+import { PeriodicTrend } from './PeriodicTrend';
+import { ReactionLimiting } from './ReactionLimiting';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -177,6 +180,13 @@ export const representationTitle = (r: Representation) =>
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'unitChain':
+    case 'atomModel':
+    case 'orbitalDiagram':
+    case 'lewisStructure':
+    case 'vsepr':
+    case 'moleMap':
+      return <HsiRep spec={spec} calc={calc} />;
     case 'unitCircle':
       return <UnitCircle spec={spec} calc={calc} />;
     case 'matrixGrid':
@@ -289,11 +299,19 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'molecules':
       return <Molecules spec={spec} calc={calc} />;
     case 'reaction':
-      return <Reaction spec={spec} calc={calc} />;
+      return spec.limiting ? (
+        <ReactionLimiting spec={spec} calc={calc} />
+      ) : (
+        <Reaction spec={spec} calc={calc} />
+      );
     case 'heatingCurve':
       return <HeatingCurve spec={spec} calc={calc} />;
     case 'periodicTable':
-      return <PeriodicTable spec={spec} calc={calc} />;
+      return spec.trend ? (
+        <PeriodicTrend spec={spec} calc={calc} />
+      ) : (
+        <PeriodicTable spec={spec} calc={calc} />
+      );
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':

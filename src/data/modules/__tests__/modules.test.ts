@@ -20,6 +20,7 @@ import { hsbSpecVars } from '../typesHsb';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
+import { hsiSpecVars } from '../typesHsi';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -512,6 +513,13 @@ function representationVars(r: Representation): string[] {
     case 'alleleFrequencies':
     case 'immuneResponse':
       return hshSpecVars(r);
+    case 'unitChain':
+    case 'atomModel':
+    case 'orbitalDiagram':
+    case 'lewisStructure':
+    case 'vsepr':
+    case 'moleMap':
+      return hsiSpecVars(r);
   }
 }
 

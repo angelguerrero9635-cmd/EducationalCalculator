@@ -90,6 +90,12 @@ search or the sitemap, but the module tests and the harness run over it):
 | `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff        | Grade 9 DNA, mutations (H36)        |
 | `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
 | `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
+| `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target    | Chemistry measurement (H43)         |
+| `atomModel`        | Bohr model: every proton and neutron, electrons on shells; ions       | Chemistry atoms, isotopes (H44)     |
+| `orbitalDiagram`   | orbital boxes by Aufbau and Hund; hydrogen levels and emission lines  | Chemistry electrons, spectra (H45)  |
+| `lewisStructure`   | electron dots: molecules, ions, ionic transfer, metals, hydrocarbons  | Chemistry bonding, organic (H47)    |
+| `vsepr`            | ball-and-stick VSEPR shapes, bond angle, dipoles; hydrogen bonds      | Chemistry molecular shape (H48)     |
+| `moleMap`          | grams, moles, particles, liters at STP; each factor; a mole ratio     | Chemistry mole, stoichiometry (H50) |
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
@@ -199,6 +205,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `powerScale`       | `log`                                    | a log₁₀ scale under the 1–10 ruler: log₁₀ 470,000 = 5 + 0.672                 |
 | `punnettSquare`    | `inheritance` (Grade 9)                  | dihybrid 4 × 4 by phenotype; incomplete, codominant; X-linked with carriers   |
 | `energyPyramid`    | `measure: 'biomass' \| 'numbers'`        | biomass or numbers: no share passed up unless `percent`; can be upside down   |
+| `periodicTable`    | `trend: { property, value, compare }`    | a trend shaded (radius, ionization, electronegativity), arrows, a key         |
+| `reaction`         | `limiting: { amounts, made, left }`      | particles on hand before; after: products made, the leftover ringed           |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
