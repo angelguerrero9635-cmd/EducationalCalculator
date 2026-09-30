@@ -224,6 +224,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `crossSection`     | `solid: 'cylinder' \| 'cone'`            | a level cut (a circle) or upright cut, shaded and drawn flat beside           |
 | `markedFigure`     | `regular`: `sides`, `triangles`          | a regular n-gon (3–30), n − 2 triangles from A, the exterior angle at B       |
 | `circleTheorems`   | `theorem`: `cyclic`, `arcAngle`          | an inscribed quadrilateral; an angle from two arcs, inside or outside         |
+| `coordinatePlane`  | `fit`                                    | sized to the points: 5, 10 or 20 each way, up to `extent`                     |
 | `factorTree`       | `root: { index, outside, inside }`       | equal pairs (or threes) ringed and brought out of the root: √72 = 6√2         |
 | `powerScale`       | `log`                                    | a log₁₀ scale under the 1–10 ruler: log₁₀ 470,000 = 5 + 0.672                 |
 | `punnettSquare`    | `inheritance` (Grade 9)                  | dihybrid 4 × 4 by phenotype; incomplete, codominant; X-linked with carriers   |

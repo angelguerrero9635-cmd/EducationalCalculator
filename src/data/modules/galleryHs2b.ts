@@ -290,6 +290,91 @@ const CIRCLES: ModuleDef[] = [
   ),
 ];
 
-export const HS2B_GALLERY_MODULES: ModuleDef[] = [...REGULAR, ...CIRCLES];
+// ─── Part 3: coordinatePlane sized to the points (m.10.coordinate-geometry) ────
+
+const distanceRule: Rule = {
+  relation: {
+    id: 'd = √((x₂ − x₁)² + (y₂ − y₁)²)',
+    display: '{d} = √(({x2} − {x1})² + ({y2} − {y1})²)',
+    vars: ['d', 'x1', 'y1', 'x2', 'y2'],
+    residual: (v) => v.d! - Math.hypot(v.x2! - v.x1!, v.y2! - v.y1!),
+    solve: {
+      d: (v) => Math.hypot(v.x2! - v.x1!, v.y2! - v.y1!),
+      x1: () => undefined,
+      y1: () => undefined,
+      x2: () => undefined,
+      y2: () => undefined,
+    },
+  },
+  steps: {
+    d: {
+      expr: '√(({x2} − {x1})² + ({y2} − {y1})²)',
+      how: 'The distance formula: the change across and the change up are the legs of a right triangle.',
+    },
+  },
+};
+const coord = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, -20, 20, { step: 0.5 });
+const fitDemo = (
+  id: string,
+  title: string,
+  use: string,
+  ex: { x1: number; y1: number; x2: number; y2: number },
+) =>
+  demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The segment AB is the hypotenuse of a right triangle whose legs go straight across and straight up.',
+      'The legs are x₂ − x₁ and y₂ − y₁, so d = √((x₂ − x₁)² + (y₂ − y₁)²).',
+      'The grid is sized to the points: 5, 10 or 20 squares each way from the origin.',
+    ],
+    variables: [
+      coord('x1', 'x₁', 'x of A'),
+      coord('y1', 'y₁', 'y of A'),
+      coord('x2', 'x₂', 'x of B'),
+      coord('y2', 'y₂', 'y of B'),
+      V('d', 'd', 'Distance AB', 0, 60, { derived: true }),
+    ],
+    rules: [distanceRule],
+    example: { ...ex, d: Math.hypot(ex.x2 - ex.x1, ex.y2 - ex.y1) },
+    startWith: ['x1', 'y1', 'x2', 'y2'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x1',
+      y: 'y1',
+      second: { x: 'x2', y: 'y2' },
+      segment: true,
+      legs: true,
+      distance: 'd',
+      extent: 20,
+      fit: true,
+      quadrants: 4,
+    },
+  });
+
+const PLANES: ModuleDef[] = [
+  fitDemo(
+    'g.m10-coordinate-geometry-fit',
+    'Distance on a grid sized to the points',
+    'Use this for “Find the distance from (−3, 2) to (5, 8).”',
+    { x1: -3, y1: 2, x2: 5, y2: 8 },
+  ),
+  fitDemo(
+    'g.m10-coordinate-geometry-fit-small',
+    'Distance between two close points',
+    'Use this for “Find the distance from (−3, 1) to (1, 4).”',
+    { x1: -3, y1: 1, x2: 1, y2: 4 },
+  ),
+  fitDemo(
+    'g.m10-coordinate-geometry-fit-20',
+    'Distance between two far points',
+    'Use this for “Find the distance from (−18, −12) to (16, 20).”',
+    { x1: -18, y1: -12, x2: 16, y2: 20 },
+  ),
+];
+
+export const HS2B_GALLERY_MODULES: ModuleDef[] = [...REGULAR, ...CIRCLES, ...PLANES];
 
 export const HS2B_GALLERY_LAYOUTS: LayoutDef[] = [];

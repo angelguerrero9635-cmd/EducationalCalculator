@@ -4,6 +4,7 @@
  * Test-only.
  */
 import { angleDeg, buildAngles } from '@/components/module/reps/circleAnglesGeo';
+import { fitExtent } from '@/components/module/reps/coordinateFit';
 import { angleAt, buildRegular } from '@/components/module/reps/regularGeo';
 
 import type { Representation } from '../types';
@@ -75,6 +76,21 @@ export function hs2bIssues(rep: Representation, val: (id: string) => number | un
       const x = a.angle ? val(a.angle) : undefined;
       if (x !== undefined && !near(x, want)) out.push(`angle ${x} is not ${want}`);
     }
+  }
+  if (rep.kind === 'coordinatePlane' && rep.fit) {
+    // The fitted plane holds every point it draws (past 20 it grows as without `fit`).
+    const ids = [
+      rep.x,
+      rep.y,
+      rep.second?.x,
+      rep.second?.y,
+      ...(rep.polygon ?? []).flat(),
+      ...(rep.rect ? [rep.rect.left, rep.rect.right, rep.rect.bottom, rep.rect.top] : []),
+    ];
+    const xs = ids.map((x) => num(x)).filter((x): x is number => x !== undefined);
+    const reach = Math.max(0, ...xs.map(Math.abs));
+    const E = reach > rep.extent ? reach : fitExtent(reach, rep.extent);
+    if (xs.some((x) => Math.abs(x) > E + 1e-9)) out.push(`a point is past the fitted plane ±${E}`);
   }
   return out;
 }

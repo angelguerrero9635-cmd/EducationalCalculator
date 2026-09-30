@@ -1062,6 +1062,8 @@ export type Representation =
       quadrantLabels?: boolean;
       /** Largest |coordinate| drawn (grows to fit). */
       extent: number;
+      /** Grades 9–12 (H96): sized to the points, 5, 10 or 20 up to `extent` (`coordinateFit.ts`). */
+      fit?: boolean;
       quadrants: 1 | 4;
       /** Grades 9–12: midpoint, partition, a polygon and its side slopes (`PlaneGeometry`). */
       midpoint?: PlaneGeometry['midpoint'];
