@@ -5,6 +5,43 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grades 9–12 lesson review: fractions, powers, names and reasons
+
+Eight lesson reviews (one per grade and subject) found about 110 errors and 230 improvements;
+one fixer per section applied them. What the engine could have prevented is now the engine's:
+
+- **A rule's message is the rejection reason.** A conflict used to say "These numbers can't all
+  be true together" even where a rule had the sentence ("an absolute value is never negative").
+  `solve.ts` now asks the rules for their message first.
+- **Numbers written as students write them.**
+  - Grades 9–12 show improper fractions (11/5, not 2 1/5), set centrally in `index.ts`.
+  - A value shows as a fraction only when it is exactly that fraction (0.0099995 is not 1/100).
+  - A fraction or mixed number raised to a power, divided into, or used as an exponent is
+    bracketed: (5/7)², 1/(1/15), 2^(4.8292 × 10⁻⁵).
+  - `2^−10` is superscripted.
+  - Negative money reads −$10, and rounded money groups its thousands.
+  - A degree angle inside sin, cos or tan keeps its sign: sin(40°).
+- **Working lines that add up.**
+  - `simplify.ts` read 10²³ as (10²)³, which made the mole pages' lines false. A run of raised
+    digits is now one exponent, and scientific notation is one number.
+  - Grades 9–12 add a list in one line (the total), not one addition per line.
+- **Names and symbols.**
+  - `lowerFirst` (shared) keeps codes (P arrival, A⁻¹), isotopes (C-14), element symbols (Cl,
+    Na⁺) and proper names (Carnot, Simpson's).
+  - A standards test rejects a symbol that is an expression or a Greek look-alike (−q, ᵦ), so no
+    step reads "−q = −q".
+- **Ranges.** A range's slack shrinks for small units, so −1 mm no longer passes a km range at 0.
+- **Harness.**
+  - It reads −$10, a superscript digit before °, and gcd of negatives.
+  - The review dump prints each rule's messages.
+- **Still open** (shared needs in `docs/build/*.md`):
+  - A message that informs without refusing (m.9 "every number is a solution").
+  - Values left over after a clear used as knowns in a walkthrough (s.10 emission, bonding).
+  - Exact trig and radical answers, and complex roots in polynomial answers.
+  - `functionGraph` following the unit menu.
+  - `affineOf` taking a limit that fails every probe as a constant.
+  - Chains that stop at function values (sin, √).
+
 ## Grades 7–8 review: exact steps, drags that keep typed numbers, pages that fit
 
 - **Exact simplifying.** `simplify.ts` reads a fraction as one number, keeps results exact

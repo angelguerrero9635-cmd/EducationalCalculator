@@ -75,6 +75,12 @@ describeOrSkip('review dump', () => {
           .join('; ')}`,
       );
       lines.push(`relations: ${m.relations.map((r) => `${r.id} [${r.display}]`).join(' | ')}`);
+      // The sentences a rule can say when numbers conflict (read from its code), for the reviewer.
+      const says = m.relations.flatMap((r) => {
+        const quoted = r.message?.toString().match(/(['`])(?:(?!\1).)+\1/g) ?? [];
+        return quoted.length ? [`${r.id}: ${quoted.join(' / ')}`] : [];
+      });
+      if (says.length) lines.push(`messages: ${says.join(' | ')}`);
       lines.push(`example: ${JSON.stringify(m.example)} start: ${m.startWith.join(', ')}`);
       lines.push(`picture: ${JSON.stringify(m.representation)}`);
       for (const a of m.assumptions) lines.push(`assume: ${a}`);

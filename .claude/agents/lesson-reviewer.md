@@ -33,6 +33,16 @@ propose a picture; neither is needed to review.
 Already enforced by the tests, so never report it: reading level and notation by grade,
 formatting, punctuation, value counts, a line shown in two steps, and that every step and check
 line evaluates; for layout pages, that every card has a group and every scene fits its figure.
+Also automatic now: symbols that are expressions or Greek look-alikes, improper fractions in
+Grades 9–12, brackets round a fraction raised to or divided by, degree signs inside trig, one-line
+sums in Grades 9–12, and a rule's message used as the rejection reason (the dump's `messages:`
+line lists each rule's sentences).
+
+Check these, which no test catches: a grade file's own number helper (`fr`, `fmt`) that formats
+differently from the values (mixed against improper); a walkthrough that uses a number no one
+typed or found earlier (a value left over after a clear); a displayed subtraction of two nearly
+equal rounded values (propose a limit between them); a value that is physically impossible at a
+range edge (an age older than the universe, a distance past Earth's size).
 When a range admits impossible inputs, propose `allowed: [...]` (values the lesson names) or
 `derived: true` (working values nobody types), not a new range.
 
