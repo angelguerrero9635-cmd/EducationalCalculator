@@ -14,6 +14,8 @@ import type { ModuleDef, StepText } from '../types';
 type Solver = (v: Values) => number | number[] | undefined;
 
 const fmt = (x: number) => formatNumber(x);
+/** A value as a fraction or mixed number with a denominator up to `most`, as its box shows it. */
+const fr = (x: number, most = 12) => formatNumber(x, { fraction: most });
 /** Rounded to 12 significant figures, so 0.1 + 0.2 is 0.3 when a value is worked out. */
 const exact = (x: number) => Number(x.toPrecision(12));
 /** A finite result, or nothing. */
@@ -118,9 +120,17 @@ function page(m: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
   return {
     ...rest,
     relations: rules.map((r) => r.relation),
-    steps: Object.fromEntries(rules.map((r) => [r.relation.id, r.steps])),
+    // A figure-only rule places the drawing: no steps.
+    steps: Object.fromEntries(
+      rules.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+    ),
   };
 }
+
+/** A rule that only places the drawing: kept out of the formulas, the steps and the check. */
+const figure = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, steps: {} });
+/** A value worked out for the picture only (see VariableDef.hidden). */
+const pictureOnly = { derived: true, hidden: true } as const;
 
 // ── Exponential functions ──
 
@@ -346,6 +356,8 @@ const EXPONENTIAL: ModuleDef[] = [
 
 /** A number as a factor in a line: negatives bracketed, (−3). */
 const sg = (x: number) => (x < 0 ? `(${fmt(x)})` : fmt(x));
+/** The same, as a fraction or mixed number when it isn't whole: (−3 2/3). */
+const sgf = (x: number, most = 20) => (x < 0 ? `(${fr(x, most)})` : fr(x, most));
 /** A polynomial from its terms, highest power first: [[2, 'x²'], [−5, 'x'], [−12, '']]. */
 function poly(terms: [number, string][]): string {
   const parts = terms.filter(([k]) => k !== 0);
@@ -1653,7 +1665,13 @@ const sameX = (b: number, d: number) =>
  * ax + b = cx + d solved for x (and for d, so typing x moves d): the x terms go to the side
  * with the larger coefficient, so the x term stays positive.
  */
-function bothSides(a: string, b: string, c: string, d: string): Rule {
+function bothSides(
+  a: string,
+  b: string,
+  c: string,
+  d: string,
+  check?: (v: Values) => string,
+): Rule {
   const left = (v: Values) => v[a]! > v[c]!;
   return rule(
     `${a}x + ${b} = ${c}x + ${d}`,
@@ -1669,8 +1687,8 @@ function bothSides(a: string, b: string, c: string, d: string): Rule {
             : `({${b}} − {${d}}) ÷ ({${c}} − {${a}})`,
         (v) =>
           left(v)
-            ? 'Take cx from both sides so the x terms are on the left, take b away, then divide.'
-            : 'Take ax from both sides so the x terms are on the right, take d away, then divide.',
+            ? `Take ${c}x from both sides so the x terms are on the left, take ${b} away, then divide.`
+            : `Take ${a}x from both sides so the x terms are on the right, take ${d} away, then divide.`,
         {
           work: (v) => {
             const [big, small, keep, move] = left(v)
@@ -1689,6 +1707,7 @@ function bothSides(a: string, b: string, c: string, d: string): Rule {
                   ]
                 : []),
               ...(keep ? [`${take(keep, fmt(keep))}: ${sides(xs(k), fmt(move - keep))}`] : []),
+              ...(k === 1 ? [] : [`Divide both sides by ${fmt(k)}: x = ${fr(v.x!, 20)}`]),
             ];
           },
           written: false,
@@ -1711,9 +1730,11 @@ function bothSides(a: string, b: string, c: string, d: string): Rule {
         v[a] === v[c] &&
         v[b] !== undefined &&
         v[d] !== undefined &&
+        // (every number solves it when b = d too, but a message refuses the newest input)
         v[b] !== v[d]
           ? sameX(v[b]!, v[d]!)
           : undefined,
+      ...(check ? { check } : {}),
     },
   );
 }
@@ -1748,7 +1769,7 @@ const SOLVING_EQUATIONS: ModuleDef[] = [
   page({
     id: 'm.9.solving-equations~distribute',
     title: 'Distribute first',
-    use: 'Use this for “2(3x − 4) = 4x + 2”.',
+    use: 'Use this for “2(3x − 4) = 4x + 2” (numbers after distributing up to 10).',
     assumptions: [
       'Multiply every term in the brackets by the number outside: p(ax + b) = pax + pb.',
       'Then collect the x terms on one side and the numbers on the other.',
@@ -1781,7 +1802,14 @@ const SOLVING_EQUATIONS: ModuleDef[] = [
         ],
         b: [(v) => div(v.B!, v.p!), '{B} ÷ {p}', 'Undo the distributing: divide by p.'],
       }),
-      bothSides('A', 'B', 'c', 'd'),
+      bothSides(
+        'A',
+        'B',
+        'c',
+        'd',
+        (v) =>
+          `${fmt(v.p!)} × (${fmt(v.a!)} × ${sgf(v.x!)} + ${sg(v.b!)}) = ${fmt(v.c!)} × ${sgf(v.x!)} + ${sg(v.d!)}`,
+      ),
     ],
     example: { p: 2, a: 3, b: -4, c: 4, d: 2, A: 6, B: -8, x: 5 },
     startWith: ['d', 'p', 'a', 'b', 'c'],
@@ -1804,9 +1832,9 @@ const SOLVING_EQUATIONS: ModuleDef[] = [
       'All three lengths use the same unit.',
     ],
     variables: [
-      num('P', 'P', 'Perimeter', 0, 100000, { unit: 'cm', step: 0.1 }),
-      num('l', 'l', 'Length', 0, 50000, { unit: 'cm', step: 0.1 }),
-      num('w', 'w', 'Width', 0, 50000, { unit: 'cm', step: 0.1 }),
+      num('P', 'P', 'Perimeter', 0.4, 100000, { unit: 'cm', step: 0.1 }),
+      num('l', 'l', 'Length', 0.1, 50000, { unit: 'cm', step: 0.1 }),
+      num('w', 'w', 'Width', 0.1, 50000, { unit: 'cm', step: 0.1 }),
     ],
     rules: [
       rule(
@@ -1836,6 +1864,98 @@ const SOLVING_EQUATIONS: ModuleDef[] = [
     example: { P: 30, l: 9, w: 6 },
     startWith: ['l', 'P'],
     representation: { kind: 'rectangle', length: 'l', width: 'w', around: 'P', extent: 10 },
+  }),
+  page({
+    id: 'm.9.solving-equations~literal-line',
+    title: 'Solve ax + by = c for y',
+    use: 'Use this for “Solve 2x + 3y = 12 for y. What is y when x = 3?”',
+    assumptions: [
+      'Treat x as a number you know and undo what is done to y.',
+      'Take ax from both sides, then divide every term by b: y = (c − ax) ÷ b.',
+      'The points (x, y) that make it true lie on one straight line.',
+    ],
+    variables: [
+      int('a', 'a', 'x coefficient', -20, 20),
+      int('b', 'b', 'y coefficient', -20, 20),
+      int('c', 'c', 'Right side', -100, 100),
+      num('x', 'x', 'Point’s x', -50, 50, { step: 0.5, fraction: 12 }),
+      num('y', 'y', 'Point’s y', -2000, 2000, { fraction: 12 }),
+      num('m', 'm', 'Slope', -100, 100, pictureOnly),
+      num('k', 'k', 'y-intercept', -1000, 1000, pictureOnly),
+    ],
+    rules: [
+      nonzero('b', 'The y coefficient'),
+      rule(
+        'ax + by = c',
+        '{a} × {x} + {b} × {y} = {c}',
+        ['a', 'x', 'b', 'y', 'c'],
+        (v) => v.a! * v.x! + v.b! * v.y! - v.c!,
+        {
+          y: [
+            (v) => (v.b ? exact((v.c! - v.a! * v.x!) / v.b!) : undefined),
+            '({c} − {a} × {x}) ÷ {b}',
+            'Take ax from both sides, then divide both sides by b.',
+            {
+              note: (v) =>
+                known(v, 'a', 'b', 'c')
+                  ? `→ solved for y: y = (${fmt(v.c!)} − ${v.a! < 0 ? `(${fmt(v.a!)})` : fmt(v.a!)}x) ÷ ${sg(v.b!)}`
+                  : '',
+            },
+          ],
+          x: [
+            (v) => (v.a ? exact((v.c! - v.b! * v.y!) / v.a!) : undefined),
+            '({c} − {b} × {y}) ÷ {a}',
+            'Solve for x the same way: take by from both sides, then divide by a.',
+          ],
+          c: [
+            (v) => exact(v.a! * v.x! + v.b! * v.y!),
+            '{a} × {x} + {b} × {y}',
+            'Put the point into the left side.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.a === 0 && v.b !== undefined && v.c !== undefined && v.y !== undefined
+              ? v.b * v.y === v.c
+                ? 'a is 0, so x can be any number: the line is flat at this y.'
+                : 'a is 0, so y is c ÷ b for every x: this y is not on the line.'
+              : undefined,
+        },
+      ),
+      derive(
+        'm = −a ÷ b',
+        'm',
+        ['a', 'b'],
+        '{m} = −{a} ÷ {b}',
+        (v) => div(-v.a!, v.b!),
+        '−{a} ÷ {b}',
+        'The slope of the line.',
+        {},
+        { hidden: true },
+      ),
+      derive(
+        'k = c ÷ b',
+        'k',
+        ['c', 'b'],
+        '{k} = {c} ÷ {b}',
+        (v) => div(v.c!, v.b!),
+        '{c} ÷ {b}',
+        'Where the line crosses the y-axis.',
+        {},
+        { hidden: true },
+      ),
+    ],
+    example: { a: 2, b: 3, c: 12, x: 3, y: 2, m: -2 / 3, k: 4 },
+    startWith: ['x', 'a', 'b', 'c'],
+    equation: '{a:coef}x + {b:coef}y = {c}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'k',
+      at: { x: 'x', y: 'y' },
+      marks: ['intercept'],
+    },
   }),
 ];
 
@@ -2327,6 +2447,18 @@ const sideLines = (k: number, t: number, n: number) => {
   };
 };
 
+/** "→ true" or "→ false" after a test's 1 or 0. */
+const truthNote = (id = 'h') => (v: Values) =>
+  v[id] === undefined ? '' : `→ ${v[id] ? 'true' : 'false'}`;
+/** How two numbers really compare: <, = or >. */
+const cmp = (l: number, r: number) => (l < r ? '<' : l > r ? '>' : '=');
+/** A test's check: the two sides as they compare, and what that says about the test number. */
+const testCheck = (l: number, r: number, ok: boolean, what = 'the test number') =>
+  `${fmt(l)} ${cmp(l, r)} ${fmt(r)}, so ${what} ${ok ? 'is' : 'is not'} a solution`;
+/** ax + b at t with its arithmetic, for a check line: 3 × (−6) − 4 = −22. */
+const atLine = (k: number, t: number, n: number) =>
+  `${fmt(k)} × ${sg(t)} ${n < 0 ? '−' : '+'} ${fmt(Math.abs(n))} = ${fmt(exact(k * t + n))}`;
+
 const LINEAR_INEQUALITIES: ModuleDef[] = [
   page({
     id: 'm.9.linear-inequalities',
@@ -2372,10 +2504,12 @@ const LINEAR_INEQUALITIES: ModuleDef[] = [
                 `${v.b < 0 ? `Add ${fmt(-v.b)} to` : `Take ${fmt(v.b)} from`} both sides: ${xs(k)} ${sign} ${fmt(rest)}`,
               );
             }
+            const after = SIGNS[(k < 0 ? flip(v.s) : v.s) - 1]!;
+            const bound = v.k === undefined ? '' : `: x ${after} ${fr(v.k, 20)}`;
             lines.push(
               k < 0
-                ? `Divide both sides by ${fmt(k)}, a negative, so ${sign} flips to ${SIGNS[flip(v.s) - 1]}`
-                : `Divide both sides by ${fmt(k)}; the sign stays ${sign}`,
+                ? `Divide both sides by ${fmt(k)}, a negative, so ${sign} flips to ${after}${bound}`
+                : `Divide both sides by ${fmt(k)}; the sign stays ${sign}${bound}`,
             );
             return lines;
           },
@@ -2402,11 +2536,21 @@ const LINEAR_INEQUALITIES: ModuleDef[] = [
                 ? `a − c is negative: dividing by it flips ${SIGNS[v.s! - 1]} to ${SIGNS[flip(v.s!) - 1]}.`
                 : `a − c is positive: the sign stays ${SIGNS[v.s! - 1]}.`,
             {
-              note: (v) => (known(v, 'f', 'k') ? `→ x ${SIGNS[v.f! - 1]} ${fmt(v.k!)}` : ''),
+              note: (v) =>
+                known(v, 'f', 'k')
+                  ? `→ sign ${SIGNS[v.f! - 1]}: x ${SIGNS[v.f! - 1]} ${fr(v.k!, 20)}`
+                  : '',
             },
           ],
         },
-        { check: (v) => `${v.a! - v.c! < 0 ? flip(v.s!) : v.s!} = ${v.f}` },
+        {
+          check: (v) =>
+            `${fmt(v.a!)} ${cmp(v.a!, v.c!)} ${fmt(v.c!)}, so ${
+              v.a! - v.c! < 0
+                ? `${SIGNS[v.s! - 1]} flips to ${SIGNS[v.f! - 1]}`
+                : `the sign stays ${SIGNS[v.s! - 1]}`
+            }`,
+        },
       ),
       rule(
         'h = test',
@@ -2419,6 +2563,7 @@ const LINEAR_INEQUALITIES: ModuleDef[] = [
             (v) => `${truth(compare(v.a! * v.t! + v.b!, v.s!, v.c! * v.t! + v.d!))}`,
             'Put the test number into both sides of the first inequality: 1 is true, 0 is false.',
             {
+              note: truthNote(),
               work: (v) => {
                 const l = sideLines(v.a!, v.t!, v.b!);
                 const r = sideLines(v.c!, v.t!, v.d!);
@@ -2434,7 +2579,12 @@ const LINEAR_INEQUALITIES: ModuleDef[] = [
           ],
         },
         {
-          check: (v) => `${truth(compare(v.a! * v.t! + v.b!, v.s!, v.c! * v.t! + v.d!))} = ${v.h}`,
+          check: (v) =>
+            testCheck(
+              exact(v.a! * v.t! + v.b!),
+              exact(v.c! * v.t! + v.d!),
+              compare(v.a! * v.t! + v.b!, v.s!, v.c! * v.t! + v.d!),
+            ),
         },
       ),
     ],
@@ -2461,6 +2611,7 @@ function compoundTest(
   holds: (v: Values) => boolean,
   lines: (v: Values) => string[],
   how: string,
+  check: (v: Values) => string,
 ): Rule {
   return rule(
     'h = test',
@@ -2472,10 +2623,10 @@ function compoundTest(
         (v) => truth(holds(v)),
         (v) => `${truth(holds(v))}`,
         how,
-        { work: (v) => lines(v), written: false },
+        { work: (v) => lines(v), written: false, note: truthNote() },
       ],
     },
-    { check: (v) => `${truth(holds(v))} = ${v.h}` },
+    { check },
   );
 }
 
@@ -2520,7 +2671,11 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
         (v) => div(v.r! - v.b!, v.a!),
         '({r} − {b}) ÷ {a}',
         'Do the same to the right part.',
-        { note: (v) => (known(v, 'L', 'U') ? `→ ${fmt(v.L!)} < x ≤ ${fmt(v.U!)}` : '') },
+        {
+          // (no interval when the bounds cross: the message says why)
+          note: (v) =>
+            known(v, 'L', 'U') && v.L! < v.U! ? `→ ${fr(v.L!)} < x ≤ ${fr(v.U!)}` : '',
+        },
         {
           message: (v) =>
             known(v, 'l', 'r') && v.l! >= v.r!
@@ -2541,6 +2696,11 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
           ];
         },
         'Put the test number in the middle: both parts must be true. 1 is true, 0 is false.',
+        (v) => {
+          const m = exact(v.a! * v.t! + v.b!);
+          const ok = v.l! < m && m <= v.r!;
+          return `${atLine(v.a!, v.t!, v.b!)}, so ${fmt(v.t!)} ${ok ? 'is' : 'is not'} a solution`;
+        },
       ),
     ],
     example: { l: -5, a: 3, b: 4, r: 13, L: -3, U: 3, t: 0, h: 1 },
@@ -2599,7 +2759,7 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
             known(v, 'L', 'U')
               ? v.U! <= v.L!
                 ? '→ the rays overlap: every number'
-                : `→ x < ${fmt(v.L!)} or x ≥ ${fmt(v.U!)}`
+                : `→ x < ${fr(v.L!)} or x ≥ ${fr(v.U!)}`
               : '',
         },
       ),
@@ -2618,6 +2778,10 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
           ];
         },
         'Put the test number into both parts: one true part is enough. 1 is true, 0 is false.',
+        (v) => {
+          const ok = v.a! * v.t! + v.b! < v.c! || v.d! * v.t! + v.e! >= v.f!;
+          return `${atLine(v.a!, v.t!, v.b!)}, so ${fmt(v.t!)} ${ok ? 'is' : 'is not'} a solution`;
+        },
       ),
     ],
     example: { a: 2, b: 3, c: -1, d: 3, e: -2, f: 7, L: -2, U: 3, t: 4, h: 1 },
@@ -2652,7 +2816,7 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
         num('b', 'b', 'y-intercept', -10, 10, { step: 0.5 }),
         num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
         num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
-        num('yl', 'y_line', 'The line’s y at x₀', -120, 120, { derived: true }),
+        num('yl', 'y_line', 'Height of the line at x₀', -120, 120, { derived: true }),
         holdsVar(),
       ],
       rules: [
@@ -2676,6 +2840,7 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
               (v) => `${truth(compare(v.ty!, code, v.yl!))}`,
               `Compare the test point’s y with the line’s: 1 is true (shaded), 0 is false.`,
               {
+                note: truthNote(),
                 work: (v) => [
                   `${fmt(v.ty!)} ${sign} ${fmt(v.yl!)} is ${compare(v.ty!, code, v.yl!) ? 'true' : 'false'}`,
                 ],
@@ -2683,7 +2848,10 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
               },
             ],
           },
-          { check: (v) => `${truth(compare(v.ty!, code, v.yl!))} = ${v.h}` },
+          {
+            check: (v) =>
+              testCheck(v.ty!, v.yl!, compare(v.ty!, code, v.yl!), 'the test point'),
+          },
         ),
       ],
       example:
@@ -2717,8 +2885,8 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
       num('p', 'p', 'Cost per visit', 0.01, 1000, { unit: '$', step: 0.01 }),
       int('s', 's', 'At most (2) or at least (4)', 2, 4, { allowed: [2, 4] }),
       num('B', 'B', 'Budget', 0, 10000, { unit: '$', step: 0.01 }),
-      num('n', 'n', 'Bound on the visits', 0, 20, { derived: true }),
-      int('N', 'N', 'Most or fewest whole visits', 0, 20, { derived: true }),
+      num('n', 'n', 'Bound on the visits', 0, 1000, { derived: true }),
+      int('N', 'N', 'Most or fewest whole visits', 0, 1000, { derived: true }),
     ],
     rules: [
       derive(
@@ -2729,6 +2897,15 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
         (v) => div(v.B! - v.F!, v.p!),
         '({B} − {F}) ÷ {p}',
         'Take the fixed cost from both sides, then divide by the cost per visit: the sign stays.',
+        {},
+        {
+          message: (v) =>
+            known(v, 'B', 'F') && v.B! < v.F!
+              ? v.s === 4
+                ? 'The fixed cost alone is past the amount: no visits are needed.'
+                : 'The fixed cost is more than the budget: no visits fit.'
+              : undefined,
+        },
       ),
       derive(
         'N = n rounded',
@@ -2861,8 +3038,8 @@ function absInequality(within: boolean): ModuleDef {
           note: (v) =>
             known(v, 'L', 'U')
               ? within
-                ? `→ ${fmt(v.L!)} ≤ x ≤ ${fmt(v.U!)}`
-                : `→ x ≤ ${fmt(v.L!)} or x ≥ ${fmt(v.U!)}`
+                ? `→ ${fr(v.L!, 20)} ≤ x ≤ ${fr(v.U!, 20)}`
+                : `→ x ≤ ${fr(v.L!, 20)} or x ≥ ${fr(v.U!, 20)}`
               : '',
         },
       ),
@@ -2877,6 +3054,7 @@ function absInequality(within: boolean): ModuleDef {
             (v) => `${truth(compare(Math.abs(v.a! * v.t! + v.b!), within ? 2 : 4, v.c!))}`,
             'Put the test number inside the bars, then compare its distance from 0 with c.',
             {
+              note: truthNote('k'),
               work: (v) => {
                 const m = at(v.a!, v.b!, v.t!);
                 const size = Math.abs(m.total);
@@ -2892,7 +3070,11 @@ function absInequality(within: boolean): ModuleDef {
         },
         {
           check: (v) =>
-            `${truth(compare(Math.abs(v.a! * v.t! + v.b!), within ? 2 : 4, v.c!))} = ${v.k}`,
+            testCheck(
+              Math.abs(exact(v.a! * v.t! + v.b!)),
+              v.c!,
+              compare(Math.abs(v.a! * v.t! + v.b!), within ? 2 : 4, v.c!),
+            ),
         },
       ),
     ],
@@ -2937,7 +3119,6 @@ const ABSOLUTE_VALUE: ModuleDef[] = [
     ],
     rules: [
       nonzero('a', 'The x inside the bars'),
-      ...centerRules(),
       derive(
         'x₁ = (c − b) ÷ a',
         'x1',
@@ -2962,6 +3143,24 @@ const ABSOLUTE_VALUE: ModuleDef[] = [
         (v) => (v.c! >= 0 ? div(-v.c! - v.b!, v.a!) : undefined),
         '(−{c} − {b}) ÷ {a}',
         'Set ax + b = −c the same way. When c = 0 the two are one solution.',
+      ),
+      derive(
+        'h = (x₁ + x₂) ÷ 2',
+        'h',
+        ['x1', 'x2'],
+        '{h} = ({x1} + {x2}) ÷ 2',
+        (v) => (v.x1! + v.x2!) / 2,
+        '({x1} + {x2}) ÷ 2',
+        'The center is halfway between the two solutions, where ax + b = 0.',
+      ),
+      derive(
+        'd = |x₁ − x₂| ÷ 2',
+        'd',
+        ['x1', 'x2'],
+        '{d} = |{x1} − {x2}| ÷ 2',
+        (v) => Math.abs(v.x1! - v.x2!) / 2,
+        '|{x1} − {x2}| ÷ 2',
+        'Each solution is this far from the center: c ÷ |a|.',
       ),
     ],
     example: { a: 2, b: -3, c: 7, h: 1.5, d: 3.5, x1: 5, x2: -2 },
