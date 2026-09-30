@@ -5,10 +5,10 @@
  * direction plan and build notes: docs/BUILD_HS.md and docs/build/m.11.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math11.ts`.
  */
-import { invPhi, Phi } from '@/components/module/reps/statMath';
+import { binomialPmf, choose, invPhi, Phi } from '@/components/module/reps/statMath';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
-import { div } from '../helpers';
+import { atLeast, div } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 
 // ── Toolkit ──
@@ -84,12 +84,18 @@ function derive(
  * A limit the rule needs (b ≠ 1, |r| < 1): values that break it are rejected, with the reason
  * under the box.
  */
-function limit(id: string, vars: string[], ok: (v: Values) => boolean, why: string): Rule {
+function limit(
+  id: string,
+  display: string,
+  vars: string[],
+  ok: (v: Values) => boolean,
+  why: string,
+): Rule {
   return {
     relation: {
       id,
       constraint: true,
-      display: id,
+      display,
       vars,
       residual: (v: Values) => (ok(v) ? 0 : 1),
       solve: {},
@@ -110,6 +116,10 @@ function page(m: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
 }
 
 // ── Statistics helpers ──
+
+/** C(n, k) for whole 0 ≤ k ≤ n, else nothing (so the solver never reads it as a flat 0). */
+const nCk = (n: number, k: number) =>
+  Number.isInteger(n) && Number.isInteger(k) && k >= 0 && k <= n ? choose(n, k) : undefined;
 
 const inOpen = (p: number) => p > 0 && p < 1;
 /** A probability, 0 to 1. */
@@ -566,5 +576,290 @@ export const MATH_11_MODULES: ModuleDef[] = [
       interval: { center: 'ph', margin: 'E' },
       fixed: true,
     },
+  }),
+
+  // ── Binomial distributions and expected value (S-MD.1–S-MD.6) ──
+  page({
+    id: 'm.11.probability-distributions',
+    assumptions: [
+      'There are n trials, and each one is a success or not.',
+      'Every trial has the same chance p, and the trials are independent.',
+      'E is the long-run average count of successes, not a promise for one round of n trials.',
+    ],
+    variables: [
+      W('n', 'n', 'Trials', 1, 40),
+      prob('p', 'p', 'Chance of success on each trial', { step: 0.01 }),
+      W('k', 'k', 'Successes', 0, 40),
+      V('C', 'C', 'Orders of k successes, C(n, k)', {
+        integer: true,
+        min: 1,
+        max: 1e12,
+        derived: true,
+      }),
+      prob('P', 'P', 'P(X = k)', { derived: true }),
+      V('E', 'E', 'Expected successes E(X)', { min: 0, max: 40, step: 0.01 }),
+      V('S', 'σ', 'Standard deviation', { min: 0, max: 10, step: 0.0001, derived: true }),
+    ],
+    rules: [
+      { relation: atLeast('n', 'k') as Relation, steps: {} },
+      derive(
+        'C = C(n, k)',
+        'C',
+        ['n', 'k'],
+        '{C} = C({n}, {k})',
+        (v) => nCk(v.n!, v.k!),
+        'C({n}, {k})',
+        'The ways to pick which k of the n trials are the successes.',
+      ),
+      derive(
+        'P = C × p^k × (1 − p)^(n − k)',
+        'P',
+        ['C', 'p', 'k', 'n'],
+        '{P} = {C} × {p}^{k} × (1 − {p})^({n} − {k})',
+        (v) => v.C! * v.p! ** v.k! * (1 - v.p!) ** (v.n! - v.k!),
+        '{C} × {p}^{k} × (1 − {p})^({n} − {k})',
+        'Each order has k successes at p and n − k failures at 1 − p.',
+      ),
+      rule('E = n × p', '{E} = {n} × {p}', ['E', 'n', 'p'], (v) => v.E! - v.n! * v.p!, {
+        E: [(v) => exact(v.n! * v.p!), '{n} × {p}', 'On average, p of the n trials succeed.'],
+        p: [(v) => fin(div(v.E!, v.n!)), '{E} ÷ {n}', 'The expected successes per trial.'],
+        n: [() => undefined],
+      }),
+      derive(
+        'σ = √(n × p × (1 − p))',
+        'S',
+        ['n', 'p'],
+        '{S} = √({n} × {p} × (1 − {p}))',
+        (v) => Math.sqrt(v.n! * v.p! * (1 - v.p!)),
+        '√({n} × {p} × (1 − {p}))',
+        'The typical distance of the count from its mean.',
+      ),
+    ],
+    example: {
+      n: 10,
+      p: 0.3,
+      k: 2,
+      C: 45,
+      P: binomialPmf(10, 0.3, 2),
+      E: 3,
+      S: Math.sqrt(2.1),
+    },
+    startWith: ['n', 'p', 'k'],
+    sliders: true,
+    pictureLabels: ['C', 'P'],
+    representation: {
+      kind: 'histogram',
+      binomial: { n: 'n', p: 'p', mean: 'E', sd: 'S' },
+      lit: 'k',
+      axis: 'Successes (k)',
+    },
+  }),
+  page({
+    id: 'm.11.probability-distributions~expected-value',
+    title: 'Expected value of a game',
+    use: 'Use this for “A spinner pays −2, 0, 5 or 20 points with chances 0.5, 0.3, 0.15, 0.05. What is the expected value?”',
+    assumptions: [
+      'X takes four values, each with its own probability.',
+      'The probabilities add to 1, so the last one is 1 minus the others.',
+      'E(X) is the average of X over many plays: each value times its probability, added.',
+    ],
+    variables: [
+      V('x1', 'x₁', 'First value', { min: -1000, max: 1000, step: 1 }),
+      V('x2', 'x₂', 'Second value', { min: -1000, max: 1000, step: 1 }),
+      V('x3', 'x₃', 'Third value', { min: -1000, max: 1000, step: 1 }),
+      V('x4', 'x₄', 'Fourth value', { min: -1000, max: 1000, step: 1 }),
+      prob('p1', 'p₁', 'P(X = x₁)', { step: 0.01 }),
+      prob('p2', 'p₂', 'P(X = x₂)', { step: 0.01 }),
+      prob('p3', 'p₃', 'P(X = x₃)', { step: 0.01 }),
+      prob('p4', 'p₄', 'P(X = x₄)', { step: 0.01, derived: true }),
+      V('E', 'E', 'Expected value E(X)', { min: -1000, max: 1000, step: 0.01, derived: true }),
+    ],
+    rules: [
+      derive(
+        'p₄ = 1 − (p₁ + p₂ + p₃)',
+        'p4',
+        ['p1', 'p2', 'p3'],
+        '{p4} = 1 − ({p1} + {p2} + {p3})',
+        (v) => 1 - (v.p1! + v.p2! + v.p3!),
+        '1 − ({p1} + {p2} + {p3})',
+        'All the probabilities add to 1.',
+      ),
+      derive(
+        'E = x₁p₁ + x₂p₂ + x₃p₃ + x₄p₄',
+        'E',
+        ['x1', 'p1', 'x2', 'p2', 'x3', 'p3', 'x4', 'p4'],
+        '{E} = {x1} × {p1} + {x2} × {p2} + {x3} × {p3} + {x4} × {p4}',
+        (v) => v.x1! * v.p1! + v.x2! * v.p2! + v.x3! * v.p3! + v.x4! * v.p4!,
+        '{x1} × {p1} + {x2} × {p2} + {x3} × {p3} + {x4} × {p4}',
+        'Weight each value by its probability, then add.',
+      ),
+    ],
+    example: { x1: -2, x2: 0, x3: 5, x4: 20, p1: 0.5, p2: 0.3, p3: 0.15, p4: 0.05, E: 0.75 },
+    startWith: ['x1', 'x2', 'x3', 'x4', 'p1', 'p2', 'p3'],
+    representation: {
+      kind: 'histogram',
+      probability: {
+        values: ['x1', 'x2', 'x3', 'x4'],
+        probs: ['p1', 'p2', 'p3', 'p4'],
+        mean: 'E',
+      },
+      axis: 'Points (x)',
+      keep: ['x1', 'x2', 'x3', 'x4', 'p1', 'p2', 'p3'],
+    },
+  }),
+
+  // ── The binomial theorem and Pascal's triangle (A-APR.5) ──
+  page({
+    id: 'm.11.binomial-theorem',
+    assumptions: [
+      'Write (ax + b)ⁿ as (A + B)ⁿ with A = ax and B = b: row n of Pascal’s triangle gives the coefficients.',
+      'In every term the powers of A and B add up to n: the xᵏ term is C(n, k)Aᵏ Bⁿ⁻ᵏ.',
+      'A negative b makes every other term negative.',
+    ],
+    variables: [
+      V('a', 'a', 'Coefficient of x', { integer: true, min: -5, max: 5 }),
+      V('b', 'b', 'Constant', { integer: true, min: -10, max: 10 }),
+      W('n', 'n', 'Power', 1, 12),
+      W('k', 'k', 'Power of x in the term', 0, 12),
+      V('C', 'C', 'Pascal entry C(n, k)', { integer: true, min: 1, max: 1000, derived: true }),
+      V('T', 'T', 'Coefficient of xᵏ', { integer: true, min: -1e16, max: 1e16, derived: true }),
+    ],
+    rules: [
+      { relation: atLeast('n', 'k') as Relation, steps: {} },
+      derive(
+        'C = C(n, k)',
+        'C',
+        ['n', 'k'],
+        '{C} = C({n}, {k})',
+        (v) => nCk(v.n!, v.k!),
+        'C({n}, {k})',
+        'Entry k of row n of Pascal’s triangle: the ways to pick k of the n factors for ax.',
+      ),
+      derive(
+        'T = C × a^k × b^(n − k)',
+        'T',
+        ['C', 'a', 'k', 'b', 'n'],
+        '{T} = {C} × {a}^{k} × {b}^({n} − {k})',
+        (v) => v.C! * v.a! ** v.k! * v.b! ** (v.n! - v.k!),
+        '{C} × {a}^{k} × {b}^({n} − {k})',
+        'k factors give ax and the other n − k give b.',
+      ),
+    ],
+    example: { a: 2, b: -3, n: 5, k: 3, C: 10, T: 720 },
+    startWith: ['a', 'b', 'n', 'k'],
+    equation: '({a}x + {b})^{n}',
+    representation: { kind: 'pascalTriangle', n: 'n', k: 'k', expand: { a: 'A', b: 'B' } },
+  }),
+  page({
+    id: 'm.11.binomial-theorem~expand',
+    title: 'Expand (ax + b)ⁿ',
+    use: 'Use this for “Expand (x + 2)⁴.”',
+    assumptions: [
+      'Row n of Pascal’s triangle gives the coefficients: 1, 4, 6, 4, 1 for n = 4.',
+      'The xʲ term is C(n, j) × aʲ × bⁿ⁻ʲ: the powers of a climb as the powers of b fall.',
+      'There are n + 1 terms; a power of x above n has coefficient 0.',
+    ],
+    variables: [
+      V('a', 'a', 'Coefficient of x', { integer: true, min: -5, max: 5 }),
+      V('b', 'b', 'Constant', { integer: true, min: -10, max: 10 }),
+      V('n', 'n', 'Power', { allowed: [0, 1, 2, 3, 4, 5, 6], min: 0, max: 6 }),
+      ...[6, 5, 4, 3, 2, 1, 0].map((j) =>
+        V(
+          `c${j}`,
+          `c${'₀₁₂₃₄₅₆'[j]}`,
+          j === 0 ? 'Constant term' : `Coefficient of x${j > 1 ? '⁰¹²³⁴⁵⁶'[j] : ''}`,
+          {
+            integer: true,
+            min: -1e9,
+            max: 1e9,
+            derived: true,
+          },
+        ),
+      ),
+    ],
+    rules: [6, 5, 4, 3, 2, 1, 0].map((j) =>
+      derive(
+        `c${j} = C(n, ${j}) × a^${j} × b^(n − ${j})`,
+        `c${j}`,
+        ['n', 'a', 'b'],
+        `{c${j}} = C({n}, ${j}) × {a}^${j} × {b}^({n} − ${j})`,
+        (v) => (v.n! < j ? 0 : choose(v.n!, j) * v.a! ** j * v.b! ** (v.n! - j)),
+        (v) => (v.n! < j ? '0' : `C({n}, ${j}) × {a}^${j} × {b}^({n} − ${j})`),
+        (v) =>
+          v.n! < j
+            ? `(ax + b)ⁿ has no power of x above n.`
+            : `Row n, entry ${j}, times a to the ${j} and b to the rest of the power.`,
+      ),
+    ),
+    example: { a: 1, b: 2, n: 4, c6: 0, c5: 0, c4: 1, c3: 8, c2: 24, c1: 32, c0: 16 },
+    startWith: ['a', 'b', 'n'],
+    equation: '({a}x + {b})^{n}',
+    representation: { kind: 'pascalTriangle', n: 'n', rows: 6, expand: { a: 'A', b: 'B' } },
+  }),
+  page({
+    id: 'm.11.binomial-theorem~pascal-rule',
+    title: 'Pascal’s rule: add the two above',
+    use: 'Use this for “Fill in row 6 of Pascal’s triangle” or “Find C(6, 2) from row 5.”',
+    assumptions: [
+      'Each row starts and ends with 1.',
+      'Every other entry is the sum of the two entries above it: C(n, k) = C(n − 1, k − 1) + C(n − 1, k).',
+    ],
+    variables: [
+      W('n', 'n', 'Row', 2, 12),
+      W('k', 'k', 'Entry', 1, 11),
+      V('L', 'L', 'Entry above left, C(n − 1, k − 1)', {
+        integer: true,
+        min: 1,
+        max: 1000,
+        derived: true,
+      }),
+      V('R', 'R', 'Entry above right, C(n − 1, k)', {
+        integer: true,
+        min: 1,
+        max: 1000,
+        derived: true,
+      }),
+      V('E', 'E', 'Entry C(n, k)', { integer: true, min: 1, max: 1000, derived: true }),
+    ],
+    rules: [
+      limit(
+        'k is at most n − 1',
+        '{k} is at most {n} − 1',
+        ['n', 'k'],
+        (v) => v.k! <= v.n! - 1,
+        'The inside entries of row n run from k = 1 to n − 1; the ends are 1.',
+      ),
+      derive(
+        'L = C(n − 1, k − 1)',
+        'L',
+        ['n', 'k'],
+        '{L} = C({n} − 1, {k} − 1)',
+        (v) => nCk(v.n! - 1, v.k! - 1),
+        'C({n} − 1, {k} − 1)',
+        'The entry up and to the left, in row n − 1.',
+      ),
+      derive(
+        'R = C(n − 1, k)',
+        'R',
+        ['n', 'k'],
+        '{R} = C({n} − 1, {k})',
+        (v) => nCk(v.n! - 1, v.k!),
+        'C({n} − 1, {k})',
+        'The entry up and to the right, in row n − 1.',
+      ),
+      derive(
+        'E = L + R',
+        'E',
+        ['L', 'R'],
+        '{E} = {L} + {R}',
+        (v) => v.L! + v.R!,
+        '{L} + {R}',
+        'Add the two entries above it.',
+      ),
+    ],
+    example: { n: 6, k: 2, L: 5, R: 10, E: 15 },
+    startWith: ['n', 'k'],
+    sliders: true,
+    representation: { kind: 'pascalTriangle', n: 'n', k: 'k' },
   }),
 ];
