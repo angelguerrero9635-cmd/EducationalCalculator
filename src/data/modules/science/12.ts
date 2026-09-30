@@ -916,6 +916,113 @@ const telescope: ModuleDef = {
   },
 };
 
+// ── The sun and stellar evolution ──
+
+/** The Sun's surface temperature, K. */
+const SUN_K = 5772;
+const lum = (r: number, t: number) => r * r * (t / SUN_K) ** 4;
+
+const hr: ModuleDef = {
+  id: 's.12.stellar-evolution',
+  unitSystems: ['metric'],
+  assumptions: [
+    'A bigger or hotter star gives off more light.',
+    'Main-sequence stars fuse hydrogen in their cores; mass sets where they sit.',
+    'Giants are cool but huge; white dwarfs are hot but tiny.',
+  ],
+  variables: [
+    V('T', 'T', 'Surface temperature', { unit: 'K', min: 2500, max: 40000, step: 10 }),
+    V('R', 'R', 'Radius', { unit: 'R☉', min: 0.005, max: 1500, step: 0.001 }),
+    V('L', 'L', 'Luminosity', { unit: 'L☉', min: 0.0001, max: 1000000, step: 0.0001 }),
+  ],
+  ...rels(
+    rule('L = R² × (T ÷ 5772)⁴', '{L} = {R}² × ({T} ÷ 5772)⁴', (v) => v.L! - lum(v.R!, v.T!), {
+      L: [
+        (v) => lum(v.R!, v.T!),
+        '{R}^2 × ({T} ÷ 5772)^4',
+        'Surface area grows as R²; each square meter shines as T⁴, compared with the Sun.',
+      ],
+      R: [
+        (v) => (v.L! > 0 ? Math.sqrt(v.L!) * (SUN_K / v.T!) ** 2 : undefined),
+        '√({L}) × (5772 ÷ {T})^2',
+        'Undo the fourth power of the temperature, then the square of the radius.',
+      ],
+      T: [
+        (v) => (v.L! > 0 && v.R! > 0 ? SUN_K * (v.L! / v.R! ** 2) ** 0.25 : undefined),
+        '5772 × ({L} ÷ {R}^2)^(1/4)',
+        'The light for each unit of surface, then its fourth root.',
+      ],
+    }),
+  ),
+  example: { T: 9940, R: 1.71, L: lum(1.71, 9940) },
+  startWith: ['T', 'R'],
+  representation: {
+    kind: 'hrDiagram',
+    temperature: 'T',
+    luminosity: 'L',
+    radius: 'R',
+    name: 'Sirius A',
+  },
+};
+
+/** Light's speed squared, m²/s². */
+const C2 = 9e16;
+
+const fusion: ModuleDef = {
+  id: 's.12.stellar-evolution~fusion',
+  title: 'How much mass the Sun turns into light',
+  use: 'Use this for “The Sun gives off 3.828 × 10²⁶ W. How much mass does it turn into energy each second?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    '0.7 % of the hydrogen’s mass becomes energy (E = mc²).',
+    'The Sun shines by this chain in its core: 4 ¹H → ⁴He + 2 e⁺.',
+    'c = 3.00 × 10⁸ m/s, so c² = 9.00 × 10¹⁶ m²/s².',
+  ],
+  variables: [
+    V('L', 'L', 'Luminosity', { unit: 'W', min: 1e20, max: 1e32, step: 1e18, scientific: true }),
+    V('m', 'm', 'Mass turned to energy each second', {
+      unit: 'kg/s',
+      min: 1e3,
+      max: 1e16,
+      step: 1,
+      scientific: true,
+    }),
+    V('H', 'H', 'Hydrogen fused each second', {
+      unit: 'kg/s',
+      min: 1e5,
+      max: 1e19,
+      step: 1,
+      scientific: true,
+    }),
+  ],
+  ...rels(
+    rule('m = L ÷ c²', '{m} = {L} ÷ (9.00 × 10¹⁶)', (v) => v.m! - v.L! / C2, {
+      m: [
+        (v) => v.L! / C2,
+        '{L} ÷ (9.00 × 10¹⁶)',
+        'E = mc²: each second’s energy over c² is the mass it came from.',
+      ],
+      L: [(v) => v.m! * C2, '{m} × 9.00 × 10¹⁶', 'Each kilogram gives c² joules.'],
+    }),
+    rule('H = m ÷ 0.007', '{H} = {m} ÷ 0.007', (v) => v.H! - v.m! / 0.007, {
+      H: [(v) => v.m! / 0.007, '{m} ÷ 0.007', 'The mass lost is only 0.7 % of the hydrogen fused.'],
+      m: [(v) => v.H! * 0.007, '{H} × 0.007', '0.7 % of the hydrogen’s mass becomes energy.'],
+    }),
+  ),
+  example: { L: 3.828e26, m: 3.828e26 / C2, H: 3.828e26 / C2 / 0.007 },
+  startWith: ['L'],
+  pictureLabels: ['L', 'm', 'H'],
+  representation: {
+    kind: 'decayChart',
+    mode: 'equation',
+    left: [{ mass: 1, atomic: 1, count: 4 }],
+    right: [
+      { mass: 4, atomic: 2 },
+      { particle: 'positron', count: 2 },
+    ],
+  },
+};
+
 export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
@@ -932,4 +1039,6 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   wien,
   doppler,
   telescope,
+  hr,
+  fusion,
 ];

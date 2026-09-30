@@ -380,4 +380,91 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'Far infrared from cold dust', bin: 'space' },
     ],
   },
+
+  // ── The sun and stellar evolution (HS-ESS1-1, HS-ESS1-3) ──
+  {
+    kind: 'sequence',
+    id: 's.12.stellar-evolution~sunlike',
+    title: 'The life of a Sun-like star',
+    use: 'Use this for “Put the stages of a Sun-like star’s life in order. What is left at the end?”',
+    assumptions: [
+      'A star’s mass sets its life: stars up to about 8 Sun masses end quietly.',
+      'The white dwarf is the old core, about the size of Earth, slowly cooling.',
+    ],
+    question: 'Put the stages of a Sun-like star’s life in order.',
+    stages: [
+      { label: 'Stellar nebula', figure: { kind: 'icon', icon: 'stellar nebula' } },
+      { label: 'Protostar', figure: { kind: 'icon', icon: 'protostar' } },
+      {
+        label: 'Main sequence: hydrogen fuses in the core',
+        figure: { kind: 'icon', icon: 'Sun-like star' },
+      },
+      {
+        label: 'Red giant: the core’s hydrogen runs out',
+        figure: { kind: 'icon', icon: 'red giant' },
+      },
+      { label: 'Planetary nebula', figure: { kind: 'icon', icon: 'planetary nebula' } },
+      { label: 'White dwarf', figure: { kind: 'icon', icon: 'white dwarf' } },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.12.stellar-evolution~massive',
+    title: 'The life of a massive star',
+    use: 'Use this for “What is left after a massive star explodes as a supernova?”',
+    assumptions: [
+      'Massive stars burn hot and fast, fusing elements up to iron in a few million years.',
+      'The collapsed core is a neutron star; above about 20 Sun masses, a black hole.',
+    ],
+    question: 'Put the stages of a massive star’s life in order.',
+    stages: [
+      { label: 'Stellar nebula', figure: { kind: 'icon', icon: 'stellar nebula' } },
+      { label: 'Protostar', figure: { kind: 'icon', icon: 'protostar' } },
+      { label: 'Massive main-sequence star', figure: { kind: 'icon', icon: 'massive star' } },
+      { label: 'Red supergiant', figure: { kind: 'icon', icon: 'red supergiant' } },
+      { label: 'Supernova', figure: { kind: 'icon', icon: 'supernova' } },
+      { label: 'Neutron star', figure: { kind: 'icon', icon: 'neutron star' } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.stellar-evolution~elements',
+    title: 'Where the atoms were made',
+    use: 'Use this for “Which two elements are the most common in the universe, and where were they made?”',
+    assumptions: [
+      'Hydrogen and helium are most of the Sun and the solar system.',
+      'Stars fuse elements up to iron; heavier ones need a supernova or a neutron-star merger.',
+    ],
+    question: 'Where were most of these atoms made?',
+    bins: [
+      {
+        id: 'bigbang',
+        label: 'The Big Bang',
+        why: 'The first minutes made the lightest nuclei, hydrogen and most of the helium.',
+      },
+      {
+        id: 'stars',
+        label: 'Fusion inside stars',
+        why: 'Stars fuse light nuclei into heavier ones, up to iron in the most massive.',
+      },
+      {
+        id: 'explosions',
+        label: 'Supernovas and neutron-star mergers',
+        why: 'Only these violent events pack in enough neutrons to build the heaviest nuclei.',
+      },
+    ],
+    cards: [
+      { label: 'Hydrogen', bin: 'bigbang', figure: { kind: 'molecule', formula: 'H' } },
+      { label: 'Most of the helium', bin: 'bigbang', figure: { kind: 'molecule', formula: 'He' } },
+      { label: 'Carbon in your body', bin: 'stars', figure: { kind: 'molecule', formula: 'C' } },
+      { label: 'Oxygen in the air', bin: 'stars', figure: { kind: 'molecule', formula: 'O' } },
+      {
+        label: 'Iron in a massive star’s core',
+        bin: 'stars',
+        figure: { kind: 'molecule', formula: 'Fe' },
+      },
+      { label: 'Gold', bin: 'explosions', figure: { kind: 'molecule', formula: 'Au' } },
+      { label: 'Uranium', bin: 'explosions', figure: { kind: 'molecule', formula: 'U' } },
+    ],
+  },
 ];
