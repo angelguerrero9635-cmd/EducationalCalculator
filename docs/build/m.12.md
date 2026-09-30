@@ -291,3 +291,16 @@ None: every planned page is built, some with an interim picture (below).
   R(γ). `~area`: p and q named "x/y of the far corner" (hidden, picture only). `~identify`: the
   two-bin card [[−1, 0], [0, −1]] replaced by [[0.6, −0.8], [0.8, 0.6]]; a dilation has k > 0;
   the reflection bin's reason says (0, 1) lands clockwise from (1, 0).
+- `m.12.polar-conics` main: n is named "Number taken away before cos θ (−1 for + cos θ)" (the
+  equation boxes already print the minus); the d step notes the directrix (x = −d or x = d).
+  `~ellipse`: c = a × e (no near-equal subtraction), and the top k = ed is typed
+  (`startWith: ['e', 'k']`, 8 values). `~parabola`: the x and y formulas are named with θ; the
+  p step notes the directrix x = −d. `~rotation`: Δ < 0 says "an ellipse" (B ≠ 0 rules out a
+  circle); the angle rule and the B ≠ 0 limit are shared with the new page below.
+- New page `m.12.polar-conics~sine` (r = k ÷ (m − n sin θ), directrix y = ∓d; r = 4 ÷ (1 +
+  sin θ): e = 1, d = 4, r = 2 at 90°), `polarGrid` point until the conic curve (H106).
+- New page `m.12.polar-conics~rotated-equation` (A′ = A cos²θ + B sin θ cos θ + C sin²θ,
+  C′ = A sin²θ − B sin θ cos θ + C cos²θ; 4x² + 2xy + 2y² = 1: θ = 22.5°, A′ = 3 + √2 ≈ 4.4142,
+  C′ = 3 − √2 ≈ 1.5858; the report's 2 ± √2 was a slip, A′ + C′ = A + C = 6), `unitCircle`
+  interim. The sin/cos choice on the main page became this separate page: a choice box is not
+  an input kind.

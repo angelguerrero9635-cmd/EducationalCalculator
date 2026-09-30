@@ -5290,7 +5290,45 @@ const conicOf = (e: number) =>
   Math.abs(e - 1) < 1e-9 ? 'a parabola' : e < 1 ? 'an ellipse' : 'a hyperbola';
 /** The conic a discriminant B² − 4AC gives (the degenerate cases aside). */
 const conicByDiscriminant = (D: number) =>
-  D < 0 ? 'an ellipse (or a circle)' : D === 0 ? 'a parabola' : 'a hyperbola';
+  D < 0 ? 'an ellipse' : D === 0 ? 'a parabola' : 'a hyperbola';
+/** x = r cos θ (or sin), its formula named with θ as the page writes it. */
+const polarPartθ = (out: string, r: string, t: string, fn: 'cos' | 'sin', how: string): Rel => {
+  const part = polarPart(out, r, t, fn, how);
+  return { ...part, relation: { ...part.relation, id: `${out} = ${r} ${fn} θ` } };
+};
+/** The angle θ that removes the xy term: tan 2θ = B ÷ (A − C), θ from 0° to 90°. */
+const turnAngle = withCheck(
+  derive(
+    'tan 2θ = B ÷ (A − C)',
+    'tan(2 × {t}°) = {B} ÷ ({A} − {C})',
+    't',
+    ['A', 'B', 'C'],
+    (v) => {
+      if (v.B === 0) return undefined;
+      if (v.A === v.C) return 45;
+      const w = Math.atan(v.B! / (v.A! - v.C!)) / RAD;
+      return (w < 0 ? w + 180 : w) / 2;
+    },
+    (v: Values) =>
+      v.A === v.C
+        ? '90 ÷ 2'
+        : v.B! / (v.A! - v.C!) < 0
+          ? '(180 + tan⁻¹({B} ÷ ({A} − {C}))) ÷ 2'
+          : 'tan⁻¹({B} ÷ ({A} − {C})) ÷ 2',
+    'tan 2θ = B ÷ (A − C) is cot 2θ = (A − C) ÷ B turned over; add 180° to a negative 2θ, then halve.',
+  ),
+  (v) =>
+    v.A === v.C
+      ? `cos(2 × ${fmt(v.t!)}°) = 0`
+      : `tan(2 × ${fmt(v.t!)}°) = ${fmt(v.B!)} ÷ (${fmt(v.A!)} − ${par(v.C!)})`,
+);
+const noXyTerm = limit(
+  'B ≠ 0',
+  'The xy term {B} is not 0',
+  ['B'],
+  (v) => v.B !== 0,
+  'B = 0: there is no xy term, so the axes need no turning.',
+);
 
 const MATH_12_POLAR_CONICS: ModuleDef[] = [
   // ── m.12.polar-conics (G-GPE.3 carried on) ──
@@ -5304,7 +5342,11 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     variables: [
       V('k', 'k', 'Top number', { min: 0.01, max: 1000, step: 0.01 }),
       V('m', 'm', 'Number in the bottom', { min: 0.01, max: 1000, step: 0.01 }),
-      V('n', 'n', 'Number before cos θ', { min: -1000, max: 1000, step: 0.01 }),
+      V('n', 'n', 'Number taken away before cos θ (−1 for + cos θ)', {
+        min: -1000,
+        max: 1000,
+        step: 0.01,
+      }),
       V('e', 'e', 'Eccentricity', { min: 0, max: 100000, step: 0.0001, derived: true }),
       V('d', 'd', 'Distance from the focus to the directrix', {
         min: 0,
@@ -5329,14 +5371,23 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
         'e',
         { note: (v) => (v.e === undefined ? '' : `→ ${conicOf(v.e)}`) },
       ),
-      derive(
-        'd = k ÷ |n|',
-        '{d} = {k} ÷ |{n}|',
+      withStep(
+        derive(
+          'd = k ÷ |n|',
+          '{d} = {k} ÷ |{n}|',
+          'd',
+          ['k', 'n'],
+          (v) => (v.n === 0 ? undefined : div(v.k!, Math.abs(v.n!))),
+          '{k} ÷ |{n}|',
+          'The top over m is ed, and e is |n| ÷ m, so d = k ÷ |n|.',
+        ),
         'd',
-        ['k', 'n'],
-        (v) => (v.n === 0 ? undefined : div(v.k!, Math.abs(v.n!))),
-        '{k} ÷ |{n}|',
-        'The top over m is ed, and e is |n| ÷ m, so d = k ÷ |n|.',
+        {
+          note: (v) =>
+            v.d === undefined || v.n === undefined
+              ? ''
+              : `→ the directrix is x = ${v.n > 0 ? '−' : ''}${fmt(v.d)}`,
+        },
       ),
       rel(
         'r = k ÷ (m − n cos θ)',
@@ -5376,6 +5427,102 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     },
   },
   {
+    id: 'm.12.polar-conics~sine',
+    title: 'Polar conics with sin θ',
+    use: 'Use this for “Name the conic r = 4 ÷ (1 + sin θ), its eccentricity and its directrix.”',
+    assumptions: [
+      'Divide the top and bottom by m to reach r = ed ÷ (1 − e sin θ): the eccentricity e and the directrix distance d.',
+      'e < 1 is an ellipse, e = 1 a parabola, e > 1 a hyperbola; the focus is at the pole.',
+      'With sin θ the directrix is horizontal: y = −d with − sin θ, y = d with + sin θ.',
+    ],
+    variables: [
+      V('k', 'k', 'Top number', { min: 0.01, max: 1000, step: 0.01 }),
+      V('m', 'm', 'Number in the bottom', { min: 0.01, max: 1000, step: 0.01 }),
+      V('n', 'n', 'Number taken away before sin θ (−1 for + sin θ)', {
+        min: -1000,
+        max: 1000,
+        step: 0.01,
+      }),
+      V('e', 'e', 'Eccentricity', { min: 0, max: 100000, step: 0.0001, derived: true }),
+      V('d', 'd', 'Distance from the focus to the directrix', {
+        min: 0,
+        max: 100000,
+        step: 0.01,
+        derived: true,
+      }),
+      deg('t', 'θ', 'Angle', -360, 360),
+      V('r', 'r', 'Distance from the pole', { min: -1000000, max: 1000000, step: 0.01 }),
+    ],
+    ...rels(
+      withStep(
+        derive(
+          'e = |n| ÷ m',
+          '{e} = |{n}| ÷ {m}',
+          'e',
+          ['n', 'm'],
+          (v) => (v.n === 0 ? undefined : div(Math.abs(v.n!), v.m!)),
+          '|{n}| ÷ {m}',
+          'Dividing the bottom by m leaves 1 − e sin θ, so e is the number before sin θ over m.',
+        ),
+        'e',
+        { note: (v) => (v.e === undefined ? '' : `→ ${conicOf(v.e)}`) },
+      ),
+      withStep(
+        derive(
+          'd = k ÷ |n|',
+          '{d} = {k} ÷ |{n}|',
+          'd',
+          ['k', 'n'],
+          (v) => (v.n === 0 ? undefined : div(v.k!, Math.abs(v.n!))),
+          '{k} ÷ |{n}|',
+          'The top over m is ed, and e is |n| ÷ m, so d = k ÷ |n|.',
+        ),
+        'd',
+        {
+          note: (v) =>
+            v.d === undefined || v.n === undefined
+              ? ''
+              : `→ the directrix is y = ${v.n > 0 ? '−' : ''}${fmt(v.d)}`,
+        },
+      ),
+      rel(
+        'r = k ÷ (m − n sin θ)',
+        '{r} = {k} ÷ ({m} − {n} × sin({t}°))',
+        ['r', 'k', 'm', 'n', 't'],
+        (v) => v.r! * (v.m! - v.n! * sind(v.t!)) - v.k!,
+        {
+          r: [
+            (v) => div(v.k!, v.m! - v.n! * sind(v.t!)),
+            '{k} ÷ ({m} − {n} × sin({t}°))',
+            'Put the angle into the equation: the point on the conic in that direction.',
+          ],
+          k: [
+            (v) => v.r! * (v.m! - v.n! * sind(v.t!)),
+            '{r} × ({m} − {n} × sin({t}°))',
+            'Multiply both sides by the bottom.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.m !== undefined &&
+            v.n !== undefined &&
+            v.t !== undefined &&
+            Math.abs(v.m - v.n * sind(v.t)) < 1e-12
+              ? 'The bottom is 0 at this angle: the conic never reaches this direction (it runs off parallel to it).'
+              : undefined,
+        },
+      ),
+    ),
+    example: { k: 4, m: 1, n: -1, e: 1, d: 4, t: 90, r: 2 },
+    startWith: ['k', 'm', 'n', 't'],
+    equation: '{r} = {k}/{{m} − {n} sin {t}°}',
+    representation: {
+      kind: 'polarGrid',
+      point: { r: 'r', theta: 't' },
+      fixed: true,
+    },
+  },
+  {
     id: 'm.12.polar-conics~ellipse',
     title: 'A polar ellipse: vertices and axes',
     use: 'Use this for “For r = 3 ÷ (1 − 0.5 cos θ), find the vertices, the center and the lengths of the axes.”',
@@ -5386,6 +5533,7 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     ],
     variables: [
       V('e', 'e', 'Eccentricity', { min: 0.01, max: 0.99, step: 0.01 }),
+      V('k', 'k', 'Top number (ed)', { min: 0.0001, max: 1000, step: 0.01 }),
       V('d', 'd', 'Distance from the focus to the directrix', { min: 0.01, max: 1000, step: 0.01 }),
       V('R', 'R', 'Distance to the vertex at 0°', { min: 0.001, max: 200000, step: 0.01 }),
       V('S', 'S', 'Distance to the vertex at 180°', { min: 0.001, max: 1000, step: 0.01 }),
@@ -5394,6 +5542,14 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
       V('b', 'b', 'Half the minor axis', { min: 0, max: 200000, step: 0.01, derived: true }),
     ],
     ...rels(
+      rel('k = ed', '{k} = {e} × {d}', ['k', 'e', 'd'], (v) => v.k! - v.e! * v.d!, {
+        k: [(v) => v.e! * v.d!, '{e} × {d}', 'The top of r = ed ÷ (1 − e cos θ) is e times d.'],
+        d: [
+          (v) => div(v.k!, v.e!),
+          '{k} ÷ {e}',
+          'The top is ed: divide it by e to find the directrix distance.',
+        ],
+      }),
       rel(
         'R = ed ÷ (1 − e)',
         '{R} = {e} × {d} ÷ (1 − {e})',
@@ -5444,18 +5600,14 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           R: [(v) => 2 * v.a! - v.S!, '2 × {a} − {S}', 'The major axis minus the near distance.'],
         },
       ),
-      rel(
-        'c = (R − S) ÷ 2',
-        '{c} = ({R} − {S}) ÷ 2',
-        ['c', 'R', 'S'],
-        (v) => 2 * v.c! - (v.R! - v.S!),
-        {
-          c: [
-            (v) => (v.R! - v.S!) / 2,
-            '({R} − {S}) ÷ 2',
-            'The center is halfway between the vertices, (R − S) ÷ 2 from the focus.',
-          ],
-        },
+      derive(
+        'c = ae',
+        '{c} = {a} × {e}',
+        'c',
+        ['a', 'e'],
+        (v) => v.a! * v.e!,
+        '{a} × {e}',
+        'The center is ae from the focus: e is the share of a between the center and the focus.',
       ),
       derive(
         'b = √(RS)',
@@ -5467,8 +5619,8 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
         'b² = a² − c² = (a + c)(a − c), and a + c = R, a − c = S.',
       ),
     ),
-    example: { e: 0.5, d: 6, R: 6, S: 2, a: 4, c: 2, b: Math.sqrt(12) },
-    startWith: ['e', 'd'],
+    example: { e: 0.5, k: 3, d: 6, R: 6, S: 2, a: 4, c: 2, b: Math.sqrt(12) },
+    startWith: ['e', 'k'],
     representation: {
       kind: 'conicGraph',
       conic: 'ellipse',
@@ -5510,14 +5662,18 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
       }),
     ],
     ...rels(
-      derive(
-        'p = d ÷ 2',
-        '{p} = {d} ÷ 2',
+      withStep(
+        derive(
+          'p = d ÷ 2',
+          '{p} = {d} ÷ 2',
+          'p',
+          ['d'],
+          (v) => v.d! / 2,
+          '{d} ÷ 2',
+          'The vertex is halfway from the focus to the directrix.',
+        ),
         'p',
-        ['d'],
-        (v) => v.d! / 2,
-        '{d} ÷ 2',
-        'The vertex is halfway from the focus to the directrix.',
+        { note: (v) => (v.d === undefined ? '' : `→ the directrix is x = −${fmt(v.d)}`) },
       ),
       hide(
         derive(
@@ -5548,8 +5704,8 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           ],
         },
       ),
-      polarPart('x', 'r', 't', 'cos', 'Across: r times the cosine of the angle.'),
-      polarPart('y', 'r', 't', 'sin', 'Up: r times the sine of the angle.'),
+      polarPartθ('x', 'r', 't', 'cos', 'Across: r times the cosine of the angle.'),
+      polarPartθ('y', 'r', 't', 'sin', 'Up: r times the sine of the angle.'),
     ),
     example: { d: 4, p: 2, t: 90, r: 4, x: 0, y: 4, h: -2 },
     startWith: ['d', 't'],
@@ -5597,42 +5753,72 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           'Turning the axes changes A, B and C but not B² − 4AC, so it names the conic.',
         ),
         'D',
+        // B ≠ 0 here, and a turned circle keeps B = 0: below 0 is an ellipse, never a circle.
         { note: (v) => (v.D === undefined ? '' : `→ ${conicByDiscriminant(v.D)}`) },
       ),
-      withCheck(
-        derive(
-          'tan 2θ = B ÷ (A − C)',
-          'tan(2 × {t}°) = {B} ÷ ({A} − {C})',
-          't',
-          ['A', 'B', 'C'],
-          (v) => {
-            if (v.B === 0) return undefined;
-            if (v.A === v.C) return 45;
-            const w = Math.atan(v.B! / (v.A! - v.C!)) / RAD;
-            return (w < 0 ? w + 180 : w) / 2;
-          },
-          (v: Values) =>
-            v.A === v.C
-              ? '90 ÷ 2'
-              : v.B! / (v.A! - v.C!) < 0
-                ? '(180 + tan⁻¹({B} ÷ ({A} − {C}))) ÷ 2'
-                : 'tan⁻¹({B} ÷ ({A} − {C})) ÷ 2',
-          'tan 2θ = B ÷ (A − C) is cot 2θ = (A − C) ÷ B turned over; add 180° to a negative 2θ, then halve.',
-        ),
-        (v) =>
-          v.A === v.C
-            ? `cos(2 × ${fmt(v.t!)}°) = 0`
-            : `tan(2 × ${fmt(v.t!)}°) = ${fmt(v.B!)} ÷ (${fmt(v.A!)} − ${par(v.C!)})`,
-      ),
-      limit(
-        'B ≠ 0',
-        'The xy term {B} is not 0',
-        ['B'],
-        (v) => v.B !== 0,
-        'B = 0: there is no xy term, so the axes need no turning.',
-      ),
+      turnAngle,
+      noXyTerm,
     ),
     example: { A: 4, B: 2, C: 2, D: -28, t: 22.5 },
+    startWith: ['A', 'B', 'C'],
+    representation: { kind: 'unitCircle', angle: 't', fixed: true },
+  },
+  {
+    id: 'm.12.polar-conics~rotated-equation',
+    title: 'The equation after turning the axes',
+    use: 'Use this for “Turn the axes to remove the xy term of 4x² + 2xy + 2y² = 1 and write the equation in x′ and y′.”',
+    assumptions: [
+      'Turning by θ puts x = x′ cos θ − y′ sin θ and y = x′ sin θ + y′ cos θ into the equation.',
+      'With tan 2θ = B ÷ (A − C) the x′y′ term is 0, leaving A′x′² + C′y′² = −F.',
+      'A′ + C′ = A + C: a quick check on the arithmetic.',
+    ],
+    variables: [
+      V('A', 'A', 'Number before x²', { min: -1000, max: 1000, step: 0.01 }),
+      V('B', 'B', 'Number before xy', { min: -1000, max: 1000, step: 0.01 }),
+      V('C', 'C', 'Number before y²', { min: -1000, max: 1000, step: 0.01 }),
+      deg('t', 'θ', 'Angle to turn the axes', 0, 90, { derived: true }),
+      V('P', 'A′', 'Number before x′²', { min: -3000, max: 3000, step: 0.0001, derived: true }),
+      V('Q', 'C′', 'Number before y′²', { min: -3000, max: 3000, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      turnAngle,
+      noXyTerm,
+      derive(
+        'A′ = A cos²θ + B sin θ cos θ + C sin²θ',
+        '{P} = {A} × cos({t}°)² + {B} × sin({t}°) × cos({t}°) + {C} × sin({t}°)²',
+        'P',
+        ['A', 'B', 'C', 't'],
+        (v) => v.A! * cosd(v.t!) ** 2 + v.B! * sind(v.t!) * cosd(v.t!) + v.C! * sind(v.t!) ** 2,
+        '{A} × cos({t}°)² + {B} × sin({t}°) × cos({t}°) + {C} × sin({t}°)²',
+        'Put x = x′ cos θ − y′ sin θ and y = x′ sin θ + y′ cos θ in, and collect the x′² terms.',
+      ),
+      withStep(
+        derive(
+          'C′ = A sin²θ − B sin θ cos θ + C cos²θ',
+          '{Q} = {A} × sin({t}°)² − {B} × sin({t}°) × cos({t}°) + {C} × cos({t}°)²',
+          'Q',
+          ['A', 'B', 'C', 't'],
+          (v) => v.A! * sind(v.t!) ** 2 - v.B! * sind(v.t!) * cosd(v.t!) + v.C! * cosd(v.t!) ** 2,
+          '{A} × sin({t}°)² − {B} × sin({t}°) × cos({t}°) + {C} × cos({t}°)²',
+          'Collect the y′² terms the same way; the signs of the sines change.',
+        ),
+        'Q',
+        {
+          note: (v) =>
+            v.P === undefined || v.Q === undefined
+              ? ''
+              : `→ ${fmt(v.P)}x′² + ${fmt(v.Q)}y′² + F = 0, with A′ + C′ = A + C`,
+        },
+      ),
+    ),
+    example: {
+      A: 4,
+      B: 2,
+      C: 2,
+      t: 22.5,
+      P: 3 + Math.SQRT2,
+      Q: 3 - Math.SQRT2,
+    },
     startWith: ['A', 'B', 'C'],
     representation: { kind: 'unitCircle', angle: 't', fixed: true },
   },
