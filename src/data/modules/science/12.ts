@@ -75,8 +75,8 @@ const difference = (a: string, b: string, c: string, id: string, how: [string, s
     [c]: [(v) => v[b]! - v[a]!, `{${b}} − {${a}}`, how[2]],
   });
 
-/** a < b, checked only. */
-const below = (a: string, b: string, id: string, display: string): Rel => ({
+/** a < b, checked only; `why` is the reason a conflict is refused. */
+const below = (a: string, b: string, id: string, display: string, why?: string): Rel => ({
   relation: {
     id,
     constraint: true,
@@ -84,6 +84,7 @@ const below = (a: string, b: string, id: string, display: string): Rel => ({
     vars: [a, b],
     residual: (v: Values) => (v[a]! < v[b]! ? 0 : 1),
     solve: {},
+    ...(why ? { message: () => why } : {}),
   },
   steps: {},
 });
@@ -128,6 +129,23 @@ const mineralDensity: ModuleDef = {
 
 // ── Earthquakes, seismic waves and Earth's interior ──
 
+/**
+ * S waves are at most 0.7 times as fast as P waves: in rock vₚ ÷ vₛ is at least √2 (the crust
+ * 6 ÷ 3.5, the mantle 13.7 ÷ 7.3). It also keeps 1 ÷ vₛ − 1 ÷ vₚ away from 0.
+ */
+const sSlower: Rel = {
+  relation: {
+    id: 'vₛ ≤ 0.7 × vₚ',
+    constraint: true,
+    display: '{vs} is at most 0.7 × {vp}',
+    vars: ['vs', 'vp'],
+    residual: (v: Values) => (v.vs! <= 0.7 * v.vp! + 1e-9 ? 0 : 1),
+    solve: {},
+    message: () => 'In rock, S waves travel at most about 0.7 times as fast as P waves.',
+  },
+  steps: {},
+};
+
 /** The S − P lag at distance d: d ÷ vₛ − d ÷ vₚ. */
 const lagOf = (d: number, vp: number, vs: number) => d / vs - d / vp;
 
@@ -140,15 +158,15 @@ const earthInterior: ModuleDef = {
     'One station gives a distance, not a direction.',
   ],
   variables: [
-    V('d', 'd', 'Distance to the focus', { unit: 'km', min: 1, max: 10000, step: 1 }),
+    V('d', 'd', 'Distance to the focus', { unit: 'km', min: 0.2, max: 12700, step: 1 }),
     V('vp', 'vₚ', 'P-wave speed', { unit: 'km/s', units: ['km/s'], min: 4, max: 14, step: 0.1 }),
     V('vs', 'vₛ', 'S-wave speed', { unit: 'km/s', units: ['km/s'], min: 2, max: 8, step: 0.1 }),
-    V('tp', 'tₚ', 'P arrival', { unit: 's', min: 0.01, max: 2500, step: 0.1, derived: true }),
-    V('ts', 'tₛ', 'S arrival', { unit: 's', min: 0.01, max: 5000, step: 0.1, derived: true }),
+    V('tp', 'tₚ', 'P arrival', { unit: 's', min: 0.01, max: 3200, step: 0.1, derived: true }),
+    V('ts', 'tₛ', 'S arrival', { unit: 's', min: 0.01, max: 6400, step: 0.1, derived: true }),
     V('L', 'L', 'S − P lag', { unit: 's', min: 0.1, max: 1500, step: 0.1 }),
   ],
   ...rels(
-    below('vs', 'vp', 'vₛ < vₚ', '{vs} is less than {vp}'),
+    sSlower,
     quotient('tp', 'd', 'vp', 'tₚ = d ÷ vₚ', [
       'Travel time is the distance over the P wave’s speed.',
       'Distance is the speed times the travel time.',
@@ -219,7 +237,7 @@ const lagRate = rule(
     k: [
       (v) => div(1, 1 / v.vs! - 1 / v.vp!),
       '1 ÷ (1 ÷ {vs} − 1 ÷ {vp})',
-      'Each km adds 1 ÷ vₛ − 1 ÷ vₚ seconds of lag; flip it for km per second of lag.',
+      'Each km adds 1 ÷ vₛ − 1 ÷ vₚ seconds of lag; flip it to get km per second of lag.',
     ],
     vs: [
       (v) => div(1, 1 / v.k! + 1 / v.vp!),
@@ -251,20 +269,20 @@ const epicenter: ModuleDef = {
     V('t3', 'L₃', 'Lag at station 3', { unit: 's', min: 0.1, max: 120, step: 0.1 }),
     V('vp', 'vₚ', 'P-wave speed', { unit: 'km/s', units: ['km/s'], min: 4, max: 14, step: 0.1 }),
     V('vs', 'vₛ', 'S-wave speed', { unit: 'km/s', units: ['km/s'], min: 2, max: 8, step: 0.1 }),
-    V('k', 'k', 'Distance per second of lag', {
+    V('k', 'k', 'Km of distance per second of lag', {
       unit: 'km/s',
       units: ['km/s'],
       min: 2,
-      max: 1000,
+      max: 35,
       step: 0.1,
       derived: true,
     }),
-    V('d1', 'd₁', 'Distance from station 1', { unit: 'km', min: 0.1, max: 100000, step: 1 }),
-    V('d2', 'd₂', 'Distance from station 2', { unit: 'km', min: 0.1, max: 100000, step: 1 }),
-    V('d3', 'd₃', 'Distance from station 3', { unit: 'km', min: 0.1, max: 100000, step: 1 }),
+    V('d1', 'd₁', 'Distance from station 1', { unit: 'km', min: 0.1, max: 4000, step: 1 }),
+    V('d2', 'd₂', 'Distance from station 2', { unit: 'km', min: 0.1, max: 4000, step: 1 }),
+    V('d3', 'd₃', 'Distance from station 3', { unit: 'km', min: 0.1, max: 4000, step: 1 }),
   ],
   ...rels(
-    below('vs', 'vp', 'vₛ < vₚ', '{vs} is less than {vp}'),
+    sSlower,
     lagRate,
     stationRel('d1', 't1', '₁'),
     stationRel('d2', 't2', '₂'),
@@ -283,8 +301,8 @@ const epicenter: ModuleDef = {
   },
 };
 
-/** Kilometres along Earth's surface per degree from the focus: π × 6371 ÷ 180. */
-const KM_PER_DEG = (Math.PI * 6371) / 180;
+/** Kilometres along Earth's surface per degree from the epicenter: 2 × π × 6,371 ÷ 360. */
+const KM_PER_DEG = (2 * Math.PI * 6371) / 360;
 
 const shadowZone: ModuleDef = {
   id: 's.12.earth-interior~shadow-zone',
@@ -297,22 +315,33 @@ const shadowZone: ModuleDef = {
     'The outer core starts 2,890 km down.',
   ],
   variables: [
-    V('D', 'Δ', 'Angle from the focus', { unit: '°', min: 0, max: 180, step: 1 }),
-    V('s', 's', 'Distance along the surface', { unit: 'km', min: 0, max: 20100, step: 1 }),
+    V('D', 'Δ', 'Angle from the epicenter', { unit: '°', min: 1, max: 180, step: 1 }),
+    V('s', 's', 'Distance along the surface', {
+      unit: 'km',
+      min: 100,
+      max: 20100,
+      step: 1,
+      sigFigs: 4,
+    }),
   ],
   ...rels(
-    rule('s = Δ × π × 6371 ÷ 180', '{s} = {D} × π × 6371 ÷ 180', (v) => v.s! - v.D! * KM_PER_DEG, {
-      s: [
-        (v) => v.D! * KM_PER_DEG,
-        '{D} × π × 6371 ÷ 180',
-        'The angle’s share of 180°, times half the circumference, π × 6371 km.',
-      ],
-      D: [
-        (v) => v.s! / KM_PER_DEG,
-        '{s} × 180 ÷ (π × 6371)',
-        'How many of the km in each degree fit into the distance.',
-      ],
-    }),
+    rule(
+      's = Δ ÷ 360 × 2 × π × 6,371',
+      '{s} = {D} ÷ 360 × 2 × π × 6,371',
+      (v) => v.s! - v.D! * KM_PER_DEG,
+      {
+        s: [
+          (v) => v.D! * KM_PER_DEG,
+          '{D} ÷ 360 × 2 × π × 6,371',
+          'The angle’s share of 360°, times Earth’s circumference, 2 × π × 6,371 km.',
+        ],
+        D: [
+          (v) => v.s! / KM_PER_DEG,
+          '{s} ÷ (2 × π × 6,371) × 360',
+          'The distance’s share of the circumference, times 360°.',
+        ],
+      },
+    ),
   ),
   example: { D: 120, s: 120 * KM_PER_DEG },
   startWith: ['D'],
@@ -343,7 +372,7 @@ const leftAfter = (p: string, parent: string) =>
       n: [
         (v) => (v[p]! > 0 ? Math.log(100 / v[p]!) / Math.log(2) : undefined),
         `ln(100/{${p}})/ln(2)`,
-        'Count the halvings with logs: how many times 2 goes into the drop.',
+        `Count the halvings: n is the power of 2 that equals 100 ÷ ${p === 'P' ? 'P' : 'p'}.`,
       ],
     },
   );
@@ -359,7 +388,7 @@ const carbonDating: ModuleDef = {
     V('T', 'T', 'Half-life of C-14', { unit: 'years', min: 5000, max: 6000, step: 1 }),
     V('t', 't', 'Age', { unit: 'years', min: 0, max: 60000, step: 1 }),
     V('n', 'n', 'Half-lives passed', { min: 0, max: 12, step: 0.0001, derived: true }),
-    V('p', 'p', 'C-14 left', { unit: '%', min: 0.01, max: 100, step: 0.01 }),
+    V('p', 'p', 'C-14 left', { unit: '%', min: 0.1, max: 100, step: 0.001 }),
     V('q', 'q', 'C-14 decayed', { unit: '%', min: 0, max: 99.99, step: 0.01, derived: true }),
   ],
   ...rels(
@@ -402,12 +431,13 @@ const uranium: ModuleDef = {
     'U-238 decays to lead-206 with a half-life of 4.47 × 10⁹ years.',
     'The rock started with no lead-206 and lost none.',
     'Most surface rocks were melted or weathered since Earth formed. Meteorites were not, so they date the solar system.',
+    'Nothing in the solar system is older than about 4.57 × 10⁹ years, so R is at most about 1.',
   ],
   variables: [
-    V('R', 'R', 'Lead-206 atoms per U-238 atom', { min: 0, max: 15, step: 0.01 }),
-    V('p', 'p', 'U-238 left', { unit: '%', min: 6.25, max: 100, step: 0.01, derived: true }),
-    V('n', 'n', 'Half-lives passed', { min: 0, max: 4, step: 0.0001, derived: true }),
-    V('t', 't', 'Age', { unit: 'years', min: 0, max: 1.8e10, step: 1000 }),
+    V('R', 'R', 'Lead-206 atoms per U-238 atom', { min: 0.0016, max: 1.04, step: 0.0001 }),
+    V('p', 'p', 'U-238 left', { unit: '%', min: 48.5, max: 99.9, step: 0.01, derived: true }),
+    V('n', 'n', 'Half-lives passed', { min: 0.002, max: 1.04, step: 0.0001, derived: true }),
+    V('t', 't', 'Age', { unit: 'years', min: 1e7, max: 4.6e9, step: 1000 }),
   ],
   ...rels(
     rule('p = 100 ÷ (1 + R)', '{p} = 100 ÷ (1 + {R})', (v) => v.p! * (1 + v.R!) - 100, {
@@ -454,18 +484,24 @@ const bracket: ModuleDef = {
     'Uranium-235 decays to lead-207 with a half-life of 704 million years.',
   ],
   variables: [
-    V('P', 'P', 'U-235 left in the lower ash', { unit: '%', min: 50, max: 100, step: 0.01 }),
+    V('P', 'P', 'U-235 left in the lower ash', { unit: '%', min: 50, max: 99, step: 0.01 }),
     V('n', 'n', 'Half-lives passed', { min: 0, max: 1, step: 0.0001, derived: true }),
     myr('t', 't', 'Age of the lower ash'),
-    myr('u', 'u', 'Age of the upper ash'),
-    myr('w', 'w', 'Width of the bracket', { derived: true }),
+    myr('u', 'u', 'Age of the upper ash', { max: 700 }),
+    myr('w', 'w', 'Width of the age bracket', { derived: true }),
   ],
   ...rels(
     leftAfter('P', 'U-235'),
     fixedAge(U235_MA, '704'),
-    below('u', 't', 'u < t', 'the upper ash {u} is younger than the lower ash {t}'),
+    below(
+      'u',
+      't',
+      'u < t',
+      'the upper ash {u} is younger than the lower ash {t}',
+      'The upper ash lies on top, so it must be younger than the lower ash.',
+    ),
     difference('w', 't', 'u', 'w = t − u', [
-      'The shale is younger than the lower ash and older than the upper ash.',
+      'The shale lies between the ash beds, so it is from u to t million years old; the bracket is their difference.',
       'The lower ash is the bracket’s width older than the upper ash.',
       'The upper ash is the bracket’s width younger than the lower ash.',
     ]),
@@ -491,6 +527,68 @@ const bracket: ModuleDef = {
         halfLives: 'n',
       },
     },
+  },
+};
+
+/** Years in the universe's age: no date can be older. */
+const UNIVERSE = 1.38e10;
+
+const halfLife: ModuleDef = {
+  id: 's.12.radiometric-dating~half-life',
+  title: 'Any isotope: age from the daughter-to-parent ratio',
+  use: 'Use this for “A rock holds 3 daughter atoms for every parent atom, and the half-life is 1.25 × 10⁹ years. How old is it?”',
+  assumptions: [
+    'Each daughter atom was once a parent atom, and the rock started with no daughter atoms.',
+    'No atoms got in or out since the rock formed.',
+    'The universe is about 1.38 × 10¹⁰ years old, so no age can be greater.',
+  ],
+  variables: [
+    V('T', 'T', 'Half-life', { unit: 'years', min: 1, max: 1e11, step: 1 }),
+    V('R', 'R', 'Daughter atoms per parent atom', { min: 0, max: 1000, step: 0.001 }),
+    V('p', 'p', 'Parent left', { unit: '%', min: 0.0999, max: 100, step: 0.01, derived: true }),
+    V('n', 'n', 'Half-lives passed', { min: 0, max: 10, step: 0.0001, derived: true }),
+    V('t', 't', 'Age', { unit: 'years', min: 0, max: 1e12, step: 1 }),
+  ],
+  ...rels(
+    rule('p = 100 ÷ (1 + R)', '{p} = 100 ÷ (1 + {R})', (v) => v.p! * (1 + v.R!) - 100, {
+      p: [
+        (v) => 100 / (1 + v.R!),
+        '100 ÷ (1 + {R})',
+        'Each daughter atom was once a parent atom: the parent’s share of 1 + R atoms.',
+      ],
+      R: [
+        (v) => div(100, v.p!)! - 1,
+        '100 ÷ {p} − 1',
+        'The atoms at the start per atom left, less the one left.',
+      ],
+    }),
+    leftAfter('p', 'parent'),
+    halves,
+    {
+      relation: {
+        id: 't ≤ 1.38 × 10¹⁰',
+        constraint: true,
+        display: '{t} is at most 1.38 × 10¹⁰ years',
+        vars: ['t'],
+        residual: (v: Values) => (v.t! <= UNIVERSE * (1 + 1e-9) ? 0 : 1),
+        solve: {},
+        message: () => 'No rock is older than the universe, about 1.38 × 10¹⁰ years.',
+      },
+      steps: {},
+    },
+  ),
+  example: { T: 1.25e9, R: 3, p: 25, n: 2, t: 2.5e9 },
+  startWith: ['R', 'T'],
+  representation: {
+    kind: 'decayChart',
+    halfLife: 'T',
+    time: 't',
+    start: 100,
+    left: 'p',
+    halves: 'n',
+    parent: 'Parent',
+    daughter: 'Daughter',
+    keep: ['T'],
   },
 };
 
@@ -1323,6 +1421,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   carbonDating,
   uranium,
   bracket,
+  halfLife,
   sonar,
   tides,
   lapse,
