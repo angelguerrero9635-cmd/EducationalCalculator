@@ -3495,10 +3495,347 @@ const PARALLEL_LINES: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.rigid-motions ──────────────────────────────────────────────────────
+
+/** A whole-number coordinate from −lim to lim. */
+const grid = (id: string, symbol: string, name: string, lim = 7) =>
+  num(id, symbol, name, -lim, lim, { step: 1, integer: true });
+/** to = from, or to = −from (`sign` −1): a coordinate carried over, both ways. */
+const carry = (to: string, from: string, how: string, sign = 1) =>
+  rule(
+    sign === 1 ? `${to} = ${from}` : `${to} = −${from}`,
+    sign === 1 ? `{${to}} = {${from}}` : `{${to}} = −{${from}}`,
+    {
+      [to]: [(v) => sign * v[from]!, sign === 1 ? `{${from}}` : `−{${from}}`, how],
+      [from]: [(v) => sign * v[to]!, sign === 1 ? `{${to}}` : `−{${to}}`, how],
+    },
+    (v) => v[to]! - sign * v[from]!,
+  );
+/** A value picked by a rule with no arithmetic (a count of lines): its check line is itself. */
+const pick = (
+  id: string,
+  display: string,
+  x: string,
+  f: (v: Values) => number,
+  how: (v: Values) => string,
+): Rule => {
+  const vars = [...new Set([...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!))];
+  return {
+    relation: {
+      id,
+      display,
+      vars,
+      check: (v: Values) => `${f(v)} = ${v[x]}`,
+      residual: (v: Values) => v[x]! - f(v),
+      solve: Object.fromEntries(vars.map((k) => [k, k === x ? f : () => undefined])),
+    },
+    steps: { [x]: { expr: (v: Values) => `${f(v)}`, how } },
+  };
+};
+
+const RIGID_MOTIONS: ModuleDef[] = [
+  page({
+    id: 'm.10.rigid-motions',
+    assumptions: [
+      'First reflect across the y-axis: (x, y) → (−x, y). Then rotate 90° counterclockwise about the origin: (x, y) → (−y, x).',
+      'Each move keeps lengths and angles, so the final image is congruent to the figure.',
+      'Order matters: swapping the two moves can land somewhere else.',
+    ],
+    standalone: {
+      vars: ['ay', 'py', 'qx'],
+      why: 'The reflection keeps y, and the turn sends that y to the new x on its own.',
+    },
+    variables: [
+      grid('ax', 'x', 'x of A'),
+      grid('ay', 'y', 'y of A'),
+      grid('px', 'x′', 'x of A′'),
+      grid('py', 'y′', 'y of A′'),
+      grid('qx', 'x″', 'x of A″'),
+      grid('qy', 'y″', 'y of A″'),
+    ],
+    rules: [
+      carry('px', 'ax', 'Reflecting across the y-axis changes the sign of x.', -1),
+      carry('py', 'ay', 'Reflecting across the y-axis keeps y.'),
+      carry(
+        'qx',
+        'py',
+        'A quarter turn counterclockwise: the new x is the old y with its sign changed.',
+        -1,
+      ),
+      carry('qy', 'px', 'A quarter turn counterclockwise: the new y is the old x.'),
+    ],
+    example: { ax: 2, ay: 5, px: -2, py: 5, qx: -5, qy: -2 },
+    startWith: ['ax', 'ay'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [5, 4],
+        [5, 6],
+      ],
+      move: 'reflect',
+      mirror: 'y-axis',
+      image: { x: 'px', y: 'py' },
+      then: { move: 'rotate', angle: 90 },
+      image2: { x: 'qx', y: 'qy' },
+      extent: 7,
+    },
+  }),
+  page({
+    id: 'm.10.rigid-motions~glide',
+    title: 'A glide reflection',
+    use: 'Use this for “Translate A(1, 2) 6 units right, then reflect it across the x-axis.”',
+    assumptions: [
+      'First slide h units right: (x, y) → (x + h, y). Then reflect across the x-axis: (x, y) → (x, −y).',
+      'A slide along a line followed by a flip in that line is a glide reflection.',
+    ],
+    standalone: {
+      vars: ['ay', 'py', 'qy'],
+      why: 'The slide is across, so the heights change only by the flip.',
+    },
+    variables: [
+      grid('ax', 'x', 'x of A'),
+      grid('ay', 'y', 'y of A'),
+      grid('h', 'h', 'Slide right'),
+      grid('px', 'x′', 'x of A′', 14),
+      grid('py', 'y′', 'y of A′'),
+      grid('qx', 'x″', 'x of A″', 14),
+      grid('qy', 'y″', 'y of A″'),
+    ],
+    rules: [
+      sum('px', 'ax', 'h', 'The slide moves every point h units across.'),
+      carry('py', 'ay', 'A slide across keeps y.'),
+      carry('qx', 'px', 'Reflecting across the x-axis keeps x.'),
+      carry('qy', 'py', 'Reflecting across the x-axis changes the sign of y.', -1),
+    ],
+    example: { ax: 1, ay: 2, h: 6, px: 7, py: 2, qx: 7, qy: -2 },
+    startWith: ['ax', 'ay', 'h'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [-4, 2],
+        [-6, 5],
+      ],
+      move: 'translate',
+      right: 'h',
+      up: 0,
+      image: { x: 'px', y: 'py' },
+      then: { move: 'reflect', mirror: 'x-axis' },
+      image2: { x: 'qx', y: 'qy' },
+      extent: 7,
+    },
+  }),
+  page({
+    id: 'm.10.rigid-motions~rotate-point',
+    title: 'Rotating about a point',
+    use: 'Use this for “Rotate A(6, 2) 90° counterclockwise about the point (1, 1).”',
+    assumptions: [
+      'The turn is 90° counterclockwise about the center (a, b).',
+      'Measure A from the center, turn that step a quarter turn, and add it back to the center.',
+      'So x′ = a − (y − b) and y′ = b + (x − a).',
+    ],
+    variables: [
+      grid('ax', 'x', 'x of A', 8),
+      grid('ay', 'y', 'y of A', 8),
+      grid('a', 'a', 'x of the center', 8),
+      grid('b', 'b', 'y of the center', 8),
+      grid('px', 'x′', 'x of A′', 30),
+      grid('py', 'y′', 'y of A′', 30),
+    ],
+    rules: [
+      rule(
+        'x′ = a − (y − b)',
+        '{px} = {a} − ({ay} − {b})',
+        {
+          px: [
+            (v) => v.a! - v.ay! + v.b!,
+            '{a} − ({ay} − {b})',
+            'A quarter turn sends the step up from the center to a step left.',
+          ],
+          ay: [
+            (v) => v.a! + v.b! - v.px!,
+            '{a} + {b} − {px}',
+            'Undo the turn for the height of A.',
+          ],
+        },
+        (v) => v.px! - (v.a! - v.ay! + v.b!),
+      ),
+      rule(
+        'y′ = b + (x − a)',
+        '{py} = {b} + ({ax} − {a})',
+        {
+          py: [
+            (v) => v.b! + v.ax! - v.a!,
+            '{b} + ({ax} − {a})',
+            'A quarter turn sends the step right from the center to a step up.',
+          ],
+          ax: [(v) => v.py! - v.b! + v.a!, '{a} + ({py} − {b})', 'Undo the turn for the x of A.'],
+        },
+        (v) => v.py! - (v.b! + v.ax! - v.a!),
+      ),
+    ],
+    example: { ax: 6, ay: 2, a: 1, b: 1, px: 0, py: 6 },
+    startWith: ['ax', 'ay', 'a', 'b'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [7, 1],
+        [7, 3],
+      ],
+      move: 'rotate',
+      angle: 90,
+      center: ['a', 'b'],
+      image: { x: 'px', y: 'py' },
+      extent: 8,
+    },
+  }),
+  page({
+    id: 'm.10.rigid-motions~reflect-line',
+    title: 'Reflecting across y = −x',
+    use: 'Use this for “Reflect A(4, 1) across the line y = −x.”',
+    assumptions: [
+      'Across y = −x the coordinates swap and both signs change: (x, y) → (−y, −x).',
+      'Across y = x they only swap: (x, y) → (y, x).',
+      'Each point and its image are the same distance from the line, on a segment at right angles to it.',
+    ],
+    standalone: { vars: ['ay', 'px'], why: 'The new x comes from the old y alone.' },
+    variables: [
+      grid('ax', 'x', 'x of A', 6),
+      grid('ay', 'y', 'y of A', 6),
+      grid('px', 'x′', 'x of A′', 6),
+      grid('py', 'y′', 'y of A′', 6),
+    ],
+    rules: [
+      carry('px', 'ay', 'Across y = −x, the new x is the old y with its sign changed.', -1),
+      carry('py', 'ax', 'Across y = −x, the new y is the old x with its sign changed.', -1),
+    ],
+    example: { ax: 4, ay: 1, px: -1, py: -4 },
+    startWith: ['ax', 'ay'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [4, 4],
+        [2, 4],
+      ],
+      move: 'reflect',
+      mirror: 'y = −x',
+      image: { x: 'px', y: 'py' },
+      extent: 6,
+    },
+  }),
+  page({
+    id: 'm.10.rigid-motions~symmetry',
+    title: 'Symmetry of a rectangle',
+    use: 'Use this for “Which rotations carry a 6 by 4 rectangle onto itself? How many lines of symmetry does it have?”',
+    assumptions: [
+      'The rectangle’s corners are (1, 1) and (r, u), with center (a, b) halfway across and up.',
+      'A rectangle that isn’t a square has 2 lines of symmetry and is carried onto itself by 180° and 360° turns.',
+      'A square (w = h) adds 90° and 270° turns and its two diagonals: 4 lines.',
+    ],
+    variables: [
+      num('w', 'w', 'Width', 1, 8, { step: 1, integer: true }),
+      num('h', 'h', 'Height', 1, 8, { step: 1, integer: true }),
+      num('t', 't', 'Turn', 90, 360, { unit: '°', allowed: [90, 180, 270, 360] }),
+      der(num('r', 'r', 'Right side at x =', 2, 9, { integer: true })),
+      der(num('u', 'u', 'Top side at y =', 2, 9, { integer: true })),
+      der(num('a', 'a', 'x of the center', 1.5, 5)),
+      der(num('b', 'b', 'y of the center', 1.5, 5)),
+      der(num('L', 'L', 'Lines of symmetry', 2, 4, { integer: true })),
+      der(num('n', 'n', 'Order of rotational symmetry', 2, 4, { integer: true })),
+      der(num('f', 'f', 'Carried onto itself (1 yes, 0 no)', 0, 1, { integer: true })),
+    ],
+    rules: [
+      derive(
+        'r = 1 + w',
+        '{r} = 1 + {w}',
+        'r',
+        (v) => 1 + v.w!,
+        '1 + {w}',
+        'The right side is w squares from x = 1.',
+      ),
+      derive(
+        'u = 1 + h',
+        '{u} = 1 + {h}',
+        'u',
+        (v) => 1 + v.h!,
+        '1 + {h}',
+        'The top is h squares above y = 1.',
+      ),
+      derive(
+        'a = (1 + r)/2',
+        '{a} = (1 + {r}) ÷ 2',
+        'a',
+        (v) => (1 + v.r!) / 2,
+        '(1 + {r}) ÷ 2',
+        'The center is halfway across.',
+      ),
+      derive(
+        'b = (1 + u)/2',
+        '{b} = (1 + {u}) ÷ 2',
+        'b',
+        (v) => (1 + v.u!) / 2,
+        '(1 + {u}) ÷ 2',
+        'The center is halfway up.',
+      ),
+      pick(
+        'L from w and h',
+        '{L} lines when the sides are {w} and {h}',
+        'L',
+        (v) => (v.w === v.h ? 4 : 2),
+        (v) =>
+          v.w === v.h
+            ? 'A square: the two midlines and the two diagonals.'
+            : 'Not a square: only the two midlines; a diagonal flips it onto a different rectangle.',
+      ),
+      pick(
+        'n from w and h',
+        'order {n} when the sides are {w} and {h}',
+        'n',
+        (v) => (v.w === v.h ? 4 : 2),
+        (v) =>
+          v.w === v.h
+            ? 'A square lands on itself every quarter turn.'
+            : 'A rectangle lands on itself every half turn.',
+      ),
+      pick(
+        'f from t and n',
+        '{f}: does a turn of {t} carry it onto itself, order {n}',
+        'f',
+        (v) => (Math.round(v.t! * v.n!) % 360 === 0 ? 1 : 0),
+        (v) =>
+          Math.round(v.t! * v.n!) % 360 === 0
+            ? 'The turn is a whole number of 360° ÷ n steps: the figure lands on itself.'
+            : 'The turn is not a whole number of 360° ÷ n steps: the figure lands turned.',
+      ),
+    ],
+    example: { w: 6, h: 4, t: 180, r: 7, u: 5, a: 4, b: 3, L: 2, n: 2, f: 1 },
+    startWith: ['w', 'h', 't'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        [1, 1],
+        ['r', 1],
+        ['r', 'u'],
+        [1, 'u'],
+      ],
+      move: 'rotate',
+      angle: 't',
+      center: ['a', 'b'],
+      symmetry: true,
+      extent: 10,
+      quadrants: 1,
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...CONSTRUCTIONS,
   ...PROOFS,
   ...PARALLEL_LINES,
+  ...RIGID_MOTIONS,
   ...SIMILARITY,
   ...SPECIAL,
   ...TRIG,

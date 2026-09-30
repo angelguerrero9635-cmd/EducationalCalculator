@@ -194,6 +194,38 @@ const PARALLEL_LINES: LayoutDef[] = [
   },
 ];
 
+// ── Rigid motions (G-CO.2–6) ──
+const RIGID_MOTIONS: LayoutDef[] = [
+  {
+    kind: 'sort',
+    id: 'm.10.rigid-motions~which-motion',
+    title: 'Which motion is the rule?',
+    use: 'Use this for “Is (x, y) → (2x, 2y) a rigid motion? Which move is (x, y) → (−y, x)?”',
+    assumptions: [
+      'A rigid motion keeps every length and every angle.',
+      'Adding to x or y slides; changing a sign or swapping flips; −y, x or −x, −y turns.',
+      'Multiplying a coordinate by a number other than 1 or −1 stretches: not rigid.',
+    ],
+    question: 'Which motion does the rule make?',
+    bins: [
+      { id: 'translate', label: 'Translation', why: 'Every point slides the same way.' },
+      { id: 'reflect', label: 'Reflection', why: 'Every point flips across a line.' },
+      { id: 'rotate', label: 'Rotation', why: 'Every point turns about the origin.' },
+      { id: 'not', label: 'Not rigid', why: 'Lengths change, so the image isn’t congruent.' },
+    ],
+    cards: [
+      { label: '(x, y) → (x + 4, y − 1)', bin: 'translate' },
+      { label: '(x, y) → (x − 2, y)', bin: 'translate' },
+      { label: '(x, y) → (x, −y)', bin: 'reflect' },
+      { label: '(x, y) → (y, x)', bin: 'reflect' },
+      { label: '(x, y) → (−y, x)', bin: 'rotate' },
+      { label: '(x, y) → (−x, −y)', bin: 'rotate' },
+      { label: '(x, y) → (2x, 2y)', bin: 'not' },
+      { label: '(x, y) → (x, 3y)', bin: 'not' },
+    ],
+  },
+];
+
 // ── Similarity (G-SRT.2–5) ──
 const SIMILARITY: LayoutDef[] = [
   {
@@ -324,6 +356,7 @@ export const MATH_10_LAYOUTS: LayoutDef[] = [
   ...CONSTRUCTIONS,
   ...PROOFS,
   ...PARALLEL_LINES,
+  ...RIGID_MOTIONS,
   ...SIMILARITY,
   ...VOLUME,
 ];
