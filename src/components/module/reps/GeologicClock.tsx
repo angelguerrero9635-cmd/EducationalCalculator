@@ -187,7 +187,7 @@ export function GeologicClock({ spec, calc }: { spec: GeologicClockSpec; calc: C
                     opacity={0.3}
                   />
                   <ChartText x={COL + 20} y={70} fontSize={chart.label}>
-                    {on ? `last ${mText}` : 'the time since, shaded'}
+                    {on ? mText : 'the time since, shaded'}
                   </ChartText>
                   {events.map((e, i) => (
                     <G key={e.name}>
