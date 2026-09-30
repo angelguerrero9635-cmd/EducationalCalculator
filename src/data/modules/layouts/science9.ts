@@ -998,6 +998,161 @@ const BIOTECH: LayoutDef[] = [
   },
 ];
 
+const ENERGY: LayoutDef[] = [
+  // ── Cellular energy: ATP, photosynthesis and cellular respiration (HS-LS1-5, 1-7, 2-3, 2-5) ──
+  {
+    kind: 'explore',
+    id: 's.9.cellular-energy',
+    assumptions: [
+      'ATP carries the energy a cell spends; the cell remakes it from ADP and phosphate.',
+      'Plant cells have chloroplasts and mitochondria; animal cells have only mitochondria.',
+      'Textbooks give 30 to 38 ATP for each glucose respired, so no single total is stated here.',
+    ],
+    figure: { kind: 'organelleEnergy' },
+    scenes: [
+      {
+        label: 'The cycle',
+        lines: [
+          'The products of each process are the reactants of the other: matter cycles, while energy flows in as light and out as work and heat.',
+        ],
+        energy: {},
+      },
+      {
+        label: 'Photosynthesis',
+        lines: [
+          'In the chloroplast, light energy turns carbon dioxide and water into glucose, giving off oxygen.',
+        ],
+        energy: { process: 'photosynthesis' },
+      },
+      {
+        label: 'Light reactions',
+        lines: [
+          'In the thylakoids, light splits water: O₂ is given off, and the energy is stored in ATP and NADPH.',
+        ],
+        energy: { process: 'lightReactions', lit: 'light' },
+      },
+      {
+        label: 'Calvin cycle',
+        lines: [
+          'In the stroma, ATP and NADPH power the fixing of carbon from CO₂ into sugar.',
+          'So the carbon atoms in glucose come from carbon dioxide in the air.',
+        ],
+        energy: { process: 'calvinCycle', lit: 'CO₂' },
+      },
+      {
+        label: 'Respiration',
+        lines: [
+          'In the mitochondrion, glucose and oxygen become carbon dioxide and water, and the energy is stored in ATP.',
+        ],
+        energy: { process: 'respiration' },
+      },
+      {
+        label: 'Glycolysis',
+        lines: [
+          'In the cytoplasm, glucose splits into 2 pyruvate for a net gain of 2 ATP. It needs no oxygen.',
+        ],
+        energy: { process: 'glycolysis', lit: 'glucose' },
+      },
+      {
+        label: 'Krebs cycle',
+        lines: [
+          'In the matrix, pyruvate is broken down to CO₂, making 2 ATP and loading carriers with electrons.',
+        ],
+        energy: { process: 'krebsCycle', lit: 'CO₂' },
+      },
+      {
+        label: 'Electron transport',
+        lines: [
+          'Along the folded inner membrane, electrons pass to oxygen, which takes them and becomes water.',
+          'Most of the ATP is made here.',
+        ],
+        energy: { process: 'electronTransport', lit: 'O₂' },
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.cellular-energy~stages',
+    title: 'The stages of cellular respiration',
+    use: 'Use this for “Where does each stage of respiration happen, and which makes the most ATP?”',
+    assumptions: [
+      'Glycolysis happens in the cytoplasm; the rest happens in the mitochondrion.',
+      'Oxygen is needed only at the last stage, where it takes the electrons.',
+    ],
+    question: 'Put the stages of cellular respiration in order.',
+    stages: [
+      { label: 'Glycolysis splits glucose into 2 pyruvate in the cytoplasm' },
+      { label: 'Pyruvate enters the mitochondrion and gives off CO₂' },
+      { label: 'The Krebs cycle gives off CO₂ and loads NADH' },
+      { label: 'The electron transport chain uses O₂ and makes most of the ATP' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.cellular-energy~processes',
+    title: 'Photosynthesis, respiration or fermentation?',
+    use: 'Use this for “Which process makes bread dough rise?”',
+    assumptions: [
+      'Photosynthesis stores light energy in glucose; aerobic respiration and fermentation release it.',
+      'Fermentation needs no oxygen but makes only 2 ATP per glucose.',
+    ],
+    question: 'Which process is it?',
+    bins: [
+      {
+        id: 'photosynthesis',
+        label: 'Photosynthesis',
+        why: 'Light, CO₂ and water make glucose and oxygen, in chloroplasts.',
+      },
+      {
+        id: 'aerobic',
+        label: 'Aerobic respiration',
+        why: 'Glucose and oxygen give CO₂, water and the most ATP, in mitochondria.',
+      },
+      {
+        id: 'fermentation',
+        label: 'Fermentation',
+        why: 'Glycolysis with no oxygen, then lactic acid or alcohol and CO₂.',
+      },
+    ],
+    cards: [
+      { label: 'Uses light energy', bin: 'photosynthesis' },
+      { label: 'Gives off O₂', bin: 'photosynthesis' },
+      { label: 'Happens in chloroplasts', bin: 'photosynthesis' },
+      { label: 'Happens in mitochondria', bin: 'aerobic' },
+      { label: 'Uses O₂ to release the most ATP', bin: 'aerobic' },
+      { label: 'Yeast makes bread dough rise with no O₂', bin: 'fermentation' },
+      { label: 'Sprinting muscles make lactic acid', bin: 'fermentation' },
+      { label: 'Makes only 2 ATP per glucose, with no O₂', bin: 'fermentation' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.cellular-energy~enzymes',
+    title: 'Enzyme activity by temperature',
+    use: 'Use this to record or read how fast an enzyme works at each temperature.',
+    assumptions: [
+      'A human enzyme: it lowers the activation energy of a reaction and is not used up.',
+      'Warmth speeds the molecules up, but too much heat changes the enzyme’s shape so its active site no longer fits.',
+    ],
+    columns: ['10 °C', '20 °C', '30 °C', '37 °C', '45 °C', '55 °C'],
+    rowLabel: 'Reaction rate',
+    unit: '% of the fastest',
+    max: 100,
+    step: 5,
+    initial: [20, 45, 80, 100, 60, 10],
+    pattern: (v) => {
+      const temps = [10, 20, 30, 37, 45, 55];
+      const peak = Math.max(...v);
+      const at = v.indexOf(peak);
+      if (at > 0 && at < v.length - 1 && v[v.length - 1]! < peak)
+        return `Activity rises to a peak near ${temps[at]} °C, then falls as heat changes the enzyme’s shape: it denatures.`;
+      if (v.every((x) => x === v[0]))
+        return 'The rate stayed the same at every temperature; a real enzyme speeds up, peaks, then falls.';
+      return 'A real enzyme speeds up with warmth, peaks at its best temperature, then falls as it denatures.';
+    },
+  },
+];
+
 export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
@@ -1008,4 +1163,5 @@ export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...HOMEOSTASIS,
   ...DNA,
   ...BIOTECH,
+  ...ENERGY,
 ];

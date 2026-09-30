@@ -8,6 +8,8 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   calculators; ~blood-types sort; ~pedigree explore).
 - `s.9.evolution-evidence`: 7 (main Hardy–Weinberg and ~allele-counts calculators; ~homologous
   and ~mechanisms sorts; ~common-ancestry explore; ~resistance and ~speciation sequences).
+- `s.9.cellular-energy`: 4 (main organelle explore with 8 scenes; ~stages sequence; ~processes
+  sort; ~enzymes observe, its columns temperatures, which `layouts.test.ts` accepts).
 - `s.9.population-ecology`: 5 (main logistic, ~rates and ~doubling calculators;
   ~limiting-factors sort; ~growth-phases sequence).
 - `s.9.membrane-transport`: 4 (main diffusion and ~pump calculators; ~transport-types and
@@ -28,6 +30,11 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
 - `s.9.mitosis-meiosis~chromosome-count` (calculator): Engine need 3, `cellDivision` as a
   calculator picture with `diploid` from a value (2–8 drawn, past 8 one pair and the count).
   Allowed [2, 4, 6] would hide the human 2n = 46 case the page is for.
+
+- `s.9.cellular-energy~equation` (calculator): Engine need 9. The `reaction` picture draws at
+  most 8 molecules a formula (`chemPictures.ts`), and 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂ needs 6 for one
+  glucose and 18 for three; the plan's interim range 1–3 already needs 18, and g = 1 alone leaves
+  the page nothing to type. Waits for 18 molecules a formula and a checked 24-atom glucose.
 
 ## Changed from the plan
 
