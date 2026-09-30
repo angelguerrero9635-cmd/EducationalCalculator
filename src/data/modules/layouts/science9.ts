@@ -131,7 +131,7 @@ const BIOMOLECULES: LayoutDef[] = [
     use: 'Use this for “Why can an insect stand on the surface of a pond?”',
     assumptions: [
       'Water is polar: its oxygen end is slightly negative and its hydrogen ends slightly positive.',
-      'Hydrogen bonds between water molecules cause all four properties here.',
+      'Hydrogen bonds, between water molecules or with other polar surfaces, cause all five properties here.',
     ],
     question: 'Which property of water explains it?',
     bins: [
@@ -139,6 +139,11 @@ const BIOMOLECULES: LayoutDef[] = [
         id: 'cohesion',
         label: 'Cohesion (surface tension)',
         why: 'Water molecules cling to each other, so the surface holds together.',
+      },
+      {
+        id: 'adhesion',
+        label: 'Adhesion (capillary action)',
+        why: 'Water molecules cling to other polar surfaces, so water climbs narrow spaces.',
       },
       {
         id: 'heat',
@@ -159,6 +164,8 @@ const BIOMOLECULES: LayoutDef[] = [
     cards: [
       { label: 'An insect stands on a pond', bin: 'cohesion' },
       { label: 'Water beads into round drops on a leaf', bin: 'cohesion' },
+      { label: 'Water climbs up a paper towel', bin: 'adhesion' },
+      { label: 'Water creeps up a thin glass tube', bin: 'adhesion' },
       { label: 'A lake warms slowly in spring', bin: 'heat' },
       { label: 'Seaside towns have milder winters than inland towns', bin: 'heat' },
       { label: 'Salt disappears when stirred into water', bin: 'solvent' },
@@ -213,7 +220,7 @@ const MEMBRANE: LayoutDef[] = [
       { label: 'CO₂ leaves a muscle cell', bin: 'simple' },
       { label: 'Glucose enters a red blood cell through a carrier protein', bin: 'facilitated' },
       { label: 'K⁺ leaves through an open channel, high to low', bin: 'facilitated' },
-      { label: 'Water enters a root cell through aquaporins', bin: 'osmosis' },
+      { label: 'Water moves into a root cell from wetter soil', bin: 'osmosis' },
       { label: 'The Na⁺/K⁺ pump spends ATP', bin: 'active' },
       { label: 'Root cells take in minerals from soil that has fewer of them', bin: 'active' },
       { label: 'A white blood cell engulfs a bacterium', bin: 'bulk' },
@@ -559,6 +566,7 @@ const INHERITANCE: LayoutDef[] = [
     assumptions: [
       'The ABO gene has three alleles: Iᴬ, Iᴮ and i.',
       'Iᴬ and Iᴮ are codominant, so IᴬIᴮ shows both; i is recessive to each of them.',
+      'Tests often write these as AA, AO, BB, BO, AB and OO.',
     ],
     question: 'Which blood type does the genotype give?',
     bins: [
@@ -669,9 +677,12 @@ const DNA: LayoutDef[] = [
     question: 'Put the steps of DNA replication in order.',
     stages: [
       { label: 'Helicase unzips the double helix at an origin' },
-      { label: 'Free nucleotides pair with each old strand, A with T and G with C' },
-      { label: 'DNA polymerase joins the new nucleotides into a strand' },
-      { label: 'Two DNA molecules, each one old strand and one new' },
+      {
+        label:
+          'DNA polymerase adds matching nucleotides along each old strand, A with T and G with C',
+      },
+      { label: 'Ligase seals the gaps between the new pieces' },
+      { label: 'Two DNA molecules, each with one old strand and one new' },
     ],
   },
   {
@@ -697,6 +708,50 @@ const DNA: LayoutDef[] = [
 
 const BIOTECH: LayoutDef[] = [
   // ── Mutations, gene expression and biotechnology (HS-LS3-1, HS-LS3-2, HS-LS1-1) ──
+  {
+    kind: 'sort',
+    id: 's.9.biotechnology~mutation-types',
+    title: 'Silent, missense, nonsense or frameshift?',
+    use: 'Use this for “The codon GAA changes to GUA. What kind of mutation is it?”',
+    assumptions: [
+      'Each card is one change to an mRNA codon, with the amino acid it codes before and after.',
+      'A substitution swaps one base for another; an insertion or deletion adds or removes bases.',
+      'Several codons code the same amino acid, so some substitutions change nothing in the protein.',
+    ],
+    question: 'Which kind of mutation is it?',
+    bins: [
+      {
+        id: 'silent',
+        label: 'Silent',
+        why: 'The new codon codes the same amino acid, so the protein does not change.',
+      },
+      {
+        id: 'missense',
+        label: 'Missense',
+        why: 'The new codon codes a different amino acid: one amino acid in the chain changes.',
+      },
+      {
+        id: 'nonsense',
+        label: 'Nonsense',
+        why: 'The new codon is a stop codon, so the chain ends early and is usually useless.',
+      },
+      {
+        id: 'frameshift',
+        label: 'Frameshift',
+        why: 'Adding or removing 1 or 2 bases shifts the reading frame: every codon after it changes.',
+      },
+    ],
+    cards: [
+      { label: 'GGU (Gly) → GGC (Gly)', bin: 'silent' },
+      { label: 'CUA (Leu) → CUG (Leu)', bin: 'silent' },
+      { label: 'GAA (Glu) → GUA (Val)', bin: 'missense' },
+      { label: 'AAA (Lys) → AGA (Arg)', bin: 'missense' },
+      { label: 'UAC (Tyr) → UAA (stop)', bin: 'nonsense' },
+      { label: 'CAG (Gln) → UAG (stop)', bin: 'nonsense' },
+      { label: 'One base deleted from codon 2', bin: 'frameshift' },
+      { label: 'Two bases inserted after codon 5', bin: 'frameshift' },
+    ],
+  },
   {
     kind: 'sort',
     id: 's.9.biotechnology~tools',
@@ -781,7 +836,11 @@ const EVOLUTION: LayoutDef[] = [
         figure: { kind: 'icon', icon: 'whale flipper bones' },
       },
       { label: 'Cat foreleg', bin: 'homologous', figure: { kind: 'icon', icon: 'cat leg bones' } },
-      { label: 'Insect wing', bin: 'analogous', figure: { kind: 'icon', icon: 'insect wing' } },
+      {
+        label: 'An insect’s wing beside a bat’s wing',
+        bin: 'analogous',
+        figure: { kind: 'icon', icon: 'insect wing' },
+      },
       { label: 'A shark’s fin beside a dolphin’s flipper', bin: 'analogous' },
       { label: 'A whale’s small hip bones', bin: 'vestigial' },
       { label: 'The human tailbone', bin: 'vestigial' },
@@ -1004,7 +1063,7 @@ const CLASSIFICATION: LayoutDef[] = [
       {
         label: 'Not a clade',
         lines: [
-          'The jellyfish and the earthworm share an ancestor, but so do the sea star, fish and human.',
+          'The jellyfish and the earthworm alone are not a clade: their last common ancestor is also the ancestor of the sea star, fish and human, which the group leaves out.',
           'A group that leaves out some of its ancestor’s descendants is not a clade.',
         ],
         clade: { ring: ['Jellyfish', 'Earthworm'] },
@@ -1272,6 +1331,67 @@ const ECOSYSTEMS: LayoutDef[] = [
         label: 'Denitrification',
         lines: ['Bacteria in wet, airless soil turn nitrate back into N₂ gas, closing the cycle.'],
         nitrogen: { process: 'denitrification' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.ecosystem-dynamics~carbon',
+    title: 'The carbon cycle and energy',
+    use: 'Use this for “How do photosynthesis and respiration move carbon between the air and living things?”',
+    assumptions: [
+      'Photosynthesis, 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂, stores the Sun’s energy in sugar.',
+      'Cellular respiration runs the same equation backward, releasing that energy and the carbon dioxide.',
+      'Carbon atoms are never used up: they cycle, while energy flows through once and leaves as heat.',
+    ],
+    figure: { kind: 'carbonCycle' },
+    scenes: [
+      {
+        label: 'The whole cycle',
+        lines: [
+          'Carbon is stored in the air as CO₂, in living things, in dead matter, in the ocean and in fossil fuels.',
+          'Every arrow moves carbon from one store to another.',
+        ],
+        carbon: {},
+      },
+      {
+        label: 'Photosynthesis',
+        lines: [
+          'Producers take in CO₂ and water and, with light energy, build glucose: carbon leaves the air.',
+          'Six CO₂ molecules give the six carbon atoms of one glucose.',
+        ],
+        carbon: { process: 'photosynthesis' },
+      },
+      {
+        label: 'Respiration',
+        lines: [
+          'Plants, animals and decomposers break glucose down with oxygen to make ATP.',
+          'Each glucose returns six CO₂ to the air: the carbon photosynthesis took in.',
+        ],
+        carbon: { process: 'respiration' },
+      },
+      {
+        label: 'Decomposition',
+        lines: [
+          'Fungi and bacteria respire the carbon in dead matter and wastes, returning it to the air as CO₂.',
+        ],
+        carbon: { process: 'decomposition' },
+      },
+      {
+        label: 'Fossil fuels',
+        lines: [
+          'Buried dead matter became coal, oil and gas over millions of years.',
+          'Burning them returns that old carbon to the air in years, faster than photosynthesis takes it back.',
+        ],
+        carbon: { process: 'burning' },
+      },
+      {
+        label: 'The ocean',
+        lines: [
+          'The ocean dissolves CO₂ from the air and gives some back; it holds far more carbon than the air.',
+          'Extra dissolved CO₂ makes seawater more acidic, which harms shell-building animals.',
+        ],
+        carbon: { process: 'dissolving' },
       },
     ],
   },
