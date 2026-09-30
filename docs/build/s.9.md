@@ -114,3 +114,63 @@ Later pages the plan names outside its 62 (not built): `s.9.population-ecology~c
   hides the protein row.
 - **`reaction` past 8 molecules a formula** (Engine need 9) and **`bars` with in- and out-flows**
   (Engine need 8) are confirmed as needed.
+
+## Lesson review fixes (`.review/hs-s.9/lesson-report.md`)
+
+All 13 errors and 18 improvements are fixed in the grade files, except as noted:
+
+- Error 1 (substitution at the start and stop codons): p is 4–9 (the codons between them), with
+  the assumption saying so. The start-lost and stop-lost captions are a shared need.
+- Error 5 (lowercased names): "Count of A alleles", "Diversity index (Simpson’s)"; the Na⁺ names
+  wait on the lead's capitals rule.
+- Error 8 (DNA main): b runs 6–3,000 (multiples of 3). The picture draws hidden values b_d and c_d:
+  the whole gene up to 12 bases, its first 9 (no stop codon, so no protein row) past that. Added w,
+  water molecules released (improvement 22).
+- Error 10 (logistic): work lines for N (A, e^(rt), the sum, the quotient; when rt > 40, "so large
+  that A ÷ e^(rt) is nearly 0") and for t (A, e^(rt) = A × N ÷ (K − N), ln). N and G carry an
+  "about … individuals" note (improvement 24).
+- Error 11 (herd immunity): the relation itself is V = P × H ÷ e, so the line is exact; the note
+  rounds up. Improvement 12's message is on the C relation (H > e), not a separate limit.
+- Improvement 14: a is typable, a = c both ways.
+- Improvement 16: n is 1–1,000, the expected counts step 0.25, and P_ff, the chance of ff (%), added.
+- Improvement 25: the growth-rate assumption is first; the closed form stays.
+- Improvement 26: new page A (below).
+- Every value symbol is a plain letter (no expressions), checked by grep.
+
+New pages from the report: `s.9.biotechnology~mutation-types` (sort, page A) and
+`s.9.ecosystem-dynamics~carbon` (explore on the Grade 7 `carbonCycle`, page B). Page C,
+`s.9.biotechnology~fingerprint`, waits for `gel` as an explore figure.
+
+## Added skills (see the plan's "Added skills")
+
+- `s.9.mitosis-meiosis`: ~checkpoints and ~cancer sorts, ~mitotic-index calculator (`pieChart`).
+- `s.9.reproduction-development`: main sequence, ~sexual-asexual and ~germ-layers sorts,
+  ~menstrual-cycle sequence (spans in days).
+- `s.9.plant-biology`: main explore (`parts` plant), ~xylem-phloem and ~tropisms sorts,
+  ~life-cycle sequence, ~transpiration calculator (`doubleNumberLine`).
+- `s.9.biomes`: main explore (`greenhouse` zones), ~land and ~aquatic sorts, ~rainfall observe.
+- `s.9.nervous-system`: main reflex sequence, ~action-potential sequence, ~divisions and ~senses
+  sorts, ~impulse-speed calculator (`doubleNumberLine`, ms per meter hidden).
+
+23 new pages in all (2 from the report, 21 for the skills): 4 calculators and 19 layouts.
+
+## Shared needs (lesson review and added skills)
+
+- **`dnaMath.effectOf` start-lost and stop-lost** (with their captions): then
+  `s.9.biotechnology` p can run 1–12 again and ~frameshift p 1–12.
+- **`dnaStrand` long gene** (first bases, "…", its stop; Engine need 2): `s.9.dna-protein-synthesis`
+  draws only the first 9 bases past 12 until then.
+- **`gel` as an explore figure** (suspects' and a family's lanes): `s.9.biotechnology~fingerprint`.
+- **`cellDivision` as a calculator picture** (Engine need 3): `s.9.mitosis-meiosis~chromosome-count`
+  still waits; phase icons on the `pieChart` wedges would also suit ~mitotic-index.
+- **Neuron and reflex-arc figure** (dendrites, axon, myelin, synapse; skin, spinal cord, muscle):
+  `s.9.nervous-system` and ~impulse-speed (text stages and a number line until then).
+- **Observe with negative values or two rows**: a membrane-potential trace for
+  `s.9.nervous-system~action-potential`; hormone levels by day for
+  `s.9.reproduction-development~menstrual-cycle`; a climograph (temperature and rainfall) for
+  `s.9.biomes~rainfall`.
+- **Flower drawing with its parts** (anther, filament, stigma, style, ovary, ovule) and embryo stage
+  icons (zygote, morula, blastula, gastrula): `s.9.plant-biology~life-cycle`,
+  `s.9.reproduction-development`.
+- **A biome map** (or biome icons for sort cards): `s.9.biomes`, ~land.
+- **Search corpus**: rerun `scripts/build-match-corpus.mjs` for the 23 new pages.
