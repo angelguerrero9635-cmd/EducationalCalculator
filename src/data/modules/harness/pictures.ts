@@ -50,7 +50,7 @@ import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
-import { hs2eIssues } from './picturesHs2e';
+import { hs2eIssues, reactionManyIssues } from './picturesHs2e';
 import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
@@ -1921,6 +1921,7 @@ export function repIssues(
         }),
       );
       out.push(...chemHsiIssues(rep, (x) => val(x)));
+      if (rep.kind === 'reaction' && rep.many) out.push(...reactionManyIssues());
       break;
     case 'lineSystem': {
       out.push(...hs2aIssues(rep, val));

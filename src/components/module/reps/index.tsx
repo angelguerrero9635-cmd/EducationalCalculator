@@ -151,6 +151,7 @@ import { ImmuneResponse } from './ImmuneResponse';
 import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
 import { ReactionLimiting } from './ReactionLimiting';
+import { ReactionMany } from './ReactionMany';
 import { HslPicture } from './HslPicture';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -342,7 +343,9 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'molecules':
       return <Molecules spec={spec} calc={calc} />;
     case 'reaction':
-      return spec.limiting ? (
+      return spec.many && !spec.limiting ? (
+        <ReactionMany spec={spec} calc={calc} />
+      ) : spec.limiting ? (
         <ReactionLimiting spec={spec} calc={calc} />
       ) : (
         <Reaction spec={spec} calc={calc} />

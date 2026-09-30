@@ -3,11 +3,46 @@
  * draws must agree with the values. Called from `repIssues` in `pictures.ts`. Test-only.
  */
 import { transcribe, translate } from '@/components/module/reps/dnaMath';
+import { GLUCOSE } from '@/components/module/reps/glucose';
 
 import { geneShown, type Hs2eSpec } from '../typesHs2e';
 import type { DnaStrandSpec } from '../typesHsg';
 
 const whole = (x: number) => Math.abs(x - Math.round(x)) < 1e-9;
+
+/**
+ * `reaction` with `many` (H100): the glucose it draws is C₆H₁₂O₆, 24 atoms, every bond between
+ * two of them, each carbon with 4 bonds, each oxygen 2 and each hydrogen 1, all in one piece.
+ */
+export function reactionManyIssues(): string[] {
+  const out: string[] = [];
+  const { atoms, bonds } = GLUCOSE;
+  const count = (el: string) => atoms.filter((a) => a.el === el).length;
+  if (atoms.length !== 24 || count('C') !== 6 || count('H') !== 12 || count('O') !== 6)
+    out.push(`glucose: ${count('C')} C, ${count('H')} H, ${count('O')} O (C₆H₁₂O₆ has 6, 12, 6)`);
+  const degree = atoms.map(() => 0);
+  for (const [i, j] of bonds) {
+    if (!atoms[i] || !atoms[j] || i === j) out.push(`glucose: bond ${i}–${j} is not two atoms`);
+    else [degree[i], degree[j]] = [degree[i]! + 1, degree[j]! + 1];
+  }
+  const valence: Record<string, number> = { C: 4, O: 2, H: 1 };
+  atoms.forEach((a, i) => {
+    if (degree[i] !== valence[a.el])
+      out.push(`glucose: atom ${i} (${a.el}) has ${degree[i]} bonds`);
+  });
+  // One molecule: 24 atoms and 24 bonds make one ring, and every atom is reached from the first.
+  const seen = new Set([0]);
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const [i, j] of bonds)
+      if (seen.has(i) !== seen.has(j)) {
+        seen.add(i).add(j);
+        grew = true;
+      }
+  }
+  if (seen.size !== atoms.length) out.push('glucose: the atoms are not all joined');
+  return out;
+}
 
 /**
  * A `dnaStrand` long gene (H100): b a whole multiple of 3, at least 6; the drawn template starts

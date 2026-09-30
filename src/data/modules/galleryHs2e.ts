@@ -69,6 +69,25 @@ const same = (out: string, a: string, how: string, back: string): Rule => ({
   },
 });
 
+/** out = f(ins), worked forward only. */
+const forward = (
+  out: string,
+  display: string,
+  ins: string[],
+  f: (v: Record<string, number>) => number,
+  expr: string,
+  how: string,
+): Rule => ({
+  relation: {
+    id: display.replace(/[{}]/g, ''),
+    display,
+    vars: [out, ...ins],
+    residual: (v) => v[out]! - f(v as Record<string, number>),
+    solve: { [out]: (v) => f(v as Record<string, number>) },
+  },
+  steps: { [out]: { expr, how } },
+});
+
 // ─── H100 part 1: macromolecules as a calculator picture ─────────────────────
 
 /** M = n × m − 18 × w: the polymer's mass, the monomers' less the water given off. */
@@ -232,26 +251,85 @@ const GENE_DEMOS: ModuleDef[] = [
   longGeneDemo('g.s9-dna-protein-synthesis-short-gene', 'The shortest genes', 9),
 ];
 
-// ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
+// ─── H100 part 9: reaction with glucose, up to 18 molecules a formula ────────
 
-/** out = f(ins), worked forward only. */
-const forward = (
-  out: string,
-  display: string,
-  ins: string[],
-  f: (v: Record<string, number>) => number,
-  expr: string,
-  how: string,
-): Rule => ({
-  relation: {
-    id: display.replace(/[{}]/g, ''),
-    display,
-    vars: [out, ...ins],
-    residual: (v) => v[out]! - f(v as Record<string, number>),
-    solve: { [out]: (v) => f(v as Record<string, number>) },
+/** out = k × a (+ k2 × b), worked forward. */
+const sumOf = (out: string, terms: [number, string][], how: string): Rule => {
+  const text = terms.map(([k, a]) => (k === 1 ? `{${a}}` : `${k} × {${a}}`)).join(' + ');
+  const f = (v: Record<string, number>) => terms.reduce((s, [k, a]) => s + k * v[a]!, 0);
+  return forward(
+    out,
+    `{${out}} = ${text}`,
+    terms.map(([, a]) => a),
+    f,
+    text,
+    how,
+  );
+};
+
+const PHOTOSYNTHESIS: ModuleDef = {
+  id: 'g.s9-cellular-energy-equation',
+  title: 'The photosynthesis equation',
+  use: 'Use this for “How many CO₂ molecules make 2 glucose molecules, and are the atoms conserved?”',
+  assumptions: [
+    'Photosynthesis: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂. Respiration is the same equation read backward.',
+    'Atoms are rearranged, never made or lost: each element has as many atoms after as before.',
+  ],
+  variables: [
+    count('g', 'g', 'Glucose molecules made', 1, 3),
+    count('c', 'c', 'CO₂ molecules', 6, 18, true),
+    count('w', 'w', 'H₂O molecules', 6, 18, true),
+    count('o', 'o', 'O₂ molecules', 6, 18, true),
+    count('C1', 'C₁', 'Carbon atoms before', 6, 18, true),
+    count('C2', 'C₂', 'Carbon atoms after', 6, 18, true),
+    count('H1', 'H₁', 'Hydrogen atoms before', 12, 36, true),
+    count('H2', 'H₂', 'Hydrogen atoms after', 12, 36, true),
+    count('O1', 'O₁', 'Oxygen atoms before', 18, 54, true),
+    count('O2', 'O₂', 'Oxygen atoms after', 18, 54, true),
+  ],
+  ...rules(
+    sumOf('c', [[6, 'g']], 'Each glucose takes 6 CO₂.'),
+    sumOf('w', [[6, 'g']], 'Each glucose takes 6 H₂O.'),
+    sumOf('o', [[6, 'g']], 'Each glucose gives off 6 O₂.'),
+    sumOf('C1', [[1, 'c']], 'One carbon in each CO₂.'),
+    sumOf('C2', [[6, 'g']], 'Six carbons in each glucose.'),
+    sumOf('H1', [[2, 'w']], 'Two hydrogens in each H₂O.'),
+    sumOf('H2', [[12, 'g']], 'Twelve hydrogens in each glucose.'),
+    sumOf(
+      'O1',
+      [
+        [2, 'c'],
+        [1, 'w'],
+      ],
+      'Two oxygens in each CO₂ and one in each H₂O.',
+    ),
+    sumOf(
+      'O2',
+      [
+        [6, 'g'],
+        [2, 'o'],
+      ],
+      'Six oxygens in each glucose and two in each O₂.',
+    ),
+  ),
+  example: { g: 3, c: 18, w: 18, o: 18, C1: 18, C2: 18, H1: 36, H2: 36, O1: 54, O2: 54 },
+  startWith: ['g'],
+  representation: {
+    kind: 'reaction',
+    reactants: [
+      { formula: 'CO2', count: 'c' },
+      { formula: 'H2O', count: 'w' },
+    ],
+    products: [
+      { formula: 'C6H12O6', count: 'g' },
+      { formula: 'O2', count: 'o' },
+    ],
+    atoms: { C: ['C1', 'C2'], H: ['H1', 'H2'], O: ['O1', 'O2'] },
+    many: true,
   },
-  steps: { [out]: { expr, how } },
-});
+};
+
+// ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /** The chromosome-count page: 2n in a body cell → n, chromatids, the zygote, 2ⁿ gametes. */
 const chromosomeDemo = (id: string, title: string, D: number, extra: string): ModuleDef => ({
@@ -331,6 +409,11 @@ const DIVISION_DEMOS: ModuleDef[] = [
   ),
 ];
 
-export const HS2E_GALLERY_MODULES: ModuleDef[] = [...MACRO_DEMOS, ...GENE_DEMOS, ...DIVISION_DEMOS];
+export const HS2E_GALLERY_MODULES: ModuleDef[] = [
+  ...MACRO_DEMOS,
+  ...GENE_DEMOS,
+  ...DIVISION_DEMOS,
+  PHOTOSYNTHESIS,
+];
 
 export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [];
