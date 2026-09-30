@@ -6,6 +6,7 @@
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math11.ts`.
  */
 import { binomialPmf, choose, invPhi, Phi } from '@/components/module/reps/statMath';
+import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { atLeast, div } from '../helpers';
@@ -65,8 +66,9 @@ function derive(
   f: (v: Values) => number | undefined,
   expr: StepText['expr'],
   how: StepText['how'],
-  extra: Partial<Relation> = {},
+  extra: Partial<Relation> & { work?: StepText['work'] } = {},
 ): Rule {
+  const { work, ...more } = extra;
   return rule(
     id,
     display,
@@ -76,7 +78,7 @@ function derive(
       [x]: [(v: Values) => fin(f(v)), expr, how],
       ...Object.fromEntries(inputs.map((i) => [i, [() => undefined]])),
     },
-    extra,
+    { ...more, ...(work ? { work: { [x]: work } } : {}) },
   );
 }
 
@@ -210,6 +212,17 @@ const MU = (unit?: string, min = -1000, max = 1000) =>
   V('m', 'μ', 'Mean', { unit, min, max, step: 0.5 });
 const SIGMA = (unit?: string, max = 500) =>
   V('s', 'σ', 'Standard deviation', { unit, min: 0.01, max, step: 0.1 });
+
+const log10 = Math.log10;
+const ln = Math.log;
+const fmt = (x: number) => formatNumber(x);
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+/** An integer exponent raised: 5 → "⁵", −4 → "⁻⁴". */
+const sup = (n: number) =>
+  `${n < 0 ? '⁻' : ''}${[...String(Math.abs(n))].map((ch) => SUP[Number(ch)]).join('')}`;
+/** A power as written, a negative base bracketed: (−3)². */
+const pw = (b: number, e: number) => `${b < 0 ? `(${fmt(b)})` : fmt(b)}${sup(e)}`;
+const BASE_NOT_1 = 'Every power of 1 is 1, so a base of 1 can’t make any other number.';
 
 /** The share within 1, 2 or 3 standard deviations, in percent, by the 68–95–99.7 rule. */
 const EMPIRICAL: Record<number, number> = { 1: 68, 2: 95, 3: 99.7 };
@@ -743,6 +756,12 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.C! * v.a! ** v.k! * v.b! ** (v.n! - v.k!),
         '{C} × {a}^{k} × {b}^({n} − {k})',
         'k factors give ax and the other n − k give b.',
+        {
+          work: (v) => [
+            `${fmt(v.C!)} × ${pw(v.a!, v.k!)} × ${pw(v.b!, v.n! - v.k!)}`,
+            `${fmt(v.C!)} × ${fmt(v.a! ** v.k!)} × ${fmt(v.b! ** (v.n! - v.k!))}`,
+          ],
+        },
       ),
     ],
     example: { a: 2, b: -3, n: 5, k: 3, C: 10, T: 720 },
@@ -789,6 +808,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
           v.n! < j
             ? `(ax + b)ⁿ has no power of x above n.`
             : `Row n, entry ${j}, times a to the ${j} and b to the rest of the power.`,
+        {
+          work: (v) =>
+            v.n! < j
+              ? []
+              : [
+                  `${choose(v.n!, j)} × ${pw(v.a!, j)} × ${pw(v.b!, v.n! - j)}`,
+                  `${choose(v.n!, j)} × ${fmt(v.a! ** j)} × ${fmt(v.b! ** (v.n! - j))}`,
+                ],
+        },
       ),
     ),
     example: { a: 1, b: 2, n: 4, c6: 0, c5: 0, c4: 1, c3: 8, c2: 24, c1: 32, c0: 16 },
@@ -861,5 +889,686 @@ export const MATH_11_MODULES: ModuleDef[] = [
     startWith: ['n', 'k'],
     sliders: true,
     representation: { kind: 'pascalTriangle', n: 'n', k: 'k' },
+  }),
+
+  // ── Logarithms and log properties (F-LE.4, F-BF.5) ──
+  page({
+    id: 'm.11.logarithms',
+    assumptions: [
+      'A log is an exponent: log_b(x) is the power of b that makes x, so log_b(x) = y means bʸ = x.',
+      'Only a positive x has a log.',
+      'The base b is positive and not 1.',
+    ],
+    variables: [
+      V('b', 'b', 'Base', { min: 0.1, max: 20, step: 0.01 }),
+      V('x', 'x', 'Number', { min: 0.001, max: 1e9, step: 0.01 }),
+      V('y', 'y', 'Logarithm', { min: -30, max: 30, step: 0.01 }),
+    ],
+    rules: [
+      limit('b ≠ 1', 'The base {b} is not 1', ['b'], (v) => v.b !== 1, BASE_NOT_1),
+      rule('x = b^y', '{x} = {b}^{y}', ['x', 'b', 'y'], (v) => ln(v.x!) - v.y! * ln(v.b!), {
+        y: [
+          (v) => (v.b === 1 || !(v.x! > 0) ? undefined : fin(log10(v.x!) / log10(v.b!))),
+          'log₁₀ {x} ÷ log₁₀ {b}',
+          'The power of b that makes x; the common logs of x and b give it by dividing.',
+        ],
+        x: [(v) => fin(v.b! ** v.y!), '{b}^{y}', 'Rewrite log_b(x) = y as bʸ = x.'],
+        b: [
+          (v) => (v.y === 0 || !(v.x! > 0) ? undefined : fin(v.x! ** (1 / v.y!))),
+          '{x}^(1 ÷ {y})',
+          'bʸ = x, so b is the yth root of x.',
+        ],
+      }),
+    ],
+    example: { b: 2, x: 32, y: 5 },
+    startWith: ['b', 'x'],
+    equation: 'log_{b}({x}) = {y}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'log',
+      b: 'b',
+      at: { x: 'x', y: 'y' },
+      marks: ['zeros', 'asymptotes', 'domain'],
+    },
+  }),
+  page({
+    id: 'm.11.logarithms~change-of-base',
+    title: 'Change of base',
+    use: 'Use this for “Estimate log₃ 20” with the log key on a calculator.',
+    assumptions: [
+      'log_b(x) = log x ÷ log b, with the common logs (base 10) on a calculator.',
+      'Any base works for both logs, if both use the same one.',
+      'The base b is positive and not 1, and x is positive.',
+    ],
+    variables: [
+      V('b', 'b', 'Base', { min: 0.1, max: 20, step: 0.01 }),
+      V('x', 'x', 'Number', { min: 0.001, max: 1e9, step: 0.01 }),
+      V('L1', 'log x', 'Common log of x', { min: -3, max: 9, step: 0.0001, derived: true }),
+      V('L2', 'log b', 'Common log of b', { min: -1, max: 1.31, step: 0.0001, derived: true }),
+      V('y', 'y', 'log_b(x)', { min: -1000, max: 1000, step: 0.0001, derived: true }),
+    ],
+    rules: [
+      limit('b ≠ 1', 'The base {b} is not 1', ['b'], (v) => v.b !== 1, BASE_NOT_1),
+      derive(
+        'log x = log₁₀ x',
+        'L1',
+        ['x'],
+        '{L1} = log₁₀ {x}',
+        (v) => (v.x! > 0 ? log10(v.x!) : undefined),
+        'log₁₀ {x}',
+        'The common log: the power of 10 that makes x.',
+      ),
+      derive(
+        'log b = log₁₀ b',
+        'L2',
+        ['b'],
+        '{L2} = log₁₀ {b}',
+        (v) => (v.b! > 0 ? log10(v.b!) : undefined),
+        'log₁₀ {b}',
+        'The common log of the base.',
+      ),
+      derive(
+        'y = log x ÷ log b',
+        'y',
+        ['L1', 'L2'],
+        '{y} = {L1} ÷ {L2}',
+        (v) => div(v.L1!, v.L2!),
+        '{L1} ÷ {L2}',
+        'Change of base: divide the two common logs.',
+      ),
+    ],
+    example: { b: 3, x: 20, L1: log10(20), L2: log10(3), y: log10(20) / log10(3) },
+    startWith: ['b', 'x'],
+    pictureLabels: ['L1', 'L2'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'log',
+      b: 'b',
+      at: { x: 'x', y: 'y' },
+      marks: ['zeros', 'asymptotes'],
+    },
+  }),
+  page({
+    id: 'm.11.logarithms~common-log',
+    title: 'Common logs from scientific notation',
+    use: 'Use this for “Find log 3,000 using log 3 ≈ 0.4771.”',
+    assumptions: [
+      'Write N as a × 10ⁿ with a from 1 up to 10.',
+      'log(a × 10ⁿ) = n + log a: the exponent is the whole part, and log a, from 0 up to 1, is the rest.',
+      'A number under 1 has a negative n, so its log is negative.',
+    ],
+    variables: [
+      V('N', 'N', 'Number', { min: 0.001, max: 9.999e12, full: true }),
+      V('a', 'a', 'Number from 1 up to 10', { min: 1, max: 9.999, step: 0.001 }),
+      V('n', 'n', 'Power of ten', { min: -3, max: 12, step: 1, integer: true }),
+      V('L', 'L', 'log₁₀ N', { min: -3, max: 13, step: 0.0001, derived: true }),
+    ],
+    rules: [
+      rule(
+        'N = a × 10^n',
+        '{N} = {a} × 10^{n}',
+        ['N', 'a', 'n'],
+        (v) => log10(v.N!) - log10(v.a!) - v.n!,
+        {
+          N: [
+            (v) => exact(v.a! * 10 ** v.n!),
+            '{a} × 10^{n}',
+            'The number from 1 up to 10 times the power of ten.',
+          ],
+          a: [
+            (v) => exact(v.N! / 10 ** v.n!),
+            '{N} ÷ 10^{n}',
+            'Divide by the power of ten to leave one digit, not 0, before the point.',
+          ],
+          n: [() => undefined],
+        },
+      ),
+      rule(
+        'n from N',
+        '{n} = exponent of the power of ten at or below {N}',
+        ['n', 'N'],
+        (v) => v.n! - Math.floor(log10(v.N!) + 1e-9),
+        {
+          n: [
+            (v) => (v.N! > 0 ? Math.floor(log10(v.N!) + 1e-9) : undefined),
+            'exponent of the power of ten at or below {N}',
+            'How many places the point moves: the whole part of the log.',
+          ],
+          N: [() => undefined],
+        },
+      ),
+      derive(
+        'L = n + log a',
+        'L',
+        ['n', 'a'],
+        '{L} = {n} + log₁₀ {a}',
+        (v) => v.n! + log10(v.a!),
+        '{n} + log₁₀ {a}',
+        'The log of a product is the sum of the logs, and log₁₀ 10ⁿ = n.',
+      ),
+    ],
+    example: { N: 3000, a: 3, n: 3, L: 3 + log10(3) },
+    startWith: ['N'],
+    representation: {
+      kind: 'powerScale',
+      number: 'N',
+      mantissa: 'a',
+      exponent: 'n',
+      log: 'L',
+      fixed: true,
+    },
+  }),
+
+  // ── Exponential and log equations, e and continuous growth (F-LE.4, A-SSE.3c) ──
+  page({
+    id: 'm.11.exp-log-equations',
+    assumptions: [
+      'Divide by a first, then take the log of both sides: x log b = log(c ÷ a).',
+      'Any base works for the logs, if both sides use the same one.',
+      'bˣ is always positive, so c ÷ a must be positive for a solution.',
+    ],
+    variables: [
+      V('a', 'a', 'Starting value', { min: -1000, max: 1000, step: 0.5 }),
+      V('b', 'b', 'Base', { min: 0.1, max: 20, step: 0.01 }),
+      V('c', 'c', 'Target value', { min: -1e6, max: 1e6, step: 0.5 }),
+      V('x', 'x', 'Solution', { min: -1000, max: 1000, step: 0.001, derived: true }),
+    ],
+    rules: [
+      limit(
+        'a ≠ 0',
+        '{a} is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 the left side is always 0.',
+      ),
+      limit('b ≠ 1', 'The base {b} is not 1', ['b'], (v) => v.b !== 1, BASE_NOT_1),
+      rule(
+        'a × b^x = c',
+        '{a} × {b}^{x} = {c}',
+        ['a', 'b', 'x', 'c'],
+        (v) => v.a! * v.b! ** v.x! - v.c!,
+        {
+          x: [
+            (v) =>
+              v.b === 1 || !((div(v.c!, v.a!) ?? 0) > 0)
+                ? undefined
+                : fin(log10(v.c! / v.a!) / log10(v.b!)),
+            'log₁₀({c} ÷ {a}) ÷ log₁₀ {b}',
+            'Divide by a, take the log of both sides, then divide by log b.',
+          ],
+          c: [() => undefined],
+          a: [() => undefined],
+          b: [() => undefined],
+        },
+        {
+          message: (v) =>
+            v.a !== undefined && v.c !== undefined && v.a !== 0 && v.c / v.a <= 0
+              ? 'bˣ is always positive, so a × bˣ has the sign of a: no x makes it c.'
+              : undefined,
+        },
+      ),
+    ],
+    example: { a: 5, b: 2, c: 60, x: log10(12) / log10(2) },
+    startWith: ['a', 'b', 'c'],
+    equation: '{a} × {b}^x = {c}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'exponential',
+      a: 'a',
+      b: 'b',
+      other: { family: 'linear', m: 0, b: 'c' },
+      crossing: { x: 'x', y: 'c' },
+      marks: ['asymptotes'],
+    },
+  }),
+  page({
+    id: 'm.11.exp-log-equations~same-base',
+    title: 'Powers of the same base',
+    use: 'Use this for “Solve 4⁶ = 8ˣ” by writing both sides as powers of 2.',
+    assumptions: [
+      'Write both sides as powers of one base g: 4 = 2² and 8 = 2³.',
+      'A power of a power multiplies the exponents: (gᵖ)ᵐ = gᵖᵐ.',
+      'Equal powers of the same base have equal exponents, so p × m = q × x.',
+    ],
+    variables: [
+      W('g', 'g', 'Common base', 2, 10),
+      W('p', 'p', 'Power of g on the left', 1, 6),
+      W('q', 'q', 'Power of g on the right', 1, 6),
+      W('m', 'm', 'Exponent on the left', 1, 20),
+      V('B1', 'gᵖ', 'Left base', { integer: true, min: 2, max: 1e6, derived: true }),
+      V('B2', 'g^q', 'Right base', { integer: true, min: 2, max: 1e6, derived: true }),
+      V('x', 'x', 'Exponent on the right', { min: 0, max: 200, fraction: 12 }),
+    ],
+    rules: [
+      derive(
+        'B1 = g^p',
+        'B1',
+        ['g', 'p'],
+        '{B1} = {g}^{p}',
+        (v) => v.g! ** v.p!,
+        '{g}^{p}',
+        'The left base as a power of g.',
+      ),
+      derive(
+        'B2 = g^q',
+        'B2',
+        ['g', 'q'],
+        '{B2} = {g}^{q}',
+        (v) => v.g! ** v.q!,
+        '{g}^{q}',
+        'The right base as a power of g.',
+      ),
+      rule(
+        'q × x = p × m',
+        '{q} × {x} = {p} × {m}',
+        ['q', 'x', 'p', 'm'],
+        (v) => v.q! * v.x! - v.p! * v.m!,
+        {
+          x: [
+            (v) => fin(div(v.p! * v.m!, v.q!)),
+            '{p} × {m} ÷ {q}',
+            'Both sides are powers of g, so the exponents p × m and q × x are equal.',
+          ],
+          m: [
+            (v) => fin(div(v.q! * v.x!, v.p!)),
+            '{q} × {x} ÷ {p}',
+            'The exponents are equal: divide q × x by p.',
+          ],
+          p: [() => undefined],
+          q: [() => undefined],
+        },
+      ),
+    ],
+    example: { g: 2, p: 2, q: 3, m: 6, B1: 4, B2: 8, x: 4 },
+    startWith: ['g', 'p', 'q', 'm'],
+    equation: '({g}^{p})^{m} = ({g}^{q})^{x}',
+    pictureLabels: ['B1', 'm', 'x'],
+    representation: {
+      kind: 'termsChart',
+      type: 'geometric',
+      first: 'g',
+      step: 'g',
+      count: 'q',
+      term: 'B2',
+    },
+  }),
+  page({
+    id: 'm.11.exp-log-equations~continuous',
+    title: 'Continuous growth',
+    use: 'Use this for “$2,000 grows at 5% a year compounded continuously. How long until it reaches $3,000?”',
+    assumptions: [
+      'e ≈ 2.71828 is what compounding more and more often approaches.',
+      'The rate r is a decimal: 5% is 0.05.',
+      'To find t, divide by P and take ln of both sides: rt = ln(A ÷ P).',
+    ],
+    variables: [
+      V('P', 'P', 'Starting amount ($)', { min: 1, max: 1e6, step: 1 }),
+      V('r', 'r', 'Rate per year', { min: 0.001, max: 1, step: 0.001 }),
+      V('t', 't', 'Time (years)', { min: 0, max: 100, step: 0.01 }),
+      V('A', 'A', 'Amount ($)', { min: 1, max: 1e50, step: 0.01 }),
+    ],
+    rules: [
+      rule(
+        'A = P × e^(r × t)',
+        '{A} = {P} × e^({r} × {t})',
+        ['A', 'P', 'r', 't'],
+        (v) => ln(v.A!) - ln(v.P!) - v.r! * v.t!,
+        {
+          A: [
+            (v) => fin(v.P! * Math.exp(v.r! * v.t!)),
+            '{P} × e^({r} × {t})',
+            'Raise e to r × t, then multiply by the starting amount.',
+          ],
+          t: [
+            (v) => fin(div(ln(v.A! / v.P!), v.r!)),
+            'ln({A} ÷ {P}) ÷ {r}',
+            'Divide by P, take ln of both sides, then divide by r.',
+          ],
+          P: [
+            (v) => fin(v.A! / Math.exp(v.r! * v.t!)),
+            '{A} ÷ e^({r} × {t})',
+            'Divide the amount by the growth factor.',
+          ],
+          r: [
+            (v) => fin(div(ln(v.A! / v.P!), v.t!)),
+            'ln({A} ÷ {P}) ÷ {t}',
+            'Divide by P, take ln of both sides, then divide by t.',
+          ],
+        },
+      ),
+    ],
+    example: { P: 2000, r: 0.05, t: 10, A: 2000 * Math.exp(0.5) },
+    startWith: ['t', 'P', 'r'],
+    equation: '{A} = {P}e^{{r}{t}}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'exponential',
+      a: 'P',
+      r: 'r',
+      name: 'A',
+      at: { x: 't', y: 'A' },
+      axes: { x: 'Time t (years)', y: 'Amount A ($)' },
+      xMin: 0,
+      marks: ['intercept'],
+    },
+  }),
+  page({
+    id: 'm.11.exp-log-equations~log-equation',
+    title: 'Solve a log equation',
+    use: 'Use this for “Solve log₃(2x − 1) = 4.”',
+    assumptions: [
+      'Rewrite log_b(u) = y as u = bʸ, with u = ax + c: the log is an exponent.',
+      'Then solve ax + c = bʸ for x.',
+      'Check: ax + c must be positive, and it is, since bʸ is.',
+    ],
+    variables: [
+      V('b', 'b', 'Base', { min: 0.1, max: 20, step: 0.01 }),
+      V('a', 'a', 'Coefficient of x', { min: -100, max: 100, step: 1 }),
+      V('c', 'c', 'Constant', { min: -1000, max: 1000, step: 1 }),
+      V('y', 'y', 'Value of the log', { min: -20, max: 20, step: 0.5 }),
+      V('u', 'u', 'Inside of the log, ax + c', { min: 0, max: 1e30, derived: true }),
+      V('x', 'x', 'Solution', { min: -1e30, max: 1e30, fraction: 12, derived: true }),
+    ],
+    rules: [
+      limit('b ≠ 1', 'The base {b} is not 1', ['b'], (v) => v.b !== 1, BASE_NOT_1),
+      limit(
+        'a ≠ 0',
+        '{a} is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 there is no x to solve for.',
+      ),
+      derive(
+        'u = b^y',
+        'u',
+        ['b', 'y'],
+        '{u} = {b}^{y}',
+        (v) => v.b! ** v.y!,
+        '{b}^{y}',
+        'log_b(u) = y means bʸ = u.',
+      ),
+      derive(
+        'x = (u − c) ÷ a',
+        'x',
+        ['u', 'c', 'a'],
+        '{x} = ({u} − {c}) ÷ {a}',
+        (v) => div(v.u! - v.c!, v.a!),
+        '({u} − {c}) ÷ {a}',
+        'Solve ax + c = u: take away c, then divide by a.',
+      ),
+    ],
+    example: { b: 3, a: 2, c: -1, y: 4, u: 81, x: 41 },
+    startWith: ['b', 'a', 'c', 'y'],
+    equation: 'log_{b}({a}x + {c}) = {y}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'log',
+      b: 'b',
+      input: 'u',
+      other: { family: 'linear', m: 0, b: 'y' },
+      crossing: { x: 'u', y: 'y' },
+      marks: ['asymptotes'],
+    },
+  }),
+
+  // ── Series and sigma notation (A-SSE.4, F-BF.2) ──
+  page({
+    id: 'm.11.series',
+    assumptions: [
+      'Each term is the one before times the common ratio r.',
+      'Multiply S by r and subtract: all but two terms cancel, leaving S(1 − r) = a₁(1 − rⁿ).',
+      'For r = 1 every term is a₁, so S is just n × a₁.',
+    ],
+    variables: [
+      V('a1', 'a₁', 'First term', { min: -100, max: 100, step: 0.5 }),
+      V('r', 'r', 'Common ratio', { min: -5, max: 5, step: 0.05 }),
+      W('n', 'n', 'Number of terms', 1, 30),
+      V('an', 'aₙ', 'Last term', { min: -1e25, max: 1e25, derived: true }),
+      V('S', 'Sₙ', 'Sum of the n terms', { min: -1e25, max: 1e25, derived: true }),
+    ],
+    rules: [
+      limit(
+        'r ≠ 1',
+        'The ratio {r} is not 1',
+        ['r'],
+        (v) => v.r !== 1,
+        'With r = 1 the formula divides by 0; the sum is n × a₁.',
+      ),
+      derive(
+        'aₙ = a₁ × r^(n − 1)',
+        'an',
+        ['a1', 'r', 'n'],
+        '{an} = {a1} × {r}^({n} − 1)',
+        (v) => v.a1! * v.r! ** (v.n! - 1),
+        '{a1} × {r}^({n} − 1)',
+        'From the first term, multiply by r, n − 1 times.',
+        {
+          work: (v) => [
+            `${fmt(v.a1!)} × ${pw(v.r!, v.n! - 1)}`,
+            `${fmt(v.a1!)} × ${fmt(v.r! ** (v.n! - 1))}`,
+          ],
+        },
+      ),
+      derive(
+        'Sₙ = a₁ × (1 − rⁿ) ÷ (1 − r)',
+        'S',
+        ['a1', 'r', 'n'],
+        '{S} = {a1} × (1 − {r}^{n}) ÷ (1 − {r})',
+        (v) => div(v.a1! * (1 - v.r! ** v.n!), 1 - v.r!),
+        '{a1} × (1 − {r}^{n}) ÷ (1 − {r})',
+        'The sum of a geometric series: a₁ times (1 − rⁿ) over (1 − r).',
+      ),
+    ],
+    example: { a1: 3, r: 2, n: 6, an: 96, S: 189 },
+    startWith: ['a1', 'r', 'n'],
+    sliders: true,
+    equation: '{S} = {a1} × {1 − {r}^{n}}/{1 − {r}}',
+    representation: {
+      kind: 'termsChart',
+      type: 'geometric',
+      first: 'a1',
+      step: 'r',
+      count: 'n',
+      sums: true,
+      term: 'an',
+      sum: 'S',
+    },
+  }),
+  page({
+    id: 'm.11.series~arithmetic',
+    title: 'Arithmetic series',
+    use: 'Use this for “Find the sum of the first 10 terms of 5, 9, 13, ….”',
+    assumptions: [
+      'The terms go up by the same common difference d each time.',
+      'Pair the first and last terms, the second and second-to-last, and so on: each pair adds to a₁ + aₙ.',
+      'n terms make n ÷ 2 pairs, so Sₙ = n(a₁ + aₙ) ÷ 2.',
+    ],
+    variables: [
+      V('a1', 'a₁', 'First term', { min: -1000, max: 1000, step: 1 }),
+      V('d', 'd', 'Common difference', { min: -100, max: 100, step: 0.5 }),
+      W('n', 'n', 'Number of terms', 1, 30),
+      V('an', 'aₙ', 'Last term', { min: -1e5, max: 1e5, step: 1 }),
+      V('S', 'Sₙ', 'Sum of the n terms', { min: -1e7, max: 1e7, step: 1 }),
+    ],
+    rules: [
+      rule(
+        'aₙ = a₁ + (n − 1) × d',
+        '{an} = {a1} + ({n} − 1) × {d}',
+        ['an', 'a1', 'n', 'd'],
+        (v) => v.an! - (v.a1! + (v.n! - 1) * v.d!),
+        {
+          an: [
+            (v) => exact(v.a1! + (v.n! - 1) * v.d!),
+            '{a1} + ({n} − 1) × {d}',
+            'From the first term, n − 1 steps of d.',
+          ],
+          a1: [
+            (v) => exact(v.an! - (v.n! - 1) * v.d!),
+            '{an} − ({n} − 1) × {d}',
+            'Go back n − 1 steps of d.',
+          ],
+          d: [
+            (v) => fin(div(v.an! - v.a1!, v.n! - 1)),
+            '({an} − {a1}) ÷ ({n} − 1)',
+            'The rise from a₁ to aₙ, over n − 1 steps.',
+          ],
+          n: [() => undefined],
+        },
+      ),
+      rule(
+        'Sₙ = n × (a₁ + aₙ) ÷ 2',
+        '{S} = {n} × ({a1} + {an}) ÷ 2',
+        ['S', 'n', 'a1', 'an'],
+        (v) => v.S! - (v.n! * (v.a1! + v.an!)) / 2,
+        {
+          S: [
+            (v) => exact((v.n! * (v.a1! + v.an!)) / 2),
+            '{n} × ({a1} + {an}) ÷ 2',
+            'n ÷ 2 pairs, each adding to a₁ + aₙ.',
+          ],
+          an: [
+            (v) => fin((div(2 * v.S!, v.n!) ?? NaN) - v.a1!),
+            '2 × {S} ÷ {n} − {a1}',
+            'Each pair adds to 2Sₙ ÷ n; take away a₁.',
+          ],
+          a1: [
+            (v) => fin((div(2 * v.S!, v.n!) ?? NaN) - v.an!),
+            '2 × {S} ÷ {n} − {an}',
+            'Each pair adds to 2Sₙ ÷ n; take away aₙ.',
+          ],
+          n: [() => undefined],
+        },
+      ),
+    ],
+    example: { a1: 5, d: 4, n: 10, an: 41, S: 230 },
+    startWith: ['a1', 'd', 'n'],
+    sliders: true,
+    representation: {
+      kind: 'termsChart',
+      type: 'arithmetic',
+      first: 'a1',
+      step: 'd',
+      count: 'n',
+      sums: true,
+      term: 'an',
+      sum: 'S',
+    },
+  }),
+  page({
+    id: 'm.11.series~sigma',
+    title: 'Sigma notation',
+    use: 'Use this for “Evaluate the sum from k = 1 to 8 of (3k − 1).”',
+    assumptions: [
+      'Σ from k = 1 to n of (ck + e) adds the terms for k = 1, 2, …, n.',
+      'The terms go up by c each time, so the sum is an arithmetic series.',
+      'Find the first and last terms, then Sₙ = n(a₁ + aₙ) ÷ 2.',
+    ],
+    variables: [
+      V('c', 'c', 'Coefficient of k', { min: -100, max: 100, step: 0.5 }),
+      V('e', 'e', 'Constant', { min: -1000, max: 1000, step: 0.5 }),
+      W('n', 'n', 'Last value of k', 1, 30),
+      V('a1', 'a₁', 'First term (k = 1)', { min: -2000, max: 2000, derived: true }),
+      V('an', 'aₙ', 'Last term (k = n)', { min: -1e5, max: 1e5, derived: true }),
+      V('S', 'S', 'Sum', { min: -1e7, max: 1e7, derived: true }),
+    ],
+    rules: [
+      derive(
+        'a₁ = c × 1 + e',
+        'a1',
+        ['c', 'e'],
+        '{a1} = {c} × 1 + {e}',
+        (v) => v.c! + v.e!,
+        '{c} × 1 + {e}',
+        'Put k = 1 into ck + e.',
+      ),
+      derive(
+        'aₙ = c × n + e',
+        'an',
+        ['c', 'n', 'e'],
+        '{an} = {c} × {n} + {e}',
+        (v) => v.c! * v.n! + v.e!,
+        '{c} × {n} + {e}',
+        'Put k = n into ck + e.',
+      ),
+      derive(
+        'S = n × (a₁ + aₙ) ÷ 2',
+        'S',
+        ['n', 'a1', 'an'],
+        '{S} = {n} × ({a1} + {an}) ÷ 2',
+        (v) => (v.n! * (v.a1! + v.an!)) / 2,
+        '{n} × ({a1} + {an}) ÷ 2',
+        'n ÷ 2 pairs of first plus last, as in any arithmetic series.',
+      ),
+    ],
+    example: { c: 3, e: -1, n: 8, a1: 2, an: 23, S: 100 },
+    startWith: ['c', 'e', 'n'],
+    sliders: true,
+    representation: {
+      kind: 'termsChart',
+      type: 'arithmetic',
+      first: 'a1',
+      step: 'c',
+      count: 'n',
+      sums: true,
+      term: 'an',
+      sum: 'S',
+    },
+  }),
+  page({
+    id: 'm.11.series~infinite',
+    title: 'Infinite geometric series',
+    use: 'Use this for “Find the sum of 12 + 3 + 3/4 + ….”',
+    assumptions: [
+      'With r between −1 and 1, rⁿ shrinks toward 0 as n grows.',
+      'The partial sums Sₙ = a₁(1 − rⁿ) ÷ (1 − r) close in on S = a₁ ÷ (1 − r).',
+      'With |r| ≥ 1 the terms do not shrink, and the sum has no limit.',
+    ],
+    variables: [
+      V('a1', 'a₁', 'First term', { min: -100, max: 100, step: 0.5 }),
+      V('r', 'r', 'Common ratio', { min: -5, max: 5, step: 0.05 }),
+      W('n', 'n', 'Terms added so far', 1, 30),
+      V('Sn', 'Sₙ', 'Sum of the first n terms', { min: -1e5, max: 1e5, derived: true }),
+      V('S', 'S', 'Sum of the series', { min: -1e5, max: 1e5, derived: true }),
+    ],
+    rules: [
+      limit(
+        '|r| < 1',
+        '{r} is between −1 and 1',
+        ['r'],
+        (v) => Math.abs(v.r!) < 1,
+        'With |r| ≥ 1 the terms do not shrink, so the sums grow without end.',
+      ),
+      derive(
+        'Sₙ = a₁ × (1 − rⁿ) ÷ (1 − r)',
+        'Sn',
+        ['a1', 'r', 'n'],
+        '{Sn} = {a1} × (1 − {r}^{n}) ÷ (1 − {r})',
+        (v) => div(v.a1! * (1 - v.r! ** v.n!), 1 - v.r!),
+        '{a1} × (1 − {r}^{n}) ÷ (1 − {r})',
+        'The first n terms of the geometric series.',
+      ),
+      derive(
+        'S = a₁ ÷ (1 − r)',
+        'S',
+        ['a1', 'r'],
+        '{S} = {a1} ÷ (1 − {r})',
+        (v) => div(v.a1!, 1 - v.r!),
+        '{a1} ÷ (1 − {r})',
+        'As n grows, rⁿ goes to 0, leaving a₁ ÷ (1 − r).',
+      ),
+    ],
+    example: { a1: 12, r: 0.25, n: 6, Sn: (12 * (1 - 0.25 ** 6)) / 0.75, S: 16 },
+    startWith: ['a1', 'r', 'n'],
+    sliders: true,
+    representation: {
+      kind: 'termsChart',
+      type: 'geometric',
+      first: 'a1',
+      step: 'r',
+      count: 'n',
+      sums: true,
+      limit: 'S',
+      sum: 'Sn',
+    },
   }),
 ];
