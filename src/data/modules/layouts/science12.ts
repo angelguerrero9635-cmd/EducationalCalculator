@@ -347,4 +347,37 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'The asteroid Vesta', bin: 'small' },
     ],
   },
+
+  // ── Light, spectra and telescopes: how we study stars (HS-ESS1-1, HS-PS4-3) ──
+  {
+    kind: 'sort',
+    id: 's.12.starlight-spectra~space-telescopes',
+    title: 'From the ground or only from space?',
+    use: 'Use this for “Why must X-ray telescopes be put in space?”',
+    assumptions: [
+      'The air lets through visible light and radio waves, and blocks most of the rest.',
+      'Ozone absorbs ultraviolet; water vapor absorbs most infrared.',
+    ],
+    question: 'Can a telescope on the ground see it?',
+    bins: [
+      {
+        id: 'ground',
+        label: 'From the ground',
+        why: 'These waves pass through the atmosphere, so telescopes on mountaintops can catch them.',
+      },
+      {
+        id: 'space',
+        label: 'Only from space',
+        why: 'The atmosphere absorbs these waves before they reach the ground.',
+      },
+    ],
+    cards: [
+      { label: 'Radio waves from a galaxy', bin: 'ground' },
+      { label: 'Visible light from a star', bin: 'ground' },
+      { label: 'X-rays from hot gas', bin: 'space' },
+      { label: 'Gamma rays from an explosion', bin: 'space' },
+      { label: 'Ultraviolet from a young star', bin: 'space' },
+      { label: 'Far infrared from cold dust', bin: 'space' },
+    ],
+  },
 ];

@@ -734,6 +734,188 @@ const kepler: ModuleDef = {
   },
 };
 
+// ── Light, spectra and telescopes: how we study stars ──
+
+/** Wien's constant in nm·K. */
+const WIEN = 2.898e6;
+
+const wien: ModuleDef = {
+  id: 's.12.starlight-spectra',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Hotter stars peak at shorter wavelengths, so they look bluer.',
+    'A star glows at every wavelength; λ is only the brightest one.',
+    'c = 3.00 × 10⁸ m/s.',
+  ],
+  variables: [
+    V('T', 'T', 'Surface temperature', { unit: 'K', min: 2500, max: 40000, step: 10 }),
+    V('l', 'λ', 'Peak wavelength', { unit: 'nm', min: 70, max: 1200, step: 0.1 }),
+    V('f', 'f', 'Frequency at the peak', {
+      unit: 'Hz',
+      min: 2.5e14,
+      max: 4.3e15,
+      step: 1e10,
+      scientific: true,
+    }),
+  ],
+  ...rels(
+    rule('λ = 2.898 × 10⁶ ÷ T', '{l} = 2.898 × 10⁶ ÷ {T}', (v) => v.l! * v.T! - WIEN, {
+      l: [
+        (v) => div(WIEN, v.T!),
+        '2.898 × 10⁶ ÷ {T}',
+        'Wien’s law: the peak wavelength in nm is 2.898 × 10⁶ over the temperature in K.',
+      ],
+      T: [
+        (v) => div(WIEN, v.l!),
+        '2.898 × 10⁶ ÷ {l}',
+        'The same law turned round for the temperature.',
+      ],
+    }),
+    rule('f = c ÷ λ', '{f} = 3.00 × 10⁸ ÷ ({l} × 10⁻⁹)', (v) => v.f! - 3e17 / v.l!, {
+      f: [
+        (v) => div(3e17, v.l!),
+        '3.00 × 10⁸ ÷ ({l} × 10⁻⁹)',
+        'Light’s speed over the wavelength in meters: a nanometer is 10⁻⁹ m.',
+      ],
+      l: [
+        (v) => div(3e17, v.f!),
+        '3.00 × 10⁸ ÷ {f} ÷ 10⁻⁹',
+        'Light’s speed over the frequency gives meters; divide by 10⁻⁹ for nm.',
+      ],
+    }),
+  ),
+  example: { T: 5772, l: WIEN / 5772, f: 3e17 / (WIEN / 5772) },
+  startWith: ['T'],
+  representation: { kind: 'spectrum', wavelength: 'l', meters: 1e-9, frequency: 'f', speed: 3e8 },
+};
+
+/** Hydrogen's red line in the lab, nm. */
+const H_ALPHA = 656.3;
+
+/** z = (λ − 656.3) ÷ 656.3. */
+const redshiftRel = rule(
+  'z = (λ − 656.3) ÷ 656.3',
+  '{z} = ({l} − 656.3) ÷ 656.3',
+  (v) => v.z! - (v.l! - H_ALPHA) / H_ALPHA,
+  {
+    z: [
+      (v) => (v.l! - H_ALPHA) / H_ALPHA,
+      '({l} − 656.3) ÷ 656.3',
+      'The shift as a fraction of the lab wavelength.',
+    ],
+    l: [(v) => H_ALPHA * (1 + v.z!), '656.3 × (1 + {z})', 'Stretch the lab wavelength by 1 + z.'],
+  },
+);
+
+/** v = c × z, c in km/s. */
+const czRel = rule('v = c × z', '{v} = 300000 × {z}', (v) => v.v! - 300000 * v.z!, {
+  v: [(v) => 300000 * v.z!, '300000 × {z}', 'Multiply the shift by light’s speed, 300,000 km/s.'],
+  z: [(v) => v.v! / 300000, '{v} ÷ 300000', 'Divide the speed by light’s speed.'],
+});
+
+const doppler: ModuleDef = {
+  id: 's.12.starlight-spectra~doppler',
+  title: 'A star’s Doppler shift',
+  use: 'Use this for “A star’s Hα line is seen at 656.5 nm. How fast is it moving, and which way?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Moving away stretches the lines red (+v); moving toward shifts them blue (−v).',
+    'Only motion along our line of sight shows.',
+    'The pattern of lines names the element; here it is hydrogen’s Hα line, 656.3 nm in the lab.',
+  ],
+  variables: [
+    V('l', 'λ', 'Observed wavelength of Hα', { unit: 'nm', min: 649, max: 663, step: 0.01 }),
+    V('z', 'z', 'Shift', { min: -0.011, max: 0.011, step: 0.000001 }),
+    V('v', 'v', 'Speed along the line of sight (+ away)', {
+      unit: 'km/s',
+      min: -3300,
+      max: 3300,
+      step: 0.1,
+    }),
+  ],
+  ...rels(redshiftRel, czRel),
+  example: {
+    l: 656.5,
+    z: (656.5 - H_ALPHA) / H_ALPHA,
+    v: (300000 * (656.5 - H_ALPHA)) / H_ALPHA,
+  },
+  startWith: ['l'],
+  representation: {
+    kind: 'spectrum',
+    wavelength: 'l',
+    meters: 1e-9,
+    lines: { element: 'H', mode: 'absorption', redshift: 'z', velocity: 'v' },
+  },
+};
+
+const telescope: ModuleDef = {
+  id: 's.12.starlight-spectra~telescope',
+  title: 'A telescope’s magnification and light-gathering',
+  use: 'Use this for “A telescope has a 900 mm objective and a 25 mm eyepiece. What is its magnification?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Aperture, not magnification, sets how faint a star you can see.',
+    'Mirrors can be made far larger than lenses.',
+    'The eye’s pupil opens to about 7 mm in the dark.',
+  ],
+  standalone: {
+    vars: ['D', 'G'],
+    why: 'The aperture sets how much light is gathered; it does not change the magnification or the tube.',
+  },
+  variables: [
+    V('o', 'fₒ', 'Objective focal length', { unit: 'mm', min: 100, max: 5000, step: 1 }),
+    V('e', 'fₑ', 'Eyepiece focal length', { unit: 'mm', min: 3, max: 60, step: 0.1 }),
+    V('M', 'M', 'Magnification', { min: 1, max: 2000, step: 0.1, derived: true }),
+    V('L', 'L', 'Tube length', { unit: 'mm', min: 103, max: 5060, step: 1, derived: true }),
+    V('D', 'D', 'Aperture', { unit: 'mm', min: 10, max: 1000, step: 1 }),
+    V('G', 'G', 'Light gathered compared with the eye', {
+      min: 2,
+      max: 20500,
+      step: 0.1,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    quotient('M', 'o', 'e', 'M = fₒ ÷ fₑ', [
+      'The objective’s focal length over the eyepiece’s.',
+      'The magnification times the eyepiece’s focal length.',
+      'The objective’s focal length over the magnification.',
+    ]),
+    rule('L = fₒ + fₑ', '{L} = {o} + {e}', (v) => v.L! - v.o! - v.e!, {
+      L: [
+        (v) => v.o! + v.e!,
+        '{o} + {e}',
+        'The two focal points meet, so the lenses sit fₒ + fₑ apart.',
+      ],
+      o: [(v) => v.L! - v.e!, '{L} − {e}', 'The tube less the eyepiece’s focal length.'],
+      e: [(v) => v.L! - v.o!, '{L} − {o}', 'The tube less the objective’s focal length.'],
+    }),
+    rule('G = (D ÷ 7)²', '{G} = ({D} ÷ 7)²', (v) => v.G! - (v.D! / 7) ** 2, {
+      G: [
+        (v) => (v.D! / 7) ** 2,
+        '({D} ÷ 7)^2',
+        'Light gathered goes with the area, so square the ratio of widths.',
+      ],
+      D: [
+        (v) => (v.G! >= 0 ? 7 * Math.sqrt(v.G!) : undefined),
+        '7 × √({G})',
+        'Undo the square, then scale up from the 7 mm pupil.',
+      ],
+    }),
+  ),
+  example: { o: 900, e: 25, M: 36, L: 925, D: 100, G: (100 / 7) ** 2 },
+  startWith: ['o', 'e', 'D'],
+  representation: {
+    kind: 'rayDiagram',
+    mode: 'telescope',
+    design: 'refracting',
+    objective: 'o',
+    eyepiece: 'e',
+    magnification: 'M',
+    length: 'L',
+  },
+};
+
 export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
@@ -747,4 +929,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   pressureMap,
   humidity,
   kepler,
+  wien,
+  doppler,
+  telescope,
 ];
