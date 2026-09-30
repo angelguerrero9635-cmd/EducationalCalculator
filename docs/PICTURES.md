@@ -199,6 +199,15 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `lineSystem`       | `shade` (a line), `test`, `sum`, `fixed` | inequalities: half-planes, dashed < >, overlap; elimination sum line (H16)    |
 | `linearFunction`   | `shade`                                  | one inequality y < mx + b: its half-plane shaded, the boundary dashed (H16)   |
 | `integerLine`      | `compound: { join, closed?, center? }`   | and / or between two bounds; abs(x − c) < d as a distance from c (H17)        |
+| `linearFunction`   | `shade: { sign, flip? }`                 | the sign box's side (1 < 2 ≤ 3 > 4 ≥), reversed while `flip` < 0 (H90)        |
+| `lineSystem`       | `lines[i].shade: { sign, flip? }`        | each line's half-plane from its sign box; ax + by (sign) c, `flip: 'b'` (H90) |
+| `lineSystem`       | `upright: [{ x, shade? }]`               | upright boundaries x ≥ k; with them only the overlap is shaded (a box) (H92)  |
+| `lineSystem`       | `marks`, `given: { x, y }`               | arrows if parallel, a square if perpendicular; the given point marked (H92)   |
+| `functionGraph`    | `inequality: { sign }`                   | f(x) (sign) 0 shaded to the x-axis; the solutions on it, open or closed (H90) |
+| `integerLine`      | `compound.closed: [id, id]`              | each bound's circle from a sign box: 2 ≤, 4 ≥ closed; 1 <, 3 > open (H90)     |
+| `integerLine`      | `fit`, `ticks`                           | the line spans its values (344–356 g → 340–360), not 0; a tick every 5 (H89)  |
+| `integerLine`      | `compound: { join: 'equal', center, … }` | abs(x − c) = d: two closed dots at c ± d, distances bracketed, no band (H91)  |
+| `normalCurve`      | `test.tail: { sign }`                    | Hₐ's sign box: 1 < 2 ≤ left, 3 > 4 ≥ right, 6 ≠ both tails (H90)              |
 | `scatter`          | `residuals`, `r`, `leastSquares`, …      | residual segments and plot, r, the least-squares line beside or given (H18)   |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |

@@ -3,6 +3,7 @@
  * family, its features marked. Kept apart from `types.ts` so that file's union only lists it. A
  * `number | string` field is a fixed number or a variable id.
  */
+import type { FunctionGraphHs2a } from './typesHs2a';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -114,7 +115,7 @@ export type FunctionGraphSpec = FunctionFamily & {
   keep?: string[];
   /** No handles: a drag couldn't solve backwards to the values typed. */
   fixed?: boolean;
-};
+} & FunctionGraphHs2a;
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');

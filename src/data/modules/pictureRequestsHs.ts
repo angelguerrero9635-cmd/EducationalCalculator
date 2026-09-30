@@ -1720,39 +1720,73 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   },
   // ── Round 2 (H89–H103): what the eight direction plans still need (docs/HS_NEEDS.md P1–P15;
   // brief docs/RENDERINGS_HS_ROUND_2.md) ──
-  ask(
-    'H89',
-    'integerLine',
-    'A number line window that fits its values (10 ≤ x ≤ 30; 344–356 g), ticks by 5 or 10',
-    ['m.9.linear-inequalities', 'm.9.absolute-value'],
-    'P1: see docs/HS_NEEDS.md and docs/plans/m.9.md need 1.',
-  ),
-  ask(
-    'H90',
-    'functionGraph',
-    'A sign box drives the picture: shading on lineSystem, linearFunction and functionGraph; closed or open ends on integerLine; the tail of normalCurve',
-    [
-      'm.9.linear-inequalities',
-      'm.9.inequality-systems',
-      'm.9.quadratic-formula',
-      'm.12.hypothesis-testing',
+  {
+    ...ask(
+      'H89',
+      'integerLine',
+      'A number line window that fits its values (10 ≤ x ≤ 30; 344–356 g), ticks by 5 or 10',
+      ['m.9.linear-inequalities', 'm.9.absolute-value'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-linear-inequalities-ticks',
+      'g.m9-linear-inequalities-compound-fit',
+      'g.m9-absolute-value-tolerance',
     ],
-    "P2: the picture takes a value id holding the sign code (1 <, 2 ≤, 3 >, 4 ≥; ≠ for a two-tailed test), flipping with the page's rule. docs/plans/m.9.md need 2, m.12.md need 2.",
-  ),
-  ask(
-    'H91',
-    'integerLine',
-    'Two dots at c ± d with the distance bracketed and nothing shaded (join: equal)',
-    ['m.9.absolute-value'],
-    'P3: docs/plans/m.9.md need 3.',
-  ),
-  ask(
-    'H92',
-    'lineSystem',
-    'Upright boundaries (x ≥ k); parallel arrows and right-angle marks; the given point',
-    ['m.9.inequality-systems', 'm.10.parallel-lines'],
-    'P4: docs/plans/m.9.md need 4, m.10.md need 10.',
-  ),
+    notes:
+      'P1 (docs/plans/m.9.md need 1). Two options on `integerLine`, off unless set, for every mode (a point, an inequality, a compound): `fit: true` spans the line over its own values (the bounds, the center, the test number) with a quarter of their spread each side and at least 10 across, rounded out to its ticks, instead of 0 and min–max (min and max are then unused): 344 ≤ w ≤ 356 draws 340 to 360 by 2 (335 to 360 by 5 with a 343 g test), 10 < x ≤ 18 draws 5 to 20; `ticks: 5` (or 10) fixes the tick step (at most 40 ticks, else the usual step): the main page at ±20 by 5s. m.9.linear-inequalities: `ticks: 5` (no other change); ~compound: `fit: true, ticks: 5` lets l and r go past ±50 (the demo keeps the page’s ranges); m.9.absolute-value~tolerance: rows T, d, w (g), L = T − d and U = T + d worked out, k = |w − T| and the truth value; picture { kind: "integerLine", value: "L", second: "U", min: 0, max: 10, unit: "g", fit: true, compound: { join: "and", closed: [true, true], center: "T", radius: "d", letter: "w", test: "w" } } (example 350 g within 6 g, a 343 g box is out).',
+  },
+  {
+    ...ask(
+      'H90',
+      'functionGraph',
+      'A sign box drives the picture: shading on lineSystem, linearFunction and functionGraph; closed or open ends on integerLine; the tail of normalCurve',
+      [
+        'm.9.linear-inequalities',
+        'm.9.inequality-systems',
+        'm.9.quadratic-formula',
+        'm.12.hypothesis-testing',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-linear-inequalities-two-variables-sign',
+      'g.m9-inequality-systems-standard-form',
+      'g.m9-quadratic-formula-inequality-sign',
+      'g.m9-linear-inequalities-compound-sign',
+      'g.m12-hypothesis-testing-sign',
+    ],
+    notes:
+      "P2 (docs/plans/m.9.md need 2, m.12.md need 2). A sign box drives a picture through `{ sign: 's', flip?: 'b' }`: `sign` is the value holding the code as `{s:sign}` stores it (1 <, 2 ≤, 3 >, 4 ≥), and `flip` (optional) reverses it while that value is negative, so the page needs no worked-out sign of its own. Until a sign is chosen nothing is shaded and the caption says so. Fields: `linearFunction` `shade: { sign: 's' }` (m.9.linear-inequalities~two-variables with `equation: 'y {s:sign} {m}x + {b}'`: one page for all four signs); `lineSystem` `lines[i].shade: { sign, flip }` (the standard-form systems page: `{a}x + {b}y {s:sign} {c}` over two lines, slopes −a ÷ b and intercepts c ÷ b as worked-out values, `shade: { sign: 's', flip: 'b' }` and `{ sign: 't', flip: 'e' }`, `fixed: true`); `functionGraph` `inequality: { sign: 's' }` draws f(x) (sign) 0: the region between the curve and the x-axis where it holds shaded, the solutions as a band on the axis with open (<, >) or closed (≤, ≥) circles at the zeros, and the caption \"f(x) < 0 where the curve is below the x-axis: −2 < x < 4\" (m.9.quadratic-formula~inequality and ~inequality-outside become one page, `x² + {b}x + {c} {s:sign} 0`); `integerLine` `compound.closed: ['s', 't']` (value ids; 2 or 4 closed, 1 or 3 open) for `{l} {s:sign} {a}x + {b} {t:sign} {r}` on ~compound (the demo keeps s and t to < and ≤ with `allowed: [1, 2]`); `normalCurve` `test.tail: { sign: 's' }`: 1 or 2 left, 3 or 4 right, 6 ≠ both tails, the caption naming Hₐ's side (m.12.hypothesis-testing and ~mean as one page, the p-value relation choosing Φ(z), 1 − Φ(z) or 2 × (1 − Φ(|z|)) by s). The sign box has no ≠ yet (`{s:sign}` cycles < ≤ > ≥; `{s:relation}` adds = as 5), so the demo types Hₐ's code (1, 3 or 6) in its row; a box offering ≠ (coded 6) is an equation-input need for the lesson chat. Example: { kind: 'lineSystem', lines: [{ slope: 'm1', intercept: 'b1', shade: { sign: 's', flip: 'b' } }, { slope: 'm2', intercept: 'b2', shade: { sign: 't', flip: 'e' } }], test: { x: 'tx', y: 'ty' }, extent: 10, fixed: true }.",
+  },
+  {
+    ...ask(
+      'H91',
+      'integerLine',
+      'Two dots at c ± d with the distance bracketed and nothing shaded (join: equal)',
+      ['m.9.absolute-value'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m9-absolute-value-equal', 'g.m9-absolute-value-equal-one'],
+    notes:
+      'P3 (docs/plans/m.9.md need 3). `compound: { join: "equal", center, radius, letter?, test? }` draws |x − c| = d: closed dots at c − d and c + d (`value` and `second`, in either order, so x₁ and x₂ can stay as the page solves them for a negative a), the center marked, d bracketed to each dot, nothing shaded between; d = 0 draws one dot at c ("x = c"), a negative d none and the caption says no number is a negative distance away. `center` and `radius` are required (the harness checks {value, second} = {c − d, c + d}); `fit` and `ticks` (H89) work here too. m.9.absolute-value main: { kind: "integerLine", value: "x1", second: "x2", min: -20, max: 20, compound: { join: "equal", center: "h", radius: "d" } } with its h and d as they are (the labels under the picture can go).',
+  },
+  {
+    ...ask(
+      'H92',
+      'lineSystem',
+      'Upright boundaries (x ≥ k); parallel arrows and right-angle marks; the given point',
+      ['m.9.inequality-systems', 'm.10.parallel-lines'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-inequality-systems-box',
+      'g.m10-parallel-lines-parallel-line-marks',
+      'g.m10-parallel-lines-perpendicular-line-marks',
+    ],
+    notes:
+      'P4 (docs/plans/m.9.md need 4, m.10.md need 10). Three options on `lineSystem`, off unless set. `upright: [{ x, shade?, label? }]`: upright lines x = k (a number or a value id) in their own colour (theme `lineUpright`), or boundaries x (sign) k with `shade` (a sign, or a sign box as in H90), dashed when strict; with any upright line only the overlap of every boundary is shaded (four half-planes on top of each other would muddy it), the caption says where all of them overlap and tests the point against each in one line. The box a ≤ x ≤ b, c ≤ y ≤ d (NAEP-2024-12M11-#11 on m.9.inequality-systems): { kind: "lineSystem", lines: [{ slope: 0, intercept: "c", shade: "≥" }, { slope: 0, intercept: "d", shade: "≤" }], upright: [{ x: "a", shade: "≥" }, { x: "b", shade: "≤" }], test: { x: "tx", y: "ty" }, extent: 10, fixed: true }. `marks: true`: one arrow on each line when the slopes are equal, a right-angle square at the crossing when they multiply to −1 (in the quarter away from the crossing’s label), with a caption line (“The arrows mark them parallel: both slopes are 3”, “The square marks a right angle: 2 × (−1/2) = −1”). `given: { x, y }`: the point the second line goes through, filled and labelled, and “(2, 7) is on Parallel: 3 × 2 + 1 = 7” (the harness checks it is on that line). m.10.parallel-lines~parallel-line and ~perpendicular-line: add `marks: true, given: { x: "x0", y: "y0" }` to their pictures (no other change).',
+  },
   ask(
     'H93',
     'termsChart',

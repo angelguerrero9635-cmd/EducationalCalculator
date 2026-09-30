@@ -17,6 +17,7 @@ import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
+import { hs2aSpecVars } from '../typesHs2a';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
@@ -288,6 +289,7 @@ function representationVars(r: Representation): string[] {
       ];
     case 'integerLine':
       return [
+        ...hs2aSpecVars(r),
         r.value,
         ...[r.opposite, r.absolute, r.second, r.change, r.jump?.by, r.jump?.result].filter(
           (x): x is string => !!x,
@@ -473,9 +475,9 @@ function representationVars(r: Representation): string[] {
     case 'functionMachine':
     case 'mapping':
     case 'transformation':
-      return graphSpecVars(r);
+      return [...graphSpecVars(r), ...hs2aSpecVars(r)];
     case 'functionGraph':
-      return functionGraphVars(r);
+      return [...functionGraphVars(r), ...hs2aSpecVars(r)];
     case 'energyPyramid':
     case 'generations':
       return lifeSpecVars(r);
@@ -501,7 +503,7 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return hsbSpecVars(r);
+      return [...hsbSpecVars(r), ...hs2aSpecVars(r)];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':
