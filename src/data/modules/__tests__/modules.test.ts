@@ -22,6 +22,7 @@ import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
+import { hslSpecVars } from '../typesHsl';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -427,7 +428,7 @@ function representationVars(r: Representation): string[] {
     case 'thermometers':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'rockLayers':
-      return [...r.fossils, r.difference];
+      return 'dating' in r ? hslSpecVars(r) : [...r.fossils, r.difference];
     case 'grassSlope':
       return [r.bare, r.grass, ...(r.difference ? [r.difference] : [])];
     case 'flashlights':
@@ -527,6 +528,12 @@ function representationVars(r: Representation): string[] {
     case 'phScale':
     case 'decayChart':
       return hsjSpecVars(r);
+    case 'earthLayers':
+    case 'oceanProfile':
+    case 'atmosphereLayers':
+    case 'hrDiagram':
+    case 'expandingUniverse':
+      return hslSpecVars(r);
   }
 }
 

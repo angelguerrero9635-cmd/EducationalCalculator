@@ -66,6 +66,22 @@ scene's `galvanic: { metals, meter?, lit? }` picks the metals (the anode, E° an
 half-reactions are worked out from the reduction potentials) and rings the electrons, anode,
 cathode, bridge or meter.
 
+Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
+ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,
+between?, absolute? }` lights a rank, shades an unknown's range or bars absolute hardness. Mineral
+icons (`layouts/icons/hl.tsx`): `quartz`, `feldspar`, `mica`, `calcite`, `halite`, `pyrite`,
+`hematite`; energy icons `solar panel` and `oil rig` (beside round 3's wind turbine, dam, coal,
+oil pump, gas flame and nuclear power plant). A star's life, on night sky: `stellar nebula`, `protostar`,
+`Sun-like star`, `massive star`, `red giant`, `red supergiant`, `planetary nebula`, `white dwarf`,
+`supernova`, `neutron star`, `black hole`. Galaxies: `spiral galaxy`, `barred spiral galaxy`, `elliptical
+galaxy`, `irregular galaxy`; the forming solar system: `solar nebula`, `spinning disk`, `protosun`,
+`planetesimals`, `young planets`. `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
+composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
+valley, a meander, an aquifer or a dune, its parts labeled. `oceanCurrents`
+(`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map. `greenhouse`
+(`layouts/greenhouseFigure.tsx`): `greenhouse: { view: 'energy', co2? }` (sunlight in, infrared out
+and back, a thermometer) or `{ view: 'zones', lit? }` (climate zones by latitude).
+
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat

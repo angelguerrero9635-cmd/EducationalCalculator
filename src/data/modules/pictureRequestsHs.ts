@@ -1252,67 +1252,180 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   ),
 
   // ── G. Earth and space ──
-  ask(
-    'H71',
-    'mineralIcons',
-    'Card icons of minerals in their materials (quartz, feldspar, mica, calcite, halite, pyrite, hematite) and the Mohs scale',
-    ['s.12.minerals-rocks'],
-  ),
-  ask(
-    'H72',
-    'earthLayers',
-    'Cross-section of Earth with P and S wave paths and the shadow zone; a seismogram; locating an epicenter from three stations',
-    ['s.12.earth-interior'],
-  ),
-  ask(
-    'H73',
-    'landforms',
-    'Explore figures: volcano types, folds and faults, a U- and a V-shaped valley, a meandering river, an aquifer and water table, dunes',
-    ['s.12.volcanoes-mountains', 's.12.surface-processes'],
-  ),
-  ask(
-    'H74',
-    'rockLayers',
-    'Absolute ages on layers, an igneous intrusion cutting across, index fossils',
-    ['s.12.radiometric-dating'],
-  ),
-  ask(
-    'H75',
-    'oceanProfile',
-    'Ocean floor profile (shelf, slope, ridge, trench); surface currents and gyres on a map; the deep conveyor; tides from the moon and sun',
-    ['s.12.ocean-atmosphere'],
-  ),
-  ask(
-    'H76',
-    'atmosphereLayers',
-    'Layers of the atmosphere with the temperature profile; a pressure map with highs, lows and wind arrows turned by Coriolis',
-    ['s.12.atmosphere-weather'],
-  ),
-  ask(
-    'H77',
-    'greenhouse',
-    'Explore figure: sunlight in, infrared out and back; climate zones by latitude',
-    ['s.12.climate-systems'],
-  ),
-  ask(
-    'H78',
-    'energySources',
-    'Card icons for energy sources (solar panel, wind turbine, dam, coal, oil rig, nuclear plant) and a resource bar or pie',
-    ['s.12.resource-management'],
-  ),
-  ask(
-    'H79',
-    'hrDiagram',
-    'H–R diagram (temperature against luminosity, log scales) with the main sequence, giants and white dwarfs; star life-cycle stages',
-    ['s.12.stellar-evolution'],
-  ),
-  ask(
-    'H80',
-    'expandingUniverse',
-    'Explore figure: galaxies spreading apart as space stretches; Hubble plot of speed against distance; galaxy type card figures',
-    ['s.12.cosmology', 's.12.solar-system'],
-    'Solar system page: nebula to planets as sequence stages.',
-  ),
+  {
+    ...ask(
+      'H71',
+      'mineralIcons',
+      'Card icons of minerals in their materials (quartz, feldspar, mica, calcite, halite, pyrite, hematite) and the Mohs scale',
+      ['s.12.minerals-rocks'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-minerals-rocks-luster',
+      'g.s12-minerals-rocks-cleavage',
+      'g.s12-minerals-rocks-mohs',
+    ],
+    notes:
+      'Drawn (group HL) as card icons and an explore figure. Card icons, each in its habit and luster: { kind: "icon", icon: "quartz" } (also "feldspar", "mica", "calcite", "halite", "pyrite", "hematite"); hematite shows its red-brown streak on a white plate, calcite doubles a line seen through it. Mohs scale (explore figure): { kind: "mohsScale" }, each scene mohs: { lit?: rank 1–10, between?: [low, high] (an unknown’s range, shaded; the tools sit at fingernail 2.5, copper coin 3.5, glass 5.5, steel file 6.5), absolute?: true (bars to absolute hardness, talc 1 … diamond 1500) }. Example scene: { label: "An unknown mineral", lines: [...], mohs: { between: [5.5, 6.5], lit: 6 } }. The harness checks lit is a rank and the range lies in 1–10.',
+  },
+  {
+    ...ask(
+      'H72',
+      'earthLayers',
+      'Cross-section of Earth with P and S wave paths and the shadow zone; a seismogram; locating an epicenter from three stations',
+      ['s.12.earth-interior'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-earth-interior-shadow-zone',
+      'g.s12-earth-interior-shadow-direct',
+      'g.s12-earth-interior-shadow-core',
+      'g.s12-earth-interior-shadow-edge',
+      'g.s12-earth-interior-seismogram',
+      'g.s12-earth-interior-seismogram-near',
+      'g.s12-earth-interior-epicenter',
+    ],
+    notes:
+      'Drawn (group HL) as one calculator kind in three modes. Cross-section: { kind: "earthLayers", mode: "section", distance?: id or number (the station’s angle from the focus, 0°–180°), fixed? }: layers to scale (crust, mantle, liquid outer core from 2,890 km, solid inner core from 5,150 km), P paths on the left curving to 104° and through the core to 140°–180°, S paths on the right stopping at the outer core, the shadow zones as bands; the station is drawn on both halves, filled where that wave arrives, and dragged round the surface. Example: { kind: "earthLayers", mode: "section", distance: "D" } with s = Δ × π × 6371 ÷ 180. Seismogram: { kind: "earthLayers", mode: "seismogram", km: id, vp?: id or number (default 6 km/s), vs?: (default 3.5), lag?: id }: the trace with P at d ÷ vₚ, S at d ÷ vₛ, surface waves after, the S − P lag bracketed; give the page a constraint vₛ < vₚ. Example: { kind: "earthLayers", mode: "seismogram", km: "d", vp: "vp", vs: "vs", lag: "L" }. Epicenter: { kind: "earthLayers", mode: "epicenter", stations: [{ name, x, y (km), r: distance id } ×3] }: circles on a km grid, the epicenter starred where all three meet; circles that miss draw faded with the reason. Example: stations [{ name: "1", x: 0, y: 0, r: "d1" }, { name: "2", x: 168, y: 210, r: "d2" }, { name: "3", x: 336, y: 0, r: "d3" }] with d = k × L, k = 8.4 km per second of lag. The harness checks the rays (the 104° ray grazes the core, none dips into it), the lag against the trace, and that stations aren’t in a line.',
+  },
+  {
+    ...ask(
+      'H73',
+      'landforms',
+      'Explore figures: volcano types, folds and faults, a U- and a V-shaped valley, a meandering river, an aquifer and water table, dunes',
+      ['s.12.volcanoes-mountains', 's.12.surface-processes'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-volcanoes-mountains-volcanoes',
+      'g.s12-volcanoes-mountains-deformation',
+      'g.s12-surface-processes-landforms',
+    ],
+    notes:
+      'Drawn (group HL) as one explore figure: { kind: "landforms" }, each scene landform: { kind } with kind one of "shield", "composite", "cinderCone" (volcanoes in cross-section: a broad basalt dome with thin flows; a steep concave cone of lava and ash layers with its vent, side vent and ash cloud; a small cone of cinders at 33°, lava from its base), "folds" (anticline and syncline, squeezed), "normalFault", "reverseFault" (layered blocks on a fault dipping left, the hanging wall dropped or pushed up, stress arrows and half arrows), "strikeSlip" (seen from above, a stream and a fence offset), "vValley", "uValley" (the glacier’s former ice dashed), "meander" (seen from above: cut banks, point bars, an oxbow lake), "aquifer" (unsaturated zone, water table, saturated sand and gravel on clay, a well and a lake) or "dunes" (gentle windward side, 33° slip face, sand bouncing). The part names are drawn; the scene’s lines explain. Example scene: { label: "Normal fault", lines: [...], landform: { kind: "normalFault" } }.',
+  },
+  {
+    ...ask(
+      'H74',
+      'rockLayers',
+      'Absolute ages on layers, an igneous intrusion cutting across, index fossils',
+      ['s.12.radiometric-dating'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-radiometric-dating-half-life',
+      'g.s12-radiometric-dating-young',
+      'g.s12-radiometric-dating-bracket',
+    ],
+    notes:
+      'Drawn (group HL) as an optional `dating` field on rockLayers (the Grade 3 fossils page is unchanged; a spec with `dating` draws the dated cliff instead): { kind: "rockLayers", dating: { layers: [{ rock: "sandstone" | "shale" | "limestone" | "siltstone" | "conglomerate" | "ash" | "lava", age?: id or number (million years), fossil?: "trilobite" | "ammonite" | "fern" }] (top to bottom, 3 to 8), intrusion?: { through: index of the highest layer the dike cuts, age? }, bracket?: index of the layer whose age is bracketed by the nearest ages above and below (a dike that cuts it makes it older than the dike; one that stops below makes it younger), sample?: { parent: percent id, layer: index (−1 for the dike), parentName, daughterName, halfLives?: id } } }; the sample is 100 atoms, parent and daughter counted from the rounded percent. Example: layers [{ rock: "sandstone", fossil: "ammonite" }, { rock: "shale" }, { rock: "ash", age: "t" }, { rock: "limestone", fossil: "trilobite" }, { rock: "siltstone" }], sample { parent: "P", layer: 2, parentName: "potassium-40", daughterName: "argon-40", halfLives: "n" } with P = 100 × (1/2)^n and t = n × T. The harness checks superposition (dated ages rise downward), cross-cutting (the dike is younger than what it cuts and older than what it doesn’t reach), a non-empty bracket and P against the half-lives; pages keep the ages in order with constraint rules.',
+  },
+  {
+    ...ask(
+      'H75',
+      'oceanProfile',
+      'Ocean floor profile (shelf, slope, ridge, trench); surface currents and gyres on a map; the deep conveyor; tides from the moon and sun',
+      ['s.12.ocean-atmosphere'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-ocean-atmosphere-sonar',
+      'g.s12-ocean-atmosphere-sonar-ridge',
+      'g.s12-ocean-atmosphere-sonar-trench',
+      'g.s12-ocean-atmosphere-tides',
+      'g.s12-ocean-atmosphere-tides-neap',
+      'g.s12-ocean-atmosphere-tides-full',
+      'g.s12-ocean-atmosphere-currents',
+    ],
+    notes:
+      'Drawn (group HL) as a calculator kind in two modes and an explore figure. Seafloor: { kind: "oceanProfile", mode: "profile", depth?: id (m), over?: "shelf" | "slope" | "rise" | "plain" | "ridge" | "trench" }: a profile from a continent to an island arc with typical depths (shelf to 200 m, abyssal plain 4,500–5,000 m, ridge crest 2,500 m with its rift, trench to 10,900 m) on a stretched depth axis; a sonar ship sits where the floor is that deep (within `over`) and pings down to it; with no such place it says so. Example: { kind: "oceanProfile", mode: "profile", depth: "d", over: "plain" } with d = v × t ÷ 2. Tides: { kind: "oceanProfile", mode: "tides", angle: id (the Moon’s angle from the Sun, 0°–180°), range?: id, fixed? }: Earth from above the North Pole with its two bulges from the Moon’s and Sun’s pulls (the Sun’s 0.46 of the Moon’s), spring or neap named, the Moon dragged round its orbit. Example: { kind: "oceanProfile", mode: "tides", angle: "A", range: "R" } with R = m × √(1 + 0.46² + 2 × 0.46 × cos(2θ)). Currents (explore figure): { kind: "oceanCurrents" }, each scene currents: { view: "gyres" | "conveyor" } on a world map with the Pacific in the middle: the five gyres (warm on each basin’s west side, cold on the east) and the Antarctic Circumpolar Current, or the conveyor’s warm surface and cold deep flows with where it sinks and rises. The harness checks the ship sits over its depth and the bulge points nearer the Moon than the Sun.',
+  },
+  {
+    ...ask(
+      'H76',
+      'atmosphereLayers',
+      'Layers of the atmosphere with the temperature profile; a pressure map with highs, lows and wind arrows turned by Coriolis',
+      ['s.12.atmosphere-weather'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-atmosphere-weather-layers',
+      'g.s12-atmosphere-weather-tropopause',
+      'g.s12-atmosphere-weather-hot-day',
+      'g.s12-atmosphere-weather-pressure',
+      'g.s12-atmosphere-weather-pressure-south',
+      'g.s12-atmosphere-weather-pressure-weak',
+    ],
+    notes:
+      'Drawn (group HL) as a calculator kind in two modes. Layers: { kind: "atmosphereLayers", mode: "profile", altitude?: id (km), temperature?: id (°C), ground?: id or number (°C, default 15) }: temperature against altitude to 120 km (standard atmosphere, the troposphere cooling 6.5 °C per km from the ground’s temperature to 11 km), the troposphere, stratosphere with its ozone layer, mesosphere and thermosphere as bands, a point at the altitude dragged up and down. Example: { kind: "atmosphereLayers", mode: "profile", altitude: "h", temperature: "T", ground: "T0" } with T = T₀ − 6.5 × h (h up to 11 km). Pressure map: { kind: "atmosphereLayers", mode: "pressure", high: id, low: id (hPa), distance?: id (km, a scale bar between the centres), hemisphere?: "north" | "south" }: H and L with their pressures, isobars every 4 hPa (doubled until at most 16 fit), surface winds from high to low turned by the Coriolis effect (right in the north, left in the south) and 30° back toward the low by friction. Example: { kind: "atmosphereLayers", mode: "pressure", high: "H", low: "Lw", distance: "D" } with ΔP = H − L and G = ΔP ÷ D × 100. The harness checks the point sits on the line, the centres are the typed pressures, and the winds turn and cross the isobars the right way round the high and the low in each hemisphere.',
+  },
+  {
+    ...ask(
+      'H77',
+      'greenhouse',
+      'Explore figure: sunlight in, infrared out and back; climate zones by latitude',
+      ['s.12.climate-systems'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s12-climate-systems-greenhouse', 'g.s12-climate-systems-zones'],
+    notes:
+      'Drawn (group HL) as an explore figure: { kind: "greenhouse" }, each scene greenhouse: { view: "energy", co2?: "none" | "preindustrial" | "today" } (sunlight in, some bounced off a cloud; infrared out from the ground as four wavy rays, 0, 2 or 3 of them absorbed by CO₂ molecules and sent back down; 0, 4 or 6 molecules; a thermometer at the mean surface temperature, −18, 14 or 15.2 °C) or { view: "zones", lit?: "tropical" | "temperate" | "polar" } (Earth at an equinox lit from the left, zones bounded at 23.5° and 66.5°, the night half shaded, one beam of sunlight on the equator and the same beam at 50° N spread over 1 ÷ cos 50° ≈ 1.6 times the area). Example scenes: { label: "Today", lines: [...], greenhouse: { view: "energy", co2: "today" } }, { label: "Polar", lines: [...], greenhouse: { view: "zones", lit: "polar" } }. The climate page’s feedback loops use the existing feedbackLoop figure (H41). The harness checks a zone is lit only on the zones view and CO₂ is set only on the energy view.',
+  },
+  {
+    ...ask(
+      'H78',
+      'energySources',
+      'Card icons for energy sources (solar panel, wind turbine, dam, coal, oil rig, nuclear plant) and a resource bar or pie',
+      ['s.12.resource-management'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-resource-management-renewable',
+      'g.s12-resource-management-mix',
+      'g.s12-resource-management-world',
+    ],
+    notes:
+      'Drawn (group HL) as card icons plus existing charts. Round 3 already draws a wind turbine, a dam, lumps of coal, an oil pump, a gas stove flame and a nuclear power plant (r3f), so this adds the two missing: { kind: "icon", icon: "solar panel" } (blue cells on a tilted stand) and "oil rig" (an offshore platform and derrick). The energy mix uses the existing bars (an icon under each bar) or pieChart (colors that mean something): { kind: "bars", bars: [{ var: "g", icon: "gas stove flame" }, { var: "n", icon: "nuclear power plant" }, { var: "k", icon: "lumps of coal" }, { var: "w", icon: "wind turbine" }, { var: "h", icon: "dam" }, { var: "s", icon: "solar panel" }], min: 0, max: 50, total: "T", scale: 10 } (US electricity, about 2023: 43, 19, 16, 10, 6, 4 and 2 other); { kind: "pieChart", parts: ["F", "n", "r"], total: "T", colors: ["rubber", "purple", "landGrass"] } (the world’s energy: fossil 81, nuclear 4, renewable 15; keep part names short, the pie’s labels sit on the wedges). Sort: renewable or nonrenewable with the seven icons.',
+  },
+  {
+    ...ask(
+      'H79',
+      'hrDiagram',
+      'H–R diagram (temperature against luminosity, log scales) with the main sequence, giants and white dwarfs; star life-cycle stages',
+      ['s.12.stellar-evolution'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-stellar-evolution-hr',
+      'g.s12-stellar-evolution-giant',
+      'g.s12-stellar-evolution-supergiant',
+      'g.s12-stellar-evolution-white-dwarf',
+      'g.s12-stellar-evolution-sunlike',
+      'g.s12-stellar-evolution-massive',
+      'g.s12-stellar-evolution-remnants',
+    ],
+    notes:
+      'Drawn (group HL) as a calculator kind and card icons. H–R diagram: { kind: "hrDiagram", temperature: id (K), luminosity: id (L☉), radius?: id (R☉), name?: "Sirius A", fixed? }: temperature 40,000–2,500 K (hot on the left) against luminosity 10⁻⁴–10⁶ L☉, both log; the main sequence (from the spectral-type tables), giants, supergiants and white dwarfs as regions, dashed lines of 0.01, 1 and 100 R☉, the Sun, and the star in its temperature’s color, named by the region it falls in (the caption gives its radius); drag the star to change T and L. Example: { kind: "hrDiagram", temperature: "T", luminosity: "L", radius: "R", name: "Sirius A" } with L = R² × (T ÷ 5772)⁴ (demos: Sirius A, Aldebaran, Betelgeuse, Sirius B). Life-cycle card icons, each on night sky: "stellar nebula", "protostar", "Sun-like star", "massive star", "red giant", "red supergiant", "planetary nebula", "white dwarf", "supernova", "neutron star", "black hole"; sequences nebula → protostar → Sun-like star → red giant → planetary nebula → white dwarf, and → massive star → red supergiant → supernova → neutron star (or black hole). The harness checks the star is in the window and L = R²(T ÷ 5772)⁴.',
+  },
+  {
+    ...ask(
+      'H80',
+      'expandingUniverse',
+      'Explore figure: galaxies spreading apart as space stretches; Hubble plot of speed against distance; galaxy type card figures',
+      ['s.12.cosmology', 's.12.solar-system'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-cosmology-stretch',
+      'g.s12-cosmology-stretch-far',
+      'g.s12-cosmology-hubble',
+      'g.s12-cosmology-hubble-far',
+      'g.s12-cosmology-galaxies',
+      'g.s12-solar-system-formation',
+    ],
+    notes:
+      'Solar system page: nebula to planets as sequence stages. Drawn (group HL) as a calculator kind with two modes, where the spec asked for an explore figure: the stretch and the Hubble plot are both driven by values (a stretch factor; H₀ and a distance), so a page can type them and drag. Stretch: { kind: "expandingUniverse", mode: "stretch", scale: id (1–4), distance?: id, after?: id }: the same patch of galaxies before and after space stretches, our galaxy ringed in the middle, each galaxy’s old place a faint dot with an arrow to its new one (the far ones move farther), a marked neighbor with its distance before and after. Example: { kind: "expandingUniverse", mode: "stretch", scale: "a", distance: "d", after: "D" } with D = a × d. Hubble plot: { kind: "expandingUniverse", mode: "hubble", distance: id (Mpc), speed: id (km/s), constant?: id or number (default 70) }: speed against distance with the line v = H₀d and its slope, a scatter of other galaxies about it, the page’s galaxy dragged along the distance axis. Example: { kind: "expandingUniverse", mode: "hubble", distance: "d", speed: "v", constant: "H" } with v = H₀ × d. Card icons (night sky): "spiral galaxy", "barred spiral galaxy", "elliptical galaxy", "irregular galaxy"; the solar system page’s sequence stages "solar nebula", "spinning disk", "protosun", "planetesimals", "young planets". The harness checks D = a × d, v = H₀ × d, and the stretch within 1–4.',
+  },
   // ── H. Equation inputs (docs/RENDERINGS_HS_EQUATIONS.md, docs/EQUATION_INPUTS.md) ──
   {
     ...ask(

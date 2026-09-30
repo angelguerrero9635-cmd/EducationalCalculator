@@ -48,6 +48,7 @@ import {
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
+import { hslIssues } from './picturesHsl';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1741,6 +1742,10 @@ export function repIssues(
       break;
     }
     case 'rockLayers':
+      if ('dating' in rep) {
+        out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+        break;
+      }
       count(rep.fossils[0], 'layers', 12);
       count(rep.fossils[1], 'layers', 12);
       break;
@@ -2125,6 +2130,14 @@ export function repIssues(
     case 'phScale':
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
+      break;
+    case 'earthLayers':
+    case 'oceanProfile':
+    case 'atmosphereLayers':
+    case 'hrDiagram':
+    case 'expandingUniverse':
+      // In formula units (km, s), as the picture draws them.
+      out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'table':
       if ('twoWay' in rep) {

@@ -10,6 +10,13 @@ import type {
   NitrogenProcess,
 } from '../typesHsh';
 import type { GalvanicScene } from '../typesHsj';
+import type {
+  CurrentsScene,
+  GreenhouseScene,
+  HslFigure,
+  LandformScene,
+  MohsScene,
+} from '../typesHsl';
 import type { Round3Icon } from './icons';
 
 /**
@@ -244,6 +251,8 @@ export interface SequenceLayout extends LayoutBase {
 
 /** What an explore figure can show; a scene sets one of these. */
 export type Figure =
+  /** Earth and space, group HL (`typesHsl.ts`): Mohs scale, landforms, currents, greenhouse. */
+  | HslFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
@@ -454,6 +463,11 @@ export interface Scene {
   label: string;
   /** What to read about this scene, one sentence per line. */
   lines: string[];
+  /** Group HL figures (`typesHsl.ts`): `mohsScale`, `landforms`, `oceanCurrents`, `greenhouse`. */
+  mohs?: MohsScene;
+  landform?: LandformScene;
+  currents?: CurrentsScene;
+  greenhouse?: GreenhouseScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** Where the ball is (a `position` figure). */

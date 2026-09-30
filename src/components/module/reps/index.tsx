@@ -150,6 +150,7 @@ import { ImmuneResponse } from './ImmuneResponse';
 import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
 import { ReactionLimiting } from './ReactionLimiting';
+import { HslPicture } from './HslPicture';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -219,6 +220,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <AlleleFrequencies spec={spec} calc={calc} />;
     case 'immuneResponse':
       return <ImmuneResponse spec={spec} calc={calc} />;
+    case 'earthLayers':
+    case 'oceanProfile':
+    case 'atmosphereLayers':
+    case 'hrDiagram':
+    case 'expandingUniverse':
+      return <HslPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
@@ -322,6 +329,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <PeriodicTable spec={spec} calc={calc} />
       );
     case 'rockLayers':
+      if ('dating' in spec) return <HslPicture spec={spec} calc={calc} />;
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':
       return <Pushes spec={spec} calc={calc} />;

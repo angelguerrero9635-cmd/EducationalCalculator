@@ -101,9 +101,16 @@ search or the sitemap, but the module tests and the harness run over it):
 | `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift       | Grade 10 equilibrium (H54)          |
 | `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve           | Grade 10 acids and bases (H55)      |
 | `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced   | Grades 10, 12 nuclear, dating (H57) |
+| `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter       | Earth science interior (H72)        |
+| `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides  | Earth science ocean (H75)           |
+| `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds    | Earth science atmosphere (H76)      |
+| `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted   | Earth science stars (H79)           |
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
+
+`expandingUniverse` (H80): galaxies spreading as space stretches by a factor, each old place
+arrowed to its new one; or a Hubble plot, v = H₀d, for Earth science cosmology.
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
@@ -213,6 +220,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `periodicTable`    | `trend: { property, value, compare }`    | a trend shaded (radius, ionization, electronegativity), arrows, a key         |
 | `reaction`         | `limiting: { amounts, made, left }`      | particles on hand before; after: products made, the leftover ringed           |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
+| `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

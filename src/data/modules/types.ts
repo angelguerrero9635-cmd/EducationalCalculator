@@ -21,6 +21,7 @@ import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
 import type { HsgSpec, PunnettInheritance } from './typesHsg';
 import type { HshSpec } from './typesHsh';
 import type { HsiSpec } from './typesHsi';
+import type { HslSpec } from './typesHsl';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 
@@ -1088,6 +1089,8 @@ export type Representation =
   | Physics8Spec
   /** Grades 9–12 geometry: triangle solver (specs in `typesHsc.ts`). */
   | HscSpec
+  /** Grades 9–12 earth and space, group HL (specs in `typesHsl.ts`). */
+  | HslSpec
   /** Grades 9–12 statistics and counting, group HB (specs in `typesHsb.ts`). */
   | HsbSpec
   /** Grades 9–12 group D: unit circle, algebra tiles, vectors, … (specs in `typesHsd.ts`). */
