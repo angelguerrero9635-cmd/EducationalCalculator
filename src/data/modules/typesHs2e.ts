@@ -27,6 +27,29 @@ export interface MacroCalcSpec {
   split?: boolean;
 }
 
+// ─── H100 part 2: dnaStrand long genes ───────────────────────────────────────
+
+/**
+ * The `gene` option on `dnaStrand` (H100): a coding sequence `bases` long (a number or a value;
+ * a multiple of 3, at least 6) whose first bases are the spec's `sequence` and whose last codon
+ * is the stop, `stop` on the template (ATT, ATC or ACT, read UAA, UAG or UGA; default ATT). Up
+ * to 15 bases it draws them all (the sequence's first bases − 3, then the stop); past 15 the
+ * first 12, "…", and the stop codon, with the mRNA, the codons and the protein (Met … Stop) under
+ * them. `codons` (on the spec) is checked as bases ÷ 3.
+ */
+export interface DnaLongGene {
+  bases: NumOrVar;
+  stop?: 'ATT' | 'ATC' | 'ACT';
+}
+
+/** The bases a long gene draws: the template shown, and where "…" goes (or −1). */
+export function geneShown(sequence: string, gene: DnaLongGene, bases: number) {
+  const stop = gene.stop ?? 'ATT';
+  const b = Math.max(6, 3 * Math.round(bases / 3));
+  if (b <= 15) return { template: sequence.slice(0, b - 3) + stop, gap: -1 };
+  return { template: sequence.slice(0, 12) + stop, gap: 12 };
+}
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /**

@@ -169,6 +169,69 @@ const MACRO_DEMOS: ModuleDef[] = [
   ),
 ];
 
+// ─── H100 part 2: dnaStrand long genes ───────────────────────────────────────
+
+/** The codons page for a gene of b bases: its first 12, "…", and its stop codon. */
+const longGeneDemo = (id: string, title: string, b: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for “A gene’s coding mRNA is 900 bases long. How many amino acids does it code?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Three mRNA bases make a codon; AUG starts the chain and codes Met, and a stop codon adds no amino acid.',
+    'So a coding mRNA of b bases, ending in its stop codon, codes b ÷ 3 − 1 amino acids.',
+    'The picture draws the gene’s first 12 bases and its stop codon; “…” stands for the rest.',
+  ],
+  variables: [
+    { ...count('b', 'b', 'Bases in the coding mRNA', 6, 3000), multipleOf: 3 },
+    count('c', 'c', 'Codons', 2, 1000, true),
+    count('a', 'a', 'Amino acids in the chain', 1, 999, true),
+    count('p', 'p', 'Peptide bonds', 0, 998, true),
+  ],
+  ...rules(
+    {
+      relation: {
+        id: 'c = b ÷ 3',
+        display: '{c} = {b} ÷ 3',
+        vars: ['c', 'b'],
+        residual: (v) => v.c! - v.b! / 3,
+        solve: { c: (v) => v.b! / 3, b: (v) => 3 * v.c! },
+      },
+      steps: {
+        c: { expr: '{b} ÷ 3', how: 'Every three bases are one codon.' },
+        b: { expr: '3 × {c}', how: 'Three bases to each codon.' },
+      },
+    },
+    less(
+      'a',
+      'c',
+      1,
+      'Every codon but the last codes an amino acid; the last is the stop codon.',
+      'One codon more than amino acids: the stop.',
+    ),
+    less(
+      'p',
+      'a',
+      1,
+      'A peptide bond joins each amino acid to the next: one fewer bond than amino acids.',
+      'One amino acid more than bonds.',
+    ),
+  ),
+  example: { b, c: b / 3, a: b / 3 - 1, p: b / 3 - 2 },
+  startWith: ['b'],
+  representation: {
+    kind: 'dnaStrand',
+    sequence: 'TACCGGTTCGGA',
+    gene: { bases: 'b' },
+    codons: 'c',
+  },
+});
+
+const GENE_DEMOS: ModuleDef[] = [
+  longGeneDemo('g.s9-dna-protein-synthesis-long-gene', 'Codons in a long gene', 900),
+  longGeneDemo('g.s9-dna-protein-synthesis-short-gene', 'The shortest genes', 9),
+];
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /** out = f(ins), worked forward only. */
@@ -268,6 +331,6 @@ const DIVISION_DEMOS: ModuleDef[] = [
   ),
 ];
 
-export const HS2E_GALLERY_MODULES: ModuleDef[] = [...MACRO_DEMOS, ...DIVISION_DEMOS];
+export const HS2E_GALLERY_MODULES: ModuleDef[] = [...MACRO_DEMOS, ...GENE_DEMOS, ...DIVISION_DEMOS];
 
 export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [];
