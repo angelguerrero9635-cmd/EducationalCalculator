@@ -15,7 +15,7 @@
   (explore, landforms), `s.12.climate-systems` (explore, greenhouse), `s.12.resource-management`
   (sort, energy icons). The other 8 mains are calculators in `src/data/modules/science/12.ts`.
 - **Start from demos.** Every page with a drawn demo starts with `node scripts/promote-demo.mjs
-  <demo> <page id>`; the demo's picture fields are kept, and its values, ranges, assumptions and
+<demo> <page id>`; the demo's picture fields are kept, and its values, ranges, assumptions and
   example are replaced by the ones below.
 - **Pilots.** There are no s.12 pages in `pilots.ts`, and none in the grade files. Nothing moves;
   every page is BUILD.
@@ -36,14 +36,14 @@
 - **Textbooks:** tarbuck-lutgens 2 (Matter and Minerals), 3 (Rocks).
 - **Tests ask:** no released questions. The common types, each with the page that answers it:
 
-  | Question (common type) | Page | |
-  | --- | --- | --- |
-  | Unknown scratches glass, is scratched by a steel file: hardness? | main | Solves |
-  | Mass and water displacement: density, which mineral? | ~density | Solves |
-  | Breaks along flat planes or curved surfaces? | ~cleavage | Solves |
-  | Silicate or not, from its name or formula | ~mineral-groups | Solves |
-  | Large crystals or glass: how fast did it cool? | ~igneous | Solves |
-  | Foliated or not; parent rock | ~metamorphic | Solves |
+  | Question (common type)                                           | Page            |        |
+  | ---------------------------------------------------------------- | --------------- | ------ |
+  | Unknown scratches glass, is scratched by a steel file: hardness? | main            | Solves |
+  | Mass and water displacement: density, which mineral?             | ~density        | Solves |
+  | Breaks along flat planes or curved surfaces?                     | ~cleavage       | Solves |
+  | Silicate or not, from its name or formula                        | ~mineral-groups | Solves |
+  | Large crystals or glass: how fast did it cool?                   | ~igneous        | Solves |
+  | Foliated or not; parent rock                                     | ~metamorphic    | Solves |
 
 - **Main — BUILD `s.12.minerals-rocks`:** explore, figure `mohsScale` (demo
   `g.s12-minerals-rocks-mohs`). Assumptions: "A mineral scratches every mineral below it on the
@@ -98,20 +98,21 @@
 - **Textbooks:** tarbuck 4, 5, 6; openstax-astronomy 8; openscied-hs 11.P.2; savvas-experience-hs 11.9.
 - **Tests ask:**
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2005-12S13-#10 (why three stations) | ~epicenter | Solves |
-  | NAEP-2019-12S7-#16 (internal heat → hot springs) | ~heat-sources | Solves |
-  | NAEP-2019-12S7-#3 (convection pulls plates) | volcanoes ~mountain-building (mantle scene) | Solves |
-  | NAEP-2000-12S11-#5 (mountains at a subduction coast) | volcanoes ~mountain-building | Solves |
-  | NAEP-2005-12S14-#3 (rift valley widens) | volcanoes ~mountain-building | Solves |
-  | NAEP-2009-12S9-#17 (folded layers) | volcanoes ~deformation | Solves |
-  | (common) S − P lag of 100 s: distance? | main | Solves |
-  | (common) Why no S waves past 104°? | ~shadow-zone | Solves |
-  | (common) Magnitude 6 vs 4: how much more shaking? | ~magnitude | Waits (need 2) |
+  | Question                                             | Page                                        |                |
+  | ---------------------------------------------------- | ------------------------------------------- | -------------- |
+  | NAEP-2005-12S13-#10 (why three stations)             | ~epicenter                                  | Solves         |
+  | NAEP-2019-12S7-#16 (internal heat → hot springs)     | ~heat-sources                               | Solves         |
+  | NAEP-2019-12S7-#3 (convection pulls plates)          | volcanoes ~mountain-building (mantle scene) | Solves         |
+  | NAEP-2000-12S11-#5 (mountains at a subduction coast) | volcanoes ~mountain-building                | Solves         |
+  | NAEP-2005-12S14-#3 (rift valley widens)              | volcanoes ~mountain-building                | Solves         |
+  | NAEP-2009-12S9-#17 (folded layers)                   | volcanoes ~deformation                      | Solves         |
+  | (common) S − P lag of 100 s: distance?               | main                                        | Solves         |
+  | (common) Why no S waves past 104°?                   | ~shadow-zone                                | Solves         |
+  | (common) Magnitude 6 vs 4: how much more shaking?    | ~magnitude                                  | Waits (need 2) |
 
   NAEP-2000-12S11-#5, NAEP-2005-12S14-#3 and NAEP-2009-12S9-#17 are about mountain building:
   `[data] → s.12.volcanoes-mountains`.
+
 - **Main — BUILD `s.12.earth-interior`:** calculator, picture `earthLayers` { mode: 'seismogram',
   km: 'd', vp: 'vp', vs: 'vs', lag: 'L' } (demo `g.s12-earth-interior-seismogram`).
   - Values:
@@ -179,13 +180,13 @@
 - **Tests ask:** no released questions of its own. It takes three NAEP items from earth-interior
   (see there), and common types:
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2009-12S9-#17 (folds) | ~deformation | Solves |
-  | NAEP-2000-12S11-#5, NAEP-2005-12S14-#3, NAEP-2019-12S7-#3 | ~mountain-building | Solves |
-  | (common) Which volcano is steep and explosive, and why? | main | Solves |
-  | (common) Silica and gas → eruption style | ~magma | Solves |
-  | (common) Hanging wall dropped: which fault and which stress? | ~deformation | Solves |
+  | Question                                                     | Page               |        |
+  | ------------------------------------------------------------ | ------------------ | ------ |
+  | NAEP-2009-12S9-#17 (folds)                                   | ~deformation       | Solves |
+  | NAEP-2000-12S11-#5, NAEP-2005-12S14-#3, NAEP-2019-12S7-#3    | ~mountain-building | Solves |
+  | (common) Which volcano is steep and explosive, and why?      | main               | Solves |
+  | (common) Silica and gas → eruption style                     | ~magma             | Solves |
+  | (common) Hanging wall dropped: which fault and which stress? | ~deformation       | Solves |
 
 - **Main — BUILD `s.12.volcanoes-mountains`:** explore, figure `landforms` (demo
   `g.s12-volcanoes-mountains-volcanoes`). Assumptions: "Silica makes magma sticky; sticky magma
@@ -225,12 +226,12 @@
   10 (Glaciers, Deserts, Wind).
 - **Tests ask:** no released questions. Common types:
 
-  | Question (common) | Page | |
-  | --- | --- | --- |
-  | Which agent carved a U-shaped valley? | main, ~agents | Solves |
-  | Frost wedging or oxidation: mechanical or chemical? | ~weathering | Solves |
-  | Where is the water table; why does a well go dry? | main (aquifer scene) | Solves |
-  | Width, depth and speed of a stream: discharge? | ~discharge | Waits (need 4) |
+  | Question (common)                                   | Page                 |                |
+  | --------------------------------------------------- | -------------------- | -------------- |
+  | Which agent carved a U-shaped valley?               | main, ~agents        | Solves         |
+  | Frost wedging or oxidation: mechanical or chemical? | ~weathering          | Solves         |
+  | Where is the water table; why does a well go dry?   | main (aquifer scene) | Solves         |
+  | Width, depth and speed of a stream: discharge?      | ~discharge           | Waits (need 4) |
 
 - **Main — BUILD `s.12.surface-processes`:** explore, figure `landforms` (demo
   `g.s12-surface-processes-landforms`). Assumptions: "Weathering breaks rock in place; erosion
@@ -268,16 +269,17 @@
   openscied-hs 11.P.2.
 - **Tests ask:**
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2000-12S11-#3 (C-14, 25 % left) | main | Solves (T range takes 5,700; n = 2) |
-  | NAEP-2009-12S9-#3 (meteorites date Earth) | ~uranium | Solves (assumption) |
-  | NAEP-2005-12S13-#4 (older rock nearer the surface) | ~relative-order | Partly: needs an uplift or fold stage |
-  | NAEP-2005-12S11-#3 (same fossil, two continents) | ~bracket | Partly: correlation is only in the lines |
-  | NAEP-2019-12S7-#7 (oxygen and red beds) | ~time-scale | Partly |
-  | (common) Parent-to-daughter ratio 1 : 3: age? | ~uranium | Solves |
+  | Question                                           | Page            |                                          |
+  | -------------------------------------------------- | --------------- | ---------------------------------------- |
+  | NAEP-2000-12S11-#3 (C-14, 25 % left)               | main            | Solves (T range takes 5,700; n = 2)      |
+  | NAEP-2009-12S9-#3 (meteorites date Earth)          | ~uranium        | Solves (assumption)                      |
+  | NAEP-2005-12S13-#4 (older rock nearer the surface) | ~relative-order | Partly: needs an uplift or fold stage    |
+  | NAEP-2005-12S11-#3 (same fossil, two continents)   | ~bracket        | Partly: correlation is only in the lines |
+  | NAEP-2019-12S7-#7 (oxygen and red beds)            | ~time-scale     | Partly                                   |
+  | (common) Parent-to-daughter ratio 1 : 3: age?      | ~uranium        | Solves                                   |
 
   NAEP-2019-12S7-#7 is filed under climate: `[data] → s.12.radiometric-dating` (Earth's history).
+
 - **Main — BUILD `s.12.radiometric-dating`:** calculator, picture `decayChart` { halfLife: 'T',
   time: 't', start: 100, left: 'p', halves: 'n', parent: 'C-14', daughter: 'N-14' } (demo
   `g.s12-radiometric-dating-carbon`).
@@ -349,16 +351,17 @@
   savvas-experience-hs 10.10, 10.14.
 - **Tests ask:**
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2000-12S11-#4 (warm air rises at the equator) | ~density | Solves |
-  | NAEP-2005-12S13-#11 (design an oil-spill experiment) | none | No: experimental design, not in any page |
-  | (common) Sonar echo of 6 s: depth? | main | Solves |
-  | (common) Spring or neap tide at first quarter? | ~tides | Solves |
-  | (common) Why the west side of a basin has warm currents | ~currents | Solves |
-  | (common) What drives the deep conveyor? | ~currents, ~density | Solves |
+  | Question                                                | Page                |                                          |
+  | ------------------------------------------------------- | ------------------- | ---------------------------------------- |
+  | NAEP-2000-12S11-#4 (warm air rises at the equator)      | ~density            | Solves                                   |
+  | NAEP-2005-12S13-#11 (design an oil-spill experiment)    | none                | No: experimental design, not in any page |
+  | (common) Sonar echo of 6 s: depth?                      | main                | Solves                                   |
+  | (common) Spring or neap tide at first quarter?          | ~tides              | Solves                                   |
+  | (common) Why the west side of a basin has warm currents | ~currents           | Solves                                   |
+  | (common) What drives the deep conveyor?                 | ~currents, ~density | Solves                                   |
 
   NAEP-2000-12S11-#4 is about air: `[data] → s.12.atmosphere-weather`.
+
 - **Main — BUILD `s.12.ocean-atmosphere`:** calculator, picture `oceanProfile` { mode: 'profile',
   depth: 'd', over: 'plain' } (demo `g.s12-ocean-atmosphere-sonar`; the ridge and trench demos
   are edge cases).
@@ -402,18 +405,19 @@
 - **Textbooks:** tarbuck 8, 10, 16, 17, 18, 19; openstax-astronomy 6, 8, 10, 11, 15.
 - **Tests ask:** no released questions filed here. It takes these three:
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2005-12S11-#9 (nitrogen and oxygen), from climate | main (assumption) | Solves |
-  | NAEP-2005-12S11-#6 (ozone and UV), from climate | main (ozone scene) | Partly: the figure has no UV arrows |
-  | NAEP-2000-12S11-#4 (convection), from ocean | ocean ~density | Solves |
-  | (common) Ground 20 °C: temperature at 8 km? | main | Solves |
-  | (common) Isobars and the pressure gradient; wind direction round a low | ~pressure | Solves |
-  | (common) Relative humidity from vapor and capacity | ~humidity | Solves |
-  | (common) Stages of a hurricane | ~hurricane | Solves |
+  | Question                                                               | Page               |                                     |
+  | ---------------------------------------------------------------------- | ------------------ | ----------------------------------- |
+  | NAEP-2005-12S11-#9 (nitrogen and oxygen), from climate                 | main (assumption)  | Solves                              |
+  | NAEP-2005-12S11-#6 (ozone and UV), from climate                        | main (ozone scene) | Partly: the figure has no UV arrows |
+  | NAEP-2000-12S11-#4 (convection), from ocean                            | ocean ~density     | Solves                              |
+  | (common) Ground 20 °C: temperature at 8 km?                            | main               | Solves                              |
+  | (common) Isobars and the pressure gradient; wind direction round a low | ~pressure          | Solves                              |
+  | (common) Relative humidity from vapor and capacity                     | ~humidity          | Solves                              |
+  | (common) Stages of a hurricane                                         | ~hurricane         | Solves                              |
 
   NAEP-2005-12S11-#9 and NAEP-2005-12S11-#6 are about the atmosphere, not climate change:
   `[data] → s.12.atmosphere-weather`.
+
 - **Main — BUILD `s.12.atmosphere-weather`:** calculator, picture `atmosphereLayers` { mode:
   'profile', altitude: 'h', temperature: 'T', ground: 'T0' } (demo `g.s12-atmosphere-weather-layers`;
   tropopause and hot-day demos are edge cases).
@@ -476,17 +480,17 @@
   openscied-hs 10.C.1; savvas-experience-hs 10.10, 10.11.
 - **Tests ask:**
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2005-12S11-#2 (temperate zones) | ~zones | Solves |
-  | NAEP-2009-12S9-#8 (carbon into sugars) | ~carbon | Solves |
-  | NAEP-2009-12S9-#9 (carbon out of the crust by volcanoes) | ~carbon | Solves |
-  | NAEP-2019-12S7-#13 (what releases CO₂) | ~carbon | Solves |
-  | NAEP-2009-12S9-#12 (smoke and ash cool Earth) | main ("Ash and smoke" scene) | Partly: the figure draws no particles |
-  | NAEP-2005-12S11-#6, #9 | atmosphere main | see there |
-  | NAEP-2019-12S7-#7 | radiometric ~time-scale | see there |
-  | (common) Ice melts, and then? (positive feedback) | ~feedbacks | Solves |
-  | (common) Read the CO₂ record: rate per decade | ~co2-record | Solves |
+  | Question                                                 | Page                         |                                       |
+  | -------------------------------------------------------- | ---------------------------- | ------------------------------------- |
+  | NAEP-2005-12S11-#2 (temperate zones)                     | ~zones                       | Solves                                |
+  | NAEP-2009-12S9-#8 (carbon into sugars)                   | ~carbon                      | Solves                                |
+  | NAEP-2009-12S9-#9 (carbon out of the crust by volcanoes) | ~carbon                      | Solves                                |
+  | NAEP-2019-12S7-#13 (what releases CO₂)                   | ~carbon                      | Solves                                |
+  | NAEP-2009-12S9-#12 (smoke and ash cool Earth)            | main ("Ash and smoke" scene) | Partly: the figure draws no particles |
+  | NAEP-2005-12S11-#6, #9                                   | atmosphere main              | see there                             |
+  | NAEP-2019-12S7-#7                                        | radiometric ~time-scale      | see there                             |
+  | (common) Ice melts, and then? (positive feedback)        | ~feedbacks                   | Solves                                |
+  | (common) Read the CO₂ record: rate per decade            | ~co2-record                  | Solves                                |
 
 - **Main — BUILD `s.12.climate-systems`:** explore, figure `greenhouse` (demo
   `g.s12-climate-systems-greenhouse`). Assumptions: "Sunlight passes through the air; the warm
@@ -538,15 +542,15 @@
   10 (grade 9); miller-levine 16 (grade 9); savvas-experience-hs 18 (grade 10), 10 (grade 11).
 - **Tests ask:**
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2009-12S10-#15 (how fossil fuels form) | ~fossil-fuels | Solves |
-  | NAEP-2005-12S13-#13 (hunger: factors and a solution) | none | No: an argument, not in the taxonomy |
-  | NAEP-2009-12S10-#9 (lead in soil: weigh three methods) | none | No: engineering tradeoff |
-  | NAEP-2019-12S7-#14 (salt or sand on roads) | none | No: engineering tradeoff |
-  | (common) Renewable or not? | main | Solves |
-  | (common) Share of electricity from fossil fuels | ~energy-mix | Solves |
-  | (common) How many years will a reserve last? | ~reserves | Waits (need 7) |
+  | Question                                               | Page          |                                      |
+  | ------------------------------------------------------ | ------------- | ------------------------------------ |
+  | NAEP-2009-12S10-#15 (how fossil fuels form)            | ~fossil-fuels | Solves                               |
+  | NAEP-2005-12S13-#13 (hunger: factors and a solution)   | none          | No: an argument, not in the taxonomy |
+  | NAEP-2009-12S10-#9 (lead in soil: weigh three methods) | none          | No: engineering tradeoff             |
+  | NAEP-2019-12S7-#14 (salt or sand on roads)             | none          | No: engineering tradeoff             |
+  | (common) Renewable or not?                             | main          | Solves                               |
+  | (common) Share of electricity from fossil fuels        | ~energy-mix   | Solves                               |
+  | (common) How many years will a reserve last?           | ~reserves     | Waits (need 7)                       |
 
 - **Main — BUILD `s.12.resource-management`:** sort (demo `g.s12-resource-management-renewable`).
   Question: "Can people use it up?"
@@ -588,12 +592,12 @@
 - **Textbooks:** openstax-astronomy 3, 7, 9, 10, 11, 12, 13, 14, 21; tarbuck 22, 24.
 - **Tests ask:** no released questions. Common types:
 
-  | Question (common) | Page | |
-  | --- | --- | --- |
-  | a = 1.52 AU: period? (T² = a³) | main | Solves |
-  | Perihelion and aphelion from a and e; where is it fastest? | main | Solves |
-  | Order the stages of the solar system's formation | ~formation | Solves |
-  | Terrestrial, Jovian or small body? | ~planet-types | Solves |
+  | Question (common)                                          | Page          |        |
+  | ---------------------------------------------------------- | ------------- | ------ |
+  | a = 1.52 AU: period? (T² = a³)                             | main          | Solves |
+  | Perihelion and aphelion from a and e; where is it fastest? | main          | Solves |
+  | Order the stages of the solar system's formation           | ~formation    | Solves |
+  | Terrestrial, Jovian or small body?                         | ~planet-types | Solves |
 
 - **Main — BUILD `s.12.solar-system`:** calculator, picture `circularMotion` { mode: 'kepler',
   semiMajor: 'a', eccentricity: 'e', perihelion: 'q', aphelion: 'Q', period: 'T' } (demo
@@ -623,15 +627,16 @@
 - **Textbooks:** openstax-astronomy 5, 6, 17, 18; tarbuck 23.
 - **Tests ask:** no released questions filed here. It takes one from stellar-evolution:
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2009-12S9-#18 (match a star's lines to elements) | ~lines | Waits (need 8); Partly on ~doppler without a shift |
-  | (common) Star at 5,800 K: peak wavelength and color | main | Solves |
-  | (common) Hα seen at 656.5 nm: speed and direction | ~doppler | Solves |
-  | (common) fₒ = 900 mm, fₑ = 25 mm: magnification | ~telescope | Solves |
-  | (common) Why X-ray telescopes go to space | ~space-telescopes | Solves |
+  | Question                                              | Page              |                                                    |
+  | ----------------------------------------------------- | ----------------- | -------------------------------------------------- |
+  | NAEP-2009-12S9-#18 (match a star's lines to elements) | ~lines            | Waits (need 8); Partly on ~doppler without a shift |
+  | (common) Star at 5,800 K: peak wavelength and color   | main              | Solves                                             |
+  | (common) Hα seen at 656.5 nm: speed and direction     | ~doppler          | Solves                                             |
+  | (common) fₒ = 900 mm, fₑ = 25 mm: magnification       | ~telescope        | Solves                                             |
+  | (common) Why X-ray telescopes go to space             | ~space-telescopes | Solves                                             |
 
   NAEP-2009-12S9-#18 is a spectra question: `[data] → s.12.starlight-spectra`.
+
 - **Main — BUILD `s.12.starlight-spectra`:** calculator (Wien's law), picture `spectrum`
   { wavelength: 'l', meters: 1e-9, frequency: 'f' }, the visible strip with the peak marked.
   - Values: T, surface temperature, K, 2,500–40,000; λ, peak wavelength, nm, 70–1,200; f, Hz.
@@ -684,14 +689,14 @@
   savvas-experience-hs 11.16.
 - **Tests ask:**
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2005-12S13-#2 (two most common elements) | ~elements | Solves |
-  | NAEP-2009-12S9-#18 | moved to starlight-spectra | see there |
-  | (common) Hot and faint: which region of the H–R diagram? | main | Solves |
-  | (common) Order a Sun-like star's life | ~sunlike | Solves |
-  | (common) What is left after a supernova? | ~massive | Solves |
-  | (common) Sun's mass lost each second to fusion | ~fusion | Solves |
+  | Question                                                 | Page                       |           |
+  | -------------------------------------------------------- | -------------------------- | --------- |
+  | NAEP-2005-12S13-#2 (two most common elements)            | ~elements                  | Solves    |
+  | NAEP-2009-12S9-#18                                       | moved to starlight-spectra | see there |
+  | (common) Hot and faint: which region of the H–R diagram? | main                       | Solves    |
+  | (common) Order a Sun-like star's life                    | ~sunlike                   | Solves    |
+  | (common) What is left after a supernova?                 | ~massive                   | Solves    |
+  | (common) Sun's mass lost each second to fusion           | ~fusion                    | Solves    |
 
 - **Main — BUILD `s.12.stellar-evolution`:** calculator, picture `hrDiagram` { temperature: 'T',
   luminosity: 'L', radius: 'R', name: 'Sirius A' } (demo `g.s12-stellar-evolution-hr`; the giant,
@@ -735,14 +740,14 @@
   savvas-experience-hs 11.16.
 - **Tests ask:**
 
-  | Question | Page | |
-  | --- | --- | --- |
-  | NAEP-2005-12S13-#9 (light shifted to longer wavelengths) | ~redshift | Solves |
-  | NAEP-2009-12S10-#13 (what every galaxy has) | ~galaxies | Solves (assumption) |
-  | (common) d = 200 Mpc: speed; the age from 1/H₀ | main | Solves |
-  | (common) z = 0.03: speed and distance | ~redshift | Solves |
-  | (common) Space doubles: how far does each galaxy move? | ~stretch | Solves |
-  | (common) Order the universe's history; what the CMB is | ~big-bang | Solves |
+  | Question                                                 | Page      |                     |
+  | -------------------------------------------------------- | --------- | ------------------- |
+  | NAEP-2005-12S13-#9 (light shifted to longer wavelengths) | ~redshift | Solves              |
+  | NAEP-2009-12S10-#13 (what every galaxy has)              | ~galaxies | Solves (assumption) |
+  | (common) d = 200 Mpc: speed; the age from 1/H₀           | main      | Solves              |
+  | (common) z = 0.03: speed and distance                    | ~redshift | Solves              |
+  | (common) Space doubles: how far does each galaxy move?   | ~stretch  | Solves              |
+  | (common) Order the universe's history; what the CMB is   | ~big-bang | Solves              |
 
 - **Main — BUILD `s.12.cosmology`:** calculator, picture `expandingUniverse` { mode: 'hubble',
   distance: 'd', speed: 'v', constant: 'H' } (demo `g.s12-cosmology-hubble`; `-far` is the edge).

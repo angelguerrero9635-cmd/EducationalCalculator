@@ -30,21 +30,21 @@
 - **Textbooks:** OpenStax Biology 2e ch. 2 (water, carbon), ch. 3 (macromolecules); Glencoe HS 10.23; HMH Dimensions 2 (Carbon-Based Molecules); Miller & Levine 1.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2019-12S7-#15 (protein subunit) | ~classes | Solves |
-  | MCAS-2026-HSBIO-#32 (antibodies are made of) | ~classes (card "Antibody" → Proteins) | Solves |
-  | NAEP-2019-12S7-#2 (CO₂ carbon into carbohydrate) | s.9.cellular-energy main | Solves (filed here; see data) |
+  | Question                                             | Page                                                               | Mark                              |
+  | ---------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------- |
+  | NAEP-2019-12S7-#15 (protein subunit)                 | ~classes                                                           | Solves                            |
+  | MCAS-2026-HSBIO-#32 (antibodies are made of)         | ~classes (card "Antibody" → Proteins)                              | Solves                            |
+  | NAEP-2019-12S7-#2 (CO₂ carbon into carbohydrate)     | s.9.cellular-energy main                                           | Solves (filed here; see data)     |
   | MCAS-2026-HSBIO-#5 (cycads, soil nitrogen, proteins) | s.9.ecosystem-dynamics~nitrogen + main scene "amino acids carry N" | Partly (graph reading not taught) |
-  | common: bonds and water in a polymer of n units | ~dehydration | Solves |
-  | common: which property of water explains … | ~water | Solves |
+  | common: bonds and water in a polymer of n units      | ~dehydration                                                       | Solves                            |
+  | common: which property of water explains …           | ~water                                                             | Solves                            |
 
 - **Main — BUILD `s.9.biomolecules` (explore):** figure `macromolecules` from demo
   `g.s9-biomolecules-polymers`. Scenes (5): "Carbohydrates" `macro: { kind: 'carbohydrate', count: 2 }`
   ("Two glucose join into maltose; one water leaves."); "Starch" `{ kind: 'carbohydrate', count: 4 }`;
   "Proteins" `{ kind: 'protein', count: 4 }` (amino acids join by peptide bonds; each carries an amine
   group, so proteins hold nitrogen; the chain folds into its shape); "Nucleic acids" `{ kind:
-  'nucleicAcid', count: 3 }`; "Fats" `{ kind: 'lipid' }` (glycerol + 3 fatty acids, 3 ester bonds);
+'nucleicAcid', count: 3 }`; "Fats" `{ kind: 'lipid' }` (glycerol + 3 fatty acids, 3 ester bonds);
   "Digestion" `{ kind: 'protein', count: 3, split: true }` (hydrolysis adds water back). Assumptions:
   monomers join by dehydration synthesis, one water per bond; hydrolysis reverses it; fats are not
   true polymers (always 3 fatty acids).
@@ -73,16 +73,16 @@
 - **Textbooks:** OpenStax Biology 2e ch. 5 (5.2 passive, 5.3 active, 5.4 bulk) and 41.1 (osmoregulation).
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-HSBIO-#28 (onion cells in salt water lose water, by osmosis) | ~tonicity | Solves |
-  | common: which way does O₂ diffuse, and when does it stop | main | Solves |
-  | common: passive or active, needs a protein or not | ~transport-types | Solves |
-  | common: how many Na⁺ and K⁺ per ATP | ~pump | Solves |
+  | Question                                                               | Page             | Mark   |
+  | ---------------------------------------------------------------------- | ---------------- | ------ |
+  | MCAS-2026-HSBIO-#28 (onion cells in salt water lose water, by osmosis) | ~tonicity        | Solves |
+  | common: which way does O₂ diffuse, and when does it stop               | main             | Solves |
+  | common: passive or active, needs a protein or not                      | ~transport-types | Solves |
+  | common: how many Na⁺ and K⁺ per ATP                                    | ~pump            | Solves |
 
 - **Main — BUILD `s.9.membrane-transport` (calculator):** picture `membrane` from demo
   `g.s9-membrane-transport-diffusion`: `{ kind: 'membrane', outside: 'o', inside: 'i', transport:
-  'diffusion', particle: 'O₂', moved: 'm', gradient: 'd' }`. Values: o O₂ outside (0–40), i O₂
+'diffusion', particle: 'O₂', moved: 'm', gradient: 'd' }`. Values: o O₂ outside (0–40), i O₂
   inside (0–40), d difference outside − inside (derived, −40–40), m moved in now (0–12), o₂ outside
   after (derived), i₂ inside after (derived). Relations: d = o − i; o₂ = o − m; i₂ = i + m. Page
   limits (not relations): m ≤ o; m ≤ d ÷ 2 (net movement stops at equal counts). Assumptions: particles
@@ -115,22 +115,22 @@
 - **Textbooks:** OpenStax Biology 2e ch. 6 (6.4 ATP, 6.5 enzymes), ch. 7, ch. 8, 22.3; HMH Dimensions 3.1–3.2; Miller & Levine 2.
 - **Tests ask** (no released items filed; common types plus the misfiled NAEP item):
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2019-12S7-#2 (carbon from CO₂ into carbohydrate) | main, scene "Calvin cycle" | Solves |
-  | common: molecules of CO₂ for n glucose; atoms conserved | ~equation | Solves |
-  | common: where each stage happens, which makes most ATP | ~stages, main | Solves |
-  | common: fermentation vs respiration vs photosynthesis | ~processes | Solves |
-  | common: enzyme activity against temperature | ~enzymes | Solves |
+  | Question                                                | Page                       | Mark   |
+  | ------------------------------------------------------- | -------------------------- | ------ |
+  | NAEP-2019-12S7-#2 (carbon from CO₂ into carbohydrate)   | main, scene "Calvin cycle" | Solves |
+  | common: molecules of CO₂ for n glucose; atoms conserved | ~equation                  | Solves |
+  | common: where each stage happens, which makes most ATP  | ~stages, main              | Solves |
+  | common: fermentation vs respiration vs photosynthesis   | ~processes                 | Solves |
+  | common: enzyme activity against temperature             | ~enzymes                   | Solves |
 
 - **Main — BUILD `s.9.cellular-energy` (explore):** figure `organelleEnergy` from
   `g.s9-cellular-energy-organelles`. Scenes (8): "The cycle" `energy: {}`; "Photosynthesis"
   `{ process: 'photosynthesis' }`; "Light reactions" `{ process: 'lightReactions', lit: 'light' }`
   (thylakoids split water, release O₂, make ATP and NADPH); "Calvin cycle" `{ process: 'calvinCycle',
-  lit: 'CO₂' }` (carbon from CO₂ is fixed into sugar); "Respiration" `{ process: 'respiration' }`;
+lit: 'CO₂' }` (carbon from CO₂ is fixed into sugar); "Respiration" `{ process: 'respiration' }`;
   "Glycolysis" `{ process: 'glycolysis', lit: 'glucose' }` (cytoplasm, no O₂ needed, 2 ATP);
   "Krebs cycle" `{ process: 'krebsCycle', lit: 'CO₂' }`; "Electron transport" `{ process:
-  'electronTransport', lit: 'O₂' }` (O₂ takes the electrons; most ATP made here). Assumptions: ATP
+'electronTransport', lit: 'O₂' }` (O₂ takes the electrons; most ATP made here). Assumptions: ATP
   carries energy the cell spends; textbooks give 30 to 38 ATP per glucose, so no single total is stated.
 - **~equation — BUILD (calculator):** picture `reaction` (Grade 7 kind): reactants CO₂ 'c', H₂O
   'w'; products C₆H₁₂O₆ 'g', O₂ 'o'; `atoms: { C: ['C1','C2'], H: ['H1','H2'], O: ['O1','O2'] }`.
@@ -161,16 +161,16 @@
 - **Textbooks:** OpenSciEd B.3; OpenStax Biology 2e ch. 10–11; HMH Dimensions 5, 7.1; Miller & Levine 3, 4.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2000-12S11-#1 (sexual reproduction, more variation) | ~compare | Solves |
-  | NAEP-2009-12S10-#2 (offspring vary from parents) | ~compare | Solves |
-  | MCAS-2026-HSBIO-#2 (final products of meiosis) | ~meiosis (telophase II card) | Solves |
-  | MCAS-2026-HSBIO-#18 (crossing over: meiosis, variation) | ~meiosis (prophase I), ~compare | Solves |
-  | MCAS-2026-HSBIO-#22 (the false sentence: gametes identical) | ~compare | Solves |
-  | MCAS-2026-HSBIO-#24 Part B (replicate before mitosis) | ~cell-cycle | Solves |
-  | MCAS-2026-HSBIO-#39 (event in interphase) | ~cell-cycle | Solves |
-  | common: 2n = 46, how many in a gamete, how many chromatids | ~chromosome-count | Solves |
+  | Question                                                    | Page                            | Mark   |
+  | ----------------------------------------------------------- | ------------------------------- | ------ |
+  | NAEP-2000-12S11-#1 (sexual reproduction, more variation)    | ~compare                        | Solves |
+  | NAEP-2009-12S10-#2 (offspring vary from parents)            | ~compare                        | Solves |
+  | MCAS-2026-HSBIO-#2 (final products of meiosis)              | ~meiosis (telophase II card)    | Solves |
+  | MCAS-2026-HSBIO-#18 (crossing over: meiosis, variation)     | ~meiosis (prophase I), ~compare | Solves |
+  | MCAS-2026-HSBIO-#22 (the false sentence: gametes identical) | ~compare                        | Solves |
+  | MCAS-2026-HSBIO-#24 Part B (replicate before mitosis)       | ~cell-cycle                     | Solves |
+  | MCAS-2026-HSBIO-#39 (event in interphase)                   | ~cell-cycle                     | Solves |
+  | common: 2n = 46, how many in a gamete, how many chromatids  | ~chromosome-count               | Solves |
 
 - **Main — BUILD `s.9.mitosis-meiosis` (sequence):** from `g.s9-mitosis-meiosis-mitosis`. "Put the
   stages of mitosis in order." Stages with `cellDivision` figures, diploid 4: Interphase, Prophase,
@@ -202,21 +202,21 @@
 - **Textbooks:** OpenSciEd B.3; OpenStax Biology 2e ch. 12–13; HMH Dimensions 7.2–7.3; Miller & Levine 4, 7.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2019-12S7-#10 (parents of 25/50/25 children: Ff × Ff) | ~genotype-ratio | Solves |
-  | NAEP-2019-12S7-#9 (group 2 is Ff) | ~genotype-ratio | Solves |
-  | MCAS-2026-HSBIO-#9 (EE × ee, chance of dark brown) | ~genotype-ratio (a = 2, c = 0 → 0 ff) | Solves |
-  | MCAS-2026-HSBIO-#13 (two normal parents, some king cubs → recessive) | ~genotype-ratio | Partly (the page shows the cross; inferring the pattern is a reasoning step) |
-  | MCAS-2026-HSBIO-#33 (two genotypes, same blood type) | ~blood-types | Solves |
-  | MCAS-2026-HSBIO-#18 (crossing over) | s.9.mitosis-meiosis~meiosis | Solves (duplicate filing) |
-  | common: dihybrid 9:3:3:1, test cross 1:1:1:1 | main | Solves |
-  | common: carrier mother, chance of an affected son | ~x-linked | Solves |
+  | Question                                                             | Page                                  | Mark                                                                         |
+  | -------------------------------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------- |
+  | NAEP-2019-12S7-#10 (parents of 25/50/25 children: Ff × Ff)           | ~genotype-ratio                       | Solves                                                                       |
+  | NAEP-2019-12S7-#9 (group 2 is Ff)                                    | ~genotype-ratio                       | Solves                                                                       |
+  | MCAS-2026-HSBIO-#9 (EE × ee, chance of dark brown)                   | ~genotype-ratio (a = 2, c = 0 → 0 ff) | Solves                                                                       |
+  | MCAS-2026-HSBIO-#13 (two normal parents, some king cubs → recessive) | ~genotype-ratio                       | Partly (the page shows the cross; inferring the pattern is a reasoning step) |
+  | MCAS-2026-HSBIO-#33 (two genotypes, same blood type)                 | ~blood-types                          | Solves                                                                       |
+  | MCAS-2026-HSBIO-#18 (crossing over)                                  | s.9.mitosis-meiosis~meiosis           | Solves (duplicate filing)                                                    |
+  | common: dihybrid 9:3:3:1, test cross 1:1:1:1                         | main                                  | Solves                                                                       |
+  | common: carrier mother, chance of an affected son                    | ~x-linked                             | Solves                                                                       |
 
 - **Main — BUILD `s.9.inheritance-patterns` (calculator, dihybrid):** picture `punnettSquare` from
   `g.s9-inheritance-patterns-dihybrid`: `{ first: 'a', second: 'c', letter: 'R', dominant: 'D',
-  recessive: 'N', inheritance: { pattern: 'dihybrid', firstB: 'b', secondB: 'e', letterB: 'Y', names:
-  ['round yellow', 'round green', 'wrinkled yellow', 'wrinkled green'] } }`. Values (10): a, c first
+recessive: 'N', inheritance: { pattern: 'dihybrid', firstB: 'b', secondB: 'e', letterB: 'Y', names:
+['round yellow', 'round green', 'wrinkled yellow', 'wrinkled green'] } }`. Values (10): a, c first
   and second parent's R alleles (0–2); b, e their Y alleles (0–2); tR, tY boxes of 4 showing round,
   yellow (derived); D both dominant, F round green, S wrinkled yellow, N neither (boxes of 16, derived).
   Relations: tR = 4 − (2 − a)(2 − c); tY = 4 − (2 − b)(2 − e); D = tR × tY; F = tR × (4 − tY);
@@ -232,13 +232,13 @@
   expected to be Ff?”" startWith ['a', 'c', 'N'].
 - **~incomplete — BUILD (calculator):** from `g.s9-inheritance-patterns-incomplete`:
   `inheritance: { pattern: 'incomplete', alleles: ['R', 'W'], names: ['red', 'pink', 'white'], middle:
-  'P' }`, letter C, flowers of snapdragons. Values: a, c parents' Cᴿ alleles (0–2); R red, P pink, W
+'P' }`, letter C, flowers of snapdragons. Values: a, c parents' Cᴿ alleles (0–2); R red, P pink, W
   white boxes of 4 (derived). Relations: R = a × c; P = a(2 − c) + c(2 − a); W = (2 − a)(2 − c).
   Example: pink × pink → 1, 2, 1; red × white → 0, 4, 0. Assumption contrasts codominance (roan
   cattle, AB blood: both show, no blend) so no separate codominance page is needed.
 - **~x-linked — BUILD (calculator):** from `g.s9-inheritance-patterns-x-linked`: `{ first: 'm',
-  second: 'f', letter: 'B', dominant: 't', recessive: 'r', inheritance: { pattern: 'xLinked', carriers:
-  'k' } }` (red–green color blindness). Values: m mother's Xᴮ (0–2), f father's Xᴮ (0–1), t boxes
+second: 'f', letter: 'B', dominant: 't', recessive: 'r', inheritance: { pattern: 'xLinked', carriers:
+'k' } }` (red–green color blindness). Values: m mother's Xᴮ (0–2), f father's Xᴮ (0–1), t boxes
   without the trait, r with it, k carrier daughters, s chance a son is affected (%) (all derived).
   Relations: r = (2 − m)(2 − f); t = 4 − r; k = (2 − m) × f + m × (1 − f); s = 50 × (2 − m). Example:
   m = 1, f = 1 → r = 1, t = 3, k = 1, s = 50%. m = 1, f = 0 → r = 2, k = 1. Assumptions: sons get their
@@ -257,14 +257,14 @@
 - **Textbooks:** OpenSciEd B.3; OpenStax Biology 2e ch. 14 (14.2–14.3), ch. 15, 16.1; HMH Dimensions 6.1–6.2; Miller & Levine 5.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2019-12S7-#11 (mutation → defective protein) | s.9.biotechnology main | Solves |
-  | MCAS-2026-HSBIO-#24 Part A (complementary base pairing) | ~replication | Solves |
-  | MCAS-2026-HSBIO-#39 (interphase) | s.9.mitosis-meiosis~cell-cycle | Solves (misfiled) |
-  | common: 30% A, find G | ~chargaff | Solves |
-  | common: mRNA of 300 bases, how many amino acids | main | Partly until Engine need 2 (range 3–12 now) |
-  | common: template → mRNA → amino acids with a codon table | main (picture) | Solves |
+  | Question                                                 | Page                           | Mark                                        |
+  | -------------------------------------------------------- | ------------------------------ | ------------------------------------------- |
+  | NAEP-2019-12S7-#11 (mutation → defective protein)        | s.9.biotechnology main         | Solves                                      |
+  | MCAS-2026-HSBIO-#24 Part A (complementary base pairing)  | ~replication                   | Solves                                      |
+  | MCAS-2026-HSBIO-#39 (interphase)                         | s.9.mitosis-meiosis~cell-cycle | Solves (misfiled)                           |
+  | common: 30% A, find G                                    | ~chargaff                      | Solves                                      |
+  | common: mRNA of 300 bases, how many amino acids          | main                           | Partly until Engine need 2 (range 3–12 now) |
+  | common: template → mRNA → amino acids with a codon table | main (picture)                 | Solves                                      |
 
 - **Main — BUILD `s.9.dna-protein-synthesis` (calculator):** picture `dnaStrand` from
   `g.s9-dna-protein-synthesis-codons`: `{ sequence: 'TACCGGTTCATT', length: 'b', codons: 'c' }` →
@@ -274,7 +274,7 @@
   make a codon; AUG starts and codes Met; a stop codon adds no amino acid; each peptide bond releases
   one water (link to biomolecules). Example: b = 12 → c = 4, a = 3, p = 2. startWith ['b'].
 - **~chargaff — BUILD (calculator):** from `g.s9-dna-protein-synthesis-chargaff`: `{ percentA: 'A',
-  pairs: 10 }`. Values: A, T, G, C (% of bases); AT, GC pairs in 10 (derived); H hydrogen bonds in the
+pairs: 10 }`. Values: A, T, G, C (% of bases); AT, GC pairs in 10 (derived); H hydrogen bonds in the
   10 pairs (derived). Relations: T = A; C = G; G = 50 − A; AT = (A + T) ÷ 10; GC = 10 − AT;
   H = 2 × AT + 3 × GC. Example: A = 30 → T = 30, G = C = 20; AT = 6, GC = 4, H = 24. A range 0–50;
   limit: A a multiple of 5 draws whole pairs (else the ladder fades, as drawn). startWith ['A'].
@@ -294,34 +294,34 @@
 - **Textbooks:** OpenStax Biology 2e ch. 16 (gene expression), ch. 17; HMH Dimensions 6.3, 7.4–7.5; Miller & Levine 7.
 - **Tests ask** (none released; common types):
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2019-12S7-#11 (mutation → defective protein; filed under DNA) | main | Solves |
-  | common: silent, missense or nonsense after a substitution | main | Solves |
-  | common: why an insertion changes every amino acid after it | ~frameshift | Solves |
-  | common: fragment sizes from a cut, read a gel | ~gel | Solves |
-  | common: copies after n PCR cycles | ~pcr | Solves |
-  | common: how gene expression is switched on or off | none | No (Engine need 5, new page) |
+  | Question                                                           | Page        | Mark                         |
+  | ------------------------------------------------------------------ | ----------- | ---------------------------- |
+  | NAEP-2019-12S7-#11 (mutation → defective protein; filed under DNA) | main        | Solves                       |
+  | common: silent, missense or nonsense after a substitution          | main        | Solves                       |
+  | common: why an insertion changes every amino acid after it         | ~frameshift | Solves                       |
+  | common: fragment sizes from a cut, read a gel                      | ~gel        | Solves                       |
+  | common: copies after n PCR cycles                                  | ~pcr        | Solves                       |
+  | common: how gene expression is switched on or off                  | none        | No (Engine need 5, new page) |
 
 - **Main — BUILD `s.9.biotechnology` (calculator, substitution):** picture `dnaStrand` from
   `g.s9-biotechnology-substitution`: `{ sequence: 'TACCGGTTCATT', mutation: { type: 'substitution',
-  at: 'p' } }`. Values: p base changed (1–12), k codon holding it (derived), j its place in the codon
+at: 'p' } }`. Values: p base changed (1–12), k codon holding it (derived), j its place in the codon
   (derived, 1–3). Relation: p = 3(k − 1) + j (step text "the codon holding base {p}"). Assumptions: one
   base swapped changes at most one codon; the caption names the effect (silent, missense, nonsense);
   the default swap is the transition A↔G, C↔T. Example: p = 5 → k = 2, j = 2; template CGG → CAG, mRNA
   GCC → GUC, Ala → Val (missense). startWith ['p'].
 - **~frameshift — BUILD (calculator):** from `g.s9-biotechnology-insertion` (`mutation: { type:
-  'insertion', at: 'p' }`). Values: L template bases (6–12, multipleOf 3), c codons (derived), p base
+'insertion', at: 'p' }`). Values: L template bases (6–12, multipleOf 3), c codons (derived), p base
   where one is inserted (1–L), k codon holding it (derived), s codons read in a shifted frame (derived).
   Relations: c = L ÷ 3; k = ⌈p ÷ 3⌉ (the step phrase "the codon holding base {p}"); s = c − k + 1. Example: L = 12, p = 5 → c = 4, k = 2, s = 3.
   Assumption: a deletion shifts the frame the same way; inserting 3 bases keeps the frame.
 - **~gel — BUILD (calculator):** from `g.s9-biotechnology-gel`: `{ lanes: [{ label: 'Uncut', bands:
-  ['L'] }, { label: 'Cut', bands: ['a', 'b'] }], keep: ['L'] }`. Values: L uncut DNA (bp, 200–10,000),
+['L'] }, { label: 'Cut', bands: ['a', 'b'] }], keep: ['L'] }`. Values: L uncut DNA (bp, 200–10,000),
   a, b fragments (bp, 100–9,900). Relation: L = a + b. Assumptions: DNA is negative and moves toward +;
   smaller fragments travel farther; the ladder's known sizes give the scale. Example: L = 5,000,
   a = 3,000 → b = 2,000. startWith ['L', 'a'].
 - **~pcr — BUILD (calculator):** from `g.s9-biotechnology-pcr`: `{ pcr: { cycles: 'n', start: 'N0',
-  copies: 'N' } }`. Values: N₀ starting copies (1–1,000), n cycles (1–40), N copies (derived).
+copies: 'N' } }`. Values: N₀ starting copies (1–1,000), n cycles (1–40), N copies (derived).
   Relation: N = N₀ × 2ⁿ. Assumptions: each cycle heats (95 °C), cools (55 °C), warms (72 °C) and
   doubles every double strand; real runs level off as primers run out. Example: N₀ = 2, n = 10 →
   N = 2,048; one copy after 30 cycles → 1,073,741,824. startWith ['N0', 'n'].
@@ -339,29 +339,29 @@
 - **Textbooks:** OpenSciEd B.4, B.5; OpenStax Biology 2e ch. 18–20; HMH Dimensions 8, 9; Miller & Levine 10.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2000-12S11-#8 (tree of vertebrate groups) | ~common-ancestry | Partly: the keyed tree makes birds and mammals sisters; the page draws today's tree (mammals branch before reptiles and birds) |
-  | NAEP-2000-12S11-#9 (not part of Darwin's theory) | ~resistance (assumptions list the 4 points) | Solves |
-  | NAEP-2005-12S13-#7 (long beak → nectar) | none | No: adaptation of form is s.7.natural-selection |
-  | NAEP-2009-12S10-#10 (which forelimb is not homologous) | ~homologous | Solves |
-  | NAEP-2009-12S10-#11 (mutations → gradual change, selected) | ~resistance | Solves |
-  | NAEP-2009-12S10-#6 (antibiotic-resistant bacteria) | ~resistance | Solves |
-  | NAEP-2009-12S9-#5 (tree built from DNA sequences) | ~common-ancestry | Solves |
-  | NAEP-2009-12S9-#6 (most closely related species) | ~common-ancestry | Solves |
-  | NAEP-2019-12S7-#12 (whale ancestor walked on land) | ~homologous (vestigial card) | Partly (fossil reasoning) |
-  | NAEP-2019-12S7-#8 (antibiotic overuse) | ~resistance | Solves |
-  | common: 16% show the recessive trait, find carriers | main | Solves |
+  | Question                                                   | Page                                        | Mark                                                                                                                           |
+  | ---------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+  | NAEP-2000-12S11-#8 (tree of vertebrate groups)             | ~common-ancestry                            | Partly: the keyed tree makes birds and mammals sisters; the page draws today's tree (mammals branch before reptiles and birds) |
+  | NAEP-2000-12S11-#9 (not part of Darwin's theory)           | ~resistance (assumptions list the 4 points) | Solves                                                                                                                         |
+  | NAEP-2005-12S13-#7 (long beak → nectar)                    | none                                        | No: adaptation of form is s.7.natural-selection                                                                                |
+  | NAEP-2009-12S10-#10 (which forelimb is not homologous)     | ~homologous                                 | Solves                                                                                                                         |
+  | NAEP-2009-12S10-#11 (mutations → gradual change, selected) | ~resistance                                 | Solves                                                                                                                         |
+  | NAEP-2009-12S10-#6 (antibiotic-resistant bacteria)         | ~resistance                                 | Solves                                                                                                                         |
+  | NAEP-2009-12S9-#5 (tree built from DNA sequences)          | ~common-ancestry                            | Solves                                                                                                                         |
+  | NAEP-2009-12S9-#6 (most closely related species)           | ~common-ancestry                            | Solves                                                                                                                         |
+  | NAEP-2019-12S7-#12 (whale ancestor walked on land)         | ~homologous (vestigial card)                | Partly (fossil reasoning)                                                                                                      |
+  | NAEP-2019-12S7-#8 (antibiotic overuse)                     | ~resistance                                 | Solves                                                                                                                         |
+  | common: 16% show the recessive trait, find carriers        | main                                        | Solves                                                                                                                         |
 
 - **Main — BUILD `s.9.evolution-evidence` (calculator, Hardy–Weinberg):** picture `alleleFrequencies`
   from `g.s9-evolution-evidence-hardy-weinberg`: `{ p: 'p', q: 'q', genotypes: ['P2', 'H', 'Q2'],
-  keep: ['N'] }`. Values (9): p, q (0–1), P2 = p², H = 2pq, Q2 = q² (0–1), N people (2–1,000,000),
+keep: ['N'] }`. Values (9): p, q (0–1), P2 = p², H = 2pq, Q2 = q² (0–1), N people (2–1,000,000),
   nAA, nAa, naa (derived). Relations: p + q = 1; P2 = p²; H = 2pq; Q2 = q²; nAA = N × P2; nAa = N × H;
   naa = N × Q2. Assumptions: the five conditions hold (large population, random mating, no mutation, no
   migration, no selection); only aa can be seen, so start from q²; carriers are 2pq. Example: Q2 = 0.16
   → q = 0.4, p = 0.6, P2 = 0.36, H = 0.48; N = 500 → 180, 240, 80. startWith ['Q2', 'N'].
 - **~allele-counts — BUILD (calculator):** from `g.s9-evolution-evidence-allele-counts`: `{ p: 'p', q:
-  'q', genotypes: [null, null, null], fixed: true }`. Values: nAA, nAa, naa (0–10,000), N (derived),
+'q', genotypes: [null, null, null], fixed: true }`. Values: nAA, nAa, naa (0–10,000), N (derived),
   A, a allele counts (derived), p, q (derived). Relations: N = nAA + nAa + naa; A = 2nAA + nAa; a =
   2naa + nAa; p = A ÷ 2N; q = a ÷ 2N. Example: 49, 42, 9 → N = 100, A = 140, a = 60, p = 0.7, q = 0.3.
   startWith ['nAA', 'nAa', 'naa'].
@@ -393,12 +393,12 @@
 - **Textbooks:** OpenStax Biology 2e ch. 20–29 (20.1–20.2 phylogeny, 21 viruses, 22 prokaryotes, 23–29 diversity); HMH Dimensions 7, 10.
 - **Tests ask** (none released; common types):
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | common: which traits do these groups share; build a cladogram | main | Solves |
-  | common: which domain or kingdom is it | ~domains, ~kingdoms | Solves |
-  | common: order of the ranks, which rank is most specific | ~ranks | Solves |
-  | common: dichotomous key | none | No (new page, Engine need 12) |
+  | Question                                                      | Page                | Mark                          |
+  | ------------------------------------------------------------- | ------------------- | ----------------------------- |
+  | common: which traits do these groups share; build a cladogram | main                | Solves                        |
+  | common: which domain or kingdom is it                         | ~domains, ~kingdoms | Solves                        |
+  | common: order of the ranks, which rank is most specific       | ~ranks              | Solves                        |
+  | common: dichotomous key                                       | none                | No (new page, Engine need 12) |
 
 - **Main — BUILD `s.9.classification` (explore):** figure `cladogram` from
   `g.s9-classification-cladogram` (a different tree from evolution's: e.g. ["Sponge", ["Jellyfish",
@@ -425,19 +425,19 @@
 - **Textbooks:** OpenSciEd B.1; OpenStax Biology 2e ch. 45 (45.1–45.4); HMH Dimensions 4.1, 10.1; Miller & Levine 15.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12S14-#4 (plot two species by day) | none | No (observe with two rows: Engine need 4) |
-  | NAEP-2005-12S14-#5 (which species out-competes) | ~limiting-factors | Partly |
-  | NAEP-2009-12S10-#4 (when growth is fastest) | main (steepest near K/2), ~doubling | Solves |
-  | NAEP-2009-12S10-#5 (why the growth rate slows, then falls) | main, ~growth-phases | Solves |
-  | NAEP-2019-12S7-#17 (succession order) | s.9.ecosystem-dynamics~succession | Solves (misfiled) |
-  | MCAS-2026-HSBIO-#14 (habitat loss → competition) | ~limiting-factors | Solves |
-  | common: births, deaths, migration → new size and rate | ~rates | Solves |
+  | Question                                                   | Page                                | Mark                                      |
+  | ---------------------------------------------------------- | ----------------------------------- | ----------------------------------------- |
+  | NAEP-2005-12S14-#4 (plot two species by day)               | none                                | No (observe with two rows: Engine need 4) |
+  | NAEP-2005-12S14-#5 (which species out-competes)            | ~limiting-factors                   | Partly                                    |
+  | NAEP-2009-12S10-#4 (when growth is fastest)                | main (steepest near K/2), ~doubling | Solves                                    |
+  | NAEP-2009-12S10-#5 (why the growth rate slows, then falls) | main, ~growth-phases                | Solves                                    |
+  | NAEP-2019-12S7-#17 (succession order)                      | s.9.ecosystem-dynamics~succession   | Solves (misfiled)                         |
+  | MCAS-2026-HSBIO-#14 (habitat loss → competition)           | ~limiting-factors                   | Solves                                    |
+  | common: births, deaths, migration → new size and rate      | ~rates                              | Solves                                    |
 
 - **Main — BUILD `s.9.population-ecology` (calculator, logistic):** picture `functionGraph` from
   `g.s9-population-ecology-logistic`: `{ family: 'logistic', K: 'K', start: 'N0', r: 'r', at: { x: 't',
-  y: 'N' }, axes: { x: 'Time (days)', y: 'Population' } }` with K dashed. Values: K carrying capacity
+y: 'N' }, axes: { x: 'Time (days)', y: 'Population' } }` with K dashed. Values: K carrying capacity
   (10–1,000,000), N₀ start (1–K), r growth rate (0.01–5 per day), t time (0–1,000 days), N population
   (derived or typed to find t), G growth now (per day, derived). Relations: N = K ÷ (1 + ((K − N₀) ÷
   N₀)e^(−rt)); G = rN(K − N) ÷ K. Limits: N₀ < K; N < K. Assumptions: growth is nearly exponential while
@@ -468,17 +468,17 @@
 - **Textbooks:** OpenSciEd B.1, B.2; OpenStax Biology 2e ch. 44–47 (46.2 energy flow, 46.3 cycles, 47 biodiversity); HMH Dimensions 3.3–3.4, 4.2; Miller & Levine 14, 15.
 - **Tests ask** (none filed here; misfiled and common):
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2019-12S7-#17 (succession order) | ~succession | Solves |
-  | MCAS-2026-HSBIO-#5 (cycads add nitrogen to soil) | ~nitrogen (fixation scene) | Partly (graph reading) |
-  | common: percent of energy passed up from data | main | Solves |
-  | common: which community is more diverse | ~biodiversity | Solves |
-  | common: carbon cycle processes | s.7.ecosystem-energy refresh (carbonCycle) | Partly |
+  | Question                                         | Page                                       | Mark                   |
+  | ------------------------------------------------ | ------------------------------------------ | ---------------------- |
+  | NAEP-2019-12S7-#17 (succession order)            | ~succession                                | Solves                 |
+  | MCAS-2026-HSBIO-#5 (cycads add nitrogen to soil) | ~nitrogen (fixation scene)                 | Partly (graph reading) |
+  | common: percent of energy passed up from data    | main                                       | Solves                 |
+  | common: which community is more diverse          | ~biodiversity                              | Solves                 |
+  | common: carbon cycle processes                   | s.7.ecosystem-energy refresh (carbonCycle) | Partly                 |
 
 - **Main — BUILD `s.9.ecosystem-dynamics` (calculator, trophic efficiency):** picture `energyPyramid`
   `{ measure: 'energy', levels: ['E1', 'E2', 'E3', 'E4'], percent: 'p', names: ['grasses',
-  'grasshoppers', 'shrews', 'owls'] }` (Grade 7 kind, measure energy). Values: E₁–E₄ (kcal, Grade 7
+'grasshoppers', 'shrews', 'owls'] }` (Grade 7 kind, measure energy). Values: E₁–E₄ (kcal, Grade 7
   `energy` helper), p efficiency (%, 1–25, no `allowed`: Grade 9 computes it). Relations: E₂ = E₁ × p ÷
   100; E₃ = E₂ × p ÷ 100; E₄ = E₃ × p ÷ 100. Assumptions: the efficiency varies, about 5–20%; the rest is
   used in respiration or lost as heat; biomass pyramids follow, but numbers pyramids (one oak, thousands
@@ -506,14 +506,14 @@
 - **Textbooks:** OpenStax Biology 2e 9 (cell signaling), 33.3, 37, 41; HMH Dimensions 1.2–1.3; Miller & Levine 12.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12S11-#13 (cooling during exercise) | main, scene "Too hot" | Solves |
-  | NAEP-2005-12S13-#3 (function of a neuron) | ~systems | Solves |
-  | NAEP-2005-12S13-#8 (nervous and endocrine coordinate) | ~systems (header) | Solves |
-  | NAEP-2005-12S14-#13 (menstruation stops in pregnancy) | none | No (reproduction not in taxonomy) |
-  | MCAS-2026-HSBIO-#4 (sodium restored, hormone stops) | ~feedback-types, main | Solves |
-  | MCAS-2026-HSBIO-#40 (kidneys filter, regulate water) | ~systems, main scene "Water balance" | Solves |
+  | Question                                              | Page                                 | Mark                              |
+  | ----------------------------------------------------- | ------------------------------------ | --------------------------------- |
+  | NAEP-2005-12S11-#13 (cooling during exercise)         | main, scene "Too hot"                | Solves                            |
+  | NAEP-2005-12S13-#3 (function of a neuron)             | ~systems                             | Solves                            |
+  | NAEP-2005-12S13-#8 (nervous and endocrine coordinate) | ~systems (header)                    | Solves                            |
+  | NAEP-2005-12S14-#13 (menstruation stops in pregnancy) | none                                 | No (reproduction not in taxonomy) |
+  | MCAS-2026-HSBIO-#4 (sodium restored, hormone stops)   | ~feedback-types, main                | Solves                            |
+  | MCAS-2026-HSBIO-#40 (kidneys filter, regulate water)  | ~systems, main scene "Water balance" | Solves                            |
 
 - **Main — BUILD `s.9.homeostasis` (explore):** figure `feedbackLoop` from `g.s9-homeostasis-feedback`.
   Scenes (5), each `loop` with roles: "Too hot" (negative): Stimulus: body temperature rises above its
@@ -548,17 +548,17 @@
 - **Textbooks:** OpenStax Biology 2e 21.2–21.3, 22.4, 24.4, ch. 42; Miller & Levine 13.
 - **Tests ask** (none released; MCAS-2026-HSBIO-#32 antibodies is filed under biomolecules):
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | common: why a second exposure is faster and stronger | main | Solves |
+  | Question                                                 | Page           | Mark   |
+  | -------------------------------------------------------- | -------------- | ------ |
+  | common: why a second exposure is faster and stronger     | main           | Solves |
   | common: what share must be immune to protect a community | ~herd-immunity | Solves |
-  | common: virus or bacterium; do antibiotics work | ~pathogens | Solves |
-  | common: order of the adaptive response | ~stages | Solves |
-  | common: innate or adaptive defense | ~defenses | Solves |
+  | common: virus or bacterium; do antibiotics work          | ~pathogens     | Solves |
+  | common: order of the adaptive response                   | ~stages        | Solves |
+  | common: innate or adaptive defense                       | ~defenses      | Solves |
 
 - **Main — BUILD `s.9.immune-disease` (calculator):** picture `immuneResponse` from
   `g.s9-immune-disease-antibodies`: `{ first: 'P1', second: 'P2', firstDays: 'd1', secondDays: 'd2',
-  secondAt: 40, axis: 'Antibody level' }`. Values: P₁, P₂ peak levels (relative units, 1–1,000), d₁, d₂
+secondAt: 40, axis: 'Antibody level' }`. Values: P₁, P₂ peak levels (relative units, 1–1,000), d₁, d₂
   days to peak (1–30), R times higher (derived), s days sooner (derived). Relations: R = P₂ ÷ P₁;
   s = d₁ − d₂. Limits: P₂ ≥ P₁; d₂ ≤ d₁. Assumptions: memory B and T cells from the first exposure (or a
   vaccine) answer the second faster and stronger; levels here are relative, as on textbook graphs.

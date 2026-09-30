@@ -34,13 +34,13 @@ none comes from `research/`.
 - **Textbooks:** im-hs 11.5; openstax-precalculus 12.1; big-ideas-hs 11.1, 11.2, 11.6; envision-aga 11.1; larson-precalculus 12.1; reveal-hs 11.1.
 - **Tests ask:** no released items; common types:
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| (common) Describe y = −2|x + 3| − 1 from its parent | main | Solves |
-| (common) Write the equation after "shift right 4, reflect, up 2" | main | Solves |
-| (common) Where does (2, 4) on y = f(x) go on y = 3f(x − 1) + 2? | ~point | Solves |
-| (common) Which change is f(x − 3) versus f(x) − 3? | ~name-the-move | Solves |
-| (common) Graph y = f(2x), y = f(−x) | ~horizontal | Partly (waits on need 4) |
+| Question                                                         | Page           | Mark                     |
+| ---------------------------------------------------------------- | -------------- | ------------------------ |
+| (common) Describe y = −2                                         | x + 3          | − 1 from its parent      | main | Solves |
+| (common) Write the equation after "shift right 4, reflect, up 2" | main           | Solves                   |
+| (common) Where does (2, 4) on y = f(x) go on y = 3f(x − 1) + 2?  | ~point         | Solves                   |
+| (common) Which change is f(x − 3) versus f(x) − 3?               | ~name-the-move | Solves                   |
+| (common) Graph y = f(2x), y = f(−x)                              | ~horizontal    | Partly (waits on need 4) |
 
 - **Main — BUILD `m.11.function-transformations`:** picture `functionGraph` (demo
   `g.m11-function-transformations-parent`), family absolute {a, h, k}, `parent: true` (|x| dashed),
@@ -75,13 +75,13 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.1, 12.1, 12.3; im-hs 11.3; openstax-algebra-trig 9.2, 11.5, 12.10; openstax-intermediate-algebra 11.8; openstax-precalculus 12.3, 12.8; big-ideas-hs 11.3; envision-aga 11.2; hmh-into-hs 11.1, 11.2; larson-precalculus 12.2; reveal-hs 11.3.
 - **Tests ask:** no released items; common types:
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| (common) Multiply (3 − 2i)(4 + i) | main | Solves |
-| (common) Add or subtract two complex numbers | ~add-subtract | Solves |
-| (common) Simplify i⁴³ | ~powers-of-i | Solves (need 2) |
-| (common) Divide (2 + i)/(1 − 3i) | ~divide | Solves (need 11) |
-| (common) Solve x² + 6x + 13 = 0 | ~quadratic | Solves |
+| Question                                     | Page          | Mark             |
+| -------------------------------------------- | ------------- | ---------------- |
+| (common) Multiply (3 − 2i)(4 + i)            | main          | Solves           |
+| (common) Add or subtract two complex numbers | ~add-subtract | Solves           |
+| (common) Simplify i⁴³                        | ~powers-of-i  | Solves (need 2)  |
+| (common) Divide (2 + i)/(1 − 3i)             | ~divide       | Solves (need 11) |
+| (common) Solve x² + 6x + 13 = 0              | ~quadratic    | Solves           |
 
 - **Main — BUILD `m.11.complex-numbers`:** multiply. Picture `complexPlane` op 'product'
   (demo `g.m11-complex-numbers-product`), z {re: a, im: b}, w {re: c, im: d}, result {re: p, im: q}.
@@ -115,13 +115,13 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.1; im-hs 11.2; openstax-algebra-trig 11.5; openstax-elementary-algebra 9.6; openstax-intermediate-algebra 11.5, 11.6; openstax-precalculus 12.3; big-ideas-hs 11.4; envision-aga 11.3; hmh-into-hs 11.2; larson-precalculus 12.2; reveal-hs 11.4, 11.5.
 - **Tests ask:** no released items; common types:
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| (common) Zeros, multiplicity and sketch of y = (x + 2)²(x − 1)(x − 3) | main | Solves |
-| (common) End behavior of −3x⁵ + … | ~end-behavior | Solves |
-| (common) Divide 2x³ − 3x² + x − 5 by x − 2 | ~divide | Solves (need 3 for the grid) |
-| (common) Find P(−1) by the remainder theorem; is x + 1 a factor? | ~divide | Solves |
-| (common) Long division by a quadratic divisor | none | No (Priority 14) |
+| Question                                                              | Page          | Mark                         |
+| --------------------------------------------------------------------- | ------------- | ---------------------------- |
+| (common) Zeros, multiplicity and sketch of y = (x + 2)²(x − 1)(x − 3) | main          | Solves                       |
+| (common) End behavior of −3x⁵ + …                                     | ~end-behavior | Solves                       |
+| (common) Divide 2x³ − 3x² + x − 5 by x − 2                            | ~divide       | Solves (need 3 for the grid) |
+| (common) Find P(−1) by the remainder theorem; is x + 1 a factor?      | ~divide       | Solves                       |
+| (common) Long division by a quadratic divisor                         | none          | No (Priority 14)             |
 
 - **Main — BUILD `m.11.polynomial-functions`:** picture `functionGraph` polynomial {a, zeros:
   [{x: r1, times: m}, {x: r2}, {x: r3}]} (demo `g.m11-polynomial-functions-zeros`), marks ['zeros',
@@ -151,14 +151,14 @@ none comes from `research/`.
 - **Textbooks:** openstax-algebra-trig 11.5; openstax-intermediate-algebra 11.6; openstax-precalculus 12.3; big-ideas-hs 11.4; envision-aga 11.3; larson-precalculus 12.2; reveal-hs 11.5.
 - **Tests ask:** no released items; common types:
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| (common) List the possible rational roots of 2x³ − … + 6 | main (steps) | Solves |
-| (common) Given one root, find the others | main | Solves |
-| (common) Write the least-degree polynomial with zeros 1 and 2 + 3i | ~complex-pair | Solves |
-| (common) How many roots does a degree-5 polynomial have? | ~complex-pair (assumption) | Partly |
-| (common) Solve x⁴ − 13x² + 36 = 0 | ~quadratic-form | Solves |
-| (common) Factor a sum of cubes | none | No (Priority 15) |
+| Question                                                           | Page                       | Mark             |
+| ------------------------------------------------------------------ | -------------------------- | ---------------- |
+| (common) List the possible rational roots of 2x³ − … + 6           | main (steps)               | Solves           |
+| (common) Given one root, find the others                           | main                       | Solves           |
+| (common) Write the least-degree polynomial with zeros 1 and 2 + 3i | ~complex-pair              | Solves           |
+| (common) How many roots does a degree-5 polynomial have?           | ~complex-pair (assumption) | Partly           |
+| (common) Solve x⁴ − 13x² + 36 = 0                                  | ~quadratic-form            | Solves           |
+| (common) Factor a sum of cubes                                     | none                       | No (Priority 15) |
 
 - **Main — BUILD `m.11.polynomial-equations`:** picture `functionGraph` polynomial coefficients
   [a, b, c, d] with `shows: { zeros: ['r', 'x2', 'x3'] }`, marks ['zeros'] (demo
@@ -176,7 +176,7 @@ none comes from `research/`.
   for P(x) = x³ + bx² + cx + d. Assumptions: "A degree-n polynomial has exactly n roots, counting
   complex roots and repeats (fundamental theorem)."; "Real coefficients bring complex roots in
   conjugate pairs." Example: r = 1, p = 2, q = 3: s = 13, P(x) = (x − 1)(x² − 4x + 13) = x³ − 5x²
-  + 17x − 13; P(1) = 0.
+  - 17x − 13; P(1) = 0.
 - **~quadratic-form — BUILD:** equation `x⁴ + {b}x² + {c} = 0`; picture `functionGraph` polynomial
   coefficients [1, 0, b, 0, c], marks ['zeros']. Values b, c, u1, u2 (derived), x1, x2 (derived: the
   positive square roots). Relations: u = x²; u1, u2 = (−b ± √(b² − 4c))/2; x1 = √u1, x2 = √u2;
@@ -190,14 +190,14 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 12.3, 12.5; openstax-algebra-trig 12.13; openstax-intermediate-algebra 11.12; openstax-precalculus 12.11; openstax-statistics 12.4; big-ideas-hs 10.13, 11.8; envision-aga 10.12, 11.12; larson-farber 12.3; larson-precalculus 12.9; reveal-hs 10.12, 11.4.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| NAEP-1990-12M9-#7 (arrangements of 5) | m.10.probability-rules (permutations) | No here: misfiled |
-| NAEP-1996-12M13-#6 (list seatings) | m.10.probability-rules | No here: misfiled |
-| NAEP-2005-12M4-#18 (color patterns up to turning) | none | No: misfiled, symmetry counting |
-| (common) Coefficient of x³ in (2x − 3)⁵ | main | Solves |
-| (common) Expand (x + 2)⁴ | ~expand | Solves |
-| (common) Fill row 6 of Pascal's triangle | ~pascal-rule | Solves |
+| Question                                          | Page                                  | Mark                            |
+| ------------------------------------------------- | ------------------------------------- | ------------------------------- |
+| NAEP-1990-12M9-#7 (arrangements of 5)             | m.10.probability-rules (permutations) | No here: misfiled               |
+| NAEP-1996-12M13-#6 (list seatings)                | m.10.probability-rules                | No here: misfiled               |
+| NAEP-2005-12M4-#18 (color patterns up to turning) | none                                  | No: misfiled, symmetry counting |
+| (common) Coefficient of x³ in (2x − 3)⁵           | main                                  | Solves                          |
+| (common) Expand (x + 2)⁴                          | ~expand                               | Solves                          |
+| (common) Fill row 6 of Pascal's triangle          | ~pascal-rule                          | Solves                          |
 
 - **Main — BUILD `m.11.binomial-theorem`:** term of (ax + b)ⁿ. Picture `pascalTriangle` n, k lit,
   expand {a, b} (demo `g.m11-binomial-theorem-pascal`). Equation `({a}x + {b})^{n}` with the term
@@ -220,12 +220,12 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.3, 12.3; im-hs 9.4, 11.5; openstax-algebra-trig 9.3, 11.5, 11.8; openstax-intermediate-algebra 11.8, 11.10; openstax-precalculus 12.1, 12.3, 12.6; big-ideas-hs 9.10, 11.5; envision-aga 9.10, 11.5; hmh-into-hs 9.2, 11.2, 11.3; larson-precalculus 12.1; reveal-hs 9.5, 11.6.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| NAEP-2005-12M3-#16 (f(g(x)) for a quadratic f and linear g) | main | Solves |
-| (common) (f + g)(3), (f·g)(3) | ~operations | Solves |
-| (common) Find f⁻¹ for f(x) = 3x − 6; check f(f⁻¹(x)) = x | ~inverse | Solves |
-| (common) Inverse of a quadratic on x ≥ h | ~restrict-domain | Solves (need 5 for the picture) |
+| Question                                                    | Page             | Mark                            |
+| ----------------------------------------------------------- | ---------------- | ------------------------------- |
+| NAEP-2005-12M3-#16 (f(g(x)) for a quadratic f and linear g) | main             | Solves                          |
+| (common) (f + g)(3), (f·g)(3)                               | ~operations      | Solves                          |
+| (common) Find f⁻¹ for f(x) = 3x − 6; check f(f⁻¹(x)) = x    | ~inverse         | Solves                          |
+| (common) Inverse of a quadratic on x ≥ h                    | ~restrict-domain | Solves (need 5 for the picture) |
 
 - **Main — BUILD `m.11.inverse-functions`:** f(g(x)) with f(x) = px² + qx + r, g(x) = mx + c.
   Picture `functionGraph` quadratic standard {a: A, b: B, c: C}, at {x, y} (demo
@@ -256,12 +256,12 @@ none comes from `research/`.
 - **Textbooks:** openstax-algebra-trig 11.5; openstax-intermediate-algebra 11.8; big-ideas-hs 11.5; envision-aga 11.5; hmh-into-hs 11.3; reveal-hs 11.6.
 - **Tests ask:** no released items; common types:
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| (common) Solve √(2x + 5) = 7 | main | Solves |
-| (common) Solve √(x + 7) = x + 1 and reject the extraneous root | ~extraneous | Solves |
-| (common) Domain and range of y = 2√(x + 3) + 1 | ~graph | Solves |
-| (common) Solve x^(3/2) = 27 | none | No (m.9.radicals covers rational exponents) |
+| Question                                                       | Page        | Mark                                        |
+| -------------------------------------------------------------- | ----------- | ------------------------------------------- |
+| (common) Solve √(2x + 5) = 7                                   | main        | Solves                                      |
+| (common) Solve √(x + 7) = x + 1 and reject the extraneous root | ~extraneous | Solves                                      |
+| (common) Domain and range of y = 2√(x + 3) + 1                 | ~graph      | Solves                                      |
+| (common) Solve x^(3/2) = 27                                    | none        | No (m.9.radicals covers rational exponents) |
 
 - **Main — BUILD `m.11.radical-functions`:** equation `√({a}x + {b}) = {c}` (demo
   `g.m11-radical-functions-equation`); picture `functionGraph` root index 2 with `other` linear
@@ -287,12 +287,12 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.3; im-hs 11.4; openstax-algebra-trig 11.6; openstax-intermediate-algebra 11.10; openstax-precalculus 12.4; big-ideas-hs 11.6; envision-aga 11.6; hmh-into-hs 11.4; larson-precalculus 12.3; reveal-hs 11.8.
 - **Tests ask:** no released items; common types:
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| (common) Evaluate log₂ 32; write 3⁴ = 81 in log form | main | Solves |
-| (common) Estimate log₃ 20 by change of base | ~change-of-base | Solves |
-| (common) Expand or condense a log expression | ~properties | Solves |
-| (common) log 3,000 without a calculator table | ~common-log | Solves |
+| Question                                             | Page            | Mark   |
+| ---------------------------------------------------- | --------------- | ------ |
+| (common) Evaluate log₂ 32; write 3⁴ = 81 in log form | main            | Solves |
+| (common) Estimate log₃ 20 by change of base          | ~change-of-base | Solves |
+| (common) Expand or condense a log expression         | ~properties     | Solves |
+| (common) log 3,000 without a calculator table        | ~common-log     | Solves |
 
 - **Main — BUILD `m.11.logarithms`:** equation `log_{b}({x}) = {y}` beside `{b}^{y} = {x}` (demo
   `g.m11-logarithms-log-form`); picture `functionGraph` log {b}, at {x, y} (demo
@@ -320,12 +320,12 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.3; im-hs 11.4; openstax-algebra-trig 11.6; openstax-intermediate-algebra 11.10; openstax-precalculus 12.4; big-ideas-hs 11.6; envision-aga 11.6; hmh-into-hs 11.4; larson-precalculus 12.3; reveal-hs 11.7, 11.8.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| NAEP-1992-12M7-#6 (two powers with a common base, solve for x) | ~same-base | Solves (base 2, p = 3, q = 4, m = 12) |
-| (common) Solve 5 × 2ˣ = 60 | main | Solves |
-| (common) Years to reach $3,000 at 5% compounded continuously | ~continuous | Solves |
-| (common) Solve log₃(2x − 1) = 4 | ~log-equation | Solves |
+| Question                                                       | Page          | Mark                                  |
+| -------------------------------------------------------------- | ------------- | ------------------------------------- |
+| NAEP-1992-12M7-#6 (two powers with a common base, solve for x) | ~same-base    | Solves (base 2, p = 3, q = 4, m = 12) |
+| (common) Solve 5 × 2ˣ = 60                                     | main          | Solves                                |
+| (common) Years to reach $3,000 at 5% compounded continuously   | ~continuous   | Solves                                |
+| (common) Solve log₃(2x − 1) = 4                                | ~log-equation | Solves                                |
 
 - **Main — BUILD `m.11.exp-log-equations`:** equation `{a} × {b}^x = {c}`; picture `functionGraph`
   exponential {a, b} with `other` linear {m: 0, b: c}, crossing {x, y: c} (demo
@@ -354,13 +354,13 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.1, 12.3; im-hs 11.2; openstax-algebra-trig 9.1, 9.2, 11.5, 12.11; openstax-elementary-algebra 9.8; openstax-intermediate-algebra 11.7; openstax-precalculus 12.3, 12.9; big-ideas-hs 11.7; envision-aga 11.4; hmh-into-hs 11.5; larson-precalculus 12.2; reveal-hs 11.9.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
+| Question                                                                  | Page          | Mark                                       |
+| ------------------------------------------------------------------------- | ------------- | ------------------------------------------ |
 | NAEP-2009-12M2-#11 (difference of two fractions with linear denominators) | ~add-subtract | Solves (a = 1, p = 2, o = −, c = 2, q = 1) |
-| (common) Asymptotes, zero and hole of a rational function | main | Solves |
-| (common) Solve a rational equation, reject the extraneous root | ~solve | Solves |
-| (common) y varies inversely with x | ~variation | Solves |
-| (common) Multiply or divide rational expressions | none | No (Priority 13) |
+| (common) Asymptotes, zero and hole of a rational function                 | main          | Solves                                     |
+| (common) Solve a rational equation, reject the extraneous root            | ~solve        | Solves                                     |
+| (common) y varies inversely with x                                        | ~variation    | Solves                                     |
+| (common) Multiply or divide rational expressions                          | none          | No (Priority 13)                           |
 
 - **Main — BUILD `m.11.rational-functions`:** y = a(x − z)(x − c)/((x − p)(x − c)). Picture
   `functionGraph` rational {a, zeros: [z, c], poles: [p, c]} (demo `g.m11-rational-functions-hole`),
@@ -391,13 +391,13 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.3; im-hs 11.1, 11.2; openstax-algebra-trig 12.13; openstax-intermediate-algebra 11.12; openstax-precalculus 12.11; big-ideas-hs 11.11; envision-aga 11.1, 11.6; hmh-into-hs 11.6; larson-precalculus 12.9; reveal-hs 11.7.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
+| Question                                                 | Page            | Mark                                                                                           |
+| -------------------------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------- |
 | NAEP-2013-12M99-#10 (induction proof of a geometric sum) | main, ~infinite | Partly: the pages check Sₙ = 1 − (1/2)ⁿ numerically; proof by induction is not in the taxonomy |
-| (common) Sum of the first 10 terms of 5, 9, 13, … | ~arithmetic | Solves |
-| (common) Evaluate Σ from k = 1 to 8 of (3k − 1) | ~sigma | Solves (rows now; need 8 for Σ) |
-| (common) Sum of a finite geometric series | main | Solves |
-| (common) Sum of 12 + 3 + 3/4 + … | ~infinite | Solves |
+| (common) Sum of the first 10 terms of 5, 9, 13, …        | ~arithmetic     | Solves                                                                                         |
+| (common) Evaluate Σ from k = 1 to 8 of (3k − 1)          | ~sigma          | Solves (rows now; need 8 for Σ)                                                                |
+| (common) Sum of a finite geometric series                | main            | Solves                                                                                         |
+| (common) Sum of 12 + 3 + 3/4 + …                         | ~infinite       | Solves                                                                                         |
 
 - **Main — BUILD `m.11.series`:** finite geometric. Picture `termsChart` geometric {first: a1,
   step: r, count: n, sums: true, sum: 'S', term: 'an'} (demo `g.m11-series-geometric-infinite`
@@ -424,11 +424,11 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.2, 12.4; im-hs 11.6; openstax-algebra-trig 11.7, 11.8; openstax-precalculus 12.5, 12.6; big-ideas-hs 11.10; envision-aga 11.7; hmh-into-hs 11.7; larson-precalculus 12.4; reveal-hs 11.11.
 - **Tests ask:** no released items; common types:
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| (common) Exact sin and cos of 5π/6 | main | Solves |
-| (common) Convert 225° to radians, 7π/6 to degrees | ~convert | Solves (need 2 for gcd) |
-| (common) Coterminal and reference angle of −495° | ~coterminal | Solves (need 2) |
+| Question                                            | Page           | Mark                            |
+| --------------------------------------------------- | -------------- | ------------------------------- |
+| (common) Exact sin and cos of 5π/6                  | main           | Solves                          |
+| (common) Convert 225° to radians, 7π/6 to degrees   | ~convert       | Solves (need 2 for gcd)         |
+| (common) Coterminal and reference angle of −495°    | ~coterminal    | Solves (need 2)                 |
 | (common) sin θ when (−3, 4) is on the terminal side | ~point-on-side | Solves (need 6 for the picture) |
 
 - **Main — BUILD `m.11.unit-circle`:** picture `unitCircle` measure 'pi', angle k, cos x, sin y, tan
@@ -457,13 +457,13 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.2; im-hs 11.6; openstax-algebra-trig 11.8; openstax-precalculus 12.6, 12.7; big-ideas-hs 11.10; envision-aga 11.7; hmh-into-hs 11.7; larson-precalculus 12.4; reveal-hs 11.11.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| NAEP-2005-12M4-#17 (x-coordinate of a marked peak of sin x) | main | Partly: the trace gives y from x and marks the extrema; x in multiples of π waits on need 1 |
-| NAEP-2009-12M2-#13 (function with a given amplitude and period) | ~from-features | Solves (A = 2, P = 2π/3 → b = 3) |
-| (common) Amplitude, period, midline, phase shift of a sinusoid | main | Solves |
-| (common) Period and asymptotes of y = 2tan(x/2) | ~tangent | Solves |
-| (common) Model a Ferris wheel's height | ~model | Solves |
+| Question                                                        | Page           | Mark                                                                                        |
+| --------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------- |
+| NAEP-2005-12M4-#17 (x-coordinate of a marked peak of sin x)     | main           | Partly: the trace gives y from x and marks the extrema; x in multiples of π waits on need 1 |
+| NAEP-2009-12M2-#13 (function with a given amplitude and period) | ~from-features | Solves (A = 2, P = 2π/3 → b = 3)                                                            |
+| (common) Amplitude, period, midline, phase shift of a sinusoid  | main           | Solves                                                                                      |
+| (common) Period and asymptotes of y = 2tan(x/2)                 | ~tangent       | Solves                                                                                      |
+| (common) Model a Ferris wheel's height                          | ~model         | Solves                                                                                      |
 
 - **Main — BUILD `m.11.trig-graphs`:** y = a sin(b(x − h)) + k. Picture `functionGraph` sin {a, b,
   h, k}, marks ['amplitude', 'period', 'midline', 'extrema'], at {x, y}, shows {amplitude: 'A',
@@ -471,8 +471,8 @@ none comes from `research/`.
   A, P (derived), x, y (derived) = 8. Relations A = |a|, P = 2π/b, y = a sin(b(x − h)) + k.
   Assumptions: "The midline is y = k; the graph rises and falls A above and below it."; "b fits b
   cycles into every 2π."; "h slides the start of the cycle to x = h." Example: y = 3 sin(2(x − π/4))
-  + 1: A = 3, P = π, midline y = 1; at x = π/2, y = 3 sin(π/2) + 1 = 4 (a maximum). startWith
-  ['a', 'b', 'h', 'k', 'x'].
+  - 1: A = 3, P = π, midline y = 1; at x = π/2, y = 3 sin(π/2) + 1 = 4 (a maximum). startWith
+    ['a', 'b', 'h', 'k', 'x'].
 - **~from-features — BUILD:** picture `functionGraph` cos {a: A, b, k} (demo
   `g.m11-trig-graphs-cosine`), marks as main. Values A (0..20), P (period, a multiple of π), k, b
   (derived). Relation b = 2π/P. Example: amplitude 4, period π/2, midline y = −1 → b = 4, y =
@@ -492,12 +492,12 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.2; im-hs 11.6; openstax-algebra-trig 11.7, 12.9; openstax-precalculus 12.5, 12.7; big-ideas-hs 11.10; envision-aga 11.8; hmh-into-hs 11.7; larson-precalculus 12.5; reveal-hs 11.12.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| NAEP-1996-12M10-#8 (sin² + cos² of the same angle 3x) | ~simplify (card), main | Solves |
-| (common) sin θ = 3/5 in quadrant II: find cos θ, tan θ | main | Solves (need 2 for the sign) |
-| (common) tan θ = −12/5 in quadrant IV: find sec θ, cos θ | ~tangent | Solves |
-| (common) Simplify (1 − cos θ)(1 + cos θ) | ~simplify | Solves |
+| Question                                                 | Page                   | Mark                         |
+| -------------------------------------------------------- | ---------------------- | ---------------------------- |
+| NAEP-1996-12M10-#8 (sin² + cos² of the same angle 3x)    | ~simplify (card), main | Solves                       |
+| (common) sin θ = 3/5 in quadrant II: find cos θ, tan θ   | main                   | Solves (need 2 for the sign) |
+| (common) tan θ = −12/5 in quadrant IV: find sec θ, cos θ | ~tangent               | Solves                       |
+| (common) Simplify (1 − cos θ)(1 + cos θ)                 | ~simplify              | Solves                       |
 
 - **Main — BUILD `m.11.pythagorean-identities`:** equation `({s})^2 + ({c})^2 = 1` (demo
   `g.m11-pythagorean-identities`, picture `unitCircle` angle θ, cos c, sin s). Values s (−1..1),
@@ -523,14 +523,14 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 12.5; openstax-statistics 12.4, 12.5; big-ideas-hs 10.13, 11.8; envision-aga 10.12, 11.12; hmh-into-hs 11.9; larson-farber 12.4.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| NAEP-2005-12M3-#7 (which spinner matches 1,000 spins) | ~expected-value | Partly: compares shares to probabilities, no observed-versus-expected table |
-| NAEP-2005-12M4-#4 (expected no-shows among scheduled riders) | main (E = np) | Solves (n = 13, p = 0.4) |
-| NAEP-2005-12M4-#5 (which day is closest to the expected no-shows) | main | Partly: gives E = 5.2; comparing a table of days is done by the student |
-| (common) P(exactly k successes) | main | Solves |
-| (common) Expected value of a game | ~expected-value | Solves |
-| (common) P(at least k) | ~at-least | Solves (need 7) |
+| Question                                                          | Page            | Mark                                                                        |
+| ----------------------------------------------------------------- | --------------- | --------------------------------------------------------------------------- |
+| NAEP-2005-12M3-#7 (which spinner matches 1,000 spins)             | ~expected-value | Partly: compares shares to probabilities, no observed-versus-expected table |
+| NAEP-2005-12M4-#4 (expected no-shows among scheduled riders)      | main (E = np)   | Solves (n = 13, p = 0.4)                                                    |
+| NAEP-2005-12M4-#5 (which day is closest to the expected no-shows) | main            | Partly: gives E = 5.2; comparing a table of days is done by the student     |
+| (common) P(exactly k successes)                                   | main            | Solves                                                                      |
+| (common) Expected value of a game                                 | ~expected-value | Solves                                                                      |
+| (common) P(at least k)                                            | ~at-least       | Solves (need 7)                                                             |
 
 - **Main — BUILD `m.11.probability-distributions`:** picture `histogram` binomial {n, p, mean: 'E',
   sd: 'S'}, lit k, axis 'Successes (k)' (demo `g.m11-probability-distributions-binomial`). Values n
@@ -553,12 +553,12 @@ none comes from `research/`.
 - **Textbooks:** openstax-statistics 12.1, 12.4; big-ideas-hs 11.9; envision-aga 11.11; larson-farber 12.1; reveal-hs 11.10.
 - **Tests ask:** no released items; common types:
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| (common) Survey, observational study or experiment? | ~study-type | Solves |
-| (common) Which sampling method is this? | ~sampling-methods | Solves |
-| (common) Can this study show cause and effect? | main | Solves |
-| (common) Name the bias in a survey | ~bias | Solves |
+| Question                                            | Page              | Mark   |
+| --------------------------------------------------- | ----------------- | ------ |
+| (common) Survey, observational study or experiment? | ~study-type       | Solves |
+| (common) Which sampling method is this?             | ~sampling-methods | Solves |
+| (common) Can this study show cause and effect?      | main              | Solves |
+| (common) Name the bias in a survey                  | ~bias             | Solves |
 
 - **Main — BUILD `m.11.study-design` (explore):** figure `studyDesign` (demo `g.m11-study-design`).
   Scenes: (1) "Survey": {design: 'survey', method: 'simple random', lit: 'sample'}, "12 of the 48
@@ -604,14 +604,14 @@ none comes from `research/`.
 - **Textbooks:** eureka-hs 11.4; im-hs 9.1, 11.7; openstax-statistics 12.2, 12.6, 12.7, 12.8; big-ideas-hs 11.9; envision-aga 11.11; hmh-into-hs 11.9; larson-farber 12.2, 12.5, 12.6; larson-precalculus 12.13; reveal-hs 11.10.
 - **Tests ask:**
 
-| Question | Page | Mark |
-| --- | --- | --- |
-| NAEP-2005-12M12-#16 (expected count of clocks beyond 1 minute, sample of 1,500) | ~outside | Solves (d = 1, σ = 0.5, N = 1,500 → 0.0455 × 1,500 ≈ 68) |
-| (common) z-score and percent below a value | main | Solves |
-| (common) Percent between two values | ~between | Solves |
-| (common) 68–95–99.7 rule | ~empirical | Solves |
-| (common) Score at the 90th percentile | ~percentile | Solves |
-| (common) Margin of error of a sample proportion | ~margin | Solves |
+| Question                                                                        | Page        | Mark                                                     |
+| ------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------- |
+| NAEP-2005-12M12-#16 (expected count of clocks beyond 1 minute, sample of 1,500) | ~outside    | Solves (d = 1, σ = 0.5, N = 1,500 → 0.0455 × 1,500 ≈ 68) |
+| (common) z-score and percent below a value                                      | main        | Solves                                                   |
+| (common) Percent between two values                                             | ~between    | Solves                                                   |
+| (common) 68–95–99.7 rule                                                        | ~empirical  | Solves                                                   |
+| (common) Score at the 90th percentile                                           | ~percentile | Solves                                                   |
+| (common) Margin of error of a sample proportion                                 | ~margin     | Solves                                                   |
 
 - **Main — BUILD `m.11.normal-distribution`:** equation `{z} = {{x} − {m}}/{s}` (demo
   `g.m11-normal-distribution-z`); picture `normalCurve` {mean: m, sd: s, shade: {to: x, area: 'P'},
@@ -693,13 +693,13 @@ none comes from `research/`.
 
 ## Curriculum coverage (units covered only Partly)
 
-| Unit | Covered by | Gap → proposed page |
-| --- | --- | --- |
-| reveal-hs 11.9 "Multiplying and dividing rational expressions" | ~add-subtract only | `m.11.rational-functions~multiply-divide` |
-| reveal-hs 11.4 "Dividing polynomials" (long division) | ~divide by x − r only | `m.11.polynomial-functions~long-division` (quadratic divisor) |
-| reveal-hs 11.5 "Proving polynomial identities" | none | `m.11.polynomial-equations~sum-of-cubes` |
-| reveal-hs 11.6 "nth roots and rational exponents" | m.9.radicals | `m.11.radical-functions~rational-exponent` (needs a power family in functionGraph) |
-| openstax-precalculus 12.3 slant asymptotes | none | later: demo `g.m11-rational-functions-slant` as `~slant` |
+| Unit                                                           | Covered by            | Gap → proposed page                                                                |
+| -------------------------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------- |
+| reveal-hs 11.9 "Multiplying and dividing rational expressions" | ~add-subtract only    | `m.11.rational-functions~multiply-divide`                                          |
+| reveal-hs 11.4 "Dividing polynomials" (long division)          | ~divide by x − r only | `m.11.polynomial-functions~long-division` (quadratic divisor)                      |
+| reveal-hs 11.5 "Proving polynomial identities"                 | none                  | `m.11.polynomial-equations~sum-of-cubes`                                           |
+| reveal-hs 11.6 "nth roots and rational exponents"              | m.9.radicals          | `m.11.radical-functions~rational-exponent` (needs a power family in functionGraph) |
+| openstax-precalculus 12.3 slant asymptotes                     | none                  | later: demo `g.m11-rational-functions-slant` as `~slant`                           |
 
 ## Priority
 

@@ -39,14 +39,14 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 2 (2.1–2.4), 3 (3.1–3.2); Glencoe 2, 3, 4; Savvas Experience 1.1–1.2.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-HSPHY-#1 (v from v₀, a, t) | main | Solves |
-  | MCAS-2026-HSPHY-#6 (which Δx equation) | main | Solves |
-  | MCAS-2026-HSPHY-#25 (drop height from time) | ~free-fall | Solves (19.6 m, the choice 20 m; see need 13) |
-  | NAEP-2005-12S11-#5 (strobe runners) | ~motion-diagrams | Solves once need 5 lands; main's strip Partly |
-  | common: stopping distance with no time | ~braking | Solves |
-  | common: slope of x–t graph, turnaround | ~position-graph, ~turn | Solves |
+  | Question                                    | Page                   | Mark                                          |
+  | ------------------------------------------- | ---------------------- | --------------------------------------------- |
+  | MCAS-2026-HSPHY-#1 (v from v₀, a, t)        | main                   | Solves                                        |
+  | MCAS-2026-HSPHY-#6 (which Δx equation)      | main                   | Solves                                        |
+  | MCAS-2026-HSPHY-#25 (drop height from time) | ~free-fall             | Solves (19.6 m, the choice 20 m; see need 13) |
+  | NAEP-2005-12S11-#5 (strobe runners)         | ~motion-diagrams       | Solves once need 5 lands; main's strip Partly |
+  | common: stopping distance with no time      | ~braking               | Solves                                        |
+  | common: slope of x–t graph, turnaround      | ~position-graph, ~turn | Solves                                        |
 
 - **Main — BUILD `s.11.kinematics-1d`:** `motionGraph` velocity view, demo `g.s11-kinematics-1d-velocity`
   (graph: "speed", kinematics: { view: "velocity" }). Values: initial velocity v₀ (−100 to 100 m/s),
@@ -84,13 +84,13 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 5.1–5.3; Glencoe 6; HMH Dimensions 1.2; Savvas 1.3; OpenSciEd P.4.
 - **Tests ask:** its four filed items are 1-D (moved above). Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | range and flight time on level ground | main | Solves |
-  | maximum height | main | Solves |
-  | ball rolled off a table or cliff | ~cliff | Solves |
-  | boat crossing a river, drift downstream | ~boat | Solves |
-  | components of a velocity | ~components | Solves |
+  | Question type                           | Page        | Mark   |
+  | --------------------------------------- | ----------- | ------ |
+  | range and flight time on level ground   | main        | Solves |
+  | maximum height                          | main        | Solves |
+  | ball rolled off a table or cliff        | ~cliff      | Solves |
+  | boat crossing a river, drift downstream | ~boat       | Solves |
+  | components of a velocity                | ~components | Solves |
 
 - **Main — BUILD `s.11.kinematics-2d`:** `projectile`, demo `g.s11-kinematics-2d-level`
   (speed "v", angle "q", height "h", vx, vy, time, range, peak). Values: launch speed v₀ (0–150 m/s),
@@ -117,14 +117,14 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 4.1–4.4, 5.4; Glencoe 4, 5; HMH 1.3; Savvas 2.1–2.3; OpenSciEd P.3.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12S11-#4 (greatest a = F/m) | main (μ = 0) | Solves |
-  | NAEP-2009-12S10-#3 (10 N push, 2 N friction, 2 kg) | main (type friction) | Solves |
-  | MCAS-2026-HSPHY-#27 (two pushers vs friction diagram) | main | Solves |
-  | NAEP-2009-12S9-#16 (two dogs, resultant direction) | ~force-sum | Solves |
-  | NAEP-2009-12S10-#1 (floating cork: upward force) | ~balanced | Partly (names the upward push) |
-  | common: block down an incline; rope at an angle; elevator | ~incline, ~rope, ~elevator | Solves |
+  | Question                                                  | Page                       | Mark                           |
+  | --------------------------------------------------------- | -------------------------- | ------------------------------ |
+  | NAEP-2005-12S11-#4 (greatest a = F/m)                     | main (μ = 0)               | Solves                         |
+  | NAEP-2009-12S10-#3 (10 N push, 2 N friction, 2 kg)        | main (type friction)       | Solves                         |
+  | MCAS-2026-HSPHY-#27 (two pushers vs friction diagram)     | main                       | Solves                         |
+  | NAEP-2009-12S9-#16 (two dogs, resultant direction)        | ~force-sum                 | Solves                         |
+  | NAEP-2009-12S10-#1 (floating cork: upward force)          | ~balanced                  | Partly (names the upward push) |
+  | common: block down an incline; rope at an angle; elevator | ~incline, ~rope, ~elevator | Solves                         |
 
 - **Main — BUILD `s.11.dynamics-vectors`:** `freeBody` floor, demo `g.s11-dynamics-vectors-push`,
   moving "right". Values: mass m (0.1–5000 kg), applied force F (0–10⁵ N), coefficient μₖ (0–1.5),
@@ -156,13 +156,13 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 6.1–6.2, 7.1–7.2; Glencoe 6, 7, 8; HMH 3.1; Savvas 3.1–3.3; OpenSciEd P.4.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2009-12S9-#13 (twice as far → ¼) | ~gravitation | Solves |
-  | MCAS-2026-HSPHY-#5 (both forces weaken with distance) | ~gravitation + electrostatics main | Solves |
-  | NAEP-2000-12S9-#9 (planet speed from r and T) | ~orbit | Solves (⏳ need 3) |
-  | NAEP-2000-12S9-#5, #6, #7, #8, #10, #14 | s.12.solar-system (data move) | No here |
-  | common: centripetal force on a string; car on a curve; tension at the bottom | main, ~car, ~swing | Solves |
+  | Question                                                                     | Page                               | Mark               |
+  | ---------------------------------------------------------------------------- | ---------------------------------- | ------------------ |
+  | NAEP-2009-12S9-#13 (twice as far → ¼)                                        | ~gravitation                       | Solves             |
+  | MCAS-2026-HSPHY-#5 (both forces weaken with distance)                        | ~gravitation + electrostatics main | Solves             |
+  | NAEP-2000-12S9-#9 (planet speed from r and T)                                | ~orbit                             | Solves (⏳ need 3) |
+  | NAEP-2000-12S9-#5, #6, #7, #8, #10, #14                                      | s.12.solar-system (data move)      | No here            |
+  | common: centripetal force on a string; car on a curve; tension at the bottom | main, ~car, ~swing                 | Solves             |
 
 - **Main — BUILD `s.11.circular-gravitation`:** `circularMotion` string, demo
   `g.s11-circular-gravitation-string`. Values radius r (0.01–10⁴ m), speed v (0–10⁴ m/s), mass m
@@ -190,12 +190,12 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 8.1–8.3; Glencoe 9; HMH 2.1; Savvas 8.1–8.2; OpenSciEd P.3.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-HSPHY-#14 (Y's momentum after, from X's) | ~one-after | Solves (⏳ need 1) |
-  | MCAS-2026-HSPHY-#13 (X's kinetic energy fell, went to Y) | ~elastic, ~one-after | Partly (KE per cart needs need 1) |
-  | MCAS-2026-HSPHY-#33 (slower landing → less force) | ~impulse | Solves (⏳ need 2) |
-  | common: carts stick; recoil; elastic bounce | main, ~explode, ~elastic | Solves |
+  | Question                                                 | Page                     | Mark                              |
+  | -------------------------------------------------------- | ------------------------ | --------------------------------- |
+  | MCAS-2026-HSPHY-#14 (Y's momentum after, from X's)       | ~one-after               | Solves (⏳ need 1)                |
+  | MCAS-2026-HSPHY-#13 (X's kinetic energy fell, went to Y) | ~elastic, ~one-after     | Partly (KE per cart needs need 1) |
+  | MCAS-2026-HSPHY-#33 (slower landing → less force)        | ~impulse                 | Solves (⏳ need 2)                |
+  | common: carts stick; recoil; elastic bounce              | main, ~explode, ~elastic | Solves                            |
 
 - **Main — BUILD `s.11.momentum`:** `collision` stick, demo `g.s11-momentum-stick`. Values m₁, m₂
   (0.01–10⁵ kg), v₁, v₂ (signed, −100 to 100 m/s), v′, total momentum p, KE before, KE after.
@@ -222,14 +222,14 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 9.1–9.3; Glencoe 10, 11; HMH 2.2; Savvas 7.1–7.3; OpenSciEd P.1.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2009-12S10-#7, #8 (trampoline transfers) | ~pogo-energy | Solves |
-  | NAEP-2019-12S7-#4 (PE vs KE from four heights) | main | Solves |
-  | NAEP-2019-12S7-#5, #6 (improve the experiment; extra push) | — | No (inquiry, not a page) |
-  | MCAS-2026-HSPHY-#28 (10 N lifted 5 m) | ~work | Solves |
-  | MCAS-2026-HSPHY-#13 | s.11.momentum | cross-listed |
-  | common: power of a climber; lever, pulley, ramp effort | ~power, ~lever, ~pulley, ~ramp | Solves |
+  | Question                                                   | Page                           | Mark                     |
+  | ---------------------------------------------------------- | ------------------------------ | ------------------------ |
+  | NAEP-2009-12S10-#7, #8 (trampoline transfers)              | ~pogo-energy                   | Solves                   |
+  | NAEP-2019-12S7-#4 (PE vs KE from four heights)             | main                           | Solves                   |
+  | NAEP-2019-12S7-#5, #6 (improve the experiment; extra push) | —                              | No (inquiry, not a page) |
+  | MCAS-2026-HSPHY-#28 (10 N lifted 5 m)                      | ~work                          | Solves                   |
+  | MCAS-2026-HSPHY-#13                                        | s.11.momentum                  | cross-listed             |
+  | common: power of a climber; lever, pulley, ramp effort     | ~power, ~lever, ~pulley, ~ramp | Solves                   |
 
 - **Main — BUILD `s.11.work-energy-power`:** `energyTrack` coaster (Grade 8 kind, as on
   `s.8.kinetic-potential`). Values mass m (0.01–10⁴ kg), start height h₀ (0–500 m), height h,
@@ -263,14 +263,14 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 11.1–11.3, 12.1–12.4; Glencoe 12; HMH 2.3; Savvas 9.1–9.2.
 - **Tests ask:** no released items. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | final temperature of hot metal in water | main | Solves |
-  | heat to warm a mass by ΔT | ~specific-heat | Solves |
-  | heat to melt or boil | ~latent-heat | Solves |
-  | ΔU from heat and work | ~first-law | Solves (⏳ need 8) |
-  | engine efficiency, Carnot limit; refrigerator COP | ~engine, ~refrigerator | Solves |
-  | which law explains … | ~laws | Solves |
+  | Question type                                     | Page                   | Mark               |
+  | ------------------------------------------------- | ---------------------- | ------------------ |
+  | final temperature of hot metal in water           | main                   | Solves             |
+  | heat to warm a mass by ΔT                         | ~specific-heat         | Solves             |
+  | heat to melt or boil                              | ~latent-heat           | Solves             |
+  | ΔU from heat and work                             | ~first-law             | Solves (⏳ need 8) |
+  | engine efficiency, Carnot limit; refrigerator COP | ~engine, ~refrigerator | Solves             |
+  | which law explains …                              | ~laws                  | Solves             |
 
 - **Main — BUILD `s.11.thermodynamics`:** `energyProfile` calorimeter with `metal`
   (from `g.s10-thermochemistry-calorimeter`; ⏳ need 14 for kg). Values water mass, water start,
@@ -305,12 +305,12 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 13.1–13.3, 14.1–14.4; Glencoe 14, 15; HMH 5.1; Savvas 11.1–11.2.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12S11-#11 (louder → amplitude) | main | Solves (assumption names loudness) |
-  | NAEP-2005-12S11-#15 (f up → speed same, λ down) | main | Solves (v kept) |
-  | NAEP-2005-12S13-#1 (which distance is λ) | main | Solves |
-  | common: string harmonics; pipes; siren pitch; decibels | ~string, ~open-pipe, ~closed-pipe, ~doppler, ~sound-level | Solves |
+  | Question                                               | Page                                                      | Mark                               |
+  | ------------------------------------------------------ | --------------------------------------------------------- | ---------------------------------- |
+  | NAEP-2005-12S11-#11 (louder → amplitude)               | main                                                      | Solves (assumption names loudness) |
+  | NAEP-2005-12S11-#15 (f up → speed same, λ down)        | main                                                      | Solves (v kept)                    |
+  | NAEP-2005-12S13-#1 (which distance is λ)               | main                                                      | Solves                             |
+  | common: string harmonics; pipes; siren pitch; decibels | ~string, ~open-pipe, ~closed-pipe, ~doppler, ~sound-level | Solves                             |
 
 - **Main — BUILD `s.11.sound-waves`:** `wave` (Grade 8 kind: amplitude, wavelength, frequency,
   extent). Values wave speed v (0.1–10⁴ m/s; the medium sets it), frequency f (0.1–10⁶ Hz),
@@ -338,9 +338,9 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 15.1–15.2, 16.1–16.3, 17.1–17.2; Glencoe 16–19; Savvas 11.3; OpenSciEd P.5.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-HSPHY-#24 (slits diffract; fringes are interference) | ~wave-behaviors, ~double-slit | Solves |
+  | Question                                                                   | Page                                                                      | Mark   |
+  | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------ |
+  | MCAS-2026-HSPHY-#24 (slits diffract; fringes are interference)             | ~wave-behaviors, ~double-slit                                             | Solves |
   | common: image from a lens or mirror; Snell; critical angle; fringe spacing | main, ~diverging, ~concave, ~convex, ~refraction, ~critical, ~double-slit | Solves |
 
 - **Main — BUILD `s.11.optics`:** `rayDiagram` lens converging, demo `g.s11-optics-lens-real`
@@ -371,11 +371,11 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 18.1–18.4; Glencoe 20, 21; Savvas 4.1–4.2.
 - **Tests ask:** none filed; moved here:
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-HSPHY-#5 (weaker with distance) | main | Solves |
-  | MCAS-2026-HSPHY-#11 (field strength at three points) | ~field | Partly (one charge; need 10b for a dipole) |
-  | common: force between two charges; field of a charge; plates; how it got charged | main, ~field, ~plates, ~charging | Solves |
+  | Question                                                                         | Page                             | Mark                                       |
+  | -------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------ |
+  | MCAS-2026-HSPHY-#5 (weaker with distance)                                        | main                             | Solves                                     |
+  | MCAS-2026-HSPHY-#11 (field strength at three points)                             | ~field                           | Partly (one charge; need 10b for a dipole) |
+  | common: force between two charges; field of a charge; plates; how it got charged | main, ~field, ~plates, ~charging | Solves                                     |
 
 - **Main — BUILD `s.11.electrostatics`:** `charges`, demos `g.s11-electrostatics-attract`, `…-repel`,
   `…-unequal`. Values q₁, q₂ (μC, −1000 to 1000), distance r (0.001–100 m), force F (signed: +
@@ -397,12 +397,12 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 19.1–19.4; Glencoe 22, 23; HMH 4.1; Savvas 4.3, 10.2.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-HSPHY-#2 (add a cell to brighten) | ~series | Solves (higher V, brighter bulb) |
-  | MCAS-2026-HSPHY-#17 (which parallel resistor gives the new current) | ~parallel | Solves |
-  | MCAS-2026-HSPHY-#32 (series drops in ratio) | ~series | Solves |
-  | MCAS-2026-HSPHY-#35 (ammeter reading) | ~series | Solves |
+  | Question                                                            | Page      | Mark                             |
+  | ------------------------------------------------------------------- | --------- | -------------------------------- |
+  | MCAS-2026-HSPHY-#2 (add a cell to brighten)                         | ~series   | Solves (higher V, brighter bulb) |
+  | MCAS-2026-HSPHY-#17 (which parallel resistor gives the new current) | ~parallel | Solves                           |
+  | MCAS-2026-HSPHY-#32 (series drops in ratio)                         | ~series   | Solves                           |
+  | MCAS-2026-HSPHY-#35 (ammeter reading)                               | ~series   | Solves                           |
 
 - **Main — BUILD `s.11.circuits`:** equation `{V:unit} = {I:unit} × {R:unit}`, demo `g.s11-circuits-ohm`.
   Values V (0–10⁴ V), I (0–100 A), R (0.01–10⁶ Ω). Assumptions: the resistor keeps its resistance;
@@ -423,12 +423,12 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 20.1–20.3; Glencoe 24–26; HMH 3.2, 4.2; Savvas 5.1–5.3; OpenSciEd P.1.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | MCAS-2026-HSPHY-#8 (magnet turned: same size, reversed) | ~magnet-poles | Solves |
-  | MCAS-2026-HSPHY-#12 (generator: mechanical → electrical, changing B) | ~motor-generator, main | Solves |
-  | MCAS-2026-HSPHY-#36 (motor spins: current's field pushes magnets) | ~motor-generator, ~force | Partly |
-  | MCAS-2026-HSPHY-#5, #11 | s.11.electrostatics (data move) | — |
+  | Question                                                             | Page                            | Mark   |
+  | -------------------------------------------------------------------- | ------------------------------- | ------ |
+  | MCAS-2026-HSPHY-#8 (magnet turned: same size, reversed)              | ~magnet-poles                   | Solves |
+  | MCAS-2026-HSPHY-#12 (generator: mechanical → electrical, changing B) | ~motor-generator, main          | Solves |
+  | MCAS-2026-HSPHY-#36 (motor spins: current's field pushes magnets)    | ~motor-generator, ~force        | Partly |
+  | MCAS-2026-HSPHY-#5, #11                                              | s.11.electrostatics (data move) | —      |
 
 - **Main — BUILD `s.11.electromagnetism`:** `induction` coil, demos `g.s11-electromagnetism-coil`,
   `…-coil-out`. Values turns N (1–10⁴), flux change ΔΦ (Wb), time Δt (s), emf. Relation:
@@ -455,12 +455,12 @@ example below is original and was worked by hand; nothing is copied from `resear
 - **Textbooks:** OpenStax Physics 7.2, 10.1–10.2, 21.1–21.3, 22.1, 23.1; Glencoe 27, 28.
 - **Tests ask:** no released items. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | photon energy from λ or f | main | Solves |
-  | wavelength of a hydrogen line | ~hydrogen-lines | Solves |
-  | photoelectron energy, threshold | ~photoelectric | Solves (⏳ need 11) |
-  | time dilation, length contraction | ~relativity | Solves (⏳ need 12) |
+  | Question type                     | Page            | Mark                |
+  | --------------------------------- | --------------- | ------------------- |
+  | photon energy from λ or f         | main            | Solves              |
+  | wavelength of a hydrogen line     | ~hydrogen-lines | Solves              |
+  | photoelectron energy, threshold   | ~photoelectric  | Solves (⏳ need 11) |
+  | time dilation, length contraction | ~relativity     | Solves (⏳ need 12) |
 
 - **Main — BUILD `s.11.modern-physics`:** `spectrum` photon, demo `g.s11-modern-physics-photon`.
   Values wavelength λ (nm, 0.01–10⁶), frequency f (Hz), energy E (J), E (eV). Relations: c = fλ;

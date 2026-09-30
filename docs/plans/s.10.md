@@ -50,14 +50,14 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenStax Chemistry 2e ch. 1 (1.4–1.6); Glencoe ch. 1–2; HMH Science Dimensions Chemistry unit 1.
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | Convert km to cm with a chain of factors | main | Solves |
-  | Convert a rate (km/h to m/s) | ~rate | Solves |
-  | Read a ruler to the estimated digit; count sig figs | ~ruler | Solves |
-  | Round a product or quotient to the fewest sig figs | ~sig-fig-math | Partly (waits on need 2) |
-  | Accurate or precise? Percent error | ~accuracy | Solves |
-  | Scientific notation in a conversion | main (large results) | Solves |
+  | Question type                                       | Page                 | Mark                     |
+  | --------------------------------------------------- | -------------------- | ------------------------ |
+  | Convert km to cm with a chain of factors            | main                 | Solves                   |
+  | Convert a rate (km/h to m/s)                        | ~rate                | Solves                   |
+  | Read a ruler to the estimated digit; count sig figs | ~ruler               | Solves                   |
+  | Round a product or quotient to the fewest sig figs  | ~sig-fig-math        | Partly (waits on need 2) |
+  | Accurate or precise? Percent error                  | ~accuracy            | Solves                   |
+  | Scientific notation in a conversion                 | main (large results) | Solves                   |
 
 - **Main — BUILD `s.10.measurement`:** unitChain chain, from g.s10-measurement-chain
   (`start: 'd', unit: 'km', factors: [1000 m/1 km, 100 cm/1 m], result: 'c'`). Values: distance
@@ -72,7 +72,7 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **~rate — BUILD:** unitChain chain with `per: 'h'`, g.s10-measurement-rate: factors 1000 m/1 km
   and 1 h/3600 s; speed v (km/h, 1–1000), w (m/s) = v × 1000 ÷ 3600. Example 90 km/h → 25 m/s.
 - **~ruler — BUILD:** unitChain ruler, g.s10-measurement-ruler (`division: 0.1, unit: 'cm',
-  span: 10`). start s (0–9 cm, `multipleOf: 0.01`), end e (0.01–10 cm, `multipleOf: 0.01`),
+span: 10`). start s (0–9 cm, `multipleOf: 0.01`), end e (0.01–10 cm, `multipleOf: 0.01`),
   length L = e − s. Assumption: "Read one digit past the smallest mark; that last digit is
   estimated and still significant." Example s 1.00 cm, e 7.46 cm → L 6.46 cm, 3 significant
   figures. (g.s10-measurement-ruler-coarse, division 1 cm, is its second assumption's picture in
@@ -95,14 +95,14 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd Chemistry C.2, C.5; OpenStax ch. 2 (2.1–2.3), 6, 21.1; Glencoe ch. 4, 5, 24; HMH unit 2; Savvas units 1, 17.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2009-12S9-#1 (which particle is a negative ion) | ~ions | Solves |
-  | NAEP-2000-12S9-#12 (sketch an atom's parts) | main (picture labels nucleus, protons, neutrons, electrons) | Solves |
-  | NAEP-2000-12S9-#13 (atom model vs Solar System model) | ~models (Bohr stage) | Partly: the stage text names one likeness and one difference; add a second of each |
-  | Mass number and neutrons of an isotope (common) | main | Solves |
-  | Average atomic mass from abundances (common) | ~average-mass | Solves |
-  | NAEP-2000-12S11-#2, NAEP-2009-12S9-#10, NAEP-2009-12S9-#2 | filed wrong: s.10.nuclear-chemistry | — |
+  | Question                                                  | Page                                                        | Mark                                                                               |
+  | --------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+  | NAEP-2009-12S9-#1 (which particle is a negative ion)      | ~ions                                                       | Solves                                                                             |
+  | NAEP-2000-12S9-#12 (sketch an atom's parts)               | main (picture labels nucleus, protons, neutrons, electrons) | Solves                                                                             |
+  | NAEP-2000-12S9-#13 (atom model vs Solar System model)     | ~models (Bohr stage)                                        | Partly: the stage text names one likeness and one difference; add a second of each |
+  | Mass number and neutrons of an isotope (common)           | main                                                        | Solves                                                                             |
+  | Average atomic mass from abundances (common)              | ~average-mass                                               | Solves                                                                             |
+  | NAEP-2000-12S11-#2, NAEP-2009-12S9-#10, NAEP-2009-12S9-#2 | filed wrong: s.10.nuclear-chemistry                         | —                                                                                  |
 
 - **Main — BUILD `s.10.atomic-structure`:** atomModel, g.s10-atomic-structure-carbon, fields
   `protons: 'p', neutrons: 'n', electrons: 'e', mass: 'A', charge: 'q'`, `sliders: true`. Values:
@@ -131,14 +131,14 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenStax ch. 6 (6.1–6.4); Glencoe ch. 5; Savvas unit 1 (1.3–1.5).
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | Write the configuration of an element; noble-gas shorthand | main | Solves |
-  | Count unpaired or valence electrons | main | Solves |
-  | Configuration of an ion (Fe³⁺) | ~ions | Solves |
-  | Energy and wavelength of an emission line (n = 3 → 2) | ~emission | Solves |
-  | Frequency and energy of a photon from its wavelength | ~photon | Solves |
-  | Exceptions (Cr, Cu) | main (allowed Z 24, 29) | Solves |
+  | Question type                                              | Page                    | Mark   |
+  | ---------------------------------------------------------- | ----------------------- | ------ |
+  | Write the configuration of an element; noble-gas shorthand | main                    | Solves |
+  | Count unpaired or valence electrons                        | main                    | Solves |
+  | Configuration of an ion (Fe³⁺)                             | ~ions                   | Solves |
+  | Energy and wavelength of an emission line (n = 3 → 2)      | ~emission               | Solves |
+  | Frequency and energy of a photon from its wavelength       | ~photon                 | Solves |
+  | Exceptions (Cr, Cu)                                        | main (allowed Z 24, 29) | Solves |
 
 - **Main — BUILD `s.10.electrons-in-atoms`:** orbitalDiagram boxes, g.s10-electrons-in-atoms-oxygen
   (`element: 'p', unpaired: 'u'`), `sliders: true`. Values: atomic number Z (1–54, integer),
@@ -165,13 +165,13 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd C.2; OpenStax 2.5, 6.5; Glencoe ch. 6; HMH unit 2 (2.2); Savvas unit 2.
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | Which atom is larger (across a period, down a group) | main | Solves |
-  | Which has the higher first ionization energy | ~ionization | Solves |
-  | Which is more electronegative | ~electronegativity | Solves |
-  | Name the family (alkali metal, halogen, noble gas) | ~families | Solves |
-  | Explain a trend by nuclear charge and shielding | main assumptions | Partly (words only) |
+  | Question type                                        | Page               | Mark                |
+  | ---------------------------------------------------- | ------------------ | ------------------- |
+  | Which atom is larger (across a period, down a group) | main               | Solves              |
+  | Which has the higher first ionization energy         | ~ionization        | Solves              |
+  | Which is more electronegative                        | ~electronegativity | Solves              |
+  | Name the family (alkali metal, halogen, noble gas)   | ~families          | Solves              |
+  | Explain a trend by nuclear charge and shielding      | main assumptions   | Partly (words only) |
 
 - **Main — BUILD `s.10.periodic-trends`:** periodicTable trend radius, g.s10-periodic-trends-radius
   (`element: 'p', trend: { property: 'radius', value: 'r', compare: 'c', compareValue: 's' }`).
@@ -196,16 +196,16 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd C.2; OpenStax 2.6–2.7, 7.1–7.3, ch. 8, 10.5; Glencoe ch. 7, 8, 12; HMH unit 3; Savvas units 3–4.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12S14-#2 (which observation shows a solid is ionic) | ~properties | Solves |
-  | Lewis structure and lone pairs of a small molecule (common) | main | Solves |
-  | Formula of an ionic compound from its ions (common) | ~ionic | Solves (Mg–Cl only; others wait on need 12) |
-  | Bond polarity from electronegativity (common) | ~polarity | Solves |
-  | NAEP-2009-12S10-#14, NAEP-2009-12S9-#4, NAEP-2019-12S7-#18 | filed wrong: s.10.molecular-shape | — |
+  | Question                                                      | Page                              | Mark                                        |
+  | ------------------------------------------------------------- | --------------------------------- | ------------------------------------------- |
+  | NAEP-2005-12S14-#2 (which observation shows a solid is ionic) | ~properties                       | Solves                                      |
+  | Lewis structure and lone pairs of a small molecule (common)   | main                              | Solves                                      |
+  | Formula of an ionic compound from its ions (common)           | ~ionic                            | Solves (Mg–Cl only; others wait on need 12) |
+  | Bond polarity from electronegativity (common)                 | ~polarity                         | Solves                                      |
+  | NAEP-2009-12S10-#14, NAEP-2009-12S9-#4, NAEP-2019-12S7-#18    | filed wrong: s.10.molecular-shape | —                                           |
 
 - **Main — BUILD `s.10.bonding`:** lewisStructure molecule, g.s10-bonding-water, `atoms: { H: 'h',
-  C: 'c', N: 'n', O: 'o' }`, `valence: 'V', bonding: 'b', lone: 'l'`, `sliders: true`. Values: H
+C: 'c', N: 'n', O: 'o' }`, `valence: 'V', bonding: 'b', lone: 'l'`, `sliders: true`. Values: H
   atoms h (0–4), C atoms c (0–1), N atoms n (0–2), O atoms o (0–2), valence electrons
   V = h + 4c + 5n + 6o, shared pairs b and lone pairs l (derived from the drawn structure),
   relation V = 2 × (b + l). Assumptions: "Each atom but hydrogen ends with 8 electrons around it;
@@ -214,7 +214,7 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
   l 1), CH₄ (8, 4, 0), CO₂ (16, 4, 4), HCN (10, 4, 1). Counts with no drawing wait on need 12.
   startWith ['h', 'o'].
 - **~ionic — BUILD:** lewisStructure ionic, g.s10-bonding-ionic-magnesium-chloride (`metal: 'Mg',
-  nonmetal: 'Cl', metals: 'a', nonmetals: 'b', transferred: 't'`). Values a (1–3), b = 2a,
+nonmetal: 'Cl', metals: 'a', nonmetals: 'b', transferred: 't'`). Values a (1–3), b = 2a,
   t = 2a. Assumption: "The total positive charge equals the total negative charge." Example
   MgCl₂: a 1, b 2, t 2. Aluminum oxide (Al₂O₃: 2, 3, 6) is its second screenshot.
 - **~metallic — BUILD:** lewisStructure metallic, g.s10-bonding-metallic-aluminum: atoms n (1–24),
@@ -239,13 +239,13 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenStax 7.6, 10.1–10.2; Glencoe ch. 8, 12; Savvas units 3 (3.4), 4.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2019-12S7-#18 (why ice floats) | ~water | Solves |
-  | NAEP-2009-12S10-#14 (why water dissolves many substances) | ~water | Partly: needs the dissolving scene (need 10) |
-  | NAEP-2009-12S9-#4 (which liquid evaporated more; boiling point) | ~imf | Solves |
-  | Shape and bond angle from Lewis structure (common) | main | Solves |
-  | Is the molecule polar (common) | ~polarity | Solves |
+  | Question                                                        | Page      | Mark                                         |
+  | --------------------------------------------------------------- | --------- | -------------------------------------------- |
+  | NAEP-2019-12S7-#18 (why ice floats)                             | ~water    | Solves                                       |
+  | NAEP-2009-12S10-#14 (why water dissolves many substances)       | ~water    | Partly: needs the dissolving scene (need 10) |
+  | NAEP-2009-12S9-#4 (which liquid evaporated more; boiling point) | ~imf      | Solves                                       |
+  | Shape and bond angle from Lewis structure (common)              | main      | Solves                                       |
+  | Is the molecule polar (common)                                  | ~polarity | Solves                                       |
 
 - **Main — BUILD `s.10.molecular-shape`:** vsepr shape, g.s10-molecular-shape-water
   (`bonded: 'b', lone: 'l', angle: 'a', polar: true`), `sliders: true`. Values: bonded atoms b
@@ -275,21 +275,21 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenStax 4.1–4.2; Glencoe ch. 9; HMH unit 4 (4.1); Savvas units 6, 12.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12S14-#7 (balance a hydrocarbon's combustion; filed under stoichiometry) | ~combustion | Partly: the page is propane; any CₓHᵧ waits on need 1 |
-  | Classify a reaction by type (common) | main | Solves |
-  | Balance a synthesis equation (common) | ~synthesis | Solves |
-  | Balance a single replacement (common) | ~replacement | Solves |
-  | Predict products (common) | — | No: see "Not in the taxonomy" |
+  | Question                                                                           | Page         | Mark                                                  |
+  | ---------------------------------------------------------------------------------- | ------------ | ----------------------------------------------------- |
+  | NAEP-2005-12S14-#7 (balance a hydrocarbon's combustion; filed under stoichiometry) | ~combustion  | Partly: the page is propane; any CₓHᵧ waits on need 1 |
+  | Classify a reaction by type (common)                                               | main         | Solves                                                |
+  | Balance a synthesis equation (common)                                              | ~synthesis   | Solves                                                |
+  | Balance a single replacement (common)                                              | ~replacement | Solves                                                |
+  | Predict products (common)                                                          | —            | No: see "Not in the taxonomy"                         |
 
 - **Main — BUILD `s.10.reaction-types` (sort):** promote g.s10-reaction-types-sort. Bins synthesis,
   decomposition, single replacement, double replacement, combustion, each card `{ kind: 'icon',
-  icon: '<bin> reaction' }` as the demo, plus equation cards: 2Mg + O₂ → 2MgO; 2H₂O₂ → 2H₂O + O₂;
+icon: '<bin> reaction' }` as the demo, plus equation cards: 2Mg + O₂ → 2MgO; 2H₂O₂ → 2H₂O + O₂;
   Fe + CuSO₄ → FeSO₄ + Cu; AgNO₃ + NaCl → AgCl + NaNO₃; C₂H₅OH + 3O₂ → 2CO₂ + 3H₂O (each
   balanced, checked). Sentence: "The pattern of what joins, splits or swaps names the type."
 - **~combustion — BUILD:** equationInput `{a:coef} C₃H₈ + {b:coef} O₂ → {c:coef} CO₂ + {d:coef}
-  H₂O` (g.s10-reaction-types-coefficient-one) and reaction picture with the atom tally. Value a
+H₂O` (g.s10-reaction-types-coefficient-one) and reaction picture with the atom tally. Value a
   (1–6, integer), b = 5a, c = 3a, d = 4a. Steps balance C, then H, then O last. Example a 1:
   C₃H₈ + 5O₂ → 3CO₂ + 4H₂O (C 3 = 3, H 8 = 8, O 10 = 6 + 4). After need 1: carbons x (1–8),
   hydrogens y (even, ≤ 2x + 2), a = 1 when y is a multiple of 4, else 2; b = a(x + y/4), c = ax,
@@ -307,17 +307,17 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd C.3; OpenStax 3.1–3.2; Glencoe ch. 10; Savvas unit 5 (5.1–5.3).
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | Grams to moles to particles | main | Solves |
-  | Molar mass of a compound | ~molar-mass | Solves |
-  | Percent composition | ~molar-mass | Solves |
-  | Grams to moles with the factor written | ~factor | Solves |
-  | Liters of gas at STP to moles and grams | ~gas-volume | Solves |
-  | Empirical formula from percents | ~empirical | Solves (ratio rounding: need 11) |
+  | Question type                           | Page        | Mark                             |
+  | --------------------------------------- | ----------- | -------------------------------- |
+  | Grams to moles to particles             | main        | Solves                           |
+  | Molar mass of a compound                | ~molar-mass | Solves                           |
+  | Percent composition                     | ~molar-mass | Solves                           |
+  | Grams to moles with the factor written  | ~factor     | Solves                           |
+  | Liters of gas at STP to moles and grams | ~gas-volume | Solves                           |
+  | Empirical formula from percents         | ~empirical  | Solves (ratio rounding: need 11) |
 
 - **Main — BUILD `s.10.mole`:** moleMap, g.s10-mole-map-grams (`moles: 'n', mass: 'm', molarMass:
-  'M', particles: 'N'`). Values: mass m (g, 0.001–10,000), molar mass M (g/mol, 1–500), moles n,
+'M', particles: 'N'`). Values: mass m (g, 0.001–10,000), molar mass M (g/mol, 1–500), moles n,
   particles N (`scientific: true`, min 6 × 10¹⁹). Relations m = n × M, N = 6.022 × 10²³ × n.
   Assumptions: "One mole is 6.022 × 10²³ particles." "Molar mass is the formula's atomic masses
   added, in g/mol." Example water: 9.01 g ÷ 18.02 g/mol = 0.500 mol → 3.011 × 10²³ molecules.
@@ -343,18 +343,18 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd C.3; OpenStax 4.3–4.5; Glencoe ch. 9, 11; HMH unit 4; Savvas units 6–7.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12S14-#7 | filed wrong: s.10.reaction-types | — |
-  | Grams of product from grams of reactant (common) | main | Solves |
-  | Limiting reactant from particles or moles (common) | ~limiting | Solves |
-  | Limiting reactant from grams (common) | ~limiting-grams | No until need 4 |
-  | Percent yield (common) | ~percent-yield | Solves |
-  | Mole ratio from coefficients (common) | main | Solves |
+  | Question                                           | Page                             | Mark            |
+  | -------------------------------------------------- | -------------------------------- | --------------- |
+  | NAEP-2005-12S14-#7                                 | filed wrong: s.10.reaction-types | —               |
+  | Grams of product from grams of reactant (common)   | main                             | Solves          |
+  | Limiting reactant from particles or moles (common) | ~limiting                        | Solves          |
+  | Limiting reactant from grams (common)              | ~limiting-grams                  | No until need 4 |
+  | Percent yield (common)                             | ~percent-yield                   | Solves          |
+  | Mole ratio from coefficients (common)              | main                             | Solves          |
 
 - **Main — BUILD `s.10.stoichiometry`:** moleMap with second, from g.s10-stoichiometry-grams-to-grams,
   set to N₂ + 3H₂ → 2NH₃: `formula: 'H2', moles: 'n', mass: 'm', second: { formula: 'NH3', ratio:
-  [3, 2], moles: 'p', mass: 'q' }`. Values m (g H₂), n = m ÷ 2.016, p = n × 2/3, q = p × 17.03.
+[3, 2], moles: 'p', mass: 'q' }`. Values m (g H₂), n = m ÷ 2.016, p = n × 2/3, q = p × 17.03.
   Assumptions: "Coefficients count moles, not grams." "Always go through moles: grams → moles →
   mole ratio → moles → grams." Example 6.048 g H₂ → 3.000 mol → 2.000 mol NH₃ → 34.06 g.
   startWith ['m'].
@@ -376,16 +376,16 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenStax ch. 9 (9.1–9.5); Glencoe ch. 13; Savvas unit 9.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2000-12S11-#7 (equal volumes hold equal molecules) | main | Solves (assumption says it) |
-  | NAEP-2000-12S11-#11 (which gas leaks faster) | ~effusion | No until need 6 |
-  | NAEP-2005-12S13-#6 (boiling at altitude) | — | No: vapor pressure is not taught (see G) |
-  | Ideal gas law, find P (common) | main | Solves |
-  | Boyle, Charles, Gay-Lussac, combined (common) | ~boyle … ~combined | Solves |
+  | Question                                                | Page               | Mark                                     |
+  | ------------------------------------------------------- | ------------------ | ---------------------------------------- |
+  | NAEP-2000-12S11-#7 (equal volumes hold equal molecules) | main               | Solves (assumption says it)              |
+  | NAEP-2000-12S11-#11 (which gas leaks faster)            | ~effusion          | No until need 6                          |
+  | NAEP-2005-12S13-#6 (boiling at altitude)                | —                  | No: vapor pressure is not taught (see G) |
+  | Ideal gas law, find P (common)                          | main               | Solves                                   |
+  | Boyle, Charles, Gay-Lussac, combined (common)           | ~boyle … ~combined | Solves                                   |
 
 - **Main — BUILD `s.10.gas-laws`:** gasPiston ideal, g.s10-gas-laws-ideal (`pressure: 'P', volume:
-  'V', temperature: 'T', moles: 'n', keep: ['n', 'T']`). Values P (atm, 0.01–200), V (L, 0.01–
+'V', temperature: 'T', moles: 'n', keep: ['n', 'T']`). Values P (atm, 0.01–200), V (L, 0.01–
   1000), n (mol, 0.001–100), T (K, 1–2000); R = 0.0821 L·atm/(mol·K) is a constant. Relation
   P × V = n × R × T. Assumptions: "Temperature must be in kelvins: add 273 to °C." "Equal volumes
   of any gases at the same T and P hold the same number of particles." "Real gases stray from
@@ -409,16 +409,16 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenStax 3.3–3.4, 11.1–11.3; Glencoe ch. 14; HMH unit 3 (3.2); Savvas units 4 (4.6), 5 (5.4).
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | Molarity from moles and volume | main | Solves |
-  | Molarity from grams and mL | ~from-grams | Solves |
-  | Dilution (M₁V₁ = M₂V₂) | ~dilution | Solves |
-  | Read a solubility curve; saturated or not | ~solubility | Solves |
-  | Freezing-point depression | — | No (see G) |
+  | Question type                             | Page        | Mark       |
+  | ----------------------------------------- | ----------- | ---------- |
+  | Molarity from moles and volume            | main        | Solves     |
+  | Molarity from grams and mL                | ~from-grams | Solves     |
+  | Dilution (M₁V₁ = M₂V₂)                    | ~dilution   | Solves     |
+  | Read a solubility curve; saturated or not | ~solubility | Solves     |
+  | Freezing-point depression                 | —           | No (see G) |
 
 - **Main — BUILD `s.10.molarity`:** beaker molarity, g.s10-molarity-moles-volume (`solution: { mode:
-  'molarity', moles: 'n', volume: 'V', molarity: 'M', solute: 'NaCl' }`), rows (V in L or mL).
+'molarity', moles: 'n', volume: 'V', molarity: 'M', solute: 'NaCl' }`), rows (V in L or mL).
   Values n (mol, 0.0001–10), V (L, 0.001–10), M (mol/L). Relation M = n ÷ V. Assumptions:
   "Molarity is moles of solute per liter of solution, not of water." "Change mL to L first."
   Example 0.50 mol in 2.0 L → 0.25 M. startWith ['n', 'V']. g.s10-molarity-concentrated is its
@@ -428,7 +428,7 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **~dilution — BUILD:** beaker dilution, g.s10-molarity-dilution: M₁V₁ = M₂V₂, water w = V₂ − V₁.
   Example 2.00 M, 50.0 mL diluted to 0.500 M → V₂ 200 mL, add 150 mL water.
 - **~solubility — BUILD:** beaker solubility, g.s10-molarity-solubility (`salt: 'KNO3',
-  temperature: 'T', amount: 'm', solubility: 's', others: ['NaCl', 'KCl']`). Values T (0–100 °C),
+temperature: 'T', amount: 'm', solubility: 's', others: ['NaCl', 'KCl']`). Values T (0–100 °C),
   m (g per 100 g water), s (derived, "solubility of KNO₃ at {T} °C"), room r = s − m (negative:
   that much settles out). Example 40 °C, 50 g → the curve reads about 64 g, so unsaturated, 14 g
   more dissolves (check the value against the drawn table at build). -excess is its screenshot.
@@ -440,17 +440,17 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd C.1, C.5; OpenStax ch. 5, ch. 16; Glencoe ch. 15; HMH unit 4 (4.3); Savvas unit 8.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2005-12S14-#9 (source of heat when propane burns) | main | Solves (assumption: energy stored in bonds) |
-  | NAEP-2009-12S10-#12 (which cup releases more heat) | ~calorimetry | Solves |
-  | NAEP-2019-12S7-#1 (flat part of a heating curve) | ~heating-curve | Solves |
-  | ΔH from heats of formation (common) | ~formation | No until need 5 |
-  | Hess's law (common) | ~hess | No until need 5 |
+  | Question                                               | Page           | Mark                                        |
+  | ------------------------------------------------------ | -------------- | ------------------------------------------- |
+  | NAEP-2005-12S14-#9 (source of heat when propane burns) | main           | Solves (assumption: energy stored in bonds) |
+  | NAEP-2009-12S10-#12 (which cup releases more heat)     | ~calorimetry   | Solves                                      |
+  | NAEP-2019-12S7-#1 (flat part of a heating curve)       | ~heating-curve | Solves                                      |
+  | ΔH from heats of formation (common)                    | ~formation     | No until need 5                             |
+  | Hess's law (common)                                    | ~hess          | No until need 5                             |
 
 - **Main — BUILD `s.10.thermochemistry`:** energyProfile, g.s10-thermochemistry-exothermic
   (`reactants: 'Hr', products: 'Hp', activation: 'Ea', deltaH: 'dH', reverse: 'Er', keep:
-  ['Hr', 'Hp']`). Values Hr, Hp, Eₐ (kJ), ΔH = Hp − Hr, reverse barrier = Eₐ − ΔH. Assumptions:
+['Hr', 'Hp']`). Values Hr, Hp, Eₐ (kJ), ΔH = Hp − Hr, reverse barrier = Eₐ − ΔH. Assumptions:
   "Energy is stored in chemical bonds; breaking bonds takes energy, forming them releases it."
   "ΔH below zero is exothermic: the surroundings warm." "Only differences matter; the zero of
   enthalpy is chosen." Example Hr 200 kJ, Hp 110 kJ, Eₐ 80 kJ → ΔH −90 kJ, peak 280 kJ, reverse
@@ -478,14 +478,14 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd C.4; OpenStax ch. 12, 13, 15; Glencoe ch. 16–17; HMH unit 5; Savvas unit 12.
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | Write K and compute it from equilibrium concentrations | main | Solves |
-  | ICE table from a start concentration and K | main | Solves |
-  | Which way does it shift (Q vs K) | ~le-chatelier | Solves |
-  | Effect of T, P, adding or removing (Le Châtelier) | ~shift | Solves |
-  | How a catalyst changes Eₐ | ~catalyst | Solves |
-  | What speeds a reaction (collision theory) | ~rate-factors | Solves |
+  | Question type                                          | Page          | Mark   |
+  | ------------------------------------------------------ | ------------- | ------ |
+  | Write K and compute it from equilibrium concentrations | main          | Solves |
+  | ICE table from a start concentration and K             | main          | Solves |
+  | Which way does it shift (Q vs K)                       | ~le-chatelier | Solves |
+  | Effect of T, P, adding or removing (Le Châtelier)      | ~shift        | Solves |
+  | How a catalyst changes Eₐ                              | ~catalyst     | Solves |
+  | What speeds a reaction (collision theory)              | ~rate-factors | Solves |
 
 - **Main — BUILD `s.10.rates-equilibrium`:** equilibriumChart, g.s10-rates-equilibrium-ice
   (N₂O₄ ⇌ 2NO₂, `start: 'A0', eq: 'A'`; NO₂ start 0, `eq: 'B'`; `K: 'K'`). Values A₀ (M), change
@@ -515,17 +515,17 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd C.4; OpenStax ch. 14 (14.1–14.3, 14.7), 15; Glencoe ch. 18; Savvas units 13–14.
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | pH from [H⁺]; acidic or basic | main | Solves |
-  | [H⁺] from pH | ~from-ph | Solves |
-  | pH of a strong base (via pOH) | ~base | Solves |
-  | Equivalence volume in a titration | ~titration | Solves |
-  | pH = pKₐ at the half-way point | ~weak-titration | Solves |
-  | Classify acid, base, neutral | ~classify | Solves |
+  | Question type                     | Page            | Mark   |
+  | --------------------------------- | --------------- | ------ |
+  | pH from [H⁺]; acidic or basic     | main            | Solves |
+  | [H⁺] from pH                      | ~from-ph        | Solves |
+  | pH of a strong base (via pOH)     | ~base           | Solves |
+  | Equivalence volume in a titration | ~titration      | Solves |
+  | pH = pKₐ at the half-way point    | ~weak-titration | Solves |
+  | Classify acid, base, neutral      | ~classify       | Solves |
 
 - **Main — BUILD `s.10.acids-bases`:** phScale, g.s10-acids-bases-ph (`pH: 'p', hydrogen: 'h',
-  hydroxide: 'o', pOH: 'q', examples: true`). Values [H⁺] h (M, 1 × 10⁻¹⁴–1, `scientific: true`),
+hydroxide: 'o', pOH: 'q', examples: true`). Values [H⁺] h (M, 1 × 10⁻¹⁴–1, `scientific: true`),
   pH p = −log h, pOH q = 14 − p, [OH⁻] o = 1.0 × 10⁻¹⁴ ÷ h. Assumptions: "Each pH unit is ten
   times the [H⁺]." "pH + pOH = 14 at 25 °C." "Below 7 is acidic, above 7 basic." Example
   [H⁺] 2.5 × 10⁻⁴ M → pH 3.60, pOH 10.40, [OH⁻] 4.0 × 10⁻¹¹ M. startWith ['h'].
@@ -550,13 +550,13 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenStax ch. 17 (17.1–17.3, 17.6); Glencoe ch. 19–20; Savvas unit 15.
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | Anode, cathode, electron flow in a cell | main | Solves |
-  | E°cell from reduction potentials | main (scenes read E°) | Solves |
-  | What is oxidized and reduced | ~oxidized-reduced | Solves |
-  | Oxidation number of an atom in a compound | ~oxidation-numbers | Partly (picture: need 8) |
-  | Electrolysis, corrosion | — | No (see G) |
+  | Question type                             | Page                  | Mark                     |
+  | ----------------------------------------- | --------------------- | ------------------------ |
+  | Anode, cathode, electron flow in a cell   | main                  | Solves                   |
+  | E°cell from reduction potentials          | main (scenes read E°) | Solves                   |
+  | What is oxidized and reduced              | ~oxidized-reduced     | Solves                   |
+  | Oxidation number of an atom in a compound | ~oxidation-numbers    | Partly (picture: need 8) |
+  | Electrolysis, corrosion                   | —                     | No (see G)               |
 
 - **Main — BUILD `s.10.redox` (explore):** figure `electrochemicalCell`, g.s10-redox-galvanic-cell.
   Scenes (E° from the figure's table, checked): "Electrons flow from zinc to copper" (Zn, Cu, lit
@@ -570,7 +570,7 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
   the same; Fe in 4Fe + 3O₂ → 2Fe₂O₃; O₂ in the same; Mg in Mg + 2H⁺ → Mg²⁺ + H₂; H⁺ in the same;
   Na⁺ in NaCl + AgNO₃ → AgCl + NaNO₃ (neither: a spectator).
 - **~oxidation-numbers — BUILD (picture waits on need 8):** equationInput `{x} + {h}(+1) +
-  {o}(−2) = {q}`: the unknown atom x, H atoms h, O atoms o, charge q. Example MnO₄⁻: x + 4(−2) =
+{o}(−2) = {q}`: the unknown atom x, H atoms h, O atoms o, charge q. Example MnO₄⁻: x + 4(−2) =
   −1 → x = +7; H₂SO₄: x + 2 − 8 = 0 → +6.
 - **Verdict:** 3 pages; 3 of 5 common types solved, 1 partly.
 
@@ -580,16 +580,16 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenStax ch. 20; Glencoe ch. 21–22; Savvas unit 16.
 - **Tests ask:** no released questions. Common types:
 
-  | Question type | Page | Mark |
-  | --- | --- | --- |
-  | Formula and name of an alkane with n carbons | main | Solves |
-  | Alkene and alkyne formulas | ~alkene, ~alkyne | Solves |
-  | Identify a functional group | ~functional-groups | Solves (cards: need 9) |
-  | Structural isomers | — | No (need 9b) |
-  | Addition polymers | — | No (see G) |
+  | Question type                                | Page               | Mark                   |
+  | -------------------------------------------- | ------------------ | ---------------------- |
+  | Formula and name of an alkane with n carbons | main               | Solves                 |
+  | Alkene and alkyne formulas                   | ~alkene, ~alkyne   | Solves                 |
+  | Identify a functional group                  | ~functional-groups | Solves (cards: need 9) |
+  | Structural isomers                           | —                  | No (need 9b)           |
+  | Addition polymers                            | —                  | No (see G)             |
 
 - **Main — BUILD `s.10.organic`:** lewisStructure hydrocarbon, g.s10-organic-alkane (`carbons: 'n',
-  bond: 'single', hydrogens: 'h'`), `sliders: true`. Values n (1–8), h = 2n + 2. Assumptions:
+bond: 'single', hydrogens: 'h'`), `sliders: true`. Values n (1–8), h = 2n + 2. Assumptions:
   "Carbon makes four bonds, hydrogen one." "Alkanes have only single bonds." "The prefix counts
   carbons: meth-, eth-, prop-, but-, pent-, hex-, hept-, oct-." Example n 3 → C₃H₈, propane.
   -octane demo is its screenshot. startWith ['n'].
@@ -608,17 +608,17 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 - **Textbooks:** OpenSciEd C.5; OpenStax ch. 21 (21.1–21.4); Glencoe ch. 24; HMH unit 2 (2.3); Savvas unit 17.
 - **Tests ask:**
 
-  | Question | Page | Mark |
-  | --- | --- | --- |
-  | NAEP-2009-12S9-#2 (which equation is fission; filed under atomic structure) | ~reactions | Solves |
-  | NAEP-2009-12S9-#10 (advantages of fusion over fission) | ~reactions | Partly: the sort's cards name fuel and waste; the page states no comparison sentence (add one) |
-  | NAEP-2000-12S11-#2 (why energy is released: mass lost) | ~mass-defect | No until need 14 |
-  | Amount left after n half-lives (common) | main | Solves |
-  | Balance an alpha or beta decay (common) | ~alpha, ~beta | Solves |
+  | Question                                                                    | Page          | Mark                                                                                           |
+  | --------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- |
+  | NAEP-2009-12S9-#2 (which equation is fission; filed under atomic structure) | ~reactions    | Solves                                                                                         |
+  | NAEP-2009-12S9-#10 (advantages of fusion over fission)                      | ~reactions    | Partly: the sort's cards name fuel and waste; the page states no comparison sentence (add one) |
+  | NAEP-2000-12S11-#2 (why energy is released: mass lost)                      | ~mass-defect  | No until need 14                                                                               |
+  | Amount left after n half-lives (common)                                     | main          | Solves                                                                                         |
+  | Balance an alpha or beta decay (common)                                     | ~alpha, ~beta | Solves                                                                                         |
 
 - **Main — BUILD `s.10.nuclear-chemistry`:** decayChart decay, g.s10-nuclear-chemistry-decay-grid
   (`halfLife: 'T', time: 't', start: 'N0', left: 'N', halves: 'n', parent: 'I-131', daughter:
-  'Xe-131', keep: ['T', 'N0']`). Values T (days), t (days), N₀ (mg), halves n = t ÷ T,
+'Xe-131', keep: ['T', 'N0']`). Values T (days), t (days), N₀ (mg), halves n = t ÷ T,
   N = N₀ × 0.5^(n). Assumptions: "Each half-life halves what is left, whatever the start."
   "Which atom decays next is random; the half-life is fixed." Example T 8.02 days, t 24.06 days,
   N₀ 80.0 mg → n 3, N 10.0 mg. startWith ['T', 'N0', 't'].
@@ -642,26 +642,26 @@ c_water = 4.18 J/(g·°C), Kw = 1.0 × 10⁻¹⁴ at 25 °C, 931.5 MeV per u).
 
 ## Page count
 
-| Skill | Pages | Layouts | Waiting |
-| --- | ---: | ---: | --- |
-| measurement | 6 | 0 | ~sig-fig-math (2) |
-| atomic-structure | 4 | 1 | ~average-mass picture (7) |
-| electrons-in-atoms | 4 | 0 | — |
-| periodic-trends | 4 | 1 | — |
-| bonding | 6 | 2 | main's undrawn counts (12) |
-| molecular-shape | 4 | 3 | ~water scene 3 (10) |
-| reaction-types | 4 | 1 | ~combustion general (1) |
-| mole | 5 | 0 | ~empirical ratio line (11) |
-| stoichiometry | 4 | 0 | ~limiting-grams (4) |
-| gas-laws | 6 | 0 | ~effusion (6) |
-| molarity | 4 | 0 | — |
-| thermochemistry | 6 | 0 | ~formation, ~hess (5) |
-| rates-equilibrium | 5 | 2 | — |
-| acids-bases | 6 | 1 | — |
-| redox | 3 | 2 | ~oxidation-numbers picture (8) |
-| organic | 4 | 1 | ~functional-groups cards (9) |
-| nuclear-chemistry | 6 | 1 | ~mass-defect (14) |
-| **Total** | **81** | **15** | 8 pages wait; 6 more build now with a fallback |
+| Skill              |  Pages | Layouts | Waiting                                        |
+| ------------------ | -----: | ------: | ---------------------------------------------- |
+| measurement        |      6 |       0 | ~sig-fig-math (2)                              |
+| atomic-structure   |      4 |       1 | ~average-mass picture (7)                      |
+| electrons-in-atoms |      4 |       0 | —                                              |
+| periodic-trends    |      4 |       1 | —                                              |
+| bonding            |      6 |       2 | main's undrawn counts (12)                     |
+| molecular-shape    |      4 |       3 | ~water scene 3 (10)                            |
+| reaction-types     |      4 |       1 | ~combustion general (1)                        |
+| mole               |      5 |       0 | ~empirical ratio line (11)                     |
+| stoichiometry      |      4 |       0 | ~limiting-grams (4)                            |
+| gas-laws           |      6 |       0 | ~effusion (6)                                  |
+| molarity           |      4 |       0 | —                                              |
+| thermochemistry    |      6 |       0 | ~formation, ~hess (5)                          |
+| rates-equilibrium  |      5 |       2 | —                                              |
+| acids-bases        |      6 |       1 | —                                              |
+| redox              |      3 |       2 | ~oxidation-numbers picture (8)                 |
+| organic            |      4 |       1 | ~functional-groups cards (9)                   |
+| nuclear-chemistry  |      6 |       1 | ~mass-defect (14)                              |
+| **Total**          | **81** |  **15** | 8 pages wait; 6 more build now with a fallback |
 
 ## Engine and picture needs
 
