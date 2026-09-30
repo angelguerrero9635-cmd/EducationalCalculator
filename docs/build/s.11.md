@@ -206,6 +206,46 @@ Each page uses the nearest existing picture or a `table` until these exist:
   r, a second charge q₀ with its U; values q, r, V, q₀, U — `s.11.electric-potential` (now the
   charge and its field lines).
 
+### Lesson review of the added skills
+
+Report: `.review/new-sci/lesson-report.md`. Fixed:
+
+- ~seesaw: the plank is light and pivoted at its middle (the old "weight acts at the pivot"
+  contradicted F_p = F₁ + F₂); τ is "Torque on each side".
+- ~angular-speed: the use line says "a wheel of radius 0.30 m"; a work line "ω = 4π"; v to 2,000
+  m/s.
+- ~angular-acceleration: n is "Net turns", with a limit that ω₀ and ω share a sign ("The wheel
+  turns back partway…"); t from Δθ, ω₀ and α by the quadratic (no numeric step). The "1 × 16"
+  after ½ × 2 is the engine's simplifier (shared needs).
+- ~rotational-inertia: a hollow ball (c = ⅔) in the allowed list, the table and the assumption.
+- Main: the example stores p 40 and τ 10.
+- Oscillations: k from E = ½kA² and k, x from U = ½kx² (no "Try numbers"); the period step shows
+  "T = 2π × 0.05 = 0.1π"; ω = √(k/m) comes before ω = 2π/T (ω = √400 = 20, not 2π/0.3142);
+  the step for L or m shows T ÷ 2π and its square.
+- ~voltage-energy: changed from the report. A limit on v (or on K and m) made the solver drop
+  the student's typed electron as the older input and search the proton in its place, the very
+  swap the report found. The page now keeps v's range wide enough for both particles (3 × 10⁹
+  m/s), so the search never finds a single mass, and a note after v says when it passes a tenth
+  of light's speed, or light's itself ("faster than light, which is impossible…"). The swap is
+  gone from the samples except odd unit cases (m typed in g or t), listed below.
+- Main: the q step's how says why 8.99 × 10³ gives μC; work numbers from 1,000 to 9,999 have a
+  separator ("−1,000 μC").
+- ~capacitor: a work line "U = ½ × 4.7 × 10⁻⁴ × 81" and U to 5 significant figures (0.019035 J).
+- ~parallel-plate: E "Field between the plates" (V/m), E = V ÷ (d × 10⁻³); the use line asks for
+  it. The field page `s.11.electrostatics~plates` still waits on need 10 for the picture.
+- Not done (engine): the unit-change work lines ("q = 4 μC = 4 × 10⁻⁶ C", "K = 100 eV × …")
+  still print after the substituted line; `StepText` has no lines before it. The q step's
+  10ⁿ rewriting lines are the engine's.
+
+### Shared needs (lesson review of the added skills)
+
+- **Engine: a `null` solve part is still filled by the whole-number search** (an `allowed` mass),
+  and a limit on a newer value drops an older allowed input instead of refusing the newer one.
+  Then `~voltage-energy` could refuse speeds past 3 × 10⁷ m/s.
+- **Engine: work lines before the substituted line** (unit changes first), for the main page and
+  `~voltage-energy`.
+- **Engine: simplify "1 × 16"** after ½ × 2 (`~angular-acceleration`).
+
 ### Outside these files
 
 `pictureRequests.test.ts` (H49, `s.10.reaction-types~combustion`) and `units.test.ts` (five
