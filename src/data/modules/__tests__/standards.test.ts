@@ -14,7 +14,10 @@ import { agree, buildSteps } from '../buildSteps';
 import type { ModuleDef } from '../types';
 import { isStandIn, pages } from '../harness/scope';
 
-/** Longest sentence per grade: the reviewer's guide (8, 12, 15, 20 words) plus half again. */
+/**
+ * Longest sentence per grade: the reviewer's guide (8, 12, 15, 20 words) plus half again; high
+ * school gets a cap too (a textbook sentence, 25 words, plus room for a formula read aloud).
+ */
 function wordLimit(grade: string | undefined): number | undefined {
   if (grade === undefined) return undefined;
   const g = grade === 'K' ? 0 : Number(grade);
@@ -22,15 +25,18 @@ function wordLimit(grade: string | undefined): number | undefined {
   if (g <= 3) return 18;
   if (g <= 5) return 22;
   if (g <= 8) return 30;
-  return undefined;
+  return 35;
 }
 
-/** Values per module: about 4–5 in K–2, 6–7 in grades 3–8 (check C), with a little room. */
+/**
+ * Values per module: about 4–5 in K–2, 6–7 in grades 3–8 (check C), with a little room; high
+ * school holds a formula's inputs and a unit or two more.
+ */
 function valueLimit(grade: string | undefined): number | undefined {
   if (grade === undefined) return undefined;
   const g = grade === 'K' ? 0 : Number(grade);
   // Kindergarten holds 6; from Grade 1 a released item can need 7 or 8 (a line plot of 7 lengths).
-  return g === 0 ? 6 : g <= 8 ? 8 : undefined;
+  return g === 0 ? 6 : g <= 8 ? 8 : 10;
 }
 
 /** Shorthand and jargon by grade (check K). */

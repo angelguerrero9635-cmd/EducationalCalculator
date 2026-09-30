@@ -1,6 +1,6 @@
 # Module plan
 
-664 skill and topic modules in total: 241 K–12 skills plus 423 college course topics (each
+720 skill and topic modules in total: 297 K–12 skills plus 423 college course topics (each
 course is in one field). They are written in sections.
 Each section goes through the review process in [MODULE_GUIDE.md](MODULE_GUIDE.md) (tests plus an
 independent AI review), and the next section starts only after the owner approves it.
@@ -10,12 +10,12 @@ independent AI review), and the next section starts only after the owner approve
 | 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice       |
 | 1   | Math K–2                                                                                            | 64      | Done, reviewed twice       |
 | 2   | Math 3–5 (one grade at a time)                                                                      | 35      | Grades 3–5 built, reviewed |
-| 3   | Math 6–8                                                                                            | 30      | 6 reviewed; 7–8 built      |
-| 4   | Math 9–10                                                                                           | 21      |                            |
-| 5   | Math 11–12                                                                                          | 22      |                            |
+| 3   | Math 6–8                                                                                            | 30      | Grades 6–8 built, reviewed |
+| 4   | Math 9–10                                                                                           | 35      | Pictures drawn; planning   |
+| 5   | Math 11–12                                                                                          | 29      | Pictures drawn; planning   |
 | 6   | Science K–5                                                                                         | 39      | K–5 built, reviewed        |
-| 7   | Science 6–8                                                                                         | 26      | 6 reviewed; 7–8 built      |
-| 8   | Science 9–12                                                                                        | 34      |                            |
+| 7   | Science 6–8                                                                                         | 26      | Grades 6–8 built, reviewed |
+| 8   | Science 9–12                                                                                        | 56      | Pictures drawn; planning   |
 | 9   | College Math                                                                                        | 25      |                            |
 | 10  | Chemistry                                                                                           | 42      |                            |
 | 11  | Physics                                                                                             | 32      |                            |

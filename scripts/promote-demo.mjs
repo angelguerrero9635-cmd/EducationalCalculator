@@ -117,19 +117,28 @@ if (close === -1) {
 }
 writeFileSync(target, `${gradeSrc.slice(0, close)}\n  ${copy},${gradeSrc.slice(close)}`);
 
-// 4. The tracker: the page joins the entry that lists the demo.
-const trackerFile = 'src/data/modules/pictureRequests.ts';
-let tracker = readFileSync(trackerFile, 'utf8');
-const entry = new RegExp(
-  `(pages: \\[)([^\\]]*)(\\][\\s\\S]*?gallery: \\[[^\\]]*'${demoId.replace(/\./g, '\\.')}')`,
-);
-if (entry.test(tracker) && !tracker.includes(`'${pageId}'`)) {
-  tracker = tracker.replace(
-    entry,
-    (all, a, pages, rest) =>
-      `${a}${pages.trim() ? `${pages.trim().replace(/,$/, '')}, ` : ''}'${pageId}'${rest}`,
+// 4. The tracker: the page joins the entry that lists the demo (K–8 entries name their pages
+// in `pages: [`, Grades 9–12 entries in the fourth argument of `ask(`).
+for (const trackerFile of [
+  'src/data/modules/pictureRequests.ts',
+  'src/data/modules/pictureRequestsHs.ts',
+]) {
+  const tracker = readFileSync(trackerFile, 'utf8');
+  const at = tracker.indexOf(`'${demoId}'`);
+  if (at === -1 || tracker.includes(`'${pageId}'`)) continue;
+  const open = Math.max(
+    tracker.lastIndexOf('pages: [', at) + 'pages: '.length,
+    tracker.indexOf('[', tracker.lastIndexOf('...ask(', at)),
   );
-  writeFileSync(trackerFile, tracker);
+  const close = tracker.indexOf(']', open);
+  const pages = tracker
+    .slice(open + 1, close)
+    .trim()
+    .replace(/,$/, '');
+  writeFileSync(
+    trackerFile,
+    `${tracker.slice(0, open + 1)}${pages ? `${pages}, ` : ''}'${pageId}'${tracker.slice(close)}`,
+  );
 }
 
 // 5. What the copy calls, so the imports can be added.
@@ -145,7 +154,7 @@ console.log(
     calls.length
       ? `It calls: ${calls.join(', ')} — import what the grade file lacks (helpers.ts, work.ts, reps).`
       : '',
-    `Then: pnpm -s exec prettier --write ${target} && MODULE_IDS=${pageId} pnpm test src/data/modules`,
+    `Then: pnpm -s exec prettier --write ${target} src/data/modules/pictureRequests*.ts && MODULE_IDS=${pageId} pnpm test src/data/modules`,
   ]
     .filter(Boolean)
     .join('\n'),

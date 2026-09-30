@@ -9,7 +9,7 @@
 // same folder) and the plan format to write in. The planner is `lesson-reviewer` with the
 // prompt in docs/MODULE_GUIDE.md ("Planning a grade").
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const args = process.argv.slice(2);
@@ -64,18 +64,36 @@ const entries = [...tracker.matchAll(/\{\n\s+id: '([A-Z]\d+)',([\s\S]*?)\n  \},/
     notes: get('notes'),
   };
 });
+// Grades 9–12 (H..) build their entries with a helper, so load that tracker as a module (it
+// imports only a type; Node strips the types).
+process.emitWarning = () => {};
+const { HS_PICTURE_REQUESTS } = await import('../src/data/modules/pictureRequestsHs.ts');
+entries.push(...HS_PICTURE_REQUESTS.map((e) => ({ notes: '', ...e })));
 const pictures = entries.filter((e) => e.pages.some((p) => p.startsWith(prefix)));
-const specFiles = [
-  'src/data/modules/types.ts',
-  ...['typesChem', 'typesLife', 'typesMechanics', 'typesPhysics8'].map(
-    (f) => `src/data/modules/${f}.ts`,
-  ),
-].filter(existsSync);
+const specFiles = readdirSync('src/data/modules')
+  .filter((f) => /^types\w*\.ts$/.test(f))
+  .map((f) => `src/data/modules/${f}`)
+  .concat('src/data/modules/layouts/types.ts');
 const specs = specFiles.map((f) => readFileSync(f, 'utf8')).join('\n');
 /** The spec of a picture kind: the lines of its `kind: '<kind>'` object in the types files. */
 const specOf = (kind) => {
-  const at = specs.indexOf(`kind: '${kind}';`);
-  if (at === -1) return '(spec not found)';
+  if (kind === 'equationInput') return '(template syntax: docs/EQUATION_INPUTS.md)';
+  // A spec written as `{ kind: 'x' } & (…)`: the whole type statement.
+  const typed = specs.indexOf(`{ kind: '${kind}' } &`);
+  if (typed !== -1) {
+    const from = specs.lastIndexOf('export type', typed);
+    const to = specs.indexOf('\n\n', typed);
+    return specs
+      .slice(from, to === -1 ? undefined : to)
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith('/**') && !l.startsWith('*') && !l.startsWith('//'))
+      .join(' ');
+  }
+  // An explore figure or a spec object: the braces around `kind: 'x'`.
+  const semi = specs.indexOf(`kind: '${kind}';`);
+  const at = semi !== -1 ? semi : specs.search(new RegExp(`\\{ kind: '${kind}'[; }]`)) + 2;
+  if (at < 2 && semi === -1) return '(no spec type: see its demos)';
   // The brace that encloses the kind line (not one inside an earlier comment).
   let open = at;
   for (let d = 0; open >= 0; open--) {
