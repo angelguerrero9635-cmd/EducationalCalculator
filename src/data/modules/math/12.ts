@@ -4675,10 +4675,11 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
   {
     id: 'm.12.vectors-3d~cross',
     title: 'The cross product',
-    use: 'Use this for “Find u × v for u = ⟨1, 2, 3⟩ and v = ⟨2, 0, 1⟩, and the area of the parallelogram they span.”',
+    use: 'Use this for “Find u × v for u = ⟨1, 2, 3⟩ and v = ⟨2, 0, 1⟩, and the areas of the parallelogram and the triangle with sides u and v from one vertex.”',
     assumptions: [
       'u × v is a vector perpendicular to both u and v: its dot product with each is 0.',
       '|u × v| is the area of the parallelogram u and v span; the triangle is half of it.',
+      'For a triangle PQR, take u = Q − P and v = R − P, the sides from one vertex.',
       'Order matters: v × u points the opposite way, −(u × v).',
     ],
     variables: [
@@ -4692,14 +4693,36 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
         step: 0.01,
         derived: true,
       }),
+      V('Tri', 'A_T', 'Area of the triangle', { min: 0, max: 2000000, step: 0.01, derived: true }),
     ],
     ...rels(
       crossPart('x', 'b', 'f', 'c', 'e', 'x'),
       crossPart('y', 'c', 'd', 'a', 'f', 'y'),
       crossPart('z', 'a', 'e', 'b', 'd', 'z'),
       length3('A', ['x', 'y', 'z'], 'u × v'),
+      derive(
+        'Area of the triangle = |u × v| ÷ 2',
+        '{Tri} = {A} ÷ 2',
+        'Tri',
+        ['A'],
+        (v) => v.A! / 2,
+        '{A} ÷ 2',
+        'The diagonal cuts the parallelogram into two equal triangles.',
+      ),
     ),
-    example: { a: 1, b: 2, c: 3, d: 2, e: 0, f: 1, x: 2, y: 5, z: -4, A: Math.sqrt(45) },
+    example: {
+      a: 1,
+      b: 2,
+      c: 3,
+      d: 2,
+      e: 0,
+      f: 1,
+      x: 2,
+      y: 5,
+      z: -4,
+      A: Math.sqrt(45),
+      Tri: Math.sqrt(45) / 2,
+    },
     startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
     equation: '⟨{a}, {b}, {c}⟩ × ⟨{d}, {e}, {f}⟩ = ⟨{x}, {y}, {z}⟩',
     representation: {
@@ -4766,6 +4789,94 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
       output: 'Vol',
       params: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
       rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.k ?? 1) + i),
+    },
+  },
+  {
+    id: 'm.12.vectors-3d~distance',
+    title: 'Distance and midpoint in space',
+    use: 'Use this for “Find the distance between P(1, 2, 3) and Q(3, 5, 9) and the midpoint of PQ.”',
+    assumptions: [
+      'A point in space has three coordinates (x, y, z); the axes meet at right angles.',
+      'The distance is √(Δx² + Δy² + Δz²): the Pythagorean theorem across the floor, then up.',
+      'The midpoint averages each coordinate.',
+    ],
+    variables: [
+      comp3('p', 'x₁', 'x of P', 'P'),
+      comp3('q', 'y₁', 'y of P', 'P'),
+      comp3('r', 'z₁', 'z of P', 'P'),
+      comp3('s', 'x₂', 'x of Q', 'Q'),
+      comp3('t', 'y₂', 'y of Q', 'Q'),
+      comp3('u', 'z₂', 'z of Q', 'Q'),
+      V('d', 'd', 'Distance PQ', { min: 0, max: 3500, step: 0.01, derived: true }),
+      V('mx', 'x_M', 'x of the midpoint M', {
+        min: -1000,
+        max: 1000,
+        step: 0.01,
+        group: 'M',
+        derived: true,
+      }),
+      V('my', 'y_M', 'y of the midpoint M', {
+        min: -1000,
+        max: 1000,
+        step: 0.01,
+        group: 'M',
+        derived: true,
+      }),
+      V('mz', 'z_M', 'z of the midpoint M', {
+        min: -1000,
+        max: 1000,
+        step: 0.01,
+        group: 'M',
+        derived: true,
+      }),
+    ],
+    ...rels(
+      derive(
+        'd = √((x₂ − x₁)² + (y₂ − y₁)² + (z₂ − z₁)²)',
+        '{d} = √(({s} − {p})² + ({t} − {q})² + ({u} − {r})²)',
+        'd',
+        ['p', 'q', 'r', 's', 't', 'u'],
+        (v) => Math.hypot(v.s! - v.p!, v.t! - v.q!, v.u! - v.r!),
+        '√(({s} − {p})² + ({t} − {q})² + ({u} − {r})²)',
+        'Subtract matching coordinates, square, add, and take the square root.',
+      ),
+      derive(
+        'x_M = (x₁ + x₂) ÷ 2',
+        '{mx} = ({p} + {s}) ÷ 2',
+        'mx',
+        ['p', 's'],
+        (v) => (v.p! + v.s!) / 2,
+        '({p} + {s}) ÷ 2',
+        'The midpoint’s x is halfway between the two xs: their mean.',
+      ),
+      derive(
+        'y_M = (y₁ + y₂) ÷ 2',
+        '{my} = ({q} + {t}) ÷ 2',
+        'my',
+        ['q', 't'],
+        (v) => (v.q! + v.t!) / 2,
+        '({q} + {t}) ÷ 2',
+        'The midpoint’s y is halfway between the two ys: their mean.',
+      ),
+      derive(
+        'z_M = (z₁ + z₂) ÷ 2',
+        '{mz} = ({r} + {u}) ÷ 2',
+        'mz',
+        ['r', 'u'],
+        (v) => (v.r! + v.u!) / 2,
+        '({r} + {u}) ÷ 2',
+        'The midpoint’s z is halfway between the two zs: their mean.',
+      ),
+    ),
+    example: { p: 1, q: 2, r: 3, s: 3, t: 5, u: 9, d: 7, mx: 2, my: 3.5, mz: 6 },
+    startWith: ['p', 'q', 'r', 's', 't', 'u'],
+    // Interim until the 3-D axes picture (H106): the distance as Q's z moves.
+    representation: {
+      kind: 'table',
+      sweep: 'u',
+      output: 'd',
+      params: ['p', 'q', 'r', 's', 't'],
+      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.u ?? 9) + i),
     },
   },
 ];
@@ -5018,8 +5129,8 @@ const MATH_12_TRANSFORMS: ModuleDef[] = [
       { ...entry('D', 'D', 'Determinant', 20000), derived: true },
       V('S', 'S', 'Area before', { min: 0, max: 100000, step: 0.01 }),
       V('T', 'T', 'Area after', { min: 0, max: 2000000000, step: 0.01 }),
-      { ...entry('p', 'p', 'a + b', 200), derived: true, hidden: true },
-      { ...entry('q', 'q', 'c + d', 200), derived: true, hidden: true },
+      { ...entry('p', 'p', 'x of the far corner', 200), derived: true, hidden: true },
+      { ...entry('q', 'q', 'y of the far corner', 200), derived: true, hidden: true },
     ],
     ...rels(
       derive(
@@ -5102,6 +5213,8 @@ const MATH_12_TRANSFORMS: ModuleDef[] = [
       deg('a', 'α', 'First turn', -360, 360),
       deg('b', 'β', 'Second turn', -360, 360),
       deg('g', 'γ', 'Both turns', -720, 720, { derived: true }),
+      V('c', 'c', 'cos γ', { min: -1, max: 1, step: 0.0001, derived: true }),
+      V('s', 's', 'sin γ', { min: -1, max: 1, step: 0.0001, derived: true }),
       coord('x', 'x', 'x of the point'),
       coord('y', 'y', 'y of the point'),
       coord('X', 'x″', 'x of the final image', 1500),
@@ -5117,34 +5230,41 @@ const MATH_12_TRANSFORMS: ModuleDef[] = [
         '{a} + {b}',
         'R(β)R(α) = R(α + β): multiplying the two matrices adds the angles (the sum formulas).',
       ),
+      trigOf('c', 'cos', 'g', 'The first column of R(γ) is where (1, 0) lands: (cos γ, sin γ).'),
+      withStep(trigOf('s', 'sin', 'g', 'The same column’s second entry.'), 's', {
+        note: (v) =>
+          v.c === undefined || v.s === undefined
+            ? ''
+            : `→ the single matrix R(γ) = [[${fmt(v.c)}, ${fmt(-v.s)}], [${fmt(v.s)}, ${fmt(v.c)}]]`,
+      }),
       rel(
-        'x″ = x cos γ − y sin γ',
-        '{X} = {x} × cos({g}°) − {y} × sin({g}°)',
-        ['X', 'x', 'y', 'g'],
-        (v) => v.X! - (v.x! * cosd(v.g!) - v.y! * sind(v.g!)),
+        'x″ = cx − sy',
+        '{X} = {c} × {x} − {s} × {y}',
+        ['X', 'c', 'x', 's', 'y'],
+        (v) => v.X! - (v.c! * v.x! - v.s! * v.y!),
         {
           X: [
-            (v) => v.x! * cosd(v.g!) - v.y! * sind(v.g!),
-            '{x} × cos({g}°) − {y} × sin({g}°)',
+            (v) => v.c! * v.x! - v.s! * v.y!,
+            '{c} × {x} − {s} × {y}',
             'The first row of R(γ), [cos γ, −sin γ], times the column (x, y).',
           ],
         },
       ),
       rel(
-        'y″ = x sin γ + y cos γ',
-        '{Y} = {x} × sin({g}°) + {y} × cos({g}°)',
-        ['Y', 'x', 'y', 'g'],
-        (v) => v.Y! - (v.x! * sind(v.g!) + v.y! * cosd(v.g!)),
+        'y″ = sx + cy',
+        '{Y} = {s} × {x} + {c} × {y}',
+        ['Y', 's', 'x', 'c', 'y'],
+        (v) => v.Y! - (v.s! * v.x! + v.c! * v.y!),
         {
           Y: [
-            (v) => v.x! * sind(v.g!) + v.y! * cosd(v.g!),
-            '{x} × sin({g}°) + {y} × cos({g}°)',
+            (v) => v.s! * v.x! + v.c! * v.y!,
+            '{s} × {x} + {c} × {y}',
             'The second row of R(γ), [sin γ, cos γ], times the column (x, y).',
           ],
         },
       ),
     ),
-    example: { a: 30, b: 60, g: 90, x: 4, y: 2, X: -2, Y: 4 },
+    example: { a: 30, b: 60, g: 90, c: 0, s: 1, x: 4, y: 2, X: -2, Y: 4 },
     startWith: ['a', 'b', 'x', 'y'],
     representation: {
       kind: 'transformation',
@@ -5170,7 +5290,45 @@ const conicOf = (e: number) =>
   Math.abs(e - 1) < 1e-9 ? 'a parabola' : e < 1 ? 'an ellipse' : 'a hyperbola';
 /** The conic a discriminant B² − 4AC gives (the degenerate cases aside). */
 const conicByDiscriminant = (D: number) =>
-  D < 0 ? 'an ellipse (or a circle)' : D === 0 ? 'a parabola' : 'a hyperbola';
+  D < 0 ? 'an ellipse' : D === 0 ? 'a parabola' : 'a hyperbola';
+/** x = r cos θ (or sin), its formula named with θ as the page writes it. */
+const polarPartθ = (out: string, r: string, t: string, fn: 'cos' | 'sin', how: string): Rel => {
+  const part = polarPart(out, r, t, fn, how);
+  return { ...part, relation: { ...part.relation, id: `${out} = ${r} ${fn} θ` } };
+};
+/** The angle θ that removes the xy term: tan 2θ = B ÷ (A − C), θ from 0° to 90°. */
+const turnAngle = withCheck(
+  derive(
+    'tan 2θ = B ÷ (A − C)',
+    'tan(2 × {t}°) = {B} ÷ ({A} − {C})',
+    't',
+    ['A', 'B', 'C'],
+    (v) => {
+      if (v.B === 0) return undefined;
+      if (v.A === v.C) return 45;
+      const w = Math.atan(v.B! / (v.A! - v.C!)) / RAD;
+      return (w < 0 ? w + 180 : w) / 2;
+    },
+    (v: Values) =>
+      v.A === v.C
+        ? '90 ÷ 2'
+        : v.B! / (v.A! - v.C!) < 0
+          ? '(180 + tan⁻¹({B} ÷ ({A} − {C}))) ÷ 2'
+          : 'tan⁻¹({B} ÷ ({A} − {C})) ÷ 2',
+    'tan 2θ = B ÷ (A − C) is cot 2θ = (A − C) ÷ B turned over; add 180° to a negative 2θ, then halve.',
+  ),
+  (v) =>
+    v.A === v.C
+      ? `cos(2 × ${fmt(v.t!)}°) = 0`
+      : `tan(2 × ${fmt(v.t!)}°) = ${fmt(v.B!)} ÷ (${fmt(v.A!)} − ${par(v.C!)})`,
+);
+const noXyTerm = limit(
+  'B ≠ 0',
+  'The xy term {B} is not 0',
+  ['B'],
+  (v) => v.B !== 0,
+  'B = 0: there is no xy term, so the axes need no turning.',
+);
 
 const MATH_12_POLAR_CONICS: ModuleDef[] = [
   // ── m.12.polar-conics (G-GPE.3 carried on) ──
@@ -5184,7 +5342,11 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     variables: [
       V('k', 'k', 'Top number', { min: 0.01, max: 1000, step: 0.01 }),
       V('m', 'm', 'Number in the bottom', { min: 0.01, max: 1000, step: 0.01 }),
-      V('n', 'n', 'Number before cos θ', { min: -1000, max: 1000, step: 0.01 }),
+      V('n', 'n', 'Number taken away before cos θ (−1 for + cos θ)', {
+        min: -1000,
+        max: 1000,
+        step: 0.01,
+      }),
       V('e', 'e', 'Eccentricity', { min: 0, max: 100000, step: 0.0001, derived: true }),
       V('d', 'd', 'Distance from the focus to the directrix', {
         min: 0,
@@ -5209,14 +5371,23 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
         'e',
         { note: (v) => (v.e === undefined ? '' : `→ ${conicOf(v.e)}`) },
       ),
-      derive(
-        'd = k ÷ |n|',
-        '{d} = {k} ÷ |{n}|',
+      withStep(
+        derive(
+          'd = k ÷ |n|',
+          '{d} = {k} ÷ |{n}|',
+          'd',
+          ['k', 'n'],
+          (v) => (v.n === 0 ? undefined : div(v.k!, Math.abs(v.n!))),
+          '{k} ÷ |{n}|',
+          'The top over m is ed, and e is |n| ÷ m, so d = k ÷ |n|.',
+        ),
         'd',
-        ['k', 'n'],
-        (v) => (v.n === 0 ? undefined : div(v.k!, Math.abs(v.n!))),
-        '{k} ÷ |{n}|',
-        'The top over m is ed, and e is |n| ÷ m, so d = k ÷ |n|.',
+        {
+          note: (v) =>
+            v.d === undefined || v.n === undefined
+              ? ''
+              : `→ the directrix is x = ${v.n > 0 ? '−' : ''}${shown(v.d)}`,
+        },
       ),
       rel(
         'r = k ÷ (m − n cos θ)',
@@ -5256,6 +5427,102 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     },
   },
   {
+    id: 'm.12.polar-conics~sine',
+    title: 'Polar conics with sin θ',
+    use: 'Use this for “Name the conic r = 4 ÷ (1 + sin θ), its eccentricity and its directrix.”',
+    assumptions: [
+      'Divide the top and bottom by m to reach r = ed ÷ (1 − e sin θ): the eccentricity e and the directrix distance d.',
+      'e < 1 is an ellipse, e = 1 a parabola, e > 1 a hyperbola; the focus is at the pole.',
+      'With sin θ the directrix is horizontal: y = −d with − sin θ, y = d with + sin θ.',
+    ],
+    variables: [
+      V('k', 'k', 'Top number', { min: 0.01, max: 1000, step: 0.01 }),
+      V('m', 'm', 'Number in the bottom', { min: 0.01, max: 1000, step: 0.01 }),
+      V('n', 'n', 'Number taken away before sin θ (−1 for + sin θ)', {
+        min: -1000,
+        max: 1000,
+        step: 0.01,
+      }),
+      V('e', 'e', 'Eccentricity', { min: 0, max: 100000, step: 0.0001, derived: true }),
+      V('d', 'd', 'Distance from the focus to the directrix', {
+        min: 0,
+        max: 100000,
+        step: 0.01,
+        derived: true,
+      }),
+      deg('t', 'θ', 'Angle', -360, 360),
+      V('r', 'r', 'Distance from the pole', { min: -1000000, max: 1000000, step: 0.01 }),
+    ],
+    ...rels(
+      withStep(
+        derive(
+          'e = |n| ÷ m',
+          '{e} = |{n}| ÷ {m}',
+          'e',
+          ['n', 'm'],
+          (v) => (v.n === 0 ? undefined : div(Math.abs(v.n!), v.m!)),
+          '|{n}| ÷ {m}',
+          'Dividing the bottom by m leaves 1 − e sin θ, so e is the number before sin θ over m.',
+        ),
+        'e',
+        { note: (v) => (v.e === undefined ? '' : `→ ${conicOf(v.e)}`) },
+      ),
+      withStep(
+        derive(
+          'd = k ÷ |n|',
+          '{d} = {k} ÷ |{n}|',
+          'd',
+          ['k', 'n'],
+          (v) => (v.n === 0 ? undefined : div(v.k!, Math.abs(v.n!))),
+          '{k} ÷ |{n}|',
+          'The top over m is ed, and e is |n| ÷ m, so d = k ÷ |n|.',
+        ),
+        'd',
+        {
+          note: (v) =>
+            v.d === undefined || v.n === undefined
+              ? ''
+              : `→ the directrix is y = ${v.n > 0 ? '−' : ''}${shown(v.d)}`,
+        },
+      ),
+      rel(
+        'r = k ÷ (m − n sin θ)',
+        '{r} = {k} ÷ ({m} − {n} × sin({t}°))',
+        ['r', 'k', 'm', 'n', 't'],
+        (v) => v.r! * (v.m! - v.n! * sind(v.t!)) - v.k!,
+        {
+          r: [
+            (v) => div(v.k!, v.m! - v.n! * sind(v.t!)),
+            '{k} ÷ ({m} − {n} × sin({t}°))',
+            'Put the angle into the equation: the point on the conic in that direction.',
+          ],
+          k: [
+            (v) => v.r! * (v.m! - v.n! * sind(v.t!)),
+            '{r} × ({m} − {n} × sin({t}°))',
+            'Multiply both sides by the bottom.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.m !== undefined &&
+            v.n !== undefined &&
+            v.t !== undefined &&
+            Math.abs(v.m - v.n * sind(v.t)) < 1e-12
+              ? 'The bottom is 0 at this angle: the conic never reaches this direction (it runs off parallel to it).'
+              : undefined,
+        },
+      ),
+    ),
+    example: { k: 4, m: 1, n: -1, e: 1, d: 4, t: 90, r: 2 },
+    startWith: ['k', 'm', 'n', 't'],
+    equation: '{r} = {k}/{{m} − {n} sin {t}°}',
+    representation: {
+      kind: 'polarGrid',
+      point: { r: 'r', theta: 't' },
+      fixed: true,
+    },
+  },
+  {
     id: 'm.12.polar-conics~ellipse',
     title: 'A polar ellipse: vertices and axes',
     use: 'Use this for “For r = 3 ÷ (1 − 0.5 cos θ), find the vertices, the center and the lengths of the axes.”',
@@ -5266,14 +5533,28 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     ],
     variables: [
       V('e', 'e', 'Eccentricity', { min: 0.01, max: 0.99, step: 0.01 }),
+      V('k', 'k', 'Top number (ed)', { min: 0.0001, max: 1000, step: 0.01 }),
       V('d', 'd', 'Distance from the focus to the directrix', { min: 0.01, max: 1000, step: 0.01 }),
       V('R', 'R', 'Distance to the vertex at 0°', { min: 0.001, max: 200000, step: 0.01 }),
       V('S', 'S', 'Distance to the vertex at 180°', { min: 0.001, max: 1000, step: 0.01 }),
       V('a', 'a', 'Half the major axis', { min: 0.001, max: 200000, step: 0.01 }),
-      V('c', 'c', 'Distance from the center to the focus', { min: 0, max: 200000, step: 0.01 }),
+      V('c', 'c', 'Distance from the center to the focus', {
+        min: 0,
+        max: 200000,
+        step: 0.01,
+        derived: true,
+      }),
       V('b', 'b', 'Half the minor axis', { min: 0, max: 200000, step: 0.01, derived: true }),
     ],
     ...rels(
+      rel('k = ed', '{k} = {e} × {d}', ['k', 'e', 'd'], (v) => v.k! - v.e! * v.d!, {
+        k: [(v) => v.e! * v.d!, '{e} × {d}', 'The top of r = ed ÷ (1 − e cos θ) is e times d.'],
+        d: [
+          (v) => div(v.k!, v.e!),
+          '{k} ÷ {e}',
+          'The top is ed: divide it by e to find the directrix distance.',
+        ],
+      }),
       rel(
         'R = ed ÷ (1 − e)',
         '{R} = {e} × {d} ÷ (1 − {e})',
@@ -5324,18 +5605,14 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           R: [(v) => 2 * v.a! - v.S!, '2 × {a} − {S}', 'The major axis minus the near distance.'],
         },
       ),
-      rel(
-        'c = (R − S) ÷ 2',
-        '{c} = ({R} − {S}) ÷ 2',
-        ['c', 'R', 'S'],
-        (v) => 2 * v.c! - (v.R! - v.S!),
-        {
-          c: [
-            (v) => (v.R! - v.S!) / 2,
-            '({R} − {S}) ÷ 2',
-            'The center is halfway between the vertices, (R − S) ÷ 2 from the focus.',
-          ],
-        },
+      derive(
+        'c = ae',
+        '{c} = {a} × {e}',
+        'c',
+        ['a', 'e'],
+        (v) => v.a! * v.e!,
+        '{a} × {e}',
+        'The center is ae from the focus: e is the share of a between the center and the focus.',
       ),
       derive(
         'b = √(RS)',
@@ -5347,8 +5624,8 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
         'b² = a² − c² = (a + c)(a − c), and a + c = R, a − c = S.',
       ),
     ),
-    example: { e: 0.5, d: 6, R: 6, S: 2, a: 4, c: 2, b: Math.sqrt(12) },
-    startWith: ['e', 'd'],
+    example: { e: 0.5, k: 3, d: 6, R: 6, S: 2, a: 4, c: 2, b: Math.sqrt(12) },
+    startWith: ['e', 'k'],
     representation: {
       kind: 'conicGraph',
       conic: 'ellipse',
@@ -5390,14 +5667,18 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
       }),
     ],
     ...rels(
-      derive(
-        'p = d ÷ 2',
-        '{p} = {d} ÷ 2',
+      withStep(
+        derive(
+          'p = d ÷ 2',
+          '{p} = {d} ÷ 2',
+          'p',
+          ['d'],
+          (v) => v.d! / 2,
+          '{d} ÷ 2',
+          'The vertex is halfway from the focus to the directrix.',
+        ),
         'p',
-        ['d'],
-        (v) => v.d! / 2,
-        '{d} ÷ 2',
-        'The vertex is halfway from the focus to the directrix.',
+        { note: (v) => (v.d === undefined ? '' : `→ the directrix is x = −${shown(v.d)}`) },
       ),
       hide(
         derive(
@@ -5428,8 +5709,8 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           ],
         },
       ),
-      polarPart('x', 'r', 't', 'cos', 'Across: r times the cosine of the angle.'),
-      polarPart('y', 'r', 't', 'sin', 'Up: r times the sine of the angle.'),
+      polarPartθ('x', 'r', 't', 'cos', 'Across: r times the cosine of the angle.'),
+      polarPartθ('y', 'r', 't', 'sin', 'Up: r times the sine of the angle.'),
     ),
     example: { d: 4, p: 2, t: 90, r: 4, x: 0, y: 4, h: -2 },
     startWith: ['d', 't'],
@@ -5477,42 +5758,72 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           'Turning the axes changes A, B and C but not B² − 4AC, so it names the conic.',
         ),
         'D',
+        // B ≠ 0 here, and a turned circle keeps B = 0: below 0 is an ellipse, never a circle.
         { note: (v) => (v.D === undefined ? '' : `→ ${conicByDiscriminant(v.D)}`) },
       ),
-      withCheck(
-        derive(
-          'tan 2θ = B ÷ (A − C)',
-          'tan(2 × {t}°) = {B} ÷ ({A} − {C})',
-          't',
-          ['A', 'B', 'C'],
-          (v) => {
-            if (v.B === 0) return undefined;
-            if (v.A === v.C) return 45;
-            const w = Math.atan(v.B! / (v.A! - v.C!)) / RAD;
-            return (w < 0 ? w + 180 : w) / 2;
-          },
-          (v: Values) =>
-            v.A === v.C
-              ? '90 ÷ 2'
-              : v.B! / (v.A! - v.C!) < 0
-                ? '(180 + tan⁻¹({B} ÷ ({A} − {C}))) ÷ 2'
-                : 'tan⁻¹({B} ÷ ({A} − {C})) ÷ 2',
-          'tan 2θ = B ÷ (A − C) is cot 2θ = (A − C) ÷ B turned over; add 180° to a negative 2θ, then halve.',
-        ),
-        (v) =>
-          v.A === v.C
-            ? `cos(2 × ${fmt(v.t!)}°) = 0`
-            : `tan(2 × ${fmt(v.t!)}°) = ${fmt(v.B!)} ÷ (${fmt(v.A!)} − ${par(v.C!)})`,
-      ),
-      limit(
-        'B ≠ 0',
-        'The xy term {B} is not 0',
-        ['B'],
-        (v) => v.B !== 0,
-        'B = 0: there is no xy term, so the axes need no turning.',
-      ),
+      turnAngle,
+      noXyTerm,
     ),
     example: { A: 4, B: 2, C: 2, D: -28, t: 22.5 },
+    startWith: ['A', 'B', 'C'],
+    representation: { kind: 'unitCircle', angle: 't', fixed: true },
+  },
+  {
+    id: 'm.12.polar-conics~rotated-equation',
+    title: 'The equation after turning the axes',
+    use: 'Use this for “Turn the axes to remove the xy term of 4x² + 2xy + 2y² = 1 and write the equation in x′ and y′.”',
+    assumptions: [
+      'Turning by θ puts x = x′ cos θ − y′ sin θ and y = x′ sin θ + y′ cos θ into the equation.',
+      'With tan 2θ = B ÷ (A − C) the x′y′ term is 0, leaving A′x′² + C′y′² = −F.',
+      'A′ + C′ = A + C: a quick check on the arithmetic.',
+    ],
+    variables: [
+      V('A', 'A', 'Number before x²', { min: -1000, max: 1000, step: 0.01 }),
+      V('B', 'B', 'Number before xy', { min: -1000, max: 1000, step: 0.01 }),
+      V('C', 'C', 'Number before y²', { min: -1000, max: 1000, step: 0.01 }),
+      deg('t', 'θ', 'Angle to turn the axes', 0, 90, { derived: true }),
+      V('P', 'A′', 'Number before x′²', { min: -3000, max: 3000, step: 0.0001, derived: true }),
+      V('Q', 'C′', 'Number before y′²', { min: -3000, max: 3000, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      turnAngle,
+      noXyTerm,
+      derive(
+        'A′ = A cos²θ + B sin θ cos θ + C sin²θ',
+        '{P} = {A} × cos({t}°)² + {B} × sin({t}°) × cos({t}°) + {C} × sin({t}°)²',
+        'P',
+        ['A', 'B', 'C', 't'],
+        (v) => v.A! * cosd(v.t!) ** 2 + v.B! * sind(v.t!) * cosd(v.t!) + v.C! * sind(v.t!) ** 2,
+        '{A} × cos({t}°)² + {B} × sin({t}°) × cos({t}°) + {C} × sin({t}°)²',
+        'Put x = x′ cos θ − y′ sin θ and y = x′ sin θ + y′ cos θ in, and collect the x′² terms.',
+      ),
+      withStep(
+        derive(
+          'C′ = A sin²θ − B sin θ cos θ + C cos²θ',
+          '{Q} = {A} × sin({t}°)² − {B} × sin({t}°) × cos({t}°) + {C} × cos({t}°)²',
+          'Q',
+          ['A', 'B', 'C', 't'],
+          (v) => v.A! * sind(v.t!) ** 2 - v.B! * sind(v.t!) * cosd(v.t!) + v.C! * cosd(v.t!) ** 2,
+          '{A} × sin({t}°)² − {B} × sin({t}°) × cos({t}°) + {C} × cos({t}°)²',
+          'Collect the y′² terms the same way; the signs of the sines change.',
+        ),
+        'Q',
+        {
+          note: (v) =>
+            v.P === undefined || v.Q === undefined
+              ? ''
+              : `→ ${fmt(v.P)}x′² + ${fmt(v.Q)}y′² + F = 0, with A′ + C′ = A + C`,
+        },
+      ),
+    ),
+    example: {
+      A: 4,
+      B: 2,
+      C: 2,
+      t: 22.5,
+      P: 3 + Math.SQRT2,
+      Q: 3 - Math.SQRT2,
+    },
     startWith: ['A', 'B', 'C'],
     representation: { kind: 'unitCircle', angle: 't', fixed: true },
   },
@@ -5542,14 +5853,36 @@ const zeroVar = V('z', 'z', 'Zero of the top', {
   derived: true,
   hidden: true,
 });
-/** a ≠ 0 (the graph is drawn from the top's zero). */
-const topHasX = limit(
-  'a ≠ 0',
-  'The top {a}x + b has an x term',
-  ['a'],
-  (v) => v.a !== 0,
-  'This page draws the graph from the zero of the top, so the top needs an x term (a not 0).',
+/** The graph's scale: the top's x term, or the number alone when the top has none. */
+const leadVar = V('L', 'L', 'Leading number of the top', {
+  min: -1000,
+  max: 1000,
+  step: 0.01,
+  derived: true,
+  hidden: true,
+});
+const topLead = hide(
+  derive(
+    'L = a, or b when a = 0',
+    '{L} = {a} or {b}',
+    'L',
+    ['a', 'b'],
+    (v) => (v.a !== 0 ? v.a! : v.b!),
+    '{a}',
+    'The top’s leading number, to draw the graph.',
+  ),
 );
+/** The top ax + b is not 0 (then there is nothing to split). */
+const topNotZero = limit(
+  'top ≠ 0',
+  'The top {a}x + {b} is not 0',
+  ['a', 'b'],
+  (v) => v.a !== 0 || v.b !== 0,
+  'The top is 0, so the fraction is 0 everywhere: there is nothing to split.',
+);
+
+/** x² + jx + k at x. */
+const quadAt = (v: Values, x: number) => x ** 2 + v.j! * x + v.k!;
 
 const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
   // ── m.12.partial-fractions (A-APR.7 carried on) ──
@@ -5559,15 +5892,17 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       '(ax + b) ÷ ((x − p)(x − q)) = A ÷ (x − p) + B ÷ (x − q): one fraction for each linear factor.',
       'Cover-up: multiply by (x − p) and put x = p, so the B term drops out and A is left.',
       'Check by adding the two fractions back over the common bottom.',
+      'If the top’s degree is not less than the bottom’s, divide first and split the remainder.',
     ],
     variables: [
       coef('a', 'a', 'Number before x on top'),
       coef('b', 'b', 'Number on top'),
       coef('p', 'p', 'Zero of the first factor', 100),
       coef('q', 'q', 'Zero of the second factor', 100),
-      coef('A', 'A', 'Top of the first fraction', 1000000),
-      coef('B', 'B', 'Top of the second fraction', 1000000),
+      coef('A', 'A', 'Top of the first fraction', 1000000, { fraction: 200 }),
+      coef('B', 'B', 'Top of the second fraction', 1000000, { fraction: 200 }),
       zeroVar,
+      leadVar,
     ],
     ...rels(
       rel(
@@ -5613,15 +5948,16 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         (v) => v.p !== v.q,
         'p = q is a repeated factor, (x − p)²: it needs A ÷ (x − p) + B ÷ (x − p)², the repeated-factor page.',
       ),
-      topHasX,
+      topNotZero,
       topZero,
+      topLead,
     ),
-    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3, z: -0.2 },
+    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3, z: -0.2, L: 5 },
     startWith: ['a', 'b', 'p', 'q'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'a',
+      a: 'L',
       zeros: ['z'],
       poles: ['p', 'q'],
       marks: ['asymptotes'],
@@ -5644,6 +5980,7 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       coef('A', 'A', 'Top over (x − p)'),
       coef('B', 'B', 'Top over (x − p)²', 200000),
       zeroVar,
+      leadVar,
     ],
     ...rels(
       rel('A = a', '{A} = {a}', ['A', 'a'], (v) => v.A! - v.a!, {
@@ -5665,15 +6002,16 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
           p: [(v) => div(v.B! - v.b!, v.a!), '({B} − {b}) ÷ {a}', 'Take b from B, divide by a.'],
         },
       ),
-      topHasX,
+      topNotZero,
       topZero,
+      topLead,
     ),
-    example: { a: 3, b: -1, p: 2, A: 3, B: 5, z: 1 / 3 },
+    example: { a: 3, b: -1, p: 2, A: 3, B: 5, z: 1 / 3, L: 3 },
     startWith: ['a', 'b', 'p'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'a',
+      a: 'L',
       zeros: ['z'],
       poles: ['p', 'p'],
       marks: ['asymptotes'],
@@ -5685,16 +6023,22 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
     title: 'A quadratic factor',
     use: 'Use this for “Write (3x² − 2x + 3) ÷ ((x − 1)(x² + 1)) as partial fractions.”',
     assumptions: [
-      'A factor x² + k that doesn’t split gets a linear top: A ÷ (x − p) + (Bx + C) ÷ (x² + k).',
+      'A factor x² + jx + k that doesn’t split (j² < 4k) gets a linear top: A ÷ (x − p) + (Bx + C) ÷ (x² + jx + k).',
       'Cover up (x − p) and put x = p for A; then match the x² and x terms for B and C.',
       'The number terms must match too: Ak − Cp = c is the check.',
     ],
     variables: [
-      coef('a', 'a', 'Number before x² on top'),
-      coef('b', 'b', 'Number before x on top'),
-      coef('c', 'c', 'Number on top'),
+      coef('a', 'a', 'Number before x² on top', 1000, { group: 'top' }),
+      coef('b', 'b', 'Number before x on top', 1000, { group: 'top' }),
+      coef('c', 'c', 'Number on top', 1000, { group: 'top' }),
       coef('p', 'p', 'Zero of the linear factor', 100),
-      V('k', 'k', 'Number in x² + k', { min: 0.01, max: 100, step: 0.01 }),
+      coef('j', 'j', 'Number before x in the quadratic factor', 20, { group: 'quadratic' }),
+      V('k', 'k', 'Number alone in the quadratic factor', {
+        min: 0.01,
+        max: 100,
+        step: 0.01,
+        group: 'quadratic',
+      }),
       coef('A', 'A', 'Top over (x − p)', 1000000),
       coef('B', 'B', 'Number before x over x² + k', 1000000),
       coef('C', 'C', 'Number over x² + k', 100000000),
@@ -5702,13 +6046,20 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       coef('y', 'y', 'The fraction’s value at x', 1e12, { derived: true }),
     ],
     ...rels(
+      limit(
+        'j² < 4k',
+        '{j}² is less than 4 × {k}',
+        ['j', 'k'],
+        (v) => v.j! ** 2 < 4 * v.k!,
+        'With j² ≥ 4k the quadratic splits into linear factors: use one fraction for each of them instead.',
+      ),
       derive(
-        'A = (ap² + bp + c) ÷ (p² + k)',
-        '{A} = ({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {k})',
+        'A = (ap² + bp + c) ÷ (p² + jp + k)',
+        '{A} = ({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {j} × {p} + {k})',
         'A',
-        ['a', 'p', 'b', 'c', 'k'],
-        (v) => div(v.a! * v.p! ** 2 + v.b! * v.p! + v.c!, v.p! ** 2 + v.k!),
-        '({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {k})',
+        ['a', 'p', 'b', 'c', 'j', 'k'],
+        (v) => div(v.a! * v.p! ** 2 + v.b! * v.p! + v.c!, v.p! ** 2 + v.j! * v.p! + v.k!),
+        '({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {j} × {p} + {k})',
         'Cover up (x − p) and put x = p: the top over what is left of the bottom.',
       ),
       derive(
@@ -5718,17 +6069,17 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         ['a', 'A'],
         (v) => v.a! - v.A!,
         '{a} − {A}',
-        'The x² terms: A(x² + k) + (Bx + C)(x − p) has (A + B)x², so A + B = a.',
+        'The x² terms: A(x² + jx + k) + (Bx + C)(x − p) has (A + B)x², so A + B = a.',
       ),
       withStep(
         derive(
-          'C = b + Bp',
-          '{C} = {b} + {B} × {p}',
+          'C = b + Bp − Aj',
+          '{C} = {b} + {B} × {p} − {A} × {j}',
           'C',
-          ['b', 'B', 'p'],
-          (v) => v.b! + v.B! * v.p!,
-          '{b} + {B} × {p}',
-          'The x terms: (Bx + C)(x − p) gives (C − Bp)x, so C − Bp = b.',
+          ['b', 'B', 'p', 'A', 'j'],
+          (v) => v.b! + v.B! * v.p! - v.A! * v.j!,
+          '{b} + {B} × {p} − {A} × {j}',
+          'The x terms: Ajx from the first fraction and (C − Bp)x from the second, so Aj + C − Bp = b.',
         ),
         'C',
         {
@@ -5740,15 +6091,14 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       ),
       withStep(
         rel(
-          'y = (ax² + bx + c) ÷ ((x − p)(x² + k))',
-          '{y} = ({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {k}))',
-          ['y', 'a', 'x', 'b', 'c', 'p', 'k'],
-          (v) =>
-            v.y! * (v.x! - v.p!) * (v.x! ** 2 + v.k!) - (v.a! * v.x! ** 2 + v.b! * v.x! + v.c!),
+          'y = (ax² + bx + c) ÷ ((x − p)(x² + jx + k))',
+          '{y} = ({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {j} × {x} + {k}))',
+          ['y', 'a', 'x', 'b', 'c', 'p', 'j', 'k'],
+          (v) => v.y! * (v.x! - v.p!) * quadAt(v, v.x!) - (v.a! * v.x! ** 2 + v.b! * v.x! + v.c!),
           {
             y: [
-              (v) => div(v.a! * v.x! ** 2 + v.b! * v.x! + v.c!, (v.x! - v.p!) * (v.x! ** 2 + v.k!)),
-              '({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {k}))',
+              (v) => div(v.a! * v.x! ** 2 + v.b! * v.x! + v.c!, (v.x! - v.p!) * quadAt(v, v.x!)),
+              '({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {j} × {x} + {k}))',
               'The fraction at one x; the two partial fractions add to the same number there.',
             ],
           },
@@ -5761,20 +6111,30 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         ),
         'y',
         {
+          // The top and the bottom once each, then the quotient.
+          work: (v) => {
+            const top = v.a! * v.x! ** 2 + v.b! * v.x! + v.c!;
+            const bottom = (v.x! - v.p!) * quadAt(v, v.x!);
+            return [
+              `(${shown(v.a!)} × ${shown(v.x! ** 2)}) + (${par(v.b!)} × ${par(v.x!)}) + ${par(v.c!)} = ${fmt(top)}`,
+              `${par(v.x! - v.p!)} × ${par(quadAt(v, v.x!))} = ${fmt(bottom)}`,
+              `y = ${par(top)} ÷ ${par(bottom)}`,
+            ];
+          },
           note: (v) =>
-            [v.A, v.B, v.C, v.x, v.p, v.k].some((x) => x === undefined)
+            [v.A, v.B, v.C, v.x, v.p, v.j, v.k].some((x) => x === undefined)
               ? ''
-              : `→ the partial fractions: ${fmt(v.A!)} ÷ ${par(v.x! - v.p!)} + ${par(v.B! * v.x! + v.C!)} ÷ ${fmt(v.x! ** 2 + v.k!)} = ${fmt(v.A! / (v.x! - v.p!) + (v.B! * v.x! + v.C!) / (v.x! ** 2 + v.k!))}`,
+              : `→ the partial fractions: ${fmt(v.A!)} ÷ ${par(v.x! - v.p!)} + ${par(v.B! * v.x! + v.C!)} ÷ ${fmt(quadAt(v, v.x!))} = ${fmt(v.A! / (v.x! - v.p!) + (v.B! * v.x! + v.C!) / quadAt(v, v.x!))}`,
         },
       ),
     ),
-    example: { a: 3, b: -2, c: 3, p: 1, k: 1, A: 2, B: 1, C: -1, x: 2, y: 11 / 5 },
-    startWith: ['a', 'b', 'c', 'p', 'k', 'x'],
+    example: { a: 3, b: -2, c: 3, p: 1, j: 0, k: 1, A: 2, B: 1, C: -1, x: 2, y: 11 / 5 },
+    startWith: ['a', 'b', 'c', 'p', 'j', 'k', 'x'],
     representation: {
       kind: 'table',
       sweep: 'x',
       output: 'y',
-      params: ['a', 'b', 'c', 'p', 'k'],
+      params: ['a', 'b', 'c', 'p', 'j', 'k'],
       rows: (v: Values) => [-2, -1, 0, 1, 2, 3, 4].filter((x) => x !== v.p).slice(0, 5),
     },
   },
@@ -5799,14 +6159,26 @@ interface SumFormula {
   term: string;
   /** Extra inputs (the ratio r). */
   more?: string[];
+  /** The inductive step in letters: formula at k + next term = formula at k + 1. */
+  algebra: string[];
 }
-function inductionRels({ S, a, F, what, term, more = [] }: SumFormula): Rel[] {
+function inductionRels({ S, a, F, what, term, more = [], algebra }: SumFormula): Rel[] {
   const sym = (d: string) => d.replace(/\{(\w+)\}/g, '$1');
   return [
-    rel(`S = ${sym(S[0])}`, `{S} = ${S[0]}`, ['S', 'n', ...more], (v) => v.S! - S[1](v), {
-      S: [S[1], S[0], `The formula at n: ${what}.`],
-      ...(S[2] ? { n: S[2] } : {}),
-    }),
+    withStep(
+      rel(`S = ${sym(S[0])}`, `{S} = ${S[0]}`, ['S', 'n', ...more], (v) => v.S! - S[1](v), {
+        S: [S[1], S[0], `The formula at n: ${what}.`],
+        ...(S[2] ? { n: S[2] } : {}),
+      }),
+      'S',
+      {
+        // At n = 1 the sum is its first term alone: the base case, left side against right.
+        note: (v) =>
+          v.n === 1 && v.S !== undefined
+            ? `→ base case: the left side is the first term, 1, and the formula gives ${fmt(v.S)}`
+            : '',
+      },
+    ),
     derive(
       `a = ${sym(a[0])}`,
       `{a} = ${a[0]}`,
@@ -5837,6 +6209,7 @@ function inductionRels({ S, a, F, what, term, more = [] }: SumFormula): Rel[] {
       ),
       'F',
       {
+        work: algebra.map((line) => `With k for n: ${line}`),
         note: (v) =>
           v.T === undefined || v.F === undefined
             ? ''
@@ -5885,6 +6258,7 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         F: ['({n} + 1) × ({n} + 2) ÷ 2', (v) => ((v.n! + 1) * (v.n! + 2)) / 2],
         what: '1 + 2 + … + n = n(n + 1)/2',
         term: 'the number n + 1 itself',
+        algebra: ['k(k + 1)/2 + (k + 1) = (k + 1)(k + 2)/2'],
       }),
     ),
     example: { n: 4, S: 10, a: 5, T: 15, F: 15 },
@@ -5920,6 +6294,7 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         F: ['({n} + 1)²', (v) => (v.n! + 1) ** 2],
         what: '1 + 3 + … + (2n − 1) = n²',
         term: '2(n + 1) − 1 = 2n + 1',
+        algebra: ['k² + (2k + 1) = (k + 1)²'],
       }),
     ),
     example: { n: 5, S: 25, a: 11, T: 36, F: 36 },
@@ -5958,6 +6333,7 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         F: ['({r}^({n} + 1) − 1) ÷ ({r} − 1)', (v) => (v.r! ** (v.n! + 1) - 1) / (v.r! - 1)],
         what: '1 + r + … + rⁿ⁻¹ = (rⁿ − 1)/(r − 1)',
         term: 'r to the power n',
+        algebra: ['(rᵏ − 1)/(r − 1) + rᵏ = (rᵏ⁺¹ − 1)/(r − 1)'],
         more: ['r'],
       }),
     ),
@@ -5993,6 +6369,10 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         ],
         what: '1² + 2² + … + n² = n(n + 1)(2n + 1)/6',
         term: '(n + 1)²',
+        algebra: [
+          'k(k + 1)(2k + 1)/6 + (k + 1)² = (k + 1)(2k² + 7k + 6)/6',
+          '(k + 1)(2k² + 7k + 6)/6 = (k + 1)(k + 2)(2k + 3)/6',
+        ],
       }),
     ),
     example: { n: 3, S: 14, a: 16, T: 30, F: 30 },
@@ -6003,6 +6383,94 @@ const MATH_12_INDUCTION: ModuleDef[] = [
       output: 'S',
       params: [],
       rows: (v: Values) => [1, 2, 3, 4, 5].map((i) => Math.max(0, (v.n ?? 3) - 3) + i),
+    },
+  },
+  {
+    id: 'm.12.induction~divisible',
+    title: 'A divisibility proof',
+    use: 'Use this for “Prove that n³ − n is divisible by 3 for every whole number n ≥ 1.”',
+    assumptions: [
+      'Base case: at n = 1, 1³ − 1 = 0, and 0 = 3 × 0 is divisible by 3.',
+      'Step: f(k + 1) = f(k) + 3k(k + 1), so if 3 divides f(k) it divides f(k + 1).',
+      'The numbers check the step at one n; the algebra with k proves every case.',
+    ],
+    variables: [
+      count(30),
+      V('f', 'f(n)', 'n³ − n', { integer: true, min: 0, max: 27000, derived: true }),
+      V('g', 'f(n) ÷ 3', 'f(n) divided by 3', { integer: true, min: 0, max: 9000, derived: true }),
+      V('F', 'f(n + 1)', 'The next one, (n + 1)³ − (n + 1)', {
+        integer: true,
+        min: 6,
+        max: 30000,
+        derived: true,
+      }),
+      V('D', 'D', 'The jump f(n + 1) − f(n)', { integer: true, min: 6, max: 3000, derived: true }),
+    ],
+    ...rels(
+      withStep(
+        derive(
+          'f(n) = n³ − n',
+          '{f} = {n}³ − {n}',
+          'f',
+          ['n'],
+          (v) => v.n! ** 3 - v.n!,
+          '{n}³ − {n}',
+          'Put n into the expression.',
+        ),
+        'f',
+        {
+          note: (v) => (v.n === 1 ? '→ base case: 0 = 3 × 0, a multiple of 3' : ''),
+        },
+      ),
+      derive(
+        'f(n) ÷ 3',
+        '{g} = {f} ÷ 3',
+        'g',
+        ['f'],
+        (v) => v.f! / 3,
+        '{f} ÷ 3',
+        'A whole number: 3 divides f(n) at this n.',
+      ),
+      derive(
+        'f(n + 1) = (n + 1)³ − (n + 1)',
+        '{F} = ({n} + 1)³ − ({n} + 1)',
+        'F',
+        ['n'],
+        (v) => (v.n! + 1) ** 3 - (v.n! + 1),
+        '({n} + 1)³ − ({n} + 1)',
+        'The expression at the next whole number.',
+      ),
+      withStep(
+        derive(
+          'D = f(n + 1) − f(n)',
+          '{D} = {F} − {f}',
+          'D',
+          ['F', 'f'],
+          (v) => v.F! - v.f!,
+          '{F} − {f}',
+          'The step: how much the expression grows from n to n + 1.',
+        ),
+        'D',
+        {
+          work: (v) => [
+            `3 × ${shown(v.n!)} × ${shown(v.n! + 1)} = ${shown(3 * v.n! * (v.n! + 1))}`,
+            'With k for n: (k + 1)³ − (k + 1) − (k³ − k) = 3k² + 3k = 3k(k + 1)',
+          ],
+          note: (v) =>
+            v.D === undefined
+              ? ''
+              : `→ the jump is 3n(n + 1), a multiple of 3: f(n) + ${shown(v.D)} stays a multiple of 3`,
+        },
+      ),
+    ),
+    example: { n: 4, f: 60, g: 20, F: 120, D: 60 },
+    startWith: ['n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'g',
+      params: [],
+      rows: (v: Values) => [1, 2, 3, 4, 5].map((i) => Math.max(0, (v.n ?? 4) - 3) + i),
     },
   },
 ];
@@ -6019,11 +6487,16 @@ const widthOf = derive(
   '{b} ÷ {n}',
   'Cut 0 to b into n strips of equal width.',
 );
-/** After the rectangles' sum: the more of them, the closer to the exact area. */
+/** Once the exact area is known, S against it: the more rectangles, the closer. */
 const towardA = (v: Values) =>
   v.S === undefined || v.A === undefined
     ? ''
-    : `→ ${v.S > v.A ? 'above' : v.S < v.A ? 'below' : 'equal to'} the exact area; more rectangles bring S closer to it`;
+    : Math.abs(v.S - v.A) <= 1e-9 * Math.max(1, Math.abs(v.A))
+      ? '→ S equals the exact area: a flat line is covered exactly'
+      : `→ S = ${fmt(v.S)} is ${v.S > v.A ? 'above' : 'below'} the exact area; more rectangles bring S closer to it`;
+
+/** The limit of (pnʲ + q) ÷ (rnᵏ + s): p ÷ r for equal powers, 0 for a bigger bottom, none else. */
+const degreeLimit = (v: Values) => (v.j === v.k ? div(v.p!, v.r!) : v.j! < v.k! ? 0 : undefined);
 
 const MATH_12_AREA: ModuleDef[] = [
   // ── m.12.area-under-curve (Larson 12.4–12.5) ──
@@ -6060,26 +6533,44 @@ const MATH_12_AREA: ModuleDef[] = [
           'Each rectangle is w wide and c(iw)² tall; adding them gives cw³(1² + 2² + … + n²).',
         ),
         'S',
-        { note: towardA },
-      ),
-      rel(
-        'A = cb³ ÷ 3',
-        '{A} = {c} × {b}³ ÷ 3',
-        ['A', 'c', 'b'],
-        (v) => v.A! - (v.c! * v.b! ** 3) / 3,
         {
-          A: [
-            (v) => (v.c! * v.b! ** 3) / 3,
-            '{c} × {b}³ ÷ 3',
-            'The limit as n → ∞: n(n + 1)(2n + 1) ÷ n³ goes to 2, so S goes to cb³ × 2 ÷ 6.',
-          ],
-          b: [
-            (v) => Math.cbrt((3 * v.A!) / v.c!),
-            '∛(3 × {A} ÷ {c})',
-            'Multiply by 3, divide by c, then take the cube root.',
-          ],
-          c: [(v) => div(3 * v.A!, v.b! ** 3), '3 × {A} ÷ {b}³', 'Multiply by 3, divide by b³.'],
+          // The sum of squares is the idea of the step: work it out as a number first.
+          work: (v) => {
+            const sq = (v.n! * (v.n! + 1) * (2 * v.n! + 1)) / 6;
+            return [
+              `${shown(v.n!)} × ${shown(v.n! + 1)} × ${shown(2 * v.n! + 1)} ÷ 6 = ${shown(sq)}`,
+              `S = ${shown(v.c!)} × ${shown(v.w!)}³ × ${shown(sq)}`,
+              `S = ${shown(exact(v.c! * v.w! ** 3))} × ${shown(sq)}`,
+            ];
+          },
+          note: (v) =>
+            v.n === undefined
+              ? ''
+              : `→ ${shown((v.n * (v.n + 1) * (2 * v.n + 1)) / 6)} is 1² + 2² + … + ${shown(v.n)}²`,
         },
+      ),
+      withStep(
+        rel(
+          'A = cb³ ÷ 3',
+          '{A} = {c} × {b}³ ÷ 3',
+          ['A', 'c', 'b'],
+          (v) => v.A! - (v.c! * v.b! ** 3) / 3,
+          {
+            A: [
+              (v) => (v.c! * v.b! ** 3) / 3,
+              '{c} × {b}³ ÷ 3',
+              'The limit as n → ∞: n(n + 1)(2n + 1) ÷ n³ goes to 2, so S goes to cb³ × 2 ÷ 6.',
+            ],
+            b: [
+              (v) => Math.cbrt((3 * v.A!) / v.c!),
+              '∛(3 × {A} ÷ {c})',
+              'Multiply by 3, divide by c, then take the cube root.',
+            ],
+            c: [(v) => div(3 * v.A!, v.b! ** 3), '3 × {A} ÷ {b}³', 'Multiply by 3, divide by b³.'],
+          },
+        ),
+        'A',
+        { note: towardA },
       ),
     ),
     example: { c: 1, b: 3, n: 6, w: 0.5, S: 11.375, A: 9 },
@@ -6120,27 +6611,27 @@ const MATH_12_AREA: ModuleDef[] = [
     ],
     ...rels(
       widthOf,
+      derive(
+        'S = mw² × n(n + 1) ÷ 2 + kb',
+        '{S} = {m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+        'S',
+        ['m', 'w', 'n', 'k', 'b'],
+        (v) => (v.m! * v.w! ** 2 * v.n! * (v.n! + 1)) / 2 + v.k! * v.b!,
+        '{m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+        'Each rectangle is w by m(iw) + k; the m parts add to mw²(1 + 2 + … + n), the k parts to kb.',
+      ),
       withStep(
         derive(
-          'S = mw² × n(n + 1) ÷ 2 + kb',
-          '{S} = {m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
-          'S',
-          ['m', 'w', 'n', 'k', 'b'],
-          (v) => (v.m! * v.w! ** 2 * v.n! * (v.n! + 1)) / 2 + v.k! * v.b!,
-          '{m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
-          'Each rectangle is w by m(iw) + k; the m parts add to mw²(1 + 2 + … + n), the k parts to kb.',
+          'A = mb² ÷ 2 + kb',
+          '{A} = {m} × {b}² ÷ 2 + {k} × {b}',
+          'A',
+          ['m', 'b', 'k'],
+          (v) => (v.m! * v.b! ** 2) / 2 + v.k! * v.b!,
+          '{m} × {b}² ÷ 2 + {k} × {b}',
+          'The limit: n(n + 1) ÷ n² goes to 1. It is also the trapezoid with heights k and mb + k.',
         ),
-        'S',
-        { note: towardA },
-      ),
-      derive(
-        'A = mb² ÷ 2 + kb',
-        '{A} = {m} × {b}² ÷ 2 + {k} × {b}',
         'A',
-        ['m', 'b', 'k'],
-        (v) => (v.m! * v.b! ** 2) / 2 + v.k! * v.b!,
-        '{m} × {b}² ÷ 2 + {k} × {b}',
-        'The limit: n(n + 1) ÷ n² goes to 1. It is also the trapezoid with heights k and mb + k.',
+        { note: towardA },
       ),
       limit(
         'mb + k ≥ 0',
@@ -6172,9 +6663,9 @@ const MATH_12_AREA: ModuleDef[] = [
     ],
     variables: [
       coef('p', 'p', 'Number before n on top', 100),
-      coef('q', 'q', 'Number on top', 1000),
+      coef('q', 'q', 'Constant on top', 1000),
       coef('r', 'r', 'Number before n in the bottom', 100),
-      coef('s', 's', 'Number in the bottom', 1000),
+      coef('s', 's', 'Constant in the bottom', 1000),
       V('n', 'n', 'Term number', { integer: true, min: 1, max: 1000000 }),
       coef('a', 'aₙ', 'Term n', 1e9),
       coef('L', 'L', 'Limit', 1e6, { derived: true }),
@@ -6226,6 +6717,97 @@ const MATH_12_AREA: ModuleDef[] = [
       rows: [1, 10, 100, 1000, 10000],
     },
   },
+  {
+    id: 'm.12.area-under-curve~degrees',
+    title: 'Limits at infinity by degree',
+    use: 'Use this for “Find the limit of (2n² + 1) ÷ (n² − 3) as n → ∞, or say there is none.”',
+    assumptions: [
+      'Divide the top and bottom by the bottom’s highest power of n; every term with n left under it goes to 0.',
+      'Same power on top and bottom: the limit is the ratio of the leading numbers. A higher power in the bottom: 0.',
+      'A higher power on top: the terms grow without bound, so there is no limit.',
+    ],
+    variables: [
+      coef('p', 'p', 'Leading number on top', 100),
+      V('j', 'j', 'Power of n on top', { integer: true, min: 0, max: 3 }),
+      coef('q', 'q', 'Constant on top', 1000),
+      coef('r', 'r', 'Leading number in the bottom', 100),
+      V('k', 'k', 'Power of n in the bottom', { integer: true, min: 0, max: 3 }),
+      coef('s', 's', 'Constant in the bottom', 1000),
+      V('n', 'n', 'Term number', { integer: true, min: 1, max: 1000000 }),
+      coef('a', 'aₙ', 'Term n', 1e21),
+      coef('L', 'L', 'Limit', 1e6, { derived: true }),
+    ],
+    ...rels(
+      rel(
+        'aₙ = (pnʲ + q) ÷ (rnᵏ + s)',
+        '{a} = ({p} × {n}^{j} + {q}) ÷ ({r} × {n}^{k} + {s})',
+        ['a', 'p', 'n', 'j', 'q', 'r', 'k', 's'],
+        (v) => v.a! * (v.r! * v.n! ** v.k! + v.s!) - (v.p! * v.n! ** v.j! + v.q!),
+        {
+          a: [
+            (v) => div(v.p! * v.n! ** v.j! + v.q!, v.r! * v.n! ** v.k! + v.s!),
+            '({p} × {n}^{j} + {q}) ÷ ({r} × {n}^{k} + {s})',
+            'Put n into the rule.',
+          ],
+        },
+        {
+          message: (v) =>
+            [v.r, v.n, v.k, v.s].every((x) => x !== undefined) && v.r! * v.n! ** v.k! + v.s! === 0
+              ? 'The bottom is 0 for this n: that term doesn’t exist.'
+              : undefined,
+        },
+      ),
+      withStep(
+        withCheck(
+          rel(
+            'L by degree',
+            '{L} = {p} ÷ {r} if {j} = {k}, 0 if {j} < {k}',
+            ['L', 'p', 'j', 'r', 'k'],
+            (v) => v.L! - (degreeLimit(v) ?? NaN),
+            {
+              L: [
+                (v) => degreeLimit(v),
+                (v: Values) => (v.j === v.k ? '{p} ÷ {r}' : '0'),
+                'Compare the powers: equal gives the leading numbers’ ratio, a higher power in the bottom gives 0.',
+              ],
+            },
+            {
+              explain: (v) =>
+                v.j !== undefined && v.k !== undefined && v.j > v.k
+                  ? 'The top’s power is higher, so the terms grow without bound: there is no limit.'
+                  : undefined,
+            },
+          ),
+          (v) => (v.j === v.k ? `${fmt(v.L!)} = ${fmt(v.p!)} ÷ ${par(v.r!)}` : `${fmt(v.L!)} = 0`),
+        ),
+        'L',
+        {
+          note: (v) =>
+            v.j === undefined || v.k === undefined
+              ? ''
+              : v.j === v.k
+                ? '→ equal powers: divide by the power and only the leading numbers are left'
+                : '→ the bottom’s power is higher: the bottom outgrows the top',
+        },
+      ),
+      limit(
+        'p ≠ 0, r ≠ 0',
+        'The leading numbers {p} and {r} are not 0',
+        ['p', 'r'],
+        (v) => v.p !== 0 && v.r !== 0,
+        'A leading number of 0 means that power isn’t there: type the highest power the expression really has.',
+      ),
+    ),
+    example: { p: 2, j: 2, q: 1, r: 1, k: 2, s: -3, n: 10, a: 201 / 97, L: 2 },
+    startWith: ['p', 'j', 'q', 'r', 'k', 's', 'n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'a',
+      params: ['p', 'j', 'q', 'r', 'k', 's'],
+      rows: [1, 10, 100, 1000],
+    },
+  },
 ];
 
 // ── Inference for the slope of a regression line (added skill 19) ──
@@ -6273,12 +6855,64 @@ const slopeCurve = {
   fixed: true,
 } as const;
 
+/** The side of Hₐ, coded as a choice: 0 for ≠, 1 for >, −1 for <. */
+const sideVar = (what: string) =>
+  V('h', 'Hₐ', `Hₐ: ${what} ≠ 0 (0), > 0 (1) or < 0 (−1)`, {
+    integer: true,
+    min: -1,
+    max: 1,
+    allowed: [-1, 0, 1],
+  });
+/** The t tail Hₐ asks for: both tails past |t|, the right tail, or the left tail. */
+const tTail = (v: Values) =>
+  v.h === 0
+    ? 2 * (1 - tCdf(Math.abs(v.t!), v.df!))
+    : v.h! > 0
+      ? 1 - tCdf(v.t!, v.df!)
+      : tCdf(v.t!, v.df!);
+const tSided = withCheck(
+  derive(
+    'P = the t tail on the side of Hₐ',
+    '{P} = the tail past {t} on the side {h} names, df = {df}',
+    'P',
+    ['t', 'df', 'h'],
+    tTail,
+    (v: Values) =>
+      v.h === 0
+        ? '2 × (1 − tcdf(|{t}|, {df}))'
+        : v.h! > 0
+          ? '1 − tcdf({t}, {df})'
+          : 'tcdf({t}, {df})',
+    'Hₐ ≠ counts both tails past |t|; Hₐ > the area right of t; Hₐ < the area left of t (tcdf is the area left).',
+  ),
+  (v) => {
+    const [t, df] = [shown(v.t!), shown(v.df!)];
+    const P = shown(v.P!);
+    return v.h === 0
+      ? `${P} = 2 × (1 − tcdf(|${t}|, ${df}))`
+      : v.h! > 0
+        ? `${P} = 1 − tcdf(${t}, ${df})`
+        : `${P} = tcdf(${t}, ${df})`;
+  },
+);
+/** The decision in context: below α is convincing evidence of the relationship Hₐ names. */
+const decideSlope = (v: Values) => {
+  if (v.P === undefined || v.a === undefined) return '';
+  const kind = v.h === 1 ? 'a positive ' : v.h === -1 ? 'a negative ' : 'a ';
+  // A p-value is never 0: one the box rounds to 0 is written P < 0.0001.
+  const tiny = v.P < 0.0001 ? 'P < 0.0001, ' : '';
+  return v.P < v.a
+    ? `→ ${tiny}below α = ${fmt(v.a)}: reject H₀, convincing evidence of ${kind}linear relationship between x and y`
+    : `→ not below α = ${fmt(v.a)}: fail to reject H₀, not convincing evidence of ${kind}linear relationship`;
+};
+const slopeP = withStep(tSided, 'P', { note: decideSlope });
+
 const MATH_12_REGRESSION: ModuleDef[] = [
   // ── m.12.regression-inference (S-ID.8 carried on; AP Statistics unit 9) ──
   {
     id: 'm.12.regression-inference',
     assumptions: [
-      'H₀: β = 0 (no linear relationship) and Hₐ: β ≠ 0; b and SE_b come from the computer output.',
+      'H₀: β = 0 (no linear relationship); Hₐ is β ≠ 0, or β > 0 (β < 0) for a positive (negative) one.',
       't = b ÷ SE_b follows a t curve with df = n − 2.',
       'The points scatter evenly about a straight line, with residuals close to normal and independent.',
     ],
@@ -6288,10 +6922,11 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       pointsVar,
       dfVar,
       tVar(),
+      sideVar('β'),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
-    ...rels(dfLine, tSlope, decided(tTwoTail('P', 't', 'df'))),
+    ...rels(dfLine, tSlope, slopeP),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
       b: 0.8,
@@ -6299,10 +6934,11 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       n: 20,
       df: 18,
       t: 3.2,
+      h: 0,
       P: 2 * (1 - tCdf(3.2, 18)),
       a: 0.05,
     },
-    startWith: ['b', 'E', 'n', 'a'],
+    startWith: ['b', 'E', 'n', 'h', 'a'],
     representation: slopeCurve,
   },
   {
@@ -6372,7 +7008,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
     title: 'Is the correlation significant?',
     use: 'Use this for “r = 0.6 for 18 pairs of data. Is the correlation significant at 0.05?”',
     assumptions: [
-      'H₀: ρ = 0 (no linear relationship in the population) and Hₐ: ρ ≠ 0.',
+      'H₀: ρ = 0 (no linear relationship in the population); Hₐ is ρ ≠ 0, ρ > 0 or ρ < 0.',
       't = r√(n − 2) ÷ √(1 − r²), with df = n − 2: the same t as the slope test.',
       'The pairs are a random sample and the scatter follows a straight-line pattern.',
     ],
@@ -6381,6 +7017,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       pointsVar,
       dfVar,
       tVar(),
+      sideVar('ρ'),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
@@ -6399,11 +7036,11 @@ const MATH_12_REGRESSION: ModuleDef[] = [
           ],
         },
       ),
-      decided(tTwoTail('P', 't', 'df')),
+      slopeP,
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
-    example: { r: 0.6, n: 18, df: 16, t: 3, P: 2 * (1 - tCdf(3, 16)), a: 0.05 },
-    startWith: ['r', 'n', 'a'],
+    example: { r: 0.6, n: 18, df: 16, t: 3, h: 0, P: 2 * (1 - tCdf(3, 16)), a: 0.05 },
+    startWith: ['r', 'n', 'h', 'a'],
     representation: {
       kind: 'normalCurve',
       axis: 'Test statistic t if ρ = 0',
@@ -6447,7 +7084,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       ),
       tSlope,
       dfLine,
-      decided(tTwoTail('P', 't', 'df')),
+      withStep(tTwoTail('P', 't', 'df'), 'P', { note: (v) => decideSlope({ ...v, h: 0 }) }),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
@@ -6569,6 +7206,7 @@ const MATH_12_ANOVA: ModuleDef[] = [
       dfOf('d1', 'df₁', 'Degrees of freedom between groups'),
       ssVar('W', 'SSW', 'Sum of squares within groups'),
       dfOf('d2', 'df₂', 'Degrees of freedom within groups'),
+      V('T', 'SST', 'Total sum of squares', { min: 0.0002, max: 2e9, step: 0.01, derived: true }),
       msVar('M1', 'MSB', 'Mean square between groups', { derived: true }),
       msVar('M2', 'MSW', 'Mean square within groups', { derived: true }),
       fVar({ derived: true }),
@@ -6593,6 +7231,15 @@ const MATH_12_ANOVA: ModuleDef[] = [
         '{W} ÷ {d2}',
         'The spread inside the groups, pooled: SSW over its df.',
       ),
+      derive(
+        'SST = SSB + SSW',
+        '{T} = {B} + {W}',
+        'T',
+        ['B', 'W'],
+        (v) => v.B! + v.W!,
+        '{B} + {W}',
+        'The total spread of every value about the grand mean splits into between and within.',
+      ),
       fRatio,
       decided(fTailRel('d1', 'd2')),
     ),
@@ -6602,6 +7249,7 @@ const MATH_12_ANOVA: ModuleDef[] = [
       d1: 2,
       W: 72,
       d2: 12,
+      T: 132,
       M1: 30,
       M2: 6,
       F: 5,
@@ -6662,7 +7310,7 @@ const MATH_12_ANOVA: ModuleDef[] = [
         ['n', 'm1', 'm2', 'm3', 'g'],
         (v) => (v.n! * ((v.m1! - v.g!) ** 2 + (v.m2! - v.g!) ** 2 + (v.m3! - v.g!) ** 2)) / 2,
         '{n} × (({m1} − {g})² + ({m2} − {g})² + ({m3} − {g})²) ÷ 2',
-        'Each group’s mean is n values away from the grand mean; divide by df₁ = 2.',
+        'Each group mean stands for its n values, so its squared distance from the grand mean counts n times; divide by df₁ = 2.',
       ),
       derive(
         'MSW = (s₁² + s₂² + s₃²) ÷ 3',
@@ -6713,8 +7361,12 @@ const MATH_12_ANOVA: ModuleDef[] = [
     variables: [
       V('s1', 's₁', 'Larger sample SD', { min: 0.001, max: 100000, step: 0.01 }),
       V('s2', 's₂', 'Smaller sample SD', { min: 0.001, max: 100000, step: 0.01 }),
-      V('n1', 'n₁', 'First sample size', { integer: true, min: 2, max: 10000 }),
-      V('n2', 'n₂', 'Second sample size', { integer: true, min: 2, max: 10000 }),
+      V('n1', 'n₁', 'Size of the larger-SD sample', { integer: true, min: 2, max: 10000 }),
+      V('n2', 'n₂', 'Size of the smaller-SD sample', {
+        integer: true,
+        min: 2,
+        max: 10000,
+      }),
       dfOf('d1', 'df₁', 'Degrees of freedom on top', { derived: true }),
       dfOf('d2', 'df₂', 'Degrees of freedom underneath', { derived: true }),
       fVar({ derived: true }),

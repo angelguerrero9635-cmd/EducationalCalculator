@@ -16,8 +16,9 @@ const NUM = String.raw`-?\d+(?:\.\d+)?(?:e[-+]?\d+)?`;
 export const M12_PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // The t distribution, as a calculator writes it: tcdf(t, df) is P(T ≤ t) (a two-sided test
   // reads tcdf(|t|, df)), and invT(area, df) the t with that area to its left.
-  [new RegExp(`tcdf\\(abs\\((${NUM})\\), (${NUM})\\)`), (t, df) => tCdf(Math.abs(t), df)],
-  [new RegExp(`tcdf\\((${NUM}), (${NUM})\\)`), (t, df) => tCdf(t, df)],
+  // A t near 0 is shown in scientific notation (4.03 × 10⁻⁶ when SE_b dwarfs b).
+  [new RegExp(`tcdf\\(abs\\((${SCI}) ?\\), (${NUM})\\)`), (t, df) => tCdf(Math.abs(t), df)],
+  [new RegExp(`tcdf\\((${SCI}) ?, (${NUM})\\)`), (t, df) => tCdf(t, df)],
   [new RegExp(`invT\\((${NUM}), (${NUM})\\)`), (p, df) => invT(p, df)],
   // The F distribution's right tail, Fcdf(F, ∞, df₁, df₂) (ANOVA and two variances).
   [

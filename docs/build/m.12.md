@@ -248,7 +248,7 @@ None: every planned page is built, some with an interim picture (below).
   `~standard-error` takes s ≥ 0.001 and sₓ ≤ 10,000 so SE_b stays in range.
 - **The F distribution** is `fTail` in `math/12.ts` (an incomplete beta, a copy of statMath's
   private one), exported for the Fcdf phrase in `phrasesM12.ts`.
-- **Partial fractions need an x term on top (a ≠ 0)** on the two graph pages: the rational
+- **Partial fractions needed an x term on top (a ≠ 0)** (removed in the lesson-review fixes): the rational
   graph is drawn from the top's zero. A number alone on top waits on a picture need (below).
 
 ### Shared needs found while building
@@ -278,3 +278,73 @@ None: every planned page is built, some with an interim picture (below).
 - **statMath: export `betaI` (or an `fCdf`)** so the grade file need not copy it.
 - Engine 5 again: `~powers` prints S = (r^n − 1) ÷ (r − 1) with carets.
 - The matcher corpus to rerun for the 31 new pages.
+- **From the lesson-review fixes:** `functionGraphMath.ts` rational case: skip a missing zero
+  (`fam.zeros.map((z) => get(z, NaN)).filter(Number.isFinite)`), so a number alone on top (the
+  partial-fractions pages now take a = 0) draws no zero at x = 0. The p-value box shows "0" for
+  P < 0.0001 (the notes say "P < 0.0001"; the formatter should). `simplify.ts`: superscript a
+  numeric exponent (2⁶, `~powers`), and simplify a quotient's top and bottom in one stage each.
+  A `choice` input (≠, >, <; cos or sin) would replace the coded h and the separate `~sine` page.
+  The matcher corpus to rerun for the 6 new pages (`~distance`, `~sine`, `~rotated-equation`,
+  `~divisible`, `~degrees`, and `m.10.modeling-density~cone`).
+
+### Lesson-review fixes (`.review/new-math/lesson-report.md`)
+
+- `m.12.vectors-3d~cross`: the triangle's area A_T = |u × v| ÷ 2 (the components are grouped,
+  so the page has 5 values); the use line and an assumption say u and v are the sides from one
+  vertex (u = Q − P, v = R − P).
+- New page `m.12.vectors-3d~distance` (distance and midpoint in space; P(1, 2, 3), Q(3, 5, 9):
+  d = 7, M(2, 3.5, 6)); a table of d as Q's z moves until the 3-D axes picture.
+- `m.12.matrix-transformations~compose`: c = cos γ and s = sin γ as values, x″ = cx − sy and
+  y″ = sx + cy (the lines read "x″ = 0 × 4 − 1 × 2"), and the s step notes the single matrix
+  R(γ). `~area`: p and q named "x/y of the far corner" (hidden, picture only). `~identify`: the
+  two-bin card `[[−1, 0], [0, −1]]` replaced by `[[0.6, −0.8], [0.8, 0.6]]`; a dilation has
+  k > 0; the reflection bin's reason says (0, 1) lands clockwise from (1, 0).
+- `m.12.polar-conics` main: n is named "Number taken away before cos θ (−1 for + cos θ)" (the
+  equation boxes already print the minus); the d step notes the directrix (x = −d or x = d).
+  `~ellipse`: c = a × e (no near-equal subtraction), and the top k = ed is typed
+  (`startWith: ['e', 'k']`, 8 values). `~parabola`: the x and y formulas are named with θ; the
+  p step notes the directrix x = −d. `~rotation`: Δ < 0 says "an ellipse" (B ≠ 0 rules out a
+  circle); the angle rule and the B ≠ 0 limit are shared with the new page below.
+- New page `m.12.polar-conics~sine` (r = k ÷ (m − n sin θ), directrix y = ∓d; r = 4 ÷ (1 +
+  sin θ): e = 1, d = 4, r = 2 at 90°), `polarGrid` point until the conic curve (H106).
+- New page `m.12.polar-conics~rotated-equation` (A′ = A cos²θ + B sin θ cos θ + C sin²θ,
+  C′ = A sin²θ − B sin θ cos θ + C cos²θ; 4x² + 2xy + 2y² = 1: θ = 22.5°, A′ = 3 + √2 ≈ 4.4142,
+  C′ = 3 − √2 ≈ 1.5858; the report's 2 ± √2 was a slip, A′ + C′ = A + C = 6), `unitCircle`
+  interim. The sin/cos choice on the main page became this separate page: a choice box is not
+  an input kind.
+- `m.12.partial-fractions` main and `~repeated`: the a ≠ 0 limit is gone, so a number alone on
+  top works (1 ÷ ((x − 1)(x + 1))); a hidden L (a, or b when a = 0) scales the graph, and a top
+  of 0 is refused with the reason. A and B on the main page show as fractions (`fraction: 200`,
+  1001/3). The main page's fourth assumption: divide first when the top's degree is not less.
+- `~quadratic`: the factor is x² + jx + k (j² < 4k, refused with the reason otherwise); A =
+  (ap² + bp + c) ÷ (p² + jp + k), B = a − A, C = b + Bp − Aj. The top's coefficients and the
+  quadratic's are grouped (8 values). The y step works the top and the bottom once each, then
+  the quotient.
+- `m.12.induction` (rework): step 4 on the main page, `~odd`, `~powers` and `~squares` now
+  writes the inductive step with k ("With k for n: k² + (2k + 1) = (k + 1)²"; two lines on
+  `~squares`), so the "Prove …" use lines are kept; at n = 1 the S step notes the base case, left
+  side against right. `~steps` unchanged.
+- New page `m.12.induction~divisible` (3 divides n³ − n: f(n), f(n) ÷ 3, f(n + 1) and the jump
+  D = 3n(n + 1), with the k algebra; n = 4: 60, 20, 120, 60 = 3 × 4 × 5), a `table` of f(n) ÷ 3.
+- `m.12.area-under-curve` main: the S step works the sum of squares as a number first
+  ("6 × 7 × 13 ÷ 6 = 91", "S = 0.125 × 91") and notes it is 1² + … + n². On the main page and
+  `~line` the S-against-A note moved to the A step, and equality reads "S equals the exact
+  area: a flat line is covered exactly". `~sequence`: q and s are "Constant on top/in the
+  bottom". Areas from a to b stay two runs and a subtraction (the use lines say "from 0").
+- New page `m.12.area-under-curve~degrees` ((pnʲ + q) ÷ (rnᵏ + s), powers 0–3: L = p ÷ r for
+  equal powers, 0 for a bigger bottom, and "no limit" explained for a bigger top; (2n² + 1) ÷
+  (n² − 3) → 2), a `table` at n = 1, 10, 100, 1000.
+- `m.12.regression-inference` main and `~correlation`: the side of Hₐ is a value (h: 0 for ≠,
+  1 for >, −1 for <, coded like the other grades' choices), and P is both tails, the right tail
+  (1 − tcdf(t, df)) or the left tail. The decision is written in context ("reject H₀,
+  convincing evidence of a positive linear relationship between x and y" / "fail to reject H₀,
+  not convincing evidence …"), and a p-value under 0.0001 is written "P < 0.0001" in the note
+  (the box still shows 0: shared needs). `~standard-error` gets the same two-sided context.
+- `m.12.anova` main: SST = SSB + SSW (10 values; k and N stay in the assumption). `~groups`:
+  the MSB sentence now says each mean counts n times. `~two-variances`: n₁ and n₂ are the sizes
+  of the larger-SD and smaller-SD samples. `~which-test`: the two-sample card compares students
+  who play a sport with those who don't.
+- Deep-run fixes: the ~quadratic work line brackets its products (the harness reads a bare
+  "2 + 3 = 11" tail as a sum); directrix notes show d as its box does (no "x = −0"); `~ellipse`
+  c is worked out only (c = ae); the one-sided t check shows t as its box does, and
+  `phrasesM12.ts` reads tcdf of a t in scientific notation.

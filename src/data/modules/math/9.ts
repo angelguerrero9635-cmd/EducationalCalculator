@@ -5,7 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math9.ts`.
  */
-import { formatNumber, superscript } from '@/engine/format';
+import { formatNumber, parseNumber, significant, superscript } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -97,8 +97,14 @@ function derive(
   );
 }
 
-/** A check that only rejects values (a ≠ 0). */
-function constraint(id: string, display: string, vars: string[], bad: (v: Values) => boolean) {
+/** A check that only rejects values (a ≠ 0); `why` is the reason shown when it fails. */
+function constraint(
+  id: string,
+  display: string,
+  vars: string[],
+  bad: (v: Values) => boolean,
+  why?: (v: Values) => string,
+) {
   return {
     relation: {
       id,
@@ -107,6 +113,7 @@ function constraint(id: string, display: string, vars: string[], bad: (v: Values
       vars,
       residual: (v: Values) => (bad(v) ? 1 : 0),
       solve: {},
+      ...(why && { message: (v: Values) => (bad(v) ? why(v) : undefined) }),
     } as Relation,
     steps: {} as Record<string, StepText>,
   };
@@ -5546,10 +5553,14 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
 
 // ── Units, accuracy and precision (N-Q.1–3) ──
 
-/** x rounded to n significant figures. */
-const toFigures = (x: number, n: number) => Number(x.toPrecision(Math.min(21, Math.max(1, n))));
+/** x rounded to n significant figures, a tie rounding up as on paper (4.35 → 4.4). */
+const toFigures = (x: number, n: number) =>
+  x === 0 ? 0 : Number(parseNumber(significant(x, Math.min(21, Math.max(1, n)))));
 /** Whether x is a whole number of steps of u (a reading to the nearest u). */
 const onStep = (x: number, u: number) => Math.abs(x / u - Math.round(x / u)) < 1e-6;
+/** Why a side can't be a reading to the nearest u. */
+const notAReading = (x: number, u: number) =>
+  `${fmt(x)} cm is not a reading to the nearest ${fmt(u)} cm: measure to a finer unit or re-type the sides.`;
 
 const UNITS_PRECISION: ModuleDef[] = [
   page({
@@ -5560,10 +5571,11 @@ const UNITS_PRECISION: ModuleDef[] = [
       'Write each factor with the unit to cancel on the other side of the fraction bar.',
       'The units left after cancelling are the answer’s unit: a check that the setup is right.',
     ],
+    // US units only: the chain is written in mi/h and ft/s, so the values stay in them.
+    unitSystems: ['us'],
     variables: [
-      // No unit menu: the chain draws mi/h and ft/s as written, so the values stay in them.
-      num('v', 'v', 'Speed in miles per hour', 0, 600, { step: 0.1 }),
-      num('u', 'u', 'Speed in feet per second', 0, 880),
+      num('v', 'v', 'Speed in miles per hour', 0, 600, { unit: 'mph', units: ['mph'], step: 0.1 }),
+      num('u', 'u', 'Speed in feet per second', 0, 880, { unit: 'ft/s', units: ['ft/s'] }),
     ],
     rules: [
       rule(
@@ -5576,11 +5588,23 @@ const UNITS_PRECISION: ModuleDef[] = [
             (v) => exact((v.v! * 5280) / 3600),
             '{v} × 5280/3600',
             'Multiply by 5280 ft per mi and by 1 h per 3600 s: mi and h cancel, leaving ft/s.',
+            {
+              work: (v) => [
+                `u = ${fmt(v.v!)} mi/h × 5280 ft/1 mi × 1 h/3600 s`,
+                `u = ${fmt(exact(v.v! * 5280))} ft ÷ 3600 s`,
+              ],
+            },
           ],
           v: [
             (v) => exact((v.u! * 3600) / 5280),
             '{u} × 3600/5280',
             'Run the chain backwards: multiply by 3600 s per h and by 1 mi per 5280 ft.',
+            {
+              work: (v) => [
+                `v = ${fmt(v.u!)} ft/s × 3600 s/1 h × 1 mi/5280 ft`,
+                `v = ${fmt(exact(v.u! * 3600))} mi ÷ 5280 h`,
+              ],
+            },
           ],
         },
       ),
@@ -5608,12 +5632,13 @@ const UNITS_PRECISION: ModuleDef[] = [
       '1 yd = 3 ft, so 1 yd² = 3 ft × 3 ft = 9 ft²: square the length factor.',
       'The price is per square yard, so change the area to square yards before multiplying.',
     ],
+    // US units only: the chain is written in ft² and yd², so the values stay in them.
+    unitSystems: ['us'],
     variables: [
-      // No unit menu: the chain draws ft² and yd² as written, so the values stay in them.
-      num('l', 'l', 'Length in feet', 0.1, 500, { step: 0.1 }),
-      num('w', 'w', 'Width in feet', 0.1, 500, { step: 0.1 }),
-      num('F', 'A_ft', 'Area in square feet', 0.01, 250000),
-      num('Y', 'A_yd', 'Area in square yards', 0.001, 27778),
+      num('l', 'l', 'Length', 0.1, 500, { unit: 'ft', units: ['ft'], step: 0.1 }),
+      num('w', 'w', 'Width', 0.1, 500, { unit: 'ft', units: ['ft'], step: 0.1 }),
+      num('F', 'A_ft', 'Area in square feet', 0.01, 250000, { unit: 'ft²', units: ['ft²'] }),
+      num('Y', 'A_yd', 'Area in square yards', 0.001, 27778, { unit: 'yd²', units: ['yd²'] }),
       num('p', 'p', 'Price per square yard', 0.01, 100, { unit: '$', step: 0.01 }),
       num('C', 'C', 'Cost', 0, 3000000, { unit: '$' }),
     ],
@@ -5702,7 +5727,7 @@ const UNITS_PRECISION: ModuleDef[] = [
   page({
     id: 'm.9.units-precision~bounds',
     title: 'Precision: least and greatest possible area',
-    use: 'Use this for “A rectangle measures 8 cm by 5 cm to the nearest centimeter. What are the least and greatest possible areas?”',
+    use: 'Use this for “A rectangle measures 8 cm by 5 cm to the nearest centimeter. What are the least and greatest possible areas and perimeters?”',
     unitSystems: ['metric'],
     assumptions: [
       'A length measured to the nearest u is off by at most half of u, the greatest possible error.',
@@ -5715,7 +5740,7 @@ const UNITS_PRECISION: ModuleDef[] = [
       num('u', 'u', 'Measured to the nearest', 0.1, 10, {
         unit: 'cm',
         units: ['cm'],
-        allowed: [0.1, 0.5, 1, 10],
+        allowed: [0.1, 0.5, 1, 5, 10],
       }),
       num('e', 'e', 'Greatest possible error', 0.05, 5, {
         unit: 'cm',
@@ -5733,6 +5758,16 @@ const UNITS_PRECISION: ModuleDef[] = [
         units: ['cm²'],
         derived: true,
       }),
+      num('plo', 'P_min', 'Least possible perimeter', 0, 4000, {
+        unit: 'cm',
+        units: ['cm'],
+        derived: true,
+      }),
+      num('phi', 'P_max', 'Greatest possible perimeter', 0, 4020, {
+        unit: 'cm',
+        units: ['cm'],
+        derived: true,
+      }),
     ],
     rules: [
       constraint(
@@ -5740,12 +5775,14 @@ const UNITS_PRECISION: ModuleDef[] = [
         'The length {l} is a multiple of {u}, as a reading to the nearest {u} is',
         ['l', 'u'],
         (v) => !onStep(v.l!, v.u!),
+        (v) => notAReading(v.l!, v.u!),
       ),
       constraint(
         'w to the nearest u',
         'The width {w} is a multiple of {u}, as a reading to the nearest {u} is',
         ['w', 'u'],
         (v) => !onStep(v.w!, v.u!),
+        (v) => notAReading(v.w!, v.u!),
       ),
       derive(
         'e = u ÷ 2',
@@ -5779,8 +5816,26 @@ const UNITS_PRECISION: ModuleDef[] = [
         '({l} + {e}) × ({w} + {e})',
         'The longest sides the readings allow give the greatest area.',
       ),
+      derive(
+        'P_min = 2(l − e) + 2(w − e)',
+        'plo',
+        ['l', 'w', 'e'],
+        '{plo} = 2 × ({l} − {e}) + 2 × ({w} − {e})',
+        (v) => 2 * (v.l! - v.e!) + 2 * (v.w! - v.e!),
+        '2 × ({l} − {e}) + 2 × ({w} − {e})',
+        'The shortest sides the readings allow give the least perimeter too.',
+      ),
+      derive(
+        'P_max = 2(l + e) + 2(w + e)',
+        'phi',
+        ['l', 'w', 'e'],
+        '{phi} = 2 × ({l} + {e}) + 2 × ({w} + {e})',
+        (v) => 2 * (v.l! + v.e!) + 2 * (v.w! + v.e!),
+        '2 × ({l} + {e}) + 2 × ({w} + {e})',
+        'The longest sides the readings allow give the greatest perimeter.',
+      ),
     ],
-    example: { l: 8, w: 5, u: 1, e: 0.5, A: 40, lo: 33.75, hi: 46.75 },
+    example: { l: 8, w: 5, u: 1, e: 0.5, A: 40, lo: 33.75, hi: 46.75, plo: 24, phi: 28 },
     startWith: ['u', 'l', 'w'],
     representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 10 },
   }),
@@ -5838,6 +5893,13 @@ const UNITS_PRECISION: ModuleDef[] = [
         (v) => toFigures(v.P!, v.n!),
         '{P} rounded to {n} significant figures',
         'Round the calculated area; the digits past n are not known from these measurements.',
+        {
+          // The box drops a trailing zero (3.0 shows 3): write the answer with its n figures.
+          note: (v) =>
+            v.P === undefined || v.n === undefined
+              ? ''
+              : `→ written with ${v.n} significant figures: ${significant(v.P, v.n)} m²`,
+        },
       ),
     ],
     example: { l: 4.25, w: 3.1, n1: 3, n2: 2, n: 2, P: 13.175, R: 13 },

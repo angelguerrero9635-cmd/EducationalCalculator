@@ -14,7 +14,7 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'The first column is where (1, 0) lands and the second where (0, 1) lands: sketch the two.',
       'A turn keeps lengths and the order of the corners; a reflection keeps lengths but flips the order.',
-      'A dilation [[k, 0], [0, k]] keeps every direction and multiplies every length by k.',
+      'A dilation [[k, 0], [0, k]] with k > 0 keeps every direction and multiplies every length by k.',
     ],
     question: 'Where do (1, 0) and (0, 1) land: turned, flipped, or stretched?',
     bins: [
@@ -26,7 +26,7 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
       {
         id: 'flip',
         label: 'Reflection',
-        why: 'The columns keep length 1 but swap their turning order, and D = −1.',
+        why: 'The columns keep length 1, but (0, 1) lands clockwise from (1, 0) instead of counterclockwise, and D = −1.',
       },
       {
         id: 'grow',
@@ -36,7 +36,7 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: '[[0, −1], [1, 0]]', bin: 'turn' },
-      { label: '[[−1, 0], [0, −1]]', bin: 'turn' },
+      { label: '[[0.6, −0.8], [0.8, 0.6]]', bin: 'turn' },
       { label: '[[0, 1], [−1, 0]]', bin: 'turn' },
       { label: '[[1, 0], [0, −1]]', bin: 'flip' },
       { label: '[[−1, 0], [0, 1]]', bin: 'flip' },
@@ -242,7 +242,11 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Do mean plant heights differ under four kinds of light?', bin: 'anova' },
       { label: 'Do three brands of battery last the same time on average?', bin: 'anova' },
-      { label: 'Do boys and girls sleep the same number of hours on average?', bin: 't2' },
+      {
+        label:
+          'Do students who play a sport and students who don’t sleep the same number of hours on average?',
+        bin: 't2',
+      },
       { label: 'Does a new diet change mean weight loss compared with the old one?', bin: 't2' },
       { label: 'Is favorite sport related to grade level, from a table of counts?', bin: 'chi' },
       { label: 'Is voting yes or no related to age group?', bin: 'chi' },

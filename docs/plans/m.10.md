@@ -838,3 +838,9 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
 - **Picture needs:** a surface-area-against-radius graph for ~can-design (the table stands in);
   an irregular region on a map grid for ~population (the circle stands in).
 - **Verdict:** 5 calculators; all 5 common problems Solve.
+
+### After the lesson review (`.review/new-math/lesson-report.md`)
+
+Added: r_best and S_min on ~can-design, s and A_max on ~fence, ρ ≤ 23 g/cm³, ~population ranges
+(r ≤ 3,000 km, N ≤ 9 × 10⁹), and the page `~cone` (mass of a cone from its density). A box
+version waits on a picture. Build notes: `docs/build/m.10.md`.

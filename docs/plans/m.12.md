@@ -824,3 +824,10 @@ hand. Build order: the precalculus skills in taxonomy order, then the two statis
 - **~which-test — BUILD (sort):** questions into one-way ANOVA, two-sample t, chi-square test
   of independence, t-test for the slope.
 - **Verdict:** 4 pages; the common items Solve.
+
+### After the lesson review (`.review/new-math/lesson-report.md`)
+
+New pages: `m.12.vectors-3d~distance`, `m.12.polar-conics~sine`,
+`m.12.polar-conics~rotated-equation`, `m.12.induction~divisible`,
+`m.12.area-under-curve~degrees`. Every other finding is listed under "Lesson-review fixes" in
+`docs/build/m.12.md`.

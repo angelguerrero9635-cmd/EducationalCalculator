@@ -960,3 +960,9 @@ without a skill"). Same format as above; every example is original and worked by
     a trip needs kilometers."
 - **Verdict:** 6 pages (5 calculators, 1 sort); every common textbook type Solved. Graph scale and
   origin (N-Q.1) are left to the graphing pages.
+
+### After the lesson review (`.review/new-math/lesson-report.md`)
+
+Main and ~area-units carry US units (mph, ft/s, ft, ft², yd²); ~bounds adds 5 cm readings and
+P_min, P_max; ~significant-figures rounds ties up and notes trailing zeros. Build notes:
+`docs/build/m.9.md`.
