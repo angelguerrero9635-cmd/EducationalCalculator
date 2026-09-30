@@ -714,12 +714,182 @@ const countingFraction = fromPage(
 
 const CHANCES: ModuleDef[] = [neitherCounts, vennCountsGiven, threeStages, countingFraction];
 
+// ── H98: unitCircle through a point, two angles in turn, two values ──
+
+const pointOnSide = page({
+  id: 'g.m11-unit-circle-point-on-side',
+  title: 'A point on the terminal side',
+  use: 'Use this for “(−3, 4) is on the terminal side of θ. Find sin θ, cos θ and tan θ.”',
+  assumptions: [
+    'The point is r = √(x² + y²) from the origin, on the ray that ends θ.',
+    'Scale it by 1/r and it lands on the unit circle: (x/r, y/r) = (cos θ, sin θ).',
+    'So sin θ = y/r, cos θ = x/r and tan θ = y/x; the signs come from the quadrant.',
+  ],
+  variables: [
+    num('x', 'x', 'x of the point', -20, 20, { step: 0.5 }),
+    num('y', 'y', 'y of the point', -20, 20, { step: 0.5 }),
+    num('r', 'r', 'Distance from the origin', 0, 30, { derived: true }),
+    num('s', 'sin θ', 'sin θ', -1, 1, { derived: true, fraction: 100 }),
+    num('c', 'cos θ', 'cos θ', -1, 1, { derived: true, fraction: 100 }),
+    num('t', 'tan θ', 'tan θ', -1000, 1000, { derived: true, fraction: 100 }),
+  ],
+  rules: [
+    limit(
+      'not (0, 0)',
+      '({x}, {y}) is not (0, 0)',
+      (v) => v.x !== 0 || v.y !== 0,
+      'The origin is on every ray: pick another point.',
+    ),
+    derive(
+      'r = √(x² + y²)',
+      'r',
+      ['x', 'y'],
+      '{r} = √({x}² + {y}²)',
+      (v) => fin(Math.hypot(v.x!, v.y!)),
+      '√({x}² + {y}²)',
+      'The distance from the origin, by the Pythagorean theorem.',
+    ),
+    derive(
+      'sin θ = y ÷ r',
+      's',
+      ['y', 'r'],
+      '{s} = {y} ÷ {r}',
+      (v) => (v.r ? fin(v.y! / v.r!) : undefined),
+      '{y} ÷ {r}',
+      'The unit point’s y: the point scaled by 1/r.',
+    ),
+    derive(
+      'cos θ = x ÷ r',
+      'c',
+      ['x', 'r'],
+      '{c} = {x} ÷ {r}',
+      (v) => (v.r ? fin(v.x! / v.r!) : undefined),
+      '{x} ÷ {r}',
+      'The unit point’s x.',
+    ),
+    derive(
+      'tan θ = y ÷ x',
+      't',
+      ['y', 'x'],
+      '{t} = {y} ÷ {x}',
+      (v) => (v.x ? fin(v.y! / v.x!) : undefined),
+      '{y} ÷ {x}',
+      'Rise over run along the ray; there is none when x = 0.',
+    ),
+  ],
+  example: { x: -3, y: 4, r: 5, s: 0.8, c: -0.6, t: -4 / 3 },
+  startWith: ['x', 'y'],
+  representation: {
+    kind: 'unitCircle',
+    angle: 0,
+    through: { x: 'x', y: 'y', r: 'r' },
+    sin: 's',
+    cos: 'c',
+    tan: 't',
+    fixed: true,
+  },
+});
+
+const sumPair = fromPage(
+  'm.12.trig-formulas-equations',
+  'g.m12-trig-formulas-equations-pair',
+  'The sum formula: A, then B',
+  {
+    kind: 'unitCircle',
+    angle: 'C',
+    sin: 'S',
+    fixed: true,
+    pair: { a: 'A', b: 'B' },
+  },
+);
+
+const differencePair = fromPage(
+  'm.12.trig-formulas-equations~difference',
+  'g.m12-trig-formulas-equations-difference-pair',
+  'The difference formula: A, then B back',
+  {
+    kind: 'unitCircle',
+    angle: 'C',
+    cos: 'K',
+    fixed: true,
+    pair: { a: 'A', b: 'B', op: 'difference' },
+  },
+);
+
+/** a·s² + b·s + c = 0 in s = sin x: two values of sin x, each with its angles. */
+const twoValues = page({
+  id: 'g.m12-trig-formulas-equations-quadratic',
+  title: 'A quadratic in sin x',
+  use: 'Use this for “Solve 2 sin²x − sin x − 1 = 0 for 0° ≤ x < 360°.”',
+  assumptions: [
+    'Treat sin x as one unknown s: 2s² − s − 1 = 0 is a quadratic.',
+    'Its two roots are two values of sin x; each gives its own angles.',
+    'A root past −1 or 1 gives no angle: sin x stays from −1 to 1.',
+  ],
+  variables: [
+    num('a', 'a', 'Number before sin²x', -10, 10, { step: 0.5 }),
+    num('b', 'b', 'Number before sin x', -10, 10, { step: 0.5 }),
+    num('c', 'c', 'Number term', -10, 10, { step: 0.5 }),
+    num('s1', 's₁', 'Smaller value of sin x', -40, 40, { derived: true, fraction: 12 }),
+    num('s2', 's₂', 'Larger value of sin x', -40, 40, { derived: true, fraction: 12 }),
+  ],
+  rules: [
+    limit('a ≠ 0', '{a} ≠ 0', (v) => v.a !== 0, 'With a = 0 it is not a quadratic.'),
+    limit(
+      'b² − 4ac ≥ 0',
+      '{b}² − 4 × {a} × {c} ≥ 0',
+      (v) => v.b! ** 2 - 4 * v.a! * v.c! >= 0,
+      'No real roots: sin x takes no value here.',
+    ),
+    derive(
+      's₁ = (−b − √(b² − 4ac)) ÷ 2a',
+      's1',
+      ['a', 'b', 'c'],
+      '{s1} = (−{b} − √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
+      (v) => {
+        const d = v.b! ** 2 - 4 * v.a! * v.c!;
+        if (d < 0 || !v.a) return undefined;
+        const r = [(-v.b! - Math.sqrt(d)) / (2 * v.a), (-v.b! + Math.sqrt(d)) / (2 * v.a)];
+        return fin(Math.min(...r));
+      },
+      '(−{b} − √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
+      'The quadratic formula in s = sin x: one root.',
+    ),
+    derive(
+      's₂ = (−b + √(b² − 4ac)) ÷ 2a',
+      's2',
+      ['a', 'b', 'c'],
+      '{s2} = (−{b} + √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
+      (v) => {
+        const d = v.b! ** 2 - 4 * v.a! * v.c!;
+        if (d < 0 || !v.a) return undefined;
+        const r = [(-v.b! - Math.sqrt(d)) / (2 * v.a), (-v.b! + Math.sqrt(d)) / (2 * v.a)];
+        return fin(Math.max(...r));
+      },
+      '(−{b} + √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
+      'And the other root.',
+    ),
+  ],
+  example: { a: 2, b: -1, c: -1, s1: -0.5, s2: 1 },
+  startWith: ['a', 'b', 'c'],
+  equation: '{a} sin²x + {b} sin x + {c} = 0',
+  representation: {
+    kind: 'unitCircle',
+    angle: 0,
+    fixed: true,
+    solutions: { fn: 'sin', value: 's1', also: 's2' },
+  },
+});
+
+const CIRCLES: ModuleDef[] = [pointOnSide, sumPair, differencePair, twoValues];
+
 export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   ...TERMS,
   ...GRAPHS,
   areaBox,
   ...MONOMIALS,
   ...CHANCES,
+  ...CIRCLES,
 ];
 
 export const HS2G_GALLERY_LAYOUTS: LayoutDef[] = [];

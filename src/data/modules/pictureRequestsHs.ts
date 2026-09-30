@@ -1876,13 +1876,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'P9 (docs/plans/m.10.md needs 8, 9 and 16). Three options, off unless set. `venn` `chances.counts: { total, count? }`: a, b and both are whole counts out of `total` ("All: 40" in the corner); each region shows its count, neither = total − (a + b − both) outside the circles; `count` is the shaded region’s count and `result` its chance, count ÷ total (both checked); the caption works the union and, shaded "and", P(B | A) = both ÷ a. m.10.probability-rules~neither with counts: { kind: "venn", chances: { a: "a", b: "b", both: "ab", names: ["Soccer", "Basketball"], shade: "neither", result: "P", counts: { total: "N", count: "s" } } }; m.10.conditional-probability~venn the same with shade "and" and `counts: { total: "N" }`. `treeDiagram` `chances.third: [[[c], [c]], [[c], [c]]]` adds a third stage (third[i][j] after first i and second j, the last chance left out is 1 − the others; 2 or 3 outcomes, up to 12 leaves), `thirdNames`, `thirdStage`, and `path3` with `path` lights a leaf; `chance` is then the product of the three (checked); each leaf shows its path’s product. m.10.conditional-probability~independent for three stages: { kind: "treeDiagram", chances: { first: ["a"], second: [["b"], ["b"]], third: [[["c"], ["c"]], [["c"], ["c"]]], names: [["On time", "Late"], ["On time", "Late"]], thirdNames: ["On time", "Late"], path: [0, 0], path3: 0, chance: "j" } }. `pascalTriangle` `fraction: { n, k, count?, chance? }`: C(n, k) of the fraction lit in its own colour over the triangle’s lit C(n, k), drawn as a fraction under it (C(5, 3) = 10 over C(9, 3) = 84 = 5/42 ≈ 0.119); `count` and `chance` checked. m.10.probability-rules~counting-probability: { kind: "pascalTriangle", n: "n", k: "r", fraction: { n: "a", k: "r", count: "f", chance: "P" } } in place of the slots.',
   },
-  ask(
-    'H98',
-    'unitCircle',
-    'A point off the circle; two angles (A ± B); the solutions of two values',
-    ['m.11.unit-circle', 'm.12.trig-formulas-equations'],
-    'P10: docs/plans/m.11.md need 6, m.12.md needs 6 and 7.',
-  ),
+  {
+    ...ask(
+      'H98',
+      'unitCircle',
+      'A point off the circle; two angles (A ± B); the solutions of two values',
+      ['m.11.unit-circle', 'm.12.trig-formulas-equations'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-unit-circle-point-on-side',
+      'g.m12-trig-formulas-equations-pair',
+      'g.m12-trig-formulas-equations-difference-pair',
+      'g.m12-trig-formulas-equations-quadratic',
+    ],
+    notes:
+      'P10 (docs/plans/m.11.md need 6, m.12.md needs 6 and 7). Three options on `unitCircle`, off unless set (UnitCircleHs2g.tsx draws them; no handle). `through: { x, y, r? }`: the point (x, y) off the circle, the dashed circle of radius r through it, the legs x and y in the cosine and sine colours, r along the ray, θ’s arc, and the unit circle with its point (x ÷ r, y ÷ r) where the ray crosses it; `cos`, `sin`, `tan` are x ÷ r, y ÷ r, y ÷ x and `r` √(x² + y²) (checked); `angle` is not read (0), or θ’s id (checked against the point). m.11.unit-circle~point-on-side: { kind: "unitCircle", angle: 0, through: { x: "x", y: "y", r: "r" }, sin: "s", cos: "c", tan: "t", fixed: true } (example (−3, 4): r = 5, sin θ = 4/5). `pair: { a, b, op? }` (op "sum", the default, or "difference"): A’s arc from the x-axis, then B’s from A on (back for a difference) to A ± B, which is `angle` (checked); the key names A and B in their colours (theme `unitCircleAngleA`, `unitCircleAngleB`) and the caption works the formula with exact values at multiples of 15° ((√6 + √2)/4). m.12.trig-formulas-equations: add `pair: { a: "A", b: "B" }` to its picture; ~difference: `pair: { a: "A", b: "B", op: "difference" }`. `solutions.also`: a second value, both lines drawn and every angle marked in its value’s colour, the caption listing them and the count (sin x = −1/2 or 1: 210°, 330° and 90°, three solutions); `angles` may hold them all. m.12.trig-formulas-equations~quadratic: { kind: "unitCircle", angle: 0, fixed: true, solutions: { fn: "sin", value: "s1", also: "s2" } } with s₁ and s₂ the roots of a·s² + b·s + c = 0.',
+  },
   ask(
     'H99',
     'normalCurve',

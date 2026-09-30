@@ -350,6 +350,9 @@ const light = {
   tileNegative: '#F2A3A3',
   tileNegativeEdge: '#C23A3A',
   vectorResultant: '#0E9F6E',
+  /** H98: the unit circle's two angles in turn, A then B (and a second value's line). */
+  unitCircleAngleA: '#0E7490',
+  unitCircleAngleB: '#C2410C',
   /** H95: the area box's like-term diagonals, one tint each. */
   areaBoxBand1: '#DCE9FB',
   areaBoxBand2: '#FCE7C8',
@@ -690,6 +693,8 @@ const dark: Palette = {
   tileNegative: '#7A3434',
   tileNegativeEdge: '#F2A3A3',
   vectorResultant: '#34D399',
+  unitCircleAngleA: '#38BDF8',
+  unitCircleAngleB: '#FB923C',
   areaBoxBand1: '#26374F',
   areaBoxBand2: '#4A3A22',
   areaBoxBand3: '#223F2E',

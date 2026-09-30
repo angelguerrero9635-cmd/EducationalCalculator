@@ -4,7 +4,7 @@
  * apart from `types.ts` so that file's union only lists them. A `NumOrVar` field is a fixed
  * number or a variable id.
  */
-import type { AlgebraTilesHs2g } from './typesHs2g';
+import type { AlgebraTilesHs2g, SolutionsAlso, UnitCircleHs2g } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
 
 /** A trig function of the unit circle. */
@@ -16,7 +16,7 @@ export type TrigFn = 'sin' | 'cos' | 'tan';
  * (the cosine and sine as its legs) and the reference angle, and the special angles marked.
  * Drag the point around the circle to change θ.
  */
-export interface UnitCircleSpec {
+export interface UnitCircleSpec extends UnitCircleHs2g {
   kind: 'unitCircle';
   /** The angle θ. */
   angle: NumOrVar;
@@ -40,7 +40,12 @@ export interface UnitCircleSpec {
    * `principal` marks only the inverse function's answer and shades its range (arcsin and
    * arctan: −90° to 90°; arccos: 0° to 180°).
    */
-  solutions?: { fn: TrigFn; value: NumOrVar; angles?: string[]; principal?: boolean };
+  solutions?: {
+    fn: TrigFn;
+    value: NumOrVar;
+    angles?: string[];
+    principal?: boolean;
+  } & SolutionsAlso;
   /** The arc from 0 to θ, its length the angle in radians (a variable holding it, checked). */
   arc?: string;
   /** Typed values held while the point is dragged (see `LineOf.keep`). */

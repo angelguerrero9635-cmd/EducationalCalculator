@@ -119,6 +119,35 @@ export interface PascalFraction {
   fraction?: { n: NumOrVar; k: NumOrVar; count?: string; chance?: string };
 }
 
+/**
+ * H98: `unitCircle` pictures past one angle (drawn by `UnitCircleHs2g.tsx`; `angle` names θ, or
+ * A ± B with `pair`, and is checked).
+ */
+export interface UnitCircleHs2g {
+  /**
+   * A point (x, y) off the circle on θ's terminal side: the circle of radius r = √(x² + y²)
+   * through it, the legs x and y, r along the ray, and the unit circle with its point
+   * (x ÷ r, y ÷ r) = (cos θ, sin θ) where the ray crosses it. `r` names r's value (checked);
+   * `cos`, `sin` and `tan` are x ÷ r, y ÷ r and y ÷ x.
+   */
+  through?: { x: NumOrVar; y: NumOrVar; r?: string };
+  /**
+   * Two angles in turn: A from the x-axis, then B on from A (counterclockwise for a sum,
+   * clockwise for a difference) to `angle` = A ± B, the three points marked. `cos`, `sin` and
+   * `tan` are A ± B's.
+   */
+  pair?: { a: NumOrVar; b: NumOrVar; op?: 'sum' | 'difference' };
+}
+
+/**
+ * H98: the solutions of an equation with two values, sin x = −1/2 or sin x = 1 (a factored
+ * quadratic): `solutions.also` is the second value, both lines drawn and every angle marked;
+ * `angles` holds them all, in order (checked).
+ */
+export interface SolutionsAlso {
+  also?: NumOrVar;
+}
+
 /** Every variable id these options name (for the module tests). */
 export function hs2gSpecVars(r: Representation): string[] {
   const ids = (...xs: (NumOrVar | boolean | undefined)[]): string[] =>
@@ -140,6 +169,8 @@ export function hs2gSpecVars(r: Representation): string[] {
       return 'chances' in r ? ids(...(r.chances.third ?? []).flat(2)) : [];
     case 'pascalTriangle':
       return ids(r.fraction?.n, r.fraction?.k, r.fraction?.count, r.fraction?.chance);
+    case 'unitCircle':
+      return ids(r.through?.x, r.through?.y, r.through?.r, r.pair?.a, r.pair?.b, r.solutions?.also);
     default:
       return [];
   }

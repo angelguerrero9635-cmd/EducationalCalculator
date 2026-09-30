@@ -226,6 +226,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `venn`             | `chances.counts: { total, count? }`      | counts out of a total: regions as counts, neither outside, P = n/N (H97)      |
 | `treeDiagram`      | `chances.third`, `thirdNames`, `path3`   | a third stage: 8 leaves, each path's product; three stages multiplied (H97)   |
 | `pascalTriangle`   | `fraction: { n, k, count?, chance? }`    | C(a, r) lit over C(n, r), drawn as a fraction: 10/84 = 5/42 (H97)             |
+| `unitCircle`       | `through: { x, y, r? }`                  | a point off the circle: r, the legs, the unit point (x/r, y/r) (H98)          |
+| `unitCircle`       | `pair: { a, b, op? }`                    | A, then B on (or back) to A ± B, arcs in turn; the formula worked (H98)       |
+| `unitCircle`       | `solutions.also`                         | two values (sin x = −1/2 or 1): both lines, every solution marked (H98)       |
 | `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |
 | `force`            | `object: 'cart'`, `block`                | a lab cart with the mass as metal blocks, pulled by a rope; F = m × a         |
 | `tenFrame`         | `takeAway`; `crossOut`                   | taken counters filled and crossed out; b crossed out inside the full ten      |

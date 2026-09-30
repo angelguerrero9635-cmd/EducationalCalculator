@@ -134,6 +134,7 @@ import { Histogram } from './Histogram';
 import { PascalTriangle } from './PascalTriangle';
 import { TermsChart } from './TermsChart';
 import { UnitCircle } from './UnitCircle';
+import { UnitCircleHs2g } from './UnitCircleHs2g';
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
@@ -200,7 +201,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'moleMap':
       return <HsiRep spec={spec} calc={calc} />;
     case 'unitCircle':
-      return <UnitCircle spec={spec} calc={calc} />;
+      return spec.through || spec.pair || spec.solutions?.also !== undefined ? (
+        <UnitCircleHs2g spec={spec} calc={calc} />
+      ) : (
+        <UnitCircle spec={spec} calc={calc} />
+      );
     case 'matrixGrid':
       return <MatrixGrid spec={spec} calc={calc} />;
     case 'membrane':

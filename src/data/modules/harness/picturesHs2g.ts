@@ -6,6 +6,7 @@
  */
 import { boxProduct, monomialModel } from '@/components/module/reps/algebraBox';
 import { curveOf } from '@/components/module/reps/functionGraphMath';
+import { toDegrees } from '@/components/module/reps/hsdKit';
 import { choose } from '@/components/module/reps/statMath';
 import { shadedChance } from '@/components/module/reps/stats';
 import { termsModel } from '@/components/module/reps/termsModel';
@@ -191,6 +192,43 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
         out.push(`top count ${count} is not C(${fn}, ${fk}) = ${top}`);
       if (chance !== undefined && bottom > 0 && !near(chance, top / bottom))
         out.push(`chance ${chance} is not ${top} ÷ ${bottom}`);
+      break;
+    }
+    case 'unitCircle': {
+      const wrap = (d: number) => (((d % 360) + 540) % 360) - 180;
+      const angle = typeof rep.angle === 'string' ? get(rep.angle) : undefined;
+      const deg = angle === undefined ? undefined : toDegrees(angle, rep.measure);
+      if (rep.through) {
+        // H98: a point off the circle; its r and the three ratios.
+        const [x, y] = [get(rep.through.x), get(rep.through.y)];
+        if (x === undefined || y === undefined) break;
+        if (x === 0 && y === 0) out.push('(0, 0) is on no terminal side');
+        const r = Math.hypot(x, y);
+        const rv = get(rep.through.r);
+        if (rv !== undefined && !near(rv, r)) out.push(`r = ${rv}, but √(x² + y²) = ${r}`);
+        if (r === 0) break;
+        const want = { cos: x / r, sin: y / r, tan: x === 0 ? NaN : y / x };
+        for (const fn of ['cos', 'sin', 'tan'] as const) {
+          const v = get(rep[fn]);
+          if (v === undefined) continue;
+          if (!Number.isFinite(want[fn])) out.push(`tan θ = ${v}, but x = 0 leaves it undefined`);
+          else if (!near(v, want[fn])) out.push(`${fn} θ = ${v}, but the point gives ${want[fn]}`);
+        }
+        const theta = (Math.atan2(y, x) * 180) / Math.PI;
+        if (deg !== undefined && Math.abs(wrap(deg - theta)) > 1e-6)
+          out.push(`θ = ${deg}°, but (${x}, ${y}) is at ${theta}°`);
+      }
+      if (rep.pair) {
+        // H98: A ± B is the angle drawn.
+        const [a, b] = [get(rep.pair.a), get(rep.pair.b)];
+        if (a === undefined || b === undefined || deg === undefined) break;
+        const [A, B] = [toDegrees(a, rep.measure), toDegrees(b, rep.measure)];
+        const C = rep.pair.op === 'difference' ? A - B : A + B;
+        if (Math.abs(wrap(deg - C)) > 1e-6)
+          out.push(
+            `the angle ${deg}° is not A ${rep.pair.op === 'difference' ? '−' : '+'} B = ${C}°`,
+          );
+      }
       break;
     }
     default:
