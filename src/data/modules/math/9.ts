@@ -1638,6 +1638,660 @@ const QUADRATIC_FORMULA: ModuleDef[] = [
   }),
 ];
 
+// ── Solving linear equations ──
+
+/** "3x", "x", "−x", "0x" for a coefficient of x. */
+const xs = (k: number) => (k === 1 ? 'x' : k === -1 ? '−x' : `${fmt(k)}x`);
+/** Why ax + b = cx + d has no single solution, when the x terms match. */
+const sameX = (b: number, d: number) =>
+  b === d
+    ? 'Both sides are the same: every number is a solution.'
+    : 'The x terms cancel and the numbers left differ: there is no solution.';
+
+/**
+ * ax + b = cx + d solved for x (and for d, so typing x moves d): the x terms go to the side
+ * with the larger coefficient, so the x term stays positive.
+ */
+function bothSides(a: string, b: string, c: string, d: string): Rule {
+  const left = (v: Values) => v[a]! > v[c]!;
+  return rule(
+    `${a}x + ${b} = ${c}x + ${d}`,
+    `{${a}} × {x} + {${b}} = {${c}} × {x} + {${d}}`,
+    ['x', a, b, c, d],
+    (v) => v[a]! * v.x! + v[b]! - (v[c]! * v.x! + v[d]!),
+    {
+      x: [
+        (v) => (v[a] === v[c] ? undefined : exact((v[d]! - v[b]!) / (v[a]! - v[c]!))),
+        (v) =>
+          left(v)
+            ? `({${d}} − {${b}}) ÷ ({${a}} − {${c}})`
+            : `({${b}} − {${d}}) ÷ ({${c}} − {${a}})`,
+        (v) =>
+          left(v)
+            ? 'Take cx from both sides so the x terms are on the left, take b away, then divide.'
+            : 'Take ax from both sides so the x terms are on the right, take d away, then divide.',
+        {
+          work: (v) => {
+            const [big, small, keep, move] = left(v)
+              ? [v[a]!, v[c]!, v[b]!, v[d]!]
+              : [v[c]!, v[a]!, v[d]!, v[b]!];
+            const k = big - small;
+            const take = (n: number, what: string) =>
+              n < 0
+                ? `Add ${what.replace(/^−/, '')} to both sides`
+                : `Take ${what} from both sides`;
+            const sides = (l: string, r: string) => (left(v) ? `${l} = ${r}` : `${r} = ${l}`);
+            return [
+              ...(small
+                ? [
+                    `${take(small, xs(small))}: ${sides(`${xs(k)} ${keep < 0 ? '−' : '+'} ${fmt(Math.abs(keep))}`, fmt(move))}`,
+                  ]
+                : []),
+              ...(keep ? [`${take(keep, fmt(keep))}: ${sides(xs(k), fmt(move - keep))}`] : []),
+            ];
+          },
+          written: false,
+        },
+      ],
+      [d]: [
+        (v) => exact((v[a]! - v[c]!) * v.x! + v[b]!),
+        `({${a}} − {${c}}) × {x} + {${b}}`,
+        'Choose the right side’s number so both sides agree at this x.',
+      ],
+      [b]: [
+        (v) => exact((v[c]! - v[a]!) * v.x! + v[d]!),
+        `({${c}} − {${a}}) × {x} + {${d}}`,
+        'Choose the left side’s number so both sides agree at this x.',
+      ],
+    },
+    {
+      message: (v) =>
+        v[a] !== undefined &&
+        v[a] === v[c] &&
+        v[b] !== undefined &&
+        v[d] !== undefined &&
+        v[b] !== v[d]
+          ? sameX(v[b]!, v[d]!)
+          : undefined,
+    },
+  );
+}
+
+const SOLVING_EQUATIONS: ModuleDef[] = [
+  page({
+    id: 'm.9.solving-equations',
+    assumptions: [
+      'Doing the same thing to both sides keeps the equation true.',
+      'Collect the x terms on the side with the larger coefficient, so the x term stays positive.',
+      'When a = c there is no solution (b ≠ d) or every number is a solution (b = d).',
+    ],
+    variables: [
+      tile('a', 'a', 'x on the left'),
+      tile('b', 'b', 'Number on the left'),
+      tile('c', 'c', 'x on the right'),
+      tile('d', 'd', 'Number on the right'),
+      num('x', 'x', 'Solution', -20, 20, { fraction: 20 }),
+    ],
+    rules: [bothSides('a', 'b', 'c', 'd')],
+    example: { a: 5, b: 1, c: 2, d: 10, x: 3 },
+    startWith: ['d', 'a', 'b', 'c'],
+    equation: '{a}x + {b} = {c}x + {d}',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'equation',
+      left: { x: 'a', unit: 'b' },
+      right: { x: 'c', unit: 'd' },
+      solution: 'x',
+    },
+  }),
+  page({
+    id: 'm.9.solving-equations~distribute',
+    title: 'Distribute first',
+    use: 'Use this for “2(3x − 4) = 4x + 2”.',
+    assumptions: [
+      'Multiply every term in the brackets by the number outside: p(ax + b) = pax + pb.',
+      'Then collect the x terms on one side and the numbers on the other.',
+      'Check by putting x back into both sides of the first equation.',
+    ],
+    variables: [
+      int('p', 'p', 'Number outside', 1, 5),
+      tile('a', 'a', 'x in the brackets'),
+      tile('b', 'b', 'Number in the brackets'),
+      tile('c', 'c', 'x on the right'),
+      tile('d', 'd', 'Number on the right'),
+      tile('A', 'A', 'x after distributing', { derived: true }),
+      tile('B', 'B', 'Number after distributing', { derived: true }),
+      num('x', 'x', 'Solution', -20, 20, { fraction: 20 }),
+    ],
+    rules: [
+      rule('A = p × a', '{A} = {p} × {a}', ['A', 'p', 'a'], (v) => v.A! - v.p! * v.a!, {
+        A: [
+          (v) => v.p! * v.a!,
+          '{p} × {a}',
+          'Multiply the x term in the brackets by the number outside.',
+        ],
+        a: [(v) => div(v.A!, v.p!), '{A} ÷ {p}', 'Undo the distributing: divide by p.'],
+      }),
+      rule('B = p × b', '{B} = {p} × {b}', ['B', 'p', 'b'], (v) => v.B! - v.p! * v.b!, {
+        B: [
+          (v) => v.p! * v.b!,
+          '{p} × {b}',
+          'Multiply the number in the brackets too: every term inside.',
+        ],
+        b: [(v) => div(v.B!, v.p!), '{B} ÷ {p}', 'Undo the distributing: divide by p.'],
+      }),
+      bothSides('A', 'B', 'c', 'd'),
+    ],
+    example: { p: 2, a: 3, b: -4, c: 4, d: 2, A: 6, B: -8, x: 5 },
+    startWith: ['d', 'p', 'a', 'b', 'c'],
+    equation: '{p}({a}x + {b}) = {c}x + {d}',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'equation',
+      left: { x: 'A', unit: 'B' },
+      right: { x: 'c', unit: 'd' },
+      solution: 'x',
+    },
+  }),
+  page({
+    id: 'm.9.solving-equations~literal',
+    title: 'Solve a formula for a letter',
+    use: 'Use this for “Solve P = 2l + 2w for w.”',
+    assumptions: [
+      'Solve for the letter first, then put the numbers in last.',
+      'Undo the operations on w in reverse order: take 2l away, then divide by 2.',
+      'All three lengths use the same unit.',
+    ],
+    variables: [
+      num('P', 'P', 'Perimeter', 0, 100000, { unit: 'cm', step: 0.1 }),
+      num('l', 'l', 'Length', 0, 50000, { unit: 'cm', step: 0.1 }),
+      num('w', 'w', 'Width', 0, 50000, { unit: 'cm', step: 0.1 }),
+    ],
+    rules: [
+      rule(
+        'P = 2l + 2w',
+        '{P} = 2 × {l} + 2 × {w}',
+        ['P', 'l', 'w'],
+        (v) => v.P! - (2 * v.l! + 2 * v.w!),
+        {
+          w: [
+            (v) => exact((v.P! - 2 * v.l!) / 2),
+            '({P} − 2 × {l}) ÷ 2',
+            'Take 2l from both sides, then divide both sides by 2: w = (P − 2l) ÷ 2.',
+          ],
+          l: [
+            (v) => exact((v.P! - 2 * v.w!) / 2),
+            '({P} − 2 × {w}) ÷ 2',
+            'Take 2w from both sides, then divide both sides by 2: l = (P − 2w) ÷ 2.',
+          ],
+          P: [
+            (v) => exact(2 * v.l! + 2 * v.w!),
+            '2 × {l} + 2 × {w}',
+            'Two lengths and two widths go around the rectangle.',
+          ],
+        },
+      ),
+    ],
+    example: { P: 30, l: 9, w: 6 },
+    startWith: ['l', 'P'],
+    representation: { kind: 'rectangle', length: 'l', width: 'w', around: 'P', extent: 10 },
+  }),
+];
+
+// ── Function notation ──
+
+const FUNCTION_NOTATION: ModuleDef[] = [
+  page({
+    id: 'm.9.function-notation',
+    assumptions: [
+      'f(x) is the output for input x, not f times x.',
+      'f(4) = 10 means the point (4, 10) is on the graph.',
+      'To solve f(x) = 13, set the rule equal to 13 and solve for x.',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -10, 10, { step: 0.5 }),
+      num('b', 'b', 'y-intercept', -20, 20, { step: 0.5 }),
+      num('x', 'x', 'Input', -20, 20, { step: 0.5, fraction: 20 }),
+      num('y', 'f(x)', 'Output', -300, 300),
+    ],
+    rules: [
+      rule(
+        'f(x) = mx + b',
+        '{y} = {m} × {x} + {b}',
+        ['y', 'm', 'x', 'b'],
+        (v) => v.y! - (v.m! * v.x! + v.b!),
+        {
+          y: [
+            (v) => exact(v.m! * v.x! + v.b!),
+            '{m} × {x} + {b}',
+            'Put the input in for x: multiply by the slope, then add b.',
+          ],
+          x: [
+            (v) => (v.m ? exact((v.y! - v.b!) / v.m!) : undefined),
+            '({y} − {b}) ÷ {m}',
+            'Set mx + b equal to the output: take b from both sides, then divide by m.',
+          ],
+          b: [(v) => exact(v.y! - v.m! * v.x!), '{y} − {m} × {x}', 'Take mx from both sides.'],
+        },
+        {
+          message: (v) =>
+            v.m === 0 && v.y !== undefined && v.b !== undefined && v.y !== v.b
+              ? 'The slope is 0: f(x) is always b, so it never reaches this output.'
+              : undefined,
+        },
+      ),
+    ],
+    example: { m: 3, b: -2, x: 4, y: 10 },
+    startWith: ['x', 'm', 'b'],
+    equation: 'f({x}) = {y}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'b',
+      at: { x: 'x', y: 'y' },
+      marks: ['intercept'],
+    },
+  }),
+  page({
+    id: 'm.9.function-notation~evaluate',
+    title: 'Evaluate a quadratic',
+    use: 'Use this for “f(x) = 2x² − 3x + 1. Find f(−2).”',
+    assumptions: [
+      'Put the input in brackets wherever x is: 2(−2)², not 2 × −2².',
+      'Square first, then multiply, then add and subtract.',
+      'Two inputs can give the same output, so here the output is only worked out.',
+    ],
+    variables: [
+      num('a', 'a', 'x² coefficient', -10, 10, { step: 0.5 }),
+      num('b', 'b', 'x coefficient', -20, 20, { step: 0.5 }),
+      num('c', 'c', 'Number term', -50, 50, { step: 0.5 }),
+      num('x', 'x', 'Input', -20, 20, { step: 0.5 }),
+      num('y', 'f(x)', 'Output', -100000, 100000, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'f(x) = ax² + bx + c',
+        'y',
+        ['a', 'x', 'b', 'c'],
+        '{y} = {a} × {x}² + {b} × {x} + {c}',
+        (v) => v.a! * v.x! ** 2 + v.b! * v.x! + v.c!,
+        '{a} × {x}² + {b} × {x} + {c}',
+        'Put the input in for x, then square, multiply and add in that order.',
+      ),
+    ],
+    example: { a: 2, b: -3, c: 1, x: -2, y: 15 },
+    startWith: ['x', 'a', 'b', 'c'],
+    equation: 'f(x) = {a:coef}x² + {b}x + {c}\nf({x}) = {y}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 'a',
+      b: 'b',
+      c: 'c',
+      at: { x: 'x', y: 'y' },
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.function-notation~domain-range',
+    title: 'Domain and range',
+    use: 'Use this for “f(x) = −2x + 5 for −1 ≤ x ≤ 4. What is its range?”',
+    assumptions: [
+      'The domain is the inputs allowed; the range is the outputs they give.',
+      'A line is highest and lowest at the ends of its domain.',
+      'Write each as an inequality, least first: −3 ≤ y ≤ 7.',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -10, 10, { step: 0.5 }),
+      num('b', 'b', 'y-intercept', -20, 20, { step: 0.5 }),
+      num('x1', 'x₁', 'Least input', -20, 20, { step: 0.5 }),
+      num('x2', 'x₂', 'Greatest input', -20, 20, { step: 0.5 }),
+      num('y1', 'f(x₁)', 'Output at x₁', -500, 500, { derived: true }),
+      num('y2', 'f(x₂)', 'Output at x₂', -500, 500, { derived: true }),
+      num('lo', 'y_min', 'Least output', -500, 500, { derived: true }),
+      num('hi', 'y_max', 'Greatest output', -500, 500, { derived: true }),
+    ],
+    rules: [
+      constraint(
+        'x₁ < x₂',
+        'The least input {x1} is below the greatest {x2}',
+        ['x1', 'x2'],
+        (v) => !(v.x1! < v.x2!),
+      ),
+      derive(
+        'y₁ = m x₁ + b',
+        'y1',
+        ['m', 'x1', 'b'],
+        '{y1} = {m} × {x1} + {b}',
+        (v) => v.m! * v.x1! + v.b!,
+        '{m} × {x1} + {b}',
+        'The output at the left end of the domain.',
+      ),
+      derive(
+        'y₂ = m x₂ + b',
+        'y2',
+        ['m', 'x2', 'b'],
+        '{y2} = {m} × {x2} + {b}',
+        (v) => v.m! * v.x2! + v.b!,
+        '{m} × {x2} + {b}',
+        'The output at the right end.',
+      ),
+      derive(
+        'y_min = the smaller of y₁ and y₂',
+        'lo',
+        ['y1', 'y2'],
+        '{lo} = the smaller of {y1} and {y2}',
+        (v) => Math.min(v.y1!, v.y2!),
+        'the smaller of {y1} and {y2}',
+        'A line only rises or only falls, so the least output is at one end.',
+      ),
+      derive(
+        'y_max = the larger of y₁ and y₂',
+        'hi',
+        ['y1', 'y2'],
+        '{hi} = the larger of {y1} and {y2}',
+        (v) => Math.max(v.y1!, v.y2!),
+        'the larger of {y1} and {y2}',
+        'And the greatest output at the other end.',
+      ),
+    ],
+    example: { m: -2, b: 5, x1: -1, x2: 4, y1: 7, y2: -3, lo: -3, hi: 7 },
+    startWith: ['m', 'b', 'x1', 'x2'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'piecewise',
+      pieces: [{ f: { family: 'linear', m: 'm', b: 'b' }, from: 'x1', to: 'x2', ends: '[]' }],
+      marks: ['domain', 'range'],
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.function-notation~rate-of-change',
+    title: 'Average rate of change',
+    use: 'Use this for “Find the average rate of change of f(x) = x² − 4x + 1 from x = 1 to x = 4.”',
+    assumptions: [
+      'The average rate of change is the change in output over the change in input.',
+      'It is the slope of the line through the two points on the graph.',
+      'For a curve it changes with the interval; for a line it is always the slope.',
+    ],
+    variables: [
+      num('a', 'a', 'x² coefficient', -10, 10, { step: 0.5 }),
+      num('b', 'b', 'x coefficient', -20, 20, { step: 0.5 }),
+      num('c', 'c', 'Number term', -50, 50, { step: 0.5 }),
+      num('x1', 'x₁', 'Start of the interval', -20, 20, { step: 0.5 }),
+      num('x2', 'x₂', 'End of the interval', -20, 20, { step: 0.5 }),
+      num('y1', 'f(x₁)', 'Output at x₁', -10000, 10000, { derived: true }),
+      num('y2', 'f(x₂)', 'Output at x₂', -10000, 10000, { derived: true }),
+      num('h', 'Δx', 'Change in input', -40, 40, { derived: true }),
+      num('r', 'r', 'Average rate of change', -10000, 10000, { derived: true }),
+    ],
+    rules: [
+      constraint(
+        'x₁ ≠ x₂',
+        'The interval’s ends {x1} and {x2} differ',
+        ['x1', 'x2'],
+        (v) => v.x1 === v.x2,
+      ),
+      derive(
+        'f(x₁)',
+        'y1',
+        ['a', 'x1', 'b', 'c'],
+        '{y1} = {a} × {x1}² + {b} × {x1} + {c}',
+        (v) => v.a! * v.x1! ** 2 + v.b! * v.x1! + v.c!,
+        '{a} × {x1}² + {b} × {x1} + {c}',
+        'The output at the start of the interval.',
+      ),
+      derive(
+        'f(x₂)',
+        'y2',
+        ['a', 'x2', 'b', 'c'],
+        '{y2} = {a} × {x2}² + {b} × {x2} + {c}',
+        (v) => v.a! * v.x2! ** 2 + v.b! * v.x2! + v.c!,
+        '{a} × {x2}² + {b} × {x2} + {c}',
+        'The output at the end.',
+      ),
+      derive(
+        'Δx = x₂ − x₁',
+        'h',
+        ['x2', 'x1'],
+        '{h} = {x2} − {x1}',
+        (v) => v.x2! - v.x1!,
+        '{x2} − {x1}',
+        'How far the input moves.',
+      ),
+      derive(
+        'r = (f(x₂) − f(x₁)) ÷ Δx',
+        'r',
+        ['y2', 'y1', 'h'],
+        '{r} = ({y2} − {y1}) ÷ {h}',
+        (v) => div(v.y2! - v.y1!, v.h!),
+        '({y2} − {y1}) ÷ {h}',
+        'The change in output over the change in input: the slope of the secant line.',
+      ),
+    ],
+    example: { a: 1, b: -4, c: 1, x1: 1, x2: 4, y1: -2, y2: 1, h: 3, r: 1 },
+    startWith: ['a', 'b', 'c', 'x1', 'x2'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 'a',
+      b: 'b',
+      c: 'c',
+      secant: { x: 'x1', h: 'h', slope: 'r' },
+      fixed: true,
+    },
+  }),
+];
+
+// ── Linear modeling ──
+
+const LINEAR_MODELING: ModuleDef[] = [
+  page({
+    id: 'm.9.linear-modeling',
+    assumptions: [
+      'Point-slope form needs one point (x₁, y₁) and the slope m.',
+      'Distribute m and add y₁ to both sides to reach y = mx + b.',
+      'A negative x₁ reads x + 3, not x − (−3).',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -10, 10, { step: 0.5, fraction: 12 }),
+      num('x1', 'x₁', 'Point’s x', -20, 20, { step: 0.5 }),
+      num('y1', 'y₁', 'Point’s y', -20, 20, { step: 0.5 }),
+      num('b', 'b', 'y-intercept', -250, 250),
+    ],
+    rules: [
+      rule(
+        'b = y₁ − m x₁',
+        '{b} = {y1} − {m} × {x1}',
+        ['b', 'y1', 'm', 'x1'],
+        (v) => v.b! - (v.y1! - v.m! * v.x1!),
+        {
+          b: [
+            (v) => exact(v.y1! - v.m! * v.x1!),
+            '{y1} − {m} × {x1}',
+            'Distribute: y − y₁ = mx − mx₁, then add y₁ to both sides; the number left is b.',
+            {
+              note: (v) =>
+                known(v, 'm', 'b')
+                  ? `→ y = ${poly([
+                      [v.m!, 'x'],
+                      [v.b!, ''],
+                    ])}`
+                  : '',
+            },
+          ],
+          y1: [
+            (v) => exact(v.b! + v.m! * v.x1!),
+            '{m} × {x1} + {b}',
+            'The point is on the line: put its x into y = mx + b.',
+          ],
+          m: [
+            (v) => (v.x1 ? exact((v.y1! - v.b!) / v.x1!) : undefined),
+            '({y1} − {b}) ÷ {x1}',
+            'The slope from the point and the y-intercept (0, b): rise over run.',
+          ],
+        },
+      ),
+    ],
+    example: { m: 3, x1: 2, y1: 5, b: -1 },
+    startWith: ['m', 'x1', 'y1'],
+    equation: 'y − {y1} = {m}(x − {x1})',
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'b',
+      at: { x: 'x1', y: 'y1' },
+      marks: ['intercept'],
+    },
+  }),
+  page({
+    id: 'm.9.linear-modeling~parallel-perpendicular',
+    title: 'Parallel and perpendicular lines',
+    use: 'Use this for “Write the line through (4, 3) perpendicular to y = 2x + 1.”',
+    assumptions: [
+      'Parallel lines have the same slope.',
+      'Perpendicular slopes multiply to −1: flip the slope and change its sign.',
+      'Then put the point into y = mx + b to find b.',
+    ],
+    variables: [
+      num('m1', 'm₁', 'Slope of the given line', -10, 10, { step: 0.5 }),
+      num('b1', 'b₁', 'y-intercept of the given line', -20, 20, { step: 0.5 }),
+      num('x1', 'x₁', 'Point’s x', -20, 20, { step: 0.5 }),
+      num('y1', 'y₁', 'Point’s y', -20, 20, { step: 0.5 }),
+      int('k', 'k', 'Parallel (1) or perpendicular (2)', 1, 2, { allowed: [1, 2] }),
+      num('m2', 'm₂', 'Slope of the new line', -1000, 1000, { derived: true }),
+      num('b2', 'b₂', 'y-intercept of the new line', -100000, 100000, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'm₂ = m₁ or −1 ÷ m₁',
+        'm2',
+        ['m1', 'k'],
+        '{m2} = {m1} when {k} is 1, −1 ÷ {m1} when it is 2',
+        // m₁ when k is 1, −1 ÷ m₁ when k is 2: one smooth rule, so the search reads it right.
+        (v) => (v.k === 2 && !v.m1 ? undefined : (2 - v.k!) * v.m1! + (v.k! - 1) * (-1 / v.m1!)),
+        (v) => (v.k === 2 ? '−1 ÷ {m1}' : '{m1}'),
+        (v) =>
+          v.k === 2
+            ? 'Perpendicular: the negative reciprocal, so the two slopes multiply to −1.'
+            : 'Parallel: the same slope, so the lines never meet.',
+        {},
+        {
+          message: (v) =>
+            v.k === 2 && v.m1 === 0
+              ? 'A line perpendicular to a flat line is upright (x = x₁): it has no slope.'
+              : undefined,
+          check: (v) =>
+            v.k === 2 ? `${fmt(v.m2!)} = −1 ÷ ${sg(v.m1!)}` : `${fmt(v.m2!)} = ${fmt(v.m1!)}`,
+        },
+      ),
+      derive(
+        'b₂ = y₁ − m₂ x₁',
+        'b2',
+        ['y1', 'm2', 'x1'],
+        '{b2} = {y1} − {m2} × {x1}',
+        (v) => v.y1! - v.m2! * v.x1!,
+        '{y1} − {m2} × {x1}',
+        'The new line passes through the point: put it into y = m₂x + b₂ and solve for b₂.',
+      ),
+    ],
+    example: { m1: 2, b1: 1, x1: 4, y1: 3, k: 2, m2: -0.5, b2: 5 },
+    startWith: ['m1', 'b1', 'x1', 'y1', 'k'],
+    standalone: {
+      vars: ['b1'],
+      why: 'The given line’s intercept only places it on the graph: the new slope uses its slope alone.',
+    },
+    pictureLabels: ['k'],
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 'm1', intercept: 'b1', label: 'Given line' },
+        { slope: 'm2', intercept: 'b2', label: 'New line' },
+      ],
+      test: { x: 'x1', y: 'y1' },
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.linear-modeling~context',
+    title: 'A linear model in a story',
+    use: 'Use this for “A class costs $25 to join plus $12.50 a class. What do 8 classes cost?”',
+    assumptions: [
+      'The total is the starting amount plus the rate times the count: C = b + mx.',
+      'b is the value when x = 0; m is how much each one more adds.',
+      'x is a whole number of classes, 0 or more: the domain of the story.',
+    ],
+    variables: [
+      num('b', 'b', 'Starting amount', 0, 10000, { unit: '$', step: 0.01 }),
+      num('m', 'm', 'Cost per class', 0, 1000, { unit: '$', step: 0.01 }),
+      int('x', 'x', 'Classes', 0, 1000),
+      num('C', 'C', 'Total cost', 0, 1000000, { unit: '$' }),
+      int('dx', 'Δx', 'More classes', 0, 1000),
+      num('dC', 'ΔC', 'Added cost', 0, 1000000, { unit: '$' }),
+    ],
+    rules: [
+      rule(
+        'C = b + m x',
+        '{C} = {b} + {m} × {x}',
+        ['C', 'b', 'm', 'x'],
+        (v) => v.C! - (v.b! + v.m! * v.x!),
+        {
+          C: [
+            (v) => exact(v.b! + v.m! * v.x!),
+            '{b} + {m} × {x}',
+            'The starting amount plus the rate for each class.',
+          ],
+          x: [
+            (v) => (v.m ? exact((v.C! - v.b!) / v.m!) : undefined),
+            '({C} − {b}) ÷ {m}',
+            'Take the starting amount from the total, then divide by the rate.',
+          ],
+          b: [
+            (v) => exact(v.C! - v.m! * v.x!),
+            '{C} − {m} × {x}',
+            'Take the classes’ cost from the total.',
+          ],
+          m: [
+            (v) => (v.x ? exact((v.C! - v.b!) / v.x!) : undefined),
+            '({C} − {b}) ÷ {x}',
+            'Take the starting amount away, then share the rest over the classes.',
+          ],
+        },
+      ),
+      rule('ΔC = m Δx', '{dC} = {m} × {dx}', ['dC', 'm', 'dx'], (v) => v.dC! - v.m! * v.dx!, {
+        dC: [
+          (v) => exact(v.m! * v.dx!),
+          '{m} × {dx}',
+          'Each class more adds the rate once, whatever the starting amount.',
+        ],
+        dx: [
+          (v) => (v.m ? exact(v.dC! / v.m!) : undefined),
+          '{dC} ÷ {m}',
+          'Divide the added cost by the rate.',
+        ],
+      }),
+    ],
+    example: { b: 25, m: 12.5, x: 8, C: 125, dx: 3, dC: 37.5 },
+    startWith: ['x', 'b', 'm', 'dx'],
+    pictureLabels: ['dx', 'dC'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'b',
+      name: 'C',
+      at: { x: 'x', y: 'C' },
+      xMin: 0,
+      axes: { x: 'Classes x', y: 'Total cost C ($)' },
+      marks: ['intercept'],
+    },
+  }),
+];
+
 /** Every Grade 9 math calculator, by skill in taxonomy order. */
 export const MATH_9_MODULES: ModuleDef[] = [
   ...EXPONENTIAL,
@@ -1646,4 +2300,7 @@ export const MATH_9_MODULES: ModuleDef[] = [
   ...FACTORING,
   ...QUADRATIC_FORMULA,
   ...QUADRATIC_INEQUALITIES,
+  ...SOLVING_EQUATIONS,
+  ...FUNCTION_NOTATION,
+  ...LINEAR_MODELING,
 ];

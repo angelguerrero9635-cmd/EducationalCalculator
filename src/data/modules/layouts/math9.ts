@@ -5,6 +5,47 @@
 import type { LayoutDef } from './types';
 
 export const MATH_9_LAYOUTS: LayoutDef[] = [
+  // ── Solving linear equations (A-REI.3) ──
+  {
+    kind: 'sort',
+    id: 'm.9.solving-equations~how-many-solutions',
+    title: 'How many solutions?',
+    use: 'Use this for “Which equation has exactly one solution, no solution, or infinitely many?”',
+    assumptions: [
+      'Collect the x terms. If they cancel, the numbers left decide: a false statement has no solution, a true one every number.',
+      'If the x terms don’t cancel, there is exactly one solution.',
+      'Distribute first, so both sides are in the form ax + b.',
+    ],
+    question: 'How many solutions does the equation have?',
+    bins: [
+      {
+        id: 'one',
+        label: 'Exactly one solution',
+        why: 'The x terms differ, so one value of x balances the two sides.',
+      },
+      {
+        id: 'none',
+        label: 'No solution',
+        why: 'The x terms cancel and leave a false statement, such as 1 = 6.',
+      },
+      {
+        id: 'every',
+        label: 'Every number is a solution',
+        why: 'The two sides are the same expression, so any x makes it true.',
+      },
+    ],
+    cards: [
+      { label: '5x − 2 = 3x + 8', bin: 'one' },
+      { label: '6x + 4 = 2x', bin: 'one' },
+      { label: '2n + 1 = 9', bin: 'one' },
+      { label: '4x + 1 = 4x + 6', bin: 'none' },
+      { label: '3x = 3x + 0.5', bin: 'none' },
+      { label: '2n + 1 = 2n', bin: 'none' },
+      { label: '2(x + 3) = 2x + 6', bin: 'every' },
+      { label: '7 − x = −x + 7', bin: 'every' },
+    ],
+  },
+
   // ── Exponential functions (F-LE.1) ──
   {
     kind: 'sort',
