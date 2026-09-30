@@ -771,7 +771,42 @@ const tolerance = page({
   },
 });
 
+// ── H91: |x − c| = d, two dots at c ± d ──
+
+/** The absolute-value main page with the 'equal' line (its example, then d = 0). */
+const [equalTwo, equalOne] = (
+  [
+    ['g.m9-absolute-value-equal', 'Absolute value equation: two dots at c ± d', undefined],
+    [
+      'g.m9-absolute-value-equal-one',
+      'Absolute value equation equal to 0: one dot',
+      { a: 2, b: -3, c: 0, h: 1.5, d: 0, x1: 1.5, x2: 1.5 },
+    ],
+  ] as const
+).map(([id, title, example]) => {
+  const base = fromPage('m.9.absolute-value', id, title, {});
+  return {
+    ...base,
+    ...(example
+      ? {
+          example: { ...example },
+          use: 'Use this for “Solve |2x − 3| = 0”: the one number 0 from the center.',
+        }
+      : {}),
+    representation: {
+      kind: 'integerLine' as const,
+      value: 'x1',
+      second: 'x2',
+      min: -20,
+      max: 20,
+      compound: { join: 'equal' as const, center: 'h', radius: 'd' },
+    },
+  };
+});
+
 export const HS2A_GALLERY_MODULES: ModuleDef[] = [
+  equalTwo!,
+  equalOne!,
   ticksBy5,
   compoundFit,
   tolerance,

@@ -73,6 +73,19 @@ export function hs2aIssues(rep: Representation, val: Val): string[] {
           out.push(`the line ${lo} to ${hi} leaves out ${pts.join(', ')}`);
         if ((hi - lo) / step > 40) out.push(`${(hi - lo) / step} ticks from ${lo} to ${hi}`);
       }
+      // H91: |x − c| = d has two solutions at c ± d, one at c for d = 0, none below 0.
+      if (rep.compound?.join === 'equal') {
+        if (!rep.compound.center || !rep.compound.radius)
+          out.push("an 'equal' compound needs its center and its radius");
+        const r = rep.compound.radius ? val(rep.compound.radius) : undefined;
+        const c = rep.compound.center ? val(rep.compound.center) : undefined;
+        const [a, b] = [val(rep.value), rep.second ? val(rep.second) : undefined];
+        if (c !== undefined && r !== undefined && r >= 0 && a !== undefined && b !== undefined) {
+          const [lo, hi] = [Math.min(a, b), Math.max(a, b)];
+          if (!near(lo, c - r) || !near(hi, c + r))
+            out.push(`|x − ${c}| = ${r} is solved by ${c - r} and ${c + r}, not ${a} and ${b}`);
+        }
+      }
       break;
     }
     default:

@@ -1235,7 +1235,8 @@ export function repIssues(
           out.push('a compound inequality is drawn across, alone');
         if (!center !== !radius) out.push('a distance needs both its center and its radius');
         const [c, r] = [center, radius].map((x) => (x ? val(x) : undefined));
-        if (c !== undefined && r !== undefined) {
+        // (H91's 'equal' dots come in either order: checked in picturesHs2a.ts.)
+        if (c !== undefined && r !== undefined && rep.compound.join !== 'equal') {
           if (a !== undefined && Math.abs(a - (c - r)) > 1e-6 * Math.max(1, Math.abs(a)))
             out.push(`|x − ${c}| with radius ${r} has its lower bound at ${c - r}, not ${a}`);
           if (b !== undefined && Math.abs(b - (c + r)) > 1e-6 * Math.max(1, Math.abs(b)))

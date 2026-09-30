@@ -10,6 +10,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
 import { lineStep, lineWindow } from './integerLineWindow';
 import { CompoundLine } from './CompoundLine';
+import { EqualLine } from './EqualLine';
 import { InequalityLine } from './Inequality';
 import { SignedJump } from './SignedJump';
 import { Steppers } from './Steppers';
@@ -26,7 +27,9 @@ export { tickStep } from './integerLineWindow';
  * `inequality`, an inequality's solutions instead (Inequality.tsx).
  */
 export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
-  return spec.compound ? (
+  return spec.compound?.join === 'equal' ? (
+    <EqualLine spec={spec} calc={calc} />
+  ) : spec.compound ? (
     <CompoundLine spec={spec} calc={calc} />
   ) : spec.inequality ? (
     <InequalityLine spec={spec} calc={calc} />
