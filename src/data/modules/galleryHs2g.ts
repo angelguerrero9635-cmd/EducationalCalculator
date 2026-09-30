@@ -126,26 +126,43 @@ function fromPage(
 
 // ── H93: termsChart past 30 terms, a recursive rule, a second lit term ──
 
+/** A demo without some of the page's values and every rule that uses them. */
+function without(m: ModuleDef, ids: string[]): ModuleDef {
+  const uses = (r: Relation) => r.vars.some((x) => ids.includes(x));
+  const gone = new Set(m.relations.filter(uses).map((r) => r.id));
+  return {
+    ...m,
+    variables: m.variables.filter((v) => !ids.includes(v.id)),
+    relations: m.relations.filter((r) => !gone.has(r.id)),
+    steps: Object.fromEntries(Object.entries(m.steps).filter(([k]) => !gone.has(k))),
+  };
+}
+
 const TERMS: ModuleDef[] = [
-  fromPage(
-    'm.9.sequences',
-    'g.m9-sequences-far',
-    'Arithmetic sequence: the 100th term',
-    {
-      kind: 'termsChart',
-      type: 'arithmetic',
-      first: 'a1',
-      step: 'd',
-      count: 'n',
-      as: 'points',
-      term: 'an',
-      far: true,
-    },
-    {
-      use: 'Use this for “7, 11, 15, … What is the 100th term?”',
-      vars: { n: { max: 1000 } },
-      example: { a1: 7, d: 4, n: 100, an: 403 },
-    },
+  // The far chart reads n and aₙ itself, so the page's picture-only values (the first 30 terms
+  // drawn, the last term drawn) and their rules are left out.
+  without(
+    fromPage(
+      'm.9.sequences',
+      'g.m9-sequences-far',
+      'Arithmetic sequence: the 100th term',
+      {
+        kind: 'termsChart',
+        type: 'arithmetic',
+        first: 'a1',
+        step: 'd',
+        count: 'n',
+        as: 'points',
+        term: 'an',
+        far: true,
+      },
+      {
+        use: 'Use this for “7, 11, 15, … What is the 100th term?”',
+        vars: { n: { max: 1000 } },
+        example: { a1: 7, d: 4, n: 100, an: 403 },
+      },
+    ),
+    ['nc', 'tl'],
   ),
   fromPage('m.9.sequences~recursive', 'g.m9-sequences-recursive-chart', 'Recursive rule', {
     kind: 'termsChart',
@@ -477,22 +494,40 @@ const MONOMIAL: Representation = {
   k: 'k',
 };
 
+/**
+ * The page checks both sides at x with the first expression multiplied out, numbers its table
+ * shows. The factor picture shows no table, so the demos drop that check's rule: y = c × xᵏ
+ * already gives y at every x (x⁰ = 1 when the exponents are equal).
+ */
+function plainCheck(m: ModuleDef): ModuleDef {
+  const gone = m.relations.filter((r) => r.check).map((r) => r.id);
+  return {
+    ...m,
+    relations: m.relations.filter((r) => !gone.includes(r.id)),
+    steps: Object.fromEntries(Object.entries(m.steps).filter(([k]) => !gone.includes(k))),
+  };
+}
+
 const MONOMIALS: ModuleDef[] = [
-  fromPage(
-    'm.9.radicals~monomials',
-    'g.m9-radicals-monomials-factors',
-    'Divide monomials',
-    MONOMIAL,
+  plainCheck(
+    fromPage(
+      'm.9.radicals~monomials',
+      'g.m9-radicals-monomials-factors',
+      'Divide monomials',
+      MONOMIAL,
+    ),
   ),
-  fromPage(
-    'm.9.radicals~monomials',
-    'g.m9-radicals-monomials-negative',
-    'Divide monomials: a negative exponent',
-    MONOMIAL,
-    {
-      use: 'Use this for “Simplify 6x² ÷ 4x⁻³.”',
-      example: { a: 6, m: 2, b: 4, n: -3, c: 1.5, k: 5, x: 2, y: 48 },
-    },
+  plainCheck(
+    fromPage(
+      'm.9.radicals~monomials',
+      'g.m9-radicals-monomials-negative',
+      'Divide monomials: a negative exponent',
+      MONOMIAL,
+      {
+        use: 'Use this for “Simplify 6x² ÷ 4x⁻³.”',
+        example: { a: 6, m: 2, b: 4, n: -3, c: 1.5, k: 5, x: 2, y: 48 },
+      },
+    ),
   ),
 ];
 
@@ -708,7 +743,24 @@ const threeStages = page({
   },
 });
 
-const countingFraction = fromPage(
+// The fraction C(a, r) ÷ C(n, r) is the page's case with every one chosen from the first group
+// (k = r), and Pascal's triangle is drawn to row 12, so the demo keeps to 12 people.
+const allFromFirst = derive(
+  'k = r',
+  'k',
+  ['r'],
+  '{k} = {r}',
+  (v) => v.r,
+  '{r}',
+  'All r are chosen from the first group.',
+);
+const toRow12 = limit(
+  'a + b ≤ 12',
+  '{a} + {b} is at most 12',
+  (v) => v.a! + v.b! <= 12,
+  'Pascal’s triangle here is drawn to row 12: keep to 12 people.',
+);
+const countingBase = fromPage(
   'm.10.probability-rules~counting-probability',
   'g.m10-probability-rules-counting-fraction',
   'Probability with combinations: a fraction of two counts',
@@ -718,7 +770,21 @@ const countingFraction = fromPage(
     k: 'r',
     fraction: { n: 'a', k: 'r', count: 'f', chance: 'P' },
   },
+  {
+    use: 'Use this for “3 students are picked at random from 5 girls and 4 boys. What is the chance all 3 are girls?”',
+    vars: { a: { max: 12 }, b: { max: 11 }, r: { max: 12 }, k: { derived: true } },
+    startWith: ['a', 'b', 'r'],
+  },
 );
+const countingFraction: ModuleDef = {
+  ...countingBase,
+  relations: [...countingBase.relations, toRow12.relation, allFromFirst.relation],
+  steps: {
+    ...countingBase.steps,
+    [toRow12.relation.id]: toRow12.steps,
+    [allFromFirst.relation.id]: allFromFirst.steps,
+  },
+};
 
 const CHANCES: ModuleDef[] = [neitherCounts, vennCountsGiven, threeStages, countingFraction];
 

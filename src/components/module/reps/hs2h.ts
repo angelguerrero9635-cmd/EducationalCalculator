@@ -10,7 +10,10 @@ import type { FigureRayPoint } from '@/data/modules/typesHsc';
 /** A value read as shown, or undefined while it is "?". */
 type Read = (id: string) => number | undefined;
 
-/** `complexPlane` `opFrom`: 1 sum, 2 difference, 3 product; undefined while "?" or another code. */
+/**
+ * `complexPlane` `opFrom`: 1 sum, 2 difference, 3 product, or −1 difference (a ±1 sign value,
+ * as `m.11.complex-numbers~add-subtract` stores it); undefined while "?" or another code.
+ */
 export function complexOp(
   op: 'sum' | 'difference' | 'product' | undefined,
   opFrom: string | undefined,
@@ -18,7 +21,13 @@ export function complexOp(
 ): 'sum' | 'difference' | 'product' | undefined {
   if (!opFrom) return op ?? 'sum';
   const code = read(opFrom);
-  return code === 1 ? 'sum' : code === 2 ? 'difference' : code === 3 ? 'product' : undefined;
+  return code === 1
+    ? 'sum'
+    : code === 2 || code === -1
+      ? 'difference'
+      : code === 3
+        ? 'product'
+        : undefined;
 }
 
 /**

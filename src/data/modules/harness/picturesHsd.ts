@@ -226,10 +226,11 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
         check(rep.argument, (((Math.atan2(z.b, z.a) / RAD) % 360) + 360) % 360, 'arg z');
       const [c, d] = [num(rep.w?.re), num(rep.w?.im)];
       if (rep.w && c !== undefined && d !== undefined) {
-        // H105: `opFrom`, a value picking the operation (1 sum, 2 difference, 3 product).
+        // H105: `opFrom`, a value picking the operation (1 sum, 2 difference, 3 product; −1
+        // difference, from a ±1 sign value).
         const code = rep.opFrom ? num(rep.opFrom) : undefined;
-        if (code !== undefined && ![1, 2, 3].includes(code))
-          out.push(`operation code ${code} is not 1, 2 or 3`);
+        if (code !== undefined && ![1, 2, 3, -1].includes(code))
+          out.push(`operation code ${code} is not 1, 2, 3 or −1`);
         const op = complexOp(rep.op, rep.opFrom, (id) => num(id));
         if (!op) break;
         const res =

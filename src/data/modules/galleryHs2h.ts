@@ -266,7 +266,7 @@ const complexSign = fromPage(
     kind: 'complexPlane',
     z: { re: 'a', im: 'b' },
     w: { re: 'c', im: 'd' },
-    opFrom: 'o',
+    opFrom: 'sg',
     result: { re: 'p', im: 'q' },
   },
 );
@@ -353,22 +353,9 @@ const freeFall = fromPage(
     kinematics: { view: 'velocity' },
   },
   {
+    // The page keeps g in its steps and hides a; the picture takes −9.8 as a number instead.
     omit: ['a'],
-    drop: ['a = -9.8', 'v = at'],
-    rules: [
-      rule('v = −9.8t', '{v} = −9.8 × {t}', ['v', 't'], (v) => v.v! + G * v.t!, {
-        v: [
-          (v) => exact(-G * v.t!),
-          '−9.8 × {t}',
-          'From rest, the velocity is the acceleration, −9.8 m/s², times the time.',
-        ],
-        t: [
-          (v) => exact(v.v! / -G),
-          '{v} ÷ (−9.8)',
-          'Divide the velocity by the acceleration, −9.8 m/s².',
-        ],
-      }),
-    ],
+    drop: ['a = v/t'],
     example: { t: 3, v: -G * 3, d: 0.5 * G * 9 },
   },
 );
