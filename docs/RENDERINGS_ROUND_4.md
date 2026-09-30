@@ -81,7 +81,8 @@ round.
 - Open every page in `pages` in the web build, and read its module or layout file. Draw for
   those pages' values, ranges and questions.
 - Add or update a gallery demo with a page's own example, plus one at the edge of its range.
-- Run `pnpm check`. Take before and after screenshots at 390 px, in light and dark
+- Test it as "Testing" in `docs/RENDERINGS_BRIEF.md` says (not `pnpm check`). Take before and
+  after screenshots at 390 px, in light and dark
   (`NODE_PATH=$(npm root -g) pnpm shots -- <page ids> --widths 390`).
 
 **When you finish an entry:**

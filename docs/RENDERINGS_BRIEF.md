@@ -59,10 +59,42 @@ closest existing picture until yours is ready, then pulls your branch and plugs 
   those. Add new files where you can; when you must touch a shared file (types, index, meta,
   theme), keep the edit small so merges are easy.
 - **Work on your own branch** (start from `claude/ios-education-wireframe-313z7z`), commit
-  after each picture kind with a clear message, push, and don't open pull requests.
-- Before each push: `pnpm check` (typecheck, lint, format, all tests). For a picture, also
-  `pnpm build:web` and `NODE_PATH=$(npm root -g) pnpm shots -- <gallery ids> --widths 390`,
-  and look at the shots in light and dark.
+  after each picture kind with a clear message, push after each group, and don't open pull
+  requests.
+- **Test only what you touched** (see "Testing" below). Don't run `pnpm check`: it runs every
+  test for every grade. The nightly CI run does the full suite.
+
+## Testing
+
+The full suite takes minutes and repeats checks your change can't affect. Run only what
+covers it.
+
+**While drawing a kind**, after each change:
+
+1. `pnpm -s typecheck` and `pnpm -s exec eslint <the files you changed>`.
+2. The module and sampling tests for the pages that show the kind: its gallery demos and every
+   page whose `representation` (or layout figure) uses it. To find those pages, run
+   `grep -rln "kind: '<kind>'" src/data/modules`. Then run, for example,
+   `MODULE_IDS=g.,m.9.quadratic-functions pnpm test src/data/modules`. The cheap suites in
+   that folder (the tracker, layouts, standards) run in full; `MODULE_IDS` only narrows the
+   heavy ones.
+3. If you changed a shared file (`types.ts`, `reps/index.tsx`, `meta.ts`, `theme.ts`), also run
+   `pnpm test src/components src/data/__tests__`.
+
+**Screenshots:** build only the pages in scope, then shoot the demos in light and dark:
+
+```
+PRERENDER_PREFIX=g.,m.9.quadratic pnpm build:web
+NODE_PATH=$(npm root -g) pnpm shots -- <ids> --widths 390
+```
+
+**Before a push**, once per group (a tracker group or a subject), not after every kind:
+
+- `pnpm -s format:check`;
+- `node scripts/ci-test.mjs`. It runs every cheap suite. It runs the two heavy suites for what
+  the push changed, and in full when a picture component changed.
+
+That is one full heavy run per group instead of one per picture.
 
 ## What exists (don't rebuild)
 
