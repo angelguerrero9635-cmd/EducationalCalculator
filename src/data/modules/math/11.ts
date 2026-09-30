@@ -1700,6 +1700,88 @@ export const MATH_11_MODULES: ModuleDef[] = [
     },
   }),
 
+  page({
+    id: 'm.11.exp-log-equations~two-logs',
+    title: 'Equations with two logs',
+    use: 'Use this for “Solve log₃ x + log₃(x − 8) = 2.”',
+    assumptions: [
+      'The product rule joins the logs: log_b(x) + log_b(x + c) = log_b(x(x + c)).',
+      'Then x(x + c) = bʸ, a quadratic: x² + cx − bʸ = 0.',
+      'A log needs a positive number, so check each candidate in x and x + c.',
+    ],
+    variables: [
+      V('b', 'b', 'Base', { min: 0.1, max: 20, step: 0.01 }),
+      V('c', 'c', 'Constant in the second log', { min: -50, max: 50, step: 1 }),
+      V('y', 'y', 'Value of the sum', { min: -10, max: 10, step: 0.5 }),
+      V('u', 'u', 'The product x(x + c), bʸ', { min: 1e-6, max: 1e6, derived: true }),
+      V('x1', 'x₁', 'Larger candidate, the solution', { min: -1e4, max: 1e4, derived: true }),
+      V('x2', 'x₂', 'Smaller candidate', { min: -1e4, max: 1e4, derived: true }),
+    ],
+    rules: [
+      limit('b ≠ 1', 'The base {b} is not 1', ['b'], (v) => v.b !== 1, BASE_NOT_1),
+      derive(
+        'u = b^y',
+        'u',
+        ['b', 'y'],
+        '{u} = {b}^{y}',
+        (v) => v.b! ** v.y!,
+        '{b}^{y}',
+        'Join the logs: log_b(x(x + c)) = y, so x(x + c) = bʸ.',
+      ),
+      derive(
+        'x₁ = (−c + √(c² + 4u)) ÷ 2',
+        'x1',
+        ['c', 'u'],
+        '{x1} = (−{c} + √({c}² + 4 × {u})) ÷ 2',
+        (v) => rootOf(1, v.c!, -v.u!, 1),
+        '(−{c} + √({c}² + 4 × {u})) ÷ 2',
+        'Multiply out x(x + c) = u and use the quadratic formula on x² + cx − u = 0.',
+        {
+          work: (v) => {
+            const x = rootOf(1, v.c!, -v.u!, 1)!;
+            return [
+              `${poly([1, v.c!, -v.u!])} = 0`,
+              ...quadWork(1, v.c!, -v.u!, 1).map((l) => `x₁ = ${l}`),
+              `x = ${fmt(x)}: x and x + c are ${fmt(x)} and ${fmt(x + v.c!)}, both positive ✓`,
+            ];
+          },
+        },
+      ),
+      derive(
+        'x₂ = (−c − √(c² + 4u)) ÷ 2',
+        'x2',
+        ['c', 'u'],
+        '{x2} = (−{c} − √({c}² + 4 × {u})) ÷ 2',
+        (v) => rootOf(1, v.c!, -v.u!, -1),
+        '(−{c} − √({c}² + 4 × {u})) ÷ 2',
+        'The same formula with the minus sign. Its x and x + c are both negative, so it is extraneous.',
+        {
+          work: (v) => {
+            const x = rootOf(1, v.c!, -v.u!, -1)!;
+            const bad = x <= 0 ? `x = ${fmt(x)}` : `x + c = ${fmt(x + v.c!)}`;
+            return [
+              ...quadWork(1, v.c!, -v.u!, -1).map((l) => `x₂ = ${l}`),
+              `${bad} is not positive, so its log has no value: reject x = ${fmt(x)}`,
+            ];
+          },
+        },
+      ),
+    ],
+    example: { b: 3, c: -8, y: 2, u: 9, x1: 9, x2: -1 },
+    startWith: ['b', 'c', 'y'],
+    equation: 'log_{b}(x) + log_{b}(x + {c}) = {y}',
+    pictureLabels: ['b', 'y', 'u'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'factored',
+      p: 'x2',
+      q: 'x1',
+      shows: { zeros: ['x2', 'x1'] },
+      marks: ['zeros'],
+    },
+  }),
+
   // ── Series and sigma notation (A-SSE.4, F-BF.2) ──
   page({
     id: 'm.11.series',
@@ -3430,6 +3512,104 @@ export const MATH_11_MODULES: ModuleDef[] = [
     },
   }),
 
+  page({
+    id: 'm.11.polynomial-equations~sum-of-cubes',
+    title: 'Sum and difference of cubes',
+    use: 'Use this for “Factor 27x³ + 8” or “Factor x³ − 125.”',
+    assumptions: [
+      'A sum of cubes factors as a³x³ + b³ = (ax + b)(a²x² − abx + b²).',
+      'A difference of cubes is the same with a negative b: x³ − 125 = (x − 5)(x² + 5x + 25).',
+      'The quadratic factor has no real zeros, so the only real zero is x = −b ÷ a.',
+    ],
+    variables: [
+      V('A', 'A', 'Coefficient of x³, a³', { integer: true, min: -1000, max: 1000 }),
+      V('B', 'B', 'Constant, b³', { integer: true, min: -1000, max: 1000 }),
+      V('a', 'a', 'Cube root of A', { integer: true, min: -10, max: 10 }),
+      V('b', 'b', 'Cube root of B', { integer: true, min: -10, max: 10 }),
+      V('m', 'm', 'x² coefficient of the second factor, a²', { min: 0, max: 100, derived: true }),
+      V('n', 'n', 'x coefficient of the second factor, −ab', {
+        min: -100,
+        max: 100,
+        derived: true,
+      }),
+      V('k', 'k', 'Constant of the second factor, b²', { min: 0, max: 100, derived: true }),
+      V('z', 'z', 'Real zero, −b ÷ a', { min: -1000, max: 1000, fraction: 12, derived: true }),
+    ],
+    rules: [
+      limit('a ≠ 0', '{a} is not 0', ['a'], (v) => v.a !== 0, 'With a = 0 there is no x³ term.'),
+      rule('A = a³', '{A} = {a}³', ['A', 'a'], (v) => v.A! - v.a! ** 3, {
+        a: [(v) => fin(Math.cbrt(v.A!)), '∛({A})', 'The number whose cube is A.'],
+        A: [(v) => v.a! ** 3, '{a}³', 'Cube a to get the x³ coefficient.'],
+      }),
+      rule('B = b³', '{B} = {b}³', ['B', 'b'], (v) => v.B! - v.b! ** 3, {
+        b: [
+          (v) => fin(Math.cbrt(v.B!)),
+          '∛({B})',
+          'The number whose cube is B; a negative B has a negative b.',
+        ],
+        B: [(v) => v.b! ** 3, '{b}³', 'Cube b to get the constant.'],
+      }),
+      derive(
+        'm = a²',
+        'm',
+        ['a'],
+        '{m} = {a}²',
+        (v) => v.a! ** 2,
+        '{a}²',
+        'The first term of the second factor: (ax)².',
+      ),
+      derive(
+        'n = −a × b',
+        'n',
+        ['a', 'b'],
+        '{n} = −1 × {a} × {b}',
+        (v) => -v.a! * v.b!,
+        '−1 × {a} × {b}',
+        'The middle term has the opposite sign of b: −abx.',
+      ),
+      derive(
+        'k = b²',
+        'k',
+        ['b'],
+        '{k} = {b}²',
+        (v) => v.b! ** 2,
+        '{b}²',
+        'The last term of the second factor is b², always positive.',
+        {
+          work: (v) =>
+            v.a === undefined
+              ? []
+              : [
+                  `${poly([v.a ** 3, 0, 0, v.b! ** 3])} = (${poly([v.a, v.b!])})(${poly([
+                    v.a ** 2,
+                    -v.a * v.b!,
+                    v.b! ** 2,
+                  ])})`,
+                ],
+        },
+      ),
+      derive(
+        'z = −b ÷ a',
+        'z',
+        ['b', 'a'],
+        '{z} = −1 × {b} ÷ {a}',
+        (v) => div(-v.b!, v.a!),
+        '−1 × {b} ÷ {a}',
+        'ax + b = 0 here: the graph crosses the x-axis once.',
+      ),
+    ],
+    example: { A: 27, B: 8, a: 3, b: 2, m: 9, n: -6, k: 4, z: -2 / 3 },
+    startWith: ['A', 'B'],
+    equation: '{A:coef}x³ + {B} = ({a:coef}x + {b})({m:coef}x² + {n}x + {k})',
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      coefficients: ['A', 0, 0, 'B'],
+      shows: { zeros: ['z'] },
+      marks: ['zeros'],
+    },
+  }),
+
   // ── Complex numbers: powers of i and division (N-CN.2, N-CN.3) ──
   page({
     id: 'm.11.complex-numbers~powers-of-i',
@@ -3714,6 +3894,101 @@ export const MATH_11_MODULES: ModuleDef[] = [
       coefficients: ['a', 'b', 'c', 'd'],
       name: 'P',
       at: { x: 'r', y: 'R' },
+      marks: ['zeros'],
+    },
+  }),
+
+  page({
+    id: 'm.11.polynomial-functions~long-division',
+    title: 'Divide by a quadratic',
+    use: 'Use this for “Divide x³ + 2x² − 5x + 7 by x² − x + 2.”',
+    assumptions: [
+      'Divide the leading terms, multiply the divisor by the result, subtract, and repeat, as in long division of numbers.',
+      'Stop when what is left has a lower degree than the divisor, x² + px + q: that is the remainder.',
+      'Check: divisor × quotient + remainder gives back P(x).',
+    ],
+    variables: [
+      V('a', 'a', 'x³ coefficient', { integer: true, min: -10, max: 10 }),
+      V('b', 'b', 'x² coefficient', { integer: true, min: -10, max: 10 }),
+      V('c', 'c', 'x coefficient', { integer: true, min: -10, max: 10 }),
+      V('d', 'd', 'Constant', { integer: true, min: -10, max: 10 }),
+      V('p', 'p', 'x coefficient of the divisor', { integer: true, min: -10, max: 10 }),
+      V('q', 'q', 'Constant of the divisor', { integer: true, min: -10, max: 10 }),
+      V('A', 'A', 'Quotient’s x coefficient', { min: -10, max: 10, derived: true }),
+      V('B', 'B', 'Quotient’s constant', { min: -200, max: 200, derived: true }),
+      V('C', 'C', 'Remainder’s x coefficient', { min: -3000, max: 3000, derived: true }),
+      V('D', 'D', 'Remainder’s constant', { min: -3000, max: 3000, derived: true }),
+    ],
+    rules: [
+      limit('a ≠ 0', '{a} is not 0', ['a'], (v) => v.a !== 0, 'With a = 0, P is not a cubic.'),
+      derive(
+        'A = a',
+        'A',
+        ['a'],
+        '{A} = {a}',
+        (v) => v.a!,
+        '{a}',
+        'Divide the leading terms: ax³ ÷ x² = ax.',
+        { work: (v) => [`${terms([[v.a!, 'x³']])} ÷ x² = ${terms([[v.a!, 'x']])}`] },
+      ),
+      derive(
+        'B = b − p × A',
+        'B',
+        ['b', 'p', 'A'],
+        '{B} = {b} − {p} × {A}',
+        (v) => v.b! - v.p! * v.A!,
+        '{b} − {p} × {A}',
+        'Take Ax(x² + px + q) away: the x² term left, divided by x², is B.',
+        {
+          work: (v) =>
+            [v.a, v.c, v.d, v.q].some((x) => x === undefined)
+              ? []
+              : [
+                  `${poly([v.a!, v.b!, v.c!, v.d!])} − ${terms([[v.A!, 'x']])}(${poly([1, v.p!, v.q!])}) = ${poly(
+                    [v.b! - v.p! * v.A!, v.c! - v.q! * v.A!, v.d!],
+                  )}`,
+                ],
+        },
+      ),
+      derive(
+        'C = c − q × A − p × B',
+        'C',
+        ['c', 'q', 'A', 'p', 'B'],
+        '{C} = {c} − {q} × {A} − {p} × {B}',
+        (v) => v.c! - v.q! * v.A! - v.p! * v.B!,
+        '{c} − {q} × {A} − {p} × {B}',
+        'Take B(x² + px + q) away too: the x term left belongs to the remainder.',
+      ),
+      derive(
+        'D = d − q × B',
+        'D',
+        ['d', 'q', 'B'],
+        '{D} = {d} − {q} × {B}',
+        (v) => v.d! - v.q! * v.B!,
+        '{d} − {q} × {B}',
+        'The constant left after both subtractions.',
+        {
+          work: (v) => {
+            if ([v.a, v.b, v.c, v.p, v.A, v.C].some((x) => x === undefined)) return [];
+            const R = poly([v.C!, v.d! - v.q! * v.B!]);
+            return [
+              `${poly([v.a!, v.b!, v.c!, v.d!])} = (${poly([1, v.p!, v.q!])})(${poly([v.A!, v.B!])})${
+                R === '0' ? '' : ` + (${R})`
+              }`,
+            ];
+          },
+        },
+      ),
+    ],
+    example: { a: 1, b: 2, c: -5, d: 7, p: -1, q: 2, A: 1, B: 3, C: -4, D: 1 },
+    startWith: ['a', 'b', 'c', 'd', 'p', 'q'],
+    equation: '({a}x³ + {b}x² + {c}x + {d}) ÷ (x² + {p}x + {q})',
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      coefficients: ['a', 'b', 'c', 'd'],
+      name: 'P',
+      other: { family: 'quadratic', form: 'standard', a: 1, b: 'p', c: 'q', name: 'g' },
       marks: ['zeros'],
     },
   }),
