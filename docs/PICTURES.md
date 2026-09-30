@@ -310,6 +310,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `moleMap`          | `limiting: { reactants, coef }`          | two reactants’ grams → moles → product, the smaller lit (H101)                |
 | `energyProfile`    | `mode: 'ladder'`                         | enthalpy levels to scale, ΔH steps, a reversed one, the total (H101)          |
 | `lewisStructure`   | hydrocarbon `branches: number[]`         | methyl groups on an alkane’s chain, named: 2,2-dimethylpropane (H101)         |
+| `lewisStructure`   | ionic `charges: { metal, nonmetal }`     | the ions from their charges 1–3: Na⁺ Mg²⁺ Al³⁺, Cl⁻ O²⁻ N³⁻ → Al₂O₃ (H108)    |
+| `chemDiagram`      | `mode: 'phase'`, `freezing`, `boiling`   | water's phase diagram, the solution's lines dashed at Tf and Tb (H108)        |
+| `chemDiagram`      | `mode: 'rate'`, `times, concentrations`  | [A] against t through two readings, the secant, Δt and Δ[A], the rate (H108)  |
+| `chemDiagram`      | `mode: 'cell'`, `cathode`, `anode`       | the galvanic cell of two E° values, its meter E°cell, the E° scale (H108)     |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
@@ -326,6 +330,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `projectile`       | `angle: 0` (a number)                    | a launch angle that never changes (level off a ledge): no handle (H105)       |
 | `freeBody`         | `displacement`, `work` (floor)           | d bracketed, F cos θ dashed; W = Fd cos θ in the caption (H102)               |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
+| `gasPiston`        | `mixture: { gases, total?, fraction? }`  | 24 particles shared by partial pressure, colored by gas; stacked P bar (H108) |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
 | `simpleMachine`    | `seesaw: { torque?, pivot? }`            | lever as a seesaw: F₁d₁ = F₂d₂ as curved arrows, Fₚ = F₁ + F₂ (H107)          |
 | `charges`          | `equipotentials: { potential, … }`       | dashed circles r/2, r, 2r with V = kq/r; q₀ on r with U = q₀V (H107)          |

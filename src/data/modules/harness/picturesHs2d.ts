@@ -17,6 +17,7 @@ import {
 } from '@/components/module/reps/chemHs2d';
 import { molarMassOf } from '@/components/module/reps/moles';
 
+import { chemDiagramHs3eIssues } from './picturesHs3e';
 import type { ChemSpec } from '../typesChem';
 import type { NumOrVar } from '../typesGraphs';
 import { ladderLevels, type ChemDiagramSpec, type EnergyLadderSpec } from '../typesHs2d';
@@ -238,6 +239,8 @@ export function chemDiagramIssues(rep: ChemDiagramSpec, val: Val): string[] {
         out.push(`E is ${defectEnergy(dm ?? b - a)} MeV, the value shows ${E}`);
       break;
     }
+    default:
+      out.push(...chemDiagramHs3eIssues(rep, num));
   }
   return out;
 }

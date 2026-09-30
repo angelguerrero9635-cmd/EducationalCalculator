@@ -10,6 +10,7 @@ import { EnergyLadder } from './EnergyLadder';
 import { EnergyProfile } from './EnergyProfile';
 import { EquilibriumChart } from './EquilibriumChart';
 import { GasFirstLaw } from './GasFirstLaw';
+import { GasMixture } from './GasMixture';
 import { GasPiston } from './GasPiston';
 import { PhScale } from './PhScale';
 
@@ -17,6 +18,7 @@ export function HsjView({ spec, calc }: { spec: HsjSpec; calc: Calculator }) {
   switch (spec.kind) {
     case 'gasPiston':
       if (spec.energy) return <GasFirstLaw spec={spec} calc={calc} />;
+      if (spec.mixture) return <GasMixture spec={spec} calc={calc} />;
       return <GasPiston spec={spec} calc={calc} />;
     case 'energyProfile':
       return spec.mode === 'ladder' ? (

@@ -2322,20 +2322,32 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       "9 (s.11.electromagnetism~moving-charge, a page not built yet; the build note's shared need): induction mode 'charge': { field, charge, coulombs? (C per unit: 1e-6 for μC, 1.602e-19 for e), speed, angle?, force?, mass?, radius?, fieldDir? }. With no angle B is × into the page (or • out), F = |q|vB in the page from F = qv × B, and with a mass the path is a dashed circle of r = mv/(|q|B) with its turning sense; with an angle B runs along the page, v at θ, F into or out of the page. Examples { kind: 'induction', mode: 'charge', charge: 'a', coulombs: 1e-6, speed: 'v', field: 'B', angle: 't', force: 'F' } and { kind: 'induction', mode: 'charge', charge: 'n', coulombs: 1.602e-19, speed: 'v', field: 'B', mass: 'm', force: 'F', radius: 'r' } (checked F = |q|vB sin θ, r = mv/(|q|B)); the page's rules are in the two demos.",
     ].join(' '),
   },
-  ask(
-    'H108',
-    'reaction',
-    'Chemistry: reaction formulas from values (CxHy) and ionic compounds from their charges; a phase diagram; a concentration–time curve; a galvanic cell as a calculator picture; colored gases in gasPiston',
-    [
-      's.10.reaction-types~combustion',
-      's.10.bonding~ionic',
-      's.10.phase-colligative',
-      's.10.rates-equilibrium~average-rate',
-      's.10.redox~cell-voltage',
-      's.10.gas-laws~partial-pressure',
+  {
+    ...ask(
+      'H108',
+      'reaction',
+      'Chemistry: reaction formulas from values (CxHy) and ionic compounds from their charges; a phase diagram; a concentration–time curve; a galvanic cell as a calculator picture; colored gases in gasPiston',
+      [
+        's.10.reaction-types~combustion',
+        's.10.bonding~ionic',
+        's.10.phase-colligative',
+        's.10.rates-equilibrium~average-rate',
+        's.10.redox~cell-voltage',
+        's.10.gas-laws~partial-pressure',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-reaction-types-combustion-general',
+      'g.s10-bonding-ionic-charges',
+      'g.s10-phase-colligative-diagram',
+      'g.s10-rates-equilibrium-average-rate-curve',
+      'g.s10-redox-cell-voltage-cell',
+      'g.s10-gas-laws-partial-pressure-mixture',
     ],
-    'P20: docs/build/s.10.md, "Shared needs".',
-  ),
+    notes:
+      'P20: docs/build/s.10.md, "Shared needs (lesson review)" 2, 3 and 5; drawn part by part (types in typesHs3e.ts, checks in harness/picturesHs3e.ts, demos in galleryHs3e.ts built from the pages themselves), each off unless a page sets it. (1) Already covered by group H2D (H101 part 1), no second option: a `reaction` term’s formula may be "C{x}H{y}" (the fuel drawn as a carbon chain from the values, double bonds when y < 2x + 2, atoms tallied, faded CₓHᵧ while "?") and `most` (8 to 32) lets a term draw up to 32 molecules (x = 8 alkane: 25 O₂). ~combustion and ~combustion-alkene: { kind: "reaction", reactants: [{ formula: "C{x}H{y}", count: "a" }, { formula: "O2", count: "b" }], products: [{ formula: "CO2", count: "c" }, { formula: "H2O", count: "d" }], most: 25 } (demo g.s10-reaction-types-combustion-general; `molar` and `atoms` are optional). (2) `lewisStructure` ionic `charges: { metal, nonmetal, metals?, nonmetals? }`: the metal ion’s charge and the size of the nonmetal ion’s charge (whole, 1–3) pick the elements, Na⁺ Mg²⁺ Al³⁺ and Cl⁻ O²⁻ N³⁻ by default (`metals`/`nonmetals` list others by charge, checked against their valence); the transfer arrows, ions and formula follow (Al³⁺ with O²⁻: 2 × 3 = 3 × 2 = 6 electrons, Al₂O₃), the caption names the ions; while a charge is "?" the spec’s metal and nonmetal draw faded. The harness checks each charge and the counts against the picked pair. ~ionic: { kind: "lewisStructure", mode: "ionic", metal: "Mg", nonmetal: "Cl", metals: "a", nonmetals: "b", transferred: "t", charges: { metal: "cp", nonmetal: "cn" } } (the "picture draws magnesium chloride" assumption can go). Parts 3–5 are new modes of the `chemDiagram` kind (ChemDiagramHs3e.tsx and a file each), in the pages’ own units (°C, s, mol/L, V; none has a unit menu). (3) mode "phase" { freezing?, boiling?, drop?, rise? }: water’s phase diagram (pressure not to scale): solid, liquid and gas regions, the triple point, the 1 atm line; the solution’s melting line and boiling curve dashed, crossing 1 atm at its freezing and boiling points (°C), ice’s own line kept; the temperature axis broken round 0 °C and 100 °C, each part to its own scale so a 0.5 °C shift shows; ΔTf and ΔTb bracketed and checked (0 − Tf, Tb − 100). s.10.phase-colligative: { kind: "chemDiagram", mode: "phase", freezing: "Tf", boiling: "Tb", drop: "dTf", rise: "dTb" } (the hidden T0 and its rule can go). (4) mode "rate" { times: [t₁, t₂], concentrations: [[A]₁, [A]₂], span?, change?, rate?, species? }: [A] against t through both readings (a first-order curve for its shape, said in the caption), the secant a little past each, the Δt and Δ[A] triangle and the rate chip; checked (Δt, Δ[A], −Δ[A]/Δt; [A]₂ ≤ [A]₁ and t₂ > t₁, else a faded stand-in). ~average-rate: { kind: "chemDiagram", mode: "rate", times: ["t1", "t2"], concentrations: ["A1", "A2"], span: "dt", change: "dA", rate: "r" } (the hidden m and b0 can go). (5) mode "cell" { cathode, anode, voltage? } (V): the galvanic cell figure (layouts/galvanicFigure.tsx, now taking a `reading`) of the metals whose table potentials those are, anode on the left, its meter reading E°cell, and an E° scale (−3 to +1 V, every table metal ticked) with the two lit and the gap bracketed; a potential not in the table or a cathode below the anode draws zinc–copper faded. ~cell-voltage: { kind: "chemDiagram", mode: "cell", cathode: "Ec", anode: "Ea", voltage: "E" }. (6) `gasPiston` `mixture: { gases: [{ formula, pressure }] (2–4), total?, fraction? }` (GasMixture.tsx; `energy` untouched): the cylinder with 24 particles shared by partial pressure (largest remainder, "rounded" said), each gas in its own color (theme gasMixA–D) and drawn as its molecule (He one ball, O₂ and N₂ two), and a bar of the partial pressures stacked to the total on a pressure scale; total and the first gas’s mole fraction checked. ~partial-pressure: { kind: "gasPiston", law: "ideal", mixture: { gases: [{ formula: "He", pressure: "P1" }, { formula: "O2", pressure: "P2" }, { formula: "N2", pressure: "P3" }], total: "P", fraction: "x" } }.',
+  },
   ask(
     'H109',
     'gel',

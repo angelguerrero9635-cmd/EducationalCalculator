@@ -13,6 +13,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { extentOf, moleculeOf, subscript, turned } from './chem';
 import { escapedSplit, grahamRatio } from './chemHs2d';
+import { ChemDiagramHs3e } from './ChemDiagramHs3e';
 import { ChemIsotopes } from './ChemIsotopes';
 import { ChemMassDefect } from './ChemMassDefect';
 import { ChemOxidation } from './ChemOxidation';
@@ -31,6 +32,8 @@ export function ChemDiagram({ spec, calc }: { spec: ChemDiagramSpec; calc: Calcu
       return <ChemOxidation spec={spec} calc={calc} />;
     case 'massDefect':
       return <ChemMassDefect spec={spec} calc={calc} />;
+    default:
+      return <ChemDiagramHs3e spec={spec} calc={calc} />;
   }
 }
 

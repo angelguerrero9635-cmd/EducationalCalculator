@@ -5,6 +5,7 @@
  * variable id. Formulas are written plainly ("H2O", "NH4+"); the pictures print subscripts.
  */
 import type { NumOrVar } from './typesGraphs';
+import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
 
 /** One conversion factor in a chain: `top` `topUnit` over `bottom` `bottomUnit` (1000 m / 1 km). */
@@ -181,6 +182,8 @@ export type LewisStructureSpec = { kind: 'lewisStructure' } & (
       metals?: NumOrVar;
       nonmetals?: NumOrVar;
       transferred?: string;
+      /** Round 3: the elements from the ions' charges (`typesHs3e.ts`, H108 part 2). */
+      charges?: IonicCharges;
     }
   | { mode: 'metallic'; element: string; atoms: NumOrVar; electrons?: string }
   | {
@@ -276,7 +279,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         case 'molecule':
           return ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone);
         case 'ionic':
-          return ids(r.metals, r.nonmetals, r.transferred);
+          return ids(r.metals, r.nonmetals, r.transferred, ...ionicChargeVars(r.charges));
         case 'metallic':
           return ids(r.atoms, r.electrons);
         default:
