@@ -2469,9 +2469,9 @@ const opticsPage = (
       positive
         ? q('f', 'f', 'Focal length', 'cm', 1, 500, 0.1)
         : q('f', 'f', 'Focal length (negative)', 'cm', -500, -1, 0.1),
-      q('o', 'dₒ', 'Object distance', 'cm', 0.1, 10000, 0.1),
+      q('o', 'dₒ', 'Object distance', 'cm', 1, 10000, 0.1),
       q('i', 'dᵢ', 'Image distance', 'cm', -1e6, 1e6, 0.01),
-      q('m', 'm', 'Magnification', undefined, -1e4, 1e4, 0.001),
+      q('m', 'm', 'Magnification', undefined, -100, 100, 0.001),
       q('h', 'hₒ', 'Object height', 'cm', 0.1, 1000, 0.1),
       q('k', 'hᵢ', 'Image height', 'cm', -1e6, 1e6, 0.01),
     ],
@@ -2504,6 +2504,7 @@ const opticsPage = (
           'The magnification: negative means the image is upside down.',
         ],
         i: [(v) => -v.m! * v.o!, '−{m} × {o}', 'Undo m = −dᵢ/dₒ for dᵢ.'],
+        o: [(v) => div(-v.i!, v.m!), '−{i}/{m}', 'Divide the image distance by −m.'],
       }),
       product('k', 'm', 'h', 'hᵢ = m hₒ', [
         'The image is m times as tall as the object.',
@@ -2537,8 +2538,8 @@ const opticsPages: ModuleDef[] = [
     undefined,
     [
       'A thin converging lens: f > 0, and distances are measured from the lens.',
-      'A real image forms on the far side of the lens; a virtual one (dᵢ < 0) on the object’s side.',
-      SIGNS,
+      'dᵢ > 0: a real image on the far side, where light really meets; dᵢ < 0: a virtual one on the object’s side.',
+      'm < 0 means the image is upside down.',
     ],
     'lens',
     'converging',
@@ -2562,7 +2563,7 @@ const opticsPages: ModuleDef[] = [
     'A concave mirror',
     'Use this for “A candle is 45 cm from a concave mirror with f = 15 cm. Where does its image form, and how big is it?”',
     [
-      'A concave mirror brings light together: f > 0, and a real image forms in front of it.',
+      'A concave mirror brings light together: f > 0. Beyond F the image is real, in front; inside F it is virtual, behind the mirror.',
       'Rays: parallel then through F, through F then parallel, and through C straight back.',
       SIGNS,
     ],
@@ -2600,7 +2601,7 @@ const opticsPages: ModuleDef[] = [
         q('a', 'n₁', 'Index of the first medium', undefined, 1, 2.42, 0.01),
         q('b', 'n₂', 'Index of the second medium', undefined, 1, 2.42, 0.01),
         q('t', 'θ₁', 'Angle in', '°', 0, 89, 1),
-        q('s', 'sin θ₂', 'Sine of the angle out', undefined, 0, 1, 0.0001),
+        q('s', 's', 'Sine of the angle out', undefined, 0, 1, 0.0001),
         q('r', 'θ₂', 'Angle out', '°', 0, 90, 0.01),
         q('w', 'v₂', 'Speed in the second medium', 'm/s', 1e8, 3e8, 1, {
           scientific: true,
@@ -2609,7 +2610,7 @@ const opticsPages: ModuleDef[] = [
       ],
       ...rules(
         rule(
-          'sin θ₂ = (n₁/n₂) sin θ₁',
+          's = (n₁/n₂) sin θ₁',
           '{s} = {a} ÷ {b} × sin({t})',
           (v) => v.s! * v.b! - v.a! * Math.sin(v.t! * RAD),
           {
@@ -2617,6 +2618,14 @@ const opticsPages: ModuleDef[] = [
               (v) => div(v.a! * Math.sin(v.t! * RAD), v.b!),
               '{a} ÷ {b} × sin({t})',
               'Snell’s law n₁ sin θ₁ = n₂ sin θ₂, solved for sin θ₂.',
+            ],
+            t: [
+              (v) => {
+                const r = (v.b! * v.s!) / v.a!;
+                return r > 1 ? undefined : Math.asin(r) / RAD;
+              },
+              'arcsin({b} × {s}/{a})',
+              'Snell’s law solved for sin θ₁, then the angle with that sine.',
             ],
             b: [
               (v) => div(v.a! * Math.sin(v.t! * RAD), v.s!),
@@ -2630,7 +2639,7 @@ const opticsPages: ModuleDef[] = [
             ],
           },
         ),
-        rule('θ₂ = arcsin(sin θ₂)', 'sin({r}) = {s}', (v) => Math.sin(v.r! * RAD) - v.s!, {
+        rule('θ₂ = arcsin(s)', '{r} = arcsin({s})', (v) => Math.sin(v.r! * RAD) - v.s!, {
           r: [
             (v) => (v.s! > 1 ? undefined : Math.asin(v.s!) / RAD),
             'arcsin({s})',
@@ -2678,7 +2687,7 @@ const opticsPages: ModuleDef[] = [
         q('b', 'n₂', 'Index of the second medium', undefined, 1, 2.42, 0.01),
         q('t', 'θ₁', 'Angle in', '°', 0, 89, 1),
         q('c', 'θc', 'Critical angle', '°', 0, 90, 0.01),
-        q('s', 'sin θ₂', 'What sin θ₂ would be', undefined, 0, 5, 0.0001),
+        q('s', 's', 'What sin θ₂ would be', undefined, 0, 5, 0.0001),
       ],
       ...rules(
         rule('sin θc = n₂/n₁', 'sin({c}) = {b}/{a}', (v) => Math.sin(v.c! * RAD) * v.a! - v.b!, {
@@ -2695,7 +2704,7 @@ const opticsPages: ModuleDef[] = [
           ],
         }),
         rule(
-          'sin θ₂ = n₁ sin θ₁/n₂',
+          's = n₁ sin θ₁/n₂',
           '{s} = {a} ÷ {b} × sin({t})',
           (v) => v.s! * v.b! - v.a! * Math.sin(v.t! * RAD),
           {
@@ -2703,6 +2712,14 @@ const opticsPages: ModuleDef[] = [
               (v) => div(v.a! * Math.sin(v.t! * RAD), v.b!),
               '{a} ÷ {b} × sin({t})',
               'Snell’s law solved for sin θ₂: more than 1 means no ray gets out.',
+            ],
+            t: [
+              (v) => {
+                const r = (v.b! * v.s!) / v.a!;
+                return r > 1 ? undefined : Math.asin(r) / RAD;
+              },
+              'arcsin({b} × {s}/{a})',
+              'Snell’s law solved for sin θ₁, then the angle with that sine.',
             ],
             b: [
               (v) => div(v.a! * Math.sin(v.t! * RAD), v.s!),
@@ -2744,32 +2761,40 @@ const opticsPages: ModuleDef[] = [
         q('y', 'Δy', 'Fringe spacing', 'mm', 0.0001, 10000, 0.001),
       ],
       ...rules(
-        rule(
-          'Δy = λL/d',
-          '{y} = {l} × 10⁻⁹ × {L}/({d} × 10⁻³) × 1000',
-          (v) => v.y! * v.d! - (v.l! * v.L!) / 1000,
-          {
-            y: [
-              (v) => div((v.l! * v.L!) / 1000, v.d!),
-              '{l} × {L}/{d}/1000',
-              'λL/d, with λ in nm and d in mm: divide by 1,000 for mm.',
-            ],
-            l: [
-              (v) => div(1000 * v.y! * v.d!, v.L!),
-              '1000 × {y} × {d}/{L}',
-              'Undo Δy = λL/d for λ.',
-            ],
-            d: [
-              (v) => div((v.l! * v.L!) / 1000, v.y!),
-              '{l} × {L}/{y}/1000',
-              'Undo Δy = λL/d for d.',
-            ],
-            L: [
-              (v) => div(1000 * v.y! * v.d!, v.l!),
-              '1000 × {y} × {d}/{l}',
-              'Undo Δy = λL/d for L.',
-            ],
-          },
+        withWork(
+          rule(
+            'Δy = λL/d',
+            '{y} = {l} × 10⁻⁹ × {L}/({d} × 10⁻³) × 1000',
+            (v) => v.y! * v.d! - (v.l! * v.L!) / 1000,
+            {
+              y: [
+                (v) => div((v.l! * v.L!) / 1000, v.d!),
+                '{l} × 10⁻⁹ × {L}/({d} × 10⁻³) × 1000',
+                'λL/d in meters (1 nm = 10⁻⁹ m, 1 mm = 10⁻³ m), then × 1,000 for mm.',
+              ],
+              l: [
+                (v) => div(1000 * v.y! * v.d!, v.L!),
+                '1000 × {y} × {d}/{L}',
+                'Undo Δy = λL/d for λ.',
+              ],
+              d: [
+                (v) => div((v.l! * v.L!) / 1000, v.y!),
+                '{l} × {L}/{y}/1000',
+                'Undo Δy = λL/d for d.',
+              ],
+              L: [
+                (v) => div(1000 * v.y! * v.d!, v.l!),
+                '1000 × {y} × {d}/{l}',
+                'Undo Δy = λL/d for L.',
+              ],
+            },
+          ),
+          'y',
+          (v) => [
+            `λ = ${sci(v.l!)} nm = ${sci(v.l! * 1e-9)} m`,
+            `d = ${sci(v.d!)} mm = ${sci(v.d! * 1e-3)} m`,
+            `Δy = ${sci(v.l! * 1e-9)} × ${sci(v.L!)}/(${sci(v.d! * 1e-3)}) = ${sci((v.l! * 1e-9 * v.L!) / (v.d! * 1e-3))} m`,
+          ],
         ),
       ),
       example: { l, d, L, y: (l * L) / 1000 / d },
