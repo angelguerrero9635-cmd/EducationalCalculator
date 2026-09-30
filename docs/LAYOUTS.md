@@ -156,6 +156,15 @@ Drawn explore figures: a `parts` figure with `drawing: 'plant' | 'animal' | 'bod
 a `dots` scene with `animal: 'deer' | 'penguin'` draws a herd or huddle
 (`layouts/animalFigures.tsx`). A sort can set `header: { kind: 'offspring', animals }`: the
 parents and young (cats or deer) above the cards.
+H104: a sort can set `intro`, a sentence above the cards (what the groups share, or a fact the
+sort needs), and a bin can set `figure` (any card figure, usually `{ kind: 'icon', icon }`), drawn
+beside its name; the harness wants every bin or none with a figure, and no card wearing another
+bin's icon. Grade 9 card icons (H100, H104, `layouts/icons/h2e.tsx`): membrane transport (`simple
+diffusion`, `channel protein`, `carrier protein`, `aquaporin`, `protein pump`, `vesicle
+transport`), ABO blood types (`blood type A`, `blood type B`, `blood type AB`, `blood type O`:
+a red cell with its A wedges, B knobs, both or none) and body systems (`nervous system`,
+`endocrine system`, `heart and blood vessels`, `respiratory system`, `excretory system`,
+`digestive system`).
 
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`

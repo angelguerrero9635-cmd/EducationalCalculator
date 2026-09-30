@@ -5,7 +5,7 @@
  */
 import type { Relation, VariableDef } from '@/engine/types';
 
-import type { LayoutDef } from './layouts';
+import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
 
 /** A relation and its step text, built together so a demo lists both from one place. */
@@ -594,6 +594,294 @@ const KEY: LayoutDef = {
   ],
 };
 
+// ─── H100 part 10 and H104: sorts with a sentence above the cards and icons on the bins ──
+
+/** A sort whose bins wear card icons: [id, label, why, icon] each. */
+const iconSort = (
+  base: Omit<Extract<LayoutDef, { kind: 'sort' }>, 'kind' | 'bins'>,
+  bins: [string, string, string, CardIcon][],
+): LayoutDef => ({
+  kind: 'sort',
+  ...base,
+  bins: bins.map(([id, label, why, icon]) => ({
+    id,
+    label,
+    why,
+    figure: { kind: 'icon', icon },
+  })),
+});
+
+const TRANSPORT_SORT = iconSort(
+  {
+    id: 'g.s9-membrane-transport-transport-types',
+    title: 'Which kind of transport is it?',
+    use: 'Use this for “Is it passive or active transport, and does it need a protein?”',
+    assumptions: [
+      'Passive transport runs from more to fewer and uses no ATP; active transport runs the other way and spends ATP.',
+      'Facilitated diffusion and osmosis are passive but go through a channel or carrier protein.',
+    ],
+    question: 'How does it cross the membrane?',
+    intro:
+      'Each group’s picture shows the membrane, outside above, and how the particles cross it.',
+    cards: [
+      { label: 'O₂ enters a lung cell', bin: 'simple' },
+      { label: 'CO₂ leaves a muscle cell', bin: 'simple' },
+      { label: 'Glucose enters a red blood cell through a carrier protein', bin: 'facilitated' },
+      { label: 'K⁺ leaves through an open channel, high to low', bin: 'facilitated' },
+      { label: 'Water enters a root cell through aquaporins', bin: 'osmosis' },
+      { label: 'The Na⁺/K⁺ pump spends ATP', bin: 'active' },
+      { label: 'Root cells take in minerals from soil that has fewer of them', bin: 'active' },
+      { label: 'A white blood cell engulfs a bacterium', bin: 'bulk' },
+      { label: 'A gland cell releases insulin in vesicles', bin: 'bulk' },
+    ],
+  },
+  [
+    [
+      'simple',
+      'Simple diffusion',
+      'Small nonpolar molecules slip between the phospholipids, from more to fewer.',
+      'simple diffusion',
+    ],
+    [
+      'facilitated',
+      'Facilitated diffusion',
+      'A channel or carrier protein lets it through, still from more to fewer, with no ATP.',
+      'channel protein',
+    ],
+    [
+      'osmosis',
+      'Osmosis',
+      'Water crosses, through aquaporins, toward the side with more solute.',
+      'aquaporin',
+    ],
+    [
+      'active',
+      'Active transport',
+      'A pump moves it from fewer to more, against the gradient, spending ATP.',
+      'protein pump',
+    ],
+    [
+      'bulk',
+      'Bulk transport',
+      'Large particles or many molecules move inside vesicles made from membrane.',
+      'vesicle transport',
+    ],
+  ],
+);
+
+const BLOOD_SORT = iconSort(
+  {
+    id: 'g.s9-inheritance-patterns-blood-types',
+    title: 'ABO blood types from genotypes',
+    use: 'Use this for “Which two genotypes give the same blood type?”',
+    assumptions: [
+      'The ABO gene has three alleles: Iᴬ, Iᴮ and i.',
+      'Iᴬ and Iᴮ are codominant, so IᴬIᴮ shows both; i is recessive to each of them.',
+    ],
+    question: 'Which blood type does the genotype give?',
+    intro: 'Three alleles: Iᴬ and Iᴮ are codominant, and i is recessive to both.',
+    cards: [
+      { label: 'IᴬIᴬ', bin: 'A' },
+      { label: 'Iᴬi', bin: 'A' },
+      { label: 'IᴮIᴮ', bin: 'B' },
+      { label: 'Iᴮi', bin: 'B' },
+      { label: 'IᴬIᴮ', bin: 'AB' },
+      { label: 'ii', bin: 'O' },
+    ],
+  },
+  [
+    ['A', 'Type A', 'At least one Iᴬ and no Iᴮ: i is hidden.', 'blood type A'],
+    ['B', 'Type B', 'At least one Iᴮ and no Iᴬ: i is hidden.', 'blood type B'],
+    ['AB', 'Type AB', 'Codominance: both A and B markers show on the cells.', 'blood type AB'],
+    ['O', 'Type O', 'Two recessive i alleles: no A or B marker.', 'blood type O'],
+  ],
+);
+
+const SYSTEMS_SORT = iconSort(
+  {
+    id: 'g.s9-homeostasis-systems',
+    title: 'Which body system does it?',
+    use: 'Use this for “Which organ system filters the blood and controls the water in it?”',
+    assumptions: [
+      'The nervous and endocrine systems coordinate the rest: nerves by fast signals, glands by hormones in the blood.',
+      'Body systems work together to keep homeostasis.',
+    ],
+    question: 'Which system does the job?',
+    intro: 'The nervous and endocrine systems coordinate the rest.',
+    cards: [
+      { label: 'Neurons carry signals from sense receptors', bin: 'nervous' },
+      { label: 'A reflex pulls a hand away from heat', bin: 'nervous' },
+      { label: 'The pancreas releases insulin', bin: 'endocrine' },
+      { label: 'Adrenal glands release adrenaline', bin: 'endocrine' },
+      { label: 'Red blood cells carry oxygen', bin: 'circulatory' },
+      { label: 'Skin blood vessels widen to release heat', bin: 'circulatory' },
+      { label: 'Alveoli exchange O₂ and CO₂', bin: 'respiratory' },
+      { label: 'Faster breathing removes extra CO₂', bin: 'respiratory' },
+      { label: 'Kidneys filter urea from the blood', bin: 'excretory' },
+      { label: 'Kidneys adjust the water in urine', bin: 'excretory' },
+      { label: 'Enzymes break food into small molecules', bin: 'digestive' },
+      { label: 'The small intestine absorbs glucose', bin: 'digestive' },
+    ],
+  },
+  [
+    ['nervous', 'Nervous', 'Neurons carry fast electrical signals.', 'nervous system'],
+    ['endocrine', 'Endocrine', 'Glands release hormones into the blood.', 'endocrine system'],
+    [
+      'circulatory',
+      'Circulatory',
+      'Blood carries gases, food and heat.',
+      'heart and blood vessels',
+    ],
+    [
+      'respiratory',
+      'Respiratory',
+      'The lungs trade O₂ and CO₂ with the air.',
+      'respiratory system',
+    ],
+    [
+      'excretory',
+      'Excretory',
+      'The kidneys remove wastes and set the blood’s water.',
+      'excretory system',
+    ],
+    ['digestive', 'Digestive', 'Food is broken down and absorbed.', 'digestive system'],
+  ],
+);
+
+const PATHOGEN_SORT = iconSort(
+  {
+    id: 'g.s9-immune-disease-pathogens-bins',
+    title: 'Kinds of pathogens',
+    use: 'Use this for “Strep throat or the flu: which one can an antibiotic treat?”',
+    assumptions: [
+      'A pathogen is anything that causes disease: a virus, a bacterium, a fungus or a parasite.',
+      'Bacteria, fungi and parasites are cells; a virus is not, and copies itself only inside a host cell.',
+    ],
+    question: 'What kind of pathogen causes it?',
+    intro: 'Antibiotics work on bacteria only: they do nothing to viruses.',
+    cards: [
+      { label: 'Influenza', bin: 'virus' },
+      { label: 'Measles', bin: 'virus' },
+      { label: 'The common cold', bin: 'virus' },
+      { label: 'Strep throat', bin: 'bacterium' },
+      { label: 'Tuberculosis', bin: 'bacterium' },
+      { label: 'Athlete’s foot', bin: 'fungus' },
+      { label: 'Ringworm', bin: 'fungus' },
+      { label: 'Malaria', bin: 'parasite' },
+      { label: 'Tapeworm', bin: 'parasite' },
+    ],
+  },
+  [
+    ['virus', 'Virus', 'Genes in a protein coat, copied only inside a host’s cells.', 'virus'],
+    ['bacterium', 'Bacterium', 'A single cell with no nucleus.', 'bacterium'],
+    ['fungus', 'Fungus', 'Cells with a nucleus and a wall, living on the host.', 'fungus'],
+    ['parasite', 'Parasite', 'A protist or an animal that lives on or in the host.', 'parasite'],
+  ],
+);
+
+const DOMAIN_SORT = iconSort(
+  {
+    id: 'g.s9-classification-domains-bins',
+    title: 'The three domains',
+    use: 'Use this for “Methane-making microbes live in a cow’s stomach. Which domain are they in?”',
+    assumptions: [
+      'Bacteria and archaea are single cells with no nucleus; archaea differ in their walls, membranes and genes, and many live in extreme places.',
+      'Eukarya have cells with a nucleus: protists, fungi, plants and animals.',
+    ],
+    question: 'Which domain does it belong to?',
+    intro: 'Viruses are not cells, so they are not placed in any domain.',
+    cards: [
+      { label: 'E. coli in the gut', bin: 'bacteria' },
+      { label: 'Streptococcus that causes strep throat', bin: 'bacteria' },
+      { label: 'Cyanobacteria in a pond', bin: 'bacteria' },
+      { label: 'Methane-making microbes in a cow’s stomach', bin: 'archaea' },
+      { label: 'Halobacterium in a salt pond', bin: 'archaea' },
+      { label: 'Paramecium (protist)', bin: 'eukarya' },
+      { label: 'Mushrooms (fungi)', bin: 'eukarya' },
+      { label: 'A leafy plant', bin: 'eukarya' },
+      { label: 'A fish (animal)', bin: 'eukarya' },
+    ],
+  },
+  [
+    [
+      'bacteria',
+      'Bacteria',
+      'Prokaryotes with cell walls made of peptidoglycan.',
+      'domain Bacteria',
+    ],
+    [
+      'archaea',
+      'Archaea',
+      'Prokaryotes whose walls and membranes are built differently from bacteria’s.',
+      'domain Archaea',
+    ],
+    ['eukarya', 'Eukarya', 'Every cell has a nucleus inside a membrane.', 'domain Eukarya'],
+  ],
+);
+
+const SAMPLING_SORT = iconSort(
+  {
+    id: 'g.m11-study-design-sampling-bins',
+    title: 'Which sampling method?',
+    use: 'Use this for “A school picks 20 students at random from each grade. Which sampling method is this?”',
+    assumptions: [
+      'Random picks give every member a known chance of being chosen.',
+      'Strata make sure every group is in the sample; clusters save travel.',
+      'A convenience sample is easy but usually biased.',
+    ],
+    question: 'Which sampling method is it?',
+    intro:
+      'Random picks give every member a known chance; strata make sure every group is in, clusters save travel, and convenience is easy but usually biased.',
+    cards: [
+      { label: 'Draw 50 student ID numbers at random', bin: 'random' },
+      { label: 'Number every apartment and let a random generator pick 20', bin: 'random' },
+      { label: 'Pick 20 students at random from each grade', bin: 'stratified' },
+      {
+        label: 'Split the team into starters and bench and pick at random from each',
+        bin: 'stratified',
+      },
+      { label: 'Choose 5 homerooms at random and ask everyone in them', bin: 'cluster' },
+      { label: 'Pick 3 city blocks at random and visit every home', bin: 'cluster' },
+      { label: 'Take every 10th name after a random start', bin: 'systematic' },
+      { label: 'Test every 4th battery off the line', bin: 'systematic' },
+      { label: 'Ask the first 30 people through the door', bin: 'convenience' },
+      { label: 'Ask the friends at your lunch table', bin: 'convenience' },
+    ],
+  },
+  [
+    [
+      'random',
+      'Simple random',
+      'Every member, and every group of that size, has the same chance.',
+      'simple random sample',
+    ],
+    [
+      'stratified',
+      'Stratified',
+      'The population is split into groups, and some are picked at random from each.',
+      'stratified sample',
+    ],
+    [
+      'cluster',
+      'Cluster',
+      'Whole groups are picked at random, and everyone in them is asked.',
+      'cluster sample',
+    ],
+    [
+      'systematic',
+      'Systematic',
+      'Every kth member of a list, from a random start.',
+      'systematic sample',
+    ],
+    [
+      'convenience',
+      'Convenience',
+      'Whoever is easiest to reach: not random, so it can be biased.',
+      'convenience sample',
+    ],
+  ],
+);
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /** The chromosome-count page: 2n in a body cell → n, chromatids, the zygote, 2ⁿ gametes. */
@@ -682,4 +970,15 @@ export const HS2E_GALLERY_MODULES: ModuleDef[] = [
   ...RATES_DEMOS,
 ];
 
-export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [COMPETITION, REPLICATION, GENE_EXPRESSION, KEY];
+export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [
+  COMPETITION,
+  REPLICATION,
+  GENE_EXPRESSION,
+  KEY,
+  TRANSPORT_SORT,
+  BLOOD_SORT,
+  SYSTEMS_SORT,
+  PATHOGEN_SORT,
+  DOMAIN_SORT,
+  SAMPLING_SORT,
+];

@@ -1889,6 +1889,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s9-dna-protein-synthesis-replication',
       'g.s9-biotechnology-gene-expression',
       'g.s9-classification-key',
+      'g.s9-membrane-transport-transport-types',
     ],
     notes: [
       'P12 (docs/plans/s.9.md needs 1–6, 8–10, 12; need 7 is harness phrases, need 11 is built).',
@@ -1901,6 +1902,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Need 6, the replication figure: card figure `{ kind: "replication", stage: "unzip" | "pair" | "join" | "copies" }` (112 × 76, for sequence stages): the helix opened at a fork by helicase; free nucleotides pairing A–T and G–C with each old strand; DNA polymerase joining the new strand; two helices each one old strand (dark) and one new (lit). The harness checks the cards come in that order. s.9.dna-protein-synthesis~replication: add each stage’s figure as in the demo (the four stages as they are).',
       'Need 5, the gene-expression explore figure: `figure: { kind: "geneExpression" }`, scene field `gene: { control: "repressor" | "activator", signal?: boolean, lit?: "promoter" | "switch" | "gene" | "polymerase" | "protein" | "signal" | "mRNA" }`: DNA with the promoter, the switch (an operator, or an activator site) and the gene; RNA polymerase; the repressor sits on the operator and blocks it unless its signal (an inducer, lactose) pulls it off; the activator binds only with its signal; when on, mRNA peels off the polymerase reading the gene and the title says so. The harness checks every scene sets `gene` and a line saying “the gene is on/off” matches the figure. s.9.biotechnology~gene-expression: the demo’s five scenes (repressor on, lactose arrives, the promoter, no activator, activator bound).',
       'Need 12, the dichotomous key: explore figure `{ kind: "dichotomousKey", steps: [{ question, yes, no }] }` (an answer is the next question’s index or a name), drawn as a tree down the page, each question’s Yes and No indented under it, long questions wrapped; scene field `key: { specimen?, step? }` traces a name’s path from the first question (answers lit, the name filled) or rings one question. The harness checks the key is a tree (each question reached once), questions end in “?”, names differ and a scene’s specimen is in the key. s.9.classification~key: the demo’s six animals (backbone, hair, true tissues, segments, stinging tentacles) and its scenes, or the page’s own organisms.',
+      'Need 10, transport card icons (layouts/icons/h2e.tsx): `simple diffusion`, `channel protein`, `carrier protein`, `aquaporin`, `protein pump`, `vesicle transport`, each a patch of bilayer (outside above) and how its particles cross. s.9.membrane-transport~transport-types: the icons on its five bins (H104 bin figures): simple diffusion, channel protein (facilitated), aquaporin (osmosis), protein pump (active), vesicle transport (bulk); the cards stay text, so the icons never give a card’s answer away.',
     ].join(' '),
   },
   ask(
@@ -1951,13 +1953,26 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ],
     'P15: docs/plans/s.12.md needs 2–11.',
   ),
-  ask(
-    'H104',
-    'sort',
-    'Sorts: header text and bin icons (blood types, body systems, pathogens, domains, sampling methods); sort bins with figures; percentBar with a second mark',
-    ['s.9.immune-disease', 's.9.homeostasis', 's.9.classification', 'm.11.study-design'],
-    'P16: docs/build/s.9.md and m.11.md, "Shared needs".',
-  ),
+  {
+    ...ask(
+      'H104',
+      'sort',
+      'Sorts: header text and bin icons (blood types, body systems, pathogens, domains, sampling methods); sort bins with figures; percentBar with a second mark',
+      ['s.9.immune-disease', 's.9.homeostasis', 's.9.classification', 'm.11.study-design'],
+    ),
+    status: 'requested',
+    gallery: [
+      'g.s9-inheritance-patterns-blood-types',
+      'g.s9-homeostasis-systems',
+      'g.s9-immune-disease-pathogens-bins',
+      'g.s9-classification-domains-bins',
+      'g.m11-study-design-sampling-bins',
+    ],
+    notes: [
+      'P16: docs/build/s.9.md and m.11.md, "Shared needs".',
+      'Part 1, header text and bin icons (layouts/types.ts, off unless set): a sort’s `intro` is a sentence above the cards; a bin’s `figure` is any card figure, drawn beside its name (kept whole beside a long name). New icons (layouts/icons/h2e.tsx): `blood type A`, `blood type B`, `blood type AB`, `blood type O` (a red cell with A wedges, B knobs, both, none); `nervous system`, `endocrine system`, `heart and blood vessels`, `respiratory system`, `excretory system`, `digestive system`. Pathogen and domain icons (hh) and sampling icons (hb) are reused. The harness wants every bin or none with a figure and no card wearing another bin’s icon; layouts.test reads `intro` at the grade level. Pages: s.9.inheritance-patterns~blood-types intro "Three alleles: Iᴬ and Iᴮ are codominant, and i is recessive to both." with bins { …, figure: { kind: "icon", icon: "blood type A" } }; s.9.homeostasis~systems intro "The nervous and endocrine systems coordinate the rest." and the six system icons; s.9.immune-disease~pathogens intro "Antibiotics work on bacteria only: they do nothing to viruses." with the virus, bacterium, fungus and parasite icons on the bins (the "A virus" icon cards can go); s.9.classification~domains intro "Viruses are not cells, so they are not placed in any domain." with the domain icons on the bins (the card icons can go); m.11.study-design~sampling-methods the five sampling icons on the bins and the plan’s sentence as intro.',
+    ].join(' '),
+  },
   ask(
     'H105',
     'functionGraph',

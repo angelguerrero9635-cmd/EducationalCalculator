@@ -48,10 +48,14 @@ export interface SortLayout extends LayoutBase {
     label: string;
     /** One sentence about the property, shown when the group is full. */
     why: string;
+    /** H104: a small drawing beside the group's name (a card figure, often an icon). */
+    figure?: CardFigure;
   }[];
   cards: { label: string; bin: string; figure?: CardFigure }[];
   /** A picture above the cards, so they can be judged by looking (`layouts/offspringFigure.tsx`). */
   header?: SortHeader;
+  /** H104: a sentence above the cards (what the groups have in common, or what to look for). */
+  intro?: string;
 }
 
 /**

@@ -89,6 +89,7 @@ function studentText(l: LayoutDef): { where: string; text: string; prose: boolea
   switch (l.kind) {
     case 'sort':
       out.push({ where: 'question', text: l.question, prose: true });
+      if (l.intro) out.push({ where: 'intro', text: l.intro, prose: true });
       l.bins.forEach((b) => {
         out.push({ where: `bin ${b.id}`, text: b.label, prose: false });
         out.push({ where: `bin ${b.id} why`, text: b.why, prose: true });

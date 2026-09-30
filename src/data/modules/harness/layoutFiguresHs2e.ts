@@ -17,6 +17,18 @@ export function hs2eFigureIssues(l: LayoutDef): string[] {
     if (stages.some((k, i) => i > 0 && k <= stages[i - 1]!))
       out.push('replication cards are not in the order unzip, pair, join, copies');
   }
+  // Sort bins with figures (H104): every bin or none, and a bin's icon never on a card of
+  // another bin (it would point the card to the wrong group).
+  if (l.kind === 'sort' && l.bins.some((b) => b.figure)) {
+    if (!l.bins.every((b) => b.figure)) out.push('sort: some bins have a figure and some do not');
+    for (const b of l.bins) {
+      const f = b.figure;
+      if (f?.kind !== 'icon') continue;
+      for (const card of l.cards)
+        if (card.bin !== b.id && card.figure?.kind === 'icon' && card.figure.icon === f.icon)
+          out.push(`sort: card "${card.label}" wears bin ${b.id}'s icon`);
+    }
+  }
   // Gene expression: every scene sets its switch, and a line that says the gene is on or off
   // agrees with the figure.
   if (l.kind === 'explore' && l.figure.kind === 'geneExpression') {
