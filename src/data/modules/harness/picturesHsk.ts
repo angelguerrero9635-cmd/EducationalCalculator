@@ -9,7 +9,7 @@ import * as hm from '@/components/module/reps/hskMath';
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
-import { satelliteIssues } from './picturesHs2c';
+import { satelliteIssues, strobeColumnIssues } from './picturesHs2c';
 
 const {
   collisionOf,
@@ -43,6 +43,7 @@ export function motionKinematicsIssues(rep: MotionGraphSpec, val: Val): string[]
   const t1 = k.at ? val(k.at) : undefined;
   const v1 = k.slope ? val(k.slope) : undefined;
   if (k.view === 'position' && !k.at) out.push('a position view needs the tangent time `at`');
+  if (k.strobe === 'vertical') out.push(...strobeColumnIssues(val(rep.time)));
   if (t1 !== undefined && t1 < 0) out.push(`tangent time ${t1} is before the start`);
   if (t1 !== undefined && v1 !== undefined && a !== undefined && v0 !== undefined)
     if (!near(v1, v0 + a * t1)) out.push(`tangent slope ${v1} is not v₀ + a t₁ = ${v0 + a * t1}`);

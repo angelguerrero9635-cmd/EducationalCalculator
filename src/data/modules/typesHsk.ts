@@ -35,8 +35,11 @@ export interface MotionKinematics {
   slope?: string;
   /** The position at time 0 (default 0). */
   position?: NumOrVar;
-  /** `false` leaves out the strobe diagram. */
-  strobe?: boolean;
+  /**
+   * `false` leaves out the strobe diagram; `'vertical'` (H102) stands it up in a column left of
+   * the graph, + up, for a dropped or thrown object.
+   */
+  strobe?: boolean | 'vertical';
   fixed?: boolean;
 }
 

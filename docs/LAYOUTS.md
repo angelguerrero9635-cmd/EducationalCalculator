@@ -100,6 +100,11 @@ light in and ATP out; `energy: { process?, lit? }` lights the whole `cycle`, `ph
 prophase I … telophase II, the chromosomes counted from 2n (2, 4 or 6), maternal red and paternal
 blue, crossed-over tips from prophase I, four different cells of n after telophase II.
 
+Grade 11 physics (H102, group H2C): card figure `strobe` (`layouts/strobeCard.tsx`, 140 × 48):
+`{ kind: 'strobe', gaps, dir?, ramp? }` dots the object's place every second, the `gaps` (m)
+to scale and the first dot open, an arrow the way it moves (`dir`, default right); `ramp` tilts
+the track up the way it moves.
+
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by
 what people already do, or an `experiment` assigned at random to a treatment and a control group;

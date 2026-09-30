@@ -308,6 +308,127 @@ const orbit: ModuleDef = (() => {
   };
 })();
 
-export const HS2C_GALLERY_MODULES: ModuleDef[] = [oneAfter, impulse, orbit];
+// ─── H102.4 motionGraph `strobe: 'vertical'`: a dropped stone ────────────────
 
-export const HS2C_GALLERY_LAYOUTS: LayoutDef[] = [];
+const G_EARTH = 9.8;
+
+const freeFall: ModuleDef = (() => {
+  const t = 3;
+  return {
+    id: 'g.s11-kinematics-1d-free-fall-vertical',
+    title: 'Free fall, the strobe stood up',
+    use: 'Use this for “A stone falls from rest for 3 s. How far does it fall, and how fast is it going?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Dropped from rest, so it starts at v₀ = 0.',
+      'Air resistance is ignored: every object falls with a = −9.8 m/s², whatever its mass.',
+      'Up is +, so the velocity is negative on the way down; the drop d is how far it fell.',
+    ],
+    variables: [
+      q('a', 'a', 'Acceleration of gravity', 'm/s²', -50, 50, 0.1, { derived: true }),
+      q('t', 't', 'Time', 's', 0.01, 30, 0.01),
+      q('v', 'v', 'Velocity (− is down)', 'm/s', -300, 0, 0.01, { derived: true }),
+      q('d', 'd', 'Drop', 'm', 0, 5000, 0.01),
+    ],
+    ...rules(
+      rule('a = −9.8', '{a} = −9.8', (x) => x.a! + G_EARTH, {
+        a: [
+          (x) => -G_EARTH + 0 * (x.a ?? 0),
+          '−9.8',
+          'Near Earth’s surface gravity speeds a falling object up by 9.8 m/s each second, downward.',
+        ],
+      }),
+      rule('v = at', '{v} = {a} × {t}', (x) => x.v! - x.a! * x.t!, {
+        v: [
+          (x) => x.a! * x.t!,
+          '{a} × {t}',
+          'From rest, the velocity is the acceleration times the time.',
+        ],
+      }),
+      rule('d = ½gt²', '{d} = ½ × 9.8 × {t}²', (x) => x.d! - 0.5 * G_EARTH * x.t! * x.t!, {
+        d: [
+          (x) => 0.5 * G_EARTH * x.t! * x.t!,
+          '½ × 9.8 × {t}²',
+          'From rest the drop is ½gt²: it grows with the square of the time.',
+        ],
+        t: [
+          (x) => (x.d! >= 0 ? Math.sqrt((2 * x.d!) / G_EARTH) : undefined),
+          '√(2 × {d}/9.8)',
+          'Undo ½gt²: double the drop, divide by g, take the square root.',
+        ],
+      }),
+    ),
+    example: { a: -G_EARTH, t, v: -G_EARTH * t, d: 0.5 * G_EARTH * t * t },
+    startWith: ['t'],
+    representation: {
+      kind: 'motionGraph',
+      graph: 'speed',
+      time: 't',
+      acceleration: 'a',
+      speed: 'v',
+      start: 0,
+      kinematics: { view: 'velocity', strobe: 'vertical' },
+    },
+    pictureLabels: ['d'],
+  };
+})();
+
+export const HS2C_GALLERY_MODULES: ModuleDef[] = [oneAfter, impulse, orbit, freeFall];
+
+// ─── H102.5 card figure `strobe`: sorting motion diagrams ───────────────────
+
+const motionDiagrams: LayoutDef = {
+  kind: 'sort',
+  id: 'g.s11-kinematics-1d-motion-diagrams',
+  title: 'Reading a motion diagram',
+  use: 'Use this for “A strobe photo shows a runner every second. Is the runner speeding up, slowing down or steady?”',
+  assumptions: [
+    'Each dot is where the object is, one second apart; the open dot is the first.',
+    'Equal gaps in equal times mean constant velocity; growing gaps, speeding up; shrinking gaps, slowing down.',
+    'The arrow is the way it moves: the gaps tell the speed whichever way that is.',
+  ],
+  question: 'How is it moving?',
+  bins: [
+    {
+      id: 'steady',
+      label: 'Constant velocity',
+      why: 'The gaps are equal: the same distance every second.',
+    },
+    { id: 'faster', label: 'Speeding up', why: 'Each gap is longer than the one before.' },
+    { id: 'slower', label: 'Slowing down', why: 'Each gap is shorter than the one before.' },
+  ],
+  cards: [
+    {
+      label: 'Gaps of 2 m each second',
+      bin: 'steady',
+      figure: { kind: 'strobe', gaps: [2, 2, 2, 2] },
+    },
+    {
+      label: 'Gaps of 1, 3, 5 and 7 m',
+      bin: 'faster',
+      figure: { kind: 'strobe', gaps: [1, 3, 5, 7] },
+    },
+    {
+      label: 'Gaps of 8, 6, 4 and 2 m',
+      bin: 'slower',
+      figure: { kind: 'strobe', gaps: [8, 6, 4, 2] },
+    },
+    {
+      label: 'Gaps of 5 m each second, moving left',
+      bin: 'steady',
+      figure: { kind: 'strobe', gaps: [5, 5, 5, 5], dir: 'left' },
+    },
+    {
+      label: 'Gaps growing as it moves left',
+      bin: 'faster',
+      figure: { kind: 'strobe', gaps: [2, 4, 6, 8], dir: 'left' },
+    },
+    {
+      label: 'A ball rolling up a ramp',
+      bin: 'slower',
+      figure: { kind: 'strobe', gaps: [7, 5, 3, 1.5], ramp: true },
+    },
+  ],
+};
+
+export const HS2C_GALLERY_LAYOUTS: LayoutDef[] = [motionDiagrams];

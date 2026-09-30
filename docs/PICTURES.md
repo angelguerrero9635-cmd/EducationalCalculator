@@ -238,6 +238,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `spectrum`         | `lines`, `photon`                        | H, He, Na lines, emission or absorption, shifted by z; E = hf (H70)           |
 | `collision`        | `type: 'general'`, `lost`                | v₁′ given, v₂′ from momentum; each cart's KE; KE lost (H102)                  |
 | `circularMotion`   | `mode: 'satellite'`, `central`           | orbit of r round M: v = √(GM/r), GM/r², T = 2πr/v; body to scale (H102)       |
+| `motionGraph`      | `kinematics.strobe: 'vertical'`          | the strobe stood up left of the graph, + up: a dropped object (H102)          |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

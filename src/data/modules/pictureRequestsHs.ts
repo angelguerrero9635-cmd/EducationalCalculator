@@ -1877,12 +1877,16 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s11-momentum-one-after',
       'g.s11-momentum-impulse',
       'g.s11-circular-gravitation-orbit',
+      'g.s11-kinematics-1d-free-fall-vertical',
+      'g.s11-kinematics-1d-motion-diagrams',
     ],
     notes: [
       'P14: docs/plans/s.11.md needs 1–12, drawn part by part.',
       "1 (~one-after): collision type 'general' with after [v₁′, v₂′] (v₁′ given, v₂′ from the momentum) and lost (the KE lost); each cart's KE is labelled. { kind: 'collision', type: 'general', masses: ['m', 'n'], before: ['v', 'w'], after: ['a', 'b'], lost: 'X' }.",
       "2 (~impulse): new kind impulse, p₀, p and Δp arrows over the force–time rectangle of area Δp; compare (s) dashes the same Δp over a longer time. { kind: 'impulse', mass: 'm', before: 'u', after: 'v', time: 't', change: 'P', force: 'F', compare: 0.2 }.",
       "3 (~orbit): circularMotion mode 'satellite' with central (M, kg), radius, speed, period, acceleration; body (a planet name or 'sun') and bodyRadius (m) draw the central body to scale. { kind: 'circularMotion', mode: 'satellite', central: 'M', radius: 'r', speed: 'v', period: 'T', body: 'earth', bodyRadius: 6.371e6 }; T needs units: ['s'].",
+      "4 (~free-fall): motionGraph kinematics strobe: 'vertical' stands the strobe in a column left of the graph, + up (the slope chip moves to the empty bottom left). { kind: 'motionGraph', graph: 'speed', time: 't', acceleration: 'a', speed: 'v', start: 0, kinematics: { view: 'velocity', strobe: 'vertical' } }.",
+      "5 (~motion-diagrams): card figure strobe, dots one second apart with the gaps (m) to scale, the first open, dir and ramp. { kind: 'strobe', gaps: [1, 3, 5, 7] }, { kind: 'strobe', gaps: [2, 4, 6, 8], dir: 'left' }, { kind: 'strobe', gaps: [7, 5, 3, 1.5], ramp: true }; the demo sort has the plan's six cards.",
     ].join(' '),
   },
   ask(

@@ -80,3 +80,21 @@ export function satelliteIssues(rep: CircularMotionSpec, val: Val): string[] {
   check(rep.period, (2 * Math.PI * r) / v, 'period 2πr/v');
   return out;
 }
+
+/** The smallest 1, 2 or 5 × 10ⁿ at least `x` (as `hsdGrid.niceStep`, which draws the dots). */
+function niceStep(x: number): number {
+  if (!(x > 0)) return 1;
+  const pow = 10 ** Math.floor(Math.log10(x));
+  const n = x / pow;
+  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * pow;
+}
+
+/**
+ * H102: a vertical strobe (`motionGraph` kinematics `strobe: 'vertical'`) dots the position at
+ * equal steps of a nice time: from 1 to 12 steps once time has passed.
+ */
+export function strobeColumnIssues(t: number | undefined): string[] {
+  if (t === undefined || t <= 0) return [];
+  const steps = Math.floor(t / niceStep(t / 10) + 1e-9);
+  return steps >= 1 && steps <= 12 ? [] : [`motionGraph: a vertical strobe of ${steps} steps`];
+}

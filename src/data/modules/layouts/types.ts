@@ -18,6 +18,7 @@ import type {
   MohsScene,
 } from '../typesHsl';
 import type { Round3Icon } from './icons';
+import type { StrobeCard } from './strobeCard';
 
 /**
  * Module layouts other than the calculator (docs/MODULE_GUIDE.md, "Module layouts"). A
@@ -161,6 +162,8 @@ export type CardFigure =
   | { kind: 'molecule'; formula: string }
   /** One stage of mitosis or meiosis, its chromosomes counted from 2n (HS group G). */
   | CellDivisionCard
+  /** A motion diagram: dots one second apart, gaps to scale (H102, `strobeCard.ts`). */
+  | StrobeCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
