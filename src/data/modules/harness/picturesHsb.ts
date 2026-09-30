@@ -33,8 +33,10 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
         const x = get(v);
         if (x !== undefined && !(x > 0 && x < 1)) out.push(`${what} ${x} is not between 0 and 1`);
       }
-      if (rep.intervals && (rep.intervals.count < 20 || rep.intervals.count > 100))
-        out.push(`${rep.intervals.count} simulated intervals (20 to 100 fit)`);
+      // H105: the count may be a value, a whole number 20 to 100.
+      const count = get(rep.intervals?.count);
+      if (count !== undefined && (count < 20 || count > 100 || !Number.isInteger(count)))
+        out.push(`${count} simulated intervals (20 to 100 fit)`);
       // Checked once the curve's own values are known (a "?" draws the example's, faded).
       const unknown = (x: NumOrVar | undefined) => x !== undefined && get(x) === undefined;
       if ([rep.mean, rep.sd, rep.sample?.n, rep.chiSquare?.df, rep.intervals?.n].some(unknown))

@@ -8,6 +8,7 @@ import { chart, usePalette, type Palette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { photonOf, SPECTRAL_LINES } from './hskMath';
+import { labLineIndex } from './hs2h';
 import { sci, sig, SubLabel } from './hskKit';
 import { url, usePaintIds } from './paint';
 
@@ -121,7 +122,10 @@ export function SpectrumLinesView({ spec, l, calc }: { spec: Spec; l: Lines; cal
         : rep.val(l.redshift);
   const zKnown = typeof l.redshift !== 'string' || rep.known(l.redshift);
   const lab = SPECTRAL_LINES[l.element];
-  const ref = lab[Math.min(lab.length - 1, Math.max(0, l.line ?? 0))]!;
+  // H105: `line: 'rest'` follows the lab wavelength typed (the nearest of the element's lines).
+  const restNm =
+    l.rest && rep.known(l.rest) ? (rep.val(l.rest) * (spec.meters ?? 1)) / 1e-9 : undefined;
+  const ref = lab[labLineIndex(lab, l.line, restNm)]!;
   // Without a redshift the page's wavelength picks one line: marked under the strip.
   const picked =
     z === undefined && rep.known(spec.wavelength)

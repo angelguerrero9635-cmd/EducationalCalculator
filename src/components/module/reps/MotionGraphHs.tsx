@@ -47,7 +47,9 @@ export function MotionGraphHs({
   const si = (x: number | string | undefined, d = 0) =>
     x === undefined ? d : typeof x === 'number' ? x : rep.val(x);
   const t = Math.max(0, rep.val(spec.time));
-  const a = rep.val(spec.acceleration);
+  // H105: a number acceleration (free fall's −9.8 m/s²) is drawn but never a value.
+  const aId = typeof spec.acceleration === 'string' ? spec.acceleration : undefined;
+  const a = aId ? rep.val(aId) : (spec.acceleration as number);
   const v0r = numOrVar(rep, spec.start, 0);
   const v0 = si(spec.start);
   const v = rep.known(spec.speed) ? rep.val(spec.speed) : v0 + a * t;
@@ -55,7 +57,7 @@ export function MotionGraphHs({
   const xAt = (s: number) => x0 + v0 * s + (a * s * s) / 2;
   const vAt = (s: number) => v0 + a * s;
   const all =
-    rep.known(spec.time) && rep.known(spec.acceleration) && v0r.known && rep.known(spec.speed);
+    rep.known(spec.time) && (!aId || rep.known(aId)) && v0r.known && rep.known(spec.speed);
   // Where the velocity passes through 0 inside the trip: the object turns round.
   const tc = a !== 0 ? -v0 / a : NaN;
   const turns = tc > 1e-9 && tc < t - 1e-9;
@@ -101,7 +103,7 @@ export function MotionGraphHs({
     rep.pin(
       [
         spec.time,
-        spec.acceleration,
+        ...(aId ? [aId] : []),
         ...(typeof spec.start === 'string' ? [spec.start] : []),
       ].filter((x) => x !== id),
     );
@@ -290,7 +292,7 @@ export function MotionGraphHs({
           [tc, 0, t, v],
         ]
       : [[0, v0, t, v]];
-    const aText = rep.value(spec.acceleration);
+    const aText = aId ? rep.value(aId) : withUnit(sig(a), vU ? `${vU}²` : undefined);
     // Beside a vertical strobe (H102) a falling line leaves the bottom left empty.
     const low = vertical && a < 0 && v0 <= 0;
     return (
@@ -337,7 +339,7 @@ export function MotionGraphHs({
         <Chip
           x={a >= 0 || low ? f.sx(0) + 8 : f.sx(win.value.x.hi) - 4}
           y={low ? f.sy(win.value.y.lo) - 10 : f.sy(win.value.y.hi) + (a >= 0 ? 34 : 16)}
-          text={`slope = ${sym(spec.acceleration)} = ${aText}`}
+          text={`slope = ${aId ? sym(aId) : 'a'} = ${aText}`}
           anchor={a >= 0 || low ? 'start' : 'end'}
           w={w}
           h={h}
@@ -457,7 +459,7 @@ export function MotionGraphHs({
           onMove={(dxp) =>
             calc.set(
               {
-                ...rep.pin([spec.time, spec.acceleration]),
+                ...rep.pin([spec.time, ...(aId ? [aId] : [])]),
                 [at]: rep.snapTo(at, drag.current.t1 + dxp / f.ux),
               },
               rep.slide(at),
@@ -501,14 +503,14 @@ export function MotionGraphHs({
   }
 
   function captionLines(): string[] {
-    const [ts, as, vs] = [sym(spec.time), sym(spec.acceleration), sym(spec.speed)];
+    const [ts, as, vs] = [sym(spec.time), aId ? sym(aId) : 'a', sym(spec.speed)];
     const v0s = typeof spec.start === 'string' ? sym(spec.start) : `${vs}₀`;
     // Substituted values without units, the result with its unit.
     const bare = (id: string | undefined, x: number) =>
       id ? (rep.known(id) ? par(rep.value(id, false)) : '?') : par(sig(x));
     const v0t = bare(typeof spec.start === 'string' ? spec.start : undefined, v0);
     const lines = [
-      `${vs} = ${v0s} + ${as}${ts} = ${v0t} + ${bare(spec.acceleration, a)} × ${bare(spec.time, t)} = ${rep.value(spec.speed)}`,
+      `${vs} = ${v0s} + ${as}${ts} = ${v0t} + ${bare(aId, a)} × ${bare(spec.time, t)} = ${rep.value(spec.speed)}`,
     ];
     if (position) {
       const x0s = typeof k.position === 'string' ? sym(k.position) : `${xName}₀`;
@@ -516,9 +518,9 @@ export function MotionGraphHs({
       const x0t = bare(typeof k.position === 'string' ? k.position : undefined, x0);
       const t1t = bare(k.at, t1);
       lines.push(
-        `${xName}(${t1s}) = ${x0s} + ${v0s}${t1s} + ½${as}${t1s}² = ${x0t} + ${v0t} × ${t1t} + ½ × ${bare(spec.acceleration, a)} × ${t1t}² = ${withUnit(sig(xAt(t1)), xU)}`,
+        `${xName}(${t1s}) = ${x0s} + ${v0s}${t1s} + ½${as}${t1s}² = ${x0t} + ${v0t} × ${t1t} + ½ × ${bare(aId, a)} × ${t1t}² = ${withUnit(sig(xAt(t1)), xU)}`,
         `The tangent’s slope is the velocity at ${t1s}.`,
-        `${k.slope ? sym(k.slope) : 'slope'} = ${v0s} + ${as}${t1s} = ${v0t} + ${bare(spec.acceleration, a)} × ${t1t} = ${withUnit(sig(v1), vU)}`,
+        `${k.slope ? sym(k.slope) : 'slope'} = ${v0s} + ${as}${t1s} = ${v0t} + ${bare(aId, a)} × ${t1t} = ${withUnit(sig(v1), vU)}`,
         v1 > 1e-9
           ? 'The tangent slopes up: moving forward (+).'
           : v1 < -1e-9

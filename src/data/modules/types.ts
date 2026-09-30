@@ -51,6 +51,8 @@ export type MeasuredThing = 'pencil' | 'ribbon' | 'crayon';
  * sets those variables exactly like typing into the formula inputs.
  */
 export type Representation =
+  /** H105: no picture, for an equation-only page: the page opens on its values (no labels). */
+  | { kind: 'none' }
   /**
    * Number line: a point at `start`, a jump of `jump`, landing on `end`. Drag start or end.
    * `tick` sets the labeled tick spacing (default 1).
@@ -665,12 +667,13 @@ export type Representation =
        * coefficient's value (checked against the points). `leastSquares`: the least-squares
        * line dashed beside the dragged one ('beside'), or the module's slope and intercept are
        * it ('fit': checked to the cent, no handles). `residualOf`: one point (an index) with
-       * its residual labelled, and the residual's value (checked).
+       * its residual labelled, and the residual's value (checked). H105: `point` may be a value
+       * id holding the point's number k, counted from 1 (the student's "point 3").
        */
       residuals?: 'segments' | 'plot';
       r?: string | true;
       leastSquares?: 'beside' | 'fit';
-      residualOf?: { point: number; residual?: string };
+      residualOf?: { point: number | string; residual?: string };
     }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at
@@ -1495,6 +1498,8 @@ export type Representation =
       third?: string;
       total?: string;
       names?: string[][];
+      /** H105: names by a stage's size, for any stage with that many outcomes ({ 2: ['H', 'T'] }). */
+      namesBySize?: Record<number, string[]>;
       stages?: string[];
       path?: number[];
       chance?: string;

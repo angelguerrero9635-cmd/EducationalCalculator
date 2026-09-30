@@ -33,12 +33,14 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
   const si = (x: number | string | undefined) =>
     x === undefined ? 0 : typeof x === 'number' ? x : rep.val(x);
   const v = Math.max(0, rep.val(spec.speed));
-  const th = rep.val(spec.angle);
+  // H105: the angle may be a number (a level launch, 0°): no handle then.
+  const angleId = typeof spec.angle === 'string' ? spec.angle : undefined;
+  const th = angleId ? rep.val(angleId) : (spec.angle as number);
   const h = Math.max(0, si(spec.height));
   const p = projectileOf(v, th, h, g);
   const known =
     rep.known(spec.speed) &&
-    rep.known(spec.angle) &&
+    (!angleId || rep.known(angleId)) &&
     (typeof spec.height !== 'string' || rep.known(spec.height));
   const tAt = spec.at ? Math.max(0, rep.val(spec.at)) : undefined;
   const pos = (t: number) => ({ x: p.vx * t, y: h + p.vy * t - (g * t * t) / 2 });
@@ -99,7 +101,7 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
               { length: Math.floor((b - a) / W.step + 1e-9) + 1 },
               (_, i) => Math.ceil(a / W.step - 1e-9) * W.step + i * W.step,
             ).filter((x) => x <= b + 1e-9);
-          const thText = rep.value(spec.angle);
+          const thText = angleId ? rep.value(angleId) : `${formatNumber(th)}°`;
           return (
             <>
               <Svg width={w} height={ch}>
@@ -384,12 +386,12 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                   />
                 ) : null}
               </Svg>
-              {!spec.fixed && rep.known(spec.angle) && v > 0 ? (
+              {!spec.fixed && angleId && rep.known(angleId) && v > 0 ? (
                 <DragHandle
                   testID="drag-angle"
                   x={tip.x}
                   y={tip.y}
-                  label={rep.variable(spec.angle).name}
+                  label={rep.variable(angleId).name}
                   onStart={() => {
                     drag.current = { x: tip.x - launch.x, y: tip.y - launch.y };
                     win.freeze();
@@ -403,8 +405,8 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                       (x): x is string => typeof x === 'string',
                     );
                     calc.set(
-                      { ...rep.pin(others), [spec.angle]: rep.snapTo(spec.angle, deg) },
-                      rep.slide(spec.angle),
+                      { ...rep.pin(others), [angleId]: rep.snapTo(angleId, deg) },
+                      rep.slide(angleId),
                     );
                   }}
                 />
@@ -419,9 +421,9 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
 
   function captionLines(): string[] {
     const vs = sym(spec.speed);
-    const ts = sym(spec.angle);
+    const ts = angleId ? sym(angleId) : 'θ';
     const vt = rep.value(spec.speed, false);
-    const tt = rep.value(spec.angle, false);
+    const tt = angleId ? rep.value(angleId, false) : formatNumber(th);
     const vxs = spec.vx ? sym(spec.vx) : 'vₓ';
     const vys = spec.vy ? sym(spec.vy) : 'vᵧ';
     const out = [

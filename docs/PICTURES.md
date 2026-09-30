@@ -123,6 +123,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits   | Physics optics, telescopes (H66)    |
 | `charges`          | point charges, traced field lines; kq₁q₂/r² forces; E at a point      | Physics electrostatics (H67)        |
 | `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns    | Physics electromagnetism (H69)      |
+| `none`             | no picture: the page opens on its values and equation, no labels      | Equation-only pages (H105)          |
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
@@ -209,6 +210,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `linearFunction`   | `shade`                                  | one inequality y < mx + b: its half-plane shaded, the boundary dashed (H16)   |
 | `integerLine`      | `compound: { join, closed?, center? }`   | and / or between two bounds; abs(x − c) < d as a distance from c (H17)        |
 | `linearFunction`   | `shade: { sign, flip? }`                 | the sign box's side (1 < 2 ≤ 3 > 4 ≥), reversed while `flip` < 0 (H90)        |
+| `linearFunction`   | `test: { x, y }`                         | a point tested in the inequality: solid when true, worked below (H105)        |
 | `lineSystem`       | `lines[i].shade: { sign, flip? }`        | each line's half-plane from its sign box; ax + by (sign) c, `flip: 'b'` (H90) |
 | `lineSystem`       | `upright: [{ x, shade? }]`               | upright boundaries x ≥ k; with them only the overlap is shaded (a box) (H92)  |
 | `lineSystem`       | `marks`, `given: { x, y }`               | arrows if parallel, a square if perpendicular; the given point marked (H92)   |
@@ -217,6 +219,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `horizontal: b`                          | y = a·f(b(x − h)) + k: squeezed toward x = h, flipped for b < 0 (H94)         |
 | `functionGraph`    | `restrict: { from?, to? }`               | the domain kept from a value, the rest dashed; the inverse of it (H94)        |
 | `functionGraph`    | `family: 'rational'`, `p, q, r, s`       | (px + q) ÷ (rx + s) from its coefficients, asymptotes marked (H94)            |
+| `functionGraph`    | `zeros: [{ x, times: n }]`               | a zero's multiplicity from a value, 1 to 9: touches or crosses (H105)         |
+| `functionGraph`    | `family: 'arcsin'`, `degrees`            | sin⁻¹, cos⁻¹, tan⁻¹ read in degrees: ±90° on a plain axis (H105)              |
 | `algebraTiles`     | `mode: 'box'`, `side`, `top`, `product`  | area box: row × column terms, like-term diagonals tinted, collected (H95)     |
 | `algebraTiles`     | `mode: 'monomial'`, `a, m, b, n, c, k`   | a·xᵐ ÷ b·xⁿ as factors over a bar, cancelled pairs struck, c·xᵏ (H95)         |
 | `integerLine`      | `compound.closed: [id, id]`              | each bound's circle from a sign box: 2 ≤, 4 ≥ closed; 1 <, 3 > open (H90)     |
@@ -228,10 +232,12 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `bars`             | `flows: { out: [ids] }`                  | start, flows in (+, green) and out (−, red) as steps, end; axis cut (H100)    |
 | `percentBar`       | `second: id`                             | a second percent on the bar: a band, a dashed line, its label (H104)          |
 | `normalCurve`      | `t: { df }`                              | a t curve over the dashed normal; areas, t⋆ and the p-value by t (H99)        |
+| `normalCurve`      | `intervals.count` (a value)              | how many simulated intervals, 20 to 100, typed; none drawn while ? (H105)     |
 | `termsChart`       | `far`                                    | past 30 terms: the first six, a break, the nth lit (a₁₀₀) (H93)               |
 | `termsChart`       | `type: 'recursive'`, `plus`              | aₙ = k × aₙ₋₁ + c from the one before, an arrow to each next (H93)            |
 | `termsChart`       | `lit`, `litTerm`, `powers`               | a second lit term (B1 beside B2); terms as powers, 2² = 4 (H93)               |
 | `scatter`          | `residuals`, `r`, `leastSquares`, …      | residual segments and plot, r, the least-squares line beside or given (H18)   |
+| `scatter`          | `residualOf: { point: k }`               | a value picks the point, counted from 1: its residual lit and worked (H105)   |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |
 | `table`            | `twoWay: { rows, cols, cells, … }`       | two-way table: totals, lit cell/row/column, segmented bars, chi-square (H20)  |
@@ -239,12 +245,15 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `venn`             | `chances: { a, b, both, shade, … }`      | probabilities per region; and, or, complement shaded; exclusive apart (H22)   |
 | `venn`             | `chances.counts: { total, count? }`      | counts out of a total: regions as counts, neither outside, P = n/N (H97)      |
 | `treeDiagram`      | `chances.third`, `thirdNames`, `path3`   | a third stage: 8 leaves, each path's product; three stages multiplied (H97)   |
+| `treeDiagram`      | `namesBySize`                            | outcome names for a stage of each size: 2 H, T; 3 R, G, B; … (H105)           |
 | `pascalTriangle`   | `fraction: { n, k, count?, chance? }`    | C(a, r) lit over C(n, r), drawn as a fraction: 10/84 = 5/42 (H97)             |
 | `unitCircle`       | `through: { x, y, r? }`                  | a point off the circle: r, the legs, the unit point (x/r, y/r) (H98)          |
 | `unitCircle`       | `pair: { a, b, op? }`                    | A, then B on (or back) to A ± B, arcs in turn; the formula worked (H98)       |
 | `unitCircle`       | `solutions.also`                         | two values (sin x = −1/2 or 1): both lines, every solution marked (H98)       |
 | `complexPlane`     | `power: n`; `roots: n`                   | z, z², …, zⁿ in turn; the n nth roots on a circle, a regular n-gon (H99)      |
+| `complexPlane`     | `opFrom`                                 | a sign box's value picks the sum (1), difference (2) or product (3) (H105)    |
 | `matrixGrid`       | `mode: 'determinant'`, `cramer`          | D by its diagonals or the first-row expansion; D, Dx, Dy side by side (H99)   |
+| `matrixGrid`       | `steps: 'echelon' \| 'reduced'`          | row operations worked out from typed entries, a 0 row read out (H105)         |
 | `histogram`        | `range: { from?, to?, total? }`          | bars k = from to to lit and added: P(X ≥ 4) = P(4) + P(5) (H99)               |
 | `histogram`        | `clt: { mean, n, samples, se? }`         | CLT: a skewed population, the means of m samples, the normal σ/√n (H99)       |
 | `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |
@@ -259,12 +268,15 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `placeValueChart`  | `plus`, `total`                          | two numbers stacked by place, points lined up, the sum under a rule           |
 | `scale`            | `before`; `hanging`                      | two scales, before and after, gas bubbles labelled; a spring scale in N       |
 | `transformation`   | `then`, `image2`; `symmetry`             | a second move from A′ (dashed) to A″; lines of symmetry and the turn order    |
+| `transformation`   | `move: 'reflect'`, `slope`               | a value 1 or −1 picks the mirror y = x or y = −x (H105)                       |
 | `scaleCopy`        | `center`; `splitter`                     | a dilation from any center with rays; DE ∥ BC cutting a triangle's sides      |
 | `coordinatePlane`  | `midpoint`, `partition`; `polygon`       | M with equal halves ticked; P at m : n; side slopes, parallel and right marks |
 | `circle`           | `sector`; `views`: `sector`, `radian`    | a sector by its angle (° or radians), arc and area; radius-long arcs around   |
 | `curvedSolid`      | `net`, `slant`, `surface`; `cavalieri`   | the surface-area net (a cone's sector); two coin stacks, one leaning          |
 | `crossSection`     | `solid: 'cylinder' \| 'cone'`            | a level cut (a circle) or upright cut, shaded and drawn flat beside           |
 | `markedFigure`     | `regular`: `sides`, `triangles`          | a regular n-gon (3–30), n − 2 triangles from A, the exterior angle at B       |
+| `markedFigure`     | `points: { D: { from, angle, meets? } }` | a point on a ray at a degree value, or where two such rays meet (H105)        |
+| `markedFigure`     | `quadrilateral.across: [p, q]`           | a rhombus from its diagonals AC (level) and BD, not a side and angle (H105)   |
 | `circleTheorems`   | `theorem`: `cyclic`, `arcAngle`          | an inscribed quadrilateral; an angle from two arcs, inside or outside         |
 | `coordinatePlane`  | `fit`                                    | sized to the points: 5, 10 or 20 each way, up to `extent`                     |
 | `factorTree`       | `root: { index, outside, inside }`       | equal pairs (or threes) ringed and brought out of the root: √72 = 6√2         |
@@ -284,9 +296,13 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
 | `spectrum`         | `lines`, `photon`                        | H, He, Na lines, emission or absorption, shifted by z; E = hf (H70)           |
+| `spectrum`         | `lines.line: 'rest'`                     | the lab line the rest value names (the nearest line): any Balmer line (H105)  |
 | `collision`        | `type: 'general'`, `lost`                | v₁′ given, v₂′ from momentum; each cart's KE; KE lost (H102)                  |
+| `collision`        | `spring` (with `explode`)                | the spring's energy named between the carts, KE gained (checked) (H105)       |
 | `circularMotion`   | `mode: 'satellite'`, `central`           | orbit of r round M: v = √(GM/r), GM/r², T = 2πr/v; body to scale (H102)       |
 | `motionGraph`      | `kinematics.strobe: 'vertical'`          | the strobe stood up left of the graph, + up: a dropped object (H102)          |
+| `motionGraph`      | `acceleration: −9.8` (a number)          | free fall's gravity drawn with no value for it; the 9–12 v–t graph (H105)     |
+| `projectile`       | `angle: 0` (a number)                    | a launch angle that never changes (level off a ledge): no handle (H105)       |
 | `freeBody`         | `displacement`, `work` (floor)           | d bracketed, F cos θ dashed; W = Fd cos θ in the caption (H102)               |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |

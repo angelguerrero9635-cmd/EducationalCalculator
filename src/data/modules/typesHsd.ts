@@ -156,6 +156,8 @@ export interface ComplexPlaneSpec extends ComplexPlaneHs2g {
   conjugate?: boolean;
   w?: { re: NumOrVar; im: NumOrVar };
   op?: 'sum' | 'difference' | 'product';
+  /** H105: a value holding 1 (sum), 2 (difference) or 3 (product), in place of `op`. */
+  opFrom?: string;
   /** The answer's parts, when the page works them out (checked). */
   result?: { re?: string; im?: string };
   modulus?: string;
@@ -265,7 +267,8 @@ export type MatrixGridSpec = { kind: 'matrixGrid' } & (
   | {
       mode: 'rowReduce';
       system: NumOrVar[][];
-      steps: RowOp[];
+      /** H105: 'echelon' or 'reduced' works the row operations out from the values. */
+      steps: RowOp[] | 'echelon' | 'reduced';
       solution?: string[];
     }
   | MatrixDeterminant // H99
@@ -328,6 +331,7 @@ export function hsdSpecVars(r: HsdSpec): string[] {
         ...('modulus' in r.z ? [r.z.modulus, r.z.argument] : [r.z.re, r.z.im]),
         r.w?.re,
         r.w?.im,
+        r.opFrom,
         r.result?.re,
         r.result?.im,
         r.modulus,

@@ -6,6 +6,8 @@
  */
 import type { FigurePart, MarkedFigureSpec } from '@/data/modules/typesHsc';
 
+import { rayPoint } from './hs2h';
+
 export type P2 = [number, number];
 
 export interface Figure {
@@ -92,12 +94,20 @@ export function buildFigure(
   if (spec.transversal) return transversal(spec, num);
   if (spec.quadrilateral) return quadrilateral(spec, num);
   // Named points (and the triangle preset's corners).
-  for (const [name, [x, y]] of Object.entries(spec.points ?? {})) {
-    const px = num(x);
-    const py = num(y);
+  for (const [name, p] of Object.entries(spec.points ?? {})) {
+    if (!Array.isArray(p)) continue;
+    const px = num(p[0]);
+    const py = num(p[1]);
     if (px === undefined || py === undefined)
       f.reason = f.reason ?? 'Type the values that place the points.';
     f.pts[name] = [px ?? 0, py ?? 0];
+  }
+  // H105: points on rays at a degree value, placed after the coordinate points.
+  for (const [name, p] of Object.entries(spec.points ?? {})) {
+    if (Array.isArray(p)) continue;
+    const placed = rayPoint(f.pts, p, num);
+    if (placed.reason) f.reason = f.reason ?? placed.reason;
+    f.pts[name] = placed.at;
   }
   if (spec.triangle) {
     const t = spec.triangle;
@@ -426,13 +436,25 @@ function quadrilateral(
     if (x === undefined) f.reason = f.reason ?? 'Type the lengths and angle that fix the shape.';
     return x ?? fallback;
   };
-  const W = need(w, 6);
   const fam = q.family;
+  // H105: a rhombus from its diagonals p = AC (level) and q = BD, crossing at their middles.
+  const across =
+    fam === 'rhombus' && q.across ? q.across.map((x, i) => need(num(x), [12, 16][i]!)) : undefined;
+  const W = across ? Math.hypot(across[0]! / 2, across[1]! / 2) : need(w, 6);
   let A: P2 = [0, 0];
   let B: P2 = [W, 0];
   let C: P2;
   let D: P2;
-  if (fam === 'square' || fam === 'rectangle') {
+  if (across) {
+    const [p, qq] = across as [number, number];
+    [A, B, C, D] = [
+      [-p / 2, 0],
+      [0, -qq / 2],
+      [p / 2, 0],
+      [0, qq / 2],
+    ];
+    if (!(p > 0 && qq > 0)) f.reason = 'Every length must be longer than 0.';
+  } else if (fam === 'square' || fam === 'rectangle') {
     const H = fam === 'square' ? W : need(h, 4);
     C = [W, H];
     D = [0, H];

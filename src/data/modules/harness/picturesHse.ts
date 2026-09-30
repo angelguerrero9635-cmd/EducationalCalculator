@@ -48,8 +48,13 @@ export function scatterIssues(rep: Of<'scatter'>, val: Val): string[] {
       );
   }
   if (rep.residualOf) {
-    const p = rep.points[rep.residualOf.point];
-    if (!p) out.push(`there is no point ${rep.residualOf.point}`);
+    // H105: a value id holds the point's number, counted from 1.
+    const pick = rep.residualOf.point;
+    const k = typeof pick === 'string' ? val(pick) : pick + 1;
+    if (typeof pick === 'string' && k !== undefined && !Number.isInteger(k))
+      out.push(`point number ${k} is not a whole number`);
+    const p = k === undefined ? undefined : rep.points[Math.round(k) - 1];
+    if (!p && k !== undefined) out.push(`there is no point ${typeof pick === 'string' ? k : pick}`);
     const d = rep.residualOf.residual ? val(rep.residualOf.residual) : undefined;
     if (
       p &&

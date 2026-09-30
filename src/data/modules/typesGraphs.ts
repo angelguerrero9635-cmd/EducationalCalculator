@@ -37,6 +37,8 @@ export interface LinearFunctionSpec {
   fixed?: boolean;
   /** Grades 9–12: the inequality y (sign) mx + b, its half-plane shaded (see `LineOf.shade`). */
   shade?: ShadeSign;
+  /** H105: a point tested in the inequality (solid when it is a solution), as `lineSystem.test`. */
+  test?: { x: NumOrVar; y: NumOrVar };
 }
 
 /**
@@ -142,7 +144,8 @@ export type TransformationSpec = {
   symmetry?: boolean;
 } & (
   | { move: 'translate'; right: NumOrVar; up: NumOrVar }
-  | { move: 'reflect'; mirror: Mirror }
+  // H105: `slope`, a value holding 1 or −1, picks the mirror y = x or y = −x (`mirror` meanwhile).
+  | { move: 'reflect'; mirror: Mirror; slope?: string }
   | { move: 'rotate'; angle: NumOrVar; center?: [NumOrVar, NumOrVar] }
   | { move: 'dilate'; factor: NumOrVar; center?: [NumOrVar, NumOrVar] }
 );
@@ -155,7 +158,7 @@ export function graphSpecVars(
     xs.filter((x): x is string => typeof x === 'string');
   switch (r.kind) {
     case 'linearFunction':
-      return ids(r.slope, r.intercept, r.point?.x, r.point?.y);
+      return ids(r.slope, r.intercept, r.point?.x, r.point?.y, r.test?.x, r.test?.y);
     case 'lineSystem':
       return ids(
         ...r.lines.flatMap((l) => [l.slope, l.intercept]),
@@ -178,7 +181,7 @@ export function graphSpecVars(
           : r.move === 'reflect'
             ? typeof r.mirror === 'object'
               ? ['x' in r.mirror ? r.mirror.x : r.mirror.y]
-              : []
+              : [r.slope]
             : r.move === 'rotate'
               ? [r.angle, ...(r.center ?? [])]
               : [r.factor, ...(r.center ?? [])];

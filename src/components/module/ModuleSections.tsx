@@ -91,8 +91,12 @@ function ModuleView({ module }: { module: ModuleDef }) {
   return (
     <StepperProvider>
       {/* Order: see the picture first, then work with the numbers, then read why. */}
-      <SectionHeader title={early ? 'Picture' : representationTitle(module.representation)} />
-      <PictureWithSliders module={module} calc={calc} />
+      {module.representation.kind === 'none' ? null : (
+        <>
+          <SectionHeader title={early ? 'Picture' : representationTitle(module.representation)} />
+          <PictureWithSliders module={module} calc={calc} />
+        </>
+      )}
 
       {/* The numbers come right under the picture, then the sentences they fill in. */}
       <InputsSection calc={calc} />

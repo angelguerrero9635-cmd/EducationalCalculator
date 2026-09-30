@@ -19,6 +19,7 @@ import {
   volumeOf,
 } from '@/components/module/reps/section';
 import { imageOf } from '@/components/module/reps/transform';
+import { mirrorOf } from '@/components/module/reps/hs2h';
 import { chemIssues } from './chemPictures';
 
 import { placeParts } from '../helpers';
@@ -55,6 +56,7 @@ import { hs2aIssues } from './picturesHs2a';
 import { barFlowIssues, hs2eIssues, percentSecondIssues, reactionManyIssues } from './picturesHs2e';
 import { hs2fIssues } from './picturesHs2f';
 import { hs2gIssues } from './picturesHs2g';
+import { hs2hIssues } from './picturesHs2h';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import type { ModuleDef, Representation } from '../types';
@@ -1459,6 +1461,7 @@ export function repIssues(
         out.push(...treeChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;
       }
+      out.push(...hs2hIssues(rep, val));
       // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
       count(rep.first, 'first-stage outcomes', 6);
       count(rep.second, 'second-stage outcomes', 6);
@@ -1836,7 +1839,7 @@ export function repIssues(
       out.push(...functionGraphIssues(rep, val), ...hs2aIssues(rep, val), ...hs2gIssues(rep, val));
       break;
     case 'linearFunction': {
-      out.push(...hs2aIssues(rep, val));
+      out.push(...hs2aIssues(rep, val), ...hs2hIssues(rep, val));
       const [m, b] = [val(rep.slope), val(rep.intercept)];
       const [x, y] = rep.point ? [val(rep.point.x), val(rep.point.y)] : [];
       if ([m, b, x, y].every((v) => v !== undefined) && rep.point) {
@@ -1849,7 +1852,7 @@ export function repIssues(
       if (rep.figure.length < 2 || rep.figure.length > 6)
         out.push(`figure with ${rep.figure.length} corners (2 to 6 are labelled A–F)`);
       const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));
-      const mirror = rep.move === 'reflect' ? rep.mirror : undefined;
+      const mirror = rep.move === 'reflect' ? mirrorOf(rep, (id) => val(id)) : undefined;
       const line =
         mirror && typeof mirror === 'object' ? val('x' in mirror ? mirror.x : mirror.y) : undefined;
       const center = 'center' in rep && rep.center ? rep.center : undefined;
@@ -1863,7 +1866,7 @@ export function repIssues(
       };
       if (move.factor !== undefined && move.factor <= 0)
         out.push(`dilation by scale factor ${move.factor}`);
-      out.push(...transformationHsfIssues(rep, val));
+      out.push(...transformationHsfIssues(rep, val), ...hs2hIssues(rep, val));
       const a = rep.figure[0] && [val(rep.figure[0][0]), val(rep.figure[0][1])];
       const [ix, iy] = rep.image ? [val(rep.image.x), val(rep.image.y)] : [];
       const all = [...Object.values(move), a?.[0], a?.[1], ix, iy];
@@ -2067,7 +2070,9 @@ export function repIssues(
       const slopeId = rep.graph === 'distance' ? rep.speed : rep.acceleration;
       const endId = rep.graph === 'distance' ? rep.distance : rep.speed;
       const [t, start, m, end] = [fv(rep.time), fv(rep.start), fv(slopeId), fv(endId)];
-      const [tu, eu, mu] = [unit(rep.time), unit(endId), unit(slopeId)];
+      const [tu, eu] = [unit(rep.time), unit(endId)];
+      // H105: a number acceleration is in the speed's unit per time unit.
+      const mu = typeof slopeId === 'number' ? `${eu}²` : unit(slopeId);
       const agree =
         rep.graph === 'distance' ? mu === `${eu}/${tu}` : mu === `${eu}²` && eu.endsWith(`/${tu}`);
       // Shown values are rounded to 9 places, so a time in hours is only roughly itself.
@@ -2111,6 +2116,7 @@ export function repIssues(
     case 'markedFigure':
     case 'circleTheorems':
       out.push(...hscIssues(rep, (id) => val(id)), ...hs2bIssues(rep, (id) => val(id)));
+      out.push(...hs2hIssues(rep, val));
       break;
     case 'normalCurve':
     case 'histogram':

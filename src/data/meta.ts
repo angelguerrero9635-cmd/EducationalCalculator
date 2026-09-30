@@ -187,9 +187,11 @@ function lessonSummary(id: string, early: boolean): string {
     : getModules(id).slice(0, 1);
   const main = modules[0];
   if (!main) return 'Lesson coming soon, with refresh links to earlier skills.';
-  const pictures = [...new Set(modules.map((m) => pictureName(m.representation.kind)))];
+  // H105: an equation-only page ('none') names no picture.
+  const kinds = modules.map((m) => m.representation.kind).filter((k) => k !== 'none');
+  const pictures = [...new Set(kinds.map(pictureName))];
   return (
-    `Interactive ${pictures.join(', ')}, ${early ? 'number sentences' : 'formulas'}, ` +
+    `Interactive ${[...pictures, early ? 'number sentences' : 'formulas'].join(', ')}, ` +
     `assumptions and step-by-step examples. ${main.assumptions[0] ?? ''}`
   ).trim();
 }

@@ -36,6 +36,8 @@ import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesH
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
   switch (r.kind) {
+    case 'none':
+      return [];
     case 'numberLine':
       return [
         r.start,
@@ -447,7 +449,7 @@ function representationVars(r: Representation): string[] {
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'scatter':
       return [
-        ...[r.slope, r.intercept, r.r, r.residualOf?.residual].filter(
+        ...[r.slope, r.intercept, r.r, r.residualOf?.residual, r.residualOf?.point].filter(
           (x): x is string => typeof x === 'string',
         ),
         ...(r.at ? [r.at.x, r.at.y] : []),

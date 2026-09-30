@@ -56,7 +56,8 @@ export interface MotionKinematics {
 export interface ProjectileSpec {
   kind: 'projectile';
   speed: string;
-  angle: string;
+  /** H105: a number for a launch that never changes (0° off a ledge): no handle. */
+  angle: NumOrVar;
   height?: NumOrVar;
   g?: number;
   /** Flight time, range and maximum height, when the page names them. */
@@ -205,6 +206,8 @@ export interface CollisionSpec {
   energy?: [string, string];
   /** `general`: the kinetic energy lost, before − after (H102). */
   lost?: string;
+  /** H105, `explode`: the energy the spring gives, after − before, labelled between the carts. */
+  spring?: string;
   fixed?: boolean;
 }
 
@@ -491,7 +494,8 @@ export interface SpectrumLines {
   element: 'H' | 'He' | 'Na';
   mode: 'emission' | 'absorption';
   redshift?: NumOrVar;
-  line?: number;
+  /** H105: 'rest' follows the `rest` value: the element's line nearest it (any Balmer line). */
+  line?: number | 'rest';
   rest?: string;
   velocity?: string;
 }
@@ -572,6 +576,7 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.momentum,
         ...(r.energy ?? []),
         r.lost,
+        r.spring,
       );
     case 'simpleMachine':
       return ids(

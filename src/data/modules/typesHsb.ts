@@ -42,7 +42,8 @@ export interface NormalCurveSpec extends NormalCurveHs2g {
   bands?: boolean;
   sample?: { n: NumOrVar; se?: string };
   interval?: { center: NumOrVar; margin: NumOrVar; level?: NumOrVar };
-  intervals?: { count: number; n: NumOrVar; level: NumOrVar; seed?: number };
+  /** H105: `count` may be a value (20 to 100 typed). */
+  intervals?: { count: NumOrVar; n: NumOrVar; level: NumOrVar; seed?: number };
   /** `tail` from a sign box (H90): Hₐ's sign, 1 < or 2 ≤ left, 3 > or 4 ≥ right, 6 ≠ both. */
   test?: { stat: NumOrVar; alpha: NumOrVar; tail: 'left' | 'right' | 'two' | SignOf; p?: string };
   chiSquare?: { df: NumOrVar; stat?: NumOrVar; alpha?: NumOrVar; p?: string };
@@ -166,6 +167,7 @@ export function hsbSpecVars(r: HsbSpec): string[] {
         r.interval?.level,
         r.intervals?.n,
         r.intervals?.level,
+        r.intervals?.count,
         r.test?.stat,
         r.test?.alpha,
         r.test?.p,

@@ -8,6 +8,7 @@ import { rectangleCounts, type Poly } from '@/components/module/reps/tiles';
 import { CURVE_FIELDS, PATH_FIELDS, pathAt, polarR } from '@/components/module/reps/polar';
 import { conicResidual, focalDistance } from '@/components/module/reps/conics';
 import { multiply, reduceSteps } from '@/components/module/reps/matrices';
+import { autoRowOps, complexOp } from '@/components/module/reps/hs2h';
 
 import type { HsdSpec, TileCounts } from '../typesHsd';
 
@@ -225,7 +226,12 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
         check(rep.argument, (((Math.atan2(z.b, z.a) / RAD) % 360) + 360) % 360, 'arg z');
       const [c, d] = [num(rep.w?.re), num(rep.w?.im)];
       if (rep.w && c !== undefined && d !== undefined) {
-        const op = rep.op ?? 'sum';
+        // H105: `opFrom`, a value picking the operation (1 sum, 2 difference, 3 product).
+        const code = rep.opFrom ? num(rep.opFrom) : undefined;
+        if (code !== undefined && ![1, 2, 3].includes(code))
+          out.push(`operation code ${code} is not 1, 2 or 3`);
+        const op = complexOp(rep.op, rep.opFrom, (id) => num(id));
+        if (!op) break;
         const res =
           op === 'sum'
             ? { a: z.a + c, b: z.b + d }
@@ -340,7 +346,26 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
       } else if (rep.mode === 'rowReduce') {
         shape(rep.system, 'the augmented matrix');
         const rows = rep.system.length;
-        for (const op of rep.steps) {
+        // H105: operations worked out from the values (checked once the matrix is known).
+        const M0 = read(rep.system);
+        const steps =
+          typeof rep.steps === 'string' ? (M0 ? autoRowOps(M0, rep.steps) : []) : rep.steps;
+        if (typeof rep.steps === 'string' && M0) {
+          const end = reduceSteps(M0, steps).pop()!;
+          end.forEach((r, i) => {
+            const lead = r.slice(0, -1).findIndex((x) => Math.abs(x) > 1e-9);
+            if (lead < 0) return;
+            if (Math.abs(r[lead]! - 1) > 1e-9)
+              out.push(`row ${i + 1}'s pivot is ${r[lead]}, not 1`);
+            end.forEach((q, j) => {
+              if (j > i && Math.abs(q[lead]!) > 1e-9)
+                out.push(`a number under row ${i + 1}'s pivot`);
+              if (rep.steps === 'reduced' && j !== i && Math.abs(q[lead]!) > 1e-9)
+                out.push(`a number beside row ${i + 1}'s pivot in its column`);
+            });
+          });
+        }
+        for (const op of steps) {
           const used = 'swap' in op ? op.swap : 'scale' in op ? [op.scale] : [op.add, op.from];
           if (used.some((r) => r < 1 || r > rows))
             out.push(`a row operation names a row past ${rows}`);
@@ -351,7 +376,7 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
         const xs = rep.solution?.map(val);
         if (M && xs && xs.every((x) => x !== undefined)) {
           // The solution satisfies every matrix in the reduction (row operations keep it).
-          reduceSteps(M, rep.steps).forEach((m, k) =>
+          reduceSteps(M, steps).forEach((m, k) =>
             m.forEach((r, i) => {
               const lhs = r.slice(0, -1).reduce((s, a, j) => s + a * xs[j]!, 0);
               if (!near(lhs, r[r.length - 1]!, 1e-4))

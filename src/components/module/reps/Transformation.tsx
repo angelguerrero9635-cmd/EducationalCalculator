@@ -5,6 +5,7 @@ import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 import type { Mirror, NumOrVar, TransformationSpec } from '@/data/modules/typesGraphs';
 import { imageOf, type MoveValues, type Pt } from './transform';
 import { symmetryOf } from './transformHsf';
+import { mirrorOf } from './hs2h';
 import { readMove, symmetryText, SymmetryMarks } from './TransformationHsf';
 import { chart, usePalette } from '@/theme';
 
@@ -88,12 +89,15 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
       : undefined;
   const right = spec.move === 'translate' ? read(spec.right) : none;
   const up = spec.move === 'translate' ? read(spec.up) : none;
-  const mirror = spec.move === 'reflect' ? spec.mirror : undefined;
+  // H105: a value (1 or −1) may pick the mirror y = x or y = −x.
+  const readKnown = (id: string) => (rep.known(id) ? rep.shown(id) : undefined);
+  const mirror = spec.move === 'reflect' ? mirrorOf(spec, readKnown) : undefined;
+  const slopeVal = spec.move === 'reflect' && spec.slope ? read(spec.slope) : undefined;
   const lineVal =
     mirror && typeof mirror === 'object' ? read('x' in mirror ? mirror.x : mirror.y) : undefined;
   const angle = spec.move === 'rotate' ? read(spec.angle) : none;
   const factor = spec.move === 'dilate' ? read(spec.factor) : { ...none, value: 1 };
-  const moveKnown = [right, up, angle, factor, center?.x, center?.y, lineVal].every(
+  const moveKnown = [right, up, angle, factor, center?.x, center?.y, lineVal, slopeVal].every(
     (r) => !r || r.known,
   );
   const v = {
@@ -133,7 +137,7 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
           ? [spec.factor, ...(spec.center ?? [])]
           : mirror && typeof mirror === 'object'
             ? ['x' in mirror ? mirror.x : mirror.y]
-            : []
+            : [spec.slope]
   ).filter((x): x is string => typeof x === 'string');
   const figVars = spec.figure.flat().filter((x): x is string => typeof x === 'string');
   const pinned = (except: string[]) =>

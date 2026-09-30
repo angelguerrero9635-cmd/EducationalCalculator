@@ -27,7 +27,8 @@ export function MotionGraph({ spec, calc }: { spec: MotionGraphSpec; calc: Calcu
   const rep = useRep(calc);
   const start = useRef({ t: 0, m: 0, y0: 0 });
   const isDist = spec.graph === 'distance';
-  const slopeId = isDist ? spec.speed : spec.acceleration;
+  // A number acceleration is drawn by MotionGraphHs (reps/index.tsx routes it there).
+  const slopeId = isDist ? spec.speed : (spec.acceleration as string);
   const endId = isDist ? spec.distance : spec.speed;
   // Physics in formula units (m, s, m/s); each axis is drawn in its shown unit.
   const tf = rep.val(spec.time);
