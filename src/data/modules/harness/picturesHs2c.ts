@@ -8,7 +8,7 @@ import type { VariableDef } from '@/engine/types';
 import { G_NEWTON as G } from '@/components/module/reps/hskMath';
 
 import type { Hs2cSpec } from '../typesHs2c';
-import type { CircularMotionSpec } from '../typesHsk';
+import type { CircularMotionSpec, FreeBodySpec } from '../typesHsk';
 
 type Val = (id: string) => number | undefined;
 
@@ -51,6 +51,17 @@ export function hs2cIssues(rep: Hs2cSpec, val: Val): string[] {
       const dp = m * (v - v0);
       same(rep.change, dp, 'Δp');
       if (t !== undefined && t > 0) same(rep.force, dp / t, 'average force');
+      break;
+    }
+    case 'powerLift': {
+      const [m, h, t] = [read(val, rep.mass), read(val, rep.height), read(val, rep.time)];
+      if (m !== undefined && m < 0) out.push(`powerLift: mass ${m} is negative`);
+      if (h !== undefined && h < 0) out.push(`powerLift: height ${h} is negative`);
+      if (t !== undefined && t <= 0) out.push(`powerLift: time ${t} is not positive`);
+      if (m === undefined || h === undefined) break;
+      const W = m * (rep.g ?? 9.8) * h;
+      same(rep.work, W, 'work mgh');
+      if (t !== undefined && t > 0) same(rep.power, W / t, 'power W/t');
       break;
     }
   }
@@ -97,4 +108,22 @@ export function strobeColumnIssues(t: number | undefined): string[] {
   if (t === undefined || t <= 0) return [];
   const steps = Math.floor(t / niceStep(t / 10) + 1e-9);
   return steps >= 1 && steps <= 12 ? [] : [`motionGraph: a vertical strobe of ${steps} steps`];
+}
+
+/** H102: a floor block's displacement d (not negative) and the pull's work Fd cos θ. SI values. */
+export function freeBodyWorkIssues(rep: FreeBodySpec, val: Val): string[] {
+  const out: string[] = [];
+  if (rep.displacement === undefined && rep.work === undefined) return out;
+  if (rep.support !== 'floor') out.push('freeBody: a displacement is drawn on a floor only');
+  if (rep.work !== undefined && rep.displacement === undefined)
+    out.push('freeBody: work needs a displacement');
+  const d = read(val, rep.displacement);
+  if (d !== undefined && d < 0) out.push(`freeBody: displacement ${d} is negative`);
+  const F = read(val, rep.applied ?? rep.tension, 0);
+  const th = read(val, rep.applied !== undefined ? rep.appliedAngle : rep.tensionAngle, 0);
+  const W = rep.work ? val(rep.work) : undefined;
+  if (d === undefined || F === undefined || th === undefined || W === undefined) return out;
+  const want = F * d * Math.cos((th * Math.PI) / 180);
+  if (!near(W, want)) out.push(`freeBody: work ${rep.work} = ${W}, the picture draws ${want}`);
+  return out;
 }

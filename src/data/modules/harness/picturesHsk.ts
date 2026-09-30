@@ -9,7 +9,7 @@ import * as hm from '@/components/module/reps/hskMath';
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
-import { satelliteIssues, strobeColumnIssues } from './picturesHs2c';
+import { freeBodyWorkIssues, satelliteIssues, strobeColumnIssues } from './picturesHs2c';
 
 const {
   collisionOf,
@@ -88,6 +88,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'freeBody': {
+      out.push(...freeBodyWorkIssues(rep, si));
       const m = si(rep.mass);
       if (m !== undefined && m < 0) out.push(`freeBody: mass ${m} is negative`);
       const th = read(si, rep.incline, 0);

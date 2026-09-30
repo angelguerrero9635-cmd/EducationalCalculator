@@ -118,6 +118,12 @@ export interface FreeBodySpec {
   moving?: 'right' | 'left' | 'up' | 'down';
   net?: string;
   acceleration?: string;
+  /**
+   * Floor (H102): the block moves `displacement` d (m) to the right, bracketed under the floor,
+   * with the pull's part along it, F cos θ, dashed; `work` names W = Fd cos θ.
+   */
+  displacement?: NumOrVar;
+  work?: string;
   fixed?: boolean;
 }
 
@@ -516,6 +522,8 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.along,
         r.net,
         r.acceleration,
+        r.displacement,
+        r.work,
       );
     case 'circularMotion':
       return ids(

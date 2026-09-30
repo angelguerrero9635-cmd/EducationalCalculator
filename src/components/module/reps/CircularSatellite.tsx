@@ -14,8 +14,8 @@ import { Ball, Metal, TopLight, url, usePaintIds } from './paint';
 import { Planet } from './planetArt';
 
 /** Big and small numbers in powers of ten (5.97 × 10²⁴), the rest plainly. */
-export const num = (x: number) =>
-  Math.abs(x) >= 1e6 || (x !== 0 && Math.abs(x) < 1e-3) ? sci(x) : sig(x);
+export const num = (x: number, digits = 3) =>
+  Math.abs(x) >= 1e6 || (x !== 0 && Math.abs(x) < 1e-3) ? sci(x, digits) : sig(x, digits);
 
 /** A time in seconds, with minutes, hours or days beside it when it is long. */
 export function longTime(s: number): string {

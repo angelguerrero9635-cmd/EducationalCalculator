@@ -96,12 +96,14 @@ export interface LightClockSpec {
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group H2C. */
-export type Hs2cSpec = ImpulseSpec;
+export type Hs2cSpec = ImpulseSpec | PowerLiftSpec;
 
 /** Every variable id a group-H2C picture reads (for modules.test.ts). */
 export function hs2cSpecVars(r: Hs2cSpec): string[] {
   switch (r.kind) {
     case 'impulse':
       return ids(r.mass, r.before, r.after, r.time, r.change, r.force, r.compare);
+    case 'powerLift':
+      return ids(r.mass, r.height, r.time, r.work, r.power);
   }
 }

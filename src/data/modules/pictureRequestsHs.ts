@@ -1879,6 +1879,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s11-circular-gravitation-orbit',
       'g.s11-kinematics-1d-free-fall-vertical',
       'g.s11-kinematics-1d-motion-diagrams',
+      'g.s11-work-energy-power-work',
+      'g.s11-work-energy-power-power',
     ],
     notes: [
       'P14: docs/plans/s.11.md needs 1–12, drawn part by part.',
@@ -1887,6 +1889,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       "3 (~orbit): circularMotion mode 'satellite' with central (M, kg), radius, speed, period, acceleration; body (a planet name or 'sun') and bodyRadius (m) draw the central body to scale. { kind: 'circularMotion', mode: 'satellite', central: 'M', radius: 'r', speed: 'v', period: 'T', body: 'earth', bodyRadius: 6.371e6 }; T needs units: ['s'].",
       "4 (~free-fall): motionGraph kinematics strobe: 'vertical' stands the strobe in a column left of the graph, + up (the slope chip moves to the empty bottom left). { kind: 'motionGraph', graph: 'speed', time: 't', acceleration: 'a', speed: 'v', start: 0, kinematics: { view: 'velocity', strobe: 'vertical' } }.",
       "5 (~motion-diagrams): card figure strobe, dots one second apart with the gaps (m) to scale, the first open, dir and ramp. { kind: 'strobe', gaps: [1, 3, 5, 7] }, { kind: 'strobe', gaps: [2, 4, 6, 8], dir: 'left' }, { kind: 'strobe', gaps: [7, 5, 3, 1.5], ramp: true }; the demo sort has the plan's six cards.",
+      "6 (~work): freeBody floor option displacement (d, m) bracketed under the floor with the pull's F cos θ dashed; work names W = Fd cos θ (of the applied force, or the tension). { kind: 'freeBody', support: 'floor', mass: 'm', weight: 'G', normal: 'N', applied: 'F', appliedAngle: 'q', displacement: 'd', work: 'W' }; freeBody needs a mass, so the page adds m, F_g and F_N (7 values).",
+      "7 (~power): new kind powerLift, a crate hauled up h on a rope in t, a stopwatch, and W = mgh as a bar of one-second pieces of P joules. { kind: 'powerLift', mass: 'm', height: 'h', time: 't', work: 'W', power: 'P' }; t with units: ['s'].",
     ].join(' '),
   },
   ask(

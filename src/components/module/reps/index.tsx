@@ -223,6 +223,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'freeBody':
       return <HskView spec={spec} calc={calc} />;
     case 'impulse':
+    case 'powerLift':
       return <Hs2cView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;

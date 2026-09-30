@@ -151,6 +151,7 @@ const PICTURE_NAMES: Record<string, string> = {
   circularMotion: 'circular motion or gravity between two masses',
   freeBody: 'free-body diagram with scaled force arrows',
   impulse: 'momentum change and the force–time rectangle',
+  powerLift: 'a crate lifted in a time: work, a stopwatch and J/s',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',
   complexPlane: 'complex number in the plane',

@@ -548,6 +548,7 @@ function representationVars(r: Representation): string[] {
     case 'freeBody':
       return hskSpecVars(r);
     case 'impulse':
+    case 'powerLift':
       return hs2cSpecVars(r);
   }
 }

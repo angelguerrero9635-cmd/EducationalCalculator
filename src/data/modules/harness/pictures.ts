@@ -2157,6 +2157,7 @@ export function repIssues(
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
       break;
     case 'impulse':
+    case 'powerLift':
       out.push(...hs2cIssues(rep, siOf(val, byId)));
       break;
     case 'table':
