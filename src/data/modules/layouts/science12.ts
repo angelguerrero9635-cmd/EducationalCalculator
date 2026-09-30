@@ -760,6 +760,213 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Climate systems, feedbacks and climate change (HS-ESS2-4, HS-ESS3-5) ──
+  {
+    kind: 'explore',
+    id: 's.12.climate-systems',
+    assumptions: [
+      'Sunlight passes through the air; the warm ground sends out infrared.',
+      'CO₂ and water vapor absorb infrared and send some back down.',
+    ],
+    figure: { kind: 'greenhouse' },
+    scenes: [
+      {
+        label: 'No greenhouse gases',
+        lines: [
+          'All the infrared from the ground escapes to space.',
+          'Earth would average about −18 °C.',
+        ],
+        greenhouse: { view: 'energy', co2: 'none' },
+      },
+      {
+        label: 'Before 1800',
+        lines: [
+          'Greenhouse gases send some infrared back down, warming the surface.',
+          'With about 280 ppm of CO₂, Earth averaged about 14 °C.',
+        ],
+        greenhouse: { view: 'energy', co2: 'preindustrial' },
+      },
+      {
+        label: 'Today',
+        lines: [
+          'Burning fossil fuels has raised CO₂ to about 420 ppm.',
+          'More CO₂ sends more infrared back, and Earth averages about 15.2 °C.',
+        ],
+        greenhouse: { view: 'energy', co2: 'today' },
+      },
+      {
+        label: 'Ash and smoke',
+        lines: [
+          'Ash from a big eruption and smoke from fires add tiny particles high in the air.',
+          'The particles reflect sunlight before it reaches the ground, which cools Earth for a year or two.',
+        ],
+        greenhouse: { view: 'energy', co2: 'today' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.12.climate-systems~zones',
+    title: 'Climate zones by latitude',
+    use: 'Use this for “Which climate zone has warm summers and cold winters?” and why the poles are cold.',
+    assumptions: [
+      'The same beam of sunlight covers more ground where it strikes at a low angle.',
+      'The zones’ edges, 23.5° and 66.5°, come from the tilt of Earth’s axis.',
+    ],
+    figure: { kind: 'greenhouse' },
+    scenes: [
+      {
+        label: 'Tropical',
+        lines: [
+          'Between 23.5° N and 23.5° S the Sun is high all year.',
+          'It is warm in every month.',
+        ],
+        greenhouse: { view: 'zones', lit: 'tropical' },
+      },
+      {
+        label: 'Temperate',
+        lines: [
+          'From 23.5° to 66.5° the Sun is high in summer and low in winter.',
+          'Summers are warm and winters are cold.',
+        ],
+        greenhouse: { view: 'zones', lit: 'temperate' },
+      },
+      {
+        label: 'Polar',
+        lines: [
+          'Past 66.5° the Sun is always low, so the same beam spreads over more ground.',
+          'It is cold all year.',
+        ],
+        greenhouse: { view: 'zones', lit: 'polar' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.12.climate-systems~feedbacks',
+    title: 'Climate feedbacks',
+    use: 'Use this for “Sea ice melts as Earth warms. Does that speed up the warming or slow it down?”',
+    assumptions: [
+      'A positive feedback makes a change bigger; a negative feedback works against it.',
+      'Feedbacks decide how much the climate changes for each added bit of CO₂.',
+    ],
+    figure: { kind: 'feedbackLoop' },
+    scenes: [
+      {
+        label: 'Ice and albedo',
+        lines: [
+          'Ice reflects most sunlight; dark ground and sea absorb most of it.',
+          'Melting ice lets in more sunlight, which melts more ice: a positive feedback.',
+        ],
+        loop: {
+          sign: 'positive',
+          back: 'more warming',
+          steps: [
+            { text: 'Earth warms.' },
+            { text: 'Sea ice and snow melt.' },
+            { text: 'Darker ground and sea absorb more sunlight.' },
+          ],
+        },
+      },
+      {
+        label: 'Water vapor',
+        lines: [
+          'Warmer air holds more water vapor, and water vapor is a greenhouse gas.',
+          'So warming adds vapor, and the vapor adds warming: a positive feedback.',
+        ],
+        loop: {
+          sign: 'positive',
+          back: 'more warming',
+          steps: [
+            { text: 'The air warms.' },
+            { text: 'Warmer air holds more water vapor.' },
+            { text: 'The vapor traps more infrared.' },
+          ],
+        },
+      },
+      {
+        label: 'Rock weathering',
+        lines: [
+          'Rain weathers silicate rock faster when it is warm and wet, and the reaction uses up CO₂.',
+          'Less CO₂ means cooling: a slow negative feedback over thousands of years.',
+        ],
+        loop: {
+          sign: 'negative',
+          back: 'cooling',
+          steps: [
+            { text: 'The climate gets warmer and wetter.' },
+            { text: 'Silicate rock weathers faster.' },
+            { text: 'CO₂ is drawn out of the air.' },
+          ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.climate-systems~carbon',
+    title: 'Adds CO₂ or takes it out?',
+    use: 'Use this for “Which of these releases carbon dioxide into the atmosphere?”',
+    assumptions: [
+      'Carbon moves between the air, living things, the ocean and rock.',
+      'Burning and breathing release it; photosynthesis and burial store it.',
+    ],
+    question: 'Does this add CO₂ to the air or take it out?',
+    bins: [
+      {
+        id: 'adds',
+        label: 'Adds CO₂ to the air',
+        why: 'Carbon stored in rock, fuel or living things is released as CO₂.',
+      },
+      {
+        id: 'removes',
+        label: 'Takes CO₂ out of the air',
+        why: 'CO₂ is built into sugars, dissolved in water or locked into rock.',
+      },
+    ],
+    cards: [
+      { label: 'A volcanic eruption', bin: 'adds' },
+      {
+        label: 'Burning coal in a power plant',
+        bin: 'adds',
+        figure: { kind: 'icon', icon: 'lumps of coal' },
+      },
+      { label: 'Animals breathing out', bin: 'adds' },
+      { label: 'Dead leaves decaying', bin: 'adds' },
+      { label: 'A forest fire', bin: 'adds' },
+      { label: 'Photosynthesis making sugars', bin: 'removes' },
+      { label: 'The ocean dissolving CO₂', bin: 'removes' },
+      { label: 'Rain weathering silicate rock', bin: 'removes' },
+      { label: 'Buried plants turning to coal', bin: 'removes' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.12.climate-systems~co2-record',
+    title: 'The CO₂ record at Mauna Loa',
+    use: 'Use this for “How fast did CO₂ rise each decade, and is the rise speeding up?”',
+    assumptions: [
+      'Yearly means from the air on Mauna Loa, Hawaii, far from cities, rounded to whole ppm.',
+      'ppm means parts per million: molecules of CO₂ in every million molecules of air.',
+    ],
+    columns: ['1960', '1970', '1980', '1990', '2000', '2010', '2020'],
+    rowLabel: 'CO₂',
+    unit: 'ppm',
+    max: 450,
+    step: 1,
+    initial: [317, 326, 339, 354, 370, 390, 414],
+    pattern: (v) => {
+      const rises = v.slice(1).map((x, i) => x - v[i]!);
+      const first = rises[0]!;
+      const last = rises[rises.length - 1]!;
+      if (rises.some((r) => r <= 0))
+        return 'The real record rises every decade. Check the values against the data.';
+      if (rises.every((r, i) => i === 0 || r > rises[i - 1]!))
+        return `CO₂ rises every decade, and faster each time: about ${first} ppm in the 1960s and ${last} ppm in the 2010s.`;
+      return `CO₂ rises every decade, from ${v[0]} ppm to ${v[v.length - 1]} ppm, by ${first} ppm in the 1960s and ${last} ppm in the 2010s.`;
+    },
+  },
+
   // ── The solar system: formation, planets and small bodies (HS-ESS1-4, HS-ESS1-6) ──
   {
     kind: 'sequence',

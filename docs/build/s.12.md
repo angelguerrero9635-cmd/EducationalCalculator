@@ -14,6 +14,8 @@ priority order of their main pages.
 - s.12.radiometric-dating: 5 (main C-14, ~uranium, ~bracket; sequences ~relative-order, ~time-scale)
 - s.12.ocean-atmosphere: 4 (main sonar, ~tides; explore ~currents, sort ~density)
 - s.12.atmosphere-weather: 5 (main lapse rate, ~pressure, ~humidity; sequence ~hurricane, sort ~air-masses)
+- s.12.climate-systems: 5 (main greenhouse explore, ~zones and ~feedbacks explores, sort ~carbon,
+  observe ~co2-record)
 - s.12.solar-system: 3 (main Kepler; sequence ~formation, sort ~planet-types)
 - s.12.starlight-spectra: 4 (main Wien, ~doppler, ~telescope; sort ~space-telescopes)
 - s.12.stellar-evolution: 5 (main H–R diagram, ~fusion; sequences ~sunlike, ~massive; sort ~elements)
