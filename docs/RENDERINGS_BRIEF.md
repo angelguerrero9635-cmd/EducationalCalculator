@@ -463,3 +463,15 @@ gel electrophoresis and PCR (`gel`), Hardy–Weinberg beads (`alleleFrequencies`
 `feedbackLoop` figure, and the immune response (`immuneResponse`, `immuneStages`, pathogen
 icons). Each entry's notes give the fields and an example; the demos are in `galleryHsg.ts` and
 `galleryHsh.ts`.
+
+### Grades 9–12, chemistry (2026-09-30): H43–H57
+
+H43–H57 are `drawn`: unit chains, a ruler read and an accuracy target (`unitChain`), Bohr
+models (`atomModel`), orbital boxes and hydrogen's energy levels (`orbitalDiagram`), periodic
+trends on `periodicTable` (`trend`), Lewis structures (`lewisStructure`), VSEPR shapes and
+hydrogen bonds (`vsepr`), limiting reactants on `reaction` (`limiting`) with reaction-type card
+icons, the mole map (`moleMap`), the gas laws under a piston (`gasPiston`), molarity, dilution
+and solubility on `beaker` (`solution`), energy profiles and calorimetry (`energyProfile`),
+equilibrium and its shifts (`equilibriumChart`), pH and titration curves (`phScale`), the
+`electrochemicalCell` explore figure and radioactive decay (`decayChart`). Each entry's notes
+give the fields and an example; the demos are in `galleryHsi.ts` and `galleryHsj.ts`.
