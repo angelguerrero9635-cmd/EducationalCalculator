@@ -32,6 +32,10 @@ const rules = (...rs: Rule[]) => ({
 const sci = (x: number) =>
   Math.abs(x) >= 1 && Math.abs(x) < 1000 ? String(Number(x.toPrecision(5))) : scientific(x);
 
+/** A number for a work line written out with separators (167,000). */
+const plain = (x: number) =>
+  Number(x.toPrecision(8)).toLocaleString('en-US', { maximumFractionDigits: 6 });
+
 /** A rule with work lines (the parts worked out first) on the step for `id`. */
 const withWork = (r: Rule, id: string, work: StepText['work']): Rule => ({
   relation: r.relation,
@@ -45,6 +49,32 @@ const hide = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, st
 const withOrder = (order: Relation, ...rs: Rule[]) => {
   const r = rules(...rs);
   return { relations: [order, ...r.relations], steps: { [order.id]: {}, ...r.steps } };
+};
+
+/**
+ * A check that two values are at least `gap` apart (a difference the steps divide by), with the
+ * reason shown when they aren't.
+ */
+const apart = (a: string, b: string, gap: number, message: string): Relation => {
+  const ok = (v: Values) => Math.abs(v[a]! - v[b]!) >= gap - 1e-9;
+  return {
+    id: `|${a} − ${b}| ≥ ${gap}`,
+    constraint: true,
+    display: `{${a}} is at least ${gap} from {${b}}`,
+    vars: [a, b],
+    residual: (v) => (ok(v) ? 0 : 1),
+    solve: {},
+    message: (v) => (ok(v) ? undefined : message),
+  };
+};
+
+/** `rules`, with checks (`apart`, `atLeast`) first. */
+const withChecks = (checks: Relation[], ...rs: Rule[]) => {
+  const r = rules(...rs);
+  return {
+    relations: [...checks, ...r.relations],
+    steps: { ...Object.fromEntries(checks.map((c) => [c.id, {}])), ...r.steps },
+  };
 };
 
 type Solve = (v: Values) => number | number[] | undefined;
@@ -2817,10 +2847,13 @@ const opticsPages: ModuleDef[] = [
 const C_WATER = 4180;
 const celsius = (id: string, symbol: string, name: string): VariableDef =>
   q(id, symbol, name, '°C', -50, 1000, 0.1);
+/** A temperature of liquid water: nothing on the page freezes or boils. */
+const waterCelsius = (id: string, symbol: string, name: string): VariableDef =>
+  q(id, symbol, name, '°C', 0, 100, 0.1);
 const kilograms = (id: string, symbol: string, name: string): VariableDef =>
   q(id, symbol, name, 'kg', 0.001, 1000, 0.001, { units: ['kg'] });
-const specificHeat = (id: string, symbol: string, name: string, allowed: number[]): VariableDef =>
-  q(id, symbol, name, 'J/(kg·°C)', Math.min(...allowed), Math.max(...allowed), 1, { allowed });
+const specificHeat = (id: string, symbol: string, name: string): VariableDef =>
+  q(id, symbol, name, 'J/(kg·°C)', 100, 5000, 1);
 const TH = q('H', 'Tₕ', 'Hot reservoir temperature', 'K', 1, 5000, 1);
 const TL = q('L', 'T_c', 'Cold reservoir temperature', 'K', 1, 5000, 1);
 const WORK = q('W', 'W', 'Work', 'J', 0.1, 1e9, 0.1);
@@ -2838,18 +2871,32 @@ const thermoPages: ModuleDef[] = [
         'Water’s specific heat is 4180 J/(kg·°C); aluminum 900, iron 450, copper 385.',
       ],
       variables: [
-        kilograms('w', 'm_w', 'Mass of water'),
-        celsius('a', 'T_w', 'Water’s starting temperature'),
+        { ...kilograms('w', 'm_w', 'Mass of water'), max: 10 },
+        waterCelsius('a', 'T_w', 'Water’s starting temperature'),
         kilograms('m', 'mₘ', 'Mass of the metal'),
-        specificHeat('c', 'cₘ', 'Specific heat of the metal', [385, 450, 900]),
+        specificHeat('c', 'cₘ', 'Specific heat of the metal'),
         celsius('b', 'Tₘ', 'Metal’s starting temperature'),
-        celsius('F', 'T_f', 'Final temperature'),
+        waterCelsius('F', 'T_f', 'Final temperature'),
         q('q', 'q', 'Heat the water takes in', 'J', -1e9, 1e9, 0.1),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          apart(
+            'b',
+            'F',
+            0.5,
+            'The metal must start at least 0.5 °C from the final temperature, or too little heat moves to measure.',
+          ),
+          apart(
+            'F',
+            'a',
+            0.1,
+            'The water must warm or cool by at least 0.1 °C, or too little heat moves to measure.',
+          ),
+        ],
         rule(
-          'T_f = (m_w c_w T_w + mₘcₘTₘ)/(m_w c_w + mₘcₘ)',
-          '{F} = ({w} × 4180 × {a} + {m} × {c} × {b})/({w} × 4180 + {m} × {c})',
+          'm_w c_w (T_f − T_w) = mₘcₘ(Tₘ − T_f)',
+          '{w} × 4180 × ({F} − {a}) = {m} × {c} × ({b} − {F})',
           (v) =>
             v.F! * (v.w! * C_WATER + v.m! * v.c!) - (v.w! * C_WATER * v.a! + v.m! * v.c! * v.b!),
           {
@@ -2885,6 +2932,11 @@ const thermoPages: ModuleDef[] = [
               '{F} − {q}/({w} × 4180)',
               'Take the water’s rise off the final temperature.',
             ],
+            F: [
+              (v) => v.a! + div(v.q!, v.w! * C_WATER)!,
+              '{a} + {q}/({w} × 4180)',
+              'Add the water’s rise to its starting temperature.',
+            ],
           },
         ),
         rule(
@@ -2892,6 +2944,16 @@ const thermoPages: ModuleDef[] = [
           '{q} = {m} × {c} × ({b} − {F})',
           (v) => v.q! - v.m! * v.c! * (v.b! - v.F!),
           {
+            q: [
+              (v) => v.m! * v.c! * (v.b! - v.F!),
+              '{m} × {c} × ({b} − {F})',
+              'The metal’s heat: its mass times cₘ times how much it cooled.',
+            ],
+            F: [
+              (v) => v.b! - div(v.q!, v.m! * v.c!)!,
+              '{b} − {q}/({m} × {c})',
+              'Take the metal’s drop off its starting temperature.',
+            ],
             m: [
               (v) => div(v.q!, v.c! * (v.b! - v.F!)),
               '{q}/({c} × ({b} − {F}))',
@@ -2938,7 +3000,7 @@ const thermoPages: ModuleDef[] = [
       ],
       variables: [
         kilograms('m', 'm', 'Mass'),
-        specificHeat('c', 'c', 'Specific heat', [385, 450, 900, 4180]),
+        specificHeat('c', 'c', 'Specific heat'),
         celsius('a', 'T₁', 'Starting temperature'),
         celsius('b', 'T₂', 'Final temperature'),
         q('d', 'ΔT', 'Change in temperature', '°C', -1000, 1000, 0.1),
@@ -2980,15 +3042,35 @@ const thermoPages: ModuleDef[] = [
   (() => {
     const [m, P] = [0.5, 500];
     const f = m * 334;
+    const qw = m * 418;
     const v = m * 2260;
+    /** t = 1000Q ÷ P: the heat in kJ as joules, over the power. */
+    const timeRule = (t: string, heat: string, sym: string, how: string): Rule =>
+      withWork(
+        rule(sym, `{${t}} = 1000 × {${heat}}/{P}`, (x) => x[t]! * x.P! - 1000 * x[heat]!, {
+          [t]: [(x) => div(1000 * x[heat]!, x.P!), `1000 × {${heat}}/{P}`, how],
+          [heat]: [
+            (x) => (x[t]! * x.P!) / 1000,
+            `{${t}} × {P}/1000`,
+            'The power times the time, in kJ.',
+          ],
+          P: [
+            (x) => div(1000 * x[heat]!, x[t]!),
+            `1000 × {${heat}}/{${t}}`,
+            'The heat in joules over the time.',
+          ],
+        }),
+        t,
+        (x) => [`${plain(x[heat]!)} kJ = ${plain(1000 * x[heat]!)} J`],
+      );
     return {
       id: 's.11.thermodynamics~latent-heat',
       title: 'Melting and boiling: latent heat',
-      use: 'Use this for “How much heat melts 0.5 kg of ice at 0 °C, and how long does a 500 W heater take? How long to boil it all away?”',
+      use: 'Use this for “How much heat turns 0.5 kg of ice at 0 °C into steam at 100 °C, and how long does each stage take with a 500 W heater?”',
       unitSystems: ['metric'],
       assumptions: [
         'While ice melts or water boils the temperature stays put: the heat breaks bonds, Q = mL.',
-        'Ice melts with L_f = 334 kJ/kg; water boils away with L_v = 2260 kJ/kg.',
+        'Ice melts with L_f = 334 kJ/kg; water boils away with L_v = 2260 kJ/kg; warming water takes 4.18 kJ/(kg·°C).',
         'The heater gives P joules each second, all of it to the water: t = Q ÷ P.',
       ],
       variables: [
@@ -2996,57 +3078,80 @@ const thermoPages: ModuleDef[] = [
         q('P', 'P', 'Heater power', 'W', 1, 1e6, 1),
         q('f', 'Q_f', 'Heat to melt it', 'kJ', 0, 1e7, 0.01),
         q('a', 't_f', 'Time to melt', 's', 0, 1e9, 0.01),
-        q('w', 't_w', 'Time to warm the water to 100 °C', 's', 0, 1e9, 0.01, { derived: true }),
+        q('q', 'Q_w', 'Heat to warm the water to 100 °C', 'kJ', 0, 1e7, 0.01),
+        q('w', 't_w', 'Time to warm the water', 's', 0, 1e9, 0.01),
         q('v', 'Q_v', 'Heat to boil it away', 'kJ', 0, 1e8, 0.01),
         q('b', 't_v', 'Time to boil', 's', 0, 1e9, 0.01),
+        q('Q', 'Q_total', 'Heat from ice to steam', 'kJ', 0, 1e8, 0.01),
       ],
       ...rules(
         product('f', 'm', 334, 'Q_f = mL_f', [
           'Each kilogram of ice takes 334 kJ to melt.',
           'Divide the heat by 334 kJ/kg.',
         ]),
-        rule('t_f = Q_f ÷ P', '{a} = 1000 × {f}/{P}', (v) => v.a! * v.P! - 1000 * v.f!, {
-          a: [
-            (v) => div(1000 * v.f!, v.P!),
-            '1000 × {f}/{P}',
-            'A watt is a joule each second: the heat in joules over the power.',
-          ],
-          f: [(v) => (v.a! * v.P!) / 1000, '{a} × {P}/1000', 'The power times the time, in kJ.'],
-          P: [(v) => div(1000 * v.f!, v.a!), '1000 × {f}/{a}', 'The heat in joules over the time.'],
-        }),
-        rule(
-          't_w = m × 4180 × 100 ÷ P',
-          '{w} = {m} × 418000/{P}',
-          (v) => v.w! * v.P! - v.m! * 418000,
-          {
-            w: [
-              (v) => div(v.m! * 418000, v.P!),
-              '{m} × 418000/{P}',
-              'Warming the water 100 °C takes m × 4180 × 100 J; divide by the power.',
-            ],
-          },
+        timeRule(
+          'a',
+          'f',
+          't_f = Q_f ÷ P',
+          'A watt is a joule each second: the heat in joules over the power.',
         ),
+        rule('Q_w = m × 4.18 × 100', '{q} = {m} × 4.18 × 100', (x) => x.q! - x.m! * 418, {
+          q: [
+            (x) => x.m! * 418,
+            '{m} × 4.18 × 100',
+            'Warming the melted water from 0 °C to 100 °C: mcΔT with c = 4.18 kJ/(kg·°C).',
+          ],
+          m: [(x) => x.q! / 418, '{q}/(4.18 × 100)', 'Divide the heat by cΔT.'],
+        }),
+        timeRule('w', 'q', 't_w = Q_w ÷ P', 'The heat in joules over the power.'),
         product('v', 'm', 2260, 'Q_v = mL_v', [
           'Each kilogram of water takes 2260 kJ to boil away.',
           'Divide the heat by 2260 kJ/kg.',
         ]),
-        rule('t_v = Q_v ÷ P', '{b} = 1000 × {v}/{P}', (v) => v.b! * v.P! - 1000 * v.v!, {
-          b: [
-            (v) => div(1000 * v.v!, v.P!),
-            '1000 × {v}/{P}',
-            'The heat in joules over the power: boiling takes much longer than melting.',
-          ],
-          v: [(v) => (v.b! * v.P!) / 1000, '{b} × {P}/1000', 'The power times the time, in kJ.'],
-        }),
+        timeRule(
+          'b',
+          'v',
+          't_v = Q_v ÷ P',
+          'The heat in joules over the power: boiling takes much longer than melting.',
+        ),
+        rule(
+          'Q_total = Q_f + Q_w + Q_v',
+          '{Q} = {f} + {q} + {v}',
+          (x) => x.Q! - x.f! - x.q! - x.v!,
+          {
+            Q: [
+              (x) => x.f! + x.q! + x.v!,
+              '{f} + {q} + {v}',
+              'Add the heat for each stage: melt, warm, boil.',
+            ],
+            f: [
+              (x) => x.Q! - x.q! - x.v!,
+              '{Q} − {q} − {v}',
+              'Take the other two stages from the total.',
+            ],
+            q: [
+              (x) => x.Q! - x.f! - x.v!,
+              '{Q} − {f} − {v}',
+              'Take the other two stages from the total.',
+            ],
+            v: [
+              (x) => x.Q! - x.f! - x.q!,
+              '{Q} − {f} − {q}',
+              'Take the other two stages from the total.',
+            ],
+          },
+        ),
       ),
       example: {
         m,
         P,
         f,
         a: (1000 * f) / P,
-        w: (m * 418000) / P,
+        q: qw,
+        w: (1000 * qw) / P,
         v,
         b: (1000 * v) / P,
+        Q: f + qw + v,
       },
       startWith: ['m', 'P'],
       representation: {
@@ -3058,7 +3163,7 @@ const thermoPages: ModuleDef[] = [
         units: { time: 's', temp: '°C' },
         formula: 'H2O',
       },
-      pictureLabels: ['f', 'v'],
+      pictureLabels: ['m', 'P', 'f', 'q', 'v', 'Q'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -3081,7 +3186,7 @@ const thermoPages: ModuleDef[] = [
         q('e', 'e', 'Efficiency', '%', 0, 100, 0.1),
         TH,
         TL,
-        q('c', 'e_C', 'Carnot limit', '%', 0, 100, 0.1),
+        q('c', 'e_C', 'Carnot limit', '%', 0.1, 100, 0.1),
         q('r', 'r', 'Share of the Carnot limit', '%', 0, 100, 0.1),
       ],
       ...rules(
@@ -3165,10 +3270,10 @@ const thermoPages: ModuleDef[] = [
         q('C', 'Q_c', 'Heat taken from inside', 'J', 0.1, 1e9, 0.1),
         WORK,
         q('Q', 'Qₕ', 'Heat given to the room', 'J', 0.1, 1e9, 0.1),
-        q('k', 'COP', 'Coefficient of performance', undefined, 0, 1000, 0.01),
+        q('k', 'COP', 'Coefficient of performance', undefined, 0.01, 100, 0.01),
         TH,
         TL,
-        q('m', 'COP_C', 'Carnot COP', undefined, 0, 10000, 0.01),
+        q('m', 'COP_C', 'Carnot COP', undefined, 0.01, 100, 0.01),
         q('r', 'r', 'Share of the Carnot COP', '%', 0, 100, 0.1),
       ],
       ...rules(
@@ -3177,11 +3282,11 @@ const thermoPages: ModuleDef[] = [
           C: [(v) => v.Q! - v.W!, '{Q} − {W}', 'Take the work from the heat given out.'],
           W: [(v) => v.Q! - v.C!, '{Q} − {C}', 'The extra heat given out is the work put in.'],
         }),
-        product('C', 'k', 'W', 'COP = Q_c/W', [
-          'The heat moved is the COP times the work.',
-          'Divide the heat moved by the work.',
-          'Divide the heat moved by the COP.',
-        ]),
+        rule('COP = Q_c/W', '{k} = {C}/{W}', (v) => v.C! - v.k! * v.W!, {
+          k: [(v) => div(v.C!, v.W!), '{C}/{W}', 'Divide the heat moved by the work.'],
+          C: [(v) => v.k! * v.W!, '{k} × {W}', 'The heat moved is the COP times the work.'],
+          W: [(v) => div(v.C!, v.k!), '{C}/{k}', 'Divide the heat moved by the COP.'],
+        }),
         rule(
           'COP_C = T_c/(Tₕ − T_c)',
           '{m} = {L}/({H} − {L})',
@@ -3193,6 +3298,11 @@ const thermoPages: ModuleDef[] = [
               'The Carnot COP: the cold temperature over the difference, in kelvins.',
             ],
             H: [(v) => v.L! + div(v.L!, v.m!)!, '{L} + {L}/{m}', 'Undo the Carnot COP for Tₕ.'],
+            L: [
+              (v) => (v.m! * v.H!) / (1 + v.m!),
+              '{m} × {H}/(1 + {m})',
+              'Solve COP_C × (Tₕ − T_c) = T_c for T_c.',
+            ],
           },
         ),
         rule('r = COP/COP_C', '{r} = 100 × {k}/{m}', (v) => v.r! * v.m! - 100 * v.k!, {
