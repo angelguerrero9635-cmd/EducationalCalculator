@@ -51,6 +51,7 @@ import { Tape } from './Tape';
 import { TapeEquation } from './TapeEquation';
 import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
+import { BarsFlows } from './BarsFlows';
 import { CircleDiagram } from './CircleDiagram';
 import { ScaleCopy } from './ScaleCopy';
 import { ForceDiagram } from './ForceDiagram';
@@ -390,7 +391,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'partnerList':
       return <PartnerList spec={spec} calc={calc} />;
     case 'bars':
-      return <Bars spec={spec} calc={calc} />;
+      return spec.flows ? <BarsFlows spec={spec} calc={calc} /> : <Bars spec={spec} calc={calc} />;
     case 'rectangle':
       return <RectangleDiagram spec={spec} calc={calc} />;
     case 'grid100':

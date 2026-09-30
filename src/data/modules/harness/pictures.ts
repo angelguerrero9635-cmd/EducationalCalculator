@@ -50,7 +50,7 @@ import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
-import { hs2eIssues, reactionManyIssues } from './picturesHs2e';
+import { barFlowIssues, hs2eIssues, reactionManyIssues } from './picturesHs2e';
 import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
@@ -2165,6 +2165,9 @@ export function repIssues(
     case 'circularMotion':
     case 'freeBody':
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
+      break;
+    case 'bars':
+      out.push(...barFlowIssues(rep, val));
       break;
     case 'table':
       if ('twoWay' in rep) {

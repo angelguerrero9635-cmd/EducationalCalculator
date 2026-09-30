@@ -329,6 +329,104 @@ const PHOTOSYNTHESIS: ModuleDef = {
   },
 };
 
+// ─── H100 part 8: bars with flows ────────────────────────────────────────────
+
+/** The births, deaths and migration page: N, four flows, N₁ (and ΔN, r). */
+const ratesDemo = (
+  id: string,
+  title: string,
+  example: { N: number; B: number; D: number; I: number; E: number },
+): ModuleDef => {
+  const { N, B, D, I, E } = example;
+  return {
+    id,
+    title,
+    use: 'Use this for “A herd of 500 deer has 90 births, 40 deaths, 10 arrivals and 20 departures in a year. What is its new size?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Births and immigrants add to a population; deaths and emigrants take away.',
+      'The per-capita growth rate counts births minus deaths for each individual, as a percent.',
+      'All four counts are over the same time, here one year.',
+    ],
+    variables: [
+      count('N', 'N', 'Population at the start', 1, 1000000),
+      count('B', 'B', 'Births', 0, 1000000),
+      count('D', 'D', 'Deaths', 0, 1000000),
+      count('I', 'I', 'Immigrants', 0, 1000000),
+      count('E', 'E', 'Emigrants', 0, 1000000),
+      count('dN', 'ΔN', 'Change in population', -2000000, 2000000, true),
+      count('N1', 'N₁', 'Population a year later', 0, 3000000, true),
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Per-capita growth rate',
+        unit: '%',
+        min: -100,
+        max: 100000000,
+        step: 0.1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      forward(
+        'dN',
+        '{dN} = {B} − {D} + {I} − {E}',
+        ['B', 'D', 'I', 'E'],
+        (v) => v.B! - v.D! + v.I! - v.E!,
+        '{B} − {D} + {I} − {E}',
+        'Births and immigrants come in; deaths and emigrants go out.',
+      ),
+      forward(
+        'N1',
+        '{N1} = {N} + {dN}',
+        ['N', 'dN'],
+        (v) => v.N! + v.dN!,
+        '{N} + {dN}',
+        'Add the change to the starting population.',
+      ),
+      forward(
+        'r',
+        '{r} = 100 × ({B} − {D}) ÷ {N}',
+        ['B', 'D', 'N'],
+        (v) => (100 * (v.B! - v.D!)) / v.N!,
+        '100 × ({B} − {D}) ÷ {N}',
+        'Births minus deaths for each individual at the start, as a percent.',
+      ),
+    ),
+    example: {
+      ...example,
+      dN: B - D + I - E,
+      N1: N + B - D + I - E,
+      r: (100 * (B - D)) / N,
+    },
+    startWith: ['N', 'B', 'D', 'I', 'E'],
+    representation: {
+      kind: 'bars',
+      bars: [{ var: 'N' }, { var: 'B' }, { var: 'D' }, { var: 'I' }, { var: 'E' }, { var: 'N1' }],
+      min: 0,
+      max: 600,
+      flows: { out: ['D', 'E'] },
+    },
+  };
+};
+
+const RATES_DEMOS: ModuleDef[] = [
+  ratesDemo('g.s9-population-ecology-rates-flows', 'Births, deaths and migration', {
+    N: 500,
+    B: 90,
+    D: 40,
+    I: 10,
+    E: 20,
+  }),
+  ratesDemo('g.s9-population-ecology-rates-shrinking', 'A shrinking population', {
+    N: 20000,
+    B: 600,
+    D: 900,
+    I: 0,
+    E: 1500,
+  }),
+];
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /** The chromosome-count page: 2n in a body cell → n, chromatids, the zygote, 2ⁿ gametes. */
@@ -414,6 +512,7 @@ export const HS2E_GALLERY_MODULES: ModuleDef[] = [
   ...GENE_DEMOS,
   ...DIVISION_DEMOS,
   PHOTOSYNTHESIS,
+  ...RATES_DEMOS,
 ];
 
 export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [];

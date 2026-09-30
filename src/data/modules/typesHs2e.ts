@@ -50,6 +50,18 @@ export function geneShown(sequence: string, gene: DnaLongGene, bases: number) {
   return { template: sequence.slice(0, 12) + stop, gap: 12 };
 }
 
+// ─── H100 part 8: bars with flows ────────────────────────────────────────────
+
+/**
+ * The `flows` option on `bars` (H100): the first bar is a start, the last an end, and each bar
+ * between a flow that adds, or takes away when named in `out` (N, + B, − D, + I, − E, N₁). Drawn
+ * as steps from the running total (`reps/BarsFlows.tsx`); the harness checks the steps reach
+ * the end bar.
+ */
+export interface BarFlows {
+  out: string[];
+}
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /**

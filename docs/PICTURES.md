@@ -212,6 +212,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `normalCurve`      | `test.tail: { sign }`                    | Hₐ's sign box: 1 < 2 ≤ left, 3 > 4 ≥ right, 6 ≠ both tails (H90)              |
 | `dnaStrand`        | `gene: { bases, stop? }`                 | a long gene: its first 12 bases, "…" and its stop; codons b ÷ 3 (H100)        |
 | `reaction`         | `many: true`                             | up to 18 molecules a formula in blocks; glucose as its 24-atom ring (H100)    |
+| `bars`             | `flows: { out: [ids] }`                  | start, flows in (+, green) and out (−, red) as steps, end; axis cut (H100)    |
 | `scatter`          | `residuals`, `r`, `leastSquares`, …      | residual segments and plot, r, the least-squares line beside or given (H18)   |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |

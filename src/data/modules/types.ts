@@ -26,7 +26,7 @@ import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
-import type { Hs2eSpec } from './typesHs2e';
+import type { BarFlows, Hs2eSpec } from './typesHs2e';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -485,6 +485,8 @@ export type Representation =
       scale?: number | string;
       /** No number on top of each bar: read its height against the scale (scaled graphs). */
       readScale?: boolean;
+      /** Grade 9 (H100): the bars between the first and last are flows in or out (`typesHs2e.ts`). */
+      flows?: BarFlows;
     }
   /** Picture graph: one column of icons per category; tap a cell to set that count. */
   | {

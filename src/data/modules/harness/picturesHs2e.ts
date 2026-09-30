@@ -3,12 +3,43 @@
  * draws must agree with the values. Called from `repIssues` in `pictures.ts`. Test-only.
  */
 import { transcribe, translate } from '@/components/module/reps/dnaMath';
+import { flowSteps } from '@/components/module/reps/barFlowMath';
 import { GLUCOSE } from '@/components/module/reps/glucose';
 
+import type { Representation } from '../types';
 import { geneShown, type Hs2eSpec } from '../typesHs2e';
 import type { DnaStrandSpec } from '../typesHsg';
 
 const whole = (x: number) => Math.abs(x - Math.round(x)) < 1e-9;
+
+/**
+ * `bars` with `flows` (H100): at least a start, one flow and an end; `out` names flows only;
+ * the steps from the start, adding and taking away, reach the end bar; no flow is negative.
+ */
+export function barFlowIssues(
+  rep: Extract<Representation, { kind: 'bars' }>,
+  val: (x: string | number) => number | undefined,
+): string[] {
+  if (!rep.flows) return [];
+  const out: string[] = [];
+  const ids = rep.bars.map((b) => b.var);
+  if (ids.length < 3) out.push(`bars flows: ${ids.length} bars (a start, flows and an end)`);
+  for (const id of rep.flows.out)
+    if (!ids.slice(1, -1).includes(id)) out.push(`bars flows: ${id} in out is not a flow bar`);
+  const vs = ids.map((id) => val(id));
+  if (vs.some((v) => v === undefined)) return out;
+  vs.slice(1, -1).forEach((v, k) => {
+    if (v! < 0) out.push(`bars flows: flow ${ids[k + 1]} is negative (${v})`);
+  });
+  const { reached } = flowSteps(
+    vs as number[],
+    ids.map((id) => rep.flows!.out.includes(id)),
+  );
+  const end = vs[vs.length - 1]!;
+  if (Math.abs(reached - end) > 1e-6 * Math.max(1, Math.abs(end)))
+    out.push(`bars flows: the steps reach ${reached}, the end bar shows ${end}`);
+  return out;
+}
 
 /**
  * `reaction` with `many` (H100): the glucose it draws is C₆H₁₂O₆, 24 atoms, every bond between
