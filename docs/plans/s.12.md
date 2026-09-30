@@ -924,7 +924,7 @@ student would compare) and names the picture it wants under "Added needs" (12–
     are rounded; new finds move them."
   - Example: A = 2,300 (oxygen building up in the air) → p = 50 %, m = 720 minutes, t = 12 h,
     noon. Check: dinosaurs gone, A = 66 → m = 20.7 minutes, t = 23.66 h (about 11:40 pm).
-  - Table rows (million years ago): Earth forms 4,600; first life 3,800; oxygen in the air
+  - Table rows (million years ago): Earth forms 4,600; first life 3,500; oxygen in the air
     2,300; animals with shells 540; the dinosaurs die out 66; our species 0.3.
   - startWith A.
 - **~day-length — BUILD:** calculator, "Day length from fossil coral", picture `table`

@@ -438,6 +438,87 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Earth's history: the early Earth, its atmosphere and life (HS-ESS2-7, HS-ESS1-6) ──
+  {
+    kind: 'sequence',
+    id: 's.12.earth-history~oxygen',
+    title: 'How oxygen filled the air',
+    use: 'Use this for “How did the first photosynthesis change Earth’s air, and what did it leave in the rocks?”',
+    assumptions: [
+      'Oxygen first reacted with iron; only after the iron was used up did it build up in the air.',
+      'Red beds need oxygen in the air, so they date its rise.',
+    ],
+    question: 'Put the changes to Earth’s early air and oceans in order.',
+    stages: [
+      { label: 'Volcanoes release water vapor, carbon dioxide and nitrogen' },
+      { label: 'Water vapor condenses, and rain fills the first oceans' },
+      { label: 'Cyanobacteria in the sea release oxygen by photosynthesis' },
+      {
+        label: 'The oxygen rusts dissolved iron into banded iron layers on the seafloor',
+        figure: { kind: 'rock', texture: 'layers' },
+      },
+      {
+        label: 'Oxygen builds up in the air, and iron rusts on land into red beds',
+        figure: { kind: 'rock', texture: 'grains' },
+      },
+      { label: 'An ozone layer forms and blocks UV, so life can move onto land' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.earth-history~atmosphere',
+    title: 'Early Earth’s air and today’s',
+    use: 'Use this for “How was Earth’s early atmosphere different from today’s, and what changed it?”',
+    assumptions: [
+      'The first lasting air came from gases released by volcanoes.',
+      'Photosynthesis added the oxygen; rain, rock and life took out most of the carbon dioxide.',
+    ],
+    question: 'Does it describe early Earth’s air or today’s air?',
+    bins: [
+      {
+        id: 'early',
+        label: 'Early Earth (about 4 billion years ago)',
+        why: 'Volcanic gases made this air before any life could release oxygen.',
+      },
+      {
+        id: 'today',
+        label: 'Today',
+        why: 'Billions of years of photosynthesis made this air.',
+      },
+    ],
+    cards: [
+      { label: 'Almost no free oxygen', bin: 'early' },
+      { label: 'Far more carbon dioxide', bin: 'early' },
+      { label: 'No ozone layer, so UV reaches the ground', bin: 'early' },
+      { label: 'Rich in water vapor that later rained out', bin: 'early' },
+      { label: 'About 21 % oxygen', bin: 'today' },
+      { label: 'Mostly nitrogen and oxygen', bin: 'today' },
+      { label: 'An ozone layer blocks most UV', bin: 'today' },
+      { label: 'Its oxygen was made by photosynthesis', bin: 'today' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.12.earth-history~life',
+    title: 'The history of life',
+    use: 'Use this for “Put the major steps in the history of life in order, from the first cells to humans.”',
+    assumptions: [
+      'Each step built on the ones before.',
+      'Mass extinctions cleared the way for new groups.',
+    ],
+    question: 'Put the steps in the history of life in order.',
+    stages: [
+      { label: 'The first single-celled life appears in the sea' },
+      { label: 'Cells with a nucleus appear after oxygen builds up' },
+      { label: 'Soft-bodied many-celled animals live on the seafloor' },
+      { label: 'Animals with shells and skeletons spread in the Cambrian' },
+      { label: 'Plants, then animals, move onto land' },
+      { label: 'Dinosaurs and the first mammals appear' },
+      { label: 'An asteroid ends the dinosaurs, and mammals spread' },
+      { label: 'Humans appear' },
+    ],
+  },
+
   // ── Weathering, erosion, groundwater, glaciers and wind (HS-ESS2-1, HS-ESS2-5) ──
   {
     kind: 'explore',

@@ -348,6 +348,131 @@ const shadowZone: ModuleDef = {
   representation: { kind: 'earthLayers', mode: 'section', distance: 'D' },
 };
 
+// ── Earth's history: the early Earth, its atmosphere and the history of life ──
+
+/** Rounded ages (million years ago) of the events in the one-day table. */
+const EARTH_EVENTS: [number, string][] = [
+  [4600, 'Earth forms'],
+  [3500, 'First life'],
+  [2300, 'Oxygen in the air'],
+  [540, 'Animals with shells'],
+  [66, 'Dinosaurs die out'],
+  [0.3, 'Our species'],
+];
+
+const earthDay: ModuleDef = {
+  id: 's.12.earth-history',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Earth formed about 4,600 million years ago: midnight at the start of the day.',
+    'Today is the next midnight, so each hour stands for about 192 million years.',
+    'Event ages are rounded; new finds move them.',
+  ],
+  variables: [
+    V('A', 'A', 'How long ago', { unit: 'million years', min: 0, max: 4600, step: 0.1 }),
+    V('p', 'p', 'Share of Earth’s history since then', {
+      unit: '%',
+      min: 0,
+      max: 100,
+      step: 0.0001,
+      derived: true,
+    }),
+    V('m', 'm', 'Minutes before midnight', { unit: 'minutes', min: 0, max: 1440, step: 0.01 }),
+    V('t', 't', 'Clock time', { unit: 'hours', min: 0, max: 24, step: 0.0001 }),
+  ],
+  ...rels(
+    rule('p = A ÷ 4,600 × 100', '{p} = {A} ÷ 4,600 × 100', (v) => v.p! - (v.A! / 4600) * 100, {
+      p: [
+        (v) => (v.A! / 4600) * 100,
+        '{A} ÷ 4,600 × 100',
+        'The event’s age as a share of Earth’s whole 4,600 million years.',
+      ],
+      A: [
+        (v) => (v.p! / 100) * 4600,
+        '{p} ÷ 100 × 4,600',
+        'Take that share of Earth’s 4,600 million years.',
+      ],
+    }),
+    rule('m = p ÷ 100 × 1,440', '{m} = {p} ÷ 100 × 1,440', (v) => v.m! - (v.p! / 100) * 1440, {
+      m: [
+        (v) => (v.p! / 100) * 1440,
+        '{p} ÷ 100 × 1,440',
+        'The same share of the day’s 1,440 minutes comes before midnight.',
+      ],
+      p: [
+        (v) => (v.m! / 1440) * 100,
+        '{m} ÷ 1,440 × 100',
+        'The minutes left as a share of the day’s 1,440 minutes.',
+      ],
+    }),
+    rule('t = 24 − m ÷ 60', '{t} = 24 − {m} ÷ 60', (v) => v.t! - (24 - v.m! / 60), {
+      t: [
+        (v) => 24 - v.m! / 60,
+        '24 − {m} ÷ 60',
+        'Turn the minutes into hours and count back from midnight, hour 24.',
+      ],
+      m: [(v) => (24 - v.t!) * 60, '(24 − {t}) × 60', 'The hours left until midnight, in minutes.'],
+    }),
+  ),
+  example: { A: 2300, p: 50, m: 720, t: 12 },
+  startWith: ['A'],
+  representation: {
+    kind: 'table',
+    sweep: 'A',
+    output: 't',
+    params: [],
+    rows: EARTH_EVENTS.map(([a]) => a),
+    rowNames: EARTH_EVENTS.map(([, name]) => name),
+  },
+  pictureLabels: ['p', 'm'],
+};
+
+/** Hours in a year: 365.25 days of 24 hours. The year's length has not changed. */
+const YEAR_H = 8766;
+
+const coralDays: ModuleDef = {
+  id: 's.12.earth-history~day-length',
+  title: 'Day length from fossil coral',
+  use: 'Use this for “A fossil coral shows 1,200 daily growth lines across 3 yearly bands. How long was a day then?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'A coral adds one thin growth line a day and one band a year.',
+    'The year’s length in hours has not changed; the Moon’s tides slow Earth’s spin.',
+    'So long ago a year had more days, and each day was shorter.',
+  ],
+  variables: [
+    V('n', 'n', 'Daily growth lines counted', { min: 1, max: 5000, step: 1 }),
+    V('b', 'b', 'Yearly bands they cross', { min: 1, max: 10, step: 1 }),
+    V('N', 'N', 'Days in a year', { unit: 'days', min: 360, max: 450, step: 0.01 }),
+    V('D', 'D', 'Length of a day', { unit: 'hours', min: 19, max: 24.5, step: 0.001 }),
+  ],
+  ...rels(
+    quotient('N', 'n', 'b', 'N = n ÷ b', [
+      'Share the daily lines among the yearly bands: the days in one year.',
+      'Each band holds a year of N lines: multiply.',
+      'How many years of N lines fit in the count.',
+    ]),
+    rule('D = 8,766 ÷ N', '{D} = 8,766 ÷ {N}', (v) => v.D! * v.N! - YEAR_H, {
+      D: [
+        (v) => div(YEAR_H, v.N!),
+        '8,766 ÷ {N}',
+        'A year is 8,766 hours; share them among its days.',
+      ],
+      N: [(v) => div(YEAR_H, v.D!), '8,766 ÷ {D}', 'How many days of D hours fit in 8,766 hours.'],
+    }),
+  ),
+  example: { n: 1200, b: 3, N: 400, D: YEAR_H / 400 },
+  startWith: ['n', 'b'],
+  representation: {
+    kind: 'table',
+    sweep: 'N',
+    output: 'D',
+    params: [],
+    rows: [365.25, 380, 400, 420, 440],
+  },
+  pictureLabels: ['n', 'b'],
+};
+
 // ── Geologic time and radiometric dating ──
 
 /** n = t ÷ T: the half-lives in an age. */
@@ -1429,6 +1554,8 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
   shadowZone,
+  earthDay,
+  coralDays,
   carbonDating,
   uranium,
   bracket,
