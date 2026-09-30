@@ -1124,6 +1124,38 @@ const clt = page({
   },
 });
 
+// ── H99: a t curve over the normal ──
+
+const tTest = fromPage(
+  'm.12.hypothesis-testing~t-test',
+  'g.m12-hypothesis-testing-t-curve',
+  'One-mean t-test on the t curve',
+  {
+    kind: 'normalCurve',
+    mean: 'm',
+    sd: 'E',
+    axis: 'Sample mean x̄ (g) if H₀ is true',
+    t: { df: 'df' },
+    test: { stat: 't', alpha: 'a', tail: 'two', p: 'P' },
+    fixed: true,
+  },
+);
+
+const tInterval = fromPage(
+  'm.12.confidence-intervals~t-interval',
+  'g.m12-confidence-intervals-t-curve',
+  'Confidence interval on the t curve',
+  {
+    kind: 'normalCurve',
+    mean: 'x',
+    sd: 'SE',
+    axis: 'Sample mean x̄',
+    t: { df: 'df' },
+    interval: { center: 'x', margin: 'E', level: 'C' },
+    fixed: true,
+  },
+);
+
 export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   ...TERMS,
   ...GRAPHS,
@@ -1135,6 +1167,8 @@ export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   cubeRoots,
   atLeast,
   clt,
+  tTest,
+  tInterval,
 ];
 
 export const HS2G_GALLERY_LAYOUTS: LayoutDef[] = [];

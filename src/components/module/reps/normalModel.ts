@@ -14,6 +14,9 @@ import {
   normalArea,
   normalDraws,
   normalPdf,
+  invT,
+  tCdf,
+  tPdf,
   zStar,
 } from './statMath';
 import { tailOf } from './signBox';
@@ -21,6 +24,10 @@ import { tailOf } from './signBox';
 export type Span = [number, number];
 
 export interface NormalModel {
+  /** H99: a t curve's degrees of freedom (the dashed normal is `pop`). */
+  t?: number;
+  /** H99: a t curve's mass past ±12 scales inside [a, b], for the harness's integration. */
+  tails?: (a: number, b: number) => number;
   /** The chi-square curve (df) in place of the normal. */
   df?: number;
   /** The curve drawn: its mean and SD (the sampling curve in `sample` mode). */
@@ -95,15 +102,25 @@ export function normalModel(spec: NormalCurveSpec, val: Val): NormalModel {
   const n = spec.sample ? val(spec.sample.n) : undefined;
   const sampled = spec.sample && n !== undefined && n >= 1;
   const s = sampled ? sigma / Math.sqrt(n) : sigma;
-  const cdf = (x: number) => normalArea(-Infinity, x, mu, s);
+  // H99: a t curve (df) in place of the normal, the normal dashed behind it.
+  const df = spec.t && !sampled ? Math.max(1, Math.round(val(spec.t.df) ?? 1)) : undefined;
+  const tc = (x: number) => (x === Infinity ? 1 : x === -Infinity ? 0 : tCdf((x - mu) / s, df!));
+  const cdf = (x: number) => (df ? tc(x) : normalArea(-Infinity, x, mu, s));
   const window: Span = [mu - 3.5 * sigma, mu + 3.5 * sigma];
   const out: NormalModel = {
     m: mu,
     s,
-    pop: sampled ? { m: mu, s: sigma } : undefined,
+    pop: sampled ? { m: mu, s: sigma } : df ? { m: mu, s } : undefined,
     window,
-    pdf: (x) => normalPdf(x, mu, s),
+    pdf: df ? (x) => tPdf((x - mu) / s, df) / s : (x) => normalPdf(x, mu, s),
     regions: [],
+    t: df,
+    tails: df
+      ? (a, b) => {
+          const [l, r] = [mu - 12 * s, mu + 12 * s];
+          return Math.max(0, tc(Math.min(b, l)) - tc(a)) + Math.max(0, tc(b) - tc(Math.max(a, r)));
+        }
+      : undefined,
   };
   const grow = (x: number | undefined, unit = sigma) => {
     if (x === undefined || !Number.isFinite(x)) return;
@@ -175,7 +192,8 @@ export function normalModel(spec: NormalCurveSpec, val: Val): NormalModel {
     // H90: Hₐ's sign box gives the tail; none drawn until a sign is chosen.
     const tail = tailOf(spec.test.tail, (id) => val(id));
     if (tail && alpha !== undefined && alpha > 0 && alpha < 1) {
-      const zc = tail === 'two' ? invPhi(1 - alpha / 2) : invPhi(1 - alpha);
+      const inv = (p: number) => (df ? invT(p, df) : invPhi(p));
+      const zc = tail === 'two' ? inv(1 - alpha / 2) : inv(1 - alpha);
       out.critical = tail === 'two' ? [x(-zc), x(zc)] : [x(tail === 'left' ? -zc : zc)];
       out.reject =
         tail === 'left'

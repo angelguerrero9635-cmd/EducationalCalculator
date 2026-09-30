@@ -5,7 +5,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type { SignOf } from './typesHs2a';
-import type { HistogramHs2g, PascalFraction, TermsChartHs2g } from './typesHs2g';
+import type { HistogramHs2g, NormalCurveHs2g, PascalFraction, TermsChartHs2g } from './typesHs2g';
 
 /**
  * A normal curve over mean μ and standard deviation σ, with an x axis (ticks at μ + kσ, the
@@ -31,7 +31,7 @@ import type { HistogramHs2g, PascalFraction, TermsChartHs2g } from './typesHs2g'
  * Handles drag the shaded ends, the mark, the test statistic and the chi-square statistic
  * (when they are variables), holding `keep` (default: the mean, the SD, n and the level).
  */
-export interface NormalCurveSpec {
+export interface NormalCurveSpec extends NormalCurveHs2g {
   kind: 'normalCurve';
   mean?: NumOrVar;
   sd?: NumOrVar;

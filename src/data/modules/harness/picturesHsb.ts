@@ -49,10 +49,11 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
         spans.reduce((t, [a, b]) => {
           const lo = chi ? Math.max(a, 0) : Math.max(a, m.m - 12 * m.s);
           const hi = chi ? Math.min(b, 200) : Math.min(b, m.m + 12 * m.s);
-          if (!(hi > lo)) return t;
+          if (!(hi > lo)) return t + (m.tails?.(a, b) ?? 0);
           // Near 0 a chi-square density with df 1 is unbounded: integrate the rest and subtract.
           if (chi && lo < 1e-9) return t + 1 - simpson(m.pdf, hi, 200, 20000);
-          return t + simpson(m.pdf, lo, hi, 20000);
+          // H99: a t curve's heavy tails past ±12 scales are added exactly.
+          return t + simpson(m.pdf, lo, hi, 20000) + (m.tails?.(a, b) ?? 0);
         }, 0);
       if (m.area !== undefined) {
         const drawn = integrate(m.regions);

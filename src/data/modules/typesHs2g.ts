@@ -176,6 +176,16 @@ export interface HistogramHs2g {
   clt?: { mean: NumOrVar; n: NumOrVar; samples: NumOrVar; se?: string; seed?: number };
 }
 
+/**
+ * H99: `normalCurve` as a t curve: `t: { df }` draws the t density with df degrees of freedom
+ * (solid) over the normal with the same center and scale (dashed); shading, intervals and a
+ * test's rejection region and p-value then use t (invT, tcdf), and the axis under the curve is
+ * t. Not with `sample`, `intervals` or `chiSquare`.
+ */
+export interface NormalCurveHs2g {
+  t?: { df: NumOrVar };
+}
+
 /** Every variable id these options name (for the module tests). */
 export function hs2gSpecVars(r: Representation): string[] {
   const ids = (...xs: (NumOrVar | boolean | undefined)[]): string[] =>
@@ -199,6 +209,8 @@ export function hs2gSpecVars(r: Representation): string[] {
       return ids(r.fraction?.n, r.fraction?.k, r.fraction?.count, r.fraction?.chance);
     case 'complexPlane':
       return ids(r.power, r.roots);
+    case 'normalCurve':
+      return ids(r.t?.df);
     case 'histogram':
       return ids(
         r.range?.from,

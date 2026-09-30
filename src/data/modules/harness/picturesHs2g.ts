@@ -302,6 +302,16 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
         out.push(`the lit bars add to ${r.sum}, but the total is ${total}`);
       break;
     }
+    case 'normalCurve': {
+      // H99: a t curve: whole df, and not with the modes that are normal by their nature.
+      if (!rep.t) break;
+      const df = get(rep.t.df);
+      if (df !== undefined && (!Number.isInteger(df) || df < 1))
+        out.push(`t df ${df} (whole, 1 or more)`);
+      if (rep.sample || rep.intervals || rep.chiSquare)
+        out.push('a t curve with sample, intervals or chiSquare');
+      break;
+    }
     default:
       break;
   }
