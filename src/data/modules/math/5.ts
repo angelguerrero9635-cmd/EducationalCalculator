@@ -2268,6 +2268,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { w: 3, n: 4, W: 0, R: 3 },
     startWith: ['w', 'n'],
+    // 3 ÷ 4 = 3/4 and 15 ÷ 4 = 3 3/4; a zero part is hidden (8 ÷ 4 = 2).
+    equation: '{w} ÷ {n} = {W} {R}/{n}',
     representation: { kind: 'shareWholes', wholes: 'w', people: 'n' },
   },
   // ── Volume of a rectangular prism (5.MD.5) ──

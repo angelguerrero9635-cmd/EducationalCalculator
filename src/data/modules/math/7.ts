@@ -1204,6 +1204,8 @@ export const MATH_7_MODULES: ModuleDef[] = [
           expr: '({r} − {q}) ÷ {p}',
           how: 'Take {q} from both sides, then divide both sides by {p}.',
           work: (v: Values) => {
+            // No sign tapped yet: the lines wait for it.
+            if (v.s === undefined) return [];
             const sign = '<≤>≥'[v.s! - 1]!;
             const flipped =
               v.p! < 0 ? ({ '<': '>', '≤': '≥', '>': '<', '≥': '≤' }[sign] ?? sign) : sign;
@@ -1239,6 +1241,8 @@ export const MATH_7_MODULES: ModuleDef[] = [
     },
     example: { p: -2, q: 1, r: 7, s: 2, b: -3, t: 1, h: 1 },
     startWith: ['p', 'q', 'r', 's', 't'],
+    // The sign is a box to tap through <, ≤, >, ≥ (1–4, as s stores it).
+    equation: '{p}x + {q} {s:sign} {r}',
     representation: {
       kind: 'integerLine',
       value: 'b',

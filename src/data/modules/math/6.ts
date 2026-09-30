@@ -144,6 +144,9 @@ const modeText = (xs: number[]) => {
 };
 const DENOMS = [1, 2, 3, 4, 5, 6, 8, 10, 12];
 
+/** The sign between two numbers as a relation box codes it: 1 <, 3 >, 5 =. */
+const sign = (a: number, b: number) => (a < b ? 1 : a > b ? 3 : 5);
+
 const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Ratios and ratio tables (6.RP.1, 6.RP.3a) ──
   {
@@ -2174,6 +2177,16 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       { id: 'x', symbol: 'x', name: 'First number', min: -100, max: 100, step: 0.25 },
       { id: 'y', symbol: 'y', name: 'Second number', min: -100, max: 100, step: 0.25 },
       {
+        id: 'c',
+        symbol: 'c',
+        name: 'Sign (1 <, 3 >, 5 =)',
+        min: 1,
+        max: 5,
+        step: 1,
+        integer: true,
+        derived: true,
+      },
+      {
         id: 'p',
         symbol: 'p',
         name: 'First number’s absolute value',
@@ -2192,6 +2205,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       { id: 'g', symbol: 'g', name: 'Distance apart', min: 0, max: 200, derived: true },
     ],
     relations: [
+      {
+        id: 'c = sign between x and y',
+        display: 'sign {c} between {x} and {y}',
+        words: 'The sign between the two numbers',
+        vars: ['c', 'x', 'y'],
+        check: (v: Values) => `${sign(v.x!, v.y!)} = ${v.c}`,
+        residual: (v: Values) => v.c! - sign(v.x!, v.y!),
+        solve: { c: (v: Values) => sign(v.x!, v.y!), x: () => undefined, y: () => undefined },
+      },
       {
         id: 'p = |x|',
         display: '|{x}| = {p}',
@@ -2221,6 +2243,17 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
     ],
     steps: {
+      'c = sign between x and y': {
+        c: {
+          expr: (v: Values) => `${sign(v.x!, v.y!)}`,
+          how: (v: Values) =>
+            v.x! < v.y!
+              ? 'The first is left of the second on the line: <.'
+              : v.x! > v.y!
+                ? 'The first is right of the second on the line: >.'
+                : 'They are the same point: =.',
+        },
+      },
       'p = |x|': { p: { expr: '|{x}|', how: 'The first number’s distance from 0.' } },
       'q = |y|': { q: { expr: '|{y}|', how: 'The second number’s distance from 0.' } },
       'g = distance from x to y': {
@@ -2236,8 +2269,11 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         },
       },
     },
-    example: { x: -12.5, y: -12, p: 12.5, q: 12, g: 0.5 },
+    example: { x: -12.5, y: -12, c: 1, p: 12.5, q: 12, g: 0.5 },
     startWith: ['x', 'y'],
+    // “Write <, > or =”: the sign is worked out in a box between the numbers.
+    equation: '{x} {c:relation} {y}',
+    letters: [],
     representation: {
       kind: 'integerLine',
       value: 'x',
@@ -3270,6 +3306,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { a: 2, c: 71, x: 35, s: 1, p: 70, e: 35.5, d: -1, h: 1 },
     startWith: ['a', 'c', 'x', 's'],
+    // 2n < 71: the sign is a box to tap (1 <, 2 ≤, 3 >, 4 ≥, as s stores it).
+    equation: '{a}n {s:sign} {c}',
+    letters: [],
     // The solutions from the boundary: an open or closed circle, the arrow, and the value
     // tested marked true or false.
     representation: {

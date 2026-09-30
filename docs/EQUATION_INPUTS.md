@@ -65,7 +65,7 @@ Boxes and letters:
 
 `grep -n "equation:" src/data/modules/math/*.ts src/data/modules/science/*.ts` finds them (two
 helpers, `signedSum` and `exponentRule`, set it for several pages): 70 pages before the review,
-111 after it.
+111 after it, 117 with the Grade 9–12 parts.
 
 **Added in the review:**
 
@@ -101,15 +101,24 @@ helpers, `signedSum` and `exponentRule`, set it for several pages): 70 pages bef
 **Removed:** `m.6.multi-digit-decimals~add-subtract` went back to rows. Its use line subtracts, and
 the addition template made students type 7.2 into the sum.
 
-**Not yet possible:**
+**Added with the Grade 9–12 parts (H82–H88):**
 
-- The power-of-a-power page: it needs an exponent on a bracket. Possible now (H82):
-  `({b}^{m})^{n} = {b}^{k} = {P}`, demo `g.m8-exponent-rules-power-of-power`.
-- `m.6.expressions-variables`: a negative constant would read "3x + −5", and the answer has no
-  box.
-- Fraction as division: a mixed number with a zero part shows "0 3/4". Possible now (H88): a
-  worked-out zero part is hidden, `{w} ÷ {n} = {W} {R}/{n}` draws 3 ÷ 4 = 3/4 and 8 ÷ 4 = 2
-  (demos `g.m5-divide-unit-fractions-fraction-as-division`, `…-whole`).
+- `m.8.exponent-rules~power-of-power`: `({b}^{m})^{n} = {b}^{k} = {P}` (an exponent on a
+  bracket).
+- `m.8.scientific-notation~add-subtract`: `{a} × 10^{n} {o:op} {c} × 10^{k} = {u} × 10^{q}` (the
+  - or − is a box to tap).
+- `m.7.two-step-equations~inequality`: `{p}x + {q} {s:sign} {r}`; the work lines wait for a sign.
+- `m.6.one-step-equations~inequality-solutions`: `{a}n {s:sign} {c}`; the test value stays a row.
+- `m.6.integers~compare`: `{x} {c:relation} {y}`, the sign worked out in its box.
+- `m.5.divide-unit-fractions~fraction-as-division`: `{w} ÷ {n} = {W} {R}/{n}` (3 ÷ 4 = 3/4,
+  8 ÷ 4 = 2: a zero part is hidden).
+- `m.3.area~missing-side`: `{l:unit} × {w:unit} = {A:unit}`.
+- The three balancing pages write `{a:coef}`: a worked-out 1 is left blank.
+
+**Kept as rows:** `m.8.roots-irrationals` (its side is rounded, so "=" would be false) and
+`~cube-root` (the cm³ and cm are the lesson); the Grade 7 add and subtract pages stay two pages,
+each with its own sign. `m.6.expressions-variables` still can't: a negative constant would read
+"3x + −5", and the answer has no box.
 
 Worked-out fractions in a box (8 7/24, 3 1/3) are drawn stacked since H88, like the fixed ones.
 

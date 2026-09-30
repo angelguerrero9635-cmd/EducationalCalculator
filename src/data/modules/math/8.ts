@@ -96,10 +96,10 @@ function exponentRule(rule: 'product' | 'quotient' | 'power') {
     },
   };
   const { display, op, solve, steps } = rules[rule];
-  // The rule as its equation, b³ × b⁴ = b⁷ = 128 (a power of a power has no template form yet).
+  // The rule as its equation: b³ × b⁴ = b⁷ = 128, and (b³)⁴ = b¹² = 4096.
   const sign = { product: '×', quotient: '÷', power: undefined }[rule];
   return {
-    ...(sign ? { equation: `{b}^{m} ${sign} {b}^{n} = {b}^{k} = {P}` } : {}),
+    equation: sign ? `{b}^{m} ${sign} {b}^{n} = {b}^{k} = {P}` : '({b}^{m})^{n} = {b}^{k} = {P}',
     variables: [
       // Any positive base, whole, decimal or fraction: 0.87⁵ ÷ 0.87³, (5/2)⁸ ÷ (5/2)⁶.
       { id: 'b', symbol: 'b', name: 'Base', min: 0.01, max: 20, step: 0.01, fraction: 12 },
@@ -1006,6 +1006,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { a: 5.3, n: 4, c: 4.7, k: 4, o: 1, g: 4.7, S: 100000, u: 1, q: 5 },
     startWith: ['a', 'n', 'c', 'k', 'o'],
+    // The + or − is a box to tap (1 +, 2 −, as o stores it).
+    equation: '{a} × 10^{n} {o:op} {c} × 10^{k} = {u} × 10^{q}',
     pictureLabels: ['g', 'o'],
     representation: { kind: 'powerScale', number: 'S', mantissa: 'u', exponent: 'q', fixed: true },
   },

@@ -365,7 +365,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       id: 'm.3.area~missing-side',
       sliders: false,
       // Typed where it is written (K–6 diagram review).
-      equation: '{l} × {w} = {A}',
+      equation: '{l:unit} × {w:unit} = {A:unit}',
       title: 'Find an unknown side from the area',
       use: 'Use this when you know the area and one side: “24 cm², 6 cm long. How wide?”',
       assumptions: [
