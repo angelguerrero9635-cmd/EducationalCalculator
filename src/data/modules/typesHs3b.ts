@@ -1,0 +1,153 @@
+/**
+ * Picture options for Grades 9–12, round 3, group B (H106, P18; see pictureRequestsHs.ts): the
+ * math options the reviewed and added pages wait on. Kept apart from the kinds' own type files so
+ * those only gain a line each. A `NumOrVar` field is a fixed number or a variable id.
+ */
+import type { NumOrVar } from './typesGraphs';
+
+/**
+ * H106: two more function families.
+ * - power: y = a·(x − h)^(p/q) + k, p/q in lowest terms (whole p ≠ 0, q from 1 to 12): an odd q
+ *   takes the real root of a negative number, an even q starts at x = h, a negative p has
+ *   asymptotes x = h and y = k.
+ * - logSum: y = log_b(x) + log_b(x + c) (natural logs when `b` is left out), defined where both
+ *   are, x > 0 and x > −c; its asymptote is at the larger of 0 and −c.
+ */
+export type FamilyHs3b =
+  | { family: 'power'; a?: NumOrVar; p: NumOrVar; q?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
+  | { family: 'logSum'; b?: NumOrVar; c: NumOrVar };
+
+/** The variable ids an H106 family names. */
+export function familyHs3bVars(f: FamilyHs3b): string[] {
+  const xs = f.family === 'power' ? [f.a, f.p, f.q, f.h, f.k] : [f.b, f.c];
+  return xs.filter((x): x is string => typeof x === 'string');
+}
+
+/** H106: `functionGraph` options. */
+export interface FunctionGraphHs3b {
+  /**
+   * The unit menu (the Units rule): the ids of the values whose shown units the axes take. Every
+   * parameter is read in the formula's units (as the relations hold), the curve is converted once
+   * to the shown units (y = f(fₓ·X) ÷ f_y), and the axes, formula, ticks and labels are in the
+   * units shown; each axis name gets its unit, "Time t" becomes "Time t (s)". Without it the graph
+   * reads shown numbers, as before, so a page with a unit menu pins its units.
+   */
+  unitsOf?: { x?: string; y?: string };
+  /**
+   * Two curves on one graph: the family is f, and g(x) = a·f(x − h) + k is drawn beside it in the
+   * second colour, named `name` (default g), written "g(x) = 2f(x − 3) + 1" with its own formula
+   * under it. An arrow carries f's marked point (the vertex, the start, (h, k)), or f's point at
+   * `from`, to its image; `image` names the values the module works out for it (checked). No
+   * crossings are marked. Left out, a is 1 and h, k are 0.
+   */
+  transform?: {
+    a?: NumOrVar;
+    h?: NumOrVar;
+    k?: NumOrVar;
+    name?: string;
+    from?: NumOrVar;
+    image?: { x?: string; y?: string };
+  };
+  /**
+   * A candidate the algebra gives that the function can't take (outside its domain, as the
+   * second root of a log equation): a crossed-out circle on the x-axis at that x, labelled
+   * "x = −1 rejected", and a caption line saying why. Checked to be outside the domain.
+   */
+  reject?: NumOrVar;
+}
+
+/**
+ * H106: `lineSystem` with a parabola. A line with `square` (its x² coefficient) is the parabola
+ * y = ax² + mx + b (`slope` m, `intercept` b), drawn as a curve with its vertex; shading works as
+ * for a line (above for > and ≥, below for < and ≤, dashed when strict). Where the two cross is
+ * solved from (a₁ − a₂)x² + (m₁ − m₂)x + (b₁ − b₂) = 0: none, one (the line touches) or two
+ * points, each ringed and labelled. No handles: the values have sliders.
+ */
+export interface LineSystemHs3b {
+  /** The crossings the module works out, left to right (checked on both curves). */
+  solutions?: { x: string; y: string }[];
+}
+
+/**
+ * H106: `polygon` with its apothem (with `sides`, and `side` for the side's label). The regular
+ * polygon on a flat side, a line from the center to each corner (n triangles), the bottom one
+ * tinted; the apothem from the center to that side's midpoint, square to it and labelled; with
+ * `angle`, half the center angle θ = 180° ÷ n marked at the center; with `area` and `around`,
+ * the caption works K = ½ × a × P. The side and apothem are checked in the formula's units.
+ */
+export interface PolygonHs3b {
+  apothem?: string;
+  angle?: string;
+  area?: string;
+}
+
+/**
+ * H106: a one-event Venn diagram (`venn` `chances`): with `one`, only circle A is drawn in the
+ * rectangle, A holding P(A) and the rest P(not A) = 1 − P(A) (`shade: 'notA'` lights it, 'aOnly'
+ * the circle). `b` and `both` are not drawn: pass 0 for each (checked).
+ */
+export interface VennChancesHs3b {
+  one?: true;
+}
+
+/**
+ * H106: a `table` sweep with its graph. `graph` draws, under the table, the output against the
+ * swept value worked out by the module's relations with the parameters held, the rows as dots,
+ * the current row lit, and with `best` the least ('min') or greatest ('max') point ringed and
+ * labelled (S against r for a can of fixed volume: the least metal). `rowsFrom: 'shown'`: the
+ * `rows` function gets the values in the units on the menu (not the formula's), so its round
+ * steps are round in the unit shown and the page can keep its unit menu (the Units rule).
+ */
+export interface TableHs3b {
+  graph?: { best?: 'min' | 'max' };
+  rowsFrom?: 'shown';
+}
+
+/**
+ * H106: `circle` with `population`, population density on a map: a town's irregular outline on
+ * a grid of the radius's shown unit, `people` as dots inside it (one dot for a round number of
+ * people), and the circle of radius `radius` that models its area dashed over it (the outline
+ * has the circle's area exactly). The caption works A = πr² (with `area`) and D = N ÷ A (with
+ * `density`); both are checked in the formula's units.
+ */
+export interface CircleHs3b {
+  population?: { people: string; density?: string };
+}
+
+/**
+ * H106: `transformation` about the figure's own center. With `about: 'center'` a rotation (or
+ * dilation) is about the corners' average, the center `symmetry` turns about, so a page needs
+ * no center values; the center is dotted and labelled, and point symmetry is drawn: each corner
+ * joined through the center to its partner straight across, the halves ticked equal, and the
+ * caption says whether every corner has one. `center` is not read.
+ */
+export interface TransformationHs3b {
+  about?: 'center';
+}
+
+/**
+ * H106: `rectangle` with `bounds`, measurement bounds. The rectangle as measured (`length` by
+ * `width`), the least one the readings allow, (l − e) by (w − e), dashed inside it and the
+ * greatest, (l + e) by (w + e), dashed outside, to scale about one center, the band between
+ * shaded; a close-up of the corner when the band is too thin to see. `error` is e, the greatest
+ * possible error; `least` and `greatest` the areas the module works out (checked).
+ */
+export interface RectangleHs3b {
+  bounds?: { error: string; least?: string; greatest?: string };
+}
+
+/** The variable ids the H106 function-graph options name (for the module tests). */
+export function functionGraphHs3bVars(r: FunctionGraphHs3b): string[] {
+  const t = r.transform;
+  return [
+    r.unitsOf?.x,
+    r.unitsOf?.y,
+    t?.a,
+    t?.h,
+    t?.k,
+    t?.from,
+    t?.image?.x,
+    t?.image?.y,
+    r.reject,
+  ].filter((x): x is string => typeof x === 'string');
+}

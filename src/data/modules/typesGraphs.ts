@@ -5,6 +5,7 @@
  */
 
 import type { LineSystemHs2a, ShadeSign } from './typesHs2a';
+import type { LineSystemHs3b, TransformationHs3b } from './typesHs3b';
 import { secondMoveVars, type SecondMove } from './typesHsf';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
@@ -46,7 +47,7 @@ export interface LinearFunctionSpec {
  * (none when parallel; the same line twice is every point). Each line's intercept (and a
  * slope point, when the slope is a variable) drags.
  */
-export interface LineSystemSpec extends LineSystemHs2a {
+export interface LineSystemSpec extends LineSystemHs2a, LineSystemHs3b {
   kind: 'lineSystem';
   lines: [LineOf, LineOf];
   /** The solution's x and y, when the module solves for them (the crossing is labelled). */
@@ -70,6 +71,8 @@ export interface LineSystemSpec extends LineSystemHs2a {
 export type InequalitySign = '<' | '≤' | '>' | '≥';
 
 export interface LineOf {
+  /** H106: an x² coefficient a, making this y = ax² + mx + b, a parabola (`lineSystem`). */
+  square?: NumOrVar;
   slope: NumOrVar;
   intercept: NumOrVar;
   /** A short name for the line ("Gym A"); default the equation. */
@@ -142,13 +145,14 @@ export type TransformationSpec = {
   image2?: { x: string; y: string };
   /** Grades 9–12: the figure's lines of symmetry and its order of rotational symmetry. */
   symmetry?: boolean;
-} & (
-  | { move: 'translate'; right: NumOrVar; up: NumOrVar }
-  // H105: `slope`, a value holding 1 or −1, picks the mirror y = x or y = −x (`mirror` meanwhile).
-  | { move: 'reflect'; mirror: Mirror; slope?: string }
-  | { move: 'rotate'; angle: NumOrVar; center?: [NumOrVar, NumOrVar] }
-  | { move: 'dilate'; factor: NumOrVar; center?: [NumOrVar, NumOrVar] }
-);
+} & TransformationHs3b &
+  (
+    | { move: 'translate'; right: NumOrVar; up: NumOrVar }
+    // H105: `slope`, a value holding 1 or −1, picks the mirror y = x or y = −x (`mirror` meanwhile).
+    | { move: 'reflect'; mirror: Mirror; slope?: string }
+    | { move: 'rotate'; angle: NumOrVar; center?: [NumOrVar, NumOrVar] }
+    | { move: 'dilate'; factor: NumOrVar; center?: [NumOrVar, NumOrVar] }
+  );
 
 /** The variable ids a spec above names (for the module tests). */
 export function graphSpecVars(
@@ -161,7 +165,8 @@ export function graphSpecVars(
       return ids(r.slope, r.intercept, r.point?.x, r.point?.y, r.test?.x, r.test?.y);
     case 'lineSystem':
       return ids(
-        ...r.lines.flatMap((l) => [l.slope, l.intercept]),
+        ...r.lines.flatMap((l) => [l.slope, l.intercept, l.square]),
+        ...(r.solutions ?? []).flatMap((q) => [q.x, q.y]),
         r.solution?.x,
         r.solution?.y,
         r.sum?.x,

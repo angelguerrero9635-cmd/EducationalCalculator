@@ -58,6 +58,8 @@ import { ForceDiagram } from './ForceDiagram';
 import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
+import { LineParabola } from './LineParabola';
+import { PolygonApothem } from './PolygonApothem';
 import { LinearFunction, LineSystem } from './Lines';
 import { FunctionGraph } from './FunctionGraph';
 import { FunctionMachine } from './FunctionMachine';
@@ -95,6 +97,10 @@ import { TwoWayTable } from './TwoWayTable';
 import { ChanceTree } from './ChanceTree';
 import { ChanceTree3 } from './ChanceTree3';
 import { VennChance } from './VennChance';
+import { VennOne } from './VennOne';
+import { TableGraph } from './TableGraph';
+import { CirclePopulation } from './CirclePopulation';
+import { RectangleBounds } from './RectangleBounds';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -291,6 +297,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
+      if (spec.lines.some((l) => l.square !== undefined))
+        return <LineParabola spec={spec} calc={calc} />; // H106
       return <LineSystem spec={spec} calc={calc} />;
     case 'functionGraph':
       return <FunctionGraph spec={spec} calc={calc} />;
@@ -438,10 +446,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'bars':
       return spec.flows ? <BarsFlows spec={spec} calc={calc} /> : <Bars spec={spec} calc={calc} />;
     case 'rectangle':
+      if (spec.bounds) return <RectangleBounds spec={spec} calc={calc} />; // H106
       return <RectangleDiagram spec={spec} calc={calc} />;
     case 'grid100':
       return <Grid100 spec={spec} calc={calc} />;
     case 'circle':
+      if (spec.population) return <CirclePopulation spec={spec} calc={calc} />; // H106
       return <CircleDiagram spec={spec} calc={calc} />;
     case 'scaleCopy':
       return <ScaleCopy spec={spec} calc={calc} />;
@@ -452,6 +462,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'table':
       return 'twoWay' in spec ? (
         <TwoWayTable spec={spec.twoWay} calc={calc} />
+      ) : spec.graph || spec.rowsFrom ? (
+        <TableGraph spec={spec} calc={calc} /> // H106
       ) : (
         <ValueTable spec={spec} calc={calc} />
       );
@@ -472,6 +484,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'compareRows':
       return <CompareRows spec={spec} calc={calc} />;
     case 'polygon':
+      if (spec.apothem && spec.sides) return <PolygonApothem spec={spec} calc={calc} />; // H106
       return <PolygonShape spec={spec} calc={calc} />;
     case 'balance':
       return <Balance spec={spec} calc={calc} />;
@@ -549,7 +562,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':
       return 'chances' in spec ? (
-        <VennChance spec={spec.chances} calc={calc} />
+        spec.chances.one ? (
+          <VennOne spec={spec.chances} calc={calc} /> // H106
+        ) : (
+          <VennChance spec={spec.chances} calc={calc} />
+        )
       ) : (
         <Venn spec={spec} calc={calc} />
       );

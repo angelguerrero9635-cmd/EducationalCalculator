@@ -13,6 +13,7 @@ import type {
 import { formatNumber } from '@/engine/format';
 
 import { toFraction } from './exact';
+import { buildHs3b } from './functionGraphFamiliesHs3b';
 import { ratioCurve, reshape } from './functionGraphHs2g';
 
 // ─── Exact numbers ─────────────────────────────────────────────────────────────
@@ -326,17 +327,17 @@ export function plain(toks: Tok[]): string {
 export type Say = (name: string, pi?: boolean) => string;
 
 /** "x − 2", "x + 2" or "x" for x − h. */
-const shiftText = (x: string, h: number, say: string) =>
+export const shiftText = (x: string, h: number, say: string) =>
   h === 0 && say !== '?'
     ? x
     : say.startsWith(MINUS)
       ? `${x} + ${say.slice(1)}`
       : `${x} ${MINUS} ${say}`;
 /** " + 3", " − 3" or "" for + k. */
-const plusText = (k: number, say: string) =>
+export const plusText = (k: number, say: string) =>
   k === 0 && say !== '?' ? '' : say.startsWith(MINUS) ? ` ${MINUS} ${say.slice(1)}` : ` + ${say}`;
 /** A leading coefficient: "" for 1, "−" for −1, else the number ("(2/3)" when a fraction). */
-const lead = (a: number, say: string) =>
+export const lead = (a: number, say: string) =>
   say === '?' ? '?' : a === 1 ? '' : a === -1 ? MINUS : say.includes('/') ? `(${say})` : say;
 
 // ─── Families ─────────────────────────────────────────────────────────────────
@@ -1121,6 +1122,9 @@ export function buildCurve(
         vas: (lo, hi) => pieces.flatMap((p) => p.c.vas(lo, hi)),
       };
     }
+    case 'power':
+    case 'logSum':
+      return buildHs3b(fam, get, say, x); // H106
     case 'sin':
     case 'cos':
     case 'tan': {
