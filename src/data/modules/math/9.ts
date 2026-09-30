@@ -4456,6 +4456,76 @@ const iqr = (I: string, q3: string, q1: string, how = 'The width of the box: the
   );
 
 const DATA_IDS = ['x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x7', 'x8'];
+/** The first n of a list's ids (n its count value), and their values. */
+const firstIds = (ids: string[], v: Values) => ids.slice(0, v.n);
+const firstValues = (ids: string[], v: Values) => firstIds(ids, v).map((id) => v[id]!);
+const sumList = (xs: number[]) => exact(xs.reduce((t, x) => t + x, 0));
+/** The middle of a list in order, or halfway between the middle two. */
+const medianOf = (xs: number[]) => {
+  const s = [...xs].sort((a, b) => a - b);
+  const n = s.length;
+  return n % 2 ? s[(n - 1) / 2]! : exact((s[n / 2 - 1]! + s[n / 2]!) / 2);
+};
+/** The lower (or upper) half of a list in order, the median left out when the count is odd. */
+const halfOf = (xs: number[], upper: boolean) => {
+  const s = [...xs].sort((a, b) => a - b);
+  const h = Math.floor(s.length / 2);
+  return upper ? s.slice(s.length - h) : s.slice(0, h);
+};
+/** A value of a counted list: its name, 0 to `max`, counted while n is at least its place. */
+const listValue = (id: string, i: number, name: string, max: number): VariableDef =>
+  num(id, `x${sub(i + 1)}`, name, 0, max, {
+    step: 1,
+    countedBy: { count: 'n', index: i + 1 },
+    group: 'data',
+  });
+
+/** Up to 12 values for a box plot drawn from the data. */
+const LIST_IDS = Array.from({ length: 12 }, (_, i) => `d${i + 1}`);
+/** One of the five numbers read from the first n values: least, median, a quartile, greatest. */
+const listRule = (
+  id: string,
+  word: string,
+  fn: (xs: number[]) => number,
+  how: string,
+  inOrder = false,
+) =>
+  rule(
+    `${id} = ${word}`,
+    `{${id}} = ${word} of the {n} values`,
+    [id, 'n', ...LIST_IDS],
+    (v) => v[id]! - fn(firstValues(LIST_IDS, v)),
+    {
+      [id]: [
+        (v) => exact(fn(firstValues(LIST_IDS, v))),
+        (v) =>
+          `${word} of ${firstIds(LIST_IDS, v)
+            .map((x) => `{${x}}`)
+            .join(', ')}`,
+        how,
+        {
+          work: (v) => {
+            const s = [...firstValues(LIST_IDS, v)].sort((a, b) => a - b);
+            if (inOrder) return [`In order: ${s.map(fmt).join(', ')}`];
+            if (word === 'first quartile' || word === 'third quartile') {
+              const half = halfOf(s, word === 'third quartile');
+              return [
+                `${word === 'first quartile' ? 'Lower' : 'Upper'} half: ${half.map(fmt).join(', ')}`,
+              ];
+            }
+            return [];
+          },
+          written: false,
+        },
+      ],
+    },
+    {
+      check: (v) =>
+        `${fmt(v[id]!)} = ${word} of ${firstValues(LIST_IDS, v)
+          .map(fmt)
+          .join(', ')}`,
+    },
+  );
 
 const DATA_DISPLAYS: ModuleDef[] = [
   page({
@@ -4570,6 +4640,75 @@ const DATA_DISPLAYS: ModuleDef[] = [
     },
   }),
   page({
+    id: 'm.9.data-displays~five-number-summary',
+    title: 'Box plot from a data list',
+    use: 'Use this for “Points in nine games: 12, 18, 9, 22, 15, 30, 14, 17, 20. Make a box plot.”',
+    assumptions: [
+      'Put the values in order first; the median splits them into a lower and an upper half.',
+      'Q₁ and Q₃ are the medians of the two halves, the median itself left out when n is odd.',
+      'The box runs from Q₁ to Q₃: the middle half of the data.',
+    ],
+    variables: [
+      int('n', 'n', 'Number of values', 5, 12),
+      ...LIST_IDS.map((id, i) => listValue(id, i, `Value ${i + 1}`, 50)),
+      num('lo', 'min', 'Least', 0, 50, { derived: true }),
+      num('q1', 'Q₁', 'First quartile', 0, 50, { derived: true }),
+      num('md', 'M', 'Median', 0, 50, { derived: true }),
+      num('q3', 'Q₃', 'Third quartile', 0, 50, { derived: true }),
+      num('hi', 'max', 'Greatest', 0, 50, { derived: true }),
+      num('I', 'IQR', 'Interquartile range', 0, 50, { derived: true }),
+    ],
+    rules: [
+      listRule('lo', 'least', (xs) => Math.min(...xs), 'The smallest value, first in order.', true),
+      listRule('md', 'median', medianOf, 'The middle value in order (halfway between the middle two).'),
+      listRule(
+        'q1',
+        'first quartile',
+        (xs) => medianOf(halfOf(xs, false)),
+        'The median of the lower half.',
+      ),
+      listRule(
+        'q3',
+        'third quartile',
+        (xs) => medianOf(halfOf(xs, true)),
+        'The median of the upper half.',
+      ),
+      listRule('hi', 'greatest', (xs) => Math.max(...xs), 'The largest value, last in order.'),
+      iqr('I', 'q3', 'q1'),
+    ],
+    example: {
+      n: 9,
+      d1: 12,
+      d2: 18,
+      d3: 9,
+      d4: 22,
+      d5: 15,
+      d6: 30,
+      d7: 14,
+      d8: 17,
+      d9: 20,
+      lo: 9,
+      q1: 13,
+      md: 17,
+      q3: 21,
+      hi: 30,
+      I: 8,
+    },
+    startWith: ['n', ...LIST_IDS.slice(0, 9)],
+    representation: {
+      kind: 'boxPlot',
+      min: 'lo',
+      q1: 'q1',
+      median: 'md',
+      q3: 'q3',
+      max: 'hi',
+      range: [0, 50],
+      data: LIST_IDS,
+      count: 'n',
+      brackets: { iqr: 'I' },
+    },
+  }),
+  page({
     id: 'm.9.data-displays~standard-deviation',
     title: 'Standard deviation',
     use: 'Use this for “Find the mean and the standard deviation of 1, 3, 3, 5, 5, 7, 7, 9.”',
@@ -4577,43 +4716,85 @@ const DATA_DISPLAYS: ModuleDef[] = [
       'The standard deviation is the typical distance of the values from the mean.',
       'σ = √(sum of squared deviations ÷ n): square each distance, add, divide by n, take the root.',
       'Most values lie within one standard deviation of the mean.',
+      'From 3 to 8 values: n says how many.',
     ],
     variables: [
-      ...DATA_IDS.map((id, i) => num(id, `x${sub(i + 1)}`, `Value ${i + 1}`, 0, 100, { step: 1 })),
+      int('n', 'n', 'Number of values', 3, 8),
+      ...DATA_IDS.map((id, i) => listValue(id, i, `Value ${i + 1}`, 100)),
       num('m', 'x̄', 'Mean', 0, 100, { derived: true }),
       num('S', 'S', 'Sum of squared deviations', 0, 100000, { derived: true }),
       num('sd', 'σ', 'Standard deviation', 0, 100, { derived: true }),
     ],
     rules: [
-      derive(
-        'x̄ = sum ÷ 8',
-        'm',
-        DATA_IDS,
-        `{m} = (${DATA_IDS.map((x) => `{${x}}`).join(' + ')}) ÷ 8`,
-        (v) => DATA_IDS.reduce((t, x) => t + v[x]!, 0) / 8,
-        `(${DATA_IDS.map((x) => `{${x}}`).join(' + ')}) ÷ 8`,
-        'Add the 8 values, then divide by 8.',
+      rule(
+        'x̄ = sum ÷ n',
+        '{m} = sum of the {n} values ÷ {n}',
+        ['m', 'n', ...DATA_IDS],
+        (v) => v.m! * v.n! - sumList(firstValues(DATA_IDS, v)),
+        {
+          m: [
+            (v) => div(sumList(firstValues(DATA_IDS, v)), v.n!),
+            (v) => `(${firstIds(DATA_IDS, v).map((x) => `{${x}}`).join(' + ')}) ÷ {n}`,
+            'Add the values, then divide by how many there are.',
+            {
+              work: (v) => {
+                const xs = firstValues(DATA_IDS, v);
+                const t = sumList(xs);
+                return [`${xs.map(fmt).join(' + ')} = ${fmt(t)}`, `${fmt(t)} ÷ ${v.n} = ${fmt(v.m!)}`];
+              },
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) =>
+            `(${firstValues(DATA_IDS, v).map(fmt).join(' + ')}) ÷ ${v.n} = ${fmt(v.m!)}`,
+        },
       ),
-      derive(
+      rule(
         'S = Σ(x − x̄)²',
-        'S',
-        ['m', ...DATA_IDS],
-        `{S} = ${DATA_IDS.map((x) => `({${x}} − {m})²`).join(' + ')}`,
-        (v) => DATA_IDS.reduce((t, x) => t + (v[x]! - v.m!) ** 2, 0),
-        DATA_IDS.map((x) => `({${x}} − {m})²`).join(' + '),
-        'Each value’s distance from the mean, squared, all added.',
+        '{S} = sum of the squared distances of the {n} values from {m}',
+        ['S', 'm', 'n', ...DATA_IDS],
+        (v) => v.S! - sumList(firstValues(DATA_IDS, v).map((x) => (x - v.m!) ** 2)),
+        {
+          S: [
+            (v) => sumList(firstValues(DATA_IDS, v).map((x) => (x - v.m!) ** 2)),
+            (v) =>
+              firstIds(DATA_IDS, v)
+                .map((x) => `({${x}} − {m})²`)
+                .join(' + '),
+            'Each value’s distance from the mean, squared, all added.',
+            {
+              work: (v) => {
+                const sq = firstValues(DATA_IDS, v).map((x) => exact((x - v.m!) ** 2));
+                return [
+                  `Squared distances: ${sq.map(fmt).join(', ')}`,
+                  `${sq.map(fmt).join(' + ')} = ${fmt(sumList(sq))}`,
+                ];
+              },
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) =>
+            `${firstValues(DATA_IDS, v)
+              .map((x) => `(${fmt(x)} − ${fmt(v.m!)})²`)
+              .join(' + ')} = ${fmt(v.S!)}`,
+        },
       ),
       derive(
-        'σ = √(S ÷ 8)',
+        'σ = √(S ÷ n)',
         'sd',
-        ['S'],
-        '{sd} = √({S} ÷ 8)',
-        (v) => Math.sqrt(v.S! / 8),
-        '√({S} ÷ 8)',
-        'Divide by n = 8, then take the square root.',
+        ['S', 'n'],
+        '{sd} = √({S} ÷ {n})',
+        (v) => div(Math.sqrt(v.S!), Math.sqrt(v.n!)),
+        '√({S} ÷ {n})',
+        'Divide by n, then take the square root.',
       ),
     ],
     example: {
+      n: 8,
       x1: 1,
       x2: 3,
       x3: 3,
@@ -4626,10 +4807,11 @@ const DATA_DISPLAYS: ModuleDef[] = [
       S: 48,
       sd: Math.sqrt(6),
     },
-    startWith: DATA_IDS,
+    startWith: ['n', ...DATA_IDS],
     representation: {
       kind: 'dotPlot',
       data: DATA_IDS,
+      count: 'n',
       min: 0,
       max: 10,
       mean: 'm',
@@ -4724,7 +4906,7 @@ const grandTotal = derive(
   'The grand total: add all four cells.',
 );
 /** f = part ÷ whole, a relative frequency. */
-const share = (f: string, part: string, whole: string, how: string) =>
+const share = (f: string, part: string, whole: string, how: string, more: Partial<StepText> = {}) =>
   derive(
     `${f} = ${part} ÷ ${whole}`,
     f,
@@ -4733,7 +4915,12 @@ const share = (f: string, part: string, whole: string, how: string) =>
     (v) => div(v[part]!, v[whole]!),
     `{${part}} ÷ {${whole}}`,
     how,
+    more,
   );
+/** "→ 45%" after a share. */
+const percentNote = (id: string): Partial<StepText> => ({
+  note: (v) => (v[id] === undefined ? '' : `→ ${fmt(exact(v[id] * 100))}%`),
+});
 /** A total of two cells. */
 const sum2cells = (t: string, x: string, y: string, how: string) =>
   derive(
@@ -4755,7 +4942,8 @@ const TABLE = {
 };
 const freq = (id: string, symbol: string, name: string) =>
   num(id, symbol, name, 0, 1, { derived: true });
-const total = (id: string, name: string) => int(id, id, name, 0, 2000, { derived: true });
+const total = (id: string, name: string, symbol = id) =>
+  int(id, symbol, name, 0, 2000, { derived: true });
 
 const TWO_WAY_TABLES: ModuleDef[] = [
   page({
@@ -4811,17 +4999,17 @@ const TWO_WAY_TABLES: ModuleDef[] = [
     ],
     variables: [
       ...CELLS,
-      total('R1', 'Grade 9 total'),
-      total('R2', 'Grade 10 total'),
-      freq('p1', 'p₁', 'Grade 9 who play'),
-      freq('p2', 'p₂', 'Grade 10 who play'),
+      total('R1', 'Grade 9 total', 'R₁'),
+      total('R2', 'Grade 10 total', 'R₂'),
+      freq('p1', 'p₁', 'Share of Grade 9 who play'),
+      freq('p2', 'p₂', 'Share of Grade 10 who play'),
       num('g', 'g', 'Gap between the rows', -1, 1, { derived: true }),
     ],
     rules: [
       sum2cells('R1', 'a', 'b', 'The row total for Grade 9.'),
       sum2cells('R2', 'c', 'd', 'The row total for Grade 10.'),
-      share('p1', 'a', 'R1', 'Of the Grade 9 students, the fraction who play.'),
-      share('p2', 'c', 'R2', 'Of the Grade 10 students, the fraction who play.'),
+      share('p1', 'a', 'R1', 'Of the Grade 9 students, the fraction who play.', percentNote('p1')),
+      share('p2', 'c', 'R2', 'Of the Grade 10 students, the fraction who play.', percentNote('p2')),
       derive(
         'g = p₁ − p₂',
         'g',
