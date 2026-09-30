@@ -152,7 +152,7 @@ New pages from the report: `s.9.biotechnology~mutation-types` (sort, page A) and
 - `s.9.nervous-system`: main reflex sequence, ~action-potential sequence, ~divisions and ~senses
   sorts, ~impulse-speed calculator (`doubleNumberLine`, ms per meter hidden).
 
-23 new pages in all (2 from the report, 21 for the skills): 4 calculators and 19 layouts.
+23 new pages in all (2 from the report, 21 for the skills): 3 calculators and 20 layouts.
 
 ## Shared needs (lesson review and added skills)
 
