@@ -13,12 +13,15 @@ into it.
 Every picture of round 1 (`H01`–`H88`) is drawn. The lesson chat then:
 
 - wrote a direction plan for each grade and subject, 9–12 (`docs/plans/<m|s>.<grade>.md`);
-- is building the pages from them, one builder per plan (`docs/BUILD_HS.md`);
+- built the pages from them, one builder per plan (`docs/BUILD_HS.md`);
 - listed what the plans still need in `docs/HS_NEEDS.md`. The engine part (E) is the lesson
-  chat's and mostly done. The picture part (P1–P15) is yours.
+  chat's and mostly done. The picture part (P1–P17) is yours.
 
-About 90 planned pages wait on these pictures. Each builder lists its waiting pages in
-`docs/build/<plan>.md` as it finishes.
+The builders are done: 533 Grade 9–12 pages are built and merged. 44 planned pages wait on your
+pictures, and some built pages use a stand-in until an option lands (a fixed sign instead of a
+sign box, a table instead of a missing picture, a normal curve instead of a t curve). Each
+`docs/build/<plan>.md` lists its waiting pages and stand-ins, and "Shared needs" names the options
+it wanted. The builders also found smaller options, collected as P16 and P17 (`H104`, `H105`).
 
 ## Read first
 
@@ -27,7 +30,7 @@ About 90 planned pages wait on these pictures. Each builder lists its waiting pa
 - `docs/HS_NEEDS.md`, the Pictures table.
 - For each entry, the plan need it quotes (`docs/plans/<plan>.md`, "Engine and picture needs"):
   it says what the page shows, which values drive it and which pages wait.
-- `src/data/modules/pictureRequestsHs.ts`: entries `H89`–`H103`, all `requested`. Each covers one
+- `src/data/modules/pictureRequestsHs.ts`: entries `H89`–`H105`, all `requested`. Each covers one
   P item and may hold several parts; draw them part by part.
 
 ## Order
@@ -44,13 +47,15 @@ Most pages first:
 3. **H102 (P14): Physics; H101 (P13): Chemistry; H100 (P12): Biology; H103 (P15): Earth and
    space.** About 10 pages each.
 4. **H89, H91–H95, H97–H99 (P1, P3–P7, P9–P11).** Smaller options on math kinds that exist.
+5. **H104–H105 (P16–P17).** Options that let built pages drop their stand-ins.
 
 ## Rules for this round
 
 - **A new option never changes a page that exists.** It is off unless a page sets it. The K–8
   and Grade 9–12 pages keep drawing as they do.
 - **Kinds and figures only.** Never edit the grade files `math/9–12.ts`, `science/9–12.ts` or
-  `layouts/*9–12.ts`: the lesson chat's builders own them. Show each part in a gallery demo.
+  `layouts/*9–12.ts`: the lesson chat places each picture on its pages and removes the
+  stand-ins. Show each part in a gallery demo.
 - **When a part is drawn:**
   - add its demo;
   - list the demo under the entry's `gallery` and write the fields you chose in its `notes`;

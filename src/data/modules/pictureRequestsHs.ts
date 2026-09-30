@@ -1888,4 +1888,27 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ],
     'P15: docs/plans/s.12.md needs 2–11.',
   ),
+  ask(
+    'H104',
+    'sort',
+    'Sorts: header text and bin icons (blood types, body systems, pathogens, domains, sampling methods); sort bins with figures; percentBar with a second mark',
+    ['s.9.immune-disease', 's.9.homeostasis', 's.9.classification', 'm.11.study-design'],
+    'P16: docs/build/s.9.md and m.11.md, "Shared needs".',
+  ),
+  ask(
+    'H105',
+    'functionGraph',
+    'Options the builders needed to replace stand-ins: value ids for fixed options, a "none" picture, matrixGrid rowReduce from values, reaction past 8 molecules, spectrum from a lab line value, and the rest of HS_NEEDS P17',
+    [
+      'm.9.regression',
+      'm.10.rigid-motions',
+      'm.11.polynomial-functions',
+      'm.12.matrices',
+      'm.12.confidence-intervals',
+      's.10.reaction-types',
+      's.11.momentum',
+      's.12.starlight-spectra',
+    ],
+    'P17: docs/HS_NEEDS.md lists each option; docs/build/<plan>.md says which page uses a stand-in until it lands.',
+  ),
 ];
