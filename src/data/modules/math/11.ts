@@ -9,7 +9,7 @@ import { binomialPmf, choose, invPhi, Phi } from '@/components/module/reps/statM
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
-import { atLeast, div } from '../helpers';
+import { div } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 import { syntheticDivision } from '../written';
 
@@ -58,6 +58,10 @@ function rule(
   return { relation: { id, display, vars, residual, solve, ...more }, steps };
 }
 
+/** Values a rule is never solved for (each gets a solver that gives nothing). */
+const never = (...ids: string[]): Record<string, [Solver]> =>
+  Object.fromEntries(ids.map((id): [string, [Solver]] => [id, [() => undefined]]));
+
 /** A value worked out from others, never solved backwards. */
 function derive(
   id: string,
@@ -102,7 +106,9 @@ function limit(
       constraint: true,
       display,
       vars,
-      residual: (v: Values) => (ok(v) ? 0 : 1),
+      // Not a flat 1 when broken: a limit broken at every probe point would pass for a
+      // straight-line rule that never holds (the harness search's `affineOf`).
+      residual: (v: Values) => (ok(v) ? 0 : 1 + vars.reduce((t, id) => t + (v[id] ?? 0) ** 2, 0)),
       solve: {},
       message: (v: Values) => (ok(v) ? undefined : why),
     },
@@ -116,7 +122,10 @@ function page(m: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
   return {
     ...rest,
     relations: rules.map((r) => r.relation),
-    steps: Object.fromEntries(rules.map((r) => [r.relation.id, r.steps])),
+    // (a figure-only relation places the drawing: it has no steps)
+    steps: Object.fromEntries(
+      rules.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+    ),
   };
 }
 
@@ -130,8 +139,9 @@ const inOpen = (p: number) => p > 0 && p < 1;
 /** A probability, 0 to 1. */
 const prob = (id: string, symbol: string, name: string, extra: Partial<VariableDef> = {}) =>
   V(id, symbol, name, { min: 0, max: 1, step: 0.0001, ...extra });
+/** A z-score: z-tables stop at ±3.49, and past ±3.5 the share rounds to 0 or 1. */
 const zVar = (id = 'z', name = 'z-score', symbol = 'z') =>
-  V(id, symbol, name, { min: -6, max: 6, step: 0.01 });
+  V(id, symbol, name, { min: -3.5, max: 3.5, step: 0.01 });
 
 /** z = (x − μ) ÷ σ. */
 const zScore = (z: string, x: string, m: string, s: string): Rule =>
@@ -175,17 +185,29 @@ const leftArea = (P: string, z: string): Rule =>
     ],
   });
 
-/** E = N × P, the expected count out of N. */
-const countOf = (E: string, N: string, P: string, what: string): Rule =>
-  rule(`${E} = ${N} × ${P}`, `{${E}} = {${N}} × {${P}}`, [E, N, P], (v) => v[E]! - v[N]! * v[P]!, {
-    [E]: [(v) => exact(v[N]! * v[P]!), `{${N}} × {${P}}`, what],
-    [N]: [
-      (v) => fin(div(v[E]!, v[P]!)),
-      `{${E}} ÷ {${P}}`,
-      'Divide the count by the share it is of the whole.',
-    ],
-    [P]: [(v) => fin(div(v[E]!, v[N]!)), `{${E}} ÷ {${N}}`, 'The count as a share of the whole.'],
-  });
+/** E = N × P, the expected count out of N, said as a whole count too ("about 327 of the 400"). */
+const countOf = (E: string, N: string, P: string, what: string): Rule => {
+  const r = rule(
+    `${E} = ${N} × ${P}`,
+    `{${E}} = {${N}} × {${P}}`,
+    [E, N, P],
+    (v) => v[E]! - v[N]! * v[P]!,
+    {
+      [E]: [(v) => exact(v[N]! * v[P]!), `{${N}} × {${P}}`, what],
+      [N]: [
+        (v) => fin(div(v[E]!, v[P]!)),
+        `{${E}} ÷ {${P}}`,
+        'Divide the count by the share it is of the whole.',
+      ],
+      [P]: [(v) => fin(div(v[E]!, v[N]!)), `{${E}} ÷ {${N}}`, 'The count as a share of the whole.'],
+    },
+  );
+  r.steps[E] = {
+    ...r.steps[E]!,
+    note: (v) => `(about ${fmt(Math.round(v[E]!))} of the ${fmt(v[N]!)})`,
+  };
+  return r;
+};
 
 /** a = b ± c. */
 const offset = (a: string, b: string, c: string, sign: 1 | -1, how: string): Rule => {
@@ -200,7 +222,7 @@ const offset = (a: string, b: string, c: string, sign: 1 | -1, how: string): Rul
       [b]: [
         (v) => exact(v[a]! - sign * v[c]!),
         `{${a}} ${sign > 0 ? '−' : '+'} {${c}}`,
-        'The center is halfway between the two ends.',
+        sign > 0 ? 'Go back down d from the upper cutoff.' : 'Go back up d from the lower cutoff.',
       ],
       [c]: [
         (v) => exact(sign * (v[a]! - v[b]!)),
@@ -227,6 +249,14 @@ const sup = (n: number) =>
 const par = (x: number) => (x < 0 ? `(${fmt(x)})` : fmt(x));
 /** A power as written, a negative base bracketed: (−3)². */
 const pw = (b: number, e: number) => `${b < 0 ? `(${fmt(b)})` : fmt(b)}${sup(e)}`;
+/** A number as a subscript, a base under a log: 2 → "₂", 2.5 → "₂.₅". */
+const subscript = (x: number) =>
+  [...fmt(x)].map((ch) => (/\d/.test(ch) ? '₀₁₂₃₄₅₆₇₈₉'[Number(ch)] : ch)).join('');
+/** log_b(x) is a whole number a student finds by asking which power of b makes x. */
+const wholePower = (v: Values) => {
+  const y = Math.log(v.x!) / Math.log(v.b!);
+  return Number.isFinite(y) && Math.abs(y - Math.round(y)) < 1e-9 && Math.abs(y) <= 12;
+};
 const BASE_NOT_1 = 'Every power of 1 is 1, so a base of 1 can’t make any other number.';
 
 /**
@@ -261,14 +291,186 @@ const quadWork = (a: number, b: number, c: number, sign: 1 | -1) => {
   ];
 };
 
+/** A number as a fraction when it is one with a bottom up to `most` (the page's `fraction`). */
+const fr = (x: number, most = 12) => formatNumber(x, { fraction: most });
+/**
+ * Terms joined with their signs, zero terms left out, a 1 before a letter left off:
+ * [[2, 'x²'], [−3, 'x'], [1, '']] → "2x² − 3x + 1".
+ */
+const terms = (ts: [number, string][], show: (x: number) => string = fmt) => {
+  const out: string[] = [];
+  for (const [c, t] of ts) {
+    if (Math.abs(c) < 1e-12) continue;
+    const size = Math.abs(c) === 1 && t !== '' ? '' : show(Math.abs(c));
+    const gap = size.includes('/') && /^[a-z]/.test(t) ? ' ' : '';
+    const sign = out.length ? (c < 0 ? ' − ' : ' + ') : c < 0 ? '−' : '';
+    out.push(`${sign}${size}${gap}${t}`);
+  }
+  return out.length ? out.join('') : '0';
+};
+/** A polynomial from its coefficients, highest power first: [2, −3, 1] → "2x² − 3x + 1". */
+const poly = (cs: number[], show: (x: number) => string = fmt) =>
+  terms(
+    cs.map((c, i) => {
+      const k = cs.length - 1 - i;
+      return [c, k === 0 ? '' : k === 1 ? 'x' : `x${sup(k)}`];
+    }),
+    show,
+  );
+/** x − r as written: x − 2, x + 4, x. */
+const lin = (r: number, show: (x: number) => string = fmt) =>
+  r === 0 ? 'x' : `x ${r < 0 ? '+' : '−'} ${show(Math.abs(r))}`;
+/** A complex number as written: 2 + 3i, 1 − 4i, −i, 11/5 − 2/5 i. */
+const cx = (re: number, im: number, show: (x: number) => string = fmt) =>
+  terms(
+    [
+      [re, ''],
+      [im, 'i'],
+    ],
+    show,
+  );
+/** √n in simplest form for a whole n > 0: √36 → "6", √124 → "2√31", √31 → "√31". */
+const radical = (n: number) => {
+  let k = Math.floor(Math.sqrt(n));
+  while (k > 1 && n % (k * k) !== 0) k--;
+  const rest = n / (k * k);
+  return rest === 1 ? String(k) : `${k > 1 ? k : ''}√${rest}`;
+};
+/** A sine or cosine as written: 6 × 10⁻¹⁷ is 0. */
+const tidy = (x: number) => Math.round(x * 1e10) / 1e10 || 0;
+/** An angle in radians as a fraction of π when it is one (π/2, −3π/4), else its decimal. */
+const radians = (x: number) => (Math.abs(x) < 1e-12 ? '0' : formatNumber(x, { pi: 'fraction' }));
+
+/** A fraction p/q, the bottom positive. */
+type Ratio = [number, number];
+/** x as p/q with q up to 12 (the pages' `fraction: 12`), or nothing. */
+const ratioOf = (x: number): Ratio | undefined => {
+  for (let q = 1; q <= 12; q++) {
+    const p = Math.round(x * q);
+    if (Math.abs(x * q - p) < 1e-9) return [p, q];
+  }
+  return undefined;
+};
+const lowest = ([p, q]: Ratio): Ratio => {
+  const g = gcd(p, q) || 1;
+  return [p / g, q / g];
+};
+/** A fraction as written: 3/4, −729/4096, or a whole number. */
+const ratioText = ([p, q]: Ratio) => (q === 1 ? fmt(p) : `${p < 0 ? '−' : ''}${Math.abs(p)}/${q}`);
+/** A negative number or a fraction bracketed, as written after × or ÷: (−63), (3/4). */
+const wrap = (t: string) => (t.startsWith('−') || t.includes('/') ? `(${t})` : t);
+/** rᵉ as a fraction when r is one and the numbers stay small, else its decimal. */
+const powRatio = (r: number, e: number): Ratio | undefined => {
+  const q = ratioOf(r);
+  return q && Math.abs(q[0]) ** e < 1e12 && q[1] ** e < 1e12
+    ? lowest([q[0] ** e, q[1] ** e])
+    : undefined;
+};
+const powValue = (r: number, e: number) => {
+  const q = powRatio(r, e);
+  return q ? ratioText(q) : fmt(r ** e);
+};
+/** rᵉ as written: 2⁵, (−3)², (3/4)⁶. */
+const powOf = (r: number, e: number) => {
+  const q = ratioOf(r);
+  return q && q[1] !== 1 ? `(${ratioText(q)})${sup(e)}` : pw(r, e);
+};
+/** The geometric sum worked: Sₙ = 3 × (1 − 64) ÷ (1 − 2), then Sₙ = 3 × (−63) ÷ (−1). */
+const geometricSumWork = (a1: number, r: number, n: number) => {
+  const q = ratioOf(r);
+  const rn = powRatio(r, n);
+  const inner = (t: string) => (t.startsWith('−') ? `(${t})` : t);
+  const top = rn ? ratioText(lowest([rn[1] - rn[0], rn[1]])) : fmt(1 - r ** n);
+  const bottom = q ? ratioText(lowest([q[1] - q[0], q[1]])) : fmt(1 - r);
+  return [
+    `Sₙ = ${fmt(a1)} × (1 − ${inner(powValue(r, n))}) ÷ (1 − ${inner(q ? ratioText(q) : fmt(r))})`,
+    `Sₙ = ${fmt(a1)} × ${wrap(top)} ÷ ${wrap(bottom)}`,
+  ];
+};
+/** The n that makes a₁rⁿ⁻¹ = aₙ, a whole number from 1 to 30, or nothing. */
+const termCount = (a1: number, r: number, an: number) => {
+  if (a1 === 0 || r === 0 || Math.abs(r) === 1) return undefined;
+  const k = Math.log(Math.abs(an / a1)) / Math.log(Math.abs(r));
+  const e = Math.round(k);
+  if (!(Math.abs(k - e) < 1e-9) || e < 0 || e > 29) return undefined;
+  return Math.abs(a1 * r ** e - an) <= 1e-9 * Math.max(1, Math.abs(an)) ? e + 1 : undefined;
+};
+
+/** (ax + b)ⁿ written out:(x + 2)⁴ = x⁴ + 8x³ + 24x² + 32x + 16. */
+const expansion = (a: number, b: number, n: number) => {
+  const cs = Array.from({ length: n + 1 }, (_, i) => choose(n, n - i) * a ** (n - i) * b ** i);
+  return `(${terms([
+    [a, 'x'],
+    [b, ''],
+  ])})${n === 1 ? '' : sup(n)} = ${poly(cs)}`;
+};
+
+/** pπ/q as written: 5π/4, π/6, −π/2, 2π, π. */
+const piOver = (p: number, q: number) => {
+  const top = `${p < 0 ? '−' : ''}${Math.abs(p) === 1 ? '' : fmt(Math.abs(p))}π`;
+  return p === 0 ? '0' : q === 1 ? top : `${top}/${fmt(q)}`;
+};
+/** An angle on an axis, between quadrants. */
+const onAxis = (deg: number) => Math.abs(deg / 90 - Math.round(deg / 90)) < 1e-9;
+const ON_AXIS =
+  'The side lies on an axis, between quadrants: it has no quadrant or reference angle.';
+/** The sign of cosine (and secant) in quadrant Q: + in I and IV, − in II and III. */
+const cosSign = (Q: number) => (Q === 1 || Q === 4 ? 1 : -1);
+/** A value shown as the identity pages show it (fraction: 100). */
+const f100 = (x: number) => fr(x, 100);
+/** x as p/q with q up to 100, or nothing. */
+const ratioOf100 = (x: number): Ratio | undefined => {
+  for (let q = 1; q <= 100; q++) {
+    const p = Math.round(x * q);
+    if (Math.abs(x * q - p) < 1e-9) return [p, q];
+  }
+  return undefined;
+};
+/** θ in degrees from sin θ and the quadrant. */
+const angleFromSin = (s: number, Q: number) => {
+  const a = (Math.asin(s) * 180) / PI;
+  return Q === 1 ? a : Q === 4 ? 360 + a : 180 - a;
+};
+/** The whole factors of n > 0. */
+const factorsOf = (n: number) =>
+  Array.from({ length: n }, (_, i) => i + 1).filter((f) => n % f === 0);
+/**
+ * The rational root theorem's candidates for ax³ + … + d, then the one tested:
+ * "Candidates: ±(1, 2, 3, 6) ÷ (1, 2) = ±1, ±2, ±3, ±6, ±1/2, ±3/2; try r = 3."
+ */
+const rationalCandidates = (a: number, d: number, r: number) => {
+  const tryR = `try r = ${fr(r)}`;
+  if (d === 0) return `d = 0, so x is a factor and r = 0 is a root; ${tryR}.`;
+  if (!Number.isInteger(a) || !Number.isInteger(d)) return `${tryR}.`;
+  const [ps, qs] = [factorsOf(Math.abs(d)), factorsOf(Math.abs(a))];
+  const all = [...new Set(ps.flatMap((p) => qs.map((q) => p / q)))].sort(
+    (x, y) => (ratioOf(x)?.[1] ?? 99) - (ratioOf(y)?.[1] ?? 99) || x - y,
+  );
+  const head = `Candidates: ±(${ps.join(', ')}) ÷ (${qs.join(', ')})`;
+  return all.length > 12
+    ? `${head}; ${tryR}.`
+    : `${head} = ${all.map((x) => `±${fr(x)}`).join(', ')}; ${tryR}.`;
+};
+
 /** The vertical factors a transformation page offers. */
 const STRETCH = [-4, -3, -2, -1, -0.5, 0.5, 1, 2, 3, 4];
 
-/** Whether a rational equation's candidate is kept: it must not make x or x − p zero. */
-const candidateHow = (v: Values, x: number, name: string) =>
-  Math.abs(x) < 1e-9 || Math.abs(x - v.p!) < 1e-9
-    ? `${name} makes a denominator 0: it is extraneous, so reject it.`
-    : `${name} keeps every denominator nonzero: it is a solution.`;
+/**
+ * A candidate of x/(x − p) = a/(x − p) + b/x worked by the quadratic formula, then the verdict:
+ * rejected when it makes x or x − p zero, else checked in the first equation.
+ */
+const candidateWork = (v: Values, sign: 1 | -1) => {
+  const [a, b, p] = [v.a!, v.b!, v.p!];
+  const x = rootOf(1, -(a + b), b * p, sign)!;
+  const name = sign > 0 ? 'x₁' : 'x₂';
+  const verdict =
+    Math.abs(x) < 1e-9
+      ? `x = 0 makes the denominator x zero: reject it`
+      : Math.abs(x - p) < 1e-9
+        ? `x = ${fmt(x)} makes ${lin(p)} = 0: reject it`
+        : `x = ${fmt(x)}: ${fmt(x)}/${wrap(fmt(x - p))} = ${fmt(a)}/${wrap(fmt(x - p))} + ${fmt(b)}/${wrap(fmt(x))} ✓`;
+  return [...quadWork(1, -(a + b), b * p, sign).map((l) => `${name} = ${l}`), verdict];
+};
 
 /** The share within 1, 2 or 3 standard deviations, in percent, by the 68–95–99.7 rule. */
 const EMPIRICAL: Record<number, number> = { 1: 68, 2: 95, 3: 99.7 };
@@ -324,6 +526,13 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('E', 'E', 'Expected count between a and b', { min: 0, max: 10000, step: 0.1 }),
     ],
     rules: [
+      limit(
+        'a < b',
+        '{a} is less than {b}',
+        ['a', 'b'],
+        (v) => v.a! < v.b!,
+        'The lower value a must be less than the upper value b.',
+      ),
       zScore('za', 'a', 'm', 's'),
       zScore('zb', 'b', 'm', 's'),
       rule(
@@ -382,12 +591,12 @@ export const MATH_11_MODULES: ModuleDef[] = [
       'Of N values, about N × P are more than d from the mean.',
     ],
     variables: [
-      MU('g', 0, 10000),
-      SIGMA('g', 1000),
-      V('d', 'd', 'Distance from the mean', { unit: 'g', min: 0.01, max: 5000, step: 0.1 }),
-      V('lo', 'L', 'Lower cutoff', { unit: 'g', min: -5000, max: 15000, step: 0.1 }),
-      V('hi', 'U', 'Upper cutoff', { unit: 'g', min: -5000, max: 15000, step: 0.1 }),
-      V('z', 'z', 'z-score of d', { min: 0, max: 6, step: 0.01 }),
+      MU(undefined, -5000, 10000),
+      SIGMA(undefined, 1000),
+      V('d', 'd', 'Distance from the mean', { min: 0.01, max: 5000, step: 0.1 }),
+      V('lo', 'L', 'Lower cutoff', { min: -10000, max: 15000, step: 0.1 }),
+      V('hi', 'U', 'Upper cutoff', { min: -10000, max: 15000, step: 0.1 }),
+      V('z', 'z', 'z-score of d', { min: 0, max: 3.5, step: 0.01 }),
       prob('P', 'P', 'Share more than d from the mean'),
       W('N', 'N', 'Values in all', 1, 100000),
       V('E', 'E', 'Expected count outside', { min: 0, max: 100000, step: 0.1 }),
@@ -397,7 +606,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
       offset('hi', 'm', 'd', 1, 'Go up d from the mean.'),
       rule('z = d ÷ σ', '{z} = {d} ÷ {s}', ['z', 'd', 's'], (v) => v.z! * v.s! - v.d!, {
         z: [(v) => fin(div(v.d!, v.s!)), '{d} ÷ {s}', 'The distance in standard deviations.'],
-        d: [(v) => exact(v.z! * v.s!), '{z} × {s}', 'z standard deviations, in grams.'],
+        d: [(v) => exact(v.z! * v.s!), '{z} × {s}', 'z standard deviations.'],
         s: [(v) => fin(div(v.d!, v.z!)), '{d} ÷ {z}', 'The distance split into z equal steps.'],
       }),
       rule(
@@ -432,13 +641,12 @@ export const MATH_11_MODULES: ModuleDef[] = [
       E: 1000 * (1 - Phi(1.5)),
     },
     startWith: ['m', 's', 'd', 'N'],
-    unitSystems: ['metric'],
     pictureLabels: ['d', 'z', 'N', 'E'],
     representation: {
       kind: 'normalCurve',
       mean: 'm',
       sd: 's',
-      axis: 'Weight (g)',
+      axis: 'Value',
       shade: { from: 'lo', to: 'hi', outside: true, area: 'P' },
     },
   }),
@@ -581,6 +789,13 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('hi', 'U', 'Upper end', { min: -1, max: 2, step: 0.0001, derived: true }),
     ],
     rules: [
+      limit(
+        'n × p̂ ≥ 10 and n × (1 − p̂) ≥ 10',
+        '{n} × {ph} and {n} × (1 − {ph}) are each at least 10',
+        ['n', 'ph'],
+        (v) => v.n! * v.ph! >= 10 - 1e-9 && v.n! * (1 - v.ph!) >= 10 - 1e-9,
+        'The normal model needs at least 10 yes and 10 no answers: n × p̂ and n × (1 − p̂) of 10 or more.',
+      ),
       derive(
         'SE = √(p̂ × (1 − p̂) ÷ n)',
         'SE',
@@ -655,12 +870,18 @@ export const MATH_11_MODULES: ModuleDef[] = [
         max: 1e12,
         derived: true,
       }),
-      prob('P', 'P', 'P(X = k)', { derived: true }),
+      prob('P', 'P', 'Probability of exactly k successes, P(X = k)', { derived: true }),
       V('E', 'E', 'Expected successes E(X)', { min: 0, max: 40, step: 0.01 }),
       V('S', 'σ', 'Standard deviation', { min: 0, max: 10, step: 0.0001, derived: true }),
     ],
     rules: [
-      { relation: atLeast('n', 'k') as Relation, steps: {} },
+      limit(
+        'k ≤ n',
+        '{k} is at most {n}',
+        ['n', 'k'],
+        (v) => v.k! <= v.n!,
+        'k counts successes among the n trials, so k is at most n.',
+      ),
       derive(
         'C = C(n, k)',
         'C',
@@ -678,6 +899,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.C! * v.p! ** v.k! * (1 - v.p!) ** (v.n! - v.k!),
         '{C} × {p}^{k} × (1 − {p})^({n} − {k})',
         'Each order has k successes at p and n − k failures at 1 − p.',
+        {
+          work: (v) => {
+            const [pk, q] = [v.p! ** v.k!, 1 - v.p!];
+            return [
+              `P = ${fmt(v.C!)} × ${fmt(pk)} × ${fmt(q)}${sup(v.n! - v.k!)}`,
+              `P = ${fmt(v.C!)} × ${fmt(pk)} × ${fmt(q ** (v.n! - v.k!))}`,
+            ];
+          },
+        },
       ),
       rule('E = n × p', '{E} = {n} × {p}', ['E', 'n', 'p'], (v) => v.E! - v.n! * v.p!, {
         E: [(v) => exact(v.n! * v.p!), '{n} × {p}', 'On average, p of the n trials succeed.'],
@@ -721,19 +951,27 @@ export const MATH_11_MODULES: ModuleDef[] = [
       'X takes four values, each with its own probability.',
       'The probabilities add to 1, so the last one is 1 minus the others.',
       'E(X) is the average of X over many plays: each value times its probability, added.',
+      'For fewer outcomes, give the extra values probability 0.',
     ],
     variables: [
       V('x1', 'x₁', 'First value', { min: -1000, max: 1000, step: 1 }),
       V('x2', 'x₂', 'Second value', { min: -1000, max: 1000, step: 1 }),
       V('x3', 'x₃', 'Third value', { min: -1000, max: 1000, step: 1 }),
-      V('x4', 'x₄', 'Fourth value', { min: -1000, max: 1000, step: 1 }),
-      prob('p1', 'p₁', 'P(X = x₁)', { step: 0.01 }),
-      prob('p2', 'p₂', 'P(X = x₂)', { step: 0.01 }),
-      prob('p3', 'p₃', 'P(X = x₃)', { step: 0.01 }),
-      prob('p4', 'p₄', 'P(X = x₄)', { step: 0.01, derived: true }),
-      V('E', 'E', 'Expected value E(X)', { min: -1000, max: 1000, step: 0.01, derived: true }),
+      V('x4', 'x₄', 'Fourth value', { min: -1e5, max: 1e5, step: 1 }),
+      prob('p1', 'p₁', 'Probability of x₁', { step: 0.01 }),
+      prob('p2', 'p₂', 'Probability of x₂', { step: 0.01 }),
+      prob('p3', 'p₃', 'Probability of x₃', { step: 0.01 }),
+      prob('p4', 'p₄', 'Probability of x₄', { step: 0.01, derived: true }),
+      V('E', 'E', 'Expected value E(X)', { min: -1000, max: 1000, step: 0.01 }),
     ],
     rules: [
+      limit(
+        'p₁ + p₂ + p₃ ≤ 1',
+        '{p1} + {p2} + {p3} is at most 1',
+        ['p1', 'p2', 'p3'],
+        (v) => v.p1! + v.p2! + v.p3! <= 1 + 1e-9,
+        'The first three probabilities already add to more than 1.',
+      ),
       derive(
         'p₄ = 1 − (p₁ + p₂ + p₃)',
         'p4',
@@ -743,18 +981,31 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '1 − ({p1} + {p2} + {p3})',
         'All the probabilities add to 1.',
       ),
-      derive(
+      rule(
         'E = x₁p₁ + x₂p₂ + x₃p₃ + x₄p₄',
-        'E',
-        ['x1', 'p1', 'x2', 'p2', 'x3', 'p3', 'x4', 'p4'],
         '{E} = {x1} × {p1} + {x2} × {p2} + {x3} × {p3} + {x4} × {p4}',
-        (v) => v.x1! * v.p1! + v.x2! * v.p2! + v.x3! * v.p3! + v.x4! * v.p4!,
-        '{x1} × {p1} + {x2} × {p2} + {x3} × {p3} + {x4} × {p4}',
-        'Weight each value by its probability, then add.',
+        ['E', 'x1', 'p1', 'x2', 'p2', 'x3', 'p3', 'x4', 'p4'],
+        (v) => v.E! - (v.x1! * v.p1! + v.x2! * v.p2! + v.x3! * v.p3! + v.x4! * v.p4!),
+        {
+          E: [
+            (v) => exact(v.x1! * v.p1! + v.x2! * v.p2! + v.x3! * v.p3! + v.x4! * v.p4!),
+            '{x1} × {p1} + {x2} × {p2} + {x3} × {p3} + {x4} × {p4}',
+            'Weight each value by its probability, then add.',
+          ],
+          x4: [
+            (v) =>
+              v.p4! > 1e-9
+                ? fin((v.E! - v.x1! * v.p1! - v.x2! * v.p2! - v.x3! * v.p3!) / v.p4!)
+                : undefined,
+            '({E} − {x1} × {p1} − {x2} × {p2} − {x3} × {p3}) ÷ {p4}',
+            'Take the other three weighted values from E, then divide by p₄: E = 0 makes the game fair.',
+          ],
+          ...never('x1', 'p1', 'x2', 'p2', 'x3', 'p3', 'p4'),
+        },
       ),
     ],
     example: { x1: -2, x2: 0, x3: 5, x4: 20, p1: 0.5, p2: 0.3, p3: 0.15, p4: 0.05, E: 0.75 },
-    startWith: ['x1', 'x2', 'x3', 'x4', 'p1', 'p2', 'p3'],
+    startWith: ['x4', 'x1', 'x2', 'x3', 'p1', 'p2', 'p3'],
     representation: {
       kind: 'histogram',
       probability: {
@@ -773,18 +1024,29 @@ export const MATH_11_MODULES: ModuleDef[] = [
     assumptions: [
       'Write (ax + b)ⁿ as (A + B)ⁿ with A = ax and B = b: row n of Pascal’s triangle gives the coefficients.',
       'In every term the powers of A and B add up to n: the xᵏ term is C(n, k)Aᵏ Bⁿ⁻ᵏ.',
-      'A negative b makes every other term negative.',
+      'When exactly one of a and b is negative, the terms alternate in sign.',
     ],
     variables: [
       V('a', 'a', 'Coefficient of x', { integer: true, min: -5, max: 5 }),
       V('b', 'b', 'Constant', { integer: true, min: -10, max: 10 }),
       W('n', 'n', 'Power', 1, 12),
       W('k', 'k', 'Power of x in the term', 0, 12),
-      V('C', 'C', 'Pascal entry C(n, k)', { integer: true, min: 1, max: 1000, derived: true }),
+      V('C', 'C', 'Entry of Pascal’s triangle, C(n, k)', {
+        integer: true,
+        min: 1,
+        max: 1000,
+        derived: true,
+      }),
       V('T', 'T', 'Coefficient of xᵏ', { integer: true, min: -1e16, max: 1e16, derived: true }),
     ],
     rules: [
-      { relation: atLeast('n', 'k') as Relation, steps: {} },
+      limit(
+        'k ≤ n',
+        '{k} is at most {n}',
+        ['n', 'k'],
+        (v) => v.k! <= v.n!,
+        'The xᵏ term takes ax from k of the n factors, so k is at most n.',
+      ),
       derive(
         'C = C(n, k)',
         'C',
@@ -804,8 +1066,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'k factors give ax and the other n − k give b.',
         {
           work: (v) => [
-            `${fmt(v.C!)} × ${pw(v.a!, v.k!)} × ${pw(v.b!, v.n! - v.k!)}`,
-            `${fmt(v.C!)} × ${fmt(v.a! ** v.k!)} × ${fmt(v.b! ** (v.n! - v.k!))}`,
+            `T = ${fmt(v.C!)} × ${pw(v.a!, v.k!)} × ${pw(v.b!, v.n! - v.k!)}`,
+            `T = ${fmt(v.C!)} × ${par(v.a! ** v.k!)} × ${par(v.b! ** (v.n! - v.k!))}`,
           ],
         },
       ),
@@ -838,34 +1100,50 @@ export const MATH_11_MODULES: ModuleDef[] = [
             min: -1e9,
             max: 1e9,
             derived: true,
+            // A power of x above n has no term: its coefficient is left out.
+            ...(j > 0 ? { countedBy: { count: 'n', index: j } } : {}),
           },
         ),
       ),
     ],
-    rules: [6, 5, 4, 3, 2, 1, 0].map((j) =>
-      derive(
-        `c${j} = C(n, ${j}) × a^${j} × b^(n − ${j})`,
-        `c${j}`,
-        ['n', 'a', 'b'],
-        `{c${j}} = C({n}, ${j}) × {a}^${j} × {b}^({n} − ${j})`,
-        (v) => (v.n! < j ? 0 : choose(v.n!, j) * v.a! ** j * v.b! ** (v.n! - j)),
-        (v) => (v.n! < j ? '0' : `C({n}, ${j}) × {a}^${j} × {b}^({n} − ${j})`),
-        (v) =>
-          v.n! < j
-            ? `(ax + b)ⁿ has no power of x above n.`
-            : `Row n, entry ${j}, times a to the ${j} and b to the rest of the power.`,
+    rules: [6, 5, 4, 3, 2, 1, 0].map((j) => {
+      const c = `c${'₀₁₂₃₄₅₆'[j]}`;
+      const id = `c${j}`;
+      const coef = (v: Values) => choose(v.n!, j) * v.a! ** j * v.b! ** (v.n! - j);
+      const expr = `C({n}, ${j}) × {a}^${j} × {b}^({n} − ${j})`;
+      // A power of x above n has no coefficient: the rule holds with nothing to find, and its
+      // value (counted only up to n) is named in words, not by its box.
+      const r = rule(
+        `${id} = C(n, ${j}) × a^${j} × b^(n − ${j})`,
+        j === 0 ? `{c0} = ${expr}` : `coefficient of x${j > 1 ? sup(j) : ''} = ${expr}`,
+        [id, 'n', 'a', 'b'],
+        (v) => (v.n! < j ? 0 : v[id]! - coef(v)),
         {
-          work: (v) =>
-            v.n! < j
-              ? []
-              : [
-                  `${choose(v.n!, j)} × ${pw(v.a!, j)} × ${pw(v.b!, v.n! - j)}`,
-                  `${choose(v.n!, j)} × ${fmt(v.a! ** j)} × ${fmt(v.b! ** (v.n! - j))}`,
-                ],
+          [id]: [
+            (v) => (v.n! < j ? undefined : coef(v)),
+            expr,
+            `Row n, entry ${j}, times a to the ${j} and b to the rest of the power.`,
+          ],
+          ...never('n', 'a', 'b'),
         },
-      ),
-    ),
-    example: { a: 1, b: 2, n: 4, c6: 0, c5: 0, c4: 1, c3: 8, c2: 24, c1: 32, c0: 16 },
+        {
+          check: (v) =>
+            v.n! < j
+              ? `no x${sup(j)} term: the powers stop at n`
+              : `${fmt(v[id]!)} = ${choose(v.n!, j)} × ${pw(v.a!, j)} × ${pw(v.b!, v.n! - j)}`,
+          work: {
+            [id]: (v) => [
+              `${c} = ${choose(v.n!, j)} × ${pw(v.a!, j)} × ${pw(v.b!, v.n! - j)}`,
+              `${c} = ${choose(v.n!, j)} × ${par(v.a! ** j)} × ${par(v.b! ** (v.n! - j))}`,
+              // The last coefficient found: the whole expansion.
+              ...(j === 0 ? [expansion(v.a!, v.b!, v.n!)] : []),
+            ],
+          },
+        },
+      );
+      return r;
+    }),
+    example: { a: 1, b: 2, n: 4, c4: 1, c3: 8, c2: 24, c1: 32, c0: 16 },
     startWith: ['a', 'b', 'n'],
     equation: '({a}x + {b})^{n}',
     representation: { kind: 'pascalTriangle', n: 'n', rows: 6, expand: { a: 'A', b: 'B' } },
@@ -876,7 +1154,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     use: 'Use this for “Fill in row 6 of Pascal’s triangle” or “Find C(6, 2) from row 5.”',
     assumptions: [
       'Each row starts and ends with 1.',
-      'Every other entry is the sum of the two entries above it: C(n, k) = C(n − 1, k − 1) + C(n − 1, k).',
+      'Each inside entry is the sum of the two entries above it: C(n, k) = C(n − 1, k − 1) + C(n − 1, k).',
     ],
     variables: [
       W('n', 'n', 'Row', 2, 12),
@@ -911,6 +1189,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => nCk(v.n! - 1, v.k! - 1),
         'C({n} − 1, {k} − 1)',
         'The entry up and to the left, in row n − 1.',
+        { work: (v) => [`L = C(${v.n! - 1}, ${v.k! - 1})`] },
       ),
       derive(
         'R = C(n − 1, k)',
@@ -920,6 +1199,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => nCk(v.n! - 1, v.k!),
         'C({n} − 1, {k})',
         'The entry up and to the right, in row n − 1.',
+        { work: (v) => [`R = C(${v.n! - 1}, ${v.k!})`] },
       ),
       derive(
         'E = L + R',
@@ -952,19 +1232,40 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     rules: [
       limit('b ≠ 1', 'The base {b} is not 1', ['b'], (v) => v.b !== 1, BASE_NOT_1),
-      rule('x = b^y', '{x} = {b}^{y}', ['x', 'b', 'y'], (v) => ln(v.x!) - v.y! * ln(v.b!), {
-        y: [
-          (v) => (v.b === 1 || !(v.x! > 0) ? undefined : fin(log10(v.x!) / log10(v.b!))),
-          'log₁₀ {x} ÷ log₁₀ {b}',
-          'The power of b that makes x; the common logs of x and b give it by dividing.',
-        ],
-        x: [(v) => fin(v.b! ** v.y!), '{b}^{y}', 'Rewrite log_b(x) = y as bʸ = x.'],
-        b: [
-          (v) => (v.y === 0 || !(v.x! > 0) ? undefined : fin(v.x! ** (1 / v.y!))),
-          '{x}^(1 ÷ {y})',
-          'bʸ = x, so b is the yth root of x.',
-        ],
-      }),
+      rule(
+        'x = b^y',
+        '{x} = {b}^{y}',
+        ['x', 'b', 'y'],
+        (v) => ln(v.x!) - v.y! * ln(v.b!),
+        {
+          y: [
+            (v) => (v.b === 1 || !(v.x! > 0) ? undefined : fin(log10(v.x!) / log10(v.b!))),
+            // A whole power is found by asking what power of b makes x; any other by the
+            // common logs (change of base).
+            (v) => (wholePower(v) ? 'log_{b}({x})' : 'log₁₀ {x} ÷ log₁₀ {b}'),
+            (v) =>
+              wholePower(v)
+                ? 'Ask: b to what power makes x?'
+                : 'The power of b that makes x; the common logs of x and b give it by dividing.',
+          ],
+          x: [(v) => fin(v.b! ** v.y!), '{b}^{y}', 'Rewrite log_b(x) = y as bʸ = x.'],
+          b: [
+            (v) => (v.y === 0 || !(v.x! > 0) ? undefined : fin(v.x! ** (1 / v.y!))),
+            '{x}^(1 ÷ {y})',
+            'bʸ = x, so b is the yth root of x.',
+          ],
+        },
+        {
+          work: {
+            y: (v) =>
+              wholePower(v)
+                ? [
+                    `${pw(v.b!, v.y!)} = ${fmt(v.x!)}, so log${subscript(v.b!)} ${fmt(v.x!)} = ${fmt(v.y!)}`,
+                  ]
+                : [],
+          },
+        },
+      ),
     ],
     example: { b: 2, x: 32, y: 5 },
     startWith: ['b', 'x'],
@@ -989,14 +1290,14 @@ export const MATH_11_MODULES: ModuleDef[] = [
     variables: [
       V('b', 'b', 'Base', { min: 0.1, max: 20, step: 0.01 }),
       V('x', 'x', 'Number', { min: 0.001, max: 1e9, step: 0.01 }),
-      V('L1', 'log x', 'Common log of x', { min: -3, max: 9, step: 0.0001, derived: true }),
-      V('L2', 'log b', 'Common log of b', { min: -1, max: 1.31, step: 0.0001, derived: true }),
+      V('L1', 'L₁', 'Common log of x, log x', { min: -3, max: 9, step: 0.0001, derived: true }),
+      V('L2', 'L₂', 'Common log of b, log b', { min: -1, max: 1.31, step: 0.0001, derived: true }),
       V('y', 'y', 'log_b(x)', { min: -1000, max: 1000, step: 0.0001, derived: true }),
     ],
     rules: [
       limit('b ≠ 1', 'The base {b} is not 1', ['b'], (v) => v.b !== 1, BASE_NOT_1),
       derive(
-        'log x = log₁₀ x',
+        'L₁ = log₁₀ x',
         'L1',
         ['x'],
         '{L1} = log₁₀ {x}',
@@ -1005,7 +1306,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'The common log: the power of 10 that makes x.',
       ),
       derive(
-        'log b = log₁₀ b',
+        'L₂ = log₁₀ b',
         'L2',
         ['b'],
         '{L2} = log₁₀ {b}',
@@ -1014,7 +1315,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'The common log of the base.',
       ),
       derive(
-        'y = log x ÷ log b',
+        'y = L₁ ÷ L₂',
         'y',
         ['L1', 'L2'],
         '{y} = {L1} ÷ {L2}',
@@ -1151,6 +1452,16 @@ export const MATH_11_MODULES: ModuleDef[] = [
             v.a !== undefined && v.c !== undefined && v.a !== 0 && v.c / v.a <= 0
               ? 'bˣ is always positive, so a × bˣ has the sign of a: no x makes it c.'
               : undefined,
+          work: {
+            x: (v) => {
+              const q = v.c! / v.a!;
+              return [
+                `${fmt(v.b!)}ˣ = ${fmt(q)}`,
+                `x = log₁₀ ${fmt(q)} ÷ log₁₀ ${fmt(v.b!)}`,
+                `x = ${fmt(log10(q))} ÷ ${par(log10(v.b!))}`,
+              ];
+            },
+          },
         },
       ),
     ],
@@ -1180,12 +1491,19 @@ export const MATH_11_MODULES: ModuleDef[] = [
       W('g', 'g', 'Common base', 2, 10),
       W('p', 'p', 'Power of g on the left', 1, 6),
       W('q', 'q', 'Power of g on the right', 1, 6),
-      W('m', 'm', 'Exponent on the left', 1, 20),
-      V('B1', 'gᵖ', 'Left base', { integer: true, min: 2, max: 1e6, derived: true }),
-      V('B2', 'g^q', 'Right base', { integer: true, min: 2, max: 1e6, derived: true }),
-      V('x', 'x', 'Exponent on the right', { min: 0, max: 200, fraction: 12 }),
+      W('m', 'm', 'Exponent on the left', -20, 20),
+      V('B1', 'B₁', 'Left base', { integer: true, min: 2, max: 1e6, derived: true }),
+      V('B2', 'B₂', 'Right base', { integer: true, min: 2, max: 1e6, derived: true }),
+      V('x', 'x', 'Exponent on the right', { min: -200, max: 200, fraction: 12 }),
     ],
     rules: [
+      limit(
+        'm ≠ 0',
+        '{m} is not 0',
+        ['m'],
+        (v) => v.m !== 0,
+        'A power 0 makes the left side 1, and then x is 0.',
+      ),
       derive(
         'B1 = g^p',
         'B1',
@@ -1223,6 +1541,19 @@ export const MATH_11_MODULES: ModuleDef[] = [
           p: [() => undefined],
           q: [() => undefined],
         },
+        {
+          work: {
+            x: (v) => [
+              ...(v.g === undefined
+                ? []
+                : [
+                    `(${pw(v.g, v.p!)})${sup(v.m!)} = (${pw(v.g, v.q!)})ˣ`,
+                    `${pw(v.g, v.p! * v.m!)} = ${fmt(v.g)}${v.q === 1 ? '' : sup(v.q!)}ˣ`,
+                  ]),
+              `${v.q === 1 ? '' : fmt(v.q!)}x = ${fmt(v.p! * v.m!)}`,
+            ],
+          },
+        },
       ),
     ],
     example: { g: 2, p: 2, q: 3, m: 6, B1: 4, B2: 8, x: 4 },
@@ -1248,10 +1579,10 @@ export const MATH_11_MODULES: ModuleDef[] = [
       'To find t, divide by P and take ln of both sides: rt = ln(A ÷ P).',
     ],
     variables: [
-      V('P', 'P', 'Starting amount ($)', { min: 1, max: 1e6, step: 1 }),
+      V('P', 'P', 'Starting amount', { unit: '$', min: 1, max: 1e6, step: 0.01 }),
       V('r', 'r', 'Rate per year', { min: 0.001, max: 1, step: 0.001 }),
       V('t', 't', 'Time (years)', { min: 0, max: 100, step: 0.01 }),
-      V('A', 'A', 'Amount ($)', { min: 1, max: 1e50, step: 0.01 }),
+      V('A', 'A', 'Amount', { unit: '$', min: 1, max: 1e8, step: 0.01 }),
     ],
     rules: [
       rule(
@@ -1281,10 +1612,22 @@ export const MATH_11_MODULES: ModuleDef[] = [
             'Divide by P, take ln of both sides, then divide by t.',
           ],
         },
+        {
+          work: {
+            t: (v) => {
+              const q = v.A! / v.P!;
+              return [
+                `e^(${fmt(v.r!)}t) = ${fmt(q)}`,
+                `${fmt(v.r!)}t = ln ${fmt(q)}`,
+                `t = ${fmt(ln(q))} ÷ ${fmt(v.r!)}`,
+              ];
+            },
+          },
+        },
       ),
     ],
-    example: { P: 2000, r: 0.05, t: 10, A: 2000 * Math.exp(0.5) },
-    startWith: ['t', 'P', 'r'],
+    example: { P: 2000, r: 0.05, A: 3000, t: ln(1.5) / 0.05 },
+    startWith: ['A', 'P', 'r'],
     equation: '{A} = {P}e^{{r}{t}}',
     representation: {
       kind: 'functionGraph',
@@ -1311,9 +1654,9 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('b', 'b', 'Base', { min: 0.1, max: 20, step: 0.01 }),
       V('a', 'a', 'Coefficient of x', { min: -100, max: 100, step: 1 }),
       V('c', 'c', 'Constant', { min: -1000, max: 1000, step: 1 }),
-      V('y', 'y', 'Value of the log', { min: -20, max: 20, step: 0.5 }),
-      V('u', 'u', 'Inside of the log, ax + c', { min: 0, max: 1e30, derived: true }),
-      V('x', 'x', 'Solution', { min: -1e30, max: 1e30, fraction: 12, derived: true }),
+      V('y', 'y', 'Value of the log', { min: -10, max: 10, step: 0.5 }),
+      V('u', 'u', 'Inside of the log, ax + c', { min: 1e-6, max: 1e12, derived: true }),
+      V('x', 'x', 'Solution', { min: -1e13, max: 1e13, fraction: 12, derived: true }),
     ],
     rules: [
       limit('b ≠ 1', 'The base {b} is not 1', ['b'], (v) => v.b !== 1, BASE_NOT_1),
@@ -1367,10 +1710,10 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     variables: [
       V('a1', 'a₁', 'First term', { min: -100, max: 100, step: 0.5 }),
-      V('r', 'r', 'Common ratio', { min: -5, max: 5, step: 0.05 }),
+      V('r', 'r', 'Common ratio', { min: -5, max: 5, step: 0.05, fraction: 12 }),
       W('n', 'n', 'Number of terms', 1, 30),
-      V('an', 'aₙ', 'Last term', { min: -1e25, max: 1e25, derived: true }),
-      V('S', 'Sₙ', 'Sum of the n terms', { min: -1e25, max: 1e25, derived: true }),
+      V('an', 'aₙ', 'Last term', { min: -1e25, max: 1e25, fraction: 12 }),
+      V('S', 'Sₙ', 'Sum of the n terms', { min: -1e25, max: 1e25, fraction: 12, derived: true }),
     ],
     rules: [
       limit(
@@ -1380,19 +1723,41 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.r !== 1,
         'With r = 1 the formula divides by 0; the sum is n × a₁.',
       ),
-      derive(
+      rule(
         'aₙ = a₁ × r^(n − 1)',
-        'an',
-        ['a1', 'r', 'n'],
         '{an} = {a1} × {r}^({n} − 1)',
-        (v) => v.a1! * v.r! ** (v.n! - 1),
-        '{a1} × {r}^({n} − 1)',
-        'From the first term, multiply by r, n − 1 times.',
+        ['an', 'a1', 'r', 'n'],
+        (v) => v.an! - v.a1! * v.r! ** (v.n! - 1),
         {
-          work: (v) => [
-            `${fmt(v.a1!)} × ${pw(v.r!, v.n! - 1)}`,
-            `${fmt(v.a1!)} × ${fmt(v.r! ** (v.n! - 1))}`,
+          an: [
+            (v) => fin(v.a1! * v.r! ** (v.n! - 1)),
+            '{a1} × {r}^({n} − 1)',
+            'From the first term, multiply by r, n − 1 times.',
           ],
+          n: [
+            (v) => termCount(v.a1!, v.r!, v.an!),
+            (v) =>
+              v.r! > 0 && v.an! / v.a1! > 0
+                ? '1 + log₁₀({an} ÷ {a1}) ÷ log₁₀ {r}'
+                : '1 + log₁₀|{an} ÷ {a1}| ÷ log₁₀|{r}|',
+            'aₙ ÷ a₁ = rⁿ⁻¹, so n − 1 is the power of r that makes aₙ ÷ a₁: take logs.',
+          ],
+          ...never('a1', 'r'),
+        },
+        {
+          message: (v) =>
+            v.an !== undefined &&
+            v.a1 !== undefined &&
+            v.r !== undefined &&
+            termCount(v.a1, v.r, v.an) === undefined
+              ? 'aₙ is not a term of this series: no whole number of steps of r reaches it.'
+              : undefined,
+          work: {
+            an: (v) => [
+              `aₙ = ${fmt(v.a1!)} × ${powOf(v.r!, v.n! - 1)}`,
+              `aₙ = ${fmt(v.a1!)} × ${wrap(powValue(v.r!, v.n! - 1))}`,
+            ],
+          },
         },
       ),
       derive(
@@ -1403,10 +1768,11 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => div(v.a1! * (1 - v.r! ** v.n!), 1 - v.r!),
         '{a1} × (1 − {r}^{n}) ÷ (1 − {r})',
         'The sum of a geometric series: a₁ times (1 − rⁿ) over (1 − r).',
+        { work: (v) => geometricSumWork(v.a1!, v.r!, v.n!) },
       ),
     ],
     example: { a1: 3, r: 2, n: 6, an: 96, S: 189 },
-    startWith: ['a1', 'r', 'n'],
+    startWith: ['n', 'a1', 'r'],
     sliders: true,
     equation: '{S} = {a1} × {1 − {r}^{n}}/{1 − {r}}',
     representation: {
@@ -1571,10 +1937,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     variables: [
       V('a1', 'a₁', 'First term', { min: -100, max: 100, step: 0.5 }),
-      V('r', 'r', 'Common ratio', { min: -5, max: 5, step: 0.05 }),
+      V('r', 'r', 'Common ratio', { min: -5, max: 5, step: 0.05, fraction: 12 }),
       W('n', 'n', 'Terms added so far', 1, 30),
-      V('Sn', 'Sₙ', 'Sum of the first n terms', { min: -1e5, max: 1e5, derived: true }),
-      V('S', 'S', 'Sum of the series', { min: -1e5, max: 1e5, derived: true }),
+      V('Sn', 'Sₙ', 'Sum of the first n terms', {
+        min: -1e5,
+        max: 1e5,
+        fraction: 12,
+        derived: true,
+      }),
+      V('S', 'S', 'Sum of the series', { min: -1e5, max: 1e5, fraction: 12, derived: true }),
     ],
     rules: [
       limit(
@@ -1592,6 +1963,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => div(v.a1! * (1 - v.r! ** v.n!), 1 - v.r!),
         '{a1} × (1 − {r}^{n}) ÷ (1 − {r})',
         'The first n terms of the geometric series.',
+        { work: (v) => geometricSumWork(v.a1!, v.r!, v.n!) },
       ),
       derive(
         'S = a₁ ÷ (1 − r)',
@@ -1642,6 +2014,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.a! * Math.abs(v.x! - v.h!) + v.k!,
         '{a} × |{x} − {h}| + {k}',
         'Shift x by h, take the absolute value, stretch by a, then shift up by k.',
+        {
+          work: (v) => {
+            const d = Math.abs(v.x! - v.h!);
+            return [
+              `y = ${fmt(v.a!)} × ${fmt(d)} + ${par(v.k!)}`,
+              `y = ${fmt(v.a! * d)} + ${par(v.k!)}`,
+            ];
+          },
+        },
       ),
     ],
     example: { a: 2, h: 3, k: -1, x: 5, y: 3 },
@@ -1756,6 +2137,25 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.a! * v.c! - v.b! * v.d!,
         '{a} × {c} − {b} × {d}',
         'The real part: a × c, and bi × di = bd × i², which is −bd.',
+        {
+          work: (v) => {
+            const [a, b, c, d] = [v.a!, v.b!, v.c!, v.d!];
+            return [
+              `(${cx(a, b)})(${cx(c, d)}) = ${terms([
+                [a * c, ''],
+                [a * d, 'i'],
+                [b * c, 'i'],
+                [b * d, 'i²'],
+              ])}`,
+              `= ${terms([
+                [a * c, ''],
+                [a * d + b * c, 'i'],
+                [-b * d, ''],
+              ])}`,
+              `p = ${fmt(a * c)} + ${par(-b * d)}`,
+            ];
+          },
+        },
       ),
       derive(
         'q = ad + bc',
@@ -1765,6 +2165,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.a! * v.d! + v.b! * v.c!,
         '{a} × {d} + {b} × {c}',
         'The imaginary part: a × di and bi × c, the two outer and inner terms.',
+        {
+          work: (v) => [
+            `q = ${fmt(v.a! * v.d!)} + ${par(v.b! * v.c!)}`,
+            `(${cx(v.a!, v.b!)})(${cx(v.c!, v.d!)}) = ${cx(
+              v.a! * v.c! - v.b! * v.d!,
+              v.a! * v.d! + v.b! * v.c!,
+            )}`,
+          ],
+        },
       ),
     ],
     example: { a: 2, b: 3, c: 1, d: -4, p: 14, q: -5 },
@@ -1790,7 +2199,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     variables: [
       V('a', 'a', 'Real part of the first', { integer: true, min: -10, max: 10 }),
       V('b', 'b', 'Imaginary part of the first', { integer: true, min: -10, max: 10 }),
-      V('o', 'o', 'Add (1) or subtract (2)', { allowed: [1, 2], min: 1, max: 2 }),
+      V('sg', 's', 'Add (1) or subtract (−1)', { allowed: [-1, 1], min: -1, max: 1 }),
       V('c', 'c', 'Real part of the second', { integer: true, min: -10, max: 10 }),
       V('d', 'd', 'Imaginary part of the second', { integer: true, min: -10, max: 10 }),
       V('C', 'C', 'Real part added', { integer: true, min: -10, max: 10, derived: true }),
@@ -1805,26 +2214,26 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     rules: [
       derive(
-        'C = ±c',
+        'C = s × c',
         'C',
-        ['o', 'c'],
-        '{C} = (3 − 2 × {o}) × {c}',
-        (v) => (3 - 2 * v.o!) * v.c!,
-        (v) => (v.o === 2 ? '−1 × {c}' : '{c}'),
+        ['sg', 'c'],
+        '{C} = {sg} × {c}',
+        (v) => v.sg! * v.c!,
+        '{sg} × {c}',
         (v) =>
-          v.o === 2
+          v.sg! < 0
             ? 'Subtracting: change the sign of the second real part.'
             : 'Adding: the second real part as it is.',
       ),
       derive(
-        'D = ±d',
+        'D = s × d',
         'D',
-        ['o', 'd'],
-        '{D} = (3 − 2 × {o}) × {d}',
-        (v) => (3 - 2 * v.o!) * v.d!,
-        (v) => (v.o === 2 ? '−1 × {d}' : '{d}'),
+        ['sg', 'd'],
+        '{D} = {sg} × {d}',
+        (v) => v.sg! * v.d!,
+        '{sg} × {d}',
         (v) =>
-          v.o === 2
+          v.sg! < 0
             ? 'Subtracting: change the sign of the second imaginary part.'
             : 'Adding: the second imaginary part as it is.',
       ),
@@ -1845,11 +2254,22 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.b! + v.D!,
         '{b} + {D}',
         'Imaginary parts together.',
+        {
+          work: (v) =>
+            [v.a, v.c, v.d, v.sg].some((x) => x === undefined)
+              ? []
+              : [
+                  `(${cx(v.a!, v.b!)}) ${v.sg! < 0 ? '−' : '+'} (${cx(v.c!, v.d!)}) = ${cx(
+                    v.a! + v.sg! * v.c!,
+                    v.b! + v.sg! * v.d!,
+                  )}`,
+                ],
+        },
       ),
     ],
-    example: { a: 4, b: -2, o: 2, c: -1, d: 5, C: 1, D: -5, p: 5, q: -7 },
-    startWith: ['a', 'b', 'o', 'c', 'd'],
-    equation: '({a} + {b}i) {o:op} ({c} + {d}i) = {p} + {q}i',
+    example: { a: 4, b: -2, sg: -1, c: -1, d: 5, C: 1, D: -5, p: 5, q: -7 },
+    startWith: ['a', 'b', 'sg', 'c', 'd'],
+    equation: '({a} + {b}i) ± ({c} + {d}i) = {p} + {q}i',
     representation: {
       kind: 'complexPlane',
       z: { re: 'a', im: 'b' },
@@ -1873,7 +2293,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('c', 'c', 'Constant', { integer: true, min: -20, max: 20 }),
       V('D', 'D', 'Discriminant b² − 4ac', { integer: true, min: -2000, max: -1, derived: true }),
       V('p', 'p', 'Real part', { min: -20, max: 20, fraction: 40, derived: true }),
-      V('q', 'q', 'Imaginary part', { min: -20, max: 20, derived: true }),
+      V('q', 'q', 'Imaginary part', { min: -20, max: 20, fraction: 40, derived: true }),
     ],
     rules: [
       limit(
@@ -1907,7 +2327,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => div(-v.b!, 2 * v.a!),
         '−{b} ÷ (2 × {a})',
         'The real part of both solutions: the −b ÷ 2a of the formula.',
-        { work: (v) => [`${fmt(-v.b!)} ÷ ${par(2 * v.a!)}`] },
+        { work: (v) => [`p = ${fmt(-v.b!)} ÷ ${par(2 * v.a!)}`] },
       ),
       derive(
         'q = √(−D) ÷ (2a)',
@@ -1917,6 +2337,21 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => (v.D! < 0 ? div(Math.sqrt(-v.D!), 2 * v.a!) : undefined),
         '√(−1 × {D}) ÷ (2 × {a})',
         '√D = √(−D) × i, since √(−1) = i: this is the i part, taken plus and minus.',
+        {
+          work: (v) => {
+            const [D, a2] = [-v.D!, 2 * v.a!];
+            if (v.b === undefined) return [];
+            const root = radical(D);
+            const iRoot = root === '1' ? 'i' : root.includes('√') ? `i${root}` : `${root}i`;
+            const [re, im] = [fr(-v.b! / a2, 40), fr(Math.abs(Math.sqrt(D) / a2), 40)];
+            const iPart = im === '1' ? 'i' : `${im}${im.includes('/') ? ' ' : ''}i`;
+            return [
+              `q = √${fmt(D)} ÷ ${par(a2)}`,
+              `q = ${fmt(Math.sqrt(D))} ÷ ${par(a2)}`,
+              `x = (${fmt(-v.b!)} ± ${iRoot}) ÷ ${par(a2)} = ${v.b === 0 ? '' : `${re} `}±${v.b === 0 ? '' : ' '}${iPart}`,
+            ];
+          },
+        },
       ),
     ],
     example: { a: 1, b: -4, c: 13, D: -36, p: 2, q: 3 },
@@ -1950,7 +2385,6 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('y', 'y', 'f(g(x))', { min: -1e6, max: 1e6, derived: true }),
     ],
     rules: [
-      limit('p ≠ 0', '{p} is not 0', ['p'], (v) => v.p !== 0, 'With p = 0, f is not a quadratic.'),
       limit(
         'm ≠ 0',
         '{m} is not 0',
@@ -1966,6 +2400,19 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.p! * v.m! ** 2,
         '{p} × {m}²',
         'p(mx + c)² starts with p × m²x².',
+        {
+          work: (v) => {
+            if ([v.q, v.r, v.c].some((x) => x === undefined)) return [];
+            const g = `(${poly([v.m!, v.c!])})`;
+            return [
+              `f(${poly([v.m!, v.c!])}) = ${terms([
+                [v.p!, `${g}²`],
+                [v.q!, g],
+                [v.r!, ''],
+              ])}`,
+            ];
+          },
+        },
       ),
       derive(
         'B = 2pmc + qm',
@@ -1984,6 +2431,19 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.p! * v.c! ** 2 + v.q! * v.c! + v.r!,
         '{p} × {c}² + {q} × {c} + {r}',
         'The constants: f(c), since g(0) = c.',
+        {
+          work: (v) => {
+            const [p, q, r, m, c] = [v.p!, v.q!, v.r!, v.m, v.c!];
+            return [
+              `C = ${fmt(p * c ** 2)} + ${par(q * c)} + ${par(r)}`,
+              ...(m === undefined
+                ? []
+                : [
+                    `f(g(x)) = ${poly([p * m ** 2, 2 * p * m * c + q * m, p * c ** 2 + q * c + r])}`,
+                  ]),
+            ];
+          },
+        },
       ),
       derive(
         'y = Ax² + Bx + C',
@@ -2009,11 +2469,12 @@ export const MATH_11_MODULES: ModuleDef[] = [
   }),
   page({
     id: 'm.11.inverse-functions~operations',
-    title: 'Add, subtract and multiply functions',
-    use: 'Use this for “f(x) = 2x − 1 and g(x) = x + 4. Find (f + g)(3), (f − g)(3) and (f · g)(3).”',
+    title: 'Add, subtract, multiply and divide functions',
+    use: 'Use this for “f(x) = 2x − 1 and g(x) = x + 4. Find (f + g)(3), (f − g)(3), (f · g)(3) and (f ÷ g)(3).”',
     assumptions: [
       '(f + g)(x) = f(x) + g(x): find each function’s value at x, then add.',
-      'Subtract or multiply the same way: (f − g)(x) = f(x) − g(x), (f · g)(x) = f(x) × g(x).',
+      'Subtract, multiply or divide the same way: (f − g)(x) = f(x) − g(x), and so on.',
+      'f ÷ g has no value where g(x) = 0: those x are left out of its domain.',
     ],
     variables: [
       V('a', 'a', 'Slope of f', { min: -10, max: 10, step: 0.5 }),
@@ -2021,13 +2482,21 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('c', 'c', 'Slope of g', { min: -10, max: 10, step: 0.5 }),
       V('d', 'd', 'Intercept of g', { min: -10, max: 10, step: 0.5 }),
       V('x', 'x', 'Input', { min: -20, max: 20, step: 0.5 }),
-      V('F', 'f(x)', 'Value of f', { min: -300, max: 300, derived: true }),
-      V('G', 'g(x)', 'Value of g', { min: -300, max: 300, derived: true }),
-      V('S', '(f + g)(x)', 'Sum', { min: -600, max: 600, derived: true }),
-      V('Df', '(f − g)(x)', 'Difference', { min: -600, max: 600, derived: true }),
-      V('P', '(f · g)(x)', 'Product', { min: -1e5, max: 1e5, derived: true }),
+      V('F', 'F', 'Value of f, f(x)', { min: -300, max: 300, derived: true }),
+      V('G', 'G', 'Value of g, g(x)', { min: -300, max: 300, derived: true }),
+      V('S', 'S', 'Sum, (f + g)(x)', { min: -600, max: 600, derived: true }),
+      V('Df', 'D', 'Difference, (f − g)(x)', { min: -600, max: 600, derived: true }),
+      V('P', 'P', 'Product, (f · g)(x)', { min: -1e5, max: 1e5, derived: true }),
+      V('Q', 'Q', 'Quotient, (f ÷ g)(x)', { min: -1e5, max: 1e5, fraction: 12, derived: true }),
     ],
     rules: [
+      limit(
+        'g(x) ≠ 0',
+        '{G} is not 0',
+        ['G'],
+        (v) => Math.abs(v.G!) > 1e-9,
+        'g(x) = 0 here, so (f ÷ g)(x) has no value: this x is outside the domain of f ÷ g.',
+      ),
       derive(
         'f(x) = ax + b',
         'F',
@@ -2073,10 +2542,19 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{F} × {G}',
         'Multiply the two values at x.',
       ),
+      derive(
+        '(f ÷ g)(x) = f(x) ÷ g(x)',
+        'Q',
+        ['F', 'G'],
+        '{Q} = {F} ÷ {G}',
+        (v) => div(v.F!, v.G!),
+        '{F} ÷ {G}',
+        'Divide f’s value by g’s.',
+      ),
     ],
-    example: { a: 2, b: -1, c: 1, d: 4, x: 3, F: 5, G: 7, S: 12, Df: -2, P: 35 },
+    example: { a: 2, b: -1, c: 1, d: 4, x: 3, F: 5, G: 7, S: 12, Df: -2, P: 35, Q: 5 / 7 },
     startWith: ['a', 'b', 'c', 'd', 'x'],
-    pictureLabels: ['S', 'Df', 'P'],
+    pictureLabels: ['S', 'Df', 'P', 'Q'],
     representation: {
       kind: 'functionGraph',
       family: 'linear',
@@ -2089,7 +2567,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
   page({
     id: 'm.11.inverse-functions~inverse',
     title: 'The inverse of a linear function',
-    use: 'Use this for “Find f⁻¹(x) for f(x) = 3x − 6, and check f(f⁻¹(x)) = x.”',
+    use: 'Use this for “Find f⁻¹(x) for f(x) = 3x − 6, and check f⁻¹(f(x)) = x.”',
     assumptions: [
       'Swap x and y in y = ax + b, then solve for y: f⁻¹(x) = (x − b) ÷ a = mx + n.',
       '(x, y) on f is (y, x) on f⁻¹: the two graphs are reflections over y = x.',
@@ -2102,6 +2580,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('n', 'n', 'Intercept of f⁻¹', { min: -1000, max: 1000, fraction: 20, derived: true }),
       V('x', 'x', 'Input of f', { min: -20, max: 20, step: 0.5 }),
       V('y', 'y', 'f(x), the input of f⁻¹', { min: -500, max: 500, step: 0.5 }),
+      V('X', 'X', 'Back to x, f⁻¹(y)', { min: -1000, max: 1000, fraction: 20, derived: true }),
     ],
     rules: [
       limit(
@@ -2134,7 +2613,31 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{m} = 1 ÷ {a}',
         (v) => div(1, v.a!),
         '1 ÷ {a}',
-        'Solving x = ay + b for y divides by a.',
+        'Swap x and y, then solve x = ay + b for y: take away b, then divide by a.',
+        {
+          work: (v) => {
+            if (v.b === undefined) return [];
+            const [a, b] = [v.a!, v.b];
+            const left = terms([
+              [1, 'x'],
+              [-b, ''],
+            ]);
+            return [
+              `x = ${terms([
+                [a, 'y'],
+                [b, ''],
+              ])}`,
+              ...(b === 0 ? [] : [`${left} = ${terms([[a, 'y']])}`]),
+              `y = ${b === 0 ? 'x' : `(${left})`} ÷ ${par(a)} = ${terms(
+                [
+                  [1 / a, 'x'],
+                  [-b / a, ''],
+                ],
+                (x) => fr(x, 20),
+              )}`,
+            ];
+          },
+        },
       ),
       derive(
         'n = −b ÷ a',
@@ -2144,12 +2647,21 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => div(-v.b!, v.a!),
         '−{b} ÷ {a}',
         'The −b, divided by a too.',
-        { work: (v) => [`${fmt(-v.b!)} ÷ ${par(v.a!)}`] },
+        { work: (v) => [`n = ${fmt(-v.b!)} ÷ ${par(v.a!)}`] },
+      ),
+      derive(
+        'X = m × y + n',
+        'X',
+        ['m', 'y', 'n'],
+        '{X} = {m} × {y} + {n}',
+        (v) => v.m! * v.y! + v.n!,
+        '{m} × {y} + {n}',
+        'Check: put y = f(x) into f⁻¹. It lands back on x, so f⁻¹ undoes f.',
       ),
     ],
-    example: { a: 3, b: -6, m: 1 / 3, n: 2, x: 4, y: 6 },
+    example: { a: 3, b: -6, m: 1 / 3, n: 2, x: 4, y: 6, X: 4 },
     startWith: ['a', 'b', 'x'],
-    pictureLabels: ['m', 'n'],
+    pictureLabels: ['m', 'n', 'X'],
     representation: {
       kind: 'functionGraph',
       family: 'linear',
@@ -2212,6 +2724,11 @@ export const MATH_11_MODULES: ModuleDef[] = [
           ],
           a: [() => undefined],
         },
+        {
+          // The check is in the first equation, the root, as assumption 3 says.
+          check: (v) =>
+            `√(${fmt(v.a!)} × ${wrap(fr(v.x!))} ${v.b! < 0 ? '−' : '+'} ${fmt(Math.abs(v.b!))}) = ${fmt(v.c!)}`,
+        },
       ),
     ],
     example: { a: 3, b: 4, c: 5, x: 7 },
@@ -2271,22 +2788,24 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'The constant of the squared equation.',
       ),
       derive(
-        'x₁ = ((1 − 2b) + √(1 + 4a − 4b)) ÷ 2',
+        'x₁ = (−B + √(B² − 4C)) ÷ 2',
         'x1',
-        ['b', 'a'],
-        '{x1} = ((1 − 2 × {b}) + √(1 + 4 × {a} − 4 × {b})) ÷ 2',
-        (v) => (1 - 2 * v.b! + Math.sqrt(1 + 4 * v.a! - 4 * v.b!)) / 2,
-        '((1 − 2 × {b}) + √(1 + 4 × {a} − 4 × {b})) ÷ 2',
-        'x² + (2b − 1)x + b² − a = 0 by the quadratic formula; here x + b > 0, so it always works.',
+        ['B', 'C'],
+        '{x1} = (−{B} + √({B}² − 4 × {C})) ÷ 2',
+        (v) => rootOf(1, v.B!, v.C!, 1),
+        '(−{B} + √({B}² − 4 × {C})) ÷ 2',
+        'x² + Bx + C = 0 by the quadratic formula; here x + b > 0, so it always works.',
+        { work: (v) => quadWork(1, v.B!, v.C!, 1).map((l) => `x₁ = ${l}`) },
       ),
       derive(
-        'x₂ = ((1 − 2b) − √(1 + 4a − 4b)) ÷ 2',
+        'x₂ = (−B − √(B² − 4C)) ÷ 2',
         'x2',
-        ['b', 'a'],
-        '{x2} = ((1 − 2 × {b}) − √(1 + 4 × {a} − 4 × {b})) ÷ 2',
-        (v) => (1 - 2 * v.b! - Math.sqrt(1 + 4 * v.a! - 4 * v.b!)) / 2,
-        '((1 − 2 × {b}) − √(1 + 4 × {a} − 4 × {b})) ÷ 2',
+        ['B', 'C'],
+        '{x2} = (−{B} − √({B}² − 4 × {C})) ÷ 2',
+        (v) => rootOf(1, v.B!, v.C!, -1),
+        '(−{B} − √({B}² − 4 × {C})) ÷ 2',
         'The other candidate, with the minus sign.',
+        { work: (v) => quadWork(1, v.B!, v.C!, -1).map((l) => `x₂ = ${l}`) },
       ),
       derive(
         'L = √(x₂ + a)',
@@ -2328,7 +2847,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
   page({
     id: 'm.11.radical-functions~graph',
     title: 'Graph a square root function',
-    use: 'Use this for “Find the domain and range of y = 2√(x + 3) + 1.”',
+    use: 'Use this for “Graph y = 2√(x + 3) + 1: where it starts, which way it goes, and y at x = 6.”',
     assumptions: [
       'y = a√(x − h) + k starts at (h, k): the parent √x moved right h and up k.',
       'The domain is x ≥ h; the range is y ≥ k when a > 0 and y ≤ k when a < 0.',
@@ -2485,7 +3004,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     variables: [
       V('a', 'a', 'First top', { min: -20, max: 20, step: 1 }),
       V('p', 'p', 'First bottom is x − p', { min: -20, max: 20, step: 1 }),
-      V('o', 'o', 'Add (1) or subtract (2)', { allowed: [1, 2], min: 1, max: 2 }),
+      V('sg', 't', 'Add (1) or subtract (−1)', { allowed: [-1, 1], min: -1, max: 1 }),
       V('c', 'c', 'Second top', { min: -20, max: 20, step: 1 }),
       V('q', 'q', 'Second bottom is x − q', { min: -20, max: 20, step: 1 }),
       V('A', 'A', 'x coefficient on top', { min: -40, max: 40, derived: true }),
@@ -2503,27 +3022,40 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'The denominators are the same: add or subtract the tops over x − p.',
       ),
       derive(
-        'A = a ± c',
+        'A = a + t × c',
         'A',
-        ['a', 'o', 'c'],
-        '{A} = {a} + (3 − 2 × {o}) × {c}',
-        (v) => v.a! + (3 - 2 * v.o!) * v.c!,
-        (v) => (v.o === 2 ? '{a} − {c}' : '{a} + {c}'),
-        'The x terms of a(x − q) and c(x − p).',
+        ['a', 'sg', 'c'],
+        '{A} = {a} + {sg} × {c}',
+        (v) => v.a! + v.sg! * v.c!,
+        '{a} + {sg} × {c}',
+        'The x terms of a(x − q) and c(x − p), with t = −1 to subtract.',
+        {
+          work: (v) => [
+            ...(v.p === undefined || v.q === undefined
+              ? []
+              : [
+                  `(${terms([
+                    [v.a!, `(${lin(v.q)})`],
+                    [v.sg! * v.c!, `(${lin(v.p)})`],
+                  ])}) ÷ ((${lin(v.p)})(${lin(v.q)}))`,
+                ]),
+            `A = ${fmt(v.a!)} + ${par(v.sg! * v.c!)}`,
+          ],
+        },
       ),
       derive(
-        'B = −(aq ± cp)',
+        'B = −(a × q + t × c × p)',
         'B',
-        ['a', 'q', 'o', 'c', 'p'],
-        '{B} = −({a} × {q} + (3 − 2 × {o}) × {c} × {p})',
-        (v) => -(v.a! * v.q! + (3 - 2 * v.o!) * v.c! * v.p!),
-        (v) => (v.o === 2 ? '−({a} × {q} − {c} × {p})' : '−({a} × {q} + {c} × {p})'),
+        ['a', 'q', 'sg', 'c', 'p'],
+        '{B} = −({a} × {q} + {sg} × {c} × {p})',
+        (v) => -(v.a! * v.q! + v.sg! * v.c! * v.p!),
+        '−({a} × {q} + {sg} × {c} × {p})',
         'The numbers: a × (−q) and c × (−p), combined the same way.',
         {
           work: (v) => {
             const s1 = v.a! * v.q!;
-            const s2 = (3 - 2 * v.o!) * v.c! * v.p!;
-            return [`−(${fmt(s1)} + ${par(s2)})`, `−${par(s1 + s2)}`];
+            const s2 = v.sg! * v.c! * v.p!;
+            return [`B = −(${fmt(s1)} + ${par(s2)})`, `B = −${par(s1 + s2)}`];
           },
         },
       ),
@@ -2535,7 +3067,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => -(v.p! + v.q!),
         '−({p} + {q})',
         '(x − p)(x − q) has x terms −px − qx.',
-        { work: (v) => [`−${par(v.p! + v.q!)}`] },
+        { work: (v) => [`S = −${par(v.p! + v.q!)}`] },
       ),
       derive(
         'P = pq',
@@ -2545,6 +3077,17 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.p! * v.q!,
         '{p} × {q}',
         '(−p) × (−q) is pq.',
+        {
+          work: (v) => {
+            const [a, t, c, p, q] = [v.a!, v.sg!, v.c!, v.p!, v.q!];
+            if ([v.a, v.sg, v.c].some((x) => x === undefined)) return [];
+            return [
+              `${fmt(a)} ÷ (${lin(p)}) ${t * c < 0 ? '−' : '+'} ${fmt(Math.abs(c))} ÷ (${lin(q)}) = (${poly(
+                [a + t * c, -(a * q + t * c * p)],
+              )}) ÷ (${poly([1, -(p + q), p * q])})`,
+            ];
+          },
+        },
       ),
       derive(
         'Z = −B ÷ A',
@@ -2554,12 +3097,13 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => div(-v.B!, v.A!),
         '−{B} ÷ {A}',
         'The top Ax + B is 0 here: the graph crosses the x-axis.',
-        { work: (v) => [`${fmt(-v.B!)} ÷ ${par(v.A!)}`] },
+        // −(−10) written as its value (the simplifying would print −−10).
+        { work: (v) => (v.B! < 0 ? [`Z = ${fmt(-v.B!)} ÷ ${par(v.A!)}`] : []) },
       ),
     ],
-    example: { a: 3, p: 1, o: 1, c: 2, q: -4, A: 5, B: 10, S: 3, P: -4, Z: -2 },
-    startWith: ['a', 'p', 'o', 'c', 'q'],
-    equation: '{a}/{x − {p}} {o:op} {c}/{x − {q}} = {{A}x + {B}}/{x² + {S}x + {P}}',
+    example: { a: 3, p: 1, sg: 1, c: 2, q: -4, A: 5, B: 10, S: 3, P: -4, Z: -2 },
+    startWith: ['a', 'p', 'sg', 'c', 'q'],
+    equation: '{a}/{x − {p}} ± {c}/{x − {q}} = {{A}x + {B}}/{x² + {S}x + {P}}',
     pictureLabels: ['Z'],
     representation: {
       kind: 'functionGraph',
@@ -2608,7 +3152,10 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{x1} = (({a} + {b}) + √(({a} + {b})² − 4 × {b} × {p})) ÷ 2',
         (v) => (v.a! + v.b! + Math.sqrt((v.a! + v.b!) ** 2 - 4 * v.b! * v.p!)) / 2,
         '(({a} + {b}) + √(({a} + {b})² − 4 × {b} × {p})) ÷ 2',
-        (v) => candidateHow(v, v.x1!, 'x₁'),
+        'Multiply by x(x − p), then use the quadratic formula.',
+        {
+          work: (v) => [`${poly([1, -(v.a! + v.b!), v.b! * v.p!])} = 0`, ...candidateWork(v, 1)],
+        },
       ),
       derive(
         'x₂ = ((a + b) − √((a + b)² − 4bp)) ÷ 2',
@@ -2617,7 +3164,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{x2} = (({a} + {b}) − √(({a} + {b})² − 4 × {b} × {p})) ÷ 2',
         (v) => (v.a! + v.b! - Math.sqrt((v.a! + v.b!) ** 2 - 4 * v.b! * v.p!)) / 2,
         '(({a} + {b}) − √(({a} + {b})² − 4 × {b} × {p})) ÷ 2',
-        (v) => candidateHow(v, v.x2!, 'x₂'),
+        'The same formula with the minus sign.',
+        { work: (v) => candidateWork(v, -1) },
       ),
     ],
     example: { p: 2, a: 2, b: 3, x1: 3, x2: 2 },
@@ -2657,8 +3205,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'The product xy is the same for every pair.',
       ),
       rule('y₂ = k ÷ x₂', '{y2} = {k} ÷ {x2}', ['y2', 'k', 'x2'], (v) => v.y2! * v.x2! - v.k!, {
-        y2: [(v) => fin(div(v.k!, v.x2!)), '{k} ÷ {x2}', 'Share the constant k by the new x.'],
-        x2: [(v) => fin(div(v.k!, v.y2!)), '{k} ÷ {y2}', 'Share the constant k by the new y.'],
+        y2: [(v) => fin(div(v.k!, v.x2!)), '{k} ÷ {x2}', 'Divide k by the new x.'],
+        x2: [(v) => fin(div(v.k!, v.y2!)), '{k} ÷ {y2}', 'Divide k by the new y.'],
         k: [() => undefined],
       }),
     ],
@@ -2770,6 +3318,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => -v.r! * v.s!,
         '−1 × {r} × {s}',
         'The constant: s × (−r).',
+        {
+          work: (v) => {
+            if (v.p === undefined || v.q === undefined) return [];
+            const [r, p, s] = [v.r!, v.p, v.p ** 2 + v.q ** 2];
+            return [
+              `(${lin(r)})(${poly([1, -2 * p, s])}) = ${poly([1, -2 * p - r, s + 2 * p * r, -r * s])}`,
+            ];
+          },
+        },
       ),
     ],
     example: { r: 1, p: 2, q: 3, s: 13, b: -5, c: 17, d: -13 },
@@ -2822,7 +3379,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => (-v.b! + Math.sqrt(v.b! ** 2 - 4 * v.c!)) / 2,
         '(−{b} + √({b}² − 4 × {c})) ÷ 2',
         'The quadratic formula for u² + bu + c = 0, with the plus sign.',
-        { work: (v) => formulaWork(v.b!, v.c!, 1) },
+        { work: (v) => formulaWork(v.b!, v.c!, 1).map((l) => `u₁ = ${l}`) },
       ),
       derive(
         'u₂ = (−b − √(b² − 4c)) ÷ 2',
@@ -2832,7 +3389,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => (-v.b! - Math.sqrt(v.b! ** 2 - 4 * v.c!)) / 2,
         '(−{b} − √({b}² − 4 × {c})) ÷ 2',
         'The same formula with the minus sign.',
-        { work: (v) => formulaWork(v.b!, v.c!, -1) },
+        { work: (v) => formulaWork(v.b!, v.c!, -1).map((l) => `u₂ = ${l}`) },
       ),
       derive(
         'x₁ = √u₁',
@@ -2851,6 +3408,14 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => Math.sqrt(v.u2!),
         '√{u2}',
         'x² = u₂, so x = ±√u₂.',
+        {
+          work: (v) => {
+            if (v.u1 === undefined) return [];
+            const [x1, x2] = [Math.sqrt(v.u1), Math.sqrt(v.u2!)];
+            const pm = (x: number) => (x === 0 ? '0' : `±${fmt(x)}`);
+            return [Math.abs(x1 - x2) < 1e-9 ? `x = ${pm(x1)}` : `x = ${pm(x1)} or x = ${pm(x2)}`];
+          },
+        },
       ),
     ],
     example: { b: -13, c: 36, u1: 9, u2: 4, x1: 3, x2: 2 },
@@ -2878,7 +3443,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
     variables: [
       W('n', 'n', 'Power of i', 0, 100),
       W('r', 'r', 'Remainder of n ÷ 4', 0, 3),
-      V('A', 'θ', 'Turn from 1', { unit: '°', integer: true, min: 0, max: 270, derived: true }),
+      // The turn only places the picture's point: the lesson reads the parts from the cycle.
+      V('A', 'θ', 'Turn from 1', {
+        unit: '°',
+        integer: true,
+        min: 0,
+        max: 270,
+        derived: true,
+        hidden: true,
+      }),
       V('p', 'p', 'Real part', { integer: true, min: -1, max: 1, derived: true }),
       V('q', 'q', 'Imaginary part', { integer: true, min: -1, max: 1, derived: true }),
     ],
@@ -2890,7 +3463,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{r} = {n} mod 4',
         (v) => v.n! % 4,
         '{n} mod 4',
-        'Every 4 factors of i make i⁴ = 1, so only the remainder of n ÷ 4 counts.',
+        'i⁴ = 1, so every 4 factors of i drop out: only the remainder counts.',
+        { work: (v) => [`${v.n!} = 4 × ${Math.floor(v.n! / 4)} + ${v.n! % 4}`] },
       ),
       derive(
         'θ = 90r',
@@ -2900,24 +3474,39 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => 90 * v.r!,
         '90 × {r}',
         'Each factor of i turns a quarter turn, 90°, around the unit circle.',
+        { hidden: true },
       ),
       derive(
-        'p = cos θ',
+        'p = real part of iʳ',
         'p',
-        ['A'],
-        '{p} = cos({A}°)',
-        (v) => Math.round(Math.cos((v.A! * Math.PI) / 180)),
-        'cos({A}°)',
-        'The point on the unit circle at that turn: its across part is the real part.',
+        ['r'],
+        '{p} = real part of i^{r}',
+        (v) => [1, 0, -1, 0][v.r!],
+        'real part of i^{r}',
+        'Read it from the cycle i⁰ = 1, i¹ = i, i² = −1, i³ = −i.',
       ),
       derive(
-        'q = sin θ',
+        'q = imaginary part of iʳ',
         'q',
-        ['A'],
-        '{q} = sin({A}°)',
-        (v) => Math.round(Math.sin((v.A! * Math.PI) / 180)),
-        'sin({A}°)',
-        'Its up part is the imaginary part.',
+        ['r'],
+        '{q} = imaginary part of i^{r}',
+        (v) => [0, 1, 0, -1][v.r!],
+        'imaginary part of i^{r}',
+        'The number of i in the same power.',
+        {
+          work: (v) => {
+            if (v.n === undefined) return [];
+            const [n, r, k] = [v.n, v.r!, Math.floor(v.n / 4)];
+            const value = ['1', 'i', '−1', '−i'][r]!;
+            if (k === 0) return [`i${sup(n)} = ${value}`];
+            const turns = `(i⁴)${k === 1 ? '' : sup(k)}`;
+            return [
+              r === 0
+                ? `i${sup(n)} = ${turns} = 1`
+                : `i${sup(n)} = ${turns} × i${sup(r)} = 1 × i${sup(r)} = ${value}`,
+            ];
+          },
+        },
       ),
     ],
     example: { n: 27, r: 3, A: 270, p: 0, q: -1 },
@@ -2943,7 +3532,14 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('b', 'b', 'Imaginary part of the top', { integer: true, min: -10, max: 10 }),
       V('c', 'c', 'Real part of the bottom', { integer: true, min: -10, max: 10 }),
       V('d', 'd', 'Imaginary part of the bottom', { integer: true, min: -10, max: 10 }),
-      V('m', '|c + di|', 'Size of the bottom', { min: 0, max: 15, derived: true }),
+      V('N', 'N', 'Bottom times its conjugate, c² + d²', {
+        integer: true,
+        min: 1,
+        max: 200,
+        derived: true,
+      }),
+      // The modulus only sizes the picture's circle.
+      V('m', 'm', 'Size of the bottom', { min: 0, max: 15, derived: true, hidden: true }),
       V('p', 'p', 'Real part of the answer', { min: -200, max: 200, fraction: 200, derived: true }),
       V('q', 'q', 'Imaginary part of the answer', {
         min: -200,
@@ -2961,46 +3557,61 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'Dividing by 0 has no answer.',
       ),
       derive(
+        'N = c² + d²',
+        'N',
+        ['c', 'd'],
+        '{N} = {c}² + {d}²',
+        (v) => v.c! ** 2 + v.d! ** 2,
+        '{c}² + {d}²',
+        'The new bottom: (c + di)(c − di) = c² − d²i² = c² + d², a real number.',
+      ),
+      derive(
         '|c + di| = √(c² + d²)',
         'm',
         ['c', 'd'],
         '{m} = √({c}² + {d}²)',
         (v) => Math.sqrt(v.c! ** 2 + v.d! ** 2),
         '√({c}² + {d}²)',
-        'Its distance from 0 on the plane: c² + d² is the new bottom.',
+        'Its distance from 0 on the plane.',
+        { hidden: true },
       ),
       derive(
-        'p = (ac + bd) ÷ (c² + d²)',
+        'p = (ac + bd) ÷ N',
         'p',
-        ['a', 'c', 'b', 'd'],
-        '{p} = ({a} × {c} + {b} × {d}) ÷ ({c}² + {d}²)',
-        (v) => div(v.a! * v.c! + v.b! * v.d!, v.c! ** 2 + v.d! ** 2),
-        '({a} × {c} + {b} × {d}) ÷ ({c}² + {d}²)',
+        ['a', 'c', 'b', 'd', 'N'],
+        '{p} = ({a} × {c} + {b} × {d}) ÷ {N}',
+        (v) => div(v.a! * v.c! + v.b! * v.d!, v.N!),
+        '({a} × {c} + {b} × {d}) ÷ {N}',
         'The real part of (a + bi)(c − di) is ac + bd, since −bd × i² = bd.',
         {
           work: (v) => [
-            `(${fmt(v.a! * v.c!)} + ${par(v.b! * v.d!)}) ÷ ${fmt(v.c! ** 2 + v.d! ** 2)}`,
-            `${fmt(v.a! * v.c! + v.b! * v.d!)} ÷ ${fmt(v.c! ** 2 + v.d! ** 2)}`,
+            `p = (${fmt(v.a! * v.c!)} + ${par(v.b! * v.d!)}) ÷ ${fmt(v.N!)}`,
+            `p = ${fmt(v.a! * v.c! + v.b! * v.d!)} ÷ ${fmt(v.N!)}`,
           ],
         },
       ),
       derive(
-        'q = (bc − ad) ÷ (c² + d²)',
+        'q = (bc − ad) ÷ N',
         'q',
-        ['b', 'c', 'a', 'd'],
-        '{q} = ({b} × {c} − {a} × {d}) ÷ ({c}² + {d}²)',
-        (v) => div(v.b! * v.c! - v.a! * v.d!, v.c! ** 2 + v.d! ** 2),
-        '({b} × {c} − {a} × {d}) ÷ ({c}² + {d}²)',
+        ['b', 'c', 'a', 'd', 'N'],
+        '{q} = ({b} × {c} − {a} × {d}) ÷ {N}',
+        (v) => div(v.b! * v.c! - v.a! * v.d!, v.N!),
+        '({b} × {c} − {a} × {d}) ÷ {N}',
         'The imaginary part: bc from bi × c and −ad from a × (−di).',
         {
-          work: (v) => [
-            `(${fmt(v.b! * v.c!)} − ${par(v.a! * v.d!)}) ÷ ${fmt(v.c! ** 2 + v.d! ** 2)}`,
-            `${fmt(v.b! * v.c! - v.a! * v.d!)} ÷ ${fmt(v.c! ** 2 + v.d! ** 2)}`,
-          ],
+          work: (v) => {
+            const [a, b, c, d, N] = [v.a!, v.b!, v.c!, v.d!, v.N!];
+            const show = (x: number) => fr(x, 200);
+            return [
+              `q = (${fmt(b * c)} − ${par(a * d)}) ÷ ${fmt(N)}`,
+              `q = ${fmt(b * c - a * d)} ÷ ${fmt(N)}`,
+              `(${cx(a, b)}) ÷ (${cx(c, d)}) = ${cx((a * c + b * d) / N, (b * c - a * d) / N, show)}`,
+            ];
+          },
         },
       ),
     ],
-    example: { a: 3, b: 4, c: 1, d: 2, m: Math.sqrt(5), p: 2.2, q: -0.4 },
+    example: { a: 3, b: 4, c: 1, d: 2, N: 5, m: Math.sqrt(5), p: 2.2, q: -0.4 },
     startWith: ['a', 'b', 'c', 'd'],
     equation: '{{a} + {b}i}/{{c} + {d}i} = {p} + {q}i',
     representation: {
@@ -3070,6 +3681,22 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{d} + {r} × {q0}',
         'The last sum is the remainder, which is P(r).',
         {
+          work: (v) => {
+            const [a, b, c, d, r] = [v.a!, v.b!, v.c!, v.d!, v.r!];
+            const [q2, q1, q0] = [a, b + r * a, c + r * (b + r * a)];
+            const R = d + r * q0;
+            const parts = [a * r ** 3, b * r ** 2, c * r, d].filter((x) => x !== 0);
+            const sum = parts.length ? terms(parts.map((x) => [x, ''])) : '0';
+            // "= R" only after a sum that starts with a positive number: the harness reads
+            // a sum of plain numbers from its first digit.
+            const plain = parts.length > 1 && parts[0]! > 0;
+            return [
+              `P(${fmt(r)}) = ${sum}${plain ? ` = ${fmt(R)}` : ''}`,
+              `${poly([a, b, c, d])} = (${lin(r)})(${poly([q2, q1, q0])})${
+                R === 0 ? '' : ` ${R < 0 ? '−' : '+'} ${fmt(Math.abs(R))}`
+              }`,
+            ];
+          },
           // The grid only while P(r) ≥ 0: the harness can't yet read a written line ending in
           // a negative number (docs/build/m.11.md, shared needs).
           written: (v) =>
@@ -3115,6 +3742,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('R', 'R', 'Remainder', { min: -1e6, max: 1e6, fraction: 12, derived: true }),
       V('x2', 'x₂', 'Larger other root', { min: -1000, max: 1000, fraction: 12, derived: true }),
       V('x3', 'x₃', 'Smaller other root', { min: -1000, max: 1000, fraction: 12, derived: true }),
+      V('z', 'z', 'Root found', { min: -20, max: 20, derived: true, hidden: true }),
     ],
     rules: [
       limit(
@@ -3125,17 +3753,10 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'With a = 0 the equation is not a cubic.',
       ),
       limit(
-        'R = 0',
-        'The remainder {R} is 0',
-        ['R'],
-        (v) => Math.abs(v.R!) < 1e-9,
-        'r is not a root: the remainder is not 0. Try another ±p/q.',
-      ),
-      limit(
         'q₁² − 4aq₀ ≥ 0',
-        '{q1}² − 4 × {a} × {q0} is 0 or more',
-        ['q1', 'a', 'q0'],
-        (v) => v.q1! ** 2 - 4 * v.a! * v.q0! >= -1e-9,
+        '{q1}² − 4 × {a} × {q0} is 0 or more, or {R} is not 0',
+        ['q1', 'a', 'q0', 'R'],
+        (v) => Math.abs(v.R!) > 1e-9 || v.q1! ** 2 - 4 * v.a! * v.q0! >= -1e-9,
         'The other two roots are complex: see “A polynomial from its zeros”.',
       ),
       derive(
@@ -3146,6 +3767,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.b! + v.r! * v.a!,
         '{b} + {r} × {a}',
         'Bring down a, multiply by r and add to b.',
+        { work: (v) => (v.d === undefined ? [] : [rationalCandidates(v.a!, v.d, v.r!)]) },
       ),
       derive(
         'q₀ = c + r × q₁',
@@ -3163,31 +3785,63 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{R} = {d} + {r} × {q0}',
         (v) => v.d! + v.r! * v.q0!,
         '{d} + {r} × {q0}',
-        'The last sum is the remainder: 0 means x − r is a factor.',
-        { written: (v) => syntheticDivision([v.a!, v.b!, v.c!, v.d!], v.r!) },
+        (v) =>
+          Math.abs(v.R!) < 1e-9
+            ? 'The last sum is the remainder: 0 means x − r is a factor.'
+            : 'R is not 0: r is not a root; try another candidate.',
+        {
+          // The grid only while P(r) ≥ 0, as on ~divide (docs/build/m.11.md, shared needs).
+          written: (v) =>
+            v.R! >= 0 ? syntheticDivision([v.a!, v.b!, v.c!, v.d!], v.r!) : undefined,
+        },
       ),
+      // The root the picture marks: r itself, once it is one (R = 0).
+      derive(
+        'z = r when R = 0',
+        'z',
+        ['r', 'R'],
+        '{z} = {r} when {R} = 0',
+        (v) => (Math.abs(v.R!) < 1e-9 ? v.r! : undefined),
+        '{r}',
+        'r is a root.',
+        { hidden: true },
+      ),
+      // The other roots come from the quotient only once r is a root (R = 0).
       derive(
         'x₂ = (−q₁ + √(q₁² − 4aq₀)) ÷ (2a)',
         'x2',
-        ['q1', 'a', 'q0'],
-        '{x2} = (−{q1} + √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
-        (v) => rootOf(v.a!, v.q1!, v.q0!, 1),
+        ['q1', 'a', 'q0', 'R'],
+        '{x2} = (−{q1} + √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a}), when {R} = 0',
+        (v) => (Math.abs(v.R!) < 1e-9 ? rootOf(v.a!, v.q1!, v.q0!, 1) : undefined),
         '(−{q1} + √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
         'The quadratic formula on the quotient, with the plus sign.',
-        { work: (v) => quadWork(v.a!, v.q1!, v.q0!, 1) },
+        {
+          check: (v) => `${fr(v.x2!)} = ${quadWork(v.a!, v.q1!, v.q0!, 1)[0]}`,
+          work: (v) => quadWork(v.a!, v.q1!, v.q0!, 1).map((l) => `x₂ = ${l}`),
+        },
       ),
       derive(
         'x₃ = (−q₁ − √(q₁² − 4aq₀)) ÷ (2a)',
         'x3',
-        ['q1', 'a', 'q0'],
-        '{x3} = (−{q1} − √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
-        (v) => rootOf(v.a!, v.q1!, v.q0!, -1),
+        ['q1', 'a', 'q0', 'R'],
+        '{x3} = (−{q1} − √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a}), when {R} = 0',
+        (v) => (Math.abs(v.R!) < 1e-9 ? rootOf(v.a!, v.q1!, v.q0!, -1) : undefined),
         '(−{q1} − √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
         'The same formula with the minus sign.',
-        { work: (v) => quadWork(v.a!, v.q1!, v.q0!, -1) },
+        {
+          check: (v) => `${fr(v.x3!)} = ${quadWork(v.a!, v.q1!, v.q0!, -1)[0]}`,
+          work: (v) => {
+            const [a, q1, q0, r] = [v.a!, v.q1!, v.q0!, v.r!];
+            const roots = [r, rootOf(a, q1, q0, 1)!, rootOf(a, q1, q0, -1)!];
+            return [
+              ...quadWork(a, q1, q0, -1).map((l) => `x₃ = ${l}`),
+              `(${lin(r, fr)})(${poly([a, q1, q0], fr)}) = 0; x = ${[...new Set(roots.map((x) => fr(x)))].join(', ')}`,
+            ];
+          },
+        },
       ),
     ],
-    example: { a: 2, b: -3, c: -11, d: 6, r: 3, q1: 3, q0: -2, R: 0, x2: 0.5, x3: -2 },
+    example: { a: 2, b: -3, c: -11, d: 6, r: 3, q1: 3, q0: -2, R: 0, x2: 0.5, x3: -2, z: 3 },
     startWith: ['a', 'b', 'c', 'd', 'r'],
     equation: '{a}x³ + {b}x² + {c}x + {d} = 0',
     pictureLabels: ['q1', 'q0', 'R'],
@@ -3195,7 +3849,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
       kind: 'functionGraph',
       family: 'polynomial',
       coefficients: ['a', 'b', 'c', 'd'],
-      shows: { zeros: ['r', 'x2', 'x3'] },
+      shows: { zeros: ['z', 'x2', 'x3'] },
+      at: { x: 'r', y: 'R' },
       marks: ['zeros'],
     },
   }),
@@ -3213,7 +3868,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('d', 'θ°', 'Angle in degrees', { min: -720, max: 720, derived: true }),
       V('x', 'x', 'cos θ', { min: -1, max: 1, derived: true }),
       V('y', 'y', 'sin θ', { min: -1, max: 1, derived: true }),
-      V('m', 'tan θ', 'tan θ', { min: -1e6, max: 1e6, derived: true }),
+      V('m', 'm', 'Tangent, tan θ (the slope y ÷ x)', { min: -1e6, max: 1e6, derived: true }),
     ],
     rules: [
       limit(
@@ -3294,15 +3949,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     rules: [
       rule(
-        'g = gcd(d, 180)',
-        '{g} = gcd({d}, 180)',
+        'g = GCF(d, 180)',
+        '{g} = GCF({d}, 180)',
         ['g', 'd'],
         (v) => v.g! - gcd(v.d!, 180),
         {
           g: [
             (v) => gcd(v.d!, 180),
-            'gcd({d}, 180)',
-            'The greatest common factor puts d/180 in lowest terms.',
+            'GCF({d}, 180)',
+            'd° is d/180 of π: the greatest common factor puts d/180 in lowest terms.',
           ],
           d: [() => undefined],
         },
@@ -3311,21 +3966,49 @@ export const MATH_11_MODULES: ModuleDef[] = [
             v.g !== undefined && v.d !== undefined && v.g !== gcd(v.d, 180)
               ? 'Write p/q in lowest terms, with q a factor of 180.'
               : undefined,
+          work: { g: (v) => [`${fmt(v.d!)} × π/180 = ${fmt(v.d!)}π/180`] },
         },
       ),
-      rule('p = d ÷ g', '{p} = {d} ÷ {g}', ['p', 'd', 'g'], (v) => v.p! * v.g! - v.d!, {
-        p: [(v) => fin(div(v.d!, v.g!)), '{d} ÷ {g}', 'Divide the top, d, by the common factor.'],
-        d: [(v) => exact(v.p! * v.g!), '{p} × {g}', 'Each 1/q of π is g degrees.'],
-        g: [() => undefined],
-      }),
-      rule('q = 180 ÷ g', '{q} = 180 ÷ {g}', ['q', 'g'], (v) => v.q! * v.g! - 180, {
-        q: [
-          (v) => fin(div(180, v.g!)),
-          '180 ÷ {g}',
-          'Divide the bottom, 180, by the common factor.',
-        ],
-        g: [(v) => fin(div(180, v.q!)), '180 ÷ {q}', 'π/q is 180 ÷ q degrees.'],
-      }),
+      rule(
+        'p = d ÷ g',
+        '{p} = {d} ÷ {g}',
+        ['p', 'd', 'g'],
+        (v) => v.p! * v.g! - v.d!,
+        {
+          p: [(v) => fin(div(v.d!, v.g!)), '{d} ÷ {g}', 'Divide the top, d, by the common factor.'],
+          d: [(v) => exact(v.p! * v.g!), '{p} × {g}', 'Each 1/q of π is g degrees.'],
+          g: [() => undefined],
+        },
+        {
+          work: {
+            d: (v) => [
+              `${piOver(v.p!, 180 / v.g!)} = ${fmt(v.p!)} × ${fmt(v.g!)}° = ${fmt(v.p! * v.g!)}°`,
+            ],
+          },
+        },
+      ),
+      rule(
+        'q = 180 ÷ g',
+        '{q} = 180 ÷ {g}',
+        ['q', 'g'],
+        (v) => v.q! * v.g! - 180,
+        {
+          q: [
+            (v) => fin(div(180, v.g!)),
+            '180 ÷ {g}',
+            'Divide the bottom, 180, by the common factor.',
+          ],
+          g: [(v) => fin(div(180, v.q!)), '180 ÷ {q}', 'π/q is 180 ÷ q degrees.'],
+        },
+        {
+          work: {
+            q: (v) =>
+              v.d === undefined
+                ? []
+                : [`${fmt(v.d)}° = ${fmt(v.d)}π/180 = ${piOver(v.d / v.g!, 180 / v.g!)}`],
+          },
+        },
+      ),
     ],
     example: { d: 225, g: 45, p: 5, q: 4 },
     startWith: ['d'],
@@ -3339,7 +4022,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     assumptions: [
       'Adding or taking away whole turns of 360° ends on the same side: a coterminal angle.',
       'The reference angle is the acute angle to the x-axis; the quadrant gives the signs.',
-      'An angle on an axis has no quadrant, so this page takes the others.',
+      'An angle on an axis (a multiple of 90°) lies between quadrants: it has no quadrant or reference angle.',
     ],
     variables: [
       V('d', 'θ', 'Angle', { unit: '°', min: -1080, max: 1080, step: 1 }),
@@ -3353,36 +4036,45 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('R', 'R', 'Reference angle', { unit: '°', min: 0, max: 90, derived: true }),
     ],
     rules: [
-      limit(
-        'θ is not on an axis',
-        '{d} is not a multiple of 90',
-        ['d'],
-        (v) => Math.abs(v.d! / 90 - Math.round(v.d! / 90)) > 1e-9,
-        'The side lies on an axis, between quadrants: its sine and cosine are 0, 1 or −1.',
-      ),
       derive(
-        'c = θ − 360⌊θ ÷ 360⌋',
+        'c = θ + 360k',
         'c',
         ['d'],
-        '{c} = {d} − 360 × ⌊{d} ÷ 360⌋',
+        '{c} = {d} + 360k, with k whole, from 0° up to 360°',
         (v) => v.d! - 360 * Math.floor(v.d! / 360),
-        '{d} − 360 × ⌊{d} ÷ 360⌋',
-        '⌊θ ÷ 360⌋ counts the whole turns (down to the next whole number); take them away.',
+        (v) => {
+          const k = -Math.floor(v.d! / 360);
+          return k === 0 ? '{d}' : `{d} ${k > 0 ? '+' : '−'} ${Math.abs(k)} × 360`;
+        },
+        (v) =>
+          Math.floor(v.d! / 360) === 0
+            ? 'The angle is already from 0° to 360°.'
+            : 'Add or take away whole turns of 360° until the angle is from 0° to 360°.',
+        {
+          check: (v) => {
+            const k = -Math.floor(v.d! / 360);
+            return `${fmt(v.c!)} = ${fmt(v.d!)}${k === 0 ? '' : ` ${k > 0 ? '+' : '−'} ${Math.abs(k)} × 360`}`;
+          },
+        },
       ),
       derive(
         'Q = ⌊c ÷ 90⌋ + 1',
         'Q',
         ['c'],
         '{Q} = ⌊{c} ÷ 90⌋ + 1',
-        (v) => Math.floor(v.c! / 90) + 1,
+        (v) => (onAxis(v.c!) ? undefined : Math.floor(v.c! / 90) + 1),
         '⌊{c} ÷ 90⌋ + 1',
-        'Each quadrant is 90° wide, counted from the positive x-axis.',
+        (v) => {
+          const q = Math.floor(v.c! / 90);
+          return `${fmt(v.c!)}° is between ${90 * q}° and ${90 * q + 90}°: quadrant ${['I', 'II', 'III', 'IV'][q]}.`;
+        },
+        { message: (v) => (v.c !== undefined && onAxis(v.c) ? ON_AXIS : undefined) },
       ),
       derive(
         'R = reference angle of c',
         'R',
         ['c', 'Q'],
-        '{R} = |{c} − 180 × ⌊{Q} ÷ 2⌋|',
+        '{R} = reference angle of {c} in quadrant {Q}',
         (v) => [v.c!, 180 - v.c!, v.c! - 180, 360 - v.c!][v.Q! - 1],
         (v) => ['{c}', '180 − {c}', '{c} − 180', '360 − {c}'][v.Q! - 1]!,
         (v) =>
@@ -3392,6 +4084,10 @@ export const MATH_11_MODULES: ModuleDef[] = [
             'In quadrant III, measure past 180°.',
             'In quadrant IV, measure on to 360°.',
           ][v.Q! - 1]!,
+        {
+          check: (v) =>
+            `${fmt(v.R!)} = ${[fmt(v.c!), `180 − ${fmt(v.c!)}`, `${fmt(v.c!)} − 180`, `360 − ${fmt(v.c!)}`][v.Q! - 1]}`,
+        },
       ),
     ],
     example: { d: -495, c: 225, Q: 3, R: 45 },
@@ -3452,6 +4148,16 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.a! * Math.sin(v.b! * (v.x! - v.h!)) + v.k!,
         '{a} × sin({b} × ({x} − {h})) + {k}',
         'Shift x by h, multiply by b, take the sine, stretch by a, then add k.',
+        {
+          work: (v) => {
+            const t = v.b! * (v.x! - v.h!);
+            const sin = tidy(Math.sin(t));
+            return [
+              `y = ${fmt(v.a!)} × sin(${radians(t)}) + ${par(v.k!)}`,
+              `y = ${fmt(v.a!)} × ${par(sin)} + ${par(v.k!)}`,
+            ];
+          },
+        },
       ),
     ],
     example: {
@@ -3512,9 +4218,23 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.A! * Math.cos(v.b! * v.x!) + v.k!,
         '{A} × cos({b} × {x}) + {k}',
         'Check a point: multiply x by b, take the cosine, stretch by A and add k.',
+        {
+          work: (v) => {
+            const q = ratioOf(v.b!);
+            const bx =
+              v.b === 1
+                ? 'x'
+                : q && q[1] !== 1
+                  ? `${q[0] === 1 ? '' : q[0]}x/${q[1]}`
+                  : `${fmt(v.b!)}x`;
+            const A = v.A === 1 ? '' : `${fmt(v.A!)} `;
+            const k = v.k === 0 ? '' : ` ${v.k! < 0 ? '−' : '+'} ${fmt(Math.abs(v.k!))}`;
+            return [`The equation: y = ${A}cos(${bx})${k}`];
+          },
+        },
       ),
     ],
-    example: { A: 4, P: PI / 2, k: -1, b: 4, x: PI / 8, y: 4 * Math.cos(PI / 2) - 1 },
+    example: { A: 4, P: PI / 2, k: -1, b: 4, x: 0, y: 3 },
     startWith: ['A', 'P', 'k', 'x'],
     representation: {
       kind: 'functionGraph',
@@ -3551,6 +4271,13 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     rules: [
       limit(
+        'a ≠ 0',
+        '{a} is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 the graph is the flat line y = 0: it has no asymptotes.',
+      ),
+      limit(
         'cos(bx) ≠ 0',
         'cos({b} × {x}) is not 0',
         ['b', 'x'],
@@ -3573,7 +4300,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{Va} = π ÷ (2 × {b})',
         (v) => PI / (2 * v.b!),
         'π ÷ (2 × {b})',
-        'cos(bx) = 0 first at bx = π/2.',
+        (v) =>
+          `cos(bx) = 0 first at bx = π/2. Then every period: x = ${formatNumber(PI / (2 * v.b!), { pi: true })} + ${formatNumber(PI / v.b!, { pi: true })}n for every whole number n.`,
       ),
       derive(
         'y = a tan(bx)',
@@ -3607,15 +4335,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
       'One turn takes T minutes, so B = 2π ÷ T; the top comes at H = T ÷ 2.',
     ],
     variables: [
-      V('top', 'top', 'Top height (m)', { min: 0, max: 200, step: 1 }),
-      V('bot', 'bottom', 'Bottom height (m)', { min: 0, max: 200, step: 1 }),
+      V('top', 'top', 'Top height', { min: 0, max: 200, step: 1 }),
+      V('bot', 'bottom', 'Bottom height', { min: 0, max: 200, step: 1 }),
       V('T', 'T', 'Minutes per turn', { min: 0.5, max: 60, step: 0.5 }),
-      V('A', 'A', 'Amplitude (m)', { min: 0, max: 100, derived: true }),
-      V('k', 'k', 'Midline (m)', { min: 0, max: 200, derived: true }),
+      V('A', 'A', 'Amplitude', { min: 0, max: 100, derived: true }),
+      V('k', 'k', 'Midline height', { min: 0, max: 200, derived: true }),
       V('B', 'B', 'Radians per minute', { pi: true, min: 0, max: 13, derived: true }),
       V('H', 'H', 'Minutes to the top', { min: 0, max: 30, derived: true }),
-      V('t', 't', 'Time (min)', { min: 0, max: 120, step: 0.5 }),
-      V('y', 'h', 'Height (m)', { min: 0, max: 200, derived: true }),
+      V('t', 't', 'Time in minutes', { min: 0, max: 120, step: 0.5 }),
+      V('y', 'h', 'Height', { min: 0, max: 200, derived: true }),
     ],
     rules: [
       limit(
@@ -3669,6 +4397,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.k! - v.A! * Math.cos(v.B! * v.t!),
         '{k} − {A} × cos({B} × {t})',
         'At t = 0 the cosine is 1, so the rider starts at k − A, the bottom.',
+        {
+          work: (v) => {
+            const t = v.B! * v.t!;
+            return [
+              `h = ${fmt(v.k!)} − ${fmt(v.A!)} × cos(${radians(t)})`,
+              `h = ${fmt(v.k!)} − ${fmt(v.A!)} × ${par(tidy(Math.cos(t)))}`,
+            ];
+          },
+        },
       ),
     ],
     example: { top: 42, bot: 2, T: 8, A: 20, k: 22, B: PI / 4, H: 4, t: 2, y: 22 },
@@ -3696,31 +4433,50 @@ export const MATH_11_MODULES: ModuleDef[] = [
       'It holds for every angle, 3x as well as θ.',
     ],
     variables: [
-      V('s', 'sin θ', 'Sine', { min: -1, max: 1, step: 0.01, fraction: 100 }),
+      V('s', 's', 'Sine, sin θ', { min: -1, max: 1, step: 0.01, fraction: 100 }),
       V('Q', 'Q', 'Quadrant', { allowed: [1, 2, 3, 4], min: 1, max: 4 }),
-      V('c', 'cos θ', 'Cosine', { min: -1, max: 1, fraction: 100, derived: true }),
-      V('m', 'tan θ', 'Tangent', { min: -1e6, max: 1e6, fraction: 100, derived: true }),
+      V('c', 'c', 'Cosine, cos θ', { min: -1, max: 1, fraction: 100, derived: true }),
+      V('m', 'm', 'Tangent, tan θ', { min: -1e6, max: 1e6, fraction: 100, derived: true }),
       V('t', 'θ', 'Angle', { unit: '°', min: 0, max: 360, derived: true }),
     ],
     rules: [
       limit(
+        '|sin θ| < 1',
+        '{s} is between −1 and 1',
+        ['s'],
+        (v) => Math.abs(v.s!) < 1,
+        'sin θ = ±1 puts the angle on the y-axis, between quadrants.',
+      ),
+      limit(
         'sin θ matches the quadrant',
         'The sign of {s} fits quadrant {Q}',
         ['s', 'Q'],
-        (v) => (v.Q! <= 2 ? v.s! >= 0 : v.s! <= 0) && Math.abs(v.s!) < 1,
-        'Sine is positive in quadrants I and II and negative in III and IV (and ±1 only on an axis).',
+        (v) => (v.Q! <= 2 ? v.s! >= 0 : v.s! <= 0),
+        'Sine is positive in quadrants I and II and negative in III and IV.',
       ),
       derive(
         'cos θ = ±√(1 − sin²θ)',
         'c',
         ['s', 'Q'],
-        '{c} = (−1)^⌊{Q} ÷ 2⌋ × √(1 − ({s})²)',
-        (v) => (v.Q === 1 || v.Q === 4 ? 1 : -1) * Math.sqrt(1 - v.s! ** 2),
-        (v) => (v.Q === 1 || v.Q === 4 ? '√(1 − ({s})²)' : '−√(1 − ({s})²)'),
+        '{c} = ±√(1 − {s}²), the sign from quadrant {Q}',
+        (v) => cosSign(v.Q!) * Math.sqrt(1 - v.s! ** 2),
+        (v) => (cosSign(v.Q!) > 0 ? '√(1 − ({s})²)' : '−√(1 − ({s})²)'),
         (v) =>
-          v.Q === 1 || v.Q === 4
+          cosSign(v.Q!) > 0
             ? 'cos²θ = 1 − sin²θ; cosine is positive in this quadrant.'
             : 'cos²θ = 1 − sin²θ; cosine is negative in quadrants II and III.',
+        {
+          check: (v) =>
+            `${f100(v.c!)} = ${cosSign(v.Q!) > 0 ? '' : '−'}√(1 − ${wrap(f100(v.s!))}²)`,
+          work: (v) => {
+            const sign = cosSign(v.Q!) > 0 ? '' : '−';
+            const q = ratioOf100(v.s!);
+            if (!q) return [];
+            const sq = lowest([q[0] ** 2, q[1] ** 2]);
+            const rest = lowest([sq[1] - sq[0], sq[1]]);
+            return [`c = ${sign}√(1 − ${ratioText(sq)})`, `c = ${sign}√(${ratioText(rest)})`];
+          },
+        },
       ),
       derive(
         'tan θ = sin θ ÷ cos θ',
@@ -3735,11 +4491,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'θ from sin θ and the quadrant',
         't',
         ['s', 'Q'],
-        '{t} = 180 × ⌊{Q} ÷ 2⌋ + (−1)^⌊{Q} ÷ 2⌋ × sin⁻¹({s})',
-        (v) => {
-          const a = (Math.asin(v.s!) * 180) / PI;
-          return v.Q === 1 ? a : v.Q === 4 ? 360 + a : 180 - a;
-        },
+        '{t} = sin⁻¹({s}), moved into quadrant {Q}',
+        (v) => angleFromSin(v.s!, v.Q!),
         (v) => (v.Q === 1 ? 'sin⁻¹({s})' : v.Q === 4 ? '360 + sin⁻¹({s})' : '180 − sin⁻¹({s})'),
         (v) =>
           v.Q === 1
@@ -3747,6 +4500,10 @@ export const MATH_11_MODULES: ModuleDef[] = [
             : v.Q === 4
               ? 'sin⁻¹ gives a negative angle; a full turn on lands in quadrant IV.'
               : 'Mirror the inverse sine across the y-axis into quadrants II and III.',
+        {
+          check: (v) =>
+            `${fmt(v.t!)} = ${(['', '180 − ', '180 − ', '360 + '] as const)[v.Q! - 1]}sin⁻¹(${f100(v.s!)})`,
+        },
       ),
     ],
     example: {
@@ -3771,11 +4528,11 @@ export const MATH_11_MODULES: ModuleDef[] = [
       'Then cos θ = 1 ÷ sec θ and sin θ = tan θ × cos θ.',
     ],
     variables: [
-      V('m', 'tan θ', 'Tangent', { min: -100, max: 100, step: 0.01, fraction: 100 }),
+      V('m', 'm', 'Tangent, tan θ', { min: -100, max: 100, step: 0.01, fraction: 100 }),
       V('Q', 'Q', 'Quadrant', { allowed: [1, 2, 3, 4], min: 1, max: 4 }),
-      V('S', 'sec θ', 'Secant', { min: -1e4, max: 1e4, fraction: 100, derived: true }),
-      V('c', 'cos θ', 'Cosine', { min: -1, max: 1, fraction: 100, derived: true }),
-      V('s', 'sin θ', 'Sine', { min: -1, max: 1, fraction: 100, derived: true }),
+      V('S', 'S', 'Secant, sec θ', { min: -1e4, max: 1e4, fraction: 100, derived: true }),
+      V('c', 'c', 'Cosine, cos θ', { min: -1, max: 1, fraction: 100, derived: true }),
+      V('s', 's', 'Sine, sin θ', { min: -1, max: 1, fraction: 100, derived: true }),
       V('t', 'θ', 'Angle', { unit: '°', min: 0, max: 360, derived: true }),
     ],
     rules: [
@@ -3790,13 +4547,17 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'sec θ = ±√(1 + tan²θ)',
         'S',
         ['m', 'Q'],
-        '{S} = (−1)^⌊{Q} ÷ 2⌋ × √(1 + ({m})²)',
-        (v) => (v.Q === 1 || v.Q === 4 ? 1 : -1) * Math.sqrt(1 + v.m! ** 2),
-        (v) => (v.Q === 1 || v.Q === 4 ? '√(1 + ({m})²)' : '−√(1 + ({m})²)'),
+        '{S} = ±√(1 + {m}²), the sign from quadrant {Q}',
+        (v) => cosSign(v.Q!) * Math.sqrt(1 + v.m! ** 2),
+        (v) => (cosSign(v.Q!) > 0 ? '√(1 + ({m})²)' : '−√(1 + ({m})²)'),
         (v) =>
-          v.Q === 1 || v.Q === 4
+          cosSign(v.Q!) > 0
             ? 'sec²θ = 1 + tan²θ; secant is positive in this quadrant.'
             : 'sec²θ = 1 + tan²θ; secant is negative in quadrants II and III.',
+        {
+          check: (v) =>
+            `${f100(v.S!)} = ${cosSign(v.Q!) > 0 ? '' : '−'}√(1 + ${wrap(f100(v.m!))}²)`,
+        },
       ),
       derive(
         'cos θ = 1 ÷ sec θ',
@@ -3820,7 +4581,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'θ from tan θ and the quadrant',
         't',
         ['m', 'Q'],
-        '{t} = 180 × ⌊{Q} ÷ 2⌋ + tan⁻¹({m})',
+        '{t} = tan⁻¹({m}), moved into quadrant {Q}',
         (v) => {
           const a = (Math.atan(v.m!) * 180) / PI;
           return v.Q === 1 ? a : v.Q === 4 ? 360 + a : 180 + a;
@@ -3832,6 +4593,10 @@ export const MATH_11_MODULES: ModuleDef[] = [
             : v.Q === 4
               ? 'tan⁻¹ gives a negative angle; a full turn on lands in quadrant IV.'
               : 'Tangent repeats every 180°: half a turn on from the inverse tangent.',
+        {
+          check: (v) =>
+            `${fmt(v.t!)} = ${(['', '180 + ', '180 + ', '360 + '] as const)[v.Q! - 1]}tan⁻¹(${f100(v.m!)})`,
+        },
       ),
     ],
     example: {
