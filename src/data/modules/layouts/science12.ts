@@ -79,4 +79,49 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'A glacier melting in summer', bin: 'sun' },
     ],
   },
+
+  // ── Geologic time and radiometric dating (HS-ESS1-5, HS-ESS1-6) ──
+  {
+    kind: 'sequence',
+    id: 's.12.radiometric-dating~relative-order',
+    title: 'Putting rock events in order',
+    use: 'Use this for “A dike cuts three layers and stops at an eroded surface under a lava flow. Which happened first?”',
+    assumptions: [
+      'Superposition: lower layers are older unless folded or overturned.',
+      'Cross-cutting: a rock is younger than what it cuts.',
+      'An eroded surface is a gap in the record.',
+    ],
+    question:
+      'A cliff has limestone at the bottom, then shale, then sandstone. A dike cuts all three and ends at an eroded surface under a lava flow. Put the events in order.',
+    stages: [
+      { label: 'Limestone is laid down', figure: { kind: 'rock', texture: 'shells' } },
+      { label: 'Shale is laid down', figure: { kind: 'rock', texture: 'layers' } },
+      { label: 'Sandstone is laid down', figure: { kind: 'rock', texture: 'grains' } },
+      { label: 'Magma cuts through as a dike', figure: { kind: 'rock', texture: 'crystals' } },
+      { label: 'Erosion cuts the top flat' },
+      { label: 'Lava flows over the eroded surface', figure: { kind: 'rock', texture: 'fine' } },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.12.radiometric-dating~time-scale',
+    title: 'The geologic time scale',
+    use: 'Use this for “Order the eras of Earth’s history. How long was each?”',
+    assumptions: [
+      'The eras are named for their life: Paleozoic means old life, Mesozoic middle and Cenozoic new.',
+      'The boundaries are dated from ash beds and lava flows by radiometric dating.',
+    ],
+    question: 'Put Earth’s history in order, from its formation to today.',
+    stages: [
+      {
+        label: 'Precambrian: Earth forms; oxygen builds up and iron rusts into red beds',
+        span: 4059,
+      },
+      { label: 'Paleozoic: shelled animals, fish, the first land plants', span: 289 },
+      { label: 'Mesozoic: dinosaurs; ends with an asteroid impact', span: 186 },
+      { label: 'Cenozoic: mammals spread; humans appear', span: 66 },
+    ],
+    unit: 'million years',
+    totalLabel: 'Earth’s age',
+  },
 ];

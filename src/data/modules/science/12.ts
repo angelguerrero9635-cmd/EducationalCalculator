@@ -280,4 +280,186 @@ const shadowZone: ModuleDef = {
   representation: { kind: 'earthLayers', mode: 'section', distance: 'D' },
 };
 
-export const SCIENCE_12_MODULES: ModuleDef[] = [earthInterior, epicenter, shadowZone];
+// ── Geologic time and radiometric dating ──
+
+/** n = t ÷ T: the half-lives in an age. */
+const halves = quotient('n', 't', 'T', 'n = t ÷ T', [
+  'Count how many half-lives fit in the age.',
+  'Each half-life takes T: multiply.',
+  'Share the age among the half-lives.',
+]);
+
+/** p = 100 × 0.5ⁿ: the percent of the parent left after n half-lives. */
+const leftAfter = (p: string, parent: string) =>
+  rule(
+    `${p === 'P' ? 'P' : 'p'} = 100 × 0.5^n`,
+    `{${p}} = 100 × 0.5^({n})`,
+    (v) => v[p]! - 100 * 0.5 ** v.n!,
+    {
+      [p]: [
+        (v) => 100 * 0.5 ** v.n!,
+        '100 × 0.5^({n})',
+        `Each half-life halves the ${parent} left: halve 100% n times.`,
+      ],
+      n: [
+        (v) => (v[p]! > 0 ? Math.log(100 / v[p]!) / Math.log(2) : undefined),
+        `ln(100/{${p}})/ln(2)`,
+        'Count the halvings with logs: how many times 2 goes into the drop.',
+      ],
+    },
+  );
+
+const carbonDating: ModuleDef = {
+  id: 's.12.radiometric-dating',
+  assumptions: [
+    'Living things keep the same C-14 level as the air; decay starts when they die.',
+    'After about 50,000 years too little is left to measure.',
+    'Only for once-living material: wood, bone, shell or cloth.',
+  ],
+  variables: [
+    V('T', 'T', 'Half-life of C-14', { unit: 'years', min: 5000, max: 6000, step: 1 }),
+    V('t', 't', 'Age', { unit: 'years', min: 0, max: 60000, step: 1 }),
+    V('n', 'n', 'Half-lives passed', { min: 0, max: 12, step: 0.0001, derived: true }),
+    V('p', 'p', 'C-14 left', { unit: '%', min: 0.01, max: 100, step: 0.01 }),
+    V('q', 'q', 'C-14 decayed', { unit: '%', min: 0, max: 99.99, step: 0.01, derived: true }),
+  ],
+  ...rels(
+    halves,
+    leftAfter('p', 'C-14'),
+    rule('q = 100 − p', '{q} = 100 − {p}', (v) => v.q! - (100 - v.p!), {
+      q: [(v) => 100 - v.p!, '100 − {p}', 'What is not left has decayed to N-14.'],
+      p: [(v) => 100 - v.q!, '100 − {q}', 'What has not decayed is still C-14.'],
+    }),
+  ),
+  example: { T: 5730, t: 17190, n: 3, p: 12.5, q: 87.5 },
+  startWith: ['p', 'T'],
+  representation: {
+    kind: 'decayChart',
+    halfLife: 'T',
+    time: 't',
+    start: 100,
+    left: 'p',
+    halves: 'n',
+    parent: 'C-14',
+    daughter: 'N-14',
+    keep: ['T'],
+  },
+};
+
+/** t = n × T for a fixed half-life, written as the lesson writes it. */
+const fixedAge = (T: number, text: string) =>
+  rule(`t = n × ${text}`, `{t} = {n} × ${text}`, (v) => (v.t! - v.n! * T) / T, {
+    n: [(v) => v.t! / T, `{t} ÷ (${text})`, 'Half-lives passed: the age over the half-life.'],
+    t: [(v) => v.n! * T, `{n} × ${text}`, 'The age is the half-lives passed times the half-life.'],
+  });
+
+const U238 = 4.47e9;
+
+const uranium: ModuleDef = {
+  id: 's.12.radiometric-dating~uranium',
+  title: 'Dating the oldest rocks with uranium-238',
+  use: 'Use this for “A meteorite has as much lead-206 as uranium-238. How old is it?”',
+  assumptions: [
+    'U-238 decays to lead-206 with a half-life of 4.47 × 10⁹ years.',
+    'The rock started with no lead-206 and lost none.',
+    'Most surface rocks were melted or weathered since Earth formed. Meteorites were not, so they date the solar system.',
+  ],
+  variables: [
+    V('R', 'R', 'Lead-206 atoms per U-238 atom', { min: 0, max: 15, step: 0.01 }),
+    V('p', 'p', 'U-238 left', { unit: '%', min: 6.25, max: 100, step: 0.01, derived: true }),
+    V('n', 'n', 'Half-lives passed', { min: 0, max: 4, step: 0.0001, derived: true }),
+    V('t', 't', 'Age', { unit: 'years', min: 0, max: 1.8e10, step: 1000 }),
+  ],
+  ...rels(
+    rule('p = 100 ÷ (1 + R)', '{p} = 100 ÷ (1 + {R})', (v) => v.p! * (1 + v.R!) - 100, {
+      p: [
+        (v) => 100 / (1 + v.R!),
+        '100 ÷ (1 + {R})',
+        'Each lead atom was once a uranium atom: the uranium’s share of 1 + R atoms.',
+      ],
+      R: [
+        (v) => div(100, v.p!)! - 1,
+        '100 ÷ {p} − 1',
+        'The atoms at the start per atom left, less the one left.',
+      ],
+    }),
+    leftAfter('p', 'U-238'),
+    fixedAge(U238, '4.47 × 10⁹'),
+  ),
+  example: { R: 1, p: 50, n: 1, t: U238 },
+  startWith: ['R'],
+  representation: {
+    kind: 'decayChart',
+    halfLife: U238,
+    time: 't',
+    start: 100,
+    left: 'p',
+    halves: 'n',
+    parent: 'U-238',
+    daughter: 'Pb-206',
+  },
+};
+
+const U235_MA = 704;
+const myr = (id: string, symbol: string, name: string, extra: Partial<VariableDef> = {}) =>
+  V(id, symbol, name, { unit: 'million years', min: 0, max: 704, step: 0.1, ...extra });
+
+const bracket: ModuleDef = {
+  id: 's.12.radiometric-dating~bracket',
+  title: 'Bracketing a fossil layer between ash beds',
+  use: 'Use this for “Which ash beds date a fossil layer, and how old can the fossils be?”',
+  assumptions: [
+    'Ash layers can be dated; sandstone and shale cannot.',
+    'A layer between two dated ash beds is younger than the one below and older than the one above.',
+    'The same index fossil marks rock of the same age anywhere.',
+    'Uranium-235 decays to lead-207 with a half-life of 704 million years.',
+  ],
+  variables: [
+    V('P', 'P', 'U-235 left in the lower ash', { unit: '%', min: 50, max: 100, step: 0.01 }),
+    V('n', 'n', 'Half-lives passed', { min: 0, max: 1, step: 0.0001, derived: true }),
+    myr('t', 't', 'Age of the lower ash'),
+    myr('u', 'u', 'Age of the upper ash'),
+    myr('w', 'w', 'Width of the bracket', { derived: true }),
+  ],
+  ...rels(
+    leftAfter('P', 'U-235'),
+    fixedAge(U235_MA, '704'),
+    below('u', 't', 'u < t', 'the upper ash {u} is younger than the lower ash {t}'),
+    difference('w', 't', 'u', 'w = t − u', [
+      'The shale is younger than the lower ash and older than the upper ash.',
+      'The lower ash is the bracket’s width older than the upper ash.',
+      'The upper ash is the bracket’s width younger than the lower ash.',
+    ]),
+  ),
+  example: { P: 100 * 0.5 ** 0.1, n: 0.1, t: 70.4, u: 66, w: 4.4 },
+  startWith: ['P', 'u'],
+  representation: {
+    kind: 'rockLayers',
+    dating: {
+      layers: [
+        { rock: 'sandstone', fossil: 'ammonite' },
+        { rock: 'ash', age: 'u' },
+        { rock: 'shale', fossil: 'ammonite' },
+        { rock: 'ash', age: 't' },
+        { rock: 'limestone' },
+      ],
+      bracket: 2,
+      sample: {
+        parent: 'P',
+        layer: 3,
+        parentName: 'uranium-235',
+        daughterName: 'lead-207',
+        halfLives: 'n',
+      },
+    },
+  },
+};
+
+export const SCIENCE_12_MODULES: ModuleDef[] = [
+  earthInterior,
+  epicenter,
+  shadowZone,
+  carbonDating,
+  uranium,
+  bracket,
+];
