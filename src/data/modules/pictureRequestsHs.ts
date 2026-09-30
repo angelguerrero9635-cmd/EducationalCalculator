@@ -2171,20 +2171,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Part 3, `percentBar` with a second mark: `second: "H"` (a value id holding a percent; off unless set) draws that percent on the same bar as a band along its bottom in chartSecond, a dashed line through the bar and its label ("H = 80%") above the percent scale; the caption adds "The line marks H = 80%." The bar runs on past 100% for it as for the main percent; the harness checks it is not negative and fits the bar. s.9.immune-disease~herd-immunity: { kind: "percentBar", percent: "C", part: "V", whole: "P", second: "H" }.',
     ].join(' '),
   },
-  ask(
-    'H105',
-    'functionGraph',
-    'Options the builders needed to replace stand-ins: value ids for fixed options, a "none" picture, matrixGrid rowReduce from values, reaction past 8 molecules, spectrum from a lab line value, and the rest of HS_NEEDS P17',
-    [
-      'm.9.regression',
-      'm.10.rigid-motions',
-      'm.11.polynomial-functions',
-      'm.12.matrices',
-      'm.12.confidence-intervals',
-      's.10.reaction-types',
-      's.11.momentum',
-      's.12.starlight-spectra',
-    ],
-    'P17: docs/HS_NEEDS.md lists each option; docs/build/<plan>.md says which page uses a stand-in until it lands.',
-  ),
+  {
+    ...ask(
+      'H105',
+      'functionGraph',
+      'Options the builders needed to replace stand-ins: value ids for fixed options, a "none" picture, matrixGrid rowReduce from values, reaction past 8 molecules, spectrum from a lab line value, and the rest of HS_NEEDS P17',
+      [
+        'm.9.regression',
+        'm.10.rigid-motions',
+        'm.11.polynomial-functions',
+        'm.12.matrices',
+        'm.12.confidence-intervals',
+        's.10.reaction-types',
+        's.11.momentum',
+        's.12.starlight-spectra',
+      ],
+    ),
+    gallery: ['g.m9-regression-point-k'],
+    notes:
+      'P17: docs/HS_NEEDS.md lists each option; docs/build/<plan>.md says which page uses a stand-in until it lands. Drawn part by part, each off unless a page sets it. (1) `scatter` `residualOf.point` may be a value id holding the point number k, counted from 1 (a number stays the 0-based index): that point’s residual is lit and worked in the caption, "Point 3 (3, 61): predicted 62, residual 61 − 62 = −1"; "?" lights none; the harness checks k is a whole number naming a point and the residual. m.9.regression: add k (`allowed` 1–8) and e = y_k − (m·x_k + b); { kind: "scatter", …, residualOf: { point: "k", residual: "e" } }.',
+  },
 ];

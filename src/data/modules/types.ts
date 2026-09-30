@@ -665,12 +665,13 @@ export type Representation =
        * coefficient's value (checked against the points). `leastSquares`: the least-squares
        * line dashed beside the dragged one ('beside'), or the module's slope and intercept are
        * it ('fit': checked to the cent, no handles). `residualOf`: one point (an index) with
-       * its residual labelled, and the residual's value (checked).
+       * its residual labelled, and the residual's value (checked). H105: `point` may be a value
+       * id holding the point's number k, counted from 1 (the student's "point 3").
        */
       residuals?: 'segments' | 'plot';
       r?: string | true;
       leastSquares?: 'beside' | 'fit';
-      residualOf?: { point: number; residual?: string };
+      residualOf?: { point: number | string; residual?: string };
     }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at

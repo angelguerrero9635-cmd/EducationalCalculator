@@ -83,7 +83,11 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
     const text = lineText(ys, xs, tm.value, tb.value);
     return tm.exact && tb.exact ? text : text.replace(' = ', ' ≈ ');
   };
-  const one = spec.residualOf ? spec.points[spec.residualOf.point] : undefined;
+  // H105: the point may be a value (k, counted from 1); "?" picks none.
+  const pick = spec.residualOf?.point;
+  const oneAt =
+    typeof pick === 'string' ? (rep.known(pick) ? Math.round(rep.shown(pick)) - 1 : -1) : pick;
+  const one = oneAt !== undefined ? spec.points[oneAt] : undefined;
   const oneRes = one ? one[1] - fit(one[0]) : 0;
   const rOwn = spec.r === true ? correlation(spec.points) : undefined;
   const rId = typeof spec.r === 'string' ? spec.r : undefined;
@@ -106,7 +110,7 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
           : []),
         ...(one
           ? [
-              `Point (${formatNumber(one[0])}, ${formatNumber(one[1])}): predicted ${near(fit(one[0]))}, residual ${formatNumber(one[1])} − ${near(fit(one[0]))} ${approx(oneRes)}`,
+              `Point ${typeof pick === 'string' ? `${oneAt! + 1} ` : ''}(${formatNumber(one[0])}, ${formatNumber(one[1])}): predicted ${near(fit(one[0]))}, residual ${formatNumber(one[1])} − ${near(fit(one[0]))} ${approx(oneRes)}`,
             ]
           : []),
         ...(ls && spec.leastSquares === 'beside'
@@ -410,7 +414,7 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   ) : null}
                   {known && (spec.residuals || one)
                     ? spec.points.map(([x, y], i) =>
-                        spec.residuals || i === spec.residualOf?.point ? (
+                        spec.residuals || i === oneAt ? (
                           <Line
                             key={`res${i}`}
                             x1={sx(x)}
@@ -418,9 +422,7 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             x2={sx(x)}
                             y2={sy(fit(x))}
                             stroke={c.chartSecond}
-                            strokeWidth={
-                              i === spec.residualOf?.point ? chart.strokeHeavy : chart.stroke
-                            }
+                            strokeWidth={i === oneAt ? chart.strokeHeavy : chart.stroke}
                           />
                         ) : null,
                       )
