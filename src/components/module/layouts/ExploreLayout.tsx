@@ -21,6 +21,13 @@ import { PositionScene } from './PositionScene';
 import { CarbonCycleFigure, LeafCellFigure, PedigreeFigure } from './figuresLife';
 import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import { MagnetsFigure, PlanetsFigure } from './figures8';
+import { StudyDesignFigure } from './studyDesignFigure';
+import { CladogramFigure } from './cladogramFigure';
+import { NitrogenCycleFigure } from './nitrogenCycleFigure';
+import { FeedbackLoopFigure } from './feedbackLoopFigure';
+import { ImmuneStagesFigure } from './immuneStagesFigure';
+import { GalvanicFigure } from './galvanicFigure';
+import { HslFigureView } from './hslFigures';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -28,6 +35,9 @@ import { RockCycleFigure } from './rockCycleFigure';
 import { PlatesFigure } from './platesFigure';
 import { WaterCycleFigure } from './waterCycleFigure';
 import { CellFigure, Particles } from './figuresR4h';
+import { ConeFigure } from './coneFigure';
+import { MacroFigure } from './macroFigure';
+import { OrganelleFigure } from './organelleFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -95,6 +105,11 @@ function FigureView({
   onPart: (name: string) => void;
 }) {
   switch (figure.kind) {
+    case 'mohsScale':
+    case 'landforms':
+    case 'oceanCurrents':
+    case 'greenhouse':
+      return <HslFigureView figure={figure} scene={scene} />;
     case 'parts':
       if (figure.drawing) {
         return (
@@ -172,6 +187,24 @@ function FigureView({
       return <PeriodicTableFigure elements={scene.elements ?? {}} />;
     case 'planets':
       return <PlanetsFigure planets={scene.planets ?? {}} />;
+    case 'studyDesign':
+      return <StudyDesignFigure study={scene.study ?? { design: 'survey' }} />;
+    case 'doubleCone':
+      return <ConeFigure cut={scene.cone ?? 'circle'} />;
+    case 'macromolecules':
+      return <MacroFigure macro={scene.macro ?? { kind: 'carbohydrate' }} />;
+    case 'organelleEnergy':
+      return <OrganelleFigure energy={scene.energy ?? {}} />;
+    case 'cladogram':
+      return <CladogramFigure figure={figure} clade={scene.clade ?? {}} />;
+    case 'nitrogenCycle':
+      return <NitrogenCycleFigure process={scene.nitrogen?.process} />;
+    case 'feedbackLoop':
+      return <FeedbackLoopFigure loop={scene.loop ?? { steps: [], sign: 'negative' }} />;
+    case 'immuneStages':
+      return <ImmuneStagesFigure stage={scene.immune?.stage} />;
+    case 'electrochemicalCell':
+      return <GalvanicFigure scene={scene.galvanic ?? { metals: ['Zn', 'Cu'] }} />;
   }
 }
 

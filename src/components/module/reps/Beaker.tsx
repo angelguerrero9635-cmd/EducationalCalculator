@@ -10,7 +10,7 @@ import { mixedValue } from './exact';
 import { Deepen, FloorShadow, Glass, Sheen, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
-type Spec = Extract<Representation, { kind: 'beaker' }>;
+type Spec = Extract<Representation, { kind: 'beaker'; parts: string[] }>;
 
 /** A measuring jug with liter marks; each part is a layer of liquid, stacked up to the total. */
 export function Beaker({ spec, calc }: { spec: Spec; calc: Calculator }) {

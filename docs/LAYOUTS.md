@@ -58,6 +58,74 @@ shrink (`fewer`). Grade 8, in `layouts/figures8.tsx`: a `magnets` scene can set
 `field` (the field lines from N to S, `compasses` round the magnets, or one magnet `single`;
 magnets are painted N red, S blue), and `planets` draws the planets and the moon to scale by
 size beside the sun's edge, ringing a scene's `lit` ones with their widths in Earths.
+Grades 10–12 (`layouts/coneFigure.tsx`): `doubleCone` cuts two cones tip to tip with a plane;
+a scene's `cone` (`circle`, `ellipse`, `parabola`, `hyperbola`) tilts the plane and draws the curve.
+Grade 10 chemistry (`layouts/galvanicFigure.tsx`): `electrochemicalCell`, a galvanic cell of two
+metals in their ions' solutions, a wire through a voltmeter or bulb and a KNO₃ salt bridge; a
+scene's `galvanic: { metals, meter?, lit? }` picks the metals (the anode, E° and both
+half-reactions are worked out from the reduction potentials) and rings the electrons, anode,
+cathode, bridge or meter.
+
+Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
+ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,
+between?, absolute? }` lights a rank, shades an unknown's range or bars absolute hardness. Mineral
+icons (`layouts/icons/hl.tsx`): `quartz`, `feldspar`, `mica`, `calcite`, `halite`, `pyrite`,
+`hematite`; energy icons `solar panel` and `oil rig` (beside round 3's wind turbine, dam, coal,
+oil pump, gas flame and nuclear power plant). A star's life, on night sky: `stellar nebula`, `protostar`,
+`Sun-like star`, `massive star`, `red giant`, `red supergiant`, `planetary nebula`, `white dwarf`,
+`supernova`, `neutron star`, `black hole`. Galaxies: `spiral galaxy`, `barred spiral galaxy`, `elliptical
+galaxy`, `irregular galaxy`; the forming solar system: `solar nebula`, `spinning disk`, `protosun`,
+`planetesimals`, `young planets`. `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
+composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
+valley, a meander, an aquifer or a dune, its parts labeled. `oceanCurrents`
+(`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map. `greenhouse`
+(`layouts/greenhouseFigure.tsx`): `greenhouse: { view: 'energy', co2? }` (sunlight in, infrared out
+and back, a thermometer) or `{ view: 'zones', lit? }` (climate zones by latitude).
+
+Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
+cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
+bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat
+(glycerol and three fatty acids), 2 to 4 units; `split` runs it as hydrolysis. Card icons (drawn in
+`layouts/icons/hg.tsx`): `red blood cell in hypotonic water` (swollen round), `… isotonic water`
+(a dimpled disc), `… hypertonic water` (shriveled, crenated), and `plant cell in hypotonic water`
+(turgid), `… isotonic water` (flaccid), `… hypertonic water` (plasmolyzed), each in water with
+its solute dots and the water's net flow as arrows. `organelleEnergy`
+(`layouts/organelleFigure.tsx`): a chloroplast (grana of thylakoids, stroma) and a mitochondrion
+(cristae, matrix) in the cytoplasm, glucose and O₂ flowing over the top, CO₂ and H₂O back under,
+light in and ATP out; `energy: { process?, lit? }` lights the whole `cycle`, `photosynthesis`,
+`respiration` or a stage (`lightReactions`, `calvinCycle`, `glycolysis`, `krebsCycle`,
+`electronTransport`) with its part and its equation, and rings one substance. Card figure
+`cellDivision` (`layouts/divisionCard.tsx`, 96 × 76, for sequence stages and sort cards):
+`{ kind: 'cellDivision', stage, diploid? }` draws interphase, prophase … cytokinesis, or
+prophase I … telophase II, the chromosomes counted from 2n (2, 4 or 6), maternal red and paternal
+blue, crossed-over tips from prophase I, four different cells of n after telophase II.
+
+Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
+people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by
+what people already do, or an `experiment` assigned at random to a treatment and a control group;
+`study: { design, method?, sample?, groups?, lit? }`). The sampling methods are also card icons
+(`simple random sample`, `stratified sample`, `cluster sample`, `systematic sample`, `convenience
+sample`), each 36 dots with its 9 picked, drawn in `layouts/icons/hb.tsx`.
+
+Grade 9 biology card icons (group HH, `layouts/icons/hh.tsx`): homologous limbs with each bone
+group in its own color (`human arm bones`, `bat wing bones`, `whale flipper bones`, `cat leg
+bones`) and an `insect wing` with none; the domains and kingdoms (`domain Bacteria`, `domain
+Archaea`, `domain Eukarya`, `kingdom Protista`, `kingdom Fungi`, `kingdom Plantae`, `kingdom
+Animalia`). Explore figure `cladogram` (`layouts/cladogramFigure.tsx`): `{ tree, traits }`, a
+tree of taxon names as nested lists and each trait's taxa (one clade) marked as a numbered bar
+on the branch into it; a scene's `clade: { lit?, ring? }` lights a trait's clade or rings taxa.
+Primary succession stage icons (`bare rock`, `lichens on rock`, `mosses and thin soil`, `grasses
+and flowers`, `shrubs`, `young trees`, `mature forest`). Explore figures `nitrogenCycle`
+(`layouts/nitrogenCycleFigure.tsx`; `nitrogen: { process? }` lights fixation, lightning,
+nitrification, assimilation, eating, ammonification or denitrification) and `feedbackLoop`
+(`layouts/feedbackLoopFigure.tsx`; `loop: { steps, sign, lit?, back? }`, the scene's own words
+in 3 to 6 boxes and the arrow back marked − or +) and `immuneStages`
+(`layouts/immuneStagesFigure.tsx`; `immune: { stage? }` lights antigen, helperT, bCells, antibodies,
+killerT or memory). Pathogen icons: `virus`, `bacterium`, `fungus`, `parasite`.
+
+Chemistry reaction types (H49) are card icons in `layouts/icons/hi.tsx`: `synthesis reaction`,
+`decomposition reaction`, `single replacement reaction`, `double replacement reaction` and
+`combustion reaction`, lit atom balls with the reactants above an arrow and the products below.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

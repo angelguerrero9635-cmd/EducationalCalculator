@@ -23,6 +23,33 @@ import { chemIssues } from './chemPictures';
 
 import { placeParts } from '../helpers';
 import { physics8Issues } from './picturesPhysics8';
+import { functionGraphIssues } from './picturesFunctionGraph';
+import { hscIssues } from './picturesHsc';
+import { hsbIssues } from './picturesHsb';
+import { hsdIssues } from './picturesHsd';
+import { hsjIssues, solutionIssues } from './picturesHsj';
+import {
+  boxPlotIssues,
+  dotPlotSdIssues,
+  scatterIssues,
+  treeChanceIssues,
+  twoWayIssues,
+  vennChanceIssues,
+} from './picturesHse';
+import {
+  circleSectorIssues,
+  curvedSolidHsfIssues,
+  factorRootIssues,
+  roundSectionIssues,
+  planeGeometryIssues,
+  scaleCopyHsfIssues,
+  transformationHsfIssues,
+} from './picturesHsf';
+import { hsgIssues, punnettHsIssues } from './picturesHsg';
+import { hshIssues } from './picturesHsh';
+import { chemHsiIssues, hsiIssues } from './picturesHsi';
+import { hslIssues } from './picturesHsl';
+import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -215,9 +242,15 @@ export function repIssues(
         out.push(`circumference ${C} is not 2π × ${r}`);
       if (r !== undefined && A !== undefined && off(A, Math.PI * r * r))
         out.push(`area ${A} is not π × ${r}²`);
+      out.push(...circleSectorIssues(rep, val));
       break;
     }
     case 'scaleCopy': {
+      // Grades 9–12: a dilation from a center, or the side-splitter (picturesHsf.ts).
+      if (rep.center || rep.splitter) {
+        out.push(...scaleCopyHsfIssues(rep, val));
+        break;
+      }
       // Whole squares for the original; both figures side by side fit about 30 squares.
       count(rep.width, 'original width', 12);
       count(rep.height, 'original height', 12);
@@ -694,6 +727,10 @@ export function repIssues(
       break;
     }
     case 'beaker': {
+      if ('solution' in rep) {
+        out.push(...solutionIssues(rep.solution, (id) => val(id), byId));
+        break;
+      }
       const t = val(rep.total);
       if (t !== undefined && t > rep.max) out.push(`total ${t} L past the jug's ${rep.max} L`);
       if (rep.mixed) for (const id of [...rep.parts, rep.total]) exact(val(id), `amount ${id}`);
@@ -808,6 +845,7 @@ export function repIssues(
       break;
     }
     case 'coordinatePlane': {
+      out.push(...planeGeometryIssues(rep, val));
       // Plotting draws its path from 0 across then up, in the first quadrant only.
       if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
       if (rep.plot && rep.second) out.push('plotting places one point, not two');
@@ -876,6 +914,7 @@ export function repIssues(
         if (a !== undefined && b !== undefined && b < a - 1e-9)
           out.push(`box plot out of order: ${a} then ${b}`);
       }
+      out.push(...boxPlotIssues(rep, val));
       break;
     }
     case 'pieChart': {
@@ -984,6 +1023,7 @@ export function repIssues(
     }
     case 'factorTree':
       count(rep.value, 'number');
+      out.push(...factorRootIssues(rep, val));
       break;
     case 'tape': {
       if ('equation' in rep) {
@@ -1112,6 +1152,7 @@ export function repIssues(
       break;
     }
     case 'wave': {
+      out.push(...hsk.waveHsIssues(rep, (id) => hsk.mapSi(val(id), byId.get(id)?.unitFactor)));
       if (typeof rep.extent === 'string') count(rep.extent, 'waves drawn', 12);
       const [A, L] = [rep.amplitude ? val(rep.amplitude) : undefined, val(rep.wavelength)];
       if (A !== undefined && A < 0) out.push(`negative amplitude ${A}`);
@@ -1119,6 +1160,10 @@ export function repIssues(
       break;
     }
     case 'punnettSquare': {
+      if (rep.inheritance) {
+        out.push(...punnettHsIssues(rep, (id) => val(id)));
+        break;
+      }
       const [p, q, d] = [rep.first, rep.second, rep.dominant].map(val);
       for (const [id, x] of [
         [rep.first, p],
@@ -1179,6 +1224,21 @@ export function repIssues(
         }
         if (rep.vertical) out.push('signed jumps are drawn across, not vertical');
         if (rep.inequality) out.push('a line shows a jump or an inequality, not both');
+      }
+      if (rep.compound) {
+        // H17: two bounds, the lower first; |x − c| (sign) d has its bounds at c ∓ d.
+        const { center, radius } = rep.compound;
+        if (!rep.second) out.push('a compound inequality needs its second bound');
+        if (rep.vertical || rep.inequality || rep.jump)
+          out.push('a compound inequality is drawn across, alone');
+        if (!center !== !radius) out.push('a distance needs both its center and its radius');
+        const [c, r] = [center, radius].map((x) => (x ? val(x) : undefined));
+        if (c !== undefined && r !== undefined) {
+          if (a !== undefined && Math.abs(a - (c - r)) > 1e-6 * Math.max(1, Math.abs(a)))
+            out.push(`|x − ${c}| with radius ${r} has its lower bound at ${c - r}, not ${a}`);
+          if (b !== undefined && Math.abs(b - (c + r)) > 1e-6 * Math.max(1, Math.abs(b)))
+            out.push(`|x − ${c}| with radius ${r} has its upper bound at ${c + r}, not ${b}`);
+        }
       }
       break;
     }
@@ -1269,6 +1329,10 @@ export function repIssues(
       break;
     }
     case 'venn':
+      if ('chances' in rep) {
+        out.push(...vennChanceIssues(rep.chances, val));
+        break;
+      }
       count(rep.first, 'Venn number', 1000);
       count(rep.second, 'Venn number', 1000);
       break;
@@ -1331,6 +1395,11 @@ export function repIssues(
       break;
     }
     case 'crossSection': {
+      // Grades 9–12: a cylinder or a cone (picturesHsf.ts).
+      if (rep.solid === 'cylinder' || rep.solid === 'cone') {
+        out.push(...roundSectionIssues(rep, val));
+        break;
+      }
       const [l, w0, h, at, A, V] = [
         rep.length,
         rep.width,
@@ -1376,6 +1445,10 @@ export function repIssues(
       break;
     }
     case 'treeDiagram': {
+      if ('chances' in rep) {
+        out.push(...treeChanceIssues(rep.chances, val));
+        break;
+      }
       // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
       count(rep.first, 'first-stage outcomes', 6);
       count(rep.second, 'second-stage outcomes', 6);
@@ -1440,6 +1513,8 @@ export function repIssues(
       xs.forEach((x, i) => {
         if (x !== undefined && x < 0) out.push(`level ${i + 1} energy ${x} is negative`);
       });
+      // A pyramid of biomass or numbers passes no share up unless it sets one (H40).
+      if (rep.measure && rep.measure !== 'energy' && rep.percent === undefined) break;
       const p = val(rep.percent ?? 10);
       if (p !== undefined && (p <= 0 || p > 100)) out.push(`${p}% passed up is not a share`);
       if (p === undefined) break;
@@ -1498,6 +1573,7 @@ export function repIssues(
       break;
     }
     case 'dotPlot': {
+      out.push(...dotPlotSdIssues(rep, val));
       const sorted = firstValues(rep.data, rep.count);
       const md = rep.median ? val(rep.median) : undefined;
       if (sorted && md !== undefined && Math.abs(medianOf(sorted) - md) > 1e-9)
@@ -1636,6 +1712,10 @@ export function repIssues(
         Math.abs(a * 10 ** e - x) > Math.max(1e-9, 5e-4 * x)
       )
         out.push(`${a} × 10^${e} drawn, the number shows ${x}`);
+      // Log mode: the log is the exponent plus the mantissa's log.
+      const lg = rep.log ? val(rep.log) : undefined;
+      if (lg !== undefined && x !== undefined && x > 0 && Math.abs(lg - Math.log10(x)) > 5e-4)
+        out.push(`log ${lg} shown, log₁₀ ${x} is ${Math.log10(x)}`);
       break;
     }
     case 'rootSquare': {
@@ -1664,6 +1744,10 @@ export function repIssues(
       break;
     }
     case 'rockLayers':
+      if ('dating' in rep) {
+        out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+        break;
+      }
       count(rep.fossils[0], 'layers', 12);
       count(rep.fossils[1], 'layers', 12);
       break;
@@ -1700,12 +1784,13 @@ export function repIssues(
         const ids4 = [rep.slope, rep.intercept, rep.at.x, rep.at.y];
         const [m, b, x, y] = ids4.map(val);
         if (
-          ids4.every((id) => !byId.get(id)?.unit) &&
+          ids4.every((id) => typeof id === 'number' || !byId.get(id)?.unit) &&
           [m, b, x, y].every((v) => v !== undefined) &&
           Math.abs(m! * x! + b! - y!) > 1e-6 * (1 + Math.abs(y!))
         )
           out.push(`prediction ${y} is off the line (${m! * x! + b!})`);
       }
+      out.push(...scatterIssues(rep, val));
       break;
     }
     case 'curvedSolid': {
@@ -1714,6 +1799,7 @@ export function repIssues(
       if ((rep.shape === 'sphere') === !!rep.height)
         out.push(`a ${rep.shape} ${rep.height ? 'has no' : 'needs a'} height`);
       if (rep.compare && rep.shape === 'cylinder') out.push('a cylinder is compared with itself');
+      out.push(...curvedSolidHsfIssues(rep, val));
       const [r, h] = [rep.radius, rep.height].map((id) => (id ? val(id) : undefined));
       if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
       if (h !== undefined && h < 0) out.push(`height ${h} is negative`);
@@ -1735,6 +1821,9 @@ export function repIssues(
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);
       break;
     }
+    case 'functionGraph':
+      out.push(...functionGraphIssues(rep, val));
+      break;
     case 'linearFunction': {
       const [m, b] = [val(rep.slope), val(rep.intercept)];
       const [x, y] = rep.point ? [val(rep.point.x), val(rep.point.y)] : [];
@@ -1762,6 +1851,7 @@ export function repIssues(
       };
       if (move.factor !== undefined && move.factor <= 0)
         out.push(`dilation by scale factor ${move.factor}`);
+      out.push(...transformationHsfIssues(rep, val));
       const a = rep.figure[0] && [val(rep.figure[0][0]), val(rep.figure[0][1])];
       const [ix, iy] = rep.image ? [val(rep.image.x), val(rep.image.y)] : [];
       const all = [...Object.values(move), a?.[0], a?.[1], ix, iy];
@@ -1825,9 +1915,22 @@ export function repIssues(
           return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
         }),
       );
+      out.push(...chemHsiIssues(rep, (x) => val(x)));
       break;
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
+      // Elimination (H16): the sum a·x + b·y = c is k₁ × (y − m₁x = b₁) + k₂ × (y − m₂x = b₂).
+      const [sa, sb, sc] = rep.sum ? [val(rep.sum.x), val(rep.sum.y), val(rep.sum.c)] : [];
+      if (
+        [m1, b1, m2, b2, sa, sb, sc].every((v) => v !== undefined) &&
+        m1 !== m2 &&
+        !(sa === 0 && sb === 0)
+      ) {
+        const k2 = (sa! + sb! * m1!) / (m1! - m2!);
+        const k1 = sb! - k2;
+        if (Math.abs(k1 * b1! + k2 * b2! - sc!) > 1e-6 * Math.max(1, Math.abs(sc!)))
+          out.push(`sum line ${sa}x + ${sb}y = ${sc} is not a sum of the two equations`);
+      }
       const [x, y] = rep.solution ? [val(rep.solution.x), val(rep.solution.y)] : [];
       if ([m1, b1, m2, b2].some((v) => v === undefined) || x === undefined || y === undefined)
         break;
@@ -1896,6 +1999,7 @@ export function repIssues(
         const x = val(id);
         return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
       };
+      out.push(...hsk.energySpringIssues(rep, (id) => f(id)));
       const g = rep.g ?? 9.8;
       const [h, pe, ke, total, top, m, v] = [
         rep.height,
@@ -1960,7 +2064,8 @@ export function repIssues(
           out.push(`motion graph ends at ${end}, not start + slope × time = ${want}`);
       }
       if (rep.graph === 'speed') {
-        for (const v of [start, end])
+        out.push(...hsk.motionKinematicsIssues(rep, (id) => fv(id)));
+        for (const v of rep.kinematics ? [] : [start, end])
           if (v !== undefined && v < 0) out.push(`speed ${v} is below 0 on a speed-time graph`);
         const d = rep.distance ? fv(rep.distance) : undefined;
         if (d !== undefined && [t, start, end].every((x) => x !== undefined)) {
@@ -1984,9 +2089,77 @@ export function repIssues(
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
-      out.push(...physics8Issues(rep, (id) => val(id)));
+      if (hsk.physicsHsOption(rep)) out.push(...hsk.physicsHsIssues(rep, (id) => val(id)));
+      else out.push(...physics8Issues(rep, (id) => val(id)));
+      break;
+    case 'triangleSolver':
+    case 'markedFigure':
+    case 'circleTheorems':
+      out.push(...hscIssues(rep, (id) => val(id)));
+      break;
+    case 'normalCurve':
+    case 'histogram':
+    case 'pascalTriangle':
+    case 'termsChart':
+      out.push(...hsbIssues(rep, (id) => val(id)));
+      break;
+    case 'unitCircle':
+    case 'algebraTiles':
+    case 'vectorDiagram':
+    case 'complexPlane':
+    case 'polarGrid':
+    case 'conicGraph':
+    case 'matrixGrid':
+      out.push(...hsdIssues(rep, (id) => val(id)));
+      break;
+    case 'membrane':
+    case 'dnaStrand':
+      out.push(...hsgIssues(rep, (id) => val(id)));
+      break;
+    case 'gel':
+    case 'alleleFrequencies':
+    case 'immuneResponse':
+      out.push(...hshIssues(rep, (id) => val(id)));
+      break;
+    case 'unitChain':
+    case 'atomModel':
+    case 'orbitalDiagram':
+    case 'lewisStructure':
+    case 'vsepr':
+    case 'moleMap':
+      out.push(...hsiIssues(rep, (id) => val(id)));
+      break;
+    case 'gasPiston':
+    case 'energyProfile':
+    case 'equilibriumChart':
+    case 'phScale':
+    case 'decayChart':
+      out.push(...hsjIssues(rep, (id) => val(id)));
+      break;
+    case 'earthLayers':
+    case 'oceanProfile':
+    case 'atmosphereLayers':
+    case 'hrDiagram':
+    case 'expandingUniverse':
+      // In formula units (km, s), as the picture draws them.
+      out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'projectile':
+    case 'induction':
+    case 'charges':
+    case 'rayDiagram':
+    case 'heatEngine':
+    case 'simpleMachine':
+    case 'collision':
+    case 'circularMotion':
+    case 'freeBody':
+      out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
       break;
     case 'table':
+      if ('twoWay' in rep) {
+        out.push(...twoWayIssues(rep.twoWay, val));
+        break;
+      }
       if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)
         out.push(`${rep.rowNames.length} row names for ${rep.rows.length} rows`);
       break;

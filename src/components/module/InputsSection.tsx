@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Platform, StyleSheet, TextInput, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
@@ -13,6 +13,16 @@ import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext'
 import { getUnit } from '@/engine/units';
 import { font, radius, space, usePalette } from '@/theme';
 
+import {
+  equationIds,
+  equationLines,
+  equationParts,
+  CHOICES,
+  type Choices,
+  type EquationPart,
+  type Slot,
+} from './equationTemplate';
+import { Fenced, Radical } from './EquationMarks';
 import type { Calculator } from './useCalculator';
 
 /**
@@ -173,7 +183,19 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
     if (typo) setDraft(null);
     setTypo(false);
   };
-  return { shown, error, status, statusWord, unit, picker, letters, onChangeText, onFocus, onBlur };
+  return {
+    shown,
+    error,
+    status,
+    statusWord,
+    unit,
+    picker,
+    letters,
+    focused,
+    onChangeText,
+    onFocus,
+    onBlur,
+  };
 }
 
 /** One row: the value's letter (from Grade 3), its name and status, and the box with its unit. */
@@ -234,26 +256,42 @@ function EquationBox({
   small,
   compact,
   letter,
+  blankOne,
 }: {
   variable: VariableDef;
   calc: Calculator;
   small?: boolean;
   compact?: boolean;
   letter?: boolean;
+  /** A chemical coefficient ({a:coef}): a worked-out 1 is left blank, as it is written. */
+  blankOne?: boolean;
 }) {
   const c = usePalette();
-  const { shown, error, status, onChangeText, onFocus, onBlur } = useVariableBox(variable, calc);
-  const tight = small || compact;
-  const width = Math.max(
-    tight ? 40 : 56,
-    (shown.length || 1) * (tight ? 11 : 13) + (tight ? 14 : 20),
+  const { shown, error, status, focused, onChangeText, onFocus, onBlur } = useVariableBox(
+    variable,
+    calc,
   );
-  const box = (
+  const tight = small || compact;
+  const worked = status === 'derived' && !focused;
+  const blank = !!blankOne && worked && calc.values[variable.id] === 1;
+  // A worked-out fraction (2 1/4, 3/4) is drawn stacked, like the fixed fractions beside it.
+  const stacked = worked && !blank ? /^(−?[\d,]+ )?(−?\d+)\/(\d+)$/.exec(shown) : null;
+  const width = stacked
+    ? Math.max(
+        56,
+        (stacked[1]?.trim().length ?? 0) * 13 +
+          Math.max(stacked[2]!.length, stacked[3]!.length) * 10 +
+          24,
+      )
+    : Math.max(tight ? 40 : 56, (shown.length || 1) * (tight ? 11 : 13) + (tight ? 14 : 20));
+  const ref = useRef<TextInput>(null);
+  const input = (
     <TextInput
+      ref={ref}
       testID={`input-${variable.id}`}
-      accessibilityLabel={variable.name}
-      value={shown}
-      placeholder="?"
+      accessibilityLabel={blank ? `${variable.name}: 1` : variable.name}
+      value={blank ? '' : shown}
+      placeholder={blank ? '' : '?'}
       placeholderTextColor={c.textMuted}
       onFocus={onFocus}
       onBlur={onBlur}
@@ -265,9 +303,11 @@ function EquationBox({
       style={[
         styles.eqBox,
         (small || compact) && styles.eqBoxSmall,
+        stacked && styles.eqBoxStacked,
         {
           width,
-          color: c.text,
+          // Stacked, the digits are drawn over the box instead.
+          color: stacked ? 'transparent' : c.text,
           borderColor: error ? c.text : c.border,
           borderStyle: variable.derived ? 'dashed' : 'solid',
           backgroundColor: status === 'given' || status === 'example' ? c.background : c.surface,
@@ -275,6 +315,37 @@ function EquationBox({
         },
       ]}
     />
+  );
+  const field = stacked ? (
+    <View>
+      {input}
+      <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.eqStackedValue]}>
+        {stacked[1] ? (
+          <Text style={[styles.eqStackedWhole, { color: c.text }]}>{stacked[1].trim()}</Text>
+        ) : null}
+        <View style={styles.eqFraction}>
+          <Text style={[styles.eqStackedPart, { color: c.text }]}>{stacked[2]}</Text>
+          <View style={[styles.eqBar, { backgroundColor: c.text }]} />
+          <Text style={[styles.eqStackedPart, { color: c.text }]}>{stacked[3]}</Text>
+        </View>
+      </View>
+    </View>
+  ) : (
+    input
+  );
+  // A small box (an exponent, a script) is 32 px tall: a margin it doesn't take up in the
+  // layout makes its tap target 44 px, a tap there focusing the box.
+  const box = small ? (
+    <Pressable
+      accessible={false}
+      focusable={false}
+      onPress={() => ref.current?.focus()}
+      style={styles.eqHit}
+    >
+      {field}
+    </Pressable>
+  ) : (
+    field
   );
   if (!letter) return box;
   return (
@@ -285,94 +356,74 @@ function EquationBox({
   );
 }
 
-/** A box ({a}) or a fixed number (the 1 of 1/{b}) in the equation. */
-type Slot = { id: string } | { text: string };
+const CHOICE_WORDS: Record<string, string> = {
+  '<': 'less than',
+  '≤': 'less than or equal to',
+  '>': 'greater than',
+  '≥': 'greater than or equal to',
+  '=': 'equal to',
+  '+': 'plus',
+  '−': 'minus',
+};
 
 /**
- * A template split into its pieces: boxes, fractions, mixed numbers, powers and the text between.
- * A text piece written against its neighbour (`{p}x`, `{a}°`, `f({x})`) is `tight` on that
- * side and is drawn touching it.
+ * A sign in the equation the student taps to change (< ≤ > ≥, or + −): the value is the sign's
+ * place in `CHOICES` (1 is <), as the inequality pages store it. Outlined like a box, dashed
+ * when worked out; in a long equation as small as its boxes, the tap target still 44 px.
  */
-type EquationPart =
-  | { kind: 'box'; id: string }
-  | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
-  | { kind: 'power'; base: Slot; exponent: Slot }
-  | { kind: 'text'; text: string; tightBefore?: boolean; tightAfter?: boolean };
-
-const SLOT = String.raw`\{(\w+)\}|(\d+)`;
-const slot = (id: string | undefined, text: string | undefined): Slot =>
-  id !== undefined ? { id } : { text: text! };
-
-/**
- * `{a}/{b}` and `1/{b}` are stacked fractions, `{w} {a}/{b}` a mixed number, `{b}^{n}`,
- * `10^{n}` and `{a}^2` powers; any other `{id}` is a box, and the rest is text (÷, =, %, :).
- * Only one line: `equationLines` splits a template at its line breaks.
- */
-export function equationParts(template: string): EquationPart[] {
-  const re = new RegExp(
-    String.raw`(?:\{(\w+)\} )?(?:${SLOT})\/(?:${SLOT})|(?:${SLOT})\^(?:${SLOT})|\{(\w+)\}`,
-    'g',
+function ChoiceBox({
+  variable,
+  calc,
+  choices,
+  compact,
+}: {
+  variable: VariableDef;
+  calc: Calculator;
+  choices: Choices;
+  compact?: boolean;
+}) {
+  const c = usePalette();
+  const signs = CHOICES[choices];
+  const value = calc.values[variable.id];
+  const status = calc.status(variable.id);
+  const at = value === undefined ? undefined : Math.round(value) - 1;
+  const sign = at !== undefined && at >= 0 && at < signs.length ? signs[at] : undefined;
+  const error = calc.errors[variable.id];
+  const next = sign === undefined ? 1 : ((at! + 1) % signs.length) + 1;
+  return (
+    <Pressable
+      testID={`input-${variable.id}`}
+      accessibilityRole="button"
+      accessibilityLabel={`${variable.name}: ${sign ? CHOICE_WORDS[sign] : 'not chosen'}`}
+      accessibilityHint={`Tap for ${CHOICE_WORDS[signs[next - 1]!]}`}
+      disabled={variable.derived}
+      onPress={() => calc.set({ [variable.id]: next })}
+      style={compact ? styles.eqHit : undefined}
+    >
+      <View
+        style={[
+          styles.eqChoice,
+          compact && styles.eqChoiceSmall,
+          {
+            borderColor: error ? c.text : c.border,
+            borderStyle: variable.derived ? 'dashed' : 'solid',
+            backgroundColor: status === 'given' || status === 'example' ? c.background : c.surface,
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.eqText,
+            compact && styles.eqTextSmall,
+            { color: sign ? c.text : c.textMuted },
+          ]}
+        >
+          {sign ?? '?'}
+        </Text>
+      </View>
+    </Pressable>
   );
-  const parts: EquationPart[] = [];
-  let last = 0;
-  // Text is split into words, so a line can break between them; only the first word can touch
-  // the piece before it and only the last the piece after.
-  const pushText = (raw: string, before: boolean, after: boolean) => {
-    const words = raw.trim().split(/\s+/).filter(Boolean);
-    words.forEach((text, k) =>
-      parts.push({
-        kind: 'text',
-        text,
-        ...(k === 0 && before && !/^\s/.test(raw) ? { tightBefore: true } : {}),
-        ...(k === words.length - 1 && after && !/\s$/.test(raw) ? { tightAfter: true } : {}),
-      }),
-    );
-  };
-  for (const m of template.matchAll(re)) {
-    pushText(template.slice(last, m.index), parts.length > 0, true);
-    const [, whole, topId, topText, bottomId, bottomText, baseId, baseText, expId, expText, box] =
-      m;
-    if (box) parts.push({ kind: 'box', id: box });
-    else if (baseId !== undefined || baseText !== undefined)
-      parts.push({
-        kind: 'power',
-        base: slot(baseId, baseText),
-        exponent: slot(expId, expText),
-      });
-    else
-      parts.push({
-        kind: 'fraction',
-        top: slot(topId, topText),
-        bottom: slot(bottomId, bottomText),
-        ...(whole ? { whole } : {}),
-      });
-    last = m.index! + m[0].length;
-  }
-  pushText(template.slice(last), parts.length > 0, false);
-  return parts;
 }
-
-/** A template's lines: a system of equations is written one equation a line. */
-export const equationLines = (template: string): string[] =>
-  template.split('\n').map((l) => l.trim());
-
-/** Every value's id in the template, in order. */
-export const equationIds = (template: string): string[] =>
-  equationLines(template).flatMap((line) =>
-    equationParts(line).flatMap((p) =>
-      p.kind === 'box'
-        ? [p.id]
-        : p.kind === 'power'
-          ? [p.base, p.exponent].flatMap((s) => ('id' in s ? [s.id] : []))
-          : p.kind === 'fraction'
-            ? [
-                p.whole,
-                'id' in p.top ? p.top.id : undefined,
-                'id' in p.bottom ? p.bottom.id : undefined,
-              ].filter((x): x is string => !!x)
-            : [],
-    ),
-  );
 
 /** The equation with a box for each value, so the numbers go where the problem writes them. */
 function EquationInput({ template, calc }: { template: string; calc: Calculator }) {
@@ -387,17 +438,10 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
   const lines = equationLines(template).map(equationParts);
   // Long equations use smaller boxes, so a phone fits them on one line: more than 6 values,
   // or more than 4 columns side by side on a line (a box, a fraction or a power is one; a
-  // mixed number two), as in 3(2 + x) = 6 + 12.
-  const columns = Math.max(
-    ...lines.map((parts) =>
-      parts.reduce(
-        (n, p) => n + (p.kind === 'text' ? 0 : p.kind === 'fraction' && p.whole ? 2 : 1),
-        0,
-      ),
-    ),
-  );
+  // mixed number two; an expression slot its boxes side by side), as in 3(2 + x) = 6 + 12.
+  const columns = Math.max(...lines.map((parts) => columnsOf(parts)));
   const compact = equationIds(template).length > 6 || columns > 4;
-  const box = (id: string, key: string, small = false, letter = lettered(id)) => (
+  const box = (id: string, key: string, small = false, letter = lettered(id), blankOne = false) => (
     <EquationBox
       key={key}
       variable={byId.get(id)!}
@@ -405,11 +449,17 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
       small={small}
       compact={compact}
       letter={letter}
+      blankOne={blankOne}
     />
   );
   const slotView = (s: Slot, key: string, small = false) =>
     'id' in s ? (
       box(s.id, key, small, false)
+    ) : 'parts' in s ? (
+      // An expression slot (x − μ over σ, n − 1 up in an exponent): its pieces in one row.
+      <View key={key} style={small ? styles.eqSlotSmall : styles.eqSlot}>
+        {row(s.parts, key, small)}
+      </View>
     ) : (
       <Text
         key={key}
@@ -425,12 +475,13 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
       ? [`${byId.get(id)!.name}: ${early ? kidMessage(e) : limitMessage(e, calc.module)}`]
       : [];
   });
-  const piece = (p: EquationPart, i: string) =>
+  const piece = (p: EquationPart, i: string, small = false, nested = false) =>
     p.kind === 'text' ? (
       <Text
         key={i}
         style={[
           styles.eqText,
+          small && styles.eqTextSmall,
           // Written against a box: closer than the box's padding lets it look (3x, 40°).
           p.tightBefore && styles.eqTightBefore,
           p.tightAfter && styles.eqTightAfter,
@@ -439,22 +490,112 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
       >
         {p.text}
       </Text>
+    ) : p.kind === 'box' && p.unit ? (
+      // {a:unit}: the unit the menu shows for this value (cm, in², V, Ω), written after it.
+      <View key={i} style={styles.eqTight}>
+        {box(p.id, `b${i}`, small, small ? false : undefined)}
+        <Text
+          style={[styles.eqText, small ? styles.eqTextSmall : styles.eqUnit, { color: c.text }]}
+        >
+          {calc.units.display[p.id] ?? byId.get(p.id)!.unit ?? ''}
+        </Text>
+      </View>
     ) : p.kind === 'box' ? (
-      box(p.id, `b${i}`)
+      box(p.id, `b${i}`, small, small ? false : undefined, p.coef)
     ) : p.kind === 'power' ? (
-      <View key={i} style={styles.eqPower}>
-        {slotView(p.base, `p${i}`)}
+      <View key={i} style={[styles.eqPower, nested && styles.eqPowerNested]}>
+        {tallBracket(p.base) ? (
+          // (1/2)^t: brackets as tall as the fraction inside them.
+          <Fenced open="(" close=")">
+            {row(tallBracket(p.base)!, `p${i}`, small)}
+          </Fenced>
+        ) : (
+          slotView(p.base, `p${i}`, small)
+        )}
         <View style={styles.eqExponent}>{slotView(p.exponent, `e${i}`, true)}</View>
       </View>
+    ) : p.kind === 'choice' ? (
+      <ChoiceBox
+        key={i}
+        variable={byId.get(p.id)!}
+        calc={calc}
+        choices={p.choices}
+        compact={compact || small}
+      />
+    ) : p.kind === 'matrix' ? (
+      // A grid in brackets (between bars for a determinant), drawn by columns so each column
+      // is as wide as its widest cell; the augmented bar between two columns.
+      <Fenced key={i} open={p.det ? '|' : '['} close={p.det ? '|' : ']'}>
+        {p.rows[0]!.map((_, j) => (
+          <View key={`m${i}-${j}`} style={styles.eqColumnPair}>
+            {p.bar === j ? <View style={[styles.eqAugment, { backgroundColor: c.text }]} /> : null}
+            <View style={[styles.eqColumn, compact && styles.eqColumnCompact]}>
+              {p.rows.map((row, r) => (
+                <View key={r} style={compact ? styles.eqCellCompact : styles.eqCell}>
+                  {row[j] ? slotView(row[j]!, `m${i}-${r}-${j}`, compact) : null}
+                </View>
+              ))}
+            </View>
+          </View>
+        ))}
+      </Fenced>
+    ) : p.kind === 'sub' ? (
+      // log_{b}, a_{n}: the subscript small, its top two thirds of the way down the base.
+      <View key={i} style={styles.eqSub}>
+        {slotView(p.base, `s${i}`, small)}
+        <View style={styles.eqSubscript}>{slotView(p.sub, `u${i}`, true)}</View>
+      </View>
+    ) : p.kind === 'scripts' ? (
+      // ^{A}_{Z}X: mass number over atomic number, right-aligned against the symbol after them.
+      <View key={i} style={styles.eqScripts}>
+        {slotView(p.top, `a${i}`, true)}
+        {slotView(p.bottom, `z${i}`, true)}
+      </View>
+    ) : p.kind === 'root' ? (
+      // √{n}, ∛{n}, √({a}x + {b}): the bar over the box or the group.
+      <Radical key={i} index={p.index}>
+        {'parts' in p.body ? row(p.body.parts, `r${i}`, small) : slotView(p.body, `r${i}`, small)}
+      </Radical>
     ) : (
       <View key={i} style={styles.eqMixed}>
-        {p.whole ? box(p.whole, `w${i}`, false, false) : null}
-        <View style={styles.eqFraction}>
-          {slotView(p.top, `t${i}`)}
-          <View style={[styles.eqBar, { backgroundColor: c.text }]} />
-          {slotView(p.bottom, `d${i}`)}
-        </View>
+        {p.whole && !hideWhole(p) ? box(p.whole, `w${i}`, small, false) : null}
+        {hideParts(p) ? null : (
+          <View style={styles.eqFraction}>
+            {slotView(p.top, `t${i}`, small)}
+            <View style={[styles.eqBar, { backgroundColor: c.text }]} />
+            {slotView(p.bottom, `d${i}`, small)}
+          </View>
+        )}
       </View>
+    );
+  // A worked-out mixed number with a zero part hides it: 3/4, not 0 3/4; 2, not 2 0/4. (A
+  // bottom that is typed only here stays, so the student can still type it.)
+  const workedZero = (id: string) =>
+    calc.status(id) === 'derived' && Math.abs(calc.values[id] ?? NaN) < 1e-12;
+  const workedNonzero = (s: Slot) =>
+    'id' in s && calc.status(s.id) !== 'unknown' && !workedZero(s.id);
+  const hideWhole = (p: EquationPart & { kind: 'fraction' }) =>
+    !!p.whole && workedZero(p.whole) && workedNonzero(p.top);
+  const hideParts = (p: EquationPart & { kind: 'fraction' }) =>
+    !!p.whole &&
+    'id' in p.top &&
+    workedZero(p.top.id) &&
+    !workedZero(p.whole) &&
+    calc.status(p.whole) !== 'unknown' &&
+    ('text' in p.bottom ||
+      ('id' in p.bottom &&
+        (calc.status(p.bottom.id) === 'derived' ||
+          equationIds(template).filter((x) => x === (p.bottom as { id: string }).id).length > 1)));
+  // Pieces in a row, those written against each other touching.
+  const row = (parts: EquationPart[], key: string, small = false) =>
+    clusters(parts.map((p, i) => ({ p, i }))).map((cluster, k) =>
+      cluster.length === 1 ? (
+        piece(cluster[0]!.p, `${key}-${cluster[0]!.i}`, small, true)
+      ) : (
+        <View key={`${key}c${k}`} style={styles.eqTight}>
+          {cluster.map(({ p, i }) => piece(p, `${key}-${i}`, small, true))}
+        </View>
+      ),
     );
   return (
     <View style={styles.equation} testID="equation">
@@ -484,6 +625,49 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
   );
 }
 
+/**
+ * The inside of a bracketed group holding a fraction, (1/2), without its brackets: the group is
+ * then drawn between brackets as tall as the fraction. Undefined for any other slot.
+ */
+function tallBracket(s: Slot): EquationPart[] | undefined {
+  if (!('parts' in s) || !s.parts.some((p) => p.kind === 'fraction')) return undefined;
+  const first = s.parts[0];
+  const last = s.parts[s.parts.length - 1];
+  if (first?.kind !== 'text' || last?.kind !== 'text' || s.parts.length < 3) return undefined;
+  if (!first.text.startsWith('(') || !last.text.endsWith(')')) return undefined;
+  const trim = (p: EquationPart & { kind: 'text' }, text: string): EquationPart[] =>
+    text ? [{ ...p, text }] : [];
+  return [
+    ...trim(first, first.text.slice(1)),
+    ...s.parts.slice(1, -1),
+    ...trim(last, last.text.slice(0, -1)),
+  ];
+}
+
+/**
+ * Columns side by side: a box, a fraction, a power or a sign box is one, a mixed number two;
+ * an expression slot counts its own (a z-score's top, x − μ, is two).
+ */
+function columnsOf(parts: EquationPart[]): number {
+  const slot = (s: Slot) => ('parts' in s ? Math.max(1, columnsOf(s.parts)) : 1);
+  return parts.reduce(
+    (n, p) =>
+      n +
+      (p.kind === 'text'
+        ? 0
+        : p.kind === 'fraction'
+          ? (p.whole ? 1 : 0) + Math.max(slot(p.top), slot(p.bottom))
+          : p.kind === 'power'
+            ? slot(p.base)
+            : p.kind === 'root'
+              ? slot(p.body)
+              : p.kind === 'matrix'
+                ? p.rows[0]!.length
+                : 1),
+    0,
+  );
+}
+
 /** Pieces written against each other ("3x", "40°", "f(2)") drawn touching, with no gap. */
 function clusters(group: { p: EquationPart; i: number }[]) {
   const out: { p: EquationPart; i: number }[][] = [];
@@ -491,7 +675,8 @@ function clusters(group: { p: EquationPart; i: number }[]) {
     const prev = group[k - 1]?.p;
     const touches =
       prev &&
-      ((item.p.kind === 'text' && item.p.tightBefore) || (prev.kind === 'text' && prev.tightAfter));
+      (('tightBefore' in item.p && item.p.tightBefore) ||
+        (prev.kind === 'text' && prev.tightAfter));
     if (touches) out[out.length - 1]!.push(item);
     else out.push([item]);
   });
@@ -519,6 +704,9 @@ function groups(parts: EquationPart[]) {
         p.text === '×' && next?.kind === 'power' && 'text' in next.base && next.base.text === '10';
       breakable = depth === 0 && SIGNS.has(p.text) && !p.tightBefore && !timesTen;
       depth = Math.max(0, depth + opens - closes);
+    } else if (p.kind === 'choice') {
+      // A sign box is a sign: the line may break before it.
+      breakable = depth === 0;
     }
     if (!prev || breakable) out.push([{ p, i }]);
     else prev.push({ p, i });
@@ -649,6 +837,8 @@ const styles = StyleSheet.create({
   eqGroup: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   eqMixed: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   eqPower: { flexDirection: 'row', alignItems: 'flex-start' },
+  // Inside a fraction or a group, room above for the exponent so it clears the bar.
+  eqPowerNested: { paddingTop: 12 },
   eqExponent: { marginTop: -14, marginLeft: 2 },
   eqLettered: { alignItems: 'center', gap: 2 },
   eqLetter: { fontSize: font.caption, fontStyle: 'italic' },
@@ -658,6 +848,35 @@ const styles = StyleSheet.create({
   eqTightBefore: { marginLeft: -3 },
   eqTightAfter: { marginRight: -3 },
   eqBoxSmall: { minHeight: 32, fontSize: font.caption + 2 },
+  eqHit: { padding: 6, margin: -6 },
+  eqChoiceSmall: { minWidth: 32, minHeight: 32 },
+  eqBoxStacked: { minHeight: 48 },
+  eqStackedValue: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 3 },
+  eqStackedWhole: { fontSize: font.body + 2, fontVariant: ['tabular-nums'] },
+  eqStackedPart: { fontSize: font.caption + 3, lineHeight: 18, fontVariant: ['tabular-nums'] },
+  eqUnit: { fontSize: font.body + 2, marginLeft: 2 },
+  eqColumnPair: { flexDirection: 'row', alignItems: 'stretch', gap: 6 },
+  eqColumn: { gap: 6, alignItems: 'center' },
+  eqColumnCompact: { gap: 12 },
+  eqCell: { minHeight: 44, justifyContent: 'center' },
+  eqCellCompact: { minHeight: 32, justifyContent: 'center' },
+  eqAugment: { width: 2, borderRadius: 1 },
+  // The base stays centred on the line: 8 above it balances the 8 the subscript hangs below.
+  eqSub: { flexDirection: 'row', alignItems: 'flex-start', paddingTop: 8 },
+  eqSubscript: { marginTop: 20, marginLeft: 1 },
+  eqScripts: { alignItems: 'flex-end', gap: 2 },
+  eqChoice: {
+    minWidth: 44,
+    minHeight: 44,
+    borderWidth: 1,
+    borderRadius: radius.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: space.xs,
+  },
+  eqTextSmall: { fontSize: font.body, lineHeight: 24 },
+  eqSlot: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  eqSlotSmall: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   eqBox: {
     fontFamily: font.family,
     minHeight: 44,

@@ -1,4 +1,22 @@
 import type { PlanetName } from '../typesPhysics8';
+import type { StudyScene } from '../typesHsb';
+import type { CellDivisionCard, EnergyScene, MacroScene } from '../typesHsg';
+import type {
+  CladeScene,
+  CladeTrait,
+  CladeTree,
+  ImmuneStage,
+  LoopScene,
+  NitrogenProcess,
+} from '../typesHsh';
+import type { GalvanicScene } from '../typesHsj';
+import type {
+  CurrentsScene,
+  GreenhouseScene,
+  HslFigure,
+  LandformScene,
+  MohsScene,
+} from '../typesHsl';
 import type { Round3Icon } from './icons';
 
 /**
@@ -141,6 +159,8 @@ export type CardFigure =
   | { kind: 'dotPlot'; values: number[] }
   /** A ball-and-stick molecule, or one atom ("H2O", "CO2", "Fe"), in the classroom colors. */
   | { kind: 'molecule'; formula: string }
+  /** One stage of mitosis or meiosis, its chromosomes counted from 2n (HS group G). */
+  | CellDivisionCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -231,6 +251,8 @@ export interface SequenceLayout extends LayoutBase {
 
 /** What an explore figure can show; a scene sets one of these. */
 export type Figure =
+  /** Earth and space, group HL (`typesHsl.ts`): Mohs scale, landforms, currents, greenhouse. */
+  | HslFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
@@ -318,7 +340,28 @@ export type Figure =
   /** The periodic table with an element, a group or a period lit (Grade 8). */
   | { kind: 'periodicTable' }
   /** The planets and Earth’s moon side by side, to scale by size, beside the sun’s edge (Grade 8). */
-  | { kind: 'planets' };
+  | { kind: 'planets' }
+  /** Population → sample → a survey, an observational study or an experiment (HS group B). */
+  | { kind: 'studyDesign' }
+  /** Two cones tip to tip cut by a plane: a circle, ellipse, parabola or hyperbola (Grades 10–12). */
+  | { kind: 'doubleCone' }
+  /** Monomers joining into polymers: sugars, amino acids, nucleotides, a fat (HS group G). */
+  | { kind: 'macromolecules' }
+  /** A chloroplast and a mitochondrion trading glucose, O₂, CO₂ and H₂O; light in, ATP out (HS group G). */
+  | { kind: 'organelleEnergy' }
+  /** A cladogram with its shared derived traits marked where they appear (HS group H). */
+  | { kind: 'cladogram'; tree: CladeTree; traits: CladeTrait[] }
+  /** The nitrogen cycle: air, a bean plant with root nodules, lightning, the soil's forms (H40). */
+  | { kind: 'nitrogenCycle' }
+  /** A feedback loop: stimulus, sensor, control center, effector, response, and back (H41). */
+  | { kind: 'feedbackLoop' }
+  /** The immune response: antigen, helper T, B and plasma cells, antibodies, killer T, memory (H42). */
+  | { kind: 'immuneStages' }
+  /** A galvanic cell: two electrodes, a salt bridge and electrons along the wire (H56). */
+  | { kind: 'electrochemicalCell' };
+
+/** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
+export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
 
 /** One person in a `pedigree` figure. */
 export interface PedigreePerson {
@@ -420,6 +463,11 @@ export interface Scene {
   label: string;
   /** What to read about this scene, one sentence per line. */
   lines: string[];
+  /** Group HL figures (`typesHsl.ts`): `mohsScale`, `landforms`, `oceanCurrents`, `greenhouse`. */
+  mohs?: MohsScene;
+  landform?: LandformScene;
+  currents?: CurrentsScene;
+  greenhouse?: GreenhouseScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** Where the ball is (a `position` figure). */
@@ -440,6 +488,24 @@ export interface Scene {
   field?: { single?: boolean; lines?: boolean; compasses?: boolean };
   /** The planets ringed, each with its width in Earths (a `planets` figure). */
   planets?: { lit?: PlanetName[] };
+  /** The design, how the sample is taken and the stage lit (a `studyDesign` figure). */
+  study?: StudyScene;
+  /** The molecule built or split (a `macromolecules` figure; `typesHsg.ts`). */
+  macro?: MacroScene;
+  /** The process lit (an `organelleEnergy` figure; `typesHsg.ts`). */
+  energy?: EnergyScene;
+  /** The trait lit and the taxa ringed (a `cladogram` figure). */
+  clade?: CladeScene;
+  /** The process lit (a `nitrogenCycle` figure); with none, the whole cycle. */
+  nitrogen?: { process?: NitrogenProcess };
+  /** The loop's steps, its sign and the step lit (a `feedbackLoop` figure). */
+  loop?: LoopScene;
+  /** The stage lit (an `immuneStages` figure); with none, the whole response. */
+  immune?: { stage?: ImmuneStage };
+  /** The conic the plane cuts (a `doubleCone` figure). */
+  cone?: ConeCut;
+  /** The two metals and the part lit (an `electrochemicalCell` figure). */
+  galvanic?: GalvanicScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

@@ -63,6 +63,8 @@ export function EnergyPyramid({ spec, calc }: { spec: Spec; calc: Calculator }) 
           ? `${formatNumber(rep.shown(spec.percent))}%`
           : '?%';
   const base = levels[0]!;
+  // Biomass and numbers (H40) pass nothing up unless the page sets a share.
+  const steps = !spec.measure || spec.measure === 'energy' || spec.percent !== undefined;
   const draggable = !rep.variable(base).derived;
 
   return (
@@ -106,7 +108,15 @@ export function EnergyPyramid({ spec, calc }: { spec: Spec; calc: Calculator }) 
                       <ChartText
                         {...(inside
                           ? { x: mid, textAnchor: 'middle' as const }
-                          : fitLabel(mid + bw / 2 + 6, text, chart.value, w - stepW, 'start', 3))}
+                          : fitLabel(
+                              // Clear of the bottom tier's handle (a pyramid of numbers, H40).
+                              mid + bw / 2 + (i === 0 && draggable ? 20 : 6),
+                              text,
+                              chart.value,
+                              w - stepW,
+                              'start',
+                              3,
+                            ))}
                         y={y + ROW / 2 + 5}
                         fontSize={chart.value}
                         fontWeight="700"
@@ -125,7 +135,7 @@ export function EnergyPyramid({ spec, calc }: { spec: Spec; calc: Calculator }) 
                     </G>
                   );
                 })}
-                {levels.slice(1).map((id, i) => {
+                {(steps ? levels.slice(1) : []).map((id, i) => {
                   // The step from level i up to level i + 1: an arrow up at the right, the share.
                   const x = w - stepW / 2 - 2;
                   const y = rowY(i) + 2;
@@ -192,10 +202,12 @@ export function EnergyPyramid({ spec, calc }: { spec: Spec; calc: Calculator }) 
         }}
       </Canvas>
       <Caption>
-        {levels
-          .slice(1)
-          .map((id, i) => nowrap(`${percent} of ${rep.value(levels[i]!)} = ${rep.value(id)}`))
-          .join(' · ')}
+        {steps
+          ? levels
+              .slice(1)
+              .map((id, i) => nowrap(`${percent} of ${rep.value(levels[i]!)} = ${rep.value(id)}`))
+              .join(' · ')
+          : `${spec.measure === 'numbers' ? 'Pyramid of numbers' : 'Pyramid of biomass'}, bottom up: ${levels.map((id, i) => `${names[i]} ${rep.value(id)}`).join(', ')}.`}
       </Caption>
     </View>
   );

@@ -58,6 +58,7 @@ import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
 import { LinearFunction, LineSystem } from './Lines';
+import { FunctionGraph } from './FunctionGraph';
 import { FunctionMachine } from './FunctionMachine';
 import { Mapping } from './Mapping';
 import { Transformation } from './Transformation';
@@ -88,6 +89,10 @@ import { Pushes } from './Pushes';
 import { DoubleNumberLine } from './DoubleNumberLine';
 import { CoordinatePlane } from './CoordinatePlane';
 import { BoxPlot } from './BoxPlot';
+import { BoxPlotPair } from './BoxPlotPair';
+import { TwoWayTable } from './TwoWayTable';
+import { ChanceTree } from './ChanceTree';
+import { VennChance } from './VennChance';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -120,6 +125,39 @@ import { MotionGraph } from './MotionGraph';
 import { ForceCart } from './ForceCart';
 import { Skaters } from './Skaters';
 import { EnergyTrack } from './EnergyTrack';
+import { TriangleSolver } from './TriangleSolver';
+import { MarkedFigure } from './MarkedFigure';
+import { CircleTheorems } from './CircleTheorems';
+import { NormalCurve } from './NormalCurve';
+import { Histogram } from './Histogram';
+import { PascalTriangle } from './PascalTriangle';
+import { TermsChart } from './TermsChart';
+import { UnitCircle } from './UnitCircle';
+import { MatrixGrid } from './MatrixGrid';
+import { HsjView } from './hsjView';
+import { BeakerSolution } from './BeakerSolution';
+import { ConicGraph } from './ConicGraph';
+import { PolarGrid } from './PolarGrid';
+import { ComplexPlane } from './ComplexPlane';
+import { VectorDiagram } from './VectorDiagram';
+import { AlgebraTiles } from './AlgebraTiles';
+import { Membrane } from './Membrane';
+import { DnaStrand } from './DnaStrand';
+import { PunnettHs } from './PunnettHs';
+import { Gel } from './Gel';
+import { AlleleFrequencies } from './AlleleFrequencies';
+import { ImmuneResponse } from './ImmuneResponse';
+import { HsiRep } from './hsi';
+import { PeriodicTrend } from './PeriodicTrend';
+import { ReactionLimiting } from './ReactionLimiting';
+import { HslPicture } from './HslPicture';
+import { MotionGraphHs } from './MotionGraphHs';
+import { HskView } from './HskView';
+import { EnergySpring } from './EnergySpring';
+import { WaveDoppler } from './WaveDoppler';
+import { CircuitMixed } from './CircuitMixed';
+import { PhotonView, SpectrumLinesView } from './SpectrumLines';
+import { WaveStanding } from './WaveStanding';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -140,23 +178,93 @@ export const representationTitle = (r: Representation) =>
           'scatter',
           'linearFunction',
           'lineSystem',
+          'functionGraph',
           'heatingCurve',
           'motionGraph',
+          'normalCurve',
+          'histogram',
+          'termsChart',
         ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'unitChain':
+    case 'atomModel':
+    case 'orbitalDiagram':
+    case 'lewisStructure':
+    case 'vsepr':
+    case 'moleMap':
+      return <HsiRep spec={spec} calc={calc} />;
+    case 'unitCircle':
+      return <UnitCircle spec={spec} calc={calc} />;
+    case 'matrixGrid':
+      return <MatrixGrid spec={spec} calc={calc} />;
+    case 'membrane':
+      return <Membrane spec={spec} calc={calc} />;
+    case 'dnaStrand':
+      return <DnaStrand spec={spec} calc={calc} />;
+    case 'gasPiston':
+    case 'energyProfile':
+    case 'equilibriumChart':
+    case 'phScale':
+    case 'decayChart':
+      return <HsjView spec={spec} calc={calc} />;
+    case 'projectile':
+    case 'induction':
+    case 'charges':
+    case 'rayDiagram':
+    case 'heatEngine':
+    case 'simpleMachine':
+    case 'collision':
+    case 'circularMotion':
+    case 'freeBody':
+      return <HskView spec={spec} calc={calc} />;
+    case 'conicGraph':
+      return <ConicGraph spec={spec} calc={calc} />;
+    case 'polarGrid':
+      return <PolarGrid spec={spec} calc={calc} />;
+    case 'complexPlane':
+      return <ComplexPlane spec={spec} calc={calc} />;
+    case 'vectorDiagram':
+      return <VectorDiagram spec={spec} calc={calc} />;
+    case 'algebraTiles':
+      return <AlgebraTiles spec={spec} calc={calc} />;
+    case 'gel':
+      return <Gel spec={spec} calc={calc} />;
+    case 'alleleFrequencies':
+      return <AlleleFrequencies spec={spec} calc={calc} />;
+    case 'immuneResponse':
+      return <ImmuneResponse spec={spec} calc={calc} />;
+    case 'earthLayers':
+    case 'oceanProfile':
+    case 'atmosphereLayers':
+    case 'hrDiagram':
+    case 'expandingUniverse':
+      return <HslPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
       return <LineSystem spec={spec} calc={calc} />;
+    case 'functionGraph':
+      return <FunctionGraph spec={spec} calc={calc} />;
     case 'motionGraph':
+      if (spec.kinematics && spec.graph === 'speed')
+        return <MotionGraphHs spec={spec} k={spec.kinematics} calc={calc} />;
       return <MotionGraph spec={spec} calc={calc} />;
+    case 'normalCurve':
+      return <NormalCurve spec={spec} calc={calc} />;
+    case 'histogram':
+      return <Histogram spec={spec} calc={calc} />;
+    case 'pascalTriangle':
+      return <PascalTriangle spec={spec} calc={calc} />;
+    case 'termsChart':
+      return <TermsChart spec={spec} calc={calc} />;
     case 'skaters':
       return <Skaters spec={spec} calc={calc} />;
     case 'energyTrack':
+      if (spec.spring) return <EnergySpring spec={spec} s={spec.spring} calc={calc} />;
       return <EnergyTrack spec={spec} calc={calc} />;
     case 'functionMachine':
       return <FunctionMachine spec={spec} calc={calc} />;
@@ -183,6 +291,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'scale':
       return <Scale spec={spec} calc={calc} />;
     case 'beaker':
+      if ('solution' in spec) return <BeakerSolution spec={spec.solution} calc={calc} />;
       return <Beaker spec={spec} calc={calc} />;
     case 'quadrilateral':
       return <Quadrilateral spec={spec} calc={calc} />;
@@ -207,8 +316,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'orbit':
       return <Orbit spec={spec} calc={calc} />;
     case 'circuit':
+      if (spec.mixed) return <CircuitMixed spec={spec} m={spec.mixed} calc={calc} />;
       return <Circuit spec={spec} calc={calc} />;
     case 'spectrum':
+      if (spec.lines) return <SpectrumLinesView spec={spec} l={spec.lines} calc={calc} />;
+      if (spec.photon) return <PhotonView spec={spec} p={spec.photon} calc={calc} />;
       return <Spectrum spec={spec} calc={calc} />;
     case 'curvedSolid':
       return <CurvedSolid spec={spec} calc={calc} />;
@@ -226,12 +338,21 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'molecules':
       return <Molecules spec={spec} calc={calc} />;
     case 'reaction':
-      return <Reaction spec={spec} calc={calc} />;
+      return spec.limiting ? (
+        <ReactionLimiting spec={spec} calc={calc} />
+      ) : (
+        <Reaction spec={spec} calc={calc} />
+      );
     case 'heatingCurve':
       return <HeatingCurve spec={spec} calc={calc} />;
     case 'periodicTable':
-      return <PeriodicTable spec={spec} calc={calc} />;
+      return spec.trend ? (
+        <PeriodicTrend spec={spec} calc={calc} />
+      ) : (
+        <PeriodicTable spec={spec} calc={calc} />
+      );
     case 'rockLayers':
+      if ('dating' in spec) return <HslPicture spec={spec} calc={calc} />;
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':
       return <Pushes spec={spec} calc={calc} />;
@@ -276,7 +397,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'plot':
       return <Plot spec={spec} calc={calc} />;
     case 'table':
-      return <ValueTable spec={spec} calc={calc} />;
+      return 'twoWay' in spec ? (
+        <TwoWayTable spec={spec.twoWay} calc={calc} />
+      ) : (
+        <ValueTable spec={spec} calc={calc} />
+      );
     case 'force':
       return spec.object === 'cart' ? (
         <ForceCart spec={spec} calc={calc} />
@@ -326,7 +451,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'coordinatePlane':
       return <CoordinatePlane spec={spec} calc={calc} />;
     case 'boxPlot':
-      return <BoxPlot spec={spec} calc={calc} />;
+      return spec.fences || spec.second ? (
+        <BoxPlotPair spec={spec} calc={calc} />
+      ) : (
+        <BoxPlot spec={spec} calc={calc} />
+      );
     case 'pieChart':
       return <PieChart spec={spec} calc={calc} />;
     case 'fractionArea':
@@ -344,9 +473,15 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'protractor':
       return <Protractor spec={spec} calc={calc} />;
     case 'wave':
+      if (spec.standing) return <WaveStanding spec={spec} s={spec.standing} calc={calc} />;
+      if (spec.doppler) return <WaveDoppler d={spec.doppler} calc={calc} />;
       return <Wave spec={spec} calc={calc} />;
     case 'punnettSquare':
-      return <PunnettSquare spec={spec} calc={calc} />;
+      return spec.inheritance ? (
+        <PunnettHs spec={spec} inheritance={spec.inheritance} calc={calc} />
+      ) : (
+        <PunnettSquare spec={spec} calc={calc} />
+      );
     case 'integerLine':
       return <IntegerLine spec={spec} calc={calc} />;
     case 'percentBar':
@@ -360,7 +495,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'fractionFit':
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':
-      return <Venn spec={spec} calc={calc} />;
+      return 'chances' in spec ? (
+        <VennChance spec={spec.chances} calc={calc} />
+      ) : (
+        <Venn spec={spec} calc={calc} />
+      );
     case 'baseHeight':
       return <BaseHeight spec={spec} calc={calc} />;
     case 'net':
@@ -380,7 +519,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'diceGrid':
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
-      return <TreeDiagram spec={spec} calc={calc} />;
+      return 'chances' in spec ? (
+        <ChanceTree spec={spec.chances} calc={calc} />
+      ) : (
+        <TreeDiagram spec={spec} calc={calc} />
+      );
     case 'marbles':
       return <Marbles spec={spec} calc={calc} />;
     case 'energyPyramid':
@@ -391,5 +534,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':
       return <GradCylinder spec={spec} calc={calc} />;
+    case 'triangleSolver':
+      return <TriangleSolver spec={spec} calc={calc} />;
+    case 'markedFigure':
+      return <MarkedFigure spec={spec} calc={calc} />;
+    case 'circleTheorems':
+      return <CircleTheorems spec={spec} calc={calc} />;
   }
 }

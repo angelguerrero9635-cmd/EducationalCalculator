@@ -6,6 +6,11 @@
 import { parseNumber, plainDigits } from '@/engine/format';
 
 import type { Walkthrough } from '../buildSteps';
+import { HSB_PHRASES } from './phrasesHsb';
+import { HSF_PHRASES } from './phrasesHsf';
+import { HSG_PHRASES } from './phrasesHsg';
+import { HSI_PHRASES } from './phrasesHsi';
+import { HSJ_PHRASES } from './phrasesHsj';
 
 /** How many prime factors (with repeats) a whole number has: 24 → 4, 7 → 1. */
 export const primeFactorCount = (n: number) => {
@@ -44,7 +49,24 @@ export const COIN: Record<string, number> = {
   nickel: 5,
   nickels: 5,
 };
+/** The median of the lower (or upper) half of a list, the median itself left out. */
+const quartile = (xs: number[], upper: boolean) => {
+  const s = xs.filter((x) => !Number.isNaN(x)).sort((a, b) => a - b);
+  const half = Math.floor(s.length / 2);
+  const part = upper ? s.slice(s.length - half) : s.slice(0, half);
+  const n = part.length;
+  return n % 2 ? part[(n - 1) / 2]! : (part[n / 2 - 1]! + part[n / 2]!) / 2;
+};
+
 export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
+  // High school logs to a base: log_2(8) is 3.
+  [new RegExp(`log_(${NUM})\\s*\\(?(${NUM})\\)?`), (b, x) => Math.log(x) / Math.log(b)],
+  // Grades 9–12 statistics and counting (group HB).
+  ...HSB_PHRASES,
+  ...HSJ_PHRASES,
+  ...HSF_PHRASES,
+  ...HSG_PHRASES,
+  ...HSI_PHRASES,
   // Grade 3 clock times ("3:45"), as minutes past 12:00 on a 12-hour clock. Phrases that start
   // with a bracket are tried first, so these come before "35 minutes".
   [
@@ -65,6 +87,16 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`jumps to (${NUM})`), (n) => n / 10],
   // Grade 4 (the primes with repeats come before the factor count, which would match first)
   [new RegExp(`prime factors of (${NUM})`), (n) => primeFactorCount(n)],
+  // Grade 9 simplifying radicals: the largest perfect square that divides 72 is 36.
+  [
+    new RegExp(`largest square factor of (${NUM})`),
+    (n) =>
+      Math.max(
+        ...Array.from({ length: Math.floor(Math.sqrt(n)) }, (_, k) => (k + 1) ** 2).filter(
+          (q) => n % q === 0,
+        ),
+      ),
+  ],
   [
     new RegExp(`factors of (${NUM})`),
     (n) => Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0).length,
@@ -221,6 +253,9 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
     new RegExp(`greatest of ((?:${NUM}, )+${NUM})`),
     (...xs) => Math.max(...xs.filter((x) => !Number.isNaN(x))),
   ],
+  // Grades 9–12 box plots: a quartile is the median of the half below (or above) the median.
+  [new RegExp(`first quartile of ((?:${NUM}, )+${NUM})`), (...xs) => quartile(xs, false)],
+  [new RegExp(`third quartile of ((?:${NUM}, )+${NUM})`), (...xs) => quartile(xs, true)],
   [
     new RegExp(`range of ((?:${NUM}, )+${NUM})`),
     (...xs) =>
@@ -307,7 +342,19 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
 ];
 
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
+/**
+ * The unit a page's angles are in, for trig in step text: 'degrees' for a page whose angles
+ * are measured in degrees (Geometry triangles), 'radians' otherwise (trig graphs, calculus).
+ * The sampling test sets it for each page; an argument written with a degree sign (sin(40°))
+ * is in degrees either way.
+ */
+let angleUnit: 'degrees' | 'radians' = 'radians';
+export function setAngleUnit(unit: 'degrees' | 'radians') {
+  angleUnit = unit;
+}
+
 export function evaluate(text: string, clampRoots = false): number | undefined {
+  const degrees = angleUnit === 'degrees' || text.includes('°');
   let s = text
     // A repeating decimal (0.1666…) is its exact value, 1/6.
     .replace(/\d+\.\d+…/g, (m) => `(${parseNumber(m)})`)
@@ -317,12 +364,24 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/×/g, '*')
     .replace(/÷/g, '/')
     .replace(/·/g, '*')
+    // Grades 9–12: the sine, cosine or tangent of degrees (sin 40°), and e to a power (e^(0.5)).
+    .replace(/\b(sin|cos|tan) \(?(-?\d+(?:\.\d+)?)°\)?/g, (_, f: 'sin' | 'cos' | 'tan', d) =>
+      String(Math[f]((Number(d) * Math.PI) / 180)),
+    )
+    .replace(/(?<![\w.])e\^/g, `(${Math.E})^`)
     // Symbols from Grade 6 on: π, ½, squares and cubes, square roots.
     // 36π is 36 × π.
     // (bracketed, so 90 ÷ 9π is 90 ÷ (9 × π), as it is written)
     .replace(/(\d+(?:\.\d+)?)π/g, '($1*π)')
     .replace(/π/g, `(${Math.PI})`)
     .replace(/½/g, '(0.5)')
+    // High school trig: inverse trig written sin⁻¹ or arcsin; an argument with a degree sign
+    // (sin(40°), Geometry) is in degrees, any other in radians (Algebra 2, Precalculus).
+    .replace(/(sin|cos|tan)⁻¹\(/g, 'a$1(')
+    .replace(/arc(sin|cos|tan)\(/g, 'a$1(')
+    .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*\d)°\)/g, '$1d($2)')
+    .replace(/(?<![\w.])e(?!\w)/g, `(${Math.E})`)
+    .replace(/⌈([^⌈⌉]+)⌉/g, 'ceil($1)')
     // Any exponent written as superscript digits (10³, 10⁴).
     .replace(
       /⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g,
@@ -348,11 +407,16 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     for (let prev = ''; prev !== s;) {
       prev = s;
       s = s
-        .replace(/(?<!sqrt|cbrt|log|abs)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g, ' $1 ')
+        .replace(
+          /(?<!sqrt|cbrt|log|abs|sin|cos|tan|sind|cosd|tand|ceil)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
+          ' $1 ',
+        )
         .replace(/\s+/g, ' ')
         // "(- 3.5 )" after unwrapping a negative mixed number is "(-3.5)".
         .replace(/\(\s*-\s+(?=\d)/g, '(-')
         .replace(/(\d)\s+\)/g, '$1)')
+        // "((3))" unwraps to "( 3)": close the gap so it unwraps again.
+        .replace(/\(\s+(?=-?\d)/g, '(')
         .trim();
     }
     // Work out bracketed arithmetic first, so phrases see one number: "tens in (45 - 5)".
@@ -406,13 +470,20 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   // A minus sign before a power, "−(0.04)^(1 ÷ 2)", is the negative of the power (JavaScript
   // won't parse "-(a) ** b" as written).
   s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
-  const bare = s.replace(/(?:sqrt|cbrt|log|abs)\(/g, '(').replace(/\*\*/g, '*');
+  const bare = s
+    .replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil)\(/g, '(')
+    .replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {
     const x = new Function(
       'clampRoots',
-      `const { log, abs, cbrt } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); return (${s});`,
-    )(clampRoots) as unknown;
+      'degrees',
+      `const { log, abs, cbrt, ceil } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); ` +
+        `const D = Math.PI / 180; const sin = degrees ? (d) => Math.sin(d * D) : Math.sin, cos = degrees ? (d) => Math.cos(d * D) : Math.cos, tan = degrees ? (d) => Math.tan(d * D) : Math.tan; ` +
+        `const sind = (d) => Math.sin(d * D), cosd = (d) => Math.cos(d * D), tand = (d) => Math.tan(d * D); ` +
+        `const one = (x) => (clampRoots ? Math.max(-1, Math.min(1, x)) : x); const U = degrees ? D : 1; ` +
+        `const asin = (x) => Math.asin(one(x)) / U, acos = (x) => Math.acos(one(x)) / U, atan = (x) => Math.atan(x) / U; return (${s});`,
+    )(clampRoots, degrees) as unknown;
     return typeof x === 'number' ? x : undefined;
   } catch {
     return undefined;

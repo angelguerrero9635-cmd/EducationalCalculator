@@ -5,6 +5,7 @@
  * "CO2", "Fe"); the pictures print them with subscripts.
  */
 import type { NumOrVar } from './typesGraphs';
+import type { PeriodicTrend, ReactionLimiting } from './typesHsi';
 
 /**
  * Ball-and-stick molecules of one substance (atoms in the classroom colors: hydrogen white,
@@ -41,6 +42,8 @@ export interface ReactionSpec {
   products: ReactionTerm[];
   /** Variables holding the atoms of an element on each side: { O: ['o1', 'o2'] }. */
   atoms?: Record<string, [string, string]>;
+  /** Grades 9–12: amounts on hand, the limiting reactant and the leftover (`typesHsi.ts`, H49). */
+  limiting?: ReactionLimiting;
 }
 
 /**
@@ -83,6 +86,8 @@ export interface PeriodicTableSpec {
   group?: NumOrVar;
   period?: NumOrVar;
   families?: boolean;
+  /** Grades 9–12: shade a periodic trend, with arrows and a key (`typesHsi.ts`, H46). */
+  trend?: PeriodicTrend;
 }
 
 export type ChemSpec = MoleculesSpec | ReactionSpec | HeatingCurveSpec | PeriodicTableSpec;
@@ -98,10 +103,25 @@ export function chemSpecVars(r: ChemSpec): string[] {
       return ids(
         ...[...r.reactants, ...r.products].map((t) => t.count),
         ...Object.values(r.atoms ?? {}).flat(),
+        ...(r.limiting
+          ? [
+              ...r.limiting.amounts,
+              r.limiting.runs,
+              ...(r.limiting.made ?? []),
+              ...(r.limiting.left ?? []),
+            ]
+          : []),
       );
     case 'heatingCurve':
       return ids(r.start, r.melt, r.boil, r.end, ...r.spans, r.at, r.temp);
     case 'periodicTable':
-      return ids(r.element, r.group, r.period);
+      return ids(
+        r.element,
+        r.group,
+        r.period,
+        r.trend?.value,
+        r.trend?.compare,
+        r.trend?.compareValue,
+      );
   }
 }

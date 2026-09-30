@@ -43,6 +43,7 @@ import {
   evaluate,
   evaluateAll,
   plainWalkthrough,
+  setAngleUnit,
   shownClose,
   withinRounding,
 } from '../harness/evaluate';
@@ -167,6 +168,12 @@ function invalidValue(r: Rng, v: VariableDef): number | undefined {
   return options.length ? r.pick(options) : undefined;
 }
 
+/** Whether `word` stands alone in `text` ("e" in "5 + e", not in "5 e-books" or "sec"). */
+const wordIn = (text: string, word: string) =>
+  new RegExp(
+    `(?<![\\p{L}\\d_.])${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\d_])`,
+    'u',
+  ).test(text);
 const close = (a: number, b: number, rel = 1e-6) => Math.abs(a - b) <= rel * (1 + Math.abs(b));
 
 const describe_ = (sys: System, vals: Values | readonly Given[]) => {
@@ -400,6 +407,9 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       continue;
     }
     const expr = line.slice(line.indexOf(' = ') + 3);
+    // A rearranged line that still names the page's values ("n = 5 + e") is symbols, not
+    // numbers: the evaluator would read a value named e as Euler's number.
+    if (!s.substituted && c.module.variables.some((v) => wordIn(expr, v.symbol))) continue;
 
     if (allNonNegative && /\(-/.test(expr)) {
       c.f.add('error', `${c.label}step substitutes a negative count: "${s.substituted}"`, where);
@@ -828,6 +838,8 @@ function unitChoiceList(m: ModuleDef): UnitChoice[] {
 
 function makeCtx(m: ModuleDef, f: Findings, choice: UnitChoice, label: string): Ctx {
   const units = makeUnitContext(m, choice);
+  // Trig in the page's step text is in degrees when its angles are measured in degrees.
+  setAngleUnit(m.variables.some((v) => v.unit === '°') ? 'degrees' : 'radians');
   return {
     module: m,
     sys: units.system,

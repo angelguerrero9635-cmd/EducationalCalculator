@@ -4,6 +4,8 @@ import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 
 import type { Mirror, NumOrVar, TransformationSpec } from '@/data/modules/typesGraphs';
 import { imageOf, type MoveValues, type Pt } from './transform';
+import { symmetryOf } from './transformHsf';
+import { readMove, symmetryText, SymmetryMarks } from './TransformationHsf';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -104,13 +106,22 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
     center: [center?.x.value ?? 0, center?.y.value ?? 0] as Pt,
   };
   const img = pts.map((p) => imageOf(p, spec.move, v));
-  const known = figKnown && moveKnown;
+  // A second move (Grades 9–12): A′ is the middle image, A″ the final one.
+  const then = spec.then;
+  const second = then ? readMove(then, read) : undefined;
+  const v2 = second?.v;
+  const img2 = then && v2 ? img.map((p) => imageOf(p, then.move, v2)) : undefined;
+  const known = figKnown && moveKnown && (second?.known ?? true);
+  const sym = spec.symmetry && figKnown ? symmetryOf(pts) : undefined;
   const base = extents(spec.extent).x;
-  const all = [...pts, ...img, v.center].flat();
-  const ext = useFrozen(fitExtent(base, [...all, ...(lineVal ? [lineVal.value] : [])]));
+  const all = [...pts, ...img, v.center, ...(img2 ?? []), ...(v2 ? [v2.center] : [])].flat();
+  const ext = useFrozen(
+    fitExtent(base, [...all, ...(lineVal ? [lineVal.value] : []), ...(v2?.line ? [v2.line] : [])]),
+  );
   const q1 = spec.quadrants === 1;
   const E = ext.value;
   const prime = (i: number) => `${LETTERS[i]}′`;
+  const prime2 = (i: number) => `${LETTERS[i]}″`;
   /** A value's id when it is a variable (a handle can only set variables). */
   const idOf = (x: NumOrVar | undefined) => (typeof x === 'string' ? x : undefined);
   const moveVars = (
@@ -130,35 +141,47 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
 
   const a = pts[0] ?? [0, 0];
   const a2 = img[0] ?? [0, 0];
-  const turn =
-    angle.value === 0
-      ? 'no turn'
-      : `${coef(Math.abs(angle.value))}° ${angle.value > 0 ? 'counterclockwise' : 'clockwise'}`;
-  const what =
-    spec.move === 'translate'
-      ? `Translate ${coef(Math.abs(v.right))} ${v.right < 0 ? 'left' : 'right'} and ${coef(Math.abs(v.up))} ${v.up < 0 ? 'down' : 'up'}`
-      : spec.move === 'reflect'
-        ? `Reflect across ${mirrorName(mirror!, v.line)}`
-        : spec.move === 'rotate'
-          ? `Rotate ${turn} about ${pointText(...v.center)}`
-          : `Dilate by scale factor ${coef(v.factor)} from ${pointText(...v.center)}`;
+  const describe = (move: TransformationSpec['move'], mv: MoveValues) => {
+    const turn =
+      mv.angle === 0
+        ? 'no turn'
+        : `${coef(Math.abs(mv.angle))}° ${mv.angle > 0 ? 'counterclockwise' : 'clockwise'}`;
+    return move === 'translate'
+      ? `Translate ${coef(Math.abs(mv.right))} ${mv.right < 0 ? 'left' : 'right'} and ${coef(Math.abs(mv.up))} ${mv.up < 0 ? 'down' : 'up'}`
+      : move === 'reflect'
+        ? `Reflect across ${mirrorName(mv.mirror!, mv.line)}`
+        : move === 'rotate'
+          ? `Rotate ${turn} about ${pointText(...mv.center)}`
+          : `Dilate by scale factor ${coef(mv.factor)} from ${pointText(...mv.center)}`;
+  };
+  const what = describe(spec.move, v);
   const rule = ruleText(spec.move, v)?.replace(/ /g, '\u00a0');
-  const caption = known
-    ? [
-        `${what}${rule ? `: ${rule}` : ''}.`,
-        `${LETTERS[0]}${pointText(...a)} → ${prime(0)}${pointText(...a2)}${
-          pts.length > 1
-            ? `; ${img
-                .slice(1)
-                .map((p, i) => `${prime(i + 1)}${pointText(...p)}`)
-                .join(', ')}`
-            : ''
-        }.`,
-        spec.move === 'dilate'
-          ? `Each side is ${coef(Math.abs(v.factor))} times as long; the angles stay the same.`
-          : 'The image has the same side lengths and angles.',
-      ].join(' · ')
-    : 'Type every corner and the move to draw the image.';
+  const rigid = spec.move !== 'dilate' && then?.move !== 'dilate';
+  const caption = !known
+    ? 'Type every corner and the move to draw the image.'
+    : then && v2 && img2
+      ? [
+          `${what}, then ${describe(then.move, v2).replace(/^./, (x) => x.toLowerCase())}.`,
+          `${LETTERS[0]}${pointText(...a)} → ${prime(0)}${pointText(...a2)} → ${prime2(0)}${pointText(...img2[0]!)}.`,
+          rigid
+            ? 'Both moves keep lengths and angles, so the final image is congruent to the figure.'
+            : 'A dilation changes the lengths, so the final image is similar to the figure.',
+        ].join(' · ')
+      : [
+          `${what}${rule ? `: ${rule}` : ''}.`,
+          `${LETTERS[0]}${pointText(...a)} → ${prime(0)}${pointText(...a2)}${
+            pts.length > 1
+              ? `; ${img
+                  .slice(1)
+                  .map((p, i) => `${prime(i + 1)}${pointText(...p)}`)
+                  .join(', ')}`
+              : ''
+          }.`,
+          spec.move === 'dilate'
+            ? `Each side is ${coef(Math.abs(v.factor))} times as long; the angles stay the same.`
+            : 'The image has the same side lengths and angles.',
+          ...(sym ? [symmetryText(sym)] : []),
+        ].join(' · ');
 
   return (
     <View>
@@ -175,7 +198,7 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
               ps.reduce((s, p) => s + p[1], 0) / ps.length,
             ] as Pt;
           /** Corner labels, pushed out from the middle of the shape. */
-          const labels = (ps: Pt[], name: (i: number) => string, color: string) => {
+          const labels = (ps: Pt[], name: (i: number) => string, color: string, gap = 16) => {
             const [mx, my] = P(centroid(ps));
             return ps.map((p, i) => {
               const [x, y] = P(p);
@@ -184,8 +207,8 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
               const out = ps.length > 1 ? Math.atan2(y - my, x - mx) : -Math.PI / 4;
               const [ax0, ay0] = [f.sx(0), f.sy(0)];
               const spot = (t: number) => {
-                const lx = Math.min(w - 8, Math.max(8, x + Math.cos(t) * 16));
-                const ly = Math.min(h - 3, Math.max(11, y + Math.sin(t) * 16 + 4));
+                const lx = Math.min(w - 8, Math.max(8, x + Math.cos(t) * gap));
+                const ly = Math.min(h - 3, Math.max(11, y + Math.sin(t) * gap + 4));
                 return {
                   lx,
                   ly,
@@ -211,10 +234,19 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
               );
             });
           };
-          const [cxp, cyp] = P(v.center);
-          const guides = (() => {
-            if (!known) return null;
-            switch (spec.move) {
+          /** The guides of one move, from the corners `pts` to their images `img`. */
+          const guidesFor = (
+            move: TransformationSpec['move'],
+            pts: Pt[],
+            img: Pt[],
+            v: MoveValues,
+          ) => {
+            const [cxp, cyp] = P(v.center);
+            const a: Pt = pts[0] ?? [0, 0];
+            const a2: Pt = img[0] ?? [0, 0];
+            const mirror = v.mirror;
+            const angle = { value: v.angle };
+            switch (move) {
               case 'translate': {
                 const [x1, y1] = P(a);
                 const [x2, y2] = P(a2);
@@ -443,13 +475,26 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
                   </G>
                 );
             }
-          })();
+          };
+          const [cxp, cyp] = P(v.center);
+          const guides = known ? guidesFor(spec.move, pts, img, v) : null;
+          const guides2 = known && then && v2 && img2 ? guidesFor(then.move, img, img2, v2) : null;
           const aHandle = P(a2);
+          // With a second move the first image is the middle step, drawn dashed.
+          const mid = then ? c.chartMuted : c.chartHighlight;
+          // A symmetry turn or flip lands the image on the figure: its labels stand further out.
+          const onto =
+            !!sym && img.every((q) => pts.some((p) => Math.hypot(p[0] - q[0], p[1] - q[1]) < 1e-6));
+          const symReach = sym
+            ? Math.max(...pts.map((p) => Math.hypot(p[0] - sym.center[0], p[1] - sym.center[1]))) +
+              1
+            : 0;
           return (
             <>
               <Svg width={w} height={h}>
                 <GridAxes f={f} />
-                {guides}
+                {sym ? null : guides}
+                {guides2}
                 <Path
                   d={path(pts)}
                   fill={c.chartFill}
@@ -461,28 +506,54 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
                 {known ? (
                   <Path
                     d={path(img)}
+                    fill={mid}
+                    fillOpacity={then ? 0.08 : 0.2}
+                    stroke={mid}
+                    strokeWidth={chart.stroke + (then ? 0 : 0.5)}
+                    strokeDasharray={then ? chart.dash : undefined}
+                  />
+                ) : null}
+                {/* With symmetry the turn or flip is drawn over the figure, which it lands on. */}
+                {sym ? guides : null}
+                {known && img2 ? (
+                  <Path
+                    d={path(img2)}
                     fill={c.chartHighlight}
                     fillOpacity={0.2}
                     stroke={c.chartHighlight}
                     strokeWidth={chart.stroke + 0.5}
                   />
                 ) : null}
+                {sym ? (
+                  <SymmetryMarks s={sym} P={P} reach={symReach} box={[f.x, f.y]} w={w} h={h} />
+                ) : null}
                 {pts.map((p, i) => (
                   <Circle key={`v${i}`} cx={P(p)[0]} cy={P(p)[1]} r={3} fill={c.chartInk} />
                 ))}
                 {known
-                  ? img.map((p, i) => (
+                  ? [...img, ...(img2 ?? [])].map((p, i) => (
                       <Circle
                         key={`w${i}`}
                         cx={P(p)[0]}
                         cy={P(p)[1]}
                         r={3}
-                        fill={c.chartHighlight}
+                        fill={i < img.length ? mid : c.chartHighlight}
                       />
                     ))
                   : null}
                 {labels(pts, (i) => LETTERS[i]!, c.chartInk)}
-                {known ? labels(img, prime, c.chartHighlight) : null}
+                {known ? labels(img, prime, mid, onto ? 30 : 16) : null}
+                {known && img2 ? labels(img2, prime2, c.chartHighlight) : null}
+                {v2 && then && (then.move === 'rotate' || then.move === 'dilate') ? (
+                  <Circle
+                    cx={P(v2.center)[0]}
+                    cy={P(v2.center)[1]}
+                    r={5}
+                    fill={c.chartSecond}
+                    stroke={c.chartInk}
+                    strokeWidth={1}
+                  />
+                ) : null}
                 {center ? (
                   <G>
                     <Circle

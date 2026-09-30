@@ -10,7 +10,7 @@ import { chart, font, radius, space, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { ChartText, useRep } from './common';
 
-type Spec = Extract<Representation, { kind: 'table' }>;
+type Spec = Extract<Representation, { kind: 'table'; sweep: string }>;
 
 /** Row height: a 44 px tap target. */
 const ROW = 44;

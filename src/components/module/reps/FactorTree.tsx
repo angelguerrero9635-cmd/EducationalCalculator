@@ -9,6 +9,8 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { Steppers } from './Steppers';
+import { RootMarks } from './FactorTreeHsf';
+import { radical, rootSplit, rootText } from './rootSplit';
 
 type Spec = Extract<Representation, { kind: 'factorTree' }>;
 
@@ -78,7 +80,10 @@ export function FactorTree({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const sharedCount = (p: number) => shared.filter((q) => q === p).length;
 
   const footY = TOP + (depth - 1) * ROW + BOX_H + 30;
-  const height = footY + R + 12;
+  // Grades 9–12: simplifying a root (FactorTreeHsf.tsx) adds a line under the foot.
+  const index = spec.root?.index ?? 2;
+  const split = spec.root && n >= 2 ? rootSplit(primes, index) : undefined;
+  const height = footY + R + 12 + (split && primes.length > 1 ? 60 : 0);
 
   return (
     <View>
@@ -183,6 +188,18 @@ export function FactorTree({ spec, calc }: { spec: Spec; calc: Calculator }) {
               const r = withTimes ? 12 : Math.min(12, (colW - 8) / list.length / 2 - 4);
               const step = withTimes ? size + 18 : 2 * r + 7;
               const x0 = cx - ((list.length - 1) * step) / 2;
+              if (split && ti === 0)
+                out.push(
+                  <RootMarks
+                    key="root"
+                    split={split}
+                    xs={list.map((_, i) => x0 + i * step)}
+                    y={footY}
+                    r={r}
+                    cx={cx}
+                    index={index}
+                  />,
+                );
               const footSeen = new Map<number, number>();
               list.forEach((p, i) => {
                 const k = (footSeen.get(p) ?? 0) + 1;
@@ -242,15 +259,21 @@ export function FactorTree({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {known && m !== undefined
-          ? `${n} = ${powers(primes)}. ${m} = ${powers(primeFactors(m))}. Shared primes (ringed): ${shared.length ? `${shared.join(' × ')} = ${shared.reduce((a, b) => a * b, 1)}` : 'none (the GCF is 1)'}.`
-          : known
-            ? n < 2
-              ? `${n} is neither prime nor composite.`
-              : isPrime(n)
-                ? `${n} is prime: its only factors are 1 and ${n}.`
-                : `${n} = ${primes.join(' × ')}: ${primes.length} prime factors.${spec.count ? ` ${rep.named(spec.count)}.` : ''}`
-            : 'Type a number to grow its tree.'}
+        {known && split
+          ? `${radical(index)}${n} = ${radical(index)}(${primes.join(' × ')}). ${
+              split.out.length
+                ? `Each ${index === 3 ? 'three' : 'pair'} of equal factors comes out as one: ${split.out.join(' × ')}${split.out.length > 1 ? ` = ${split.outside}` : ''}. ${radical(index)}${n} = ${rootText(split.outside, split.inside, index)}.`
+                : `No ${index === 3 ? 'three' : 'two'} factors are equal: ${radical(index)}${n} is already simplest.`
+            }`
+          : known && m !== undefined
+            ? `${n} = ${powers(primes)}. ${m} = ${powers(primeFactors(m))}. Shared primes (ringed): ${shared.length ? `${shared.join(' × ')} = ${shared.reduce((a, b) => a * b, 1)}` : 'none (the GCF is 1)'}.`
+            : known
+              ? n < 2
+                ? `${n} is neither prime nor composite.`
+                : isPrime(n)
+                  ? `${n} is prime: its only factors are 1 and ${n}.`
+                  : `${n} = ${primes.join(' × ')}: ${primes.length} prime factors.${spec.count ? ` ${rep.named(spec.count)}.` : ''}`
+              : 'Type a number to grow its tree.'}
       </Caption>
       <Steppers
         calc={calc}

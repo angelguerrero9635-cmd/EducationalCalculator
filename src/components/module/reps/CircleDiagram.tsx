@@ -8,6 +8,7 @@ import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { CircleUnroll, CircleWedges } from './CircleParts';
+import { CircleRadian, CircleSector } from './CircleSector';
 import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'circle' }>;
@@ -17,6 +18,8 @@ const VIEW_LABELS: Record<View, string> = {
   radius: 'Radius',
   unroll: 'Unrolled',
   wedges: 'Wedges',
+  sector: 'Sector',
+  radian: 'Radians',
 };
 
 /**
@@ -24,7 +27,7 @@ const VIEW_LABELS: Record<View, string> = {
  * area cut into wedges, with buttons to switch when there are two or more.
  */
 export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
-  const views = spec.views ?? ['radius'];
+  const views = spec.views ?? [spec.sector ? 'sector' : 'radius'];
   const [view, setView] = useState<View>(views[0]!);
   const shown = views.includes(view) ? view : views[0]!;
   return (
@@ -38,7 +41,11 @@ export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) 
           />
         </RNView>
       ) : null}
-      {shown === 'unroll' ? (
+      {shown === 'sector' ? (
+        <CircleSector spec={spec} calc={calc} />
+      ) : shown === 'radian' ? (
+        <CircleRadian spec={spec} calc={calc} />
+      ) : shown === 'unroll' ? (
         <CircleUnroll spec={spec} calc={calc} />
       ) : shown === 'wedges' ? (
         <CircleWedges spec={spec} calc={calc} />

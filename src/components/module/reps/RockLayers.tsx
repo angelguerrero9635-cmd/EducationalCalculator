@@ -10,7 +10,7 @@ import { Canvas, ChartText, useRep, Caption } from './common';
 import { Ball, TopLight, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
-type Spec = Extract<Representation, { kind: 'rockLayers' }>;
+type Spec = Extract<Representation, { kind: 'rockLayers'; fossils: [string, string] }>;
 
 /** A repeatable "random" number in [0, 1) for grains and joints, so the rock never flickers. */
 const rnd = (i: number, k: number) => {

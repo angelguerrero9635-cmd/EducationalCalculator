@@ -459,3 +459,80 @@ the record: each entry says what changed, "no page change" or the exact fields a
 now pass (`uses`), and the gallery demos. Before-and-after contact sheets, one per urgency
 band: `docs/renderings/round4-high.png`, `round4-medium.png`, `round4-low.png` (each entry's
 first page at 390 px, light).
+
+### Grades 9–12, group A (2026-09-29): new math picture kinds
+
+H01–H15 in `src/data/modules/pictureRequestsHs.ts` are `drawn`: `functionGraph`,
+`normalCurve`, `histogram`, `triangleSolver`, `markedFigure`, `unitCircle`, `algebraTiles`,
+`vectorDiagram`, `complexPlane`, `polarGrid`, `conicGraph` (with the `doubleCone` explore
+figure), `circleTheorems`, `pascalTriangle`, `matrixGrid` and `termsChart`. H30 (the
+`studyDesign` explore figure) is drawn too. Each entry's notes give the fields a page passes,
+with an example; the demos are in `galleryHsa.ts`–`galleryHsd.ts`. The harness reads trig in
+degrees on a page whose angle variables have the unit °, in radians otherwise.
+
+### Grades 9–12, group B (2026-09-29): extensions of existing math pictures
+
+H16–H29 are `drawn`, each as optional fields, so existing pages are unchanged: shaded
+half-planes and elimination's sum line (`lineSystem`), compound and absolute-value
+inequalities (`integerLine`), residuals, r and least squares (`scatter`), outlier fences, paired
+box plots and a standard-deviation band (`boxPlot`, `dotPlot`), two-way tables with relative
+frequencies and chi-square (`table`), chance trees (`treeDiagram`) and Venns (`venn`), composed
+moves and symmetry (`transformation`), dilation from a center and the side splitter
+(`scaleCopy`), midpoint, partition and side slopes (`coordinatePlane`), sectors and radians
+(`circle`), nets, Cavalieri and round cross sections (`curvedSolid`, `crossSection`), roots
+from a factor tree (`factorTree`) and a log ruler (`powerScale`). Each entry's notes give the
+fields and an example; the demos are in `galleryHse.ts` and `galleryHsf.ts`.
+
+### Grades 9–12, biology (2026-09-30): H31–H42
+
+H31–H42 are `drawn`: monomers into polymers (`macromolecules` explore figure), membrane
+transport with tonicity card icons (`membrane`), the chloroplast and mitochondrion
+(`organelleEnergy` explore figure), mitosis and meiosis stages (`cellDivision` card), Grade 9
+inheritance on `punnettSquare` (`inheritance`), DNA to protein with mutations (`dnaStrand`),
+gel electrophoresis and PCR (`gel`), Hardy–Weinberg beads (`alleleFrequencies`), the
+`cladogram` explore figure with domain and kingdom icons, biomass and numbers pyramids
+(`energyPyramid` `measure`) with succession icons and the `nitrogenCycle` figure, the
+`feedbackLoop` figure, and the immune response (`immuneResponse`, `immuneStages`, pathogen
+icons). Each entry's notes give the fields and an example; the demos are in `galleryHsg.ts` and
+`galleryHsh.ts`.
+
+### Grades 9–12, chemistry (2026-09-30): H43–H57
+
+H43–H57 are `drawn`: unit chains, a ruler read and an accuracy target (`unitChain`), Bohr
+models (`atomModel`), orbital boxes and hydrogen's energy levels (`orbitalDiagram`), periodic
+trends on `periodicTable` (`trend`), Lewis structures (`lewisStructure`), VSEPR shapes and
+hydrogen bonds (`vsepr`), limiting reactants on `reaction` (`limiting`) with reaction-type card
+icons, the mole map (`moleMap`), the gas laws under a piston (`gasPiston`), molarity, dilution
+and solubility on `beaker` (`solution`), energy profiles and calorimetry (`energyProfile`),
+equilibrium and its shifts (`equilibriumChart`), pH and titration curves (`phScale`), the
+`electrochemicalCell` explore figure and radioactive decay (`decayChart`). Each entry's notes
+give the fields and an example; the demos are in `galleryHsi.ts` and `galleryHsj.ts`.
+
+### Grades 9–12, earth and space (2026-09-30): H71–H80
+
+H71–H80 are `drawn`: mineral card icons and the `mohsScale` explore figure, Earth's interior
+with shadow zones, a seismogram and an epicenter (`earthLayers`), the `landforms` explore
+figure, dated layers on `rockLayers` (`dating`), the seafloor and the tides (`oceanProfile`)
+with the `oceanCurrents` figure, the atmosphere's layers and a pressure map
+(`atmosphereLayers`), the `greenhouse` explore figure, solar panel and oil rig icons beside the
+round 3 energy icons, the HR diagram with star life-cycle icons (`hrDiagram`), and the expanding
+universe with galaxy and solar-system formation icons (`expandingUniverse`, a calculator kind
+rather than an explore figure, because both of its parts are driven by values). Each entry's
+notes give the fields and an example; the demos are in `galleryHsl.ts`.
+
+### Grades 9–12, physics (2026-09-30): H58–H70
+
+H58–H70 are `drawn`: signed velocity–time areas, a position tangent and a strobe diagram on
+`motionGraph` (`kinematics`), projectiles to scale (`projectile`), free-body diagrams on a
+floor, a ramp or a rope (`freeBody`), circular motion, gravitation and Kepler's ellipse
+(`circularMotion`), collisions with momentum arrows (`collision`), levers, pulleys and ramps
+(`simpleMachine`) and a spring launcher on `energyTrack` (`spring`), heat engines and
+refrigerators (`heatEngine`), standing waves and the Doppler effect on `wave` (`standing`,
+`doppler`), lenses, mirrors, refraction, the double slit and telescopes (`rayDiagram`), point
+charges and field lines (`charges`), mixed circuits on `circuit` (`mixed`), induction, the
+motor force and transformers (`induction`), and line spectra, redshift and photon energy on
+`spectrum` (`lines`, `photon`). Each entry's notes give the fields and an example; the demos are
+in `galleryHsk.ts`. Step text must put a divisor before a sine (`{a}/{b} × sin({t})`), as the
+H66 and H69 notes say.
+
+With physics, every Grades 9–12 entry (H01–H88) is drawn.

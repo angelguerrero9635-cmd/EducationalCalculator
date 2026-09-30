@@ -3,16 +3,29 @@ import { initialState, setValues } from '@/engine/state';
 import { makeUnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
 import { resolveItem } from '@/data/selectors';
+import { equationIds } from '@/components/module/equationTemplate';
 
 import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 import { graphSpecVars } from '../typesGraphs';
+import { circleSectorVars, planeGeometryVars, scaleCopyHsfVars } from '../typesHsf';
+import { functionGraphVars } from '../typesFunctionGraph';
 import { lifeSpecVars } from '../typesLife';
 import { chemSpecVars } from '../typesChem';
 import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
+import { hscSpecVars } from '../typesHsc';
+import { hsbSpecVars } from '../typesHsb';
+import { hsdSpecVars } from '../typesHsd';
+import { hsgSpecVars, inheritanceVars } from '../typesHsg';
+import { hshSpecVars } from '../typesHsh';
+import { hsiSpecVars } from '../typesHsi';
+import { hsjSpecVars, solutionVars } from '../typesHsj';
+import { hslSpecVars } from '../typesHsl';
+import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { isStandIn, pages } from '../harness/scope';
+import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -163,7 +176,7 @@ function representationVars(r: Representation): string[] {
         r.total,
       ];
     case 'beaker':
-      return [...r.parts, r.total];
+      return 'solution' in r ? solutionVars(r.solution) : [...r.parts, r.total];
     case 'quadrilateral':
       return [r.first, r.second, r.rightAngles];
     case 'rectilinear':
@@ -201,6 +214,7 @@ function representationVars(r: Representation): string[] {
         ...(r.trail
           ? [r.trail.across, r.trail.up].filter((v): v is string => typeof v === 'string')
           : []),
+        ...planeGeometryVars(r),
       ];
     case 'boxPlot':
       return [
@@ -212,6 +226,8 @@ function representationVars(r: Representation): string[] {
         ...[r.brackets?.range, r.brackets?.iqr].filter((x): x is string => !!x),
         ...(r.data ?? []),
         ...(r.count ? [r.count] : []),
+        ...[r.fences?.lower, r.fences?.upper].filter((x): x is string => !!x),
+        ...(r.second ? Object.values(r.second) : []),
       ];
     case 'pieChart':
       return [...r.parts, ...(r.total ? [r.total] : []), ...(r.group ? [r.group.id] : [])];
@@ -242,7 +258,12 @@ function representationVars(r: Representation): string[] {
     case 'shareWholes':
       return [r.wholes, r.people, ...(r.each ? [r.each] : [])];
     case 'factorTree':
-      return [r.value, ...[r.count, r.second, r.gcf, r.lcm].filter((x): x is string => !!x)];
+      return [
+        r.value,
+        ...[r.count, r.second, r.gcf, r.lcm, r.root?.outside, r.root?.inside].filter(
+          (x): x is string => !!x,
+        ),
+      ];
     case 'protractor':
       return [
         r.angle,
@@ -255,9 +276,16 @@ function representationVars(r: Representation): string[] {
         ...(typeof r.extent === 'string' ? [r.extent] : []),
         r.wavelength,
         ...(r.frequency ? [r.frequency] : []),
+        ...hskOptionVars(r),
       ];
     case 'punnettSquare':
-      return [r.first, r.second, r.dominant, ...(r.recessive ? [r.recessive] : [])];
+      return [
+        r.first,
+        r.second,
+        r.dominant,
+        ...(r.recessive ? [r.recessive] : []),
+        ...(r.inheritance ? inheritanceVars(r.inheritance) : []),
+      ];
     case 'integerLine':
       return [
         r.value,
@@ -270,6 +298,9 @@ function representationVars(r: Representation): string[] {
         ...(r.inequality?.twoStep
           ? [r.inequality.twoStep.times, r.inequality.twoStep.plus, r.inequality.twoStep.total]
           : []),
+        ...[r.compound?.center, r.compound?.radius, r.compound?.test].filter(
+          (x): x is string => !!x,
+        ),
       ];
     case 'percentBar':
       return [
@@ -293,6 +324,7 @@ function representationVars(r: Representation): string[] {
         ...(r.quotient ? [r.quotient] : []),
       ];
     case 'venn':
+      if ('chances' in r) return vennChanceVars(r.chances);
       return [r.first, r.second, ...[r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'baseHeight':
       return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];
@@ -305,6 +337,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
+      if ('chances' in r) return treeChanceVars(r.chances);
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];
@@ -325,6 +358,7 @@ function representationVars(r: Representation): string[] {
         ...(r.second
           ? [...r.second.data, ...[r.second.mean, r.second.median].filter((x): x is string => !!x)]
           : []),
+        ...(r.sd ? [r.sd.id] : []),
       ];
     case 'fieldOfView':
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
@@ -364,13 +398,22 @@ function representationVars(r: Representation): string[] {
         ...(r.product ?? []),
       ];
     case 'circle':
-      return [r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(
-        (v): v is string => typeof v === 'string',
-      );
+      return [
+        ...[r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(
+          (v): v is string => typeof v === 'string',
+        ),
+        ...circleSectorVars(r.sector),
+      ];
     case 'scaleCopy':
-      return [r.factor, r.width, r.height, r.copyWidth, r.copyHeight, ...(r.area ?? [])].filter(
-        (v): v is string => typeof v === 'string',
-      );
+      return [
+        r.factor,
+        r.width,
+        r.height,
+        r.copyWidth,
+        r.copyHeight,
+        ...(r.area ?? []),
+        ...scaleCopyHsfVars(r),
+      ].filter((v): v is string => typeof v === 'string');
     case 'rightTriangle':
       return [r.a, r.b, r.c];
     case 'plot':
@@ -383,11 +426,11 @@ function representationVars(r: Representation): string[] {
         ),
       ];
     case 'table':
-      return [r.sweep, r.output, ...r.params];
+      return 'twoWay' in r ? twoWayVars(r.twoWay) : [r.sweep, r.output, ...r.params];
     case 'thermometers':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'rockLayers':
-      return [...r.fossils, r.difference];
+      return 'dating' in r ? hslSpecVars(r) : [...r.fossils, r.difference];
     case 'grassSlope':
       return [r.bare, r.grass, ...(r.difference ? [r.difference] : [])];
     case 'flashlights':
@@ -395,15 +438,28 @@ function representationVars(r: Representation): string[] {
     case 'leafCount':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'scatter':
-      return [r.slope, r.intercept, ...(r.at ? [r.at.x, r.at.y] : [])];
+      return [
+        ...[r.slope, r.intercept, r.r, r.residualOf?.residual].filter(
+          (x): x is string => typeof x === 'string',
+        ),
+        ...(r.at ? [r.at.x, r.at.y] : []),
+      ];
     case 'curvedSolid':
-      return [r.radius, ...(r.height ? [r.height] : []), ...(r.volume ? [r.volume] : [])];
+      return [
+        r.radius,
+        ...[r.height, r.volume, r.slant, r.surface].filter((x): x is string => !!x),
+      ];
     case 'rootSquare':
       return [r.area, r.side, ...(r.between ?? [])];
     case 'factorRows':
       return [r.base, r.first, r.second, r.result];
     case 'powerScale':
-      return [r.number, r.mantissa, r.exponent, ...(r.second ? [r.second] : [])];
+      return [
+        r.number,
+        r.mantissa,
+        r.exponent,
+        ...[r.second, r.log].filter((x): x is string => !!x),
+      ];
     case 'equationBalance':
       return [r.x, ...[...r.left, ...r.right].filter((v): v is string => typeof v === 'string')];
     case 'pushes':
@@ -418,6 +474,8 @@ function representationVars(r: Representation): string[] {
     case 'mapping':
     case 'transformation':
       return graphSpecVars(r);
+    case 'functionGraph':
+      return functionGraphVars(r);
     case 'energyPyramid':
     case 'generations':
       return lifeSpecVars(r);
@@ -429,12 +487,65 @@ function representationVars(r: Representation): string[] {
     case 'motionGraph':
     case 'skaters':
     case 'energyTrack':
-      return mechanicsSpecVars(r);
+      return [...mechanicsSpecVars(r), ...hskOptionVars(r)];
     case 'spectrum':
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
-      return physics8SpecVars(r);
+      return [...physics8SpecVars(r), ...hskOptionVars(r)];
+    case 'triangleSolver':
+    case 'markedFigure':
+    case 'circleTheorems':
+      return hscSpecVars(r);
+    case 'normalCurve':
+    case 'histogram':
+    case 'pascalTriangle':
+    case 'termsChart':
+      return hsbSpecVars(r);
+    case 'unitCircle':
+    case 'algebraTiles':
+    case 'vectorDiagram':
+    case 'complexPlane':
+    case 'polarGrid':
+    case 'conicGraph':
+    case 'matrixGrid':
+      return hsdSpecVars(r);
+    case 'membrane':
+    case 'dnaStrand':
+      return hsgSpecVars(r);
+    case 'gel':
+    case 'alleleFrequencies':
+    case 'immuneResponse':
+      return hshSpecVars(r);
+    case 'unitChain':
+    case 'atomModel':
+    case 'orbitalDiagram':
+    case 'lewisStructure':
+    case 'vsepr':
+    case 'moleMap':
+      return hsiSpecVars(r);
+    case 'gasPiston':
+    case 'energyProfile':
+    case 'equilibriumChart':
+    case 'phScale':
+    case 'decayChart':
+      return hsjSpecVars(r);
+    case 'earthLayers':
+    case 'oceanProfile':
+    case 'atmosphereLayers':
+    case 'hrDiagram':
+    case 'expandingUniverse':
+      return hslSpecVars(r);
+    case 'projectile':
+    case 'induction':
+    case 'charges':
+    case 'rayDiagram':
+    case 'heatEngine':
+    case 'simpleMachine':
+    case 'collision':
+    case 'circularMotion':
+    case 'freeBody':
+      return hskSpecVars(r);
   }
 }
 
@@ -480,7 +591,8 @@ describe.each(pages(TESTED_MODULES))('module %s', (id, m) => {
 
   it('draws its equation from declared values only', () => {
     if (!m.equation) return;
-    const inTemplate = [...m.equation.matchAll(/\{(\w+)\}/g)].map((x) => x[1]);
+    // Every box, sign box and script the template draws (equationTemplate.ts).
+    const inTemplate = equationIds(m.equation);
     expect(inTemplate.filter((id) => !ids.includes(id!))).toEqual([]);
   });
 

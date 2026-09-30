@@ -8,9 +8,11 @@ import { getSkill } from '@/data/selectors';
 import { LAYOUTS, gradeOf, moduleOwner } from '..';
 import type { Figure, LayoutDef, Scene } from '../layouts';
 import { isStandIn, pages } from '../harness/scope';
+import { HSL_SCENE_FIELD } from '../typesHsl';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
+  ...HSL_SCENE_FIELD,
   parts: 'part',
   position: 'position',
   clock: 'time',
@@ -40,6 +42,15 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   phases: 'phase',
   periodicTable: 'elements',
   planets: 'planets',
+  studyDesign: 'study',
+  doubleCone: 'cone',
+  macromolecules: 'macro',
+  organelleEnergy: 'energy',
+  cladogram: 'clade',
+  nitrogenCycle: 'nitrogen',
+  feedbackLoop: 'loop',
+  immuneStages: 'immune',
+  electrochemicalCell: 'galvanic',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */
