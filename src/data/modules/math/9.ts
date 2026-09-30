@@ -359,12 +359,12 @@ const sg = (x: number) => (x < 0 ? `(${fmt(x)})` : fmt(x));
 /** The same, as a fraction or mixed number when it isn't whole: (−3 2/3). */
 const sgf = (x: number, most = 20) => (x < 0 ? `(${fr(x, most)})` : fr(x, most));
 /** A polynomial from its terms, highest power first: [[2, 'x²'], [−5, 'x'], [−12, '']]. */
-function poly(terms: [number, string][]): string {
+function poly(terms: [number, string][], f: (x: number) => string = fmt): string {
   const parts = terms.filter(([k]) => k !== 0);
   if (parts.length === 0) return '0';
   return parts
     .map(([k, s], i) => {
-      const size = Math.abs(k) === 1 && s ? s : `${fmt(Math.abs(k))}${s}`;
+      const size = Math.abs(k) === 1 && s ? s : `${f(Math.abs(k))}${s}`;
       return i === 0 ? `${k < 0 ? '−' : ''}${size}` : ` ${k < 0 ? '−' : '+'} ${size}`;
     })
     .join('');
@@ -2235,13 +2235,27 @@ const LINEAR_MODELING: ModuleDef[] = [
             '{y1} − {m} × {x1}',
             'Distribute: y − y₁ = mx − mx₁, then add y₁ to both sides; the number left is b.',
             {
-              note: (v) =>
-                known(v, 'm', 'b')
-                  ? `→ y = ${poly([
-                      [v.m!, 'x'],
+              work: (v) => {
+                const m = v.m!;
+                const slope = m === 1 ? '' : m === -1 ? '−' : m < 0 ? `(${fr(m)})` : fr(m);
+                return [
+                  `${xPlus(-v.y1!, 'y')} = ${slope}(${xPlus(-v.x1!)})`,
+                  `${xPlus(-v.y1!, 'y')} = ${poly(
+                    [
+                      [m, 'x'],
+                      [exact(-m * v.x1!), ''],
+                    ],
+                    fr,
+                  )}`,
+                  `y = ${poly(
+                    [
+                      [m, 'x'],
                       [v.b!, ''],
-                    ])}`
-                  : '',
+                    ],
+                    fr,
+                  )}`,
+                ];
+              },
             },
           ],
           y1: [
@@ -2284,8 +2298,11 @@ const LINEAR_MODELING: ModuleDef[] = [
       num('x1', 'x₁', 'Point’s x', -20, 20, { step: 0.5 }),
       num('y1', 'y₁', 'Point’s y', -20, 20, { step: 0.5 }),
       int('k', 'k', 'Parallel (1) or perpendicular (2)', 1, 2, { allowed: [1, 2] }),
-      num('m2', 'm₂', 'Slope of the new line', -1000, 1000, { derived: true }),
-      num('b2', 'b₂', 'y-intercept of the new line', -100000, 100000, { derived: true }),
+      num('m2', 'm₂', 'Slope of the new line', -1000, 1000, { derived: true, fraction: 12 }),
+      num('b2', 'b₂', 'y-intercept of the new line', -100000, 100000, {
+        derived: true,
+        fraction: 12,
+      }),
     ],
     rules: [
       derive(
@@ -2307,7 +2324,7 @@ const LINEAR_MODELING: ModuleDef[] = [
               ? 'A line perpendicular to a flat line is upright (x = x₁): it has no slope.'
               : undefined,
           check: (v) =>
-            v.k === 2 ? `${fmt(v.m2!)} = −1 ÷ ${sg(v.m1!)}` : `${fmt(v.m2!)} = ${fmt(v.m1!)}`,
+            v.k === 2 ? `${fr(v.m2!)} = −1 ÷ ${sg(v.m1!)}` : `${fr(v.m2!)} = ${fmt(v.m1!)}`,
         },
       ),
       derive(
@@ -3223,8 +3240,12 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
       num('y', 'y', 'Corner y', -10000, 10000, { derived: true }),
       num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
       num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
-      num('d1', 'd₁', 'Test point above the first line', -250, 250, { derived: true }),
-      num('d2', 'd₂', 'Test point above the second line', -250, 250, { derived: true }),
+      num('d1', 'd₁', 'Test point’s height above the first line', -250, 250, {
+        derived: true,
+      }),
+      num('d2', 'd₂', 'Test point’s height above the second line', -250, 250, {
+        derived: true,
+      }),
     ],
     rules: [
       ...crossRules('m1', 'b1', 'm2', 'b2'),
@@ -3292,10 +3313,10 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
       int('r', 'r', 'Right side of the sum', -3000, 3000, { derived: true }),
       num('x', 'x', 'Solution x', -1000, 1000, { derived: true, fraction: 20 }),
       num('y', 'y', 'Solution y', -1000, 1000, { derived: true, fraction: 20 }),
-      num('m1', 'm₁', 'First slope', -100, 100, { derived: true }),
-      num('i1', 'i₁', 'First y-intercept', -100, 100, { derived: true }),
-      num('m2', 'm₂', 'Second slope', -100, 100, { derived: true }),
-      num('i2', 'i₂', 'Second y-intercept', -100, 100, { derived: true }),
+      num('m1', 'm₁', 'First slope', -100, 100, { ...pictureOnly, fraction: 12 }),
+      num('i1', 'i₁', 'First y-intercept', -100, 100, pictureOnly),
+      num('m2', 'm₂', 'Second slope', -100, 100, { ...pictureOnly, fraction: 12 }),
+      num('i2', 'i₂', 'Second y-intercept', -100, 100, pictureOnly),
     ],
     rules: [
       nonzero('b', 'The y in the first'),
@@ -3335,6 +3356,25 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
         (v) => v.k1! * v.a! + v.k2! * v.d!,
         '{k1} × {a} + {k2} × {d}',
         'Add the x terms of the two multiplied equations; the y terms cancel.',
+        {
+          work: (v) => {
+            if (!known(v, 'a', 'b', 'c', 'd', 'e', 'f', 'k1', 'k2')) return [];
+            const side = (a: number, b: number) =>
+              poly([
+                [a, 'x'],
+                [b, 'y'],
+              ]);
+            const times = (k: number, a: number, b: number, c: number) =>
+              k === 1
+                ? `${side(a, b)} = ${fmt(c)}`
+                : `${fmt(k)}(${side(a, b)}) = ${fmt(k)}(${fmt(c)}): ${side(k * a, k * b)} = ${fmt(k * c)}`;
+            return [
+              times(v.k1!, v.a!, v.b!, v.c!),
+              times(v.k2!, v.d!, v.e!, v.f!),
+              `Add: ${poly([[v.k1! * v.a! + v.k2! * v.d!, 'x']])} = ${fmt(v.k1! * v.c! + v.k2! * v.f!)}`,
+            ];
+          },
+        },
       ),
       derive(
         'r = k₁c + k₂f',
@@ -3369,42 +3409,56 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
         (v) => div(v.c! - v.a! * v.x!, v.b!),
         '({c} − {a} × {x}) ÷ {b}',
         'Put x into the first equation, take ax from both sides, then divide by b.',
+        {},
+        {
+          // Found from the first equation, so check it in the second.
+          check: (v) =>
+            `${fmt(v.d!)} × ${sgf(v.x!)} + ${sg(v.e!)} × ${sgf(v.y!)} = ${fmt(v.f!)}`,
+        },
       ),
-      derive(
-        'm₁ = −a ÷ b',
-        'm1',
-        ['a', 'b'],
-        '{m1} = −{a} ÷ {b}',
-        (v) => div(-v.a!, v.b!),
-        '−{a} ÷ {b}',
-        'For the graph: the first line’s slope, solving for y.',
+      figure(
+        derive(
+          'm₁ = −a ÷ b',
+          'm1',
+          ['a', 'b'],
+          '{m1} = −{a} ÷ {b}',
+          (v) => div(-v.a!, v.b!),
+          '−{a} ÷ {b}',
+          'For the graph: the first line’s slope, solving for y.',
+        ),
       ),
-      derive(
-        'i₁ = c ÷ b',
-        'i1',
-        ['c', 'b'],
-        '{i1} = {c} ÷ {b}',
-        (v) => div(v.c!, v.b!),
-        '{c} ÷ {b}',
-        'And its y-intercept.',
+      figure(
+        derive(
+          'i₁ = c ÷ b',
+          'i1',
+          ['c', 'b'],
+          '{i1} = {c} ÷ {b}',
+          (v) => div(v.c!, v.b!),
+          '{c} ÷ {b}',
+          'And its y-intercept.',
+        ),
       ),
-      derive(
-        'm₂ = −d ÷ e',
-        'm2',
-        ['d', 'e'],
-        '{m2} = −{d} ÷ {e}',
-        (v) => div(-v.d!, v.e!),
-        '−{d} ÷ {e}',
-        'The second line’s slope.',
+      figure(
+        derive(
+          'm₂ = −d ÷ e',
+          'm2',
+          ['d', 'e'],
+          '{m2} = −{d} ÷ {e}',
+          (v) => div(-v.d!, v.e!),
+          '−{d} ÷ {e}',
+          'The second line’s slope.',
+        ),
       ),
-      derive(
-        'i₂ = f ÷ e',
-        'i2',
-        ['f', 'e'],
-        '{i2} = {f} ÷ {e}',
-        (v) => div(v.f!, v.e!),
-        '{f} ÷ {e}',
-        'And its y-intercept.',
+      figure(
+        derive(
+          'i₂ = f ÷ e',
+          'i2',
+          ['f', 'e'],
+          '{i2} = {f} ÷ {e}',
+          (v) => div(v.f!, v.e!),
+          '{f} ÷ {e}',
+          'And its y-intercept.',
+        ),
       ),
     ],
     example: {
@@ -3455,7 +3509,7 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
       int('N', 'N', 'Most tickets', 0, 1000),
       int('ta', 'a₀', 'Adult tickets to test', 0, 1000),
       int('ts', 's₀', 'Student tickets to test', 0, 1000),
-      num('m1', 'm₁', 'Slope of the money line', -100000, 0, { derived: true }),
+      num('m1', 'm₁', 'Slope of the money line', -100000, 0, { derived: true, fraction: 12 }),
       num('i1', 'i₁', 'Money line’s s-intercept', 0, 1e7, { derived: true }),
       num('cx', 'a', 'Corner: adult tickets', -1e6, 1e6, { derived: true }),
       num('cy', 's', 'Corner: student tickets', -1e6, 1e6, { derived: true }),
@@ -3492,7 +3546,9 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
         {},
         {
           message: (v) =>
-            v.A === v.S ? 'The two prices are equal: the lines are parallel.' : undefined,
+            v.A !== undefined && v.A === v.S
+              ? 'The two prices are equal: the lines are parallel, so there is no corner.'
+              : undefined,
         },
       ),
       derive(
@@ -3503,6 +3559,12 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
         (v) => v.N! - v.cx!,
         '{N} − {cx}',
         'On the count line, the rest of the tickets are student tickets.',
+        {
+          note: (v) =>
+            known(v, 'cx', 'cy') && (v.cx! < 0 || v.cy! < 0)
+              ? '→ the lines cross outside the first quadrant: no whole-ticket corner there'
+              : '',
+        },
       ),
       derive(
         'C = A a₀ + S s₀',
@@ -4007,7 +4069,7 @@ const TEMPERATURE_DRINKS: [number, number][] = [
 ];
 
 /** ŷ = mx + b, solved for the prediction and for x. */
-const prediction = (m: string | number, b: string | number) => {
+const prediction = (m: string | number, b: string | number, note?: (v: Values) => string) => {
   const M = (v: Values) => (typeof m === 'number' ? m : v[m]!);
   const B = (v: Values) => (typeof b === 'number' ? b : v[b]!);
   const ms = typeof m === 'number' ? fmt(m) : `{${m}}`;
@@ -4018,6 +4080,7 @@ const prediction = (m: string | number, b: string | number) => {
       (v) => exact(M(v) * v.x! + B(v)),
       `${ms} × {x} + ${bs}`,
       'Put x into the line: slope times x, plus the intercept.',
+      note ? { note } : {},
     ],
     x: [
       (v) => (M(v) ? exact((v.y! - B(v)) / M(v)) : undefined),
@@ -4038,7 +4101,7 @@ const REGRESSION: ModuleDef[] = [
     variables: [
       num('m', 'm', 'Slope', -20, 20, { step: 0.1 }),
       num('b', 'b', 'y-intercept', 0, 100, { step: 0.1 }),
-      num('x', 'x', 'Practice hours', 0, 9, { step: 0.5 }),
+      num('x', 'x', 'Practice hours', 1, 8, { step: 0.5 }),
       num('y', 'ŷ', 'Predicted points', -200, 300),
       num('e', 'e', 'Residual of point 3, (3, 61)', -300, 300, { derived: true }),
     ],
@@ -4081,7 +4144,11 @@ const REGRESSION: ModuleDef[] = [
       num('x', 'x', 'Temperature', 30, 85, { unit: '°F', units: ['°F'], step: 0.5 }),
       num('y', 'ŷ', 'Predicted drinks sold', -100, 200),
     ],
-    rules: [prediction(-0.59, 82.19)],
+    rules: [
+      prediction(-0.59, 82.19, (v) =>
+        v.y === undefined ? '' : `→ about ${fmt(Math.round(v.y))} drinks`,
+      ),
+    ],
     example: { x: 62, y: 45.61 },
     startWith: ['x'],
     unitSystems: ['us'],
