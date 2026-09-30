@@ -232,6 +232,38 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
         out.push(`simpleMachine: effort moves ${de}, not MA × ${dl}`);
       break;
     }
+    case 'induction': {
+      if (rep.mode === 'coil') {
+        const [N, dF, dt] = [read(si, rep.turns), read(si, rep.flux), read(si, rep.time)];
+        if (N === undefined || dF === undefined || dt === undefined) break;
+        if (N < 1 || Math.abs(N - Math.round(N)) > 1e-9) out.push(`induction: ${N} turns`);
+        if (dt <= 0) out.push(`induction: time ${dt} is not positive`);
+        else same(rep.emf, (N * dF) / dt, 'emf');
+      } else if (rep.mode === 'force') {
+        const [B, I, L, th] = [
+          read(si, rep.field),
+          read(si, rep.current),
+          read(si, rep.length),
+          read(si, rep.angle, 90),
+        ];
+        if (B === undefined || I === undefined || L === undefined || th === undefined) break;
+        same(rep.force, B * I * L * Math.sin((th * Math.PI) / 180), 'force BIL sin θ');
+      } else if (rep.mode === 'transformer') {
+        const [Np, Ns, Vp] = [
+          read(si, rep.primary),
+          read(si, rep.secondary),
+          read(si, rep.voltage),
+        ];
+        if (Np === undefined || Ns === undefined || Vp === undefined) break;
+        if (Np < 1 || Ns < 1) out.push('induction: a winding with no turns');
+        else {
+          same(rep.output, (Vp * Ns) / Np, 'secondary voltage');
+          const Ip = read(si, rep.current);
+          if (Ip !== undefined) same(rep.outputCurrent, (Ip * Np) / Ns, 'secondary current');
+        }
+      }
+      break;
+    }
     case 'charges': {
       const [q1, q2] = rep.charges.map((x) => (x === undefined ? undefined : read(si, x)));
       const r = read(si, rep.distance);

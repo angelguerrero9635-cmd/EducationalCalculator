@@ -10,6 +10,7 @@ import { CircularMotion } from './CircularMotion';
 import { Collision } from './Collision';
 import { FreeBody } from './FreeBody';
 import { HeatEngine } from './HeatEngine';
+import { Induction } from './Induction';
 import { Projectile } from './Projectile';
 import { RayLens } from './RayLens';
 import { RayRefraction, RaySlits, RayTelescope } from './RayOptics';
@@ -31,6 +32,8 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
       return <HeatEngine spec={spec} calc={calc} />;
     case 'charges':
       return <Charges spec={spec} calc={calc} />;
+    case 'induction':
+      return <Induction spec={spec} calc={calc} />;
     case 'rayDiagram':
       switch (spec.mode) {
         case 'lens':

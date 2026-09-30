@@ -189,6 +189,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
     case 'projectile':
+    case 'induction':
     case 'charges':
     case 'rayDiagram':
     case 'heatEngine':

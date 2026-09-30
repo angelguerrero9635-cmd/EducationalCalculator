@@ -134,6 +134,7 @@ const PICTURE_NAMES: Record<string, string> = {
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',
   projectile: 'projectile path with its velocity components',
+  induction: 'induction: coil and magnet, force on a wire, transformer',
   charges: 'point charges with field lines and forces',
   rayDiagram: 'ray diagram: lenses, mirrors, refraction, slits',
   heatEngine: 'heat engine between hot and cold reservoirs',

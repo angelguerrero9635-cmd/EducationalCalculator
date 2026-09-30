@@ -386,6 +386,51 @@ export interface MixedCircuit {
   powers?: [string?, string?, string?];
 }
 
+// ─── H69 induction ───────────────────────────────────────────────────────────
+
+/**
+ * Electromagnetism:
+ *
+ * - `coil`: a bar magnet pushed into (or pulled out of) a copper coil of `turns` N, its field
+ *   lines traced, and a center-zero galvanometer whose needle swings by the induced
+ *   emf = N ΔΦ/Δt (`flux` ΔΦ in Wb over `time` Δt in s), one way going in and the other coming
+ *   out (Lenz's law);
+ * - `force`: a wire of `length` L carrying `current` I across a magnetic `field` B (drawn as ×
+ *   into the page or • out of it), and the force F = BIL sin θ on it, its direction from the
+ *   right-hand rule (F = IL × B);
+ * - `transformer`: an iron core with `primary` Nₚ and `secondary` Nₛ turns (each turn drawn up
+ *   to 20), Vₛ = Vₚ Nₛ/Nₚ, and with a primary `current`, Iₛ = Iₚ Nₚ/Nₛ (power kept).
+ */
+export type InductionSpec = { kind: 'induction'; fixed?: boolean } & (
+  | {
+      mode: 'coil';
+      turns: NumOrVar;
+      flux: NumOrVar;
+      time: NumOrVar;
+      emf?: string;
+      direction?: 'in' | 'out';
+    }
+  | {
+      mode: 'force';
+      field: NumOrVar;
+      current: NumOrVar;
+      length: NumOrVar;
+      angle?: NumOrVar;
+      force?: string;
+      currentDir?: 'right' | 'left';
+      fieldDir?: 'in' | 'out';
+    }
+  | {
+      mode: 'transformer';
+      primary: NumOrVar;
+      secondary: NumOrVar;
+      voltage: NumOrVar;
+      output?: string;
+      current?: NumOrVar;
+      outputCurrent?: string;
+    }
+);
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
@@ -397,7 +442,8 @@ export type HskSpec =
   | SimpleMachineSpec
   | HeatEngineSpec
   | RayDiagramSpec
-  | ChargesSpec;
+  | ChargesSpec
+  | InductionSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
@@ -455,6 +501,16 @@ export function hskSpecVars(r: HskSpec): string[] {
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
     case 'charges':
       return ids(...r.charges, r.distance, r.force, r.field);
+    case 'induction':
+      switch (r.mode) {
+        case 'coil':
+          return ids(r.turns, r.flux, r.time, r.emf);
+        case 'force':
+          return ids(r.field, r.current, r.length, r.angle, r.force);
+        case 'transformer':
+          return ids(r.primary, r.secondary, r.voltage, r.output, r.current, r.outputCurrent);
+      }
+      break;
     case 'rayDiagram':
       switch (r.mode) {
         case 'lens':

@@ -2553,6 +2553,219 @@ const CIRCUIT_DEMOS: ModuleDef[] = [
   ),
 ];
 
+// ─── H69 induction ───────────────────────────────────────────────────────────
+
+const coilDemo = (
+  id: string,
+  title: string,
+  use: string,
+  direction: 'in' | 'out',
+  ex: { N: number; f: number; t: number },
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  unitSystems: ['metric'],
+  assumptions: [
+    'Faraday’s law: a changing magnetic flux through a coil induces an emf, emf = NΔΦ/Δt.',
+    'Lenz’s law: the induced current’s own field opposes the change that makes it.',
+  ],
+  variables: [
+    q('N', 'N', 'Turns', undefined, 1, 5000, 1, { integer: true }),
+    q('f', 'ΔΦ', 'Change in flux', 'Wb', 0.00001, 10, 0.00001),
+    q('t', 'Δt', 'Time', 's', 0.001, 100, 0.001),
+    q('e', 'emf', 'Induced emf', 'V', 0, 1e6, 0.0001),
+  ],
+  ...rules(
+    rule('emf = NΔΦ/Δt', '{e} = {N} × {f}/{t}', (v) => v.e! * v.t! - v.N! * v.f!, {
+      e: [(v) => div(v.N! * v.f!, v.t!), '{N} × {f}/{t}', 'Each turn gets ΔΦ/Δt; N turns add up.'],
+      f: [(v) => div(v.e! * v.t!, v.N!), '{e} × {t}/{N}', 'Solve Faraday’s law for ΔΦ.'],
+      t: [(v) => div(v.N! * v.f!, v.e!), '{N} × {f}/{e}', 'Solve Faraday’s law for Δt.'],
+    }),
+  ),
+  example: { ...ex, e: (ex.N * ex.f) / ex.t },
+  startWith: ['N', 'f', 't'],
+  representation: {
+    kind: 'induction',
+    mode: 'coil',
+    turns: 'N',
+    flux: 'f',
+    time: 't',
+    emf: 'e',
+    direction,
+  },
+});
+
+const forceDemo = (
+  id: string,
+  title: string,
+  use: string,
+  ex: { B: number; I: number; L: number; q?: number },
+): ModuleDef => {
+  const angled = ex.q !== undefined;
+  return {
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions: [
+      'A current in a magnetic field feels a force F = BIL sin θ, θ the angle between the wire and the field.',
+      angled
+        ? 'Here the field runs along the paper, so the force points straight into or out of it.'
+        : 'Here the field goes into the page (×) at right angles to the wire: sin 90° = 1.',
+    ],
+    variables: [
+      q('B', 'B', 'Magnetic field', 'T', 0.0001, 10, 0.0001),
+      q('I', 'I', 'Current', 'A', 0.01, 1000, 0.01),
+      q('L', 'L', 'Length in the field', 'm', 0.01, 100, 0.01),
+      ...(angled ? [q('q', 'θ', 'Angle to the field', '°', 1, 179, 1)] : []),
+      q('F', 'F', 'Force', 'N', 0, 1e6, 0.0001),
+    ],
+    ...rules(
+      angled
+        ? rule(
+            'F = BIL sin θ',
+            '{F} = {B} × {I} × {L} × sin({q})',
+            (v) => v.F! - v.B! * v.I! * v.L! * Math.sin(v.q! * RAD),
+            {
+              F: [
+                (v) => v.B! * v.I! * v.L! * Math.sin(v.q! * RAD),
+                '{B} × {I} × {L} × sin({q})',
+                'Multiply the field, current, length and sin θ.',
+              ],
+              B: [
+                (v) => div(v.F!, v.I! * v.L! * Math.sin(v.q! * RAD)),
+                '{F}/(sin({q}) × {I} × {L})',
+                'Solve for B.',
+              ],
+              I: [
+                (v) => div(v.F!, v.B! * v.L! * Math.sin(v.q! * RAD)),
+                '{F}/(sin({q}) × {B} × {L})',
+                'Solve for I.',
+              ],
+            },
+          )
+        : rule('F = BIL', '{F} = {B} × {I} × {L}', (v) => v.F! - v.B! * v.I! * v.L!, {
+            F: [
+              (v) => v.B! * v.I! * v.L!,
+              '{B} × {I} × {L}',
+              'Multiply the field, the current and the length.',
+            ],
+            B: [(v) => div(v.F!, v.I! * v.L!), '{F}/({I} × {L})', 'Solve for B.'],
+            I: [(v) => div(v.F!, v.B! * v.L!), '{F}/({B} × {L})', 'Solve for I.'],
+            L: [(v) => div(v.F!, v.B! * v.I!), '{F}/({B} × {I})', 'Solve for L.'],
+          }),
+    ),
+    example: { ...ex, F: ex.B * ex.I * ex.L * Math.sin((ex.q ?? 90) * RAD) },
+    startWith: angled ? ['B', 'I', 'L', 'q'] : ['B', 'I', 'L'],
+    representation: {
+      kind: 'induction',
+      mode: 'force',
+      field: 'B',
+      current: 'I',
+      length: 'L',
+      ...(angled ? { angle: 'q' } : {}),
+      force: 'F',
+    },
+  };
+};
+
+const transformerDemo = (
+  id: string,
+  title: string,
+  use: string,
+  ex: { p: number; s: number; V: number; I: number },
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  unitSystems: ['metric'],
+  assumptions: [
+    'The voltage per turn is the same in both coils: Vₛ/Vₚ = Nₛ/Nₚ.',
+    'An ideal transformer keeps the power: VₚIₚ = VₛIₛ, so stepping the voltage up steps the current down.',
+  ],
+  variables: [
+    q('p', 'Nₚ', 'Primary turns', undefined, 1, 100000, 1, { integer: true }),
+    q('s', 'Nₛ', 'Secondary turns', undefined, 1, 100000, 1, { integer: true }),
+    q('V', 'Vₚ', 'Primary voltage', 'V', 0.1, 1e6, 0.1),
+    q('W', 'Vₛ', 'Secondary voltage', 'V', 0, 1e8, 0.001),
+    q('I', 'Iₚ', 'Primary current', 'A', 0.001, 10000, 0.001),
+    q('J', 'Iₛ', 'Secondary current', 'A', 0, 1e6, 0.0001),
+  ],
+  ...rules(
+    rule('Vₛ = Vₚ Nₛ/Nₚ', '{W} = {V} × {s}/{p}', (v) => v.W! * v.p! - v.V! * v.s!, {
+      W: [
+        (v) => div(v.V! * v.s!, v.p!),
+        '{V} × {s}/{p}',
+        'The same voltage per turn: multiply by the turns ratio.',
+      ],
+      V: [(v) => div(v.W! * v.p!, v.s!), '{W} × {p}/{s}', 'Undo the turns ratio.'],
+      s: [(v) => div(v.W! * v.p!, v.V!), '{W} × {p}/{V}', 'Solve for Nₛ.'],
+    }),
+    rule('Iₛ = Iₚ Nₚ/Nₛ', '{J} = {I} × {p}/{s}', (v) => v.J! * v.s! - v.I! * v.p!, {
+      J: [
+        (v) => div(v.I! * v.p!, v.s!),
+        '{I} × {p}/{s}',
+        'Power kept: the current goes the other way from the voltage.',
+      ],
+      I: [(v) => div(v.J! * v.s!, v.p!), '{J} × {s}/{p}', 'Undo the turns ratio.'],
+    }),
+  ),
+  example: { ...ex, W: (ex.V * ex.s) / ex.p, J: (ex.I * ex.p) / ex.s },
+  startWith: ['p', 's', 'V', 'I'],
+  representation: {
+    kind: 'induction',
+    mode: 'transformer',
+    primary: 'p',
+    secondary: 's',
+    voltage: 'V',
+    output: 'W',
+    current: 'I',
+    outputCurrent: 'J',
+  },
+});
+
+const INDUCTION_DEMOS: ModuleDef[] = [
+  coilDemo(
+    'g.s11-electromagnetism-coil',
+    'A magnet pushed into a coil',
+    'Use this for “A magnet changes the flux through a 50-turn coil by 0.004 Wb in 0.2 s. What emf is induced?”',
+    'in',
+    { N: 50, f: 0.004, t: 0.2 },
+  ),
+  coilDemo(
+    'g.s11-electromagnetism-coil-out',
+    'Pulled out quickly',
+    'Use this for “Pulling a magnet out of a 200-turn coil changes the flux by 0.003 Wb in 0.1 s. What emf, and which way does the needle swing?”',
+    'out',
+    { N: 200, f: 0.003, t: 0.1 },
+  ),
+  forceDemo(
+    'g.s11-electromagnetism-force',
+    'The force on a current',
+    'Use this for “A 0.3 m wire carries 4 A across a 0.5 T field into the page. What force acts on it, and which way?”',
+    { B: 0.5, I: 4, L: 0.3 },
+  ),
+  forceDemo(
+    'g.s11-electromagnetism-force-angle',
+    'A wire at an angle to the field',
+    'Use this for “A 0.5 m wire with 5 A lies at 30° to a 0.2 T field. What is the force?”',
+    { B: 0.2, I: 5, L: 0.5, q: 30 },
+  ),
+  transformerDemo(
+    'g.s11-electromagnetism-transformer',
+    'A step-down transformer',
+    'Use this for “A transformer has 500 primary turns and 50 secondary turns on 120 V. What voltage comes out, and what current if 0.5 A goes in?”',
+    { p: 500, s: 50, V: 120, I: 0.5 },
+  ),
+  transformerDemo(
+    'g.s11-electromagnetism-step-up',
+    'A step-up transformer',
+    'Use this for “20 primary turns, 200 secondary turns, 12 V in: what comes out?”',
+    { p: 20, s: 200, V: 12, I: 2 },
+  ),
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
@@ -2565,5 +2778,6 @@ export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...RAY_DEMOS,
   ...CHARGE_DEMOS,
   ...CIRCUIT_DEMOS,
+  ...INDUCTION_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

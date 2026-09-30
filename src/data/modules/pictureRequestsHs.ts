@@ -1111,12 +1111,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK, reps/CircuitMixed.tsx; the readings in hskMath.ts mixedOf) as an option on the Grade 8 circuit, so every current circuit page is unchanged. Calculator picture { kind: "circuit", wiring: "series" (ignored), voltage: V, bulbs: [], current: I (the ammeter, the total current), mixed: { layout: "seriesParallel" (R₁ in series with R₂ ∥ R₃) | "parallelSeries" ((R₁ + R₂) ∥ R₃), resistors: [R₁, R₂, R₃] (Ω, numbers or variables), equivalent?: R_total, power?: total P, voltages?, currents?, powers?: [for R₁, R₂, R₃] (checked when named) } }. A battery cell, an ammeter on the top wire reading the total current, copper wire with the junctions dotted, three ceramic resistors each labelled R₁ … with its reading: the voltage across it, the current through it and its power, and R_total at the corner. The caption works R_total, I = V/R_total and P = VI. The harness checks R_total, I, P and each resistor’s V, I and P (a value shown in mA or kΩ allowed). Example: representation: { kind: "circuit", wiring: "series", voltage: "V", bulbs: [], current: "I", mixed: { layout: "seriesParallel", resistors: ["a", "b", "c"], equivalent: "R", power: "P" } }.',
   },
-  ask(
-    'H69',
-    'induction',
-    'Magnet moving through a coil with a meter; force on a current in a field (right-hand rule); a transformer by turns',
-    ['s.11.electromagnetism'],
-  ),
+  {
+    ...ask(
+      'H69',
+      'induction',
+      'Magnet moving through a coil with a meter; force on a current in a field (right-hand rule); a transformer by turns',
+      ['s.11.electromagnetism'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-electromagnetism-coil',
+      'g.s11-electromagnetism-coil-out',
+      'g.s11-electromagnetism-force',
+      'g.s11-electromagnetism-force-angle',
+      'g.s11-electromagnetism-transformer',
+      'g.s11-electromagnetism-step-up',
+    ],
+    notes:
+      'Drawn (group HK, reps/Induction.tsx). Calculator picture { kind: "induction", fixed?: true, and one mode }: coil: { mode: "coil", turns: N, flux: ΔΦ (Wb), time: Δt (s), emf?: NΔΦ/Δt, direction?: "in" | "out" } — a painted bar magnet (S blue, N red) pushed in or pulled out, its field lines traced, a copper coil with one loop per turn (up to 20, the count labelled), leads to a center-zero galvanometer whose needle swings by the emf, right going in and left coming out (Lenz’s law); force: { mode: "force", field: B (T), current: I (A), length: L (m), angle?: θ (degrees; given, B runs along the paper and the wire is drawn at θ to it, the force into or out of the page ⊗/⊙), force?: F, currentDir?: "right" | "left", fieldDir?: "in" | "out" (× or • marks) } — a copper wire with its current arrow, the force arrow on one scale, direction from F = IL × B (right-hand rule in the caption); transformer: { mode: "transformer", primary: Nₚ, secondary: Nₛ, voltage: Vₚ, output?: Vₛ, current?: Iₚ, outputCurrent?: Iₛ } — a laminated iron core, both windings with one loop per turn (up to 20, counts labelled), an AC source and a lamp, step-up or step-down named; Vₛ = Vₚ Nₛ/Nₚ and Iₛ = Iₚ Nₚ/Nₛ (power kept). Step text must put a sine first inside a bracket ({F}/(sin({q}) × {I} × {L})): the harness can’t read N/(N × N × sin(N)). The harness checks the emf, BIL sin θ, Vₛ and Iₛ. Example: representation: { kind: "induction", mode: "transformer", primary: "p", secondary: "s", voltage: "V", output: "W", current: "I", outputCurrent: "J" }.',
+  },
   ask(
     'H70',
     'spectrum',
