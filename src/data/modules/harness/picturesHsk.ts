@@ -165,12 +165,16 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       if (rep.mode === 'kepler') {
         const [a, e] = [read(si, rep.semiMajor, 1), read(si, rep.eccentricity, 0)];
         if (a === undefined || e === undefined) break;
-        if (e < 0 || e > 0.95) out.push(`circularMotion: eccentricity ${e} is not from 0 to 0.95`);
+        if (e < 0 || e > 0.97) out.push(`circularMotion: eccentricity ${e} is not from 0 to 0.97`);
         if (a <= 0) out.push(`circularMotion: semi-major axis ${a} is not positive`);
-        if (a <= 0 || e < 0 || e > 0.95) break;
+        const M = read(si, rep.starMass, 1);
+        if (M === undefined) break;
+        if (M <= 0) out.push(`circularMotion: star mass ${M} is not positive`);
+        if (a <= 0 || e < 0 || e > 0.97 || M <= 0) break;
         same(rep.perihelion, a * (1 - e), 'perihelion a(1 − e)');
         same(rep.aphelion, a * (1 + e), 'aphelion a(1 + e)');
-        same(rep.period, Math.pow(a, 1.5), 'period (T² = a³)');
+        // Round the Sun T² = a³; round a star of M Suns a³ = M × T² (H110).
+        same(rep.period, Math.sqrt(a ** 3 / M), 'period (a³ = M × T²)');
         // The two shaded sectors: each 1/8 of the period, each 1/8 of the ellipse's area.
         const whole = Math.PI * a * a * Math.sqrt(1 - e * e);
         for (const M of [0, Math.PI]) {

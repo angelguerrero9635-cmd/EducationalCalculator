@@ -33,7 +33,10 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
   const d = Math.max(1e-9, si(spec.distance, 1));
   const Fg = (G_NEWTON * m1! * m2!) / (d * d);
   const a = Math.max(1e-9, si(spec.semiMajor, 1));
-  const e = Math.min(0.95, Math.max(0, si(spec.eccentricity)));
+  const e = Math.min(0.97, Math.max(0, si(spec.eccentricity)));
+  // Round another star (H110): a³ = M × T², with M in Suns.
+  const star = spec.mode === 'kepler' && spec.starMass !== undefined;
+  const M = Math.max(1e-9, si(spec.starMass, 1));
   // Arrow scales stay put during a drag, so a longer arrow means a bigger value.
   const ref = useFrozen({ v: Math.max(1e-9, v), ac: Math.max(1e-9, ac), F: Math.max(1e-300, Fg) });
 
@@ -41,7 +44,7 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
     spec.mode === 'gravity'
       ? [...(spec.masses ?? []), spec.distance].every(known)
       : spec.mode === 'kepler'
-        ? [spec.semiMajor, spec.eccentricity].every(known)
+        ? [spec.semiMajor, spec.eccentricity, spec.starMass].every(known)
         : [spec.radius, spec.speed].every(known);
   const lines = captionLines();
 
@@ -269,7 +272,7 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
           stroke={c.chartMuted}
           strokeDasharray={chart.dashFine}
         />
-        <Circle cx={X(a * e)} cy={O.y} r={10} fill={url(ids.sun)} stroke={c.sunRay} />
+        <Circle cx={X(a * e)} cy={O.y} r={e > 0.9 ? 7 : 10} fill={url(ids.sun)} stroke={c.sunRay} />
         <Circle cx={X(-a * e)} cy={O.y} r={4} fill={c.card} stroke={c.chartInk} />
         <Circle
           cx={X(planet.x)}
@@ -278,7 +281,13 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
           fill={url(ids.planet)}
           stroke={c.chartInk}
         />
-        <SubLabel x={X(a * e)} y={O.y + 26} text="sun (focus)" w={w} size={chart.label} />
+        <SubLabel
+          x={X(a * e)}
+          y={O.y + 26}
+          text={star ? 'star (focus)' : 'sun (focus)'}
+          w={w}
+          size={chart.label}
+        />
         {e > 0.05 ? (
           <SubLabel
             x={X(-a * e)}
@@ -289,20 +298,26 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
             bold={false}
           />
         ) : null}
-        <SubLabel
-          x={X(a) - 2}
-          y={Y(-b) + 22}
-          text={`perihelion ${sig(a * (1 - e))} AU`}
-          anchor="end"
-          w={w}
-        />
-        <SubLabel
-          x={X(-a) + 2}
-          y={Y(b) - 10}
-          text={`aphelion ${sig(a * (1 + e))} AU`}
-          anchor="start"
-          w={w}
-        />
+        {star && e === 0 ? (
+          <SubLabel x={X(-a) + 2} y={Y(b) - 10} text={`a = ${sig(a)} AU`} anchor="start" w={w} />
+        ) : (
+          <>
+            <SubLabel
+              x={X(a) - 2}
+              y={Y(-b) + 22}
+              text={`${star ? 'closest' : 'perihelion'} ${sig(a * (1 - e))} AU`}
+              anchor="end"
+              w={w}
+            />
+            <SubLabel
+              x={X(-a) + 2}
+              y={Y(b) - 10}
+              text={`${star ? 'farthest' : 'aphelion'} ${sig(a * (1 + e))} AU`}
+              anchor="start"
+              w={w}
+            />
+          </>
+        )}
       </G>
     );
   }
@@ -379,6 +394,18 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
         `F = Gm₁m₂/r² = ${sig(G_NEWTON)} × ${sig(m1!)} × ${sig(m2!)}/${sig(d)}² = ${sig(Fg)} N`,
         'Each mass pulls the other just as hard (Newton’s third law). Twice the distance, a quarter of the pull.',
       ];
+    if (spec.mode === 'kepler' && star) {
+      const T = Math.sqrt(a ** 3 / M);
+      return [
+        ...(e > 0
+          ? [
+              `Closest a(1 − e) = ${sig(a)} × (1 − ${sig(e)}) = ${sig(a * (1 - e))} AU; farthest a(1 + e) = ${sig(a * (1 + e))} AU.`,
+            ]
+          : []),
+        `Each shaded sector is swept in 1/8 of the period: equal areas in equal times.`,
+        `a³ = M × T² for a star of M = ${sig(M)} Suns: T = √(${sig(a)}³ ÷ ${sig(M)}) = ${sig(T)} years (${sig(T * 365.25)} days)`,
+      ];
+    }
     if (spec.mode === 'kepler') {
       const T = Math.pow(a, 1.5);
       return [

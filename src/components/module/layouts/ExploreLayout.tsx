@@ -31,6 +31,7 @@ import { ImmuneStagesFigure } from './immuneStagesFigure';
 import { GalvanicFigure } from './galvanicFigure';
 import { HslFigureView } from './hslFigures';
 import { SpectraFigure } from './spectraFigure';
+import { Hs3cFigureView } from './hs3cFigures';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -115,6 +116,8 @@ function FigureView({
       return <HslFigureView figure={figure} scene={scene} />;
     case 'spectra':
       return <SpectraFigure scene={scene.spectra ?? { star: [] }} />;
+    case 'earthLayers':
+      return <Hs3cFigureView figure={figure} scene={scene} />;
     case 'parts':
       if (figure.drawing) {
         return (

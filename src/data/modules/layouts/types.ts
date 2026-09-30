@@ -21,6 +21,7 @@ import type {
 } from '../typesHsl';
 import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
+import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
 
@@ -272,6 +273,8 @@ export type Figure =
   | HslFigure
   /** Earth and space round 2, group H2F (`typesHs2f.ts`): spectra side by side. */
   | Hs2fFigure
+  /** Earth and space round 3, group H3C (`typesHs3c.ts`): Earth cut open, a station placed. */
+  | Hs3cFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
@@ -502,6 +505,8 @@ export interface Scene {
   greenhouse?: GreenhouseScene;
   /** A `spectra` figure (`typesHs2f.ts`): the star's elements, one lab strip lit. */
   spectra?: SpectraScene;
+  /** An `earthLayers` figure (`typesHs3c.ts`): the station's distance from the focus. */
+  earthSection?: EarthSectionScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** Where the ball is (a `position` figure). */
