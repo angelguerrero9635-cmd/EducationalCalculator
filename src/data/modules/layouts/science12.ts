@@ -467,4 +467,78 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'Uranium', bin: 'explosions', figure: { kind: 'molecule', formula: 'U' } },
     ],
   },
+
+  // ── Galaxies, the Big Bang and the expanding universe (HS-ESS1-2) ──
+  {
+    kind: 'sort',
+    id: 's.12.cosmology~galaxies',
+    title: 'Kinds of galaxies',
+    use: 'Use this for “What do all galaxies have in common?” and for sorting galaxies by shape.',
+    assumptions: [
+      'Every galaxy holds millions to trillions of stars bound by gravity.',
+      'Galaxies are sorted by shape: spiral, elliptical or irregular.',
+    ],
+    question: 'What type of galaxy is it?',
+    bins: [
+      {
+        id: 'spiral',
+        label: 'Spiral',
+        why: 'A bulge and a flat disk with arms, where gas forms young blue stars.',
+      },
+      {
+        id: 'elliptical',
+        label: 'Elliptical',
+        why: 'A smooth ball or oval of old red stars, with little gas left to make new ones.',
+      },
+      {
+        id: 'irregular',
+        label: 'Irregular',
+        why: 'Patchy clumps of stars and gas with no clear shape.',
+      },
+    ],
+    cards: [
+      {
+        label: 'The Milky Way',
+        bin: 'spiral',
+        figure: { kind: 'icon', icon: 'barred spiral galaxy' },
+      },
+      { label: 'Andromeda', bin: 'spiral', figure: { kind: 'icon', icon: 'spiral galaxy' } },
+      { label: 'A disk with arms and young blue stars', bin: 'spiral' },
+      {
+        label: 'A giant ball of old red stars',
+        bin: 'elliptical',
+        figure: { kind: 'icon', icon: 'elliptical galaxy' },
+      },
+      { label: 'Round or oval, with little gas', bin: 'elliptical' },
+      {
+        label: 'The Large Magellanic Cloud',
+        bin: 'irregular',
+        figure: { kind: 'icon', icon: 'irregular galaxy' },
+      },
+      { label: 'No clear shape, lots of gas and new stars', bin: 'irregular' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.12.cosmology~big-bang',
+    title: 'The history of the universe',
+    use: 'Use this for “Put the events since the Big Bang in order. What is the microwave background?”',
+    assumptions: [
+      'The times are since the Big Bang, 13.8 billion years ago.',
+      'The microwave background is the oldest light we can see, stretched by expansion into microwaves.',
+    ],
+    question: 'Put the events since the Big Bang in order.',
+    stages: [
+      { label: 'Space expands from a hot, dense state' },
+      { label: 'Protons and neutrons form in the first second' },
+      { label: 'Hydrogen and helium nuclei form in the first minutes' },
+      {
+        label:
+          'Atoms form and light goes free, seen today as the microwave background (380,000 years)',
+      },
+      { label: 'The first stars shine (about 200 million years)' },
+      { label: 'The Sun and Earth form (about 9 billion years)' },
+      { label: 'Today (13.8 billion years)' },
+    ],
+  },
 ];

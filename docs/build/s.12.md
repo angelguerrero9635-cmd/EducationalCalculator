@@ -12,6 +12,7 @@ priority order of their main pages.
 - s.12.solar-system: 3 (main Kepler; sequence ~formation, sort ~planet-types)
 - s.12.starlight-spectra: 4 (main Wien, ~doppler, ~telescope; sort ~space-telescopes)
 - s.12.stellar-evolution: 5 (main H–R diagram, ~fusion; sequences ~sunlike, ~massive; sort ~elements)
+- s.12.cosmology: 5 (main Hubble’s law, ~redshift, ~stretch; sort ~galaxies, sequence ~big-bang)
 
 ## Waiting
 
@@ -55,6 +56,10 @@ priority order of their main pages.
 - s.12.starlight-spectra~telescope: the aperture D and light gathered G are marked
   `standalone`: they are joined to each other but to no other value, as the plan's relations have
   them.
+- s.12.cosmology~redshift: z runs 0–0.1 and λ 656.3–721.9 nm (656.3 × 1.1), not z from −0.01
+  and λ from 600 nm. The page works d = v ÷ H₀, which gives a negative distance for a
+  blueshift; blueshifts stay on ~doppler. H₀ is an input (50–100, opening at 70), not a fixed
+  value, for the reason under ~uranium.
 
 ## Shared needs found while building
 

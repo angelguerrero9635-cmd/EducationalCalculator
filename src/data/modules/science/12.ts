@@ -1023,6 +1023,152 @@ const fusion: ModuleDef = {
   },
 };
 
+// ── Galaxies, the Big Bang and the expanding universe ──
+
+/** v = H₀ × d. */
+const hubbleRel = product('v', 'H', 'd', 'v = H₀ × d', [
+  'Each megaparsec of distance adds H₀ km/s of speed.',
+  'The speed for each megaparsec: the slope of the Hubble plot.',
+  'How many megaparsecs give that speed.',
+]);
+
+const hubble: ModuleDef = {
+  id: 's.12.cosmology',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Farther galaxies move away faster because space itself stretches.',
+    '1/H₀ is the age if expansion had never changed speed.',
+    'Nearby galaxies such as Andromeda can approach us.',
+  ],
+  variables: [
+    V('H', 'H₀', 'Hubble constant', { unit: 'km/s per Mpc', min: 50, max: 100, step: 0.1 }),
+    V('d', 'd', 'Distance', { unit: 'Mpc', min: 1, max: 1000, step: 0.1 }),
+    V('v', 'v', 'Speed away', { unit: 'km/s', min: 0, max: 70000, step: 1 }),
+    V('t', 't', 'Age from 1/H₀', {
+      unit: 'billion years',
+      min: 9.778,
+      max: 19.556,
+      step: 0.01,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    hubbleRel,
+    rule('t = 977.8 ÷ H₀', '{t} = 977.8 ÷ {H}', (v) => v.t! - 977.8 / v.H!, {
+      t: [
+        (v) => div(977.8, v.H!),
+        '977.8 ÷ {H}',
+        '1 ÷ H₀ is a time; 977.8 turns km/s per Mpc into billions of years.',
+      ],
+      H: [(v) => div(977.8, v.t!), '977.8 ÷ {t}', 'The same rule turned round for H₀.'],
+    }),
+  ),
+  example: { H: 70, d: 200, v: 14000, t: 977.8 / 70 },
+  startWith: ['H', 'd'],
+  representation: {
+    kind: 'expandingUniverse',
+    mode: 'hubble',
+    distance: 'd',
+    speed: 'v',
+    constant: 'H',
+  },
+};
+
+const redshift: ModuleDef = {
+  id: 's.12.cosmology~redshift',
+  title: 'A galaxy’s redshift and distance',
+  use: 'Use this for “A galaxy’s light is shifted to longer wavelengths, z = 0.03. How fast is it moving away, and how far is it?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'v = cz only for z under about 0.1.',
+    'A redshift means longer wavelengths and a galaxy moving away.',
+    'Hydrogen’s Hα line is 656.3 nm in the lab.',
+  ],
+  variables: [
+    V('l', 'λ', 'Observed wavelength of Hα', {
+      unit: 'nm',
+      min: H_ALPHA,
+      max: H_ALPHA * 1.1,
+      step: 0.01,
+    }),
+    V('z', 'z', 'Redshift', { min: 0, max: 0.1, step: 0.00001 }),
+    V('v', 'v', 'Speed away', { unit: 'km/s', min: 0, max: 30000, step: 1 }),
+    V('H', 'H₀', 'Hubble constant', { unit: 'km/s per Mpc', min: 50, max: 100, step: 0.1 }),
+    V('d', 'd', 'Distance', { unit: 'Mpc', min: 0, max: 600, step: 0.1 }),
+  ],
+  ...rels(redshiftRel, czRel, hubbleRel),
+  example: {
+    l: 676,
+    z: (676 - H_ALPHA) / H_ALPHA,
+    v: (300000 * (676 - H_ALPHA)) / H_ALPHA,
+    H: 70,
+    d: (300000 * (676 - H_ALPHA)) / H_ALPHA / 70,
+  },
+  startWith: ['l', 'H'],
+  pictureLabels: ['H', 'd'],
+  representation: {
+    kind: 'spectrum',
+    wavelength: 'l',
+    meters: 1e-9,
+    lines: { element: 'H', mode: 'absorption', redshift: 'z', velocity: 'v' },
+  },
+};
+
+const stretch: ModuleDef = {
+  id: 's.12.cosmology~stretch',
+  title: 'Space stretching: every galaxy moves apart',
+  use: 'Use this for “Space doubles in size. How far does a galaxy 100 million light-years away move?”',
+  assumptions: [
+    'Space itself stretches, carrying the galaxies apart.',
+    'Every distance grows by the same factor, so from any galaxy the others all seem to move away.',
+    'Twice as far moves twice as far: that is Hubble’s law.',
+  ],
+  variables: [
+    V('a', 'a', 'Stretch factor', { min: 1, max: 4, step: 0.01 }),
+    V('d', 'd', 'Distance before', {
+      unit: 'million light-years',
+      min: 1,
+      max: 1000,
+      step: 1,
+    }),
+    V('D', 'D', 'Distance after', {
+      unit: 'million light-years',
+      min: 1,
+      max: 4000,
+      step: 1,
+      derived: true,
+    }),
+    V('m', 'Δ', 'How far it moved', {
+      unit: 'million light-years',
+      min: 0,
+      max: 3000,
+      step: 1,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    product('D', 'a', 'd', 'D = a × d', [
+      'Every distance grows by the stretch factor.',
+      'How many times the distance grew.',
+      'Undo the stretch: divide by the factor.',
+    ]),
+    difference('m', 'D', 'd', 'Δ = D − d', [
+      'How far it moved is the growth in its distance.',
+      'The distance after is the distance before plus how far it moved.',
+      'The distance before is the distance after less how far it moved.',
+    ]),
+  ),
+  example: { a: 2, d: 100, D: 200, m: 100 },
+  startWith: ['a', 'd'],
+  representation: {
+    kind: 'expandingUniverse',
+    mode: 'stretch',
+    scale: 'a',
+    distance: 'd',
+    after: 'D',
+  },
+};
+
 export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
@@ -1041,4 +1187,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   telescope,
   hr,
   fusion,
+  hubble,
+  redshift,
+  stretch,
 ];
