@@ -6,7 +6,7 @@
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math12.ts`.
  */
 import { chiCdf, invPhi, Phi, tCdf, tStar } from '@/components/module/reps/statMath';
-import { formatNumber } from '@/engine/format';
+import { formatNumber, superscript } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -30,7 +30,10 @@ const exact = (x: number) => Number(x.toPrecision(12));
 /** The relations and their step text, as a page spreads them. */
 const rels = (...rs: Rel[]) => ({
   relations: rs.map((r) => r.relation),
-  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+  // A figure-only relation places the drawing: it has no steps.
+  steps: Object.fromEntries(
+    rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+  ),
 });
 
 /**
@@ -96,6 +99,9 @@ const withStep = (r: Rel, id: string, more: Partial<StepText>): Rel => ({
   ...r,
   steps: { ...r.steps, [id]: { ...r.steps[id]!, ...more } },
 });
+
+/** A relation that only places the picture (its value is `hidden`): no row, step or check. */
+const hide = (r: Rel): Rel => ({ ...r, relation: { ...r.relation, hidden: true } });
 
 /** A relation with its check line written out. */
 const withCheck = (r: Rel, check: (v: Values) => string): Rel => ({
@@ -3266,7 +3272,7 @@ const MATH_12_POLAR: ModuleDef[] = [
       'A negative r lands on the ray opposite θ.',
     ],
     variables: [
-      V('r', 'r', 'Distance from the pole', { min: -20, max: 20, step: 0.01 }),
+      V('r', 'r', 'Directed distance r', { min: -20, max: 20, step: 0.01 }),
       deg('t', 'θ', 'Angle', -360, 720),
       real('x', 'x', 'x-coordinate', -20, 20),
       real('y', 'y', 'y-coordinate', -20, 20),
@@ -3334,10 +3340,12 @@ const MATH_12_POLAR: ModuleDef[] = [
       deg('t1', 'θ₁', 'Argument of z', 0, 360),
       V('r2', 'r₂', 'Modulus of w', { min: 0, max: 1000, step: 0.01 }),
       deg('t2', 'θ₂', 'Argument of w', 0, 360),
-      comp('c', 'c', 'Real part of w', 1000, { derived: true }),
-      comp('d', 'd', 'Imaginary part of w', 1000, { derived: true }),
+      comp('c', 'c', 'Real part of w', 1000, { derived: true, hidden: true }),
+      comp('d', 'd', 'Imaginary part of w', 1000, { derived: true, hidden: true }),
       V('r', 'r', 'Modulus of zw', { min: 0, max: 1000000, step: 0.01 }),
       deg('t', 'θ', 'Argument of zw', 0, 720),
+      comp('p', 'p', 'Real part of zw', 1000000, { derived: true }),
+      comp('q', 'q', 'Imaginary part of zw', 1000000, { derived: true }),
     ],
     ...rels(
       rel('r = r₁ × r₂', '{r} = {r1} × {r2}', ['r', 'r1', 'r2'], (v) => v.r! - v.r1! * v.r2!, {
@@ -3350,10 +3358,12 @@ const MATH_12_POLAR: ModuleDef[] = [
         t1: [(v) => v.t! - v.t2!, '{t} − {t2}', 'Take w’s argument from the product’s.'],
         t2: [(v) => v.t! - v.t1!, '{t} − {t1}', 'Take z’s argument from the product’s.'],
       }),
-      polarPart('c', 'r2', 't2', 'cos', 'w’s real part, to draw it: r₂ cos θ₂.'),
-      polarPart('d', 'r2', 't2', 'sin', 'w’s imaginary part, to draw it: r₂ sin θ₂.'),
+      hide(polarPart('c', 'r2', 't2', 'cos', 'w’s real part, to draw it: r₂ cos θ₂.')),
+      hide(polarPart('d', 'r2', 't2', 'sin', 'w’s imaginary part, to draw it: r₂ sin θ₂.')),
+      polarPart('p', 'r', 't', 'cos', 'Back to a + bi: the real part of zw is r cos θ.'),
+      polarPart('q', 'r', 't', 'sin', 'The imaginary part of zw is r sin θ.'),
     ),
-    example: { r1: 2, t1: 30, r2: 3, t2: 60, c: 1.5, d: 3 * sind(60), r: 6, t: 90 },
+    example: { r1: 2, t1: 30, r2: 3, t2: 60, c: 1.5, d: 3 * sind(60), r: 6, t: 90, p: 0, q: 6 },
     startWith: ['r1', 't1', 'r2', 't2'],
     representation: {
       kind: 'complexPlane',
@@ -3391,14 +3401,25 @@ const MATH_12_POLAR: ModuleDef[] = [
     ...rels(
       polarDistance('r', 'a', 'b', false),
       direction('t', 'a', 'b', 'point'),
-      derive(
-        'R = rⁿ',
-        '{R} = {r}^{n}',
+      withStep(
+        derive(
+          'R = rⁿ = (a² + b²)ⁿᐟ²',
+          '{R} = ({a}² + {b}²)^({n} ÷ 2)',
+          'R',
+          ['a', 'b', 'n'],
+          (v) => (v.a! ** 2 + v.b! ** 2) ** (v.n! / 2),
+          (v: Values) => (v.n! % 2 === 0 ? `({a}² + {b}²)^${v.n! / 2}` : `√({a}² + {b}²)^${v.n!}`),
+          'Raise the modulus to the nth power: r² = a² + b², so rⁿ is a² + b² to the power n ÷ 2, with no rounded r.',
+        ),
         'R',
-        ['r', 'n'],
-        (v) => v.r! ** v.n!,
-        '{r}^{n}',
-        'Raise the modulus to the nth power.',
+        {
+          work: (v) => {
+            const m = v.a! ** 2 + v.b! ** 2;
+            return v.n! % 2 === 0
+              ? [`${superscript(`${fmt(m)}^${v.n! / 2}`)} = ${fmt(v.R!)}`]
+              : [`${superscript(`√${fmt(m)}^${v.n!}`)} = ${fmt(v.R!)}`];
+          },
+        },
       ),
       derive(
         'T = nθ',
@@ -3423,14 +3444,14 @@ const MATH_12_POLAR: ModuleDef[] = [
     use: 'Use this for “How many petals does r = 4 cos 2θ have? Find r at θ = 30°.”',
     assumptions: [
       'r = a cos(nθ) draws a rose: n petals when n is odd, 2n when n is even.',
-      'Each petal is a long; a negative r is plotted on the opposite ray.',
+      'Each petal is |a| long; a negative r is plotted on the opposite ray.',
       'The whole curve is drawn as θ runs once around.',
     ],
     variables: [
       real('a', 'a', 'Petal length', -20, 20),
       V('n', 'n', 'Number in cos nθ', { integer: true, min: 1, max: 8 }),
       deg('t', 'θ', 'Angle', 0, 360),
-      real('r', 'r', 'Distance from the pole', -20, 20),
+      real('r', 'r', 'Directed distance r', -20, 20),
       V('P', 'P', 'Petals', { integer: true, min: 1, max: 16, derived: true }),
     ],
     ...rels(
@@ -3475,15 +3496,15 @@ const MATH_12_POLAR: ModuleDef[] = [
     title: 'Limaçons and cardioids',
     use: 'Use this for “Find r on r = 2 + 2 cos θ at θ = 60°” and the curve’s shape.',
     assumptions: [
-      'r = a + b cos θ: a = b is a cardioid, through the pole with a heart shape.',
-      'a < b has an inner loop; a > b has a dimple, or is an oval when a ≥ 2b.',
+      'r = a + b cos θ: |a| = |b| is a cardioid, through the pole with a heart shape.',
+      '|a| < |b| has an inner loop; |a| > |b| has a dimple, or is convex when |a| ≥ 2|b|.',
       'A negative r is plotted on the opposite ray.',
     ],
     variables: [
       real('a', 'a', 'Constant a', -20, 20),
       real('b', 'b', 'Number before cos θ', -20, 20),
       deg('t', 'θ', 'Angle', 0, 360),
-      real('r', 'r', 'Distance from the pole', -40, 40),
+      real('r', 'r', 'Directed distance r', -40, 40),
     ],
     ...rels(
       rel(
