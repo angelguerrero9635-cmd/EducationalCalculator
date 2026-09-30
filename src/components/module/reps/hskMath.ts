@@ -195,6 +195,19 @@ export function snellOf(n1: number, n2: number, deg: number) {
 /** Double-slit fringe spacing Δy = λL/d, with λ in nm, d in mm, L in m: Δy in mm. */
 export const fringeOf = (nm: number, mm: number, m: number) => (mm > 0 ? (nm * m) / mm / 1000 : 0);
 
+/** Coulomb's constant, N·m²/C². */
+export const K_COULOMB = 8.99e9;
+
+/** The force between two charges in μC r m apart (N, the size), and whether they repel. */
+export const coulombOf = (q1: number, q2: number, r: number) => ({
+  F: r > 0 ? (K_COULOMB * Math.abs(q1 * 1e-6 * q2 * 1e-6)) / (r * r) : Infinity,
+  repel: q1 * q2 > 0,
+});
+
+/** The field of a charge in μC at r m (N/C, the size). */
+export const fieldOf = (q: number, r: number) =>
+  r > 0 ? (K_COULOMB * Math.abs(q * 1e-6)) / (r * r) : Infinity;
+
 /** The Doppler frequencies for a source moving at vₛ through still air (observers at rest). */
 export const dopplerOf = (f: number, v: number, vs: number) => ({
   ahead: v > vs ? (f * v) / (v - vs) : Infinity,

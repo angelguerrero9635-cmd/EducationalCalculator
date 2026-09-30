@@ -347,6 +347,25 @@ export type RayDiagramSpec = { kind: 'rayDiagram'; fixed?: boolean } & (
     }
 );
 
+// ─── H67 charges ─────────────────────────────────────────────────────────────
+
+/**
+ * Point charges (μC, signed) and their electric field lines, traced from the field itself:
+ * out of + charges, into − charges, as many from each as its size. With two charges
+ * `distance` r apart (m, not to scale), the Coulomb forces F = k|q₁q₂|/r² (k = 8.99 × 10⁹
+ * N·m²/C²) on each, equal and opposite: apart for like charges, together for unlike; drag the
+ * second charge for r (the arrows follow the inverse square). With one charge, the field
+ * E = k|q|/r² at a point r away (`field`, N/C), pointing away from + and toward −.
+ */
+export interface ChargesSpec {
+  kind: 'charges';
+  charges: [NumOrVar, NumOrVar?];
+  distance: NumOrVar;
+  force?: string;
+  field?: string;
+  fixed?: boolean;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
@@ -357,7 +376,8 @@ export type HskSpec =
   | CollisionSpec
   | SimpleMachineSpec
   | HeatEngineSpec
-  | RayDiagramSpec;
+  | RayDiagramSpec
+  | ChargesSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
@@ -413,6 +433,8 @@ export function hskSpecVars(r: HskSpec): string[] {
       );
     case 'heatEngine':
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
+    case 'charges':
+      return ids(...r.charges, r.distance, r.force, r.field);
     case 'rayDiagram':
       switch (r.mode) {
         case 'lens':

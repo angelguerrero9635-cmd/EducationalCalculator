@@ -5,6 +5,7 @@
 import type { HskSpec } from '@/data/modules/typesHsk';
 
 import type { Calculator } from '../useCalculator';
+import { Charges } from './Charges';
 import { CircularMotion } from './CircularMotion';
 import { Collision } from './Collision';
 import { FreeBody } from './FreeBody';
@@ -28,6 +29,8 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
       return <SimpleMachine spec={spec} calc={calc} />;
     case 'heatEngine':
       return <HeatEngine spec={spec} calc={calc} />;
+    case 'charges':
+      return <Charges spec={spec} calc={calc} />;
     case 'rayDiagram':
       switch (spec.mode) {
         case 'lens':

@@ -2303,6 +2303,138 @@ const RAY_DEMOS: ModuleDef[] = [
   })),
 ];
 
+// ─── H67 charges ─────────────────────────────────────────────────────────────
+
+const chargeVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'μC', -100, 100, 0.1);
+
+const coulombDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  ex: { a: number; b: number; r: number },
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  unitSystems: ['metric'],
+  assumptions: [
+    ...assumptions,
+    'F = kq₁q₂/r², k = 8.99 × 10⁹ N·m²/C², charges in coulombs (1 μC = 10⁻⁶ C). A negative F means the charges attract.',
+  ],
+  variables: [
+    chargeVar('a', 'q₁', 'First charge'),
+    chargeVar('b', 'q₂', 'Second charge'),
+    q('r', 'r', 'Distance apart', 'm', 0.001, 100, 0.001),
+    q('F', 'F', 'Force (− attract, + repel)', 'N', -1e9, 1e9, 0.0001),
+  ],
+  ...rules(
+    rule(
+      'F = kq₁q₂/r²',
+      '{F} = 8.99 × 10⁹ × {a} × {b} × 10⁻¹²/({r}²)',
+      (v) => v.F! * v.r! * v.r! - 8.99e-3 * v.a! * v.b!,
+      {
+        F: [
+          (v) => div(8.99e-3 * v.a! * v.b!, v.r! * v.r!),
+          '8.99 × 10⁹ × {a} × {b} × 10⁻¹²/({r}²)',
+          'Coulomb’s law: k times the two charges (μC × 10⁻⁶ each), over the distance squared.',
+        ],
+        r: [
+          (v) => {
+            const x = div(8.99e-3 * v.a! * v.b!, v.F!);
+            return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+          },
+          '√(8.99 × 10⁹ × {a} × {b} × 10⁻¹²/{F})',
+          'Solve Coulomb’s law for r², then take the square root.',
+        ],
+        a: [
+          (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.b!),
+          '{F} × {r}²/(8.99 × 10⁻³ × {b})',
+          'Solve Coulomb’s law for q₁.',
+        ],
+        b: [
+          (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.a!),
+          '{F} × {r}²/(8.99 × 10⁻³ × {a})',
+          'Solve Coulomb’s law for q₂.',
+        ],
+      },
+    ),
+  ),
+  example: { ...ex, F: (8.99e-3 * ex.a * ex.b) / (ex.r * ex.r) },
+  startWith: ['a', 'b', 'r'],
+  representation: { kind: 'charges', charges: ['a', 'b'], distance: 'r', force: 'F' },
+});
+
+const CHARGE_DEMOS: ModuleDef[] = [
+  coulombDemo(
+    'g.s11-electrostatics-attract',
+    'Unlike charges attract',
+    'Use this for “A +3 μC and a −2 μC charge are 0.3 m apart. How hard do they pull on each other?”',
+    ['Field lines leave the + charge and end on the − charge.'],
+    { a: 3, b: -2, r: 0.3 },
+  ),
+  coulombDemo(
+    'g.s11-electrostatics-repel',
+    'Like charges repel',
+    'Use this for “Two +4 μC charges are 0.5 m apart. What force pushes them apart?”',
+    ['Between two like charges the field lines bend away: a point midway feels no field at all.'],
+    { a: 4, b: 4, r: 0.5 },
+  ),
+  coulombDemo(
+    'g.s11-electrostatics-unequal',
+    'A big charge and a small one',
+    'Use this for “A +6 μC charge is 10 cm from a −1 μC charge. What is the force?”',
+    ['Most lines from the big charge go off far away; only a sixth of them end on the small one.'],
+    { a: 6, b: -1, r: 0.1 },
+  ),
+  {
+    id: 'g.s11-electrostatics-field',
+    title: 'The field of a point charge',
+    use: 'Use this for “What is the electric field 0.2 m from a +5 μC charge?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The field is the force on each coulomb of a small test charge: E = kq/r².',
+      'It points away from a + charge and toward a − charge.',
+    ],
+    variables: [
+      chargeVar('a', 'q', 'Charge'),
+      q('r', 'r', 'Distance', 'm', 0.001, 100, 0.001),
+      q('E', 'E', 'Field (− toward the charge)', 'N/C', -1e12, 1e12, 1, { scientific: true }),
+    ],
+    ...rules(
+      rule(
+        'E = kq/r²',
+        '{E} = 8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
+        (v) => v.E! * v.r! * v.r! - 8.99e3 * v.a!,
+        {
+          E: [
+            (v) => div(8.99e3 * v.a!, v.r! * v.r!),
+            '8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
+            'k times the charge in coulombs, over r².',
+          ],
+          a: [
+            (v) => (v.E! * v.r! * v.r!) / 8.99e3,
+            '{E} × {r}²/(8.99 × 10³)',
+            'Solve for the charge.',
+          ],
+          r: [
+            (v) => {
+              const x = div(8.99e3 * v.a!, v.E!);
+              return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+            },
+            '√(8.99 × 10⁹ × {a} × 10⁻⁶/{E})',
+            'Solve for r², then take the square root.',
+          ],
+        },
+      ),
+    ),
+    example: { a: 5, r: 0.2, E: (8.99e3 * 5) / 0.04 },
+    startWith: ['a', 'r'],
+    representation: { kind: 'charges', charges: ['a'], distance: 'r', field: 'E' },
+  },
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
@@ -2313,5 +2445,6 @@ export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...HEAT_ENGINE_DEMOS,
   ...WAVE_DEMOS,
   ...RAY_DEMOS,
+  ...CHARGE_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

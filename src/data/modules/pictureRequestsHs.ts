@@ -1078,12 +1078,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Total internal reflection past the critical angle; double-slit fringes; telescopes for the Earth and space page. Drawn (group HK, reps/RayLens.tsx and reps/RayOptics.tsx; thin lens, Snell and fringe math in hskMath.ts). Calculator picture { kind: "rayDiagram", fixed?: true, and one mode }: lens or mirror: { mode: "lens" | "mirror", shape: "converging" | "diverging" | "concave" | "convex", focal: f (a length; the page may pass it signed, − for diverging or convex: the shape sets the sign), objectDistance: dₒ, objectHeight?: hₒ, imageDistance?: dᵢ, imageHeight?: hᵢ, magnification?: m } — a glass lens (biconvex or biconcave) or a silvered mirror on the axis, F, F′, 2F (C for a mirror) marked, the object arrow, the three principal rays in three colors (parallel then through F, through the center or vertex, through F then parallel), each continued to where it meets the others: a real image (solid, the rays meet) or a virtual one (dashed back-extensions), from 1/f = 1/dₒ + 1/dᵢ; the two drawing scales are affine so the rays meet at the image exactly; an object at F sends parallel rays and no image; drag the object. Refraction: { mode: "refraction", n1, n2, angle: θ₁ (degrees from the normal), refracted?: θ₂, critical?: θc, media?: [top, bottom names] } — two media shaded by their index, the normal dashed, the ray bent by n₁ sin θ₁ = n₂ sin θ₂ with its faint reflection, angle arcs, the critical angle dashed red; past it, total internal reflection (the reflection full strength, no ray out); drag the incoming ray. Double slit: { mode: "doubleSlit", wavelength (nm), spacing (mm), screen (m), fringe?: Δy (mm) } — light in its color (grey outside 380–750 nm) through two slits onto a screen, cos² brightness, bright fringes m = −2 … 2 labelled, Δy = λL/d bracketed, the paths to m = 1 dashed; not to scale across. Telescope: { mode: "telescope", design: "refracting" | "reflecting", objective: fₒ, eyepiece: fₑ, magnification?: M, length? (fₒ + fₑ) } — refracting: objective and eyepiece lenses fₒ + fₑ apart, starlight focused in the shared focal plane and sent out parallel at a larger angle; reflecting (Newtonian): a parabolic mirror and a 45° flat turning the focus up to the eyepiece; M = fₒ/fₑ. Step text must write a divisor before a sine (n₁/n₂ × sin θ₁): the harness reads sin(55)/2.7 as sin(55/2.7). The harness checks dᵢ, m, hᵢ, the sign of f against the shape, θ₂, θc, Δy and M. Example: representation: { kind: "rayDiagram", mode: "lens", shape: "converging", focal: "f", objectDistance: "o", objectHeight: "h", imageDistance: "i", magnification: "m", imageHeight: "k" }.',
   },
-  ask(
-    'H67',
-    'charges',
-    'Point charges with field lines and the Coulomb force arrows scaled by q₁, q₂ and r',
-    ['s.11.electrostatics'],
-  ),
+  {
+    ...ask(
+      'H67',
+      'charges',
+      'Point charges with field lines and the Coulomb force arrows scaled by q₁, q₂ and r',
+      ['s.11.electrostatics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-electrostatics-attract',
+      'g.s11-electrostatics-repel',
+      'g.s11-electrostatics-unequal',
+      'g.s11-electrostatics-field',
+    ],
+    notes:
+      'Drawn (group HK, reps/Charges.tsx; the field lines traced with fieldLines.ts, Coulomb math in hskMath.ts). Calculator picture { kind: "charges", charges: [q₁, q₂?] (μC, signed, numbers or variables), distance: r (m), force?: F (N; a page may count it signed, − for attraction: compared by size), field?: E (N/C, one charge), fixed?: true }. Lit charge balls, red + and blue −, each labelled with its value; field lines traced step by step through the field of the charges (out of +, into −, as many from each charge as its share of the biggest, at least 2), an arrow on each; for two charges the Coulomb forces F = k|q₁q₂|/r² as equal and opposite arrows on one scale (apart for like, together for unlike charges); drag the second charge for r and the arrows follow the inverse square; for one charge, the field E = k|q|/r² at a point r away, pointing away from + and toward −. r is bracketed; the spacing on screen is fixed (the lines’ shape doesn’t depend on r). The harness checks F and E. Example: representation: { kind: "charges", charges: ["a", "b"], distance: "r", force: "F" }; { kind: "charges", charges: ["a"], distance: "r", field: "E" }.',
+  },
   ask('H68', 'circuit', 'Mixed series-parallel circuits, meter readings at each resistor, power', [
     's.11.circuits',
   ]),

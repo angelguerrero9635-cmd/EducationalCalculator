@@ -232,6 +232,24 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
         out.push(`simpleMachine: effort moves ${de}, not MA × ${dl}`);
       break;
     }
+    case 'charges': {
+      const [q1, q2] = rep.charges.map((x) => (x === undefined ? undefined : read(si, x)));
+      const r = read(si, rep.distance);
+      if (q1 === undefined || r === undefined) break;
+      if (r <= 0) out.push(`charges: distance ${r} is not positive`);
+      else if (rep.charges[1] !== undefined) {
+        // A page may count the force signed (− for attraction): compared by size.
+        const F = rep.force ? si(rep.force) : undefined;
+        const want = q2 === undefined ? undefined : hm.coulombOf(q1, q2, r).F;
+        if (F !== undefined && want !== undefined && !near(Math.abs(F), want))
+          out.push(`charges: force ${F}, the picture draws ${want}`);
+      } else {
+        const E = rep.field ? si(rep.field) : undefined;
+        if (E !== undefined && !near(Math.abs(E), hm.fieldOf(q1, r)))
+          out.push(`charges: field ${E}, the picture draws ${hm.fieldOf(q1, r)}`);
+      }
+      break;
+    }
     case 'rayDiagram': {
       if (rep.mode === 'lens' || rep.mode === 'mirror') {
         const [f, dO, hO] = [
