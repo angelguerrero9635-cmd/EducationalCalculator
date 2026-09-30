@@ -1124,12 +1124,26 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as an optional `dating` field on rockLayers (the Grade 3 fossils page is unchanged; a spec with `dating` draws the dated cliff instead): { kind: "rockLayers", dating: { layers: [{ rock: "sandstone" | "shale" | "limestone" | "siltstone" | "conglomerate" | "ash" | "lava", age?: id or number (million years), fossil?: "trilobite" | "ammonite" | "fern" }] (top to bottom, 3 to 8), intrusion?: { through: index of the highest layer the dike cuts, age? }, bracket?: index of the layer whose age is bracketed by the nearest ages above and below (a dike that cuts it makes it older than the dike; one that stops below makes it younger), sample?: { parent: percent id, layer: index (−1 for the dike), parentName, daughterName, halfLives?: id } } }; the sample is 100 atoms, parent and daughter counted from the rounded percent. Example: layers [{ rock: "sandstone", fossil: "ammonite" }, { rock: "shale" }, { rock: "ash", age: "t" }, { rock: "limestone", fossil: "trilobite" }, { rock: "siltstone" }], sample { parent: "P", layer: 2, parentName: "potassium-40", daughterName: "argon-40", halfLives: "n" } with P = 100 × (1/2)^n and t = n × T. The harness checks superposition (dated ages rise downward), cross-cutting (the dike is younger than what it cuts and older than what it doesn’t reach), a non-empty bracket and P against the half-lives; pages keep the ages in order with constraint rules.',
   },
-  ask(
-    'H75',
-    'oceanProfile',
-    'Ocean floor profile (shelf, slope, ridge, trench); surface currents and gyres on a map; the deep conveyor; tides from the moon and sun',
-    ['s.12.ocean-atmosphere'],
-  ),
+  {
+    ...ask(
+      'H75',
+      'oceanProfile',
+      'Ocean floor profile (shelf, slope, ridge, trench); surface currents and gyres on a map; the deep conveyor; tides from the moon and sun',
+      ['s.12.ocean-atmosphere'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-ocean-atmosphere-sonar',
+      'g.s12-ocean-atmosphere-sonar-ridge',
+      'g.s12-ocean-atmosphere-sonar-trench',
+      'g.s12-ocean-atmosphere-tides',
+      'g.s12-ocean-atmosphere-tides-neap',
+      'g.s12-ocean-atmosphere-tides-full',
+      'g.s12-ocean-atmosphere-currents',
+    ],
+    notes:
+      'Drawn (group HL) as a calculator kind in two modes and an explore figure. Seafloor: { kind: "oceanProfile", mode: "profile", depth?: id (m), over?: "shelf" | "slope" | "rise" | "plain" | "ridge" | "trench" }: a profile from a continent to an island arc with typical depths (shelf to 200 m, abyssal plain 4,500–5,000 m, ridge crest 2,500 m with its rift, trench to 10,900 m) on a stretched depth axis; a sonar ship sits where the floor is that deep (within `over`) and pings down to it; with no such place it says so. Example: { kind: "oceanProfile", mode: "profile", depth: "d", over: "plain" } with d = v × t ÷ 2. Tides: { kind: "oceanProfile", mode: "tides", angle: id (the Moon’s angle from the Sun, 0°–180°), range?: id, fixed? }: Earth from above the North Pole with its two bulges from the Moon’s and Sun’s pulls (the Sun’s 0.46 of the Moon’s), spring or neap named, the Moon dragged round its orbit. Example: { kind: "oceanProfile", mode: "tides", angle: "A", range: "R" } with R = m × √(1 + 0.46² + 2 × 0.46 × cos(2θ)). Currents (explore figure): { kind: "oceanCurrents" }, each scene currents: { view: "gyres" | "conveyor" } on a world map with the Pacific in the middle: the five gyres (warm on each basin’s west side, cold on the east) and the Antarctic Circumpolar Current, or the conveyor’s warm surface and cold deep flows with where it sinks and rises. The harness checks the ship sits over its depth and the bulge points nearer the Moon than the Sun.',
+  },
   ask(
     'H76',
     'atmosphereLayers',

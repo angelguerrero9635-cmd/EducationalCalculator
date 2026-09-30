@@ -6,11 +6,14 @@
 import {
   arrivals,
   bracketOf,
+  depthAt,
   EARTH,
   mantleRay,
   parentLeft,
   QUAKE_DEFAULTS,
   SHADOW,
+  shipAt,
+  tideAt,
 } from '@/components/module/reps/earthModel';
 
 import type { HslSpec } from '../typesHsl';
@@ -60,6 +63,33 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
         const [a, b, c] = rep.stations;
         if ((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y) === 0)
           out.push('the three stations are in a line: no single epicenter');
+      }
+      break;
+    }
+    case 'oceanProfile': {
+      if (rep.mode === 'profile') {
+        const d = num(rep.depth);
+        if (d === undefined) break;
+        if (d <= 0) out.push(`depth ${d} m is not below sea level`);
+        // The sonar line ends on the seafloor: the ship sits where the floor is that deep.
+        const x = shipAt(d, rep.over);
+        if (x !== undefined && !near(depthAt(x), d))
+          out.push(`ship over ${depthAt(x)} m, not ${d}`);
+      } else {
+        const a = num(rep.angle);
+        if (a === undefined) break;
+        if (a < 0 || a > 180) out.push(`Moon at ${a}°, not 0°–180°`);
+        // The high tide points nearer the Moon than the Sun: the Moon's pull is the larger.
+        const moon = Math.PI - (a * Math.PI) / 180;
+        let best = 0;
+        for (let i = 0; i < 3600; i++) {
+          const phi = (i * Math.PI) / 1800;
+          if (tideAt(phi, moon, Math.PI) > tideAt(best, moon, Math.PI)) best = phi;
+        }
+        const off = Math.abs(
+          ((((best - moon + Math.PI / 2) % Math.PI) + Math.PI) % Math.PI) - Math.PI / 2,
+        );
+        if (off > Math.PI / 4 + 1e-6) out.push(`the bulge points ${off} rad from the Moon`);
       }
       break;
     }

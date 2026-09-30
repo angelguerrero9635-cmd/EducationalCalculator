@@ -65,13 +65,7 @@ export type EarthLayersSpec = EarthSectionSpec | SeismogramSpec | EpicenterSpec;
 
 /** The rocks a dated cliff draws: sediments, a volcanic ash bed and a lava flow. */
 export type DatedRock =
-  | 'sandstone'
-  | 'shale'
-  | 'limestone'
-  | 'siltstone'
-  | 'conglomerate'
-  | 'ash'
-  | 'lava';
+  'sandstone' | 'shale' | 'limestone' | 'siltstone' | 'conglomerate' | 'ash' | 'lava';
 
 /** An index fossil drawn in a layer. */
 export type IndexFossil = 'trilobite' | 'ammonite' | 'fern';
@@ -108,7 +102,43 @@ export interface RockDatingSpec {
   };
 }
 
-export type HslSpec = EarthLayersSpec | RockDatingSpec;
+/** The labeled parts of the seafloor profile. */
+export type SeafloorPart = 'shelf' | 'slope' | 'rise' | 'plain' | 'ridge' | 'trench';
+
+/**
+ * The ocean (H75), `profile` mode: the seafloor from a continent across an ocean to an island
+ * arc (shelf, slope, rise, abyssal plain, mid-ocean ridge with its rift, trench), depths to scale
+ * on a stretched vertical axis. `depth` puts a ship where the floor is that deep (within `over`
+ * when given) and draws its sonar ping down and back.
+ */
+export interface OceanSonarSpec {
+  kind: 'oceanProfile';
+  mode: 'profile';
+  /** The depth under the ship, m. */
+  depth?: NumOrVar;
+  /** The part of the profile the ship is over. */
+  over?: SeafloorPart;
+}
+
+/**
+ * The ocean, `tides` mode: Earth seen from above the North Pole with its two tidal bulges, the
+ * Sun far to the left and the Moon on its orbit `angle` degrees from the Sun's direction; the
+ * bulges from Moon and Sun add (spring tides, at 0° and 180°) or partly cancel (neap, at 90°).
+ * Drag the Moon round its orbit.
+ */
+export interface TidesSpec {
+  kind: 'oceanProfile';
+  mode: 'tides';
+  /** The Moon's angle from the Sun's direction, 0°–180° (0 new moon, 90 quarter, 180 full). */
+  angle: NumOrVar;
+  /** The tidal range, when the page works it out (shown in the caption). */
+  range?: NumOrVar;
+  fixed?: boolean;
+}
+
+export type OceanProfileSpec = OceanSonarSpec | TidesSpec;
+
+export type HslSpec = EarthLayersSpec | RockDatingSpec | OceanProfileSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hslSpecVars(r: HslSpec): string[] {
@@ -119,6 +149,8 @@ export function hslSpecVars(r: HslSpec): string[] {
       if (r.mode === 'section') return ids([r.distance]);
       if (r.mode === 'seismogram') return ids([r.km, r.vp, r.vs, r.lag]);
       return ids(r.stations.map((s) => s.r));
+    case 'oceanProfile':
+      return r.mode === 'profile' ? ids([r.depth]) : ids([r.angle, r.range]);
     case 'rockLayers':
       return ids([
         ...r.dating.layers.map((l) => l.age),
@@ -162,10 +194,16 @@ export interface LandformScene {
 }
 
 /** The explore figures of group L (listed in `layouts/types.ts`). */
-export type HslFigure = { kind: 'mohsScale' } | { kind: 'landforms' };
+/** An `oceanCurrents` scene: the surface gyres, or the deep conveyor. */
+export interface CurrentsScene {
+  view: 'gyres' | 'conveyor';
+}
+
+export type HslFigure = { kind: 'mohsScale' } | { kind: 'landforms' } | { kind: 'oceanCurrents' };
 
 /** The scene field each group L figure reads (for the layout tests). */
 export const HSL_SCENE_FIELD = {
   mohsScale: 'mohs',
   landforms: 'landform',
+  oceanCurrents: 'currents',
 } as const satisfies Record<HslFigure['kind'], string>;

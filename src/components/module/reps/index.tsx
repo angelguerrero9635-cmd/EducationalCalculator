@@ -203,6 +203,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'immuneResponse':
       return <ImmuneResponse spec={spec} calc={calc} />;
     case 'earthLayers':
+    case 'oceanProfile':
       return <HslPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;

@@ -166,3 +166,95 @@ export function bracketOf(
 
 /** Percent of parent atoms left after n half-lives. */
 export const parentLeft = (n: number) => 100 * 0.5 ** n;
+
+// ── The ocean (H75) ──
+
+/**
+ * A seafloor profile across an ocean, from a continent to an island arc: [share of the way
+ * across, depth in m] (negative is above sea level). Depths follow the usual figures: the shelf
+ * to about 200 m, the slope down to about 3,000 m, the rise to 4,000 m, abyssal plains near
+ * 4,500–5,000 m, a mid-ocean ridge crest near 2,500 m with its rift valley, and a trench past
+ * 8,000 m (the deepest, the Mariana Trench, is about 11,000 m).
+ */
+export const SEAFLOOR: [number, number][] = [
+  [0, -600],
+  [0.05, 0],
+  [0.15, 200],
+  [0.2, 3000],
+  [0.27, 4000],
+  [0.33, 4600],
+  [0.37, 4550],
+  [0.41, 4700],
+  [0.465, 2500],
+  [0.475, 2900],
+  [0.485, 2900],
+  [0.495, 2500],
+  [0.55, 4700],
+  [0.62, 4750],
+  [0.7, 4900],
+  [0.76, 5100],
+  [0.82, 8500],
+  [0.85, 10900],
+  [0.875, 6000],
+  [0.92, 1500],
+  [0.95, -400],
+  [1, -500],
+];
+
+/** The labeled features of the profile: where each lies across it. */
+export const SEAFLOOR_FEATURES = {
+  shelf: [0.05, 0.15],
+  slope: [0.15, 0.2],
+  rise: [0.2, 0.27],
+  plain: [0.27, 0.41],
+  ridge: [0.41, 0.55],
+  trench: [0.76, 0.875],
+} as const;
+
+export type SeafloorFeature = keyof typeof SEAFLOOR_FEATURES;
+
+/** Depth (m) of the seafloor at share `x` across the profile. */
+export function depthAt(x: number): number {
+  const i = SEAFLOOR.findIndex(([px]) => px >= x);
+  if (i <= 0) return SEAFLOOR[0]![1];
+  const [x0, d0] = SEAFLOOR[i - 1]!;
+  const [x1, d1] = SEAFLOOR[i]!;
+  return d0 + ((d1 - d0) * (x - x0)) / (x1 - x0);
+}
+
+/**
+ * Where a ship finds the seafloor at depth `d`: the first place across the profile (within
+ * `over`, when given) where the depth equals d, found exactly on the segment that crosses it;
+ * undefined when no part of the profile (or of that feature) is that deep.
+ */
+export function shipAt(d: number, over?: SeafloorFeature): number | undefined {
+  const [lo, hi] = over ? SEAFLOOR_FEATURES[over] : [0.05, 0.95];
+  for (let i = 1; i < SEAFLOOR.length; i++) {
+    const [x0, d0] = SEAFLOOR[i - 1]!;
+    const [x1, d1] = SEAFLOOR[i]!;
+    if (x1 < lo || x0 > hi) continue;
+    if ((d0 - d) * (d1 - d) <= 0 && d0 !== d1) {
+      const x = x0 + ((d - d0) * (x1 - x0)) / (d1 - d0);
+      if (x >= lo - 1e-9 && x <= hi + 1e-9) return x;
+    }
+  }
+  return undefined;
+}
+
+/** Speed of sound in seawater used by echo sounding, m/s. */
+export const SOUND_IN_SEAWATER = 1500;
+
+/** The Sun's tide-raising pull as a share of the Moon's (about 0.46). */
+export const SUN_TIDE = 0.46;
+
+/**
+ * The tidal range (as a multiple of the Moon's own) with the Moon `deg` degrees from the Sun as
+ * seen from Earth: the two bulges add at new and full moon (spring, 1.46) and partly cancel at
+ * the quarters (neap, 0.54).
+ */
+export const tideFactor = (deg: number) =>
+  Math.sqrt(1 + SUN_TIDE ** 2 + 2 * SUN_TIDE * Math.cos((2 * deg * Math.PI) / 180));
+
+/** The ocean's height at direction `phi` (radians) round Earth: the Moon's and Sun's bulges. */
+export const tideAt = (phi: number, moon: number, sun: number) =>
+  Math.cos(2 * (phi - moon)) + SUN_TIDE * Math.cos(2 * (phi - sun));

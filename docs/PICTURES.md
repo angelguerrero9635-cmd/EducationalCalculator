@@ -91,6 +91,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
 | `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
 | `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter       | Earth science interior (H72)        |
+| `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides  | Earth science ocean (H75)           |
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.

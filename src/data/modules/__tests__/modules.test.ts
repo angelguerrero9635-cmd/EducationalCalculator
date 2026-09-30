@@ -514,6 +514,7 @@ function representationVars(r: Representation): string[] {
     case 'immuneResponse':
       return hshSpecVars(r);
     case 'earthLayers':
+    case 'oceanProfile':
       return hslSpecVars(r);
   }
 }

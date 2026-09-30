@@ -296,6 +296,10 @@ const light = {
   landSand: '#E9CE8E',
   landClay: '#B98568',
   landGrass: '#8CC26B',
+  /** The ocean (H75): warm and cold currents on the map, and seafloor sediment. */
+  currentWarm: '#D93A3A',
+  currentCold: '#2F6FD0',
+  seafloor: '#9C8A77',
   /** Grades 9–12 group D: sine and cosine legs on the unit circle, algebra tiles (positive and
    * negative), and a resultant vector. */
   unitCircleSine: '#D9480F',
@@ -563,6 +567,9 @@ const dark: Palette = {
   landSand: '#A8905C',
   landClay: '#86604B',
   landGrass: '#5E8C45',
+  currentWarm: '#F0625A',
+  currentCold: '#5B9BFF',
+  seafloor: '#6B5D50',
   unitCircleSine: '#FF8A5C',
   unitCircleCosine: '#3CCFAE',
   tilePositive: '#2F5F86',

@@ -703,7 +703,180 @@ const bracket: ModuleDef = {
   },
 };
 
+// ── H75: the ocean ──
+
+const sonar: ModuleDef = {
+  id: 'g.s12-ocean-atmosphere-sonar',
+  title: 'Sounding the seafloor with sonar',
+  use: 'Use this for the depth of the seafloor from a sonar echo’s round-trip time.',
+  assumptions: [
+    'A ship’s sonar sends a pulse of sound down; it bounces off the seafloor and returns.',
+    'Sound travels about 1,500 m/s in seawater, and the echo’s time covers the trip down and back.',
+    'Across an ocean the floor drops from the continental shelf down the slope and rise to the abyssal plain, climbs to a mid-ocean ridge, and plunges into trenches.',
+  ],
+  variables: [
+    V('t', 't', 'Echo time, down and back', { unit: 's', min: 0.01, max: 20, step: 0.01 }),
+    V('v', 'v', 'Speed of sound in seawater', { unit: 'm/s', min: 1400, max: 1600, step: 1 }),
+    V('d', 'd', 'Depth', { unit: 'm', min: 1, max: 11000, step: 1, derived: true }),
+  ],
+  ...rels({
+    relation: {
+      id: 'd = v × t ÷ 2',
+      display: '{d} = {v} × {t} ÷ 2',
+      vars: ['d', 'v', 't'],
+      residual: (v: Values) => v.d! - (v.v! * v.t!) / 2,
+      solve: {
+        d: (v: Values) => (v.v! * v.t!) / 2,
+        t: (v: Values) => div(2 * v.d!, v.v!),
+        v: (v: Values) => div(2 * v.d!, v.t!),
+      },
+    },
+    steps: {
+      d: {
+        expr: '{v} × {t} ÷ 2',
+        how: 'Distance down and back is speed times time; the depth is half of it.',
+      },
+      t: {
+        expr: '2 × {d} ÷ {v}',
+        how: 'The sound goes down and back: twice the depth, over its speed.',
+      },
+      v: { expr: '2 × {d} ÷ {t}', how: 'Twice the depth, over the echo’s time.' },
+    },
+  }),
+  example: { t: 6, v: 1500, d: 4500 },
+  startWith: ['t', 'v'],
+  representation: { kind: 'oceanProfile', mode: 'profile', depth: 'd', over: 'plain' },
+};
+
+const sonarRidge: ModuleDef = {
+  ...sonar,
+  id: 'g.s12-ocean-atmosphere-sonar-ridge',
+  title: 'Sonar over a mid-ocean ridge',
+  use: 'Use this for a sounding over a mid-ocean ridge, where the floor rises toward the surface.',
+  example: { t: 3.4, v: 1500, d: 2550 },
+  representation: { kind: 'oceanProfile', mode: 'profile', depth: 'd', over: 'ridge' },
+};
+
+const sonarTrench: ModuleDef = {
+  ...sonar,
+  id: 'g.s12-ocean-atmosphere-sonar-trench',
+  title: 'Sonar over a deep trench',
+  use: 'Use this for a sounding over an ocean trench, the deepest parts of the ocean.',
+  example: { t: 14, v: 1500, d: 10500 },
+  representation: { kind: 'oceanProfile', mode: 'profile', depth: 'd', over: 'trench' },
+};
+
+const TIDE = 'Math.sqrt(1 + 0.46 ** 2 + 2 * 0.46 * cos(2A))';
+const tideRoot = (deg: number) =>
+  Math.sqrt(1 + 0.46 ** 2 + 2 * 0.46 * Math.cos((2 * deg * Math.PI) / 180));
+
+const tides: ModuleDef = {
+  id: 'g.s12-ocean-atmosphere-tides',
+  title: 'Spring and neap tides',
+  use: 'Use this for the tidal range from the Moon’s angle to the Sun: spring, neap or between.',
+  assumptions: [
+    'The Moon’s pull raises two bulges of ocean, one facing it and one opposite; Earth turns through both each day.',
+    'The Sun raises bulges too, about 0.46 as high. In line (new and full moon) they add: spring tides.',
+    'At right angles (the quarter moons) they partly cancel: neap tides. The range is m × √(1 + 0.46² + 2 × 0.46 × cos 2θ).',
+  ],
+  variables: [
+    V('m', 'm', 'Range from the Moon alone', { unit: 'm', min: 0.1, max: 10, step: 0.01 }),
+    V('A', 'θ', 'Moon’s angle from the Sun', { unit: '°', min: 0, max: 180, step: 1 }),
+    V('R', 'R', 'Tidal range', { unit: 'm', min: 0.01, max: 20, step: 0.01, derived: true }),
+  ],
+  ...rels({
+    relation: {
+      id: `R = m × ${TIDE}`,
+      display: '{R} = {m} × √(1 + 0.46² + 2 × 0.46 × cos(2 × {A}))',
+      vars: ['R', 'm', 'A'],
+      residual: (v: Values) => v.R! - v.m! * tideRoot(v.A!),
+      solve: {
+        R: (v: Values) => v.m! * tideRoot(v.A!),
+        m: (v: Values) => div(v.R!, tideRoot(v.A!)),
+        A: (v: Values) => {
+          const k = ((v.R! / v.m!) ** 2 - 1 - 0.46 ** 2) / (2 * 0.46);
+          if (!(k >= -1 - 1e-9 && k <= 1 + 1e-9)) return undefined;
+          const a = (Math.acos(Math.max(-1, Math.min(1, k))) * 180) / Math.PI / 2;
+          return [a, 180 - a];
+        },
+      },
+    },
+    steps: {
+      R: {
+        expr: '{m} × √(1 + 0.46^2 + 2 × 0.46 × cos(2 × {A}))',
+        how: 'Add the Moon’s and the Sun’s bulges at the angle between them.',
+      },
+      m: {
+        expr: '{R} ÷ √(1 + 0.46^2 + 2 × 0.46 × cos(2 × {A}))',
+        how: 'Undo the Sun’s share: divide the range by the same factor.',
+      },
+      A: {
+        expr: 'cos⁻¹((({R} ÷ {m})^2 − 1 − 0.46^2) ÷ (2 × 0.46)) ÷ 2',
+        how: 'Solve the range rule for cos 2θ, then take the inverse cosine and halve it.',
+      },
+    },
+  }),
+  example: { m: 2, A: 0, R: 2 * tideRoot(0) },
+  startWith: ['m', 'A'],
+  representation: { kind: 'oceanProfile', mode: 'tides', angle: 'A', range: 'R' },
+};
+
+const tidesNeap: ModuleDef = {
+  ...tides,
+  id: 'g.s12-ocean-atmosphere-tides-neap',
+  title: 'Neap tides at the quarter moon',
+  use: 'Use this for the small tidal range when the Moon is at right angles to the Sun.',
+  example: { m: 2, A: 90, R: 2 * tideRoot(90) },
+};
+
+const tidesFull: ModuleDef = {
+  ...tides,
+  id: 'g.s12-ocean-atmosphere-tides-full',
+  title: 'Spring tides at the full moon',
+  use: 'Use this for the full moon, on the far side of Earth from the Sun: spring tides again.',
+  example: { m: 2, A: 180, R: 2 * tideRoot(180) },
+};
+
+const currentsLayouts: LayoutDef[] = [
+  {
+    id: 'g.s12-ocean-atmosphere-currents',
+    title: 'Surface currents and the deep conveyor',
+    kind: 'explore',
+    use: 'Use this for how winds drive surface currents in gyres, and how cold salty water drives the deep conveyor.',
+    assumptions: [
+      'Winds drag the surface water; the Coriolis effect and the continents turn it into great loops called gyres.',
+      'Currents flowing toward the poles carry warm water; those flowing toward the equator carry cold water.',
+      'Deep currents are driven by density: cold, salty water sinks and spreads along the ocean floor.',
+    ],
+    figure: { kind: 'oceanCurrents' },
+    scenes: [
+      {
+        label: 'Surface gyres',
+        lines: [
+          'Gyres turn clockwise in the Northern Hemisphere and counterclockwise in the Southern.',
+          'Warm currents like the Gulf Stream run poleward along the west of each ocean; cold ones like the California Current run back along the east.',
+        ],
+        currents: { view: 'gyres' },
+      },
+      {
+        label: 'The deep conveyor',
+        lines: [
+          'Near Greenland, cold salty water is dense enough to sink; it flows south along the bottom and round Antarctica.',
+          'It rises in the Indian and Pacific Oceans and returns at the surface: one loop takes about 1,000 years.',
+        ],
+        currents: { view: 'conveyor' },
+      },
+    ],
+  },
+];
+
 export const HSL_GALLERY_MODULES: ModuleDef[] = [
+  sonar,
+  sonarRidge,
+  sonarTrench,
+  tides,
+  tidesNeap,
+  tidesFull,
   halfLife,
   halfLifeYoung,
   bracket,
@@ -715,4 +888,8 @@ export const HSL_GALLERY_MODULES: ModuleDef[] = [
   seismogramNear,
   epicenter,
 ];
-export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [...mineralLayouts, ...landformLayouts];
+export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [
+  ...mineralLayouts,
+  ...landformLayouts,
+  ...currentsLayouts,
+];

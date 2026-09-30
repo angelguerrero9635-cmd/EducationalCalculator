@@ -9,6 +9,7 @@ import type { HslFigure } from '@/data/modules/typesHsl';
 
 import { LandformsFigure } from './landformsFigure';
 import { MohsFigure } from './mohsFigure';
+import { CurrentsFigure } from './currentsFigure';
 
 export function HslFigureView({
   figure,
@@ -22,5 +23,7 @@ export function HslFigureView({
       return <MohsFigure mohs={scene.mohs ?? {}} />;
     case 'landforms':
       return <LandformsFigure kind={scene.landform?.kind ?? 'shield'} />;
+    case 'oceanCurrents':
+      return <CurrentsFigure view={scene.currents?.view ?? 'gyres'} />;
   }
 }

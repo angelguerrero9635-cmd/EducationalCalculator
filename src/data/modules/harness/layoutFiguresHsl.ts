@@ -12,6 +12,7 @@ export function hslFigureIssues(l: LayoutDef): string[] {
     const at = `scene "${s.label}"`;
     if (s.mohs && f.kind !== 'mohsScale') out.push(`${at}: mohs on a ${f.kind} figure`);
     if (s.landform && f.kind !== 'landforms') out.push(`${at}: landform on a ${f.kind} figure`);
+    if (s.currents && f.kind !== 'oceanCurrents') out.push(`${at}: currents on a ${f.kind} figure`);
     if (f.kind === 'mohsScale' && s.mohs) {
       const { lit, between } = s.mohs;
       if (lit !== undefined && (!Number.isInteger(lit) || lit < 1 || lit > 10))

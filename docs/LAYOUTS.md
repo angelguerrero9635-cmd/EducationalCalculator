@@ -67,7 +67,8 @@ between?, absolute? }` lights a rank, shades an unknown's range or bars absolute
 icons (`layouts/icons/hl.tsx`): `quartz`, `feldspar`, `mica`, `calcite`, `halite`, `pyrite`,
 `hematite`. `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
 composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
-valley, a meander, an aquifer or a dune, its parts labeled.
+valley, a meander, an aquifer or a dune, its parts labeled. `oceanCurrents`
+(`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map.
 
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
