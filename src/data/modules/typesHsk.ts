@@ -39,14 +39,49 @@ export interface MotionKinematics {
   fixed?: boolean;
 }
 
+// ─── H59 projectile ──────────────────────────────────────────────────────────
+
+/**
+ * A projectile launched at `speed` and `angle` (degrees above level) from `height` above flat
+ * ground, drawn to scale (one unit the same both ways): the path, the ball at launch, at the top
+ * and on landing (or at time `at`) with its velocity and the components vₓ (steady) and v_y
+ * (changing), the maximum height H dashed and the range R along the ground. Drag the tip of the
+ * launch velocity to change the angle. `parametric` names the path x(t), y(t) for the Grade 12
+ * parametric page and marks the point at `at`. Gravity `g` defaults to 9.8 m/s².
+ */
+export interface ProjectileSpec {
+  kind: 'projectile';
+  speed: string;
+  angle: string;
+  height?: NumOrVar;
+  g?: number;
+  /** Flight time, range and maximum height, when the page names them. */
+  time?: string;
+  range?: string;
+  peak?: string;
+  /** The launch components, when the page names them. */
+  vx?: string;
+  vy?: string;
+  /** A time t: the ball drawn there, its position (x, y) and velocity. */
+  at?: string;
+  /** Position at `at`, when the page names it. */
+  x?: string;
+  y?: string;
+  parametric?: boolean;
+  fixed?: boolean;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
-export type HskSpec = never;
+export type HskSpec = ProjectileSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
-  return ids(r);
+  switch (r.kind) {
+    case 'projectile':
+      return ids(r.speed, r.angle, r.height, r.time, r.range, r.peak, r.vx, r.vy, r.at, r.x, r.y);
+  }
 }
 
 /** The variable ids the group-HK options on older kinds read (motionGraph, …). */

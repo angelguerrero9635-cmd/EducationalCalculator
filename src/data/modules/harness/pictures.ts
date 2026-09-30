@@ -45,7 +45,7 @@ import {
   transformationHsfIssues,
 } from './picturesHsf';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
-import { motionKinematicsIssues } from './picturesHsk';
+import { hskIssues, motionKinematicsIssues } from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2097,6 +2097,9 @@ export function repIssues(
     case 'membrane':
     case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
+      break;
+    case 'projectile':
+      out.push(...hskIssues(rep, (id) => val(id), byId));
       break;
     case 'table':
       if ('twoWay' in rep) {

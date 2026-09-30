@@ -933,12 +933,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK, reps/MotionGraphHs.tsx) as an option on the Grade 8 speed graph, so every current motionGraph page is unchanged. Calculator picture { kind: "motionGraph", graph: "speed", time, acceleration, speed (the velocity v at the end), start (v₀, number or variable), distance? (the displacement Δx), kinematics: { view: "velocity" | "position", at?: t₁ (the tangent’s time, position view), slope?: v₁ (the tangent’s slope), position?: x₀ (default 0), strobe?: false, fixed?: true } }. Velocities are signed. Velocity view: the v–t line, the area to the axis shaded + above and − below, each part labelled; where the line crosses the axis the object turns round (an open dot) and the caption gives the displacement and the distance travelled. Position view: x = x₀ + v₀t + ½at², the tangent at t₁ with a rise/run triangle, its slope = v₀ + at₁; drag the tangent point. Above either: a strobe motion diagram, the position every Δt (1, 2 or 5 × 10ⁿ s) with a velocity arrow on each dot, the way back on a second row. Drawn in SI (m, s, m/s) whatever units the boxes show. The harness checks slope = v₀ + at₁ and Δx = (v₀ + v)/2 × t with signed velocities. Example: representation: { kind: "motionGraph", graph: "speed", time: "t", acceleration: "a", speed: "v", start: "u", distance: "d", kinematics: { view: "velocity" } }.',
   },
-  ask(
-    'H59',
-    'projectile',
-    'Trajectory from launch speed, angle and height, velocity components along it, maximum height and range',
-    ['s.11.kinematics-2d', 'm.12.parametric'],
-  ),
+  {
+    ...ask(
+      'H59',
+      'projectile',
+      'Trajectory from launch speed, angle and height, velocity components along it, maximum height and range',
+      ['s.11.kinematics-2d', 'm.12.parametric'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-kinematics-2d-level',
+      'g.s11-kinematics-2d-cliff',
+      'g.s11-kinematics-2d-steep',
+      'g.m12-parametric-launch',
+    ],
+    notes:
+      'Drawn (group HK, reps/Projectile.tsx, the physics in hskMath.ts). Calculator picture { kind: "projectile", speed: v₀, angle: θ in degrees (0 to 90 on the demos, −90 to 90 allowed), height?: launch height (number or variable, default 0), g?: 9.8, vx?, vy?, time?: flight time T, range?: R, peak?: H (checked when named), at?: a time t (the ball drawn there, its position labelled; the path continues dashed past the landing), x?, y?: the position at t, parametric?: true (captions x(t) and y(t) for m.12.parametric), fixed?: true }. Drawn to scale, one unit the same both ways, on soil with a grass edge and a rock cliff under a raised launch: the path, the ball at launch, at the top and on landing (or at t) with its velocity (ink) and components vₓ (green, steady) and v_y (orange, changing), H dashed, R along the ground, the angle arc. Drag the tip of the launch velocity to change the angle. Drawn in SI whatever units the boxes show. The harness checks vₓ, v_y, T, R, H and x(t), y(t) against the launch values. Example: representation: { kind: "projectile", speed: "v", angle: "q", height: "h", vx: "x", vy: "y", time: "T", range: "R", peak: "H" }; parametric: { kind: "projectile", speed: "v", angle: "q", height: "h", at: "t", x: "X", y: "Y", parametric: true }.',
+  },
   ask(
     'H60',
     'freeBody',

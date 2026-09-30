@@ -143,6 +143,7 @@ import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
 import { PunnettHs } from './PunnettHs';
 import { MotionGraphHs } from './MotionGraphHs';
+import { HskView } from './HskView';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -183,6 +184,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Membrane spec={spec} calc={calc} />;
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
+    case 'projectile':
+      return <HskView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':

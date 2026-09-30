@@ -231,5 +231,260 @@ const KINEMATICS_DEMOS: ModuleDef[] = [
   },
 ];
 
-export const HSK_GALLERY_MODULES: ModuleDef[] = [...KINEMATICS_DEMOS];
+// ─── H59 projectile ──────────────────────────────────────────────────────────
+
+const RAD = Math.PI / 180;
+const G = 9.8;
+
+const LAUNCH_V = q('v', 'v₀', 'Launch speed', 'm/s', 0.5, 100, 0.5);
+const LAUNCH_ANGLE = q('q', 'θ', 'Launch angle', '°', 0, 90, 1);
+const LAUNCH_H = q('h', 'h', 'Launch height', 'm', 0, 200, 0.5);
+
+/** vₓ = v₀ cos θ and v_y = v₀ sin θ. */
+const component = (id: string, fn: 'cos' | 'sin', what: string): Rule => {
+  const f = fn === 'cos' ? Math.cos : Math.sin;
+  const inv = fn === 'cos' ? Math.acos : Math.asin;
+  const sym = fn === 'cos' ? 'vₓ' : 'v_y';
+  return rule(
+    `${sym} = v₀ ${fn} θ`,
+    `{${id}} = {v} × ${fn}({q})`,
+    (v) => v[id]! - v.v! * f(v.q! * RAD),
+    {
+      [id]: [
+        (v) => v.v! * f(v.q! * RAD),
+        `{v} × ${fn}({q})`,
+        `The ${what} part of the launch velocity: v₀ times ${fn} θ.`,
+      ],
+      v: [
+        (v) => div(v[id]!, f(v.q! * RAD)),
+        `{${id}}/${fn}({q})`,
+        `Divide the ${what} part by ${fn} θ.`,
+      ],
+      q: [
+        (v) => {
+          const r = div(v[id]!, v.v!);
+          return r === undefined || Math.abs(r) > 1 ? undefined : inv(r) / RAD;
+        },
+        `arc${fn}({${id}}/{v})`,
+        `The angle whose ${fn} is the ${what} part over the speed.`,
+      ],
+    },
+  );
+};
+
+const PROJECTILE_VARS: VariableDef[] = [
+  LAUNCH_V,
+  LAUNCH_ANGLE,
+  LAUNCH_H,
+  q('x', 'vₓ', 'Horizontal velocity', 'm/s', 0, 100, 0.1),
+  q('y', 'v_y', 'Vertical launch velocity', 'm/s', 0, 100, 0.1),
+  q('T', 'T', 'Time in the air', 's', 0, 60, 0.01),
+  q('R', 'R', 'Range', 'm', 0, 12000, 0.1),
+  q('H', 'H', 'Maximum height', 'm', 0, 3000, 0.1),
+];
+
+const PROJECTILE_RULES = rules(
+  component('x', 'cos', 'horizontal'),
+  component('y', 'sin', 'vertical'),
+  rule(
+    'H = h + v_y²/(2g)',
+    '{H} = {h} + {y}²/(2 × 9.8)',
+    (v) => v.H! - v.h! - (v.y! * v.y!) / (2 * G),
+    {
+      H: [
+        (v) => v.h! + (v.y! * v.y!) / (2 * G),
+        '{h} + {y}²/(2 × 9.8)',
+        'At the top v_y is 0: the height gained is v_y² over 2g.',
+      ],
+      h: [
+        (v) => v.H! - (v.y! * v.y!) / (2 * G),
+        '{H} − {y}²/(2 × 9.8)',
+        'Take the height gained from the top.',
+      ],
+      y: [
+        (v) => (v.H! >= v.h! ? Math.sqrt(2 * G * (v.H! - v.h!)) : undefined),
+        '√(2 × 9.8 × ({H} − {h}))',
+        'The launch v_y that rises H − h before stopping.',
+      ],
+    },
+  ),
+  rule(
+    'T = (v_y + √(v_y² + 2gh))/g',
+    '{T} = ({y} + √({y}² + 2 × 9.8 × {h}))/9.8',
+    (v) => v.h! + v.y! * v.T! - (G / 2) * v.T! * v.T!,
+    {
+      T: [
+        (v) => (v.y! + Math.sqrt(v.y! * v.y! + 2 * G * v.h!)) / G,
+        '({y} + √({y}² + 2 × 9.8 × {h}))/9.8',
+        'It lands when h + v_y t − ½gt² = 0: the positive root of the quadratic.',
+      ],
+      y: [
+        (v) => div((G / 2) * v.T! * v.T! - v.h!, v.T!),
+        '(4.9 × {T}² − {h})/{T}',
+        'Solve h + v_y T − 4.9T² = 0 for v_y.',
+      ],
+      h: [
+        (v) => (G / 2) * v.T! * v.T! - v.y! * v.T!,
+        '4.9 × {T}² − {y} × {T}',
+        'The drop that the flight time covers.',
+      ],
+    },
+  ),
+  rule('R = vₓT', '{R} = {x} × {T}', (v) => v.R! - v.x! * v.T!, {
+    R: [(v) => v.x! * v.T!, '{x} × {T}', 'Across, the speed stays vₓ for the whole flight.'],
+    x: [(v) => div(v.R!, v.T!), '{R}/{T}', 'Divide the range by the time in the air.'],
+    T: [(v) => div(v.R!, v.x!), '{R}/{x}', 'Divide the range by the horizontal speed.'],
+  }),
+);
+
+const projectileDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  launch: { v: number; q: number; h: number },
+): ModuleDef => {
+  const vx = launch.v * Math.cos(launch.q * RAD);
+  const vy = launch.v * Math.sin(launch.q * RAD);
+  const T = (vy + Math.sqrt(vy * vy + 2 * G * launch.h)) / G;
+  return {
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions: ['No air resistance; g = 9.8 m/s² downward.', ...assumptions],
+    variables: PROJECTILE_VARS,
+    ...PROJECTILE_RULES,
+    example: { ...launch, x: vx, y: vy, T, R: vx * T, H: launch.h + (vy * vy) / (2 * G) },
+    startWith: ['v', 'q', 'h'],
+    representation: {
+      kind: 'projectile',
+      speed: 'v',
+      angle: 'q',
+      height: 'h',
+      vx: 'x',
+      vy: 'y',
+      time: 'T',
+      range: 'R',
+      peak: 'H',
+    },
+  };
+};
+
+const PROJECTILE_DEMOS: ModuleDef[] = [
+  projectileDemo(
+    'g.s11-kinematics-2d-level',
+    'A throw over level ground',
+    'Use this for “A ball is thrown at 20 m/s, 45° up, from 1.5 m above the ground. How high does it go and how far does it land?”',
+    [
+      'Split the launch velocity into vₓ = v₀ cos θ across and v_y = v₀ sin θ up.',
+      'Across nothing pushes, so vₓ stays the same; up and down, v_y falls by 9.8 m/s every second.',
+    ],
+    { v: 20, q: 45, h: 1.5 },
+  ),
+  projectileDemo(
+    'g.s11-kinematics-2d-cliff',
+    'Launched from a cliff',
+    'Use this for “A stone is thrown at 15 m/s, 30° up, from a cliff 20 m high. How long is it in the air, and how far out does it land?”',
+    [
+      'The stone lands when its height h + v_y t − ½gt² comes back to 0: the ground below the cliff.',
+      'It rises to the top, then falls past its launch height to the ground.',
+    ],
+    { v: 15, q: 30, h: 20 },
+  ),
+  projectileDemo(
+    'g.s11-kinematics-2d-steep',
+    'A steep launch',
+    'Use this for “A model rocket leaves a 1 m pad at 25 m/s, 75° up. How high and how far does it go?”',
+    [
+      'A steep launch goes high but not far: most of the speed is vertical.',
+      'From the ground, angles that add to 90° (75° and 15°) would land at the same range.',
+    ],
+    { v: 25, q: 75, h: 1 },
+  ),
+  {
+    id: 'g.m12-parametric-launch',
+    title: 'A launch as parametric equations',
+    use: 'Use this for “x(t) = 16t, y(t) = 2 + 12t − 4.9t². Where is the ball at t = 1.5?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'No air resistance; g = 9.8 m/s².',
+      'x(t) = (v₀ cos θ)t and y(t) = h + (v₀ sin θ)t − 4.9t²: the parameter t is the time.',
+    ],
+    variables: [
+      LAUNCH_V,
+      LAUNCH_ANGLE,
+      LAUNCH_H,
+      q('t', 't', 'Time', 's', 0, 60, 0.1),
+      q('X', 'x', 'Distance across', 'm', 0, 6000, 0.01),
+      q('Y', 'y', 'Height', 'm', -20000, 1000, 0.01),
+    ],
+    ...rules(
+      rule(
+        'x = v₀ cos θ · t',
+        '{X} = {v} × cos({q}) × {t}',
+        (v) => v.X! - v.v! * Math.cos(v.q! * RAD) * v.t!,
+        {
+          X: [
+            (v) => v.v! * Math.cos(v.q! * RAD) * v.t!,
+            '{v} × cos({q}) × {t}',
+            'Across, the speed stays v₀ cos θ.',
+          ],
+          t: [
+            (v) => div(v.X!, v.v! * Math.cos(v.q! * RAD)),
+            '{X}/(cos({q}) × {v})',
+            'Divide the distance across by the speed across.',
+          ],
+          v: [
+            (v) => div(v.X!, Math.cos(v.q! * RAD) * v.t!),
+            '{X}/(cos({q}) × {t})',
+            'Divide the distance across by cos θ times t.',
+          ],
+          q: undefined,
+        },
+      ),
+      rule(
+        'y = h + v₀ sin θ · t − 4.9t²',
+        '{Y} = {h} + {v} × sin({q}) × {t} − 4.9 × {t}²',
+        (v) => v.Y! - v.h! - v.v! * Math.sin(v.q! * RAD) * v.t! + 4.9 * v.t! * v.t!,
+        {
+          Y: [
+            (v) => v.h! + v.v! * Math.sin(v.q! * RAD) * v.t! - 4.9 * v.t! * v.t!,
+            '{h} + {v} × sin({q}) × {t} − 4.9 × {t}²',
+            'Start at h, rise at v₀ sin θ, and fall ½gt².',
+          ],
+          h: [
+            (v) => v.Y! - v.v! * Math.sin(v.q! * RAD) * v.t! + 4.9 * v.t! * v.t!,
+            '{Y} − {v} × sin({q}) × {t} + 4.9 × {t}²',
+            'Undo the rise and the fall.',
+          ],
+          v: undefined,
+          q: undefined,
+          t: undefined,
+        },
+      ),
+    ),
+    example: {
+      v: 20,
+      q: 36.87,
+      h: 2,
+      t: 1.5,
+      X: 20 * Math.cos(36.87 * RAD) * 1.5,
+      Y: 2 + 20 * Math.sin(36.87 * RAD) * 1.5 - 4.9 * 2.25,
+    },
+    startWith: ['v', 'q', 'h', 't'],
+    representation: {
+      kind: 'projectile',
+      speed: 'v',
+      angle: 'q',
+      height: 'h',
+      at: 't',
+      x: 'X',
+      y: 'Y',
+      parametric: true,
+    },
+  },
+];
+
+export const HSK_GALLERY_MODULES: ModuleDef[] = [...KINEMATICS_DEMOS, ...PROJECTILE_DEMOS];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

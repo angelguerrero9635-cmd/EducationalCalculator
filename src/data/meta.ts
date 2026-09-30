@@ -133,6 +133,7 @@ const PICTURE_NAMES: Record<string, string> = {
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',
+  projectile: 'projectile path with its velocity components',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',
   complexPlane: 'complex number in the plane',

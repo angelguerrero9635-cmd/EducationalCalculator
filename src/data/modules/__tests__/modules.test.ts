@@ -19,7 +19,7 @@ import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
-import { hskOptionVars } from '../typesHsk';
+import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -508,6 +508,8 @@ function representationVars(r: Representation): string[] {
     case 'membrane':
     case 'dnaStrand':
       return hsgSpecVars(r);
+    case 'projectile':
+      return hskSpecVars(r);
   }
 }
 

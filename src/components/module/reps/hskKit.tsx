@@ -3,12 +3,12 @@
  * significant figures, a value reader for number-or-variable fields, a labelled force arrow and
  * a window along one axis that starts at 0. Flat.
  */
-import { G, Line, Path } from 'react-native-svg';
+import { G, Line, Path, Rect, TSpan } from 'react-native-svg';
 
 import { formatNumber } from '@/engine/format';
-import { chart } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
-import type { useRep } from './common';
+import { ChartText, type useRep } from './common';
 import { arrowHead } from './graphKit';
 import { niceStep } from './hsdGrid';
 
@@ -101,3 +101,80 @@ export function Vec({
 
 /** Degrees to radians. */
 export const RAD = Math.PI / 180;
+
+/**
+ * A label whose `_x` parts are subscripts ("v_y = 10 m/s", "F_N"), the first letter of a
+ * symbol in italics, on an optional chip of the card color. `x` is the anchor, `y` the baseline.
+ */
+export function SubLabel({
+  x,
+  y,
+  text,
+  color,
+  size = chart.label,
+  anchor = 'middle',
+  chip = true,
+  bold = true,
+  w,
+}: {
+  x: number;
+  y: number;
+  text: string;
+  color?: string;
+  size?: number;
+  anchor?: 'start' | 'middle' | 'end';
+  chip?: boolean;
+  bold?: boolean;
+  /** Canvas width: the label is slid inside it. */
+  w?: number;
+}) {
+  const c = usePalette();
+  const segs = text.split(/(_[A-Za-z0-9]+)/).filter(Boolean);
+  const width = segs.reduce(
+    (n, sg) => n + (sg.startsWith('_') ? (sg.length - 1) * 0.78 : sg.length) * size * 0.58,
+    0,
+  );
+  let left = anchor === 'start' ? x : anchor === 'end' ? x - width : x - width / 2;
+  if (w !== undefined) left = Math.min(w - width - 4, Math.max(4, left));
+  const drop = size * 0.3;
+  return (
+    <G>
+      {chip ? (
+        <Rect
+          x={left - 3}
+          y={y - size + 1}
+          width={width + 6}
+          height={size + 6}
+          rx={3}
+          fill={c.card}
+          opacity={0.88}
+        />
+      ) : null}
+      <ChartText
+        x={left}
+        y={y}
+        fontSize={size}
+        fontWeight={bold ? '700' : '400'}
+        fill={color ?? c.chartInk}
+      >
+        {segs.map((sg, i) => {
+          const sub = sg.startsWith('_');
+          const prevSub = i > 0 && segs[i - 1]!.startsWith('_');
+          return (
+            <TSpan
+              key={i}
+              dy={sub ? drop : prevSub ? -drop : 0}
+              fontSize={sub ? size * 0.78 : size}
+            >
+              {sub ? sg.slice(1) : sg}
+            </TSpan>
+          );
+        })}
+      </ChartText>
+    </G>
+  );
+}
+
+/** A subscript written for plain text (captions): "v_y" stays, "v_x" becomes "vₓ". */
+export const plainSub = (text: string) =>
+  text.replace(/_x\b/g, 'ₓ').replace(/_0\b/g, '₀').replace(/_1\b/g, '₁').replace(/_2\b/g, '₂');
