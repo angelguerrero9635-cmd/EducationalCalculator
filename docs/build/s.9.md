@@ -10,6 +10,8 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   and ~mechanisms sorts; ~common-ancestry explore; ~resistance and ~speciation sequences).
 - `s.9.cellular-energy`: 4 (main organelle explore with 8 scenes; ~stages sequence; ~processes
   sort; ~enzymes observe, its columns temperatures, which `layouts.test.ts` accepts).
+- `s.9.classification`: 4 (main cladogram explore; ~domains and ~kingdoms sorts; ~ranks
+  sequence).
 - `s.9.population-ecology`: 5 (main logistic, ~rates and ~doubling calculators;
   ~limiting-factors sort; ~growth-phases sequence).
 - `s.9.membrane-transport`: 4 (main diffusion and ~pump calculators; ~transport-types and
@@ -85,5 +87,12 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   community P and the people to vaccinate V = P × C ÷ 100; the bar shades C. H is shown as a
   value, not shaded. Example R₀ = 5, e = 95%, P = 19,000 → H = 80%, C ≈ 84.2%, V = 16,000.
 - `~pathogens`: bins cannot carry icons, so each kind's icon is a card of its own ("A virus").
+
+- `s.9.classification` main: the plan's example tree (Earthworm outside Insect + Fish + Human)
+  groups an insect with the chordates, which today's tree does not; the page uses Sponge,
+  Jellyfish, Earthworm, Sea star, Fish, Human with True tissues, Bilateral symmetry, Deuterostome
+  embryo, Backbone and Hair, each one clade. Scenes: each trait lit, a clade, not a clade, and
+  reading the nodes.
+- `~domains`: the viruses line (the plan's header) is an assumption; sorts have no header text.
 
 ## Shared needs found while building

@@ -1298,6 +1298,201 @@ const IMMUNE: LayoutDef[] = [
   },
 ];
 
+const CLASSIFICATION: LayoutDef[] = [
+  // ── Classification and the diversity of life (HS-LS4-1) ──
+  {
+    kind: 'explore',
+    id: 's.9.classification',
+    assumptions: [
+      'A cladogram groups organisms by shared derived traits: new features passed on to every descendant.',
+      'Branch order, not branch length, shows relationship; each branch point is a common ancestor.',
+      'A clade is an ancestor and all of its descendants.',
+    ],
+    figure: {
+      kind: 'cladogram',
+      tree: ['Sponge', ['Jellyfish', ['Earthworm', ['Sea star', ['Fish', 'Human']]]]],
+      traits: [
+        { name: 'True tissues', taxa: ['Jellyfish', 'Earthworm', 'Sea star', 'Fish', 'Human'] },
+        { name: 'Bilateral symmetry', taxa: ['Earthworm', 'Sea star', 'Fish', 'Human'] },
+        { name: 'Deuterostome embryo', taxa: ['Sea star', 'Fish', 'Human'] },
+        { name: 'Backbone', taxa: ['Fish', 'Human'] },
+        { name: 'Hair', taxa: ['Human'] },
+      ],
+    },
+    scenes: [
+      {
+        label: 'True tissues',
+        lines: [
+          'A sponge’s cells are not organized into tissues; every other animal here inherited tissues.',
+        ],
+        clade: { lit: 'True tissues' },
+      },
+      {
+        label: 'Bilateral symmetry',
+        lines: [
+          'A left and a right side, a front and a back: the jellyfish, round like a wheel, split off before this.',
+        ],
+        clade: { lit: 'Bilateral symmetry' },
+      },
+      {
+        label: 'Deuterostome embryo',
+        lines: [
+          'In the sea star, fish and human embryo, the first opening becomes the anus, not the mouth.',
+          'The young sea star is two-sided; only the adult grows five arms.',
+        ],
+        clade: { lit: 'Deuterostome embryo' },
+      },
+      {
+        label: 'Backbone',
+        lines: ['The fish and the human share a backbone, so they share the most recent ancestor.'],
+        clade: { lit: 'Backbone' },
+      },
+      {
+        label: 'Hair',
+        lines: ['Only the human has hair here: a trait of one branch groups nothing else.'],
+        clade: { lit: 'Hair' },
+      },
+      {
+        label: 'A clade',
+        lines: [
+          'The sea star, fish and human are an ancestor’s whole family: a clade.',
+          'Any group that sits above one branch point is a clade.',
+        ],
+        clade: { ring: ['Sea star', 'Fish', 'Human'] },
+      },
+      {
+        label: 'Not a clade',
+        lines: [
+          'The jellyfish and the earthworm share an ancestor, but so do the sea star, fish and human.',
+          'A group that leaves out some of its ancestor’s descendants is not a clade.',
+        ],
+        clade: { ring: ['Jellyfish', 'Earthworm'] },
+      },
+      {
+        label: 'Reading the nodes',
+        lines: [
+          'The last common ancestor of any two taxa sits at the branch point where their lines meet.',
+          'The earthworm and the human meet lower down than the fish and the human, so they are less closely related.',
+        ],
+        clade: {},
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.classification~domains',
+    title: 'The three domains',
+    use: 'Use this for “Methane-making microbes live in a cow’s stomach. Which domain are they in?”',
+    assumptions: [
+      'Bacteria and archaea are single cells with no nucleus; archaea differ in their walls, membranes and genes, and many live in extreme places.',
+      'Eukarya have cells with a nucleus: protists, fungi, plants and animals.',
+      'Viruses are not cells, so they are not placed in any domain.',
+    ],
+    question: 'Which domain does it belong to?',
+    bins: [
+      {
+        id: 'bacteria',
+        label: 'Bacteria',
+        why: 'Prokaryotes with cell walls made of peptidoglycan.',
+      },
+      {
+        id: 'archaea',
+        label: 'Archaea',
+        why: 'Prokaryotes whose walls and membranes are built differently from bacteria’s.',
+      },
+      { id: 'eukarya', label: 'Eukarya', why: 'Every cell has a nucleus inside a membrane.' },
+    ],
+    cards: [
+      {
+        label: 'E. coli in the gut',
+        bin: 'bacteria',
+        figure: { kind: 'icon', icon: 'domain Bacteria' },
+      },
+      { label: 'Streptococcus that causes strep throat', bin: 'bacteria' },
+      { label: 'Cyanobacteria in a pond', bin: 'bacteria' },
+      {
+        label: 'Methane-making microbes in a cow’s stomach',
+        bin: 'archaea',
+        figure: { kind: 'icon', icon: 'domain Archaea' },
+      },
+      { label: 'Halobacterium in a salt pond', bin: 'archaea' },
+      {
+        label: 'Paramecium (protist)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Protista' },
+      },
+      {
+        label: 'Mushrooms (fungi)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Fungi' },
+      },
+      { label: 'A leafy plant', bin: 'eukarya', figure: { kind: 'icon', icon: 'kingdom Plantae' } },
+      {
+        label: 'A fish (animal)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Animalia' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.classification~kingdoms',
+    title: 'The kingdoms of Eukarya',
+    use: 'Use this for “Is yeast a plant, a fungus or a protist?”',
+    assumptions: [
+      'Plants make their own food by photosynthesis and have cell walls of cellulose.',
+      'Fungi absorb food and have walls of chitin; animals eat food and have no cell walls.',
+      'Protists are the eukaryotes that are not plants, fungi or animals: most are single cells.',
+    ],
+    question: 'Which kingdom does it belong to?',
+    bins: [
+      {
+        id: 'protists',
+        label: 'Protists',
+        why: 'Mostly single cells, some plant-like, some animal-like.',
+      },
+      { id: 'fungi', label: 'Fungi', why: 'They absorb food from what they grow on.' },
+      { id: 'plants', label: 'Plants', why: 'Many-celled producers that make food from light.' },
+      { id: 'animals', label: 'Animals', why: 'Many-celled consumers with no cell walls.' },
+    ],
+    cards: [
+      { label: 'Amoeba', bin: 'protists' },
+      { label: 'Paramecium', bin: 'protists' },
+      { label: 'Kelp', bin: 'protists' },
+      { label: 'Yeast', bin: 'fungi' },
+      { label: 'Bread mold', bin: 'fungi' },
+      { label: 'Mushroom', bin: 'fungi' },
+      { label: 'Moss', bin: 'plants' },
+      { label: 'Fern', bin: 'plants' },
+      { label: 'Pine tree', bin: 'plants' },
+      { label: 'Sponge', bin: 'animals' },
+      { label: 'Jellyfish', bin: 'animals' },
+      { label: 'Earthworm', bin: 'animals' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.classification~ranks',
+    title: 'The ranks of classification',
+    use: 'Use this for “Which rank is the most specific: family, genus or order?”',
+    assumptions: [
+      'Each rank holds fewer, more closely related organisms than the one above it.',
+      'The scientific name is the genus and the species, written in italics: Homo sapiens.',
+    ],
+    question: 'Order the ranks for humans, from broadest to most specific.',
+    stages: [
+      { label: 'Domain Eukarya' },
+      { label: 'Kingdom Animalia' },
+      { label: 'Phylum Chordata' },
+      { label: 'Class Mammalia' },
+      { label: 'Order Primates' },
+      { label: 'Family Hominidae' },
+      { label: 'Genus Homo' },
+      { label: 'Species Homo sapiens' },
+    ],
+  },
+];
+
 export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
@@ -1310,4 +1505,5 @@ export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...BIOTECH,
   ...ENERGY,
   ...IMMUNE,
+  ...CLASSIFICATION,
 ];
