@@ -226,6 +226,16 @@ const par = (x: number) => (x < 0 ? `(${fmt(x)})` : fmt(x));
 const pw = (b: number, e: number) => `${b < 0 ? `(${fmt(b)})` : fmt(b)}${sup(e)}`;
 const BASE_NOT_1 = 'Every power of 1 is 1, so a base of 1 can’t make any other number.';
 
+/**
+ * The quadratic formula for u² + bu + c = 0 worked with numbers, −b written as its value
+ * (the simplifying would print −(−13) as −−13): (13 + √25) ÷ 2, then (13 + 5) ÷ 2.
+ */
+const formulaWork = (b: number, c: number, sign: 1 | -1) => {
+  const D = b ** 2 - 4 * c;
+  const op = sign > 0 ? '+' : '−';
+  return [`(${fmt(-b)} ${op} √${par(D)}) ÷ 2`, `(${fmt(-b)} ${op} ${fmt(Math.sqrt(D))}) ÷ 2`];
+};
+
 /** The vertical factors a transformation page offers. */
 const STRETCH = [-4, -3, -2, -1, -0.5, 0.5, 1, 2, 3, 4];
 
@@ -2638,6 +2648,195 @@ export const MATH_11_MODULES: ModuleDef[] = [
       poles: [0],
       at: { x: 'x2', y: 'y2' },
       marks: ['asymptotes'],
+    },
+  }),
+
+  // ── Polynomial functions: graphs and zeros (A-APR.3, F-IF.7c) ──
+  page({
+    id: 'm.11.polynomial-functions',
+    assumptions: [
+      'y = a(x − r₁)²(x − r₂)(x − r₃) has degree 4: the double zero r₁ touches the x-axis and turns, and r₂ and r₃ cross it.',
+      'An odd multiplicity crosses: move r₂ onto r₁ to make a triple zero.',
+      'The leading term ax⁴ decides the ends, and a degree-4 graph has at most 3 turns.',
+    ],
+    variables: [
+      V('a', 'a', 'Leading coefficient', { allowed: [-3, -2, -1, 1, 2, 3], min: -3, max: 3 }),
+      V('r1', 'r₁', 'Double zero', { min: -6, max: 6, step: 0.5 }),
+      V('r2', 'r₂', 'Second zero', { min: -6, max: 6, step: 0.5 }),
+      V('r3', 'r₃', 'Third zero', { min: -6, max: 6, step: 0.5 }),
+      V('x', 'x', 'Input', { min: -10, max: 10, step: 0.5 }),
+      V('y', 'y', 'Output', { min: -1e6, max: 1e6, derived: true }),
+    ],
+    rules: [
+      derive(
+        'y = a(x − r₁)²(x − r₂)(x − r₃)',
+        'y',
+        ['a', 'x', 'r1', 'r2', 'r3'],
+        '{y} = {a} × ({x} − {r1})² × ({x} − {r2}) × ({x} − {r3})',
+        (v) => v.a! * (v.x! - v.r1!) ** 2 * (v.x! - v.r2!) * (v.x! - v.r3!),
+        '{a} × ({x} − {r1})² × ({x} − {r2}) × ({x} − {r3})',
+        'Put x into each factor, then multiply.',
+      ),
+    ],
+    example: { a: 1, r1: -2, r2: 1, r3: 3, x: 0, y: 12 },
+    startWith: ['a', 'r1', 'r2', 'r3', 'x'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      a: 'a',
+      zeros: [{ x: 'r1', times: 2 }, { x: 'r2' }, { x: 'r3' }],
+      at: { x: 'x', y: 'y' },
+      marks: ['zeros', 'intercept'],
+    },
+  }),
+
+  // ── Polynomial equations: the fundamental theorem (N-CN.9, A-SSE.2) ──
+  page({
+    id: 'm.11.polynomial-equations~complex-pair',
+    title: 'A polynomial from its zeros',
+    use: 'Use this for “Write the polynomial of least degree with zeros 1 and 2 + 3i.”',
+    assumptions: [
+      'A degree-n polynomial has exactly n roots, counting complex roots and repeats (the fundamental theorem of algebra).',
+      'Real coefficients bring complex roots in conjugate pairs: 2 + 3i comes with 2 − 3i.',
+      'The pair multiplies to x² − 2px + (p² + q²), then times x − r.',
+    ],
+    variables: [
+      V('r', 'r', 'Real zero', { min: -10, max: 10, step: 1 }),
+      V('p', 'p', 'Real part of the complex zero', { min: -10, max: 10, step: 1 }),
+      V('q', 'q', 'Imaginary part of the complex zero', { min: -10, max: 10, step: 1 }),
+      V('s', 's', 'p² + q²', { min: 0, max: 200, derived: true }),
+      V('b', 'b', 'x² coefficient', { min: -30, max: 30, derived: true }),
+      V('c', 'c', 'x coefficient', { min: -400, max: 400, derived: true }),
+      V('d', 'd', 'Constant', { min: -2000, max: 2000, derived: true }),
+    ],
+    rules: [
+      derive(
+        's = p² + q²',
+        's',
+        ['p', 'q'],
+        '{s} = {p}² + {q}²',
+        (v) => v.p! ** 2 + v.q! ** 2,
+        '{p}² + {q}²',
+        '(p + qi)(p − qi) = p² − q²i² = p² + q².',
+      ),
+      derive(
+        'b = −2p − r',
+        'b',
+        ['p', 'r'],
+        '{b} = −2 × {p} − {r}',
+        (v) => -2 * v.p! - v.r!,
+        '−2 × {p} − {r}',
+        'x² − 2px + s times x − r: the x² terms are −2px² and −rx².',
+      ),
+      derive(
+        'c = s + 2pr',
+        'c',
+        ['s', 'p', 'r'],
+        '{c} = {s} + 2 × {p} × {r}',
+        (v) => v.s! + 2 * v.p! * v.r!,
+        '{s} + 2 × {p} × {r}',
+        'The x terms: s × x and −2px × (−r).',
+      ),
+      derive(
+        'd = −r × s',
+        'd',
+        ['r', 's'],
+        '{d} = −1 × {r} × {s}',
+        (v) => -v.r! * v.s!,
+        '−1 × {r} × {s}',
+        'The constant: s × (−r).',
+      ),
+    ],
+    example: { r: 1, p: 2, q: 3, s: 13, b: -5, c: 17, d: -13 },
+    startWith: ['r', 'p', 'q'],
+    equation: 'x³ + {b}x² + {c}x + {d}',
+    pictureLabels: ['r', 's'],
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'p', im: 'q' },
+      conjugate: true,
+    },
+  }),
+  page({
+    id: 'm.11.polynomial-equations~quadratic-form',
+    title: 'Equations in quadratic form',
+    use: 'Use this for “Solve x⁴ − 13x² + 36 = 0.”',
+    assumptions: [
+      'Let u = x²: then x⁴ + bx² + c = 0 is the quadratic u² + bu + c = 0.',
+      'Solve for u, then x = ±√u for each u.',
+      'A negative u gives no real x, so this page needs both u to be 0 or more.',
+    ],
+    variables: [
+      V('b', 'b', 'Coefficient of x²', { min: -50, max: 50, step: 1 }),
+      V('c', 'c', 'Constant', { min: -200, max: 600, step: 1 }),
+      V('u1', 'u₁', 'Larger u', { min: 0, max: 1000, derived: true }),
+      V('u2', 'u₂', 'Smaller u', { min: 0, max: 1000, derived: true }),
+      V('x1', 'x₁', 'Positive root from u₁', { min: 0, max: 100, derived: true }),
+      V('x2', 'x₂', 'Positive root from u₂', { min: 0, max: 100, derived: true }),
+    ],
+    rules: [
+      limit(
+        'b² − 4c ≥ 0',
+        '{b}² − 4 × {c} is 0 or more',
+        ['b', 'c'],
+        (v) => v.b! ** 2 - 4 * v.c! >= 0,
+        'The quadratic in u has no real solutions, so x has none either.',
+      ),
+      limit(
+        'u₂ ≥ 0',
+        '{b} is at most 0 and {c} is at least 0',
+        ['b', 'c'],
+        (v) => v.b! <= 0 && v.c! >= 0,
+        'A negative u gives x² < 0, which has no real x: those roots are imaginary.',
+      ),
+      derive(
+        'u₁ = (−b + √(b² − 4c)) ÷ 2',
+        'u1',
+        ['b', 'c'],
+        '{u1} = (−{b} + √({b}² − 4 × {c})) ÷ 2',
+        (v) => (-v.b! + Math.sqrt(v.b! ** 2 - 4 * v.c!)) / 2,
+        '(−{b} + √({b}² − 4 × {c})) ÷ 2',
+        'The quadratic formula for u² + bu + c = 0, with the plus sign.',
+        { work: (v) => formulaWork(v.b!, v.c!, 1) },
+      ),
+      derive(
+        'u₂ = (−b − √(b² − 4c)) ÷ 2',
+        'u2',
+        ['b', 'c'],
+        '{u2} = (−{b} − √({b}² − 4 × {c})) ÷ 2',
+        (v) => (-v.b! - Math.sqrt(v.b! ** 2 - 4 * v.c!)) / 2,
+        '(−{b} − √({b}² − 4 × {c})) ÷ 2',
+        'The same formula with the minus sign.',
+        { work: (v) => formulaWork(v.b!, v.c!, -1) },
+      ),
+      derive(
+        'x₁ = √u₁',
+        'x1',
+        ['u1'],
+        '{x1} = √{u1}',
+        (v) => Math.sqrt(v.u1!),
+        '√{u1}',
+        'x² = u₁, so x = ±√u₁: this is the positive one.',
+      ),
+      derive(
+        'x₂ = √u₂',
+        'x2',
+        ['u2'],
+        '{x2} = √{u2}',
+        (v) => Math.sqrt(v.u2!),
+        '√{u2}',
+        'x² = u₂, so x = ±√u₂.',
+      ),
+    ],
+    example: { b: -13, c: 36, u1: 9, u2: 4, x1: 3, x2: 2 },
+    startWith: ['b', 'c'],
+    equation: 'x⁴ + {b}x² + {c} = 0',
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      coefficients: [1, 0, 'b', 0, 'c'],
+      shows: { zeros: ['x1', 'x2'] },
+      marks: ['zeros'],
     },
   }),
 ];
