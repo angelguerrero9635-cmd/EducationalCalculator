@@ -9,6 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { histModel } from './histModel';
+import { rangeOf } from './histRange';
 import { prob4 } from './NormalCurve';
 import { niceStep } from './Plot';
 
@@ -41,6 +42,8 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
     spec.binomial?.p,
   ].every(known);
   const frozen = useFrozen({ top: Math.max(0, ...model.bars.map((b) => height(b.h))) });
+  // H99: a range of bars lit, and their sum in the caption.
+  const range = rangeOf(spec, model, get, prob);
   const litIndex = (() => {
     const l = get(spec.lit);
     if (l === undefined) return -1;
@@ -101,6 +104,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
         : `Mean x̄ = ${num(meanValue!)}.`,
     );
   if (showMedian) lines.push(`Median = ${num(medianValue!)}.`);
+  if (range && !model.problem) lines.push(range.caption);
   if (spec.shape && !model.problem)
     lines.push(`Shape: ${spec.shape === true ? model.shape : spec.shape}.`);
 
@@ -198,7 +202,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
                   {bars.map((b, i) => {
                     const x = prob ? sx(b.lo) - barW / 2 : sx(b.lo);
                     const hh = height(b.h) * uy;
-                    const lit = i === litIndex;
+                    const lit = i === litIndex || !!range?.lit.includes(i);
                     return (
                       <Rect
                         key={`b${i}`}

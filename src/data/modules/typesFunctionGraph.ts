@@ -4,6 +4,7 @@
  * `number | string` field is a fixed number or a variable id.
  */
 import type { FunctionGraphHs2a } from './typesHs2a';
+import type { FunctionGraphHs2g, RationalByCoefficients } from './typesHs2g';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -37,6 +38,7 @@ export type FunctionFamily =
   | { family: 'polynomial'; coefficients: NumOrVar[] }
   | { family: 'polynomial'; a?: NumOrVar; zeros: { x: NumOrVar; times?: number }[] }
   | { family: 'rational'; a?: NumOrVar; zeros: NumOrVar[]; poles: NumOrVar[]; k?: NumOrVar }
+  | RationalByCoefficients // H94: (px + q) ÷ (rx + s)
   | { family: 'piecewise'; pieces: Piece[] }
   | { family: 'sin' | 'cos' | 'tan'; a?: NumOrVar; b?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar };
@@ -115,7 +117,8 @@ export type FunctionGraphSpec = FunctionFamily & {
   keep?: string[];
   /** No handles: a drag couldn't solve backwards to the values typed. */
   fixed?: boolean;
-} & FunctionGraphHs2a;
+} & FunctionGraphHs2a &
+  FunctionGraphHs2g;
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -138,7 +141,7 @@ export function familyVars(f: FunctionFamily): string[] {
     case 'polynomial':
       return 'coefficients' in f ? ids(...f.coefficients) : ids(f.a, ...f.zeros.map((z) => z.x));
     case 'rational':
-      return ids(f.a, ...f.zeros, ...f.poles, f.k);
+      return 'p' in f ? ids(f.p, f.q, f.r, f.s) : ids(f.a, ...f.zeros, ...f.poles, f.k);
     case 'piecewise':
       return f.pieces.flatMap((p) => [...familyVars(p.f), ...ids(p.from, p.to)]);
     case 'arcsin':

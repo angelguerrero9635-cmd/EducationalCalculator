@@ -93,6 +93,7 @@ import { BoxPlot } from './BoxPlot';
 import { BoxPlotPair } from './BoxPlotPair';
 import { TwoWayTable } from './TwoWayTable';
 import { ChanceTree } from './ChanceTree';
+import { ChanceTree3 } from './ChanceTree3';
 import { VennChance } from './VennChance';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
@@ -132,18 +133,23 @@ import { RegularPolygon } from './RegularPolygon';
 import { CircleTheorems } from './CircleTheorems';
 import { CircleAngles } from './CircleAngles';
 import { NormalCurve } from './NormalCurve';
+import { CltHistogram } from './CltHistogram';
 import { Histogram } from './Histogram';
 import { PascalTriangle } from './PascalTriangle';
 import { TermsChart } from './TermsChart';
 import { UnitCircle } from './UnitCircle';
+import { UnitCircleHs2g } from './UnitCircleHs2g';
+import { MatrixDeterminant } from './MatrixDeterminant';
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
 import { ConicGraph } from './ConicGraph';
 import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
+import { ComplexPowers } from './ComplexPowers';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
+import { AlgebraTilesHs2g } from './AlgebraTilesHs2g';
 import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
 import { Hs2eView } from './Hs2eView';
@@ -206,9 +212,17 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'moleMap':
       return <HsiRep spec={spec} calc={calc} />;
     case 'unitCircle':
-      return <UnitCircle spec={spec} calc={calc} />;
+      return spec.through || spec.pair || spec.solutions?.also !== undefined ? (
+        <UnitCircleHs2g spec={spec} calc={calc} />
+      ) : (
+        <UnitCircle spec={spec} calc={calc} />
+      );
     case 'matrixGrid':
-      return <MatrixGrid spec={spec} calc={calc} />;
+      return spec.mode === 'determinant' ? (
+        <MatrixDeterminant spec={spec} calc={calc} />
+      ) : (
+        <MatrixGrid spec={spec} calc={calc} />
+      );
     case 'membrane':
       return <Membrane spec={spec} calc={calc} />;
     case 'dnaStrand':
@@ -244,11 +258,19 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'polarGrid':
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
-      return <ComplexPlane spec={spec} calc={calc} />;
+      return spec.power !== undefined || spec.roots !== undefined ? (
+        <ComplexPowers spec={spec} calc={calc} />
+      ) : (
+        <ComplexPlane spec={spec} calc={calc} />
+      );
     case 'vectorDiagram':
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':
-      return <AlgebraTiles spec={spec} calc={calc} />;
+      return spec.mode === 'box' || spec.mode === 'monomial' ? (
+        <AlgebraTilesHs2g spec={spec} calc={calc} />
+      ) : (
+        <AlgebraTiles spec={spec} calc={calc} />
+      );
     case 'gel':
       return <Gel spec={spec} calc={calc} />;
     case 'alleleFrequencies':
@@ -277,7 +299,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'normalCurve':
       return <NormalCurve spec={spec} calc={calc} />;
     case 'histogram':
-      return <Histogram spec={spec} calc={calc} />;
+      return spec.clt ? (
+        <CltHistogram spec={spec} calc={calc} />
+      ) : (
+        <Histogram spec={spec} calc={calc} />
+      );
     case 'pascalTriangle':
       return <PascalTriangle spec={spec} calc={calc} />;
     case 'termsChart':
@@ -543,7 +569,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
       return 'chances' in spec ? (
-        <ChanceTree spec={spec.chances} calc={calc} />
+        spec.chances.third ? (
+          <ChanceTree3 spec={spec.chances} calc={calc} />
+        ) : (
+          <ChanceTree spec={spec.chances} calc={calc} />
+        )
       ) : (
         <TreeDiagram spec={spec} calc={calc} />
       );

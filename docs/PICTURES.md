@@ -213,6 +213,12 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `lineSystem`       | `upright: [{ x, shade? }]`               | upright boundaries x ≥ k; with them only the overlap is shaded (a box) (H92)  |
 | `lineSystem`       | `marks`, `given: { x, y }`               | arrows if parallel, a square if perpendicular; the given point marked (H92)   |
 | `functionGraph`    | `inequality: { sign }`                   | f(x) (sign) 0 shaded to the x-axis; the solutions on it, open or closed (H90) |
+| `functionGraph`    | `abs`                                    | abs(f(x)): the parts below the x-axis reflected up, f(x) dashed (H94)         |
+| `functionGraph`    | `horizontal: b`                          | y = a·f(b(x − h)) + k: squeezed toward x = h, flipped for b < 0 (H94)         |
+| `functionGraph`    | `restrict: { from?, to? }`               | the domain kept from a value, the rest dashed; the inverse of it (H94)        |
+| `functionGraph`    | `family: 'rational'`, `p, q, r, s`       | (px + q) ÷ (rx + s) from its coefficients, asymptotes marked (H94)            |
+| `algebraTiles`     | `mode: 'box'`, `side`, `top`, `product`  | area box: row × column terms, like-term diagonals tinted, collected (H95)     |
+| `algebraTiles`     | `mode: 'monomial'`, `a, m, b, n, c, k`   | a·xᵐ ÷ b·xⁿ as factors over a bar, cancelled pairs struck, c·xᵏ (H95)         |
 | `integerLine`      | `compound.closed: [id, id]`              | each bound's circle from a sign box: 2 ≤, 4 ≥ closed; 1 <, 3 > open (H90)     |
 | `integerLine`      | `fit`, `ticks`                           | the line spans its values (344–356 g → 340–360), not 0; a tick every 5 (H89)  |
 | `integerLine`      | `compound: { join: 'equal', center, … }` | abs(x − c) = d: two closed dots at c ± d, distances bracketed, no band (H91)  |
@@ -221,12 +227,26 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `reaction`         | `many: true`                             | up to 18 molecules a formula in blocks; glucose as its 24-atom ring (H100)    |
 | `bars`             | `flows: { out: [ids] }`                  | start, flows in (+, green) and out (−, red) as steps, end; axis cut (H100)    |
 | `percentBar`       | `second: id`                             | a second percent on the bar: a band, a dashed line, its label (H104)          |
+| `normalCurve`      | `t: { df }`                              | a t curve over the dashed normal; areas, t⋆ and the p-value by t (H99)        |
+| `termsChart`       | `far`                                    | past 30 terms: the first six, a break, the nth lit (a₁₀₀) (H93)               |
+| `termsChart`       | `type: 'recursive'`, `plus`              | aₙ = k × aₙ₋₁ + c from the one before, an arrow to each next (H93)            |
+| `termsChart`       | `lit`, `litTerm`, `powers`               | a second lit term (B1 beside B2); terms as powers, 2² = 4 (H93)               |
 | `scatter`          | `residuals`, `r`, `leastSquares`, …      | residual segments and plot, r, the least-squares line beside or given (H18)   |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |
 | `table`            | `twoWay: { rows, cols, cells, … }`       | two-way table: totals, lit cell/row/column, segmented bars, chi-square (H20)  |
 | `treeDiagram`      | `chances: { first, second, names, … }`   | a chance per branch, B given A on the second stage, path products (H21)       |
 | `venn`             | `chances: { a, b, both, shade, … }`      | probabilities per region; and, or, complement shaded; exclusive apart (H22)   |
+| `venn`             | `chances.counts: { total, count? }`      | counts out of a total: regions as counts, neither outside, P = n/N (H97)      |
+| `treeDiagram`      | `chances.third`, `thirdNames`, `path3`   | a third stage: 8 leaves, each path's product; three stages multiplied (H97)   |
+| `pascalTriangle`   | `fraction: { n, k, count?, chance? }`    | C(a, r) lit over C(n, r), drawn as a fraction: 10/84 = 5/42 (H97)             |
+| `unitCircle`       | `through: { x, y, r? }`                  | a point off the circle: r, the legs, the unit point (x/r, y/r) (H98)          |
+| `unitCircle`       | `pair: { a, b, op? }`                    | A, then B on (or back) to A ± B, arcs in turn; the formula worked (H98)       |
+| `unitCircle`       | `solutions.also`                         | two values (sin x = −1/2 or 1): both lines, every solution marked (H98)       |
+| `complexPlane`     | `power: n`; `roots: n`                   | z, z², …, zⁿ in turn; the n nth roots on a circle, a regular n-gon (H99)      |
+| `matrixGrid`       | `mode: 'determinant'`, `cramer`          | D by its diagonals or the first-row expansion; D, Dx, Dy side by side (H99)   |
+| `histogram`        | `range: { from?, to?, total? }`          | bars k = from to to lit and added: P(X ≥ 4) = P(4) + P(5) (H99)               |
+| `histogram`        | `clt: { mean, n, samples, se? }`         | CLT: a skewed population, the means of m samples, the normal σ/√n (H99)       |
 | `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |
 | `force`            | `object: 'cart'`, `block`                | a lab cart with the mass as metal blocks, pulled by a rope; F = m × a         |
 | `tenFrame`         | `takeAway`; `crossOut`                   | taken counters filled and crossed out; b crossed out inside the full ten      |

@@ -28,7 +28,8 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
       // The point drawn is (cos θ, sin θ): on the circle, and each named value matches it.
       const [x, y] = [Math.cos(deg * RAD), Math.sin(deg * RAD)];
       if (!near(x * x + y * y, 1, 1e-9)) out.push(`point (${x}, ${y}) is off the unit circle`);
-      for (const fn of ['cos', 'sin', 'tan'] as const) {
+      // H98: with `through` they are x ÷ r, y ÷ r and y ÷ x (picturesHs2g.ts).
+      for (const fn of rep.through ? [] : (['cos', 'sin', 'tan'] as const)) {
         const v = num(rep[fn]);
         if (v === undefined) continue;
         const want = trig(fn, deg);
@@ -53,11 +54,14 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
             out.push(`marked angle ${a}° gives ${sol.fn} = ${trig(sol.fn, a)}, not ${c}`);
           if (!sol.principal && (a < 0 || a >= 360)) out.push(`marked angle ${a}° is off one turn`);
         }
+        // H98: a second value's solutions are marked too.
+        const also = num(sol.also);
+        const all = also === undefined ? marked : [...marked, ...solutionsOf(sol.fn, also)];
         for (const id of sol.angles ?? []) {
           const a = val(id);
           if (a === undefined) continue;
           const d = toDegrees(a, rep.measure);
-          const hit = marked.some((m) => near(((((d - m) % 360) + 540) % 360) - 180, 0, 1e-4));
+          const hit = all.some((m) => near(((((d - m) % 360) + 540) % 360) - 180, 0, 1e-4));
           if (!hit) out.push(`solution ${id} = ${a} is not one of the marked angles`);
         }
       }
@@ -333,7 +337,7 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
               );
           }),
         );
-      } else {
+      } else if (rep.mode === 'rowReduce') {
         shape(rep.system, 'the augmented matrix');
         const rows = rep.system.length;
         for (const op of rep.steps) {

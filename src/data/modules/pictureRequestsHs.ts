@@ -1787,32 +1787,61 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'P4 (docs/plans/m.9.md need 4, m.10.md need 10). Three options on `lineSystem`, off unless set. `upright: [{ x, shade?, label? }]`: upright lines x = k (a number or a value id) in their own colour (theme `lineUpright`), or boundaries x (sign) k with `shade` (a sign, or a sign box as in H90), dashed when strict; with any upright line only the overlap of every boundary is shaded (four half-planes on top of each other would muddy it), the caption says where all of them overlap and tests the point against each in one line. The box a ≤ x ≤ b, c ≤ y ≤ d (NAEP-2024-12M11-#11 on m.9.inequality-systems): { kind: "lineSystem", lines: [{ slope: 0, intercept: "c", shade: "≥" }, { slope: 0, intercept: "d", shade: "≤" }], upright: [{ x: "a", shade: "≥" }, { x: "b", shade: "≤" }], test: { x: "tx", y: "ty" }, extent: 10, fixed: true }. `marks: true`: one arrow on each line when the slopes are equal, a right-angle square at the crossing when they multiply to −1 (in the quarter away from the crossing’s label), with a caption line (“The arrows mark them parallel: both slopes are 3”, “The square marks a right angle: 2 × (−1/2) = −1”). `given: { x, y }`: the point the second line goes through, filled and labelled, and “(2, 7) is on Parallel: 3 × 2 + 1 = 7” (the harness checks it is on that line). m.10.parallel-lines~parallel-line and ~perpendicular-line: add `marks: true, given: { x: "x0", y: "y0" }` to their pictures (no other change).',
   },
-  ask(
-    'H93',
-    'termsChart',
-    'Past 30 terms (the first terms, a break, the nth); a recursive type; a second lit term',
-    ['m.9.sequences', 'm.11.exp-log-equations'],
-    'P5: docs/plans/m.9.md needs 5 and 11, m.11.md need 10.',
-  ),
-  ask(
-    'H94',
-    'functionGraph',
-    '|f(x)| reflected; a horizontal factor b; xMin from a value; rational by coefficients',
-    [
-      'm.9.piecewise-functions',
-      'm.11.function-transformations',
-      'm.11.inverse-functions',
-      'm.12.limits-intro',
+  {
+    ...ask(
+      'H93',
+      'termsChart',
+      'Past 30 terms (the first terms, a break, the nth); a recursive type; a second lit term',
+      ['m.9.sequences', 'm.11.exp-log-equations'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-sequences-far',
+      'g.m9-sequences-recursive-chart',
+      'g.m11-exp-log-equations-same-base-lit',
     ],
-    'P6: docs/plans/m.9.md need 6, m.11.md needs 4 and 5, m.12.md need 11.',
-  ),
-  ask(
-    'H95',
-    'algebraTiles',
-    'An area box for polynomial products past the tiles; a monomial picture with factors struck',
-    ['m.9.polynomial-operations', 'm.9.radicals'],
-    'P7: docs/plans/m.9.md needs 7 and 8.',
-  ),
+    notes:
+      'P5 (docs/plans/m.9.md needs 5 and 11, m.11.md need 10). Three options on `termsChart`, off unless set. `far: true`: `count` may run to 10,000; past 30 the chart draws the first six terms, a break on the axis ("…"), then the nth term lit, and the caption says where it skips; at 30 or fewer it draws every term as before (partial sums are drawn only without a break). m.9.sequences main: add `far: true` and let n run 1–1000 (example 7, 11, 15, … → a₁₀₀ = 403): { kind: "termsChart", type: "arithmetic", first: "a1", step: "d", count: "n", as: "points", term: "an", far: true }. `type: "recursive"` with `step` the multiplier k and `plus` the added c (default 0): aₙ = k × aₙ₋₁ + c, each term worked out from the one before, an arrow from each term to the next (up to 12 terms), the caption "a₄ = 3 × 14 − 1 = 41"; m.9.sequences~recursive: { kind: "termsChart", type: "recursive", first: "a1", step: "k", plus: "c", count: "n", term: "an" } in place of the table. `lit` (a term number, value id or number) lights a second term in the second colour with its label, the chart running on to it when it is past `count` (up to 30); `litTerm` names the value it equals (checked); `powers: true` (geometric with r = a₁) writes the terms as powers, "2² = 4", the axis "exponent n". m.11.exp-log-equations~same-base: { kind: "termsChart", type: "geometric", first: "g", step: "g", count: "q", term: "B2", lit: "p", litTerm: "B1", powers: true }.',
+  },
+  {
+    ...ask(
+      'H94',
+      'functionGraph',
+      '|f(x)| reflected; a horizontal factor b; xMin from a value; rational by coefficients',
+      [
+        'm.9.piecewise-functions',
+        'm.11.function-transformations',
+        'm.11.inverse-functions',
+        'm.12.limits-intro',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-piecewise-functions-abs',
+      'g.m11-function-transformations-horizontal',
+      'g.m11-function-transformations-horizontal-flip',
+      'g.m11-inverse-functions-restrict-domain',
+      'g.m12-limits-intro-infinity-coefficients',
+    ],
+    notes:
+      'P6 (docs/plans/m.9.md need 6, m.11.md needs 4 and 5, m.12.md need 11). Four options on `functionGraph`, off unless set; the picture and the harness reshape the same curve (functionGraphHs2g.ts). `abs: true` draws |f(x)| for any family: the parts below the x-axis reflected up, the curve before it dashed, the formula in bars, no handles (sliders); a traced point reads |f(x)|. m.9.piecewise-functions~absolute-function (the |f(x)| item): { kind: "functionGraph", family: "quadratic", form: "standard", a: "a", b: "b", c: "c", abs: true, at: { x: "x", y: "y" }, marks: ["zeros"] } with y = |f(x)|. `horizontal: "b"` on the absolute, root, exponential and log families draws y = a·f(b(x − h)) + k, written "√(2x)", "|2(x − 3)|", "√(−(x − 2))"; the graph squeezed toward x = h (stretched for |b| < 1), flipped across it for b < 0; `parent: true` keeps f(x) dashed; handles at x = h stay, the stretch handle moves to h + 1/b. m.11.function-transformations~horizontal: { kind: "functionGraph", family: "root", index: 2, h: "h", horizontal: "b", parent: true, input: "x", at: { x: "X", y: "Y" } } (X = h + p ÷ b, Y = √p). `restrict: { from?, to? }` (numbers or value ids) keeps the domain x ≥ from (x ≤ to): the rest dashed, closed end dots, and with `inverse` only the kept part is reflected; a vertex-form parabola kept on x ≥ h writes f⁻¹(x) = h + √((x − k)/a). `xMin` keeps its meaning (the window’s left edge). m.11.inverse-functions~restrict-domain: { kind: "functionGraph", family: "quadratic", form: "vertex", a: "a", h: "h", k: "k", restrict: { from: "h" }, inverse: true, at: { x: "x", y: "y" } }. Rational by coefficients: `family: "rational", p, q, r, s` draws (px + q) ÷ (rx + s) written as typed, its asymptotes x = −s ÷ r and y = p ÷ r (no handles). m.12.limits-intro~infinity: { kind: "functionGraph", family: "rational", p: "p", q: "q", r: "r", s: "s", shows: { ha: "L" } }, so z and v can go.',
+  },
+  {
+    ...ask(
+      'H95',
+      'algebraTiles',
+      'An area box for polynomial products past the tiles; a monomial picture with factors struck',
+      ['m.9.polynomial-operations', 'm.9.radicals'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-polynomial-operations-box',
+      'g.m9-radicals-monomials-factors',
+      'g.m9-radicals-monomials-negative',
+    ],
+    notes:
+      'P7 (docs/plans/m.9.md needs 7 and 8). Two new `algebraTiles` modes; the other modes are unchanged. `mode: "box"`: the area box (a generic rectangle, not to scale) with `side` (the left factor’s coefficients, highest power first, 1–3 terms) down the left and `top` (1–4 terms) across the top, each cell the row term times the column term, each diagonal of like terms in its own tint (theme `areaBoxBand1`–`6`) and collected in a key under the box ("−3x² + 2x² = −x²"); `product` names the product’s coefficients, highest first (checked). m.9.polynomial-operations~box: { kind: "algebraTiles", mode: "box", side: ["a", "b"], top: ["c", "d", "e"], product: ["p", "q", "r", "t"] } for ({a}x + {b})({c}x² + {d}x + {e}) = {p}x³ + {q}x² + {r}x + {t} (9 values; example (x + 2)(x² − 3x + 4) = x³ − x² − 2x + 8). `mode: "monomial"`: a·xᵐ ÷ b·xⁿ written as a · x · x · … over b · x · …, the pairs that cancel struck, a negative exponent’s factors moved across the bar (in orange, the caption says why), the answer c·xᵏ under it ("= 4x⁵", "= (3/2)x⁵", "= 2/x³ = 2x⁻³"); `c` and `k` are checked (c = a ÷ b, k = m − n). m.9.radicals~monomials: { kind: "algebraTiles", mode: "monomial", a: "a", m: "m", b: "b", n: "n", c: "c", k: "k" } in place of the table (the check value x and y can go).',
+  },
   {
     ...ask(
       'H96',
@@ -1863,34 +1892,69 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Need 12 (volume-derivations~cross-section-shapes): card figure solidCut { solid: "cube" | "pyramid" | "cylinder" | "cone" | "sphere", cut: "level" | "axis" | "slant" | "edges" | "corners" | "pentagon" (the last three on a cube only) }, 96 × 84: the solid in outline (hidden edges dashed), its cutting plane and the section shaded, worked out from the solid and the plane. The harness checks a slanted cut of a cylinder or cone misses the bases and, on a sort whose bins are triangle, square, rectangle or pentagon, that a flat-faced solid\'s section has that many sides. The page\'s eleven cards map one to one: e.g. { label: "Cube cut through the three corners next to one corner", bin: "triangle", figure: { kind: "solidCut", solid: "cube", cut: "corners" } }; "Sphere cut by any plane" uses cut "slant".',
     ].join(' '),
   },
-  ask(
-    'H97',
-    'venn',
-    'Probability: a Venn with counts; a three-stage tree; pascalTriangle as a fraction of two counts',
-    ['m.10.probability-rules', 'm.10.conditional-probability'],
-    'P9: docs/plans/m.10.md needs 8, 9, 16.',
-  ),
-  ask(
-    'H98',
-    'unitCircle',
-    'A point off the circle; two angles (A ± B); the solutions of two values',
-    ['m.11.unit-circle', 'm.12.trig-formulas-equations'],
-    'P10: docs/plans/m.11.md need 6, m.12.md needs 6 and 7.',
-  ),
-  ask(
-    'H99',
-    'normalCurve',
-    'Statistics and complex numbers: a t curve over the normal; histogram lit range; a CLT simulation; complexPlane powers and roots; a determinant picture',
-    [
-      'm.11.probability-distributions',
-      'm.12.polar',
-      'm.12.sampling-distributions',
-      'm.12.confidence-intervals',
-      'm.12.hypothesis-testing',
-      'm.12.matrices',
+  {
+    ...ask(
+      'H97',
+      'venn',
+      'Probability: a Venn with counts; a three-stage tree; pascalTriangle as a fraction of two counts',
+      ['m.10.probability-rules', 'm.10.conditional-probability'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-probability-rules-neither-counts',
+      'g.m10-conditional-probability-venn-counts',
+      'g.m10-conditional-probability-three-stages',
+      'g.m10-probability-rules-counting-fraction',
     ],
-    'P11: docs/plans/m.11.md need 7, m.12.md needs 1, 5, 8, 9. The t math is in statMath (tPdf, tCdf, invT, tStar).',
-  ),
+    notes:
+      'P9 (docs/plans/m.10.md needs 8, 9 and 16). Three options, off unless set. `venn` `chances.counts: { total, count? }`: a, b and both are whole counts out of `total` ("All: 40" in the corner); each region shows its count, neither = total − (a + b − both) outside the circles; `count` is the shaded region’s count and `result` its chance, count ÷ total (both checked); the caption works the union and, shaded "and", P(B | A) = both ÷ a. m.10.probability-rules~neither with counts: { kind: "venn", chances: { a: "a", b: "b", both: "ab", names: ["Soccer", "Basketball"], shade: "neither", result: "P", counts: { total: "N", count: "s" } } }; m.10.conditional-probability~venn the same with shade "and" and `counts: { total: "N" }`. `treeDiagram` `chances.third: [[[c], [c]], [[c], [c]]]` adds a third stage (third[i][j] after first i and second j, the last chance left out is 1 − the others; 2 or 3 outcomes, up to 12 leaves), `thirdNames`, `thirdStage`, and `path3` with `path` lights a leaf; `chance` is then the product of the three (checked); each leaf shows its path’s product. m.10.conditional-probability~independent for three stages: { kind: "treeDiagram", chances: { first: ["a"], second: [["b"], ["b"]], third: [[["c"], ["c"]], [["c"], ["c"]]], names: [["On time", "Late"], ["On time", "Late"]], thirdNames: ["On time", "Late"], path: [0, 0], path3: 0, chance: "j" } }. `pascalTriangle` `fraction: { n, k, count?, chance? }`: C(n, k) of the fraction lit in its own colour over the triangle’s lit C(n, k), drawn as a fraction under it (C(5, 3) = 10 over C(9, 3) = 84 = 5/42 ≈ 0.119); `count` and `chance` checked. m.10.probability-rules~counting-probability: { kind: "pascalTriangle", n: "n", k: "r", fraction: { n: "a", k: "r", count: "f", chance: "P" } } in place of the slots.',
+  },
+  {
+    ...ask(
+      'H98',
+      'unitCircle',
+      'A point off the circle; two angles (A ± B); the solutions of two values',
+      ['m.11.unit-circle', 'm.12.trig-formulas-equations'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-unit-circle-point-on-side',
+      'g.m12-trig-formulas-equations-pair',
+      'g.m12-trig-formulas-equations-difference-pair',
+      'g.m12-trig-formulas-equations-quadratic',
+    ],
+    notes:
+      'P10 (docs/plans/m.11.md need 6, m.12.md needs 6 and 7). Three options on `unitCircle`, off unless set (UnitCircleHs2g.tsx draws them; no handle). `through: { x, y, r? }`: the point (x, y) off the circle, the dashed circle of radius r through it, the legs x and y in the cosine and sine colours, r along the ray, θ’s arc, and the unit circle with its point (x ÷ r, y ÷ r) where the ray crosses it; `cos`, `sin`, `tan` are x ÷ r, y ÷ r, y ÷ x and `r` √(x² + y²) (checked); `angle` is not read (0), or θ’s id (checked against the point). m.11.unit-circle~point-on-side: { kind: "unitCircle", angle: 0, through: { x: "x", y: "y", r: "r" }, sin: "s", cos: "c", tan: "t", fixed: true } (example (−3, 4): r = 5, sin θ = 4/5). `pair: { a, b, op? }` (op "sum", the default, or "difference"): A’s arc from the x-axis, then B’s from A on (back for a difference) to A ± B, which is `angle` (checked); the key names A and B in their colours (theme `unitCircleAngleA`, `unitCircleAngleB`) and the caption works the formula with exact values at multiples of 15° ((√6 + √2)/4). m.12.trig-formulas-equations: add `pair: { a: "A", b: "B" }` to its picture; ~difference: `pair: { a: "A", b: "B", op: "difference" }`. `solutions.also`: a second value, both lines drawn and every angle marked in its value’s colour, the caption listing them and the count (sin x = −1/2 or 1: 210°, 330° and 90°, three solutions); `angles` may hold them all. m.12.trig-formulas-equations~quadratic: { kind: "unitCircle", angle: 0, fixed: true, solutions: { fn: "sin", value: "s1", also: "s2" } } with s₁ and s₂ the roots of a·s² + b·s + c = 0.',
+  },
+  {
+    ...ask(
+      'H99',
+      'normalCurve',
+      'Statistics and complex numbers: a t curve over the normal; histogram lit range; a CLT simulation; complexPlane powers and roots; a determinant picture',
+      [
+        'm.11.probability-distributions',
+        'm.12.polar',
+        'm.12.sampling-distributions',
+        'm.12.confidence-intervals',
+        'm.12.hypothesis-testing',
+        'm.12.matrices',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m12-polar-de-moivre-powers',
+      'g.m12-polar-roots',
+      'g.m11-probability-distributions-at-least',
+      'g.m12-sampling-distributions-clt',
+      'g.m12-hypothesis-testing-t-curve',
+      'g.m12-confidence-intervals-t-curve',
+      'g.m12-matrices-determinant-expansion',
+      'g.m12-matrices-cramer-determinants',
+      'g.m12-matrices-determinant-two',
+    ],
+    notes:
+      'P11 (docs/plans/m.11.md need 7, m.12.md needs 1, 5, 8, 9). Drawn part by part. (1) `complexPlane` `power` and `roots` (ComplexPowers.tsx, no handle), off unless set: `power: n` (1–12) marks z, z², …, zⁿ joined in turn by a dashed path, arg z’s arc, z and zⁿ labelled, and the caption "each power turns θ more and stretches by |z|: z⁸ = (√2)⁸(cos 360° + i sin 360°) = 16"; `roots: n` (2–12) marks the n roots on the dashed circle of radius |z|^(1/n), a regular polygon, the first root’s argument arc, z as an arrow; `result` is zⁿ or the first root (checked). m.12.polar~de-moivre: { kind: "complexPlane", z: { re: "a", im: "b" }, power: "n", result: { re: "p", im: "q" } }; m.12.polar~roots: { kind: "complexPlane", z: { re: "a", im: "b" }, roots: "n", result: { re: "p", im: "q" }, fixed: true } (the cube roots of 8i: 2 at 30°, 150°, 270°). (2) `histogram` `range: { from?, to?, total? }`, off unless set: the probability bars from k = from to to (a side left out runs to the end; bins by number for counts) lit, the caption "P(X ≥ 4) = P(4) + P(5) = 0.1563 + 0.0313 = 0.1875", `total` the sum (checked); `lit` still lights one bar. m.11.probability-distributions~at-least: { kind: "histogram", binomial: { n: "n", p: "p" }, range: { from: "k", total: "P" }, axis: "Successes (k)" } (the demo’s step writes the terms, 5 × 0.5^4 × (1 − 0.5)^1 + 1 × 0.5^5 × (1 − 0.5)^0, until the binomcdf phrase lands). (3) `histogram` `clt: { mean, n, samples, se?, seed? }` (CltHistogram.tsx, in place of data), off unless set: the population on top (wait times skewed right, exponential with σ = μ), and on the same axis the means of `samples` seeded random samples of size n as a histogram with the normal curve of mean μ and spread σ/√n over them, μ dashed; the caption gives σ/√n and the simulated means’ own mean and spread; `se` is checked, and the harness checks every mean is counted and that they average near μ. m.12.sampling-distributions~clt: values μ, n (1–100), m samples (10–2000), E = σ/√n and N = n × m; { kind: "histogram", clt: { mean: "mu", n: "n", samples: "m", se: "E" } }. (4) `normalCurve` `t: { df }`, off unless set: the t density with df degrees of freedom (solid) over the normal with the same center and scale (dashed), the standardized axis labelled t; shading, `interval`, and a test’s rejection region (invT) and p-value (tcdf) then use t, so the areas are the t ones; the caption says how the curves differ and gives t⋆ for 95%; a sign-box tail (H90) works as before. Not with `sample`, `intervals` or `chiSquare`. m.12.hypothesis-testing~t-test: { kind: "normalCurve", mean: "m", sd: "E", axis: "Sample mean x̄ (g) if H₀ is true", t: { df: "df" }, test: { stat: "t", alpha: "a", tail: "two", p: "P" }, fixed: true }; m.12.confidence-intervals~t-interval: { kind: "normalCurve", mean: "x", sd: "SE", axis: "Sample mean x̄", t: { df: "df" }, interval: { center: "x", margin: "E", level: "C" }, fixed: true }; ~two-sample the same with its df. (5) `matrixGrid` `mode: "determinant"` (MatrixDeterminant.tsx; the other modes unchanged): `matrix` 2 × 2 or 3 × 3 and `value` (D, checked). A 2 × 2 draws its two diagonals, D = ad − bc worked under it; a 3 × 3 is expanded along the first row, one small copy per entry with its row and column struck and the entry lit, "+ 2 × (3 × 4 − 2 × 1) = + 2 × 10" beside it, the sum under them; `cramer: { rhs, values?, solution? }` draws D, Dx, Dy (Dz) side by side, the replaced column lit in each, "x = Dx ÷ D = −10 ÷ (−5) = 2" (Dᵢ and the unknowns checked). I drew the cofactor expansion rather than the parallelogram of the columns: it is what the page’s steps do. m.12.matrices~determinant: { kind: "matrixGrid", mode: "determinant", matrix: [["a", "b", "c"], ["d", "e", "f"], ["g", "h", "k"]], value: "D" } in place of the table; m.12.matrices~cramer: { kind: "matrixGrid", mode: "determinant", matrix: [["a", "b"], ["c", "d"]], value: "D", cramer: { rhs: ["p", "q"], solution: ["x", "y"] } } in place of the plane (or beside it as a second picture).',
+  },
   {
     ...ask(
       'H100',
