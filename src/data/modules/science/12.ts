@@ -141,8 +141,8 @@ const earthInterior: ModuleDef = {
   ],
   variables: [
     V('d', 'd', 'Distance to the focus', { unit: 'km', min: 1, max: 10000, step: 1 }),
-    V('vp', 'vₚ', 'P-wave speed', { unit: 'km/s', min: 4, max: 14, step: 0.1 }),
-    V('vs', 'vₛ', 'S-wave speed', { unit: 'km/s', min: 2, max: 8, step: 0.1 }),
+    V('vp', 'vₚ', 'P-wave speed', { unit: 'km/s', units: ['km/s'], min: 4, max: 14, step: 0.1 }),
+    V('vs', 'vₛ', 'S-wave speed', { unit: 'km/s', units: ['km/s'], min: 2, max: 8, step: 0.1 }),
     V('tp', 'tₚ', 'P arrival', { unit: 's', min: 0.01, max: 2500, step: 0.1, derived: true }),
     V('ts', 'tₛ', 'S arrival', { unit: 's', min: 0.01, max: 5000, step: 0.1, derived: true }),
     V('L', 'L', 'S − P lag', { unit: 's', min: 0.1, max: 1500, step: 0.1 }),
@@ -249,10 +249,11 @@ const epicenter: ModuleDef = {
     V('t1', 'L₁', 'Lag at station 1', { unit: 's', min: 0.1, max: 120, step: 0.1 }),
     V('t2', 'L₂', 'Lag at station 2', { unit: 's', min: 0.1, max: 120, step: 0.1 }),
     V('t3', 'L₃', 'Lag at station 3', { unit: 's', min: 0.1, max: 120, step: 0.1 }),
-    V('vp', 'vₚ', 'P-wave speed', { unit: 'km/s', min: 4, max: 14, step: 0.1 }),
-    V('vs', 'vₛ', 'S-wave speed', { unit: 'km/s', min: 2, max: 8, step: 0.1 }),
+    V('vp', 'vₚ', 'P-wave speed', { unit: 'km/s', units: ['km/s'], min: 4, max: 14, step: 0.1 }),
+    V('vs', 'vₛ', 'S-wave speed', { unit: 'km/s', units: ['km/s'], min: 2, max: 8, step: 0.1 }),
     V('k', 'k', 'Distance per second of lag', {
       unit: 'km/s',
+      units: ['km/s'],
       min: 2,
       max: 1000,
       step: 0.1,
@@ -972,6 +973,7 @@ const doppler: ModuleDef = {
     V('z', 'z', 'Shift', { min: -0.011, max: 0.011, step: 0.000001 }),
     V('v', 'v', 'Speed along the line of sight (+ away)', {
       unit: 'km/s',
+      units: ['km/s'],
       min: -3300,
       max: 3300,
       step: 0.1,
@@ -1187,7 +1189,7 @@ const hubble: ModuleDef = {
   variables: [
     V('H', 'H₀', 'Hubble constant', { unit: 'km/s per Mpc', min: 50, max: 100, step: 0.1 }),
     V('d', 'd', 'Distance', { unit: 'Mpc', min: 1, max: 1000, step: 0.1 }),
-    V('v', 'v', 'Speed away', { unit: 'km/s', min: 0, max: 70000, step: 1 }),
+    V('v', 'v', 'Speed away', { unit: 'km/s', units: ['km/s'], min: 0, max: 70000, step: 1 }),
     V('t', 't', 'Age from 1/H₀', {
       unit: 'billion years',
       min: 9.778,
@@ -1236,7 +1238,7 @@ const redshift: ModuleDef = {
       step: 0.01,
     }),
     V('z', 'z', 'Redshift', { min: 0, max: 0.1, step: 0.00001 }),
-    V('v', 'v', 'Speed away', { unit: 'km/s', min: 0, max: 30000, step: 1 }),
+    V('v', 'v', 'Speed away', { unit: 'km/s', units: ['km/s'], min: 0, max: 30000, step: 1 }),
     V('H', 'H₀', 'Hubble constant', { unit: 'km/s per Mpc', min: 50, max: 100, step: 0.1 }),
     V('d', 'd', 'Distance', { unit: 'Mpc', min: 0, max: 600, step: 0.1 }),
   ],

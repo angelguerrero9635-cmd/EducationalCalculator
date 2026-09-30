@@ -116,6 +116,16 @@ describe('unit conversions (exact definitions)', () => {
       'T',
       'N/m',
       'N/C',
+      'L☉',
+      'R☉',
+      'Mpc',
+      'million light-years',
+      'km/s per Mpc',
+      'billion years',
+      'million years',
+      'g/kg',
+      'hPa per 100 km',
+      'kg/s',
     ];
     const unknown = new Set(
       MODULES.flatMap((m) =>
