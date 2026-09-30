@@ -23,6 +23,8 @@ export interface VariableDef {
    * hits stays a decimal. Boxes also take "2 3/8" and "3/8" typed.
    */
   fraction?: number;
+  /** A fraction past 1 as an improper fraction (11/5, not 2 1/5), as Grades 9–12 write it. */
+  improper?: boolean;
   /**
    * Show a value that is a whole or short-decimal multiple of π as that multiple (36π, 2.25π),
    * the way circle and volume answers are written; boxes take "36π", "36 pi" or "36*pi".

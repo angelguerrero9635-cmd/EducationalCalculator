@@ -1,4 +1,4 @@
-import { dollarsOf, formatNumber, renderTemplate, unitFor } from '@/engine/format';
+import { dollarsOf, formatNumber, lowerFirst, renderTemplate, unitFor } from '@/engine/format';
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
@@ -99,7 +99,6 @@ const sumsAtOnce = (lines: string[], start: string, grade: string) => {
 const wordy = (line: string) => /[(]|[a-z]{3,}/i.test(line.replace(/^\S+ = /, ''));
 
 // An acronym keeps its capitals: "MAD of class A" stays, it never reads "mAD".
-const lowerFirst = (x: string) => (/^[A-Z]{2}/.test(x) ? x : `${x[0]!.toLowerCase()}${x.slice(1)}`);
 
 /**
  * Builds the step-by-step explanation of how `result` was reached from the entered values.

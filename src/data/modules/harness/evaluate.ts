@@ -400,7 +400,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     // (sin(40°), Geometry) is in degrees, any other in radians (Algebra 2, Precalculus).
     .replace(/(sin|cos|tan)⁻¹\(/g, 'a$1(')
     .replace(/arc(sin|cos|tan)\(/g, 'a$1(')
-    .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*\d)°\)/g, '$1d($2)')
+    .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*[\d⁰¹²³⁴⁵⁶⁷⁸⁹])°\)/g, '$1d($2)')
     .replace(/(?<![\w.])e(?!\w)/g, `(${Math.E})`)
     .replace(/⌈([^⌈⌉]+)⌉/g, 'ceil($1)')
     .replace(/⌊([^⌊⌋]+)⌋/g, 'floor($1)')

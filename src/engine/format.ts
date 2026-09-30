@@ -5,7 +5,15 @@ export function formatNumber(
   x: number,
   variable?: Pick<
     VariableDef,
-    'integer' | 'digits' | 'fraction' | 'pi' | 'scientific' | 'repeating' | 'full' | 'sigFigs'
+    | 'integer'
+    | 'digits'
+    | 'fraction'
+    | 'improper'
+    | 'pi'
+    | 'scientific'
+    | 'repeating'
+    | 'full'
+    | 'sigFigs'
   >,
 ): string {
   if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
@@ -24,7 +32,7 @@ export function formatNumber(
   }
   if (variable?.scientific && x !== 0) return scientific(x);
   if (variable?.fraction && !Number.isInteger(x)) {
-    const f = asFraction(x, variable.fraction);
+    const f = asFraction(x, variable.fraction, variable.improper);
     if (f) return f;
   }
   // Padded numbers are clock minutes ("05"): no separators there.
@@ -194,15 +202,21 @@ export function asPiMultiple(x: number): string | undefined {
  * x as a mixed number or fraction in lowest terms with a denominator up to `most`
  * ("33 1/3", "3/8", "−2 1/2"), or undefined when none is within a hair of x.
  */
-export function asFraction(x: number, most: number): string | undefined {
+export function asFraction(x: number, most: number, improper = false): string | undefined {
   const abs = Math.abs(x);
   for (let d = 2; d <= most; d++) {
     const n = Math.round(abs * d);
-    if (Math.abs(abs * d - n) > 1e-6 * d) continue;
+    // Only a value that is that fraction (0.0099995 is not 1/100): a relative hair, for float
+    // error, never a rounding.
+    if (Math.abs(abs * d - n) > 1e-9 * Math.max(1, n)) continue;
     const whole = Math.floor(n / d);
     const r = n - whole * d;
     if (r === 0) return undefined;
-    const text = whole ? `${withSeparators(String(whole))} ${r}/${d}` : `${r}/${d}`;
+    const text = improper
+      ? `${withSeparators(String(n))}/${d}`
+      : whole
+        ? `${withSeparators(String(whole))} ${r}/${d}`
+        : `${r}/${d}`;
     return x < 0 ? `−${text}` : text;
   }
   return undefined;
@@ -342,8 +356,12 @@ export function renderTemplate(
     const power = /^[\^²³⁰¹⁴-⁹]/.test(after);
     const needs = /[+−×÷·\-*/]$/.test(before) || power;
     // Scientific notation reads as one number only in brackets there too: ÷ (3 × 10⁻⁴); a
-    // fraction or mixed number is raised whole: (5/7)², not 5/7².
-    if (power && /[/ ]/.test(s)) return `(${s})`;
+    // fraction or mixed number is raised or divided by whole: (5/7)², 1/(1/15).
+    if ((power || /[/÷]$/.test(before)) && /[/ ]/.test(s)) return `(${s})`;
+    // An angle in degrees inside sin, cos or tan keeps its sign: sin(40°), not sin(40), which
+    // would be radians.
+    if (variable.unit === '°' && /(sin|cos|tan)\($/.test(before) && after.startsWith(')'))
+      return `${s}°`;
     return (x < 0 || s.includes(' × 10')) && needs ? `(${s})` : s;
   });
   if (!values) return filled;
@@ -427,4 +445,28 @@ export function unitFor(x: number, unit: string): string {
         ? `${head}${stem}`
         : `${head}${stem}${end === 'es' ? 'e' : ''}`,
   );
+}
+
+/** Proper names that keep their capital inside a sentence. */
+const PROPER = new Set(
+  (
+    'Carnot Kepler Newton Earth Sun Moon Mars Jupiter Celsius Kelvin Fahrenheit Hubble Doppler ' +
+    'Wien Ohm Coulomb Hooke Snell Punnett Mendel Hardy Richter Pascal Bohr Avogadro Boyle ' +
+    'Charles Gay-Lussac Dalton Graham Hess Planck Einstein Mercator Pythagoras Heron Euler ' +
+    'Venn Pacific Atlantic Mohs Fujita Saffir-Simpson Milankovitch'
+  ).split(' '),
+);
+
+/**
+ * A name's first letter lower-cased to sit inside a sentence ("Find area"), except where the
+ * capital means something: an abbreviation (IQR), a symbol or code (P arrival, A⁻¹,
+ * P(A or B)), an isotope (C-14, U-238) or a proper name (Carnot limit).
+ */
+export function lowerFirst(text: string): string {
+  if (!text) return text;
+  const first = text.split(/[\s,]/)[0]!;
+  // (a word "A" or "I" is not a code: "A number" still reads "a number")
+  const code = /^[A-Z](?![a-z])/.test(text) && !/^[AI] /.test(text);
+  if (code || /^[A-Z][a-z]?-\d/.test(text) || PROPER.has(first)) return text;
+  return `${text[0]!.toLowerCase()}${text.slice(1)}`;
 }

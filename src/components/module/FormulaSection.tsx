@@ -5,14 +5,13 @@ import { Text } from '@/components/Text';
 import { gradeBand, isEarlyGrade, isElementary, wordRule } from '@/data/modules';
 
 import { agree } from '@/data/modules/buildSteps';
-import { renderTemplate } from '@/engine/format';
+import { lowerFirst, renderTemplate } from '@/engine/format';
 import type { LatexOptions } from '@/engine/latex';
 import type { Values } from '@/engine/types';
 import { font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from './useCalculator';
 
-const lowerFirst = (t: string) => `${t[0]!.toLowerCase()}${t.slice(1)}`;
 /** "24/6 = 4 0/6" reads "24/6 = 4": a mixed number with no fraction part is a whole. */
 const noEmptyPart = (t: string) => t.replace(/(\d) 0\/\d+(?![\d/])/g, '$1');
 
