@@ -38,6 +38,7 @@ import { AVOGADRO, MOLAR_VOLUME, molarMassOf } from '@/components/module/reps/mo
 import { hydrogenBonds, shapeOf } from '@/components/module/reps/vseprGeo';
 
 import { branchIssues } from './picturesHs2d';
+import { ionicChargeIssues } from './picturesHs3e';
 
 import type { ChemSpec } from '../typesChem';
 import type { HsiSpec } from '../typesHsi';
@@ -255,7 +256,9 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
           out.push(`${rep.metal} is not a metal the picture draws`);
         if (!IONIC_NONMETALS.includes(rep.nonmetal))
           out.push(`${rep.nonmetal} is not a nonmetal the picture draws`);
-        const ion = ionic(rep.metal, rep.nonmetal);
+        // Round 3 (H108 part 2): the elements may come from the ions' charges.
+        const pick = ionicChargeIssues(rep, num, out);
+        const ion = ionic(pick.metal, pick.nonmetal);
         const a = num(rep.metals) ?? ion.metals;
         const b = num(rep.nonmetals) ?? ion.nonmetals;
         const t = num(rep.transferred);

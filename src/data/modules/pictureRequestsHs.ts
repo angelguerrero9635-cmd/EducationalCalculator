@@ -2254,20 +2254,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ],
     'P19: docs/build/s.11.md, "Added skills" and "Shared needs (pictures)".',
   ),
-  ask(
-    'H108',
-    'reaction',
-    'Chemistry: reaction formulas from values (CxHy) and ionic compounds from their charges; a phase diagram; a concentration–time curve; a galvanic cell as a calculator picture; colored gases in gasPiston',
-    [
-      's.10.reaction-types~combustion',
-      's.10.bonding~ionic',
-      's.10.phase-colligative',
-      's.10.rates-equilibrium~average-rate',
-      's.10.redox~cell-voltage',
-      's.10.gas-laws~partial-pressure',
-    ],
-    'P20: docs/build/s.10.md, "Shared needs".',
-  ),
+  {
+    ...ask(
+      'H108',
+      'reaction',
+      'Chemistry: reaction formulas from values (CxHy) and ionic compounds from their charges; a phase diagram; a concentration–time curve; a galvanic cell as a calculator picture; colored gases in gasPiston',
+      [
+        's.10.reaction-types~combustion',
+        's.10.bonding~ionic',
+        's.10.phase-colligative',
+        's.10.rates-equilibrium~average-rate',
+        's.10.redox~cell-voltage',
+        's.10.gas-laws~partial-pressure',
+      ],
+    ),
+    gallery: ['g.s10-reaction-types-combustion-general', 'g.s10-bonding-ionic-charges'],
+    notes:
+      'P20: docs/build/s.10.md, "Shared needs (lesson review)" 2, 3 and 5; drawn part by part (types in typesHs3e.ts, checks in harness/picturesHs3e.ts, demos in galleryHs3e.ts built from the pages themselves), each off unless a page sets it. (1) Already covered by group H2D (H101 part 1), no second option: a `reaction` term’s formula may be "C{x}H{y}" (the fuel drawn as a carbon chain from the values, double bonds when y < 2x + 2, atoms tallied, faded CₓHᵧ while "?") and `most` (8 to 32) lets a term draw up to 32 molecules (x = 8 alkane: 25 O₂). ~combustion and ~combustion-alkene: { kind: "reaction", reactants: [{ formula: "C{x}H{y}", count: "a" }, { formula: "O2", count: "b" }], products: [{ formula: "CO2", count: "c" }, { formula: "H2O", count: "d" }], most: 25 } (demo g.s10-reaction-types-combustion-general; `molar` and `atoms` are optional). (2) `lewisStructure` ionic `charges: { metal, nonmetal, metals?, nonmetals? }`: the metal ion’s charge and the size of the nonmetal ion’s charge (whole, 1–3) pick the elements, Na⁺ Mg²⁺ Al³⁺ and Cl⁻ O²⁻ N³⁻ by default (`metals`/`nonmetals` list others by charge, checked against their valence); the transfer arrows, ions and formula follow (Al³⁺ with O²⁻: 2 × 3 = 3 × 2 = 6 electrons, Al₂O₃), the caption names the ions; while a charge is "?" the spec’s metal and nonmetal draw faded. The harness checks each charge and the counts against the picked pair. ~ionic: { kind: "lewisStructure", mode: "ionic", metal: "Mg", nonmetal: "Cl", metals: "a", nonmetals: "b", transferred: "t", charges: { metal: "cp", nonmetal: "cn" } } (the "picture draws magnesium chloride" assumption can go).',
+  },
   ask(
     'H109',
     'gel',
