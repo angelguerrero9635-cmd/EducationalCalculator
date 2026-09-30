@@ -150,9 +150,9 @@ const decide =
   (v: Values) =>
     v[P] === undefined || v[a] === undefined
       ? ''
-      : `→ ${v[P]! < 0.0001 ? 'P < 0.0001' : `P = ${fmt(v[P]!)}`}, ${
-          v[P]! < v[a]! ? 'below' : 'not below'
-        } α = ${fmt(v[a]!)}: ${v[P]! < v[a]! ? 'reject H₀' : 'fail to reject H₀'}`;
+      : v[P]! < v[a]!
+        ? `→ ${v[P]! < 0.0001 ? 'below' : `${shown(v[P]!)} <`} α = ${fmt(v[a]!)}: reject H₀`
+        : `→ ${shown(v[P]!)} ≥ α = ${fmt(v[a]!)}: fail to reject H₀`;
 /** A p-value relation with the decision written after its answer. */
 const decided = (r: Rel, a = 'a') => withStep(r, 'P', { note: decide('P', a) });
 
@@ -597,6 +597,182 @@ const MATH_12_STATS: ModuleDef[] = [
       sd: 'E',
       axis: 'Sample mean x̄ (g) if H₀ is true',
       mark: { x: 'x' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.hypothesis-testing~paired',
+    title: 'Matched pairs t-test',
+    use: 'Use this for “Twelve students gained 2.5 points on average after a review, s = 3.2. Did the review change scores?”',
+    assumptions: [
+      'Each subject is measured twice (before and after): work with the differences d, one per pair.',
+      'H₀: μ_d = 0 and Hₐ: μ_d ≠ 0; the differences are a one-mean t-test with df = n − 1.',
+      'The pairs are random and the differences close to normal (or n ≥ 30).',
+    ],
+    variables: [
+      V('x', 'd̄', 'Mean of the differences', { min: -10000, max: 10000, step: 0.1 }),
+      V('s', 's', 'Standard deviation of the differences', { min: 0.01, max: 10000, step: 0.1 }),
+      V('n', 'n', 'Number of pairs', { integer: true, min: 2, max: 1000 }),
+      V('df', 'df', 'Degrees of freedom', { integer: true, min: 1, max: 999, derived: true }),
+      V('E', 'SE', 'Standard error', { min: 0.0001, max: 10000, step: 0.01, derived: true }),
+      tVar(),
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      degreesOfFreedom('df', 'n'),
+      derive(
+        'SE = s ÷ √n',
+        '{E} = {s} ÷ √{n}',
+        'E',
+        ['s', 'n'],
+        (v) => div(v.s!, Math.sqrt(v.n!)),
+        '{s} ÷ √{n}',
+        'The differences’ s over the root of the number of pairs.',
+      ),
+      rel('t = d̄ ÷ SE', '{t} = {x} ÷ {E}', ['t', 'x', 'E'], (v) => v.t! * v.E! - v.x!, {
+        t: [
+          (v) => div(v.x!, v.E!),
+          '{x} ÷ {E}',
+          'H₀ says the mean difference is 0: count how many standard errors d̄ is from 0.',
+        ],
+        x: [(v) => v.t! * v.E!, '{t} × {E}', 'Go t standard errors from 0.'],
+      }),
+      decided(tTwoTail('P', 't', 'df')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      x: 2.5,
+      s: 3.2,
+      n: 12,
+      df: 11,
+      E: 3.2 / Math.sqrt(12),
+      t: 2.5 / (3.2 / Math.sqrt(12)),
+      P: 2 * (1 - tCdf(2.5 / (3.2 / Math.sqrt(12)), 11)),
+      a: 0.05,
+    },
+    startWith: ['x', 's', 'n', 'a'],
+    representation: {
+      kind: 'normalCurve',
+      mean: 0,
+      sd: 'E',
+      axis: 'Mean difference d̄ if H₀ is true',
+      mark: { x: 'x' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.hypothesis-testing~two-proportion',
+    title: 'Two-proportion z-test',
+    use: 'Use this for “84 of 150 people sent a reminder voted, against 66 of 150 who were not. Is there a difference?”',
+    assumptions: [
+      'Two independent random samples, or two groups assigned at random; H₀: p₁ = p₂, Hₐ: p₁ ≠ p₂.',
+      'If H₀ is true both samples share one proportion: pool them, p̂ = (k₁ + k₂) ÷ (n₁ + n₂).',
+      'Each sample has at least 10 successes and 10 failures, so the difference is close to normal.',
+    ],
+    variables: [
+      V('k1', 'k₁', 'Successes in sample 1', { integer: true, min: 0, max: 100000 }),
+      V('n1', 'n₁', 'Size of sample 1', { integer: true, min: 1, max: 100000 }),
+      V('k2', 'k₂', 'Successes in sample 2', { integer: true, min: 0, max: 100000 }),
+      V('n2', 'n₂', 'Size of sample 2', { integer: true, min: 1, max: 100000 }),
+      V('d', 'd', 'Difference of the proportions, p̂₁ − p̂₂', {
+        min: -1,
+        max: 1,
+        step: 0.0001,
+        derived: true,
+      }),
+      prob('p', 'p̂', 'Pooled proportion', { derived: true }),
+      V('E', 'SE', 'Standard error if H₀ is true', {
+        min: 0.00001,
+        max: 1,
+        step: 0.0001,
+        derived: true,
+      }),
+      { ...zVar(), derived: true },
+      prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
+    ],
+    ...rels(
+      limit(
+        'k₁ ≥ 10, n₁ − k₁ ≥ 10',
+        'Sample 1 has at least 10 successes and 10 failures: {k1} of {n1}',
+        ['k1', 'n1'],
+        (v) => v.k1! >= 10 && v.n1! - v.k1! >= 10,
+        'Each sample needs at least 10 successes and 10 failures for the normal curve.',
+      ),
+      limit(
+        'k₂ ≥ 10, n₂ − k₂ ≥ 10',
+        'Sample 2 has at least 10 successes and 10 failures: {k2} of {n2}',
+        ['k2', 'n2'],
+        (v) => v.k2! >= 10 && v.n2! - v.k2! >= 10,
+        'Each sample needs at least 10 successes and 10 failures for the normal curve.',
+      ),
+      withStep(
+        derive(
+          'd = k₁ ÷ n₁ − k₂ ÷ n₂',
+          '{d} = {k1} ÷ {n1} − {k2} ÷ {n2}',
+          'd',
+          ['k1', 'n1', 'k2', 'n2'],
+          (v) => v.k1! / v.n1! - v.k2! / v.n2!,
+          '{k1} ÷ {n1} − {k2} ÷ {n2}',
+          'Each sample’s proportion of successes, p̂₁ − p̂₂.',
+        ),
+        'd',
+        {
+          work: (v) => [
+            `${fmt(v.k1! / v.n1!)} − ${fmt(v.k2! / v.n2!)} = ${fmt(v.k1! / v.n1! - v.k2! / v.n2!)}`,
+          ],
+        },
+      ),
+      derive(
+        'p̂ = (k₁ + k₂) ÷ (n₁ + n₂)',
+        '{p} = ({k1} + {k2}) ÷ ({n1} + {n2})',
+        'p',
+        ['k1', 'k2', 'n1', 'n2'],
+        (v) => (v.k1! + v.k2!) / (v.n1! + v.n2!),
+        '({k1} + {k2}) ÷ ({n1} + {n2})',
+        'If H₀ is true the two samples share one proportion: all the successes over everyone.',
+      ),
+      derive(
+        'SE = √(p̂(1 − p̂)(1 ÷ n₁ + 1 ÷ n₂))',
+        '{E} = √({p} × (1 − {p}) × (1 ÷ {n1} + 1 ÷ {n2}))',
+        'E',
+        ['p', 'n1', 'n2'],
+        (v) => Math.sqrt(v.p! * (1 - v.p!) * (1 / v.n1! + 1 / v.n2!)),
+        '√({p} × (1 − {p}) × (1 ÷ {n1} + 1 ÷ {n2}))',
+        'The spread of p̂₁ − p̂₂ if H₀ is true, from the pooled proportion.',
+      ),
+      derive(
+        'z = d ÷ SE',
+        '{z} = {d} ÷ {E}',
+        'z',
+        ['d', 'E'],
+        (v) => div(v.d!, v.E!),
+        '{d} ÷ {E}',
+        'H₀ says the difference is 0: count how many standard errors it is from 0.',
+      ),
+      decided(twoTail('P', 'z')),
+    ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
+    example: {
+      k1: 84,
+      n1: 150,
+      k2: 66,
+      n2: 150,
+      d: 0.12,
+      p: 0.5,
+      E: Math.sqrt(0.25 * (2 / 150)),
+      z: 0.12 / Math.sqrt(0.25 * (2 / 150)),
+      P: 2 * (1 - Phi(0.12 / Math.sqrt(0.25 * (2 / 150)))),
+      a: 0.05,
+    },
+    startWith: ['k1', 'n1', 'k2', 'n2', 'a'],
+    representation: {
+      kind: 'normalCurve',
+      mean: 0,
+      sd: 'E',
+      axis: 'Difference p̂₁ − p̂₂ if H₀ is true',
+      mark: { x: 'd' },
       fixed: true,
     },
   },
