@@ -134,7 +134,7 @@ export function TableGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
   return (
     <View>
       <ValueTable spec={shownSpec} calc={calc} />
-      <Canvas aspect={0.62}>
+      <Canvas aspect={0.52}>
         {({ w, h }) => {
           const L = 50;
           const R = 16;
@@ -247,7 +247,7 @@ export function TableGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                   <ChartText
                     x={bFit.x}
-                    y={graph.best === 'max' ? sy(best.y) + 26 : sy(best.y) - 14}
+                    y={graph.best === 'max' ? sy(best.y) + 28 : sy(best.y) - 22}
                     fontSize={chart.label}
                     fontWeight="700"
                     textAnchor={bFit.textAnchor}

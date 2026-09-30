@@ -80,7 +80,7 @@ export function CirclePopulation({ spec, calc }: { spec: Spec; calc: Calculator 
           // The map spans a little past the outline's widest reach.
           const half = r * 1.4 || 1;
           const u = size / 2 / half; // px per shown unit
-          const step = niceStep(2 * half, 8);
+          const step = niceStep(2 * half, 10);
           const gridN = Math.floor(half / step);
           const outline = Array.from({ length: 121 }, (_, i) => {
             const t = (2 * Math.PI * i) / 120;

@@ -139,10 +139,10 @@ export function buildHs3b(fam: FamilyHs3b, get: Get, say: SayField, x: string): 
   const f = (t: number) => (t > start ? (Math.log(t) + Math.log(t + c)) / lnB : NaN);
   const zero = (-c + Math.sqrt(c * c + 4)) / 2;
   const cSaid = say(fam.c, 0);
-  const log = (arg: string): Tok[] =>
+  const log = (arg: string, tail = ''): Tok[] =>
     natural
-      ? [{ t: `ln(${arg})` }]
-      : [{ t: 'log' }, { t: say(fam.b, 10), sub: true }, { t: `(${arg})` }];
+      ? [{ t: `ln(${arg})${tail}` }]
+      : [{ t: 'log' }, { t: say(fam.b, 10), sub: true }, { t: `(${arg})${tail}` }];
   const second = plusText(c, cSaid);
   return {
     ...base,
@@ -156,7 +156,8 @@ export function buildHs3b(fam: FamilyHs3b, get: Get, say: SayField, x: string): 
     zeros: (lo, hi) => (zero >= lo && zero <= hi ? [{ x: zero, text: fracText(zero) }] : []),
     domain: [iv(start, Infinity, false, false)],
     range: [ALL],
-    text: [...log(x), { t: ' + ' }, ...log(`${x}${second}`)],
+    // The first log's bracket carries the plus (spaces between tokens are not kept).
+    text: [...log(x, '\u00a0+\u00a0'), ...log(`${x}${second}`)],
     handles: [],
   };
 }

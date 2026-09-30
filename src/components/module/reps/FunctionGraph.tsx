@@ -484,6 +484,8 @@ export function FunctionGraph({
     main.family === 'log'
       ? [main.f(main.key?.x ?? 0) + 2, main.f((main.key?.x ?? 0) + 2)]
       : []),
+    // H106: the log sum's plunge to its asymptote, below its zero.
+    ...(main.family === 'logSum' ? [-2.5] : []),
   ].filter((v) => Number.isFinite(v) && Math.abs(v) < 1e6);
 
   const legend: { toks: Tok[]; name: string; color: string; dash?: string }[] = [
@@ -493,7 +495,9 @@ export function FunctionGraph({
           {
             toks:
               tfText !== undefined
-                ? [{ t: tfText }, ...(moved?.own ? [{ t: ' = ' }, ...other.text] : [])]
+                ? moved?.own
+                  ? [{ t: `${tfText} = ${plain(other.text)}` }]
+                  : [{ t: tfText }]
                 : other.text,
             name: `${gName}(${xName}) = `,
             color: c.fnSecond,

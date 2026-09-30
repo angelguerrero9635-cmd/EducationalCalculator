@@ -124,16 +124,32 @@ export function LineParabola({ spec, calc }: { spec: LineSystemSpec; calc: Calcu
             !!spec.axes,
           );
           const n = Math.max(200, Math.round(w));
-          const span = f.y[1] - f.y[0];
           const X = (i: number) => f.x[0] + ((f.x[1] - f.x[0]) * i) / n;
           const pathOf = (k: Quad) => {
             let d = '';
-            let pen = false;
+            // Each step clipped to the grid's height, so the curve stops at its edge.
+            const [lo, hi] = f.y;
+            let last: [number, number] | undefined;
+            let pen = false; // the path is at the last segment's end (one path, so dashes run on)
             for (let i = 0; i <= n; i++) {
-              const y = quadAt(k, X(i));
-              const yc = Math.max(f.y[0] - span, Math.min(f.y[1] + span, y));
-              d += `${pen ? 'L' : 'M'} ${f.sx(X(i)).toFixed(2)} ${f.sy(yc).toFixed(2)} `;
-              pen = yc === y;
+              const p: [number, number] = [X(i), quadAt(k, X(i))];
+              if (last) {
+                let [[x0, y0], [x1, y1]] = [last, p];
+                const cut = (x: number, y: number, xo: number, yo: number, edge: number) =>
+                  [x + ((xo - x) * (edge - y)) / (yo - y), edge] as [number, number];
+                const out0 = y0 < lo || y0 > hi;
+                const out1 = y1 < lo || y1 > hi;
+                if (!(out0 && out1 && (y0 - lo) * (y1 - lo) > 0 && (y0 - hi) * (y1 - hi) > 0)) {
+                  if (y0 > hi) [x0, y0] = cut(x0, y0, x1, y1, hi);
+                  else if (y0 < lo) [x0, y0] = cut(x0, y0, x1, y1, lo);
+                  if (y1 > hi) [x1, y1] = cut(x1, y1, x0, y0, hi);
+                  else if (y1 < lo) [x1, y1] = cut(x1, y1, x0, y0, lo);
+                  if (!pen || out0) d += `M ${f.sx(x0).toFixed(2)} ${f.sy(y0).toFixed(2)} `;
+                  d += `L ${f.sx(x1).toFixed(2)} ${f.sy(y1).toFixed(2)} `;
+                  pen = !out1;
+                } else pen = false;
+              }
+              last = p;
             }
             return d;
           };

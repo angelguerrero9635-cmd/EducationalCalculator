@@ -41,7 +41,7 @@ export function PointPairs({
             y1={y - ny * 5}
             x2={x + nx * 5}
             y2={y + ny * 5}
-            stroke={c.chartSecond}
+            stroke={c.chartMuted}
             strokeWidth={chart.stroke}
           />
         );
@@ -52,7 +52,7 @@ export function PointPairs({
               y1={y1}
               x2={x2}
               y2={y2}
-              stroke={c.chartSecond}
+              stroke={c.chartMuted}
               strokeWidth={chart.stroke}
               strokeDasharray={chart.dashFine}
             />

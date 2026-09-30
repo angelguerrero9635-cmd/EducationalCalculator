@@ -43,10 +43,16 @@ export function RectangleBounds({ spec, calc }: { spec: Spec; calc: Calculator }
       <Canvas aspect={0.72}>
         {({ w: W, h: H }) => {
           const pad = 26;
+          const left = 64; // room for the width's label
           const lo = [Math.max(0, l - e), Math.max(0, w - e)];
           const hi = [l + e, w + e];
-          const s = Math.min((W - 2 * pad) / hi[0]!, (H - 2 * pad - 20) / hi[1]!);
-          const cx = W / 2;
+          const fit = (right: number) =>
+            Math.min((W - left - right) / hi[0]!, (H - 2 * pad - 20) / hi[1]!);
+          // A band under 8 px gets a close-up column on the right.
+          const zoom = known && e * fit(16) < 8;
+          const right = zoom ? 128 : 16;
+          const s = fit(right);
+          const cx = left + (W - left - right) / 2;
           const cy = pad + 6 + (H - 2 * pad - 20) / 2;
           const box = (x: number, y: number) =>
             ({ x: cx - (x * s) / 2, y: cy - (y * s) / 2, width: x * s, height: y * s }) as const;
@@ -56,11 +62,10 @@ export function RectangleBounds({ spec, calc }: { spec: Spec; calc: Calculator }
           const band = e * s;
           // The band as one shape: the outer rectangle with the inner one cut out.
           const ring = `M ${outer.x} ${outer.y} h ${outer.width} v ${outer.height} h ${-outer.width} Z M ${inner.x} ${inner.y} v ${inner.height} h ${inner.width} v ${-inner.height} Z`;
-          const zoom = band < 8 && known;
-          // The close-up: the top-right corner magnified so e is 16 px.
-          const k = zoom ? 16 / Math.max(band, 1e-9) : 1;
-          const zx = W - pad - 96;
-          const zy = pad + 4;
+          // The close-up: the top-right corner magnified so e is 18 px.
+          const k = zoom ? 18 / Math.max(band, 1e-9) : 1;
+          const zx = W - 116;
+          const zy = pad + 10;
           return (
             <Svg width={W} height={H} opacity={known ? 1 : 0.4}>
               <Path d={ring} fill={c.boundsBand} fillRule="evenodd" />
@@ -113,20 +118,20 @@ export function RectangleBounds({ spec, calc }: { spec: Spec; calc: Calculator }
                   <Rect
                     x={zx}
                     y={zy}
-                    width={96}
-                    height={72}
+                    width={108}
+                    height={86}
                     fill={c.card}
                     stroke={c.chartMuted}
                     strokeWidth={1}
                   />
                   {[-1, 0, 1].map((d) => {
                     // Each edge's corner, e·k apart, the measured one in the middle.
-                    const x = zx + 60 + d * 16;
-                    const y = zy + 24 - d * 16;
+                    const x = zx + 62 + d * 18;
+                    const y = zy + 28 - d * 18;
                     return (
                       <Path
                         key={`z${d}`}
-                        d={`M ${zx + 4} ${y} L ${x} ${y} L ${x} ${zy + 70}`}
+                        d={`M ${zx + 4} ${y} L ${x} ${y} L ${x} ${zy + 82}`}
                         stroke={d === 0 ? c.chartInk : c.chartSecond}
                         strokeWidth={d === 0 ? chart.strokeHeavy : chart.stroke}
                         strokeDasharray={d === 0 ? undefined : chart.dashFine}
@@ -135,17 +140,17 @@ export function RectangleBounds({ spec, calc }: { spec: Spec; calc: Calculator }
                     );
                   })}
                   <Line
-                    x1={zx + 60}
-                    y1={zy + 52}
-                    x2={zx + 76}
-                    y2={zy + 52}
+                    x1={zx + 62}
+                    y1={zy + 60}
+                    x2={zx + 80}
+                    y2={zy + 60}
                     stroke={c.chartInk}
                     strokeWidth={1}
                   />
-                  <ChartText x={zx + 48} y={zy + 66} fontSize={chart.label} textAnchor="end">
+                  <ChartText x={zx + 54} y={zy + 104} fontSize={chart.label} textAnchor="middle">
                     {`e = ${n(e)}${unit ? ` ${unit}` : ''}`}
                   </ChartText>
-                  <ChartText x={zx + 48} y={zy - 4} fontSize={chart.label} textAnchor="middle">
+                  <ChartText x={zx + 54} y={zy - 6} fontSize={chart.label} textAnchor="middle">
                     {`corner ×${formatNumber(Math.round(k))}`}
                   </ChartText>
                 </G>

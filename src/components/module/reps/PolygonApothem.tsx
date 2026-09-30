@@ -7,7 +7,7 @@
  * caption works K = ½ × a × P. Flat and exact: the shape is drawn from n; lengths are labels.
  */
 import { View } from 'react-native';
-import Svg, { G, Line, Path, Polygon, Circle } from 'react-native-svg';
+import Svg, { Circle, G, Line, Path, Polygon, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
@@ -56,7 +56,7 @@ export function PolygonApothem({ spec, calc }: { spec: Spec; calc: Calculator })
 
   return (
     <View>
-      <Canvas aspect={0.8}>
+      <Canvas aspect={0.7}>
         {({ w, h }) => {
           // The polygon on a flat bottom side, as big as the canvas allows with room for labels.
           const R = Math.min((w - 40) / 2, (h - 56) / (1 + Math.cos(Math.PI / n))) * 0.94;
@@ -78,8 +78,41 @@ export function PolygonApothem({ spec, calc }: { spec: Spec; calc: Calculator })
           const rArc = Math.min(26, ap * 0.4);
           const arc = `M ${cx} ${cy + rArc} A ${rArc} ${rArc} 0 0 0 ${cx + rArc * Math.sin(Math.PI / n)} ${cy + rArc * Math.cos(Math.PI / n)}`;
           const aText = say(a);
-          const aX = cx + 8;
-          const aFit = fitLabel(aX, aText, chart.label, w, 'start');
+          const aFit = fitLabel(cx - 8, aText, chart.label, w, 'end');
+          /** A label on a card-coloured chip, so it reads over the dashed lines. */
+          const chip = (
+            x: number,
+            y: number,
+            text: string,
+            anchor: 'start' | 'middle' | 'end',
+            fill: string,
+          ) => {
+            const tw = text.length * chart.label * 0.58 + 6;
+            const l = anchor === 'start' ? x - 3 : anchor === 'end' ? x - tw + 3 : x - tw / 2;
+            return (
+              <G>
+                <Rect
+                  x={l}
+                  y={y - chart.label}
+                  width={tw}
+                  height={chart.label + 5}
+                  rx={3}
+                  fill={c.card}
+                  opacity={0.9}
+                />
+                <ChartText
+                  x={x}
+                  y={y}
+                  fontSize={chart.label}
+                  fontWeight="700"
+                  textAnchor={anchor}
+                  fill={fill}
+                >
+                  {text}
+                </ChartText>
+              </G>
+            );
+          };
           const sText = spec.side ? say(spec.side) : '';
           return (
             <Svg width={w} height={h}>
@@ -122,29 +155,23 @@ export function PolygonApothem({ spec, calc }: { spec: Spec; calc: Calculator })
               {spec.angle ? (
                 <G>
                   <Path d={arc} stroke={c.fnSecond} strokeWidth={chart.stroke} fill="none" />
-                  <ChartText
-                    x={cx - 6}
-                    y={cy + rArc + 4}
-                    fontSize={chart.label}
-                    fontWeight="700"
-                    textAnchor="end"
-                    fill={c.fnSecond}
-                  >
-                    {`${rep.variable(spec.angle).symbol} = ${+theta.toFixed(2)}°`}
-                  </ChartText>
+                  {chip(
+                    cx + rArc * Math.sin(Math.PI / n) + 4,
+                    cy + rArc + 12,
+                    `${rep.variable(spec.angle).symbol} = ${+theta.toFixed(2)}°`,
+                    'start',
+                    c.fnSecond,
+                  )}
                 </G>
               ) : null}
               <Circle cx={cx} cy={cy} r={3.5} fill={c.chartInk} />
-              <ChartText
-                x={aFit.x}
-                y={(cy + my) / 2 + 12}
-                fontSize={chart.label}
-                fontWeight="700"
-                textAnchor={aFit.textAnchor}
-                fill={known(a) ? c.chartHighlight : c.chartMuted}
-              >
-                {aText}
-              </ChartText>
+              {chip(
+                aFit.x,
+                (cy + my) / 2 + 14,
+                aText,
+                aFit.textAnchor,
+                known(a) ? c.chartHighlight : c.chartMuted,
+              )}
               {spec.side ? (
                 <ChartText
                   x={cx}
