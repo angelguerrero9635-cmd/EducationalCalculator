@@ -447,13 +447,22 @@ export function unitFor(x: number, unit: string): string {
   );
 }
 
+/** Element symbols that start a name (not the ones that are also words: In, As, At, Be, No). */
+const ELEMENTS = new Set(
+  (
+    'H He Li B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Ti Cr Mn Fe Ni Cu Zn Br Kr Ag Sn Xe ' +
+    'Ba Pt Au Hg Pb Rn Ra U Pu Sr Rb Cs Li Co'
+  ).split(' '),
+);
+
 /** Proper names that keep their capital inside a sentence. */
 const PROPER = new Set(
   (
     'Carnot Kepler Newton Earth Sun Moon Mars Jupiter Celsius Kelvin Fahrenheit Hubble Doppler ' +
     'Wien Ohm Coulomb Hooke Snell Punnett Mendel Hardy Richter Pascal Bohr Avogadro Boyle ' +
     'Charles Gay-Lussac Dalton Graham Hess Planck Einstein Mercator Pythagoras Heron Euler ' +
-    'Venn Pacific Atlantic Mohs Fujita Saffir-Simpson Milankovitch'
+    'Venn Pacific Atlantic Mohs Fujita Saffir-Simpson Milankovitch Simpson Hardy-Weinberg Lewis ' +
+    'Bronsted Arrhenius Le Chatelier Faraday Ampere Joule Watt Hertz Gauss Tesla Lenz'
   ).split(' '),
 );
 
@@ -464,9 +473,11 @@ const PROPER = new Set(
  */
 export function lowerFirst(text: string): string {
   if (!text) return text;
-  const first = text.split(/[\s,]/)[0]!;
+  const first = text.split(/[\s,]/)[0]!.replace(/[’']s$/, '');
+  // An element symbol, alone or with its charge or count (Cl ions, Na⁺ pumped out, O₂ made).
+  const element = ELEMENTS.has(first.replace(/[₀-₉⁰-⁹⁺⁻²³]+$/, ''));
   // (a word "A" or "I" is not a code: "A number" still reads "a number")
   const code = /^[A-Z](?![a-z])/.test(text) && !/^[AI] /.test(text);
-  if (code || /^[A-Z][a-z]?-\d/.test(text) || PROPER.has(first)) return text;
+  if (code || element || /^[A-Z][a-z]?-\d/.test(text) || PROPER.has(first)) return text;
   return `${text[0]!.toLowerCase()}${text.slice(1)}`;
 }

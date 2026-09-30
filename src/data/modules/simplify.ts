@@ -30,6 +30,11 @@ const NUMBER = /^\d+(?:\.\d+)?/;
 /** A fraction written as one number: "3/4", or mixed "26 2/3" (division is written ÷). */
 const FRACTION = /^(?:(\d+) )?(\d+)\/(\d+)(?![\d.])/;
 
+const SCI = /^(\d+(?:\.\d+)?) × 10(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)/;
+const SUPER = /^⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/;
+const superValue = (raised: string) =>
+  Number([...raised].map((c) => (c === '⁻' ? '-' : '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c))).join(''));
+
 function tokenize(text: string): Token[] | undefined {
   const s = plainDigits(text).replace(/\s+/g, ' ').trim();
   const out: Token[] = [];
@@ -38,6 +43,21 @@ function tokenize(text: string): Token[] | undefined {
     const ch = s[i]!;
     if (ch === ' ') {
       i++;
+      continue;
+    }
+    // Scientific notation is one number (6.022 × 10²³), never a power to work out; a lone
+    // ² or ³ stays a power (expanded form, 3 × 10² = 300).
+    const sci = SCI.exec(s.slice(i));
+    if (sci && !/^[²³]$/.test(sci[2]!)) {
+      out.push({ t: 'num', value: Number(sci[1]) * 10 ** superValue(sci[2]!), text: sci[0] });
+      i += sci[0].length;
+      continue;
+    }
+    // A run of raised digits is one exponent: 10²³ is 10 to the 23rd, not (10²)³.
+    const raised = SUPER.exec(s.slice(i));
+    if (raised && !/^[²³]$/.test(raised[0])) {
+      out.push({ t: 'op', v: '^' }, { t: 'num', value: superValue(raised[0]) });
+      i += raised[0].length;
       continue;
     }
     const frac = FRACTION.exec(s.slice(i));
