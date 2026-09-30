@@ -834,9 +834,10 @@ const POLYNOMIAL_OPERATIONS: ModuleDef[] = [
       tile('d', 'd', 'x² in the second'),
       tile('e', 'e', 'x in the second'),
       tile('f', 'f', 'Number in the second'),
-      tile('D', 'd′', 'x² added', { derived: true }),
-      tile('E', 'e′', 'x added', { derived: true }),
-      tile('F', 'f′', 'Number added', { derived: true }),
+      // The second polynomial as added (its opposite when subtracting): the tiles' second group.
+      tile('D', 'd′', 'x² added', pictureOnly),
+      tile('E', 'e′', 'x added', pictureOnly),
+      tile('F', 'f′', 'Number added', pictureOnly),
       int('p', 'p', 'x² in the answer', -20, 20, { derived: true }),
       int('q', 'q', 'x in the answer', -20, 20, { derived: true }),
       int('r', 'r', 'Number in the answer', -20, 20, { derived: true }),
@@ -844,47 +845,85 @@ const POLYNOMIAL_OPERATIONS: ModuleDef[] = [
     rules: [
       ...(
         [
-          ['D', 'd', 'x²'],
-          ['E', 'e', 'x'],
-          ['F', 'f', 'number'],
+          ['D', 'd'],
+          ['E', 'e'],
+          ['F', 'f'],
         ] as const
-      ).map(([id, from, what]) =>
-        derive(
-          `${id} = ±${from}`,
-          id,
-          [from, 'o'],
-          `{${id}} = {${from}} × (1 or −1, as {o} says)`,
-          // 1 for +, −1 for − (o is 1 or 2): one smooth rule, so the search reads it right.
-          (v) => v[from]! * (3 - 2 * v.o!),
-          (v) => (v.o === 2 ? `−1 × {${from}}` : `{${from}}`),
-          (v) =>
-            v.o === 2
-              ? `Subtracting adds the opposite: the second ${what} term changes sign.`
-              : `Adding keeps the second ${what} term as it is.`,
-          {},
-          {
-            check: (v) =>
-              v.o === 2
-                ? `${fmt(v[id]!)} = −1 × ${sg(v[from]!)}`
-                : `${fmt(v[id]!)} = ${fmt(v[from]!)}`,
-          },
+      ).map(([id, from]) =>
+        figure(
+          derive(
+            `${id} = ±${from}`,
+            id,
+            [from, 'o'],
+            `{${id}} = {${from}} × (1 or −1, as {o} says)`,
+            // 1 for +, −1 for − (o is 1 or 2): one smooth rule, so the search reads it right.
+            (v) => v[from]! * (3 - 2 * v.o!),
+            `{${from}}`,
+            'The second group of tiles: the second polynomial, or its opposite when subtracting.',
+          ),
         ),
       ),
       ...(
         [
-          ['p', 'a', 'D', 'x² terms'],
-          ['q', 'b', 'E', 'x terms'],
-          ['r', 'c', 'F', 'numbers'],
+          ['p', 'a', 'd', 'x² terms'],
+          ['q', 'b', 'e', 'x terms'],
+          ['r', 'c', 'f', 'numbers'],
         ] as const
-      ).map(([id, x, y, what]) =>
-        derive(
-          `${id} = ${x} + ${y}`,
-          id,
-          [x, y],
-          `{${id}} = {${x}} + {${y}}`,
-          (v) => v[x]! + v[y]!,
-          `{${x}} + {${y}}`,
-          `Combine the ${what}.`,
+      ).map(([id, x, y, what], i) =>
+        rule(
+          `${id} = ${x} ± ${y}`,
+          `{${id}} = {${x}} ± {${y}}, − when {o} is 2`,
+          [id, x, y, 'o'],
+          (v) => v[id]! - (v[x]! + v[y]! * (3 - 2 * v.o!)),
+          {
+            [id]: [
+              (v) => exact(v[x]! + v[y]! * (3 - 2 * v.o!)),
+              (v) => (v.o === 2 ? `{${x}} − {${y}}` : `{${x}} + {${y}}`),
+              (v) =>
+                v.o === 2
+                  ? `Subtracting adds the opposite: combine the ${what}, the second one’s sign changed.`
+                  : `Combine the ${what}.`,
+              {
+                // The subtraction written as adding the opposite, once, before the like terms.
+                ...(i === 0
+                  ? {
+                      work: (v: Values) =>
+                        v.o === 2 && known(v, 'd', 'e', 'f')
+                          ? [
+                              `−(${poly([
+                                [v.d!, 'x²'],
+                                [v.e!, 'x'],
+                                [v.f!, ''],
+                              ])}) = ${poly([
+                                [-v.d!, 'x²'],
+                                [-v.e!, 'x'],
+                                [-v.f!, ''],
+                              ])}`,
+                            ]
+                          : [],
+                    }
+                  : {}),
+                ...(i === 2
+                  ? {
+                      note: (v: Values) =>
+                        known(v, 'p', 'q', 'r')
+                          ? `→ ${poly([
+                              [v.p!, 'x²'],
+                              [v.q!, 'x'],
+                              [v.r!, ''],
+                            ])}`
+                          : '',
+                    }
+                  : {}),
+              },
+            ],
+          },
+          {
+            check: (v) =>
+              v.o === 2
+                ? `${fmt(v[id]!)} = ${fmt(v[x]!)} − ${sg(v[y]!)}`
+                : `${fmt(v[id]!)} = ${fmt(v[x]!)} + ${sg(v[y]!)}`,
+          },
         ),
       ),
     ],
@@ -943,6 +982,16 @@ const POLYNOMIAL_OPERATIONS: ModuleDef[] = [
         (v) => v.b! ** 2,
         '{b}²',
         'The number times itself: always 0 or more.',
+        {
+          note: (v) =>
+            known(v, 'p', 'q', 'r')
+              ? `→ ${poly([
+                  [v.p!, 'x²'],
+                  [v.q!, 'x'],
+                  [v.r!, ''],
+                ])}`
+              : '',
+        },
       ),
     ],
     example: { a: 3, b: -2, p: 9, q: -12, r: 4 },
@@ -960,35 +1009,60 @@ const POLYNOMIAL_OPERATIONS: ModuleDef[] = [
 
 // ── Factoring ──
 
-/** p and q with p + q = b and p × q = c (p the larger), when b² − 4c is a perfect square. */
+/**
+ * p and q with p + q = b and p × q = c, when b² − 4c is a perfect square: p the larger, unless
+ * it is 0 (then the other). The harness reads "the number in the pair of c that adds to b" the
+ * same way (phrasesM9.ts).
+ */
 const pairFor = (b: number, c: number) => {
   const r = intRoot(b * b - 4 * c);
-  return r === undefined ? undefined : { p: (b + r) / 2, q: (b - r) / 2 };
+  if (r === undefined) return undefined;
+  const [p, q] = [(b + r) / 2, (b - r) / 2];
+  return p === 0 ? { p: q, q: p } : { p, q };
 };
-const noPair = (v: Values) =>
-  v.b !== undefined && v.c !== undefined && !pairFor(v.b, v.c)
-    ? 'No two whole numbers multiply to c and add to b: it does not factor over the integers.'
+/** ax + b as a bracket's inside: 2x + 1, x − 3, x. */
+const bin = (a: number, b: number) =>
+  poly([
+    [a, 'x'],
+    [b, ''],
+  ]);
+/** The most tiles an edge of the rectangle holds. */
+const EDGE = 10;
+const noPair = (v: Values) => {
+  if (v.b === undefined || v.c === undefined) return undefined;
+  const pq = pairFor(v.b, v.c);
+  if (!pq)
+    return 'No two whole numbers multiply to c and add to b: it does not factor over the integers.';
+  return Math.abs(pq.p) > EDGE || Math.abs(pq.q) > EDGE
+    ? `${fmt(pq.p)} and ${fmt(pq.q)} work: (${bin(1, pq.p)})(${bin(1, pq.q)}). The tiles hold at most ${EDGE} on an edge, so this page stops there.`
     : undefined;
+};
 
 /**
  * The ac method for ax² + bx + c (a > 0): m + n = b, m × n = ac; then p = GCF(a, m), the
  * common bracket (rx + s) = (ax + m) ÷ p, and q = n ÷ r.
  */
 function acSplit(a: number, b: number, c: number) {
-  const r0 = intRoot(b * b - 4 * a * c);
-  if (r0 === undefined || !(a > 0)) return undefined;
-  let m = (b + r0) / 2;
-  let n = b - m;
-  if (m === 0) [m, n] = [n, m];
+  const pair = pairFor(b, a * c);
+  if (pair === undefined || !(a > 0)) return undefined;
+  const { p: m, q: n } = pair;
   const p = gcd(a, m) || a;
   const r = a / p;
   const s = m / p;
   return { m, n, p, r, s, q: n / r };
 }
-const noSplit = (v: Values) =>
-  v.a !== undefined && v.b !== undefined && v.c !== undefined && !acSplit(v.a, v.b, v.c)
-    ? 'No two whole numbers multiply to ac and add to b: it does not factor over the integers.'
+const noSplit = (v: Values) => {
+  if (v.a === undefined || v.b === undefined || v.c === undefined) return undefined;
+  const f = acSplit(v.a, v.b, v.c);
+  if (!f)
+    return 'No two whole numbers multiply to ac and add to b: it does not factor over the integers.';
+  return [f.p, f.q, f.r, f.s].some((x) => Math.abs(x) > EDGE)
+    ? `It factors as (${bin(f.p, f.q)})(${bin(f.r, f.s)}), but the tiles hold at most ${EDGE} on an edge, so this page stops there.`
     : undefined;
+};
+
+/** The perfect squares 1 to 100: a difference of two squares starts from them. */
+const SQUARES = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100];
 
 const FACTORING: ModuleDef[] = [
   page({
@@ -1006,13 +1080,13 @@ const FACTORING: ModuleDef[] = [
     ],
     rules: [
       derive(
-        'p = (b + √(b² − 4c)) ÷ 2',
+        'p: the pair of c that adds to b',
         'p',
-        ['b', 'c'],
-        '{p} = ({b} + √({b}² − 4 × {c})) ÷ 2',
+        ['c', 'b'],
+        '{p} = the number in the pair of {c} that adds to {b}',
         (v) => pairFor(v.b!, v.c!)?.p,
-        '({b} + √({b}² − 4 × {c})) ÷ 2',
-        'List the factor pairs of c and find the pair that adds to b; this is the larger of the two.',
+        'the number in the pair of {c} that adds to {b}',
+        'List the factor pairs of c and find the pair that adds to b; p is the larger of the two.',
         {
           work: (v) => {
             const q = v.b! - v.p!;
@@ -1022,7 +1096,7 @@ const FACTORING: ModuleDef[] = [
             ];
           },
         },
-        { message: noPair },
+        { message: noPair, check: (v) => `${sg(v.p!)} × ${sg(v.b! - v.p!)} = ${fmt(v.c!)}` },
       ),
       derive(
         'q = b − p',
@@ -1042,6 +1116,7 @@ const FACTORING: ModuleDef[] = [
                 ])} = (${xPlus(v.p!)})(${xPlus(v.q!)})`
               : '',
         },
+        { check: (v) => `${sg(v.p!)} + ${sg(v.q!)} = ${fmt(v.b!)}` },
       ),
     ],
     example: { b: 2, c: -15, p: 5, q: -3 },
@@ -1060,6 +1135,7 @@ const FACTORING: ModuleDef[] = [
     title: 'Factor when a is not 1',
     use: 'Use this for “Factor 2x² + 7x + 3.”',
     assumptions: [
+      'Take out any common factor of a, b and c first, or a bracket keeps one.',
       'Find two numbers m and n that multiply to ac and add to b.',
       'Split bx into mx + nx, then factor each pair: both leave the same bracket.',
       'Check by multiplying the brackets back out.',
@@ -1077,12 +1153,12 @@ const FACTORING: ModuleDef[] = [
     ],
     rules: [
       derive(
-        'm = (b + √(b² − 4ac)) ÷ 2',
+        'm: the pair of ac that adds to b',
         'm',
-        ['a', 'b', 'c'],
-        '{m} = ({b} + √({b}² − 4 × {a} × {c})) ÷ 2',
+        ['a', 'c', 'b'],
+        '{m} = the number in the pair of {a} × {c} that adds to {b}',
         (v) => acSplit(v.a!, v.b!, v.c!)?.m,
-        '({b} + √({b}² − 4 × {a} × {c})) ÷ 2',
+        'the number in the pair of {a} × {c} that adds to {b}',
         'Multiply a by c, then find the factor pair of ac that adds to b.',
         {
           work: (v) => {
@@ -1094,7 +1170,10 @@ const FACTORING: ModuleDef[] = [
             ];
           },
         },
-        { message: noSplit },
+        {
+          message: noSplit,
+          check: (v) => `${sg(v.m!)} × ${sg(v.b! - v.m!)} = ${fmt(v.a! * v.c!)}`,
+        },
       ),
       derive(
         'n = b − m',
@@ -1115,6 +1194,7 @@ const FACTORING: ModuleDef[] = [
                 ])}`
               : '',
         },
+        { check: (v) => `${sg(v.m!)} + ${sg(v.n!)} = ${fmt(v.b!)}` },
       ),
       derive(
         'p = GCF of a and m',
@@ -1158,7 +1238,11 @@ const FACTORING: ModuleDef[] = [
               [v.r!, 'x'],
               [v.s!, ''],
             ]);
-            return `→ ${fmt(v.p!)}x(${common}) ${v.q! < 0 ? '−' : '+'} ${fmt(Math.abs(v.q!))}(${common})`;
+            const split = `${fmt(v.p!)}x(${common}) ${v.q! < 0 ? '−' : '+'} ${fmt(Math.abs(v.q!))}(${common})`;
+            const out = `${split} = (${bin(v.p!, v.q!)})(${common})`;
+            // A common factor left in a bracket comes out too: (4x + 2)(x + 2) = 2(2x + 1)(x + 2).
+            const g = gcd(v.p!, v.q!);
+            return g > 1 ? `→ ${out} = ${fmt(g)}(${bin(v.p! / g, v.q! / g)})(${common})` : `→ ${out}`;
           },
         },
       ),
@@ -1218,6 +1302,15 @@ const FACTORING: ModuleDef[] = [
         (v) => div(v.b!, v.g!),
         '{b} ÷ {g}',
         'Divide the x term by gx: what is left is a number.',
+        {
+          note: (v) =>
+            known(v, 'a', 'b', 'g', 'p', 'q')
+              ? `→ ${poly([
+                  [v.a!, 'x²'],
+                  [v.b!, 'x'],
+                ])} = ${v.g === 1 ? '' : fmt(v.g!)}x(${bin(v.p!, v.q!)})`
+              : '',
+        },
       ),
     ],
     example: { a: 6, b: 15, g: 3, p: 2, q: 5 },
@@ -1241,11 +1334,11 @@ const FACTORING: ModuleDef[] = [
       'A sum of two squares, such as x² + 4, does not factor over the integers.',
     ],
     variables: [
-      int('a', 'a', 'x² coefficient', 1, 100),
-      int('c', 'c', 'Number taken away', 1, 100),
+      int('a', 'a', 'x² coefficient', 1, 100, { allowed: SQUARES }),
+      int('c', 'c', 'Number taken away', 1, 100, { allowed: SQUARES }),
       tile('p', 'p', 'Square root of a', { derived: true }),
       tile('q', 'q', 'Square root of c', { derived: true }),
-      tile('u', '−q', 'Number in the second factor', { derived: true }),
+      tile('u', 'u', 'Number in the second bracket', { derived: true }),
       int('z', 'z', 'x terms, which cancel', -200, 200, { derived: true }),
     ],
     rules: [
@@ -1289,6 +1382,8 @@ const FACTORING: ModuleDef[] = [
         (v) => -v.q!,
         '−{q}',
         'One bracket adds q and the other takes it away.',
+        {},
+        { check: (v) => `${fmt(v.q!)} + ${sg(v.u!)} = 0` },
       ),
       derive(
         'z = p × u + q × p',
@@ -1298,6 +1393,12 @@ const FACTORING: ModuleDef[] = [
         (v) => v.p! * v.u! + v.q! * v.p!,
         '{p} × {u} + {q} × {p}',
         'Check the middle: the outer and inner x terms are opposites, so they cancel.',
+        {
+          note: (v) =>
+            known(v, 'a', 'c', 'p', 'q')
+              ? `→ ${v.a === 1 ? '' : fmt(v.a!)}x² − ${fmt(v.c!)} = (${bin(v.p!, v.q!)})(${bin(v.p!, -v.q!)})`
+              : '',
+        },
       ),
     ],
     example: { a: 9, c: 25, p: 3, q: 5, u: -5, z: 0 },

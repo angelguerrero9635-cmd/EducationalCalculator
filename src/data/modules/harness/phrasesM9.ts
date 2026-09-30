@@ -20,6 +20,16 @@ export const M9_PHRASES: [RegExp, (...xs: number[]) => number][] = [
       return (x * y) / gcd(x, y);
     },
   ],
+  // Factoring: the number of the pair that multiplies to c (or a × c) and adds to b, the larger
+  // one unless it is 0 (pairFor in math/9.ts).
+  [
+    new RegExp(`the number in the pair of (${NUM})(?: \\* (${NUM}))? that adds to (${NUM})`),
+    (c1, c2, b) => {
+      const c = Number.isNaN(c2) ? c1 : c1 * c2;
+      const r = Math.sqrt(b * b - 4 * c);
+      return (b + r) / 2 === 0 ? (b - r) / 2 : (b + r) / 2;
+    },
+  ],
   // Rational exponents: the fourth root and the fifth root of the base.
   [new RegExp(`∜(${NUM})`), (b) => b ** (1 / 4)],
   [new RegExp(`the fifth root of (${NUM})`), (b) => b ** (1 / 5)],
