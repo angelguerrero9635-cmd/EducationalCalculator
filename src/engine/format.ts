@@ -149,9 +149,11 @@ const raised = (n: number) =>
  * scientific notation past 10⁷ or under 10⁻⁴ (1.20 × 10⁻⁵).
  */
 export function significant(x: number, sig: number): string {
-  const abs = Math.abs(Number(x.toPrecision(sig)));
+  // A tie rounds up, as on paper: 4.35 is stored as 4.3499…, so nudge it a hair first.
+  const abs = Math.abs(Number((x * (1 + 1e-12)).toPrecision(sig)));
   const e = Math.floor(Math.log10(abs) + 1e-12);
-  if (abs >= 1e7 || abs < 1e-4) {
+  // Zeros that only hold the place (1,600 to 2 figures) would look significant: 1.6 × 10³.
+  if (abs >= 1e7 || abs < 1e-4 || e >= sig) {
     return minus(`${x < 0 ? '-' : ''}${(abs / 10 ** e).toFixed(sig - 1)} × 10${raised(e)}`);
   }
   const text = abs.toFixed(Math.max(0, sig - 1 - e));
