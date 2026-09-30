@@ -239,7 +239,46 @@ export interface GalvanicScene {
   lit?: 'electrons' | 'anode' | 'cathode' | 'bridge' | 'meter';
 }
 
-export type HsjSpec = GasPistonSpec | EnergyProfileSpec | EquilibriumChartSpec | PhScaleSpec;
+// ─── H57 decayChart ──────────────────────────────────────────────────────────
+
+/**
+ * One term of a nuclear equation: a nucleus by its mass number A and atomic number Z (its
+ * symbol from Z unless given), or a particle. `count` stands in front (3 neutrons).
+ */
+export type Nuclide =
+  | { mass: NumOrVar; atomic: NumOrVar; symbol?: string; count?: NumOrVar }
+  | { particle: 'alpha' | 'beta' | 'positron' | 'neutron' | 'gamma'; count?: NumOrVar };
+
+/**
+ * Radioactive decay (H57).
+ *
+ * - The decay (no `mode`): a grid of 100 atoms of the parent, and after `time` the ones that
+ *   have decayed turned to the daughter, in an order drawn at random from a fixed seed; as many
+ *   are left as the half-life says, 100 × (1/2)^(t ÷ T), rounded. Beside it, the decay curve of
+ *   the amount left (`start` at t = 0) with each half-life dashed, and the point at `time`
+ *   (drag it along). `left` names the amount left and `halves` the half-lives passed (both
+ *   checked). `parent` and `daughter` name the isotopes ('C-14', 'N-14').
+ * - 'equation': a nuclear equation, `left` → `right`, each term with its mass number over its
+ *   atomic number, and the two sums under it (checked to balance).
+ */
+export type DecayChartSpec =
+  | {
+      kind: 'decayChart';
+      mode?: 'decay';
+      halfLife: NumOrVar;
+      time: NumOrVar;
+      start: NumOrVar;
+      left?: NumOrVar;
+      halves?: NumOrVar;
+      parent?: string;
+      daughter?: string;
+      keep?: string[];
+      fixed?: boolean;
+    }
+  | { kind: 'decayChart'; mode: 'equation'; left: Nuclide[]; right: Nuclide[] };
+
+export type HsjSpec =
+  GasPistonSpec | EnergyProfileSpec | EquilibriumChartSpec | PhScaleSpec | DecayChartSpec;
 
 /** Every variable id a group J picture refers to (for the module tests). */
 export function hsjSpecVars(r: HsjSpec): string[] {
@@ -290,5 +329,12 @@ export function hsjSpecVars(r: HsjSpec): string[] {
             r.equivalence,
           )
         : ids(r.pH, r.hydrogen, r.hydroxide, r.pOH);
+    case 'decayChart': {
+      if (r.mode !== 'equation') return ids(r.halfLife, r.time, r.start, r.left, r.halves);
+      const terms = [...r.left, ...r.right];
+      return ids(
+        ...terms.flatMap((t) => ('particle' in t ? [t.count] : [t.mass, t.atomic, t.count])),
+      );
+    }
   }
 }

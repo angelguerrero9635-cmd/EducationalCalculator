@@ -1722,13 +1722,450 @@ const ACIDS: ModuleDef[] = [
   },
 ];
 
+// ─── H57 decayChart ──────────────────────────────────────────────────────────
+
+/** n = t ÷ T: the half-lives in a time. */
+const halvesRule: Rule = {
+  relation: {
+    id: 'n = t/T',
+    display: '{n} = {t}/{T}',
+    vars: ['n', 't', 'T'],
+    residual: (v) => v.n! * v.T! - v.t!,
+    solve: { n: (v) => div(v.t!, v.T!), t: (v) => v.n! * v.T!, T: (v) => div(v.t!, v.n!) },
+  },
+  steps: {
+    n: { expr: '{t}/{T}', how: 'Count how many half-lives fit in the time.' },
+    t: { expr: '{n} × {T}', how: 'Each half-life takes T: multiply.' },
+    T: { expr: '{t}/{n}', how: 'Share the time among the half-lives.' },
+  },
+};
+
+/** What is left: N = N₀ × (1/2)^n, or a percent: p = 100 × (1/2)^n. */
+const leftRule = (N: string, N0: string | number): Rule => {
+  const start = (v: Record<string, number | undefined>) => (typeof N0 === 'number' ? N0 : v[N0]!);
+  const s = typeof N0 === 'number' ? String(N0) : `{${N0}}`;
+  return {
+    relation: {
+      id: `${N} = ${typeof N0 === 'number' ? N0 : 'N₀'} × (1/2)^n`,
+      display: `{${N}} = ${s} × 0.5^({n})`,
+      vars: [N, ...(typeof N0 === 'number' ? [] : [N0]), 'n'],
+      residual: (v) => v[N]! - start(v) * 0.5 ** v.n!,
+      solve: {
+        [N]: (v) => start(v) * 0.5 ** v.n!,
+        n: (v) =>
+          v[N]! > 0 && start(v) > 0 ? Math.log(start(v) / v[N]!) / Math.log(2) : undefined,
+        ...(typeof N0 === 'number'
+          ? {}
+          : { [N0]: (v: Record<string, number | undefined>) => v[N]! / 0.5 ** v.n! }),
+      },
+    },
+    steps: {
+      [N]: {
+        expr: `${s} × 0.5^({n})`,
+        how: 'Each half-life halves what is left: halve it n times.',
+      },
+      n: {
+        expr: `ln(${s}/{${N}})/ln(2)`,
+        how: 'Count the halvings with logs: how many times 2 goes into the drop.',
+      },
+      ...(typeof N0 === 'number'
+        ? {}
+        : {
+            [N0]: {
+              expr: `{${N}}/(0.5^({n}))`,
+              how: 'Double what is left once for each half-life.',
+            },
+          }),
+    },
+  };
+};
+
+const timeVar = (
+  id: string,
+  symbol: string,
+  name: string,
+  unit: string,
+  max: number,
+): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit,
+  min: 0,
+  max,
+  step: max > 1e6 ? 1000 : 0.01,
+});
+
+const DECAY_ASSUMPTIONS = [
+  'In each half-life, half of the atoms still there decay.',
+  'Which atom decays next is random; the half-life says how many.',
+];
+
+/** A nuclear equation page: the parent's A and Z, the daughter's, and the parent's neutrons. */
+const nuclear = (
+  id: string,
+  title: string,
+  use: string,
+  daughter: { dA: number; dZ: number; how: string },
+  example: { A: number; Z: number },
+  particle: 'alpha' | 'beta',
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions: [
+    'A nucleus is written with its mass number (protons + neutrons) over its atomic number.',
+    'Both numbers add to the same on each side of a nuclear equation.',
+  ],
+  variables: [
+    { id: 'A', symbol: 'A', name: 'Mass number of the parent', min: 1, max: 300, integer: true },
+    { id: 'Z', symbol: 'Z', name: 'Atomic number of the parent', min: 1, max: 118, integer: true },
+    {
+      id: 'A2',
+      symbol: 'A′',
+      name: 'Mass number of the daughter',
+      min: 0,
+      max: 300,
+      integer: true,
+    },
+    {
+      id: 'Z2',
+      symbol: 'Z′',
+      name: 'Atomic number of the daughter',
+      min: 1,
+      max: 118,
+      integer: true,
+    },
+    { id: 'N', symbol: 'N', name: 'Neutrons in the parent', min: 0, max: 200, integer: true },
+  ],
+  ...rules(
+    {
+      relation: {
+        id: 'A′ = A − particle’s A',
+        display: daughter.dA ? `{A2} = {A} − ${daughter.dA}` : '{A2} = {A}',
+        vars: ['A2', 'A'],
+        residual: (v) => v.A2! - (v.A! - daughter.dA),
+        solve: { A2: (v) => v.A! - daughter.dA, A: (v) => v.A2! + daughter.dA },
+      },
+      steps: {
+        A2: { expr: daughter.dA ? `{A} − ${daughter.dA}` : '{A}', how: daughter.how },
+        A: {
+          expr: daughter.dA ? `{A2} + ${daughter.dA}` : '{A2}',
+          how: 'Add back what the particle carried off.',
+        },
+      },
+    },
+    {
+      relation: {
+        id: 'Z′ = Z − particle’s Z',
+        display: `{Z2} = {Z} ${daughter.dZ < 0 ? '+' : '−'} ${Math.abs(daughter.dZ)}`,
+        vars: ['Z2', 'Z'],
+        residual: (v) => v.Z2! - (v.Z! - daughter.dZ),
+        solve: { Z2: (v) => v.Z! - daughter.dZ, Z: (v) => v.Z2! + daughter.dZ },
+      },
+      steps: {
+        Z2: {
+          expr: `{Z} ${daughter.dZ < 0 ? '+' : '−'} ${Math.abs(daughter.dZ)}`,
+          how: 'The atomic numbers balance too; the new atomic number names the new element.',
+        },
+        Z: {
+          expr: `{Z2} ${daughter.dZ < 0 ? '−' : '+'} ${Math.abs(daughter.dZ)}`,
+          how: 'Undo the particle’s change to the atomic number.',
+        },
+      },
+    },
+    {
+      relation: {
+        id: 'N = A − Z',
+        display: '{N} = {A} − {Z}',
+        vars: ['N', 'A', 'Z'],
+        residual: (v) => v.N! - (v.A! - v.Z!),
+        solve: { N: (v) => v.A! - v.Z!, A: (v) => v.N! + v.Z!, Z: (v) => v.A! - v.N! },
+      },
+      steps: {
+        N: {
+          expr: '{A} − {Z}',
+          how: 'The mass number counts protons and neutrons: take the protons away.',
+        },
+        A: { expr: '{N} + {Z}', how: 'Add the neutrons and the protons.' },
+        Z: { expr: '{A} − {N}', how: 'Take the neutrons from the mass number.' },
+      },
+    },
+  ),
+  example: {
+    ...example,
+    A2: example.A - daughter.dA,
+    Z2: example.Z - daughter.dZ,
+    N: example.A - example.Z,
+  },
+  startWith: ['A', 'Z'],
+  pictureLabels: ['N'],
+  representation: {
+    kind: 'decayChart',
+    mode: 'equation',
+    left: [{ mass: 'A', atomic: 'Z' }],
+    right: [{ mass: 'A2', atomic: 'Z2' }, { particle }],
+  },
+});
+
+const DECAY: ModuleDef[] = [
+  {
+    id: 'g.s10-nuclear-chemistry-decay-grid',
+    title: 'Half-life: atoms decaying',
+    use: 'Use this for “Iodine-131 has a half-life of 8 days. How much of an 80 g sample is left after 24 days?”',
+    assumptions: DECAY_ASSUMPTIONS,
+    variables: [
+      { ...timeVar('T', 'T', 'Half-life', 'days', 100000), min: 0.001 },
+      timeVar('t', 't', 'Time', 'days', 1000000),
+      { id: 'n', symbol: 'n', name: 'Half-lives passed', min: 0, max: 60, step: 0.0001 },
+      {
+        id: 'N0',
+        symbol: 'N₀',
+        name: 'Amount at the start',
+        unit: 'g',
+        units: ['g'],
+        min: 0.001,
+        max: 100000,
+        step: 0.001,
+      },
+      {
+        id: 'N',
+        symbol: 'N',
+        name: 'Amount left',
+        unit: 'g',
+        units: ['g'],
+        min: 0,
+        max: 100000,
+        step: 0.0001,
+      },
+    ],
+    unitSystems: ['metric'],
+    ...rules(halvesRule, leftRule('N', 'N0')),
+    example: { T: 8, t: 24, n: 3, N0: 80, N: 10 },
+    startWith: ['T', 't', 'N0'],
+    representation: {
+      kind: 'decayChart',
+      halfLife: 'T',
+      time: 't',
+      start: 'N0',
+      left: 'N',
+      halves: 'n',
+      parent: 'I-131',
+      daughter: 'Xe-131',
+      keep: ['T', 'N0'],
+    },
+  },
+  {
+    id: 'g.s12-radiometric-dating-carbon',
+    title: 'Carbon-14 dating',
+    use: 'Use this for “A bone has 25% of its carbon-14 left. Carbon-14’s half-life is 5,730 years. How old is it?”',
+    assumptions: [
+      ...DECAY_ASSUMPTIONS,
+      'A living thing keeps the same share of carbon-14 as the air; when it dies, the clock starts.',
+    ],
+    variables: [
+      { ...timeVar('T', 'T', 'Half-life', 'years', 1e11), min: 0.01 },
+      timeVar('t', 't', 'Age', 'years', 1e11),
+      { id: 'n', symbol: 'n', name: 'Half-lives passed', min: 0, max: 60, step: 0.0001 },
+      {
+        id: 'p',
+        symbol: 'p',
+        name: 'Carbon-14 left',
+        unit: '%',
+        min: 0.0001,
+        max: 100,
+        step: 0.01,
+      },
+    ],
+    ...rules(halvesRule, leftRule('p', 100)),
+    example: { T: 5730, t: 11460, n: 2, p: 25 },
+    startWith: ['T', 'p'],
+    representation: {
+      kind: 'decayChart',
+      halfLife: 'T',
+      time: 't',
+      start: 100,
+      left: 'p',
+      halves: 'n',
+      parent: 'C-14',
+      daughter: 'N-14',
+      keep: ['T'],
+    },
+  },
+  {
+    id: 'g.s12-radiometric-dating-uranium',
+    title: 'Dating the oldest rocks',
+    use: 'Use this for “A zircon has half its uranium-238 left (half-life 4.47 × 10⁹ years). How old is it?”',
+    assumptions: [
+      ...DECAY_ASSUMPTIONS,
+      'Uranium-238 decays, step by step, to lead-206; the rock started with no lead-206.',
+    ],
+    variables: [
+      { ...{ ...timeVar('T', 'T', 'Half-life', 'years', 1e11), min: 0.01 }, scientific: true },
+      { ...timeVar('t', 't', 'Age', 'years', 1e11), scientific: true },
+      { id: 'n', symbol: 'n', name: 'Half-lives passed', min: 0, max: 60, step: 0.0001 },
+      {
+        id: 'p',
+        symbol: 'p',
+        name: 'Uranium-238 left',
+        unit: '%',
+        min: 0.0001,
+        max: 100,
+        step: 0.01,
+      },
+    ],
+    ...rules(halvesRule, leftRule('p', 100)),
+    example: { T: 4.47e9, t: 4.47e9, n: 1, p: 50 },
+    startWith: ['T', 'p'],
+    representation: {
+      kind: 'decayChart',
+      halfLife: 'T',
+      time: 't',
+      start: 100,
+      left: 'p',
+      halves: 'n',
+      parent: 'U-238',
+      daughter: 'Pb-206',
+      keep: ['T'],
+    },
+  },
+  nuclear(
+    'g.s10-nuclear-chemistry-equation-alpha',
+    'Alpha decay as an equation',
+    'Use this for “Write the equation for the alpha decay of uranium-238.”',
+    { dA: 4, dZ: 2, how: 'The alpha particle carries off 4 from the mass number.' },
+    { A: 238, Z: 92 },
+    'alpha',
+  ),
+  nuclear(
+    'g.s10-nuclear-chemistry-equation-beta',
+    'Beta decay as an equation',
+    'Use this for “Write the equation for the beta decay of carbon-14.”',
+    { dA: 0, dZ: -1, how: 'A beta particle has a mass number of 0: the mass number stays.' },
+    { A: 14, Z: 6 },
+    'beta',
+  ),
+  {
+    id: 'g.s10-nuclear-chemistry-fission',
+    title: 'Fission of uranium-235',
+    use: 'Use this for “U-235 takes in a neutron and splits into Ba-141, a second nucleus and 3 neutrons. What is the second nucleus?”',
+    assumptions: [
+      'A slow neutron splits the uranium-235 nucleus into two smaller ones and a few neutrons.',
+      'Mass numbers and atomic numbers add to the same on both sides.',
+    ],
+    variables: [
+      { id: 'A', symbol: 'A', name: 'Mass number of the uranium', min: 1, max: 300, integer: true },
+      {
+        id: 'Z',
+        symbol: 'Z',
+        name: 'Atomic number of the uranium',
+        min: 57,
+        max: 118,
+        integer: true,
+      },
+      { id: 'k', symbol: 'k', name: 'Neutrons given off', min: 1, max: 5, integer: true },
+      {
+        id: 'Ak',
+        symbol: 'A′',
+        name: 'Mass number of the second nucleus',
+        min: 1,
+        max: 300,
+        integer: true,
+      },
+      {
+        id: 'Zk',
+        symbol: 'Z′',
+        name: 'Atomic number of the second nucleus',
+        min: 1,
+        max: 118,
+        integer: true,
+      },
+      { id: 'N', symbol: 'N', name: 'Neutrons in the uranium', min: 0, max: 200, integer: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'A′ = A + 1 − 141 − k',
+          display: '{Ak} = {A} + 1 − 141 − {k}',
+          vars: ['Ak', 'A', 'k'],
+          residual: (v) => v.Ak! - (v.A! + 1 - 141 - v.k!),
+          solve: {
+            Ak: (v) => v.A! + 1 - 141 - v.k!,
+            A: (v) => v.Ak! - 1 + 141 + v.k!,
+            k: (v) => v.A! + 1 - 141 - v.Ak!,
+          },
+        },
+        steps: {
+          Ak: {
+            expr: '{A} + 1 − 141 − {k}',
+            how: 'The mass numbers on the left add to A + 1; take the barium’s and the neutrons’.',
+          },
+          A: {
+            expr: '{Ak} − 1 + 141 + {k}',
+            how: 'The right side’s mass numbers, less the neutron’s 1.',
+          },
+          k: {
+            expr: '{A} + 1 − 141 − {Ak}',
+            how: 'Whatever mass number is left over is neutrons.',
+          },
+        },
+      },
+      {
+        relation: {
+          id: 'Z′ = Z − 56',
+          display: '{Zk} = {Z} − 56',
+          vars: ['Zk', 'Z'],
+          residual: (v) => v.Zk! - (v.Z! - 56),
+          solve: { Zk: (v) => v.Z! - 56, Z: (v) => v.Zk! + 56 },
+        },
+        steps: {
+          Zk: {
+            expr: '{Z} − 56',
+            how: 'Barium has 56 protons; the rest are in the second nucleus.',
+          },
+          Z: { expr: '{Zk} + 56', how: 'Add back barium’s 56 protons.' },
+        },
+      },
+      {
+        relation: {
+          id: 'N = A − Z (fission)',
+          display: '{N} = {A} − {Z}',
+          vars: ['N', 'A', 'Z'],
+          residual: (v) => v.N! - (v.A! - v.Z!),
+          solve: { N: (v) => v.A! - v.Z!, A: (v) => v.N! + v.Z!, Z: (v) => v.A! - v.N! },
+        },
+        steps: {
+          N: { expr: '{A} − {Z}', how: 'Take the protons from the mass number.' },
+          A: { expr: '{N} + {Z}', how: 'Add the neutrons and the protons.' },
+          Z: { expr: '{A} − {N}', how: 'Take the neutrons from the mass number.' },
+        },
+      },
+    ),
+    example: { A: 235, Z: 92, k: 3, Ak: 92, Zk: 36, N: 143 },
+    startWith: ['A', 'Z', 'k'],
+    pictureLabels: ['N'],
+    representation: {
+      kind: 'decayChart',
+      mode: 'equation',
+      left: [{ mass: 'A', atomic: 'Z' }, { particle: 'neutron' }],
+      right: [
+        { mass: 141, atomic: 56 },
+        { mass: 'Ak', atomic: 'Zk' },
+        { particle: 'neutron', count: 'k' },
+      ],
+    },
+  },
+];
+
 export const HSJ_GALLERY_MODULES: ModuleDef[] = [
   ...GAS,
   ...SOLUTIONS,
   ...ENERGY,
   ...EQUILIBRIUM,
   ...ACIDS,
+  ...DECAY,
 ];
+
 // ─── H56 electrochemicalCell (explore) ───────────────────────────────────────
 
 const GALVANIC_LAYOUT: LayoutDef = {

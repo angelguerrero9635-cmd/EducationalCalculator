@@ -8,6 +8,8 @@ import {
   molesPerParticle,
   particleCount,
 } from '@/components/module/reps/gasModel';
+import { element } from '@/components/module/reps/chem';
+import { GRID_ATOMS, PARTICLES, atomsLeft, shareLeft } from '@/components/module/reps/decayModel';
 import { PEAK, profileAt } from '@/components/module/reps/energyModel';
 import { quotient, stages } from '@/components/module/reps/equilibriumModel';
 import { equivalenceVolume, titrationPH } from '@/components/module/reps/phModel';
@@ -15,7 +17,7 @@ import { solubilityAt } from '@/components/module/reps/solubility';
 import type { VariableDef } from '@/engine/types';
 import { convert, getUnit } from '@/engine/units';
 
-import type { BeakerSolution, GasState, HsjSpec } from '../typesHsj';
+import type { BeakerSolution, GasState, HsjSpec, Nuclide } from '../typesHsj';
 import type { NumOrVar } from '../typesGraphs';
 
 /** Equal to display rounding (values are read as shown, 4 decimals or 4 significant figures). */
@@ -193,6 +195,48 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       const oh = num(rep.hydroxide);
       if (oh !== undefined && !near(oh, 10 ** (ph - 14), 5e-3))
         out.push(`[OH⁻] ${oh} is not 10^(${ph} − 14)`);
+      break;
+    }
+    case 'decayChart': {
+      if (rep.mode === 'equation') {
+        // Mass numbers and atomic numbers balance; a symbol given matches its atomic number.
+        const terms = (ts: Nuclide[]) =>
+          ts.map((t) => {
+            const count = t.count === undefined ? 1 : num(t.count);
+            if ('particle' in t) {
+              const p = PARTICLES[t.particle];
+              return { mass: p.mass, atomic: p.atomic, count, symbol: undefined };
+            }
+            return { mass: num(t.mass), atomic: num(t.atomic), count, symbol: t.symbol };
+          });
+        const [l, r] = [terms(rep.left), terms(rep.right)];
+        const all = [...l, ...r];
+        if (
+          all.some((t) => t.mass === undefined || t.atomic === undefined || t.count === undefined)
+        )
+          break;
+        const sum = (ts: typeof l, k: 'mass' | 'atomic') =>
+          ts.reduce((s, t) => s + t.count! * t[k]!, 0);
+        for (const k of ['mass', 'atomic'] as const)
+          if (Math.abs(sum(l, k) - sum(r, k)) > 1e-9)
+            out.push(`${k} numbers ${sum(l, k)} → ${sum(r, k)} don't balance`);
+        for (const t of all)
+          if (t.symbol && element(t.symbol)?.z !== t.atomic)
+            out.push(`${t.symbol} is not element ${t.atomic}`);
+        break;
+      }
+      const [T, t, n0] = [num(rep.halfLife), num(rep.time), num(rep.start)];
+      if (T === undefined || t === undefined || n0 === undefined) break;
+      if (!(T > 0)) out.push(`half-life ${T} is not positive`);
+      const left = num(rep.left);
+      if (left !== undefined && !near(left, n0 * shareLeft(t, T), 2e-3))
+        out.push(`left ${left} is not ${n0} × (1/2)^(${t} ÷ ${T})`);
+      const halves = num(rep.halves);
+      if (halves !== undefined && !near(halves, t / T, 1e-3))
+        out.push(`half-lives ${halves} is not ${t} ÷ ${T}`);
+      const atoms = atomsLeft(t, T);
+      if (atoms < 0 || atoms > GRID_ATOMS || Math.abs(atoms - GRID_ATOMS * shareLeft(t, T)) > 0.5)
+        out.push(`grid shows ${atoms} atoms left`);
       break;
     }
   }

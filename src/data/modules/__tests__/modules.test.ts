@@ -502,6 +502,7 @@ function representationVars(r: Representation): string[] {
     case 'energyProfile':
     case 'equilibriumChart':
     case 'phScale':
+    case 'decayChart':
       return hsjSpecVars(r);
   }
 }

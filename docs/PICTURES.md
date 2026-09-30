@@ -90,6 +90,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `energyProfile`    | reaction energy: levels, Eₐ hump, ΔH, catalyst dashed; calorimeter    | Grade 10 thermochemistry (H53)      |
 | `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift       | Grade 10 equilibrium (H54)          |
 | `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve           | Grade 10 acids and bases (H55)      |
+| `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced   | Grades 10, 12 nuclear, dating (H57) |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

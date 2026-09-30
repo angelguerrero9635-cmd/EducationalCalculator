@@ -2096,6 +2096,7 @@ export function repIssues(
     case 'energyProfile':
     case 'equilibriumChart':
     case 'phScale':
+    case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
       break;
     case 'table':

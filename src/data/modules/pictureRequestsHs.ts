@@ -919,12 +919,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn: explore figure { kind: 'electrochemicalCell' } (layouts/galvanicFigure.tsx; scene type GalvanicScene in typesHsj.ts). Two metal electrodes, each in a glass beaker of its own ion's solution (Cu²⁺ blue, Ni²⁺ and Fe²⁺ green, the others clear), a copper wire through a voltmeter or a bulb, and a KNO₃ salt bridge. From the standard reduction potentials (Mg, Al, Zn, Fe, Ni, Pb, Cu, Ag) the figure works out the anode (the lower E°), sends electrons along the wire from it to the cathode, drifts NO₃⁻ toward the anode and K⁺ toward the cathode in the bridge, writes both half-reactions under the beakers (oxidation, reduction) and reads E° = E°cathode − E°anode on the meter; the anode is eaten away at its foot and the cathode wears a coat of its metal. Scene field: galvanic { metals: [left, right], meter? ('voltmeter' | 'bulb'), lit? ('electrons' | 'anode' | 'cathode' | 'bridge' | 'meter') }. Example: figure { kind: 'electrochemicalCell' }, scenes [{ label: 'Electrons', galvanic: { metals: ['Zn', 'Cu'], lit: 'electrons' }, lines: ['…'] }, { label: 'Copper as anode', galvanic: { metals: ['Ag', 'Cu'], lit: 'anode' }, lines: ['…'] }]. Harness (layoutFiguresHsj.ts): two different known metals, the anode the lower E°, the voltage positive and E°cathode − E°anode.",
   },
-  ask(
-    'H57',
-    'decayChart',
-    'Half-life: a grid of atoms decaying, what is left after n half-lives, the decay curve; nuclear equations',
-    ['s.10.nuclear-chemistry', 's.12.radiometric-dating'],
-  ),
+  {
+    ...ask(
+      'H57',
+      'decayChart',
+      'Half-life: a grid of atoms decaying, what is left after n half-lives, the decay curve; nuclear equations',
+      ['s.10.nuclear-chemistry', 's.12.radiometric-dating'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-nuclear-chemistry-decay-grid',
+      'g.s12-radiometric-dating-carbon',
+      'g.s12-radiometric-dating-uranium',
+      'g.s10-nuclear-chemistry-equation-alpha',
+      'g.s10-nuclear-chemistry-equation-beta',
+      'g.s10-nuclear-chemistry-fission',
+    ],
+    notes:
+      "Drawn: kind decayChart (typesHsj.ts). The decay (no mode) { halfLife, time, start (numbers or variables; the time unit from the variable: days, years), left? (checked as start × (1/2)^(t ÷ T)), halves? (checked as t ÷ T), parent? ('C-14'), daughter? ('N-14'), keep?, fixed? }: a 10 × 10 grid of parent atoms where 100 × (1/2)^(t ÷ T) (rounded) are left and the rest have turned to the daughter, which ones from a fixed random order; a key with both counts; and the decay curve of the amount left with every half-life dashed to both axes (x ticks at multiples of T, big times as 4.47 × 10⁹) and the point at `time`, dragged along the curve. mode 'equation' { left: Nuclide[], right: Nuclide[] }, a Nuclide { mass, atomic, symbol? (from the atomic number when left out, so the daughter's symbol follows the student's Z), count? } or { particle: 'alpha' | 'beta' | 'positron' | 'neutron' | 'gamma', count? }: each mass number over its atomic number beside the symbol, and both sums under the equation (checked to balance). Radiometric dating reuses the decay mode with start 100 and left as a percent. Examples: { kind: 'decayChart', halfLife: 'T', time: 't', start: 'N0', left: 'N', halves: 'n', parent: 'I-131', daughter: 'Xe-131', keep: ['T', 'N0'] }; { kind: 'decayChart', halfLife: 'T', time: 't', start: 100, left: 'p', halves: 'n', parent: 'C-14', daughter: 'N-14' }; { kind: 'decayChart', mode: 'equation', left: [{ mass: 'A', atomic: 'Z' }], right: [{ mass: 'A2', atomic: 'Z2' }, { particle: 'alpha' }] }. Step text writes the power as 0.5^(n) so a tiny n in scientific notation stays one exponent.",
+  },
 
   // ── F. Physics ──
   ask(
