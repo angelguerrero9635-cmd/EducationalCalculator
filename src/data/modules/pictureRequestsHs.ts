@@ -950,12 +950,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK, reps/Projectile.tsx, the physics in hskMath.ts). Calculator picture { kind: "projectile", speed: v₀, angle: θ in degrees (0 to 90 on the demos, −90 to 90 allowed), height?: launch height (number or variable, default 0), g?: 9.8, vx?, vy?, time?: flight time T, range?: R, peak?: H (checked when named), at?: a time t (the ball drawn there, its position labelled; the path continues dashed past the landing), x?, y?: the position at t, parametric?: true (captions x(t) and y(t) for m.12.parametric), fixed?: true }. Drawn to scale, one unit the same both ways, on soil with a grass edge and a rock cliff under a raised launch: the path, the ball at launch, at the top and on landing (or at t) with its velocity (ink) and components vₓ (green, steady) and v_y (orange, changing), H dashed, R along the ground, the angle arc. Drag the tip of the launch velocity to change the angle. Drawn in SI whatever units the boxes show. The harness checks vₓ, v_y, T, R, H and x(t), y(t) against the launch values. Example: representation: { kind: "projectile", speed: "v", angle: "q", height: "h", vx: "x", vy: "y", time: "T", range: "R", peak: "H" }; parametric: { kind: "projectile", speed: "v", angle: "q", height: "h", at: "t", x: "X", y: "Y", parametric: true }.',
   },
-  ask(
-    'H60',
-    'freeBody',
-    'Free-body diagram with scaled force arrows (weight, normal, friction, tension, applied); an incline with components',
-    ['s.11.dynamics-vectors', 's.11.circular-gravitation'],
-  ),
+  {
+    ...ask(
+      'H60',
+      'freeBody',
+      'Free-body diagram with scaled force arrows (weight, normal, friction, tension, applied); an incline with components',
+      ['s.11.dynamics-vectors', 's.11.circular-gravitation'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-dynamics-vectors-push',
+      'g.s11-dynamics-vectors-rope',
+      'g.s11-dynamics-vectors-incline',
+      'g.s11-dynamics-vectors-steep',
+      'g.s11-dynamics-vectors-elevator',
+    ],
+    notes:
+      'Drawn (group HK, reps/FreeBody.tsx, the forces in hskMath.ts freeBodyOf). Calculator picture { kind: "freeBody", support: "floor" | "incline" | "hanging", mass, g?: 9.8, incline?: θ (degrees, incline), weight?, normal?, friction?: μF_N (kinetic, or the most static friction holds), mu?: μ (for the caption), applied?: F and appliedAngle? (degrees above level; up the slope on an incline), tension?: T and tensionAngle? (a rope drawn on the floor), along?: W sin θ, net?, acceleration?, moving?: "right" | "left" | "up" | "down" (already sliding: kinetic friction full size against the motion, net counted + that way; without it the block starts at rest and friction is capped as static friction, the caption saying it stays put), fixed?: true }. A wooden block on a floor, on a ramp drawn at θ, or hanging from a beam; every force an arrow from its center on one scale in N (weight, normal, friction, tension, applied, each its own color and labelled W, F_N, f or f_s, T, F with its value); on an incline the weight’s components W sin θ and W cos θ dashed with θ marked between W and W cos θ; the net force as a separate arrow beside the block (F_net = 0 when balanced). Drag the applied force’s or the rope’s tip along its line. Captions work weight, normal force, friction, net force and a = F_net/m in words (Weight, Normal force, Net force) since plain text has no subscripts. The harness checks W = mg, F_N, W sin θ, F_net (signed along the motion when moving) and a. Example: representation: { kind: "freeBody", support: "incline", moving: "down", mass: "m", incline: "q", weight: "W", along: "P", normal: "N", friction: "f", mu: "k", net: "n", acceleration: "a" }. For the circular-gravitation page, "hanging" draws a mass on a string at the bottom of its swing (tension up, weight down, the net force toward the center).',
+  },
   ask(
     'H61',
     'circularMotion',

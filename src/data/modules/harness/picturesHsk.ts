@@ -4,7 +4,7 @@
  * Values are read in the shown units; pages built on these pictures use SI units.
  */
 import type { VariableDef } from '@/engine/types';
-import { projectileOf } from '@/components/module/reps/hskMath';
+import { freeBodyOf, projectileOf } from '@/components/module/reps/hskMath';
 
 import type { MotionGraphSpec } from '../typesMechanics';
 import type { HskSpec } from '../typesHsk';
@@ -69,6 +69,60 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
         if (t < 0) out.push(`projectile: time ${t} is before the launch`);
         same(rep.x, p.vx * t, 'x');
         same(rep.y, h + p.vy * t - ((rep.g ?? 9.8) * t * t) / 2, 'y');
+      }
+      break;
+    }
+    case 'freeBody': {
+      const m = si(rep.mass);
+      if (m !== undefined && m < 0) out.push(`freeBody: mass ${m} is negative`);
+      const th = read(si, rep.incline, 0);
+      if (rep.support === 'incline' && th !== undefined && (th < 0 || th >= 90))
+        out.push(`freeBody: incline ${th}° is not from 0° to 90°`);
+      const parts = [rep.applied, rep.appliedAngle, rep.tension, rep.tensionAngle, rep.friction];
+      const vals = parts.map((x) => read(si, x, 0));
+      if (m === undefined || th === undefined || vals.some((x) => x === undefined)) break;
+      const [F, phi, T, psi, f] = vals as [number, number, number, number, number];
+      for (const [x, what] of [
+        [F, 'applied force'],
+        [T, 'tension'],
+        [f, 'friction'],
+      ] as const)
+        if (x! < 0) out.push(`freeBody: ${what} ${x} is negative`);
+      const dir = rep.moving === 'right' || rep.moving === 'up' ? 1 : rep.moving ? -1 : undefined;
+      const fb = freeBodyOf({
+        support: rep.support,
+        m,
+        g: rep.g ?? 9.8,
+        theta: th,
+        F,
+        phi,
+        T,
+        psi,
+        f,
+        moving: dir,
+      });
+      // Net along the motion, signed; else its size (a rope's up or down counted either way).
+      const rad = (th * Math.PI) / 180;
+      const signed = dir
+        ? dir *
+          (rep.support === 'incline'
+            ? fb.net.x * Math.cos(rad) + fb.net.y * Math.sin(rad)
+            : fb.net.x)
+        : undefined;
+      same(rep.weight, fb.W, 'weight');
+      if (rep.support !== 'hanging') same(rep.normal, fb.N, 'normal force');
+      same(rep.along, fb.W * Math.sin((th * Math.PI) / 180), 'weight down the slope');
+      const net = rep.net ? si(rep.net) : undefined;
+      // A net force the page counts signed (up or down a rope) is compared by size.
+      const cmp = (x: number, want: number) =>
+        signed !== undefined ? near(x, want) : near(Math.abs(x), Math.abs(want));
+      const want = signed ?? fb.netSize;
+      if (net !== undefined && !cmp(net, want))
+        out.push(`freeBody: net force ${net} is not the arrows' sum ${want}`);
+      if (m > 0) {
+        const a = rep.acceleration ? si(rep.acceleration) : undefined;
+        if (a !== undefined && !cmp(a, want / m))
+          out.push(`freeBody: acceleration ${a} is not F_net/m = ${fb.netSize / m}`);
       }
       break;
     }

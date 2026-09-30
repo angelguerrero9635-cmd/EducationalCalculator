@@ -185,6 +185,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
     case 'projectile':
+    case 'freeBody':
       return <HskView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;

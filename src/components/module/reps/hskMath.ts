@@ -12,3 +12,76 @@ export function projectileOf(v: number, deg: number, h: number, g = G_EARTH) {
   const T = (vy + Math.sqrt(Math.max(0, vy * vy + 2 * g * h))) / g;
   return { vx, vy, T, R: vx * T, H: vy > 0 ? h + (vy * vy) / (2 * g) : h };
 }
+
+const RAD_M = Math.PI / 180;
+
+/** A force on a free-body diagram, in newtons, x to the right and y up. */
+export interface Force {
+  key: 'weight' | 'normal' | 'friction' | 'tension' | 'applied';
+  fx: number;
+  fy: number;
+}
+
+/**
+ * The forces on a block (H60). `floor`: weight, the normal force balancing what is not
+ * lifted by an applied force or rope at their angles above level, and friction against the
+ * horizontal pull. `incline` (rising to the right at θ): weight, the normal force mg cos θ, an
+ * applied force or rope up the slope, friction along the slope against the rest. `hanging`: a
+ * rope's tension up and the weight. Friction never exceeds what would stop the block: past
+ * that it is static friction, equal to the rest (`isStatic`). A block already `moving` feels
+ * kinetic friction of its full size against the motion.
+ */
+export function freeBodyOf(inp: {
+  support: 'floor' | 'incline' | 'hanging';
+  m: number;
+  g: number;
+  theta: number;
+  F: number;
+  phi: number;
+  T: number;
+  psi: number;
+  f: number;
+  /** Already sliding: +1 along the surface's + way (right; up the slope), −1 the other way. */
+  moving?: 1 | -1;
+}) {
+  const { m, g, F, T } = inp;
+  const W = m * g;
+  const forces: Force[] = [{ key: 'weight', fx: 0, fy: -W }];
+  let N = 0;
+  let fUsed = 0;
+  let isStatic = false;
+  let driving = 0;
+  const friction = (ux: number, uy: number) => {
+    // Sliding: kinetic friction, its full size against the motion. At rest: at most what
+    // holds the block (static), against the rest of the forces.
+    fUsed = inp.moving ? Math.max(0, inp.f) : Math.min(Math.max(0, inp.f), Math.abs(driving));
+    isStatic = !inp.moving && inp.f > 0 && inp.f >= Math.abs(driving);
+    const sgn = inp.moving ? -inp.moving : -Math.sign(driving);
+    if (fUsed) forces.push({ key: 'friction', fx: sgn * fUsed * ux, fy: sgn * fUsed * uy });
+  };
+  if (inp.support === 'hanging') {
+    forces.push({ key: 'tension', fx: 0, fy: T });
+  } else if (inp.support === 'floor') {
+    const [cp, sp] = [Math.cos(inp.phi * RAD_M), Math.sin(inp.phi * RAD_M)];
+    const [cq, sq] = [Math.cos(inp.psi * RAD_M), Math.sin(inp.psi * RAD_M)];
+    if (F) forces.push({ key: 'applied', fx: F * cp, fy: F * sp });
+    if (T) forces.push({ key: 'tension', fx: T * cq, fy: T * sq });
+    N = Math.max(0, W - F * sp - T * sq);
+    driving = F * cp + T * cq;
+    forces.push({ key: 'normal', fx: 0, fy: N });
+    friction(1, 0);
+  } else {
+    const [c, s] = [Math.cos(inp.theta * RAD_M), Math.sin(inp.theta * RAD_M)];
+    N = W * c;
+    forces.push({ key: 'normal', fx: -s * N, fy: c * N });
+    if (F) forces.push({ key: 'applied', fx: F * c, fy: F * s });
+    if (T) forces.push({ key: 'tension', fx: T * c, fy: T * s });
+    driving = F + T - W * s;
+    friction(c, s);
+  }
+  const sum = forces.reduce((a, q) => ({ x: a.x + q.fx, y: a.y + q.fy }), { x: 0, y: 0 });
+  // Rounding leaves crumbs: a balanced direction is exactly 0.
+  const tidy = (x: number) => (Math.abs(x) < 1e-9 * Math.max(1, W, F, T) ? 0 : x);
+  const net = { x: tidy(sum.x), y: tidy(sum.y) };
+  return { W, N, fUsed, isStatic, driving, forces, net, netSize: Math.hypot(net.x, net.y) };
+}

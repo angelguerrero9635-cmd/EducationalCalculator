@@ -5,11 +5,14 @@
 import type { HskSpec } from '@/data/modules/typesHsk';
 
 import type { Calculator } from '../useCalculator';
+import { FreeBody } from './FreeBody';
 import { Projectile } from './Projectile';
 
 export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
   switch (spec.kind) {
     case 'projectile':
       return <Projectile spec={spec} calc={calc} />;
+    case 'freeBody':
+      return <FreeBody spec={spec} calc={calc} />;
   }
 }

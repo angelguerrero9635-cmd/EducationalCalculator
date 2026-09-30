@@ -486,5 +486,351 @@ const PROJECTILE_DEMOS: ModuleDef[] = [
   },
 ];
 
-export const HSK_GALLERY_MODULES: ModuleDef[] = [...KINEMATICS_DEMOS, ...PROJECTILE_DEMOS];
+// ─── Shared rules: a product, a difference, a sum ───────────────────────────
+
+/** out = a × b (or k × a with a number), each way, with the step text for each. */
+const product = (
+  out: string,
+  a: string,
+  b: string | number,
+  sym: string,
+  hows: [string, string, string?],
+): Rule => {
+  const bv = (v: Values) => (typeof b === 'number' ? b : v[b]!);
+  const bt = typeof b === 'number' ? String(b) : `{${b}}`;
+  return rule(sym, `{${out}} = {${a}} × ${bt}`, (v) => v[out]! - v[a]! * bv(v), {
+    [out]: [(v) => v[a]! * bv(v), `{${a}} × ${bt}`, hows[0]],
+    [a]: [(v) => div(v[out]!, bv(v)), `{${out}}/${bt}`, hows[1]],
+    ...(typeof b === 'string'
+      ? { [b]: [(v: Values) => div(v[out]!, v[a]!), `{${out}}/{${a}}`, hows[2] ?? hows[1]] }
+      : {}),
+  } as Record<string, [Solve, string, string]>);
+};
+
+/** out = a − b, each way. */
+const difference = (out: string, a: string, b: string, sym: string, how: string): Rule =>
+  rule(sym, `{${out}} = {${a}} − {${b}}`, (v) => v[out]! - (v[a]! - v[b]!), {
+    [out]: [(v) => v[a]! - v[b]!, `{${a}} − {${b}}`, how],
+    [a]: [(v) => v[out]! + v[b]!, `{${out}} + {${b}}`, 'Add back what was taken away.'],
+    [b]: [(v) => v[a]! - v[out]!, `{${a}} − {${out}}`, 'Take the result from the first.'],
+  });
+
+// ─── H60 freeBody ────────────────────────────────────────────────────────────
+
+const MASS = q('m', 'm', 'Mass', 'kg', 0.1, 1000, 0.1);
+const MU = q('k', 'μ', 'Coefficient of friction', undefined, 0.01, 1.5, 0.01);
+const WEIGHT = q('W', 'W', 'Weight', 'N', 0, 10000, 0.1);
+const NORMAL = q('N', 'Fₙ', 'Normal force', 'N', 0, 10000, 0.1);
+const FRICTION = q('f', 'f', 'Friction', 'N', 0, 10000, 0.1);
+const NET = q('n', 'Fₙₑₜ', 'Net force', 'N', -10000, 10000, 0.1);
+const ACC = q('a', 'a', 'Acceleration', 'm/s²', -100, 100, 0.01);
+
+const weightRule = product('W', 'm', 9.8, 'W = mg', [
+  'Earth pulls each kilogram with 9.8 N.',
+  'Divide the weight by 9.8 N/kg.',
+]);
+const frictionRule = product('f', 'k', 'N', 'f = μFₙ', [
+  'Friction is μ times the normal force pressing the surfaces together.',
+  'Divide the friction by the normal force.',
+  'Divide the friction by μ.',
+]);
+const newtonRule = product('n', 'm', 'a', 'Fₙₑₜ = ma', [
+  'Newton’s second law: the net force is the mass times the acceleration.',
+  'Divide the net force by the acceleration.',
+  'Divide the net force by the mass.',
+]);
+
+const FREE_BODY_DEMOS: ModuleDef[] = [
+  {
+    id: 'g.s11-dynamics-vectors-push',
+    title: 'Pushing a crate across the floor',
+    use: 'Use this for “A 10 kg crate is pushed with 50 N across a floor with μ = 0.3. What is its acceleration?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Up and down nothing moves: the normal force balances the weight.',
+      'Kinetic friction f = μFₙ acts against the motion.',
+      'The net force is the push minus friction, and Fₙₑₜ = ma.',
+    ],
+    variables: [
+      MASS,
+      q('F', 'F', 'Push', 'N', 0, 10000, 1),
+      MU,
+      WEIGHT,
+      NORMAL,
+      FRICTION,
+      NET,
+      ACC,
+    ],
+    ...rules(
+      weightRule,
+      rule('Fₙ = W', '{N} = {W}', (v) => v.N! - v.W!, {
+        N: [
+          (v) => v.W!,
+          '{W}',
+          'Nothing else pushes up or down, so the floor pushes up with the weight.',
+        ],
+        W: [(v) => v.N!, '{N}', 'The weight equals the normal force.'],
+      }),
+      frictionRule,
+      difference('n', 'F', 'f', 'Fₙₑₜ = F − f', 'The push forward less friction backward.'),
+      newtonRule,
+    ),
+    example: { m: 10, F: 50, k: 0.3, W: 98, N: 98, f: 29.4, n: 20.6, a: 2.06 },
+    startWith: ['m', 'F', 'k'],
+    representation: {
+      kind: 'freeBody',
+      support: 'floor',
+      moving: 'right',
+      mass: 'm',
+      applied: 'F',
+      weight: 'W',
+      normal: 'N',
+      friction: 'f',
+      mu: 'k',
+      net: 'n',
+      acceleration: 'a',
+    },
+  },
+  {
+    id: 'g.s11-dynamics-vectors-rope',
+    title: 'Pulling a sled by a rope at an angle',
+    use: 'Use this for “A 20 kg sled is pulled by a rope at 30° above level with 100 N; μ = 0.2. Find the normal force and the acceleration.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The rope’s tension has a part across, T cos θ, and a part up, T sin θ.',
+      'The part up lifts a little, so the ground pushes up less: Fₙ = W − T sin θ.',
+      'Less normal force means less friction.',
+    ],
+    variables: [
+      MASS,
+      q('T', 'T', 'Tension in the rope', 'N', 0, 10000, 1),
+      q('q', 'θ', 'Angle of the rope', '°', 0, 80, 1),
+      MU,
+      WEIGHT,
+      NORMAL,
+      FRICTION,
+      NET,
+      ACC,
+    ],
+    ...rules(
+      weightRule,
+      rule(
+        'Fₙ = W − T sin θ',
+        '{N} = {W} − {T} × sin({q})',
+        (v) => v.N! - v.W! + v.T! * Math.sin(v.q! * RAD),
+        {
+          N: [
+            (v) => v.W! - v.T! * Math.sin(v.q! * RAD),
+            '{W} − {T} × sin({q})',
+            'The rope lifts T sin θ of the weight; the ground holds the rest.',
+          ],
+          W: [
+            (v) => v.N! + v.T! * Math.sin(v.q! * RAD),
+            '{N} + {T} × sin({q})',
+            'The ground and the rope together hold the weight.',
+          ],
+          T: [
+            (v) => div(v.W! - v.N!, Math.sin(v.q! * RAD)),
+            '({W} − {N})/sin({q})',
+            'The rope lifts what the ground doesn’t.',
+          ],
+          q: undefined,
+        },
+      ),
+      frictionRule,
+      rule(
+        'Fₙₑₜ = T cos θ − f',
+        '{n} = {T} × cos({q}) − {f}',
+        (v) => v.n! - v.T! * Math.cos(v.q! * RAD) + v.f!,
+        {
+          n: [
+            (v) => v.T! * Math.cos(v.q! * RAD) - v.f!,
+            '{T} × cos({q}) − {f}',
+            'The rope’s pull across, less friction.',
+          ],
+          f: [
+            (v) => v.T! * Math.cos(v.q! * RAD) - v.n!,
+            '{T} × cos({q}) − {n}',
+            'The pull across less the net force.',
+          ],
+          T: [
+            (v) => div(v.n! + v.f!, Math.cos(v.q! * RAD)),
+            '({n} + {f})/cos({q})',
+            'The pull across is the net force plus friction.',
+          ],
+          q: undefined,
+        },
+      ),
+      newtonRule,
+    ),
+    example: {
+      m: 20,
+      T: 100,
+      q: 30,
+      k: 0.2,
+      W: 196,
+      N: 146,
+      f: 29.2,
+      n: 100 * Math.cos(30 * RAD) - 29.2,
+      a: (100 * Math.cos(30 * RAD) - 29.2) / 20,
+    },
+    startWith: ['m', 'T', 'q', 'k'],
+    representation: {
+      kind: 'freeBody',
+      support: 'floor',
+      moving: 'right',
+      mass: 'm',
+      tension: 'T',
+      tensionAngle: 'q',
+      weight: 'W',
+      normal: 'N',
+      friction: 'f',
+      mu: 'k',
+      net: 'n',
+      acceleration: 'a',
+    },
+  },
+  ...[
+    {
+      id: 'g.s11-dynamics-vectors-incline',
+      title: 'A block sliding down an incline',
+      use: 'Use this for “A 5 kg block slides down a 30° ramp with μ = 0.2. What is its acceleration?”',
+      ex: { m: 5, q: 30, k: 0.2 },
+    },
+    {
+      id: 'g.s11-dynamics-vectors-steep',
+      title: 'A steep, slippery ramp',
+      use: 'Use this for “A 2 kg box slides down a 60° ramp with μ = 0.1. How fast does it speed up?”',
+      ex: { m: 2, q: 60, k: 0.1 },
+    },
+  ].map(({ id, title, use, ex }): ModuleDef => {
+    const W = ex.m * 9.8;
+    const P = W * Math.sin(ex.q * RAD);
+    const N = W * Math.cos(ex.q * RAD);
+    const f = ex.k * N;
+    return {
+      id,
+      title,
+      use,
+      unitSystems: ['metric'],
+      assumptions: [
+        'Tilt the axes with the slope: the weight splits into W sin θ down the slope and W cos θ into it.',
+        'Into the slope nothing moves, so Fₙ = W cos θ.',
+        'Friction acts up the slope, against the sliding.',
+      ],
+      variables: [
+        MASS,
+        q('q', 'θ', 'Angle of the ramp', '°', 1, 80, 1),
+        MU,
+        WEIGHT,
+        q('P', 'W∥', 'Weight down the slope', 'N', 0, 10000, 0.1),
+        NORMAL,
+        FRICTION,
+        NET,
+        ACC,
+      ],
+      ...rules(
+        weightRule,
+        rule('W∥ = W sin θ', '{P} = {W} × sin({q})', (v) => v.P! - v.W! * Math.sin(v.q! * RAD), {
+          P: [
+            (v) => v.W! * Math.sin(v.q! * RAD),
+            '{W} × sin({q})',
+            'The part of the weight along the slope.',
+          ],
+          W: [
+            (v) => div(v.P!, Math.sin(v.q! * RAD)),
+            '{P}/sin({q})',
+            'Divide the part along the slope by sin θ.',
+          ],
+          q: [
+            (v) => {
+              const r = div(v.P!, v.W!);
+              return r === undefined || r > 1 ? undefined : Math.asin(r) / RAD;
+            },
+            'arcsin({P}/{W})',
+            'The angle whose sine is the part along the slope over the weight.',
+          ],
+        }),
+        rule('Fₙ = W cos θ', '{N} = {W} × cos({q})', (v) => v.N! - v.W! * Math.cos(v.q! * RAD), {
+          N: [
+            (v) => v.W! * Math.cos(v.q! * RAD),
+            '{W} × cos({q})',
+            'Into the slope the forces balance: the normal force is the weight’s part into it.',
+          ],
+          W: [
+            (v) => div(v.N!, Math.cos(v.q! * RAD)),
+            '{N}/cos({q})',
+            'Divide the normal force by cos θ.',
+          ],
+          q: [
+            (v) => {
+              const r = div(v.N!, v.W!);
+              return r === undefined || r > 1 ? undefined : Math.acos(r) / RAD;
+            },
+            'arccos({N}/{W})',
+            'The angle whose cosine is the normal force over the weight.',
+          ],
+        }),
+        frictionRule,
+        difference(
+          'n',
+          'P',
+          'f',
+          'Fₙₑₜ = W sin θ − f',
+          'Down the slope: the weight’s part less friction.',
+        ),
+        newtonRule,
+      ),
+      example: { ...ex, W, P, N, f, n: P - f, a: (P - f) / ex.m },
+      startWith: ['m', 'q', 'k'],
+      representation: {
+        kind: 'freeBody',
+        support: 'incline',
+        moving: 'down',
+        mass: 'm',
+        incline: 'q',
+        weight: 'W',
+        along: 'P',
+        normal: 'N',
+        friction: 'f',
+        mu: 'k',
+        net: 'n',
+        acceleration: 'a',
+      },
+    };
+  }),
+  {
+    id: 'g.s11-dynamics-vectors-elevator',
+    title: 'An elevator speeding up',
+    use: 'Use this for “The cable pulls a 600 kg elevator up with 7,000 N. What is its acceleration?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Only two forces: the cable’s tension up and the weight down.',
+      'More tension than weight: the net force is up and the elevator speeds up going up.',
+    ],
+    variables: [MASS, q('T', 'T', 'Tension in the cable', 'N', 0, 100000, 10), WEIGHT, NET, ACC],
+    ...rules(
+      weightRule,
+      difference('n', 'T', 'W', 'Fₙₑₜ = T − W', 'Up is +: the tension up less the weight down.'),
+      newtonRule,
+    ),
+    example: { m: 600, T: 7000, W: 5880, n: 1120, a: 1120 / 600 },
+    startWith: ['m', 'T'],
+    representation: {
+      kind: 'freeBody',
+      support: 'hanging',
+      mass: 'm',
+      tension: 'T',
+      weight: 'W',
+      net: 'n',
+      acceleration: 'a',
+    },
+  },
+];
+
+export const HSK_GALLERY_MODULES: ModuleDef[] = [
+  ...KINEMATICS_DEMOS,
+  ...PROJECTILE_DEMOS,
+  ...FREE_BODY_DEMOS,
+];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

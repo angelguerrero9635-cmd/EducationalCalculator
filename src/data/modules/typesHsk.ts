@@ -71,16 +71,78 @@ export interface ProjectileSpec {
   fixed?: boolean;
 }
 
+// ─── H60 freeBody ────────────────────────────────────────────────────────────
+
+/**
+ * A block and the forces on it, each arrow drawn from the block's center as long as its size
+ * (one scale in N for all), labelled with its name and value:
+ *
+ * - `floor`: weight down, the normal force up, an `applied` force (or a rope's `tension`) at
+ *   `appliedAngle` (`tensionAngle`) degrees above level, friction against the pull;
+ * - `incline` at `incline` degrees (rising to the right): weight, the normal force at right
+ *   angles to the slope, an applied force or rope up the slope, friction along it; the weight's
+ *   components mg sin θ and mg cos θ dashed, with θ marked between the weight and mg cos θ;
+ * - `hanging`: a rope's tension up and the weight (an elevator cable, a mass on a string).
+ *
+ * Friction is at most what stops the block: when `friction` (the most it can be, μN) is more
+ * than the rest along the surface, it is static and matches the rest (net 0). The net force is
+ * a separate arrow beside the block. `g` defaults to 9.8 N/kg.
+ */
+export interface FreeBodySpec {
+  kind: 'freeBody';
+  support: 'floor' | 'incline' | 'hanging';
+  mass: string;
+  g?: number;
+  incline?: NumOrVar;
+  weight?: string;
+  normal?: string;
+  /** The friction force (kinetic, or the most static friction can give). */
+  friction?: string;
+  /** The coefficient of friction μ, named in the caption. */
+  mu?: string;
+  applied?: NumOrVar;
+  appliedAngle?: NumOrVar;
+  tension?: NumOrVar;
+  tensionAngle?: NumOrVar;
+  /** The weight's component down the slope, mg sin θ (incline). */
+  along?: string;
+  /**
+   * The block is already sliding this way (floor: right or left; incline: up or down the
+   * slope): friction is kinetic, full size, against the motion, and `net` is counted + the
+   * way it moves (negative: slowing down). Without it the block starts at rest.
+   */
+  moving?: 'right' | 'left' | 'up' | 'down';
+  net?: string;
+  acceleration?: string;
+  fixed?: boolean;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
-export type HskSpec = ProjectileSpec;
+export type HskSpec = ProjectileSpec | FreeBodySpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
   switch (r.kind) {
     case 'projectile':
       return ids(r.speed, r.angle, r.height, r.time, r.range, r.peak, r.vx, r.vy, r.at, r.x, r.y);
+    case 'freeBody':
+      return ids(
+        r.mass,
+        r.incline,
+        r.weight,
+        r.normal,
+        r.friction,
+        r.mu,
+        r.applied,
+        r.appliedAngle,
+        r.tension,
+        r.tensionAngle,
+        r.along,
+        r.net,
+        r.acceleration,
+      );
   }
 }
 
