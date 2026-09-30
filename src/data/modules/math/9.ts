@@ -1227,7 +1227,7 @@ const FACTORING: ModuleDef[] = [
       int('c', 'c', 'Number taken away', 1, 100),
       tile('p', 'p', 'Square root of a', { derived: true }),
       tile('q', 'q', 'Square root of c', { derived: true }),
-      tile('u', '−q', 'Number in the second factor', { derived: true }),
+      tile('u', 'u', 'Number in the second bracket', { derived: true }),
       int('z', 'z', 'x terms, which cancel', -200, 200, { derived: true }),
     ],
     rules: [

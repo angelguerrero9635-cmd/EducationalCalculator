@@ -79,7 +79,8 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
     formatNumber(f === 1 ? bound : Number((bound / f).toPrecision(3)));
   // Whole numbers are compared exactly (the tolerance would let 2,000,000,001 pass 2e9).
   const shown = variable.integer ? Math.round(x / f) * f : x;
-  const slack = (bound: number) => (variable.integer ? 0 : TOLERANCE * (f + Math.abs(bound)));
+  const slack = (bound: number) =>
+    variable.integer ? 0 : TOLERANCE * (Math.min(1, f) + Math.abs(bound));
   if (variable.min !== undefined && shown < variable.min - slack(variable.min)) {
     return `Must be at least ${withUnit(limit(variable.min))}`;
   }
