@@ -1807,6 +1807,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.m10-coordinate-geometry-fit-small',
       'g.m10-coordinate-geometry-fit-20',
       'g.m10-rigid-motions-symmetry-parallelogram',
+      'g.m10-congruence-marked',
+      'g.m10-similarity-marked',
     ],
     notes: [
       'P8: docs/plans/m.10.md needs 4–7, 11, 12, 14. Group H2B; types in typesHs2b.ts, checks in harness/picturesHs2b.ts.',
@@ -1814,6 +1816,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Need 7 (circle-theorems ~cyclic-quadrilateral, ~chord-angle): circleTheorems theorem "cyclic" with cyclic { A?, B?, C?, D? } (value ids or numbers; A and B place the quadrilateral, B chosen for the widest figure when no value gives it; C and D checked: opposite angles add to 180°), ∠A\'s arc BCD blue and ∠C\'s arc DAB yellow; and theorem "arcAngle" with arcAngle { arcs: [p, q], angle?, where } where `where` is the + − box\'s code (`{o:op}`: 1 +, 2 −): 1 draws chords AB and CD crossing at E with ∠AEC = (arc AC + arc BD) ÷ 2, 2 draws secants from P with ∠P = (far arc BD − near arc AC) ÷ 2 (arcs are [far, near]). Examples: { kind: "circleTheorems", theorem: "cyclic", cyclic: { A: "a", C: "c" } }; { kind: "circleTheorems", theorem: "arcAngle", arcAngle: { arcs: ["p", "q"], angle: "x", where: "o" } } with equation "{x}° = ({p}° {o:op} {q}°) ÷ 2" and the relation written with (3 − 2 × {o}) as the sign (see the demo: a sign read as ±1 makes the solver take the relation for a straight-line sum).',
       'Need 11 (coordinate-geometry pages): coordinatePlane `fit: true` sizes the plane to the points drawn (both points, a polygon, a rectangle): the smallest of 5, 10 and 20, up to `extent`, that holds them with a unit to spare; past `extent` it grows as before. The pages keep `extent: 20` and add `fit: true`. Example: { kind: "coordinatePlane", x: "x1", y: "y1", second: { x: "x2", y: "y2" }, segment: true, legs: true, distance: "d", extent: 20, fit: true, quadrants: 4 } (the main page\'s example draws to ±10).',
       'Need 14 (rigid-motions~symmetry, MCAS-2026-G10M-#41): no new field. transformation `symmetry: true` already finds the lines and the turn order about the corners\' average, so a parallelogram drawn from values turns about its own center off the origin: order 2, no line of symmetry. The demo slides the top 2 across: figure [[1, 1], ["r", 1], ["p", "u"], [3, "u"]] with p = r + 2 a worked-out value, center ["a", "b"] at the diagonals\' crossing, move "rotate", angle "t", symmetry: true, extent 10, quadrants 1; w 2–6 and h 1–7 keep it on the grid.',
+      'Need 6 (congruence main, similarity~similar-or-not): card figure markedTriangles { triangles: [[a, b, c], [a, b, c]] (each by its sides BC, CA, AB, drawn to one scale), mirror?, ticks?: { a?, b?, c? } (counts), arcs?: { A?, B?, C? }, right?: ["C"], lengths?: true | ["b", "c"], names? }, 144 × 76. Marks mean what they say on both triangles (the harness checks equal ticks are equal sides, equal arcs equal angles, right marks 90°), so SSA and AAA cards draw two different triangles that share the marked parts. Example (SAS): { kind: "markedTriangles", triangles: [[6, 5, 4], [6, 5, 4]], mirror: true, ticks: { c: 1, a: 2 }, arcs: { B: 1 } }; the demos build the SSA pair from A = 40°, AB = 5, BC = 4 with the law of cosines.',
     ].join(' '),
   },
   ask(

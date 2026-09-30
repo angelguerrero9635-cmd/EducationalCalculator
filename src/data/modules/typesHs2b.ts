@@ -56,3 +56,36 @@ export function circleHs2bVars(r: CircleHs2b): string[] {
     ...(r.arcAngle ? [...r.arcAngle.arcs, r.arcAngle.angle, r.arcAngle.where] : []),
   ].filter((x): x is string => typeof x === 'string');
 }
+
+// ─── Card figures (sort cards and sequence stages) ───────────────────────────
+
+/** A triangle on a card by its sides [a, b, c]: BC, CA and AB (any unit; drawn to scale). */
+export type CardSides = [number, number, number];
+export type TriSide = 'a' | 'b' | 'c';
+export type TriCorner = 'A' | 'B' | 'C';
+
+/**
+ * Two triangles side by side, drawn to one scale from their sides, with the marks a
+ * congruence or similarity card needs. Marks mean what they say on both triangles: `ticks`
+ * sides with the same count are equal, `arcs` angles with the same count are equal, `right`
+ * angles are 90° (each checked). The second is ABC's partner DEF (a with d, …).
+ */
+export interface MarkedTrianglesCard {
+  kind: 'markedTriangles';
+  triangles: [CardSides, CardSides];
+  /** The second drawn turned over (its mirror image). */
+  mirror?: boolean;
+  /** Equal sides, the same count on both triangles: { a: 1, c: 2 }. */
+  ticks?: Partial<Record<TriSide, number>>;
+  /** Equal angles, the same count on both: { A: 1, B: 2 }. */
+  arcs?: Partial<Record<TriCorner, number>>;
+  /** Right angles, marked on both. */
+  right?: TriCorner[];
+  /** Side lengths written beside the sides (the numbers in `triangles`): all, or these sides. */
+  lengths?: boolean | TriSide[];
+  /** The corner letters A, B, C and D, E, F. */
+  names?: boolean;
+}
+
+/** The card figures group H2B adds (`components/module/layouts/cardFiguresHs2b.tsx`). */
+export type Hs2bCard = MarkedTrianglesCard;

@@ -506,4 +506,265 @@ const SYMMETRY: ModuleDef[] = [
 
 export const HS2B_GALLERY_MODULES: ModuleDef[] = [...REGULAR, ...CIRCLES, ...PLANES, ...SYMMETRY];
 
-export const HS2B_GALLERY_LAYOUTS: LayoutDef[] = [];
+// ─── Part 5: marked-triangle cards (m.10.congruence, m.10.similarity~similar-or-not) ─
+
+type Sides = [number, number, number];
+const RAD = Math.PI / 180;
+/** Side BC from AB = c, CA = b and the angle A between them (law of cosines). */
+const opposite = (A: number, b: number, c: number) =>
+  Math.sqrt(b * b + c * c - 2 * b * c * Math.cos(A * RAD));
+/**
+ * The two triangles SSA allows: angle A, AB = c and BC = a (shorter than c) fit two lengths of
+ * CA, so two different triangles share those three parts.
+ */
+const ssa = (A: number, c: number, a: number): [Sides, Sides] => {
+  const along = c * Math.cos(A * RAD);
+  const r = Math.sqrt(a * a - (c * Math.sin(A * RAD)) ** 2);
+  return [
+    [a, along + r, c],
+    [a, along - r, c],
+  ];
+};
+const [ssaLong, ssaShort] = ssa(40, 5, 4);
+const scaled = (t: Sides, k: number): Sides => [t[0] * k, t[1] * k, t[2] * k];
+
+const CONGRUENCE_CARDS: LayoutDef = {
+  kind: 'sort',
+  id: 'g.m10-congruence-marked',
+  title: 'Which test proves the triangles congruent?',
+  use: 'Use this for “Which test proves △ABC ≅ △DEF from the marks?”',
+  assumptions: [
+    'Tick marks with the same count are equal sides; arcs with the same count are equal angles.',
+    'SSS, SAS, ASA and AAS each prove two triangles congruent; HL does for right triangles.',
+    'SSA and AAA don’t: two different triangles can match those parts.',
+  ],
+  question: 'Which test proves △ABC ≅ △DEF?',
+  bins: [
+    { id: 'sss', label: 'SSS', why: 'Three pairs of sides are congruent.' },
+    { id: 'sas', label: 'SAS', why: 'Two sides and the angle between them.' },
+    { id: 'asa', label: 'ASA', why: 'Two angles and the side between them.' },
+    { id: 'aas', label: 'AAS', why: 'Two angles and a side not between them.' },
+    { id: 'hl', label: 'HL', why: 'Right triangles with the hypotenuse and a leg congruent.' },
+    { id: 'none', label: 'Not enough', why: 'Two different triangles fit these parts.' },
+  ],
+  cards: [
+    {
+      label: 'AB = DE, BC = EF, CA = FD',
+      bin: 'sss',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [6, 5, 4],
+          [6, 5, 4],
+        ],
+        mirror: true,
+        ticks: { a: 1, b: 2, c: 3 },
+      },
+    },
+    {
+      label: 'AB = DE, m∠B = m∠E, BC = EF',
+      bin: 'sas',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [6, 5, 4],
+          [6, 5, 4],
+        ],
+        mirror: true,
+        ticks: { c: 1, a: 2 },
+        arcs: { B: 1 },
+      },
+    },
+    {
+      label: 'm∠A = m∠D, AB = DE, m∠B = m∠E',
+      bin: 'asa',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [5, 6, 4],
+          [5, 6, 4],
+        ],
+        mirror: true,
+        ticks: { c: 1 },
+        arcs: { A: 1, B: 2 },
+      },
+    },
+    {
+      label: 'm∠A = m∠D, m∠B = m∠E, BC = EF',
+      bin: 'aas',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [5, 6, 4],
+          [5, 6, 4],
+        ],
+        mirror: true,
+        ticks: { a: 1 },
+        arcs: { A: 1, B: 2 },
+      },
+    },
+    {
+      label: 'Right angles at C and F, AB = DE, AC = DF',
+      bin: 'hl',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [3, 4, 5],
+          [3, 4, 5],
+        ],
+        mirror: true,
+        right: ['C'],
+        ticks: { c: 1, b: 2 },
+      },
+    },
+    {
+      label: 'AB = DE, BC = EF, m∠A = m∠D',
+      bin: 'none',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [ssaLong, ssaShort],
+        ticks: { c: 1, a: 2 },
+        arcs: { A: 1 },
+      },
+    },
+    {
+      label: 'All three angles equal',
+      bin: 'none',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [4, 5, 6],
+          [6, 7.5, 9],
+        ],
+        arcs: { A: 1, B: 2, C: 3 },
+      },
+    },
+  ],
+};
+
+const sasFirst: Sides = [opposite(50, 6, 8), 6, 8];
+
+const SIMILARITY_CARDS: LayoutDef = {
+  kind: 'sort',
+  id: 'g.m10-similarity-marked',
+  title: 'Similar, and by which test?',
+  use: 'Use this for “Which pairs of triangles must be similar, and why?”',
+  assumptions: [
+    'AA: two pairs of equal angles. SSS: all three side ratios equal.',
+    'SAS: two side ratios equal and the angles between those sides equal.',
+    'Arcs with the same count are equal angles; the numbers are side lengths.',
+  ],
+  question: 'Must the triangles be similar? By which test?',
+  bins: [
+    { id: 'aa', label: 'Similar by AA', why: 'Two pairs of equal angles fix the third pair too.' },
+    {
+      id: 'sss',
+      label: 'Similar by SSS',
+      why: 'Every side of one is the same multiple of its match.',
+    },
+    {
+      id: 'sas',
+      label: 'Similar by SAS',
+      why: 'Two sides in the same ratio with equal angles between them.',
+    },
+    {
+      id: 'not',
+      label: 'Not always similar',
+      why: 'The facts given fit triangles of different shapes.',
+    },
+  ],
+  cards: [
+    {
+      label: 'm∠A = m∠D and m∠B = m∠E',
+      bin: 'aa',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [4, 5, 6],
+          [6, 7.5, 9],
+        ],
+        arcs: { A: 1, B: 2 },
+      },
+    },
+    {
+      label: 'Two equilateral triangles',
+      bin: 'aa',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [3, 3, 3],
+          [5, 5, 5],
+        ],
+        arcs: { A: 1, B: 1, C: 1 },
+      },
+    },
+    {
+      label: 'Sides 3, 4, 6 and 4.5, 6, 9',
+      bin: 'sss',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [3, 4, 6],
+          [4.5, 6, 9],
+        ],
+        lengths: true,
+      },
+    },
+    {
+      label: 'AB/DE = AC/DF = 2 and m∠A = m∠D',
+      bin: 'sas',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [sasFirst, scaled(sasFirst, 0.5)],
+        lengths: ['b', 'c'],
+        arcs: { A: 1 },
+      },
+    },
+    {
+      label: 'Two isosceles triangles',
+      bin: 'not',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [5, 5, 3],
+          [4, 6, 6],
+        ],
+      },
+    },
+    {
+      label: 'Two right triangles',
+      bin: 'not',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [3, 4, 5],
+          [5, 12, 13],
+        ],
+        right: ['C'],
+      },
+    },
+    {
+      label: 'Sides 4, 6, 8 and 6, 9, 13',
+      bin: 'not',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [
+          [4, 6, 8],
+          [6, 9, 13],
+        ],
+        lengths: true,
+      },
+    },
+    {
+      label: 'AB/DE = BC/EF and m∠A = m∠D',
+      bin: 'not',
+      figure: {
+        kind: 'markedTriangles',
+        triangles: [ssaLong, scaled(ssaShort, 1.5)],
+        arcs: { A: 1 },
+      },
+    },
+  ],
+};
+
+export const HS2B_GALLERY_LAYOUTS: LayoutDef[] = [CONGRUENCE_CARDS, SIMILARITY_CARDS];

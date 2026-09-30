@@ -27,6 +27,7 @@ import {
   r3hFigureWidth,
 } from './cardFiguresR3h';
 import { DIVISION_H, DIVISION_W, DivisionCard } from './divisionCard';
+import { Hs2bCardView, hs2bFigureSize } from './cardFiguresHs2b';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -38,6 +39,8 @@ const MARKED = 64;
 export function figureWidth(f: Spec): number {
   const r3h = r3hFigureWidth(f);
   if (r3h) return r3h;
+  const hs2b = hs2bFigureSize(f);
+  if (hs2b) return hs2b[0];
   switch (f.kind) {
     case 'bar':
       return Math.max(S, 16 + (f.length + (f.units === 'offset' ? 2 : 0)) * 8 + 24);
@@ -81,11 +84,12 @@ export function CardFigureView({
 }) {
   const w = figureWidth(figure);
   const h =
-    figure.kind === 'polygon' && figure.marks
+    hs2bFigureSize(figure)?.[1] ??
+    (figure.kind === 'polygon' && figure.marks
       ? MARKED
       : figure.kind === 'cellDivision'
         ? DIVISION_H
-        : S;
+        : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -194,6 +198,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <Icon icon={f.icon} ink={ink} shade={shade} />;
     case 'cellDivision':
       return <DivisionCard f={f} ink={ink} />;
+    case 'markedTriangles':
+      return <Hs2bCardView f={f} ink={ink} shade={shade} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;
