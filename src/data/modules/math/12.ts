@@ -6007,6 +6007,227 @@ const MATH_12_INDUCTION: ModuleDef[] = [
   },
 ];
 
+// ── The area under a curve, limits of sequences (added skill 18) ──
+
+const rectangles = V('n', 'n', 'Number of rectangles', { integer: true, min: 1, max: 1000 });
+const widthOf = derive(
+  'w = b ÷ n',
+  '{w} = {b} ÷ {n}',
+  'w',
+  ['b', 'n'],
+  (v) => div(v.b!, v.n!),
+  '{b} ÷ {n}',
+  'Cut 0 to b into n strips of equal width.',
+);
+/** After the rectangles' sum: the more of them, the closer to the exact area. */
+const towardA = (v: Values) =>
+  v.S === undefined || v.A === undefined
+    ? ''
+    : `→ ${v.S > v.A ? 'above' : v.S < v.A ? 'below' : 'equal to'} the exact area; more rectangles bring S closer to it`;
+
+const MATH_12_AREA: ModuleDef[] = [
+  // ── m.12.area-under-curve (Larson 12.4–12.5) ──
+  {
+    id: 'm.12.area-under-curve',
+    assumptions: [
+      'Cut 0 to b into n strips of width w = b ÷ n; each rectangle is as tall as the curve at its right edge, x = iw.',
+      'The heights add with Σi² = n(n + 1)(2n + 1)/6, so S = cw³ × n(n + 1)(2n + 1)/6.',
+      'As n → ∞, S → cb³/3: the exact area under y = cx² from 0 to b.',
+    ],
+    variables: [
+      V('c', 'c', 'Number before x²', { min: 0.01, max: 1000, step: 0.01 }),
+      V('b', 'b', 'Right end', { min: 0.01, max: 100, step: 0.01 }),
+      rectangles,
+      V('w', 'w', 'Width of each rectangle', { min: 0, max: 100, step: 0.0001, derived: true }),
+      V('S', 'S', 'Sum of the rectangles', {
+        min: 0,
+        max: 1e12,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('A', 'A', 'Exact area', { min: 0, max: 1e12, step: 0.0001 }),
+    ],
+    ...rels(
+      widthOf,
+      withStep(
+        derive(
+          'S = cw³ × n(n + 1)(2n + 1) ÷ 6',
+          '{S} = {c} × {w}³ × {n} × ({n} + 1) × (2 × {n} + 1) ÷ 6',
+          'S',
+          ['c', 'w', 'n'],
+          (v) => (v.c! * v.w! ** 3 * v.n! * (v.n! + 1) * (2 * v.n! + 1)) / 6,
+          '{c} × {w}³ × {n} × ({n} + 1) × (2 × {n} + 1) ÷ 6',
+          'Each rectangle is w wide and c(iw)² tall; adding them gives cw³(1² + 2² + … + n²).',
+        ),
+        'S',
+        { note: towardA },
+      ),
+      rel(
+        'A = cb³ ÷ 3',
+        '{A} = {c} × {b}³ ÷ 3',
+        ['A', 'c', 'b'],
+        (v) => v.A! - (v.c! * v.b! ** 3) / 3,
+        {
+          A: [
+            (v) => (v.c! * v.b! ** 3) / 3,
+            '{c} × {b}³ ÷ 3',
+            'The limit as n → ∞: n(n + 1)(2n + 1) ÷ n³ goes to 2, so S goes to cb³ × 2 ÷ 6.',
+          ],
+          b: [
+            (v) => Math.cbrt((3 * v.A!) / v.c!),
+            '∛(3 × {A} ÷ {c})',
+            'Multiply by 3, divide by c, then take the cube root.',
+          ],
+          c: [(v) => div(3 * v.A!, v.b! ** 3), '3 × {A} ÷ {b}³', 'Multiply by 3, divide by b³.'],
+        },
+      ),
+    ),
+    example: { c: 1, b: 3, n: 6, w: 0.5, S: 11.375, A: 9 },
+    startWith: ['c', 'b', 'n'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'vertex',
+      a: 'c',
+      h: 0,
+      k: 0,
+      shade: { from: 0, to: 'b' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.area-under-curve~line',
+    title: 'The area under a line',
+    use: 'Use this for “Estimate the area under y = 2x + 1 from 0 to 4 with 8 rectangles, then find it exactly.”',
+    assumptions: [
+      'Right-edge rectangles of width w = b ÷ n: heights m(iw) + k, for i = 1 to n.',
+      'Σi = n(n + 1)/2 adds them: S = mw² × n(n + 1)/2 + kb.',
+      'As n → ∞, S → mb²/2 + kb, the trapezoid’s area; the line stays on or above the x-axis here.',
+    ],
+    variables: [
+      V('m', 'm', 'Slope', { min: -100, max: 100, step: 0.01 }),
+      V('k', 'k', 'y-intercept', { min: 0, max: 1000, step: 0.01 }),
+      V('b', 'b', 'Right end', { min: 0.01, max: 100, step: 0.01 }),
+      rectangles,
+      V('w', 'w', 'Width of each rectangle', { min: 0, max: 100, step: 0.0001, derived: true }),
+      V('S', 'S', 'Sum of the rectangles', {
+        min: 0,
+        max: 1e9,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('A', 'A', 'Exact area', { min: 0, max: 1e9, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      widthOf,
+      withStep(
+        derive(
+          'S = mw² × n(n + 1) ÷ 2 + kb',
+          '{S} = {m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+          'S',
+          ['m', 'w', 'n', 'k', 'b'],
+          (v) => (v.m! * v.w! ** 2 * v.n! * (v.n! + 1)) / 2 + v.k! * v.b!,
+          '{m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+          'Each rectangle is w by m(iw) + k; the m parts add to mw²(1 + 2 + … + n), the k parts to kb.',
+        ),
+        'S',
+        { note: towardA },
+      ),
+      derive(
+        'A = mb² ÷ 2 + kb',
+        '{A} = {m} × {b}² ÷ 2 + {k} × {b}',
+        'A',
+        ['m', 'b', 'k'],
+        (v) => (v.m! * v.b! ** 2) / 2 + v.k! * v.b!,
+        '{m} × {b}² ÷ 2 + {k} × {b}',
+        'The limit: n(n + 1) ÷ n² goes to 1. It is also the trapezoid with heights k and mb + k.',
+      ),
+      limit(
+        'mb + k ≥ 0',
+        'The line is on or above the x-axis at b: {m} × {b} + {k} ≥ 0',
+        ['m', 'b', 'k'],
+        (v) => v.m! * v.b! + v.k! >= 0,
+        'The line dips below the x-axis before b: this page adds areas above the axis only.',
+      ),
+    ),
+    example: { m: 2, k: 1, b: 4, n: 8, w: 0.5, S: 22, A: 20 },
+    startWith: ['m', 'k', 'b', 'n'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'k',
+      shade: { from: 0, to: 'b' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.area-under-curve~sequence',
+    title: 'The limit of a sequence',
+    use: 'Use this for “Find the limit of aₙ = (3n + 1) ÷ (2n − 1) as n → ∞.”',
+    assumptions: [
+      'Divide the top and bottom by n: (p + q/n) ÷ (r + s/n).',
+      'As n grows, q/n and s/n go to 0, so aₙ → p ÷ r.',
+      'The table shows the terms closing in on the limit.',
+    ],
+    variables: [
+      coef('p', 'p', 'Number before n on top', 100),
+      coef('q', 'q', 'Number on top', 1000),
+      coef('r', 'r', 'Number before n in the bottom', 100),
+      coef('s', 's', 'Number in the bottom', 1000),
+      V('n', 'n', 'Term number', { integer: true, min: 1, max: 1000000 }),
+      coef('a', 'aₙ', 'Term n', 1e9),
+      coef('L', 'L', 'Limit', 1e6, { derived: true }),
+    ],
+    ...rels(
+      rel(
+        'aₙ = (pn + q) ÷ (rn + s)',
+        '{a} = ({p} × {n} + {q}) ÷ ({r} × {n} + {s})',
+        ['a', 'p', 'n', 'q', 'r', 's'],
+        (v) => v.a! * (v.r! * v.n! + v.s!) - (v.p! * v.n! + v.q!),
+        {
+          a: [
+            (v) => div(v.p! * v.n! + v.q!, v.r! * v.n! + v.s!),
+            '({p} × {n} + {q}) ÷ ({r} × {n} + {s})',
+            'Put n into the rule.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.r !== undefined && v.n !== undefined && v.s !== undefined && v.r * v.n + v.s === 0
+              ? 'The bottom is 0 for this n: that term doesn’t exist.'
+              : undefined,
+        },
+      ),
+      derive(
+        'L = p ÷ r',
+        '{L} = {p} ÷ {r}',
+        'L',
+        ['p', 'r'],
+        (v) => div(v.p!, v.r!),
+        '{p} ÷ {r}',
+        'Divide the top and bottom by n: q ÷ n and s ÷ n go to 0, leaving p ÷ r.',
+      ),
+      limit(
+        'r ≠ 0',
+        'The bottom has an n term: {r} is not 0',
+        ['r'],
+        (v) => v.r !== 0,
+        'With r = 0 the bottom stays s while the top grows: the terms have no limit (unless p = 0).',
+      ),
+    ),
+    example: { p: 3, q: 1, r: 2, s: -1, n: 10, a: 31 / 19, L: 1.5 },
+    startWith: ['p', 'q', 'r', 's', 'n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'a',
+      params: ['p', 'q', 'r', 's'],
+      rows: [1, 10, 100, 1000, 10000],
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
@@ -6017,6 +6238,7 @@ export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_MATRICES,
   ...MATH_12_TRANSFORMS,
   ...MATH_12_LIMITS,
+  ...MATH_12_AREA,
   ...MATH_12_CONICS,
   ...MATH_12_INDUCTION,
   ...MATH_12_PARTIAL_FRACTIONS,
