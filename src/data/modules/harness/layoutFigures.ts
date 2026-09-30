@@ -7,6 +7,7 @@ import { DRAWN_PARTS, drawnPart, scaleTicks } from '@/components/module/layouts/
 
 import type { LayoutDef } from '../layouts';
 import { studyFigureIssues } from './layoutFiguresHsb';
+import { hs2eFigureIssues } from './layoutFiguresHs2e';
 import { hsgFigureIssues } from './layoutFiguresHsg';
 import { hshFigureIssues } from './layoutFiguresHsh';
 import { galvanicFigureIssues } from './layoutFiguresHsj';
@@ -85,6 +86,7 @@ export function layoutFigureIssues(l: LayoutDef): string[] {
   }
   out.push(...studyFigureIssues(l));
   out.push(...hsgFigureIssues(l));
+  out.push(...hs2eFigureIssues(l));
   out.push(...hshFigureIssues(l));
   out.push(...galvanicFigureIssues(l));
   out.push(...hslFigureIssues(l));

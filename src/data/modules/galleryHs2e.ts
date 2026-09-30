@@ -460,6 +460,39 @@ const COMPETITION: LayoutDef = {
   },
 };
 
+// ─── H100 part 6: the replication card ───────────────────────────────────────
+
+const REPLICATION: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.s9-dna-protein-synthesis-replication',
+  title: 'DNA replication',
+  use: 'Use this for “How does base pairing let a cell copy its DNA before it divides?”',
+  assumptions: [
+    'Each old strand is a template: A pairs with T and G with C, so the new strand’s order is fixed.',
+    'Replication is semiconservative: each new DNA molecule keeps one old strand.',
+    'In the pictures the old strands are dark and the new ones lit.',
+  ],
+  question: 'Put the steps of DNA replication in order.',
+  stages: [
+    {
+      label: 'Helicase unzips the double helix at an origin',
+      figure: { kind: 'replication', stage: 'unzip' },
+    },
+    {
+      label: 'Free nucleotides pair with each old strand, A with T and G with C',
+      figure: { kind: 'replication', stage: 'pair' },
+    },
+    {
+      label: 'DNA polymerase joins the new nucleotides into a strand',
+      figure: { kind: 'replication', stage: 'join' },
+    },
+    {
+      label: 'Two DNA molecules, each one old strand and one new',
+      figure: { kind: 'replication', stage: 'copies' },
+    },
+  ],
+};
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /** The chromosome-count page: 2n in a body cell → n, chromatids, the zygote, 2ⁿ gametes. */
@@ -548,4 +581,4 @@ export const HS2E_GALLERY_MODULES: ModuleDef[] = [
   ...RATES_DEMOS,
 ];
 
-export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [COMPETITION];
+export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [COMPETITION, REPLICATION];

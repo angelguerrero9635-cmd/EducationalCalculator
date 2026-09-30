@@ -75,6 +75,19 @@ export interface ObserveSecond {
   initial: number[];
 }
 
+// ─── H100 part 6: the replication card ───────────────────────────────────────
+
+/**
+ * A card figure for one stage of DNA replication (a sequence stage), 112 × 76: `unzip` (the
+ * helix opened at a fork by helicase), `pair` (free nucleotides pairing A–T and G–C with each
+ * old strand), `join` (DNA polymerase joining the new strand along each) and `copies` (two
+ * helices, each one old strand, dark, and one new, lit: semiconservative).
+ */
+export interface ReplicationCard {
+  kind: 'replication';
+  stage: 'unzip' | 'pair' | 'join' | 'copies';
+}
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /**

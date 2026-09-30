@@ -17,7 +17,7 @@ import type {
   LandformScene,
   MohsScene,
 } from '../typesHsl';
-import type { ObserveSecond } from '../typesHs2e';
+import type { ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Round3Icon } from './icons';
 
 /**
@@ -162,6 +162,8 @@ export type CardFigure =
   | { kind: 'molecule'; formula: string }
   /** One stage of mitosis or meiosis, its chromosomes counted from 2n (HS group G). */
   | CellDivisionCard
+  /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
+  | ReplicationCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';

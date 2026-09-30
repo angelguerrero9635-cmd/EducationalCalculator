@@ -99,6 +99,10 @@ light in and ATP out; `energy: { process?, lit? }` lights the whole `cycle`, `ph
 `{ kind: 'cellDivision', stage, diploid? }` draws interphase, prophase … cytokinesis, or
 prophase I … telophase II, the chromosomes counted from 2n (2, 4 or 6), maternal red and paternal
 blue, crossed-over tips from prophase I, four different cells of n after telophase II.
+Card figure `replication` (H100, `layouts/replicationCard.tsx`, 112 × 76, for sequence stages):
+`{ kind: 'replication', stage }` draws `unzip` (helicase at the fork), `pair` (free nucleotides
+pairing with each old strand), `join` (DNA polymerase and the new strand) or `copies` (two
+helices, each one old strand, dark, and one new, lit: semiconservative).
 
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by
