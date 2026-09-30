@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { toFraction } from './exact';
+import { shadeSaid, shadeSign } from './signBox';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import {
   above,
@@ -158,6 +159,9 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
   const m = read(spec.slope);
   const b = read(spec.intercept);
   const pt = spec.point ? { x: read(spec.point.x), y: read(spec.point.y) } : undefined;
+  // H90: the shaded side, fixed or from a sign box.
+  const readId = (id: string) => (rep.known(id) ? rep.shown(id) : undefined);
+  const shade = shadeSign(spec.shade, readId);
   const grid = useGrid(spec, pt ? [pt.x.value] : [], [b.value, ...(pt ? [pt.y.value] : [])]);
   const start = useRef({ m: 0, b: 0, x: 0, run: 1, x0: 0 });
   const known = m.known && b.known;
@@ -226,9 +230,9 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
             <>
               <Svg width={w} height={h}>
                 <GridAxes f={f} names={spec.axes} />
-                {spec.shade ? (
+                {shade ? (
                   <Path
-                    d={regionPath(region([{ m: m.value, b: b.value, sign: spec.shade }], f), f)}
+                    d={regionPath(region([{ m: m.value, b: b.value, sign: shade }], f), f)}
                     fill={c.chartHighlight}
                     opacity={known ? 0.16 : 0.06}
                   />
@@ -241,7 +245,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                     y2={f.sy(seg.b[1])}
                     stroke={c.chartHighlight}
                     strokeWidth={chart.strokeHeavy}
-                    strokeDasharray={spec.shade && strict(spec.shade) ? STRICT_DASH : undefined}
+                    strokeDasharray={shade && strict(shade) ? STRICT_DASH : undefined}
                     opacity={known ? 1 : 0.35}
                   />
                 ) : null}
@@ -397,9 +401,9 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
       </Canvas>
       <Caption>
         {[
-          withSign(lineEquation(m, b, xSym, ySym), spec.shade),
-          ...(spec.shade && known
-            ? [shadeWords(spec.shade, ySym, lineEquation(m, b, xSym, ySym).split(' = ')[1]!)]
+          withSign(lineEquation(m, b, xSym, ySym), shadeSaid(spec.shade, readId)),
+          ...(shade && known
+            ? [shadeWords(shade, ySym, lineEquation(m, b, xSym, ySym).split(' = ')[1]!)]
             : []),
           m.known
             ? m.value === 0
@@ -429,7 +433,15 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   const c = usePalette();
   const rep = useRep(calc);
   const read = reader(rep);
-  const lines = spec.lines.map((l) => ({ ...l, m: read(l.slope), b: read(l.intercept) }));
+  const readId = (id: string) => (rep.known(id) ? rep.shown(id) : undefined);
+  const lines = spec.lines.map((l) => ({
+    ...l,
+    m: read(l.slope),
+    b: read(l.intercept),
+    // H90: the shaded side, fixed or from a sign box.
+    shade: shadeSign(l.shade, readId),
+    said: shadeSaid(l.shade, readId),
+  }));
   const [p, q] = lines as [(typeof lines)[0], (typeof lines)[0]];
   const known = lines.every((l) => l.m.known && l.b.known);
   const same = known && p.m.value === q.m.value && p.b.value === q.b.value;
@@ -464,7 +476,7 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   const colors = [c.chartHighlight, c.chartSecond];
   const x = spec.solution ? rep.variable(spec.solution.x).symbol : 'x';
   const y = spec.solution ? rep.variable(spec.solution.y).symbol : 'y';
-  const eqs = lines.map((l) => withSign(lineEquation(l.m, l.b, x, y), l.shade));
+  const eqs = lines.map((l) => withSign(lineEquation(l.m, l.b, x, y), l.said));
   // Inequalities: each shaded line as a boundary.
   const bounds = lines.flatMap((l) =>
     l.shade ? [{ m: l.m.value, b: l.b.value, sign: l.shade } as Bound] : [],

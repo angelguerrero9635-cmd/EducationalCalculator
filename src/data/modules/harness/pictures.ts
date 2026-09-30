@@ -49,6 +49,7 @@ import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
+import { hs2aIssues } from './picturesHs2a';
 import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
@@ -1177,6 +1178,7 @@ export function repIssues(
       break;
     }
     case 'integerLine': {
+      out.push(...hs2aIssues(rep, val));
       const [a, o, abs, b, d] = [rep.value, rep.opposite, rep.absolute, rep.second, rep.change].map(
         (id) => (id ? val(id) : undefined),
       );
@@ -1822,9 +1824,10 @@ export function repIssues(
       break;
     }
     case 'functionGraph':
-      out.push(...functionGraphIssues(rep, val));
+      out.push(...functionGraphIssues(rep, val), ...hs2aIssues(rep, val));
       break;
     case 'linearFunction': {
+      out.push(...hs2aIssues(rep, val));
       const [m, b] = [val(rep.slope), val(rep.intercept)];
       const [x, y] = rep.point ? [val(rep.point.x), val(rep.point.y)] : [];
       if ([m, b, x, y].every((v) => v !== undefined) && rep.point) {
@@ -1918,6 +1921,7 @@ export function repIssues(
       out.push(...chemHsiIssues(rep, (x) => val(x)));
       break;
     case 'lineSystem': {
+      out.push(...hs2aIssues(rep, val));
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
       // Elimination (H16): the sum a·x + b·y = c is k₁ × (y − m₁x = b₁) + k₂ × (y − m₂x = b₂).
       const [sa, sb, sc] = rep.sum ? [val(rep.sum.x), val(rep.sum.y), val(rep.sum.c)] : [];
@@ -2101,7 +2105,7 @@ export function repIssues(
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      out.push(...hsbIssues(rep, (id) => val(id)));
+      out.push(...hsbIssues(rep, (id) => val(id)), ...hs2aIssues(rep, val));
       break;
     case 'unitCircle':
     case 'algebraTiles':

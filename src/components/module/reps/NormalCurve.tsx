@@ -9,6 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { chiStep, normalModel, type Span } from './normalModel';
+import { tailWords } from './signBox';
 import { normalArea, zStar } from './statMath';
 import { usePaintIds } from './paint';
 
@@ -132,6 +133,8 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
       : p <= alpha
         ? ` ≤ α = ${num(alpha)}: reject H₀.`
         : ` > α = ${num(alpha)}: fail to reject H₀.`;
+  if (spec.test && typeof spec.test.tail === 'object')
+    lines.push(tailWords(spec.test.tail, (id) => (rep.known(id) ? rep.shown(id) : undefined)));
   if (spec.test && !model.problem) {
     const z = get(spec.test.stat);
     const alpha = get(spec.test.alpha);

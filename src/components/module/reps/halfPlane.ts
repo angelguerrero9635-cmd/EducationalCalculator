@@ -80,5 +80,5 @@ export function overlaps(p: Bound, q: Bound) {
 }
 
 /** "y = 2x + 3" as the inequality "y > 2x + 3". */
-export const withSign = (equation: string, sign: InequalitySign | undefined) =>
+export const withSign = (equation: string, sign: string | undefined) =>
   sign ? equation.replace(' = ', ` ${sign} `) : equation;

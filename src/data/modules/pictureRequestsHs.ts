@@ -1727,18 +1727,29 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['m.9.linear-inequalities', 'm.9.absolute-value'],
     'P1: see docs/HS_NEEDS.md and docs/plans/m.9.md need 1.',
   ),
-  ask(
-    'H90',
-    'functionGraph',
-    'A sign box drives the picture: shading on lineSystem, linearFunction and functionGraph; closed or open ends on integerLine; the tail of normalCurve',
-    [
-      'm.9.linear-inequalities',
-      'm.9.inequality-systems',
-      'm.9.quadratic-formula',
-      'm.12.hypothesis-testing',
+  {
+    ...ask(
+      'H90',
+      'functionGraph',
+      'A sign box drives the picture: shading on lineSystem, linearFunction and functionGraph; closed or open ends on integerLine; the tail of normalCurve',
+      [
+        'm.9.linear-inequalities',
+        'm.9.inequality-systems',
+        'm.9.quadratic-formula',
+        'm.12.hypothesis-testing',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-linear-inequalities-two-variables-sign',
+      'g.m9-inequality-systems-standard-form',
+      'g.m9-quadratic-formula-inequality-sign',
+      'g.m9-linear-inequalities-compound-sign',
+      'g.m12-hypothesis-testing-sign',
     ],
-    "P2: the picture takes a value id holding the sign code (1 <, 2 ≤, 3 >, 4 ≥; ≠ for a two-tailed test), flipping with the page's rule. docs/plans/m.9.md need 2, m.12.md need 2.",
-  ),
+    notes:
+      "P2 (docs/plans/m.9.md need 2, m.12.md need 2). A sign box drives a picture through `{ sign: 's', flip?: 'b' }`: `sign` is the value holding the code as `{s:sign}` stores it (1 <, 2 ≤, 3 >, 4 ≥), and `flip` (optional) reverses it while that value is negative, so the page needs no worked-out sign of its own. Until a sign is chosen nothing is shaded and the caption says so. Fields: `linearFunction` `shade: { sign: 's' }` (m.9.linear-inequalities~two-variables with `equation: 'y {s:sign} {m}x + {b}'`: one page for all four signs); `lineSystem` `lines[i].shade: { sign, flip }` (the standard-form systems page: `{a}x + {b}y {s:sign} {c}` over two lines, slopes −a ÷ b and intercepts c ÷ b as worked-out values, `shade: { sign: 's', flip: 'b' }` and `{ sign: 't', flip: 'e' }`, `fixed: true`); `functionGraph` `inequality: { sign: 's' }` draws f(x) (sign) 0: the region between the curve and the x-axis where it holds shaded, the solutions as a band on the axis with open (<, >) or closed (≤, ≥) circles at the zeros, and the caption \"f(x) < 0 where the curve is below the x-axis: −2 < x < 4\" (m.9.quadratic-formula~inequality and ~inequality-outside become one page, `x² + {b}x + {c} {s:sign} 0`); `integerLine` `compound.closed: ['s', 't']` (value ids; 2 or 4 closed, 1 or 3 open) for `{l} {s:sign} {a}x + {b} {t:sign} {r}` on ~compound (the demo keeps s and t to < and ≤ with `allowed: [1, 2]`); `normalCurve` `test.tail: { sign: 's' }`: 1 or 2 left, 3 or 4 right, 6 ≠ both tails, the caption naming Hₐ's side (m.12.hypothesis-testing and ~mean as one page, the p-value relation choosing Φ(z), 1 − Φ(z) or 2 × (1 − Φ(|z|)) by s). The sign box has no ≠ yet (`{s:sign}` cycles < ≤ > ≥; `{s:relation}` adds = as 5), so the demo types Hₐ's code (1, 3 or 6) in its row; a box offering ≠ (coded 6) is an equation-input need for the lesson chat. Example: { kind: 'lineSystem', lines: [{ slope: 'm1', intercept: 'b1', shade: { sign: 's', flip: 'b' } }, { slope: 'm2', intercept: 'b2', shade: { sign: 't', flip: 'e' } }], test: { x: 'tx', y: 'ty' }, extent: 10, fixed: true }.",
+  },
   ask(
     'H91',
     'integerLine',

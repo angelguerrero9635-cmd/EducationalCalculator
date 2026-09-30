@@ -25,6 +25,7 @@ import type { HslSpec } from './typesHsl';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
+import type { IntegerLineHs2a } from './typesHs2a';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1243,7 +1244,7 @@ export type Representation =
    * `second` point with the jump between the two (`change`). Shown from `min` to `max`, growing
    * to fit.
    */
-  | {
+  | (IntegerLineHs2a & {
       kind: 'integerLine';
       value: string;
       opposite?: string;
@@ -1286,14 +1287,16 @@ export type Representation =
        * second = center + radius). `test` is a number checked in both parts.
        */
       compound?: {
-        join: 'and' | 'or';
-        closed?: [boolean, boolean];
+        /** H91: 'equal', |x − center| = radius: two closed dots at c ± d, nothing shaded. */
+        join: 'and' | 'or' | 'equal';
+        /** H90: or a value id holding each bound's sign code (2 ≤ and 4 ≥ closed). */
+        closed?: [boolean | string, boolean | string];
         center?: string;
         radius?: string;
         letter?: string;
         test?: string;
       };
-    }
+    })
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {
       kind: 'percentBar';

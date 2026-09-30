@@ -9,6 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { tickStep } from './IntegerLine';
+import { closedEnd } from './signBox';
 
 type Spec = Extract<Representation, { kind: 'integerLine' }>;
 
@@ -30,7 +31,9 @@ export function CompoundLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const start = useRef(0);
   const cp = spec.compound!;
   const and = cp.join === 'and';
-  const [closedLo, closedHi] = cp.closed ?? [false, false];
+  // H90: each end fixed, or closed while its sign box holds ≤ or ≥.
+  const readId = (id: string) => (rep.known(id) ? rep.shown(id) : undefined);
+  const [closedLo, closedHi] = (cp.closed ?? [false, false]).map((e) => closedEnd(e, readId));
   const x = cp.letter ?? 'x';
   const lo = rep.shown(spec.value);
   const hi = spec.second ? rep.shown(spec.second) : lo;
