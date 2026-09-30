@@ -47,6 +47,7 @@ import {
   transformationHsfIssues,
 } from './picturesHsf';
 import { hs2bIssues } from './picturesHs2b';
+import { pieStageIssues } from './picturesHs3d';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
@@ -947,6 +948,7 @@ export function repIssues(
           if (Math.abs(s - g) > 1e-6) out.push(`pie group parts add to ${s}, not ${g}`);
         }
       }
+      out.push(...pieStageIssues(rep, byId));
       break;
     }
     case 'fractionArea': {

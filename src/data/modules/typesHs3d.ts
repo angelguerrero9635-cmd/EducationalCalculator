@@ -2,6 +2,13 @@
  * Round 3 group H3D (biology, H109) types, kept apart from `types.ts` and `layouts/types.ts` so
  * those unions only list them.
  */
+import type { DivisionStage } from './typesHsg';
+
+/**
+ * A `pieChart` part's stage (`stages`, one per part): the `cellDivision` card of that stage,
+ * small, beside the part's name (the mitotic index: interphase and the four phases of mitosis).
+ */
+export type PieStage = DivisionStage;
 
 /** One lane of a `gel` explore figure: its name over the well and its bands in base pairs. */
 export interface GelFigureLane {

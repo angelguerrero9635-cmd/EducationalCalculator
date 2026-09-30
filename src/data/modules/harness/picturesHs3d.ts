@@ -3,6 +3,9 @@
  * `pictures.ts` and `picturesHsg.ts`. Test-only.
  */
 import { CODON_TABLE, effectOf, mutate, transcribe } from '@/components/module/reps/dnaMath';
+import type { VariableDef } from '@/engine/types';
+
+import type { Representation } from '../types';
 
 const STOPS = ['UAA', 'UAG', 'UGA'];
 
@@ -40,4 +43,24 @@ export function mutationEffectIssues(
   if (want !== undefined && got !== want)
     return [`dna: a ${m.type} at base ${m.at} reads as ${got}, expected ${want}`];
   return [];
+}
+
+/**
+ * `pieChart` `stages` (H109): one per part, each part's name naming its stage ("Cells in
+ * prophase"), so the drawing beside a name is the phase it counts.
+ */
+export function pieStageIssues(
+  rep: Extract<Representation, { kind: 'pieChart' }>,
+  byId: Map<string, VariableDef>,
+): string[] {
+  if (!rep.stages) return [];
+  if (rep.stages.length !== rep.parts.length)
+    return [`pie: ${rep.stages.length} stages for ${rep.parts.length} parts`];
+  return rep.parts.flatMap((id, i) => {
+    const name = (byId.get(id)?.name ?? '').toLowerCase();
+    const stage = rep.stages![i]!;
+    return name.includes(stage.toLowerCase())
+      ? []
+      : [`pie: part ${id} ("${name}") is drawn as ${stage}`];
+  });
 }

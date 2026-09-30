@@ -5,6 +5,7 @@
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
+import { div } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
 
@@ -137,7 +138,108 @@ const DNA: ModuleDef[] = [
   },
 ];
 
-export const HS3D_GALLERY_MODULES: ModuleDef[] = [...DNA];
+// ─── Part 3: phase icons on the mitotic index's pie (s.9.mitosis-meiosis~mitotic-index) ───
+
+const MITOTIC_INDEX: ModuleDef = {
+  id: 'g.s9-mitosis-meiosis-mitotic-index-stages',
+  title: 'Mitotic index, each phase drawn',
+  use: 'Use this for “20 of 100 root-tip cells are in mitosis. How long does mitosis last in a 24-hour cycle?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The cells are counted in one field of a root tip under a microscope, each in the phase it was in when fixed.',
+    'Cells divide at random times, so the share of cells in a phase is the share of the cycle spent in it.',
+    'Beside each phase is what its cells look like: chromosomes condensing, lined up, pulled apart, two nuclei.',
+  ],
+  variables: [
+    count('I', 'I', 'Cells in interphase', 0, 1000),
+    count('P', 'P', 'Cells in prophase', 0, 500),
+    count('M', 'M', 'Cells in metaphase', 0, 500),
+    count('A', 'A', 'Cells in anaphase', 0, 500),
+    count('T', 'T', 'Cells in telophase', 0, 500),
+    count('N', 'N', 'Cells counted', 1, 3000, true),
+    count('m', 'm', 'Cells in mitosis', 0, 2000, true),
+    {
+      id: 'x',
+      symbol: 'x',
+      name: 'Mitotic index',
+      unit: '%',
+      min: 0,
+      max: 100,
+      step: 0.1,
+      derived: true,
+    },
+    {
+      id: 'h',
+      symbol: 'h',
+      name: 'Length of one cycle',
+      unit: 'h',
+      units: ['h'],
+      min: 1,
+      max: 100,
+      step: 0.5,
+    },
+    {
+      id: 't',
+      symbol: 't',
+      name: 'Time in mitosis',
+      unit: 'h',
+      units: ['h'],
+      min: 0,
+      max: 100,
+      step: 0.01,
+      derived: true,
+    },
+  ],
+  ...rules(
+    forward(
+      'N = I + P + M + A + T',
+      '{N} = {I} + {P} + {M} + {A} + {T}',
+      'N',
+      ['I', 'P', 'M', 'A', 'T'],
+      (v) => v.I! + v.P! + v.M! + v.A! + v.T!,
+      '{I} + {P} + {M} + {A} + {T}',
+      'Every cell counted is in interphase or in one phase of mitosis.',
+    ),
+    forward(
+      'm = P + M + A + T',
+      '{m} = {P} + {M} + {A} + {T}',
+      'm',
+      ['P', 'M', 'A', 'T'],
+      (v) => v.P! + v.M! + v.A! + v.T!,
+      '{P} + {M} + {A} + {T}',
+      'The cells in any of the four phases of mitosis.',
+    ),
+    forward(
+      'x = 100 × m ÷ N',
+      '{x} = 100 × {m} ÷ {N}',
+      'x',
+      ['m', 'N'],
+      (v) => div(100 * v.m!, v.N!),
+      '100 × {m} ÷ {N}',
+      'The cells in mitosis as a percent of all the cells counted.',
+    ),
+    forward(
+      't = m × h ÷ N',
+      '{t} = {m} × {h} ÷ {N}',
+      't',
+      ['m', 'h', 'N'],
+      (v) => div(v.m! * v.h!, v.N!),
+      '{m} × {h} ÷ {N}',
+      'The share of cells in mitosis, m ÷ N, is the share of the cycle spent in mitosis.',
+    ),
+  ),
+  example: { I: 80, P: 10, M: 5, A: 3, T: 2, N: 100, m: 20, x: 20, h: 24, t: 4.8 },
+  startWith: ['I', 'P', 'M', 'A', 'T', 'h'],
+  representation: {
+    kind: 'pieChart',
+    parts: ['I', 'P', 'M', 'A', 'T'],
+    total: 'N',
+    group: { id: 'm', parts: ['P', 'M', 'A', 'T'] },
+    stages: ['interphase', 'prophase', 'metaphase', 'anaphase', 'telophase'],
+  },
+};
+
+export const HS3D_GALLERY_MODULES: ModuleDef[] = [...DNA, MITOTIC_INDEX];
 
 // ─── Part 2: `gel` as an explore figure (s.9.biotechnology~fingerprint) ───────────────
 

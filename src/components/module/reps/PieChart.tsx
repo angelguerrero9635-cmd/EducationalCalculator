@@ -9,6 +9,7 @@ import { chart, usePalette, useResolvedScheme, type Palette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { Steppers } from './Steppers';
+import { PIE_ICON_W, PieStageIcon } from './pieStageIcon';
 
 type Spec = Extract<Representation, { kind: 'pieChart' }>;
 
@@ -115,7 +116,12 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
     const cx = r + 10;
     const colX = cx + r + EXPLODE + 20;
     const colW = w - colX - 4;
-    const label = (id: string, indent = 0) => ({ lines: wrap(name(id), colW - indent - 16) });
+    // H109: a stage icon between the swatch and the name.
+    const iconW = spec.stages ? PIE_ICON_W + 4 : 0;
+    const label = (id: string, indent = 0) => ({
+      lines: wrap(name(id), colW - indent - 16 - iconW),
+    });
+    const tall = (lines: string[]) => Math.max((lines.length + 1) * LINE, iconW ? 38 : 0);
     const entries: {
       key: string;
       mid: number;
@@ -128,7 +134,7 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
       entries.push({
         key: `w${wd.i}`,
         mid: wd.mid,
-        height: (lines.length + 1) * LINE,
+        height: tall(lines),
         items: [{ i: wd.i, lines, indent: 0 }],
       });
     }
@@ -152,21 +158,21 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
         height:
           (headLines.length + 1) * LINE +
           GAP / 2 +
-          items.reduce((s, it) => s + (it.lines.length + 1) * LINE + GAP, -GAP),
+          items.reduce((s, it) => s + tall(it.lines) + GAP, -GAP),
         items,
       });
     }
     entries.sort((p, q) => (((p.mid % 360) + 360) % 360) - (((q.mid % 360) + 360) % 360));
     const colH = entries.reduce((s, e) => s + e.height + GAP, -GAP);
     const h = Math.max(2 * r + 24, colH + 20);
-    return { r, cx, cy: h / 2, colX, h, entries };
+    return { r, cx, cy: h / 2, colX, h, entries, iconW, tall };
   };
 
   return (
     <View>
       <Canvas aspect={(w) => layout(w).h / w}>
         {({ w }) => {
-          const { r, cx, cy, colX, h, entries } = layout(w);
+          const { r, cx, cy, colX, h, entries, iconW, tall } = layout(w);
           // Pull the group's wedges out along its middle.
           const g = group && groupIdx.length ? entries.find((e) => e.key === 'group') : undefined;
           const [ex, ey] = g ? polar(0, 0, EXPLODE, g.mid) : [0, 0];
@@ -203,11 +209,15 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
           const partLabel = (i: number, lines: string[], x: number, y: number) => {
             nodes.push(swatch(i, x, y));
+            const stage = spec.stages?.[i];
+            if (stage)
+              nodes.push(<PieStageIcon key={`st${i}`} stage={stage} x={x + 15} y={y - 12} />);
+            const tx = x + 16 + iconW;
             lines.forEach((ln, k) =>
               nodes.push(
                 <ChartText
                   key={`n${i}-${k}`}
-                  x={x + 16}
+                  x={tx}
                   y={y + k * LINE}
                   fontSize={NAME}
                   fontWeight="700"
@@ -217,7 +227,7 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
               ),
             );
             nodes.push(
-              <ChartText key={`v${i}`} x={x + 16} y={y + lines.length * LINE} fontSize={VALUE}>
+              <ChartText key={`v${i}`} x={tx} y={y + lines.length * LINE} fontSize={VALUE}>
                 {amount(parts[i]!, spec.parts[i]!)}
               </ChartText>,
             );
@@ -277,7 +287,7 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
             }
             for (const it of e.items) {
               partLabel(it.i, it.lines, colX + it.indent, y);
-              y += (it.lines.length + 1) * LINE + GAP;
+              y += tall(it.lines) + GAP;
             }
           });
 
@@ -296,8 +306,16 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
             const tw = Math.max(...lines.map((l, k) => l.length * (k ? VALUE : NAME))) * 0.6 + 14;
             const th = lines.length * LINE + 8;
             const x = Math.max(cx - r + 6, Math.min(px - tw / 2, cx - tw - 2));
+            const stage = spec.stages?.[big];
             inside = (
               <G>
+                {stage ? (
+                  <PieStageIcon
+                    stage={stage}
+                    x={x + tw / 2 - PIE_ICON_W / 2}
+                    y={py - th / 2 - 36}
+                  />
+                ) : null}
                 <Rect
                   x={x}
                   y={py - th / 2}

@@ -30,6 +30,7 @@ import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
 import type { BarFlows, Hs2eSpec } from './typesHs2e';
+import type { PieStage } from './typesHs3d';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1165,6 +1166,8 @@ export type Representation =
       colors?: string[];
       /** Parts that make a named value (fresh = frozen + liquid): pulled out and bracketed. */
       group?: { id: string; parts: string[] };
+      /** H109: one cell-cycle stage per part, drawn beside its name (`typesHs3d.ts`). */
+      stages?: PieStage[];
     }
   /**
    * Fraction × fraction as an area model: a unit square cut into `first.den` columns and
