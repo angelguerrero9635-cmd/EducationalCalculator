@@ -22,6 +22,14 @@ import { HI_ICONS } from './hi';
 import { HJ_ICONS } from './hj';
 import { HK_ICONS } from './hk';
 import { HL_ICONS } from './hl';
+import { H2A_ICONS } from './h2a';
+import { H2B_ICONS } from './h2b';
+import { H2C_ICONS } from './h2c';
+import { H2D_ICONS } from './h2d';
+import { H2E_ICONS } from './h2e';
+import { H2F_ICONS } from './h2f';
+import { H2G_ICONS } from './h2g';
+import { H2H_ICONS } from './h2h';
 
 export const ROUND3_ICONS: readonly string[] = [
   ...R3A_ICONS,
@@ -46,6 +54,14 @@ export const ROUND3_ICONS: readonly string[] = [
   ...HJ_ICONS,
   ...HK_ICONS,
   ...HL_ICONS,
+  ...H2A_ICONS,
+  ...H2B_ICONS,
+  ...H2C_ICONS,
+  ...H2D_ICONS,
+  ...H2E_ICONS,
+  ...H2F_ICONS,
+  ...H2G_ICONS,
+  ...H2H_ICONS,
 ];
 
 export type Round3Icon =
@@ -70,6 +86,14 @@ export type Round3Icon =
   | (typeof HI_ICONS)[number]
   | (typeof HJ_ICONS)[number]
   | (typeof HK_ICONS)[number]
-  | (typeof HL_ICONS)[number];
+  | (typeof HL_ICONS)[number]
+  | (typeof H2A_ICONS)[number]
+  | (typeof H2B_ICONS)[number]
+  | (typeof H2C_ICONS)[number]
+  | (typeof H2D_ICONS)[number]
+  | (typeof H2E_ICONS)[number]
+  | (typeof H2F_ICONS)[number]
+  | (typeof H2G_ICONS)[number]
+  | (typeof H2H_ICONS)[number];
 
 export const isRound3Icon = (icon: string): icon is Round3Icon => ROUND3_ICONS.includes(icon);
