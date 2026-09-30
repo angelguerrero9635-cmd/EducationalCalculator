@@ -262,6 +262,16 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                             color={c.forceNet}
                             head={9}
                           />
+                          {/* H105: the spring's energy, named between the carts before. */}
+                          {spec.spring && row.title === 'Before' ? (
+                            <SubLabel
+                              x={w * 0.44}
+                              y={railY + 44}
+                              text={`spring ${rep.label(spec.spring)}`}
+                              color={c.forceNet}
+                              w={w}
+                            />
+                          ) : null}
                         </G>
                       ) : null}
                     </G>
@@ -332,7 +342,9 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
             ? `: ${sig(keB - keA)} J turned to heat and sound.`
             : spec.type === 'elastic'
               ? ': kept, the collision is elastic.'
-              : `: the spring gave ${sig(keA - keB)} J.`
+              : spec.spring
+                ? `: the spring gave ${rep.variable(spec.spring).symbol} = ${sig(keA - keB)} J.`
+                : `: the spring gave ${sig(keA - keB)} J.`
       }`,
     ];
     return out;

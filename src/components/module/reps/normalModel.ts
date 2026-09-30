@@ -159,9 +159,18 @@ export function normalModel(spec: NormalCurveSpec, val: Val): NormalModel {
   }
   if (spec.intervals) {
     const level = val(spec.intervals.level);
-    const count = Math.min(100, Math.max(20, Math.round(spec.intervals.count)));
+    // H105: the count may be a value (20 to 100); none drawn while it is "?".
+    const typed = val(spec.intervals.count);
+    const count = Math.min(100, Math.max(20, Math.round(typed ?? 20)));
     const ns = val(spec.intervals.n);
-    if (level !== undefined && level > 0 && level < 1 && ns !== undefined && ns >= 1) {
+    if (
+      typed !== undefined &&
+      level !== undefined &&
+      level > 0 &&
+      level < 1 &&
+      ns !== undefined &&
+      ns >= 1
+    ) {
       const se = sigma / Math.sqrt(ns);
       const zs = zStar(level);
       out.intervals = normalDraws(count, spec.intervals.seed ?? 152).map((z) => ({

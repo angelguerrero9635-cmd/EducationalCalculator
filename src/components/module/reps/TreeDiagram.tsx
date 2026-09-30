@@ -45,8 +45,12 @@ export function TreeDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const shownA = Math.max(1, Math.min(n[0]!, Math.floor(LEAVES_MAX / under[0]!)));
   const leaves = shownA * under[0]!;
   const all = n.reduce((p, x) => p * x, 1);
+  // H105: names that fit the stage's size (H, T for 2) come before the stage's own.
   const name = (stage: number, i: number) =>
-    spec.names?.[stage]?.[i] ?? DEFAULT_NAMES[stage]?.[i] ?? `${i + 1}`;
+    spec.namesBySize?.[n[stage]!]?.[i] ??
+    spec.names?.[stage]?.[i] ??
+    DEFAULT_NAMES[stage]?.[i] ??
+    `${i + 1}`;
   const path = spec.path ?? n.map(() => 0);
   const onPath = known && path.every((i, s) => i < n[s]!);
   const sym = (id: string) => (rep.words ? rep.variable(id).name : rep.variable(id).symbol);

@@ -172,9 +172,20 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
   // H90: the shaded side, fixed or from a sign box.
   const readId = (id: string) => (rep.known(id) ? rep.shown(id) : undefined);
   const shade = shadeSign(spec.shade, readId);
-  const grid = useGrid(spec, pt ? [pt.x.value] : [], [b.value, ...(pt ? [pt.y.value] : [])]);
+  // H105: a test point, solid when it makes the inequality true (as `lineSystem.test`).
+  const test = spec.test ? { x: read(spec.test.x), y: read(spec.test.y) } : undefined;
+  const testIn = test && test.x.known && test.y.known ? test : undefined;
+  const grid = useGrid(
+    spec,
+    [...(pt ? [pt.x.value] : []), ...(testIn ? [testIn.x.value] : [])],
+    [b.value, ...(pt ? [pt.y.value] : []), ...(testIn ? [testIn.y.value] : [])],
+  );
   const start = useRef({ m: 0, b: 0, x: 0, run: 1, x0: 0 });
   const known = m.known && b.known;
+  const testOk =
+    testIn && shade && known
+      ? holds({ m: m.value, b: b.value, sign: shade }, testIn.x.value, testIn.y.value)
+      : undefined;
   const xSym = spec.point ? rep.variable(spec.point.x).symbol : 'x';
   const ySym = spec.point ? rep.variable(spec.point.y).symbol : 'y';
   const sym = (v: number | string, fallback: string) =>
@@ -331,6 +342,26 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                     />
                   </G>
                 ) : null}
+                {testIn ? (
+                  <G>
+                    <Circle
+                      cx={f.sx(testIn.x.value)}
+                      cy={f.sy(testIn.y.value)}
+                      r={5.5}
+                      fill={testOk ? c.chartInk : c.card}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.stroke}
+                    />
+                    <Chip
+                      x={f.sx(testIn.x.value) + 9}
+                      y={f.sy(testIn.y.value) - 8}
+                      text={pointText(testIn.x.value, testIn.y.value)}
+                      anchor="start"
+                      w={w}
+                      h={h}
+                    />
+                  </G>
+                ) : null}
               </Svg>
               {!spec.fixed && typeof spec.intercept === 'string' && b.known && bIn ? (
                 <DragHandle
@@ -426,6 +457,14 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
           ...(pt && known && pt.x.known
             ? [
                 `${ySym} = ${worked(m.value, pt.x.value, b.value)} when ${xSym} = ${coef(pt.x.value)}`,
+              ]
+            : []),
+          ...(testIn && shade && known
+            ? [
+                `Test ${pointText(testIn.x.value, testIn.y.value)}: ${worked(m.value, testIn.x.value, b.value)}, and ${coef(testIn.y.value)} ${shade} ${coef(m.value * testIn.x.value + b.value)} is ${testOk}`,
+                testOk
+                  ? 'It is a solution: it lies in the shaded part.'
+                  : 'It is not a solution: it lies outside the shaded part.',
               ]
             : []),
         ].join(' · ')}

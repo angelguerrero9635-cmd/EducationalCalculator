@@ -7,6 +7,7 @@ import { rootSplit } from '@/components/module/reps/rootSplit';
 import { partitionOf } from '@/components/module/reps/planeGeo';
 import { roundCut, roundReach } from '@/components/module/reps/roundSection';
 import { splitterShape } from '@/components/module/reps/scaleSplitter';
+import { mirrorOf } from '@/components/module/reps/hs2h';
 import { imageOf, type MoveValues, type Pt } from '@/components/module/reps/transform';
 
 import { primeFactors } from '../helpers';
@@ -22,7 +23,7 @@ const far = (a: number, b: number) => Math.abs(a - b) > 1e-6 * Math.max(1, Math.
 function moveValues(m: SecondMove, val: Val): MoveValues | undefined {
   const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));
   const center = 'center' in m && m.center ? m.center : undefined;
-  const mirror = m.move === 'reflect' ? m.mirror : undefined;
+  const mirror = m.move === 'reflect' ? mirrorOf(m, (id) => val(id)) : undefined;
   const line =
     mirror && typeof mirror === 'object' ? val('x' in mirror ? mirror.x : mirror.y) : undefined;
   if (mirror && typeof mirror === 'object' && line === undefined) return undefined;

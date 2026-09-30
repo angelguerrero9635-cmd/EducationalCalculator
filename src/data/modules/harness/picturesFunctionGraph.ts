@@ -41,6 +41,12 @@ function familyIssues(f: FunctionFamily, val: (v: NumOrVar) => number | undefine
       break;
     case 'polynomial':
       if ('coefficients' in f && v(f.coefficients[0], 1) === 0) out.push('leading coefficient 0');
+      // H105: a multiplicity from a value is a whole number 1 to 9.
+      if ('zeros' in f)
+        for (const z of f.zeros) {
+          const t = v(z.times, 1);
+          if (!Number.isInteger(t) || t < 1 || t > 9) out.push(`multiplicity ${t} (1 to 9)`);
+        }
       break;
     case 'piecewise': {
       let prev = -Infinity;

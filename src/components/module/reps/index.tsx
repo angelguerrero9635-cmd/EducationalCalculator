@@ -204,6 +204,8 @@ export const representationTitle = (r: Representation) =>
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'none':
+      return null; // H105: an equation-only page (ModuleSections leaves out the section)
     case 'unitChain':
     case 'atomModel':
     case 'orbitalDiagram':
@@ -293,8 +295,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'functionGraph':
       return <FunctionGraph spec={spec} calc={calc} />;
     case 'motionGraph':
-      if (spec.kinematics && spec.graph === 'speed')
-        return <MotionGraphHs spec={spec} k={spec.kinematics} calc={calc} />;
+      if (spec.graph === 'speed' && (spec.kinematics || typeof spec.acceleration === 'number'))
+        return (
+          <MotionGraphHs spec={spec} k={spec.kinematics ?? { view: 'velocity' }} calc={calc} />
+        );
       return <MotionGraph spec={spec} calc={calc} />;
     case 'normalCurve':
       return <NormalCurve spec={spec} calc={calc} />;

@@ -36,6 +36,8 @@ import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesH
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
   switch (r.kind) {
+    case 'none':
+      return [];
     case 'numberLine':
       return [
         r.start,

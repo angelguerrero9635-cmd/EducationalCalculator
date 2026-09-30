@@ -36,12 +36,14 @@ export type FunctionFamily =
   | { family: 'log'; a?: NumOrVar; b?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   | { family: 'root'; index: 2 | 3; a?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   | { family: 'polynomial'; coefficients: NumOrVar[] }
-  | { family: 'polynomial'; a?: NumOrVar; zeros: { x: NumOrVar; times?: number }[] }
+  // H105: `times` (a zero's multiplicity) may be a value id, a whole number 1 to 9.
+  | { family: 'polynomial'; a?: NumOrVar; zeros: { x: NumOrVar; times?: NumOrVar }[] }
   | { family: 'rational'; a?: NumOrVar; zeros: NumOrVar[]; poles: NumOrVar[]; k?: NumOrVar }
   | RationalByCoefficients // H94: (px + q) ÷ (rx + s)
   | { family: 'piecewise'; pieces: Piece[] }
   | { family: 'sin' | 'cos' | 'tan'; a?: NumOrVar; b?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
-  | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar };
+  // H105: `degrees` reads the angle in degrees (sin⁻¹ from −90° to 90°), not radians.
+  | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar; degrees?: boolean };
 
 /** One piece of a piecewise function: a family over from … to (unbounded when left out). */
 export interface Piece {
@@ -139,7 +141,9 @@ export function familyVars(f: FunctionFamily): string[] {
     case 'logistic':
       return ids(f.K, f.start, f.r);
     case 'polynomial':
-      return 'coefficients' in f ? ids(...f.coefficients) : ids(f.a, ...f.zeros.map((z) => z.x));
+      return 'coefficients' in f
+        ? ids(...f.coefficients)
+        : ids(f.a, ...f.zeros.flatMap((z) => [z.x, z.times]));
     case 'rational':
       return 'p' in f ? ids(f.p, f.q, f.r, f.s) : ids(f.a, ...f.zeros, ...f.poles, f.k);
     case 'piecewise':

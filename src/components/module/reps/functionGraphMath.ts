@@ -863,10 +863,19 @@ export function buildCurve(
     }
     case 'polynomial': {
       const byZeros = 'zeros' in fam;
-      const zs = byZeros ? fam.zeros.map((z) => ({ x: get(z.x, 0), times: z.times ?? 1 })) : [];
+      // H105: a multiplicity from a value is kept to a whole number 1 to 9.
+      const zs = byZeros
+        ? fam.zeros.map((z) => ({
+            x: get(z.x, 0),
+            times: Math.min(9, Math.max(1, Math.round(get(z.times, 1)))),
+          }))
+        : [];
       const a = byZeros ? get(fam.a, 1) : 1;
       const cs = byZeros ? polyFromZeros(a, zs) : fam.coefficients.map((c) => get(c, 0));
-      const f = (t: number) => polyAt(cs, t);
+      // By zeros, the product itself: expanded coefficients lose a repeated zero's sign.
+      const f = byZeros
+        ? (t: number) => zs.reduce((p, z) => p * (t - z.x) ** z.times, a)
+        : (t: number) => polyAt(cs, t);
       const deg = cs.length - 1;
       let text: string;
       const handles: HandleDef[] = [];
@@ -877,7 +886,8 @@ export function buildCurve(
           fam.zeros
             .map((z, i) => {
               const s = shiftText(x, zs[i]!.x, say(z.x, 0));
-              const pow = zs[i]!.times > 1 ? SUP[zs[i]!.times] : '';
+              const pow =
+                say(z.times, 1) === '?' ? '^?' : zs[i]!.times > 1 ? SUP[zs[i]!.times] : '';
               return s === x ? `${x}${pow}` : `(${s})${pow}`;
             })
             .join('');
@@ -1227,8 +1237,12 @@ export function buildCurve(
       const g =
         fam.family === 'arcsin' ? Math.asin : fam.family === 'arccos' ? Math.acos : Math.atan;
       const tan = fam.family === 'arctan';
-      const f = (t: number) => (tan || Math.abs(t) <= 1 ? a * g(t) + k : NaN);
-      const [lo, hi] = fam.family === 'arccos' ? [0, Math.PI] : [-Math.PI / 2, Math.PI / 2];
+      // H105: in degrees, the angle is 180/π times the radian one.
+      const u = fam.degrees ? 180 / Math.PI : 1;
+      const f = (t: number) => (tan || Math.abs(t) <= 1 ? a * u * g(t) + k : NaN);
+      const [lo, hi] = (fam.family === 'arccos' ? [0, Math.PI] : [-Math.PI / 2, Math.PI / 2]).map(
+        (x) => x * u,
+      ) as [number, number];
       const [r0, r1] = [a * lo + k, a * hi + k].sort((p, q) => p - q) as [number, number];
       const coef = lead(a, say(fam.a, 1));
       const name = fam.family.slice(3);
@@ -1243,10 +1257,10 @@ export function buildCurve(
         text: [
           T(`${coef}${coef && coef !== MINUS ? ' ' : ''}${name}`),
           T(`${MINUS}1`, { sup: true }),
-          T(`(${x})${plusText(k, say(fam.k, 0, true))}`),
+          T(`(${x})${plusText(k, say(fam.k, 0, !fam.degrees))}`),
         ],
-        parent: { family: fam.family },
-        piY: true,
+        parent: { family: fam.family, ...(fam.degrees ? { degrees: true } : {}) },
+        piY: !fam.degrees,
         handles: [
           {
             name: 'the shift',
@@ -1263,7 +1277,9 @@ export function buildCurve(
             axis: 'y',
             sets: ['a'],
             to: (_, Y) => ({
-              a: (Y - k) / (fam.family === 'arccos' ? Math.PI : tan ? Math.PI / 4 : Math.PI / 2),
+              a:
+                (Y - k) /
+                (u * (fam.family === 'arccos' ? Math.PI : tan ? Math.PI / 4 : Math.PI / 2)),
             }),
           },
         ],
@@ -1330,7 +1346,17 @@ export function zerosIn(c: Curve, lo: number, hi: number): Feature[] {
 export function extremaIn(c: Curve, lo: number, hi: number): (Feature & { kind: 'max' | 'min' })[] {
   const out: (Feature & { kind: 'max' | 'min' })[] = [];
   for (const [a, b] of spans(c, lo, hi))
-    for (const x of criticalPoints(c.f, a, b, 800)) {
+    for (const x0 of criticalPoints(c.f, a, b, 800)) {
+      // A turn on the x-axis is a repeated zero: taken at the zero itself, since a flat
+      // (x − r)⁴ leaves the numeric search a little off it (H105).
+      const z =
+        Math.abs(c.f(x0)) < 1e-9 && c.zeros
+          ? c
+              .zeros(a, b)
+              .filter((q) => Math.abs(q.x - x0) < 1e-3 * (hi - lo))
+              .sort((p, q) => Math.abs(p.x - x0) - Math.abs(q.x - x0))[0]
+          : undefined;
+      const x = z ? z.x : x0;
       const y = c.f(x);
       const e = Math.max(1e-4, (hi - lo) * 1e-3);
       const kind = c.f(x - e) < y ? 'max' : 'min';

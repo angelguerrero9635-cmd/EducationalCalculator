@@ -37,7 +37,8 @@ export type MotionGraphSpec = {
     }
   | {
       graph: 'speed';
-      acceleration: string;
+      /** H105: a number (free fall's −9.8) draws the Grades 9–12 graph with no value for it. */
+      acceleration: NumOrVar;
       /** The speed at the end of the time. */
       speed: string;
       /** The speed at time 0 (default 0). */

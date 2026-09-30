@@ -5,6 +5,7 @@
  */
 import type { VariableDef } from '@/engine/types';
 import * as hm from '@/components/module/reps/hskMath';
+import { labLineIndex } from '@/components/module/reps/hs2h';
 
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
@@ -45,7 +46,7 @@ export function motionKinematicsIssues(rep: MotionGraphSpec, val: Val): string[]
   const out: string[] = [];
   const k = rep.kinematics;
   if (!k || rep.graph !== 'speed') return out;
-  const [a, v0] = [val(rep.acceleration), read(val, rep.start, 0)];
+  const [a, v0] = [read(val, rep.acceleration), read(val, rep.start, 0)];
   const t1 = k.at ? val(k.at) : undefined;
   const v1 = k.slope ? val(k.slope) : undefined;
   if (k.view === 'position' && !k.at) out.push('a position view needs the tangent time `at`');
@@ -73,7 +74,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
   };
   switch (rep.kind) {
     case 'projectile': {
-      const [v, th, h] = [si(rep.speed), si(rep.angle), read(si, rep.height, 0)];
+      const [v, th, h] = [si(rep.speed), read(si, rep.angle), read(si, rep.height, 0)];
       if (v !== undefined && v < 0) out.push(`projectile: launch speed ${v} is negative`);
       if (th !== undefined && (th < -90 || th > 90))
         out.push(`projectile: angle ${th}° is not from −90° to 90°`);
@@ -216,6 +217,9 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
         ke(m1!, v1!) + ke(m2!, v2!) - ke(m1!, u1) - ke(m2!, u2),
         'kinetic energy lost',
       );
+      // H105: an explosion's spring gives the kinetic energy gained.
+      if (rep.spring && rep.type !== 'explode') out.push('collision: spring energy on a collision');
+      same(rep.spring, ke(m1!, u1) + ke(m2!, u2) - ke(m1!, v1!) - ke(m2!, v2!), 'spring energy');
       if (rep.type === 'elastic' && !near(ke(m1!, u1) + ke(m2!, u2), ke(m1!, v1!) + ke(m2!, v2!)))
         out.push('collision: an elastic collision lost kinetic energy');
       break;
@@ -491,7 +495,9 @@ function spectrumHsIssues(rep: Extract<Physics8, { kind: 'spectrum' }>, val: Val
   if (rep.lines) {
     const l = rep.lines;
     const lab = hm.SPECTRAL_LINES[l.element];
-    const ref = lab[Math.min(lab.length - 1, Math.max(0, l.line ?? 0))]!.nm;
+    // H105: `line: 'rest'` follows the rest value; that value must be one of the lines.
+    const r0 = l.rest ? val(l.rest) : undefined;
+    const ref = lab[labLineIndex(lab, l.line, r0 === undefined ? undefined : (r0 * m) / 1e-9)]!.nm;
     const z = read(val, l.redshift, 0);
     if (z === undefined) return out;
     if (z <= -1) out.push(`spectrum: redshift ${z} is not above −1`);

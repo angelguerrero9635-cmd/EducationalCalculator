@@ -214,6 +214,7 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
       spec.sample?.n,
       spec.intervals?.n,
       spec.intervals?.level,
+      spec.intervals?.count,
       spec.interval?.level,
       spec.test?.alpha,
       spec.chiSquare?.df,
