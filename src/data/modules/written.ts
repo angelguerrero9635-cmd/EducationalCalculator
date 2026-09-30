@@ -22,6 +22,10 @@ export interface WrittenCell {
   muted?: boolean;
   /** A note cell that takes its own width (the partial-product labels). */
   wide?: boolean;
+  /** A line down the cell's right side (synthetic division: after the divisor). */
+  bar?: boolean;
+  /** A box around the cell (synthetic division's remainder). */
+  boxed?: boolean;
 }
 
 export interface Written {
@@ -31,6 +35,8 @@ export interface Written {
   width: number;
   /** The equation the work shows, in one line ("38 + 25 = 63"), for the harness and the dump. */
   says: string;
+  /** Column width in px when cells hold signed numbers, not digits (synthetic division). */
+  cellWidth?: number;
 }
 
 const digitsOf = (n: number) => String(n).split('').map(Number);
@@ -524,17 +530,59 @@ export function decimalColumns(op: '+' | '−', nums: number[]): Written | undef
   };
 }
 
+/**
+ * Synthetic division of a polynomial by x − k (Grade 11 on), set out as it is written: k and a
+ * bar, the coefficients (a 0 for each missing power), the products k × each number below them,
+ * a line, then the sums: the quotient's coefficients and the remainder in a box. `says` is the
+ * same work nested, ((2 × 3 − 3) × 3 + 0) × 3 + 5 = 32, which is P(k).
+ */
+export function syntheticDivision(coefficients: number[], k: number): Written | undefined {
+  if (coefficients.length < 2 || ![...coefficients, k].every(Number.isFinite)) return undefined;
+  const sums: number[] = [];
+  coefficients.forEach((a, i) => sums.push(i === 0 ? a : a + k * sums[i - 1]!));
+  const width = coefficients.length + 1;
+  const rows: WrittenCell[][] = [
+    [cell(fn(k), { bar: true }), ...coefficients.map((a) => cell(fn(a)))],
+    [
+      cell('', { bar: true }),
+      cell('', { underline: true }),
+      ...sums.slice(0, -1).map((b) => cell(fn(k * b), { underline: true })),
+    ],
+    [
+      blank,
+      ...sums.slice(0, -1).map((b) => cell(fn(b))),
+      cell(fn(sums[sums.length - 1]!), { boxed: true }),
+    ],
+  ];
+  const kText = k < 0 ? `(${fn(k)})` : fn(k);
+  const signed = (a: number) => (a < 0 ? ` − ${fn(-a)}` : ` + ${fn(a)}`);
+  // Nested as it is worked: 2 × 3 − 3, then (2 × 3 − 3) × 3 + 0, …
+  let nested = fn(coefficients[0]!);
+  coefficients.slice(1).forEach((a, i) => {
+    nested = `${i === 0 ? nested : `(${nested})`} × ${kText}${signed(a)}`;
+  });
+  return {
+    kind: 'grid',
+    rows,
+    width,
+    says: `${nested} = ${fn(sums[sums.length - 1]!)}`,
+    cellWidth: 40,
+  };
+}
+
 /** The grid as text lines for the review dump, columns right-aligned. */
 export function writtenText(w: Written): string[] {
+  // A remainder's box is "[32]" and a divisor's bar "3 |" in text.
+  const shown = (c: WrittenCell) => (c.boxed ? `[${c.text}]` : c.bar ? `${c.text} |` : c.text);
   const widths = Array<number>(w.width).fill(1);
   for (const row of w.rows) {
-    row.slice(0, w.width).forEach((c, i) => (widths[i] = Math.max(widths[i]!, c.text.length)));
+    row.slice(0, w.width).forEach((c, i) => (widths[i] = Math.max(widths[i]!, shown(c).length)));
   }
   return w.rows.map((row) => {
     const cells = Array.from({ length: w.width }, (_, i) => row[i] ?? blank);
     // A crossed-out digit gets a combining stroke (zero width, so the columns stay aligned).
     const main = cells
-      .map((c, i) => (c.strike ? `${c.text}\u0336` : c.text).padStart(widths[i]!))
+      .map((c, i) => (c.strike ? `${c.text}\u0336` : shown(c)).padStart(widths[i]!))
       .join(' ')
       .trimEnd();
     const notes = row

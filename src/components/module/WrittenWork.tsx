@@ -23,7 +23,7 @@ export function WrittenWork({ work }: { work: Written }) {
       {work.rows.map((row, r) => (
         <View key={r} style={styles.row}>
           {Array.from({ length: work.width }, (_, i) => (
-            <Cell key={i} cell={row[i]} />
+            <Cell key={i} cell={row[i]} width={work.cellWidth} />
           ))}
           {row.slice(work.width).map((cell, i) => (
             <Cell key={`n${i}`} cell={cell} />
@@ -34,14 +34,18 @@ export function WrittenWork({ work }: { work: Written }) {
   );
 }
 
-function Cell({ cell }: { cell: WrittenCell | undefined }) {
+function Cell({ cell, width }: { cell: WrittenCell | undefined; width?: number }) {
   const c = usePalette();
-  if (!cell) return <View style={styles.cell} />;
+  const sized = width ? { width } : null;
+  if (!cell) return <View style={[styles.cell, sized]} />;
   return (
     <View
       style={[
-        cell.wide ? styles.note : styles.cell,
+        cell.wide ? styles.note : [styles.cell, sized],
         cell.underline ? { borderBottomWidth: 1.5, borderBottomColor: c.text } : null,
+        // Synthetic division: the bar after the divisor, the remainder in a box.
+        cell.bar ? { borderRightWidth: 1.5, borderRightColor: c.text } : null,
+        cell.boxed ? { borderWidth: 1.5, borderColor: c.text, borderRadius: 2 } : null,
       ]}
     >
       <Text

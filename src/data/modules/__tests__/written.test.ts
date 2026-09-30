@@ -1,5 +1,7 @@
+import { evaluate } from '../harness/evaluate';
 import { operationCount, simplifyChain } from '../simplify';
 import {
+  syntheticDivision,
   autoWritten,
   columnAdd,
   columnMultiply,
@@ -200,5 +202,22 @@ describe('Grade 5 written work', () => {
     expect(autoWritten('5', '3 + 1.25')?.says).toBe('3.00 + 1.25 = 4.25');
     expect(autoWritten('4', '2.5 + 1.25')).toBeUndefined();
     expect(autoWritten('5', '1.25 − 2.5')).toBeUndefined();
+  });
+});
+
+describe('synthetic division', () => {
+  it('sets out (2x³ − 3x² + 5) ÷ (x − 3): quotient 2, 3, 9 and remainder 32', () => {
+    const w = syntheticDivision([2, -3, 0, 5], 3)!;
+    expect(writtenText(w)).toEqual([
+      '3 | 2 −3 0    5',
+      '  |    6 9   27\n    ───────────',
+      '    2  3 9 [32]',
+    ]);
+    expect(w.says).toBe('((2 × 3 − 3) × 3 + 0) × 3 + 5 = 32');
+    expect(evaluate(w.says.split(' = ')[0]!)).toBe(32);
+  });
+  it('divides by x + 2 as k = −2', () => {
+    const w = syntheticDivision([1, 0, -4], -2)!;
+    expect(w.says).toBe('(1 × (−2) + 0) × (−2) − 4 = 0');
   });
 });
