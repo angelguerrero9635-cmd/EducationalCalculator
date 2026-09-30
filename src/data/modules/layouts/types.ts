@@ -17,6 +17,7 @@ import type {
   LandformScene,
   MohsScene,
 } from '../typesHsl';
+import type { ObserveSecond } from '../typesHs2e';
 import type { Round3Icon } from './icons';
 
 /**
@@ -683,11 +684,13 @@ export interface ObserveLayout extends LayoutBase {
   /** The opening values, one per column. */
   initial: number[];
   /** The pattern in a sentence, from the current values. */
-  pattern: (values: number[]) => string;
+  pattern: (values: number[], second?: number[]) => string;
   /** Columns are intervals of one number line: the bars touch, with a count scale beside. */
   histogram?: boolean;
   /** A picture of the column last tapped, above the chart (`ObserveFigure`). */
   figure?: ObserveFigure;
+  /** H100: a second row counted in the same columns, its bars beside the first (`typesHs2e.ts`). */
+  second?: ObserveSecond;
 }
 
 /**

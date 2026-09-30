@@ -111,7 +111,7 @@ function studentText(l: LayoutDef): { where: string; text: string; prose: boolea
       }
       break;
     case 'observe':
-      out.push({ where: 'pattern', text: l.pattern(l.initial), prose: true });
+      out.push({ where: 'pattern', text: l.pattern(l.initial, l.second?.initial), prose: true });
       out.push({ where: 'pattern (equal)', text: l.pattern(l.initial.map(() => 10)), prose: true });
       l.columns.forEach((col) => out.push({ where: `column ${col}`, text: col, prose: false }));
       break;
@@ -185,7 +185,8 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
         break;
       case 'observe':
         expect(l.initial).toHaveLength(l.columns.length);
-        for (const x of l.initial) {
+        if (l.second) expect(l.second.initial).toHaveLength(l.columns.length);
+        for (const x of [...l.initial, ...(l.second?.initial ?? [])]) {
           expect(x).toBeGreaterThanOrEqual(0);
           expect(x).toBeLessThanOrEqual(l.max);
           expect(x % l.step).toBe(0);

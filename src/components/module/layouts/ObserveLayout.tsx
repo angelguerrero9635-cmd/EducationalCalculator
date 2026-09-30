@@ -32,13 +32,16 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
   const few = spec.columns.length <= 4;
   const c = usePalette();
   const [values, setValues] = useState(spec.initial);
+  // H100: a second row, counted in the same columns (two species side by side).
+  const [seconds, setSeconds] = useState(spec.second?.initial ?? []);
+  const two = !!spec.second;
   // The column the figure shows: the one tapped last.
   const [picked, setPicked] = useState(0);
-  const setAt = (i: number, y: number, height: number) => {
+  const setAt = (i: number, y: number, height: number, row = 0) => {
     setPicked(i);
     const raw = ((height - y) / height) * spec.max;
     const next = Math.max(0, Math.min(spec.max, Math.round(raw / spec.step) * spec.step));
-    setValues((vs) => vs.map((x, k) => (k === i ? next : x)));
+    (row ? setSeconds : setValues)((vs) => vs.map((x, k) => (k === i ? next : x)));
   };
   return (
     <View style={styles.wrap}>
@@ -62,16 +65,38 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
             ))}
           </View>
         ) : null}
-        {values.map((x, i) => (
-          <Bar
-            key={spec.columns[i]}
-            i={i}
-            x={x}
-            spec={spec}
-            few={few}
-            onSet={(y) => setAt(i, y, CHART_HEIGHT)}
-          />
-        ))}
+        {values.map((x, i) =>
+          two ? (
+            <View key={spec.columns[i]} style={[styles.pair, few && styles.fewColumn]}>
+              <Bar
+                i={i}
+                x={x}
+                spec={spec}
+                few={few}
+                onSet={(y) => setAt(i, y, CHART_HEIGHT)}
+                half
+              />
+              <Bar
+                i={i}
+                x={seconds[i] ?? 0}
+                spec={spec}
+                few={few}
+                onSet={(y) => setAt(i, y, CHART_HEIGHT, 1)}
+                half
+                second
+              />
+            </View>
+          ) : (
+            <Bar
+              key={spec.columns[i]}
+              i={i}
+              x={x}
+              spec={spec}
+              few={few}
+              onSet={(y) => setAt(i, y, CHART_HEIGHT)}
+            />
+          ),
+        )}
       </View>
       <View style={[styles.labels, spec.histogram && styles.touchingLabels]}>
         {spec.columns.map((col) => (
@@ -84,7 +109,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       <View style={[styles.table, { borderColor: c.border }]}>
         <View style={[styles.row, { backgroundColor: c.surface, borderBottomColor: c.border }]}>
           <Text style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
-            {spec.rowLabel}
+            {two ? spec.unit : spec.rowLabel}
           </Text>
           {spec.columns.map((col) => (
             <Text key={col} style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
@@ -92,21 +117,42 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
             </Text>
           ))}
         </View>
-        <View style={styles.row}>
-          <Text style={[styles.cell, tight && styles.tight, { color: c.textMuted }]}>
-            {spec.unit}
-          </Text>
-          {values.map((x, i) => (
-            <Text
-              key={spec.columns[i]}
-              style={[styles.cell, tight && styles.tight, { color: c.text }]}
-            >
-              {x}
+        {(two ? [values, seconds] : [values]).map((row, r) => (
+          <View key={r} style={styles.row}>
+            <Text style={[styles.cell, tight && styles.tight, { color: c.textMuted }]}>
+              {two ? (r ? spec.second!.rowLabel : spec.rowLabel) : spec.unit}
             </Text>
+            {row.map((x, i) => (
+              <Text
+                key={spec.columns[i]}
+                style={[styles.cell, tight && styles.tight, { color: c.text }]}
+              >
+                {x}
+              </Text>
+            ))}
+          </View>
+        ))}
+      </View>
+      {two ? (
+        // The key: which colour is which row.
+        <View style={styles.key}>
+          {[spec.rowLabel, spec.second!.rowLabel].map((name, r) => (
+            <View key={name} style={styles.keyItem}>
+              <View
+                style={[
+                  styles.swatch,
+                  {
+                    backgroundColor: r ? c.chartSecond : c.chartHighlight,
+                    borderColor: c.chartInk,
+                  },
+                ]}
+              />
+              <Text style={[styles.keyText, { color: c.text }]}>{name}</Text>
+            </View>
           ))}
         </View>
-      </View>
-      <Caption>{spec.pattern(values)}</Caption>
+      ) : null}
+      <Caption>{two ? spec.pattern(values, seconds) : spec.pattern(values)}</Caption>
       <Text style={[styles.hint, { color: c.textMuted }]}>Tap a bar at the height you want.</Text>
     </View>
   );
@@ -170,12 +216,17 @@ function Bar({
   spec,
   few,
   onSet,
+  half,
+  second,
 }: {
   i: number;
   x: number;
   spec: Spec;
   few: boolean;
   onSet: (y: number) => void;
+  /** H100: one of two bars sharing a column; `second` is the second row's. */
+  half?: boolean;
+  second?: boolean;
 }) {
   const c = usePalette();
   // Web: pointer events with capture, the column's top measured at the press.
@@ -190,9 +241,9 @@ function Bar({
   });
   return (
     <View
-      testID={`bar-${i}`}
+      testID={second ? `bar2-${i}` : `bar-${i}`}
       accessibilityRole="adjustable"
-      accessibilityLabel={`${spec.columns[i]}: ${x} ${spec.unit}`}
+      accessibilityLabel={`${half ? `${second ? spec.second?.rowLabel : spec.rowLabel}, ` : ''}${spec.columns[i]}: ${x} ${spec.unit}`}
       accessibilityValue={{ min: 0, max: spec.max, now: x }}
       // The column takes the touch itself, so the tap's height is measured in it.
       ref={ref}
@@ -206,6 +257,7 @@ function Bar({
         styles.column,
         few && styles.fewColumn,
         spec.histogram && styles.wideColumn,
+        half && styles.halfColumn,
         { borderBottomColor: c.chartInk },
         WEB_BAR_STYLE,
       ]}
@@ -218,9 +270,10 @@ function Bar({
         style={[
           styles.bar,
           spec.histogram && styles.histogramBar,
+          half && styles.halfBar,
           {
             height: Math.max(2, (x / spec.max) * (CHART_HEIGHT - 24)),
-            backgroundColor: c.chartHighlight,
+            backgroundColor: second ? c.chartSecond : c.chartHighlight,
             borderColor: c.chartInk,
           },
         ]}
@@ -286,6 +339,14 @@ const styles = StyleSheet.create({
     fontSize: font.caption,
     fontVariant: ['tabular-nums'],
   },
+  // H100: two bars to a column, and the key under the table.
+  pair: { flex: 1, maxWidth: 56, flexDirection: 'row', gap: 2 },
+  halfColumn: { maxWidth: undefined },
+  halfBar: { width: '80%' },
+  key: { flexDirection: 'row', justifyContent: 'center', gap: space.lg },
+  keyItem: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  swatch: { width: 14, height: 14, borderRadius: 3, borderWidth: 1 },
+  keyText: { fontSize: font.caption + 1 },
   // Six columns and the row label share a phone's width: less padding, smaller type.
   tight: { paddingHorizontal: 1, fontSize: font.caption - 1 },
 });

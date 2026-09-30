@@ -134,6 +134,9 @@ scale, with the sun on the line over the stick's top (higher for a shorter shado
 `layouts/observeFigures.tsx`: `thermometer`, `plantHeight` (a potted plant beside a cm ruler),
 `ramp` (`heights` per column; the cup slid the value), `flashlight` (`distances` per column;
 the lit circle side on and face on) and `cup` (an open cup, the first column's level dashed).
+An observation can count a second row in the same columns, `second: { rowLabel, initial }`
+(H100, two species a day): its bars beside the first's, a row of its own in the table, a key,
+and `pattern(first, second)` reading both.
 
 Drawn explore figures: a `parts` figure with `drawing: 'plant' | 'animal' | 'body'`
 (`layouts/partsDrawings.tsx`) draws the thing, labels every part and lights the scene's part;

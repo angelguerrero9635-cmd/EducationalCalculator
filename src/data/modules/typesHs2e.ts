@@ -62,6 +62,19 @@ export interface BarFlows {
   out: string[];
 }
 
+// ─── H100 part 4: observe with two rows ──────────────────────────────────────
+
+/**
+ * The `second` row of an observe page (H100): a second quantity counted in the same columns and
+ * unit (a second species per day), its bars beside the first's in `chartSecond`, a row of its
+ * own in the table, and a key naming both rows. The page's `rowLabel` names the first row, its
+ * `unit` heads the table, and `pattern(first, second)` reads both.
+ */
+export interface ObserveSecond {
+  rowLabel: string;
+  initial: number[];
+}
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /**
