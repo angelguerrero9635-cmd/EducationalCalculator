@@ -611,37 +611,35 @@ hand. Build order: the precalculus skills in taxonomy order, then the two statis
   | Item (our words)                                      | Page      | Mark   |
   | ----------------------------------------------------- | --------- | ------ |
   | Image of (3, 1) after a 90° rotation about the origin | main      | Solves |
-  | Image of a point under [[2, 1], [1, 1]]; undo it      | ~image    | Solves |
+  | Image of a point under `[[2, 1], [1, 1]]`; undo it    | ~image    | Solves |
   | How a matrix changes a figure's area                  | ~area     | Solves |
   | Rotate by 30°, then by 60°: one matrix for both       | ~compose  | Solves |
-  | Which transformation does [[0, 1], [1, 0]] do?        | ~identify | Solves |
+  | Which transformation does `[[0, 1], [1, 0]]` do?      | ~identify | Solves |
 
-- **Main — BUILD `m.12.matrix-transformations`
-
-  :** picture `transformation` (move 'rotate'
-    about the origin: the segment from A = (x, y) to O, its image A′ = (X, Y)). Values θ (−360
-    to 360 °), x, y, c (cos θ, derived), s (sin θ, derived), X, Y. Relations c = cos θ;
-    s = sin θ; X = cx − sy; Y = sx + cy (and back: x = cX + sY, y = −sX + cY). Assumptions: the
-    rotation matrix is [[cos θ, −sin θ], [sin θ, cos θ]]; its columns are where (1, 0) and
-    (0, 1) land; a positive θ turns counterclockwise. Example: θ = 90°: c = 0, s = 1,
-    (3, 1) → (0 − 1, 3 + 0) = (−1, 3). startWith: θ, x, y.
+- **Main — BUILD `m.12.matrix-transformations`:** picture `transformation` (move 'rotate'
+  about the origin: the segment from A = (x, y) to O, its image A′ = (X, Y)). Values θ (−360
+  to 360 °), x, y, c (cos θ, derived), s (sin θ, derived), X, Y. Relations c = cos θ;
+  s = sin θ; X = cx − sy; Y = sx + cy (and back: x = cX + sY, y = −sX + cY). Assumptions: the
+  rotation matrix is `[[cos θ, −sin θ], [sin θ, cos θ]]`; its columns are where (1, 0) and
+  (0, 1) land; a positive θ turns counterclockwise. Example: θ = 90°: c = 0, s = 1,
+  (3, 1) → (0 − 1, 3 + 0) = (−1, 3). startWith: θ, x, y.
 - **~image — BUILD:** picture `matrixGrid` multiply (A times the column (x, y)). Values a, b,
-    c, d (one group), x, y, X, Y, D (ad − bc, derived). Relations X = ax + by; Y = cx + dy;
-    D = ad − bc; typed X and Y undo the move: x = (dX − bY) ÷ D, y = (aY − cX) ÷ D (limit
-    D ≠ 0: the matrix flattens the plane onto a line, so it can't be undone). Example:
-    [[2, 1], [1, 1]] (3, −1) = (5, 2); D = 1. startWith: x, y, a, b, c, d.
+  c, d (one group), x, y, X, Y, D (ad − bc, derived). Relations X = ax + by; Y = cx + dy;
+  D = ad − bc; typed X and Y undo the move: x = (dX − bY) ÷ D, y = (aY − cX) ÷ D (limit
+  D ≠ 0: the matrix flattens the plane onto a line, so it can't be undone). Example:
+  `[[2, 1], [1, 1]]` times (3, −1) is (5, 2); D = 1. startWith: x, y, a, b, c, d.
 - **~area — BUILD:** picture `coordinatePlane` polygon: the unit square's image, the
-    parallelogram (0, 0), (a, c), (a + b, c + d), (b, d) (the two sums hidden), its corner (a, c)
-    the point dragged. Values a, b, c, d (one group), D, S (area before), T (area after).
-    Relations D = ad − bc; T = |D| × S. Example: [[3, 1], [1, 2]]: D = 5; a figure of area 4
-    becomes 20. Assumption: a negative D also flips the figure over.
+  parallelogram (0, 0), (a, c), (a + b, c + d), (b, d) (the two sums hidden), its corner
+  (a, c) the point dragged. Values a, b, c, d (one group), D, S (area before), T (area after).
+  Relations D = ad − bc; T = (the size of D) × S. Example: `[[3, 1], [1, 2]]`: D = 5; a
+  figure of area 4 becomes 20. Assumption: a negative D also flips the figure over.
 - **~compose — BUILD:** picture `transformation` rotate α then rotate β (`then`), A″ = (X, Y).
   Values α, β, γ (α + β, derived), x, y, X, Y. Relations γ = α + β; X = x cos γ − y sin γ;
   Y = x sin γ + y cos γ. Example: α = 30°, β = 60°: γ = 90°; (4, 2) → (−2, 4). Assumption:
   the matrix of “α then β” is R(β)R(α) = R(α + β); for other moves the order matters.
 - **~identify — BUILD (sort):** eight matrices into rotation, reflection, dilation:
-    [[0, −1], [1, 0]], [[−1, 0], [0, −1]], [[0, 1], [−1, 0]]; [[1, 0], [0, −1]],
-    [[−1, 0], [0, 1]], [[0, 1], [1, 0]]; [[2, 0], [0, 2]], [[0.5, 0], [0, 0.5]].
+  `[[0, −1], [1, 0]]`, `[[−1, 0], [0, −1]]`, `[[0, 1], [−1, 0]]`; `[[1, 0], [0, −1]]`,
+  `[[−1, 0], [0, 1]]`, `[[0, 1], [1, 0]]`; `[[2, 0], [0, 2]]`, `[[0.5, 0], [0, 0.5]]`.
 - **Verdict:** 5 pages; the common items Solve.
 
 ### 15. m.12.polar-conics — Polar equations of conics and rotation of axes
