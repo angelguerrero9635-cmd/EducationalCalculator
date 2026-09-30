@@ -558,4 +558,245 @@ const EVOLUTION: ModuleDef[] = [
   },
 ];
 
-export const SCIENCE_9_MODULES: ModuleDef[] = [...INHERITANCE, ...EVOLUTION];
+/** A value the story keeps strictly below another (a start below the carrying capacity). */
+const below = (small: string, big: string): Rule => ({
+  relation: {
+    id: `${small} < ${big}`,
+    constraint: true,
+    display: `{${small}} is less than {${big}}`,
+    vars: [small, big],
+    residual: (v: Values) => (v[small]! < v[big]! ? 0 : 1),
+    solve: {},
+  },
+  steps: {},
+});
+
+/** The logistic curve N = K ÷ (1 + Ae^(−rt)), A = (K − N₀) ÷ N₀. */
+const logistic = (v: Values) => v.K! / (1 + ((v.K! - v.N0!) / v.N0!) * Math.exp(-v.r! * v.t!));
+
+const POPULATION: ModuleDef[] = [
+  // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
+  {
+    id: 's.9.population-ecology',
+    unitSystems: ['metric'],
+    assumptions: [
+      'While N is small, food and space are plentiful and growth is nearly exponential.',
+      'Growth G = rN(K − N) ÷ K is fastest at N = K ÷ 2, then slows as resources run short.',
+      'The population levels off at the carrying capacity K, the most the habitat can support.',
+    ],
+    variables: [
+      { id: 't', symbol: 't', name: 'Time', unit: 'days', min: 0, max: 1000, step: 0.5 },
+      count('K', 'K', 'Carrying capacity', 10, 1000000),
+      count('N0', 'N₀', 'Starting population', 1, 1000000),
+      { id: 'r', symbol: 'r', name: 'Growth rate', unit: 'per day', min: 0.01, max: 5, step: 0.01 },
+      { id: 'N', symbol: 'N', name: 'Population', min: 0, max: 1000000, step: 1 },
+      {
+        id: 'G',
+        symbol: 'G',
+        name: 'Growth now',
+        unit: 'per day',
+        min: 0,
+        max: 2000000,
+        step: 0.01,
+        derived: true,
+      },
+    ],
+    ...rules(
+      both(
+        'N = K ÷ (1 + ((K − N₀) ÷ N₀)e^(−rt))',
+        '{N} = {K} ÷ (1 + (({K} − {N0}) ÷ {N0}) × e^(−{r}{t}))',
+        ['N', 'K', 'N0', 'r', 't'],
+        (v) => v.N! - logistic(v),
+        {
+          N: [
+            logistic,
+            '{K} ÷ (1 + (({K} − {N0}) ÷ {N0}) ÷ e^({r} × {t}))',
+            'Work out A = (K − N₀) ÷ N₀, then K ÷ (1 + A ÷ e^(rt)): N₀ at t = 0, K after a long time.',
+          ],
+          t: [
+            (v) => {
+              const q = (((v.K! - v.N0!) / v.N0!) * v.N!) / (v.K! - v.N!);
+              return q > 0 && Number.isFinite(q) ? Math.log(q) / v.r! : undefined;
+            },
+            'ln((({K} − {N0}) ÷ {N0}) × {N} ÷ ({K} − {N})) ÷ {r}',
+            'Solve 1 + Ae^(−rt) = K ÷ N for e^(−rt), then take the natural log and divide by −r.',
+          ],
+        },
+      ),
+      forward(
+        'G = rN(K − N) ÷ K',
+        '{G} = {r} × {N} × ({K} − {N}) ÷ {K}',
+        'G',
+        ['r', 'N', 'K'],
+        (v) => (v.r! * v.N! * (v.K! - v.N!)) / v.K!,
+        '{r} × {N} × ({K} − {N}) ÷ {K}',
+        'The exponential rate rN, slowed by the share of K still unused, (K − N) ÷ K.',
+      ),
+      below('N0', 'K'),
+    ),
+    example: {
+      t: 6,
+      K: 1000,
+      N0: 100,
+      r: 0.5,
+      N: 1000 / (1 + 9 * Math.exp(-3)),
+      G: (0.5 * (1000 / (1 + 9 * Math.exp(-3))) * (1000 - 1000 / (1 + 9 * Math.exp(-3)))) / 1000,
+    },
+    startWith: ['t', 'K', 'N0', 'r'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'logistic',
+      K: 'K',
+      start: 'N0',
+      r: 'r',
+      name: 'N',
+      at: { x: 't', y: 'N' },
+      axes: { x: 'Time t (days)', y: 'Population N' },
+      marks: ['asymptotes', 'extrema'],
+    },
+  },
+  {
+    id: 's.9.population-ecology~rates',
+    title: 'Births, deaths and migration',
+    use: 'Use this for “A herd of 500 deer has 90 births, 40 deaths, 10 arrivals and 20 departures in a year. What is its new size?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Births and immigrants add to a population; deaths and emigrants take away.',
+      'The per-capita growth rate counts births minus deaths for each individual, as a percent.',
+      'All four counts are over the same time, here one year.',
+    ],
+    variables: [
+      count('N', 'N', 'Population at the start', 1, 1000000),
+      count('B', 'B', 'Births', 0, 1000000),
+      count('D', 'D', 'Deaths', 0, 1000000),
+      count('I', 'I', 'Immigrants', 0, 1000000),
+      count('E', 'E', 'Emigrants', 0, 1000000),
+      count('dN', 'ΔN', 'Change in population', -2000000, 2000000, true),
+      count('N1', 'N₁', 'Population a year later', 0, 3000000, true),
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Per-capita growth rate',
+        unit: '%',
+        min: -100,
+        max: 100000000,
+        step: 0.1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      forward(
+        'ΔN = B − D + I − E',
+        '{dN} = {B} − {D} + {I} − {E}',
+        'dN',
+        ['B', 'D', 'I', 'E'],
+        (v) => v.B! - v.D! + v.I! - v.E!,
+        '{B} − {D} + {I} − {E}',
+        'Births and immigrants come in; deaths and emigrants go out.',
+      ),
+      forward(
+        'N₁ = N + ΔN',
+        '{N1} = {N} + {dN}',
+        'N1',
+        ['N', 'dN'],
+        (v) => v.N! + v.dN!,
+        '{N} + {dN}',
+        'Add the change to the starting population.',
+      ),
+      forward(
+        'r = 100 × (B − D) ÷ N',
+        '{r} = 100 × ({B} − {D}) ÷ {N}',
+        'r',
+        ['B', 'D', 'N'],
+        (v) => div(100 * (v.B! - v.D!), v.N!),
+        '100 × ({B} − {D}) ÷ {N}',
+        'Births minus deaths for each individual at the start, as a percent.',
+      ),
+    ),
+    example: { N: 500, B: 90, D: 40, I: 10, E: 20, dN: 40, N1: 540, r: 10 },
+    startWith: ['N', 'B', 'D', 'I', 'E'],
+    representation: {
+      kind: 'bars',
+      bars: [{ var: 'N' }, { var: 'B' }, { var: 'D' }, { var: 'I' }, { var: 'E' }, { var: 'N1' }],
+      min: 0,
+      max: 600,
+    },
+  },
+  {
+    id: 's.9.population-ecology~doubling',
+    title: 'Doubling time',
+    use: 'Use this for “Bacteria double every 20 minutes. How many are there after 2 hours, starting from 100?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'With plenty of food and space, a population doubles every doubling time d: exponential growth.',
+      'After t minutes it has doubled g = t ÷ d times, so N = N₀ × 2ᵍ.',
+      'Real populations slow down as food runs out; this is the early, exponential part.',
+    ],
+    variables: [
+      count('N0', 'N₀', 'Starting population', 1, 1000000),
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Doubling time',
+        unit: 'min',
+        units: ['min'],
+        min: 1,
+        max: 600,
+        step: 1,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time',
+        unit: 'min',
+        units: ['min'],
+        min: 0,
+        max: 1440,
+        step: 1,
+      },
+      { id: 'g', symbol: 'g', name: 'Doublings', min: 0, max: 40, step: 0.01, derived: true },
+      {
+        id: 'N',
+        symbol: 'N',
+        name: 'Population after t',
+        min: 1,
+        max: 1e18,
+        step: 1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      forward(
+        'g = t ÷ d',
+        '{g} = {t} ÷ {d}',
+        'g',
+        ['t', 'd'],
+        (v) => div(v.t!, v.d!),
+        '{t} ÷ {d}',
+        'How many doubling times fit into the time.',
+      ),
+      forward(
+        'N = N₀ × 2^g',
+        '{N} = {N0} × 2^{g}',
+        'N',
+        ['N0', 'g'],
+        (v) => v.N0! * 2 ** v.g!,
+        '{N0} × 2^{g}',
+        'Each doubling multiplies the population by 2: g doublings multiply it by 2ᵍ.',
+      ),
+    ),
+    example: { N0: 100, d: 20, t: 120, g: 6, N: 6400 },
+    startWith: ['N0', 'd', 't'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'exponential',
+      a: 'N0',
+      b: 2,
+      name: 'N',
+      at: { x: 'g', y: 'N' },
+      axes: { x: 'Doublings g', y: 'Population N' },
+    },
+  },
+];
+
+export const SCIENCE_9_MODULES: ModuleDef[] = [...INHERITANCE, ...EVOLUTION, ...POPULATION];

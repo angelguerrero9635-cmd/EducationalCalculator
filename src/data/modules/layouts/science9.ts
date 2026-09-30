@@ -307,4 +307,60 @@ const EVOLUTION: LayoutDef[] = [
   },
 ];
 
-export const SCIENCE_9_LAYOUTS: LayoutDef[] = [...INHERITANCE, ...EVOLUTION];
+const POPULATION: LayoutDef[] = [
+  // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
+  {
+    kind: 'sort',
+    id: 's.9.population-ecology~limiting-factors',
+    title: 'Density-dependent or density-independent?',
+    use: 'Use this for “Habitat loss crowds a population. Which limiting factor grows stronger?”',
+    assumptions: [
+      'A limiting factor keeps a population from growing without end.',
+      'Density-dependent factors hit harder as the population gets more crowded; density-independent ones hit the same share whatever the crowding.',
+    ],
+    question: 'Does its effect depend on how crowded the population is?',
+    bins: [
+      {
+        id: 'dependent',
+        label: 'Density-dependent',
+        why: 'The more individuals share the space, the stronger it acts.',
+      },
+      {
+        id: 'independent',
+        label: 'Density-independent',
+        why: 'Weather and disasters strike a sparse population as hard as a crowded one.',
+      },
+    ],
+    cards: [
+      { label: 'Competition for food', bin: 'dependent' },
+      { label: 'Disease spreading in a crowded herd', bin: 'dependent' },
+      { label: 'Predators catching more prey when prey are many', bin: 'dependent' },
+      { label: 'Parasites', bin: 'dependent' },
+      { label: 'Less nesting space after habitat loss', bin: 'dependent' },
+      { label: 'A wildfire', bin: 'independent' },
+      { label: 'A flood', bin: 'independent' },
+      { label: 'A late frost', bin: 'independent' },
+      { label: 'A hurricane', bin: 'independent' },
+      { label: 'A drought', bin: 'independent' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.population-ecology~growth-phases',
+    title: 'Bacteria growing in a flask',
+    use: 'Use this for “Why does the number of bacteria level off and then fall?”',
+    assumptions: [
+      'A flask holds a fixed amount of food and never has its wastes removed.',
+      'Growth is fastest in the exponential phase; it stops when births equal deaths.',
+    ],
+    question: 'Put the growth phases in order.',
+    stages: [
+      { label: 'Lag: the cells adjust and divide little' },
+      { label: 'Exponential: doubling at a steady rate' },
+      { label: 'Stationary: births equal deaths as food runs low' },
+      { label: 'Death: wastes build up and deaths exceed births' },
+    ],
+  },
+];
+
+export const SCIENCE_9_LAYOUTS: LayoutDef[] = [...INHERITANCE, ...EVOLUTION, ...POPULATION];
