@@ -2,7 +2,7 @@ records: 1415 errors: 0
 by source: {'Illustrative Mathematics': 549, 'NAEP (NCES)': 803, 'MCAS released items (Massachusetts DESE)': 63}
 math {'K': 40, '1': 60, '2': 53, '3': 64, '4': 307, '5': 83, '6': 73, '7': 43, '8': 237, '9': 56, '10': 58, '11': 8, '12': 3}
 science {'K': 0, '1': 0, '2': 0, '3': 0, '4': 101, '5': 0, '6': 0, '7': 1, '8': 105, '9': 39, '10': 17, '11': 33, '12': 34}
-K-12 skills: 318 with >=1 question (filed or also): 240 null skillId: 0
+K-12 skills: 318 with >=1 question (filed or also): 242 null skillId: 0
 
 ## Totals by source
 
@@ -292,8 +292,8 @@ Filed: the question's `skillId`. Also: questions filed elsewhere that list this 
 | `s.9.population-ecology`               | Population growth and carrying capacity                                                                    |     5 |    0 |
 | `s.9.ecosystem-dynamics`               | Ecosystems: energy pyramids, matter cycles, succession and biodiversity                                    |     2 |    0 |
 | `s.9.biomes`                           | Biomes and aquatic ecosystems                                                                              |     0 |    0 |
-| `s.9.homeostasis`                      | Body systems, homeostasis and feedback loops                                                               |     5 |    1 |
-| `s.9.nervous-system`                   | The nervous system and the senses                                                                          |     0 |    0 |
+| `s.9.homeostasis`                      | Body systems, homeostasis and feedback loops                                                               |     4 |    2 |
+| `s.9.nervous-system`                   | The nervous system and the senses                                                                          |     1 |    0 |
 | `s.9.immune-disease`                   | Disease and the immune system                                                                              |     0 |    0 |
 | `s.10.measurement`                     | Measurement, significant figures and dimensional analysis                                                  |     0 |    0 |
 | `s.10.atomic-structure`                | Atomic structure and isotopes                                                                              |     3 |    0 |
@@ -333,9 +333,9 @@ Filed: the question's `skillId`. Also: questions filed elsewhere that list this 
 | `s.12.minerals-rocks`                  | Minerals and rocks: properties and how they form                                                           |     0 |    0 |
 | `s.12.earth-interior`                  | Earthquakes, seismic waves and Earth's interior                                                            |     6 |    0 |
 | `s.12.volcanoes-mountains`             | Volcanoes, crustal deformation and mountain building                                                       |     0 |    0 |
-| `s.12.earth-history`                   | Earth's history: the early Earth, its atmosphere and the history of life                                   |     0 |    0 |
+| `s.12.earth-history`                   | Earth's history: the early Earth, its atmosphere and the history of life                                   |     1 |    0 |
 | `s.12.surface-processes`               | Weathering, erosion, groundwater, glaciers and wind                                                        |     0 |    0 |
-| `s.12.radiometric-dating`              | Geologic time and radiometric dating                                                                       |     5 |    0 |
+| `s.12.radiometric-dating`              | Geologic time and radiometric dating                                                                       |     4 |    1 |
 | `s.12.ocean-atmosphere`                | The ocean: seafloor, currents and ocean–atmosphere interaction                                             |     1 |    0 |
 | `s.12.atmosphere-weather`              | The atmosphere: structure, air pressure, wind and severe weather                                           |     3 |    0 |
 | `s.12.climate-systems`                 | Climate systems, feedbacks and climate change                                                              |     5 |    2 |
@@ -402,7 +402,6 @@ Filed: the question's `skillId`. Also: questions filed elsewhere that list this 
 - `s.9.classification` — Classification and the diversity of life: domains, kingdoms and cladograms
 - `s.9.plant-biology` — Plants: structure, transport, growth and reproduction
 - `s.9.biomes` — Biomes and aquatic ecosystems
-- `s.9.nervous-system` — The nervous system and the senses
 - `s.9.immune-disease` — Disease and the immune system
 - `s.10.measurement` — Measurement, significant figures and dimensional analysis
 - `s.10.electrons-in-atoms` — Electrons in atoms: energy levels, electron configuration and light
@@ -423,7 +422,6 @@ Filed: the question's `skillId`. Also: questions filed elsewhere that list this 
 - `s.11.modern-physics` — Modern physics: photons, atomic spectra and relativity
 - `s.12.minerals-rocks` — Minerals and rocks: properties and how they form
 - `s.12.volcanoes-mountains` — Volcanoes, crustal deformation and mountain building
-- `s.12.earth-history` — Earth's history: the early Earth, its atmosphere and the history of life
 - `s.12.surface-processes` — Weathering, erosion, groundwater, glaciers and wind
 - `s.12.exoplanets` — Exoplanets and the search for life
 
