@@ -525,11 +525,11 @@ function wholeSolutions(
             .slice()
             .sort((a, b) => a - b);
         if (list?.length) {
-          const gaps = list
-            .slice(1)
-            .map((x, i) => x - list[i]!)
-            .filter((g) => g > 1e-12);
-          return [v.id, { lo: list[0]!, hi: list[list.length - 1]!, f: Math.min(1, ...gaps) }];
+          // The step divides every allowed value (0.9, 0.95, 0.99 → 0.01), so bounds snapped
+          // to it keep them all.
+          const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+          const g = list.reduce((acc, x) => gcd(acc, Math.round(Math.abs(x) * 1e6)), 0);
+          return [v.id, { lo: list[0]!, hi: list[list.length - 1]!, f: g ? g / 1e6 : 1 }];
         }
         const f = (v.unitFactor ?? 1) * (v.multipleOf ?? 1);
         return [

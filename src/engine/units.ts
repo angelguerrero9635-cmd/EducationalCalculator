@@ -145,8 +145,8 @@ export const UNITS: readonly UnitDef[] = [
   usu('in/s', 'inches per second', 'speed', IN, 'cm/s'),
   usu('ft/s', 'feet per second', 'speed', FT, 'm/s'),
   usu('mph', 'miles per hour', 'speed', MI / 3600, 'km/h'),
-  u('km/s', 'kilometers per second', 'speed', 1000, 'metric', 'mi/s'),
-  usu('mi/s', 'miles per second', 'speed', MI, 'km/s'),
+  // Space speeds are km/s in both systems (no one writes a galaxy's speed in mi/s).
+  u('km/s', 'kilometers per second', 'speed', 1000, 'both'),
   // Acceleration (m/s²)
   u('m/s²', 'meters per second squared', 'acceleration', 1, 'metric', 'ft/s²'),
   usu('ft/s²', 'feet per second squared', 'acceleration', FT, 'm/s²'),

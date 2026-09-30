@@ -2826,7 +2826,7 @@ const redshiftDemo = (
   variables: [
     q('z', 'z', 'Redshift', undefined, -0.1, 0.3, 0.0001),
     q('l', 'λ', 'Observed wavelength of Hα', 'nm', 500, 900, 0.01),
-    q('v', 'v', 'Speed (+ away)', 'km/s', -30000, 90000, 1),
+    q('v', 'v', 'Speed (+ away)', 'km/s', -30000, 90000, 1, { units: ['km/s'] }),
     ...(z > 0 ? [q('d', 'd', 'Distance (Hubble’s law)', 'Mpc', 0.1, 2000, 0.1)] : []),
   ],
   ...rules(
