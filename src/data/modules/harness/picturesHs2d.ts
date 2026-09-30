@@ -2,10 +2,15 @@
  * Picture checks for Grades 9–12 round 2, group H2D (H101: chemistry; `typesHs2d.ts`), called
  * from the kinds' cases in `pictures.ts`. Test-only.
  */
+import { ELEMENTS, parseFormula } from '@/components/module/reps/chem';
 import {
+  atomsInOrder,
+  averageMass,
+  defectEnergy,
   drawableChain,
   fillFormula,
   formulaVars,
+  grahamRatio,
   hydrocarbonCounts,
   isTemplate,
 } from '@/components/module/reps/chemHs2d';
@@ -13,7 +18,7 @@ import { molarMassOf } from '@/components/module/reps/moles';
 
 import type { ChemSpec } from '../typesChem';
 import type { NumOrVar } from '../typesGraphs';
-import { ladderLevels, type EnergyLadderSpec } from '../typesHs2d';
+import { ladderLevels, type ChemDiagramSpec, type EnergyLadderSpec } from '../typesHs2d';
 import type { MoleMapSpec } from '../typesHsi';
 
 type Val = (x: string | number) => number | undefined;
@@ -127,6 +132,99 @@ export function ladderIssues(
     const [a, b] = [levels[s.from], levels[s.to]];
     if (d !== undefined && a !== undefined && b !== undefined && !near(d, b - a))
       out.push(`${s.label ?? 'a step'} is drawn as ${b - a}, the value shows ${d}`);
+  }
+  return out;
+}
+
+/** The chemDiagram kind (H101 parts 6, 7, 8, 14). */
+export function chemDiagramIssues(rep: ChemDiagramSpec, val: Val): string[] {
+  const out: string[] = [];
+  const num = (x: NumOrVar | undefined) => (x === undefined ? undefined : val(x));
+  const formulaOk = (f: string) => {
+    const parts = parseFormula(f);
+    if (parts.length === 0) out.push(`formula "${f}" has no atoms`);
+    for (const { el } of parts)
+      if (!ELEMENTS.some(([sym]) => sym === el)) out.push(`"${el}" in ${f} is not an element`);
+  };
+  switch (rep.mode) {
+    case 'effusion': {
+      rep.gases.forEach((g) => formulaOk(g.formula));
+      const [m1, m2] = rep.gases.map((g) => num(g.molarMass));
+      if ([m1, m2].some((m) => m !== undefined && !(m > 0)))
+        out.push('a molar mass is not positive');
+      const r = num(rep.ratio);
+      if (m1 && m2 && m1 > 0 && m2 > 0 && r !== undefined && !near(r, grahamRatio(m1, m2)))
+        out.push(`√(${m2} ÷ ${m1}) is ${grahamRatio(m1, m2)}, the value shows ${r}`);
+      break;
+    }
+    case 'isotopes': {
+      formulaOk(rep.element);
+      const [m1, m2] = rep.masses.map(num);
+      const p1 = num(rep.percents[0]);
+      const p2 = num(rep.percents[1]);
+      if (p1 !== undefined && (p1 < 0 || p1 > 100)) out.push(`${p1}% is not a percent`);
+      if (p1 !== undefined && p2 !== undefined && !near(p1 + p2, 100, 1e-6))
+        out.push(`the percents add to ${p1 + p2}, not 100`);
+      if ([m1, m2].some((m) => m !== undefined && !(m > 0)))
+        out.push('an isotope mass is not positive');
+      const avg = num(rep.average);
+      if (m1 !== undefined && m2 !== undefined && p1 !== undefined && avg !== undefined)
+        if (!near(avg, averageMass(m1, m2, p1), 1e-4))
+          out.push(`the pivot is at ${averageMass(m1, m2, p1)}, the value shows ${avg}`);
+      break;
+    }
+    case 'oxidation': {
+      const template = isTemplate(rep.formula);
+      const filled = fillFormula(rep.formula, (id) => val(id), true);
+      if (filled === undefined) break;
+      formulaOk(filled);
+      const atoms = atomsInOrder(filled);
+      if (atoms.length > 14) out.push(`${atoms.length} atoms (the tally draws up to 14)`);
+      const els = [...new Set(atoms)];
+      for (const el of els)
+        if (!(el in rep.numbers)) out.push(`no oxidation number for ${el} in ${rep.formula}`);
+      if (!template)
+        for (const el of Object.keys(rep.numbers))
+          if (!els.includes(el)) out.push(`${el} is not in ${rep.formula}`);
+      const ns = els.map((el) => num(rep.numbers[el]));
+      for (const n of ns)
+        if (n !== undefined && (!Number.isInteger(n) || n < -4 || n > 8))
+          out.push(`oxidation number ${n} (whole, −4 to +8)`);
+      const q = rep.charge === undefined ? 0 : num(rep.charge);
+      if (q !== undefined && ns.every((n) => n !== undefined)) {
+        const total = els.reduce(
+          (sum, el, i) => sum + ns[i]! * atoms.filter((a) => a === el).length,
+          0,
+        );
+        if (!near(total, q, 1e-9))
+          out.push(`the oxidation numbers add to ${total}, the charge is ${q}`);
+      }
+      break;
+    }
+    case 'massDefect': {
+      if (
+        rep.before.length < 1 ||
+        rep.before.length > 3 ||
+        rep.after.length < 1 ||
+        rep.after.length > 4
+      )
+        out.push('1 to 3 parts before and 1 to 4 after');
+      const side = (ps: typeof rep.before) => {
+        const ms = ps.map((p) => num(p.mass));
+        return ms.some((m) => m === undefined) ? undefined : ms.reduce((a, b) => a! + b!, 0)!;
+      };
+      const [b, a] = [side(rep.before), side(rep.after)];
+      if (b === undefined || a === undefined) break;
+      const dm = num(rep.defect);
+      if (dm !== undefined && !near(dm, b - a, 1e-6))
+        out.push(`Δm is ${b - a} u, the value shows ${dm}`);
+      if (b - a <= 0)
+        out.push(`the mass after (${a}) is not less than before (${b}): no gap to draw`);
+      const E = num(rep.energy);
+      if (E !== undefined && !near(E, defectEnergy(dm ?? b - a), 2e-3))
+        out.push(`E is ${defectEnergy(dm ?? b - a)} MeV, the value shows ${E}`);
+      break;
+    }
   }
   return out;
 }

@@ -181,7 +181,8 @@ export interface MassPart {
  *   isotopes (default: the symbol with the mass number, "¹⁰B").
  * - `oxidation` (part 8): every atom of `formula` in a row with its oxidation number on it
  *   (`numbers`, by element), each element's atoms added (4 × −2 = −8) and the sum equal to the
- *   `charge` (default 0), checked.
+ *   `charge` (default 0), checked. The formula may take subscripts from values ("H{h}S{s}O{o}",
+ *   an element with 0 left out).
  * - `massDefect` (part 14): the mass `before` and `after` a nuclear change as two bars on a
  *   broken axis, so a few thousandths of a unit show on top of hundreds; the gap is the mass
  *   defect (`defect`, checked as before − after) and `energy` (MeV, checked as Δm × 931.5).
@@ -226,11 +227,96 @@ export function chemDiagramVars(r: ChemDiagramSpec): string[] {
     case 'isotopes':
       return ids(...r.masses, ...r.percents, r.average);
     case 'oxidation':
-      return ids(...Object.values(r.numbers), r.charge);
+      return [...formulaVars(r.formula), ...ids(...Object.values(r.numbers), r.charge)];
     case 'massDefect':
       return ids(...[...r.before, ...r.after].map((p) => p.mass), r.defect, r.energy);
   }
 }
 
-/** MeV per atomic mass unit (E = mc²). */
-export const MEV_PER_U = 931.5;
+// ─── Part 10: hydration (a `molecules` explore scene) ────────────────────────
+
+/**
+ * `hydration` on a `molecules` scene (H101 part 10): each ion ("Na+", "Cl-", "Mg2+") drawn big
+ * with its charge, ringed by `waters` water molecules (4 to 8, default 6) turned by the charge:
+ * the partly negative O toward a positive ion, a partly positive H toward a negative one, with
+ * δ− and δ+ marked. `crystal` adds the salt's lattice at the bottom, its edge ions pulled off.
+ */
+export interface HydrationScene {
+  ions: string[];
+  waters?: number;
+  crystal?: boolean;
+}
+
+/** An ion written "Na+", "Cl-", "Mg2+", "SO4 2-" → its formula and charge. */
+export function ionOf(text: string): { formula: string; charge: number } | undefined {
+  const m = /^([A-Z][A-Za-z0-9()]*?)\s*(\d*)([+-])$/.exec(text.trim());
+  if (!m) return undefined;
+  const n = m[2] ? Number(m[2]) : 1;
+  return { formula: m[1]!, charge: m[3] === '+' ? n : -n };
+}
+
+// ─── Part 9: organic condensed-formula cards ─────────────────────────────────
+
+/** The functional groups a condensed-formula card can light. */
+export type FunctionalGroup =
+  'alcohol' | 'acid' | 'ester' | 'amine' | 'ketone' | 'aldehyde' | 'ether' | 'halide';
+
+/**
+ * A card figure (H101 part 9): an organic molecule's condensed structural formula, its groups
+ * written with dashes for bonds ("CH3-CH2-OH"; a carbonyl carbon "C(=O)", its O drawn above
+ * with a double bond), and its functional group lit: alcohol –OH, acid –C(=O)–OH, ester
+ * –C(=O)–O–, amine –NH₂, ketone C(=O) between carbons, aldehyde –C(=O)–H, ether –O– between
+ * carbons, halide –F, –Cl, –Br or –I.
+ */
+export interface CondensedCard {
+  kind: 'condensed';
+  formula: string;
+  group: FunctionalGroup;
+}
+
+/** The groups of a condensed formula, split at its dashes. */
+export const condensedUnits = (formula: string) => formula.split('-').filter(Boolean);
+
+const CARBON = /^C(H\d?)?$/;
+/** A unit that is a carbon of the chain (CH3, CH2, CH, C), not the carbonyl. */
+const isCarbon = (u: string | undefined) => !!u && CARBON.test(u);
+const isCarbonyl = (u: string | undefined) => u === 'C(=O)';
+
+/** The units the functional group covers (indices), or [] when the formula has none. */
+export function groupUnits(formula: string, group: FunctionalGroup): number[] {
+  const u = condensedUnits(formula);
+  for (let i = 0; i < u.length; i++) {
+    const [prev, cur, next] = [u[i - 1], u[i], u[i + 1]];
+    switch (group) {
+      case 'alcohol':
+        if (cur === 'OH' && !isCarbonyl(prev)) return [i];
+        break;
+      case 'acid':
+        if (isCarbonyl(cur) && next === 'OH') return [i, i + 1];
+        if (cur === 'COOH') return [i];
+        break;
+      case 'ester':
+        if (isCarbonyl(cur) && next === 'O' && isCarbon(u[i + 2])) return [i, i + 1];
+        if (cur === 'COO') return [i];
+        break;
+      case 'amine':
+        if (cur === 'NH2' || cur === 'NH') return [i];
+        break;
+      case 'ketone':
+        if (isCarbonyl(cur) && isCarbon(prev) && isCarbon(next)) return [i];
+        break;
+      case 'aldehyde':
+        if (isCarbonyl(cur) && (next === 'H' || prev === 'H'))
+          return next === 'H' ? [i, i + 1] : [i - 1, i];
+        if (cur === 'CHO') return [i];
+        break;
+      case 'ether':
+        if (cur === 'O' && isCarbon(prev) && isCarbon(next)) return [i];
+        break;
+      case 'halide':
+        if (['F', 'Cl', 'Br', 'I'].includes(cur!)) return [i];
+        break;
+    }
+  }
+  return [];
+}

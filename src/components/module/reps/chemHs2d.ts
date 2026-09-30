@@ -21,20 +21,26 @@ export const isTemplate = (formula: string) => formula.includes('{');
 /**
  * A formula with its values put in ("C{x}H{y}" with x 3, y 8 → "C3H8"); undefined while a value
  * is unknown or not a whole number of at least 1 (a subscript of 1 is left out, as written).
+ * With `zeroDrops`, a subscript of 0 leaves its element out ("H{h}SO4" with h 0 → "SO4").
  */
 export function fillFormula(
   formula: string,
   get: (id: string) => number | undefined,
+  zeroDrops = false,
 ): string | undefined {
   let ok = true;
-  const out = formula.replace(VAR, (_, id: string) => {
-    const v = get(id);
-    if (v === undefined || !Number.isInteger(v) || v < 1) {
-      ok = false;
-      return '';
-    }
-    return v === 1 ? '' : String(v);
-  });
+  const out = formula.replace(
+    /([A-Z][a-z]?)?\{([^}]+)\}/g,
+    (_, el: string | undefined, id: string) => {
+      const v = get(id);
+      if (zeroDrops && v === 0) return '';
+      if (v === undefined || !Number.isInteger(v) || v < 1) {
+        ok = false;
+        return el ?? '';
+      }
+      return `${el ?? ''}${v === 1 ? '' : v}`;
+    },
+  );
   return ok ? out : undefined;
 }
 
@@ -216,3 +222,40 @@ export function ionicUnit(formula: string): Molecule {
   }
   return { atoms, bonds: [], ionic: true };
 }
+
+// ─── Effusion, isotopes, oxidation numbers, mass defect ─────────────────────
+
+/** Graham's law: how many times faster gas 1 effuses than gas 2, √(M₂ ÷ M₁). */
+export const grahamRatio = (m1: number, m2: number) => Math.sqrt(m2 / m1);
+
+/**
+ * Of `total` molecules that have escaped, how many are the first gas: in the ratio of the rates
+ * (rounded, at least one of each when both rates are real).
+ */
+export function escapedSplit(ratio: number, total: number): [number, number] {
+  const first = Math.min(total - 1, Math.max(1, Math.round((total * ratio) / (1 + ratio))));
+  return [first, total - first];
+}
+
+/** The average atomic mass of two isotopes from the first one's percent. */
+export const averageMass = (m1: number, m2: number, p1: number) =>
+  (m1 * p1) / 100 + (m2 * (100 - p1)) / 100;
+
+/** Atoms of a formula one by one, in the order written: "MnO4" → Mn, O, O, O, O. */
+export const atomsInOrder = (formula: string) =>
+  parseFormula(formula).flatMap(({ el, n }) => Array<string>(n).fill(el));
+
+/** A signed number as a chemist writes an oxidation number or a charge: +7, −2, 0. */
+export const signedText = (x: number, text = String(Math.abs(x))) =>
+  x > 0 ? `+${text}` : x < 0 ? `−${text}` : '0';
+
+/** A charge as a superscript after a formula: −1 → ⁻, +2 → ²⁺, 0 → nothing. */
+export function chargeSuperscript(q: number): string {
+  if (!q) return '';
+  const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  const n = Math.abs(Math.round(q));
+  return `${n === 1 ? '' : [...String(n)].map((d) => SUP[Number(d)]).join('')}${q > 0 ? '⁺' : '⁻'}`;
+}
+
+/** Energy from a mass defect: Δm (u) × 931.5 MeV per u. */
+export const defectEnergy = (dm: number) => dm * 931.5;

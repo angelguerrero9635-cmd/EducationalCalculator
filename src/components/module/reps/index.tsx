@@ -150,6 +150,7 @@ import { ImmuneResponse } from './ImmuneResponse';
 import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
 import { ReactionLimiting } from './ReactionLimiting';
+import { ChemDiagram } from './ChemDiagram';
 import { HslPicture } from './HslPicture';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -211,6 +212,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'phScale':
     case 'decayChart':
       return <HsjView spec={spec} calc={calc} />;
+    case 'chemDiagram':
+      return <ChemDiagram spec={spec} calc={calc} />;
     case 'projectile':
     case 'induction':
     case 'charges':

@@ -48,7 +48,7 @@ import {
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
-import { chemHs2dIssues, filledChem, moleMapHs2dIssues } from './picturesHs2d';
+import { chemDiagramIssues, chemHs2dIssues, filledChem, moleMapHs2dIssues } from './picturesHs2d';
 import { hslIssues } from './picturesHsl';
 import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
@@ -2138,6 +2138,9 @@ export function repIssues(
     case 'phScale':
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
+      break;
+    case 'chemDiagram':
+      out.push(...chemDiagramIssues(rep, (id) => val(id)));
       break;
     case 'earthLayers':
     case 'oceanProfile':

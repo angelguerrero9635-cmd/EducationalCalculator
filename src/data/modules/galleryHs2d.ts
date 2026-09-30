@@ -112,7 +112,7 @@ const combustionGeneral: ModuleDef = {
     { ...whole('d', 'd', 'Water molecules', 1, 18), derived: true },
     { ...whole('o', 'O', 'Oxygen atoms on each side', 2, 50), derived: true },
     {
-      ...quantity('M', 'M', 'Molar mass of the fuel', 'g/mol', 1, 200, 0.01, { digits: 2 }),
+      ...quantity('M', 'M', 'Molar mass of the fuel', 'g/mol', 1, 200, 0.01),
       derived: true,
     },
   ],
@@ -610,6 +610,311 @@ const hess: ModuleDef = {
   },
 };
 
+// ─── Part 6: effusion (chemDiagram effusion) ─────────────────────────────────
+
+const molar = (id: string, symbol: string, name: string): VariableDef =>
+  quantity(id, symbol, name, 'g/mol', 0.1, 1000, 0.001);
+
+/** Graham's law: which gas leaks out faster, and how many times as fast. */
+const effusion: ModuleDef = {
+  id: 'g.s10-gas-laws-effusion',
+  title: 'Effusion: Graham’s law',
+  use: 'Use this for “Hydrogen and oxygen leak from one balloon. Which escapes faster, and how many times as fast?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Both gases are at the same temperature, so their molecules have the same average kinetic energy.',
+    'Lighter molecules move faster, so they find the pinhole more often.',
+    'rate₁ ÷ rate₂ = √(M₂ ÷ M₁).',
+  ],
+  variables: [
+    molar('M1', 'M₁', 'Molar mass of H₂'),
+    molar('M2', 'M₂', 'Molar mass of O₂'),
+    {
+      ...quantity('r', 'r', 'How many times as fast H₂ escapes', undefined, 0.01, 100, 0.01),
+      derived: true,
+    },
+  ],
+  ...rules({
+    relation: {
+      id: 'r = √(M2/M1)',
+      display: '{r} = √({M2}/{M1})',
+      vars: ['r', 'M1', 'M2'],
+      residual: (v) => v.r! * v.r! * v.M1! - v.M2!,
+      solve: {
+        r: (v) => (v.M1! > 0 && v.M2! > 0 ? Math.sqrt(v.M2! / v.M1!) : undefined),
+        M1: (v) => (v.r! > 0 ? v.M2! / (v.r! * v.r!) : undefined),
+        M2: (v) => v.r! * v.r! * v.M1!,
+      },
+    },
+    steps: {
+      r: {
+        expr: '√({M2}/{M1})',
+        how: 'Graham’s law: the rate goes as 1 over the square root of the molar mass.',
+      },
+      M1: { expr: '{M2}/{r}²', how: 'Square the ratio and divide it into M₂.' },
+      M2: { expr: '{r}² × {M1}', how: 'Square the ratio and multiply by M₁.' },
+    },
+  }),
+  example: { M1: 2.016, M2: 32, r: Math.sqrt(32 / 2.016) },
+  startWith: ['M1', 'M2'],
+  representation: {
+    kind: 'chemDiagram',
+    mode: 'effusion',
+    gases: [
+      { formula: 'H2', molarMass: 'M1' },
+      { formula: 'O2', molarMass: 'M2' },
+    ],
+    ratio: 'r',
+  },
+};
+
+// ─── Part 7: isotope abundance (chemDiagram isotopes) ────────────────────────
+
+const averageMass: ModuleDef = {
+  id: 'g.s10-atomic-structure-average-mass',
+  title: 'Average atomic mass from isotopes',
+  use: 'Use this for “Boron is 19.9% boron-10 (10.01 u) and 80.1% boron-11 (11.01 u). Find its atomic mass.”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The element has two isotopes; their percents add to 100%.',
+    'The atomic mass on the periodic table is the average over the atoms, weighted by how common each isotope is.',
+  ],
+  variables: [
+    quantity('m1', 'm₁', 'Mass of the first isotope', 'u', 0.1, 300, 0.01),
+    quantity('m2', 'm₂', 'Mass of the second isotope', 'u', 0.1, 300, 0.01),
+    quantity('f1', 'f₁', 'Abundance of the first isotope', '%', 0, 100, 0.1),
+    { ...quantity('f2', 'f₂', 'Abundance of the second isotope', '%', 0, 100, 0.1), derived: true },
+    { ...quantity('A', 'A', 'Average atomic mass', 'u', 0.1, 300, 0.01), derived: true },
+  ],
+  ...rules(
+    {
+      relation: {
+        id: 'f2 = 100 − f1',
+        display: '{f2} = 100 − {f1}',
+        vars: ['f2', 'f1'],
+        residual: (v) => v.f2! - (100 - v.f1!),
+        solve: { f2: (v) => 100 - v.f1!, f1: (v) => 100 - v.f2! },
+      },
+      steps: {
+        f2: { expr: '100 − {f1}', how: 'The two isotopes make up all the atoms: 100%.' },
+        f1: { expr: '100 − {f2}', how: 'The rest of the 100% is the first isotope.' },
+      },
+    },
+    {
+      relation: {
+        id: 'A = m1 f1 + m2 f2',
+        display: '{A} = {m1} × {f1}/100 + {m2} × {f2}/100',
+        vars: ['A', 'm1', 'f1', 'm2', 'f2'],
+        residual: (v) => 100 * v.A! - (v.m1! * v.f1! + v.m2! * v.f2!),
+        solve: {
+          A: (v) => (v.m1! * v.f1! + v.m2! * v.f2!) / 100,
+          m1: (v) => (v.f1! > 0 ? (100 * v.A! - v.m2! * v.f2!) / v.f1! : undefined),
+          m2: (v) => (v.f2! > 0 ? (100 * v.A! - v.m1! * v.f1!) / v.f2! : undefined),
+        },
+      },
+      steps: {
+        A: {
+          expr: '{m1} × {f1}/100 + {m2} × {f2}/100',
+          how: 'Each isotope counts as much as its share of the atoms.',
+        },
+        m1: {
+          expr: '(100 × {A} − {m2} × {f2})/{f1}',
+          how: 'Take the second isotope’s share away and divide by the first one’s percent.',
+        },
+        m2: {
+          expr: '(100 × {A} − {m1} × {f1})/{f2}',
+          how: 'Take the first isotope’s share away and divide by the second one’s percent.',
+        },
+      },
+    },
+  ),
+  example: { m1: 10.01, m2: 11.01, f1: 19.9, f2: 80.1, A: (10.01 * 19.9 + 11.01 * 80.1) / 100 },
+  startWith: ['m1', 'm2', 'f1'],
+  representation: {
+    kind: 'chemDiagram',
+    mode: 'isotopes',
+    element: 'B',
+    masses: ['m1', 'm2'],
+    percents: ['f1', 'f2'],
+    average: 'A',
+  },
+};
+
+// ─── Part 8: oxidation numbers (chemDiagram oxidation) ───────────────────────
+
+/** x + h(+1) + o(−2) = q: the sulfur in H₂SO₄, HSO₄⁻, SO₄²⁻, SO₃²⁻, H₂S … */
+const oxidationSulfur: ModuleDef = {
+  id: 'g.s10-redox-oxidation-numbers',
+  title: 'Oxidation numbers: the atom to find',
+  use: 'Use this for “What is the oxidation number of S in H₂SO₄?” or in SO₄²⁻.',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Hydrogen is +1 and oxygen −2 in most compounds.',
+    'The oxidation numbers of all the atoms add up to the charge: 0 for a neutral compound.',
+  ],
+  variables: [
+    whole('x', 'x', 'Oxidation number of the sulfur', -4, 8),
+    whole('h', 'h', 'Hydrogen atoms', 0, 4),
+    whole('o', 'o', 'Oxygen atoms', 0, 4),
+    whole('q', 'q', 'Charge of the particle', -3, 3),
+  ],
+  ...rules({
+    relation: {
+      id: 'x + h − 2o = q',
+      display: '{x} + {h} × (+1) + {o} × (−2) = {q}',
+      vars: ['x', 'h', 'o', 'q'],
+      residual: (v) => v.x! + v.h! - 2 * v.o! - v.q!,
+      solve: {
+        x: (v) => v.q! - v.h! + 2 * v.o!,
+        h: (v) => v.q! - v.x! + 2 * v.o!,
+        o: (v) => (v.x! + v.h! - v.q!) / 2,
+        q: (v) => v.x! + v.h! - 2 * v.o!,
+      },
+    },
+    steps: {
+      x: {
+        expr: '{q} − {h} + 2 × {o}',
+        how: 'Take the hydrogens’ +1 each away from the charge and add back the oxygens’ −2 each.',
+      },
+      h: { expr: '{q} − {x} + 2 × {o}', how: 'What the charge still needs, +1 per hydrogen.' },
+      o: {
+        expr: '({x} + {h} − {q})/2',
+        how: 'What the other atoms have too much of, −2 per oxygen.',
+      },
+      q: { expr: '{x} + {h} − 2 × {o}', how: 'Add every atom’s oxidation number.' },
+    },
+  }),
+  example: { x: 6, h: 2, o: 4, q: 0 },
+  startWith: ['h', 'o', 'q'],
+  representation: {
+    kind: 'chemDiagram',
+    mode: 'oxidation',
+    formula: 'H{h}SO{o}',
+    numbers: { H: 1, S: 'x', O: -2 },
+    charge: 'q',
+  },
+};
+
+/** The manganese in permanganate, MnO₄⁻. */
+const oxidationPermanganate: ModuleDef = {
+  id: 'g.s10-redox-oxidation-numbers-ion',
+  title: 'Oxidation numbers in an ion',
+  use: 'Use this for “What is the oxidation number of Mn in MnO₄⁻?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Oxygen is −2 in most compounds.',
+    'In an ion, the oxidation numbers add up to the ion’s charge.',
+  ],
+  variables: [
+    whole('x', 'x', 'Oxidation number of the manganese', -4, 8),
+    whole('q', 'q', 'Charge of the ion', -3, 3),
+  ],
+  ...rules({
+    relation: {
+      id: 'x − 8 = q',
+      display: '{x} + 4 × (−2) = {q}',
+      vars: ['x', 'q'],
+      residual: (v) => v.x! - 8 - v.q!,
+      solve: { x: (v) => v.q! + 8, q: (v) => v.x! - 8 },
+    },
+    steps: {
+      x: { expr: '{q} + 8', how: 'The four oxygens bring −8; the manganese makes up the rest.' },
+      q: { expr: '{x} − 8', how: 'Add the four oxygens’ −2 each to the manganese.' },
+    },
+  }),
+  example: { x: 7, q: -1 },
+  startWith: ['q'],
+  representation: {
+    kind: 'chemDiagram',
+    mode: 'oxidation',
+    formula: 'MnO4',
+    numbers: { Mn: 'x', O: -2 },
+    charge: 'q',
+  },
+};
+
+// ─── Part 14: the mass defect (chemDiagram massDefect) ───────────────────────
+
+const massU = (id: string, symbol: string, name: string): VariableDef =>
+  quantity(id, symbol, name, 'u', 0.000001, 300, 0.000001);
+
+const massDefect: ModuleDef = {
+  id: 'g.s10-nuclear-chemistry-mass-defect',
+  title: 'The mass defect: where the energy comes from',
+  use: 'Use this for “U-238 gives off an alpha particle. How much mass is lost, and how much energy is released?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The masses are of the nuclei with their electrons (atomic masses), in unified atomic mass units.',
+    'The mass lost becomes energy, E = mc²: 931.5 MeV for each unit of mass.',
+  ],
+  variables: [
+    massU('mb', 'm', 'Mass of U-238'),
+    massU('m1', 'm₁', 'Mass of Th-234'),
+    massU('m2', 'm₂', 'Mass of He-4'),
+    { ...massU('dm', 'Δm', 'Mass lost'), min: -300, derived: true },
+    {
+      ...quantity('E', 'E', 'Energy released', 'MeV', -100000, 100000, 0.01),
+      derived: true,
+    },
+  ],
+  ...rules(
+    {
+      relation: {
+        id: 'mass is lost',
+        constraint: true,
+        display: 'The mass after, {m1} + {m2}, is less than {mb}',
+        vars: ['mb', 'm1', 'm2'],
+        residual: (v) => (v.m1! + v.m2! < v.mb! ? 0 : 1),
+        solve: {},
+      },
+      steps: {},
+    },
+    {
+      relation: {
+        id: 'dm = mb − (m1 + m2)',
+        display: '{dm} = {mb} − ({m1} + {m2})',
+        vars: ['dm', 'mb', 'm1', 'm2'],
+        residual: (v) => v.dm! - (v.mb! - v.m1! - v.m2!),
+        solve: {
+          dm: (v) => v.mb! - v.m1! - v.m2!,
+          mb: (v) => v.dm! + v.m1! + v.m2!,
+          m1: (v) => v.mb! - v.dm! - v.m2!,
+          m2: (v) => v.mb! - v.dm! - v.m1!,
+        },
+      },
+      steps: {
+        dm: { expr: '{mb} − ({m1} + {m2})', how: 'The mass before less the mass after.' },
+        mb: { expr: '{dm} + {m1} + {m2}', how: 'The mass after plus what was lost.' },
+        m1: { expr: '{mb} − {dm} − {m2}', how: 'What is left of the mass for the thorium.' },
+        m2: { expr: '{mb} − {dm} − {m1}', how: 'What is left of the mass for the helium.' },
+      },
+    },
+    scaleBy('E', 'dm', 931.5, '931.5', [
+      'Each unit of mass lost becomes 931.5 MeV of energy.',
+      'Divide the energy by 931.5 MeV per unit.',
+    ]),
+  ),
+  example: {
+    mb: 238.050788,
+    m1: 234.043601,
+    m2: 4.002603,
+    dm: 238.050788 - 234.043601 - 4.002603,
+    E: (238.050788 - 234.043601 - 4.002603) * 931.5,
+  },
+  startWith: ['mb', 'm1', 'm2'],
+  representation: {
+    kind: 'chemDiagram',
+    mode: 'massDefect',
+    before: [{ name: 'U-238', mass: 'mb' }],
+    after: [
+      { name: 'Th-234', mass: 'm1' },
+      { name: 'He-4', mass: 'm2' },
+    ],
+    defect: 'dm',
+    energy: 'E',
+  },
+};
+
 export const HS2D_GALLERY_MODULES: ModuleDef[] = [
   combustionGeneral,
   replacementIons,
@@ -617,6 +922,11 @@ export const HS2D_GALLERY_MODULES: ModuleDef[] = [
   limitingGrams,
   formation,
   hess,
+  effusion,
+  averageMass,
+  oxidationSulfur,
+  oxidationPermanganate,
+  massDefect,
 ];
 
 export const HS2D_GALLERY_LAYOUTS: LayoutDef[] = [];

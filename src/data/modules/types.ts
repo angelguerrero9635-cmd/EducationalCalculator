@@ -22,6 +22,7 @@ import type { HsgSpec, PunnettInheritance } from './typesHsg';
 import type { HshSpec } from './typesHsh';
 import type { HsiSpec } from './typesHsi';
 import type { HslSpec } from './typesHsl';
+import type { ChemDiagramSpec } from './typesHs2d';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
@@ -1104,6 +1105,8 @@ export type Representation =
   | HsiSpec
   /** Grades 9–12 chemistry, group J: gas piston, … (specs in `typesHsj.ts`). */
   | HsjSpec
+  /** Grades 9–12 round 2, group H2D: effusion, isotopes, oxidation numbers, mass defect. */
+  | ChemDiagramSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
