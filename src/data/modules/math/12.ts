@@ -6850,12 +6850,64 @@ const slopeCurve = {
   fixed: true,
 } as const;
 
+/** The side of Hₐ, coded as a choice: 0 for ≠, 1 for >, −1 for <. */
+const sideVar = (what: string) =>
+  V('h', 'Hₐ', `Hₐ: ${what} ≠ 0 (0), > 0 (1) or < 0 (−1)`, {
+    integer: true,
+    min: -1,
+    max: 1,
+    allowed: [-1, 0, 1],
+  });
+/** The t tail Hₐ asks for: both tails past |t|, the right tail, or the left tail. */
+const tTail = (v: Values) =>
+  v.h === 0
+    ? 2 * (1 - tCdf(Math.abs(v.t!), v.df!))
+    : v.h! > 0
+      ? 1 - tCdf(v.t!, v.df!)
+      : tCdf(v.t!, v.df!);
+const tSided = withCheck(
+  derive(
+    'P = the t tail on the side of Hₐ',
+    '{P} = the tail past {t} on the side {h} names, df = {df}',
+    'P',
+    ['t', 'df', 'h'],
+    tTail,
+    (v: Values) =>
+      v.h === 0
+        ? '2 × (1 − tcdf(|{t}|, {df}))'
+        : v.h! > 0
+          ? '1 − tcdf({t}, {df})'
+          : 'tcdf({t}, {df})',
+    'Hₐ ≠ counts both tails past |t|; Hₐ > the area right of t; Hₐ < the area left of t (tcdf is the area left).',
+  ),
+  (v) => {
+    const [t, df] = [fmt(v.t!), fmt(v.df!)];
+    const P = shown(v.P!);
+    return v.h === 0
+      ? `${P} = 2 × (1 − tcdf(|${t}|, ${df}))`
+      : v.h! > 0
+        ? `${P} = 1 − tcdf(${t}, ${df})`
+        : `${P} = tcdf(${t}, ${df})`;
+  },
+);
+/** The decision in context: below α is convincing evidence of the relationship Hₐ names. */
+const decideSlope = (v: Values) => {
+  if (v.P === undefined || v.a === undefined) return '';
+  const kind = v.h === 1 ? 'a positive ' : v.h === -1 ? 'a negative ' : 'a ';
+  // A p-value is never 0: one the box rounds to 0 is written P < 0.0001.
+  const tiny = v.P < 0.0001 ? 'P < 0.0001, ' : '';
+  return v.P < v.a
+    ? `→ ${tiny}below α = ${fmt(v.a)}: reject H₀, convincing evidence of ${kind}linear relationship between x and y`
+    : `→ not below α = ${fmt(v.a)}: fail to reject H₀, not convincing evidence of ${kind}linear relationship`;
+};
+const slopeP = withStep(tSided, 'P', { note: decideSlope });
+
 const MATH_12_REGRESSION: ModuleDef[] = [
   // ── m.12.regression-inference (S-ID.8 carried on; AP Statistics unit 9) ──
   {
     id: 'm.12.regression-inference',
     assumptions: [
-      'H₀: β = 0 (no linear relationship) and Hₐ: β ≠ 0; b and SE_b come from the computer output.',
+      'H₀: β = 0 (no linear relationship); Hₐ is β ≠ 0, or β > 0 (β < 0) for a positive (negative) one.',
       't = b ÷ SE_b follows a t curve with df = n − 2.',
       'The points scatter evenly about a straight line, with residuals close to normal and independent.',
     ],
@@ -6865,10 +6917,11 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       pointsVar,
       dfVar,
       tVar(),
+      sideVar('β'),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
-    ...rels(dfLine, tSlope, decided(tTwoTail('P', 't', 'df'))),
+    ...rels(dfLine, tSlope, slopeP),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
       b: 0.8,
@@ -6876,10 +6929,11 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       n: 20,
       df: 18,
       t: 3.2,
+      h: 0,
       P: 2 * (1 - tCdf(3.2, 18)),
       a: 0.05,
     },
-    startWith: ['b', 'E', 'n', 'a'],
+    startWith: ['b', 'E', 'n', 'h', 'a'],
     representation: slopeCurve,
   },
   {
@@ -6949,7 +7003,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
     title: 'Is the correlation significant?',
     use: 'Use this for “r = 0.6 for 18 pairs of data. Is the correlation significant at 0.05?”',
     assumptions: [
-      'H₀: ρ = 0 (no linear relationship in the population) and Hₐ: ρ ≠ 0.',
+      'H₀: ρ = 0 (no linear relationship in the population); Hₐ is ρ ≠ 0, ρ > 0 or ρ < 0.',
       't = r√(n − 2) ÷ √(1 − r²), with df = n − 2: the same t as the slope test.',
       'The pairs are a random sample and the scatter follows a straight-line pattern.',
     ],
@@ -6958,6 +7012,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       pointsVar,
       dfVar,
       tVar(),
+      sideVar('ρ'),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
@@ -6976,11 +7031,11 @@ const MATH_12_REGRESSION: ModuleDef[] = [
           ],
         },
       ),
-      decided(tTwoTail('P', 't', 'df')),
+      slopeP,
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
-    example: { r: 0.6, n: 18, df: 16, t: 3, P: 2 * (1 - tCdf(3, 16)), a: 0.05 },
-    startWith: ['r', 'n', 'a'],
+    example: { r: 0.6, n: 18, df: 16, t: 3, h: 0, P: 2 * (1 - tCdf(3, 16)), a: 0.05 },
+    startWith: ['r', 'n', 'h', 'a'],
     representation: {
       kind: 'normalCurve',
       axis: 'Test statistic t if ρ = 0',
@@ -7024,7 +7079,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       ),
       tSlope,
       dfLine,
-      decided(tTwoTail('P', 't', 'df')),
+      withStep(tTwoTail('P', 't', 'df'), 'P', { note: (v) => decideSlope({ ...v, h: 0 }) }),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {

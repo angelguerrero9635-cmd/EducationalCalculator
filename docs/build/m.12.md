@@ -326,3 +326,9 @@ None: every planned page is built, some with an interim picture (below).
 - New page `m.12.area-under-curve~degrees` ((pnʲ + q) ÷ (rnᵏ + s), powers 0–3: L = p ÷ r for
   equal powers, 0 for a bigger bottom, and "no limit" explained for a bigger top; (2n² + 1) ÷
   (n² − 3) → 2), a `table` at n = 1, 10, 100, 1000.
+- `m.12.regression-inference` main and `~correlation`: the side of Hₐ is a value (h: 0 for ≠,
+  1 for >, −1 for <, coded like the other grades' choices), and P is both tails, the right tail
+  (1 − tcdf(t, df)) or the left tail. The decision is written in context ("reject H₀,
+  convincing evidence of a positive linear relationship between x and y" / "fail to reject H₀,
+  not convincing evidence …"), and a p-value under 0.0001 is written "P < 0.0001" in the note
+  (the box still shows 0: shared needs). `~standard-error` gets the same two-sided context.
