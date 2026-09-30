@@ -313,3 +313,36 @@ it('offers only squares and cubes of lengths for areas and volumes in whole-numb
   // A liquid-volume lesson (no lengths) keeps its liters.
   expect(unitChoices(V, 'metric', [V])).toContain('L');
 });
+
+describe('Grades 9–12 units', () => {
+  it.each([
+    [0, '°C', 'K', 273.15],
+    [212, '°F', '°C', 100],
+    [-40, '°C', '°F', -40],
+    [300, 'K', '°C', 26.85],
+    [1, 'atm', 'mmHg', 760],
+    [1, 'atm', 'kPa', 101.325],
+    [1013.25, 'hPa', 'atm', 1],
+    [1, 'kcal', 'kJ', 4.184],
+    [2500, 'mmol', 'mol', 2.5],
+    [4.184, 'J/(g·°C)', 'J/(kg·°C)', 4184],
+    [4.6, 'Ga', 'Ma', 4600],
+    [30, 'km/s', 'm/s', 30000],
+  ])('%p %s = %p %s', (x, from, to, y) => {
+    expect(close(convert(x, from, to), y)).toBe(true);
+  });
+
+  it('offers a temperature, pressure or energy menu only on a value that lists its units', () => {
+    const T = { id: 'T', symbol: 'T', name: 'Temperature', unit: '°C' };
+    const P = { id: 'P', symbol: 'P', name: 'Pressure', unit: 'atm' };
+    // A K–8 page writing °C as a label keeps it: no menu, no Units dropdown.
+    expect(unitChoices(T, 'metric', [T])).toEqual([]);
+    expect(unitOptions([T]).systems).toEqual([]);
+    expect(unitChoices({ ...T, units: ['°C', 'K'] }, 'metric', [T])).toEqual(['K', '°C']);
+    expect(unitChoices({ ...P, units: ['atm', 'kPa', 'mmHg'] }, 'metric', [P])).toEqual([
+      'kPa',
+      'atm',
+      'mmHg',
+    ]);
+  });
+});

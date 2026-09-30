@@ -584,3 +584,31 @@ export const atLeast = (big: string, small: string) => ({
   residual: (v: Values) => (v[big]! >= v[small]! - 1e-9 * Math.max(1, Math.abs(v[small]!)) ? 0 : 1),
   solve: {},
 });
+
+/**
+ * Mole ratios made whole, as an empirical formula is found: divide by the smallest, then, when
+ * a result sits near .5, .33 or .25, multiply every one by 2, 3 or 4 (1 : 1.5 → 2 : 3). Each
+ * result must land within `tolerance` of a whole number; undefined when none of 1–6 works.
+ */
+export function wholeRatio(amounts: number[], tolerance = 0.1): number[] | undefined {
+  const least = Math.min(...amounts);
+  if (!(least > 0)) return undefined;
+  const ratio = amounts.map((a) => a / least);
+  for (let k = 1; k <= 6; k++) {
+    const scaled = ratio.map((r) => r * k);
+    if (scaled.every((r) => Math.abs(r - Math.round(r)) <= tolerance))
+      return scaled.map(Math.round);
+  }
+  return undefined;
+}
+
+/**
+ * The direction of a vector from its components, in degrees from the positive x-axis measured
+ * counterclockwise, 0 up to 360 (−3, 4 → 126.87°): the quadrant a bare tan⁻¹(y/x) loses.
+ * Undefined for the zero vector.
+ */
+export function direction(x: number, y: number): number | undefined {
+  if (x === 0 && y === 0) return undefined;
+  const d = (Math.atan2(y, x) * 180) / Math.PI;
+  return d < 0 ? d + 360 : d;
+}

@@ -31,6 +31,11 @@ export interface VariableDef {
   /** Show the value in scientific notation (4.7 × 10⁵); boxes take "4.7 × 10^5" and "4.7e5". */
   scientific?: boolean;
   /**
+   * Show the value to this many significant figures, trailing zeros kept (2.50, 3.0, 0.0450),
+   * in scientific notation past 10⁷ or under 10⁻⁴ (1.20 × 10⁻⁵): a measurement's precision.
+   */
+  sigFigs?: number;
+  /**
    * A fraction whose decimal repeats shows its repeating digits and "…" (1/3 → 0.333…,
    * 1/6 → 0.1666…) when the block is at most 6 digits; boxes take the same.
    */

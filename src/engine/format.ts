@@ -5,9 +5,10 @@ export function formatNumber(
   x: number,
   variable?: Pick<
     VariableDef,
-    'integer' | 'digits' | 'fraction' | 'pi' | 'scientific' | 'repeating' | 'full'
+    'integer' | 'digits' | 'fraction' | 'pi' | 'scientific' | 'repeating' | 'full' | 'sigFigs'
   >,
 ): string {
+  if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
   if (variable?.full && x !== 0 && Number.isFinite(x)) {
     const e = Math.floor(Math.log10(Math.abs(x)) + 1e-12);
     const a = Number((Math.abs(x) / 10 ** e).toPrecision(12));
@@ -135,6 +136,20 @@ const raised = (n: number) =>
  * x in scientific notation with up to 5 significant figures (so 1.9998 × 10¹¹ keeps its own
  * digits): "4.7 × 10⁵", "−3 × 10⁻⁴".
  */
+/**
+ * x to `sig` significant figures with its trailing zeros (2.50, 3.0, 0.0450, 1,200), in
+ * scientific notation past 10⁷ or under 10⁻⁴ (1.20 × 10⁻⁵).
+ */
+export function significant(x: number, sig: number): string {
+  const abs = Math.abs(Number(x.toPrecision(sig)));
+  const e = Math.floor(Math.log10(abs) + 1e-12);
+  if (abs >= 1e7 || abs < 1e-4) {
+    return minus(`${x < 0 ? '-' : ''}${(abs / 10 ** e).toFixed(sig - 1)} × 10${raised(e)}`);
+  }
+  const text = abs.toFixed(Math.max(0, sig - 1 - e));
+  return minus(`${x < 0 ? '-' : ''}${withSeparators(text)}`);
+}
+
 export function scientific(x: number): string {
   if (x === 0) return '0';
   let n = Math.floor(Math.log10(Math.abs(x)));

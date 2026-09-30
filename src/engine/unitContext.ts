@@ -1,6 +1,6 @@
 import { holds, type System } from './solve';
 import type { Values, VariableDef } from './types';
-import { convert, getUnit, unitInSystem, unitsOf, type UnitSystem } from './units';
+import { OPT_IN, convert, getUnit, unitInSystem, unitsOf, type UnitSystem } from './units';
 
 /**
  * Unit choice: a system (metric, US customary, or mixed = any unit), plus optional per-variable
@@ -23,7 +23,8 @@ export function unitChoices(
   variables?: readonly VariableDef[],
 ): string[] {
   const unit = getUnit(variable.unit);
-  if (!unit) return [];
+  // Temperature, pressure, energy…: a menu only when the value lists its units.
+  if (!unit || (OPT_IN.has(unit.dimension) && !variable.units)) return [];
   const cubes =
     (unit.dimension === 'area' || unit.dimension === 'volume') &&
     variables?.some((v) => v.integer && getUnit(v.unit)) &&
@@ -105,7 +106,10 @@ export function unitOptions(
   variables: readonly VariableDef[],
   allowed: readonly UnitSystem[] = ['metric', 'us'],
 ): UnitOptions {
-  const convertible = variables.filter((v) => getUnit(v.unit));
+  const convertible = variables.filter((v) => {
+    const unit = getUnit(v.unit);
+    return unit && (!OPT_IN.has(unit.dimension) || v.units);
+  });
   const differsInUs = convertible.some(
     (v) => unitInSystem(v.unit!, 'us') !== unitInSystem(v.unit!, 'metric'),
   );

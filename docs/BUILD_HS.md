@@ -48,6 +48,7 @@ What the engine already does for you:
 
 ## Testing
 
+- Run Jest with one worker (`npx jest --maxWorkers=1 …`): builders share the machine's memory.
 - After each page: `MODULE_IDS=<page id> pnpm test src/data/modules`. A new phrase in step text
   goes into your phrases file; a gap the harness can't read fails the test.
 - After each skill: `MODULE_IDS=<skill id> pnpm test src/data/modules`, then

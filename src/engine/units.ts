@@ -17,7 +17,25 @@ export type Dimension =
   | 'voltage'
   | 'current'
   | 'resistance'
-  | 'power';
+  | 'power'
+  // Grades 9–12 science. These offer a unit menu only on a value that lists its `units`
+  // (OPT_IN): the K–8 pages that write °C, J or mol as a plain label stay as they are.
+  | 'temperature'
+  | 'pressure'
+  | 'energy'
+  | 'amount'
+  | 'specificHeat'
+  | 'longTime';
+
+/** Dimensions whose menu a value opts into by listing its `units`. */
+export const OPT_IN: ReadonlySet<Dimension> = new Set([
+  'temperature',
+  'pressure',
+  'energy',
+  'amount',
+  'specificHeat',
+  'longTime',
+]);
 
 export type UnitSystem = 'metric' | 'us';
 
@@ -34,6 +52,12 @@ export interface UnitDef {
   us?: string;
   /** For US units: the metric unit used instead under "Metric". */
   metric?: string;
+  /**
+   * Base units at this unit's zero (temperature: 0 °C is 273.15 K), so base = x × factor +
+   * offset. Only absolute temperatures convert this way; a change of 5 °C is a change of 5 K,
+   * so a temperature difference keeps one unit (no `units` menu).
+   */
+  offset?: number;
 }
 
 const IN = 0.0254;
@@ -121,6 +145,8 @@ export const UNITS: readonly UnitDef[] = [
   usu('in/s', 'inches per second', 'speed', IN, 'cm/s'),
   usu('ft/s', 'feet per second', 'speed', FT, 'm/s'),
   usu('mph', 'miles per hour', 'speed', MI / 3600, 'km/h'),
+  u('km/s', 'kilometers per second', 'speed', 1000, 'metric', 'mi/s'),
+  usu('mi/s', 'miles per second', 'speed', MI, 'km/s'),
   // Acceleration (m/s²)
   u('m/s²', 'meters per second squared', 'acceleration', 1, 'metric', 'ft/s²'),
   usu('ft/s²', 'feet per second squared', 'acceleration', FT, 'm/s²'),
@@ -150,6 +176,38 @@ export const UNITS: readonly UnitDef[] = [
   u('kW', 'kilowatts', 'power', 1e3, 'both'),
   u('MW', 'megawatts', 'power', 1e6, 'both'),
   usu('hp', 'horsepower (mechanical)', 'power', 550 * FT * LB * G0, 'W'),
+  // Temperature (K), absolute temperatures only (see `offset`)
+  u('K', 'kelvins', 'temperature', 1, 'both'),
+  { ...u('°C', 'degrees Celsius', 'temperature', 1, 'both'), offset: 273.15 },
+  { ...u('°F', 'degrees Fahrenheit', 'temperature', 5 / 9, 'both'), offset: (459.67 * 5) / 9 },
+  // Pressure (Pa)
+  u('Pa', 'pascals', 'pressure', 1, 'both'),
+  u('hPa', 'hectopascals', 'pressure', 100, 'both'),
+  u('kPa', 'kilopascals', 'pressure', 1000, 'both'),
+  u('atm', 'atmospheres', 'pressure', 101325, 'both'),
+  u('mmHg', 'millimeters of mercury', 'pressure', 101325 / 760, 'both'),
+  u('torr', 'torr', 'pressure', 101325 / 760, 'both'),
+  u('psi', 'pounds per square inch', 'pressure', (LB * G0) / IN ** 2, 'both'),
+  // Energy (J)
+  u('J', 'joules', 'energy', 1, 'both'),
+  u('kJ', 'kilojoules', 'energy', 1000, 'both'),
+  u('MJ', 'megajoules', 'energy', 1e6, 'both'),
+  u('cal', 'calories', 'energy', 4.184, 'both'),
+  u('kcal', 'kilocalories', 'energy', 4184, 'both'),
+  u('kWh', 'kilowatt-hours', 'energy', 3.6e6, 'both'),
+  u('eV', 'electronvolts', 'energy', 1.602176634e-19, 'both'),
+  // Amount of substance (mol)
+  u('mmol', 'millimoles', 'amount', 1e-3, 'both'),
+  u('mol', 'moles', 'amount', 1, 'both'),
+  // Specific heat (J/(kg·°C)); a change of 1 °C is a change of 1 K
+  u('J/(g·°C)', 'joules per gram per degree Celsius', 'specificHeat', 1000, 'both'),
+  u('J/(kg·°C)', 'joules per kilogram per degree Celsius', 'specificHeat', 1, 'both'),
+  u('cal/(g·°C)', 'calories per gram per degree Celsius', 'specificHeat', 4184, 'both'),
+  // Long times (years), for Earth's history and a star's life
+  u('yr', 'years', 'longTime', 1, 'both'),
+  u('kyr', 'thousand years', 'longTime', 1e3, 'both'),
+  u('Ma', 'million years', 'longTime', 1e6, 'both'),
+  u('Ga', 'billion years', 'longTime', 1e9, 'both'),
 ];
 
 const BY_ID = new Map(UNITS.map((x) => [x.id, x]));
@@ -168,7 +226,7 @@ export function convert(x: number, from: string, to: string): number {
   if (!a || !b || a.dimension !== b.dimension) {
     throw new Error(`Cannot convert ${from} to ${to}`);
   }
-  return (x * a.factor) / b.factor;
+  return (x * a.factor + (a.offset ?? 0) - (b.offset ?? 0)) / b.factor;
 }
 
 /** The unit a variable shows in a given system (its own unit if the system shares it). */
