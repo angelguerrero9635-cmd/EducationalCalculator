@@ -791,3 +791,50 @@ none is taken from `research/`. Demo ids are the brief's; "promote" means
 4. Geometry foundations with layouts: constructions, proofs, parallel-lines, rigid-motions,
    congruence, triangle-relationships, quadrilaterals (need 4 for the main page).
 5. Pictures 5, 6, 7, 8, 9, 12 in that order (5 and 6 serve the most pages).
+
+## Added skills
+
+### 19. m.10.modeling-density — Modeling with geometry: density, design and optimization
+
+- **Standard:** G-MG.1, G-MG.2, G-MG.3.
+- **Textbooks:** reveal-hs 10.11 (lesson 11-9, Density); im-hs 10.5 (Solid Geometry, lessons
+  17 "Volume and Density" and 18 "Volume and Graphing"); big-ideas-hs 10.11.4 (Modeling with
+  Area: population density), 10.12.6 (Modeling with Surface Area and Volume). The crosswalk
+  lists only reveal-hs 10.11; IM and Big Ideas teach it too.
+- **Tests ask:** `research/questions/` files no question under this skill (COVERAGE.md: 0), and
+  no grade 9–12 file has a density or design item. Common textbook problems instead:
+
+  | Question                                                     | Page        | Mark   |
+  | ------------------------------------------------------------ | ----------- | ------ |
+  | Common: a solid's mass and size, find the density (material) | main        | Solves |
+  | Common: a ball of a known material, find its mass            | ~sphere     | Solves |
+  | Common: people in a region modeled as a circle, per km²      | ~population | Solves |
+  | Common: a can of fixed volume, the radius with least metal   | ~can-design | Solves |
+  | Common: a fixed length of fence, the pen with the most area  | ~fence      | Solves |
+
+- **Main — MOVE (from `m.10.volume-derivations~density`)** "Density": `curvedSolid` cylinder
+  { radius r, height h, volume V }, m and ρ labeled under it. Values r, h (0.01–1000 cm),
+  V (cm³, plain decimal: a π volume's check misreads under mm³), m (g, kg), ρ (g/cm³, kg/m³).
+  Relations V = πr²h, ρ = m ÷ V. Example r = 2 cm, h = 5 cm, m = 170 g: V = 20π ≈ 62.83 cm³,
+  ρ = 170 ÷ 62.83 ≈ 2.71 g/cm³ (about aluminum). `startWith: ['r', 'h', 'm']`.
+- **~sphere — BUILD** "Mass of a ball from its density": `curvedSolid` sphere { radius r,
+  volume V }, ρ and m labeled. V = 4πr³ ÷ 3, ρ = m ÷ V. Example r = 1.5 cm, ρ = 7.8 g/cm³:
+  V = 4.5π ≈ 14.14 cm³, m = 7.8 × 14.14 ≈ 110.27 g. `use`: “A steel ball has radius 1.5 cm …
+  Find its mass.” `startWith: ['r', 'rho']`.
+- **~population — BUILD** "Population density": `circle` { radius r, area A }, N and D labeled.
+  Values r (0.01–10,000 km), A (km²), N (people), D (people per km², a fixed label: the
+  formula works in km² whatever unit A is shown in). A = πr², D = N ÷ A. Example r = 3 km,
+  N = 45,000: A = 9π ≈ 28.27 km², D ≈ 1,591.55 people per km². `startWith: ['r', 'N']`.
+- **~can-design — BUILD** "Designing a can with the least material": `table` sweeping r with V
+  held, output S (seven radii in 1–2–5 steps around the best one, ∛(V ÷ 2π)). Values V, r, h,
+  S (cm only, so the table's rows are in the unit shown). V = πr²h, S = 2πr² + 2πrh. Example
+  V = 500 cm³, r = 4 cm: h = 500 ÷ 16π ≈ 9.95 cm, S = 32π + 250 ≈ 350.53 cm²; the table's
+  r = 1 … 7 gives 1,006.3, 525.1, 389.9, 350.5, 357.1, 392.9, 450.7 (least near r = 4.3, where
+  h = 2r). `startWith: ['V', 'r']`.
+- **~fence — BUILD** "The most area for a fixed perimeter": `rectangle` { length x, width y,
+  around P, inside A }. P = 2x + 2y, A = xy; limits x, y < P ÷ 2 with a message. Example
+  P = 40 m, x = 12 m: y = 8 m, A = 96 m² (the 10 by 10 square holds 100 m²).
+  `startWith: ['P', 'x']`.
+- **Picture needs:** a surface-area-against-radius graph for ~can-design (the table stands in);
+  an irregular region on a map grid for ~population (the circle stands in).
+- **Verdict:** 5 calculators; all 5 common problems Solve.
