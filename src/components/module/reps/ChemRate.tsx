@@ -41,6 +41,7 @@ export function ChemRate({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const cUnit =
     (typeof spec.concentrations[0] === 'string' && rep.unit(spec.concentrations[0])) || 'mol/L';
   const name = spec.species ?? 'A';
+  const rateUnit = cUnit === 'mol/L' ? `mol/(L·${tUnit})` : `${cUnit} per ${tUnit}`;
   const xStep = niceStep((1.9 * dt) / 5);
   const xLo = Math.max(0, Math.floor((t1 - 0.6 * dt) / xStep) * xStep);
   const xHi = Math.ceil((t2 + 0.35 * dt) / xStep) * xStep;
@@ -72,8 +73,10 @@ export function ChemRate({ spec, calc }: { spec: Spec; calc: Calculator }) {
     const yTicks: number[] = [];
     for (let a = 0; a <= yHi + 1e-12; a += yStep) yTicks.push(Number(a.toPrecision(10)));
     const lit = c.chartHighlight;
-    const chip = `rate = ${rate === undefined ? '?' : sig(rate)} ${cUnit.replace('/L', '/(L·')}${tUnit})`;
+    const chip = `rate = ${rate === undefined ? '?' : sig(rate)} ${rateUnit}`;
     const chipAt = fitLabel(pr, chip, chart.value, w, 'end');
+    const riseText = `Δ[${name}] = ${ok ? sig(dA) : '?'}`;
+    const riseAt = fitLabel(X(t2), riseText, chart.label, w, 'start', 3);
     return (
       <Svg width={w} height={h}>
         <Defs>
@@ -162,15 +165,16 @@ export function ChemRate({ spec, calc }: { spec: Spec; calc: Calculator }) {
             fontSize={chart.label}
             fontWeight="700"
           >
-            {`Δt = ${ok ? sig(dt) : '?'}`}
+            {`Δt = ${ok ? `${sig(dt)} ${tUnit}` : '?'}`}
           </ChartText>
           <ChartText
-            x={X(t2) + 6}
+            x={riseAt.x}
             y={(Y(a1) + Y(a2)) / 2 + 4}
+            textAnchor={riseAt.textAnchor}
             fontSize={chart.label}
             fontWeight="700"
           >
-            {`Δ[${name}] = ${ok ? sig(dA) : '?'}`}
+            {riseText}
           </ChartText>
           {[
             [t1, a1],
@@ -205,7 +209,7 @@ export function ChemRate({ spec, calc }: { spec: Spec; calc: Calculator }) {
     ? [
         `The curve (drawn first-order, for its shape) falls fastest at the start.`,
         `The secant through (${sig(t1)} ${tUnit}, ${sig(a1)} ${cUnit}) and (${sig(t2)} ${tUnit}, ${sig(a2)} ${cUnit}) has slope Δ[${name}]/Δt = ${sig(dA)}/${sig(dt)} = ${sig(dA / dt)}.`,
-        `The average rate is −Δ[${name}]/Δt = ${rate === undefined ? '?' : sig(rate)} ${cUnit} each ${tUnit}.`,
+        `The average rate is −Δ[${name}]/Δt = ${rate === undefined ? '?' : sig(rate)} ${rateUnit}.`,
       ].join(' · ')
     : typed
       ? `The readings need a later second time and a concentration that falls: [${name}]₂ ≤ [${name}]₁. A stand-in curve is drawn faded.`

@@ -187,7 +187,7 @@ export function GasMixture({ spec, calc }: { spec: GasPistonSpec; calc: Calculat
         </G>
         <ChartText
           x={barX + bw / 2}
-          y={Math.min(Y(ok ? sum : pMax / 2), bottom) - 8}
+          y={Math.min(Y(ok ? sum : pMax / 2), bottom) - 11}
           textAnchor="middle"
           fontSize={chart.value}
           fontWeight="700"

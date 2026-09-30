@@ -24,27 +24,6 @@ type Pt = [number, number];
 /** A value as printed: at most 4 decimals, a true minus. */
 const fmt = (x: number) => formatNumber(Number(x.toFixed(4)));
 
-/** Points along a Catmull-Rom curve through `ps` (x increasing), `n` per span. */
-function smooth(ps: Pt[], n = 12): Pt[] {
-  const out: Pt[] = [ps[0]!];
-  for (let i = 0; i < ps.length - 1; i++) {
-    const p0 = ps[Math.max(0, i - 1)]!;
-    const p1 = ps[i]!;
-    const p2 = ps[i + 1]!;
-    const p3 = ps[Math.min(ps.length - 1, i + 2)]!;
-    for (let k = 1; k <= n; k++) {
-      const t = k / n;
-      const t2 = t * t;
-      const t3 = t2 * t;
-      const f = (a: number, b: number, c: number, d: number) =>
-        0.5 *
-        (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
-      out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
-    }
-  }
-  return out;
-}
-
 const poly = (ps: Pt[]) => ps.map(([x, y], i) => `${i ? 'L' : 'M'} ${x} ${y}`).join(' ');
 
 export function ChemPhase({ spec, calc }: { spec: Spec; calc: Calculator }) {
@@ -73,8 +52,8 @@ export function ChemPhase({ spec, calc }: { spec: Spec; calc: Calculator }) {
     const bStart = pr - W * 0.46;
     const xA = (t: number) => pl + ((t - rangeA[0]) / (rangeA[1] - rangeA[0])) * (aEnd - pl);
     const xB = (t: number) => bStart + ((t - rangeB[0]) / (rangeB[1] - rangeB[0])) * (pr - bStart);
-    const y1 = pt + 0.38 * (pb - pt);
-    const yT = pt + 0.8 * (pb - pt);
+    const y1 = pt + 0.46 * (pb - pt);
+    const yT = pt + 0.82 * (pb - pt);
     // Pure water's triple point sits at 0.01 °C, a hair right of its melting point at 1 atm.
     const xT = xA(0) + 3;
     const ySub = (x: number) => pb - 4 - (pb - 4 - yT) * ((x - pl) / (xT - pl)) ** 1.6;
@@ -94,22 +73,18 @@ export function ChemPhase({ spec, calc }: { spec: Spec; calc: Calculator }) {
       const x = pl + ((xT - pl) * k) / 24;
       return [x, ySub(x)];
     });
-    const rise = yT - y1;
-    const vapor = smooth([
-      [xT, yT],
-      [aEnd, yT - 0.3 * rise],
-      [bStart, yT - 0.62 * rise],
-      [xB(100), y1],
-      [pr - 4, pt + 8],
-    ]);
-    const dip = 10;
-    const vaporS = smooth([
-      [xTs, yTs],
-      [aEnd, yT - 0.3 * rise + dip],
-      [bStart, yT - 0.62 * rise + dip],
-      [xB(tb), y1],
-      [pr - 4, pt + 8 + 0.3 * (y1 - pt - 8)],
-    ]);
+    // A boiling curve rises ever faster: y falls as a power of x from its triple point, through
+    // its boiling point at 1 atm, to the top right (toward the critical point).
+    const boilCurve = (x0: number, y0: number, xb: number, yEnd: number): Pt[] => {
+      const xE = pr - 4;
+      const p = Math.log((y0 - y1) / (y0 - yEnd)) / Math.log((xb - x0) / (xE - x0));
+      return Array.from({ length: 49 }, (_, k): Pt => {
+        const x = x0 + ((xE - x0) * k) / 48;
+        return [x, y0 - (y0 - yEnd) * ((x - x0) / (xE - x0)) ** p];
+      });
+    };
+    const vapor = boilCurve(xT, yT, xB(100), pt + 8);
+    const vaporS = boilCurve(xTs, yTs, xB(tb), pt + 8 + 0.3 * (y1 - pt - 8));
     const topPure = fusionAt(xA(0), pt);
     const solid: Pt[] = [[pl, pt], [topPure, pt], [xT, yT], ...[...sub].reverse(), [pl, pb - 4]];
     const liquid: Pt[] = [[topPure, pt], [pr, pt], [pr, pt + 8], ...[...vapor].reverse()];
@@ -214,8 +189,8 @@ export function ChemPhase({ spec, calc }: { spec: Spec; calc: Calculator }) {
         </G>
         <Circle cx={xA(0)} cy={y1} r={3.5} fill={lineColor} />
         <Circle cx={xB(100)} cy={y1} r={3.5} fill={lineColor} />
-        {bracket(xA(0), xA(tf), `ΔTf ${dropText === undefined ? '?' : fmt(dropText)}`, fKnown)}
-        {bracket(xB(100), xB(tb), `ΔTb ${riseText === undefined ? '?' : fmt(riseText)}`, bKnown)}
+        {bracket(xA(0), xA(tf), `ΔTf = ${dropText === undefined ? '?' : fmt(dropText)}`, fKnown)}
+        {bracket(xB(100), xB(tb), `ΔTb = ${riseText === undefined ? '?' : fmt(riseText)}`, bKnown)}
         {/* The axes, the temperature axis broken between its two parts. */}
         <Line x1={pl} y1={pt} x2={pl} y2={pb} stroke={c.chartInk} strokeWidth={1.2} />
         <Line x1={pl} y1={pb} x2={aEnd} y2={pb} stroke={c.chartInk} strokeWidth={1.2} />
