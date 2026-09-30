@@ -2299,10 +2299,44 @@ const VOLUME: ModuleDef[] = [
     unitSystems: ['metric'],
     representation: { kind: 'net', solid: 'squarePyramid', length: 'b', slant: 'l', total: 'S' },
   }),
+];
+
+// ─── m.10.modeling-density ───────────────────────────────────────────────────
+
+/** A mass in grams (or kilograms). */
+const grams = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0.001, 1e9, { unit: 'g', units: ['g', 'kg'] });
+/** A density in g/cm³ (or kg/m³). */
+const density = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0.0001, 100, { unit: 'g/cm³', units: ['g/cm³', 'kg/m³'] });
+/** ρ = m ÷ V, solved for any one. */
+const densityRule = rule(
+  'ρ = m ÷ V',
+  '{rho} = {m} ÷ {V}',
+  {
+    rho: [(v) => quot(v.m!, v.V!), '{m} ÷ {V}', 'Density is the mass in each cubic centimeter.'],
+    m: [(v) => v.rho! * v.V!, '{rho} × {V}', 'Each cubic centimeter has ρ grams: multiply.'],
+    V: [(v) => quot(v.m!, v.rho!), '{m} ÷ {rho}', 'How many cubic centimeters hold that mass.'],
+  },
+  (v) => v.rho! * v.V! - v.m!,
+);
+/**
+ * Seven radii around the best one for a can of volume V (h = 2r at r = ∛(V ÷ 2π)), in steps
+ * of 1, 2 or 5 times a power of ten, so the table's surface areas dip and rise again.
+ */
+function canRows(v: Values): number[] {
+  const best = v.V !== undefined && v.V > 0 ? Math.cbrt(v.V / (2 * Math.PI)) : 4;
+  const raw = best / 4;
+  const p = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 2, 5, 10].map((k) => k * p).find((s) => s >= raw * 0.99)!;
+  const mid = Math.round(best / step);
+  const first = Math.max(1, mid - 3);
+  return Array.from({ length: 7 }, (_, i) => exact((first + i) * step)!);
+}
+
+const MODELING: ModuleDef[] = [
   page({
-    id: 'm.10.volume-derivations~density',
-    title: 'Density and modeling',
-    use: 'Use this for “A metal cylinder has radius 2 cm, height 5 cm and mass 170 g. Find its density.”',
+    id: 'm.10.modeling-density',
     assumptions: [
       'Density is mass per unit of volume: ρ = m ÷ V.',
       'Model the object as a solid you know: here a cylinder, V = πr²h.',
@@ -2312,33 +2346,14 @@ const VOLUME: ModuleDef[] = [
       cm('r', 'r', 'Radius'),
       cm('h', 'h', 'Height'),
       num('V', 'V', 'Volume', 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'] }),
-      num('m', 'm', 'Mass', 0.001, 1e9, { unit: 'g', units: ['g', 'kg'] }),
-      num('rho', 'ρ', 'Density', 0.0001, 100, { unit: 'g/cm³', units: ['g/cm³', 'kg/m³'] }),
+      grams('m', 'm', 'Mass'),
+      density('rho', 'ρ', 'Density'),
     ],
-    rules: [
-      cylinderVolume,
-      rule(
-        'ρ = m ÷ V',
-        '{rho} = {m} ÷ {V}',
-        {
-          rho: [
-            (v) => quot(v.m!, v.V!),
-            '{m} ÷ {V}',
-            'Density is the mass in each cubic centimeter.',
-          ],
-          m: [(v) => v.rho! * v.V!, '{rho} × {V}', 'Each cubic centimeter has ρ grams: multiply.'],
-          V: [
-            (v) => quot(v.m!, v.rho!),
-            '{m} ÷ {rho}',
-            'How many cubic centimeters hold that mass.',
-          ],
-        },
-        (v) => v.rho! * v.V! - v.m!,
-      ),
-    ],
+    rules: [cylinderVolume, densityRule],
     example: { r: 2, h: 5, V: 20 * Math.PI, m: 170, rho: 170 / (20 * Math.PI) },
     startWith: ['r', 'h', 'm'],
     unitSystems: ['metric'],
+    pictureLabels: ['m', 'rho'],
     representation: {
       kind: 'curvedSolid',
       shape: 'cylinder',
@@ -2346,6 +2361,210 @@ const VOLUME: ModuleDef[] = [
       height: 'h',
       volume: 'V',
       extent: 6,
+    },
+  }),
+  page({
+    id: 'm.10.modeling-density~sphere',
+    title: 'Mass of a ball from its density',
+    use: 'Use this for “A steel ball has radius 1.5 cm and steel is 7.8 g/cm³. Find its mass.”',
+    assumptions: [
+      'Model the ball as a sphere: V = 4πr³ ÷ 3.',
+      'Mass is density times volume: m = ρV.',
+      'Given the mass and the material, work back to the volume first, then the radius.',
+    ],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      num('V', 'V', 'Volume', 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'] }),
+      density('rho', 'ρ', 'Density'),
+      grams('m', 'm', 'Mass'),
+    ],
+    rules: [
+      rule(
+        'V = 4πr³/3',
+        '{V} = 4 × π × {r}³ ÷ 3',
+        {
+          V: [
+            (v) => (4 * Math.PI * v.r! ** 3) / 3,
+            '4 × π × {r}³ ÷ 3',
+            'The volume of a sphere is 4πr³ ÷ 3.',
+          ],
+          r: [
+            (v) => Math.cbrt((3 * v.V!) / (4 * Math.PI)),
+            '∛(3 × {V} ÷ (4 × π))',
+            'Multiply by 3, divide by 4π, then take the cube root.',
+          ],
+        },
+        (v) => v.V! - (4 * Math.PI * v.r! ** 3) / 3,
+      ),
+      densityRule,
+    ],
+    example: { r: 1.5, V: 4.5 * Math.PI, rho: 7.8, m: 7.8 * 4.5 * Math.PI },
+    startWith: ['r', 'rho'],
+    unitSystems: ['metric'],
+    pictureLabels: ['rho', 'm'],
+    representation: { kind: 'curvedSolid', shape: 'sphere', radius: 'r', volume: 'V', extent: 4 },
+  }),
+  page({
+    id: 'm.10.modeling-density~population',
+    title: 'Population density',
+    use: 'Use this for “45,000 people live within 3 km of a town’s center. How many people per km²?”',
+    assumptions: [
+      'Population density is people per unit of area: D = N ÷ A.',
+      'Model the region as a shape you know: here a circle around the center, A = πr².',
+      'D is an average over the whole region; some parts are more crowded than others.',
+    ],
+    variables: [
+      len('r', 'r', 'Radius of the region', 10000, { unit: 'km' }),
+      num('A', 'A', 'Area', 0, 1e9, { unit: 'km²' }),
+      num('N', 'N', 'Population', 1, 1e10, { unit: 'people' }),
+      num('D', 'D', 'Population density', 0, 1e7, { unit: 'people per km²' }),
+    ],
+    rules: [
+      rule(
+        'A = πr²',
+        '{A} = π × {r}²',
+        {
+          A: [(v) => Math.PI * v.r! ** 2, 'π × {r}²', 'The area of a circle is πr².'],
+          r: [(v) => root(v.A! / Math.PI), '√({A} ÷ π)', 'Divide by π, then take the square root.'],
+        },
+        (v) => v.A! - Math.PI * v.r! ** 2,
+      ),
+      rule(
+        'D = N ÷ A',
+        '{D} = {N} ÷ {A}',
+        {
+          D: [
+            (v) => quot(v.N!, v.A!),
+            '{N} ÷ {A}',
+            'Share the people out over each square kilometer.',
+          ],
+          N: [(v) => v.D! * v.A!, '{D} × {A}', 'Each square kilometer holds D people: multiply.'],
+          A: [
+            (v) => quot(v.N!, v.D!),
+            '{N} ÷ {D}',
+            'How many square kilometers hold that many people.',
+          ],
+        },
+        (v) => v.D! * v.A! - v.N!,
+      ),
+    ],
+    example: { r: 3, A: 9 * Math.PI, N: 45000, D: 5000 / Math.PI },
+    startWith: ['r', 'N'],
+    unitSystems: ['metric'],
+    pictureLabels: ['N', 'D'],
+    representation: { kind: 'circle', radius: 'r', area: 'A', extent: 4 },
+  }),
+  page({
+    id: 'm.10.modeling-density~can-design',
+    title: 'Designing a can with the least material',
+    use: 'Use this for “A can must hold 500 cm³. Which radius uses the least metal?”',
+    assumptions: [
+      'The can is a closed cylinder: V = πr²h, and its metal is the surface S = 2πr² + 2πrh.',
+      'Hold V and try radii: the table shows S dip and then rise again.',
+      'The least metal comes when the height equals the diameter, h = 2r.',
+    ],
+    variables: [
+      num('V', 'V', 'Volume', 0.01, 1e7, { unit: 'cm³', units: ['cm³'] }),
+      len('r', 'r', 'Radius', 1000, { unit: 'cm', units: ['cm'] }),
+      len('h', 'h', 'Height', 1e6, { unit: 'cm', units: ['cm'] }),
+      num('S', 'S', 'Surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] }),
+    ],
+    rules: [
+      cylinderVolume,
+      rule(
+        'S = 2πr² + 2πrh',
+        '{S} = 2 × π × {r}² + 2 × π × {r} × {h}',
+        {
+          S: [
+            (v) => 2 * Math.PI * v.r! ** 2 + 2 * Math.PI * v.r! * v.h!,
+            '2 × π × {r}² + 2 × π × {r} × {h}',
+            'Two circles for the top and bottom, and the side unrolled: a rectangle 2πr by h.',
+          ],
+          h: [
+            (v) => quot(v.S! - 2 * Math.PI * v.r! ** 2, 2 * Math.PI * v.r!),
+            '({S} − 2 × π × {r}²) ÷ (2 × π × {r})',
+            'Take away the two circles; the side is 2πr × h.',
+          ],
+        },
+        (v) => v.S! - 2 * Math.PI * v.r! ** 2 - 2 * Math.PI * v.r! * v.h!,
+      ),
+    ],
+    example: { V: 500, r: 4, h: 500 / (16 * Math.PI), S: 32 * Math.PI + 250 },
+    startWith: ['V', 'r'],
+    unitSystems: ['metric'],
+    representation: { kind: 'table', sweep: 'r', output: 'S', params: ['V'], rows: canRows },
+  }),
+  page({
+    id: 'm.10.modeling-density~fence',
+    title: 'The most area for a fixed perimeter',
+    use: 'Use this for “40 m of fence makes a rectangular pen. Which sides give the most area?”',
+    assumptions: [
+      'The fence is the perimeter: P = 2x + 2y, so x + y is half of P.',
+      'The pen’s area is A = xy; a longer side means a shorter one.',
+      'For a fixed perimeter the square, x = y = P ÷ 4, holds the most area.',
+    ],
+    variables: [
+      len('P', 'P', 'Perimeter', 1e5, { unit: 'm' }),
+      len('x', 'x', 'Length', 1e5, { unit: 'm' }),
+      len('y', 'y', 'Width', 1e5, { unit: 'm' }),
+      num('A', 'A', 'Area', 0, 1e9, { unit: 'm²' }),
+    ],
+    rules: [
+      rule(
+        'P = 2x + 2y',
+        '{P} = 2 × {x} + 2 × {y}',
+        {
+          P: [
+            (v) => 2 * v.x! + 2 * v.y!,
+            '2 × {x} + 2 × {y}',
+            'The fence goes once around: two lengths and two widths.',
+          ],
+          y: [
+            (v) => v.P! / 2 - v.x!,
+            '{P} ÷ 2 − {x}',
+            'Half the fence is one length and one width.',
+          ],
+          x: [
+            (v) => v.P! / 2 - v.y!,
+            '{P} ÷ 2 − {y}',
+            'Half the fence is one length and one width.',
+          ],
+        },
+        (v) => v.P! - 2 * v.x! - 2 * v.y!,
+      ),
+      limit(
+        'x < P/2',
+        '{x} is less than {P} ÷ 2',
+        (v) => v.x! < v.P! / 2,
+        'The length must be less than half the fence, or no fence is left for the widths.',
+      ),
+      limit(
+        'y < P/2',
+        '{y} is less than {P} ÷ 2',
+        (v) => v.y! < v.P! / 2,
+        'The width must be less than half the fence, or no fence is left for the lengths.',
+      ),
+      rule(
+        'A = xy',
+        '{A} = {x} × {y}',
+        {
+          A: [(v) => v.x! * v.y!, '{x} × {y}', 'The area of a rectangle is length × width.'],
+          y: [(v) => quot(v.A!, v.x!), '{A} ÷ {x}', 'Divide the area by the length.'],
+          x: [(v) => quot(v.A!, v.y!), '{A} ÷ {y}', 'Divide the area by the width.'],
+        },
+        (v) => v.A! - v.x! * v.y!,
+      ),
+    ],
+    example: { P: 40, x: 12, y: 8, A: 96 },
+    startWith: ['P', 'x'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'rectangle',
+      length: 'x',
+      width: 'y',
+      around: 'P',
+      inside: 'A',
+      extent: 20,
     },
   }),
 ];
@@ -5042,6 +5261,7 @@ export const MATH_10_MODULES: ModuleDef[] = [
   ...CIRCLE_EQUATIONS,
   ...ARC_SECTOR,
   ...VOLUME,
+  ...MODELING,
   ...PROBABILITY_RULES,
   ...CONDITIONAL,
 ];
