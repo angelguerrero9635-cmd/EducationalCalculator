@@ -1108,7 +1108,162 @@ const climateLayouts: LayoutDef[] = [
   },
 ];
 
+// ── H78: energy sources ──
+
+/** t = the parts added; `what` names them. */
+function sum(t: string, parts: string[], what: string, symbols: Record<string, string>): Rel {
+  const rest = (p: string) => parts.filter((x) => x !== p);
+  const sym = (id: string) => symbols[id] ?? id;
+  return {
+    relation: {
+      id: `${sym(t)} = ${parts.map(sym).join(' + ')}`,
+      display: `{${t}} = ${parts.map((p) => `{${p}}`).join(' + ')}`,
+      vars: [t, ...parts],
+      residual: (v: Values) => v[t]! - parts.reduce((s, p) => s + v[p]!, 0),
+      solve: Object.fromEntries([
+        [t, (v: Values) => parts.reduce((s, p) => s + v[p]!, 0)],
+        ...parts.map((p) => [p, (v: Values) => v[t]! - rest(p).reduce((s, q) => s + v[q]!, 0)]),
+      ]),
+    },
+    steps: Object.fromEntries([
+      [t, { expr: parts.map((p) => `{${p}}`).join(' + '), how: `Add up the ${what}.` }],
+      ...parts.map((p) => [
+        p,
+        {
+          expr: `{${t}} − ${rest(p)
+            .map((q) => `{${q}}`)
+            .join(' − ')}`,
+          how: `Take the other ${what} away from the total.`,
+        },
+      ]),
+    ]),
+  };
+}
+
+const pct = (id: string, symbol: string, name: string, derived = false) =>
+  V(id, symbol, name, { unit: '%', min: 0, max: 100, step: 1, integer: true, derived });
+
+const ENERGY_WHY = [
+  'Renewable sources are replaced naturally as fast as we use them: sunlight, wind and flowing water.',
+  'Fossil fuels (coal, oil and natural gas) took millions of years to form, and burning them releases CO₂; nuclear fuel (uranium) is mined and also runs out.',
+];
+
+const electricityMix: ModuleDef = {
+  id: 'g.s12-resource-management-mix',
+  title: 'Where electricity comes from',
+  use: 'Use this for an energy mix: each source’s share and how much of it is renewable.',
+  assumptions: [
+    ...ENERGY_WHY,
+    'The shares are about those of US electricity in 2023, rounded to whole percents.',
+  ],
+  variables: [
+    pct('g', 'g', 'Natural gas'),
+    pct('n', 'n', 'Nuclear'),
+    pct('k', 'k', 'Coal'),
+    pct('w', 'w', 'Wind'),
+    pct('h', 'h', 'Hydroelectric'),
+    pct('s', 's', 'Solar'),
+    pct('o', 'o', 'Other sources'),
+    pct('T', 'T', 'All sources', true),
+    pct('R', 'R', 'Renewable: wind, water and sun', true),
+  ],
+  ...rels(
+    sum('T', ['g', 'n', 'k', 'w', 'h', 's', 'o'], 'shares', {}),
+    sum('R', ['w', 'h', 's'], 'renewable shares', {}),
+  ),
+  example: { g: 43, n: 19, k: 16, w: 10, h: 6, s: 4, o: 2, T: 100, R: 20 },
+  startWith: ['g', 'n', 'k', 'w', 'h', 's', 'o'],
+  representation: {
+    kind: 'bars',
+    bars: [
+      { var: 'g', icon: 'gas stove flame' },
+      { var: 'n', icon: 'nuclear power plant' },
+      { var: 'k', icon: 'lumps of coal' },
+      { var: 'w', icon: 'wind turbine' },
+      { var: 'h', icon: 'dam' },
+      { var: 's', icon: 'solar panel' },
+    ],
+    min: 0,
+    max: 50,
+    total: 'T',
+    scale: 10,
+  },
+};
+
+const worldMix: ModuleDef = {
+  id: 'g.s12-resource-management-world',
+  title: 'The world’s energy: fossil, nuclear, renewable',
+  use: 'Use this for the shares of all the energy the world uses, where fossil fuels still dominate.',
+  assumptions: [
+    ...ENERGY_WHY,
+    'All energy, not just electricity: fuel for transport, heating and industry too.',
+    'The shares are roughly the world’s in 2023: fossil fuels (oil, coal and gas) about 81%, renewables (water, wind, sun and others) about 15%.',
+  ],
+  variables: [
+    pct('F', 'F', 'Fossil fuels'),
+    pct('n', 'n', 'Nuclear'),
+    pct('r', 'r', 'Renewable'),
+    pct('T', 'T', 'All sources', true),
+  ],
+  ...rels(sum('T', ['F', 'n', 'r'], 'shares', {})),
+  example: { F: 81, n: 4, r: 15, T: 100 },
+  startWith: ['F', 'n', 'r'],
+  sliders: false,
+  representation: {
+    kind: 'pieChart',
+    parts: ['F', 'n', 'r'],
+    total: 'T',
+    colors: ['rubber', 'purple', 'landGrass'],
+  },
+};
+
+const energyLayouts: LayoutDef[] = [
+  {
+    id: 'g.s12-resource-management-renewable',
+    title: 'Renewable or nonrenewable',
+    kind: 'sort',
+    use: 'Use this for sorting energy sources by whether they are replaced as fast as we use them.',
+    assumptions: ENERGY_WHY,
+    question: 'Is it replaced as fast as we use it?',
+    bins: [
+      {
+        id: 'renewable',
+        label: 'Renewable',
+        why: 'Sunlight, wind and rain keep coming, and making electricity from them gives off no CO₂.',
+      },
+      {
+        id: 'nonrenewable',
+        label: 'Nonrenewable',
+        why: 'Coal, oil, gas and uranium are dug or pumped from the ground, and there is a limited amount.',
+      },
+    ],
+    cards: [
+      { label: 'Solar panels', bin: 'renewable', figure: { kind: 'icon', icon: 'solar panel' } },
+      { label: 'Wind turbine', bin: 'renewable', figure: { kind: 'icon', icon: 'wind turbine' } },
+      {
+        label: 'Hydroelectric dam',
+        bin: 'renewable',
+        figure: { kind: 'icon', icon: 'dam' },
+      },
+      { label: 'Coal', bin: 'nonrenewable', figure: { kind: 'icon', icon: 'lumps of coal' } },
+      { label: 'Oil rig', bin: 'nonrenewable', figure: { kind: 'icon', icon: 'oil rig' } },
+      {
+        label: 'Natural gas',
+        bin: 'nonrenewable',
+        figure: { kind: 'icon', icon: 'gas stove flame' },
+      },
+      {
+        label: 'Nuclear plant',
+        bin: 'nonrenewable',
+        figure: { kind: 'icon', icon: 'nuclear power plant' },
+      },
+    ],
+  },
+];
+
 export const HSL_GALLERY_MODULES: ModuleDef[] = [
+  electricityMix,
+  worldMix,
   lapse,
   lapseTop,
   lapseHot,
@@ -1137,4 +1292,5 @@ export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [
   ...landformLayouts,
   ...currentsLayouts,
   ...climateLayouts,
+  ...energyLayouts,
 ];

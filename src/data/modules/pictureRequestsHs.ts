@@ -1175,12 +1175,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as an explore figure: { kind: "greenhouse" }, each scene greenhouse: { view: "energy", co2?: "none" | "preindustrial" | "today" } (sunlight in, some bounced off a cloud; infrared out from the ground as four wavy rays, 0, 2 or 3 of them absorbed by CO₂ molecules and sent back down; 0, 4 or 6 molecules; a thermometer at the mean surface temperature, −18, 14 or 15.2 °C) or { view: "zones", lit?: "tropical" | "temperate" | "polar" } (Earth at an equinox lit from the left, zones bounded at 23.5° and 66.5°, the night half shaded, one beam of sunlight on the equator and the same beam at 50° N spread over 1 ÷ cos 50° ≈ 1.6 times the area). Example scenes: { label: "Today", lines: [...], greenhouse: { view: "energy", co2: "today" } }, { label: "Polar", lines: [...], greenhouse: { view: "zones", lit: "polar" } }. The climate page’s feedback loops use the existing feedbackLoop figure (H41). The harness checks a zone is lit only on the zones view and CO₂ is set only on the energy view.',
   },
-  ask(
-    'H78',
-    'energySources',
-    'Card icons for energy sources (solar panel, wind turbine, dam, coal, oil rig, nuclear plant) and a resource bar or pie',
-    ['s.12.resource-management'],
-  ),
+  {
+    ...ask(
+      'H78',
+      'energySources',
+      'Card icons for energy sources (solar panel, wind turbine, dam, coal, oil rig, nuclear plant) and a resource bar or pie',
+      ['s.12.resource-management'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-resource-management-renewable',
+      'g.s12-resource-management-mix',
+      'g.s12-resource-management-world',
+    ],
+    notes:
+      'Drawn (group HL) as card icons plus existing charts. Round 3 already draws a wind turbine, a dam, lumps of coal, an oil pump, a gas stove flame and a nuclear power plant (r3f), so this adds the two missing: { kind: "icon", icon: "solar panel" } (blue cells on a tilted stand) and "oil rig" (an offshore platform and derrick). The energy mix uses the existing bars (an icon under each bar) or pieChart (colors that mean something): { kind: "bars", bars: [{ var: "g", icon: "gas stove flame" }, { var: "n", icon: "nuclear power plant" }, { var: "k", icon: "lumps of coal" }, { var: "w", icon: "wind turbine" }, { var: "h", icon: "dam" }, { var: "s", icon: "solar panel" }], min: 0, max: 50, total: "T", scale: 10 } (US electricity, about 2023: 43, 19, 16, 10, 6, 4 and 2 other); { kind: "pieChart", parts: ["F", "n", "r"], total: "T", colors: ["rubber", "purple", "landGrass"] } (the world’s energy: fossil 81, nuclear 4, renewable 15; keep part names short, the pie’s labels sit on the wedges). Sort: renewable or nonrenewable with the seven icons.',
+  },
   ask(
     'H79',
     'hrDiagram',

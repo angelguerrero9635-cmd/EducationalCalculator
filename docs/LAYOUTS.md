@@ -65,7 +65,8 @@ Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mo
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,
 between?, absolute? }` lights a rank, shades an unknown's range or bars absolute hardness. Mineral
 icons (`layouts/icons/hl.tsx`): `quartz`, `feldspar`, `mica`, `calcite`, `halite`, `pyrite`,
-`hematite`. `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
+`hematite`; energy icons `solar panel` and `oil rig` (beside round 3's wind turbine, dam, coal,
+oil pump, gas flame and nuclear power plant). `landforms` (`layouts/landformsFigure.tsx`): `landform: { kind }` draws a shield,
 composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
 valley, a meander, an aquifer or a dune, its parts labeled. `oceanCurrents`
 (`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map. `greenhouse`

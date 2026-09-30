@@ -312,6 +312,8 @@ const light = {
   space: '#1E2340',
   airBand: '#CFE7F7',
   zoneTropical: '#F4B860',
+  /** Energy sources (H78): a solar panel's cells. */
+  solarCell: '#22407A',
   /** Grades 9–12 group D: sine and cosine legs on the unit circle, algebra tiles (positive and
    * negative), and a resultant vector. */
   unitCircleSine: '#D9480F',
@@ -592,6 +594,7 @@ const dark: Palette = {
   space: '#0C0F22',
   airBand: '#1E3A50',
   zoneTropical: '#B9812F',
+  solarCell: '#2B4E8F',
   unitCircleSine: '#FF8A5C',
   unitCircleCosine: '#3CCFAE',
   tilePositive: '#2F5F86',
