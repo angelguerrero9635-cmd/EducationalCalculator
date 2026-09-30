@@ -18,6 +18,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hs2aSpecVars } from '../typesHs2a';
+import { hs2gSpecVars } from '../typesHs2g';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
@@ -503,7 +504,7 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return [...hsbSpecVars(r), ...hs2aSpecVars(r)];
+      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r)];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':

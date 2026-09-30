@@ -1787,13 +1787,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'P4 (docs/plans/m.9.md need 4, m.10.md need 10). Three options on `lineSystem`, off unless set. `upright: [{ x, shade?, label? }]`: upright lines x = k (a number or a value id) in their own colour (theme `lineUpright`), or boundaries x (sign) k with `shade` (a sign, or a sign box as in H90), dashed when strict; with any upright line only the overlap of every boundary is shaded (four half-planes on top of each other would muddy it), the caption says where all of them overlap and tests the point against each in one line. The box a ≤ x ≤ b, c ≤ y ≤ d (NAEP-2024-12M11-#11 on m.9.inequality-systems): { kind: "lineSystem", lines: [{ slope: 0, intercept: "c", shade: "≥" }, { slope: 0, intercept: "d", shade: "≤" }], upright: [{ x: "a", shade: "≥" }, { x: "b", shade: "≤" }], test: { x: "tx", y: "ty" }, extent: 10, fixed: true }. `marks: true`: one arrow on each line when the slopes are equal, a right-angle square at the crossing when they multiply to −1 (in the quarter away from the crossing’s label), with a caption line (“The arrows mark them parallel: both slopes are 3”, “The square marks a right angle: 2 × (−1/2) = −1”). `given: { x, y }`: the point the second line goes through, filled and labelled, and “(2, 7) is on Parallel: 3 × 2 + 1 = 7” (the harness checks it is on that line). m.10.parallel-lines~parallel-line and ~perpendicular-line: add `marks: true, given: { x: "x0", y: "y0" }` to their pictures (no other change).',
   },
-  ask(
-    'H93',
-    'termsChart',
-    'Past 30 terms (the first terms, a break, the nth); a recursive type; a second lit term',
-    ['m.9.sequences', 'm.11.exp-log-equations'],
-    'P5: docs/plans/m.9.md needs 5 and 11, m.11.md need 10.',
-  ),
+  {
+    ...ask(
+      'H93',
+      'termsChart',
+      'Past 30 terms (the first terms, a break, the nth); a recursive type; a second lit term',
+      ['m.9.sequences', 'm.11.exp-log-equations'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-sequences-far',
+      'g.m9-sequences-recursive-chart',
+      'g.m11-exp-log-equations-same-base-lit',
+    ],
+    notes:
+      'P5 (docs/plans/m.9.md needs 5 and 11, m.11.md need 10). Three options on `termsChart`, off unless set. `far: true`: `count` may run to 10,000; past 30 the chart draws the first six terms, a break on the axis ("…"), then the nth term lit, and the caption says where it skips; at 30 or fewer it draws every term as before (partial sums are drawn only without a break). m.9.sequences main: add `far: true` and let n run 1–1000 (example 7, 11, 15, … → a₁₀₀ = 403): { kind: "termsChart", type: "arithmetic", first: "a1", step: "d", count: "n", as: "points", term: "an", far: true }. `type: "recursive"` with `step` the multiplier k and `plus` the added c (default 0): aₙ = k × aₙ₋₁ + c, each term worked out from the one before, an arrow from each term to the next (up to 12 terms), the caption "a₄ = 3 × 14 − 1 = 41"; m.9.sequences~recursive: { kind: "termsChart", type: "recursive", first: "a1", step: "k", plus: "c", count: "n", term: "an" } in place of the table. `lit` (a term number, value id or number) lights a second term in the second colour with its label, the chart running on to it when it is past `count` (up to 30); `litTerm` names the value it equals (checked); `powers: true` (geometric with r = a₁) writes the terms as powers, "2² = 4", the axis "exponent n". m.11.exp-log-equations~same-base: { kind: "termsChart", type: "geometric", first: "g", step: "g", count: "q", term: "B2", lit: "p", litTerm: "B1", powers: true }.',
+  },
   ask(
     'H94',
     'functionGraph',

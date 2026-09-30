@@ -5,6 +5,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type { SignOf } from './typesHs2a';
+import type { TermsChartHs2g } from './typesHs2g';
 
 /**
  * A normal curve over mean μ and standard deviation σ, with an x axis (ticks at μ + kσ, the
@@ -108,9 +109,10 @@ export interface PascalTriangleSpec {
  * dashed (when |r| < 1), the partial sums closing in on it. `term`, `sum` and `limit` (as a
  * variable id) are checked against the rule. No handles: the values have sliders.
  */
-export interface TermsChartSpec {
+export interface TermsChartSpec extends TermsChartHs2g {
   kind: 'termsChart';
-  type: 'arithmetic' | 'geometric';
+  /** H93: 'recursive', aₙ = step × aₙ₋₁ + plus (see `TermsChartHs2g`). */
+  type: 'arithmetic' | 'geometric' | 'recursive';
   first: NumOrVar;
   /** The common difference d, or the common ratio r. */
   step: NumOrVar;

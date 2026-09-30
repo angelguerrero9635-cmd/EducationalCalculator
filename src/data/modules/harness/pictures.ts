@@ -50,6 +50,7 @@ import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
+import { hs2gIssues } from './picturesHs2g';
 import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
@@ -2106,7 +2107,11 @@ export function repIssues(
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      out.push(...hsbIssues(rep, (id) => val(id)), ...hs2aIssues(rep, val));
+      out.push(
+        ...hsbIssues(rep, (id) => val(id)),
+        ...hs2aIssues(rep, val),
+        ...hs2gIssues(rep, val),
+      );
       break;
     case 'unitCircle':
     case 'algebraTiles':
