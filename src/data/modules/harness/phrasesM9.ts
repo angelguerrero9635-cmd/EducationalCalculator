@@ -3,6 +3,7 @@
  * time they run, × is *, − is -, superscripts are powers and a bracket around one number is
  * gone. Test-only.
  */
+import { parseNumber, significant } from '@/engine/format';
 
 /** A bare number, as `evaluate` leaves one by the time phrases run. */
 const NUM = String.raw`-?\d+(?:\.\d+)?(?:e[-+]?\d+)?`;
@@ -55,6 +56,9 @@ export const M9_PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // Significant figures: a calculated product rounded to the fewer figures of its factors.
   [
     new RegExp(`(${NUM}) rounded to (${NUM}) significant figures?`),
-    (x, n) => Number(x.toPrecision(Math.min(21, Math.max(1, Math.round(n))))),
+    (x, n) => Number(parseNumber(significant(x, Math.min(21, Math.max(1, Math.round(n)))))),
   ],
+  // A unit chain (units-precision): "45 mi/h * 5280 ft/1 mi * 1 h/3600 s" is its numbers, the
+  // units cancelling as the line says.
+  [new RegExp(`(${NUM}) (?:mi/h|ft/s|ft|mi|h|s)(?=$|\\s*[*/)])`), (a) => a],
 ];
