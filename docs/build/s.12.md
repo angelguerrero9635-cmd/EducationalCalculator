@@ -169,6 +169,19 @@ periods, orbit distances), the values it doesn't draw as `pictureLabels`.
   and hours are written out, not the registry's `min` and `h`, so the one-day clock's 24 and
   1,440 stay in the formula's own units.
 
+### Lesson review of the added skills
+
+Report: `.review/new-sci/lesson-report.md`. Fixed:
+
+- Earth-history main: t has a note with the clock time ("(11:39 p.m.)", "(12:00 noon)").
+- ~day-length: n runs 360–4,500, so every n fits N 360–450 for some b.
+- Exoplanets main: δ has no significant-figure pin, so it reads "1%", not "1.000%".
+- ~orbit: a work line "a = ∛0.008"; the use line says 36.525 days, as the example.
+- ~habitable-zone: a middle line "T = 278 × 0.7071 ÷ 0.7071" and the verdict as a note after T
+  ("(0.475 < 0.5 < 0.685 AU: in the zone)", too hot, too cold); a limit that a is more than
+  0.005 × √L AU ("That orbit is inside the star.").
+- Not built: a ~drake page (the report's "Not in the taxonomy" note, not a proposed page).
+
 ### Shared needs (pictures)
 
 - `geologicClock` (new kind, or a `timeline` mode): a 24-hour dial with Earth's formation at

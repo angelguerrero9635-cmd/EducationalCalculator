@@ -5,6 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/science12.ts`.
  */
+import { formatNumber as fmt } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -360,6 +361,16 @@ const EARTH_EVENTS: [number, string][] = [
   [0.3, 'Our species'],
 ];
 
+/** Hours after midnight (0–24) as a clock reads them: "11:39 p.m.", "12:00 noon". */
+const clockText = (t: number) => {
+  const all = Math.round(t * 60) % 1440;
+  const [h, m] = [Math.floor(all / 60), all % 60];
+  const mm = String(m).padStart(2, '0');
+  if (all === 0) return '12:00 midnight';
+  if (all === 720) return '12:00 noon';
+  return `${h % 12 === 0 ? 12 : h % 12}:${mm} ${h < 12 ? 'a.m.' : 'p.m.'}`;
+};
+
 const earthDay: ModuleDef = {
   id: 's.12.earth-history',
   unitSystems: ['metric'],
@@ -405,14 +416,23 @@ const earthDay: ModuleDef = {
         'The minutes left as a share of the day’s 1,440 minutes.',
       ],
     }),
-    rule('t = 24 − m ÷ 60', '{t} = 24 − {m} ÷ 60', (v) => v.t! - (24 - v.m! / 60), {
-      t: [
-        (v) => 24 - v.m! / 60,
-        '24 − {m} ÷ 60',
-        'Turn the minutes into hours and count back from midnight, hour 24.',
-      ],
-      m: [(v) => (24 - v.t!) * 60, '(24 − {t}) × 60', 'The hours left until midnight, in minutes.'],
-    }),
+    ((r: Rel): Rel => ({
+      ...r,
+      steps: { ...r.steps, t: { ...r.steps.t!, note: (v) => `(${clockText(v.t!)})` } },
+    }))(
+      rule('t = 24 − m ÷ 60', '{t} = 24 − {m} ÷ 60', (v) => v.t! - (24 - v.m! / 60), {
+        t: [
+          (v) => 24 - v.m! / 60,
+          '24 − {m} ÷ 60',
+          'Turn the minutes into hours and count back from midnight, hour 24.',
+        ],
+        m: [
+          (v) => (24 - v.t!) * 60,
+          '(24 − {t}) × 60',
+          'The hours left until midnight, in minutes.',
+        ],
+      }),
+    ),
   ),
   example: { A: 2300, p: 50, m: 720, t: 12 },
   startWith: ['A'],
@@ -441,7 +461,7 @@ const coralDays: ModuleDef = {
     'So long ago a year had more days, and each day was shorter.',
   ],
   variables: [
-    V('n', 'n', 'Daily growth lines counted', { min: 1, max: 5000, step: 1 }),
+    V('n', 'n', 'Daily growth lines counted', { min: 360, max: 4500, step: 1 }),
     V('b', 'b', 'Yearly bands they cross', { min: 1, max: 10, step: 1 }),
     V('N', 'N', 'Days in a year', { unit: 'days', min: 360, max: 450, step: 0.01 }),
     V('D', 'D', 'Length of a day', { unit: 'hours', min: 19, max: 24.5, step: 0.001 }),
@@ -1576,7 +1596,7 @@ const transit: ModuleDef = {
   variables: [
     V('R', 'R', 'Star’s radius', { unit: 'R☉', min: 0.1, max: 10, step: 0.001 }),
     V('r', 'r', 'Planet’s radius', { unit: 'R⊕', min: 0.3, max: 25, step: 0.01 }),
-    V('d', 'δ', 'Transit depth', { unit: '%', min: 1e-6, max: 100, step: 1e-6, sigFigs: 4 }),
+    V('d', 'δ', 'Transit depth', { unit: '%', min: 1e-6, max: 100, step: 1e-6 }),
   ],
   ...rels(
     {
@@ -1629,7 +1649,7 @@ const transit: ModuleDef = {
 const exoOrbit: ModuleDef = {
   id: 's.12.exoplanets~orbit',
   title: 'An exoplanet’s orbit from its period',
-  use: 'Use this for “A planet circles a star of 0.8 solar masses every 36.5 days. How far is it from its star?”',
+  use: 'Use this for “A planet circles a star of 0.8 solar masses every 36.525 days. How far is it from its star?”',
   unitSystems: ['metric'],
   assumptions: [
     'The planet’s mass is tiny beside its star’s.',
@@ -1647,19 +1667,27 @@ const exoOrbit: ModuleDef = {
       T: [(v) => v.P! / 365.25, '{P} ÷ 365.25', 'A year is 365.25 days: count the years.'],
       P: [(v) => v.T! * 365.25, '{T} × 365.25', 'Each year is 365.25 days: multiply.'],
     }),
-    rule('a³ = M × T²', '{a}³ = {M} × {T}²', (v) => v.a! ** 3 - v.M! * v.T! * v.T!, {
-      a: [
-        (v) => Math.cbrt(v.M! * v.T! * v.T!),
-        '∛({M} × {T}²)',
-        'Kepler’s third law with the star’s mass: a is the cube root of M × T².',
-      ],
-      M: [(v) => div(v.a! ** 3, v.T! * v.T!), '{a}³ ÷ {T}²', 'Divide a³ by T².'],
-      T: [
-        (v) => (v.M! > 0 ? Math.sqrt(v.a! ** 3 / v.M!) : undefined),
-        '√({a}³ ÷ {M})',
-        'T² is a³ over the star’s mass; take the square root.',
-      ],
-    }),
+    ((r: Rel): Rel => ({
+      ...r,
+      steps: {
+        ...r.steps,
+        a: { ...r.steps.a!, work: (v) => [`a = ∛${fmt(v.M! * v.T! * v.T!)}`] },
+      },
+    }))(
+      rule('a³ = M × T²', '{a}³ = {M} × {T}²', (v) => v.a! ** 3 - v.M! * v.T! * v.T!, {
+        a: [
+          (v) => Math.cbrt(v.M! * v.T! * v.T!),
+          '∛({M} × {T}²)',
+          'Kepler’s third law with the star’s mass: a is the cube root of M × T².',
+        ],
+        M: [(v) => div(v.a! ** 3, v.T! * v.T!), '{a}³ ÷ {T}²', 'Divide a³ by T².'],
+        T: [
+          (v) => (v.M! > 0 ? Math.sqrt(v.a! ** 3 / v.M!) : undefined),
+          '√({a}³ ÷ {M})',
+          'T² is a³ over the star’s mass; take the square root.',
+        ],
+      }),
+    ),
   ),
   example: { M: 0.8, P: 36.525, T: 0.1, a: 0.2 },
   startWith: ['P', 'M'],
@@ -1705,6 +1733,19 @@ const habitable: ModuleDef = {
     V('T', 'T', 'Planet’s temperature', { unit: 'K', min: 1, max: 10000, step: 0.1 }),
   ],
   ...rels(
+    {
+      relation: {
+        id: 'a > 0.005 × √L',
+        constraint: true,
+        display: '{a} is more than 0.005 × √({L})',
+        vars: ['a', 'L'],
+        residual: (v: Values) => (v.a! > 0.005 * Math.sqrt(v.L!) ? 0 : 1),
+        solve: {},
+        message: (v: Values) =>
+          v.a! > 0.005 * Math.sqrt(v.L!) ? undefined : 'That orbit is inside the star.',
+      },
+      steps: {},
+    },
     rule('d₁ = 0.95 × √L', '{d1} = 0.95 × √({L})', (v) => v.d1! - 0.95 * Math.sqrt(v.L!), {
       d1: [
         (v) => 0.95 * Math.sqrt(v.L!),
@@ -1717,27 +1758,44 @@ const habitable: ModuleDef = {
       d2: [(v) => 1.37 * Math.sqrt(v.L!), '1.37 × √({L})', 'Farther than this, its water freezes.'],
       L: [(v) => (v.d2! / 1.37) ** 2, '({d2} ÷ 1.37)²', 'Undo the square root: square d₂ ÷ 1.37.'],
     }),
-    rule(
-      'T = 278 × L^(1/4) ÷ √a',
-      '{T} = 278 × ({L})^(1/4) ÷ √({a})',
-      (v) => v.T! - habTemp(v.L!, v.a!),
-      {
-        T: [
-          (v) => habTemp(v.L!, v.a!),
-          '278 × ({L})^(1/4) ÷ √({a})',
-          'A planet at 1 AU from the Sun comes to 278 K; more light warms it, more distance cools it.',
-        ],
-        a: [
-          (v) => (v.T! > 0 ? ((278 * v.L! ** 0.25) / v.T!) ** 2 : undefined),
-          '(278 × ({L})^(1/4) ÷ {T})²',
-          'Undo the square root of the distance: square the ratio.',
-        ],
-        L: [
-          (v) => ((v.T! * Math.sqrt(v.a!)) / 278) ** 4,
-          '({T} × √({a}) ÷ 278)⁴',
-          'Undo the fourth root of the light: raise to the fourth power.',
-        ],
+    ((r: Rel): Rel => ({
+      ...r,
+      steps: {
+        ...r.steps,
+        T: {
+          ...r.steps.T!,
+          work: (v) => [`T = 278 × ${fmt(v.L! ** 0.25)} ÷ ${fmt(Math.sqrt(v.a!))}`],
+          note: (v) =>
+            v.a! < v.d1!
+              ? `(${fmt(v.a!)} AU is inside ${fmt(v.d1!)} AU: too hot)`
+              : v.a! > v.d2!
+                ? `(${fmt(v.a!)} AU is past ${fmt(v.d2!)} AU: too cold)`
+                : `(${fmt(v.d1!)} < ${fmt(v.a!)} < ${fmt(v.d2!)} AU: in the zone)`,
+        },
       },
+    }))(
+      rule(
+        'T = 278 × L^(1/4) ÷ √a',
+        '{T} = 278 × ({L})^(1/4) ÷ √({a})',
+        (v) => v.T! - habTemp(v.L!, v.a!),
+        {
+          T: [
+            (v) => habTemp(v.L!, v.a!),
+            '278 × ({L})^(1/4) ÷ √({a})',
+            'A planet at 1 AU from the Sun comes to 278 K; more light warms it, more distance cools it.',
+          ],
+          a: [
+            (v) => (v.T! > 0 ? ((278 * v.L! ** 0.25) / v.T!) ** 2 : undefined),
+            '(278 × ({L})^(1/4) ÷ {T})²',
+            'Undo the square root of the distance: square the ratio.',
+          ],
+          L: [
+            (v) => ((v.T! * Math.sqrt(v.a!)) / 278) ** 4,
+            '({T} × √({a}) ÷ 278)⁴',
+            'Undo the fourth root of the light: raise to the fourth power.',
+          ],
+        },
+      ),
     ),
   ),
   example: { L: 0.25, d1: 0.475, d2: 0.685, a: 0.5, T: 278 },
