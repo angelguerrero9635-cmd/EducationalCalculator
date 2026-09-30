@@ -10,11 +10,13 @@
 // types only; a main page takes the skill's title) and a `use` line to fill in, adds the page
 // to the picture tracker entry that lists the demo, and reports the helpers the copy calls so
 // their imports can be added. The copy is a start: edit its assumptions, ranges and use line to
-// the plan, then run `MODULE_IDS=<id> pnpm test src/data/modules`.
+// the plan, then run `MODULE_IDS=<id> pnpm test src/data/modules`. `--no-tracker` leaves the
+// tracker alone (builders working in parallel; the tracker is updated once when they merge).
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const [demoId, pageId, title] = process.argv.slice(2);
+const noTracker = process.argv.includes('--no-tracker');
+const [demoId, pageId, title] = process.argv.slice(2).filter((a) => a !== '--no-tracker');
 if (!demoId?.startsWith('g.') || !/^[ms]\.\w+\.[\w-]+(~[\w-]+)?$/.test(pageId ?? '')) {
   console.log(
     'Usage: node scripts/promote-demo.mjs g.<demo> <m|s>.<grade>.<skill>[~<slug>] ["Title"]',
@@ -119,10 +121,9 @@ writeFileSync(target, `${gradeSrc.slice(0, close)}\n  ${copy},${gradeSrc.slice(c
 
 // 4. The tracker: the page joins the entry that lists the demo (K–8 entries name their pages
 // in `pages: [`, Grades 9–12 entries in the fourth argument of `ask(`).
-for (const trackerFile of [
-  'src/data/modules/pictureRequests.ts',
-  'src/data/modules/pictureRequestsHs.ts',
-]) {
+for (const trackerFile of noTracker
+  ? []
+  : ['src/data/modules/pictureRequests.ts', 'src/data/modules/pictureRequestsHs.ts']) {
   const tracker = readFileSync(trackerFile, 'utf8');
   const at = tracker.indexOf(`'${demoId}'`);
   if (at === -1 || tracker.includes(`'${pageId}'`)) continue;

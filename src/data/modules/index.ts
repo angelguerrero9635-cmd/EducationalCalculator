@@ -17,6 +17,14 @@ import { MATH_7_MODULES } from './math/7';
 import { MATH_8_MODULES } from './math/8';
 import { SCIENCE_7_MODULES } from './science/7';
 import { SCIENCE_8_MODULES } from './science/8';
+import { MATH_9_MODULES } from './math/9';
+import { MATH_10_MODULES } from './math/10';
+import { MATH_11_MODULES } from './math/11';
+import { MATH_12_MODULES } from './math/12';
+import { SCIENCE_9_MODULES } from './science/9';
+import { SCIENCE_10_MODULES } from './science/10';
+import { SCIENCE_11_MODULES } from './science/11';
+import { SCIENCE_12_MODULES } from './science/12';
 import { PILOT_MODULES } from './pilots';
 import { GALLERY_MODULES } from './gallery';
 import { LAYOUTS, getLayout, type LayoutDef } from './layouts';
@@ -44,6 +52,14 @@ export const MODULES: readonly ModuleDef[] = [
   ...MATH_8_MODULES,
   ...SCIENCE_7_MODULES,
   ...SCIENCE_8_MODULES,
+  ...MATH_9_MODULES,
+  ...MATH_10_MODULES,
+  ...MATH_11_MODULES,
+  ...MATH_12_MODULES,
+  ...SCIENCE_9_MODULES,
+  ...SCIENCE_10_MODULES,
+  ...SCIENCE_11_MODULES,
+  ...SCIENCE_12_MODULES,
   ...PILOT_MODULES,
   ...COLLEGE_MODULES,
 ];

@@ -4,6 +4,14 @@ import { MATH_8_LAYOUTS } from './math8';
 import { SCIENCE_LAYOUTS } from './science';
 import { SCIENCE_7_LAYOUTS } from './science7';
 import { SCIENCE_8_LAYOUTS } from './science8';
+import { MATH_9_LAYOUTS } from './math9';
+import { MATH_10_LAYOUTS } from './math10';
+import { MATH_11_LAYOUTS } from './math11';
+import { MATH_12_LAYOUTS } from './math12';
+import { SCIENCE_9_LAYOUTS } from './science9';
+import { SCIENCE_10_LAYOUTS } from './science10';
+import { SCIENCE_11_LAYOUTS } from './science11';
+import { SCIENCE_12_LAYOUTS } from './science12';
 import type { LayoutDef } from './types';
 
 export type {
@@ -36,6 +44,14 @@ export const LAYOUTS: readonly LayoutDef[] = [
   ...SCIENCE_LAYOUTS,
   ...SCIENCE_7_LAYOUTS,
   ...SCIENCE_8_LAYOUTS,
+  ...MATH_9_LAYOUTS,
+  ...MATH_10_LAYOUTS,
+  ...MATH_11_LAYOUTS,
+  ...MATH_12_LAYOUTS,
+  ...SCIENCE_9_LAYOUTS,
+  ...SCIENCE_10_LAYOUTS,
+  ...SCIENCE_11_LAYOUTS,
+  ...SCIENCE_12_LAYOUTS,
 ];
 
 const BY_ID = new Map(LAYOUTS.map((l) => [l.id, l]));

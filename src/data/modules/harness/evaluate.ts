@@ -11,6 +11,14 @@ import { HSF_PHRASES } from './phrasesHsf';
 import { HSG_PHRASES } from './phrasesHsg';
 import { HSI_PHRASES } from './phrasesHsi';
 import { HSJ_PHRASES } from './phrasesHsj';
+import { M9_PHRASES } from './phrasesM9';
+import { M10_PHRASES } from './phrasesM10';
+import { M11_PHRASES } from './phrasesM11';
+import { M12_PHRASES } from './phrasesM12';
+import { S9_PHRASES } from './phrasesS9';
+import { S10_PHRASES } from './phrasesS10';
+import { S11_PHRASES } from './phrasesS11';
+import { S12_PHRASES } from './phrasesS12';
 
 /** How many prime factors (with repeats) a whole number has: 24 → 4, 7 → 1. */
 export const primeFactorCount = (n: number) => {
@@ -67,6 +75,15 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ...HSF_PHRASES,
   ...HSG_PHRASES,
   ...HSI_PHRASES,
+  // Grades 9–12 pages, one list per grade and subject.
+  ...M9_PHRASES,
+  ...M10_PHRASES,
+  ...M11_PHRASES,
+  ...M12_PHRASES,
+  ...S9_PHRASES,
+  ...S10_PHRASES,
+  ...S11_PHRASES,
+  ...S12_PHRASES,
   // Grade 3 clock times ("3:45"), as minutes past 12:00 on a 12-hour clock. Phrases that start
   // with a bracket are tried first, so these come before "35 minutes".
   [

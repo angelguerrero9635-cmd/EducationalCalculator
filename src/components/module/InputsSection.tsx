@@ -257,6 +257,8 @@ function EquationBox({
   compact,
   letter,
   blankOne,
+  absolute,
+  onFocusChange,
 }: {
   variable: VariableDef;
   calc: Calculator;
@@ -265,12 +267,23 @@ function EquationBox({
   letter?: boolean;
   /** A chemical coefficient ({a:coef}): a worked-out 1 is left blank, as it is written. */
   blankOne?: boolean;
+  /** After a flipped sign: the value's size, without its minus (x + 3 for x − (−3)). */
+  absolute?: boolean;
+  /** Told when the box gains or loses focus (a flipped sign turns back while it is typed in). */
+  onFocusChange?: (focused: boolean) => void;
 }) {
   const c = usePalette();
-  const { shown, error, status, focused, onChangeText, onFocus, onBlur } = useVariableBox(
-    variable,
-    calc,
-  );
+  const hook = useVariableBox(variable, calc);
+  const { error, status, focused, onChangeText } = hook;
+  const shown = absolute && !focused ? hook.shown.replace(/^−/, '') : hook.shown;
+  const onFocus = () => {
+    hook.onFocus();
+    onFocusChange?.(true);
+  };
+  const onBlur = () => {
+    hook.onBlur();
+    onFocusChange?.(false);
+  };
   const tight = small || compact;
   const worked = status === 'derived' && !focused;
   const blank = !!blankOne && worked && calc.values[variable.id] === 1;
@@ -441,7 +454,16 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
   // mixed number two; an expression slot its boxes side by side), as in 3(2 + x) = 6 + 12.
   const columns = Math.max(...lines.map((parts) => columnsOf(parts)));
   const compact = equationIds(template).length > 6 || columns > 4;
-  const box = (id: string, key: string, small = false, letter = lettered(id), blankOne = false) => (
+  // The box being typed in: a sign flipped for its negative value turns back while it is.
+  const [editing, setEditing] = useState<string | null>(null);
+  const box = (
+    id: string,
+    key: string,
+    small = false,
+    letter = lettered(id),
+    blankOne = false,
+    absolute = false,
+  ) => (
     <EquationBox
       key={key}
       variable={byId.get(id)!}
@@ -450,8 +472,30 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
       compact={compact}
       letter={letter}
       blankOne={blankOne}
+      absolute={absolute}
+      onFocusChange={(f) => setEditing((prev) => (f ? id : prev === id ? null : prev))}
     />
   );
+  // x − {h} with h = −3 reads x + 3, and {m}x + {b} with b = −3 reads 2x − 3: a written + or −
+  // before a box holding a negative value flips, and the box shows the size.
+  const signed = (parts: EquationPart[]): EquationPart[] =>
+    parts.map((p, i) => {
+      const next = parts[i + 1];
+      const prev = parts[i - 1];
+      const negative = (id: string) =>
+        editing !== id && calc.status(id) !== 'unknown' && (calc.values[id] ?? 0) < 0;
+      if (p.kind === 'text' && next?.kind === 'box' && negative(next.id) && /[+−]\s*$/.test(p.text))
+        return {
+          ...p,
+          text: p.text.replace(
+            /([+−])(\s*)$/,
+            (_, s: string, sp: string) => `${s === '+' ? '−' : '+'}${sp}`,
+          ),
+        };
+      if (p.kind === 'box' && prev?.kind === 'text' && negative(p.id) && /[+−]\s*$/.test(prev.text))
+        return { ...p, abs: true };
+      return p;
+    });
   const slotView = (s: Slot, key: string, small = false) =>
     'id' in s ? (
       box(s.id, key, small, false)
@@ -493,7 +537,7 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
     ) : p.kind === 'box' && p.unit ? (
       // {a:unit}: the unit the menu shows for this value (cm, in², V, Ω), written after it.
       <View key={i} style={styles.eqTight}>
-        {box(p.id, `b${i}`, small, small ? false : undefined)}
+        {box(p.id, `b${i}`, small, small ? false : undefined, false, p.abs)}
         <Text
           style={[styles.eqText, small ? styles.eqTextSmall : styles.eqUnit, { color: c.text }]}
         >
@@ -501,7 +545,7 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
         </Text>
       </View>
     ) : p.kind === 'box' ? (
-      box(p.id, `b${i}`, small, small ? false : undefined, p.coef)
+      box(p.id, `b${i}`, small, small ? false : undefined, p.coef, p.abs)
     ) : p.kind === 'power' ? (
       <View key={i} style={[styles.eqPower, nested && styles.eqPowerNested]}>
         {tallBracket(p.base) ? (
@@ -588,7 +632,7 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
           equationIds(template).filter((x) => x === (p.bottom as { id: string }).id).length > 1)));
   // Pieces in a row, those written against each other touching.
   const row = (parts: EquationPart[], key: string, small = false) =>
-    clusters(parts.map((p, i) => ({ p, i }))).map((cluster, k) =>
+    clusters(signed(parts).map((p, i) => ({ p, i }))).map((cluster, k) =>
       cluster.length === 1 ? (
         piece(cluster[0]!.p, `${key}-${cluster[0]!.i}`, small, true)
       ) : (
@@ -601,7 +645,7 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
     <View style={styles.equation} testID="equation">
       {lines.map((parts, l) => (
         <View key={l} style={[styles.eqRow, compact && styles.eqRowCompact]}>
-          {groups(parts).map((group, g) => (
+          {groups(signed(parts)).map((group, g) => (
             <View key={g} style={[styles.eqGroup, compact && styles.eqRowCompact]}>
               {clusters(group).map((cluster, k) =>
                 cluster.length === 1 ? (

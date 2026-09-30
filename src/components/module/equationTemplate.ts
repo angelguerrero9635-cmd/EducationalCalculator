@@ -17,7 +17,11 @@ export type Slot = { id: string } | { text: string } | { parts: EquationPart[] }
  */
 export type EquationPart =
   /** `unit`: the value's unit written after the box, following the unit menu ({a:unit}). */
-  | { kind: 'box'; id: string; unit?: boolean; coef?: boolean }
+  /**
+   * `abs`, set when drawing: the box follows a written + or − and holds a negative value, so the
+   * sign before it flips and the box shows the size (x − {h} with h = −3 reads x + 3).
+   */
+  | { kind: 'box'; id: string; unit?: boolean; coef?: boolean; abs?: boolean }
   | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
   /** `tightBefore`: a bracket written against the piece before it, {a}(1 + {r})^{t}. */
   | { kind: 'power'; base: Slot; exponent: Slot; tightBefore?: boolean }
