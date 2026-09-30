@@ -519,3 +519,20 @@ round 3 energy icons, the HR diagram with star life-cycle icons (`hrDiagram`), a
 universe with galaxy and solar-system formation icons (`expandingUniverse`, a calculator kind
 rather than an explore figure, because both of its parts are driven by values). Each entry's
 notes give the fields and an example; the demos are in `galleryHsl.ts`.
+
+### Grades 9–12, physics (2026-09-30): H58–H70
+
+H58–H70 are `drawn`: signed velocity–time areas, a position tangent and a strobe diagram on
+`motionGraph` (`kinematics`), projectiles to scale (`projectile`), free-body diagrams on a
+floor, a ramp or a rope (`freeBody`), circular motion, gravitation and Kepler's ellipse
+(`circularMotion`), collisions with momentum arrows (`collision`), levers, pulleys and ramps
+(`simpleMachine`) and a spring launcher on `energyTrack` (`spring`), heat engines and
+refrigerators (`heatEngine`), standing waves and the Doppler effect on `wave` (`standing`,
+`doppler`), lenses, mirrors, refraction, the double slit and telescopes (`rayDiagram`), point
+charges and field lines (`charges`), mixed circuits on `circuit` (`mixed`), induction, the
+motor force and transformers (`induction`), and line spectra, redshift and photon energy on
+`spectrum` (`lines`, `photon`). Each entry's notes give the fields and an example; the demos are
+in `galleryHsk.ts`. Step text must put a divisor before a sine (`{a}/{b} × sin({t})`), as the
+H66 and H69 notes say.
+
+With physics, every Grades 9–12 entry (H01–H88) is drawn.
