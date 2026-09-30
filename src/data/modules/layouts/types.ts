@@ -325,7 +325,14 @@ export type Figure =
    * The carbon cycle: the air's carbon dioxide, a tree, an animal, the dead matter and its
    * decomposers, fossil fuels, a factory and the ocean, with the processes as arrows (Grade 7).
    */
-  | { kind: 'carbonCycle' }
+  | {
+      kind: 'carbonCycle';
+      /**
+       * H103: a volcanic island in the ocean over a magma chamber, its outgassing an arrow up
+       * to the air (the `volcano` process). Off unless set.
+       */
+      volcano?: boolean;
+    }
   /**
    * A family's pedigree chart in the standard symbols: squares are males, circles females,
    * filled has the trait, half-filled carries it; a line joins parents, their children hang
@@ -397,7 +404,9 @@ export type CarbonProcess =
   | 'decomposition'
   | 'burning'
   | 'dissolving'
-  | 'burial';
+  | 'burial'
+  /** Volcanoes giving off carbon dioxide (a `carbonCycle` figure with `volcano`). */
+  | 'volcano';
 
 /** A substance in a `molecules` scene: its formula ("H2O") and how many (default 1). */
 export interface MoleculeItem {

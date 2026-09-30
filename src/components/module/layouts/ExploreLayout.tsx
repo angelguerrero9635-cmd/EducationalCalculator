@@ -179,7 +179,7 @@ function FigureView({
     case 'leafCell':
       return <LeafCellFigure scene={scene.leafCell ?? { process: 'photosynthesis' }} c={c} />;
     case 'carbonCycle':
-      return <CarbonCycleFigure carbon={scene.carbon ?? {}} c={c} />;
+      return <CarbonCycleFigure carbon={scene.carbon ?? {}} c={c} volcano={figure.volcano} />;
     case 'pedigree':
       return <PedigreeFigure people={figure.people} family={scene.family ?? {}} />;
     case 'molecules':

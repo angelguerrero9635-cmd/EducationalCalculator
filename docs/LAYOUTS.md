@@ -46,8 +46,10 @@ shrink (`fewer`). Grade 7 life science adds, in `layouts/figuresLife.tsx`: `leaf
 the light and a cell with its mitochondria, the inputs and outputs as arrows and the word
 equations; `leafCell: { process, lit? }` shows photosynthesis, respiration or both trading
 their outputs), `carbonCycle` (air, a tree, a rabbit, dead matter and mushrooms, coal and oil,
-a factory and the ocean; `carbon: { process? }` lights one process) and `pedigree` (a family
-given as `people` in the standard symbols; `family: { lit?, carriers?, genotypes?, ask? }`).
+a factory and the ocean; `carbon: { process? }` lights one process; the figure's `volcano: true`,
+H103, adds a volcanic island over a magma chamber and its `volcano` arrow up to the air) and
+`pedigree` (a family given as `people` in the standard symbols; `family: { lit?, carriers?,
+genotypes?, ask? }`).
 shrink (`fewer`). Grade 7–8 chemistry (`layouts/chemFigures.tsx`): `molecules` (ball-and-stick
 molecules in the classroom colors: one alone drawn big with each element named, or a scene's
 `items` in a box packed as a `state`, with `after` in a second box behind an arrow),

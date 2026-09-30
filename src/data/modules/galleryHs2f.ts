@@ -740,4 +740,48 @@ const spectraLayouts: LayoutDef[] = [
   },
 ];
 
-export const HS2F_GALLERY_LAYOUTS: LayoutDef[] = [...spectraLayouts];
+// ── Part 10: volcanoes in the carbon cycle (carbonCycle `volcano`) ──
+
+const carbonVolcano: LayoutDef = {
+  id: 'g.s12-climate-systems-carbon-volcano',
+  title: 'Volcanoes in the carbon cycle',
+  kind: 'explore',
+  use: 'Use this for where volcanoes fit in the carbon cycle, beside living things, fuels and the ocean.',
+  assumptions: [
+    'Every arrow is carbon moving from one place to another.',
+    'Volcanoes release carbon dioxide from magma deep underground; on average they add far less each year than burning fossil fuels.',
+    'The dashed arrow takes millions of years.',
+  ],
+  figure: { kind: 'carbonCycle', volcano: true },
+  scenes: [
+    {
+      label: 'Whole cycle',
+      lines: [
+        'Carbon moves between the air, living things, dead matter, the ocean, coal and oil, and rock deep underground.',
+      ],
+      carbon: {},
+    },
+    {
+      label: 'Volcanoes',
+      lines: [
+        'Magma holds carbon from deep in Earth; a volcano lets it out as carbon dioxide.',
+        'Over millions of years this returns carbon that rock locked away.',
+      ],
+      carbon: { process: 'volcano' },
+    },
+    {
+      label: 'Burning',
+      lines: [
+        'Burning coal, oil and gas puts carbon stored for millions of years into the air in a few years.',
+      ],
+      carbon: { process: 'burning' },
+    },
+    {
+      label: 'Dissolving',
+      lines: ['The ocean takes in carbon dioxide from the air and gives some back.'],
+      carbon: { process: 'dissolving' },
+    },
+  ],
+};
+
+export const HS2F_GALLERY_LAYOUTS: LayoutDef[] = [...spectraLayouts, carbonVolcano];

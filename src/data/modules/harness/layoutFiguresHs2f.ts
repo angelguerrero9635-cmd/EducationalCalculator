@@ -17,6 +17,8 @@ export function hs2fFigureIssues(l: LayoutDef): string[] {
     // Their label sits in space past the escaping infrared, which fills it with no greenhouse gases.
     if (s.greenhouse?.particles && s.greenhouse.co2 === 'none')
       out.push(`${at}: particles with no greenhouse gases (no room for their label)`);
+    if (s.carbon?.process === 'volcano' && !(f.kind === 'carbonCycle' && f.volcano))
+      out.push(`${at}: the volcano lit, but the figure draws none (volcano: true)`);
     if (s.spectra) {
       const { star } = s.spectra;
       if (new Set(star).size !== star.length) out.push(`${at}: an element listed twice`);
