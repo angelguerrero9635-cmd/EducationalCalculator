@@ -88,6 +88,44 @@ const below = (a: string, b: string, id: string, display: string): Rel => ({
   steps: {},
 });
 
+// ── Minerals and rocks (the main page is an explore, in ../layouts/science12.ts) ──
+
+const mineralDensity: ModuleDef = {
+  id: 's.12.minerals-rocks~density',
+  title: 'A mineral’s density by water displacement',
+  use: 'Use this for “A 26.5 g mineral raises the water from 50 mL to 60 mL. What is its density, and which mineral could it be?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    '1 mL of water displaced = 1 cm³ of mineral.',
+    'The sample sinks and has no air pockets.',
+    'Density is a clue, not proof: compare it with hardness and streak too.',
+  ],
+  variables: [
+    V('m', 'm', 'Mass', { unit: 'g', min: 0.1, max: 500, step: 0.1 }),
+    V('a', 'V₁', 'Water before', { unit: 'mL', min: 0, max: 90, step: 0.1 }),
+    V('b', 'V₂', 'Water after', { unit: 'mL', min: 1, max: 100, step: 0.1 }),
+    V('V', 'V', 'Volume', { unit: 'cm³', min: 0.1, max: 100, step: 0.1 }),
+    V('rho', 'ρ', 'Density', { unit: 'g/cm³', min: 1, max: 20, step: 0.01 }),
+  ],
+  ...rels(
+    below('a', 'b', 'V₁ < V₂', 'the water before {a} is below the water after {b}'),
+    difference('V', 'b', 'a', 'V = V₂ − V₁', [
+      'The water rises by the mineral’s volume: 1 mL is 1 cm³.',
+      'The level after is the level before plus the mineral’s volume.',
+      'The level before is the level after less the mineral’s volume.',
+    ]),
+    quotient('rho', 'm', 'V', 'ρ = m ÷ V', [
+      'Share the mass over the cubic centimeters of the mineral.',
+      'Each cubic centimeter holds the density’s mass: multiply.',
+      'How many of the density’s mass fit in the mass.',
+    ]),
+  ),
+  example: { m: 26.5, a: 50, b: 60, V: 10, rho: 2.65 },
+  startWith: ['m', 'a', 'b'],
+  pictureLabels: ['m', 'rho'],
+  representation: { kind: 'gradCylinder', before: 'a', after: 'b', volume: 'V', max: 100 },
+};
+
 // ── Earthquakes, seismic waves and Earth's interior ──
 
 /** The S − P lag at distance d: d ÷ vₛ − d ÷ vₚ. */
@@ -1170,6 +1208,7 @@ const stretch: ModuleDef = {
 };
 
 export const SCIENCE_12_MODULES: ModuleDef[] = [
+  mineralDensity,
   earthInterior,
   epicenter,
   shadowZone,

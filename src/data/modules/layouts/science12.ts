@@ -5,6 +5,204 @@
 import type { LayoutDef } from './types';
 
 export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
+  // ── Minerals and rocks: properties and how they form (HS-ESS2-1, HS-ESS2-3) ──
+  {
+    kind: 'explore',
+    id: 's.12.minerals-rocks',
+    assumptions: [
+      'A mineral scratches every mineral below it on the scale and is scratched by those above it.',
+      'The scale ranks hardness only; the steps are not equal.',
+    ],
+    figure: { kind: 'mohsScale' },
+    scenes: [
+      {
+        label: 'The ten minerals',
+        lines: [
+          'Talc, at 1, is the softest mineral on the scale; diamond, at 10, is the hardest.',
+          'The dashed lines are everyday tools: a fingernail, a copper coin, glass and a steel file.',
+        ],
+        mohs: {},
+      },
+      {
+        label: 'Scratched by a coin, not a fingernail',
+        lines: [
+          'A fingernail (2.5) can’t scratch it, but a copper coin (3.5) can.',
+          'Its hardness is between 2.5 and 3.5: calcite, at 3, fits.',
+        ],
+        mohs: { between: [2.5, 3.5], lit: 3 },
+      },
+      {
+        label: 'Scratches glass, not a steel file',
+        lines: [
+          'It scratches glass (5.5), but a steel file (6.5) scratches it.',
+          'Its hardness is between 5.5 and 6.5: feldspar, at 6, fits.',
+        ],
+        mohs: { between: [5.5, 6.5], lit: 6 },
+      },
+      {
+        label: 'Scratches glass and steel',
+        lines: [
+          'It scratches both glass and a steel file, so it is harder than 6.5.',
+          'Quartz, at 7, is the common mineral that does this.',
+        ],
+        mohs: { lit: 7 },
+      },
+      {
+        label: 'How far apart the ranks are',
+        lines: [
+          'The ranks are equal steps, but the hardness is not.',
+          'Diamond is about four times as hard as corundum, but only one rank above it.',
+        ],
+        mohs: { absolute: true },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.minerals-rocks~mineral-groups',
+    title: 'Silicate or not?',
+    use: 'Use this for “Which of these minerals is a silicate?”',
+    assumptions: [
+      'Silicon and oxygen are the two most common elements in Earth’s crust.',
+      'Silicates are built on units of one silicon atom joined to four oxygen atoms.',
+    ],
+    question: 'Is it a silicate?',
+    bins: [
+      {
+        id: 'silicate',
+        label: 'Silicate (built on silicon and oxygen)',
+        why: 'Silicates make up most of the crust: quartz, feldspar and mica are the commonest.',
+      },
+      {
+        id: 'other',
+        label: 'Not a silicate',
+        why: 'Carbonates, halides, sulfides and oxides have no silicon-oxygen units.',
+      },
+    ],
+    cards: [
+      { label: 'Quartz (SiO₂)', bin: 'silicate', figure: { kind: 'icon', icon: 'quartz' } },
+      { label: 'Feldspar', bin: 'silicate', figure: { kind: 'icon', icon: 'feldspar' } },
+      { label: 'Mica', bin: 'silicate', figure: { kind: 'icon', icon: 'mica' } },
+      { label: 'Calcite (CaCO₃)', bin: 'other', figure: { kind: 'icon', icon: 'calcite' } },
+      { label: 'Halite (NaCl)', bin: 'other', figure: { kind: 'icon', icon: 'halite' } },
+      { label: 'Pyrite (FeS₂)', bin: 'other', figure: { kind: 'icon', icon: 'pyrite' } },
+      { label: 'Hematite (Fe₂O₃)', bin: 'other', figure: { kind: 'icon', icon: 'hematite' } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.minerals-rocks~cleavage',
+    title: 'Cleavage or fracture?',
+    use: 'Use this for “Does this mineral break along flat planes or along curved surfaces?”',
+    assumptions: [
+      'Cleavage follows planes where the bonds in the crystal are weakest.',
+      'Where the bonds are equally strong in every direction, the mineral fractures.',
+    ],
+    question: 'How does it break?',
+    bins: [
+      {
+        id: 'cleavage',
+        label: 'Cleavage (flat planes)',
+        why: 'Mica splits one way into sheets, feldspar two ways at 90°, halite three ways at 90° and calcite three ways, not at 90°.',
+      },
+      {
+        id: 'fracture',
+        label: 'Fracture (uneven or curved)',
+        why: 'Quartz breaks in smooth curved shells; pyrite and hematite break unevenly.',
+      },
+    ],
+    cards: [
+      { label: 'Mica', bin: 'cleavage', figure: { kind: 'icon', icon: 'mica' } },
+      { label: 'Feldspar', bin: 'cleavage', figure: { kind: 'icon', icon: 'feldspar' } },
+      { label: 'Halite', bin: 'cleavage', figure: { kind: 'icon', icon: 'halite' } },
+      { label: 'Calcite', bin: 'cleavage', figure: { kind: 'icon', icon: 'calcite' } },
+      { label: 'Quartz', bin: 'fracture', figure: { kind: 'icon', icon: 'quartz' } },
+      { label: 'Pyrite', bin: 'fracture', figure: { kind: 'icon', icon: 'pyrite' } },
+      { label: 'Hematite', bin: 'fracture', figure: { kind: 'icon', icon: 'hematite' } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.minerals-rocks~igneous',
+    title: 'Intrusive or extrusive?',
+    use: 'Use this for “A rock has large crystals. Did it cool quickly or slowly?”',
+    assumptions: [
+      'Slow cooling gives crystals time to grow large; fast cooling leaves tiny crystals or glass.',
+      'Gas escaping from lava as it cools leaves holes.',
+    ],
+    question: 'Where did this rock cool?',
+    bins: [
+      {
+        id: 'intrusive',
+        label: 'Slowly, underground (intrusive)',
+        why: 'Buried magma cools over thousands of years, so its crystals are big enough to see.',
+      },
+      {
+        id: 'extrusive',
+        label: 'Quickly, at the surface (extrusive)',
+        why: 'Lava cools in days or years: tiny crystals, glass, or holes where gas escaped.',
+      },
+    ],
+    cards: [
+      { label: 'Granite', bin: 'intrusive', figure: { kind: 'rock', texture: 'crystals' } },
+      { label: 'Gabbro', bin: 'intrusive', figure: { kind: 'rock', texture: 'crystals' } },
+      { label: 'Diorite', bin: 'intrusive', figure: { kind: 'rock', texture: 'crystals' } },
+      { label: 'Peridotite', bin: 'intrusive', figure: { kind: 'rock', texture: 'crystals' } },
+      { label: 'Basalt', bin: 'extrusive', figure: { kind: 'rock', texture: 'fine' } },
+      { label: 'Rhyolite', bin: 'extrusive', figure: { kind: 'rock', texture: 'fine' } },
+      { label: 'Andesite', bin: 'extrusive', figure: { kind: 'rock', texture: 'fine' } },
+      { label: 'Obsidian', bin: 'extrusive', figure: { kind: 'rock', texture: 'glassy' } },
+      { label: 'Pumice', bin: 'extrusive', figure: { kind: 'rock', texture: 'holes' } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.minerals-rocks~metamorphic',
+    title: 'Foliated or nonfoliated?',
+    use: 'Use this for “Is gneiss foliated? What was its parent rock?”',
+    assumptions: [
+      'Heat and pressure change a rock without melting it.',
+      'Pressure from one direction lines up flat minerals into layers or bands.',
+    ],
+    question: 'Are the minerals lined up?',
+    bins: [
+      {
+        id: 'foliated',
+        label: 'Foliated',
+        why: 'Flat minerals such as mica line up across the squeeze, in layers or bands.',
+      },
+      {
+        id: 'nonfoliated',
+        label: 'Nonfoliated',
+        why: 'The minerals recrystallize into grains with no lined-up layers, often from one mineral.',
+      },
+    ],
+    cards: [
+      { label: 'Slate, from shale', bin: 'foliated', figure: { kind: 'rock', texture: 'layers' } },
+      { label: 'Schist, from slate', bin: 'foliated', figure: { kind: 'rock', texture: 'layers' } },
+      {
+        label: 'Gneiss, from granite',
+        bin: 'foliated',
+        figure: { kind: 'rock', texture: 'bands' },
+      },
+      {
+        label: 'Marble, from limestone',
+        bin: 'nonfoliated',
+        figure: { kind: 'rock', texture: 'crystals' },
+      },
+      {
+        label: 'Quartzite, from sandstone',
+        bin: 'nonfoliated',
+        figure: { kind: 'rock', texture: 'grains' },
+      },
+      {
+        label: 'Hornfels, from shale baked by magma',
+        bin: 'nonfoliated',
+        figure: { kind: 'rock', texture: 'fine' },
+      },
+    ],
+  },
+
   // ── Earthquakes, seismic waves and Earth's interior (HS-ESS2-3, HS-ESS1-5) ──
   {
     kind: 'sort',
