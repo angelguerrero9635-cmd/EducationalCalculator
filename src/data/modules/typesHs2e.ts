@@ -27,8 +27,27 @@ export interface MacroCalcSpec {
   split?: boolean;
 }
 
+// ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
+
+/**
+ * Chromosome counts from a value: a body cell of 2n = `diploid` chromosomes (duplicated, as at
+ * metaphase), a gamete after meiosis (n), and an egg and a sperm joining into a zygote (n + n).
+ * Each pair is one maternal (red) and one paternal (blue) chromosome. Up to 2n = 8 each is
+ * drawn; past 8 one pair and "× n pairs". Optional variables, each checked: `haploid` (2n ÷ 2),
+ * `chromatids` (2 × 2n, at metaphase), `zygote` (n + n) and `combinations` (2ⁿ gametes by
+ * independent assortment, no crossing over).
+ */
+export interface CellDivisionCalcSpec {
+  kind: 'cellDivision';
+  diploid: NumOrVar;
+  haploid?: string;
+  chromatids?: string;
+  zygote?: string;
+  combinations?: string;
+}
+
 /** Group H2E's calculator pictures. */
-export type Hs2eSpec = MacroCalcSpec;
+export type Hs2eSpec = MacroCalcSpec | CellDivisionCalcSpec;
 
 /** Every variable id a group-H2E picture reads (for modules.test.ts). */
 export function hs2eSpecVars(r: Hs2eSpec): string[] {
@@ -37,5 +56,7 @@ export function hs2eSpecVars(r: Hs2eSpec): string[] {
   switch (r.kind) {
     case 'macromolecules':
       return ids([r.count, r.bonds, r.water]);
+    case 'cellDivision':
+      return ids([r.diploid, r.haploid, r.chromatids, r.zygote, r.combinations]);
   }
 }

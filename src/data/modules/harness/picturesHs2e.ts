@@ -26,6 +26,24 @@ export function hs2eIssues(rep: Hs2eSpec, val: (id: string) => number | undefine
       }
       break;
     }
+    case 'cellDivision': {
+      // 2n even and at least 2; each count the page names agrees with it.
+      const d = num(rep.diploid, val);
+      if (d === undefined) break;
+      if (!whole(d / 2) || d < 2) out.push(`cellDivision: 2n = ${d} (an even number, 2 or more)`);
+      const n = d / 2;
+      for (const [id, want, what] of [
+        [rep.haploid, n, 'n'],
+        [rep.chromatids, 2 * d, 'chromatids'],
+        [rep.zygote, d, 'zygote chromosomes'],
+        [rep.combinations, 2 ** n, 'gamete combinations'],
+      ] as const) {
+        const x = id === undefined ? undefined : val(id);
+        if (x !== undefined && Math.abs(x - want) > 1e-9 * Math.max(1, want))
+          out.push(`cellDivision: 2n = ${d} gives ${want} ${what}, the value shows ${x}`);
+      }
+      break;
+    }
   }
   return out;
 }

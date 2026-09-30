@@ -1875,10 +1875,16 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       ],
     ),
     status: 'requested',
-    gallery: ['g.s9-biomolecules-dehydration', 'g.s9-biomolecules-dehydration-long'],
+    gallery: [
+      'g.s9-biomolecules-dehydration',
+      'g.s9-biomolecules-dehydration-long',
+      'g.s9-mitosis-meiosis-chromosome-count',
+      'g.s9-mitosis-meiosis-chromosome-count-human',
+    ],
     notes: [
       'P12 (docs/plans/s.9.md needs 1–6, 8–10, 12; need 7 is harness phrases, need 11 is built).',
       'Need 1, `macromolecules` as a calculator picture (`typesHs2e.ts`): { kind: "macromolecules", macro: "carbohydrate" | "protein" | "nucleicAcid", count: "n", bonds?: "b", water?: "w", split?: true } draws the H31 figure from the value: 2–4 monomers drawn; past 4 the first two and the last with "…" between, the titles and "299 H₂O given off" carrying the count (three water molecules and "…"). The harness checks n whole and at least 2, and bonds = water = n − 1. s.9.biomolecules~dehydration: { kind: "macromolecules", macro: "carbohydrate", count: "n", bonds: "b", water: "w" } with the plan’s n, b, w, m, M.',
+      'Need 3, `cellDivision` as a calculator picture: { kind: "cellDivision", diploid: "D", haploid?: "n", chromatids?: "X", zygote?: "Z", combinations?: "C" } draws a body cell of 2n (duplicated, as at metaphase: 2 × 2n chromatids), a gamete after meiosis (n, pairs assorted), and an egg (maternal red) and a sperm (paternal blue) joining into a zygote (n + n); up to 2n = 8 every chromosome, past 8 one pair and "× 23 pairs". The harness checks 2n even, n = 2n ÷ 2, X = 2 × 2n, Z = 2n and C = 2ⁿ. s.9.mitosis-meiosis~chromosome-count: the plan’s D, n, X, Z, C with that spec (2–100, multipleOf 2; the human 46 draws one pair).',
     ].join(' '),
   },
   ask(

@@ -169,6 +169,105 @@ const MACRO_DEMOS: ModuleDef[] = [
   ),
 ];
 
-export const HS2E_GALLERY_MODULES: ModuleDef[] = [...MACRO_DEMOS];
+// ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
+
+/** out = f(ins), worked forward only. */
+const forward = (
+  out: string,
+  display: string,
+  ins: string[],
+  f: (v: Record<string, number>) => number,
+  expr: string,
+  how: string,
+): Rule => ({
+  relation: {
+    id: display.replace(/[{}]/g, ''),
+    display,
+    vars: [out, ...ins],
+    residual: (v) => v[out]! - f(v as Record<string, number>),
+    solve: { [out]: (v) => f(v as Record<string, number>) },
+  },
+  steps: { [out]: { expr, how } },
+});
+
+/** The chromosome-count page: 2n in a body cell → n, chromatids, the zygote, 2ⁿ gametes. */
+const chromosomeDemo = (id: string, title: string, D: number, extra: string): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for “A body cell has 46 chromosomes. How many are in a gamete, and in a zygote?”',
+  assumptions: [
+    'A body cell holds 2n chromosomes: n pairs, one of each pair from each parent.',
+    'Meiosis leaves one chromosome of each pair in a gamete; fertilization joins two gametes.',
+    extra,
+  ],
+  variables: [
+    { ...count('D', '2n', 'Chromosomes in a body cell', 2, 100), multipleOf: 2 },
+    count('n', 'n', 'Chromosomes in a gamete', 1, 50, true),
+    count('X', 'X', 'Chromatids at metaphase', 4, 200, true),
+    count('Z', 'Z', 'Chromosomes in a zygote', 2, 100, true),
+    count('C', 'C', 'Kinds of gamete', 2, 2 ** 50, true),
+  ],
+  ...rules(
+    forward(
+      'n',
+      '{n} = {D} ÷ 2',
+      ['D'],
+      (v) => v.D! / 2,
+      '{D} ÷ 2',
+      'A gamete keeps one of each pair.',
+    ),
+    forward(
+      'X',
+      '{X} = 2 × {D}',
+      ['D'],
+      (v) => 2 * v.D!,
+      '2 × {D}',
+      'Before division each chromosome is copied: two sister chromatids.',
+    ),
+    forward(
+      'Z',
+      '{Z} = {n} + {n}',
+      ['n'],
+      (v) => 2 * v.n!,
+      '{n} + {n}',
+      'An egg and a sperm join.',
+    ),
+    forward(
+      'C',
+      '{C} = 2^{n}',
+      ['n'],
+      (v) => 2 ** v.n!,
+      '2^{n}',
+      'Each pair lines up either way round, so every pair doubles the kinds of gamete.',
+    ),
+  ),
+  example: { D, n: D / 2, X: 2 * D, Z: D, C: 2 ** (D / 2) },
+  startWith: ['D'],
+  representation: {
+    kind: 'cellDivision',
+    diploid: 'D',
+    haploid: 'n',
+    chromatids: 'X',
+    zygote: 'Z',
+    combinations: 'C',
+  },
+});
+
+const DIVISION_DEMOS: ModuleDef[] = [
+  chromosomeDemo(
+    'g.s9-mitosis-meiosis-chromosome-count',
+    'Counting chromosomes',
+    8,
+    'A fruit fly has 2n = 8; crossing over is left out of the count of gametes.',
+  ),
+  chromosomeDemo(
+    'g.s9-mitosis-meiosis-chromosome-count-human',
+    'Counting human chromosomes',
+    46,
+    'A human body cell has 2n = 46: past 8 the picture draws one pair and writes the count.',
+  ),
+];
+
+export const HS2E_GALLERY_MODULES: ModuleDef[] = [...MACRO_DEMOS, ...DIVISION_DEMOS];
 
 export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [];

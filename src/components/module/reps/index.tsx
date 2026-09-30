@@ -207,6 +207,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
     case 'macromolecules':
+    case 'cellDivision':
       return <Hs2eView spec={spec} calc={calc} />;
     case 'gasPiston':
     case 'energyProfile':

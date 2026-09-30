@@ -517,6 +517,7 @@ function representationVars(r: Representation): string[] {
     case 'dnaStrand':
       return hsgSpecVars(r);
     case 'macromolecules':
+    case 'cellDivision':
       return hs2eSpecVars(r);
     case 'gel':
     case 'alleleFrequencies':

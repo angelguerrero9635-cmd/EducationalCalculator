@@ -2123,6 +2123,7 @@ export function repIssues(
       out.push(...hsgIssues(rep, (id) => val(id)));
       break;
     case 'macromolecules':
+    case 'cellDivision':
       out.push(...hs2eIssues(rep, (id) => val(id)));
       break;
     case 'gel':
