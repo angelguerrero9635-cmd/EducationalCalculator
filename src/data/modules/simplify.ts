@@ -316,7 +316,7 @@ const reduce = (n: Node, stage: Stage, depth = 0): Node => {
 const fmt = (x: number) => formatNumber(x).replace('-', '−');
 
 /** Prints a node with only the brackets the order of operations needs. */
-function print(n: Node, parentRank = 0, rightSide = false): string {
+function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): string {
   switch (n.kind) {
     case 'num': {
       const s = n.text ?? fmt(n.value);
@@ -328,14 +328,17 @@ function print(n: Node, parentRank = 0, rightSide = false): string {
       const compound = parentRank === 4 && /[/ π]/.test(s) && s !== 'π';
       // (first in its expression it reads as itself: −60 ÷ 2)
       const after = parentRank > 0 && (rightSide || parentRank === 4);
-      return (negative && after) || (sci && parentRank > 0) || compound ? `(${s})` : s;
+      // (and so is one that starts what follows a sign: 4 − (−10) × 2)
+      return (negative && (after || afterSign)) || (sci && parentRank > 0) || compound
+        ? `(${s})`
+        : s;
     }
     case 'neg': {
       // −(−4), not −−4.
       const inner = print(n.arg, 4);
       const s = `−${inner.startsWith('−') ? `(${inner})` : inner}`;
       // "+ (−1)", not "+ −1".
-      return parentRank > 0 && parentRank < 4 && rightSide ? `(${s})` : s;
+      return (parentRank > 0 && parentRank < 4 && rightSide) || afterSign ? `(${s})` : s;
     }
     case 'sqrt': {
       // √25 and √(9 + 16): brackets only around an expression.
@@ -351,9 +354,14 @@ function print(n: Node, parentRank = 0, rightSide = false): string {
       const r = rank(n);
       // The base of ^ keeps its brackets when negative: (−3)^2, not −3^2.
       const base = n.op === '^' ? print(n.left, 4, false) : undefined;
+      // The left piece starts where this node starts: after a sign when this node does.
       const left =
-        base === undefined ? print(n.left, r, false) : base.startsWith('−') ? `(${base})` : base;
-      const right = print(n.right, r, true);
+        base === undefined
+          ? print(n.left, r, false, afterSign)
+          : base.startsWith('−')
+            ? `(${base})`
+            : base;
+      const right = print(n.right, r, true, true);
       const text =
         n.op === '/'
           ? `${left}/${right}`

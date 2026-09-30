@@ -226,5 +226,7 @@ describe('simplify chain: negatives', () => {
   it('keeps a negative base bracketed under a power, and brackets a minus before a negative', () => {
     expect(simplifyChain('(−3)^(5 − 3)')).toEqual(['(−3)^2', '9']);
     expect(simplifyChain('−(−(2 + 2)) + 1')).toEqual(['−(−4) + 1', '4 + 1', '5']);
+    expect(simplifyChain('4 × 1 − (−10) × 2')[0]).toBe('4 − (−20)');
+    expect(simplifyChain('3 − (−2 + 7) × 2')[0]).toBe('3 − 5 × 2');
   });
 });

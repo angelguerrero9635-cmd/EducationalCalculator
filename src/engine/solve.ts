@@ -518,6 +518,19 @@ function wholeSolutions(
     }
     const bounds: Bounds = new Map(
       whole.map((v) => {
+        // An allowed list sets its own range and step (0.9, 0.95, 0.99 need no min or max).
+        const list =
+          v.allowed &&
+          wholeValues(v)!
+            .slice()
+            .sort((a, b) => a - b);
+        if (list?.length) {
+          const gaps = list
+            .slice(1)
+            .map((x, i) => x - list[i]!)
+            .filter((g) => g > 1e-12);
+          return [v.id, { lo: list[0]!, hi: list[list.length - 1]!, f: Math.min(1, ...gaps) }];
+        }
         const f = (v.unitFactor ?? 1) * (v.multipleOf ?? 1);
         return [
           v.id,

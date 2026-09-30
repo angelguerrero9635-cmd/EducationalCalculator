@@ -65,8 +65,10 @@ function familyIssues(f: FunctionFamily, val: (v: NumOrVar) => number | undefine
 /** Every feature of a curve in [lo, hi] satisfies its formula. */
 function featureIssues(c: Curve, lo: number, hi: number, out: string[], what = 'f') {
   const d = (x: number) => (c.f(x + 1e-6) - c.f(x - 1e-6)) / 2e-6;
+  // (a root's start, √(x − h) at h, has no slope on its left: scale 1 there)
+  const scale = (x: number) => (Number.isFinite(d(x)) ? Math.max(1, Math.abs(d(x))) : 1);
   for (const z of zerosIn(c, lo, hi))
-    if (!(Math.abs(c.f(z.x)) <= TOL * Math.max(1, Math.abs(d(z.x)))))
+    if (!(Math.abs(c.f(z.x)) <= TOL * scale(z.x)))
       out.push(`${what}: zero at ${z.x} gives ${c.f(z.x)}`);
   if (c.key && c.key.what !== 'center') {
     if (!close(c.f(c.key.x), c.key.y))

@@ -211,11 +211,12 @@ function resultNumber(result: string, exp = false): number {
     const n = Number([...sci[2]!].map((c) => (c === '⁻' ? '-' : '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c))).join(''));
     return Number(sci[1]!.replace('−', '-')) * 10 ** n;
   }
-  const pi = /^([-−]?[\d.]*)π/.exec(rhs);
+  // (and a fraction of π, as radians are written: 5π/2, −π/6)
+  const pi = /^([-−]?[\d.]*)π(?:\/(\d+))?/.exec(rhs);
   if (pi) {
     const k =
       pi[1] === '' ? 1 : pi[1] === '−' || pi[1] === '-' ? -1 : Number(pi[1]!.replace('−', '-'));
-    return k * Math.PI;
+    return (k * Math.PI) / Number(pi[2] ?? 1);
   }
   const re = exp ? /^\$?(-?[\d.]+(?:e[-+]?\d+)?)/ : /^\$?(-?[\d.]+)/;
   return Number(re.exec(rhs)?.[1]);
@@ -450,7 +451,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     const says = s.written.says;
     const answer = resultNumber(s.result);
     const long = /^(\d+) ÷ (\d+) = (\d+) remainder (\d+)$/.exec(says);
-    const plain = /^(.*) = (\d+(?:\.\d+…?)?)$/.exec(says);
+    // (a synthetic division can end below 0: P(r) = −12)
+    const plain = /^(.*) = (−?[\d,]+(?:\.\d+…?)?)$/.exec(says);
     const said = plain ? Number(parseNumber(plain[2]!)) : NaN;
     const x = plain ? evaluate(plain[1]!) : undefined;
     const ok = long
