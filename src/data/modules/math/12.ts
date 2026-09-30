@@ -5129,8 +5129,8 @@ const MATH_12_TRANSFORMS: ModuleDef[] = [
       { ...entry('D', 'D', 'Determinant', 20000), derived: true },
       V('S', 'S', 'Area before', { min: 0, max: 100000, step: 0.01 }),
       V('T', 'T', 'Area after', { min: 0, max: 2000000000, step: 0.01 }),
-      { ...entry('p', 'p', 'a + b', 200), derived: true, hidden: true },
-      { ...entry('q', 'q', 'c + d', 200), derived: true, hidden: true },
+      { ...entry('p', 'p', 'x of the far corner', 200), derived: true, hidden: true },
+      { ...entry('q', 'q', 'y of the far corner', 200), derived: true, hidden: true },
     ],
     ...rels(
       derive(
@@ -5213,6 +5213,8 @@ const MATH_12_TRANSFORMS: ModuleDef[] = [
       deg('a', 'α', 'First turn', -360, 360),
       deg('b', 'β', 'Second turn', -360, 360),
       deg('g', 'γ', 'Both turns', -720, 720, { derived: true }),
+      V('c', 'c', 'cos γ', { min: -1, max: 1, step: 0.0001, derived: true }),
+      V('s', 's', 'sin γ', { min: -1, max: 1, step: 0.0001, derived: true }),
       coord('x', 'x', 'x of the point'),
       coord('y', 'y', 'y of the point'),
       coord('X', 'x″', 'x of the final image', 1500),
@@ -5228,34 +5230,41 @@ const MATH_12_TRANSFORMS: ModuleDef[] = [
         '{a} + {b}',
         'R(β)R(α) = R(α + β): multiplying the two matrices adds the angles (the sum formulas).',
       ),
+      trigOf('c', 'cos', 'g', 'The first column of R(γ) is where (1, 0) lands: (cos γ, sin γ).'),
+      withStep(trigOf('s', 'sin', 'g', 'The same column’s second entry.'), 's', {
+        note: (v) =>
+          v.c === undefined || v.s === undefined
+            ? ''
+            : `→ the single matrix R(γ) = [[${fmt(v.c)}, ${fmt(-v.s)}], [${fmt(v.s)}, ${fmt(v.c)}]]`,
+      }),
       rel(
-        'x″ = x cos γ − y sin γ',
-        '{X} = {x} × cos({g}°) − {y} × sin({g}°)',
-        ['X', 'x', 'y', 'g'],
-        (v) => v.X! - (v.x! * cosd(v.g!) - v.y! * sind(v.g!)),
+        'x″ = cx − sy',
+        '{X} = {c} × {x} − {s} × {y}',
+        ['X', 'c', 'x', 's', 'y'],
+        (v) => v.X! - (v.c! * v.x! - v.s! * v.y!),
         {
           X: [
-            (v) => v.x! * cosd(v.g!) - v.y! * sind(v.g!),
-            '{x} × cos({g}°) − {y} × sin({g}°)',
+            (v) => v.c! * v.x! - v.s! * v.y!,
+            '{c} × {x} − {s} × {y}',
             'The first row of R(γ), [cos γ, −sin γ], times the column (x, y).',
           ],
         },
       ),
       rel(
-        'y″ = x sin γ + y cos γ',
-        '{Y} = {x} × sin({g}°) + {y} × cos({g}°)',
-        ['Y', 'x', 'y', 'g'],
-        (v) => v.Y! - (v.x! * sind(v.g!) + v.y! * cosd(v.g!)),
+        'y″ = sx + cy',
+        '{Y} = {s} × {x} + {c} × {y}',
+        ['Y', 's', 'x', 'c', 'y'],
+        (v) => v.Y! - (v.s! * v.x! + v.c! * v.y!),
         {
           Y: [
-            (v) => v.x! * sind(v.g!) + v.y! * cosd(v.g!),
-            '{x} × sin({g}°) + {y} × cos({g}°)',
+            (v) => v.s! * v.x! + v.c! * v.y!,
+            '{s} × {x} + {c} × {y}',
             'The second row of R(γ), [sin γ, cos γ], times the column (x, y).',
           ],
         },
       ),
     ),
-    example: { a: 30, b: 60, g: 90, x: 4, y: 2, X: -2, Y: 4 },
+    example: { a: 30, b: 60, g: 90, c: 0, s: 1, x: 4, y: 2, X: -2, Y: 4 },
     startWith: ['a', 'b', 'x', 'y'],
     representation: {
       kind: 'transformation',

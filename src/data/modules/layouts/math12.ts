@@ -14,7 +14,7 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'The first column is where (1, 0) lands and the second where (0, 1) lands: sketch the two.',
       'A turn keeps lengths and the order of the corners; a reflection keeps lengths but flips the order.',
-      'A dilation [[k, 0], [0, k]] keeps every direction and multiplies every length by k.',
+      'A dilation [[k, 0], [0, k]] with k > 0 keeps every direction and multiplies every length by k.',
     ],
     question: 'Where do (1, 0) and (0, 1) land: turned, flipped, or stretched?',
     bins: [
@@ -26,7 +26,7 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
       {
         id: 'flip',
         label: 'Reflection',
-        why: 'The columns keep length 1 but swap their turning order, and D = −1.',
+        why: 'The columns keep length 1, but (0, 1) lands clockwise from (1, 0) instead of counterclockwise, and D = −1.',
       },
       {
         id: 'grow',
@@ -36,7 +36,7 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: '[[0, −1], [1, 0]]', bin: 'turn' },
-      { label: '[[−1, 0], [0, −1]]', bin: 'turn' },
+      { label: '[[0.6, −0.8], [0.8, 0.6]]', bin: 'turn' },
       { label: '[[0, 1], [−1, 0]]', bin: 'turn' },
       { label: '[[1, 0], [0, −1]]', bin: 'flip' },
       { label: '[[−1, 0], [0, 1]]', bin: 'flip' },

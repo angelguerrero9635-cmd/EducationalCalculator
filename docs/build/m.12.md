@@ -286,3 +286,8 @@ None: every planned page is built, some with an interim picture (below).
   vertex (u = Q − P, v = R − P).
 - New page `m.12.vectors-3d~distance` (distance and midpoint in space; P(1, 2, 3), Q(3, 5, 9):
   d = 7, M(2, 3.5, 6)); a table of d as Q's z moves until the 3-D axes picture.
+- `m.12.matrix-transformations~compose`: c = cos γ and s = sin γ as values, x″ = cx − sy and
+  y″ = sx + cy (the lines read "x″ = 0 × 4 − 1 × 2"), and the s step notes the single matrix
+  R(γ). `~area`: p and q named "x/y of the far corner" (hidden, picture only). `~identify`: the
+  two-bin card [[−1, 0], [0, −1]] replaced by [[0.6, −0.8], [0.8, 0.6]]; a dilation has k > 0;
+  the reflection bin's reason says (0, 1) lands clockwise from (1, 0).
