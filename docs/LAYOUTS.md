@@ -81,6 +81,11 @@ painted gel of fixed samples (up to 8 lanes, 6 a scene) on one log scale; a scen
 lit?, compare?, parents? }` picks and rings lanes, carries the compared lane's bands across as
 dashed lines (matching bands lit, counted in the caption) or, with `parents: [mother, father]`,
 colors each of the child's bands by its parent and rings one from neither ("ruled out").
+Also H109 (`layouts/reflexArcFigure.tsx`): `reflexArc`, a hand on a hot pan, the arm and its
+biceps, and the spinal cord in section; a scene's `reflex: { lit?, impulse? }` lights `receptor`,
+`sensory`, `interneuron`, `motor`, `effector` or `brain` and draws the impulse's arrows as far as
+it. Card figure `{ kind: 'reflexArc', lit }` (112 × 76, for sequence stages): the same arc, small,
+one part lit (no arrows); the harness checks the cards come in the impulse's order.
 
 Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,

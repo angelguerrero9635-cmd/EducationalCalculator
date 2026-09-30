@@ -21,7 +21,7 @@ import type {
 } from '../typesHsl';
 import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
-import type { GelScene, Hs3dFigure } from '../typesHs3d';
+import type { GelScene, Hs3dCard, Hs3dFigure, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
 
@@ -179,6 +179,8 @@ export type CardFigure =
   | CondensedCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
+  /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */
+  | Hs3dCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -549,6 +551,8 @@ export interface Scene {
   key?: KeyScene;
   /** The lanes shown, ringed and compared (a `gel` figure; `typesHs3d.ts`, H109). */
   gel?: GelScene;
+  /** The part lit and the impulse so far (a `reflexArc` figure; `typesHs3d.ts`). */
+  reflex?: ReflexScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

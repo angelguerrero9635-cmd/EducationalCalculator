@@ -10,13 +10,21 @@ import {
 } from '@/components/module/layouts/gelFigureMath';
 
 import type { LayoutDef } from '../layouts';
-import { GEL_FIGURE_LANES, GEL_SCENE_LANES } from '../typesHs3d';
+import { GEL_FIGURE_LANES, GEL_SCENE_LANES, REFLEX_ORDER } from '../typesHs3d';
 
 /** The gel's running length on the figure (px): bands closer than 6 px read as one. */
 const RUN = 236;
 
 export function hs3dFigureIssues(l: LayoutDef): string[] {
   const out: string[] = [];
+  // Reflex-arc cards in a sequence come in the order the impulse reaches their parts.
+  if (l.kind === 'sequence') {
+    const at = l.stages.flatMap((s) =>
+      s.figure?.kind === 'reflexArc' ? [REFLEX_ORDER.indexOf(s.figure.lit)] : [],
+    );
+    if (at.some((k, i) => i > 0 && k <= at[i - 1]!))
+      out.push(`reflexArc cards are not in the order ${REFLEX_ORDER.join(', ')}`);
+  }
   if (l.kind === 'explore' && l.figure.kind === 'gel') {
     const fig = l.figure;
     const names = fig.lanes.map((x) => x.label);

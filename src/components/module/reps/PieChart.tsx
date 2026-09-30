@@ -112,7 +112,8 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
     .filter(({ i }) => i !== big && !inGroup(i))
     .map((wd) => ({ ...wd, mid: (wd.a0 + wd.a1) / 2 }));
   const layout = (w: number) => {
-    const r = Math.max(70, Math.min(135, w * 0.27));
+    // H109: a smaller pie when stage icons take room in the label column.
+    const r = Math.max(70, Math.min(135, w * (spec.stages ? 0.21 : 0.27)));
     const cx = r + 10;
     const colX = cx + r + EXPLODE + 20;
     const colW = w - colX - 4;

@@ -37,17 +37,73 @@ export interface GelScene {
 /** Two bands are one size when they differ by under 1%. */
 export const sameBand = (a: number, b: number) => Math.abs(a - b) <= 0.01 * Math.max(a, b);
 
+/** The parts of a reflex arc, in the order an impulse reaches them. */
+export const REFLEX_ORDER = [
+  'receptor',
+  'sensory',
+  'interneuron',
+  'motor',
+  'effector',
+  'brain',
+] as const;
+export type ReflexPart = (typeof REFLEX_ORDER)[number];
+
+/**
+ * A `reflexArc` scene: the part lit, and whether the impulse's arrows are drawn along the path
+ * as far as it (the whole arc when none is lit).
+ */
+export interface ReflexScene {
+  lit?: ReflexPart;
+  impulse?: boolean;
+}
+
+/** Round 3 group H3D's card figures (sequence stages and sort cards). */
+export type Hs3dCard =
+  /** A reflex arc with one part lit (H109, 112 × 76). */
+  { kind: 'reflexArc'; lit: ReflexPart };
+
 /** Round 3 group H3D's explore figures. */
-export type Hs3dFigure = {
-  /** Gel electrophoresis of fixed samples: fingerprints of suspects, or a family (H109). */
-  kind: 'gel';
-  lanes: GelFigureLane[];
-  /** The ladder's sizes (default the calculator gel's); false for none. */
-  ladder?: number[] | false;
-};
+export type Hs3dFigure =
+  | {
+      /** Gel electrophoresis of fixed samples: fingerprints of suspects, or a family (H109). */
+      kind: 'gel';
+      lanes: GelFigureLane[];
+      /** The ladder's sizes (default the calculator gel's); false for none. */
+      ladder?: number[] | false;
+    }
+  /** A reflex arc from a hand on a hot pan through the spinal cord to the biceps (H109). */
+  | { kind: 'reflexArc' };
 
 /** The scene field each H3D explore figure reads (layouts.test). */
-export const HS3D_SCENE_FIELD = { gel: 'gel' } as const satisfies Record<
+export const HS3D_SCENE_FIELD = { gel: 'gel', reflexArc: 'reflex' } as const satisfies Record<
   Hs3dFigure['kind'],
   string
 >;
+
+// ─── Calculator pictures ────────────────────────────────────────────────────
+
+/** Axons at this speed or faster are drawn myelinated (unmyelinated fibers run about 0.5–2 m/s). */
+export const MYELIN_SPEED = 3;
+
+/**
+ * `neuron` (H109): a motor neuron with its dendrites, cell body, axon and terminals on a muscle
+ * fiber; under the axon a distance scale (0 to `length`, in m) and a time scale (0 to `time`,
+ * in ms) at the same quarter marks, so the impulse's place and time read together. With a speed
+ * of 3 m/s or more (or `myelin: true`) the axon is wrapped in myelin and the impulse hops from
+ * node to node; slower, it is bare and the impulse creeps along it. Values in the formula's
+ * units (m, m/s, ms).
+ */
+export interface NeuronSpec {
+  kind: 'neuron';
+  length: string | number;
+  speed: string | number;
+  time?: string | number;
+  myelin?: boolean;
+}
+
+export type Hs3dSpec = NeuronSpec;
+
+/** Every variable id an H3D picture reads (for modules.test.ts). */
+export function hs3dSpecVars(r: Hs3dSpec): string[] {
+  return [r.length, r.speed, r.time].filter((x): x is string => typeof x === 'string');
+}

@@ -6,6 +6,7 @@ import { CODON_TABLE, effectOf, mutate, transcribe } from '@/components/module/r
 import type { VariableDef } from '@/engine/types';
 
 import type { Representation } from '../types';
+import type { NeuronSpec } from '../typesHs3d';
 
 const STOPS = ['UAA', 'UAG', 'UGA'];
 
@@ -63,4 +64,26 @@ export function pieStageIssues(
       ? []
       : [`pie: part ${id} ("${name}") is drawn as ${stage}`];
   });
+}
+
+/**
+ * `neuron` (H109): the length and speed are positive, and a time the page gives is the one the
+ * scales draw, 1,000 × length ÷ speed ms.
+ */
+export function neuronIssues(
+  rep: NeuronSpec,
+  val: (x: string | number) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  const d = val(rep.length);
+  const v = val(rep.speed);
+  const t = rep.time === undefined ? undefined : val(rep.time);
+  if (d !== undefined && !(d > 0)) out.push(`neuron: axon length ${d} is not positive`);
+  if (v !== undefined && !(v > 0)) out.push(`neuron: speed ${v} is not positive`);
+  if (d !== undefined && v !== undefined && v > 0 && t !== undefined) {
+    const want = (1000 * d) / v;
+    if (Math.abs(t - want) > 0.01 * Math.max(1, want))
+      out.push(`neuron: ${t} ms drawn, 1,000 × ${d} ÷ ${v} = ${want} ms`);
+  }
+  return out;
 }

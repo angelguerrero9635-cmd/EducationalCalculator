@@ -90,6 +90,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff        | Grade 9 DNA, mutations (H36)        |
 | `macromolecules`   | monomers into a chain by a value, "…" past 4; bonds and water counted | Grade 9 biomolecules (H100)         |
 | `cellDivision`     | body cell 2n, gamete n, egg + sperm = zygote; one pair past 2n = 8    | Grade 9 chromosome counts (H100)    |
+| `neuron`           | a neuron timing its impulse: m and ms scales; myelin at 3 m/s         | Grade 9 impulse speed (H109)        |
 | `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
 | `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
 | `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target    | Chemistry measurement (H43)         |

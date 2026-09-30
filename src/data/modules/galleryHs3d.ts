@@ -239,7 +239,92 @@ const MITOTIC_INDEX: ModuleDef = {
   },
 };
 
-export const HS3D_GALLERY_MODULES: ModuleDef[] = [...DNA, MITOTIC_INDEX];
+// ─── Part 4: a neuron timing its impulse (s.9.nervous-system~impulse-speed) ─────────────
+
+const impulseTime: Rule = {
+  relation: {
+    id: 't = 1,000 × d ÷ v',
+    display: '{t} = 1,000 × {d} ÷ {v}',
+    vars: ['t', 'd', 'v'],
+    residual: (v) => v.t! - (1000 * v.d!) / v.v!,
+    solve: {
+      t: (v) => div(1000 * v.d!, v.v!),
+      d: (v) => (v.v! * v.t!) / 1000,
+      v: (v) => div(1000 * v.d!, v.t!),
+    },
+  },
+  steps: {
+    t: {
+      expr: '1,000 × {d} ÷ {v}',
+      how: 'Distance ÷ speed is the time in seconds; 1,000 times that is the time in ms.',
+    },
+    d: { expr: '{v} × {t} ÷ 1,000', how: 'Speed × time, with the ms turned into seconds.' },
+    v: { expr: '1,000 × {d} ÷ {t}', how: 'Distance ÷ time, with the ms turned into seconds.' },
+  },
+};
+
+const impulseDemo = (id: string, title: string, example: Values): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for “An impulse travels 1 m from the toe to the spinal cord at 50 m/s. How long does it take?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The impulse moves along the axon at a steady speed.',
+    'Axons wrapped in myelin carry impulses fastest, up to about 120 m/s; thin axons without it, about 1 m/s.',
+    'The time is in milliseconds: 1,000 ms is 1 s.',
+  ],
+  variables: [
+    {
+      id: 'd',
+      symbol: 'd',
+      name: 'Length of the axon',
+      unit: 'm',
+      units: ['m'],
+      min: 0.01,
+      max: 3,
+      step: 0.01,
+    },
+    {
+      id: 'v',
+      symbol: 'v',
+      name: 'Impulse speed',
+      unit: 'm/s',
+      units: ['m/s'],
+      min: 0.5,
+      max: 120,
+      step: 0.5,
+    },
+    {
+      id: 't',
+      symbol: 't',
+      name: 'Time to travel',
+      unit: 'ms',
+      units: ['ms'],
+      min: 0,
+      max: 6000,
+      step: 0.1,
+    },
+  ],
+  ...rules(impulseTime),
+  example,
+  startWith: ['d', 'v'],
+  representation: { kind: 'neuron', length: 'd', speed: 'v', time: 't' },
+});
+
+const IMPULSE = [
+  impulseDemo('g.s9-nervous-system-impulse-speed-neuron', 'How fast a nerve impulse travels', {
+    d: 1,
+    v: 50,
+    t: 20,
+  }),
+  impulseDemo('g.s9-nervous-system-impulse-speed-bare', 'A slow impulse on a bare axon', {
+    d: 0.8,
+    v: 1,
+    t: 800,
+  }),
+];
+
+export const HS3D_GALLERY_MODULES: ModuleDef[] = [...DNA, MITOTIC_INDEX, ...IMPULSE];
 
 // ─── Part 2: `gel` as an explore figure (s.9.biotechnology~fingerprint) ───────────────
 
@@ -329,4 +414,99 @@ const FINGERPRINT: LayoutDef = {
   ],
 };
 
-export const HS3D_GALLERY_LAYOUTS: LayoutDef[] = [FINGERPRINT];
+// ─── Part 4: the reflex arc (s.9.nervous-system) ────────────────────────────────
+
+const REFLEX_EXPLORE: LayoutDef = {
+  kind: 'explore',
+  id: 'g.s9-nervous-system-reflex-arc',
+  title: 'A reflex arc',
+  use: 'Use this for “Why do you pull your hand off a hot pan before you feel the pain?”',
+  assumptions: [
+    'A neuron takes in signals on its dendrites and sends an impulse along its axon to the next cell.',
+    'In a reflex the spinal cord answers before the brain knows: that saves time.',
+  ],
+  figure: { kind: 'reflexArc' },
+  scenes: [
+    {
+      label: 'The arc',
+      lines: [
+        'Touching a hot pan starts an impulse that runs to the spinal cord and straight back to an arm muscle.',
+      ],
+      reflex: { impulse: true },
+    },
+    {
+      label: 'Receptor',
+      lines: ['Heat receptors in the skin of the fingertip turn the heat into nerve impulses.'],
+      reflex: { lit: 'receptor', impulse: true },
+    },
+    {
+      label: 'Sensory',
+      lines: [
+        'The sensory neuron carries the impulse to the spinal cord; its cell body sits in a ganglion just outside it.',
+      ],
+      reflex: { lit: 'sensory', impulse: true },
+    },
+    {
+      label: 'Interneuron',
+      lines: ['In the cord’s gray matter, an interneuron passes the impulse to a motor neuron.'],
+      reflex: { lit: 'interneuron', impulse: true },
+    },
+    {
+      label: 'Motor',
+      lines: [
+        'The motor neuron’s axon, wrapped in myelin, carries the impulse out to the arm muscle.',
+      ],
+      reflex: { lit: 'motor', impulse: true },
+    },
+    {
+      label: 'Muscle',
+      lines: ['The biceps, the effector, contracts and pulls the hand away.'],
+      reflex: { lit: 'effector', impulse: true },
+    },
+    {
+      label: 'Brain',
+      lines: ['Only now does a message reach the brain up the cord, and you feel the pain.'],
+      reflex: { lit: 'brain', impulse: true },
+    },
+  ],
+};
+
+const REFLEX_SEQUENCE: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.s9-nervous-system-reflex-cards',
+  title: 'A reflex, step by step',
+  use: 'Use this for “Put the steps of a reflex in order: a hand touches a hot pan.”',
+  assumptions: [
+    'A neuron takes in signals on its dendrites and sends an impulse along its axon to the next cell.',
+    'In a reflex the spinal cord answers before the brain knows: that saves time.',
+  ],
+  question: 'Put the steps of a reflex in order: a hand touches a hot pan.',
+  stages: [
+    {
+      label: 'Receptors in the skin detect the heat',
+      figure: { kind: 'reflexArc', lit: 'receptor' },
+    },
+    {
+      label: 'A sensory neuron carries the impulse to the spinal cord',
+      figure: { kind: 'reflexArc', lit: 'sensory' },
+    },
+    {
+      label: 'An interneuron in the spinal cord passes it on',
+      figure: { kind: 'reflexArc', lit: 'interneuron' },
+    },
+    {
+      label: 'A motor neuron carries the impulse to an arm muscle',
+      figure: { kind: 'reflexArc', lit: 'motor' },
+    },
+    {
+      label: 'The muscle contracts and pulls the hand away',
+      figure: { kind: 'reflexArc', lit: 'effector' },
+    },
+    {
+      label: 'The message reaches the brain, and you feel the pain',
+      figure: { kind: 'reflexArc', lit: 'brain' },
+    },
+  ],
+};
+
+export const HS3D_GALLERY_LAYOUTS: LayoutDef[] = [FINGERPRINT, REFLEX_EXPLORE, REFLEX_SEQUENCE];
