@@ -20,6 +20,9 @@ export const M9_PHRASES: [RegExp, (...xs: number[]) => number][] = [
       return (x * y) / gcd(x, y);
     },
   ],
+  // Rational exponents: the fourth root and the fifth root of the base.
+  [new RegExp(`∜(${NUM})`), (b) => b ** (1 / 4)],
+  [new RegExp(`the fifth root of (${NUM})`), (b) => b ** (1 / 5)],
   // Whole-number answers to an inequality: at most rounds down, at least rounds up.
   [new RegExp(`(${NUM}) rounded down to a whole number`), (n) => Math.floor(n + 1e-9)],
   [new RegExp(`(${NUM}) rounded up to a whole number`), (n) => Math.ceil(n - 1e-9)],

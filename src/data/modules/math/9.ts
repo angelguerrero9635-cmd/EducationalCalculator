@@ -5,7 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math9.ts`.
  */
-import { formatNumber } from '@/engine/format';
+import { formatNumber, superscript } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -219,7 +219,7 @@ const EXPONENTIAL_MAIN = page({
     num('y', 'y', 'Output', 0, 1e40),
   ],
   rules: [EXP_RULE, constraint('b ≠ 1', 'The factor {b} is not 1', ['b'], (v) => v.b === 1)],
-  example: { a: 500, b: 2, x: 3, y: 4000 },
+  example: { a: 300, b: 2, x: 3, y: 2400 },
   startWith: ['x', 'a', 'b'],
   equation: 'y = {a}({b})^x',
   representation: {
@@ -307,7 +307,7 @@ const EXPONENTIAL: ModuleDef[] = [
       num('N0', 'N₀', 'Starting amount', 0.01, 1e9, { step: 1 }),
       num('t', 't', 'Time passed', 0, 1000, { step: 0.5 }),
       num('T', 'T', 'Doubling time', 0.1, 1000, { step: 0.1 }),
-      num('k', 'k', 'Number of doublings', 0, 100, { derived: true }),
+      num('k', 'k', 'Number of doublings', 0, 10000, { derived: true }),
       num('N', 'N', 'Amount after time t', 0.01, 1e40),
     ],
     rules: [
@@ -336,6 +336,12 @@ const EXPONENTIAL: ModuleDef[] = [
             '{N} ÷ 2^{k}',
             'Halve the amount once for each doubling: divide by 2ᵏ.',
           ],
+        },
+        {
+          message: (v) =>
+            known(v, 'N0', 'k') && v.N0! * 2 ** v.k! > 1e40
+              ? `${fmt(v.k!)} doublings make the amount too large to show: try a shorter time.`
+              : undefined,
         },
       ),
     ],
@@ -3655,6 +3661,14 @@ function rootRules(n: string, index: 2 | 3, k = 'k', r = 'r'): Rule[] {
       (v) => Math.round(largestPower(v[n]!, index) ** (1 / index)),
       `${sign}(largest perfect ${word} factor of {${n}})`,
       `Each ${index === 3 ? 'group of three' : 'pair'} of equal prime factors brings one out: together they make the ${sign} of the largest perfect ${word} factor.`,
+      {
+        work: (v) => {
+          const big = largestPower(v[n]!, index);
+          return big === 1
+            ? []
+            : [`${fmt(v[n]!)} = ${fmt(big)} × ${fmt(v[n]! / big)}`, `${sign}${fmt(big)} = ${fmt(v[k]!)}`];
+        },
+      },
     ),
     derive(
       `${r} = ${n} ÷ ${k}${pow}`,
@@ -3664,9 +3678,35 @@ function rootRules(n: string, index: 2 | 3, k = 'k', r = 'r'): Rule[] {
       (v) => div(v[n]!, v[k]! ** index),
       `{${n}} ÷ {${k}}${pow}`,
       'What is left under the root: divide out the perfect factor.',
+      {
+        note: (v) =>
+          !known(v, n, k, r)
+            ? ''
+            : v[r] === 1
+              ? `→ ${sign}${fmt(v[n]!)} = ${fmt(v[k]!)}`
+              : v[k] === 1
+                ? `→ ${sign}${fmt(v[n]!)} is already in simplest form`
+                : `→ ${sign}${fmt(v[n]!)} = ${fmt(v[k]!)}${sign}${fmt(v[r]!)}`,
+      },
     ),
   ];
 }
+
+/** The qth root of b as it is written: √b, ∛b, ∜b, the fifth root of b. */
+const ROOT_OF: Record<number, string> = {
+  2: '√{b}',
+  3: '∛{b}',
+  4: '∜{b}',
+  5: 'the fifth root of {b}',
+};
+
+/** A fraction in lowest terms, improper: −50/3, 4. */
+const improper = (top: number, bottom: number) => {
+  const g = gcd(top, bottom) || 1;
+  const [t, b] = [top / g, bottom / g];
+  const s = t * b < 0 ? '−' : '';
+  return Math.abs(b) === 1 ? `${s}${fmt(Math.abs(t))}` : `${s}${fmt(Math.abs(t))}/${fmt(Math.abs(b))}`;
+};
 
 const RADICALS: ModuleDef[] = [
   page({
@@ -3727,7 +3767,7 @@ const RADICALS: ModuleDef[] = [
     variables: [
       num('b', 'b', 'Base', 1, 1000, { step: 1 }),
       int('p', 'p', 'Top of the exponent', -6, 6),
-      int('q', 'q', 'Bottom of the exponent', 2, 4, { allowed: [2, 3, 4] }),
+      int('q', 'q', 'Bottom of the exponent', 2, 5, { allowed: [2, 3, 4, 5] }),
       num('w', 'w', 'The qth root of b', 1, 32, { derived: true }),
       num('v', 'v', 'Value', 0, 1e18, { derived: true, fraction: 1000 }),
     ],
@@ -3736,10 +3776,13 @@ const RADICALS: ModuleDef[] = [
         'w = b^(1/q)',
         'w',
         ['b', 'q'],
-        '{w} = {b}^(1 ÷ {q})',
-        (v) => v.b! ** (1 / v.q!),
-        '{b}^(1 ÷ {q})',
+        '{w} = {b}^(1/{q})',
+        (v) => fin(v.b! ** (1 / v.q!)),
+        // The root the exponent names, written as a root sign.
+        (v) => ROOT_OF[v.q!] ?? '{b}^(1/{q})',
         'The bottom of the exponent is the root: find the number that, used q times as a factor, makes b.',
+        {},
+        { check: (v) => `${fmt(v.w!)} = ${(ROOT_OF[v.q!] ?? '').replace('{b}', fmt(v.b!))}` },
       ),
       derive(
         'v = w^p',
@@ -3801,6 +3844,15 @@ const RADICALS: ModuleDef[] = [
         (v) => v.m! - v.n!,
         '{m} − {n}',
         'Dividing powers of x subtracts the exponents.',
+        {
+          note: (v) => {
+            if (!known(v, 'a', 'b', 'k')) return '';
+            const c = improper(v.a!, v.b!);
+            const x = v.k === 0 ? '' : v.k === 1 ? 'x' : superscript(`x^${v.k}`);
+            const front = !x ? c : c === '1' ? '' : c === '−1' ? '−' : c.includes('/') ? `(${c})` : c;
+            return `→ ${front}${x}`;
+          },
+        },
       ),
       derive(
         'y = c × x^k',
@@ -3810,6 +3862,29 @@ const RADICALS: ModuleDef[] = [
         (v) => v.c! * v.x! ** v.k!,
         '{c} × {x}^{k}',
         'Check: put x into the answer; the first expression gives the same value there.',
+      ),
+      rule(
+        'y = c when k = 0',
+        '{y} = {c} when {k} is 0',
+        ['y', 'c', 'k'],
+        (v) => (v.k === 0 ? v.y! - v.c! : 0),
+        {
+          y: [
+            // (with x known, the rule before gives y the same value)
+            (v) => (v.k === 0 ? v.c : v.x === undefined ? undefined : fin(v.c! * v.x ** v.k!)),
+            '{c}',
+            'The exponents are equal, so x cancels (x⁰ = 1): both sides are c at every x.',
+          ],
+        },
+        {
+          // The first expression at the same x: both sides agree.
+          check: (v) =>
+            v.x === undefined
+              ? `${fr(v.y!, 100000)} = ${fr(v.c!, 50)}`
+              : superscript(
+              `${fr(v.y!, 100000)} = ${fmt(v.a!)} × ${fmt(v.x!)}^${v.m} ÷ (${fmt(v.b!)} × ${fmt(v.x!)}^${v.n})`,
+            ),
+        },
       ),
     ],
     example: { a: 12, m: 7, b: 3, n: 2, c: 4, k: 5, x: 2, y: 128 },
@@ -3884,9 +3959,11 @@ const SEQUENCES: ModuleDef[] = [
     variables: [
       num('a1', 'a₁', 'First term', -100, 100, { step: 0.5 }),
       num('d', 'd', 'Common difference', -50, 50, { step: 0.5 }),
-      // The chart draws 30 terms; past that waits on need 5 (docs/build/m.9.md).
-      int('n', 'n', 'Term number', 1, 30),
+      int('n', 'n', 'Term number', 1, 1000),
       num('an', 'aₙ', 'nth term', -100000, 100000),
+      // The chart draws the first 30 terms at most; the nth is marked when it is one of them.
+      num('nc', 'n_drawn', 'Terms drawn', 1, 30, pictureOnly),
+      num('tl', 'a_drawn', 'Last term drawn', -100000, 100000, pictureOnly),
     ],
     rules: [
       rule(
@@ -3927,8 +4004,28 @@ const SEQUENCES: ModuleDef[] = [
               : undefined,
         },
       ),
+      figure(
+        derive(
+          'terms drawn = n, at most 30',
+          'nc',
+          ['n'],
+          '{nc} = {n}, at most 30',
+          (v) => Math.min(v.n!, 30),
+          '{n}',
+          'The chart draws the first 30 terms at most.',
+        ),
+      ),
+      figure(
+        rule(
+          'the nth term is drawn when n ≤ 30',
+          '{tl} = {an} when {n} ≤ 30',
+          ['tl', 'an', 'n'],
+          (v) => (v.n! > 30 ? 0 : v.tl! - v.an!),
+          { tl: [(v) => (v.n! > 30 ? undefined : v.an), '{an}', 'The nth term, marked.'] },
+        ),
+      ),
     ],
-    example: { a1: 7, d: 4, n: 20, an: 83 },
+    example: { a1: 7, d: 4, n: 20, an: 83, nc: 20, tl: 83 },
     startWith: ['n', 'a1', 'd'],
     equation: 'aₙ = {a1} + ({n} − 1){d} = {an}',
     representation: {
@@ -3936,9 +4033,9 @@ const SEQUENCES: ModuleDef[] = [
       type: 'arithmetic',
       first: 'a1',
       step: 'd',
-      count: 'n',
+      count: 'nc',
       as: 'points',
-      term: 'an',
+      term: 'tl',
     },
   }),
   page({
@@ -3954,30 +4051,40 @@ const SEQUENCES: ModuleDef[] = [
       num('a1', 'a₁', 'First term', -1000, 1000, { step: 0.5 }),
       num('r', 'r', 'Common ratio', -10, 10, { step: 0.5 }),
       int('n', 'n', 'Term number', 1, 20),
+      int('e', 'e', 'Factors of r, n − 1', 0, 19, { derived: true }),
       num('an', 'aₙ', 'nth term', -1e15, 1e15),
     ],
     rules: [
       nonzero('r', 'The ratio'),
+      derive(
+        'e = n − 1',
+        'e',
+        ['n'],
+        '{e} = {n} − 1',
+        (v) => v.n! - 1,
+        '{n} − 1',
+        'From the first term to the nth there are n − 1 steps, each a factor of r.',
+      ),
       rule(
         'aₙ = a₁ × r^(n − 1)',
-        '{an} = {a1} × {r}^({n} − 1)',
-        ['an', 'a1', 'r', 'n'],
-        (v) => v.an! - v.a1! * v.r! ** (v.n! - 1),
+        '{an} = {a1} × {r}^{e}',
+        ['an', 'a1', 'r', 'e'],
+        (v) => v.an! - v.a1! * v.r! ** v.e!,
         {
           an: [
-            (v) => fin(v.a1! * v.r! ** (v.n! - 1)),
-            '{a1} × {r}^({n} − 1)',
-            'Start at the first term and multiply by r, n − 1 times.',
+            (v) => fin(v.a1! * v.r! ** v.e!),
+            '{a1} × {r}^{e}',
+            'Start at the first term and multiply by r, e times.',
           ],
           a1: [
-            (v) => fin(v.an! / v.r! ** (v.n! - 1)),
-            '{an} ÷ {r}^({n} − 1)',
-            'Divide out the n − 1 factors of r.',
+            (v) => fin(v.an! / v.r! ** v.e!),
+            '{an} ÷ {r}^{e}',
+            'Divide out the e factors of r.',
           ],
         },
       ),
     ],
-    example: { a1: 3, r: 2, n: 8, an: 384 },
+    example: { a1: 3, r: 2, n: 8, e: 7, an: 384 },
     startWith: ['n', 'a1', 'r'],
     equation: 'aₙ = {a1} × {r}^{{n} − 1} = {an}',
     representation: {
@@ -4012,13 +4119,17 @@ const SEQUENCES: ModuleDef[] = [
         ['a1', 'k', 'c', 'n'],
         '{an} = term {n} of {a1}, each term {k} × the one before + {c}',
         (v) => terms(v.a1!, v.k!, v.c!, v.n!).at(-1),
-        (v) => {
-          const t = terms(v.a1!, v.k!, v.c!, v.n!);
-          return t.length < 2 ? '{a1}' : `{k} × ${sg(t.at(-2)!)} + {c}`;
-        },
-        'Each term is k times the one before, plus c: the last term before it, worked out below.',
+        // The rule in words and letters: the numbers go into the work lines, one term at a time.
+        (v) => (v.n === 1 ? '{a1}' : 'k × aₙ₋₁ + c'),
+        'Start at a₁ and use the rule again and again: each term is k times the one before, plus c.',
         {
-          work: (v) => terms(v.a1!, v.k!, v.c!, v.n!).map((x, i) => `a${sub(i + 1)} = ${fmt(x)}`),
+          work: (v) => {
+            const t = terms(v.a1!, v.k!, v.c!, v.n!);
+            return t
+              .slice(1)
+              .map((_, i) => `a${sub(i + 2)} = ${sideLines(v.k!, t[i]!, v.c!).line}`);
+          },
+          note: (v) => (v.n === undefined ? '' : `→ a${sub(v.n)} = ${fmt(v.an!)}`),
           written: false,
         },
         {
