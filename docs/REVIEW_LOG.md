@@ -13,6 +13,32 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Grades 9–12 lessons: eight lesson reviewers, eight fixers
+
+- **Setup.**
+  - `review-evidence.mjs --stage lesson --out .review/hs-<section>` per section.
+  - One lesson reviewer per section, report-only, all eight in parallel, about 170k–290k tokens
+    each (about 1.8M in all).
+  - One fixer per section in its own worktree, plus a builder per grade for the 21 new skills.
+- **Found** (about 110 errors):
+  - near-singular working lines (earthquake speeds, refrigerators, lenses);
+  - impossible values (rocks older than the universe, 100,000 km on Earth);
+  - pages that dropped their own range edges;
+  - steps that showed the quadratic formula as factoring, or i²⁷ through cos 270°;
+  - wrong science (a sinking plate that "melts", a charged can, a start codon read as missense);
+  - two sort cards copied from a released question.
+- **What went wrong.**
+  - Eight parallel jobs, each running jest, ran the container out of memory. It restarted and
+    stopped every agent.
+  - The fixers' committed work survived in their worktrees, and they resumed there.
+  - From then on: at most four agents, jest with one worker, and a commit per unit of work.
+- **Reviewer and evidence improvements.**
+  - The dump prints each rule's messages; the m.9 reviewer had to infer them from code.
+  - The lesson reviewer's brief now lists the engine changes, so fixed patterns aren't
+    re-reported.
+  - Its instructions add: check that a grade file's own fraction helper matches the value
+    format, and flag walkthroughs that use a number that was never typed.
+
 ## Grades 7–8: one lesson-reviewer and one page-reviewer, math and science
 
 - Setup: `pnpm review` for `m.7.`, `m.8.`, `s.7.`, `s.8.`; the lesson reviewer about 397k

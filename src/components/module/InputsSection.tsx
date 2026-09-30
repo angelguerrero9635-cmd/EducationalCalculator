@@ -814,8 +814,8 @@ export function InputsSection({ calc }: { calc: Calculator }) {
       {module.equation ? <EquationInput template={module.equation} calc={calc} /> : null}
       <View>
         {module.variables
-          // A data set of 5 hides the boxes for a 6th value and on.
-          .filter((v) => !outOfCount(v, calc.result.values))
+          // A data set of 5 hides the boxes for a 6th value and on; figure-only values have none.
+          .filter((v) => !v.hidden && !outOfCount(v, calc.result.values))
           // Values in the equation are typed there.
           .filter((v) => !module.equation || !equationIds(module.equation).includes(v.id))
           .map((v) => (

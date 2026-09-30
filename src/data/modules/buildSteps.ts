@@ -1,4 +1,4 @@
-import { dollarsOf, formatNumber, renderTemplate, unitFor } from '@/engine/format';
+import { dollarsOf, formatNumber, lowerFirst, renderTemplate, unitFor } from '@/engine/format';
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
@@ -81,10 +81,24 @@ export interface Walkthrough {
 }
 
 /** A line with brackets or words after "x =": the work lines say it better for K–2. */
+/**
+ * Grades 9–12 add a list at once: "(10 + 75 + 200) ÷ 25" goes straight to "285 ÷ 25", not
+ * through "85 + 200". A stage that only adds two numbers is dropped when the next one does too.
+ */
+const sumsAtOnce = (lines: string[], start: string, grade: string) => {
+  if (!['9', '10', '11', '12'].includes(grade)) return lines;
+  const ops = (l: string) => l.replace(/[^×÷√^²³·]/g, '').length;
+  const adds = (l: string) => l.match(/ [+−] /g)?.length ?? 0;
+  const adding = (from: string, to: string) => ops(from) === ops(to) && adds(to) === adds(from) - 1;
+  return lines.filter((l, i) => {
+    const next = lines[i + 1];
+    return !(next && adding(lines[i - 1] ?? start, l) && adding(l, next));
+  });
+};
+
 const wordy = (line: string) => /[(]|[a-z]{3,}/i.test(line.replace(/^\S+ = /, ''));
 
 // An acronym keeps its capitals: "MAD of class A" stays, it never reads "mAD".
-const lowerFirst = (x: string) => (/^[A-Z]{2}/.test(x) ? x : `${x[0]!.toLowerCase()}${x.slice(1)}`);
 
 /**
  * Builds the step-by-step explanation of how `result` was reached from the entered values.
@@ -248,7 +262,9 @@ export function buildSteps(
   const known: Values = Object.fromEntries(givenIdsOf(result).map((id) => [id, working[id]!]));
   /** The values the student typed (exact as shown). */
   const typed = new Set(givenIdsOf(result));
-  const steps = result.trace.map((t): Step => {
+  // Figure-only values are found for the picture, never written as a step.
+  const trace = result.trace.filter((t) => !byId.get(t.id)?.hidden);
+  const steps = trace.map((t): Step => {
     const knownHere = { ...known };
     known[t.id] = working[t.id]!;
     const v = byId.get(t.id)!;
@@ -388,7 +404,7 @@ export function buildSteps(
     const chain =
       shownWork?.length || written || !showSubstituted
         ? []
-        : simplifyChain(bare)
+        : sumsAtOnce(simplifyChain(bare), bare, grade ?? '')
             .slice(0, -1)
             .map((line) => plain(`${v.symbol} = ${line}`, t.id, false));
     return {
@@ -443,7 +459,7 @@ export function buildSteps(
     ? undefined
     : [...new Set(converted.map(formulaUnit).filter((u): u is string => !!u))].join(', ');
 
-  const missing = result.unknown.map(quantity);
+  const missing = result.unknown.filter((id) => !byId.get(id)?.hidden).map(quantity);
   // A line the student has just read in an earlier step ("97 = 90 + 7" for both the tens and
   // the ones) is shown once: later steps keep only what is new.
   const seen = new Set<string>();
@@ -458,12 +474,12 @@ export function buildSteps(
   return {
     band,
     given: givenIds.map(quantity),
-    find: result.trace.map((t) => quantity(t.id)),
+    find: trace.map((t) => quantity(t.id)),
     steps,
     // Page limits (a constraint: "3/4 is at most 1") are never shown as a check: a student
     // would take them for part of the problem. A value that breaks one is refused as it is typed.
     check: module.relations
-      .filter((r) => !r.constraint)
+      .filter((r) => !r.constraint && !r.hidden)
       .filter((r) =>
         r.vars.every(
           (id) =>
@@ -485,7 +501,7 @@ export function buildSteps(
       .filter((id) => converted.includes(id))
       .map((id) => conversion(id, 'formula'))
       .map((line) => plain(line, convertedId(line), true)),
-    convertOut: result.trace
+    convertOut: trace
       .map((t) => t.id)
       .filter((id) => converted.includes(id))
       .map((id) => conversion(id, 'shown'))

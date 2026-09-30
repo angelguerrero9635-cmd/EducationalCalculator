@@ -5,7 +5,15 @@ export function formatNumber(
   x: number,
   variable?: Pick<
     VariableDef,
-    'integer' | 'digits' | 'fraction' | 'pi' | 'scientific' | 'repeating' | 'full' | 'sigFigs'
+    | 'integer'
+    | 'digits'
+    | 'fraction'
+    | 'improper'
+    | 'pi'
+    | 'scientific'
+    | 'repeating'
+    | 'full'
+    | 'sigFigs'
   >,
 ): string {
   if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
@@ -24,7 +32,7 @@ export function formatNumber(
   }
   if (variable?.scientific && x !== 0) return scientific(x);
   if (variable?.fraction && !Number.isInteger(x)) {
-    const f = asFraction(x, variable.fraction);
+    const f = asFraction(x, variable.fraction, variable.improper);
     if (f) return f;
   }
   // Padded numbers are clock minutes ("05"): no separators there.
@@ -194,22 +202,32 @@ export function asPiMultiple(x: number): string | undefined {
  * x as a mixed number or fraction in lowest terms with a denominator up to `most`
  * ("33 1/3", "3/8", "−2 1/2"), or undefined when none is within a hair of x.
  */
-export function asFraction(x: number, most: number): string | undefined {
+export function asFraction(x: number, most: number, improper = false): string | undefined {
   const abs = Math.abs(x);
   for (let d = 2; d <= most; d++) {
     const n = Math.round(abs * d);
-    if (Math.abs(abs * d - n) > 1e-6 * d) continue;
+    // Only a value that is that fraction (0.0099995 is not 1/100): a relative hair, for float
+    // error, never a rounding.
+    if (Math.abs(abs * d - n) > 1e-9 * Math.max(1, n)) continue;
     const whole = Math.floor(n / d);
     const r = n - whole * d;
     if (r === 0) return undefined;
-    const text = whole ? `${withSeparators(String(whole))} ${r}/${d}` : `${r}/${d}`;
+    const text = improper
+      ? `${withSeparators(String(n))}/${d}`
+      : whole
+        ? `${withSeparators(String(whole))} ${r}/${d}`
+        : `${r}/${d}`;
     return x < 0 ? `−${text}` : text;
   }
   return undefined;
 }
 
 /** A shown number as dollars: cents are two digits ("$7.50", not "$7.5"). */
-export const dollars = (num: string) => `$${num.replace(/(\.\d)$/, '$10')}`;
+export const dollars = (num: string) => {
+  // A negative amount is written with its sign first: −$10, not $−10.
+  const neg = /^[−-]/.test(num);
+  return `${neg ? '−' : ''}$${num.replace(/^[−-]/, '').replace(/(\.\d)$/, '$10')}`;
+};
 
 /**
  * Money that isn't a whole number of cents ($10 for 3 is $3.3333… each) as the price a store
@@ -219,7 +237,7 @@ export const dollarsOf = (x: number, num: string) => {
   const cents = Math.round(x * 100);
   if (Math.abs(x * 100 - cents) < 1e-6) return dollars(num);
   if (Math.abs(x) < 0.005) return 'less than 1 cent';
-  return `about ${dollars((cents / 100).toFixed(2))}`;
+  return `about ${dollars(withSeparators((cents / 100).toFixed(2)))}`;
 };
 
 /** Thousands separators from 1,000 ("12,500.5"), the way students read numbers in class. */
@@ -335,8 +353,17 @@ export function renderTemplate(
     // power; alone, first in a line or in an ordered pair it reads as itself: (−4, 3), |−4|.
     const before = template.slice(0, at).trimEnd();
     const after = template.slice(at + id.length + 2);
-    const needs = /[+−×÷·\-*/]$/.test(before) || /^[\^²³⁰¹⁴-⁹]/.test(after);
-    // Scientific notation reads as one number only in brackets there too: ÷ (3 × 10⁻⁴).
+    const power = /^[\^²³⁰¹⁴-⁹]/.test(after);
+    const needs = /[+−×÷·\-*/]$/.test(before) || power;
+    // Scientific notation reads as one number only in brackets there too: ÷ (3 × 10⁻⁴); a
+    // fraction or mixed number is raised or divided by whole: (5/7)², 1/(1/15).
+    if ((power || /[/÷]$/.test(before)) && /[/ ]/.test(s)) return `(${s})`;
+    // A value raised to it is bracketed too: 2^(4.8292 × 10⁻⁵).
+    if (/\^$/.test(before) && /[/ ]/.test(s)) return `(${s})`;
+    // An angle in degrees inside sin, cos or tan keeps its sign: sin(40°), not sin(40), which
+    // would be radians.
+    if (variable.unit === '°' && /(sin|cos|tan)\($/.test(before) && after.startsWith(')'))
+      return `${s}°`;
     return (x < 0 || s.includes(' × 10')) && needs ? `(${s})` : s;
   });
   if (!values) return filled;
@@ -347,8 +374,8 @@ export function renderTemplate(
 
 /** Whole-number exponents after a caret written as superscript digits: "10^3" → "10³". */
 export function superscript(text: string): string {
-  return text.replace(/\^(-?)(\d+)(?![\d.])/g, (_, sign: string, d: string) =>
-    raised(Number(`${sign}${d}`)),
+  return text.replace(/\^([-−]?)(\d+)(?![\d.])/g, (_, sign: string, d: string) =>
+    raised(Number(`${sign ? '-' : ''}${d}`)),
   );
 }
 
@@ -420,4 +447,39 @@ export function unitFor(x: number, unit: string): string {
         ? `${head}${stem}`
         : `${head}${stem}${end === 'es' ? 'e' : ''}`,
   );
+}
+
+/** Element symbols that start a name (not the ones that are also words: In, As, At, Be, No). */
+const ELEMENTS = new Set(
+  (
+    'H He Li B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Ti Cr Mn Fe Ni Cu Zn Br Kr Ag Sn Xe ' +
+    'Ba Pt Au Hg Pb Rn Ra U Pu Sr Rb Cs Li Co'
+  ).split(' '),
+);
+
+/** Proper names that keep their capital inside a sentence. */
+const PROPER = new Set(
+  (
+    'Carnot Kepler Newton Earth Sun Moon Mars Jupiter Celsius Kelvin Fahrenheit Hubble Doppler ' +
+    'Wien Ohm Coulomb Hooke Snell Punnett Mendel Hardy Richter Pascal Bohr Avogadro Boyle ' +
+    'Charles Gay-Lussac Dalton Graham Hess Planck Einstein Mercator Pythagoras Heron Euler ' +
+    'Venn Pacific Atlantic Mohs Fujita Saffir-Simpson Milankovitch Simpson Hardy-Weinberg Lewis ' +
+    'Bronsted Arrhenius Le Chatelier Faraday Ampere Joule Watt Hertz Gauss Tesla Lenz'
+  ).split(' '),
+);
+
+/**
+ * A name's first letter lower-cased to sit inside a sentence ("Find area"), except where the
+ * capital means something: an abbreviation (IQR), a symbol or code (P arrival, A⁻¹,
+ * P(A or B)), an isotope (C-14, U-238) or a proper name (Carnot limit).
+ */
+export function lowerFirst(text: string): string {
+  if (!text) return text;
+  const first = text.split(/[\s,]/)[0]!.replace(/[’']s$/, '');
+  // An element symbol, alone or with its charge or count (Cl ions, Na⁺ pumped out, O₂ made).
+  const element = ELEMENTS.has(first.replace(/[₀-₉⁰-⁹⁺⁻²³]+$/, ''));
+  // (a word "A" or "I" is not a code: "A number" still reads "a number")
+  const code = /^[A-Z](?![a-z])/.test(text) && !/^[AI] /.test(text);
+  if (code || element || /^[A-Z][a-z]?-\d/.test(text) || PROPER.has(first)) return text;
+  return `${text[0]!.toLowerCase()}${text.slice(1)}`;
 }

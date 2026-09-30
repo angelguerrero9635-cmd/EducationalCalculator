@@ -115,9 +115,38 @@ function page(d: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
   return {
     ...rest,
     relations: rules.map((r) => r.relation),
-    steps: Object.fromEntries(rules.map((r) => [r.relation.id, r.steps])),
+    // A figure-only relation places the drawing: it has no steps.
+    steps: Object.fromEntries(
+      rules.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+    ),
   };
 }
+/** A value picked by a rule with no arithmetic (a count of lines): its check line is itself. */
+const pick = (
+  id: string,
+  display: string,
+  x: string,
+  f: (v: Values) => number,
+  how: (v: Values) => string,
+): Rule => {
+  const vars = [...new Set([...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!))];
+  return {
+    relation: {
+      id,
+      display,
+      vars,
+      check: (v: Values) => `${f(v)} = ${v[x]}`,
+      residual: (v: Values) => v[x]! - f(v),
+      solve: Object.fromEntries(vars.map((k) => [k, k === x ? f : () => undefined])),
+    },
+    steps: { [x]: { expr: (v: Values) => `${f(v)}`, how } },
+  };
+};
+
+/** The sign between two numbers as a relation box: 1 <, 3 >, 5 = (equal to 9 digits). */
+const signOf = (x: number, y: number) =>
+  Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(y)) ? 5 : x < y ? 1 : 3;
+const SIGN_TEXT: Record<number, string> = { 1: '<', 3: '>', 5: '=' };
 /** x² + y² = z², solved for any one. */
 const pythagoras = (x: string, y: string, z: string, why: string) =>
   rule(
@@ -130,6 +159,8 @@ const pythagoras = (x: string, y: string, z: string, why: string) =>
     },
     (v) => v[x]! ** 2 + v[y]! ** 2 - v[z]! ** 2,
   );
+/** The sentence's first letter in capitals. */
+const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1);
 /** f(A) = x ÷ y for sin, cos or tan of an acute angle A, solved for any one. */
 function ratio(
   fn: 'sin' | 'cos' | 'tan',
@@ -143,13 +174,17 @@ function ratio(
   const [top, bottom] = names;
   return rule(
     `${fn} ${A} = ${x}/${y}`,
-    `${fn}({${A}}) = {${x}} ÷ {${y}}`,
+    `${fn}({${A}}°) = {${x}} ÷ {${y}}`,
     {
-      [x]: [(v) => v[y]! * f(v[A]!), `{${y}} × ${fn}({${A}})`, `${top} = ${bottom} × ${fn} ${A}.`],
+      [x]: [
+        (v) => v[y]! * f(v[A]!),
+        `{${y}} × ${fn}({${A}}°)`,
+        `${cap(top)} = ${bottom} × ${fn} ${A}.`,
+      ],
       [y]: [
         (v) => quot(v[x]!, f(v[A]!)),
-        `{${x}} ÷ ${fn}({${A}})`,
-        `${bottom} = ${top} ÷ ${fn} ${A}.`,
+        `{${x}} ÷ ${fn}({${A}}°)`,
+        `${cap(bottom)} = ${top} ÷ ${fn} ${A}.`,
       ],
       [A]: [
         (v) => inv(v[x]! / v[y]!),
@@ -189,7 +224,7 @@ const scaled = (c: string, k: string, a: string, what: string, square = false) =
           [k]: [
             (v) => quot(v[c]!, v[a]!),
             `{${c}} ÷ {${a}}`,
-            `The image’s ${what} over the original’s.`,
+            'The scale factor is a side of the image over its match in the original.',
           ],
           [a]: [
             (v) => quot(v[c]!, v[k]!),
@@ -211,10 +246,10 @@ const sum = (c: string, a: string, b: string, how: string) =>
     },
     (v) => v[c]! - v[a]! - v[b]!,
   );
-/** x × y = z × w, solved for any one. */
-const products = (x: string, y: string, z: string, w: string, how: string) =>
+/** x × y = z × w, solved for any one (`name`: the rule as the lesson writes it). */
+const products = (x: string, y: string, z: string, w: string, how: string, name?: string) =>
   rule(
-    `${x}${y} = ${z}${w}`,
+    name ?? `${x}${y} = ${z}${w}`,
     `{${x}} × {${y}} = {${z}} × {${w}}`,
     {
       [x]: [(v) => quot(v[z]! * v[w]!, v[y]!), `{${z}} × {${w}} ÷ {${y}}`, how],
@@ -248,38 +283,38 @@ const TRIG: ModuleDef[] = [
       len('b', 'b', 'Adjacent side b', 10000),
       len('c', 'c', 'Hypotenuse c', 15000),
       deg('A', 'A', 'Angle A', 0.01, 89.99),
-      der(num('s', 'sin A', 'Sine of A', 0, 1)),
-      der(num('k', 'cos A', 'Cosine of A', 0, 1)),
-      der(num('t', 'tan A', 'Tangent of A', 0, 1e6)),
+      der(num('s', 's', 'Sine of A', 0, 1, { fraction: 100 })),
+      der(num('k', 'k', 'Cosine of A', 0, 1, { fraction: 100 })),
+      der(num('t', 't', 'Tangent of A', 0, 1e6, { fraction: 100 })),
     ],
     rules: [
       pythagoras('a', 'b', 'c', 'The legs and the hypotenuse of a right triangle: a² + b² = c².'),
-      ratio('tan', 'A', 'a', 'b', ['Opposite', 'adjacent']),
-      ratio('sin', 'A', 'a', 'c', ['Opposite', 'hypotenuse']),
-      ratio('cos', 'A', 'b', 'c', ['Adjacent', 'hypotenuse']),
+      ratio('tan', 'A', 'a', 'b', ['opposite', 'adjacent']),
+      ratio('sin', 'A', 'a', 'c', ['opposite', 'hypotenuse']),
+      ratio('cos', 'A', 'b', 'c', ['adjacent', 'hypotenuse']),
       derive(
-        'sin A = a ÷ c',
+        's = a ÷ c (sin A)',
         '{s} = {a} ÷ {c}',
         's',
         (v) => quot(v.a!, v.c!),
         '{a} ÷ {c}',
-        'Sine: the opposite side over the hypotenuse.',
+        'The sine of A: the opposite side over the hypotenuse.',
       ),
       derive(
-        'cos A = b ÷ c',
+        'k = b ÷ c (cos A)',
         '{k} = {b} ÷ {c}',
         'k',
         (v) => quot(v.b!, v.c!),
         '{b} ÷ {c}',
-        'Cosine: the adjacent side over the hypotenuse.',
+        'The cosine of A: the adjacent side over the hypotenuse.',
       ),
       derive(
-        'tan A = a ÷ b',
+        't = a ÷ b (tan A)',
         '{t} = {a} ÷ {b}',
         't',
         (v) => quot(v.a!, v.b!),
         '{a} ÷ {b}',
-        'Tangent: the opposite side over the adjacent side.',
+        'The tangent of A: the opposite side over the adjacent side.',
       ),
     ],
     example: { a: 5, b: 12, c: 13, A: atanD(5 / 12), s: 5 / 13, k: 12 / 13, t: 5 / 12 },
@@ -293,24 +328,24 @@ const TRIG: ModuleDef[] = [
   page({
     id: 'm.10.right-triangle-trig~find-side',
     title: 'Find a side from an angle',
-    use: 'Use this for “A 25 ft ladder leans at 38° to the ground. How high up the wall does it reach?”',
+    use: 'Use this for “A 7.5 m ladder leans at 38° to the ground. How high up the wall does it reach?”',
     assumptions: [
       'The wall is straight up from level ground, so the right angle is at its foot.',
       'The ladder is the hypotenuse; the height is opposite the angle A, the foot distance adjacent.',
       'Multiply the hypotenuse by sin A for the opposite side, by cos A for the adjacent side.',
     ],
     variables: [
-      deg('A', 'A', 'Angle with the ground', 0.01, 89.99),
-      len('o', 'o', 'Height up the wall', 10000, { unit: 'ft' }),
-      len('h', 'h', 'Ladder length', 10000, { unit: 'ft' }),
-      len('b', 'b', 'Foot from the wall', 10000, { unit: 'ft' }),
+      deg('A', 'A', 'Angle with the ground', 1, 89),
+      len('o', 'o', 'Height up the wall', 10000, { unit: 'm' }),
+      len('h', 'h', 'Ladder length', 10000, { unit: 'm' }),
+      len('b', 'b', 'Foot from the wall', 10000, { unit: 'm' }),
     ],
     rules: [
-      ratio('sin', 'A', 'o', 'h', ['Opposite', 'hypotenuse']),
-      ratio('cos', 'A', 'b', 'h', ['Adjacent', 'hypotenuse']),
+      ratio('sin', 'A', 'o', 'h', ['opposite', 'hypotenuse']),
+      ratio('cos', 'A', 'b', 'h', ['adjacent', 'hypotenuse']),
       pythagoras('o', 'b', 'h', 'The ladder is the hypotenuse of a right triangle.'),
     ],
-    example: { A: 38, h: 25, o: 25 * sin(38), b: 25 * cos(38) },
+    example: { A: 38, h: 7.5, o: 7.5 * sin(38), b: 7.5 * cos(38) },
     startWith: ['A', 'h'],
     equation: 'sin({A}°) = {o}/{h}',
     representation: {
@@ -323,7 +358,7 @@ const TRIG: ModuleDef[] = [
   page({
     id: 'm.10.right-triangle-trig~find-angle',
     title: 'Find an angle from two sides',
-    use: 'Use this for “A ramp rises 2 ft over a run of 24 ft. What angle does it make with the ground?”',
+    use: 'Use this for “A ramp rises 0.5 m over a run of 6 m. What angle does it make with the ground?”',
     assumptions: [
       'The rise is opposite the angle A and the run is adjacent to it, so tan A = rise ÷ run.',
       'The inverse tangent, tan⁻¹, turns the ratio back into the angle.',
@@ -331,11 +366,11 @@ const TRIG: ModuleDef[] = [
     ],
     variables: [
       deg('A', 'A', 'Ramp angle', 0.01, 89.99),
-      len('o', 'o', 'Rise', 10000, { unit: 'ft' }),
-      len('r', 'r', 'Run', 10000, { unit: 'ft' }),
+      len('o', 'o', 'Rise', 10000, { unit: 'm' }),
+      len('r', 'r', 'Run', 10000, { unit: 'm' }),
     ],
-    rules: [ratio('tan', 'A', 'o', 'r', ['Opposite', 'adjacent'])],
-    example: { o: 2, r: 24, A: atanD(2 / 24) },
+    rules: [ratio('tan', 'A', 'o', 'r', ['opposite', 'adjacent'])],
+    example: { o: 0.5, r: 6, A: atanD(0.5 / 6) },
     startWith: ['o', 'r'],
     equation: 'tan({A}°) = {o}/{r}',
     representation: {
@@ -348,21 +383,21 @@ const TRIG: ModuleDef[] = [
   page({
     id: 'm.10.right-triangle-trig~elevation',
     title: 'Angle of elevation',
-    use: 'Use this for “From 120 ft away, the angle of elevation to the top of a tree is 28°. How tall is the tree?”',
+    use: 'Use this for “From 36 m away, the angle of elevation to the top of a tree is 28°. How tall is the tree?”',
     assumptions: [
       'The angle of elevation is measured up from a level line through the eye.',
       'The height above the eye is opposite the angle: distance × tan A.',
       'Add the eye height for the whole height; use 0 when the angle is measured at the ground.',
     ],
     variables: [
-      len('d', 'd', 'Distance along the ground', 10000, { unit: 'ft', min: 0.1 }),
+      len('d', 'd', 'Distance along the ground', 10000, { unit: 'm', min: 0.1 }),
       deg('A', 'A', 'Angle of elevation', 0.01, 89.99),
-      num('e', 'e', 'Eye height', 0, 10, { unit: 'ft' }),
-      len('u', 'u', 'Height above the eye', 1e6, { unit: 'ft' }),
-      len('H', 'H', 'Height of the top', 1e6, { unit: 'ft' }),
+      num('e', 'e', 'Eye height', 0, 3, { unit: 'm' }),
+      len('u', 'u', 'Height above the eye', 1e6, { unit: 'm' }),
+      len('H', 'H', 'Height of the top', 1e6, { unit: 'm' }),
     ],
     rules: [
-      ratio('tan', 'A', 'u', 'd', ['Opposite', 'adjacent']),
+      ratio('tan', 'A', 'u', 'd', ['opposite', 'adjacent']),
       rule(
         'H = u + e',
         '{H} = {u} + {e}',
@@ -374,7 +409,7 @@ const TRIG: ModuleDef[] = [
         (v) => v.H! - v.u! - v.e!,
       ),
     ],
-    example: { d: 120, A: 28, e: 5, u: 120 * tan(28), H: 120 * tan(28) + 5 },
+    example: { d: 36, A: 28, e: 1.5, u: 36 * tan(28), H: 36 * tan(28) + 1.5 },
     startWith: ['d', 'A', 'e'],
     representation: {
       kind: 'triangleSolver',
@@ -395,8 +430,8 @@ const TRIG: ModuleDef[] = [
     variables: [
       deg('A', 'A', 'Angle A', 0.01, 89.99),
       deg('B', 'B', 'Angle B', 0.01, 89.99),
-      num('s', 'sin A', 'Sine of A', 0.0001, 1),
-      num('k', 'cos B', 'Cosine of B', 0.0001, 1),
+      num('s', 's', 'Sine of A', 0.0001, 1),
+      num('k', 'k', 'Cosine of B', 0.0001, 1),
     ],
     rules: [
       rule(
@@ -410,11 +445,11 @@ const TRIG: ModuleDef[] = [
       ),
       rule(
         's = sin A',
-        '{s} = sin({A})',
+        '{s} = sin({A}°)',
         {
           s: [
             (v) => sin(v.A!),
-            'sin({A})',
+            'sin({A}°)',
             'The sine of A: the side opposite A over the hypotenuse.',
           ],
           A: [
@@ -427,11 +462,11 @@ const TRIG: ModuleDef[] = [
       ),
       rule(
         'k = cos B',
-        '{k} = cos({B})',
+        '{k} = cos({B}°)',
         {
           k: [
             (v) => cos(v.B!),
-            'cos({B})',
+            'cos({B}°)',
             'The cosine of B: the side next to B over the hypotenuse.',
           ],
           B: [
@@ -550,6 +585,28 @@ const SIMILARITY: ModuleDef[] = [
       num('k', 'k', 'Scale factor AD ÷ AB', 0.001, 0.999),
     ],
     rules: [
+      rule(
+        'AD ÷ DB = AE ÷ EC',
+        '{ad} ÷ {db} = {ae} ÷ {ec}',
+        Object.fromEntries(
+          (
+            [
+              ['ec', 'ae', 'db', 'ad'],
+              ['ae', 'ad', 'ec', 'db'],
+              ['db', 'ad', 'ec', 'ae'],
+              ['ad', 'ae', 'db', 'ec'],
+            ] as const
+          ).map(([x, p, q, d]) => [
+            x,
+            [
+              (v: Values) => quot(v[p]! * v[q]!, v[d]!),
+              `{${p}} × {${q}} ÷ {${d}}`,
+              'A line parallel to one side cuts the other two in the same ratio: cross-multiply.',
+            ],
+          ]),
+        ),
+        (v) => v.ad! * v.ec! - v.ae! * v.db!,
+      ),
       sum('ab', 'ad', 'db', 'Side AB is AD and DB put together.'),
       sum('ac', 'ae', 'ec', 'Side AC is AE and EC put together.'),
       scaled('ad', 'k', 'ab', 'side AB'),
@@ -597,6 +654,122 @@ const SIMILARITY: ModuleDef[] = [
       width: 'ab',
       height: 'ac',
       splitter: { base: ['de', 'bc'] },
+    },
+  }),
+  page({
+    id: 'm.10.similarity~splitter-converse',
+    title: 'Is DE parallel to BC?',
+    use: 'Use this for “D is on AB and E is on AC; AD = 4, DB = 6, AE = 6 and EC = 9. Is DE parallel to BC?”',
+    assumptions: [
+      'D is on side AB and E is on side AC.',
+      'Converse of the side-splitter theorem: DE ∥ BC exactly when AD ÷ DB = AE ÷ EC.',
+      'Unequal ratios mean DE tilts toward BC and would meet it.',
+    ],
+    variables: [
+      len('ad', 'AD', 'AD'),
+      len('db', 'DB', 'DB'),
+      len('ae', 'AE', 'AE'),
+      len('ec', 'EC', 'EC'),
+      der(len('ab', 'AB', 'Side AB', 2000)),
+      der(len('ac', 'AC', 'Side AC', 2000)),
+      der(num('u', 'u', 'Ratio AD ÷ DB', 0, 1e5, { fraction: 100 })),
+      der(num('w', 'w', 'Ratio AE ÷ EC', 0, 1e5, { fraction: 100 })),
+      der(num('g', 'g', 'Sign (1 <, 3 >, 5 =)', 1, 5, { step: 1, integer: true })),
+      // Where C and E sit: side AC drawn at 60° to AB.
+      ...['cx', 'cy', 'ex', 'ey'].map((id) => ({
+        ...num(id, id, id, -1e4, 1e4),
+        derived: true,
+        hidden: true,
+      })),
+    ],
+    rules: [
+      sum('ab', 'ad', 'db', 'Side AB is AD and DB put together.'),
+      sum('ac', 'ae', 'ec', 'Side AC is AE and EC put together.'),
+      derive(
+        'u = AD ÷ DB',
+        '{u} = {ad} ÷ {db}',
+        'u',
+        (v) => quot(v.ad!, v.db!),
+        '{ad} ÷ {db}',
+        'How many times DB fits in AD.',
+      ),
+      derive(
+        'w = AE ÷ EC',
+        '{w} = {ae} ÷ {ec}',
+        'w',
+        (v) => quot(v.ae!, v.ec!),
+        '{ae} ÷ {ec}',
+        'How many times EC fits in AE.',
+      ),
+      {
+        relation: {
+          id: 'g = sign between u and w',
+          display: 'sign {g} between {u} and {w}',
+          vars: ['g', 'u', 'w'],
+          check: (v: Values) => `${signOf(v.u!, v.w!)} = ${v.g}`,
+          residual: (v: Values) => v.g! - signOf(v.u!, v.w!),
+          solve: { g: (v: Values) => signOf(v.u!, v.w!), u: () => undefined, w: () => undefined },
+        },
+        steps: {
+          g: {
+            expr: (v: Values) => `${signOf(v.u!, v.w!)}`,
+            how: (v: Values) =>
+              signOf(v.u!, v.w!) === 5
+                ? 'The ratios are equal, so DE is parallel to BC: the converse of the side-splitter theorem.'
+                : 'The ratios differ, so DE is not parallel to BC.',
+            note: (v: Values) => `(${SIGN_TEXT[signOf(v.u!, v.w!)]})`,
+          },
+        },
+      },
+      ...(
+        [
+          ['cx', 'ac', 0.5],
+          ['cy', 'ac', Math.sqrt(3) / 2],
+          ['ex', 'ae', 0.5],
+          ['ey', 'ae', Math.sqrt(3) / 2],
+        ] as const
+      ).map(([x, side, f]) =>
+        rule(
+          `${x} = ${f} ${side}`,
+          `{${x}} = ${f} × {${side}}`,
+          { [x]: [(v: Values) => f * v[side]!, '', ''] },
+          (v) => v[x]! - f * v[side]!,
+          {
+            hidden: true,
+          },
+        ),
+      ),
+    ],
+    example: {
+      ad: 4,
+      db: 6,
+      ae: 6,
+      ec: 9,
+      ab: 10,
+      ac: 15,
+      u: 2 / 3,
+      w: 2 / 3,
+      g: 5,
+      cx: 7.5,
+      cy: 7.5 * Math.sqrt(3),
+      ex: 3,
+      ey: 3 * Math.sqrt(3),
+    },
+    startWith: ['ad', 'db', 'ae', 'ec'],
+    equation: '{ad}/{db} {g:relation} {ae}/{ec}',
+    representation: {
+      kind: 'markedFigure',
+      points: { A: [0, 0], B: ['ab', 0], C: ['cx', 'cy'], D: ['ad', 0], E: ['ex', 'ey'] },
+      parts: [
+        { segment: 'AB' },
+        { segment: 'AC' },
+        { segment: 'BC' },
+        { segment: 'DE' },
+        { label: 'AD', value: 'ad' },
+        { label: 'DB', value: 'db' },
+        { label: 'AE', value: 'ae' },
+        { label: 'EC', value: 'ec' },
+      ],
     },
   }),
   page({
@@ -760,6 +933,9 @@ const chance = (id: string, symbol: string, name: string) =>
   num(id, symbol, name, 0, 1, { step: 0.01 });
 /** A probability worked out. */
 const chanceOut = (id: string, symbol: string, name: string) => der(num(id, symbol, name, 0, 1));
+/** A probability worked out from counts, shown as the fraction it is (5/14). */
+const chanceFrac = (id: string, symbol: string, name: string) =>
+  der(num(id, symbol, name, 0, 1, { fraction: 10000 }));
 /** total = the parts added. */
 const total = (t: string, ids: string[], how: string) =>
   derive(
@@ -800,6 +976,10 @@ const CONDITIONAL: ModuleDef[] = [
       'The whole is the column total, not the grand total.',
       'P(Bus | Late) looks at the late row instead: the order of the events matters.',
     ],
+    standalone: {
+      vars: ['e', 'h'],
+      why: 'On time by walking or car fill the table: neither the bus column nor the late row holds them.',
+    },
     variables: [
       count('a', 'Late, bus'),
       count('b', 'Late, walk'),
@@ -808,24 +988,17 @@ const CONDITIONAL: ModuleDef[] = [
       count('e', 'On time, walk'),
       count('h', 'On time, car'),
       der(num('B', 'B', 'Bus total', 0, 2000)),
-      chanceOut('p', 'P(L | B)', 'P(Late | Bus)'),
-      chanceOut('q', 'P(B | L)', 'P(Bus | Late)'),
-      der(num('N', 'N', 'Grand total', 0, 6000)),
+      der(num('L', 'L', 'Late total', 0, 3000)),
+      chanceFrac('p', 'P(L | B)', 'P(Late | Bus)'),
+      chanceFrac('q', 'P(B | L)', 'P(Bus | Late)'),
     ],
     rules: [
       total('B', ['a', 'd'], 'Add the bus column.'),
       share('p', 'a', 'B', 'Late among the bus riders only: the cell over its column total.'),
-      derive(
-        'P(Bus | Late) = a ÷ (a + b + g)',
-        '{q} = {a} ÷ ({a} + {b} + {g})',
-        'q',
-        (v) => quot(v.a!, v.a! + v.b! + v.g!),
-        '{a} ÷ ({a} + {b} + {g})',
-        'Bus riders among the late students: the cell over its row total.',
-      ),
-      total('N', ['a', 'b', 'g', 'd', 'e', 'h'], 'Add all six counts: everyone in the table.'),
+      total('L', ['a', 'b', 'g'], 'Add the late row.'),
+      share('q', 'a', 'L', 'Bus riders among the late students: the cell over its row total.'),
     ],
-    example: { a: 12, b: 4, g: 9, d: 48, e: 36, h: 51, B: 60, p: 0.2, q: 0.48, N: 160 },
+    example: { a: 12, b: 4, g: 9, d: 48, e: 36, h: 51, B: 60, L: 25, p: 0.2, q: 0.48 },
     startWith: ['a', 'b', 'g', 'd', 'e', 'h'],
     equation: 'P(Late | Bus) = {a}/{B} = {p}',
     representation: {
@@ -961,17 +1134,17 @@ const CONDITIONAL: ModuleDef[] = [
     variables: [
       num('rd', 'r', 'Red marbles', 1, 50, { step: 1, integer: true }),
       num('n', 'n', 'Marbles in all', 2, 100, { step: 1, integer: true }),
-      chanceOut('p1', 'P(R)', 'P(Red first)'),
-      chanceOut('p2', 'P(R | R)', 'P(Red second | Red first)'),
-      chanceOut('p3', 'P(R | B)', 'P(Red second | Blue first)'),
-      chanceOut('pp', 'P(R, R)', 'P(Red, then Red)'),
+      chanceFrac('p1', 'P(R)', 'P(Red first)'),
+      chanceFrac('p2', 'P(R | R)', 'P(Red second | Red first)'),
+      chanceFrac('p3', 'P(R | B)', 'P(Red second | Blue first)'),
+      chanceFrac('pp', 'P(R, R)', 'P(Red, then Red)'),
     ],
     rules: [
       limit(
-        'r ≤ n',
-        '{rd} is at most {n}',
-        (v) => v.rd! <= v.n!,
-        'There can’t be more red marbles than marbles in all.',
+        'r < n',
+        '{rd} is less than {n}',
+        (v) => v.rd! < v.n!,
+        'Put at least one blue marble in the bag, or there is no blue first draw.',
       ),
       share('p1', 'rd', 'n', 'Reds out of all the marbles.'),
       derive(
@@ -986,7 +1159,7 @@ const CONDITIONAL: ModuleDef[] = [
         'P(R | B) = r ÷ (n − 1)',
         '{p3} = {rd} ÷ ({n} − 1)',
         'p3',
-        (v) => (v.rd! <= v.n! - 1 ? quot(v.rd!, v.n! - 1) : 0),
+        (v) => quot(v.rd!, v.n! - 1),
         '{rd} ÷ ({n} − 1)',
         'Every red is left after a blue.',
       ),
@@ -1023,7 +1196,7 @@ const CONDITIONAL: ModuleDef[] = [
     assumptions: [
       'Given A, only the A circle counts: P(B | A) = P(A and B) ÷ P(A).',
       'A and B are independent only when P(B | A) = P(B).',
-      'Here 0.3 is not 0.4, so knowing A changes the chance of B.',
+      'Compare P(B | A) with P(B): equal means independent; different means knowing A changes the chance of B.',
     ],
     variables: [
       chance('a', 'P(A)', 'P(A)'),
@@ -1083,7 +1256,7 @@ const distance = (d: string, x1: string, y1: string, x2: string, y2: string, nam
     d,
     (v) => Math.hypot(v[x2]! - v[x1]!, v[y2]! - v[y1]!),
     `√(({${x2}} − {${x1}})² + ({${y2}} − {${y1}})²)`,
-    `${name}The distance formula: the change across and the change up are the legs of a right triangle.`,
+    `The distance formula${name}: the change across and the change up are the legs of a right triangle.`,
   );
 /** The slope of side PQ from its corners (none for a vertical side). */
 const sideSlope = (m: string, p: string, q: string) => {
@@ -1108,7 +1281,7 @@ const corner = (p: string) => [
   coord(`${p}y`, `y${p.toUpperCase()}`, `y of ${p.toUpperCase()}`, 1),
 ];
 const slopeOut = (id: string, side: string) =>
-  der(num(id, `m${side}`, `Slope of ${side}`, -1000, 1000));
+  der(num(id, `m${side}`, `Slope of ${side}`, -1000, 1000, { fraction: 1000 }));
 
 const COORDINATES: ModuleDef[] = [
   page({
@@ -1147,7 +1320,7 @@ const COORDINATES: ModuleDef[] = [
     assumptions: [
       'The midpoint M is halfway from A to B, across and up.',
       'Its coordinates are the averages: ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2).',
-      'Given M and one end, the other end is as far past M: x₂ = 2x − x₁.',
+      'Given M and one end, the other end is as far past M: x₂ = 2xₘ − x₁.',
     ],
     standalone: {
       vars: ['x1', 'x2', 'mx'],
@@ -1158,8 +1331,8 @@ const COORDINATES: ModuleDef[] = [
       coord('y1', 'y₁', 'y of A'),
       coord('x2', 'x₂', 'x of B'),
       coord('y2', 'y₂', 'y of B'),
-      num('mx', 'x', 'x of M', -20, 20, { step: 0.25 }),
-      num('my', 'y', 'y of M', -20, 20, { step: 0.25 }),
+      num('mx', 'xₘ', 'x of M', -20, 20, { step: 0.25 }),
+      num('my', 'yₘ', 'y of M', -20, 20, { step: 0.25 }),
     ],
     rules: [half('mx', 'x1', 'x2', 'x'), half('my', 'y1', 'y2', 'y')],
     example: { x1: -4, y1: 3, x2: 8, y2: -5, mx: 2, my: -1 },
@@ -1191,19 +1364,31 @@ const COORDINATES: ModuleDef[] = [
       coord('y2', 'y₂', 'y of B'),
       num('m', 'm', 'Pieces from A to P', 1, 10, { step: 1, integer: true }),
       num('n', 'n', 'Pieces from P to B', 1, 10, { step: 1, integer: true }),
-      der(num('px', 'x', 'x of P', -20, 20)),
-      der(num('py', 'y', 'y of P', -20, 20)),
+      der(num('px', 'xₚ', 'x of P', -20, 20)),
+      der(num('py', 'yₚ', 'y of P', -20, 20)),
     ],
-    rules: (['x', 'y'] as const).map((c) =>
-      derive(
-        `P${c} = A${c} + m/(m + n) × (B${c} − A${c})`,
+    rules: (['x', 'y'] as const).map((c) => {
+      const r = derive(
+        `${c}ₚ = ${c}₁ + m/(m + n) × (${c}₂ − ${c}₁)`,
         `{p${c}} = {${c}1} + {m} ÷ ({m} + {n}) × ({${c}2} − {${c}1})`,
         `p${c}`,
         (v) => v[`${c}1`]! + (v.m! / (v.m! + v.n!)) * (v[`${c}2`]! - v[`${c}1`]!),
         `{${c}1} + {m} ÷ ({m} + {n}) × ({${c}2} − {${c}1})`,
         `Start at A and go m of the m + n equal pieces of the change in ${c}.`,
-      ),
-    ),
+      );
+      // The fraction of the way, the change, then the share of it: −2 + 1/3 × 12, −2 + 4.
+      r.steps[`p${c}`]!.work = (v: Values) => {
+        const [a, b, m, n] = [v[`${c}1`]!, v[`${c}2`]!, v.m!, v.n!];
+        const f = (x: number) => formatNumber(Number(x.toPrecision(12)));
+        const par = (x: number) => (x < 0 ? `(${f(x)})` : f(x));
+        const part = (m * (b - a)) / (m + n);
+        return [
+          `${c}ₚ = ${f(a)} + ${f(m)}/${f(m + n)} × ${par(b - a)}`,
+          `${c}ₚ = ${f(a)} + ${par(part)}`,
+        ];
+      };
+      return r;
+    }),
     example: { x1: -2, y1: 1, x2: 10, y2: 7, m: 1, n: 2, px: 2, py: 3 },
     startWith: ['x1', 'y1', 'x2', 'y2', 'm', 'n'],
     representation: {
@@ -1276,14 +1461,16 @@ const COORDINATES: ModuleDef[] = [
     assumptions: [
       'Two sides are perpendicular when their slopes multiply to −1.',
       'A vertical side has no slope; it is perpendicular to a level side (slope 0).',
-      'A right angle at B makes AB and BC perpendicular.',
+      'Check the two slopes at each corner: a product of −1 is a right angle there.',
     ],
     variables: [
       ...['a', 'b', 'c'].flatMap(corner),
       slopeOut('mab', 'AB'),
       slopeOut('mbc', 'BC'),
       slopeOut('mac', 'AC'),
-      der(num('p', 'p', 'Slope of AB × slope of BC', -1e6, 1e6)),
+      der(num('p', 'p', 'Product at B, mAB × mBC', -1e6, 1e6, { fraction: 1000 })),
+      der(num('q', 'q', 'Product at C, mBC × mAC', -1e6, 1e6, { fraction: 1000 })),
+      der(num('w', 'w', 'Product at A, mAB × mAC', -1e6, 1e6, { fraction: 1000 })),
     ],
     rules: [
       sideSlope('mab', 'a', 'b'),
@@ -1297,8 +1484,37 @@ const COORDINATES: ModuleDef[] = [
         '{mab} × {mbc}',
         'Multiply the two slopes at B: −1 means a right angle.',
       ),
+      derive(
+        'q = mBC × mAC',
+        '{q} = {mbc} × {mac}',
+        'q',
+        (v) => v.mbc! * v.mac!,
+        '{mbc} × {mac}',
+        'Multiply the two slopes at C: −1 means a right angle.',
+      ),
+      derive(
+        'w = mAB × mAC',
+        '{w} = {mab} × {mac}',
+        'w',
+        (v) => v.mab! * v.mac!,
+        '{mab} × {mac}',
+        'Multiply the two slopes at A: −1 means a right angle.',
+      ),
     ],
-    example: { ax: -1, ay: 1, bx: 1, by: 5, cx: 5, cy: 3, mab: 2, mbc: -0.5, mac: 1 / 3, p: -1 },
+    example: {
+      ax: -1,
+      ay: 1,
+      bx: 1,
+      by: 5,
+      cx: 5,
+      cy: 3,
+      mab: 2,
+      mbc: -0.5,
+      mac: 1 / 3,
+      p: -1,
+      q: -1 / 6,
+      w: 2 / 3,
+    },
     startWith: ['ax', 'ay', 'bx', 'by', 'cx', 'cy'],
     representation: {
       kind: 'coordinatePlane',
@@ -1338,9 +1554,9 @@ const COORDINATES: ModuleDef[] = [
         (v) => v.ay! === v.by!,
         'Put A and B at the same height, so AB is a level base.',
       ),
-      distance('ab', 'ax', 'ay', 'bx', 'by', 'AB: '),
-      distance('bc', 'bx', 'by', 'cx', 'cy', 'BC: '),
-      distance('ca', 'cx', 'cy', 'ax', 'ay', 'CA: '),
+      distance('ab', 'ax', 'ay', 'bx', 'by', ' for AB'),
+      distance('bc', 'bx', 'by', 'cx', 'cy', ' for BC'),
+      distance('ca', 'cx', 'cy', 'ax', 'ay', ' for CA'),
       total('P', ['ab', 'bc', 'ca'], 'Add the three sides.'),
       derive(
         'K = ½ × |xB − xA| × |yC − yA|',
@@ -1370,11 +1586,6 @@ const COORDINATES: ModuleDef[] = [
 
 // ─── m.10.special-right-triangles ────────────────────────────────────────────
 
-/** The sign between two numbers as a relation box: 1 <, 3 >, 5 = (equal to 9 digits). */
-const signOf = (x: number, y: number) =>
-  Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(y)) ? 5 : x < y ? 1 : 3;
-const SIGN_TEXT: Record<number, string> = { 1: '<', 3: '>', 5: '=' };
-
 const SPECIAL: ModuleDef[] = [
   page({
     id: 'm.10.special-right-triangles',
@@ -1387,8 +1598,8 @@ const SPECIAL: ModuleDef[] = [
       len('a', 'a', 'Side a'),
       len('b', 'b', 'Side b'),
       len('c', 'c', 'Longest side c'),
-      der(num('s', 'a² + b²', 'Sum of the squares of a and b', 0, 2e6)),
-      der(num('q', 'c²', 'Square of c', 0, 2e6)),
+      der(num('s', 'S', 'Sum of the squares, a² + b²', 0, 2e6)),
+      der(num('q', 'Q', 'Square of c', 0, 2e6)),
       der(num('r', 'r', 'Sign (1 <, 3 >, 5 =)', 1, 5, { step: 1, integer: true })),
     ],
     rules: [
@@ -1405,17 +1616,17 @@ const SPECIAL: ModuleDef[] = [
         'The two shorter sides must add to more than the longest.',
       ),
       derive(
-        's = a² + b²',
+        'S = a² + b²',
         '{s} = {a}² + {b}²',
         's',
         (v) => v.a! ** 2 + v.b! ** 2,
         '{a}² + {b}²',
         'Square the two shorter sides and add.',
       ),
-      derive('q = c²', '{q} = {c}²', 'q', (v) => v.c! ** 2, '{c}²', 'Square the longest side.'),
+      derive('Q = c²', '{q} = {c}²', 'q', (v) => v.c! ** 2, '{c}²', 'Square the longest side.'),
       {
         relation: {
-          id: 'r = sign between a² + b² and c²',
+          id: 'r = sign between S and Q',
           display: 'sign {r} between {s} and {q}',
           vars: ['r', 's', 'q'],
           check: (v: Values) => `${signOf(v.s!, v.q!)} = ${v.r}`,
@@ -1522,8 +1733,8 @@ const SPECIAL: ModuleDef[] = [
 // ─── m.10.arc-sector ─────────────────────────────────────────────────────────
 
 const radius = len('r', 'r', 'Radius', 1000, { unit: 'cm' });
-const arcLength = len('s', 's', 'Arc length', 1e4, { unit: 'cm', pi: true });
-const sectorArea = len('A', 'A', 'Sector area', 4e6, { unit: 'cm²', pi: true });
+const arcLength = len('s', 's', 'Arc length', 1e4, { unit: 'cm', pi: true, min: 1e-6 });
+const sectorArea = len('A', 'A', 'Sector area', 4e6, { unit: 'cm²', pi: true, min: 1e-6 });
 
 const ARC_SECTOR: ModuleDef[] = [
   page({
@@ -1601,7 +1812,7 @@ const ARC_SECTOR: ModuleDef[] = [
     ],
     variables: [
       radius,
-      num('t', 'θ', 'Central angle (radians)', 0.01, 6.28),
+      num('t', 'θ', 'Central angle (radians)', 0.01, 2 * Math.PI, { pi: 'fraction' }),
       arcLength,
       sectorArea,
       der(deg('d', 'θ°', 'Central angle in degrees', 0, 360)),
@@ -1916,10 +2127,14 @@ const VOLUME: ModuleDef[] = [
     use: 'Use this for “A ball has radius 5 cm. Find its surface area and volume.”',
     assumptions: [
       'The surface area is four times a great circle: S = 4πr².',
-      'The volume is V = 4/3πr³.',
+      'The volume is V = 4πr³ ÷ 3: two thirds of the cylinder that just holds the sphere.',
       'Given S or V, work back to the radius first.',
     ],
-    variables: [cm('r', 'r', 'Radius'), cm2('S', 'S', 'Surface area'), cm3('V', 'V', 'Volume')],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      cm2('S', 'S', 'Surface area'),
+      { ...cm3('V', 'V', 'Volume'), pi: 'fraction' },
+    ],
     rules: [
       rule(
         'S = 4πr²',
@@ -1938,11 +2153,15 @@ const VOLUME: ModuleDef[] = [
         'V = 4πr³/3',
         '{V} = 4 × π × {r}³ ÷ 3',
         {
-          V: [(v) => (4 * Math.PI * v.r! ** 3) / 3, '4 × π × {r}³ ÷ 3', 'The volume of a sphere.'],
+          V: [
+            (v) => (4 * Math.PI * v.r! ** 3) / 3,
+            '4 × π × {r}³ ÷ 3',
+            'Cavalieri: a hemisphere matches a cylinder with a cone taken out, so V is 4πr³ ÷ 3.',
+          ],
           r: [
             (v) => Math.cbrt((3 * v.V!) / (4 * Math.PI)),
             '∛(3 × {V} ÷ (4 × π))',
-            'Undo 4/3 π, then take the cube root.',
+            'Multiply by 3, divide by 4π, then take the cube root.',
           ],
         },
         (v) => v.V! - (4 * Math.PI * v.r! ** 3) / 3,
@@ -2022,6 +2241,330 @@ const VOLUME: ModuleDef[] = [
       cut: 'base',
       at: 'z',
       area: 'A',
+    },
+  }),
+  page({
+    id: 'm.10.volume-derivations~pyramid-surface',
+    title: 'Surface area of a pyramid',
+    use: 'Use this for “A square pyramid has base side 6 cm and height 4 cm. Find its slant height and surface area.”',
+    assumptions: [
+      'The base is a square with side b; the four side faces are equal triangles.',
+      'The slant height ℓ is each triangle’s height: the hypotenuse of legs h and b ÷ 2.',
+      'So S = b² + 4 × ½ × b × ℓ = b² + 2bℓ.',
+    ],
+    variables: [
+      cm('b', 'b', 'Base side'),
+      cm('h', 'h', 'Height'),
+      cm('l', 'ℓ', 'Slant height', 1500),
+      num('S', 'S', 'Surface area', 0, 1e8, { unit: 'cm²', units: ['mm²', 'cm²', 'm²'] }),
+    ],
+    rules: [
+      rule(
+        'ℓ² = h² + (b/2)²',
+        '{l}² = {h}² + ({b} ÷ 2)²',
+        {
+          l: [
+            (v) => Math.hypot(v.h!, v.b! / 2),
+            '√({h}² + ({b} ÷ 2)²)',
+            'The slant height is the hypotenuse over the middle of a base edge.',
+          ],
+          h: [
+            (v) => root(v.l! ** 2 - (v.b! / 2) ** 2),
+            '√({l}² − ({b} ÷ 2)²)',
+            'The height is a leg of the right triangle under the slant height.',
+          ],
+        },
+        (v) => v.l! ** 2 - v.h! ** 2 - (v.b! / 2) ** 2,
+      ),
+      rule(
+        'S = b² + 2bℓ',
+        '{S} = {b}² + 2 × {b} × {l}',
+        {
+          S: [
+            (v) => v.b! ** 2 + 2 * v.b! * v.l!,
+            '{b}² + 2 × {b} × {l}',
+            'The square base and four triangles, each ½ × b × ℓ.',
+          ],
+          l: [
+            (v) => quot(v.S! - v.b! ** 2, 2 * v.b!),
+            '({S} − {b}²) ÷ (2 × {b})',
+            'Take away the base; the four triangles are 2bℓ.',
+          ],
+        },
+        (v) => v.S! - v.b! ** 2 - 2 * v.b! * v.l!,
+      ),
+    ],
+    example: { b: 6, h: 4, l: 5, S: 96 },
+    startWith: ['b', 'h'],
+    unitSystems: ['metric'],
+    representation: { kind: 'net', solid: 'squarePyramid', length: 'b', slant: 'l', total: 'S' },
+  }),
+];
+
+// ─── m.10.modeling-density ───────────────────────────────────────────────────
+
+/** A mass in grams (or kilograms). */
+const grams = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0.001, 1e9, { unit: 'g', units: ['g', 'kg'] });
+/** A density in g/cm³ (or kg/m³). */
+const density = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0.0001, 100, { unit: 'g/cm³', units: ['g/cm³', 'kg/m³'] });
+/** ρ = m ÷ V, solved for any one. */
+const densityRule = rule(
+  'ρ = m ÷ V',
+  '{rho} = {m} ÷ {V}',
+  {
+    rho: [(v) => quot(v.m!, v.V!), '{m} ÷ {V}', 'Density is the mass in each cubic centimeter.'],
+    m: [(v) => v.rho! * v.V!, '{rho} × {V}', 'Each cubic centimeter has ρ grams: multiply.'],
+    V: [(v) => quot(v.m!, v.rho!), '{m} ÷ {rho}', 'How many cubic centimeters hold that mass.'],
+  },
+  (v) => v.rho! * v.V! - v.m!,
+);
+/**
+ * Seven radii around the best one for a can of volume V (h = 2r at r = ∛(V ÷ 2π)), in steps
+ * of 1, 2 or 5 times a power of ten, so the table's surface areas dip and rise again.
+ */
+function canRows(v: Values): number[] {
+  const best = v.V !== undefined && v.V > 0 ? Math.cbrt(v.V / (2 * Math.PI)) : 4;
+  const raw = best / 4;
+  const p = 10 ** Math.floor(Math.log10(raw));
+  const step = [5, 2, 1].map((k) => k * p).find((s) => s <= raw * 1.01)!;
+  const mid = Math.round(best / step);
+  const first = Math.max(1, mid - 3);
+  return Array.from({ length: 7 }, (_, i) => exact((first + i) * step)!);
+}
+
+const MODELING: ModuleDef[] = [
+  page({
+    id: 'm.10.modeling-density',
+    assumptions: [
+      'Density is mass per unit of volume: ρ = m ÷ V.',
+      'Model the object as a solid you know: here a cylinder, V = πr²h.',
+      'One material has one density at any size, so ρ names the material: aluminum is about 2.7 g/cm³.',
+    ],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      cm('h', 'h', 'Height'),
+      num('V', 'V', 'Volume', 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'] }),
+      grams('m', 'm', 'Mass'),
+      density('rho', 'ρ', 'Density'),
+    ],
+    rules: [cylinderVolume, densityRule],
+    example: { r: 2, h: 5, V: 20 * Math.PI, m: 170, rho: 170 / (20 * Math.PI) },
+    startWith: ['r', 'h', 'm'],
+    unitSystems: ['metric'],
+    pictureLabels: ['m', 'rho'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cylinder',
+      radius: 'r',
+      height: 'h',
+      volume: 'V',
+      extent: 6,
+    },
+  }),
+  page({
+    id: 'm.10.modeling-density~sphere',
+    title: 'Mass of a ball from its density',
+    use: 'Use this for “A steel ball has radius 1.5 cm and steel is 7.8 g/cm³. Find its mass.”',
+    assumptions: [
+      'Model the ball as a sphere: V = 4πr³ ÷ 3.',
+      'Mass is density times volume: m = ρV.',
+      'Given the mass and the material, work back to the volume first, then the radius.',
+    ],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      num('V', 'V', 'Volume', 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'] }),
+      density('rho', 'ρ', 'Density'),
+      grams('m', 'm', 'Mass'),
+    ],
+    rules: [
+      rule(
+        'V = 4πr³/3',
+        '{V} = 4 × π × {r}³ ÷ 3',
+        {
+          V: [
+            (v) => (4 * Math.PI * v.r! ** 3) / 3,
+            '4 × π × {r}³ ÷ 3',
+            'The volume of a sphere is 4πr³ ÷ 3.',
+          ],
+          r: [
+            (v) => Math.cbrt((3 * v.V!) / (4 * Math.PI)),
+            '∛(3 × {V} ÷ (4 × π))',
+            'Multiply by 3, divide by 4π, then take the cube root.',
+          ],
+        },
+        (v) => v.V! - (4 * Math.PI * v.r! ** 3) / 3,
+      ),
+      densityRule,
+    ],
+    example: { r: 1.5, V: 4.5 * Math.PI, rho: 7.8, m: 7.8 * 4.5 * Math.PI },
+    startWith: ['r', 'rho'],
+    unitSystems: ['metric'],
+    pictureLabels: ['rho', 'm'],
+    representation: { kind: 'curvedSolid', shape: 'sphere', radius: 'r', volume: 'V', extent: 4 },
+  }),
+  page({
+    id: 'm.10.modeling-density~population',
+    title: 'Population density',
+    use: 'Use this for “45,000 people live within 3 km of a town’s center. How many people per km²?”',
+    assumptions: [
+      'Population density is people per unit of area: D = N ÷ A.',
+      'Model the region as a shape you know: here a circle around the center, A = πr².',
+      'D is an average over the whole region; some parts are more crowded than others.',
+    ],
+    variables: [
+      len('r', 'r', 'Radius of the region', 10000, { unit: 'km' }),
+      num('A', 'A', 'Area', 0, 1e9, { unit: 'km²' }),
+      num('N', 'N', 'Population', 1, 1e10, { unit: 'people' }),
+      num('D', 'D', 'Population density', 1e-12, 1e10, { unit: 'people per km²' }),
+    ],
+    rules: [
+      rule(
+        'A = πr²',
+        '{A} = π × {r}²',
+        {
+          A: [(v) => Math.PI * v.r! ** 2, 'π × {r}²', 'The area of a circle is πr².'],
+          r: [(v) => root(v.A! / Math.PI), '√({A} ÷ π)', 'Divide by π, then take the square root.'],
+        },
+        (v) => v.A! - Math.PI * v.r! ** 2,
+      ),
+      rule(
+        'D = N ÷ A',
+        '{D} = {N} ÷ {A}',
+        {
+          D: [
+            (v) => quot(v.N!, v.A!),
+            '{N} ÷ {A}',
+            'Share the people out over each square kilometer.',
+          ],
+          N: [(v) => v.D! * v.A!, '{D} × {A}', 'Each square kilometer holds D people: multiply.'],
+          A: [
+            (v) => quot(v.N!, v.D!),
+            '{N} ÷ {D}',
+            'How many square kilometers hold that many people.',
+          ],
+        },
+        (v) => v.D! * v.A! - v.N!,
+      ),
+    ],
+    example: { r: 3, A: 9 * Math.PI, N: 45000, D: 5000 / Math.PI },
+    startWith: ['r', 'N'],
+    unitSystems: ['metric'],
+    pictureLabels: ['N', 'D'],
+    representation: { kind: 'circle', radius: 'r', area: 'A', extent: 4 },
+  }),
+  page({
+    id: 'm.10.modeling-density~can-design',
+    title: 'Designing a can with the least material',
+    use: 'Use this for “A can must hold 500 cm³. Which radius uses the least metal?”',
+    assumptions: [
+      'The can is a closed cylinder: V = πr²h, and its metal is the surface S = 2πr² + 2πrh.',
+      'Hold V and try radii: the table shows S dip and then rise again.',
+      'The least metal comes when the height equals the diameter, h = 2r.',
+    ],
+    variables: [
+      num('V', 'V', 'Volume', 0.01, 1e7, { unit: 'cm³', units: ['cm³'] }),
+      len('r', 'r', 'Radius', 1000, { unit: 'cm', units: ['cm'] }),
+      len('h', 'h', 'Height', 1e6, { unit: 'cm', units: ['cm'] }),
+      num('S', 'S', 'Surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] }),
+    ],
+    rules: [
+      cylinderVolume,
+      rule(
+        'S = 2πr² + 2πrh',
+        '{S} = 2 × π × {r}² + 2 × π × {r} × {h}',
+        {
+          S: [
+            (v) => 2 * Math.PI * v.r! ** 2 + 2 * Math.PI * v.r! * v.h!,
+            '2 × π × {r}² + 2 × π × {r} × {h}',
+            'Two circles for the top and bottom, and the side unrolled: a rectangle 2πr by h.',
+          ],
+          h: [
+            (v) => quot(v.S! - 2 * Math.PI * v.r! ** 2, 2 * Math.PI * v.r!),
+            '({S} − 2 × π × {r}²) ÷ (2 × π × {r})',
+            'Take away the two circles; the side is 2πr × h.',
+          ],
+        },
+        (v) => v.S! - 2 * Math.PI * v.r! ** 2 - 2 * Math.PI * v.r! * v.h!,
+      ),
+    ],
+    example: { V: 500, r: 4, h: 500 / (16 * Math.PI), S: 32 * Math.PI + 250 },
+    startWith: ['V', 'r'],
+    unitSystems: ['metric'],
+    representation: { kind: 'table', sweep: 'r', output: 'S', params: ['V'], rows: canRows },
+  }),
+  page({
+    id: 'm.10.modeling-density~fence',
+    title: 'The most area for a fixed perimeter',
+    use: 'Use this for “40 m of fence makes a rectangular pen. Which sides give the most area?”',
+    assumptions: [
+      'The fence is the perimeter: P = 2x + 2y, so x + y is half of P.',
+      'The pen’s area is A = xy; a longer side means a shorter one.',
+      'For a fixed perimeter the square, x = y = P ÷ 4, holds the most area.',
+    ],
+    variables: [
+      len('P', 'P', 'Perimeter', 1e5, { unit: 'm' }),
+      len('x', 'x', 'Length', 1e5, { unit: 'm' }),
+      len('y', 'y', 'Width', 1e5, { unit: 'm' }),
+      num('A', 'A', 'Area', 0, 1e9, { unit: 'm²' }),
+    ],
+    rules: [
+      rule(
+        'P = 2x + 2y',
+        '{P} = 2 × {x} + 2 × {y}',
+        {
+          P: [
+            (v) => 2 * v.x! + 2 * v.y!,
+            '2 × {x} + 2 × {y}',
+            'The fence goes once around: two lengths and two widths.',
+          ],
+          y: [
+            (v) => v.P! / 2 - v.x!,
+            '{P} ÷ 2 − {x}',
+            'Half the fence is one length and one width.',
+          ],
+          x: [
+            (v) => v.P! / 2 - v.y!,
+            '{P} ÷ 2 − {y}',
+            'Half the fence is one length and one width.',
+          ],
+        },
+        (v) => v.P! - 2 * v.x! - 2 * v.y!,
+      ),
+      limit(
+        'x < P/2',
+        '{x} is less than {P} ÷ 2',
+        (v) => v.x! < v.P! / 2,
+        'The length must be less than half the fence, or no fence is left for the widths.',
+      ),
+      limit(
+        'y < P/2',
+        '{y} is less than {P} ÷ 2',
+        (v) => v.y! < v.P! / 2,
+        'The width must be less than half the fence, or no fence is left for the lengths.',
+      ),
+      rule(
+        'A = xy',
+        '{A} = {x} × {y}',
+        {
+          A: [(v) => v.x! * v.y!, '{x} × {y}', 'The area of a rectangle is length × width.'],
+          y: [(v) => quot(v.A!, v.x!), '{A} ÷ {x}', 'Divide the area by the length.'],
+          x: [(v) => quot(v.A!, v.y!), '{A} ÷ {y}', 'Divide the area by the width.'],
+        },
+        (v) => v.A! - v.x! * v.y!,
+      ),
+    ],
+    example: { P: 40, x: 12, y: 8, A: 96 },
+    startWith: ['P', 'x'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'rectangle',
+      length: 'x',
+      width: 'y',
+      around: 'P',
+      inside: 'A',
+      extent: 20,
     },
   }),
 ];
@@ -2118,13 +2661,20 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
       'The products of the parts of each chord are equal: AE × EB = CE × ED.',
     ],
     variables: [
-      len('a', 'a', 'AE'),
-      len('b', 'b', 'EB'),
-      len('c', 'c', 'CE'),
-      len('d', 'd', 'ED', 1e6),
+      len('a', 'AE', 'AE'),
+      len('b', 'EB', 'EB'),
+      len('c', 'CE', 'CE'),
+      len('d', 'ED', 'ED', 1e6),
     ],
     rules: [
-      products('a', 'b', 'c', 'd', 'Crossing chords: the products of their parts are equal.'),
+      products(
+        'a',
+        'b',
+        'c',
+        'd',
+        'Crossing chords: the products of their parts are equal.',
+        'AE × EB = CE × ED',
+      ),
     ],
     example: { a: 6, b: 4, c: 3, d: 8 },
     startWith: ['a', 'b', 'c'],
@@ -2139,10 +2689,10 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
       'Outside part × whole secant is the same for both: PA × PB = PC × PD.',
     ],
     variables: [
-      len('a', 'a', 'PA (outside)'),
-      len('b', 'b', 'PB (whole)', 1e6),
-      len('c', 'c', 'PC (outside)'),
-      len('d', 'd', 'PD (whole)', 1e6),
+      len('a', 'PA', 'PA (outside)'),
+      len('b', 'PB', 'PB (whole)', 1e6),
+      len('c', 'PC', 'PC (outside)'),
+      len('d', 'PD', 'PD (whole)', 1e6),
     ],
     rules: [
       limit(
@@ -2163,6 +2713,7 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
         'c',
         'd',
         'Two secants from one point: outside part × whole secant is equal.',
+        'PA × PB = PC × PD',
       ),
     ],
     example: { a: 3, b: 10, c: 5, d: 6 },
@@ -2178,9 +2729,9 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
       'The tangent squared is outside part × whole secant: PT² = PA × PB.',
     ],
     variables: [
-      len('t', 't', 'PT (tangent)'),
-      len('a', 'a', 'PA (outside)'),
-      len('b', 'b', 'PB (whole)', 1e6),
+      len('t', 'PT', 'PT (tangent)'),
+      len('a', 'PA', 'PA (outside)'),
+      len('b', 'PB', 'PB (whole)', 1e6),
     ],
     rules: [
       limit(
@@ -2190,7 +2741,7 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
         'A whole secant is longer than its outside part.',
       ),
       rule(
-        't² = ab',
+        'PT² = PA × PB',
         '{t}² = {a} × {b}',
         {
           t: [
@@ -2221,7 +2772,7 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
 // ─── m.10.circle-equations ───────────────────────────────────────────────────
 
 const rSquared = rule(
-  'r² = r × r',
+  'q = r²',
   '{q} = {r}²',
   {
     q: [(v) => v.r! ** 2, '{r}²', 'Square the radius for the right side.'],
@@ -2246,7 +2797,7 @@ const CIRCLE_EQUATIONS: ModuleDef[] = [
       num('h', 'h', 'Center, x', -20, 20, { step: 0.5 }),
       num('k', 'k', 'Center, y', -20, 20, { step: 0.5 }),
       num('r', 'r', 'Radius', 0.1, 100, { step: 0.1 }),
-      num('q', 'r²', 'Right side r²', 0.01, 10000),
+      num('q', 'q', 'Right side, r²', 0.01, 10000),
     ],
     rules: [rSquared],
     example: { h: 3, k: -2, r: 5, q: 25 },
@@ -2323,38 +2874,63 @@ const CIRCLE_EQUATIONS: ModuleDef[] = [
       num('r', 'r', 'Radius', 0.1, 100, { step: 0.1 }),
       num('x', 'x', 'Point, x', -120, 120),
       num('y', 'y', 'Point, y', -120, 120),
+      der(num('x2', 'x₂', 'Other point, x', -240, 240)),
     ],
     rules: [
-      rule(
-        '(x − h)² + (y − k)² = r²',
-        '({x} − {h})² + ({y} − {k})² = {r}²',
-        {
-          x: [
-            (v) => {
-              const d = v.r! ** 2 - (v.y! - v.k!) ** 2;
-              return d < 0 ? undefined : [v.h! + Math.sqrt(d), v.h! - Math.sqrt(d)];
-            },
-            '{h} ± √({r}² − ({y} − {k})²)',
-            'Solve the circle’s equation for x: two points at that height.',
-          ],
-          y: [
-            (v) => {
-              const d = v.r! ** 2 - (v.x! - v.h!) ** 2;
-              return d < 0 ? undefined : [v.k! + Math.sqrt(d), v.k! - Math.sqrt(d)];
-            },
-            '{k} ± √({r}² − ({x} − {h})²)',
-            'Solve the circle’s equation for y: two points above and below.',
-          ],
-          r: [
-            (v) => Math.hypot(v.x! - v.h!, v.y! - v.k!),
-            '√(({x} − {h})² + ({y} − {k})²)',
-            'The radius is the distance from the center to the point.',
-          ],
-        },
-        (v) => (v.x! - v.h!) ** 2 + (v.y! - v.k!) ** 2 - v.r! ** 2,
+      (() => {
+        const r = rule(
+          '(x − h)² + (y − k)² = r²',
+          '({x} − {h})² + ({y} − {k})² = {r}²',
+          {
+            x: [
+              (v) => {
+                const d = v.r! ** 2 - (v.y! - v.k!) ** 2;
+                return d < 0 ? undefined : [v.h! + Math.sqrt(d), v.h! - Math.sqrt(d)];
+              },
+              '{h} ± √({r}² − ({y} − {k})²)',
+              'Solve the circle’s equation for x: two points at that height.',
+            ],
+            y: [
+              (v) => {
+                const d = v.r! ** 2 - (v.x! - v.h!) ** 2;
+                return d < 0 ? undefined : [v.k! + Math.sqrt(d), v.k! - Math.sqrt(d)];
+              },
+              '{k} ± √({r}² − ({x} − {h})²)',
+              'Solve the circle’s equation for y: two points above and below.',
+            ],
+            r: [
+              (v) => Math.hypot(v.x! - v.h!, v.y! - v.k!),
+              '√(({x} − {h})² + ({y} − {k})²)',
+              'The radius is the distance from the center to the point.',
+            ],
+          },
+          (v) => (v.x! - v.h!) ** 2 + (v.y! - v.k!) ** 2 - v.r! ** 2,
+        );
+        // The stages under the ±: the square, the root, then the two points.
+        const pm = (c: string, center: number, other: number, otherCenter: number, r: number) => {
+          const sq = (other - otherCenter) ** 2;
+          const d = r ** 2 - sq;
+          const f = (n: number) => formatNumber(Number(n.toPrecision(12)));
+          return [
+            `${c} = ${f(center)} ± √(${f(r ** 2)} − ${f(sq)})`,
+            `${c} = ${f(center)} ± √${f(d)}`,
+            `${c} = ${f(center)} ± ${f(Math.sqrt(d))}`,
+          ];
+        };
+        r.steps.x!.work = (v: Values) => pm('x', v.h!, v.y!, v.k!, v.r!);
+        r.steps.y!.work = (v: Values) => pm('y', v.k!, v.x!, v.h!, v.r!);
+        return r;
+      })(),
+      derive(
+        'x₂ = 2h − x',
+        '{x2} = 2 × {h} − {x}',
+        'x2',
+        (v) => 2 * v.h! - v.x!,
+        '2 × {h} − {x}',
+        'The other point is the mirror image across x = h.',
       ),
     ],
-    example: { h: 1, k: 2, r: 5, y: 5, x: 5 },
+    example: { h: 1, k: 2, r: 5, y: 5, x: 5, x2: -3 },
     startWith: ['h', 'k', 'r', 'y'],
     representation: {
       kind: 'conicGraph',
@@ -2393,11 +2969,11 @@ function beside(x: number, y: number, X: number) {
 const cosines = (x: string, y: string, z: string, X: string) =>
   rule(
     `${x}² = ${y}² + ${z}² − 2${y}${z} cos ${X}`,
-    `{${x}}² = {${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}})`,
+    `{${x}}² = {${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}}°)`,
     {
       [x]: [
         (v) => root(v[y]! ** 2 + v[z]! ** 2 - 2 * v[y]! * v[z]! * cos(v[X]!)),
-        `√({${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}}))`,
+        `√({${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}}°))`,
         `Law of cosines: the two sides beside ${X} and the angle between them give the side across from it.`,
       ],
       [X]: [
@@ -2407,17 +2983,28 @@ const cosines = (x: string, y: string, z: string, X: string) =>
       ],
       [y]: [
         (v) => beside(v[x]!, v[z]!, v[X]!),
-        `{${z}} × cos({${X}}) ± √({${x}}² − ({${z}} × sin({${X}}))²)`,
+        `{${z}} × cos({${X}}°) ± √({${x}}² − ({${z}} × sin({${X}}°))²)`,
         `Law of cosines as a quadratic in ${y}: two lengths fit when both come out positive.`,
       ],
       [z]: [
         (v) => beside(v[x]!, v[y]!, v[X]!),
-        `{${y}} × cos({${X}}) ± √({${x}}² − ({${y}} × sin({${X}}))²)`,
+        `{${y}} × cos({${X}}°) ± √({${x}}² − ({${y}} × sin({${X}}°))²)`,
         `Law of cosines as a quadratic in ${z}: two lengths fit when both come out positive.`,
       ],
     },
     (v) => v[x]! ** 2 - (v[y]! ** 2 + v[z]! ** 2 - 2 * v[y]! * v[z]! * cos(v[X]!)),
   );
+/**
+ * How many triangles fit side a across from the acute angle A, with side b next to A: none
+ * when a is shorter than the height b sin A, one when a is the height or at least b, else two.
+ */
+function ssaCount(a: number, b: number, A: number) {
+  const h = b * sin(A);
+  const tol = 1e-9 * Math.max(1, h);
+  if (a < h - tol) return 0;
+  if (Math.abs(a - h) <= tol || a >= b) return 1;
+  return 2;
+}
 /** The angle X from its sine: sin⁻¹, or 180° − sin⁻¹ when the angle is obtuse. */
 const inverseSine = (X: string, inner: string): [StepText['expr'], StepText['how']] => [
   (v) => (v[X]! > 90 ? `180 − sin⁻¹(${inner})` : `sin⁻¹(${inner})`),
@@ -2430,25 +3017,25 @@ const inverseSine = (X: string, inner: string): [StepText['expr'], StepText['how
 const sines = (x: string, X: string, y: string, Y: string): Rule => {
   const r = rule(
     `${x}/sin ${X} = ${y}/sin ${Y}`,
-    `{${x}} ÷ sin({${X}}) = {${y}} ÷ sin({${Y}})`,
+    `{${x}} ÷ sin({${X}}°) = {${y}} ÷ sin({${Y}}°)`,
     {
       [x]: [
         (v) => quot(v[y]! * sin(v[X]!), sin(v[Y]!)),
-        `{${y}} × sin({${X}}) ÷ sin({${Y}})`,
+        `{${y}} × sin({${X}}°) ÷ sin({${Y}}°)`,
         'Law of sines: multiply both sides by the sine of the angle across from the side.',
       ],
       [y]: [
         (v) => quot(v[x]! * sin(v[Y]!), sin(v[X]!)),
-        `{${x}} × sin({${Y}}) ÷ sin({${X}})`,
+        `{${x}} × sin({${Y}}°) ÷ sin({${X}}°)`,
         'Law of sines: multiply both sides by the sine of the angle across from the side.',
       ],
       [X]: [
         (v) => fitAngle(asinBoth((v[x]! * sin(v[Y]!)) / v[y]!), v[Y]!),
-        ...inverseSine(X, `{${x}} × sin({${Y}}) ÷ {${y}}`),
+        ...inverseSine(X, `{${x}} × sin({${Y}}°) ÷ {${y}}`),
       ],
       [Y]: [
         (v) => fitAngle(asinBoth((v[y]! * sin(v[X]!)) / v[x]!), v[X]!),
-        ...inverseSine(Y, `{${y}} × sin({${X}}) ÷ {${x}}`),
+        ...inverseSine(Y, `{${y}} × sin({${X}}°) ÷ {${x}}`),
       ],
     },
     (v) => v[x]! * sin(v[Y]!) - v[y]! * sin(v[X]!),
@@ -2536,8 +3123,8 @@ const LAW_SINES_COSINES: ModuleDef[] = [
       angleSum,
       closes('a', 'b', 'c'),
       sines('a', 'A', 'b', 'B'),
-      sines('b', 'B', 'c', 'C'),
       sines('a', 'A', 'c', 'C'),
+      sines('b', 'B', 'c', 'C'),
     ],
     example: {
       A: 35,
@@ -2576,21 +3163,135 @@ const LAW_SINES_COSINES: ModuleDef[] = [
     example: fromSss(5, 7, 9),
     startWith: ['a', 'b', 'c'],
   }),
-  anyTriangle({
+  page({
     id: 'm.10.law-sines-cosines~ambiguous-case',
     title: 'The ambiguous case (SSA)',
     use: 'Use this for “A = 30°, a = 6 and b = 10. How many triangles fit, and what is B?”',
     assumptions: [
-      ...LAWS,
-      'Two sides and an angle across from one of them can fit two triangles, one or none.',
-      'a ≥ b gives one triangle; a less than b × sin A gives none.',
+      'Side a is across from the acute angle A, and b is the other side next to A.',
+      'Acute A: a < b × sin A fits none, a = b × sin A or a ≥ b fits one, anything between fits two.',
+      'Two triangles share the same sin B: B and 180° − B.',
+    ],
+    variables: [
+      len('a', 'a', 'Side a (across from A)', 1000, { min: 0.1 }),
+      len('b', 'b', 'Side b', 1000, { min: 0.1 }),
+      deg('A', 'A', 'Angle A', 1, 89),
+      der(len('h', 'h', 'Height b × sin A', 1000, { min: 0.001 })),
+      der(num('n', 'n', 'Triangles that fit', 0, 2, { integer: true })),
+      der(deg('B', 'B', 'Angle B', 0.001, 179.999)),
+      der(deg('B2', 'B₂', 'Second B, 180° − B', 0.001, 179.999)),
+      der(deg('C', 'C', 'Angle C', 0.001, 179.999)),
+      der(deg('C2', 'C₂', 'Second C', 0.001, 179.999)),
+      der(len('c', 'c', 'Side c', 2000, { min: 1e-6 })),
+      der(len('c2', 'c₂', 'Second c', 2000, { min: 1e-6 })),
+    ],
+    rules: [
+      derive(
+        'h = b sin A',
+        '{h} = {b} × sin({A}°)',
+        'h',
+        (v) => v.b! * sin(v.A!),
+        '{b} × sin({A}°)',
+        'The height from C to the line of side c: b is its hypotenuse.',
+      ),
+      (() => {
+        const r = pick(
+          'n from a, h and b',
+          '{n} = the triangles side {a} makes with height {h} and side {b}',
+          'n',
+          (v) => ssaCount(v.a!, v.b!, v.A!),
+          (v) =>
+            [
+              'a is shorter than the height h: it can’t reach the base line, so none fits.',
+              v.a! < v.b!
+                ? 'a equals the height h: it just reaches the base line, a right angle at B.'
+                : 'a is at least b: the second place a could land is behind A, so one fits.',
+              'a is between h and b: it reaches the base line in two places, so two fit.',
+            ][ssaCount(v.a!, v.b!, v.A!)]!,
+        );
+        // The comparison behind the count: (5 < 6 < 10).
+        r.steps.n!.note = (v: Values) => {
+          const [a, h, b] = [v.a!, v.h!, v.b!].map((x) => formatNumber(x));
+          return [
+            `(a < h: ${a} < ${h})`,
+            v.a! < v.b! ? `(a = h = ${a})` : `(a ≥ b: ${a} ≥ ${b})`,
+            `(h < a < b: ${h} < ${a} < ${b})`,
+          ][ssaCount(v.a!, v.b!, v.A!)]!;
+        };
+        return r;
+      })(),
+      derive(
+        'sin B = b sin A ÷ a',
+        '{B} = sin⁻¹({b} × sin({A}°) ÷ {a})',
+        'B',
+        (v) => (ssaCount(v.a!, v.b!, v.A!) ? asinD((v.b! * sin(v.A!)) / v.a!) : undefined),
+        'sin⁻¹({b} × sin({A}°) ÷ {a})',
+        'Law of sines, solved for sin B, then the inverse sine.',
+      ),
+      derive(
+        'B₂ = 180° − B',
+        '{B2} = 180 − {B}',
+        'B2',
+        (v) => (ssaCount(v.a!, v.b!, v.A!) === 2 ? 180 - v.B! : undefined),
+        '180 − {B}',
+        'The same sine fits the obtuse angle too.',
+      ),
+      derive(
+        'C = 180° − A − B',
+        '{C} = 180 − {A} − {B}',
+        'C',
+        (v) => 180 - v.A! - v.B!,
+        '180 − {A} − {B}',
+        'The angles of a triangle add to 180°.',
+      ),
+      derive(
+        'C₂ = 180° − A − B₂',
+        '{C2} = 180 − {A} − {B2}',
+        'C2',
+        (v) => 180 - v.A! - v.B2!,
+        '180 − {A} − {B2}',
+        'The angles of the second triangle add to 180° too.',
+      ),
+      derive(
+        'c = a sin C ÷ sin A',
+        '{c} = {a} × sin({C}°) ÷ sin({A}°)',
+        'c',
+        (v) => quot(v.a! * sin(v.C!), sin(v.A!)),
+        '{a} × sin({C}°) ÷ sin({A}°)',
+        'Law of sines: c ÷ sin C = a ÷ sin A.',
+      ),
+      derive(
+        'c₂ = a sin C₂ ÷ sin A',
+        '{c2} = {a} × sin({C2}°) ÷ sin({A}°)',
+        'c2',
+        (v) => quot(v.a! * sin(v.C2!), sin(v.A!)),
+        '{a} × sin({C2}°) ÷ sin({A}°)',
+        'Law of sines again, with the second triangle’s angle C₂.',
+      ),
     ],
     example: (() => {
       const B = asinD((10 * sin(30)) / 6)!;
-      const C = 180 - 30 - B;
-      return { a: 6, b: 10, A: 30, B, C, c: (6 * sin(C)) / sin(30) };
+      const [C, C2] = [150 - B, B - 30];
+      return {
+        a: 6,
+        b: 10,
+        A: 30,
+        h: 5,
+        n: 2,
+        B,
+        B2: 180 - B,
+        C,
+        C2,
+        c: (6 * sin(C)) / sin(30),
+        c2: (6 * sin(C2)) / sin(30),
+      };
     })(),
     startWith: ['a', 'b', 'A'],
+    representation: {
+      kind: 'triangleSolver',
+      parts: { a: 'a', b: 'b', c: 'c', A: 'A', B: 'B', C: 'C' },
+      given: ['a', 'b', 'A'],
+    },
   }),
   page({
     id: 'm.10.law-sines-cosines~area',
@@ -2609,21 +3310,21 @@ const LAW_SINES_COSINES: ModuleDef[] = [
     rules: [
       rule(
         'K = ½ab sin C',
-        '{K} = {a} × {b} × sin({C}) ÷ 2',
+        '{K} = {a} × {b} × sin({C}°) ÷ 2',
         {
           K: [
             (v) => (v.a! * v.b! * sin(v.C!)) / 2,
-            '{a} × {b} × sin({C}) ÷ 2',
+            '{a} × {b} × sin({C}°) ÷ 2',
             'Half the base times the height, and the height is b × sin C.',
           ],
           a: [
             (v) => quot(2 * v.K!, v.b! * sin(v.C!)),
-            '2 × {K} ÷ ({b} × sin({C}))',
+            '2 × {K} ÷ ({b} × sin({C}°))',
             'Undo the half, then divide by b × sin C.',
           ],
           b: [
             (v) => quot(2 * v.K!, v.a! * sin(v.C!)),
-            '2 × {K} ÷ ({a} × sin({C}))',
+            '2 × {K} ÷ ({a} × sin({C}°))',
             'Undo the half, then divide by a × sin C.',
           ],
         },
@@ -2638,12 +3339,17 @@ const LAW_SINES_COSINES: ModuleDef[] = [
 
 // ─── m.10.probability-rules ──────────────────────────────────────────────────
 
-/** n! for a whole n. */
-const fact = (n: number) => {
+/** n × (n − 1) × … for r factors: the ordered count P(n, r), exact for whole numbers. */
+const falling = (n: number, r: number) => {
   let out = 1;
-  for (let i = 2; i <= n; i++) out *= i;
+  for (let i = 0; i < r; i++) out *= n - i;
   return out;
 };
+/** The factors of n × (n − 1) × … for r places, as written ("8 × 7 × 6"). */
+const factors = (n: number, r: number) =>
+  Array.from({ length: r }, (_, i) => formatNumber(n - i)).join(' × ');
+/** The most ways a counting page shows (a count past it has more digits than a line holds). */
+const MOST_WAYS = 1e12;
 /** C(n, r), the ways to choose r of n. */
 const choose = (n: number, r: number) => {
   if (r < 0 || r > n) return 0;
@@ -2717,6 +3423,31 @@ function vennPage(d: {
 /** P(n, r) or C(n, r) from n and r. */
 function countingPage(kind: 'P' | 'C'): ModuleDef {
   const perm = kind === 'P';
+  const count = rule(
+    perm ? 'P = n! ÷ (n − r)!' : 'C = n! ÷ ((n − r)! × r!)',
+    perm ? '{c} = {n}! ÷ ({n} − {r})!' : '{c} = {n}! ÷ (({n} − {r})! × {r}!)',
+    {
+      c: [
+        (v) => (perm ? falling(v.n!, v.r!) : choose(v.n!, v.r!)),
+        perm ? '{n}! ÷ ({n} − {r})!' : '{n}! ÷ (({n} − {r})! × {r}!)',
+        perm
+          ? 'n × (n − 1) × … for r places: n! with the unused (n − r)! divided out.'
+          : 'The ordered count, n! ÷ (n − r)!, divided by the r! orders of each group.',
+      ],
+    },
+    (v) => v.c! - (perm ? falling(v.n!, v.r!) : choose(v.n!, v.r!)),
+  );
+  // The factors a student writes: 8 × 7 × 6, then over 3 × 2 × 1 for a combination.
+  count.steps.c!.work = (v: Values) =>
+    v.r! < 2
+      ? []
+      : perm
+        ? [`P = ${factors(v.n!, v.r!)}`]
+        : [
+            `C = (${factors(v.n!, v.r!)}) ÷ (${factors(v.r!, v.r!)})`,
+            `C = ${formatNumber(falling(v.n!, v.r!))} ÷ ${formatNumber(falling(v.r!, v.r!))}`,
+          ];
+  count.steps.c!.written = false;
   return page({
     id: `m.10.probability-rules~${perm ? 'permutations' : 'combinations'}`,
     title: perm ? 'Permutations: order matters' : 'Combinations: order doesn’t matter',
@@ -2735,12 +3466,12 @@ function countingPage(kind: 'P' | 'C'): ModuleDef {
           'Order doesn’t matter: a committee of Ana and Ben is the same as Ben and Ana.',
         ],
     variables: [
-      num('n', 'n', 'Choices', 1, perm ? 14 : 12, { step: 1, integer: true }),
-      num('r', 'r', perm ? 'Places filled in order' : 'Chosen', 0, perm ? 14 : 12, {
+      num('n', 'n', 'Choices', 1, 60, { step: 1, integer: true }),
+      num('r', 'r', perm ? 'Places filled in order' : 'Chosen', 0, 14, {
         step: 1,
         integer: true,
       }),
-      der(num('c', kind, perm ? 'Ways' : 'Groups', 1, 1e19, { integer: true })),
+      der(num('c', kind, perm ? 'Ways' : 'Groups', 1, MOST_WAYS, { integer: true })),
     ],
     rules: [
       limit(
@@ -2749,23 +3480,13 @@ function countingPage(kind: 'P' | 'C'): ModuleDef {
         (v) => v.r! <= v.n!,
         'You can’t choose more than there are.',
       ),
-      perm
-        ? derive(
-            'P = n! ÷ (n − r)!',
-            '{c} = {n}! ÷ ({n} − {r})!',
-            'c',
-            (v) => fact(v.n!) / fact(v.n! - v.r!),
-            '{n}! ÷ ({n} − {r})!',
-            'n × (n − 1) × … for r places: n! with the unused (n − r)! divided out.',
-          )
-        : derive(
-            'C = n! ÷ ((n − r)! × r!)',
-            '{c} = {n}! ÷ (({n} − {r})! × {r}!)',
-            'c',
-            (v) => choose(v.n!, v.r!),
-            '{n}! ÷ (({n} − {r})! × {r}!)',
-            'The ordered count, n! ÷ (n − r)!, divided by the r! orders of each group.',
-          ),
+      limit(
+        `${kind} ≤ 10¹²`,
+        `${kind}({n}, {r}) is at most a trillion`,
+        (v) => (perm ? falling(v.n!, v.r!) : choose(v.n!, v.r!)) <= MOST_WAYS,
+        'That many ways passes what the page can show: try fewer places.',
+      ),
+      count,
     ],
     example: { n: 8, r: 3, c: perm ? 336 : 56 },
     startWith: ['n', 'r'],
@@ -2774,7 +3495,7 @@ function countingPage(kind: 'P' | 'C'): ModuleDef {
     representation: {
       kind: 'pascalTriangle',
       n: 'n',
-      ...(perm ? { triangle: false } : { k: 'r' }),
+      triangle: false,
       slots: { r: 'r', ...(perm ? {} : { choose: true }), result: 'c' },
     },
   });
@@ -2836,7 +3557,7 @@ const PROBABILITY_RULES: ModuleDef[] = [
       name: 'P(not Rain)',
       display: '{s} = 1 − {a}',
       fn: (v) => 1 - v.a!,
-      how: 'Everything outside A: take P(A) from 1.',
+      how: 'Everything outside Rain: take P(Rain) from 1.',
     },
     example: { a: 0.35, b: 0.4, ab: 0.2, s: 0.65 },
   }),
@@ -2863,11 +3584,11 @@ const PROBABILITY_RULES: ModuleDef[] = [
   page({
     id: 'm.10.probability-rules~sample-space',
     title: 'Listing equally likely outcomes',
-    use: 'Use this for “Three coins are tossed. What is the chance of exactly two heads?”',
+    use: 'Use this for “Three coins are tossed. What is the chance of exactly two heads?” (code heads as 1, tails as 2).',
     assumptions: [
       'A tree lists every outcome: each branch splits into every outcome of the next stage.',
       'When every path is equally likely, P(event) = favorable outcomes ÷ all outcomes.',
-      'Three coins, 1 for heads and 2 for tails: 1-1-2, 1-2-1 and 2-1-1 are exactly two heads, 3 of 8.',
+      'Code heads as 1 and tails as 2 for three coins: 1-1-2, 1-2-1 and 2-1-1 are exactly two heads, 3 of 8.',
     ],
     variables: [
       num('a', 'a', 'First-stage outcomes', 2, 4, { step: 1, integer: true }),
@@ -2916,42 +3637,61 @@ const PROBABILITY_RULES: ModuleDef[] = [
   page({
     id: 'm.10.probability-rules~counting-probability',
     title: 'Probability with combinations',
-    use: 'Use this for “3 students are picked at random from 5 girls and 4 boys. What is the chance all 3 are girls?”',
+    use: 'Use this for “3 students are picked at random from 5 girls and 4 boys. What is the chance all 3 are girls? Exactly 2?”',
     assumptions: [
       'Every group of r is equally likely, so count groups with combinations.',
-      'Favorable groups: C(a, r) ways to pick all r from the first group.',
+      'Favorable groups: C(a, k) ways to pick k from the first group, times C(b, r − k) for the rest.',
       'All groups: C(a + b, r). The probability is the first over the second.',
     ],
     variables: [
-      num('a', 'a', 'First group', 1, 12, { step: 1, integer: true }),
-      num('b', 'b', 'Second group', 0, 11, { step: 1, integer: true }),
-      num('r', 'r', 'Chosen', 1, 12, { step: 1, integer: true }),
-      der(num('n', 'n', 'Everyone', 1, 12, { integer: true })),
-      der(num('f', 'f', 'Groups all from the first', 0, 1000, { integer: true })),
-      der(num('t', 't', 'Groups in all', 1, 1000, { integer: true })),
+      num('a', 'a', 'First group', 1, 60, { step: 1, integer: true }),
+      num('b', 'b', 'Second group', 0, 59, { step: 1, integer: true }),
+      num('r', 'r', 'Chosen', 1, 14, { step: 1, integer: true }),
+      num('k', 'k', 'Chosen from the first group', 0, 14, { step: 1, integer: true }),
+      der(num('n', 'n', 'Everyone', 1, 60, { integer: true })),
+      der(num('f', 'f', 'Favorable groups', 0, MOST_WAYS, { integer: true })),
+      der(num('t', 't', 'Groups in all', 1, MOST_WAYS, { integer: true })),
       der(num('P', 'P', 'Probability', 0, 1, { fraction: 1000 })),
     ],
     rules: [
       limit(
-        'a + b ≤ 12',
-        '{a} + {b} is at most 12',
-        (v) => v.a! + v.b! <= 12,
-        'Keep to 12 people in all, so the triangle can show them.',
+        'a + b ≤ 60',
+        '{a} + {b} is at most 60',
+        (v) => v.a! + v.b! <= 60,
+        'Keep to 60 people in all.',
       ),
       limit(
-        'r ≤ a',
-        '{r} is at most {a}',
-        (v) => v.r! <= v.a!,
+        'k ≤ r',
+        '{k} is at most {r}',
+        (v) => v.k! <= v.r!,
+        'The first group can’t give more than the number chosen.',
+      ),
+      limit(
+        'k ≤ a',
+        '{k} is at most {a}',
+        (v) => v.k! <= v.a!,
         'Choose no more than the first group has.',
       ),
+      limit(
+        'r − k ≤ b',
+        '{r} − {k} is at most {b}',
+        (v) => v.r! - v.k! <= v.b!,
+        'The rest come from the second group, so it must have r − k people.',
+      ),
       total('n', ['a', 'b'], 'Everyone in both groups.'),
+      limit(
+        'C(n, r) ≤ 10¹²',
+        'C({n}, {r}) is at most a trillion',
+        (v) => choose(v.n!, v.r!) <= MOST_WAYS,
+        'That many groups passes what the page can show: try choosing fewer.',
+      ),
       derive(
-        'f = C(a, r)',
-        '{f} = C({a}, {r})',
+        'f = C(a, k) × C(b, r − k)',
+        '{f} = C({a}, {k}) × C({b}, {r} − {k})',
         'f',
-        (v) => choose(v.a!, v.r!),
-        'C({a}, {r})',
-        'The ways to choose all r from the first group.',
+        (v) => choose(v.a!, v.k!) * choose(v.b!, v.r! - v.k!),
+        'C({a}, {k}) × C({b}, {r} − {k})',
+        'Pick k from the first group and the other r − k from the second: multiply the ways.',
       ),
       derive(
         't = C(n, r)',
@@ -2963,12 +3703,12 @@ const PROBABILITY_RULES: ModuleDef[] = [
       ),
       share('P', 'f', 't', 'Favorable groups over all the equally likely groups.'),
     ],
-    example: { a: 5, b: 4, r: 3, n: 9, f: 10, t: 84, P: 10 / 84 },
-    startWith: ['a', 'b', 'r'],
+    example: { a: 5, b: 4, r: 3, k: 3, n: 9, f: 10, t: 84, P: 10 / 84 },
+    startWith: ['a', 'b', 'r', 'k'],
     representation: {
       kind: 'pascalTriangle',
       n: 'n',
-      k: 'r',
+      triangle: false,
       slots: { r: 'r', choose: true, result: 't' },
     },
   }),
@@ -2976,16 +3716,20 @@ const PROBABILITY_RULES: ModuleDef[] = [
 
 // ─── m.10.constructions ──────────────────────────────────────────────────────
 
-/** p·x + q = r·x + s solved for x (the letter on both sides). */
+/**
+ * p·x + q = r·x + s solved for x (the letter on both sides): the smaller x term is taken from
+ * both sides, so the x term left is positive, then the number beside it, then the division.
+ */
 const bothSides = (x: string) => {
+  const left = (v: Values) => v.p! > v.r!;
   const r = rule(
     `${x}: px + q = rx + s`,
     `{p} × {${x}} + {q} = {r} × {${x}} + {s}`,
     {
       [x]: [
         (v) => quot(v.s! - v.q!, v.p! - v.r!),
-        '({s} − {q}) ÷ ({p} − {r})',
-        'Take the same x and the same number from both sides, then divide by the x left.',
+        (v) => (left(v) ? '({s} − {q}) ÷ ({p} − {r})' : '({q} − {s}) ÷ ({r} − {p})'),
+        'Take the smaller x term from both sides, then the number beside the x left, then divide.',
       ],
     },
     (v) => v.p! * v[x]! + v.q! - (v.r! * v[x]! + v.s!),
@@ -2997,16 +3741,21 @@ const bothSides = (x: string) => {
     },
   );
   const fmt = (n: number) => formatNumber(n);
-  // "3x", "x", "−x"; a negative is added back ("Add 7"), never "Take −7".
-  const xs = (k: number) => (k === 1 ? 'x' : k === -1 ? '−x' : `${fmt(k)}x`);
+  // "3x", "x"; a negative is added back ("Add 7"), never "Take −7".
+  const xs = (k: number) => (k === 1 ? 'x' : `${fmt(k)}x`);
   const move = (k: number, text: (n: number) => string) =>
     k < 0 ? `Add ${text(-k)} to both sides` : `Take ${text(k)} from both sides`;
+  const plus = (n: number) => (n < 0 ? ` − ${fmt(-n)}` : n > 0 ? ` + ${fmt(n)}` : '');
   r.steps[x]!.work = (v: Values) => {
-    const left = v.p! - v.r!;
-    const plus = v.q! < 0 ? ` − ${fmt(-v.q!)}` : v.q! > 0 ? ` + ${fmt(v.q!)}` : '';
+    const [small, big, keep, gone] = left(v) ? [v.r!, v.p!, v.q!, v.s!] : [v.p!, v.r!, v.s!, v.q!];
+    const k = big - small;
+    // The x side and the number side, written in the equation's own order.
+    const eq = (xSide: string, n: number) =>
+      left(v) ? `${xSide} = ${fmt(n)}` : `${fmt(n)} = ${xSide}`;
     return [
-      `${move(v.r!, xs)}: ${xs(left)}${plus} = ${fmt(v.s!)}`,
-      ...(v.q ? [`${move(v.q!, fmt)}: ${xs(left)} = ${fmt(v.s! - v.q!)}`] : []),
+      `${move(small, xs)}: ${eq(`${xs(k)}${plus(keep)}`, gone)}`,
+      ...(keep ? [`${move(keep, fmt)}: ${eq(xs(k), gone - keep)}`] : []),
+      ...(k === 1 ? [] : [`Divide both sides by ${fmt(k)}: x = ${fmt(v[x]!)}`]),
     ];
   };
   r.steps[x]!.written = false;
@@ -3111,9 +3860,9 @@ const CONSTRUCTIONS: ModuleDef[] = [
       'A bisector cuts the angle into two equal halves: then m∠AOB = m∠BOC.',
     ],
     variables: [
-      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 359.9),
-      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 359.9),
-      deg('c', 'm∠AOC', 'm∠AOC', 0.2, 360),
+      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 179.9),
+      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 179.9),
+      deg('c', 'm∠AOC', 'm∠AOC', 0.2, 180),
     ],
     rules: [sum('c', 'a', 'b', 'The two angles side by side add to the whole angle.')],
     example: { a: 38, b: 47, c: 85 },
@@ -3128,7 +3877,7 @@ const CONSTRUCTIONS: ModuleDef[] = [
     assumptions: [
       'Open the compass wider than half of AB; draw an arc from A and one from B.',
       'The arcs cross at P, the same distance r from A and B. The line through P at right angles to AB bisects it at M.',
-      'P is h above M, and the right triangle AMP gives h² + AM² = r².',
+      'P is MP above M, and the right triangle AMP gives MP² + AM² = r².',
     ],
     variables: [
       len('ab', 'AB', 'Segment AB', 1000, { unit: 'cm', min: 0.1 }),
@@ -3220,6 +3969,102 @@ const PROOFS: ModuleDef[] = [
     example: { a: 52, b: 71, c: 57, d: 123 },
     startWith: ['a', 'b'],
     representation: { kind: 'angles', parts: ['a', 'b'], whole: 'd', triangle: { third: 'c' } },
+  }),
+  // Figure-only values (the drawing's BD, AD and BC) stay out of the steps: sine comes later.
+  page({
+    id: 'm.10.proofs~isosceles',
+    title: 'Base angles of an isosceles triangle',
+    use: 'Use this for “Given AB = AC, prove ∠B = ∠C” and “An isosceles triangle has a 40° vertex angle. What are its base angles?”',
+    assumptions: [
+      'Given: AB = AC. Draw AD, the bisector of ∠A, to meet BC at D.',
+      'Step through the proof: each step lights what it uses and what it proves.',
+      'The base angles are equal, so each is half of what is left of 180°.',
+    ],
+    variables: [
+      len('s', 's', 'Legs AB = AC', 1000, { unit: 'cm' }),
+      deg('A', 'A', 'Vertex angle A', 0.2, 179.8),
+      der(deg('B', 'B', 'Base angle B')),
+      { ...len('half', 'BD', 'BD', 1000, { min: 1e-9 }), derived: true, hidden: true },
+      { ...len('ht', 'AD', 'AD', 1000, { min: 1e-9 }), derived: true, hidden: true },
+      { ...len('b', 'BC', 'Base BC', 2000, { min: 1e-9 }), derived: true, hidden: true },
+      { id: 'k', symbol: 'k', name: 'Proof step', min: 1, max: 5, integer: true },
+    ],
+    rules: [
+      rule(
+        'B = (180° − A)/2',
+        '{B} = (180 − {A}) ÷ 2',
+        {
+          B: [
+            (v) => (180 - v.A!) / 2,
+            '(180 − {A}) ÷ 2',
+            'The two base angles are equal and share what is left of 180°.',
+          ],
+          A: [(v) => 180 - 2 * v.B!, '180 − 2 × {B}', 'Take both base angles from 180°.'],
+        },
+        (v) => v.B! - (180 - v.A!) / 2,
+      ),
+      rule(
+        'BD = s sin(A/2)',
+        '{half} = {s} × sin({A} ÷ 2)',
+        { half: [(v) => v.s! * sin(v.A! / 2), '', ''] },
+        (v) => v.half! - v.s! * sin(v.A! / 2),
+        { hidden: true },
+      ),
+      rule(
+        'AD = s cos(A/2)',
+        '{ht} = {s} × cos({A} ÷ 2)',
+        { ht: [(v) => v.s! * cos(v.A! / 2), '', ''] },
+        (v) => v.ht! - v.s! * cos(v.A! / 2),
+        { hidden: true },
+      ),
+      rule(
+        'BC = 2BD',
+        '{b} = 2 × {half}',
+        { b: [(v) => 2 * v.half!, '', ''] },
+        (v) => v.b! - 2 * v.half!,
+        { hidden: true },
+      ),
+    ],
+    example: { s: 6, A: 40, B: 70, half: 6 * sin(20), ht: 6 * cos(20), b: 12 * sin(20), k: 1 },
+    startWith: ['s', 'A', 'k'],
+    standalone: { vars: ['k'], why: 'The proof step only picks what the figure lights.' },
+    representation: {
+      kind: 'markedFigure',
+      points: { B: [0, 0], C: ['b', 0], D: ['half', 0], A: ['half', 'ht'] },
+      parts: [
+        { segment: 'AB' },
+        { segment: 'AC' },
+        { segment: 'BC' },
+        { segment: 'AD' },
+        { ticks: 'AB', count: 1 },
+        { ticks: 'AC', count: 1 },
+        { arcs: 'BAD', count: 1 },
+        { arcs: 'DAC', count: 1 },
+        { label: 'ABD', value: 'B' },
+      ],
+      proof: {
+        step: 'k',
+        steps: [
+          { given: ['AB', 'AC'], proved: [], text: 'AB = AC (given).' },
+          {
+            given: ['BAD', 'DAC'],
+            proved: [],
+            text: 'AD bisects ∠A, so ∠BAD ≅ ∠DAC (definition of angle bisector).',
+          },
+          { given: [], proved: ['AD'], text: 'AD ≅ AD (Reflexive Property).' },
+          {
+            given: ['AB', 'AC', 'BAD', 'DAC', 'AD'],
+            proved: ['△ABD', '△ACD'],
+            text: '△ABD ≅ △ACD (SAS).',
+          },
+          {
+            given: ['△ABD', '△ACD'],
+            proved: ['ABD', 'ACD'],
+            text: '∠B ≅ ∠C (corresponding parts of congruent triangles are congruent).',
+          },
+        ],
+      },
+    },
   }),
 ];
 
@@ -3419,6 +4264,12 @@ const PARALLEL_LINES: ModuleDef[] = [
         '{y0} − {m} × {x0}',
         'The point is on the new line, so y₀ = m × x₀ + b.',
       ),
+      limit(
+        'b ≠ b₁',
+        '{b2} is not {b1}',
+        (v) => Math.abs(v.b2! - v.b1!) > 1e-9,
+        'The point is on the given line, so the parallel through it is the line itself.',
+      ),
     ],
     example: { m: 3, b1: -4, x0: 2, y0: 7, b2: 1 },
     startWith: ['m', 'b1', 'x0', 'y0'],
@@ -3511,28 +4362,6 @@ const carry = (to: string, from: string, how: string, sign = 1) =>
     },
     (v) => v[to]! - sign * v[from]!,
   );
-/** A value picked by a rule with no arithmetic (a count of lines): its check line is itself. */
-const pick = (
-  id: string,
-  display: string,
-  x: string,
-  f: (v: Values) => number,
-  how: (v: Values) => string,
-): Rule => {
-  const vars = [...new Set([...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!))];
-  return {
-    relation: {
-      id,
-      display,
-      vars,
-      check: (v: Values) => `${f(v)} = ${v[x]}`,
-      residual: (v: Values) => v[x]! - f(v),
-      solve: Object.fromEntries(vars.map((k) => [k, k === x ? f : () => undefined])),
-    },
-    steps: { [x]: { expr: (v: Values) => `${f(v)}`, how } },
-  };
-};
-
 const RIGID_MOTIONS: ModuleDef[] = [
   page({
     id: 'm.10.rigid-motions',
@@ -3596,13 +4425,19 @@ const RIGID_MOTIONS: ModuleDef[] = [
     variables: [
       grid('ax', 'x', 'x of A'),
       grid('ay', 'y', 'y of A'),
-      grid('h', 'h', 'Slide right'),
-      grid('px', 'x′', 'x of A′', 14),
+      grid('h', 'h', 'Slide right (negative: left)'),
+      grid('px', 'x′', 'x of A′'),
       grid('py', 'y′', 'y of A′'),
-      grid('qx', 'x″', 'x of A″', 14),
+      grid('qx', 'x″', 'x of A″'),
       grid('qy', 'y″', 'y of A″'),
     ],
     rules: [
+      limit(
+        'the image stays on the grid',
+        '{ax} + {h} is between −7 and 7',
+        (v) => Math.abs(v.ax! + v.h!) <= 7,
+        'Keep the image on the grid: x + h must be between −7 and 7.',
+      ),
       sum('px', 'ax', 'h', 'The slide moves every point h units across.'),
       carry('py', 'ay', 'A slide across keeps y.'),
       carry('qx', 'px', 'Reflecting across the x-axis keeps x.'),
@@ -3640,10 +4475,16 @@ const RIGID_MOTIONS: ModuleDef[] = [
       grid('ay', 'y', 'y of A', 8),
       grid('a', 'a', 'x of the center', 8),
       grid('b', 'b', 'y of the center', 8),
-      grid('px', 'x′', 'x of A′', 30),
-      grid('py', 'y′', 'y of A′', 30),
+      grid('px', 'x′', 'x of A′', 8),
+      grid('py', 'y′', 'y of A′', 8),
     ],
     rules: [
+      limit(
+        'the image stays on the grid',
+        'The turned point ({a} − ({ay} − {b}), {b} + ({ax} − {a})) is on the grid',
+        (v) => Math.abs(v.a! - v.ay! + v.b!) <= 8 && Math.abs(v.b! + v.ax! - v.a!) <= 8,
+        'Keep the image on the grid: both of its coordinates must be between −8 and 8.',
+      ),
       rule(
         'x′ = a − (y − b)',
         '{px} = {a} − ({ay} − {b})',
@@ -3731,7 +4572,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
     title: 'Symmetry of a rectangle',
     use: 'Use this for “Which rotations carry a 6 by 4 rectangle onto itself? How many lines of symmetry does it have?”',
     assumptions: [
-      'The rectangle’s corners are (1, 1) and (r, u), with center (a, b) halfway across and up.',
+      'The rectangle is w squares wide and h tall, and it turns about its center.',
       'A rectangle that isn’t a square has 2 lines of symmetry and is carried onto itself by 180° and 360° turns.',
       'A square (w = h) adds 90° and 270° turns and its two diagonals: 4 lines.',
     ],
@@ -3739,46 +4580,39 @@ const RIGID_MOTIONS: ModuleDef[] = [
       num('w', 'w', 'Width', 1, 8, { step: 1, integer: true }),
       num('h', 'h', 'Height', 1, 8, { step: 1, integer: true }),
       num('t', 't', 'Turn', 90, 360, { unit: '°', allowed: [90, 180, 270, 360] }),
-      der(num('r', 'r', 'Right side at x =', 2, 9, { integer: true })),
-      der(num('u', 'u', 'Top side at y =', 2, 9, { integer: true })),
-      der(num('a', 'a', 'x of the center', 1.5, 5)),
-      der(num('b', 'b', 'y of the center', 1.5, 5)),
+      // The drawing's corners and center only place the rectangle on the grid.
+      {
+        ...num('r', 'r', 'Right side at x =', 2, 9, { integer: true }),
+        derived: true,
+        hidden: true,
+      },
+      { ...num('u', 'u', 'Top side at y =', 2, 9, { integer: true }), derived: true, hidden: true },
+      { ...num('a', 'a', 'x of the center', 1.5, 5), derived: true, hidden: true },
+      { ...num('b', 'b', 'y of the center', 1.5, 5), derived: true, hidden: true },
       der(num('L', 'L', 'Lines of symmetry', 2, 4, { integer: true })),
       der(num('n', 'n', 'Order of rotational symmetry', 2, 4, { integer: true })),
       der(num('f', 'f', 'Carried onto itself (1 yes, 0 no)', 0, 1, { integer: true })),
     ],
     rules: [
-      derive(
-        'r = 1 + w',
-        '{r} = 1 + {w}',
-        'r',
-        (v) => 1 + v.w!,
-        '1 + {w}',
-        'The right side is w squares from x = 1.',
-      ),
-      derive(
-        'u = 1 + h',
-        '{u} = 1 + {h}',
-        'u',
-        (v) => 1 + v.h!,
-        '1 + {h}',
-        'The top is h squares above y = 1.',
-      ),
-      derive(
+      rule('r = 1 + w', '{r} = 1 + {w}', { r: [(v) => 1 + v.w!, '', ''] }, (v) => v.r! - 1 - v.w!, {
+        hidden: true,
+      }),
+      rule('u = 1 + h', '{u} = 1 + {h}', { u: [(v) => 1 + v.h!, '', ''] }, (v) => v.u! - 1 - v.h!, {
+        hidden: true,
+      }),
+      rule(
         'a = (1 + r)/2',
         '{a} = (1 + {r}) ÷ 2',
-        'a',
-        (v) => (1 + v.r!) / 2,
-        '(1 + {r}) ÷ 2',
-        'The center is halfway across.',
+        { a: [(v) => (1 + v.r!) / 2, '', ''] },
+        (v) => v.a! - (1 + v.r!) / 2,
+        { hidden: true },
       ),
-      derive(
+      rule(
         'b = (1 + u)/2',
         '{b} = (1 + {u}) ÷ 2',
-        'b',
-        (v) => (1 + v.u!) / 2,
-        '(1 + {u}) ÷ 2',
-        'The center is halfway up.',
+        { b: [(v) => (1 + v.u!) / 2, '', ''] },
+        (v) => v.b! - (1 + v.u!) / 2,
+        { hidden: true },
       ),
       pick(
         'L from w and h',
@@ -3800,16 +4634,20 @@ const RIGID_MOTIONS: ModuleDef[] = [
             ? 'A square lands on itself every quarter turn.'
             : 'A rectangle lands on itself every half turn.',
       ),
-      pick(
-        'f from t and n',
-        '{f}: does a turn of {t} carry it onto itself, order {n}',
-        'f',
-        (v) => (Math.round(v.t! * v.n!) % 360 === 0 ? 1 : 0),
-        (v) =>
-          Math.round(v.t! * v.n!) % 360 === 0
-            ? 'The turn is a whole number of 360° ÷ n steps: the figure lands on itself.'
-            : 'The turn is not a whole number of 360° ÷ n steps: the figure lands turned.',
-      ),
+      (() => {
+        const r = pick(
+          'f from t and n',
+          '{f}: does a turn of {t} carry it onto itself, order {n}',
+          'f',
+          (v) => (Math.round(v.t! * v.n!) % 360 === 0 ? 1 : 0),
+          (v) =>
+            Math.round(v.t! * v.n!) % 360 === 0
+              ? 'The turn is a whole number of 360° ÷ n steps: the figure lands on itself.'
+              : 'The turn is not a whole number of 360° ÷ n steps: the figure lands turned.',
+        );
+        r.steps.f!.note = (v: Values) => (v.f ? '(yes)' : '(no)');
+        return r;
+      })(),
     ],
     example: { w: 6, h: 4, t: 180, r: 7, u: 5, a: 4, b: 3, L: 2, n: 2, f: 1 },
     startWith: ['w', 'h', 't'],
@@ -3841,7 +4679,6 @@ const CONGRUENCE: ModuleDef[] = [
     assumptions: [
       'Corresponding parts of congruent triangles are congruent, so AB = DE: set the expressions equal.',
       'The order of the letters pairs the parts: A with D, B with E, C with F.',
-      'Here BC = 16 and AC = 12, so AB must be between 4 and 28 for the triangle to close.',
     ],
     variables: [
       coefficient('p', 'x coefficient of AB'),
@@ -3850,6 +4687,9 @@ const CONGRUENCE: ModuleDef[] = [
       constant('s', 'Number in DE', 100),
       der(num('x', 'x', 'x', -1000, 1000)),
       der(num('L', 'AB', 'AB = DE', -1e5, 1e5)),
+      // The drawing's other two sides: a 3-4-5 shape on AB.
+      { ...len('bc', 'BC', 'BC', 1e5, { min: 1e-9 }), derived: true, hidden: true },
+      { ...len('ac', 'AC', 'AC', 1e5, { min: 1e-9 }), derived: true, hidden: true },
     ],
     rules: [
       bothSides('x'),
@@ -3862,18 +4702,32 @@ const CONGRUENCE: ModuleDef[] = [
         'Put x back into AB.',
       ),
       limit(
-        '4 < AB < 28',
-        '{L} is between 4 and 28',
-        (v) => v.L! > 4 && v.L! < 28,
-        'With BC = 16 and AC = 12, AB must be between 4 and 28, or the triangle doesn’t close.',
+        'AB > 0',
+        '{L} is more than 0',
+        (v) => v.L! > 0,
+        'A length can’t be 0 or less: this x gives no segment.',
+      ),
+      rule(
+        'BC = 0.8 AB',
+        '{bc} = 0.8 × {L}',
+        { bc: [(v) => (v.L! > 0 ? 0.8 * v.L! : undefined), '', ''] },
+        (v) => v.bc! - 0.8 * v.L!,
+        { hidden: true },
+      ),
+      rule(
+        'AC = 0.6 AB',
+        '{ac} = 0.6 × {L}',
+        { ac: [(v) => (v.L! > 0 ? 0.6 * v.L! : undefined), '', ''] },
+        (v) => v.ac! - 0.6 * v.L!,
+        { hidden: true },
       ),
     ],
-    example: { p: 3, q: 2, r: 1, s: 14, x: 6, L: 20 },
+    example: { p: 3, q: 2, r: 1, s: 14, x: 6, L: 20, bc: 16, ac: 12 },
     startWith: ['p', 'q', 'r', 's'],
     equation: '{p}x + {q} = {r}x + {s}',
     representation: {
       kind: 'triangleSolver',
-      parts: { c: 'L', a: 16, b: 12 },
+      parts: { c: 'L', a: 'bc', b: 'ac' },
       congruence: {},
     },
   }),
@@ -3923,8 +4777,8 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
     ],
     variables: [
       len('m', 'AD', 'Median AD'),
-      len('g', 'AG', 'AG', 1000),
-      len('k', 'GD', 'GD', 1000),
+      len('g', 'AG', 'AG', 1000, { min: 0.001 }),
+      len('k', 'GD', 'GD', 1000, { min: 0.001 }),
     ],
     rules: [
       rule(
@@ -4067,7 +4921,7 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
       len('b', 'b', 'Side b', 1000, { min: 0.1 }),
       der(num('lo', 'low', 'Third side is more than', 0, 1000)),
       der(num('hi', 'high', 'Third side is less than', 0, 2000)),
-      der(len('c', 'c', 'A third side that fits', 1000)),
+      { ...len('c', 'c', 'A third side that fits', 1000), derived: true, hidden: true },
     ],
     rules: [
       derive(
@@ -4084,15 +4938,14 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
         'hi',
         (v) => v.a! + v.b!,
         '{a} + {b}',
-        'The third side must be shorter than the sum.',
+        'The third side must be shorter than the sum. So |a − b| < third side < a + b.',
       ),
-      derive(
+      rule(
         'c = (low + high)/2',
         '{c} = ({lo} + {hi}) ÷ 2',
-        'c',
-        (v) => (v.lo! + v.hi!) / 2,
-        '({lo} + {hi}) ÷ 2',
-        'A third side halfway through the range, for the picture.',
+        { c: [(v) => (v.lo! + v.hi!) / 2, '', ''] },
+        (v) => v.c! - (v.lo! + v.hi!) / 2,
+        { hidden: true },
       ),
     ],
     example: { a: 7, b: 11, lo: 4, hi: 18, c: 11 },
@@ -4104,6 +4957,34 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
 // ─── m.10.quadrilaterals ─────────────────────────────────────────────────────
 
 const QUADRILATERALS: ModuleDef[] = [
+  page({
+    id: 'm.10.quadrilaterals~parallelogram',
+    title: 'Angles of a parallelogram',
+    use: 'Use this for “In parallelogram ABCD, m∠A = 58°. Find m∠B and m∠C.”',
+    assumptions: [
+      'Opposite sides are parallel and equal, and the diagonals cut each other in half.',
+      'Angles next to each other add to 180°, because the sides are parallel.',
+      'Opposite angles are equal: m∠C = m∠A and m∠D = m∠B.',
+    ],
+    variables: [deg('A', 'm∠A', 'm∠A'), der(deg('B', 'm∠B', 'm∠B')), der(deg('C', 'm∠C', 'm∠C'))],
+    rules: [
+      supplement('A', 'B', 'Angles next to each other in a parallelogram add to 180°.'),
+      equal('A', 'C', 'Opposite angles of a parallelogram are equal.'),
+    ],
+    example: { A: 58, B: 122, C: 58 },
+    startWith: ['A'],
+    representation: {
+      kind: 'markedFigure',
+      quadrilateral: {
+        family: 'parallelogram',
+        width: 7,
+        height: 4,
+        angle: 'A',
+        diagonals: true,
+        labels: { DAB: 'A', ABC: 'B', BCD: 'C' },
+      },
+    },
+  }),
   page({
     id: 'm.10.quadrilaterals~rectangle',
     title: 'Rectangle and its diagonals',
@@ -4144,14 +5025,14 @@ const QUADRILATERALS: ModuleDef[] = [
     variables: [
       len('p', 'p', 'Diagonal AC', 1000, { min: 0.1 }),
       len('q', 'q', 'Diagonal BD', 1000, { min: 0.1 }),
-      der(len('hp', 'p/2', 'Half of AC', 500)),
-      der(len('hq', 'q/2', 'Half of BD', 500)),
+      der(len('hp', 'AO', 'Half of AC (AO)', 500)),
+      der(len('hq', 'BO', 'Half of BD (BO)', 500)),
       der(len('s', 's', 'Side', 1000)),
       der(num('K', 'K', 'Area', 0, 1e6)),
     ],
     rules: [
       derive(
-        'p/2',
+        'AO = p/2',
         '{hp} = {p} ÷ 2',
         'hp',
         (v) => v.p! / 2,
@@ -4159,7 +5040,7 @@ const QUADRILATERALS: ModuleDef[] = [
         'The diagonals bisect each other.',
       ),
       derive(
-        'q/2',
+        'BO = q/2',
         '{hq} = {q} ÷ 2',
         'hq',
         (v) => v.q! / 2,
@@ -4167,7 +5048,7 @@ const QUADRILATERALS: ModuleDef[] = [
         'The diagonals bisect each other.',
       ),
       derive(
-        's = √((p/2)² + (q/2)²)',
+        's = √(AO² + BO²)',
         '{s} = √({hp}² + {hq}²)',
         's',
         (v) => Math.hypot(v.hp!, v.hq!),
@@ -4304,6 +5185,63 @@ const QUADRILATERALS: ModuleDef[] = [
       },
     },
   }),
+  page({
+    id: 'm.10.quadrilaterals~regular-area',
+    title: 'Area of a regular polygon',
+    use: 'Use this for “A regular hexagon has sides of 4 cm. Find its apothem and its area.”',
+    assumptions: [
+      'A regular polygon has n equal sides; the apothem a runs from the center to a side’s midpoint, at right angles.',
+      'Lines to the corners cut it into n triangles of base s and height a, so K = ½ × a × P.',
+      'Each triangle’s angle at the center is 360° ÷ n; the apothem halves it: θ = 180° ÷ n.',
+    ],
+    variables: [
+      num('n', 'n', 'Number of sides', 3, 12, { step: 1, integer: true }),
+      len('s', 's', 'Side', 1000, { unit: 'cm', units: ['mm', 'cm', 'm'], min: 0.1 }),
+      len('P', 'P', 'Perimeter', 12000, { unit: 'cm', units: ['mm', 'cm', 'm'] }),
+      der(deg('t', 'θ', 'Half the angle at the center', 15, 60)),
+      der(len('a', 'a', 'Apothem', 5000, { unit: 'cm', units: ['mm', 'cm', 'm'] })),
+      der(num('K', 'K', 'Area', 0, 1e8, { unit: 'cm²', units: ['mm²', 'cm²', 'm²'] })),
+    ],
+    rules: [
+      rule(
+        'P = ns',
+        '{P} = {n} × {s}',
+        {
+          P: [(v) => v.n! * v.s!, '{n} × {s}', 'The perimeter is n equal sides of length s.'],
+          s: [(v) => quot(v.P!, v.n!), '{P} ÷ {n}', 'Share the perimeter among the n equal sides.'],
+        },
+        (v) => v.P! - v.n! * v.s!,
+      ),
+      derive(
+        'θ = 180° ÷ n',
+        '{t} = 180 ÷ {n}',
+        't',
+        (v) => 180 / v.n!,
+        '180 ÷ {n}',
+        'The n angles at the center make 360°, and the apothem cuts each in half.',
+      ),
+      derive(
+        'a = s ÷ (2 tan θ)',
+        '{a} = {s} ÷ (2 × tan({t}°))',
+        'a',
+        (v) => quot(v.s!, 2 * tan(v.t!)),
+        '{s} ÷ (2 × tan({t}°))',
+        'In the right triangle at the center, tan θ is half a side over the apothem.',
+      ),
+      derive(
+        'K = ½aP',
+        '{K} = {a} × {P} ÷ 2',
+        'K',
+        (v) => (v.a! * v.P!) / 2,
+        '{a} × {P} ÷ 2',
+        'The n triangles together: ½ × apothem × all their bases.',
+      ),
+    ],
+    example: { n: 6, s: 4, P: 24, t: 30, a: 2 * Math.sqrt(3), K: 24 * Math.sqrt(3) },
+    startWith: ['n', 's'],
+    unitSystems: ['metric'],
+    representation: { kind: 'polygon', sides: 'n', side: 's' },
+  }),
 ];
 
 export const MATH_10_MODULES: ModuleDef[] = [
@@ -4323,6 +5261,7 @@ export const MATH_10_MODULES: ModuleDef[] = [
   ...CIRCLE_EQUATIONS,
   ...ARC_SECTOR,
   ...VOLUME,
+  ...MODELING,
   ...PROBABILITY_RULES,
   ...CONDITIONAL,
 ];

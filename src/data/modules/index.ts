@@ -33,6 +33,19 @@ import type { ModuleDef } from './types';
 
 export type { ModuleDef, Representation } from './types';
 
+/** Grades 9–12 write a fraction past 1 as an improper fraction (11/5), as Algebra 1 on does. */
+const highSchool = (modules: readonly ModuleDef[]): ModuleDef[] =>
+  modules.map((m) =>
+    m.variables.some((v) => v.fraction && v.improper === undefined)
+      ? {
+          ...m,
+          variables: m.variables.map((v) =>
+            v.fraction && v.improper === undefined ? { ...v, improper: true } : v,
+          ),
+        }
+      : m,
+  );
+
 export const MODULES: readonly ModuleDef[] = [
   ...MATH_K_MODULES,
   ...MATH_1_MODULES,
@@ -52,14 +65,14 @@ export const MODULES: readonly ModuleDef[] = [
   ...MATH_8_MODULES,
   ...SCIENCE_7_MODULES,
   ...SCIENCE_8_MODULES,
-  ...MATH_9_MODULES,
-  ...MATH_10_MODULES,
-  ...MATH_11_MODULES,
-  ...MATH_12_MODULES,
-  ...SCIENCE_9_MODULES,
-  ...SCIENCE_10_MODULES,
-  ...SCIENCE_11_MODULES,
-  ...SCIENCE_12_MODULES,
+  ...highSchool(MATH_9_MODULES),
+  ...highSchool(MATH_10_MODULES),
+  ...highSchool(MATH_11_MODULES),
+  ...highSchool(MATH_12_MODULES),
+  ...highSchool(SCIENCE_9_MODULES),
+  ...highSchool(SCIENCE_10_MODULES),
+  ...highSchool(SCIENCE_11_MODULES),
+  ...highSchool(SCIENCE_12_MODULES),
   ...PILOT_MODULES,
   ...COLLEGE_MODULES,
 ];

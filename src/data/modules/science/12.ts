@@ -75,8 +75,8 @@ const difference = (a: string, b: string, c: string, id: string, how: [string, s
     [c]: [(v) => v[b]! - v[a]!, `{${b}} − {${a}}`, how[2]],
   });
 
-/** a < b, checked only. */
-const below = (a: string, b: string, id: string, display: string): Rel => ({
+/** a < b, checked only; `why` is the reason a conflict is refused. */
+const below = (a: string, b: string, id: string, display: string, why?: string): Rel => ({
   relation: {
     id,
     constraint: true,
@@ -84,6 +84,7 @@ const below = (a: string, b: string, id: string, display: string): Rel => ({
     vars: [a, b],
     residual: (v: Values) => (v[a]! < v[b]! ? 0 : 1),
     solve: {},
+    ...(why ? { message: () => why } : {}),
   },
   steps: {},
 });
@@ -128,6 +129,23 @@ const mineralDensity: ModuleDef = {
 
 // ── Earthquakes, seismic waves and Earth's interior ──
 
+/**
+ * S waves are at most 0.7 times as fast as P waves: in rock vₚ ÷ vₛ is at least √2 (the crust
+ * 6 ÷ 3.5, the mantle 13.7 ÷ 7.3). It also keeps 1 ÷ vₛ − 1 ÷ vₚ away from 0.
+ */
+const sSlower: Rel = {
+  relation: {
+    id: 'vₛ ≤ 0.7 × vₚ',
+    constraint: true,
+    display: '{vs} is at most 0.7 × {vp}',
+    vars: ['vs', 'vp'],
+    residual: (v: Values) => (v.vs! <= 0.7 * v.vp! + 1e-9 ? 0 : 1),
+    solve: {},
+    message: () => 'In rock, S waves travel at most about 0.7 times as fast as P waves.',
+  },
+  steps: {},
+};
+
 /** The S − P lag at distance d: d ÷ vₛ − d ÷ vₚ. */
 const lagOf = (d: number, vp: number, vs: number) => d / vs - d / vp;
 
@@ -140,15 +158,15 @@ const earthInterior: ModuleDef = {
     'One station gives a distance, not a direction.',
   ],
   variables: [
-    V('d', 'd', 'Distance to the focus', { unit: 'km', min: 1, max: 10000, step: 1 }),
+    V('d', 'd', 'Distance to the focus', { unit: 'km', min: 0.2, max: 12700, step: 1 }),
     V('vp', 'vₚ', 'P-wave speed', { unit: 'km/s', units: ['km/s'], min: 4, max: 14, step: 0.1 }),
     V('vs', 'vₛ', 'S-wave speed', { unit: 'km/s', units: ['km/s'], min: 2, max: 8, step: 0.1 }),
-    V('tp', 'tₚ', 'P arrival', { unit: 's', min: 0.01, max: 2500, step: 0.1, derived: true }),
-    V('ts', 'tₛ', 'S arrival', { unit: 's', min: 0.01, max: 5000, step: 0.1, derived: true }),
+    V('tp', 'tₚ', 'P arrival', { unit: 's', min: 0.01, max: 3200, step: 0.1, derived: true }),
+    V('ts', 'tₛ', 'S arrival', { unit: 's', min: 0.01, max: 6400, step: 0.1, derived: true }),
     V('L', 'L', 'S − P lag', { unit: 's', min: 0.1, max: 1500, step: 0.1 }),
   ],
   ...rels(
-    below('vs', 'vp', 'vₛ < vₚ', '{vs} is less than {vp}'),
+    sSlower,
     quotient('tp', 'd', 'vp', 'tₚ = d ÷ vₚ', [
       'Travel time is the distance over the P wave’s speed.',
       'Distance is the speed times the travel time.',
@@ -219,7 +237,7 @@ const lagRate = rule(
     k: [
       (v) => div(1, 1 / v.vs! - 1 / v.vp!),
       '1 ÷ (1 ÷ {vs} − 1 ÷ {vp})',
-      'Each km adds 1 ÷ vₛ − 1 ÷ vₚ seconds of lag; flip it for km per second of lag.',
+      'Each km adds 1 ÷ vₛ − 1 ÷ vₚ seconds of lag; flip it to get km per second of lag.',
     ],
     vs: [
       (v) => div(1, 1 / v.k! + 1 / v.vp!),
@@ -251,20 +269,20 @@ const epicenter: ModuleDef = {
     V('t3', 'L₃', 'Lag at station 3', { unit: 's', min: 0.1, max: 120, step: 0.1 }),
     V('vp', 'vₚ', 'P-wave speed', { unit: 'km/s', units: ['km/s'], min: 4, max: 14, step: 0.1 }),
     V('vs', 'vₛ', 'S-wave speed', { unit: 'km/s', units: ['km/s'], min: 2, max: 8, step: 0.1 }),
-    V('k', 'k', 'Distance per second of lag', {
+    V('k', 'k', 'Km of distance per second of lag', {
       unit: 'km/s',
       units: ['km/s'],
       min: 2,
-      max: 1000,
+      max: 35,
       step: 0.1,
       derived: true,
     }),
-    V('d1', 'd₁', 'Distance from station 1', { unit: 'km', min: 0.1, max: 100000, step: 1 }),
-    V('d2', 'd₂', 'Distance from station 2', { unit: 'km', min: 0.1, max: 100000, step: 1 }),
-    V('d3', 'd₃', 'Distance from station 3', { unit: 'km', min: 0.1, max: 100000, step: 1 }),
+    V('d1', 'd₁', 'Distance from station 1', { unit: 'km', min: 0.1, max: 4000, step: 1 }),
+    V('d2', 'd₂', 'Distance from station 2', { unit: 'km', min: 0.1, max: 4000, step: 1 }),
+    V('d3', 'd₃', 'Distance from station 3', { unit: 'km', min: 0.1, max: 4000, step: 1 }),
   ],
   ...rels(
-    below('vs', 'vp', 'vₛ < vₚ', '{vs} is less than {vp}'),
+    sSlower,
     lagRate,
     stationRel('d1', 't1', '₁'),
     stationRel('d2', 't2', '₂'),
@@ -283,8 +301,8 @@ const epicenter: ModuleDef = {
   },
 };
 
-/** Kilometres along Earth's surface per degree from the focus: π × 6371 ÷ 180. */
-const KM_PER_DEG = (Math.PI * 6371) / 180;
+/** Kilometres along Earth's surface per degree from the epicenter: 2 × π × 6,371 ÷ 360. */
+const KM_PER_DEG = (2 * Math.PI * 6371) / 360;
 
 const shadowZone: ModuleDef = {
   id: 's.12.earth-interior~shadow-zone',
@@ -297,26 +315,162 @@ const shadowZone: ModuleDef = {
     'The outer core starts 2,890 km down.',
   ],
   variables: [
-    V('D', 'Δ', 'Angle from the focus', { unit: '°', min: 0, max: 180, step: 1 }),
-    V('s', 's', 'Distance along the surface', { unit: 'km', min: 0, max: 20100, step: 1 }),
+    V('D', 'Δ', 'Angle from the epicenter', { unit: '°', min: 1, max: 180, step: 1 }),
+    V('s', 's', 'Distance along the surface', {
+      unit: 'km',
+      min: 100,
+      max: 20100,
+      step: 1,
+      sigFigs: 4,
+    }),
   ],
   ...rels(
-    rule('s = Δ × π × 6371 ÷ 180', '{s} = {D} × π × 6371 ÷ 180', (v) => v.s! - v.D! * KM_PER_DEG, {
-      s: [
-        (v) => v.D! * KM_PER_DEG,
-        '{D} × π × 6371 ÷ 180',
-        'The angle’s share of 180°, times half the circumference, π × 6371 km.',
-      ],
-      D: [
-        (v) => v.s! / KM_PER_DEG,
-        '{s} × 180 ÷ (π × 6371)',
-        'How many of the km in each degree fit into the distance.',
-      ],
-    }),
+    rule(
+      's = Δ ÷ 360 × 2 × π × 6,371',
+      '{s} = {D} ÷ 360 × 2 × π × 6,371',
+      (v) => v.s! - v.D! * KM_PER_DEG,
+      {
+        s: [
+          (v) => v.D! * KM_PER_DEG,
+          '{D} ÷ 360 × 2 × π × 6,371',
+          'The angle’s share of 360°, times Earth’s circumference, 2 × π × 6,371 km.',
+        ],
+        D: [
+          (v) => v.s! / KM_PER_DEG,
+          '{s} ÷ (2 × π × 6,371) × 360',
+          'The distance’s share of the circumference, times 360°.',
+        ],
+      },
+    ),
   ),
   example: { D: 120, s: 120 * KM_PER_DEG },
   startWith: ['D'],
   representation: { kind: 'earthLayers', mode: 'section', distance: 'D' },
+};
+
+// ── Earth's history: the early Earth, its atmosphere and the history of life ──
+
+/** Rounded ages (million years ago) of the events in the one-day table. */
+const EARTH_EVENTS: [number, string][] = [
+  [4600, 'Earth forms'],
+  [3500, 'First life'],
+  [2300, 'Oxygen in the air'],
+  [540, 'Animals with shells'],
+  [66, 'Dinosaurs die out'],
+  [0.3, 'Our species'],
+];
+
+const earthDay: ModuleDef = {
+  id: 's.12.earth-history',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Earth formed about 4,600 million years ago: midnight at the start of the day.',
+    'Today is the next midnight, so each hour stands for about 192 million years.',
+    'Event ages are rounded; new finds move them.',
+  ],
+  variables: [
+    V('A', 'A', 'How long ago', { unit: 'million years', min: 0, max: 4600, step: 0.1 }),
+    V('p', 'p', 'Share of Earth’s history since then', {
+      unit: '%',
+      min: 0,
+      max: 100,
+      step: 0.0001,
+      derived: true,
+    }),
+    V('m', 'm', 'Minutes before midnight', { unit: 'minutes', min: 0, max: 1440, step: 0.01 }),
+    V('t', 't', 'Clock time', { unit: 'hours', min: 0, max: 24, step: 0.0001 }),
+  ],
+  ...rels(
+    rule('p = A ÷ 4,600 × 100', '{p} = {A} ÷ 4,600 × 100', (v) => v.p! - (v.A! / 4600) * 100, {
+      p: [
+        (v) => (v.A! / 4600) * 100,
+        '{A} ÷ 4,600 × 100',
+        'The event’s age as a share of Earth’s whole 4,600 million years.',
+      ],
+      A: [
+        (v) => (v.p! / 100) * 4600,
+        '{p} ÷ 100 × 4,600',
+        'Take that share of Earth’s 4,600 million years.',
+      ],
+    }),
+    rule('m = p ÷ 100 × 1,440', '{m} = {p} ÷ 100 × 1,440', (v) => v.m! - (v.p! / 100) * 1440, {
+      m: [
+        (v) => (v.p! / 100) * 1440,
+        '{p} ÷ 100 × 1,440',
+        'The same share of the day’s 1,440 minutes comes before midnight.',
+      ],
+      p: [
+        (v) => (v.m! / 1440) * 100,
+        '{m} ÷ 1,440 × 100',
+        'The minutes left as a share of the day’s 1,440 minutes.',
+      ],
+    }),
+    rule('t = 24 − m ÷ 60', '{t} = 24 − {m} ÷ 60', (v) => v.t! - (24 - v.m! / 60), {
+      t: [
+        (v) => 24 - v.m! / 60,
+        '24 − {m} ÷ 60',
+        'Turn the minutes into hours and count back from midnight, hour 24.',
+      ],
+      m: [(v) => (24 - v.t!) * 60, '(24 − {t}) × 60', 'The hours left until midnight, in minutes.'],
+    }),
+  ),
+  example: { A: 2300, p: 50, m: 720, t: 12 },
+  startWith: ['A'],
+  representation: {
+    kind: 'table',
+    sweep: 'A',
+    output: 't',
+    params: [],
+    rows: EARTH_EVENTS.map(([a]) => a),
+    rowNames: EARTH_EVENTS.map(([, name]) => name),
+  },
+  pictureLabels: ['p', 'm'],
+};
+
+/** Hours in a year: 365.25 days of 24 hours. The year's length has not changed. */
+const YEAR_H = 8766;
+
+const coralDays: ModuleDef = {
+  id: 's.12.earth-history~day-length',
+  title: 'Day length from fossil coral',
+  use: 'Use this for “A fossil coral shows 1,200 daily growth lines across 3 yearly bands. How long was a day then?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'A coral adds one thin growth line a day and one band a year.',
+    'The year’s length in hours has not changed; the Moon’s tides slow Earth’s spin.',
+    'So long ago a year had more days, and each day was shorter.',
+  ],
+  variables: [
+    V('n', 'n', 'Daily growth lines counted', { min: 1, max: 5000, step: 1 }),
+    V('b', 'b', 'Yearly bands they cross', { min: 1, max: 10, step: 1 }),
+    V('N', 'N', 'Days in a year', { unit: 'days', min: 360, max: 450, step: 0.01 }),
+    V('D', 'D', 'Length of a day', { unit: 'hours', min: 19, max: 24.5, step: 0.001 }),
+  ],
+  ...rels(
+    quotient('N', 'n', 'b', 'N = n ÷ b', [
+      'Share the daily lines among the yearly bands: the days in one year.',
+      'Each band holds a year of N lines: multiply.',
+      'How many years of N lines fit in the count.',
+    ]),
+    rule('D = 8,766 ÷ N', '{D} = 8,766 ÷ {N}', (v) => v.D! * v.N! - YEAR_H, {
+      D: [
+        (v) => div(YEAR_H, v.N!),
+        '8,766 ÷ {N}',
+        'A year is 8,766 hours; share them among its days.',
+      ],
+      N: [(v) => div(YEAR_H, v.D!), '8,766 ÷ {D}', 'How many days of D hours fit in 8,766 hours.'],
+    }),
+  ),
+  example: { n: 1200, b: 3, N: 400, D: YEAR_H / 400 },
+  startWith: ['n', 'b'],
+  representation: {
+    kind: 'table',
+    sweep: 'N',
+    output: 'D',
+    params: [],
+    rows: [365.25, 380, 400, 420, 440],
+  },
+  pictureLabels: ['n', 'b'],
 };
 
 // ── Geologic time and radiometric dating ──
@@ -343,7 +497,7 @@ const leftAfter = (p: string, parent: string) =>
       n: [
         (v) => (v[p]! > 0 ? Math.log(100 / v[p]!) / Math.log(2) : undefined),
         `ln(100/{${p}})/ln(2)`,
-        'Count the halvings with logs: how many times 2 goes into the drop.',
+        `Count the halvings: n is the power of 2 that equals 100 ÷ ${p === 'P' ? 'P' : 'p'}.`,
       ],
     },
   );
@@ -359,7 +513,7 @@ const carbonDating: ModuleDef = {
     V('T', 'T', 'Half-life of C-14', { unit: 'years', min: 5000, max: 6000, step: 1 }),
     V('t', 't', 'Age', { unit: 'years', min: 0, max: 60000, step: 1 }),
     V('n', 'n', 'Half-lives passed', { min: 0, max: 12, step: 0.0001, derived: true }),
-    V('p', 'p', 'C-14 left', { unit: '%', min: 0.01, max: 100, step: 0.01 }),
+    V('p', 'p', 'C-14 left', { unit: '%', min: 0.1, max: 100, step: 0.001 }),
     V('q', 'q', 'C-14 decayed', { unit: '%', min: 0, max: 99.99, step: 0.01, derived: true }),
   ],
   ...rels(
@@ -402,12 +556,13 @@ const uranium: ModuleDef = {
     'U-238 decays to lead-206 with a half-life of 4.47 × 10⁹ years.',
     'The rock started with no lead-206 and lost none.',
     'Most surface rocks were melted or weathered since Earth formed. Meteorites were not, so they date the solar system.',
+    'Nothing in the solar system is older than about 4.57 × 10⁹ years, so R is at most about 1.',
   ],
   variables: [
-    V('R', 'R', 'Lead-206 atoms per U-238 atom', { min: 0, max: 15, step: 0.01 }),
-    V('p', 'p', 'U-238 left', { unit: '%', min: 6.25, max: 100, step: 0.01, derived: true }),
-    V('n', 'n', 'Half-lives passed', { min: 0, max: 4, step: 0.0001, derived: true }),
-    V('t', 't', 'Age', { unit: 'years', min: 0, max: 1.8e10, step: 1000 }),
+    V('R', 'R', 'Lead-206 atoms per U-238 atom', { min: 0.0016, max: 1.04, step: 0.0001 }),
+    V('p', 'p', 'U-238 left', { unit: '%', min: 48.5, max: 99.9, step: 0.01, derived: true }),
+    V('n', 'n', 'Half-lives passed', { min: 0.002, max: 1.04, step: 0.0001, derived: true }),
+    V('t', 't', 'Age', { unit: 'years', min: 1e7, max: 4.6e9, step: 1000 }),
   ],
   ...rels(
     rule('p = 100 ÷ (1 + R)', '{p} = 100 ÷ (1 + {R})', (v) => v.p! * (1 + v.R!) - 100, {
@@ -454,18 +609,24 @@ const bracket: ModuleDef = {
     'Uranium-235 decays to lead-207 with a half-life of 704 million years.',
   ],
   variables: [
-    V('P', 'P', 'U-235 left in the lower ash', { unit: '%', min: 50, max: 100, step: 0.01 }),
+    V('P', 'P', 'U-235 left in the lower ash', { unit: '%', min: 50, max: 99, step: 0.01 }),
     V('n', 'n', 'Half-lives passed', { min: 0, max: 1, step: 0.0001, derived: true }),
     myr('t', 't', 'Age of the lower ash'),
-    myr('u', 'u', 'Age of the upper ash'),
-    myr('w', 'w', 'Width of the bracket', { derived: true }),
+    myr('u', 'u', 'Age of the upper ash', { max: 700 }),
+    myr('w', 'w', 'Width of the age bracket', { derived: true }),
   ],
   ...rels(
     leftAfter('P', 'U-235'),
     fixedAge(U235_MA, '704'),
-    below('u', 't', 'u < t', 'the upper ash {u} is younger than the lower ash {t}'),
+    below(
+      'u',
+      't',
+      'u < t',
+      'the upper ash {u} is younger than the lower ash {t}',
+      'The upper ash lies on top, so it must be younger than the lower ash.',
+    ),
     difference('w', 't', 'u', 'w = t − u', [
-      'The shale is younger than the lower ash and older than the upper ash.',
+      'The shale lies between the ash beds, so it is from u to t million years old; the bracket is their difference.',
       'The lower ash is the bracket’s width older than the upper ash.',
       'The upper ash is the bracket’s width younger than the lower ash.',
     ]),
@@ -494,6 +655,68 @@ const bracket: ModuleDef = {
   },
 };
 
+/** Years in the universe's age: no date can be older. */
+const UNIVERSE = 1.38e10;
+
+const halfLife: ModuleDef = {
+  id: 's.12.radiometric-dating~half-life',
+  title: 'Any isotope: age from the daughter-to-parent ratio',
+  use: 'Use this for “A rock holds 3 daughter atoms for every parent atom, and the half-life is 1.25 × 10⁹ years. How old is it?”',
+  assumptions: [
+    'Each daughter atom was once a parent atom, and the rock started with no daughter atoms.',
+    'No atoms got in or out since the rock formed.',
+    'The universe is about 1.38 × 10¹⁰ years old, so no age can be greater.',
+  ],
+  variables: [
+    V('T', 'T', 'Half-life', { unit: 'years', min: 1, max: 1e11, step: 1 }),
+    V('R', 'R', 'Daughter atoms per parent atom', { min: 0, max: 1000, step: 0.001 }),
+    V('p', 'p', 'Parent left', { unit: '%', min: 0.0999, max: 100, step: 0.01, derived: true }),
+    V('n', 'n', 'Half-lives passed', { min: 0, max: 10, step: 0.0001, derived: true }),
+    V('t', 't', 'Age', { unit: 'years', min: 0, max: 1e12, step: 1 }),
+  ],
+  ...rels(
+    rule('p = 100 ÷ (1 + R)', '{p} = 100 ÷ (1 + {R})', (v) => v.p! * (1 + v.R!) - 100, {
+      p: [
+        (v) => 100 / (1 + v.R!),
+        '100 ÷ (1 + {R})',
+        'Each daughter atom was once a parent atom: the parent’s share of 1 + R atoms.',
+      ],
+      R: [
+        (v) => div(100, v.p!)! - 1,
+        '100 ÷ {p} − 1',
+        'The atoms at the start per atom left, less the one left.',
+      ],
+    }),
+    leftAfter('p', 'parent'),
+    halves,
+    {
+      relation: {
+        id: 't ≤ 1.38 × 10¹⁰',
+        constraint: true,
+        display: '{t} is at most 1.38 × 10¹⁰ years',
+        vars: ['t'],
+        residual: (v: Values) => (v.t! <= UNIVERSE * (1 + 1e-9) ? 0 : 1),
+        solve: {},
+        message: () => 'No rock is older than the universe, about 1.38 × 10¹⁰ years.',
+      },
+      steps: {},
+    },
+  ),
+  example: { T: 1.25e9, R: 3, p: 25, n: 2, t: 2.5e9 },
+  startWith: ['R', 'T'],
+  representation: {
+    kind: 'decayChart',
+    halfLife: 'T',
+    time: 't',
+    start: 100,
+    left: 'p',
+    halves: 'n',
+    parent: 'Parent',
+    daughter: 'Daughter',
+    keep: ['T'],
+  },
+};
+
 // ── The ocean: seafloor, currents and ocean–atmosphere interaction ──
 
 const sonar: ModuleDef = {
@@ -505,7 +728,7 @@ const sonar: ModuleDef = {
     'The shelf is under 200 m deep and trenches reach almost 11,000 m.',
   ],
   variables: [
-    V('t', 't', 'Echo time, down and back', { unit: 's', min: 0.01, max: 15, step: 0.01 }),
+    V('t', 't', 'Echo time, down and back', { unit: 's', min: 0.01, max: 14, step: 0.01 }),
     V('v', 'v', 'Speed of sound in seawater', { unit: 'm/s', min: 1450, max: 1550, step: 1 }),
     V('d', 'd', 'Depth', { unit: 'm', min: 1, max: 11000, step: 1 }),
   ],
@@ -556,12 +779,12 @@ const tides: ModuleDef = {
       {
         R: [
           (v) => v.m! * tideRoot(v.A!),
-          '{m} × √(1 + 0.46^2 + 2 × 0.46 × cos(2 × {A}))',
+          '{m} × √(1 + 0.46² + 2 × 0.46 × cos(2 × {A}))',
           'Add the Moon’s and the Sun’s bulges at the angle between them.',
         ],
         m: [
           (v) => div(v.R!, tideRoot(v.A!)),
-          '{R} ÷ √(1 + 0.46^2 + 2 × 0.46 × cos(2 × {A}))',
+          '{R} ÷ √(1 + 0.46² + 2 × 0.46 × cos(2 × {A}))',
           'Undo the Sun’s share: divide the range by the same factor.',
         ],
         A: [
@@ -571,7 +794,7 @@ const tides: ModuleDef = {
             const a = (Math.acos(Math.max(-1, Math.min(1, k))) * 180) / Math.PI / 2;
             return [a, 180 - a];
           },
-          'cos⁻¹((({R} ÷ {m})^2 − 1 − 0.46^2) ÷ (2 × 0.46)) ÷ 2',
+          'cos⁻¹((({R} ÷ {m})² − 1 − 0.46²) ÷ (2 × 0.46)) ÷ 2',
           'Solve the range rule for cos 2θ, then take the inverse cosine and halve it.',
         ],
       },
@@ -595,7 +818,7 @@ const lapse: ModuleDef = {
   variables: [
     V('T0', 'T₀', 'Temperature at the ground', { unit: '°C', min: -40, max: 50, step: 0.1 }),
     V('h', 'h', 'Altitude', { unit: 'km', min: 0, max: 11, step: 0.1 }),
-    V('T', 'T', 'Temperature at h', { unit: '°C', min: -90, max: 50, step: 0.1 }),
+    V('T', 'T', 'Temperature at h', { unit: '°C', min: -112, max: 50, step: 0.1 }),
   ],
   ...rels(
     rule('T = T₀ − 6.5 × h', '{T} = {T0} − 6.5 × {h}', (v) => v.T! - (v.T0! - 6.5 * v.h!), {
@@ -834,12 +1057,13 @@ const kepler: ModuleDef = {
     'Second law: the line to the Sun sweeps equal areas in equal times, so the planet is fastest at perihelion.',
     'Third law: T² = a³, with T in years and a in AU.',
     'T² = a³ holds only for bodies orbiting the Sun.',
+    '1 AU = 150 million km, Earth’s distance from the Sun.',
   ],
   variables: [
     V('a', 'a', 'Semi-major axis', { unit: 'AU', min: 0.1, max: 100, step: 0.01 }),
     V('e', 'e', 'Eccentricity', { min: 0, max: 0.95, step: 0.001 }),
-    V('q', 'q', 'Perihelion distance', { unit: 'AU', min: 0, max: 200, step: 0.001 }),
-    V('Q', 'Q', 'Aphelion distance', { unit: 'AU', min: 0, max: 200, step: 0.001 }),
+    V('q', 'q', 'Perihelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
+    V('Q', 'Q', 'Aphelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
     V('T', 'T', 'Period', { unit: 'years', min: 0.03, max: 1000, step: 0.01 }),
   ],
   ...rels(
@@ -891,11 +1115,12 @@ const wien: ModuleDef = {
     'Hotter stars peak at shorter wavelengths, so they look bluer.',
     'A star glows at every wavelength; λ is only the brightest one.',
     'c = 3.00 × 10⁸ m/s.',
+    'f is the frequency of the peak wavelength; graphed by frequency, the peak falls elsewhere.',
   ],
   variables: [
     V('T', 'T', 'Surface temperature', { unit: 'K', min: 2500, max: 40000, step: 10 }),
     V('l', 'λ', 'Peak wavelength', { unit: 'nm', min: 70, max: 1200, step: 0.1 }),
-    V('f', 'f', 'Frequency at the peak', {
+    V('f', 'f', 'Frequency of the peak wavelength', {
       unit: 'Hz',
       min: 2.5e14,
       max: 4.3e15,
@@ -953,9 +1178,9 @@ const redshiftRel = rule(
 );
 
 /** v = c × z, c in km/s. */
-const czRel = rule('v = c × z', '{v} = 300000 × {z}', (v) => v.v! - 300000 * v.z!, {
-  v: [(v) => 300000 * v.z!, '300000 × {z}', 'Multiply the shift by light’s speed, 300,000 km/s.'],
-  z: [(v) => v.v! / 300000, '{v} ÷ 300000', 'Divide the speed by light’s speed.'],
+const czRel = rule('v = c × z', '{v} = 300,000 × {z}', (v) => v.v! - 300000 * v.z!, {
+  v: [(v) => 300000 * v.z!, '300,000 × {z}', 'Multiply the shift by light’s speed, 300,000 km/s.'],
+  z: [(v) => v.v! / 300000, '{v} ÷ 300,000', 'Divide the speed by light’s speed.'],
 });
 
 const doppler: ModuleDef = {
@@ -970,13 +1195,14 @@ const doppler: ModuleDef = {
   ],
   variables: [
     V('l', 'λ', 'Observed wavelength of Hα', { unit: 'nm', min: 649, max: 663, step: 0.01 }),
-    V('z', 'z', 'Shift', { min: -0.011, max: 0.011, step: 0.000001 }),
-    V('v', 'v', 'Speed along the line of sight (+ away)', {
+    V('z', 'z', 'Shift', { min: -0.012, max: 0.012, step: 0.000001, sigFigs: 5 }),
+    V('v', 'v', 'Line-of-sight speed', {
       unit: 'km/s',
       units: ['km/s'],
-      min: -3300,
-      max: 3300,
+      min: -3600,
+      max: 3600,
       step: 0.1,
+      sigFigs: 4,
     }),
   ],
   ...rels(redshiftRel, czRel),
@@ -1014,10 +1240,11 @@ const telescope: ModuleDef = {
     V('M', 'M', 'Magnification', { min: 1, max: 2000, step: 0.1, derived: true }),
     V('L', 'L', 'Tube length', { unit: 'mm', min: 103, max: 5060, step: 1, derived: true }),
     V('D', 'D', 'Aperture', { unit: 'mm', min: 10, max: 1000, step: 1 }),
-    V('G', 'G', 'Light gathered compared with the eye', {
+    V('G', 'G', 'Times more light than the eye', {
       min: 2,
       max: 20500,
-      step: 0.1,
+      step: 1,
+      sigFigs: 3,
       derived: true,
     }),
   ],
@@ -1039,7 +1266,7 @@ const telescope: ModuleDef = {
     rule('G = (D ÷ 7)²', '{G} = ({D} ÷ 7)²', (v) => v.G! - (v.D! / 7) ** 2, {
       G: [
         (v) => (v.D! / 7) ** 2,
-        '({D} ÷ 7)^2',
+        '({D} ÷ 7)²',
         'Light gathered goes with the area, so square the ratio of widths.',
       ],
       D: [
@@ -1082,20 +1309,20 @@ const hr: ModuleDef = {
     V('L', 'L', 'Luminosity', { unit: 'L☉', min: 0.0001, max: 1000000, step: 0.0001 }),
   ],
   ...rels(
-    rule('L = R² × (T ÷ 5772)⁴', '{L} = {R}² × ({T} ÷ 5772)⁴', (v) => v.L! - lum(v.R!, v.T!), {
+    rule('L = R² × (T ÷ 5,772)⁴', '{L} = {R}² × ({T} ÷ 5,772)⁴', (v) => v.L! - lum(v.R!, v.T!), {
       L: [
         (v) => lum(v.R!, v.T!),
-        '{R}^2 × ({T} ÷ 5772)^4',
+        '{R}² × ({T} ÷ 5,772)⁴',
         'Surface area grows as R²; each square meter shines as T⁴, compared with the Sun.',
       ],
       R: [
         (v) => (v.L! > 0 ? Math.sqrt(v.L!) * (SUN_K / v.T!) ** 2 : undefined),
-        '√({L}) × (5772 ÷ {T})^2',
+        '√({L}) × (5,772 ÷ {T})²',
         'Undo the fourth power of the temperature, then the square of the radius.',
       ],
       T: [
         (v) => (v.L! > 0 && v.R! > 0 ? SUN_K * (v.L! / v.R! ** 2) ** 0.25 : undefined),
-        '5772 × ({L} ÷ {R}^2)^(1/4)',
+        '5,772 × ({L} ÷ {R}²)^(1/4)',
         'The light for each unit of surface, then its fourth root.',
       ],
     }),
@@ -1121,7 +1348,7 @@ const fusion: ModuleDef = {
   unitSystems: ['metric'],
   assumptions: [
     '0.7 % of the hydrogen’s mass becomes energy (E = mc²).',
-    'The Sun shines by this chain in its core: 4 ¹H → ⁴He + 2 e⁺.',
+    'The Sun shines by this chain in its core: 4 ¹H → ⁴He + 2 e⁺ + 2 neutrinos.',
     'c = 3.00 × 10⁸ m/s, so c² = 9.00 × 10¹⁶ m²/s².',
   ],
   variables: [
@@ -1234,11 +1461,18 @@ const redshift: ModuleDef = {
     V('l', 'λ', 'Observed wavelength of Hα', {
       unit: 'nm',
       min: H_ALPHA,
-      max: H_ALPHA * 1.1,
+      max: 721.93,
       step: 0.01,
     }),
-    V('z', 'z', 'Redshift', { min: 0, max: 0.1, step: 0.00001 }),
-    V('v', 'v', 'Speed away', { unit: 'km/s', units: ['km/s'], min: 0, max: 30000, step: 1 }),
+    V('z', 'z', 'Redshift', { min: 0, max: 0.1, step: 0.00001, sigFigs: 5 }),
+    V('v', 'v', 'Speed away', {
+      unit: 'km/s',
+      units: ['km/s'],
+      min: 0,
+      max: 30000,
+      step: 1,
+      sigFigs: 4,
+    }),
     V('H', 'H₀', 'Hubble constant', { unit: 'km/s per Mpc', min: 50, max: 100, step: 0.1 }),
     V('d', 'd', 'Distance', { unit: 'Mpc', min: 0, max: 600, step: 0.1 }),
   ],
@@ -1315,14 +1549,220 @@ const stretch: ModuleDef = {
   },
 };
 
+// ── Exoplanets and the search for life ──
+
+/** Earth radii in the Sun's radius (696,000 km ÷ 6,371 km, rounded). */
+const RE_PER_RSUN = 109;
+const depthOf = (r: number, R: number) => 100 * (r / (RE_PER_RSUN * R)) ** 2;
+
+/** Planets of the solar system by radius (Earth radii), for the transit table. */
+const TRANSIT_ROWS: [number, string][] = [
+  [0.53, 'Mars'],
+  [1, 'Earth'],
+  [3.88, 'Neptune'],
+  [9.45, 'Saturn'],
+  [11.21, 'Jupiter'],
+];
+
+const transit: ModuleDef = {
+  id: 's.12.exoplanets',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The dip is the share of the star’s disk the planet covers.',
+    'The orbit must be nearly edge-on to us, or there is no transit.',
+    'Repeated dips a period apart confirm a planet.',
+    '1 R☉ = 109 R⊕: the Sun is 109 Earths wide.',
+  ],
+  variables: [
+    V('R', 'R', 'Star’s radius', { unit: 'R☉', min: 0.1, max: 10, step: 0.001 }),
+    V('r', 'r', 'Planet’s radius', { unit: 'R⊕', min: 0.3, max: 25, step: 0.01 }),
+    V('d', 'δ', 'Transit depth', { unit: '%', min: 1e-6, max: 100, step: 1e-6, sigFigs: 4 }),
+  ],
+  ...rels(
+    {
+      relation: {
+        id: 'r < 109 × R',
+        constraint: true,
+        display: '{r} is less than 109 × {R}',
+        vars: ['r', 'R'],
+        residual: (v: Values) => (v.r! < RE_PER_RSUN * v.R! ? 0 : 1),
+        solve: {},
+        message: () => 'A planet is smaller than its star, so it blocks only part of the light.',
+      },
+      steps: {},
+    },
+    rule(
+      'δ = 100 × (r ÷ (109 × R))²',
+      '{d} = 100 × ({r} ÷ (109 × {R}))²',
+      (v) => v.d! - depthOf(v.r!, v.R!),
+      {
+        d: [
+          (v) => depthOf(v.r!, v.R!),
+          '100 × ({r} ÷ (109 × {R}))²',
+          'The planet’s disk over the star’s disk: the ratio of their radii, squared.',
+        ],
+        r: [
+          (v) => (v.d! >= 0 ? RE_PER_RSUN * v.R! * Math.sqrt(v.d! / 100) : undefined),
+          '109 × {R} × √({d} ÷ 100)',
+          'Undo the square: the radius ratio is the square root of the dip’s share.',
+        ],
+        R: [
+          (v) => (v.d! > 0 ? v.r! / (RE_PER_RSUN * Math.sqrt(v.d! / 100)) : undefined),
+          '{r} ÷ (109 × √({d} ÷ 100))',
+          'The star is as many times wider as the square root of the share is small.',
+        ],
+      },
+    ),
+  ),
+  example: { R: 1, r: 10.9, d: 1 },
+  startWith: ['d', 'R'],
+  representation: {
+    kind: 'table',
+    sweep: 'r',
+    output: 'd',
+    params: ['R'],
+    rows: TRANSIT_ROWS.map(([r]) => r),
+    rowNames: TRANSIT_ROWS.map(([, name]) => name),
+  },
+};
+
+const exoOrbit: ModuleDef = {
+  id: 's.12.exoplanets~orbit',
+  title: 'An exoplanet’s orbit from its period',
+  use: 'Use this for “A planet circles a star of 0.8 solar masses every 36.5 days. How far is it from its star?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The planet’s mass is tiny beside its star’s.',
+    'With M = 1 this is the solar system’s T² = a³.',
+    'A heavier star pulls harder, so the same period means a wider orbit.',
+  ],
+  variables: [
+    V('M', 'M', 'Star’s mass', { unit: 'M☉', min: 0.1, max: 5, step: 0.01 }),
+    V('P', 'P', 'Period in days', { unit: 'days', min: 0.2, max: 10000, step: 0.001 }),
+    V('T', 'T', 'Period in years', { unit: 'years', min: 0.0005, max: 27.4, step: 0.0001 }),
+    V('a', 'a', 'Orbit size', { unit: 'AU', min: 0.001, max: 20, step: 0.0001 }),
+  ],
+  ...rels(
+    rule('T = P ÷ 365.25', '{T} = {P} ÷ 365.25', (v) => v.T! - v.P! / 365.25, {
+      T: [(v) => v.P! / 365.25, '{P} ÷ 365.25', 'A year is 365.25 days: count the years.'],
+      P: [(v) => v.T! * 365.25, '{T} × 365.25', 'Each year is 365.25 days: multiply.'],
+    }),
+    rule('a³ = M × T²', '{a}³ = {M} × {T}²', (v) => v.a! ** 3 - v.M! * v.T! * v.T!, {
+      a: [
+        (v) => Math.cbrt(v.M! * v.T! * v.T!),
+        '∛({M} × {T}²)',
+        'Kepler’s third law with the star’s mass: a is the cube root of M × T².',
+      ],
+      M: [(v) => div(v.a! ** 3, v.T! * v.T!), '{a}³ ÷ {T}²', 'Divide a³ by T².'],
+      T: [
+        (v) => (v.M! > 0 ? Math.sqrt(v.a! ** 3 / v.M!) : undefined),
+        '√({a}³ ÷ {M})',
+        'T² is a³ over the star’s mass; take the square root.',
+      ],
+    }),
+  ),
+  example: { M: 0.8, P: 36.525, T: 0.1, a: 0.2 },
+  startWith: ['P', 'M'],
+  representation: {
+    kind: 'table',
+    sweep: 'P',
+    output: 'a',
+    params: ['M'],
+    rows: [1, 10, 36.525, 100, 365.25],
+  },
+  pictureLabels: ['T'],
+};
+
+const habTemp = (L: number, a: number) => (278 * L ** 0.25) / Math.sqrt(a);
+
+const habitable: ModuleDef = {
+  id: 's.12.exoplanets~habitable-zone',
+  title: 'The habitable zone and a planet’s temperature',
+  use: 'Use this for “A star gives off 0.25 times the Sun’s light. Where is its habitable zone, and is a planet at 0.5 AU in it?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Between d₁ and d₂ a planet like Earth could keep liquid water.',
+    'Light spreads out as the square of distance, so the zone moves out as √L.',
+    'T leaves out clouds and greenhouse gases: it gives Earth 278 K, but Earth averages about 288 K.',
+  ],
+  variables: [
+    V('L', 'L', 'Star’s luminosity', { unit: 'L☉', min: 0.001, max: 100, step: 0.001 }),
+    V('d1', 'd₁', 'Inner edge of the zone', {
+      unit: 'AU',
+      min: 0.03,
+      max: 9.5,
+      step: 0.001,
+      derived: true,
+    }),
+    V('d2', 'd₂', 'Outer edge of the zone', {
+      unit: 'AU',
+      min: 0.043,
+      max: 13.7,
+      step: 0.001,
+      derived: true,
+    }),
+    V('a', 'a', 'Planet’s orbit', { unit: 'AU', min: 0.01, max: 100, step: 0.001 }),
+    V('T', 'T', 'Planet’s temperature', { unit: 'K', min: 1, max: 10000, step: 0.1 }),
+  ],
+  ...rels(
+    rule('d₁ = 0.95 × √L', '{d1} = 0.95 × √({L})', (v) => v.d1! - 0.95 * Math.sqrt(v.L!), {
+      d1: [
+        (v) => 0.95 * Math.sqrt(v.L!),
+        '0.95 × √({L})',
+        'Nearer than this, a planet like Earth grows too hot and loses its water.',
+      ],
+      L: [(v) => (v.d1! / 0.95) ** 2, '({d1} ÷ 0.95)²', 'Undo the square root: square d₁ ÷ 0.95.'],
+    }),
+    rule('d₂ = 1.37 × √L', '{d2} = 1.37 × √({L})', (v) => v.d2! - 1.37 * Math.sqrt(v.L!), {
+      d2: [(v) => 1.37 * Math.sqrt(v.L!), '1.37 × √({L})', 'Farther than this, its water freezes.'],
+      L: [(v) => (v.d2! / 1.37) ** 2, '({d2} ÷ 1.37)²', 'Undo the square root: square d₂ ÷ 1.37.'],
+    }),
+    rule(
+      'T = 278 × L^(1/4) ÷ √a',
+      '{T} = 278 × ({L})^(1/4) ÷ √({a})',
+      (v) => v.T! - habTemp(v.L!, v.a!),
+      {
+        T: [
+          (v) => habTemp(v.L!, v.a!),
+          '278 × ({L})^(1/4) ÷ √({a})',
+          'A planet at 1 AU from the Sun comes to 278 K; more light warms it, more distance cools it.',
+        ],
+        a: [
+          (v) => (v.T! > 0 ? ((278 * v.L! ** 0.25) / v.T!) ** 2 : undefined),
+          '(278 × ({L})^(1/4) ÷ {T})²',
+          'Undo the square root of the distance: square the ratio.',
+        ],
+        L: [
+          (v) => ((v.T! * Math.sqrt(v.a!)) / 278) ** 4,
+          '({T} × √({a}) ÷ 278)⁴',
+          'Undo the fourth root of the light: raise to the fourth power.',
+        ],
+      },
+    ),
+  ),
+  example: { L: 0.25, d1: 0.475, d2: 0.685, a: 0.5, T: 278 },
+  startWith: ['L', 'a'],
+  representation: {
+    kind: 'table',
+    sweep: 'a',
+    output: 'T',
+    params: ['L'],
+    rows: [0.25, 0.5, 0.75, 1, 1.5, 2],
+  },
+  pictureLabels: ['d1', 'd2'],
+};
+
 export const SCIENCE_12_MODULES: ModuleDef[] = [
   mineralDensity,
   earthInterior,
   epicenter,
   shadowZone,
+  earthDay,
+  coralDays,
   carbonDating,
   uranium,
   bracket,
+  halfLife,
   sonar,
   tides,
   lapse,
@@ -1338,4 +1778,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   hubble,
   redshift,
   stretch,
+  transit,
+  exoOrbit,
+  habitable,
 ];

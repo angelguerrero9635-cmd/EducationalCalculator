@@ -235,7 +235,7 @@
           "n": "10",
           "title": "Chi-Square Tests and the F-Distribution",
           "url": "https://www.ixl.com/math/skill-plans/elementary-statistics",
-          "skills": ["m.12.chi-square", "m.12.hypothesis-testing"],
+          "skills": ["m.12.anova", "m.12.chi-square", "m.12.hypothesis-testing"],
           "notes": "Chi-square tests and the F-distribution go beyond the taxonomy's introduction to hypothesis testing. IXL gives only a section range for this chapter, not section titles; sections omitted."
         },
         {

@@ -22,13 +22,12 @@ and each strand's skills sit together within a grade.
    a saved "Recently viewed" entry points to. Give topics stable ids when they get lessons, since
    that will be the first time reordering could lose a student's place.
 
-3. **Standards with no page yet (from the K–3 and Grade 4 reviews).** 4.OA.5 (patterns),
-   4.MD.4 (line plots with fractions), 4.NF.6 (decimals past 1 on a number line), 4.MD.6
-   (a protractor, as an explore figure); K.CC.2 (count on from a number other
-   than 1) beyond "one more"; K.G.5 (build shapes from sticks and clay); 1.G.2 (compose
-   shapes); 2.MD.3 (estimate lengths); 3.G.2 (equal parts of an area); K-PS2-2 (change a
-   push's direction); 3-PS2-4 (electric forces). 3.NBT.2 is taught on the Grade 2 page
-   `m.2.add-sub-1000` by the one-definition rule.
+3. **Standards with no page (checked again after Grades 9–12).** Only K.G.5 (build shapes from
+   sticks and clay) has none, since it is a hands-on activity; `m.K.compose-shapes` covers
+   composing (K.G.6, and 1.G.2's idea). The rest of the earlier list now has pages: 4.MD.4
+   (`m.4` line plots in eighths), 4.NF.6 (decimals on a number line), 4.MD.6
+   (`m.4.angles~protractor`), K-PS2-2 and 3-PS2-4 (the pushes and magnets pages). 3.NBT.2 is
+   taught on `m.2.add-sub-1000` by the one-definition rule.
 
 4. **Duplicate pairs across grades.** `m.K.classify-count` and `m.1.data-3-categories`;
    `m.K.shapes-2d-3d`, `m.1.shape-attributes` and `m.2.thirds-polygons~polygons`;
@@ -42,39 +41,45 @@ and each strand's skills sit together within a grade.
 6. **Layout kinds are not a taxonomy field.** Sorts, sequences, explorations and observations
    are marked by the page data (`src/data/modules/layouts/`), not the skill row.
 
-7. **Grades 9–12: topics the textbooks teach that no skill holds (from the eight direction plans,
-   `docs/plans/`).** Logged for the owner, to add after Grades 9–12 are built; the builders plan
-   no pages for them.
-   - **Math:**
-     - density and modeling with solids (G-MG.2);
-     - proof by induction;
-     - symmetry counting (patterns up to rotation);
-     - linear transformations as matrices;
-     - 3-D vectors and the cross product;
-     - rotation of axes and polar conics;
-     - the area problem and limits of sequences;
-     - inference for regression, ANOVA and the F distribution;
-     - partial fractions.
-   - **Math, taught but held by another skill's title:** average rate of change (under
-     m.9.function-notation); parallel and perpendicular lines (m.9.linear-modeling,
-     m.10.parallel-lines); rational and irrational sums (m.9.radicals); the zero-product property
-     (m.9.quadratic-formula); sum and difference of cubes (m.11.polynomial-equations).
-   - **Biology:** reproduction and development (NAEP-2005-12S14-#13 has no skill); plants;
-     nervous and sensory systems; cell-cycle control and cancer; biomes.
-   - **Chemistry:** predicting products; vapor pressure and boiling point (NAEP-2005-12S13-#6);
-     colligative properties; electrolysis and corrosion; polymers; entropy and free energy.
-   - **Physics:** electric potential and capacitors; simple harmonic motion; torque and rotation;
-     which skill owns E = mc² (modern physics or nuclear chemistry). Kepler's laws are taught in
-     Grade 11 but sit in s.12.solar-system (a Refresh link for now).
-   - **Earth and space:** engineering tradeoffs for human impacts (3 NAEP items) and experimental
-     design (1); parallax and distances; black holes; the Milky Way; the interstellar medium;
-     quasars; life in the universe; exoplanet detection; early Earth's atmosphere.
-   - **Crosswalk:** Tarbuck 13 (the ocean floor) should also map to s.12.ocean-atmosphere, and
-     m.10.circle-equations to Big Ideas 10.7 and IM 6.4–6.6.
-   - **Question data:** 45 released questions were refiled to the skill that teaches them, from
-     the plans' lists (`research/questions`, COVERAGE.md regenerated).
-
 ## Resolved
+
+### Grades 9–12 topics without a skill (added after Grades 9–12 were built)
+
+The eight direction plans and the eight lesson reviews listed textbook units no skill held; the
+owner deferred them until Grades 9–12 were built. **21 skills added**, **13 titles widened** to
+name what their pages already teach or now take in:
+
+- **Math 9:** added `units-precision` (N-Q.3, accuracy and precision). Widened
+  `function-notation` (average rate of change), `linear-modeling` (parallel and perpendicular
+  lines), `radicals` (rational and irrational numbers) and `quadratic-formula` (factoring, the
+  zero-product property).
+- **Math 10:** added `modeling-density` (G-MG.2–3, density and design).
+- **Math 11:** widened `polynomial-equations` (sums and differences of cubes).
+- **Math 12, Precalculus:** added `vectors-3d`, `matrix-transformations`, `induction`,
+  `partial-fractions`, `polar-conics` (with rotation of axes) and `area-under-curve` (limits of
+  sequences). **Statistics:** added `regression-inference` and `anova`.
+- **Biology:** added `reproduction-development`, `plant-biology`, `biomes` and
+  `nervous-system`; `mitosis-meiosis` takes cell-cycle control and cancer.
+- **Chemistry:** added `phase-colligative` (vapor pressure, boiling point, colligative
+  properties) and `entropy-free-energy`; `reaction-types` takes predicting products, `redox`
+  electrolysis and corrosion, `organic` polymers.
+- **Physics:** added `rotation` (torque, static equilibrium), `oscillations` (simple harmonic
+  motion) and `electric-potential` (with capacitors). E = mc² stays with `s.11.modern-physics`
+  (relativity) and mass defect with `s.10.nuclear-chemistry`; Kepler's laws stay in
+  `s.12.solar-system`.
+- **Earth and space:** added `earth-history` (early Earth, its atmosphere, the history of life)
+  and `exoplanets` (with the search for life); `resource-management` takes engineering
+  solutions, `starlight-spectra` distances (parallax), `stellar-evolution` black holes and
+  `cosmology` the Milky Way.
+- **Not added:** symmetry counting (a problem type of `m.10.rigid-motions`), transformations of
+  linear graphs (`m.11.function-transformations`), radical equations (in
+  `m.11.radical-functions`' title), experimental design in Earth science (a practices skill).
+- **Textbooks:** `research/textbooks/tools/remap_hs.py` maps the units to the new skills (and
+  Tarbuck 13, the ocean floor, to `s.12.ocean-atmosphere`); `grades/` and `CROSSWALK.md`
+  regenerated. **Questions:** 7 released questions refiled (reproduction, vapor pressure, two
+  atmosphere items, two Grade 10 geometry items, and one probability item to Grade 7);
+  COVERAGE.md regenerated.
+- The new skills have no pages yet; they are built next, one builder per grade.
 
 ### Each college course in one field
 

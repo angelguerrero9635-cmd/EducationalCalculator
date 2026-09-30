@@ -103,7 +103,12 @@
           "n": "4",
           "title": "Physical Properties of Materials",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": ["s.10.molecular-shape", "s.10.bonding", "s.10.molarity"],
+          "skills": [
+            "s.10.phase-colligative",
+            "s.10.molecular-shape",
+            "s.10.bonding",
+            "s.10.molarity"
+          ],
           "storyline": "Atoms, Elements, and Molecules",
           "lessons": [
             {
@@ -311,7 +316,7 @@
           "n": "12",
           "title": "Reaction Rates and Equilibrium",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": ["s.10.reaction-types", "s.10.rates-equilibrium"],
+          "skills": ["s.10.entropy-free-energy", "s.10.reaction-types", "s.10.rates-equilibrium"],
           "storyline": "The Dynamics of Chemical Reactions and Ocean Acidification",
           "lessons": [
             {
@@ -678,7 +683,7 @@
           "n": "10",
           "title": "Electromagnetic Energy",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
-          "skills": ["s.11.circuits", "s.12.resource-management"],
+          "skills": ["s.11.electric-potential", "s.11.circuits", "s.12.resource-management"],
           "storyline": "Energy Conversion",
           "lessons": [
             {

@@ -196,7 +196,8 @@ const describe_ = (sys: System, vals: Values | readonly Given[]) => {
  */
 function resultNumber(result: string, exp = false): number {
   // "about $3.33": a price rounded to the cent.
-  const rhs = (result.split(' = ')[1] ?? '').replace(/^about /, '');
+  // A negative amount of money is written with its sign first (−$10).
+  const rhs = (result.split(' = ')[1] ?? '').replace(/^about /, '').replace(/^[−-]\$/, '-');
   const mixed = /^(-?)(?:(\d+) )?(\d+)\/(\d+)(?![\d.])/.exec(rhs);
   if (mixed) {
     const x = Number(mixed[2] ?? 0) + Number(mixed[3]) / Number(mixed[4]);
@@ -413,7 +414,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     // numbers: the evaluator would read a value named e as Euler's number.
     if (!s.substituted && c.module.variables.some((v) => wordIn(expr, v.symbol))) continue;
 
-    if (allNonNegative && /\(-/.test(expr)) {
+    // (a negative value put in is a bracketed number, "(-3)"; e^(-0.5 × 6) is an exponent)
+    if (allNonNegative && /\(-\s*[\d.,]+\)/.test(expr)) {
       c.f.add('error', `${c.label}step substitutes a negative count: "${s.substituted}"`, where);
     }
     const xs = evaluateAll(expr);
@@ -669,7 +671,7 @@ function checkAll(c: Ctx, sent: readonly Given[], res: SolveResult) {
 // ─── Sampling stages ─────────────────────────────────────────────────────────
 
 /** Values a student can type: a derived value is only ever worked out. */
-const typable = (c: Ctx) => c.sys.variables.filter((v) => !v.derived);
+const typable = (c: Ctx) => c.sys.variables.filter((v) => !v.derived && !v.hidden);
 
 function randomGivens(c: Ctx, r: Rng): Given[] {
   const vars = typable(c);
@@ -731,9 +733,10 @@ function stageEdits(c: Ctx, r: Rng, sequences: number) {
       let mode: 'set' | 'same' | 'clear' | 'invalid' | 'multi' = 'set';
       const givenIds = state.given.map((g) => g.id);
       // A derived value has no box to retype into.
-      const knownIds = Object.keys(state.result.values).filter(
-        (id) => !c.sys.variables.find((v) => v.id === id)?.derived,
-      );
+      const knownIds = Object.keys(state.result.values).filter((id) => {
+        const v = c.sys.variables.find((x) => x.id === id);
+        return !v?.derived && !v?.hidden;
+      });
       if (roll < 0.12 && knownIds.length) {
         mode = 'same';
         const id = r.pick(knownIds);

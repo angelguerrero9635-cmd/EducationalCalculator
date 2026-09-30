@@ -3,16 +3,16 @@
 Built from `.review/plans/m.9/plan.md` in its Priority order. Pages are in
 `src/data/modules/math/9.ts` (one array per skill, exported in taxonomy order), sorts in
 `src/data/modules/layouts/math9.ts`, step phrases in `src/data/modules/harness/phrasesM9.ts`.
-`MODULE_IDS=m.9. pnpm test src/data/modules`: 3,072 passed, 2 skipped; `src/data/__tests__`:
+`MODULE_IDS=m.9. pnpm test src/data/modules`: 3,308 passed, 2 skipped (deep run clean); `src/data/__tests__`:
 50 passed.
 
 ## Built
 
-67 pages written, 66 of them registered (the main exponential page waits on the move, below).
+71 pages, all registered (67 from the plan and 4 from the lesson review, below).
 
 | Skill                     | Pages | Calculators                                                                       | Sorts                   |
 | ------------------------- | ----- | --------------------------------------------------------------------------------- | ----------------------- |
-| m.9.solving-equations     | 4     | main, ~distribute, ~literal                                                       | ~how-many-solutions     |
+| m.9.solving-equations     | 5     | main, ~distribute, ~literal, ~literal-line                                        | ~how-many-solutions     |
 | m.9.linear-inequalities   | 6     | main, ~compound, ~or, ~two-variables, ~two-variables-below, ~whole-number-answers | —                       |
 | m.9.absolute-value        | 3     | main, ~inequality, ~inequality-beyond                                             | —                       |
 | m.9.function-notation     | 4     | main, ~evaluate, ~domain-range, ~rate-of-change                                   | —                       |
@@ -21,13 +21,13 @@ Built from `.review/plans/m.9/plan.md` in its Priority order. Pages are in
 | m.9.inequality-systems    | 3     | main, ~elimination, ~modeling                                                     | —                       |
 | m.9.piecewise-functions   | 4     | main, ~context, ~step, ~absolute-function                                         | —                       |
 | m.9.radicals              | 6     | main, ~cube-root, ~rational-exponent, ~monomials, ~multiply                       | ~rational-or-irrational |
-| m.9.exponential-functions | 5     | main (`EXPONENTIAL_MAIN`), ~percent-growth, ~decay, ~doubling                     | ~linear-or-exponential  |
+| m.9.exponential-functions | 6     | main, ~percent-growth, ~decay, ~same-base, ~doubling                              | ~linear-or-exponential  |
 | m.9.sequences             | 3     | main, ~geometric, ~recursive                                                      | —                       |
 | m.9.polynomial-operations | 3     | main, ~add-subtract, ~square                                                      | —                       |
 | m.9.factoring             | 4     | main, ~leading-coefficient, ~gcf, ~special                                        | —                       |
-| m.9.quadratic-functions   | 4     | main, ~standard-form, ~factored-form, ~projectile                                 | —                       |
+| m.9.quadratic-functions   | 5     | main, ~standard-form, ~factored-form, ~projectile                                 | ~compare-models         |
 | m.9.quadratic-formula     | 5     | main, ~square-roots, ~complete-square, ~inequality, ~inequality-outside           | —                       |
-| m.9.data-displays         | 4     | main, ~outliers, ~standard-deviation, ~compare                                    | —                       |
+| m.9.data-displays         | 5     | main, ~outliers, ~standard-deviation, ~compare, ~five-number-summary              | —                       |
 | m.9.two-way-tables        | 3     | main, ~marginal, ~conditional                                                     | —                       |
 
 Interims built as the plan allows: two fixed-sign pages each for the half-plane
@@ -38,15 +38,6 @@ Interims built as the plan allows: two fixed-sign pages each for the half-plane
 
 ## Waiting
 
-- **Pilot move + galleryR4d repoint (lead does at merge).** The main page
-  `m.9.exponential-functions` (y = a(b)ˣ on `functionGraph`, the plan's move with changes) is
-  written and tested as `EXPONENTIAL_MAIN` in `math/9.ts` (tested under a temporary id), but it is
-  not in `MATH_9_MODULES`, and `pilots.ts` still holds the pilot: `galleryR4d.ts` builds the demo
-  `g.r4d-table-growth` from the pilot by id, so removing it stops every suite from loading, and
-  the permission system refused this builder's edit to that shared file. At merge: in
-  `galleryR4d.ts` import `MATH_9_MODULES` from `./math/9`, add it to `PAGES`, and point the demo
-  at `m.9.exponential-functions~decay` (the pilot's sweep table lives there now; its example
-  passes); then empty `PILOT_MODULES` and put `EXPONENTIAL_MAIN` first in the `EXPONENTIAL` array.
 - **m.9.polynomial-operations~box** — need 7 (an area box for a binomial × trinomial, x³ and
   more than 10 tiles a side).
 - **m.9.absolute-value~tolerance** — need 1 (an `integerLine` window from its values: 344–356 g
@@ -107,7 +98,6 @@ Interims built as the plan allows: two fixed-sign pages each for the half-plane
 
 ## Shared needs found while building
 
-- **galleryR4d.ts** reads the Grade 9 pilot by id (see Waiting).
 - **Harness: a dollar answer in scientific notation** ("A = $6.0972 × 10⁹") is read as its leading
   number (`resultNumber`), so the step check fails. Would let the money pages keep wider ranges.
 - **Simplifying chain and negatives** (`simplify.ts`): "−(−6) ÷ (2 × 1)" simplifies to
@@ -126,3 +116,81 @@ Interims built as the plan allows: two fixed-sign pages each for the half-plane
   groundwork; need 12's phrases are in `phrasesM9.ts` (smaller/larger of, rounded up/down to a
   whole number, least common multiple of negatives); "largest perfect square factor" and "±" were
   already read.
+
+## Lesson review fixes
+
+From `.review/hs-m.9/lesson-report.md` (16 errors, 31 improvements, 4 new pages). E1, E14, E15
+and the ~special symbol were done by the lead first; E8–E11 by the engine.
+
+- **Fixed:** E1 (the corner outside the first quadrant is a rule message; m₁ in fractions), E2,
+  E3 (a pair past the tiles' 10 is said as the factorization), E4, E6, E7, E12, E13, E16, and
+  30 of the 31 improvements.
+- **E5 not done:** a rule message refuses the newest input, so "every number is a solution"
+  can't be a message on a = c, b = d (it would refuse typing b = d); the page shows no x and no
+  reason there. Shared need below.
+- **~outliers range:** `boxPlot` widens its axis past `range` to fit the values, so the 0–50
+  axis needs no change.
+- **Symbols:** no value symbol is an expression: f(x), f(x₁), f(x₂), f(p) are y, y₁, y₂, y_p
+  (the function notation is in the names), the class A/B summaries on ~compare are Q₁_A, IQR_B.
+- **New pages:** ~literal-line (ax + by = c for y), ~same-base (4⁶ = 8ˣ → 2¹² = 2³ˣ → x = 4,
+  whole exponent e = sa, so no fractional power is written; the table's qˣ is picture-only;
+  phrases in `phrasesM9.ts`), ~five-number-summary (box plot from up to 12 values),
+  ~compare-models (sort: linear, quadratic or exponential by differences and ratios).
+- **Waiting (from the report's coverage table):** m.9.function-notation~transform
+  (f(x) + k, f(x − h), a·f(x) on `functionGraph`: needs two curves on one graph) and
+  m.9.radicals~quotient (√a ÷ √b and rationalizing, no picture of it yet); nonlinear systems
+  (need `lineSystem` with a parabola).
+
+### Shared needs from the review
+
+- A rule message that informs without refusing the input (E5: a = c and b = d on
+  m.9.solving-equations, ~distribute: "every number is a solution").
+- The dump could print rule messages and mark `note:` lines (reviewer, E7).
+- Two-way tables: a page that fills the table from totals needs typed totals in `twoWayTable`.
+- The fixed-sign interims (~compound, ~or, half-planes, the inequalities) still wait on need 2.
+
+## Added skills
+
+Built from `docs/plans/m.9.md` "Added skills". `MODULE_IDS=m.9.units-precision`: module,
+standards, layouts and sampling suites pass (deep run `SAMPLES=100 SEQUENCES=15 UNIT_CASES=10`
+clean); `src/data/__tests__` and `units.test.ts` pass.
+
+### Built
+
+| Skill               | Pages | Calculators                                                                     | Sorts              |
+| ------------------- | ----- | ------------------------------------------------------------------------------- | ------------------ |
+| m.9.units-precision | 6     | main (mi/h to ft/s), ~area-units, ~formula-units, ~bounds, ~significant-figures | ~level-of-accuracy |
+
+Interims: ~bounds and ~significant-figures draw the plain `rectangle` (shared needs below).
+
+### Waiting
+
+None.
+
+### Changed from the plan
+
+- **Main and ~area-units carry no unit menu.** Their values are named in their units ("Speed in
+  miles per hour", "Area in square feet"), as `g.s10-measurement-rate` does: the `unitChain`
+  chain draws its units as written, and a page's metric system is always offered (even with
+  `unitSystems: ['us']` and pinned `units`), which would convert the numbers under the US chain.
+  The main page's title is the skill's.
+- **~formula-units is in km/h and km** (18 km/h for 40 min = 12 km), with mph and mi on the unit
+  menu: the default system is metric, and the lesson (minutes to hours before d = rt) holds in
+  either. t stays in minutes and h in hours (pinned).
+- **~area-units price up to $100 a square yard** (cost under $3,000,000): dollar answers past
+  $10,000,000 are drawn in scientific notation and the check line then reads them wrong.
+- **~bounds and ~significant-figures are metric only** (`unitSystems: ['metric']`), so the
+  precision u (0.1, 0.5, 1 or 10 cm) and the typed counts keep their meaning. ~bounds refuses a
+  side that is not a multiple of u; ~significant-figures refuses a count too small for the
+  number (4.25 with 2 figures).
+
+### Shared needs found while building
+
+- **Picture: `rectangle` bounds** — the measured rectangle with the least (l − e by w − e) and
+  greatest (l + e by w + e) rectangles dashed inside and outside it, the band between shaded;
+  driven by l, w, e, A_min, A_max. Page: m.9.units-precision~bounds.
+- **Engine: significant figures of a typed value** — keep the figures a student types (3.10, 250.)
+  so n₁ and n₂ are read, not typed, and show a worked-out value to n figures from a value id
+  (`sigFigs: 'n'`), so 13.0 shows its zero. Page: m.9.units-precision~significant-figures.
+- **Engine: a US-only page** — `unitSystems: ['us']` with pinned `units` still offers metric and
+  converts; honoring it would let the main page and ~area-units show mph, ft/s, ft², yd² as units.

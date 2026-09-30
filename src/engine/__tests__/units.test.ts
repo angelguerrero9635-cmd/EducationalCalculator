@@ -59,6 +59,15 @@ describe('unit conversions (exact definitions)', () => {
       '%',
       'bp',
       'per day',
+      'mol/kg',
+      'J/(mol·K)',
+      'mol/(L·s)',
+      'g/L',
+      'people',
+      'people per km²',
+      'minutes',
+      'R⊕',
+      'M☉',
       'per 1,000',
       'years',
       'cubes',
@@ -126,6 +135,17 @@ describe('unit conversions (exact definitions)', () => {
       'g/kg',
       'hPa per 100 km',
       'kg/s',
+      // s.11 rotation, oscillations, electric potential
+      'N·m',
+      'rpm',
+      'rad',
+      'rad/s',
+      'rad/s²',
+      'kg·m²',
+      'e',
+      'μF',
+      'pF',
+      'pC',
     ];
     const unknown = new Set(
       MODULES.flatMap((m) =>

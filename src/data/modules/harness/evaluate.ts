@@ -137,7 +137,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) \\+ (${NUM}) past the hour`), (a, b) => (a + b) % 60],
   [new RegExp(`(${NUM}) [-−] (${NUM}) past the hour`), (a, b) => (((a - b) % 60) + 60) % 60],
   [new RegExp(`(${NUM}) wholes? and (${NUM})/(${NUM})`), (w, a, b) => w + a / b],
-  [new RegExp(`(${NUM})/(${NUM})`), (a, b) => a / b],
+  // (not when the bottom is raised to a power: 12/2² is 12 ÷ 4)
+  [new RegExp(`(${NUM})/(${NUM})(?![\\d.]|\\s*\\*\\*)`), (a, b) => a / b],
   [new RegExp(`(${NUM}) (?:not shaded|shaded|equal parts)`), (a) => a],
   [new RegExp(`difference of (${NUM}) and (${NUM})`), (a, b) => Math.abs(a - b)],
   [new RegExp(`size of (${NUM}) equal jumps from (${NUM}) to (${NUM})`), (k, a, n) => (n - a) / k],
@@ -297,10 +298,7 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // Grade 6 factors and multiples (6.NS.4).
   [
     new RegExp(`(?:greatest common factor|shared prime factors) of (${NUM}) and (${NUM})`),
-    (a, b) => {
-      const gcd = (x: number, y: number): number => (y === 0 ? x : gcd(y, x % y));
-      return gcd(a, b);
-    },
+    (a, b) => gcd(a, b),
   ],
   [
     new RegExp(`least common multiple of (${NUM}) and (${NUM})`),
@@ -404,7 +402,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     // (sin(40°), Geometry) is in degrees, any other in radians (Algebra 2, Precalculus).
     .replace(/(sin|cos|tan)⁻¹\(/g, 'a$1(')
     .replace(/arc(sin|cos|tan)\(/g, 'a$1(')
-    .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*\d)°\)/g, '$1d($2)')
+    .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*[\d⁰¹²³⁴⁵⁶⁷⁸⁹])°\)/g, '$1d($2)')
     .replace(/(?<![\w.])e(?!\w)/g, `(${Math.E})`)
     .replace(/⌈([^⌈⌉]+)⌉/g, 'ceil($1)')
     .replace(/⌊([^⌊⌋]+)⌋/g, 'floor($1)')

@@ -734,8 +734,10 @@ it('module ids are unique', () => {
 describe.each(pages(TESTED_MODULES))('steps for %s', (id, m) => {
   if (isStandIn(id)) return void it.skip('no pages in scope', () => {});
   it('explain every rearrangement, using only that relation’s variables', () => {
-    expect(Object.keys(m.steps).sort()).toEqual(m.relations.map((r) => r.id).sort());
-    for (const r of m.relations) {
+    // (a figure-only relation places the drawing: it has no steps)
+    const shown = m.relations.filter((r) => !r.hidden);
+    expect(Object.keys(m.steps).sort()).toEqual(shown.map((r) => r.id).sort());
+    for (const r of shown) {
       const texts = m.steps[r.id]!;
       const solvable = Object.entries(r.solve ?? {}).filter(([, fn]) => fn!.length > 0);
       expect(Object.keys(texts).sort()).toEqual(solvable.map(([id]) => id).sort());
@@ -758,7 +760,7 @@ describe.each(pages(TESTED_MODULES))('steps for %s', (id, m) => {
     expect(w.given.map((q) => q.id)).toEqual(m.startWith);
     expect([...w.steps.map((s) => s.id), ...m.startWith].sort()).toEqual(
       m.variables
-        .filter((v) => !outOfCount(v, m.example))
+        .filter((v) => !outOfCount(v, m.example) && !v.hidden)
         .map((v) => v.id)
         .sort(),
     );
@@ -768,7 +770,7 @@ describe.each(pages(TESTED_MODULES))('steps for %s', (id, m) => {
     }
     expect(w.missing).toEqual([]);
     // Page limits are never shown as checks.
-    expect(w.check.length).toBe(m.relations.filter((r) => !r.constraint).length);
+    expect(w.check.length).toBe(m.relations.filter((r) => !r.constraint && !r.hidden).length);
     expect(w.check.every((c) => c.ok)).toBe(true);
   });
 });

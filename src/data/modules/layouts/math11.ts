@@ -87,7 +87,7 @@ export const MATH_11_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A log turns multiplying into adding, dividing into subtracting and a power into multiplying.',
       'The rules come from the exponent rules, since a log is an exponent.',
-      'A sum inside a log does not split, and a log of a log is not a power rule.',
+      'A sum inside a log does not split, and (log x)², a power of a log, is not the power rule.',
     ],
     question: 'Which rule makes the equation true?',
     bins: [
@@ -97,7 +97,7 @@ export const MATH_11_LAYOUTS: LayoutDef[] = [
       {
         id: 'not',
         label: 'Not a log rule',
-        why: 'These two sides are not equal for most numbers: no rule splits a sum or a quotient of logs.',
+        why: 'These two sides are not equal for most numbers: no rule splits a sum inside a log, a power of a log or a quotient of logs.',
       },
     ],
     cards: [

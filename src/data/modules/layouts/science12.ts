@@ -135,7 +135,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       {
         id: 'intrusive',
         label: 'Slowly, underground (intrusive)',
-        why: 'Buried magma cools over thousands of years, so its crystals are big enough to see.',
+        why: 'Buried magma cools over thousands to millions of years, so its crystals grow big enough to see.',
       },
       {
         id: 'extrusive',
@@ -366,7 +366,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     use: 'Use this for “Why do volcanoes above subduction zones erupt explosively?”',
     assumptions: [
       'Silica chains make magma thick; thick magma holds its gas until it bursts out.',
-      'Basalt is low in silica; andesite and rhyolite are high.',
+      'Basalt is low in silica, andesite is in between, and rhyolite is highest.',
     ],
     question: 'Which magma does this describe?',
     bins: [
@@ -406,7 +406,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       {
         label: 'Subduction',
         lines: [
-          'The dense ocean plate sinks under the continent and melts at depth.',
+          'The dense ocean plate sinks under the continent. Water squeezed out of it melts the mantle above.',
           'The magma rises to build a volcanic arc and coastal mountains, like the Andes.',
         ],
         plates: { boundary: 'subduction' },
@@ -435,6 +435,87 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
         ],
         plates: { boundary: 'divergent', mantle: true },
       },
+    ],
+  },
+
+  // ── Earth's history: the early Earth, its atmosphere and life (HS-ESS2-7, HS-ESS1-6) ──
+  {
+    kind: 'sequence',
+    id: 's.12.earth-history~oxygen',
+    title: 'How oxygen filled the air',
+    use: 'Use this for “How did the first photosynthesis change Earth’s air, and what did it leave in the rocks?”',
+    assumptions: [
+      'Oxygen first reacted with iron; only after the iron was used up did it build up in the air.',
+      'Red beds need oxygen in the air, so they date its rise.',
+    ],
+    question: 'Put the changes to Earth’s early air and oceans in order.',
+    stages: [
+      { label: 'Volcanoes release water vapor, carbon dioxide and nitrogen' },
+      { label: 'Water vapor condenses, and rain fills the first oceans' },
+      { label: 'Cyanobacteria in the sea release oxygen by photosynthesis' },
+      {
+        label: 'The oxygen rusts dissolved iron into banded iron layers on the seafloor',
+        figure: { kind: 'rock', texture: 'layers' },
+      },
+      {
+        label: 'Oxygen builds up in the air, and iron rusts on land into red beds',
+        figure: { kind: 'rock', texture: 'grains' },
+      },
+      { label: 'An ozone layer forms and blocks UV, so life can move onto land' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.earth-history~atmosphere',
+    title: 'Early Earth’s air and today’s',
+    use: 'Use this for “How was Earth’s early atmosphere different from today’s, and what changed it?”',
+    assumptions: [
+      'The first lasting air came from gases released by volcanoes.',
+      'Photosynthesis added the oxygen; rain, rock and life took out most of the carbon dioxide.',
+    ],
+    question: 'Does it describe early Earth’s air or today’s air?',
+    bins: [
+      {
+        id: 'early',
+        label: 'Early Earth (about 4 billion years ago)',
+        why: 'Volcanic gases made this air before any life could release oxygen.',
+      },
+      {
+        id: 'today',
+        label: 'Today',
+        why: 'Billions of years of photosynthesis made this air.',
+      },
+    ],
+    cards: [
+      { label: 'Almost no free oxygen', bin: 'early' },
+      { label: 'Far more carbon dioxide', bin: 'early' },
+      { label: 'No ozone layer, so UV reaches the ground', bin: 'early' },
+      { label: 'Rich in water vapor that later rained out', bin: 'early' },
+      { label: 'About 21 % oxygen', bin: 'today' },
+      { label: 'Mostly nitrogen and oxygen', bin: 'today' },
+      { label: 'An ozone layer blocks most UV', bin: 'today' },
+      { label: 'Its oxygen was made by photosynthesis', bin: 'today' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.12.earth-history~life',
+    title: 'The history of life',
+    use: 'Use this for “Put the major steps in the history of life in order, from the first cells to humans.”',
+    assumptions: [
+      'Each step built on the ones before.',
+      'Mass extinctions cleared the way for new groups.',
+    ],
+    question: 'Put the steps in the history of life in order.',
+    stages: [
+      { label: 'The first single-celled life appears in the sea' },
+      { label: 'Cells with a nucleus appear after oxygen builds up' },
+      { label: 'Soft-bodied many-celled animals live on the seafloor' },
+      { label: 'Animals with shells and skeletons spread in the Cambrian' },
+      { label: 'Plants, then animals, move onto land' },
+      { label: 'Dinosaurs and the first mammals appear' },
+      { label: 'An asteroid ends the dinosaurs, and mammals spread' },
+      { label: 'Humans appear' },
     ],
   },
 
@@ -592,15 +673,16 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 's.12.radiometric-dating~time-scale',
     title: 'The geologic time scale',
-    use: 'Use this for “Order the eras of Earth’s history. How long was each?”',
+    use: 'Use this for “Order the spans of Earth’s history, from Precambrian time to the Cenozoic Era. How long was each?”',
     assumptions: [
       'The eras are named for their life: Paleozoic means old life, Mesozoic middle and Cenozoic new.',
       'The boundaries are dated from ash beds and lava flows by radiometric dating.',
+      'Earth is about 4,600 million years old.',
     ],
     question: 'Put Earth’s history in order, from its formation to today.',
     stages: [
       {
-        label: 'Precambrian: Earth forms; oxygen builds up and iron rusts into red beds',
+        label: 'Precambrian time: Earth forms; oxygen builds up and iron rusts into red beds',
         span: 4059,
       },
       { label: 'Paleozoic: shelled animals, fish, the first land plants', span: 289 },
@@ -797,8 +879,8 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       {
         label: 'Ash and smoke',
         lines: [
-          'Ash from a big eruption and smoke from fires add tiny particles high in the air.',
-          'The particles reflect sunlight before it reaches the ground, which cools Earth for a year or two.',
+          'A big eruption sends sulfur gas high into the air, where it forms tiny droplets; smoke from big fires adds particles too.',
+          'They reflect sunlight before it reaches the ground, which cools Earth for a year or two.',
         ],
         greenhouse: { view: 'energy', co2: 'today' },
       },
@@ -972,7 +1054,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.12.resource-management',
     assumptions: [
-      'Renewable resources are replaced as fast as we use them.',
+      'Renewable resources are replaced by nature within a human lifetime.',
       'Fossil fuels took millions of years to form.',
     ],
     question: 'Can people use it up?',
@@ -1019,7 +1101,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     use: 'Use this for “Describe how fossil fuels such as coal form.”',
     assumptions: [
       'Oil and gas form the same way from tiny sea organisms buried in mud.',
-      'Each step takes millions of years, so fossil fuels are nonrenewable.',
+      'The whole change takes millions of years, so fossil fuels are nonrenewable.',
     ],
     question: 'Put the steps in the formation of coal in order.',
     stages: [
@@ -1299,6 +1381,83 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'The first stars shine (about 200 million years)' },
       { label: 'The Sun and Earth form (about 9 billion years)' },
       { label: 'Today (13.8 billion years)' },
+    ],
+  },
+
+  // ── Exoplanets and the search for life (HS-ESS1-4, HS-ESS1-1) ──
+  {
+    kind: 'sort',
+    id: 's.12.exoplanets~methods',
+    title: 'How exoplanets are found',
+    use: 'Use this for “Which planets are easiest to find by transits, by the Doppler wobble or by imaging?”',
+    assumptions: [
+      'A planet is far fainter than its star, so most are found by what they do to the star.',
+      'Big planets close to their star are the easiest to find by transits and by wobble.',
+    ],
+    question: 'Which method is it?',
+    bins: [
+      {
+        id: 'transit',
+        label: 'Transit (the star dims)',
+        why: 'The planet passes in front of the star and blocks a little of its light.',
+      },
+      {
+        id: 'wobble',
+        label: 'Radial velocity (the star wobbles)',
+        why: 'The planet’s pull swings the star toward and away from us, shifting its lines.',
+      },
+      {
+        id: 'image',
+        label: 'Direct imaging',
+        why: 'A telescope blocks the star and records the planet’s own light.',
+      },
+    ],
+    cards: [
+      { label: 'Gives the planet’s size', bin: 'transit' },
+      { label: 'Needs the orbit edge-on to us', bin: 'transit' },
+      { label: 'The star dims on a regular schedule', bin: 'transit' },
+      { label: 'Gives a lowest possible mass for the planet', bin: 'wobble' },
+      { label: 'The star’s lines shift red, then blue', bin: 'wobble' },
+      { label: 'Measures the star’s speed toward and away from us', bin: 'wobble' },
+      { label: 'Blocks the star’s glare to catch the planet’s own light', bin: 'image' },
+      { label: 'Works best for big, young planets far from their star', bin: 'image' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.exoplanets~life',
+    title: 'Searching for life',
+    use: 'Use this for “Which findings would show a world could hold life, and which would show life itself?”',
+    assumptions: [
+      'Life as we know it needs liquid water, energy and carbon-based chemistry.',
+      'A world that could hold life is not proof that it does.',
+    ],
+    question: 'What does this finding tell us?',
+    bins: [
+      {
+        id: 'habitable',
+        label: 'Habitable: life could live there',
+        why: 'These make a world able to hold life, but no life has been found yet.',
+      },
+      {
+        id: 'bio',
+        label: 'Biosignature: a sign of life',
+        why: 'Living things leave these, and they are hard to explain without life.',
+      },
+      {
+        id: 'techno',
+        label: 'Technosignature: a sign of technology',
+        why: 'Only a technology would send these; SETI listens and looks for them.',
+      },
+    ],
+    cards: [
+      { label: 'Liquid water on its surface', bin: 'habitable' },
+      { label: 'An orbit inside the habitable zone', bin: 'habitable' },
+      { label: 'A rocky surface under a thick enough atmosphere', bin: 'habitable' },
+      { label: 'Oxygen and methane together in its air', bin: 'bio' },
+      { label: 'Fossil microbes in a rock', bin: 'bio' },
+      { label: 'A narrow radio signal no natural source makes', bin: 'techno' },
+      { label: 'Laser flashes repeating in a pattern', bin: 'techno' },
     ],
   },
 ];

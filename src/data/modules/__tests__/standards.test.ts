@@ -330,9 +330,22 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
     // Derived values are read-only boxes the lesson fills in, not values the student holds;
     // a data set (3 to 10 values and their count) is one list, held as one value, and so is a
     // group (a matrix's cells, a fixed data list).
-    const held = m.variables.filter((v) => !v.derived && !v.countedBy);
+    const held = m.variables.filter((v) => !v.derived && !v.countedBy && !v.hidden);
     const groups = new Set(held.flatMap((v) => (v.group ? [v.group] : [])));
     if (limit !== undefined)
       expect(held.filter((v) => !v.group).length + groups.size).toBeLessThanOrEqual(limit);
+  });
+
+  it('names each value with a symbol a student can read aloud', () => {
+    // A symbol that is an expression (−q) reads "−q = −q" in its own step; a Greek look-alike
+    // subscript (ᵦ, U+1D66) reads "beta", not "B".
+    const bad = m.variables.flatMap((v) =>
+      /^[−+×÷=-]/.test(v.symbol)
+        ? [`${v.id}: "${v.symbol}" starts with an operator`]
+        : /[ᵦᵨᵩᵪ]/.test(v.symbol)
+          ? [`${v.id}: "${v.symbol}" has a Greek subscript`]
+          : [],
+    );
+    expect(bad).toEqual([]);
   });
 });

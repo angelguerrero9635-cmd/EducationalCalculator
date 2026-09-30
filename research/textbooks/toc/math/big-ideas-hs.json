@@ -23,7 +23,12 @@
           "n": "1",
           "title": "Solving Linear Equations",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
-          "skills": ["m.9.solving-equations", "m.8.multi-step-equations", "m.9.absolute-value"],
+          "skills": [
+            "m.9.units-precision",
+            "m.9.solving-equations",
+            "m.8.multi-step-equations",
+            "m.9.absolute-value"
+          ],
           "notes": "Solving linear equations in one variable has no Grade 9 skill; mapped to m.8.multi-step-equations.",
           "lessons": [
             {
@@ -747,6 +752,7 @@
           "title": "Circles",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
           "skills": [
+            "m.10.circle-equations",
             "m.10.quadrilaterals",
             "m.10.circle-theorems",
             "m.10.coordinate-geometry",

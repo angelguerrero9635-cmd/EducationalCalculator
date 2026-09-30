@@ -663,7 +663,12 @@
           "n": "9",
           "title": "Coordinate Geometry",
           "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
-          "skills": ["m.10.quadrilaterals", "m.10.coordinate-geometry", "m.12.conics"],
+          "skills": [
+            "m.10.circle-equations",
+            "m.10.quadrilaterals",
+            "m.10.coordinate-geometry",
+            "m.12.conics"
+          ],
           "lessons": [
             {
               "n": "9-1",

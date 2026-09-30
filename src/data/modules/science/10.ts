@@ -5,27 +5,22 @@
  * direction plan and build notes: docs/BUILD_HS.md, docs/build/s.10.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/science10.ts`.
  */
+import { CELL_METALS } from '@/components/module/layouts/galvanic';
 import { trendValue } from '@/components/module/reps/chemTrends';
 import {
   configuration,
+  notation,
   photonEnergy,
   photonWavelength,
   unpaired,
   valenceOf,
 } from '@/components/module/reps/electrons';
-import { subscript } from '@/components/module/reps/chem';
-import {
-  LEWIS,
-  hydrogensOf,
-  ionic,
-  lewisCounts,
-  lewisKey,
-  valenceElectrons,
-} from '@/components/module/reps/lewis';
+import { element, groupOf, periodOf, subscript } from '@/components/module/reps/chem';
+import { hydrocarbonName, hydrogensOf, valenceElectrons } from '@/components/module/reps/lewis';
 import { molarMassOf } from '@/components/module/reps/moles';
 import { solubilityAt } from '@/components/module/reps/solubility';
 import { shapeOf } from '@/components/module/reps/vseprGeo';
-import { formatNumber as fmt } from '@/engine/format';
+import { formatNumber as fmt, scientific } from '@/engine/format';
 import type { Relation, VariableDef } from '@/engine/types';
 
 import { atLeast, whole } from '../helpers';
@@ -41,8 +36,20 @@ interface Rule {
 /** Gathers rules into a module's `relations` and `steps`. */
 const rules = (...rs: Rule[]) => ({
   relations: rs.map((r) => r.relation),
-  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+  // A figure-only (hidden) relation places the drawing and has no steps.
+  steps: Object.fromEntries(
+    rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+  ),
 });
+
+/** A factor after a division sign: a plain number as it is (/22.4), anything else bracketed. */
+const over = (k: string) => (/^[\d.,]+$/.test(k) ? k : `(${k})`);
+
+/** a ÷ b, or undefined when b is 0. */
+const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
+
+/** The greatest common factor of two whole numbers. */
+const gcd = (a: number, b: number): number => (b === 0 ? Math.abs(a) : gcd(b, a % b));
 
 /** A value with a unit the unit menu keeps (never switched to another unit). */
 const quantity = (
@@ -88,7 +95,7 @@ const chainRule = (
   steps: {
     [out]: { expr: `{${start}} × ${factorText}`, how },
     [start]: {
-      expr: `{${out}}/(${factorText})`,
+      expr: `{${out}}/${over(factorText)}`,
       how: 'Run the chain backwards: divide by the product of the factors.',
     },
   },
@@ -192,8 +199,8 @@ const MEASUREMENT: ModuleDef[] = [
       'The km on top and bottom cancel, leaving meters.',
     ],
     variables: [
-      quantity('a', 'a', 'Kilometers', undefined, 0.001, 1000, 0.001),
-      quantity('b', 'b', 'Meters', undefined, 1, 1e6, 1),
+      quantity('a', 'a', 'Distance in kilometers', 'km', 0.001, 1000, 0.001),
+      quantity('b', 'b', 'Distance in meters', 'm', 1, 1e6, 1),
     ],
     relations: [
       {
@@ -255,16 +262,17 @@ const MEASUREMENT: ModuleDef[] = [
   {
     id: 's.10.measurement~ruler',
     title: 'Reading a ruler to the estimated digit',
-    use: 'Use this to read a length to one digit past the smallest marks and count its significant figures.',
+    use: 'Use this to read a rod’s length from its start and end, to one digit past the smallest marks.',
     unitSystems: ['metric'],
     assumptions: [
       'The ruler is marked every 0.1 cm (every millimeter).',
       'Read one digit past the smallest mark; that last digit is estimated and still significant.',
+      'A length such as 6.46 cm has 3 significant figures: two certain digits and one estimated.',
     ],
     variables: [
       quantity('s', 'x₁', 'Start of the rod', 'cm', 0, 9, 0.01, { multipleOf: 0.01 }),
       quantity('e', 'x₂', 'End of the rod', 'cm', 0.01, 10, 0.01, { multipleOf: 0.01 }),
-      quantity('L', 'L', 'Length of the rod', 'cm', 0, 10, 0.01),
+      quantity('L', 'L', 'Length of the rod', 'cm', 0.01, 10, 0.01),
     ],
     ...rules({
       relation: {
@@ -280,7 +288,7 @@ const MEASUREMENT: ModuleDef[] = [
         s: { expr: '{e} − {L}', how: 'Take the length away from the end reading.' },
       },
     }),
-    example: { s: 1, e: 7.46, L: 6.46 },
+    example: { s: 1.25, e: 7.71, L: 6.46 },
     startWith: ['s', 'e'],
     sliders: true,
     representation: {
@@ -404,24 +412,31 @@ const ATOMS: ModuleDef[] = [
       'An ion has gained or lost electrons; its protons, and so its element, stay the same.',
       'Nonmetals such as sulfur gain electrons to fill their outer shell: S²⁻ has two extra.',
     ],
-    variables: PARTICLES,
-    ...rules(massRule, chargeRule),
-    example: { p: 16, n: 16, e: 18, A: 32, q: -2 },
-    startWith: ['p', 'n', 'e'],
+    variables: PARTICLES.filter((x) => ['p', 'e', 'q'].includes(x.id)),
+    ...rules(chargeRule),
+    example: { p: 16, e: 18, q: -2 },
+    startWith: ['p', 'e'],
     sliders: true,
-    representation: ATOM_PICTURE,
+    representation: { kind: 'atomModel', protons: 'p', electrons: 'e', charge: 'q' },
   },
 ];
 
 // ─── Electrons in atoms ──────────────────────────────────────────────────────
+
+/** "Z = 8 (oxygen): 1s² 2s² 2p⁴", the configuration the boxes are filled from. */
+const configLine = (z: number, electrons: number) => {
+  const name = element(z)?.name.toLowerCase() ?? `element ${z}`;
+  const ion = electrons === z ? '' : ` with ${electrons} electrons`;
+  return `Z = ${z} (${name})${ion}: ${notation(configuration(z, electrons))}`;
+};
 
 /** u: unpaired electrons of atom Z (with e electrons for an ion). */
 const unpairedRule = (ion: boolean): Rule => ({
   relation: {
     id: 'unpaired electrons',
     display: ion
-      ? '{u} = unpaired electrons of Z = {p} with {e} electrons'
-      : '{u} = unpaired electrons of Z = {p}',
+      ? '{u} = unpaired electrons of element {p} with {e} electrons'
+      : '{u} = unpaired electrons of element {p}',
     vars: ion ? ['u', 'p', 'e'] : ['u', 'p'],
     residual: (v) => v.u! - unpaired(configuration(v.p!, ion ? v.e! : v.p!)),
     solve: ion
@@ -431,9 +446,10 @@ const unpairedRule = (ion: boolean): Rule => ({
   steps: {
     u: {
       expr: ion
-        ? 'unpaired electrons of Z = {p} with {e} electrons'
-        : 'unpaired electrons of Z = {p}',
+        ? 'unpaired electrons of element {p} with {e} electrons'
+        : 'unpaired electrons of element {p}',
       how: 'Fill the boxes in order, one arrow in each box of a subshell before pairing, then count the single arrows.',
+      work: (v) => [configLine(v.p!, ion ? v.e! : v.p!)],
     },
   },
 });
@@ -442,15 +458,22 @@ const unpairedRule = (ion: boolean): Rule => ({
 const valenceRule: Rule = {
   relation: {
     id: 'valence electrons',
-    display: '{v} = valence electrons of Z = {p}',
+    display: '{v} = valence electrons of element {p}',
     vars: ['v', 'p'],
     residual: (v) => v.v! - valenceOf(configuration(v.p!)),
     solve: { v: (v) => valenceOf(configuration(v.p!)), p: () => undefined },
   },
   steps: {
     v: {
-      expr: 'valence electrons of Z = {p}',
+      expr: 'valence electrons of element {p}',
       how: 'The electrons in the highest-numbered shell are the valence electrons.',
+      work: (v) => {
+        const cfg = configuration(v.p!);
+        const top = Math.max(...cfg.filter((x) => x.e > 0).map((x) => x.n));
+        const outer = cfg.filter((x) => x.n === top && x.e > 0).map((x) => x.e);
+        const sum = outer.length > 1 ? `${outer.join(' + ')} = ${valenceOf(cfg)}` : `${outer[0]}`;
+        return [configLine(v.p!, v.p!), `Shell ${top} holds ${sum}`];
+      },
     },
   },
 };
@@ -487,6 +510,13 @@ const LADDER_RULES: Rule[] = [
       E: {
         expr: '13.6 × (1/{l}^2 − 1/{u}^2)',
         how: 'The photon carries the energy between the two levels, Eₙ = −13.6/n² eV.',
+        work: (v) => {
+          const [a, b] = [v.l! ** 2, v.u! ** 2];
+          const g = gcd(b - a, a * b);
+          const [top, bottom] = [(b - a) / g, (a * b) / g];
+          const frac = bottom === 1 ? `${top}` : `${top}/${bottom}`;
+          return [`1/${a} − 1/${b} = ${frac}`, `13.6 × ${frac} = ${fmt(13.6 * (top / bottom))}`];
+        },
       },
       u: {
         expr: '1/√(1/{l}^2 − {E}/13.6)',
@@ -536,8 +566,15 @@ const PHOTON_RULES: Rule[] = [
         how: 'Light travels at c = 3.00 × 10⁸ m/s: divide c by the wavelength in meters.',
       },
       l: {
-        expr: '(3.00 × 10⁸)/{f}/10⁻⁹',
-        how: 'Divide c by the frequency for meters, then change meters to nanometers.',
+        expr: '(3.00 × 10⁸)/{f} × 10⁹',
+        how: 'Divide c by the frequency for meters, then change meters to nanometers: 10⁹ nm in 1 m.',
+        work: (v) => {
+          const m = scientific(3e8 / v.f!);
+          return [
+            `(3.00 × 10⁸)/(${scientific(v.f!)}) = ${m} m`,
+            `${m} m × 10⁹ nm/m = ${fmt(3e17 / v.f!)} nm`,
+          ];
+        },
       },
     },
   },
@@ -669,17 +706,58 @@ const ELECTRONS: ModuleDef[] = [
 
 const TREND_WORDS: Record<
   TrendProperty,
-  { phrase: string; name: string; unit?: string; step: number }
+  { phrase: string; name: string; unit?: string; step: number; max: number }
 > = {
-  radius: { phrase: 'atomic radius', name: 'Atomic radius', unit: 'pm', step: 1 },
+  radius: { phrase: 'atomic radius', name: 'Atomic radius', unit: 'pm', step: 1, max: 3000 },
   ionization: {
     phrase: 'ionization energy',
     name: 'First ionization energy',
     unit: 'kJ/mol',
     step: 1,
+    max: 3000,
   },
-  electronegativity: { phrase: 'electronegativity', name: 'Electronegativity', step: 0.01 },
+  electronegativity: {
+    phrase: 'electronegativity',
+    name: 'Electronegativity',
+    step: 0.01,
+    max: 4,
+  },
 };
+
+/** "Z = 11 (sodium): period 3, group 1", where an element sits in the table. */
+const placeLine = (z: number) =>
+  `Z = ${z} (${element(z)?.name.toLowerCase() ?? z}): period ${periodOf(z)}, group ${groupOf(z)}`;
+
+/**
+ * The trend reasoning for two elements: same period (farther right), same group (lower down),
+ * or both, and what the trend says about the property. When the values go against the trend
+ * (a transition metal, or a half-filled subshell) the line says the table decides.
+ */
+function trendReason(property: TrendProperty, z1: number, z2: number): string {
+  const words = TREND_WORDS[property].phrase;
+  const [a, b] = [trendValue(property, z1), trendValue(property, z2)];
+  if (a === undefined || b === undefined || z1 === z2) return `Both are Z = ${z1}`;
+  // Across a period the radius shrinks and the other two grow; down a group the reverse.
+  const acrossUp = property !== 'radius';
+  const [p1, p2, g1, g2] = [periodOf(z1), periodOf(z2), groupOf(z1)!, groupOf(z2)!];
+  // +1 when the trend makes the first element's value larger, −1 smaller, 0 when it can't say.
+  const across = g1 === g2 ? 0 : (g1 > g2 ? 1 : -1) * (acrossUp ? 1 : -1);
+  const down = p1 === p2 ? 0 : (p1 > p2 ? 1 : -1) * (acrossUp ? -1 : 1);
+  const says = across === 0 ? down : down === 0 ? across : across === down ? across : 0;
+  const where =
+    p1 === p2
+      ? `Same period: Z = ${g1 > g2 ? z1 : z2} is farther right`
+      : g1 === g2
+        ? `Same group: Z = ${p1 > p2 ? z1 : z2} is lower down`
+        : (p1 > p2 ? z1 : z2) === (g1 > g2 ? z1 : z2)
+          ? `Z = ${p1 > p2 ? z1 : z2} is lower down and farther right`
+          : `Z = ${p1 > p2 ? z1 : z2} is lower down and Z = ${g1 > g2 ? z1 : z2} farther right`;
+  if (says === 0) return `${where}, so the two trends pull opposite ways: the table decides`;
+  const bigger = says > 0 ? z1 : z2;
+  if ((a > b ? z1 : z2) !== bigger || a === b)
+    return `${where}; the trend says Z = ${bigger} is larger, but here the table goes against it`;
+  return `${where}, so the ${words} of Z = ${bigger} is the larger`;
+}
 
 /** out: an element's value of a property, looked up from its atomic number (never worked back). */
 const trendRule = (property: TrendProperty, out: string, z: string): Rule => {
@@ -687,19 +765,37 @@ const trendRule = (property: TrendProperty, out: string, z: string): Rule => {
   return {
     relation: {
       id: `${out} = ${words.phrase} of ${z}`,
-      display: `{${out}} = ${words.phrase} of Z = {${z}}`,
+      display: `{${out}} = ${words.phrase} of element {${z}}`,
       vars: [out, z],
       residual: (v) => v[out]! - (trendValue(property, v[z]!) ?? NaN),
       solve: { [out]: (v) => trendValue(property, v[z]!), [z]: () => undefined },
     },
     steps: {
       [out]: {
-        expr: `${words.phrase} of Z = {${z}}`,
+        expr: `${words.phrase} of element {${z}}`,
         how: `Read the element’s ${words.phrase} from the table.`,
+        work: (v) => [placeLine(v[z]!)],
       },
     },
   };
 };
+
+/**
+ * The bond's kind from the electronegativity difference, and which atom takes δ−:
+ * "0.4 ≤ 0.96 ≤ 1.7, so the bond is polar covalent; Z = 17 (chlorine) takes δ−".
+ */
+function bondClass(d: number, z1: number, z2: number, en1: number, en2: number): string {
+  const x = fmt(d);
+  const kind =
+    d < 0.4
+      ? `${x} is below 0.4, so the bond is nonpolar`
+      : d <= 1.7
+        ? `0.4 ≤ ${x} ≤ 1.7, so the bond is polar covalent`
+        : `${x} is above 1.7, so the bond is mostly ionic`;
+  if (en1 === en2) return `${kind}; neither atom pulls harder`;
+  const z = en1 > en2 ? z1 : z2;
+  return `${kind}; Z = ${z} (${element(z)?.name.toLowerCase()}), the more electronegative, takes δ−`;
+}
 
 /** Atomic numbers 1–54 that have a value of the property. */
 const withValue = (property: TrendProperty) =>
@@ -727,7 +823,7 @@ function trendPage(
     name,
     ...(words.unit ? { unit: words.unit, units: [words.unit] } : {}),
     min: 0,
-    max: 3000,
+    max: words.max,
     step: words.step,
   });
   const r = trendValue(property, z)!;
@@ -745,6 +841,8 @@ function trendPage(
           d: {
             expr: '|{r} − {s}|',
             how: 'The size of the difference says how unevenly the shared pair is held.',
+            work: (v) =>
+              v.p === undefined || v.c === undefined ? [] : [bondClass(v.d!, v.p, v.c, v.r!, v.s!)],
           },
         },
       }
@@ -757,7 +855,12 @@ function trendPage(
           solve: { d: (v) => v.r! - v.s!, r: (v) => v.d! + v.s!, s: (v) => v.r! - v.d! },
         },
         steps: {
-          d: { expr: '{r} − {s}', how: 'Subtract to see which is larger, and by how much.' },
+          d: {
+            expr: '{r} − {s}',
+            how: 'Subtract to see which is larger, and by how much.',
+            work: (v) =>
+              v.p === undefined || v.c === undefined ? [] : [trendReason(property, v.p, v.c)],
+          },
           r: { expr: '{d} + {s}', how: 'Add the difference to the second value.' },
           s: { expr: '{r} − {d}', how: 'Take the difference away from the first value.' },
         },
@@ -778,7 +881,7 @@ function trendPage(
           absolute ? 'ΔEN' : 'Δx',
           absolute ? 'Difference in electronegativity' : 'Difference (first − second)',
         ),
-        min: absolute ? 0 : -3000,
+        min: absolute ? 0 : -words.max,
       },
     ],
     ...rules(trendRule(property, 'r', 'p'), trendRule(property, 's', 'c'), difference),
@@ -846,12 +949,6 @@ const BOND_ATOMS: [string, string, string, number][] = [
   ['O', 'o', 'Oxygen atoms', 2],
 ];
 
-/** The drawn Lewis structure for h H, c C, n N and o O atoms, if there is one. */
-const drawnLewis = (v: Record<string, number | undefined>) => {
-  const key = lewisKey({ H: v.h!, C: v.c!, N: v.n!, O: v.o! });
-  return key ? lewisCounts(LEWIS[key]!) : undefined;
-};
-
 /** V = h + 4c + 5n + 6o: every valence electron the atoms bring. */
 const valenceSum: Rule = (() => {
   const terms = BOND_ATOMS.map(([el, id]) => ({ id, k: valenceElectrons(el) }));
@@ -885,29 +982,53 @@ const valenceSum: Rule = (() => {
   };
 })();
 
-const LEWIS_RULES: Rule[] = [
-  valenceSum,
-  {
-    relation: {
-      id: 'shared pairs',
-      display: '{b} = shared pairs in the structure of {h} H, {c} C, {n} N and {o} O',
-      vars: ['b', 'h', 'c', 'n', 'o'],
-      residual: (v) => v.b! - (drawnLewis(v)?.bonding ?? NaN),
-      solve: {
-        b: (v) => drawnLewis(v)?.bonding,
-        h: () => undefined,
-        c: () => undefined,
-        n: () => undefined,
-        o: () => undefined,
-      },
-    },
-    steps: {
-      b: {
-        expr: 'shared pairs in the structure of {h} H, {c} C, {n} N and {o} O',
-        how: 'Join the atoms with single bonds, then turn lone pairs into double or triple bonds until every atom has its octet.',
-      },
+/** N − A = S: electrons needed for full shells minus those on hand, halved, are the shared pairs. */
+const sharedPairs: Rule = {
+  relation: {
+    id: 'shared pairs',
+    display: '{b} = (2 × {h} + 8 × ({c} + {n} + {o}) − {V})/2',
+    vars: ['b', 'h', 'c', 'n', 'o', 'V'],
+    residual: (v) => v.b! - (2 * v.h! + 8 * (v.c! + v.n! + v.o!) - v.V!) / 2,
+    solve: {
+      b: (v) => (2 * v.h! + 8 * (v.c! + v.n! + v.o!) - v.V!) / 2,
+      V: (v) => 2 * v.h! + 8 * (v.c! + v.n! + v.o!) - 2 * v.b!,
+      h: (v) => (2 * v.b! + v.V! - 8 * (v.c! + v.n! + v.o!)) / 2,
+      c: (v) => (2 * v.b! + v.V! - 2 * v.h!) / 8 - v.n! - v.o!,
+      n: (v) => (2 * v.b! + v.V! - 2 * v.h!) / 8 - v.c! - v.o!,
+      o: (v) => (2 * v.b! + v.V! - 2 * v.h!) / 8 - v.c! - v.n!,
     },
   },
+  steps: {
+    b: {
+      expr: '(2 × {h} + 8 × ({c} + {n} + {o}) − {V})/2',
+      how: 'Electrons needed for full shells (2 for H, 8 for the others) minus the valence electrons you have, halved, are the shared pairs.',
+    },
+    V: {
+      expr: '2 × {h} + 8 × ({c} + {n} + {o}) − 2 × {b}',
+      how: 'Each shared pair counts for two atoms, so the electrons needed less two per pair are the ones on hand.',
+    },
+    h: {
+      expr: '(2 × {b} + {V} − 8 × ({c} + {n} + {o}))/2',
+      how: 'Undo the shared-pair rule: what is left of the electrons needed fills hydrogen’s 2 each.',
+    },
+    c: {
+      expr: '(2 × {b} + {V} − 2 × {h})/8 − {n} − {o}',
+      how: 'Undo the shared-pair rule: each atom other than H needs 8.',
+    },
+    n: {
+      expr: '(2 × {b} + {V} − 2 × {h})/8 − {c} − {o}',
+      how: 'Undo the shared-pair rule: each atom other than H needs 8.',
+    },
+    o: {
+      expr: '(2 × {b} + {V} − 2 × {h})/8 − {c} − {n}',
+      how: 'Undo the shared-pair rule: each atom other than H needs 8.',
+    },
+  },
+};
+
+const LEWIS_RULES: Rule[] = [
+  valenceSum,
+  sharedPairs,
   {
     relation: {
       id: 'V = 2(b + l)',
@@ -931,77 +1052,106 @@ const LEWIS_RULES: Rule[] = [
   },
 ];
 
-/** An ionic compound: a metal ions and b nonmetal ions whose charges balance, t electrons moved. */
-function ionicPage(
-  id: string,
-  title: string,
-  use: string,
-  assumptions: string[],
-  metal: string,
-  nonmetal: string,
-): ModuleDef {
-  const ion = ionic(metal, nonmetal);
-  const s = (k: number) => (k > 1 ? 's' : '');
-  return {
-    id,
-    title,
-    use,
-    assumptions,
-    variables: [
-      whole('a', 'a', `${metal} ions`, 1, 3),
-      whole('b', 'b', `${nonmetal} ions`, 1, 6),
-      whole('t', 't', 'Electrons moved', 1, 18),
-    ],
-    ...rules(
-      {
-        relation: {
-          id: 't = given × a',
-          display: `{t} = ${ion.give} × {a}`,
-          vars: ['t', 'a'],
-          residual: (v) => v.t! - ion.give * v.a!,
-          solve: { t: (v) => ion.give * v.a!, a: (v) => v.t! / ion.give },
-        },
-        steps: {
-          t: {
-            expr: `${ion.give} × {a}`,
-            how: `Each ${metal} atom gives ${ion.give} electron${s(ion.give)}.`,
-          },
-          a: { expr: `{t}/${ion.give}`, how: `Divide by the electrons each ${metal} atom gives.` },
+/** The lowest common multiple of two whole numbers. */
+const lcm = (a: number, b: number) => (a * b) / gcd(a, b);
+
+/**
+ * An ionic compound's formula from its ions' charges: the electrons moved are the lowest common
+ * multiple of the two charges, so a metal ions give them and b nonmetal ions take them.
+ */
+const IONIC: ModuleDef = {
+  id: 's.10.bonding~ionic',
+  title: 'The formula of an ionic compound',
+  use: 'Use this to find an ionic compound’s formula from the charges of its ions: Mg²⁺ with Cl⁻ is MgCl₂, Al³⁺ with O²⁻ is Al₂O₃.',
+  assumptions: [
+    'The metal gives electrons and the nonmetal takes them: the total positive charge equals the total negative charge.',
+    'The formula uses the lowest whole-number ratio of ions.',
+    'The picture draws magnesium chloride, Mg²⁺ with Cl⁻; other charges are worked in the rows.',
+  ],
+  variables: [
+    whole('cp', 'c₊', 'Charge of the metal ion', 1, 3),
+    whole('cn', 'c₋', 'Size of the nonmetal ion’s charge', 1, 3),
+    { ...whole('t', 't', 'Electrons moved', 1, 6), derived: true },
+    { ...whole('a', 'a', 'Metal ions in the formula', 1, 3), derived: true },
+    { ...whole('b', 'b', 'Nonmetal ions in the formula', 1, 3), derived: true },
+  ],
+  ...rules(
+    {
+      relation: {
+        id: 't = lcm(c₊, c₋)',
+        display: '{t} = least common multiple of {cp} and {cn}',
+        vars: ['t', 'cp', 'cn'],
+        residual: (v) => v.t! - lcm(v.cp!, v.cn!),
+        solve: { t: (v) => lcm(v.cp!, v.cn!), cp: () => undefined, cn: () => undefined },
+      },
+      steps: {
+        t: {
+          expr: 'least common multiple of {cp} and {cn}',
+          how: 'The electrons given must equal the electrons taken: the smallest number both charges go into.',
         },
       },
-      {
-        relation: {
-          id: 't = taken × b',
-          display: `{t} = ${ion.take} × {b}`,
-          vars: ['t', 'b'],
-          residual: (v) => v.t! - ion.take * v.b!,
-          solve: { t: (v) => ion.take * v.b!, b: (v) => v.t! / ion.take },
-        },
-        steps: {
-          t: {
-            expr: `${ion.take} × {b}`,
-            how: `Each ${nonmetal} atom takes ${ion.take} to fill its octet.`,
-          },
-          b: {
-            expr: `{t}/${ion.take}`,
-            how: `Divide by the electrons each ${nonmetal} atom takes.`,
-          },
-        },
-      },
-    ),
-    example: { a: ion.metals, b: ion.nonmetals, t: ion.transferred },
-    startWith: ['a'],
-    sliders: true,
-    representation: {
-      kind: 'lewisStructure',
-      mode: 'ionic',
-      metal,
-      nonmetal,
-      metals: 'a',
-      nonmetals: 'b',
-      transferred: 't',
     },
+    {
+      relation: {
+        id: 'a = t ÷ c₊',
+        display: '{a} = {t}/{cp}',
+        vars: ['a', 't', 'cp'],
+        residual: (v) => v.a! * v.cp! - v.t!,
+        solve: { a: (v) => div(v.t!, v.cp!), t: (v) => v.a! * v.cp!, cp: (v) => div(v.t!, v.a!) },
+      },
+      steps: {
+        a: { expr: '{t}/{cp}', how: 'Each metal ion gives as many electrons as its charge.' },
+        t: { expr: '{a} × {cp}', how: 'The metal ions give their charge each.' },
+        cp: { expr: '{t}/{a}', how: 'Share the electrons among the metal ions.' },
+      },
+    },
+    {
+      relation: {
+        id: 'b = t ÷ c₋',
+        display: '{b} = {t}/{cn}',
+        vars: ['b', 't', 'cn'],
+        residual: (v) => v.b! * v.cn! - v.t!,
+        solve: { b: (v) => div(v.t!, v.cn!), t: (v) => v.b! * v.cn!, cn: (v) => div(v.t!, v.b!) },
+      },
+      steps: {
+        b: {
+          expr: '{t}/{cn}',
+          how: 'Each nonmetal ion takes as many electrons as its charge.',
+          work: (v) => (v.a === undefined ? [] : [formulaLine(v.a, v.b!)]),
+        },
+        t: { expr: '{b} × {cn}', how: 'The nonmetal ions take their charge each.' },
+        cn: { expr: '{t}/{b}', how: 'Share the electrons among the nonmetal ions.' },
+      },
+    },
+  ),
+  example: { cp: 2, cn: 1, t: 2, a: 1, b: 2 },
+  startWith: ['cp', 'cn'],
+  sliders: true,
+  representation: {
+    kind: 'lewisStructure',
+    mode: 'ionic',
+    metal: 'Mg',
+    nonmetal: 'Cl',
+    metals: 'a',
+    nonmetals: 'b',
+    transferred: 't',
+  },
+};
+
+/** "a = 2, b = 3: M₂X₃, as in Al₂O₃", the formula the counts write. */
+function formulaLine(a: number, b: number): string {
+  const sub = (k: number) => (k === 1 ? '' : subscript(String(k)));
+  const EXAMPLES: Record<string, string> = {
+    '1,1': 'NaCl',
+    '1,2': 'MgCl₂',
+    '1,3': 'AlCl₃',
+    '2,1': 'Na₂O',
+    '2,3': 'Al₂O₃',
+    '3,1': 'Na₃N',
+    '3,2': 'Mg₃N₂',
   };
+  const like = EXAMPLES[`${a},${b}`];
+  return `The formula is M${sub(a)}X${sub(b)}${like ? `, as in ${like}` : ''}`;
 }
 
 const BONDING: ModuleDef[] = [
@@ -1009,9 +1159,9 @@ const BONDING: ModuleDef[] = [
     id: 's.10.bonding',
     assumptions: [
       'Each atom but hydrogen ends with 8 electrons around it; hydrogen with 2.',
-      'A shared pair counts for both atoms.',
+      'A shared pair counts for both atoms, so the electrons needed minus those on hand are two per shared pair.',
       'Two or three shared pairs make a double or triple bond.',
-      'The drawn molecules are H₂O, NH₃, CH₄, CO₂, HCN, CH₂O, H₂, O₂ and N₂.',
+      'The drawn molecules are H₂O, NH₃, CH₄, CO₂, HCN, CH₂O, H₂, O₂ and N₂; the rule works for any molecule whose atoms all reach full shells.',
     ],
     variables: [
       ...BOND_ATOMS.map(([, vid, name, max]) => whole(vid, `n${vid.toUpperCase()}`, name, 0, max)),
@@ -1033,18 +1183,7 @@ const BONDING: ModuleDef[] = [
       lone: 'l',
     },
   },
-  ionicPage(
-    's.10.bonding~ionic',
-    'The formula of an ionic compound',
-    'Use this to find an ionic compound’s formula from the charges of its ions, such as MgCl₂.',
-    [
-      'The metal gives electrons and the nonmetal takes them, making ions.',
-      'The total positive charge equals the total negative charge.',
-      'Magnesium gives 2 electrons; each chlorine takes 1, so one Mg²⁺ pairs with two Cl⁻.',
-    ],
-    'Mg',
-    'Cl',
-  ),
+  IONIC,
   {
     id: 's.10.bonding~metallic',
     title: 'Metallic bonding: a sea of electrons',
@@ -1100,10 +1239,9 @@ const SHAPES: ModuleDef[] = [
   {
     id: 's.10.molecular-shape',
     assumptions: [
-      'Electron domains spread as far apart as they can.',
-      'Lone pairs push harder than bonds, so angles shrink below 109.5°.',
+      'Electron domains spread as far apart as they can; a double bond counts as one domain.',
+      'Lone pairs push harder than bonds, so angles shrink: the angles are measured ones, such as water’s 104.5° and ammonia’s 107°.',
       'A molecule is polar when its bond dipoles don’t cancel.',
-      'A double bond counts as one domain, like a single bond.',
     ],
     variables: [
       whole('b', 'b', 'Bonded atoms on the central atom', 2, 4),
@@ -1141,12 +1279,22 @@ const SHAPES: ModuleDef[] = [
           a: {
             expr: 'bond angle with {b} bonded atoms and {l} lone pairs',
             how: 'The domains spread as far apart as they can; lone pairs take more room and squeeze the bonds together.',
+            work: (v) => {
+              const shape = shapeOf(v.b!, v.l!);
+              if (!shape) return [];
+              const lone =
+                v.l === 0 ? 'no lone pairs' : v.l === 1 ? '1 lone pair' : `${v.l} lone pairs`;
+              return [
+                `${v.b! + v.l!} domains: ${shape.domains}; ${lone}, so the shape is ${shape.name}, like ${subscript(shape.example.formula)}`,
+              ];
+            },
           },
         },
       },
     ),
     example: { b: 2, l: 2, d: 4, a: shapeOf(2, 2)!.angle },
     startWith: ['b', 'l'],
+    pictureLabels: ['d'],
     sliders: true,
     representation: { kind: 'vsepr', bonded: 'b', lone: 'l', angle: 'a', polar: true },
   },
@@ -1155,116 +1303,193 @@ const SHAPES: ModuleDef[] = [
 // ─── Reaction types: balancing ───────────────────────────────────────────────
 
 /** out = k × of: a coefficient or an atom count that follows another by a fixed ratio. */
-const scaled = (out: string, k: number, of: string, how: [string, string]): Rule => ({
-  relation: {
-    id: `${out} = ${k} × ${of}`,
-    display: k === 1 ? `{${out}} = {${of}}` : `{${out}} = ${k} × {${of}}`,
-    vars: [out, of],
-    residual: (v) => v[out]! - k * v[of]!,
-    solve: { [out]: (v) => k * v[of]!, [of]: (v) => v[out]! / k },
-  },
-  steps: {
-    [out]: { expr: k === 1 ? `{${of}}` : `${k} × {${of}}`, how: how[0] },
-    [of]: { expr: k === 1 ? `{${out}}` : `{${out}}/${k}`, how: how[1] },
-  },
-});
+const scaled = (
+  out: string,
+  k: number,
+  of: string,
+  how: [string, string],
+  text?: [string, string],
+): Rule => {
+  // `text` writes a fraction the way a class does: {a}/2, not 0.5 × {a} (and back, 2 × {c}).
+  const [fwd, back] = text ?? [
+    k === 1 ? `{${of}}` : `${k} × {${of}}`,
+    k === 1 ? `{${out}}` : `{${out}}/${k}`,
+  ];
+  return {
+    relation: {
+      id: `${out} = ${k} × ${of}`,
+      display: `{${out}} = ${fwd}`,
+      vars: [out, of],
+      residual: (v) => v[out]! - k * v[of]!,
+      solve: { [out]: (v) => k * v[of]!, [of]: (v) => v[out]! / k },
+    },
+    steps: {
+      [out]: { expr: fwd, how: how[0] },
+      [of]: { expr: back, how: how[1] },
+    },
+  };
+};
 
 const coefficient = (id: string, name: string, min: number, max: number) =>
   whole(id, id, name, min, max);
 
-const BALANCING: ModuleDef[] = [
-  {
-    id: 's.10.reaction-types~combustion',
-    title: 'Balancing a combustion: propane',
-    use: 'Use this for “Balance C₃H₈ + O₂ → CO₂ + H₂O”: carbon first, hydrogen next, oxygen last.',
+/**
+ * A hydrocarbon CₓHᵧ burning: a CₓHᵧ + b O₂ → c CO₂ + d H₂O. Carbon first (c = ax), hydrogen
+ * next (d = ay/2), oxygen last (b = c + d/2); a is 2 when y is not a multiple of 4, so that
+ * b comes out whole.
+ */
+function combustionPage(
+  id: string,
+  title: string,
+  use: string,
+  bond: 'single' | 'double',
+  x: number,
+): ModuleDef {
+  const k = bond === 'single' ? 2 : 0;
+  const y = 2 * x + k;
+  const a = y % 4 === 0 ? 1 : 2;
+  return {
+    id,
+    title,
+    use,
     unitSystems: ['metric'],
     assumptions: [
-      'A hydrocarbon burns in oxygen to make carbon dioxide and water.',
+      'A hydrocarbon burns in oxygen to make carbon dioxide and water; coefficients count molecules, subscripts never change.',
+      `An ${bond === 'single' ? 'alkane' : 'alkene'} has ${bond === 'single' ? '2x + 2' : '2x'} hydrogen atoms for x carbon atoms.`,
       'Balance carbon first, then hydrogen, and oxygen last, since O₂ appears alone.',
-      'Coefficients count molecules; subscripts never change.',
+      'When the hydrogens are not a multiple of 4, the O₂ would come out as a half: double the fuel.',
     ],
     variables: [
-      { ...coefficient('a', 'Propane molecules', 1, 1), derived: false },
-      { ...coefficient('b', 'Oxygen molecules', 0, 8), derived: true },
-      { ...coefficient('c', 'Carbon dioxide molecules', 0, 8), derived: true },
-      { ...coefficient('d', 'Water molecules', 0, 8), derived: true },
-      { ...whole('c1', 'C₁', 'Carbon atoms before', 0, 64), derived: true },
-      { ...whole('h1', 'H₁', 'Hydrogen atoms before', 0, 64), derived: true },
-      { ...whole('o1', 'O₁', 'Oxygen atoms before', 0, 64), derived: true },
-      { ...whole('c2', 'C₂', 'Carbon atoms after', 0, 64), derived: true },
-      { ...whole('h2', 'H₂', 'Hydrogen atoms after', 0, 64), derived: true },
-      { ...whole('o2', 'O₂', 'Oxygen atoms after', 0, 64), derived: true },
+      whole('x', 'x', 'Carbon atoms in the fuel', bond === 'single' ? 1 : 2, 8),
+      whole('y', 'y', 'Hydrogen atoms in the fuel', 2, 18),
+      { ...coefficient('a', 'Fuel molecules', 1, 2), derived: true },
+      { ...coefficient('b', 'Oxygen molecules', 1, 50), derived: true },
+      { ...coefficient('c', 'Carbon dioxide molecules', 1, 16), derived: true },
+      { ...coefficient('d', 'Water molecules', 1, 18), derived: true },
     ],
     ...rules(
-      scaled('c', 3, 'a', [
-        'Carbon first: each C₃H₈ has 3 carbon atoms, one for each CO₂.',
-        'Carbon first: 3 CO₂ for each C₃H₈.',
-      ]),
-      scaled('d', 4, 'a', [
-        'Hydrogen next: each C₃H₈ has 8 hydrogen atoms and each H₂O takes 2.',
-        'Hydrogen next: 4 H₂O for each C₃H₈.',
-      ]),
       {
         relation: {
-          id: '2b = 2c + d',
-          display: '2 × {b} = 2 × {c} + {d}',
+          id: 'hydrogens',
+          display: k ? `{y} = 2 × {x} + ${k}` : '{y} = 2 × {x}',
+          vars: ['y', 'x'],
+          residual: (v) => v.y! - hydrogensOf(v.x!, bond),
+          solve: { y: (v) => hydrogensOf(v.x!, bond), x: (v) => (v.y! - k) / 2 },
+        },
+        steps: {
+          y: {
+            expr: k ? `2 × {x} + ${k}` : '2 × {x}',
+            how:
+              bond === 'single'
+                ? 'Each carbon holds 2 hydrogens, and the two ends 1 more each.'
+                : 'Each carbon holds 2 hydrogens and the ends 2 more; the double bond takes 2 away.',
+          },
+          x: { expr: k ? `({y} − ${k})/2` : '{y}/2', how: 'Undo the rule for the hydrogens.' },
+        },
+      },
+      {
+        relation: {
+          id: 'fuel molecules',
+          display: '{a} = 1 if {y} is a multiple of 4, else 2',
+          vars: ['a', 'y'],
+          residual: (v) => v.a! - (v.y! % 4 === 0 ? 1 : 2),
+          solve: { a: (v) => (v.y! % 4 === 0 ? 1 : 2), y: () => undefined },
+        },
+        steps: {
+          a: {
+            expr: '1 if {y} is a multiple of 4, else 2',
+            how: 'Each O₂ brings 2 oxygen atoms. With one fuel molecule the water’s oxygen would leave half an O₂ unless the hydrogens are a multiple of 4.',
+          },
+        },
+      },
+      {
+        relation: {
+          id: 'c = a × x',
+          display: '{c} = {a} × {x}',
+          vars: ['c', 'a', 'x'],
+          residual: (v) => v.c! - v.a! * v.x!,
+          solve: { c: (v) => v.a! * v.x!, x: (v) => div(v.c!, v.a!), a: (v) => div(v.c!, v.x!) },
+        },
+        steps: {
+          c: { expr: '{a} × {x}', how: 'Carbon first: one CO₂ for each carbon atom in the fuel.' },
+          x: { expr: '{c}/{a}', how: 'Share the CO₂ among the fuel molecules.' },
+          a: { expr: '{c}/{x}', how: 'Each fuel molecule makes x CO₂.' },
+        },
+      },
+      {
+        relation: {
+          id: 'd = a × y ÷ 2',
+          display: '{d} = {a} × {y}/2',
+          vars: ['d', 'a', 'y'],
+          residual: (v) => 2 * v.d! - v.a! * v.y!,
+          solve: {
+            d: (v) => (v.a! * v.y!) / 2,
+            y: (v) => div(2 * v.d!, v.a!),
+            a: (v) => div(2 * v.d!, v.y!),
+          },
+        },
+        steps: {
+          d: {
+            expr: '{a} × {y}/2',
+            how: 'Hydrogen next: each H₂O takes 2 of the fuel’s hydrogen atoms.',
+          },
+          y: { expr: '2 × {d}/{a}', how: 'Each water holds 2 hydrogen atoms.' },
+          a: { expr: '2 × {d}/{y}', how: 'Each fuel molecule makes y/2 waters.' },
+        },
+      },
+      {
+        relation: {
+          id: 'b = c + d ÷ 2',
+          display: '{b} = {c} + {d}/2',
           vars: ['b', 'c', 'd'],
           residual: (v) => 2 * v.b! - (2 * v.c! + v.d!),
           solve: {
-            b: (v) => (2 * v.c! + v.d!) / 2,
-            c: (v) => (2 * v.b! - v.d!) / 2,
-            d: (v) => 2 * v.b! - 2 * v.c!,
+            b: (v) => v.c! + v.d! / 2,
+            c: (v) => v.b! - v.d! / 2,
+            d: (v) => 2 * (v.b! - v.c!),
           },
         },
         steps: {
           b: {
-            expr: '(2 × {c} + {d})/2',
-            how: 'Oxygen last: 2 in each CO₂ and 1 in each H₂O, then halve for O₂.',
+            expr: '{c} + {d}/2',
+            how: 'Oxygen last: 2 atoms in each CO₂ and 1 in each H₂O, halved because each O₂ brings 2.',
+            work: (v) => [
+              `${2 * v.c!} + ${v.d} = ${2 * v.c! + v.d!} oxygen atoms on the right, so ${fmt(v.b!)} O₂ on the left`,
+            ],
           },
-          c: { expr: '(2 × {b} − {d})/2', how: 'Oxygen last: what the water leaves, 2 per CO₂.' },
-          d: { expr: '2 × {b} − 2 × {c}', how: 'Oxygen last: what the CO₂ leaves.' },
-        },
-      },
-      scaled('c1', 3, 'a', ['3 carbon atoms in each C₃H₈.', 'Divide by 3.']),
-      scaled('h1', 8, 'a', ['8 hydrogen atoms in each C₃H₈.', 'Divide by 8.']),
-      scaled('o1', 2, 'b', ['2 oxygen atoms in each O₂.', 'Divide by 2.']),
-      scaled('c2', 1, 'c', ['1 carbon atom in each CO₂.', 'One CO₂ per carbon atom.']),
-      scaled('h2', 2, 'd', ['2 hydrogen atoms in each H₂O.', 'Divide by 2.']),
-      {
-        relation: {
-          id: 'O after = 2c + d',
-          display: '{o2} = 2 × {c} + {d}',
-          vars: ['o2', 'c', 'd'],
-          residual: (v) => v.o2! - (2 * v.c! + v.d!),
-          solve: {
-            o2: (v) => 2 * v.c! + v.d!,
-            c: (v) => (v.o2! - v.d!) / 2,
-            d: (v) => v.o2! - 2 * v.c!,
-          },
-        },
-        steps: {
-          o2: { expr: '2 × {c} + {d}', how: '2 oxygen atoms in each CO₂ and 1 in each H₂O.' },
-          c: { expr: '({o2} − {d})/2', how: 'Take the water’s oxygen away, 2 per CO₂.' },
-          d: { expr: '{o2} − 2 × {c}', how: 'Take the CO₂’s oxygen away.' },
+          c: { expr: '{b} − {d}/2', how: 'Oxygen last: what the water leaves, 2 per CO₂.' },
+          d: { expr: '2 × ({b} − {c})', how: 'Oxygen last: what the CO₂ leaves.' },
         },
       },
     ),
-    example: { a: 1, b: 5, c: 3, d: 4, c1: 3, h1: 8, o1: 10, c2: 3, h2: 8, o2: 10 },
-    startWith: ['a'],
-    equation: '{a:coef} C₃H₈ + {b:coef} O₂ → {c:coef} CO₂ + {d:coef} H₂O',
+    example: { x, y, a, b: a * x + (a * y) / 4, c: a * x, d: (a * y) / 2 },
+    startWith: ['x'],
+    equation: '{a:coef} C_{x}H_{y} + {b:coef} O₂ → {c:coef} CO₂ + {d:coef} H₂O',
     representation: {
-      kind: 'reaction',
-      reactants: [
-        { formula: 'C3H8', count: 'a' },
-        { formula: 'O2', count: 'b' },
-      ],
-      products: [
-        { formula: 'CO2', count: 'c' },
-        { formula: 'H2O', count: 'd' },
-      ],
-      atoms: { C: ['c1', 'c2'], H: ['h1', 'h2'], O: ['o1', 'o2'] },
+      kind: 'lewisStructure',
+      mode: 'hydrocarbon',
+      carbons: 'x',
+      bond,
+      hydrogens: 'y',
     },
-  },
+  };
+}
+
+const BALANCING: ModuleDef[] = [
+  combustionPage(
+    's.10.reaction-types~combustion',
+    'Balancing the combustion of an alkane',
+    'Use this to balance any alkane burning, such as “C₃H₈ + O₂ → CO₂ + H₂O”: carbon first, hydrogen next, oxygen last.',
+    'single',
+    3,
+  ),
+  combustionPage(
+    's.10.reaction-types~combustion-alkene',
+    'Balancing the combustion of an alkene',
+    'Use this to balance an alkene burning, such as “C₅H₁₀ + O₂ → CO₂ + H₂O”, where the fuel’s coefficient must be 2.',
+    'double',
+    5,
+  ),
   {
     id: 's.10.reaction-types~synthesis',
     title: 'Balancing a synthesis: aluminum oxide',
@@ -1272,23 +1497,35 @@ const BALANCING: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       'Aluminum burns in oxygen to make aluminum oxide, one product from two reactants.',
-      'Oxygen comes in pairs and Al₂O₃ holds 3, so the oxygen atoms must be a multiple of 6.',
-      'That takes 4 aluminum atoms at a time.',
+      'Oxygen comes in pairs and Al₂O₃ holds 3, so the oxygen atoms must be a multiple of 6: 4 aluminum atoms at a time.',
+      'The balanced equation uses the smallest whole numbers, 4, 3 and 2; larger inputs are the same reaction run more times.',
     ],
     variables: [
       { ...coefficient('a', 'Aluminum atoms', 4, 8), multipleOf: 4 },
       { ...coefficient('b', 'Oxygen molecules', 0, 6), derived: true },
-      { ...coefficient('c', 'Aluminum oxide units', 0, 4), derived: true },
+      { ...coefficient('c', 'Aluminum oxide formula units', 0, 4), derived: true },
     ],
     ...rules(
-      scaled('c', 0.5, 'a', [
-        'Aluminum: each Al₂O₃ holds 2 aluminum atoms, so half as many units as atoms.',
-        'Aluminum: 2 atoms for each Al₂O₃.',
-      ]),
-      scaled('b', 1.5, 'c', [
-        'Oxygen: each Al₂O₃ holds 3 oxygen atoms and each O₂ brings 2.',
-        'Oxygen: 3 O₂ bring the 6 oxygen atoms of 2 Al₂O₃.',
-      ]),
+      scaled(
+        'c',
+        0.5,
+        'a',
+        [
+          'Aluminum: each Al₂O₃ holds 2 aluminum atoms, so half as many formula units as atoms.',
+          'Aluminum: 2 atoms for each Al₂O₃.',
+        ],
+        ['{a}/2', '2 × {c}'],
+      ),
+      scaled(
+        'b',
+        1.5,
+        'c',
+        [
+          'Oxygen: each Al₂O₃ holds 3 oxygen atoms and each O₂ brings 2.',
+          'Oxygen: 3 O₂ bring the 6 oxygen atoms of 2 Al₂O₃.',
+        ],
+        ['3 × {c}/2', '2 × {b}/3'],
+      ),
     ),
     example: { a: 4, b: 3, c: 2 },
     startWith: ['a'],
@@ -1310,11 +1547,12 @@ const BALANCING: ModuleDef[] = [
     assumptions: [
       'Zinc takes the place of hydrogen: the hydrogen leaves as a gas.',
       'Each ZnCl₂ needs 2 chlorine atoms, so 2 HCl for each zinc atom.',
+      'The balanced equation uses the smallest whole numbers, 1, 2, 1 and 1; larger inputs are the same reaction run more times.',
     ],
     variables: [
       coefficient('a', 'Zinc atoms', 1, 4),
       { ...coefficient('b', 'Hydrogen chloride molecules', 0, 8), derived: true },
-      { ...coefficient('c', 'Zinc chloride units', 0, 4), derived: true },
+      { ...coefficient('c', 'Zinc chloride formula units', 0, 4), derived: true },
       { ...coefficient('d', 'Hydrogen molecules', 0, 4), derived: true },
     ],
     ...rules(
@@ -1323,10 +1561,13 @@ const BALANCING: ModuleDef[] = [
         'Chlorine: each ZnCl₂ holds 2, and each HCl brings 1.',
         'Chlorine: one ZnCl₂ for every 2 HCl.',
       ]),
-      scaled('d', 0.5, 'b', [
-        'Hydrogen: the HCl’s hydrogen atoms pair up as H₂.',
-        'Hydrogen: 2 HCl for each H₂.',
-      ]),
+      scaled(
+        'd',
+        0.5,
+        'b',
+        ['Hydrogen: the HCl’s hydrogen atoms pair up as H₂.', 'Hydrogen: 2 HCl for each H₂.'],
+        ['{b}/2', '2 × {d}'],
+      ),
     ),
     example: { a: 1, b: 2, c: 1, d: 1 },
     startWith: ['a'],
@@ -1365,7 +1606,7 @@ const perMole = (
   },
   steps: {
     [out]: { expr: `${kText} × {${n}}`, how },
-    [n]: { expr: `{${out}}/(${kText})`, how: back },
+    [n]: { expr: `{${out}}/${over(kText)}`, how: back },
   },
 });
 
@@ -1399,23 +1640,25 @@ const VOLUME_RULE = perMole(
   'Divide the liters by 22.4 L per mole.',
 );
 
-const MOLES = quantity('n', 'n', 'Amount', 'mol', 0.0001, 1000, 0.0001);
-const PARTICLE_COUNT = quantity('N', 'N', 'Particles', undefined, 6e19, 1e27, 1e18, {
+const MOLES = quantity('n', 'n', 'Amount', 'mol', 0.000001, 100000, 0.000001);
+const PARTICLE_COUNT = quantity('N', 'N', 'Particles', undefined, 6e17, 6e28, 1e16, {
   scientific: true,
 });
 const grams = (id = 'm', name = 'Mass', symbol = id) =>
   quantity(id, symbol, name, 'g', 0.001, 100000, 0.001);
 
-/** Atomic masses the molar-mass pages use, in g/mol. */
+/** Atomic masses the molar-mass pages use, in g/mol, and as the steps write them. */
 const MASS = { C: 12.01, H: 1.008, O: 16.0 };
+const MASS_TEXT = { C: '12.01', H: '1.008', O: '16.00' };
 
 /** An element's percent of a compound's mass: p = k × count ÷ M × 100. */
 const percentRule = (p: string, count: string, el: 'C' | 'H' | 'O'): Rule => {
   const k = MASS[el];
+  const kt = MASS_TEXT[el];
   return {
     relation: {
       id: `percent ${el}`,
-      display: `{${p}} = ${fmt(k)} × {${count}}/{M} × 100`,
+      display: `{${p}} = ${kt} × {${count}}/{M} × 100`,
       vars: [p, count, 'M'],
       residual: (v) => v[p]! * v.M! - k * v[count]! * 100,
       solve: {
@@ -1426,25 +1669,42 @@ const percentRule = (p: string, count: string, el: 'C' | 'H' | 'O'): Rule => {
     },
     steps: {
       [p]: {
-        expr: `${fmt(k)} × {${count}}/{M} × 100`,
+        expr: `${kt} × {${count}}/{M} × 100`,
         how: `The ${el} atoms’ mass as a share of the whole formula’s mass.`,
       },
-      [count]: { expr: `{${p}} × {M}/(100 × ${fmt(k)})`, how: `Divide that mass by ${fmt(k)} g.` },
-      M: { expr: `${fmt(k)} × {${count}} × 100/{${p}}`, how: 'Scale the part up to the whole.' },
+      [count]: { expr: `{${p}} × {M}/(100 × ${kt})`, how: `Divide that mass by ${kt} g.` },
+      M: { expr: `${kt} × {${count}} × 100/{${p}}`, how: 'Scale the part up to the whole.' },
     },
   };
 };
 
-/** Moles of an element in 100 g of the compound: n = p ÷ atomic mass. */
-const molesIn100 = (n: string, p: string, el: 'C' | 'H' | 'O'): Rule =>
-  perMole(
-    p,
-    n,
-    MASS[el],
-    fmt(MASS[el]),
-    `Each mole of ${el} atoms is ${fmt(MASS[el])} g.`,
-    `In 100 g the percent is grams: divide by ${fmt(MASS[el])} g per mole of ${el}.`,
-  );
+/** Moles of an element in 100 g of the compound: n = p ÷ atomic mass (the percent is grams). */
+const molesIn100 = (n: string, p: string, el: 'C' | 'H' | 'O'): Rule => {
+  const [k, kt] = [MASS[el], MASS_TEXT[el]];
+  return {
+    relation: {
+      id: `moles of ${el} in 100 g`,
+      display: `{${n}} = {${p}} ÷ ${kt}`,
+      vars: [n, p],
+      residual: (v) => v[p]! - k * v[n]!,
+      solve: { [n]: (v) => v[p]! / k, [p]: (v) => k * v[n]! },
+    },
+    steps: {
+      [n]: {
+        expr: `{${p}} ÷ ${kt}`,
+        how: `In 100 g the percent is grams: divide by ${kt} g per mole of ${el}.`,
+        work: (v) => [
+          `${fmt(v[p]!)}% of 100 g is ${fmt(v[p]!)} g of ${el}`,
+          `${fmt(v[p]!)} g ÷ ${kt} g/mol = ${fmt(v[p]! / k)} mol`,
+        ],
+      },
+      [p]: {
+        expr: `${kt} × {${n}}`,
+        how: `Each mole of ${el} atoms is ${kt} g, and in 100 g the grams are the percent.`,
+      },
+    },
+  };
+};
 
 /** r = n ÷ s: an element's moles over the smallest. */
 const ratioRule = (r: string, n: string, el: string): Rule => ({
@@ -1582,9 +1842,9 @@ const MOLE: ModuleDef[] = [
       '1 mol/M g is a unit factor: the grams cancel, leaving moles.',
     ],
     variables: [
-      quantity('m', 'm', 'Mass (g)', undefined, 0.001, 1e6, 0.001),
-      quantity('M', 'M', 'Molar mass (g/mol)', undefined, 1, 1000, 0.01),
-      quantity('n', 'n', 'Amount (mol)', undefined, 0.000001, 1e6, 0.000001),
+      quantity('m', 'm', 'Mass', 'g', 0.001, 1e6, 0.001),
+      quantity('M', 'M', 'Molar mass', 'g/mol', 1, 1000, 0.01),
+      quantity('n', 'n', 'Amount', 'mol', 0.000001, 1e6, 0.000001),
     ],
     relations: [
       {
@@ -1601,7 +1861,11 @@ const MOLE: ModuleDef[] = [
     ],
     steps: {
       'n = m ÷ M': {
-        n: { expr: '{m} ÷ {M}', how: 'Multiply by 1 mol over M grams: the grams cancel.' },
+        n: {
+          expr: '{m} ÷ {M}',
+          how: 'Multiply by 1 mol over M grams: the grams cancel.',
+          work: ['{m} g × 1 mol/{M} g: the grams cancel, leaving mol'],
+        },
         m: { expr: '{n} × {M}', how: 'Each mole has a mass of M grams.' },
         M: { expr: '{m} ÷ {n}', how: 'Divide the grams by the moles.' },
       },
@@ -1795,6 +2059,13 @@ function limitingPage(
       r: {
         expr: `smaller of {a} ÷ ${p} and {b} ÷ ${q}, rounded down`,
         how: 'Each reactant allows its amount divided by its coefficient runs; the smaller number is how many can happen.',
+        work: (v) => {
+          const [x, y] = [v.a! / p, v.b! / q];
+          const [X, Y] = [subscript(fx), subscript(fy)];
+          const line = `${v.a} ÷ ${p} = ${fmt(x)} for ${X}, ${v.b} ÷ ${q} = ${fmt(y)} for ${Y}`;
+          if (x === y) return [`${line}: both run out together`];
+          return [`${line}: ${x < y ? X : Y} is the limiting reactant`];
+        },
       },
     },
   };
@@ -1806,7 +2077,7 @@ function limitingPage(
     variables: [
       whole('a', 'a', `${subscript(fx)} molecules at the start`, 0, 12),
       whole('b', 'b', `${subscript(fy)} molecules at the start`, 0, 12),
-      { ...whole('r', 'r', 'Runs of the reaction', 0, 12), derived: true },
+      { ...whole('r', 'r', 'Times the reaction happens', 0, 12), derived: true },
       ...products.map(([f], i) => ({
         ...whole(madeIds[i]!, `m${'₁₂'[i]}`, `${subscript(f)} made`, 0, 24),
         derived: true,
@@ -1948,7 +2219,6 @@ const STOICHIOMETRY: ModuleDef[] = [
 
 // ─── Gas laws ────────────────────────────────────────────────────────────────
 
-const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
 const SUB: Record<string, string> = { '1': '₁', '2': '₂', '': '' };
 const when = (k: string) => (k === '1' ? ' before' : k === '2' ? ' after' : '');
 
@@ -2129,10 +2399,33 @@ const ideal: Rule = {
   },
 };
 
-const GAS_ASSUMPTIONS = [
-  'The gas is ideal: its particles take up no room and do not attract each other.',
-  'Temperatures are in kelvins: add 273 to °C. Pressures are in atm.',
-];
+const IDEAL = 'The gas is ideal: its particles take up no room and do not attract each other.';
+const KELVINS = 'Temperatures are in kelvins: add 273 to °C.';
+
+/** T = t + 273: a temperature typed in °C, changed to kelvins for the gas laws. */
+const toKelvin = (T: string, t: string): Rule => ({
+  relation: {
+    id: `${T} = ${t} + 273`,
+    display: `{${T}} = {${t}} + 273`,
+    vars: [T, t],
+    residual: (v) => v[T]! - (v[t]! + 273),
+    solve: { [T]: (v) => v[t]! + 273, [t]: (v) => v[T]! - 273 },
+  },
+  steps: {
+    [T]: { expr: `{${t}} + 273`, how: 'Kelvins start at absolute zero, 273 degrees below 0 °C.' },
+    [t]: { expr: `{${T}} − 273`, how: 'Take 273 off the kelvins for °C.' },
+  },
+});
+const celsiusOf = (k: string): VariableDef => ({
+  id: `t${k}`,
+  symbol: `t${SUB[k]}`,
+  name: `Temperature${when(k)} in °C`,
+  unit: '°C',
+  units: ['°C'],
+  min: -272,
+  max: 1727,
+  step: 1,
+});
 
 const GAS: ModuleDef[] = [
   {
@@ -2144,14 +2437,16 @@ const GAS: ModuleDef[] = [
       'Real gases stray from this at high pressure and low temperature.',
     ],
     variables: [
-      pressure(''),
+      { ...pressure(''), min: 0.001 },
       volume('', ['L']),
       { ...quantity('n', 'n', 'Amount of gas', 'mol', 0.001, 100, 0.001) },
       kelvins(''),
+      celsiusOf(''),
     ],
-    ...rules(ideal),
-    example: { P: 2, V: 24.63, n: 2, T: 300 },
+    ...rules(ideal, toKelvin('T', 't')),
+    example: { P: 2, V: 24.63, n: 2, T: 300, t: 27 },
     startWith: ['n', 'T', 'V'],
+    pictureLabels: ['t'],
     representation: {
       kind: 'gasPiston',
       law: 'ideal',
@@ -2167,7 +2462,11 @@ const GAS: ModuleDef[] = [
     title: 'Boyle’s law: squeezing a gas',
     use: 'Use this for a gas squeezed or let out at one temperature: “6 L at 1 atm is pressed into 3 L. What is the pressure?”',
     unitSystems: ['metric'],
-    assumptions: [...GAS_ASSUMPTIONS, 'The temperature and the amount of gas stay the same.'],
+    assumptions: [
+      IDEAL,
+      'Pressures are in atm; both volumes are in the same unit.',
+      'The temperature and the amount of gas stay the same.',
+    ],
     variables: [pressure('1'), volume('1'), pressure('2'), volume('2')],
     ...rules(boyle),
     example: { P1: 1, V1: 6, P2: 2, V2: 3 },
@@ -2186,11 +2485,19 @@ const GAS: ModuleDef[] = [
     title: 'Charles’s law: heating a gas',
     use: 'Use this for a gas warmed or cooled at one pressure: “2.00 L at 300 K is heated to 450 K. What is its volume?”',
     unitSystems: ['metric'],
-    assumptions: [...GAS_ASSUMPTIONS, 'The pressure and the amount of gas stay the same.'],
-    variables: [volume('1'), kelvins('1'), volume('2'), kelvins('2')],
-    ...rules(charles),
-    example: { V1: 2, T1: 300, V2: 3, T2: 450 },
+    assumptions: [IDEAL, KELVINS, 'The pressure and the amount of gas stay the same.'],
+    variables: [
+      volume('1'),
+      kelvins('1'),
+      volume('2'),
+      kelvins('2'),
+      celsiusOf('1'),
+      celsiusOf('2'),
+    ],
+    ...rules(charles, toKelvin('T1', 't1'), toKelvin('T2', 't2')),
+    example: { V1: 2, T1: 300, V2: 3, T2: 450, t1: 27, t2: 177 },
     startWith: ['V1', 'T1', 'T2'],
+    pictureLabels: ['t1', 't2'],
     representation: {
       kind: 'gasPiston',
       law: 'charles',
@@ -2205,7 +2512,7 @@ const GAS: ModuleDef[] = [
     title: 'Gay-Lussac’s law: a sealed, rigid container',
     use: 'Use this for a gas heated in a rigid container: “A tire at 2.00 atm and 280 K warms to 308 K. What is the pressure?”',
     unitSystems: ['metric'],
-    assumptions: [...GAS_ASSUMPTIONS, 'The volume and the amount of gas stay the same.'],
+    assumptions: [IDEAL, KELVINS, 'The volume and the amount of gas stay the same.'],
     variables: [pressure('1'), kelvins('1'), pressure('2'), kelvins('2')],
     ...rules(gayLussac),
     example: { P1: 2, T1: 280, P2: 2.2, T2: 308 },
@@ -2223,7 +2530,7 @@ const GAS: ModuleDef[] = [
     title: 'The combined gas law',
     use: 'Use this when pressure, volume and temperature all change: “5.00 L at 1.00 atm and 300 K goes to 2.00 atm and 360 K. What is the volume?”',
     unitSystems: ['metric'],
-    assumptions: [...GAS_ASSUMPTIONS, 'The amount of gas stays the same.'],
+    assumptions: [IDEAL, `${KELVINS} Pressures are in atm.`, 'The amount of gas stays the same.'],
     variables: [pressure('1'), volume('1'), kelvins('1'), pressure('2'), volume('2'), kelvins('2')],
     ...rules(combined),
     example: { P1: 1, V1: 5, T1: 300, P2: 2, V2: 3, T2: 360 },
@@ -2247,9 +2554,9 @@ const molarityVar = (id: string, symbol: string, name: string): VariableDef => (
   symbol,
   name,
   unit: 'mol/L',
-  min: 0.0001,
+  min: 0.000001,
   max: 20,
-  step: 0.0001,
+  step: 0.000001,
 });
 const solutionVolume = (id: string, symbol: string, name: string, unit = 'L'): VariableDef => ({
   id,
@@ -2497,6 +2804,13 @@ const MOLARITY: ModuleDef[] = [
           r: {
             expr: '{s} − {m}',
             how: 'Take what is stirred in from what can dissolve; below zero, that much settles out.',
+            work: (v) => [
+              v.r! > 0
+                ? `r = ${fmt(v.r!)} g is above 0, so the solution is unsaturated`
+                : v.r === 0
+                  ? 'r = 0 g, so the solution is just saturated'
+                  : `r is below 0, so the solution is saturated and ${fmt(-v.r!)} g settles out`,
+            ],
           },
           m: { expr: '{s} − {r}', how: 'Take the room left from what can dissolve.' },
           s: { expr: '{r} + {m}', how: 'Add what is dissolved and the room left.' },
@@ -2647,6 +2961,23 @@ const CALORIMETER_RULES: Rule[] = [
   },
 ];
 
+/** The q step with a line saying what the reaction did: the water's heat, with the sign turned. */
+const gaveOff = (r: Rule): Rule => ({
+  ...r,
+  steps: {
+    ...r.steps,
+    q: {
+      ...r.steps.q!,
+      work: (v) =>
+        v.q === 0
+          ? ['No heat moved: the temperature did not change']
+          : v.q! > 0
+            ? [`The reaction gave off ${fmt(v.q!)} J (qᵣₓₙ = −${fmt(v.q!)} J)`]
+            : [`The reaction took in ${fmt(-v.q!)} J (qᵣₓₙ = ${fmt(-v.q!)} J)`],
+    },
+  },
+});
+
 const celsius = (id: string, symbol: string, name: string): VariableDef => ({
   id,
   symbol,
@@ -2686,7 +3017,7 @@ const stageRule = (q: string, k: number, kText: string, how: string): Rule => ({
   },
   steps: {
     [q]: { expr: `{m} × ${kText}`, how },
-    m: { expr: `{${q}}/(${kText})`, how: 'Divide the stage’s heat by the heat per gram.' },
+    m: { expr: `{${q}}/${over(kText)}`, how: 'Divide the stage’s heat by the heat per gram.' },
   },
 });
 
@@ -2732,7 +3063,7 @@ const THERMO: ModuleDef[] = [
       'The heat the water takes in is the heat the reaction gives off.',
     ],
     variables: CALORIMETER_VARS,
-    ...rules(...CALORIMETER_RULES),
+    ...rules(...CALORIMETER_RULES.map((r) => (r.relation.id === 'q = mcΔT' ? gaveOff(r) : r))),
     example: { m: 100, c: 4.18, T1: 21, T2: 27.5, dT: 6.5, q: 100 * 4.18 * 6.5 },
     startWith: ['m', 'c', 'T1', 'T2'],
     representation: CALORIMETER_PICTURE,
@@ -2797,7 +3128,7 @@ const THERMO: ModuleDef[] = [
   {
     id: 's.10.thermochemistry~heating-curve',
     title: 'Heat to turn ice into steam',
-    use: 'Use this for the heat to warm ice from −10 °C, melt it, warm the water and boil it away.',
+    use: 'Use this for the heat to warm ice to 0 °C, melt it, warm the water to 100 °C and boil it away.',
     unitSystems: ['metric'],
     assumptions: [
       'Ice 2.09, water 4.18 J/(g·°C); melting takes 334 J/g and boiling 2260 J/g.',
@@ -2805,14 +3136,38 @@ const THERMO: ModuleDef[] = [
     ],
     variables: [
       quantity('m', 'm', 'Mass of water', 'g', 0.1, 1000, 0.1),
-      quantity('q1', 'q₁', 'Warm the ice from −10 °C to 0 °C', 'J', 0, 1e7, 0.1),
-      quantity('q2', 'q₂', 'Melt the ice', 'J', 0, 1e7, 0.1),
-      quantity('q3', 'q₃', 'Warm the water from 0 °C to 100 °C', 'J', 0, 1e7, 0.1),
-      quantity('q4', 'q₄', 'Boil the water', 'J', 0, 1e8, 0.1),
+      quantity('t0', 'T₀', 'Starting temperature of the ice', '°C', -50, -0.1, 0.1),
+      quantity('q1', 'q₁', 'Heat to warm the ice to 0 °C', 'J', 0, 1e7, 0.1),
+      quantity('q2', 'q₂', 'Heat to melt the ice', 'J', 0, 1e7, 0.1),
+      quantity('q3', 'q₃', 'Heat to warm the water to 100 °C', 'J', 0, 1e7, 0.1),
+      quantity('q4', 'q₄', 'Heat to boil the water', 'J', 0, 1e8, 0.1),
       quantity('q', 'q', 'Total heat', 'J', 0, 1e8, 0.1),
     ],
     ...rules(
-      stageRule('q1', 20.9, '2.09 × 10', 'Ice warms 10 °C at 2.09 J for each gram and degree.'),
+      {
+        relation: {
+          id: 'q₁ = m × 2.09 × (0 − T₀)',
+          display: '{q1} = {m} × 2.09 × (0 − {t0})',
+          vars: ['q1', 'm', 't0'],
+          residual: (v) => v.q1! - v.m! * 2.09 * -v.t0!,
+          solve: {
+            q1: (v) => v.m! * 2.09 * -v.t0!,
+            m: (v) => div(v.q1!, -2.09 * v.t0!),
+            t0: (v) => div(-v.q1!, 2.09 * v.m!),
+          },
+        },
+        steps: {
+          q1: {
+            expr: '{m} × 2.09 × (0 − {t0})',
+            how: 'Ice warms from its start to 0 °C at 2.09 J for each gram and degree.',
+          },
+          m: { expr: '{q1}/(2.09 × (0 − {t0}))', how: 'Divide the heat by the heat per gram.' },
+          t0: {
+            expr: '0 − {q1}/(2.09 × {m})',
+            how: 'The ice warmed q₁ ÷ 2.09m degrees to reach 0 °C.',
+          },
+        },
+      },
       stageRule('q2', 334, '334', 'Melting takes 334 J for each gram, at 0 °C.'),
       stageRule('q3', 418, '4.18 × 100', 'Water warms 100 °C at 4.18 J for each gram and degree.'),
       stageRule('q4', 2260, '2260', 'Boiling takes 2260 J for each gram, at 100 °C.'),
@@ -2839,11 +3194,12 @@ const THERMO: ModuleDef[] = [
         },
       },
     ),
-    example: { m: 10, q1: 209, q2: 3340, q3: 4180, q4: 22600, q: 30329 },
-    startWith: ['m'],
+    example: { m: 10, t0: -10, q1: 209, q2: 3340, q3: 4180, q4: 22600, q: 30329 },
+    startWith: ['m', 't0'],
+    pictureLabels: ['m', 'q'],
     representation: {
       kind: 'heatingCurve',
-      start: -10,
+      start: 't0',
       melt: 0,
       boil: 100,
       spans: ['q1', 'q2', 'q3', 'q4'],
@@ -3004,14 +3360,37 @@ const EQUILIBRIUM: ModuleDef[] = [
           solve: {
             Q: (v) => div(v.p! ** 2, (v.h! + v.a!) * v.i!),
             a: (v) => (v.Q! * v.i! === 0 ? undefined : v.p! ** 2 / (v.Q! * v.i!) - v.h!),
+            h: (v) => (v.Q! * v.i! === 0 ? undefined : v.p! ** 2 / (v.Q! * v.i!) - v.a!),
+            i: (v) => div(v.p! ** 2, v.Q! * (v.h! + v.a!)),
+            p: (v) => Math.sqrt(Math.max(0, v.Q! * (v.h! + v.a!) * v.i!)),
           },
         },
         steps: {
           Q: {
             expr: '{p}^2/(({h} + {a}) × {i})',
             how: 'Just after the H₂ goes in, only [H₂] has changed. Compare Q with K.',
+            work: (v) => {
+              if (v.K === undefined) return [];
+              const [Q, K] = [fmt(v.Q!), fmt(v.K)];
+              if (Math.abs(v.Q! - v.K) <= 1e-9 * v.K)
+                return [`Q = ${Q} equals K, so nothing shifts`];
+              return v.Q! < v.K
+                ? [`Q = ${Q} is below K = ${K}, so the reaction shifts toward HI (the product)`]
+                : [
+                    `Q = ${Q} is above K = ${K}, so the reaction shifts toward H₂ and I₂ (the reactants)`,
+                  ];
+            },
           },
           a: { expr: '{p}^2/({Q} × {i}) − {h}', how: 'Find [H₂] from Q, then take the old [H₂].' },
+          h: {
+            expr: '{p}^2/({Q} × {i}) − {a}',
+            how: 'Divide [HI]² by Q[I₂], then take away the H₂ added.',
+          },
+          i: { expr: '{p}^2/({Q} × ({h} + {a}))', how: 'Divide [HI]² by Q times the new [H₂].' },
+          p: {
+            expr: '√({Q} × ({h} + {a}) × {i})',
+            how: 'Multiply out, then take the square root.',
+          },
         },
       },
     ),
@@ -3092,7 +3471,12 @@ const ionVar = (id: string, symbol: string, name: string): VariableDef => ({
 });
 
 /** pH = −log₁₀[H⁺] (and back: [H⁺] = 10^−pH). */
-const phRule = (p = 'p', h = 'h', ion = 'H⁺'): Rule => ({
+const phRule = (
+  p = 'p',
+  h = 'h',
+  ion = 'H⁺',
+  how = `Each step of 1 on the scale is ten times the [${ion}]: the log counts the powers of ten.`,
+): Rule => ({
   relation: {
     id: `p = −log₁₀[${ion}] (${p})`,
     display: `{${p}} = −log₁₀({${h}})`,
@@ -3104,11 +3488,8 @@ const phRule = (p = 'p', h = 'h', ion = 'H⁺'): Rule => ({
     },
   },
   steps: {
-    [p]: {
-      expr: `−log₁₀({${h}})`,
-      how: `Each step of 1 on the scale is ten times the [${ion}]: the log counts the powers of ten.`,
-    },
-    [h]: { expr: `1/(10^{${p}})`, how: 'Undo the log: one over 10 to the power of the value.' },
+    [p]: { expr: `−log₁₀({${h}})`, how },
+    [h]: { expr: `10^−{${p}}`, how: 'Undo the log: 10 to the power of minus the value.' },
   },
 });
 
@@ -3197,16 +3578,22 @@ const titrationRules = (weak: boolean): Rule[] => [
       display: '{r} = {Vb}/{Ve}',
       vars: ['r', 'Vb', 'Ve'],
       residual: (v) => v.r! * v.Ve! - v.Vb!,
-      solve: { r: (v) => div(v.Vb!, v.Ve!), Vb: (v) => v.r! * v.Ve! },
+      solve: { r: (v) => div(v.Vb!, v.Ve!), Vb: (v) => v.r! * v.Ve!, Ve: (v) => div(v.Vb!, v.r!) },
     },
     steps: {
       r: { expr: '{Vb}/{Ve}', how: 'Compare the base added with the base equivalence takes.' },
       Vb: { expr: '{r} × {Ve}', how: 'Take that share of the equivalence volume.' },
+      Ve: { expr: '{Vb}/{r}', how: 'The base added is that share of the equivalence volume.' },
     },
   },
   ...(weak
     ? [
-        phRule('pKa', 'Ka', 'Kₐ'),
+        phRule(
+          'pKa',
+          'Ka',
+          'Kₐ',
+          'Each step of 1 on the pKₐ scale is ten times the Kₐ: the log counts the powers of ten.',
+        ),
         {
           relation: {
             id: 'V½ = Vₑ/2',
@@ -3348,6 +3735,10 @@ const ACIDS: ModuleDef[] = [
 
 // ─── Organic chemistry ───────────────────────────────────────────────────────
 
+/** C₄H₈ from the counts (a count of 1 is left unwritten: CH₄). */
+const hydrocarbonFormula = (c: number, h: number) =>
+  `C${c === 1 ? '' : subscript(String(c))}H${h === 1 ? '' : subscript(String(h))}`;
+
 function chainPage(
   id: string,
   title: string | undefined,
@@ -3358,6 +3749,13 @@ function chainPage(
 ): ModuleDef {
   const k = bond === 'single' ? 2 : bond === 'double' ? 0 : -2;
   const tail = k === 0 ? '' : k > 0 ? ` + ${k}` : ` − ${-k}`;
+  // "4 carbons: 1-butene, C₄H₈", the compound the numbers name.
+  const named = (v: Record<string, number | undefined>) =>
+    v.n === undefined || v.h === undefined
+      ? []
+      : [
+          `${v.n} carbon${v.n === 1 ? '' : 's'} and ${bond === 'single' ? 'only single bonds' : `one ${bond} bond`}: ${hydrocarbonName(v.n, bond)}, ${hydrocarbonFormula(v.n, v.h)}`,
+        ];
   return {
     id,
     ...(title ? { title } : {}),
@@ -3382,10 +3780,12 @@ function chainPage(
             bond === 'single'
               ? 'Each carbon holds 2 hydrogens, and the two ends 1 more each.'
               : `Each carbon holds 2 hydrogens and the ends 2 more; the ${bond} bond takes ${bond === 'double' ? 2 : 4} away.`,
+          work: named,
         },
         n: {
           expr: k === 0 ? '{h}/2' : `({h}${k > 0 ? ` − ${k}` : ` + ${-k}`})/2`,
           how: 'Undo the rule for the hydrogens.',
+          work: named,
         },
       },
     }),
@@ -3444,6 +3844,13 @@ const ORGANIC: ModuleDef[] = [
 const nucleon = (id: string, symbol: string, name: string, min: number, max: number) =>
   whole(id, symbol, name, min, max);
 
+/** "Z = 90 is thorium: Th-234", the nucleus an atomic number (and mass number) name. */
+function nucleusName(z: number, a: number | undefined, label: string): string {
+  const e = element(z);
+  if (!e) return `${label} = ${z}`;
+  return `${label} = ${z} is ${e.name.toLowerCase()}${a === undefined ? '' : `: ${e.symbol}-${a}`}`;
+}
+
 /** A decay's daughter nucleus: the mass and atomic numbers left after the particle leaves. */
 function decayPage(
   id: string,
@@ -3454,8 +3861,12 @@ function decayPage(
   example: { A: number; Z: number },
 ): ModuleDef {
   const { mass, charge } = particle;
-  const minus = (a: string, n: number) => (n < 0 ? `{${a}} + ${-n}` : `{${a}} − ${n}`);
-  const plus = (a: string, n: number) => (n < 0 ? `{${a}} − ${-n}` : `{${a}} + ${n}`);
+  // A term of 0 (a beta particle's mass number) is left out: A′ = A, not A − 0.
+  const minus = (a: string, n: number) =>
+    n === 0 ? `{${a}}` : n < 0 ? `{${a}} + ${-n}` : `{${a}} − ${n}`;
+  const plus = (a: string, n: number) =>
+    n === 0 ? `{${a}}` : n < 0 ? `{${a}} − ${-n}` : `{${a}} + ${n}`;
+  const signed = (n: number) => (n < 0 ? `−${-n}` : `${n}`);
   return {
     id,
     title,
@@ -3463,7 +3874,7 @@ function decayPage(
     assumptions: [
       'The mass numbers (top) on the two sides add to the same total.',
       'The atomic numbers (bottom) on the two sides add to the same total.',
-      `The ${particle.name} carries away ${mass} in mass number and ${charge} in atomic number.`,
+      `The ${particle.name} carries away ${mass} in mass number and ${signed(charge)} in atomic number.`,
       'The new atomic number names the new element.',
     ],
     variables: [
@@ -3483,7 +3894,7 @@ function decayPage(
       },
       {
         id: 'A = A₂ + particle',
-        display: `{A} = {A2} + ${mass}`,
+        display: mass === 0 ? '{A2} = {A}' : `{A} = {A2} + ${mass}`,
         vars: ['A', 'A2'],
         residual: (v) => v.A! - (v.A2! + mass),
         solve: { A2: (v) => v.A! - mass, A: (v) => v.A2! + mass },
@@ -3505,9 +3916,18 @@ function decayPage(
       'A = A₂ + particle': {
         A2: {
           expr: minus('A', mass),
-          how: `The ${particle.name} takes ${mass} of the mass number.`,
+          how:
+            mass === 0
+              ? `A ${particle.name} has mass number 0, so the mass number stays the same.`
+              : `The ${particle.name} takes ${mass} of the mass number.`,
         },
-        A: { expr: plus('A2', mass), how: `Add back the ${particle.name}’s mass number.` },
+        A: {
+          expr: plus('A2', mass),
+          how:
+            mass === 0
+              ? `A ${particle.name} has mass number 0, so the mass number was the same.`
+              : `Add back the ${particle.name}’s mass number.`,
+        },
       },
       'Z = Z₂ + particle': {
         Z2: {
@@ -3516,6 +3936,7 @@ function decayPage(
             charge < 0
               ? `The ${particle.name} has atomic number −1: a neutron became a proton.`
               : `The ${particle.name} takes ${charge} of the atomic number.`,
+          work: (v) => [nucleusName(v.Z2!, v.A2, 'Z′')],
         },
         Z: { expr: plus('Z2', charge), how: `Add back the ${particle.name}’s atomic number.` },
       },
@@ -3571,7 +3992,7 @@ const NUCLEAR: ModuleDef[] = [
       {
         relation: {
           id: 'N = N₀ × (1/2)^n',
-          display: '{N} = {N0} × 0.5^({n})',
+          display: '{N} = {N0} × (1/2)^{n}',
           vars: ['N', 'N0', 'n'],
           residual: (v) => v.N! - v.N0! * 0.5 ** v.n!,
           solve: {
@@ -3582,14 +4003,14 @@ const NUCLEAR: ModuleDef[] = [
         },
         steps: {
           N: {
-            expr: '{N0} × 0.5^({n})',
+            expr: '{N0} × (1/2)^{n}',
             how: 'Each half-life halves what is left: halve it n times.',
           },
           n: {
             expr: 'ln({N0}/{N})/ln(2)',
             how: 'Count the halvings with logs: how many times 2 goes into the drop.',
           },
-          N0: { expr: '{N}/(0.5^({n}))', how: 'Double what is left once for each half-life.' },
+          N0: { expr: '{N} × 2^{n}', how: 'Double what is left once for each half-life.' },
         },
       },
     ),
@@ -3677,6 +4098,7 @@ const NUCLEAR: ModuleDef[] = [
           Z2: {
             expr: '92 − {Z1}',
             how: 'Uranium’s 92 protons are shared by the two fragments; neutrons carry none.',
+            work: (v) => [nucleusName(v.Z2!, v.A2, 'Z₂')],
           },
           Z1: { expr: '92 − {Z2}', how: 'The first fragment has the protons the second lacks.' },
         },
@@ -3695,6 +4117,21 @@ const NUCLEAR: ModuleDef[] = [
           Z1: { expr: '{A1} − {N1}', how: 'Take the neutrons from the mass number.' },
         },
       },
+      {
+        relation: {
+          id: 'N₁ ≥ Z₁',
+          constraint: true,
+          display: '{N1} is at least {Z1}',
+          vars: ['N1', 'Z1'],
+          residual: (v) => (v.N1! >= v.Z1! ? 0 : 1),
+          solve: {},
+          message: (v) =>
+            v.N1! >= v.Z1!
+              ? undefined
+              : 'A fragment this heavy has at least as many neutrons as protons.',
+        },
+        steps: {},
+      },
     ),
     example: { A1: 141, Z1: 56, k: 3, A2: 92, Z2: 36, N1: 85 },
     startWith: ['A1', 'Z1', 'k'],
@@ -3708,6 +4145,778 @@ const NUCLEAR: ModuleDef[] = [
         { mass: 'A2', atomic: 'Z2' },
         { particle: 'neutron', count: 'k' },
       ],
+    },
+  },
+];
+
+// ─── Pages the lesson review added ───────────────────────────────────────────
+
+/** Standard reduction potentials the cell page takes (volts, 25 °C), from the cell figure's table. */
+const POTENTIALS = Object.values(CELL_METALS).map((m) => m.potential);
+const metalAt = (e: number) =>
+  Object.values(CELL_METALS)
+    .find((m) => Math.abs(m.potential - e) < 1e-9)
+    ?.name.toLowerCase();
+
+const ADDED: ModuleDef[] = [
+  {
+    id: 's.10.rates-equilibrium~average-rate',
+    title: 'Average reaction rate',
+    use: 'Use this for “[A] falls from 1.20 mol/L at 30 s to 0.75 mol/L at 120 s. What is the average rate?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A reactant is used up, so its concentration falls: the rate is −Δ[A]/Δt, a positive number.',
+      'It is an average: the line through the two readings has slope Δ[A]/Δt, though the true curve is steepest at the start.',
+    ],
+    variables: [
+      conc('A1', '[A]₁', 'Concentration at the first time'),
+      conc('A2', '[A]₂', 'Concentration at the second time'),
+      quantity('t1', 't₁', 'First time', 's', 0, 100000, 0.1),
+      quantity('t2', 't₂', 'Second time', 's', 0.1, 100000, 0.1),
+      quantity('dt', 'Δt', 'Time between', 's', 0.1, 100000, 0.1),
+      quantity('dA', 'Δ[A]', 'Change in concentration', 'mol/L', -100, 0, 0.0001),
+      quantity('r', 'r', 'Average rate', 'mol/(L·s)', 0, 1000, 0.000001),
+      {
+        ...quantity('m', 'm', 'Slope of the line', undefined, -1000, 0, 0.000001),
+        derived: true,
+        hidden: true,
+      },
+      {
+        ...quantity('b0', 'b', 'Where the line meets the axis', undefined, -1e7, 1e7, 0.000001),
+        derived: true,
+        hidden: true,
+      },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Δt = t₂ − t₁',
+          display: '{dt} = {t2} − {t1}',
+          vars: ['dt', 't2', 't1'],
+          residual: (v) => v.dt! - (v.t2! - v.t1!),
+          solve: { dt: (v) => v.t2! - v.t1!, t2: (v) => v.t1! + v.dt!, t1: (v) => v.t2! - v.dt! },
+          message: (v) =>
+            v.t2! > v.t1! ? undefined : 'The second time must come after the first.',
+        },
+        steps: {
+          dt: { expr: '{t2} − {t1}', how: 'The time between the two readings.' },
+          t2: { expr: '{t1} + {dt}', how: 'Add the time between to the first time.' },
+          t1: { expr: '{t2} − {dt}', how: 'Take the time between off the second time.' },
+        },
+      },
+      {
+        relation: {
+          id: 'Δ[A] = [A]₂ − [A]₁',
+          display: '{dA} = {A2} − {A1}',
+          vars: ['dA', 'A2', 'A1'],
+          residual: (v) => v.dA! - (v.A2! - v.A1!),
+          solve: { dA: (v) => v.A2! - v.A1!, A2: (v) => v.A1! + v.dA!, A1: (v) => v.A2! - v.dA! },
+          message: (v) =>
+            v.A2! <= v.A1! ? undefined : 'A reactant is used up: [A]₂ can’t be more than [A]₁.',
+        },
+        steps: {
+          dA: {
+            expr: '{A2} − {A1}',
+            how: 'Last minus first: negative, since the reactant is used up.',
+          },
+          A2: { expr: '{A1} + {dA}', how: 'Add the (negative) change to the first reading.' },
+          A1: { expr: '{A2} − {dA}', how: 'Take the change back off the second reading.' },
+        },
+      },
+      {
+        relation: {
+          id: 'rate = −Δ[A]/Δt',
+          display: '{r} = −{dA}/{dt}',
+          vars: ['r', 'dA', 'dt'],
+          residual: (v) => v.r! * v.dt! + v.dA!,
+          solve: {
+            r: (v) => div(-v.dA!, v.dt!),
+            dA: (v) => -v.r! * v.dt!,
+            dt: (v) => div(-v.dA!, v.r!),
+          },
+        },
+        steps: {
+          r: {
+            expr: '−{dA}/{dt}',
+            how: 'The drop in concentration per second: the minus sign makes the rate positive.',
+          },
+          dA: { expr: '−{r} × {dt}', how: 'The concentration drops by the rate times the time.' },
+          dt: { expr: '−{dA}/{r}', how: 'Divide the drop by the rate.' },
+        },
+      },
+      {
+        relation: {
+          id: 'slope of the line',
+          hidden: true,
+          display: '{m} = {dA}/{dt}',
+          vars: ['m', 'dA', 'dt'],
+          residual: (v) => v.m! * v.dt! - v.dA!,
+          solve: { m: (v) => div(v.dA!, v.dt!) },
+        },
+        steps: { m: { expr: '{dA}/{dt}', how: 'Rise over run between the two readings.' } },
+      },
+      {
+        relation: {
+          id: 'line through the first reading',
+          hidden: true,
+          display: '{b0} = {A1} − {m} × {t1}',
+          vars: ['b0', 'A1', 'm', 't1'],
+          residual: (v) => v.b0! - (v.A1! - v.m! * v.t1!),
+          solve: { b0: (v) => v.A1! - v.m! * v.t1! },
+        },
+        steps: {
+          b0: { expr: '{A1} − {m} × {t1}', how: 'The line passes through the first reading.' },
+        },
+      },
+    ),
+    example: {
+      A1: 1.2,
+      A2: 0.75,
+      t1: 30,
+      t2: 120,
+      dt: 90,
+      dA: -0.45,
+      r: 0.005,
+      m: -0.005,
+      b0: 1.35,
+    },
+    startWith: ['A1', 'A2', 't1', 't2'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'b0',
+      secant: { x: 't1', h: 'dt' },
+      xMin: 0,
+      axes: { x: 'Time t (s)', y: 'Concentration [A] (mol/L)' },
+      fixed: true,
+    },
+  },
+  {
+    id: 's.10.rates-equilibrium~ksp',
+    title: 'Solubility product',
+    use: 'Use this for a salt such as AgCl that barely dissolves: its Ksp from its molar solubility, or the solubility from Ksp.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'AgCl(s) ⇌ Ag⁺ + Cl⁻: each unit that dissolves gives one of each ion, so both are s mol/L.',
+      'The solid is left out: Ksp = [Ag⁺][Cl⁻] = s². At 25 °C, AgCl’s Ksp is 1.8 × 10⁻¹⁰.',
+      'Silver chloride’s molar mass is 143.32 g/mol.',
+    ],
+    variables: [
+      quantity('K', 'Ksp', 'Solubility product', undefined, 1e-24, 1, 1e-26, { scientific: true }),
+      quantity('s', 's', 'Molar solubility', 'mol/L', 1e-12, 1, 1e-14, { scientific: true }),
+      quantity('g', 'S', 'Solubility in grams per liter', 'g/L', 1e-10, 200, 1e-12, {
+        scientific: true,
+      }),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Ksp = s²',
+          display: '{K} = {s}^2',
+          vars: ['K', 's'],
+          residual: (v) => v.K! / v.s! ** 2 - 1,
+          // s first: `holds` re-solves the first entry, and a check on Ksp (10⁻¹⁰) passes anything.
+          solve: { s: (v) => Math.sqrt(Math.max(0, v.K!)), K: (v) => v.s! ** 2 },
+        },
+        steps: {
+          s: { expr: '√({K})', how: 'Ksp is s times s, so s is its square root.' },
+          K: { expr: '{s}^2', how: 'Both ions are at s mol/L, and Ksp is their product.' },
+        },
+      },
+      {
+        relation: {
+          id: 'S = 143.32 × s',
+          display: '{g} = {s} × 143.32',
+          vars: ['g', 's'],
+          residual: (v) => v.g! / (143.32 * v.s!) - 1,
+          solve: { s: (v) => v.g! / 143.32, g: (v) => v.s! * 143.32 },
+        },
+        steps: {
+          g: { expr: '{s} × 143.32', how: 'Each mole of AgCl that dissolves is 143.32 g.' },
+          s: { expr: '{g}/143.32', how: 'Divide the grams by the grams in one mole.' },
+        },
+      },
+    ),
+    example: { K: 1.8e-10, s: Math.sqrt(1.8e-10), g: Math.sqrt(1.8e-10) * 143.32 },
+    startWith: ['K'],
+    representation: {
+      kind: 'equilibriumChart',
+      species: [
+        { formula: 'Ag⁺', coef: 1, side: 'product', start: 0, eq: 's' },
+        { formula: 'Cl⁻', coef: 1, side: 'product', start: 0, eq: 's' },
+      ],
+      K: 'K',
+    },
+  },
+  {
+    id: 's.10.gas-laws~partial-pressure',
+    title: 'Dalton’s law of partial pressures',
+    use: 'Use this for a mixture of gases: the total pressure from each gas’s partial pressure, and one gas’s mole fraction.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A tank holds helium, oxygen and nitrogen, all ideal and at one temperature.',
+      'Each gas pushes as if it were alone, so the total pressure is the sum of the partial pressures.',
+      'A gas’s share of the pressure is its share of the particles: its mole fraction.',
+    ],
+    variables: [
+      { ...pressure('1'), name: 'Pressure of helium' },
+      { ...pressure('2'), name: 'Pressure of oxygen' },
+      { ...pressure('2'), id: 'P3', symbol: 'P₃', name: 'Pressure of nitrogen' },
+      { ...pressure(''), name: 'Total pressure', max: 600 },
+      { id: 'x', symbol: 'x₁', name: 'Mole fraction of helium', min: 0, max: 1, step: 0.0001 },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'P = P₁ + P₂ + P₃',
+          display: '{P} = {P1} + {P2} + {P3}',
+          vars: ['P', 'P1', 'P2', 'P3'],
+          residual: (v) => v.P! - (v.P1! + v.P2! + v.P3!),
+          solve: {
+            P: (v) => v.P1! + v.P2! + v.P3!,
+            P1: (v) => v.P! - v.P2! - v.P3!,
+            P2: (v) => v.P! - v.P1! - v.P3!,
+            P3: (v) => v.P! - v.P1! - v.P2!,
+          },
+        },
+        steps: {
+          P: { expr: '{P1} + {P2} + {P3}', how: 'Each gas adds its own push to the total.' },
+          P1: { expr: '{P} − {P2} − {P3}', how: 'Take the other gases’ pressures from the total.' },
+          P2: { expr: '{P} − {P1} − {P3}', how: 'Take the other gases’ pressures from the total.' },
+          P3: { expr: '{P} − {P1} − {P2}', how: 'Take the other gases’ pressures from the total.' },
+        },
+      },
+      {
+        relation: {
+          id: 'x₁ = P₁/P',
+          display: '{x} = {P1}/{P}',
+          vars: ['x', 'P1', 'P'],
+          residual: (v) => v.x! * v.P! - v.P1!,
+          solve: { x: (v) => div(v.P1!, v.P!), P1: (v) => v.x! * v.P!, P: (v) => div(v.P1!, v.x!) },
+        },
+        steps: {
+          x: {
+            expr: '{P1}/{P}',
+            how: 'Helium’s share of the pressure is its share of the particles.',
+          },
+          P1: { expr: '{x} × {P}', how: 'Take helium’s share of the total pressure.' },
+          P: {
+            expr: '{P1}/{x}',
+            how: 'Helium’s pressure is that share of the total: scale it up.',
+          },
+        },
+      },
+    ),
+    example: { P1: 2, P2: 0.5, P3: 1.5, P: 4, x: 0.5 },
+    startWith: ['P1', 'P2', 'P3'],
+    representation: { kind: 'pieChart', parts: ['P1', 'P2', 'P3'], total: 'P' },
+  },
+  {
+    id: 's.10.molarity~percent-mass',
+    title: 'Percent by mass',
+    use: 'Use this for “15 g of sugar is dissolved in 135 g of water. What is the percent sugar by mass?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The solution’s mass is the solute’s and the solvent’s together.',
+      'Percent by mass is the solute’s share of the solution’s mass, not of the water’s.',
+    ],
+    variables: [
+      { ...saltGrams('m1', 'm₁', 'Mass of solute', 0.001), max: 10000, step: 0.001 },
+      { ...saltGrams('m2', 'm₂', 'Mass of solvent', 0.001), max: 10000, step: 0.001 },
+      { ...saltGrams('m', 'm', 'Mass of solution', 0.002), max: 20000, step: 0.001 },
+      quantity('p', 'p', 'Percent by mass', '%', 0, 100, 0.0001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'm = m₁ + m₂',
+          display: '{m} = {m1} + {m2}',
+          vars: ['m', 'm1', 'm2'],
+          residual: (v) => v.m! - (v.m1! + v.m2!),
+          solve: { m: (v) => v.m1! + v.m2!, m1: (v) => v.m! - v.m2!, m2: (v) => v.m! - v.m1! },
+        },
+        steps: {
+          m: {
+            expr: '{m1} + {m2}',
+            how: 'Dissolving loses no mass: add the solute and the solvent.',
+          },
+          m1: { expr: '{m} − {m2}', how: 'Take the solvent’s mass from the solution’s.' },
+          m2: { expr: '{m} − {m1}', how: 'Take the solute’s mass from the solution’s.' },
+        },
+      },
+      {
+        relation: {
+          id: 'p = m₁/m × 100',
+          display: '{p} = {m1}/{m} × 100',
+          vars: ['p', 'm1', 'm'],
+          residual: (v) => v.p! * v.m! - 100 * v.m1!,
+          solve: {
+            p: (v) => div(100 * v.m1!, v.m!),
+            m1: (v) => (v.p! * v.m!) / 100,
+            m: (v) => div(100 * v.m1!, v.p!),
+          },
+        },
+        steps: {
+          p: {
+            expr: '{m1}/{m} × 100',
+            how: 'The solute’s share of the whole solution, as a percent.',
+          },
+          m1: { expr: '{p} × {m}/100', how: 'Take that percent of the solution’s mass.' },
+          m: {
+            expr: '{m1} × 100/{p}',
+            how: 'The solute is p percent of the solution: scale it up.',
+          },
+        },
+      },
+    ),
+    example: { m1: 15, m2: 135, m: 150, p: 10 },
+    startWith: ['m1', 'm2'],
+    representation: { kind: 'percentBar', percent: 'p', part: 'm1', whole: 'm' },
+  },
+  {
+    id: 's.10.redox~cell-voltage',
+    title: 'Standard cell voltage',
+    use: 'Use this for “What voltage does a zinc–copper cell give?”: E°cell from the two metals’ reduction potentials.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each metal stands in a 1 M solution of its own ion at 25 °C; the potentials are the standard table’s.',
+      'The metal with the higher reduction potential is the cathode, where reduction happens.',
+      'E°cell = E°cathode − E°anode, and it is positive for a working cell.',
+    ],
+    variables: [
+      {
+        ...quantity('Ec', 'E°cathode', 'Reduction potential of the cathode', 'V', -3, 1, 0.01),
+        allowed: POTENTIALS,
+      },
+      {
+        ...quantity('Ea', 'E°anode', 'Reduction potential of the anode', 'V', -3, 1, 0.01),
+        allowed: POTENTIALS,
+      },
+      quantity('E', 'E°cell', 'Cell voltage', 'V', 0, 4, 0.01),
+    ],
+    ...rules({
+      relation: {
+        id: 'E°cell = E°cathode − E°anode',
+        display: '{E} = {Ec} − {Ea}',
+        vars: ['E', 'Ec', 'Ea'],
+        residual: (v) => v.E! - (v.Ec! - v.Ea!),
+        solve: { E: (v) => v.Ec! - v.Ea!, Ec: (v) => v.E! + v.Ea!, Ea: (v) => v.Ec! - v.E! },
+        message: (v) =>
+          v.Ec! > v.Ea!
+            ? undefined
+            : 'The cathode has the higher reduction potential: swap the two metals.',
+      },
+      steps: {
+        E: {
+          expr: '{Ec} − {Ea}',
+          how: 'The cathode’s pull for electrons minus the anode’s: the bigger the gap, the bigger the voltage.',
+          work: (v) => {
+            const [c, a] = [metalAt(v.Ec!), metalAt(v.Ea!)];
+            return c && a
+              ? [
+                  `${fmt(v.Ec!)} V is ${c}’s and ${fmt(v.Ea!)} V is ${a}’s: a ${a}–${c} cell with ${a} the anode`,
+                ]
+              : [];
+          },
+        },
+        Ec: { expr: '{E} + {Ea}', how: 'Add the anode’s potential to the cell voltage.' },
+        Ea: { expr: '{Ec} − {E}', how: 'Take the cell voltage from the cathode’s potential.' },
+      },
+    }),
+    example: { Ec: 0.34, Ea: -0.76, E: 1.1 },
+    startWith: ['Ec', 'Ea'],
+    representation: {
+      kind: 'integerLine',
+      value: 'Ea',
+      second: 'Ec',
+      change: 'E',
+      min: -3,
+      max: 1,
+      vertical: true,
+      unit: 'V',
+    },
+  },
+];
+
+// ─── Phase changes, vapor pressure and colligative properties ───────────────
+
+/** ΔT = i × K × b for a solvent constant K (1.86 °C·kg/mol freezing, 0.512 boiling, water). */
+const colligativeRule = (dT: string, k: number, kText: string, what: string): Rule => ({
+  relation: {
+    id: `${dT} = i × ${kText} × b`,
+    display: `{${dT}} = {i} × ${kText} × {b}`,
+    vars: [dT, 'i', 'b'],
+    residual: (v) => v[dT]! - v.i! * k * v.b!,
+    solve: {
+      [dT]: (v) => v.i! * k * v.b!,
+      b: (v) => div(v[dT]!, v.i! * k),
+      i: (v) => div(v[dT]!, k * v.b!),
+    },
+  },
+  steps: {
+    [dT]: {
+      expr: `{i} × ${kText} × {b}`,
+      how: `Water’s ${what} changes ${kText} °C for each mole of particles per kilogram.`,
+    },
+    b: { expr: `{${dT}}/({i} × ${kText})`, how: 'Divide the change by i times the constant.' },
+    i: { expr: `{${dT}}/(${kText} × {b})`, how: 'Divide the change by the constant times b.' },
+  },
+});
+
+const PHASE: ModuleDef[] = [
+  {
+    id: 's.10.phase-colligative',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The solvent is water: it freezes at 0 °C and boils at 100 °C, with Kf = 1.86 and Kb = 0.512 °C·kg/mol.',
+      'Only the number of dissolved particles matters: i is 1 for sugar, 2 for NaCl, 3 for CaCl₂.',
+      'Molality b is moles of solute per kilogram of water, not per liter of solution.',
+    ],
+    variables: [
+      quantity('n', 'n', 'Moles of solute', 'mol', 0.001, 50, 0.001),
+      quantity('w', 'w', 'Mass of water', 'kg', 0.01, 100, 0.001),
+      quantity('b', 'b', 'Molality', 'mol/kg', 0.0001, 20, 0.0001),
+      {
+        ...whole('i', 'i', 'Particles each unit gives (van ’t Hoff factor)', 1, 3),
+        allowed: [1, 2, 3],
+      },
+      quantity('dTf', 'ΔTf', 'Freezing point drop', '°C', 0, 120, 0.0001),
+      quantity('Tf', 'Tf', 'Freezing point of the solution', '°C', -120, 0, 0.0001),
+      quantity('dTb', 'ΔTb', 'Boiling point rise', '°C', 0, 40, 0.0001),
+      quantity('Tb', 'Tb', 'Boiling point of the solution', '°C', 100, 140, 0.0001),
+      {
+        ...quantity('T0', 'T₀', 'Where the curve starts', '°C', -130, -10, 0.0001),
+        derived: true,
+        hidden: true,
+      },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'b = n/w',
+          display: '{b} = {n}/{w}',
+          vars: ['b', 'n', 'w'],
+          residual: (v) => v.b! * v.w! - v.n!,
+          solve: { b: (v) => div(v.n!, v.w!), n: (v) => v.b! * v.w!, w: (v) => div(v.n!, v.b!) },
+        },
+        steps: {
+          b: { expr: '{n}/{w}', how: 'Molality is moles of solute per kilogram of water.' },
+          n: { expr: '{b} × {w}', how: 'Multiply the moles in each kilogram by the kilograms.' },
+          w: { expr: '{n}/{b}', how: 'Divide the moles by the moles in each kilogram.' },
+        },
+      },
+      colligativeRule('dTf', 1.86, '1.86', 'freezing point'),
+      {
+        relation: {
+          id: 'Tf = 0 − ΔTf',
+          display: '{Tf} = 0 − {dTf}',
+          vars: ['Tf', 'dTf'],
+          residual: (v) => v.Tf! + v.dTf!,
+          solve: { Tf: (v) => -v.dTf!, dTf: (v) => -v.Tf! },
+        },
+        steps: {
+          Tf: { expr: '0 − {dTf}', how: 'Pure water freezes at 0 °C; the solute pushes it lower.' },
+          dTf: { expr: '0 − {Tf}', how: 'How far below 0 °C the solution freezes.' },
+        },
+      },
+      colligativeRule('dTb', 0.512, '0.512', 'boiling point'),
+      {
+        relation: {
+          id: 'Tb = 100 + ΔTb',
+          display: '{Tb} = 100 + {dTb}',
+          vars: ['Tb', 'dTb'],
+          residual: (v) => v.Tb! - (100 + v.dTb!),
+          solve: { Tb: (v) => 100 + v.dTb!, dTb: (v) => v.Tb! - 100 },
+        },
+        steps: {
+          Tb: {
+            expr: '100 + {dTb}',
+            how: 'Pure water boils at 100 °C; the solute pushes it higher.',
+          },
+          dTb: { expr: '{Tb} − 100', how: 'How far above 100 °C the solution boils.' },
+        },
+      },
+      {
+        relation: {
+          id: 'curve start',
+          hidden: true,
+          display: '{T0} = {Tf} − 10',
+          vars: ['T0', 'Tf'],
+          residual: (v) => v.T0! - (v.Tf! - 10),
+          solve: { T0: (v) => v.Tf! - 10 },
+        },
+        steps: {},
+      },
+    ),
+    example: {
+      n: 0.25,
+      w: 0.5,
+      b: 0.5,
+      i: 3,
+      dTf: 3 * 1.86 * 0.5,
+      Tf: -3 * 1.86 * 0.5,
+      dTb: 3 * 0.512 * 0.5,
+      Tb: 100 + 3 * 0.512 * 0.5,
+      T0: -3 * 1.86 * 0.5 - 10,
+    },
+    startWith: ['n', 'w', 'i'],
+    representation: {
+      kind: 'heatingCurve',
+      start: 'T0',
+      melt: 'Tf',
+      boil: 'Tb',
+      spans: [4, 8, 10, 20],
+      names: ['ice', 'solution', 'steam'],
+      formula: 'H2O',
+    },
+  },
+  {
+    id: 's.10.phase-colligative~vapor-pressure',
+    title: 'Vapor pressure of a solution',
+    use: 'Use this for “Glucose is dissolved in water. How much does the vapor pressure drop?”: Raoult’s law.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The solute does not evaporate, so only water molecules at the surface escape (Raoult’s law).',
+      'The vapor pressure is the pure water’s times water’s mole fraction; at 25 °C pure water’s is 23.8 mmHg.',
+      'Count particles: a salt that splits into ions counts each ion.',
+    ],
+    variables: [
+      quantity('n1', 'n₁', 'Moles of water', 'mol', 0.01, 1000, 0.001),
+      quantity('n2', 'n₂', 'Moles of solute particles', 'mol', 0, 1000, 0.001),
+      quantity('n', 'n', 'Moles in all', 'mol', 0.01, 2000, 0.001),
+      { id: 'x', symbol: 'x', name: 'Mole fraction of water', min: 0, max: 1, step: 0.0001 },
+      quantity('P0', 'P°', 'Vapor pressure of pure water', 'mmHg', 0.1, 800, 0.01),
+      quantity('P', 'P', 'Vapor pressure of the solution', 'mmHg', 0, 800, 0.0001),
+      quantity('dP', 'ΔP', 'Drop in vapor pressure', 'mmHg', 0, 800, 0.0001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'n = n₁ + n₂',
+          display: '{n} = {n1} + {n2}',
+          vars: ['n', 'n1', 'n2'],
+          residual: (v) => v.n! - (v.n1! + v.n2!),
+          solve: { n: (v) => v.n1! + v.n2!, n1: (v) => v.n! - v.n2!, n2: (v) => v.n! - v.n1! },
+        },
+        steps: {
+          n: { expr: '{n1} + {n2}', how: 'Add the water’s moles and the solute particles’.' },
+          n1: { expr: '{n} − {n2}', how: 'Take the solute particles from the total.' },
+          n2: { expr: '{n} − {n1}', how: 'Take the water from the total.' },
+        },
+      },
+      {
+        relation: {
+          id: 'x = n₁/n',
+          display: '{x} = {n1}/{n}',
+          vars: ['x', 'n1', 'n'],
+          residual: (v) => v.x! * v.n! - v.n1!,
+          solve: { x: (v) => div(v.n1!, v.n!), n1: (v) => v.x! * v.n!, n: (v) => div(v.n1!, v.x!) },
+        },
+        steps: {
+          x: { expr: '{n1}/{n}', how: 'Water’s share of all the particles.' },
+          n1: { expr: '{x} × {n}', how: 'Take water’s share of all the moles.' },
+          n: { expr: '{n1}/{x}', how: 'The water is that share of the whole: scale it up.' },
+        },
+      },
+      {
+        relation: {
+          id: 'P = x × P°',
+          display: '{P} = {x} × {P0}',
+          vars: ['P', 'x', 'P0'],
+          residual: (v) => v.P! - v.x! * v.P0!,
+          solve: { P: (v) => v.x! * v.P0!, x: (v) => div(v.P!, v.P0!), P0: (v) => div(v.P!, v.x!) },
+        },
+        steps: {
+          P: {
+            expr: '{x} × {P0}',
+            how: 'Only the water’s share of the surface escapes, so the pressure drops by that share.',
+          },
+          x: { expr: '{P}/{P0}', how: 'Compare the solution’s vapor pressure with pure water’s.' },
+          P0: { expr: '{P}/{x}', how: 'The solution has that share of pure water’s pressure.' },
+        },
+      },
+      {
+        relation: {
+          id: 'ΔP = P° − P',
+          display: '{dP} = {P0} − {P}',
+          vars: ['dP', 'P0', 'P'],
+          residual: (v) => v.dP! - (v.P0! - v.P!),
+          solve: { dP: (v) => v.P0! - v.P!, P0: (v) => v.dP! + v.P!, P: (v) => v.P0! - v.dP! },
+        },
+        steps: {
+          dP: { expr: '{P0} − {P}', how: 'The drop is pure water’s pressure less the solution’s.' },
+          P0: { expr: '{dP} + {P}', how: 'Add the drop back to the solution’s pressure.' },
+          P: { expr: '{P0} − {dP}', how: 'Take the drop off pure water’s pressure.' },
+        },
+      },
+    ),
+    example: { n1: 9.5, n2: 0.5, n: 10, x: 0.95, P0: 23.8, P: 22.61, dP: 1.19 },
+    startWith: ['n1', 'n2', 'P0'],
+    representation: { kind: 'pieChart', parts: ['n1', 'n2'], total: 'n' },
+  },
+];
+
+// ─── Entropy, free energy and spontaneity ────────────────────────────────────
+
+/** ΔG against T is a line: slope −ΔS/1000 (kJ per kelvin), meeting the axis at ΔH. */
+const slopeRule: Rule = {
+  relation: {
+    id: 'slope of ΔG against T',
+    hidden: true,
+    display: '{m} = −{dS}/1000',
+    vars: ['m', 'dS'],
+    residual: (v) => v.m! + v.dS! / 1000,
+    solve: { m: (v) => -v.dS! / 1000 },
+  },
+  steps: {},
+};
+const freeVars = (): VariableDef[] => [
+  quantity('dH', 'ΔH', 'Enthalpy change', 'kJ/mol', -5000, 5000, 0.01),
+  quantity('dS', 'ΔS', 'Entropy change', 'J/(mol·K)', -5000, 5000, 0.01),
+  {
+    ...quantity('m', 'm', 'Slope of the line', undefined, -5, 5, 0.000001),
+    derived: true,
+    hidden: true,
+  },
+];
+const FREE_AXES = { x: 'Temperature T (K)', y: 'ΔG (kJ/mol)' };
+
+const FREE: ModuleDef[] = [
+  {
+    id: 's.10.entropy-free-energy',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A reaction is spontaneous, able to go on its own, when ΔG is below 0.',
+      'ΔG = ΔH − TΔS, with T in kelvins; ΔS is in J/(mol·K), so divide it by 1000 to match ΔH’s kJ.',
+      'Spontaneous says nothing about speed: diamond turning to graphite is spontaneous but far too slow to see.',
+    ],
+    variables: [
+      ...freeVars(),
+      quantity('T', 'T', 'Temperature', 'K', 1, 5000, 0.1),
+      quantity('dG', 'ΔG', 'Free energy change', 'kJ/mol', -30000, 30000, 0.0001),
+    ],
+    ...rules(slopeRule, {
+      relation: {
+        id: 'ΔG = ΔH − TΔS',
+        display: '{dG} = {dH} − {T} × {dS}/1000',
+        vars: ['dG', 'dH', 'T', 'dS'],
+        residual: (v) => v.dG! - (v.dH! - (v.T! * v.dS!) / 1000),
+        solve: {
+          dG: (v) => v.dH! - (v.T! * v.dS!) / 1000,
+          dH: (v) => v.dG! + (v.T! * v.dS!) / 1000,
+          T: (v) => div(1000 * (v.dH! - v.dG!), v.dS!),
+          dS: (v) => div(1000 * (v.dH! - v.dG!), v.T!),
+        },
+      },
+      steps: {
+        dG: {
+          expr: '{dH} − {T} × {dS}/1000',
+          how: 'The heat given off pushes a reaction forward; spreading out (ΔS) pushes it more at high T.',
+          work: (v) =>
+            v.dG === 0
+              ? ['ΔG = 0: the reaction is at equilibrium']
+              : v.dG! < 0
+                ? [`ΔG is below 0, so the reaction is spontaneous at ${fmt(v.T!)} K`]
+                : [`ΔG is above 0, so the reaction is not spontaneous at ${fmt(v.T!)} K`],
+        },
+        dH: { expr: '{dG} + {T} × {dS}/1000', how: 'Add TΔS back to ΔG.' },
+        T: {
+          expr: '1000 × ({dH} − {dG})/{dS}',
+          how: 'TΔS is what ΔH and ΔG differ by: divide it by ΔS.',
+        },
+        dS: {
+          expr: '1000 × ({dH} − {dG})/{T}',
+          how: 'TΔS is what ΔH and ΔG differ by: divide it by T.',
+        },
+      },
+    }),
+    example: { dH: 50, dS: 200, m: -0.2, T: 300, dG: -10 },
+    startWith: ['dH', 'dS', 'T'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'dH',
+      at: { x: 'T', y: 'dG' },
+      xMin: 0,
+      axes: FREE_AXES,
+      fixed: true,
+    },
+  },
+  {
+    id: 's.10.entropy-free-energy~crossover',
+    title: 'The temperature where it turns spontaneous',
+    use: 'Use this for “Above what temperature is a reaction with ΔH = 60 kJ/mol and ΔS = 150 J/(mol·K) spontaneous?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'ΔG = ΔH − TΔS is 0 where the reaction switches: T = ΔH ÷ ΔS, with ΔS changed to kJ.',
+      'Both positive: spontaneous above that temperature. Both negative: spontaneous below it.',
+      'With opposite signs ΔG never changes sign, so there is no switch.',
+    ],
+    variables: [
+      ...freeVars(),
+      quantity('Tc', 'T', 'Temperature where ΔG = 0', 'K', 1, 100000, 0.01),
+    ],
+    ...rules(
+      slopeRule,
+      {
+        relation: {
+          id: 'ΔH and ΔS share a sign',
+          constraint: true,
+          display: '{dH} and {dS} have the same sign',
+          vars: ['dH', 'dS'],
+          residual: (v) => (v.dH! * v.dS! > 0 ? 0 : 1),
+          solve: {},
+          message: (v) =>
+            v.dH! * v.dS! > 0
+              ? undefined
+              : 'ΔH and ΔS need the same sign: otherwise ΔG never changes sign, and there is no switching temperature.',
+        },
+        steps: {},
+      },
+      {
+        relation: {
+          id: 'T = ΔH/ΔS',
+          display: '{Tc} = 1000 × {dH}/{dS}',
+          vars: ['Tc', 'dH', 'dS'],
+          residual: (v) => v.Tc! * v.dS! - 1000 * v.dH!,
+          solve: {
+            Tc: (v) => div(1000 * v.dH!, v.dS!),
+            dH: (v) => (v.Tc! * v.dS!) / 1000,
+            dS: (v) => div(1000 * v.dH!, v.Tc!),
+          },
+          message: (v) =>
+            v.dH! * v.dS! > 0
+              ? undefined
+              : 'ΔH and ΔS have opposite signs, so ΔG never changes sign: there is no switching temperature.',
+        },
+        steps: {
+          Tc: {
+            expr: '1000 × {dH}/{dS}',
+            how: 'Set ΔG = 0: then ΔH = TΔS, so T is ΔH over ΔS (in kJ, so times 1000).',
+            work: (v) =>
+              v.dS! > 0
+                ? [`ΔH and ΔS are both positive: spontaneous above ${fmt(v.Tc!)} K`]
+                : [`ΔH and ΔS are both negative: spontaneous below ${fmt(v.Tc!)} K`],
+          },
+          dH: { expr: '{Tc} × {dS}/1000', how: 'At the switch ΔH equals TΔS.' },
+          dS: { expr: '1000 × {dH}/{Tc}', how: 'At the switch ΔS is ΔH over T.' },
+        },
+      },
+    ),
+    example: { dH: 60, dS: 150, m: -0.15, Tc: 400 },
+    startWith: ['dH', 'dS'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'dH',
+      shows: { zeros: ['Tc'] },
+      marks: ['zeros'],
+      xMin: 0,
+      axes: FREE_AXES,
+      fixed: true,
     },
   },
 ];
@@ -3729,4 +4938,7 @@ export const SCIENCE_10_MODULES: ModuleDef[] = [
   ...ACIDS,
   ...ORGANIC,
   ...NUCLEAR,
+  ...PHASE,
+  ...FREE,
+  ...ADDED,
 ];

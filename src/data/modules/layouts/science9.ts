@@ -131,7 +131,7 @@ const BIOMOLECULES: LayoutDef[] = [
     use: 'Use this for “Why can an insect stand on the surface of a pond?”',
     assumptions: [
       'Water is polar: its oxygen end is slightly negative and its hydrogen ends slightly positive.',
-      'Hydrogen bonds between water molecules cause all four properties here.',
+      'Hydrogen bonds, between water molecules or with other polar surfaces, cause all five properties here.',
     ],
     question: 'Which property of water explains it?',
     bins: [
@@ -139,6 +139,11 @@ const BIOMOLECULES: LayoutDef[] = [
         id: 'cohesion',
         label: 'Cohesion (surface tension)',
         why: 'Water molecules cling to each other, so the surface holds together.',
+      },
+      {
+        id: 'adhesion',
+        label: 'Adhesion (capillary action)',
+        why: 'Water molecules cling to other polar surfaces, so water climbs narrow spaces.',
       },
       {
         id: 'heat',
@@ -159,6 +164,8 @@ const BIOMOLECULES: LayoutDef[] = [
     cards: [
       { label: 'An insect stands on a pond', bin: 'cohesion' },
       { label: 'Water beads into round drops on a leaf', bin: 'cohesion' },
+      { label: 'Water climbs up a paper towel', bin: 'adhesion' },
+      { label: 'Water creeps up a thin glass tube', bin: 'adhesion' },
       { label: 'A lake warms slowly in spring', bin: 'heat' },
       { label: 'Seaside towns have milder winters than inland towns', bin: 'heat' },
       { label: 'Salt disappears when stirred into water', bin: 'solvent' },
@@ -213,7 +220,7 @@ const MEMBRANE: LayoutDef[] = [
       { label: 'CO₂ leaves a muscle cell', bin: 'simple' },
       { label: 'Glucose enters a red blood cell through a carrier protein', bin: 'facilitated' },
       { label: 'K⁺ leaves through an open channel, high to low', bin: 'facilitated' },
-      { label: 'Water enters a root cell through aquaporins', bin: 'osmosis' },
+      { label: 'Water moves into a root cell from wetter soil', bin: 'osmosis' },
       { label: 'The Na⁺/K⁺ pump spends ATP', bin: 'active' },
       { label: 'Root cells take in minerals from soil that has fewer of them', bin: 'active' },
       { label: 'A white blood cell engulfs a bacterium', bin: 'bulk' },
@@ -547,6 +554,196 @@ const DIVISION: LayoutDef[] = [
       },
     ],
   },
+  {
+    kind: 'sort',
+    id: 's.9.mitosis-meiosis~checkpoints',
+    title: 'Which checkpoint stops it?',
+    use: 'Use this for “A cell’s DNA is damaged before it is copied. Where in the cycle is it stopped?”',
+    assumptions: [
+      'Checkpoints are proteins that check the cell before it moves on to the next phase.',
+      'A cell that fails a check pauses to repair the problem, or destroys itself by apoptosis.',
+    ],
+    question: 'Which checkpoint catches it?',
+    bins: [
+      {
+        id: 'g1',
+        label: 'G1 checkpoint (before S)',
+        why: 'Checks the cell’s size, nutrients, growth signals and DNA before it is copied.',
+      },
+      {
+        id: 'g2',
+        label: 'G2 checkpoint (before M)',
+        why: 'Checks that all the DNA was copied, and copied without damage.',
+      },
+      {
+        id: 'm',
+        label: 'M checkpoint (at metaphase)',
+        why: 'Checks that every chromosome is attached to the spindle before sisters separate.',
+      },
+    ],
+    cards: [
+      { label: 'The cell is still too small to divide', bin: 'g1' },
+      { label: 'No growth factor has signaled the cell to divide', bin: 'g1' },
+      { label: 'Sunlight damaged the DNA before it was copied', bin: 'g1' },
+      { label: 'Part of one chromosome was not replicated', bin: 'g2' },
+      { label: 'A copying error was left in the new DNA', bin: 'g2' },
+      { label: 'One chromosome is not attached to spindle fibers', bin: 'm' },
+      { label: 'The chromosomes are not all lined up at the middle', bin: 'm' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.mitosis-meiosis~cancer',
+    title: 'Normal cell or cancer cell?',
+    use: 'Use this for “How does a cancer cell differ from a normal body cell?”',
+    assumptions: [
+      'Cancer starts when mutations damage the genes that control the cell cycle.',
+      'A mutated proto-oncogene acts like a stuck accelerator; a broken tumor-suppressor gene, like failed brakes.',
+      'Mutations add up over time, so most cancers need several of them.',
+    ],
+    question: 'Does it describe a normal cell or a cancer cell?',
+    bins: [
+      {
+        id: 'normal',
+        label: 'Normal cell',
+        why: 'Its checkpoints and signals control when it divides and when it dies.',
+      },
+      {
+        id: 'cancer',
+        label: 'Cancer cell',
+        why: 'It divides out of control and ignores the signals and checks that stop other cells.',
+      },
+    ],
+    cards: [
+      { label: 'Stops dividing when crowded by its neighbors', bin: 'normal' },
+      { label: 'Divides only when a growth factor signals it', bin: 'normal' },
+      { label: 'Destroys itself when its DNA is badly damaged', bin: 'normal' },
+      { label: 'Stays in its own tissue', bin: 'normal' },
+      { label: 'Keeps dividing and piles up into a tumor', bin: 'cancer' },
+      { label: 'Divides with no growth factor signal', bin: 'cancer' },
+      { label: 'Keeps dividing although its DNA is damaged', bin: 'cancer' },
+      { label: 'Spreads through the blood to other organs', bin: 'cancer' },
+    ],
+  },
+];
+
+const REPRODUCTION: LayoutDef[] = [
+  // ── Reproduction and development (HS-LS1-4, HS-LS3-2) ──
+  {
+    kind: 'sequence',
+    id: 's.9.reproduction-development',
+    assumptions: [
+      'An egg and a sperm are haploid; together they make a diploid zygote, which divides by mitosis.',
+      'Every cell has the same DNA, but different cells turn on different genes: they differentiate.',
+    ],
+    question: 'Put the stages of animal development in order, from fertilization.',
+    stages: [
+      { label: 'Fertilization: a sperm joins an egg, making a zygote' },
+      { label: 'Cleavage: the zygote divides into a solid ball of cells' },
+      { label: 'Blastula: a hollow ball of cells forms' },
+      { label: 'Gastrulation: the cells fold in to form three germ layers' },
+      { label: 'Organogenesis: the germ layers form tissues and organs' },
+      { label: 'The fetus grows until birth or hatching' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.reproduction-development~sexual-asexual',
+    title: 'Sexual or asexual reproduction?',
+    use: 'Use this for “Why do offspring from sexual reproduction differ from both parents?”',
+    assumptions: [
+      'Asexual reproduction needs one parent, and the offspring are clones: their DNA matches the parent’s.',
+      'Sexual reproduction joins two gametes made by meiosis, so each offspring gets a new mix of both parents’ DNA.',
+    ],
+    question: 'Is it sexual or asexual reproduction?',
+    bins: [
+      {
+        id: 'asexual',
+        label: 'Asexual',
+        why: 'One parent, mitosis or splitting: offspring identical to the parent.',
+      },
+      {
+        id: 'sexual',
+        label: 'Sexual',
+        why: 'An egg and a sperm join: offspring differ from each parent and each other.',
+      },
+    ],
+    cards: [
+      { label: 'A bacterium splits in two', bin: 'asexual' },
+      { label: 'A hydra grows a bud that breaks off', bin: 'asexual' },
+      { label: 'A strawberry plant sends out runners', bin: 'asexual' },
+      { label: 'A piece of a flatworm regrows into a whole worm', bin: 'asexual' },
+      { label: 'Frogs release eggs and sperm into a pond', bin: 'sexual' },
+      { label: 'Pollen carried to another flower’s stigma', bin: 'sexual' },
+      { label: 'Siblings with different eye colors', bin: 'sexual' },
+      { label: 'Offspring vary, so some may survive a new disease', bin: 'sexual' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.reproduction-development~germ-layers',
+    title: 'Which germ layer forms it?',
+    use: 'Use this for “Which germ layer forms the brain and spinal cord?”',
+    assumptions: [
+      'Gastrulation folds the early embryo into three germ layers: outer, middle and inner.',
+      'Each layer’s cells differentiate into its own set of tissues and organs.',
+    ],
+    question: 'Which germ layer does it come from?',
+    bins: [
+      {
+        id: 'ecto',
+        label: 'Ectoderm (outer)',
+        why: 'The outer layer makes the skin’s surface and the whole nervous system.',
+      },
+      {
+        id: 'meso',
+        label: 'Mesoderm (middle)',
+        why: 'The middle layer makes muscle, bone, blood, the heart and the kidneys.',
+      },
+      {
+        id: 'endo',
+        label: 'Endoderm (inner)',
+        why: 'The inner layer lines the gut and the lungs, and makes the liver and pancreas.',
+      },
+    ],
+    cards: [
+      { label: 'Brain and spinal cord', bin: 'ecto' },
+      { label: 'Outer layer of the skin', bin: 'ecto' },
+      { label: 'Lens of the eye', bin: 'ecto' },
+      { label: 'Heart and blood vessels', bin: 'meso' },
+      { label: 'Bones and skeletal muscle', bin: 'meso' },
+      { label: 'Kidneys', bin: 'meso' },
+      { label: 'Lining of the stomach and intestines', bin: 'endo' },
+      { label: 'Lining of the lungs', bin: 'endo' },
+      { label: 'Liver and pancreas', bin: 'endo' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.reproduction-development~menstrual-cycle',
+    title: 'The menstrual cycle',
+    use: 'Use this for “Why does menstruation stop during pregnancy?”',
+    assumptions: [
+      'Hormones from the brain (FSH and LH) and the ovary (estrogen and progesterone) run the cycle.',
+      'If an embryo implants, it makes the hormone hCG, which keeps progesterone high, so the lining stays and menstruation stops.',
+      'The days are for a typical 28-day cycle; real cycles vary.',
+    ],
+    question: 'Put the phases of the menstrual cycle in order, from day 1.',
+    stages: [
+      { label: 'Menstruation: progesterone is low, so the uterine lining is shed', span: 5 },
+      {
+        label: 'Follicle phase: FSH grows a follicle, whose estrogen rebuilds the lining',
+        span: 8,
+      },
+      { label: 'Ovulation: a surge of LH releases the egg', span: 1 },
+      {
+        label: 'Luteal phase: the empty follicle makes progesterone, which keeps the lining',
+        span: 14,
+      },
+    ],
+    unit: 'days',
+    totalLabel: 'One typical cycle',
+  },
 ];
 
 const INHERITANCE: LayoutDef[] = [
@@ -559,6 +756,7 @@ const INHERITANCE: LayoutDef[] = [
     assumptions: [
       'The ABO gene has three alleles: Iᴬ, Iᴮ and i.',
       'Iᴬ and Iᴮ are codominant, so IᴬIᴮ shows both; i is recessive to each of them.',
+      'Tests often write these as AA, AO, BB, BO, AB and OO.',
     ],
     question: 'Which blood type does the genotype give?',
     bins: [
@@ -669,9 +867,12 @@ const DNA: LayoutDef[] = [
     question: 'Put the steps of DNA replication in order.',
     stages: [
       { label: 'Helicase unzips the double helix at an origin' },
-      { label: 'Free nucleotides pair with each old strand, A with T and G with C' },
-      { label: 'DNA polymerase joins the new nucleotides into a strand' },
-      { label: 'Two DNA molecules, each one old strand and one new' },
+      {
+        label:
+          'DNA polymerase adds matching nucleotides along each old strand, A with T and G with C',
+      },
+      { label: 'Ligase seals the gaps between the new pieces' },
+      { label: 'Two DNA molecules, each with one old strand and one new' },
     ],
   },
   {
@@ -697,6 +898,50 @@ const DNA: LayoutDef[] = [
 
 const BIOTECH: LayoutDef[] = [
   // ── Mutations, gene expression and biotechnology (HS-LS3-1, HS-LS3-2, HS-LS1-1) ──
+  {
+    kind: 'sort',
+    id: 's.9.biotechnology~mutation-types',
+    title: 'Silent, missense, nonsense or frameshift?',
+    use: 'Use this for “The codon GAA changes to GUA. What kind of mutation is it?”',
+    assumptions: [
+      'Each card is one change to an mRNA codon, with the amino acid it codes before and after.',
+      'A substitution swaps one base for another; an insertion or deletion adds or removes bases.',
+      'Several codons code the same amino acid, so some substitutions change nothing in the protein.',
+    ],
+    question: 'Which kind of mutation is it?',
+    bins: [
+      {
+        id: 'silent',
+        label: 'Silent',
+        why: 'The new codon codes the same amino acid, so the protein does not change.',
+      },
+      {
+        id: 'missense',
+        label: 'Missense',
+        why: 'The new codon codes a different amino acid: one amino acid in the chain changes.',
+      },
+      {
+        id: 'nonsense',
+        label: 'Nonsense',
+        why: 'The new codon is a stop codon, so the chain ends early and is usually useless.',
+      },
+      {
+        id: 'frameshift',
+        label: 'Frameshift',
+        why: 'Adding or removing 1 or 2 bases shifts the reading frame: every codon after it changes.',
+      },
+    ],
+    cards: [
+      { label: 'GGU (Gly) → GGC (Gly)', bin: 'silent' },
+      { label: 'CUA (Leu) → CUG (Leu)', bin: 'silent' },
+      { label: 'GAA (Glu) → GUA (Val)', bin: 'missense' },
+      { label: 'AAA (Lys) → AGA (Arg)', bin: 'missense' },
+      { label: 'UAC (Tyr) → UAA (stop)', bin: 'nonsense' },
+      { label: 'CAG (Gln) → UAG (stop)', bin: 'nonsense' },
+      { label: 'One base deleted from codon 2', bin: 'frameshift' },
+      { label: 'Two bases inserted after codon 5', bin: 'frameshift' },
+    ],
+  },
   {
     kind: 'sort',
     id: 's.9.biotechnology~tools',
@@ -781,7 +1026,11 @@ const EVOLUTION: LayoutDef[] = [
         figure: { kind: 'icon', icon: 'whale flipper bones' },
       },
       { label: 'Cat foreleg', bin: 'homologous', figure: { kind: 'icon', icon: 'cat leg bones' } },
-      { label: 'Insect wing', bin: 'analogous', figure: { kind: 'icon', icon: 'insect wing' } },
+      {
+        label: 'An insect’s wing beside a bat’s wing',
+        bin: 'analogous',
+        figure: { kind: 'icon', icon: 'insect wing' },
+      },
       { label: 'A shark’s fin beside a dolphin’s flipper', bin: 'analogous' },
       { label: 'A whale’s small hip bones', bin: 'vestigial' },
       { label: 'The human tailbone', bin: 'vestigial' },
@@ -1004,7 +1253,7 @@ const CLASSIFICATION: LayoutDef[] = [
       {
         label: 'Not a clade',
         lines: [
-          'The jellyfish and the earthworm share an ancestor, but so do the sea star, fish and human.',
+          'The jellyfish and the earthworm alone are not a clade: their last common ancestor is also the ancestor of the sea star, fish and human, which the group leaves out.',
           'A group that leaves out some of its ancestor’s descendants is not a clade.',
         ],
         clade: { ring: ['Jellyfish', 'Earthworm'] },
@@ -1130,6 +1379,160 @@ const CLASSIFICATION: LayoutDef[] = [
       { label: 'Family Hominidae' },
       { label: 'Genus Homo' },
       { label: 'Species Homo sapiens' },
+    ],
+  },
+];
+
+const PLANTS: LayoutDef[] = [
+  // ── Plants: structure, transport, growth and reproduction (HS-LS1-2, HS-LS1-5) ──
+  {
+    kind: 'explore',
+    id: 's.9.plant-biology',
+    assumptions: [
+      'A flowering plant’s organs are its roots, stem, leaves and flowers; tap one to read its job.',
+      'Xylem carries water and minerals up from the roots; phloem carries sugar from the leaves to where it is used.',
+    ],
+    figure: {
+      kind: 'parts',
+      drawing: 'plant',
+      parts: [
+        {
+          name: 'Roots',
+          job: 'Anchor the plant and take in water and minerals through root hairs.',
+        },
+        { name: 'Stem', job: 'Holds up the leaves; its xylem and phloem carry water and sugar.' },
+        {
+          name: 'Leaves',
+          job: 'Make sugar by photosynthesis; stomata let CO₂ in and water vapor out.',
+        },
+        {
+          name: 'Flower',
+          job: 'Makes pollen and eggs; after fertilization it forms seeds and fruit.',
+        },
+      ],
+    },
+    scenes: [
+      {
+        label: 'Roots',
+        part: 'Roots',
+        lines: [
+          'Thousands of root hairs give the root a huge surface for taking in water and minerals.',
+          'Water enters by osmosis, because the root’s cells hold more dissolved minerals than the soil water.',
+        ],
+      },
+      {
+        label: 'Stem',
+        part: 'Stem',
+        lines: [
+          'Xylem tubes are made of dead cells that carry water and minerals up, one way.',
+          'Living phloem cells carry sugar both ways: down to the roots and up to new leaves and fruit.',
+        ],
+      },
+      {
+        label: 'Leaves',
+        part: 'Leaves',
+        lines: [
+          'Guard cells open the stomata to let CO₂ in, and water vapor escapes: transpiration.',
+          'Water evaporating from the leaves pulls the next water up the xylem, since water molecules cling together.',
+        ],
+      },
+      {
+        label: 'Flower',
+        part: 'Flower',
+        lines: [
+          'The anthers make pollen; the ovary holds the ovules, each with an egg.',
+          'After fertilization each ovule becomes a seed, and the ovary becomes the fruit.',
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.plant-biology~xylem-phloem',
+    title: 'Xylem or phloem?',
+    use: 'Use this for “Which tissue carries sugar from the leaves to the roots?”',
+    assumptions: [
+      'Xylem and phloem run side by side in bundles through the roots, stem and leaves.',
+      'Transpiration pulls water up the xylem; sugar is pushed through the phloem from a source to a sink.',
+    ],
+    question: 'Is it xylem or phloem?',
+    bins: [
+      {
+        id: 'xylem',
+        label: 'Xylem',
+        why: 'Hollow tubes of dead cells carry water and minerals up from the roots.',
+      },
+      {
+        id: 'phloem',
+        label: 'Phloem',
+        why: 'Living cells carry sugar from where it is made to where it is used or stored.',
+      },
+    ],
+    cards: [
+      { label: 'Carries water from the roots to the leaves', bin: 'xylem' },
+      { label: 'Carries minerals such as nitrate up the plant', bin: 'xylem' },
+      { label: 'Made of dead cells with thick walls', bin: 'xylem' },
+      { label: 'Forms most of the wood of a tree', bin: 'xylem' },
+      { label: 'Carries sugar from the leaves to the roots', bin: 'phloem' },
+      { label: 'Carries sugar up to a growing fruit', bin: 'phloem' },
+      { label: 'Made of living sieve-tube cells', bin: 'phloem' },
+      { label: 'Maple syrup is made from its sugary sap', bin: 'phloem' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.plant-biology~tropisms',
+    title: 'Which tropism is it?',
+    use: 'Use this for “Why does a houseplant bend toward the window?”',
+    assumptions: [
+      'A tropism is growth toward or away from a stimulus.',
+      'The hormone auxin collects on one side of a shoot, where the cells lengthen, so the shoot bends.',
+    ],
+    question: 'Which stimulus is the plant responding to?',
+    bins: [
+      {
+        id: 'photo',
+        label: 'Phototropism (light)',
+        why: 'Auxin gathers on the shaded side, which grows longer, so the shoot bends toward light.',
+      },
+      {
+        id: 'gravi',
+        label: 'Gravitropism (gravity)',
+        why: 'Roots grow down with gravity and shoots grow up against it.',
+      },
+      {
+        id: 'thigmo',
+        label: 'Thigmotropism (touch)',
+        why: 'Contact with an object makes the plant grow around it.',
+      },
+    ],
+    cards: [
+      { label: 'A houseplant bends toward the window', bin: 'photo' },
+      { label: 'Sunflower seedlings lean toward the light', bin: 'photo' },
+      { label: 'A seed’s root grows down however it is planted', bin: 'gravi' },
+      { label: 'A pot on its side: the stem turns upward', bin: 'gravi' },
+      { label: 'A pea tendril coils around a stick', bin: 'thigmo' },
+      { label: 'A vine climbs by wrapping around a fence', bin: 'thigmo' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.plant-biology~life-cycle',
+    title: 'A flowering plant’s life cycle',
+    use: 'Use this for “Put these in order: pollination, fertilization, seed dispersal, germination.”',
+    assumptions: [
+      'Pollen carries the sperm; the egg is in an ovule inside the flower’s ovary.',
+      'A seed holds an embryo and its food; the fruit around it helps spread it.',
+    ],
+    question: 'Put the stages in order, starting at the flower.',
+    stages: [
+      { label: 'Pollination: pollen lands on a stigma' },
+      { label: 'A pollen tube grows down to an ovule' },
+      { label: 'Fertilization: a sperm joins the egg' },
+      { label: 'The ovule becomes a seed, and the ovary a fruit' },
+      { label: 'Seed dispersal by wind, water or animals' },
+      { label: 'Germination: the root and shoot break out' },
+      { label: 'The seedling grows and flowers' },
     ],
   },
 ];
@@ -1274,6 +1677,210 @@ const ECOSYSTEMS: LayoutDef[] = [
         nitrogen: { process: 'denitrification' },
       },
     ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.ecosystem-dynamics~carbon',
+    title: 'The carbon cycle and energy',
+    use: 'Use this for “How do photosynthesis and respiration move carbon between the air and living things?”',
+    assumptions: [
+      'Photosynthesis, 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂, stores the Sun’s energy in sugar.',
+      'Cellular respiration runs the same equation backward, releasing that energy and the carbon dioxide.',
+      'Carbon atoms are never used up: they cycle, while energy flows through once and leaves as heat.',
+    ],
+    figure: { kind: 'carbonCycle' },
+    scenes: [
+      {
+        label: 'The whole cycle',
+        lines: [
+          'Carbon is stored in the air as CO₂, in living things, in dead matter, in the ocean and in fossil fuels.',
+          'Every arrow moves carbon from one store to another.',
+        ],
+        carbon: {},
+      },
+      {
+        label: 'Photosynthesis',
+        lines: [
+          'Producers take in CO₂ and water and, with light energy, build glucose: carbon leaves the air.',
+          'Six CO₂ molecules give the six carbon atoms of one glucose.',
+        ],
+        carbon: { process: 'photosynthesis' },
+      },
+      {
+        label: 'Respiration',
+        lines: [
+          'Plants, animals and decomposers break glucose down with oxygen to make ATP.',
+          'Each glucose returns six CO₂ to the air: the carbon photosynthesis took in.',
+        ],
+        carbon: { process: 'respiration' },
+      },
+      {
+        label: 'Decomposition',
+        lines: [
+          'Fungi and bacteria respire the carbon in dead matter and wastes, returning it to the air as CO₂.',
+        ],
+        carbon: { process: 'decomposition' },
+      },
+      {
+        label: 'Fossil fuels',
+        lines: [
+          'Buried dead matter became coal, oil and gas over millions of years.',
+          'Burning them returns that old carbon to the air in years, faster than photosynthesis takes it back.',
+        ],
+        carbon: { process: 'burning' },
+      },
+      {
+        label: 'The ocean',
+        lines: [
+          'The ocean dissolves CO₂ from the air and gives some back; it holds far more carbon than the air.',
+          'Extra dissolved CO₂ makes seawater more acidic, which harms shell-building animals.',
+        ],
+        carbon: { process: 'dissolving' },
+      },
+    ],
+  },
+];
+
+const BIOMES: LayoutDef[] = [
+  // ── Biomes and aquatic ecosystems (HS-LS2-1, HS-LS2-2) ──
+  {
+    kind: 'explore',
+    id: 's.9.biomes',
+    assumptions: [
+      'A biome is a large region with a similar climate, and so similar plants and animals.',
+      'Temperature and rainfall decide the biome; both change with latitude, and temperature with height.',
+    ],
+    figure: { kind: 'greenhouse' },
+    scenes: [
+      {
+        label: 'Tropical',
+        lines: [
+          'Near the equator it is warm all year. With heavy rain all year: tropical rainforest, the most species of any biome.',
+          'With a long dry season: savanna, grassland with scattered trees.',
+        ],
+        greenhouse: { view: 'zones', lit: 'tropical' },
+      },
+      {
+        label: 'Deserts',
+        lines: [
+          'Near 30° north and south, dry air sinks, so the great deserts lie at the edge of the tropics.',
+          'Deserts get under 25 cm of rain a year; cacti store water, and many animals come out at night.',
+        ],
+        greenhouse: { view: 'zones' },
+      },
+      {
+        label: 'Temperate',
+        lines: [
+          'Warm summers and cold winters. With steady rain: temperate deciduous forest, whose trees drop their leaves in fall.',
+          'With less rain: grassland, or prairie, whose deep roots survive drought and fire.',
+          'Farther toward the poles: taiga, forests of conifers that keep their needles through long, cold winters.',
+        ],
+        greenhouse: { view: 'zones', lit: 'temperate' },
+      },
+      {
+        label: 'Polar',
+        lines: [
+          'Tundra: too cold for trees. Only the top of the soil thaws in summer, above permafrost.',
+          'Mosses, lichens and low shrubs grow in the short summer.',
+        ],
+        greenhouse: { view: 'zones', lit: 'polar' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.biomes~land',
+    title: 'Which biome is it?',
+    use: 'Use this for “Which biome has permafrost and no trees?”',
+    assumptions: [
+      'Each card describes a biome’s climate, its plants or its animals.',
+      'Plants and animals have adaptations that suit their biome’s temperature and rainfall.',
+    ],
+    question: 'Which biome does it describe?',
+    bins: [
+      { id: 'rainforest', label: 'Tropical rainforest', why: 'Warm and wet all year.' },
+      { id: 'desert', label: 'Desert', why: 'Under 25 cm of rain a year, hot or cold.' },
+      { id: 'grassland', label: 'Grassland', why: 'Too dry for many trees; grasses and fires.' },
+      {
+        id: 'deciduous',
+        label: 'Temperate deciduous forest',
+        why: 'Four seasons and steady rain; broad leaves fall in autumn.',
+      },
+      { id: 'taiga', label: 'Taiga', why: 'Long, cold winters; conifer forest.' },
+      { id: 'tundra', label: 'Tundra', why: 'Very cold, no trees, permafrost below.' },
+    ],
+    cards: [
+      { label: 'Layers of canopy trees, vines and orchids', bin: 'rainforest' },
+      { label: 'Poor soil: dead leaves decay and are taken up fast', bin: 'rainforest' },
+      { label: 'A cactus stores water in its thick stem', bin: 'desert' },
+      { label: 'A kangaroo rat never needs to drink', bin: 'desert' },
+      { label: 'Bison graze on the prairie', bin: 'grassland' },
+      { label: 'Fires sweep through, and the grasses regrow from their roots', bin: 'grassland' },
+      { label: 'Oaks and maples drop their leaves in fall', bin: 'deciduous' },
+      { label: 'Spruce and fir forest with deep snow', bin: 'taiga' },
+      { label: 'Moose and lynx through a long winter', bin: 'taiga' },
+      { label: 'Permafrost lies under a thin summer soil', bin: 'tundra' },
+      { label: 'Caribou graze lichens where no trees grow', bin: 'tundra' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.biomes~aquatic',
+    title: 'Which aquatic ecosystem is it?',
+    use: 'Use this for “Where does fresh water mix with salt water?”',
+    assumptions: [
+      'Aquatic ecosystems are sorted by how salty the water is, how deep it is and how fast it moves.',
+      'Sunlight reaches only the top 200 m or so of water, so producers live near the surface or the shore.',
+    ],
+    question: 'Which ecosystem does it describe?',
+    bins: [
+      { id: 'lake', label: 'Lake or pond', why: 'Still fresh water.' },
+      { id: 'river', label: 'River or stream', why: 'Moving fresh water.' },
+      { id: 'wetland', label: 'Wetland', why: 'Shallow water over soil for part of the year.' },
+      { id: 'estuary', label: 'Estuary', why: 'Where a river’s fresh water meets the sea.' },
+      { id: 'reef', label: 'Coral reef', why: 'Warm, clear, shallow sea water.' },
+      { id: 'deep', label: 'Deep ocean', why: 'Salt water too deep for sunlight to reach.' },
+    ],
+    cards: [
+      { label: 'Still water with lily pads and frogs', bin: 'lake' },
+      { label: 'Trout in cold, fast-flowing water', bin: 'river' },
+      { label: 'A marsh of cattails that filters runoff', bin: 'wetland' },
+      { label: 'Brackish water where salmon pass from sea to river', bin: 'estuary' },
+      { label: 'Oysters and young fish in a salt marsh at a river mouth', bin: 'estuary' },
+      { label: 'Colonies of tiny animals build limestone in warm, clear water', bin: 'reef' },
+      { label: 'Anglerfish in total darkness', bin: 'deep' },
+      { label: 'Life around hot vents, fed by bacteria rather than sunlight', bin: 'deep' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.biomes~rainfall',
+    title: 'Rainfall by month',
+    use: 'Use this to record a place’s rainfall each month and see which biome it suits.',
+    assumptions: [
+      'Rainfall is in millimeters: 10 mm is 1 cm of water over the ground.',
+      'Temperature matters too: a cold place with little rain is tundra or a cold desert.',
+    ],
+    columns: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    rowLabel: 'Rainfall',
+    unit: 'mm',
+    max: 400,
+    step: 10,
+    initial: [80, 70, 90, 90, 100, 100, 110, 100, 90, 80, 90, 90],
+    pattern: (v) => {
+      const total = v.reduce((a, b) => a + b, 0);
+      const wet = v.filter((x) => x >= 100).length;
+      const dry = v.filter((x) => x < 20).length;
+      const cm = Math.round(total / 10);
+      if (total < 250) return `About ${cm} cm a year: dry enough for a desert.`;
+      if (total >= 2000 && dry === 0)
+        return `About ${cm} cm a year, wet every month: a tropical rainforest, if it is warm all year.`;
+      if (dry >= 3 && wet >= 3)
+        return `About ${cm} cm a year with a long dry season: a savanna, if it is warm all year.`;
+      if (total < 750)
+        return `About ${cm} cm a year: enough for grassland, but dry for most forests.`;
+      return `About ${cm} cm a year, spread through the year: enough for a forest, deciduous where winters are mild, taiga where they are long.`;
+    },
   },
 ];
 
@@ -1506,6 +2113,128 @@ const HOMEOSTASIS: LayoutDef[] = [
   },
 ];
 
+const NERVOUS: LayoutDef[] = [
+  // ── The nervous system and the senses (HS-LS1-2, HS-LS1-3) ──
+  {
+    kind: 'sequence',
+    id: 's.9.nervous-system',
+    assumptions: [
+      'A neuron receives signals on its dendrites and sends an impulse along its axon to the next cell.',
+      'In a reflex the spinal cord answers before the brain knows: that saves time.',
+    ],
+    question: 'Put the steps of a reflex in order: a hand touches a hot pan.',
+    stages: [
+      { label: 'Receptors in the skin detect the heat' },
+      { label: 'A sensory neuron carries the impulse to the spinal cord' },
+      { label: 'An interneuron in the spinal cord passes it on' },
+      { label: 'A motor neuron carries the impulse to an arm muscle' },
+      { label: 'The muscle contracts and pulls the hand away' },
+      { label: 'The message reaches the brain, and you feel the pain' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.nervous-system~action-potential',
+    title: 'A nerve impulse',
+    use: 'Use this for “What makes the inside of a neuron positive during an impulse?”',
+    assumptions: [
+      'At rest the inside of a neuron is about −70 mV, more negative than the outside.',
+      'The Na⁺/K⁺ pump keeps more Na⁺ outside and more K⁺ inside, ready for the next impulse.',
+      'Each patch of axon triggers the next, so the impulse travels along it one way.',
+    ],
+    question: 'Put the steps of an action potential in order, from rest.',
+    stages: [
+      { label: 'Resting: the inside is at −70 mV' },
+      { label: 'A stimulus raises it to the threshold, about −55 mV' },
+      { label: 'Na⁺ channels open and Na⁺ rushes in: the inside turns positive' },
+      { label: 'K⁺ channels open and K⁺ flows out: the inside turns negative again' },
+      { label: 'The inside dips just below −70 mV' },
+      { label: 'The pump restores the ions: resting again' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.nervous-system~divisions',
+    title: 'Which part of the nervous system?',
+    use: 'Use this for “Which part of the nervous system speeds up the heart in an emergency?”',
+    assumptions: [
+      'The central nervous system is the brain and spinal cord; every nerve outside them is peripheral.',
+      'The peripheral system has a somatic part (the muscles you choose to move) and an autonomic part (the organs).',
+    ],
+    question: 'Which part of the nervous system is it?',
+    bins: [
+      {
+        id: 'cns',
+        label: 'Central (brain and spinal cord)',
+        why: 'It takes in the signals, makes sense of them and decides a response.',
+      },
+      {
+        id: 'somatic',
+        label: 'Somatic (voluntary)',
+        why: 'Motor nerves to skeletal muscles, which you control.',
+      },
+      {
+        id: 'autonomic',
+        label: 'Autonomic (involuntary)',
+        why: 'Nerves to the heart, gut and glands, working without thought.',
+      },
+    ],
+    cards: [
+      { label: 'The cerebrum plans a move and stores memories', bin: 'cns' },
+      { label: 'The cerebellum keeps your balance', bin: 'cns' },
+      { label: 'The brainstem keeps you breathing', bin: 'cns' },
+      { label: 'You decide to kick a ball', bin: 'somatic' },
+      { label: 'Fingers typing a message', bin: 'somatic' },
+      { label: 'The heart speeds up when you are frightened', bin: 'autonomic' },
+      { label: 'The stomach churns food after a meal', bin: 'autonomic' },
+      { label: 'The pupils narrow in bright light', bin: 'autonomic' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.nervous-system~senses',
+    title: 'Which receptor detects it?',
+    use: 'Use this for “Which receptors in the eye respond to light?”',
+    assumptions: [
+      'A sensory receptor turns a stimulus into nerve impulses; the brain decides what they mean.',
+      'Each kind of receptor responds best to one kind of stimulus.',
+    ],
+    question: 'Which kind of receptor detects it?',
+    bins: [
+      {
+        id: 'photo',
+        label: 'Photoreceptors',
+        why: 'Rods and cones in the retina respond to light.',
+      },
+      {
+        id: 'mechano',
+        label: 'Mechanoreceptors',
+        why: 'Respond to pressure, stretch or vibration: touch, hearing and balance.',
+      },
+      {
+        id: 'chemo',
+        label: 'Chemoreceptors',
+        why: 'Respond to chemicals: taste, smell and the blood’s CO₂.',
+      },
+      {
+        id: 'thermo',
+        label: 'Thermoreceptors',
+        why: 'Respond to warming and cooling of the skin.',
+      },
+    ],
+    cards: [
+      { label: 'Cones tell red from green', bin: 'photo' },
+      { label: 'Rods let you see in dim light', bin: 'photo' },
+      { label: 'Hair cells in the ear bend with sound', bin: 'mechano' },
+      { label: 'Fluid in the inner ear tells which way is up', bin: 'mechano' },
+      { label: 'A light touch on the skin', bin: 'mechano' },
+      { label: 'Taste buds detect sweet and salty', bin: 'chemo' },
+      { label: 'The nose picks up the smell of smoke', bin: 'chemo' },
+      { label: 'Stepping into a cold pool', bin: 'thermo' },
+    ],
+  },
+];
+
 const IMMUNE: LayoutDef[] = [
   // ── Disease and the immune system (HS-LS1-2, HS-LS1-3) ──
   {
@@ -1656,13 +2385,17 @@ export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...MEMBRANE,
   ...ENERGY,
   ...DIVISION,
+  ...REPRODUCTION,
   ...INHERITANCE,
   ...DNA,
   ...BIOTECH,
   ...EVOLUTION,
   ...CLASSIFICATION,
+  ...PLANTS,
   ...POPULATION,
   ...ECOSYSTEMS,
+  ...BIOMES,
   ...HOMEOSTASIS,
+  ...NERVOUS,
   ...IMMUNE,
 ];

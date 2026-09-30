@@ -254,7 +254,7 @@
           "n": "7",
           "title": "Systems of Equations and Inequalities",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
-          "skills": ["m.8.systems-linear", "m.9.inequality-systems"],
+          "skills": ["m.12.partial-fractions", "m.8.systems-linear", "m.9.inequality-systems"],
           "notes": "Partial fractions and linear programming have no taxonomy skill.",
           "lessons": [
             {
@@ -321,6 +321,7 @@
           "title": "Sequences, Series, and Probability",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
           "skills": [
+            "m.12.induction",
             "m.10.probability-rules",
             "m.9.sequences",
             "m.11.series",
@@ -362,7 +363,7 @@
           "n": "10",
           "title": "Topics in Analytic Geometry",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
-          "skills": ["m.12.conics", "m.12.parametric", "m.12.polar"],
+          "skills": ["m.12.polar-conics", "m.12.conics", "m.12.parametric", "m.12.polar"],
           "lessons": [
             {
               "n": "10.1",
@@ -406,23 +407,23 @@
           "n": "11",
           "title": "Analytic Geometry in Three Dimensions",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
-          "skills": ["m.12.vectors"],
+          "skills": ["m.12.vectors-3d", "m.12.vectors"],
           "notes": "Loose fit: three-dimensional coordinates, cross products, lines and planes in space; only vectors are in the taxonomy.",
           "lessons": [
             {
               "n": "11.1",
               "title": "The Three-Dimensional Coordinate System",
-              "skills": ["m.12.vectors"]
+              "skills": ["m.12.vectors-3d", "m.12.vectors"]
             },
             {
               "n": "11.2",
               "title": "Vectors in Space",
-              "skills": ["m.12.vectors"]
+              "skills": ["m.12.vectors-3d", "m.12.vectors"]
             },
             {
               "n": "11.3",
               "title": "The Cross Product of Two Vectors",
-              "skills": ["m.12.vectors"]
+              "skills": ["m.12.vectors-3d", "m.12.vectors"]
             },
             {
               "n": "11.4",
@@ -435,7 +436,7 @@
           "n": "12",
           "title": "Limits and an Introduction to Calculus",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
-          "skills": ["m.12.limits-intro"],
+          "skills": ["m.12.area-under-curve", "m.12.limits-intro"],
           "lessons": [
             {
               "n": "12.1",
@@ -455,12 +456,12 @@
             {
               "n": "12.4",
               "title": "Limits at Infinity and Limits of Sequences",
-              "skills": ["m.12.limits-intro"]
+              "skills": ["m.12.area-under-curve", "m.12.limits-intro"]
             },
             {
               "n": "12.5",
               "title": "The Area Problem",
-              "skills": ["m.12.limits-intro"]
+              "skills": ["m.12.area-under-curve", "m.12.limits-intro"]
             }
           ]
         },

@@ -23,7 +23,7 @@
           "n": "1",
           "title": "Expressions",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
-          "skills": ["m.6.expressions-variables", "m.6.integers"],
+          "skills": ["m.9.units-precision", "m.6.expressions-variables", "m.6.integers"],
           "notes": "Expressions, properties of real numbers and absolute value are review; no Grade 9 skill.",
           "lessons": [
             {
@@ -880,6 +880,7 @@
           "title": "Measurement",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
           "skills": [
+            "m.10.modeling-density",
             "m.6.area-polygons",
             "m.10.arc-sector",
             "m.10.volume-derivations",

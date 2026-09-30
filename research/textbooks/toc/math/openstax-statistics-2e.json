@@ -595,25 +595,25 @@
           "n": "13",
           "title": "F Distribution and One-Way ANOVA",
           "url": "https://openstax.org/books/introductory-statistics-2e/pages/13-introduction",
-          "skills": ["m.12.hypothesis-testing"],
+          "skills": ["m.12.anova", "m.12.hypothesis-testing"],
           "lessons": [
             {
               "n": "13.1",
               "title": "One-Way ANOVA",
               "url": "https://openstax.org/books/introductory-statistics-2e/pages/13-1-one-way-anova",
-              "skills": ["m.12.hypothesis-testing"]
+              "skills": ["m.12.anova", "m.12.hypothesis-testing"]
             },
             {
               "n": "13.2",
               "title": "The F Distribution and the F-Ratio",
               "url": "https://openstax.org/books/introductory-statistics-2e/pages/13-2-the-f-distribution-and-the-f-ratio",
-              "skills": ["m.12.hypothesis-testing"]
+              "skills": ["m.12.anova", "m.12.hypothesis-testing"]
             },
             {
               "n": "13.3",
               "title": "Facts About the F Distribution",
               "url": "https://openstax.org/books/introductory-statistics-2e/pages/13-3-facts-about-the-f-distribution",
-              "skills": ["m.12.hypothesis-testing"]
+              "skills": ["m.12.anova", "m.12.hypothesis-testing"]
             },
             {
               "n": "13.4",
@@ -625,7 +625,7 @@
               "n": "13.5",
               "title": "Lab: One-Way ANOVA",
               "url": "https://openstax.org/books/introductory-statistics-2e/pages/13-5-lab-one-way-anova",
-              "skills": ["m.12.hypothesis-testing"]
+              "skills": ["m.12.anova", "m.12.hypothesis-testing"]
             }
           ],
           "notes": "ANOVA and F distribution: Grade 12 hypothesis testing (beyond the intro skill)"
