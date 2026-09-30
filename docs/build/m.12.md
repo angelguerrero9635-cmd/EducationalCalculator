@@ -278,3 +278,11 @@ None: every planned page is built, some with an interim picture (below).
 - **statMath: export `betaI` (or an `fCdf`)** so the grade file need not copy it.
 - Engine 5 again: `~powers` prints S = (r^n − 1) ÷ (r − 1) with carets.
 - The matcher corpus to rerun for the 31 new pages.
+
+### Lesson-review fixes (`.review/new-math/lesson-report.md`)
+
+- `m.12.vectors-3d~cross`: the triangle's area A_T = |u × v| ÷ 2 (the components are grouped,
+  so the page has 5 values); the use line and an assumption say u and v are the sides from one
+  vertex (u = Q − P, v = R − P).
+- New page `m.12.vectors-3d~distance` (distance and midpoint in space; P(1, 2, 3), Q(3, 5, 9):
+  d = 7, M(2, 3.5, 6)); a table of d as Q's z moves until the 3-D axes picture.
