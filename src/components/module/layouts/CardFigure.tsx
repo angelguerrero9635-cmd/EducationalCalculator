@@ -28,6 +28,7 @@ import {
   r3hFigureWidth,
 } from './cardFiguresR3h';
 import { DIVISION_H, DIVISION_W, DivisionCard } from './divisionCard';
+import { hs3dCardSize, Hs3dCardView } from './hs3dCards';
 import { Hs2bCardView, hs2bFigureSize } from './cardFiguresHs2b';
 import { StrobeCardView } from './strobeCard';
 import { STROBE_W } from '@/data/modules/layouts/strobeCard';
@@ -74,6 +75,9 @@ export function figureWidth(f: Spec): number {
       return condensedWidth(f);
     case 'replication':
       return REPLICATION_W;
+    case 'reflexArc':
+    case 'flowerCycle':
+      return hs3dCardSize(f)![0];
     default:
       return S;
   }
@@ -95,6 +99,7 @@ export function CardFigureView({
   const w = figureWidth(figure);
   const h =
     hs2bFigureSize(figure)?.[1] ??
+    hs3dCardSize(figure)?.[1] ??
     (figure.kind === 'polygon' && figure.marks
       ? MARKED
       : figure.kind === 'cellDivision'
@@ -218,6 +223,9 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <StrobeCardView f={f} ink={ink} />;
     case 'replication':
       return <ReplicationCard f={f} ink={ink} />;
+    case 'reflexArc':
+    case 'flowerCycle':
+      return <Hs3dCardView f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;

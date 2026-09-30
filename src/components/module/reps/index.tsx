@@ -158,6 +158,7 @@ import { AlgebraTiles } from './AlgebraTiles';
 import { AlgebraTilesHs2g } from './AlgebraTilesHs2g';
 import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
+import { Neuron } from './Neuron';
 import { Hs2eView } from './Hs2eView';
 import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
@@ -240,6 +241,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'macromolecules':
     case 'cellDivision':
       return <Hs2eView spec={spec} calc={calc} />;
+    case 'neuron':
+      return <Neuron spec={spec} calc={calc} />;
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':

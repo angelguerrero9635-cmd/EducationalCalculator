@@ -19,6 +19,7 @@ import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
+import { hs3dSpecVars } from '../typesHs3d';
 import { hs2gSpecVars } from '../typesHs2g';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
@@ -533,6 +534,8 @@ function representationVars(r: Representation): string[] {
     case 'macromolecules':
     case 'cellDivision':
       return hs2eSpecVars(r);
+    case 'neuron':
+      return hs3dSpecVars(r);
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':

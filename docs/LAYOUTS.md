@@ -76,6 +76,23 @@ Also H100 (`layouts/dichotomousKeyFigure.tsx`): `dichotomousKey`, `{ kind: 'dich
 `steps: { question, yes, no }[]` (an answer is the next question's index or a name), drawn as a
 tree down the page, each question's Yes then No indented under it; a scene's `key: { specimen?,
 step? }` traces one name's path (answers lit, the name filled) or rings one question.
+H109 (`layouts/gelFigure.tsx`): `gel`, `{ kind: 'gel', lanes: { label, bands }[], ladder? }`, a
+painted gel of fixed samples (up to 8 lanes, 6 a scene) on one log scale; a scene's `gel: { lanes?,
+lit?, compare?, parents? }` picks and rings lanes, carries the compared lane's bands across as
+dashed lines (matching bands lit, counted in the caption) or, with `parents: [mother, father]`,
+colors each of the child's bands by its parent and rings one from neither ("ruled out").
+Also H109 (`layouts/reflexArcFigure.tsx`): `reflexArc`, a hand on a hot pan, the arm and its
+biceps, and the spinal cord in section; a scene's `reflex: { lit?, impulse? }` lights `receptor`,
+`sensory`, `interneuron`, `motor`, `effector` or `brain` and draws the impulse's arrows as far as
+it. Card figure `{ kind: 'reflexArc', lit }` (112 × 76, for sequence stages): the same arc, small,
+one part lit (no arrows); the harness checks the cards come in the impulse's order.
+Also H109: a `parts` figure's `drawing: 'flower'` (`layouts/partsFlower.tsx`), a flower cut in
+half: petal, sepal, anther, filament, stigma, style, ovary, ovule. Card figure `{ kind:
+'flowerCycle', stage }` (`layouts/flowerCycleCard.tsx`, 112 × 76): `pollination`, `pollen tube`,
+`fertilization`, `seed and fruit`, `dispersal`, `germination`, `seedling`, in that order (checked).
+Card icons (`layouts/icons/h3d.tsx`): `zygote`, `morula`, `blastula`, `gastrula` (germ layers
+blue, red, yellow) and the land biomes `tropical rainforest`, `desert`, `grassland`, `temperate
+deciduous forest`, `taiga`, `tundra`.
 
 Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,
@@ -183,7 +200,10 @@ scale, with the sun on the line over the stick's top (higher for a shorter shado
 the lit circle side on and face on) and `cup` (an open cup, the first column's level dashed).
 An observation can count a second row in the same columns, `second: { rowLabel, initial }`
 (H100, two species a day): its bars beside the first's, a row of its own in the table, a key,
-and `pattern(first, second)` reading both.
+and `pattern(first, second)` reading both. H109 (`layouts/observeScaled.tsx`): `min` (below 0,
+a membrane potential in mV) grows each bar up or down from a 0 line; `second` may take its own
+`unit`, `max`, `min` and `step` (a climograph: rainfall in mm, temperature in °C), and with its
+own unit each row gets a chart of its own, named with its unit, over the shared month labels.
 
 Drawn explore figures: a `parts` figure with `drawing: 'plant' | 'animal' | 'body'`
 (`layouts/partsDrawings.tsx`) draws the thing, labels every part and lights the scene's part;

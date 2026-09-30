@@ -11,12 +11,14 @@ import { isStandIn, pages } from '../harness/scope';
 import { HSL_SCENE_FIELD } from '../typesHsl';
 import { HS2F_SCENE_FIELD } from '../typesHs2f';
 import { HS3C_SCENE_FIELD } from '../typesHs3c';
+import { HS3D_SCENE_FIELD } from '../typesHs3d';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   ...HSL_SCENE_FIELD,
   ...HS2F_SCENE_FIELD,
   ...HS3C_SCENE_FIELD,
+  ...HS3D_SCENE_FIELD,
   parts: 'part',
   position: 'position',
   clock: 'time',
@@ -193,10 +195,25 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
       case 'observe':
         expect(l.initial).toHaveLength(l.columns.length);
         if (l.second) expect(l.second.initial).toHaveLength(l.columns.length);
-        for (const x of [...l.initial, ...(l.second?.initial ?? [])]) {
-          expect(x).toBeGreaterThanOrEqual(0);
-          expect(x).toBeLessThanOrEqual(l.max);
-          expect(x % l.step).toBe(0);
+        // Each row on its own range (H109: a second row's own scale, values below 0).
+        for (const [xs, lo, hi, step] of [
+          [l.initial, l.min ?? 0, l.max, l.step] as const,
+          ...(l.second
+            ? [
+                [
+                  l.second.initial,
+                  l.second.min ?? l.min ?? 0,
+                  l.second.max ?? l.max,
+                  l.second.step ?? l.step,
+                ] as const,
+              ]
+            : []),
+        ]) {
+          for (const x of xs) {
+            expect(x).toBeGreaterThanOrEqual(lo);
+            expect(x).toBeLessThanOrEqual(hi);
+            expect(Math.abs(x % step)).toBe(0);
+          }
         }
         break;
     }

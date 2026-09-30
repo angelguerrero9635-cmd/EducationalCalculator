@@ -22,6 +22,7 @@ import type {
 import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
+import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
 
@@ -179,6 +180,8 @@ export type CardFigure =
   | CondensedCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
+  /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */
+  | Hs3dCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -275,17 +278,20 @@ export type Figure =
   | Hs2fFigure
   /** Earth and space round 3, group H3C (`typesHs3c.ts`): Earth cut open, a station placed. */
   | Hs3cFigure
+  /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
+  | Hs3dFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
    * scene's part lit; a part is picked by tapping it. Each part's name must name a drawn part:
    * `plant` flower, leaves, stem, roots; `animal` (a bear and a turtle) eyes, ears, fur,
-   * claws, shell; `body` brain, heart, lungs, stomach, bones, skin (any capitals).
+   * claws, shell; `body` brain, heart, lungs, stomach, bones, skin; `flower` (H109, cut in
+   * half) petal, sepal, anther, filament, stigma, style, ovary, ovule (any capitals).
    */
   | {
       kind: 'parts';
       parts: { name: string; job: string }[];
-      drawing?: 'plant' | 'animal' | 'body';
+      drawing?: 'plant' | 'animal' | 'body' | 'flower';
     }
   /** A ball and a box; a scene puts the ball above, below, beside, in front of or behind. */
   | { kind: 'position' }
@@ -549,6 +555,10 @@ export interface Scene {
   gene?: GeneScene;
   /** The name traced and the question ringed (a `dichotomousKey` figure; `typesHs2e.ts`). */
   key?: KeyScene;
+  /** The lanes shown, ringed and compared (a `gel` figure; `typesHs3d.ts`, H109). */
+  gel?: GelScene;
+  /** The part lit and the impulse so far (a `reflexArc` figure; `typesHs3d.ts`). */
+  reflex?: ReflexScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**
@@ -734,7 +744,9 @@ export interface ObserveLayout extends LayoutBase {
   /** A picture of the column last tapped, above the chart (`ObserveFigure`). */
   figure?: ObserveFigure;
   /** H100: a second row counted in the same columns, its bars beside the first (`typesHs2e.ts`). */
-  second?: ObserveSecond;
+  second?: ObserveSecond & ObserveScale;
+  /** H109: the lowest value (below 0 for a membrane potential); bars grow up or down from 0. */
+  min?: number;
 }
 
 /**

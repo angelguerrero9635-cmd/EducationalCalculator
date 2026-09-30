@@ -33,6 +33,7 @@ import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
 import type { CircleHs3b, PolygonHs3b, RectangleHs3b, TableHs3b } from './typesHs3b';
 import type { BarFlows, Hs2eSpec } from './typesHs2e';
+import type { Hs3dSpec, PieStage } from './typesHs3d';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1133,6 +1134,7 @@ export type Representation =
   | Hs3aSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
+  | Hs3dSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
@@ -1172,6 +1174,8 @@ export type Representation =
       colors?: string[];
       /** Parts that make a named value (fresh = frozen + liquid): pulled out and bracketed. */
       group?: { id: string; parts: string[] };
+      /** H109: one cell-cycle stage per part, drawn beside its name (`typesHs3d.ts`). */
+      stages?: PieStage[];
     }
   /**
    * Fraction × fraction as an area model: a unit square cut into `first.den` columns and

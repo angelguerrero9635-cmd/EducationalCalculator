@@ -15,6 +15,7 @@ import {
   ThermometerFigure,
 } from './observeFigures';
 import { ShadowStick } from './ShadowStick';
+import { isScaled, rowScales, ScaledBar, signed, SplitCharts, valueAt } from './observeScaled';
 
 const CHART_HEIGHT = 180;
 /** The browser must not pan the page while a finger moves along a bar. */
@@ -37,10 +38,20 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
   const two = !!spec.second;
   // The column the figure shows: the one tapped last.
   const [picked, setPicked] = useState(0);
+  // H109: rows on ranges of their own (below 0, or a second row's own unit and scale).
+  const scaled = isScaled(spec);
+  const scales = rowScales(spec);
+  const ownUnit = two && spec.second!.unit !== undefined && spec.second!.unit !== spec.unit;
+  const split = scaled && ownUnit;
+  const dense = split && spec.columns.length > 8;
+  const rowName = (r: number) =>
+    (r ? spec.second!.rowLabel : spec.rowLabel) + (ownUnit ? ` (${scales[r]!.unit})` : '');
   const setAt = (i: number, y: number, height: number, row = 0) => {
     setPicked(i);
     const raw = ((height - y) / height) * spec.max;
-    const next = Math.max(0, Math.min(spec.max, Math.round(raw / spec.step) * spec.step));
+    const next = scaled
+      ? valueAt(y, height, scales[row]!)
+      : Math.max(0, Math.min(spec.max, Math.round(raw / spec.step) * spec.step));
     (row ? setSeconds : setValues)((vs) => vs.map((x, k) => (k === i ? next : x)));
   };
   return (
@@ -48,57 +59,85 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       {spec.figure ? (
         <ObserveFigureView figure={spec.figure} values={values} picked={picked} spec={spec} />
       ) : null}
-      <View style={[styles.chart, spec.histogram && styles.touching]}>
-        {spec.histogram ? (
-          // The count scale: 0, half and the top, level with the bars.
-          <View style={styles.scale}>
-            {[0, spec.max / 2, spec.max].map((v) => (
-              <Text
-                key={v}
-                style={[
-                  styles.scaleText,
-                  { color: c.textMuted, bottom: (v / spec.max) * (CHART_HEIGHT - 24) - 6 },
-                ]}
-              >
-                {v}
-              </Text>
-            ))}
-          </View>
-        ) : null}
-        {values.map((x, i) =>
-          two ? (
-            <View key={spec.columns[i]} style={[styles.pair, few && styles.fewColumn]}>
+      {split ? (
+        // H109: a second row on its own unit gets a chart of its own above the first's.
+        <SplitCharts
+          rows={[values, seconds]}
+          names={[rowName(0), rowName(1)]}
+          scales={scales}
+          columns={spec.columns}
+          dense={dense}
+          onSet={(i, y, h, r) => setAt(i, y, h, r)}
+        />
+      ) : (
+        <View style={[styles.chart, spec.histogram && styles.touching]}>
+          {spec.histogram ? (
+            // The count scale: 0, half and the top, level with the bars.
+            <View style={styles.scale}>
+              {[0, spec.max / 2, spec.max].map((v) => (
+                <Text
+                  key={v}
+                  style={[
+                    styles.scaleText,
+                    { color: c.textMuted, bottom: (v / spec.max) * (CHART_HEIGHT - 24) - 6 },
+                  ]}
+                >
+                  {v}
+                </Text>
+              ))}
+            </View>
+          ) : null}
+          {values.map((x, i) =>
+            scaled ? (
+              <View key={spec.columns[i]} style={[styles.pair, few && styles.fewColumn]}>
+                {(two ? [x, seconds[i] ?? 0] : [x]).map((v, r) => (
+                  <ScaledBar
+                    key={r}
+                    i={i}
+                    x={v}
+                    r={scales[r]!}
+                    height={CHART_HEIGHT}
+                    label={`${two ? `${rowName(r)}, ` : ''}${spec.columns[i]}`}
+                    onSet={(y) => setAt(i, y, CHART_HEIGHT, r)}
+                    half
+                    second={r === 1}
+                  />
+                ))}
+              </View>
+            ) : two ? (
+              <View key={spec.columns[i]} style={[styles.pair, few && styles.fewColumn]}>
+                <Bar
+                  i={i}
+                  x={x}
+                  spec={spec}
+                  few={few}
+                  onSet={(y) => setAt(i, y, CHART_HEIGHT)}
+                  half
+                />
+                <Bar
+                  i={i}
+                  x={seconds[i] ?? 0}
+                  spec={spec}
+                  few={few}
+                  onSet={(y) => setAt(i, y, CHART_HEIGHT, 1)}
+                  half
+                  second
+                />
+              </View>
+            ) : (
               <Bar
+                key={spec.columns[i]}
                 i={i}
                 x={x}
                 spec={spec}
                 few={few}
                 onSet={(y) => setAt(i, y, CHART_HEIGHT)}
-                half
               />
-              <Bar
-                i={i}
-                x={seconds[i] ?? 0}
-                spec={spec}
-                few={few}
-                onSet={(y) => setAt(i, y, CHART_HEIGHT, 1)}
-                half
-                second
-              />
-            </View>
-          ) : (
-            <Bar
-              key={spec.columns[i]}
-              i={i}
-              x={x}
-              spec={spec}
-              few={few}
-              onSet={(y) => setAt(i, y, CHART_HEIGHT)}
-            />
-          ),
-        )}
-      </View>
-      <View style={[styles.labels, spec.histogram && styles.touchingLabels]}>
+            ),
+          )}
+        </View>
+      )}
+      <View style={[styles.labels, spec.histogram && styles.touchingLabels, dense && styles.dense]}>
         {spec.columns.map((col) => (
           <Text key={col} style={[styles.label, few && styles.fewColumn, { color: c.text }]}>
             {col}
@@ -109,7 +148,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       <View style={[styles.table, { borderColor: c.border }]}>
         <View style={[styles.row, { backgroundColor: c.surface, borderBottomColor: c.border }]}>
           <Text style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
-            {two ? spec.unit : spec.rowLabel}
+            {two ? (ownUnit ? '' : spec.unit) : spec.rowLabel}
           </Text>
           {spec.columns.map((col) => (
             <Text key={col} style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
@@ -120,14 +159,14 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
         {(two ? [values, seconds] : [values]).map((row, r) => (
           <View key={r} style={styles.row}>
             <Text style={[styles.cell, tight && styles.tight, { color: c.textMuted }]}>
-              {two ? (r ? spec.second!.rowLabel : spec.rowLabel) : spec.unit}
+              {two ? rowName(r) : spec.unit}
             </Text>
             {row.map((x, i) => (
               <Text
                 key={spec.columns[i]}
                 style={[styles.cell, tight && styles.tight, { color: c.text }]}
               >
-                {x}
+                {scaled ? signed(x) : x}
               </Text>
             ))}
           </View>
@@ -136,7 +175,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       {two ? (
         // The key: which colour is which row.
         <View style={styles.key}>
-          {[spec.rowLabel, spec.second!.rowLabel].map((name, r) => (
+          {[rowName(0), rowName(1)].map((name, r) => (
             <View key={name} style={styles.keyItem}>
               <View
                 style={[
@@ -347,6 +386,8 @@ const styles = StyleSheet.create({
   keyItem: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   swatch: { width: 14, height: 14, borderRadius: 3, borderWidth: 1 },
   keyText: { fontSize: font.caption + 1 },
+  // H109: twelve months under a split chart: less room between columns.
+  dense: { gap: space.xs },
   // Six columns and the row label share a phone's width: less padding, smaller type.
   tight: { paddingHorizontal: 1, fontSize: font.caption - 1 },
 });
