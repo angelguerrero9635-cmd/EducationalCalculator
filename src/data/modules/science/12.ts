@@ -603,7 +603,7 @@ const sonar: ModuleDef = {
     'The shelf is under 200 m deep and trenches reach almost 11,000 m.',
   ],
   variables: [
-    V('t', 't', 'Echo time, down and back', { unit: 's', min: 0.01, max: 15, step: 0.01 }),
+    V('t', 't', 'Echo time, down and back', { unit: 's', min: 0.01, max: 14, step: 0.01 }),
     V('v', 'v', 'Speed of sound in seawater', { unit: 'm/s', min: 1450, max: 1550, step: 1 }),
     V('d', 'd', 'Depth', { unit: 'm', min: 1, max: 11000, step: 1 }),
   ],
@@ -654,12 +654,12 @@ const tides: ModuleDef = {
       {
         R: [
           (v) => v.m! * tideRoot(v.A!),
-          '{m} × √(1 + 0.46^2 + 2 × 0.46 × cos(2 × {A}))',
+          '{m} × √(1 + 0.46² + 2 × 0.46 × cos(2 × {A}))',
           'Add the Moon’s and the Sun’s bulges at the angle between them.',
         ],
         m: [
           (v) => div(v.R!, tideRoot(v.A!)),
-          '{R} ÷ √(1 + 0.46^2 + 2 × 0.46 × cos(2 × {A}))',
+          '{R} ÷ √(1 + 0.46² + 2 × 0.46 × cos(2 × {A}))',
           'Undo the Sun’s share: divide the range by the same factor.',
         ],
         A: [
@@ -669,7 +669,7 @@ const tides: ModuleDef = {
             const a = (Math.acos(Math.max(-1, Math.min(1, k))) * 180) / Math.PI / 2;
             return [a, 180 - a];
           },
-          'cos⁻¹((({R} ÷ {m})^2 − 1 − 0.46^2) ÷ (2 × 0.46)) ÷ 2',
+          'cos⁻¹((({R} ÷ {m})² − 1 − 0.46²) ÷ (2 × 0.46)) ÷ 2',
           'Solve the range rule for cos 2θ, then take the inverse cosine and halve it.',
         ],
       },
@@ -693,7 +693,7 @@ const lapse: ModuleDef = {
   variables: [
     V('T0', 'T₀', 'Temperature at the ground', { unit: '°C', min: -40, max: 50, step: 0.1 }),
     V('h', 'h', 'Altitude', { unit: 'km', min: 0, max: 11, step: 0.1 }),
-    V('T', 'T', 'Temperature at h', { unit: '°C', min: -90, max: 50, step: 0.1 }),
+    V('T', 'T', 'Temperature at h', { unit: '°C', min: -112, max: 50, step: 0.1 }),
   ],
   ...rels(
     rule('T = T₀ − 6.5 × h', '{T} = {T0} − 6.5 × {h}', (v) => v.T! - (v.T0! - 6.5 * v.h!), {
@@ -932,12 +932,13 @@ const kepler: ModuleDef = {
     'Second law: the line to the Sun sweeps equal areas in equal times, so the planet is fastest at perihelion.',
     'Third law: T² = a³, with T in years and a in AU.',
     'T² = a³ holds only for bodies orbiting the Sun.',
+    '1 AU = 150 million km, Earth’s distance from the Sun.',
   ],
   variables: [
     V('a', 'a', 'Semi-major axis', { unit: 'AU', min: 0.1, max: 100, step: 0.01 }),
-    V('e', 'e', 'Eccentricity', { min: 0, max: 0.95, step: 0.001 }),
-    V('q', 'q', 'Perihelion distance', { unit: 'AU', min: 0, max: 200, step: 0.001 }),
-    V('Q', 'Q', 'Aphelion distance', { unit: 'AU', min: 0, max: 200, step: 0.001 }),
+    V('e', 'e', 'Eccentricity', { min: 0, max: 0.97, step: 0.001 }),
+    V('q', 'q', 'Perihelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
+    V('Q', 'Q', 'Aphelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
     V('T', 'T', 'Period', { unit: 'years', min: 0.03, max: 1000, step: 0.01 }),
   ],
   ...rels(
@@ -989,11 +990,12 @@ const wien: ModuleDef = {
     'Hotter stars peak at shorter wavelengths, so they look bluer.',
     'A star glows at every wavelength; λ is only the brightest one.',
     'c = 3.00 × 10⁸ m/s.',
+    'f is the frequency of the peak wavelength; graphed by frequency, the peak falls elsewhere.',
   ],
   variables: [
     V('T', 'T', 'Surface temperature', { unit: 'K', min: 2500, max: 40000, step: 10 }),
     V('l', 'λ', 'Peak wavelength', { unit: 'nm', min: 70, max: 1200, step: 0.1 }),
-    V('f', 'f', 'Frequency at the peak', {
+    V('f', 'f', 'Frequency of the peak wavelength', {
       unit: 'Hz',
       min: 2.5e14,
       max: 4.3e15,
@@ -1051,9 +1053,9 @@ const redshiftRel = rule(
 );
 
 /** v = c × z, c in km/s. */
-const czRel = rule('v = c × z', '{v} = 300000 × {z}', (v) => v.v! - 300000 * v.z!, {
-  v: [(v) => 300000 * v.z!, '300000 × {z}', 'Multiply the shift by light’s speed, 300,000 km/s.'],
-  z: [(v) => v.v! / 300000, '{v} ÷ 300000', 'Divide the speed by light’s speed.'],
+const czRel = rule('v = c × z', '{v} = 300,000 × {z}', (v) => v.v! - 300000 * v.z!, {
+  v: [(v) => 300000 * v.z!, '300,000 × {z}', 'Multiply the shift by light’s speed, 300,000 km/s.'],
+  z: [(v) => v.v! / 300000, '{v} ÷ 300,000', 'Divide the speed by light’s speed.'],
 });
 
 const doppler: ModuleDef = {
@@ -1068,13 +1070,14 @@ const doppler: ModuleDef = {
   ],
   variables: [
     V('l', 'λ', 'Observed wavelength of Hα', { unit: 'nm', min: 649, max: 663, step: 0.01 }),
-    V('z', 'z', 'Shift', { min: -0.011, max: 0.011, step: 0.000001 }),
-    V('v', 'v', 'Speed along the line of sight (+ away)', {
+    V('z', 'z', 'Shift', { min: -0.012, max: 0.012, step: 0.000001, sigFigs: 5 }),
+    V('v', 'v', 'Line-of-sight speed', {
       unit: 'km/s',
       units: ['km/s'],
-      min: -3300,
-      max: 3300,
+      min: -3600,
+      max: 3600,
       step: 0.1,
+      sigFigs: 4,
     }),
   ],
   ...rels(redshiftRel, czRel),
@@ -1112,10 +1115,11 @@ const telescope: ModuleDef = {
     V('M', 'M', 'Magnification', { min: 1, max: 2000, step: 0.1, derived: true }),
     V('L', 'L', 'Tube length', { unit: 'mm', min: 103, max: 5060, step: 1, derived: true }),
     V('D', 'D', 'Aperture', { unit: 'mm', min: 10, max: 1000, step: 1 }),
-    V('G', 'G', 'Light gathered compared with the eye', {
+    V('G', 'G', 'Times more light than the eye', {
       min: 2,
       max: 20500,
-      step: 0.1,
+      step: 1,
+      sigFigs: 3,
       derived: true,
     }),
   ],
@@ -1137,7 +1141,7 @@ const telescope: ModuleDef = {
     rule('G = (D ÷ 7)²', '{G} = ({D} ÷ 7)²', (v) => v.G! - (v.D! / 7) ** 2, {
       G: [
         (v) => (v.D! / 7) ** 2,
-        '({D} ÷ 7)^2',
+        '({D} ÷ 7)²',
         'Light gathered goes with the area, so square the ratio of widths.',
       ],
       D: [
@@ -1180,20 +1184,20 @@ const hr: ModuleDef = {
     V('L', 'L', 'Luminosity', { unit: 'L☉', min: 0.0001, max: 1000000, step: 0.0001 }),
   ],
   ...rels(
-    rule('L = R² × (T ÷ 5772)⁴', '{L} = {R}² × ({T} ÷ 5772)⁴', (v) => v.L! - lum(v.R!, v.T!), {
+    rule('L = R² × (T ÷ 5,772)⁴', '{L} = {R}² × ({T} ÷ 5,772)⁴', (v) => v.L! - lum(v.R!, v.T!), {
       L: [
         (v) => lum(v.R!, v.T!),
-        '{R}^2 × ({T} ÷ 5772)^4',
+        '{R}² × ({T} ÷ 5,772)⁴',
         'Surface area grows as R²; each square meter shines as T⁴, compared with the Sun.',
       ],
       R: [
         (v) => (v.L! > 0 ? Math.sqrt(v.L!) * (SUN_K / v.T!) ** 2 : undefined),
-        '√({L}) × (5772 ÷ {T})^2',
+        '√({L}) × (5,772 ÷ {T})²',
         'Undo the fourth power of the temperature, then the square of the radius.',
       ],
       T: [
         (v) => (v.L! > 0 && v.R! > 0 ? SUN_K * (v.L! / v.R! ** 2) ** 0.25 : undefined),
-        '5772 × ({L} ÷ {R}^2)^(1/4)',
+        '5,772 × ({L} ÷ {R}²)^(1/4)',
         'The light for each unit of surface, then its fourth root.',
       ],
     }),
@@ -1219,7 +1223,7 @@ const fusion: ModuleDef = {
   unitSystems: ['metric'],
   assumptions: [
     '0.7 % of the hydrogen’s mass becomes energy (E = mc²).',
-    'The Sun shines by this chain in its core: 4 ¹H → ⁴He + 2 e⁺.',
+    'The Sun shines by this chain in its core: 4 ¹H → ⁴He + 2 e⁺ + 2 neutrinos.',
     'c = 3.00 × 10⁸ m/s, so c² = 9.00 × 10¹⁶ m²/s².',
   ],
   variables: [
@@ -1332,11 +1336,18 @@ const redshift: ModuleDef = {
     V('l', 'λ', 'Observed wavelength of Hα', {
       unit: 'nm',
       min: H_ALPHA,
-      max: H_ALPHA * 1.1,
+      max: 721.93,
       step: 0.01,
     }),
-    V('z', 'z', 'Redshift', { min: 0, max: 0.1, step: 0.00001 }),
-    V('v', 'v', 'Speed away', { unit: 'km/s', units: ['km/s'], min: 0, max: 30000, step: 1 }),
+    V('z', 'z', 'Redshift', { min: 0, max: 0.1, step: 0.00001, sigFigs: 5 }),
+    V('v', 'v', 'Speed away', {
+      unit: 'km/s',
+      units: ['km/s'],
+      min: 0,
+      max: 30000,
+      step: 1,
+      sigFigs: 4,
+    }),
     V('H', 'H₀', 'Hubble constant', { unit: 'km/s per Mpc', min: 50, max: 100, step: 0.1 }),
     V('d', 'd', 'Distance', { unit: 'Mpc', min: 0, max: 600, step: 0.1 }),
   ],
