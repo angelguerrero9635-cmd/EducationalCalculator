@@ -6,6 +6,8 @@
  */
 import { boxProduct, monomialModel } from '@/components/module/reps/algebraBox';
 import { curveOf } from '@/components/module/reps/functionGraphMath';
+import { choose } from '@/components/module/reps/statMath';
+import { shadedChance } from '@/components/module/reps/stats';
 import { termsModel } from '@/components/module/reps/termsModel';
 
 import type { Representation } from '../types';
@@ -111,6 +113,84 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
         if (k !== undefined && k !== model.k)
           out.push(`monomial: k ${k} is not m − n = ${model.k}`);
       }
+      break;
+    }
+    case 'venn': {
+      // H97: counts out of a total.
+      const v = 'chances' in rep ? rep.chances : undefined;
+      if (!v?.counts) break;
+      const [a, b, both, N] = [v.a, v.b, v.both, v.counts.total].map(get);
+      if ([a, b, both, N].some((x) => x === undefined)) break;
+      for (const x of [a!, b!, both!, N!])
+        if (!Number.isInteger(x) || x < 0) out.push(`Venn count ${x} is not a whole number`);
+      if (both! > Math.min(a!, b!)) out.push(`both = ${both} is more than A or B`);
+      if (a! + b! - both! > N!) out.push(`A or B = ${a! + b! - both!} is more than the total ${N}`);
+      if (!v.shade || !(N! > 0)) break;
+      const want = shadedChance(v.shade, a! / N!, b! / N!, v.exclusive ? 0 : both! / N!);
+      const [count, r] = [get(v.counts.count), get(v.result)];
+      if (count !== undefined && !near(count, want * N!))
+        out.push(`shaded ${v.shade} holds ${want * N!}, count shows ${count}`);
+      if (r !== undefined && !near(r, want))
+        out.push(`shaded ${v.shade} is ${want}, result shows ${r}`);
+      break;
+    }
+    case 'treeDiagram': {
+      // H97: a third stage.
+      const t = 'chances' in rep ? rep.chances : undefined;
+      if (!t?.third) break;
+      const [A, B, C] = [t.names[0].length, t.names[1].length, t.thirdNames?.length ?? 0];
+      if (C < 2 || C > 3) out.push(`${C} third-stage outcomes (2 or 3)`);
+      if (A * B * C > 12) out.push(`${A * B * C} leaves (at most 12)`);
+      if (t.third.length !== A || t.third.some((r) => r.length !== B))
+        out.push(`third-stage chances are not ${A} × ${B} lists`);
+      const full = (xs: (number | undefined)[], k: number) =>
+        xs.every((x) => x !== undefined)
+          ? xs.length === k - 1
+            ? [...(xs as number[]), 1 - (xs as number[]).reduce((p, q) => p + q, 0)]
+            : (xs as number[])
+          : undefined;
+      const pC = t.third.map((r) => r.map((xs) => full(xs.map(get), C)));
+      for (const xs of pC.flat()) {
+        if (!xs) continue;
+        if (xs.length !== C) out.push(`${xs.length} third chances for ${C} outcomes`);
+        else if (
+          xs.some((p) => p < -1e-9 || p > 1 + 1e-9) ||
+          !near(
+            xs.reduce((p, q) => p + q, 0),
+            1,
+          )
+        )
+          out.push(`third-stage branches ${xs.join(', ')} don't add to 1`);
+      }
+      if (t.path3 !== undefined && !(t.path3 >= 0 && t.path3 < C))
+        out.push(`no third outcome ${t.path3}`);
+      if (!t.path || t.path3 === undefined || !t.chance) break;
+      const [i, j] = t.path;
+      const pa = full(t.first.map(get), A)?.[i];
+      const pb = full((t.second[i] ?? []).map(get), B)?.[j];
+      const pc = pC[i]?.[j]?.[t.path3];
+      const x = get(t.chance);
+      if (pa !== undefined && pb !== undefined && pc !== undefined && x !== undefined) {
+        const want = pa * pb * pc;
+        if (!near(x, want)) out.push(`path chance shows ${x}, the three branches give ${want}`);
+      }
+      break;
+    }
+    case 'pascalTriangle': {
+      // H97: C(a, r) over C(n, r).
+      const f = rep.fraction;
+      if (!f) break;
+      const [n, k, fn, fk] = [rep.n, rep.k, f.n, f.k].map(get);
+      if ([n, k, fn, fk].some((x) => x === undefined)) break;
+      if (fn! > n!) out.push(`the top count's row ${fn} is past row ${n}`);
+      if (fk! > fn! || fk! < 0) out.push(`C(${fn}, ${fk}) has no entry ${fk}`);
+      const top = fk! <= fn! ? choose(fn!, fk!) : 0;
+      const bottom = choose(n!, k!);
+      const [count, chance] = [get(f.count), get(f.chance)];
+      if (count !== undefined && count !== top)
+        out.push(`top count ${count} is not C(${fn}, ${fk}) = ${top}`);
+      if (chance !== undefined && bottom > 0 && !near(chance, top / bottom))
+        out.push(`chance ${chance} is not ${top} ÷ ${bottom}`);
       break;
     }
     default:

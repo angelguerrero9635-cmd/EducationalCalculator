@@ -86,6 +86,39 @@ export type AlgebraTilesHs2g =
       k?: string;
     };
 
+/**
+ * H97: a Venn diagram of counts (`venn` `chances` with `counts`): a, b and both are whole
+ * counts out of `total` (drawn in the corner, outside the circles); each region shows its count,
+ * neither = total − (a + b − both); the shaded region's count is `count` (checked) and `result`
+ * stays its probability, count ÷ total.
+ */
+export interface VennCounts {
+  counts?: { total: NumOrVar; count?: string };
+}
+
+/**
+ * H97: a third stage on a chance tree (`treeDiagram` `chances`): `third[i][j]` are the chances
+ * after first outcome i and second outcome j (the last one left out is 1 − the others), named
+ * by `thirdNames`; `path3` extends `path` to a leaf, and `chance` is then the product of the
+ * three branches on it.
+ */
+export interface TreeChancesHs2g {
+  third?: NumOrVar[][][];
+  thirdNames?: string[];
+  thirdStage?: string;
+  path3?: number;
+}
+
+/**
+ * H97: probability as a fraction of two counts on Pascal's triangle: C(`n`, `k`) lit in the
+ * second colour over the triangle's own C(n, k) (the page's n and k), and drawn as a fraction
+ * under it, C(5, 3) ÷ C(9, 3) = 10/84 = 5/42. `count` and `chance` name the top count and the
+ * probability (checked).
+ */
+export interface PascalFraction {
+  fraction?: { n: NumOrVar; k: NumOrVar; count?: string; chance?: string };
+}
+
 /** Every variable id these options name (for the module tests). */
 export function hs2gSpecVars(r: Representation): string[] {
   const ids = (...xs: (NumOrVar | boolean | undefined)[]): string[] =>
@@ -101,6 +134,12 @@ export function hs2gSpecVars(r: Representation): string[] {
         : r.mode === 'monomial'
           ? ids(r.a, r.m, r.b, r.n, r.c, r.k)
           : [];
+    case 'venn':
+      return 'chances' in r ? ids(r.chances.counts?.total, r.chances.counts?.count) : [];
+    case 'treeDiagram':
+      return 'chances' in r ? ids(...(r.chances.third ?? []).flat(2)) : [];
+    case 'pascalTriangle':
+      return ids(r.fraction?.n, r.fraction?.k, r.fraction?.count, r.fraction?.chance);
     default:
       return [];
   }

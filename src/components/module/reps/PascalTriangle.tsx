@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { expansion, pascalRows, slotsOf } from './pascal';
+import { FRACTION_H, FractionRow, fractionOf } from './PascalFraction';
 
 const fmt = (x: number) => formatNumber(x);
 const sup = (e: number) => [...String(e)].map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]).join('');
@@ -33,7 +34,14 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
   const r = spec.slots ? Math.round(get(spec.slots.r) ?? 0) : 0;
   const slots = spec.slots ? slotsOf(n, r, !!spec.slots.choose) : undefined;
   const slotsFit = !!slots && r >= 0 && r <= n;
-  const allKnown = known(spec.n) && known(spec.k) && known(spec.slots?.r);
+  const allKnown =
+    known(spec.n) &&
+    known(spec.k) &&
+    known(spec.slots?.r) &&
+    known(spec.fraction?.n) &&
+    known(spec.fraction?.k);
+  // H97: C(a, r) over the lit C(n, k), a probability as a fraction of two counts.
+  const frac = fractionOf(spec, get, n, k);
 
   // ── Caption ──
   const lines: string[] = [];
@@ -57,6 +65,7 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
         `(${spec.expand.a} + ${spec.expand.b})${sup(n)} = ${expansion(n, spec.expand.a, spec.expand.b)}`,
       );
   }
+  if (frac) lines.push(frac.caption);
   if (slots) {
     if (!slotsFit) lines.push(`${r} places can’t be filled from ${n}: r runs from 0 to n.`);
     else {
@@ -72,7 +81,7 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
   }
 
   const triH = (w: number) => (showTriangle ? (R + 1) * cellOf(w).h + 10 : 0);
-  const slotsH = slots ? (spec.slots!.choose ? 118 : 78) : 0;
+  const slotsH = (slots ? (spec.slots!.choose ? 118 : 78) : 0) + (frac ? FRACTION_H : 0);
   function cellOf(w: number) {
     const cw = Math.min(40, (w - 16) / (R + 1));
     return { w: cw, h: Math.min(28, Math.max(20, cw * 0.82)) };
@@ -125,6 +134,7 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
                     row.map((v, j) => {
                       const p = at(i, j);
                       const on = lit(i, j);
+                      const second = !on && !!frac && i === frac.n && j === frac.k;
                       const up = parent(i, j);
                       const text = fmt(v);
                       const size = text.length >= 4 && cell.w < 34 ? chart.label : chart.value;
@@ -136,9 +146,25 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
                             width={cell.w - 3}
                             height={cell.h - 4}
                             rx={5}
-                            fill={on ? c.chartHighlight : up ? c.chartSecond : c.chartSurface}
-                            fillOpacity={on ? 1 : up ? 0.35 : 1}
-                            stroke={on ? c.chartHighlight : up ? c.chartSecond : c.chartGrid}
+                            fill={
+                              on
+                                ? c.chartHighlight
+                                : second
+                                  ? c.fnSecond
+                                  : up
+                                    ? c.chartSecond
+                                    : c.chartSurface
+                            }
+                            fillOpacity={on || second ? 1 : up ? 0.35 : 1}
+                            stroke={
+                              on
+                                ? c.chartHighlight
+                                : second
+                                  ? c.fnSecond
+                                  : up
+                                    ? c.chartSecond
+                                    : c.chartGrid
+                            }
                             strokeWidth={1}
                           />
                           <ChartText
@@ -146,8 +172,8 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
                             y={p.y + size * 0.36}
                             textAnchor="middle"
                             fontSize={size}
-                            fontWeight={on || i === n ? '700' : '400'}
-                            fill={on ? c.onChartHighlight : c.chartInk}
+                            fontWeight={on || second || i === n ? '700' : '400'}
+                            fill={on || second ? c.onChartHighlight : c.chartInk}
                           >
                             {text}
                           </ChartText>
@@ -271,6 +297,19 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
                       </>
                     );
                   })()}
+                </G>
+              ) : null}
+              {frac ? (
+                <G opacity={op}>
+                  <FractionRow
+                    frac={frac}
+                    x={w / 2}
+                    y={h - FRACTION_H}
+                    ink={c.chartInk}
+                    lit={c.chartHighlight}
+                    second={c.fnSecond}
+                    muted={c.chartMuted}
+                  />
                 </G>
               ) : null}
             </Svg>

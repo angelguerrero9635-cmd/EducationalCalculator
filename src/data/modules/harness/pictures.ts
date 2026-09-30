@@ -1334,7 +1334,7 @@ export function repIssues(
     }
     case 'venn':
       if ('chances' in rep) {
-        out.push(...vennChanceIssues(rep.chances, val));
+        out.push(...vennChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;
       }
       count(rep.first, 'Venn number', 1000);
@@ -1450,7 +1450,7 @@ export function repIssues(
     }
     case 'treeDiagram': {
       if ('chances' in rep) {
-        out.push(...treeChanceIssues(rep.chances, val));
+        out.push(...treeChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;
       }
       // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).

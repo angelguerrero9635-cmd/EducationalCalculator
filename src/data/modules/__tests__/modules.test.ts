@@ -327,7 +327,7 @@ function representationVars(r: Representation): string[] {
         ...(r.quotient ? [r.quotient] : []),
       ];
     case 'venn':
-      if ('chances' in r) return vennChanceVars(r.chances);
+      if ('chances' in r) return [...vennChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'baseHeight':
       return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];
@@ -340,7 +340,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
-      if ('chances' in r) return treeChanceVars(r.chances);
+      if ('chances' in r) return [...treeChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];

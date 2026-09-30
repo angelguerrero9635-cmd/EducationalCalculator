@@ -488,6 +488,238 @@ const MONOMIALS: ModuleDef[] = [
   ),
 ];
 
-export const HS2G_GALLERY_MODULES: ModuleDef[] = [...TERMS, ...GRAPHS, areaBox, ...MONOMIALS];
+// ── H97: a Venn of counts, a three-stage tree, a fraction of two counts ──
+
+/** A whole count, 0 to max. */
+const count = (
+  id: string,
+  symbol: string,
+  name: string,
+  max: number,
+  more: Partial<VariableDef> = {},
+) => num(id, symbol, name, 0, max, { step: 1, integer: true, ...more });
+/** A chance worked out, 0 to 1, shown as a fraction where it is one. */
+const chanceOut = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0, 1, { derived: true, fraction: 1000 });
+/** A chance typed, 0 to 1. */
+const chanceIn = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0, 1, { step: 0.01 });
+
+/** Region checks every counts page shares: both ≤ A and B, the union within the total. */
+const vennLimits = () => [
+  limit(
+    'both ≤ A, B',
+    '{ab} is at most {a} and {b}',
+    (v) => v.ab! <= Math.min(v.a!, v.b!),
+    'The overlap is part of both circles: it can’t be bigger than either.',
+  ),
+  limit(
+    'A or B ≤ total',
+    '{a} + {b} − {ab} is at most {N}',
+    (v) => v.a! + v.b! - v.ab! <= v.N!,
+    'The circles hold more people than there are in all.',
+  ),
+];
+
+const neitherCounts = page({
+  id: 'g.m10-probability-rules-neither-counts',
+  title: 'Neither event, from counts',
+  use: 'Use this for “Of 40 students, 22 play soccer, 15 basketball and 8 both. How many play neither?”',
+  assumptions: [
+    'Each circle counts the people in it; the overlap counts those in both.',
+    'Soccer or basketball counts the overlap once: a + b − both.',
+    'Neither is everyone else in the rectangle: the total minus that.',
+  ],
+  variables: [
+    count('a', 'a', 'In A', 1000),
+    count('b', 'b', 'In B', 1000),
+    count('ab', 'ab', 'In both', 1000),
+    count('N', 'N', 'In all', 1000),
+    count('u', 'u', 'In A or B', 2000, { derived: true }),
+    count('s', 's', 'In neither', 1000, { derived: true }),
+    chanceOut('P', 'P(neither)', 'P(neither)'),
+  ],
+  rules: [
+    ...vennLimits(),
+    derive(
+      'u = a + b − ab',
+      'u',
+      ['a', 'b', 'ab'],
+      '{u} = {a} + {b} − {ab}',
+      (v) => v.a! + v.b! - v.ab!,
+      '{a} + {b} − {ab}',
+      'Add the two circles, then take off the overlap counted twice.',
+    ),
+    derive(
+      's = N − u',
+      's',
+      ['N', 'u'],
+      '{s} = {N} − {u}',
+      (v) => v.N! - v.u!,
+      '{N} − {u}',
+      'Everyone not in either circle.',
+    ),
+    derive(
+      'P = s ÷ N',
+      'P',
+      ['s', 'N'],
+      '{P} = {s} ÷ {N}',
+      (v) => (v.N ? fin(v.s! / v.N!) : undefined),
+      '{s} ÷ {N}',
+      'The count in neither over everyone.',
+    ),
+  ],
+  example: { a: 22, b: 15, ab: 8, N: 40, u: 29, s: 11, P: 0.275 },
+  startWith: ['a', 'b', 'ab', 'N'],
+  representation: {
+    kind: 'venn',
+    chances: {
+      a: 'a',
+      b: 'b',
+      both: 'ab',
+      names: ['Soccer', 'Basketball'],
+      shade: 'neither',
+      result: 'P',
+      counts: { total: 'N', count: 's' },
+    },
+  },
+});
+
+const vennCountsGiven = page({
+  id: 'g.m10-conditional-probability-venn-counts',
+  title: 'Conditional probability from a Venn of counts',
+  use: 'Use this for “Of 60 students, 25 drink juice, 30 milk and 10 both. What fraction of the juice drinkers drink milk?”',
+  assumptions: [
+    'P(B | A) looks only inside circle A: the overlap out of everyone in A.',
+    'So P(B | A) = both ÷ a, not both ÷ the total.',
+    'If it equals P(B) = b ÷ total, A and B are independent.',
+  ],
+  variables: [
+    count('a', 'a', 'In A', 1000),
+    count('b', 'b', 'In B', 1000),
+    count('ab', 'ab', 'In both', 1000),
+    count('N', 'N', 'In all', 1000),
+    chanceOut('j', 'P(A and B)', 'P(A and B)'),
+    chanceOut('c', 'P(B | A)', 'P(B | A)'),
+  ],
+  rules: [
+    ...vennLimits(),
+    derive(
+      'P(A and B) = ab ÷ N',
+      'j',
+      ['ab', 'N'],
+      '{j} = {ab} ÷ {N}',
+      (v) => (v.N ? fin(v.ab! / v.N!) : undefined),
+      '{ab} ÷ {N}',
+      'The overlap out of everyone.',
+    ),
+    derive(
+      'P(B | A) = ab ÷ a',
+      'c',
+      ['ab', 'a'],
+      '{c} = {ab} ÷ {a}',
+      (v) => (v.a ? fin(v.ab! / v.a!) : undefined),
+      '{ab} ÷ {a}',
+      'Given A: only the people in A count, and ab of them are in B.',
+    ),
+  ],
+  example: { a: 25, b: 30, ab: 10, N: 60, j: 1 / 6, c: 0.4 },
+  startWith: ['a', 'b', 'ab', 'N'],
+  representation: {
+    kind: 'venn',
+    chances: {
+      a: 'a',
+      b: 'b',
+      both: 'ab',
+      names: ['Juice', 'Milk'],
+      shade: 'and',
+      result: 'j',
+      counts: { total: 'N' },
+    },
+  },
+});
+
+const threeStages = page({
+  id: 'g.m10-conditional-probability-three-stages',
+  title: 'Three independent stages',
+  use: 'Use this for “Three trains are on time with chances 0.9, 0.8 and 0.7. What is the chance all three are?”',
+  assumptions: [
+    'Each train is on time or late, whatever the others do: the stages are independent.',
+    'Along one path, multiply the three chances.',
+    'At least one late is every other path: 1 − P(all on time).',
+  ],
+  variables: [
+    chanceIn('a', 'P(A)', 'First on time'),
+    chanceIn('b', 'P(B)', 'Second on time'),
+    chanceIn('c', 'P(C)', 'Third on time'),
+    chanceOut('j', 'P(all)', 'All three on time'),
+    chanceOut('m', 'P(some late)', 'At least one late'),
+  ],
+  rules: [
+    derive(
+      'P(all) = a × b × c',
+      'j',
+      ['a', 'b', 'c'],
+      '{j} = {a} × {b} × {c}',
+      (v) => fin(v.a! * v.b! * v.c!),
+      '{a} × {b} × {c}',
+      'Independent stages: multiply along the path.',
+    ),
+    derive(
+      'P(some late) = 1 − P(all)',
+      'm',
+      ['j'],
+      '{m} = 1 − {j}',
+      (v) => fin(1 - v.j!),
+      '1 − {j}',
+      'Every path but the all-on-time one.',
+    ),
+  ],
+  example: { a: 0.9, b: 0.8, c: 0.7, j: 0.504, m: 0.496 },
+  startWith: ['a', 'b', 'c'],
+  representation: {
+    kind: 'treeDiagram',
+    chances: {
+      first: ['a'],
+      second: [['b'], ['b']],
+      third: [
+        [['c'], ['c']],
+        [['c'], ['c']],
+      ],
+      names: [
+        ['On time', 'Late'],
+        ['On time', 'Late'],
+      ],
+      thirdNames: ['On time', 'Late'],
+      stages: ['First', 'Second'],
+      thirdStage: 'Third',
+      path: [0, 0],
+      path3: 0,
+      chance: 'j',
+    },
+  },
+});
+
+const countingFraction = fromPage(
+  'm.10.probability-rules~counting-probability',
+  'g.m10-probability-rules-counting-fraction',
+  'Probability with combinations: a fraction of two counts',
+  {
+    kind: 'pascalTriangle',
+    n: 'n',
+    k: 'r',
+    fraction: { n: 'a', k: 'r', count: 'f', chance: 'P' },
+  },
+);
+
+const CHANCES: ModuleDef[] = [neitherCounts, vennCountsGiven, threeStages, countingFraction];
+
+export const HS2G_GALLERY_MODULES: ModuleDef[] = [
+  ...TERMS,
+  ...GRAPHS,
+  areaBox,
+  ...MONOMIALS,
+  ...CHANCES,
+];
 
 export const HS2G_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -5,7 +5,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type { SignOf } from './typesHs2a';
-import type { TermsChartHs2g } from './typesHs2g';
+import type { PascalFraction, TermsChartHs2g } from './typesHs2g';
 
 /**
  * A normal curve over mean μ and standard deviation σ, with an x axis (ticks at μ + kσ, the
@@ -91,7 +91,7 @@ export interface HistogramSpec {
  * n's coefficients in the caption. `triangle: false` leaves the triangle out (slots alone, for
  * n past 12). No handles: n, k and r move with their sliders.
  */
-export interface PascalTriangleSpec {
+export interface PascalTriangleSpec extends PascalFraction {
   kind: 'pascalTriangle';
   n: NumOrVar;
   k?: NumOrVar;

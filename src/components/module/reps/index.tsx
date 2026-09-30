@@ -92,6 +92,7 @@ import { BoxPlot } from './BoxPlot';
 import { BoxPlotPair } from './BoxPlotPair';
 import { TwoWayTable } from './TwoWayTable';
 import { ChanceTree } from './ChanceTree';
+import { ChanceTree3 } from './ChanceTree3';
 import { VennChance } from './VennChance';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
@@ -525,7 +526,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
       return 'chances' in spec ? (
-        <ChanceTree spec={spec.chances} calc={calc} />
+        spec.chances.third ? (
+          <ChanceTree3 spec={spec.chances} calc={calc} />
+        ) : (
+          <ChanceTree spec={spec.chances} calc={calc} />
+        )
       ) : (
         <TreeDiagram spec={spec} calc={calc} />
       );
