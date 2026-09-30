@@ -232,6 +232,20 @@ const EXPONENTIAL_MAIN = page({
   },
 });
 
+/** The power of b that makes n (8 as a power of 2 is 3), when it is a whole number. */
+const powerOf = (b: number, n: number) => {
+  if (!(b >= 2) || !(n >= 1)) return undefined;
+  const k = Math.round(Math.log(n) / Math.log(b));
+  return b ** k === n ? k : undefined;
+};
+/** The smallest base both p and q are whole powers of (4 and 8: 2), or nothing. */
+const commonBase = (p: number, q: number) => {
+  for (let b = 2; b <= Math.max(p, q); b++) if (powerOf(b, p) && powerOf(b, q)) return b;
+  return undefined;
+};
+/** Digits (and a minus) raised: 12 → ¹². */
+const raised = (x: number) => superscript(`^${x}`).replace(/^\^/, '');
+
 const EXPONENTIAL: ModuleDef[] = [
   // ── Exponential functions: growth and decay (F-LE.1–3, F-LE.5, F-IF.8b) ──
   EXPONENTIAL_MAIN,
@@ -292,6 +306,105 @@ const EXPONENTIAL: ModuleDef[] = [
       output: 'A',
       params: ['P', 'r'],
       rows: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    },
+  }),
+  page({
+    id: 'm.9.exponential-functions~same-base',
+    title: 'Solve by writing the same base',
+    use: 'Use this for “Solve 4⁶ = 8ˣ.”',
+    assumptions: [
+      'Write both sides as powers of one base: 4 = 2² and 8 = 2³.',
+      'A power of a power multiplies the exponents: (2²)⁶ = 2¹².',
+      'When the bases are equal, the exponents are equal: solve 3x = 12.',
+    ],
+    variables: [
+      int('p', 'p', 'Base on the left', 2, 100),
+      int('a', 'a', 'Exponent on the left', -10, 10),
+      int('q', 'q', 'Base on the right', 2, 100),
+      int('b', 'b', 'Common base', 2, 100, { derived: true }),
+      int('s', 's', 'p as a power of b', 1, 10, { derived: true }),
+      int('t', 't', 'q as a power of b', 1, 10, { derived: true }),
+      num('x', 'x', 'Solution', -100, 100, { fraction: 12 }),
+      num('R', 'R', 'Right side, q to the power x', 0, 1e21, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'b = common base of p and q',
+        'b',
+        ['p', 'q'],
+        '{b} = the common base of {p} and {q}',
+        (v) => commonBase(v.p!, v.q!),
+        'the common base of {p} and {q}',
+        'Find the smallest number both bases are powers of.',
+        {},
+        {
+          message: (v) =>
+            known(v, 'p', 'q') && commonBase(v.p!, v.q!) === undefined
+              ? 'These bases are not powers of one number: this needs logarithms (Algebra 2).'
+              : undefined,
+        },
+      ),
+      derive(
+        's: p = b^s',
+        's',
+        ['b', 'p'],
+        '{s} = the power of {b} that makes {p}',
+        (v) => powerOf(v.b!, v.p!),
+        'the power of {b} that makes {p}',
+        'Write the left base as a power of b.',
+        { work: (v) => [`${fmt(v.p!)} = ${fmt(v.b!)}${raised(v.s!)}`] },
+      ),
+      derive(
+        't: q = b^t',
+        't',
+        ['b', 'q'],
+        '{t} = the power of {b} that makes {q}',
+        (v) => powerOf(v.b!, v.q!),
+        'the power of {b} that makes {q}',
+        'Write the right base as a power of b too.',
+        { work: (v) => [`${fmt(v.q!)} = ${fmt(v.b!)}${raised(v.t!)}`] },
+      ),
+      rule(
+        'x = s × a ÷ t',
+        '{x} = {s} × {a} ÷ {t}',
+        ['x', 's', 'a', 't'],
+        (v) => v.x! * v.t! - v.s! * v.a!,
+        {
+          x: [
+            (v) => div(v.s! * v.a!, v.t!),
+            '{s} × {a} ÷ {t}',
+            'Now b^(sa) = b^(tx): the bases match, so tx = sa. Divide by t.',
+            {
+              work: (v) => [
+                `${fmt(v.b!)}${raised(v.s! * v.a!)} = ${fmt(v.b!)}${raised(v.t!)}ˣ`,
+                `${fmt(v.t!)}x = ${fmt(v.s! * v.a!)}`,
+              ],
+            },
+          ],
+          a: [(v) => div(v.t! * v.x!, v.s!), '{t} × {x} ÷ {s}', 'The same, solved for a: sa = tx.'],
+        },
+      ),
+      derive(
+        'R = q^x',
+        'R',
+        ['q', 'x'],
+        '{R} = {q}^{x}',
+        (v) => fin(v.q! ** v.x!),
+        '{q}^{x}',
+        'Check: the right side at this x equals the left side, pᵃ.',
+        {},
+        { check: (v) => `${fmt(v.p!)}${raised(v.a!)} = ${fmt(v.R!)}` },
+      ),
+    ],
+    example: { p: 4, a: 6, q: 8, b: 2, s: 2, t: 3, x: 4, R: 4096 },
+    startWith: ['p', 'a', 'q'],
+    equation: '{p}^{a} = {q}^x',
+    representation: {
+      kind: 'table',
+      sweep: 'x',
+      output: 'R',
+      params: ['q'],
+      rows: [0, 1, 2, 3, 4, 5, 6],
     },
   }),
   page({
@@ -1263,7 +1376,9 @@ const FACTORING: ModuleDef[] = [
             const out = `${split} = (${bin(v.p!, v.q!)})(${common})`;
             // A common factor left in a bracket comes out too: (4x + 2)(x + 2) = 2(2x + 1)(x + 2).
             const g = gcd(v.p!, v.q!);
-            return g > 1 ? `→ ${out} = ${fmt(g)}(${bin(v.p! / g, v.q! / g)})(${common})` : `→ ${out}`;
+            return g > 1
+              ? `→ ${out} = ${fmt(g)}(${bin(v.p! / g, v.q! / g)})(${common})`
+              : `→ ${out}`;
           },
         },
       ),
@@ -1498,8 +1613,7 @@ function monicZeros(set: (lo: string, hi: string) => string): Rule[] {
         : 'The plus sign gives the larger zero.',
       sign > 0
         ? {
-            note: (v) =>
-              known(v, 'x1', 'x2') ? `→ ${set(fr(v.x1!, 20), fr(v.x2!, 20))}` : '',
+            note: (v) => (known(v, 'x1', 'x2') ? `→ ${set(fr(v.x1!, 20), fr(v.x2!, 20))}` : ''),
           }
         : {},
     );
@@ -2124,7 +2238,7 @@ const FUNCTION_NOTATION: ModuleDef[] = [
       num('m', 'm', 'Slope', -10, 10, { step: 0.5 }),
       num('b', 'b', 'y-intercept', -20, 20, { step: 0.5 }),
       num('x', 'x', 'Input', -20, 20, { step: 0.5, fraction: 20 }),
-      num('y', 'f(x)', 'Output', -300, 300),
+      num('y', 'y', 'Output f(x)', -300, 300),
     ],
     rules: [
       rule(
@@ -2179,7 +2293,7 @@ const FUNCTION_NOTATION: ModuleDef[] = [
       num('b', 'b', 'x coefficient', -20, 20, { step: 0.5 }),
       num('c', 'c', 'Number term', -50, 50, { step: 0.5 }),
       num('x', 'x', 'Input', -20, 20, { step: 0.5 }),
-      num('y', 'f(x)', 'Output', -100000, 100000, { derived: true }),
+      num('y', 'y', 'Output f(x)', -100000, 100000, { derived: true }),
     ],
     rules: [
       derive(
@@ -2220,8 +2334,8 @@ const FUNCTION_NOTATION: ModuleDef[] = [
       num('b', 'b', 'y-intercept', -20, 20, { step: 0.5 }),
       num('x1', 'x₁', 'Least input', -20, 20, { step: 0.5 }),
       num('x2', 'x₂', 'Greatest input', -20, 20, { step: 0.5 }),
-      num('y1', 'f(x₁)', 'Output at x₁', -500, 500, { derived: true }),
-      num('y2', 'f(x₂)', 'Output at x₂', -500, 500, { derived: true }),
+      num('y1', 'y₁', 'Output at x₁, f(x₁)', -500, 500, { derived: true }),
+      num('y2', 'y₂', 'Output at x₂, f(x₂)', -500, 500, { derived: true }),
       num('lo', 'y_min', 'Least output', -500, 500, { derived: true }),
       num('hi', 'y_max', 'Greatest output', -500, 500, { derived: true }),
     ],
@@ -2294,8 +2408,8 @@ const FUNCTION_NOTATION: ModuleDef[] = [
       num('c', 'c', 'Number term', -50, 50, { step: 0.5 }),
       num('x1', 'x₁', 'Start of the interval', -20, 20, { step: 0.5 }),
       num('x2', 'x₂', 'End of the interval', -20, 20, { step: 0.5 }),
-      num('y1', 'f(x₁)', 'Output at x₁', -10000, 10000, { derived: true }),
-      num('y2', 'f(x₂)', 'Output at x₂', -10000, 10000, { derived: true }),
+      num('y1', 'y₁', 'Output at x₁, f(x₁)', -10000, 10000, { derived: true }),
+      num('y2', 'y₂', 'Output at x₂, f(x₂)', -10000, 10000, { derived: true }),
       num('h', 'Δx', 'Change in input', -40, 40, { derived: true }),
       num('r', 'r', 'Average rate of change', -10000, 10000, { derived: true }),
     ],
@@ -2334,7 +2448,7 @@ const FUNCTION_NOTATION: ModuleDef[] = [
         'How far the input moves.',
       ),
       derive(
-        'r = (f(x₂) − f(x₁)) ÷ Δx',
+        'r = (y₂ − y₁) ÷ Δx',
         'r',
         ['y2', 'y1', 'h'],
         '{r} = ({y2} − {y1}) ÷ {h}',
@@ -2616,8 +2730,10 @@ const sideLines = (k: number, t: number, n: number) => {
 };
 
 /** "→ true" or "→ false" after a test's 1 or 0. */
-const truthNote = (id = 'h') => (v: Values) =>
-  v[id] === undefined ? '' : `→ ${v[id] ? 'true' : 'false'}`;
+const truthNote =
+  (id = 'h') =>
+  (v: Values) =>
+    v[id] === undefined ? '' : `→ ${v[id] ? 'true' : 'false'}`;
 /** How two numbers really compare: <, = or >. */
 const cmp = (l: number, r: number) => (l < r ? '<' : l > r ? '>' : '=');
 /** A test's check: the two sides as they compare, and what that says about the test number. */
@@ -2841,8 +2957,7 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
         'Do the same to the right part.',
         {
           // (no interval when the bounds cross: the message says why)
-          note: (v) =>
-            known(v, 'L', 'U') && v.L! < v.U! ? `→ ${fr(v.L!)} < x ≤ ${fr(v.U!)}` : '',
+          note: (v) => (known(v, 'L', 'U') && v.L! < v.U! ? `→ ${fr(v.L!)} < x ≤ ${fr(v.U!)}` : ''),
         },
         {
           message: (v) =>
@@ -3017,8 +3132,7 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
             ],
           },
           {
-            check: (v) =>
-              testCheck(v.ty!, v.yl!, compare(v.ty!, code, v.yl!), 'the test point'),
+            check: (v) => testCheck(v.ty!, v.yl!, compare(v.ty!, code, v.yl!), 'the test point'),
           },
         ),
       ],
@@ -3563,8 +3677,7 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
         {},
         {
           // Found from the first equation, so check it in the second.
-          check: (v) =>
-            `${fmt(v.d!)} × ${sgf(v.x!)} + ${sg(v.e!)} × ${sgf(v.y!)} = ${fmt(v.f!)}`,
+          check: (v) => `${fmt(v.d!)} × ${sgf(v.x!)} + ${sg(v.e!)} × ${sgf(v.y!)} = ${fmt(v.f!)}`,
         },
       ),
       figure(
@@ -3662,8 +3775,8 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
       int('ts', 's₀', 'Student tickets to test', 0, 1000),
       num('m1', 'm₁', 'Slope of the money line', -100000, 0, { derived: true, fraction: 12 }),
       num('i1', 'i₁', 'Money line’s s-intercept', 0, 1e7, { derived: true }),
-      num('cx', 'a', 'Corner: adult tickets', -1e6, 1e6, { derived: true }),
-      num('cy', 's', 'Corner: student tickets', -1e6, 1e6, { derived: true }),
+      num('cx', 'a', 'Corner: adult tickets', 0, 1000, { derived: true }),
+      num('cy', 's', 'Corner: student tickets', 0, 1000, { derived: true }),
       num('cost', 'C', 'Test cost', 0, 1e7, { unit: '$', derived: true }),
       int('count', 'n', 'Test count', 0, 2000, { derived: true }),
     ],
@@ -3691,15 +3804,23 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
         'cx',
         ['M', 'S', 'N', 'A'],
         '{cx} = ({M} − {S} × {N}) ÷ ({A} − {S})',
-        (v) => div(v.M! - v.S! * v.N!, v.A! - v.S!),
+        (v) => {
+          const a = div(v.M! - v.S! * v.N!, v.A! - v.S!);
+          return a !== undefined && a >= 0 && a <= v.N! ? a : undefined;
+        },
         '({M} − {S} × {N}) ÷ ({A} − {S})',
         'Where the lines cross: put s = N − a into Aa + Ss = M, so (A − S)a = M − SN.',
         {},
         {
-          message: (v) =>
-            v.A !== undefined && v.A === v.S
-              ? 'The two prices are equal: the lines are parallel, so there is no corner.'
-              : undefined,
+          message: (v) => {
+            if (!known(v, 'A', 'S', 'M', 'N')) return undefined;
+            if (v.A === v.S)
+              return 'The two prices are equal: the lines are parallel, so there is no corner.';
+            const a = (v.M! - v.S! * v.N!) / (v.A! - v.S!);
+            return a < 0 || a > v.N!
+              ? 'The lines cross outside the first quadrant: no whole-ticket corner there.'
+              : undefined;
+          },
         },
       ),
       derive(
@@ -3710,12 +3831,6 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
         (v) => v.N! - v.cx!,
         '{N} − {cx}',
         'On the count line, the rest of the tickets are student tickets.',
-        {
-          note: (v) =>
-            known(v, 'cx', 'cy') && (v.cx! < 0 || v.cy! < 0)
-              ? '→ the lines cross outside the first quadrant: no whole-ticket corner there'
-              : '',
-        },
       ),
       derive(
         'C = A a₀ + S s₀',
@@ -3811,7 +3926,10 @@ function rootRules(n: string, index: 2 | 3, k = 'k', r = 'r'): Rule[] {
           const big = largestPower(v[n]!, index);
           return big === 1
             ? []
-            : [`${fmt(v[n]!)} = ${fmt(big)} × ${fmt(v[n]! / big)}`, `${sign}${fmt(big)} = ${fmt(v[k]!)}`];
+            : [
+                `${fmt(v[n]!)} = ${fmt(big)} × ${fmt(v[n]! / big)}`,
+                `${sign}${fmt(big)} = ${fmt(v[k]!)}`,
+              ];
         },
       },
     ),
@@ -3850,7 +3968,9 @@ const improper = (top: number, bottom: number) => {
   const g = gcd(top, bottom) || 1;
   const [t, b] = [top / g, bottom / g];
   const s = t * b < 0 ? '−' : '';
-  return Math.abs(b) === 1 ? `${s}${fmt(Math.abs(t))}` : `${s}${fmt(Math.abs(t))}/${fmt(Math.abs(b))}`;
+  return Math.abs(b) === 1
+    ? `${s}${fmt(Math.abs(t))}`
+    : `${s}${fmt(Math.abs(t))}/${fmt(Math.abs(b))}`;
 };
 
 const RADICALS: ModuleDef[] = [
@@ -3994,7 +4114,15 @@ const RADICALS: ModuleDef[] = [
             if (!known(v, 'a', 'b', 'k')) return '';
             const c = improper(v.a!, v.b!);
             const x = v.k === 0 ? '' : v.k === 1 ? 'x' : superscript(`x^${v.k}`);
-            const front = !x ? c : c === '1' ? '' : c === '−1' ? '−' : c.includes('/') ? `(${c})` : c;
+            const front = !x
+              ? c
+              : c === '1'
+                ? ''
+                : c === '−1'
+                  ? '−'
+                  : c.includes('/')
+                    ? `(${c})`
+                    : c;
             return `→ ${front}${x}`;
           },
         },
@@ -4027,8 +4155,8 @@ const RADICALS: ModuleDef[] = [
             v.x === undefined
               ? `${fr(v.y!, 100000)} = ${fr(v.c!, 50)}`
               : superscript(
-              `${fr(v.y!, 100000)} = ${fmt(v.a!)} × ${fmt(v.x!)}^${v.m} ÷ (${fmt(v.b!)} × ${fmt(v.x!)}^${v.n})`,
-            ),
+                  `${fr(v.y!, 100000)} = ${fmt(v.a!)} × ${fmt(v.x!)}^${v.m} ÷ (${fmt(v.b!)} × ${fmt(v.x!)}^${v.n})`,
+                ),
         },
       ),
     ],
@@ -4520,10 +4648,7 @@ const listRule = (
       ],
     },
     {
-      check: (v) =>
-        `${fmt(v[id]!)} = ${word} of ${firstValues(LIST_IDS, v)
-          .map(fmt)
-          .join(', ')}`,
+      check: (v) => `${fmt(v[id]!)} = ${word} of ${firstValues(LIST_IDS, v).map(fmt).join(', ')}`,
     },
   );
 
@@ -4660,7 +4785,12 @@ const DATA_DISPLAYS: ModuleDef[] = [
     ],
     rules: [
       listRule('lo', 'least', (xs) => Math.min(...xs), 'The smallest value, first in order.', true),
-      listRule('md', 'median', medianOf, 'The middle value in order (halfway between the middle two).'),
+      listRule(
+        'md',
+        'median',
+        medianOf,
+        'The middle value in order (halfway between the middle two).',
+      ),
       listRule(
         'q1',
         'first quartile',
@@ -4734,13 +4864,19 @@ const DATA_DISPLAYS: ModuleDef[] = [
         {
           m: [
             (v) => div(sumList(firstValues(DATA_IDS, v)), v.n!),
-            (v) => `(${firstIds(DATA_IDS, v).map((x) => `{${x}}`).join(' + ')}) ÷ {n}`,
+            (v) =>
+              `(${firstIds(DATA_IDS, v)
+                .map((x) => `{${x}}`)
+                .join(' + ')}) ÷ {n}`,
             'Add the values, then divide by how many there are.',
             {
               work: (v) => {
                 const xs = firstValues(DATA_IDS, v);
                 const t = sumList(xs);
-                return [`${xs.map(fmt).join(' + ')} = ${fmt(t)}`, `${fmt(t)} ÷ ${v.n} = ${fmt(v.m!)}`];
+                return [
+                  `${xs.map(fmt).join(' + ')} = ${fmt(t)}`,
+                  `${fmt(t)} ÷ ${v.n} = ${fmt(v.m!)}`,
+                ];
               },
               written: false,
             },
@@ -4829,17 +4965,17 @@ const DATA_DISPLAYS: ModuleDef[] = [
     ],
     variables: [
       ...FIVE.map((id, i) =>
-        num(`${id}A`, `${FIVE_SYMBOLS[i]} (A)`, `Class A ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
+        num(`${id}A`, `${FIVE_SYMBOLS[i]}_A`, `Class A ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
           step: 0.5,
         }),
       ),
       ...FIVE.map((id, i) =>
-        num(`${id}B`, `${FIVE_SYMBOLS[i]} (B)`, `Class B ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
+        num(`${id}B`, `${FIVE_SYMBOLS[i]}_B`, `Class B ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
           step: 0.5,
         }),
       ),
-      num('IA', 'IQR (A)', 'Class A interquartile range', 0, 100, { derived: true }),
-      num('IB', 'IQR (B)', 'Class B interquartile range', 0, 100, { derived: true }),
+      num('IA', 'IQR_A', 'Class A interquartile range', 0, 100, { derived: true }),
+      num('IB', 'IQR_B', 'Class B interquartile range', 0, 100, { derived: true }),
       num('D', 'D', 'Difference of the medians (B − A)', -100, 100, { derived: true }),
     ],
     rules: [
@@ -5050,9 +5186,9 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
       num('m2', 'm₂', 'Right piece’s slope', -10, 10, { step: 0.5 }),
       num('b2', 'b₂', 'Right piece’s y-intercept', -20, 20, { step: 0.5 }),
       num('x', 'x', 'Input', -20, 20, { step: 0.5 }),
-      num('y', 'f(x)', 'Output', -500, 500),
+      num('y', 'y', 'Output f(x)', -500, 500),
       num('L', 'L', 'Left piece’s end at the break', -500, 500, { derived: true }),
-      num('R', 'f(p)', 'Value at the break', -500, 500, { derived: true }),
+      num('R', 'y_p', 'Value at the break, f(p)', -500, 500, { derived: true }),
     ],
     rules: [
       rule(
@@ -5087,7 +5223,7 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
         'The left piece heads here at the break, but x < p leaves it out: an open dot.',
       ),
       derive(
-        'f(p) = m₂p + b₂',
+        'y_p = m₂p + b₂',
         'R',
         ['m2', 'p', 'b2'],
         '{R} = {m2} × {p} + {b2}',
@@ -5205,7 +5341,9 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
       int('H', 'H', 'Hours charged', 1, 24, { derived: true }),
       num('C', 'C', 'Cost', 0, 2400, { unit: '$', derived: true }),
       // The drawn steps' ends (T₀ … T₄) and heights (C₁ … C₄), for the graph only.
-      ...[0, ...STEP_HOURS].map((k) => int(`T${k}`, `T${sub(k)}`, `End of step ${k}`, 0, 24, pictureOnly)),
+      ...[0, ...STEP_HOURS].map((k) =>
+        int(`T${k}`, `T${sub(k)}`, `End of step ${k}`, 0, 24, pictureOnly),
+      ),
       ...STEP_HOURS.map((k) =>
         num(`S${k}`, `C${sub(k)}`, `Height of step ${k}`, 0, 2400, { unit: '$', ...pictureOnly }),
       ),

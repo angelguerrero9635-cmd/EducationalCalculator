@@ -30,6 +30,22 @@ export const M9_PHRASES: [RegExp, (...xs: number[]) => number][] = [
       return (b + r) / 2 === 0 ? (b - r) / 2 : (b + r) / 2;
     },
   ],
+  // Same base: the smallest base two numbers are powers of, and the power that makes one.
+  [
+    new RegExp(`the common base of (${NUM}) and (${NUM})`),
+    (p, q) => {
+      const power = (b: number, n: number) => {
+        const k = Math.round(Math.log(n) / Math.log(b));
+        return b ** k === n;
+      };
+      for (let b = 2; b <= Math.max(p, q); b++) if (power(b, p) && power(b, q)) return b;
+      return NaN;
+    },
+  ],
+  [
+    new RegExp(`the power of (${NUM}) that makes (${NUM})`),
+    (b, n) => Math.round(Math.log(n) / Math.log(b)),
+  ],
   // Rational exponents: the fourth root and the fifth root of the base.
   [new RegExp(`∜(${NUM})`), (b) => b ** (1 / 4)],
   [new RegExp(`the fifth root of (${NUM})`), (b) => b ** (1 / 5)],
