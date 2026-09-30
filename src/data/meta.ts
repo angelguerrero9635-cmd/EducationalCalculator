@@ -134,6 +134,7 @@ const PICTURE_NAMES: Record<string, string> = {
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',
   projectile: 'projectile path with its velocity components',
+  heatEngine: 'heat engine between hot and cold reservoirs',
   simpleMachine: 'lever, pulleys or ramp with effort and load',
   collision: 'carts before and after a collision, with momentum arrows',
   circularMotion: 'circular motion or gravity between two masses',

@@ -93,6 +93,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |
 | `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce  | Physics momentum (H62)              |
 | `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA     | Physics simple machines (H63)       |
+| `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot   | Physics thermodynamics (H64)        |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

@@ -1550,6 +1550,178 @@ const MACHINE_DEMOS: ModuleDef[] = [
   },
 ];
 
+// ─── H64 heatEngine ──────────────────────────────────────────────────────────
+
+const TH = q('H', 'Tₕ', 'Hot reservoir temperature', 'K', 1, 5000, 1);
+const TL = q('L', 'Tₗ', 'Cold reservoir temperature', 'K', 1, 5000, 1);
+const WORK = q('W', 'W', 'Work', 'J', 0.1, 1e7, 0.1);
+
+/** Carnot efficiency (percent): 1 − Tₗ/Tₕ. */
+const carnotRule = rule(
+  'eₘₐₓ = 1 − Tₗ/Tₕ',
+  '{c} = 100 × (1 − {L}/{H})',
+  (v) => v.c! - 100 * (1 - v.L! / v.H!),
+  {
+    c: [
+      (v) => 100 * (1 - v.L! / v.H!),
+      '100 × (1 − {L}/{H})',
+      'No engine between these temperatures can beat 1 − Tₗ/Tₕ (in kelvins).',
+    ],
+    L: [(v) => v.H! * (1 - v.c! / 100), '{H} × (1 − {c}/100)', 'Undo the Carnot formula for Tₗ.'],
+    H: [(v) => div(v.L!, 1 - v.c! / 100), '{L}/(1 − {c}/100)', 'Undo the Carnot formula for Tₕ.'],
+  },
+);
+
+const HEAT_ENGINE_DEMOS: ModuleDef[] = [
+  ...[
+    {
+      id: 'g.s11-thermodynamics-engine',
+      title: 'A heat engine and its efficiency',
+      use: 'Use this for “An engine takes in 1,000 J from a 600 K reservoir, does 300 J of work and dumps the rest at 300 K. What is its efficiency, and the most it could be?”',
+      ex: { Q: 1000, W: 300, H: 600, L: 300 },
+      atLimit: false,
+    },
+    {
+      id: 'g.s11-thermodynamics-carnot',
+      title: 'An engine at the Carnot limit',
+      use: 'Use this for “What is the most work an engine between 500 K and 300 K can get from 800 J of heat?”',
+      ex: { Q: 800, W: 320, H: 500, L: 300 },
+      atLimit: true,
+    },
+  ].map(({ id, title, use, ex, atLimit }): ModuleDef => ({
+    id,
+    title,
+    use,
+    assumptions: [
+      'First law: the heat taken in becomes work plus the heat given out, Qₕ = W + Qₗ.',
+      'Second law: some heat always goes to the cold reservoir. The best possible efficiency is the Carnot limit, 1 − Tₗ/Tₕ, temperatures in kelvins.',
+    ],
+    variables: [
+      q('Q', 'Qₕ', 'Heat in from the hot reservoir', 'J', 0.1, 1e7, 0.1),
+      WORK,
+      q('C', 'Qₗ', 'Heat out to the cold reservoir', 'J', 0, 1e7, 0.1),
+      q('e', 'e', 'Efficiency', '%', 0, 100, 0.1),
+      TH,
+      TL,
+      q('c', 'eₘₐₓ', 'Carnot limit', '%', 0, 100, 0.1),
+      ...(atLimit ? [] : [q('r', 'r', 'Share of the Carnot limit', '%', 0, 100, 0.1)]),
+    ],
+    ...rules(
+      difference(
+        'C',
+        'Q',
+        'W',
+        'Qₗ = Qₕ − W',
+        'The heat not turned into work goes to the cold reservoir.',
+      ),
+      rule('e = W/Qₕ', '{e} = 100 × {W}/{Q}', (v) => v.e! * v.Q! - 100 * v.W!, {
+        e: [
+          (v) => div(100 * v.W!, v.Q!),
+          '100 × {W}/{Q}',
+          'The share of the heat that became work, as a percent.',
+        ],
+        W: [(v) => (v.e! * v.Q!) / 100, '{e}/100 × {Q}', 'The efficiency times the heat in.'],
+        Q: [(v) => div(100 * v.W!, v.e!), '100 × {W}/{e}', 'The work over the efficiency.'],
+      }),
+      carnotRule,
+      atLimit
+        ? rule('e = eₘₐₓ', '{e} = {c}', (v) => v.e! - v.c!, {
+            e: [(v) => v.c!, '{c}', 'A perfect (Carnot) engine reaches the limit exactly.'],
+            c: [(v) => v.e!, '{e}', 'The limit is the efficiency of a perfect engine.'],
+          })
+        : rule('r = e/eₘₐₓ', '{r} = 100 × {e}/{c}', (v) => v.r! * v.c! - 100 * v.e!, {
+            r: [
+              (v) => div(100 * v.e!, v.c!),
+              '100 × {e}/{c}',
+              'How close the engine comes to the best possible: e over the Carnot limit.',
+            ],
+            e: [(v) => (v.r! * v.c!) / 100, '{r}/100 × {c}', 'The share times the limit.'],
+            c: [(v) => div(100 * v.e!, v.r!), '100 × {e}/{r}', 'The efficiency over the share.'],
+          }),
+    ),
+    example: {
+      ...ex,
+      C: ex.Q - ex.W,
+      e: (100 * ex.W) / ex.Q,
+      c: 100 * (1 - ex.L / ex.H),
+      ...(atLimit ? {} : { r: (100 * ((100 * ex.W) / ex.Q)) / (100 * (1 - ex.L / ex.H)) }),
+    },
+    startWith: atLimit ? ['Q', 'H', 'L'] : ['Q', 'W', 'H', 'L'],
+    representation: {
+      kind: 'heatEngine',
+      hotHeat: 'Q',
+      work: 'W',
+      coldHeat: 'C',
+      efficiency: 'e',
+      hot: 'H',
+      cold: 'L',
+      carnot: 'c',
+    },
+  })),
+  {
+    id: 'g.s11-thermodynamics-refrigerator',
+    title: 'A refrigerator',
+    use: 'Use this for “A fridge takes 300 J from its 270 K inside using 100 J of work. How much heat reaches the 300 K kitchen, and what is its COP?”',
+    assumptions: [
+      'Heat flows from hot to cold by itself; moving it the other way takes work.',
+      'The kitchen gets the heat from inside plus the work: Qₕ = Qₗ + W.',
+      'COP = Qₗ/W; the best possible is Tₗ/(Tₕ − Tₗ).',
+    ],
+    variables: [
+      q('C', 'Qₗ', 'Heat taken from inside', 'J', 0.1, 1e7, 0.1),
+      WORK,
+      q('Q', 'Qₕ', 'Heat given to the room', 'J', 0.1, 1e7, 0.1),
+      q('k', 'COP', 'Coefficient of performance', undefined, 0, 1000, 0.01),
+      TH,
+      TL,
+      q('m', 'COPₘₐₓ', 'Carnot COP', undefined, 0, 10000, 0.01),
+      q('r', 'r', 'Share of the Carnot COP', '%', 0, 100, 0.1),
+    ],
+    ...rules(
+      rule('Qₕ = Qₗ + W', '{Q} = {C} + {W}', (v) => v.Q! - v.C! - v.W!, {
+        Q: [(v) => v.C! + v.W!, '{C} + {W}', 'The room gets the heat from inside plus the work.'],
+        C: [(v) => v.Q! - v.W!, '{Q} − {W}', 'Take the work from the heat given out.'],
+        W: [(v) => v.Q! - v.C!, '{Q} − {C}', 'The extra heat given out is the work put in.'],
+      }),
+      product('C', 'k', 'W', 'COP = Qₗ/W', [
+        'The heat moved is the COP times the work.',
+        'Divide the heat moved by the work.',
+        'Divide the heat moved by the COP.',
+      ]),
+      rule('COPₘₐₓ = Tₗ/(Tₕ − Tₗ)', '{m} = {L}/({H} − {L})', (v) => v.m! * (v.H! - v.L!) - v.L!, {
+        m: [
+          (v) => div(v.L!, v.H! - v.L!),
+          '{L}/({H} − {L})',
+          'The Carnot COP: the cold temperature over the difference, in kelvins.',
+        ],
+        H: [(v) => v.L! + div(v.L!, v.m!)!, '{L} + {L}/{m}', 'Undo the Carnot COP for Tₕ.'],
+      }),
+      rule('r = COP/COPₘₐₓ', '{r} = 100 × {k}/{m}', (v) => v.r! * v.m! - 100 * v.k!, {
+        r: [
+          (v) => div(100 * v.k!, v.m!),
+          '100 × {k}/{m}',
+          'How close the fridge comes to the best possible.',
+        ],
+        k: [(v) => (v.r! * v.m!) / 100, '{r}/100 × {m}', 'The share times the Carnot COP.'],
+        m: [(v) => div(100 * v.k!, v.r!), '100 × {k}/{r}', 'The COP over the share.'],
+      }),
+    ),
+    example: { C: 300, W: 100, Q: 400, k: 3, H: 300, L: 270, m: 9, r: 100 / 3 },
+    startWith: ['C', 'W', 'H', 'L'],
+    representation: {
+      kind: 'heatEngine',
+      mode: 'refrigerator',
+      coldHeat: 'C',
+      work: 'W',
+      hotHeat: 'Q',
+      efficiency: 'k',
+      hot: 'H',
+      cold: 'L',
+      carnot: 'm',
+    },
+  },
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
@@ -1557,5 +1729,6 @@ export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...CIRCULAR_DEMOS,
   ...COLLISION_DEMOS,
   ...MACHINE_DEMOS,
+  ...HEAT_ENGINE_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

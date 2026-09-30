@@ -9,7 +9,7 @@ import * as hm from '@/components/module/reps/hskMath';
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { HskSpec } from '../typesHsk';
 
-const { collisionOf, freeBodyOf, G_NEWTON, machineOf, projectileOf, sweptArea } = hm;
+const { collisionOf, freeBodyOf, G_NEWTON, heatEngineOf, machineOf, projectileOf, sweptArea } = hm;
 
 /** Equal to 1e-6 of the larger (values are rounded to 9 places when shown). */
 const near = (a: number, b: number) =>
@@ -219,6 +219,25 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       const [de, dl] = [rep.effortDistance, rep.loadDistance].map((x) => (x ? si(x) : undefined));
       if (de !== undefined && dl !== undefined && !near(de, mo.ima * dl))
         out.push(`simpleMachine: effort moves ${de}, not MA × ${dl}`);
+      break;
+    }
+    case 'heatEngine': {
+      const mode = rep.mode ?? 'engine';
+      const heat = read(si, mode === 'engine' ? rep.hotHeat : rep.coldHeat);
+      const [W, TH, TC] = [read(si, rep.work), read(si, rep.hot, 0), read(si, rep.cold, 0)];
+      if ([heat, W, TH, TC].some((x) => x === undefined)) break;
+      if (heat! < 0 || W! < 0) out.push('heatEngine: a negative heat or work');
+      if (TH! < 0 || TC! < 0) out.push('heatEngine: a temperature below absolute zero');
+      const fl = heatEngineOf(mode, heat!, W!, TH!, TC!);
+      const other = mode === 'engine' ? rep.coldHeat : rep.hotHeat;
+      same(
+        typeof other === 'string' ? other : undefined,
+        mode === 'engine' ? fl.QC : fl.QH,
+        'heat',
+      );
+      same(rep.efficiency, mode === 'engine' ? fl.e * 100 : fl.e, 'efficiency');
+      if (rep.hot !== undefined && rep.cold !== undefined && TH! > TC!)
+        same(rep.carnot, mode === 'engine' ? fl.carnot * 100 : fl.carnot, 'Carnot limit');
       break;
     }
   }

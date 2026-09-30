@@ -2100,6 +2100,7 @@ export function repIssues(
       out.push(...hsgIssues(rep, (id) => val(id)));
       break;
     case 'projectile':
+    case 'heatEngine':
     case 'simpleMachine':
     case 'collision':
     case 'circularMotion':

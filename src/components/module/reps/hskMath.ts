@@ -143,6 +143,35 @@ export function collisionOf(
 }
 
 /**
+ * A heat engine's flows (J) and efficiency, or a refrigerator's. Engine: Q_C = Q_H − W,
+ * e = W/Q_H, Carnot 1 − T_C/T_H. Refrigerator: Q_H = Q_C + W, COP = Q_C/W, Carnot COP
+ * T_C/(T_H − T_C).
+ */
+export function heatEngineOf(
+  mode: 'engine' | 'refrigerator',
+  heat: number,
+  W: number,
+  TH: number,
+  TC: number,
+) {
+  if (mode === 'engine')
+    return {
+      QH: heat,
+      QC: heat - W,
+      W,
+      e: heat > 0 ? W / heat : 0,
+      carnot: TH > 0 ? 1 - TC / TH : 0,
+    };
+  return {
+    QH: heat + W,
+    QC: heat,
+    W,
+    e: W > 0 ? heat / W : 0,
+    carnot: TH > TC ? TC / (TH - TC) : Infinity,
+  };
+}
+
+/**
  * A simple machine's ideal mechanical advantage (lever: effort arm ÷ load arm; pulley: the
  * supporting strands; ramp: length ÷ height) and the effort that lifts `load` at `efficiency`
  * percent (100: ideal).

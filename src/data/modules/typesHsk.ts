@@ -233,11 +233,42 @@ export interface EnergySpring {
   fixed?: boolean;
 }
 
+// ─── H64 heatEngine ──────────────────────────────────────────────────────────
+
+/**
+ * A heat engine between a hot and a cold reservoir, the flows of energy as bands as wide as
+ * their size: heat Q_H in from the hot reservoir, work W out, heat Q_L to the cold reservoir
+ * (Q_H = W + Q_L), and an efficiency bar (W/Q_H) with the Carnot limit 1 − T_L/T_H marked. An
+ * efficiency past the limit draws faded, the caption saying why. `refrigerator` runs it
+ * backward: work in moves Q_L out of the cold reservoir and Q_H = Q_L + W into the hot one,
+ * with the coefficient of performance Q_L/W beside the Carnot COP T_L/(T_H − T_L).
+ * Energies in J, temperatures in K.
+ */
+export interface HeatEngineSpec {
+  kind: 'heatEngine';
+  mode?: 'engine' | 'refrigerator';
+  /** Engine: Q_H and W given (Q_L = Q_H − W). Refrigerator: Q_L and W given (Q_H = Q_L + W). */
+  hotHeat?: NumOrVar;
+  coldHeat?: NumOrVar;
+  work: NumOrVar;
+  hot?: NumOrVar;
+  cold?: NumOrVar;
+  /** Efficiency in percent, or the refrigerator's COP. */
+  efficiency?: string;
+  /** The Carnot limit: efficiency in percent, or the COP. */
+  carnot?: string;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
 export type HskSpec =
-  ProjectileSpec | FreeBodySpec | CircularMotionSpec | CollisionSpec | SimpleMachineSpec;
+  | ProjectileSpec
+  | FreeBodySpec
+  | CircularMotionSpec
+  | CollisionSpec
+  | SimpleMachineSpec
+  | HeatEngineSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
@@ -291,6 +322,8 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.effortDistance,
         r.loadDistance,
       );
+    case 'heatEngine':
+      return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
   }
 }
 

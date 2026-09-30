@@ -8,6 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { CircularMotion } from './CircularMotion';
 import { Collision } from './Collision';
 import { FreeBody } from './FreeBody';
+import { HeatEngine } from './HeatEngine';
 import { Projectile } from './Projectile';
 import { SimpleMachine } from './SimpleMachine';
 
@@ -23,5 +24,7 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
       return <Collision spec={spec} calc={calc} />;
     case 'simpleMachine':
       return <SimpleMachine spec={spec} calc={calc} />;
+    case 'heatEngine':
+      return <HeatEngine spec={spec} calc={calc} />;
   }
 }

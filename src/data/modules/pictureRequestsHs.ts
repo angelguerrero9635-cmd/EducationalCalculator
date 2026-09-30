@@ -1021,12 +1021,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'energyTrack: a friction-heat bar and a spring. Drawn (group HK, reps/SimpleMachine.tsx and, for the energyTrack option, reps/EnergySpring.tsx; the mechanical advantage in hskMath.ts machineOf). Calculator picture { kind: "simpleMachine", machine: "lever" | "pulley" | "incline", load (N), effort?, advantage? (ideal MA), effortArm? and loadArm? (lever, m), strands? (pulley, whole 1 to 6; 1 is a single fixed pulley), length? and height? (incline, m), efficiency? (percent, default 100: effort = load ÷ (MA × efficiency)), effortDistance?, loadDistance? (checked: effort distance = MA × load distance), fixed?: true }. Lever: a wooden plank on a metal fulcrum drawn to scale from the two arms, the load crate and its weight, the effort arrow, both arms bracketed; drag the fulcrum (the arms trade, their sum kept). Pulley: a block and tackle with every supporting strand drawn and numbered, the sheave blocks in metal, the free end pulled down as the effort. Incline: a wooden ramp to scale, the crate pushed along the slope, its weight, the length and height labelled; a ramp shorter than its height draws faded with the reason. Load and effort share one scale in N. energyTrack option: spring: { k (N/m), compression (m), stored?: ½kx², friction? (N), rough? (m), heat?: fd, fixed? } on an energyTrack spec (its height, potential, kinetic, mass): a steel spring against a wall launches a block across a gritty rough patch and up a smooth ramp; bars Start (the spring’s ½kx²) and Now (heat + potential + kinetic, the same total), a key with each value, the highest point it can reach dashed; drag the block along the ramp. The harness checks the MA, the effort, the distances, ½kx², fd and the kinetic energy left. Example: representation: { kind: "simpleMachine", machine: "lever", load: "W", effortArm: "e", loadArm: "l", advantage: "A", effort: "F" }; { kind: "energyTrack", track: "coaster", height: "h", potential: "U", kinetic: "K", mass: "m", spring: { k: "k", compression: "x", stored: "E", friction: "f", rough: "d", heat: "Q" } }.',
   },
-  ask(
-    'H64',
-    'heatEngine',
-    'Hot reservoir, engine, work out and heat to the cold reservoir, with the efficiency',
-    ['s.11.thermodynamics'],
-  ),
+  {
+    ...ask(
+      'H64',
+      'heatEngine',
+      'Hot reservoir, engine, work out and heat to the cold reservoir, with the efficiency',
+      ['s.11.thermodynamics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-thermodynamics-engine',
+      'g.s11-thermodynamics-carnot',
+      'g.s11-thermodynamics-refrigerator',
+    ],
+    notes:
+      'Drawn (group HK, reps/HeatEngine.tsx; flows in hskMath.ts heatEngineOf). Calculator picture { kind: "heatEngine", mode?: "engine" | "refrigerator" (default engine), work: W, hotHeat: Q_H (given for an engine, else worked out), coldHeat: Q_L (given for a refrigerator, else worked out), hot?: T_H and cold?: T_L (K), efficiency?: percent (engine) or the COP (refrigerator), carnot?: the Carnot limit (percent, or the Carnot COP) }. The hot reservoir (red) over the engine (a metal cylinder and piston) over the cold reservoir (blue); the energy flows as bands as wide as their size, Q_H = W + Q_L, arrowheads showing the way heat moves (reversed for a refrigerator, work in); a bar of the efficiency (or COP) with the Carnot limit marked. Work more than the heat in, a cold reservoir hotter than the hot one, or an efficiency past the Carnot limit draws faded, the caption naming the law it breaks. Captions write Qₕ, Qₗ, Tₕ, Tₗ (H for hot, L for low). The harness checks Q_L or Q_H, the efficiency or COP and the Carnot limit. Example: representation: { kind: "heatEngine", hotHeat: "Q", work: "W", coldHeat: "C", efficiency: "e", hot: "H", cold: "L", carnot: "c" }.',
+  },
   ask(
     'H65',
     'wave',
