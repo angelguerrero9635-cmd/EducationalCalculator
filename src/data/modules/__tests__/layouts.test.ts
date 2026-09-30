@@ -193,10 +193,25 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
       case 'observe':
         expect(l.initial).toHaveLength(l.columns.length);
         if (l.second) expect(l.second.initial).toHaveLength(l.columns.length);
-        for (const x of [...l.initial, ...(l.second?.initial ?? [])]) {
-          expect(x).toBeGreaterThanOrEqual(0);
-          expect(x).toBeLessThanOrEqual(l.max);
-          expect(x % l.step).toBe(0);
+        // Each row on its own range (H109: a second row's own scale, values below 0).
+        for (const [xs, lo, hi, step] of [
+          [l.initial, l.min ?? 0, l.max, l.step] as const,
+          ...(l.second
+            ? [
+                [
+                  l.second.initial,
+                  l.second.min ?? l.min ?? 0,
+                  l.second.max ?? l.max,
+                  l.second.step ?? l.step,
+                ] as const,
+              ]
+            : []),
+        ]) {
+          for (const x of xs) {
+            expect(x).toBeGreaterThanOrEqual(lo);
+            expect(x).toBeLessThanOrEqual(hi);
+            expect(Math.abs(x % step)).toBe(0);
+          }
         }
         break;
     }

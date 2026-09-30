@@ -21,7 +21,7 @@ import type {
 } from '../typesHsl';
 import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
-import type { GelScene, Hs3dCard, Hs3dFigure, ReflexScene } from '../typesHs3d';
+import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
 
@@ -739,7 +739,9 @@ export interface ObserveLayout extends LayoutBase {
   /** A picture of the column last tapped, above the chart (`ObserveFigure`). */
   figure?: ObserveFigure;
   /** H100: a second row counted in the same columns, its bars beside the first (`typesHs2e.ts`). */
-  second?: ObserveSecond;
+  second?: ObserveSecond & ObserveScale;
+  /** H109: the lowest value (below 0 for a membrane potential); bars grow up or down from 0. */
+  min?: number;
 }
 
 /**

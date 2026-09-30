@@ -193,7 +193,10 @@ scale, with the sun on the line over the stick's top (higher for a shorter shado
 the lit circle side on and face on) and `cup` (an open cup, the first column's level dashed).
 An observation can count a second row in the same columns, `second: { rowLabel, initial }`
 (H100, two species a day): its bars beside the first's, a row of its own in the table, a key,
-and `pattern(first, second)` reading both.
+and `pattern(first, second)` reading both. H109 (`layouts/observeScaled.tsx`): `min` (below 0,
+a membrane potential in mV) grows each bar up or down from a 0 line; `second` may take its own
+`unit`, `max`, `min` and `step` (a climograph: rainfall in mm, temperature in °C), and with its
+own unit each row gets a chart of its own, named with its unit, over the shared month labels.
 
 Drawn explore figures: a `parts` figure with `drawing: 'plant' | 'animal' | 'body'`
 (`layouts/partsDrawings.tsx`) draws the thing, labels every part and lights the scene's part;

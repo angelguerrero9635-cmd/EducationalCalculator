@@ -697,6 +697,100 @@ const BIOMES: LayoutDef = {
   ],
 };
 
+// ─── Part 7: observe pages below 0 and with a second row on its own scale ──────────
+
+const ACTION_POTENTIAL: LayoutDef = {
+  kind: 'observe',
+  id: 'g.s9-nervous-system-action-potential-trace',
+  title: 'A nerve impulse, millisecond by millisecond',
+  use: 'Use this to record a neuron’s membrane potential through one impulse.',
+  assumptions: [
+    'At rest the inside of a neuron is about −70 mV, more negative than the outside.',
+    'Past the threshold, about −55 mV, Na⁺ rushes in; then K⁺ flows out and the inside turns negative again.',
+  ],
+  columns: ['0 ms', '1 ms', '2 ms', '3 ms', '4 ms', '5 ms', '6 ms'],
+  rowLabel: 'Membrane potential',
+  unit: 'mV',
+  min: -90,
+  max: 40,
+  step: 5,
+  initial: [-70, -55, 30, -40, -80, -75, -70],
+  pattern: (v) => {
+    const peak = Math.max(...v);
+    const low = Math.min(...v);
+    const sign = (x: number) => (x > 0 ? `+${x}` : x < 0 ? `−${-x}` : '0');
+    if (peak < -55)
+      return `It never passes the threshold of −55 mV, so no impulse fires: the neuron stays near rest.`;
+    const dip =
+      low < -70 ? ` It dips to ${sign(low)} mV, below rest, before the pump restores it.` : '';
+    return `It passes the threshold and peaks at ${sign(peak)} mV as Na⁺ rushes in; then K⁺ flows out.${dip}`;
+  },
+};
+
+const HORMONES: LayoutDef = {
+  kind: 'observe',
+  id: 'g.s9-reproduction-development-hormones',
+  title: 'Hormone levels through a cycle',
+  use: 'Use this for “Which hormone keeps the uterine lining in the second half of the cycle?”',
+  assumptions: [
+    'Levels are shown as a share of each hormone’s highest level, 0 to 100.',
+    'The days are for a typical 28-day cycle; real cycles vary.',
+  ],
+  columns: ['Day 1', 'Day 7', 'Day 14', 'Day 21', 'Day 28'],
+  rowLabel: 'Estrogen',
+  unit: 'Level',
+  max: 100,
+  step: 5,
+  initial: [10, 40, 90, 50, 15],
+  second: { rowLabel: 'Progesterone', initial: [5, 5, 10, 80, 10] },
+  pattern: (e, p = []) => {
+    const ei = e.indexOf(Math.max(...e));
+    const pi = p.indexOf(Math.max(...p));
+    const days = ['day 1', 'day 7', 'day 14', 'day 21', 'day 28'];
+    if (pi > ei)
+      return `Estrogen peaks first, by ${days[ei]}, rebuilding the lining; progesterone peaks later, by ${days[pi]}, keeping it.`;
+    return `Here progesterone peaks by ${days[pi]}, before estrogen: in a real cycle estrogen leads, before ovulation.`;
+  },
+};
+
+const CLIMOGRAPH: LayoutDef = {
+  kind: 'observe',
+  id: 'g.s9-biomes-rainfall-climograph',
+  title: 'Rainfall and temperature by month',
+  use: 'Use this to record a place’s rainfall and temperature each month and see which biome it suits.',
+  assumptions: [
+    'Rainfall is in millimeters: 10 mm is 1 cm of water over the ground.',
+    'Temperature is the month’s average, in °C; bars below the line are below freezing.',
+  ],
+  columns: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  rowLabel: 'Rainfall',
+  unit: 'mm',
+  max: 400,
+  step: 10,
+  initial: [80, 70, 90, 90, 100, 100, 110, 100, 90, 80, 90, 90],
+  second: {
+    rowLabel: 'Temperature',
+    unit: '°C',
+    min: -30,
+    max: 40,
+    step: 1,
+    initial: [-5, -3, 3, 10, 16, 21, 24, 23, 18, 11, 4, -2],
+  },
+  pattern: (rain, temp = []) => {
+    const cm = Math.round(rain.reduce((a, b) => a + b, 0) / 10);
+    const warmest = Math.max(...temp);
+    const coldest = Math.min(...temp);
+    if (warmest < 10)
+      return `About ${cm} cm a year, and no month above 10 °C: too cold for trees, tundra.`;
+    if (cm < 25) return `About ${cm} cm a year: a desert, whatever the temperature.`;
+    if (coldest >= 18 && cm >= 200)
+      return `About ${cm} cm a year and warm every month: a tropical rainforest.`;
+    if (coldest < -10) return `About ${cm} cm a year with long, freezing winters: taiga.`;
+    if (cm < 75) return `About ${cm} cm a year with warm summers: grassland.`;
+    return `About ${cm} cm a year, cold winters and warm summers: a temperate deciduous forest.`;
+  },
+};
+
 export const HS3D_GALLERY_LAYOUTS: LayoutDef[] = [
   FINGERPRINT,
   REFLEX_EXPLORE,
@@ -705,4 +799,7 @@ export const HS3D_GALLERY_LAYOUTS: LayoutDef[] = [
   LIFE_CYCLE,
   EMBRYO,
   BIOMES,
+  ACTION_POTENTIAL,
+  HORMONES,
+  CLIMOGRAPH,
 ];

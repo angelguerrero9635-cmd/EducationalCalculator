@@ -94,6 +94,21 @@ export const HS3D_SCENE_FIELD = { gel: 'gel', reflexArc: 'reflex' } as const sat
   string
 >;
 
+// ─── Observe pages ──────────────────────────────────────────────────────────
+
+/**
+ * H109: an observe page's `second` row on a scale of its own (a climograph: rainfall in mm and
+ * temperature in °C by month). Each field left out is the page's. With its own `unit` the key
+ * and the table name each row with its unit and each row's bars are drawn on its own range,
+ * from its own 0 line when it goes below 0.
+ */
+export interface ObserveScale {
+  unit?: string;
+  max?: number;
+  min?: number;
+  step?: number;
+}
+
 // ─── Calculator pictures ────────────────────────────────────────────────────
 
 /** Axons at this speed or faster are drawn myelinated (unmyelinated fibers run about 0.5–2 m/s). */
