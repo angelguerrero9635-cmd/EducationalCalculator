@@ -2862,7 +2862,7 @@ function direction(t: string, x: string, y: string, what = 'arrow', r?: string):
   );
 }
 
-/** m = √(x² + y²), and a missing component back from the length. */
+/** m = √(x² + y²), and a missing component back from the magnitude. */
 const lengthOf = (
   m: string,
   x: string,
@@ -2882,7 +2882,7 @@ const lengthOf = (
             ? undefined
             : [Math.sqrt(v[m]! ** 2 - v[y]! ** 2), -Math.sqrt(v[m]! ** 2 - v[y]! ** 2)],
         `±√({${m}}² − {${y}}²)`,
-        'Take the other component’s square from the length’s square, then the root (either sign).',
+        'Take the other component’s square from the magnitude’s square, then the root (either sign).',
       ],
       [y]: [
         (v) =>
@@ -2890,7 +2890,7 @@ const lengthOf = (
             ? undefined
             : [Math.sqrt(v[m]! ** 2 - v[x]! ** 2), -Math.sqrt(v[m]! ** 2 - v[x]! ** 2)],
         `±√({${m}}² − {${x}}²)`,
-        'Take the other component’s square from the length’s square, then the root (either sign).',
+        'Take the other component’s square from the magnitude’s square, then the root (either sign).',
       ],
     },
   );
@@ -2924,11 +2924,11 @@ const MATH_12_VECTORS: ModuleDef[] = [
     id: 'm.12.vectors',
     assumptions: [
       'The direction θ is measured counterclockwise from the positive x-axis.',
-      'A vector has a length and a direction but no fixed place: move it and it is the same vector.',
+      'A vector has a magnitude (its length) and a direction but no fixed place: move it and it is the same vector.',
       'tan⁻¹(vy ÷ vx) alone gives the wrong quadrant when vx < 0: add 180°.',
     ],
     variables: [
-      V('m', '|v|', 'Length', { min: 0, max: 1000, step: 0.01 }),
+      V('m', '|v|', 'Magnitude', { min: 0, max: 1000, step: 0.01 }),
       deg('t', 'θ', 'Direction', 0, 360),
       comp('vx', 'vₓ', 'x-component'),
       comp('vy', 'vᵧ', 'y-component'),
@@ -2943,7 +2943,7 @@ const MATH_12_VECTORS: ModuleDef[] = [
           vx: [
             (v) => v.m! * cosd(v.t!),
             '{m} × cos({t}°)',
-            'The x-component is the length times the cosine of the direction.',
+            'The x-component is the magnitude times the cosine of the direction.',
           ],
         },
       ),
@@ -2956,7 +2956,7 @@ const MATH_12_VECTORS: ModuleDef[] = [
           vy: [
             (v) => v.m! * sind(v.t!),
             '{m} × sin({t}°)',
-            'The y-component is the length times the sine of the direction.',
+            'The y-component is the magnitude times the sine of the direction.',
           ],
         },
       ),
@@ -2975,11 +2975,11 @@ const MATH_12_VECTORS: ModuleDef[] = [
   {
     id: 'm.12.vectors~add',
     title: 'Adding vectors',
-    use: 'Use this for “Find u + v for u = ⟨3, 1⟩ and v = ⟨1, 2⟩, and its length.”',
+    use: 'Use this for “Find u + v for u = ⟨3, 1⟩ and v = ⟨1, 2⟩, and its magnitude.”',
     assumptions: [
       'Add vectors by adding matching components.',
       'Tip to tail: start v where u ends; u + v runs from u’s tail to v’s tip.',
-      'The length of the sum is not the sum of the lengths.',
+      'The magnitude of the sum is not the sum of the magnitudes.',
     ],
     variables: [
       comp('ux', 'u₁', 'x-component of u'),
@@ -2988,13 +2988,13 @@ const MATH_12_VECTORS: ModuleDef[] = [
       comp('vy', 'v₂', 'y-component of v'),
       comp('sx', 's₁', 'x-component of u + v', 2000),
       comp('sy', 's₂', 'y-component of u + v', 2000),
-      V('r', '|u + v|', 'Length of u + v', { min: 0, max: 3000, step: 0.01 }),
+      V('r', '|s|', 'Magnitude of s = u + v', { min: 0, max: 3000, step: 0.01 }),
     ],
     ...rels(
       sumOf('sx', 'ux', 'vx', 'x'),
       sumOf('sy', 'uy', 'vy', 'y'),
       derive(
-        '|u + v| = √(s₁² + s₂²)',
+        '|s| = √(s₁² + s₂²)',
         '{r} = √({sx}² + {sy}²)',
         'r',
         ['sx', 'sy'],
@@ -3019,11 +3019,11 @@ const MATH_12_VECTORS: ModuleDef[] = [
   {
     id: 'm.12.vectors~scalar',
     title: 'A scalar times a vector',
-    use: 'Use this for “Find −2u for u = ⟨3, 4⟩” or a unit vector along u.',
+    use: 'Use this for “Find −2u for u = ⟨3, 4⟩ and its magnitude.”',
     assumptions: [
       'k multiplies each component, so ku is |k| times as long.',
       'A negative k reverses the direction.',
-      'k = 1 ÷ |u| gives the unit vector along u: ⟨3, 4⟩ becomes ⟨0.6, 0.8⟩.',
+      'Type k = 1 ÷ |u| for the unit vector along u: k = 0.2 turns ⟨3, 4⟩ into ⟨0.6, 0.8⟩.',
     ],
     variables: [
       V('k', 'k', 'Scalar', { min: -1000, max: 1000, step: 0.01 }),
@@ -3031,8 +3031,8 @@ const MATH_12_VECTORS: ModuleDef[] = [
       comp('uy', 'u₂', 'y-component of u'),
       comp('x', 'w₁', 'x-component of ku', 1000000),
       comp('y', 'w₂', 'y-component of ku', 1000000),
-      V('m', '|u|', 'Length of u', { min: 0, max: 1500, step: 0.01, derived: true }),
-      V('M', '|ku|', 'Length of ku', { min: 0, max: 2000000, step: 0.01 }),
+      V('m', '|u|', 'Magnitude of u', { min: 0, max: 1500, step: 0.01, derived: true }),
+      V('M', '|ku|', 'Magnitude of ku', { min: 0, max: 2000000, step: 0.01 }),
     ],
     ...rels(
       scaled('x', 'k', 'ux', 'x'),
@@ -3055,7 +3055,7 @@ const MATH_12_VECTORS: ModuleDef[] = [
           M: [
             (v) => Math.abs(v.k!) * v.m!,
             '|{k}| × {m}',
-            'Scaling by k scales the length by |k|; a negative k only turns it around.',
+            'Scaling by k scales the magnitude by |k|; a negative k only turns it around.',
           ],
         },
       ),
@@ -3084,8 +3084,8 @@ const MATH_12_VECTORS: ModuleDef[] = [
       comp('c', 'c', 'x-component of v'),
       comp('d', 'd', 'y-component of v'),
       V('p', 'u · v', 'Dot product', { min: -2000000, max: 2000000, step: 0.01, derived: true }),
-      V('m1', '|u|', 'Length of u', { min: 0, max: 1500, step: 0.01, derived: true }),
-      V('m2', '|v|', 'Length of v', { min: 0, max: 1500, step: 0.01, derived: true }),
+      V('m1', '|u|', 'Magnitude of u', { min: 0, max: 1500, step: 0.01, derived: true }),
+      V('m2', '|v|', 'Magnitude of v', { min: 0, max: 1500, step: 0.01, derived: true }),
       deg('t', 'θ', 'Angle between u and v', 0, 180, { derived: true }),
     ],
     ...rels(
@@ -3126,7 +3126,7 @@ const MATH_12_VECTORS: ModuleDef[] = [
           return q === undefined ? undefined : Math.acos(Math.max(-1, Math.min(1, q))) / RAD;
         },
         'cos⁻¹({p} ÷ ({m1} × {m2}))',
-        'The cosine of the angle is the dot product over the product of the lengths.',
+        'The cosine of the angle is the dot product over the product of the magnitudes.',
       ),
     ),
     example: { a: 2, b: 1, c: 1, d: 3, p: 5, m1: Math.sqrt(5), m2: Math.sqrt(10), t: 45 },
@@ -3151,22 +3151,22 @@ const MATH_12_VECTORS: ModuleDef[] = [
       'Its direction φ is measured from F₁, counterclockwise.',
     ],
     variables: [
-      V('f1', 'F₁', 'First force', { unit: 'N', min: 0.01, max: 100000, step: 0.1 }),
-      V('f2', 'F₂', 'Second force', { unit: 'N', min: 0.01, max: 100000, step: 0.1 }),
+      V('f1', 'F₁', 'First force', { unit: 'N', min: 0.1, max: 10000, step: 0.1 }),
+      V('f2', 'F₂', 'Second force', { unit: 'N', min: 0.1, max: 10000, step: 0.1 }),
       deg('a', 'a', 'Angle of F₂', 0, 360),
       V('fx', 'Fₓ', 'x-component of the resultant', {
         unit: 'N',
-        min: -200000,
-        max: 200000,
+        min: -20000,
+        max: 20000,
         step: 0.01,
       }),
       V('fy', 'Fᵧ', 'y-component of the resultant', {
         unit: 'N',
-        min: -200000,
-        max: 200000,
+        min: -20000,
+        max: 20000,
         step: 0.01,
       }),
-      V('F', 'F', 'Resultant', { unit: 'N', min: 0, max: 300000, step: 0.01 }),
+      V('F', 'F', 'Resultant', { unit: 'N', min: 0, max: 30000, step: 0.01 }),
       deg('p', 'φ', 'Direction of the resultant', 0, 360),
     ],
     ...rels(
