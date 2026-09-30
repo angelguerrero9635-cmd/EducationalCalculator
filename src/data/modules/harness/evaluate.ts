@@ -67,6 +67,12 @@ const quartile = (xs: number[], upper: boolean) => {
 };
 
 export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
+  // Whole-number work in high school (powers of i, coterminal angles, a quadrant): the
+  // greatest common factor, a remainder, and a count of whole turns.
+  [new RegExp(`gcd\\((${NUM}),\\s*(${NUM})\\)`), (a, b) => gcd(a, b)],
+  [new RegExp(`(${NUM}) mod (${NUM})`), (a, n) => ((a % n) + n) % n],
+  // (÷ is / by now)
+  [new RegExp(`the remainder of (${NUM}) / (${NUM})`), (a, n) => ((a % n) + n) % n],
   // High school logs to a base: log_2(8) is 3.
   [new RegExp(`log_(${NUM})\\s*\\(?(${NUM})\\)?`), (b, x) => Math.log(x) / Math.log(b)],
   // Grades 9–12 statistics and counting (group HB).
@@ -399,6 +405,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*\d)°\)/g, '$1d($2)')
     .replace(/(?<![\w.])e(?!\w)/g, `(${Math.E})`)
     .replace(/⌈([^⌈⌉]+)⌉/g, 'ceil($1)')
+    .replace(/⌊([^⌊⌋]+)⌋/g, 'floor($1)')
     // Any exponent written as superscript digits (10³, 10⁴).
     .replace(
       /⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g,
@@ -425,7 +432,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
       prev = s;
       s = s
         .replace(
-          /(?<!sqrt|cbrt|log|abs|sin|cos|tan|sind|cosd|tand|ceil)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
+          /(?<!sqrt|cbrt|log|abs|sin|cos|tan|sind|cosd|tand|ceil|floor)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
           ' $1 ',
         )
         .replace(/\s+/g, ' ')
@@ -488,14 +495,14 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   // won't parse "-(a) ** b" as written).
   s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
   const bare = s
-    .replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil)\(/g, '(')
+    .replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil|floor)\(/g, '(')
     .replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {
     const x = new Function(
       'clampRoots',
       'degrees',
-      `const { log, abs, cbrt, ceil } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); ` +
+      `const { log, abs, cbrt, ceil, floor } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); ` +
         `const D = Math.PI / 180; const sin = degrees ? (d) => Math.sin(d * D) : Math.sin, cos = degrees ? (d) => Math.cos(d * D) : Math.cos, tan = degrees ? (d) => Math.tan(d * D) : Math.tan; ` +
         `const sind = (d) => Math.sin(d * D), cosd = (d) => Math.cos(d * D), tand = (d) => Math.tan(d * D); ` +
         `const one = (x) => (clampRoots ? Math.max(-1, Math.min(1, x)) : x); const U = degrees ? D : 1; ` +
@@ -584,3 +591,10 @@ export function plainWalkthrough(w: Walkthrough): Walkthrough {
 }
 
 export const BAD_TEXT = /NaN|undefined|Infinity|null|(^|[^\w.])[-−]0(?![\d.])/;
+
+/** The greatest common factor of two whole numbers (gcd(0, n) is n). */
+function gcd(a: number, b: number): number {
+  let [x, y] = [Math.abs(Math.round(a)), Math.abs(Math.round(b))];
+  while (y) [x, y] = [y, x % y];
+  return x;
+}

@@ -19,7 +19,7 @@ export function formatNumber(
     if (r) return r;
   }
   if (variable?.pi && x !== 0) {
-    const p = asPiMultiple(x);
+    const p = (variable.pi === 'fraction' ? asPiFraction(x) : undefined) ?? asPiMultiple(x);
     if (p) return p;
   }
   if (variable?.scientific && x !== 0) return scientific(x);
@@ -163,6 +163,21 @@ export function scientific(x: number): string {
 }
 
 /**
+ * x as a fraction of π with a denominator up to 12, as angles in radians are written: "5π/2",
+ * "π/6", "−3π/4", "2π"; undefined otherwise.
+ */
+export function asPiFraction(x: number): string | undefined {
+  const k = x / Math.PI;
+  for (let d = 1; d <= 12; d++) {
+    const n = Math.round(k * d);
+    if (n === 0 || Math.abs(k * d - n) > 1e-9 * Math.max(1, Math.abs(k * d))) continue;
+    const top = Math.abs(n) === 1 ? 'π' : `${Math.abs(n)}π`;
+    return `${n < 0 ? '−' : ''}${top}${d === 1 ? '' : `/${d}`}`;
+  }
+  return undefined;
+}
+
+/**
  * x as a multiple of π when it is one to within a hair, with at most two decimals in the
  * multiple: "36π", "π", "2.25π", "−4π"; undefined otherwise.
  */
@@ -224,10 +239,12 @@ export const plainDigits = (s: string) => s.replace(/(\d),(?=\d{3}(?!\d))/g, '$1
 export function parseNumber(text: string): number | undefined | 'invalid' {
   const cleaned = text.trim().replace(/,/g, '').replace(/−/g, '-');
   if (cleaned === '') return undefined;
-  // A multiple of π: "36π", "36 pi", "36*pi", "π", "-2.5π".
-  const pi = /^([-+]?)(\d+\.?\d*|\.\d+)?\s*\*?\s*(?:π|pi)$/i.exec(cleaned);
+  // A multiple of π: "36π", "36 pi", "36*pi", "π", "-2.5π", and a fraction of it: "5π/2",
+  // "π/6", "3pi/4".
+  const pi = /^([-+]?)(\d+\.?\d*|\.\d+)?\s*\*?\s*(?:π|pi)(?:\s*\/\s*(\d+))?$/i.exec(cleaned);
   if (pi) {
-    const k = pi[2] === undefined ? 1 : Number(pi[2]);
+    const k = (pi[2] === undefined ? 1 : Number(pi[2])) / (pi[3] === undefined ? 1 : Number(pi[3]));
+    if (!Number.isFinite(k)) return 'invalid';
     return (pi[1] === '-' ? -k : k) * Math.PI;
   }
   // Scientific notation: "4.7 × 10^5", "4.7 x 10^-3", "4.7*10⁵", "4.7 × 10⁻³".

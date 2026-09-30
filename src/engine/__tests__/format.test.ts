@@ -1,4 +1,4 @@
-import { formatNumber } from '../format';
+import { formatNumber, parseNumber } from '../format';
 
 describe('significant figures', () => {
   it.each([
@@ -12,5 +12,22 @@ describe('significant figures', () => {
     [25000000, 3, '2.50 × 10⁷'],
   ])('%p to %p figures is %p', (x, sig, text) => {
     expect(formatNumber(x, { sigFigs: sig })).toBe(text);
+  });
+});
+
+describe('radians as fractions of π', () => {
+  it.each([
+    [(5 * Math.PI) / 2, '5π/2'],
+    [Math.PI / 6, 'π/6'],
+    [(-3 * Math.PI) / 4, '−3π/4'],
+    [2 * Math.PI, '2π'],
+    [Math.PI, 'π'],
+  ])('%p is %p, and reads back', (x, text) => {
+    expect(formatNumber(x, { pi: 'fraction' })).toBe(text);
+    expect(parseNumber(text)).toBeCloseTo(x, 12);
+  });
+  it('keeps decimal multiples on pages that write them (2.25π)', () => {
+    expect(formatNumber(2.25 * Math.PI, { pi: true })).toBe('2.25π');
+    expect(parseNumber('3pi/4')).toBeCloseTo((3 * Math.PI) / 4, 12);
   });
 });

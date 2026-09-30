@@ -26,8 +26,9 @@ export interface VariableDef {
   /**
    * Show a value that is a whole or short-decimal multiple of π as that multiple (36π, 2.25π),
    * the way circle and volume answers are written; boxes take "36π", "36 pi" or "36*pi".
+   * `'fraction'` writes radians as fractions of π (5π/2, π/6, −3π/4) and takes them typed.
    */
-  pi?: boolean;
+  pi?: boolean | 'fraction';
   /** Show the value in scientific notation (4.7 × 10⁵); boxes take "4.7 × 10^5" and "4.7e5". */
   scientific?: boolean;
   /**
