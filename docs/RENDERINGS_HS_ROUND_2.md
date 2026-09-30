@@ -64,6 +64,5 @@ Most pages first:
   - document the option in `docs/PICTURES.md` or `docs/LAYOUTS.md`.
 - **Test** as "Testing" in `docs/RENDERINGS_BRIEF.md` says: your demos by id, then
   `pnpm test src/components src/data/__tests__`, then `node scripts/ci-test.mjs` once before each
-  push. Run Jest with `--maxWorkers=1` while the lesson chat's builders are running: the machine
-  is shared.
+  push.
 - Keep `docs/HS_NEEDS.md` current: mark a P item `done` when its entry is `drawn`.
