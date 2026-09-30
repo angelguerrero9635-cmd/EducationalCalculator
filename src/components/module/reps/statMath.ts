@@ -118,6 +118,75 @@ export function chiCritical(tail: number, k: number): number {
   return (lo + hi) / 2;
 }
 
+/** The continued fraction of the incomplete beta function (modified Lentz). */
+function betaFraction(a: number, b: number, x: number): number {
+  const tiny = 1e-300;
+  let c = 1;
+  let d = 1 - ((a + b) * x) / (a + 1);
+  if (Math.abs(d) < tiny) d = tiny;
+  d = 1 / d;
+  let h = d;
+  for (let m = 1; m < 500; m++) {
+    const m2 = 2 * m;
+    let aa = (m * (b - m) * x) / ((a + m2 - 1) * (a + m2));
+    d = 1 + aa * d;
+    if (Math.abs(d) < tiny) d = tiny;
+    c = 1 + aa / c;
+    if (Math.abs(c) < tiny) c = tiny;
+    d = 1 / d;
+    h *= d * c;
+    aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + m2 + 1));
+    d = 1 + aa * d;
+    if (Math.abs(d) < tiny) d = tiny;
+    c = 1 + aa / c;
+    if (Math.abs(c) < tiny) c = tiny;
+    d = 1 / d;
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < 1e-15) break;
+  }
+  return h;
+}
+
+/** The regularized incomplete beta function I_x(a, b). */
+function betaI(x: number, a: number, b: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const front = Math.exp(
+    lnGamma(a + b) - lnGamma(a) - lnGamma(b) + a * Math.log(x) + b * Math.log(1 - x),
+  );
+  return x < (a + 1) / (a + b + 2)
+    ? (front * betaFraction(a, b, x)) / a
+    : 1 - (front * betaFraction(b, a, 1 - x)) / b;
+}
+
+/** The t density with `df` degrees of freedom. */
+export function tPdf(t: number, df: number): number {
+  const lnC = lnGamma((df + 1) / 2) - lnGamma(df / 2) - 0.5 * Math.log(df * Math.PI);
+  return Math.exp(lnC - ((df + 1) / 2) * Math.log(1 + (t * t) / df));
+}
+
+/** P(T ≤ t) with `df` degrees of freedom (a calculator's tcdf from −∞). */
+export function tCdf(t: number, df: number): number {
+  const tail = 0.5 * betaI(df / (df + t * t), df / 2, 0.5);
+  return t > 0 ? 1 - tail : tail;
+}
+
+/** The t with P(T ≤ t) = p (a calculator's invT). */
+export function invT(p: number, df: number): number {
+  let lo = -1000;
+  let hi = 1000;
+  for (let i = 0; i < 200; i++) {
+    const mid = (lo + hi) / 2;
+    if (tCdf(mid, df) < p) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/** The critical t* for a confidence level (0.95 → 2.262 with 9 degrees of freedom). */
+export const tStar = (level: number, df: number) => invT(1 - (1 - level) / 2, df);
+
 /** A small seeded random stream (mulberry32): the same numbers from the same seed. */
 export function seeded(seed: number) {
   let a = seed >>> 0;

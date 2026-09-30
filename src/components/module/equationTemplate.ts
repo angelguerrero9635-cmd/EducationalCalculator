@@ -177,7 +177,13 @@ function readMatrix(s: string, i: number): { part: EquationPart; end: number } |
  */
 function readPiece(s: string, i: number): { parts: EquationPart[]; end: number } | undefined {
   const matrix = readMatrix(s, i);
-  if (matrix) return { parts: [matrix.part], end: matrix.end };
+  if (matrix) {
+    // A matrix raised to a power, its inverse written [[…]]^{−1}.
+    const exponent = s[matrix.end] === '^' ? readSlot(s, matrix.end + 1, true) : undefined;
+    if (!exponent) return { parts: [matrix.part], end: matrix.end };
+    const base: Slot = { parts: [matrix.part] };
+    return { parts: [{ kind: 'power', base, exponent: exponent.slot }], end: exponent.end };
+  }
   // Scripts on the left of a symbol, mass number over atomic number: ^{A}_{Z}X (a ^ with
   // nothing before it).
   if (s[i] === '^' && (i === 0 || /\s/.test(s[i - 1]!))) {

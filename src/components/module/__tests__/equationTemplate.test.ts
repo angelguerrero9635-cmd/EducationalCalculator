@@ -343,6 +343,22 @@ describe('H86: matrices', () => {
       box('D'),
     ]);
     expect(equationIds('||{a}, {b}; {c}, {d}|| = {D}')).toEqual(['a', 'b', 'c', 'd', 'D']);
+    // An inverse: the matrix is a power's base, −1 its exponent.
+    const [inv] = equationParts('[[{a}, {b}; {c}, {d}]]^{−1} = [[{p}, {q}; {r}, {s}]]');
+    expect(inv).toMatchObject({
+      kind: 'power',
+      exponent: { parts: [{ kind: 'text', text: '−1' }] },
+    });
+    expect(equationIds('[[{a}, {b}; {c}, {d}]]^{−1} = [[{p}, {q}; {r}, {s}]]')).toEqual([
+      'a',
+      'b',
+      'c',
+      'd',
+      'p',
+      'q',
+      'r',
+      's',
+    ]);
   });
 
   it('keeps single bars as text (absolute value)', () => {

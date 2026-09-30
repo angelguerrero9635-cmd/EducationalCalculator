@@ -66,6 +66,11 @@ export interface VariableDef {
    */
   countedBy?: { count: string; index: number };
   /**
+   * One cell of a grid or list read as one thing (a matrix's entries, a fixed data list): the
+   * values sharing a group count once toward the page's number of values. Nothing else changes.
+   */
+  group?: string;
+  /**
    * Set by the unit context, not by content: how many formula units one shown unit equals, and
    * the shown unit. Ranges and whole-number rules then apply to the shown number.
    */
