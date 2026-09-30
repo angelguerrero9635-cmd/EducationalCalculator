@@ -499,6 +499,7 @@ function representationVars(r: Representation): string[] {
     case 'matrixGrid':
       return hsdSpecVars(r);
     case 'gasPiston':
+    case 'energyProfile':
       return hsjSpecVars(r);
   }
 }

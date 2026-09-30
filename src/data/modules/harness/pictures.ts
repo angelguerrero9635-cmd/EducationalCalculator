@@ -2093,6 +2093,7 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)));
       break;
     case 'gasPiston':
+    case 'energyProfile':
       out.push(...hsjIssues(rep, (id) => val(id)));
       break;
     case 'table':

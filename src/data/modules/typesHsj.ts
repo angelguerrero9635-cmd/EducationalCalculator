@@ -100,7 +100,50 @@ export function solutionVars(s: BeakerSolution): string[] {
   }
 }
 
-export type HsjSpec = GasPistonSpec;
+// ─── H53 energyProfile ───────────────────────────────────────────────────────
+
+/**
+ * A reaction's energy (H53).
+ *
+ * - The profile (no `mode`): energy against reaction progress. The reactants' level, a hump
+ *   `activation` above it and the products' level; `deltaH` (checked as products − reactants)
+ *   is an arrow between the levels, `activation` an arrow up to the peak and `reverse`
+ *   (checked as Eₐ − ΔH) one from the products up to it. `catalyst` is the activation energy
+ *   with a catalyst: a lower hump, dashed, between the same two levels. `names` label the
+ *   levels ("N₂ + 3H₂"). A peak under either level can't happen: drawn faded with the reason.
+ *   Drag the peak to change `activation`; `keep` pins typed values, `fixed` has no handle.
+ * - 'calorimeter': a foam-cup calorimeter, water of `mass` g with specific heat `heat`
+ *   (J/(g·°C)) going from `start` to `end` °C on the thermometer; `change` (ΔT) and `q` (J)
+ *   are checked against q = mcΔT. `metal` drops a hot block in (its name, mass and starting
+ *   temperature; `heat` its specific heat, checked against the heat the water took in).
+ */
+export type EnergyProfileSpec =
+  | {
+      kind: 'energyProfile';
+      mode?: 'profile';
+      reactants: NumOrVar;
+      products: NumOrVar;
+      activation: NumOrVar;
+      deltaH?: NumOrVar;
+      reverse?: NumOrVar;
+      catalyst?: NumOrVar;
+      names?: { reactants?: string; products?: string };
+      keep?: string[];
+      fixed?: boolean;
+    }
+  | {
+      kind: 'energyProfile';
+      mode: 'calorimeter';
+      mass: NumOrVar;
+      heat: NumOrVar;
+      start: NumOrVar;
+      end: NumOrVar;
+      change?: NumOrVar;
+      q?: NumOrVar;
+      metal?: { name: string; mass: NumOrVar; start: NumOrVar; heat?: NumOrVar };
+    };
+
+export type HsjSpec = GasPistonSpec | EnergyProfileSpec;
 
 /** Every variable id a group J picture refers to (for the module tests). */
 export function hsjSpecVars(r: HsjSpec): string[] {
@@ -117,5 +160,19 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.before?.volume,
         r.before?.temperature,
       );
+    case 'energyProfile':
+      return r.mode === 'calorimeter'
+        ? ids(
+            r.mass,
+            r.heat,
+            r.start,
+            r.end,
+            r.change,
+            r.q,
+            r.metal?.mass,
+            r.metal?.start,
+            r.metal?.heat,
+          )
+        : ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst);
   }
 }

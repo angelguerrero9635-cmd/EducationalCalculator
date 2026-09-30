@@ -850,13 +850,27 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn: beaker takes solution (typesHsj.ts BeakerSolution); pages without it draw exactly as before. mode 'molarity' { moles, volume (L or mL), molarity? (checked as n ÷ V), solute? }: a glass beaker filled to the volume on its printed scale, the solute as dots spread through the liquid (one dot per 0.01, 0.02, 0.05 … mol, the key in the caption). mode 'dilution' { stock: { molarity, volume }, diluted: { molarity, volume }, water? (checked as V₂ − V₁), solute? }: the stock beside the diluted solution, the beakers sized to their capacities, the same dots in both and the tint paler as it is weaker. mode 'solubility' { salt ('KNO3' | 'NaNO3' | 'NaCl' | 'KCl' | 'NH4Cl' | 'KClO3'), temperature (°C), amount? (g per 100 g of water), solubility? (checked against the curve), others? }: the curve from the standard tables (read in straight lines between every 10 °C), others faint, the point and its verdict (unsaturated, saturated, or how much settles out). Step text can say “solubility of KNO₃ at {T} °C” (harness phrase in phrasesHsj.ts). Examples: { kind: 'beaker', solution: { mode: 'molarity', moles: 'n', volume: 'V', molarity: 'M', solute: 'NaCl' } }; { kind: 'beaker', solution: { mode: 'dilution', stock: { molarity: 'M1', volume: 'V1' }, diluted: { molarity: 'M2', volume: 'V2' }, water: 'w', solute: 'CuSO₄' } }; { kind: 'beaker', solution: { mode: 'solubility', salt: 'KNO3', temperature: 'T', amount: 'm', solubility: 's', others: ['NaCl', 'KCl'] } }.",
   },
-  ask(
-    'H53',
-    'energyProfile',
-    'Reaction energy diagram: reactant and product levels, ΔH, activation energy, the catalyst path dashed',
-    ['s.10.thermochemistry', 's.10.rates-equilibrium'],
-    'Also a coffee-cup calorimeter (q = mcΔT) for thermochemistry and thermodynamics.',
-  ),
+  {
+    ...ask(
+      'H53',
+      'energyProfile',
+      'Reaction energy diagram: reactant and product levels, ΔH, activation energy, the catalyst path dashed',
+      ['s.10.thermochemistry', 's.10.rates-equilibrium'],
+      'Also a coffee-cup calorimeter (q = mcΔT) for thermochemistry and thermodynamics.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-thermochemistry-exothermic',
+      'g.s10-thermochemistry-endothermic',
+      'g.s10-rates-equilibrium-catalyst',
+      'g.s10-rates-equilibrium-reverse',
+      'g.s10-thermochemistry-calorimeter',
+      'g.s10-thermochemistry-cold-pack',
+      'g.s11-thermodynamics-specific-heat',
+    ],
+    notes:
+      "Drawn: kind energyProfile (typesHsj.ts). The profile (no mode) { reactants, products, activation (numbers or variables, kJ from the variable's unit), deltaH? (checked as products − reactants), reverse? (the reverse barrier, checked as Eₐ − ΔH), catalyst? (Eₐ with a catalyst: a lower dashed hump between the same levels), names? { reactants, products } ('2H₂O₂'), keep?, fixed? }: flat levels, a smooth hump to the peak at r + Eₐ, arrows for Eₐ, ΔH (red when negative) and the reverse barrier; a peak under the products draws faded with the reason; drag the peak to change Eₐ. mode 'calorimeter' { mass, heat (J/(g·°C)), start, end, change? (ΔT, checked), q? (checked as mcΔT), metal? { name, mass, start, heat? (checked against the heat the water took in) } }: two nested foam cups with a lid and stirrer, the water, a thermometer read from T₁ (dashed) to T₂ with the ΔT arrow, and a metal block when a hot metal is dropped in (physics' specific heat). Examples: { kind: 'energyProfile', reactants: 'Hr', products: 'Hp', activation: 'Ea', deltaH: 'dH', catalyst: 'Ec', names: { reactants: '2H₂O₂', products: '2H₂O + O₂' }, keep: ['Hr', 'Hp'] }; { kind: 'energyProfile', mode: 'calorimeter', mass: 'm', heat: 'c', start: 'T1', end: 'T2', change: 'dT', q: 'q' }. Also for s.11.thermodynamics (g.s11-thermodynamics-specific-heat).",
+  },
   ask(
     'H54',
     'equilibriumChart',

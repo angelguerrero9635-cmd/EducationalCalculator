@@ -729,5 +729,411 @@ const SOLUTIONS: ModuleDef[] = [
   },
 ];
 
-export const HSJ_GALLERY_MODULES: ModuleDef[] = [...GAS, ...SOLUTIONS];
+// ─── H53 energyProfile ───────────────────────────────────────────────────────
+
+const kJ = (id: string, symbol: string, name: string, min = -10000): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'kJ',
+  min,
+  max: 10000,
+  step: 1,
+});
+
+/** ΔH = products − reactants. */
+const enthalpy: Rule = {
+  relation: {
+    id: 'ΔH = Hₚ − Hᵣ',
+    display: '{dH} = {Hp} − {Hr}',
+    vars: ['dH', 'Hp', 'Hr'],
+    residual: (v) => v.dH! - (v.Hp! - v.Hr!),
+    solve: { dH: (v) => v.Hp! - v.Hr!, Hp: (v) => v.dH! + v.Hr!, Hr: (v) => v.Hp! - v.dH! },
+  },
+  steps: {
+    dH: {
+      expr: '{Hp} − {Hr}',
+      how: 'ΔH is where the reaction ends minus where it starts: negative when energy is given off.',
+    },
+    Hp: { expr: '{Hr} + {dH}', how: 'Start at the reactants and add ΔH.' },
+    Hr: { expr: '{Hp} − {dH}', how: 'Take ΔH back off the products.' },
+  },
+};
+
+/** The peak, reactants + Eₐ. */
+const peakRule: Rule = {
+  relation: {
+    id: 'peak = Hᵣ + Eₐ',
+    display: '{Ep} = {Hr} + {Ea}',
+    vars: ['Ep', 'Hr', 'Ea'],
+    residual: (v) => v.Ep! - (v.Hr! + v.Ea!),
+    solve: { Ep: (v) => v.Hr! + v.Ea!, Ea: (v) => v.Ep! - v.Hr!, Hr: (v) => v.Ep! - v.Ea! },
+  },
+  steps: {
+    Ep: { expr: '{Hr} + {Ea}', how: 'The reactants must climb Eₐ to reach the top of the hump.' },
+    Ea: { expr: '{Ep} − {Hr}', how: 'The climb from the reactants to the top of the hump.' },
+    Hr: { expr: '{Ep} − {Ea}', how: 'Come down Eₐ from the top of the hump.' },
+  },
+};
+
+/** The reverse reaction's barrier, Eₐ − ΔH. */
+const reverseRule: Rule = {
+  relation: {
+    id: 'Eₐ reverse = Eₐ − ΔH',
+    display: '{Er} = {Ea} − {dH}',
+    vars: ['Er', 'Ea', 'dH'],
+    residual: (v) => v.Er! - (v.Ea! - v.dH!),
+    solve: { Er: (v) => v.Ea! - v.dH!, Ea: (v) => v.Er! + v.dH!, dH: (v) => v.Ea! - v.Er! },
+  },
+  steps: {
+    Er: {
+      expr: '{Ea} − {dH}',
+      how: 'Going back, the climb starts at the products: the forward climb minus ΔH.',
+    },
+    Ea: { expr: '{Er} + {dH}', how: 'Add ΔH to the reverse climb.' },
+    dH: { expr: '{Ea} − {Er}', how: 'The difference between the two climbs.' },
+  },
+};
+
+/** How much a catalyst lowers the barrier. */
+const loweredRule: Rule = {
+  relation: {
+    id: 'lowered = Eₐ − Eₐ with catalyst',
+    display: '{d} = {Ea} − {Ec}',
+    vars: ['d', 'Ea', 'Ec'],
+    residual: (v) => v.d! - (v.Ea! - v.Ec!),
+    solve: { d: (v) => v.Ea! - v.Ec!, Ec: (v) => v.Ea! - v.d!, Ea: (v) => v.Ec! + v.d! },
+  },
+  steps: {
+    d: { expr: '{Ea} − {Ec}', how: 'The catalyst’s path is lower by the difference.' },
+    Ec: { expr: '{Ea} − {d}', how: 'Take what the catalyst saves off the barrier.' },
+    Ea: { expr: '{Ec} + {d}', how: 'Add back what the catalyst saves.' },
+  },
+};
+
+const PROFILE_ASSUMPTIONS = [
+  'Energies are per mole of reaction as written, in kilojoules.',
+  'Eₐ is the climb from the reactants to the top of the hump.',
+];
+
+/** q = mcΔT, and ΔT = T₂ − T₁. */
+const heatRule: Rule = {
+  relation: {
+    id: 'q = mcΔT',
+    display: '{q} = {m} × {c} × {dT}',
+    vars: ['q', 'm', 'c', 'dT'],
+    residual: (v) => v.q! - v.m! * v.c! * v.dT!,
+    solve: {
+      q: (v) => v.m! * v.c! * v.dT!,
+      m: (v) => div(v.q!, v.c! * v.dT!),
+      c: (v) => div(v.q!, v.m! * v.dT!),
+      dT: (v) => div(v.q!, v.m! * v.c!),
+    },
+  },
+  steps: {
+    q: {
+      expr: '{m} × {c} × {dT}',
+      how: 'Heat is mass times specific heat times the change in temperature.',
+    },
+    m: { expr: '{q}/({c} × {dT})', how: 'Divide the heat by cΔT.' },
+    c: { expr: '{q}/({m} × {dT})', how: 'Divide the heat by mΔT.' },
+    dT: { expr: '{q}/({m} × {c})', how: 'Divide the heat by mc.' },
+  },
+};
+const changeRule: Rule = {
+  relation: {
+    id: 'ΔT = T₂ − T₁',
+    display: '{dT} = {T2} − {T1}',
+    vars: ['dT', 'T2', 'T1'],
+    residual: (v) => v.dT! - (v.T2! - v.T1!),
+    solve: { dT: (v) => v.T2! - v.T1!, T2: (v) => v.T1! + v.dT!, T1: (v) => v.T2! - v.dT! },
+  },
+  steps: {
+    dT: { expr: '{T2} − {T1}', how: 'The change is the final temperature minus the first.' },
+    T2: { expr: '{T1} + {dT}', how: 'Add the change to the first temperature.' },
+    T1: { expr: '{T2} − {dT}', how: 'Take the change off the final temperature.' },
+  },
+};
+const metalRule: Rule = {
+  relation: {
+    id: 'c metal = q/(m metal × (T metal − T₂))',
+    display: '{cm} = {q}/({mm} × ({Tm} − {T2}))',
+    vars: ['cm', 'q', 'mm', 'Tm', 'T2'],
+    residual: (v) => v.cm! * v.mm! * (v.Tm! - v.T2!) - v.q!,
+    solve: {
+      cm: (v) => div(v.q!, v.mm! * (v.Tm! - v.T2!)),
+      q: (v) => v.cm! * v.mm! * (v.Tm! - v.T2!),
+      mm: (v) => div(v.q!, v.cm! * (v.Tm! - v.T2!)),
+      Tm: (v) => (v.cm! * v.mm! === 0 ? undefined : v.T2! + v.q! / (v.cm! * v.mm!)),
+      T2: () => undefined,
+    },
+  },
+  steps: {
+    cm: {
+      expr: '{q}/({mm} × ({Tm} − {T2}))',
+      how: 'The heat the water took in is the heat the metal gave off as it cooled to T₂.',
+    },
+    q: { expr: '{cm} × {mm} × ({Tm} − {T2})', how: 'The heat the metal gave off as it cooled.' },
+    mm: { expr: '{q}/({cm} × ({Tm} − {T2}))', how: 'Divide the heat by the metal’s cΔT.' },
+    Tm: { expr: '{T2} + {q}/({cm} × {mm})', how: 'Add the metal’s drop to the final temperature.' },
+  },
+};
+
+const celsius = (id: string, symbol: string, name: string): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: '°C',
+  min: -50,
+  max: 150,
+  step: 0.1,
+});
+const waterMass: VariableDef = {
+  id: 'm',
+  symbol: 'm',
+  name: 'Mass of water',
+  unit: 'g',
+  units: ['g'],
+  min: 1,
+  max: 5000,
+  step: 0.1,
+};
+const specificHeat = (id: string, name: string): VariableDef => ({
+  id,
+  symbol: id === 'c' ? 'c' : 'cₘ',
+  name,
+  unit: 'J/(g·°C)',
+  min: 0.01,
+  max: 20,
+  step: 0.01,
+});
+const heatVar: VariableDef = {
+  id: 'q',
+  symbol: 'q',
+  name: 'Heat the water takes in',
+  unit: 'J',
+  min: -1000000,
+  max: 1000000,
+  step: 0.1,
+};
+const changeVar: VariableDef = {
+  id: 'dT',
+  symbol: 'ΔT',
+  name: 'Change in temperature',
+  unit: '°C',
+  min: -100,
+  max: 100,
+  step: 0.1,
+};
+const CALORIMETER_ASSUMPTIONS = [
+  'The foam cups keep heat from getting in or out, so the water takes in all of it.',
+  'Water’s specific heat is 4.18 J/(g·°C).',
+];
+
+const ENERGY: ModuleDef[] = [
+  {
+    id: 'g.s10-thermochemistry-exothermic',
+    title: 'An exothermic reaction’s energy',
+    use: 'Use this for a reaction that gives off heat: “Reactants at 120 kJ, products at 30 kJ, Eₐ = 60 kJ. What is ΔH?”',
+    unitSystems: ['metric'],
+    assumptions: PROFILE_ASSUMPTIONS,
+    variables: [
+      kJ('Hr', 'Hᵣ', 'Energy of the reactants'),
+      kJ('Hp', 'Hₚ', 'Energy of the products'),
+      kJ('dH', 'ΔH', 'Enthalpy change'),
+      kJ('Ea', 'Eₐ', 'Activation energy', 0),
+      kJ('Ep', 'Eₚₑₐₖ', 'Energy at the top of the hump'),
+    ],
+    ...rules(enthalpy, peakRule),
+    example: { Hr: 120, Hp: 30, dH: -90, Ea: 60, Ep: 180 },
+    startWith: ['Hr', 'Hp', 'Ea'],
+    pictureLabels: ['Ep'],
+    representation: {
+      kind: 'energyProfile',
+      reactants: 'Hr',
+      products: 'Hp',
+      activation: 'Ea',
+      deltaH: 'dH',
+      keep: ['Hr', 'Hp'],
+    },
+  },
+  {
+    id: 'g.s10-thermochemistry-endothermic',
+    title: 'An endothermic reaction’s energy',
+    use: 'Use this for a reaction that takes in heat, and the barrier back: “Reactants at 40 kJ, products at 100 kJ, Eₐ = 110 kJ.”',
+    unitSystems: ['metric'],
+    assumptions: PROFILE_ASSUMPTIONS,
+    variables: [
+      kJ('Hr', 'Hᵣ', 'Energy of the reactants'),
+      kJ('Hp', 'Hₚ', 'Energy of the products'),
+      kJ('dH', 'ΔH', 'Enthalpy change'),
+      kJ('Ea', 'Eₐ', 'Activation energy', 0),
+      kJ('Er', 'Eₐ′', 'Activation energy of the reverse reaction', 0),
+    ],
+    ...rules(enthalpy, reverseRule),
+    example: { Hr: 40, Hp: 100, dH: 60, Ea: 110, Er: 50 },
+    startWith: ['Hr', 'Hp', 'Ea'],
+    representation: {
+      kind: 'energyProfile',
+      reactants: 'Hr',
+      products: 'Hp',
+      activation: 'Ea',
+      deltaH: 'dH',
+      reverse: 'Er',
+      keep: ['Hr', 'Hp'],
+    },
+  },
+  {
+    id: 'g.s10-rates-equilibrium-catalyst',
+    title: 'What a catalyst changes',
+    use: 'Use this for a catalyst’s lower path: “2H₂O₂ → 2H₂O + O₂ has Eₐ = 75 kJ, 56 kJ with a catalyst. By how much is it lowered?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      ...PROFILE_ASSUMPTIONS,
+      'A catalyst gives the reaction a lower path; it is not used up.',
+    ],
+    variables: [
+      kJ('Hr', 'Hᵣ', 'Energy of the reactants'),
+      kJ('Hp', 'Hₚ', 'Energy of the products'),
+      kJ('dH', 'ΔH', 'Enthalpy change'),
+      kJ('Ea', 'Eₐ', 'Activation energy', 0),
+      kJ('Ec', 'Eₐ,cat', 'Activation energy with the catalyst', 0),
+      kJ('d', 'd', 'How much the catalyst lowers it', 0),
+      kJ('Ep', 'Eₚₑₐₖ', 'Energy at the top of the hump'),
+    ],
+    ...rules(enthalpy, loweredRule, peakRule),
+    example: { Hr: 200, Hp: 4, dH: -196, Ea: 75, Ec: 56, d: 19, Ep: 275 },
+    startWith: ['Hr', 'Hp', 'Ea', 'Ec'],
+    representation: {
+      kind: 'energyProfile',
+      reactants: 'Hr',
+      products: 'Hp',
+      activation: 'Ea',
+      deltaH: 'dH',
+      catalyst: 'Ec',
+      names: { reactants: '2H₂O₂', products: '2H₂O + O₂' },
+      keep: ['Hr', 'Hp', 'Ec'],
+    },
+    pictureLabels: ['d', 'Ep'],
+  },
+  {
+    id: 'g.s10-rates-equilibrium-reverse',
+    title: 'A small barrier back',
+    use: 'Use this when the products sit just under the peak: “ΔH = +70 kJ and Eₐ = 75 kJ. What is the reverse Eₐ?”',
+    unitSystems: ['metric'],
+    assumptions: PROFILE_ASSUMPTIONS,
+    variables: [
+      kJ('Hr', 'Hᵣ', 'Energy of the reactants'),
+      kJ('Hp', 'Hₚ', 'Energy of the products'),
+      kJ('dH', 'ΔH', 'Enthalpy change'),
+      kJ('Ea', 'Eₐ', 'Activation energy', 0),
+      kJ('Er', 'Eₐ′', 'Activation energy of the reverse reaction', 0),
+    ],
+    ...rules(enthalpy, reverseRule),
+    example: { Hr: 20, Hp: 90, dH: 70, Ea: 75, Er: 5 },
+    startWith: ['Hr', 'Hp', 'Ea'],
+    representation: {
+      kind: 'energyProfile',
+      reactants: 'Hr',
+      products: 'Hp',
+      activation: 'Ea',
+      deltaH: 'dH',
+      reverse: 'Er',
+      keep: ['Hr', 'Hp'],
+    },
+  },
+  {
+    id: 'g.s10-thermochemistry-calorimeter',
+    title: 'A coffee-cup calorimeter',
+    use: 'Use this for “A reaction in 100 g of water warms it from 22 °C to 30.5 °C. How much heat did it give off?”',
+    unitSystems: ['metric'],
+    assumptions: CALORIMETER_ASSUMPTIONS,
+    variables: [
+      waterMass,
+      specificHeat('c', 'Specific heat of water'),
+      celsius('T1', 'T₁', 'Starting temperature'),
+      celsius('T2', 'T₂', 'Final temperature'),
+      changeVar,
+      heatVar,
+    ],
+    ...rules(changeRule, heatRule),
+    example: { m: 100, c: 4.18, T1: 22, T2: 30.5, dT: 8.5, q: 3553 },
+    startWith: ['m', 'c', 'T1', 'T2'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'calorimeter',
+      mass: 'm',
+      heat: 'c',
+      start: 'T1',
+      end: 'T2',
+      change: 'dT',
+      q: 'q',
+    },
+  },
+  {
+    id: 'g.s10-thermochemistry-cold-pack',
+    title: 'A calorimeter that cools',
+    use: 'Use this for a salt that cools the water as it dissolves: “50 g of water drops from 25 °C to 18.4 °C.”',
+    unitSystems: ['metric'],
+    assumptions: CALORIMETER_ASSUMPTIONS,
+    variables: [
+      waterMass,
+      specificHeat('c', 'Specific heat of water'),
+      celsius('T1', 'T₁', 'Starting temperature'),
+      celsius('T2', 'T₂', 'Final temperature'),
+      changeVar,
+      heatVar,
+    ],
+    ...rules(changeRule, heatRule),
+    example: { m: 50, c: 4.18, T1: 25, T2: 18.4, dT: -6.6, q: -1379.4 },
+    startWith: ['m', 'c', 'T1', 'T2'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'calorimeter',
+      mass: 'm',
+      heat: 'c',
+      start: 'T1',
+      end: 'T2',
+      change: 'dT',
+      q: 'q',
+    },
+  },
+  {
+    id: 'g.s11-thermodynamics-specific-heat',
+    title: 'A metal’s specific heat',
+    use: 'Use this for “50 g of metal at 100 °C goes into 100 g of water at 20 °C, which ends at 24 °C. What is the metal’s c?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      ...CALORIMETER_ASSUMPTIONS,
+      'The metal and the water end at the same temperature, T₂.',
+    ],
+    variables: [
+      waterMass,
+      specificHeat('c', 'Specific heat of water'),
+      celsius('T1', 'T₁', 'Water’s starting temperature'),
+      celsius('T2', 'T₂', 'Final temperature'),
+      { ...changeVar, min: 0 },
+      { ...heatVar, min: 0 },
+      { ...waterMass, id: 'mm', symbol: 'mₘ', name: 'Mass of the metal' },
+      celsius('Tm', 'Tₘ', 'Metal’s starting temperature'),
+      specificHeat('cm', 'Specific heat of the metal'),
+    ],
+    ...rules(changeRule, heatRule, metalRule),
+    example: { m: 100, c: 4.18, T1: 20, T2: 24, dT: 4, q: 1672, mm: 50, Tm: 100, cm: 0.44 },
+    startWith: ['m', 'c', 'T1', 'T2', 'mm', 'Tm'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'calorimeter',
+      mass: 'm',
+      heat: 'c',
+      start: 'T1',
+      end: 'T2',
+      change: 'dT',
+      q: 'q',
+      metal: { name: 'metal', mass: 'mm', start: 'Tm', heat: 'cm' },
+    },
+  },
+];
+
+export const HSJ_GALLERY_MODULES: ModuleDef[] = [...GAS, ...SOLUTIONS, ...ENERGY];
 export const HSJ_GALLERY_LAYOUTS: LayoutDef[] = [];

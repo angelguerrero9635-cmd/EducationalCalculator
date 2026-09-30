@@ -8,7 +8,7 @@ import {
   molesPerParticle,
   particleCount,
 } from '@/components/module/reps/gasModel';
-
+import { PEAK, profileAt } from '@/components/module/reps/energyModel';
 import { solubilityAt } from '@/components/module/reps/solubility';
 import type { VariableDef } from '@/engine/types';
 import { convert, getUnit } from '@/engine/units';
@@ -71,6 +71,41 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       const [l, r] = [side(was), side(now)];
       if (l !== undefined && r !== undefined && !near(l, r))
         out.push(`${rep.law}: the two states give ${l} and ${r}`);
+      break;
+    }
+    case 'energyProfile': {
+      if (rep.mode === 'calorimeter') {
+        const [m, c, t1, t2] = [num(rep.mass), num(rep.heat), num(rep.start), num(rep.end)];
+        if (m === undefined || c === undefined || t1 === undefined || t2 === undefined) break;
+        const dT = num(rep.change);
+        if (dT !== undefined && !near(dT, t2 - t1, 1e-3)) out.push(`ΔT ${dT} is not ${t2} − ${t1}`);
+        const q = num(rep.q);
+        if (q !== undefined && !near(q, m * c * (t2 - t1), 1e-3))
+          out.push(`q ${q} J is not mcΔT = ${m * c * (t2 - t1)} J`);
+        if (rep.metal) {
+          const [mm, tm, cm] = [num(rep.metal.mass), num(rep.metal.start), num(rep.metal.heat)];
+          // A metal that warms the water starts hotter than the end (once its values are all in).
+          if (tm !== undefined && mm !== undefined && cm !== undefined && t2 > t1 && tm < t2)
+            out.push(`the ${rep.metal.name} starts colder than the end`);
+          if (mm !== undefined && tm !== undefined && cm !== undefined && tm !== t2)
+            if (!near(cm, (m * c * (t2 - t1)) / (mm * (tm - t2)), 1e-3))
+              out.push(`the ${rep.metal.name}'s c ${cm} does not give the heat the water took in`);
+        }
+        break;
+      }
+      const [r, p, ea] = [num(rep.reactants), num(rep.products), num(rep.activation)];
+      if (r === undefined || p === undefined || ea === undefined) break;
+      // The curve starts at the reactants, peaks at r + Eₐ and ends at the products.
+      if (!near(profileAt(0, r, p, ea), r, 1e-9) || !near(profileAt(1, r, p, ea), p, 1e-9))
+        out.push('the profile does not start and end at its levels');
+      if (!near(profileAt(PEAK, r, p, ea), r + ea, 1e-9)) out.push('the peak is not r + Eₐ');
+      const dH = num(rep.deltaH);
+      if (dH !== undefined && !near(dH, p - r, 1e-3)) out.push(`ΔH ${dH} is not ${p} − ${r}`);
+      const rev = num(rep.reverse);
+      if (rev !== undefined && !near(rev, ea - (p - r), 1e-3))
+        out.push(`the reverse barrier ${rev} is not Eₐ − ΔH`);
+      const cat = num(rep.catalyst);
+      if (cat !== undefined && cat > ea + 1e-9) out.push(`the catalyst's Eₐ ${cat} is above ${ea}`);
       break;
     }
   }
