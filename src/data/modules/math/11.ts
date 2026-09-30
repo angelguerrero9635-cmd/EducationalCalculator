@@ -537,7 +537,17 @@ export const MATH_11_MODULES: ModuleDef[] = [
       zVar(),
       prob('P', 'P', 'Share below x'),
     ],
-    rules: [zScore('z', 'x', 'm', 's'), leftArea('P', 'z')],
+    rules: [
+      limit(
+        'σ > 0',
+        '{s} is more than 0',
+        ['s'],
+        (v) => v.s! > 0,
+        'A standard deviation of 0 would put every height at the mean: x = μ leaves σ unknown.',
+      ),
+      zScore('z', 'x', 'm', 's'),
+      leftArea('P', 'z'),
+    ],
     example: { m: 170, s: 8, x: 182, z: 1.5, P: Phi(1.5) },
     startWith: ['m', 's', 'x'],
     unitSystems: ['metric'],
@@ -1712,6 +1722,13 @@ export const MATH_11_MODULES: ModuleDef[] = [
         ['a'],
         (v) => v.a !== 0,
         'With a = 0 there is no x to solve for.',
+      ),
+      limit(
+        'bʸ ≥ 0.000001',
+        '{b}^{y} is at least 0.000001',
+        ['b', 'y'],
+        (v) => v.b! ** v.y! >= 1e-6,
+        'bʸ is below 0.000001, too close to 0 to show: use a y nearer 0.',
       ),
       derive(
         'u = b^y',
@@ -4024,6 +4041,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         'The last sum is the remainder, which is P(r).',
         {
           work: (v) => {
+            if ([v.a, v.b, v.c, v.d, v.r].some((x) => x === undefined)) return [];
             const [a, b, c, d, r] = [v.a!, v.b!, v.c!, v.d!, v.r!];
             const [q2, q1, q0] = [a, b + r * a, c + r * (b + r * a)];
             const R = d + r * q0;

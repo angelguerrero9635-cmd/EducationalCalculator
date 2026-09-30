@@ -40,6 +40,7 @@ Phrases added to `harness/phrasesM11.ts`: "share within k standard deviations" (
 | m.11.function-transformations~horizontal | 4    | functionGraph horizontal factor b (y = f(b(x − h))) (P6)           |
 | m.11.inverse-functions~restrict-domain   | 5    | functionGraph `xMin` as a value, the inverse of the kept half (P6) |
 | m.11.probability-distributions~at-least  | 7    | A binomcdf relation and histogram `lit` as a range (P11)           |
+| m.11.radical-functions~rational-exponent | —    | functionGraph has no power family y = a·x^(p/q) (lesson review)    |
 
 Need 9 (limits with a reason) is met by a `constraint: true` relation with a `message` (the
 `limit` helper at the top of `11.ts`). Needs 8 (Σ) and 10 (termsChart second term) have their
@@ -166,3 +167,57 @@ planned interims built.
     polynomial-functions~divide (the grid is hidden when P(r) < 0).
 11. **Simplifying − −** (need 2 above) also hits a product with a negative factor after a minus,
     (4 × 1 − −10 × 2); complex ~divide works around it with work lines.
+
+## Lesson review (`.review/hs-m.11/lesson-report.md`)
+
+All 18 errors and 45 improvements are fixed in the pages, except those below. Every value symbol
+that was an expression is now a plain letter (B₁, B₂, s, t, …).
+
+New pages from the review's coverage gaps (65 pages now):
+
+- **m.11.exp-log-equations~two-logs:** log_b(x) + log_b(x + c) = y → x(x + c) = bʸ, then the
+  quadratic formula; x₂ is always rejected (x and x + c are both negative there). The picture is
+  the quadratic's two zeros, not a log graph (functionGraph can't draw a sum of logs). Example
+  log₃ x + log₃(x − 8) = 2 → x = 9.
+- **m.11.polynomial-equations~sum-of-cubes:** A = a³, B = b³ typable either way (∛ brackets its
+  argument so the harness reads a negative one), the second factor a²x² − abx + b² and the real
+  zero −b ÷ a.
+- **m.11.polynomial-functions~long-division:** a cubic ÷ x² + px + q; quotient Ax + B and
+  remainder Cx + D, the check line written out.
+- **m.11.rational-functions~multiply-divide:** (x − a)/(x − b) × ((x − c)/(x − d))ᵗ with t = ±1;
+  the step's right side is what is left after cancelling, its how writes the product, the
+  cancelled factor and the x left out. m, n and h (the flipped fraction and the divisor's own
+  left-out x) are hidden picture values, so the graph shows the holes.
+
+Changed from the report or not done:
+
+- **Pythagorean ~tangent, mixed numbers, "p(X = k)":** left to the lead's engine
+  changes (improper fractions, exact-only fractions, capitals kept in names); `fraction` stays on
+  c and s of pythagorean ~tangent.
+- **rational ~variation:** x₁ and y₁ still stop at 60 until the harness asymptote check scales.
+- **polynomial-equations ~quadratic-form (negative u) and main (a quotient with complex roots):**
+  still rejected; Partly, as the report says.
+- **complex ~quadratic:** q has `fraction`; the radical form (√31/4) needs exact radicals.
+- **unit-circle main:** decimals stay until exact values at multiples of π/6 and π/4 exist.
+- **Question re-filing** ([data] NAEP-2005-12M3-#7): the lead's.
+
+The deep run (`SAMPLES=100 SEQUENCES=15 UNIT_CASES=10`) found three more lesson problems, now
+fixed: normal main accepted σ = 0 in km (a limit σ > 0), ~log-equation drew bʸ ≈ 10⁻¹³ (a limit
+bʸ ≥ 0.000001), and ~divide wrote NaN work lines before a was known. What it still reports is
+the engine's (below): ~between, ~outside and ~percentile tolerance cases, quadratic-form's
+stale roots, series' mixed number r = −4 1/2 in a log step, and probability-distributions
+leaving p unknown after E = 0 clears the older p.
+
+## Shared needs from the lesson review
+
+12. **Exact trig values** at multiples of π/6 and π/4 (−√3/2). Page: m.11.unit-circle.
+13. **Exact radicals in answers** (√31/4). Page: m.11.complex-numbers~quadratic.
+14. **Complex roots in polynomial answers** (x⁴ − 5x² − 36 = 0 → ±3, ±2i; x³ − 1 = 0). Pages:
+    m.11.polynomial-equations~quadratic-form and main.
+15. **The rational asymptote check scaling with x** (so x₁, y₁ can reach 1,000). Page:
+    m.11.rational-functions~variation.
+16. **functionGraph power family** y = a·x^(p/q). Page: m.11.radical-functions~rational-exponent.
+17. **A log-sum graph** (log_b x + log_b(x + c)) for m.11.exp-log-equations~two-logs (drawn as
+    the quadratic's zeros meanwhile).
+18. **The solver re-solving after a newer entry clears an older one** (p = E ÷ n left unknown
+    once E = 0 clears p). Page: m.11.probability-distributions.
