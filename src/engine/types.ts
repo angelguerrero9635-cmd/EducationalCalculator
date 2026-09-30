@@ -38,6 +38,8 @@ export interface VariableDef {
    * in scientific notation past 10⁷ or under 10⁻⁴ (1.20 × 10⁻⁵): a measurement's precision.
    */
   sigFigs?: number;
+  /** A worked-out value under half the step reads "< 0.0001" in its box (a p-value), never 0. */
+  belowStep?: boolean;
   /**
    * A fraction whose decimal repeats shows its repeating digits and "…" (1/3 → 0.333…,
    * 1/6 → 0.1666…) when the block is at most 6 digits; boxes take the same.

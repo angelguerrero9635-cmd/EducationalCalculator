@@ -10,19 +10,25 @@
  * the work is shown in class. Lines are text; the last one is the value itself, which the
  * answer line shows, so callers usually drop it.
  */
-import { asFraction, formatNumber, plainDigits } from '@/engine/format';
+import { asFraction, formatNumber, plainDigits, superscript } from '@/engine/format';
 
 type Node =
   /** `pi`: the value is a multiple of π, printed "30π" (π stays a factor, never 3.1416). */
-  | { kind: 'num'; value: number; text?: string; pi?: boolean }
+  | { kind: 'num'; value: number; text?: string; pi?: boolean; deg?: boolean }
   | { kind: 'bin'; op: '+' | '−' | '×' | '÷' | '/' | '^'; left: Node; right: Node }
   | { kind: 'pow'; base: Node; exp: 2 | 3 }
   | { kind: 'sqrt'; arg: Node }
+  /** sin(30°), cos, tan: an angle in degrees when it is written with °, else in radians. */
+  | { kind: 'fn'; name: Trig; arg: Node }
   | { kind: 'neg'; arg: Node };
 
+type Trig = 'sin' | 'cos' | 'tan';
+const TRIG = /^(sin|cos|tan)(?=\()/;
+
 type Token =
-  | { t: 'num'; value: number; text?: string; pi?: boolean }
+  | { t: 'num'; value: number; text?: string; pi?: boolean; deg?: boolean }
   | { t: 'op'; v: string }
+  | { t: 'fn'; v: Trig }
   | { t: '('; v?: undefined }
   | { t: ')'; v?: undefined };
 
@@ -69,8 +75,20 @@ function tokenize(text: string): Token[] | undefined {
     }
     const num = NUMBER.exec(s.slice(i));
     if (num) {
-      out.push({ t: 'num', value: Number(num[0]) });
-      i += num[0].length;
+      // An angle keeps its degree sign: sin(30°).
+      if (s[i + num[0].length] === '°') {
+        out.push({ t: 'num', value: Number(num[0]), text: `${num[0]}°`, deg: true });
+        i += num[0].length + 1;
+      } else {
+        out.push({ t: 'num', value: Number(num[0]) });
+        i += num[0].length;
+      }
+      continue;
+    }
+    const trig = TRIG.exec(s.slice(i));
+    if (trig) {
+      out.push({ t: 'fn', v: trig[1] as Trig });
+      i += trig[0].length;
       continue;
     }
     if (ch === 'π') out.push({ t: 'num', value: Math.PI, text: 'π', pi: true });
@@ -103,7 +121,16 @@ function parse(tokens: Token[]): Node | undefined {
         value: tok.value,
         ...(tok.text ? { text: tok.text } : {}),
         ...(tok.pi ? { pi: true } : {}),
+        ...(tok.deg ? { deg: true } : {}),
       };
+    if (tok.t === 'fn') {
+      if (peek()?.t !== '(') fail.failed = true;
+      else take();
+      const arg = sum();
+      if (peek()?.t !== ')') fail.failed = true;
+      else take();
+      return { kind: 'fn', name: tok.v, arg };
+    }
     if (tok.t === '(') {
       const inner = sum();
       if (peek()?.t !== ')') fail.failed = true;
@@ -175,7 +202,13 @@ function parse(tokens: Token[]): Node | undefined {
 
 /** Order of operations, higher first: powers and roots, then × ÷, then + −. */
 const rank = (n: Node): number => {
-  if (n.kind === 'pow' || n.kind === 'sqrt' || (n.kind === 'bin' && n.op === '^')) return 3;
+  if (
+    n.kind === 'pow' ||
+    n.kind === 'sqrt' ||
+    n.kind === 'fn' ||
+    (n.kind === 'bin' && n.op === '^')
+  )
+    return 3;
   if (n.kind === 'bin' && (n.op === '×' || n.op === '÷' || n.op === '/')) return 2;
   if (n.kind === 'bin') return 1;
   return n.kind === 'neg' ? 4 : 0;
@@ -193,10 +226,21 @@ const ready = (n: Node): boolean => {
     case 'pow':
       return isNum(n.base);
     case 'sqrt':
+    case 'fn':
     case 'neg':
       return isNum(n.arg);
   }
 };
+
+/** Whether a value is an angle in degrees (30°, 90° − 60°). */
+const degOf = (n: Node): boolean =>
+  n.kind === 'num'
+    ? !!n.deg
+    : n.kind === 'bin'
+      ? degOf(n.left) || degOf(n.right)
+      : n.kind === 'pow'
+        ? degOf(n.base)
+        : n.kind !== 'fn' && degOf(n.arg);
 
 const compute = (n: Node): number => {
   switch (n.kind) {
@@ -218,6 +262,13 @@ const compute = (n: Node): number => {
       return compute(n.base) ** n.exp;
     case 'sqrt':
       return Math.sqrt(compute(n.arg));
+    case 'fn': {
+      const angle = compute(n.arg) * (degOf(n.arg) ? Math.PI / 180 : 1);
+      const value = Math[n.name](angle);
+      // cos 90° is 0, not 6 × 10⁻¹⁷; tan 90° has no value.
+      if (n.name === 'tan' && Math.abs(Math.cos(angle)) < 1e-12) return NaN;
+      return Math.abs(value) < 1e-12 ? 0 : value;
+    }
     case 'neg':
       return -compute(n.arg);
   }
@@ -233,6 +284,8 @@ const piOf = (n: Node): boolean | undefined => {
     case 'sqrt':
     case 'pow':
       return piOf(n.kind === 'sqrt' ? n.arg : n.base) ? undefined : false;
+    case 'fn':
+      return piOf(n.arg) === undefined ? undefined : false;
     case 'bin': {
       const [a, b] = [piOf(n.left), piOf(n.right)];
       if (a === undefined || b === undefined) return undefined;
@@ -271,7 +324,7 @@ function exactText(value: number, pi: boolean, fractions: boolean): string | und
  * in brackets comes first, whatever its operation.
  */
 const grouped = (parent: Node, child: Node, rightSide: boolean): boolean => {
-  if (parent.kind === 'sqrt') return true;
+  if (parent.kind === 'sqrt' || parent.kind === 'fn') return true;
   if (parent.kind === 'pow') return child.kind !== 'num';
   if (parent.kind === 'bin' && parent.op === '^') return true;
   if (parent.kind === 'bin' && child.kind === 'bin') {
@@ -317,7 +370,10 @@ const reduce = (n: Node, stage: Stage, depth = 0): Node => {
     const pi = piOf(n);
     const text = pi === undefined ? undefined : exactText(value, pi, fractionsAllowed);
     // NaN marks a value that can't be written exactly; the chain stops before it.
-    if (text === undefined) return { kind: 'num', value: NaN, text: INEXACT };
+    if (text === undefined || Number.isNaN(value))
+      return { kind: 'num', value: NaN, text: INEXACT };
+    // An angle worked out stays an angle: sin(90° − 60°), sin(30°).
+    if (degOf(n)) return { kind: 'num', value, text: `${text}°`, deg: true };
     return { kind: 'num', value, text, ...(pi ? { pi: true } : {}) };
   }
   const at = (child: Node, rightSide: boolean) =>
@@ -328,6 +384,50 @@ const reduce = (n: Node, stage: Stage, depth = 0): Node => {
     case 'pow':
       return { ...n, base: at(n.base, false) };
     case 'sqrt':
+    case 'fn':
+    case 'neg':
+      return { ...n, arg: at(n.arg, false) };
+  }
+};
+
+/** −100 written in brackets is a number, not a stage: −(−4) stays one. */
+const signed = (n: Node): Node => {
+  switch (n.kind) {
+    case 'num':
+      return n;
+    case 'neg':
+      return isNum(n.arg) && n.arg.value > 0
+        ? { ...n.arg, value: -n.arg.value, ...(n.arg.text ? { text: `−${n.arg.text}` } : {}) }
+        : { ...n, arg: signed(n.arg) };
+    case 'bin':
+      return { ...n, left: signed(n.left), right: signed(n.right) };
+    case 'pow':
+      return { ...n, base: signed(n.base) };
+    case 'sqrt':
+    case 'fn':
+      return { ...n, arg: signed(n.arg) };
+  }
+};
+
+/**
+ * Works out a stage in every bracket group at the stage's depth, each at its own strongest
+ * operation: (2⁶ − 1) ÷ (2 − 1) → (64 − 1) ÷ 1, the top and bottom of a quotient side by side.
+ */
+const reduceGroups = (n: Node, target: number, depth = 0): Node => {
+  if (n.kind === 'num') return n;
+  if (depth === target) {
+    const own = nextStage(n);
+    return own && own.depth === 0 ? reduce(n, own) : n;
+  }
+  const at = (child: Node, rightSide: boolean) =>
+    reduceGroups(child, target, depth + (grouped(n, child, rightSide) ? 1 : 0));
+  switch (n.kind) {
+    case 'bin':
+      return { ...n, left: at(n.left, false), right: at(n.right, true) };
+    case 'pow':
+      return { ...n, base: at(n.base, false) };
+    case 'sqrt':
+    case 'fn':
     case 'neg':
       return { ...n, arg: at(n.arg, false) };
   }
@@ -365,6 +465,8 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
       const inner = print(n.arg, 0);
       return isNum(n.arg) && n.arg.value >= 0 ? `√${inner}` : `√(${inner})`;
     }
+    case 'fn':
+      return `${n.name}(${print(n.arg, 0)})`;
     case 'pow': {
       const base = print(n.base, 4);
       const needs = !isNum(n.base) || n.base.value < 0;
@@ -386,7 +488,8 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
         n.op === '/'
           ? `${left}/${right}`
           : n.op === '^'
-            ? `${left}^${right}`
+            ? // A whole-number exponent is written raised: 2⁶, (1.05)².
+              superscript(`${left}^${right}`)
             : `${left} ${n.op} ${right}`;
       // Brackets when this sits under a stronger operation, or to the right of − or ÷ at the
       // same level (8 − (5 − 3)), or as the base of a power.
@@ -410,6 +513,7 @@ export function operationCount(text: string): number | undefined {
       case 'pow':
         return 1 + count(n.base);
       case 'sqrt':
+      case 'fn':
         return 1 + count(n.arg);
       case 'neg':
         return count(n.arg);
@@ -432,14 +536,15 @@ const loose = (line: string) =>
  */
 export function simplifyChain(text: string): string[] {
   const tokens = tokenize(text);
-  let tree = tokens && parse(tokens);
-  if (!tree || (operationCount(text) ?? 0) < 2) return [];
+  const parsed = tokens && parse(tokens);
+  if (!parsed || (operationCount(text) ?? 0) < 2) return [];
+  let tree = signed(parsed);
   fractionsAllowed = !!tokens?.some((t) => t.t === 'num' && t.text?.includes('/'));
   const lines: string[] = [];
   for (let guard = 0; guard < 40 && tree.kind !== 'num'; guard++) {
     const stage = nextStage(tree);
     if (!stage) break;
-    tree = reduce(tree, stage);
+    tree = reduceGroups(tree, stage.depth);
     // "5 − (−3)" and "−(−3)" are one stage each; the reader sees the sign settle on the next line.
     const line = print(tree);
     // A stage that would need rounding ends the working: the answer line gives the value.

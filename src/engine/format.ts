@@ -1,6 +1,21 @@
 import type { Values, VariableDef } from './types';
 
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
+/**
+ * A worked-out value under half its box's step reads "< 0.0001" (a p-value under 0.0001),
+ * never "0" or 2 × 10⁻⁵, on a variable that asks for it (`belowStep`).
+ */
+export function belowStep(
+  x: number,
+  formatted: string,
+  variable: Pick<VariableDef, 'belowStep' | 'step'>,
+): string {
+  const step = variable.step;
+  return variable.belowStep && step !== undefined && x >= 0 && x < step / 2
+    ? `< ${formatNumber(step)}`
+    : formatted;
+}
+
 export function formatNumber(
   x: number,
   variable?: Pick<

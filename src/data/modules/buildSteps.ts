@@ -5,7 +5,7 @@ import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
 
 import { gradeBand, gradeOf, quantityLabel, wordRule, type GradeBand } from './grade';
-import { simplifyChain } from './simplify';
+import { operationCount, simplifyChain } from './simplify';
 import type { ModuleDef } from './types';
 import { factWork } from './work';
 import { autoWritten, type Written } from './written';
@@ -87,7 +87,11 @@ export interface Walkthrough {
  */
 const sumsAtOnce = (lines: string[], start: string, grade: string) => {
   if (!['9', '10', '11', '12'].includes(grade)) return lines;
-  const ops = (l: string) => l.replace(/[^×÷√^²³·]/g, '').length;
+  const ops = (l: string) =>
+    l
+      .replace(/[⁻⁰¹²³⁴-⁹]+/g, '^')
+      .replace(/sin|cos|tan/g, '√')
+      .replace(/[^×÷√^·]/g, '').length;
   const adds = (l: string) => l.match(/ [+−] /g)?.length ?? 0;
   const adding = (from: string, to: string) => ops(from) === ops(to) && adds(to) === adds(from) - 1;
   return lines.filter((l, i) => {
@@ -405,7 +409,9 @@ export function buildSteps(
       shownWork?.length || written || !showSubstituted
         ? []
         : sumsAtOnce(simplifyChain(bare), bare, grade ?? '')
-            .slice(0, -1)
+            // The value itself is the answer line; a chain that stops before a value that
+            // needs rounding (√98) keeps its last line.
+            .filter((line, i, all) => i < all.length - 1 || (operationCount(line) ?? 0) > 0)
             .map((line) => plain(`${v.symbol} = ${line}`, t.id, false));
     return {
       ...base,

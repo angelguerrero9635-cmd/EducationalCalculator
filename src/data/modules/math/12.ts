@@ -134,8 +134,15 @@ const inOpen = (p: number) => (p > 0 && p < 1 ? p : undefined);
 
 // ── Statistics ──
 
+/** A p-value under 0.0001 reads "< 0.0001" in its box. */
 const prob = (id: string, symbol: string, name: string, extra: Partial<VariableDef> = {}) =>
-  V(id, symbol, name, { min: 0, max: 1, step: 0.0001, ...extra });
+  V(id, symbol, name, {
+    min: 0,
+    max: 1,
+    step: 0.0001,
+    ...(name === 'p-value' ? { belowStep: true } : {}),
+    ...extra,
+  });
 const zVar = (id = 'z', name = 'Test statistic') =>
   V(id, 'z', name, { min: -50, max: 50, step: 0.01 });
 const alphaOf = (id = 'a') =>

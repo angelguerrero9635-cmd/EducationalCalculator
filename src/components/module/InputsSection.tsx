@@ -6,7 +6,7 @@ import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
 import { gradeBand, isEarlyGrade, wordRule } from '@/data/modules';
 import type { ModuleDef } from '@/data/modules/types';
-import { formatNumber, parseCents, parseNumber } from '@/engine/format';
+import { belowStep, formatNumber, parseCents, parseNumber } from '@/engine/format';
 import { outOfCount } from '@/engine/solve';
 import type { VariableDef } from '@/engine/types';
 import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext';
@@ -154,8 +154,13 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
         derived: early ? 'answer' : 'calculated',
         unknown: early ? '?' : 'unknown',
       }[status];
+  const display = value === undefined ? undefined : calc.units.toDisplay(variable.id, value);
   const formatted =
-    value === undefined ? '' : formatNumber(calc.units.toDisplay(variable.id, value), variable);
+    display === undefined
+      ? ''
+      : status !== 'derived' || display !== value
+        ? formatNumber(display, variable)
+        : belowStep(display, formatNumber(display, variable), variable);
   // While typing, and after a number the range refused, the box keeps the typed text beside
   // its message, so the student can fix it instead of retyping it.
   // A value cleared because it no longer fits shows "?" (the picture and sentences drop it too),

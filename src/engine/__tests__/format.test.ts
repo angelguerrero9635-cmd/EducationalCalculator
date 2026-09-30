@@ -1,4 +1,4 @@
-import { formatNumber, parseNumber } from '../format';
+import { belowStep, formatNumber, parseNumber } from '../format';
 
 describe('significant figures', () => {
   it.each([
@@ -31,5 +31,15 @@ describe('radians as fractions of π', () => {
   it('keeps decimal multiples on pages that write them (2.25π)', () => {
     expect(formatNumber(2.25 * Math.PI, { pi: true })).toBe('2.25π');
     expect(parseNumber('3pi/4')).toBeCloseTo((3 * Math.PI) / 4, 12);
+  });
+});
+
+describe('a worked-out value below its step', () => {
+  it('reads "< step" instead of 0', () => {
+    const P = { belowStep: true, step: 0.0001 };
+    expect(belowStep(0.00002, formatNumber(0.00002), P)).toBe('< 0.0001');
+    expect(belowStep(0, formatNumber(0), P)).toBe('< 0.0001');
+    expect(belowStep(0.0312, formatNumber(0.0312), P)).toBe('0.0312');
+    expect(belowStep(0, formatNumber(0), { step: 0.0001 })).toBe('0');
   });
 });
