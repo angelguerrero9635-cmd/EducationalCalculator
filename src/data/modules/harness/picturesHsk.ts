@@ -4,7 +4,7 @@
  * Values are read in the shown units; pages built on these pictures use SI units.
  */
 import type { VariableDef } from '@/engine/types';
-import { freeBodyOf, projectileOf } from '@/components/module/reps/hskMath';
+import { freeBodyOf, G_NEWTON, projectileOf, sweptArea } from '@/components/module/reps/hskMath';
 
 import type { MotionGraphSpec } from '../typesMechanics';
 import type { HskSpec } from '../typesHsk';
@@ -124,6 +124,44 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
         if (a !== undefined && !cmp(a, want / m))
           out.push(`freeBody: acceleration ${a} is not F_net/m = ${fb.netSize / m}`);
       }
+      break;
+    }
+    case 'circularMotion': {
+      if (rep.mode === 'gravity') {
+        const [m1, m2] = (rep.masses ?? [1, 1]).map((x) => read(si, x));
+        const d = read(si, rep.distance);
+        if (m1 === undefined || m2 === undefined || d === undefined) break;
+        if (m1 < 0 || m2 < 0 || d <= 0) out.push('circularMotion: a negative mass or distance');
+        else same(rep.force, (G_NEWTON * m1 * m2) / (d * d), 'pull Gm₁m₂/r²');
+        break;
+      }
+      if (rep.mode === 'kepler') {
+        const [a, e] = [read(si, rep.semiMajor, 1), read(si, rep.eccentricity, 0)];
+        if (a === undefined || e === undefined) break;
+        if (e < 0 || e > 0.95) out.push(`circularMotion: eccentricity ${e} is not from 0 to 0.95`);
+        if (a <= 0) out.push(`circularMotion: semi-major axis ${a} is not positive`);
+        if (a <= 0 || e < 0 || e > 0.95) break;
+        same(rep.perihelion, a * (1 - e), 'perihelion a(1 − e)');
+        same(rep.aphelion, a * (1 + e), 'aphelion a(1 + e)');
+        same(rep.period, Math.pow(a, 1.5), 'period (T² = a³)');
+        // The two shaded sectors: each 1/8 of the period, each 1/8 of the ellipse's area.
+        const whole = Math.PI * a * a * Math.sqrt(1 - e * e);
+        for (const M of [0, Math.PI]) {
+          const A = sweptArea(a, e, M - Math.PI / 8, M + Math.PI / 8);
+          if (Math.abs(A - whole / 8) > 1e-3 * whole)
+            out.push(`circularMotion: a sector sweeps ${A}, not 1/8 of ${whole}`);
+        }
+        break;
+      }
+      const [r, v, m] = [read(si, rep.radius, 1), read(si, rep.speed, 0), read(si, rep.mass, 1)];
+      if (r === undefined || v === undefined || m === undefined) break;
+      if (r <= 0 || v < 0) {
+        out.push(`circularMotion: radius ${r} or speed ${v} out of range`);
+        break;
+      }
+      same(rep.acceleration, (v * v) / r, 'centripetal acceleration v²/r');
+      same(rep.force, (m * v * v) / r, 'centripetal force mv²/r');
+      if (v > 0) same(rep.period, (2 * Math.PI * r) / v, 'period 2πr/v');
       break;
     }
   }

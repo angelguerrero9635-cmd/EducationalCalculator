@@ -509,6 +509,7 @@ function representationVars(r: Representation): string[] {
     case 'dnaStrand':
       return hsgSpecVars(r);
     case 'projectile':
+    case 'circularMotion':
     case 'freeBody':
       return hskSpecVars(r);
   }

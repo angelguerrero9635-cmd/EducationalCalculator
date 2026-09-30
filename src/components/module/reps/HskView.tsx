@@ -5,6 +5,7 @@
 import type { HskSpec } from '@/data/modules/typesHsk';
 
 import type { Calculator } from '../useCalculator';
+import { CircularMotion } from './CircularMotion';
 import { FreeBody } from './FreeBody';
 import { Projectile } from './Projectile';
 
@@ -14,5 +15,7 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
       return <Projectile spec={spec} calc={calc} />;
     case 'freeBody':
       return <FreeBody spec={spec} calc={calc} />;
+    case 'circularMotion':
+      return <CircularMotion spec={spec} calc={calc} />;
   }
 }

@@ -2099,6 +2099,7 @@ export function repIssues(
       out.push(...hsgIssues(rep, (id) => val(id)));
       break;
     case 'projectile':
+    case 'circularMotion':
     case 'freeBody':
       out.push(...hskIssues(rep, (id) => val(id), byId));
       break;

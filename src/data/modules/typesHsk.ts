@@ -117,10 +117,50 @@ export interface FreeBodySpec {
   fixed?: boolean;
 }
 
+// ─── H61 circularMotion ──────────────────────────────────────────────────────
+
+/**
+ * Motion on a circle and the pull of gravity:
+ *
+ * - `string`: a ball whirled on a string, seen from above: the circle of `radius`, the velocity
+ *   tangent to it (drag its tip for the speed), the centripetal acceleration v²/r toward the
+ *   center, the dashed straight path it would take if the string broke;
+ * - `car`: a car rounding a curve of `radius`, friction toward the center as the centripetal
+ *   force;
+ * - `gravity`: two masses `distance` apart (not to scale), the equal and opposite pulls
+ *   F = Gm₁m₂/r² (drag the second mass for r: the arrows follow the inverse square);
+ * - `kepler`: an orbit as an ellipse of `semiMajor` (AU) and `eccentricity`, the sun at one
+ *   focus and the empty focus marked, perihelion and aphelion, and two sectors swept in equal
+ *   times (1/8 of the period each, from Kepler's equation) with equal areas; T² = a³.
+ */
+export interface CircularMotionSpec {
+  kind: 'circularMotion';
+  mode: 'string' | 'car' | 'gravity' | 'kepler';
+  radius?: NumOrVar;
+  speed?: NumOrVar;
+  mass?: NumOrVar;
+  /** The centripetal acceleration v²/r. */
+  acceleration?: string;
+  /** The centripetal force m v²/r (or the gravitational pull). */
+  force?: string;
+  /** Time for one turn (s), or the orbit's period in years (kepler). */
+  period?: string;
+  /** Gravity: the two masses (kg) and the distance between their centers (m). */
+  masses?: [NumOrVar, NumOrVar];
+  distance?: NumOrVar;
+  /** Kepler: the semi-major axis in AU and the eccentricity (0 to 0.9). */
+  semiMajor?: NumOrVar;
+  eccentricity?: NumOrVar;
+  /** Kepler: the closest and farthest distances from the sun (AU). */
+  perihelion?: string;
+  aphelion?: string;
+  fixed?: boolean;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
-export type HskSpec = ProjectileSpec | FreeBodySpec;
+export type HskSpec = ProjectileSpec | FreeBodySpec | CircularMotionSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
@@ -142,6 +182,21 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.along,
         r.net,
         r.acceleration,
+      );
+    case 'circularMotion':
+      return ids(
+        r.radius,
+        r.speed,
+        r.mass,
+        r.acceleration,
+        r.force,
+        r.period,
+        ...(r.masses ?? []),
+        r.distance,
+        r.semiMajor,
+        r.eccentricity,
+        r.perihelion,
+        r.aphelion,
       );
   }
 }

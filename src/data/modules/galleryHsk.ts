@@ -828,9 +828,264 @@ const FREE_BODY_DEMOS: ModuleDef[] = [
   },
 ];
 
+// ─── H61 circularMotion ──────────────────────────────────────────────────────
+
+const RADIUS = q('r', 'r', 'Radius', 'm', 0.1, 1000, 0.1);
+const SPEED = q('v', 'v', 'Speed', 'm/s', 0.1, 100, 0.1);
+const AC = q('a', 'aᶜ', 'Centripetal acceleration', 'm/s²', 0, 100000, 0.01);
+const FC = q('F', 'Fᶜ', 'Centripetal force', 'N', 0, 1e7, 0.1);
+
+/** a = v²/r. */
+const centripetalRule = rule('a = v²/r', '{a} = {v}²/{r}', (v) => v.a! - (v.v! * v.v!) / v.r!, {
+  a: [
+    (v) => div(v.v! * v.v!, v.r!),
+    '{v}²/{r}',
+    'Turning takes an acceleration toward the center: v² over r.',
+  ],
+  v: [
+    (v) => Math.sqrt(Math.max(0, v.a! * v.r!)),
+    '√({a} × {r})',
+    'Undo v²/r: multiply by r, take the square root.',
+  ],
+  r: [(v) => div(v.v! * v.v!, v.a!), '{v}²/{a}', 'Divide v² by the acceleration.'],
+});
+
+const circleDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  mode: 'string' | 'car',
+  ex: { m: number; r: number; v: number },
+): ModuleDef => {
+  const a = (ex.v * ex.v) / ex.r;
+  return {
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions,
+    variables: [
+      { ...MASS, max: 5000 },
+      RADIUS,
+      SPEED,
+      AC,
+      FC,
+      ...(mode === 'string' ? [q('T', 'T', 'Time for one turn', 's', 0.01, 10000, 0.01)] : []),
+    ],
+    ...rules(
+      centripetalRule,
+      product('F', 'm', 'a', 'Fᶜ = maᶜ', [
+        'Newton’s second law toward the center: mass times the centripetal acceleration.',
+        'Divide the force by the acceleration.',
+        'Divide the force by the mass.',
+      ]),
+      ...(mode === 'string'
+        ? [
+            rule('T = 2πr/v', '{T} = 2π × {r}/{v}', (v) => v.T! - (2 * Math.PI * v.r!) / v.v!, {
+              T: [
+                (v) => div(2 * Math.PI * v.r!, v.v!),
+                '2π × {r}/{v}',
+                'One turn is the circumference, 2πr, at speed v.',
+              ],
+              r: [
+                (v) => (v.T! * v.v!) / (2 * Math.PI),
+                '{T} × {v}/(2π)',
+                'The distance in one turn, over 2π.',
+              ],
+              v: [
+                (v) => div(2 * Math.PI * v.r!, v.T!),
+                '2π × {r}/{T}',
+                'The circumference over the time for a turn.',
+              ],
+            }),
+          ]
+        : []),
+    ),
+    example: {
+      ...ex,
+      a,
+      F: ex.m * a,
+      ...(mode === 'string' ? { T: (2 * Math.PI * ex.r) / ex.v } : {}),
+    },
+    startWith: ['m', 'r', 'v'],
+    representation: {
+      kind: 'circularMotion',
+      mode,
+      radius: 'r',
+      speed: 'v',
+      mass: 'm',
+      acceleration: 'a',
+      force: 'F',
+      ...(mode === 'string' ? { period: 'T' } : {}),
+    },
+  };
+};
+
+const CIRCULAR_DEMOS: ModuleDef[] = [
+  circleDemo(
+    'g.s11-circular-gravitation-string',
+    'A ball whirled on a string',
+    'Use this for “A 0.5 kg ball on a 1.2 m string goes round at 6 m/s. What is the tension?”',
+    [
+      'Seen from above, the ball goes round a flat circle at a steady speed.',
+      'Its velocity is along the tangent; its acceleration v²/r points to the center.',
+      'The string’s pull is the centripetal force: F = mv²/r.',
+    ],
+    'string',
+    { m: 0.5, r: 1.2, v: 6 },
+  ),
+  circleDemo(
+    'g.s11-circular-gravitation-car',
+    'A car rounding a curve',
+    'Use this for “A 1,200 kg car takes a 50 m curve at 15 m/s. How much friction does it need?”',
+    [
+      'On a flat curve, friction between the tires and the road pulls the car toward the center.',
+      'Too fast, and friction can’t supply mv²/r: the car slides off along the tangent.',
+    ],
+    'car',
+    { m: 1200, r: 50, v: 15 },
+  ),
+  {
+    id: 'g.s11-circular-gravitation-gravity',
+    title: 'Universal gravitation',
+    use: 'Use this for “How hard do Earth and the Moon pull on each other?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Every two masses pull on each other: F = Gm₁m₂/r², G = 6.674 × 10⁻¹¹ N·m²/kg².',
+      'r is the distance between their centers. Twice as far, a quarter of the pull.',
+    ],
+    variables: [
+      q('M', 'm₁', 'First mass', 'kg', 1, 1e31, 1, { scientific: true }),
+      q('n', 'm₂', 'Second mass', 'kg', 1, 1e31, 1, { scientific: true }),
+      q('d', 'r', 'Distance between centers', 'm', 1, 1e13, 1, { scientific: true }),
+      q('F', 'F', 'Pull of gravity', 'N', 0, 1e40, 1, { scientific: true }),
+    ],
+    ...rules(
+      rule(
+        'F = Gm₁m₂/r²',
+        '{F} = 6.674 × 10⁻¹¹ × {M} × {n}/{d}²',
+        (v) => v.F! / ((6.674e-11 * v.M! * v.n!) / (v.d! * v.d!)) - 1,
+        {
+          F: [
+            (v) => div(6.674e-11 * v.M! * v.n!, v.d! * v.d!),
+            '6.674 × 10⁻¹¹ × {M} × {n}/{d}²',
+            'Multiply G by both masses and divide by the distance squared.',
+          ],
+          d: [
+            (v) => Math.sqrt(Math.max(0, div(6.674e-11 * v.M! * v.n!, v.F!) ?? 0)),
+            '√(6.674 × 10⁻¹¹ × {M} × {n}/{F})',
+            'Solve for r²: G m₁ m₂ over F, then take the square root.',
+          ],
+          M: [
+            (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.n!),
+            '{F} × {d}²/(6.674 × 10⁻¹¹ × {n})',
+            'Undo the formula for m₁.',
+          ],
+          n: [
+            (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.M!),
+            '{F} × {d}²/(6.674 × 10⁻¹¹ × {M})',
+            'Undo the formula for m₂.',
+          ],
+        },
+      ),
+    ),
+    example: {
+      M: 5.97e24,
+      n: 7.35e22,
+      d: 3.84e8,
+      F: (6.674e-11 * 5.97e24 * 7.35e22) / (3.84e8 * 3.84e8),
+    },
+    startWith: ['M', 'n', 'd'],
+    representation: {
+      kind: 'circularMotion',
+      mode: 'gravity',
+      masses: ['M', 'n'],
+      distance: 'd',
+      force: 'F',
+    },
+  },
+  ...[
+    {
+      id: 'g.s12-solar-system-kepler',
+      title: 'Kepler’s laws: an orbit as an ellipse',
+      use: 'Use this for “Mars orbits at a = 1.52 AU with e = 0.093. How close and how far does it get, and how long is its year?”',
+      ex: { a: 1.52, e: 0.093 },
+    },
+    {
+      id: 'g.s12-solar-system-comet',
+      title: 'A comet’s stretched orbit',
+      use: 'Use this for “A comet has a = 3 AU and e = 0.8. Where is it fastest, and what is its period?”',
+      ex: { a: 3, e: 0.8 },
+    },
+  ].map(({ id, title, use, ex }): ModuleDef => ({
+    id,
+    title,
+    use,
+    assumptions: [
+      'First law: each planet moves on an ellipse with the sun at one focus.',
+      'Second law: the line to the sun sweeps equal areas in equal times, so the planet is fastest at perihelion.',
+      'Third law: T² = a³, with T in years and a in AU.',
+    ],
+    variables: [
+      q('a', 'a', 'Semi-major axis', 'AU', 0.1, 100, 0.01),
+      q('e', 'e', 'Eccentricity', undefined, 0, 0.95, 0.001),
+      q('q', 'q', 'Perihelion distance', 'AU', 0, 200, 0.001),
+      q('Q', 'Q', 'Aphelion distance', 'AU', 0, 200, 0.001),
+      q('T', 'T', 'Period', 'years', 0.01, 1000, 0.01),
+    ],
+    ...rules(
+      rule('q = a(1 − e)', '{q} = {a} × (1 − {e})', (v) => v.q! - v.a! * (1 - v.e!), {
+        q: [
+          (v) => v.a! * (1 - v.e!),
+          '{a} × (1 − {e})',
+          'Closest: a less the sun’s offset from the center, ae.',
+        ],
+        a: [
+          (v) => div(v.q!, 1 - v.e!),
+          '{q}/(1 − {e})',
+          'Divide the perihelion distance by 1 − e.',
+        ],
+        e: [(v) => div(v.a! - v.q!, v.a!), '({a} − {q})/{a}', 'The offset a − q, over a.'],
+      }),
+      rule('Q = a(1 + e)', '{Q} = {a} × (1 + {e})', (v) => v.Q! - v.a! * (1 + v.e!), {
+        Q: [(v) => v.a! * (1 + v.e!), '{a} × (1 + {e})', 'Farthest: a plus the offset ae.'],
+        a: [(v) => div(v.Q!, 1 + v.e!), '{Q}/(1 + {e})', 'Divide the aphelion distance by 1 + e.'],
+        e: [(v) => div(v.Q! - v.a!, v.a!), '({Q} − {a})/{a}', 'The offset Q − a, over a.'],
+      }),
+      rule('T² = a³', '{T}² = {a}³', (v) => v.T! * v.T! - v.a! ** 3, {
+        T: [
+          (v) => Math.pow(v.a!, 1.5),
+          '√({a}³)',
+          'Kepler’s third law: T is the square root of a³.',
+        ],
+        a: [(v) => Math.cbrt(v.T! * v.T!), '∛({T}²)', 'a is the cube root of T².'],
+      }),
+    ),
+    example: {
+      a: ex.a,
+      e: ex.e,
+      q: ex.a * (1 - ex.e),
+      Q: ex.a * (1 + ex.e),
+      T: Math.pow(ex.a, 1.5),
+    },
+    startWith: ['a', 'e'],
+    representation: {
+      kind: 'circularMotion',
+      mode: 'kepler',
+      semiMajor: 'a',
+      eccentricity: 'e',
+      perihelion: 'q',
+      aphelion: 'Q',
+      period: 'T',
+    },
+  })),
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
   ...FREE_BODY_DEMOS,
+  ...CIRCULAR_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

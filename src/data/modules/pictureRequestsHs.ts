@@ -968,13 +968,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK, reps/FreeBody.tsx, the forces in hskMath.ts freeBodyOf). Calculator picture { kind: "freeBody", support: "floor" | "incline" | "hanging", mass, g?: 9.8, incline?: θ (degrees, incline), weight?, normal?, friction?: μF_N (kinetic, or the most static friction holds), mu?: μ (for the caption), applied?: F and appliedAngle? (degrees above level; up the slope on an incline), tension?: T and tensionAngle? (a rope drawn on the floor), along?: W sin θ, net?, acceleration?, moving?: "right" | "left" | "up" | "down" (already sliding: kinetic friction full size against the motion, net counted + that way; without it the block starts at rest and friction is capped as static friction, the caption saying it stays put), fixed?: true }. A wooden block on a floor, on a ramp drawn at θ, or hanging from a beam; every force an arrow from its center on one scale in N (weight, normal, friction, tension, applied, each its own color and labelled W, F_N, f or f_s, T, F with its value); on an incline the weight’s components W sin θ and W cos θ dashed with θ marked between W and W cos θ; the net force as a separate arrow beside the block (F_net = 0 when balanced). Drag the applied force’s or the rope’s tip along its line. Captions work weight, normal force, friction, net force and a = F_net/m in words (Weight, Normal force, Net force) since plain text has no subscripts. The harness checks W = mg, F_N, W sin θ, F_net (signed along the motion when moving) and a. Example: representation: { kind: "freeBody", support: "incline", moving: "down", mass: "m", incline: "q", weight: "W", along: "P", normal: "N", friction: "f", mu: "k", net: "n", acceleration: "a" }. For the circular-gravitation page, "hanging" draws a mass on a string at the bottom of its swing (tension up, weight down, the net force toward the center).',
   },
-  ask(
-    'H61',
-    'circularMotion',
-    'Object on a circle with velocity tangent and acceleration toward the center; two masses and the pull between them',
-    ['s.11.circular-gravitation'],
-    'Orbit: Kepler ellipse with foci and equal-area sectors for the solar system page.',
-  ),
+  {
+    ...ask(
+      'H61',
+      'circularMotion',
+      'Object on a circle with velocity tangent and acceleration toward the center; two masses and the pull between them',
+      ['s.11.circular-gravitation'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-circular-gravitation-string',
+      'g.s11-circular-gravitation-car',
+      'g.s11-circular-gravitation-gravity',
+      'g.s12-solar-system-kepler',
+      'g.s12-solar-system-comet',
+    ],
+    notes:
+      'Orbit: Kepler ellipse with foci and equal-area sectors for the solar system page. Drawn (group HK, reps/CircularMotion.tsx; Kepler\'s equation and swept areas in hskMath.ts). Kepler\'s ellipse is drawn as a mode of circularMotion rather than as an option on the Grade 8 orbit picture: orbit requires distance and pull variables a Kepler page doesn\'t have, and the orbit page stays as it is. Calculator picture { kind: "circularMotion", mode: "string" | "car" | "gravity" | "kepler", fixed?: true, and per mode: string and car: radius, speed, mass?, acceleration? (v²/r), force? (mv²/r), period? (2πr/v); gravity: masses: [m₁, m₂], distance, force? (Gm₁m₂/r², G = 6.674 × 10⁻¹¹); kepler: semiMajor (AU), eccentricity (0 to 0.95), perihelion?, aphelion?, period? (years, T² = a³) }; every field a number or variable. String: a ball on a string seen from above, the velocity tangent (drag its tip for the speed), the centripetal acceleration toward the center, the dashed straight path it would take if let go. Car: a car on a curved road, friction toward the center. Gravity: two lit spheres sized by the cube root of their masses, equal and opposite pull arrows (drag the second mass: the arrows follow the inverse square), r bracketed, not to scale. Kepler: the ellipse with the sun at one focus, the empty focus, perihelion and aphelion, and two sectors each swept in 1/8 of the period (positions from Kepler\'s equation) with equal areas. The harness checks v²/r, mv²/r, 2πr/v, Gm₁m₂/r², a(1 ± e), T² = a³ and that both sectors are 1/8 of the ellipse\'s area. Example: representation: { kind: "circularMotion", mode: "string", radius: "r", speed: "v", mass: "m", acceleration: "a", force: "F", period: "T" }; { kind: "circularMotion", mode: "kepler", semiMajor: "a", eccentricity: "e", perihelion: "q", aphelion: "Q", period: "T" } (for s.12.solar-system).',
+  },
   ask(
     'H62',
     'collision',

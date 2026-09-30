@@ -15,6 +15,38 @@ export function projectileOf(v: number, deg: number, h: number, g = G_EARTH) {
 
 const RAD_M = Math.PI / 180;
 
+/** Newton's gravitational constant, N·m²/kg². */
+export const G_NEWTON = 6.674e-11;
+
+/**
+ * Where a planet is on a Kepler ellipse at mean anomaly M (radians from perihelion, growing
+ * evenly with time): Kepler's equation M = E − e sin E solved for E by Newton's method, then
+ * the position from the ellipse's center (the sun at (ae, 0), perihelion at (a, 0)).
+ */
+export function keplerPoint(a: number, e: number, M: number) {
+  let E = e < 0.8 ? M : Math.PI;
+  for (let i = 0; i < 40; i++) {
+    const d = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+    E -= d;
+    if (Math.abs(d) < 1e-12) break;
+  }
+  const b = a * Math.sqrt(1 - e * e);
+  return { x: a * Math.cos(E), y: b * Math.sin(E), E, r: a * (1 - e * Math.cos(E)) };
+}
+
+/** The area swept from the sun between mean anomalies M1 and M2 (shoelace over a fine path). */
+export function sweptArea(a: number, e: number, M1: number, M2: number, n = 400) {
+  const sun = { x: a * e, y: 0 };
+  let area = 0;
+  let prev = keplerPoint(a, e, M1);
+  for (let i = 1; i <= n; i++) {
+    const p = keplerPoint(a, e, M1 + ((M2 - M1) * i) / n);
+    area += ((prev.x - sun.x) * (p.y - sun.y) - (p.x - sun.x) * (prev.y - sun.y)) / 2;
+    prev = p;
+  }
+  return Math.abs(area);
+}
+
 /** A force on a free-body diagram, in newtons, x to the right and y up. */
 export interface Force {
   key: 'weight' | 'normal' | 'friction' | 'tension' | 'applied';
