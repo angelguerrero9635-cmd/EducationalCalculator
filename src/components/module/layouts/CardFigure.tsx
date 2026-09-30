@@ -200,6 +200,7 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <DivisionCard f={f} ink={ink} />;
     case 'markedTriangles':
     case 'construction':
+    case 'solidCut':
       return <Hs2bCardView f={f} ink={ink} shade={shade} />;
     case 'fractionBars': {
       const bw = w - 8;

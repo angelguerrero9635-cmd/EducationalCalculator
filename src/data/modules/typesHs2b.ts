@@ -127,5 +127,19 @@ export interface ConstructionCard {
   lit?: string[];
 }
 
+/**
+ * A solid in outline with a cutting plane through it and the cross section shaded, 96 × 84
+ * (flat, seen from above and to the right). Cuts: `level` (across, halfway up), `axis`
+ * (straight down through the middle: a cylinder's axis, a cone's tip), `slant` (tilted, missing
+ * a cylinder's or cone's bases), and on a cube only `edges` (down through two opposite edges),
+ * `corners` (through the three corners next to one corner) and `pentagon` (a tilted plane
+ * crossing five faces). The section is worked out from the solid and the plane.
+ */
+export interface SolidCutCard {
+  kind: 'solidCut';
+  solid: 'cube' | 'pyramid' | 'cylinder' | 'cone' | 'sphere';
+  cut: 'level' | 'axis' | 'slant' | 'edges' | 'corners' | 'pentagon';
+}
+
 /** The card figures group H2B adds (`components/module/layouts/cardFiguresHs2b.tsx`). */
-export type Hs2bCard = MarkedTrianglesCard | ConstructionCard;
+export type Hs2bCard = MarkedTrianglesCard | ConstructionCard | SolidCutCard;

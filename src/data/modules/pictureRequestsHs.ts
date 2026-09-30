@@ -1796,6 +1796,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'm.10.volume-derivations',
       ],
     ),
+    status: 'drawn',
     gallery: [
       'g.m10-quadrilaterals-polygon-sums',
       'g.m10-quadrilaterals-polygon-sums-30',
@@ -1815,6 +1816,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.m10-proofs-vertical-angles',
       'g.m10-parallel-lines-triangle-sum-proof',
       'g.m10-congruence-cpctc-proof',
+      'g.m10-volume-derivations-cross-sections',
     ],
     notes: [
       'P8: docs/plans/m.10.md needs 4–7, 11, 12, 14. Group H2B; types in typesHs2b.ts, checks in harness/picturesHs2b.ts.',
@@ -1824,6 +1826,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Need 14 (rigid-motions~symmetry, MCAS-2026-G10M-#41): no new field. transformation `symmetry: true` already finds the lines and the turn order about the corners\' average, so a parallelogram drawn from values turns about its own center off the origin: order 2, no line of symmetry. The demo slides the top 2 across: figure [[1, 1], ["r", 1], ["p", "u"], [3, "u"]] with p = r + 2 a worked-out value, center ["a", "b"] at the diagonals\' crossing, move "rotate", angle "t", symmetry: true, extent 10, quadrants 1; w 2–6 and h 1–7 keep it on the grid.',
       'Need 6 (congruence main, similarity~similar-or-not): card figure markedTriangles { triangles: [[a, b, c], [a, b, c]] (each by its sides BC, CA, AB, drawn to one scale), mirror?, ticks?: { a?, b?, c? } (counts), arcs?: { A?, B?, C? }, right?: ["C"], lengths?: true | ["b", "c"], names? }, 144 × 76. Marks mean what they say on both triangles (the harness checks equal ticks are equal sides, equal arcs equal angles, right marks 90°), so SSA and AAA cards draw two different triangles that share the marked parts. Example (SAS): { kind: "markedTriangles", triangles: [[6, 5, 4], [6, 5, 4]], mirror: true, ticks: { c: 1, a: 2 }, arcs: { B: 1 } }; the demos build the SSA pair from A = 40°, AB = 5, BC = 4 with the law of cosines.',
       'Need 5 (constructions ~bisector-steps, ~angle-bisector-steps, ~find-center; proofs main, parallel-lines~triangle-sum-proof, congruence~cpctc-proof): card figure construction { points: { A: [x, y], … } (one-letter names in a 0–100 box, y down), parts, lit?: part ids, named?: letters shown }, 104 × 104, for each sequence stage. Parts: { segment | ray | line: "AB", dashed? }, { circle: "O", through: "K" }, { compass: "A", from: "P", to: "Q" } (an arc about A from P to Q, run on 8°), { compass: "A", through: "P", span? }, { dot: "P" }, { fill: "PMR" }, { ticks: "PM", count }, { arcs: "ABC", count }, { right: "ABC" }, { text: "1", at: "AXB" | "C" }; each may carry an id, and `lit` draws those in the highlight. The harness checks compass arcs reach both ends, ticks and arcs with one count are equal, right marks are 90°, and lit ids exist. Each stage shows the construction so far with its new step lit; the demos build the points in code (arc crossings from the compass opening). Example stage: { kind: "construction", points: { A: [20, 55], B: [80, 55], P: [50, 28.5], Q: [50, 81.5] }, parts: [{ segment: "AB" }, { compass: "A", from: "P", to: "Q", id: "arcA" }], lit: ["arcA"], named: ["A", "B"] }.',
+      'Need 12 (volume-derivations~cross-section-shapes): card figure solidCut { solid: "cube" | "pyramid" | "cylinder" | "cone" | "sphere", cut: "level" | "axis" | "slant" | "edges" | "corners" | "pentagon" (the last three on a cube only) }, 96 × 84: the solid in outline (hidden edges dashed), its cutting plane and the section shaded, worked out from the solid and the plane. The harness checks a slanted cut of a cylinder or cone misses the bases and, on a sort whose bins are triangle, square, rectangle or pentagon, that a flat-faced solid\'s section has that many sides. The page\'s eleven cards map one to one: e.g. { label: "Cube cut through the three corners next to one corner", bin: "triangle", figure: { kind: "solidCut", solid: "cube", cut: "corners" } }; "Sphere cut by any plane" uses cut "slant".',
     ].join(' '),
   },
   ask(

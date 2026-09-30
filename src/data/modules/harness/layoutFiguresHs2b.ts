@@ -3,6 +3,7 @@
  * what it says on the drawn figure. Called from `layoutFigureIssues`. Test-only.
  */
 import { anglesOf, cornersOf } from '@/components/module/layouts/cardHs2bMath';
+import { CUBE_ONLY, sectionOf, sectionSides } from '@/components/module/layouts/solidCutMath';
 
 import type { CardFigure, LayoutDef } from '../layouts';
 import type { TriCorner, TriSide } from '../typesHs2b';
@@ -87,6 +88,16 @@ export function hs2bCardIssues(f: CardFigure): string[] {
       if (as.some((a) => !close(a, as[0]!, 1))) out.push(`arcs on unequal angles ${as.join(', ')}`);
     for (const id of f.lit ?? []) if (!ids.has(id)) out.push(`lit part "${id}" is not drawn`);
   }
+  if (f.kind === 'solidCut') {
+    if ((CUBE_ONLY as readonly string[]).includes(f.cut) && f.solid !== 'cube')
+      out.push(`a ${f.cut} cut is for a cube, not a ${f.solid}`);
+    const sec = sectionOf(f);
+    if (!sec.length) out.push('the plane misses the solid');
+    // A slanted cut of a cylinder or cone misses the bases (its section is an ellipse).
+    if (f.cut === 'slant' && (f.solid === 'cylinder' || f.solid === 'cone'))
+      if (sec.some((p) => p[1] < -1 + 1e-3 || (f.solid === 'cylinder' && p[1] > 1 - 1e-3)))
+        out.push('the slanted cut reaches a base');
+  }
   return out;
 }
 
@@ -97,7 +108,16 @@ export function hs2bFigureIssues(l: LayoutDef): string[] {
       : l.kind === 'sort'
         ? l.cards.map((s) => ({ label: s.label, f: s.figure }))
         : [];
-  return figures.flatMap(({ label, f }) =>
-    f ? hs2bCardIssues(f).map((x) => `card "${label}": ${x}`) : [],
-  );
+  // A sort's bin named for a polygon: a flat-faced solid's section has that many sides.
+  const SIDES: Record<string, number> = { triangle: 3, square: 4, rectangle: 4, pentagon: 5 };
+  const bins = l.kind === 'sort' ? l.cards.map((c) => c.bin) : [];
+  return figures.flatMap(({ label, f }, i) => {
+    if (!f) return [];
+    const out = hs2bCardIssues(f);
+    const want = SIDES[bins[i] ?? ''];
+    const got = f.kind === 'solidCut' ? sectionSides(f) : undefined;
+    if (want !== undefined && got !== undefined && got !== want)
+      out.push(`the section has ${got} sides, the card's group ${want}`);
+    return out.map((x) => `card "${label}": ${x}`);
+  });
 }

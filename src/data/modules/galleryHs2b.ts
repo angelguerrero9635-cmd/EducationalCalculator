@@ -1080,8 +1080,89 @@ const CONSTRUCTION_STAGES: LayoutDef[] = [
   },
 ];
 
+// ─── Part 7: cross-section cards (m.10.volume-derivations~cross-section-shapes) ─
+
+const SECTION_CARDS: LayoutDef = {
+  kind: 'sort',
+  id: 'g.m10-volume-derivations-cross-sections',
+  title: 'What shape is the cut?',
+  use: 'Use this for “A plane cuts a cube through three corners. What shape is the cross section?”',
+  assumptions: [
+    'A cross section is the flat shape where a plane cuts a solid.',
+    'Its number of sides is the number of faces the plane crosses.',
+    'A curved surface cut by a plane gives a curved edge.',
+  ],
+  question: 'What shape is the cross section?',
+  bins: [
+    { id: 'circle', label: 'Circle', why: 'A level cut of a round solid, or any cut of a sphere.' },
+    { id: 'ellipse', label: 'Ellipse', why: 'A slanted cut all the way round a cone or cylinder.' },
+    { id: 'triangle', label: 'Triangle', why: 'The plane crosses three faces.' },
+    { id: 'square', label: 'Square', why: 'A level cut of a solid with a square base.' },
+    { id: 'rectangle', label: 'Rectangle', why: 'Straight down, parallel to the height.' },
+    { id: 'pentagon', label: 'Pentagon', why: 'The plane crosses five faces.' },
+  ],
+  cards: [
+    {
+      label: 'Cylinder cut level',
+      bin: 'circle',
+      figure: { kind: 'solidCut', solid: 'cylinder', cut: 'level' },
+    },
+    {
+      label: 'Sphere cut by any plane',
+      bin: 'circle',
+      figure: { kind: 'solidCut', solid: 'sphere', cut: 'slant' },
+    },
+    {
+      label: 'Cone cut on a slant, missing the base',
+      bin: 'ellipse',
+      figure: { kind: 'solidCut', solid: 'cone', cut: 'slant' },
+    },
+    {
+      label: 'Cylinder cut on a slant, missing both bases',
+      bin: 'ellipse',
+      figure: { kind: 'solidCut', solid: 'cylinder', cut: 'slant' },
+    },
+    {
+      label: 'Cone cut straight down through its tip',
+      bin: 'triangle',
+      figure: { kind: 'solidCut', solid: 'cone', cut: 'axis' },
+    },
+    {
+      label: 'Cube cut through the three corners next to one corner',
+      bin: 'triangle',
+      figure: { kind: 'solidCut', solid: 'cube', cut: 'corners' },
+    },
+    {
+      label: 'Cube cut level',
+      bin: 'square',
+      figure: { kind: 'solidCut', solid: 'cube', cut: 'level' },
+    },
+    {
+      label: 'Square pyramid cut level',
+      bin: 'square',
+      figure: { kind: 'solidCut', solid: 'pyramid', cut: 'level' },
+    },
+    {
+      label: 'Cylinder cut straight down through its axis',
+      bin: 'rectangle',
+      figure: { kind: 'solidCut', solid: 'cylinder', cut: 'axis' },
+    },
+    {
+      label: 'Cube cut straight down through two opposite edges',
+      bin: 'rectangle',
+      figure: { kind: 'solidCut', solid: 'cube', cut: 'edges' },
+    },
+    {
+      label: 'Cube cut by a plane crossing five of its faces',
+      bin: 'pentagon',
+      figure: { kind: 'solidCut', solid: 'cube', cut: 'pentagon' },
+    },
+  ],
+};
+
 export const HS2B_GALLERY_LAYOUTS: LayoutDef[] = [
   CONGRUENCE_CARDS,
   SIMILARITY_CARDS,
   ...CONSTRUCTION_STAGES,
+  SECTION_CARDS,
 ];
