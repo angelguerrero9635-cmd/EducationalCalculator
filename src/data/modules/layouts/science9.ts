@@ -595,10 +595,98 @@ const DIVISION: LayoutDef[] = [
   },
 ];
 
+const ECOSYSTEMS: LayoutDef[] = [
+  // ── Ecosystems: energy pyramids, matter cycles, succession, biodiversity (HS-LS2-2 to 2-7) ──
+  {
+    kind: 'sequence',
+    id: 's.9.ecosystem-dynamics~succession',
+    title: 'Primary succession',
+    use: 'Use this for “Put these communities in the order they grow on new volcanic rock.”',
+    assumptions: [
+      'Primary succession starts with no soil: new lava rock, or rock left bare by a glacier.',
+      'Pioneer lichens break down rock; each community changes the soil and shade so the next can grow.',
+      'Secondary succession, after a fire or on a plowed field, starts at grasses because the soil remains.',
+    ],
+    question: 'Put the stages of primary succession in order.',
+    stages: [
+      { label: 'Bare rock', figure: { kind: 'icon', icon: 'bare rock' } },
+      { label: 'Lichens', figure: { kind: 'icon', icon: 'lichens on rock' } },
+      { label: 'Mosses and thin soil', figure: { kind: 'icon', icon: 'mosses and thin soil' } },
+      { label: 'Grasses and flowers', figure: { kind: 'icon', icon: 'grasses and flowers' } },
+      { label: 'Shrubs', figure: { kind: 'icon', icon: 'shrubs' } },
+      { label: 'Young trees', figure: { kind: 'icon', icon: 'young trees' } },
+      { label: 'Mature forest', figure: { kind: 'icon', icon: 'mature forest' } },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.ecosystem-dynamics~nitrogen',
+    title: 'The nitrogen cycle',
+    use: 'Use this for “How do plants such as beans add nitrogen to the soil?”',
+    assumptions: [
+      'Air is mostly nitrogen gas, N₂, but plants and animals cannot use it in that form.',
+      'Living things need nitrogen to build amino acids, so proteins, and the bases of DNA.',
+    ],
+    figure: { kind: 'nitrogenCycle' },
+    scenes: [
+      {
+        label: 'The whole cycle',
+        lines: [
+          'Nitrogen goes from the air into the soil, through living things and back to the air.',
+        ],
+        nitrogen: {},
+      },
+      {
+        label: 'Fixation',
+        lines: [
+          'Bacteria in the root nodules of beans and clover turn N₂ into ammonia, which becomes ammonium in the soil.',
+          'This is nitrogen fixation, the main way nitrogen enters living things.',
+        ],
+        nitrogen: { process: 'fixation' },
+      },
+      {
+        label: 'Lightning',
+        lines: [
+          'A lightning bolt’s energy joins nitrogen and oxygen; rain carries the nitrate into the soil.',
+        ],
+        nitrogen: { process: 'lightning' },
+      },
+      {
+        label: 'Nitrification',
+        lines: ['Soil bacteria turn ammonium into nitrite, then into nitrate.'],
+        nitrogen: { process: 'nitrification' },
+      },
+      {
+        label: 'Assimilation',
+        lines: [
+          'Plant roots take in nitrate and ammonium and build them into amino acids and DNA.',
+        ],
+        nitrogen: { process: 'assimilation' },
+      },
+      {
+        label: 'Eating',
+        lines: ['Animals get their nitrogen by eating plants or other animals.'],
+        nitrogen: { process: 'eating' },
+      },
+      {
+        label: 'Ammonification',
+        lines: ['Decomposers break down wastes and dead matter, releasing ammonium into the soil.'],
+        nitrogen: { process: 'ammonification' },
+      },
+      {
+        label: 'Denitrification',
+        lines: ['Bacteria in wet, airless soil turn nitrate back into N₂ gas, closing the cycle.'],
+        nitrogen: { process: 'denitrification' },
+      },
+    ],
+  },
+];
+
 export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
   ...POPULATION,
   ...MEMBRANE,
   ...DIVISION,
+  ...ECOSYSTEMS,
 ];

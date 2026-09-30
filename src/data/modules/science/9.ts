@@ -933,9 +933,129 @@ const MEMBRANE: ModuleDef[] = [
   },
 ];
 
+/** Energy at a feeding level, in kilocalories. */
+const kcal = (id: string, symbol: string, name: string): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'kcal',
+  min: 0.001,
+  max: 10000000,
+  step: 0.01,
+});
+
+/** Level `up` keeps p% of level `down`: up = down × p ÷ 100, every way. */
+const passUp = (up: string, down: string, what: string): Rule =>
+  both(
+    `${up} = ${down} × p ÷ 100`,
+    `{${up}} = {${down}} × {p} ÷ 100`,
+    [up, down, 'p'],
+    (v) => v[up]! - (v[down]! * v.p!) / 100,
+    {
+      [up]: [
+        (v) => (v[down]! * v.p!) / 100,
+        `{${down}} × {p} ÷ 100`,
+        `Only p% of the energy ${what} is stored in the level above.`,
+      ],
+      [down]: [
+        (v) => div(v[up]! * 100, v.p!),
+        `{${up}} × 100 ÷ {p}`,
+        'Undo taking the percent: multiply by 100 and divide by p.',
+      ],
+      p: [
+        (v) => div(v[up]! * 100, v[down]!),
+        `100 × {${up}} ÷ {${down}}`,
+        'The energy passed up as a percent of the level below.',
+      ],
+    },
+  );
+
+/** One species’ share squared, (n ÷ N)², in Simpson’s index. */
+const share2 = (n: string) => `({${n}} ÷ {N})^2`;
+
+const ECOSYSTEMS: ModuleDef[] = [
+  // ── Ecosystems: energy pyramids, matter cycles, succession, biodiversity (HS-LS2-2 to 2-7) ──
+  {
+    id: 's.9.ecosystem-dynamics',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The trophic efficiency p varies, about 5–20%; the rest of the energy is used in respiration or lost as heat.',
+      'Biomass pyramids usually follow the energy pyramid, but a numbers pyramid can stand upside down: one oak feeds thousands of caterpillars.',
+      'Energy flows one way through the levels; matter cycles.',
+    ],
+    variables: [
+      kcal('E1', 'E₁', 'Energy in the grasses'),
+      kcal('E2', 'E₂', 'Energy in the grasshoppers'),
+      { id: 'p', symbol: 'p', name: 'Trophic efficiency', unit: '%', min: 1, max: 25, step: 0.1 },
+      kcal('E3', 'E₃', 'Energy in the shrews'),
+      kcal('E4', 'E₄', 'Energy in the owls'),
+    ],
+    ...rules(
+      passUp('E2', 'E1', 'in the grasses'),
+      passUp('E3', 'E2', 'in the grasshoppers'),
+      passUp('E4', 'E3', 'in the shrews'),
+    ),
+    example: { E1: 12000, E2: 960, p: 8, E3: 76.8, E4: 6.144 },
+    startWith: ['E1', 'E2'],
+    representation: {
+      kind: 'energyPyramid',
+      measure: 'energy',
+      levels: ['E1', 'E2', 'E3', 'E4'],
+      percent: 'p',
+      names: ['grasses', 'grasshoppers', 'shrews', 'owls'],
+    },
+  },
+  {
+    id: 's.9.ecosystem-dynamics~biodiversity',
+    title: 'Simpson’s diversity index',
+    use: 'Use this for “Which pond community is more diverse: 25, 5, 5, 5 or 10, 10, 10, 10?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'S is the chance that two individuals picked at random belong to different species.',
+      'More species, and more even counts of each, raise S toward 1; one species alone gives 0.',
+      'Here a pond survey counts four species.',
+    ],
+    variables: [
+      count('n1', 'n₁', 'Water striders', 0, 1000),
+      count('n2', 'n₂', 'Pond snails', 0, 1000),
+      count('n3', 'n₃', 'Dragonfly nymphs', 0, 1000),
+      count('n4', 'n₄', 'Tadpoles', 0, 1000),
+      count('N', 'N', 'Individuals in all', 1, 4000, true),
+      freq('S', 'S', 'Simpson’s index', true),
+    ],
+    ...rules(
+      forward(
+        'N = n₁ + n₂ + n₃ + n₄',
+        '{N} = {n1} + {n2} + {n3} + {n4}',
+        'N',
+        ['n1', 'n2', 'n3', 'n4'],
+        (v) => v.n1! + v.n2! + v.n3! + v.n4!,
+        '{n1} + {n2} + {n3} + {n4}',
+        'Add the counts of the four species.',
+      ),
+      forward(
+        'S = 1 − ((n₁ ÷ N)² + (n₂ ÷ N)² + (n₃ ÷ N)² + (n₄ ÷ N)²)',
+        `{S} = 1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
+        'S',
+        ['n1', 'n2', 'n3', 'n4', 'N'],
+        (v) =>
+          v.N! > 0
+            ? 1 - [v.n1!, v.n2!, v.n3!, v.n4!].reduce((t, n) => t + (n / v.N!) ** 2, 0)
+            : undefined,
+        `1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
+        'Each (n ÷ N)² is the chance two picks are both that species; 1 minus their sum is the chance they differ.',
+      ),
+    ),
+    example: { n1: 25, n2: 5, n3: 5, n4: 5, N: 40, S: 0.5625 },
+    startWith: ['n1', 'n2', 'n3', 'n4'],
+    representation: { kind: 'pieChart', parts: ['n1', 'n2', 'n3', 'n4'], total: 'N' },
+  },
+];
+
 export const SCIENCE_9_MODULES: ModuleDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
   ...POPULATION,
   ...MEMBRANE,
+  ...ECOSYSTEMS,
 ];

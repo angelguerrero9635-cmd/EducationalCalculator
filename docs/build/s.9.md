@@ -14,6 +14,8 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   ~tonicity sorts).
 - `s.9.mitosis-meiosis`: 4 (main mitosis sequence; ~cell-cycle and ~meiosis sequences; ~compare
   sort).
+- `s.9.ecosystem-dynamics`: 4 (main trophic-efficiency and ~biodiversity calculators;
+  ~succession sequence; ~nitrogen explore).
 
 ## Waiting
 
@@ -46,5 +48,9 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   so with more Na⁺ inside the picture would pump it in. K⁺ and the after-counts are labelled
   under the picture.
 - `~transport-types`: text cards (Engine need 10, transport icons, would add pictures).
+
+- `~biodiversity`: Simpson's sum is written out term by term, 1 − ((n₁ ÷ N)² + … + (n₄ ÷ N)²),
+  so the harness reads it with no Σ phrase (Engine need 7 is not needed for this page). The four
+  species are named (a pond survey) rather than numbered.
 
 ## Shared needs found while building
