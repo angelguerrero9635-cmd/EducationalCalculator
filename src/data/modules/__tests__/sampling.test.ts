@@ -206,7 +206,8 @@ function resultNumber(result: string, exp = false): number {
   const rep = /^[-−]?\d[\d,]*\.\d+…/.exec(rhs);
   if (rep) return Number(parseNumber(rep[0]));
   // Scientific notation (4.7 × 10⁵, −3 × 10⁻⁴) and multiples of π (36π) are one number.
-  const sci = /^([-−]?[\d.]+) × 10(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)/.exec(rhs);
+  // (a dollar amount too: $6.0972 × 10⁹)
+  const sci = /^\$?([-−]?[\d.]+) × 10(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)/.exec(rhs);
   if (sci) {
     const n = Number([...sci[2]!].map((c) => (c === '⁻' ? '-' : '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c))).join(''));
     return Number(sci[1]!.replace('−', '-')) * 10 ** n;

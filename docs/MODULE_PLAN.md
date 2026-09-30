@@ -11,11 +11,11 @@ independent AI review), and the next section starts only after the owner approve
 | 1   | Math K–2                                                                                            | 64      | Done, reviewed twice       |
 | 2   | Math 3–5 (one grade at a time)                                                                      | 35      | Grades 3–5 built, reviewed |
 | 3   | Math 6–8                                                                                            | 30      | Grades 6–8 built, reviewed |
-| 4   | Math 9–10                                                                                           | 35      | Pictures drawn; planning   |
-| 5   | Math 11–12                                                                                          | 29      | Pictures drawn; planning   |
+| 4   | Math 9–10                                                                                           | 35      | 9–10 built (166 pages)     |
+| 5   | Math 11–12                                                                                          | 29      | 11–12 built (114 pages)    |
 | 6   | Science K–5                                                                                         | 39      | K–5 built, reviewed        |
 | 7   | Science 6–8                                                                                         | 26      | Grades 6–8 built, reviewed |
-| 8   | Science 9–12                                                                                        | 56      | Pictures drawn; planning   |
+| 8   | Science 9–12                                                                                        | 56      | 9–12 built (253 pages)     |
 | 9   | College Math                                                                                        | 25      |                            |
 | 10  | Chemistry                                                                                           | 42      |                            |
 | 11  | Physics                                                                                             | 32      |                            |
