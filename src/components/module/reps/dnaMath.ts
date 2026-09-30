@@ -75,19 +75,48 @@ export function mutate(template: string, m: Mutation): string {
   return template.slice(0, i) + template.slice(i + 1);
 }
 
-/** What a mutation does to the protein. */
-export type Effect = 'silent' | 'missense' | 'nonsense' | 'frameshift' | 'none';
+/**
+ * What a mutation does to the protein. H109: when the template starts with the start codon (its
+ * mRNA begins AUG), a change that breaks AUG is `start-lost` (no protein from this start), a
+ * substitution turning the stop codon into an amino acid is `stop-lost` (the ribosome reads on),
+ * an insertion before base 1 is `before-start` (the start codon is intact, one base later), and an
+ * insertion or deletion past the stop codon is `none`.
+ */
+export type Effect =
+  | 'silent'
+  | 'missense'
+  | 'nonsense'
+  | 'frameshift'
+  | 'none'
+  | 'start-lost'
+  | 'stop-lost'
+  | 'before-start';
 
 export function effectOf(template: string, m: Mutation): Effect {
-  if (m.type !== 'substitution') return 'frameshift';
   const before = translate(transcribe(template)).map((x) => x.aa);
-  const after = translate(transcribe(mutate(template, m))).map((x) => x.aa);
+  const hasStart = before[0] === 'Met';
+  const stopAt = before.indexOf('Stop');
   const codon = Math.ceil(m.at / 3) - 1;
+  if (m.type !== 'substitution') {
+    if (!hasStart) return 'frameshift';
+    if (m.type === 'insertion' && m.at <= 1) return 'before-start';
+    if (codon === 0 && !transcribe(mutate(template, m)).startsWith('AUG')) return 'start-lost';
+    // Wholly past the stop codon: an insertion before a base after it, or a deleted base after it.
+    const lastCoding = stopAt >= 0 ? 3 * (stopAt + 1) : Infinity;
+    if (m.at > lastCoding) return 'none';
+    return 'frameshift';
+  }
+  const after = translate(transcribe(mutate(template, m))).map((x) => x.aa);
   if (codon >= before.length) return 'none';
+  if (hasStart && codon === 0 && after[0] !== 'Met') return 'start-lost';
+  if (before[codon] === 'Stop' && after[codon] !== 'Stop') return 'stop-lost';
   if (after[codon] === before[codon]) return 'silent';
   if (after[codon] === 'Stop') return 'nonsense';
   return 'missense';
 }
+
+/** Where the ribosome starts on the mutated mRNA: one base on after an insertion before base 1. */
+export const readFrom = (effect: Effect | undefined) => (effect === 'before-start' ? 1 : 0);
 
 /**
  * Chargaff's rule: `pairs` base pairs with A (so T) `percentA` of the bases. The pairs top to

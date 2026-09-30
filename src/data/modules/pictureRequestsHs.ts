@@ -2268,20 +2268,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ],
     'P20: docs/build/s.10.md, "Shared needs".',
   ),
-  ask(
-    'H109',
-    'gel',
-    'Biology: gel as an explore figure, cellDivision as a calculator picture, a neuron and reflex arc, a flower with its parts and embryo-stage icons, biome icons or a map, observe pages with two rows or negative values, dnaMath start-lost and stop-lost effects',
-    [
-      's.9.biotechnology',
-      's.9.mitosis-meiosis~mitotic-index',
-      's.9.nervous-system',
-      's.9.plant-biology~life-cycle',
-      's.9.reproduction-development',
-      's.9.biomes~land',
-    ],
-    'P21: docs/build/s.9.md, "Shared needs".',
-  ),
+  {
+    ...ask(
+      'H109',
+      'gel',
+      'Biology: gel as an explore figure, cellDivision as a calculator picture, a neuron and reflex arc, a flower with its parts and embryo-stage icons, biome icons or a map, observe pages with two rows or negative values, dnaMath start-lost and stop-lost effects',
+      [
+        's.9.biotechnology',
+        's.9.biotechnology~frameshift',
+        's.9.mitosis-meiosis~mitotic-index',
+        's.9.nervous-system',
+        's.9.plant-biology~life-cycle',
+        's.9.reproduction-development',
+        's.9.biomes~land',
+      ],
+    ),
+    gallery: ['g.s9-biotechnology-start-stop', 'g.s9-biotechnology-frameshift-start'],
+    notes:
+      'P21: docs/build/s.9.md, "Shared needs"; drawn part by part (group H3D, demos in galleryHs3d.ts). (1) `dnaMath.effectOf` start-lost and stop-lost (dnaStrand, no new field): when the template’s mRNA starts AUG, a substitution in codon 1 is start-lost (AUG is Met’s only codon): the After row reads “No protein: the start codon is gone” and the caption “Start lost: the start codon AUG becomes AUA, so the ribosome can’t start here and no protein is made”; a substitution turning the stop into a sense codon is stop-lost: the After row gains that amino acid, lit, and the caption reads “Stop lost: the stop codon UAA becomes CAA (Gln), so the ribosome reads on past the gene’s end and the protein comes out too long”. An insertion inside the start codon (before base 2 or 3) or a deletion breaking AUG is start-lost; an insertion before base 1 leaves AUG whole, one base later (read from there: the protein is the same); an insertion or deletion past the stop codon changes nothing; every other insertion or deletion stays a frameshift. The harness (picturesHs3d.ts) works the expected effect out from the codons. No page changes today (p is 4–9 and 4–12). s.9.biotechnology: p may run 1–12 (the assumption “this page changes the codons between them” goes; k 1–4); ~frameshift: p 1–12 (k 1–4; at p = 1 the insertion is ahead of the start and the protein is the same, so s is 0 there, or keep p from 2). Demos g.s9-biotechnology-start-stop (p 1–12, example p = 10, stop lost) and g.s9-biotechnology-frameshift-start (p 1–12, example p = 2, start lost).',
+  },
   ask(
     'H110',
     'geologicClock',

@@ -18,9 +18,11 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import {
   chargaffPairs,
+  CODON_TABLE,
   complement,
   effectOf,
   mutate,
+  readFrom,
   transcribe,
   translate,
   type Mutation,
@@ -99,10 +101,16 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
   const shown = mut ? mutate(template, mut) : template;
   const show = spec.show ?? ['mrna', 'protein'];
   const mrna = transcribe(shown);
-  const protein = translate(mrna);
+  const effect = mut ? effectOf(template, mut) : undefined;
+  // H109: no protein when the start codon is lost; read from the moved start after an insertion
+  // before base 1.
+  const from = readFrom(effect);
+  const protein = effect === 'start-lost' ? [] : translate(mrna.slice(from));
   const before = mut ? translate(transcribe(template)) : undefined;
   const bw = Math.min(26, (W - X0 - 8) / Math.max(1, shown.length + (gap >= 0 ? 1 : 0)));
   const x = (i: number) => X0 + (i + (gap >= 0 && i >= gap ? 1 : 0)) * bw;
+  /** Where codon k's bases start on the drawing, from the read start. */
+  const xr = (i: number) => x(i + from);
   /** The "…" standing for the gene's middle, in a row at y. */
   const dots = (y: number) =>
     gap >= 0 ? (
@@ -123,7 +131,6 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
   const rows = show.includes('protein') ? (before ? 2 : 1) : 0;
   const H = (show.includes('mrna') ? protY : ladderH + 10) + rows * 30 + 6;
   const allKnown = known(spec.length) && (!m || known(m.at)) && known(spec.gene?.bases);
-  const effect = mut ? effectOf(template, mut) : undefined;
   const changed = (i: number) =>
     !!before &&
     (before[i]?.aa !== protein[i]?.aa || (before[i] === undefined) !== (protein[i] === undefined));
@@ -182,8 +189,8 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
                     />
                   ))}
                   {protein.map((p, k) => {
-                    const x1 = x(3 * k) + 2;
-                    const x2 = x(3 * k + 2) + bw - 2;
+                    const x1 = xr(3 * k) + 2;
+                    const x2 = xr(3 * k + 2) + bw - 2;
                     return (
                       <G key={k}>
                         <Path
@@ -216,11 +223,22 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
                     label={before ? 'After' : 'Protein'}
                     chain={protein}
                     y={protY + (before ? 30 : 0)}
-                    x={x}
+                    x={xr}
                     bw={bw}
                     c={c}
                     lit={changed}
                   />
+                  {effect === 'start-lost' ? (
+                    <ChartText
+                      x={X0 + 4}
+                      y={protY + 30 + 15.5}
+                      fontSize={chart.value}
+                      fontWeight="700"
+                      fill={c.chartHighlight}
+                    >
+                      No protein: the start codon is gone
+                    </ChartText>
+                  ) : null}
                 </G>
               ) : null}
             </G>
@@ -269,6 +287,15 @@ function captionOf(
     return `${shown.length} bases make ${Math.floor(shown.length / 3)} codons.${codons} Template ${template} → mRNA ${transcribe(template)} → ${chain || 'no complete codon yet'}.`;
   }
   const where = `base ${mut.at}, codon ${Math.ceil(mut.at / 3)}`;
+  const k = Math.ceil(mut.at / 3) - 1;
+  const oldCodon = transcribe(template).slice(3 * k, 3 * k + 3);
+  const newCodon = transcribe(shown).slice(3 * k, 3 * k + 3);
+  if (effect === 'start-lost')
+    return `A ${mut.type} at ${where}. Start lost: the start codon AUG becomes ${transcribe(shown).slice(0, 3)}, so the ribosome can’t start here and no protein is made.`;
+  if (effect === 'before-start')
+    return `An insertion before base 1, ahead of the start codon. The ribosome still starts at AUG, one base later, so the protein is the same: ${chain}.`;
+  if (effect === 'stop-lost')
+    return `A substitution at ${where}. Stop lost: the stop codon ${oldCodon} becomes ${newCodon} (${CODON_TABLE[newCodon] ?? '?'}), so the ribosome reads on past the gene’s end and the protein comes out too long: ${chain}, and on.`;
   const what =
     effect === 'silent'
       ? 'Silent: the new codon codes for the same amino acid.'

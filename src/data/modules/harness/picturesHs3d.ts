@@ -1,0 +1,43 @@
+/**
+ * Picture checks for round 3 group H3D (biology, H109). Called from the kinds' cases in
+ * `pictures.ts` and `picturesHsg.ts`. Test-only.
+ */
+import { CODON_TABLE, effectOf, mutate, transcribe } from '@/components/module/reps/dnaMath';
+
+const STOPS = ['UAA', 'UAG', 'UGA'];
+
+/**
+ * `dnaStrand` mutations (H109): the effect the caption names, worked out here from the bases.
+ * With a template whose mRNA starts AUG: a change breaking the start codon is start-lost, an
+ * insertion before base 1 leaves the start whole, a substitution turning the stop into a sense
+ * codon is stop-lost, an insertion or deletion past the stop changes nothing; any other
+ * insertion or deletion is a frameshift.
+ */
+export function mutationEffectIssues(
+  template: string,
+  m: { type: 'substitution' | 'insertion' | 'deletion'; at: number; base?: string },
+): string[] {
+  const got = effectOf(template, m);
+  const mrna = transcribe(template);
+  const after = transcribe(mutate(template, m));
+  const codons = mrna.match(/.{3}/g) ?? [];
+  const started = codons[0] === 'AUG';
+  const stop = codons.findIndex((c) => STOPS.includes(c));
+  const k = Math.ceil(m.at / 3) - 1;
+  let want: string | undefined;
+  if (m.type !== 'substitution') {
+    if (!started) want = 'frameshift';
+    else if (m.type === 'insertion' && m.at === 1) want = 'before-start';
+    else if (k === 0 && after.slice(0, 3) !== 'AUG') want = 'start-lost';
+    else if (stop >= 0 && m.at > 3 * (stop + 1)) want = 'none';
+    else want = 'frameshift';
+  } else if (started && k === 0) {
+    // AUG is Met's only codon: any change to it loses the start.
+    want = CODON_TABLE[after.slice(0, 3)] === 'Met' ? 'silent' : 'start-lost';
+  } else if (k === stop) {
+    want = STOPS.includes(after.slice(3 * k, 3 * k + 3)) ? 'silent' : 'stop-lost';
+  }
+  if (want !== undefined && got !== want)
+    return [`dna: a ${m.type} at base ${m.at} reads as ${got}, expected ${want}`];
+  return [];
+}
