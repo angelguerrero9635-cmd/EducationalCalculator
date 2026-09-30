@@ -3,7 +3,7 @@
 Built from `.review/plans/m.9/plan.md` in its Priority order. Pages are in
 `src/data/modules/math/9.ts` (one array per skill, exported in taxonomy order), sorts in
 `src/data/modules/layouts/math9.ts`, step phrases in `src/data/modules/harness/phrasesM9.ts`.
-`MODULE_IDS=m.9. pnpm test src/data/modules`: 3,072 passed, 2 skipped; `src/data/__tests__`:
+`MODULE_IDS=m.9. pnpm test src/data/modules`: 3,308 passed, 2 skipped (deep run clean); `src/data/__tests__`:
 50 passed.
 
 ## Built
@@ -133,7 +133,8 @@ and the ~special symbol were done by the lead first; E8–E11 by the engine.
 - **Symbols:** no value symbol is an expression: f(x), f(x₁), f(x₂), f(p) are y, y₁, y₂, y_p
   (the function notation is in the names), the class A/B summaries on ~compare are Q₁_A, IQR_B.
 - **New pages:** ~literal-line (ax + by = c for y), ~same-base (4⁶ = 8ˣ → 2¹² = 2³ˣ → x = 4,
-  table of qˣ; phrases in `phrasesM9.ts`), ~five-number-summary (box plot from up to 12 values),
+  whole exponent e = sa, so no fractional power is written; the table's qˣ is picture-only;
+  phrases in `phrasesM9.ts`), ~five-number-summary (box plot from up to 12 values),
   ~compare-models (sort: linear, quadratic or exponential by differences and ratios).
 - **Waiting (from the report's coverage table):** m.9.function-notation~transform
   (f(x) + k, f(x − h), a·f(x) on `functionGraph`: needs two curves on one graph) and

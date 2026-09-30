@@ -324,8 +324,10 @@ const EXPONENTIAL: ModuleDef[] = [
       int('b', 'b', 'Common base', 2, 100, { derived: true }),
       int('s', 's', 'p as a power of b', 1, 10, { derived: true }),
       int('t', 't', 'q as a power of b', 1, 10, { derived: true }),
+      int('e', 'e', 'Exponent of b on each side', -1000, 1000, { derived: true }),
       num('x', 'x', 'Solution', -100, 100, { fraction: 12 }),
-      num('R', 'R', 'Right side, q to the power x', 0, 1e21, { derived: true }),
+      num('R', 'R', 'Each side’s value, b to the power e', 0, 1e21, { derived: true }),
+      num('Q', 'Q', 'q to the power x, for the table', 0, 1e21, pictureOnly),
     ],
     rules: [
       derive(
@@ -364,45 +366,53 @@ const EXPONENTIAL: ModuleDef[] = [
         'Write the right base as a power of b too.',
         { work: (v) => [`${fmt(v.q!)} = ${fmt(v.b!)}${raised(v.t!)}`] },
       ),
-      rule(
-        'x = s × a ÷ t',
-        '{x} = {s} × {a} ÷ {t}',
-        ['x', 's', 'a', 't'],
-        (v) => v.x! * v.t! - v.s! * v.a!,
-        {
-          x: [
-            (v) => div(v.s! * v.a!, v.t!),
-            '{s} × {a} ÷ {t}',
-            'Now b^(sa) = b^(tx): the bases match, so tx = sa. Divide by t.',
-            {
-              work: (v) => [
-                `${fmt(v.b!)}${raised(v.s! * v.a!)} = ${fmt(v.b!)}${raised(v.t!)}ˣ`,
-                `${fmt(v.t!)}x = ${fmt(v.s! * v.a!)}`,
-              ],
-            },
-          ],
-          a: [(v) => div(v.t! * v.x!, v.s!), '{t} × {x} ÷ {s}', 'The same, solved for a: sa = tx.'],
-        },
-      ),
       derive(
-        'R = q^x',
+        'e = s × a',
+        'e',
+        ['s', 'a'],
+        '{e} = {s} × {a}',
+        (v) => v.s! * v.a!,
+        '{s} × {a}',
+        'A power of a power multiplies the exponents: the left side is b to the power sa.',
+      ),
+      rule('x = e ÷ t', '{x} = {e} ÷ {t}', ['x', 'e', 't'], (v) => v.x! * v.t! - v.e!, {
+        x: [
+          (v) => div(v.e!, v.t!),
+          '{e} ÷ {t}',
+          'The right side is b to the power tx. The bases match, so tx = e: divide by t.',
+        ],
+        e: [(v) => v.t! * v.x!, '{t} × {x}', 'The same, solved for e: e = tx.'],
+      }),
+      derive(
+        'R = b^e',
         'R',
-        ['q', 'x'],
-        '{R} = {q}^{x}',
-        (v) => fin(v.q! ** v.x!),
-        '{q}^{x}',
-        'Check: the right side at this x equals the left side, pᵃ.',
+        ['b', 'e'],
+        '{R} = {b}^{e}',
+        (v) => fin(v.b! ** v.e!),
+        '{b}^{e}',
+        'Check: both sides are this number.',
         {},
         { check: (v) => `${fmt(v.p!)}${raised(v.a!)} = ${fmt(v.R!)}` },
       ),
+      figure(
+        derive(
+          'Q = q^x',
+          'Q',
+          ['q', 'x'],
+          '{Q} = {q}^{x}',
+          (v) => fin(v.q! ** v.x!),
+          '{q}^{x}',
+          '',
+        ),
+      ),
     ],
-    example: { p: 4, a: 6, q: 8, b: 2, s: 2, t: 3, x: 4, R: 4096 },
+    example: { p: 4, a: 6, q: 8, b: 2, s: 2, t: 3, e: 12, x: 4, R: 4096, Q: 4096 },
     startWith: ['p', 'a', 'q'],
     equation: '{p}^{a} = {q}^x',
     representation: {
       kind: 'table',
       sweep: 'x',
-      output: 'R',
+      output: 'Q',
       params: ['q'],
       rows: [0, 1, 2, 3, 4, 5, 6],
     },
@@ -2067,13 +2077,10 @@ const SOLVING_EQUATIONS: ModuleDef[] = [
         ],
         b: [(v) => div(v.B!, v.p!), '{B} ÷ {p}', 'Undo the distributing: divide by p.'],
       }),
-      bothSides(
-        'A',
-        'B',
-        'c',
-        'd',
-        (v) =>
-          `${fmt(v.p!)} × (${fmt(v.a!)} × ${sgf(v.x!)} + ${sg(v.b!)}) = ${fmt(v.c!)} × ${sgf(v.x!)} + ${sg(v.d!)}`,
+      bothSides('A', 'B', 'c', 'd', (v) =>
+        known(v, 'p', 'a', 'b')
+          ? `${fmt(v.p!)} × (${fmt(v.a!)} × ${sgf(v.x!)} + ${sg(v.b!)}) = ${fmt(v.c!)} × ${sgf(v.x!)} + ${sg(v.d!)}`
+          : `${fmt(v.A!)} × ${sgf(v.x!)} + ${sg(v.B!)} = ${fmt(v.c!)} × ${sgf(v.x!)} + ${sg(v.d!)}`,
       ),
     ],
     example: { p: 2, a: 3, b: -4, c: 4, d: 2, A: 6, B: -8, x: 5 },
