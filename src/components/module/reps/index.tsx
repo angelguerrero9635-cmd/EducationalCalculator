@@ -145,6 +145,7 @@ import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
 import { AlleleFrequencies } from './AlleleFrequencies';
 import { ImmuneResponse } from './ImmuneResponse';
+import { HslPicture } from './HslPicture';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -201,6 +202,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <AlleleFrequencies spec={spec} calc={calc} />;
     case 'immuneResponse':
       return <ImmuneResponse spec={spec} calc={calc} />;
+    case 'earthLayers':
+      return <HslPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

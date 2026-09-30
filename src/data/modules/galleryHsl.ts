@@ -7,8 +7,91 @@
  * landforms, dated rock layers, the ocean, the atmosphere, the greenhouse effect, energy
  * sources, the H–R diagram and the expanding universe.
  */
+import type { Relation, Values, VariableDef } from '@/engine/types';
+
+import { div } from './helpers';
 import type { LayoutDef } from './layouts';
-import type { ModuleDef } from './types';
+import type { ModuleDef, StepText } from './types';
+
+type Rel = { relation: Relation; steps: Record<string, StepText> };
+
+const V = (
+  id: string,
+  symbol: string,
+  name: string,
+  extra: Partial<VariableDef> = {},
+): VariableDef => ({ id, symbol, name, ...extra });
+
+const rels = (...rs: Rel[]) => ({
+  relations: rs.map((r) => r.relation),
+  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+});
+
+/** a = b × c, with each way round. `how`: for a, for b, for c. */
+function product(a: string, b: string, c: string, how: [string, string, string]): Rel {
+  return {
+    relation: {
+      id: `${a} = ${b} × ${c}`,
+      display: `{${a}} = {${b}} × {${c}}`,
+      vars: [a, b, c],
+      residual: (v: Values) => v[a]! - v[b]! * v[c]!,
+      solve: {
+        [a]: (v: Values) => v[b]! * v[c]!,
+        [b]: (v: Values) => div(v[a]!, v[c]!),
+        [c]: (v: Values) => div(v[a]!, v[b]!),
+      },
+    },
+    steps: {
+      [a]: { expr: `{${b}} × {${c}}`, how: how[0] },
+      [b]: { expr: `{${a}} ÷ {${c}}`, how: how[1] },
+      [c]: { expr: `{${a}} ÷ {${b}}`, how: how[2] },
+    },
+  };
+}
+
+/** a = b ÷ c, with each way round. */
+function quotient(a: string, b: string, c: string, how: [string, string, string]): Rel {
+  return {
+    relation: {
+      id: `${a} = ${b} ÷ ${c}`,
+      display: `{${a}} = {${b}} ÷ {${c}}`,
+      vars: [a, b, c],
+      residual: (v: Values) => v[a]! * v[c]! - v[b]!,
+      solve: {
+        [a]: (v: Values) => div(v[b]!, v[c]!),
+        [b]: (v: Values) => v[a]! * v[c]!,
+        [c]: (v: Values) => div(v[b]!, v[a]!),
+      },
+    },
+    steps: {
+      [a]: { expr: `{${b}} ÷ {${c}}`, how: how[0] },
+      [b]: { expr: `{${a}} × {${c}}`, how: how[1] },
+      [c]: { expr: `{${b}} ÷ {${a}}`, how: how[2] },
+    },
+  };
+}
+
+/** a = b − c, with each way round. */
+function difference(a: string, b: string, c: string, how: [string, string, string]): Rel {
+  return {
+    relation: {
+      id: `${a} = ${b} − ${c}`,
+      display: `{${a}} = {${b}} − {${c}}`,
+      vars: [a, b, c],
+      residual: (v: Values) => v[a]! - (v[b]! - v[c]!),
+      solve: {
+        [a]: (v: Values) => v[b]! - v[c]!,
+        [b]: (v: Values) => v[a]! + v[c]!,
+        [c]: (v: Values) => v[b]! - v[a]!,
+      },
+    },
+    steps: {
+      [a]: { expr: `{${b}} − {${c}}`, how: how[0] },
+      [b]: { expr: `{${a}} + {${c}}`, how: how[1] },
+      [c]: { expr: `{${b}} − {${a}}`, how: how[2] },
+    },
+  };
+}
 
 // ── H71: minerals and the Mohs scale ──
 
@@ -139,5 +222,204 @@ const mineralLayouts: LayoutDef[] = [
   },
 ];
 
-export const HSL_GALLERY_MODULES: ModuleDef[] = [];
+// ── H72: Earth's interior and earthquakes ──
+
+const QUAKE_WHY = [
+  'An earthquake sends out P waves (push-pull, the fastest) and S waves (side to side, slower); surface waves come last.',
+  'P waves travel through solids and liquids; S waves travel only through solids.',
+];
+
+/** Kilometres along Earth's surface per degree from the focus: 2π × 6371 ÷ 360. */
+const KM_PER_DEG = (Math.PI * 6371) / 180;
+
+const shadowZone: ModuleDef = {
+  id: 'g.s12-earth-interior-shadow-zone',
+  title: 'The shadow zones: which waves reach a station',
+  use: 'Use this for which seismic waves reach a station a given angle from an earthquake, and why.',
+  assumptions: [
+    ...QUAKE_WHY,
+    'Wave speed rises with depth, so paths through the mantle curve back up to the surface.',
+    'No S waves arrive past 104° from the focus: the outer core is liquid. P waves bend at the core, leaving a P shadow zone from 104° to 140°.',
+    'Distance along the surface is the angle’s share of Earth’s circumference, with a radius of 6,371 km.',
+  ],
+  variables: [
+    V('D', 'Δ', 'Angle from the focus', { unit: '°', min: 0, max: 180, step: 1 }),
+    V('s', 's', 'Distance along the surface', { unit: 'km', min: 0, max: 20100, step: 1 }),
+  ],
+  ...rels({
+    relation: {
+      id: 's = Δ × π × 6371 ÷ 180',
+      display: '{s} = {D} × π × 6371 ÷ 180',
+      vars: ['s', 'D'],
+      residual: (v: Values) => v.s! - v.D! * KM_PER_DEG,
+      solve: { s: (v: Values) => v.D! * KM_PER_DEG, D: (v: Values) => v.s! / KM_PER_DEG },
+    },
+    steps: {
+      s: {
+        expr: '{D} × π × 6371 ÷ 180',
+        how: 'The angle’s share of the half circle, times half the circumference π × 6371 km.',
+      },
+      D: {
+        expr: '{s} × 180 ÷ (π × 6371)',
+        how: 'How many of the km per degree fit into the distance.',
+      },
+    },
+  }),
+  example: { D: 120, s: 120 * KM_PER_DEG },
+  startWith: ['D'],
+  representation: { kind: 'earthLayers', mode: 'section', distance: 'D' },
+};
+
+const shadowDirect: ModuleDef = {
+  ...shadowZone,
+  id: 'g.s12-earth-interior-shadow-direct',
+  title: 'A station that gets both waves',
+  use: 'Use this for a station close enough that P and S waves reach it through the mantle.',
+  example: { D: 60, s: 60 * KM_PER_DEG },
+};
+
+const shadowCore: ModuleDef = {
+  ...shadowZone,
+  id: 'g.s12-earth-interior-shadow-core',
+  title: 'A station past the core',
+  use: 'Use this for a station on the far side of Earth, reached only by P waves through the core.',
+  example: { D: 160, s: 160 * KM_PER_DEG },
+};
+
+const shadowEdge: ModuleDef = {
+  ...shadowZone,
+  id: 'g.s12-earth-interior-shadow-edge',
+  title: 'The edge of the shadow zone',
+  use: 'Use this for the 104° path that just grazes the core, where both shadow zones begin.',
+  example: { D: 104, s: 104 * KM_PER_DEG },
+};
+
+const kmv = (id: string, symbol: string, name: string, derived = false) =>
+  V(id, symbol, name, { unit: 'km', min: 1, max: 20000, step: 1, derived });
+const sec = (id: string, symbol: string, name: string, derived = false) =>
+  V(id, symbol, name, { unit: 's', min: 0.1, max: 5000, step: 0.1, derived });
+const speed = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { unit: 'km/s', min: 0.5, max: 15, step: 0.1 });
+
+const seismogram: ModuleDef = {
+  id: 'g.s12-earth-interior-seismogram',
+  title: 'Reading a seismogram: the S − P lag',
+  use: 'Use this for when the P and S waves reach a station, and the lag between them.',
+  assumptions: [
+    ...QUAKE_WHY,
+    'Each wave’s travel time is the distance divided by its speed; here P waves travel at about 6 km/s and S waves at 3.5 km/s in the crust.',
+    'The farther the station, the longer the gap between the P and S arrivals.',
+  ],
+  variables: [
+    kmv('d', 'd', 'Distance to the earthquake'),
+    speed('vp', 'vₚ', 'P-wave speed'),
+    speed('vs', 'vₛ', 'S-wave speed'),
+    sec('tp', 'tₚ', 'P travel time', true),
+    sec('ts', 'tₛ', 'S travel time', true),
+    sec('L', 'L', 'S − P lag', true),
+  ],
+  ...rels(
+    quotient('tp', 'd', 'vp', [
+      'Travel time is the distance over the P wave’s speed.',
+      'Distance is speed times time.',
+      'Speed is distance over time.',
+    ]),
+    quotient('ts', 'd', 'vs', [
+      'Travel time is the distance over the S wave’s speed.',
+      'Distance is speed times time.',
+      'Speed is distance over time.',
+    ]),
+    {
+      relation: {
+        id: 'vₛ < vₚ',
+        constraint: true,
+        display: '{vs} is less than {vp}',
+        vars: ['vs', 'vp'],
+        residual: (v: Values) => (v.vs! < v.vp! ? 0 : 1),
+        solve: {},
+      },
+      steps: {},
+    },
+    difference('L', 'ts', 'tp', [
+      'The S wave arrives this long after the P wave.',
+      'The S wave arrives the lag after the P wave.',
+      'The P wave arrives the lag before the S wave.',
+    ]),
+  ),
+  example: { d: 420, vp: 6, vs: 3.5, tp: 70, ts: 120, L: 50 },
+  startWith: ['d', 'vp', 'vs'],
+  representation: {
+    kind: 'earthLayers',
+    mode: 'seismogram',
+    km: 'd',
+    vp: 'vp',
+    vs: 'vs',
+    lag: 'L',
+  },
+};
+
+const seismogramNear: ModuleDef = {
+  ...seismogram,
+  id: 'g.s12-earth-interior-seismogram-near',
+  title: 'A seismogram close to the earthquake',
+  use: 'Use this for a station near the earthquake, where the P and S waves arrive only seconds apart.',
+  example: { d: 35, vp: 6, vs: 3.5, tp: 35 / 6, ts: 10, L: 10 - 35 / 6 },
+};
+
+const epicenter: ModuleDef = {
+  id: 'g.s12-earth-interior-epicenter',
+  title: 'Locating an epicenter from three stations',
+  use: 'Use this for finding an epicenter from three stations’ S − P lags.',
+  assumptions: [
+    ...QUAKE_WHY,
+    'Each second of S − P lag means the same extra distance: here k = vₚ × vₛ ÷ (vₚ − vₛ) = 6 × 3.5 ÷ 2.5 = 8.4 km.',
+    'Each station’s distance draws a circle round it: the epicenter is on that circle.',
+    'Two circles cross at two points; the third circle picks the one where all three meet.',
+  ],
+  variables: [
+    V('k', 'k', 'Distance per second of lag', { unit: 'km/s', min: 1, max: 20, step: 0.1 }),
+    sec('t1', 'L₁', 'Lag at station 1'),
+    sec('t2', 'L₂', 'Lag at station 2'),
+    sec('t3', 'L₃', 'Lag at station 3'),
+    kmv('d1', 'd₁', 'Distance from station 1', true),
+    kmv('d2', 'd₂', 'Distance from station 2', true),
+    kmv('d3', 'd₃', 'Distance from station 3', true),
+  ],
+  ...rels(
+    ...(
+      [
+        ['d1', 't1'],
+        ['d2', 't2'],
+        ['d3', 't3'],
+      ] as const
+    ).map(([d, t]) =>
+      product(d, 'k', t, [
+        'Each second of lag is k more kilometres from the station.',
+        'The kilometres per second of lag.',
+        'How many seconds of lag cover the distance.',
+      ]),
+    ),
+  ),
+  example: { k: 8.4, t1: 25, t2: 10, t3: 25, d1: 210, d2: 84, d3: 210 },
+  startWith: ['k', 't1', 't2', 't3'],
+  representation: {
+    kind: 'earthLayers',
+    mode: 'epicenter',
+    stations: [
+      { name: '1', x: 0, y: 0, r: 'd1' },
+      { name: '2', x: 168, y: 210, r: 'd2' },
+      { name: '3', x: 336, y: 0, r: 'd3' },
+    ],
+  },
+};
+
+export const HSL_GALLERY_MODULES: ModuleDef[] = [
+  shadowZone,
+  shadowDirect,
+  shadowCore,
+  shadowEdge,
+  seismogram,
+  seismogramNear,
+  epicenter,
+];
 export const HSL_GALLERY_LAYOUTS: LayoutDef[] = [...mineralLayouts];

@@ -133,6 +133,7 @@ const PICTURE_NAMES: Record<string, string> = {
   gel: 'gel electrophoresis or PCR copies',
   alleleFrequencies: 'allele beads and genotype bars',
   immuneResponse: 'antibody levels after two exposures',
+  earthLayers: 'Earth’s layers, seismic waves or an epicenter',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

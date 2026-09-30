@@ -46,6 +46,7 @@ import {
 } from './picturesHsf';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
+import { hslIssues } from './picturesHsl';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2103,6 +2104,10 @@ export function repIssues(
     case 'alleleFrequencies':
     case 'immuneResponse':
       out.push(...hshIssues(rep, (id) => val(id)));
+      break;
+    case 'earthLayers':
+      // In formula units (km, s), as the picture draws them.
+      out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'table':
       if ('twoWay' in rep) {

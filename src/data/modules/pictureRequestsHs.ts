@@ -1072,12 +1072,26 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HL) as card icons and an explore figure. Card icons, each in its habit and luster: { kind: "icon", icon: "quartz" } (also "feldspar", "mica", "calcite", "halite", "pyrite", "hematite"); hematite shows its red-brown streak on a white plate, calcite doubles a line seen through it. Mohs scale (explore figure): { kind: "mohsScale" }, each scene mohs: { lit?: rank 1–10, between?: [low, high] (an unknown’s range, shaded; the tools sit at fingernail 2.5, copper coin 3.5, glass 5.5, steel file 6.5), absolute?: true (bars to absolute hardness, talc 1 … diamond 1500) }. Example scene: { label: "An unknown mineral", lines: [...], mohs: { between: [5.5, 6.5], lit: 6 } }. The harness checks lit is a rank and the range lies in 1–10.',
   },
-  ask(
-    'H72',
-    'earthLayers',
-    'Cross-section of Earth with P and S wave paths and the shadow zone; a seismogram; locating an epicenter from three stations',
-    ['s.12.earth-interior'],
-  ),
+  {
+    ...ask(
+      'H72',
+      'earthLayers',
+      'Cross-section of Earth with P and S wave paths and the shadow zone; a seismogram; locating an epicenter from three stations',
+      ['s.12.earth-interior'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-earth-interior-shadow-zone',
+      'g.s12-earth-interior-shadow-direct',
+      'g.s12-earth-interior-shadow-core',
+      'g.s12-earth-interior-shadow-edge',
+      'g.s12-earth-interior-seismogram',
+      'g.s12-earth-interior-seismogram-near',
+      'g.s12-earth-interior-epicenter',
+    ],
+    notes:
+      'Drawn (group HL) as one calculator kind in three modes. Cross-section: { kind: "earthLayers", mode: "section", distance?: id or number (the station’s angle from the focus, 0°–180°), fixed? }: layers to scale (crust, mantle, liquid outer core from 2,890 km, solid inner core from 5,150 km), P paths on the left curving to 104° and through the core to 140°–180°, S paths on the right stopping at the outer core, the shadow zones as bands; the station is drawn on both halves, filled where that wave arrives, and dragged round the surface. Example: { kind: "earthLayers", mode: "section", distance: "D" } with s = Δ × π × 6371 ÷ 180. Seismogram: { kind: "earthLayers", mode: "seismogram", km: id, vp?: id or number (default 6 km/s), vs?: (default 3.5), lag?: id }: the trace with P at d ÷ vₚ, S at d ÷ vₛ, surface waves after, the S − P lag bracketed; give the page a constraint vₛ < vₚ. Example: { kind: "earthLayers", mode: "seismogram", km: "d", vp: "vp", vs: "vs", lag: "L" }. Epicenter: { kind: "earthLayers", mode: "epicenter", stations: [{ name, x, y (km), r: distance id } ×3] }: circles on a km grid, the epicenter starred where all three meet; circles that miss draw faded with the reason. Example: stations [{ name: "1", x: 0, y: 0, r: "d1" }, { name: "2", x: 168, y: 210, r: "d2" }, { name: "3", x: 336, y: 0, r: "d3" }] with d = k × L, k = 8.4 km per second of lag. The harness checks the rays (the 104° ray grazes the core, none dips into it), the lag against the trace, and that stations aren’t in a line.',
+  },
   ask(
     'H73',
     'landforms',

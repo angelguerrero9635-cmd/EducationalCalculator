@@ -279,6 +279,13 @@ const light = {
   mineralApatite: '#6FBF9A',
   mineralTopaz: '#F2C065',
   mineralCorundum: '#C8324A',
+  /** Earth's interior (H72): crust, mantle, liquid outer core, solid inner core; P and S waves. */
+  earthCrust: '#8B6A4E',
+  earthMantle: '#E3935B',
+  earthOuterCore: '#F2B84B',
+  earthInnerCore: '#FBE38A',
+  quakeP: '#2563EB',
+  quakeS: '#C2410C',
   /** Grades 9–12 group D: sine and cosine legs on the unit circle, algebra tiles (positive and
    * negative), and a resultant vector. */
   unitCircleSine: '#D9480F',
@@ -531,6 +538,12 @@ const dark: Palette = {
   mineralApatite: '#4F9C79',
   mineralTopaz: '#D2A24A',
   mineralCorundum: '#C23A50',
+  earthCrust: '#6A5039',
+  earthMantle: '#A8603A',
+  earthOuterCore: '#B98A2E',
+  earthInnerCore: '#D8BE5C',
+  quakeP: '#6EA0FF',
+  quakeS: '#F08A3C',
   unitCircleSine: '#FF8A5C',
   unitCircleCosine: '#3CCFAE',
   tilePositive: '#2F5F86',
