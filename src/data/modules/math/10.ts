@@ -242,10 +242,10 @@ const sum = (c: string, a: string, b: string, how: string) =>
     },
     (v) => v[c]! - v[a]! - v[b]!,
   );
-/** x × y = z × w, solved for any one. */
-const products = (x: string, y: string, z: string, w: string, how: string) =>
+/** x × y = z × w, solved for any one (`name`: the rule as the lesson writes it). */
+const products = (x: string, y: string, z: string, w: string, how: string, name?: string) =>
   rule(
-    `${x}${y} = ${z}${w}`,
+    name ?? `${x}${y} = ${z}${w}`,
     `{${x}} × {${y}} = {${z}} × {${w}}`,
     {
       [x]: [(v) => quot(v[z]! * v[w]!, v[y]!), `{${z}} × {${w}} ÷ {${y}}`, how],
@@ -581,6 +581,28 @@ const SIMILARITY: ModuleDef[] = [
       num('k', 'k', 'Scale factor AD ÷ AB', 0.001, 0.999),
     ],
     rules: [
+      rule(
+        'AD ÷ DB = AE ÷ EC',
+        '{ad} ÷ {db} = {ae} ÷ {ec}',
+        Object.fromEntries(
+          (
+            [
+              ['ec', 'ae', 'db', 'ad'],
+              ['ae', 'ad', 'ec', 'db'],
+              ['db', 'ad', 'ec', 'ae'],
+              ['ad', 'ae', 'db', 'ec'],
+            ] as const
+          ).map(([x, p, q, d]) => [
+            x,
+            [
+              (v: Values) => quot(v[p]! * v[q]!, v[d]!),
+              `{${p}} × {${q}} ÷ {${d}}`,
+              'A line parallel to one side cuts the other two in the same ratio: cross-multiply.',
+            ],
+          ]),
+        ),
+        (v) => v.ad! * v.ec! - v.ae! * v.db!,
+      ),
       sum('ab', 'ad', 'db', 'Side AB is AD and DB put together.'),
       sum('ac', 'ae', 'ec', 'Side AC is AE and EC put together.'),
       scaled('ad', 'k', 'ab', 'side AB'),
@@ -1222,19 +1244,31 @@ const COORDINATES: ModuleDef[] = [
       coord('y2', 'y₂', 'y of B'),
       num('m', 'm', 'Pieces from A to P', 1, 10, { step: 1, integer: true }),
       num('n', 'n', 'Pieces from P to B', 1, 10, { step: 1, integer: true }),
-      der(num('px', 'x', 'x of P', -20, 20)),
-      der(num('py', 'y', 'y of P', -20, 20)),
+      der(num('px', 'xₚ', 'x of P', -20, 20)),
+      der(num('py', 'yₚ', 'y of P', -20, 20)),
     ],
-    rules: (['x', 'y'] as const).map((c) =>
-      derive(
-        `P${c} = A${c} + m/(m + n) × (B${c} − A${c})`,
+    rules: (['x', 'y'] as const).map((c) => {
+      const r = derive(
+        `${c}ₚ = ${c}₁ + m/(m + n) × (${c}₂ − ${c}₁)`,
         `{p${c}} = {${c}1} + {m} ÷ ({m} + {n}) × ({${c}2} − {${c}1})`,
         `p${c}`,
         (v) => v[`${c}1`]! + (v.m! / (v.m! + v.n!)) * (v[`${c}2`]! - v[`${c}1`]!),
         `{${c}1} + {m} ÷ ({m} + {n}) × ({${c}2} − {${c}1})`,
         `Start at A and go m of the m + n equal pieces of the change in ${c}.`,
-      ),
-    ),
+      );
+      // The fraction of the way, the change, then the share of it: −2 + 1/3 × 12, −2 + 4.
+      r.steps[`p${c}`]!.work = (v: Values) => {
+        const [a, b, m, n] = [v[`${c}1`]!, v[`${c}2`]!, v.m!, v.n!];
+        const f = (x: number) => formatNumber(Number(x.toPrecision(12)));
+        const par = (x: number) => (x < 0 ? `(${f(x)})` : f(x));
+        const part = (m * (b - a)) / (m + n);
+        return [
+          `${c}ₚ = ${f(a)} + ${f(m)}/${f(m + n)} × ${par(b - a)}`,
+          `${c}ₚ = ${f(a)} + ${par(part)}`,
+        ];
+      };
+      return r;
+    }),
     example: { x1: -2, y1: 1, x2: 10, y2: 7, m: 1, n: 2, px: 2, py: 3 },
     startWith: ['x1', 'y1', 'x2', 'y2', 'm', 'n'],
     representation: {
@@ -1307,14 +1341,16 @@ const COORDINATES: ModuleDef[] = [
     assumptions: [
       'Two sides are perpendicular when their slopes multiply to −1.',
       'A vertical side has no slope; it is perpendicular to a level side (slope 0).',
-      'A right angle at B makes AB and BC perpendicular.',
+      'Check the two slopes at each corner: a product of −1 is a right angle there.',
     ],
     variables: [
       ...['a', 'b', 'c'].flatMap(corner),
       slopeOut('mab', 'AB'),
       slopeOut('mbc', 'BC'),
       slopeOut('mac', 'AC'),
-      der(num('p', 'p', 'Slope of AB × slope of BC', -1e6, 1e6)),
+      der(num('p', 'p', 'Product at B, mAB × mBC', -1e6, 1e6, { fraction: 1000 })),
+      der(num('q', 'q', 'Product at C, mBC × mAC', -1e6, 1e6, { fraction: 1000 })),
+      der(num('w', 'w', 'Product at A, mAB × mAC', -1e6, 1e6, { fraction: 1000 })),
     ],
     rules: [
       sideSlope('mab', 'a', 'b'),
@@ -1328,8 +1364,37 @@ const COORDINATES: ModuleDef[] = [
         '{mab} × {mbc}',
         'Multiply the two slopes at B: −1 means a right angle.',
       ),
+      derive(
+        'q = mBC × mAC',
+        '{q} = {mbc} × {mac}',
+        'q',
+        (v) => v.mbc! * v.mac!,
+        '{mbc} × {mac}',
+        'Multiply the two slopes at C: −1 means a right angle.',
+      ),
+      derive(
+        'w = mAB × mAC',
+        '{w} = {mab} × {mac}',
+        'w',
+        (v) => v.mab! * v.mac!,
+        '{mab} × {mac}',
+        'Multiply the two slopes at A: −1 means a right angle.',
+      ),
     ],
-    example: { ax: -1, ay: 1, bx: 1, by: 5, cx: 5, cy: 3, mab: 2, mbc: -0.5, mac: 1 / 3, p: -1 },
+    example: {
+      ax: -1,
+      ay: 1,
+      bx: 1,
+      by: 5,
+      cx: 5,
+      cy: 3,
+      mab: 2,
+      mbc: -0.5,
+      mac: 1 / 3,
+      p: -1,
+      q: -1 / 6,
+      w: 2 / 3,
+    },
     startWith: ['ax', 'ay', 'bx', 'by', 'cx', 'cy'],
     representation: {
       kind: 'coordinatePlane',
@@ -2157,13 +2222,20 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
       'The products of the parts of each chord are equal: AE × EB = CE × ED.',
     ],
     variables: [
-      len('a', 'a', 'AE'),
-      len('b', 'b', 'EB'),
-      len('c', 'c', 'CE'),
-      len('d', 'd', 'ED', 1e6),
+      len('a', 'AE', 'AE'),
+      len('b', 'EB', 'EB'),
+      len('c', 'CE', 'CE'),
+      len('d', 'ED', 'ED', 1e6),
     ],
     rules: [
-      products('a', 'b', 'c', 'd', 'Crossing chords: the products of their parts are equal.'),
+      products(
+        'a',
+        'b',
+        'c',
+        'd',
+        'Crossing chords: the products of their parts are equal.',
+        'AE × EB = CE × ED',
+      ),
     ],
     example: { a: 6, b: 4, c: 3, d: 8 },
     startWith: ['a', 'b', 'c'],
@@ -2178,10 +2250,10 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
       'Outside part × whole secant is the same for both: PA × PB = PC × PD.',
     ],
     variables: [
-      len('a', 'a', 'PA (outside)'),
-      len('b', 'b', 'PB (whole)', 1e6),
-      len('c', 'c', 'PC (outside)'),
-      len('d', 'd', 'PD (whole)', 1e6),
+      len('a', 'PA', 'PA (outside)'),
+      len('b', 'PB', 'PB (whole)', 1e6),
+      len('c', 'PC', 'PC (outside)'),
+      len('d', 'PD', 'PD (whole)', 1e6),
     ],
     rules: [
       limit(
@@ -2202,6 +2274,7 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
         'c',
         'd',
         'Two secants from one point: outside part × whole secant is equal.',
+        'PA × PB = PC × PD',
       ),
     ],
     example: { a: 3, b: 10, c: 5, d: 6 },
@@ -2217,9 +2290,9 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
       'The tangent squared is outside part × whole secant: PT² = PA × PB.',
     ],
     variables: [
-      len('t', 't', 'PT (tangent)'),
-      len('a', 'a', 'PA (outside)'),
-      len('b', 'b', 'PB (whole)', 1e6),
+      len('t', 'PT', 'PT (tangent)'),
+      len('a', 'PA', 'PA (outside)'),
+      len('b', 'PB', 'PB (whole)', 1e6),
     ],
     rules: [
       limit(
@@ -2229,7 +2302,7 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
         'A whole secant is longer than its outside part.',
       ),
       rule(
-        't² = ab',
+        'PT² = PA × PB',
         '{t}² = {a} × {b}',
         {
           t: [
@@ -4057,7 +4130,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
     title: 'Symmetry of a rectangle',
     use: 'Use this for “Which rotations carry a 6 by 4 rectangle onto itself? How many lines of symmetry does it have?”',
     assumptions: [
-      'The rectangle’s corners are (1, 1) and (r, u), with center (a, b) halfway across and up.',
+      'The rectangle is w squares wide and h tall, and it turns about its center.',
       'A rectangle that isn’t a square has 2 lines of symmetry and is carried onto itself by 180° and 360° turns.',
       'A square (w = h) adds 90° and 270° turns and its two diagonals: 4 lines.',
     ],
@@ -4065,46 +4138,35 @@ const RIGID_MOTIONS: ModuleDef[] = [
       num('w', 'w', 'Width', 1, 8, { step: 1, integer: true }),
       num('h', 'h', 'Height', 1, 8, { step: 1, integer: true }),
       num('t', 't', 'Turn', 90, 360, { unit: '°', allowed: [90, 180, 270, 360] }),
-      der(num('r', 'r', 'Right side at x =', 2, 9, { integer: true })),
-      der(num('u', 'u', 'Top side at y =', 2, 9, { integer: true })),
-      der(num('a', 'a', 'x of the center', 1.5, 5)),
-      der(num('b', 'b', 'y of the center', 1.5, 5)),
+      // The drawing's corners and center only place the rectangle on the grid.
+      { ...num('r', 'r', 'Right side at x =', 2, 9, { integer: true }), derived: true, hidden: true },
+      { ...num('u', 'u', 'Top side at y =', 2, 9, { integer: true }), derived: true, hidden: true },
+      { ...num('a', 'a', 'x of the center', 1.5, 5), derived: true, hidden: true },
+      { ...num('b', 'b', 'y of the center', 1.5, 5), derived: true, hidden: true },
       der(num('L', 'L', 'Lines of symmetry', 2, 4, { integer: true })),
       der(num('n', 'n', 'Order of rotational symmetry', 2, 4, { integer: true })),
       der(num('f', 'f', 'Carried onto itself (1 yes, 0 no)', 0, 1, { integer: true })),
     ],
     rules: [
-      derive(
-        'r = 1 + w',
-        '{r} = 1 + {w}',
-        'r',
-        (v) => 1 + v.w!,
-        '1 + {w}',
-        'The right side is w squares from x = 1.',
-      ),
-      derive(
-        'u = 1 + h',
-        '{u} = 1 + {h}',
-        'u',
-        (v) => 1 + v.h!,
-        '1 + {h}',
-        'The top is h squares above y = 1.',
-      ),
-      derive(
+      rule('r = 1 + w', '{r} = 1 + {w}', { r: [(v) => 1 + v.w!, '', ''] }, (v) => v.r! - 1 - v.w!, {
+        hidden: true,
+      }),
+      rule('u = 1 + h', '{u} = 1 + {h}', { u: [(v) => 1 + v.h!, '', ''] }, (v) => v.u! - 1 - v.h!, {
+        hidden: true,
+      }),
+      rule(
         'a = (1 + r)/2',
         '{a} = (1 + {r}) ÷ 2',
-        'a',
-        (v) => (1 + v.r!) / 2,
-        '(1 + {r}) ÷ 2',
-        'The center is halfway across.',
+        { a: [(v) => (1 + v.r!) / 2, '', ''] },
+        (v) => v.a! - (1 + v.r!) / 2,
+        { hidden: true },
       ),
-      derive(
+      rule(
         'b = (1 + u)/2',
         '{b} = (1 + {u}) ÷ 2',
-        'b',
-        (v) => (1 + v.u!) / 2,
-        '(1 + {u}) ÷ 2',
-        'The center is halfway up.',
+        { b: [(v) => (1 + v.u!) / 2, '', ''] },
+        (v) => v.b! - (1 + v.u!) / 2,
+        { hidden: true },
       ),
       pick(
         'L from w and h',
@@ -4126,7 +4188,8 @@ const RIGID_MOTIONS: ModuleDef[] = [
             ? 'A square lands on itself every quarter turn.'
             : 'A rectangle lands on itself every half turn.',
       ),
-      pick(
+      (() => {
+        const r = pick(
         'f from t and n',
         '{f}: does a turn of {t} carry it onto itself, order {n}',
         'f',
@@ -4135,7 +4198,10 @@ const RIGID_MOTIONS: ModuleDef[] = [
           Math.round(v.t! * v.n!) % 360 === 0
             ? 'The turn is a whole number of 360° ÷ n steps: the figure lands on itself.'
             : 'The turn is not a whole number of 360° ÷ n steps: the figure lands turned.',
-      ),
+      );
+        r.steps.f!.note = (v: Values) => (v.f ? '(yes)' : '(no)');
+        return r;
+      })(),
     ],
     example: { w: 6, h: 4, t: 180, r: 7, u: 5, a: 4, b: 3, L: 2, n: 2, f: 1 },
     startWith: ['w', 'h', 't'],
