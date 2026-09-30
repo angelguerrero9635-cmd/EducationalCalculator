@@ -5,6 +5,7 @@
 import type { ChemDiagramHs3eSpec } from '@/data/modules/typesHs3e';
 
 import type { Calculator } from '../useCalculator';
+import { ChemCell } from './ChemCell';
 import { ChemPhase } from './ChemPhase';
 import { ChemRate } from './ChemRate';
 
@@ -14,7 +15,7 @@ export function ChemDiagramHs3e({ spec, calc }: { spec: ChemDiagramHs3eSpec; cal
       return <ChemPhase spec={spec} calc={calc} />;
     case 'rate':
       return <ChemRate spec={spec} calc={calc} />;
-    default:
-      return null;
+    case 'cell':
+      return <ChemCell spec={spec} calc={calc} />;
   }
 }

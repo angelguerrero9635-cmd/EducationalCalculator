@@ -83,6 +83,21 @@ const averageRate = fromPage(
   },
 );
 
-export const HS3E_GALLERY_MODULES: ModuleDef[] = [ionicCharges, phaseDiagram, averageRate];
+// ─── Part 5: a galvanic cell as a calculator picture ─────────────────────────
+
+/** s.10.redox~cell-voltage drawing the cell its two potentials make. */
+const cellVoltage = fromPage(
+  's.10.redox~cell-voltage',
+  'g.s10-redox-cell-voltage-cell',
+  'Cell voltage with the cell drawn',
+  { kind: 'chemDiagram', mode: 'cell', cathode: 'Ec', anode: 'Ea', voltage: 'E' },
+);
+
+export const HS3E_GALLERY_MODULES: ModuleDef[] = [
+  ionicCharges,
+  phaseDiagram,
+  averageRate,
+  cellVoltage,
+];
 
 export const HS3E_GALLERY_LAYOUTS: LayoutDef[] = [];
