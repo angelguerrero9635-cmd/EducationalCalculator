@@ -5,6 +5,8 @@
  * string is a variable id; a number is a fixed value the page doesn't ask for.
  */
 
+import { regularVars, type RegularPolygon } from './typesHs2b';
+
 /** A triangle's parts: sides a, b, c opposite the angles A, B, C (degrees). */
 export type TriPart = 'a' | 'b' | 'c' | 'A' | 'B' | 'C';
 
@@ -142,6 +144,8 @@ export interface MarkedFigureSpec {
   };
   /** Proof steps; `step` (a value id, 1 to the count) picks the one lit. */
   proof?: { step: string; steps: ProofStep[] };
+  /** A regular polygon, its triangles from one corner and an exterior angle (`typesHs2b.ts`). */
+  regular?: RegularPolygon;
 }
 
 /**
@@ -204,6 +208,7 @@ export function hscSpecVars(r: HscSpec): string[] {
         r.quadrilateral?.top,
         ...Object.values(r.quadrilateral?.labels ?? {}),
         r.proof?.step,
+        ...regularVars(r.regular),
       ]);
     case 'circleTheorems':
       return ids([

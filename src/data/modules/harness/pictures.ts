@@ -45,6 +45,7 @@ import {
   scaleCopyHsfIssues,
   transformationHsfIssues,
 } from './picturesHsf';
+import { hs2bIssues } from './picturesHs2b';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
@@ -2095,7 +2096,7 @@ export function repIssues(
     case 'triangleSolver':
     case 'markedFigure':
     case 'circleTheorems':
-      out.push(...hscIssues(rep, (id) => val(id)));
+      out.push(...hscIssues(rep, (id) => val(id)), ...hs2bIssues(rep, (id) => val(id)));
       break;
     case 'normalCurve':
     case 'histogram':
