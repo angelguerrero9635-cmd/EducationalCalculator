@@ -2435,6 +2435,124 @@ const CHARGE_DEMOS: ModuleDef[] = [
   },
 ];
 
+// ─── H68 circuit: mixed series-parallel ──────────────────────────────────────
+
+const mixedDemo = (
+  id: string,
+  title: string,
+  use: string,
+  layout: 'seriesParallel' | 'parallelSeries',
+  ex: { V: number; a: number; b: number; c: number },
+): ModuleDef => {
+  const sp = layout === 'seriesParallel';
+  const Req = sp
+    ? ex.a + (ex.b * ex.c) / (ex.b + ex.c)
+    : ((ex.a + ex.b) * ex.c) / (ex.a + ex.b + ex.c);
+  const I = ex.V / Req;
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      sp
+        ? 'R₁ carries the whole current; then it splits between R₂ and R₃, which share one voltage.'
+        : 'Each branch gets the whole battery voltage; R₁ and R₂ in the first branch share its current.',
+      'Series: resistances add. Parallel: 1/R = 1/R₂ + 1/R₃, so R₂ ∥ R₃ = R₂R₃/(R₂ + R₃).',
+      'Each resistor’s reading: V = IR across it, P = VI in it.',
+    ],
+    variables: [
+      q('V', 'V', 'Battery voltage', 'V', 0.1, 1000, 0.1),
+      q('a', 'R₁', 'Resistor 1', 'Ω', 0.1, 10000, 0.1),
+      q('b', 'R₂', 'Resistor 2', 'Ω', 0.1, 10000, 0.1),
+      q('c', 'R₃', 'Resistor 3', 'Ω', 0.1, 10000, 0.1),
+      q('R', 'Rₜₒₜ', 'Total resistance', 'Ω', 0.001, 100000, 0.001),
+      q('I', 'I', 'Total current', 'A', 0, 10000, 0.001),
+      q('P', 'P', 'Total power', 'W', 0, 1e7, 0.01),
+    ],
+    ...rules(
+      sp
+        ? rule(
+            'Rₜₒₜ = R₁ + R₂R₃/(R₂ + R₃)',
+            '{R} = {a} + {b} × {c}/({b} + {c})',
+            (v) => v.R! - v.a! - (v.b! * v.c!) / (v.b! + v.c!),
+            {
+              R: [
+                (v) => v.a! + div(v.b! * v.c!, v.b! + v.c!)!,
+                '{a} + {b} × {c}/({b} + {c})',
+                'R₂ and R₃ in parallel, then R₁ in series.',
+              ],
+              a: [
+                (v) => v.R! - div(v.b! * v.c!, v.b! + v.c!)!,
+                '{R} − {b} × {c}/({b} + {c})',
+                'Take the parallel pair from the total.',
+              ],
+            },
+          )
+        : rule(
+            'Rₜₒₜ = (R₁ + R₂)R₃/(R₁ + R₂ + R₃)',
+            '{R} = ({a} + {b}) × {c}/({a} + {b} + {c})',
+            (v) => v.R! * (v.a! + v.b! + v.c!) - (v.a! + v.b!) * v.c!,
+            {
+              R: [
+                (v) => div((v.a! + v.b!) * v.c!, v.a! + v.b! + v.c!),
+                '({a} + {b}) × {c}/({a} + {b} + {c})',
+                'R₁ and R₂ in series, that branch in parallel with R₃.',
+              ],
+              c: [
+                (v) => div(v.R! * (v.a! + v.b!), v.a! + v.b! - v.R!),
+                '{R} × ({a} + {b})/({a} + {b} − {R})',
+                'Solve the parallel formula for R₃.',
+              ],
+            },
+          ),
+      rule('I = V/Rₜₒₜ', '{I} = {V}/{R}', (v) => v.I! * v.R! - v.V!, {
+        I: [(v) => div(v.V!, v.R!), '{V}/{R}', 'Ohm’s law for the whole circuit.'],
+        V: [(v) => v.I! * v.R!, '{I} × {R}', 'The current times the total resistance.'],
+        R: [(v) => div(v.V!, v.I!), '{V}/{I}', 'The voltage over the current.'],
+      }),
+      product('P', 'V', 'I', 'P = VI', [
+        'The battery’s power: its voltage times the current it drives.',
+        'Divide the power by the current.',
+        'Divide the power by the voltage.',
+      ]),
+    ),
+    example: { ...ex, R: Req, I, P: ex.V * I },
+    startWith: ['V', 'a', 'b', 'c'],
+    representation: {
+      kind: 'circuit',
+      wiring: 'series',
+      voltage: 'V',
+      bulbs: [],
+      current: 'I',
+      mixed: { layout, resistors: ['a', 'b', 'c'], equivalent: 'R', power: 'P' },
+    },
+  };
+};
+
+const CIRCUIT_DEMOS: ModuleDef[] = [
+  mixedDemo(
+    'g.s11-circuits-series-parallel',
+    'A resistor in series with a parallel pair',
+    'Use this for “A 12 V battery drives R₁ = 4 Ω in series with 6 Ω and 3 Ω in parallel. Find the current and each resistor’s voltage.”',
+    'seriesParallel',
+    { V: 12, a: 4, b: 6, c: 3 },
+  ),
+  mixedDemo(
+    'g.s11-circuits-parallel-series',
+    'Two branches, one with two resistors',
+    'Use this for “A 12 V battery drives a branch of 2 Ω and 4 Ω in series, in parallel with 12 Ω. Find each current.”',
+    'parallelSeries',
+    { V: 12, a: 2, b: 4, c: 12 },
+  ),
+  mixedDemo(
+    'g.s11-circuits-equal-resistors',
+    'Three equal resistors',
+    'Use this for “Three 3 Ω resistors: one in series with the other two in parallel, on 9 V. What is the total resistance?”',
+    'seriesParallel',
+    { V: 9, a: 3, b: 3, c: 3 },
+  ),
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
@@ -2446,5 +2564,6 @@ export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...WAVE_DEMOS,
   ...RAY_DEMOS,
   ...CHARGE_DEMOS,
+  ...CIRCUIT_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

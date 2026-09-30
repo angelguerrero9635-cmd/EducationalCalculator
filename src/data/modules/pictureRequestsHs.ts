@@ -1095,9 +1095,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK, reps/Charges.tsx; the field lines traced with fieldLines.ts, Coulomb math in hskMath.ts). Calculator picture { kind: "charges", charges: [q₁, q₂?] (μC, signed, numbers or variables), distance: r (m), force?: F (N; a page may count it signed, − for attraction: compared by size), field?: E (N/C, one charge), fixed?: true }. Lit charge balls, red + and blue −, each labelled with its value; field lines traced step by step through the field of the charges (out of +, into −, as many from each charge as its share of the biggest, at least 2), an arrow on each; for two charges the Coulomb forces F = k|q₁q₂|/r² as equal and opposite arrows on one scale (apart for like, together for unlike charges); drag the second charge for r and the arrows follow the inverse square; for one charge, the field E = k|q|/r² at a point r away, pointing away from + and toward −. r is bracketed; the spacing on screen is fixed (the lines’ shape doesn’t depend on r). The harness checks F and E. Example: representation: { kind: "charges", charges: ["a", "b"], distance: "r", force: "F" }; { kind: "charges", charges: ["a"], distance: "r", field: "E" }.',
   },
-  ask('H68', 'circuit', 'Mixed series-parallel circuits, meter readings at each resistor, power', [
-    's.11.circuits',
-  ]),
+  {
+    ...ask(
+      'H68',
+      'circuit',
+      'Mixed series-parallel circuits, meter readings at each resistor, power',
+      ['s.11.circuits'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-circuits-series-parallel',
+      'g.s11-circuits-parallel-series',
+      'g.s11-circuits-equal-resistors',
+    ],
+    notes:
+      'Drawn (group HK, reps/CircuitMixed.tsx; the readings in hskMath.ts mixedOf) as an option on the Grade 8 circuit, so every current circuit page is unchanged. Calculator picture { kind: "circuit", wiring: "series" (ignored), voltage: V, bulbs: [], current: I (the ammeter, the total current), mixed: { layout: "seriesParallel" (R₁ in series with R₂ ∥ R₃) | "parallelSeries" ((R₁ + R₂) ∥ R₃), resistors: [R₁, R₂, R₃] (Ω, numbers or variables), equivalent?: R_total, power?: total P, voltages?, currents?, powers?: [for R₁, R₂, R₃] (checked when named) } }. A battery cell, an ammeter on the top wire reading the total current, copper wire with the junctions dotted, three ceramic resistors each labelled R₁ … with its reading: the voltage across it, the current through it and its power, and R_total at the corner. The caption works R_total, I = V/R_total and P = VI. The harness checks R_total, I, P and each resistor’s V, I and P (a value shown in mA or kΩ allowed). Example: representation: { kind: "circuit", wiring: "series", voltage: "V", bulbs: [], current: "I", mixed: { layout: "seriesParallel", resistors: ["a", "b", "c"], equivalent: "R", power: "P" } }.',
+  },
   ask(
     'H69',
     'induction',

@@ -146,6 +146,7 @@ import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { EnergySpring } from './EnergySpring';
 import { WaveDoppler } from './WaveDoppler';
+import { CircuitMixed } from './CircuitMixed';
 import { WaveStanding } from './WaveStanding';
 
 /** Section title for each representation kind. */
@@ -278,6 +279,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'orbit':
       return <Orbit spec={spec} calc={calc} />;
     case 'circuit':
+      if (spec.mixed) return <CircuitMixed spec={spec} m={spec.mixed} calc={calc} />;
       return <Circuit spec={spec} calc={calc} />;
     case 'spectrum':
       return <Spectrum spec={spec} calc={calc} />;

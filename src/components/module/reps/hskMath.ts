@@ -195,6 +195,33 @@ export function snellOf(n1: number, n2: number, deg: number) {
 /** Double-slit fringe spacing Δy = λL/d, with λ in nm, d in mm, L in m: Δy in mm. */
 export const fringeOf = (nm: number, mm: number, m: number) => (mm > 0 ? (nm * m) / mm / 1000 : 0);
 
+/**
+ * Three resistors on a battery (H68): R₁ in series with R₂ ∥ R₃, or (R₁ + R₂) ∥ R₃. The
+ * equivalent resistance, the total current, and each resistor's voltage, current and power.
+ */
+export function mixedOf(
+  layout: 'seriesParallel' | 'parallelSeries',
+  [R1, R2, R3]: [number, number, number],
+  V: number,
+) {
+  if (layout === 'seriesParallel') {
+    const R23 = (R2 * R3) / (R2 + R3);
+    const Req = R1 + R23;
+    const I = V / Req;
+    const V23 = I * R23;
+    const Vs = [I * R1, V23, V23] as const;
+    const Is = [I, V23 / R2, V23 / R3] as const;
+    return { Req, I, V: Vs, I3: Is, P: [Vs[0] * Is[0], Vs[1] * Is[1], Vs[2] * Is[2]] as const };
+  }
+  const R12 = R1 + R2;
+  const Req = (R12 * R3) / (R12 + R3);
+  const I = V / Req;
+  const I12 = V / R12;
+  const Vs = [I12 * R1, I12 * R2, V] as const;
+  const Is = [I12, I12, V / R3] as const;
+  return { Req, I, V: Vs, I3: Is, P: [Vs[0] * Is[0], Vs[1] * Is[1], Vs[2] * Is[2]] as const };
+}
+
 /** Coulomb's constant, N·m²/C². */
 export const K_COULOMB = 8.99e9;
 

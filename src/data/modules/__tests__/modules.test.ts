@@ -488,7 +488,7 @@ function representationVars(r: Representation): string[] {
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
-      return physics8SpecVars(r);
+      return [...physics8SpecVars(r), ...hskOptionVars(r)];
     case 'triangleSolver':
     case 'markedFigure':
     case 'circleTheorems':

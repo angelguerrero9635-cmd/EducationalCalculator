@@ -366,6 +366,26 @@ export interface ChargesSpec {
   fixed?: boolean;
 }
 
+// ─── H68 circuit option: mixed series-parallel ──────────────────────────────
+
+/**
+ * A `circuit` option: three resistors (Ω) on a battery (the circuit's `voltage`), either
+ * `seriesParallel` (R₁ in series with R₂ ∥ R₃) or `parallelSeries` ((R₁ + R₂) ∥ R₃), in copper
+ * wire with an ammeter for the total current (the circuit's `current`). Each resistor carries
+ * its reading: the voltage across it, the current through it and its power. `equivalent` is
+ * R_eq, `power` the total power VI; `voltages`, `currents` and `powers` name each resistor's
+ * values when the page has them (checked).
+ */
+export interface MixedCircuit {
+  layout: 'seriesParallel' | 'parallelSeries';
+  resistors: [NumOrVar, NumOrVar, NumOrVar];
+  equivalent?: string;
+  power?: string;
+  voltages?: [string?, string?, string?];
+  currents?: [string?, string?, string?];
+  powers?: [string?, string?, string?];
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
@@ -472,6 +492,17 @@ export function hskOptionVars(r: { kind: string }): string[] {
   if (r.kind === 'wave' && o.doppler) {
     const d = o.doppler as DopplerWave;
     return ids(d.sourceSpeed, d.waveSpeed, d.frequency, d.ahead, d.behind);
+  }
+  if (r.kind === 'circuit' && o.mixed) {
+    const m = o.mixed as MixedCircuit;
+    return ids(
+      ...m.resistors,
+      m.equivalent,
+      m.power,
+      ...(m.voltages ?? []),
+      ...(m.currents ?? []),
+      ...(m.powers ?? []),
+    );
   }
   if (r.kind === 'energyTrack' && o.spring) {
     const e = o.spring as EnergySpring;

@@ -2074,7 +2074,8 @@ export function repIssues(
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
-      out.push(...physics8Issues(rep, (id) => val(id)));
+      if (hsk.physicsHsOption(rep)) out.push(...hsk.physicsHsIssues(rep, (id) => val(id)));
+      else out.push(...physics8Issues(rep, (id) => val(id)));
       break;
     case 'triangleSolver':
     case 'markedFigure':

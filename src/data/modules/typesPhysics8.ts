@@ -3,6 +3,7 @@
  * with bulbs, an electromagnet and an orbit (kept apart from `types.ts` so that file's union
  * only lists them). Every string is a variable id.
  */
+import type { MixedCircuit } from './typesHsk';
 
 /**
  * The electromagnetic spectrum as a band from radio (long waves, left) to gamma rays (short,
@@ -45,6 +46,8 @@ export interface CircuitSpec {
   branches?: string[];
   /** A 0–1 value: 1 closes the switch, 0 opens it (the current is then 0). Tap it to flip. */
   switch?: string;
+  /** Grades 9–12 (H68): three resistors in series-parallel (`typesHsk.ts`); `bulbs` is then []. */
+  mixed?: MixedCircuit;
 }
 
 /**

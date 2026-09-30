@@ -376,3 +376,46 @@ export function waveHsIssues(rep: WaveSpec, si: Val): string[] {
 
 /** A shown value in formula (SI) units, or undefined for a "?". */
 export const mapSi = (x: number | undefined, factor = 1) => (x === undefined ? x : x * factor);
+
+type Physics8 = Extract<
+  Representation,
+  { kind: 'spectrum' | 'circuit' | 'electromagnet' | 'orbit' }
+>;
+
+/** Whether a Grade 8 physics picture carries a group-HK option (checked here instead). */
+export const physicsHsOption = (rep: Physics8) => rep.kind === 'circuit' && !!rep.mixed;
+
+/** Equal, or equal up to a unit prefix (a value shown in mA or kΩ is 10³ from the formula's). */
+const nearUnit = (a: number, b: number) => {
+  if (near(a, b)) return true;
+  if (!(a > 0 && b > 0)) return false;
+  const k = Math.log10(a / b);
+  return Math.abs(k - Math.round(k)) < 1e-4 && Math.round(k) % 3 === 0;
+};
+
+/** H68: a mixed circuit's R_eq, total current, power and each resistor's readings. */
+export function physicsHsIssues(rep: Physics8, val: Val): string[] {
+  const out: string[] = [];
+  if (rep.kind !== 'circuit' || !rep.mixed) return out;
+  const m = rep.mixed;
+  const Rs = m.resistors.map((x) => read(val, x));
+  const V = val(rep.voltage);
+  if (Rs.some((r) => r !== undefined && r <= 0))
+    out.push('circuit: a resistor that is not positive');
+  if (V === undefined || Rs.some((r) => r === undefined || r <= 0)) return out;
+  const c = hm.mixedOf(m.layout, Rs as [number, number, number], V);
+  const check = (id: string | undefined, want: number, what: string) => {
+    const x = id ? val(id) : undefined;
+    if (x !== undefined && !nearUnit(x, want))
+      out.push(`circuit: ${what} ${x}, the picture draws ${want}`);
+  };
+  check(rep.current, c.I, 'total current');
+  check(m.equivalent, c.Req, 'equivalent resistance');
+  check(m.power, V * c.I, 'total power');
+  [0, 1, 2].forEach((i) => {
+    check(m.voltages?.[i], c.V[i]!, `voltage across R${i + 1}`);
+    check(m.currents?.[i], c.I3[i]!, `current through R${i + 1}`);
+    check(m.powers?.[i], c.P[i]!, `power of R${i + 1}`);
+  });
+  return out;
+}
