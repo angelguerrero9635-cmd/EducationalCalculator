@@ -936,7 +936,7 @@ const kepler: ModuleDef = {
   ],
   variables: [
     V('a', 'a', 'Semi-major axis', { unit: 'AU', min: 0.1, max: 100, step: 0.01 }),
-    V('e', 'e', 'Eccentricity', { min: 0, max: 0.97, step: 0.001 }),
+    V('e', 'e', 'Eccentricity', { min: 0, max: 0.95, step: 0.001 }),
     V('q', 'q', 'Perihelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
     V('Q', 'Q', 'Aphelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
     V('T', 'T', 'Period', { unit: 'years', min: 0.03, max: 1000, step: 0.01 }),
