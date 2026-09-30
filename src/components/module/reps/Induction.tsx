@@ -9,6 +9,7 @@ import { Canvas, Caption, ChartText, niceCeil, useFrozen, useRep } from './commo
 import { arrowAt, pathOf, traceLine, type Pole } from './fieldLines';
 import { arrowHead } from './graphKit';
 import { RAD, sig, SubLabel, Vec } from './hskKit';
+import { MovingCharge } from './MovingCharge';
 import { Sheen, TopLight, url, usePaintIds } from './paint';
 
 const MAX_LOOPS = 20;
@@ -26,6 +27,8 @@ export function Induction({ spec, calc }: { spec: InductionSpec; calc: Calculato
       return <ForceView spec={spec} calc={calc} />;
     case 'transformer':
       return <TransformerView spec={spec} calc={calc} />;
+    case 'charge':
+      return <MovingCharge spec={spec} calc={calc} />;
   }
 }
 
