@@ -25,6 +25,9 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
 - `s.9.biotechnology`: 5 (main substitution, ~frameshift, ~gel and ~pcr calculators; ~tools
   sort).
 
+- `s.9.immune-disease`: 5 (main antibody-peaks and ~herd-immunity calculators; ~pathogens and
+  ~defenses sorts; ~stages explore).
+
 ## Waiting
 
 - `s.9.mitosis-meiosis~chromosome-count` (calculator): Engine need 3, `cellDivision` as a
@@ -75,5 +78,12 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   pairs in 10 and the hydrogen bonds can be decimals: they read as averages per 10 pairs.
 - `~replication`: text stages only (Engine need 6, the replication-fork figure).
 - `~frameshift`: added the limit p ≤ L (the plan's range 1–L).
+
+- `s.9.immune-disease` main: the days (d₁, d₂, s) are marked `standalone`: how much sooner and
+  how much higher are separate comparisons with no formula between them.
+- `~herd-immunity`: `percentBar` shades a part of a whole, so the page adds the people in the
+  community P and the people to vaccinate V = P × C ÷ 100; the bar shades C. H is shown as a
+  value, not shaded. Example R₀ = 5, e = 95%, P = 19,000 → H = 80%, C ≈ 84.2%, V = 16,000.
+- `~pathogens`: bins cannot carry icons, so each kind's icon is a card of its own ("A virus").
 
 ## Shared needs found while building

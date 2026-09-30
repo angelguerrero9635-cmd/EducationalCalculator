@@ -1153,6 +1153,151 @@ const ENERGY: LayoutDef[] = [
   },
 ];
 
+const IMMUNE: LayoutDef[] = [
+  // ── Disease and the immune system (HS-LS1-2, HS-LS1-3) ──
+  {
+    kind: 'sort',
+    id: 's.9.immune-disease~pathogens',
+    title: 'Kinds of pathogens',
+    use: 'Use this for “Strep throat or the flu: which one can an antibiotic treat?”',
+    assumptions: [
+      'A pathogen is anything that causes disease: a virus, a bacterium, a fungus or a parasite.',
+      'Bacteria, fungi and parasites are cells; a virus is not, and copies itself only inside a host cell.',
+      'Antibiotics work on bacteria only: they do nothing to viruses.',
+    ],
+    question: 'What kind of pathogen causes it?',
+    bins: [
+      {
+        id: 'virus',
+        label: 'Virus',
+        why: 'Genes in a protein coat, copied only inside a host’s cells.',
+      },
+      { id: 'bacterium', label: 'Bacterium', why: 'A single cell with no nucleus.' },
+      {
+        id: 'fungus',
+        label: 'Fungus',
+        why: 'Cells with a nucleus and a wall, living on the host.',
+      },
+      {
+        id: 'parasite',
+        label: 'Parasite',
+        why: 'A protist or an animal that lives on or in the host.',
+      },
+    ],
+    cards: [
+      { label: 'A virus', bin: 'virus', figure: { kind: 'icon', icon: 'virus' } },
+      { label: 'Influenza', bin: 'virus' },
+      { label: 'Measles', bin: 'virus' },
+      { label: 'The common cold', bin: 'virus' },
+      { label: 'A bacterium', bin: 'bacterium', figure: { kind: 'icon', icon: 'bacterium' } },
+      { label: 'Strep throat', bin: 'bacterium' },
+      { label: 'Tuberculosis', bin: 'bacterium' },
+      { label: 'A fungus', bin: 'fungus', figure: { kind: 'icon', icon: 'fungus' } },
+      { label: 'Athlete’s foot', bin: 'fungus' },
+      { label: 'Ringworm', bin: 'fungus' },
+      { label: 'A parasite', bin: 'parasite', figure: { kind: 'icon', icon: 'parasite' } },
+      { label: 'Malaria', bin: 'parasite' },
+      { label: 'Tapeworm', bin: 'parasite' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.immune-disease~stages',
+    title: 'The immune response in stages',
+    use: 'Use this for “Put the steps of the adaptive immune response in order.”',
+    assumptions: [
+      'An antigen is a molecule on a pathogen that the immune system recognizes as foreign.',
+      'The response is specific: only the B and T cells whose receptors fit that antigen are chosen.',
+    ],
+    figure: { kind: 'immuneStages' },
+    scenes: [
+      {
+        label: 'The whole response',
+        lines: [
+          'The response runs from the antigen to antibodies and killer T cells, and leaves memory cells.',
+        ],
+        immune: {},
+      },
+      {
+        label: 'Antigen',
+        lines: [
+          'A macrophage engulfs a pathogen and breaks it down.',
+          'It shows a piece of the pathogen, the antigen, on its surface.',
+        ],
+        immune: { stage: 'antigen' },
+      },
+      {
+        label: 'Helper T cells',
+        lines: [
+          'A helper T cell whose receptor fits the antigen is switched on, and it signals B cells and killer T cells.',
+        ],
+        immune: { stage: 'helperT' },
+      },
+      {
+        label: 'B cells',
+        lines: ['A B cell that fits the antigen divides many times into plasma cells.'],
+        immune: { stage: 'bCells' },
+      },
+      {
+        label: 'Antibodies',
+        lines: [
+          'Plasma cells release antibodies, proteins that bind the antigen and mark the pathogen.',
+          'Marked pathogens clump together, and macrophages eat them.',
+        ],
+        immune: { stage: 'antibodies' },
+      },
+      {
+        label: 'Killer T cells',
+        lines: ['Killer T cells find body cells infected by the pathogen and destroy them.'],
+        immune: { stage: 'killerT' },
+      },
+      {
+        label: 'Memory cells',
+        lines: [
+          'Some B and T cells stay as memory cells for years.',
+          'They make a second response faster and stronger: the idea behind vaccines.',
+        ],
+        immune: { stage: 'memory' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.immune-disease~defenses',
+    title: 'Innate or adaptive defense?',
+    use: 'Use this for “Is a fever part of the innate or the adaptive immune response?”',
+    assumptions: [
+      'Innate defenses act the same way against any invader, within minutes or hours.',
+      'Adaptive defenses target one antigen, take days the first time and remember it afterward.',
+    ],
+    question: 'Which kind of defense is it?',
+    bins: [
+      {
+        id: 'innate',
+        label: 'Innate (first and second lines)',
+        why: 'Barriers and general responses that meet every invader alike.',
+      },
+      {
+        id: 'adaptive',
+        label: 'Adaptive',
+        why: 'B and T cells chosen for one antigen, and the memory they leave.',
+      },
+    ],
+    cards: [
+      { label: 'Skin', bin: 'innate' },
+      { label: 'Mucus and cilia', bin: 'innate' },
+      { label: 'Stomach acid', bin: 'innate' },
+      { label: 'Fever', bin: 'innate' },
+      { label: 'Inflammation', bin: 'innate' },
+      { label: 'Phagocytes engulfing any invader', bin: 'innate' },
+      { label: 'Antibodies from B cells', bin: 'adaptive' },
+      { label: 'Killer T cells', bin: 'adaptive' },
+      { label: 'Memory cells', bin: 'adaptive' },
+      { label: 'A vaccine’s protection', bin: 'adaptive' },
+    ],
+  },
+];
+
 export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
@@ -1164,4 +1309,5 @@ export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...DNA,
   ...BIOTECH,
   ...ENERGY,
+  ...IMMUNE,
 ];
