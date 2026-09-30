@@ -7,6 +7,7 @@
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
+import { atLeast } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 
 // ─── Helpers for this grade (the group HK gallery's, kept here) ─────────────
@@ -22,6 +23,12 @@ const rules = (...rs: Rule[]) => ({
   relations: rs.map((r) => r.relation),
   steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
 });
+
+/** `rules`, with an order the story fixes (the top is at least the height now) first. */
+const withOrder = (order: Relation, ...rs: Rule[]) => {
+  const r = rules(...rs);
+  return { relations: [order, ...r.relations], steps: { [order.id]: {}, ...r.steps } };
+};
 
 type Solve = (v: Values) => number | number[] | undefined;
 
@@ -1235,6 +1242,825 @@ const dynamicsPages: ModuleDef[] = [
   })(),
 ];
 
+// ─── s.11.circular-gravitation ──────────────────────────────────────────────
+
+const RADIUS = q('r', 'r', 'Radius', 'm', 0.01, 10000, 0.01);
+const SPEED = q('v', 'v', 'Speed', 'm/s', 0.01, 10000, 0.01);
+const AC = q('a', 'a_c', 'Centripetal acceleration', 'm/s²', 0, 1e9, 0.01);
+const FC = q('F', 'F_c', 'Centripetal force', 'N', 0, 1e12, 0.01);
+
+/** a_c = v² ÷ r. */
+const centripetalRule = rule('a_c = v²/r', '{a} = {v}²/{r}', (v) => v.a! * v.r! - v.v! * v.v!, {
+  a: [
+    (v) => div(v.v! * v.v!, v.r!),
+    '{v}²/{r}',
+    'Turning takes an acceleration toward the center: v² over r.',
+  ],
+  v: [
+    (v) => Math.sqrt(Math.max(0, v.a! * v.r!)),
+    '√({a} × {r})',
+    'Undo v²/r: multiply by r, take the square root.',
+  ],
+  r: [(v) => div(v.v! * v.v!, v.a!), '{v}²/{a}', 'Divide v² by the acceleration.'],
+});
+const centripetalForce = product('F', 'm', 'a', 'F_c = ma_c', [
+  'Newton’s second law toward the center: the mass times the centripetal acceleration.',
+  'Divide the force by the acceleration.',
+  'Divide the force by the mass.',
+]);
+
+const circularPages: ModuleDef[] = [
+  (() => {
+    const [m, r, v] = [0.5, 1.2, 6];
+    const a = (v * v) / r;
+    return {
+      id: 's.11.circular-gravitation',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The ball goes round a flat circle at a constant speed: only its direction changes.',
+        'The net force (here the string’s pull) points to the center: F_c = mv²/r.',
+        'Let go, it moves off in a straight line along the tangent, not outward.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass', 'kg', 0.001, 10000, 0.001),
+        RADIUS,
+        SPEED,
+        AC,
+        FC,
+        q('T', 'T', 'Period (time for one turn)', 's', 0.0001, 1e7, 0.0001),
+      ],
+      ...rules(
+        centripetalRule,
+        centripetalForce,
+        rule('T = 2πr/v', '{T} = 2π × {r}/{v}', (v) => v.T! * v.v! - 2 * Math.PI * v.r!, {
+          T: [
+            (v) => div(2 * Math.PI * v.r!, v.v!),
+            '2π × {r}/{v}',
+            'One turn is the circumference, 2πr, at speed v.',
+          ],
+          r: [
+            (v) => (v.T! * v.v!) / (2 * Math.PI),
+            '{T} × {v}/(2π)',
+            'The distance in one turn, over 2π.',
+          ],
+          v: [
+            (v) => div(2 * Math.PI * v.r!, v.T!),
+            '2π × {r}/{T}',
+            'The circumference over the time for a turn.',
+          ],
+        }),
+      ),
+      example: { m, r, v, a, F: m * a, T: (2 * Math.PI * r) / v },
+      startWith: ['m', 'r', 'v'],
+      representation: {
+        kind: 'circularMotion',
+        mode: 'string',
+        radius: 'r',
+        speed: 'v',
+        mass: 'm',
+        acceleration: 'a',
+        force: 'F',
+        period: 'T',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, r, v] = [1200, 50, 15];
+    const a = (v * v) / r;
+    return {
+      id: 's.11.circular-gravitation~car',
+      title: 'A car rounding a flat curve',
+      use: 'Use this for “A 1,200 kg car takes a 50 m curve at 15 m/s. How much friction does it need, and what is the least μₛ that holds it?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'On a flat curve, static friction between the tires and the road pulls the car toward the center.',
+        'The tires don’t slide sideways, so the friction is static: it can be at most μₛ F_N.',
+        'Too fast, and friction can’t supply mv²/r: the car slides off along the tangent.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass of the car', 'kg', 1, 1e5, 1),
+        RADIUS,
+        { ...SPEED, max: 100 },
+        AC,
+        { ...FC, name: 'Friction needed' },
+        q('k', 'μₛ', 'Least coefficient of static friction', undefined, 0, 10, 0.001),
+      ],
+      ...rules(
+        centripetalRule,
+        centripetalForce,
+        rule('μₛ = v²/(rg)', '{k} = {v}²/({r} × 9.8)', (v) => v.k! * v.r! * G - v.v! * v.v!, {
+          k: [
+            (v) => div(v.v! * v.v!, v.r! * G),
+            '{v}²/({r} × 9.8)',
+            'Friction μₛmg must give mv²/r: the mass cancels, leaving v²/(rg).',
+          ],
+          v: [
+            (v) => Math.sqrt(Math.max(0, v.k! * v.r! * G)),
+            '√({k} × {r} × 9.8)',
+            'The fastest safe speed: undo v²/(rg).',
+          ],
+          r: [
+            (v) => div(v.v! * v.v!, v.k! * G),
+            '{v}²/({k} × 9.8)',
+            'The tightest safe radius: undo v²/(rg).',
+          ],
+        }),
+      ),
+      example: { m, r, v, a, F: m * a, k: (v * v) / (r * G) },
+      startWith: ['m', 'r', 'v'],
+      representation: {
+        kind: 'circularMotion',
+        mode: 'car',
+        radius: 'r',
+        speed: 'v',
+        mass: 'm',
+        acceleration: 'a',
+        force: 'F',
+      },
+      pictureLabels: ['k'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, v, r] = [2, 3, 1.5];
+    const a = (v * v) / r;
+    const W = m * G;
+    return {
+      id: 's.11.circular-gravitation~swing',
+      title: 'At the bottom of a swing',
+      use: 'Use this for “A 2 kg ball on a 1.5 m string swings through the bottom at 3 m/s. What is the tension there?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'At the bottom the center of the circle is straight up, so the net force points up.',
+        'The tension must hold up the weight and also supply mv²/r: T = m(g + v²/r).',
+        'Up is +; the string is the radius r.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass', 'kg', 0.001, 10000, 0.001),
+        { ...SPEED, max: 1000 },
+        { ...RADIUS, name: 'Length of the string (radius)' },
+        { ...AC, max: 1e7 },
+        WEIGHT,
+        q('T', 'T', 'Tension', 'N', 0, 1e8, 0.01),
+        { ...NET, min: 0, max: 1e8 },
+      ],
+      ...rules(
+        centripetalRule,
+        weightRule,
+        rule('F_net = ma_c', '{n} = {m} × {a}', (v) => v.n! - v.m! * v.a!, {
+          n: [
+            (v) => v.m! * v.a!,
+            '{m} × {a}',
+            'The net force up is the mass times the centripetal acceleration.',
+          ],
+          m: [(v) => div(v.n!, v.a!), '{n}/{a}', 'Divide the net force by the acceleration.'],
+        }),
+        sum(
+          'T',
+          'W',
+          'n',
+          'T = W + F_net',
+          'The string holds the weight and adds the pull to the center.',
+        ),
+      ),
+      example: { m, v, r, a, W, T: W + m * a, n: m * a },
+      startWith: ['m', 'v', 'r'],
+      representation: {
+        kind: 'freeBody',
+        support: 'hanging',
+        mass: 'm',
+        tension: 'T',
+        weight: 'W',
+        net: 'n',
+        acceleration: 'a',
+      },
+      pictureLabels: ['v', 'r'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [M, n, d] = [5.97e24, 7.35e22, 3.84e8];
+    return {
+      id: 's.11.circular-gravitation~gravitation',
+      title: 'Universal gravitation',
+      use: 'Use this for “How hard do Earth (5.97 × 10²⁴ kg) and the Moon (7.35 × 10²² kg), 3.84 × 10⁸ m apart, pull on each other? What if they were twice as far?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Every two masses pull on each other: F = Gm₁m₂/r², G = 6.674 × 10⁻¹¹ N·m²/kg².',
+        'r is the distance between their centers. Twice as far gives a quarter of the pull.',
+        'The pulls on the two are equal and opposite, whatever their masses.',
+      ],
+      variables: [
+        q('M', 'm₁', 'First mass', 'kg', 1, 1e31, 1, { scientific: true }),
+        q('n', 'm₂', 'Second mass', 'kg', 1, 1e31, 1, { scientific: true }),
+        q('d', 'r', 'Distance between centers', 'm', 0.01, 1e13, 0.01, { scientific: true }),
+        q('F', 'F', 'Pull of gravity', 'N', 0, 1e45, 1, { scientific: true }),
+      ],
+      ...rules(
+        rule(
+          'F = Gm₁m₂/r²',
+          '{F} = 6.674 × 10⁻¹¹ × {M} × {n}/{d}²',
+          (v) => v.F! / ((6.674e-11 * v.M! * v.n!) / (v.d! * v.d!)) - 1,
+          {
+            F: [
+              (v) => div(6.674e-11 * v.M! * v.n!, v.d! * v.d!),
+              '6.674 × 10⁻¹¹ × {M} × {n}/({d}²)',
+              'Multiply G by both masses and divide by the distance squared.',
+            ],
+            d: [
+              (v) => Math.sqrt(Math.max(0, div(6.674e-11 * v.M! * v.n!, v.F!) ?? 0)),
+              '√(6.674 × 10⁻¹¹ × {M} × {n}/{F})',
+              'Solve for r²: G m₁ m₂ over F, then take the square root.',
+            ],
+            M: [
+              (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.n!),
+              '{F} × {d}²/(6.674 × 10⁻¹¹ × {n})',
+              'Undo the formula for m₁.',
+            ],
+            n: [
+              (v) => div(v.F! * v.d! * v.d!, 6.674e-11 * v.M!),
+              '{F} × {d}²/(6.674 × 10⁻¹¹ × {M})',
+              'Undo the formula for m₂.',
+            ],
+          },
+        ),
+      ),
+      example: { M, n, d, F: (6.674e-11 * M * n) / (d * d) },
+      startWith: ['M', 'n', 'd'],
+      representation: {
+        kind: 'circularMotion',
+        mode: 'gravity',
+        masses: ['M', 'n'],
+        distance: 'd',
+        force: 'F',
+      },
+    } satisfies ModuleDef;
+  })(),
+];
+
+// ─── s.11.momentum ──────────────────────────────────────────────────────────
+
+const M1 = q('m', 'm₁', 'Mass of cart 1', 'kg', 0.01, 1e5, 0.01);
+const M2 = q('n', 'm₂', 'Mass of cart 2', 'kg', 0.01, 1e5, 0.01);
+const V1B = q('v', 'v₁', 'Velocity of cart 1 before', 'm/s', -100, 100, 0.01);
+const V2B = q('w', 'v₂', 'Velocity of cart 2 before', 'm/s', -100, 100, 0.01);
+const V1A = q('a', 'v₁′', 'Velocity of cart 1 after', 'm/s', -300, 300, 0.01);
+const V2A = q('b', 'v₂′', 'Velocity of cart 2 after', 'm/s', -300, 300, 0.01);
+const KE = (id: string, symbol: string, name: string) => q(id, symbol, name, 'J', 0, 1e10, 0.0001);
+
+/** K = ½m₁v₁² + ½m₂v₂² for the two carts at velocities x and y. */
+const keRule = (out: string, x: string, y: string, sym: string, when: string): Rule =>
+  rule(
+    sym,
+    `{${out}} = ½ × {m} × {${x}}² + ½ × {n} × {${y}}²`,
+    (v) => v[out]! - 0.5 * v.m! * v[x]! ** 2 - 0.5 * v.n! * v[y]! ** 2,
+    {
+      [out]: [
+        (v) => 0.5 * v.m! * v[x]! ** 2 + 0.5 * v.n! * v[y]! ** 2,
+        `½ × {m} × {${x}}² + ½ × {n} × {${y}}²`,
+        `Add each cart’s ½mv² ${when}: kinetic energy has no direction.`,
+      ],
+    },
+  );
+
+const momentumPages: ModuleDef[] = [
+  (() => {
+    const [m, n, v, w] = [2, 1, 3, -3];
+    const p = m * v + n * w;
+    const u = p / (m + n);
+    return {
+      id: 's.11.momentum',
+      unitSystems: ['metric'],
+      assumptions: [
+        'No outside push along the track, so the total momentum is the same before and after.',
+        '+ is to the right: a cart moving left has a negative velocity and momentum.',
+        'The carts stick together: momentum is kept, but some kinetic energy turns to heat and sound.',
+      ],
+      variables: [
+        M1,
+        M2,
+        V1B,
+        V2B,
+        q('p', 'p', 'Total momentum', 'kg·m/s', -1e7, 1e7, 0.01),
+        q('u', 'v′', 'Velocity together after', 'm/s', -100, 100, 0.0001),
+        KE('K', 'KE', 'Kinetic energy before'),
+        KE('L', 'KE′', 'Kinetic energy after'),
+      ],
+      ...rules(
+        rule(
+          'p = m₁v₁ + m₂v₂',
+          '{p} = {m} × {v} + {n} × {w}',
+          (v) => v.p! - v.m! * v.v! - v.n! * v.w!,
+          {
+            p: [
+              (v) => v.m! * v.v! + v.n! * v.w!,
+              '{m} × {v} + {n} × {w}',
+              'Add the carts’ momenta, signs and all.',
+            ],
+            v: [
+              (v) => div(v.p! - v.n! * v.w!, v.m!),
+              '({p} − {n} × {w})/{m}',
+              'Take cart 2’s momentum from the total, divide by m₁.',
+            ],
+            w: [
+              (v) => div(v.p! - v.m! * v.v!, v.n!),
+              '({p} − {m} × {v})/{n}',
+              'Take cart 1’s momentum from the total, divide by m₂.',
+            ],
+          },
+        ),
+        rule('v′ = p/(m₁ + m₂)', '{u} = {p}/({m} + {n})', (v) => v.u! * (v.m! + v.n!) - v.p!, {
+          u: [
+            (v) => div(v.p!, v.m! + v.n!),
+            '{p}/({m} + {n})',
+            'The same momentum, now carried by both masses together.',
+          ],
+          p: [
+            (v) => v.u! * (v.m! + v.n!),
+            '{u} × ({m} + {n})',
+            'Both masses at the shared velocity.',
+          ],
+        }),
+        keRule('K', 'v', 'w', 'KE = ½m₁v₁² + ½m₂v₂²', 'before'),
+        rule(
+          'KE′ = ½(m₁ + m₂)v′²',
+          '{L} = ½ × ({m} + {n}) × {u}²',
+          (v) => v.L! - 0.5 * (v.m! + v.n!) * v.u! ** 2,
+          {
+            L: [
+              (v) => 0.5 * (v.m! + v.n!) * v.u! ** 2,
+              '½ × ({m} + {n}) × {u}²',
+              'After, both masses move together at v′.',
+            ],
+          },
+        ),
+      ),
+      example: { m, n, v, w, p, u, K: 0.5 * m * v * v + 0.5 * n * w * w, L: 0.5 * (m + n) * u * u },
+      startWith: ['m', 'v', 'n', 'w'],
+      representation: {
+        kind: 'collision',
+        type: 'stick',
+        masses: ['m', 'n'],
+        before: ['v', 'w'],
+        after: ['u'],
+        momentum: 'p',
+        energy: ['K', 'L'],
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, n, v, w] = [1, 3, 4, -2];
+    const a = ((m - n) * v + 2 * n * w) / (m + n);
+    const b = ((n - m) * w + 2 * m * v) / (m + n);
+    return {
+      id: 's.11.momentum~elastic',
+      title: 'An elastic collision',
+      use: 'Use this for “A 1 kg cart at 4 m/s meets a 3 kg cart coming the other way at 2 m/s. They bounce apart elastically. What are their velocities after?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Elastic: the carts bounce apart keeping both the total momentum and the total kinetic energy.',
+        '+ is to the right; a cart moving left has a negative velocity.',
+        'Magnets or springy bumpers make a collision close to elastic.',
+      ],
+      variables: [
+        M1,
+        M2,
+        V1B,
+        V2B,
+        V1A,
+        V2A,
+        KE('K', 'KE', 'Kinetic energy before'),
+        KE('L', 'KE′', 'Kinetic energy after'),
+      ],
+      ...rules(
+        rule(
+          'v₁′ = ((m₁ − m₂)v₁ + 2m₂v₂)/(m₁ + m₂)',
+          '{a} = (({m} − {n}) × {v} + 2 × {n} × {w})/({m} + {n})',
+          (v) => v.a! * (v.m! + v.n!) - ((v.m! - v.n!) * v.v! + 2 * v.n! * v.w!),
+          {
+            a: [
+              (v) => div((v.m! - v.n!) * v.v! + 2 * v.n! * v.w!, v.m! + v.n!),
+              '(({m} − {n}) × {v} + 2 × {n} × {w})/({m} + {n})',
+              'Momentum and kinetic energy both kept: this is cart 1’s velocity after.',
+            ],
+            w: [
+              (v) => div(v.a! * (v.m! + v.n!) - (v.m! - v.n!) * v.v!, 2 * v.n!),
+              '({a} × ({m} + {n}) − ({m} − {n}) × {v})/(2 × {n})',
+              'Undo the formula for v₂.',
+            ],
+          },
+        ),
+        rule(
+          'v₂′ = ((m₂ − m₁)v₂ + 2m₁v₁)/(m₁ + m₂)',
+          '{b} = (({n} − {m}) × {w} + 2 × {m} × {v})/({m} + {n})',
+          (v) => v.b! * (v.m! + v.n!) - ((v.n! - v.m!) * v.w! + 2 * v.m! * v.v!),
+          {
+            b: [
+              (v) => div((v.n! - v.m!) * v.w! + 2 * v.m! * v.v!, v.m! + v.n!),
+              '(({n} − {m}) × {w} + 2 × {m} × {v})/({m} + {n})',
+              'The same rule with the carts swapped.',
+            ],
+            v: [
+              (v) => div(v.b! * (v.m! + v.n!) - (v.n! - v.m!) * v.w!, 2 * v.m!),
+              '({b} × ({m} + {n}) − ({n} − {m}) × {w})/(2 × {m})',
+              'Undo the formula for v₁.',
+            ],
+          },
+        ),
+        keRule('K', 'v', 'w', 'KE = ½m₁v₁² + ½m₂v₂²', 'before'),
+        keRule('L', 'a', 'b', 'KE′ = ½m₁v₁′² + ½m₂v₂′²', 'after'),
+      ),
+      example: {
+        m,
+        n,
+        v,
+        w,
+        a,
+        b,
+        K: 0.5 * m * v * v + 0.5 * n * w * w,
+        L: 0.5 * m * a * a + 0.5 * n * b * b,
+      },
+      startWith: ['m', 'n', 'v', 'w'],
+      representation: {
+        kind: 'collision',
+        type: 'elastic',
+        masses: ['m', 'n'],
+        before: ['v', 'w'],
+        after: ['a', 'b'],
+        energy: ['K', 'L'],
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, n, a] = [1.5, 0.5, -1];
+    const b = (-m * a) / n;
+    return {
+      id: 's.11.momentum~explode',
+      title: 'Pushed apart from rest',
+      use: 'Use this for “A spring pushes a 1.5 kg cart and a 0.5 kg cart apart from rest. The big cart moves left at 1 m/s. How fast does the small one go, and how much energy did the spring give?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'They start at rest, so the total momentum is 0 before and after: m₁v₁′ + m₂v₂′ = 0.',
+        'The carts move off in opposite directions; the lighter one faster.',
+        'The spring’s stored energy becomes the carts’ kinetic energy.',
+      ],
+      variables: [M1, M2, V1A, V2A, KE('E', 'E', 'Energy from the spring')],
+      ...rules(
+        rule('v₂′ = −m₁v₁′/m₂', '{b} = −{m} × {a}/{n}', (v) => v.b! * v.n! + v.m! * v.a!, {
+          b: [
+            (v) => div(-v.m! * v.a!, v.n!),
+            '−{m} × {a}/{n}',
+            'Cart 2’s momentum must cancel cart 1’s: the same size, the other way.',
+          ],
+          a: [
+            (v) => div(-v.n! * v.b!, v.m!),
+            '−{n} × {b}/{m}',
+            'Cart 1’s momentum must cancel cart 2’s.',
+          ],
+          n: [
+            (v) => div(-v.m! * v.a!, v.b!),
+            '−{m} × {a}/{b}',
+            'The mass whose momentum cancels cart 1’s.',
+          ],
+          m: [
+            (v) => div(-v.n! * v.b!, v.a!),
+            '−{n} × {b}/{a}',
+            'The mass whose momentum cancels cart 2’s.',
+          ],
+        }),
+        keRule('E', 'a', 'b', 'E = ½m₁v₁′² + ½m₂v₂′²', 'after'),
+      ),
+      example: { m, n, a, b, E: 0.5 * m * a * a + 0.5 * n * b * b },
+      startWith: ['m', 'n', 'a'],
+      representation: {
+        kind: 'collision',
+        type: 'explode',
+        masses: ['m', 'n'],
+        before: [0],
+        after: ['a', 'b'],
+      },
+      pictureLabels: ['E'],
+    } satisfies ModuleDef;
+  })(),
+];
+
+// ─── s.11.work-energy-power ─────────────────────────────────────────────────
+
+const LOAD = q('W', 'F_L', 'Load', 'N', 1, 1e6, 1);
+const EFFORT = q('F', 'F_E', 'Effort', 'N', 0, 1e6, 0.01);
+const MA = q('A', 'MA', 'Mechanical advantage', undefined, 0.01, 1000, 0.01);
+const EFFICIENCY = q('p', 'e', 'Efficiency', '%', 1, 100, 1);
+
+/** F_E = F_L ÷ (MA × e): the actual effort. */
+const effortRule = rule(
+  'F_E = F_L/(MA × e)',
+  '{F} = {W}/({A} × {p}/100)',
+  (v) => (v.F! * v.A! * v.p!) / 100 - v.W!,
+  {
+    F: [
+      (v) => div(100 * v.W!, v.A! * v.p!),
+      '{W}/({A} × {p}/100)',
+      'The ideal effort is the load over MA; friction makes it bigger: divide by the efficiency too.',
+    ],
+    W: [(v) => (v.F! * v.A! * v.p!) / 100, '{F} × {A} × {p}/100', 'Undo the division.'],
+    p: [
+      (v) => div(100 * v.W!, v.F! * v.A!),
+      '100 × {W}/({F} × {A})',
+      'The ideal effort over the actual effort, as a percent.',
+    ],
+  },
+);
+
+const energyPages: ModuleDef[] = [
+  (() => {
+    const [m, H, h] = [0.25, 8, 3];
+    const E = m * G * H;
+    const U = m * G * h;
+    const K = E - U;
+    return {
+      id: 's.11.work-energy-power',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The car starts at rest at height h₀, and heights are measured from the lowest point.',
+        'No friction or air resistance, so the total energy E stays the same: U + K = E.',
+        'Mass cancels out of the speed: every car from the same height has the same v there.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass', 'kg', 0.01, 10000, 0.01),
+        q('H', 'h₀', 'Starting height', 'm', 0.01, 500, 0.01),
+        q('h', 'h', 'Height now', 'm', 0, 500, 0.01),
+        q('v', 'v', 'Speed now', 'm/s', 0, 200, 0.01),
+        q('U', 'U', 'Potential energy', 'J', 0, 1e8, 0.0001),
+        q('K', 'K', 'Kinetic energy', 'J', 0, 1e8, 0.0001),
+        q('E', 'E', 'Total energy', 'J', 0, 1e8, 0.0001),
+      ],
+      ...withOrder(
+        atLeast('H', 'h'),
+        rule('E = mgh₀', '{E} = {m} × 9.8 × {H}', (v) => v.E! - v.m! * G * v.H!, {
+          E: [
+            (v) => v.m! * G * v.H!,
+            '{m} × 9.8 × {H}',
+            'At the start it is all potential energy.',
+          ],
+          m: [(v) => div(v.E!, G * v.H!), '{E}/(9.8 × {H})', 'Divide by g × h₀.'],
+          H: [(v) => div(v.E!, G * v.m!), '{E}/({m} × 9.8)', 'Divide by m × g.'],
+        }),
+        rule('U = mgh', '{U} = {m} × 9.8 × {h}', (v) => v.U! - v.m! * G * v.h!, {
+          U: [
+            (v) => v.m! * G * v.h!,
+            '{m} × 9.8 × {h}',
+            'Each kilogram lifted each meter stores 9.8 J.',
+          ],
+          h: [(v) => div(v.U!, G * v.m!), '{U}/({m} × 9.8)', 'Divide by m × g.'],
+        }),
+        difference('K', 'E', 'U', 'K = E − U', 'What is not potential energy is kinetic energy.'),
+        rule('K = ½mv²', '{K} = ½ × {m} × {v}²', (v) => v.K! - 0.5 * v.m! * v.v! * v.v!, {
+          v: [
+            (v) => (v.K! >= 0 && v.m! > 0 ? Math.sqrt((2 * v.K!) / v.m!) : undefined),
+            '√(2 × {K}/{m})',
+            'Double the kinetic energy, divide by the mass, take the square root.',
+          ],
+          K: [
+            (v) => 0.5 * v.m! * v.v! * v.v!,
+            '½ × {m} × {v}²',
+            'Half the mass times the speed squared.',
+          ],
+        }),
+      ),
+      example: { m, H, h, v: Math.sqrt((2 * K) / m), U, K, E },
+      startWith: ['m', 'H', 'h'],
+      representation: {
+        kind: 'energyTrack',
+        track: 'coaster',
+        height: 'h',
+        potential: 'U',
+        kinetic: 'K',
+        total: 'E',
+        top: 'H',
+        mass: 'm',
+        speed: 'v',
+      },
+    } satisfies ModuleDef;
+  })(),
+  {
+    id: 's.11.work-energy-power~lever',
+    title: 'A lever',
+    use: 'Use this for “A 600 N load sits 0.4 m from the fulcrum, and you push 1.6 m from it. What is the mechanical advantage, and what effort lifts it?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A lever balances when effort × effort arm = load × load arm.',
+      'The ideal mechanical advantage is the effort arm over the load arm: a long effort arm means less force.',
+      'Less force, more distance: the work you put in is the work done on the load.',
+    ],
+    variables: [
+      LOAD,
+      q('e', 'L_E', 'Effort arm', 'm', 0.01, 100, 0.01),
+      q('l', 'L_L', 'Load arm', 'm', 0.01, 100, 0.01),
+      MA,
+      EFFORT,
+    ],
+    ...rules(
+      rule('MA = L_E/L_L', '{A} = {e}/{l}', (v) => v.A! * v.l! - v.e!, {
+        A: [(v) => div(v.e!, v.l!), '{e}/{l}', 'Effort arm over load arm.'],
+        e: [(v) => v.A! * v.l!, '{A} × {l}', 'The mechanical advantage times the load arm.'],
+        l: [(v) => div(v.e!, v.A!), '{e}/{A}', 'The effort arm over the mechanical advantage.'],
+      }),
+      rule('F_E = F_L/MA', '{F} = {W}/{A}', (v) => v.F! * v.A! - v.W!, {
+        F: [
+          (v) => div(v.W!, v.A!),
+          '{W}/{A}',
+          'An ideal machine divides the load by its mechanical advantage.',
+        ],
+        W: [(v) => v.F! * v.A!, '{F} × {A}', 'The effort times the mechanical advantage.'],
+        A: [
+          (v) => div(v.W!, v.F!),
+          '{W}/{F}',
+          'How many times the load is bigger than the effort.',
+        ],
+      }),
+    ),
+    example: { W: 600, e: 1.6, l: 0.4, A: 4, F: 150 },
+    startWith: ['W', 'e', 'l'],
+    representation: {
+      kind: 'simpleMachine',
+      machine: 'lever',
+      load: 'W',
+      effortArm: 'e',
+      loadArm: 'l',
+      advantage: 'A',
+      effort: 'F',
+    },
+  },
+  (() => {
+    const [W, n, p, h] = [800, 4, 80, 0.5];
+    return {
+      id: 's.11.work-energy-power~pulley',
+      title: 'A block and tackle',
+      use: 'Use this for “Four strands hold up an 800 N crate and the pulleys are 80% efficient. What pull lifts it, and how much rope do you pull to lift it 0.5 m?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Each supporting strand holds an equal share of the load: the ideal MA is the number of strands.',
+        'Less force, more distance: pull the rope MA times as far as the load rises.',
+        'Friction in the pulleys wastes some work: divide the ideal effort by the efficiency.',
+      ],
+      variables: [
+        LOAD,
+        q('n', 'n', 'Supporting strands', undefined, 1, 6, 1, { integer: true }),
+        MA,
+        EFFICIENCY,
+        EFFORT,
+        q('h', 'd_L', 'Load lifted', 'm', 0.01, 100, 0.01),
+        q('d', 'd_E', 'Rope pulled', 'm', 0.01, 1000, 0.01),
+      ],
+      ...rules(
+        rule('MA = n', '{A} = {n}', (v) => v.A! - v.n!, {
+          A: [(v) => v.n!, '{n}', 'Count the strands holding up the moving pulley.'],
+          n: [(v) => v.A!, '{A}', 'The strands are the mechanical advantage.'],
+        }),
+        effortRule,
+        product('d', 'A', 'h', 'd_E = MA × d_L', [
+          'Each strand shortens by the lift, so pull MA times as much rope.',
+          'Divide the rope pulled by the lift.',
+          'Divide the rope pulled by the mechanical advantage.',
+        ]),
+      ),
+      example: { W, n, A: n, p, F: (100 * W) / (n * p), h, d: n * h },
+      startWith: ['W', 'n', 'p', 'h'],
+      representation: {
+        kind: 'simpleMachine',
+        machine: 'pulley',
+        load: 'W',
+        strands: 'n',
+        advantage: 'A',
+        efficiency: 'p',
+        effort: 'F',
+        loadDistance: 'h',
+        effortDistance: 'd',
+      },
+    } satisfies ModuleDef;
+  })(),
+  {
+    id: 's.11.work-energy-power~ramp',
+    title: 'A ramp',
+    use: 'Use this for “A 900 N crate is pushed up a 3 m ramp onto a 1 m platform. What is the mechanical advantage and the effort? What if the ramp is 75% efficient?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The ideal mechanical advantage of a ramp is its length over its height.',
+      'Friction wastes some of the work: the actual effort is the ideal effort divided by the efficiency.',
+      'A smooth ramp is 100% efficient.',
+    ],
+    variables: [
+      LOAD,
+      q('L', 'L', 'Ramp length', 'm', 0.1, 1000, 0.1),
+      q('h', 'h', 'Ramp height', 'm', 0.01, 1000, 0.01),
+      EFFICIENCY,
+      MA,
+      EFFORT,
+    ],
+    ...rules(
+      rule('MA = L/h', '{A} = {L}/{h}', (v) => v.A! * v.h! - v.L!, {
+        A: [(v) => div(v.L!, v.h!), '{L}/{h}', 'The ramp’s length over its height.'],
+        L: [(v) => v.A! * v.h!, '{A} × {h}', 'The mechanical advantage times the height.'],
+        h: [(v) => div(v.L!, v.A!), '{L}/{A}', 'The length over the mechanical advantage.'],
+      }),
+      effortRule,
+    ),
+    example: { W: 900, L: 3, h: 1, p: 100, A: 3, F: 300 },
+    startWith: ['W', 'L', 'h', 'p'],
+    representation: {
+      kind: 'simpleMachine',
+      machine: 'incline',
+      load: 'W',
+      length: 'L',
+      height: 'h',
+      efficiency: 'p',
+      advantage: 'A',
+      effort: 'F',
+    },
+  },
+  (() => {
+    const [k, x, m, f, d, h] = [400, 0.15, 0.5, 2, 0.5, 0.5];
+    const E = 0.5 * k * x * x;
+    const Q = f * d;
+    const U = m * G * h;
+    return {
+      id: 's.11.work-energy-power~spring',
+      title: 'A spring launcher, friction and a ramp',
+      use: 'Use this for “A spring (k = 400 N/m) pressed 0.15 m launches a 0.5 kg block over 0.5 m of floor with 2 N of friction. How high up the smooth ramp does it go?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The spring stores ½kx²; friction turns fd into heat; the smooth ramp trades kinetic energy for mgh.',
+        'The total never changes: spring energy = heat + potential + kinetic.',
+        'At the highest point the block stops for an instant: type K = 0 to find that height.',
+      ],
+      variables: [
+        q('k', 'k', 'Spring constant', 'N/m', 1, 100000, 1),
+        q('x', 'x', 'Compression', 'm', 0.001, 2, 0.001),
+        q('m', 'm', 'Mass', 'kg', 0.01, 100, 0.01),
+        q('f', 'f', 'Friction', 'N', 0, 1000, 0.1),
+        q('d', 'd', 'Rough patch', 'm', 0, 100, 0.01),
+        q('h', 'h', 'Height on the ramp', 'm', 0, 100, 0.001),
+        q('E', 'Eₛ', 'Spring energy', 'J', 0, 1e6, 0.0001),
+        q('Q', 'Q', 'Heat', 'J', 0, 1e6, 0.0001),
+        q('U', 'U', 'Potential energy', 'J', 0, 1e6, 0.0001),
+        q('K', 'K', 'Kinetic energy', 'J', 0, 1e6, 0.0001),
+      ],
+      ...rules(
+        rule('Eₛ = ½kx²', '{E} = ½ × {k} × {x}²', (v) => v.E! - 0.5 * v.k! * v.x! * v.x!, {
+          E: [(v) => 0.5 * v.k! * v.x! * v.x!, '½ × {k} × {x}²', 'A spring pressed x stores ½kx².'],
+          k: [(v) => div(2 * v.E!, v.x! * v.x!), '2 × {E}/({x}²)', 'Undo ½kx² for k.'],
+          x: [
+            (v) => Math.sqrt(Math.max(0, div(2 * v.E!, v.k!) ?? 0)),
+            '√(2 × {E}/{k})',
+            'Undo ½kx² for x.',
+          ],
+        }),
+        product('Q', 'f', 'd', 'Q = fd', [
+          'Friction’s work on the rough patch becomes heat: force times distance.',
+          'Divide the heat by the distance.',
+          'Divide the heat by the friction.',
+        ]),
+        rule('U = mgh', '{U} = {m} × 9.8 × {h}', (v) => v.U! - v.m! * G * v.h!, {
+          U: [(v) => v.m! * G * v.h!, '{m} × 9.8 × {h}', 'Lifting m to height h stores mgh.'],
+          h: [(v) => div(v.U!, v.m! * G), '{U}/({m} × 9.8)', 'Divide the potential energy by mg.'],
+          m: [(v) => div(v.U!, G * v.h!), '{U}/(9.8 × {h})', 'Divide the potential energy by gh.'],
+        }),
+        rule('K = Eₛ − Q − U', '{K} = {E} − {Q} − {U}', (v) => v.K! - v.E! + v.Q! + v.U!, {
+          K: [
+            (v) => v.E! - v.Q! - v.U!,
+            '{E} − {Q} − {U}',
+            'What the spring gave, less the heat and the height gained.',
+          ],
+          U: [
+            (v) => v.E! - v.Q! - v.K!,
+            '{E} − {Q} − {K}',
+            'What is left after the heat and the kinetic energy.',
+          ],
+          E: [
+            (v) => v.K! + v.Q! + v.U!,
+            '{K} + {Q} + {U}',
+            'All the energy now came from the spring.',
+          ],
+          Q: [
+            (v) => v.E! - v.U! - v.K!,
+            '{E} − {U} − {K}',
+            'The energy missing from potential and kinetic is heat.',
+          ],
+        }),
+      ),
+      example: { k, x, m, f, d, h, E, Q, U, K: E - Q - U },
+      startWith: ['k', 'x', 'm', 'f', 'd', 'h'],
+      representation: {
+        kind: 'energyTrack',
+        track: 'coaster',
+        height: 'h',
+        potential: 'U',
+        kinetic: 'K',
+        mass: 'm',
+        spring: { k: 'k', compression: 'x', stored: 'E', friction: 'f', rough: 'd', heat: 'Q' },
+      },
+    } satisfies ModuleDef;
+  })(),
+];
+
 // ─── s.11.sound-waves ───────────────────────────────────────────────────────
 
 const WAVE_SPEED = q('v', 'v', 'Wave speed', 'm/s', 0.1, 10000, 0.1);
@@ -2188,6 +3014,9 @@ export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...kinematicsPages,
   ...projectilePages,
   ...dynamicsPages,
+  ...circularPages,
+  ...momentumPages,
+  ...energyPages,
   ...soundPages,
   ...opticsPages,
   ...circuitPages,
