@@ -233,7 +233,7 @@ function fossilArt(c: Palette, kind: IndexFossil, x: number, y: number, s: numbe
 export function RockLayersDated({ spec, calc }: { spec: RockDatingSpec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
-  const ids = usePaintIds('light', 'parent', 'daughter', 'dike', 'shell');
+  const ids = usePaintIds('light', 'parent', 'daughter', 'second', 'dike', 'shell');
   const d = spec.dating;
   const known = (x: number | string | undefined) =>
     x !== undefined && (typeof x === 'number' || rep.known(x));
@@ -251,8 +251,16 @@ export function RockLayersDated({ spec, calc }: { spec: RockDatingSpec; calc: Ca
   const br = d.bracket === undefined ? undefined : bracketOf(ages, d.bracket, intrusion);
   const parent = d.sample ? val(d.sample.parent) : undefined;
   const nParent = parent === undefined ? undefined : Math.max(0, Math.min(100, Math.round(parent)));
+  // A parent that decays two ways: the decayed atoms split between the two daughters.
+  const second = d.sample?.second;
+  const nSecond =
+    second && nParent !== undefined ? Math.round(((100 - nParent) * second.share) / 100) : 0;
   const gridTop = bottom + 26;
-  const height = d.sample ? gridTop + GRID * 10 + 10 : bottom + 12;
+  const height = d.sample ? gridTop + GRID * 10 + 10 + (second ? 10 : 0) : bottom + 12;
+  // The key's rows (parent, daughter, second daughter) and the half-lives line under them.
+  const keyRows = second ? [0, 40, 80] : [0, 46];
+  const halfY = second ? gridTop + 140 : gridTop + 116;
+  const pct = (x: number) => `${formatNumber(Number(x.toFixed(1)))}% of decays`;
   const sampleY = (k: number) =>
     k < 0 && d.intrusion ? ys[d.intrusion.through]! + 12 : (ys[k]! + ys[k + 1]!) / 2;
   const dikeX = 150;
@@ -266,6 +274,7 @@ export function RockLayersDated({ spec, calc }: { spec: RockDatingSpec; calc: Ca
               <TopLight id={ids.light} strength={0.7} />
               <Ball id={ids.parent} color={c.chartHighlight} />
               <Ball id={ids.daughter} color={c.chartSecond} />
+              <Ball id={ids.second} color={c.lineSum} />
               <Ball id={ids.shell} color={c.fat} />
             </Defs>
             <G transform={`scale(${w / BW})`}>
@@ -439,15 +448,26 @@ export function RockLayersDated({ spec, calc }: { spec: RockDatingSpec; calc: Ca
                       cx={X0 + 6 + (k % 10) * GRID}
                       cy={gridTop + 6 + Math.floor(k / 10) * GRID}
                       r={5}
-                      fill={url(k < (nParent ?? 100) ? ids.parent : ids.daughter)}
+                      fill={url(
+                        k < (nParent ?? 100)
+                          ? ids.parent
+                          : k < 100 - nSecond
+                            ? ids.daughter
+                            : ids.second,
+                      )}
                       stroke={c.chartInk}
                       strokeWidth={0.4}
                     />
                   ))}
-                  <Circle cx={X0 + GRID * 10 + 20} cy={gridTop + 20} r={6} fill={url(ids.parent)} />
+                  <Circle
+                    cx={X0 + GRID * 10 + 20}
+                    cy={gridTop + 20 + keyRows[0]!}
+                    r={6}
+                    fill={url(ids.parent)}
+                  />
                   <ChartText
                     x={X0 + GRID * 10 + 32}
-                    y={gridTop + 25}
+                    y={gridTop + 25 + keyRows[0]!}
                     fontSize={chart.value}
                     fontWeight="700"
                   >
@@ -455,7 +475,7 @@ export function RockLayersDated({ spec, calc }: { spec: RockDatingSpec; calc: Ca
                   </ChartText>
                   <ChartText
                     x={X0 + GRID * 10 + 32}
-                    y={gridTop + 41}
+                    y={gridTop + 41 + keyRows[0]!}
                     fontSize={chart.label}
                     fill={c.chartMuted}
                   >
@@ -463,30 +483,56 @@ export function RockLayersDated({ spec, calc }: { spec: RockDatingSpec; calc: Ca
                   </ChartText>
                   <Circle
                     cx={X0 + GRID * 10 + 20}
-                    cy={gridTop + 66}
+                    cy={gridTop + 20 + keyRows[1]!}
                     r={6}
                     fill={url(ids.daughter)}
                   />
                   <ChartText
                     x={X0 + GRID * 10 + 32}
-                    y={gridTop + 71}
+                    y={gridTop + 25 + keyRows[1]!}
                     fontSize={chart.value}
                     fontWeight="700"
                   >
-                    {`${nParent === undefined ? '?' : 100 - nParent} ${d.sample.daughterName}`}
+                    {`${nParent === undefined ? '?' : 100 - nParent - nSecond} ${d.sample.daughterName}`}
                   </ChartText>
                   <ChartText
                     x={X0 + GRID * 10 + 32}
-                    y={gridTop + 87}
+                    y={gridTop + 41 + keyRows[1]!}
                     fontSize={chart.label}
                     fill={c.chartMuted}
                   >
-                    daughter atoms made
+                    {second ? pct(100 - second.share) : 'daughter atoms made'}
                   </ChartText>
+                  {second ? (
+                    <>
+                      <Circle
+                        cx={X0 + GRID * 10 + 20}
+                        cy={gridTop + 20 + keyRows[2]!}
+                        r={6}
+                        fill={url(ids.second)}
+                      />
+                      <ChartText
+                        x={X0 + GRID * 10 + 32}
+                        y={gridTop + 25 + keyRows[2]!}
+                        fontSize={chart.value}
+                        fontWeight="700"
+                      >
+                        {`${nParent === undefined ? '?' : nSecond} ${second.name}`}
+                      </ChartText>
+                      <ChartText
+                        x={X0 + GRID * 10 + 32}
+                        y={gridTop + 41 + keyRows[2]!}
+                        fontSize={chart.label}
+                        fill={c.chartMuted}
+                      >
+                        {pct(second.share)}
+                      </ChartText>
+                    </>
+                  ) : null}
                   {d.sample.halfLives !== undefined ? (
                     <ChartText
                       x={X0 + GRID * 10 + 20}
-                      y={gridTop + 116}
+                      y={halfY}
                       fontSize={chart.label}
                       fill={c.chartInk}
                     >
@@ -505,6 +551,10 @@ export function RockLayersDated({ spec, calc }: { spec: RockDatingSpec; calc: Ca
           if (d.sample && nParent !== undefined && parent !== undefined)
             parts.push(
               `${formatNumber(Number(parent.toFixed(2)))}% of the ${d.sample.parentName} is left, drawn as ${nParent} of 100 atoms.`,
+            );
+          if (d.sample && second && nParent !== undefined)
+            parts.push(
+              `Of the ${100 - nParent} that decayed, ${formatNumber(100 - second.share)}% became ${d.sample.daughterName} (${100 - nParent - nSecond}) and ${formatNumber(second.share)}% ${second.name} (${nSecond}).`,
             );
           if (br && d.bracket !== undefined) {
             const name = NAMES[d.layers[d.bracket]!.rock];

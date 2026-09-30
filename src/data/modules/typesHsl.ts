@@ -105,6 +105,12 @@ export interface RockDatingSpec {
       daughterName: string;
       /** Half-lives gone by, when the page names them (parent = 100 × (1/2)ⁿ). */
       halfLives?: NumOrVar;
+      /**
+       * A parent that decays two ways (H103): `share` percent of the decayed atoms become this
+       * second daughter and the rest `daughterName`. Potassium-40: { name: 'calcium-40',
+       * share: 89.3 }, so only 10.7 % of it becomes argon-40.
+       */
+      second?: { name: string; share: number };
     };
   };
 }

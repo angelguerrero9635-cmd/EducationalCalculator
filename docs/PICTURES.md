@@ -250,6 +250,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | a ridge from above: polarity stripes mirrored, a rock at x km and t Ma (H103) |
 | `atmosphereLayers` | `mode: 'parcel'`, `temperature`, …       | a parcel cooling 10 °C/km, dew point 2 °C/km, meeting at a cloud base (H103)  |
 | `atmosphereLayers` | `mode: 'balance'`, `albedo`, `sunlight`  | S ÷ 4 in, α reflected, F absorbed and sent out as σTₑ⁴; a thermometer (H103)  |
+| `rockLayers`       | `dating.sample.second: { name, share }`  | a parent that decays two ways: the decayed atoms split by share (K-40) (H103) |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

@@ -68,9 +68,6 @@ const difference = (a: string, b: string, c: string, how: [string, string, strin
     [c]: [(v) => v[b]! - v[a]!, `{${b}} − {${a}}`, how[2]],
   });
 
-// Keep the helpers referenced while later parts add their demos.
-void product;
-
 // ── Part 1: two seismograms by magnitude (earthLayers mode `magnitude`) ──
 
 const mag = (id: string, symbol: string, name: string) =>
@@ -500,7 +497,75 @@ const reservesLong: ModuleDef = {
   example: { Q: 1100, r: 8, y: 137.5 },
 };
 
+// ── Part 8: a parent that decays two ways (rockLayers `dating.sample.second`) ──
+
+const potassium: ModuleDef = {
+  id: 'g.s12-radiometric-dating-potassium',
+  title: 'Potassium-40: one parent, two daughters',
+  use: 'Use this for dating volcanic ash by potassium-40, which decays to both calcium-40 and argon-40.',
+  assumptions: [
+    'Potassium-40 has a half-life of 1,250 million years: 89.3% of it decays to calcium-40 and 10.7% to argon-40.',
+    'Argon is a gas that escapes molten rock but stays trapped once volcanic ash cools, so the argon clock starts at the eruption.',
+    'Layers lie in order: younger above, older below.',
+  ],
+  variables: [
+    V('P', 'P', 'Potassium-40 left', {
+      unit: '%',
+      min: 0.001,
+      max: 100,
+      step: 0.01,
+      derived: true,
+    }),
+    V('n', 'n', 'Half-lives gone by', { min: 0, max: 12, step: 0.01 }),
+    V('T', 'T', 'Half-life', { unit: 'million years', min: 1, max: 5000, step: 1 }),
+    V('t', 't', 'Age of the ash bed', {
+      unit: 'million years',
+      min: 0,
+      max: 60000,
+      step: 0.1,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    rule('P = 100 × (1/2)^n', '{P} = 100 × (1/2)^{n}', (v) => v.P! - 100 * 0.5 ** v.n!, {
+      P: [(v) => 100 * 0.5 ** v.n!, '100 × (1/2)^{n}', 'Each half-life halves what is left.'],
+      n: [
+        (v) => (v.P! > 0 ? Math.log2(100 / v.P!) : undefined),
+        'log_2(100 ÷ {P})',
+        'How many halvings take 100% down to P.',
+      ],
+    }),
+    product('t', 'n', 'T', [
+      'The age is the half-lives gone by times the length of one.',
+      'Half-lives gone by: the age over the half-life.',
+      'The half-life: the age over the half-lives gone by.',
+    ]),
+  ),
+  example: { P: 50, n: 1, T: 1250, t: 1250 },
+  startWith: ['n', 'T'],
+  representation: {
+    kind: 'rockLayers',
+    dating: {
+      layers: [
+        { rock: 'sandstone', fossil: 'fern' },
+        { rock: 'shale' },
+        { rock: 'ash', age: 't' },
+        { rock: 'limestone', fossil: 'trilobite' },
+      ],
+      sample: {
+        parent: 'P',
+        layer: 2,
+        parentName: 'potassium-40',
+        daughterName: 'argon-40',
+        halfLives: 'n',
+        second: { name: 'calcium-40', share: 89.3 },
+      },
+    },
+  },
+};
+
 export const HS2F_GALLERY_MODULES: ModuleDef[] = [
+  potassium,
   reserves,
   reservesSmall,
   reservesLong,

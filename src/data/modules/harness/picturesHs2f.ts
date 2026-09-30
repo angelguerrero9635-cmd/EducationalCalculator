@@ -91,6 +91,10 @@ export function hs2fIssues(rep: Representation, val: (id: string) => number | un
     if (q !== undefined && r !== undefined && r > 0 && y !== undefined && !near(y, q / r, 1e-4))
       out.push(`lasts ${y} years, but ${q} ÷ ${r} = ${q / r}`);
   }
+  if (rep.kind === 'rockLayers' && 'dating' in rep && rep.dating.sample?.second) {
+    const { share, name } = rep.dating.sample.second;
+    if (!(share > 0 && share < 100)) out.push(`${name} takes ${share}% of decays, not 0–100`);
+  }
   if (rep.kind === 'streamChannel') {
     const w = num(rep.width);
     const d = num(rep.depth);

@@ -1750,6 +1750,7 @@ export function repIssues(
     case 'rockLayers':
       if ('dating' in rep) {
         out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+        out.push(...hs2fIssues(rep, (id) => val(id)));
         break;
       }
       count(rep.fossils[0], 'layers', 12);
