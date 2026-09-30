@@ -22,20 +22,17 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
     question: 'Put the models of the atom in the order they were proposed.',
     stages: [
-      { label: 'Dalton (1803): atoms are solid spheres that can’t be split', span: 94 },
+      { label: 'Dalton: atoms are solid spheres that can’t be split', span: 94 },
       {
-        label: 'Thomson (1897): electrons found, stuck in a positive ball like plums in a pudding',
+        label: 'Thomson: electrons found, stuck in a positive ball like plums in a pudding',
         span: 14,
       },
-      {
-        label: 'Rutherford (1911): gold foil shows a tiny, dense, positive nucleus',
-        span: 2,
-      },
-      { label: 'Bohr (1913): electrons on fixed energy levels around the nucleus', span: 13 },
-      { label: 'Quantum model (1926): electrons in clouds of probability, still used today' },
+      { label: 'Rutherford: gold foil shows a tiny, dense, positive nucleus', span: 2 },
+      { label: 'Bohr: electrons on fixed energy levels around the nucleus', span: 13 },
+      { label: 'Quantum model: electrons in clouds of probability, still used today' },
     ],
     unit: 'years',
-    totalLabel: 'From Dalton to the quantum model',
+    totalLabel: 'From Dalton (1803) to the quantum model (1926)',
   },
 
   // ── The periodic table and periodic trends (HS-PS1-1, HS-PS1-2) ──
@@ -295,7 +292,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.10.reaction-types',
     assumptions: [
-      'Tap a card, then a group.',
+      'A fuel burning in oxygen makes carbon dioxide and water.',
       'Each colored ball is an atom; balls side by side are bonded.',
       'The pattern of what joins, splits or swaps names the type.',
     ],
@@ -333,7 +330,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
         bin,
         figure: { kind: 'icon' as const, icon: icon as CardIcon },
       })),
-      { label: '2Mg + O₂ → 2MgO', bin: 'synthesis' },
+      { label: '2Na + Cl₂ → 2NaCl', bin: 'synthesis' },
       { label: '2H₂O₂ → 2H₂O + O₂', bin: 'decomposition' },
       { label: 'Fe + CuSO₄ → FeSO₄ + Cu', bin: 'single' },
       { label: 'AgNO₃ + NaCl → AgCl + NaNO₃', bin: 'double' },
@@ -601,7 +598,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     use: 'Use this for “Which equation shows fission?” and “Why is fusion a cleaner source of energy than fission?”',
     assumptions: [
       'Mass numbers and atomic numbers balance in every nuclear equation.',
-      'Fusion’s fuel is hydrogen from water and it leaves little long-lived waste; fission leaves radioactive waste.',
+      'Fusion’s fuel, deuterium, comes from seawater, and it leaves little long-lived waste; fission leaves waste that stays radioactive for thousands of years.',
     ],
     question: 'What kind of nuclear change is it?',
     bins: [
@@ -615,14 +612,14 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       { id: 'fusion', label: 'Fusion', why: 'Light nuclei join into a heavier one.' },
     ],
     cards: [
-      { label: '²²⁶Ra → ²²²Rn + ⁴He', bin: 'alpha' },
+      { label: '²²⁶₈₈Ra → ²²²₈₆Rn + ⁴₂He', bin: 'alpha' },
       { label: 'Gives off a helium-4 nucleus', bin: 'alpha' },
-      { label: '³H → ³He + e⁻', bin: 'beta' },
+      { label: '³₁H → ³₂He + ⁰₋₁e', bin: 'beta' },
       { label: 'A neutron becomes a proton', bin: 'beta' },
-      { label: '²³⁵U + n → ¹⁴⁴Ba + ⁸⁹Kr + 3n', bin: 'fission' },
+      { label: '²³⁵₉₂U + ¹₀n → ¹⁴⁴₅₆Ba + ⁸⁹₃₆Kr + 3¹₀n', bin: 'fission' },
       { label: 'A heavy nucleus splits', bin: 'fission' },
       { label: 'Runs today’s nuclear power plants', bin: 'fission' },
-      { label: '²H + ³H → ⁴He + n', bin: 'fusion' },
+      { label: '²₁H + ³₁H → ⁴₂He + ¹₀n', bin: 'fusion' },
       { label: 'Light nuclei join', bin: 'fusion' },
       { label: 'Powers the Sun', bin: 'fusion' },
     ],
