@@ -10,7 +10,8 @@ into it.
 
 ## What happened since round 2
 
-Round 2 (`H89`–`H105`) is drawn and merged into the lesson branch. Since then the lesson chat:
+Round 2 (`H89`–`H105`) is drawn on your branch. The lesson chat merges it once step 0 below is
+pushed, then places the pictures on its pages. Since round 2 began the lesson chat:
 
 - ran a lesson review of all eight Grade 9–12 sections and fixed what it found;
 - added 21 skills the textbooks teach and the taxonomy lacked (TAXONOMY_ISSUES.md, "Grades 9–12
@@ -48,7 +49,8 @@ picture it wanted under "Shared needs" in `docs/build/<m|s>.<grade>.md`. They ar
      r > n.
    - `g.m11-complex-numbers-sign-box`: the page's sign value `o` became `s` (±1).
    - `g.s11-kinematics-1d-free-fall-number`: the page's `a` is gone (g is hidden or a number now).
-     Then continue in this order, most pages first:
+
+Then continue in this order, most pages first:
 
 1. **H107 (P19): Physics.** New kinds `torque`, `rotor`, `oscillator`, `capacitor`; a `pendulum`
    driven by length; the lever's `seesaw` option; `charges` equipotentials and a charge
