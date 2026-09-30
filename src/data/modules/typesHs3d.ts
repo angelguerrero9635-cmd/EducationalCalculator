@@ -60,7 +60,21 @@ export interface ReflexScene {
 /** Round 3 group H3D's card figures (sequence stages and sort cards). */
 export type Hs3dCard =
   /** A reflex arc with one part lit (H109, 112 × 76). */
-  { kind: 'reflexArc'; lit: ReflexPart };
+  | { kind: 'reflexArc'; lit: ReflexPart }
+  /** One stage of a flowering plant's life cycle (H109, 112 × 76). */
+  | { kind: 'flowerCycle'; stage: FlowerStage };
+
+/** The stages of a flowering plant's life cycle, in order. */
+export const FLOWER_STAGES = [
+  'pollination',
+  'pollen tube',
+  'fertilization',
+  'seed and fruit',
+  'dispersal',
+  'germination',
+  'seedling',
+] as const;
+export type FlowerStage = (typeof FLOWER_STAGES)[number];
 
 /** Round 3 group H3D's explore figures. */
 export type Hs3dFigure =

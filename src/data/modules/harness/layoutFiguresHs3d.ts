@@ -10,7 +10,7 @@ import {
 } from '@/components/module/layouts/gelFigureMath';
 
 import type { LayoutDef } from '../layouts';
-import { GEL_FIGURE_LANES, GEL_SCENE_LANES, REFLEX_ORDER } from '../typesHs3d';
+import { FLOWER_STAGES, GEL_FIGURE_LANES, GEL_SCENE_LANES, REFLEX_ORDER } from '../typesHs3d';
 
 /** The gel's running length on the figure (px): bands closer than 6 px read as one. */
 const RUN = 236;
@@ -24,6 +24,11 @@ export function hs3dFigureIssues(l: LayoutDef): string[] {
     );
     if (at.some((k, i) => i > 0 && k <= at[i - 1]!))
       out.push(`reflexArc cards are not in the order ${REFLEX_ORDER.join(', ')}`);
+    const fl = l.stages.flatMap((s) =>
+      s.figure?.kind === 'flowerCycle' ? [FLOWER_STAGES.indexOf(s.figure.stage)] : [],
+    );
+    if (fl.some((k, i) => i > 0 && k <= fl[i - 1]!))
+      out.push(`flowerCycle cards are not in the order ${FLOWER_STAGES.join(', ')}`);
   }
   if (l.kind === 'explore' && l.figure.kind === 'gel') {
     const fig = l.figure;

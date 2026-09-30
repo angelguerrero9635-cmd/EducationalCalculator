@@ -509,4 +509,200 @@ const REFLEX_SEQUENCE: LayoutDef = {
   ],
 };
 
-export const HS3D_GALLERY_LAYOUTS: LayoutDef[] = [FINGERPRINT, REFLEX_EXPLORE, REFLEX_SEQUENCE];
+// ─── Part 5: the flower and its life cycle; the early embryo (plant-biology, reproduction) ───
+
+const FLOWER: LayoutDef = {
+  kind: 'explore',
+  id: 'g.s9-plant-biology-flower',
+  title: 'The parts of a flower',
+  use: 'Use this for “Which part of the flower becomes the fruit?”',
+  assumptions: [
+    'The flower is cut in half from top to bottom, so the parts inside show.',
+    'The stamen (anther and filament) is the male part; the pistil (stigma, style and ovary) is the female part.',
+  ],
+  figure: {
+    kind: 'parts',
+    drawing: 'flower',
+    parts: [
+      { name: 'Petal', job: 'Bright petals attract the insects and birds that carry pollen.' },
+      { name: 'Sepal', job: 'Sepals wrap and protect the flower while it is a bud.' },
+      { name: 'Anther', job: 'Makes pollen, which carries the sperm.' },
+      { name: 'Filament', job: 'The stalk that holds the anther up.' },
+      { name: 'Stigma', job: 'The sticky tip that catches pollen.' },
+      { name: 'Style', job: 'The stalk a pollen tube grows down to reach the ovary.' },
+      { name: 'Ovary', job: 'Holds the ovules; after fertilization it becomes the fruit.' },
+      { name: 'Ovule', job: 'Holds an egg; after fertilization it becomes a seed.' },
+    ],
+  },
+  scenes: [
+    {
+      label: 'Male parts',
+      part: 'Anther',
+      lines: ['Each stamen is a filament with an anther on top, full of pollen.'],
+    },
+    {
+      label: 'Female parts',
+      part: 'Stigma',
+      lines: ['The pistil is the stigma, the style and the ovary at the base.'],
+    },
+    {
+      label: 'Egg',
+      part: 'Ovule',
+      lines: ['Each ovule inside the ovary holds one egg cell.'],
+    },
+    {
+      label: 'Fruit',
+      part: 'Ovary',
+      lines: ['After fertilization the ovules become seeds and the ovary swells into the fruit.'],
+    },
+    {
+      label: 'Attract',
+      part: 'Petal',
+      lines: ['Colored petals, and often scent and nectar, bring pollinators to the flower.'],
+    },
+  ],
+};
+
+const LIFE_CYCLE: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.s9-plant-biology-life-cycle-cards',
+  title: 'A flowering plant’s life cycle',
+  use: 'Use this for “Put these in order: pollination, fertilization, seed dispersal, germination.”',
+  assumptions: [
+    'Pollen carries the sperm; the egg is in an ovule inside the flower’s ovary.',
+    'A seed holds an embryo and its food; the fruit around it helps spread it.',
+  ],
+  question: 'Put the stages in order, starting at the flower.',
+  stages: [
+    {
+      label: 'Pollination: pollen lands on a stigma',
+      figure: { kind: 'flowerCycle', stage: 'pollination' },
+    },
+    {
+      label: 'A pollen tube grows down to an ovule',
+      figure: { kind: 'flowerCycle', stage: 'pollen tube' },
+    },
+    {
+      label: 'Fertilization: a sperm joins the egg',
+      figure: { kind: 'flowerCycle', stage: 'fertilization' },
+    },
+    {
+      label: 'The ovule becomes a seed, and the ovary a fruit',
+      figure: { kind: 'flowerCycle', stage: 'seed and fruit' },
+    },
+    {
+      label: 'Seed dispersal by wind, water or animals',
+      figure: { kind: 'flowerCycle', stage: 'dispersal' },
+    },
+    {
+      label: 'Germination: the root and shoot break out',
+      figure: { kind: 'flowerCycle', stage: 'germination' },
+    },
+    {
+      label: 'The seedling grows and flowers',
+      figure: { kind: 'flowerCycle', stage: 'seedling' },
+    },
+  ],
+};
+
+const EMBRYO: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.s9-reproduction-development-embryo',
+  title: 'Animal development',
+  use: 'Use this for “Which comes first, the blastula or the gastrula?”',
+  assumptions: [
+    'An egg and a sperm are haploid; together they make a diploid zygote, which divides by mitosis.',
+    'Every cell has the same DNA, but different cells turn on different genes: they differentiate.',
+  ],
+  question: 'Put the stages of animal development in order, from fertilization.',
+  stages: [
+    {
+      label: 'Fertilization: a sperm joins an egg, making a zygote',
+      figure: { kind: 'icon', icon: 'zygote' },
+    },
+    {
+      label: 'Cleavage: the zygote divides into a solid ball of cells',
+      figure: { kind: 'icon', icon: 'morula' },
+    },
+    {
+      label: 'Blastula: a hollow ball of cells forms',
+      figure: { kind: 'icon', icon: 'blastula' },
+    },
+    {
+      label: 'Gastrulation: the cells fold in to form three germ layers',
+      figure: { kind: 'icon', icon: 'gastrula' },
+    },
+    { label: 'Organogenesis: the germ layers form tissues and organs' },
+    { label: 'The fetus grows until birth or hatching' },
+  ],
+};
+
+// ─── Part 6: biome icons (s.9.biomes~land) ─────────────────────────────────────────
+
+const BIOMES: LayoutDef = {
+  kind: 'sort',
+  id: 'g.s9-biomes-land-icons',
+  title: 'Which biome is it?',
+  use: 'Use this for “Which biome has permafrost and no trees?”',
+  assumptions: [
+    'Each card describes a biome’s climate, its plants or its animals.',
+    'Plants and animals have adaptations that suit their biome’s temperature and rainfall.',
+  ],
+  question: 'Which biome does it describe?',
+  bins: [
+    {
+      id: 'rainforest',
+      label: 'Tropical rainforest',
+      why: 'Warm and wet all year.',
+      figure: { kind: 'icon', icon: 'tropical rainforest' },
+    },
+    {
+      id: 'desert',
+      label: 'Desert',
+      why: 'Under 25 cm of rain a year, hot or cold.',
+      figure: { kind: 'icon', icon: 'desert' },
+    },
+    {
+      id: 'grassland',
+      label: 'Grassland',
+      why: 'Too dry for many trees; grasses and fires.',
+      figure: { kind: 'icon', icon: 'grassland' },
+    },
+    {
+      id: 'deciduous',
+      label: 'Temperate deciduous forest',
+      why: 'Four seasons and steady rain; broad leaves fall in autumn.',
+      figure: { kind: 'icon', icon: 'temperate deciduous forest' },
+    },
+    {
+      id: 'taiga',
+      label: 'Taiga',
+      why: 'Long, cold winters; conifer forest.',
+      figure: { kind: 'icon', icon: 'taiga' },
+    },
+    {
+      id: 'tundra',
+      label: 'Tundra',
+      why: 'Very cold, no trees, permafrost below.',
+      figure: { kind: 'icon', icon: 'tundra' },
+    },
+  ],
+  cards: [
+    { label: 'Layers of canopy trees, vines and orchids', bin: 'rainforest' },
+    { label: 'A cactus stores water in its thick stem', bin: 'desert' },
+    { label: 'Bison graze on the prairie', bin: 'grassland' },
+    { label: 'Oaks and maples drop their leaves in fall', bin: 'deciduous' },
+    { label: 'Spruce and fir forest with deep snow', bin: 'taiga' },
+    { label: 'Caribou graze lichens where no trees grow', bin: 'tundra' },
+  ],
+};
+
+export const HS3D_GALLERY_LAYOUTS: LayoutDef[] = [
+  FINGERPRINT,
+  REFLEX_EXPLORE,
+  REFLEX_SEQUENCE,
+  FLOWER,
+  LIFE_CYCLE,
+  EMBRYO,
+  BIOMES,
+];

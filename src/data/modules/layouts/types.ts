@@ -282,12 +282,13 @@ export type Figure =
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
    * scene's part lit; a part is picked by tapping it. Each part's name must name a drawn part:
    * `plant` flower, leaves, stem, roots; `animal` (a bear and a turtle) eyes, ears, fur,
-   * claws, shell; `body` brain, heart, lungs, stomach, bones, skin (any capitals).
+   * claws, shell; `body` brain, heart, lungs, stomach, bones, skin; `flower` (H109, cut in
+   * half) petal, sepal, anther, filament, stigma, style, ovary, ovule (any capitals).
    */
   | {
       kind: 'parts';
       parts: { name: string; job: string }[];
-      drawing?: 'plant' | 'animal' | 'body';
+      drawing?: 'plant' | 'animal' | 'body' | 'flower';
     }
   /** A ball and a box; a scene puts the ball above, below, beside, in front of or behind. */
   | { kind: 'position' }

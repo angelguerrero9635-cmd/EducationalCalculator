@@ -14,6 +14,7 @@ import { Canvas, ChartText } from '../reps/common';
 import { FloorShadow } from '../reps/paint';
 import { ell, useDrawKit, type DrawKit } from './drawKit';
 import { drawnPart, type PartsDrawingKind } from './figureMath';
+import { FLOWER } from './partsFlower';
 
 /** The drawings are made in a box this wide, then scaled to the screen. */
 const W = 320;
@@ -30,7 +31,10 @@ interface Region {
 }
 
 interface Drawing {
+  /** (Exported below as `PartsDrawingDef` for drawings kept in their own files.) */
   height: number;
+  /** H109: the drawing's top in its own coordinates (default 0), for a drawing made lower down. */
+  top?: number;
   /** Drawn under the parts (ground, soil). */
   back?: (k: DrawKit) => ReactNode;
   regions: Region[];
@@ -95,7 +99,7 @@ function DrawingView({
     <View style={{ width: w, height: h }}>
       <Svg width={w} height={h}>
         {kit.defs}
-        <G transform={`translate(${ox} 0) scale(${k})`}>
+        <G transform={`translate(${ox} ${-(def.top ?? 0) * k}) scale(${k})`}>
           {def.back?.(kit)}
           {def.regions.map((r) => (
             <G key={r.key}>{r.art(kit, r.key === lit)}</G>
@@ -165,7 +169,7 @@ function DrawingView({
             style={{
               position: 'absolute',
               left: ox + x * k,
-              top: y * k,
+              top: (y - (def.top ?? 0)) * k,
               width: bw * k,
               height: bh * k,
             }}
@@ -558,4 +562,11 @@ const BODY: Drawing = {
   ],
 };
 
-const DRAWINGS: Record<PartsDrawingKind, Drawing> = { plant: PLANT, animal: ANIMAL, body: BODY };
+export type PartsDrawingDef = Drawing;
+
+const DRAWINGS: Record<PartsDrawingKind, Drawing> = {
+  plant: PLANT,
+  animal: ANIMAL,
+  body: BODY,
+  flower: FLOWER,
+};

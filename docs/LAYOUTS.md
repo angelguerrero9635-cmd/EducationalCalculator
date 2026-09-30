@@ -86,6 +86,13 @@ biceps, and the spinal cord in section; a scene's `reflex: { lit?, impulse? }` l
 `sensory`, `interneuron`, `motor`, `effector` or `brain` and draws the impulse's arrows as far as
 it. Card figure `{ kind: 'reflexArc', lit }` (112 × 76, for sequence stages): the same arc, small,
 one part lit (no arrows); the harness checks the cards come in the impulse's order.
+Also H109: a `parts` figure's `drawing: 'flower'` (`layouts/partsFlower.tsx`), a flower cut in
+half: petal, sepal, anther, filament, stigma, style, ovary, ovule. Card figure `{ kind:
+'flowerCycle', stage }` (`layouts/flowerCycleCard.tsx`, 112 × 76): `pollination`, `pollen tube`,
+`fertilization`, `seed and fruit`, `dispersal`, `germination`, `seedling`, in that order (checked).
+Card icons (`layouts/icons/h3d.tsx`): `zygote`, `morula`, `blastula`, `gastrula` (germ layers
+blue, red, yellow) and the land biomes `tropical rainforest`, `desert`, `grassland`, `temperate
+deciduous forest`, `taiga`, `tundra`.
 
 Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,

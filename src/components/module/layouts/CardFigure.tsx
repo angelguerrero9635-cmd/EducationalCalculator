@@ -76,6 +76,7 @@ export function figureWidth(f: Spec): number {
     case 'replication':
       return REPLICATION_W;
     case 'reflexArc':
+    case 'flowerCycle':
       return hs3dCardSize(f)![0];
     default:
       return S;
@@ -223,7 +224,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
     case 'replication':
       return <ReplicationCard f={f} ink={ink} />;
     case 'reflexArc':
-      return <Hs3dCardView f={f} />;
+    case 'flowerCycle':
+      return <Hs3dCardView f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;
