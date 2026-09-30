@@ -2635,6 +2635,344 @@ const LAW_SINES_COSINES: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.probability-rules ──────────────────────────────────────────────────
+
+/** n! for a whole n. */
+const fact = (n: number) => {
+  let out = 1;
+  for (let i = 2; i <= n; i++) out *= i;
+  return out;
+};
+/** C(n, r), the ways to choose r of n. */
+const choose = (n: number, r: number) => {
+  if (r < 0 || r > n) return 0;
+  let out = 1;
+  for (let i = 1; i <= r; i++) out = (out * (n - r + i)) / i;
+  return Math.round(out);
+};
+/** One shaded probability on a Venn diagram of P(A), P(B) and P(A and B). */
+function vennPage(d: {
+  id: string;
+  title?: string;
+  use?: string;
+  assumptions: string[];
+  names: [string, string];
+  shade: 'or' | 'notA' | 'neither';
+  result: { symbol: string; name: string; display: string; fn: (v: Values) => number; how: string };
+  example: Values;
+  exclusive?: boolean;
+}): ModuleDef {
+  const [A, B] = d.names;
+  const expr = d.result.display.replace(/^\{s\} = /, '');
+  return page({
+    id: d.id,
+    ...(d.title ? { title: d.title, use: d.use } : {}),
+    assumptions: d.assumptions,
+    variables: [
+      chance('a', `P(${A})`, `P(${A})`),
+      chance('b', `P(${B})`, `P(${B})`),
+      ...(d.exclusive ? [] : [chance('ab', `P(${A} and ${B})`, `P(${A} and ${B})`)]),
+      chanceOut('s', d.result.symbol, d.result.name),
+    ],
+    rules: [
+      ...(d.exclusive
+        ? [
+            limit(
+              'P(A) + P(B) ≤ 1',
+              '{a} + {b} is at most 1',
+              (v) => v.a! + v.b! <= 1 + 1e-9,
+              'Events that can’t happen together can’t have chances adding past 1.',
+            ),
+          ]
+        : vennFits),
+      derive(
+        d.result.display.replace(/[{}]/g, ''),
+        d.result.display,
+        's',
+        (v) => {
+          const x = d.result.fn(v);
+          return x >= -1e-9 && x <= 1 + 1e-9 ? x : undefined;
+        },
+        expr,
+        d.result.how,
+      ),
+    ],
+    example: d.example,
+    startWith: d.exclusive ? ['a', 'b'] : ['a', 'b', 'ab'],
+    representation: {
+      kind: 'venn',
+      chances: {
+        a: 'a',
+        b: 'b',
+        both: d.exclusive ? 0 : 'ab',
+        names: d.names,
+        shade: d.shade,
+        ...(d.exclusive ? { exclusive: true } : {}),
+        result: 's',
+      },
+    },
+  });
+}
+/** P(n, r) or C(n, r) from n and r. */
+function countingPage(kind: 'P' | 'C'): ModuleDef {
+  const perm = kind === 'P';
+  return page({
+    id: `m.10.probability-rules~${perm ? 'permutations' : 'combinations'}`,
+    title: perm ? 'Permutations: order matters' : 'Combinations: order doesn’t matter',
+    use: perm
+      ? 'Use this for “In how many ways can 8 runners take gold, silver and bronze?”'
+      : 'Use this for “In how many ways can a committee of 3 be chosen from 8 people?”',
+    assumptions: perm
+      ? [
+          'The first place can go to any of the n; each later place has one fewer choice.',
+          'So P(n, r) = n × (n − 1) × … for r places = n! ÷ (n − r)!.',
+          'Order matters: gold to Ana and silver to Ben differs from the other way round.',
+        ]
+      : [
+          'Fill r places in order, then divide by the r! orders each group can be listed in.',
+          'So C(n, r) = n! ÷ ((n − r)! × r!).',
+          'Order doesn’t matter: a committee of Ana and Ben is the same as Ben and Ana.',
+        ],
+    variables: [
+      num('n', 'n', 'Choices', 1, perm ? 14 : 12, { step: 1, integer: true }),
+      num('r', 'r', perm ? 'Places filled in order' : 'Chosen', 0, perm ? 14 : 12, {
+        step: 1,
+        integer: true,
+      }),
+      der(num('c', kind, perm ? 'Ways' : 'Groups', 1, 1e19, { integer: true })),
+    ],
+    rules: [
+      limit(
+        'r ≤ n',
+        '{r} is at most {n}',
+        (v) => v.r! <= v.n!,
+        'You can’t choose more than there are.',
+      ),
+      perm
+        ? derive(
+            'P = n! ÷ (n − r)!',
+            '{c} = {n}! ÷ ({n} − {r})!',
+            'c',
+            (v) => fact(v.n!) / fact(v.n! - v.r!),
+            '{n}! ÷ ({n} − {r})!',
+            'n × (n − 1) × … for r places: n! with the unused (n − r)! divided out.',
+          )
+        : derive(
+            'C = n! ÷ ((n − r)! × r!)',
+            '{c} = {n}! ÷ (({n} − {r})! × {r}!)',
+            'c',
+            (v) => choose(v.n!, v.r!),
+            '{n}! ÷ (({n} − {r})! × {r}!)',
+            'The ordered count, n! ÷ (n − r)!, divided by the r! orders of each group.',
+          ),
+    ],
+    example: { n: 8, r: 3, c: perm ? 336 : 56 },
+    startWith: ['n', 'r'],
+    sliders: true,
+    equation: `${kind}({n}, {r}) = {c}`,
+    representation: {
+      kind: 'pascalTriangle',
+      n: 'n',
+      ...(perm ? { triangle: false } : { k: 'r' }),
+      slots: { r: 'r', ...(perm ? {} : { choose: true }), result: 'c' },
+    },
+  });
+}
+
+const PROBABILITY_RULES: ModuleDef[] = [
+  vennPage({
+    id: 'm.10.probability-rules',
+    assumptions: [
+      'P(A) and P(B) both count the overlap, so it is taken off once.',
+      'Each region shows its own probability; the whole rectangle is 1.',
+      'The shaded union is every outcome in A, in B or in both.',
+    ],
+    names: ['Band', 'Sport'],
+    shade: 'or',
+    result: {
+      symbol: 'P(Band or Sport)',
+      name: 'P(Band or Sport)',
+      display: '{s} = {a} + {b} − {ab}',
+      fn: (v) => v.a! + v.b! - v.ab!,
+      how: 'Add the two, then take off the overlap counted twice.',
+    },
+    example: { a: 0.45, b: 0.3, ab: 0.12, s: 0.63 },
+  }),
+  vennPage({
+    id: 'm.10.probability-rules~exclusive',
+    title: 'Mutually exclusive events',
+    use: 'Use this for “P(red) = 0.25 and P(blue) = 0.40 for one marble. Find P(red or blue).”',
+    assumptions: [
+      'Mutually exclusive events share no outcome: P(A and B) = 0.',
+      'Their circles don’t overlap, so nothing is counted twice.',
+      'So P(A or B) = P(A) + P(B).',
+    ],
+    names: ['Red', 'Blue'],
+    shade: 'or',
+    result: {
+      symbol: 'P(Red or Blue)',
+      name: 'P(Red or Blue)',
+      display: '{s} = {a} + {b}',
+      fn: (v) => v.a! + v.b!,
+      how: 'Nothing is shared, so just add the two.',
+    },
+    example: { a: 0.25, b: 0.4, s: 0.65 },
+    exclusive: true,
+  }),
+  vennPage({
+    id: 'm.10.probability-rules~complement',
+    title: 'The complement rule',
+    use: 'Use this for “The chance of rain is 0.35. What is the chance of no rain?”',
+    assumptions: [
+      'Everything outside A is the complement of A, written A′ or “not A”.',
+      'A and not A together fill the rectangle, whose probability is 1.',
+      'So P(not A) = 1 − P(A).',
+    ],
+    names: ['Rain', 'Wind'],
+    shade: 'notA',
+    result: {
+      symbol: 'P(not Rain)',
+      name: 'P(not Rain)',
+      display: '{s} = 1 − {a}',
+      fn: (v) => 1 - v.a!,
+      how: 'Everything outside A: take P(A) from 1.',
+    },
+    example: { a: 0.35, b: 0.4, ab: 0.2, s: 0.65 },
+  }),
+  vennPage({
+    id: 'm.10.probability-rules~neither',
+    title: 'Neither event',
+    use: 'Use this for “P(band) = 0.45, P(sport) = 0.30, P(both) = 0.12. What is the chance of neither?”',
+    assumptions: [
+      'Outside both circles is neither A nor B.',
+      'First find P(A or B) by the addition rule.',
+      'Then the rest of the rectangle is 1 − P(A or B).',
+    ],
+    names: ['Band', 'Sport'],
+    shade: 'neither',
+    result: {
+      symbol: 'P(neither)',
+      name: 'P(neither)',
+      display: '{s} = 1 − ({a} + {b} − {ab})',
+      fn: (v) => 1 - (v.a! + v.b! - v.ab!),
+      how: 'Everything outside the union: take P(A or B) from 1.',
+    },
+    example: { a: 0.45, b: 0.3, ab: 0.12, s: 0.37 },
+  }),
+  page({
+    id: 'm.10.probability-rules~sample-space',
+    title: 'Listing equally likely outcomes',
+    use: 'Use this for “Three coins are tossed. What is the chance of exactly two heads?”',
+    assumptions: [
+      'A tree lists every outcome: each branch splits into every outcome of the next stage.',
+      'When every path is equally likely, P(event) = favorable outcomes ÷ all outcomes.',
+      'Three coins, 1 for heads and 2 for tails: 1-1-2, 1-2-1 and 2-1-1 are exactly two heads, 3 of 8.',
+    ],
+    variables: [
+      num('a', 'a', 'First-stage outcomes', 2, 4, { step: 1, integer: true }),
+      num('b', 'b', 'Second-stage outcomes', 2, 4, { step: 1, integer: true }),
+      num('c', 'c', 'Third-stage outcomes', 2, 4, { step: 1, integer: true }),
+      der(num('n', 'n', 'Outcomes in all', 1, 64, { integer: true })),
+      num('f', 'f', 'Favorable outcomes', 0, 64, { step: 1, integer: true }),
+      der(num('P', 'P', 'Probability', 0, 1, { fraction: 64 })),
+    ],
+    rules: [
+      derive(
+        'n = a × b × c',
+        '{n} = {a} × {b} × {c}',
+        'n',
+        (v) => v.a! * v.b! * v.c!,
+        '{a} × {b} × {c}',
+        'Each branch splits into every outcome of the next stage: multiply.',
+      ),
+      limit(
+        'f ≤ n',
+        '{f} is at most {n}',
+        (v) => v.f! <= v.n!,
+        'There can’t be more favorable outcomes than outcomes.',
+      ),
+      share('P', 'f', 'n', 'Favorable outcomes over all the equally likely outcomes.'),
+    ],
+    example: { a: 2, b: 2, c: 2, n: 8, f: 3, P: 0.375 },
+    startWith: ['a', 'b', 'c', 'f'],
+    representation: {
+      kind: 'treeDiagram',
+      first: 'a',
+      second: 'b',
+      third: 'c',
+      total: 'n',
+      names: [
+        ['1', '2', '3', '4'],
+        ['1', '2', '3', '4'],
+        ['1', '2', '3', '4'],
+      ],
+      stages: ['First', 'Second', 'Third'],
+      path: [0, 0, 1],
+    },
+  }),
+  countingPage('P'),
+  countingPage('C'),
+  page({
+    id: 'm.10.probability-rules~counting-probability',
+    title: 'Probability with combinations',
+    use: 'Use this for “3 students are picked at random from 5 girls and 4 boys. What is the chance all 3 are girls?”',
+    assumptions: [
+      'Every group of r is equally likely, so count groups with combinations.',
+      'Favorable groups: C(a, r) ways to pick all r from the first group.',
+      'All groups: C(a + b, r). The probability is the first over the second.',
+    ],
+    variables: [
+      num('a', 'a', 'First group', 1, 12, { step: 1, integer: true }),
+      num('b', 'b', 'Second group', 0, 11, { step: 1, integer: true }),
+      num('r', 'r', 'Chosen', 1, 12, { step: 1, integer: true }),
+      der(num('n', 'n', 'Everyone', 1, 12, { integer: true })),
+      der(num('f', 'f', 'Groups all from the first', 0, 1000, { integer: true })),
+      der(num('t', 't', 'Groups in all', 1, 1000, { integer: true })),
+      der(num('P', 'P', 'Probability', 0, 1, { fraction: 1000 })),
+    ],
+    rules: [
+      limit(
+        'a + b ≤ 12',
+        '{a} + {b} is at most 12',
+        (v) => v.a! + v.b! <= 12,
+        'Keep to 12 people in all, so the triangle can show them.',
+      ),
+      limit(
+        'r ≤ a',
+        '{r} is at most {a}',
+        (v) => v.r! <= v.a!,
+        'Choose no more than the first group has.',
+      ),
+      total('n', ['a', 'b'], 'Everyone in both groups.'),
+      derive(
+        'f = C(a, r)',
+        '{f} = C({a}, {r})',
+        'f',
+        (v) => choose(v.a!, v.r!),
+        'C({a}, {r})',
+        'The ways to choose all r from the first group.',
+      ),
+      derive(
+        't = C(n, r)',
+        '{t} = C({n}, {r})',
+        't',
+        (v) => choose(v.n!, v.r!),
+        'C({n}, {r})',
+        'The ways to choose any r from everyone.',
+      ),
+      share('P', 'f', 't', 'Favorable groups over all the equally likely groups.'),
+    ],
+    example: { a: 5, b: 4, r: 3, n: 9, f: 10, t: 84, P: 10 / 84 },
+    startWith: ['a', 'b', 'r'],
+    representation: {
+      kind: 'pascalTriangle',
+      n: 'n',
+      k: 'r',
+      slots: { r: 'r', choose: true, result: 't' },
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...SIMILARITY,
   ...SPECIAL,
@@ -2645,5 +2983,6 @@ export const MATH_10_MODULES: ModuleDef[] = [
   ...CIRCLE_THEOREMS,
   ...CIRCLE_EQUATIONS,
   ...LAW_SINES_COSINES,
+  ...PROBABILITY_RULES,
   ...CONDITIONAL,
 ];
