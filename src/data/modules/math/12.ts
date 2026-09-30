@@ -103,6 +103,26 @@ const withCheck = (r: Rel, check: (v: Values) => string): Rel => ({
   relation: { ...r.relation, check },
 });
 
+/** A rule that only checks (never solved): 0 when it holds; `why` is the reason shown when not. */
+const limit = (
+  id: string,
+  display: string,
+  vars: string[],
+  ok: (v: Values) => boolean,
+  why: string | ((v: Values) => string),
+): Rel => ({
+  relation: {
+    id,
+    constraint: true,
+    display,
+    vars,
+    residual: (v) => (ok(v) ? 0 : 1),
+    solve: {},
+    message: (v) => (ok(v) ? undefined : typeof why === 'string' ? why : why(v)),
+  },
+  steps: {},
+});
+
 /** 0 < p < 1, or undefined. */
 const inOpen = (p: number) => (p > 0 && p < 1 ? p : undefined);
 
@@ -112,13 +132,23 @@ const prob = (id: string, symbol: string, name: string, extra: Partial<VariableD
   V(id, symbol, name, { min: 0, max: 1, step: 0.0001, ...extra });
 const zVar = (id = 'z', name = 'Test statistic') =>
   V(id, 'z', name, { min: -50, max: 50, step: 0.01 });
-const alphaVar = V('a', 'α', 'Significance level', {
-  allowed: [0.01, 0.05, 0.1],
-  min: 0.01,
-  max: 0.1,
-});
+const alphaOf = (id = 'a') =>
+  V(id, 'α', 'Significance level', { allowed: [0.01, 0.05, 0.1], min: 0.01, max: 0.1 });
+const alphaVar = alphaOf();
 const ALPHA_WHY =
-  'The significance level is chosen before the test; the picture compares the p-value with it.';
+  'The significance level is chosen before the test; the p-value step compares the p-value with it.';
+
+/** The decision, after the p-value: below α rejects H₀. */
+const decide =
+  (P = 'P', a = 'a') =>
+  (v: Values) =>
+    v[P] === undefined || v[a] === undefined
+      ? ''
+      : `→ ${v[P]! < 0.0001 ? 'P < 0.0001' : `P = ${fmt(v[P]!)}`}, ${
+          v[P]! < v[a]! ? 'below' : 'not below'
+        } α = ${fmt(v[a]!)}: ${v[P]! < v[a]! ? 'reject H₀' : 'fail to reject H₀'}`;
+/** A p-value relation with the decision written after its answer. */
+const decided = (r: Rel, a = 'a') => withStep(r, 'P', { note: decide('P', a) });
 
 /** z = (x − m) ÷ s: how many standard errors the estimate is from the H₀ value. */
 function zScore(
@@ -282,6 +312,15 @@ function end(a: string, b: string, c: string, sign: 1 | -1): Rel {
   );
 }
 
+/** L < U: an interval's ends in order. */
+const ordered = limit(
+  'L < U',
+  'The lower end {lo} is below the upper end {hi}',
+  ['lo', 'hi'],
+  (v) => v.lo! < v.hi!,
+  'The lower end must be below the upper end: the interval is the estimate ± a positive margin.',
+);
+
 // ── The t distribution (engine need 1) ──
 
 const tVar = () =>
@@ -342,11 +381,14 @@ const FIVE_TERMS = FIVE.map((i) => `({O${i}} − {n} × {p${i}})² ÷ ({n} × {p
 
 /** A number as the steps show it (at most 4 decimals). */
 const fmt = (x: number) => formatNumber(Number(x.toFixed(4)));
+/** A value as its box shows it (4 significant figures below 1), bracketed when negative. */
+const shown = (x: number) => formatNumber(x);
+const par = (x: number) => (x < 0 ? `(${shown(x)})` : shown(x));
 
 /** The 2 × 3 table of the independence test, row by row. */
 const CELLS = [
-  ['a', 'b', 'e'],
-  ['c', 'd', 'f'],
+  ['a', 'b', 'c'],
+  ['d', 'e', 'f'],
 ] as const;
 const ALL_CELLS: string[] = CELLS.flat();
 /** Each cell's expected count if the variables are independent: row × column ÷ grand total. */
@@ -362,6 +404,10 @@ const chiOfTable = (v: Values) => {
     ? cells.reduce((t, c) => t + (c.O - c.E) ** 2 / c.E, 0)
     : undefined;
 };
+
+/** The other direction's chance, after a tail area: 1 − P. */
+const complement = (P: number | undefined, what: string) =>
+  P === undefined ? '' : `→ ${what}: 1 − ${fmt(P)} = ${fmt(1 - P)}`;
 
 const MATH_12_STATS: ModuleDef[] = [
   // ── m.12.hypothesis-testing (S-IC.5, S-IC.6) ──
@@ -389,9 +435,27 @@ const MATH_12_STATS: ModuleDef[] = [
     ],
     ...rels(
       proportion('p', 'k', 'n'),
-      seProportion('E', 'p0', 'n', 'If H₀ is true, p̂ spreads by √(p₀(1 − p₀) ÷ n): use p₀, not p̂.'),
+      withStep(
+        seProportion(
+          'E',
+          'p0',
+          'n',
+          'If H₀ is true, p̂ spreads by √(p₀(1 − p₀) ÷ n): use p₀, not p̂.',
+        ),
+        'E',
+        {
+          // The normal curve needs np₀ ≥ 10 and n(1 − p₀) ≥ 10.
+          note: (v) => {
+            if (v.n === undefined || v.p0 === undefined) return '';
+            const [what, x] = v.p0 <= 0.5 ? ['np₀', v.n * v.p0] : ['n(1 − p₀)', v.n * (1 - v.p0)];
+            return x >= 10
+              ? ''
+              : `→ ${what} = ${fmt(x)} is below 10: the normal curve is a poor fit`;
+          },
+        },
+      ),
       zScore('z', 'p', 'p0', 'E'),
-      twoTail('P', 'z'),
+      decided(twoTail('P', 'z')),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
@@ -433,7 +497,7 @@ const MATH_12_STATS: ModuleDef[] = [
       prob('P', 'P', 'p-value'),
       alphaVar,
     ],
-    ...rels(seMean('E', 's', 'n'), zScore('z', 'x', 'm', 'E'), leftTail('P', 'z')),
+    ...rels(seMean('E', 's', 'n'), zScore('z', 'x', 'm', 'E'), decided(leftTail('P', 'z'))),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: { m: 500, s: 12, n: 36, x: 496, E: 2, z: -2, P: Phi(-2), a: 0.05 },
     startWith: ['m', 's', 'n', 'x', 'a'],
@@ -502,7 +566,7 @@ const MATH_12_STATS: ModuleDef[] = [
           ],
         },
       ),
-      tTwoTail('P', 't', 'df'),
+      decided(tTwoTail('P', 't', 'df')),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
@@ -543,14 +607,14 @@ const MATH_12_STATS: ModuleDef[] = [
       V('x2', 'x̄₂', 'Mean of sample 2', { unit: 'cm', min: -10000, max: 10000, step: 0.1 }),
       V('s2', 's₂', 'Standard deviation 2', { unit: 'cm', min: 0.01, max: 10000, step: 0.1 }),
       V('n2', 'n₂', 'Size of sample 2', { integer: true, min: 2, max: 1000 }),
-      V('d', 'x̄₁ − x̄₂', 'Difference of the means', {
+      V('d', 'd', 'Difference of the means, x̄₁ − x̄₂', {
         unit: 'cm',
         min: -20000,
         max: 20000,
         step: 0.1,
         derived: true,
       }),
-      V('E', 'SE', 'Standard error of x̄₁ − x̄₂', {
+      V('E', 'SE', 'Standard error of d', {
         unit: 'cm',
         min: 0.0001,
         max: 10000,
@@ -593,14 +657,14 @@ const MATH_12_STATS: ModuleDef[] = [
         ),
         (v) => `${fmt(v.df!)} = ${fmt(Math.min(v.n1!, v.n2!))} − 1`,
       ),
-      rel('t = (x̄₁ − x̄₂) ÷ SE', '{t} = {d} ÷ {E}', ['t', 'd', 'E'], (v) => v.t! * v.E! - v.d!, {
+      rel('t = d ÷ SE', '{t} = {d} ÷ {E}', ['t', 'd', 'E'], (v) => v.t! * v.E! - v.d!, {
         t: [
           (v) => div(v.d!, v.E!),
           '{d} ÷ {E}',
           'H₀ says the difference is 0: count how many standard errors it is from 0.',
         ],
       }),
-      tTwoTail('P', 't', 'df'),
+      decided(tTwoTail('P', 't', 'df')),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
@@ -650,8 +714,8 @@ const MATH_12_STATS: ModuleDef[] = [
       V('z', 'z⋆', 'Critical value', { min: 0.1, max: 4, step: 0.001, derived: true }),
       V('SE', 'SE', 'Standard error', { min: 0.000001, max: 100000, step: 0.01 }),
       V('E', 'E', 'Margin of error', { min: 0.000001, max: 1000000, step: 0.01 }),
-      V('lo', 'L', 'Lower end', { min: -3000000, max: 3000000, step: 0.01 }),
-      V('hi', 'U', 'Upper end', { min: -3000000, max: 3000000, step: 0.01 }),
+      V('lo', 'L', 'Lower end', { min: -1000000, max: 1000000, step: 0.01 }),
+      V('hi', 'U', 'Upper end', { min: -1000000, max: 1000000, step: 0.01 }),
     ],
     ...rels(
       critical,
@@ -659,6 +723,7 @@ const MATH_12_STATS: ModuleDef[] = [
       margin,
       end('lo', 'x', 'E', -1),
       end('hi', 'x', 'E', 1),
+      ordered,
     ),
     example: {
       x: 52,
@@ -705,8 +770,8 @@ const MATH_12_STATS: ModuleDef[] = [
       V('ts', 't⋆', 'Critical value', { min: 0.1, max: 700, step: 0.001, derived: true }),
       V('SE', 'SE', 'Standard error', { min: 0.000001, max: 100000, step: 0.01, derived: true }),
       V('E', 'E', 'Margin of error', { min: 0.000001, max: 1000000, step: 0.01 }),
-      V('lo', 'L', 'Lower end', { min: -3000000, max: 3000000, step: 0.01 }),
-      V('hi', 'U', 'Upper end', { min: -3000000, max: 3000000, step: 0.01 }),
+      V('lo', 'L', 'Lower end', { min: -1000000, max: 1000000, step: 0.01 }),
+      V('hi', 'U', 'Upper end', { min: -1000000, max: 1000000, step: 0.01 }),
     ],
     ...rels(
       degreesOfFreedom('df', 'n'),
@@ -725,6 +790,7 @@ const MATH_12_STATS: ModuleDef[] = [
       }),
       end('lo', 'x', 'E', -1),
       end('hi', 'x', 'E', 1),
+      ordered,
     ),
     example: {
       x: 52,
@@ -775,6 +841,13 @@ const MATH_12_STATS: ModuleDef[] = [
       V('hi', 'U', 'Upper end', { min: -4, max: 5, step: 0.0001 }),
     ],
     ...rels(
+      limit(
+        'k ≥ 10, n − k ≥ 10',
+        'At least 10 successes and 10 failures: {k} of {n}',
+        ['k', 'n'],
+        (v) => v.k! >= 10 && v.n! - v.k! >= 10,
+        'The interval needs at least 10 successes and 10 failures in the sample.',
+      ),
       proportion('p', 'k', 'n'),
       critical,
       seProportion(
@@ -786,6 +859,7 @@ const MATH_12_STATS: ModuleDef[] = [
       margin,
       end('lo', 'p', 'E', -1),
       end('hi', 'p', 'E', 1),
+      ordered,
     ),
     example: {
       k: 240,
@@ -837,14 +911,25 @@ const MATH_12_STATS: ModuleDef[] = [
     ],
     ...rels(
       critical,
-      derive(
-        'n = ⌈z⋆² × p(1 − p) ÷ E²⌉',
-        '{n} = ⌈{z}² × {p} × (1 − {p}) ÷ {E}²⌉',
+      withStep(
+        derive(
+          'n = ⌈z⋆² × p(1 − p) ÷ E²⌉',
+          '{n} = ⌈{z}² × {p} × (1 − {p}) ÷ {E}²⌉',
+          'n',
+          ['z', 'p', 'E'],
+          (v) => Math.ceil(exact((v.z! ** 2 * v.p! * (1 - v.p!)) / v.E! ** 2)),
+          '⌈{z}² × {p} × (1 − {p}) ÷ {E}²⌉',
+          'Square E = z⋆√(p(1 − p) ÷ n) and solve for n, then round up to a whole person.',
+        ),
         'n',
-        ['z', 'p', 'E'],
-        (v) => Math.ceil(exact((v.z! ** 2 * v.p! * (1 - v.p!)) / v.E! ** 2)),
-        '⌈{z}² × {p} × (1 − {p}) ÷ {E}²⌉',
-        'Square E = z⋆√(p(1 − p) ÷ n) and solve for n, then round up to a whole person.',
+        {
+          // The unrounded n first: rounding it up is the lesson.
+          work: (v) => [
+            `${fmt(v.z!)}² × ${fmt(v.p!)} × ${fmt(1 - v.p!)} ÷ ${fmt(v.E!)}² = ${fmt(
+              (v.z! ** 2 * v.p! * (1 - v.p!)) / v.E! ** 2,
+            )}, rounded up to ${fmt(v.n!)}`,
+          ],
+        },
       ),
       derive(
         'SE = √(p(1 − p) ÷ n)',
@@ -853,7 +938,7 @@ const MATH_12_STATS: ModuleDef[] = [
         ['p', 'n'],
         (v) => Math.sqrt((v.p! * (1 - v.p!)) / v.n!),
         '√({p} × (1 − {p}) ÷ {n})',
-        'The standard error with that many people; z⋆ of them is within the margin.',
+        'The standard error with that many people: z⋆ standard errors fit within the margin.',
       ),
     ),
     example: {
@@ -952,7 +1037,11 @@ const MATH_12_STATS: ModuleDef[] = [
         'How many standard errors x̄ is from μ.',
         'Start at μ and go z standard errors.',
       ]),
-      leftTail('P', 'z', 'Φ(z) is the area under the standard normal curve left of z.'),
+      withStep(
+        leftTail('P', 'z', 'Φ(z) is the area under the standard normal curve left of z.'),
+        'P',
+        { note: (v) => complement(v.P, 'more than x̄') },
+      ),
     ),
     example: { m: 170, s: 10, n: 25, E: 2, x: 173, z: 1.5, P: Phi(1.5) },
     startWith: ['m', 's', 'n', 'x'],
@@ -990,7 +1079,9 @@ const MATH_12_STATS: ModuleDef[] = [
         'How many standard errors p̂ is from p.',
         'Start at p and go z standard errors.',
       ]),
-      rightTail('P', 'z', 'The whole area is 1; take away the area left of z.'),
+      withStep(rightTail('P', 'z', 'The whole area is 1; take away the area left of z.'), 'P', {
+        note: (v) => complement(v.P, 'at most p̂'),
+      }),
     ),
     example: { p: 0.4, n: 150, E: 0.04, x: 0.46, z: 1.5, P: 1 - Phi(1.5) },
     startWith: ['p', 'n', 'x'],
@@ -1006,7 +1097,7 @@ const MATH_12_STATS: ModuleDef[] = [
   {
     id: 'm.12.sampling-distributions~counts',
     title: 'Mean and spread of a binomial count',
-    use: 'Use this for “In 40 trials with p = 0.25, find the mean and standard deviation of the count.”',
+    use: 'Use this for “In 40 trials with p = 0.25, find the mean and standard deviation of the count” (up to 40 trials).',
     assumptions: [
       'n independent trials, each a success with the same chance p; X counts the successes.',
       'X has mean np and standard deviation √(np(1 − p)).',
@@ -1070,6 +1161,7 @@ const MATH_12_STATS: ModuleDef[] = [
       V('n', 'n', 'Flowers in all', { integer: true, min: 1, max: 300000, derived: true }),
       V('X', 'X²', 'Chi-square statistic', { min: 0, max: 10000000, step: 0.01, derived: true }),
       prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
     ],
     ...rels(
       derive(
@@ -1105,19 +1197,22 @@ const MATH_12_STATS: ModuleDef[] = [
         ),
         'X',
         {
+          // The expected counts come first, before the formula that uses them.
+          how: (v) =>
+            `The expected counts are E = n × p: ${[v.p1!, v.p2!, v.p3!]
+              .map((p) => fmt(v.n! * p))
+              .join(', ')}. Add (O − E)² ÷ E over the three categories.`,
           work: (v) => {
             const E = [v.p1!, v.p2!, v.p3!].map((p) => v.n! * p);
             const O = [v.O1!, v.O2!, v.O3!];
             const terms = O.map((o, i) => (o - E[i]!) ** 2 / E[i]!);
-            return [
-              `Expected counts E = n × p: ${E.map(fmt).join(', ')}`,
-              `${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`,
-            ];
+            return [`${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`];
           },
         },
       ),
-      chiTail2,
+      decided(chiTail2),
     ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
       O1: 22,
       O2: 54,
@@ -1128,11 +1223,12 @@ const MATH_12_STATS: ModuleDef[] = [
       n: 100,
       X: 0.72,
       P: Math.exp(-0.36),
+      a: 0.05,
     },
-    startWith: ['O1', 'O2', 'O3', 'p1', 'p2'],
+    startWith: ['O1', 'O2', 'O3', 'p1', 'p2', 'a'],
     representation: {
       kind: 'normalCurve',
-      chiSquare: { df: 2, stat: 'X', p: 'P' },
+      chiSquare: { df: 2, stat: 'X', p: 'P', alpha: 'a' },
     },
   },
   {
@@ -1170,6 +1266,7 @@ const MATH_12_STATS: ModuleDef[] = [
       V('n', 'n', 'Choices in all', { integer: true, min: 1, max: 500000, derived: true }),
       V('X', 'X²', 'Chi-square statistic', { min: 0, max: 10000000, step: 0.01, derived: true }),
       prob('P', 'P', 'p-value', { derived: true }),
+      alphaVar,
     ],
     ...rels(
       derive(
@@ -1206,26 +1303,30 @@ const MATH_12_STATS: ModuleDef[] = [
         ),
         'X',
         {
+          how: (v) =>
+            `The expected counts are E = n × p: ${FIVE.map((i) => fmt(v.n! * v[`p${i}`]!)).join(
+              ', ',
+            )}. Add (O − E)² ÷ E over the five choices.`,
           work: (v) => {
             const E = FIVE.map((i) => v.n! * v[`p${i}`]!);
             const terms = FIVE.map((i, k) => (v[`O${i}`]! - E[k]!) ** 2 / E[k]!);
-            return [
-              `Expected counts E = n × p: ${E.map(fmt).join(', ')}`,
-              `${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`,
-            ];
+            return [`${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`];
           },
         },
       ),
-      derive(
-        'P = χ²cdf(X, ∞, 4)',
-        '{P} = χ²cdf({X}, ∞, 4)',
-        'P',
-        ['X'],
-        (v) => 1 - chiCdf(v.X!, 4),
-        'χ²cdf({X}, ∞, 4)',
-        'The area under the chi-square curve with df 4 past the statistic.',
+      decided(
+        derive(
+          'P = χ²cdf(X, ∞, 4)',
+          '{P} = χ²cdf({X}, ∞, 4)',
+          'P',
+          ['X'],
+          (v) => 1 - chiCdf(v.X!, 4),
+          'χ²cdf({X}, ∞, 4)',
+          'The area under the chi-square curve with df 4 past the statistic.',
+        ),
       ),
     ),
+    standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
       O1: 66,
       O2: 44,
@@ -1240,9 +1341,13 @@ const MATH_12_STATS: ModuleDef[] = [
       n: 200,
       X: 4.32,
       P: 1 - chiCdf(4.32, 4),
+      a: 0.05,
     },
-    startWith: ['O1', 'O2', 'O3', 'O4', 'O5', 'p1', 'p2', 'p3', 'p4'],
-    representation: { kind: 'normalCurve', chiSquare: { df: 4, stat: 'X', p: 'P' } },
+    startWith: ['O1', 'O2', 'O3', 'O4', 'O5', 'p1', 'p2', 'p3', 'p4', 'a'],
+    representation: {
+      kind: 'normalCurve',
+      chiSquare: { df: 4, stat: 'X', p: 'P', alpha: 'a' },
+    },
   },
   {
     id: 'm.12.chi-square~independence',
@@ -1256,18 +1361,19 @@ const MATH_12_STATS: ModuleDef[] = [
     variables: [
       V('a', 'a', 'Grade 11, walk', { integer: true, min: 0, max: 100000 }),
       V('b', 'b', 'Grade 11, bus', { integer: true, min: 0, max: 100000 }),
-      V('e', 'e', 'Grade 11, car', { integer: true, min: 0, max: 100000 }),
-      V('c', 'c', 'Grade 12, walk', { integer: true, min: 0, max: 100000 }),
-      V('d', 'd', 'Grade 12, bus', { integer: true, min: 0, max: 100000 }),
+      V('c', 'c', 'Grade 11, car', { integer: true, min: 0, max: 100000 }),
+      V('d', 'd', 'Grade 12, walk', { integer: true, min: 0, max: 100000 }),
+      V('e', 'e', 'Grade 12, bus', { integer: true, min: 0, max: 100000 }),
       V('f', 'f', 'Grade 12, car', { integer: true, min: 0, max: 100000 }),
       V('X', 'X²', 'Chi-square statistic', { min: 0, max: 10000000, step: 0.01, derived: true }),
       prob('P', 'P', 'p-value', { derived: true }),
+      alphaOf('al'),
     ],
     ...rels(
       {
         relation: {
           id: 'X² = Σ(O − E)² ÷ E',
-          display: '{X} = Σ(O − E)² ÷ E over the cells {a}, {b}, {e}, {c}, {d}, {f}',
+          display: '{X} = Σ(O − E)² ÷ E over the cells {a}, {b}, {c}, {d}, {e}, {f}',
           vars: ['X', ...ALL_CELLS],
           residual: (v) => v.X! - (chiOfTable(v) ?? NaN),
           solve: {
@@ -1288,39 +1394,43 @@ const MATH_12_STATS: ModuleDef[] = [
               expectedCounts(v)
                 .map((c) => `({${c.id}} − ${fmt(c.E)})² ÷ ${fmt(c.E)}`)
                 .join(' + '),
-            how: 'Each cell expects row total × column total ÷ grand total; add (O − E)² ÷ E over the six cells.',
-            work: (v) => {
+            how: (v) => {
               const cells = expectedCounts(v);
-              const terms = cells.map((c) => (c.O - c.E) ** 2 / c.E);
-              return [
-                `Expected counts, row by row: ${cells.map((c) => fmt(c.E)).join(', ')}`,
-                `${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`,
-              ];
+              const N = cells.reduce((t, c) => t + c.O, 0);
+              const row = v.a! + v.b! + v.c!;
+              const col = v.a! + v.d!;
+              return `Each cell expects row total × column total ÷ grand total; walk, grade 11: ${fmt(row)} × ${fmt(col)} ÷ ${fmt(N)} = ${fmt(cells[0]!.E)}. Row by row they are ${cells.map((c) => fmt(c.E)).join(', ')}.`;
+            },
+            work: (v) => {
+              const terms = expectedCounts(v).map((c) => (c.O - c.E) ** 2 / c.E);
+              return [`${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`];
             },
           },
         },
       },
-      chiTail2,
+      decided(chiTail2, 'al'),
     ),
+    standalone: { vars: ['al'], why: ALPHA_WHY },
     example: {
       a: 20,
       b: 30,
-      e: 50,
-      c: 30,
-      d: 20,
+      c: 50,
+      d: 30,
+      e: 20,
       f: 50,
       X: 4,
       P: Math.exp(-2),
+      al: 0.05,
     },
-    startWith: ['a', 'b', 'e', 'c', 'd', 'f'],
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f', 'al'],
     representation: {
       kind: 'table',
       twoWay: {
         rows: ['Grade 11', 'Grade 12'],
         cols: ['Walk', 'Bus', 'Car'],
         cells: [
-          ['a', 'b', 'e'],
-          ['c', 'd', 'f'],
+          ['a', 'b', 'c'],
+          ['d', 'e', 'f'],
         ],
         expected: 'independence',
         chiSquare: 'X',
@@ -1938,8 +2048,13 @@ const toRadians = (t: string, A: string) =>
     `{${A}} × π/180`,
     'A half turn, 180°, is π radians: multiply by π/180.',
   );
-const radians = (id: string, min: number, max: number) =>
-  V(id, 't', 'The angle in radians', { min, max, step: 0.0001, derived: true });
+const radians = (
+  id: string,
+  min: number,
+  max: number,
+  symbol = 't',
+  name = 'The angle in radians',
+) => V(id, symbol, name, { min, max, step: 0.0001, derived: true, pi: 'fraction' });
 
 /** A = f⁻¹(x) on the inverse's range, and x = f(A) back. */
 function inverse(fn: 'sin' | 'cos' | 'tan', A: string, x: string, how: string): Rel {
@@ -1962,6 +2077,8 @@ function inverse(fn: 'sin' | 'cos' | 'tan', A: string, x: string, how: string): 
         `Take the ${fn === 'sin' ? 'sine' : fn === 'cos' ? 'cosine' : 'tangent'} of both sides.`,
       ],
     },
+    // The check goes the other way, through the function itself.
+    { check: (v) => `${fn}(${shown(v[A]!)}°) = ${shown(v[x]!)}` },
   );
 }
 
@@ -2027,7 +2144,7 @@ const MATH_12_TRIG: ModuleDef[] = [
   {
     id: 'm.12.inverse-trig~arctan',
     title: 'Inverse tangent: the angle of a slope',
-    use: 'Use this for “A ramp rises 5 m over 2 m of ground. What angle does it make?”',
+    use: 'Use this for “A road rises 3 m over 40 m of ground. What angle does it make with the level?”',
     assumptions: [
       'The angle of a slope is tan⁻¹ of rise over run.',
       'tan⁻¹(x) is the one angle between −90° and 90° whose tangent is x; every x has one.',
@@ -2047,7 +2164,7 @@ const MATH_12_TRIG: ModuleDef[] = [
       }),
       inverse('tan', 'A', 'x', 'The angle between −90° and 90° whose tangent is rise over run.'),
     ),
-    example: { r: 5, u: 2, x: 2.5, A: Math.atan(2.5) / RAD },
+    example: { r: 3, u: 40, x: 0.075, A: Math.atan(0.075) / RAD },
     startWith: ['r', 'u'],
     representation: {
       kind: 'functionGraph',
@@ -2103,23 +2220,96 @@ const MATH_12_TRIG: ModuleDef[] = [
 /** Sine and cosine of degrees, exactly 0 at the multiples of 90° where they vanish. */
 const sind = (x: number) => (x % 180 === 0 ? 0 : Math.sin(x * RAD));
 const cosd = (x: number) => ((x - 90) % 180 === 0 ? 0 : Math.cos(x * RAD));
-/** Four special values and their products, then the sum, as work lines. */
-const formulaWork = (p: number, q: number, parts: string[]) => {
-  const sum = p + q;
+/** n√k ÷ d: a special value written exactly (√2/2, −1/2, (√6 + √2)/4's parts). */
+type Surd = { n: number; k: number; d: number };
+/** The sine of each multiple of 30° and 45° on one turn, as n√k ÷ 2. */
+const SIN_EXACT: Record<number, [number, number]> = {
+  0: [0, 1],
+  30: [1, 1],
+  45: [1, 2],
+  60: [1, 3],
+  90: [2, 1],
+  120: [1, 3],
+  135: [1, 2],
+  150: [1, 1],
+  180: [0, 1],
+  210: [-1, 1],
+  225: [-1, 2],
+  240: [-1, 3],
+  270: [-2, 1],
+  300: [-1, 3],
+  315: [-1, 2],
+  330: [-1, 1],
+};
+/** The angles the sum and difference pages take: those with exact values. */
+const SPECIAL_ANGLES = [...Object.keys(SIN_EXACT).map(Number), 360];
+const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+const lowest = ({ n, k, d }: Surd): Surd => {
+  if (n === 0) return { n: 0, k: 1, d: 1 };
+  const g = gcd(Math.abs(n), d);
+  return { n: n / g, k, d: d / g };
+};
+const exactTrig = (fn: 'sin' | 'cos', x: number): Surd | undefined => {
+  const e = SIN_EXACT[((((fn === 'sin' ? x : x + 90) % 360) + 360) % 360) as number];
+  return e && lowest({ n: e[0], k: e[1], d: 2 });
+};
+const surdText = ({ n, k, d }: Surd) => {
+  if (n === 0) return '0';
+  const a = Math.abs(n);
+  return `${n < 0 ? '−' : ''}${k === 1 ? a : `${a === 1 ? '' : a}√${k}`}${d === 1 ? '' : `/${d}`}`;
+};
+/** A product of two exact values, its square factors taken out (√2 × √2 = 2). */
+const surdTimes = (x: Surd, y: Surd): Surd => {
+  let n = x.n * y.n;
+  let k = x.k * y.k;
+  for (const r of [2, 3]) {
+    if (k % (r * r) === 0) {
+      n *= r;
+      k /= r * r;
+    }
+  }
+  return lowest({ n, k, d: x.d * y.d });
+};
+/** p + q in lowest terms: like roots combine, unlike ones share a denominator. */
+const surdSum = (p: Surd, q: Surd): string => {
+  if (q.n === 0) return surdText(p);
+  if (p.n === 0) return surdText(q);
+  const d = (p.d * q.d) / gcd(p.d, q.d);
+  const np = (p.n * d) / p.d;
+  const nq = (q.n * d) / q.d;
+  if (p.k === q.k) return surdText(lowest({ n: np + nq, k: p.k, d }));
+  const g = gcd(gcd(Math.abs(np), Math.abs(nq)), d);
+  const top = `${surdText({ n: np / g, k: p.k, d: 1 })} ${nq < 0 ? '−' : '+'} ${surdText({
+    n: Math.abs(nq) / g,
+    k: q.k,
+    d: 1,
+  })}`;
+  return d / g === 1 ? top : `(${top})/${d / g}`;
+};
+type Factor = ['sin' | 'cos', number];
+/**
+ * The four special values exactly, then the two products as surds and their sum, ending at
+ * the decimal: sin 45° = √2/2, …; √2/2 × √3/2 + √2/2 × 1/2 = √6/4 + √2/4 = (√6 + √2)/4 ≈ 0.9659.
+ */
+const exactWork = (a: Factor, b: Factor, c: Factor, d: Factor, value: number): string[] => {
+  const all = [a, b, c, d];
+  const vals = all.map(([fn, x]) => exactTrig(fn, x));
+  if (vals.some((x) => x === undefined)) return [];
+  const [sa, sb, sc, sd] = vals as Surd[];
+  const factor = (x: Surd, first = false) => (x.n < 0 && !first ? `(${surdText(x)})` : surdText(x));
+  const p = surdTimes(sa!, sb!);
+  const q = surdTimes(sc!, sd!);
+  const sum = surdSum(p, q);
+  const middle =
+    p.n !== 0 && q.n !== 0
+      ? ` = ${surdText(p)} ${q.n < 0 ? '−' : '+'} ${surdText({ ...q, n: Math.abs(q.n) })}`
+      : '';
+  const tail = /√/.test(sum) ? ` ≈ ${fmt(value)}` : /\//.test(sum) ? ` = ${fmt(value)}` : '';
   return [
-    parts.join(', '),
-    // A negative first product goes second, so the line reads as a subtraction.
-    p < 0 && q >= 0
-      ? `${fmt(q)} − ${fmt(-p)} = ${fmt(sum)}`
-      : `${fmt(p)} ${q < 0 ? '−' : '+'} ${fmt(Math.abs(q))} = ${fmt(sum)}`,
+    all.map(([fn, x], i) => `${fn} ${fmt(x)}° = ${surdText(vals[i]!)}`).join(', '),
+    `${factor(sa!, true)} × ${factor(sb!)} + ${factor(sc!)} × ${factor(sd!)}${middle} = ${sum}${tail}`,
   ];
 };
-
-/** A rule that only checks (never solved): 0 when it holds. */
-const limit = (id: string, display: string, vars: string[], ok: (v: Values) => boolean): Rel => ({
-  relation: { id, constraint: true, display, vars, residual: (v) => (ok(v) ? 0 : 1), solve: {} },
-  steps: {},
-});
 
 /** k = (c − b) ÷ a: the equation a f(x) + b = c solved for f(x). */
 const isolate = (fn: string) =>
@@ -2139,6 +2329,25 @@ const isolate = (fn: string) =>
     },
   );
 
+/** The sign of cos A from A's quadrant: negative in II and III, but never −0 (sin A = ±1). */
+const cosSign = (v: Values) => ((v.q === 2 || v.q === 3) && Math.abs(v.s!) < 1 ? -1 : 1);
+
+/**
+ * The sign of sin(A/2) or cos(A/2) from the quadrant of A/2 (sine negative in III and IV,
+ * cosine in II and III), never −0 when the root is 0.
+ */
+const halfSign = (v: Values, fn: 'sin' | 'cos') => {
+  const root = fn === 'sin' ? 1 - v.c! : 1 + v.c!;
+  const negative = fn === 'sin' ? v.q! >= 3 : v.q === 2 || v.q === 3;
+  return negative && root > 0 ? -1 : 1;
+};
+
+/** A note after a second solution that is the first one again (k = ±1). */
+const oneSolution = (v: Values) =>
+  v.x1 !== undefined && v.x2 !== undefined && Math.abs(v.x1 - v.x2) < 1e-9
+    ? '→ the same angle as x₁: one solution'
+    : '';
+
 const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
   // ── m.12.trig-formulas-equations (F-TF.9, F-TF.7) ──
   {
@@ -2149,14 +2358,14 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
       'The same formula with minus signs gives sin(A − B) = sin A cos B − cos A sin B.',
     ],
     variables: [
-      deg('A', 'A', 'First angle', 0, 360),
-      deg('B', 'B', 'Second angle', 0, 360),
-      deg('C', 'A + B', 'The sum of the angles', 0, 720, { derived: true }),
+      deg('A', 'A', 'First angle', 0, 360, { allowed: SPECIAL_ANGLES }),
+      deg('B', 'B', 'Second angle', 0, 360, { allowed: SPECIAL_ANGLES }),
+      deg('C', 'C', 'The sum of the angles, A + B', 0, 720, { derived: true }),
       unitValue('S', 'S', 'sin(A + B)', { derived: true }),
     ],
     ...rels(
       derive(
-        'A + B',
+        'C = A + B',
         '{C} = {A} + {B}',
         'C',
         ['A', 'B'],
@@ -2176,13 +2385,7 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
         ),
         'S',
         {
-          work: (v) =>
-            formulaWork(sind(v.A!) * cosd(v.B!), cosd(v.A!) * sind(v.B!), [
-              `sin A = ${fmt(sind(v.A!))}`,
-              `cos B = ${fmt(cosd(v.B!))}`,
-              `cos A = ${fmt(cosd(v.A!))}`,
-              `sin B = ${fmt(sind(v.B!))}`,
-            ]),
+          work: (v) => exactWork(['sin', v.A!], ['cos', v.B!], ['cos', v.A!], ['sin', v.B!], v.S!),
         },
       ),
     ),
@@ -2201,14 +2404,14 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
       'cos(A + B) = cos A cos B − sin A sin B is the same formula with B made negative.',
     ],
     variables: [
-      deg('A', 'A', 'First angle', 0, 360),
-      deg('B', 'B', 'Second angle', 0, 360),
-      deg('C', 'A − B', 'The difference of the angles', -360, 360, { derived: true }),
+      deg('A', 'A', 'First angle', 0, 360, { allowed: SPECIAL_ANGLES }),
+      deg('B', 'B', 'Second angle', 0, 360, { allowed: SPECIAL_ANGLES }),
+      deg('C', 'C', 'The difference of the angles, A − B', -360, 360, { derived: true }),
       unitValue('K', 'K', 'cos(A − B)', { derived: true }),
     ],
     ...rels(
       derive(
-        'A − B',
+        'C = A − B',
         '{C} = {A} − {B}',
         'C',
         ['A', 'B'],
@@ -2228,13 +2431,7 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
         ),
         'K',
         {
-          work: (v) =>
-            formulaWork(cosd(v.A!) * cosd(v.B!), sind(v.A!) * sind(v.B!), [
-              `cos A = ${fmt(cosd(v.A!))}`,
-              `cos B = ${fmt(cosd(v.B!))}`,
-              `sin A = ${fmt(sind(v.A!))}`,
-              `sin B = ${fmt(sind(v.B!))}`,
-            ]),
+          work: (v) => exactWork(['cos', v.A!], ['cos', v.B!], ['sin', v.A!], ['sin', v.B!], v.K!),
         },
       ),
     ),
@@ -2253,12 +2450,12 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
       'The sine is positive in quadrants I and II and negative in III and IV.',
     ],
     variables: [
-      unitValue('s', 'sin A', 'Sine of A'),
+      unitValue('s', 's', 'sin A'),
       V('q', 'Q', 'Quadrant of A', { allowed: [1, 2, 3, 4], integer: true, min: 1, max: 4 }),
-      unitValue('c', 'cos A', 'Cosine of A', { derived: true }),
+      unitValue('c', 'c', 'cos A', { derived: true }),
       deg('A', 'A', 'The angle', 0, 360, { derived: true }),
-      unitValue('S', 'sin 2A', 'Sine of 2A'),
-      unitValue('K', 'cos 2A', 'Cosine of 2A'),
+      unitValue('S', 'S', 'sin 2A'),
+      unitValue('K', 'K', 'cos 2A'),
     ],
     ...rels(
       limit(
@@ -2266,22 +2463,23 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
         'The sign of {s} fits quadrant {q}: not negative in I and II, not positive in III and IV',
         ['s', 'q'],
         (v) => (v.q! <= 2 ? v.s! >= 0 : v.s! <= 0),
+        'The sine is not negative in quadrants I and II and not positive in III and IV.',
       ),
       rel(
         'cos A = ±√(1 − sin²A)',
         '{c} = ±√(1 − {s}²), the sign from quadrant {q}',
         ['c', 's', 'q'],
-        (v) => v.c! - (v.q === 2 || v.q === 3 ? -1 : 1) * Math.sqrt(1 - v.s! ** 2),
+        (v) => v.c! - cosSign(v) * Math.sqrt(1 - v.s! ** 2),
         {
           c: [
-            (v) => (v.q === 2 || v.q === 3 ? -1 : 1) * Math.sqrt(1 - v.s! ** 2),
-            (v: Values) => (v.q === 2 || v.q === 3 ? '−√(1 − {s}²)' : '√(1 − {s}²)'),
+            (v) => cosSign(v) * Math.sqrt(1 - v.s! ** 2),
+            (v: Values) => (cosSign(v) < 0 ? '−√(1 − {s}²)' : '√(1 − {s}²)'),
             'cos²A = 1 − sin²A; the root is negative in quadrants II and III, positive in I and IV.',
           ],
         },
         {
           check: (v) =>
-            `${fmt(v.c!)} = ${v.q === 2 || v.q === 3 ? '−' : ''}√(1 − ${v.s! < 0 ? `(${fmt(v.s!)})` : fmt(v.s!)}²)`,
+            `${fmt(v.c!)} = ${cosSign(v) < 0 ? '−' : ''}√(1 − ${v.s! < 0 ? `(${fmt(v.s!)})` : fmt(v.s!)}²)`,
         },
       ),
       rel(
@@ -2326,24 +2524,90 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
     representation: { kind: 'unitCircle', angle: 'A', sin: 's', cos: 'c', fixed: true },
   },
   {
+    id: 'm.12.trig-formulas-equations~half-angle',
+    title: 'Half-angle formulas',
+    use: 'Use this for “cos A = 7/25 and A/2 is in Quadrant I. Find sin(A/2) and cos(A/2).”',
+    assumptions: [
+      'sin(A/2) = ±√((1 − cos A) ÷ 2) and cos(A/2) = ±√((1 + cos A) ÷ 2).',
+      'The signs come from the quadrant of A/2, not of A: the sine is positive in I and II, the cosine in I and IV.',
+      'For A from 0° to 360°, A/2 is from 0° to 180°: quadrant I or II.',
+    ],
+    variables: [
+      unitValue('c', 'c', 'cos A'),
+      V('q', 'Q', 'Quadrant of A/2', { allowed: [1, 2, 3, 4], integer: true, min: 1, max: 4 }),
+      unitValue('S', 'S', 'sin(A/2)', { derived: true }),
+      unitValue('K', 'K', 'cos(A/2)', { derived: true }),
+      deg('H', 'H', 'The half angle, A/2', 0, 360, { derived: true }),
+    ],
+    ...rels(
+      withCheck(
+        derive(
+          'sin(A/2) = ±√((1 − cos A) ÷ 2)',
+          '{S} = ±√((1 − {c}) ÷ 2), the sign from quadrant {q}',
+          'S',
+          ['c', 'q'],
+          (v) => halfSign(v, 'sin') * Math.sqrt((1 - v.c!) / 2),
+          (v: Values) => (halfSign(v, 'sin') < 0 ? '−√((1 − {c}) ÷ 2)' : '√((1 − {c}) ÷ 2)'),
+          'The half-angle formula for sine; the root is negative when A/2 is in quadrant III or IV.',
+        ),
+        (v) => `${shown(v.S!)} = ${halfSign(v, 'sin') < 0 ? '−' : ''}√((1 − ${par(v.c!)}) ÷ 2)`,
+      ),
+      withCheck(
+        derive(
+          'cos(A/2) = ±√((1 + cos A) ÷ 2)',
+          '{K} = ±√((1 + {c}) ÷ 2), the sign from quadrant {q}',
+          'K',
+          ['c', 'q'],
+          (v) => halfSign(v, 'cos') * Math.sqrt((1 + v.c!) / 2),
+          (v: Values) => (halfSign(v, 'cos') < 0 ? '−√((1 + {c}) ÷ 2)' : '√((1 + {c}) ÷ 2)'),
+          'The half-angle formula for cosine; the root is negative when A/2 is in quadrant II or III.',
+        ),
+        (v) => `${shown(v.K!)} = ${halfSign(v, 'cos') < 0 ? '−' : ''}√((1 + ${par(v.c!)}) ÷ 2)`,
+      ),
+      withCheck(
+        derive(
+          'H from cos(A/2) and its quadrant',
+          '{H} = the angle in quadrant {q} with cosine {K}',
+          'H',
+          ['K', 'q'],
+          (v) => (v.q! <= 2 ? Math.acos(v.K!) / RAD : 360 - Math.acos(v.K!) / RAD),
+          (v: Values) => (v.q! <= 2 ? 'cos⁻¹({K})' : '360 − cos⁻¹({K})'),
+          'cos⁻¹ gives an angle from 0° to 180°; in quadrants III and IV take it from 360°.',
+        ),
+        (v) => `cos(${fmt(v.H!)}°) = ${fmt(v.K!)}`,
+      ),
+    ),
+    example: { c: 0.28, q: 1, S: 0.6, K: 0.8, H: Math.acos(0.8) / RAD },
+    startWith: ['c', 'q'],
+    representation: { kind: 'unitCircle', angle: 'H', sin: 'S', cos: 'K', fixed: true },
+  },
+  {
     id: 'm.12.trig-formulas-equations~sine-equation',
     title: 'Solve a sin x + b = c',
     use: 'Use this for “Solve 2 sin x + 3 = 4 for 0° ≤ x < 360°.”',
     assumptions: [
       'Get sin x on its own first; it must be from −1 to 1, or there is no solution.',
-      'The line y = sin x crosses the circle twice: at sin⁻¹ and at 180° minus it.',
+      'The level line y = k crosses the unit circle twice: at sin⁻¹(k) and at 180° minus it (once when k = ±1).',
       'Answers are from 0° up to 360°: add 360° to a negative angle.',
     ],
     variables: [
       V('a', 'a', 'Number before sin x', { min: -100, max: 100, step: 0.01 }),
       V('b', 'b', 'Number added', { min: -100, max: 100, step: 0.01 }),
       V('c', 'c', 'Right side', { min: -100, max: 100, step: 0.01 }),
-      unitValue('k', 'sin x', 'sin x on its own', { derived: true }),
+      unitValue('k', 'k', 'k, the value of sin x', { derived: true }),
       deg('x1', 'x₁', 'First solution', 0, 360),
       deg('x2', 'x₂', 'Second solution', 90, 270),
+      radians('r1', 0, 2 * Math.PI, 't₁', 'First solution in radians'),
+      radians('r2', 0, 2 * Math.PI, 't₂', 'Second solution in radians'),
     ],
     ...rels(
-      limit('a ≠ 0', 'The number before sin x, {a}, is not 0', ['a'], (v) => v.a !== 0),
+      limit(
+        'a ≠ 0',
+        'The number before sin x, {a}, is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 there is no sin x left to solve for.',
+      ),
       isolate('sin'),
       rel(
         'x₁ = sin⁻¹(k)',
@@ -2360,21 +2624,37 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
         },
         { check: (v) => `sin(${fmt(v.x1!)}°) = ${fmt(v.k!)}` },
       ),
-      rel(
-        'x₂ = 180° − sin⁻¹(k)',
-        '{x2} = 180 − sin⁻¹({k})',
-        ['x2', 'k'],
-        (v) => sind(v.x2!) - v.k!,
-        {
-          x2: [
-            (v) => (Math.abs(v.k!) > 1 ? undefined : 180 - Math.asin(v.k!) / RAD),
-            '180 − sin⁻¹({k})',
-            'The mirror image across the y-axis has the same sine.',
-          ],
-        },
+      withStep(
+        rel(
+          'x₂ = 180° − sin⁻¹(k)',
+          '{x2} = 180 − sin⁻¹({k})',
+          ['x2', 'k'],
+          (v) => sind(v.x2!) - v.k!,
+          {
+            x2: [
+              (v) => (Math.abs(v.k!) > 1 ? undefined : 180 - Math.asin(v.k!) / RAD),
+              '180 − sin⁻¹({k})',
+              'The mirror image across the y-axis has the same sine.',
+            ],
+          },
+          { check: (v) => `sin(${fmt(v.x2!)}°) = ${fmt(v.k!)}` },
+        ),
+        'x2',
+        { note: oneSolution },
       ),
+      toRadians('r1', 'x1'),
+      toRadians('r2', 'x2'),
     ),
-    example: { a: 2, b: 3, c: 4, k: 0.5, x1: 30, x2: 150 },
+    example: {
+      a: 2,
+      b: 3,
+      c: 4,
+      k: 0.5,
+      x1: 30,
+      x2: 150,
+      r1: Math.PI / 6,
+      r2: (5 * Math.PI) / 6,
+    },
     startWith: ['a', 'b', 'c'],
     equation: '{a} sin x + {b} = {c}',
     representation: {
@@ -2397,7 +2677,7 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
       V('a', 'a', 'Number before tan x', { min: -100, max: 100, step: 0.01 }),
       V('b', 'b', 'Number added', { min: -100, max: 100, step: 0.01 }),
       V('c', 'c', 'Right side', { min: -100, max: 100, step: 0.01 }),
-      V('k', 'tan x', 'tan x on its own', {
+      V('k', 'k', 'k, the value of tan x', {
         min: -100000,
         max: 100000,
         step: 0.0001,
@@ -2405,9 +2685,17 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
       }),
       deg('x1', 'x₁', 'First solution', 0, 180),
       deg('x2', 'x₂', 'Second solution', 180, 360),
+      radians('r1', 0, Math.PI, 't₁', 'First solution in radians'),
+      radians('r2', Math.PI, 2 * Math.PI, 't₂', 'Second solution in radians'),
     ],
     ...rels(
-      limit('a ≠ 0', 'The number before tan x, {a}, is not 0', ['a'], (v) => v.a !== 0),
+      limit(
+        'a ≠ 0',
+        'The number before tan x, {a}, is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 there is no tan x left to solve for.',
+      ),
       isolate('tan'),
       rel(
         'x₁ = tan⁻¹(k)',
@@ -2432,8 +2720,19 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
         ],
         x1: [(v) => v.x2! - 180, '{x2} − 180', 'Half a turn back gives the first solution.'],
       }),
+      toRadians('r1', 'x1'),
+      toRadians('r2', 'x2'),
     ),
-    example: { a: 3, b: 1, c: 4, k: 1, x1: 45, x2: 225 },
+    example: {
+      a: 3,
+      b: 1,
+      c: 4,
+      k: 1,
+      x1: 45,
+      x2: 225,
+      r1: Math.PI / 4,
+      r2: (5 * Math.PI) / 4,
+    },
     startWith: ['a', 'b', 'c'],
     equation: '{a} tan x + {b} = {c}',
     representation: {
@@ -3431,12 +3730,19 @@ const MATH_12_LIMITS: ModuleDef[] = [
       real('y', 'f(x)', 'f(x) there', -60, 60),
     ],
     ...rels(
-      limit('b ≠ a', 'The other zero {b} is not {a}', ['a', 'b'], (v) => v.a !== v.b),
+      limit(
+        'b ≠ a',
+        'The other zero {b} is not {a}',
+        ['a', 'b'],
+        (v) => v.a !== v.b,
+        'Pick another zero b: the page needs b and a apart, so the hole at a stands on its own.',
+      ),
       limit(
         'x ≠ a',
         'f has no value at x = {a}, so {x} is not {a}',
         ['x', 'a'],
         (v) => v.x !== v.a,
+        'f has no value at x = a (the hole): pick an x close to a instead.',
       ),
       withStep(
         derive(
@@ -3579,7 +3885,13 @@ const MATH_12_LIMITS: ModuleDef[] = [
       }),
     ],
     ...rels(
-      limit('h ≠ 0', 'The step {h} is not 0', ['h'], (v) => v.h !== 0),
+      limit(
+        'h ≠ 0',
+        'The step {h} is not 0',
+        ['h'],
+        (v) => v.h !== 0,
+        'With h = 0 the two points are one point: there is no secant.',
+      ),
       withStep(
         derive(
           'm = (f(x + h) − f(x)) ÷ h',
@@ -3645,18 +3957,26 @@ const MATH_12_LIMITS: ModuleDef[] = [
       real('y', 'f(x)', 'f(x) there', -1e9, 1e9),
     ],
     ...rels(
-      limit('p, r ≠ 0', 'Both {p} and {r} are not 0', ['p', 'r'], (v) => v.p !== 0 && v.r !== 0),
+      limit(
+        'p, r ≠ 0',
+        'Both {p} and {r} are not 0',
+        ['p', 'r'],
+        (v) => v.p !== 0 && v.r !== 0,
+        'With p or r at 0 the top or bottom has no x term: this page is for a line over a line.',
+      ),
       limit(
         'no common factor',
         'The zero −{q} ÷ {p} is not the pole −{s} ÷ {r}',
         ['p', 'q', 'r', 's'],
         (v) => v.q! * v.r! !== v.s! * v.p!,
+        'The top and bottom share a factor there: it cancels to a hole, not an asymptote.',
       ),
       limit(
         'x ≠ v',
         'f has no value at x = −{s} ÷ {r}, so {x} is not there',
         ['x', 'r', 's'],
         (v) => v.r! * v.x! + v.s! !== 0,
+        'The bottom is 0 at that x: pick another x.',
       ),
       derive(
         'z = −q ÷ p',
