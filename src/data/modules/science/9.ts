@@ -5,6 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/science9.ts`.
  */
+import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -21,7 +22,9 @@ interface Rule {
 /** Gathers rules into a module's `relations` and `steps`. */
 const rules = (...rs: Rule[]) => ({
   relations: rs.map((r) => r.relation),
-  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+  steps: Object.fromEntries(
+    rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+  ),
 });
 
 /**
@@ -101,6 +104,17 @@ const alleles = (id: string, symbol: string, name: string, max = 2): VariableDef
   allowed: Array.from({ length: max + 1 }, (_, k) => k),
 });
 
+/** An expected count among offspring: an average, so it can be a quarter (derived). */
+const expect = (id: string, symbol: string, name: string): VariableDef => ({
+  id,
+  symbol,
+  name,
+  min: 0,
+  max: 1000,
+  step: 0.25,
+  derived: true,
+});
+
 /** Boxes of 4 showing the dominant trait: 4 − (2 − a)(2 − b), one way. */
 const showing = (out: string, a: string, b: string, trait: string): Rule =>
   forward(
@@ -137,7 +151,7 @@ const expected = (out: string, share: string, what: string): Rule =>
   );
 
 /** A value the story keeps strictly below another (a start below the carrying capacity). */
-const below = (small: string, big: string): Rule => ({
+const below = (small: string, big: string, message?: string): Rule => ({
   relation: {
     id: `${small} < ${big}`,
     constraint: true,
@@ -145,12 +159,26 @@ const below = (small: string, big: string): Rule => ({
     vars: [small, big],
     residual: (v: Values) => (v[small]! < v[big]! ? 0 : 1),
     solve: {},
+    ...(message
+      ? {
+          message: (v: Values) =>
+            v[small] !== undefined && v[big] !== undefined && v[small]! >= v[big]!
+              ? message
+              : undefined,
+        }
+      : {}),
   },
   steps: {},
 });
 
 /** A page limit the story sets (not a formula): `ok` says whether the values keep to it. */
-const limit = (id: string, display: string, vars: string[], ok: (v: Values) => boolean): Rule => ({
+const limit = (
+  id: string,
+  display: string,
+  vars: string[],
+  ok: (v: Values) => boolean,
+  message?: string | ((v: Values) => string),
+): Rule => ({
   relation: {
     id,
     constraint: true,
@@ -158,8 +186,35 @@ const limit = (id: string, display: string, vars: string[], ok: (v: Values) => b
     vars,
     residual: (v: Values) => (ok(v) ? 0 : 1),
     solve: {},
+    ...(message
+      ? {
+          message: (v: Values) =>
+            vars.every((x) => v[x] !== undefined) && !ok(v)
+              ? typeof message === 'string'
+                ? message
+                : message(v)
+              : undefined,
+        }
+      : {}),
   },
   steps: {},
+});
+
+const fmt = (x: number) => formatNumber(x);
+
+/** More step text (work lines, a note) for one value a rule solves for. */
+const withStep = (r: Rule, id: string, extra: Partial<StepText>): Rule => ({
+  ...r,
+  steps: { ...r.steps, [id]: { ...r.steps[id]!, ...extra } },
+});
+
+/** A rule that only places the picture (its values `hidden`): no row, step or check. */
+const hide = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, steps: {} });
+
+/** A rule that says why its value can't be found, when `why` returns a sentence. */
+const saying = (r: Rule, why: (v: Values) => string | undefined): Rule => ({
+  ...r,
+  relation: { ...r.relation, message: why },
 });
 
 /** The logistic curve N = K ÷ (1 + Ae^(−rt)), A = (K − N₀) ÷ N₀. */
@@ -228,7 +283,7 @@ const codonOf = (k: string, p: string): Rule =>
     k,
     [p],
     (v) => Math.ceil(v[p]! / 3 - 1e-9),
-    `the codon holding base {${p}}`,
+    `⌈{${p}} ÷ 3⌉`,
     'Bases 1 to 3 are codon 1, bases 4 to 6 codon 2, and so on: divide by 3 and round up.',
   );
 
@@ -288,6 +343,10 @@ const MEMBRANE: ModuleDef[] = [
         '{m} is at most half of {d}, or 0',
         ['m', 'd'],
         (v) => 2 * v.m! <= Math.max(0, v.d!) + 1e-9,
+        (v) =>
+          v.d! <= 0
+            ? 'With no more O₂ outside than inside, none moves in: the net flow is out, or zero.'
+            : 'Net movement stops at equal counts, so at most half the gradient moves in.',
       ),
     ),
     example: { o: 20, i: 8, m: 6, d: 12, o2: 14, i2: 14 },
@@ -319,8 +378,8 @@ const MEMBRANE: ModuleDef[] = [
       count('c', 'c', 'Pump cycles', 1, 4),
       count('s', 's', 'Na⁺ pumped out', 3, 12, true),
       count('k', 'k', 'K⁺ pumped in', 2, 8, true),
-      count('a', 'a', 'ATP used', 1, 4, true),
-      count('o2', 'o₂', 'Na⁺ outside after', 0, 40, true),
+      count('a', 'a', 'ATP used', 1, 4),
+      count('o2', 'o₂', 'Na⁺ outside after', 0, 52, true),
       count('i2', 'i₂', 'Na⁺ inside after', 0, 40, true),
     ],
     ...rules(
@@ -342,10 +401,18 @@ const MEMBRANE: ModuleDef[] = [
         '2 × {c}',
         'Each cycle brings 2 K⁺ into the cell.',
       ),
-      forward('a = c', '{a} = {c}', 'a', ['c'], (v) => v.c!, '{c}', 'Each cycle splits one ATP.'),
+      same('a', 'c', 'Each cycle splits one ATP.'),
       plusMinus('o2', 'o', 's', 1, 'The Na⁺ pumped out join the outside.'),
-      plusMinus('i2', 'i', 's', -1, 'The Na⁺ pumped out leave the inside.'),
-      below('i', 'o'),
+      saying(plusMinus('i2', 'i', 's', -1, 'The Na⁺ pumped out leave the inside.'), (v) =>
+        v.i !== undefined && v.s !== undefined && v.s > v.i
+          ? 'The pump can’t move out more Na⁺ than the cell holds: s is at most i.'
+          : undefined,
+      ),
+      below(
+        'i',
+        'o',
+        'This page needs less Na⁺ inside than outside: the pump pushes it against the gradient.',
+      ),
     ),
     example: { o: 20, i: 8, c: 2, s: 6, k: 4, a: 2, o2: 26, i2: 2 },
     startWith: ['o', 'i', 'c'],
@@ -362,6 +429,114 @@ const MEMBRANE: ModuleDef[] = [
   },
 ];
 
+const DIVISION: ModuleDef[] = [
+  // ── The cell cycle and its control (HS-LS1-4) ──
+  {
+    id: 's.9.mitosis-meiosis~mitotic-index',
+    title: 'Mitotic index',
+    use: 'Use this for “20 of 100 root-tip cells are in mitosis. How long does mitosis last in a 24-hour cycle?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The cells are counted in one field of a root tip under a microscope, each in the phase it was in when fixed.',
+      'Cells divide at random times, so the share of cells in a phase is the share of the cycle spent in it.',
+      'The mitotic index is the percent of cells in mitosis; a fast-growing tissue, or a tumor, has a high one.',
+    ],
+    variables: [
+      count('I', 'I', 'Cells in interphase', 0, 1000),
+      count('P', 'P', 'Cells in prophase', 0, 500),
+      count('M', 'M', 'Cells in metaphase', 0, 500),
+      count('A', 'A', 'Cells in anaphase', 0, 500),
+      count('T', 'T', 'Cells in telophase', 0, 500),
+      count('N', 'N', 'Cells counted', 1, 3000, true),
+      count('m', 'm', 'Cells in mitosis', 0, 2000, true),
+      {
+        id: 'x',
+        symbol: 'x',
+        name: 'Mitotic index',
+        unit: '%',
+        min: 0,
+        max: 100,
+        step: 0.1,
+        derived: true,
+      },
+      {
+        id: 'h',
+        symbol: 'h',
+        name: 'Length of one cycle',
+        unit: 'h',
+        units: ['h'],
+        min: 1,
+        max: 100,
+        step: 0.5,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time in mitosis',
+        unit: 'h',
+        units: ['h'],
+        min: 0,
+        max: 100,
+        step: 0.01,
+        derived: true,
+      },
+    ],
+    ...rules(
+      forward(
+        'N = I + P + M + A + T',
+        '{N} = {I} + {P} + {M} + {A} + {T}',
+        'N',
+        ['I', 'P', 'M', 'A', 'T'],
+        (v) => v.I! + v.P! + v.M! + v.A! + v.T!,
+        '{I} + {P} + {M} + {A} + {T}',
+        'Every cell counted is in interphase or in one phase of mitosis.',
+      ),
+      forward(
+        'm = P + M + A + T',
+        '{m} = {P} + {M} + {A} + {T}',
+        'm',
+        ['P', 'M', 'A', 'T'],
+        (v) => v.P! + v.M! + v.A! + v.T!,
+        '{P} + {M} + {A} + {T}',
+        'The cells in any of the four phases of mitosis.',
+      ),
+      forward(
+        'x = 100 × m ÷ N',
+        '{x} = 100 × {m} ÷ {N}',
+        'x',
+        ['m', 'N'],
+        (v) => div(100 * v.m!, v.N!),
+        '100 × {m} ÷ {N}',
+        'The cells in mitosis as a percent of all the cells counted.',
+      ),
+      forward(
+        't = m × h ÷ N',
+        '{t} = {m} × {h} ÷ {N}',
+        't',
+        ['m', 'h', 'N'],
+        (v) => div(v.m! * v.h!, v.N!),
+        '{m} × {h} ÷ {N}',
+        'The share of cells in mitosis, m ÷ N, is the share of the cycle spent in mitosis.',
+      ),
+      limit(
+        'N ≥ 1',
+        '{N} is at least 1',
+        ['N'],
+        (v) => v.N! >= 1,
+        'Count at least one cell: the index is a share of the cells counted.',
+      ),
+    ),
+    example: { I: 80, P: 10, M: 5, A: 3, T: 2, N: 100, m: 20, x: 20, h: 24, t: 4.8 },
+    startWith: ['I', 'P', 'M', 'A', 'T', 'h'],
+    representation: {
+      kind: 'pieChart',
+      parts: ['I', 'P', 'M', 'A', 'T'],
+      total: 'N',
+      group: { id: 'm', parts: ['P', 'M', 'A', 'T'] },
+    },
+  },
+];
+
 const INHERITANCE: ModuleDef[] = [
   // ── Mendelian and non-Mendelian inheritance (HS-LS3-2, HS-LS3-3) ──
   {
@@ -370,7 +545,7 @@ const INHERITANCE: ModuleDef[] = [
     assumptions: [
       'Pea seeds: R (round) is dominant to r (wrinkled), and Y (yellow) is dominant to y (green).',
       'The two genes are on different chromosomes, so they sort independently into the gametes.',
-      'Each parent makes four kinds of gamete, so the 16 boxes are equally likely: each is 1/16.',
+      'Each parent’s 4 gametes (some may repeat) are equally likely, so each of the 16 boxes is 1/16.',
       'The product rule: the chance of both traits is the one-gene chances multiplied.',
     ],
     variables: [
@@ -380,10 +555,10 @@ const INHERITANCE: ModuleDef[] = [
       alleles('e', 'e', 'Y alleles in the second parent'),
       count('tR', 't_R', 'Boxes of 4 with round seeds', 0, 4, true),
       count('tY', 't_Y', 'Boxes of 4 with yellow seeds', 0, 4, true),
-      count('D', 'D', 'Boxes of 16 round and yellow', 0, 16, true),
-      count('F', 'F', 'Boxes of 16 round and green', 0, 16, true),
-      count('S', 'S', 'Boxes of 16 wrinkled and yellow', 0, 16, true),
-      count('N', 'N', 'Boxes of 16 wrinkled and green', 0, 16, true),
+      count('D', 'D', 'Round yellow, boxes of 16', 0, 16, true),
+      count('F', 'F', 'Round green, boxes of 16', 0, 16, true),
+      count('S', 'S', 'Wrinkled yellow, boxes of 16', 0, 16, true),
+      count('N', 'N', 'Wrinkled green, boxes of 16', 0, 16, true),
     ],
     ...rules(
       showing('tR', 'a', 'c', 'round'),
@@ -456,11 +631,21 @@ const INHERITANCE: ModuleDef[] = [
     variables: [
       alleles('a', 'a', 'F alleles in the first parent'),
       alleles('c', 'c', 'F alleles in the second parent'),
-      { ...count('n', 'n', 'Offspring in all', 4, 1000), multipleOf: 4 },
+      count('n', 'n', 'Offspring in all', 1, 1000),
       count('t', 't', 'Boxes of 4 showing the trait', 0, 4, true),
-      count('nFF', 'n_FF', 'Expected FF', 0, 1000, true),
-      count('nFf', 'n_Ff', 'Expected Ff', 0, 1000, true),
-      count('nff', 'n_ff', 'Expected ff', 0, 1000, true),
+      expect('nFF', 'n_FF', 'Expected FF'),
+      expect('nFf', 'n_Ff', 'Expected Ff'),
+      expect('nff', 'n_ff', 'Expected ff'),
+      {
+        id: 'cff',
+        symbol: 'P_ff',
+        name: 'Chance of ff',
+        unit: '%',
+        min: 0,
+        max: 100,
+        step: 25,
+        derived: true,
+      },
     ],
     ...rules(
       showing('t', 'a', 'c', 'dominant'),
@@ -491,8 +676,17 @@ const INHERITANCE: ModuleDef[] = [
         '{n} × (2 − {a}) × (2 − {c}) ÷ 4',
         'An f from each parent: the f alleles of one times the f alleles of the other.',
       ),
+      forward(
+        'P_ff = 25 × (2 − a)(2 − c)',
+        '{cff} = 25 × (2 − {a}) × (2 − {c})',
+        'cff',
+        ['a', 'c'],
+        (v) => 25 * (2 - v.a!) * (2 - v.c!),
+        '25 × (2 − {a}) × (2 − {c})',
+        'Each box is 25% of the offspring, and (2 − a) × (2 − c) boxes are ff.',
+      ),
     ),
-    example: { a: 1, c: 1, n: 100, t: 3, nFF: 25, nFf: 50, nff: 25 },
+    example: { a: 1, c: 1, n: 100, t: 3, nFF: 25, nFf: 50, nff: 25, cff: 25 },
     startWith: ['a', 'c', 'n'],
     representation: {
       kind: 'punnettSquare',
@@ -647,13 +841,16 @@ const DNA: ModuleDef[] = [
       'Three mRNA bases make a codon; AUG starts the chain and codes Met, and a stop codon adds no amino acid.',
       'So a coding mRNA of b bases, ending in its stop codon, codes b ÷ 3 − 1 amino acids.',
       'Each peptide bond joining two amino acids releases one water molecule.',
-      'The picture reads the first b bases of the gene TACCGGTTCATT, whose stop codon is the fourth.',
+      'The picture draws the start of the gene TACCGGTTCATT: all of it up to 12 bases, the first 9 of a longer gene.',
     ],
     variables: [
-      { ...count('b', 'b', 'Bases in the coding mRNA', 6, 12), multipleOf: 3 },
-      count('c', 'c', 'Codons', 2, 4, true),
-      count('a', 'a', 'Amino acids in the chain', 1, 3, true),
-      count('p', 'p', 'Peptide bonds', 0, 2, true),
+      { ...count('b', 'b', 'Bases in the coding mRNA', 6, 3000), multipleOf: 3 },
+      count('c', 'c', 'Codons', 2, 1000, true),
+      count('a', 'a', 'Amino acids in the chain', 1, 999, true),
+      count('p', 'p', 'Peptide bonds', 0, 998, true),
+      count('w', 'w', 'Water molecules released', 0, 998, true),
+      { ...count('bd', 'b_d', 'Bases drawn', 6, 12, true), hidden: true },
+      { ...count('cd', 'c_d', 'Codons drawn', 2, 4, true), hidden: true },
     ],
     ...rules(
       forward(
@@ -683,15 +880,36 @@ const DNA: ModuleDef[] = [
         '{a} − 1',
         'A peptide bond joins each amino acid to the next: one fewer bond than amino acids.',
       ),
+      forward(
+        'w = p',
+        '{w} = {p}',
+        'w',
+        ['p'],
+        (v) => v.p!,
+        '{p}',
+        'Each peptide bond releases one water molecule.',
+      ),
+      hide(
+        forward(
+          'b_d = b up to 12, else 9',
+          '{bd} = {b}',
+          'bd',
+          ['b'],
+          (v) => (v.b! <= 12 ? v.b! : 9),
+          '{b}',
+          '',
+        ),
+      ),
+      hide(forward('c_d = b_d ÷ 3', '{cd} = {bd} ÷ 3', 'cd', ['bd'], (v) => v.bd! / 3, '', '')),
     ),
-    example: { b: 12, c: 4, a: 3, p: 2 },
+    example: { b: 12, c: 4, a: 3, p: 2, w: 2, bd: 12, cd: 4 },
     startWith: ['b'],
-    pictureLabels: ['a', 'p'],
+    pictureLabels: ['c', 'a', 'p', 'w'],
     representation: {
       kind: 'dnaStrand',
       sequence: GENE,
-      length: 'b',
-      codons: 'c',
+      length: 'bd',
+      codons: 'cd',
       show: ['mrna'],
     },
   },
@@ -713,7 +931,7 @@ const DNA: ModuleDef[] = [
       {
         id: 'AT',
         symbol: 'n_AT',
-        name: 'A–T pairs in 10 pairs',
+        name: 'A–T pairs per 10 pairs (average)',
         min: 0,
         max: 10,
         step: 0.1,
@@ -722,7 +940,7 @@ const DNA: ModuleDef[] = [
       {
         id: 'GC',
         symbol: 'n_GC',
-        name: 'G–C pairs in 10 pairs',
+        name: 'G–C pairs per 10 pairs (average)',
         min: 0,
         max: 10,
         step: 0.1,
@@ -731,7 +949,7 @@ const DNA: ModuleDef[] = [
       {
         id: 'H',
         symbol: 'H',
-        name: 'Hydrogen bonds in 10 pairs',
+        name: 'Hydrogen bonds per 10 pairs (average)',
         min: 20,
         max: 30,
         step: 0.1,
@@ -756,7 +974,7 @@ const DNA: ModuleDef[] = [
         ['A', 'T'],
         (v) => (v.A! + v.T!) / 10,
         '({A} + {T}) ÷ 10',
-        'Each pair is 2 of the 20 bases in 10 pairs, so 10% of the bases: A and T’s share over 10.',
+        'A–T pairs are (A + T)% of all pairs, and (A + T)% of 10 pairs is (A + T) ÷ 10.',
       ),
       forward(
         'n_GC = 10 − n_AT',
@@ -790,12 +1008,13 @@ const BIOTECH: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       `The template strand is ${GENE}; its mRNA AUG GCC AAG UAA codes Met–Ala–Lys, then stop.`,
-      'One base swapped changes at most one codon: the caption names the effect, silent, missense or nonsense.',
+      'Bases 1–3 are the start codon and 10–12 the stop; this page changes the codons between them.',
+      'One base swapped changes at most one codon: the caption names the effect, silent or missense.',
       'The base changed swaps A with G or C with T, the most common kind of substitution.',
     ],
     variables: [
-      count('p', 'p', 'Base changed', 1, 12),
-      count('k', 'k', 'Codon holding it', 1, 4, true),
+      count('p', 'p', 'Base changed', 4, 9),
+      count('k', 'k', 'Codon holding it', 2, 3, true),
       count('j', 'j', 'Its place in the codon', 1, 3, true),
     ],
     ...rules(
@@ -826,14 +1045,14 @@ const BIOTECH: ModuleDef[] = [
     assumptions: [
       `The template strand is the first L bases of ${GENE}; an A is inserted before base p.`,
       'The ribosome reads in threes, so every codon from the one holding the insertion on is read in a shifted frame.',
-      'A deletion shifts the frame the same way; inserting 3 bases keeps it.',
+      'The insertion comes after the start codon (p ≥ 4); a deletion shifts the frame the same way, and inserting 3 bases keeps it.',
     ],
     variables: [
       { ...count('L', 'L', 'Template bases', 6, 12), multipleOf: 3 },
       count('c', 'c', 'Codons', 2, 4, true),
-      count('p', 'p', 'Base the insertion goes before', 1, 12),
-      count('k', 'k', 'Codon holding it', 1, 4, true),
-      count('s', 's', 'Codons read in a shifted frame', 1, 4, true),
+      count('p', 'p', 'Base the insertion goes before', 4, 12),
+      count('k', 'k', 'Codon holding it', 2, 4, true),
+      count('s', 's', 'Codons read in a shifted frame', 1, 3, true),
     ],
     ...rules(
       forward(
@@ -855,7 +1074,13 @@ const BIOTECH: ModuleDef[] = [
         '{c} − {k} + 1',
         'Codon k and every codon after it, to the last, are read in the new frame.',
       ),
-      limit('p ≤ L', '{p} is at most {L}', ['p', 'L'], (v) => v.p! <= v.L!),
+      limit(
+        'p ≤ L',
+        '{p} is at most {L}',
+        ['p', 'L'],
+        (v) => v.p! <= v.L!,
+        'The insertion goes before one of the L template bases, so p is at most L.',
+      ),
     ),
     example: { L: 12, c: 4, p: 5, k: 2, s: 3 },
     startWith: ['L', 'p'],
@@ -968,8 +1193,8 @@ const EVOLUTION: ModuleDef[] = [
       { ...freq('naa', 'n_aa', 'Expected aa people', true), max: 1000000, step: 1 },
     ],
     ...rules(
-      both('q² = q^2', '{Q2} = {q}^2', ['Q2', 'q'], (v) => v.Q2! - v.q! ** 2, {
-        Q2: [(v) => v.q! ** 2, '{q}^2', 'Two a alleles meet with chance q × q.'],
+      both('q² = q × q', '{Q2} = {q} × {q}', ['Q2', 'q'], (v) => v.Q2! - v.q! ** 2, {
+        Q2: [(v) => v.q! ** 2, '{q} × {q}', 'Two a alleles meet with chance q × q.'],
         q: [
           (v) => (v.Q2! >= 0 ? Math.sqrt(v.Q2!) : undefined),
           '√{Q2}',
@@ -980,8 +1205,8 @@ const EVOLUTION: ModuleDef[] = [
         p: [(v) => 1 - v.q!, '1 − {q}', 'The two alleles’ frequencies add to 1.'],
         q: [(v) => 1 - v.p!, '1 − {p}', 'The two alleles’ frequencies add to 1.'],
       }),
-      both('p² = p^2', '{P2} = {p}^2', ['P2', 'p'], (v) => v.P2! - v.p! ** 2, {
-        P2: [(v) => v.p! ** 2, '{p}^2', 'Two A alleles meet with chance p × p.'],
+      both('p² = p × p', '{P2} = {p} × {p}', ['P2', 'p'], (v) => v.P2! - v.p! ** 2, {
+        P2: [(v) => v.p! ** 2, '{p} × {p}', 'Two A alleles meet with chance p × p.'],
         p: [
           (v) => (v.P2! >= 0 ? Math.sqrt(v.P2!) : undefined),
           '√{P2}',
@@ -1032,8 +1257,8 @@ const EVOLUTION: ModuleDef[] = [
       count('nAa', 'n_Aa', 'Individuals Aa', 0, 10000),
       count('naa', 'n_aa', 'Individuals aa', 0, 10000),
       count('N', 'N', 'Individuals in all', 1, 30000, true),
-      count('A', 'A', 'A alleles counted', 0, 60000, true),
-      count('a', 'a', 'a alleles counted', 0, 60000, true),
+      count('A', 'A', 'Count of A alleles', 0, 60000, true),
+      count('a', 'a', 'Count of a alleles', 0, 60000, true),
       freq('p', 'p', 'Frequency of allele A', true),
       freq('q', 'q', 'Frequency of allele a', true),
     ],
@@ -1090,14 +1315,75 @@ const EVOLUTION: ModuleDef[] = [
   },
 ];
 
+const PLANTS: ModuleDef[] = [
+  // ── Plants: water transport (HS-LS1-2) ──
+  {
+    id: 's.9.plant-biology~transpiration',
+    title: 'Transpiration rate',
+    use: 'Use this for “A leafy shoot in a potometer takes up 4.8 mL of water in 6 hours. What is its rate?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A potometer measures the water a cut shoot takes up; nearly all of it leaves the leaves as vapor.',
+      'The rate is steady over the time measured: the light, heat, wind and humidity stay the same.',
+      'More light, heat or wind, or drier air, raises the rate; closing the stomata lowers it.',
+    ],
+    variables: [
+      {
+        id: 'W',
+        symbol: 'W',
+        name: 'Water taken up',
+        unit: 'mL',
+        units: ['mL'],
+        min: 0,
+        max: 100,
+        step: 0.1,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time measured',
+        unit: 'h',
+        units: ['h'],
+        min: 0.5,
+        max: 48,
+        step: 0.5,
+      },
+      {
+        id: 'R',
+        symbol: 'R',
+        name: 'Water taken up each hour',
+        unit: 'mL',
+        units: ['mL'],
+        min: 0,
+        max: 20,
+        step: 0.01,
+      },
+    ],
+    ...rules(
+      both('W = R × t', '{W} = {R} × {t}', ['W', 'R', 't'], (v) => v.W! - v.R! * v.t!, {
+        R: [(v) => div(v.W!, v.t!), '{W} ÷ {t}', 'Share the water over the hours measured.'],
+        W: [(v) => v.R! * v.t!, '{R} × {t}', 'Each hour takes up R mL: multiply by the hours.'],
+        t: [
+          (v) => (v.R! > 0 ? v.W! / v.R! : undefined),
+          '{W} ÷ {R}',
+          'Count how many hours of R mL fit in the water taken up.',
+        ],
+      }),
+    ),
+    example: { W: 4.8, t: 6, R: 0.8 },
+    startWith: ['W', 't'],
+    representation: { kind: 'doubleNumberLine', top: 't', bottom: 'W', per: 'R', ticks: 6 },
+  },
+];
+
 const POPULATION: ModuleDef[] = [
   // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
   {
     id: 's.9.population-ecology',
     unitSystems: ['metric'],
     assumptions: [
-      'While N is small, food and space are plentiful and growth is nearly exponential.',
       'Growth G = rN(K − N) ÷ K is fastest at N = K ÷ 2, then slows as resources run short.',
+      'While N is small, food and space are plentiful and growth is nearly exponential.',
       'The population levels off at the carrying capacity K, the most the habitat can support.',
     ],
     variables: [
@@ -1118,37 +1404,77 @@ const POPULATION: ModuleDef[] = [
       },
     ],
     ...rules(
-      both(
-        'N = K ÷ (1 + ((K − N₀) ÷ N₀)e^(−rt))',
-        '{N} = {K} ÷ (1 + (({K} − {N0}) ÷ {N0}) × e^(−{r}{t}))',
-        ['N', 'K', 'N0', 'r', 't'],
-        (v) => v.N! - logistic(v),
-        {
-          N: [
-            logistic,
-            '{K} ÷ (1 + (({K} − {N0}) ÷ {N0}) ÷ e^({r} × {t}))',
-            'Work out A = (K − N₀) ÷ N₀, then K ÷ (1 + A ÷ e^(rt)): N₀ at t = 0, K after a long time.',
-          ],
-          t: [
-            (v) => {
-              const q = (((v.K! - v.N0!) / v.N0!) * v.N!) / (v.K! - v.N!);
-              return q > 0 && Number.isFinite(q) ? Math.log(q) / v.r! : undefined;
+      withStep(
+        withStep(
+          both(
+            'N = K ÷ (1 + ((K − N₀) ÷ N₀)e^(−rt))',
+            '{N} = {K} ÷ (1 + (({K} − {N0}) ÷ {N0}) × e^(−{r}{t}))',
+            ['N', 'K', 'N0', 'r', 't'],
+            (v) => v.N! - logistic(v),
+            {
+              N: [
+                logistic,
+                '{K} ÷ (1 + (({K} − {N0}) ÷ {N0}) ÷ e^({r} × {t}))',
+                'Work out A = (K − N₀) ÷ N₀, then K ÷ (1 + A ÷ e^(rt)): N₀ at t = 0, K after a long time.',
+              ],
+              t: [
+                (v) => {
+                  const q = (((v.K! - v.N0!) / v.N0!) * v.N!) / (v.K! - v.N!);
+                  return q > 0 && Number.isFinite(q) ? Math.log(q) / v.r! : undefined;
+                },
+                'ln((({K} − {N0}) ÷ {N0}) × {N} ÷ ({K} − {N})) ÷ {r}',
+                'Solve 1 + Ae^(−rt) = K ÷ N for e^(−rt), then take the natural log and divide by −r.',
+              ],
             },
-            'ln((({K} − {N0}) ÷ {N0}) × {N} ÷ ({K} − {N})) ÷ {r}',
-            'Solve 1 + Ae^(−rt) = K ÷ N for e^(−rt), then take the natural log and divide by −r.',
-          ],
+          ),
+          'N',
+          {
+            work: (v) => {
+              const A = (v.K! - v.N0!) / v.N0!;
+              const E = Math.exp(v.r! * v.t!);
+              if (v.r! * v.t! > 40)
+                return [
+                  `A = (${fmt(v.K!)} − ${fmt(v.N0!)}) ÷ ${fmt(v.N0!)} = ${fmt(A)}`,
+                  `e^(${fmt(v.r!)} × ${fmt(v.t!)}) = e^${fmt(v.r! * v.t!)}, so large that A ÷ e^(rt) is nearly 0`,
+                  `N = ${fmt(v.K!)} ÷ (1 + 0)`,
+                ];
+              return [
+                `A = (${fmt(v.K!)} − ${fmt(v.N0!)}) ÷ ${fmt(v.N0!)} = ${fmt(A)}`,
+                `e^(${fmt(v.r!)} × ${fmt(v.t!)}) = e^${fmt(v.r! * v.t!)} ≈ ${fmt(E)}`,
+                `N = ${fmt(v.K!)} ÷ (1 + ${fmt(A)} ÷ ${fmt(E)})`,
+                `N = ${fmt(v.K!)} ÷ ${fmt(1 + A / E)}`,
+              ];
+            },
+            note: (v) => `(about ${fmt(Math.round(v.N!))} individuals)`,
+          },
+        ),
+        't',
+        {
+          work: (v) => {
+            const A = (v.K! - v.N0!) / v.N0!;
+            const q = (A * v.N!) / (v.K! - v.N!);
+            return [
+              `A = (${fmt(v.K!)} − ${fmt(v.N0!)}) ÷ ${fmt(v.N0!)} = ${fmt(A)}`,
+              `e^(rt) = A × N ÷ (K − N) = ${fmt(A)} × ${fmt(v.N!)} ÷ ${fmt(v.K! - v.N!)} ≈ ${fmt(q)}`,
+              `t = ln ${fmt(q)} ÷ ${fmt(v.r!)}`,
+            ];
+          },
         },
       ),
-      forward(
-        'G = rN(K − N) ÷ K',
-        '{G} = {r} × {N} × ({K} − {N}) ÷ {K}',
+      withStep(
+        forward(
+          'G = rN(K − N) ÷ K',
+          '{G} = {r} × {N} × ({K} − {N}) ÷ {K}',
+          'G',
+          ['r', 'N', 'K'],
+          (v) => (v.r! * v.N! * (v.K! - v.N!)) / v.K!,
+          '{r} × {N} × ({K} − {N}) ÷ {K}',
+          'The exponential rate rN, slowed by the share of K still unused, (K − N) ÷ K.',
+        ),
         'G',
-        ['r', 'N', 'K'],
-        (v) => (v.r! * v.N! * (v.K! - v.N!)) / v.K!,
-        '{r} × {N} × ({K} − {N}) ÷ {K}',
-        'The exponential rate rN, slowed by the share of K still unused, (K − N) ÷ K.',
+        { note: (v) => `(about ${fmt(Math.round(v.G!))} individuals a day, on average)` },
       ),
-      below('N0', 'K'),
+      below('N0', 'K', 'This page starts below the carrying capacity: N₀ is less than K.'),
     ),
     example: {
       t: 6,
@@ -1363,7 +1689,7 @@ const ECOSYSTEMS: ModuleDef[] = [
       count('n3', 'n₃', 'Dragonfly nymphs', 0, 1000),
       count('n4', 'n₄', 'Tadpoles', 0, 1000),
       count('N', 'N', 'Individuals in all', 1, 4000, true),
-      freq('S', 'S', 'Simpson’s index', true),
+      freq('S', 'S', 'Diversity index (Simpson’s)', true),
     ],
     ...rules(
       forward(
@@ -1375,22 +1701,125 @@ const ECOSYSTEMS: ModuleDef[] = [
         '{n1} + {n2} + {n3} + {n4}',
         'Add the counts of the four species.',
       ),
-      forward(
-        'S = 1 − ((n₁ ÷ N)² + (n₂ ÷ N)² + (n₃ ÷ N)² + (n₄ ÷ N)²)',
-        `{S} = 1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
+      withStep(
+        forward(
+          'S = 1 − ((n₁ ÷ N)² + (n₂ ÷ N)² + (n₃ ÷ N)² + (n₄ ÷ N)²)',
+          `{S} = 1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
+          'S',
+          ['n1', 'n2', 'n3', 'n4', 'N'],
+          (v) =>
+            v.N! > 0
+              ? 1 - [v.n1!, v.n2!, v.n3!, v.n4!].reduce((t, n) => t + (n / v.N!) ** 2, 0)
+              : undefined,
+          `1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
+          'Each (n ÷ N)² is the chance two picks are both that species; 1 minus their sum is the chance they differ.',
+        ),
         'S',
-        ['n1', 'n2', 'n3', 'n4', 'N'],
-        (v) =>
-          v.N! > 0
-            ? 1 - [v.n1!, v.n2!, v.n3!, v.n4!].reduce((t, n) => t + (n / v.N!) ** 2, 0)
-            : undefined,
-        `1 − (${['n1', 'n2', 'n3', 'n4'].map(share2).join(' + ')})`,
-        'Each (n ÷ N)² is the chance two picks are both that species; 1 minus their sum is the chance they differ.',
+        {
+          work: (v) => {
+            const shares = [v.n1!, v.n2!, v.n3!, v.n4!].map((n) => n / v.N!);
+            const squares = shares.map((x) => x * x);
+            return [
+              `S = 1 − (${shares.map((x) => `${fmt(x)}²`).join(' + ')})`,
+              `S = 1 − (${squares.map(fmt).join(' + ')})`,
+              `S = 1 − ${fmt(squares.reduce((t, x) => t + x, 0))}`,
+            ];
+          },
+        },
       ),
     ),
     example: { n1: 25, n2: 5, n3: 5, n4: 5, N: 40, S: 0.5625 },
     startWith: ['n1', 'n2', 'n3', 'n4'],
     representation: { kind: 'pieChart', parts: ['n1', 'n2', 'n3', 'n4'], total: 'N' },
+  },
+];
+
+const NERVOUS: ModuleDef[] = [
+  // ── The nervous system: how fast an impulse travels (HS-LS1-2) ──
+  {
+    id: 's.9.nervous-system~impulse-speed',
+    title: 'How fast a nerve impulse travels',
+    use: 'Use this for “An impulse travels 1 m from the toe to the spinal cord at 50 m/s. How long does it take?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The impulse moves along the axon at a steady speed.',
+      'Axons wrapped in myelin carry impulses fastest, up to about 120 m/s; thin axons without it, about 1 m/s.',
+      'The time is in milliseconds: 1,000 ms is 1 s.',
+    ],
+    variables: [
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Length of the axon',
+        unit: 'm',
+        units: ['m'],
+        min: 0.01,
+        max: 3,
+        step: 0.01,
+      },
+      {
+        id: 'v',
+        symbol: 'v',
+        name: 'Impulse speed',
+        unit: 'm/s',
+        units: ['m/s'],
+        min: 0.5,
+        max: 120,
+        step: 0.5,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time to travel',
+        unit: 'ms',
+        units: ['ms'],
+        min: 0,
+        max: 6000,
+        step: 0.1,
+      },
+      {
+        id: 'k',
+        symbol: 'k',
+        name: 'Milliseconds per meter',
+        min: 0,
+        max: 2000,
+        step: 0.01,
+        derived: true,
+        hidden: true,
+      },
+    ],
+    ...rules(
+      both(
+        't = 1,000 × d ÷ v',
+        '{t} = 1,000 × {d} ÷ {v}',
+        ['t', 'd', 'v'],
+        (v) => v.t! - (1000 * v.d!) / v.v!,
+        {
+          t: [
+            (v) => div(1000 * v.d!, v.v!),
+            '1,000 × {d} ÷ {v}',
+            'Distance ÷ speed is the time in seconds; 1,000 times that is the time in ms.',
+          ],
+          d: [
+            (v) => (v.v! * v.t!) / 1000,
+            '{v} × {t} ÷ 1,000',
+            'Speed × time, with the ms turned into seconds.',
+          ],
+          v: [
+            (v) => div(1000 * v.d!, v.t!),
+            '1,000 × {d} ÷ {t}',
+            'Distance ÷ time, with the ms turned into seconds.',
+          ],
+        },
+      ),
+      hide(
+        forward('k = 1,000 ÷ v', '{k} = 1,000 ÷ {v}', 'k', ['v'], (v) => div(1000, v.v!), '', ''),
+      ),
+    ),
+    example: { d: 1, v: 50, t: 20, k: 20 },
+    startWith: ['d', 'v'],
+    pictureLabels: ['v'],
+    representation: { kind: 'doubleNumberLine', top: 'd', bottom: 't', per: 'k', ticks: 3 },
   },
 ];
 
@@ -1545,23 +1974,38 @@ const IMMUNE: ModuleDef[] = [
         '100 × (1 − 1 ÷ {R0})',
         'Each case must infect fewer than one person, so all but 1 in R₀ must be immune.',
       ),
-      forward(
-        'C = 100 × H ÷ e',
-        '{C} = 100 × {H} ÷ {e}',
-        'C',
-        ['H', 'e'],
-        (v) => div(100 * v.H!, v.e!),
-        '100 × {H} ÷ {e}',
-        'Only e% of those vaccinated become immune, so divide the share needed by e%.',
+      saying(
+        forward(
+          'C = 100 × H ÷ e',
+          '{C} = 100 × {H} ÷ {e}',
+          'C',
+          ['H', 'e'],
+          (v) => div(100 * v.H!, v.e!),
+          '100 × {H} ÷ {e}',
+          'Only e% of those vaccinated become immune, so divide the share needed by e%.',
+        ),
+        (v) =>
+          v.H !== undefined && v.e !== undefined && v.H > v.e
+            ? `Even vaccinating everyone makes only ${fmt(v.e)}% immune, less than the ${fmt(v.H)}% needed: this vaccine alone can’t stop the spread.`
+            : undefined,
       ),
-      forward(
-        'V = P × C ÷ 100',
-        '{V} = {P} × {C} ÷ 100',
+      withStep(
+        forward(
+          'V = P × H ÷ e',
+          '{V} = {P} × {H} ÷ {e}',
+          'V',
+          ['P', 'H', 'e'],
+          (v) => div(v.P! * v.H!, v.e!),
+          '{P} × {H} ÷ {e}',
+          'C% of P is P × H ÷ e, because C = 100 × H ÷ e.',
+        ),
         'V',
-        ['P', 'C'],
-        (v) => (v.P! * v.C!) / 100,
-        '{P} × {C} ÷ 100',
-        'That percent of the people in the community.',
+        {
+          note: (v) =>
+            Math.abs(v.V! - Math.round(v.V!)) > 1e-9
+              ? `(round up: ${fmt(Math.ceil(v.V! - 1e-9))} people)`
+              : '',
+        },
       ),
     ),
     example: { R0: 5, H: 80, e: 95, C: 8000 / 95, P: 19000, V: 16000 },
@@ -1572,11 +2016,14 @@ const IMMUNE: ModuleDef[] = [
 
 export const SCIENCE_9_MODULES: ModuleDef[] = [
   ...MEMBRANE,
+  ...DIVISION,
   ...INHERITANCE,
   ...DNA,
   ...BIOTECH,
   ...EVOLUTION,
+  ...PLANTS,
   ...POPULATION,
   ...ECOSYSTEMS,
+  ...NERVOUS,
   ...IMMUNE,
 ];

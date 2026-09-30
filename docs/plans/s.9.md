@@ -581,6 +581,80 @@ secondAt: 40, axis: 'Antibody level' }`. Values: P₁, P₂ peak levels (relativ
   from B cells; killer T cells; memory cells; a vaccine's protection → Adaptive.
 - **Verdict:** 5 pages (2 calculators, 2 sorts, 1 explore); all common types Solves.
 
+## Added skills
+
+Written after the Grades 9–12 taxonomy additions (TAXONOMY_ISSUES.md, "Grades 9–12 topics without
+a skill"). Textbook units are from `research/textbooks/grades/9.md` and `CROSSWALK.md`; released
+questions from `research/questions/science/9.jsonl`. Every page uses a picture that exists.
+
+### s.9.mitosis-meiosis (widened) — cell-cycle control and cancer
+
+- **Standard:** HS-LS1-4. **Textbooks:** OpenStax Biology 2e 10.3–10.4, 16.7; Miller & Levine 4.
+- **Tests ask:** no released item on control or cancer; the onion root-tip count is the common lab.
+- **~checkpoints (sort):** bins G1 (before S: size, nutrients, growth signals, DNA), G2 (before M:
+  DNA fully and correctly copied), M (spindle attached to every chromosome); 7 cards.
+- **~cancer (sort):** Normal cell or Cancer cell; 8 cards (contact inhibition, growth factors,
+  apoptosis, staying put against a tumor, dividing without signals, spreading).
+- **~mitotic-index (calculator, `pieChart`):** I, P, M, A, T cells in each phase (typed), N = I + P
+  - M + A + T, m = P + M + A + T (the pie's bracketed group), x = 100 × m ÷ N (%), h cycle length
+    (h, typed), t = m × h ÷ N (time in mitosis; from m and N, not the rounded x). Example: 80, 10, 5, 3,
+    2 → N = 100, m = 20, x = 20%; h = 24 → t = 20 × 24 ÷ 100 = 4.8 h. Use: "20 of 100 root-tip cells are
+    in mitosis. How long does mitosis last in a 24-hour cycle?"
+
+### s.9.reproduction-development — Reproduction and development
+
+- **Standard:** HS-LS1-4 (differentiation), HS-LS3-2 (variation). **Textbooks:** OpenStax 11.2, 32,
+  43 (43.1 methods, 43.4 hormones, 43.6 early development).
+- **Tests ask:** NAEP-2005-12S14-#13 (why menstruation stops in pregnancy) → ~menstrual-cycle, Solves
+  (the hCG assumption); NAEP-2000-12S11-#1 and NAEP-2009-12S10-#2 (sexual reproduction varies
+  offspring) → ~sexual-asexual, Solves (also on s.9.mitosis-meiosis~compare).
+- **Main (sequence):** fertilization, cleavage, blastula, gastrulation (three germ layers),
+  organogenesis, fetus.
+- **~sexual-asexual (sort):** Asexual (fission, budding, runners, fragmentation) or Sexual (external
+  fertilization, pollination, siblings that differ, variation against a new disease).
+- **~germ-layers (sort):** Ectoderm, Mesoderm, Endoderm; 9 organ cards.
+- **~menstrual-cycle (sequence with spans, days):** menstruation 5, follicle phase 8, ovulation 1,
+  luteal phase 14 = 28; the hormones named on each stage.
+
+### s.9.plant-biology — Plants: structure, transport, growth and reproduction
+
+- **Standard:** HS-LS1-2, HS-LS1-5. **Textbooks:** OpenStax 30–32; Miller & Levine 11.
+- **Tests ask:** no released item; the textbooks ask xylem against phloem, transpiration, tropisms
+  and the flower's life cycle.
+- **Main (explore, `parts` plant drawing):** roots, stem, leaves, flower, each scene at Grade 9
+  depth (root hairs and osmosis, xylem and phloem, stomata and cohesion, ovule to seed).
+- **~xylem-phloem (sort), ~tropisms (sort):** 8 and 6 cards; auxin in the tropism assumptions.
+- **~life-cycle (sequence):** pollination, pollen tube, fertilization, seed and fruit, dispersal,
+  germination, flowering.
+- **~transpiration (calculator, `doubleNumberLine`):** W water taken up (mL), t hours, R mL each
+  hour; W = R × t every way. Example: 4.8 mL in 6 h → R = 4.8 ÷ 6 = 0.8 mL an hour.
+
+### s.9.biomes — Biomes and aquatic ecosystems
+
+- **Standard:** HS-LS2-1, HS-LS2-2 (and MS-LS2 refresh). **Textbooks:** OpenStax 44.3–44.4.
+- **Tests ask:** no released item.
+- **Main (explore, `greenhouse` zones):** tropical (rainforest, savanna), the deserts near 30°,
+  temperate (deciduous forest, grassland, taiga), polar (tundra).
+- **~land (sort):** six biomes, 11 cards. **~aquatic (sort):** lake or pond, river or stream,
+  wetland, estuary, coral reef, deep ocean; 8 cards.
+- **~rainfall (observe):** monthly rainfall in mm, Jan–Dec; the pattern names the year's total in cm
+  and the biome it suits (desert under 25 cm, grassland under 75 cm, a dry season for savanna,
+  over 200 cm every month for rainforest).
+
+### s.9.nervous-system — The nervous system and the senses
+
+- **Standard:** HS-LS1-2, HS-LS1-3. **Textbooks:** OpenStax 35–36 (and 30.6 plant senses, left out).
+- **Tests ask:** NAEP-2005-12S13-#3 (a neuron receives signals) → main (assumption) and ~divisions,
+  Solves.
+- **Main (sequence):** a reflex arc: receptor, sensory neuron, interneuron, motor neuron, muscle,
+  then the brain.
+- **~action-potential (sequence):** resting −70 mV, threshold, Na⁺ in, K⁺ out, undershoot, pump.
+- **~divisions (sort):** Central, Somatic, Autonomic; 8 cards. **~senses (sort):** photo-, mechano-,
+  chemo- and thermoreceptors; 8 cards.
+- **~impulse-speed (calculator, `doubleNumberLine`):** d axon length (m), v speed (m/s), t time (ms),
+  t = 1,000 × d ÷ v every way; the picture's ms-per-meter k = 1,000 ÷ v is hidden. Example: 1 m at
+  50 m/s → t = 1,000 × 1 ÷ 50 = 20 ms.
+
 ## Engine and picture needs
 
 1. **`macromolecules` as a calculator picture** (count from a value, 2–4 drawn, more elided with the
