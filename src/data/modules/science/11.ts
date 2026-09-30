@@ -27,13 +27,14 @@ type Solve = (v: Values) => number | number[] | undefined;
 
 /**
  * A rule from its display, its residual and, per variable, how to solve for it with the step
- * text: `[solve, expr, how]`. A variable given `undefined` is solved numerically, with no step.
+ * text: `[solve, expr, how]`. A variable given `undefined` is solved numerically, with no step;
+ * one given `null` is never worked out from this rule (one value, many answers).
  */
 const rule = (
   id: string,
   display: string,
   residual: (v: Values) => number,
-  parts: Record<string, [Solve, string, string] | undefined>,
+  parts: Record<string, [Solve, string, string] | undefined | null>,
 ): Rule => ({
   relation: {
     id,
@@ -43,7 +44,9 @@ const rule = (
     ],
     residual,
     solve: Object.fromEntries(
-      Object.entries(parts).flatMap(([k, p]) => (p ? [[k, p[0]]] : [])),
+      Object.entries(parts).flatMap(([k, p]) =>
+        p ? [[k, p[0]]] : p === null ? [[k, () => undefined]] : [],
+      ),
     ) as Relation['solve'],
   },
   steps: Object.fromEntries(
@@ -1232,6 +1235,641 @@ const dynamicsPages: ModuleDef[] = [
   })(),
 ];
 
+// ─── s.11.sound-waves ───────────────────────────────────────────────────────
+
+const WAVE_SPEED = q('v', 'v', 'Wave speed', 'm/s', 0.1, 10000, 0.1);
+const LAMBDA = q('l', 'λ', 'Wavelength', 'm', 0.0001, 1e5, 0.0001);
+const FREQ = q('f', 'f', 'Frequency', 'Hz', 0.1, 1e6, 0.1);
+
+/** f = v ÷ λ. */
+const freqRule = rule('f = v/λ', '{f} = {v}/{l}', (v) => v.f! * v.l! - v.v!, {
+  f: [
+    (v) => div(v.v!, v.l!),
+    '{v}/{l}',
+    'Waves pass at v; each is λ long: v/λ of them each second.',
+  ],
+  v: [(v) => v.f! * v.l!, '{f} × {l}', 'The frequency times the wavelength.'],
+  l: [(v) => div(v.v!, v.f!), '{v}/{f}', 'The speed over the frequency.'],
+});
+
+/** A standing wave on a string or in a pipe: λ = 2L ÷ n (or 4L ÷ n), then f = v ÷ λ. */
+const standingPage = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  medium: 'string' | 'open' | 'closed',
+  ex: { n: number; L: number; v: number },
+): ModuleDef => {
+  const k = medium === 'closed' ? 4 : 2;
+  const l = (k * ex.L) / ex.n;
+  const part = medium === 'closed' ? 'quarter' : 'half';
+  return {
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions,
+    variables: [
+      medium === 'closed'
+        ? q('n', 'n', 'Harmonic (odd)', undefined, 1, 9, 2, {
+            integer: true,
+            allowed: [1, 3, 5, 7, 9],
+          })
+        : q('n', 'n', 'Harmonic', undefined, 1, 10, 1, { integer: true }),
+      q('L', 'L', medium === 'string' ? 'String length' : 'Pipe length', 'm', 0.01, 100, 0.01),
+      { ...WAVE_SPEED, min: 1 },
+      LAMBDA,
+      FREQ,
+    ],
+    ...rules(
+      rule(`λ = ${k}L/n`, `{l} = ${k} × {L}/{n}`, (v) => v.l! * v.n! - k * v.L!, {
+        l: [
+          (v) => div(k * v.L!, v.n!),
+          `${k} × {L}/{n}`,
+          `Harmonic n fits n ${part} wavelengths in the length.`,
+        ],
+        L: [(v) => (v.l! * v.n!) / k, `{l} × {n}/${k}`, `n ${part} wavelengths make the length.`],
+        n: [(v) => div(k * v.L!, v.l!), `${k} × {L}/{l}`, `How many ${part} wavelengths fit.`],
+      }),
+      freqRule,
+    ),
+    example: { ...ex, l, f: ex.v / l },
+    startWith: ['n', 'L', 'v'],
+    representation: {
+      kind: 'wave',
+      wavelength: 'l',
+      frequency: 'f',
+      extent: 1,
+      standing: { medium, harmonic: 'n', length: 'L', speed: 'v' },
+    },
+  };
+};
+
+const soundPages: ModuleDef[] = [
+  (() => {
+    const [v, f, A] = [343, 440, 0.02];
+    return {
+      id: 's.11.sound-waves',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The medium sets the wave speed, so a new frequency changes the wavelength, not the speed.',
+        'The amplitude is the loudness (or the height of the wave): it doesn’t change λ or v.',
+        'Sound in air at 20 °C travels at 343 m/s.',
+      ],
+      variables: [
+        WAVE_SPEED,
+        FREQ,
+        LAMBDA,
+        q('T', 'T', 'Period', 's', 1e-6, 10, 0.000001),
+        q('A', 'A', 'Amplitude', 'm', 0.0001, 100, 0.0001),
+      ],
+      standalone: {
+        vars: ['A'],
+        why: 'The amplitude sets how loud or tall the wave is; no formula here links it to v, f or λ.',
+      },
+      ...rules(
+        freqRule,
+        rule('T = 1/f', '{T} = 1/{f}', (v) => v.T! * v.f! - 1, {
+          T: [
+            (v) => div(1, v.f!),
+            '1/{f}',
+            'The period is the time for one wave: 1 over the frequency.',
+          ],
+          f: [(v) => div(1, v.T!), '1/{T}', 'The frequency is how many periods fit in a second.'],
+        }),
+      ),
+      example: { v, f, l: v / f, T: 1 / f, A },
+      startWith: ['v', 'f', 'A'],
+      representation: { kind: 'wave', amplitude: 'A', wavelength: 'l', frequency: 'f', extent: 4 },
+      pictureLabels: ['v', 'T'],
+    } satisfies ModuleDef;
+  })(),
+  standingPage(
+    's.11.sound-waves~string',
+    'A standing wave on a string',
+    'Use this for “A 0.65 m guitar string carries waves at 286 m/s. What frequency is its first harmonic?”',
+    [
+      'Both ends are fixed, so they are nodes: harmonic n fits n half wavelengths, λ = 2L/n.',
+      'Nodes (N) never move; antinodes (A) swing the most.',
+      'The string’s tension and mass set the wave speed v.',
+    ],
+    'string',
+    { n: 1, L: 0.65, v: 286 },
+  ),
+  standingPage(
+    's.11.sound-waves~open-pipe',
+    'A pipe open at both ends',
+    'Use this for “A 0.50 m flute-like pipe is open at both ends. What is its lowest note in 343 m/s air?”',
+    [
+      'The curves show how far the air moves: both open ends are antinodes.',
+      'Harmonic n fits n half wavelengths: λ = 2L/n, every whole n allowed.',
+    ],
+    'open',
+    { n: 1, L: 0.5, v: 343 },
+  ),
+  standingPage(
+    's.11.sound-waves~closed-pipe',
+    'A pipe closed at one end',
+    'Use this for “A 0.25 m tube is closed at the bottom. What are its first two notes in 343 m/s air?”',
+    [
+      'The closed end is a node and the open end an antinode: odd numbers of quarter wavelengths fit, λ = 4L/n.',
+      'Only odd harmonics sound: n = 1, 3, 5, …',
+    ],
+    'closed',
+    { n: 1, L: 0.25, v: 343 },
+  ),
+  (() => {
+    const [s, v, f] = [25, 343, 700];
+    return {
+      id: 's.11.sound-waves~doppler',
+      title: 'The Doppler effect',
+      use: 'Use this for “A 700 Hz siren passes you at 25 m/s. What pitch do you hear as it comes and as it goes?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The source sends out one wavefront each period, from wherever it is then; the air carries each out at v.',
+        'Ahead the fronts bunch up: a higher frequency. Behind they spread out: a lower one.',
+        'The listener stands still; the source moves slower than sound.',
+      ],
+      variables: [
+        q('s', 'vₛ', 'Speed of the source', 'm/s', 0.1, 300, 0.1),
+        { ...WAVE_SPEED, min: 301, max: 2000 },
+        { ...FREQ, name: 'Frequency sent out', min: 1, max: 1e5 },
+        LAMBDA,
+        q('a', 'f′₁', 'Frequency heard ahead', 'Hz', 0.01, 1e7, 0.01),
+        q('b', 'f′₂', 'Frequency heard behind', 'Hz', 0.01, 1e7, 0.01),
+      ],
+      ...rules(
+        rule('λ = v/f', '{l} = {v}/{f}', (v) => v.l! * v.f! - v.v!, {
+          l: [(v) => div(v.v!, v.f!), '{v}/{f}', 'At rest the waves are v/f apart.'],
+          f: [(v) => div(v.v!, v.l!), '{v}/{l}', 'The speed over the wavelength.'],
+        }),
+        rule(
+          'f′ = fv/(v − vₛ)',
+          '{a} = {f} × {v}/({v} − {s})',
+          (v) => v.a! * (v.v! - v.s!) - v.f! * v.v!,
+          {
+            a: [
+              (v) => div(v.f! * v.v!, v.v! - v.s!),
+              '{f} × {v}/({v} − {s})',
+              'Ahead the fronts are only (v − vₛ)/f apart: a higher pitch.',
+            ],
+            f: [
+              (v) => div(v.a! * (v.v! - v.s!), v.v!),
+              '{a} × ({v} − {s})/{v}',
+              'Undo the Doppler shift.',
+            ],
+            s: [
+              (v) => v.v! - div(v.f! * v.v!, v.a!)!,
+              '{v} − {f} × {v}/{a}',
+              'Solve the Doppler formula for vₛ.',
+            ],
+          },
+        ),
+        rule(
+          'f′ = fv/(v + vₛ)',
+          '{b} = {f} × {v}/({v} + {s})',
+          (v) => v.b! * (v.v! + v.s!) - v.f! * v.v!,
+          {
+            b: [
+              (v) => div(v.f! * v.v!, v.v! + v.s!),
+              '{f} × {v}/({v} + {s})',
+              'Behind the fronts are (v + vₛ)/f apart: a lower pitch.',
+            ],
+          },
+        ),
+      ),
+      example: { s, v, f, l: v / f, a: (f * v) / (v - s), b: (f * v) / (v + s) },
+      startWith: ['s', 'v', 'f'],
+      representation: {
+        kind: 'wave',
+        wavelength: 'l',
+        frequency: 'f',
+        extent: 1,
+        doppler: { sourceSpeed: 's', waveSpeed: 'v', frequency: 'f', ahead: 'a', behind: 'b' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const I = 1e-5;
+    const L = Math.log10(I);
+    return {
+      id: 's.11.sound-waves~sound-level',
+      title: 'Sound level in decibels',
+      use: 'Use this for “A busy street has a sound intensity of 10⁻⁵ W/m². What is its sound level in decibels?”',
+      assumptions: [
+        'Hearing starts at I₀ = 10⁻¹² W/m² (0 dB); β = 10 log(I ÷ I₀).',
+        'Each power of ten in intensity adds 10 dB: ten times the intensity, 10 dB louder.',
+      ],
+      variables: [
+        q('I', 'I', 'Intensity', 'W/m²', 1e-12, 100, 1e-12, { full: true }),
+        q('a', 'a', 'Number in front (1 to 10)', undefined, 1, 9.999, 0.001, {
+          derived: true,
+        }),
+        q('n', 'n', 'Power of ten', undefined, -12, 2, 1, { integer: true, derived: true }),
+        q('L', 'log I', 'Log of the intensity', undefined, -12, 2, 0.001, { derived: true }),
+        q('B', 'β', 'Sound level', 'dB', 0, 140, 0.01),
+      ],
+      ...rules(
+        rule('I = a × 10^n', '{I} = {a} × 10^{n}', (v) => v.I! - v.a! * 10 ** v.n!, {
+          I: [
+            (v) => v.a! * 10 ** v.n!,
+            '{a} × 10^{n}',
+            'The number in front times the power of ten.',
+          ],
+          a: [(v) => v.I! / 10 ** v.n!, '{I} ÷ 10^{n}', 'Divide by the power of ten.'],
+        }),
+        rule(
+          'n from I',
+          '{n} = exponent of the power of ten at or below {I}',
+          (v) => v.n! - Math.floor(Math.log10(v.I!) + 1e-9),
+          {
+            n: [
+              (v) => (v.I! > 0 ? Math.floor(Math.log10(v.I!) + 1e-9) : undefined),
+              'exponent of the power of ten at or below {I}',
+              'The whole part of the log: the power of ten the intensity sits at.',
+            ],
+            I: null,
+          },
+        ),
+        rule('log I = log₁₀ I', '{L} = log₁₀({I})', (v) => v.L! - Math.log10(v.I!), {
+          L: [
+            (v) => (v.I! > 0 ? Math.log10(v.I!) : undefined),
+            'log₁₀({I})',
+            'The power of ten that makes the intensity.',
+          ],
+          I: [(v) => 10 ** v.L!, '10^{L}', 'Undo the log: 10 to that power.'],
+        }),
+        rule('β = 10 × (log I + 12)', '{B} = 10 × ({L} + 12)', (v) => v.B! - 10 * (v.L! + 12), {
+          B: [
+            (v) => 10 * (v.L! + 12),
+            '10 × ({L} + 12)',
+            'log(I ÷ 10⁻¹²) is log I + 12: the powers of ten above the threshold, 10 dB each.',
+          ],
+          L: [
+            (v) => v.B! / 10 - 12,
+            '{B}/10 − 12',
+            'Undo the decibel scale: divide by 10, take 12.',
+          ],
+        }),
+      ),
+      example: { I, a: 1, n: -5, L, B: 10 * (L + 12) },
+      startWith: ['I'],
+      representation: {
+        kind: 'powerScale',
+        number: 'I',
+        mantissa: 'a',
+        exponent: 'n',
+        log: 'L',
+        fixed: true,
+      },
+      pictureLabels: ['B'],
+    } satisfies ModuleDef;
+  })(),
+];
+
+// ─── s.11.optics ────────────────────────────────────────────────────────────
+
+/** A lens or mirror page: 1/f = 1/dₒ + 1/dᵢ, m = −dᵢ/dₒ, hᵢ = m hₒ (f signed). */
+const opticsPage = (
+  id: string,
+  title: string | undefined,
+  use: string | undefined,
+  assumptions: string[],
+  mode: 'lens' | 'mirror',
+  shape: 'converging' | 'diverging' | 'concave' | 'convex',
+  ex: { f: number; o: number; h: number },
+): ModuleDef => {
+  const i = 1 / (1 / ex.f - 1 / ex.o);
+  const m = -i / ex.o;
+  const positive = shape === 'converging' || shape === 'concave';
+  return {
+    id,
+    ...(title ? { title } : {}),
+    ...(use ? { use } : {}),
+    unitSystems: ['metric'],
+    assumptions,
+    variables: [
+      positive
+        ? q('f', 'f', 'Focal length', 'cm', 1, 500, 0.1)
+        : q('f', 'f', 'Focal length (negative)', 'cm', -500, -1, 0.1),
+      q('o', 'dₒ', 'Object distance', 'cm', 0.1, 10000, 0.1),
+      q('i', 'dᵢ', 'Image distance', 'cm', -1e6, 1e6, 0.01),
+      q('m', 'm', 'Magnification', undefined, -1e4, 1e4, 0.001),
+      q('h', 'hₒ', 'Object height', 'cm', 0.1, 1000, 0.1),
+      q('k', 'hᵢ', 'Image height', 'cm', -1e6, 1e6, 0.01),
+    ],
+    ...rules(
+      rule('1/f = 1/dₒ + 1/dᵢ', '1/{f} = 1/{o} + 1/{i}', (v) => 1 / v.f! - 1 / v.o! - 1 / v.i!, {
+        i: [
+          (v) => div(1, 1 / v.f! - 1 / v.o!),
+          '1/(1/{f} − 1/{o})',
+          'Take 1/dₒ from 1/f, then flip.',
+        ],
+        o: [
+          // An image at F is an object at infinity: past 1000 f the object distance is lost.
+          (v) => {
+            const o = div(1, 1 / v.f! - 1 / v.i!);
+            return o === undefined || Math.abs(o) > 1000 * Math.abs(v.f!) ? undefined : o;
+          },
+          '1/(1/{f} − 1/{i})',
+          'Take 1/dᵢ from 1/f, then flip.',
+        ],
+        f: [
+          (v) => div(1, 1 / v.o! + 1 / v.i!),
+          '1/(1/{o} + 1/{i})',
+          'Add 1/dₒ and 1/dᵢ, then flip.',
+        ],
+      }),
+      rule('m = −dᵢ/dₒ', '{m} = −{i}/{o}', (v) => v.m! * v.o! + v.i!, {
+        m: [
+          (v) => div(-v.i!, v.o!),
+          '−{i}/{o}',
+          'The magnification: negative means the image is upside down.',
+        ],
+        i: [(v) => -v.m! * v.o!, '−{m} × {o}', 'Undo m = −dᵢ/dₒ for dᵢ.'],
+      }),
+      product('k', 'm', 'h', 'hᵢ = m hₒ', [
+        'The image is m times as tall as the object.',
+        'Divide the image height by the object height.',
+        'Divide the image height by the magnification.',
+      ]),
+    ),
+    example: { ...ex, i, m, k: m * ex.h },
+    startWith: ['f', 'o', 'h'],
+    representation: {
+      kind: 'rayDiagram',
+      mode,
+      shape,
+      focal: 'f',
+      objectDistance: 'o',
+      objectHeight: 'h',
+      imageDistance: 'i',
+      magnification: 'm',
+      imageHeight: 'k',
+    },
+  };
+};
+
+const SIGNS =
+  'dᵢ > 0 is a real image (light really meets there); dᵢ < 0 is a virtual one. m < 0 means upside down.';
+
+const opticsPages: ModuleDef[] = [
+  opticsPage(
+    's.11.optics',
+    undefined,
+    undefined,
+    [
+      'A thin converging lens: f > 0, and distances are measured from the lens.',
+      'A real image forms on the far side of the lens; a virtual one (dᵢ < 0) on the object’s side.',
+      SIGNS,
+    ],
+    'lens',
+    'converging',
+    { f: 10, o: 30, h: 4 },
+  ),
+  opticsPage(
+    's.11.optics~diverging',
+    'A diverging lens',
+    'Use this for “An object is 24 cm from a diverging lens with f = −12 cm. Where is the image, and how big?”',
+    [
+      'A diverging lens spreads rays out: f < 0.',
+      'Its image is always virtual, upright and smaller, between F and the lens.',
+      SIGNS,
+    ],
+    'lens',
+    'diverging',
+    { f: -12, o: 24, h: 3 },
+  ),
+  opticsPage(
+    's.11.optics~concave',
+    'A concave mirror',
+    'Use this for “A candle is 45 cm from a concave mirror with f = 15 cm. Where does its image form, and how big is it?”',
+    [
+      'A concave mirror brings light together: f > 0, and a real image forms in front of it.',
+      'Rays: parallel then through F, through F then parallel, and through C straight back.',
+      SIGNS,
+    ],
+    'mirror',
+    'concave',
+    { f: 15, o: 45, h: 4 },
+  ),
+  opticsPage(
+    's.11.optics~convex',
+    'A convex mirror',
+    'Use this for “A car is 30 cm from a convex mirror with f = −20 cm. Where is its image, and how big?”',
+    [
+      'A convex mirror spreads light out: f < 0.',
+      'The image is behind it: virtual, upright and smaller, showing a wide view.',
+      SIGNS,
+    ],
+    'mirror',
+    'convex',
+    { f: -20, o: 30, h: 5 },
+  ),
+  (() => {
+    const [a, b, t] = [1, 1.33, 40];
+    const s = (a / b) * Math.sin(t * RAD);
+    return {
+      id: 's.11.optics~refraction',
+      title: 'Refraction: Snell’s law',
+      use: 'Use this for “Light goes from air into water (n = 1.33) at 40° from the normal. At what angle does it travel in the water, and how fast?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Light slows in glass or water (v = c/n); crossing at an angle, it bends.',
+        'n₁ sin θ₁ = n₂ sin θ₂, with the angles measured from the normal (dashed).',
+        'Into a slower medium (bigger n), the ray bends toward the normal.',
+      ],
+      variables: [
+        q('a', 'n₁', 'Index of the first medium', undefined, 1, 2.42, 0.01),
+        q('b', 'n₂', 'Index of the second medium', undefined, 1, 2.42, 0.01),
+        q('t', 'θ₁', 'Angle in', '°', 0, 89, 1),
+        q('s', 'sin θ₂', 'Sine of the angle out', undefined, 0, 1, 0.0001),
+        q('r', 'θ₂', 'Angle out', '°', 0, 90, 0.01),
+        q('w', 'v₂', 'Speed in the second medium', 'm/s', 1e8, 3e8, 1, {
+          scientific: true,
+          units: ['m/s'],
+        }),
+      ],
+      ...rules(
+        rule(
+          'sin θ₂ = (n₁/n₂) sin θ₁',
+          '{s} = {a} ÷ {b} × sin({t})',
+          (v) => v.s! * v.b! - v.a! * Math.sin(v.t! * RAD),
+          {
+            s: [
+              (v) => div(v.a! * Math.sin(v.t! * RAD), v.b!),
+              '{a} ÷ {b} × sin({t})',
+              'Snell’s law n₁ sin θ₁ = n₂ sin θ₂, solved for sin θ₂.',
+            ],
+            b: [
+              (v) => div(v.a! * Math.sin(v.t! * RAD), v.s!),
+              '{a} ÷ {s} × sin({t})',
+              'Solve Snell’s law for n₂.',
+            ],
+            a: [
+              (v) => div(v.b! * v.s!, Math.sin(v.t! * RAD)),
+              '{b} × {s}/sin({t})',
+              'Solve Snell’s law for n₁.',
+            ],
+          },
+        ),
+        rule('θ₂ = arcsin(sin θ₂)', 'sin({r}) = {s}', (v) => Math.sin(v.r! * RAD) - v.s!, {
+          r: [
+            (v) => (v.s! > 1 ? undefined : Math.asin(v.s!) / RAD),
+            'arcsin({s})',
+            'The angle whose sine it is.',
+          ],
+          s: [(v) => Math.sin(v.r! * RAD), 'sin({r})', 'The sine of the angle out.'],
+        }),
+        rule('v₂ = c/n₂', '{w} = 3 × 10⁸/{b}', (v) => v.w! * v.b! - 3e8, {
+          w: [
+            (v) => div(3e8, v.b!),
+            '3 × 10⁸/{b}',
+            'Light is n times slower in a medium than in a vacuum: c over n.',
+          ],
+          b: [(v) => div(3e8, v.w!), '3 × 10⁸/{w}', 'The index is c over the speed.'],
+        }),
+      ),
+      example: { a, b, t, s, r: Math.asin(s) / RAD, w: 3e8 / b },
+      startWith: ['a', 'b', 't'],
+      pictureLabels: ['s', 'w'],
+      representation: {
+        kind: 'rayDiagram',
+        mode: 'refraction',
+        n1: 'a',
+        n2: 'b',
+        angle: 't',
+        refracted: 'r',
+        media: ['air', 'water'],
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [a, b, t] = [1.5, 1, 50];
+    return {
+      id: 's.11.optics~critical',
+      title: 'The critical angle',
+      use: 'Use this for “What is the critical angle from glass (n = 1.50) into air? Does light hitting the surface at 50° get out?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Going into a faster medium (smaller n) the ray bends away from the normal.',
+        'At the critical angle θc the ray skims the surface: sin θc = n₂/n₁.',
+        'Past it sin θ₂ would be more than 1: all the light reflects. Optical fibers work this way.',
+      ],
+      variables: [
+        q('a', 'n₁', 'Index of the first medium', undefined, 1.01, 2.42, 0.01),
+        q('b', 'n₂', 'Index of the second medium', undefined, 1, 2.42, 0.01),
+        q('t', 'θ₁', 'Angle in', '°', 0, 89, 1),
+        q('c', 'θc', 'Critical angle', '°', 0, 90, 0.01),
+        q('s', 'sin θ₂', 'What sin θ₂ would be', undefined, 0, 5, 0.0001),
+      ],
+      ...rules(
+        rule('sin θc = n₂/n₁', 'sin({c}) = {b}/{a}', (v) => Math.sin(v.c! * RAD) * v.a! - v.b!, {
+          c: [
+            (v) => (v.b! > v.a! ? undefined : Math.asin(v.b! / v.a!) / RAD),
+            'arcsin({b}/{a})',
+            'At the critical angle θ₂ = 90°: sin θc = n₂/n₁.',
+          ],
+          b: [(v) => v.a! * Math.sin(v.c! * RAD), '{a} × sin({c})', 'Undo sin θc = n₂/n₁ for n₂.'],
+          a: [
+            (v) => div(v.b!, Math.sin(v.c! * RAD)),
+            '{b}/sin({c})',
+            'Undo sin θc = n₂/n₁ for n₁.',
+          ],
+        }),
+        rule(
+          'sin θ₂ = n₁ sin θ₁/n₂',
+          '{s} = {a} ÷ {b} × sin({t})',
+          (v) => v.s! * v.b! - v.a! * Math.sin(v.t! * RAD),
+          {
+            s: [
+              (v) => div(v.a! * Math.sin(v.t! * RAD), v.b!),
+              '{a} ÷ {b} × sin({t})',
+              'Snell’s law solved for sin θ₂: more than 1 means no ray gets out.',
+            ],
+            b: [
+              (v) => div(v.a! * Math.sin(v.t! * RAD), v.s!),
+              '{a} ÷ {s} × sin({t})',
+              'Solve Snell’s law for n₂.',
+            ],
+          },
+        ),
+      ),
+      example: { a, b, t, c: Math.asin(b / a) / RAD, s: (a / b) * Math.sin(t * RAD) },
+      startWith: ['a', 'b', 't'],
+      pictureLabels: ['s'],
+      representation: {
+        kind: 'rayDiagram',
+        mode: 'refraction',
+        n1: 'a',
+        n2: 'b',
+        angle: 't',
+        critical: 'c',
+        media: ['glass', 'air'],
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [l, d, L] = [633, 0.25, 2];
+    return {
+      id: 's.11.optics~double-slit',
+      title: 'Double-slit interference',
+      use: 'Use this for “Laser light (633 nm) passes two slits 0.25 mm apart onto a screen 2 m away. How far apart are the bright fringes?”',
+      assumptions: [
+        'Each slit spreads the light out (diffraction); where the two overlap they interfere.',
+        'Bright where the waves arrive in step, dark where they cancel.',
+        'Bright fringes are Δy = λL/d apart, with the screen far away compared with d.',
+      ],
+      variables: [
+        q('l', 'λ', 'Wavelength', 'nm', 100, 2000, 1),
+        q('d', 'd', 'Slit spacing', 'mm', 0.01, 10, 0.01),
+        q('L', 'L', 'Distance to the screen', 'm', 0.1, 20, 0.1),
+        q('y', 'Δy', 'Fringe spacing', 'mm', 0.0001, 10000, 0.001),
+      ],
+      ...rules(
+        rule(
+          'Δy = λL/d',
+          '{y} = {l} × 10⁻⁹ × {L}/({d} × 10⁻³) × 1000',
+          (v) => v.y! * v.d! - (v.l! * v.L!) / 1000,
+          {
+            y: [
+              (v) => div((v.l! * v.L!) / 1000, v.d!),
+              '{l} × {L}/{d}/1000',
+              'λL/d, with λ in nm and d in mm: divide by 1,000 for mm.',
+            ],
+            l: [
+              (v) => div(1000 * v.y! * v.d!, v.L!),
+              '1000 × {y} × {d}/{L}',
+              'Undo Δy = λL/d for λ.',
+            ],
+            d: [
+              (v) => div((v.l! * v.L!) / 1000, v.y!),
+              '{l} × {L}/{y}/1000',
+              'Undo Δy = λL/d for d.',
+            ],
+            L: [
+              (v) => div(1000 * v.y! * v.d!, v.l!),
+              '1000 × {y} × {d}/{l}',
+              'Undo Δy = λL/d for L.',
+            ],
+          },
+        ),
+      ),
+      example: { l, d, L, y: (l * L) / 1000 / d },
+      startWith: ['l', 'd', 'L'],
+      representation: {
+        kind: 'rayDiagram',
+        mode: 'doubleSlit',
+        wavelength: 'l',
+        spacing: 'd',
+        screen: 'L',
+        fringe: 'y',
+      },
+    } satisfies ModuleDef;
+  })(),
+];
+
 // ─── s.11.circuits ───────────────────────────────────────────────────────────
 
 const VOLTS = q('V', 'V', 'Battery voltage', 'V', 0.01, 10000, 0.01);
@@ -1550,5 +2188,7 @@ export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...kinematicsPages,
   ...projectilePages,
   ...dynamicsPages,
+  ...soundPages,
+  ...opticsPages,
   ...circuitPages,
 ];
