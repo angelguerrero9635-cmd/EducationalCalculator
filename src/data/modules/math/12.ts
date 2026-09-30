@@ -4035,22 +4035,37 @@ const MATH_12_PARAMETRIC: ModuleDef[] = [
 // ── Limits ──
 
 const quad = (v: Values, x: number) => v.a! * x ** 2 + v.b! * x + v.c!;
+/** ax² + bx + c as written: no 1 before x², no 0 terms, a minus for a negative (x² − 4x). */
+const polyText = (a: number, b: number, c: number) => {
+  const terms: string[] = [];
+  const add = (k: number, x: string) => {
+    if (k === 0) return;
+    const mag = Math.abs(k) === 1 && x ? '' : fmt(Math.abs(k));
+    terms.push(
+      terms.length === 0 ? `${k < 0 ? '−' : ''}${mag}${x}` : `${k < 0 ? '−' : '+'} ${mag}${x}`,
+    );
+  };
+  add(a, 'x²');
+  add(b, 'x');
+  add(c, '');
+  return terms.length === 0 ? '0' : terms.join(' ');
+};
 
 const MATH_12_LIMITS: ModuleDef[] = [
   // ── m.12.limits-intro (AP Calculus AB 1.2–2.2) ──
   {
     id: 'm.12.limits-intro',
     assumptions: [
+      'f(x) = (x − a)(x − b) ÷ (x − a): factor the top first, as x² − 9 = (x − 3)(x + 3).',
       'The limit is the value f(x) approaches as x gets close to a, not the value f(a).',
       'Here f has no value at x = a (a hole in the graph), but the limit exists.',
-      'Cancelling the common factor x − a is allowed because x never equals a on the way.',
     ],
     variables: [
       real('a', 'a', 'x approaches', -10, 10),
       real('b', 'b', 'The other zero', -10, 10),
       V('L', 'L', 'The limit', { min: -20, max: 20, step: 0.01, derived: true }),
       real('x', 'x', 'An x close to a', -30, 30),
-      real('y', 'f(x)', 'f(x) there', -60, 60),
+      real('y', 'y', 'f(x) there', -60, 60),
     ],
     ...rels(
       limit(
@@ -4200,7 +4215,7 @@ const MATH_12_LIMITS: ModuleDef[] = [
       real('x', 'x', 'The point’s x', -10, 10),
       real('h', 'h', 'Step to the second point', -5, 5),
       V('m', 'm', 'Secant slope', { min: -10000, max: 10000, step: 0.0001, derived: true }),
-      V('d', 'f′(x)', 'Derivative, the tangent’s slope', {
+      V('d', 'f′', 'Derivative, the tangent’s slope', {
         min: -10000,
         max: 10000,
         step: 0.0001,
@@ -4215,22 +4230,32 @@ const MATH_12_LIMITS: ModuleDef[] = [
         (v) => v.h !== 0,
         'With h = 0 the two points are one point: there is no secant.',
       ),
-      withStep(
-        derive(
-          'm = (f(x + h) − f(x)) ÷ h',
-          '{m} = (f({x} + {h}) − f({x})) ÷ {h}, with f(x) = {a}x² + {b}x + {c}',
+      withCheck(
+        withStep(
+          derive(
+            'm = (f(x + h) − f(x)) ÷ h',
+            '{m} = (f({x} + {h}) − f({x})) ÷ {h}, with f(x) = {a}x² + {b}x + {c}',
+            'm',
+            ['a', 'b', 'c', 'x', 'h'],
+            (v) => div(quad(v, v.x! + v.h!) - quad(v, v.x!), v.h!),
+            '(({a} × ({x} + {h})² + {b} × ({x} + {h}) + {c}) − ({a} × {x}² + {b} × {x} + {c})) ÷ {h}',
+            'The rise from (x, f(x)) to (x + h, f(x + h)) over the run h.',
+          ),
           'm',
-          ['a', 'b', 'c', 'x', 'h'],
-          (v) => div(quad(v, v.x! + v.h!) - quad(v, v.x!), v.h!),
-          '(({a} × ({x} + {h})² + {b} × ({x} + {h}) + {c}) − ({a} × {x}² + {b} × {x} + {c})) ÷ {h}',
-          'The rise from (x, f(x)) to (x + h, f(x + h)) over the run h.',
+          {
+            how: (v) =>
+              `Here f(x) = ${polyText(v.a!, v.b!, v.c!)}. The secant’s slope is the rise from (x, f(x)) to (x + h, f(x + h)) over the run h.`,
+            work: (v) => {
+              const rise = quad(v, v.x! + v.h!) - quad(v, v.x!);
+              return [
+                `f(${fmt(v.x! + v.h!)}) − f(${fmt(v.x!)}) = ${fmt(quad(v, v.x! + v.h!))} − ${par(Number(quad(v, v.x!).toFixed(4)))} = ${fmt(rise)}`,
+                `${fmt(rise)} ÷ ${par(v.h!)} = ${fmt(rise / v.h!)}`,
+              ];
+            },
+          },
         ),
-        'm',
-        {
-          work: (v) => [
-            `f(${fmt(v.x! + v.h!)}) − f(${fmt(v.x!)}) = ${fmt(quad(v, v.x! + v.h!))} − ${fmt(quad(v, v.x!))} = ${fmt(quad(v, v.x! + v.h!) - quad(v, v.x!))}`,
-          ],
-        },
+        (v) =>
+          `${fmt(v.m!)} = (${fmt(quad(v, v.x! + v.h!))} − ${par(Number(quad(v, v.x!).toFixed(4)))}) ÷ ${par(v.h!)}`,
       ),
       derive(
         'f′(x) = 2ax + b',
@@ -4277,7 +4302,7 @@ const MATH_12_LIMITS: ModuleDef[] = [
       }),
       V('L', 'L', 'Limit as x → ∞', { min: -10000, max: 10000, step: 0.0001, derived: true }),
       real('x', 'x', 'A large x', -1000000, 1000000),
-      real('y', 'f(x)', 'f(x) there', -1e9, 1e9),
+      real('y', 'y', 'f(x) there', -1e9, 1e9),
     ],
     ...rels(
       limit(
