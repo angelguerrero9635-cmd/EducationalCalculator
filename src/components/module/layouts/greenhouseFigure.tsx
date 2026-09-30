@@ -80,19 +80,49 @@ export function GreenhouseFigure({ scene }: { scene: GreenhouseScene }) {
   return scene.view === 'zones' ? (
     <Zones lit={scene.lit} />
   ) : (
-    <Energy co2={scene.co2 ?? 'preindustrial'} />
+    <Energy co2={scene.co2 ?? 'preindustrial'} particles={!!scene.particles} />
   );
 }
 
 const EH = 300;
+
+/** Ash and smoke particles high in the air: x, y and radius. */
+const PARTICLES: [number, number, number][] = [
+  [46, 65, 2.2],
+  [56, 70, 1.6],
+  [66, 66, 2],
+  [76, 71, 2.4],
+  [86, 67, 1.8],
+  [96, 72, 2.2],
+  [106, 68, 1.6],
+  [116, 73, 2],
+  [126, 69, 2.4],
+  [136, 65, 1.8],
+  [146, 70, 2.2],
+  [156, 66, 1.6],
+  [166, 71, 2],
+  [176, 67, 2.4],
+  [186, 72, 1.8],
+  [196, 68, 2.2],
+];
 const AIR_TOP = 62;
 const AIR_BOTTOM = 176;
 const GROUND = 222;
 
-function Energy({ co2 }: { co2: NonNullable<GreenhouseScene['co2']> }) {
+/** How much cooler ash and smoke leave the surface for a year or two, °C (as after a large eruption). */
+export const PARTICLE_COOLING = 0.5;
+
+function Energy({
+  co2,
+  particles,
+}: {
+  co2: NonNullable<GreenhouseScene['co2']>;
+  particles: boolean;
+}) {
   const c = usePalette();
   const ids = usePaintIds('sun', 'soil', 'c', 'o', 'cloud');
   const level = GREENHOUSE_LEVELS[co2];
+  const temp = Number((level.temp - (particles ? PARTICLE_COOLING : 0)).toFixed(1));
   const spots: [number, number][] = [
     [150, 96],
     [250, 120],
@@ -104,6 +134,8 @@ function Energy({ co2 }: { co2: NonNullable<GreenhouseScene['co2']> }) {
   const molecules = spots.slice(0, level.molecules);
   const irX = [160, 205, 250, 295];
   const back = level.back;
+  // The particles' label sits past the last infrared ray that escapes to space.
+  const labelX = Math.max(...irX.slice(0, irX.length - back)) + 12;
   // The rays sent back: absorbed by a molecule above them and re-emitted down.
   const rays: ReactNode[] = irX.map((x, i) => {
     const absorbed = i >= irX.length - back;
@@ -144,7 +176,36 @@ function Energy({ co2 }: { co2: NonNullable<GreenhouseScene['co2']> }) {
       <Ellipse cx={112} cy={96} rx={22} ry={10} fill={url(ids.cloud)} />
       <Ellipse cx={100} cy={90} rx={12} ry={9} fill={url(ids.cloud)} />
       {ray(c, [44, 48], [96, GROUND - 4], 'r1')}
-      {ray(c, [50, 42], [130, GROUND - 4], 'r2')}
+      {particles ? (
+        <>
+          {/* Ash and smoke high in the air: one ray turned back to space before the ground. */}
+          {PARTICLES.map(([x, y, r], i) => (
+            <Circle key={`a${i}`} cx={x} cy={y} r={r * 1.35} fill={c.landAsh} opacity={0.9} />
+          ))}
+          {ray(c, [50, 42], [61, 66], 'r2')}
+          {ray(c, [61, 66], [96, 14], 'r2b')}
+          {/* Named in space, clear of the infrared that escapes, a leader down to them. */}
+          <Line
+            x1={labelX + 4}
+            y1={AIR_TOP - 12}
+            x2={labelX - 6}
+            y2={AIR_TOP + 2}
+            stroke={c.moonLit}
+            strokeWidth={1}
+          />
+          <HaloText
+            x={labelX}
+            y={AIR_TOP - 16}
+            text="ash and smoke"
+            c={c}
+            size={chart.label}
+            bold
+            anchor="start"
+          />
+        </>
+      ) : (
+        ray(c, [50, 42], [130, GROUND - 4], 'r2')
+      )}
       {ray(c, [48, 36], [98, 84], 'r3')}
       {ray(c, [100, 82], [150, 12], 'r4')}
       <HaloText
@@ -207,19 +268,13 @@ function Energy({ co2 }: { co2: NonNullable<GreenhouseScene['co2']> }) {
         stroke={c.chartInk}
         strokeWidth={1}
       />
-      <Rect
-        x={25}
-        y={tY(level.temp)}
-        width={6}
-        height={GROUND + 58 - tY(level.temp)}
-        fill={c.mercury}
-      />
+      <Rect x={25} y={tY(temp)} width={6} height={GROUND + 58 - tY(temp)} fill={c.mercury} />
       <Circle cx={28} cy={GROUND + 60} r={8} fill={c.mercury} stroke={c.chartInk} strokeWidth={1} />
       <Line x1={34} y1={tY(0)} x2={40} y2={tY(0)} stroke={c.chartInk} strokeWidth={1} />
       <HaloText
         x={44}
-        y={tY(level.temp) + 4}
-        text={`${level.temp < 0 ? `−${-level.temp}` : level.temp} °C`}
+        y={tY(temp) + 4}
+        text={`${temp < 0 ? `−${-temp}` : temp} °C`}
         c={c}
         size={chart.value}
         bold

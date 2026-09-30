@@ -79,8 +79,17 @@ galaxy`, `irregular galaxy`; the forming solar system: `solar nebula`, `spinning
 composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
 valley, a meander, an aquifer or a dune, its parts labeled. `oceanCurrents`
 (`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map. `greenhouse`
-(`layouts/greenhouseFigure.tsx`): `greenhouse: { view: 'energy', co2? }` (sunlight in, infrared out
-and back, a thermometer) or `{ view: 'zones', lit? }` (climate zones by latitude).
+(`layouts/greenhouseFigure.tsx`): `greenhouse: { view: 'energy', co2?, particles? }` (sunlight in,
+infrared out and back, a thermometer; `particles`, H103: ash and smoke high in the air turn a ray
+of sunlight back to space and the thermometer reads 0.5 °C cooler; not with `co2: 'none'`) or
+`{ view: 'zones', lit? }` (climate zones by latitude).
+
+Earth and space, round 2 (HS group H2F, H103): `spectra` (`layouts/spectraFigure.tsx`), a star's
+absorption spectrum over the lab emission spectra of hydrogen, helium and sodium on one
+wavelength scale; `spectra: { star, lit? }` lists the elements whose dark lines the star shows
+and lights one lab strip, each of its lines joined up to the star, solid and ringed where the
+star has a line within 1 nm, dashed where it doesn't, with "every line matches" or "2 of 7
+lines match: not in the star".
 
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per

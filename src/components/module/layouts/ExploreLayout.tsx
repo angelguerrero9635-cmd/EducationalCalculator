@@ -28,6 +28,7 @@ import { FeedbackLoopFigure } from './feedbackLoopFigure';
 import { ImmuneStagesFigure } from './immuneStagesFigure';
 import { GalvanicFigure } from './galvanicFigure';
 import { HslFigureView } from './hslFigures';
+import { SpectraFigure } from './spectraFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -110,6 +111,8 @@ function FigureView({
     case 'oceanCurrents':
     case 'greenhouse':
       return <HslFigureView figure={figure} scene={scene} />;
+    case 'spectra':
+      return <SpectraFigure scene={scene.spectra ?? { star: [] }} />;
     case 'parts':
       if (figure.drawing) {
         return (

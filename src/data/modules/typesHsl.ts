@@ -324,6 +324,11 @@ export interface GreenhouseScene {
   co2?: 'none' | 'preindustrial' | 'today';
   /** The zone lit (a `zones` view). */
   lit?: 'tropical' | 'temperate' | 'polar';
+  /**
+   * An `energy` view (H103): ash and smoke particles high in the air reflect some sunlight back
+   * to space before it reaches the ground, and the thermometer reads about 0.5 °C cooler.
+   */
+  particles?: boolean;
 }
 
 export type HslFigure =

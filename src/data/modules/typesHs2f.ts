@@ -141,3 +141,29 @@ export function hs2fSpecVars(r: Hs2fSpec): string[] {
       return ids([r.albedo, r.sunlight, r.absorbed, r.temperature]);
   }
 }
+
+// ── Explore figures ──
+
+/** The elements whose lab spectra a `spectra` figure draws. */
+export type SpectraElement = 'H' | 'He' | 'Na';
+
+/**
+ * A `spectra` scene (H103 part 7): a star's absorption spectrum over the lab (emission) spectra
+ * of hydrogen, helium and sodium on one wavelength scale. `star` lists the elements whose lines
+ * the star shows (dark lines on its rainbow); `lit` lights one reference strip and joins each of
+ * its lines to the star's strip, solid where the star has that line, so a match is seen line by
+ * line.
+ */
+export interface SpectraScene {
+  star: SpectraElement[];
+  lit?: SpectraElement;
+}
+
+/** The group F explore figures (listed in `layouts/types.ts`). */
+export type Hs2fFigure = { kind: 'spectra' };
+
+/** The scene field each group F figure reads (for the layout tests). */
+export const HS2F_SCENE_FIELD = { spectra: 'spectra' } as const satisfies Record<
+  Hs2fFigure['kind'],
+  string
+>;

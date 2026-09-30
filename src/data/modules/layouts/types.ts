@@ -17,6 +17,7 @@ import type {
   LandformScene,
   MohsScene,
 } from '../typesHsl';
+import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { Round3Icon } from './icons';
 
 /**
@@ -253,6 +254,8 @@ export interface SequenceLayout extends LayoutBase {
 export type Figure =
   /** Earth and space, group HL (`typesHsl.ts`): Mohs scale, landforms, currents, greenhouse. */
   | HslFigure
+  /** Earth and space round 2, group H2F (`typesHs2f.ts`): spectra side by side. */
+  | Hs2fFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
@@ -468,6 +471,8 @@ export interface Scene {
   landform?: LandformScene;
   currents?: CurrentsScene;
   greenhouse?: GreenhouseScene;
+  /** A `spectra` figure (`typesHs2f.ts`): the star's elements, one lab strip lit. */
+  spectra?: SpectraScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** Where the ball is (a `position` figure). */
