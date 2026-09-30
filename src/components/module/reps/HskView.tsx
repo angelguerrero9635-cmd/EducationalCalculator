@@ -9,6 +9,7 @@ import { CircularMotion } from './CircularMotion';
 import { Collision } from './Collision';
 import { FreeBody } from './FreeBody';
 import { Projectile } from './Projectile';
+import { SimpleMachine } from './SimpleMachine';
 
 export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -20,5 +21,7 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
       return <CircularMotion spec={spec} calc={calc} />;
     case 'collision':
       return <Collision spec={spec} calc={calc} />;
+    case 'simpleMachine':
+      return <SimpleMachine spec={spec} calc={calc} />;
   }
 }

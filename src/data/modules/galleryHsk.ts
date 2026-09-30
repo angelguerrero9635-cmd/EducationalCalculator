@@ -242,11 +242,11 @@ const LAUNCH_V = q('v', 'v₀', 'Launch speed', 'm/s', 0.5, 100, 0.5);
 const LAUNCH_ANGLE = q('q', 'θ', 'Launch angle', '°', 0, 90, 1);
 const LAUNCH_H = q('h', 'h', 'Launch height', 'm', 0, 200, 0.5);
 
-/** vₓ = v₀ cos θ and v_y = v₀ sin θ. */
+/** vₓ = v₀ cos θ and vᵧ = v₀ sin θ. */
 const component = (id: string, fn: 'cos' | 'sin', what: string): Rule => {
   const f = fn === 'cos' ? Math.cos : Math.sin;
   const inv = fn === 'cos' ? Math.acos : Math.asin;
-  const sym = fn === 'cos' ? 'vₓ' : 'v_y';
+  const sym = fn === 'cos' ? 'vₓ' : 'vᵧ';
   return rule(
     `${sym} = v₀ ${fn} θ`,
     `{${id}} = {v} × ${fn}({q})`,
@@ -279,7 +279,7 @@ const PROJECTILE_VARS: VariableDef[] = [
   LAUNCH_ANGLE,
   LAUNCH_H,
   q('x', 'vₓ', 'Horizontal velocity', 'm/s', 0, 100, 0.1),
-  q('y', 'v_y', 'Vertical launch velocity', 'm/s', 0, 100, 0.1),
+  q('y', 'vᵧ', 'Vertical launch velocity', 'm/s', 0, 100, 0.1),
   q('T', 'T', 'Time in the air', 's', 0, 60, 0.01),
   q('R', 'R', 'Range', 'm', 0, 12000, 0.1),
   q('H', 'H', 'Maximum height', 'm', 0, 3000, 0.1),
@@ -289,14 +289,14 @@ const PROJECTILE_RULES = rules(
   component('x', 'cos', 'horizontal'),
   component('y', 'sin', 'vertical'),
   rule(
-    'H = h + v_y²/(2g)',
+    'H = h + vᵧ²/(2g)',
     '{H} = {h} + {y}²/(2 × 9.8)',
     (v) => v.H! - v.h! - (v.y! * v.y!) / (2 * G),
     {
       H: [
         (v) => v.h! + (v.y! * v.y!) / (2 * G),
         '{h} + {y}²/(2 × 9.8)',
-        'At the top v_y is 0: the height gained is v_y² over 2g.',
+        'At the top vᵧ is 0: the height gained is vᵧ² over 2g.',
       ],
       h: [
         (v) => v.H! - (v.y! * v.y!) / (2 * G),
@@ -306,24 +306,24 @@ const PROJECTILE_RULES = rules(
       y: [
         (v) => (v.H! >= v.h! ? Math.sqrt(2 * G * (v.H! - v.h!)) : undefined),
         '√(2 × 9.8 × ({H} − {h}))',
-        'The launch v_y that rises H − h before stopping.',
+        'The launch vᵧ that rises H − h before stopping.',
       ],
     },
   ),
   rule(
-    'T = (v_y + √(v_y² + 2gh))/g',
+    'T = (vᵧ + √(vᵧ² + 2gh))/g',
     '{T} = ({y} + √({y}² + 2 × 9.8 × {h}))/9.8',
     (v) => v.h! + v.y! * v.T! - (G / 2) * v.T! * v.T!,
     {
       T: [
         (v) => (v.y! + Math.sqrt(v.y! * v.y! + 2 * G * v.h!)) / G,
         '({y} + √({y}² + 2 × 9.8 × {h}))/9.8',
-        'It lands when h + v_y t − ½gt² = 0: the positive root of the quadratic.',
+        'It lands when h + vᵧ t − ½gt² = 0: the positive root of the quadratic.',
       ],
       y: [
         (v) => div((G / 2) * v.T! * v.T! - v.h!, v.T!),
         '(4.9 × {T}² − {h})/{T}',
-        'Solve h + v_y T − 4.9T² = 0 for v_y.',
+        'Solve h + vᵧ T − 4.9T² = 0 for vᵧ.',
       ],
       h: [
         (v) => (G / 2) * v.T! * v.T! - v.y! * v.T!,
@@ -379,8 +379,8 @@ const PROJECTILE_DEMOS: ModuleDef[] = [
     'A throw over level ground',
     'Use this for “A ball is thrown at 20 m/s, 45° up, from 1.5 m above the ground. How high does it go and how far does it land?”',
     [
-      'Split the launch velocity into vₓ = v₀ cos θ across and v_y = v₀ sin θ up.',
-      'Across nothing pushes, so vₓ stays the same; up and down, v_y falls by 9.8 m/s every second.',
+      'Split the launch velocity into vₓ = v₀ cos θ across and vᵧ = v₀ sin θ up.',
+      'Across nothing pushes, so vₓ stays the same; up and down, vᵧ falls by 9.8 m/s every second.',
     ],
     { v: 20, q: 45, h: 1.5 },
   ),
@@ -389,7 +389,7 @@ const PROJECTILE_DEMOS: ModuleDef[] = [
     'Launched from a cliff',
     'Use this for “A stone is thrown at 15 m/s, 30° up, from a cliff 20 m high. How long is it in the air, and how far out does it land?”',
     [
-      'The stone lands when its height h + v_y t − ½gt² comes back to 0: the ground below the cliff.',
+      'The stone lands when its height h + vᵧ t − ½gt² comes back to 0: the ground below the cliff.',
       'It rises to the top, then falls past its launch height to the ground.',
     ],
     { v: 15, q: 30, h: 20 },
@@ -971,7 +971,7 @@ const CIRCULAR_DEMOS: ModuleDef[] = [
         {
           F: [
             (v) => div(6.674e-11 * v.M! * v.n!, v.d! * v.d!),
-            '6.674 × 10⁻¹¹ × {M} × {n}/{d}²',
+            '6.674 × 10⁻¹¹ × {M} × {n}/({d}²)',
             'Multiply G by both masses and divide by the distance squared.',
           ],
           d: [
@@ -1306,11 +1306,256 @@ const COLLISION_DEMOS: ModuleDef[] = [
   },
 ];
 
+// ─── H63 simpleMachine, and the energyTrack spring ──────────────────────────
+
+const LOAD = q('W', 'Fₗ', 'Load', 'N', 1, 100000, 1);
+const EFFORT = q('F', 'Fₑ', 'Effort', 'N', 0, 100000, 0.1);
+const MA = q('A', 'MA', 'Mechanical advantage', undefined, 0.01, 1000, 0.01);
+
+/** Fₑ = Fₗ/MA: an ideal machine's effort. */
+const effortRule = rule('Fₑ = Fₗ/MA', '{F} = {W}/{A}', (v) => v.F! * v.A! - v.W!, {
+  F: [
+    (v) => div(v.W!, v.A!),
+    '{W}/{A}',
+    'An ideal machine divides the load by its mechanical advantage.',
+  ],
+  W: [(v) => v.F! * v.A!, '{F} × {A}', 'The effort times the mechanical advantage.'],
+  A: [(v) => div(v.W!, v.F!), '{W}/{F}', 'How many times the load is bigger than the effort.'],
+});
+
+const MACHINE_DEMOS: ModuleDef[] = [
+  {
+    id: 'g.s11-work-energy-power-lever',
+    title: 'A lever',
+    use: 'Use this for “A 600 N rock is 0.5 m from the fulcrum and you push 2 m from it. What effort lifts it?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A lever balances when effort × effort arm = load × load arm.',
+      'The ideal mechanical advantage is the effort arm over the load arm: a long effort arm means less force.',
+    ],
+    variables: [
+      LOAD,
+      q('e', 'Lₑ', 'Effort arm', 'm', 0.01, 100, 0.01),
+      q('l', 'Lₗ', 'Load arm', 'm', 0.01, 100, 0.01),
+      MA,
+      EFFORT,
+    ],
+    ...rules(
+      rule('MA = Lₑ/Lₗ', '{A} = {e}/{l}', (v) => v.A! * v.l! - v.e!, {
+        A: [(v) => div(v.e!, v.l!), '{e}/{l}', 'Effort arm over load arm.'],
+        e: [(v) => v.A! * v.l!, '{A} × {l}', 'The mechanical advantage times the load arm.'],
+        l: [(v) => div(v.e!, v.A!), '{e}/{A}', 'The effort arm over the mechanical advantage.'],
+      }),
+      effortRule,
+    ),
+    example: { W: 600, e: 2, l: 0.5, A: 4, F: 150 },
+    startWith: ['W', 'e', 'l'],
+    representation: {
+      kind: 'simpleMachine',
+      machine: 'lever',
+      load: 'W',
+      effortArm: 'e',
+      loadArm: 'l',
+      advantage: 'A',
+      effort: 'F',
+    },
+  },
+  ...[
+    {
+      id: 'g.s11-work-energy-power-pulley',
+      n: 4,
+      W: 800,
+      title: 'A block and tackle',
+      use: 'Use this for “Four strands hold up an 800 N crate. What pull lifts it, and how much rope do you pull to lift it 1 m?”',
+    },
+    {
+      id: 'g.s11-work-energy-power-fixed-pulley',
+      n: 1,
+      W: 200,
+      title: 'A single fixed pulley',
+      use: 'Use this for “A flag rope runs over one pulley. Does it make the lift easier?”',
+    },
+  ].map(({ id, n, W, title, use }): ModuleDef => ({
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each supporting strand holds an equal share of the load, so the ideal mechanical advantage is the number of strands.',
+      'Less force, more distance: pull the rope MA times as far as the load rises. A single fixed pulley only changes the direction.',
+    ],
+    variables: [
+      LOAD,
+      q('n', 'n', 'Supporting strands', undefined, 1, 6, 1, { integer: true }),
+      MA,
+      EFFORT,
+      q('h', 'dₗ', 'Load lifted', 'm', 0.01, 100, 0.01),
+      q('d', 'dₑ', 'Rope pulled', 'm', 0.01, 1000, 0.01),
+    ],
+    ...rules(
+      rule('MA = n', '{A} = {n}', (v) => v.A! - v.n!, {
+        A: [(v) => v.n!, '{n}', 'Count the strands holding up the moving block.'],
+        n: [(v) => v.A!, '{A}', 'The strands are the mechanical advantage.'],
+      }),
+      effortRule,
+      product('d', 'A', 'h', 'dₑ = MA × dₗ', [
+        'Each strand shortens by the lift, so pull MA times as much rope.',
+        'Divide the rope pulled by the lift.',
+        'Divide the rope pulled by the mechanical advantage.',
+      ]),
+    ),
+    example: { W, n, A: n, F: W / n, h: 1, d: n },
+    startWith: ['W', 'n', 'h'],
+    representation: {
+      kind: 'simpleMachine',
+      machine: 'pulley',
+      load: 'W',
+      strands: 'n',
+      advantage: 'A',
+      effort: 'F',
+      loadDistance: 'h',
+      effortDistance: 'd',
+    },
+  })),
+  {
+    id: 'g.s11-work-energy-power-ramp',
+    title: 'A ramp with friction',
+    use: 'Use this for “A 500 N crate is pushed up a 5 m ramp to a 1 m platform. The ramp is 80% efficient. What push does it take?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The ideal mechanical advantage of a ramp is its length over its height.',
+      'Friction wastes some of the work: the actual effort is the ideal effort divided by the efficiency.',
+    ],
+    variables: [
+      LOAD,
+      q('L', 'L', 'Ramp length', 'm', 0.1, 100, 0.1),
+      q('h', 'h', 'Ramp height', 'm', 0.01, 100, 0.01),
+      q('p', 'e', 'Efficiency', '%', 1, 100, 1),
+      MA,
+      EFFORT,
+    ],
+    ...rules(
+      rule('MA = L/h', '{A} = {L}/{h}', (v) => v.A! * v.h! - v.L!, {
+        A: [(v) => div(v.L!, v.h!), '{L}/{h}', 'The ramp’s length over its height.'],
+        L: [(v) => v.A! * v.h!, '{A} × {h}', 'The mechanical advantage times the height.'],
+        h: [(v) => div(v.L!, v.A!), '{L}/{A}', 'The length over the mechanical advantage.'],
+      }),
+      rule(
+        'Fₑ = Fₗ/(MA × e)',
+        '{F} = {W}/({A} × {p}/100)',
+        (v) => (v.F! * v.A! * v.p!) / 100 - v.W!,
+        {
+          F: [
+            (v) => div(100 * v.W!, v.A! * v.p!),
+            '{W}/({A} × {p}/100)',
+            'The ideal effort, divided by the efficiency.',
+          ],
+          W: [(v) => (v.F! * v.A! * v.p!) / 100, '{F} × {A} × {p}/100', 'Undo the division.'],
+          p: [
+            (v) => div(100 * v.W!, v.F! * v.A!),
+            '100 × {W}/({F} × {A})',
+            'The ideal effort over the actual effort, as a percent.',
+          ],
+        },
+      ),
+    ),
+    example: { W: 500, L: 5, h: 1, p: 80, A: 5, F: 125 },
+    startWith: ['W', 'L', 'h', 'p'],
+    representation: {
+      kind: 'simpleMachine',
+      machine: 'incline',
+      load: 'W',
+      length: 'L',
+      height: 'h',
+      efficiency: 'p',
+      advantage: 'A',
+      effort: 'F',
+    },
+  },
+  {
+    id: 'g.s11-work-energy-power-spring',
+    title: 'A spring launcher, friction and a ramp',
+    use: 'Use this for “A spring (k = 400 N/m) pressed 0.2 m launches a 0.5 kg block across 2 m of floor with 1 N of friction. How fast is it moving 0.5 m up the ramp?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The spring stores ½kx²; friction turns fd into heat; the smooth ramp trades kinetic energy for mgh.',
+      'The total never changes: spring energy = heat + potential + kinetic.',
+    ],
+    variables: [
+      q('k', 'k', 'Spring constant', 'N/m', 1, 100000, 1),
+      q('x', 'x', 'Compression', 'm', 0.001, 2, 0.001),
+      { ...MASS, max: 100 },
+      q('f', 'f', 'Friction', 'N', 0, 1000, 0.1),
+      q('d', 'd', 'Rough patch', 'm', 0, 100, 0.1),
+      q('h', 'h', 'Height on the ramp', 'm', 0, 100, 0.01),
+      q('E', 'Eₛ', 'Spring energy', 'J', 0, 1e6, 0.0001),
+      q('Q', 'Q', 'Heat', 'J', 0, 1e6, 0.0001),
+      q('U', 'U', 'Potential energy', 'J', 0, 1e6, 0.0001),
+      q('K', 'K', 'Kinetic energy', 'J', 0, 1e6, 0.0001),
+    ],
+    ...rules(
+      rule('Eₛ = ½kx²', '{E} = ½ × {k} × {x}²', (v) => v.E! - 0.5 * v.k! * v.x! * v.x!, {
+        E: [(v) => 0.5 * v.k! * v.x! * v.x!, '½ × {k} × {x}²', 'A spring pressed x stores ½kx².'],
+        k: [(v) => div(2 * v.E!, v.x! * v.x!), '2 × {E}/({x}²)', 'Undo ½kx² for k.'],
+        x: [
+          (v) => Math.sqrt(Math.max(0, div(2 * v.E!, v.k!) ?? 0)),
+          '√(2 × {E}/{k})',
+          'Undo ½kx² for x.',
+        ],
+      }),
+      product('Q', 'f', 'd', 'Q = fd', [
+        'Friction’s work on the rough patch becomes heat: force times distance.',
+        'Divide the heat by the distance.',
+        'Divide the heat by the friction.',
+      ]),
+      rule('U = mgh', '{U} = {m} × 9.8 × {h}', (v) => v.U! - v.m! * 9.8 * v.h!, {
+        U: [(v) => v.m! * 9.8 * v.h!, '{m} × 9.8 × {h}', 'Lifting m to height h stores mgh.'],
+        h: [(v) => div(v.U!, v.m! * 9.8), '{U}/({m} × 9.8)', 'Divide the potential energy by mg.'],
+        m: [(v) => div(v.U!, 9.8 * v.h!), '{U}/(9.8 × {h})', 'Divide the potential energy by gh.'],
+      }),
+      rule('K = Eₛ − Q − U', '{K} = {E} − {Q} − {U}', (v) => v.K! - v.E! + v.Q! + v.U!, {
+        K: [
+          (v) => v.E! - v.Q! - v.U!,
+          '{E} − {Q} − {U}',
+          'What the spring gave, less the heat and the height gained.',
+        ],
+        U: [
+          (v) => v.E! - v.Q! - v.K!,
+          '{E} − {Q} − {K}',
+          'What is left after the heat and the kinetic energy.',
+        ],
+        E: [
+          (v) => v.K! + v.Q! + v.U!,
+          '{K} + {Q} + {U}',
+          'All the energy now came from the spring.',
+        ],
+        Q: [
+          (v) => v.E! - v.U! - v.K!,
+          '{E} − {U} − {K}',
+          'The energy missing from potential and kinetic is heat.',
+        ],
+      }),
+    ),
+    example: { k: 400, x: 0.2, m: 0.5, f: 1, d: 2, h: 0.5, E: 8, Q: 2, U: 2.45, K: 3.55 },
+    startWith: ['k', 'x', 'm', 'f', 'd', 'h'],
+    representation: {
+      kind: 'energyTrack',
+      track: 'coaster',
+      height: 'h',
+      potential: 'U',
+      kinetic: 'K',
+      mass: 'm',
+      spring: { k: 'k', compression: 'x', stored: 'E', friction: 'f', rough: 'd', heat: 'Q' },
+    },
+  },
+];
+
 export const HSK_GALLERY_MODULES: ModuleDef[] = [
   ...KINEMATICS_DEMOS,
   ...PROJECTILE_DEMOS,
   ...FREE_BODY_DEMOS,
   ...CIRCULAR_DEMOS,
   ...COLLISION_DEMOS,
+  ...MACHINE_DEMOS,
 ];
 export const HSK_GALLERY_LAYOUTS: LayoutDef[] = [];

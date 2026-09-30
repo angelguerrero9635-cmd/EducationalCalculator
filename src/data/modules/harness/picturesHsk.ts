@@ -6,10 +6,10 @@
 import type { VariableDef } from '@/engine/types';
 import * as hm from '@/components/module/reps/hskMath';
 
-import type { MotionGraphSpec } from '../typesMechanics';
+import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { HskSpec } from '../typesHsk';
 
-const { collisionOf, freeBodyOf, G_NEWTON, projectileOf, sweptArea } = hm;
+const { collisionOf, freeBodyOf, G_NEWTON, machineOf, projectileOf, sweptArea } = hm;
 
 /** Equal to 1e-6 of the larger (values are rounded to 9 places when shown). */
 const near = (a: number, b: number) =>
@@ -190,6 +190,65 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
         out.push('collision: an elastic collision lost kinetic energy');
       break;
     }
+    case 'simpleMachine': {
+      const [load, Le, Ll, n, L, h, e] = [
+        read(si, rep.load),
+        read(si, rep.effortArm, 1),
+        read(si, rep.loadArm, 1),
+        read(si, rep.strands, 1),
+        read(si, rep.length, 1),
+        read(si, rep.height, 1),
+        read(si, rep.efficiency, 100),
+      ];
+      if ([load, Le, Ll, n, L, h, e].some((x) => x === undefined)) break;
+      if (rep.machine === 'pulley' && (n! < 1 || n! > 6 || Math.abs(n! - Math.round(n!)) > 1e-9))
+        out.push(`simpleMachine: ${n} strands (a whole number from 1 to 6)`);
+      if (e! <= 0 || e! > 100) out.push(`simpleMachine: efficiency ${e}% is not from 0 to 100`);
+      const mo = machineOf({
+        machine: rep.machine,
+        load: load!,
+        effortArm: Le!,
+        loadArm: Ll!,
+        strands: n!,
+        length: L!,
+        height: h!,
+        efficiency: e!,
+      });
+      same(rep.advantage, mo.ima, 'mechanical advantage');
+      if (e! > 0) same(rep.effort, mo.effort, 'effort');
+      const [de, dl] = [rep.effortDistance, rep.loadDistance].map((x) => (x ? si(x) : undefined));
+      if (de !== undefined && dl !== undefined && !near(de, mo.ima * dl))
+        out.push(`simpleMachine: effort moves ${de}, not MA × ${dl}`);
+      break;
+    }
   }
+  return out;
+}
+
+/** H63: the spring's ½kx², friction's heat fd and the kinetic energy left at the height. */
+export function energySpringIssues(rep: EnergyTrackSpec, si: Val): string[] {
+  const out: string[] = [];
+  const sp = rep.spring;
+  if (!sp) return out;
+  const [k, x, m, f, d, h] = [
+    read(si, sp.k),
+    read(si, sp.compression),
+    read(si, rep.mass, 1),
+    read(si, sp.friction, 0),
+    read(si, sp.rough, 0),
+    si(rep.height),
+  ];
+  if ([k, x, m, f, d, h].some((v) => v === undefined)) return out;
+  const E0 = (k! * x! * x!) / 2;
+  const heat = f! * d!;
+  const check = (id: string | undefined, want: number, what: string) => {
+    const v = id ? si(id) : undefined;
+    if (v !== undefined && !near(v, want))
+      out.push(`energyTrack: ${what} ${v}, the picture draws ${want}`);
+  };
+  check(sp.stored, E0, 'spring energy');
+  check(sp.heat, heat, 'heat');
+  const ke = E0 - heat - m! * (rep.g ?? 9.8) * h!;
+  if (ke >= 0) check(rep.kinetic, ke, 'kinetic energy');
   return out;
 }

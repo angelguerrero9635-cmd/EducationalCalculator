@@ -144,6 +144,7 @@ import { DnaStrand } from './DnaStrand';
 import { PunnettHs } from './PunnettHs';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
+import { EnergySpring } from './EnergySpring';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -185,6 +186,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
     case 'projectile':
+    case 'simpleMachine':
     case 'collision':
     case 'circularMotion':
     case 'freeBody':
@@ -220,6 +222,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'skaters':
       return <Skaters spec={spec} calc={calc} />;
     case 'energyTrack':
+      if (spec.spring) return <EnergySpring spec={spec} s={spec.spring} calc={calc} />;
       return <EnergyTrack spec={spec} calc={calc} />;
     case 'functionMachine':
       return <FunctionMachine spec={spec} calc={calc} />;

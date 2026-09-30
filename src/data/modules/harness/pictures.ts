@@ -45,7 +45,7 @@ import {
   transformationHsfIssues,
 } from './picturesHsf';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
-import { hskIssues, motionKinematicsIssues } from './picturesHsk';
+import { energySpringIssues, hskIssues, motionKinematicsIssues } from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1983,6 +1983,7 @@ export function repIssues(
         const x = val(id);
         return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
       };
+      out.push(...energySpringIssues(rep, (id) => f(id)));
       const g = rep.g ?? 9.8;
       const [h, pe, ke, total, top, m, v] = [
         rep.height,
@@ -2099,6 +2100,7 @@ export function repIssues(
       out.push(...hsgIssues(rep, (id) => val(id)));
       break;
     case 'projectile':
+    case 'simpleMachine':
     case 'collision':
     case 'circularMotion':
     case 'freeBody':

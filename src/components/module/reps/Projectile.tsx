@@ -421,7 +421,7 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
     const vt = rep.value(spec.speed, false);
     const tt = rep.value(spec.angle, false);
     const vxs = spec.vx ? sym(spec.vx) : 'vₓ';
-    const vys = spec.vy ? sym(spec.vy) : 'v_y';
+    const vys = spec.vy ? sym(spec.vy) : 'vᵧ';
     const out = [
       `${vxs} = ${vs} cos ${ts} = ${vt} × cos ${tt}° = ${withUnit(sig(p.vx), spU)}`,
       `${vys} = ${vs} sin ${ts} = ${vt} × sin ${tt}° = ${withUnit(sig(p.vy), spU)}`,

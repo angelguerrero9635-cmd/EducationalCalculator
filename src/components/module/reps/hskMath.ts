@@ -141,3 +141,32 @@ export function collisionOf(
     return [((m1 - m2) * v1 + 2 * m2 * v2) / M, ((m2 - m1) * v2 + 2 * m1 * v1) / M];
   return [first, m2 > 0 ? (M * v1 - m1 * first) / m2 : 0];
 }
+
+/**
+ * A simple machine's ideal mechanical advantage (lever: effort arm ÷ load arm; pulley: the
+ * supporting strands; ramp: length ÷ height) and the effort that lifts `load` at `efficiency`
+ * percent (100: ideal).
+ */
+export function machineOf(inp: {
+  machine: 'lever' | 'pulley' | 'incline';
+  load: number;
+  effortArm: number;
+  loadArm: number;
+  strands: number;
+  length: number;
+  height: number;
+  efficiency: number;
+}) {
+  const ima =
+    inp.machine === 'lever'
+      ? inp.loadArm > 0
+        ? inp.effortArm / inp.loadArm
+        : 0
+      : inp.machine === 'pulley'
+        ? inp.strands
+        : inp.height > 0
+          ? inp.length / inp.height
+          : 0;
+  const eff = inp.efficiency / 100;
+  return { ima, effort: ima > 0 && eff > 0 ? inp.load / (ima * eff) : 0 };
+}

@@ -184,10 +184,60 @@ export interface CollisionSpec {
   fixed?: boolean;
 }
 
+// ─── H63 simpleMachine, and the energyTrack option ──────────────────────────
+
+/**
+ * A simple machine lifting a `load` (N) with an `effort` (N), both arrows on one scale:
+ *
+ * - `lever`: a plank on a fulcrum, the load at `loadArm` from it and the effort at `effortArm`
+ *   (m), drawn to scale; ideal mechanical advantage = effort arm/load arm;
+ * - `pulley`: a block and tackle with `strands` supporting strands (1 to 6; 1 is a single fixed
+ *   pulley), each sheave drawn; ideal MA = the number of supporting strands;
+ * - `incline`: a crate pushed up a ramp of `length` rising `height`; ideal MA = length/height.
+ *
+ * `efficiency` (percent, default 100) makes the actual effort ideal effort ÷ efficiency.
+ * `effortDistance` and `loadDistance` are how far each moves (work in = effort × its distance).
+ */
+export interface SimpleMachineSpec {
+  kind: 'simpleMachine';
+  machine: 'lever' | 'pulley' | 'incline';
+  load: NumOrVar;
+  effort?: string;
+  advantage?: string;
+  effortArm?: NumOrVar;
+  loadArm?: NumOrVar;
+  strands?: NumOrVar;
+  length?: NumOrVar;
+  height?: NumOrVar;
+  efficiency?: NumOrVar;
+  effortDistance?: string;
+  loadDistance?: string;
+  fixed?: boolean;
+}
+
+/**
+ * An `energyTrack` option (H63): a spring launcher, a rough patch of floor and a smooth ramp.
+ * The spring (`k` N/m, pressed in `compression` m) stores ½kx²; the block leaves it, loses
+ * `friction` × `rough` (N × m) to heat on the rough patch and climbs the ramp to the track's
+ * `height`. Bars for the spring's energy, kinetic, potential and heat add to the same total.
+ * The spec's `potential` and `kinetic` are the block's at `height`; `heat` the heat made.
+ */
+export interface EnergySpring {
+  k: NumOrVar;
+  compression: NumOrVar;
+  /** The spring's stored energy ½kx², when the page names it. */
+  stored?: string;
+  friction?: NumOrVar;
+  rough?: NumOrVar;
+  heat?: string;
+  fixed?: boolean;
+}
+
 // ─── The union and the variables each picture reads ──────────────────────────
 
 /** New picture kinds of group HK. */
-export type HskSpec = ProjectileSpec | FreeBodySpec | CircularMotionSpec | CollisionSpec;
+export type HskSpec =
+  ProjectileSpec | FreeBodySpec | CircularMotionSpec | CollisionSpec | SimpleMachineSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
 export function hskSpecVars(r: HskSpec): string[] {
@@ -227,6 +277,20 @@ export function hskSpecVars(r: HskSpec): string[] {
       );
     case 'collision':
       return ids(...r.masses, ...r.before, ...(r.after ?? []), r.momentum, ...(r.energy ?? []));
+    case 'simpleMachine':
+      return ids(
+        r.load,
+        r.effort,
+        r.advantage,
+        r.effortArm,
+        r.loadArm,
+        r.strands,
+        r.length,
+        r.height,
+        r.efficiency,
+        r.effortDistance,
+        r.loadDistance,
+      );
   }
 }
 
@@ -236,6 +300,10 @@ export function hskOptionVars(r: { kind: string }): string[] {
   if (r.kind === 'motionGraph' && o.kinematics) {
     const k = o.kinematics as MotionKinematics;
     return ids(k.at, k.slope, k.position);
+  }
+  if (r.kind === 'energyTrack' && o.spring) {
+    const e = o.spring as EnergySpring;
+    return ids(e.k, e.compression, e.stored, e.friction, e.rough, e.heat);
   }
   return [];
 }

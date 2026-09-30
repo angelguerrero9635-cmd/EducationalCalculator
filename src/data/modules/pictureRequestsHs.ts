@@ -1003,13 +1003,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HK, reps/Collision.tsx; the velocities after in hskMath.ts collisionOf). Calculator picture { kind: "collision", type: "stick" | "elastic" | "explode", masses: [m₁, m₂], before: [v₁, v₂] (signed, + to the right; "explode" takes one shared velocity), after?: [v₁′, v₂′] (stick: [v′]; explode: [v₁′ (given), v₂′]), momentum?: total p, energy?: [KE before, KE after], fixed?: true }. Two rows, Before and After: painted carts with wheels on a metal track, their masses on them, each cart’s momentum p = mv as an arrow on one scale (arrows kept inside the canvas), velocities under the carts, and the total momentum tip to tail in each row (the same before and after). Stick: the carts coupled after, one arrow and v′. Explode: coupled before, pushed apart after. Drag the first cart’s momentum arrow to change v₁. The caption works the momentum before and after and the kinetic energy (lost, kept, or given by the spring). The harness checks v′ from the momentum, the elastic formulas, the total momentum, the kinetic energies and that an elastic collision keeps kinetic energy. Example: representation: { kind: "collision", type: "stick", masses: ["m", "n"], before: ["v", "w"], after: ["u"], momentum: "p" }.',
   },
-  ask(
-    'H63',
-    'simpleMachine',
-    'Lever, pulley system and inclined plane with effort, load and mechanical advantage from the values',
-    ['s.11.work-energy-power'],
-    'energyTrack: a friction-heat bar and a spring.',
-  ),
+  {
+    ...ask(
+      'H63',
+      'simpleMachine',
+      'Lever, pulley system and inclined plane with effort, load and mechanical advantage from the values',
+      ['s.11.work-energy-power'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-work-energy-power-lever',
+      'g.s11-work-energy-power-pulley',
+      'g.s11-work-energy-power-fixed-pulley',
+      'g.s11-work-energy-power-ramp',
+      'g.s11-work-energy-power-spring',
+    ],
+    notes:
+      'energyTrack: a friction-heat bar and a spring. Drawn (group HK, reps/SimpleMachine.tsx and, for the energyTrack option, reps/EnergySpring.tsx; the mechanical advantage in hskMath.ts machineOf). Calculator picture { kind: "simpleMachine", machine: "lever" | "pulley" | "incline", load (N), effort?, advantage? (ideal MA), effortArm? and loadArm? (lever, m), strands? (pulley, whole 1 to 6; 1 is a single fixed pulley), length? and height? (incline, m), efficiency? (percent, default 100: effort = load ÷ (MA × efficiency)), effortDistance?, loadDistance? (checked: effort distance = MA × load distance), fixed?: true }. Lever: a wooden plank on a metal fulcrum drawn to scale from the two arms, the load crate and its weight, the effort arrow, both arms bracketed; drag the fulcrum (the arms trade, their sum kept). Pulley: a block and tackle with every supporting strand drawn and numbered, the sheave blocks in metal, the free end pulled down as the effort. Incline: a wooden ramp to scale, the crate pushed along the slope, its weight, the length and height labelled; a ramp shorter than its height draws faded with the reason. Load and effort share one scale in N. energyTrack option: spring: { k (N/m), compression (m), stored?: ½kx², friction? (N), rough? (m), heat?: fd, fixed? } on an energyTrack spec (its height, potential, kinetic, mass): a steel spring against a wall launches a block across a gritty rough patch and up a smooth ramp; bars Start (the spring’s ½kx²) and Now (heat + potential + kinetic, the same total), a key with each value, the highest point it can reach dashed; drag the block along the ramp. The harness checks the MA, the effort, the distances, ½kx², fd and the kinetic energy left. Example: representation: { kind: "simpleMachine", machine: "lever", load: "W", effortArm: "e", loadArm: "l", advantage: "A", effort: "F" }; { kind: "energyTrack", track: "coaster", height: "h", potential: "U", kinetic: "K", mass: "m", spring: { k: "k", compression: "x", stored: "E", friction: "f", rough: "d", heat: "Q" } }.',
+  },
   ask(
     'H64',
     'heatEngine',
