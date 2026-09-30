@@ -13,9 +13,10 @@ import {
 import { trendValue } from '@/components/module/reps/chemTrends';
 import { hydrogensOf, ionic, valenceElectrons } from '@/components/module/reps/lewis';
 import { shapeOf } from '@/components/module/reps/vseprGeo';
+import { subscript } from '@/components/module/reps/chem';
 import type { Relation, VariableDef, Values } from '@/engine/types';
 
-import type { LayoutDef } from './layouts';
+import type { CardIcon, LayoutDef } from './layouts';
 import type { TrendProperty } from './typesHsi';
 import type { ModuleDef, StepText } from './types';
 
@@ -1548,6 +1549,207 @@ SHAPES_DEMOS.push(
   ),
 );
 
+// ─── H49 reaction: the limiting reactant ─────────────────────────────────────
+
+/**
+ * Two reactants X and Y with coefficients p and q on hand as a and b particles: r whole runs,
+ * each product made (coefficient × r) and each reactant left over (amount − coefficient × r).
+ */
+const limitingDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  reactants: [string, number, number][],
+  products: [string, number][],
+): ModuleDef => {
+  const [[fx, p, a], [fy, q, b]] = reactants as [
+    [string, number, number],
+    [string, number, number],
+  ];
+  const r = Math.floor(Math.min(a / p, b / q));
+  const madeIds = products.map((_, i) => `m${i + 1}`);
+  const made: Rule[] = products.map(([f, k], i) => ({
+    relation: {
+      id: `made ${f}`,
+      display: `{${madeIds[i]}} = ${k} × {r}`,
+      vars: [madeIds[i]!, 'r'],
+      residual: (v) => v[madeIds[i]!]! - k * v.r!,
+      solve: { [madeIds[i]!]: (v) => k * v.r!, r: (v) => v[madeIds[i]!]! / k },
+    },
+    steps: {
+      [madeIds[i]!]: { expr: `${k} × {r}`, how: `Each run makes ${k} ${subscript(f)}.` },
+      r: { expr: `{${madeIds[i]}}/${k}`, how: `Divide by the ${subscript(f)} each run makes.` },
+    },
+  }));
+  const left = (lid: string, amount: string, k: number, f: string): Rule => ({
+    relation: {
+      id: `left ${f}`,
+      display: `{${lid}} = {${amount}} − ${k} × {r}`,
+      vars: [lid, amount, 'r'],
+      residual: (v) => v[lid]! - (v[amount]! - k * v.r!),
+      solve: {
+        [lid]: (v) => v[amount]! - k * v.r!,
+        [amount]: (v) => v[lid]! + k * v.r!,
+        r: (v) => (v[amount]! - v[lid]!) / k,
+      },
+    },
+    steps: {
+      [lid]: {
+        expr: `{${amount}} − ${k} × {r}`,
+        how: `Each run uses ${k} ${subscript(f)}; the rest is left over.`,
+      },
+      [amount]: { expr: `{${lid}} + ${k} × {r}`, how: 'Add back what the runs used.' },
+      r: {
+        expr: `({${amount}} − {${lid}})/${k}`,
+        how: `Divide what was used by the ${k} each run takes.`,
+      },
+    },
+  });
+  const runsRule: Rule = {
+    relation: {
+      id: 'runs',
+      display: `{r} = smaller of {a} ÷ ${p} and {b} ÷ ${q}, rounded down`,
+      vars: ['r', 'a', 'b'],
+      residual: (v) => v.r! - Math.floor(Math.min(v.a! / p, v.b! / q) + 1e-9),
+      solve: {
+        r: (v) => Math.floor(Math.min(v.a! / p, v.b! / q) + 1e-9),
+        a: () => undefined,
+        b: () => undefined,
+      },
+    },
+    steps: {
+      r: {
+        expr: `smaller of {a} ÷ ${p} and {b} ÷ ${q}, rounded down`,
+        how: 'Each reactant allows its amount divided by its coefficient runs; the smaller number is how many can happen.',
+      },
+    },
+  };
+  return {
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      whole('a', 'a', `${subscript(fx)} particles at the start`, 0, 12),
+      whole('b', 'b', `${subscript(fy)} particles at the start`, 0, 12),
+      whole('r', 'r', 'Runs of the reaction', 0, 12),
+      ...products.map(([f], i) => whole(madeIds[i]!, `m${'₁₂'[i]}`, `${subscript(f)} made`, 0, 12)),
+      whole('x', 'x', `${subscript(fx)} left over`, 0, 12),
+      whole('y', 'y', `${subscript(fy)} left over`, 0, 12),
+    ],
+    ...rules(runsRule, ...made, left('x', 'a', p, fx), left('y', 'b', q, fy)),
+    example: {
+      a,
+      b,
+      r,
+      ...Object.fromEntries(products.map(([, k], i) => [madeIds[i]!, k * r])),
+      x: a - p * r,
+      y: b - q * r,
+    },
+    startWith: ['a', 'b'],
+    sliders: true,
+    representation: {
+      kind: 'reaction',
+      reactants: [
+        { formula: fx, count: p },
+        { formula: fy, count: q },
+      ],
+      products: products.map(([formula, count]) => ({ formula, count })),
+      limiting: { amounts: ['a', 'b'], runs: 'r', made: madeIds, left: ['x', 'y'] },
+    },
+  };
+};
+
+const LIMITING: ModuleDef[] = [
+  limitingDemo(
+    'g.s10-stoichiometry-limiting-water',
+    'The limiting reactant: making water',
+    'Use this to find which reactant runs out first, how much product forms and what is left over.',
+    [
+      'The equation is balanced: 2 H₂ + O₂ → 2 H₂O.',
+      'The reaction can only run while every reactant it needs is still there.',
+    ],
+    [
+      ['H2', 2, 5],
+      ['O2', 1, 2],
+    ],
+    [['H2O', 2]],
+  ),
+  limitingDemo(
+    'g.s10-stoichiometry-limiting-ammonia',
+    'The limiting reactant: making ammonia',
+    'Use this when the reactant with fewer particles is not the one that runs out.',
+    [
+      'The equation is balanced: N₂ + 3 H₂ → 2 NH₃.',
+      'Divide each amount by its coefficient to see which runs out first.',
+    ],
+    [
+      ['N2', 1, 3],
+      ['H2', 3, 6],
+    ],
+    [['NH3', 2]],
+  ),
+  limitingDemo(
+    'g.s10-stoichiometry-limiting-methane',
+    'The limiting reactant with two products',
+    'Use this for a reaction that makes two products, such as burning methane.',
+    [
+      'The equation is balanced: CH₄ + 2 O₂ → CO₂ + 2 H₂O.',
+      'Every product is made in step with the runs of the reaction.',
+    ],
+    [
+      ['CH4', 1, 4],
+      ['O2', 2, 6],
+    ],
+    [
+      ['CO2', 1],
+      ['H2O', 2],
+    ],
+  ),
+];
+
+/** The five reaction types, sorted from their card icons. */
+const REACTION_TYPES: LayoutDef = {
+  id: 'g.s10-reaction-types-sort',
+  title: 'Types of reactions',
+  use: 'Use this to sort reactions by what happens to their atoms.',
+  kind: 'sort',
+  question: 'Do the reactants join, split, or swap partners?',
+  assumptions: [
+    'Tap a card, then a group.',
+    'Each colored ball is an atom; balls side by side are bonded.',
+  ],
+  bins: [
+    {
+      id: 'join',
+      label: 'Join or split',
+      why: 'Synthesis joins substances into one; decomposition splits one into several.',
+    },
+    {
+      id: 'swap',
+      label: 'Swap partners',
+      why: 'In a replacement reaction an element or ion trades places with another.',
+    },
+    {
+      id: 'burn',
+      label: 'Burn in oxygen',
+      why: 'Combustion: a fuel reacts with oxygen, making carbon dioxide and water.',
+    },
+  ],
+  cards: [
+    ['Synthesis: A + B → AB', 'join', 'synthesis reaction'],
+    ['Decomposition: AB → A + B', 'join', 'decomposition reaction'],
+    ['Single replacement: A + BC → AC + B', 'swap', 'single replacement reaction'],
+    ['Double replacement: AB + CD → AD + CB', 'swap', 'double replacement reaction'],
+    ['Combustion: CH₄ + 2 O₂ → CO₂ + 2 H₂O', 'burn', 'combustion reaction'],
+  ].map(([label, bin, icon]) => ({
+    label: label!,
+    bin: bin!,
+    figure: { kind: 'icon' as const, icon: icon as CardIcon },
+  })),
+};
+
 export const HSI_GALLERY_MODULES: ModuleDef[] = [
   ...MEASUREMENT,
   ...ATOMS,
@@ -1555,5 +1757,6 @@ export const HSI_GALLERY_MODULES: ModuleDef[] = [
   ...TRENDS_DEMOS,
   ...BONDING,
   ...SHAPES_DEMOS,
+  ...LIMITING,
 ];
-export const HSI_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HSI_GALLERY_LAYOUTS: LayoutDef[] = [REACTION_TYPES];

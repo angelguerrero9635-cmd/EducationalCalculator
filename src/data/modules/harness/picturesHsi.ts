@@ -33,6 +33,7 @@ import {
   valenceElectrons,
 } from '@/components/module/reps/lewis';
 
+import { MAX_PARTICLES, balanced, limitingOutcome } from '@/components/module/reps/limiting';
 import { hydrogenBonds, shapeOf } from '@/components/module/reps/vseprGeo';
 
 import type { ChemSpec } from '../typesChem';
@@ -258,6 +259,39 @@ export function chemHsiIssues(
 ): string[] {
   const out: string[] = [];
   const num = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  if (rep.kind === 'reaction' && rep.limiting) {
+    const lim = rep.limiting;
+    if (lim.amounts.length !== rep.reactants.length)
+      out.push(`${lim.amounts.length} amounts for ${rep.reactants.length} reactants`);
+    const coefs = rep.reactants.map((t) => num(t.count));
+    const pcoefs = rep.products.map((t) => num(t.count));
+    const amounts = lim.amounts.map((a) => num(a));
+    if ([...coefs, ...pcoefs, ...amounts].some((x) => x === undefined)) return out;
+    for (const a of amounts as number[])
+      if (a !== Math.round(a) || a < 0 || a > MAX_PARTICLES)
+        out.push(`${a} particles (whole, 0 to ${MAX_PARTICLES} drawn)`);
+    if (
+      !balanced(
+        rep.reactants.map((t, i) => ({ formula: t.formula, n: coefs[i]! })),
+        rep.products.map((t, i) => ({ formula: t.formula, n: pcoefs[i]! })),
+      )
+    )
+      out.push('the limiting-reactant picture needs a balanced equation');
+    const o = limitingOutcome(coefs as number[], amounts as number[], pcoefs as number[]);
+    o.made.forEach((m, i) => {
+      if (m > MAX_PARTICLES) out.push(`${m} particles of a product made (${MAX_PARTICLES} drawn)`);
+      const v = num(lim.made?.[i]);
+      if (v !== undefined && v !== m)
+        out.push(`${m} of product ${i + 1} drawn, the value shows ${v}`);
+    });
+    o.left.forEach((l, i) => {
+      const v = num(lim.left?.[i]);
+      if (v !== undefined && v !== l)
+        out.push(`${l} of reactant ${i + 1} left over, the value shows ${v}`);
+    });
+    const r = num(lim.runs);
+    if (r !== undefined && r !== o.runs) out.push(`${o.runs} runs drawn, the value shows ${r}`);
+  }
   if (rep.kind === 'periodicTable' && rep.trend) {
     const pairs: [string | number | undefined, string | undefined][] = [
       [rep.element, rep.trend.value],

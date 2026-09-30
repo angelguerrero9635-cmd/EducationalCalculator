@@ -736,12 +736,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn (group HI): kind vsepr (typesHsi.ts, reps/Vsepr.tsx, geometry in reps/vseprGeo.ts). mode 'shape' (default) { bonded (2–4), lone (0–2; 2 to 4 domains in all), angle? (checked), polar? }: a ball-and-stick example molecule for the shape (linear CO₂ 180°, trigonal planar BF₃ 120°, bent SO₂ 119°, tetrahedral CH₄ 109.5°, trigonal pyramidal NH₃ 107°, bent H₂O 104.5°), lone pairs as lobes with their two dots, the angle as a true 3-D arc between two bonds, four-domain shapes turned a little so no atom hides another; with polar, crossed bond-dipole arrows toward the more electronegative atom and the net dipole beside the molecule (none when the dipoles cancel; the caption says polar or nonpolar). mode 'hbonds' { molecules (2–5), bonds? (checked, molecules − 1) }: water molecules around a middle one, dotted hydrogen bonds from an H to an O's lone pair (two accepted, two donated), δ− and δ+ on the middle molecule. The step phrase \"bond angle with {b} bonded atoms and {l} lone pairs\" is taught to the harness. No handles: give the page `sliders: true`. Examples: { kind: 'vsepr', bonded: 'b', lone: 'l', angle: 'a', polar: true } with d = b + l; { kind: 'vsepr', mode: 'hbonds', molecules: 'n', bonds: 'k' }.",
   },
-  ask(
-    'H49',
-    'reaction',
-    'Coefficients set the molecule counts and an atom tally; leftover reactant lit (limiting reactant); reaction-type card figures',
-    ['s.10.reaction-types', 's.10.stoichiometry'],
-  ),
+  {
+    ...ask(
+      'H49',
+      'reaction',
+      'Coefficients set the molecule counts and an atom tally; leftover reactant lit (limiting reactant); reaction-type card figures',
+      ['s.10.reaction-types', 's.10.stoichiometry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-stoichiometry-limiting-water',
+      'g.s10-stoichiometry-limiting-ammonia',
+      'g.s10-stoichiometry-limiting-methane',
+      'g.s10-reaction-types-sort',
+    ],
+    notes:
+      "Drawn (group HI): an optional `limiting` on the existing reaction (typesChem.ts; drawn by reps/ReactionLimiting.tsx, math in reps/limiting.ts). Pages without it draw exactly as before (molecules from the coefficients, the atom tally on each side). limiting { amounts (particles of each reactant at the start, in the reactants' order, 0–12), runs? (whole runs, checked), made? (per product, checked), left? (per reactant, checked) }: the balanced equation, then Before: every particle on hand, the reactant that runs out first tagged \"limiting\"; After n runs: every product particle made and the leftover reactant particles ringed in yellow. An unbalanced equation draws faded with the reason. The step phrase \"smaller of {a} ÷ p and {b} ÷ q, rounded down\" is taught to the harness. Reaction-type card icons (layouts/icons/hi.ts): 'synthesis reaction', 'decomposition reaction', 'single replacement reaction', 'double replacement reaction', 'combustion reaction' (colored atom balls, reactants above an arrow, products below; combustion over a flame), sorted in the demo g.s10-reaction-types-sort as { label, bin, figure: { kind: 'icon', icon: 'synthesis reaction' } }. Example: { kind: 'reaction', reactants: [{ formula: 'H2', count: 2 }, { formula: 'O2', count: 1 }], products: [{ formula: 'H2O', count: 2 }], limiting: { amounts: ['a', 'b'], runs: 'r', made: ['m1'], left: ['x', 'y'] } } with m1 = 2 × r, x = a − 2 × r, y = b − r.",
+  },
   ask(
     'H50',
     'moleMap',

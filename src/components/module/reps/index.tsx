@@ -137,6 +137,7 @@ import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
 import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
+import { ReactionLimiting } from './ReactionLimiting';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -277,7 +278,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'molecules':
       return <Molecules spec={spec} calc={calc} />;
     case 'reaction':
-      return <Reaction spec={spec} calc={calc} />;
+      return spec.limiting ? (
+        <ReactionLimiting spec={spec} calc={calc} />
+      ) : (
+        <Reaction spec={spec} calc={calc} />
+      );
     case 'heatingCurve':
       return <HeatingCurve spec={spec} calc={calc} />;
     case 'periodicTable':

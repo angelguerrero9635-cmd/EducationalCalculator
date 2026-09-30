@@ -115,6 +115,20 @@ export type OrbitalDiagramSpec =
       levels?: number;
     };
 
+/**
+ * `limiting` on `reaction` (H49): the particles each reactant starts with (`amounts`, in the
+ * reactants' order, up to 12 each), the reaction run as many whole times as the scarcest
+ * reactant allows, the products made and the leftover reactant lit (the other one is the
+ * limiting reactant). `runs`, `made` (per product) and `left` (per reactant) are checked. The
+ * coefficients must balance the equation.
+ */
+export interface ReactionLimiting {
+  amounts: NumOrVar[];
+  runs?: string;
+  made?: string[];
+  left?: string[];
+}
+
 /** A periodic trend (H46). */
 export type TrendProperty = 'radius' | 'ionization' | 'electronegativity';
 

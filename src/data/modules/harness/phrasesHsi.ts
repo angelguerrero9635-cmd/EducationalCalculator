@@ -18,6 +18,11 @@ export const HSI_PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ],
   [new RegExp(`unpaired electrons of Z = (${NUM})`), (z) => unpaired(configuration(z))],
   // Periodic-trend values, looked up by atomic number.
+  // Whole runs of a reaction from two reactants: the smaller of amount ÷ coefficient, rounded down.
+  [
+    new RegExp(`smaller of (${NUM}) / (${NUM}) and (${NUM}) / (${NUM}), rounded down`),
+    (a, p, b, q) => Math.floor(Math.min(a / p, b / q) + 1e-9),
+  ],
   // The VSEPR bond angle from the bonded atoms and lone pairs on the central atom.
   [
     new RegExp(`bond angle with (${NUM}) bonded atoms and (${NUM}) lone pairs`),
