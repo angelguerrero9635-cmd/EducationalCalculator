@@ -4563,13 +4563,615 @@ const MATH_12_LIMITS: ModuleDef[] = [
   },
 ];
 
+// ── Vectors in space (added skill 13) ──
+
+/** One component of a 3-D vector, one of a group of three (they count as one value). */
+const comp3 = (id: string, symbol: string, name: string, group: string, range = 1000) =>
+  V(id, symbol, name, { min: -range, max: range, step: 0.01, group });
+
+/** The six components of u = ⟨a, b, c⟩ and v = ⟨d, e, f⟩. */
+const UV: VariableDef[] = [
+  comp3('a', 'u₁', 'x-component of u', 'u'),
+  comp3('b', 'u₂', 'y-component of u', 'u'),
+  comp3('c', 'u₃', 'z-component of u', 'u'),
+  comp3('d', 'v₁', 'x-component of v', 'v'),
+  comp3('e', 'v₂', 'y-component of v', 'v'),
+  comp3('f', 'v₃', 'z-component of v', 'v'),
+];
+
+/** Each 3-D component's symbol, for the formulas' names. */
+const SYM3: Record<string, string> = {
+  a: 'u₁',
+  b: 'u₂',
+  c: 'u₃',
+  d: 'v₁',
+  e: 'v₂',
+  f: 'v₃',
+  g: 'w₁',
+  h: 'w₂',
+  k: 'w₃',
+  x: 'w₁',
+  y: 'w₂',
+  z: 'w₃',
+};
+
+/** m = √(x² + y² + z²), a 3-D vector's length. */
+const length3 = (m: string, [x, y, z]: string[], name: string) =>
+  derive(
+    `|${name}| = √(${SYM3[x!]}² + ${SYM3[y!]}² + ${SYM3[z!]}²)`,
+    `{${m}} = √({${x}}² + {${y}}² + {${z}}²)`,
+    m,
+    [x!, y!, z!],
+    (v) => Math.hypot(v[x!]!, v[y!]!, v[z!]!),
+    `√({${x}}² + {${y}}² + {${z}}²)`,
+    `The Pythagorean theorem twice: across the floor, then up. That is ${name}’s length.`,
+  );
+
+/** One component of u × v: the other two components crossed, first times second minus … */
+const crossPart = (out: string, p: string, q: string, r: string, s: string, which: string) =>
+  derive(
+    `${SYM3[out]} = ${SYM3[p]}${SYM3[q]} − ${SYM3[r]}${SYM3[s]}`,
+    `{${out}} = {${p}} × {${q}} − {${r}} × {${s}}`,
+    out,
+    [p, q, r, s],
+    (v) => v[p]! * v[q]! - v[r]! * v[s]!,
+    `{${p}} × {${q}} − {${r}} × {${s}}`,
+    `The ${which}-component: cover the ${which} column and take the 2 × 2 determinant of what is left${which === 'y' ? ', with its sign changed' : ''}.`,
+  );
+
+const MATH_12_VECTORS_3D: ModuleDef[] = [
+  // ── m.12.vectors-3d (N-VM.4, N-VM.5 in space) ──
+  {
+    id: 'm.12.vectors-3d',
+    assumptions: [
+      'A vector in space has three components, ⟨x, y, z⟩; u · v multiplies matching components and adds.',
+      'cos θ = u · v ÷ (|u||v|), with θ from 0° to 180°.',
+      'A dot product of 0 means the vectors are perpendicular.',
+    ],
+    variables: [
+      ...UV,
+      V('p', 'u · v', 'Dot product', { min: -3000000, max: 3000000, step: 0.01, derived: true }),
+      V('m1', '|u|', 'Magnitude of u', { min: 0, max: 1800, step: 0.01, derived: true }),
+      V('m2', '|v|', 'Magnitude of v', { min: 0, max: 1800, step: 0.01, derived: true }),
+      deg('t', 'θ', 'Angle between u and v', 0, 180, { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'u · v = u₁v₁ + u₂v₂ + u₃v₃',
+        '{p} = {a} × {d} + {b} × {e} + {c} × {f}',
+        'p',
+        ['a', 'd', 'b', 'e', 'c', 'f'],
+        (v) => v.a! * v.d! + v.b! * v.e! + v.c! * v.f!,
+        '{a} × {d} + {b} × {e} + {c} × {f}',
+        'Multiply matching components and add: the row u times the column v.',
+      ),
+      length3('m1', ['a', 'b', 'c'], 'u'),
+      length3('m2', ['d', 'e', 'f'], 'v'),
+      derive(
+        'θ = cos⁻¹(u · v ÷ (|u||v|))',
+        '{t} = cos⁻¹({p} ÷ ({m1} × {m2}))',
+        't',
+        ['p', 'm1', 'm2'],
+        (v) => {
+          const q = div(v.p!, v.m1! * v.m2!);
+          return q === undefined ? undefined : Math.acos(Math.max(-1, Math.min(1, q))) / RAD;
+        },
+        'cos⁻¹({p} ÷ ({m1} × {m2}))',
+        'The cosine of the angle is the dot product over the product of the magnitudes.',
+      ),
+    ),
+    example: { a: 1, b: 2, c: 2, d: 4, e: 0, f: 3, p: 10, m1: 3, m2: 5, t: Math.acos(2 / 3) / RAD },
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
+    equation: '⟨{a}, {b}, {c}⟩ · ⟨{d}, {e}, {f}⟩ = {p}',
+    pictureLabels: ['m1', 'm2', 't'],
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'multiply',
+      a: [['a', 'b', 'c']],
+      b: [['d'], ['e'], ['f']],
+      product: [['p']],
+    },
+  },
+  {
+    id: 'm.12.vectors-3d~cross',
+    title: 'The cross product',
+    use: 'Use this for “Find u × v for u = ⟨1, 2, 3⟩ and v = ⟨2, 0, 1⟩, and the area of the parallelogram they span.”',
+    assumptions: [
+      'u × v is a vector perpendicular to both u and v: its dot product with each is 0.',
+      '|u × v| is the area of the parallelogram u and v span; the triangle is half of it.',
+      'Order matters: v × u points the opposite way, −(u × v).',
+    ],
+    variables: [
+      ...UV,
+      comp3('x', 'w₁', 'x-component of u × v', 'w', 2000000),
+      comp3('y', 'w₂', 'y-component of u × v', 'w', 2000000),
+      comp3('z', 'w₃', 'z-component of u × v', 'w', 2000000),
+      V('A', 'A', 'Area of the parallelogram, |u × v|', {
+        min: 0,
+        max: 4000000,
+        step: 0.01,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      crossPart('x', 'b', 'f', 'c', 'e', 'x'),
+      crossPart('y', 'c', 'd', 'a', 'f', 'y'),
+      crossPart('z', 'a', 'e', 'b', 'd', 'z'),
+      length3('A', ['x', 'y', 'z'], 'u × v'),
+    ),
+    example: { a: 1, b: 2, c: 3, d: 2, e: 0, f: 1, x: 2, y: 5, z: -4, A: Math.sqrt(45) },
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
+    equation: '⟨{a}, {b}, {c}⟩ × ⟨{d}, {e}, {f}⟩ = ⟨{x}, {y}, {z}⟩',
+    representation: {
+      kind: 'table',
+      sweep: 'f',
+      output: 'A',
+      params: ['a', 'b', 'c', 'd', 'e'],
+      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.f ?? 1) + i),
+    },
+  },
+  {
+    id: 'm.12.vectors-3d~triple',
+    title: 'Volume from the triple product',
+    use: 'Use this for “Find the volume of the box that u = ⟨1, 2, 0⟩, v = ⟨0, 1, 3⟩ and w = ⟨2, 0, 1⟩ span.”',
+    assumptions: [
+      'u · (v × w) is the 3 × 3 determinant with rows u, v and w.',
+      'The volume of the slanted box (parallelepiped) the three vectors span is its absolute value.',
+      'A triple product of 0 means the three vectors lie in one plane.',
+    ],
+    variables: [
+      comp3('a', 'u₁', 'x-component of u', 'u', 100),
+      comp3('b', 'u₂', 'y-component of u', 'u', 100),
+      comp3('c', 'u₃', 'z-component of u', 'u', 100),
+      comp3('d', 'v₁', 'x-component of v', 'v', 100),
+      comp3('e', 'v₂', 'y-component of v', 'v', 100),
+      comp3('f', 'v₃', 'z-component of v', 'v', 100),
+      comp3('g', 'w₁', 'x-component of w', 'w', 100),
+      comp3('h', 'w₂', 'y-component of w', 'w', 100),
+      comp3('k', 'w₃', 'z-component of w', 'w', 100),
+      V('T', 'T', 'Triple product u · (v × w)', {
+        min: -10000000,
+        max: 10000000,
+        step: 0.01,
+        derived: true,
+      }),
+      V('Vol', 'V', 'Volume', { min: 0, max: 10000000, step: 0.01, derived: true }),
+    ],
+    ...rels(
+      derive(
+        'u · (v × w) = u₁(v₂w₃ − v₃w₂) − u₂(v₁w₃ − v₃w₁) + u₃(v₁w₂ − v₂w₁)',
+        `{T} = ${DET3}`,
+        'T',
+        ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
+        det3,
+        DET3,
+        'Expand the determinant along u’s row: each entry times the 2 × 2 determinant left, signs +, −, +.',
+      ),
+      derive(
+        'V = |u · (v × w)|',
+        '{Vol} = |{T}|',
+        'Vol',
+        ['T'],
+        (v) => Math.abs(v.T!),
+        '|{T}|',
+        'A volume is never negative: the sign only says which way the three vectors turn.',
+      ),
+    ),
+    example: { a: 1, b: 2, c: 0, d: 0, e: 1, f: 3, g: 2, h: 0, k: 1, T: 13, Vol: 13 },
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
+    equation: '||{a}, {b}, {c}; {d}, {e}, {f}; {g}, {h}, {k}|| = {T}',
+    representation: {
+      kind: 'table',
+      sweep: 'k',
+      output: 'Vol',
+      params: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.k ?? 1) + i),
+    },
+  },
+];
+
+// ── Matrices as transformations (added skill 14) ──
+
+const coord = (id: string, symbol: string, name: string, range = 1000, extra = {}) =>
+  V(id, symbol, name, { min: -range, max: range, step: 0.01, ...extra });
+
+/** A rotation's matrix entry: c = cos θ or s = sin θ. */
+const trigOf = (out: string, fn: 'cos' | 'sin', t: string, which: string) =>
+  derive(
+    `${out} = ${fn} ${t === 'g' ? 'γ' : 'θ'}`,
+    `{${out}} = ${fn}({${t}}°)`,
+    out,
+    [t],
+    (v) => (fn === 'cos' ? cosd(v[t]!) : sind(v[t]!)),
+    `${fn}({${t}}°)`,
+    which,
+  );
+
+const MATH_12_TRANSFORMS: ModuleDef[] = [
+  // ── m.12.matrix-transformations (N-VM.12) ──
+  {
+    id: 'm.12.matrix-transformations',
+    assumptions: [
+      'Turning by θ about the origin is the matrix [[cos θ, −sin θ], [sin θ, cos θ]]; a positive θ turns counterclockwise.',
+      'Its columns are where (1, 0) and (0, 1) land: (cos θ, sin θ) and (−sin θ, cos θ).',
+      'Multiply the matrix by the point as a column: each row times the column gives one coordinate.',
+    ],
+    variables: [
+      deg('t', 'θ', 'Angle of turn', -360, 360),
+      coord('x', 'x', 'x of the point'),
+      coord('y', 'y', 'y of the point'),
+      V('c', 'c', 'cos θ', { min: -1, max: 1, step: 0.0001, derived: true }),
+      V('s', 's', 'sin θ', { min: -1, max: 1, step: 0.0001, derived: true }),
+      coord('X', 'x′', 'x of the image', 1500),
+      coord('Y', 'y′', 'y of the image', 1500),
+    ],
+    ...rels(
+      trigOf('c', 'cos', 't', 'The first column is where (1, 0) lands: (cos θ, sin θ).'),
+      trigOf('s', 'sin', 't', 'The same column’s second entry.'),
+      rel(
+        'x′ = cx − sy',
+        '{X} = {c} × {x} − {s} × {y}',
+        ['X', 'c', 'x', 's', 'y'],
+        (v) => v.X! - (v.c! * v.x! - v.s! * v.y!),
+        {
+          X: [
+            (v) => v.c! * v.x! - v.s! * v.y!,
+            '{c} × {x} − {s} × {y}',
+            'The first row [cos θ, −sin θ] times the column (x, y).',
+          ],
+        },
+      ),
+      rel(
+        'y′ = sx + cy',
+        '{Y} = {s} × {x} + {c} × {y}',
+        ['Y', 's', 'x', 'c', 'y'],
+        (v) => v.Y! - (v.s! * v.x! + v.c! * v.y!),
+        {
+          Y: [
+            (v) => v.s! * v.x! + v.c! * v.y!,
+            '{s} × {x} + {c} × {y}',
+            'The second row [sin θ, cos θ] times the column (x, y).',
+          ],
+        },
+      ),
+      rel(
+        'x = cx′ + sy′',
+        '{x} = {c} × {X} + {s} × {Y}',
+        ['x', 'c', 'X', 's', 'Y'],
+        (v) => v.x! - (v.c! * v.X! + v.s! * v.Y!),
+        {
+          x: [
+            (v) => v.c! * v.X! + v.s! * v.Y!,
+            '{c} × {X} + {s} × {Y}',
+            'Undo the turn: turning back by θ is the matrix [[cos θ, sin θ], [−sin θ, cos θ]].',
+          ],
+        },
+      ),
+      rel(
+        'y = −sx′ + cy′',
+        '{y} = −{s} × {X} + {c} × {Y}',
+        ['y', 's', 'X', 'c', 'Y'],
+        (v) => v.y! - (-v.s! * v.X! + v.c! * v.Y!),
+        {
+          y: [
+            (v) => -v.s! * v.X! + v.c! * v.Y!,
+            '−{s} × {X} + {c} × {Y}',
+            'The second row of the turn back times the column (x′, y′).',
+          ],
+        },
+      ),
+    ),
+    example: { t: 90, x: 3, y: 1, c: 0, s: 1, X: -1, Y: 3 },
+    startWith: ['t', 'x', 'y'],
+    pictureLabels: ['c', 's'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['x', 'y'],
+        [0, 0],
+      ],
+      move: 'rotate',
+      angle: 't',
+      center: [0, 0],
+      image: { x: 'X', y: 'Y' },
+      extent: 6,
+      quadrants: 4,
+    },
+  },
+  {
+    id: 'm.12.matrix-transformations~image',
+    title: 'The image of a point, and undoing it',
+    use: 'Use this for “Where does [[2, 1], [1, 1]] send (3, −1)? Which point does it send to (5, 2)?”',
+    assumptions: [
+      'The matrix [[a, b], [c, d]] sends (x, y) to (ax + by, cx + dy).',
+      'Type x′ and y′ to undo it: the inverse matrix sends the image back, when D = ad − bc is not 0.',
+      'D = 0 flattens the whole plane onto a line or a point, so the move can’t be undone.',
+    ],
+    variables: [
+      { ...entry('a', 'a', 'Row 1, column 1', 100), group: 'A' },
+      { ...entry('b', 'b', 'Row 1, column 2', 100), group: 'A' },
+      { ...entry('c', 'c', 'Row 2, column 1', 100), group: 'A' },
+      { ...entry('d', 'd', 'Row 2, column 2', 100), group: 'A' },
+      coord('x', 'x', 'x of the point'),
+      coord('y', 'y', 'y of the point'),
+      coord('X', 'x′', 'x of the image', 200000),
+      coord('Y', 'y′', 'y of the image', 200000),
+      { ...entry('D', 'D', 'Determinant', 20000), derived: true },
+    ],
+    ...rels(
+      rel(
+        'x′ = ax + by',
+        '{X} = {a} × {x} + {b} × {y}',
+        ['X', 'a', 'x', 'b', 'y'],
+        (v) => v.X! - (v.a! * v.x! + v.b! * v.y!),
+        {
+          X: [
+            (v) => v.a! * v.x! + v.b! * v.y!,
+            '{a} × {x} + {b} × {y}',
+            'Row 1 times the column (x, y).',
+          ],
+          x: [
+            (v) => div(v.X! - v.b! * v.y!, v.a!),
+            '({X} − {b} × {y}) ÷ {a}',
+            'Take by from x′, then divide by a.',
+          ],
+          y: [
+            (v) => div(v.X! - v.a! * v.x!, v.b!),
+            '({X} − {a} × {x}) ÷ {b}',
+            'Take ax from x′, then divide by b.',
+          ],
+        },
+      ),
+      rel(
+        'y′ = cx + dy',
+        '{Y} = {c} × {x} + {d} × {y}',
+        ['Y', 'c', 'x', 'd', 'y'],
+        (v) => v.Y! - (v.c! * v.x! + v.d! * v.y!),
+        {
+          Y: [
+            (v) => v.c! * v.x! + v.d! * v.y!,
+            '{c} × {x} + {d} × {y}',
+            'Row 2 times the column (x, y).',
+          ],
+          x: [
+            (v) => div(v.Y! - v.d! * v.y!, v.c!),
+            '({Y} − {d} × {y}) ÷ {c}',
+            'Take dy from y′, then divide by c.',
+          ],
+          y: [
+            (v) => div(v.Y! - v.c! * v.x!, v.d!),
+            '({Y} − {c} × {x}) ÷ {d}',
+            'Take cx from y′, then divide by d.',
+          ],
+        },
+      ),
+      derive(
+        'D = ad − bc',
+        '{D} = {a} × {d} − {b} × {c}',
+        'D',
+        ['a', 'd', 'b', 'c'],
+        (v) => v.a! * v.d! - v.b! * v.c!,
+        '{a} × {d} − {b} × {c}',
+        'The determinant says whether the move can be undone: not when it is 0.',
+      ),
+      rel(
+        'x = (dx′ − by′) ÷ D',
+        '{x} = ({d} × {X} − {b} × {Y}) ÷ {D}',
+        ['x', 'd', 'X', 'b', 'Y', 'D'],
+        (v) => v.x! * v.D! - (v.d! * v.X! - v.b! * v.Y!),
+        {
+          x: [
+            (v) => div(v.d! * v.X! - v.b! * v.Y!, v.D!),
+            '({d} × {X} − {b} × {Y}) ÷ {D}',
+            'The inverse (1/D)[[d, −b], [−c, a]] times (x′, y′): its first row.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.D === 0
+              ? 'D = 0: the matrix flattens the plane onto a line, so many points share this image, or none has it.'
+              : undefined,
+        },
+      ),
+      rel(
+        'y = (ay′ − cx′) ÷ D',
+        '{y} = ({a} × {Y} − {c} × {X}) ÷ {D}',
+        ['y', 'a', 'Y', 'c', 'X', 'D'],
+        (v) => v.y! * v.D! - (v.a! * v.Y! - v.c! * v.X!),
+        {
+          y: [
+            (v) => div(v.a! * v.Y! - v.c! * v.X!, v.D!),
+            '({a} × {Y} − {c} × {X}) ÷ {D}',
+            'The inverse’s second row times (x′, y′).',
+          ],
+        },
+      ),
+    ),
+    example: { a: 2, b: 1, c: 1, d: 1, x: 3, y: -1, X: 5, Y: 2, D: 1 },
+    startWith: ['x', 'y', 'a', 'b', 'c', 'd'],
+    equation: '[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] = [[{X}; {Y}]]',
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'multiply',
+      a: [
+        ['a', 'b'],
+        ['c', 'd'],
+      ],
+      b: [['x'], ['y']],
+      product: [['X'], ['Y']],
+    },
+  },
+  {
+    id: 'm.12.matrix-transformations~area',
+    title: 'How a matrix changes area',
+    use: 'Use this for “A shape of area 4 is transformed by [[3, 1], [1, 2]]. What is the new area?”',
+    assumptions: [
+      'The unit square lands on the parallelogram with sides (a, c) and (b, d), the matrix’s columns.',
+      'Its area is |D| = |ad − bc|, and every area is multiplied by the same |D|.',
+      'A negative D also flips the figure over; D = 0 squashes it flat.',
+    ],
+    variables: [
+      { ...entry('a', 'a', 'Row 1, column 1', 100), group: 'A' },
+      { ...entry('b', 'b', 'Row 1, column 2', 100), group: 'A' },
+      { ...entry('c', 'c', 'Row 2, column 1', 100), group: 'A' },
+      { ...entry('d', 'd', 'Row 2, column 2', 100), group: 'A' },
+      { ...entry('D', 'D', 'Determinant', 20000), derived: true },
+      V('S', 'S', 'Area before', { min: 0, max: 100000, step: 0.01 }),
+      V('T', 'T', 'Area after', { min: 0, max: 2000000000, step: 0.01 }),
+      { ...entry('p', 'p', 'a + b', 200), derived: true, hidden: true },
+      { ...entry('q', 'q', 'c + d', 200), derived: true, hidden: true },
+    ],
+    ...rels(
+      derive(
+        'D = ad − bc',
+        '{D} = {a} × {d} − {b} × {c}',
+        'D',
+        ['a', 'd', 'b', 'c'],
+        (v) => v.a! * v.d! - v.b! * v.c!,
+        '{a} × {d} − {b} × {c}',
+        'The area of the unit square’s image, with a sign for flipping.',
+      ),
+      rel(
+        'T = |D| × S',
+        '{T} = |{D}| × {S}',
+        ['T', 'D', 'S'],
+        (v) => v.T! - Math.abs(v.D!) * v.S!,
+        {
+          T: [
+            (v) => Math.abs(v.D!) * v.S!,
+            '|{D}| × {S}',
+            'Every unit square becomes a parallelogram of area |D|, so every area is multiplied by |D|.',
+          ],
+          S: [
+            (v) => div(v.T!, Math.abs(v.D!)),
+            '{T} ÷ |{D}|',
+            'Undo the stretch: divide the new area by |D|.',
+          ],
+        },
+      ),
+      hide(
+        derive(
+          'p = a + b',
+          '{p} = {a} + {b}',
+          'p',
+          ['a', 'b'],
+          (v) => v.a! + v.b!,
+          '{a} + {b}',
+          'The far corner of the parallelogram, to draw it.',
+        ),
+      ),
+      hide(
+        derive(
+          'q = c + d',
+          '{q} = {c} + {d}',
+          'q',
+          ['c', 'd'],
+          (v) => v.c! + v.d!,
+          '{c} + {d}',
+          'The far corner of the parallelogram, to draw it.',
+        ),
+      ),
+    ),
+    example: { a: 3, b: 1, c: 1, d: 2, D: 5, S: 4, T: 20, p: 4, q: 3 },
+    startWith: ['a', 'b', 'c', 'd', 'S'],
+    pictureLabels: ['D', 'S', 'T'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'a',
+      y: 'c',
+      polygon: [
+        ['a', 'c'],
+        ['p', 'q'],
+        ['b', 'd'],
+        [0, 0],
+      ],
+      extent: 6,
+      quadrants: 4,
+    },
+  },
+  {
+    id: 'm.12.matrix-transformations~compose',
+    title: 'Two turns in a row',
+    use: 'Use this for “Turn (4, 2) by 30° and then by 60°. Which single matrix does both?”',
+    assumptions: [
+      'Doing α and then β is the product R(β)R(α), the later move written on the left.',
+      'For two turns about the origin the product is one turn by γ = α + β.',
+      'For most other pairs of moves the order changes the answer.',
+    ],
+    variables: [
+      deg('a', 'α', 'First turn', -360, 360),
+      deg('b', 'β', 'Second turn', -360, 360),
+      deg('g', 'γ', 'Both turns', -720, 720, { derived: true }),
+      coord('x', 'x', 'x of the point'),
+      coord('y', 'y', 'y of the point'),
+      coord('X', 'x″', 'x of the final image', 1500),
+      coord('Y', 'y″', 'y of the final image', 1500),
+    ],
+    ...rels(
+      derive(
+        'γ = α + β',
+        '{g} = {a} + {b}',
+        'g',
+        ['a', 'b'],
+        (v) => v.a! + v.b!,
+        '{a} + {b}',
+        'R(β)R(α) = R(α + β): multiplying the two matrices adds the angles (the sum formulas).',
+      ),
+      rel(
+        'x″ = x cos γ − y sin γ',
+        '{X} = {x} × cos({g}°) − {y} × sin({g}°)',
+        ['X', 'x', 'y', 'g'],
+        (v) => v.X! - (v.x! * cosd(v.g!) - v.y! * sind(v.g!)),
+        {
+          X: [
+            (v) => v.x! * cosd(v.g!) - v.y! * sind(v.g!),
+            '{x} × cos({g}°) − {y} × sin({g}°)',
+            'The first row of R(γ), [cos γ, −sin γ], times the column (x, y).',
+          ],
+        },
+      ),
+      rel(
+        'y″ = x sin γ + y cos γ',
+        '{Y} = {x} × sin({g}°) + {y} × cos({g}°)',
+        ['Y', 'x', 'y', 'g'],
+        (v) => v.Y! - (v.x! * sind(v.g!) + v.y! * cosd(v.g!)),
+        {
+          Y: [
+            (v) => v.x! * sind(v.g!) + v.y! * cosd(v.g!),
+            '{x} × sin({g}°) + {y} × cos({g}°)',
+            'The second row of R(γ), [sin γ, cos γ], times the column (x, y).',
+          ],
+        },
+      ),
+    ),
+    example: { a: 30, b: 60, g: 90, x: 4, y: 2, X: -2, Y: 4 },
+    startWith: ['a', 'b', 'x', 'y'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['x', 'y'],
+        [0, 0],
+      ],
+      move: 'rotate',
+      angle: 'a',
+      center: [0, 0],
+      then: { move: 'rotate', angle: 'b', center: [0, 0] },
+      image2: { x: 'X', y: 'Y' },
+      extent: 6,
+      quadrants: 4,
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
   ...MATH_12_VECTORS,
+  ...MATH_12_VECTORS_3D,
   ...MATH_12_POLAR,
   ...MATH_12_PARAMETRIC,
   ...MATH_12_MATRICES,
+  ...MATH_12_TRANSFORMS,
   ...MATH_12_LIMITS,
   ...MATH_12_CONICS,
   ...MATH_12_STATS,

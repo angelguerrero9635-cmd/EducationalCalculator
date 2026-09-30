@@ -5,6 +5,47 @@
 import type { LayoutDef } from './types';
 
 export const MATH_12_LAYOUTS: LayoutDef[] = [
+  // ── Matrices as transformations (N-VM.12) ──
+  {
+    kind: 'sort',
+    id: 'm.12.matrix-transformations~identify',
+    title: 'Which move does the matrix make?',
+    use: 'Use this for “Describe the transformation [[0, 1], [1, 0]] makes.”',
+    assumptions: [
+      'The first column is where (1, 0) lands and the second where (0, 1) lands: sketch the two.',
+      'A turn keeps lengths and the order of the corners; a reflection keeps lengths but flips the order.',
+      'A dilation [[k, 0], [0, k]] keeps every direction and multiplies every length by k.',
+    ],
+    question: 'Where do (1, 0) and (0, 1) land: turned, flipped, or stretched?',
+    bins: [
+      {
+        id: 'turn',
+        label: 'Rotation',
+        why: 'Both columns are turned by the same angle, and D = 1.',
+      },
+      {
+        id: 'flip',
+        label: 'Reflection',
+        why: 'The columns keep length 1 but swap their turning order, and D = −1.',
+      },
+      {
+        id: 'grow',
+        label: 'Dilation',
+        why: 'Both columns keep their direction and are multiplied by the same k.',
+      },
+    ],
+    cards: [
+      { label: '[[0, −1], [1, 0]]', bin: 'turn' },
+      { label: '[[−1, 0], [0, −1]]', bin: 'turn' },
+      { label: '[[0, 1], [−1, 0]]', bin: 'turn' },
+      { label: '[[1, 0], [0, −1]]', bin: 'flip' },
+      { label: '[[−1, 0], [0, 1]]', bin: 'flip' },
+      { label: '[[0, 1], [1, 0]]', bin: 'flip' },
+      { label: '[[2, 0], [0, 2]]', bin: 'grow' },
+      { label: '[[0.5, 0], [0, 0.5]]', bin: 'grow' },
+    ],
+  },
+
   // ── Conic sections (G-GPE.3) ──
   {
     kind: 'sort',
