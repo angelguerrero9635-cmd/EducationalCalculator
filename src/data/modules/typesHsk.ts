@@ -164,9 +164,14 @@ export interface CircularMotionSpec {
   /** Gravity: the two masses (kg) and the distance between their centers (m). */
   masses?: [NumOrVar, NumOrVar];
   distance?: NumOrVar;
-  /** Kepler: the semi-major axis in AU and the eccentricity (0 to 0.9). */
+  /** Kepler: the semi-major axis in AU and the eccentricity (0 to 0.97, Halley's Comet). */
   semiMajor?: NumOrVar;
   eccentricity?: NumOrVar;
+  /**
+   * Kepler (H110): the star's mass in Suns (M☉), for a planet round another star: the caption
+   * works a³ = M × T² in place of T² = a³, and the labels say star, closest and farthest.
+   */
+  starMass?: NumOrVar;
   /** Kepler: the closest and farthest distances from the sun (AU). */
   perihelion?: string;
   aphelion?: string;
@@ -563,6 +568,7 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.distance,
         r.semiMajor,
         r.eccentricity,
+        r.starMass,
         r.perihelion,
         r.aphelion,
         r.central,

@@ -110,6 +110,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted   | Earth science stars (H79)           |
 | `streamChannel`    | a channel to scale, w × d, and the water passing in 1 s: Q = A × v    | Earth science streams (H103)        |
 | `reserve`          | a reserve as a bar cut into each year's use; empty after Q ÷ r years  | Earth science resources (H103)      |
+| `geologicClock`    | Earth's history as one day: the event at t, the time since shaded     | Earth science history (H110)        |
+| `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours   | Earth science history (H110)        |
+| `transit`          | a planet crossing its star to scale; the light curve dipping by δ     | Earth and space exoplanets (H110)   |
+| `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T      | Earth and space exoplanets (H110)   |
+| `parallax`         | Earth in January and July, a near star shifting on far stars; p, d    | Earth and space stars (H110)        |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |
@@ -312,6 +317,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `atmosphereLayers` | `mode: 'balance'`, `albedo`, `sunlight`  | S ÷ 4 in, α reflected, F absorbed and sent out as σTₑ⁴; a thermometer (H103)  |
 | `rockLayers`       | `dating.sample.second: { name, share }`  | a parent that decays two ways: the decayed atoms split by share (K-40) (H103) |
 | `hrDiagram`        | `mass`, `luminosity?`, `lifetime?`       | a main-sequence star placed by mass, L = M^3.5; 3, 10, 30 M☉ marked (H103)    |
+| `circularMotion`   | kepler `starMass`                        | round another star: a³ = M × T², star, closest and farthest labels (H110)     |
+| `circularMotion`   | kepler `eccentricity` to 0.97            | long comet ellipses such as Halley's Comet (e = 0.967) (H110)                 |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

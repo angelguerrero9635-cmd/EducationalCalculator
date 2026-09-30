@@ -93,14 +93,74 @@ const R = 136;
  * halves (filled where that wave arrives, hollow where it doesn't).
  */
 function Section({ spec, calc }: { spec: EarthSectionSpec; calc: Calculator }) {
-  const c = usePalette();
   const { rep, num, known } = useVals(calc);
-  const ids = usePaintIds('mantle', 'outer', 'inner');
   const start = useRef(0);
   const id = typeof spec.distance === 'string' ? spec.distance : undefined;
   const has = spec.distance !== undefined;
   const delta = Math.max(0, Math.min(180, num(spec.distance, 60)));
   const on = has && known(spec.distance);
+  const km = Math.round(delta * KM_PER_DEGREE);
+  return (
+    <View>
+      <SectionDrawing
+        delta={delta}
+        has={has}
+        on={on}
+        overlay={(k, sx, sy) =>
+          id && !spec.fixed ? (
+            <DragHandle
+              x={sx * k}
+              y={sy * k}
+              label="the station's distance"
+              onStart={() => {
+                start.current = delta;
+              }}
+              onMove={(dx, dy) => {
+                const bx = sx + dx / k;
+                const by = sy + dy / k;
+                let deg = (Math.atan2(CX - bx, CY - by) * 180) / Math.PI;
+                if (deg < 0) deg = bx > CX ? 0 : 180;
+                calc.set({ [id]: rep.snapTo(id, Math.min(180, deg)) }, rep.slide(id));
+              }}
+            />
+          ) : null
+        }
+      />
+      <Caption>
+        {!has
+          ? `P waves pass through solids and liquids; S waves only through solids, so they stop at the liquid outer core.`
+          : !on
+            ? 'Type the station’s distance to place it.'
+            : `A station ${formatNumber(round(delta, 1))}° from the focus is about ${formatNumber(km)} km away along the surface. ${
+                delta < SHADOW.pFrom
+                  ? 'P and S waves both reach it directly through the mantle.'
+                  : delta < SHADOW.pTo
+                    ? 'No direct P or S waves reach it: it is in the P-wave shadow zone, and S waves cannot cross the liquid outer core.'
+                    : 'P waves reach it after bending through the core; S waves cannot cross the liquid outer core.'
+              }`}
+      </Caption>
+    </View>
+  );
+}
+
+/**
+ * The cross-section itself, for a station `delta` degrees from the focus: the calculator picture
+ * above and the `earthLayers` explore figure (H110) draw it. `has` draws the stations (faded
+ * unless `on`); `overlay` puts a drag handle over the station on the P side at (sx, sy).
+ */
+export function SectionDrawing({
+  delta,
+  has,
+  on,
+  overlay,
+}: {
+  delta: number;
+  has: boolean;
+  on: boolean;
+  overlay?: (k: number, sx: number, sy: number) => ReactNode;
+}) {
+  const c = usePalette();
+  const ids = usePaintIds('mantle', 'outer', 'inner');
   const rc = EARTH.core / EARTH.radius;
   const ri = EARTH.inner / EARTH.radius;
   const P = ([x, y]: [number, number]) => [CX + x * R, CY - y * R] as const;
@@ -161,217 +221,185 @@ function Section({ spec, calc }: { spec: EarthSectionSpec; calc: Calculator }) {
     ['outer core (liquid)', c.earthOuterCore],
     ['inner core (solid)', c.earthInnerCore],
   ];
-  const km = Math.round(delta * KM_PER_DEGREE);
   return (
-    <View>
-      <Canvas aspect={BH / BW}>
-        {({ w, h }) => {
-          const k = w / BW;
-          const [sx, sy] = onSurface(delta, -1, R + 2);
-          return (
-            <>
-              <Svg width={w} height={h}>
-                <Defs>
-                  {(
-                    [
-                      [ids.mantle, c.earthMantle],
-                      [ids.outer, c.earthOuterCore],
-                      [ids.inner, c.earthInnerCore],
-                    ] as const
-                  ).map(([gid, col]) => (
-                    <RadialGradient key={gid} id={gid} cx="0.5" cy="0.5" r="0.5">
-                      <Stop offset="0" stopColor={c.shine} stopOpacity={0.25 * c.sheen} />
-                      <Stop offset="0.6" stopColor={col} stopOpacity={0} />
-                      <Stop offset="1" stopColor={c.shade} stopOpacity={0.12} />
-                    </RadialGradient>
-                  ))}
-                </Defs>
-                <G transform={`scale(${k})`}>
-                  {/* Layers: crust (drawn thicker than its 35 km to be seen), mantle, cores. */}
-                  <Circle cx={CX} cy={CY} r={R} fill={c.earthCrust} />
-                  <Circle cx={CX} cy={CY} r={R - 3} fill={c.earthMantle} />
-                  <Circle cx={CX} cy={CY} r={R - 3} fill={`url(#${ids.mantle})`} />
-                  <Circle cx={CX} cy={CY} r={rc * R} fill={c.earthOuterCore} />
-                  <Circle cx={CX} cy={CY} r={rc * R} fill={`url(#${ids.outer})`} />
-                  <Circle cx={CX} cy={CY} r={ri * R} fill={c.earthInnerCore} />
-                  <Circle cx={CX} cy={CY} r={R} fill="none" stroke={c.chartInk} strokeWidth={1.2} />
-                  {[rc, ri].map((r) => (
-                    <Circle
-                      key={r}
-                      cx={CX}
-                      cy={CY}
-                      r={r * R}
-                      fill="none"
-                      stroke={c.chartInk}
-                      strokeWidth={0.8}
-                      strokeOpacity={0.6}
-                    />
-                  ))}
-                  {/* P waves, left: direct paths to 104°, through the core to 140°–180°. */}
-                  {DIRECT.map((d) => (
-                    <Path
-                      key={`p${d}`}
-                      d={polyline(mantleRay(d, -1))}
-                      stroke={c.quakeP}
-                      strokeWidth={1.6}
-                      fill="none"
-                    />
-                  ))}
-                  {[SHADOW.pTo, 158, 180].map((d) => (
-                    <Path
-                      key={`pk${d}`}
-                      d={polyline(coreRay(d, -1))}
-                      stroke={c.quakeP}
-                      strokeWidth={1.6}
-                      fill="none"
-                      strokeLinejoin="round"
-                    />
-                  ))}
-                  {/* S waves, right: direct paths to 104°; the ones sent deeper stop at the core. */}
-                  {DIRECT.map((d) => (
-                    <Path
-                      key={`s${d}`}
-                      d={polyline(mantleRay(d, 1))}
-                      stroke={c.quakeS}
-                      strokeWidth={1.6}
-                      strokeDasharray="6 3"
-                      fill="none"
-                    />
-                  ))}
-                  {[12, 26, 40].map((a) => {
-                    const r = (a * Math.PI) / 180;
-                    const [ex, ey] = P([rc * Math.sin(r), rc * Math.cos(r)]);
-                    const [nx, ny] = [Math.sin(r), -Math.cos(r)];
-                    return (
-                      <G key={`sc${a}`}>
-                        <Path
-                          d={`M ${CX} ${CY - R} L ${ex} ${ey}`}
-                          stroke={c.quakeS}
-                          strokeWidth={1.6}
-                          strokeDasharray="6 3"
-                        />
-                        <Path
-                          d={`M ${ex - ny * 5} ${ey + nx * 5} L ${ex + ny * 5} ${ey - nx * 5}`}
-                          stroke={c.quakeS}
-                          strokeWidth={2.4}
-                        />
-                      </G>
-                    );
-                  })}
-                  {/* The shadow zones, as bands outside the surface. */}
-                  <Path
-                    d={band(SHADOW.pFrom, SHADOW.pTo, -1)}
-                    stroke={c.quakeP}
-                    strokeWidth={6}
-                    strokeOpacity={0.55}
+    <Canvas aspect={BH / BW}>
+      {({ w, h }) => {
+        const k = w / BW;
+        const [sx, sy] = onSurface(delta, -1, R + 2);
+        return (
+          <>
+            <Svg width={w} height={h}>
+              <Defs>
+                {(
+                  [
+                    [ids.mantle, c.earthMantle],
+                    [ids.outer, c.earthOuterCore],
+                    [ids.inner, c.earthInnerCore],
+                  ] as const
+                ).map(([gid, col]) => (
+                  <RadialGradient key={gid} id={gid} cx="0.5" cy="0.5" r="0.5">
+                    <Stop offset="0" stopColor={c.shine} stopOpacity={0.25 * c.sheen} />
+                    <Stop offset="0.6" stopColor={col} stopOpacity={0} />
+                    <Stop offset="1" stopColor={c.shade} stopOpacity={0.12} />
+                  </RadialGradient>
+                ))}
+              </Defs>
+              <G transform={`scale(${k})`}>
+                {/* Layers: crust (drawn thicker than its 35 km to be seen), mantle, cores. */}
+                <Circle cx={CX} cy={CY} r={R} fill={c.earthCrust} />
+                <Circle cx={CX} cy={CY} r={R - 3} fill={c.earthMantle} />
+                <Circle cx={CX} cy={CY} r={R - 3} fill={`url(#${ids.mantle})`} />
+                <Circle cx={CX} cy={CY} r={rc * R} fill={c.earthOuterCore} />
+                <Circle cx={CX} cy={CY} r={rc * R} fill={`url(#${ids.outer})`} />
+                <Circle cx={CX} cy={CY} r={ri * R} fill={c.earthInnerCore} />
+                <Circle cx={CX} cy={CY} r={R} fill="none" stroke={c.chartInk} strokeWidth={1.2} />
+                {[rc, ri].map((r) => (
+                  <Circle
+                    key={r}
+                    cx={CX}
+                    cy={CY}
+                    r={r * R}
                     fill="none"
-                  />
-                  <Path
-                    d={band(SHADOW.sFrom, 180, 1)}
-                    stroke={c.quakeS}
-                    strokeWidth={6}
-                    strokeOpacity={0.55}
-                    fill="none"
-                  />
-                  {degLabel(SHADOW.pFrom, -1)}
-                  {degLabel(SHADOW.pTo, -1)}
-                  {degLabel(SHADOW.sFrom, 1)}
-                  {/* The focus, at the top. */}
-                  <Path
-                    d={star(CX, CY - R, 9)}
-                    fill={c.chartSecond}
                     stroke={c.chartInk}
-                    strokeWidth={1}
+                    strokeWidth={0.8}
+                    strokeOpacity={0.6}
                   />
-                  <ChartText x={CX} y={CY - R - 14} fontSize={chart.label} textAnchor="middle">
-                    focus
-                  </ChartText>
-                  <ChartText x={8} y={20} fontSize={chart.value} fontWeight="700" fill={c.quakeP}>
-                    P waves
-                  </ChartText>
-                  <ChartText
-                    x={BW - 8}
-                    y={20}
-                    fontSize={chart.value}
-                    fontWeight="700"
-                    textAnchor="end"
-                    fill={c.quakeS}
-                  >
-                    S waves
-                  </ChartText>
-                  <ChartText x={8} y={CY + R + 26} fontSize={chart.label} fill={c.quakeP}>
-                    {`P shadow zone ${SHADOW.pFrom}°–${SHADOW.pTo}°`}
-                  </ChartText>
-                  <ChartText
-                    x={BW - 8}
-                    y={CY + R + 26}
-                    fontSize={chart.label}
-                    textAnchor="end"
-                    fill={c.quakeS}
-                  >
-                    {`no S waves past ${SHADOW.sFrom}°`}
-                  </ChartText>
-                  {has ? station(-1, waves.p, c.quakeP) : null}
-                  {has ? station(1, waves.s, c.quakeS) : null}
-                  {/* The key to the layers. */}
-                  {key.map(([name, col], i) => {
-                    const x = i % 2 ? 190 : 12;
-                    const y = CY + R + 48 + Math.floor(i / 2) * 20;
-                    return (
-                      <G key={name}>
-                        <Rect
-                          x={x}
-                          y={y - 10}
-                          width={12}
-                          height={12}
-                          rx={3}
-                          fill={col}
-                          stroke={c.chartInk}
-                          strokeWidth={0.8}
-                        />
-                        <ChartText x={x + 18} y={y} fontSize={chart.label}>
-                          {name}
-                        </ChartText>
-                      </G>
-                    );
-                  })}
-                </G>
-              </Svg>
-              {id && !spec.fixed ? (
-                <DragHandle
-                  x={sx * k}
-                  y={sy * k}
-                  label="the station's distance"
-                  onStart={() => {
-                    start.current = delta;
-                  }}
-                  onMove={(dx, dy) => {
-                    const bx = sx + dx / k;
-                    const by = sy + dy / k;
-                    let deg = (Math.atan2(CX - bx, CY - by) * 180) / Math.PI;
-                    if (deg < 0) deg = bx > CX ? 0 : 180;
-                    calc.set({ [id]: rep.snapTo(id, Math.min(180, deg)) }, rep.slide(id));
-                  }}
+                ))}
+                {/* P waves, left: direct paths to 104°, through the core to 140°–180°. */}
+                {DIRECT.map((d) => (
+                  <Path
+                    key={`p${d}`}
+                    d={polyline(mantleRay(d, -1))}
+                    stroke={c.quakeP}
+                    strokeWidth={1.6}
+                    fill="none"
+                  />
+                ))}
+                {[SHADOW.pTo, 158, 180].map((d) => (
+                  <Path
+                    key={`pk${d}`}
+                    d={polyline(coreRay(d, -1))}
+                    stroke={c.quakeP}
+                    strokeWidth={1.6}
+                    fill="none"
+                    strokeLinejoin="round"
+                  />
+                ))}
+                {/* S waves, right: direct paths to 104°; the ones sent deeper stop at the core. */}
+                {DIRECT.map((d) => (
+                  <Path
+                    key={`s${d}`}
+                    d={polyline(mantleRay(d, 1))}
+                    stroke={c.quakeS}
+                    strokeWidth={1.6}
+                    strokeDasharray="6 3"
+                    fill="none"
+                  />
+                ))}
+                {[12, 26, 40].map((a) => {
+                  const r = (a * Math.PI) / 180;
+                  const [ex, ey] = P([rc * Math.sin(r), rc * Math.cos(r)]);
+                  const [nx, ny] = [Math.sin(r), -Math.cos(r)];
+                  return (
+                    <G key={`sc${a}`}>
+                      <Path
+                        d={`M ${CX} ${CY - R} L ${ex} ${ey}`}
+                        stroke={c.quakeS}
+                        strokeWidth={1.6}
+                        strokeDasharray="6 3"
+                      />
+                      <Path
+                        d={`M ${ex - ny * 5} ${ey + nx * 5} L ${ex + ny * 5} ${ey - nx * 5}`}
+                        stroke={c.quakeS}
+                        strokeWidth={2.4}
+                      />
+                    </G>
+                  );
+                })}
+                {/* The shadow zones, as bands outside the surface. */}
+                <Path
+                  d={band(SHADOW.pFrom, SHADOW.pTo, -1)}
+                  stroke={c.quakeP}
+                  strokeWidth={6}
+                  strokeOpacity={0.55}
+                  fill="none"
                 />
-              ) : null}
-            </>
-          );
-        }}
-      </Canvas>
-      <Caption>
-        {!has
-          ? `P waves pass through solids and liquids; S waves only through solids, so they stop at the liquid outer core.`
-          : !on
-            ? 'Type the station’s distance to place it.'
-            : `A station ${formatNumber(round(delta, 1))}° from the focus is about ${formatNumber(km)} km away along the surface. ${
-                delta < SHADOW.pFrom
-                  ? 'P and S waves both reach it directly through the mantle.'
-                  : delta < SHADOW.pTo
-                    ? 'No direct P or S waves reach it: it is in the P-wave shadow zone, and S waves cannot cross the liquid outer core.'
-                    : 'P waves reach it after bending through the core; S waves cannot cross the liquid outer core.'
-              }`}
-      </Caption>
-    </View>
+                <Path
+                  d={band(SHADOW.sFrom, 180, 1)}
+                  stroke={c.quakeS}
+                  strokeWidth={6}
+                  strokeOpacity={0.55}
+                  fill="none"
+                />
+                {degLabel(SHADOW.pFrom, -1)}
+                {degLabel(SHADOW.pTo, -1)}
+                {degLabel(SHADOW.sFrom, 1)}
+                {/* The focus, at the top. */}
+                <Path
+                  d={star(CX, CY - R, 9)}
+                  fill={c.chartSecond}
+                  stroke={c.chartInk}
+                  strokeWidth={1}
+                />
+                <ChartText x={CX} y={CY - R - 14} fontSize={chart.label} textAnchor="middle">
+                  focus
+                </ChartText>
+                <ChartText x={8} y={20} fontSize={chart.value} fontWeight="700" fill={c.quakeP}>
+                  P waves
+                </ChartText>
+                <ChartText
+                  x={BW - 8}
+                  y={20}
+                  fontSize={chart.value}
+                  fontWeight="700"
+                  textAnchor="end"
+                  fill={c.quakeS}
+                >
+                  S waves
+                </ChartText>
+                <ChartText x={8} y={CY + R + 26} fontSize={chart.label} fill={c.quakeP}>
+                  {`P shadow zone ${SHADOW.pFrom}°–${SHADOW.pTo}°`}
+                </ChartText>
+                <ChartText
+                  x={BW - 8}
+                  y={CY + R + 26}
+                  fontSize={chart.label}
+                  textAnchor="end"
+                  fill={c.quakeS}
+                >
+                  {`no S waves past ${SHADOW.sFrom}°`}
+                </ChartText>
+                {has ? station(-1, waves.p, c.quakeP) : null}
+                {has ? station(1, waves.s, c.quakeS) : null}
+                {/* The key to the layers. */}
+                {key.map(([name, col], i) => {
+                  const x = i % 2 ? 190 : 12;
+                  const y = CY + R + 48 + Math.floor(i / 2) * 20;
+                  return (
+                    <G key={name}>
+                      <Rect
+                        x={x}
+                        y={y - 10}
+                        width={12}
+                        height={12}
+                        rx={3}
+                        fill={col}
+                        stroke={c.chartInk}
+                        strokeWidth={0.8}
+                      />
+                      <ChartText x={x + 18} y={y} fontSize={chart.label}>
+                        {name}
+                      </ChartText>
+                    </G>
+                  );
+                })}
+              </G>
+            </Svg>
+            {overlay?.(k, sx, sy)}
+          </>
+        );
+      }}
+    </Canvas>
   );
 }
 

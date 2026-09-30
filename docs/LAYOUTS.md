@@ -102,6 +102,13 @@ and lights one lab strip, each of its lines joined up to the star, solid and rin
 star has a line within 1 nm, dashed where it doesn't, with "every line matches" or "2 of 7
 lines match: not in the star".
 
+Earth and space, round 3 (HS group H3C, H110): `earthLayers` (`layouts/hs3cFigures.tsx`), Earth
+cut through an earthquake's focus as the calculator picture's `section` mode draws it (layers to
+scale, P paths left, S paths right, the shadow zones); `earthSection: { distance }` puts a
+station that many degrees from the focus on both halves, filled where the wave arrives and
+hollow where it doesn't. The layout check keeps a scene's lines from saying S waves arrive past
+104°.
+
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat

@@ -55,6 +55,7 @@ import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
 import { barFlowIssues, hs2eIssues, percentSecondIssues, reactionManyIssues } from './picturesHs2e';
 import { hs2fIssues } from './picturesHs2f';
+import { hs3cIssues } from './picturesHs3c';
 import { hs2gIssues } from './picturesHs2g';
 import { hs2hIssues } from './picturesHs2h';
 import * as hsk from './picturesHsk';
@@ -2182,6 +2183,13 @@ export function repIssues(
     case 'streamChannel':
     case 'reserve':
       out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'geologicClock':
+    case 'coralSection':
+    case 'transit':
+    case 'habitableZone':
+    case 'parallax':
+      out.push(...hs3cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'projectile':
     case 'induction':

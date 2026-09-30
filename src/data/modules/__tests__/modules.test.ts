@@ -28,6 +28,7 @@ import { hsjSpecVars, solutionVars } from '../typesHsj';
 import { chemDiagramVars } from '../typesHs2d';
 import { hslSpecVars } from '../typesHsl';
 import { hs2fSpecVars } from '../typesHs2f';
+import { hs3cSpecVars } from '../typesHs3c';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { hs2cSpecVars } from '../typesHs2c';
 import { isStandIn, pages } from '../harness/scope';
@@ -554,6 +555,12 @@ function representationVars(r: Representation): string[] {
     case 'streamChannel':
     case 'reserve':
       return hs2fSpecVars(r);
+    case 'geologicClock':
+    case 'coralSection':
+    case 'transit':
+    case 'habitableZone':
+    case 'parallax':
+      return hs3cSpecVars(r);
     case 'projectile':
     case 'induction':
     case 'charges':

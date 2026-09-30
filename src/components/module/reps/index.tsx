@@ -164,6 +164,7 @@ import { ChemDiagram } from './ChemDiagram';
 import { ReactionMany } from './ReactionMany';
 import { HslPicture } from './HslPicture';
 import { Hs2fPicture } from './Hs2fPicture';
+import { Hs3cPicture } from './Hs3cPicture';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { Hs2cView } from './Hs2cView';
@@ -288,6 +289,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'streamChannel':
     case 'reserve':
       return <Hs2fPicture spec={spec} calc={calc} />;
+    case 'geologicClock':
+    case 'coralSection':
+    case 'transit':
+    case 'habitableZone':
+    case 'parallax':
+      return <Hs3cPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

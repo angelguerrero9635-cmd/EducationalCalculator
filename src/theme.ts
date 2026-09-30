@@ -344,6 +344,15 @@ const light = {
   starRed: '#F0643C',
   nebulaPink: '#E48BC0',
   nebulaBlue: '#7FB3E8',
+  /** Earth and space round 3 (H110): a fossil coral's wall, its daily ridges and yearly
+   * grooves; a planet's silhouette in transit; the habitable zone, too hot inside, too cold out. */
+  coralFossil: '#DCCBA8',
+  coralRidge: '#9A8460',
+  coralGroove: '#6E5A3C',
+  transitPlanet: '#15171F',
+  zoneHabitable: '#5DBB6E',
+  zoneHot: '#F08A5D',
+  zoneCold: '#86B4E6',
   /** Grades 9–12 group D: sine and cosine legs on the unit circle, algebra tiles (positive and
    * negative), and a resultant vector. */
   unitCircleSine: '#D9480F',
@@ -699,6 +708,13 @@ const dark: Palette = {
   starRed: '#F0643C',
   nebulaPink: '#C66EA2',
   nebulaBlue: '#5E93CC',
+  coralFossil: '#9E8D6C',
+  coralRidge: '#5E4F37',
+  coralGroove: '#3F3222',
+  transitPlanet: '#05060A',
+  zoneHabitable: '#3F9150',
+  zoneHot: '#B05A36',
+  zoneCold: '#4F7DB0',
   unitCircleSine: '#FF8A5C',
   unitCircleCosine: '#3CCFAE',
   tilePositive: '#2F5F86',
