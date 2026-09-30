@@ -38,6 +38,7 @@ pages in `docs/build/<plan>.md`. Status: open, done.
 | E26 | The harness's `affineOf` treats a pass/fail limit that fails every probe as a constant (then every input looks infeasible).                                  | m.12 hypothesis-testing~two-proportion                                                                                  | open                      |
 | E27 | A sum that nearly cancels carries enough digits that the printed line evaluates to the answer.                                                               | s.11 optics~diverging, ~convex                                                                                          | open                      |
 | E28 | A named constant (G, k, h) in a rule line that the check line can evaluate.                                                                                  | s.11 circular-gravitation~gravitation, electrostatics                                                                   | open                      |
+| E29 | Typed values rounded to their step (d = 463.6 against z × σ = 463.601) are accepted as consistent: a tolerance of half the typed value's step.               | m.11 normal-distribution~outside                                                                                        | open                      |
 
 ## Pictures (pictures chat)
 

@@ -417,6 +417,8 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     // Natural logs from the exponential lessons: ln(x) and ln|x|.
     .replace(/ln\|([^|]*)\|/g, 'log(abs($1))')
     .replace(/ln\(/g, 'log(')
+    // A common log of any expression: log₁₀(|−9/2|).
+    .replace(/log₁₀\(/g, 'log10(')
     // Absolute value bars (Grade 6): |−4| is 4.
     .replace(/\|([^|]+)\|/g, 'abs($1)');
   // Long repeated sums are shortened: "2 + 2 + … (12 times)" is 2 × 12.
@@ -430,7 +432,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
       prev = s;
       s = s
         .replace(
-          /(?<!sqrt|cbrt|log|abs|sin|cos|tan|sind|cosd|tand|ceil|floor)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
+          /(?<!sqrt|cbrt|log|log10|abs|sin|cos|tan|sind|cosd|tand|ceil|floor)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
           ' $1 ',
         )
         .replace(/\s+/g, ' ')
@@ -493,14 +495,14 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   // won't parse "-(a) ** b" as written).
   s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
   const bare = s
-    .replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil|floor)\(/g, '(')
+    .replace(/(?:sqrt|cbrt|log10|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil|floor)\(/g, '(')
     .replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {
     const x = new Function(
       'clampRoots',
       'degrees',
-      `const { log, abs, cbrt, ceil, floor } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); ` +
+      `const { log, log10, abs, cbrt, ceil, floor } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); ` +
         `const D = Math.PI / 180; const sin = degrees ? (d) => Math.sin(d * D) : Math.sin, cos = degrees ? (d) => Math.cos(d * D) : Math.cos, tan = degrees ? (d) => Math.tan(d * D) : Math.tan; ` +
         `const sind = (d) => Math.sin(d * D), cosd = (d) => Math.cos(d * D), tand = (d) => Math.tan(d * D); ` +
         `const one = (x) => (clampRoots ? Math.max(-1, Math.min(1, x)) : x); const U = degrees ? D : 1; ` +

@@ -577,9 +577,9 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('b', 'b', 'Upper value', { min: -2000, max: 2000, step: 0.5 }),
       zVar('za', 'z-score of a', 'z₁'),
       zVar('zb', 'z-score of b', 'z₂'),
-      prob('P', 'P', 'Share between a and b'),
+      prob('P', 'P', 'Share between a and b', { min: 0.0001 }),
       W('N', 'N', 'Values in all', 1, 10000),
-      V('E', 'E', 'Expected count between a and b', { min: 0, max: 10000, step: 0.1 }),
+      V('E', 'E', 'Expected count between a and b', { min: 0.01, max: 10000, step: 0.1 }),
     ],
     rules: [
       limit(
@@ -652,7 +652,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('d', 'd', 'Distance from the mean', { min: 0.01, max: 5000, step: 0.1 }),
       V('lo', 'L', 'Lower cutoff', { min: -10000, max: 15000, step: 0.1 }),
       V('hi', 'U', 'Upper cutoff', { min: -10000, max: 15000, step: 0.1 }),
-      V('z', 'z', 'z-score of d', { min: 0, max: 3.5, step: 0.01 }),
+      V('z', 'z', 'z-score of d', { min: 0, max: 3, step: 0.01 }),
       prob('P', 'P', 'Share more than d from the mean'),
       W('N', 'N', 'Values in all', 1, 100000),
       V('E', 'E', 'Expected count outside', { min: 0, max: 100000, step: 0.1 }),
@@ -815,7 +815,17 @@ export const MATH_11_MODULES: ModuleDef[] = [
       zVar(),
       V('x', 'x', 'Value at the percentile', { min: -5000, max: 5000, step: 0.5 }),
     ],
-    rules: [leftArea('P', 'z'), zScore('z', 'x', 'm', 's')],
+    rules: [
+      leftArea('P', 'z'),
+      zScore('z', 'x', 'm', 's'),
+      limit(
+        'z = 0 → x = μ',
+        '{z} = 0 → {x} = {m}',
+        ['z', 'x', 'm'],
+        (v) => Math.abs(v.z!) > 1e-9 || Math.abs(v.x! - v.m!) < 1e-6,
+        'At the 50th percentile z = 0, so the value is the mean μ itself.',
+      ),
+    ],
     example: { m: 500, s: 100, P: 0.9, z: invPhi(0.9), x: 500 + 100 * invPhi(0.9) },
     startWith: ['m', 's', 'P'],
     representation: {
@@ -918,7 +928,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     variables: [
       W('n', 'n', 'Trials', 1, 40),
-      prob('p', 'p', 'Chance of success on each trial', { step: 0.01 }),
+      prob('p', 'p', 'Chance of success on each trial', { min: 0.01, max: 0.99, step: 0.01 }),
       W('k', 'k', 'Successes', 0, 40),
       V('C', 'C', 'Orders of k successes, C(n, k)', {
         integer: true,
@@ -927,7 +937,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
         derived: true,
       }),
       prob('P', 'P', 'Probability of exactly k successes, P(X = k)', { derived: true }),
-      V('E', 'E', 'Expected successes E(X)', { min: 0, max: 40, step: 0.01 }),
+      V('E', 'E', 'Expected successes E(X)', { min: 0.01, max: 40, step: 0.01 }),
       V('S', 'σ', 'Standard deviation', { min: 0, max: 10, step: 0.0001, derived: true }),
     ],
     rules: [
@@ -1884,7 +1894,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
             (v) =>
               v.r! > 0 && v.an! / v.a1! > 0
                 ? '1 + log₁₀({an} ÷ {a1}) ÷ log₁₀ {r}'
-                : '1 + log₁₀|{an} ÷ {a1}| ÷ log₁₀|{r}|',
+                : '1 + log₁₀(|{an} ÷ {a1}|) ÷ log₁₀(|{r}|)',
             'aₙ ÷ a₁ = rⁿ⁻¹, so n − 1 is the power of r that makes aₙ ÷ a₁: take logs.',
           ],
           ...never('a1', 'r'),
