@@ -26,6 +26,7 @@ import { CladogramFigure } from './cladogramFigure';
 import { NitrogenCycleFigure } from './nitrogenCycleFigure';
 import { FeedbackLoopFigure } from './feedbackLoopFigure';
 import { ImmuneStagesFigure } from './immuneStagesFigure';
+import { HslFigureView } from './hslFigures';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -103,6 +104,8 @@ function FigureView({
   onPart: (name: string) => void;
 }) {
   switch (figure.kind) {
+    case 'mohsScale':
+      return <HslFigureView figure={figure} scene={scene} />;
     case 'parts':
       if (figure.drawing) {
         return (

@@ -1056,12 +1056,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   ),
 
   // ── G. Earth and space ──
-  ask(
-    'H71',
-    'mineralIcons',
-    'Card icons of minerals in their materials (quartz, feldspar, mica, calcite, halite, pyrite, hematite) and the Mohs scale',
-    ['s.12.minerals-rocks'],
-  ),
+  {
+    ...ask(
+      'H71',
+      'mineralIcons',
+      'Card icons of minerals in their materials (quartz, feldspar, mica, calcite, halite, pyrite, hematite) and the Mohs scale',
+      ['s.12.minerals-rocks'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-minerals-rocks-luster',
+      'g.s12-minerals-rocks-cleavage',
+      'g.s12-minerals-rocks-mohs',
+    ],
+    notes:
+      'Drawn (group HL) as card icons and an explore figure. Card icons, each in its habit and luster: { kind: "icon", icon: "quartz" } (also "feldspar", "mica", "calcite", "halite", "pyrite", "hematite"); hematite shows its red-brown streak on a white plate, calcite doubles a line seen through it. Mohs scale (explore figure): { kind: "mohsScale" }, each scene mohs: { lit?: rank 1–10, between?: [low, high] (an unknown’s range, shaded; the tools sit at fingernail 2.5, copper coin 3.5, glass 5.5, steel file 6.5), absolute?: true (bars to absolute hardness, talc 1 … diamond 1500) }. Example scene: { label: "An unknown mineral", lines: [...], mohs: { between: [5.5, 6.5], lit: 6 } }. The harness checks lit is a rank and the range lies in 1–10.',
+  },
   ask(
     'H72',
     'earthLayers',
