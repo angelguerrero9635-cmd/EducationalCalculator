@@ -29,6 +29,7 @@ export function formatNumber(
     | 'repeating'
     | 'full'
     | 'sigFigs'
+    | 'figures'
   >,
 ): string {
   if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
@@ -63,8 +64,16 @@ export function formatNumber(
   // Very big or very small: scientific notation as it is written in class (3 × 10¹⁶), never
   // the calculator's 3e16.
   if (abs >= 1e7 || abs < 1e-4) return scientific(x);
-  // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals.
-  return minus(withSeparators(String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4)))));
+  // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals, or the
+  // variable's figures (277.8, never fewer than the whole digits: 12346).
+  const whole = Math.floor(Math.log10(abs)) + 1;
+  const text =
+    abs < 1
+      ? x.toPrecision(4)
+      : variable?.figures
+        ? x.toPrecision(Math.min(21, Math.max(variable.figures, whole)))
+        : x.toFixed(4);
+  return minus(withSeparators(String(Number(text))));
 }
 
 const minus = (s: string) => s.replace(/^-/, '−');

@@ -38,6 +38,11 @@ export interface VariableDef {
    * in scientific notation past 10⁷ or under 10⁻⁴ (1.20 × 10⁻⁵): a measurement's precision.
    */
   sigFigs?: number;
+  /**
+   * At most this many significant figures once the value is 1 or more, no zeros added: 277.8
+   * m/s, pH 3.602 (the 9–12 science pages set 4). Below 1 every value keeps 4 figures.
+   */
+  figures?: number;
   /** A worked-out value under half the step reads "< 0.0001" in its box (a p-value), never 0. */
   belowStep?: boolean;
   /**

@@ -30,21 +30,28 @@ import { GALLERY_MODULES } from './gallery';
 import { LAYOUTS, getLayout, type LayoutDef } from './layouts';
 import { registerLetterPages } from './grade';
 import type { ModuleDef } from './types';
+import type { VariableDef } from '@/engine/types';
 
 export type { ModuleDef, Representation } from './types';
 
 /** Grades 9–12 write a fraction past 1 as an improper fraction (11/5), as Algebra 1 on does. */
-const highSchool = (modules: readonly ModuleDef[]): ModuleDef[] =>
-  modules.map((m) =>
-    m.variables.some((v) => v.fraction && v.improper === undefined)
+const highSchool = (modules: readonly ModuleDef[], science = false): ModuleDef[] =>
+  modules.map((m) => {
+    const improper = (v: VariableDef) => v.fraction && v.improper === undefined;
+    // Science values show 4 significant figures (277.8 m/s, pH 3.602), not 4 decimals.
+    const figures = (v: VariableDef) =>
+      science && v.figures === undefined && !v.sigFigs && !v.integer;
+    return m.variables.some((v) => improper(v) || figures(v))
       ? {
           ...m,
-          variables: m.variables.map((v) =>
-            v.fraction && v.improper === undefined ? { ...v, improper: true } : v,
-          ),
+          variables: m.variables.map((v) => ({
+            ...v,
+            ...(improper(v) ? { improper: true } : {}),
+            ...(figures(v) ? { figures: 4 } : {}),
+          })),
         }
-      : m,
-  );
+      : m;
+  });
 
 export const MODULES: readonly ModuleDef[] = [
   ...MATH_K_MODULES,
@@ -69,10 +76,10 @@ export const MODULES: readonly ModuleDef[] = [
   ...highSchool(MATH_10_MODULES),
   ...highSchool(MATH_11_MODULES),
   ...highSchool(MATH_12_MODULES),
-  ...highSchool(SCIENCE_9_MODULES),
-  ...highSchool(SCIENCE_10_MODULES),
-  ...highSchool(SCIENCE_11_MODULES),
-  ...highSchool(SCIENCE_12_MODULES),
+  ...highSchool(SCIENCE_9_MODULES, true),
+  ...highSchool(SCIENCE_10_MODULES, true),
+  ...highSchool(SCIENCE_11_MODULES, true),
+  ...highSchool(SCIENCE_12_MODULES, true),
   ...PILOT_MODULES,
   ...COLLEGE_MODULES,
 ];

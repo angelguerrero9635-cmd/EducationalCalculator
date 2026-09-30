@@ -5,6 +5,40 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grades 9–12 follow-up: the shared engine needs
+
+The 21 added Grade 9–12 skills had their own lesson review (math: 13 errors, 29 improvements;
+science: 15 errors, about 30 improvements), fixed by one fixer per subject. Then the shared
+needs (`docs/HS_NEEDS.md`, E20–E29) were worked through:
+
+- **A rule that informs** (E20). A relation's `explain` gives the hint line when the values leave
+  nothing to find ("Both sides are the same: every number is a solution"), instead of "Type one
+  more number".
+- **US-only pages** (E25). `unitSystems: ['us']` offers no metric menu, and a page asked for
+  metric falls back to US.
+- **The harness's limits** (E26). `affineOf` no longer reads a limit that fails every probe as a
+  constant.
+- **Rounded typed values agree** (E29, part). A typed value within half its box's step of the
+  worked-out value is consistent with it (d = 463.6 against 463.601). A rounding that runs
+  through several values still conflicts.
+- **Significant figures.** A tie rounds up (4.35 → 4.4), and a value with more whole digits than
+  figures goes to scientific notation (1234 at 2 → 1.2 × 10³).
+- **Working lines through functions** (E23). `simplify.ts` works sin, cos and tan of a degree
+  angle as a stage when the value is exact (98 − 50 × sin(30°) → 98 − 25 → 73). A chain that
+  stops before a value needing rounding keeps its last line (√(24.5/0.25) → √98), which the
+  caller used to drop as if it were the answer.
+- **Working lines as written.** Whole-number exponents are raised (2⁶, 1.05²). Each bracket group
+  at the deepest level advances its own stage, so a quotient's top and bottom are worked in the
+  same lines ((2⁶ − 1) ÷ (2 − 1) → (64 − 1) ÷ 1). A signed number in brackets, (−100), is a
+  number, not a stage.
+- **p-values.** A variable can set `belowStep`: a worked-out value under half its step reads
+  "< 0.0001" in its box. The m.12 p-values set it, so a tiny p-value no longer shows 0.
+- **Named constants** (E28). No change: every page writes its constant as a number in the rule
+  line (6.674 × 10⁻¹¹, 8.99 × 10⁹), which the check line evaluates.
+- **Still open:** circular fills after a clear (E21), exact trig and radical answers (E22),
+  4 significant figures on science pages (E24), digits kept through a near-cancelling sum
+  (E27), a rounding that runs through several values (E29).
+
 ## Grades 9–12 lesson review: fractions, powers, names and reasons
 
 Eight lesson reviews (one per grade and subject) found about 110 errors and 230 improvements;
@@ -40,7 +74,6 @@ one fixer per section applied them. What the engine could have prevented is now 
   - Exact trig and radical answers, and complex roots in polynomial answers.
   - `functionGraph` following the unit menu.
   - `affineOf` taking a limit that fails every probe as a constant.
-  - Chains that stop at function values (sin, √).
 
 ## Grades 7–8 review: exact steps, drags that keep typed numbers, pages that fit
 

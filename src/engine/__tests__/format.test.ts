@@ -43,3 +43,13 @@ describe('a worked-out value below its step', () => {
     expect(belowStep(0, formatNumber(0), { step: 0.0001 })).toBe('0');
   });
 });
+
+describe('figures', () => {
+  it('shows at most that many significant figures from 1 up', () => {
+    expect(formatNumber(277.7778, { figures: 4 })).toBe('277.8');
+    expect(formatNumber(3.60206, { figures: 4 })).toBe('3.602');
+    expect(formatNumber(12345.678, { figures: 4 })).toBe('12,346');
+    expect(formatNumber(2.5, { figures: 4 })).toBe('2.5');
+    expect(formatNumber(0.0012347, { figures: 4 })).toBe('0.001235');
+  });
+});
