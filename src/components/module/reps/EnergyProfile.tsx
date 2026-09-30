@@ -23,7 +23,7 @@ import { Deepen, Metal, Sheen, TopLight, url, usePaintIds } from './paint';
 
 type Rep = ReturnType<typeof useRep>;
 type Read = { value: number; known: boolean; text: string; id?: string };
-type Profile = Exclude<EnergyProfileSpec, { mode: 'calorimeter' }>;
+type Profile = Exclude<EnergyProfileSpec, { mode: 'calorimeter' | 'ladder' }>;
 type Calorimeter = Extract<EnergyProfileSpec, { mode: 'calorimeter' }>;
 
 const readOf =
@@ -37,7 +37,13 @@ const readOf =
 const labelOf = (rep: Rep, r: Read, symbol: string, unit: string) =>
   r.id ? rep.label(r.id) : `${symbol} = ${r.text} ${unit}`;
 
-export function EnergyProfile({ spec, calc }: { spec: EnergyProfileSpec; calc: Calculator }) {
+export function EnergyProfile({
+  spec,
+  calc,
+}: {
+  spec: Exclude<EnergyProfileSpec, { mode: 'ladder' }>;
+  calc: Calculator;
+}) {
   const rep = useRep(calc);
   return spec.mode === 'calorimeter' ? (
     <CalorimeterView spec={spec} rep={rep} />

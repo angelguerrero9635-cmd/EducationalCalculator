@@ -48,6 +48,7 @@ import {
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
+import { chemHs2dIssues, filledChem, moleMapHs2dIssues } from './picturesHs2d';
 import { hslIssues } from './picturesHsl';
 import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
@@ -1910,12 +1911,13 @@ export function repIssues(
       // Chemistry pictures draw fixed numbers in formula units (a time in hours still meets
       // spans in minutes), so they read every value in formula units.
       out.push(
-        ...chemIssues(rep, (x) => {
+        ...chemIssues(filledChem(rep, val), (x) => {
           const y = val(x);
           return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
         }),
       );
-      out.push(...chemHsiIssues(rep, (x) => val(x)));
+      out.push(...chemHsiIssues(filledChem(rep, val), (x) => val(x)));
+      out.push(...chemHs2dIssues(rep, (x) => val(x)));
       break;
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
@@ -2128,6 +2130,7 @@ export function repIssues(
     case 'vsepr':
     case 'moleMap':
       out.push(...hsiIssues(rep, (id) => val(id)));
+      if (rep.kind === 'moleMap') out.push(...moleMapHs2dIssues(rep, (id) => val(id)));
       break;
     case 'gasPiston':
     case 'energyProfile':

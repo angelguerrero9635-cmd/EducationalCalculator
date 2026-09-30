@@ -228,6 +228,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `energyPyramid`    | `measure: 'biomass' \| 'numbers'`        | biomass or numbers: no share passed up unless `percent`; can be upside down   |
 | `periodicTable`    | `trend: { property, value, compare }`    | a trend shaded (radius, ionization, electronegativity), arrows, a key         |
 | `reaction`         | `limiting: { amounts, made, left }`      | particles on hand before; after: products made, the leftover ringed           |
+| `reaction`         | `C{x}H{y}` terms, `most`, `ions`         | subscripts from values (a hydrocarbon chain), 32 a term, ions (H101)          |
+| `moleMap`          | `limiting: { reactants, coef }`          | two reactants’ grams → moles → product, the smaller lit (H101)                |
+| `energyProfile`    | `mode: 'ladder'`                         | enthalpy levels to scale, ΔH steps, a reversed one, the total (H101)          |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |

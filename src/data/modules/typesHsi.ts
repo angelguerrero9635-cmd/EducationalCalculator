@@ -5,6 +5,7 @@
  * variable id. Formulas are written plainly ("H2O", "NH4+"); the pictures print subscripts.
  */
 import type { NumOrVar } from './typesGraphs';
+import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
 
 /** One conversion factor in a chain: `top` `topUnit` over `bottom` `bottomUnit` (1000 m / 1 km). */
 export interface ChainFactor {
@@ -233,6 +234,8 @@ export interface MoleMapSpec {
     mass?: NumOrVar;
     molarMass?: NumOrVar;
   };
+  /** Round 2: two reactants from grams, the limiting one lit (`typesHs2d.ts`, H101). */
+  limiting?: MoleMapLimiting;
 }
 
 export type HsiSpec =
@@ -262,6 +265,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         r.particles,
         r.volume,
         ...(r.second ? [...r.second.ratio, r.second.moles, r.second.mass, r.second.molarMass] : []),
+        ...moleMapHs2dVars(r),
       );
     case 'vsepr':
       return r.mode === 'hbonds' ? ids(r.molecules, r.bonds) : ids(r.bonded, r.lone, r.angle);

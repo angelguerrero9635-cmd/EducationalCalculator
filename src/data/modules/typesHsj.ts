@@ -5,6 +5,7 @@
  * lists them. A `NumOrVar` field is a fixed number or a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
+import { ladderVars, type EnergyLadderSpec } from './typesHs2d';
 
 // ─── H51 gasPiston ───────────────────────────────────────────────────────────
 
@@ -141,7 +142,9 @@ export type EnergyProfileSpec =
       change?: NumOrVar;
       q?: NumOrVar;
       metal?: { name: string; mass: NumOrVar; start: NumOrVar; heat?: NumOrVar };
-    };
+    }
+  /** Round 2: an enthalpy ladder, levels only (`typesHs2d.ts`, H101). */
+  | EnergyLadderSpec;
 
 // ─── H54 equilibriumChart ────────────────────────────────────────────────────
 
@@ -296,6 +299,7 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.before?.temperature,
       );
     case 'energyProfile':
+      if (r.mode === 'ladder') return ladderVars(r);
       return r.mode === 'calorimeter'
         ? ids(
             r.mass,
