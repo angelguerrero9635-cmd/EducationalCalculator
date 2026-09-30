@@ -28,9 +28,11 @@ const rules = (...rs: Rule[]) => ({
   ),
 });
 
-/** A number for a work line: plain from 1 to 999, else in scientific notation (4.388 × 10⁴⁷). */
+/** A number for a work line: plain from 0.001 to 9,999, else in scientific notation (4.388 × 10⁴⁷). */
 const sci = (x: number) =>
-  Math.abs(x) >= 1 && Math.abs(x) < 1000 ? String(Number(x.toPrecision(5))) : scientific(x);
+  Math.abs(x) >= 0.001 && Math.abs(x) < 10000
+    ? String(Number(x.toPrecision(5))).replace('-', '−')
+    : scientific(x);
 
 /** A number for a work line written out with separators (167,000). */
 const plain = (x: number) =>
@@ -3390,7 +3392,7 @@ const electroPages: ModuleDef[] = [
           'F',
           (v) => [
             `q₁ × q₂ = (${sci(v.a! * 1e-6)}) × (${sci(v.b! * 1e-6)}) = ${sci(v.a! * v.b! * 1e-12)} C²`,
-            `r² = ${sci(v.r!)}² = ${sci(v.r! * v.r!)} m²`,
+            `r² = (${sci(v.r!)})² = ${sci(v.r! * v.r!)} m²`,
           ],
         ),
       ),
@@ -3449,7 +3451,7 @@ const electroPages: ModuleDef[] = [
           'E',
           (v) => [
             `q = ${sci(v.a!)} μC = ${sci(v.a! * 1e-6)} C`,
-            `r² = ${sci(v.r!)}² = ${sci(v.r! * v.r!)} m²`,
+            `r² = (${sci(v.r!)})² = ${sci(v.r! * v.r!)} m²`,
           ],
         ),
         rule('F = q₀E', '{F} = {t} × 10⁻⁶ × {E}', (v) => v.F! - v.t! * 1e-6 * v.E!, {
