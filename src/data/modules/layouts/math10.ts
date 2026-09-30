@@ -170,6 +170,30 @@ const PROOFS: LayoutDef[] = [
   },
 ];
 
+// ── Parallel and perpendicular lines (G-CO.9, G-GPE.5) ──
+const PARALLEL_LINES: LayoutDef[] = [
+  {
+    kind: 'sequence',
+    id: 'm.10.parallel-lines~triangle-sum-proof',
+    title: 'Why a triangle’s angles add to 180°',
+    use: 'Use this for “Prove that the angles of a triangle add to 180°.”',
+    assumptions: [
+      'Through a point not on a line there is exactly one parallel line (the Parallel Postulate).',
+      'Parallel lines make alternate interior angles congruent.',
+      'Angles that make a straight line add to 180°.',
+    ],
+    question: 'Put the proof in order.',
+    stages: [
+      { label: 'Draw line ℓ through B parallel to AC (Parallel Postulate)' },
+      { label: '∠1 ≅ ∠A and ∠3 ≅ ∠C (Alternate interior angles)' },
+      {
+        label:
+          'm∠A + m∠B + m∠C = m∠1 + m∠B + m∠3 = 180° (Substitution; ∠1, ∠B and ∠3 make a straight angle)',
+      },
+    ],
+  },
+];
+
 // ── Similarity (G-SRT.2–5) ──
 const SIMILARITY: LayoutDef[] = [
   {
@@ -296,4 +320,10 @@ const VOLUME: LayoutDef[] = [
   },
 ];
 
-export const MATH_10_LAYOUTS: LayoutDef[] = [...CONSTRUCTIONS, ...PROOFS, ...SIMILARITY, ...VOLUME];
+export const MATH_10_LAYOUTS: LayoutDef[] = [
+  ...CONSTRUCTIONS,
+  ...PROOFS,
+  ...PARALLEL_LINES,
+  ...SIMILARITY,
+  ...VOLUME,
+];

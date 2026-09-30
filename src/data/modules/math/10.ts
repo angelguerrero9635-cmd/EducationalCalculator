@@ -3223,9 +3223,282 @@ const PROOFS: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.parallel-lines ─────────────────────────────────────────────────────
+
+/** y = 180° − x (a linear pair, or same-side interior angles), both ways. */
+const supplement = (x: string, y: string, why: string) =>
+  rule(
+    `${y} = 180° − ${x}`,
+    `{${y}} = 180 − {${x}}`,
+    {
+      [y]: [(v) => 180 - v[x]!, `180 − {${x}}`, why],
+      [x]: [(v) => 180 - v[y]!, `180 − {${y}}`, why],
+    },
+    (v) => v[y]! - (180 - v[x]!),
+  );
+/** y = x (equal angles), both ways. */
+const equal = (x: string, y: string, why: string) =>
+  rule(
+    `${y} = ${x}`,
+    `{${y}} = {${x}}`,
+    { [y]: [(v) => v[x]!, `{${x}}`, why], [x]: [(v) => v[y]!, `{${y}}`, why] },
+    (v) => v[y]! - v[x]!,
+  );
+const PARALLEL_GIVEN = 'Lines ℓ and m are parallel, and the transversal crosses both.';
+
+const PARALLEL_LINES: ModuleDef[] = [
+  page({
+    id: 'm.10.parallel-lines',
+    assumptions: [
+      PARALLEL_GIVEN,
+      'Corresponding angles sit in the same position at each crossing: 1 and 5, 2 and 6, 3 and 7, 4 and 8.',
+      'When the lines are parallel, corresponding angles are congruent.',
+    ],
+    variables: [deg('x', 'm∠1', 'm∠1', 1, 179), deg('y', 'm∠5', 'm∠5', 1, 179)],
+    rules: [equal('x', 'y', 'Parallel lines: corresponding angles are congruent.')],
+    example: { x: 62, y: 62 },
+    startWith: ['x'],
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 'x', second: 'y', highlight: [1, 5], labels: { 1: 'x', 5: 'y' } },
+    },
+  }),
+  page({
+    id: 'm.10.parallel-lines~alternate-interior',
+    title: 'Alternate interior angles',
+    use: 'Use this for “ℓ ∥ m and m∠1 = 118°. Find m∠3 and m∠6.”',
+    assumptions: [
+      PARALLEL_GIVEN,
+      'Angles 1 and 3 make a straight line, so they add to 180°.',
+      'Alternate interior angles (3 and 6, 4 and 5) are between the lines on opposite sides of the transversal; they are congruent.',
+    ],
+    variables: [
+      deg('a', 'm∠1', 'm∠1', 1, 179),
+      deg('x', 'm∠3', 'm∠3', 1, 179),
+      deg('y', 'm∠6', 'm∠6', 1, 179),
+    ],
+    rules: [
+      supplement('a', 'x', 'A linear pair adds to 180°.'),
+      equal('x', 'y', 'Parallel lines: alternate interior angles are congruent.'),
+    ],
+    example: { a: 118, x: 62, y: 62 },
+    startWith: ['a'],
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 'a', highlight: [3, 6], labels: { 1: 'a', 3: 'x', 6: 'y' } },
+    },
+  }),
+  page({
+    id: 'm.10.parallel-lines~same-side',
+    title: 'Same-side interior angles',
+    use: 'Use this for “ℓ ∥ m and m∠4 = 73°. Find m∠6.”',
+    assumptions: [
+      PARALLEL_GIVEN,
+      'Same-side interior angles (3 and 5, 4 and 6) are between the lines on one side of the transversal; they add to 180°.',
+      'Angles 1 and 4 are vertical angles, so they are congruent.',
+    ],
+    variables: [
+      deg('a', 'm∠1', 'm∠1', 1, 179),
+      deg('x', 'm∠4', 'm∠4', 1, 179),
+      deg('y', 'm∠6', 'm∠6', 1, 179),
+    ],
+    rules: [
+      equal('a', 'x', 'Vertical angles are congruent.'),
+      supplement('x', 'y', 'Parallel lines: same-side interior angles add to 180°.'),
+    ],
+    example: { a: 73, x: 73, y: 107 },
+    startWith: ['x'],
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 'a', highlight: [4, 6], labels: { 1: 'a', 4: 'x', 6: 'y' } },
+    },
+  }),
+  page({
+    id: 'm.10.parallel-lines~converse',
+    title: 'Are the lines parallel?',
+    use: 'Use this for “m∠1 = 81° and m∠5 = 79°. Are lines ℓ and m parallel?”',
+    assumptions: [
+      'Converse: if corresponding angles are congruent, the lines are parallel.',
+      'If they differ, the lines meet: the second line is tilted by the difference d.',
+    ],
+    variables: [
+      deg('a', 'm∠1', 'm∠1', 1, 179),
+      deg('b', 'm∠5', 'm∠5', 1, 179),
+      num('d', 'd', 'Difference', -178, 178, { unit: '°' }),
+    ],
+    rules: [
+      rule(
+        'd = b − a',
+        '{d} = {b} − {a}',
+        {
+          d: [
+            (v) => v.b! - v.a!,
+            '{b} − {a}',
+            'The tilt between the lines: 0° only when they are parallel.',
+          ],
+          b: [(v) => v.a! + v.d!, '{a} + {d}', 'Angle 5 is angle 1 turned by the tilt.'],
+          a: [(v) => v.b! - v.d!, '{b} − {d}', 'Angle 1 is angle 5 less the tilt.'],
+        },
+        (v) => v.d! - (v.b! - v.a!),
+      ),
+    ],
+    example: { a: 81, b: 79, d: -2 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 'a', second: 'b', highlight: [1, 5], labels: { 1: 'a', 5: 'b' } },
+    },
+  }),
+  page({
+    id: 'm.10.parallel-lines~algebra',
+    title: 'Angle expressions',
+    use: 'Use this for “ℓ ∥ m, corresponding angles are (4x + 12)° and (2x + 50)°. Find x and the angle.”',
+    assumptions: [
+      'The lines are parallel, so the two corresponding angles are congruent: set the expressions equal.',
+      'Solve for x, then put it back to find the angle.',
+      'An angle here must be between 0° and 180°.',
+    ],
+    variables: [
+      coefficient('p', 'x coefficient of the first angle'),
+      constant('q', 'Number in the first angle', 100),
+      coefficient('r', 'x coefficient of the second angle'),
+      constant('s', 'Number in the second angle', 100),
+      der(num('x', 'x', 'x', -1000, 1000)),
+      der(deg('t', 't', 'The angle', -1e5, 1e5)),
+    ],
+    rules: [
+      bothSides('x'),
+      derive(
+        't = px + q',
+        '{t} = {p} × {x} + {q}',
+        't',
+        (v) => v.p! * v.x! + v.q!,
+        '{p} × {x} + {q}',
+        'Put x back into the first angle.',
+      ),
+      limit(
+        '0° < t < 180°',
+        '{t} is between 0 and 180',
+        (v) => v.t! > 0 && v.t! < 180,
+        'An angle here must be between 0° and 180°: this x gives none.',
+      ),
+    ],
+    example: { p: 4, q: 12, r: 2, s: 50, x: 19, t: 88 },
+    startWith: ['p', 'q', 'r', 's'],
+    equation: '({p}x + {q})° = ({r}x + {s})°',
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 't', highlight: [1, 5], labels: { 1: 't', 5: 't' } },
+    },
+  }),
+  page({
+    id: 'm.10.parallel-lines~parallel-line',
+    title: 'A parallel line through a point',
+    use: 'Use this for “Write the equation of the line parallel to y = 3x − 4 through (2, 7).”',
+    assumptions: [
+      'Parallel lines have the same slope and different intercepts.',
+      'Put the point into y = mx + b to find the new intercept: b = y₀ − m × x₀.',
+    ],
+    standalone: {
+      vars: ['b1'],
+      why: 'The given line’s intercept only draws it: the new line needs its slope alone.',
+    },
+    variables: [
+      num('m', 'm', 'Slope', -20, 20),
+      num('b1', 'b₁', 'Given line’s intercept', -20, 20),
+      num('x0', 'x₀', 'Point, x', -20, 20),
+      num('y0', 'y₀', 'Point, y', -20, 20),
+      der(num('b2', 'b', 'New line’s intercept', -1000, 1000)),
+    ],
+    rules: [
+      derive(
+        'b = y₀ − m x₀',
+        '{b2} = {y0} − {m} × {x0}',
+        'b2',
+        (v) => v.y0! - v.m! * v.x0!,
+        '{y0} − {m} × {x0}',
+        'The point is on the new line, so y₀ = m × x₀ + b.',
+      ),
+    ],
+    example: { m: 3, b1: -4, x0: 2, y0: 7, b2: 1 },
+    startWith: ['m', 'b1', 'x0', 'y0'],
+    equation: 'y = {m}x + {b2}',
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 'm', intercept: 'b1', label: 'Given' },
+        { slope: 'm', intercept: 'b2', label: 'Parallel' },
+      ],
+      extent: 20,
+      quadrants: 4,
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.10.parallel-lines~perpendicular-line',
+    title: 'A perpendicular line through a point',
+    use: 'Use this for “Write the equation of the line perpendicular to y = 2x + 1 through (4, 3).”',
+    assumptions: [
+      'Perpendicular slopes multiply to −1, so the new slope is −1 ÷ m.',
+      'Put the point into y = mx + b to find the new intercept.',
+      'A level line’s perpendicular is vertical, x = x₀: it has no slope.',
+    ],
+    standalone: {
+      vars: ['b1'],
+      why: 'The given line’s intercept only draws it: the new line needs its slope alone.',
+    },
+    variables: [
+      num('m1', 'm₁', 'Given slope', -20, 20),
+      num('b1', 'b₁', 'Given line’s intercept', -20, 20),
+      num('x0', 'x₀', 'Point, x', -20, 20),
+      num('y0', 'y₀', 'Point, y', -20, 20),
+      der(num('m2', 'm₂', 'Perpendicular slope', -1e6, 1e6, { fraction: 100 })),
+      der(num('b2', 'b', 'New line’s intercept', -1e6, 1e6, { fraction: 100 })),
+    ],
+    rules: [
+      limit(
+        'm₁ ≠ 0',
+        '{m1} is not 0',
+        (v) => v.m1! !== 0,
+        'A level line’s perpendicular is vertical: x = x₀.',
+      ),
+      derive(
+        'm₂ = −1/m₁',
+        '{m2} = −1 ÷ {m1}',
+        'm2',
+        (v) => quot(-1, v.m1!),
+        '−1 ÷ {m1}',
+        'Perpendicular slopes multiply to −1.',
+      ),
+      derive(
+        'b = y₀ − m₂ x₀',
+        '{b2} = {y0} − {m2} × {x0}',
+        'b2',
+        (v) => v.y0! - v.m2! * v.x0!,
+        '{y0} − {m2} × {x0}',
+        'The point is on the new line, so y₀ = m₂ × x₀ + b.',
+      ),
+    ],
+    example: { m1: 2, b1: 1, x0: 4, y0: 3, m2: -0.5, b2: 5 },
+    startWith: ['m1', 'b1', 'x0', 'y0'],
+    equation: 'y = {m2}x + {b2}',
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 'm1', intercept: 'b1', label: 'Given' },
+        { slope: 'm2', intercept: 'b2', label: 'Perpendicular' },
+      ],
+      extent: 20,
+      quadrants: 4,
+      fixed: true,
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...CONSTRUCTIONS,
   ...PROOFS,
+  ...PARALLEL_LINES,
   ...SIMILARITY,
   ...SPECIAL,
   ...TRIG,
