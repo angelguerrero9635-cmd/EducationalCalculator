@@ -994,7 +994,12 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H47',
       'lewisStructure',
       'Electron-dot structures, electron transfer in ionic bonds, the sea of electrons; hydrocarbons from n carbons',
-      ['s.10.bonding', 's.10.organic'],
+      [
+        's.10.bonding',
+        's.10.organic',
+        's.10.reaction-types~combustion',
+        's.10.reaction-types~combustion-alkene',
+      ],
     ),
     status: 'placed',
     gallery: [
@@ -1043,7 +1048,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'reaction',
       'Coefficients set the molecule counts and an atom tally; leftover reactant lit (limiting reactant); reaction-type card figures',
       [
-        's.10.reaction-types~combustion',
         's.10.reaction-types~synthesis',
         's.10.reaction-types~replacement',
         's.10.stoichiometry~limiting',

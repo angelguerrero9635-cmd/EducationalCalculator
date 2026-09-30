@@ -358,6 +358,8 @@ export function renderTemplate(
     // Scientific notation reads as one number only in brackets there too: ÷ (3 × 10⁻⁴); a
     // fraction or mixed number is raised or divided by whole: (5/7)², 1/(1/15).
     if ((power || /[/÷]$/.test(before)) && /[/ ]/.test(s)) return `(${s})`;
+    // A value raised to it is bracketed too: 2^(4.8292 × 10⁻⁵).
+    if (/\^$/.test(before) && /[/ ]/.test(s)) return `(${s})`;
     // An angle in degrees inside sin, cos or tan keeps its sign: sin(40°), not sin(40), which
     // would be radians.
     if (variable.unit === '°' && /(sin|cos|tan)\($/.test(before) && after.startsWith(')'))
