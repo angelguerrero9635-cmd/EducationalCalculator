@@ -278,6 +278,14 @@ None: every planned page is built, some with an interim picture (below).
 - **statMath: export `betaI` (or an `fCdf`)** so the grade file need not copy it.
 - Engine 5 again: `~powers` prints S = (r^n − 1) ÷ (r − 1) with carets.
 - The matcher corpus to rerun for the 31 new pages.
+- **From the lesson-review fixes:** `functionGraphMath.ts` rational case: skip a missing zero
+  (`fam.zeros.map((z) => get(z, NaN)).filter(Number.isFinite)`), so a number alone on top (the
+  partial-fractions pages now take a = 0) draws no zero at x = 0. The p-value box shows "0" for
+  P < 0.0001 (the notes say "P < 0.0001"; the formatter should). `simplify.ts`: superscript a
+  numeric exponent (2⁶, `~powers`), and simplify a quotient's top and bottom in one stage each.
+  A `choice` input (≠, >, <; cos or sin) would replace the coded h and the separate `~sine` page.
+  The matcher corpus to rerun for the 6 new pages (`~distance`, `~sine`, `~rotated-equation`,
+  `~divisible`, `~degrees`, and `m.10.modeling-density~cone`).
 
 ### Lesson-review fixes (`.review/new-math/lesson-report.md`)
 
@@ -287,10 +295,10 @@ None: every planned page is built, some with an interim picture (below).
 - New page `m.12.vectors-3d~distance` (distance and midpoint in space; P(1, 2, 3), Q(3, 5, 9):
   d = 7, M(2, 3.5, 6)); a table of d as Q's z moves until the 3-D axes picture.
 - `m.12.matrix-transformations~compose`: c = cos γ and s = sin γ as values, x″ = cx − sy and
-  y″ = sx + cy (the lines read "x″ = 0 × 4 − 1 × 2"), and the s step notes the single matrix
-  R(γ). `~area`: p and q named "x/y of the far corner" (hidden, picture only). `~identify`: the
-  two-bin card [[−1, 0], [0, −1]] replaced by [[0.6, −0.8], [0.8, 0.6]]; a dilation has k > 0;
-  the reflection bin's reason says (0, 1) lands clockwise from (1, 0).
+    y″ = sx + cy (the lines read "x″ = 0 × 4 − 1 × 2"), and the s step notes the single matrix
+    R(γ). `~area`: p and q named "x/y of the far corner" (hidden, picture only). `~identify`: the
+    two-bin card [[−1, 0], [0, −1]] replaced by [[0.6, −0.8], [0.8, 0.6]]; a dilation has k > 0;
+    the reflection bin's reason says (0, 1) lands clockwise from (1, 0).
 - `m.12.polar-conics` main: n is named "Number taken away before cos θ (−1 for + cos θ)" (the
   equation boxes already print the minus); the d step notes the directrix (x = −d or x = d).
   `~ellipse`: c = a × e (no near-equal subtraction), and the top k = ed is typed
