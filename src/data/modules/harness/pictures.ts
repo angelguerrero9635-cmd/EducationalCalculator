@@ -49,6 +49,7 @@ import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
+import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1151,6 +1152,7 @@ export function repIssues(
       break;
     }
     case 'wave': {
+      out.push(...hsk.waveHsIssues(rep, (id) => hsk.mapSi(val(id), byId.get(id)?.unitFactor)));
       if (typeof rep.extent === 'string') count(rep.extent, 'waves drawn', 12);
       const [A, L] = [rep.amplitude ? val(rep.amplitude) : undefined, val(rep.wavelength)];
       if (A !== undefined && A < 0) out.push(`negative amplitude ${A}`);
@@ -1997,6 +1999,7 @@ export function repIssues(
         const x = val(id);
         return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
       };
+      out.push(...hsk.energySpringIssues(rep, (id) => f(id)));
       const g = rep.g ?? 9.8;
       const [h, pe, ke, total, top, m, v] = [
         rep.height,
@@ -2061,7 +2064,8 @@ export function repIssues(
           out.push(`motion graph ends at ${end}, not start + slope × time = ${want}`);
       }
       if (rep.graph === 'speed') {
-        for (const v of [start, end])
+        out.push(...hsk.motionKinematicsIssues(rep, (id) => fv(id)));
+        for (const v of rep.kinematics ? [] : [start, end])
           if (v !== undefined && v < 0) out.push(`speed ${v} is below 0 on a speed-time graph`);
         const d = rep.distance ? fv(rep.distance) : undefined;
         if (d !== undefined && [t, start, end].every((x) => x !== undefined)) {
@@ -2085,7 +2089,8 @@ export function repIssues(
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
-      out.push(...physics8Issues(rep, (id) => val(id)));
+      if (hsk.physicsHsOption(rep)) out.push(...hsk.physicsHsIssues(rep, (id) => val(id)));
+      else out.push(...physics8Issues(rep, (id) => val(id)));
       break;
     case 'triangleSolver':
     case 'markedFigure':
@@ -2138,6 +2143,17 @@ export function repIssues(
     case 'expandingUniverse':
       // In formula units (km, s), as the picture draws them.
       out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'projectile':
+    case 'induction':
+    case 'charges':
+    case 'rayDiagram':
+    case 'heatEngine':
+    case 'simpleMachine':
+    case 'collision':
+    case 'circularMotion':
+    case 'freeBody':
+      out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
       break;
     case 'table':
       if ('twoWay' in rep) {

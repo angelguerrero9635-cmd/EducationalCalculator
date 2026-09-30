@@ -151,6 +151,13 @@ import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
 import { ReactionLimiting } from './ReactionLimiting';
 import { HslPicture } from './HslPicture';
+import { MotionGraphHs } from './MotionGraphHs';
+import { HskView } from './HskView';
+import { EnergySpring } from './EnergySpring';
+import { WaveDoppler } from './WaveDoppler';
+import { CircuitMixed } from './CircuitMixed';
+import { PhotonView, SpectrumLinesView } from './SpectrumLines';
+import { WaveStanding } from './WaveStanding';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -204,6 +211,16 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'phScale':
     case 'decayChart':
       return <HsjView spec={spec} calc={calc} />;
+    case 'projectile':
+    case 'induction':
+    case 'charges':
+    case 'rayDiagram':
+    case 'heatEngine':
+    case 'simpleMachine':
+    case 'collision':
+    case 'circularMotion':
+    case 'freeBody':
+      return <HskView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':
@@ -233,6 +250,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'functionGraph':
       return <FunctionGraph spec={spec} calc={calc} />;
     case 'motionGraph':
+      if (spec.kinematics && spec.graph === 'speed')
+        return <MotionGraphHs spec={spec} k={spec.kinematics} calc={calc} />;
       return <MotionGraph spec={spec} calc={calc} />;
     case 'normalCurve':
       return <NormalCurve spec={spec} calc={calc} />;
@@ -245,6 +264,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'skaters':
       return <Skaters spec={spec} calc={calc} />;
     case 'energyTrack':
+      if (spec.spring) return <EnergySpring spec={spec} s={spec.spring} calc={calc} />;
       return <EnergyTrack spec={spec} calc={calc} />;
     case 'functionMachine':
       return <FunctionMachine spec={spec} calc={calc} />;
@@ -296,8 +316,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'orbit':
       return <Orbit spec={spec} calc={calc} />;
     case 'circuit':
+      if (spec.mixed) return <CircuitMixed spec={spec} m={spec.mixed} calc={calc} />;
       return <Circuit spec={spec} calc={calc} />;
     case 'spectrum':
+      if (spec.lines) return <SpectrumLinesView spec={spec} l={spec.lines} calc={calc} />;
+      if (spec.photon) return <PhotonView spec={spec} p={spec.photon} calc={calc} />;
       return <Spectrum spec={spec} calc={calc} />;
     case 'curvedSolid':
       return <CurvedSolid spec={spec} calc={calc} />;
@@ -450,6 +473,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'protractor':
       return <Protractor spec={spec} calc={calc} />;
     case 'wave':
+      if (spec.standing) return <WaveStanding spec={spec} s={spec.standing} calc={calc} />;
+      if (spec.doppler) return <WaveDoppler d={spec.doppler} calc={calc} />;
       return <Wave spec={spec} calc={calc} />;
     case 'punnettSquare':
       return spec.inheritance ? (

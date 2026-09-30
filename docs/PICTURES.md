@@ -105,6 +105,15 @@ search or the sitemap, but the module tests and the harness run over it):
 | `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides  | Earth science ocean (H75)           |
 | `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds    | Earth science atmosphere (H76)      |
 | `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted   | Earth science stars (H79)           |
+| `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
+| `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
+| `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |
+| `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce  | Physics momentum (H62)              |
+| `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA     | Physics simple machines (H63)       |
+| `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot   | Physics thermodynamics (H64)        |
+| `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits   | Physics optics, telescopes (H66)    |
+| `charges`          | point charges, traced field lines; kq₁q₂/r² forces; E at a point      | Physics electrostatics (H67)        |
+| `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns    | Physics electromagnetism (H69)      |
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
@@ -221,6 +230,11 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `reaction`         | `limiting: { amounts, made, left }`      | particles on hand before; after: products made, the leftover ringed           |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
+| `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
+| `energyTrack`      | `spring: { k, compression, … }`          | spring launcher, rough patch (heat fd), ramp; start and now bars (H63)        |
+| `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
+| `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
+| `spectrum`         | `lines`, `photon`                        | H, He, Na lines, emission or absorption, shifted by z; E = hf (H70)           |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

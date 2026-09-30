@@ -1172,84 +1172,239 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   },
 
   // ── F. Physics ──
-  ask(
-    'H58',
-    'motionGraph',
-    'Area under velocity–time shaded as displacement, the tangent slope, a strobe motion diagram',
-    ['s.11.kinematics-1d'],
-  ),
-  ask(
-    'H59',
-    'projectile',
-    'Trajectory from launch speed, angle and height, velocity components along it, maximum height and range',
-    ['s.11.kinematics-2d', 'm.12.parametric'],
-  ),
-  ask(
-    'H60',
-    'freeBody',
-    'Free-body diagram with scaled force arrows (weight, normal, friction, tension, applied); an incline with components',
-    ['s.11.dynamics-vectors', 's.11.circular-gravitation'],
-  ),
-  ask(
-    'H61',
-    'circularMotion',
-    'Object on a circle with velocity tangent and acceleration toward the center; two masses and the pull between them',
-    ['s.11.circular-gravitation'],
-    'Orbit: Kepler ellipse with foci and equal-area sectors for the solar system page.',
-  ),
-  ask(
-    'H62',
-    'collision',
-    'Carts on a track before and after, momentum arrows, sticking together or bouncing',
-    ['s.11.momentum'],
-  ),
-  ask(
-    'H63',
-    'simpleMachine',
-    'Lever, pulley system and inclined plane with effort, load and mechanical advantage from the values',
-    ['s.11.work-energy-power'],
-    'energyTrack: a friction-heat bar and a spring.',
-  ),
-  ask(
-    'H64',
-    'heatEngine',
-    'Hot reservoir, engine, work out and heat to the cold reservoir, with the efficiency',
-    ['s.11.thermodynamics'],
-  ),
-  ask(
-    'H65',
-    'wave',
-    'Standing waves on a string and in pipes (harmonic n, nodes and antinodes); Doppler wavefronts from a moving source',
-    ['s.11.sound-waves'],
-  ),
-  ask(
-    'H66',
-    'rayDiagram',
-    'Lenses and mirrors with principal rays, object and image from 1/f = 1/d₀ + 1/dᵢ; refraction with the normal and angles',
-    ['s.11.optics', 's.12.starlight-spectra'],
-    'Total internal reflection past the critical angle; double-slit fringes; telescopes for the Earth and space page.',
-  ),
-  ask(
-    'H67',
-    'charges',
-    'Point charges with field lines and the Coulomb force arrows scaled by q₁, q₂ and r',
-    ['s.11.electrostatics'],
-  ),
-  ask('H68', 'circuit', 'Mixed series-parallel circuits, meter readings at each resistor, power', [
-    's.11.circuits',
-  ]),
-  ask(
-    'H69',
-    'induction',
-    'Magnet moving through a coil with a meter; force on a current in a field (right-hand rule); a transformer by turns',
-    ['s.11.electromagnetism'],
-  ),
-  ask(
-    'H70',
-    'spectrum',
-    'Emission and absorption lines of H, He, Na; the lines shifted red; photon energy from frequency',
-    ['s.11.modern-physics', 's.12.starlight-spectra', 's.12.cosmology'],
-  ),
+  {
+    ...ask(
+      'H58',
+      'motionGraph',
+      'Area under velocity–time shaded as displacement, the tangent slope, a strobe motion diagram',
+      ['s.11.kinematics-1d'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-kinematics-1d-velocity',
+      'g.s11-kinematics-1d-turn',
+      'g.s11-kinematics-1d-braking',
+      'g.s11-kinematics-1d-tangent',
+    ],
+    notes:
+      'Drawn (group HK, reps/MotionGraphHs.tsx) as an option on the Grade 8 speed graph, so every current motionGraph page is unchanged. Calculator picture { kind: "motionGraph", graph: "speed", time, acceleration, speed (the velocity v at the end), start (v₀, number or variable), distance? (the displacement Δx), kinematics: { view: "velocity" | "position", at?: t₁ (the tangent’s time, position view), slope?: v₁ (the tangent’s slope), position?: x₀ (default 0), strobe?: false, fixed?: true } }. Velocities are signed. Velocity view: the v–t line, the area to the axis shaded + above and − below, each part labelled; where the line crosses the axis the object turns round (an open dot) and the caption gives the displacement and the distance travelled. Position view: x = x₀ + v₀t + ½at², the tangent at t₁ with a rise/run triangle, its slope = v₀ + at₁; drag the tangent point. Above either: a strobe motion diagram, the position every Δt (1, 2 or 5 × 10ⁿ s) with a velocity arrow on each dot, the way back on a second row. Drawn in SI (m, s, m/s) whatever units the boxes show. The harness checks slope = v₀ + at₁ and Δx = (v₀ + v)/2 × t with signed velocities. Example: representation: { kind: "motionGraph", graph: "speed", time: "t", acceleration: "a", speed: "v", start: "u", distance: "d", kinematics: { view: "velocity" } }.',
+  },
+  {
+    ...ask(
+      'H59',
+      'projectile',
+      'Trajectory from launch speed, angle and height, velocity components along it, maximum height and range',
+      ['s.11.kinematics-2d', 'm.12.parametric'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-kinematics-2d-level',
+      'g.s11-kinematics-2d-cliff',
+      'g.s11-kinematics-2d-steep',
+      'g.m12-parametric-launch',
+    ],
+    notes:
+      'Drawn (group HK, reps/Projectile.tsx, the physics in hskMath.ts). Calculator picture { kind: "projectile", speed: v₀, angle: θ in degrees (0 to 90 on the demos, −90 to 90 allowed), height?: launch height (number or variable, default 0), g?: 9.8, vx?, vy?, time?: flight time T, range?: R, peak?: H (checked when named), at?: a time t (the ball drawn there, its position labelled; the path continues dashed past the landing), x?, y?: the position at t, parametric?: true (captions x(t) and y(t) for m.12.parametric), fixed?: true }. Drawn to scale, one unit the same both ways, on soil with a grass edge and a rock cliff under a raised launch: the path, the ball at launch, at the top and on landing (or at t) with its velocity (ink) and components vₓ (green, steady) and v_y (orange, changing), H dashed, R along the ground, the angle arc. Drag the tip of the launch velocity to change the angle. Drawn in SI whatever units the boxes show. The harness checks vₓ, v_y, T, R, H and x(t), y(t) against the launch values. Example: representation: { kind: "projectile", speed: "v", angle: "q", height: "h", vx: "x", vy: "y", time: "T", range: "R", peak: "H" }; parametric: { kind: "projectile", speed: "v", angle: "q", height: "h", at: "t", x: "X", y: "Y", parametric: true }.',
+  },
+  {
+    ...ask(
+      'H60',
+      'freeBody',
+      'Free-body diagram with scaled force arrows (weight, normal, friction, tension, applied); an incline with components',
+      ['s.11.dynamics-vectors', 's.11.circular-gravitation'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-dynamics-vectors-push',
+      'g.s11-dynamics-vectors-rope',
+      'g.s11-dynamics-vectors-incline',
+      'g.s11-dynamics-vectors-steep',
+      'g.s11-dynamics-vectors-elevator',
+    ],
+    notes:
+      'Drawn (group HK, reps/FreeBody.tsx, the forces in hskMath.ts freeBodyOf). Calculator picture { kind: "freeBody", support: "floor" | "incline" | "hanging", mass, g?: 9.8, incline?: θ (degrees, incline), weight?, normal?, friction?: μF_N (kinetic, or the most static friction holds), mu?: μ (for the caption), applied?: F and appliedAngle? (degrees above level; up the slope on an incline), tension?: T and tensionAngle? (a rope drawn on the floor), along?: W sin θ, net?, acceleration?, moving?: "right" | "left" | "up" | "down" (already sliding: kinetic friction full size against the motion, net counted + that way; without it the block starts at rest and friction is capped as static friction, the caption saying it stays put), fixed?: true }. A wooden block on a floor, on a ramp drawn at θ, or hanging from a beam; every force an arrow from its center on one scale in N (weight, normal, friction, tension, applied, each its own color and labelled W, F_N, f or f_s, T, F with its value); on an incline the weight’s components W sin θ and W cos θ dashed with θ marked between W and W cos θ; the net force as a separate arrow beside the block (F_net = 0 when balanced). Drag the applied force’s or the rope’s tip along its line. Captions work weight, normal force, friction, net force and a = F_net/m in words (Weight, Normal force, Net force) since plain text has no subscripts. The harness checks W = mg, F_N, W sin θ, F_net (signed along the motion when moving) and a. Example: representation: { kind: "freeBody", support: "incline", moving: "down", mass: "m", incline: "q", weight: "W", along: "P", normal: "N", friction: "f", mu: "k", net: "n", acceleration: "a" }. For the circular-gravitation page, "hanging" draws a mass on a string at the bottom of its swing (tension up, weight down, the net force toward the center).',
+  },
+  {
+    ...ask(
+      'H61',
+      'circularMotion',
+      'Object on a circle with velocity tangent and acceleration toward the center; two masses and the pull between them',
+      ['s.11.circular-gravitation'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-circular-gravitation-string',
+      'g.s11-circular-gravitation-car',
+      'g.s11-circular-gravitation-gravity',
+      'g.s12-solar-system-kepler',
+      'g.s12-solar-system-comet',
+    ],
+    notes:
+      'Orbit: Kepler ellipse with foci and equal-area sectors for the solar system page. Drawn (group HK, reps/CircularMotion.tsx; Kepler\'s equation and swept areas in hskMath.ts). Kepler\'s ellipse is drawn as a mode of circularMotion rather than as an option on the Grade 8 orbit picture: orbit requires distance and pull variables a Kepler page doesn\'t have, and the orbit page stays as it is. Calculator picture { kind: "circularMotion", mode: "string" | "car" | "gravity" | "kepler", fixed?: true, and per mode: string and car: radius, speed, mass?, acceleration? (v²/r), force? (mv²/r), period? (2πr/v); gravity: masses: [m₁, m₂], distance, force? (Gm₁m₂/r², G = 6.674 × 10⁻¹¹); kepler: semiMajor (AU), eccentricity (0 to 0.95), perihelion?, aphelion?, period? (years, T² = a³) }; every field a number or variable. String: a ball on a string seen from above, the velocity tangent (drag its tip for the speed), the centripetal acceleration toward the center, the dashed straight path it would take if let go. Car: a car on a curved road, friction toward the center. Gravity: two lit spheres sized by the cube root of their masses, equal and opposite pull arrows (drag the second mass: the arrows follow the inverse square), r bracketed, not to scale. Kepler: the ellipse with the sun at one focus, the empty focus, perihelion and aphelion, and two sectors each swept in 1/8 of the period (positions from Kepler\'s equation) with equal areas. The harness checks v²/r, mv²/r, 2πr/v, Gm₁m₂/r², a(1 ± e), T² = a³ and that both sectors are 1/8 of the ellipse\'s area. Example: representation: { kind: "circularMotion", mode: "string", radius: "r", speed: "v", mass: "m", acceleration: "a", force: "F", period: "T" }; { kind: "circularMotion", mode: "kepler", semiMajor: "a", eccentricity: "e", perihelion: "q", aphelion: "Q", period: "T" } (for s.12.solar-system).',
+  },
+  {
+    ...ask(
+      'H62',
+      'collision',
+      'Carts on a track before and after, momentum arrows, sticking together or bouncing',
+      ['s.11.momentum'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-momentum-stick',
+      'g.s11-momentum-head-on',
+      'g.s11-momentum-elastic',
+      'g.s11-momentum-explode',
+    ],
+    notes:
+      'Drawn (group HK, reps/Collision.tsx; the velocities after in hskMath.ts collisionOf). Calculator picture { kind: "collision", type: "stick" | "elastic" | "explode", masses: [m₁, m₂], before: [v₁, v₂] (signed, + to the right; "explode" takes one shared velocity), after?: [v₁′, v₂′] (stick: [v′]; explode: [v₁′ (given), v₂′]), momentum?: total p, energy?: [KE before, KE after], fixed?: true }. Two rows, Before and After: painted carts with wheels on a metal track, their masses on them, each cart’s momentum p = mv as an arrow on one scale (arrows kept inside the canvas), velocities under the carts, and the total momentum tip to tail in each row (the same before and after). Stick: the carts coupled after, one arrow and v′. Explode: coupled before, pushed apart after. Drag the first cart’s momentum arrow to change v₁. The caption works the momentum before and after and the kinetic energy (lost, kept, or given by the spring). The harness checks v′ from the momentum, the elastic formulas, the total momentum, the kinetic energies and that an elastic collision keeps kinetic energy. Example: representation: { kind: "collision", type: "stick", masses: ["m", "n"], before: ["v", "w"], after: ["u"], momentum: "p" }.',
+  },
+  {
+    ...ask(
+      'H63',
+      'simpleMachine',
+      'Lever, pulley system and inclined plane with effort, load and mechanical advantage from the values',
+      ['s.11.work-energy-power'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-work-energy-power-lever',
+      'g.s11-work-energy-power-pulley',
+      'g.s11-work-energy-power-fixed-pulley',
+      'g.s11-work-energy-power-ramp',
+      'g.s11-work-energy-power-spring',
+    ],
+    notes:
+      'energyTrack: a friction-heat bar and a spring. Drawn (group HK, reps/SimpleMachine.tsx and, for the energyTrack option, reps/EnergySpring.tsx; the mechanical advantage in hskMath.ts machineOf). Calculator picture { kind: "simpleMachine", machine: "lever" | "pulley" | "incline", load (N), effort?, advantage? (ideal MA), effortArm? and loadArm? (lever, m), strands? (pulley, whole 1 to 6; 1 is a single fixed pulley), length? and height? (incline, m), efficiency? (percent, default 100: effort = load ÷ (MA × efficiency)), effortDistance?, loadDistance? (checked: effort distance = MA × load distance), fixed?: true }. Lever: a wooden plank on a metal fulcrum drawn to scale from the two arms, the load crate and its weight, the effort arrow, both arms bracketed; drag the fulcrum (the arms trade, their sum kept). Pulley: a block and tackle with every supporting strand drawn and numbered, the sheave blocks in metal, the free end pulled down as the effort. Incline: a wooden ramp to scale, the crate pushed along the slope, its weight, the length and height labelled; a ramp shorter than its height draws faded with the reason. Load and effort share one scale in N. energyTrack option: spring: { k (N/m), compression (m), stored?: ½kx², friction? (N), rough? (m), heat?: fd, fixed? } on an energyTrack spec (its height, potential, kinetic, mass): a steel spring against a wall launches a block across a gritty rough patch and up a smooth ramp; bars Start (the spring’s ½kx²) and Now (heat + potential + kinetic, the same total), a key with each value, the highest point it can reach dashed; drag the block along the ramp. The harness checks the MA, the effort, the distances, ½kx², fd and the kinetic energy left. Example: representation: { kind: "simpleMachine", machine: "lever", load: "W", effortArm: "e", loadArm: "l", advantage: "A", effort: "F" }; { kind: "energyTrack", track: "coaster", height: "h", potential: "U", kinetic: "K", mass: "m", spring: { k: "k", compression: "x", stored: "E", friction: "f", rough: "d", heat: "Q" } }.',
+  },
+  {
+    ...ask(
+      'H64',
+      'heatEngine',
+      'Hot reservoir, engine, work out and heat to the cold reservoir, with the efficiency',
+      ['s.11.thermodynamics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-thermodynamics-engine',
+      'g.s11-thermodynamics-carnot',
+      'g.s11-thermodynamics-refrigerator',
+    ],
+    notes:
+      'Drawn (group HK, reps/HeatEngine.tsx; flows in hskMath.ts heatEngineOf). Calculator picture { kind: "heatEngine", mode?: "engine" | "refrigerator" (default engine), work: W, hotHeat: Q_H (given for an engine, else worked out), coldHeat: Q_L (given for a refrigerator, else worked out), hot?: T_H and cold?: T_L (K), efficiency?: percent (engine) or the COP (refrigerator), carnot?: the Carnot limit (percent, or the Carnot COP) }. The hot reservoir (red) over the engine (a metal cylinder and piston) over the cold reservoir (blue); the energy flows as bands as wide as their size, Q_H = W + Q_L, arrowheads showing the way heat moves (reversed for a refrigerator, work in); a bar of the efficiency (or COP) with the Carnot limit marked. Work more than the heat in, a cold reservoir hotter than the hot one, or an efficiency past the Carnot limit draws faded, the caption naming the law it breaks. Captions write Qₕ, Qₗ, Tₕ, Tₗ (H for hot, L for low). The harness checks Q_L or Q_H, the efficiency or COP and the Carnot limit. Example: representation: { kind: "heatEngine", hotHeat: "Q", work: "W", coldHeat: "C", efficiency: "e", hot: "H", cold: "L", carnot: "c" }.',
+  },
+  {
+    ...ask(
+      'H65',
+      'wave',
+      'Standing waves on a string and in pipes (harmonic n, nodes and antinodes); Doppler wavefronts from a moving source',
+      ['s.11.sound-waves'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-sound-waves-string',
+      'g.s11-sound-waves-open-pipe',
+      'g.s11-sound-waves-closed-pipe',
+      'g.s11-sound-waves-doppler',
+      'g.s11-sound-waves-sonic-boom',
+    ],
+    notes:
+      'Drawn (group HK) as two options on the Grade 8 wave, so every current wave page is unchanged: reps/WaveStanding.tsx and reps/WaveDoppler.tsx, the physics in hskMath.ts (standingOf, dopplerOf). The wave spec keeps its required wavelength and extent (pass extent: 1). Standing: { kind: "wave", wavelength: λ, frequency?: f, extent: 1, standing: { medium: "string" | "open" | "closed", harmonic: n, length: L, speed?: v } } — a string between two metal posts, or a glass pipe (a metal cap on a closed end); the envelope at both extremes (solid and dashed), every node (N, dot on the axis) and antinode (A) marked and counted from the harmonic, half a wavelength bracketed, L and n below; λ = 2L/n (string, open pipe) or 4L/n (closed pipe, odd n only; an even n draws faded with the reason), f = v/λ. Pipes show the air’s displacement: antinodes at open ends, a node at a closed end. Doppler: { kind: "wave", wavelength: λ at rest, frequency: f, extent: 1, doppler: { sourceSpeed: vₛ, waveSpeed: v, frequency: f, ahead?: f′ ahead, behind?: f′ behind } } — six wavefronts, one per period, each a circle centered where the source was when it left (its centers dotted), bunched ahead and spread behind with λ bracketed on each side, the source a lit ball with its velocity; at or past the wave speed the fronts pile into a shock cone (half-angle arcsin(v/vₛ)) drawn in red. The harness checks λ, f = v/λ, odd closed-pipe harmonics and f v/(v ∓ vₛ). Example: representation: { kind: "wave", wavelength: "l", frequency: "f", extent: 1, standing: { medium: "closed", harmonic: "n", length: "L", speed: "v" } }.',
+  },
+  {
+    ...ask(
+      'H66',
+      'rayDiagram',
+      'Lenses and mirrors with principal rays, object and image from 1/f = 1/d₀ + 1/dᵢ; refraction with the normal and angles',
+      ['s.11.optics', 's.12.starlight-spectra'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-optics-lens-real',
+      'g.s11-optics-magnifier',
+      'g.s11-optics-diverging',
+      'g.s11-optics-concave',
+      'g.s11-optics-convex',
+      'g.s11-optics-refraction',
+      'g.s11-optics-total-internal',
+      'g.s11-optics-double-slit',
+      'g.s12-starlight-spectra-refractor',
+      'g.s12-starlight-spectra-reflector',
+    ],
+    notes:
+      'Total internal reflection past the critical angle; double-slit fringes; telescopes for the Earth and space page. Drawn (group HK, reps/RayLens.tsx and reps/RayOptics.tsx; thin lens, Snell and fringe math in hskMath.ts). Calculator picture { kind: "rayDiagram", fixed?: true, and one mode }: lens or mirror: { mode: "lens" | "mirror", shape: "converging" | "diverging" | "concave" | "convex", focal: f (a length; the page may pass it signed, − for diverging or convex: the shape sets the sign), objectDistance: dₒ, objectHeight?: hₒ, imageDistance?: dᵢ, imageHeight?: hᵢ, magnification?: m } — a glass lens (biconvex or biconcave) or a silvered mirror on the axis, F, F′, 2F (C for a mirror) marked, the object arrow, the three principal rays in three colors (parallel then through F, through the center or vertex, through F then parallel), each continued to where it meets the others: a real image (solid, the rays meet) or a virtual one (dashed back-extensions), from 1/f = 1/dₒ + 1/dᵢ; the two drawing scales are affine so the rays meet at the image exactly; an object at F sends parallel rays and no image; drag the object. Refraction: { mode: "refraction", n1, n2, angle: θ₁ (degrees from the normal), refracted?: θ₂, critical?: θc, media?: [top, bottom names] } — two media shaded by their index, the normal dashed, the ray bent by n₁ sin θ₁ = n₂ sin θ₂ with its faint reflection, angle arcs, the critical angle dashed red; past it, total internal reflection (the reflection full strength, no ray out); drag the incoming ray. Double slit: { mode: "doubleSlit", wavelength (nm), spacing (mm), screen (m), fringe?: Δy (mm) } — light in its color (grey outside 380–750 nm) through two slits onto a screen, cos² brightness, bright fringes m = −2 … 2 labelled, Δy = λL/d bracketed, the paths to m = 1 dashed; not to scale across. Telescope: { mode: "telescope", design: "refracting" | "reflecting", objective: fₒ, eyepiece: fₑ, magnification?: M, length? (fₒ + fₑ) } — refracting: objective and eyepiece lenses fₒ + fₑ apart, starlight focused in the shared focal plane and sent out parallel at a larger angle; reflecting (Newtonian): a parabolic mirror and a 45° flat turning the focus up to the eyepiece; M = fₒ/fₑ. Step text must write a divisor before a sine (n₁/n₂ × sin θ₁): the harness reads sin(55)/2.7 as sin(55/2.7). The harness checks dᵢ, m, hᵢ, the sign of f against the shape, θ₂, θc, Δy and M. Example: representation: { kind: "rayDiagram", mode: "lens", shape: "converging", focal: "f", objectDistance: "o", objectHeight: "h", imageDistance: "i", magnification: "m", imageHeight: "k" }.',
+  },
+  {
+    ...ask(
+      'H67',
+      'charges',
+      'Point charges with field lines and the Coulomb force arrows scaled by q₁, q₂ and r',
+      ['s.11.electrostatics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-electrostatics-attract',
+      'g.s11-electrostatics-repel',
+      'g.s11-electrostatics-unequal',
+      'g.s11-electrostatics-field',
+    ],
+    notes:
+      'Drawn (group HK, reps/Charges.tsx; the field lines traced with fieldLines.ts, Coulomb math in hskMath.ts). Calculator picture { kind: "charges", charges: [q₁, q₂?] (μC, signed, numbers or variables), distance: r (m), force?: F (N; a page may count it signed, − for attraction: compared by size), field?: E (N/C, one charge), fixed?: true }. Lit charge balls, red + and blue −, each labelled with its value; field lines traced step by step through the field of the charges (out of +, into −, as many from each charge as its share of the biggest, at least 2), an arrow on each; for two charges the Coulomb forces F = k|q₁q₂|/r² as equal and opposite arrows on one scale (apart for like, together for unlike charges); drag the second charge for r and the arrows follow the inverse square; for one charge, the field E = k|q|/r² at a point r away, pointing away from + and toward −. r is bracketed; the spacing on screen is fixed (the lines’ shape doesn’t depend on r). The harness checks F and E. Example: representation: { kind: "charges", charges: ["a", "b"], distance: "r", force: "F" }; { kind: "charges", charges: ["a"], distance: "r", field: "E" }.',
+  },
+  {
+    ...ask(
+      'H68',
+      'circuit',
+      'Mixed series-parallel circuits, meter readings at each resistor, power',
+      ['s.11.circuits'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-circuits-series-parallel',
+      'g.s11-circuits-parallel-series',
+      'g.s11-circuits-equal-resistors',
+    ],
+    notes:
+      'Drawn (group HK, reps/CircuitMixed.tsx; the readings in hskMath.ts mixedOf) as an option on the Grade 8 circuit, so every current circuit page is unchanged. Calculator picture { kind: "circuit", wiring: "series" (ignored), voltage: V, bulbs: [], current: I (the ammeter, the total current), mixed: { layout: "seriesParallel" (R₁ in series with R₂ ∥ R₃) | "parallelSeries" ((R₁ + R₂) ∥ R₃), resistors: [R₁, R₂, R₃] (Ω, numbers or variables), equivalent?: R_total, power?: total P, voltages?, currents?, powers?: [for R₁, R₂, R₃] (checked when named) } }. A battery cell, an ammeter on the top wire reading the total current, copper wire with the junctions dotted, three ceramic resistors each labelled R₁ … with its reading: the voltage across it, the current through it and its power, and R_total at the corner. The caption works R_total, I = V/R_total and P = VI. The harness checks R_total, I, P and each resistor’s V, I and P (a value shown in mA or kΩ allowed). Example: representation: { kind: "circuit", wiring: "series", voltage: "V", bulbs: [], current: "I", mixed: { layout: "seriesParallel", resistors: ["a", "b", "c"], equivalent: "R", power: "P" } }.',
+  },
+  {
+    ...ask(
+      'H69',
+      'induction',
+      'Magnet moving through a coil with a meter; force on a current in a field (right-hand rule); a transformer by turns',
+      ['s.11.electromagnetism'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-electromagnetism-coil',
+      'g.s11-electromagnetism-coil-out',
+      'g.s11-electromagnetism-force',
+      'g.s11-electromagnetism-force-angle',
+      'g.s11-electromagnetism-transformer',
+      'g.s11-electromagnetism-step-up',
+    ],
+    notes:
+      'Drawn (group HK, reps/Induction.tsx). Calculator picture { kind: "induction", fixed?: true, and one mode }: coil: { mode: "coil", turns: N, flux: ΔΦ (Wb), time: Δt (s), emf?: NΔΦ/Δt, direction?: "in" | "out" } — a painted bar magnet (S blue, N red) pushed in or pulled out, its field lines traced, a copper coil with one loop per turn (up to 20, the count labelled), leads to a center-zero galvanometer whose needle swings by the emf, right going in and left coming out (Lenz’s law); force: { mode: "force", field: B (T), current: I (A), length: L (m), angle?: θ (degrees; given, B runs along the paper and the wire is drawn at θ to it, the force into or out of the page ⊗/⊙), force?: F, currentDir?: "right" | "left", fieldDir?: "in" | "out" (× or • marks) } — a copper wire with its current arrow, the force arrow on one scale, direction from F = IL × B (right-hand rule in the caption); transformer: { mode: "transformer", primary: Nₚ, secondary: Nₛ, voltage: Vₚ, output?: Vₛ, current?: Iₚ, outputCurrent?: Iₛ } — a laminated iron core, both windings with one loop per turn (up to 20, counts labelled), an AC source and a lamp, step-up or step-down named; Vₛ = Vₚ Nₛ/Nₚ and Iₛ = Iₚ Nₚ/Nₛ (power kept). Step text must put a sine first inside a bracket ({F}/(sin({q}) × {I} × {L})): the harness can’t read N/(N × N × sin(N)). The harness checks the emf, BIL sin θ, Vₛ and Iₛ. Example: representation: { kind: "induction", mode: "transformer", primary: "p", secondary: "s", voltage: "V", output: "W", current: "I", outputCurrent: "J" }.',
+  },
+  {
+    ...ask(
+      'H70',
+      'spectrum',
+      'Emission and absorption lines of H, He, Na; the lines shifted red; photon energy from frequency',
+      ['s.11.modern-physics', 's.12.starlight-spectra', 's.12.cosmology'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s11-modern-physics-hydrogen',
+      'g.s11-modern-physics-helium',
+      'g.s11-modern-physics-photon',
+      'g.s12-starlight-spectra-absorption',
+      'g.s12-cosmology-redshift',
+      'g.s12-cosmology-blueshift',
+    ],
+    notes:
+      'Drawn (group HK, reps/SpectrumLines.tsx; the line list and photon math in hskMath.ts) as two options on the Grade 8 spectrum, so every current spectrum page is unchanged. The line wavelengths are the standard measured values in air: H 656.3 (Hα), 486.1, 434.0, 410.2 nm; He 587.6, 447.1, 471.3, 492.2, 501.6, 667.8, 706.5 nm; Na 589.0 and 589.6 (the D doublet), 568.8, 615.4 nm. Lines: { kind: "spectrum", wavelength: λ (with meters: 1e-9 for nm), lines: { element: "H" | "He" | "Na", mode: "emission" | "absorption", redshift?: z (number or variable), line?: the reference line’s index (default the first: Hα, He 587.6, Na D₂), rest?: its lab wavelength, velocity?: v ≈ cz in km/s } } — the visible spectrum 380–750 nm as bright lines in their colors on black (emission) or dark lines across the rainbow (absorption), Hα–Hδ and D named, ticks every 100 nm; without a redshift the page’s λ may be any of the element’s lines (give the variable `allowed` the list) and is marked under the strip; with z, a second strip at λ(1 + z), each line joined to its lab line, lines past 750 nm noted; λ is then the observed reference line. Photon: { kind: "spectrum", wavelength: λ, meters: 1e-9, photon: { frequency: f, hertz?: Hz per unit (1e12 for THz), energy?: E in J, electronVolts?: E in eV } } — the wave in its color with more cycles for a higher frequency, its place on the visible strip (UV, IR, radio or X-ray named past it), λ = c/f and E = hf in J and eV in the caption. The harness checks the observed λ₀(1 + z), cz, that an unshifted λ is one of the element’s lines, and λ = c/f, hf and eV. Example: representation: { kind: "spectrum", wavelength: "l", meters: 1e-9, lines: { element: "H", mode: "absorption", redshift: "z", velocity: "v" } }.',
+  },
 
   // ── G. Earth and space ──
   {

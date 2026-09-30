@@ -23,6 +23,7 @@ import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
 import { hslSpecVars } from '../typesHsl';
+import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -275,6 +276,7 @@ function representationVars(r: Representation): string[] {
         ...(typeof r.extent === 'string' ? [r.extent] : []),
         r.wavelength,
         ...(r.frequency ? [r.frequency] : []),
+        ...hskOptionVars(r),
       ];
     case 'punnettSquare':
       return [
@@ -485,12 +487,12 @@ function representationVars(r: Representation): string[] {
     case 'motionGraph':
     case 'skaters':
     case 'energyTrack':
-      return mechanicsSpecVars(r);
+      return [...mechanicsSpecVars(r), ...hskOptionVars(r)];
     case 'spectrum':
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
-      return physics8SpecVars(r);
+      return [...physics8SpecVars(r), ...hskOptionVars(r)];
     case 'triangleSolver':
     case 'markedFigure':
     case 'circleTheorems':
@@ -534,6 +536,16 @@ function representationVars(r: Representation): string[] {
     case 'hrDiagram':
     case 'expandingUniverse':
       return hslSpecVars(r);
+    case 'projectile':
+    case 'induction':
+    case 'charges':
+    case 'rayDiagram':
+    case 'heatEngine':
+    case 'simpleMachine':
+    case 'collision':
+    case 'circularMotion':
+    case 'freeBody':
+      return hskSpecVars(r);
   }
 }
 
