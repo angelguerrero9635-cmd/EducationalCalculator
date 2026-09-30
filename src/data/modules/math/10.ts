@@ -2217,6 +2217,155 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.circle-equations ───────────────────────────────────────────────────
+
+const rSquared = rule(
+  'r² = r × r',
+  '{q} = {r}²',
+  {
+    q: [(v) => v.r! ** 2, '{r}²', 'Square the radius for the right side.'],
+    r: [(v) => root(v.q!), '√{q}', 'The radius is the square root of the right side.'],
+  },
+  (v) => v.q! - v.r! ** 2,
+);
+
+const CIRCLE_EQUATIONS: ModuleDef[] = [
+  page({
+    id: 'm.10.circle-equations',
+    assumptions: [
+      'Every point (x, y) on the circle is r from the center (h, k).',
+      'The distance formula squared gives (x − h)² + (y − k)² = r².',
+      'A center with a negative coordinate turns the minus into a plus: (y + 2)² has k = −2.',
+    ],
+    standalone: {
+      vars: ['h', 'k'],
+      why: 'The center only moves the circle; the right side comes from the radius alone.',
+    },
+    variables: [
+      num('h', 'h', 'Center, x', -20, 20, { step: 0.5 }),
+      num('k', 'k', 'Center, y', -20, 20, { step: 0.5 }),
+      num('r', 'r', 'Radius', 0.1, 100, { step: 0.1 }),
+      num('q', 'r²', 'Right side r²', 0.01, 10000),
+    ],
+    rules: [rSquared],
+    example: { h: 3, k: -2, r: 5, q: 25 },
+    startWith: ['h', 'k', 'r'],
+    equation: '(x − {h})² + (y − {k})² = {q}',
+    representation: { kind: 'conicGraph', conic: 'circle', h: 'h', k: 'k', r: 'r' },
+  }),
+  page({
+    id: 'm.10.circle-equations~general-form',
+    title: 'Center and radius from the general form',
+    use: 'Use this for “Find the center and radius of x² + y² − 6x + 4y − 12 = 0.”',
+    assumptions: [
+      'Complete the square in x and in y: x² + Dx = (x + D/2)² − (D/2)².',
+      'So the center is (−D ÷ 2, −E ÷ 2) and r² = h² + k² − F.',
+      'When h² + k² − F is 0 or less, the equation has no circle.',
+    ],
+    variables: [
+      num('D', 'D', 'Coefficient of x', -100, 100),
+      num('E', 'E', 'Coefficient of y', -100, 100),
+      num('F', 'F', 'Constant', -1000, 1000),
+      der(num('h', 'h', 'Center, x', -50, 50)),
+      der(num('k', 'k', 'Center, y', -50, 50)),
+      der(num('r', 'r', 'Radius', 0, 200)),
+    ],
+    rules: [
+      derive(
+        'h = −D/2',
+        '{h} = −{D} ÷ 2',
+        'h',
+        (v) => -v.D! / 2,
+        '−{D} ÷ 2',
+        'Half the x coefficient, with its sign changed, completes the square.',
+      ),
+      derive(
+        'k = −E/2',
+        '{k} = −{E} ÷ 2',
+        'k',
+        (v) => -v.E! / 2,
+        '−{E} ÷ 2',
+        'Half the y coefficient, with its sign changed, completes the square.',
+      ),
+      limit(
+        'the equation is a circle',
+        '{h}² + {k}² − {F} is more than 0',
+        (v) => v.h! ** 2 + v.k! ** 2 - v.F! > 0,
+        'h² + k² − F is 0 or less: this equation has no circle.',
+      ),
+      derive(
+        'r = √(h² + k² − F)',
+        '{r} = √({h}² + {k}² − {F})',
+        'r',
+        (v) => root(v.h! ** 2 + v.k! ** 2 - v.F!),
+        '√({h}² + {k}² − {F})',
+        'Move the squares’ extra terms and F to the right side: that is r².',
+      ),
+    ],
+    example: { D: -6, E: 4, F: -12, h: 3, k: -2, r: 5 },
+    startWith: ['D', 'E', 'F'],
+    equation: 'x² + y² + {D}x + {E}y + {F} = 0',
+    representation: { kind: 'conicGraph', conic: 'circle', h: 'h', k: 'k', r: 'r' },
+  }),
+  page({
+    id: 'm.10.circle-equations~point',
+    title: 'A point on the circle',
+    use: 'Use this for “A circle has center (1, 2) and radius 5. Find x when the point (x, 5) is on it.”',
+    assumptions: [
+      'A point is on the circle when (x − h)² + (y − k)² = r².',
+      'Given y, solve for x: x = h ± √(r² − (y − k)²). Two points share each height, mirrored across x = h.',
+      'The radius is the distance from the center to any point on the circle.',
+    ],
+    variables: [
+      num('h', 'h', 'Center, x', -20, 20, { step: 0.5 }),
+      num('k', 'k', 'Center, y', -20, 20, { step: 0.5 }),
+      num('r', 'r', 'Radius', 0.1, 100, { step: 0.1 }),
+      num('x', 'x', 'Point, x', -120, 120),
+      num('y', 'y', 'Point, y', -120, 120),
+    ],
+    rules: [
+      rule(
+        '(x − h)² + (y − k)² = r²',
+        '({x} − {h})² + ({y} − {k})² = {r}²',
+        {
+          x: [
+            (v) => {
+              const d = v.r! ** 2 - (v.y! - v.k!) ** 2;
+              return d < 0 ? undefined : [v.h! + Math.sqrt(d), v.h! - Math.sqrt(d)];
+            },
+            '{h} ± √({r}² − ({y} − {k})²)',
+            'Solve the circle’s equation for x: two points at that height.',
+          ],
+          y: [
+            (v) => {
+              const d = v.r! ** 2 - (v.x! - v.h!) ** 2;
+              return d < 0 ? undefined : [v.k! + Math.sqrt(d), v.k! - Math.sqrt(d)];
+            },
+            '{k} ± √({r}² − ({x} − {h})²)',
+            'Solve the circle’s equation for y: two points above and below.',
+          ],
+          r: [
+            (v) => Math.hypot(v.x! - v.h!, v.y! - v.k!),
+            '√(({x} − {h})² + ({y} − {k})²)',
+            'The radius is the distance from the center to the point.',
+          ],
+        },
+        (v) => (v.x! - v.h!) ** 2 + (v.y! - v.k!) ** 2 - v.r! ** 2,
+      ),
+    ],
+    example: { h: 1, k: 2, r: 5, y: 5, x: 5 },
+    startWith: ['h', 'k', 'r', 'y'],
+    representation: {
+      kind: 'conicGraph',
+      conic: 'circle',
+      h: 'h',
+      k: 'k',
+      r: 'r',
+      point: { x: 'x', y: 'y' },
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...SIMILARITY,
   ...SPECIAL,
@@ -2225,5 +2374,6 @@ export const MATH_10_MODULES: ModuleDef[] = [
   ...ARC_SECTOR,
   ...VOLUME,
   ...CIRCLE_THEOREMS,
+  ...CIRCLE_EQUATIONS,
   ...CONDITIONAL,
 ];
