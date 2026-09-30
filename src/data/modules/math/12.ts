@@ -5386,7 +5386,7 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           note: (v) =>
             v.d === undefined || v.n === undefined
               ? ''
-              : `→ the directrix is x = ${v.n > 0 ? '−' : ''}${fmt(v.d)}`,
+              : `→ the directrix is x = ${v.n > 0 ? '−' : ''}${shown(v.d)}`,
         },
       ),
       rel(
@@ -5482,7 +5482,7 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           note: (v) =>
             v.d === undefined || v.n === undefined
               ? ''
-              : `→ the directrix is y = ${v.n > 0 ? '−' : ''}${fmt(v.d)}`,
+              : `→ the directrix is y = ${v.n > 0 ? '−' : ''}${shown(v.d)}`,
         },
       ),
       rel(
@@ -5538,7 +5538,12 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
       V('R', 'R', 'Distance to the vertex at 0°', { min: 0.001, max: 200000, step: 0.01 }),
       V('S', 'S', 'Distance to the vertex at 180°', { min: 0.001, max: 1000, step: 0.01 }),
       V('a', 'a', 'Half the major axis', { min: 0.001, max: 200000, step: 0.01 }),
-      V('c', 'c', 'Distance from the center to the focus', { min: 0, max: 200000, step: 0.01 }),
+      V('c', 'c', 'Distance from the center to the focus', {
+        min: 0,
+        max: 200000,
+        step: 0.01,
+        derived: true,
+      }),
       V('b', 'b', 'Half the minor axis', { min: 0, max: 200000, step: 0.01, derived: true }),
     ],
     ...rels(
@@ -5673,7 +5678,7 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
           'The vertex is halfway from the focus to the directrix.',
         ),
         'p',
-        { note: (v) => (v.d === undefined ? '' : `→ the directrix is x = −${fmt(v.d)}`) },
+        { note: (v) => (v.d === undefined ? '' : `→ the directrix is x = −${shown(v.d)}`) },
       ),
       hide(
         derive(
@@ -6111,7 +6116,7 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
             const top = v.a! * v.x! ** 2 + v.b! * v.x! + v.c!;
             const bottom = (v.x! - v.p!) * quadAt(v, v.x!);
             return [
-              `${shown(v.a!)} × ${shown(v.x! ** 2)} + ${par(v.b!)} × ${par(v.x!)} + ${par(v.c!)} = ${fmt(top)}`,
+              `(${shown(v.a!)} × ${shown(v.x! ** 2)}) + (${par(v.b!)} × ${par(v.x!)}) + ${par(v.c!)} = ${fmt(top)}`,
               `${par(v.x! - v.p!)} × ${par(quadAt(v, v.x!))} = ${fmt(bottom)}`,
               `y = ${par(top)} ÷ ${par(bottom)}`,
             ];
@@ -6881,7 +6886,7 @@ const tSided = withCheck(
     'Hₐ ≠ counts both tails past |t|; Hₐ > the area right of t; Hₐ < the area left of t (tcdf is the area left).',
   ),
   (v) => {
-    const [t, df] = [fmt(v.t!), fmt(v.df!)];
+    const [t, df] = [shown(v.t!), shown(v.df!)];
     const P = shown(v.P!);
     return v.h === 0
       ? `${P} = 2 × (1 − tcdf(|${t}|, ${df}))`

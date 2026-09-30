@@ -344,3 +344,7 @@ None: every planned page is built, some with an interim picture (below).
   the MSB sentence now says each mean counts n times. `~two-variances`: n₁ and n₂ are the sizes
   of the larger-SD and smaller-SD samples. `~which-test`: the two-sample card compares students
   who play a sport with those who don't.
+- Deep-run fixes: the ~quadratic work line brackets its products (the harness reads a bare
+  "2 + 3 = 11" tail as a sum); directrix notes show d as its box does (no "x = −0"); `~ellipse`
+  c is worked out only (c = ae); the one-sided t check shows t as its box does, and
+  `phrasesM12.ts` reads tcdf of a t in scientific notation.
