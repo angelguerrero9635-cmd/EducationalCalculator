@@ -7,6 +7,7 @@
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
+import { div } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 
 // ─── Helpers only Grade 9 biology uses ──────────────────────────────────────
@@ -390,4 +391,171 @@ const INHERITANCE: ModuleDef[] = [
   },
 ];
 
-export const SCIENCE_9_MODULES: ModuleDef[] = [...INHERITANCE];
+/** A frequency or share, 0 to 1. */
+const freq = (id: string, symbol: string, name: string, derived = false): VariableDef => ({
+  id,
+  symbol,
+  name,
+  min: 0,
+  max: 1,
+  step: 0.0001,
+  ...(derived ? { derived: true } : {}),
+});
+
+/** Expected people with a genotype: N × its share (one way). */
+const expected = (out: string, share: string, what: string): Rule =>
+  forward(
+    `${out} = N × ${share}`,
+    `{${out}} = {N} × {${share}}`,
+    out,
+    ['N', share],
+    (v) => v.N! * v[share]!,
+    `{N} × {${share}}`,
+    `The ${what} share of the N people.`,
+  );
+
+const EVOLUTION: ModuleDef[] = [
+  // ── Evidence for evolution, population genetics and speciation (HS-LS4-1 to 4-5) ──
+  {
+    id: 's.9.evolution-evidence',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Hardy–Weinberg holds in a large population with random mating, no mutation, no migration and no selection.',
+      'Only aa shows the recessive trait, so start from its share q²: q is its square root.',
+      'Carriers (Aa) show nothing but make up 2pq, and p² + 2pq + q² = 1.',
+    ],
+    variables: [
+      freq('Q2', 'q²', 'Share with the recessive trait (aa)'),
+      freq('q', 'q', 'Frequency of allele a'),
+      freq('p', 'p', 'Frequency of allele A'),
+      freq('P2', 'p²', 'Share that is AA'),
+      freq('H', '2pq', 'Share of carriers (Aa)'),
+      count('N', 'N', 'People in the population', 2, 1000000),
+      { ...freq('nAA', 'n_AA', 'Expected AA people', true), max: 1000000, step: 1 },
+      { ...freq('nAa', 'n_Aa', 'Expected carriers', true), max: 1000000, step: 1 },
+      { ...freq('naa', 'n_aa', 'Expected aa people', true), max: 1000000, step: 1 },
+    ],
+    ...rules(
+      both('q² = q^2', '{Q2} = {q}^2', ['Q2', 'q'], (v) => v.Q2! - v.q! ** 2, {
+        Q2: [(v) => v.q! ** 2, '{q}^2', 'Two a alleles meet with chance q × q.'],
+        q: [
+          (v) => (v.Q2! >= 0 ? Math.sqrt(v.Q2!) : undefined),
+          '√{Q2}',
+          'Only aa shows the recessive trait, so q is the square root of its share.',
+        ],
+      }),
+      both('p = 1 − q', '{p} = 1 − {q}', ['p', 'q'], (v) => v.p! + v.q! - 1, {
+        p: [(v) => 1 - v.q!, '1 − {q}', 'The two alleles’ frequencies add to 1.'],
+        q: [(v) => 1 - v.p!, '1 − {p}', 'The two alleles’ frequencies add to 1.'],
+      }),
+      both('p² = p^2', '{P2} = {p}^2', ['P2', 'p'], (v) => v.P2! - v.p! ** 2, {
+        P2: [(v) => v.p! ** 2, '{p}^2', 'Two A alleles meet with chance p × p.'],
+        p: [
+          (v) => (v.P2! >= 0 ? Math.sqrt(v.P2!) : undefined),
+          '√{P2}',
+          'p is the square root of the AA share.',
+        ],
+      }),
+      both(
+        '2pq = 2 × p × q',
+        '{H} = 2 × {p} × {q}',
+        ['H', 'p', 'q'],
+        (v) => v.H! - 2 * v.p! * v.q!,
+        {
+          H: [
+            (v) => 2 * v.p! * v.q!,
+            '2 × {p} × {q}',
+            'A from one parent and a from the other, or the other way round: twice p × q.',
+          ],
+          p: [(v) => div(v.H!, 2 * v.q!), '{H} ÷ (2 × {q})', 'Divide the carrier share by 2q.'],
+          q: [(v) => div(v.H!, 2 * v.p!), '{H} ÷ (2 × {p})', 'Divide the carrier share by 2p.'],
+        },
+      ),
+      expected('nAA', 'P2', 'AA'),
+      expected('nAa', 'H', 'carrier'),
+      expected('naa', 'Q2', 'aa'),
+    ),
+    example: { Q2: 0.16, q: 0.4, p: 0.6, P2: 0.36, H: 0.48, N: 500, nAA: 180, nAa: 240, naa: 80 },
+    startWith: ['Q2', 'N'],
+    representation: {
+      kind: 'alleleFrequencies',
+      p: 'p',
+      q: 'q',
+      genotypes: ['P2', 'H', 'Q2'],
+      keep: ['N'],
+    },
+  },
+  {
+    id: 's.9.evolution-evidence~allele-counts',
+    title: 'Allele frequencies from genotype counts',
+    use: 'Use this for “A sample has 49 AA, 42 Aa and 9 aa. What are p and q?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each individual carries two alleles: AA has two A, Aa one of each, aa two a.',
+      'So N individuals carry 2N alleles, and p is the share of them that are A.',
+      'Counting alleles works for any population, whether or not it is in Hardy–Weinberg equilibrium.',
+    ],
+    variables: [
+      count('nAA', 'n_AA', 'Individuals AA', 0, 10000),
+      count('nAa', 'n_Aa', 'Individuals Aa', 0, 10000),
+      count('naa', 'n_aa', 'Individuals aa', 0, 10000),
+      count('N', 'N', 'Individuals in all', 1, 30000, true),
+      count('A', 'A', 'A alleles counted', 0, 60000, true),
+      count('a', 'a', 'a alleles counted', 0, 60000, true),
+      freq('p', 'p', 'Frequency of allele A', true),
+      freq('q', 'q', 'Frequency of allele a', true),
+    ],
+    ...rules(
+      forward(
+        'N = n_AA + n_Aa + n_aa',
+        '{N} = {nAA} + {nAa} + {naa}',
+        'N',
+        ['nAA', 'nAa', 'naa'],
+        (v) => v.nAA! + v.nAa! + v.naa!,
+        '{nAA} + {nAa} + {naa}',
+        'Add the three genotype counts.',
+      ),
+      forward(
+        'A = 2n_AA + n_Aa',
+        '{A} = 2 × {nAA} + {nAa}',
+        'A',
+        ['nAA', 'nAa'],
+        (v) => 2 * v.nAA! + v.nAa!,
+        '2 × {nAA} + {nAa}',
+        'Two A in each AA individual and one in each Aa.',
+      ),
+      forward(
+        'a = 2n_aa + n_Aa',
+        '{a} = 2 × {naa} + {nAa}',
+        'a',
+        ['naa', 'nAa'],
+        (v) => 2 * v.naa! + v.nAa!,
+        '2 × {naa} + {nAa}',
+        'Two a in each aa individual and one in each Aa.',
+      ),
+      forward(
+        'p = A ÷ 2N',
+        '{p} = {A} ÷ (2 × {N})',
+        'p',
+        ['A', 'N'],
+        (v) => div(v.A!, 2 * v.N!),
+        '{A} ÷ (2 × {N})',
+        'The A alleles out of all 2N alleles.',
+      ),
+      forward(
+        'q = a ÷ 2N',
+        '{q} = {a} ÷ (2 × {N})',
+        'q',
+        ['a', 'N'],
+        (v) => div(v.a!, 2 * v.N!),
+        '{a} ÷ (2 × {N})',
+        'The a alleles out of all 2N alleles.',
+      ),
+    ),
+    example: { nAA: 49, nAa: 42, naa: 9, N: 100, A: 140, a: 60, p: 0.7, q: 0.3 },
+    startWith: ['nAA', 'nAa', 'naa'],
+    representation: { kind: 'alleleFrequencies', p: 'p', q: 'q', fixed: true },
+  },
+];
+
+export const SCIENCE_9_MODULES: ModuleDef[] = [...INHERITANCE, ...EVOLUTION];
