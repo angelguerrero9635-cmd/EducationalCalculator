@@ -5780,6 +5780,233 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
   },
 ];
 
+// ── Mathematical induction (added skill 17) ──
+
+/**
+ * The inductive step in numbers for a sum formula S(n): the formula at n, the next term, their
+ * sum T, and the formula at n + 1, F. T = F is the step; the two are worked out separately.
+ */
+interface SumFormula {
+  /** S(n) as the page writes it, with {n} (and {r}). */
+  S: [display: string, f: (v: Values) => number, back?: [Solver, string, string]];
+  /** The next term, a(n + 1). */
+  a: [display: string, f: (v: Values) => number];
+  /** S(n + 1). */
+  F: [display: string, f: (v: Values) => number];
+  /** What the formula is, for the steps. */
+  what: string;
+  /** The next term in words. */
+  term: string;
+  /** Extra inputs (the ratio r). */
+  more?: string[];
+}
+function inductionRels({ S, a, F, what, term, more = [] }: SumFormula): Rel[] {
+  const sym = (d: string) => d.replace(/\{(\w+)\}/g, '$1');
+  return [
+    rel(`S = ${sym(S[0])}`, `{S} = ${S[0]}`, ['S', 'n', ...more], (v) => v.S! - S[1](v), {
+      S: [S[1], S[0], `The formula at n: ${what}.`],
+      ...(S[2] ? { n: S[2] } : {}),
+    }),
+    derive(
+      `a = ${sym(a[0])}`,
+      `{a} = ${a[0]}`,
+      'a',
+      ['n', ...more],
+      a[1],
+      a[0],
+      `The next term, number n + 1: ${term}.`,
+    ),
+    derive(
+      'T = S + a',
+      '{T} = {S} + {a}',
+      'T',
+      ['S', 'a'],
+      (v) => v.S! + v.a!,
+      '{S} + {a}',
+      'If the formula holds at n, the sum through term n + 1 is S plus the next term.',
+    ),
+    withStep(
+      derive(
+        `F = ${sym(F[0])}`,
+        `{F} = ${F[0]}`,
+        'F',
+        ['n', ...more],
+        F[1],
+        F[0],
+        'The formula with n + 1 in place of n.',
+      ),
+      'F',
+      {
+        note: (v) =>
+          v.T === undefined || v.F === undefined
+            ? ''
+            : Math.abs(v.T - v.F) < 1e-9 * Math.max(1, Math.abs(v.F))
+              ? `→ T = F = ${fmt(v.F)}: adding the next term gives the formula at n + 1`
+              : `→ T = ${fmt(v.T)} is not F: the formula fails`,
+      },
+    ),
+  ];
+}
+
+const count = (max: number) => V('n', 'n', 'Number of terms', { integer: true, min: 1, max });
+const sumVar = (max: number, extra = {}) =>
+  V('S', 'S', 'Sum of the first n terms', { integer: true, min: 1, max, ...extra });
+const inductionVars = (max: number) => [
+  V('a', 'a', 'Next term', { min: 1, max, step: 1, derived: true }),
+  V('T', 'T', 'S plus the next term', { min: 1, max, step: 1, derived: true }),
+  V('F', 'F', 'The formula at n + 1', { min: 1, max, step: 1, derived: true }),
+];
+const INDUCTION_WHY = [
+  'Base case: check the formula at n = 1.',
+  'Step: assume it holds at n = k; adding term k + 1 must give the formula at k + 1.',
+];
+
+const MATH_12_INDUCTION: ModuleDef[] = [
+  // ── m.12.induction (Larson 9.4) ──
+  {
+    id: 'm.12.induction',
+    assumptions: [
+      ...INDUCTION_WHY,
+      'Here: k(k + 1)/2 + (k + 1) = (k + 1)(k + 2)/2. Numbers check one case; the algebra proves every case.',
+    ],
+    variables: [count(30), sumVar(500), ...inductionVars(600)],
+    ...rels(
+      ...inductionRels({
+        S: [
+          '{n} × ({n} + 1) ÷ 2',
+          (v) => (v.n! * (v.n! + 1)) / 2,
+          [
+            (v) => (Math.sqrt(1 + 8 * v.S!) - 1) / 2,
+            '(√(1 + 8 × {S}) − 1) ÷ 2',
+            'Solve n² + n = 2S for the positive n.',
+          ],
+        ],
+        a: ['{n} + 1', (v) => v.n! + 1],
+        F: ['({n} + 1) × ({n} + 2) ÷ 2', (v) => ((v.n! + 1) * (v.n! + 2)) / 2],
+        what: '1 + 2 + … + n = n(n + 1)/2',
+        term: 'the number n + 1 itself',
+      }),
+    ),
+    example: { n: 4, S: 10, a: 5, T: 15, F: 15 },
+    startWith: ['n'],
+    representation: {
+      kind: 'termsChart',
+      type: 'arithmetic',
+      first: 1,
+      step: 1,
+      count: 'n',
+      as: 'bars',
+      sums: true,
+      sum: 'S',
+    },
+  },
+  {
+    id: 'm.12.induction~odd',
+    title: 'The sum of odd numbers',
+    use: 'Use this for “Prove 1 + 3 + 5 + … + (2n − 1) = n² by induction.”',
+    assumptions: [
+      ...INDUCTION_WHY,
+      'Here: k² + (2k + 1) = (k + 1)², so the step holds for every k.',
+    ],
+    variables: [count(30), sumVar(900), ...inductionVars(1000)],
+    ...rels(
+      ...inductionRels({
+        S: [
+          '{n}²',
+          (v) => v.n! ** 2,
+          [(v) => Math.sqrt(v.S!), '√{S}', 'The square root of the sum.'],
+        ],
+        a: ['2 × {n} + 1', (v) => 2 * v.n! + 1],
+        F: ['({n} + 1)²', (v) => (v.n! + 1) ** 2],
+        what: '1 + 3 + … + (2n − 1) = n²',
+        term: '2(n + 1) − 1 = 2n + 1',
+      }),
+    ),
+    example: { n: 5, S: 25, a: 11, T: 36, F: 36 },
+    startWith: ['n'],
+    representation: {
+      kind: 'termsChart',
+      type: 'arithmetic',
+      first: 1,
+      step: 2,
+      count: 'n',
+      as: 'bars',
+      sums: true,
+      sum: 'S',
+    },
+  },
+  {
+    id: 'm.12.induction~powers',
+    title: 'A geometric sum',
+    use: 'Use this for “Prove 1 + 2 + 4 + … + 2ⁿ⁻¹ = 2ⁿ − 1 by induction.”',
+    assumptions: [
+      ...INDUCTION_WHY,
+      'Here: (rᵏ − 1)/(r − 1) + rᵏ = (rᵏ⁺¹ − 1)/(r − 1), since rᵏ(r − 1) = rᵏ⁺¹ − rᵏ.',
+    ],
+    variables: [
+      V('r', 'r', 'Ratio', { integer: true, min: 2, max: 10 }),
+      count(20),
+      sumVar(2e20, { integer: false, step: 1 }),
+      V('a', 'a', 'Next term', { min: 1, max: 1e21, step: 1, derived: true }),
+      V('T', 'T', 'S plus the next term', { min: 1, max: 1e21, step: 1, derived: true }),
+      V('F', 'F', 'The formula at n + 1', { min: 1, max: 1e21, step: 1, derived: true }),
+    ],
+    ...rels(
+      ...inductionRels({
+        S: ['({r}^{n} − 1) ÷ ({r} − 1)', (v) => (v.r! ** v.n! - 1) / (v.r! - 1)],
+        a: ['{r}^{n}', (v) => v.r! ** v.n!],
+        F: ['({r}^({n} + 1) − 1) ÷ ({r} − 1)', (v) => (v.r! ** (v.n! + 1) - 1) / (v.r! - 1)],
+        what: '1 + r + … + rⁿ⁻¹ = (rⁿ − 1)/(r − 1)',
+        term: 'r to the power n',
+        more: ['r'],
+      }),
+    ),
+    example: { r: 2, n: 5, S: 31, a: 32, T: 63, F: 63 },
+    startWith: ['r', 'n'],
+    representation: {
+      kind: 'termsChart',
+      type: 'geometric',
+      first: 1,
+      step: 'r',
+      count: 'n',
+      as: 'bars',
+      sums: true,
+      sum: 'S',
+    },
+  },
+  {
+    id: 'm.12.induction~squares',
+    title: 'The sum of squares',
+    use: 'Use this for “Prove 1² + 2² + … + n² = n(n + 1)(2n + 1)/6 by induction.”',
+    assumptions: [
+      ...INDUCTION_WHY,
+      'Here: k(k + 1)(2k + 1)/6 + (k + 1)² = (k + 1)(k + 2)(2k + 3)/6; factor out k + 1 to see it.',
+    ],
+    variables: [count(1000), sumVar(400000000), ...inductionVars(500000000)],
+    ...rels(
+      ...inductionRels({
+        S: ['{n} × ({n} + 1) × (2 × {n} + 1) ÷ 6', (v) => (v.n! * (v.n! + 1) * (2 * v.n! + 1)) / 6],
+        a: ['({n} + 1)²', (v) => (v.n! + 1) ** 2],
+        F: [
+          '({n} + 1) × ({n} + 2) × (2 × {n} + 3) ÷ 6',
+          (v) => ((v.n! + 1) * (v.n! + 2) * (2 * v.n! + 3)) / 6,
+        ],
+        what: '1² + 2² + … + n² = n(n + 1)(2n + 1)/6',
+        term: '(n + 1)²',
+      }),
+    ),
+    example: { n: 3, S: 14, a: 16, T: 30, F: 30 },
+    startWith: ['n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'S',
+      params: [],
+      rows: (v: Values) => [1, 2, 3, 4, 5].map((i) => Math.max(0, (v.n ?? 3) - 3) + i),
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
@@ -5791,6 +6018,7 @@ export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRANSFORMS,
   ...MATH_12_LIMITS,
   ...MATH_12_CONICS,
+  ...MATH_12_INDUCTION,
   ...MATH_12_PARTIAL_FRACTIONS,
   ...MATH_12_POLAR_CONICS,
   ...MATH_12_STATS,

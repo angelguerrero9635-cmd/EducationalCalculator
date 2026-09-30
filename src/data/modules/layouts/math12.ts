@@ -120,6 +120,29 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Mathematical induction (Larson 9.4) ──
+  {
+    kind: 'sequence',
+    id: 'm.12.induction~steps',
+    title: 'The steps of a proof by induction',
+    use: 'Use this for “Prove by induction that 1 + 3 + 5 + … + (2n − 1) = n² for every n ≥ 1.”',
+    assumptions: [
+      'Induction proves a statement for every whole number n ≥ 1, like a line of falling dominoes.',
+      'The base case knocks over the first domino; the step shows each one knocks over the next.',
+      'Both parts are needed: a step with no base case proves nothing.',
+    ],
+    question: 'Put the parts of the proof that 1 + 3 + … + (2n − 1) = n² in order.',
+    stages: [
+      { label: 'Base case: for n = 1 the left side is 1 and the right side is 1² = 1' },
+      { label: 'Hypothesis: assume 1 + 3 + … + (2k − 1) = k² for some k ≥ 1' },
+      { label: 'Add the next odd number, 2k + 1, to both sides' },
+      { label: 'Simplify: k² + 2k + 1 = (k + 1)², the statement for n = k + 1' },
+      {
+        label: 'Conclusion: true for n = 1, and each case gives the next, so true for every n ≥ 1',
+      },
+    ],
+  },
+
   // ── Hypothesis tests (S-IC.5) ──
   {
     kind: 'sort',
