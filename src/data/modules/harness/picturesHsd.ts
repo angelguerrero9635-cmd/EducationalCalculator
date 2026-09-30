@@ -337,7 +337,7 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
               );
           }),
         );
-      } else {
+      } else if (rep.mode === 'rowReduce') {
         shape(rep.system, 'the augmented matrix');
         const rows = rep.system.length;
         for (const op of rep.steps) {

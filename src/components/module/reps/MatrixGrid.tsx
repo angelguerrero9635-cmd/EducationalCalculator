@@ -10,12 +10,12 @@ import { Canvas, Caption, useRep } from './common';
 import { MathText } from './hsdText';
 import { entryText, multiply, opText, reduceSteps, type Matrix } from './matrices';
 
-const ROW_H = 24;
+export const ROW_H = 24;
 const SUB = '₀₁₂₃₄₅₆₇₈₉';
 const sub = (n: number) => String(n).replace(/\d/g, (d) => SUB[Number(d)]!);
 
 /** A cell's width for the widest entry of a matrix. */
-const cellWidth = (m: string[][]) =>
+export const cellWidth = (m: string[][]) =>
   Math.max(28, ...m.flat().map((t) => t.length * chart.value * 0.6 + 12));
 
 interface Lit {
@@ -29,7 +29,7 @@ interface Lit {
  * A matrix in square brackets at (x, y) (top left), `bar` a dashed line before that column
  * (augmented), lit rows, columns or a cell; returns its drawing and size.
  */
-function matrixAt(
+export function matrixAt(
   x: number,
   y: number,
   cells: string[][],
@@ -293,6 +293,8 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
     );
   }
 
+  // H99: the determinant mode is MatrixDeterminant's (reps/index.tsx routes it there).
+  if (spec.mode === 'determinant') return null;
   // Row reduction: each matrix under the last, the operation beside the arrow between.
   const M = spec.system.map((r) => r.map(num));
   const known = spec.system.flat().every(isKnown);

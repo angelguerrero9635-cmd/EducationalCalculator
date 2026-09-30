@@ -7,6 +7,7 @@
 import { boxProduct, monomialModel } from '@/components/module/reps/algebraBox';
 import { powersOf, rootsOf } from '@/components/module/reps/complexPowers';
 import { cltModel } from '@/components/module/reps/cltModel';
+import { cramerOf, det } from '@/components/module/reps/determinant';
 import { curveOf } from '@/components/module/reps/functionGraphMath';
 import { histModel } from '@/components/module/reps/histModel';
 import { rangeOf } from '@/components/module/reps/histRange';
@@ -310,6 +311,37 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
         out.push(`t df ${df} (whole, 1 or more)`);
       if (rep.sample || rep.intervals || rep.chiSquare)
         out.push('a t curve with sample, intervals or chiSquare');
+      break;
+    }
+    case 'matrixGrid': {
+      // H99: a determinant, and Cramer's rule.
+      if (rep.mode !== 'determinant') break;
+      const n = rep.matrix.length;
+      if (!(n === 2 || n === 3) || rep.matrix.some((r) => r.length !== n))
+        out.push(`a ${n} × ${rep.matrix[0]?.length} determinant (2 × 2 or 3 × 3)`);
+      if (rep.cramer && rep.cramer.rhs.length !== n)
+        out.push(`${rep.cramer.rhs.length} right sides for ${n} rows`);
+      const M = rep.matrix.map((r) => r.map(get));
+      if (M.flat().some((x) => x === undefined)) break;
+      const D = det(M as number[][]);
+      const typed = get(rep.value);
+      if (typed !== undefined && !near(typed, D))
+        out.push(`D = ${typed}, but the matrix gives ${D}`);
+      if (!rep.cramer) break;
+      const rhs = rep.cramer.rhs.map(get);
+      if (rhs.some((x) => x === undefined)) break;
+      const cr = cramerOf(M as number[][], rhs as number[]);
+      rep.cramer.values?.forEach((id, j) => {
+        const v = get(id);
+        if (v !== undefined && !near(v, cr.Ds[j]!))
+          out.push(`D${j + 1} = ${v}, but it is ${cr.Ds[j]}`);
+      });
+      rep.cramer.solution?.forEach((id, j) => {
+        const v = get(id);
+        const want = cr.solution?.[j];
+        if (v !== undefined && want !== undefined && !near(v, want))
+          out.push(`unknown ${j + 1} = ${v}, but Dᵢ ÷ D = ${want}`);
+      });
       break;
     }
     default:

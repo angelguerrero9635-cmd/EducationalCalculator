@@ -186,6 +186,21 @@ export interface NormalCurveHs2g {
   t?: { df: NumOrVar };
 }
 
+/**
+ * H99: `matrixGrid` `mode: 'determinant'` (drawn by `MatrixDeterminant.tsx`): a 2 × 2 or 3 × 3
+ * `matrix` and its determinant. A 2 × 2 lights its two diagonals, ad − bc; a 3 × 3 is expanded
+ * along the first row, each entry's row and column struck in a small copy, its 2 × 2 minor and
+ * sign (+, −, +) beside it. `value` names D (checked). `cramer`: the right sides `rhs`, and D,
+ * Dx, Dy (and Dz) side by side, the replaced column lit in each; `values` names Dx, Dy (, Dz) and
+ * `solution` x, y (, z) = Dx ÷ D … (checked).
+ */
+export interface MatrixDeterminant {
+  mode: 'determinant';
+  matrix: NumOrVar[][];
+  value?: string;
+  cramer?: { rhs: NumOrVar[]; values?: string[]; solution?: string[] };
+}
+
 /** Every variable id these options name (for the module tests). */
 export function hs2gSpecVars(r: Representation): string[] {
   const ids = (...xs: (NumOrVar | boolean | undefined)[]): string[] =>
@@ -209,6 +224,16 @@ export function hs2gSpecVars(r: Representation): string[] {
       return ids(r.fraction?.n, r.fraction?.k, r.fraction?.count, r.fraction?.chance);
     case 'complexPlane':
       return ids(r.power, r.roots);
+    case 'matrixGrid':
+      return r.mode === 'determinant'
+        ? ids(
+            ...r.matrix.flat(),
+            r.value,
+            ...(r.cramer?.rhs ?? []),
+            ...(r.cramer?.values ?? []),
+            ...(r.cramer?.solution ?? []),
+          )
+        : [];
     case 'normalCurve':
       return ids(r.t?.df);
     case 'histogram':

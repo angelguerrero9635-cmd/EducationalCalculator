@@ -7,6 +7,7 @@
 import type {
   AlgebraTilesHs2g,
   ComplexPlaneHs2g,
+  MatrixDeterminant,
   SolutionsAlso,
   UnitCircleHs2g,
 } from './typesHs2g';
@@ -267,6 +268,7 @@ export type MatrixGridSpec = { kind: 'matrixGrid' } & (
       steps: RowOp[];
       solution?: string[];
     }
+  | MatrixDeterminant // H99
 );
 
 export type HsdSpec =
@@ -343,7 +345,9 @@ export function hsdSpecVars(r: HsdSpec): string[] {
     case 'matrixGrid':
       return r.mode === 'multiply'
         ? ids(...r.a.flat(), ...r.b.flat(), ...(r.product ?? []).flat())
-        : ids(...r.system.flat(), ...(r.solution ?? []));
+        : r.mode === 'rowReduce'
+          ? ids(...r.system.flat(), ...(r.solution ?? []))
+          : []; // H99's determinant: hs2gSpecVars
     case 'conicGraph':
       return ids(
         r.h,

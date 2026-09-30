@@ -1156,6 +1156,55 @@ const tInterval = fromPage(
   },
 );
 
+// ── H99: a determinant picture ──
+
+const expansion = fromPage(
+  'm.12.matrices~determinant',
+  'g.m12-matrices-determinant-expansion',
+  'Determinant of a 3 × 3 matrix, expanded',
+  {
+    kind: 'matrixGrid',
+    mode: 'determinant',
+    matrix: [
+      ['a', 'b', 'c'],
+      ['d', 'e', 'f'],
+      ['g', 'h', 'k'],
+    ],
+    value: 'D',
+  },
+);
+
+const cramer = fromPage(
+  'm.12.matrices~cramer',
+  'g.m12-matrices-cramer-determinants',
+  'Cramer’s rule: D, Dx and Dy',
+  {
+    kind: 'matrixGrid',
+    mode: 'determinant',
+    matrix: [
+      ['a', 'b'],
+      ['c', 'd'],
+    ],
+    value: 'D',
+    cramer: { rhs: ['p', 'q'], solution: ['x', 'y'] },
+  },
+);
+
+const twoByTwo = fromPage(
+  'm.12.matrices~cramer',
+  'g.m12-matrices-determinant-two',
+  'Determinant of a 2 × 2 matrix',
+  {
+    kind: 'matrixGrid',
+    mode: 'determinant',
+    matrix: [
+      ['a', 'b'],
+      ['c', 'd'],
+    ],
+    value: 'D',
+  },
+);
+
 export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   ...TERMS,
   ...GRAPHS,
@@ -1169,6 +1218,9 @@ export const HS2G_GALLERY_MODULES: ModuleDef[] = [
   clt,
   tTest,
   tInterval,
+  expansion,
+  cramer,
+  twoByTwo,
 ];
 
 export const HS2G_GALLERY_LAYOUTS: LayoutDef[] = [];

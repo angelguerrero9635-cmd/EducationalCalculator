@@ -136,6 +136,7 @@ import { PascalTriangle } from './PascalTriangle';
 import { TermsChart } from './TermsChart';
 import { UnitCircle } from './UnitCircle';
 import { UnitCircleHs2g } from './UnitCircleHs2g';
+import { MatrixDeterminant } from './MatrixDeterminant';
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
@@ -209,7 +210,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <UnitCircle spec={spec} calc={calc} />
       );
     case 'matrixGrid':
-      return <MatrixGrid spec={spec} calc={calc} />;
+      return spec.mode === 'determinant' ? (
+        <MatrixDeterminant spec={spec} calc={calc} />
+      ) : (
+        <MatrixGrid spec={spec} calc={calc} />
+      );
     case 'membrane':
       return <Membrane spec={spec} calc={calc} />;
     case 'dnaStrand':
