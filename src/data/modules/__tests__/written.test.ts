@@ -221,3 +221,10 @@ describe('synthetic division', () => {
     expect(w.says).toBe('(1 × (−2) + 0) × (−2) − 4 = 0');
   });
 });
+
+describe('simplify chain: negatives', () => {
+  it('keeps a negative base bracketed under a power, and brackets a minus before a negative', () => {
+    expect(simplifyChain('(−3)^(5 − 3)')).toEqual(['(−3)^2', '9']);
+    expect(simplifyChain('−(−(2 + 2)) + 1')).toEqual(['−(−4) + 1', '4 + 1', '5']);
+  });
+});

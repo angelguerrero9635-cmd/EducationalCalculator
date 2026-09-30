@@ -331,7 +331,9 @@ function print(n: Node, parentRank = 0, rightSide = false): string {
       return (negative && after) || (sci && parentRank > 0) || compound ? `(${s})` : s;
     }
     case 'neg': {
-      const s = `−${print(n.arg, 4)}`;
+      // −(−4), not −−4.
+      const inner = print(n.arg, 4);
+      const s = `−${inner.startsWith('−') ? `(${inner})` : inner}`;
       // "+ (−1)", not "+ −1".
       return parentRank > 0 && parentRank < 4 && rightSide ? `(${s})` : s;
     }
@@ -347,7 +349,10 @@ function print(n: Node, parentRank = 0, rightSide = false): string {
     }
     case 'bin': {
       const r = rank(n);
-      const left = print(n.left, r, false);
+      // The base of ^ keeps its brackets when negative: (−3)^2, not −3^2.
+      const base = n.op === '^' ? print(n.left, 4, false) : undefined;
+      const left =
+        base === undefined ? print(n.left, r, false) : base.startsWith('−') ? `(${base})` : base;
       const right = print(n.right, r, true);
       const text =
         n.op === '/'
