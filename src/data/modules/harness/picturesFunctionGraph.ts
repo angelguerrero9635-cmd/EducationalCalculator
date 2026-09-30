@@ -111,7 +111,10 @@ function featureIssues(c: Curve, lo: number, hi: number, out: string[], what = '
     if (!sides.length || !grows) out.push(`${what}: asymptote x = ${v} doesn't blow up`);
   }
   for (const a of c.has) {
-    const ends = [c.f(-1e7), c.f(1e7), c.f(-60), c.f(60)].filter(Number.isFinite);
+    // (±1e300: a small power like x^(−1/9) nears its asymptote only far out, H106)
+    const ends = [c.f(-1e7), c.f(1e7), c.f(-60), c.f(60), c.f(-1e300), c.f(1e300)].filter(
+      Number.isFinite,
+    );
     if (!ends.some((y) => Math.abs(y - a) < 1e-3 * Math.max(1, Math.abs(a))))
       out.push(`${what}: horizontal asymptote y = ${a} isn't approached`);
   }

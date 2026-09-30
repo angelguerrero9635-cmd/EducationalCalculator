@@ -5,6 +5,7 @@
  */
 import type { TreeChancesHs2g, VennCounts } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
+import type { VennChancesHs3b } from './typesHs3b';
 
 /**
  * H20: a two-way frequency table (`table` with `twoWay`): the counts by row and column
@@ -57,7 +58,7 @@ export interface TreeChances extends TreeChancesHs2g {
  * (A ∩ B), 'or' (A ∪ B), 'notA' (the complement of A), 'aOnly' or 'neither'. With `exclusive`,
  * A and B draw apart (P(A and B) is 0). `result` is the shaded probability's value (checked).
  */
-export interface VennChances extends VennCounts {
+export interface VennChances extends VennCounts, VennChancesHs3b {
   a: NumOrVar;
   b: NumOrVar;
   both: NumOrVar;

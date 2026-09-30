@@ -66,6 +66,7 @@ function representationVars(r: Representation): string[] {
         ...(r.corners ? [r.corners] : []),
         ...(r.sideValues ?? []),
         ...(r.around ? [r.around] : []),
+        ...[r.apothem, r.angle, r.area].filter((x): x is string => !!x), // H106
       ];
     case 'balance':
       return [...r.left, ...r.right, ...(r.takeAway ? [r.takeAway] : [])];
@@ -400,7 +401,10 @@ function representationVars(r: Representation): string[] {
     case 'waterfall':
       return [...r.items.map((b) => b.var), r.total, ...(r.caption ?? [])];
     case 'rectangle':
-      return [r.length, r.width, ...(r.inside ? [r.inside] : []), ...(r.around ? [r.around] : [])];
+      return [
+        ...[r.length, r.width, r.inside, r.around],
+        ...[r.bounds?.error, r.bounds?.least, r.bounds?.greatest], // H106
+      ].filter((x): x is string => !!x);
     case 'grid100':
       return [
         r.percent,
@@ -415,6 +419,7 @@ function representationVars(r: Representation): string[] {
           (v): v is string => typeof v === 'string',
         ),
         ...circleSectorVars(r.sector),
+        ...[r.population?.people, r.population?.density].filter((x): x is string => !!x), // H106
       ];
     case 'scaleCopy':
       return [

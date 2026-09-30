@@ -58,6 +58,7 @@ import { hs2fIssues } from './picturesHs2f';
 import { hs3cIssues } from './picturesHs3c';
 import { hs2gIssues } from './picturesHs2g';
 import { hs2hIssues } from './picturesHs2h';
+import { hs3bCenter, hs3bIssues, hs3bVal } from './picturesHs3b';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
@@ -193,9 +194,15 @@ export function repIssues(
       if (rep.side) {
         const [len, p] = [val(rep.side), rep.around ? val(rep.around) : undefined];
         if (len !== undefined && len <= 0) out.push(`side ${rep.side} = ${len}`);
-        if (s !== undefined && len !== undefined && p !== undefined && Math.abs(s * len - p) > 1e-9)
+        if (
+          s !== undefined &&
+          len !== undefined &&
+          p !== undefined &&
+          Math.abs(s * len - p) > 1e-9 * Math.max(1, Math.abs(p)) // relative (H106)
+        )
           out.push(`${s} sides of ${len} labeled, perimeter shows ${p}`);
       }
+      out.push(...hs3bIssues(rep, val, byId));
       break;
     }
     case 'balance': {
@@ -253,7 +260,7 @@ export function repIssues(
         out.push(`circumference ${C} is not 2π × ${r}`);
       if (r !== undefined && A !== undefined && off(A, Math.PI * r * r))
         out.push(`area ${A} is not π × ${r}²`);
-      out.push(...circleSectorIssues(rep, val));
+      out.push(...circleSectorIssues(rep, val), ...hs3bIssues(rep, val, byId));
       break;
     }
     case 'scaleCopy': {
@@ -1096,6 +1103,9 @@ export function repIssues(
         out.push(`tape: ${Math.max(a, b)} is not ${k} copies of ${Math.min(a, b)}`);
       break;
     }
+    case 'rectangle':
+      out.push(...hs3bIssues(rep, val, byId)); // H106: bounds
+      break;
     case 'grid100': {
       // Tenths × tenths: columns and rows of one grid, the overlap the product (Grid100.tsx);
       // a factor of 1 or more, or past tenths, draws the area model, so any product fits.
@@ -1345,6 +1355,7 @@ export function repIssues(
     case 'venn':
       if ('chances' in rep) {
         out.push(...vennChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
+        out.push(...hs3bIssues(rep, val, byId));
         break;
       }
       count(rep.first, 'Venn number', 1000);
@@ -1837,9 +1848,12 @@ export function repIssues(
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);
       break;
     }
-    case 'functionGraph':
-      out.push(...functionGraphIssues(rep, val), ...hs2aIssues(rep, val), ...hs2gIssues(rep, val));
+    case 'functionGraph': {
+      const v = hs3bVal(rep, val, byId); // H106: `unitsOf` reads formula units
+      out.push(...functionGraphIssues(rep, v), ...hs2aIssues(rep, v), ...hs2gIssues(rep, v));
+      out.push(...hs3bIssues(rep, val, byId));
       break;
+    }
     case 'linearFunction': {
       out.push(...hs2aIssues(rep, val), ...hs2hIssues(rep, val));
       const [m, b] = [val(rep.slope), val(rep.intercept)];
@@ -1863,8 +1877,9 @@ export function repIssues(
         up: rep.move === 'translate' ? num(rep.up, 0) : 0,
         angle: rep.move === 'rotate' ? num(rep.angle, 0) : 0,
         factor: rep.move === 'dilate' ? num(rep.factor, 1) : 1,
-        cx: num(center?.[0], 0),
-        cy: num(center?.[1], 0),
+        // H106: `about: 'center'` turns about the corners' average.
+        cx: rep.about ? hs3bCenter(rep, val)[0] : num(center?.[0], 0),
+        cy: rep.about ? hs3bCenter(rep, val)[1] : num(center?.[1], 0),
       };
       if (move.factor !== undefined && move.factor <= 0)
         out.push(`dilation by scale factor ${move.factor}`);
@@ -1937,6 +1952,11 @@ export function repIssues(
       if (rep.kind === 'reaction' && rep.many) out.push(...reactionManyIssues());
       break;
     case 'lineSystem': {
+      // H106: a parabola in the system (a line with `square`) is checked on its own.
+      if (rep.lines.some((l) => l.square !== undefined)) {
+        out.push(...hs3bIssues(rep, val, byId));
+        break;
+      }
       out.push(...hs2aIssues(rep, val));
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
       // Elimination (H16): the sum a·x + b·y = c is k₁ × (y − m₁x = b₁) + k₂ × (y − m₂x = b₂).
@@ -2227,6 +2247,7 @@ export function repIssues(
       }
       if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)
         out.push(`${rep.rowNames.length} row names for ${rep.rows.length} rows`);
+      out.push(...hs3bIssues(rep, val, byId));
       break;
     default:
       break;

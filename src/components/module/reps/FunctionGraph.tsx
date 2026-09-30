@@ -43,6 +43,8 @@ import {
 } from './functionGraphMath';
 import { SignBand, SignFill, signCaption } from './FunctionSign';
 import { reshape, reshapeCaption, reshapeVars } from './functionGraphHs2g';
+import { transformCurve, transformText } from './functionGraphHs3b';
+import { toShownUnits, unitPositionIds } from './functionGraphUnits';
 import { usePaintIds, url } from './paint';
 import { signOf } from './signBox';
 
@@ -328,14 +330,45 @@ const pointText = (x: number, y: number, piX = false, piY = false, xText?: strin
 
 // ─── The picture ─────────────────────────────────────────────────────────────
 
-export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculator }) {
+export function FunctionGraph({
+  spec: given,
+  calc,
+}: {
+  spec: FunctionGraphSpec;
+  calc: Calculator;
+}) {
   const c = usePalette();
   const rep = useRep(calc);
   const ids = usePaintIds('clip');
-  const known = (v: NumOrVar | undefined) =>
-    v === undefined || typeof v === 'number' || rep.known(v);
+  // H106: with `unitsOf`, the family read in formula units and converted to the shown axes.
+  const [ux0, uy0] = [given.unitsOf?.x, given.unitsOf?.y];
+  const fx = ux0 ? rep.factor(ux0) : 1;
+  const fy = uy0 ? rep.factor(uy0) : 1;
+  const conv = given.unitsOf
+    ? toShownUnits(
+        given,
+        (v, d) => (v === undefined ? d : typeof v === 'number' ? v : rep.val(v)),
+        fx,
+        fy,
+        { x: ux0 && rep.unit(ux0), y: uy0 && rep.unit(uy0) },
+      )
+    : undefined;
+  const spec = conv?.spec ?? given;
+  const xPos = new Set(conv ? unitPositionIds(given) : []);
+  const known = (v: NumOrVar | undefined): boolean =>
+    v === undefined ||
+    typeof v === 'number' ||
+    (conv?.source.has(v) ? known(conv.source.get(v)) : rep.known(v));
   const get = (v: NumOrVar | undefined, fallback: number) =>
-    v === undefined ? fallback : typeof v === 'number' ? v : rep.shown(v);
+    v === undefined
+      ? fallback
+      : typeof v === 'number'
+        ? v
+        : conv?.value.has(v)
+          ? conv.value.get(v)!
+          : xPos.has(v)
+            ? rep.val(v) / fx
+            : rep.shown(v);
   const say = (v: NumOrVar | undefined, fallback: number, pi = false) =>
     known(v) ? numText(get(v, fallback), pi) : '?';
   const xName = spec.input ?? (spec.at ? rep.variable(spec.at.x).symbol : 'x');
@@ -345,9 +378,27 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
   // H94: |f(x)|, a horizontal factor and a kept domain reshape the family's curve.
   const shaped = reshape(spec, get, say, xName, (f, l) => buildCurve(f, get, say, l));
   const main = shaped.curve;
-  const allKnown = [...familyVars(spec), ...reshapeVars(spec)].every((id) => rep.known(id));
-  const other = spec.other ? buildCurve(spec.other, get, say, xName) : undefined;
-  const gName = spec.other?.name ?? 'g';
+  const allKnown = [...familyVars(given), ...reshapeVars(given)].every((id) => rep.known(id));
+  // H106: g(x) = a·f(x − h) + k beside f, an arrow from f's point to its image.
+  const tf = spec.other ? undefined : spec.transform;
+  const [tfA, tfH, tfK] = tf ? [get(tf.a, 1), get(tf.h, 0), get(tf.k, 0)] : [1, 0, 0];
+  const moved = tf
+    ? transformCurve(spec, main, get, tfA, tfH, tfK, xName, !reshapeVars(given).length)
+    : undefined;
+  const tfP = tf
+    ? (() => {
+        const x = tf.from !== undefined ? get(tf.from, 0) : (main.key?.x ?? 0);
+        const y = main.f(x);
+        return Number.isFinite(y) ? { x, y, X: x + tfH, Y: tfA * y + tfK } : undefined;
+      })()
+    : undefined;
+  const other = spec.other ? buildCurve(spec.other, get, say, xName) : moved?.curve;
+  // H106: a candidate outside the domain, crossed out on the x-axis.
+  const rejX = spec.reject !== undefined && known(spec.reject) ? get(spec.reject, 0) : undefined;
+  const gName = spec.other?.name ?? tf?.name ?? 'g';
+  const tfText = tf
+    ? transformText(fName, xName, say(tf.a, 1), tfH, say(tf.h, 0), tfK, say(tf.k, 0))
+    : undefined;
   const parent =
     spec.parent && main.parent
       ? buildCurve(main.parent, get, (v, d) => numText(get(v, d)), xName)
@@ -388,7 +439,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
   const hi0 = Math.max(probe[1], ...keyXs.filter(Number.isFinite));
   const zeros0 = periodic ? [] : zerosIn(main, lo0, hi0);
   const ext0 = periodic || main.family === 'quadratic' ? [] : extremaIn(main, lo0, hi0);
-  const cross0 = other ? crossings(main, other, lo0, hi0) : [];
+  const cross0 = spec.other && other ? crossings(main, other, lo0, hi0) : [];
   const trigSpan = periodic
     ? [
         Math.min(0, get('h' in spec ? spec.h : undefined, 0)),
@@ -402,6 +453,8 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     ...ext0.map((e) => e.x),
     ...cross0.map((p) => p.x),
     ...trigSpan,
+    ...(tfP ? [tfP.x, tfP.X] : []),
+    ...(rejX !== undefined && Math.abs(rejX) < 60 ? [rejX] : []),
   ];
   const ys = [
     ...(main.key ? [main.key.y] : []),
@@ -412,6 +465,8 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     ...(main.vas(-12, 12).length && !main.piX ? main.has.flatMap((a) => [a - 3, a + 3]) : []),
     ...ext0.map((e) => e.y),
     ...cross0.map((p) => p.y),
+    ...(tfP ? [tfP.y, tfP.Y] : []),
+    ...(moved?.curve.key ? [moved.curve.key.y] : []),
     ...(atX !== undefined ? [main.f(atX)] : []),
     ...(sec ? [main.f(sec.x), main.f(sec.x + sec.h)] : []),
     ...(limX !== undefined ? [main.side(limX, -1), main.side(limX, 1)] : []),
@@ -429,11 +484,26 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     main.family === 'log'
       ? [main.f(main.key?.x ?? 0) + 2, main.f((main.key?.x ?? 0) + 2)]
       : []),
+    // H106: the log sum's plunge to its asymptote, below its zero.
+    ...(main.family === 'logSum' ? [-2.5] : []),
   ].filter((v) => Number.isFinite(v) && Math.abs(v) < 1e6);
 
   const legend: { toks: Tok[]; name: string; color: string; dash?: string }[] = [
     { toks: main.text, name: `${fName}(${xName}) = `, color: c.chartHighlight },
-    ...(other ? [{ toks: other.text, name: `${gName}(${xName}) = `, color: c.fnSecond }] : []),
+    ...(other
+      ? [
+          {
+            toks:
+              tfText !== undefined
+                ? moved?.own
+                  ? [{ t: `${tfText} = ${plain(other.text)}` }]
+                  : [{ t: tfText }]
+                : other.text,
+            name: `${gName}(${xName}) = `,
+            color: c.fnSecond,
+          },
+        ]
+      : []),
     ...(spec.inverse
       ? [
           {
@@ -484,7 +554,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
   const start = useRef<{ def?: HandleDef; x: number; y: number }>({ x: 0, y: 0 });
 
   // Values held while a handle moves: every other typed parameter, and the traced x.
-  const paramIds = [...familyVars(spec), ...(spec.other ? familyVars(spec.other) : [])].filter(
+  const paramIds = [...familyVars(given), ...(given.other ? familyVars(given.other) : [])].filter(
     (id) => !rep.variable(id).derived,
   );
   const held = (moving: string[]) =>
@@ -502,7 +572,12 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
 
   const captions: string[] = [];
   captions.push(`${fName}(${xName}) = ${plain(main.text)}`);
-  if (other) captions.push(`${gName}(${xName}) = ${plain(other.text)}`);
+  if (other)
+    captions.push(
+      tfText !== undefined
+        ? `${gName}(${xName}) = ${tfText}${moved?.own ? ` = ${plain(other.text)}` : ''}`
+        : `${gName}(${xName}) = ${plain(other.text)}`,
+    );
 
   return (
     <View>
@@ -595,9 +670,10 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
               ? { x: 0, y: y0 }
               : undefined;
           const vas = main.vas(wx0, wx1);
-          const cross = other
-            ? crossings(main, other, wx0, wx1).filter((p) => inWin(p.x, p.y))
-            : [];
+          const cross =
+            spec.other && other
+              ? crossings(main, other, wx0, wx1).filter((p) => inWin(p.x, p.y))
+              : [];
 
           // Handles.
           const handleDefs: { def: HandleDef; ids: Record<string, string> }[] = [];
@@ -605,7 +681,10 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
             for (const def of main.handles) {
               const idsOf: Record<string, string> = {};
               for (const s of def.sets) {
-                const v = fieldAt(spec as FunctionFamily, s);
+                const key = fieldAt(spec as FunctionFamily, s);
+                // H106: a converted field drags back by its factor (none: no handle).
+                if (conv && typeof key === 'string' && !conv.scale.has(key)) continue;
+                const v = conv && typeof key === 'string' ? conv.source.get(key) : key;
                 if (typeof v === 'string' && !rep.variable(v).derived) idsOf[s] = v;
               }
               if (!Object.keys(idsOf).length) continue;
@@ -818,6 +897,19 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
               });
             dots.push({ ...p, color: c.chartInk, r: 5.5 });
             label(p.x, p.y, pointText(p.x, p.y, piX, piY));
+          }
+          const tfArrow =
+            tfP && inWin(tfP.x, tfP.y) && inWin(tfP.X, tfP.Y) && allKnown ? tfP : undefined;
+          const rej = rejX !== undefined && inX(rejX) && inY(0) && allKnown ? rejX : undefined;
+          if (rej !== undefined) {
+            dots.push({ x: rej, y: 0, color: c.chartMuted, open: true, r: 6 });
+            label(rej, 0, `${xName} = ${numText(rej)} rejected`, c.chartMuted);
+          }
+          if (tfArrow) {
+            dots.push({ x: tfArrow.x, y: tfArrow.y, color: c.chartHighlight });
+            dots.push({ x: tfArrow.X, y: tfArrow.Y, color: c.fnSecond });
+            label(tfArrow.x, tfArrow.y, pointText(tfArrow.x, tfArrow.y), c.chartHighlight);
+            label(tfArrow.X, tfArrow.Y, pointText(tfArrow.X, tfArrow.Y), c.fnSecond);
           }
           if (
             main.inflection &&
@@ -1290,6 +1382,39 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                       <Circle cx={sx(secLine.q.x)} cy={sy(secLine.q.y)} r={4.5} fill={c.fnSecond} />
                     </>
                   ) : null}
+                  {tfArrow && Math.hypot(tfArrow.X - tfArrow.x, tfArrow.Y - tfArrow.y) > 1e-9
+                    ? (() => {
+                        const [x1, y1, x2, y2] = [
+                          sx(tfArrow.x),
+                          sy(tfArrow.y),
+                          sx(tfArrow.X),
+                          sy(tfArrow.Y),
+                        ];
+                        const len = Math.hypot(x2 - x1, y2 - y1);
+                        if (len < 20) return null;
+                        const [ex, ey] = [(x2 - x1) / len, (y2 - y1) / len];
+                        // From the dot's edge to the image's, the head just short of it.
+                        const [ax, ay] = [x1 + ex * 7, y1 + ey * 7];
+                        const [bx, by] = [x2 - ex * 7, y2 - ey * 7];
+                        return (
+                          <G>
+                            <Line
+                              x1={ax}
+                              y1={ay}
+                              x2={bx - ex * 6}
+                              y2={by - ey * 6}
+                              stroke={c.chartInk}
+                              strokeWidth={chart.stroke}
+                              strokeDasharray={chart.dashFine}
+                            />
+                            <Path
+                              d={`M ${bx} ${by} L ${bx - ex * 9 - ey * 5} ${by - ey * 9 + ex * 5} L ${bx - ex * 9 + ey * 5} ${by - ey * 9 - ex * 5} Z`}
+                              fill={c.chartInk}
+                            />
+                          </G>
+                        );
+                      })()
+                    : null}
                   {lim
                     ? ([-1, 1] as const).map((s) => {
                         const x1 = limX! + s * lim.d;
@@ -1371,6 +1496,13 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                       opacity={opacity}
                     />
                   ))}
+                  {rej !== undefined ? (
+                    <Path
+                      d={`M ${sx(rej) - 4} ${sy(0) - 4} L ${sx(rej) + 4} ${sy(0) + 4} M ${sx(rej) - 4} ${sy(0) + 4} L ${sx(rej) + 4} ${sy(0) - 4}`}
+                      stroke={c.chartMuted}
+                      strokeWidth={chart.stroke}
+                    />
+                  ) : null}
                   {atPt ? (
                     <Circle
                       cx={sx(atPt.x)}
@@ -1427,7 +1559,10 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                     calc.set(
                       {
                         ...held([id]),
-                        [id]: rep.snapTo(id, (start.current.x + dx / ux) * rep.factor(id)),
+                        [id]: rep.snapTo(
+                          id,
+                          (start.current.x + dx / ux) * (conv ? fx : rep.factor(id)),
+                        ),
                       },
                       rep.slide(id),
                     );
@@ -1450,7 +1585,10 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                     calc.set(
                       {
                         ...held([id]),
-                        [id]: rep.snapTo(id, (start.current.x + dx / ux - sec!.x) * rep.factor(id)),
+                        [id]: rep.snapTo(
+                          id,
+                          (start.current.x + dx / ux - sec!.x) * (conv ? fx : rep.factor(id)),
+                        ),
                       },
                       rep.slide(id),
                     );
@@ -1480,8 +1618,9 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                     const updates: Record<string, number> = {};
                     for (const [path, v] of Object.entries(next)) {
                       const id = hIds[path];
+                      const by = conv?.scale.get(fieldAt(spec as FunctionFamily, path) as string);
                       if (id && Number.isFinite(v))
-                        updates[id] = rep.snapTo(id, v * rep.factor(id));
+                        updates[id] = rep.snapTo(id, by ? v / by : v * rep.factor(id));
                     }
                     const first = hIds[s.def.sets.find((p) => hIds[p])!]!;
                     calc.set({ ...held(moving), ...updates }, rep.slide(first));
@@ -1578,7 +1717,22 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
           : `${fName}(${numText(atX, pi)}) has no value: ${numText(atX, pi)} is outside the domain`,
       );
     }
-    if (other) {
+    if (rejX !== undefined)
+      lines.push(
+        `${xName} = ${numText(rejX)} is rejected: ${Number.isFinite(main.f(rejX)) ? `${fName}(${numText(rejX)}) is not what the equation needs` : `${fName}(${numText(rejX)}) has no value, it is outside the domain`}`,
+      );
+    if (tfP) {
+      const [p, q] = [pointText(tfP.x, tfP.y), pointText(tfP.X, tfP.Y)];
+      lines.push(
+        p && q
+          ? `${p} on ${fName} moves to ${q} on ${gName}: ${xName} + ${numText(tfH)}, then ${numText(tfA)} × y + ${numText(tfK)}`.replace(
+              /\+ −/g,
+              '− ',
+            )
+          : `${fName}'s point moves ${numText(tfH)} across and to ${numText(tfA)} × y + ${numText(tfK)}`,
+      );
+    }
+    if (spec.other && other) {
       const cs = crossings(main, other, win[0], win[1]).slice(0, 4);
       lines.push(
         cs.length

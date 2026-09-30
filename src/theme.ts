@@ -451,6 +451,11 @@ const light = {
   physResistor: '#E6D3B0',
   physIron: '#8D949E',
   satellitePanel: '#2B4C8C',
+  /** H106: a town's land and its outline on a population map. */
+  populationLand: '#DDEFD6',
+  populationEdge: '#4F8A3C',
+  /** H106: the band a measured rectangle's true edges can be in. */
+  boundsBand: 'rgba(194, 87, 12, 0.18)',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -792,6 +797,9 @@ const dark: Palette = {
   physResistor: '#8A7A5C',
   physIron: '#626A75',
   satellitePanel: '#3D5FA3',
+  populationLand: '#1F3320',
+  populationEdge: '#7CC46A',
+  boundsBand: 'rgba(245, 160, 74, 0.22)',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

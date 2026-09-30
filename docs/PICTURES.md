@@ -231,6 +231,17 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `family: 'rational'`, `p, q, r, s`       | (px + q) ÷ (rx + s) from its coefficients, asymptotes marked (H94)            |
 | `functionGraph`    | `zeros: [{ x, times: n }]`               | a zero's multiplicity from a value, 1 to 9: touches or crosses (H105)         |
 | `functionGraph`    | `family: 'arcsin'`, `degrees`            | sin⁻¹, cos⁻¹, tan⁻¹ read in degrees: ±90° on a plain axis (H105)              |
+| `functionGraph`    | `unitsOf: { x, y }`                      | unit menus: parameters read in formula units, drawn in the shown ones (H106)  |
+| `functionGraph`    | `transform: { a, h, k, from?, image? }`  | g(x) = a·f(x − h) + k beside f; an arrow from f's point to its image (H106)   |
+| `functionGraph`    | `family: 'power'`, `a, p, q, h, k`       | a·(x − h)^(p/q) + k: odd roots of negatives, asymptotes when p < 0 (H106)     |
+| `functionGraph`    | `family: 'logSum'`, `b, c`; `reject`     | log_b(x) + log_b(x + c) from max(0, −c); a candidate crossed out on x (H106)  |
+| `lineSystem`       | `lines[i].square`, `solutions`           | y = ax² + mx + b: a parabola and a line, 0–2 crossings ringed, shading (H106) |
+| `polygon`          | `apothem`, `angle`, `area`               | the n triangles, the apothem square to a side, θ = 180° ÷ n, K = ½aP (H106)   |
+| `venn`             | `chances.one`                            | one event: circle A in the rectangle, P(not A) = 1 − P(A) outside (H106)      |
+| `table`            | `graph: { best }`, `rowsFrom: 'shown'`   | the output against the sweep under the table, the best point ringed (H106)    |
+| `circle`           | `population: { people, density? }`       | a town's outline on a km grid, people as dots, the model circle r (H106)      |
+| `transformation`   | `about: 'center'`                        | turns about the figure's own center; point symmetry pairs through it (H106)   |
+| `rectangle`        | `bounds: { error, least?, greatest? }`   | (l ± e) by (w ± e) dashed, the band between shaded, a corner close-up (H106)  |
 | `algebraTiles`     | `mode: 'box'`, `side`, `top`, `product`  | area box: row × column terms, like-term diagonals tinted, collected (H95)     |
 | `algebraTiles`     | `mode: 'monomial'`, `a, m, b, n, c, k`   | a·xᵐ ÷ b·xⁿ as factors over a bar, cancelled pairs struck, c·xᵏ (H95)         |
 | `integerLine`      | `compound.closed: [id, id]`              | each bound's circle from a sign box: 2 ≤, 4 ≥ closed; 1 <, 3 > open (H90)     |

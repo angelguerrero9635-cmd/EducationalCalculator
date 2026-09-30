@@ -5,6 +5,12 @@
  */
 import type { FunctionGraphHs2a } from './typesHs2a';
 import type { FunctionGraphHs2g, RationalByCoefficients } from './typesHs2g';
+import {
+  familyHs3bVars,
+  functionGraphHs3bVars,
+  type FamilyHs3b,
+  type FunctionGraphHs3b,
+} from './typesHs3b';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -43,7 +49,8 @@ export type FunctionFamily =
   | { family: 'piecewise'; pieces: Piece[] }
   | { family: 'sin' | 'cos' | 'tan'; a?: NumOrVar; b?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   // H105: `degrees` reads the angle in degrees (sin⁻¹ from −90° to 90°), not radians.
-  | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar; degrees?: boolean };
+  | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar; degrees?: boolean }
+  | FamilyHs3b; // H106: a·(x − h)^(p/q) + k and log_b(x) + log_b(x + c)
 
 /** One piece of a piecewise function: a family over from … to (unbounded when left out). */
 export interface Piece {
@@ -120,7 +127,8 @@ export type FunctionGraphSpec = FunctionFamily & {
   /** No handles: a drag couldn't solve backwards to the values typed. */
   fixed?: boolean;
 } & FunctionGraphHs2a &
-  FunctionGraphHs2g;
+  FunctionGraphHs2g &
+  FunctionGraphHs3b;
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -154,6 +162,9 @@ export function familyVars(f: FunctionFamily): string[] {
       return ids(f.a, f.k);
     case 'log':
       return ids(f.a, f.b, f.h, f.k);
+    case 'power':
+    case 'logSum':
+      return familyHs3bVars(f);
     default:
       return ids(f.a, f.h, f.k, 'b' in f ? f.b : undefined);
   }
@@ -171,5 +182,6 @@ export function functionGraphVars(r: FunctionGraphSpec): string[] {
     ...ids(r.limit?.x, r.secant?.x, r.secant?.h, r.secant?.slope),
     ...ids(s?.vertex?.x, s?.vertex?.y, ...(s?.zeros ?? []), s?.intercept, s?.va, s?.ha),
     ...ids(s?.period, s?.amplitude),
+    ...functionGraphHs3bVars(r),
   ];
 }

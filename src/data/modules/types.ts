@@ -31,6 +31,7 @@ import type { Hs3aSpec } from './typesHs3a';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
+import type { CircleHs3b, PolygonHs3b, RectangleHs3b, TableHs3b } from './typesHs3b';
 import type { BarFlows, Hs2eSpec } from './typesHs2e';
 
 /**
@@ -229,7 +230,7 @@ export type Representation =
    * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`
    * words (Grade 2) say “angles” and name any 4-sided shape a quadrilateral.
    */
-  | {
+  | ({
       kind: 'polygon';
       /** The number of sides (a stepper changes it). Not used with `sideValues`. */
       sides?: string;
@@ -248,7 +249,7 @@ export type Representation =
        * student switch between an even shape and a stretched one.
        */
       irregular?: boolean | 'toggle';
-    }
+    } & PolygonHs3b)
   /** Balance scale: the counters on each pan are the listed values. Level when equal. */
   | {
       kind: 'balance';
@@ -525,7 +526,7 @@ export type Representation =
    * Rectangle with side lengths and a value written inside. Drag the corner. `extent` is the
    * smallest side length the drawing fits; it grows for larger values.
    */
-  | {
+  | ({
       kind: 'rectangle';
       length: string;
       width: string;
@@ -537,7 +538,7 @@ export type Representation =
       /** Draw it as a real roof in perspective: slate shingles, a gutter and rain falling. */
       roof?: boolean;
       extent: number;
-    }
+    } & RectangleHs3b)
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
   | {
       kind: 'grid100';
@@ -586,7 +587,7 @@ export type Representation =
       splitter?: SideSplitter;
     }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
-  | {
+  | ({
       kind: 'circle';
       radius: string;
       extent: number;
@@ -607,7 +608,7 @@ export type Representation =
        * (the default view when this is set); 'radian' wraps radius-long arcs around the circle.
        */
       sector?: CircleSector;
-    }
+    } & CircleHs3b)
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
   | {
       kind: 'rightTriangle';
@@ -1602,7 +1603,7 @@ export type Representation =
       inheritance?: PunnettInheritance;
     }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
-  | {
+  | ({
       kind: 'table';
       sweep: string;
       output: string;
@@ -1613,7 +1614,7 @@ export type Representation =
       named?: { param: string; names: Record<number, string> };
       /** A name for each swept row ("Moon", "Mars"), in a first column. */
       rowNames?: string[];
-    }
+    } & TableHs3b)
   /** Grades 9–12 (H20): a two-way frequency table (spec in `typesHse.ts`). */
   | { kind: 'table'; twoWay: TwoWaySpec }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */
