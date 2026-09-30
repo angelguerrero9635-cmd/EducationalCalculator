@@ -3353,38 +3353,45 @@ const electroPages: ModuleDef[] = [
         charge('a', 'q₁', 'First charge'),
         charge('b', 'q₂', 'Second charge'),
         q('r', 'r', 'Distance apart', 'm', 0.001, 100, 0.001),
-        q('F', 'F', 'Force (+ repel, − attract)', 'N', -1e10, 1e10, 0.0001),
+        q('F', 'F', 'Force', 'N', -1e10, 1e10, 0.0001),
       ],
       ...rules(
-        rule(
-          'F = kq₁q₂/r²',
-          '{F} = 8.99 × 10⁹ × {a} × {b} × 10⁻¹²/({r}²)',
-          (v) => v.F! * v.r! * v.r! - 8.99e-3 * v.a! * v.b!,
-          {
-            F: [
-              (v) => div(8.99e-3 * v.a! * v.b!, v.r! * v.r!),
-              '8.99 × 10⁹ × {a} × {b} × 10⁻¹²/({r}²)',
-              'Coulomb’s law: k times the two charges (each μC is 10⁻⁶ C), over the distance squared.',
-            ],
-            r: [
-              (v) => {
-                const x = div(8.99e-3 * v.a! * v.b!, v.F!);
-                return x === undefined || x < 0 ? undefined : Math.sqrt(x);
-              },
-              '√(8.99 × 10⁹ × {a} × {b} × 10⁻¹²/{F})',
-              'Solve Coulomb’s law for r², then take the square root.',
-            ],
-            a: [
-              (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.b!),
-              '{F} × {r}²/(8.99 × 10⁻³ × {b})',
-              'Solve Coulomb’s law for q₁.',
-            ],
-            b: [
-              (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.a!),
-              '{F} × {r}²/(8.99 × 10⁻³ × {a})',
-              'Solve Coulomb’s law for q₂.',
-            ],
-          },
+        withWork(
+          rule(
+            'F = kq₁q₂/r²',
+            '{F} = 8.99 × 10⁹ × {a} × 10⁻⁶ × {b} × 10⁻⁶/({r}²)',
+            (v) => v.F! * v.r! * v.r! - 8.99e-3 * v.a! * v.b!,
+            {
+              F: [
+                (v) => div(8.99e-3 * v.a! * v.b!, v.r! * v.r!),
+                '8.99 × 10⁹ × {a} × 10⁻⁶ × {b} × 10⁻⁶/({r}²)',
+                'Coulomb’s law: k = 8.99 × 10⁹ N·m²/C² times the two charges in coulombs (1 μC = 10⁻⁶ C), over r².',
+              ],
+              r: [
+                (v) => {
+                  const x = div(8.99e-3 * v.a! * v.b!, v.F!);
+                  return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+                },
+                '√(8.99 × 10⁹ × {a} × 10⁻⁶ × {b} × 10⁻⁶/{F})',
+                'Solve Coulomb’s law for r², then take the square root.',
+              ],
+              a: [
+                (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.b!),
+                '{F} × {r}²/(8.99 × 10⁻³ × {b})',
+                'Solve Coulomb’s law for q₁.',
+              ],
+              b: [
+                (v) => div(v.F! * v.r! * v.r!, 8.99e-3 * v.a!),
+                '{F} × {r}²/(8.99 × 10⁻³ × {a})',
+                'Solve Coulomb’s law for q₂.',
+              ],
+            },
+          ),
+          'F',
+          (v) => [
+            `q₁ × q₂ = (${sci(v.a! * 1e-6)}) × (${sci(v.b! * 1e-6)}) = ${sci(v.a! * v.b! * 1e-12)} C²`,
+            `r² = ${sci(v.r!)}² = ${sci(v.r! * v.r!)} m²`,
+          ],
         ),
       ),
       example: { a, b, r, F: (8.99e-3 * a * b) / (r * r) },
@@ -3408,35 +3415,42 @@ const electroPages: ModuleDef[] = [
       variables: [
         charge('a', 'q', 'Charge'),
         q('r', 'r', 'Distance', 'm', 0.001, 100, 0.001),
-        q('E', 'E', 'Field (− toward the charge)', 'N/C', -1e13, 1e13, 1, { scientific: true }),
+        q('E', 'E', 'Field', 'N/C', -1e13, 1e13, 1, { scientific: true }),
         charge('t', 'q₀', 'Test charge'),
         q('F', 'F', 'Force on the test charge', 'N', -1e10, 1e10, 0.0001),
       ],
       ...rules(
-        rule(
-          'E = kq/r²',
-          '{E} = 8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
-          (v) => v.E! * v.r! * v.r! - 8.99e3 * v.a!,
-          {
-            E: [
-              (v) => div(8.99e3 * v.a!, v.r! * v.r!),
-              '8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
-              'k times the charge in coulombs, over r².',
-            ],
-            a: [
-              (v) => (v.E! * v.r! * v.r!) / 8.99e3,
-              '{E} × {r}²/(8.99 × 10³)',
-              'Solve for the charge.',
-            ],
-            r: [
-              (v) => {
-                const x = div(8.99e3 * v.a!, v.E!);
-                return x === undefined || x < 0 ? undefined : Math.sqrt(x);
-              },
-              '√(8.99 × 10⁹ × {a} × 10⁻⁶/{E})',
-              'Solve for r², then take the square root.',
-            ],
-          },
+        withWork(
+          rule(
+            'E = kq/r²',
+            '{E} = 8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
+            (v) => v.E! * v.r! * v.r! - 8.99e3 * v.a!,
+            {
+              E: [
+                (v) => div(8.99e3 * v.a!, v.r! * v.r!),
+                '8.99 × 10⁹ × {a} × 10⁻⁶/({r}²)',
+                'k = 8.99 × 10⁹ N·m²/C² times the charge in coulombs, over r².',
+              ],
+              a: [
+                (v) => (v.E! * v.r! * v.r!) / 8.99e3,
+                '{E} × {r}²/(8.99 × 10³)',
+                'Solve for the charge.',
+              ],
+              r: [
+                (v) => {
+                  const x = div(8.99e3 * v.a!, v.E!);
+                  return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+                },
+                '√(8.99 × 10⁹ × {a} × 10⁻⁶/{E})',
+                'Solve for r², then take the square root.',
+              ],
+            },
+          ),
+          'E',
+          (v) => [
+            `q = ${sci(v.a!)} μC = ${sci(v.a! * 1e-6)} C`,
+            `r² = ${sci(v.r!)}² = ${sci(v.r! * v.r!)} m²`,
+          ],
         ),
         rule('F = q₀E', '{F} = {t} × 10⁻⁶ × {E}', (v) => v.F! - v.t! * 1e-6 * v.E!, {
           F: [
@@ -3445,6 +3459,11 @@ const electroPages: ModuleDef[] = [
             'The field is newtons per coulomb: times the test charge in coulombs.',
           ],
           t: [(v) => div(v.F!, 1e-6 * v.E!), '{F}/({E} × 10⁻⁶)', 'Divide the force by the field.'],
+          E: [
+            (v) => div(v.F!, v.t! * 1e-6),
+            '{F}/({t} × 10⁻⁶)',
+            'The field is the force on each coulomb of test charge.',
+          ],
         }),
       ),
       example: { a, r, E, t, F: t * 1e-6 * E },
@@ -3506,6 +3525,88 @@ const inductionPages: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
+    const [N, b, c, A, t] = [200, 0.1, 0.5, 0.02, 0.1];
+    const f = (c - b) * A;
+    return {
+      id: 's.11.electromagnetism~flux-change',
+      title: 'Flux from a changing field',
+      use: 'Use this for “A 200-turn coil of area 0.02 m² sits in a field that grows from 0.1 T to 0.5 T in 0.1 s. What emf is induced?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The field is square to the coil’s face, so the flux is Φ = BA.',
+        'The area stays the same, so the flux changes by ΔΦ = (B₂ − B₁)A.',
+        'The field grows here; a shrinking one gives the same size emf the other way (Lenz’s law).',
+      ],
+      variables: [
+        q('N', 'N', 'Turns', undefined, 1, 10000, 1, { integer: true }),
+        q('b', 'B₁', 'Field at the start', 'T', 0, 10, 0.0001),
+        q('c', 'B₂', 'Field at the end', 'T', 0.001, 10, 0.0001),
+        q('A', 'A', 'Area of the coil', 'm²', 0.0001, 10, 0.0001),
+        q('f', 'ΔΦ', 'Change in flux', 'Wb', 0, 100, 0.0001, { derived: true }),
+        q('t', 'Δt', 'Time', 's', 0.001, 10, 0.001),
+        q('e', 'emf', 'Induced emf', 'V', 0, 1e10, 0.0001, { derived: true }),
+      ],
+      ...withChecks(
+        [
+          apart(
+            'c',
+            'b',
+            0.001,
+            'The field must change by at least 0.001 T: with no change in flux there is no emf.',
+          ),
+        ],
+        rule('ΔΦ = (B₂ − B₁)A', '{f} = ({c} − {b}) × {A}', (v) => v.f! - (v.c! - v.b!) * v.A!, {
+          f: [
+            (v) => (v.c! - v.b!) * v.A!,
+            '({c} − {b}) × {A}',
+            'The change in the field times the area it passes through.',
+          ],
+          A: [
+            (v) => div(v.f!, v.c! - v.b!),
+            '{f}/({c} − {b})',
+            'Divide the change in flux by the change in the field.',
+          ],
+          c: [
+            (v) => div(v.f!, v.A!)! + v.b!,
+            '{b} + {f}/{A}',
+            'Add the change in the field to B₁.',
+          ],
+          b: [
+            (v) => v.c! - div(v.f!, v.A!)!,
+            '{c} − {f}/{A}',
+            'Take the change in the field from B₂.',
+          ],
+        }),
+        rule('emf = NΔΦ/Δt', '{e} = {N} × {f}/{t}', (v) => v.e! * v.t! - v.N! * v.f!, {
+          e: [
+            (v) => div(v.N! * v.f!, v.t!),
+            '{N} × {f}/{t}',
+            'Each turn gets ΔΦ/Δt; N turns add up.',
+          ],
+          f: [(v) => div(v.e! * v.t!, v.N!), '{e} × {t}/{N}', 'Solve Faraday’s law for ΔΦ.'],
+          t: [(v) => div(v.N! * v.f!, v.e!), '{N} × {f}/{e}', 'Solve Faraday’s law for Δt.'],
+          N: [
+            (v) => div(v.e! * v.t!, v.f!),
+            '{e} × {t}/{f}',
+            'Solve Faraday’s law for the number of turns.',
+          ],
+        }),
+      ),
+      example: { N, b, c, A, f, t, e: (N * f) / t },
+      startWith: ['N', 'b', 'c', 'A', 't'],
+      representation: {
+        kind: 'induction',
+        mode: 'coil',
+        turns: 'N',
+        flux: 'f',
+        time: 't',
+        emf: 'e',
+        direction: 'in',
+      },
+      pictureLabels: ['b', 'c', 'A'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
     const [B, I, L, t] = [0.4, 5, 0.25, 90];
     return {
       id: 's.11.electromagnetism~force',
@@ -3549,6 +3650,14 @@ const inductionPages: ModuleDef[] = [
               (v) => div(v.F!, v.B! * v.I! * Math.sin(v.q! * RAD)),
               '{F} ÷ (sin({q}) × {B} × {I})',
               'Divide the force by sin θ, the field and the current.',
+            ],
+            q: [
+              (v) => {
+                const r = div(v.F!, v.B! * v.I! * v.L!);
+                return r === undefined || r > 1 ? undefined : Math.asin(r) / RAD;
+              },
+              'arcsin({F}/({B} × {I} × {L}))',
+              'Divide F by BIL, then take arcsin (θ or 180° − θ).',
             ],
           },
         ),
@@ -3641,33 +3750,29 @@ const modernPages: ModuleDef[] = [
       variables: [
         q('l', 'λ', 'Wavelength', 'nm', 0.01, 1e6, 0.01),
         q('f', 'f', 'Frequency', 'Hz', 3e11, 3e19, 1, { scientific: true }),
-        q('E', 'E_J', 'Photon energy in joules', 'J', 6.626e-34 * 3e11, 6.626e-34 * 3e19, 1e-25, {
+        q('E', 'E_J', 'Photon energy in joules', 'J', 1e-22, 2e-14, 1e-25, {
           scientific: true,
           derived: true,
         }),
-        q(
-          'e',
-          'E',
-          'Photon energy',
-          'eV',
-          (6.626e-34 * 3e11) / 1.602e-19,
-          (6.626e-34 * 3e19) / 1.602e-19,
-          0.0001,
-        ),
+        q('e', 'E', 'Photon energy', 'eV', 0.001, 130000, 0.0001),
       ],
       ...rules(
-        rule('f = c/λ', '{f} = 3 × 10⁸/({l} × 10⁻⁹)', (v) => v.l! - 3e17 / v.f!, {
-          f: [
-            (v) => div(3e8, v.l! * 1e-9),
-            '3 × 10⁸/({l} × 10⁻⁹)',
-            'c = fλ: the speed of light over the wavelength in meters (1 nm = 10⁻⁹ m).',
-          ],
-          l: [
-            (v) => div(3e8, v.f! * 1e-9),
-            '3 × 10⁸/({f} × 10⁻⁹)',
-            'The speed of light over the frequency, in nm.',
-          ],
-        }),
+        withWork(
+          rule('f = c/λ', '{f} = 3 × 10⁸/({l} × 10⁻⁹)', (v) => v.l! - 3e17 / v.f!, {
+            f: [
+              (v) => div(3e8, v.l! * 1e-9),
+              '3 × 10⁸/({l} × 10⁻⁹)',
+              'c = fλ: the speed of light over the wavelength in meters (1 nm = 10⁻⁹ m).',
+            ],
+            l: [
+              (v) => div(3e8, v.f! * 1e-9),
+              '3 × 10⁸/({f} × 10⁻⁹)',
+              'The speed of light over the frequency, in nm.',
+            ],
+          }),
+          'f',
+          (v) => [`λ = ${sci(v.l!)} nm = ${sci(v.l! * 1e-9)} m`],
+        ),
         // f and eV first in these two: the solver checks a relation by its first rearrangement,
         // and joules this small would pass any check.
         rule('E_J = hf', '{E} = 6.626 × 10⁻³⁴ × {f}', (v) => v.f! - v.E! / 6.626e-34, {
@@ -3724,15 +3829,29 @@ const modernPages: ModuleDef[] = [
         q('E', 'E', 'Photon energy', 'eV', 0.01, 13.6, 0.0001),
         q('w', 'λ', 'Wavelength', 'nm', 50, 20000, 0.1),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          {
+            id: 'n_u > n_l',
+            constraint: true,
+            display: '{u} is more than {l}',
+            vars: ['u', 'l'],
+            residual: (v) => (v.u! > v.l! ? 0 : 1),
+            solve: {},
+            message: (v) =>
+              v.u! > v.l!
+                ? undefined
+                : 'The electron drops from a higher level: n_u must be more than n_l.',
+          },
+        ],
         rule(
           'E = 13.6(1/n_l² − 1/n_u²)',
-          '{E} = 13.6 × (1/{l}^2 − 1/{u}^2)',
+          '{E} = 13.6 × (1/{l}² − 1/{u}²)',
           (v) => v.E! - hydrogenEnergy(v.u!, v.l!),
           {
             E: [
               (v) => hydrogenEnergy(v.u!, v.l!),
-              '13.6 × (1/{l}^2 − 1/{u}^2)',
+              '13.6 × (1/{l}² − 1/{u}²)',
               'The photon carries the energy between the two levels.',
             ],
             u: [
@@ -3740,12 +3859,12 @@ const modernPages: ModuleDef[] = [
                 const k = 1 / v.l! ** 2 - v.E! / 13.6;
                 return k > 0 ? 1 / Math.sqrt(k) : undefined;
               },
-              '1/√(1/{l}^2 − {E}/13.6)',
+              '1/√(1/{l}² − {E}/13.6)',
               'Solve the level formula for the upper level.',
             ],
             l: [
               (v) => 1 / Math.sqrt(v.E! / 13.6 + 1 / v.u! ** 2),
-              '1/√({E}/13.6 + 1/{u}^2)',
+              '1/√({E}/13.6 + 1/{u}²)',
               'Solve the level formula for the lower level.',
             ],
           },
@@ -3810,10 +3929,10 @@ const circuitPages: ModuleDef[] = [
         V: [(v) => v.I! * v.R!, '{I} × {R}', 'The voltage is the current times the resistance.'],
         I: [
           (v) => div(v.V!, v.R!),
-          '{V} ÷ {R}',
+          '{V}/{R}',
           'Divide the voltage by the resistance: more resistance, less current.',
         ],
-        R: [(v) => div(v.V!, v.I!), '{V} ÷ {I}', 'Divide the voltage by the current.'],
+        R: [(v) => div(v.V!, v.I!), '{V}/{I}', 'Divide the voltage by the current.'],
       }),
     ),
     example: { V: 9, I: 0.45, R: 20 },
@@ -3901,7 +4020,7 @@ const circuitPages: ModuleDef[] = [
         amps('i', 'I₁', 'Current in R₁'),
         amps('j', 'I₂', 'Current in R₂'),
         amps('k', 'I₃', 'Current in R₃'),
-        amps('I', 'I', 'Total current', true),
+        amps('I', 'I', 'Total current'),
         resistor('R', 'R', 'Equivalent resistance'),
       ],
       ...rules(
@@ -3914,17 +4033,39 @@ const circuitPages: ModuleDef[] = [
             '{i} + {j} + {k}',
             'The branch currents join again: add them.',
           ],
+          i: [
+            (v) => v.I! - v.j! - v.k!,
+            '{I} − {j} − {k}',
+            'Take the other branches from the total.',
+          ],
+          j: [
+            (v) => v.I! - v.i! - v.k!,
+            '{I} − {i} − {k}',
+            'Take the other branches from the total.',
+          ],
+          k: [
+            (v) => v.I! - v.i! - v.j!,
+            '{I} − {i} − {j}',
+            'Take the other branches from the total.',
+          ],
         }),
-        rule(
-          '1/R = 1/R₁ + 1/R₂ + 1/R₃',
-          '1/{R} = 1/{a} + 1/{b} + 1/{c}',
-          (v) => 1 / v.R! - 1 / v.a! - 1 / v.b! - 1 / v.c!,
-          {
-            R: [
-              (v) => div(1, 1 / v.a! + 1 / v.b! + 1 / v.c!),
-              '1/(1/{a} + 1/{b} + 1/{c})',
-              'Add the reciprocals of the branch resistances, then flip the sum.',
-            ],
+        withWork(
+          rule(
+            '1/R = 1/R₁ + 1/R₂ + 1/R₃',
+            '1/{R} = 1/{a} + 1/{b} + 1/{c}',
+            (v) => 1 / v.R! - 1 / v.a! - 1 / v.b! - 1 / v.c!,
+            {
+              R: [
+                (v) => div(1, 1 / v.a! + 1 / v.b! + 1 / v.c!),
+                '1/(1/{a} + 1/{b} + 1/{c})',
+                'Add the reciprocals of the branch resistances, then flip the sum.',
+              ],
+            },
+          ),
+          'R',
+          (v) => {
+            const [x, y, z] = [1 / v.a!, 1 / v.b!, 1 / v.c!].map((n) => Number(n.toPrecision(4)));
+            return [`1/R = ${x} + ${y} + ${z} = ${Number((x! + y! + z!).toPrecision(4))}`];
           },
         ),
       ),
@@ -4049,9 +4190,9 @@ const circuitPages: ModuleDef[] = [
       ],
       variables: [
         VOLTS,
-        amps('I', 'I', 'Current'),
+        { ...amps('I', 'I', 'Current'), min: 0.001 },
         resistor('R', 'R', 'Resistance'),
-        q('P', 'P', 'Power', 'W', 0, 1e7, 0.01),
+        q('P', 'P', 'Power', 'W', 0.001, 1e7, 0.01),
         q('t', 't', 'Time', 's', 0.01, 1e7, 0.01),
         q('E', 'E', 'Energy used', 'J', 0, 1e12, 0.01),
       ],
