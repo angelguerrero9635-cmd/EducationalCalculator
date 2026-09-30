@@ -95,7 +95,10 @@ export const SCIENCE_11_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: 'A thermometer reads the cup once the two match', bin: 'zeroth' },
-      { label: 'Two blocks touching end at one temperature', bin: 'zeroth' },
+      {
+        label: 'Two cups each match the same thermometer reading, so neither warms the other',
+        bin: 'zeroth',
+      },
       { label: 'A heated gas pushes a piston out and warms less', bin: 'first' },
       { label: 'Squeezing a gas quickly warms it', bin: 'first' },
       { label: 'Heat flows on its own from a hot mug to cool air', bin: 'second' },
@@ -115,7 +118,7 @@ export const SCIENCE_11_LAYOUTS: LayoutDef[] = [
       'Longitudinal: the medium moves back and forth along the way the wave travels, in squeezes and stretches.',
       'Light needs no medium: its electric and magnetic fields swing across its path.',
     ],
-    question: 'Which way does the medium move?',
+    question: 'Which way does it vibrate, across or along its path?',
     bins: [
       {
         id: 'transverse',
@@ -183,13 +186,13 @@ export const SCIENCE_11_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.11.electrostatics~charging',
     title: 'Charged by friction, conduction or induction?',
-    use: 'Use this for “A charged rod is held near a metal can without touching it, and the can rolls toward it. How did the can become charged?”',
+    use: 'Use this for “A charged rod is held near a metal can without touching it, and the can rolls toward it. Why?”',
     assumptions: [
       'Charge is never made or destroyed: electrons move from one object to another.',
       'Friction rubs electrons off one material onto another; conduction shares charge by touch.',
       'Induction moves charges within an object by a nearby charge, without touching.',
     ],
-    question: 'How does it get its charge?',
+    question: 'How do its charges move?',
     bins: [
       {
         id: 'friction',
@@ -213,7 +216,10 @@ export const SCIENCE_11_LAYOUTS: LayoutDef[] = [
       { label: 'Tape pulled quickly off a roll', bin: 'friction' },
       { label: 'A charged rod touched to a metal sphere', bin: 'conduction' },
       { label: 'A hand on a charged dome, hair standing up', bin: 'conduction' },
-      { label: 'A charged rod held near a can pulls it without touching', bin: 'induction' },
+      {
+        label: 'A charged rod held near a can separates its charges and pulls it, without touching',
+        bin: 'induction',
+      },
       {
         label: 'A sphere grounded while a rod is near, then the ground wire removed',
         bin: 'induction',
@@ -228,7 +234,7 @@ export const SCIENCE_11_LAYOUTS: LayoutDef[] = [
     title: 'Motor or generator?',
     use: 'Use this for “A generator turns. What energy change happens, and why does it make a current?”',
     assumptions: [
-      'A motor: a current in a magnetic field feels a force, so electrical energy becomes motion.',
+      'A motor: the current’s magnetic field and the magnet’s field push on each other, so electrical energy becomes motion.',
       'A generator: a coil turning in a magnetic field has a changing flux, so motion becomes electrical energy.',
       'They are the same device run in opposite directions.',
     ],
