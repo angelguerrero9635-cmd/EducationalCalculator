@@ -3831,11 +3831,60 @@ const RIGID_MOTIONS: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.congruence ─────────────────────────────────────────────────────────
+
+const CONGRUENCE: ModuleDef[] = [
+  page({
+    id: 'm.10.congruence~corresponding-parts',
+    title: 'Congruent parts with an unknown',
+    use: 'Use this for “△ABC ≅ △DEF, AB = 3x + 2 and DE = x + 14. Find x and AB.”',
+    assumptions: [
+      'Corresponding parts of congruent triangles are congruent, so AB = DE: set the expressions equal.',
+      'The order of the letters pairs the parts: A with D, B with E, C with F.',
+      'Here BC = 16 and AC = 12, so AB must be between 4 and 28 for the triangle to close.',
+    ],
+    variables: [
+      coefficient('p', 'x coefficient of AB'),
+      constant('q', 'Number in AB', 100),
+      coefficient('r', 'x coefficient of DE'),
+      constant('s', 'Number in DE', 100),
+      der(num('x', 'x', 'x', -1000, 1000)),
+      der(num('L', 'AB', 'AB = DE', -1e5, 1e5)),
+    ],
+    rules: [
+      bothSides('x'),
+      derive(
+        'AB = px + q',
+        '{L} = {p} × {x} + {q}',
+        'L',
+        (v) => v.p! * v.x! + v.q!,
+        '{p} × {x} + {q}',
+        'Put x back into AB.',
+      ),
+      limit(
+        '4 < AB < 28',
+        '{L} is between 4 and 28',
+        (v) => v.L! > 4 && v.L! < 28,
+        'With BC = 16 and AC = 12, AB must be between 4 and 28, or the triangle doesn’t close.',
+      ),
+    ],
+    example: { p: 3, q: 2, r: 1, s: 14, x: 6, L: 20 },
+    startWith: ['p', 'q', 'r', 's'],
+    equation: '{p}x + {q} = {r}x + {s}',
+    representation: {
+      kind: 'triangleSolver',
+      parts: { c: 'L', a: 16, b: 12 },
+      congruence: {},
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...CONSTRUCTIONS,
   ...PROOFS,
   ...PARALLEL_LINES,
   ...RIGID_MOTIONS,
+  ...CONGRUENCE,
   ...SIMILARITY,
   ...SPECIAL,
   ...TRIG,

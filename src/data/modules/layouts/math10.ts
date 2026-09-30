@@ -226,6 +226,79 @@ const RIGID_MOTIONS: LayoutDef[] = [
   },
 ];
 
+// ── Congruent triangles (G-CO.7, G-CO.8, G-SRT.5) ──
+const CONGRUENCE: LayoutDef[] = [
+  {
+    kind: 'sort',
+    id: 'm.10.congruence',
+    assumptions: [
+      'SSS, SAS, ASA and AAS each prove two triangles congruent; HL does for right triangles.',
+      'In SAS and ASA the angle or side is between the other two parts.',
+      'SSA and AAA don’t prove congruence: two different triangles can match those parts.',
+    ],
+    question: 'Which test proves △ABC ≅ △DEF?',
+    bins: [
+      { id: 'sss', label: 'SSS', why: 'Three pairs of sides are congruent.' },
+      { id: 'sas', label: 'SAS', why: 'Two sides and the angle between them.' },
+      { id: 'asa', label: 'ASA', why: 'Two angles and the side between them.' },
+      { id: 'aas', label: 'AAS', why: 'Two angles and a side not between them.' },
+      { id: 'hl', label: 'HL', why: 'Right triangles with the hypotenuse and a leg congruent.' },
+      { id: 'none', label: 'Not enough', why: 'Two different triangles fit these parts.' },
+    ],
+    cards: [
+      { label: 'AB = DE, BC = EF, CA = FD', bin: 'sss' },
+      { label: 'AB = DE, m∠B = m∠E, BC = EF', bin: 'sas' },
+      { label: 'm∠A = m∠D, AB = DE, m∠B = m∠E', bin: 'asa' },
+      { label: 'm∠A = m∠D, m∠B = m∠E, BC = EF', bin: 'aas' },
+      { label: 'Right angles at C and F, AB = DE, AC = DF', bin: 'hl' },
+      { label: 'AB = DE, BC = EF, m∠A = m∠D', bin: 'none' },
+      { label: 'All three angles equal', bin: 'none' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.10.congruence~correspondence',
+    title: '△ABC ≅ △KLM: must it be true?',
+    use: 'Use this for “△ABC ≅ △KLM. Which parts must be congruent?”',
+    assumptions: [
+      'The order of the letters pairs the parts: A with K, B with L, C with M.',
+      'A side pairs with the side whose letters sit in the same places: BC with LM.',
+    ],
+    question: 'Must the statement be true?',
+    bins: [
+      { id: 'must', label: 'Must be true', why: 'The letters sit in matching places.' },
+      { id: 'not', label: 'Not always', why: 'The letters don’t match in order.' },
+    ],
+    cards: [
+      { label: '∠B ≅ ∠L', bin: 'must' },
+      { label: 'AC ≅ KM', bin: 'must' },
+      { label: 'AB ≅ KL', bin: 'must' },
+      { label: '∠C ≅ ∠M', bin: 'must' },
+      { label: 'BC ≅ KL', bin: 'not' },
+      { label: '∠A ≅ ∠M', bin: 'not' },
+      { label: 'AB ≅ LM', bin: 'not' },
+      { label: '∠B ≅ ∠K', bin: 'not' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'm.10.congruence~cpctc-proof',
+    title: 'Prove two segments congruent',
+    use: 'Use this for “M is the midpoint of PQ and of RS. Prove PR ≅ QS.”',
+    assumptions: [
+      'Given: M is the midpoint of PQ and of RS. Prove: PR ≅ QS.',
+      'Prove two triangles congruent first; then their corresponding parts are congruent.',
+    ],
+    question: 'Put the proof in order.',
+    stages: [
+      { label: 'PM ≅ QM and RM ≅ SM (M is the midpoint of both: given)' },
+      { label: '∠PMR ≅ ∠QMS (Vertical angles)' },
+      { label: '△PMR ≅ △QMS (SAS)' },
+      { label: 'PR ≅ QS (Corresponding parts of congruent triangles)' },
+    ],
+  },
+];
+
 // ── Similarity (G-SRT.2–5) ──
 const SIMILARITY: LayoutDef[] = [
   {
@@ -357,6 +430,7 @@ export const MATH_10_LAYOUTS: LayoutDef[] = [
   ...PROOFS,
   ...PARALLEL_LINES,
   ...RIGID_MOTIONS,
+  ...CONGRUENCE,
   ...SIMILARITY,
   ...VOLUME,
 ];
