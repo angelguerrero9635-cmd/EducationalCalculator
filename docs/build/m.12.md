@@ -171,6 +171,8 @@ another way or left for shared work.
 - **Limits with reasons (8–10, harness).** `~projectile` t ≤ T and y ≥ 0; `~proportion` 10
   successes and 10 failures; `~parabola` q ≠ 0; the interval pages L < U with x̄, L and U on one
   range (±1,000,000); every earlier limit now says why.
+- **Deep run**: `~independence` now needs every expected count to be at least 5 (a 0.015
+  expected count made the rounded terms disagree); `~arctan` takes a run of at least 0.1 m.
 - **`~vectors~resultant`**: forces 0.1 N to 10,000 N, so the direction no longer rounds to 0°.
 - **Checks through the function (17)**: sin(30°) = 0.5 on the four inverse pages.
 - **`~polar~product` (18)** hides w's parts (figure-only) and answers zw as p + qi.

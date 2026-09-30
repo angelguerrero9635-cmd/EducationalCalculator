@@ -1555,6 +1555,13 @@ const MATH_12_STATS: ModuleDef[] = [
       alphaOf('al'),
     ],
     ...rels(
+      limit(
+        'expected counts ≥ 5',
+        'Every expected count from {a}, {b}, {c}, {d}, {e}, {f} is at least 5',
+        ALL_CELLS,
+        (v) => expectedCounts(v).every((c) => c.E >= 5),
+        'Every expected count must be at least 5 for the chi-square curve to fit: add more to the small rows or columns.',
+      ),
       {
         relation: {
           id: 'X² = Σ(O − E)² ÷ E',
@@ -2620,7 +2627,7 @@ const MATH_12_TRIG: ModuleDef[] = [
     ],
     variables: [
       V('r', 'rise', 'Rise', { unit: 'm', min: -100000, max: 100000, step: 0.01 }),
-      V('u', 'run', 'Run', { unit: 'm', min: 0.001, max: 100000, step: 0.01 }),
+      V('u', 'run', 'Run', { unit: 'm', min: 0.1, max: 100000, step: 0.01 }),
       V('x', 'x', 'Rise over run', { min: -100000, max: 100000, step: 0.0001, derived: true }),
       deg('A', 'A', 'Angle of the slope', -89.99, 89.99),
     ],
