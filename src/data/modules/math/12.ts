@@ -1718,6 +1718,69 @@ const det3 = (v: Values) =>
 const DET3 =
   '{a} × ({e} × {k} − {f} × {h}) − {b} × ({d} × {k} − {f} × {g}) + {c} × ({d} × {h} − {e} × {g})';
 
+/** The inverse as class writes it: 1/D times the swapped matrix, (1/10)[[6, −7], [−2, 4]]. */
+const inverseNote = (v: Values) =>
+  [v.a, v.b, v.c, v.d, v.D].some((x) => x === undefined) || v.D === 0
+    ? ''
+    : `→ A⁻¹ = (1/${fmt(v.D!)})[[${fmt(v.d!)}, ${fmt(-v.b! + 0)}], [${fmt(-v.c! + 0)}, ${fmt(v.a!)}]]`;
+
+/** One entry of A⁻¹, worked out only to draw A⁻¹B (the system page's picture). */
+const inverseEntry = (x: string, top: string, sign: 1 | -1) =>
+  hide(
+    derive(
+      `${x} = ${sign < 0 ? '−' : ''}${top} ÷ D`,
+      `{${x}} = ${sign < 0 ? '−' : ''}{${top}} ÷ {D}`,
+      x,
+      [top, 'D'],
+      (v) => div(sign * v[top]!, v.D!),
+      `${sign < 0 ? '−' : ''}{${top}} ÷ {D}`,
+      'An entry of the inverse, to draw it.',
+    ),
+  );
+
+/** A line's slope and intercept, worked out only to draw it (the Cramer page's picture). */
+const lineOf = (n: string, which: string) => [
+  V(`m${n}`, `m${n}`, `Slope of the ${which} line`, {
+    min: -1e9,
+    max: 1e9,
+    step: 0.0001,
+    derived: true,
+    hidden: true,
+  }),
+  V(`i${n}`, `i${n}`, `Intercept of the ${which} line`, {
+    min: -1e9,
+    max: 1e9,
+    step: 0.0001,
+    derived: true,
+    hidden: true,
+  }),
+];
+/** ax + by = p as y = (−a ÷ b)x + p ÷ b, for the picture only (no line when b = 0). */
+const lineRels = (n: string, a: string, b: string, p: string): Rel[] => [
+  hide(
+    derive(
+      `m${n} = −${a} ÷ ${b}`,
+      `{m${n}} = −{${a}} ÷ {${b}}`,
+      `m${n}`,
+      [a, b],
+      (v) => div(-v[a]!, v[b]!),
+      `−{${a}} ÷ {${b}}`,
+      'The slope of the line, to draw it.',
+    ),
+  ),
+  hide(
+    derive(
+      `i${n} = ${p} ÷ ${b}`,
+      `{i${n}} = {${p}} ÷ {${b}}`,
+      `i${n}`,
+      [p, b],
+      (v) => div(v[p]!, v[b]!),
+      `{${p}} ÷ {${b}}`,
+      'Where the line crosses the y-axis, to draw it.',
+    ),
+  ),
+];
+
 const MATH_12_MATRICES: ModuleDef[] = [
   // ── m.12.matrices (A-REI.8, A-REI.9, N-VM.6–12) ──
   {
@@ -1946,40 +2009,51 @@ const MATH_12_MATRICES: ModuleDef[] = [
         step: 0.01,
         derived: true,
       }),
-      V('e', 'e', 'A⁻¹, row 1, column 1', {
+      V('e', 'e', 'Row 1, column 1 of A⁻¹', {
         min: -1000000,
         max: 1000000,
         step: 0.0001,
         derived: true,
+        fraction: 1000,
       }),
-      V('f', 'f', 'A⁻¹, row 1, column 2', {
+      V('f', 'f', 'Row 1, column 2 of A⁻¹', {
         min: -1000000,
         max: 1000000,
         step: 0.0001,
         derived: true,
+        fraction: 1000,
       }),
-      V('g', 'g', 'A⁻¹, row 2, column 1', {
+      V('g', 'g', 'Row 2, column 1 of A⁻¹', {
         min: -1000000,
         max: 1000000,
         step: 0.0001,
         derived: true,
+        fraction: 1000,
       }),
-      V('h', 'h', 'A⁻¹, row 2, column 2', {
+      V('h', 'h', 'Row 2, column 2 of A⁻¹', {
         min: -1000000,
         max: 1000000,
         step: 0.0001,
         derived: true,
+        fraction: 1000,
       }),
     ],
     ...rels(
-      derive(
-        'D = ad − bc',
-        '{D} = {a} × {d} − {b} × {c}',
+      withStep(
+        derive(
+          'D = ad − bc',
+          '{D} = {a} × {d} − {b} × {c}',
+          'D',
+          ['a', 'd', 'b', 'c'],
+          (v) => v.a! * v.d! - v.b! * v.c!,
+          '{a} × {d} − {b} × {c}',
+          'Multiply down the main diagonal and take away the other diagonal.',
+        ),
         'D',
-        ['a', 'd', 'b', 'c'],
-        (v) => v.a! * v.d! - v.b! * v.c!,
-        '{a} × {d} − {b} × {c}',
-        'Multiply down the main diagonal and take away the other diagonal.',
+        {
+          // The inverse as class writes it: 1/D times the swapped matrix.
+          note: inverseNote,
+        },
       ),
       derive(
         'e = d ÷ D',
@@ -2035,6 +2109,112 @@ const MATH_12_MATRICES: ModuleDef[] = [
     },
   },
   {
+    id: 'm.12.matrices~inverse-system',
+    title: 'Solving a system with A⁻¹',
+    use: 'Use this for “Solve 3x + 2y = 7 and 5x + 4y = 13 with the inverse matrix.”',
+    assumptions: [
+      'The system is AX = B: A holds the coefficients, X = [[x], [y]] and B the right sides.',
+      'Multiply both sides by A⁻¹ on the left: X = A⁻¹B.',
+      'A⁻¹ = (1/D)[[d, −b], [−c, a]] with D = ad − bc, so D = 0 means no single solution.',
+    ],
+    variables: [
+      entry('a', 'a', 'x in the first'),
+      entry('b', 'b', 'y in the first'),
+      entry('p', 'p', 'Right side of the first'),
+      entry('c', 'c', 'x in the second'),
+      entry('d', 'd', 'y in the second'),
+      entry('q', 'q', 'Right side of the second'),
+      V('D', 'D', 'Determinant ad − bc', {
+        min: -2000000,
+        max: 2000000,
+        step: 0.01,
+        derived: true,
+      }),
+      V('x', 'x', 'Solution x', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
+      V('y', 'y', 'Solution y', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
+      ...['e', 'f', 'g', 'h'].map((id) =>
+        V(id, id, 'An entry of A⁻¹', {
+          min: -1e9,
+          max: 1e9,
+          step: 0.0001,
+          derived: true,
+          hidden: true,
+        }),
+      ),
+    ],
+    ...rels(
+      limit(
+        'D ≠ 0',
+        'The determinant {a} × {d} − {b} × {c} is not 0',
+        ['a', 'b', 'c', 'd'],
+        (v) => v.a! * v.d! - v.b! * v.c! !== 0,
+        'With D = 0, A has no inverse: the lines are parallel or the same line.',
+      ),
+      withStep(
+        derive(
+          'D = ad − bc',
+          '{D} = {a} × {d} − {b} × {c}',
+          'D',
+          ['a', 'd', 'b', 'c'],
+          (v) => v.a! * v.d! - v.b! * v.c!,
+          '{a} × {d} − {b} × {c}',
+          'A⁻¹ needs the determinant: down the main diagonal, take away the other.',
+        ),
+        'D',
+        { note: inverseNote },
+      ),
+      derive(
+        'x = (dp − bq) ÷ D',
+        '{x} = ({d} × {p} − {b} × {q}) ÷ {D}',
+        'x',
+        ['d', 'p', 'b', 'q', 'D'],
+        (v) => div(v.d! * v.p! - v.b! * v.q!, v.D!),
+        '({d} × {p} − {b} × {q}) ÷ {D}',
+        'Row 1 of A⁻¹ times B: d times p, take away b times q, all over D.',
+      ),
+      derive(
+        'y = (aq − cp) ÷ D',
+        '{y} = ({a} × {q} − {c} × {p}) ÷ {D}',
+        'y',
+        ['a', 'q', 'c', 'p', 'D'],
+        (v) => div(v.a! * v.q! - v.c! * v.p!, v.D!),
+        '({a} × {q} − {c} × {p}) ÷ {D}',
+        'Row 2 of A⁻¹ times B: −c times p plus a times q, all over D.',
+      ),
+      inverseEntry('e', 'd', 1),
+      inverseEntry('f', 'b', -1),
+      inverseEntry('g', 'c', -1),
+      inverseEntry('h', 'a', 1),
+    ),
+    example: {
+      a: 3,
+      b: 2,
+      p: 7,
+      c: 5,
+      d: 4,
+      q: 13,
+      D: 2,
+      x: 1,
+      y: 2,
+      e: 2,
+      f: -1,
+      g: -2.5,
+      h: 1.5,
+    },
+    startWith: ['a', 'b', 'p', 'c', 'd', 'q'],
+    equation: '{a}x + {b}y = {p}\n{c}x + {d}y = {q}',
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'multiply',
+      a: [
+        ['e', 'f'],
+        ['g', 'h'],
+      ],
+      b: [['p'], ['q']],
+      product: [['x'], ['y']],
+    },
+  },
+  {
     id: 'm.12.matrices~cramer',
     title: 'Cramer’s rule for two equations',
     use: 'Use this for “Solve 2x + 3y = 13 and x − y = −1 by Cramer’s rule.”',
@@ -2058,6 +2238,8 @@ const MATH_12_MATRICES: ModuleDef[] = [
       }),
       V('x', 'x', 'Solution x', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
       V('y', 'y', 'Solution y', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
+      ...lineOf('1', 'first'),
+      ...lineOf('2', 'second'),
     ],
     ...rels(
       derive(
@@ -2069,29 +2251,71 @@ const MATH_12_MATRICES: ModuleDef[] = [
         '{a} × {d} − {b} × {c}',
         'The determinant of the coefficients: down the main diagonal, take away the other.',
       ),
-      derive(
-        'x = (pd − bq) ÷ D',
-        '{x} = ({p} × {d} − {b} × {q}) ÷ {D}',
+      withStep(
+        derive(
+          'x = (pd − bq) ÷ D',
+          '{x} = ({p} × {d} − {b} × {q}) ÷ {D}',
+          'x',
+          ['p', 'd', 'b', 'q', 'D'],
+          (v) => div(v.p! * v.d! - v.b! * v.q!, v.D!),
+          '({p} × {d} − {b} × {q}) ÷ {D}',
+          'Dₓ puts the right sides in the x column; divide it by D.',
+        ),
         'x',
-        ['p', 'd', 'b', 'q', 'D'],
-        (v) => div(v.p! * v.d! - v.b! * v.q!, v.D!),
-        '({p} × {d} − {b} × {q}) ÷ {D}',
-        'Dx puts the right sides in the x column; divide it by D.',
+        {
+          work: (v) => [
+            `Dₓ = ${fmt(v.p!)} × ${par(v.d!)} − ${fmt(v.b!)} × ${par(v.q!)} = ${fmt(v.p! * v.d! - v.b! * v.q!)}`,
+            `${fmt(v.p! * v.d! - v.b! * v.q!)} ÷ ${par(v.D!)} = ${fmt((v.p! * v.d! - v.b! * v.q!) / v.D!)}`,
+          ],
+        },
       ),
-      derive(
-        'y = (aq − pc) ÷ D',
-        '{y} = ({a} × {q} − {p} × {c}) ÷ {D}',
+      withStep(
+        derive(
+          'y = (aq − pc) ÷ D',
+          '{y} = ({a} × {q} − {p} × {c}) ÷ {D}',
+          'y',
+          ['a', 'q', 'p', 'c', 'D'],
+          (v) => div(v.a! * v.q! - v.p! * v.c!, v.D!),
+          '({a} × {q} − {p} × {c}) ÷ {D}',
+          'Dᵧ puts the right sides in the y column; divide it by D.',
+        ),
         'y',
-        ['a', 'q', 'p', 'c', 'D'],
-        (v) => div(v.a! * v.q! - v.p! * v.c!, v.D!),
-        '({a} × {q} − {p} × {c}) ÷ {D}',
-        'Dy puts the right sides in the y column; divide it by D.',
+        {
+          work: (v) => [
+            `Dᵧ = ${fmt(v.a!)} × ${par(v.q!)} − ${fmt(v.p!)} × ${par(v.c!)} = ${fmt(v.a! * v.q! - v.p! * v.c!)}`,
+            `${fmt(v.a! * v.q! - v.p! * v.c!)} ÷ ${par(v.D!)} = ${fmt((v.a! * v.q! - v.p! * v.c!) / v.D!)}`,
+          ],
+        },
       ),
+      ...lineRels('1', 'a', 'b', 'p'),
+      ...lineRels('2', 'c', 'd', 'q'),
     ),
-    example: { a: 2, b: 3, p: 13, c: 1, d: -1, q: -1, D: -5, x: 2, y: 3 },
+    example: {
+      a: 2,
+      b: 3,
+      p: 13,
+      c: 1,
+      d: -1,
+      q: -1,
+      D: -5,
+      x: 2,
+      y: 3,
+      m1: -2 / 3,
+      i1: 13 / 3,
+      m2: 1,
+      i2: 1,
+    },
     startWith: ['a', 'b', 'p', 'c', 'd', 'q'],
     equation: '{a}x + {b}y = {p}\n{c}x + {d}y = {q}',
-    representation: { kind: 'coordinatePlane', x: 'x', y: 'y', extent: 10, quadrants: 4 },
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 'm1', intercept: 'i1', label: 'First' },
+        { slope: 'm2', intercept: 'i2', label: 'Second' },
+      ],
+      solution: { x: 'x', y: 'y' },
+      fixed: true,
+    },
   },
 ];
 
