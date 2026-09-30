@@ -52,3 +52,6 @@ src/**/__tests__/zz-*.review.test.ts
 # Python bytecode (research tools)
 __pycache__/
 *.pyc
+
+# Git worktrees of parallel builders (each merged back by its branch)
+.claude/worktrees/
