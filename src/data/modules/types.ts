@@ -26,6 +26,7 @@ import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
+import type { Hs2eSpec } from './typesHs2e';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1107,6 +1108,8 @@ export type Representation =
   | HsjSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
+  /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
+  | Hs2eSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

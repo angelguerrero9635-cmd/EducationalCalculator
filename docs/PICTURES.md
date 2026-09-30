@@ -88,6 +88,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
 | `membrane`         | a bilayer, particles counted on each side; channel, aquaporin or pump | Grade 9 membrane transport (H32)    |
 | `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff        | Grade 9 DNA, mutations (H36)        |
+| `macromolecules`   | monomers into a chain by a value, "…" past 4; bonds and water counted | Grade 9 biomolecules (H100)         |
 | `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
 | `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
 | `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target    | Chemistry measurement (H43)         |

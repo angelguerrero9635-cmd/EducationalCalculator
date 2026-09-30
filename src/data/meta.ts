@@ -141,6 +141,7 @@ const PICTURE_NAMES: Record<string, string> = {
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',
+  macromolecules: 'monomers joining into a polymer, water given off',
   projectile: 'projectile path with its velocity components',
   induction: 'induction: coil and magnet, force on a wire, transformer',
   charges: 'point charges with field lines and forces',

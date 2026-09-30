@@ -143,6 +143,7 @@ import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
 import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
+import { Hs2eView } from './Hs2eView';
 import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
 import { AlleleFrequencies } from './AlleleFrequencies';
@@ -205,6 +206,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Membrane spec={spec} calc={calc} />;
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
+    case 'macromolecules':
+      return <Hs2eView spec={spec} calc={calc} />;
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':

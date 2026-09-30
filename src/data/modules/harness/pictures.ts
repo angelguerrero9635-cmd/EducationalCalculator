@@ -50,6 +50,7 @@ import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
 import { hs2aIssues } from './picturesHs2a';
+import { hs2eIssues } from './picturesHs2e';
 import * as hsk from './picturesHsk';
 import type { ModuleDef, Representation } from '../types';
 
@@ -2120,6 +2121,9 @@ export function repIssues(
     case 'membrane':
     case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
+      break;
+    case 'macromolecules':
+      out.push(...hs2eIssues(rep, (id) => val(id)));
       break;
     case 'gel':
     case 'alleleFrequencies':
