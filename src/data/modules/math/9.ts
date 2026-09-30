@@ -362,6 +362,8 @@ const xPlus = (p: number, x = 'x') =>
     [1, x],
     [p, ''],
   ]);
+/** Whether every value named is known. */
+const known = (v: Values, ...ids: string[]) => ids.every((id) => v[id] !== undefined);
 /** Greatest common factor of two whole numbers (0 when both are 0). */
 function gcd(a: number, b: number): number {
   a = Math.abs(a);
@@ -721,5 +723,927 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
   }),
 ];
 
+// ── Polynomial operations ──
+
+/** A coefficient on tile edges: a whole number from −10 to 10. */
+const tile = (id: string, symbol: string, name: string, more: Partial<VariableDef> = {}) =>
+  int(id, symbol, name, -10, 10, more);
+
+const POLYNOMIAL_OPERATIONS: ModuleDef[] = [
+  page({
+    id: 'm.9.polynomial-operations',
+    assumptions: [
+      'Every term of one factor multiplies every term of the other: four products.',
+      'The two x terms are like terms: combine them.',
+      'A negative times a negative is positive.',
+    ],
+    variables: [
+      tile('a', 'a', 'x in the first factor'),
+      tile('b', 'b', 'Number in the first factor'),
+      tile('c', 'c', 'x in the second factor'),
+      tile('d', 'd', 'Number in the second factor'),
+      int('p', 'p', 'x² terms', -100, 100, { derived: true }),
+      int('q', 'q', 'x terms', -200, 200, { derived: true }),
+      int('r', 'r', 'Number term', -100, 100, { derived: true }),
+    ],
+    rules: [
+      nonzero('a', 'The x in the first factor'),
+      nonzero('c', 'The x in the second factor'),
+      derive(
+        'p = a × c',
+        'p',
+        ['a', 'c'],
+        '{p} = {a} × {c}',
+        (v) => v.a! * v.c!,
+        '{a} × {c}',
+        'First terms: ax times cx gives acx².',
+      ),
+      derive(
+        'q = a × d + b × c',
+        'q',
+        ['a', 'd', 'b', 'c'],
+        '{q} = {a} × {d} + {b} × {c}',
+        (v) => v.a! * v.d! + v.b! * v.c!,
+        '{a} × {d} + {b} × {c}',
+        'Outer and inner terms: ax times d and b times cx are both x terms, so add them.',
+      ),
+      derive(
+        'r = b × d',
+        'r',
+        ['b', 'd'],
+        '{r} = {b} × {d}',
+        (v) => v.b! * v.d!,
+        '{b} × {d}',
+        'Last terms: the two numbers multiply to the number term.',
+        {
+          note: (v) =>
+            known(v, 'p', 'q', 'r')
+              ? `→ ${poly([
+                  [v.p!, 'x²'],
+                  [v.q!, 'x'],
+                  [v.r!, ''],
+                ])}`
+              : '',
+        },
+      ),
+    ],
+    example: { a: 2, b: 3, c: 1, d: -4, p: 2, q: -5, r: -12 },
+    startWith: ['a', 'b', 'c', 'd'],
+    equation: '({a:coef}x + {b})({c:coef}x + {d}) = {p:coef}x² + {q}x + {r}',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'rectangle',
+      given: 'factors',
+      factors: { p: 'a', q: 'b', r: 'c', s: 'd' },
+      product: { x2: 'p', x: 'q', unit: 'r' },
+    },
+  }),
+  page({
+    id: 'm.9.polynomial-operations~add-subtract',
+    title: 'Add and subtract polynomials',
+    use: 'Use this for “(3x² − 2x + 5) − (x² + 4x − 1)”.',
+    assumptions: [
+      'Only like terms combine: x² with x², x with x, numbers with numbers.',
+      'To subtract, add the opposite: change the sign of every term in the second bracket.',
+      'A positive and a negative tile of the same size make zero.',
+    ],
+    variables: [
+      tile('a', 'a', 'x² in the first'),
+      tile('b', 'b', 'x in the first'),
+      tile('c', 'c', 'Number in the first'),
+      int('o', 'o', 'Add (1) or subtract (2)', 1, 2, { allowed: [1, 2] }),
+      tile('d', 'd', 'x² in the second'),
+      tile('e', 'e', 'x in the second'),
+      tile('f', 'f', 'Number in the second'),
+      tile('D', 'd′', 'x² added', { derived: true }),
+      tile('E', 'e′', 'x added', { derived: true }),
+      tile('F', 'f′', 'Number added', { derived: true }),
+      int('p', 'p', 'x² in the answer', -20, 20, { derived: true }),
+      int('q', 'q', 'x in the answer', -20, 20, { derived: true }),
+      int('r', 'r', 'Number in the answer', -20, 20, { derived: true }),
+    ],
+    rules: [
+      ...(
+        [
+          ['D', 'd', 'x²'],
+          ['E', 'e', 'x'],
+          ['F', 'f', 'number'],
+        ] as const
+      ).map(([id, from, what]) =>
+        derive(
+          `${id} = ±${from}`,
+          id,
+          [from, 'o'],
+          `{${id}} = {${from}} × (1 or −1, as {o} says)`,
+          // 1 for +, −1 for − (o is 1 or 2): one smooth rule, so the search reads it right.
+          (v) => v[from]! * (3 - 2 * v.o!),
+          (v) => (v.o === 2 ? `−1 × {${from}}` : `{${from}}`),
+          (v) =>
+            v.o === 2
+              ? `Subtracting adds the opposite: the second ${what} term changes sign.`
+              : `Adding keeps the second ${what} term as it is.`,
+          {},
+          {
+            check: (v) =>
+              v.o === 2
+                ? `${fmt(v[id]!)} = −1 × ${sg(v[from]!)}`
+                : `${fmt(v[id]!)} = ${fmt(v[from]!)}`,
+          },
+        ),
+      ),
+      ...(
+        [
+          ['p', 'a', 'D', 'x² terms'],
+          ['q', 'b', 'E', 'x terms'],
+          ['r', 'c', 'F', 'numbers'],
+        ] as const
+      ).map(([id, x, y, what]) =>
+        derive(
+          `${id} = ${x} + ${y}`,
+          id,
+          [x, y],
+          `{${id}} = {${x}} + {${y}}`,
+          (v) => v[x]! + v[y]!,
+          `{${x}} + {${y}}`,
+          `Combine the ${what}.`,
+        ),
+      ),
+    ],
+    example: { a: 3, b: -2, c: 5, o: 2, d: 1, e: 4, f: -1, D: -1, E: -4, F: 1, p: 2, q: -6, r: 6 },
+    startWith: ['a', 'b', 'c', 'o', 'd', 'e', 'f'],
+    equation:
+      '({a:coef}x² + {b}x + {c}) {o:op} ({d:coef}x² + {e}x + {f}) = {p:coef}x² + {q}x + {r}',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'collect',
+      tiles: { x2: 'a', x: 'b', unit: 'c' },
+      plus: { x2: 'D', x: 'E', unit: 'F' },
+      sum: { x2: 'p', x: 'q', unit: 'r' },
+    },
+  }),
+  page({
+    id: 'm.9.polynomial-operations~square',
+    title: 'Square a binomial',
+    use: 'Use this for “(3x − 2)²”.',
+    assumptions: [
+      '(ax + b)² means (ax + b)(ax + b), a square of tiles.',
+      'The middle term is 2abx, from the two equal rectangles: (ax + b)² is not a²x² + b².',
+    ],
+    variables: [
+      tile('a', 'a', 'x in the bracket'),
+      tile('b', 'b', 'Number in the bracket'),
+      int('p', 'p', 'x² terms', 0, 100, { derived: true }),
+      int('q', 'q', 'x terms', -200, 200, { derived: true }),
+      int('r', 'r', 'Number term', 0, 100, { derived: true }),
+    ],
+    rules: [
+      nonzero('a', 'The x in the bracket'),
+      derive(
+        'p = a²',
+        'p',
+        ['a'],
+        '{p} = {a}²',
+        (v) => v.a! ** 2,
+        '{a}²',
+        'The x term times itself.',
+      ),
+      derive(
+        'q = 2ab',
+        'q',
+        ['a', 'b'],
+        '{q} = 2 × {a} × {b}',
+        (v) => 2 * v.a! * v.b!,
+        '2 × {a} × {b}',
+        'The outer and inner products are the same, abx twice.',
+      ),
+      derive(
+        'r = b²',
+        'r',
+        ['b'],
+        '{r} = {b}²',
+        (v) => v.b! ** 2,
+        '{b}²',
+        'The number times itself: always 0 or more.',
+      ),
+    ],
+    example: { a: 3, b: -2, p: 9, q: -12, r: 4 },
+    startWith: ['a', 'b'],
+    equation: '({a:coef}x + {b})² = {p:coef}x² + {q}x + {r}',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'rectangle',
+      given: 'factors',
+      factors: { p: 'a', q: 'b', r: 'a', s: 'b' },
+      product: { x2: 'p', x: 'q', unit: 'r' },
+    },
+  }),
+];
+
+// ── Factoring ──
+
+/** p and q with p + q = b and p × q = c (p the larger), when b² − 4c is a perfect square. */
+const pairFor = (b: number, c: number) => {
+  const r = intRoot(b * b - 4 * c);
+  return r === undefined ? undefined : { p: (b + r) / 2, q: (b - r) / 2 };
+};
+const noPair = (v: Values) =>
+  v.b !== undefined && v.c !== undefined && !pairFor(v.b, v.c)
+    ? 'No two whole numbers multiply to c and add to b: it does not factor over the integers.'
+    : undefined;
+
+/**
+ * The ac method for ax² + bx + c (a > 0): m + n = b, m × n = ac; then p = GCF(a, m), the
+ * common bracket (rx + s) = (ax + m) ÷ p, and q = n ÷ r.
+ */
+function acSplit(a: number, b: number, c: number) {
+  const r0 = intRoot(b * b - 4 * a * c);
+  if (r0 === undefined || !(a > 0)) return undefined;
+  let m = (b + r0) / 2;
+  let n = b - m;
+  if (m === 0) [m, n] = [n, m];
+  const p = gcd(a, m) || a;
+  const r = a / p;
+  const s = m / p;
+  return { m, n, p, r, s, q: n / r };
+}
+const noSplit = (v: Values) =>
+  v.a !== undefined && v.b !== undefined && v.c !== undefined && !acSplit(v.a, v.b, v.c)
+    ? 'No two whole numbers multiply to ac and add to b: it does not factor over the integers.'
+    : undefined;
+
+const FACTORING: ModuleDef[] = [
+  page({
+    id: 'm.9.factoring',
+    assumptions: [
+      'Find two numbers whose product is c and whose sum is b.',
+      'Check by multiplying the brackets back out.',
+      'Not every trinomial factors over the integers.',
+    ],
+    variables: [
+      int('b', 'b', 'x coefficient', -20, 20),
+      int('c', 'c', 'Number term', -100, 100),
+      tile('p', 'p', 'First number', { derived: true }),
+      tile('q', 'q', 'Second number', { derived: true }),
+    ],
+    rules: [
+      derive(
+        'p = (b + √(b² − 4c)) ÷ 2',
+        'p',
+        ['b', 'c'],
+        '{p} = ({b} + √({b}² − 4 × {c})) ÷ 2',
+        (v) => pairFor(v.b!, v.c!)?.p,
+        '({b} + √({b}² − 4 × {c})) ÷ 2',
+        'List the factor pairs of c and find the pair that adds to b; this is the larger of the two.',
+        {
+          work: (v) => {
+            const q = v.b! - v.p!;
+            return [
+              `${sg(v.p!)} × ${sg(q)} = ${fmt(v.c!)}`,
+              `${sg(v.p!)} + ${sg(q)} = ${fmt(v.b!)}`,
+            ];
+          },
+        },
+        { message: noPair },
+      ),
+      derive(
+        'q = b − p',
+        'q',
+        ['b', 'p'],
+        '{q} = {b} − {p}',
+        (v) => v.b! - v.p!,
+        '{b} − {p}',
+        'The two numbers add to b.',
+        {
+          note: (v) =>
+            known(v, 'b', 'c', 'p', 'q')
+              ? `→ ${poly([
+                  [1, 'x²'],
+                  [v.b!, 'x'],
+                  [v.c!, ''],
+                ])} = (${xPlus(v.p!)})(${xPlus(v.q!)})`
+              : '',
+        },
+      ),
+    ],
+    example: { b: 2, c: -15, p: 5, q: -3 },
+    startWith: ['b', 'c'],
+    equation: 'x² + {b}x + {c} = (x + {p})(x + {q})',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'rectangle',
+      given: 'product',
+      factors: { p: 1, q: 'p', r: 1, s: 'q' },
+      product: { x2: 1, x: 'b', unit: 'c' },
+    },
+  }),
+  page({
+    id: 'm.9.factoring~leading-coefficient',
+    title: 'Factor when a is not 1',
+    use: 'Use this for “Factor 2x² + 7x + 3.”',
+    assumptions: [
+      'Find two numbers m and n that multiply to ac and add to b.',
+      'Split bx into mx + nx, then factor each pair: both leave the same bracket.',
+      'Check by multiplying the brackets back out.',
+    ],
+    variables: [
+      int('a', 'a', 'x² coefficient', 1, 10),
+      int('b', 'b', 'x coefficient', -50, 50),
+      int('c', 'c', 'Number term', -50, 50),
+      int('m', 'm', 'First part of b', -500, 500, { derived: true }),
+      int('n', 'n', 'Second part of b', -500, 500, { derived: true }),
+      tile('p', 'p', 'x in the first factor', { derived: true }),
+      tile('q', 'q', 'Number in the first factor', { derived: true }),
+      tile('r', 'r', 'x in the second factor', { derived: true }),
+      tile('s', 's', 'Number in the second factor', { derived: true }),
+    ],
+    rules: [
+      derive(
+        'm = (b + √(b² − 4ac)) ÷ 2',
+        'm',
+        ['a', 'b', 'c'],
+        '{m} = ({b} + √({b}² − 4 × {a} × {c})) ÷ 2',
+        (v) => acSplit(v.a!, v.b!, v.c!)?.m,
+        '({b} + √({b}² − 4 × {a} × {c})) ÷ 2',
+        'Multiply a by c, then find the factor pair of ac that adds to b.',
+        {
+          work: (v) => {
+            const n = v.b! - v.m!;
+            return [
+              `${fmt(v.a!)} × ${sg(v.c!)} = ${fmt(v.a! * v.c!)}`,
+              `${sg(v.m!)} × ${sg(n)} = ${fmt(v.a! * v.c!)}`,
+              `${sg(v.m!)} + ${sg(n)} = ${fmt(v.b!)}`,
+            ];
+          },
+        },
+        { message: noSplit },
+      ),
+      derive(
+        'n = b − m',
+        'n',
+        ['b', 'm'],
+        '{n} = {b} − {m}',
+        (v) => v.b! - v.m!,
+        '{b} − {m}',
+        'The two parts add to b.',
+        {
+          note: (v) =>
+            known(v, 'a', 'm', 'n', 'c')
+              ? `→ ${poly([
+                  [v.a!, 'x²'],
+                  [v.m!, 'x'],
+                  [v.n!, 'x'],
+                  [v.c!, ''],
+                ])}`
+              : '',
+        },
+      ),
+      derive(
+        'p = GCF of a and m',
+        'p',
+        ['a', 'm'],
+        '{p} = greatest common factor of {a} and {m}',
+        (v) => gcd(v.a!, v.m!) || v.a!,
+        'greatest common factor of {a} and {m}',
+        'Take the greatest common factor out of the first pair, ax² + mx.',
+      ),
+      derive(
+        'r = a ÷ p',
+        'r',
+        ['a', 'p'],
+        '{r} = {a} ÷ {p}',
+        (v) => div(v.a!, v.p!),
+        '{a} ÷ {p}',
+        'What is left of ax² in the bracket, after px comes out.',
+      ),
+      derive(
+        's = m ÷ p',
+        's',
+        ['m', 'p'],
+        '{s} = {m} ÷ {p}',
+        (v) => div(v.m!, v.p!),
+        '{m} ÷ {p}',
+        'What is left of mx in the bracket: the common bracket is (rx + s).',
+      ),
+      derive(
+        'q = n ÷ r',
+        'q',
+        ['n', 'r'],
+        '{q} = {n} ÷ {r}',
+        (v) => div(v.n!, v.r!),
+        '{n} ÷ {r}',
+        'The second pair, nx + c, is q times the same bracket.',
+        {
+          note: (v) => {
+            if (!known(v, 'p', 'q', 'r', 's')) return '';
+            const common = poly([
+              [v.r!, 'x'],
+              [v.s!, ''],
+            ]);
+            return `→ ${fmt(v.p!)}x(${common}) ${v.q! < 0 ? '−' : '+'} ${fmt(Math.abs(v.q!))}(${common})`;
+          },
+        },
+      ),
+    ],
+    example: { a: 2, b: 7, c: 3, m: 6, n: 1, p: 2, q: 1, r: 1, s: 3 },
+    startWith: ['a', 'b', 'c'],
+    equation: '{a:coef}x² + {b}x + {c} = ({p:coef}x + {q})({r:coef}x + {s})',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'rectangle',
+      given: 'product',
+      factors: { p: 'p', q: 'q', r: 'r', s: 's' },
+      product: { x2: 'a', x: 'b', unit: 'c' },
+    },
+  }),
+  page({
+    id: 'm.9.factoring~gcf',
+    title: 'Take out the greatest common factor',
+    use: 'Use this for “Factor 6x² + 15x.”',
+    assumptions: [
+      'Find the greatest common factor of the coefficients; x divides both terms too.',
+      'Divide each term by the common factor to fill the bracket.',
+      'Check by distributing back.',
+    ],
+    variables: [
+      int('a', 'a', 'x² coefficient', -50, 50),
+      int('b', 'b', 'x coefficient', -50, 50),
+      tile('g', 'g', 'Greatest common factor', { derived: true }),
+      tile('p', 'p', 'x in the bracket', { derived: true }),
+      tile('q', 'q', 'Number in the bracket', { derived: true }),
+    ],
+    rules: [
+      nonzero('a', 'The x² coefficient'),
+      derive(
+        'g = GCF of a and b',
+        'g',
+        ['a', 'b'],
+        '{g} = greatest common factor of {a} and {b}',
+        (v) => gcd(v.a!, v.b!) || undefined,
+        'greatest common factor of {a} and {b}',
+        'The largest whole number that divides both coefficients.',
+      ),
+      derive(
+        'p = a ÷ g',
+        'p',
+        ['a', 'g'],
+        '{p} = {a} ÷ {g}',
+        (v) => div(v.a!, v.g!),
+        '{a} ÷ {g}',
+        'Divide the x² term by gx: what is left is px.',
+      ),
+      derive(
+        'q = b ÷ g',
+        'q',
+        ['b', 'g'],
+        '{q} = {b} ÷ {g}',
+        (v) => div(v.b!, v.g!),
+        '{b} ÷ {g}',
+        'Divide the x term by gx: what is left is a number.',
+      ),
+    ],
+    example: { a: 6, b: 15, g: 3, p: 2, q: 5 },
+    startWith: ['a', 'b'],
+    equation: '{a:coef}x² + {b}x = {g:coef}x({p:coef}x + {q})',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'rectangle',
+      given: 'product',
+      factors: { p: 'g', q: 0, r: 'p', s: 'q' },
+      product: { x2: 'a', x: 'b', unit: 0 },
+    },
+  }),
+  page({
+    id: 'm.9.factoring~special',
+    title: 'Difference of two squares',
+    use: 'Use this for “Factor 9x² − 25.”',
+    assumptions: [
+      'a²x² − b² = (ax + b)(ax − b): the two middle terms cancel.',
+      'Both terms must be perfect squares, and they must be subtracted.',
+      'A sum of two squares, such as x² + 4, does not factor over the integers.',
+    ],
+    variables: [
+      int('a', 'a', 'x² coefficient', 1, 100),
+      int('c', 'c', 'Number taken away', 1, 100),
+      tile('p', 'p', 'Square root of a', { derived: true }),
+      tile('q', 'q', 'Square root of c', { derived: true }),
+      tile('u', '−q', 'Number in the second factor', { derived: true }),
+      int('z', 'z', 'x terms, which cancel', -200, 200, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'p = √a',
+        'p',
+        ['a'],
+        '{p} = √{a}',
+        (v) => intRoot(v.a!),
+        '√{a}',
+        'The first term is a square: (px)² = ax².',
+        {},
+        {
+          message: (v) =>
+            v.a !== undefined && intRoot(v.a) === undefined
+              ? 'a is not a perfect square, so this is not a difference of two squares.'
+              : undefined,
+        },
+      ),
+      derive(
+        'q = √c',
+        'q',
+        ['c'],
+        '{q} = √{c}',
+        (v) => intRoot(v.c!),
+        '√{c}',
+        'The number taken away is a square too: q² = c.',
+        {},
+        {
+          message: (v) =>
+            v.c !== undefined && intRoot(v.c) === undefined
+              ? 'c is not a perfect square, so this is not a difference of two squares.'
+              : undefined,
+        },
+      ),
+      derive(
+        'u = −q',
+        'u',
+        ['q'],
+        '{u} = −{q}',
+        (v) => -v.q!,
+        '−{q}',
+        'One bracket adds q and the other takes it away.',
+      ),
+      derive(
+        'z = p × u + q × p',
+        'z',
+        ['p', 'u', 'q'],
+        '{z} = {p} × {u} + {q} × {p}',
+        (v) => v.p! * v.u! + v.q! * v.p!,
+        '{p} × {u} + {q} × {p}',
+        'Check the middle: the outer and inner x terms are opposites, so they cancel.',
+      ),
+    ],
+    example: { a: 9, c: 25, p: 3, q: 5, u: -5, z: 0 },
+    startWith: ['a', 'c'],
+    equation: '{a:coef}x² − {c} = ({p:coef}x + {q})({p:coef}x − {q})',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'rectangle',
+      given: 'product',
+      factors: { p: 'p', q: 'q', r: 'p', s: 'u' },
+    },
+  }),
+];
+
+// ── Solving quadratics ──
+
+/** The discriminant and the two roots of ax² + bx + c = 0, smallest first. */
+function formulaRules(a = 'a', b = 'b', c = 'c'): Rule[] {
+  const root = (id: string, first: boolean) =>
+    derive(
+      `${id} = (−b ${first ? '−' : '+'} √D) ÷ (2a)`,
+      id,
+      [b, 'D', a],
+      `{${id}} = (−{${b}} ${first ? '−' : '+'} √{D}) ÷ (2 × {${a}})`,
+      (v) => {
+        if (!v[a] || v.D! < 0) return undefined;
+        return (-v[b]! + (first ? -1 : 1) * Math.sqrt(v.D!)) / (2 * v[a]!);
+      },
+      `(−{${b}} ${first ? '−' : '+'} √{D}) ÷ (2 × {${a}})`,
+      first
+        ? 'The quadratic formula, x = (−b ± √D) ÷ (2a), with the minus sign.'
+        : 'The quadratic formula with the plus sign.',
+      first
+        ? {
+            work: (v) =>
+              intRoot(v.D!) === undefined
+                ? [`x = (${fmt(-v[b]!)} ± √${fmt(v.D!)}) ÷ ${fmt(2 * v[a]!)}, exactly`]
+                : [],
+          }
+        : {},
+    );
+  return [
+    derive(
+      'D = b² − 4ac',
+      'D',
+      [b, a, c],
+      `{D} = {${b}}² − 4 × {${a}} × {${c}}`,
+      (v) => v[b]! ** 2 - 4 * v[a]! * v[c]!,
+      `{${b}}² − 4 × {${a}} × {${c}}`,
+      'The discriminant counts the roots: positive two, zero one, negative none.',
+      {},
+      {
+        message: (v) =>
+          v.D !== undefined && v.D < 0
+            ? 'D is negative: the parabola misses the x-axis, so there are no real roots.'
+            : undefined,
+      },
+    ),
+    root('x1', true),
+    root('x2', false),
+  ];
+}
+
+/** The zeros of x² + bx + c, smallest first, from D = b² − 4c. */
+function monicZeros(): Rule[] {
+  const root = (id: string, sign: 1 | -1) =>
+    derive(
+      `${id} = (−b ${sign < 0 ? '−' : '+'} √D) ÷ 2`,
+      id,
+      ['b', 'D'],
+      `{${id}} = (−{b} ${sign < 0 ? '−' : '+'} √{D}) ÷ 2`,
+      (v) => (v.D! >= 0 ? (-v.b! + sign * Math.sqrt(v.D!)) / 2 : undefined),
+      `(−{b} ${sign < 0 ? '−' : '+'} √{D}) ÷ 2`,
+      sign < 0
+        ? 'Solve x² + bx + c = 0 first: the quadratic formula with a = 1 and the minus sign.'
+        : 'The plus sign gives the larger zero.',
+    );
+  return [
+    derive(
+      'D = b² − 4c',
+      'D',
+      ['b', 'c'],
+      '{D} = {b}² − 4 × {c}',
+      (v) => v.b! ** 2 - 4 * v.c!,
+      '{b}² − 4 × {c}',
+      'The discriminant, with a = 1.',
+      {},
+      {
+        message: (v) =>
+          v.D !== undefined && v.D < 0
+            ? 'D is negative: the parabola is above the x-axis everywhere, so it has no zeros to split the line.'
+            : undefined,
+      },
+    ),
+    root('x1', -1),
+    root('x2', 1),
+  ];
+}
+
+const QUADRATIC_INEQUALITIES: ModuleDef[] = [
+  page({
+    id: 'm.9.quadratic-formula~inequality',
+    title: 'Quadratic inequality: between the zeros',
+    use: 'Use this for “Solve x² − 2x − 8 < 0.”',
+    assumptions: [
+      'Solve the equation x² + bx + c = 0 first: its zeros split the number line.',
+      'The parabola opens up, so it is below the x-axis between its zeros.',
+      'The zeros make it 0, not less than 0, so they are left out: x₁ < x < x₂.',
+    ],
+    variables: [
+      int('b', 'b', 'x coefficient', -20, 20),
+      int('c', 'c', 'Number term', -100, 100),
+      num('D', 'D', 'Discriminant', -400, 800, { derived: true }),
+      num('x1', 'x₁', 'Smaller zero', -40, 40, { derived: true }),
+      num('x2', 'x₂', 'Larger zero', -40, 40, { derived: true }),
+    ],
+    rules: monicZeros(),
+    example: { b: -2, c: -8, D: 36, x1: -2, x2: 4 },
+    startWith: ['b', 'c'],
+    equation: 'x² + {b}x + {c} < 0',
+    pictureLabels: ['D'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 1,
+      b: 'b',
+      c: 'c',
+      shade: { from: 'x1', to: 'x2' },
+      shows: { zeros: ['x1', 'x2'] },
+      marks: ['zeros'],
+    },
+  }),
+  page({
+    id: 'm.9.quadratic-formula~inequality-outside',
+    title: 'Quadratic inequality: outside the zeros',
+    use: 'Use this for “Solve x² − x − 6 ≥ 0.”',
+    assumptions: [
+      'Solve the equation x² + bx + c = 0 first: its zeros split the number line.',
+      'The parabola opens up, so it is on or above the x-axis outside its zeros.',
+      'The zeros make it 0, so ≥ takes them in: x ≤ x₁ or x ≥ x₂.',
+    ],
+    variables: [
+      int('b', 'b', 'x coefficient', -10, 10),
+      int('c', 'c', 'Number term', -25, 25),
+      num('D', 'D', 'Discriminant', -100, 200, { derived: true }),
+      num('x1', 'x₁', 'Smaller zero', -10, 10, { derived: true }),
+      num('x2', 'x₂', 'Larger zero', -10, 10, { derived: true }),
+    ],
+    rules: monicZeros(),
+    example: { b: -1, c: -6, D: 25, x1: -2, x2: 3 },
+    startWith: ['b', 'c'],
+    equation: 'x² + {b}x + {c} ≥ 0',
+    pictureLabels: ['D'],
+    representation: {
+      kind: 'integerLine',
+      value: 'x1',
+      second: 'x2',
+      min: -10,
+      max: 10,
+      compound: { join: 'or', closed: [true, true] },
+    },
+  }),
+];
+
+const QUADRATIC_FORMULA: ModuleDef[] = [
+  page({
+    id: 'm.9.quadratic-formula',
+    assumptions: [
+      'First write the equation as ax² + bx + c = 0.',
+      'D = b² − 4ac: when D > 0 there are two roots, when D = 0 just one, and when D < 0 none that are real.',
+      'Leave √D exact when D is not a perfect square; round only at the end.',
+    ],
+    variables: [
+      num('a', 'a', 'x² coefficient', -20, 20, { step: 0.5 }),
+      num('b', 'b', 'x coefficient', -100, 100, { step: 0.5 }),
+      num('c', 'c', 'Number term', -100, 100, { step: 0.5 }),
+      num('D', 'D', 'Discriminant', -100000, 100000, { derived: true }),
+      num('x1', 'x₁', 'Root with −√D', -1e6, 1e6, { derived: true }),
+      num('x2', 'x₂', 'Root with +√D', -1e6, 1e6, { derived: true }),
+    ],
+    rules: [nonzero('a', 'The x² coefficient'), ...formulaRules()],
+    example: { a: 2, b: -3, c: -5, D: 49, x1: -1, x2: 2.5 },
+    pictureLabels: ['D', 'x1', 'x2'],
+    startWith: ['a', 'b', 'c'],
+    equation: '{a:coef}x² + {b}x + {c} = 0',
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 'a',
+      b: 'b',
+      c: 'c',
+      marks: ['zeros', 'vertex'],
+    },
+  }),
+  page({
+    id: 'm.9.quadratic-formula~square-roots',
+    title: 'Solve by square roots',
+    use: 'Use this for “(x − 3)² = 25”.',
+    assumptions: [
+      'Take the square root of both sides: there are two roots, + and −.',
+      'A negative right side has no real solution.',
+    ],
+    variables: [
+      num('p', 'p', 'Number in the bracket', -50, 50, { step: 0.5 }),
+      num('q', 'q', 'Right side', -1000, 10000, { step: 0.5 }),
+      num('h', 'h', 'Vertex x, −p', -50, 50, { derived: true }),
+      num('k', 'k', 'Vertex y, −q', -10000, 1000, { derived: true }),
+      num('x1', 'x₁', 'Smaller root', -200, 200, { derived: true }),
+      num('x2', 'x₂', 'Larger root', -200, 200, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'x₁ = −p − √q',
+        'x1',
+        ['p', 'q'],
+        '{x1} = −{p} − √{q}',
+        (v) => (v.q! >= 0 ? -v.p! - Math.sqrt(v.q!) : undefined),
+        '−{p} − √{q}',
+        'Take the square root of both sides, x + p = ±√q, then take p away. The minus root first.',
+        {},
+        {
+          message: (v) =>
+            v.q !== undefined && v.q < 0
+              ? 'A square is never negative: there is no real solution.'
+              : undefined,
+        },
+      ),
+      derive(
+        'x₂ = −p + √q',
+        'x2',
+        ['p', 'q'],
+        '{x2} = −{p} + √{q}',
+        (v) => (v.q! >= 0 ? -v.p! + Math.sqrt(v.q!) : undefined),
+        '−{p} + √{q}',
+        'The plus root.',
+      ),
+      derive(
+        'h = −p',
+        'h',
+        ['p'],
+        '{h} = −{p}',
+        (v) => -v.p!,
+        '−{p}',
+        'On the graph of y = (x + p)² − q the vertex is at x = −p.',
+      ),
+      derive(
+        'k = −q',
+        'k',
+        ['q'],
+        '{k} = −{q}',
+        (v) => -v.q!,
+        '−{q}',
+        'Moving q to the left side puts the vertex at y = −q; the roots are the zeros.',
+      ),
+    ],
+    example: { p: -3, q: 25, h: 3, k: -25, x1: -2, x2: 8 },
+    startWith: ['p', 'q'],
+    equation: '(x + {p})² = {q}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'vertex',
+      a: 1,
+      h: 'h',
+      k: 'k',
+      shows: { vertex: { x: 'h', y: 'k' }, zeros: ['x1', 'x2'] },
+      marks: ['vertex', 'zeros'],
+    },
+  }),
+  page({
+    id: 'm.9.quadratic-formula~complete-square',
+    title: 'Complete the square',
+    use: 'Use this for “Solve x² + 6x − 7 = 0 by completing the square.”',
+    assumptions: [
+      'Half of b fills each side of the x² tile; the missing corner is (b/2)² unit tiles.',
+      'Add the corner to both sides, so the left side is (x + b/2)².',
+      'Then solve by square roots.',
+    ],
+    variables: [
+      int('b', 'b', 'x coefficient', -10, 10, {
+        allowed: [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10],
+      }),
+      int('c', 'c', 'Number term', -10, 10),
+      num('k', 'k', 'Half of b', -5, 5, { derived: true }),
+      num('m', 'm', 'Missing corner', 0, 25, { derived: true }),
+      num('R', 'R', 'Right side after completing', -10, 35, { derived: true }),
+      num('x1', 'x₁', 'Smaller root', -20, 20, { derived: true }),
+      num('x2', 'x₂', 'Larger root', -20, 20, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'k = b ÷ 2',
+        'k',
+        ['b'],
+        '{k} = {b} ÷ 2',
+        (v) => v.b! / 2,
+        '{b} ÷ 2',
+        'Split the x tiles in half, one half on each side of the x² tile.',
+      ),
+      derive(
+        'm = k²',
+        'm',
+        ['k'],
+        '{m} = {k}²',
+        (v) => v.k! ** 2,
+        '{k}²',
+        'The missing corner is k by k.',
+      ),
+      derive(
+        'R = m − c',
+        'R',
+        ['m', 'c'],
+        '{R} = {m} − {c}',
+        (v) => v.m! - v.c!,
+        '{m} − {c}',
+        'Move c to the right side and add the corner to both sides: (x + k)² = k² − c.',
+      ),
+      derive(
+        'x₁ = −k − √R',
+        'x1',
+        ['k', 'R'],
+        '{x1} = −{k} − √{R}',
+        (v) => (v.R! >= 0 ? -v.k! - Math.sqrt(v.R!) : undefined),
+        '−{k} − √{R}',
+        'Take the square root of both sides, x + k = ±√R, then take k away.',
+        {},
+        {
+          message: (v) =>
+            v.R !== undefined && v.R < 0
+              ? 'The right side is negative, and a square never is: no real solution.'
+              : undefined,
+        },
+      ),
+      derive(
+        'x₂ = −k + √R',
+        'x2',
+        ['k', 'R'],
+        '{x2} = −{k} + √{R}',
+        (v) => (v.R! >= 0 ? -v.k! + Math.sqrt(v.R!) : undefined),
+        '−{k} + √{R}',
+        'The plus root.',
+      ),
+    ],
+    example: { b: 6, c: -7, k: 3, m: 9, R: 16, x1: -7, x2: 1 },
+    startWith: ['b', 'c'],
+    equation: 'x² + {b}x + {c} = 0',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'square',
+      b: 'b',
+      c: 'c',
+      k: 'k',
+      missing: 'm',
+    },
+  }),
+];
+
 /** Every Grade 9 math calculator, by skill in taxonomy order. */
-export const MATH_9_MODULES: ModuleDef[] = [...EXPONENTIAL, ...QUADRATIC_FUNCTIONS];
+export const MATH_9_MODULES: ModuleDef[] = [
+  ...EXPONENTIAL,
+  ...QUADRATIC_FUNCTIONS,
+  ...POLYNOMIAL_OPERATIONS,
+  ...FACTORING,
+  ...QUADRATIC_FORMULA,
+  ...QUADRATIC_INEQUALITIES,
+];
