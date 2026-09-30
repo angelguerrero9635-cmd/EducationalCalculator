@@ -375,6 +375,135 @@ const PLANES: ModuleDef[] = [
   ),
 ];
 
-export const HS2B_GALLERY_MODULES: ModuleDef[] = [...REGULAR, ...CIRCLES, ...PLANES];
+// ─── Part 4: symmetry about a center off the origin (m.10.rigid-motions~symmetry) ─
+
+/** x = f(v), read off the figure (no inverse): a value picked by the others. */
+const pick = (
+  id: string,
+  display: string,
+  x: string,
+  f: (v: Values) => number,
+  how: (v: Values) => string,
+): Rule => {
+  const vars = [...new Set([...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!))];
+  return {
+    relation: {
+      id,
+      display,
+      vars,
+      check: (v: Values) => `${f(v)} = ${v[x]}`,
+      residual: (v: Values) => v[x]! - f(v),
+      solve: Object.fromEntries(vars.map((k) => [k, k === x ? f : () => undefined])),
+    },
+    steps: { [x]: { expr: (v: Values) => `${f(v)}`, how } },
+  };
+};
+/** x = e (a sum or half-sum of the other values), worked out only. */
+const derive = (
+  x: string,
+  display: string,
+  f: (v: Values) => number,
+  expr: string,
+  how: string,
+) => {
+  const vars = [...new Set([...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!))];
+  return {
+    relation: {
+      id: display.replace(/[{}]/g, ''),
+      display,
+      vars,
+      residual: (v: Values) => v[x]! - f(v),
+      solve: Object.fromEntries(vars.map((k) => [k, k === x ? f : () => undefined])),
+    },
+    steps: { [x]: { expr, how } },
+  } as Rule;
+};
+
+const SYMMETRY: ModuleDef[] = [
+  demo({
+    id: 'g.m10-rigid-motions-symmetry-parallelogram',
+    title: 'Turns that carry a parallelogram onto itself',
+    use: 'Use this for “Which rotations about its center carry a parallelogram onto itself?”',
+    assumptions: [
+      'The parallelogram has corners (1, 1), (r, 1), (p, u) and (3, u): the top is the base slid 2 to the right.',
+      'Its center (a, b) is where the diagonals cross: halfway from (1, 1) to (p, u).',
+      'A half turn about the center swaps opposite corners, so 180° and 360° carry it onto itself; it has no line of symmetry.',
+    ],
+    variables: [
+      V('w', 'w', 'Base', 2, 6, { step: 1, integer: true }),
+      V('h', 'h', 'Height', 1, 7, { step: 1, integer: true }),
+      V('t', 't', 'Turn', 90, 360, { unit: '°', allowed: [90, 180, 270, 360] }),
+      V('r', 'r', 'x of the second corner', 3, 7, { integer: true, derived: true }),
+      V('u', 'u', 'Top side at y =', 2, 8, { integer: true, derived: true }),
+      V('p', 'p', 'x of the third corner', 5, 9, { integer: true, derived: true }),
+      V('a', 'a', 'x of the center', 3, 5, { derived: true }),
+      V('b', 'b', 'y of the center', 1.5, 4.5, { derived: true }),
+      V('n', 'n', 'Order of rotational symmetry', 2, 2, { integer: true, derived: true }),
+      V('f', 'f', 'Carried onto itself (1 yes, 0 no)', 0, 1, { integer: true, derived: true }),
+    ],
+    rules: [
+      derive(
+        'r',
+        '{r} = 1 + {w}',
+        (v) => 1 + v.w!,
+        '1 + {w}',
+        'The base runs w squares from x = 1.',
+      ),
+      derive('u', '{u} = 1 + {h}', (v) => 1 + v.h!, '1 + {h}', 'The top is h squares above y = 1.'),
+      derive('p', '{p} = {r} + 2', (v) => v.r! + 2, '{r} + 2', 'The top is the base slid 2 right.'),
+      derive(
+        'a',
+        '{a} = (1 + {p}) ÷ 2',
+        (v) => (1 + v.p!) / 2,
+        '(1 + {p}) ÷ 2',
+        'The diagonals cross halfway across.',
+      ),
+      derive(
+        'b',
+        '{b} = (1 + {u}) ÷ 2',
+        (v) => (1 + v.u!) / 2,
+        '(1 + {u}) ÷ 2',
+        'The diagonals cross halfway up.',
+      ),
+      pick(
+        'n from w and h',
+        'order {n} when the sides are {w} and {h}',
+        'n',
+        // Any slanted parallelogram (never a rectangle here: the top is slid 2 across).
+        (v) => (v.w! > 0 && v.h! > 0 ? 2 : 1),
+        () => 'A slanted parallelogram lands on itself every half turn, and on no smaller turn.',
+      ),
+      pick(
+        'f from t and n',
+        '{f}: does a turn of {t} carry it onto itself, order {n}',
+        'f',
+        (v) => (Math.round(v.t! * v.n!) % 360 === 0 ? 1 : 0),
+        (v) =>
+          Math.round(v.t! * v.n!) % 360 === 0
+            ? 'The turn is a whole number of half turns: the figure lands on itself.'
+            : 'The turn is not a whole number of half turns: the figure lands turned.',
+      ),
+    ],
+    example: { w: 4, h: 4, t: 180, r: 5, u: 5, p: 7, a: 4, b: 3, n: 2, f: 1 },
+    startWith: ['w', 'h', 't'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        [1, 1],
+        ['r', 1],
+        ['p', 'u'],
+        [3, 'u'],
+      ],
+      move: 'rotate',
+      angle: 't',
+      center: ['a', 'b'],
+      symmetry: true,
+      extent: 10,
+      quadrants: 1,
+    },
+  }),
+];
+
+export const HS2B_GALLERY_MODULES: ModuleDef[] = [...REGULAR, ...CIRCLES, ...PLANES, ...SYMMETRY];
 
 export const HS2B_GALLERY_LAYOUTS: LayoutDef[] = [];
