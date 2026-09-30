@@ -463,6 +463,7 @@ function representationVars(r: Representation): string[] {
     case 'unitChain':
     case 'atomModel':
     case 'orbitalDiagram':
+    case 'lewisStructure':
       return hsiSpecVars(r);
   }
 }

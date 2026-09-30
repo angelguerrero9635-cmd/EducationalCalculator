@@ -2018,6 +2018,7 @@ export function repIssues(
     case 'unitChain':
     case 'atomModel':
     case 'orbitalDiagram':
+    case 'lewisStructure':
       out.push(...hsiIssues(rep, (id) => val(id)));
       break;
     case 'table':

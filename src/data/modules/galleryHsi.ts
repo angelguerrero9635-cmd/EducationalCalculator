@@ -11,6 +11,7 @@ import {
   valenceOf,
 } from '@/components/module/reps/electrons';
 import { trendValue } from '@/components/module/reps/chemTrends';
+import { hydrogensOf, ionic, valenceElectrons } from '@/components/module/reps/lewis';
 import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -948,10 +949,427 @@ const TRENDS_DEMOS: ModuleDef[] = [
   ),
 ];
 
+// ─── H47 lewisStructure ──────────────────────────────────────────────────────
+
+type Vals = Record<string, number | undefined>;
+
+/** V = Σ (atoms × valence electrons) − q: the electrons a Lewis structure places. */
+const valenceSumRule = (atoms: string[], ids: string[], charge?: string): Rule => {
+  const terms = atoms.map((el, i) => ({ el, id: ids[i]!, v: valenceElectrons(el) }));
+  const text = terms.map((t) => (t.v === 1 ? `{${t.id}}` : `${t.v} × {${t.id}}`)).join(' + ');
+  const expr = charge ? `${text} − {${charge}}` : text;
+  const sum = (v: Vals) =>
+    terms.reduce((s, t) => s + t.v * v[t.id]!, 0) - (charge ? v[charge]! : 0);
+  const solve: Record<string, (v: Vals) => number | undefined> = { V: (v) => sum(v) };
+  const steps: Record<string, StepText> = {
+    V: {
+      expr,
+      how: 'Add each atom’s valence electrons (its group’s last digit); a positive charge takes electrons away.',
+    },
+  };
+  for (const t of terms) {
+    solve[t.id] = (v) =>
+      (v.V! +
+        (charge ? v[charge]! : 0) -
+        terms.filter((o) => o !== t).reduce((acc, o) => acc + o.v * v[o.id]!, 0)) /
+      t.v;
+    const others = terms
+      .filter((o) => o !== t)
+      .map((o) => ` − ${o.v === 1 ? '' : `${o.v} × `}{${o.id}}`)
+      .join('');
+    const top = `{V}${charge ? ` + {${charge}}` : ''}${others}`;
+    steps[t.id] = {
+      expr: t.v === 1 ? top : `(${top})/${t.v}`,
+      how: `Take away the other atoms’ electrons${t.v === 1 ? '' : ` and divide by ${t.v}`}.`,
+    };
+  }
+  if (charge) {
+    solve[charge] = (v) => terms.reduce((acc, t) => acc + t.v * v[t.id]!, 0) - v.V!;
+    steps[charge] = {
+      expr: `${text} − {V}`,
+      how: 'The charge is the atoms’ valence electrons minus the electrons placed.',
+    };
+  }
+  return {
+    relation: {
+      id: 'valence electrons',
+      display: `{V} = ${expr}`,
+      vars: ['V', ...ids, ...(charge ? [charge] : [])],
+      residual: (v) => v.V! - sum(v),
+      solve,
+    },
+    steps,
+  };
+};
+
+const ELEMENT_WORDS: Record<string, string> = {
+  H: 'Hydrogen',
+  C: 'Carbon',
+  N: 'Nitrogen',
+  O: 'Oxygen',
+};
+
+const moleculeDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  atoms: [string, string, number][],
+  extra: { charge?: number; dots?: boolean } = {},
+): ModuleDef => {
+  const q = extra.charge;
+  const V = atoms.reduce((s, [el, , n]) => s + valenceElectrons(el) * n, 0) - (q ?? 0);
+  return {
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      ...atoms.map(([el, vid]) => whole(vid, `n${el}`, `${ELEMENT_WORDS[el] ?? el} atoms`, 0, 4)),
+      ...(q !== undefined ? [whole('q', 'q', 'Charge', -3, 3)] : []),
+      whole('V', 'V', 'Valence electrons', 0, 40),
+    ],
+    ...rules(
+      valenceSumRule(
+        atoms.map((a) => a[0]),
+        atoms.map((a) => a[1]),
+        q !== undefined ? 'q' : undefined,
+      ),
+    ),
+    example: {
+      ...Object.fromEntries(atoms.map(([, vid, n]) => [vid, n])),
+      ...(q !== undefined ? { q } : {}),
+      V,
+    },
+    startWith: [...atoms.map((a) => a[1]), ...(q !== undefined ? ['q'] : [])],
+    sliders: true,
+    representation: {
+      kind: 'lewisStructure',
+      mode: 'molecule',
+      atoms: Object.fromEntries(atoms.map(([el, vid]) => [el, vid])),
+      ...(q !== undefined ? { charge: 'q' } : {}),
+      valence: 'V',
+      ...(extra.dots ? { dots: true } : {}),
+    },
+  };
+};
+
+const BONDING: ModuleDef[] = [
+  moleculeDemo(
+    'g.s10-bonding-water',
+    'Lewis structure of water',
+    'Use this to count a molecule’s valence electrons and place them as shared and lone pairs.',
+    [
+      'Each atom but hydrogen ends with 8 electrons around it; hydrogen with 2.',
+      'A line is a shared pair of electrons.',
+    ],
+    [
+      ['H', 'h', 2],
+      ['O', 'o', 1],
+    ],
+  ),
+  moleculeDemo(
+    'g.s10-bonding-ammonia',
+    'Lewis structure of ammonia',
+    'Use this for a molecule whose central atom keeps a lone pair.',
+    ['Nitrogen has 5 valence electrons and makes 3 bonds.', 'Its fourth pair is a lone pair.'],
+    [
+      ['H', 'h', 3],
+      ['N', 'n', 1],
+    ],
+  ),
+  moleculeDemo(
+    'g.s10-bonding-double',
+    'Double bonds: carbon dioxide',
+    'Use this for a molecule that needs double bonds to give every atom an octet.',
+    ['Carbon shares two pairs with each oxygen.', 'Each double bond is 4 shared electrons.'],
+    [
+      ['C', 'c', 1],
+      ['O', 'o', 2],
+    ],
+  ),
+  moleculeDemo(
+    'g.s10-bonding-triple-dots',
+    'Electron dots: nitrogen gas',
+    'Use this to see every electron as a dot, with a triple bond as three shared pairs.',
+    [
+      'Each nitrogen has 5 valence electrons.',
+      'Three shared pairs and a lone pair give each an octet.',
+    ],
+    [['N', 'n', 2]],
+    { dots: true },
+  ),
+  moleculeDemo(
+    'g.s10-bonding-polyatomic-ion',
+    'A polyatomic ion: ammonium',
+    'Use this for an ion made of bonded atoms, drawn in brackets with its charge.',
+    [
+      'A charge of +1 means one electron fewer than the atoms bring.',
+      'All four N–H bonds are the same once formed.',
+    ],
+    [
+      ['H', 'h', 4],
+      ['N', 'n', 1],
+    ],
+    { charge: 1 },
+  ),
+];
+
+/** An ionic compound: a metal ions and b nonmetal ions whose charges balance, t electrons moved. */
+const ionicDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  metal: string,
+  nonmetal: string,
+): ModuleDef => {
+  const ion = ionic(metal, nonmetal);
+  const s = (k: number) => (k > 1 ? 's' : '');
+  return {
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      whole('a', 'a', `${metal} ions`, 1, 6),
+      whole('b', 'b', `${nonmetal} ions`, 1, 6),
+      whole('t', 't', 'Electrons moved', 1, 18),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 't = given × a',
+          display: `{t} = ${ion.give} × {a}`,
+          vars: ['t', 'a'],
+          residual: (v) => v.t! - ion.give * v.a!,
+          solve: { t: (v) => ion.give * v.a!, a: (v) => v.t! / ion.give },
+        },
+        steps: {
+          t: {
+            expr: `${ion.give} × {a}`,
+            how: `Each ${metal} atom gives ${ion.give} electron${s(ion.give)}.`,
+          },
+          a: { expr: `{t}/${ion.give}`, how: `Divide by the electrons each ${metal} atom gives.` },
+        },
+      },
+      {
+        relation: {
+          id: 't = taken × b',
+          display: `{t} = ${ion.take} × {b}`,
+          vars: ['t', 'b'],
+          residual: (v) => v.t! - ion.take * v.b!,
+          solve: { t: (v) => ion.take * v.b!, b: (v) => v.t! / ion.take },
+        },
+        steps: {
+          t: {
+            expr: `${ion.take} × {b}`,
+            how: `Each ${nonmetal} atom takes ${ion.take} to fill its octet.`,
+          },
+          b: {
+            expr: `{t}/${ion.take}`,
+            how: `Divide by the electrons each ${nonmetal} atom takes.`,
+          },
+        },
+      },
+    ),
+    example: { a: ion.metals, b: ion.nonmetals, t: ion.transferred },
+    startWith: ['a'],
+    sliders: true,
+    representation: {
+      kind: 'lewisStructure',
+      mode: 'ionic',
+      metal,
+      nonmetal,
+      metals: 'a',
+      nonmetals: 'b',
+      transferred: 't',
+    },
+  };
+};
+
+BONDING.push(
+  ionicDemo(
+    'g.s10-bonding-ionic-sodium-chloride',
+    'An ionic bond: sodium chloride',
+    'Use this to see a metal atom give its valence electron to a nonmetal atom.',
+    [
+      'Sodium has 1 valence electron; chlorine needs 1 more for an octet.',
+      'The ions attract: Na⁺ and Cl⁻.',
+    ],
+    'Na',
+    'Cl',
+  ),
+  ionicDemo(
+    'g.s10-bonding-ionic-magnesium-chloride',
+    'Ions in a 1-to-2 ratio: magnesium chloride',
+    'Use this to find an ionic formula when one atom gives more electrons than another takes.',
+    ['Magnesium gives 2 electrons; each chlorine takes 1.', 'So one Mg²⁺ pairs with two Cl⁻.'],
+    'Mg',
+    'Cl',
+  ),
+  ionicDemo(
+    'g.s10-bonding-ionic-aluminum-oxide',
+    'Ions in a 2-to-3 ratio: aluminum oxide',
+    'Use this for the largest formula units drawn: two aluminum ions and three oxide ions.',
+    ['Aluminum gives 3 electrons; oxygen takes 2.', '2 × 3 = 3 × 2 = 6 electrons move.'],
+    'Al',
+    'O',
+  ),
+);
+
+const metalDemo = (
+  id: string,
+  title: string,
+  use: string,
+  element: string,
+  n: number,
+): ModuleDef => {
+  const v = valenceElectrons(element);
+  const s = v > 1 ? 's' : '';
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      `Each ${element} atom gives up its ${v} valence electron${s} to the whole piece of metal.`,
+      'The electrons are shared by all the ions, not held by any one.',
+    ],
+    variables: [whole('n', 'n', 'Metal atoms', 1, 24), whole('e', 'e', 'Free electrons', 0, 72)],
+    ...rules({
+      relation: {
+        id: 'e = v × n',
+        display: `{e} = ${v} × {n}`,
+        vars: ['e', 'n'],
+        residual: (x) => x.e! - v * x.n!,
+        solve: { e: (x) => v * x.n!, n: (x) => x.e! / v },
+      },
+      steps: {
+        e: { expr: `${v} × {n}`, how: `Each atom gives ${v} electron${s} to the sea.` },
+        n: { expr: `{e}/${v}`, how: `Divide by the electrons each atom gives.` },
+      },
+    }),
+    example: { n, e: v * n },
+    startWith: ['n'],
+    sliders: true,
+    representation: {
+      kind: 'lewisStructure',
+      mode: 'metallic',
+      element,
+      atoms: 'n',
+      electrons: 'e',
+    },
+  };
+};
+
+BONDING.push(
+  metalDemo(
+    'g.s10-bonding-metallic',
+    'A sea of electrons: sodium',
+    'Use this for metallic bonding: positive ions in a sea of shared electrons.',
+    'Na',
+    12,
+  ),
+  metalDemo(
+    'g.s10-bonding-metallic-aluminum',
+    'A sea of electrons: aluminum',
+    'Use this for a metal whose atoms each give three electrons to the sea.',
+    'Al',
+    24,
+  ),
+);
+
+const chainDemo = (
+  id: string,
+  title: string,
+  use: string,
+  bond: 'single' | 'double' | 'triple',
+  n: number,
+): ModuleDef => {
+  const k = bond === 'single' ? 2 : bond === 'double' ? 0 : -2;
+  const tail = k === 0 ? '' : k > 0 ? ` + ${k}` : ` − ${-k}`;
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      'Every carbon makes 4 bonds and every hydrogen 1.',
+      bond === 'single'
+        ? 'All the carbon–carbon bonds are single (an alkane).'
+        : `One carbon–carbon bond is ${bond}, between the first two carbons (an ${bond === 'double' ? 'alkene' : 'alkyne'}).`,
+    ],
+    variables: [
+      whole('n', 'n', 'Carbon atoms', bond === 'single' ? 1 : 2, 8),
+      whole('h', 'h', 'Hydrogen atoms', 0, 18),
+    ],
+    ...rules({
+      relation: {
+        id: 'hydrogens',
+        display: `{h} = 2 × {n}${tail}`,
+        vars: ['h', 'n'],
+        residual: (v) => v.h! - hydrogensOf(v.n!, bond),
+        solve: { h: (v) => hydrogensOf(v.n!, bond), n: (v) => (v.h! - k) / 2 },
+      },
+      steps: {
+        h: {
+          expr: `2 × {n}${tail}`,
+          how: 'Each carbon holds 2 hydrogens and the chain’s ends 2 more; a double bond takes 2 away, a triple 4.',
+        },
+        n: {
+          expr: k === 0 ? '{h}/2' : `({h}${k > 0 ? ` − ${k}` : ` + ${-k}`})/2`,
+          how: 'Undo the rule for the hydrogens.',
+        },
+      },
+    }),
+    example: { n, h: hydrogensOf(n, bond) },
+    startWith: ['n'],
+    sliders: true,
+    representation: {
+      kind: 'lewisStructure',
+      mode: 'hydrocarbon',
+      carbons: 'n',
+      bond,
+      hydrogens: 'h',
+    },
+  };
+};
+
+BONDING.push(
+  chainDemo(
+    'g.s10-organic-alkane',
+    'Alkanes: propane',
+    'Use this for the structure and formula of an alkane from its number of carbons.',
+    'single',
+    3,
+  ),
+  chainDemo(
+    'g.s10-organic-alkene',
+    'Alkenes: 1-butene',
+    'Use this for an alkene: a chain with one carbon–carbon double bond.',
+    'double',
+    4,
+  ),
+  chainDemo(
+    'g.s10-organic-alkyne',
+    'Alkynes: ethyne',
+    'Use this for an alkyne: a chain with one carbon–carbon triple bond.',
+    'triple',
+    2,
+  ),
+  chainDemo(
+    'g.s10-organic-octane',
+    'A long chain: octane',
+    'Use this for the longest chain drawn, eight carbons.',
+    'single',
+    8,
+  ),
+);
+
 export const HSI_GALLERY_MODULES: ModuleDef[] = [
   ...MEASUREMENT,
   ...ATOMS,
   ...ORBITALS,
   ...TRENDS_DEMOS,
+  ...BONDING,
 ];
 export const HSI_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -688,12 +688,33 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn (group HI): an optional `trend` on the existing periodicTable (typesChem.ts; drawn by reps/PeriodicTrend.tsx, data in reps/chemTrends.ts). Pages without `trend` draw exactly as before. trend { property: 'radius' | 'ionization' | 'electronegativity', value? (the element's value, checked), compare? (a second atomic number, ringed in yellow), compareValue? (checked) }: every element shaded by its value (the stronger the shade, the larger; dashed where there is no value), a key from the smallest to the largest, an arrow across the top (\"decreases across a period\" for radius, \"increases\" for the other two) and one down the side (\"increases/decreases down a group\"); the page's `element` is outlined with its name and value on a card in the gap, and every cell can be tapped to choose it. Data: covalent radii (pm, Pyykkö), first ionization energies (kJ/mol), Pauling electronegativities (none for He, Ne, Ar). Step phrases \"atomic radius of Z = {p}\", \"ionization energy of Z = {p}\" and \"electronegativity of Z = {p}\" are taught to the harness; give the atomic-number variables `allowed` values that have data (the demos do). Example: { kind: 'periodicTable', element: 'p', trend: { property: 'radius', value: 'r', compare: 'c', compareValue: 's' } } with r = atomic radius of Z = p.",
   },
-  ask(
-    'H47',
-    'lewisStructure',
-    'Electron-dot structures, electron transfer in ionic bonds, the sea of electrons; hydrocarbons from n carbons',
-    ['s.10.bonding', 's.10.organic'],
-  ),
+  {
+    ...ask(
+      'H47',
+      'lewisStructure',
+      'Electron-dot structures, electron transfer in ionic bonds, the sea of electrons; hydrocarbons from n carbons',
+      ['s.10.bonding', 's.10.organic'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-bonding-water',
+      'g.s10-bonding-ammonia',
+      'g.s10-bonding-double',
+      'g.s10-bonding-triple-dots',
+      'g.s10-bonding-polyatomic-ion',
+      'g.s10-bonding-ionic-sodium-chloride',
+      'g.s10-bonding-ionic-magnesium-chloride',
+      'g.s10-bonding-ionic-aluminum-oxide',
+      'g.s10-bonding-metallic',
+      'g.s10-bonding-metallic-aluminum',
+      'g.s10-organic-alkane',
+      'g.s10-organic-alkene',
+      'g.s10-organic-alkyne',
+      'g.s10-organic-octane',
+    ],
+    notes:
+      "Drawn (group HI): kind lewisStructure (typesHsi.ts, reps/LewisStructure.tsx, data in reps/lewis.ts), four modes. 'molecule' { atoms? ({ H: 'h', O: 'o' }: the structure is looked up from the counts), charge?, formula? (fixed instead, \"H2O\", \"NH4+\"), valence?, bonding? (shared pairs), lone? (lone pairs), dots? (shared pairs as dots) }: symbols with shared pairs as lit lines and lone pairs as dots, an ion in brackets with its charge; drawn: H₂, H₂O, CO₂, NH₃, CH₄, O₂, N₂, F₂, Cl₂, HF, HCl, CH₂O, HCN, NH₄⁺, H₃O⁺, OH⁻, CN⁻ (other counts name these in the caption); every atom's octet (hydrogen's 2) and the valence total are checked. 'ionic' { metal (groups 1, 2, Al), nonmetal (F, Cl, Br, I, O, S, N, P), metals?, nonmetals? (ion counts), transferred? }: the atoms with their valence dots, arrows carrying each metal electron to a nonmetal, then the ions in brackets with charges, the gained electrons lit, and the formula; counts whose charges don't balance (or past 6 ions) draw the formula unit faded with the reason. 'metallic' { element, atoms (1–24), electrons? }: metal ions (Na⁺, Al³⁺ …) with every freed electron scattered among them. 'hydrocarbon' { carbons (1–8), bond? ('single' | 'double' | 'triple', between the first two carbons), hydrogens? }: the structural formula with every H, named (propane, 1-butene, ethyne). No handles: give the page `sliders: true`. Examples: { kind: 'lewisStructure', mode: 'molecule', atoms: { H: 'h', O: 'o' }, valence: 'V' } with V = h + 6 × o; { kind: 'lewisStructure', mode: 'ionic', metal: 'Mg', nonmetal: 'Cl', metals: 'a', nonmetals: 'b', transferred: 't' }; { kind: 'lewisStructure', mode: 'metallic', element: 'Na', atoms: 'n', electrons: 'e' }; { kind: 'lewisStructure', mode: 'hydrocarbon', carbons: 'n', bond: 'double', hydrogens: 'h' }.",
+  },
   ask(
     'H48',
     'vsepr',

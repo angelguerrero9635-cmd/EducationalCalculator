@@ -6,6 +6,7 @@ import type { HsiSpec } from '@/data/modules/typesHsi';
 
 import type { Calculator } from '../useCalculator';
 import { AtomModel } from './AtomModel';
+import { LewisStructure } from './LewisStructure';
 import { OrbitalDiagram } from './OrbitalDiagram';
 import { UnitChain } from './UnitChain';
 
@@ -17,5 +18,7 @@ export function HsiRep({ spec, calc }: { spec: HsiSpec; calc: Calculator }) {
       return <AtomModel spec={spec} calc={calc} />;
     case 'orbitalDiagram':
       return <OrbitalDiagram spec={spec} calc={calc} />;
+    case 'lewisStructure':
+      return <LewisStructure spec={spec} calc={calc} />;
   }
 }

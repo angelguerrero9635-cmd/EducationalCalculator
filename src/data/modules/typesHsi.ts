@@ -132,7 +132,51 @@ export interface PeriodicTrend {
   compareValue?: string;
 }
 
-export type HsiSpec = UnitChainSpec | AtomModelSpec | OrbitalDiagramSpec;
+/**
+ * Bonding (H47), by `mode`:
+ *
+ * - `molecule`: a Lewis structure, shared pairs as lines (or `dots`) and lone pairs as dots, an
+ *   ion in brackets with its charge. The structure is looked up from the `atoms` counts
+ *   ({ H: 'h', O: 'o' }) and `charge`, or fixed by `formula` ("H2O", "NH4+"); drawn: H₂, H₂O,
+ *   CO₂, NH₃, CH₄, O₂, N₂, F₂, Cl₂, HF, HCl, CH₂O, HCN, NH₄⁺, H₃O⁺, OH⁻, CN⁻ (anything else is
+ *   named in the caption). `valence`, `bonding` (shared pairs) and `lone` (lone pairs) are checked.
+ * - `ionic`: `metal` atoms giving their valence electrons to `nonmetal` atoms (arrows), then
+ *   the ions in brackets; `metals` and `nonmetals` (ion counts, whose charges must balance) and
+ *   `transferred` are checked. Metals of groups 1, 2 and Al; nonmetals F, Cl, Br, I, O, S, N, P.
+ * - `metallic`: `atoms` metal ions (up to 24) in a sea of every electron they gave up;
+ *   `electrons` is checked.
+ * - `hydrocarbon`: a straight chain of `carbons` (1–8) with its hydrogens, all single bonds or
+ *   one double or triple bond between the first two carbons; `hydrogens` is checked.
+ */
+export type LewisStructureSpec = { kind: 'lewisStructure' } & (
+  | {
+      mode: 'molecule';
+      atoms?: Record<string, NumOrVar>;
+      charge?: NumOrVar;
+      formula?: string;
+      valence?: string;
+      bonding?: string;
+      lone?: string;
+      dots?: boolean;
+    }
+  | {
+      mode: 'ionic';
+      metal: string;
+      nonmetal: string;
+      metals?: NumOrVar;
+      nonmetals?: NumOrVar;
+      transferred?: string;
+    }
+  | { mode: 'metallic'; element: string; atoms: NumOrVar; electrons?: string }
+  | {
+      mode: 'hydrocarbon';
+      carbons: NumOrVar;
+      bond?: 'single' | 'double' | 'triple';
+      hydrogens?: string;
+    }
+);
+
+export type HsiSpec = UnitChainSpec | AtomModelSpec | OrbitalDiagramSpec | LewisStructureSpec;
 
 /** Every variable id a group I spec refers to (for the module tests). */
 export function hsiSpecVars(r: HsiSpec): string[] {
@@ -150,5 +194,16 @@ export function hsiSpecVars(r: HsiSpec): string[] {
       return r.mode === 'boxes'
         ? ids(r.element, r.electrons, r.unpaired)
         : ids(r.upper, r.lower, r.energy, r.wavelength);
+    case 'lewisStructure':
+      switch (r.mode) {
+        case 'molecule':
+          return ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone);
+        case 'ionic':
+          return ids(r.metals, r.nonmetals, r.transferred);
+        case 'metallic':
+          return ids(r.atoms, r.electrons);
+        default:
+          return ids(r.carbons, r.hydrogens);
+      }
   }
 }

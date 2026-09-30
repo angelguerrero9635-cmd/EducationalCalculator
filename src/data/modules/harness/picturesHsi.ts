@@ -21,6 +21,18 @@ import {
 
 import { trendValue } from '@/components/module/reps/chemTrends';
 
+import {
+  IONIC_METALS,
+  IONIC_NONMETALS,
+  LEWIS,
+  electronsAround,
+  hydrogensOf,
+  ionic,
+  lewisCounts,
+  lewisKey,
+  valenceElectrons,
+} from '@/components/module/reps/lewis';
+
 import type { ChemSpec } from '../typesChem';
 import type { HsiSpec } from '../typesHsi';
 
@@ -140,6 +152,75 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       const lam = num(rep.wavelength);
       if (lam !== undefined && !near(lam, photonWavelength(en ?? E), 1e-3))
         out.push(`wavelength ${photonWavelength(en ?? E)} nm, the value shows ${lam}`);
+      break;
+    }
+    case 'lewisStructure': {
+      const whole = (x: number | undefined, what: string, lo: number, hi: number) => {
+        if (x !== undefined && (x !== Math.round(x) || x < lo || x > hi))
+          out.push(`${what} ${x} (whole, ${lo} to ${hi} drawn)`);
+      };
+      if (rep.mode === 'molecule') {
+        const counts = Object.entries(rep.atoms ?? {}).map(([el, x]) => [el, num(x)] as const);
+        const q = rep.charge === undefined ? 0 : num(rep.charge);
+        if (!rep.formula && !rep.atoms) out.push('a molecule needs a formula or atom counts');
+        if (counts.some(([, n]) => n === undefined) || q === undefined) break;
+        const key = rep.formula ?? lewisKey(Object.fromEntries(counts as [string, number][]), q);
+        if (rep.formula && !LEWIS[rep.formula]) out.push(`no Lewis structure for ${rep.formula}`);
+        const s = key ? LEWIS[key] : undefined;
+        if (!s) break; // The caption names the structures that are drawn.
+        s.atoms.forEach((a, i) => {
+          const want = a.el === 'H' ? 2 : 8;
+          if (electronsAround(s, i) !== want)
+            out.push(
+              `${a.el} in ${key} has ${electronsAround(s, i)} electrons around it, not ${want}`,
+            );
+        });
+        const c = lewisCounts(s);
+        if (c.valence !== 2 * (c.bonding + c.lone))
+          out.push(`${key}: ${c.valence} valence electrons, ${2 * (c.bonding + c.lone)} drawn`);
+        for (const [id, want, what] of [
+          [rep.valence, c.valence, 'valence electrons'],
+          [rep.bonding, c.bonding, 'shared pairs'],
+          [rep.lone, c.lone, 'lone pairs'],
+        ] as const) {
+          const v = num(id);
+          if (v !== undefined && v !== want)
+            out.push(`${want} ${what} drawn in ${key}, the value shows ${v}`);
+        }
+        break;
+      }
+      if (rep.mode === 'ionic') {
+        if (!IONIC_METALS.includes(rep.metal))
+          out.push(`${rep.metal} is not a metal the picture draws`);
+        if (!IONIC_NONMETALS.includes(rep.nonmetal))
+          out.push(`${rep.nonmetal} is not a nonmetal the picture draws`);
+        const ion = ionic(rep.metal, rep.nonmetal);
+        const a = num(rep.metals) ?? ion.metals;
+        const b = num(rep.nonmetals) ?? ion.nonmetals;
+        const t = num(rep.transferred);
+        // Unbalanced charges or more than 6 ions draw the formula unit faded, the reason in the caption.
+        if (a * ion.give !== b * ion.take || a + b > 6) break;
+        if (t !== undefined && t !== a * ion.give)
+          out.push(`${a * ion.give} electrons move, the value shows ${t}`);
+        break;
+      }
+      if (rep.mode === 'metallic') {
+        const v = valenceElectrons(rep.element);
+        if (!IONIC_METALS.includes(rep.element))
+          out.push(`${rep.element} is not a metal the picture draws`);
+        const n = num(rep.atoms);
+        whole(n, 'metal atoms', 1, 24);
+        const e = num(rep.electrons);
+        if (n !== undefined && e !== undefined && e !== n * v)
+          out.push(`${n} × ${v} = ${n * v} electrons drawn, the value shows ${e}`);
+        break;
+      }
+      const bond = rep.bond ?? 'single';
+      const n = num(rep.carbons);
+      whole(n, 'carbons', bond === 'single' ? 1 : 2, 8);
+      const h = num(rep.hydrogens);
+      if (n !== undefined && h !== undefined && h !== hydrogensOf(n, bond))
+        out.push(`${hydrogensOf(n, bond)} hydrogens drawn, the value shows ${h}`);
       break;
     }
   }
