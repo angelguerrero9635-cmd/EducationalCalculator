@@ -1906,22 +1906,32 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ],
     'P14: docs/plans/s.11.md needs 1–12.',
   ),
-  ask(
-    'H103',
-    'earthLayers',
-    'Earth and space: two seismograms by magnitude; magnetic stripes; a stream cross-section; a rising parcel; energy balance as a calculator; a reserve drawn down; spectra side by side; the rockLayers K-40 fix; mass on the H–R diagram; a carbonCycle volcano',
-    [
-      's.12.earth-interior',
-      's.12.surface-processes',
-      's.12.atmosphere-weather',
-      's.12.climate-systems',
-      's.12.resource-management',
-      's.12.starlight-spectra',
-      's.12.radiometric-dating',
-      's.12.stellar-evolution',
+  {
+    ...ask(
+      'H103',
+      'earthLayers',
+      'Earth and space: two seismograms by magnitude; magnetic stripes; a stream cross-section; a rising parcel; energy balance as a calculator; a reserve drawn down; spectra side by side; the rockLayers K-40 fix; mass on the H–R diagram; a carbonCycle volcano',
+      [
+        's.12.earth-interior',
+        's.12.surface-processes',
+        's.12.atmosphere-weather',
+        's.12.climate-systems',
+        's.12.resource-management',
+        's.12.starlight-spectra',
+        's.12.radiometric-dating',
+        's.12.stellar-evolution',
+      ],
+    ),
+    gallery: [
+      'g.s12-earth-interior-magnitude',
+      'g.s12-earth-interior-magnitude-half',
+      'g.s12-earth-interior-magnitude-far',
     ],
-    'P15: docs/plans/s.12.md needs 2–11.',
-  ),
+    notes: [
+      'P15: docs/plans/s.12.md needs 2–11, drawn part by part (group H2F, demos in galleryHs2f.ts, checks in harness/picturesHs2f.ts).',
+      "Need 2 (s.12.earth-interior~magnitude): `earthLayers` mode `magnitude`, { kind: 'earthLayers', mode: 'magnitude', m1: 'M1', m2: 'M2', amplitude?: 'A', energy?: 'E', fixed? }: the two seismograms to one amplitude scale (a trace too small to see says so), then a bar to each magnitude on a whole-number magnitude scale with the gap bracketed as 10^ΔM = A × the shaking; the caption works ΔM, A = 10^ΔM and E = 10^(1.5 ΔM). Drag either bar's end. The harness checks both magnitudes are 0–10 and A and E against 10^ΔM and 10^(1.5 ΔM). Relations: ΔM = M₂ − M₁, A = 10^ΔM, E = 10^(1.5 × ΔM) (demo g.s12-earth-interior-magnitude, M₁ = 4, M₂ = 6 → A = 100, E = 1,000).",
+    ].join(' '),
+  },
   ask(
     'H104',
     'sort',

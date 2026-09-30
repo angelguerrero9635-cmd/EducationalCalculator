@@ -60,7 +60,7 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
         const lag = num(rep.lag);
         if (lag !== undefined && !near(lag, a.s - a.p, 1e-4))
           out.push(`lag ${lag} s, but the trace's S − P is ${a.s - a.p} s`);
-      } else {
+      } else if (rep.mode === 'epicenter') {
         const st = rep.stations.map((s) => ({ ...s, r: num(s.r) }));
         if (st.some((s) => s.r === undefined)) break;
         const known = st as { x: number; y: number; r: number }[];

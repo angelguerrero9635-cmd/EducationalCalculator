@@ -4,6 +4,7 @@
  * explore figures. A `NumOrVar` field is a fixed number or a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
+import { hs2fSpecVars, type MagnitudeSpec } from './typesHs2f';
 
 // ── Calculator pictures ──
 
@@ -61,7 +62,7 @@ export interface EpicenterSpec {
   stations: [QuakeStation, QuakeStation, QuakeStation];
 }
 
-export type EarthLayersSpec = EarthSectionSpec | SeismogramSpec | EpicenterSpec;
+export type EarthLayersSpec = EarthSectionSpec | SeismogramSpec | EpicenterSpec | MagnitudeSpec;
 
 /** The rocks a dated cliff draws: sediments, a volcanic ash bed and a lava flow. */
 export type DatedRock =
@@ -240,6 +241,7 @@ export function hslSpecVars(r: HslSpec): string[] {
     case 'earthLayers':
       if (r.mode === 'section') return ids([r.distance]);
       if (r.mode === 'seismogram') return ids([r.km, r.vp, r.vs, r.lag]);
+      if (r.mode === 'magnitude') return hs2fSpecVars(r);
       return ids(r.stations.map((s) => s.r));
     case 'oceanProfile':
       return r.mode === 'profile' ? ids([r.depth]) : ids([r.angle, r.range]);

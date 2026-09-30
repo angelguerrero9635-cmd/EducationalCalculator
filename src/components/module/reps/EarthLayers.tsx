@@ -26,6 +26,7 @@ import {
   traceAt,
   wavesAt,
 } from './earthModel';
+import { EarthMagnitude } from './EarthMagnitude';
 import { usePaintIds } from './paint';
 
 /** A tick step of 1, 2 or 5 × 10ⁿ giving at most `most` steps over `span`. */
@@ -73,6 +74,8 @@ export function EarthLayers({ spec, calc }: { spec: EarthLayersSpec; calc: Calcu
       return <Seismogram spec={spec} calc={calc} />;
     case 'epicenter':
       return <Epicenter spec={spec} calc={calc} />;
+    case 'magnitude':
+      return <EarthMagnitude spec={spec} calc={calc} />;
   }
 }
 
