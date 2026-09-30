@@ -86,6 +86,24 @@ export interface BalanceSpec {
 }
 
 /**
+ * `hrDiagram` with `mass` (H103 part 9): a main-sequence star placed by its mass. Its luminosity
+ * is L = M^3.5 (the page's value when given) and it sits on the drawn main sequence at that
+ * luminosity; the masses 3, 10 and 30 M☉ are marked along the band, and the caption gives
+ * its lifetime there, t = 10¹⁰ × M^−2.5 years.
+ */
+export interface HrMassSpec {
+  kind: 'hrDiagram';
+  /** The star's mass, in Suns. */
+  mass: NumOrVar;
+  /** Its luminosity, in Suns, when the page works it out (else M^3.5). */
+  luminosity?: NumOrVar;
+  /** Its main-sequence lifetime, years, when the page works it out. */
+  lifetime?: NumOrVar;
+  /** The star's name by its dot. */
+  name?: string;
+}
+
+/**
  * `streamChannel` (H103 part 3, a new kind): a stream's channel seen in cross-section and in
  * perspective, drawn to scale: the water `width` m wide and `depth` m deep (A = w × d), and the
  * slab of water that passes in one second, `speed` m long, so its volume is the discharge
@@ -122,7 +140,8 @@ export interface ReserveSpec {
 export type Hs2fKindSpec = StreamChannelSpec | ReserveSpec;
 
 /** Every group F spec. */
-export type Hs2fSpec = MagnitudeSpec | StripesSpec | ParcelSpec | BalanceSpec | Hs2fKindSpec;
+export type Hs2fSpec =
+  MagnitudeSpec | StripesSpec | ParcelSpec | BalanceSpec | HrMassSpec | Hs2fKindSpec;
 
 /** The variable ids a group F spec names (for the module tests). */
 export function hs2fSpecVars(r: Hs2fSpec): string[] {
@@ -130,6 +149,7 @@ export function hs2fSpecVars(r: Hs2fSpec): string[] {
     xs.filter((x): x is string => typeof x === 'string');
   if (r.kind === 'streamChannel') return ids([r.width, r.depth, r.speed, r.area, r.discharge]);
   if (r.kind === 'reserve') return ids([r.reserve, r.rate, r.years]);
+  if (r.kind === 'hrDiagram') return ids([r.mass, r.luminosity, r.lifetime]);
   switch (r.mode) {
     case 'magnitude':
       return ids([r.m1, r.m2, r.amplitude, r.energy]);

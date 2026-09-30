@@ -7,6 +7,7 @@ import type { NumOrVar } from './typesGraphs';
 import {
   hs2fSpecVars,
   type BalanceSpec,
+  type HrMassSpec,
   type MagnitudeSpec,
   type ParcelSpec,
   type StripesSpec,
@@ -244,7 +245,8 @@ export type HslSpec =
   | RockDatingSpec
   | OceanProfileSpec
   | AtmosphereLayersSpec
-  | HrDiagramSpec;
+  | HrDiagramSpec
+  | HrMassSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hslSpecVars(r: HslSpec): string[] {
@@ -260,6 +262,7 @@ export function hslSpecVars(r: HslSpec): string[] {
       if (r.mode === 'stripes') return hs2fSpecVars(r);
       return r.mode === 'profile' ? ids([r.depth]) : ids([r.angle, r.range]);
     case 'hrDiagram':
+      if ('mass' in r) return hs2fSpecVars(r);
       return ids([r.temperature, r.luminosity, r.radius]);
     case 'expandingUniverse':
       return r.mode === 'stretch'

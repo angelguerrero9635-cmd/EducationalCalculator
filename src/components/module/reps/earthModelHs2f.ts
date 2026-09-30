@@ -2,6 +2,7 @@
  * The science behind the group F round 2 earth and space pictures (H103), shared by the
  * pictures and their harness checks so both use the same numbers.
  */
+import { HR_WINDOW, mainSequenceL } from './earthModel';
 
 // ── Earthquake magnitude ──
 
@@ -115,3 +116,32 @@ export const absorbedOf = (s: number, albedo: number) => (s * (1 - albedo)) / 4;
 
 /** The temperature that sends F back out as infrared: σT⁴ = F. */
 export const balanceTemp = (f: number) => (Math.max(0, f) / SIGMA) ** 0.25;
+
+// ── A star's mass on the main sequence ──
+
+/** Main-sequence luminosity (L☉) by mass (M☉): L = M^3.5. */
+export const massLuminosity = (m: number) => m ** 3.5;
+
+/** Main-sequence lifetime (years) by mass: the Sun's 10¹⁰ years × M^−2.5 (fuel M over rate L). */
+export const massLifetime = (m: number) => 1e10 * m ** -2.5;
+
+/** The masses marked along the main sequence, M☉. */
+export const MASS_MARKS = [3, 10, 30];
+
+/** The masses whose L = M^3.5 stays on the diagram (1e-4 to 1e6 L☉). */
+export const MASS_RANGE = { min: 0.08, max: 50 };
+
+/**
+ * The temperature (K) where the drawn main sequence reaches luminosity l, by bisection on
+ * `mainSequenceL` (which rises with temperature), within the diagram's window.
+ */
+export function mainSequenceT(l: number): number {
+  let lo = Math.log10(HR_WINDOW.tCool);
+  let hi = Math.log10(HR_WINDOW.tHot);
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (mainSequenceL(10 ** mid) < l) lo = mid;
+    else hi = mid;
+  }
+  return 10 ** ((lo + hi) / 2);
+}

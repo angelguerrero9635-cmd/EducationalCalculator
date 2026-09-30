@@ -9,6 +9,9 @@ import {
   MAGNITUDE_RANGE,
   STRIPE_RECORD,
   cloudBase,
+  massLifetime,
+  massLuminosity,
+  MASS_RANGE,
   absorbedOf,
   balanceTemp,
   SOLAR_CONSTANT,
@@ -94,6 +97,19 @@ export function hs2fIssues(rep: Representation, val: (id: string) => number | un
   if (rep.kind === 'rockLayers' && 'dating' in rep && rep.dating.sample?.second) {
     const { share, name } = rep.dating.sample.second;
     if (!(share > 0 && share < 100)) out.push(`${name} takes ${share}% of decays, not 0–100`);
+  }
+  if (rep.kind === 'hrDiagram' && 'mass' in rep) {
+    const m = num(rep.mass);
+    if (m === undefined) return out;
+    if (m < MASS_RANGE.min || m > MASS_RANGE.max)
+      out.push(`mass ${m} M☉ is off the main sequence drawn (${MASS_RANGE.min}–${MASS_RANGE.max})`);
+    // The dot sits at L = M^3.5 on the main sequence; the caption's lifetime is 10¹⁰ × M^−2.5.
+    const l = num(rep.luminosity);
+    if (l !== undefined && !near(l, massLuminosity(m), 1e-4))
+      out.push(`L ${l}, but ${m}^3.5 = ${massLuminosity(m)}`);
+    const t = num(rep.lifetime);
+    if (t !== undefined && !near(t, massLifetime(m), 1e-4))
+      out.push(`lifetime ${t}, but 10¹⁰ × ${m}^−2.5 = ${massLifetime(m)}`);
   }
   if (rep.kind === 'streamChannel') {
     const w = num(rep.width);

@@ -150,6 +150,7 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'hrDiagram': {
+      if ('mass' in rep) break; // picturesHs2f.ts
       const t = num(rep.temperature);
       const l = num(rep.luminosity);
       const r = num(rep.radius);
