@@ -39,6 +39,12 @@ export interface GasPistonSpec extends GasState {
   R?: number;
   keep?: string[];
   fixed?: boolean;
+  /**
+   * H102: the first law instead of a gas law (pass `law: 'ideal'` and no state): heat `heat` Q
+   * in (+) or out (−) and work `work` W by the gas (+) or on it (−) as bands, and
+   * ΔU = Q − W (`change`) in a waterfall beside the cylinder.
+   */
+  energy?: { heat: NumOrVar; work: NumOrVar; change?: string };
 }
 
 // ─── H52 beaker: solutions ───────────────────────────────────────────────────
@@ -294,6 +300,9 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.before?.pressure,
         r.before?.volume,
         r.before?.temperature,
+        r.energy?.heat,
+        r.energy?.work,
+        r.energy?.change,
       );
     case 'energyProfile':
       return r.mode === 'calorimeter'

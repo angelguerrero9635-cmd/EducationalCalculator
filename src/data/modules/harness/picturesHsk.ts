@@ -9,7 +9,13 @@ import * as hm from '@/components/module/reps/hskMath';
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
-import { freeBodyWorkIssues, satelliteIssues, strobeColumnIssues } from './picturesHs2c';
+import {
+  freeBodyWorkIssues,
+  platesIssues,
+  pointFieldIssues,
+  satelliteIssues,
+  strobeColumnIssues,
+} from './picturesHs2c';
 
 const {
   collisionOf,
@@ -278,6 +284,11 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'charges': {
+      if (rep.mode === 'plates') {
+        out.push(...platesIssues(rep, si));
+        break;
+      }
+      out.push(...pointFieldIssues(rep, si));
       const [q1, q2] = rep.charges.map((x) => (x === undefined ? undefined : read(si, x)));
       const r = read(si, rep.distance);
       if (q1 === undefined || r === undefined) break;

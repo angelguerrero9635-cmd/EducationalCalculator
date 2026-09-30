@@ -5,6 +5,7 @@
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
+import { atLeast } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
 
@@ -508,7 +509,174 @@ const power: ModuleDef = (() => {
   };
 })();
 
-export const HS2C_GALLERY_MODULES: ModuleDef[] = [oneAfter, impulse, orbit, freeFall, work, power];
+// ─── H102.8 gasPiston `energy`: the first law, ΔU = Q − W ───────────────────
+
+const firstLaw: ModuleDef = {
+  id: 'g.s11-thermodynamics-first-law',
+  title: 'The first law of thermodynamics',
+  use: 'Use this for “A gas takes in 500 J of heat and does 200 J of work pushing a piston out. How much does its internal energy change?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Energy is kept: the heat in goes to the gas’s internal energy or out as work. ΔU = Q − W.',
+    'Q is + for heat into the gas and − for heat out of it.',
+    'W is + when the gas does work by expanding and − when work is done on it (it is squeezed).',
+  ],
+  variables: [
+    q('Q', 'Q', 'Heat into the gas', 'J', -1e9, 1e9, 0.01),
+    q('W', 'W', 'Work done by the gas', 'J', -1e9, 1e9, 0.01),
+    q('U', 'ΔU', 'Change in internal energy', 'J', -1e9, 1e9, 0.01),
+  ],
+  ...rules(
+    rule('ΔU = Q − W', '{U} = {Q} − {W}', (x) => x.U! - (x.Q! - x.W!), {
+      U: [(x) => x.Q! - x.W!, '{Q} − {W}', 'The heat in less the work out.'],
+      Q: [
+        (x) => x.U! + x.W!,
+        '{U} + {W}',
+        'The heat must cover the rise in internal energy and the work.',
+      ],
+      W: [
+        (x) => x.Q! - x.U!,
+        '{Q} − {U}',
+        'What the heat did not keep in the gas went out as work.',
+      ],
+    }),
+  ),
+  example: { Q: 500, W: 200, U: 300 },
+  startWith: ['Q', 'W'],
+  representation: {
+    kind: 'gasPiston',
+    law: 'ideal',
+    energy: { heat: 'Q', work: 'W', change: 'U' },
+  },
+};
+
+// ─── H102.10 charges `plates`, and the field at a point between two charges ──
+
+const plates: ModuleDef = (() => {
+  const [V, d, qe] = [12, 0.003, -1.602e-19];
+  return {
+    id: 'g.s11-electrostatics-plates',
+    title: 'The field between charged plates',
+    use: 'Use this for “Two plates 3 mm apart have 12 V across them. What is the field between them, and the force on an electron there?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Between large parallel plates the field is uniform: E = V/d, from the + plate to the − plate.',
+      'A charge there feels F = qE: a + charge along the field, a − charge against it.',
+      'An electron’s charge is −1.602 × 10⁻¹⁹ C; a proton’s is +1.602 × 10⁻¹⁹ C.',
+    ],
+    variables: [
+      q('V', 'V', 'Voltage across the plates', 'V', 0.001, 1e6, 0.001),
+      q('d', 'd', 'Gap between the plates', 'm', 1e-6, 10, 1e-6, { scientific: true }),
+      q('E', 'E', 'Field between the plates', 'V/m', 0, 1e12, 0.01, { scientific: true }),
+      q('q', 'q', 'Charge', 'C', -1, 1, 1e-22, { scientific: true }),
+      q('F', 'F', 'Force on the charge', 'N', -1e12, 1e12, 1e-22, {
+        scientific: true,
+        units: ['N'],
+      }),
+    ],
+    ...rules(
+      rule('E = V/d', '{E} = {V}/{d}', (x) => x.E! * x.d! - x.V!, {
+        E: [(x) => div(x.V!, x.d!), '{V}/{d}', 'The voltage for each meter of the gap.'],
+        V: [(x) => x.E! * x.d!, '{E} × {d}', 'The field times the gap.'],
+        d: [(x) => div(x.V!, x.E!), '{V}/{E}', 'Divide the voltage by the field.'],
+      }),
+      rule('F = qE', '{F} = {q} × {E}', (x) => x.F! - x.q! * x.E!, {
+        E: [
+          (x) => (x.q === 0 ? undefined : x.F! / x.q!),
+          '{F}/{q}',
+          'The force for each coulomb of charge.',
+        ],
+        F: [(x) => x.q! * x.E!, '{q} × {E}', 'Charge times field; its sign gives the direction.'],
+        q: [(x) => div(x.F!, x.E!), '{F}/{E}', 'Divide the force by the field.'],
+      }),
+    ),
+    example: { V, d, E: V / d, q: qe, F: (qe * V) / d },
+    startWith: ['V', 'd', 'q'],
+    representation: {
+      kind: 'charges',
+      mode: 'plates',
+      voltage: 'V',
+      gap: 'd',
+      field: 'E',
+      charge: 'q',
+      force: 'F',
+    },
+  };
+})();
+
+const K_E = 8.99e9;
+
+const pointField: ModuleDef = (() => {
+  const [a, b, r, x] = [3, -1, 0.4, 0.1];
+  const E = (K_E * a * 1e-6) / (x * x) - (K_E * b * 1e-6) / ((r - x) * (r - x));
+  return {
+    id: 'g.s11-electrostatics-point-field',
+    title: 'The field at a point between two charges',
+    use: 'Use this for “+3 μC and −1 μC are 0.4 m apart. What is the field 0.1 m from the +3 μC charge, on the line between them?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The point is on the line between the charges, x from q₁; + is toward q₂.',
+      'Each charge’s field points away from it if +, toward it if −, and the two fields add.',
+      'E = kq₁/x² − kq₂/(r − x)², with k = 8.99 × 10⁹ N·m²/C² and the charges in μC × 10⁻⁶.',
+    ],
+    variables: [
+      q('a', 'q₁', 'First charge', 'μC', -1000, 1000, 0.01),
+      q('b', 'q₂', 'Second charge', 'μC', -1000, 1000, 0.01),
+      q('r', 'r', 'Distance between the charges', 'm', 0.001, 100, 0.001),
+      q('x', 'x', 'Distance of the point from q₁', 'm', 0.0001, 100, 0.0001),
+      q('E', 'E', 'Field at the point (+ toward q₂)', 'N/C', -1e15, 1e15, 0.01, {
+        scientific: true,
+      }),
+    ],
+    ...rules(
+      { relation: atLeast('r', 'x'), steps: {} },
+      rule(
+        'E = kq₁/x² − kq₂/(r − x)²',
+        '{E} = 8.99 × 10⁹ × {a} × 10⁻⁶/{x}² − 8.99 × 10⁹ × {b} × 10⁻⁶/({r} − {x})²',
+        (v) =>
+          v.E! -
+          ((K_E * v.a! * 1e-6) / (v.x! * v.x!) -
+            (K_E * v.b! * 1e-6) / ((v.r! - v.x!) * (v.r! - v.x!))),
+        {
+          E: [
+            (v) =>
+              v.x! > 0 && v.r! > v.x!
+                ? (K_E * v.a! * 1e-6) / (v.x! * v.x!) -
+                  (K_E * v.b! * 1e-6) / ((v.r! - v.x!) * (v.r! - v.x!))
+                : undefined,
+            '8.99 × 10⁹ × {a} × 10⁻⁶/({x}²) − 8.99 × 10⁹ × {b} × 10⁻⁶/(({r} − {x})²)',
+            'For + charges, q₁’s part points toward q₂ and q₂’s points back toward q₁: subtract it.',
+          ],
+          a: null,
+          b: null,
+          r: null,
+          x: null,
+        },
+      ),
+    ),
+    example: { a, b, r, x, E },
+    startWith: ['a', 'b', 'r', 'x'],
+    representation: {
+      kind: 'charges',
+      charges: ['a', 'b'],
+      distance: 'r',
+      point: 'x',
+      field: 'E',
+    },
+  };
+})();
+
+export const HS2C_GALLERY_MODULES: ModuleDef[] = [
+  oneAfter,
+  impulse,
+  orbit,
+  freeFall,
+  work,
+  power,
+  firstLaw,
+  plates,
+  pointField,
+];
 
 // ─── H102.5 card figure `strobe`: sorting motion diagrams ───────────────────
 

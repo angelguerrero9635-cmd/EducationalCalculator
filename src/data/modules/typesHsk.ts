@@ -380,13 +380,34 @@ export type RayDiagramSpec = { kind: 'rayDiagram'; fixed?: boolean } & (
  * N·m²/C²) on each, equal and opposite: apart for like charges, together for unlike; drag the
  * second charge for r (the arrows follow the inverse square). With one charge, the field
  * E = k|q|/r² at a point r away (`field`, N/C), pointing away from + and toward −.
+ * With two charges and a `point` x (m from q₁ along the line toward q₂; H102), the field
+ * there from each charge, dashed, and their sum E (`field`, N/C, signed: + toward q₂'s side).
  */
 export interface ChargesSpec {
   kind: 'charges';
+  mode?: 'points';
   charges: [NumOrVar, NumOrVar?];
   distance: NumOrVar;
   force?: string;
   field?: string;
+  point?: NumOrVar;
+  fixed?: boolean;
+}
+
+/**
+ * `charges` mode `plates` (H102): two parallel plates `gap` d (m) apart with a potential
+ * difference `voltage` V (V) across them, the uniform field E = V/d (V/m, `field`) drawn as
+ * evenly spaced lines from + to −, and a `charge` q (C, signed; an electron −1.602 × 10⁻¹⁹)
+ * between them with its force F = qE (`force`, N, signed: + along the field).
+ */
+export interface ChargePlatesSpec {
+  kind: 'charges';
+  mode: 'plates';
+  voltage: NumOrVar;
+  gap: NumOrVar;
+  field?: string;
+  charge?: NumOrVar;
+  force?: string;
   fixed?: boolean;
 }
 
@@ -500,6 +521,7 @@ export type HskSpec =
   | HeatEngineSpec
   | RayDiagramSpec
   | ChargesSpec
+  | ChargePlatesSpec
   | InductionSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
@@ -568,7 +590,9 @@ export function hskSpecVars(r: HskSpec): string[] {
     case 'heatEngine':
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
     case 'charges':
-      return ids(...r.charges, r.distance, r.force, r.field);
+      return r.mode === 'plates'
+        ? ids(r.voltage, r.gap, r.field, r.charge, r.force)
+        : ids(...r.charges, r.distance, r.force, r.field, r.point);
     case 'induction':
       switch (r.mode) {
         case 'coil':

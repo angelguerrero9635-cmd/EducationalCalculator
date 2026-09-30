@@ -341,3 +341,15 @@ export function machineOf(inp: {
   const eff = inp.efficiency / 100;
   return { ima, effort: ima > 0 && eff > 0 ? inp.load / (ima * eff) : 0 };
 }
+
+/**
+ * The field of charges q₁ (at 0) and q₂ (at r), in μC, at a point x m along their line (H102):
+ * each charge's part and the sum, signed + toward larger x (N/C).
+ */
+export function fieldAtPoint(q1: number, q2: number, r: number, x: number) {
+  const part = (q: number, d: number) =>
+    Math.abs(d) < 1e-12 ? NaN : (K_COULOMB * q * 1e-6 * Math.sign(d)) / (d * d);
+  const E1 = part(q1, x);
+  const E2 = part(q2, x - r);
+  return { E1, E2, E: E1 + E2 };
+}

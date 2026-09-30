@@ -241,6 +241,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `circularMotion`   | `mode: 'satellite'`, `central`           | orbit of r round M: v = √(GM/r), GM/r², T = 2πr/v; body to scale (H102)       |
 | `motionGraph`      | `kinematics.strobe: 'vertical'`          | the strobe stood up left of the graph, + up: a dropped object (H102)          |
 | `freeBody`         | `displacement`, `work` (floor)           | d bracketed, F cos θ dashed; W = Fd cos θ in the caption (H102)               |
+| `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
+| `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

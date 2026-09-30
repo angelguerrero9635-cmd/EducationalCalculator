@@ -1881,6 +1881,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s11-kinematics-1d-motion-diagrams',
       'g.s11-work-energy-power-work',
       'g.s11-work-energy-power-power',
+      'g.s11-thermodynamics-first-law',
+      'g.s11-electrostatics-plates',
+      'g.s11-electrostatics-point-field',
     ],
     notes: [
       'P14: docs/plans/s.11.md needs 1–12, drawn part by part.',
@@ -1891,6 +1894,9 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       "5 (~motion-diagrams): card figure strobe, dots one second apart with the gaps (m) to scale, the first open, dir and ramp. { kind: 'strobe', gaps: [1, 3, 5, 7] }, { kind: 'strobe', gaps: [2, 4, 6, 8], dir: 'left' }, { kind: 'strobe', gaps: [7, 5, 3, 1.5], ramp: true }; the demo sort has the plan's six cards.",
       "6 (~work): freeBody floor option displacement (d, m) bracketed under the floor with the pull's F cos θ dashed; work names W = Fd cos θ (of the applied force, or the tension). { kind: 'freeBody', support: 'floor', mass: 'm', weight: 'G', normal: 'N', applied: 'F', appliedAngle: 'q', displacement: 'd', work: 'W' }; freeBody needs a mass, so the page adds m, F_g and F_N (7 values).",
       "7 (~power): new kind powerLift, a crate hauled up h on a rope in t, a stopwatch, and W = mgh as a bar of one-second pieces of P joules. { kind: 'powerLift', mass: 'm', height: 'h', time: 't', work: 'W', power: 'P' }; t with units: ['s'].",
+      "8 (~first-law): gasPiston energy { heat, work, change } draws the first law instead of a gas law: Q in or out and W by or on the gas as bands, the piston up or down, and a Q, −W, ΔU waterfall. { kind: 'gasPiston', law: 'ideal', energy: { heat: 'Q', work: 'W', change: 'U' } } (no gas state).",
+      '9 (~latent-heat): no change: heatingCurve spans already take variables (s.11.thermodynamics~latent-heat draws its melt, warm and boil spans from Q ÷ P).',
+      "10 (~plates): charges mode 'plates' { kind: 'charges', mode: 'plates', voltage: 'V', gap: 'd', field: 'E', charge: 'q', force: 'F' } (q in C, F signed, E and F need scientific; F with units: ['N']). 10b (MCAS #11): two charges with point (x m from q₁) draw E₁, E₂ dashed and E there; field is signed + toward q₂. { kind: 'charges', charges: ['a', 'b'], distance: 'r', point: 'x', field: 'E' }.",
     ].join(' '),
   },
   ask(

@@ -50,7 +50,7 @@ import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import { hslIssues } from './picturesHsl';
 import * as hsk from './picturesHsk';
-import { hs2cIssues, siOf } from './picturesHs2c';
+import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2136,6 +2136,7 @@ export function repIssues(
     case 'phScale':
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
+      if (rep.kind === 'gasPiston') out.push(...gasEnergyIssues(rep, siOf(val, byId)));
       break;
     case 'earthLayers':
     case 'oceanProfile':

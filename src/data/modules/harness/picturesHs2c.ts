@@ -5,10 +5,11 @@
  * units (nm and eV where the spec says so).
  */
 import type { VariableDef } from '@/engine/types';
-import { G_NEWTON as G } from '@/components/module/reps/hskMath';
+import { fieldAtPoint, G_NEWTON as G } from '@/components/module/reps/hskMath';
 
 import type { Hs2cSpec } from '../typesHs2c';
-import type { CircularMotionSpec, FreeBodySpec } from '../typesHsk';
+import type { ChargePlatesSpec, ChargesSpec, CircularMotionSpec, FreeBodySpec } from '../typesHsk';
+import type { GasPistonSpec } from '../typesHsj';
 
 type Val = (id: string) => number | undefined;
 
@@ -125,5 +126,57 @@ export function freeBodyWorkIssues(rep: FreeBodySpec, val: Val): string[] {
   if (d === undefined || F === undefined || th === undefined || W === undefined) return out;
   const want = F * d * Math.cos((th * Math.PI) / 180);
   if (!near(W, want)) out.push(`freeBody: work ${rep.work} = ${W}, the picture draws ${want}`);
+  return out;
+}
+
+/** H102: the gas piston's first law, ΔU = Q − W. SI values. */
+export function gasEnergyIssues(rep: GasPistonSpec, val: Val): string[] {
+  const e = rep.energy;
+  if (!e) return [];
+  const out: string[] = [];
+  if (rep.law !== 'ideal' || rep.before || rep.pressure || rep.volume || rep.temperature)
+    out.push('gasPiston: the first law draws no gas state (law ideal, no values)');
+  const [Q, W] = [read(val, e.heat), read(val, e.work)];
+  const U = e.change ? val(e.change) : undefined;
+  if (Q !== undefined && W !== undefined && U !== undefined && !near(U, Q - W))
+    out.push(`gasPiston: ΔU ${e.change} = ${U}, the picture draws Q − W = ${Q - W}`);
+  return out;
+}
+
+/** H102: plates' field E = V/d and the force F = qE on the charge. SI values. */
+export function platesIssues(rep: ChargePlatesSpec, val: Val): string[] {
+  const out: string[] = [];
+  const [V, d, q] = [read(val, rep.voltage), read(val, rep.gap), read(val, rep.charge)];
+  if (d !== undefined && d <= 0) out.push(`charges: plate gap ${d} is not positive`);
+  if (V === undefined || d === undefined || d <= 0) return out;
+  const E = V / d;
+  const check = (id: string | undefined, want: number, what: string) => {
+    const x = id ? val(id) : undefined;
+    if (x !== undefined && !near(x, want))
+      out.push(`charges: ${what} ${id} = ${x}, the picture draws ${want}`);
+  };
+  check(rep.field, E, 'field V/d');
+  if (q !== undefined) check(rep.force, q * E, 'force qE');
+  return out;
+}
+
+/** H102: two charges' field at a point x along their line (signed, + toward q₂'s side). */
+export function pointFieldIssues(rep: ChargesSpec, val: Val): string[] {
+  if (rep.point === undefined) return [];
+  const out: string[] = [];
+  if (rep.charges[1] === undefined) out.push('charges: a field point needs two charges');
+  const [q1, q2, r, x] = [
+    read(val, rep.charges[0]),
+    read(val, rep.charges[1]),
+    read(val, rep.distance),
+    read(val, rep.point),
+  ];
+  if (q1 === undefined || q2 === undefined || r === undefined || x === undefined) return out;
+  if (Math.abs(x) < 1e-12 || Math.abs(x - r) < 1e-12)
+    out.push('charges: the field point is on a charge');
+  const E = fieldAtPoint(q1, q2, r, x).E;
+  const named = rep.field ? val(rep.field) : undefined;
+  if (named !== undefined && Number.isFinite(E) && !near(named, E))
+    out.push(`charges: field ${rep.field} = ${named}, the picture draws ${E}`);
   return out;
 }

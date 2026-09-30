@@ -30,6 +30,7 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
     x === undefined ? undefined : typeof x === 'number' ? x : val(x);
   switch (rep.kind) {
     case 'gasPiston': {
+      if (rep.energy) break; // H102: the first law, checked by gasEnergyIssues.
       const state = (s: GasState) => ({
         p: num(s.pressure),
         v: num(s.volume),
