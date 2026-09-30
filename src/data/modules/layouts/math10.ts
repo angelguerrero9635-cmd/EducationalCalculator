@@ -299,6 +299,39 @@ const CONGRUENCE: LayoutDef[] = [
   },
 ];
 
+// ── Relationships within triangles (G-CO.10, G-C.3) ──
+const TRIANGLE_RELATIONSHIPS: LayoutDef[] = [
+  {
+    kind: 'sort',
+    id: 'm.10.triangle-relationships~which-center',
+    title: 'Which center?',
+    use: 'Use this for “Which point of a triangle is the same distance from all three sides?”',
+    assumptions: [
+      'Each center is where three special lines of the triangle meet.',
+      'Medians give the centroid, angle bisectors the incenter, perpendicular bisectors the circumcenter, altitudes the orthocenter.',
+    ],
+    question: 'Which center is it?',
+    bins: [
+      { id: 'centroid', label: 'Centroid', why: 'Where the medians meet: the balance point.' },
+      { id: 'incenter', label: 'Incenter', why: 'Where the angle bisectors meet.' },
+      { id: 'circumcenter', label: 'Circumcenter', why: 'Where the perpendicular bisectors meet.' },
+      { id: 'orthocenter', label: 'Orthocenter', why: 'Where the altitudes meet.' },
+    ],
+    cards: [
+      { label: 'Medians meet', bin: 'centroid' },
+      { label: 'Cuts each median 2:1 from the corner', bin: 'centroid' },
+      { label: 'Balance point', bin: 'centroid' },
+      { label: 'Angle bisectors meet', bin: 'incenter' },
+      { label: 'Same distance from all three sides', bin: 'incenter' },
+      { label: 'Center of the circle inside touching each side', bin: 'incenter' },
+      { label: 'Perpendicular bisectors meet', bin: 'circumcenter' },
+      { label: 'Same distance from all three corners', bin: 'circumcenter' },
+      { label: 'Center of the circle through the corners', bin: 'circumcenter' },
+      { label: 'Altitudes meet', bin: 'orthocenter' },
+    ],
+  },
+];
+
 // ── Similarity (G-SRT.2–5) ──
 const SIMILARITY: LayoutDef[] = [
   {
@@ -431,6 +464,7 @@ export const MATH_10_LAYOUTS: LayoutDef[] = [
   ...PARALLEL_LINES,
   ...RIGID_MOTIONS,
   ...CONGRUENCE,
+  ...TRIANGLE_RELATIONSHIPS,
   ...SIMILARITY,
   ...VOLUME,
 ];

@@ -3879,12 +3879,235 @@ const CONGRUENCE: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.triangle-relationships ─────────────────────────────────────────────
+
+const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
+  page({
+    id: 'm.10.triangle-relationships',
+    assumptions: [
+      'D and E are the midpoints of AB and AC; the segment DE joining them is a midsegment.',
+      'The midsegment is parallel to the third side BC and half as long: DE = BC ÷ 2.',
+    ],
+    variables: [
+      len('a', 'a', 'Side BC', 1000, { min: 0.1 }),
+      len('b', 'b', 'Side CA', 1000, { min: 0.1 }),
+      len('c', 'c', 'Side AB', 1000, { min: 0.1 }),
+      der(len('m', 'DE', 'Midsegment DE', 500)),
+    ],
+    rules: [
+      closes('a', 'b', 'c'),
+      derive(
+        'DE = BC/2',
+        '{m} = {a} ÷ 2',
+        'm',
+        (v) => v.a! / 2,
+        '{a} ÷ 2',
+        'The midsegment is half the third side.',
+      ),
+    ],
+    example: { a: 14, b: 12, c: 10, m: 7 },
+    startWith: ['a', 'b', 'c'],
+    representation: {
+      kind: 'markedFigure',
+      triangle: { sides: ['a', 'b', 'c'], lines: 'midsegment', labels: { DE: 'm', BC: 'a' } },
+    },
+  }),
+  page({
+    id: 'm.10.triangle-relationships~centroid',
+    title: 'Medians and the centroid',
+    use: 'Use this for “The median AD is 12. How long are AG and GD?”',
+    assumptions: [
+      'A median joins a corner to the midpoint of the opposite side.',
+      'The three medians meet at the centroid G, two thirds of the way from each corner.',
+      'So AG = 2/3 of AD and GD = 1/3 of AD: AG is twice GD.',
+    ],
+    variables: [
+      len('m', 'AD', 'Median AD'),
+      len('g', 'AG', 'AG', 1000),
+      len('k', 'GD', 'GD', 1000),
+    ],
+    rules: [
+      rule(
+        'AG = 2/3 AD',
+        '{g} = 2 × {m} ÷ 3',
+        {
+          g: [
+            (v) => (2 * v.m!) / 3,
+            '2 × {m} ÷ 3',
+            'The centroid is two thirds of the way from the corner.',
+          ],
+          m: [(v) => (3 * v.g!) / 2, '3 × {g} ÷ 2', 'AG is two thirds of the median.'],
+        },
+        (v) => v.g! - (2 * v.m!) / 3,
+      ),
+      rule(
+        'GD = 1/3 AD',
+        '{k} = {m} ÷ 3',
+        {
+          k: [(v) => v.m! / 3, '{m} ÷ 3', 'The last third of the median.'],
+          m: [(v) => 3 * v.k!, '3 × {k}', 'GD is one third of the median.'],
+        },
+        (v) => v.k! - v.m! / 3,
+      ),
+    ],
+    example: { m: 12, g: 8, k: 4 },
+    startWith: ['m'],
+    representation: {
+      kind: 'markedFigure',
+      points: { B: [0, 0], C: ['g', 0], D: ['k', 0], A: ['k', 'm'], G: ['k', 'k'] },
+      parts: [
+        { segment: 'AB' },
+        { segment: 'AC' },
+        { segment: 'BC' },
+        { segment: 'AD' },
+        { ticks: 'BD', count: 1 },
+        { ticks: 'DC', count: 1 },
+        { label: 'AG', value: 'g' },
+        { label: 'GD', value: 'k' },
+        { label: 'AD', value: 'm', inCaption: true },
+      ],
+    },
+  }),
+  page({
+    id: 'm.10.triangle-relationships~incenter',
+    title: 'The incircle of a right triangle',
+    use: 'Use this for “A right triangle has legs 9 and 12. Find the radius of the circle inside it.”',
+    assumptions: [
+      'The angle bisectors meet at the incenter I, the same distance r from all three sides.',
+      'The two tangent lengths from each corner are equal, and at the right angle they are both r.',
+      'So the legs share the hypotenuse plus 2r: r = (a + b − c) ÷ 2.',
+    ],
+    variables: [
+      len('a', 'a', 'Leg BC', 1000, { min: 0.1 }),
+      len('b', 'b', 'Leg CA', 1000, { min: 0.1 }),
+      der(len('c', 'c', 'Hypotenuse AB', 1500)),
+      der(len('r', 'r', 'Inradius r', 500)),
+    ],
+    rules: [
+      derive(
+        'c = √(a² + b²)',
+        '{c} = √({a}² + {b}²)',
+        'c',
+        (v) => Math.hypot(v.a!, v.b!),
+        '√({a}² + {b}²)',
+        'The Pythagorean theorem gives the hypotenuse.',
+      ),
+      derive(
+        'r = (a + b − c)/2',
+        '{r} = ({a} + {b} − {c}) ÷ 2',
+        'r',
+        (v) => (v.a! + v.b! - v.c!) / 2,
+        '({a} + {b} − {c}) ÷ 2',
+        'The legs are the hypotenuse plus two radii: take c away and halve.',
+      ),
+    ],
+    example: { a: 9, b: 12, c: 15, r: 3 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'markedFigure',
+      triangle: { sides: ['a', 'b', 'c'], lines: 'bisector', center: true, labels: { IT: 'r' } },
+    },
+  }),
+  page({
+    id: 'm.10.triangle-relationships~circumcenter',
+    title: 'The circle through the corners of a right triangle',
+    use: 'Use this for “A right triangle has legs 5 and 12. Find the radius of the circle through its corners.”',
+    assumptions: [
+      'The perpendicular bisectors of the sides meet at the circumcenter O, the same distance R from all three corners.',
+      'In a right triangle O is the midpoint of the hypotenuse, so R = c ÷ 2.',
+      'For other triangles, construct the bisectors: O is where they meet.',
+    ],
+    variables: [
+      len('a', 'a', 'Leg BC', 1000, { min: 0.1 }),
+      len('b', 'b', 'Leg CA', 1000, { min: 0.1 }),
+      der(len('c', 'c', 'Hypotenuse AB', 1500)),
+      der(len('R', 'R', 'Circumradius R', 750)),
+    ],
+    rules: [
+      derive(
+        'c = √(a² + b²)',
+        '{c} = √({a}² + {b}²)',
+        'c',
+        (v) => Math.hypot(v.a!, v.b!),
+        '√({a}² + {b}²)',
+        'The Pythagorean theorem gives the hypotenuse.',
+      ),
+      derive(
+        'R = c/2',
+        '{R} = {c} ÷ 2',
+        'R',
+        (v) => v.c! / 2,
+        '{c} ÷ 2',
+        'The circumcenter is the midpoint of the hypotenuse.',
+      ),
+    ],
+    example: { a: 5, b: 12, c: 13, R: 6.5 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'markedFigure',
+      triangle: {
+        sides: ['a', 'b', 'c'],
+        lines: 'perpendicular',
+        center: true,
+        labels: { OA: 'R' },
+      },
+    },
+  }),
+  page({
+    id: 'm.10.triangle-relationships~inequality',
+    title: 'The triangle inequality',
+    use: 'Use this for “Two sides of a triangle are 7 and 11. What lengths can the third side be?”',
+    assumptions: [
+      'Any two sides of a triangle add to more than the third.',
+      'So the third side is more than the difference of the other two and less than their sum.',
+      'The longest side is across from the largest angle.',
+    ],
+    variables: [
+      len('a', 'a', 'Side a', 1000, { min: 0.1 }),
+      len('b', 'b', 'Side b', 1000, { min: 0.1 }),
+      der(num('lo', 'low', 'Third side is more than', 0, 1000)),
+      der(num('hi', 'high', 'Third side is less than', 0, 2000)),
+      der(len('c', 'c', 'A third side that fits', 1000)),
+    ],
+    rules: [
+      derive(
+        'low = |a − b|',
+        '{lo} = |{a} − {b}|',
+        'lo',
+        (v) => Math.abs(v.a! - v.b!),
+        '|{a} − {b}|',
+        'The third side must be longer than the difference.',
+      ),
+      derive(
+        'high = a + b',
+        '{hi} = {a} + {b}',
+        'hi',
+        (v) => v.a! + v.b!,
+        '{a} + {b}',
+        'The third side must be shorter than the sum.',
+      ),
+      derive(
+        'c = (low + high)/2',
+        '{c} = ({lo} + {hi}) ÷ 2',
+        'c',
+        (v) => (v.lo! + v.hi!) / 2,
+        '({lo} + {hi}) ÷ 2',
+        'A third side halfway through the range, for the picture.',
+      ),
+    ],
+    example: { a: 7, b: 11, lo: 4, hi: 18, c: 11 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'triangleSolver', parts: { a: 'a', b: 'b', c: 'c' } },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...CONSTRUCTIONS,
   ...PROOFS,
   ...PARALLEL_LINES,
   ...RIGID_MOTIONS,
   ...CONGRUENCE,
+  ...TRIANGLE_RELATIONSHIPS,
   ...SIMILARITY,
   ...SPECIAL,
   ...TRIG,
