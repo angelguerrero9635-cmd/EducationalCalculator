@@ -2269,7 +2269,10 @@ const rowReduceDemo: ModuleDef = {
           solve: { [out]: f, d1: () => undefined, d2: () => undefined, d3: () => undefined },
         },
         steps: {
-          [out]: { expr, how: 'Row reduction ends with each unknown alone: this is its value.' },
+          [out]: {
+            expr,
+            how: 'The last row gives z; putting it back into the rows above gives y, then x.',
+          },
         },
       };
     }),
@@ -2289,7 +2292,6 @@ const rowReduceDemo: ModuleDef = {
       { add: 3, from: 1, times: -1 },
       { swap: [2, 3] },
       { add: 3, from: 2, times: 3 },
-      { scale: 3, by: -1 / 7 },
     ],
     solution: ['x', 'y', 'z'],
   },
