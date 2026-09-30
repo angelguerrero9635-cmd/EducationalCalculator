@@ -199,3 +199,19 @@ so the table's radii are in the unit shown.
 - `region` (or a `circle` option): an irregular outline on a km grid with people as dots, its
   area modeled by the circle of radius r; driven by r, A, N, D. Pages:
   `modeling-density~population`.
+- `unitCubes` with `scale` for sides that aren't whole cubes (a 2.5 × 3 × 5.2 cm block), or a
+  plain box solid: the lesson review's box density page (V = lwh, a 2 × 3 × 5 cm block of 81 g
+  is 2.7 g/cm³) waits on it; the cone version was built instead.
+- Engine: a new value that makes an older input impossible clears the older one silently (h at
+  r = 0.01 on the main page). The ρ ≤ 23 g/cm³ limit now gives the reason for the densest cases.
+
+### Lesson-review fixes (`.review/new-math/lesson-report.md`)
+
+- `~can-design`: r_best = ∛(V ÷ 2π) and S_min = 2πr_best² + 2V ÷ r_best (500 cm³: 4.3013 cm,
+  348.73 cm²); with V known the S step works as "S = 2 × π × 4² + 2 × 500 ÷ 4", "S = 32π + 250".
+- `~fence`: s = P ÷ 4 and A_max = s² (40 m: 10 m, 100 m²).
+- `~population`: r up to 3,000 km, N up to 9 × 10⁹.
+- Main, `~sphere` and the new pages: a limit ρ ≤ 23 g/cm³ ("No material is denser than about
+  22.6 g/cm³ (osmium) …").
+- New page `~cone` (mass of a cone from its density, `curvedSolid` cone; r = 3, h = 4, aluminum
+  2.7 g/cm³: V = 12π cm³, m ≈ 101.79 g). The box version waits (shared needs).
