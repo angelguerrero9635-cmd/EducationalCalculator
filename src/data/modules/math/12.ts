@@ -6154,14 +6154,26 @@ interface SumFormula {
   term: string;
   /** Extra inputs (the ratio r). */
   more?: string[];
+  /** The inductive step in letters: formula at k + next term = formula at k + 1. */
+  algebra: string[];
 }
-function inductionRels({ S, a, F, what, term, more = [] }: SumFormula): Rel[] {
+function inductionRels({ S, a, F, what, term, more = [], algebra }: SumFormula): Rel[] {
   const sym = (d: string) => d.replace(/\{(\w+)\}/g, '$1');
   return [
-    rel(`S = ${sym(S[0])}`, `{S} = ${S[0]}`, ['S', 'n', ...more], (v) => v.S! - S[1](v), {
-      S: [S[1], S[0], `The formula at n: ${what}.`],
-      ...(S[2] ? { n: S[2] } : {}),
-    }),
+    withStep(
+      rel(`S = ${sym(S[0])}`, `{S} = ${S[0]}`, ['S', 'n', ...more], (v) => v.S! - S[1](v), {
+        S: [S[1], S[0], `The formula at n: ${what}.`],
+        ...(S[2] ? { n: S[2] } : {}),
+      }),
+      'S',
+      {
+        // At n = 1 the sum is its first term alone: the base case, left side against right.
+        note: (v) =>
+          v.n === 1 && v.S !== undefined
+            ? `→ base case: the left side is the first term, 1, and the formula gives ${fmt(v.S)}`
+            : '',
+      },
+    ),
     derive(
       `a = ${sym(a[0])}`,
       `{a} = ${a[0]}`,
@@ -6192,6 +6204,7 @@ function inductionRels({ S, a, F, what, term, more = [] }: SumFormula): Rel[] {
       ),
       'F',
       {
+        work: algebra.map((line) => `With k for n: ${line}`),
         note: (v) =>
           v.T === undefined || v.F === undefined
             ? ''
@@ -6240,6 +6253,7 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         F: ['({n} + 1) × ({n} + 2) ÷ 2', (v) => ((v.n! + 1) * (v.n! + 2)) / 2],
         what: '1 + 2 + … + n = n(n + 1)/2',
         term: 'the number n + 1 itself',
+        algebra: ['k(k + 1)/2 + (k + 1) = (k + 1)(k + 2)/2'],
       }),
     ),
     example: { n: 4, S: 10, a: 5, T: 15, F: 15 },
@@ -6275,6 +6289,7 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         F: ['({n} + 1)²', (v) => (v.n! + 1) ** 2],
         what: '1 + 3 + … + (2n − 1) = n²',
         term: '2(n + 1) − 1 = 2n + 1',
+        algebra: ['k² + (2k + 1) = (k + 1)²'],
       }),
     ),
     example: { n: 5, S: 25, a: 11, T: 36, F: 36 },
@@ -6313,6 +6328,7 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         F: ['({r}^({n} + 1) − 1) ÷ ({r} − 1)', (v) => (v.r! ** (v.n! + 1) - 1) / (v.r! - 1)],
         what: '1 + r + … + rⁿ⁻¹ = (rⁿ − 1)/(r − 1)',
         term: 'r to the power n',
+        algebra: ['(rᵏ − 1)/(r − 1) + rᵏ = (rᵏ⁺¹ − 1)/(r − 1)'],
         more: ['r'],
       }),
     ),
@@ -6348,6 +6364,10 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         ],
         what: '1² + 2² + … + n² = n(n + 1)(2n + 1)/6',
         term: '(n + 1)²',
+        algebra: [
+          'k(k + 1)(2k + 1)/6 + (k + 1)² = (k + 1)(2k² + 7k + 6)/6',
+          '(k + 1)(2k² + 7k + 6)/6 = (k + 1)(k + 2)(2k + 3)/6',
+        ],
       }),
     ),
     example: { n: 3, S: 14, a: 16, T: 30, F: 30 },
@@ -6358,6 +6378,94 @@ const MATH_12_INDUCTION: ModuleDef[] = [
       output: 'S',
       params: [],
       rows: (v: Values) => [1, 2, 3, 4, 5].map((i) => Math.max(0, (v.n ?? 3) - 3) + i),
+    },
+  },
+  {
+    id: 'm.12.induction~divisible',
+    title: 'A divisibility proof',
+    use: 'Use this for “Prove that n³ − n is divisible by 3 for every whole number n ≥ 1.”',
+    assumptions: [
+      'Base case: at n = 1, 1³ − 1 = 0, and 0 = 3 × 0 is divisible by 3.',
+      'Step: f(k + 1) = f(k) + 3k(k + 1), so if 3 divides f(k) it divides f(k + 1).',
+      'The numbers check the step at one n; the algebra with k proves every case.',
+    ],
+    variables: [
+      count(30),
+      V('f', 'f(n)', 'n³ − n', { integer: true, min: 0, max: 27000, derived: true }),
+      V('g', 'f(n) ÷ 3', 'f(n) divided by 3', { integer: true, min: 0, max: 9000, derived: true }),
+      V('F', 'f(n + 1)', 'The next one, (n + 1)³ − (n + 1)', {
+        integer: true,
+        min: 6,
+        max: 30000,
+        derived: true,
+      }),
+      V('D', 'D', 'The jump f(n + 1) − f(n)', { integer: true, min: 6, max: 3000, derived: true }),
+    ],
+    ...rels(
+      withStep(
+        derive(
+          'f(n) = n³ − n',
+          '{f} = {n}³ − {n}',
+          'f',
+          ['n'],
+          (v) => v.n! ** 3 - v.n!,
+          '{n}³ − {n}',
+          'Put n into the expression.',
+        ),
+        'f',
+        {
+          note: (v) => (v.n === 1 ? '→ base case: 0 = 3 × 0, a multiple of 3' : ''),
+        },
+      ),
+      derive(
+        'f(n) ÷ 3',
+        '{g} = {f} ÷ 3',
+        'g',
+        ['f'],
+        (v) => v.f! / 3,
+        '{f} ÷ 3',
+        'A whole number: 3 divides f(n) at this n.',
+      ),
+      derive(
+        'f(n + 1) = (n + 1)³ − (n + 1)',
+        '{F} = ({n} + 1)³ − ({n} + 1)',
+        'F',
+        ['n'],
+        (v) => (v.n! + 1) ** 3 - (v.n! + 1),
+        '({n} + 1)³ − ({n} + 1)',
+        'The expression at the next whole number.',
+      ),
+      withStep(
+        derive(
+          'D = f(n + 1) − f(n)',
+          '{D} = {F} − {f}',
+          'D',
+          ['F', 'f'],
+          (v) => v.F! - v.f!,
+          '{F} − {f}',
+          'The step: how much the expression grows from n to n + 1.',
+        ),
+        'D',
+        {
+          work: (v) => [
+            `3 × ${shown(v.n!)} × ${shown(v.n! + 1)} = ${shown(3 * v.n! * (v.n! + 1))}`,
+            'With k for n: (k + 1)³ − (k + 1) − (k³ − k) = 3k² + 3k = 3k(k + 1)',
+          ],
+          note: (v) =>
+            v.D === undefined
+              ? ''
+              : `→ the jump is 3n(n + 1), a multiple of 3: f(n) + ${shown(v.D)} stays a multiple of 3`,
+        },
+      ),
+    ),
+    example: { n: 4, f: 60, g: 20, F: 120, D: 60 },
+    startWith: ['n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'g',
+      params: [],
+      rows: (v: Values) => [1, 2, 3, 4, 5].map((i) => Math.max(0, (v.n ?? 4) - 3) + i),
     },
   },
 ];

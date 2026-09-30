@@ -312,3 +312,9 @@ None: every planned page is built, some with an interim picture (below).
   (ap² + bp + c) ÷ (p² + jp + k), B = a − A, C = b + Bp − Aj. The top's coefficients and the
   quadratic's are grouped (8 values). The y step works the top and the bottom once each, then
   the quotient.
+- `m.12.induction` (rework): step 4 on the main page, `~odd`, `~powers` and `~squares` now
+  writes the inductive step with k ("With k for n: k² + (2k + 1) = (k + 1)²"; two lines on
+  `~squares`), so the "Prove …" use lines are kept; at n = 1 the S step notes the base case, left
+  side against right. `~steps` unchanged.
+- New page `m.12.induction~divisible` (3 divides n³ − n: f(n), f(n) ÷ 3, f(n + 1) and the jump
+  D = 3n(n + 1), with the k algebra; n = 4: 60, 20, 120, 60 = 3 × 4 × 5), a `table` of f(n) ÷ 3.
