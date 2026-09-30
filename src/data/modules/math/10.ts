@@ -2025,6 +2025,198 @@ const VOLUME: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.circle-theorems ────────────────────────────────────────────────────
+
+const CIRCLE_THEOREMS: ModuleDef[] = [
+  page({
+    id: 'm.10.circle-theorems',
+    assumptions: [
+      'A central angle has its vertex at the center O; it has the same measure as its arc AB.',
+      'An inscribed angle has its vertex P on the circle and stands on the same arc: it is half the central angle.',
+      'Every inscribed angle on the same arc is equal, wherever P sits on the other arc.',
+    ],
+    variables: [
+      deg('c', 'c', 'Central angle (arc AB)', 1, 359),
+      deg('i', 'i', 'Inscribed angle APB', 0.5, 179.5),
+    ],
+    rules: [
+      rule(
+        'i = c/2',
+        '{i} = {c} ÷ 2',
+        {
+          i: [
+            (v) => v.c! / 2,
+            '{c} ÷ 2',
+            'An inscribed angle is half the central angle on its arc.',
+          ],
+          c: [(v) => 2 * v.i!, '2 × {i}', 'The arc (central angle) is twice the inscribed angle.'],
+        },
+        (v) => v.i! - v.c! / 2,
+      ),
+    ],
+    example: { c: 130, i: 65 },
+    startWith: ['c'],
+    representation: { kind: 'circleTheorems', theorem: 'inscribed', central: 'c', inscribed: 'i' },
+  }),
+  page({
+    id: 'm.10.circle-theorems~semicircle',
+    title: 'The angle in a semicircle',
+    use: 'Use this for “AB is a diameter and m∠PAB = 34°. Find m∠PBA.”',
+    assumptions: [
+      'AB is a diameter, so its arc is 180° and the inscribed angle at P is half of it: 90°.',
+      'So the other two angles of △APB add to 90°.',
+      'Going the other way, an inscribed right angle always stands on a diameter.',
+    ],
+    variables: [deg('a', 'a', 'm∠PAB', 1, 89), deg('b', 'b', 'm∠PBA', 1, 89)],
+    rules: [
+      rule(
+        'a + b = 90°',
+        '{a} + {b} = 90',
+        {
+          a: [(v) => 90 - v.b!, '90 − {b}', 'The angle at P is 90°, so the other two share 90°.'],
+          b: [(v) => 90 - v.a!, '90 − {a}', 'The angle at P is 90°, so the other two share 90°.'],
+        },
+        (v) => v.a! + v.b! - 90,
+      ),
+    ],
+    example: { a: 34, b: 56 },
+    startWith: ['a'],
+    representation: { kind: 'circleTheorems', theorem: 'semicircle', angle: 'a', other: 'b' },
+  }),
+  page({
+    id: 'm.10.circle-theorems~tangent',
+    title: 'A tangent and its radius',
+    use: 'Use this for “The radius is 8 and the tangent from P is 15. How far is P from the center?”',
+    assumptions: [
+      'A tangent touches the circle at one point T, at right angles to the radius OT.',
+      'So O, T and P make a right triangle with hypotenuse OP: r² + t² = d².',
+      'The two tangents from one point are equal in length.',
+    ],
+    variables: [
+      len('r', 'r', 'Radius OT'),
+      len('t', 't', 'Tangent PT'),
+      len('d', 'd', 'Distance OP', 1500),
+    ],
+    rules: [pythagoras('r', 't', 'd', 'OP is the hypotenuse of the right triangle OTP.')],
+    example: { r: 8, t: 15, d: 17 },
+    startWith: ['r', 't'],
+    representation: {
+      kind: 'circleTheorems',
+      theorem: 'tangent',
+      radius: 'r',
+      tangent: 't',
+      distance: 'd',
+    },
+  }),
+  page({
+    id: 'm.10.circle-theorems~chords',
+    title: 'Two chords crossing',
+    use: 'Use this for “Chords AB and CD cross at E; AE = 6, EB = 4 and CE = 3. Find ED.”',
+    assumptions: [
+      'Two chords cross at E inside the circle.',
+      'The products of the parts of each chord are equal: AE × EB = CE × ED.',
+    ],
+    variables: [
+      len('a', 'a', 'AE'),
+      len('b', 'b', 'EB'),
+      len('c', 'c', 'CE'),
+      len('d', 'd', 'ED', 1e6),
+    ],
+    rules: [
+      products('a', 'b', 'c', 'd', 'Crossing chords: the products of their parts are equal.'),
+    ],
+    example: { a: 6, b: 4, c: 3, d: 8 },
+    startWith: ['a', 'b', 'c'],
+    representation: { kind: 'circleTheorems', theorem: 'chords', segments: ['a', 'b', 'c', 'd'] },
+  }),
+  page({
+    id: 'm.10.circle-theorems~secants',
+    title: 'Two secants from a point',
+    use: 'Use this for “From P, PA = 3 and PB = 10 on one secant, PC = 5 on the other. Find PD.”',
+    assumptions: [
+      'Two secants from P outside the circle: PA and PC are the outside parts, PB and PD the whole secants.',
+      'Outside part × whole secant is the same for both: PA × PB = PC × PD.',
+    ],
+    variables: [
+      len('a', 'a', 'PA (outside)'),
+      len('b', 'b', 'PB (whole)', 1e6),
+      len('c', 'c', 'PC (outside)'),
+      len('d', 'd', 'PD (whole)', 1e6),
+    ],
+    rules: [
+      limit(
+        'PB > PA',
+        '{b} is more than {a}',
+        (v) => v.b! > v.a!,
+        'A whole secant is longer than its outside part.',
+      ),
+      limit(
+        'PD > PC',
+        '{d} is more than {c}',
+        (v) => v.d! > v.c!,
+        'A whole secant is longer than its outside part.',
+      ),
+      products(
+        'a',
+        'b',
+        'c',
+        'd',
+        'Two secants from one point: outside part × whole secant is equal.',
+      ),
+    ],
+    example: { a: 3, b: 10, c: 5, d: 6 },
+    startWith: ['a', 'b', 'c'],
+    representation: { kind: 'circleTheorems', theorem: 'secants', segments: ['a', 'b', 'c', 'd'] },
+  }),
+  page({
+    id: 'm.10.circle-theorems~secant-tangent',
+    title: 'A tangent and a secant from a point',
+    use: 'Use this for “From P, PA = 4 and PB = 16 on a secant. How long is the tangent PT?”',
+    assumptions: [
+      'From P, a tangent touches the circle at T and a secant crosses it at A and B.',
+      'The tangent squared is outside part × whole secant: PT² = PA × PB.',
+    ],
+    variables: [
+      len('t', 't', 'PT (tangent)'),
+      len('a', 'a', 'PA (outside)'),
+      len('b', 'b', 'PB (whole)', 1e6),
+    ],
+    rules: [
+      limit(
+        'PB > PA',
+        '{b} is more than {a}',
+        (v) => v.b! > v.a!,
+        'A whole secant is longer than its outside part.',
+      ),
+      rule(
+        't² = ab',
+        '{t}² = {a} × {b}',
+        {
+          t: [
+            (v) => root(v.a! * v.b!),
+            '√({a} × {b})',
+            'The tangent is the square root of outside part × whole secant.',
+          ],
+          b: [
+            (v) => quot(v.t! ** 2, v.a!),
+            '{t}² ÷ {a}',
+            'The whole secant is the tangent squared over the outside part.',
+          ],
+          a: [
+            (v) => quot(v.t! ** 2, v.b!),
+            '{t}² ÷ {b}',
+            'The outside part is the tangent squared over the whole secant.',
+          ],
+        },
+        (v) => v.t! ** 2 - v.a! * v.b!,
+      ),
+    ],
+    example: { t: 8, a: 4, b: 16 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'circleTheorems', theorem: 'secantTangent', segments: ['t', 'a', 'b'] },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...SIMILARITY,
   ...SPECIAL,
@@ -2032,5 +2224,6 @@ export const MATH_10_MODULES: ModuleDef[] = [
   ...COORDINATES,
   ...ARC_SECTOR,
   ...VOLUME,
+  ...CIRCLE_THEOREMS,
   ...CONDITIONAL,
 ];
