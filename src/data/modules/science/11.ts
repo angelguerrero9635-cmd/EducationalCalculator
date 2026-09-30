@@ -4232,11 +4232,315 @@ const circuitPages: ModuleDef[] = [
   })(),
 ];
 
+// ─── s.11.rotation ──────────────────────────────────────────────────────────
+
+const TORQUE = q('t', 'τ', 'Torque', 'N·m', 0, 1e7, 0.001);
+
+const rotationPages: ModuleDef[] = [
+  (() => {
+    const [r, F, a] = [0.25, 80, 30];
+    const p = F * Math.sin(a * RAD);
+    return {
+      id: 's.11.rotation',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The lever arm r runs from the pivot to where the force pushes.',
+        'Only the part of F at right angles to the arm turns it: all of F at 90°, none at 0°.',
+        'The same force turns harder on a longer arm: τ = rF sin θ.',
+      ],
+      variables: [
+        q('r', 'r', 'Lever arm', 'm', 0.001, 100, 0.001),
+        q('F', 'F', 'Force', 'N', 0, 1e5, 0.01),
+        q('a', 'θ', 'Angle between arm and force', '°', 0, 180, 1),
+        q('p', 'F⊥', 'Force across the arm', 'N', 0, 1e5, 0.01),
+        TORQUE,
+      ],
+      ...rules(
+        componentOf(
+          'p',
+          'F',
+          'a',
+          'sin',
+          'F⊥ = F sin θ',
+          'The part of the force across the arm is F times sin θ.',
+        ),
+        product('t', 'r', 'p', 'τ = rF⊥', [
+          'Torque is the lever arm times the force across it.',
+          'Divide the torque by the force across the arm.',
+          'Divide the torque by the lever arm.',
+        ]),
+      ),
+      example: { r, F, a, p, t: r * p },
+      startWith: ['r', 'F', 'a'],
+      representation: {
+        kind: 'vectorDiagram',
+        vectors: [{ name: 'F', magnitude: 'F', direction: 'a' }],
+        components: true,
+        unit: 'N',
+        axes: { x: 'Along the arm', y: 'Across the arm' },
+      },
+      pictureLabels: ['r', 'p', 't'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [W, l, F] = [300, 2, 400];
+    return {
+      id: 's.11.rotation~seesaw',
+      title: 'Balancing a seesaw',
+      use: 'Use this for “A 300 N child sits 2 m from the pivot. Where must a 400 N child sit to balance, and how hard does the pivot push up?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Balanced means no net torque and no net force: the two torques match, and the pivot holds up both weights.',
+        'Each torque is a weight times its distance from the pivot.',
+        'The plank’s own weight acts at the pivot, so it adds no torque.',
+      ],
+      variables: [
+        q('W', 'F₁', 'First weight', 'N', 0.01, 1e5, 0.01),
+        q('l', 'd₁', 'First distance', 'm', 0.01, 100, 0.01),
+        q('F', 'F₂', 'Second weight', 'N', 0.01, 1e5, 0.01),
+        q('e', 'd₂', 'Second distance', 'm', 0.01, 100, 0.01),
+        TORQUE,
+        q('P', 'F_p', 'Pivot force', 'N', 0, 2e5, 0.01),
+      ],
+      ...rules(
+        product('t', 'W', 'l', 'τ = F₁d₁', [
+          'The first child’s torque: weight times distance from the pivot.',
+          'Divide the torque by the distance.',
+          'Divide the torque by the weight.',
+        ]),
+        product('t', 'F', 'e', 'τ = F₂d₂', [
+          'Balanced, the second torque equals the first.',
+          'Divide the torque by the distance.',
+          'Divide the torque by the weight: the heavier child sits closer.',
+        ]),
+        sum(
+          'P',
+          'W',
+          'F',
+          'F_p = F₁ + F₂',
+          'No net force: the pivot pushes up as hard as both weights push down.',
+        ),
+      ),
+      example: { W, l, F, e: (W * l) / F, t: W * l, P: W + F },
+      startWith: ['W', 'l', 'F'],
+      representation: {
+        kind: 'simpleMachine',
+        machine: 'lever',
+        load: 'W',
+        loadArm: 'l',
+        effortArm: 'e',
+        effort: 'F',
+      },
+      pictureLabels: ['t', 'P'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [r, N] = [0.3, 120];
+    const w = (2 * Math.PI * N) / 60;
+    return {
+      id: 's.11.rotation~angular-speed',
+      title: 'Angular speed and rim speed',
+      use: 'Use this for “A 0.30 m wheel turns at 120 rpm. What is its angular speed in rad/s, and how fast does its rim move?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'One turn is 2π radians, so N turns a minute is 2πN/60 radians a second.',
+        'Every point on the wheel has the same ω, but points farther out move faster: v = rω.',
+        'The rim’s velocity is along the tangent; the angle must be in radians for v = rω.',
+      ],
+      variables: [
+        q('r', 'r', 'Radius', 'm', 0.001, 1000, 0.001),
+        q('N', 'N', 'Turning rate', 'rpm', 0.01, 1e5, 0.01),
+        q('w', 'ω', 'Angular speed', 'rad/s', 0.001, 1e4, 0.001),
+        q('T', 'T', 'Period', 's', 0.0001, 1e5, 0.0001),
+        q('v', 'v', 'Rim speed', 'm/s', 0, 1e5, 0.001),
+      ],
+      ...rules(
+        rule('ω = 2πN/60', '{w} = 2π × {N}/60', (v) => 60 * v.w! - 2 * Math.PI * v.N!, {
+          w: [
+            (v) => (2 * Math.PI * v.N!) / 60,
+            '2π × {N}/60',
+            'Each turn is 2π radians, and a minute is 60 seconds.',
+          ],
+          N: [
+            (v) => (60 * v.w!) / (2 * Math.PI),
+            '60 × {w}/(2π)',
+            'Radians a second times 60, over 2π radians a turn.',
+          ],
+        }),
+        rule('T = 2π/ω', '{T} = 2π/{w}', (v) => v.T! * v.w! - 2 * Math.PI, {
+          T: [
+            (v) => div(2 * Math.PI, v.w!),
+            '2π/{w}',
+            'One turn, 2π radians, at ω radians a second.',
+          ],
+          w: [(v) => div(2 * Math.PI, v.T!), '2π/{T}', 'One turn, 2π radians, in one period.'],
+        }),
+        product('v', 'r', 'w', 'v = rω', [
+          'Each radian turned moves the rim one radius along.',
+          'Divide the rim speed by the angular speed.',
+          'Divide the rim speed by the radius.',
+        ]),
+      ),
+      example: { r, N, w, T: (2 * Math.PI) / w, v: r * w },
+      startWith: ['r', 'N'],
+      representation: {
+        kind: 'circularMotion',
+        mode: 'string',
+        radius: 'r',
+        speed: 'v',
+        period: 'T',
+      },
+      pictureLabels: ['N', 'w'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [u, a, t] = [3, 2, 4];
+    const d = u * t + 0.5 * a * t * t;
+    return {
+      id: 's.11.rotation~angular-acceleration',
+      title: 'A wheel speeding up',
+      use: 'Use this for “A fan turning at 3 rad/s speeds up at 2 rad/s² for 4 s. How fast is it turning, and how many turns does it make?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The angular acceleration α is constant.',
+        'These are the straight-line motion equations with θ, ω and α in place of x, v and a.',
+        'The area under the ω–t line is the angle turned; one turn is 2π radians.',
+      ],
+      variables: [
+        q('u', 'ω₀', 'Starting angular speed', 'rad/s', -1000, 1000, 0.01),
+        q('a', 'α', 'Angular acceleration', 'rad/s²', -500, 500, 0.01),
+        q('t', 't', 'Time', 's', 0.01, 600, 0.01),
+        q('w', 'ω', 'Angular speed', 'rad/s', -1e5, 1e5, 0.01),
+        q('d', 'Δθ', 'Angle turned', 'rad', -1e7, 1e7, 0.01),
+        q('n', 'n', 'Turns', undefined, -1e6, 1e6, 0.001),
+      ],
+      ...rules(
+        rule('ω = ω₀ + αt', '{w} = {u} + {a} × {t}', (v) => v.w! - v.u! - v.a! * v.t!, {
+          w: [
+            (v) => v.u! + v.a! * v.t!,
+            '{u} + {a} × {t}',
+            'Start at ω₀ and add α for every second.',
+          ],
+          u: [(v) => v.w! - v.a! * v.t!, '{w} − {a} × {t}', 'Take off α for every second.'],
+          a: [
+            (v) => div(v.w! - v.u!, v.t!),
+            '({w} − {u})/{t}',
+            'The slope of the ω–t line: the change in angular speed over the time.',
+          ],
+          t: [
+            (v) => div(v.w! - v.u!, v.a!),
+            '({w} − {u})/{a}',
+            'Divide the change in angular speed by the change each second.',
+          ],
+        }),
+        rule(
+          'Δθ = ω₀t + ½αt²',
+          '{d} = {u} × {t} + ½ × {a} × {t}²',
+          (v) => v.d! - v.u! * v.t! - 0.5 * v.a! * v.t! * v.t!,
+          {
+            d: [
+              (v) => v.u! * v.t! + 0.5 * v.a! * v.t! * v.t!,
+              '{u} × {t} + ½ × {a} × {t}²',
+              'The angle at the starting speed, plus the extra the steady α adds.',
+            ],
+            u: [
+              (v) => div(v.d! - 0.5 * v.a! * v.t! * v.t!, v.t!),
+              '({d} − ½ × {a} × {t}²)/{t}',
+              'Take off what α added, then divide by the time.',
+            ],
+            a: [
+              (v) => div(2 * (v.d! - v.u! * v.t!), v.t! * v.t!),
+              '2 × ({d} − {u} × {t})/({t}²)',
+              'Take off the angle at ω₀, then undo ½t².',
+            ],
+          },
+        ),
+        rule('n = Δθ/2π', '{n} = {d}/(2π)', (v) => 2 * Math.PI * v.n! - v.d!, {
+          n: [(v) => v.d! / (2 * Math.PI), '{d}/(2π)', 'Each turn is 2π radians.'],
+          d: [(v) => 2 * Math.PI * v.n!, '2π × {n}', 'Each turn is 2π radians.'],
+        }),
+      ),
+      example: { u, a, t, w: u + a * t, d, n: d / (2 * Math.PI) },
+      startWith: ['u', 'a', 't'],
+      representation: {
+        kind: 'motionGraph',
+        graph: 'speed',
+        time: 't',
+        acceleration: 'a',
+        speed: 'w',
+        start: 'u',
+        distance: 'd',
+        kinematics: { view: 'velocity', strobe: false },
+      },
+      pictureLabels: ['n'],
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [c, m, r, t] = [0.5, 2, 0.5, 3];
+    const I = c * m * r * r;
+    return {
+      id: 's.11.rotation~rotational-inertia',
+      title: 'Torque and rotational inertia',
+      use: 'Use this for “A 3 N·m torque turns a 2 kg disk of radius 0.5 m. What is its angular acceleration? What if it were a hoop?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Rotational inertia I is how hard a body is to spin up: mass farther from the axis counts more.',
+        'I = cmr² about the center: c = 1 for a hoop, ½ for a solid disk, 0.4 for a solid ball.',
+        'Newton’s second law for turning: τ = Iα, with α in rad/s².',
+      ],
+      variables: [
+        q('c', 'c', 'Shape factor', undefined, 0.4, 1, 0.1, { allowed: [1, 0.5, 0.4] }),
+        q('m', 'm', 'Mass', 'kg', 0.001, 1e5, 0.001),
+        q('r', 'r', 'Radius', 'm', 0.001, 100, 0.001),
+        q('I', 'I', 'Rotational inertia', 'kg·m²', 0, 1e9, 0.0001),
+        TORQUE,
+        q('a', 'α', 'Angular acceleration', 'rad/s²', 0, 1e6, 0.001),
+      ],
+      ...rules(
+        rule('I = cmr²', '{I} = {c} × {m} × {r}²', (v) => v.I! - v.c! * v.m! * v.r! * v.r!, {
+          I: [
+            (v) => v.c! * v.m! * v.r! * v.r!,
+            '{c} × {m} × {r}²',
+            'The shape factor times the mass times the radius squared.',
+          ],
+          m: [(v) => div(v.I!, v.c! * v.r! * v.r!), '{I}/({c} × {r}²)', 'Divide I by c × r².'],
+          r: [
+            (v) => {
+              const x = div(v.I!, v.c! * v.m!);
+              return x === undefined || x < 0 ? undefined : Math.sqrt(x);
+            },
+            '√({I}/({c} × {m}))',
+            'Divide I by c × m, then take the square root.',
+          ],
+          c: [(v) => div(v.I!, v.m! * v.r! * v.r!), '{I}/({m} × {r}²)', 'Divide I by m × r².'],
+        }),
+        product('t', 'I', 'a', 'τ = Iα', [
+          'The torque is the rotational inertia times the angular acceleration.',
+          'Divide the torque by the angular acceleration.',
+          'Divide the torque by the rotational inertia: a bigger I spins up more slowly.',
+        ]),
+      ),
+      example: { c, m, r, I, t, a: t / I },
+      startWith: ['c', 'm', 'r', 't'],
+      representation: {
+        kind: 'table',
+        sweep: 'c',
+        output: 'a',
+        params: ['m', 'r', 't'],
+        rows: [1, 0.5, 0.4],
+        rowNames: ['Hoop', 'Solid disk', 'Solid ball'],
+      },
+      pictureLabels: ['I'],
+    } satisfies ModuleDef;
+  })(),
+];
+
 export const SCIENCE_11_MODULES: ModuleDef[] = [
   ...kinematicsPages,
   ...projectilePages,
   ...dynamicsPages,
   ...circularPages,
+  ...rotationPages,
   ...momentumPages,
   ...energyPages,
   ...thermoPages,
