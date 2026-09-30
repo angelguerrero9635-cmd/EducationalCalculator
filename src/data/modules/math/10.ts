@@ -1660,11 +1660,377 @@ const ARC_SECTOR: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.volume-derivations ─────────────────────────────────────────────────
+
+const cm = (id: string, symbol: string, name: string, max = 1000) =>
+  len(id, symbol, name, max, { unit: 'cm', units: ['mm', 'cm', 'm'] });
+const cm2 = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0, 1e8, { unit: 'cm²', units: ['mm²', 'cm²', 'm²'], pi: true });
+const cm3 = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'], pi: true });
+/** V = πr²h, solved for any one. */
+const cylinderVolume = rule(
+  'V = πr²h',
+  '{V} = π × {r}² × {h}',
+  {
+    V: [
+      (v) => Math.PI * v.r! ** 2 * v.h!,
+      'π × {r}² × {h}',
+      'The base’s area πr² times the height.',
+    ],
+    h: [(v) => quot(v.V!, Math.PI * v.r! ** 2), '{V} ÷ (π × {r}²)', 'Divide by the base’s area.'],
+    r: [
+      (v) => root(quot(v.V!, Math.PI * v.h!) ?? NaN),
+      '√({V} ÷ (π × {h}))',
+      'Divide by π × h, then take the square root.',
+    ],
+  },
+  (v) => v.V! - Math.PI * v.r! ** 2 * v.h!,
+);
+/** ℓ = √(r² + h²) for a cone. */
+const coneSlant = pythagoras(
+  'r',
+  'h',
+  'l',
+  'The slant height is the long side of the right triangle with legs r and h.',
+);
+
+const VOLUME: ModuleDef[] = [
+  page({
+    id: 'm.10.volume-derivations',
+    assumptions: [
+      'A cylinder is a stack of circles, each with area πr², so V = πr²h.',
+      'Cavalieri: solids with equal cross-sections at every height have equal volumes.',
+      'So a leaning stack keeps the same volume as a straight one.',
+    ],
+    variables: [cm('r', 'r', 'Radius'), cm('h', 'h', 'Height'), cm3('V', 'V', 'Volume')],
+    rules: [cylinderVolume],
+    example: { r: 3, h: 8, V: 72 * Math.PI },
+    startWith: ['r', 'h'],
+    unitSystems: ['metric'],
+    sliders: true,
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cylinder',
+      radius: 'r',
+      height: 'h',
+      volume: 'V',
+      cavalieri: true,
+      extent: 6,
+    },
+  }),
+  page({
+    id: 'm.10.volume-derivations~cylinder-surface',
+    title: 'Surface area of a cylinder',
+    use: 'Use this for “Find the surface area of a can with radius 4 cm and height 7 cm.”',
+    assumptions: [
+      'Unrolled, a cylinder is two circles and a rectangle.',
+      'The rectangle wraps the circle: it is as long as the circumference 2πr and as tall as h.',
+      'So S = 2πr² + 2πrh.',
+    ],
+    variables: [cm('r', 'r', 'Radius'), cm('h', 'h', 'Height'), cm2('S', 'S', 'Surface area')],
+    rules: [
+      rule(
+        'S = 2πr² + 2πrh',
+        '{S} = 2 × π × {r}² + 2 × π × {r} × {h}',
+        {
+          S: [
+            (v) => 2 * Math.PI * v.r! ** 2 + 2 * Math.PI * v.r! * v.h!,
+            '2 × π × {r}² + 2 × π × {r} × {h}',
+            'Two circles and a rectangle 2πr long and h tall.',
+          ],
+          h: [
+            (v) => quot(v.S! - 2 * Math.PI * v.r! ** 2, 2 * Math.PI * v.r!),
+            '({S} − 2 × π × {r}²) ÷ (2 × π × {r})',
+            'Take away the two circles; the rectangle is 2πr long.',
+          ],
+          r: [
+            (v) => (Math.sqrt(v.h! ** 2 + (2 * v.S!) / Math.PI) - v.h!) / 2,
+            '(√({h}² + 2 × {S} ÷ π) − {h}) ÷ 2',
+            'Solve 2πr² + 2πhr = S for the positive r (the quadratic formula).',
+          ],
+        },
+        (v) => v.S! - 2 * Math.PI * v.r! ** 2 - 2 * Math.PI * v.r! * v.h!,
+      ),
+    ],
+    example: { r: 4, h: 7, S: 88 * Math.PI },
+    startWith: ['r', 'h'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cylinder',
+      radius: 'r',
+      height: 'h',
+      surface: 'S',
+      net: true,
+      extent: 6,
+    },
+  }),
+  page({
+    id: 'm.10.volume-derivations~cone',
+    title: 'Volume of a cone',
+    use: 'Use this for “A cone has radius 3 cm and height 4 cm. Find its volume.”',
+    assumptions: [
+      'A cone holds one third of the cylinder with the same base and height.',
+      'So V = ⅓πr²h, with h the straight-up height, not the slant.',
+    ],
+    variables: [cm('r', 'r', 'Radius'), cm('h', 'h', 'Height'), cm3('V', 'V', 'Volume')],
+    rules: [
+      rule(
+        'V = πr²h/3',
+        '{V} = π × {r}² × {h} ÷ 3',
+        {
+          V: [
+            (v) => (Math.PI * v.r! ** 2 * v.h!) / 3,
+            'π × {r}² × {h} ÷ 3',
+            'One third of the cylinder with the same base and height.',
+          ],
+          h: [
+            (v) => quot(3 * v.V!, Math.PI * v.r! ** 2),
+            '3 × {V} ÷ (π × {r}²)',
+            'Undo the third, then divide by the base’s area.',
+          ],
+          r: [
+            (v) => root(quot(3 * v.V!, Math.PI * v.h!) ?? NaN),
+            '√(3 × {V} ÷ (π × {h}))',
+            'Undo the third, divide by π × h, then take the square root.',
+          ],
+        },
+        (v) => v.V! - (Math.PI * v.r! ** 2 * v.h!) / 3,
+      ),
+    ],
+    example: { r: 3, h: 4, V: 12 * Math.PI },
+    startWith: ['r', 'h'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cone',
+      radius: 'r',
+      height: 'h',
+      volume: 'V',
+      extent: 5,
+    },
+  }),
+  page({
+    id: 'm.10.volume-derivations~cone-surface',
+    title: 'Surface area of a cone',
+    use: 'Use this for “A cone has radius 3 cm and height 4 cm. Find its slant height and surface area.”',
+    assumptions: [
+      'The slant height ℓ is the hypotenuse of the right triangle with legs r and h.',
+      'Unrolled, the side is a sector of radius ℓ whose arc wraps the base; its area is πrℓ.',
+      'So S = πr² + πrℓ.',
+    ],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      cm('h', 'h', 'Height'),
+      cm('l', 'ℓ', 'Slant height', 1500),
+      cm2('S', 'S', 'Surface area'),
+    ],
+    rules: [
+      coneSlant,
+      rule(
+        'S = πr² + πrℓ',
+        '{S} = π × {r}² + π × {r} × {l}',
+        {
+          S: [
+            (v) => Math.PI * v.r! ** 2 + Math.PI * v.r! * v.l!,
+            'π × {r}² + π × {r} × {l}',
+            'The base circle and the sector, whose area is πrℓ.',
+          ],
+          l: [
+            (v) => quot(v.S! - Math.PI * v.r! ** 2, Math.PI * v.r!),
+            '({S} − π × {r}²) ÷ (π × {r})',
+            'Take away the base; the sector is πrℓ.',
+          ],
+        },
+        (v) => v.S! - Math.PI * v.r! ** 2 - Math.PI * v.r! * v.l!,
+      ),
+    ],
+    example: { r: 3, h: 4, l: 5, S: 24 * Math.PI },
+    startWith: ['r', 'h'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cone',
+      radius: 'r',
+      height: 'h',
+      slant: 'l',
+      surface: 'S',
+      net: true,
+      extent: 5,
+    },
+  }),
+  page({
+    id: 'm.10.volume-derivations~pyramid',
+    title: 'Volume of a pyramid',
+    use: 'Use this for “A square pyramid has base side 6 cm and height 10 cm. Find its volume.”',
+    assumptions: [
+      'The base is a square with side b; h is the straight-up height to the tip.',
+      'A pyramid holds one third of the prism with the same base and height: V = ⅓b²h.',
+      'Level cuts are smaller squares, shrinking evenly to the tip.',
+    ],
+    variables: [
+      cm('b', 'b', 'Base side'),
+      cm('h', 'h', 'Height'),
+      num('V', 'V', 'Volume', 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'] }),
+    ],
+    rules: [
+      rule(
+        'V = b²h/3',
+        '{V} = {b}² × {h} ÷ 3',
+        {
+          V: [
+            (v) => (v.b! ** 2 * v.h!) / 3,
+            '{b}² × {h} ÷ 3',
+            'One third of the prism with the same base and height.',
+          ],
+          h: [
+            (v) => quot(3 * v.V!, v.b! ** 2),
+            '3 × {V} ÷ {b}²',
+            'Undo the third, then divide by the base’s area.',
+          ],
+          b: [
+            (v) => root(quot(3 * v.V!, v.h!) ?? NaN),
+            '√(3 × {V} ÷ {h})',
+            'Undo the third, divide by h, then take the square root.',
+          ],
+        },
+        (v) => v.V! - (v.b! ** 2 * v.h!) / 3,
+      ),
+    ],
+    example: { b: 6, h: 10, V: 120 },
+    startWith: ['b', 'h'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'crossSection',
+      solid: 'pyramid',
+      length: 'b',
+      height: 'h',
+      volume: 'V',
+    },
+  }),
+  page({
+    id: 'm.10.volume-derivations~sphere',
+    title: 'Surface area and volume of a sphere',
+    use: 'Use this for “A ball has radius 5 cm. Find its surface area and volume.”',
+    assumptions: [
+      'The surface area is four times a great circle: S = 4πr².',
+      'The volume is V = 4/3πr³.',
+      'Given S or V, work back to the radius first.',
+    ],
+    variables: [cm('r', 'r', 'Radius'), cm2('S', 'S', 'Surface area'), cm3('V', 'V', 'Volume')],
+    rules: [
+      rule(
+        'S = 4πr²',
+        '{S} = 4 × π × {r}²',
+        {
+          S: [(v) => 4 * Math.PI * v.r! ** 2, '4 × π × {r}²', 'Four great circles, each πr².'],
+          r: [
+            (v) => root(v.S! / (4 * Math.PI)),
+            '√({S} ÷ (4 × π))',
+            'Divide by 4π, then take the square root.',
+          ],
+        },
+        (v) => v.S! - 4 * Math.PI * v.r! ** 2,
+      ),
+      rule(
+        'V = 4πr³/3',
+        '{V} = 4 × π × {r}³ ÷ 3',
+        {
+          V: [(v) => (4 * Math.PI * v.r! ** 3) / 3, '4 × π × {r}³ ÷ 3', 'The volume of a sphere.'],
+          r: [
+            (v) => Math.cbrt((3 * v.V!) / (4 * Math.PI)),
+            '∛(3 × {V} ÷ (4 × π))',
+            'Undo 4/3 π, then take the cube root.',
+          ],
+        },
+        (v) => v.V! - (4 * Math.PI * v.r! ** 3) / 3,
+      ),
+    ],
+    example: { r: 5, S: 100 * Math.PI, V: (500 * Math.PI) / 3 },
+    startWith: ['r'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'sphere',
+      radius: 'r',
+      surface: 'S',
+      volume: 'V',
+      net: true,
+      extent: 4,
+    },
+  }),
+  page({
+    id: 'm.10.volume-derivations~cross-section',
+    title: 'A level cut of a cone',
+    use: 'Use this for “A cone has radius 6 cm and height 9 cm. What is the area of a level cut 3 cm up?”',
+    assumptions: [
+      'A cut parallel to the base is a circle.',
+      'Its radius shrinks evenly to 0 at the tip: ρ = r(h − z) ÷ h at height z.',
+      'The small cone above the cut is similar to the whole cone.',
+    ],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      cm('h', 'h', 'Height'),
+      num('z', 'z', 'Height of the cut', 0, 1000, { unit: 'cm' }),
+      num('p', 'ρ', 'Radius of the cut', 0, 1000, { unit: 'cm' }),
+      cm2('A', 'A', 'Area of the cut'),
+    ],
+    rules: [
+      limit(
+        'the plane cuts the cone',
+        '{z} is at most {h}',
+        (v) => v.z! <= v.h!,
+        'The cut must be between the base and the tip.',
+      ),
+      rule(
+        'ρ = r(h − z)/h',
+        '{p} = {r} × ({h} − {z}) ÷ {h}',
+        {
+          p: [
+            (v) => (v.z! > v.h! ? undefined : (v.r! * (v.h! - v.z!)) / v.h!),
+            '{r} × ({h} − {z}) ÷ {h}',
+            'The radius left at that height: similar cones.',
+          ],
+          z: [
+            (v) => v.h! * (1 - v.p! / v.r!),
+            '{h} × (1 − {p} ÷ {r})',
+            'How far up the radius has shrunk to ρ.',
+          ],
+        },
+        (v) => v.p! - (v.r! * (v.h! - v.z!)) / v.h!,
+      ),
+      rule(
+        'A = πρ²',
+        '{A} = π × {p}²',
+        {
+          A: [(v) => Math.PI * v.p! ** 2, 'π × {p}²', 'The area of the circle.'],
+          p: [(v) => root(v.A! / Math.PI), '√({A} ÷ π)', 'Undo the square.'],
+        },
+        (v) => v.A! - Math.PI * v.p! ** 2,
+      ),
+    ],
+    example: { r: 6, h: 9, z: 3, p: 4, A: 16 * Math.PI },
+    startWith: ['r', 'h', 'z'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'crossSection',
+      solid: 'cone',
+      length: 'r',
+      height: 'h',
+      cut: 'base',
+      at: 'z',
+      area: 'A',
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...SIMILARITY,
   ...SPECIAL,
   ...TRIG,
   ...COORDINATES,
   ...ARC_SECTOR,
+  ...VOLUME,
   ...CONDITIONAL,
 ];
