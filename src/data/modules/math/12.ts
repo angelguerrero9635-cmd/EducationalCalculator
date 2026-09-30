@@ -5848,14 +5848,36 @@ const zeroVar = V('z', 'z', 'Zero of the top', {
   derived: true,
   hidden: true,
 });
-/** a ≠ 0 (the graph is drawn from the top's zero). */
-const topHasX = limit(
-  'a ≠ 0',
-  'The top {a}x + b has an x term',
-  ['a'],
-  (v) => v.a !== 0,
-  'This page draws the graph from the zero of the top, so the top needs an x term (a not 0).',
+/** The graph's scale: the top's x term, or the number alone when the top has none. */
+const leadVar = V('L', 'L', 'Leading number of the top', {
+  min: -1000,
+  max: 1000,
+  step: 0.01,
+  derived: true,
+  hidden: true,
+});
+const topLead = hide(
+  derive(
+    'L = a, or b when a = 0',
+    '{L} = {a} or {b}',
+    'L',
+    ['a', 'b'],
+    (v) => (v.a !== 0 ? v.a! : v.b!),
+    '{a}',
+    'The top’s leading number, to draw the graph.',
+  ),
 );
+/** The top ax + b is not 0 (then there is nothing to split). */
+const topNotZero = limit(
+  'top ≠ 0',
+  'The top {a}x + {b} is not 0',
+  ['a', 'b'],
+  (v) => v.a !== 0 || v.b !== 0,
+  'The top is 0, so the fraction is 0 everywhere: there is nothing to split.',
+);
+
+/** x² + jx + k at x. */
+const quadAt = (v: Values, x: number) => x ** 2 + v.j! * x + v.k!;
 
 const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
   // ── m.12.partial-fractions (A-APR.7 carried on) ──
@@ -5865,15 +5887,17 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       '(ax + b) ÷ ((x − p)(x − q)) = A ÷ (x − p) + B ÷ (x − q): one fraction for each linear factor.',
       'Cover-up: multiply by (x − p) and put x = p, so the B term drops out and A is left.',
       'Check by adding the two fractions back over the common bottom.',
+      'If the top’s degree is not less than the bottom’s, divide first and split the remainder.',
     ],
     variables: [
       coef('a', 'a', 'Number before x on top'),
       coef('b', 'b', 'Number on top'),
       coef('p', 'p', 'Zero of the first factor', 100),
       coef('q', 'q', 'Zero of the second factor', 100),
-      coef('A', 'A', 'Top of the first fraction', 1000000),
-      coef('B', 'B', 'Top of the second fraction', 1000000),
+      coef('A', 'A', 'Top of the first fraction', 1000000, { fraction: 200 }),
+      coef('B', 'B', 'Top of the second fraction', 1000000, { fraction: 200 }),
       zeroVar,
+      leadVar,
     ],
     ...rels(
       rel(
@@ -5919,15 +5943,16 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         (v) => v.p !== v.q,
         'p = q is a repeated factor, (x − p)²: it needs A ÷ (x − p) + B ÷ (x − p)², the repeated-factor page.',
       ),
-      topHasX,
+      topNotZero,
       topZero,
+      topLead,
     ),
-    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3, z: -0.2 },
+    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3, z: -0.2, L: 5 },
     startWith: ['a', 'b', 'p', 'q'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'a',
+      a: 'L',
       zeros: ['z'],
       poles: ['p', 'q'],
       marks: ['asymptotes'],
@@ -5950,6 +5975,7 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       coef('A', 'A', 'Top over (x − p)'),
       coef('B', 'B', 'Top over (x − p)²', 200000),
       zeroVar,
+      leadVar,
     ],
     ...rels(
       rel('A = a', '{A} = {a}', ['A', 'a'], (v) => v.A! - v.a!, {
@@ -5971,15 +5997,16 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
           p: [(v) => div(v.B! - v.b!, v.a!), '({B} − {b}) ÷ {a}', 'Take b from B, divide by a.'],
         },
       ),
-      topHasX,
+      topNotZero,
       topZero,
+      topLead,
     ),
-    example: { a: 3, b: -1, p: 2, A: 3, B: 5, z: 1 / 3 },
+    example: { a: 3, b: -1, p: 2, A: 3, B: 5, z: 1 / 3, L: 3 },
     startWith: ['a', 'b', 'p'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'a',
+      a: 'L',
       zeros: ['z'],
       poles: ['p', 'p'],
       marks: ['asymptotes'],
@@ -5991,16 +6018,22 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
     title: 'A quadratic factor',
     use: 'Use this for “Write (3x² − 2x + 3) ÷ ((x − 1)(x² + 1)) as partial fractions.”',
     assumptions: [
-      'A factor x² + k that doesn’t split gets a linear top: A ÷ (x − p) + (Bx + C) ÷ (x² + k).',
+      'A factor x² + jx + k that doesn’t split (j² < 4k) gets a linear top: A ÷ (x − p) + (Bx + C) ÷ (x² + jx + k).',
       'Cover up (x − p) and put x = p for A; then match the x² and x terms for B and C.',
       'The number terms must match too: Ak − Cp = c is the check.',
     ],
     variables: [
-      coef('a', 'a', 'Number before x² on top'),
-      coef('b', 'b', 'Number before x on top'),
-      coef('c', 'c', 'Number on top'),
+      coef('a', 'a', 'Number before x² on top', 1000, { group: 'top' }),
+      coef('b', 'b', 'Number before x on top', 1000, { group: 'top' }),
+      coef('c', 'c', 'Number on top', 1000, { group: 'top' }),
       coef('p', 'p', 'Zero of the linear factor', 100),
-      V('k', 'k', 'Number in x² + k', { min: 0.01, max: 100, step: 0.01 }),
+      coef('j', 'j', 'Number before x in the quadratic factor', 20, { group: 'quadratic' }),
+      V('k', 'k', 'Number alone in the quadratic factor', {
+        min: 0.01,
+        max: 100,
+        step: 0.01,
+        group: 'quadratic',
+      }),
       coef('A', 'A', 'Top over (x − p)', 1000000),
       coef('B', 'B', 'Number before x over x² + k', 1000000),
       coef('C', 'C', 'Number over x² + k', 100000000),
@@ -6008,13 +6041,20 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       coef('y', 'y', 'The fraction’s value at x', 1e12, { derived: true }),
     ],
     ...rels(
+      limit(
+        'j² < 4k',
+        '{j}² is less than 4 × {k}',
+        ['j', 'k'],
+        (v) => v.j! ** 2 < 4 * v.k!,
+        'With j² ≥ 4k the quadratic splits into linear factors: use one fraction for each of them instead.',
+      ),
       derive(
-        'A = (ap² + bp + c) ÷ (p² + k)',
-        '{A} = ({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {k})',
+        'A = (ap² + bp + c) ÷ (p² + jp + k)',
+        '{A} = ({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {j} × {p} + {k})',
         'A',
-        ['a', 'p', 'b', 'c', 'k'],
-        (v) => div(v.a! * v.p! ** 2 + v.b! * v.p! + v.c!, v.p! ** 2 + v.k!),
-        '({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {k})',
+        ['a', 'p', 'b', 'c', 'j', 'k'],
+        (v) => div(v.a! * v.p! ** 2 + v.b! * v.p! + v.c!, v.p! ** 2 + v.j! * v.p! + v.k!),
+        '({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {j} × {p} + {k})',
         'Cover up (x − p) and put x = p: the top over what is left of the bottom.',
       ),
       derive(
@@ -6024,17 +6064,17 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         ['a', 'A'],
         (v) => v.a! - v.A!,
         '{a} − {A}',
-        'The x² terms: A(x² + k) + (Bx + C)(x − p) has (A + B)x², so A + B = a.',
+        'The x² terms: A(x² + jx + k) + (Bx + C)(x − p) has (A + B)x², so A + B = a.',
       ),
       withStep(
         derive(
-          'C = b + Bp',
-          '{C} = {b} + {B} × {p}',
+          'C = b + Bp − Aj',
+          '{C} = {b} + {B} × {p} − {A} × {j}',
           'C',
-          ['b', 'B', 'p'],
-          (v) => v.b! + v.B! * v.p!,
-          '{b} + {B} × {p}',
-          'The x terms: (Bx + C)(x − p) gives (C − Bp)x, so C − Bp = b.',
+          ['b', 'B', 'p', 'A', 'j'],
+          (v) => v.b! + v.B! * v.p! - v.A! * v.j!,
+          '{b} + {B} × {p} − {A} × {j}',
+          'The x terms: Ajx from the first fraction and (C − Bp)x from the second, so Aj + C − Bp = b.',
         ),
         'C',
         {
@@ -6046,15 +6086,14 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       ),
       withStep(
         rel(
-          'y = (ax² + bx + c) ÷ ((x − p)(x² + k))',
-          '{y} = ({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {k}))',
-          ['y', 'a', 'x', 'b', 'c', 'p', 'k'],
-          (v) =>
-            v.y! * (v.x! - v.p!) * (v.x! ** 2 + v.k!) - (v.a! * v.x! ** 2 + v.b! * v.x! + v.c!),
+          'y = (ax² + bx + c) ÷ ((x − p)(x² + jx + k))',
+          '{y} = ({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {j} × {x} + {k}))',
+          ['y', 'a', 'x', 'b', 'c', 'p', 'j', 'k'],
+          (v) => v.y! * (v.x! - v.p!) * quadAt(v, v.x!) - (v.a! * v.x! ** 2 + v.b! * v.x! + v.c!),
           {
             y: [
-              (v) => div(v.a! * v.x! ** 2 + v.b! * v.x! + v.c!, (v.x! - v.p!) * (v.x! ** 2 + v.k!)),
-              '({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {k}))',
+              (v) => div(v.a! * v.x! ** 2 + v.b! * v.x! + v.c!, (v.x! - v.p!) * quadAt(v, v.x!)),
+              '({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {j} × {x} + {k}))',
               'The fraction at one x; the two partial fractions add to the same number there.',
             ],
           },
@@ -6067,20 +6106,30 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         ),
         'y',
         {
+          // The top and the bottom once each, then the quotient.
+          work: (v) => {
+            const top = v.a! * v.x! ** 2 + v.b! * v.x! + v.c!;
+            const bottom = (v.x! - v.p!) * quadAt(v, v.x!);
+            return [
+              `${shown(v.a!)} × ${shown(v.x! ** 2)} + ${par(v.b!)} × ${par(v.x!)} + ${par(v.c!)} = ${fmt(top)}`,
+              `${par(v.x! - v.p!)} × ${par(quadAt(v, v.x!))} = ${fmt(bottom)}`,
+              `y = ${par(top)} ÷ ${par(bottom)}`,
+            ];
+          },
           note: (v) =>
-            [v.A, v.B, v.C, v.x, v.p, v.k].some((x) => x === undefined)
+            [v.A, v.B, v.C, v.x, v.p, v.j, v.k].some((x) => x === undefined)
               ? ''
-              : `→ the partial fractions: ${fmt(v.A!)} ÷ ${par(v.x! - v.p!)} + ${par(v.B! * v.x! + v.C!)} ÷ ${fmt(v.x! ** 2 + v.k!)} = ${fmt(v.A! / (v.x! - v.p!) + (v.B! * v.x! + v.C!) / (v.x! ** 2 + v.k!))}`,
+              : `→ the partial fractions: ${fmt(v.A!)} ÷ ${par(v.x! - v.p!)} + ${par(v.B! * v.x! + v.C!)} ÷ ${fmt(quadAt(v, v.x!))} = ${fmt(v.A! / (v.x! - v.p!) + (v.B! * v.x! + v.C!) / quadAt(v, v.x!))}`,
         },
       ),
     ),
-    example: { a: 3, b: -2, c: 3, p: 1, k: 1, A: 2, B: 1, C: -1, x: 2, y: 11 / 5 },
-    startWith: ['a', 'b', 'c', 'p', 'k', 'x'],
+    example: { a: 3, b: -2, c: 3, p: 1, j: 0, k: 1, A: 2, B: 1, C: -1, x: 2, y: 11 / 5 },
+    startWith: ['a', 'b', 'c', 'p', 'j', 'k', 'x'],
     representation: {
       kind: 'table',
       sweep: 'x',
       output: 'y',
-      params: ['a', 'b', 'c', 'p', 'k'],
+      params: ['a', 'b', 'c', 'p', 'j', 'k'],
       rows: (v: Values) => [-2, -1, 0, 1, 2, 3, 4].filter((x) => x !== v.p).slice(0, 5),
     },
   },

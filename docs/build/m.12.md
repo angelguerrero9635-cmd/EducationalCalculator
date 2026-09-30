@@ -248,7 +248,7 @@ None: every planned page is built, some with an interim picture (below).
   `~standard-error` takes s ≥ 0.001 and sₓ ≤ 10,000 so SE_b stays in range.
 - **The F distribution** is `fTail` in `math/12.ts` (an incomplete beta, a copy of statMath's
   private one), exported for the Fcdf phrase in `phrasesM12.ts`.
-- **Partial fractions need an x term on top (a ≠ 0)** on the two graph pages: the rational
+- **Partial fractions needed an x term on top (a ≠ 0)** (removed in the lesson-review fixes): the rational
   graph is drawn from the top's zero. A number alone on top waits on a picture need (below).
 
 ### Shared needs found while building
@@ -304,3 +304,11 @@ None: every planned page is built, some with an interim picture (below).
   C′ = 3 − √2 ≈ 1.5858; the report's 2 ± √2 was a slip, A′ + C′ = A + C = 6), `unitCircle`
   interim. The sin/cos choice on the main page became this separate page: a choice box is not
   an input kind.
+- `m.12.partial-fractions` main and `~repeated`: the a ≠ 0 limit is gone, so a number alone on
+  top works (1 ÷ ((x − 1)(x + 1))); a hidden L (a, or b when a = 0) scales the graph, and a top
+  of 0 is refused with the reason. A and B on the main page show as fractions (`fraction: 200`,
+  1001/3). The main page's fourth assumption: divide first when the top's degree is not less.
+- `~quadratic`: the factor is x² + jx + k (j² < 4k, refused with the reason otherwise); A =
+  (ap² + bp + c) ÷ (p² + jp + k), B = a − A, C = b + Bp − Aj. The top's coefficients and the
+  quadratic's are grouped (8 values). The y step works the top and the bottom once each, then
+  the quotient.
