@@ -175,7 +175,12 @@ export function ChargePlates({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
                 <Line x1={xl} y1={bottom + 24} x2={xr} y2={bottom + 24} stroke={c.chartMuted} />
                 <Line x1={xl} y1={bottom + 18} x2={xl} y2={bottom + 30} stroke={c.chartMuted} />
                 <Line x1={xr} y1={bottom + 18} x2={xr} y2={bottom + 30} stroke={c.chartMuted} />
-                <SubLabel x={w / 2} y={bottom + 28} text={`d = ${shown(spec.gap, 'm')}`} w={w} />
+                <SubLabel
+                  x={w / 2}
+                  y={bottom + 28}
+                  text={`d = ${shown(spec.gap ?? 1, 'm')}`}
+                  w={w}
+                />
                 <ChartText
                   x={w - 6}
                   y={h - 6}

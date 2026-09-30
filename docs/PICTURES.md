@@ -118,6 +118,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | `powerLift`        | a crate hauled up h in t: stopwatch, W = mgh cut into J/s pieces      | Physics power (H102)                |
 | `photoelectric`    | light of λ on a metal: E = 1240/λ, electrons with E − φ, λ₀ strip     | Physics modern (H102)               |
 | `lightClock`       | light clock at rest and moving: the slant cΔt/2, γ; a rod L₀/γ        | Physics relativity (H102)           |
+| `torque`           | a wrench or door: arm r, F at θ, F⊥ = F sin θ dashed, τ = rF⊥         | Physics rotation (H107)             |
+| `rotor`            | hoop, disk, ball: I = cmr², τ = Iα; ω₀, ω; ω–t area; turn dials       | Physics rotation (H107)             |
+| `oscillator`       | spring and block by its x–t trace, ±A, v_max, ½kx² + ½mv²; hung       | Physics oscillations (H107)         |
+| `pendulum`         | a bob on L to a meter rule's scale, g named; T on a seconds strip     | Physics oscillations (H107)         |
+| `capacitor`        | plates ±Q on a battery, even field, κ slab; the Q–V line, ½CV²        | Physics potential (H107)            |
 | `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA     | Physics simple machines (H63)       |
 | `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot   | Physics thermodynamics (H64)        |
 | `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits   | Physics optics, telescopes (H66)    |
@@ -306,6 +311,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `freeBody`         | `displacement`, `work` (floor)           | d bracketed, F cos θ dashed; W = Fd cos θ in the caption (H102)               |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
+| `simpleMachine`    | `seesaw: { torque?, pivot? }`            | lever as a seesaw: F₁d₁ = F₂d₂ as curved arrows, Fₚ = F₁ + F₂ (H107)          |
+| `charges`          | `equipotentials: { potential, … }`       | dashed circles r/2, r, 2r with V = kq/r; q₀ on r with U = q₀V (H107)          |
+| `charges`          | plates `launch: { charge, mass }`        | a charge let go at a plate: strobed ∝ t², K = qΔV eV, v vs c/10 (H107)        |
+| `induction`        | `mode: 'charge'`, `coulombs`             | a moving charge: F = qvB sin θ along qv × B; square to B, r = mv/qB (H107)    |
 | `earthLayers`      | `mode: 'magnitude'`, `m1`, `m2`, …       | two seismograms to one scale; bars on a magnitude scale, 10^ΔM marked (H103)  |
 | `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | a ridge from above: polarity stripes mirrored, a rock at x km and t Ma (H103) |
 | `atmosphereLayers` | `mode: 'parcel'`, `temperature`, …       | a parcel cooling 10 °C/km, dew point 2 °C/km, meeting at a cloud base (H103)  |

@@ -26,6 +26,7 @@ import type { ChemDiagramSpec } from './typesHs2d';
 import type { Hs2fKindSpec } from './typesHs2f';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { Hs2cSpec } from './typesHs2c';
+import type { Hs3aSpec } from './typesHs3a';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1124,6 +1125,8 @@ export type Representation =
   | HskSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
   | Hs2cSpec
+  /** Grades 9–12 physics round 3, group H3A: torque, rotor, … (specs in typesHs3a.ts). */
+  | Hs3aSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
