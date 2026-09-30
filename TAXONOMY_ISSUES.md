@@ -44,6 +44,24 @@ and each strand's skills sit together within a grade.
 
 ## Resolved
 
+### Each college course in one field
+
+The side menu listed 16 engineering courses once for every field they were cross-listed in
+(51 extra rows), and Browse and search did the same. Each course is now in exactly one field,
+and `validateTaxonomy()` rejects a course with more than one:
+
+- **Classical (Engineering Mechanics):** Statics, Dynamics, Mechanics of Materials, Materials
+  Science, Engineering Programming, Engineering Graphics & CAD, Numerical Methods, Advanced
+  Solid Mechanics, Finite Element Analysis.
+- **Mechanical:** Engineering Thermodynamics, Fluid Mechanics, Heat Transfer.
+- **Electrical:** Control Systems, Circuit Analysis I, Signals & Systems.
+- **Computer:** Digital Logic Design.
+
+Courses that overlap in content across divisions stay separate, since each is taught as its own
+course: Engineering Thermodynamics, Chemical Engineering Thermodynamics and Thermal & Statistical
+Physics; Engineering Electromagnetics and Electromagnetic Theory; Hydraulics & Hydrology and
+Hydrology; Orbital Mechanics and Classical Mechanics.
+
 ### Grades 9–12 aligned with the high-school textbooks
 
 The grades 9–12 research (`research/textbooks/grades/9.md`–`12.md`, the source notes in
@@ -185,13 +203,8 @@ now one course in the order its textbooks teach it, titled in their words.
 - **Refresh links for prereqs in another subject.** `refreshLinks()` names the subject for every
   skill prereq ("Refresh: Grade 8 · Math"), so a Math skill linked from Science says so. The UI
   no longer adds the subject itself.
-- **Primary field of a cross-listed course.** The first entry in a course's `fields` is its home
-  field, and `Course.fields` documents that. The current order is deliberate: Classical
-  (Engineering Mechanics) leads for statics, dynamics and solids; Aerospace leads for thermal and
-  fluids courses; Electrical leads for circuits and signals.
-
-### Section 1 review (Kindergarten–Grade 2)
-
+- **Primary field of a cross-listed course.** Superseded: every course now has one field (see
+  "Each college course in one field").
 - **Titles above the grade's reading level:** 8 K–2 skills use the language reviewer's titles
   (for example "Add in any order or grouping").
 - **Standards with no skill:**

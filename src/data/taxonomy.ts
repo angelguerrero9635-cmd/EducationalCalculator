@@ -9,8 +9,8 @@
  *   Later grades never repeat it; they reference it in `prereqs`, which the UI
  *   renders as a "Refresh: Grade X" link (see refreshLinks()).
  * - K–12 prereqs must point to an EARLIER grade.
- * - Higher-ed courses shared across engineering disciplines are defined once and
- *   cross-listed via `fields` (same no-repeat principle).
+ * - Each higher-ed course is listed once, in one field (a course shared across
+ *   engineering disciplines lives in the one that teaches it first, often Classical).
  * - Run validateTaxonomy() in CI to enforce all of the above.
  */
 
@@ -559,28 +559,28 @@ export const COURSES: Course[] = [
   bio("anatomy-physiology", "Human Anatomy & Physiology", ["s.9.homeostasis"],
     ["Tissues", "Musculoskeletal system", "Nervous system", "Cardiovascular and respiratory systems"]),
 
-  // Engineering — shared core (defined once, cross-listed)
-  eng("statics", "Statics", ["classical", "aerospace", "mechanical", "civil", "bio"], ["he.physics.university-1", "he.math.calc-1"],
+  // Engineering — shared core (each in the one field that owns it)
+  eng("statics", "Statics", ["classical"], ["he.physics.university-1", "he.math.calc-1"],
     ["Force vectors and equilibrium", "Trusses and frames", "Centroids", "Moments of inertia", "Friction"]),
-  eng("dynamics", "Dynamics", ["classical", "aerospace", "mechanical", "civil"], ["he.engineering.statics", "he.math.calc-2"],
+  eng("dynamics", "Dynamics", ["classical"], ["he.engineering.statics", "he.math.calc-2"],
     ["Particle kinematics", "Kinetics of particles", "Work–energy and impulse–momentum", "Rigid-body dynamics"]),
-  eng("mechanics-of-materials", "Mechanics of Materials (Solid Mechanics I)", ["classical", "aerospace", "mechanical", "civil", "bio"], ["he.engineering.statics"],
+  eng("mechanics-of-materials", "Mechanics of Materials (Solid Mechanics I)", ["classical"], ["he.engineering.statics"],
     ["Stress and strain", "Axial loading", "Torsion", "Bending and shear", "Beam deflection", "Column buckling"]),
-  eng("materials-science", "Materials Science & Material Properties", ["classical", "aerospace", "mechanical", "civil", "chemical", "bio"], ["he.chemistry.gen-chem-1"],
+  eng("materials-science", "Materials Science & Material Properties", ["classical"], ["he.chemistry.gen-chem-1"],
     ["Crystal structures", "Defects and diffusion", "Phase diagrams", "Mechanical properties"]),
-  eng("thermodynamics", "Engineering Thermodynamics", ["aerospace", "mechanical"], ["he.physics.university-1", "he.math.calc-2"],
+  eng("thermodynamics", "Engineering Thermodynamics", ["mechanical"], ["he.physics.university-1", "he.math.calc-2"],
     ["Properties of pure substances", "First law", "Second law and entropy", "Power and refrigeration cycles"]),
-  eng("fluid-mechanics", "Fluid Mechanics", ["aerospace", "mechanical", "civil", "chemical"], ["he.physics.university-1", "he.math.diff-eq"],
+  eng("fluid-mechanics", "Fluid Mechanics", ["mechanical"], ["he.physics.university-1", "he.math.diff-eq"],
     ["Fluid statics", "Bernoulli equation", "Control-volume analysis", "Dimensional analysis", "Pipe flow", "Boundary layers"]),
-  eng("heat-transfer", "Heat Transfer", ["aerospace", "mechanical", "chemical"], ["he.engineering.thermodynamics", "he.math.diff-eq"],
+  eng("heat-transfer", "Heat Transfer", ["mechanical"], ["he.engineering.thermodynamics", "he.math.diff-eq"],
     ["Conduction", "Convection", "Radiation", "Heat exchangers"]),
-  eng("control-systems", "Control Systems", ["aerospace", "mechanical", "electrical"], ["he.math.diff-eq"],
+  eng("control-systems", "Control Systems", ["electrical"], ["he.math.diff-eq"],
     ["Laplace-domain modeling", "Transfer functions", "Stability and root locus", "Frequency response", "PID control"]),
-  eng("circuits-1", "Circuit Analysis I", ["electrical", "computer", "bio"], ["he.physics.university-2"],
+  eng("circuits-1", "Circuit Analysis I", ["electrical"], ["he.physics.university-2"],
     ["Ohm's and Kirchhoff's laws", "Node and mesh analysis", "Thévenin and Norton equivalents", "Op-amps", "RC and RL transients"]),
-  eng("digital-logic", "Digital Logic Design", ["electrical", "computer"], [],
+  eng("digital-logic", "Digital Logic Design", ["computer"], [],
     ["Number systems and Boolean algebra", "Combinational logic", "Sequential logic and flip-flops", "State machines"]),
-  eng("signals-systems", "Signals & Systems", ["electrical", "computer", "bio"], ["he.math.diff-eq"],
+  eng("signals-systems", "Signals & Systems", ["electrical"], ["he.math.diff-eq"],
     ["Continuous and discrete signals", "Convolution", "Fourier series and transforms", "Laplace and z-transforms", "Sampling"]),
 
   // Aerospace
@@ -677,16 +677,16 @@ export const COURSES: Course[] = [
   eng("networks", "Computer Networks", ["computer"], ["he.engineering.data-structures"],
     ["Layered models", "TCP/IP", "Routing", "Network performance"]),
 
-  // Classical (Engineering Mechanics) — shared core above is cross-listed; below are its own courses
-  eng("engineering-programming", "Engineering Programming (MATLAB/Python)", ["classical", "mechanical", "aerospace", "civil", "chemical", "bio"], ["he.math.calc-1"],
+  // Classical (Engineering Mechanics) — with most of the shared core above; below are its own courses
+  eng("engineering-programming", "Engineering Programming (MATLAB/Python)", ["classical"], ["he.math.calc-1"],
     ["Variables, arrays and control flow", "Vectorized computation", "Plotting and data import", "Scripting engineering calculations"]),
-  eng("cad-graphics", "Engineering Graphics & CAD", ["classical", "mechanical", "aerospace", "civil"], ["m.10.constructions"],
+  eng("cad-graphics", "Engineering Graphics & CAD", ["classical"], ["m.10.constructions"],
     ["Orthographic and isometric projection", "Dimensioning and GD&T basics", "Parametric solid modeling", "Assemblies and drawings"]),
-  eng("numerical-methods", "Numerical Methods for Engineers", ["classical", "mechanical", "aerospace", "civil", "chemical", "electrical"], ["he.engineering.engineering-programming", "he.math.diff-eq", "he.math.linear-algebra"],
+  eng("numerical-methods", "Numerical Methods for Engineers", ["classical"], ["he.engineering.engineering-programming", "he.math.diff-eq", "he.math.linear-algebra"],
     ["Root finding", "Solving linear systems", "Interpolation and curve fitting", "Numerical integration", "Numerical ODE solvers (Euler, Runge–Kutta)"]),
-  eng("advanced-solid-mechanics", "Advanced Solid Mechanics (Solid Mechanics II)", ["classical", "mechanical", "aerospace", "civil"], ["he.engineering.mechanics-of-materials", "he.math.linear-algebra"],
+  eng("advanced-solid-mechanics", "Advanced Solid Mechanics (Solid Mechanics II)", ["classical"], ["he.engineering.mechanics-of-materials", "he.math.linear-algebra"],
     ["Stress and strain tensors", "Generalized Hooke's law", "Energy methods", "Plasticity and failure criteria", "Plates and shells"]),
-  eng("finite-element-analysis", "Finite Element Analysis", ["classical", "mechanical", "aerospace", "civil"], ["he.engineering.numerical-methods", "he.engineering.mechanics-of-materials"],
+  eng("finite-element-analysis", "Finite Element Analysis", ["classical"], ["he.engineering.numerical-methods", "he.engineering.mechanics-of-materials"],
     ["Direct stiffness method", "Shape functions", "Truss, beam and 2D elements", "Meshing and convergence", "Interpreting FEA results"]),
 ];
 
@@ -771,6 +771,7 @@ export function validateTaxonomy() {
   for (const c of COURSES) {
     const known = new Set(HE_FIELDS[c.division].map((f) => f.id));
     for (const f of c.fields) if (!known.has(f)) errors.push(`${c.id}: unknown field ${f}`);
+    if (c.fields.length !== 1) errors.push(`${c.id}: listed in ${c.fields.length} fields (a course belongs to one)`);
     if (c.topics.length === 0) errors.push(`${c.id}: no topics`);
     const topics = new Set<string>();
     for (const t of c.topics) {
