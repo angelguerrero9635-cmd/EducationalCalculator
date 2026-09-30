@@ -278,6 +278,166 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Volcanoes, crustal deformation and mountain building (HS-ESS2-1, HS-ESS2-3) ──
+  {
+    kind: 'explore',
+    id: 's.12.volcanoes-mountains',
+    assumptions: [
+      'Silica makes magma sticky; sticky magma traps gas.',
+      'Trapped gas makes eruptions explosive.',
+    ],
+    figure: { kind: 'landforms' },
+    scenes: [
+      {
+        label: 'Shield volcano',
+        lines: [
+          'Runny basalt flows spread thin before they cool, building gentle slopes.',
+          'Eruptions are mostly quiet lava flows, as on Hawaii.',
+        ],
+        landform: { kind: 'shield' },
+      },
+      {
+        label: 'Composite volcano',
+        lines: [
+          'Layers of sticky lava and ash build a tall cone with steep sides.',
+          'Gas trapped in the sticky magma makes its eruptions explosive.',
+        ],
+        landform: { kind: 'composite' },
+      },
+      {
+        label: 'Cinder cone',
+        lines: [
+          'Gassy lava blasts into the air and falls as cinders, piling into a small, steep cone.',
+          'Lava often leaks out from its base.',
+        ],
+        landform: { kind: 'cinderCone' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.12.volcanoes-mountains~deformation',
+    title: 'Folds and faults',
+    use: 'Use this for “The hanging wall dropped down along the fault. Which kind of fault is it, and what stress made it?”',
+    assumptions: [
+      'Compression shortens rock, tension stretches it, shear slides it sideways.',
+      'Deep, warm rock bends into folds; rock near the surface breaks along faults.',
+    ],
+    figure: { kind: 'landforms' },
+    scenes: [
+      {
+        label: 'Folds',
+        lines: [
+          'Slow compression bends layers into arches (anticlines) and troughs (synclines).',
+          'Rock that is deep and warm bends instead of breaking.',
+        ],
+        landform: { kind: 'folds' },
+      },
+      {
+        label: 'Normal fault',
+        lines: [
+          'Tension pulls the crust apart, and the hanging wall drops down the fault.',
+          'The hanging wall is the block above a sloping fault.',
+        ],
+        landform: { kind: 'normalFault' },
+      },
+      {
+        label: 'Reverse fault',
+        lines: [
+          'Compression pushes the hanging wall up the fault.',
+          'Older rock ends up stacked on younger rock.',
+        ],
+        landform: { kind: 'reverseFault' },
+      },
+      {
+        label: 'Strike-slip fault',
+        lines: [
+          'Shear slides the blocks past each other sideways, as on the San Andreas Fault.',
+          'A fence across the fault is offset.',
+        ],
+        landform: { kind: 'strikeSlip' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.volcanoes-mountains~magma',
+    title: 'Low-silica or high-silica magma?',
+    use: 'Use this for “Why do volcanoes above subduction zones erupt explosively?”',
+    assumptions: [
+      'Silica chains make magma thick; thick magma holds its gas until it bursts out.',
+      'Basalt is low in silica; andesite and rhyolite are high.',
+    ],
+    question: 'Which magma does this describe?',
+    bins: [
+      {
+        id: 'low',
+        label: 'Low silica (basaltic)',
+        why: 'Runny magma lets gas bubble out gently, so lava flows far.',
+      },
+      {
+        id: 'high',
+        label: 'High silica (andesitic to rhyolitic)',
+        why: 'Sticky magma traps gas until the pressure blasts it apart.',
+      },
+    ],
+    cards: [
+      { label: 'Runny lava that flows far', bin: 'low' },
+      { label: 'Gas escapes easily', bin: 'low' },
+      { label: 'Builds broad shield volcanoes', bin: 'low' },
+      { label: 'Erupts at mid-ocean ridges and hot spots', bin: 'low' },
+      { label: 'Sticky lava that traps gas', bin: 'high' },
+      { label: 'Explosive eruptions of ash and pumice', bin: 'high' },
+      { label: 'Builds steep composite volcanoes', bin: 'high' },
+      { label: 'Forms above subduction zones', bin: 'high' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.12.volcanoes-mountains~mountain-building',
+    title: 'How plates build mountains',
+    use: 'Use this for “Why are there volcanic mountains along a coast where an ocean plate sinks?” and “What happens as a rift valley widens?”',
+    assumptions: [
+      'Mantle convection and the pull of sinking slabs move the plates.',
+      'Where plates push together the crust thickens into mountains; where they pull apart it thins and sinks.',
+    ],
+    figure: { kind: 'plates' },
+    scenes: [
+      {
+        label: 'Subduction',
+        lines: [
+          'The dense ocean plate sinks under the continent and melts at depth.',
+          'The magma rises to build a volcanic arc and coastal mountains, like the Andes.',
+        ],
+        plates: { boundary: 'subduction' },
+      },
+      {
+        label: 'Collision',
+        lines: [
+          'Two continents meet and neither sinks.',
+          'The crust folds and thickens into high ranges like the Himalayas.',
+        ],
+        plates: { boundary: 'collision' },
+      },
+      {
+        label: 'Rift',
+        lines: [
+          'The crust stretches and breaks on normal faults.',
+          'The valley widens and deepens, and the sea may flood it.',
+        ],
+        plates: { boundary: 'rift' },
+      },
+      {
+        label: 'Ridge and mantle',
+        lines: [
+          'Convection currents in the mantle rise under the ridge and spread outward.',
+          'They carry the plates apart, and new ocean floor forms in the gap.',
+        ],
+        plates: { boundary: 'divergent', mantle: true },
+      },
+    ],
+  },
+
   // ── Geologic time and radiometric dating (HS-ESS1-5, HS-ESS1-6) ──
   {
     kind: 'sequence',
