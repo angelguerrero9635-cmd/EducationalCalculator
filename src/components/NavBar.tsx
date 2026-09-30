@@ -2,15 +2,15 @@ import { router, type NativeStackHeaderProps } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MenuButton } from '@/components/SideMenu';
+import { HEADER_ACTIONS_WIDTH, HeaderActions } from '@/components/HeaderActions';
 import { Text } from '@/components/Text';
 import { parentOf, screenTitle } from '@/data/selectors';
 import { font, space, usePalette } from '@/theme';
 
 /**
- * Navigation bar for every stacked page: a back button, the page's name and the lessons menu. Back returns to the
- * previous page; with no history (opened from a link or a reload) it goes one level up instead,
- * e.g. from a skill to its grade.
+ * Navigation bar for every stacked page: a back button, the page's name, and Home, Search and
+ * the lessons menu. Back returns to the previous page; with no history (opened from a link or a
+ * reload) it goes one level up instead, e.g. from a skill to its grade.
  */
 export function NavBar({ navigation, route, options, back }: NativeStackHeaderProps) {
   const c = usePalette();
@@ -65,13 +65,14 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
         >
           {title}
         </Text>
-        {/* The lessons menu; as wide as the back button so the title stays centered. */}
-        <View style={styles.side}>{modal ? null : <MenuButton />}</View>
+        {/* Home, Search and the lessons menu. */}
+        <View style={styles.side}>{modal ? null : <HeaderActions />}</View>
       </View>
     </View>
   );
 }
 
+/** The back button's width; the buttons on the right take what they need. */
 const SIDE = 96;
 
 const styles = StyleSheet.create({
@@ -92,5 +93,5 @@ const styles = StyleSheet.create({
   chevron: { fontSize: 30, lineHeight: 32, marginTop: -3 },
   backLabel: { flexShrink: 1, fontSize: font.body, fontWeight: '500' },
   title: { flex: 1, textAlign: 'center', fontSize: font.body + 1, fontWeight: '700' },
-  side: { width: SIDE, alignItems: 'flex-end' },
+  side: { width: HEADER_ACTIONS_WIDTH, alignItems: 'flex-end' },
 });

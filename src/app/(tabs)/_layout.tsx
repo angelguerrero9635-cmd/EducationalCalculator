@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router/js-tabs';
 import type { ColorValue } from 'react-native';
 
 import { Icon, type IconName } from '@/components/Icon';
-import { MenuButton } from '@/components/SideMenu';
+import { HeaderActions } from '@/components/HeaderActions';
 import { font, usePalette } from '@/theme';
 
 /** A tab's icon: outlined, and filled (or bolder) when it is the open tab. */
@@ -24,8 +24,8 @@ export default function TabsLayout() {
         tabBarLabelStyle: { fontSize: font.caption - 1, fontWeight: '600' },
         headerStyle: { backgroundColor: c.background },
         headerShadowVisible: false,
-        // Every tab's header opens the lessons menu too.
-        headerRight: () => <MenuButton />,
+        // Every tab's header has Home, Search and the lessons menu too.
+        headerRight: () => <HeaderActions />,
         headerRightContainerStyle: { paddingRight: 8 },
         headerTitleStyle: { fontSize: font.body + 1, fontWeight: '700', color: c.text },
       }}
