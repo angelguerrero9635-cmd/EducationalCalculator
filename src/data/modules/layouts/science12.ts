@@ -135,7 +135,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       {
         id: 'intrusive',
         label: 'Slowly, underground (intrusive)',
-        why: 'Buried magma cools over thousands of years, so its crystals are big enough to see.',
+        why: 'Buried magma cools over thousands to millions of years, so its crystals grow big enough to see.',
       },
       {
         id: 'extrusive',
@@ -366,7 +366,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     use: 'Use this for “Why do volcanoes above subduction zones erupt explosively?”',
     assumptions: [
       'Silica chains make magma thick; thick magma holds its gas until it bursts out.',
-      'Basalt is low in silica; andesite and rhyolite are high.',
+      'Basalt is low in silica, andesite is in between, and rhyolite is highest.',
     ],
     question: 'Which magma does this describe?',
     bins: [
@@ -406,7 +406,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       {
         label: 'Subduction',
         lines: [
-          'The dense ocean plate sinks under the continent and melts at depth.',
+          'The dense ocean plate sinks under the continent. Water squeezed out of it melts the mantle above.',
           'The magma rises to build a volcanic arc and coastal mountains, like the Andes.',
         ],
         plates: { boundary: 'subduction' },
@@ -592,15 +592,16 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 's.12.radiometric-dating~time-scale',
     title: 'The geologic time scale',
-    use: 'Use this for “Order the eras of Earth’s history. How long was each?”',
+    use: 'Use this for “Order the spans of Earth’s history, from Precambrian time to the Cenozoic Era. How long was each?”',
     assumptions: [
       'The eras are named for their life: Paleozoic means old life, Mesozoic middle and Cenozoic new.',
       'The boundaries are dated from ash beds and lava flows by radiometric dating.',
+      'Earth is about 4,600 million years old.',
     ],
     question: 'Put Earth’s history in order, from its formation to today.',
     stages: [
       {
-        label: 'Precambrian: Earth forms; oxygen builds up and iron rusts into red beds',
+        label: 'Precambrian time: Earth forms; oxygen builds up and iron rusts into red beds',
         span: 4059,
       },
       { label: 'Paleozoic: shelled animals, fish, the first land plants', span: 289 },
@@ -797,8 +798,8 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       {
         label: 'Ash and smoke',
         lines: [
-          'Ash from a big eruption and smoke from fires add tiny particles high in the air.',
-          'The particles reflect sunlight before it reaches the ground, which cools Earth for a year or two.',
+          'A big eruption sends sulfur gas high into the air, where it forms tiny droplets; smoke from big fires adds particles too.',
+          'They reflect sunlight before it reaches the ground, which cools Earth for a year or two.',
         ],
         greenhouse: { view: 'energy', co2: 'today' },
       },
@@ -972,7 +973,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.12.resource-management',
     assumptions: [
-      'Renewable resources are replaced as fast as we use them.',
+      'Renewable resources are replaced by nature within a human lifetime.',
       'Fossil fuels took millions of years to form.',
     ],
     question: 'Can people use it up?',
@@ -1019,7 +1020,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     use: 'Use this for “Describe how fossil fuels such as coal form.”',
     assumptions: [
       'Oil and gas form the same way from tiny sea organisms buried in mud.',
-      'Each step takes millions of years, so fossil fuels are nonrenewable.',
+      'The whole change takes millions of years, so fossil fuels are nonrenewable.',
     ],
     question: 'Put the steps in the formation of coal in order.',
     stages: [

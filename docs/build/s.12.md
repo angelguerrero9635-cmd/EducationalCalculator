@@ -11,7 +11,8 @@ priority order of their main pages.
 - s.12.volcanoes-mountains: 4 (main volcano explore, ~deformation and ~mountain-building explores,
   sort ~magma)
 - s.12.surface-processes: 3 (main landforms explore; sorts ~weathering, ~agents)
-- s.12.radiometric-dating: 5 (main C-14, ~uranium, ~bracket; sequences ~relative-order, ~time-scale)
+- s.12.radiometric-dating: 6 (main C-14, ~uranium, ~bracket, ~half-life; sequences ~relative-order,
+  ~time-scale)
 - s.12.ocean-atmosphere: 4 (main sonar, ~tides; explore ~currents, sort ~density)
 - s.12.atmosphere-weather: 5 (main lapse rate, ~pressure, ~humidity; sequence ~hurricane, sort ~air-masses)
 - s.12.climate-systems: 5 (main greenhouse explore, ~zones and ~feedbacks explores, sort ~carbon,
@@ -22,7 +23,7 @@ priority order of their main pages.
 - s.12.stellar-evolution: 5 (main H–R diagram, ~fusion; sequences ~sunlike, ~massive; sort ~elements)
 - s.12.cosmology: 5 (main Hubble’s law, ~redshift, ~stretch; sort ~galaxies, sequence ~big-bang)
 
-57 pages: 22 calculators (8 mains, 14 problem types) and 35 layouts (5 mains, 30 problem types).
+58 pages: 23 calculators (8 mains, 15 problem types) and 35 layouts (5 mains, 30 problem types).
 The order of work was the plan's priority order of the mains (the 8 calculator mains, then the
 5 layout mains), each skill finished and committed before the next; both files list the pages
 in taxonomy order.
@@ -43,6 +44,9 @@ in taxonomy order.
 - s.12.starlight-spectra~lines: need 8 (spectra side by side: the star’s strip over the H, He
   and Na reference strips).
 - s.12.stellar-evolution~lifetime: need 10 (`hrDiagram` option `mass`).
+- s.12.starlight-spectra~parallax (from the lesson review, N2): distance from parallax, d = 1 ÷ p
+  parsecs and 3.26 × d light-years (p = 0.001–1″). No picture draws a parallax yet: Earth's orbit
+  as the baseline, the near star shifting against far stars, the angle p marked.
 
 Built with a planned interim: the climate main's "Ash and smoke" scene says in its lines what
 need 8's `particles` option would draw (the energy view has no aerosol particles yet).
@@ -107,3 +111,38 @@ need 8's `particles` option would draw (the energy view has no aerosol particles
   factor) makes the solver work it out from two typed values and refuse it. Pages here write
   such constants into the formula; a solver rule that never solves for a one-value variable
   would let a page show it as a value.
+
+## Lesson review fixes (`.review/hs-s.12/lesson-report.md`)
+
+- Seismic pages: `vₛ < vₚ` became the limit vₛ ≤ 0.7 × vₚ with its reason (in rock vₚ ÷ vₛ ≥ √2);
+  it keeps 1 ÷ vₛ − 1 ÷ vₚ away from 0, the cause of the six harness errors. Main: d 0.2–12,700 km
+  (0.2, not the report's 0.5: L = 0.1 s at 4 and 2 km/s is 0.4 km), tₚ and tₛ widened to match.
+  ~epicenter: k "Km of distance per second of lag", 2–35; d₁–d₃ to 4,000 km.
+- ~shadow-zone stays a calculator (no explore figure draws `earthLayers`): Δ from the epicenter,
+  1–180°, s = Δ ÷ 360 × 2 × π × 6,371 shown to 4 figures.
+- C-14 left from 0.1 % (the plan's), not the report's 0.025 %: at the opening half-life 5,730
+  years 0.025 % is 68,500 years, past t's 60,000, and the edge dropped T.
+- ~uranium: R 0.0016–1.04, t 10⁷–4.6 × 10⁹ years (the report's 0.0015 and 1.05 give ages just
+  outside t's range at the edges); the solar system's age is an assumption.
+- ~bracket: P to 99 %, u to 700; the u < t limit has a reason, so an upper ash older than the
+  lower is refused, not silently dropped.
+- New ~half-life (N1): any isotope, T typed; a limit t ≤ 1.38 × 10¹⁰ years with its reason
+  refuses ages older than the universe.
+- Rounding so a step evaluates as written: z to 5 figures (Doppler, redshift), v to 4, telescope
+  G and Kepler q, Q to 3 (`sigFigs`). The pressure gradient keeps 4 decimals: at 2 figures the
+  harness recomputes 76.1 ÷ 416.3 × 100 = 18.3 against "18", and 4.0 breaks the trailing-.0 rule.
+- Kepler e stays at most 0.95: the `circularMotion` kepler picture refuses more (the report's
+  0.97 for Halley's Comet).
+
+## Shared needs (lesson review)
+
+- `earthLayers` as an explore figure (mode `section`, a Δ per scene) so ~shadow-zone can become
+  the report's explore: which waves reach 60°, 104°, 120°, 150° (s.12.earth-interior~shadow-zone).
+- `circularMotion` mode `kepler`: eccentricity up to 0.97 (Halley's Comet) (s.12.solar-system).
+- A display rounding to the value's `step` (0.01, whole numbers) that keeps the steps exact, for
+  values `sigFigs` can't serve: the pressure gradient G (s.12.atmosphere-weather~pressure).
+- A parallax picture (s.12.starlight-spectra~parallax, above).
+- Simplifier: "0 × 2 × π × 6,371 → 0π × 6,371" (s.12.earth-interior~shadow-zone; Δ now starts at
+  1° to avoid it).
+- The time-scale span prints "4059 million years" without a separator
+  (s.12.radiometric-dating~time-scale).
