@@ -273,4 +273,78 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'Brings heat waves to the southern Plains', bin: 'cT' },
     ],
   },
+
+  // ── The solar system: formation, planets and small bodies (HS-ESS1-4, HS-ESS1-6) ──
+  {
+    kind: 'sequence',
+    id: 's.12.solar-system~formation',
+    title: 'How the solar system formed',
+    use: 'Use this for “Put the stages of the solar system’s formation in order.”',
+    assumptions: [
+      'It all began about 4.6 billion years ago with a cloud of gas and dust.',
+      'Near the Sun only rock and metal stay solid; past the frost line ice does too, so the outer planets grew big.',
+    ],
+    question: 'Put the stages of the solar system’s formation in order.',
+    stages: [
+      {
+        label: 'A cloud of gas and dust collapses',
+        figure: { kind: 'icon', icon: 'solar nebula' },
+      },
+      {
+        label: 'It spins faster and flattens into a disk',
+        figure: { kind: 'icon', icon: 'spinning disk' },
+      },
+      { label: 'The center heats into the protosun', figure: { kind: 'icon', icon: 'protosun' } },
+      {
+        label: 'Dust clumps into planetesimals: rock near the Sun, ice beyond the frost line',
+        figure: { kind: 'icon', icon: 'planetesimals' },
+      },
+      {
+        label: 'Planetesimals collide into planets; the Sun’s wind clears the gas',
+        figure: { kind: 'icon', icon: 'young planets' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.solar-system~planet-types',
+    title: 'Terrestrial, Jovian or small body?',
+    use: 'Use this for “Is Neptune a terrestrial or a Jovian planet? What about Pluto?”',
+    assumptions: [
+      'Terrestrial planets are small, rocky and dense; Jovian planets are huge balls of gas and ice.',
+      'Dwarf planets, asteroids and comets are leftover pieces too small to clear their orbits.',
+    ],
+    question: 'What kind of body is it?',
+    bins: [
+      {
+        id: 'terrestrial',
+        label: 'Terrestrial planet',
+        why: 'Rock and metal, formed close to the Sun where only they could stay solid.',
+      },
+      {
+        id: 'jovian',
+        label: 'Jovian planet',
+        why: 'Giant worlds of hydrogen, helium and ice, formed beyond the frost line.',
+      },
+      {
+        id: 'small',
+        label: 'Dwarf planet or small body',
+        why: 'Too small to sweep its orbit clear of other bodies.',
+      },
+    ],
+    cards: [
+      { label: 'Mercury', bin: 'terrestrial' },
+      { label: 'Venus', bin: 'terrestrial' },
+      { label: 'Earth', bin: 'terrestrial' },
+      { label: 'Mars', bin: 'terrestrial' },
+      { label: 'Jupiter', bin: 'jovian' },
+      { label: 'Saturn', bin: 'jovian' },
+      { label: 'Uranus', bin: 'jovian' },
+      { label: 'Neptune', bin: 'jovian' },
+      { label: 'Pluto', bin: 'small' },
+      { label: 'Ceres', bin: 'small' },
+      { label: 'Halley’s Comet', bin: 'small' },
+      { label: 'The asteroid Vesta', bin: 'small' },
+    ],
+  },
 ];

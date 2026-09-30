@@ -680,6 +680,60 @@ const humidity: ModuleDef = {
   representation: { kind: 'percentBar', percent: 'RH', part: 'w', whole: 'ws', ticks: 10 },
 };
 
+// ── The solar system: formation, planets and small bodies ──
+
+const kepler: ModuleDef = {
+  id: 's.12.solar-system',
+  assumptions: [
+    'First law: each planet moves on an ellipse with the Sun at one focus.',
+    'Second law: the line to the Sun sweeps equal areas in equal times, so the planet is fastest at perihelion.',
+    'Third law: T² = a³, with T in years and a in AU.',
+    'T² = a³ holds only for bodies orbiting the Sun.',
+  ],
+  variables: [
+    V('a', 'a', 'Semi-major axis', { unit: 'AU', min: 0.1, max: 100, step: 0.01 }),
+    V('e', 'e', 'Eccentricity', { min: 0, max: 0.95, step: 0.001 }),
+    V('q', 'q', 'Perihelion distance', { unit: 'AU', min: 0, max: 200, step: 0.001 }),
+    V('Q', 'Q', 'Aphelion distance', { unit: 'AU', min: 0, max: 200, step: 0.001 }),
+    V('T', 'T', 'Period', { unit: 'years', min: 0.03, max: 1000, step: 0.01 }),
+  ],
+  ...rels(
+    rule('q = a(1 − e)', '{q} = {a} × (1 − {e})', (v) => v.q! - v.a! * (1 - v.e!), {
+      q: [
+        (v) => v.a! * (1 - v.e!),
+        '{a} × (1 − {e})',
+        'Closest: a less the Sun’s offset from the center, ae.',
+      ],
+      a: [
+        (v) => div(v.q!, 1 - v.e!),
+        '{q} ÷ (1 − {e})',
+        'Divide the perihelion distance by 1 − e.',
+      ],
+      e: [(v) => div(v.a! - v.q!, v.a!), '({a} − {q}) ÷ {a}', 'The offset a − q, over a.'],
+    }),
+    rule('Q = a(1 + e)', '{Q} = {a} × (1 + {e})', (v) => v.Q! - v.a! * (1 + v.e!), {
+      Q: [(v) => v.a! * (1 + v.e!), '{a} × (1 + {e})', 'Farthest: a plus the offset ae.'],
+      a: [(v) => div(v.Q!, 1 + v.e!), '{Q} ÷ (1 + {e})', 'Divide the aphelion distance by 1 + e.'],
+      e: [(v) => div(v.Q! - v.a!, v.a!), '({Q} − {a}) ÷ {a}', 'The offset Q − a, over a.'],
+    }),
+    rule('T² = a³', '{T}² = {a}³', (v) => v.T! * v.T! - v.a! ** 3, {
+      T: [(v) => Math.pow(v.a!, 1.5), '√({a}³)', 'Kepler’s third law: T is the square root of a³.'],
+      a: [(v) => Math.cbrt(v.T! * v.T!), '∛({T}²)', 'a is the cube root of T².'],
+    }),
+  ),
+  example: { a: 1.52, e: 0.093, q: 1.52 * 0.907, Q: 1.52 * 1.093, T: Math.pow(1.52, 1.5) },
+  startWith: ['a', 'e'],
+  representation: {
+    kind: 'circularMotion',
+    mode: 'kepler',
+    semiMajor: 'a',
+    eccentricity: 'e',
+    perihelion: 'q',
+    aphelion: 'Q',
+    period: 'T',
+  },
+};
+
 export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
@@ -692,4 +746,5 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   lapse,
   pressureMap,
   humidity,
+  kepler,
 ];
