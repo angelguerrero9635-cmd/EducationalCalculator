@@ -4260,8 +4260,8 @@ const TORQUE = q('t', 'τ', 'Torque', 'N·m', 0, 1e7, 0.001);
 
 const rotationPages: ModuleDef[] = [
   (() => {
+    // F⊥ = 80 sin 30° = 40 N and τ = 0.25 × 40 = 10 N·m, stored exactly (not 39.99999999999999).
     const [r, F, a] = [0.25, 80, 30];
-    const p = F * Math.sin(a * RAD);
     return {
       id: 's.11.rotation',
       unitSystems: ['metric'],
