@@ -28,7 +28,7 @@ pages in `docs/build/<plan>.md`. Status: open, done.
 | E16 | Observe columns that are not times: columns are free headings ("20 °C").                                                                                     | s.9 cellular-energy~enzymes                                                                                             | done                      |
 | E17 | Page limits between values (D < 0, b ≠ 1, \|r\| < 1, Σp = 1): `constraint: true` relations; their display is the reason.                                     | m.11 complex~quadratic, radical, logarithms, series, pythagorean                                                        | done                      |
 | E18 | A g choice (9.8 or 10 m/s²) for pages whose tests round g: a `g` value with `allowed: [9.8, 10]`.                                                            | s.11 kinematics-1d, dynamics-vectors                                                                                    | done                      |
-| E19 | The harness takes a minus inside an exponent in step text (e^(−0.5 × 6)) without calling it a negative count.                                                | s.9 logistic and decay steps (written with e^(rt) today)                                                                | open                      |
+| E19 | The harness takes a minus inside an exponent in step text (e^(−0.5 × 6)) without calling it a negative count.                                                | s.9 logistic and decay steps (written with e^(rt) today)                                                                | done                      |
 
 ## Pictures (pictures chat)
 

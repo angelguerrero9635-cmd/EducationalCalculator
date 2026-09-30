@@ -135,7 +135,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) \\+ (${NUM}) past the hour`), (a, b) => (a + b) % 60],
   [new RegExp(`(${NUM}) [-−] (${NUM}) past the hour`), (a, b) => (((a - b) % 60) + 60) % 60],
   [new RegExp(`(${NUM}) wholes? and (${NUM})/(${NUM})`), (w, a, b) => w + a / b],
-  [new RegExp(`(${NUM})/(${NUM})`), (a, b) => a / b],
+  // (not when the bottom is raised to a power: 12/2² is 12 ÷ 4)
+  [new RegExp(`(${NUM})/(${NUM})(?![\\d.]|\\s*\\*\\*)`), (a, b) => a / b],
   [new RegExp(`(${NUM}) (?:not shaded|shaded|equal parts)`), (a) => a],
   [new RegExp(`difference of (${NUM}) and (${NUM})`), (a, b) => Math.abs(a - b)],
   [new RegExp(`size of (${NUM}) equal jumps from (${NUM}) to (${NUM})`), (k, a, n) => (n - a) / k],

@@ -413,7 +413,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     // numbers: the evaluator would read a value named e as Euler's number.
     if (!s.substituted && c.module.variables.some((v) => wordIn(expr, v.symbol))) continue;
 
-    if (allNonNegative && /\(-/.test(expr)) {
+    // (a negative value put in is a bracketed number, "(-3)"; e^(-0.5 × 6) is an exponent)
+    if (allNonNegative && /\(-\s*[\d.,]+\)/.test(expr)) {
       c.f.add('error', `${c.label}step substitutes a negative count: "${s.substituted}"`, where);
     }
     const xs = evaluateAll(expr);

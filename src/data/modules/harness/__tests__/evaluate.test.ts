@@ -8,3 +8,10 @@ it('reads floor, gcd, mod, remainders and radians', () => {
   expect(evaluate('sin(π/2)')).toBeCloseTo(1, 9);
   expect(evaluate('cos(3π/4)')).toBeCloseTo(-Math.SQRT1_2, 9);
 });
+
+it('raises a fraction’s bottom before dividing', () => {
+  expect(evaluate('12/2²')).toBe(3);
+  expect(evaluate('3/4^2')).toBe(0.1875);
+  expect(evaluate('3/4')).toBe(0.75);
+  expect(evaluate('100 × e^(−0.5 × 6)')).toBeCloseTo(4.9787, 3);
+});
