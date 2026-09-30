@@ -769,6 +769,9 @@ const chance = (id: string, symbol: string, name: string) =>
   num(id, symbol, name, 0, 1, { step: 0.01 });
 /** A probability worked out. */
 const chanceOut = (id: string, symbol: string, name: string) => der(num(id, symbol, name, 0, 1));
+/** A probability worked out from counts, shown as the fraction it is (5/14). */
+const chanceFrac = (id: string, symbol: string, name: string) =>
+  der(num(id, symbol, name, 0, 1, { fraction: 10000 }));
 /** total = the parts added. */
 const total = (t: string, ids: string[], how: string) =>
   derive(
@@ -809,6 +812,10 @@ const CONDITIONAL: ModuleDef[] = [
       'The whole is the column total, not the grand total.',
       'P(Bus | Late) looks at the late row instead: the order of the events matters.',
     ],
+    standalone: {
+      vars: ['e', 'h'],
+      why: 'On time by walking or car fill the table: neither the bus column nor the late row holds them.',
+    },
     variables: [
       count('a', 'Late, bus'),
       count('b', 'Late, walk'),
@@ -817,24 +824,17 @@ const CONDITIONAL: ModuleDef[] = [
       count('e', 'On time, walk'),
       count('h', 'On time, car'),
       der(num('B', 'B', 'Bus total', 0, 2000)),
-      chanceOut('p', 'P(L | B)', 'P(Late | Bus)'),
-      chanceOut('q', 'P(B | L)', 'P(Bus | Late)'),
-      der(num('N', 'N', 'Grand total', 0, 6000)),
+      der(num('L', 'L', 'Late total', 0, 3000)),
+      chanceFrac('p', 'P(L | B)', 'P(Late | Bus)'),
+      chanceFrac('q', 'P(B | L)', 'P(Bus | Late)'),
     ],
     rules: [
       total('B', ['a', 'd'], 'Add the bus column.'),
       share('p', 'a', 'B', 'Late among the bus riders only: the cell over its column total.'),
-      derive(
-        'P(Bus | Late) = a ÷ (a + b + g)',
-        '{q} = {a} ÷ ({a} + {b} + {g})',
-        'q',
-        (v) => quot(v.a!, v.a! + v.b! + v.g!),
-        '{a} ÷ ({a} + {b} + {g})',
-        'Bus riders among the late students: the cell over its row total.',
-      ),
-      total('N', ['a', 'b', 'g', 'd', 'e', 'h'], 'Add all six counts: everyone in the table.'),
+      total('L', ['a', 'b', 'g'], 'Add the late row.'),
+      share('q', 'a', 'L', 'Bus riders among the late students: the cell over its row total.'),
     ],
-    example: { a: 12, b: 4, g: 9, d: 48, e: 36, h: 51, B: 60, p: 0.2, q: 0.48, N: 160 },
+    example: { a: 12, b: 4, g: 9, d: 48, e: 36, h: 51, B: 60, L: 25, p: 0.2, q: 0.48 },
     startWith: ['a', 'b', 'g', 'd', 'e', 'h'],
     equation: 'P(Late | Bus) = {a}/{B} = {p}',
     representation: {
@@ -970,17 +970,17 @@ const CONDITIONAL: ModuleDef[] = [
     variables: [
       num('rd', 'r', 'Red marbles', 1, 50, { step: 1, integer: true }),
       num('n', 'n', 'Marbles in all', 2, 100, { step: 1, integer: true }),
-      chanceOut('p1', 'P(R)', 'P(Red first)'),
-      chanceOut('p2', 'P(R | R)', 'P(Red second | Red first)'),
-      chanceOut('p3', 'P(R | B)', 'P(Red second | Blue first)'),
-      chanceOut('pp', 'P(R, R)', 'P(Red, then Red)'),
+      chanceFrac('p1', 'P(R)', 'P(Red first)'),
+      chanceFrac('p2', 'P(R | R)', 'P(Red second | Red first)'),
+      chanceFrac('p3', 'P(R | B)', 'P(Red second | Blue first)'),
+      chanceFrac('pp', 'P(R, R)', 'P(Red, then Red)'),
     ],
     rules: [
       limit(
-        'r ≤ n',
-        '{rd} is at most {n}',
-        (v) => v.rd! <= v.n!,
-        'There can’t be more red marbles than marbles in all.',
+        'r < n',
+        '{rd} is less than {n}',
+        (v) => v.rd! < v.n!,
+        'Put at least one blue marble in the bag, or there is no blue first draw.',
       ),
       share('p1', 'rd', 'n', 'Reds out of all the marbles.'),
       derive(
@@ -995,7 +995,7 @@ const CONDITIONAL: ModuleDef[] = [
         'P(R | B) = r ÷ (n − 1)',
         '{p3} = {rd} ÷ ({n} − 1)',
         'p3',
-        (v) => (v.rd! <= v.n! - 1 ? quot(v.rd!, v.n! - 1) : 0),
+        (v) => quot(v.rd!, v.n! - 1),
         '{rd} ÷ ({n} − 1)',
         'Every red is left after a blue.',
       ),
@@ -1032,7 +1032,7 @@ const CONDITIONAL: ModuleDef[] = [
     assumptions: [
       'Given A, only the A circle counts: P(B | A) = P(A and B) ÷ P(A).',
       'A and B are independent only when P(B | A) = P(B).',
-      'Here 0.3 is not 0.4, so knowing A changes the chance of B.',
+      'Compare P(B | A) with P(B): equal means independent; different means knowing A changes the chance of B.',
     ],
     variables: [
       chance('a', 'P(A)', 'P(A)'),
@@ -1531,8 +1531,8 @@ const SPECIAL: ModuleDef[] = [
 // ─── m.10.arc-sector ─────────────────────────────────────────────────────────
 
 const radius = len('r', 'r', 'Radius', 1000, { unit: 'cm' });
-const arcLength = len('s', 's', 'Arc length', 1e4, { unit: 'cm', pi: true });
-const sectorArea = len('A', 'A', 'Sector area', 4e6, { unit: 'cm²', pi: true });
+const arcLength = len('s', 's', 'Arc length', 1e4, { unit: 'cm', pi: true, min: 1e-6 });
+const sectorArea = len('A', 'A', 'Sector area', 4e6, { unit: 'cm²', pi: true, min: 1e-6 });
 
 const ARC_SECTOR: ModuleDef[] = [
   page({
@@ -2672,12 +2672,17 @@ const LAW_SINES_COSINES: ModuleDef[] = [
 
 // ─── m.10.probability-rules ──────────────────────────────────────────────────
 
-/** n! for a whole n. */
-const fact = (n: number) => {
+/** n × (n − 1) × … for r factors: the ordered count P(n, r), exact for whole numbers. */
+const falling = (n: number, r: number) => {
   let out = 1;
-  for (let i = 2; i <= n; i++) out *= i;
+  for (let i = 0; i < r; i++) out *= n - i;
   return out;
 };
+/** The factors of n × (n − 1) × … for r places, as written ("8 × 7 × 6"). */
+const factors = (n: number, r: number) =>
+  Array.from({ length: r }, (_, i) => formatNumber(n - i)).join(' × ');
+/** The most ways a counting page shows (a count past it has more digits than a line holds). */
+const MOST_WAYS = 1e12;
 /** C(n, r), the ways to choose r of n. */
 const choose = (n: number, r: number) => {
   if (r < 0 || r > n) return 0;
@@ -2751,6 +2756,31 @@ function vennPage(d: {
 /** P(n, r) or C(n, r) from n and r. */
 function countingPage(kind: 'P' | 'C'): ModuleDef {
   const perm = kind === 'P';
+  const count = rule(
+    perm ? 'P = n! ÷ (n − r)!' : 'C = n! ÷ ((n − r)! × r!)',
+    perm ? '{c} = {n}! ÷ ({n} − {r})!' : '{c} = {n}! ÷ (({n} − {r})! × {r}!)',
+    {
+      c: [
+        (v) => (perm ? falling(v.n!, v.r!) : choose(v.n!, v.r!)),
+        perm ? '{n}! ÷ ({n} − {r})!' : '{n}! ÷ (({n} − {r})! × {r}!)',
+        perm
+          ? 'n × (n − 1) × … for r places: n! with the unused (n − r)! divided out.'
+          : 'The ordered count, n! ÷ (n − r)!, divided by the r! orders of each group.',
+      ],
+    },
+    (v) => v.c! - (perm ? falling(v.n!, v.r!) : choose(v.n!, v.r!)),
+  );
+  // The factors a student writes: 8 × 7 × 6, then over 3 × 2 × 1 for a combination.
+  count.steps.c!.work = (v: Values) =>
+    v.r! < 2
+      ? []
+      : perm
+        ? [`P = ${factors(v.n!, v.r!)}`]
+        : [
+            `C = (${factors(v.n!, v.r!)}) ÷ (${factors(v.r!, v.r!)})`,
+            `C = ${formatNumber(falling(v.n!, v.r!))} ÷ ${formatNumber(falling(v.r!, v.r!))}`,
+          ];
+  count.steps.c!.written = false;
   return page({
     id: `m.10.probability-rules~${perm ? 'permutations' : 'combinations'}`,
     title: perm ? 'Permutations: order matters' : 'Combinations: order doesn’t matter',
@@ -2769,12 +2799,12 @@ function countingPage(kind: 'P' | 'C'): ModuleDef {
           'Order doesn’t matter: a committee of Ana and Ben is the same as Ben and Ana.',
         ],
     variables: [
-      num('n', 'n', 'Choices', 1, perm ? 14 : 12, { step: 1, integer: true }),
-      num('r', 'r', perm ? 'Places filled in order' : 'Chosen', 0, perm ? 14 : 12, {
+      num('n', 'n', 'Choices', 1, 60, { step: 1, integer: true }),
+      num('r', 'r', perm ? 'Places filled in order' : 'Chosen', 0, 14, {
         step: 1,
         integer: true,
       }),
-      der(num('c', kind, perm ? 'Ways' : 'Groups', 1, 1e19, { integer: true })),
+      der(num('c', kind, perm ? 'Ways' : 'Groups', 1, MOST_WAYS, { integer: true })),
     ],
     rules: [
       limit(
@@ -2783,23 +2813,13 @@ function countingPage(kind: 'P' | 'C'): ModuleDef {
         (v) => v.r! <= v.n!,
         'You can’t choose more than there are.',
       ),
-      perm
-        ? derive(
-            'P = n! ÷ (n − r)!',
-            '{c} = {n}! ÷ ({n} − {r})!',
-            'c',
-            (v) => fact(v.n!) / fact(v.n! - v.r!),
-            '{n}! ÷ ({n} − {r})!',
-            'n × (n − 1) × … for r places: n! with the unused (n − r)! divided out.',
-          )
-        : derive(
-            'C = n! ÷ ((n − r)! × r!)',
-            '{c} = {n}! ÷ (({n} − {r})! × {r}!)',
-            'c',
-            (v) => choose(v.n!, v.r!),
-            '{n}! ÷ (({n} − {r})! × {r}!)',
-            'The ordered count, n! ÷ (n − r)!, divided by the r! orders of each group.',
-          ),
+      limit(
+        `${kind} ≤ 10¹²`,
+        `${kind}({n}, {r}) is at most a trillion`,
+        (v) => (perm ? falling(v.n!, v.r!) : choose(v.n!, v.r!)) <= MOST_WAYS,
+        'That many ways passes what the page can show: try fewer places.',
+      ),
+      count,
     ],
     example: { n: 8, r: 3, c: perm ? 336 : 56 },
     startWith: ['n', 'r'],
@@ -2808,7 +2828,7 @@ function countingPage(kind: 'P' | 'C'): ModuleDef {
     representation: {
       kind: 'pascalTriangle',
       n: 'n',
-      ...(perm ? { triangle: false } : { k: 'r' }),
+      triangle: false,
       slots: { r: 'r', ...(perm ? {} : { choose: true }), result: 'c' },
     },
   });
@@ -2870,7 +2890,7 @@ const PROBABILITY_RULES: ModuleDef[] = [
       name: 'P(not Rain)',
       display: '{s} = 1 − {a}',
       fn: (v) => 1 - v.a!,
-      how: 'Everything outside A: take P(A) from 1.',
+      how: 'Everything outside Rain: take P(Rain) from 1.',
     },
     example: { a: 0.35, b: 0.4, ab: 0.2, s: 0.65 },
   }),
@@ -2897,11 +2917,11 @@ const PROBABILITY_RULES: ModuleDef[] = [
   page({
     id: 'm.10.probability-rules~sample-space',
     title: 'Listing equally likely outcomes',
-    use: 'Use this for “Three coins are tossed. What is the chance of exactly two heads?”',
+    use: 'Use this for “Three coins are tossed. What is the chance of exactly two heads?” (code heads as 1, tails as 2).',
     assumptions: [
       'A tree lists every outcome: each branch splits into every outcome of the next stage.',
       'When every path is equally likely, P(event) = favorable outcomes ÷ all outcomes.',
-      'Three coins, 1 for heads and 2 for tails: 1-1-2, 1-2-1 and 2-1-1 are exactly two heads, 3 of 8.',
+      'Code heads as 1 and tails as 2 for three coins: 1-1-2, 1-2-1 and 2-1-1 are exactly two heads, 3 of 8.',
     ],
     variables: [
       num('a', 'a', 'First-stage outcomes', 2, 4, { step: 1, integer: true }),
@@ -2950,42 +2970,61 @@ const PROBABILITY_RULES: ModuleDef[] = [
   page({
     id: 'm.10.probability-rules~counting-probability',
     title: 'Probability with combinations',
-    use: 'Use this for “3 students are picked at random from 5 girls and 4 boys. What is the chance all 3 are girls?”',
+    use: 'Use this for “3 students are picked at random from 5 girls and 4 boys. What is the chance all 3 are girls? Exactly 2?”',
     assumptions: [
       'Every group of r is equally likely, so count groups with combinations.',
-      'Favorable groups: C(a, r) ways to pick all r from the first group.',
+      'Favorable groups: C(a, k) ways to pick k from the first group, times C(b, r − k) for the rest.',
       'All groups: C(a + b, r). The probability is the first over the second.',
     ],
     variables: [
-      num('a', 'a', 'First group', 1, 12, { step: 1, integer: true }),
-      num('b', 'b', 'Second group', 0, 11, { step: 1, integer: true }),
-      num('r', 'r', 'Chosen', 1, 12, { step: 1, integer: true }),
-      der(num('n', 'n', 'Everyone', 1, 12, { integer: true })),
-      der(num('f', 'f', 'Groups all from the first', 0, 1000, { integer: true })),
-      der(num('t', 't', 'Groups in all', 1, 1000, { integer: true })),
+      num('a', 'a', 'First group', 1, 60, { step: 1, integer: true }),
+      num('b', 'b', 'Second group', 0, 59, { step: 1, integer: true }),
+      num('r', 'r', 'Chosen', 1, 14, { step: 1, integer: true }),
+      num('k', 'k', 'Chosen from the first group', 0, 14, { step: 1, integer: true }),
+      der(num('n', 'n', 'Everyone', 1, 60, { integer: true })),
+      der(num('f', 'f', 'Favorable groups', 0, MOST_WAYS, { integer: true })),
+      der(num('t', 't', 'Groups in all', 1, MOST_WAYS, { integer: true })),
       der(num('P', 'P', 'Probability', 0, 1, { fraction: 1000 })),
     ],
     rules: [
       limit(
-        'a + b ≤ 12',
-        '{a} + {b} is at most 12',
-        (v) => v.a! + v.b! <= 12,
-        'Keep to 12 people in all, so the triangle can show them.',
+        'a + b ≤ 60',
+        '{a} + {b} is at most 60',
+        (v) => v.a! + v.b! <= 60,
+        'Keep to 60 people in all.',
       ),
       limit(
-        'r ≤ a',
-        '{r} is at most {a}',
-        (v) => v.r! <= v.a!,
+        'k ≤ r',
+        '{k} is at most {r}',
+        (v) => v.k! <= v.r!,
+        'The first group can’t give more than the number chosen.',
+      ),
+      limit(
+        'k ≤ a',
+        '{k} is at most {a}',
+        (v) => v.k! <= v.a!,
         'Choose no more than the first group has.',
       ),
+      limit(
+        'r − k ≤ b',
+        '{r} − {k} is at most {b}',
+        (v) => v.r! - v.k! <= v.b!,
+        'The rest come from the second group, so it must have r − k people.',
+      ),
       total('n', ['a', 'b'], 'Everyone in both groups.'),
+      limit(
+        'C(n, r) ≤ 10¹²',
+        'C({n}, {r}) is at most a trillion',
+        (v) => choose(v.n!, v.r!) <= MOST_WAYS,
+        'That many groups passes what the page can show: try choosing fewer.',
+      ),
       derive(
-        'f = C(a, r)',
-        '{f} = C({a}, {r})',
+        'f = C(a, k) × C(b, r − k)',
+        '{f} = C({a}, {k}) × C({b}, {r} − {k})',
         'f',
-        (v) => choose(v.a!, v.r!),
-        'C({a}, {r})',
-        'The ways to choose all r from the first group.',
+        (v) => choose(v.a!, v.k!) * choose(v.b!, v.r! - v.k!),
+        'C({a}, {k}) × C({b}, {r} − {k})',
+        'Pick k from the first group and the other r − k from the second: multiply the ways.',
       ),
       derive(
         't = C(n, r)',
@@ -2997,12 +3036,12 @@ const PROBABILITY_RULES: ModuleDef[] = [
       ),
       share('P', 'f', 't', 'Favorable groups over all the equally likely groups.'),
     ],
-    example: { a: 5, b: 4, r: 3, n: 9, f: 10, t: 84, P: 10 / 84 },
-    startWith: ['a', 'b', 'r'],
+    example: { a: 5, b: 4, r: 3, k: 3, n: 9, f: 10, t: 84, P: 10 / 84 },
+    startWith: ['a', 'b', 'r', 'k'],
     representation: {
       kind: 'pascalTriangle',
       n: 'n',
-      k: 'r',
+      triangle: false,
       slots: { r: 'r', choose: true, result: 't' },
     },
   }),
@@ -3277,9 +3316,9 @@ const PROOFS: ModuleDef[] = [
       len('s', 's', 'Legs AB = AC', 1000, { unit: 'cm' }),
       deg('A', 'A', 'Vertex angle A', 0.2, 179.8),
       der(deg('B', 'B', 'Base angle B')),
-      { ...len('half', 'BD', 'BD'), derived: true, hidden: true },
-      { ...len('ht', 'AD', 'AD'), derived: true, hidden: true },
-      { ...len('b', 'BC', 'Base BC'), derived: true, hidden: true },
+      { ...len('half', 'BD', 'BD', 1000, { min: 1e-9 }), derived: true, hidden: true },
+      { ...len('ht', 'AD', 'AD', 1000, { min: 1e-9 }), derived: true, hidden: true },
+      { ...len('b', 'BC', 'Base BC', 2000, { min: 1e-9 }), derived: true, hidden: true },
       { id: 'k', symbol: 'k', name: 'Proof step', min: 1, max: 5, integer: true },
     ],
     rules: [
@@ -3339,8 +3378,12 @@ const PROOFS: ModuleDef[] = [
         step: 'k',
         steps: [
           { given: ['AB', 'AC'], proved: [], text: 'AB = AC (given).' },
-          { given: ['BAD', 'DAC'], proved: [], text: 'AD bisects ∠A, so ∠BAD = ∠DAC (given).' },
-          { given: [], proved: ['AD'], text: 'AD = AD (the same segment).' },
+          {
+            given: ['BAD', 'DAC'],
+            proved: [],
+            text: 'AD bisects ∠A, so ∠BAD ≅ ∠DAC (definition of angle bisector).',
+          },
+          { given: [], proved: ['AD'], text: 'AD ≅ AD (Reflexive Property).' },
           {
             given: ['AB', 'AC', 'BAD', 'DAC', 'AD'],
             proved: ['△ABD', '△ACD'],
@@ -3349,7 +3392,7 @@ const PROOFS: ModuleDef[] = [
           {
             given: ['△ABD', '△ACD'],
             proved: ['ABD', 'ACD'],
-            text: '∠B = ∠C: matching parts of congruent triangles are equal.',
+            text: '∠B ≅ ∠C (corresponding parts of congruent triangles are congruent).',
           },
         ],
       },
@@ -4073,8 +4116,8 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
     ],
     variables: [
       len('m', 'AD', 'Median AD'),
-      len('g', 'AG', 'AG', 1000),
-      len('k', 'GD', 'GD', 1000),
+      len('g', 'AG', 'AG', 1000, { min: 0.001 }),
+      len('k', 'GD', 'GD', 1000, { min: 0.001 }),
     ],
     rules: [
       rule(

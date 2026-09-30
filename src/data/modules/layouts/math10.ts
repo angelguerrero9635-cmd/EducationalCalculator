@@ -203,7 +203,7 @@ const RIGID_MOTIONS: LayoutDef[] = [
     use: 'Use this for “Is (x, y) → (2x, 2y) a rigid motion? Which move is (x, y) → (−y, x)?”',
     assumptions: [
       'A rigid motion keeps every length and every angle.',
-      'Adding to x or y slides; changing a sign or swapping flips; −y, x or −x, −y turns.',
+      'Adding to x or y slides; changing one sign, or swapping x and y, flips; (−y, x) and (−x, −y) turn.',
       'Multiplying a coordinate by a number other than 1 or −1 stretches: not rigid.',
     ],
     question: 'Which motion does the rule make?',
@@ -247,10 +247,15 @@ const CONGRUENCE: LayoutDef[] = [
     ],
     cards: [
       { label: 'AB = DE, BC = EF, CA = FD', bin: 'sss' },
+      { label: 'AC = DF, CB = FE, BA = ED', bin: 'sss' },
       { label: 'AB = DE, m∠B = m∠E, BC = EF', bin: 'sas' },
+      { label: 'AC = DF, m∠C = m∠F, CB = FE', bin: 'sas' },
       { label: 'm∠A = m∠D, AB = DE, m∠B = m∠E', bin: 'asa' },
+      { label: 'm∠B = m∠E, BC = EF, m∠C = m∠F', bin: 'asa' },
       { label: 'm∠A = m∠D, m∠B = m∠E, BC = EF', bin: 'aas' },
+      { label: 'm∠B = m∠E, m∠C = m∠F, AB = DE', bin: 'aas' },
       { label: 'Right angles at C and F, AB = DE, AC = DF', bin: 'hl' },
+      { label: 'Right angles at B and E, AC = DF, BC = EF', bin: 'hl' },
       { label: 'AB = DE, BC = EF, m∠A = m∠D', bin: 'none' },
       { label: 'All three angles equal', bin: 'none' },
     ],
@@ -291,10 +296,10 @@ const CONGRUENCE: LayoutDef[] = [
     ],
     question: 'Put the proof in order.',
     stages: [
-      { label: 'PM ≅ QM and RM ≅ SM (M is the midpoint of both: given)' },
-      { label: '∠PMR ≅ ∠QMS (Vertical angles)' },
-      { label: '△PMR ≅ △QMS (SAS)' },
-      { label: 'PR ≅ QS (Corresponding parts of congruent triangles)' },
+      { label: 'M is the midpoint of PQ and of RS (Given)' },
+      { label: 'PM ≅ QM and RM ≅ SM (Definition of midpoint)' },
+      { label: '△PMR ≅ △QMS (SAS, with vertical angles ∠PMR ≅ ∠QMS)' },
+      { label: 'PR ≅ QS (Corresponding parts of congruent triangles are congruent)' },
     ],
   },
 ];
@@ -430,7 +435,7 @@ const VOLUME: LayoutDef[] = [
       'Its number of sides is the number of faces the plane crosses.',
       'A curved surface cut by a plane gives a curved edge.',
     ],
-    question: 'What shape is the cross section?',
+    question: 'What is the most exact name for the cross section?',
     bins: [
       {
         id: 'circle',
