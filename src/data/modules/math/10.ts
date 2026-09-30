@@ -1092,7 +1092,7 @@ const distance = (d: string, x1: string, y1: string, x2: string, y2: string, nam
     d,
     (v) => Math.hypot(v[x2]! - v[x1]!, v[y2]! - v[y1]!),
     `√(({${x2}} − {${x1}})² + ({${y2}} − {${y1}})²)`,
-    `${name}The distance formula: the change across and the change up are the legs of a right triangle.`,
+    `The distance formula${name}: the change across and the change up are the legs of a right triangle.`,
   );
 /** The slope of side PQ from its corners (none for a vertical side). */
 const sideSlope = (m: string, p: string, q: string) => {
@@ -1117,7 +1117,7 @@ const corner = (p: string) => [
   coord(`${p}y`, `y${p.toUpperCase()}`, `y of ${p.toUpperCase()}`, 1),
 ];
 const slopeOut = (id: string, side: string) =>
-  der(num(id, `m${side}`, `Slope of ${side}`, -1000, 1000));
+  der(num(id, `m${side}`, `Slope of ${side}`, -1000, 1000, { fraction: 1000 }));
 
 const COORDINATES: ModuleDef[] = [
   page({
@@ -1156,7 +1156,7 @@ const COORDINATES: ModuleDef[] = [
     assumptions: [
       'The midpoint M is halfway from A to B, across and up.',
       'Its coordinates are the averages: ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2).',
-      'Given M and one end, the other end is as far past M: x₂ = 2x − x₁.',
+      'Given M and one end, the other end is as far past M: x₂ = 2xₘ − x₁.',
     ],
     standalone: {
       vars: ['x1', 'x2', 'mx'],
@@ -1167,8 +1167,8 @@ const COORDINATES: ModuleDef[] = [
       coord('y1', 'y₁', 'y of A'),
       coord('x2', 'x₂', 'x of B'),
       coord('y2', 'y₂', 'y of B'),
-      num('mx', 'x', 'x of M', -20, 20, { step: 0.25 }),
-      num('my', 'y', 'y of M', -20, 20, { step: 0.25 }),
+      num('mx', 'xₘ', 'x of M', -20, 20, { step: 0.25 }),
+      num('my', 'yₘ', 'y of M', -20, 20, { step: 0.25 }),
     ],
     rules: [half('mx', 'x1', 'x2', 'x'), half('my', 'y1', 'y2', 'y')],
     example: { x1: -4, y1: 3, x2: 8, y2: -5, mx: 2, my: -1 },
@@ -1347,9 +1347,9 @@ const COORDINATES: ModuleDef[] = [
         (v) => v.ay! === v.by!,
         'Put A and B at the same height, so AB is a level base.',
       ),
-      distance('ab', 'ax', 'ay', 'bx', 'by', 'AB: '),
-      distance('bc', 'bx', 'by', 'cx', 'cy', 'BC: '),
-      distance('ca', 'cx', 'cy', 'ax', 'ay', 'CA: '),
+      distance('ab', 'ax', 'ay', 'bx', 'by', ' for AB'),
+      distance('bc', 'bx', 'by', 'cx', 'cy', ' for BC'),
+      distance('ca', 'cx', 'cy', 'ax', 'ay', ' for CA'),
       total('P', ['ab', 'bc', 'ca'], 'Add the three sides.'),
       derive(
         'K = ½ × |xB − xA| × |yC − yA|',
@@ -1610,7 +1610,7 @@ const ARC_SECTOR: ModuleDef[] = [
     ],
     variables: [
       radius,
-      num('t', 'θ', 'Central angle (radians)', 0.01, 6.28),
+      num('t', 'θ', 'Central angle (radians)', 0.01, 2 * Math.PI, { pi: 'fraction' }),
       arcLength,
       sectorArea,
       der(deg('d', 'θ°', 'Central angle in degrees', 0, 360)),
@@ -1925,10 +1925,14 @@ const VOLUME: ModuleDef[] = [
     use: 'Use this for “A ball has radius 5 cm. Find its surface area and volume.”',
     assumptions: [
       'The surface area is four times a great circle: S = 4πr².',
-      'The volume is V = 4/3πr³.',
+      'The volume is V = 4πr³ ÷ 3: two thirds of the cylinder that just holds the sphere.',
       'Given S or V, work back to the radius first.',
     ],
-    variables: [cm('r', 'r', 'Radius'), cm2('S', 'S', 'Surface area'), cm3('V', 'V', 'Volume')],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      cm2('S', 'S', 'Surface area'),
+      { ...cm3('V', 'V', 'Volume'), pi: 'fraction' },
+    ],
     rules: [
       rule(
         'S = 4πr²',
@@ -1947,11 +1951,15 @@ const VOLUME: ModuleDef[] = [
         'V = 4πr³/3',
         '{V} = 4 × π × {r}³ ÷ 3',
         {
-          V: [(v) => (4 * Math.PI * v.r! ** 3) / 3, '4 × π × {r}³ ÷ 3', 'The volume of a sphere.'],
+          V: [
+            (v) => (4 * Math.PI * v.r! ** 3) / 3,
+            '4 × π × {r}³ ÷ 3',
+            'Cavalieri: a hemisphere matches a cylinder with a cone taken out, so V is 4πr³ ÷ 3.',
+          ],
           r: [
             (v) => Math.cbrt((3 * v.V!) / (4 * Math.PI)),
             '∛(3 × {V} ÷ (4 × π))',
-            'Undo 4/3 π, then take the cube root.',
+            'Multiply by 3, divide by 4π, then take the cube root.',
           ],
         },
         (v) => v.V! - (4 * Math.PI * v.r! ** 3) / 3,
@@ -2570,8 +2578,8 @@ const LAW_SINES_COSINES: ModuleDef[] = [
       angleSum,
       closes('a', 'b', 'c'),
       sines('a', 'A', 'b', 'B'),
-      sines('b', 'B', 'c', 'C'),
       sines('a', 'A', 'c', 'C'),
+      sines('b', 'B', 'c', 'C'),
     ],
     example: {
       A: 35,
@@ -3192,9 +3200,9 @@ const CONSTRUCTIONS: ModuleDef[] = [
       'A bisector cuts the angle into two equal halves: then m∠AOB = m∠BOC.',
     ],
     variables: [
-      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 359.9),
-      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 359.9),
-      deg('c', 'm∠AOC', 'm∠AOC', 0.2, 360),
+      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 179.9),
+      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 179.9),
+      deg('c', 'm∠AOC', 'm∠AOC', 0.2, 180),
     ],
     rules: [sum('c', 'a', 'b', 'The two angles side by side add to the whole angle.')],
     example: { a: 38, b: 47, c: 85 },
@@ -3209,7 +3217,7 @@ const CONSTRUCTIONS: ModuleDef[] = [
     assumptions: [
       'Open the compass wider than half of AB; draw an arc from A and one from B.',
       'The arcs cross at P, the same distance r from A and B. The line through P at right angles to AB bisects it at M.',
-      'P is h above M, and the right triangle AMP gives h² + AM² = r².',
+      'P is MP above M, and the right triangle AMP gives MP² + AM² = r².',
     ],
     variables: [
       len('ab', 'AB', 'Segment AB', 1000, { unit: 'cm', min: 0.1 }),
@@ -3596,6 +3604,12 @@ const PARALLEL_LINES: ModuleDef[] = [
         '{y0} − {m} × {x0}',
         'The point is on the new line, so y₀ = m × x₀ + b.',
       ),
+      limit(
+        'b ≠ b₁',
+        '{b2} is not {b1}',
+        (v) => Math.abs(v.b2! - v.b1!) > 1e-9,
+        'The point is on the given line, so the parallel through it is the line itself.',
+      ),
     ],
     example: { m: 3, b1: -4, x0: 2, y0: 7, b2: 1 },
     startWith: ['m', 'b1', 'x0', 'y0'],
@@ -3773,13 +3787,19 @@ const RIGID_MOTIONS: ModuleDef[] = [
     variables: [
       grid('ax', 'x', 'x of A'),
       grid('ay', 'y', 'y of A'),
-      grid('h', 'h', 'Slide right'),
-      grid('px', 'x′', 'x of A′', 14),
+      grid('h', 'h', 'Slide right (negative: left)'),
+      grid('px', 'x′', 'x of A′'),
       grid('py', 'y′', 'y of A′'),
-      grid('qx', 'x″', 'x of A″', 14),
+      grid('qx', 'x″', 'x of A″'),
       grid('qy', 'y″', 'y of A″'),
     ],
     rules: [
+      limit(
+        'the image stays on the grid',
+        '{ax} + {h} is between −7 and 7',
+        (v) => Math.abs(v.ax! + v.h!) <= 7,
+        'Keep the image on the grid: x + h must be between −7 and 7.',
+      ),
       sum('px', 'ax', 'h', 'The slide moves every point h units across.'),
       carry('py', 'ay', 'A slide across keeps y.'),
       carry('qx', 'px', 'Reflecting across the x-axis keeps x.'),
@@ -3817,10 +3837,16 @@ const RIGID_MOTIONS: ModuleDef[] = [
       grid('ay', 'y', 'y of A', 8),
       grid('a', 'a', 'x of the center', 8),
       grid('b', 'b', 'y of the center', 8),
-      grid('px', 'x′', 'x of A′', 30),
-      grid('py', 'y′', 'y of A′', 30),
+      grid('px', 'x′', 'x of A′', 8),
+      grid('py', 'y′', 'y of A′', 8),
     ],
     rules: [
+      limit(
+        'the image stays on the grid',
+        'The turned point ({a} − ({ay} − {b}), {b} + ({ax} − {a})) is on the grid',
+        (v) => Math.abs(v.a! - v.ay! + v.b!) <= 8 && Math.abs(v.b! + v.ax! - v.a!) <= 8,
+        'Keep the image on the grid: both of its coordinates must be between −8 and 8.',
+      ),
       rule(
         'x′ = a − (y − b)',
         '{px} = {a} − ({ay} − {b})',
@@ -4260,7 +4286,7 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
       len('b', 'b', 'Side b', 1000, { min: 0.1 }),
       der(num('lo', 'low', 'Third side is more than', 0, 1000)),
       der(num('hi', 'high', 'Third side is less than', 0, 2000)),
-      der(len('c', 'c', 'A third side that fits', 1000)),
+      { ...len('c', 'c', 'A third side that fits', 1000), derived: true, hidden: true },
     ],
     rules: [
       derive(
@@ -4277,15 +4303,14 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
         'hi',
         (v) => v.a! + v.b!,
         '{a} + {b}',
-        'The third side must be shorter than the sum.',
+        'The third side must be shorter than the sum. So |a − b| < third side < a + b.',
       ),
-      derive(
+      rule(
         'c = (low + high)/2',
         '{c} = ({lo} + {hi}) ÷ 2',
-        'c',
-        (v) => (v.lo! + v.hi!) / 2,
-        '({lo} + {hi}) ÷ 2',
-        'A third side halfway through the range, for the picture.',
+        { c: [(v) => (v.lo! + v.hi!) / 2, '', ''] },
+        (v) => v.c! - (v.lo! + v.hi!) / 2,
+        { hidden: true },
       ),
     ],
     example: { a: 7, b: 11, lo: 4, hi: 18, c: 11 },
@@ -4300,16 +4325,16 @@ const QUADRILATERALS: ModuleDef[] = [
   page({
     id: 'm.10.quadrilaterals~parallelogram',
     title: 'Angles of a parallelogram',
-    use: 'Use this for “In parallelogram ABCD, ∠A = 58°. Find ∠B and ∠C.”',
+    use: 'Use this for “In parallelogram ABCD, m∠A = 58°. Find m∠B and m∠C.”',
     assumptions: [
       'Opposite sides are parallel and equal, and the diagonals cut each other in half.',
       'Angles next to each other add to 180°, because the sides are parallel.',
-      'Opposite angles are equal: ∠C = ∠A and ∠D = ∠B.',
+      'Opposite angles are equal: m∠C = m∠A and m∠D = m∠B.',
     ],
     variables: [
-      deg('A', 'A', 'Angle A'),
-      der(deg('B', 'B', 'Angle B')),
-      der(deg('C', 'C', 'Angle C')),
+      deg('A', 'm∠A', 'm∠A'),
+      der(deg('B', 'm∠B', 'm∠B')),
+      der(deg('C', 'm∠C', 'm∠C')),
     ],
     rules: [
       supplement('A', 'B', 'Angles next to each other in a parallelogram add to 180°.'),
