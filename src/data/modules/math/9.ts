@@ -662,6 +662,7 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
       }),
       num('T', 't_top', 'Time at the top', 0, 1000, { unit: 's', units: ['s'], derived: true }),
       num('M', 'h_max', 'Greatest height', 0, 100000, { unit: 'm', units: ['m'], derived: true }),
+      num('L', 't_land', 'Landing time', 0, 10000, { unit: 's', units: ['s'], derived: true }),
     ],
     rules: [
       derive(
@@ -674,30 +675,30 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
         'Gravity’s pull makes the t² term −½g.',
       ),
       rule(
-        'h = −½gt² + vt + h₀',
-        '{H} = −{g} ÷ 2 × {t}² + {v} × {t} + {h0}',
-        ['H', 'g', 't', 'v', 'h0'],
-        (v) => v.H! - (-(v.g! / 2) * v.t! ** 2 + v.v! * v.t! + v.h0!),
+        'h = at² + vt + h₀',
+        '{H} = {A} × {t}² + {v} × {t} + {h0}',
+        ['H', 'A', 't', 'v', 'h0'],
+        (v) => v.H! - (v.A! * v.t! ** 2 + v.v! * v.t! + v.h0!),
         {
           H: [
-            (v) => exact(-(v.g! / 2) * v.t! ** 2 + v.v! * v.t! + v.h0!),
-            '−{g} ÷ 2 × {t}² + {v} × {t} + {h0}',
+            (v) => exact(v.A! * v.t! ** 2 + v.v! * v.t! + v.h0!),
+            '{A} × {t}² + {v} × {t} + {h0}',
             'Put the time into the height rule.',
           ],
           t: [
             (v) => {
-              const D = v.v! ** 2 + 2 * v.g! * (v.h0! - v.H!);
-              if (D < 0) return undefined;
-              return [(v.v! - Math.sqrt(D)) / v.g!, (v.v! + Math.sqrt(D)) / v.g!]
+              const D = v.v! ** 2 - 4 * v.A! * (v.h0! - v.H!);
+              if (D < 0 || !v.A) return undefined;
+              return [(-v.v! + Math.sqrt(D)) / (2 * v.A!), (-v.v! - Math.sqrt(D)) / (2 * v.A!)]
                 .filter((x) => x >= 0)
                 .map(exact);
             },
-            '({v} ± √({v}² + 2 × {g} × ({h0} − {H}))) ÷ {g}',
+            '(−{v} ± √({v}² − 4 × {A} × ({h0} − {H}))) ÷ (2 × {A})',
             'Write the rule = 0 and use the quadratic formula: the ball is at a height once going up, once coming down.',
           ],
           h0: [
-            (v) => exact(v.H! + (v.g! / 2) * v.t! ** 2 - v.v! * v.t!),
-            '{H} + {g} ÷ 2 × {t}² − {v} × {t}',
+            (v) => exact(v.H! - v.A! * v.t! ** 2 - v.v! * v.t!),
+            '{H} − {A} × {t}² − {v} × {t}',
             'Move the t terms to the other side.',
           ],
         },
@@ -720,11 +721,31 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
         '{h0} + {v}² ÷ (2 × {g})',
         'Put the top’s time into the height rule; it simplifies to h₀ + v² ÷ (2g).',
       ),
+      derive(
+        't_land = (v + √(v² + 2gh₀)) ÷ g',
+        'L',
+        ['v', 'g', 'h0'],
+        '{L} = ({v} + √({v}² + 2 × {g} × {h0})) ÷ {g}',
+        (v) => div(v.v! + Math.sqrt(v.v! ** 2 + 2 * v.g! * v.h0!), v.g!),
+        '({v} + √({v}² + 2 × {g} × {h0})) ÷ {g}',
+        'Set h = 0 and use the quadratic formula; the positive root is the landing.',
+      ),
     ],
-    example: { g: 9.8, v: 19.6, h0: 2, t: 1, H: 16.7, A: -4.9, T: 2, M: 21.6 },
+    example: {
+      g: 9.8,
+      v: 19.6,
+      h0: 2,
+      t: 1,
+      H: 16.7,
+      A: -4.9,
+      T: 2,
+      M: 21.6,
+      L: (19.6 + Math.sqrt(19.6 ** 2 + 2 * 9.8 * 2)) / 9.8,
+    },
     // The graph's axes are in meters and seconds, so the units stay put.
     unitSystems: ['metric'],
     startWith: ['t', 'g', 'v', 'h0'],
+    pictureLabels: ['L'],
     representation: {
       kind: 'functionGraph',
       family: 'quadratic',
@@ -1463,7 +1484,7 @@ function formulaRules(a = 'a', b = 'b', c = 'c'): Rule[] {
 }
 
 /** The zeros of x² + bx + c, smallest first, from D = b² − 4c. */
-function monicZeros(): Rule[] {
+function monicZeros(set: (lo: string, hi: string) => string): Rule[] {
   const root = (id: string, sign: 1 | -1) =>
     derive(
       `${id} = (−b ${sign < 0 ? '−' : '+'} √D) ÷ 2`,
@@ -1475,6 +1496,12 @@ function monicZeros(): Rule[] {
       sign < 0
         ? 'Solve x² + bx + c = 0 first: the quadratic formula with a = 1 and the minus sign.'
         : 'The plus sign gives the larger zero.',
+      sign > 0
+        ? {
+            note: (v) =>
+              known(v, 'x1', 'x2') ? `→ ${set(fr(v.x1!, 20), fr(v.x2!, 20))}` : '',
+          }
+        : {},
     );
   return [
     derive(
@@ -1515,7 +1542,7 @@ const QUADRATIC_INEQUALITIES: ModuleDef[] = [
       num('x1', 'x₁', 'Smaller zero', -40, 40, { derived: true }),
       num('x2', 'x₂', 'Larger zero', -40, 40, { derived: true }),
     ],
-    rules: monicZeros(),
+    rules: monicZeros((lo, hi) => `${lo} < x < ${hi}`),
     example: { b: -2, c: -8, D: 36, x1: -2, x2: 4 },
     startWith: ['b', 'c'],
     equation: 'x² + {b}x + {c} < 0',
@@ -1548,7 +1575,7 @@ const QUADRATIC_INEQUALITIES: ModuleDef[] = [
       num('x1', 'x₁', 'Smaller zero', -10, 10, { derived: true }),
       num('x2', 'x₂', 'Larger zero', -10, 10, { derived: true }),
     ],
-    rules: monicZeros(),
+    rules: monicZeros((lo, hi) => `x ≤ ${lo} or x ≥ ${hi}`),
     example: { b: -1, c: -6, D: 25, x1: -2, x2: 3 },
     startWith: ['b', 'c'],
     equation: 'x² + {b}x + {c} ≥ 0',
@@ -1577,8 +1604,8 @@ const QUADRATIC_FORMULA: ModuleDef[] = [
       num('b', 'b', 'x coefficient', -100, 100, { step: 0.5 }),
       num('c', 'c', 'Number term', -100, 100, { step: 0.5 }),
       num('D', 'D', 'Discriminant', -100000, 100000, { derived: true }),
-      num('x1', 'x₁', 'Root with −√D', -1e6, 1e6, { derived: true }),
-      num('x2', 'x₂', 'Root with +√D', -1e6, 1e6, { derived: true }),
+      num('x1', 'x₁', 'Root with −√D', -1e6, 1e6, { derived: true, fraction: 12 }),
+      num('x2', 'x₂', 'Root with +√D', -1e6, 1e6, { derived: true, fraction: 12 }),
     ],
     rules: [nonzero('a', 'The x² coefficient'), ...formulaRules()],
     example: { a: 2, b: -3, c: -5, D: 49, x1: -1, x2: 2.5 },
@@ -1606,8 +1633,8 @@ const QUADRATIC_FORMULA: ModuleDef[] = [
     variables: [
       num('p', 'p', 'Number in the bracket', -50, 50, { step: 0.5 }),
       num('q', 'q', 'Right side', -1000, 10000, { step: 0.5 }),
-      num('h', 'h', 'Vertex x, −p', -50, 50, { derived: true }),
-      num('k', 'k', 'Vertex y, −q', -10000, 1000, { derived: true }),
+      num('h', 'h', 'Vertex x, −p', -50, 50, pictureOnly),
+      num('k', 'k', 'Vertex y, −q', -10000, 1000, pictureOnly),
       num('x1', 'x₁', 'Smaller root', -200, 200, { derived: true }),
       num('x2', 'x₂', 'Larger root', -200, 200, { derived: true }),
     ],
@@ -1637,23 +1664,27 @@ const QUADRATIC_FORMULA: ModuleDef[] = [
         '−{p} + √{q}',
         'The plus root.',
       ),
-      derive(
-        'h = −p',
-        'h',
-        ['p'],
-        '{h} = −{p}',
-        (v) => -v.p!,
-        '−{p}',
-        'On the graph of y = (x + p)² − q the vertex is at x = −p.',
+      figure(
+        derive(
+          'h = −p',
+          'h',
+          ['p'],
+          '{h} = −{p}',
+          (v) => -v.p!,
+          '−{p}',
+          'On the graph of y = (x + p)² − q the vertex is at x = −p.',
+        ),
       ),
-      derive(
-        'k = −q',
-        'k',
-        ['q'],
-        '{k} = −{q}',
-        (v) => -v.q!,
-        '−{q}',
-        'Moving q to the left side puts the vertex at y = −q; the roots are the zeros.',
+      figure(
+        derive(
+          'k = −q',
+          'k',
+          ['q'],
+          '{k} = −{q}',
+          (v) => -v.q!,
+          '−{q}',
+          'Moving q to the left side puts the vertex at y = −q; the roots are the zeros.',
+        ),
       ),
     ],
     example: { p: -3, q: 25, h: 3, k: -25, x1: -2, x2: 8 },
@@ -1717,6 +1748,19 @@ const QUADRATIC_FORMULA: ModuleDef[] = [
         (v) => v.m! - v.c!,
         '{m} − {c}',
         'Move c to the right side and add the corner to both sides: (x + k)² = k² − c.',
+        {
+          work: (v) =>
+            known(v, 'b', 'c', 'k', 'm', 'R')
+              ? [
+                  `${poly([
+                    [1, 'x²'],
+                    [v.b!, 'x'],
+                    [v.m!, ''],
+                  ])} = ${fmt(-v.c!)} + ${fmt(v.m!)}`,
+                  `(${xPlus(v.k!)})² = ${fmt(v.R!)}`,
+                ]
+              : [],
+        },
       ),
       derive(
         'x₁ = −k − √R',
