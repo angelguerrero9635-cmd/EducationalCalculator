@@ -46,6 +46,48 @@ export const MATH_9_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  // ── Regression: the direction of a correlation (S-ID.8) ──
+  {
+    kind: 'sort',
+    id: 'm.9.regression~correlation',
+    title: 'Positive, negative or none?',
+    use: 'Use this for “Which scatter plot shows a negative correlation?” or “What does r = −0.78 say?”',
+    assumptions: [
+      'The sign of r says which way the points go; how close r is to 1 or −1 says how tight they are.',
+      'Positive: as one variable goes up, the other tends to go up.',
+      'Negative: as one goes up, the other tends to go down. None: no trend either way.',
+    ],
+    question: 'What kind of correlation is it?',
+    bins: [
+      {
+        id: 'positive',
+        label: 'Positive correlation',
+        why: 'The points rise from left to right, and r is above 0.',
+      },
+      {
+        id: 'negative',
+        label: 'Negative correlation',
+        why: 'The points fall from left to right, and r is below 0.',
+      },
+      {
+        id: 'none',
+        label: 'No correlation',
+        why: 'The points show no trend up or down, and r is close to 0.',
+      },
+    ],
+    cards: [
+      { label: 'Rising points', bin: 'positive', figure: { kind: 'scatter', trend: 'up' } },
+      { label: 'r = 0.91', bin: 'positive' },
+      { label: 'Height and arm span', bin: 'positive' },
+      { label: 'Falling points', bin: 'negative', figure: { kind: 'scatter', trend: 'down' } },
+      { label: 'r = −0.78', bin: 'negative' },
+      { label: 'Age of a bike and its resale price', bin: 'negative' },
+      { label: 'Scattered points', bin: 'none', figure: { kind: 'scatter', trend: 'none' } },
+      { label: 'r = 0.04', bin: 'none' },
+      { label: 'Shoe size and quiz score', bin: 'none' },
+    ],
+  },
+
   // ── Radicals: rational and irrational numbers (N-RN.3) ──
   {
     kind: 'sort',

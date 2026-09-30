@@ -3781,6 +3781,544 @@ const SEQUENCES: ModuleDef[] = [
   }),
 ];
 
+// ── Regression ──
+
+/** Practice hours and points scored in a game (made up for the lesson). */
+const PRACTICE_POINTS: [number, number][] = [
+  [1, 52],
+  [2, 58],
+  [3, 61],
+  [4, 68],
+  [5, 70],
+  [6, 77],
+  [7, 80],
+  [8, 86],
+];
+/** Outside temperature (°F) and hot drinks sold (made up for the lesson). */
+const TEMPERATURE_DRINKS: [number, number][] = [
+  [40, 60],
+  [45, 52],
+  [50, 57],
+  [55, 46],
+  [60, 50],
+  [65, 41],
+  [70, 45],
+  [75, 36],
+];
+
+/** ŷ = mx + b, solved for the prediction and for x. */
+const prediction = (m: string | number, b: string | number) => {
+  const M = (v: Values) => (typeof m === 'number' ? m : v[m]!);
+  const B = (v: Values) => (typeof b === 'number' ? b : v[b]!);
+  const ms = typeof m === 'number' ? fmt(m) : `{${m}}`;
+  const bs = typeof b === 'number' ? fmt(b) : `{${b}}`;
+  const vars = ['y', 'x', ...[m, b].filter((z): z is string => typeof z === 'string')];
+  return rule('ŷ = mx + b', `{y} = ${ms} × {x} + ${bs}`, vars, (v) => v.y! - (M(v) * v.x! + B(v)), {
+    y: [
+      (v) => exact(M(v) * v.x! + B(v)),
+      `${ms} × {x} + ${bs}`,
+      'Put x into the line: slope times x, plus the intercept.',
+    ],
+    x: [
+      (v) => (M(v) ? exact((v.y! - B(v)) / M(v)) : undefined),
+      `({y} − ${bs}) ÷ ${ms}`,
+      'Take the intercept from the prediction, then divide by the slope.',
+    ],
+  });
+};
+
+const REGRESSION: ModuleDef[] = [
+  page({
+    id: 'm.9.regression',
+    assumptions: [
+      'Residual = actual − predicted; a point above the line has a positive residual.',
+      'A good line leaves residuals scattered about 0 with no pattern.',
+      'Predict only inside the data’s x values.',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -20, 20, { step: 0.1 }),
+      num('b', 'b', 'y-intercept', 0, 100, { step: 0.1 }),
+      num('x', 'x', 'Practice hours', 0, 9, { step: 0.5 }),
+      num('y', 'ŷ', 'Predicted points', -200, 300),
+      num('e', 'e', 'Residual of point 3, (3, 61)', -300, 300, { derived: true }),
+    ],
+    rules: [
+      prediction('m', 'b'),
+      derive(
+        'e = 61 − (3m + b)',
+        'e',
+        ['m', 'b'],
+        '{e} = 61 − ({m} × 3 + {b})',
+        (v) => 61 - (v.m! * 3 + v.b!),
+        '61 − ({m} × 3 + {b})',
+        'Point 3 is (3, 61): its actual points minus the line’s prediction at x = 3.',
+      ),
+    ],
+    example: { m: 5, b: 47, x: 4.5, y: 69.5, e: -1 },
+    startWith: ['x', 'm', 'b'],
+    representation: {
+      kind: 'scatter',
+      x: { label: 'Practice hours', min: 0, max: 9 },
+      y: { label: 'Points scored', min: 40, max: 100 },
+      points: PRACTICE_POINTS,
+      slope: 'm',
+      intercept: 'b',
+      at: { x: 'x', y: 'y' },
+      residuals: 'plot',
+      residualOf: { point: 2, residual: 'e' },
+    },
+  }),
+  page({
+    id: 'm.9.regression~correlation-r',
+    title: 'The least-squares line and r',
+    use: 'Use this for “Predict the drinks sold at 62 °F from the line of best fit, and describe r.”',
+    assumptions: [
+      'A calculator gives the least-squares line: here ŷ ≈ −0.59x + 82.19.',
+      'r ≈ −0.90: the negative sign says the points fall; near −1 says they are close to a line.',
+      'Correlation is not causation: warm days bring other changes too.',
+    ],
+    variables: [
+      num('x', 'x', 'Temperature', 30, 85, { unit: '°F', units: ['°F'], step: 0.5 }),
+      num('y', 'ŷ', 'Predicted drinks sold', -100, 200),
+    ],
+    rules: [prediction(-0.59, 82.19)],
+    example: { x: 62, y: 45.61 },
+    startWith: ['x'],
+    unitSystems: ['us'],
+    representation: {
+      kind: 'scatter',
+      x: { label: 'Temperature (°F)', min: 35, max: 80 },
+      y: { label: 'Hot drinks sold', min: 30, max: 65 },
+      points: TEMPERATURE_DRINKS,
+      slope: -0.59,
+      intercept: 82.19,
+      at: { x: 'x', y: 'y' },
+      r: true,
+      residuals: 'segments',
+      leastSquares: 'fit',
+    },
+  }),
+];
+
+// ── One-variable statistics ──
+
+const BINS = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6'];
+const MIDS = [5, 15, 25, 35, 45, 55];
+/** The five-number summary's ids and names. */
+const FIVE = ['lo', 'q1', 'md', 'q3', 'hi'];
+const FIVE_NAMES = ['Least', 'First quartile', 'Median', 'Third quartile', 'Greatest'];
+const FIVE_SYMBOLS = ['min', 'Q₁', 'M', 'Q₃', 'max'];
+/** The five numbers in order, as checks. */
+const ordered = (ids: string[]): Rule[] =>
+  ids
+    .slice(1)
+    .map((big, i) =>
+      constraint(
+        `${big} ≥ ${ids[i]}`,
+        `{${big}} is at least {${ids[i]}}`,
+        [big, ids[i]!],
+        (v) => !(v[big]! >= v[ids[i]!]!),
+      ),
+    );
+/** IQR = Q₃ − Q₁. */
+const iqr = (I: string, q3: string, q1: string, how = 'The width of the box: the middle half.') =>
+  derive(
+    `${I} = ${q3} − ${q1}`,
+    I,
+    [q3, q1],
+    `{${I}} = {${q3}} − {${q1}}`,
+    (v) => v[q3]! - v[q1]!,
+    `{${q3}} − {${q1}}`,
+    how,
+  );
+
+const DATA_IDS = ['x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x7', 'x8'];
+
+const DATA_DISPLAYS: ModuleDef[] = [
+  page({
+    id: 'm.9.data-displays',
+    assumptions: [
+      'A histogram groups values into equal bins; each bin takes its left end and leaves out its right.',
+      'From the counts alone the mean is an estimate: each value counts as its bin’s midpoint.',
+      'A long right tail pulls the mean above the median.',
+    ],
+    variables: [
+      ...BINS.map((id, i) =>
+        int(id, `f${sub(i + 1)}`, `Count, ${i * 10} to ${i * 10 + 10} minutes`, 0, 50),
+      ),
+      int('n', 'n', 'Number of students', 0, 300, { derived: true }),
+      num('mean', 'x̄', 'Estimated mean', 0, 60, { unit: 'min', units: ['min'], derived: true }),
+    ],
+    rules: [
+      derive(
+        'n = f₁ + … + f₆',
+        'n',
+        BINS,
+        `{n} = ${BINS.map((b) => `{${b}}`).join(' + ')}`,
+        (v) => BINS.reduce((t, b) => t + v[b]!, 0),
+        BINS.map((b) => `{${b}}`).join(' + '),
+        'Add the counts of all the bins.',
+      ),
+      derive(
+        'x̄ ≈ Σ(midpoint × f) ÷ n',
+        'mean',
+        [...BINS, 'n'],
+        `{mean} = (${BINS.map((b, i) => `${MIDS[i]} × {${b}}`).join(' + ')}) ÷ {n}`,
+        (v) =>
+          div(
+            BINS.reduce((t, b, i) => t + MIDS[i]! * v[b]!, 0),
+            v.n!,
+          ),
+        `(${BINS.map((b, i) => `${MIDS[i]} × {${b}}`).join(' + ')}) ÷ {n}`,
+        'Count each value as its bin’s midpoint, add them all, then divide by how many there are.',
+      ),
+    ],
+    example: { f1: 2, f2: 5, f3: 8, f4: 6, f5: 3, f6: 1, n: 25, mean: 27.4 },
+    startWith: BINS,
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'histogram',
+      counts: BINS,
+      start: 0,
+      width: 10,
+      mean: 'mean',
+      shape: true,
+      axis: 'Minutes of reading',
+    },
+  }),
+  page({
+    id: 'm.9.data-displays~outliers',
+    title: 'Outliers and the 1.5 × IQR fences',
+    use: 'Use this for “The five-number summary is 12, 20, 24, 28, 45. Is 45 an outlier?”',
+    assumptions: [
+      'The fences sit 1.5 × IQR below Q₁ and 1.5 × IQR above Q₃.',
+      'A value past a fence is an outlier.',
+      'An outlier moves the mean and the range a lot, the median and the IQR hardly at all.',
+    ],
+    variables: [
+      ...FIVE.map((id, i) => num(id, FIVE_SYMBOLS[i]!, FIVE_NAMES[i]!, 0, 1000, { step: 0.5 })),
+      num('I', 'IQR', 'Interquartile range', 0, 1000, { derived: true }),
+      num('L', 'L', 'Lower fence', -1500, 1000, { derived: true }),
+      num('U', 'U', 'Upper fence', 0, 2500, { derived: true }),
+    ],
+    rules: [
+      ...ordered(FIVE),
+      iqr('I', 'q3', 'q1'),
+      derive(
+        'L = Q₁ − 1.5 × IQR',
+        'L',
+        ['q1', 'I'],
+        '{L} = {q1} − 1.5 × {I}',
+        (v) => v.q1! - 1.5 * v.I!,
+        '{q1} − 1.5 × {I}',
+        'Go 1.5 box-widths below the first quartile.',
+      ),
+      derive(
+        'U = Q₃ + 1.5 × IQR',
+        'U',
+        ['q3', 'I'],
+        '{U} = {q3} + 1.5 × {I}',
+        (v) => v.q3! + 1.5 * v.I!,
+        '{q3} + 1.5 × {I}',
+        'Go 1.5 box-widths above the third quartile.',
+        {
+          note: (v) => {
+            if (!known(v, 'lo', 'hi', 'L', 'U')) return '';
+            const out = [
+              ...(v.lo! < v.L! ? [fmt(v.lo!)] : []),
+              ...(v.hi! > v.U! ? [fmt(v.hi!)] : []),
+            ];
+            return out.length ? `→ outlier: ${out.join(' and ')}` : '→ no outliers';
+          },
+        },
+      ),
+    ],
+    example: { lo: 12, q1: 20, md: 24, q3: 28, hi: 45, I: 8, L: 8, U: 40 },
+    startWith: FIVE,
+    representation: {
+      kind: 'boxPlot',
+      min: 'lo',
+      q1: 'q1',
+      median: 'md',
+      q3: 'q3',
+      max: 'hi',
+      range: [0, 50],
+      fences: { lower: 'L', upper: 'U' },
+    },
+  }),
+  page({
+    id: 'm.9.data-displays~standard-deviation',
+    title: 'Standard deviation',
+    use: 'Use this for “Find the mean and the standard deviation of 1, 3, 3, 5, 5, 7, 7, 9.”',
+    assumptions: [
+      'The standard deviation is the typical distance of the values from the mean.',
+      'σ = √(sum of squared deviations ÷ n): square each distance, add, divide by n, take the root.',
+      'Most values lie within one standard deviation of the mean.',
+    ],
+    variables: [
+      ...DATA_IDS.map((id, i) => num(id, `x${sub(i + 1)}`, `Value ${i + 1}`, 0, 100, { step: 1 })),
+      num('m', 'x̄', 'Mean', 0, 100, { derived: true }),
+      num('S', 'S', 'Sum of squared deviations', 0, 100000, { derived: true }),
+      num('sd', 'σ', 'Standard deviation', 0, 100, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'x̄ = sum ÷ 8',
+        'm',
+        DATA_IDS,
+        `{m} = (${DATA_IDS.map((x) => `{${x}}`).join(' + ')}) ÷ 8`,
+        (v) => DATA_IDS.reduce((t, x) => t + v[x]!, 0) / 8,
+        `(${DATA_IDS.map((x) => `{${x}}`).join(' + ')}) ÷ 8`,
+        'Add the 8 values, then divide by 8.',
+      ),
+      derive(
+        'S = Σ(x − x̄)²',
+        'S',
+        ['m', ...DATA_IDS],
+        `{S} = ${DATA_IDS.map((x) => `({${x}} − {m})²`).join(' + ')}`,
+        (v) => DATA_IDS.reduce((t, x) => t + (v[x]! - v.m!) ** 2, 0),
+        DATA_IDS.map((x) => `({${x}} − {m})²`).join(' + '),
+        'Each value’s distance from the mean, squared, all added.',
+      ),
+      derive(
+        'σ = √(S ÷ 8)',
+        'sd',
+        ['S'],
+        '{sd} = √({S} ÷ 8)',
+        (v) => Math.sqrt(v.S! / 8),
+        '√({S} ÷ 8)',
+        'Divide by n = 8, then take the square root.',
+      ),
+    ],
+    example: {
+      x1: 1,
+      x2: 3,
+      x3: 3,
+      x4: 5,
+      x5: 5,
+      x6: 7,
+      x7: 7,
+      x8: 9,
+      m: 5,
+      S: 48,
+      sd: Math.sqrt(6),
+    },
+    startWith: DATA_IDS,
+    representation: {
+      kind: 'dotPlot',
+      data: DATA_IDS,
+      min: 0,
+      max: 10,
+      mean: 'm',
+      sd: { id: 'sd', kind: 'population' },
+    },
+  }),
+  page({
+    id: 'm.9.data-displays~compare',
+    title: 'Compare two box plots',
+    use: 'Use this for “Compare the reading minutes of two classes by their medians and IQRs.”',
+    assumptions: [
+      'Put both box plots on one number line so their boxes line up.',
+      'Compare the centers with the medians and the spreads with the IQRs.',
+      'The medians and IQRs are hardly moved by an outlier, so they suit skewed data.',
+    ],
+    variables: [
+      ...FIVE.map((id, i) =>
+        num(`${id}A`, `${FIVE_SYMBOLS[i]}ₐ`, `Class A ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
+          step: 0.5,
+        }),
+      ),
+      ...FIVE.map((id, i) =>
+        num(`${id}B`, `${FIVE_SYMBOLS[i]}ᵦ`, `Class B ${FIVE_NAMES[i]!.toLowerCase()}`, 0, 100, {
+          step: 0.5,
+        }),
+      ),
+      num('IA', 'IQRₐ', 'Class A interquartile range', 0, 100, { derived: true }),
+      num('IB', 'IQRᵦ', 'Class B interquartile range', 0, 100, { derived: true }),
+      num('D', 'D', 'Difference of the medians (B − A)', -100, 100, { derived: true }),
+    ],
+    rules: [
+      ...ordered(FIVE.map((id) => `${id}A`)),
+      ...ordered(FIVE.map((id) => `${id}B`)),
+      iqr('IA', 'q3A', 'q1A', 'Class A’s box width: the spread of its middle half.'),
+      iqr('IB', 'q3B', 'q1B', 'Class B’s box width.'),
+      derive(
+        'D = M_B − M_A',
+        'D',
+        ['mdB', 'mdA'],
+        '{D} = {mdB} − {mdA}',
+        (v) => v.mdB! - v.mdA!,
+        '{mdB} − {mdA}',
+        'How far B’s median is above A’s: the difference in centers.',
+      ),
+    ],
+    example: {
+      loA: 10,
+      q1A: 18,
+      mdA: 25,
+      q3A: 32,
+      hiA: 50,
+      loB: 15,
+      q1B: 22,
+      mdB: 28,
+      q3B: 40,
+      hiB: 55,
+      IA: 14,
+      IB: 18,
+      D: 3,
+    },
+    startWith: [...FIVE.map((id) => `${id}A`), ...FIVE.map((id) => `${id}B`)],
+    representation: {
+      kind: 'boxPlot',
+      min: 'loA',
+      q1: 'q1A',
+      median: 'mdA',
+      q3: 'q3A',
+      max: 'hiA',
+      range: [0, 60],
+      second: { min: 'loB', q1: 'q1B', median: 'mdB', q3: 'q3B', max: 'hiB' },
+      labels: ['Class A', 'Class B'],
+    },
+  }),
+];
+
+// ── Two-way tables ──
+
+const cell = (id: string, name: string) => int(id, id, name, 0, 500);
+const CELLS = [
+  cell('a', 'Grade 9, plays an instrument'),
+  cell('b', 'Grade 9, does not'),
+  cell('c', 'Grade 10, plays an instrument'),
+  cell('d', 'Grade 10, does not'),
+];
+const grandTotal = derive(
+  'n = a + b + c + d',
+  'n',
+  ['a', 'b', 'c', 'd'],
+  '{n} = {a} + {b} + {c} + {d}',
+  (v) => v.a! + v.b! + v.c! + v.d!,
+  '{a} + {b} + {c} + {d}',
+  'The grand total: add all four cells.',
+);
+/** f = part ÷ whole, a relative frequency. */
+const share = (f: string, part: string, whole: string, how: string) =>
+  derive(
+    `${f} = ${part} ÷ ${whole}`,
+    f,
+    [part, whole],
+    `{${f}} = {${part}} ÷ {${whole}}`,
+    (v) => div(v[part]!, v[whole]!),
+    `{${part}} ÷ {${whole}}`,
+    how,
+  );
+/** A total of two cells. */
+const sum2cells = (t: string, x: string, y: string, how: string) =>
+  derive(
+    `${t} = ${x} + ${y}`,
+    t,
+    [x, y],
+    `{${t}} = {${x}} + {${y}}`,
+    (v) => v[x]! + v[y]!,
+    `{${x}} + {${y}}`,
+    how,
+  );
+const TABLE = {
+  rows: ['Grade 9', 'Grade 10'],
+  cols: ['Plays an instrument', 'Does not'],
+  cells: [
+    ['a', 'b'],
+    ['c', 'd'],
+  ],
+};
+const freq = (id: string, symbol: string, name: string) =>
+  num(id, symbol, name, 0, 1, { derived: true });
+const total = (id: string, name: string) => int(id, id, name, 0, 2000, { derived: true });
+
+const TWO_WAY_TABLES: ModuleDef[] = [
+  page({
+    id: 'm.9.two-way-tables',
+    assumptions: [
+      'A relative frequency is a count divided by a total.',
+      'A joint relative frequency divides one cell by the grand total.',
+      'The row and column totals are the margins of the table.',
+    ],
+    variables: [...CELLS, total('n', 'Grand total'), freq('p', 'p', 'Joint relative frequency')],
+    rules: [grandTotal, share('p', 'a', 'n', 'One cell out of everyone: Grade 9 and plays.')],
+    example: { a: 18, b: 22, c: 12, d: 28, n: 80, p: 0.225 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'table',
+      twoWay: { ...TABLE, lit: { row: 0, col: 0 }, of: 'total', frequency: 'p' },
+    },
+  }),
+  page({
+    id: 'm.9.two-way-tables~marginal',
+    title: 'Marginal relative frequency',
+    use: 'Use this for “What fraction of all the students play an instrument?”',
+    assumptions: [
+      'A marginal relative frequency uses a total at the edge of the table.',
+      'Divide a column (or row) total by the grand total.',
+    ],
+    variables: [
+      ...CELLS,
+      total('C', 'Plays an instrument, total'),
+      total('n', 'Grand total'),
+      freq('p', 'p', 'Marginal relative frequency'),
+    ],
+    rules: [
+      sum2cells('C', 'a', 'c', 'The column total: everyone who plays.'),
+      grandTotal,
+      share('p', 'C', 'n', 'The column total out of everyone.'),
+    ],
+    example: { a: 18, b: 22, c: 12, d: 28, C: 30, n: 80, p: 0.375 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'table',
+      twoWay: { ...TABLE, lit: { col: 0 }, of: 'total', frequency: 'p' },
+    },
+  }),
+  page({
+    id: 'm.9.two-way-tables~conditional',
+    title: 'Conditional relative frequency',
+    use: 'Use this for “Of the Grade 9 students, what fraction play? Is grade linked to playing?”',
+    assumptions: [
+      'A conditional relative frequency divides a cell by its own row total.',
+      'Compare the rows: if their fractions differ, the two variables are associated.',
+      'If every row has the same fraction, there is no association.',
+    ],
+    variables: [
+      ...CELLS,
+      total('R1', 'Grade 9 total'),
+      total('R2', 'Grade 10 total'),
+      freq('p1', 'p₁', 'Grade 9 who play'),
+      freq('p2', 'p₂', 'Grade 10 who play'),
+      num('g', 'g', 'Gap between the rows', -1, 1, { derived: true }),
+    ],
+    rules: [
+      sum2cells('R1', 'a', 'b', 'The row total for Grade 9.'),
+      sum2cells('R2', 'c', 'd', 'The row total for Grade 10.'),
+      share('p1', 'a', 'R1', 'Of the Grade 9 students, the fraction who play.'),
+      share('p2', 'c', 'R2', 'Of the Grade 10 students, the fraction who play.'),
+      derive(
+        'g = p₁ − p₂',
+        'g',
+        ['p1', 'p2'],
+        '{g} = {p1} − {p2}',
+        (v) => v.p1! - v.p2!,
+        '{p1} − {p2}',
+        'Compare the rows: a gap between them means grade and playing are associated.',
+      ),
+    ],
+    example: { a: 18, b: 22, c: 12, d: 28, R1: 40, R2: 40, p1: 0.45, p2: 0.3, g: 0.15 },
+    startWith: ['a', 'b', 'c', 'd'],
+    pictureLabels: ['p2', 'g'],
+    representation: {
+      kind: 'table',
+      twoWay: { ...TABLE, lit: { row: 0, col: 0 }, of: 'row', frequency: 'p1', bar: 'rows' },
+    },
+  }),
+];
+
 /** Every Grade 9 math calculator, by skill in taxonomy order. */
 export const MATH_9_MODULES: ModuleDef[] = [
   ...EXPONENTIAL,
@@ -3798,4 +4336,7 @@ export const MATH_9_MODULES: ModuleDef[] = [
   ...INEQUALITY_SYSTEMS,
   ...RADICALS,
   ...SEQUENCES,
+  ...REGRESSION,
+  ...DATA_DISPLAYS,
+  ...TWO_WAY_TABLES,
 ];
