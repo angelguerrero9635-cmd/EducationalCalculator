@@ -72,6 +72,12 @@ export interface VariableDef {
    */
   group?: string;
   /**
+   * Figure-only: worked out for the picture (a side that places a drawing, BD = s sin(A/2) on a
+   * page before trig), never shown as a row, asked for, or written in the steps. It is found
+   * through `hidden` relations only.
+   */
+  hidden?: boolean;
+  /**
    * Set by the unit context, not by content: how many formula units one shown unit equals, and
    * the shown unit. Ranges and whole-number rules then apply to the shown number.
    */
@@ -90,6 +96,11 @@ export interface Relation {
    * only used to reject values that break it once every variable in it is known.
    */
   constraint?: boolean;
+  /**
+   * Places the drawing only (see VariableDef.hidden): solved like any other, but kept out of
+   * the Formulas list, the steps and the check.
+   */
+  hidden?: boolean;
   /**
    * Variables the display names but the rule doesn't use (the bottom in "3/4 + 2/4 = 5/4"):
    * they can be unknown without holding the rule up.

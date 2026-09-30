@@ -669,7 +669,7 @@ function checkAll(c: Ctx, sent: readonly Given[], res: SolveResult) {
 // ─── Sampling stages ─────────────────────────────────────────────────────────
 
 /** Values a student can type: a derived value is only ever worked out. */
-const typable = (c: Ctx) => c.sys.variables.filter((v) => !v.derived);
+const typable = (c: Ctx) => c.sys.variables.filter((v) => !v.derived && !v.hidden);
 
 function randomGivens(c: Ctx, r: Rng): Given[] {
   const vars = typable(c);
@@ -731,9 +731,10 @@ function stageEdits(c: Ctx, r: Rng, sequences: number) {
       let mode: 'set' | 'same' | 'clear' | 'invalid' | 'multi' = 'set';
       const givenIds = state.given.map((g) => g.id);
       // A derived value has no box to retype into.
-      const knownIds = Object.keys(state.result.values).filter(
-        (id) => !c.sys.variables.find((v) => v.id === id)?.derived,
-      );
+      const knownIds = Object.keys(state.result.values).filter((id) => {
+        const v = c.sys.variables.find((x) => x.id === id);
+        return !v?.derived && !v?.hidden;
+      });
       if (roll < 0.12 && knownIds.length) {
         mode = 'same';
         const id = r.pick(knownIds);

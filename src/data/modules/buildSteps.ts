@@ -248,7 +248,9 @@ export function buildSteps(
   const known: Values = Object.fromEntries(givenIdsOf(result).map((id) => [id, working[id]!]));
   /** The values the student typed (exact as shown). */
   const typed = new Set(givenIdsOf(result));
-  const steps = result.trace.map((t): Step => {
+  // Figure-only values are found for the picture, never written as a step.
+  const trace = result.trace.filter((t) => !byId.get(t.id)?.hidden);
+  const steps = trace.map((t): Step => {
     const knownHere = { ...known };
     known[t.id] = working[t.id]!;
     const v = byId.get(t.id)!;
@@ -443,7 +445,7 @@ export function buildSteps(
     ? undefined
     : [...new Set(converted.map(formulaUnit).filter((u): u is string => !!u))].join(', ');
 
-  const missing = result.unknown.map(quantity);
+  const missing = result.unknown.filter((id) => !byId.get(id)?.hidden).map(quantity);
   // A line the student has just read in an earlier step ("97 = 90 + 7" for both the tens and
   // the ones) is shown once: later steps keep only what is new.
   const seen = new Set<string>();
@@ -458,12 +460,12 @@ export function buildSteps(
   return {
     band,
     given: givenIds.map(quantity),
-    find: result.trace.map((t) => quantity(t.id)),
+    find: trace.map((t) => quantity(t.id)),
     steps,
     // Page limits (a constraint: "3/4 is at most 1") are never shown as a check: a student
     // would take them for part of the problem. A value that breaks one is refused as it is typed.
     check: module.relations
-      .filter((r) => !r.constraint)
+      .filter((r) => !r.constraint && !r.hidden)
       .filter((r) =>
         r.vars.every(
           (id) =>
@@ -485,7 +487,7 @@ export function buildSteps(
       .filter((id) => converted.includes(id))
       .map((id) => conversion(id, 'formula'))
       .map((line) => plain(line, convertedId(line), true)),
-    convertOut: result.trace
+    convertOut: trace
       .map((t) => t.id)
       .filter((id) => converted.includes(id))
       .map((id) => conversion(id, 'shown'))

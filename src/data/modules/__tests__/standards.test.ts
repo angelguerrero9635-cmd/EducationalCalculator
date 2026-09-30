@@ -330,7 +330,7 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
     // Derived values are read-only boxes the lesson fills in, not values the student holds;
     // a data set (3 to 10 values and their count) is one list, held as one value, and so is a
     // group (a matrix's cells, a fixed data list).
-    const held = m.variables.filter((v) => !v.derived && !v.countedBy);
+    const held = m.variables.filter((v) => !v.derived && !v.countedBy && !v.hidden);
     const groups = new Set(held.flatMap((v) => (v.group ? [v.group] : [])));
     if (limit !== undefined)
       expect(held.filter((v) => !v.group).length + groups.size).toBeLessThanOrEqual(limit);

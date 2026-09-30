@@ -47,7 +47,7 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
       <View style={styles.formulas}>
         {/* Page limits (constraints) are never shown: a student would take them for a step. */}
         {module.relations
-          .filter((r) => !r.constraint)
+          .filter((r) => !r.constraint && !r.hidden)
           .map((r) => {
             const letters = renderTemplate(r.display, module.variables);
             const numbers = noEmptyPart(

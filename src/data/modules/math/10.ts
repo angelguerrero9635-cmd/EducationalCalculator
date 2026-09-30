@@ -115,7 +115,10 @@ function page(d: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
   return {
     ...rest,
     relations: rules.map((r) => r.relation),
-    steps: Object.fromEntries(rules.map((r) => [r.relation.id, r.steps])),
+    // A figure-only relation places the drawing: it has no steps.
+    steps: Object.fromEntries(
+      rules.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+    ),
   };
 }
 /** x² + y² = z², solved for any one. */
@@ -3221,6 +3224,98 @@ const PROOFS: ModuleDef[] = [
     startWith: ['a', 'b'],
     representation: { kind: 'angles', parts: ['a', 'b'], whole: 'd', triangle: { third: 'c' } },
   }),
+  // Figure-only values (the drawing's BD, AD and BC) stay out of the steps: sine comes later.
+  page({
+    id: 'm.10.proofs~isosceles',
+    title: 'Base angles of an isosceles triangle',
+    use: 'Use this for “Given AB = AC, prove ∠B = ∠C” and “An isosceles triangle has a 40° vertex angle. What are its base angles?”',
+    assumptions: [
+      'Given: AB = AC. Draw AD, the bisector of ∠A, to meet BC at D.',
+      'Step through the proof: each step lights what it uses and what it proves.',
+      'The base angles are equal, so each is half of what is left of 180°.',
+    ],
+    variables: [
+      len('s', 's', 'Legs AB = AC', 1000, { unit: 'cm' }),
+      deg('A', 'A', 'Vertex angle A', 0.2, 179.8),
+      der(deg('B', 'B', 'Base angle B')),
+      { ...len('half', 'BD', 'BD'), derived: true, hidden: true },
+      { ...len('ht', 'AD', 'AD'), derived: true, hidden: true },
+      { ...len('b', 'BC', 'Base BC'), derived: true, hidden: true },
+      { id: 'k', symbol: 'k', name: 'Proof step', min: 1, max: 5, integer: true },
+    ],
+    rules: [
+      rule(
+        'B = (180° − A)/2',
+        '{B} = (180 − {A}) ÷ 2',
+        {
+          B: [
+            (v) => (180 - v.A!) / 2,
+            '(180 − {A}) ÷ 2',
+            'The two base angles are equal and share what is left of 180°.',
+          ],
+          A: [(v) => 180 - 2 * v.B!, '180 − 2 × {B}', 'Take both base angles from 180°.'],
+        },
+        (v) => v.B! - (180 - v.A!) / 2,
+      ),
+      rule(
+        'BD = s sin(A/2)',
+        '{half} = {s} × sin({A} ÷ 2)',
+        { half: [(v) => v.s! * sin(v.A! / 2), '', ''] },
+        (v) => v.half! - v.s! * sin(v.A! / 2),
+        { hidden: true },
+      ),
+      rule(
+        'AD = s cos(A/2)',
+        '{ht} = {s} × cos({A} ÷ 2)',
+        { ht: [(v) => v.s! * cos(v.A! / 2), '', ''] },
+        (v) => v.ht! - v.s! * cos(v.A! / 2),
+        { hidden: true },
+      ),
+      rule(
+        'BC = 2BD',
+        '{b} = 2 × {half}',
+        { b: [(v) => 2 * v.half!, '', ''] },
+        (v) => v.b! - 2 * v.half!,
+        { hidden: true },
+      ),
+    ],
+    example: { s: 6, A: 40, B: 70, half: 6 * sin(20), ht: 6 * cos(20), b: 12 * sin(20), k: 1 },
+    startWith: ['s', 'A', 'k'],
+    standalone: { vars: ['k'], why: 'The proof step only picks what the figure lights.' },
+    representation: {
+      kind: 'markedFigure',
+      points: { B: [0, 0], C: ['b', 0], D: ['half', 0], A: ['half', 'ht'] },
+      parts: [
+        { segment: 'AB' },
+        { segment: 'AC' },
+        { segment: 'BC' },
+        { segment: 'AD' },
+        { ticks: 'AB', count: 1 },
+        { ticks: 'AC', count: 1 },
+        { arcs: 'BAD', count: 1 },
+        { arcs: 'DAC', count: 1 },
+        { label: 'ABD', value: 'B' },
+      ],
+      proof: {
+        step: 'k',
+        steps: [
+          { given: ['AB', 'AC'], proved: [], text: 'AB = AC (given).' },
+          { given: ['BAD', 'DAC'], proved: [], text: 'AD bisects ∠A, so ∠BAD = ∠DAC (given).' },
+          { given: [], proved: ['AD'], text: 'AD = AD (the same segment).' },
+          {
+            given: ['AB', 'AC', 'BAD', 'DAC', 'AD'],
+            proved: ['△ABD', '△ACD'],
+            text: '△ABD ≅ △ACD (SAS).',
+          },
+          {
+            given: ['△ABD', '△ACD'],
+            proved: ['ABD', 'ACD'],
+            text: '∠B = ∠C: matching parts of congruent triangles are equal.',
+          },
+        ],
+      },
+    },
+  }),
 ];
 
 // ─── m.10.parallel-lines ─────────────────────────────────────────────────────
@@ -4104,6 +4199,38 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
 // ─── m.10.quadrilaterals ─────────────────────────────────────────────────────
 
 const QUADRILATERALS: ModuleDef[] = [
+  page({
+    id: 'm.10.quadrilaterals~parallelogram',
+    title: 'Angles of a parallelogram',
+    use: 'Use this for “In parallelogram ABCD, ∠A = 58°. Find ∠B and ∠C.”',
+    assumptions: [
+      'Opposite sides are parallel and equal, and the diagonals cut each other in half.',
+      'Angles next to each other add to 180°, because the sides are parallel.',
+      'Opposite angles are equal: ∠C = ∠A and ∠D = ∠B.',
+    ],
+    variables: [
+      deg('A', 'A', 'Angle A'),
+      der(deg('B', 'B', 'Angle B')),
+      der(deg('C', 'C', 'Angle C')),
+    ],
+    rules: [
+      supplement('A', 'B', 'Angles next to each other in a parallelogram add to 180°.'),
+      equal('A', 'C', 'Opposite angles of a parallelogram are equal.'),
+    ],
+    example: { A: 58, B: 122, C: 58 },
+    startWith: ['A'],
+    representation: {
+      kind: 'markedFigure',
+      quadrilateral: {
+        family: 'parallelogram',
+        width: 7,
+        height: 4,
+        angle: 'A',
+        diagonals: true,
+        labels: { DAB: 'A', ABC: 'B', BCD: 'C' },
+      },
+    },
+  }),
   page({
     id: 'm.10.quadrilaterals~rectangle',
     title: 'Rectangle and its diagonals',

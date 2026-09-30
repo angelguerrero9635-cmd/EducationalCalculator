@@ -101,3 +101,10 @@ already reads.
 - **`markedFigure` rays at an angle** (a ray drawn from a degree value, not coordinates): angle
   addition and exterior-angle pages could then use it, as the plan wanted.
 - **`quadrilateral` rhombus from its diagonals** (not side and angle): `quadrilaterals~rhombus`.
+
+## After the build (lead)
+
+- `m.10.proofs~isosceles`: built with figure-only values (engine need 1, `hidden`): BD, AD and BC
+  place the drawing, and only the base-angle rule is shown.
+- `m.10.quadrilaterals~parallelogram`: built with the drawing's width and height as fixed
+  numbers (the picture takes them), so the page is the angles alone: ∠B = 180° − ∠A, ∠C = ∠A.
