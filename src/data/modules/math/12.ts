@@ -1771,8 +1771,9 @@ const MATH_12_TRIG: ModuleDef[] = [
   },
 ];
 
-const sind = (x: number) => Math.sin(x * RAD);
-const cosd = (x: number) => Math.cos(x * RAD);
+/** Sine and cosine of degrees, exactly 0 at the multiples of 90° where they vanish. */
+const sind = (x: number) => (x % 180 === 0 ? 0 : Math.sin(x * RAD));
+const cosd = (x: number) => ((x - 90) % 180 === 0 ? 0 : Math.cos(x * RAD));
 /** Four special values and their products, then the sum, as work lines. */
 const formulaWork = (p: number, q: number, parts: string[]) => {
   const sum = p + q;
@@ -2123,31 +2124,38 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
  */
 const directionOf = (x: number, y: number) =>
   x === 0 && y === 0 ? undefined : (((Math.atan2(y, x) / RAD + 360) % 360) as number);
-function direction(t: string, x: string, y: string, what = 'arrow'): Rel {
+function direction(t: string, x: string, y: string, what = 'arrow', r?: string): Rel {
+  /** The angle wanted: the arrow's direction, turned half a turn when r is negative. */
+  const want = (v: Values) => {
+    const d = directionOf(v[x]!, v[y]!);
+    if (d === undefined) return undefined;
+    return r !== undefined && v[r]! < 0 ? (d + 180) % 360 : d;
+  };
   return rel(
     `${t} = direction of (${x}, ${y})`,
-    `tan {${t}} = {${y}} ÷ {${x}}, {${t}} in the quadrant of ({${x}}, {${y}})`,
-    [t, x, y],
+    r === undefined
+      ? `tan {${t}} = {${y}} ÷ {${x}}, {${t}} in the quadrant of ({${x}}, {${y}})`
+      : `tan {${t}} = {${y}} ÷ {${x}}, {${t}} in the quadrant of ({${x}}, {${y}}), turned 180° when {${r}} < 0`,
+    r === undefined ? [t, x, y] : [t, x, y, r],
     (v) => {
-      const d = directionOf(v[x]!, v[y]!);
+      const d = want(v);
       if (d === undefined) return NaN;
-      const gap = Math.abs(d - v[t]!) % 360;
+      const gap = (((d - v[t]!) % 360) + 360) % 360;
       return Math.min(gap, 360 - gap);
     },
     {
       [t]: [
-        (v) => directionOf(v[x]!, v[y]!),
-        (v: Values) =>
-          v[x]! > 0
-            ? v[y]! >= 0
-              ? `tan⁻¹({${y}} ÷ {${x}})`
-              : `360 + tan⁻¹({${y}} ÷ {${x}})`
-            : v[x]! < 0
-              ? `180 + tan⁻¹({${y}} ÷ {${x}})`
-              : v[y]! > 0
-                ? '90'
-                : '270',
-        `tan⁻¹ gives an angle from −90° to 90°; add 180° when the ${what} points left, 360° when it points down and right.`,
+        want,
+        (v: Values) => {
+          const d = want(v);
+          if (v[x] === 0 || d === undefined) return fmt(d ?? 0);
+          // tan⁻¹ gives −90° to 90°; the rest is a whole number of half turns.
+          const offset = Math.round((d - Math.atan(v[y]! / v[x]!) / RAD) / 180) * 180;
+          return offset === 0 ? `tan⁻¹({${y}} ÷ {${x}})` : `${offset} + tan⁻¹({${y}} ÷ {${x}})`;
+        },
+        r === undefined
+          ? `tan⁻¹ gives an angle from −90° to 90°; add 180° when the ${what} points left, 360° when it points down and right.`
+          : 'tan⁻¹ gives an angle from −90° to 90°; add half turns to reach the ray the point is on (the opposite ray when r < 0).',
       ],
     },
     {
@@ -2520,10 +2528,305 @@ const MATH_12_VECTORS: ModuleDef[] = [
   },
 ];
 
+// ── Polar coordinates and complex numbers ──
+
+/** x = r cos θ (or y = r sin θ): one rectangular coordinate from polar ones. */
+const polarPart = (out: string, r: string, t: string, fn: 'cos' | 'sin', how: string) =>
+  rel(
+    `${out} = ${r} ${fn} ${t}`,
+    `{${out}} = {${r}} × ${fn}({${t}}°)`,
+    [out, r, t],
+    (v) => v[out]! - v[r]! * (fn === 'cos' ? cosd(v[t]!) : sind(v[t]!)),
+    {
+      [out]: [
+        (v) => exact(v[r]! * (fn === 'cos' ? cosd(v[t]!) : sind(v[t]!))),
+        `{${r}} × ${fn}({${t}}°)`,
+        how,
+      ],
+    },
+  );
+
+/** r² = x² + y²: the distance from the pole, either sign (the positive one first). */
+const polarDistance = (r: string, x: string, y: string, signed: boolean) =>
+  rel(
+    `${r}² = ${x}² + ${y}²`,
+    signed ? `{${r}}² = {${x}}² + {${y}}²` : `{${r}} = √({${x}}² + {${y}}²)`,
+    [r, x, y],
+    (v) => v[r]! ** 2 - v[x]! ** 2 - v[y]! ** 2,
+    {
+      [r]: [
+        (v) => {
+          const d = Math.hypot(v[x]!, v[y]!);
+          return signed ? [d, -d] : d;
+        },
+        (v: Values) => (signed && v[r]! < 0 ? '−' : '') + `√({${x}}² + {${y}}²)`,
+        signed
+          ? 'The Pythagorean theorem gives the distance; r is its negative when the point is named on the opposite ray.'
+          : 'The Pythagorean theorem: the distance from the pole to the point.',
+      ],
+    },
+  );
+
+const MATH_12_POLAR: ModuleDef[] = [
+  // ── m.12.polar (N-CN.4–6) ──
+  {
+    id: 'm.12.polar',
+    assumptions: [
+      'θ is measured from the positive x-axis, counterclockwise.',
+      'A point has many polar names: add 360° to θ, or make r negative and add 180°.',
+      'A negative r lands on the ray opposite θ.',
+    ],
+    variables: [
+      V('r', 'r', 'Distance from the pole', { min: -20, max: 20, step: 0.01 }),
+      deg('t', 'θ', 'Angle', -360, 720),
+      real('x', 'x', 'x-coordinate', -20, 20),
+      real('y', 'y', 'y-coordinate', -20, 20),
+    ],
+    ...rels(
+      polarPart('x', 'r', 't', 'cos', 'Go r along the angle; the across part is r cos θ.'),
+      polarPart('y', 'r', 't', 'sin', 'The up part is r sin θ.'),
+      polarDistance('r', 'x', 'y', true),
+      direction('t', 'x', 'y', 'point', 'r'),
+    ),
+    example: { r: 4, t: 150, x: 4 * cosd(150), y: 2 },
+    startWith: ['r', 't'],
+    representation: { kind: 'polarGrid', point: { r: 'r', theta: 't', x: 'x', y: 'y' } },
+  },
+  {
+    id: 'm.12.polar~complex-form',
+    title: 'Polar form of a complex number',
+    use: 'Use this for “Write 2(cos 60° + i sin 60°) as a + bi,” or back.',
+    assumptions: [
+      'r is the modulus |z| and θ the argument, measured from the positive real axis.',
+      'a = r cos θ is the real part and b = r sin θ the imaginary part.',
+      'Going back, r = √(a² + b²) and θ is in the quadrant of the point (a, b).',
+    ],
+    variables: [
+      V('r', 'r', 'Modulus', { min: 0, max: 1000, step: 0.01 }),
+      deg('t', 'θ', 'Argument', 0, 360),
+      comp('a', 'a', 'Real part'),
+      comp('b', 'b', 'Imaginary part'),
+    ],
+    ...rels(
+      polarPart(
+        'a',
+        'r',
+        't',
+        'cos',
+        'The real part is the modulus times the cosine of the argument.',
+      ),
+      polarPart(
+        'b',
+        'r',
+        't',
+        'sin',
+        'The imaginary part is the modulus times the sine of the argument.',
+      ),
+      polarDistance('r', 'a', 'b', false),
+      direction('t', 'a', 'b', 'point'),
+    ),
+    example: { r: 2, t: 60, a: 1, b: Math.sqrt(3) },
+    startWith: ['r', 't'],
+    equation: '{r}(cos {t}° + i sin {t}°) = {a} + {b}i',
+    pictureLabels: ['a', 'b'],
+    representation: { kind: 'complexPlane', z: { modulus: 'r', argument: 't' }, polar: true },
+  },
+  {
+    id: 'm.12.polar~product',
+    title: 'Multiplying in polar form',
+    use: 'Use this for “Multiply 2(cos 30° + i sin 30°) by 3(cos 60° + i sin 60°).”',
+    assumptions: [
+      'Multiply the moduli and add the arguments.',
+      'So multiplying by w stretches z by |w| and turns it by w’s argument.',
+      'Subtract 360° from an argument past 360° if you want it on one turn.',
+    ],
+    variables: [
+      V('r1', 'r₁', 'Modulus of z', { min: 0, max: 1000, step: 0.01 }),
+      deg('t1', 'θ₁', 'Argument of z', 0, 360),
+      V('r2', 'r₂', 'Modulus of w', { min: 0, max: 1000, step: 0.01 }),
+      deg('t2', 'θ₂', 'Argument of w', 0, 360),
+      comp('c', 'c', 'Real part of w', 1000, { derived: true }),
+      comp('d', 'd', 'Imaginary part of w', 1000, { derived: true }),
+      V('r', 'r', 'Modulus of zw', { min: 0, max: 1000000, step: 0.01 }),
+      deg('t', 'θ', 'Argument of zw', 0, 720),
+    ],
+    ...rels(
+      rel('r = r₁ × r₂', '{r} = {r1} × {r2}', ['r', 'r1', 'r2'], (v) => v.r! - v.r1! * v.r2!, {
+        r: [(v) => v.r1! * v.r2!, '{r1} × {r2}', 'Moduli multiply.'],
+        r1: [(v) => div(v.r!, v.r2!), '{r} ÷ {r2}', 'Divide the product’s modulus by w’s.'],
+        r2: [(v) => div(v.r!, v.r1!), '{r} ÷ {r1}', 'Divide the product’s modulus by z’s.'],
+      }),
+      rel('θ = θ₁ + θ₂', '{t} = {t1} + {t2}', ['t', 't1', 't2'], (v) => v.t! - v.t1! - v.t2!, {
+        t: [(v) => v.t1! + v.t2!, '{t1} + {t2}', 'Arguments add: the turns add up.'],
+        t1: [(v) => v.t! - v.t2!, '{t} − {t2}', 'Take w’s argument from the product’s.'],
+        t2: [(v) => v.t! - v.t1!, '{t} − {t1}', 'Take z’s argument from the product’s.'],
+      }),
+      polarPart('c', 'r2', 't2', 'cos', 'w’s real part, to draw it: r₂ cos θ₂.'),
+      polarPart('d', 'r2', 't2', 'sin', 'w’s imaginary part, to draw it: r₂ sin θ₂.'),
+    ),
+    example: { r1: 2, t1: 30, r2: 3, t2: 60, c: 1.5, d: 3 * sind(60), r: 6, t: 90 },
+    startWith: ['r1', 't1', 'r2', 't2'],
+    representation: {
+      kind: 'complexPlane',
+      z: { modulus: 'r1', argument: 't1' },
+      w: { re: 'c', im: 'd' },
+      op: 'product',
+      polar: true,
+    },
+  },
+  {
+    id: 'm.12.polar~de-moivre',
+    title: 'Powers by De Moivre’s theorem',
+    use: 'Use this for “Find (1 + i)⁸ with De Moivre’s theorem.”',
+    assumptions: [
+      'Write a + bi in polar form first: r = √(a² + b²), θ in the quadrant of (a, b).',
+      'De Moivre: (r(cos θ + i sin θ))ⁿ = rⁿ(cos nθ + i sin nθ).',
+      'Raise the modulus to the nth power and multiply the argument by n.',
+    ],
+    variables: [
+      real('a', 'a', 'Real part', -10, 10),
+      real('b', 'b', 'Imaginary part', -10, 10),
+      V('n', 'n', 'Power', { integer: true, min: 1, max: 12 }),
+      V('r', 'r', 'Modulus of a + bi', { min: 0, max: 15, step: 0.0001, derived: true }),
+      deg('t', 'θ', 'Argument of a + bi', 0, 360, { derived: true }),
+      V('R', 'R', 'Modulus of the power', { min: 0, max: 1e15, step: 0.01, derived: true }),
+      deg('T', 'nθ', 'Argument of the power', 0, 4320, { derived: true }),
+      V('p', 'p', 'Real part of the power', { min: -1e15, max: 1e15, step: 0.01, derived: true }),
+      V('q', 'q', 'Imaginary part of the power', {
+        min: -1e15,
+        max: 1e15,
+        step: 0.01,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      polarDistance('r', 'a', 'b', false),
+      direction('t', 'a', 'b', 'point'),
+      derive(
+        'R = rⁿ',
+        '{R} = {r}^{n}',
+        'R',
+        ['r', 'n'],
+        (v) => v.r! ** v.n!,
+        '{r}^{n}',
+        'Raise the modulus to the nth power.',
+      ),
+      derive(
+        'T = nθ',
+        '{T} = {n} × {t}',
+        'T',
+        ['n', 't'],
+        (v) => v.n! * v.t!,
+        '{n} × {t}',
+        'Multiply the argument by n: n turns of θ.',
+      ),
+      polarPart('p', 'R', 'T', 'cos', 'Back to a + bi: the real part is R cos nθ.'),
+      polarPart('q', 'R', 'T', 'sin', 'The imaginary part is R sin nθ.'),
+    ),
+    example: { a: 1, b: 1, n: 8, r: Math.SQRT2, t: 45, R: 16, T: 360, p: 16, q: 0 },
+    startWith: ['a', 'b', 'n'],
+    equation: '({a} + {b}i)^{n} = {p} + {q}i',
+    representation: { kind: 'complexPlane', z: { modulus: 'R', argument: 'T' }, polar: true },
+  },
+  {
+    id: 'm.12.polar~rose',
+    title: 'Rose curves',
+    use: 'Use this for “How many petals does r = 4 cos 2θ have? Find r at θ = 30°.”',
+    assumptions: [
+      'r = a cos(nθ) draws a rose: n petals when n is odd, 2n when n is even.',
+      'Each petal is a long; a negative r is plotted on the opposite ray.',
+      'The whole curve is drawn as θ runs once around.',
+    ],
+    variables: [
+      real('a', 'a', 'Petal length', -20, 20),
+      V('n', 'n', 'Number in cos nθ', { integer: true, min: 1, max: 8 }),
+      deg('t', 'θ', 'Angle', 0, 360),
+      real('r', 'r', 'Distance from the pole', -20, 20),
+      V('P', 'P', 'Petals', { integer: true, min: 1, max: 16, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'r = a cos(nθ)',
+        '{r} = {a} × cos({n} × {t}°)',
+        ['r', 'a', 'n', 't'],
+        (v) => v.r! - v.a! * cosd(v.n! * v.t!),
+        {
+          r: [
+            (v) => exact(v.a! * cosd(v.n! * v.t!)),
+            '{a} × cos({n} × {t}°)',
+            'Put θ into the curve’s equation.',
+          ],
+        },
+      ),
+      rel(
+        'P = n or 2n',
+        '{P} = {n} if {n} is odd, 2 × {n} if even',
+        ['P', 'n'],
+        (v) => v.P! - (v.n! % 2 ? v.n! : 2 * v.n!),
+        {
+          P: [
+            (v) => (v.n! % 2 ? v.n! : 2 * v.n!),
+            (v: Values) => (v.n! % 2 ? '{n}' : '2 × {n}'),
+            'An odd n retraces its petals; an even n gives twice as many.',
+          ],
+        },
+        { check: (v) => `${fmt(v.P!)} = ${v.n! % 2 ? fmt(v.n!) : `2 × ${fmt(v.n!)}`}` },
+      ),
+    ),
+    example: { a: 4, n: 2, t: 30, r: 2, P: 4 },
+    startWith: ['a', 'n', 't'],
+    representation: {
+      kind: 'polarGrid',
+      curve: { shape: 'rose', a: 'a', n: 'n' },
+      point: { r: 'r', theta: 't' },
+    },
+  },
+  {
+    id: 'm.12.polar~limacon',
+    title: 'Limaçons and cardioids',
+    use: 'Use this for “Find r on r = 2 + 2 cos θ at θ = 60°” and the curve’s shape.',
+    assumptions: [
+      'r = a + b cos θ: a = b is a cardioid, through the pole with a heart shape.',
+      'a < b has an inner loop; a > b has a dimple, or is an oval when a ≥ 2b.',
+      'A negative r is plotted on the opposite ray.',
+    ],
+    variables: [
+      real('a', 'a', 'Constant a', -20, 20),
+      real('b', 'b', 'Number before cos θ', -20, 20),
+      deg('t', 'θ', 'Angle', 0, 360),
+      real('r', 'r', 'Distance from the pole', -40, 40),
+    ],
+    ...rels(
+      rel(
+        'r = a + b cos θ',
+        '{r} = {a} + {b} × cos({t}°)',
+        ['r', 'a', 'b', 't'],
+        (v) => v.r! - v.a! - v.b! * cosd(v.t!),
+        {
+          r: [
+            (v) => exact(v.a! + v.b! * cosd(v.t!)),
+            '{a} + {b} × cos({t}°)',
+            'Put θ into the curve’s equation.',
+          ],
+          a: [(v) => v.r! - v.b! * cosd(v.t!), '{r} − {b} × cos({t}°)', 'Take b cos θ from r.'],
+        },
+      ),
+    ),
+    example: { a: 2, b: 2, t: 60, r: 3 },
+    startWith: ['a', 'b', 't'],
+    representation: {
+      kind: 'polarGrid',
+      curve: { shape: 'cardioid', a: 'a', b: 'b' },
+      point: { r: 'r', theta: 't' },
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
   ...MATH_12_VECTORS,
+  ...MATH_12_POLAR,
   ...MATH_12_MATRICES,
   ...MATH_12_CONICS,
   ...MATH_12_STATS,

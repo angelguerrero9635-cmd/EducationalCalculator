@@ -21,6 +21,8 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   `~double-angle`, `~sine-equation`, `~tangent-equation`.
 - `m.12.vectors` (5): main (components, length and direction), `~add`, `~scalar`, `~dot`,
   `~resultant`.
+- `m.12.polar` (6): main (polar point), `~complex-form`, `~product`, `~de-moivre`, `~rose`,
+  `~limacon`.
 
 ## Waiting
 
@@ -77,6 +79,13 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   direction relation puts tan⁻¹(y ÷ x) into the arrow's quadrant (`direction` at the top of
   `math/12.ts`), and its step reads `180 + tan⁻¹(4 ÷ (−3))` or `360 + tan⁻¹(…)`, which the
   harness already evaluates; no phrase was needed. Its check line is tan φ = y ÷ x.
+
+- **`~de-moivre` draws the answer only (need 8 interim).** The complex plane shows zⁿ by its
+  modulus R and argument nθ; z, z², …, zⁿ in turn wait on need 8.
+- **`~product` draws w by its parts.** `complexPlane` takes w as re and im, so w's parts c and
+  d are worked out from r₂ and θ₂ (derived), as the plan says.
+- **The polar point's θ relation knows the sign of r.** A negative r turns the direction half a
+  turn, so typing x and y back gives the θ that goes with the r shown.
 
 ## Shared needs found while building
 
