@@ -25,6 +25,7 @@ import { StudyDesignFigure } from './studyDesignFigure';
 import { CladogramFigure } from './cladogramFigure';
 import { NitrogenCycleFigure } from './nitrogenCycleFigure';
 import { FeedbackLoopFigure } from './feedbackLoopFigure';
+import { GeneExpressionFigure } from './geneExpressionFigure';
 import { ImmuneStagesFigure } from './immuneStagesFigure';
 import { GalvanicFigure } from './galvanicFigure';
 import { HslFigureView } from './hslFigures';
@@ -205,6 +206,8 @@ function FigureView({
       return <ImmuneStagesFigure stage={scene.immune?.stage} />;
     case 'electrochemicalCell':
       return <GalvanicFigure scene={scene.galvanic ?? { metals: ['Zn', 'Cu'] }} />;
+    case 'geneExpression':
+      return <GeneExpressionFigure gene={scene.gene ?? { control: 'repressor' }} />;
   }
 }
 

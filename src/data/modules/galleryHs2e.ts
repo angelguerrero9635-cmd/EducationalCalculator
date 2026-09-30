@@ -493,6 +493,62 @@ const REPLICATION: LayoutDef = {
   ],
 };
 
+// ─── H100 part 5: the gene-expression figure ─────────────────────────────────
+
+const GENE_EXPRESSION: LayoutDef = {
+  kind: 'explore',
+  id: 'g.s9-biotechnology-gene-expression',
+  title: 'Genes switched on and off',
+  use: 'Use this for “Why does a bacterium make the enzymes for lactose only when lactose is there?”',
+  assumptions: [
+    'Every cell has the same genes, but it reads only some of them: those genes are expressed.',
+    'RNA polymerase binds the promoter in front of a gene and copies the gene into mRNA.',
+    'Proteins on the DNA near the promoter switch the gene off (repressors) or on (activators).',
+  ],
+  figure: { kind: 'geneExpression' },
+  scenes: [
+    {
+      label: 'Repressor on',
+      lines: [
+        'With no lactose, the repressor sits on the operator and blocks RNA polymerase.',
+        'The gene is off: no mRNA, so no lactose enzymes are wasted.',
+      ],
+      gene: { control: 'repressor', lit: 'protein' },
+    },
+    {
+      label: 'Lactose arrives',
+      lines: [
+        'Lactose binds the repressor and changes its shape, so it lets go of the operator.',
+        'The gene is on: RNA polymerase reads it into mRNA.',
+      ],
+      gene: { control: 'repressor', signal: true, lit: 'signal' },
+    },
+    {
+      label: 'The promoter',
+      lines: [
+        'RNA polymerase always starts at the promoter, the stretch just in front of the gene.',
+      ],
+      gene: { control: 'repressor', signal: true, lit: 'promoter' },
+    },
+    {
+      label: 'No activator',
+      lines: [
+        'Some genes need an activator: without its signal the activator stays off the DNA.',
+        'The gene is off: the polymerase does not start.',
+      ],
+      gene: { control: 'activator', lit: 'switch' },
+    },
+    {
+      label: 'Activator bound',
+      lines: [
+        'With its signal the activator binds in front of the promoter and helps the polymerase on.',
+        'The gene is on.',
+      ],
+      gene: { control: 'activator', signal: true, lit: 'mRNA' },
+    },
+  ],
+};
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /** The chromosome-count page: 2n in a body cell → n, chromatids, the zygote, 2ⁿ gametes. */
@@ -581,4 +637,4 @@ export const HS2E_GALLERY_MODULES: ModuleDef[] = [
   ...RATES_DEMOS,
 ];
 
-export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [COMPETITION, REPLICATION];
+export const HS2E_GALLERY_LAYOUTS: LayoutDef[] = [COMPETITION, REPLICATION, GENE_EXPRESSION];

@@ -88,6 +88,24 @@ export interface ReplicationCard {
   stage: 'unzip' | 'pair' | 'join' | 'copies';
 }
 
+// ─── H100 part 5: the gene-expression explore figure ─────────────────────────
+
+/**
+ * A `geneExpression` scene: the gene's switch (`control`), whether its `signal` is there, and
+ * one part ringed (`lit`). A repressor sits on the operator unless its signal (an inducer)
+ * pulls it off; an activator binds in front of the promoter only with its signal. The gene is
+ * read into mRNA (on) when nothing blocks the polymerase: no repressor bound, or an activator
+ * bound (`geneIsOn`).
+ */
+export interface GeneScene {
+  control: 'repressor' | 'activator';
+  signal?: boolean;
+  lit?: 'promoter' | 'switch' | 'gene' | 'polymerase' | 'protein' | 'signal' | 'mRNA';
+}
+
+/** Whether a `geneExpression` scene's gene is read: its signal pulls the repressor off, or puts the activator on. */
+export const geneIsOn = (g: GeneScene) => !!g.signal;
+
 // ─── H100 part 3: cellDivision as a calculator picture ───────────────────────
 
 /**

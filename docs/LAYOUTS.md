@@ -65,6 +65,11 @@ metals in their ions' solutions, a wire through a voltmeter or bulb and a KNO₃
 scene's `galvanic: { metals, meter?, lit? }` picks the metals (the anode, E° and both
 half-reactions are worked out from the reduction potentials) and rings the electrons, anode,
 cathode, bridge or meter.
+Grade 9 biology (H100, `layouts/geneExpressionFigure.tsx`): `geneExpression`, a stretch of DNA with a
+promoter, a gene and its switch, RNA polymerase and, when the gene is read, its mRNA; a scene's
+`gene: { control: 'repressor' | 'activator', signal?, lit? }` sets the switch: a repressor sits on
+the operator unless its signal (an inducer) pulls it off, an activator binds only with its
+signal, so the gene is on exactly when the signal is there.
 
 Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,

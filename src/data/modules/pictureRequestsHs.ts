@@ -1887,6 +1887,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s9-population-ecology-rates-shrinking',
       'g.s9-population-ecology-competition',
       'g.s9-dna-protein-synthesis-replication',
+      'g.s9-biotechnology-gene-expression',
     ],
     notes: [
       'P12 (docs/plans/s.9.md needs 1–6, 8–10, 12; need 7 is harness phrases, need 11 is built).',
@@ -1897,6 +1898,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Need 8, `bars` with flows: `flows: { out: ["D", "E"] }` (off unless set) reads the first bar as the start, the last as the end and each bar between as a flow, drawn as a step from the running total: green up with "+90" (in) or red down with "−40" (out, the ids in `out`), dashed on to the next step; the scale starts near the smallest total (the start and end bars cut with a break, the axis naming where it starts) so a flow a tenth of N still reads; the caption writes N₁ = N + B − D + I − E with the numbers. The harness checks the flows are not negative and the steps reach the end bar. s.9.population-ecology~rates: add `flows: { out: ["D", "E"] }` to its bars (no other change).',
       'Need 4, observe with two rows: `second: { rowLabel, initial }` on an observe page (off unless set) counts a second quantity in the same columns and unit: its bars beside the first’s (chartSecond), each tapped on its own, a row of its own in the table (the unit heads it), a key naming both rows, and `pattern(first, second)` reading both (layouts.test checks the second row’s length, range and step). s.9.population-ecology~competition: { kind: "observe", columns: ["Day 0", …, "Day 20"], rowLabel: "Species A", unit: "per mL", max: 200, step: 10, initial: [...], second: { rowLabel: "Species B", initial: [...] }, pattern: (a, b) => … } as the demo.',
       'Need 6, the replication figure: card figure `{ kind: "replication", stage: "unzip" | "pair" | "join" | "copies" }` (112 × 76, for sequence stages): the helix opened at a fork by helicase; free nucleotides pairing A–T and G–C with each old strand; DNA polymerase joining the new strand; two helices each one old strand (dark) and one new (lit). The harness checks the cards come in that order. s.9.dna-protein-synthesis~replication: add each stage’s figure as in the demo (the four stages as they are).',
+      'Need 5, the gene-expression explore figure: `figure: { kind: "geneExpression" }`, scene field `gene: { control: "repressor" | "activator", signal?: boolean, lit?: "promoter" | "switch" | "gene" | "polymerase" | "protein" | "signal" | "mRNA" }`: DNA with the promoter, the switch (an operator, or an activator site) and the gene; RNA polymerase; the repressor sits on the operator and blocks it unless its signal (an inducer, lactose) pulls it off; the activator binds only with its signal; when on, mRNA peels off the polymerase reading the gene and the title says so. The harness checks every scene sets `gene` and a line saying “the gene is on/off” matches the figure. s.9.biotechnology~gene-expression: the demo’s five scenes (repressor on, lactose arrives, the promoter, no activator, activator bound).',
     ].join(' '),
   },
   ask(

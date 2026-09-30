@@ -17,7 +17,7 @@ import type {
   LandformScene,
   MohsScene,
 } from '../typesHsl';
-import type { ObserveSecond, ReplicationCard } from '../typesHs2e';
+import type { GeneScene, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Round3Icon } from './icons';
 
 /**
@@ -361,7 +361,9 @@ export type Figure =
   /** The immune response: antigen, helper T, B and plasma cells, antibodies, killer T, memory (H42). */
   | { kind: 'immuneStages' }
   /** A galvanic cell: two electrodes, a salt bridge and electrons along the wire (H56). */
-  | { kind: 'electrochemicalCell' };
+  | { kind: 'electrochemicalCell' }
+  /** A gene with its promoter and a repressor or activator switch, read into mRNA or not (H100). */
+  | { kind: 'geneExpression' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -509,6 +511,8 @@ export interface Scene {
   cone?: ConeCut;
   /** The two metals and the part lit (an `electrochemicalCell` figure). */
   galvanic?: GalvanicScene;
+  /** The switch, the signal and the part lit (a `geneExpression` figure; `typesHs2e.ts`). */
+  gene?: GeneScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**
