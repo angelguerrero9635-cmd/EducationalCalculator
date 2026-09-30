@@ -60,6 +60,11 @@ magnets are painted N red, S blue), and `planets` draws the planets and the moon
 size beside the sun's edge, ringing a scene's `lit` ones with their widths in Earths.
 Grades 10–12 (`layouts/coneFigure.tsx`): `doubleCone` cuts two cones tip to tip with a plane;
 a scene's `cone` (`circle`, `ellipse`, `parabola`, `hyperbola`) tilts the plane and draws the curve.
+Grade 10 chemistry (`layouts/galvanicFigure.tsx`): `electrochemicalCell`, a galvanic cell of two
+metals in their ions' solutions, a wire through a voltmeter or bulb and a KNO₃ salt bridge; a
+scene's `galvanic: { metals, meter?, lit? }` picks the metals (the anode, E° and both
+half-reactions are worked out from the reduction potentials) and rings the electrons, anode,
+cathode, bridge or meter.
 
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by

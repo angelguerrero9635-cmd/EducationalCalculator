@@ -220,6 +220,25 @@ export type PhScaleSpec =
       fixed?: boolean;
     };
 
+// ─── H56 electrochemicalCell (explore figure) ───────────────────────────────
+
+/** Metals a galvanic cell's electrodes can be (each in a solution of its own ion). */
+export type CellMetal = 'Mg' | 'Al' | 'Zn' | 'Fe' | 'Ni' | 'Pb' | 'Cu' | 'Ag';
+
+/**
+ * A scene of the `electrochemicalCell` explore figure (H56): two metals, each in a beaker of
+ * its own ion's solution, joined by a wire through a voltmeter or a bulb and by a salt bridge
+ * (KNO₃). The figure works out which metal is the anode (the lower standard reduction
+ * potential), draws the electrons along the wire from it to the cathode, the ions drifting in
+ * the bridge, both half-reactions and the cell's voltage E° = E°cathode − E°anode. `lit` rings
+ * one part: the electrons, the anode, the cathode, the salt bridge or the meter.
+ */
+export interface GalvanicScene {
+  metals: [CellMetal, CellMetal];
+  meter?: 'voltmeter' | 'bulb';
+  lit?: 'electrons' | 'anode' | 'cathode' | 'bridge' | 'meter';
+}
+
 export type HsjSpec = GasPistonSpec | EnergyProfileSpec | EquilibriumChartSpec | PhScaleSpec;
 
 /** Every variable id a group J picture refers to (for the module tests). */

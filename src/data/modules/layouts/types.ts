@@ -1,5 +1,6 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
+import type { GalvanicScene } from '../typesHsj';
 import type { Round3Icon } from './icons';
 
 /**
@@ -323,7 +324,9 @@ export type Figure =
   /** Population → sample → a survey, an observational study or an experiment (HS group B). */
   | { kind: 'studyDesign' }
   /** Two cones tip to tip cut by a plane: a circle, ellipse, parabola or hyperbola (Grades 10–12). */
-  | { kind: 'doubleCone' };
+  | { kind: 'doubleCone' }
+  /** A galvanic cell: two electrodes, a salt bridge and electrons along the wire (H56). */
+  | { kind: 'electrochemicalCell' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -452,6 +455,8 @@ export interface Scene {
   study?: StudyScene;
   /** The conic the plane cuts (a `doubleCone` figure). */
   cone?: ConeCut;
+  /** The two metals and the part lit (an `electrochemicalCell` figure). */
+  galvanic?: GalvanicScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

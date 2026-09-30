@@ -22,6 +22,7 @@ import { CarbonCycleFigure, LeafCellFigure, PedigreeFigure } from './figuresLife
 import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import { MagnetsFigure, PlanetsFigure } from './figures8';
 import { StudyDesignFigure } from './studyDesignFigure';
+import { GalvanicFigure } from './galvanicFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -178,6 +179,8 @@ function FigureView({
       return <StudyDesignFigure study={scene.study ?? { design: 'survey' }} />;
     case 'doubleCone':
       return <ConeFigure cut={scene.cone ?? 'circle'} />;
+    case 'electrochemicalCell':
+      return <GalvanicFigure scene={scene.galvanic ?? { metals: ['Zn', 'Cu'] }} />;
   }
 }
 

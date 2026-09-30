@@ -1729,4 +1729,72 @@ export const HSJ_GALLERY_MODULES: ModuleDef[] = [
   ...EQUILIBRIUM,
   ...ACIDS,
 ];
-export const HSJ_GALLERY_LAYOUTS: LayoutDef[] = [];
+// ─── H56 electrochemicalCell (explore) ───────────────────────────────────────
+
+const GALVANIC_LAYOUT: LayoutDef = {
+  id: 'g.s10-redox-galvanic-cell',
+  title: 'A galvanic cell',
+  kind: 'explore',
+  assumptions: [
+    'Each metal stands in a 1 M solution of its own ion, at 25 °C.',
+    'A wire joins the metals; a salt bridge of KNO₃ joins the solutions.',
+  ],
+  figure: { kind: 'electrochemicalCell' },
+  scenes: [
+    {
+      label: 'Electrons',
+      galvanic: { metals: ['Zn', 'Cu'], lit: 'electrons' },
+      lines: [
+        'Zinc gives up electrons more easily than copper, so zinc is the anode.',
+        'The electrons leave the zinc and travel along the wire to the copper.',
+      ],
+    },
+    {
+      label: 'Anode',
+      galvanic: { metals: ['Zn', 'Cu'], lit: 'anode' },
+      lines: [
+        'At the anode, each zinc atom loses two electrons and goes into the solution as Zn²⁺.',
+        'Losing electrons is oxidation. The zinc strip slowly wears away.',
+      ],
+    },
+    {
+      label: 'Cathode',
+      galvanic: { metals: ['Zn', 'Cu'], lit: 'cathode' },
+      lines: [
+        'At the cathode, each Cu²⁺ ion takes two electrons and coats the strip as copper.',
+        'Gaining electrons is reduction. The blue solution slowly fades.',
+      ],
+    },
+    {
+      label: 'Salt bridge',
+      galvanic: { metals: ['Zn', 'Cu'], lit: 'bridge' },
+      lines: [
+        'NO₃⁻ ions drift toward the anode and K⁺ ions toward the cathode.',
+        'That keeps both solutions neutral. Take the bridge away and the current stops.',
+      ],
+    },
+    {
+      label: 'Voltage',
+      galvanic: { metals: ['Zn', 'Cu'], lit: 'meter' },
+      lines: ['E° = E°cathode − E°anode = 0.34 − (−0.76) = 1.10 V.'],
+    },
+    {
+      label: 'Copper as anode',
+      galvanic: { metals: ['Ag', 'Cu'], lit: 'anode' },
+      lines: [
+        'Beside silver, copper is the anode: Ag⁺ takes electrons more easily than Cu²⁺.',
+        'E° = 0.80 − 0.34 = 0.46 V.',
+      ],
+    },
+    {
+      label: 'A bigger voltage',
+      galvanic: { metals: ['Mg', 'Ag'], meter: 'bulb', lit: 'meter' },
+      lines: [
+        'Magnesium and silver are far apart: E° = 0.80 − (−2.37) = 3.17 V.',
+        'That is enough to light a small bulb.',
+      ],
+    },
+  ],
+};
+
+export const HSJ_GALLERY_LAYOUTS: LayoutDef[] = [GALVANIC_LAYOUT];

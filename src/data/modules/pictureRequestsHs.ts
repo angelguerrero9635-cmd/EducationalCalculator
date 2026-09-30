@@ -907,12 +907,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn: kind phScale (typesHsj.ts). The scale (no mode) { pH, hydrogen? ([H⁺], checked as 10^−pH), hydroxide? ([OH⁻], checked), pOH? (checked as 14 − pH), examples? (lemon juice, coffee, pure water, baking soda, ammonia marked above), keep?, fixed? }: fifteen cells 0–14 in universal-indicator colors (red through green at 7 to violet), the pH marked through the bar with a pointer (drag it), [H⁺] as 10⁰ … 10⁻¹⁴ under every other number, acidic, neutral and basic named. mode 'titration' { acid: { concentration, volume, Ka? (left out: strong), name? }, base: { concentration, name? }, added, equivalence? (checked as CₐVₐ ÷ C_b), keep?, fixed? }: the pH against the base added from the exact charge balance of a monoprotic acid and a strong base (no buffer shortcuts), the indicator's colors up the pH axis, the equivalence point (pH 7 for a strong acid, above 7 for a weak one), the half-way point (pH = pKₐ for a weak acid) and the point at `added`, dragged along the curve. Examples: { kind: 'phScale', pH: 'p', hydrogen: 'h', examples: true }; { kind: 'phScale', mode: 'titration', acid: { concentration: 'Ca', volume: 'Va', Ka: 'Ka', name: 'acetic acid' }, base: { concentration: 'Cb', name: 'NaOH' }, added: 'Vb', equivalence: 'Ve', keep: ['Ca', 'Va', 'Cb', 'Ka'] }. Step text for [H⁺] from pH reads 1/(10^pH), so no negative number is substituted.",
   },
-  ask(
-    'H56',
-    'electrochemicalCell',
-    'Explore figure: galvanic cell with two electrodes, a salt bridge and electrons flowing through the wire',
-    ['s.10.redox'],
-  ),
+  {
+    ...ask(
+      'H56',
+      'electrochemicalCell',
+      'Explore figure: galvanic cell with two electrodes, a salt bridge and electrons flowing through the wire',
+      ['s.10.redox'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s10-redox-galvanic-cell'],
+    notes:
+      "Drawn: explore figure { kind: 'electrochemicalCell' } (layouts/galvanicFigure.tsx; scene type GalvanicScene in typesHsj.ts). Two metal electrodes, each in a glass beaker of its own ion's solution (Cu²⁺ blue, Ni²⁺ and Fe²⁺ green, the others clear), a copper wire through a voltmeter or a bulb, and a KNO₃ salt bridge. From the standard reduction potentials (Mg, Al, Zn, Fe, Ni, Pb, Cu, Ag) the figure works out the anode (the lower E°), sends electrons along the wire from it to the cathode, drifts NO₃⁻ toward the anode and K⁺ toward the cathode in the bridge, writes both half-reactions under the beakers (oxidation, reduction) and reads E° = E°cathode − E°anode on the meter; the anode is eaten away at its foot and the cathode wears a coat of its metal. Scene field: galvanic { metals: [left, right], meter? ('voltmeter' | 'bulb'), lit? ('electrons' | 'anode' | 'cathode' | 'bridge' | 'meter') }. Example: figure { kind: 'electrochemicalCell' }, scenes [{ label: 'Electrons', galvanic: { metals: ['Zn', 'Cu'], lit: 'electrons' }, lines: ['…'] }, { label: 'Copper as anode', galvanic: { metals: ['Ag', 'Cu'], lit: 'anode' }, lines: ['…'] }]. Harness (layoutFiguresHsj.ts): two different known metals, the anode the lower E°, the voltage positive and E°cathode − E°anode.",
+  },
   ask(
     'H57',
     'decayChart',
