@@ -2328,7 +2328,7 @@ function canRows(v: Values): number[] {
   const best = v.V !== undefined && v.V > 0 ? Math.cbrt(v.V / (2 * Math.PI)) : 4;
   const raw = best / 4;
   const p = 10 ** Math.floor(Math.log10(raw));
-  const step = [1, 2, 5, 10].map((k) => k * p).find((s) => s >= raw * 0.99)!;
+  const step = [5, 2, 1].map((k) => k * p).find((s) => s <= raw * 1.01)!;
   const mid = Math.round(best / step);
   const first = Math.max(1, mid - 3);
   return Array.from({ length: 7 }, (_, i) => exact((first + i) * step)!);
@@ -2417,7 +2417,7 @@ const MODELING: ModuleDef[] = [
       len('r', 'r', 'Radius of the region', 10000, { unit: 'km' }),
       num('A', 'A', 'Area', 0, 1e9, { unit: 'km²' }),
       num('N', 'N', 'Population', 1, 1e10, { unit: 'people' }),
-      num('D', 'D', 'Population density', 0, 1e7, { unit: 'people per km²' }),
+      num('D', 'D', 'Population density', 1e-12, 1e10, { unit: 'people per km²' }),
     ],
     rules: [
       rule(
