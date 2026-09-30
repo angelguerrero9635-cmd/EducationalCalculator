@@ -6482,11 +6482,16 @@ const widthOf = derive(
   '{b} ÷ {n}',
   'Cut 0 to b into n strips of equal width.',
 );
-/** After the rectangles' sum: the more of them, the closer to the exact area. */
+/** Once the exact area is known, S against it: the more rectangles, the closer. */
 const towardA = (v: Values) =>
   v.S === undefined || v.A === undefined
     ? ''
-    : `→ ${v.S > v.A ? 'above' : v.S < v.A ? 'below' : 'equal to'} the exact area; more rectangles bring S closer to it`;
+    : Math.abs(v.S - v.A) <= 1e-9 * Math.max(1, Math.abs(v.A))
+      ? '→ S equals the exact area: a flat line is covered exactly'
+      : `→ S = ${fmt(v.S)} is ${v.S > v.A ? 'above' : 'below'} the exact area; more rectangles bring S closer to it`;
+
+/** The limit of (pnʲ + q) ÷ (rnᵏ + s): p ÷ r for equal powers, 0 for a bigger bottom, none else. */
+const degreeLimit = (v: Values) => (v.j === v.k ? div(v.p!, v.r!) : v.j! < v.k! ? 0 : undefined);
 
 const MATH_12_AREA: ModuleDef[] = [
   // ── m.12.area-under-curve (Larson 12.4–12.5) ──
@@ -6523,26 +6528,44 @@ const MATH_12_AREA: ModuleDef[] = [
           'Each rectangle is w wide and c(iw)² tall; adding them gives cw³(1² + 2² + … + n²).',
         ),
         'S',
-        { note: towardA },
-      ),
-      rel(
-        'A = cb³ ÷ 3',
-        '{A} = {c} × {b}³ ÷ 3',
-        ['A', 'c', 'b'],
-        (v) => v.A! - (v.c! * v.b! ** 3) / 3,
         {
-          A: [
-            (v) => (v.c! * v.b! ** 3) / 3,
-            '{c} × {b}³ ÷ 3',
-            'The limit as n → ∞: n(n + 1)(2n + 1) ÷ n³ goes to 2, so S goes to cb³ × 2 ÷ 6.',
-          ],
-          b: [
-            (v) => Math.cbrt((3 * v.A!) / v.c!),
-            '∛(3 × {A} ÷ {c})',
-            'Multiply by 3, divide by c, then take the cube root.',
-          ],
-          c: [(v) => div(3 * v.A!, v.b! ** 3), '3 × {A} ÷ {b}³', 'Multiply by 3, divide by b³.'],
+          // The sum of squares is the idea of the step: work it out as a number first.
+          work: (v) => {
+            const sq = (v.n! * (v.n! + 1) * (2 * v.n! + 1)) / 6;
+            return [
+              `${shown(v.n!)} × ${shown(v.n! + 1)} × ${shown(2 * v.n! + 1)} ÷ 6 = ${shown(sq)}`,
+              `S = ${shown(v.c!)} × ${shown(v.w!)}³ × ${shown(sq)}`,
+              `S = ${shown(exact(v.c! * v.w! ** 3))} × ${shown(sq)}`,
+            ];
+          },
+          note: (v) =>
+            v.n === undefined
+              ? ''
+              : `→ ${shown((v.n * (v.n + 1) * (2 * v.n + 1)) / 6)} is 1² + 2² + … + ${shown(v.n)}²`,
         },
+      ),
+      withStep(
+        rel(
+          'A = cb³ ÷ 3',
+          '{A} = {c} × {b}³ ÷ 3',
+          ['A', 'c', 'b'],
+          (v) => v.A! - (v.c! * v.b! ** 3) / 3,
+          {
+            A: [
+              (v) => (v.c! * v.b! ** 3) / 3,
+              '{c} × {b}³ ÷ 3',
+              'The limit as n → ∞: n(n + 1)(2n + 1) ÷ n³ goes to 2, so S goes to cb³ × 2 ÷ 6.',
+            ],
+            b: [
+              (v) => Math.cbrt((3 * v.A!) / v.c!),
+              '∛(3 × {A} ÷ {c})',
+              'Multiply by 3, divide by c, then take the cube root.',
+            ],
+            c: [(v) => div(3 * v.A!, v.b! ** 3), '3 × {A} ÷ {b}³', 'Multiply by 3, divide by b³.'],
+          },
+        ),
+        'A',
+        { note: towardA },
       ),
     ),
     example: { c: 1, b: 3, n: 6, w: 0.5, S: 11.375, A: 9 },
@@ -6583,27 +6606,27 @@ const MATH_12_AREA: ModuleDef[] = [
     ],
     ...rels(
       widthOf,
+      derive(
+        'S = mw² × n(n + 1) ÷ 2 + kb',
+        '{S} = {m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+        'S',
+        ['m', 'w', 'n', 'k', 'b'],
+        (v) => (v.m! * v.w! ** 2 * v.n! * (v.n! + 1)) / 2 + v.k! * v.b!,
+        '{m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+        'Each rectangle is w by m(iw) + k; the m parts add to mw²(1 + 2 + … + n), the k parts to kb.',
+      ),
       withStep(
         derive(
-          'S = mw² × n(n + 1) ÷ 2 + kb',
-          '{S} = {m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
-          'S',
-          ['m', 'w', 'n', 'k', 'b'],
-          (v) => (v.m! * v.w! ** 2 * v.n! * (v.n! + 1)) / 2 + v.k! * v.b!,
-          '{m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
-          'Each rectangle is w by m(iw) + k; the m parts add to mw²(1 + 2 + … + n), the k parts to kb.',
+          'A = mb² ÷ 2 + kb',
+          '{A} = {m} × {b}² ÷ 2 + {k} × {b}',
+          'A',
+          ['m', 'b', 'k'],
+          (v) => (v.m! * v.b! ** 2) / 2 + v.k! * v.b!,
+          '{m} × {b}² ÷ 2 + {k} × {b}',
+          'The limit: n(n + 1) ÷ n² goes to 1. It is also the trapezoid with heights k and mb + k.',
         ),
-        'S',
-        { note: towardA },
-      ),
-      derive(
-        'A = mb² ÷ 2 + kb',
-        '{A} = {m} × {b}² ÷ 2 + {k} × {b}',
         'A',
-        ['m', 'b', 'k'],
-        (v) => (v.m! * v.b! ** 2) / 2 + v.k! * v.b!,
-        '{m} × {b}² ÷ 2 + {k} × {b}',
-        'The limit: n(n + 1) ÷ n² goes to 1. It is also the trapezoid with heights k and mb + k.',
+        { note: towardA },
       ),
       limit(
         'mb + k ≥ 0',
@@ -6635,9 +6658,9 @@ const MATH_12_AREA: ModuleDef[] = [
     ],
     variables: [
       coef('p', 'p', 'Number before n on top', 100),
-      coef('q', 'q', 'Number on top', 1000),
+      coef('q', 'q', 'Constant on top', 1000),
       coef('r', 'r', 'Number before n in the bottom', 100),
-      coef('s', 's', 'Number in the bottom', 1000),
+      coef('s', 's', 'Constant in the bottom', 1000),
       V('n', 'n', 'Term number', { integer: true, min: 1, max: 1000000 }),
       coef('a', 'aₙ', 'Term n', 1e9),
       coef('L', 'L', 'Limit', 1e6, { derived: true }),
@@ -6687,6 +6710,97 @@ const MATH_12_AREA: ModuleDef[] = [
       output: 'a',
       params: ['p', 'q', 'r', 's'],
       rows: [1, 10, 100, 1000, 10000],
+    },
+  },
+  {
+    id: 'm.12.area-under-curve~degrees',
+    title: 'Limits at infinity by degree',
+    use: 'Use this for “Find the limit of (2n² + 1) ÷ (n² − 3) as n → ∞, or say there is none.”',
+    assumptions: [
+      'Divide the top and bottom by the bottom’s highest power of n; every term with n left under it goes to 0.',
+      'Same power on top and bottom: the limit is the ratio of the leading numbers. A higher power in the bottom: 0.',
+      'A higher power on top: the terms grow without bound, so there is no limit.',
+    ],
+    variables: [
+      coef('p', 'p', 'Leading number on top', 100),
+      V('j', 'j', 'Power of n on top', { integer: true, min: 0, max: 3 }),
+      coef('q', 'q', 'Constant on top', 1000),
+      coef('r', 'r', 'Leading number in the bottom', 100),
+      V('k', 'k', 'Power of n in the bottom', { integer: true, min: 0, max: 3 }),
+      coef('s', 's', 'Constant in the bottom', 1000),
+      V('n', 'n', 'Term number', { integer: true, min: 1, max: 1000000 }),
+      coef('a', 'aₙ', 'Term n', 1e21),
+      coef('L', 'L', 'Limit', 1e6, { derived: true }),
+    ],
+    ...rels(
+      rel(
+        'aₙ = (pnʲ + q) ÷ (rnᵏ + s)',
+        '{a} = ({p} × {n}^{j} + {q}) ÷ ({r} × {n}^{k} + {s})',
+        ['a', 'p', 'n', 'j', 'q', 'r', 'k', 's'],
+        (v) => v.a! * (v.r! * v.n! ** v.k! + v.s!) - (v.p! * v.n! ** v.j! + v.q!),
+        {
+          a: [
+            (v) => div(v.p! * v.n! ** v.j! + v.q!, v.r! * v.n! ** v.k! + v.s!),
+            '({p} × {n}^{j} + {q}) ÷ ({r} × {n}^{k} + {s})',
+            'Put n into the rule.',
+          ],
+        },
+        {
+          message: (v) =>
+            [v.r, v.n, v.k, v.s].every((x) => x !== undefined) && v.r! * v.n! ** v.k! + v.s! === 0
+              ? 'The bottom is 0 for this n: that term doesn’t exist.'
+              : undefined,
+        },
+      ),
+      withStep(
+        withCheck(
+          rel(
+            'L by degree',
+            '{L} = {p} ÷ {r} if {j} = {k}, 0 if {j} < {k}',
+            ['L', 'p', 'j', 'r', 'k'],
+            (v) => v.L! - (degreeLimit(v) ?? NaN),
+            {
+              L: [
+                (v) => degreeLimit(v),
+                (v: Values) => (v.j === v.k ? '{p} ÷ {r}' : '0'),
+                'Compare the powers: equal gives the leading numbers’ ratio, a higher power in the bottom gives 0.',
+              ],
+            },
+            {
+              explain: (v) =>
+                v.j !== undefined && v.k !== undefined && v.j > v.k
+                  ? 'The top’s power is higher, so the terms grow without bound: there is no limit.'
+                  : undefined,
+            },
+          ),
+          (v) => (v.j === v.k ? `${fmt(v.L!)} = ${fmt(v.p!)} ÷ ${par(v.r!)}` : `${fmt(v.L!)} = 0`),
+        ),
+        'L',
+        {
+          note: (v) =>
+            v.j === undefined || v.k === undefined
+              ? ''
+              : v.j === v.k
+                ? '→ equal powers: divide by the power and only the leading numbers are left'
+                : '→ the bottom’s power is higher: the bottom outgrows the top',
+        },
+      ),
+      limit(
+        'p ≠ 0, r ≠ 0',
+        'The leading numbers {p} and {r} are not 0',
+        ['p', 'r'],
+        (v) => v.p !== 0 && v.r !== 0,
+        'A leading number of 0 means that power isn’t there: type the highest power the expression really has.',
+      ),
+    ),
+    example: { p: 2, j: 2, q: 1, r: 1, k: 2, s: -3, n: 10, a: 201 / 97, L: 2 },
+    startWith: ['p', 'j', 'q', 'r', 'k', 's', 'n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'a',
+      params: ['p', 'j', 'q', 'r', 'k', 's'],
+      rows: [1, 10, 100, 1000],
     },
   },
 ];

@@ -318,3 +318,11 @@ None: every planned page is built, some with an interim picture (below).
   side against right. `~steps` unchanged.
 - New page `m.12.induction~divisible` (3 divides n³ − n: f(n), f(n) ÷ 3, f(n + 1) and the jump
   D = 3n(n + 1), with the k algebra; n = 4: 60, 20, 120, 60 = 3 × 4 × 5), a `table` of f(n) ÷ 3.
+- `m.12.area-under-curve` main: the S step works the sum of squares as a number first
+  ("6 × 7 × 13 ÷ 6 = 91", "S = 0.125 × 91") and notes it is 1² + … + n². On the main page and
+  `~line` the S-against-A note moved to the A step, and equality reads "S equals the exact
+  area: a flat line is covered exactly". `~sequence`: q and s are "Constant on top/in the
+  bottom". Areas from a to b stay two runs and a subtraction (the use lines say "from 0").
+- New page `m.12.area-under-curve~degrees` ((pnʲ + q) ÷ (rnᵏ + s), powers 0–3: L = p ÷ r for
+  equal powers, 0 for a bigger bottom, and "no limit" explained for a bigger top; (2n² + 1) ÷
+  (n² − 3) → 2), a `table` at n = 1, 10, 100, 1000.
