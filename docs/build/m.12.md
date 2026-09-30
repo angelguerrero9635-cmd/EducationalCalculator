@@ -17,6 +17,8 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 - `m.12.matrices` (5): main (row reduction, right sides typed), `~multiply`, `~determinant`
   (3 × 3), `~inverse`, `~cramer`.
 - `m.12.inverse-trig` (4): main (sin⁻¹), `~arccos`, `~arctan` (rise over run), `~compose`.
+- `m.12.trig-formulas-equations` (5): main (sin(A + B)), `~difference` (cos(A − B)),
+  `~double-angle`, `~sine-equation`, `~tangent-equation`.
 
 ## Waiting
 
@@ -60,6 +62,14 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   point is the degree value the page types. The radian value t is worked out beside it.
 - **`~compose` works y = √(1 − x²) directly** (the plan's "shown as"); A = sin⁻¹(x) is the
   angle the unit circle draws.
+
+- **Sum and difference pages draw the one angle A ± B (need 6 interim).** The unit circle marks
+  C = A + B (or A − B) with its sine (cosine); the four special values and their products are
+  work lines under the formula step. A and B as two arcs wait on need 6.
+- **S and K are worked out.** On the sum and difference pages sin(A + B) and cos(A − B) are
+  derived: a typed value has many A and B.
+- **Checks written as sin(x₁°) = k.** On the equation pages the check says the solution's sine
+  (tangent) is k, since sin⁻¹(k) alone is not x₁ once 360° or 180° is added.
 
 ## Shared needs found while building
 

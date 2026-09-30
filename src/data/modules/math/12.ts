@@ -1771,7 +1771,352 @@ const MATH_12_TRIG: ModuleDef[] = [
   },
 ];
 
+const sind = (x: number) => Math.sin(x * RAD);
+const cosd = (x: number) => Math.cos(x * RAD);
+/** Four special values and their products, then the sum, as work lines. */
+const formulaWork = (p: number, q: number, parts: string[]) => {
+  const sum = p + q;
+  return [
+    parts.join(', '),
+    // A negative first product goes second, so the line reads as a subtraction.
+    p < 0 && q >= 0
+      ? `${fmt(q)} − ${fmt(-p)} = ${fmt(sum)}`
+      : `${fmt(p)} ${q < 0 ? '−' : '+'} ${fmt(Math.abs(q))} = ${fmt(sum)}`,
+  ];
+};
+
+/** A rule that only checks (never solved): 0 when it holds. */
+const limit = (id: string, display: string, vars: string[], ok: (v: Values) => boolean): Rel => ({
+  relation: { id, constraint: true, display, vars, residual: (v) => (ok(v) ? 0 : 1), solve: {} },
+  steps: {},
+});
+
+/** k = (c − b) ÷ a: the equation a f(x) + b = c solved for f(x). */
+const isolate = (fn: string) =>
+  rel(
+    `k = (c − b) ÷ a`,
+    `{k} = ({c} − {b}) ÷ {a}`,
+    ['k', 'c', 'b', 'a'],
+    (v) => v.k! * v.a! - (v.c! - v.b!),
+    {
+      k: [
+        (v) => div(v.c! - v.b!, v.a!),
+        '({c} − {b}) ÷ {a}',
+        `Take b from both sides, then divide by a: ${fn} x on its own.`,
+      ],
+      c: [(v) => v.a! * v.k! + v.b!, '{a} × {k} + {b}', 'Put the value of the function back in.'],
+      b: [(v) => v.c! - v.a! * v.k!, '{c} − {a} × {k}', 'Take a times the function from c.'],
+    },
+  );
+
+const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
+  // ── m.12.trig-formulas-equations (F-TF.9, F-TF.7) ──
+  {
+    id: 'm.12.trig-formulas-equations',
+    assumptions: [
+      'sin(A + B) = sin A cos B + cos A sin B; it is not sin A + sin B.',
+      'Pick A and B with known exact values (30°, 45°, 60° and their relatives).',
+      'The same formula with minus signs gives sin(A − B) = sin A cos B − cos A sin B.',
+    ],
+    variables: [
+      deg('A', 'A', 'First angle', 0, 360),
+      deg('B', 'B', 'Second angle', 0, 360),
+      deg('C', 'A + B', 'The sum of the angles', 0, 720, { derived: true }),
+      unitValue('S', 'S', 'sin(A + B)', { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'A + B',
+        '{C} = {A} + {B}',
+        'C',
+        ['A', 'B'],
+        (v) => v.A! + v.B!,
+        '{A} + {B}',
+        'Add the two angles.',
+      ),
+      withStep(
+        derive(
+          'sin(A + B) = sin A cos B + cos A sin B',
+          '{S} = sin({A}°) × cos({B}°) + cos({A}°) × sin({B}°)',
+          'S',
+          ['A', 'B'],
+          (v) => sind(v.A!) * cosd(v.B!) + cosd(v.A!) * sind(v.B!),
+          'sin({A}°) × cos({B}°) + cos({A}°) × sin({B}°)',
+          'The sum formula: sin A cos B plus cos A sin B, from the four values you know.',
+        ),
+        'S',
+        {
+          work: (v) =>
+            formulaWork(sind(v.A!) * cosd(v.B!), cosd(v.A!) * sind(v.B!), [
+              `sin A = ${fmt(sind(v.A!))}`,
+              `cos B = ${fmt(cosd(v.B!))}`,
+              `cos A = ${fmt(cosd(v.A!))}`,
+              `sin B = ${fmt(sind(v.B!))}`,
+            ]),
+        },
+      ),
+    ),
+    example: { A: 45, B: 30, C: 75, S: Math.sin(75 * RAD) },
+    startWith: ['A', 'B'],
+    equation: 'sin({A}° + {B}°) = {S}',
+    representation: { kind: 'unitCircle', angle: 'C', sin: 'S', fixed: true },
+  },
+  {
+    id: 'm.12.trig-formulas-equations~difference',
+    title: 'The difference formula for cosine',
+    use: 'Use this for “Find the exact value of cos 15° as cos(45° − 30°).”',
+    assumptions: [
+      'cos(A − B) = cos A cos B + sin A sin B: the sign in the middle flips.',
+      'Write the angle as a difference of angles with known exact values.',
+      'cos(A + B) = cos A cos B − sin A sin B is the same formula with B made negative.',
+    ],
+    variables: [
+      deg('A', 'A', 'First angle', 0, 360),
+      deg('B', 'B', 'Second angle', 0, 360),
+      deg('C', 'A − B', 'The difference of the angles', -360, 360, { derived: true }),
+      unitValue('K', 'K', 'cos(A − B)', { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'A − B',
+        '{C} = {A} − {B}',
+        'C',
+        ['A', 'B'],
+        (v) => v.A! - v.B!,
+        '{A} − {B}',
+        'Take the second angle from the first.',
+      ),
+      withStep(
+        derive(
+          'cos(A − B) = cos A cos B + sin A sin B',
+          '{K} = cos({A}°) × cos({B}°) + sin({A}°) × sin({B}°)',
+          'K',
+          ['A', 'B'],
+          (v) => cosd(v.A!) * cosd(v.B!) + sind(v.A!) * sind(v.B!),
+          'cos({A}°) × cos({B}°) + sin({A}°) × sin({B}°)',
+          'The difference formula: cos A cos B plus sin A sin B.',
+        ),
+        'K',
+        {
+          work: (v) =>
+            formulaWork(cosd(v.A!) * cosd(v.B!), sind(v.A!) * sind(v.B!), [
+              `cos A = ${fmt(cosd(v.A!))}`,
+              `cos B = ${fmt(cosd(v.B!))}`,
+              `sin A = ${fmt(sind(v.A!))}`,
+              `sin B = ${fmt(sind(v.B!))}`,
+            ]),
+        },
+      ),
+    ),
+    example: { A: 45, B: 30, C: 15, K: Math.cos(15 * RAD) },
+    startWith: ['A', 'B'],
+    equation: 'cos({A}° − {B}°) = {K}',
+    representation: { kind: 'unitCircle', angle: 'C', cos: 'K', fixed: true },
+  },
+  {
+    id: 'm.12.trig-formulas-equations~double-angle',
+    title: 'Double-angle formulas',
+    use: 'Use this for “sin A = 3/5 with A in Quadrant II. Find sin 2A and cos 2A.”',
+    assumptions: [
+      'sin 2A = 2 sin A cos A and cos 2A = cos²A − sin²A.',
+      'Find cos A from sin²A + cos²A = 1; its sign comes from the quadrant (negative in II and III).',
+      'The sine is positive in quadrants I and II and negative in III and IV.',
+    ],
+    variables: [
+      unitValue('s', 'sin A', 'Sine of A'),
+      V('q', 'Q', 'Quadrant of A', { allowed: [1, 2, 3, 4], integer: true, min: 1, max: 4 }),
+      unitValue('c', 'cos A', 'Cosine of A', { derived: true }),
+      deg('A', 'A', 'The angle', 0, 360, { derived: true }),
+      unitValue('S', 'sin 2A', 'Sine of 2A'),
+      unitValue('K', 'cos 2A', 'Cosine of 2A'),
+    ],
+    ...rels(
+      limit(
+        'sign of sin A in its quadrant',
+        'The sign of {s} fits quadrant {q}: not negative in I and II, not positive in III and IV',
+        ['s', 'q'],
+        (v) => (v.q! <= 2 ? v.s! >= 0 : v.s! <= 0),
+      ),
+      rel(
+        'cos A = ±√(1 − sin²A)',
+        '{c} = ±√(1 − {s}²), the sign from quadrant {q}',
+        ['c', 's', 'q'],
+        (v) => v.c! - (v.q === 2 || v.q === 3 ? -1 : 1) * Math.sqrt(1 - v.s! ** 2),
+        {
+          c: [
+            (v) => (v.q === 2 || v.q === 3 ? -1 : 1) * Math.sqrt(1 - v.s! ** 2),
+            (v: Values) => (v.q === 2 || v.q === 3 ? '−√(1 − {s}²)' : '√(1 − {s}²)'),
+            'cos²A = 1 − sin²A; the root is negative in quadrants II and III, positive in I and IV.',
+          ],
+        },
+        {
+          check: (v) =>
+            `${fmt(v.c!)} = ${v.q === 2 || v.q === 3 ? '−' : ''}√(1 − ${v.s! < 0 ? `(${fmt(v.s!)})` : fmt(v.s!)}²)`,
+        },
+      ),
+      rel(
+        'A from sin A and its quadrant',
+        '{A} = the angle in quadrant {q} with sine {s}',
+        ['A', 's', 'q'],
+        (v) => sind(v.A!) - v.s!,
+        {
+          A: [
+            (v) => {
+              const a = Math.asin(v.s!) / RAD;
+              return v.q === 1 ? a : v.q === 4 ? 360 + a : 180 - a;
+            },
+            (v: Values) =>
+              v.q === 1 ? 'sin⁻¹({s})' : v.q === 4 ? '360 + sin⁻¹({s})' : '180 − sin⁻¹({s})',
+            'sin⁻¹ gives an angle from −90° to 90°; move it into the quadrant (180° − it in II and III).',
+          ],
+        },
+        { check: (v) => `sin(${fmt(v.A!)}°) = ${fmt(v.s!)}` },
+      ),
+      rel(
+        'sin 2A = 2 sin A cos A',
+        '{S} = 2 × {s} × {c}',
+        ['S', 's', 'c'],
+        (v) => v.S! - 2 * v.s! * v.c!,
+        {
+          S: [(v) => 2 * v.s! * v.c!, '2 × {s} × {c}', 'The double-angle formula for sine.'],
+        },
+      ),
+      rel(
+        'cos 2A = cos²A − sin²A',
+        '{K} = {c}² − {s}²',
+        ['K', 'c', 's'],
+        (v) => v.K! - (v.c! ** 2 - v.s! ** 2),
+        {
+          K: [(v) => v.c! ** 2 - v.s! ** 2, '{c}² − {s}²', 'The double-angle formula for cosine.'],
+        },
+      ),
+    ),
+    example: { s: 0.6, q: 2, c: -0.8, A: 180 - Math.asin(0.6) / RAD, S: -0.96, K: 0.28 },
+    startWith: ['s', 'q'],
+    representation: { kind: 'unitCircle', angle: 'A', sin: 's', cos: 'c', fixed: true },
+  },
+  {
+    id: 'm.12.trig-formulas-equations~sine-equation',
+    title: 'Solve a sin x + b = c',
+    use: 'Use this for “Solve 2 sin x + 3 = 4 for 0° ≤ x < 360°.”',
+    assumptions: [
+      'Get sin x on its own first; it must be from −1 to 1, or there is no solution.',
+      'The line y = sin x crosses the circle twice: at sin⁻¹ and at 180° minus it.',
+      'Answers are from 0° up to 360°: add 360° to a negative angle.',
+    ],
+    variables: [
+      V('a', 'a', 'Number before sin x', { min: -100, max: 100, step: 0.01 }),
+      V('b', 'b', 'Number added', { min: -100, max: 100, step: 0.01 }),
+      V('c', 'c', 'Right side', { min: -100, max: 100, step: 0.01 }),
+      unitValue('k', 'sin x', 'sin x on its own', { derived: true }),
+      deg('x1', 'x₁', 'First solution', 0, 360),
+      deg('x2', 'x₂', 'Second solution', 90, 270),
+    ],
+    ...rels(
+      limit('a ≠ 0', 'The number before sin x, {a}, is not 0', ['a'], (v) => v.a !== 0),
+      isolate('sin'),
+      rel(
+        'x₁ = sin⁻¹(k)',
+        '{x1} = sin⁻¹({k})',
+        ['x1', 'k'],
+        (v) => sind(v.x1!) - v.k!,
+        {
+          x1: [
+            (v) => (Math.abs(v.k!) > 1 ? undefined : (Math.asin(v.k!) / RAD + 360) % 360),
+            (v: Values) => (v.k! < 0 ? 'sin⁻¹({k}) + 360' : 'sin⁻¹({k})'),
+            'sin⁻¹ gives one angle; add 360° when it is negative so it lies on one turn from 0°.',
+          ],
+          k: [(v) => sind(v.x1!), 'sin({x1}°)', 'Take the sine of the angle.'],
+        },
+        { check: (v) => `sin(${fmt(v.x1!)}°) = ${fmt(v.k!)}` },
+      ),
+      rel(
+        'x₂ = 180° − sin⁻¹(k)',
+        '{x2} = 180 − sin⁻¹({k})',
+        ['x2', 'k'],
+        (v) => sind(v.x2!) - v.k!,
+        {
+          x2: [
+            (v) => (Math.abs(v.k!) > 1 ? undefined : 180 - Math.asin(v.k!) / RAD),
+            '180 − sin⁻¹({k})',
+            'The mirror image across the y-axis has the same sine.',
+          ],
+        },
+      ),
+    ),
+    example: { a: 2, b: 3, c: 4, k: 0.5, x1: 30, x2: 150 },
+    startWith: ['a', 'b', 'c'],
+    equation: '{a} sin x + {b} = {c}',
+    representation: {
+      kind: 'unitCircle',
+      angle: 'x1',
+      fixed: true,
+      solutions: { fn: 'sin', value: 'k', angles: ['x1', 'x2'] },
+    },
+  },
+  {
+    id: 'm.12.trig-formulas-equations~tangent-equation',
+    title: 'Solve a tan x + b = c',
+    use: 'Use this for “Solve 3 tan x + 1 = 4 for 0° ≤ x < 360°.”',
+    assumptions: [
+      'Get tan x on its own first; every value has solutions.',
+      'The tangent repeats every 180°, so the second solution is the first plus 180°.',
+      'Answers are from 0° up to 360°: add 180° to a negative tan⁻¹.',
+    ],
+    variables: [
+      V('a', 'a', 'Number before tan x', { min: -100, max: 100, step: 0.01 }),
+      V('b', 'b', 'Number added', { min: -100, max: 100, step: 0.01 }),
+      V('c', 'c', 'Right side', { min: -100, max: 100, step: 0.01 }),
+      V('k', 'tan x', 'tan x on its own', {
+        min: -100000,
+        max: 100000,
+        step: 0.0001,
+        derived: true,
+      }),
+      deg('x1', 'x₁', 'First solution', 0, 180),
+      deg('x2', 'x₂', 'Second solution', 180, 360),
+    ],
+    ...rels(
+      limit('a ≠ 0', 'The number before tan x, {a}, is not 0', ['a'], (v) => v.a !== 0),
+      isolate('tan'),
+      rel(
+        'x₁ = tan⁻¹(k)',
+        '{x1} = tan⁻¹({k})',
+        ['x1', 'k'],
+        (v) => v.k! * cosd(v.x1!) - sind(v.x1!),
+        {
+          x1: [
+            (v) => (Math.atan(v.k!) / RAD + 180) % 180,
+            (v: Values) => (v.k! < 0 ? 'tan⁻¹({k}) + 180' : 'tan⁻¹({k})'),
+            'tan⁻¹ gives one angle; add 180° when it is negative so it lies from 0° to 180°.',
+          ],
+          k: [(v) => Math.tan(v.x1! * RAD), 'tan({x1}°)', 'Take the tangent of the angle.'],
+        },
+        { check: (v) => `tan(${fmt(v.x1!)}°) = ${fmt(v.k!)}` },
+      ),
+      rel('x₂ = x₁ + 180°', '{x2} = {x1} + 180', ['x2', 'x1'], (v) => v.x2! - v.x1! - 180, {
+        x2: [
+          (v) => v.x1! + 180,
+          '{x1} + 180',
+          'Half a turn on, the opposite point has the same tangent.',
+        ],
+        x1: [(v) => v.x2! - 180, '{x2} − 180', 'Half a turn back gives the first solution.'],
+      }),
+    ),
+    example: { a: 3, b: 1, c: 4, k: 1, x1: 45, x2: 225 },
+    startWith: ['a', 'b', 'c'],
+    equation: '{a} tan x + {b} = {c}',
+    representation: {
+      kind: 'unitCircle',
+      angle: 'x1',
+      fixed: true,
+      solutions: { fn: 'tan', value: 'k', angles: ['x1', 'x2'] },
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
+  ...MATH_12_TRIG_EQUATIONS,
   ...MATH_12_STATS,
   ...MATH_12_CONICS,
   ...MATH_12_MATRICES,
