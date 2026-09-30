@@ -141,7 +141,12 @@ function affineOf(rel: Relation): Affine | undefined {
   const zero = Object.fromEntries(rel.vars.map((id) => [id, 0]));
   const c0 = at(zero);
   const coef = new Map(rel.vars.map((id) => [id, at({ ...zero, [id]: 1 }) - c0]));
-  let ok = Number.isFinite(c0) && [...coef.values()].every(Number.isFinite);
+  // A rule with no coefficient at all is a pass/fail check that failed every probe (a limit
+  // like "n·p ≥ 10" at small points), not a constant sum that can never be met.
+  let ok =
+    Number.isFinite(c0) &&
+    [...coef.values()].every(Number.isFinite) &&
+    [...coef.values()].some((c) => c !== 0);
   // Probe a few fixed points: a product or a ratio shows up as a miss.
   for (let i = 1; ok && i <= 6; i++) {
     const p = Object.fromEntries(rel.vars.map((id, k) => [id, ((i * 37 + k * 53) % 200) - 50]));
