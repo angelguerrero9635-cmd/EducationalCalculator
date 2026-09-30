@@ -643,7 +643,7 @@ const REPRODUCTION: LayoutDef[] = [
       { label: 'Blastula: a hollow ball of cells forms' },
       { label: 'Gastrulation: the cells fold in to form three germ layers' },
       { label: 'Organogenesis: the germ layers form tissues and organs' },
-      { label: 'The fetus grows until birth or hatching' },
+      { label: 'The embryo grows until birth or hatching' },
     ],
   },
   {
@@ -732,12 +732,13 @@ const REPRODUCTION: LayoutDef[] = [
     stages: [
       { label: 'Menstruation: progesterone is low, so the uterine lining is shed', span: 5 },
       {
-        label: 'Follicle phase: FSH grows a follicle, whose estrogen rebuilds the lining',
+        label: 'Follicular phase: FSH grows a follicle, whose estrogen rebuilds the lining',
         span: 8,
       },
       { label: 'Ovulation: a surge of LH releases the egg', span: 1 },
       {
-        label: 'Luteal phase: the empty follicle makes progesterone, which keeps the lining',
+        label:
+          'Luteal phase: the empty follicle (corpus luteum) makes progesterone, which keeps the lining',
         span: 14,
       },
     ],
@@ -1476,7 +1477,7 @@ const PLANTS: LayoutDef[] = [
       { label: 'Carries sugar from the leaves to the roots', bin: 'phloem' },
       { label: 'Carries sugar up to a growing fruit', bin: 'phloem' },
       { label: 'Made of living sieve-tube cells', bin: 'phloem' },
-      { label: 'Maple syrup is made from its sugary sap', bin: 'phloem' },
+      { label: 'Aphids feed on its sugary sap', bin: 'phloem' },
     ],
   },
   {
@@ -1513,6 +1514,49 @@ const PLANTS: LayoutDef[] = [
       { label: 'A pot on its side: the stem turns upward', bin: 'gravi' },
       { label: 'A pea tendril coils around a stick', bin: 'thigmo' },
       { label: 'A vine climbs by wrapping around a fence', bin: 'thigmo' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.9.plant-biology~nutrients',
+    title: 'Which nutrient is it?',
+    use: 'Use this for “Why do farmers plant beans to add nitrogen to the soil?”',
+    assumptions: [
+      'Roots take up mineral nutrients dissolved in the soil water.',
+      'A fertilizer label lists N, P and K, the three nutrients a plant needs most.',
+    ],
+    question: 'Which nutrient does it describe?',
+    bins: [
+      {
+        id: 'n',
+        label: 'Nitrogen (N)',
+        why: 'Builds amino acids and proteins; plants take it up as nitrate or ammonium.',
+      },
+      {
+        id: 'p',
+        label: 'Phosphorus (P)',
+        why: 'Builds the phosphate groups of ATP, DNA and cell membranes.',
+      },
+      {
+        id: 'k',
+        label: 'Potassium (K)',
+        why: 'Keeps the water balance of cells and works the guard cells.',
+      },
+      {
+        id: 'mg',
+        label: 'Magnesium (Mg)',
+        why: 'Sits at the center of every chlorophyll molecule.',
+      },
+    ],
+    cards: [
+      { label: 'Part of every amino acid', bin: 'n' },
+      { label: 'Bacteria in bean root nodules turn N₂ from the air into it', bin: 'n' },
+      { label: 'The phosphate groups in ATP', bin: 'p' },
+      { label: 'Its cycle has no gas: weathering rock slowly frees it', bin: 'p' },
+      { label: 'Moves in and out of guard cells to open and close stomata', bin: 'k' },
+      { label: 'Short of it, leaf edges turn brown and scorched', bin: 'k' },
+      { label: 'The atom at the center of chlorophyll', bin: 'mg' },
+      { label: 'Short of it, leaves yellow between green veins', bin: 'mg' },
     ],
   },
   {
@@ -1846,7 +1890,7 @@ const BIOMES: LayoutDef[] = [
       { label: 'Trout in cold, fast-flowing water', bin: 'river' },
       { label: 'A marsh of cattails that filters runoff', bin: 'wetland' },
       { label: 'Brackish water where salmon pass from sea to river', bin: 'estuary' },
-      { label: 'Oysters and young fish in a salt marsh at a river mouth', bin: 'estuary' },
+      { label: 'Oysters and young fish where a river meets the sea', bin: 'estuary' },
       { label: 'Colonies of tiny animals build limestone in warm, clear water', bin: 'reef' },
       { label: 'Anglerfish in total darkness', bin: 'deep' },
       { label: 'Life around hot vents, fed by bacteria rather than sunlight', bin: 'deep' },
@@ -1879,7 +1923,9 @@ const BIOMES: LayoutDef[] = [
         return `About ${cm} cm a year with a long dry season: a savanna, if it is warm all year.`;
       if (total < 750)
         return `About ${cm} cm a year: enough for grassland, but dry for most forests.`;
-      return `About ${cm} cm a year, spread through the year: enough for a forest, deciduous where winters are mild, taiga where they are long.`;
+      if (dry > 0)
+        return `About ${cm} cm a year, with ${dry} dry month${dry === 1 ? '' : 's'}: a seasonal forest if it is warm.`;
+      return `About ${cm} cm a year, spread through the year: enough for a forest: temperate deciduous where summers are warm, taiga where winters are long and cold.`;
     },
   },
 ];
@@ -2153,6 +2199,25 @@ const NERVOUS: LayoutDef[] = [
     ],
   },
   {
+    kind: 'sequence',
+    id: 's.9.nervous-system~synapse',
+    title: 'Across a synapse',
+    use: 'Use this for “How does a signal pass from one neuron to the next?”',
+    assumptions: [
+      'Neurons do not touch: a tiny gap, the synapse, separates the end of one axon from the next cell.',
+      'A chemical, the neurotransmitter, carries the signal across the gap, so it passes one way only.',
+    ],
+    question: 'Put the steps in order: an impulse reaches the end of an axon.',
+    stages: [
+      { label: 'The impulse reaches the end of the axon' },
+      { label: 'Small sacs (vesicles) release neurotransmitter into the gap' },
+      { label: 'The neurotransmitter crosses the gap' },
+      { label: 'It binds to receptors on the next cell' },
+      { label: 'The next cell starts a new impulse, or is held back from one' },
+      { label: 'The neurotransmitter is broken down or taken back up' },
+    ],
+  },
+  {
     kind: 'sort',
     id: 's.9.nervous-system~divisions',
     title: 'Which part of the nervous system?',
@@ -2183,7 +2248,7 @@ const NERVOUS: LayoutDef[] = [
       { label: 'The cerebrum plans a move and stores memories', bin: 'cns' },
       { label: 'The cerebellum keeps your balance', bin: 'cns' },
       { label: 'The brainstem keeps you breathing', bin: 'cns' },
-      { label: 'You decide to kick a ball', bin: 'somatic' },
+      { label: 'Motor nerves carry the kick to the leg muscles', bin: 'somatic' },
       { label: 'Fingers typing a message', bin: 'somatic' },
       { label: 'The heart speeds up when you are frightened', bin: 'autonomic' },
       { label: 'The stomach churns food after a meal', bin: 'autonomic' },

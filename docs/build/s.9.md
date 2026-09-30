@@ -154,6 +154,22 @@ New pages from the report: `s.9.biotechnology~mutation-types` (sort, page A) and
 
 23 new pages in all (2 from the report, 21 for the skills): 3 calculators and 20 layouts.
 
+### Lesson review of the added skills
+
+Report: `.review/new-sci/lesson-report.md`. Every finding is fixed:
+
+- Wording: "The embryo grows until birth or hatching"; "Follicular phase"; "the empty follicle
+  (corpus luteum)".
+- One right bin: the maple-syrup card (maple sap is xylem) is now "Aphids feed on its sugary sap";
+  the salt-marsh card (also a wetland) is "where a river meets the sea"; "You decide to kick a ball"
+  (a decision in the cerebrum) is "Motor nerves carry the kick to the leg muscles".
+- ~rainfall: deciduous forests have warm summers and cold winters (the sentence said mild winters);
+  a wet year with 1–2 dry months now reads as a seasonal forest.
+- ~transpiration: R is in mL/h (a fixed label).
+- ~impulse-speed: the t step shows the seconds first ("d ÷ v = 1 ÷ 50 = 0.02 s", "t = 0.02 × 1,000").
+- ~action-potential's "the pump restores the ions" stays (the report accepted it).
+- New pages: `s.9.nervous-system~synapse` (sequence) and `s.9.plant-biology~nutrients` (sort).
+
 ## Shared needs (lesson review and added skills)
 
 - **`dnaMath.effectOf` start-lost and stop-lost** (with their captions): then

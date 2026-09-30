@@ -112,6 +112,8 @@ describe('unit conversions (exact definitions)', () => {
       'amp-turns',
       'turns',
       'clips',
+      'mL/h',
+      'V/m',
       // Grades 9–12 science labels (no conversion offered)
       'mol/L',
       'g/mol',
