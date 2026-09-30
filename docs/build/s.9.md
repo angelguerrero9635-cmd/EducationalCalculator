@@ -18,6 +18,10 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
   ~succession sequence; ~nitrogen explore).
 - `s.9.homeostasis`: 4 (main feedback-loop explore with 6 scenes; ~systems and ~feedback-types
   sorts; ~blood-glucose observe).
+- `s.9.dna-protein-synthesis`: 4 (main codons and ~chargaff calculators; ~replication and
+  ~protein-synthesis sequences).
+- `s.9.biotechnology`: 5 (main substitution, ~frameshift, ~gel and ~pcr calculators; ~tools
+  sort).
 
 ## Waiting
 
@@ -54,5 +58,15 @@ Built from `.review/plans/s.9/plan.md` in its Priority order, one skill at a tim
 - `~biodiversity`: Simpson's sum is written out term by term, 1 − ((n₁ ÷ N)² + … + (n₄ ÷ N)²),
   so the harness reads it with no Σ phrase (Engine need 7 is not needed for this page). The four
   species are named (a pond survey) rather than numbered.
+
+- `s.9.dna-protein-synthesis` main: b runs 6–12, not 3–12: with b = 3 the one codon is the stop,
+  so a = 0 amino acids and p = −1 peptide bonds. The picture draws the first b bases of the
+  example gene with its mRNA only (`show: ['mrna']`): below 12 bases no stop codon is drawn, so a
+  protein row would contradict a = c − 1. The amino acids and bonds are labelled under it. Both
+  wait on Engine need 2 (a long gene drawn as its first 12 bases and "…", ending in its stop).
+- `~chargaff`: A takes any whole percent (the ladder fades off multiples of 5, as drawn), so the
+  pairs in 10 and the hydrogen bonds can be decimals: they read as averages per 10 pairs.
+- `~replication`: text stages only (Engine need 6, the replication-fork figure).
+- `~frameshift`: added the limit p ≤ L (the plan's range 1–L).
 
 ## Shared needs found while building

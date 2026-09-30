@@ -911,6 +911,93 @@ const HOMEOSTASIS: LayoutDef[] = [
   },
 ];
 
+const DNA: LayoutDef[] = [
+  // ── DNA structure, replication and protein synthesis (HS-LS1-1, HS-LS3-1) ──
+  {
+    kind: 'sequence',
+    id: 's.9.dna-protein-synthesis~replication',
+    title: 'DNA replication',
+    use: 'Use this for “How does base pairing let a cell copy its DNA before it divides?”',
+    assumptions: [
+      'Each old strand is a template: A pairs with T and G with C, so the new strand’s order is fixed.',
+      'Replication is semiconservative: each new DNA molecule keeps one old strand.',
+    ],
+    question: 'Put the steps of DNA replication in order.',
+    stages: [
+      { label: 'Helicase unzips the double helix at an origin' },
+      { label: 'Free nucleotides pair with each old strand, A with T and G with C' },
+      { label: 'DNA polymerase joins the new nucleotides into a strand' },
+      { label: 'Two DNA molecules, each one old strand and one new' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.9.dna-protein-synthesis~protein-synthesis',
+    title: 'From gene to protein',
+    use: 'Use this for “Put the steps of protein synthesis in order, from the gene in the nucleus.”',
+    assumptions: [
+      'Transcription copies a gene into mRNA in the nucleus; translation builds the protein at a ribosome.',
+      'Each tRNA carries one amino acid and pairs with one codon by its anticodon.',
+    ],
+    question: 'Put the steps of protein synthesis in order.',
+    stages: [
+      { label: 'RNA polymerase copies a gene into mRNA in the nucleus' },
+      { label: 'The mRNA leaves through a nuclear pore' },
+      { label: 'A ribosome reads the mRNA from the start codon AUG' },
+      { label: 'tRNAs bring the amino acids that match each codon' },
+      { label: 'Peptide bonds link the amino acids' },
+      { label: 'A stop codon releases the chain, which folds into a protein' },
+    ],
+  },
+];
+
+const BIOTECH: LayoutDef[] = [
+  // ── Mutations, gene expression and biotechnology (HS-LS3-1, HS-LS3-2, HS-LS1-1) ──
+  {
+    kind: 'sort',
+    id: 's.9.biotechnology~tools',
+    title: 'Which DNA tool is it?',
+    use: 'Use this for “Which technique would make millions of copies of DNA from one hair?”',
+    assumptions: [
+      'PCR copies DNA, gel electrophoresis sorts it by size, and enzymes cut it at chosen sequences.',
+      'Genetic engineering moves a gene into another organism, which then makes that gene’s protein.',
+    ],
+    question: 'Which tool or technique is it?',
+    bins: [
+      {
+        id: 'pcr',
+        label: 'PCR (copies DNA)',
+        why: 'Each cycle of heating and cooling doubles the DNA.',
+      },
+      {
+        id: 'gel',
+        label: 'Gel electrophoresis (sorts by size)',
+        why: 'An electric field pulls DNA through a gel; short pieces run farthest.',
+      },
+      {
+        id: 'cut',
+        label: 'Cutting DNA',
+        why: 'Restriction enzymes and CRISPR–Cas9 cut only at a matching sequence.',
+      },
+      {
+        id: 'engineering',
+        label: 'Genetic engineering (moves a gene)',
+        why: 'A gene from one organism is put into another, which makes its protein.',
+      },
+    ],
+    cards: [
+      { label: 'Millions of copies from one hair’s DNA', bin: 'pcr' },
+      { label: 'Heat, cool and warm again 30 times', bin: 'pcr' },
+      { label: 'Shorter pieces travel farther toward +', bin: 'gel' },
+      { label: 'A child’s bands compared with each parent’s', bin: 'gel' },
+      { label: 'An enzyme cuts only at GAATTC', bin: 'cut' },
+      { label: 'Cas9 led to a gene by a guide RNA', bin: 'cut' },
+      { label: 'Bacteria given the human insulin gene', bin: 'engineering' },
+      { label: 'Corn with a bacterial gene that kills caterpillars', bin: 'engineering' },
+    ],
+  },
+];
+
 export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
@@ -919,4 +1006,6 @@ export const SCIENCE_9_LAYOUTS: LayoutDef[] = [
   ...DIVISION,
   ...ECOSYSTEMS,
   ...HOMEOSTASIS,
+  ...DNA,
+  ...BIOTECH,
 ];

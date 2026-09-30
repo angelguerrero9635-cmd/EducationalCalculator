@@ -1052,10 +1052,354 @@ const ECOSYSTEMS: ModuleDef[] = [
   },
 ];
 
+/** A short gene's template strand: mRNA AUG GCC AAG UAA, Met–Ala–Lys–Stop. */
+const GENE = 'TACCGGTTCATT';
+
+/** k = ⌈p ÷ 3⌉: the codon a base falls in (one way). */
+const codonOf = (k: string, p: string): Rule =>
+  forward(
+    `${k} = ⌈${p} ÷ 3⌉`,
+    `{${k}} = ⌈{${p}} ÷ 3⌉`,
+    k,
+    [p],
+    (v) => Math.ceil(v[p]! / 3 - 1e-9),
+    `the codon holding base {${p}}`,
+    'Bases 1 to 3 are codon 1, bases 4 to 6 codon 2, and so on: divide by 3 and round up.',
+  );
+
+/** y = x, both ways. */
+const same = (y: string, x: string, how: string): Rule =>
+  both(`${y} = ${x}`, `{${y}} = {${x}}`, [y, x], (v) => v[y]! - v[x]!, {
+    [y]: [(v) => v[x]!, `{${x}}`, how],
+    [x]: [(v) => v[y]!, `{${y}}`, how],
+  });
+
+/** A length of DNA in base pairs. */
+const bp = (id: string, symbol: string, name: string, min: number, max: number): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'bp',
+  min,
+  max,
+  step: 10,
+  integer: true,
+});
+
+const DNA: ModuleDef[] = [
+  // ── DNA structure, replication and protein synthesis (HS-LS1-1, HS-LS3-1) ──
+  {
+    id: 's.9.dna-protein-synthesis',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Three mRNA bases make a codon; AUG starts the chain and codes Met, and a stop codon adds no amino acid.',
+      'So a coding mRNA of b bases, ending in its stop codon, codes b ÷ 3 − 1 amino acids.',
+      'Each peptide bond joining two amino acids releases one water molecule.',
+      'The picture reads the first b bases of the gene TACCGGTTCATT, whose stop codon is the fourth.',
+    ],
+    variables: [
+      { ...count('b', 'b', 'Bases in the coding mRNA', 6, 12), multipleOf: 3 },
+      count('c', 'c', 'Codons', 2, 4, true),
+      count('a', 'a', 'Amino acids in the chain', 1, 3, true),
+      count('p', 'p', 'Peptide bonds', 0, 2, true),
+    ],
+    ...rules(
+      forward(
+        'c = b ÷ 3',
+        '{c} = {b} ÷ 3',
+        'c',
+        ['b'],
+        (v) => v.b! / 3,
+        '{b} ÷ 3',
+        'Every three bases are one codon.',
+      ),
+      forward(
+        'a = c − 1',
+        '{a} = {c} − 1',
+        'a',
+        ['c'],
+        (v) => v.c! - 1,
+        '{c} − 1',
+        'Every codon but the last codes an amino acid; the last is the stop codon.',
+      ),
+      forward(
+        'p = a − 1',
+        '{p} = {a} − 1',
+        'p',
+        ['a'],
+        (v) => v.a! - 1,
+        '{a} − 1',
+        'A peptide bond joins each amino acid to the next: one fewer bond than amino acids.',
+      ),
+    ),
+    example: { b: 12, c: 4, a: 3, p: 2 },
+    startWith: ['b'],
+    pictureLabels: ['a', 'p'],
+    representation: {
+      kind: 'dnaStrand',
+      sequence: GENE,
+      length: 'b',
+      codons: 'c',
+      show: ['mrna'],
+    },
+  },
+  {
+    id: 's.9.dna-protein-synthesis~chargaff',
+    title: 'Base pairing: Chargaff’s rule',
+    use: 'Use this for “A DNA sample is 30% adenine. What percent is guanine?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A always pairs with T, and G with C, so DNA has as much A as T and as much G as C.',
+      'The four percents add to 100%, so A + G = 50%.',
+      'An A–T pair is held by 2 hydrogen bonds and a G–C pair by 3, so DNA rich in G and C holds together more tightly.',
+    ],
+    variables: [
+      { id: 'A', symbol: 'A', name: 'Adenine', unit: '%', min: 0, max: 50, step: 1 },
+      { id: 'T', symbol: 'T', name: 'Thymine', unit: '%', min: 0, max: 50, step: 1 },
+      { id: 'G', symbol: 'G', name: 'Guanine', unit: '%', min: 0, max: 50, step: 1 },
+      { id: 'C', symbol: 'C', name: 'Cytosine', unit: '%', min: 0, max: 50, step: 1 },
+      {
+        id: 'AT',
+        symbol: 'n_AT',
+        name: 'A–T pairs in 10 pairs',
+        min: 0,
+        max: 10,
+        step: 0.1,
+        derived: true,
+      },
+      {
+        id: 'GC',
+        symbol: 'n_GC',
+        name: 'G–C pairs in 10 pairs',
+        min: 0,
+        max: 10,
+        step: 0.1,
+        derived: true,
+      },
+      {
+        id: 'H',
+        symbol: 'H',
+        name: 'Hydrogen bonds in 10 pairs',
+        min: 20,
+        max: 30,
+        step: 0.1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      same('T', 'A', 'Every A pairs with a T, so there are as many.'),
+      both('G = 50 − A', '{G} = 50 − {A}', ['G', 'A'], (v) => v.G! - (50 - v.A!), {
+        G: [
+          (v) => 50 - v.A!,
+          '50 − {A}',
+          'A and T take 2A of the 100%; G and C share the rest equally: (100 − 2A) ÷ 2 = 50 − A.',
+        ],
+        A: [(v) => 50 - v.G!, '50 − {G}', 'A and G together are half the bases.'],
+      }),
+      same('C', 'G', 'Every G pairs with a C, so there are as many.'),
+      forward(
+        'n_AT = (A + T) ÷ 10',
+        '{AT} = ({A} + {T}) ÷ 10',
+        'AT',
+        ['A', 'T'],
+        (v) => (v.A! + v.T!) / 10,
+        '({A} + {T}) ÷ 10',
+        'Each pair is 2 of the 20 bases in 10 pairs, so 10% of the bases: A and T’s share over 10.',
+      ),
+      forward(
+        'n_GC = 10 − n_AT',
+        '{GC} = 10 − {AT}',
+        'GC',
+        ['AT'],
+        (v) => 10 - v.AT!,
+        '10 − {AT}',
+        'Every pair that is not A–T is G–C.',
+      ),
+      forward(
+        'H = 2n_AT + 3n_GC',
+        '{H} = 2 × {AT} + 3 × {GC}',
+        'H',
+        ['AT', 'GC'],
+        (v) => 2 * v.AT! + 3 * v.GC!,
+        '2 × {AT} + 3 × {GC}',
+        'Two hydrogen bonds hold each A–T pair and three hold each G–C pair.',
+      ),
+    ),
+    example: { A: 30, T: 30, G: 20, C: 20, AT: 6, GC: 4, H: 24 },
+    startWith: ['A'],
+    representation: { kind: 'dnaStrand', percentA: 'A', pairs: 10 },
+  },
+];
+
+const BIOTECH: ModuleDef[] = [
+  // ── Mutations, gene expression and biotechnology (HS-LS3-1, HS-LS3-2, HS-LS1-1) ──
+  {
+    id: 's.9.biotechnology',
+    unitSystems: ['metric'],
+    assumptions: [
+      `The template strand is ${GENE}; its mRNA AUG GCC AAG UAA codes Met–Ala–Lys, then stop.`,
+      'One base swapped changes at most one codon: the caption names the effect, silent, missense or nonsense.',
+      'The base changed swaps A with G or C with T, the most common kind of substitution.',
+    ],
+    variables: [
+      count('p', 'p', 'Base changed', 1, 12),
+      count('k', 'k', 'Codon holding it', 1, 4, true),
+      count('j', 'j', 'Its place in the codon', 1, 3, true),
+    ],
+    ...rules(
+      codonOf('k', 'p'),
+      forward(
+        'j = p − 3(k − 1)',
+        '{j} = {p} − 3 × ({k} − 1)',
+        'j',
+        ['p', 'k'],
+        (v) => v.p! - 3 * (v.k! - 1),
+        '{p} − 3 × ({k} − 1)',
+        'The codons before it hold 3 × (k − 1) bases; the rest is its place in its own codon.',
+      ),
+    ),
+    example: { p: 5, k: 2, j: 2 },
+    startWith: ['p'],
+    representation: {
+      kind: 'dnaStrand',
+      sequence: GENE,
+      mutation: { type: 'substitution', at: 'p' },
+    },
+  },
+  {
+    id: 's.9.biotechnology~frameshift',
+    title: 'An insertion shifts the reading frame',
+    use: 'Use this for “Why does inserting one base change every amino acid after it?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      `The template strand is the first L bases of ${GENE}; an A is inserted before base p.`,
+      'The ribosome reads in threes, so every codon from the one holding the insertion on is read in a shifted frame.',
+      'A deletion shifts the frame the same way; inserting 3 bases keeps it.',
+    ],
+    variables: [
+      { ...count('L', 'L', 'Template bases', 6, 12), multipleOf: 3 },
+      count('c', 'c', 'Codons', 2, 4, true),
+      count('p', 'p', 'Base the insertion goes before', 1, 12),
+      count('k', 'k', 'Codon holding it', 1, 4, true),
+      count('s', 's', 'Codons read in a shifted frame', 1, 4, true),
+    ],
+    ...rules(
+      forward(
+        'c = L ÷ 3',
+        '{c} = {L} ÷ 3',
+        'c',
+        ['L'],
+        (v) => v.L! / 3,
+        '{L} ÷ 3',
+        'Every three bases are one codon.',
+      ),
+      codonOf('k', 'p'),
+      forward(
+        's = c − k + 1',
+        '{s} = {c} − {k} + 1',
+        's',
+        ['c', 'k'],
+        (v) => v.c! - v.k! + 1,
+        '{c} − {k} + 1',
+        'Codon k and every codon after it, to the last, are read in the new frame.',
+      ),
+      limit('p ≤ L', '{p} is at most {L}', ['p', 'L'], (v) => v.p! <= v.L!),
+    ),
+    example: { L: 12, c: 4, p: 5, k: 2, s: 3 },
+    startWith: ['L', 'p'],
+    representation: {
+      kind: 'dnaStrand',
+      sequence: GENE,
+      length: 'L',
+      codons: 'c',
+      mutation: { type: 'insertion', at: 'p', base: 'A' },
+    },
+  },
+  {
+    id: 's.9.biotechnology~gel',
+    title: 'Gel electrophoresis: a piece of DNA cut once',
+    use: 'Use this for “A 5,000 bp piece is cut once, and one fragment is 3,000 bp. How long is the other?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'DNA is negatively charged, so in the gel it moves toward the + end.',
+      'Smaller fragments slip through the gel faster and travel farther; the ladder’s known sizes give the scale.',
+      'A restriction enzyme cutting once splits the piece into two fragments that add back to it.',
+    ],
+    variables: [
+      bp('L', 'L', 'Uncut DNA', 200, 10000),
+      bp('a', 'a', 'First fragment', 100, 9900),
+      bp('b', 'b', 'Second fragment', 100, 9900),
+    ],
+    ...rules(
+      both('L = a + b', '{L} = {a} + {b}', ['L', 'a', 'b'], (v) => v.L! - v.a! - v.b!, {
+        L: [(v) => v.a! + v.b!, '{a} + {b}', 'The two fragments add back up to the whole piece.'],
+        a: [(v) => v.L! - v.b!, '{L} − {b}', 'Take the other fragment away from the whole.'],
+        b: [(v) => v.L! - v.a!, '{L} − {a}', 'Take the other fragment away from the whole.'],
+      }),
+    ),
+    example: { L: 5000, a: 3000, b: 2000 },
+    startWith: ['L', 'a'],
+    representation: {
+      kind: 'gel',
+      lanes: [
+        { label: 'Uncut', bands: ['L'] },
+        { label: 'Cut', bands: ['a', 'b'] },
+      ],
+      keep: ['L'],
+    },
+  },
+  {
+    id: 's.9.biotechnology~pcr',
+    title: 'PCR: copies double each cycle',
+    use: 'Use this for “Starting from 2 copies, how many copies are there after 10 cycles of PCR?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each cycle heats the DNA to 95 °C to separate the strands, cools it to 55 °C so primers bind, and warms it to 72 °C to copy.',
+      'Every double strand is copied each cycle, so the copies double: N = N₀ × 2ⁿ.',
+      'Real runs level off after about 30 cycles, as the primers and nucleotides run low.',
+    ],
+    variables: [
+      count('N0', 'N₀', 'Starting copies', 1, 1000),
+      count('n', 'n', 'Cycles', 1, 40),
+      { id: 'N', symbol: 'N', name: 'Copies after n cycles', min: 2, max: 1.2e15, step: 1 },
+    ],
+    ...rules(
+      both(
+        'N = N₀ × 2^n',
+        '{N} = {N0} × 2^{n}',
+        ['N', 'N0', 'n'],
+        (v) => v.N! - v.N0! * 2 ** v.n!,
+        {
+          N: [
+            (v) => v.N0! * 2 ** v.n!,
+            '{N0} × 2^{n}',
+            'Each cycle doubles the copies: n doublings of N₀.',
+          ],
+          N0: [
+            (v) => div(v.N!, 2 ** v.n!),
+            '{N} ÷ 2^{n}',
+            'Undo the n doublings: halve N, n times.',
+          ],
+          n: [
+            (v) => (v.N! > 0 && v.N0! > 0 ? Math.log2(v.N! / v.N0!) : undefined),
+            'log_2({N} ÷ {N0})',
+            'How many doublings turn N₀ into N.',
+          ],
+        },
+      ),
+    ),
+    example: { N0: 2, n: 10, N: 2048 },
+    startWith: ['N0', 'n'],
+    representation: { kind: 'gel', pcr: { cycles: 'n', start: 'N0', copies: 'N' } },
+  },
+];
+
 export const SCIENCE_9_MODULES: ModuleDef[] = [
   ...INHERITANCE,
   ...EVOLUTION,
   ...POPULATION,
   ...MEMBRANE,
   ...ECOSYSTEMS,
+  ...DNA,
+  ...BIOTECH,
 ];
