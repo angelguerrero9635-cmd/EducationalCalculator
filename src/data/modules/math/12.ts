@@ -5518,6 +5518,268 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
   },
 ];
 
+// ── Partial fractions (added skill 16) ──
+
+const coef = (id: string, symbol: string, name: string, range = 1000, extra = {}) =>
+  V(id, symbol, name, { min: -range, max: range, step: 0.01, ...extra });
+
+/** The top's zero z = −b ÷ a, worked out only to draw the graph. */
+const topZero = hide(
+  derive(
+    'z = −b ÷ a',
+    '{z} = −{b} ÷ {a}',
+    'z',
+    ['b', 'a'],
+    (v) => div(-v.b!, v.a!),
+    '−{b} ÷ {a}',
+    'Where the top is 0, to draw the graph.',
+  ),
+);
+const zeroVar = V('z', 'z', 'Zero of the top', {
+  min: -1e9,
+  max: 1e9,
+  step: 0.0001,
+  derived: true,
+  hidden: true,
+});
+/** a ≠ 0 (the graph is drawn from the top's zero). */
+const topHasX = limit(
+  'a ≠ 0',
+  'The top {a}x + b has an x term',
+  ['a'],
+  (v) => v.a !== 0,
+  'This page draws the graph from the zero of the top, so the top needs an x term (a not 0).',
+);
+
+const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
+  // ── m.12.partial-fractions (A-APR.7 carried on) ──
+  {
+    id: 'm.12.partial-fractions',
+    assumptions: [
+      '(ax + b) ÷ ((x − p)(x − q)) = A ÷ (x − p) + B ÷ (x − q): one fraction for each linear factor.',
+      'Cover-up: multiply by (x − p) and put x = p, so the B term drops out and A is left.',
+      'Check by adding the two fractions back over the common bottom.',
+    ],
+    variables: [
+      coef('a', 'a', 'Number before x on top'),
+      coef('b', 'b', 'Number on top'),
+      coef('p', 'p', 'Zero of the first factor', 100),
+      coef('q', 'q', 'Zero of the second factor', 100),
+      coef('A', 'A', 'Top of the first fraction', 1000000),
+      coef('B', 'B', 'Top of the second fraction', 1000000),
+      zeroVar,
+    ],
+    ...rels(
+      rel(
+        'A = (ap + b) ÷ (p − q)',
+        '{A} = ({a} × {p} + {b}) ÷ ({p} − {q})',
+        ['A', 'a', 'p', 'b', 'q'],
+        (v) => v.A! * (v.p! - v.q!) - (v.a! * v.p! + v.b!),
+        {
+          A: [
+            (v) => div(v.a! * v.p! + v.b!, v.p! - v.q!),
+            '({a} × {p} + {b}) ÷ ({p} − {q})',
+            'Cover up (x − p) on the left and put x = p into what is left.',
+          ],
+          b: [
+            (v) => v.A! * (v.p! - v.q!) - v.a! * v.p!,
+            '{A} × ({p} − {q}) − {a} × {p}',
+            'Multiply by p − q, then take ap away.',
+          ],
+        },
+      ),
+      rel(
+        'B = (aq + b) ÷ (q − p)',
+        '{B} = ({a} × {q} + {b}) ÷ ({q} − {p})',
+        ['B', 'a', 'q', 'b', 'p'],
+        (v) => v.B! * (v.q! - v.p!) - (v.a! * v.q! + v.b!),
+        {
+          B: [
+            (v) => div(v.a! * v.q! + v.b!, v.q! - v.p!),
+            '({a} × {q} + {b}) ÷ ({q} − {p})',
+            'Cover up (x − q) and put x = q into what is left.',
+          ],
+          a: [
+            (v) => div(v.B! * (v.q! - v.p!) - v.b!, v.q!),
+            '({B} × ({q} − {p}) − {b}) ÷ {q}',
+            'Multiply by q − p, take b away, then divide by q.',
+          ],
+        },
+      ),
+      limit(
+        'p ≠ q',
+        'The two factors {p} and {q} differ',
+        ['p', 'q'],
+        (v) => v.p !== v.q,
+        'p = q is a repeated factor, (x − p)²: it needs A ÷ (x − p) + B ÷ (x − p)², the repeated-factor page.',
+      ),
+      topHasX,
+      topZero,
+    ),
+    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3, z: -0.2 },
+    startWith: ['a', 'b', 'p', 'q'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      a: 'a',
+      zeros: ['z'],
+      poles: ['p', 'q'],
+      marks: ['asymptotes'],
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.partial-fractions~repeated',
+    title: 'A repeated factor',
+    use: 'Use this for “Write (3x − 1) ÷ (x − 2)² as partial fractions.”',
+    assumptions: [
+      'A squared factor gets a fraction for each power: A ÷ (x − p) + B ÷ (x − p)².',
+      'Multiply through by (x − p)²: ax + b = A(x − p) + B.',
+      'Match the x terms for A, then put x = p for B.',
+    ],
+    variables: [
+      coef('a', 'a', 'Number before x on top'),
+      coef('b', 'b', 'Number on top'),
+      coef('p', 'p', 'Zero of the factor', 100),
+      coef('A', 'A', 'Top over (x − p)'),
+      coef('B', 'B', 'Top over (x − p)²', 200000),
+      zeroVar,
+    ],
+    ...rels(
+      rel('A = a', '{A} = {a}', ['A', 'a'], (v) => v.A! - v.a!, {
+        A: [(v) => v.a!, '{a}', 'The x terms match: A(x − p) gives Ax, and the left has ax.'],
+        a: [(v) => v.A!, '{A}', 'The x terms match.'],
+      }),
+      rel(
+        'B = ap + b',
+        '{B} = {a} × {p} + {b}',
+        ['B', 'a', 'p', 'b'],
+        (v) => v.B! - (v.a! * v.p! + v.b!),
+        {
+          B: [
+            (v) => v.a! * v.p! + v.b!,
+            '{a} × {p} + {b}',
+            'Put x = p into ax + b = A(x − p) + B: the A term is 0, leaving B.',
+          ],
+          b: [(v) => v.B! - v.a! * v.p!, '{B} − {a} × {p}', 'Take ap from B.'],
+          p: [(v) => div(v.B! - v.b!, v.a!), '({B} − {b}) ÷ {a}', 'Take b from B, divide by a.'],
+        },
+      ),
+      topHasX,
+      topZero,
+    ),
+    example: { a: 3, b: -1, p: 2, A: 3, B: 5, z: 1 / 3 },
+    startWith: ['a', 'b', 'p'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      a: 'a',
+      zeros: ['z'],
+      poles: ['p', 'p'],
+      marks: ['asymptotes'],
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.partial-fractions~quadratic',
+    title: 'A quadratic factor',
+    use: 'Use this for “Write (3x² − 2x + 3) ÷ ((x − 1)(x² + 1)) as partial fractions.”',
+    assumptions: [
+      'A factor x² + k that doesn’t split gets a linear top: A ÷ (x − p) + (Bx + C) ÷ (x² + k).',
+      'Cover up (x − p) and put x = p for A; then match the x² and x terms for B and C.',
+      'The number terms must match too: Ak − Cp = c is the check.',
+    ],
+    variables: [
+      coef('a', 'a', 'Number before x² on top'),
+      coef('b', 'b', 'Number before x on top'),
+      coef('c', 'c', 'Number on top'),
+      coef('p', 'p', 'Zero of the linear factor', 100),
+      V('k', 'k', 'Number in x² + k', { min: 0.01, max: 100, step: 0.01 }),
+      coef('A', 'A', 'Top over (x − p)', 1000000),
+      coef('B', 'B', 'Number before x over x² + k', 1000000),
+      coef('C', 'C', 'Number over x² + k', 100000000),
+      coef('x', 'x', 'An x to check', 100),
+      coef('y', 'y', 'The fraction’s value at x', 1e12, { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'A = (ap² + bp + c) ÷ (p² + k)',
+        '{A} = ({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {k})',
+        'A',
+        ['a', 'p', 'b', 'c', 'k'],
+        (v) => div(v.a! * v.p! ** 2 + v.b! * v.p! + v.c!, v.p! ** 2 + v.k!),
+        '({a} × {p}² + {b} × {p} + {c}) ÷ ({p}² + {k})',
+        'Cover up (x − p) and put x = p: the top over what is left of the bottom.',
+      ),
+      derive(
+        'B = a − A',
+        '{B} = {a} − {A}',
+        'B',
+        ['a', 'A'],
+        (v) => v.a! - v.A!,
+        '{a} − {A}',
+        'The x² terms: A(x² + k) + (Bx + C)(x − p) has (A + B)x², so A + B = a.',
+      ),
+      withStep(
+        derive(
+          'C = b + Bp',
+          '{C} = {b} + {B} × {p}',
+          'C',
+          ['b', 'B', 'p'],
+          (v) => v.b! + v.B! * v.p!,
+          '{b} + {B} × {p}',
+          'The x terms: (Bx + C)(x − p) gives (C − Bp)x, so C − Bp = b.',
+        ),
+        'C',
+        {
+          note: (v) =>
+            [v.A, v.k, v.C, v.p, v.c].some((x) => x === undefined)
+              ? ''
+              : `→ check: ${fmt(v.A!)} × ${par(v.k!)} − ${par(v.C!)} × ${par(v.p!)} = ${fmt(v.c!)}`,
+        },
+      ),
+      withStep(
+        rel(
+          'y = (ax² + bx + c) ÷ ((x − p)(x² + k))',
+          '{y} = ({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {k}))',
+          ['y', 'a', 'x', 'b', 'c', 'p', 'k'],
+          (v) =>
+            v.y! * (v.x! - v.p!) * (v.x! ** 2 + v.k!) - (v.a! * v.x! ** 2 + v.b! * v.x! + v.c!),
+          {
+            y: [
+              (v) => div(v.a! * v.x! ** 2 + v.b! * v.x! + v.c!, (v.x! - v.p!) * (v.x! ** 2 + v.k!)),
+              '({a} × {x}² + {b} × {x} + {c}) ÷ (({x} − {p}) × ({x}² + {k}))',
+              'The fraction at one x; the two partial fractions add to the same number there.',
+            ],
+          },
+          {
+            message: (v) =>
+              v.x !== undefined && v.x === v.p
+                ? 'At x = p the bottom is 0: pick another x to check.'
+                : undefined,
+          },
+        ),
+        'y',
+        {
+          note: (v) =>
+            [v.A, v.B, v.C, v.x, v.p, v.k].some((x) => x === undefined)
+              ? ''
+              : `→ the partial fractions: ${fmt(v.A!)} ÷ ${par(v.x! - v.p!)} + ${par(v.B! * v.x! + v.C!)} ÷ ${fmt(v.x! ** 2 + v.k!)} = ${fmt(v.A! / (v.x! - v.p!) + (v.B! * v.x! + v.C!) / (v.x! ** 2 + v.k!))}`,
+        },
+      ),
+    ),
+    example: { a: 3, b: -2, c: 3, p: 1, k: 1, A: 2, B: 1, C: -1, x: 2, y: 11 / 5 },
+    startWith: ['a', 'b', 'c', 'p', 'k', 'x'],
+    representation: {
+      kind: 'table',
+      sweep: 'x',
+      output: 'y',
+      params: ['a', 'b', 'c', 'p', 'k'],
+      rows: (v: Values) => [-2, -1, 0, 1, 2, 3, 4].filter((x) => x !== v.p).slice(0, 5),
+    },
+  },
+];
+
 export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRIG,
   ...MATH_12_TRIG_EQUATIONS,
@@ -5529,6 +5791,7 @@ export const MATH_12_MODULES: ModuleDef[] = [
   ...MATH_12_TRANSFORMS,
   ...MATH_12_LIMITS,
   ...MATH_12_CONICS,
+  ...MATH_12_PARTIAL_FRACTIONS,
   ...MATH_12_POLAR_CONICS,
   ...MATH_12_STATS,
 ];
