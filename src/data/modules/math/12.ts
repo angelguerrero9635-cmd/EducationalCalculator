@@ -99,7 +99,11 @@ const prob = (id: string, symbol: string, name: string, extra: Partial<VariableD
   V(id, symbol, name, { min: 0, max: 1, step: 0.0001, ...extra });
 const zVar = (id = 'z', name = 'Test statistic') =>
   V(id, 'z', name, { min: -50, max: 50, step: 0.01 });
-const alphaVar = V('a', 'α', 'Significance level', { allowed: [0.01, 0.05, 0.1] });
+const alphaVar = V('a', 'α', 'Significance level', {
+  allowed: [0.01, 0.05, 0.1],
+  min: 0.01,
+  max: 0.1,
+});
 const ALPHA_WHY =
   'The significance level is chosen before the test; the picture compares the p-value with it.';
 
@@ -225,6 +229,18 @@ const critical = rel(
       'invNorm(1 − (1 − {C}) ÷ 2)',
       'The middle C of the curve is inside ±z⋆, so half of the rest, 1 − C, sits in each tail.',
     ],
+  },
+);
+
+/** E = z⋆ × SE, the margin of error. */
+const margin = rel(
+  'E = z⋆ × SE',
+  '{E} = {z} × {SE}',
+  ['E', 'z', 'SE'],
+  (v) => v.E! - v.z! * v.SE!,
+  {
+    E: [(v) => v.z! * v.SE!, '{z} × {SE}', 'The margin of error is z⋆ standard errors.'],
+    SE: [(v) => div(v.E!, v.z!), '{E} ÷ {z}', 'Divide the margin by z⋆.'],
   },
 );
 
@@ -423,6 +439,234 @@ const MATH_12_STATS: ModuleDef[] = [
       axis: 'Difference x̄₁ − x̄₂ (cm) if H₀ is true',
       test: { stat: 'z', alpha: 'a', tail: 'two', p: 'P' },
       fixed: true,
+    },
+  },
+
+  // ── m.12.confidence-intervals (S-IC.4) ──
+  {
+    id: 'm.12.confidence-intervals',
+    assumptions: [
+      'A random sample; σ is known (with σ unknown a t interval is used instead).',
+      'x̄ is close to normal: the population is normal or n ≥ 30.',
+      'The interval estimates the population mean μ, not where single values fall.',
+    ],
+    variables: [
+      V('x', 'x̄', 'Sample mean', { min: -1000000, max: 1000000, step: 0.1 }),
+      V('s', 'σ', 'Population standard deviation', { min: 0.001, max: 100000, step: 0.1 }),
+      V('n', 'n', 'Sample size', { integer: true, min: 2, max: 1000000 }),
+      V('C', 'C', 'Confidence level', {
+        allowed: [0.9, 0.95, 0.99],
+        min: 0.9,
+        max: 0.99,
+        multipleOf: 0.01,
+      }),
+      V('z', 'z⋆', 'Critical value', { min: 0.1, max: 4, step: 0.001, derived: true }),
+      V('SE', 'SE', 'Standard error', { min: 0.000001, max: 100000, step: 0.01 }),
+      V('E', 'E', 'Margin of error', { min: 0.000001, max: 1000000, step: 0.01 }),
+      V('lo', 'L', 'Lower end', { min: -3000000, max: 3000000, step: 0.01 }),
+      V('hi', 'U', 'Upper end', { min: -3000000, max: 3000000, step: 0.01 }),
+    ],
+    ...rels(
+      critical,
+      seMean('SE', 's', 'n'),
+      margin,
+      end('lo', 'x', 'E', -1),
+      end('hi', 'x', 'E', 1),
+    ),
+    example: {
+      x: 52,
+      s: 8,
+      n: 64,
+      C: 0.95,
+      z: invPhi(0.975),
+      SE: 1,
+      E: invPhi(0.975),
+      lo: 52 - invPhi(0.975),
+      hi: 52 + invPhi(0.975),
+    },
+    startWith: ['x', 's', 'n', 'C'],
+    equation: '{x} ± {z} × {s}/√{n}',
+    representation: {
+      kind: 'normalCurve',
+      mean: 'x',
+      sd: 'SE',
+      axis: 'Sample mean x̄',
+      interval: { center: 'x', margin: 'E', level: 'C' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.confidence-intervals~proportion',
+    title: 'Confidence interval for a proportion',
+    use: 'Use this for “240 of 400 people said yes. Find a 95% confidence interval for p.”',
+    assumptions: [
+      'A random sample with at least 10 successes and 10 failures, so p̂ is close to normal.',
+      'The standard error uses p̂, since the true p is what the interval estimates.',
+      'The interval estimates the population proportion p.',
+    ],
+    variables: [
+      V('k', 'k', 'Successes in the sample', { integer: true, min: 0, max: 1000000 }),
+      V('n', 'n', 'Sample size', { integer: true, min: 1, max: 1000000 }),
+      prob('p', 'p̂', 'Sample proportion', { derived: true }),
+      V('C', 'C', 'Confidence level', {
+        allowed: [0.9, 0.95, 0.99],
+        min: 0.9,
+        max: 0.99,
+        multipleOf: 0.01,
+      }),
+      V('z', 'z⋆', 'Critical value', { min: 0.1, max: 4, step: 0.001, derived: true }),
+      V('SE', 'SE', 'Standard error', { min: 0.000001, max: 1, step: 0.0001, derived: true }),
+      V('E', 'E', 'Margin of error', { min: 0.000001, max: 4, step: 0.0001 }),
+      V('lo', 'L', 'Lower end', { min: -4, max: 5, step: 0.0001 }),
+      V('hi', 'U', 'Upper end', { min: -4, max: 5, step: 0.0001 }),
+    ],
+    ...rels(
+      proportion('p', 'k', 'n'),
+      critical,
+      seProportion(
+        'SE',
+        'p',
+        'n',
+        'The spread of p̂ from sample to sample, estimated with p̂ itself.',
+      ),
+      margin,
+      end('lo', 'p', 'E', -1),
+      end('hi', 'p', 'E', 1),
+    ),
+    example: {
+      k: 240,
+      n: 400,
+      p: 0.6,
+      C: 0.95,
+      z: invPhi(0.975),
+      SE: Math.sqrt(0.0006),
+      E: invPhi(0.975) * Math.sqrt(0.0006),
+      lo: 0.6 - invPhi(0.975) * Math.sqrt(0.0006),
+      hi: 0.6 + invPhi(0.975) * Math.sqrt(0.0006),
+    },
+    startWith: ['k', 'n', 'C'],
+    representation: {
+      kind: 'normalCurve',
+      mean: 'p',
+      sd: 'SE',
+      axis: 'Sample proportion p̂',
+      interval: { center: 'p', margin: 'E', level: 'C' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.confidence-intervals~sample-size',
+    title: 'Sample size for a margin of error',
+    use: 'Use this for “How many people must be asked for a 95% margin of 3 points?”',
+    assumptions: [
+      'The margin is E = z⋆√(p(1 − p) ÷ n); solve it for n.',
+      'With no earlier estimate, use p = 0.5: it gives the largest n, so the margin is met whatever p is.',
+      'Round n up: rounding down would make the margin a little too wide.',
+    ],
+    variables: [
+      V('C', 'C', 'Confidence level', {
+        allowed: [0.9, 0.95, 0.99],
+        min: 0.9,
+        max: 0.99,
+        multipleOf: 0.01,
+      }),
+      V('z', 'z⋆', 'Critical value', { min: 0.1, max: 4, step: 0.001, derived: true }),
+      V('p', 'p', 'Guess for the proportion', { min: 0.01, max: 0.99, step: 0.01 }),
+      V('E', 'E', 'Margin of error wanted', { min: 0.001, max: 0.5, step: 0.001 }),
+      V('n', 'n', 'Sample size needed', { integer: true, min: 1, max: 10000000, derived: true }),
+      V('SE', 'SE', 'Standard error with that n', {
+        min: 0.00001,
+        max: 1,
+        step: 0.0001,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      critical,
+      derive(
+        'n = ⌈z⋆² × p(1 − p) ÷ E²⌉',
+        '{n} = ⌈{z}² × {p} × (1 − {p}) ÷ {E}²⌉',
+        'n',
+        ['z', 'p', 'E'],
+        (v) => Math.ceil(exact((v.z! ** 2 * v.p! * (1 - v.p!)) / v.E! ** 2)),
+        '⌈{z}² × {p} × (1 − {p}) ÷ {E}²⌉',
+        'Square E = z⋆√(p(1 − p) ÷ n) and solve for n, then round up to a whole person.',
+      ),
+      derive(
+        'SE = √(p(1 − p) ÷ n)',
+        '{SE} = √({p} × (1 − {p}) ÷ {n})',
+        'SE',
+        ['p', 'n'],
+        (v) => Math.sqrt((v.p! * (1 - v.p!)) / v.n!),
+        '√({p} × (1 − {p}) ÷ {n})',
+        'The standard error with that many people; z⋆ of them is within the margin.',
+      ),
+    ),
+    example: {
+      C: 0.95,
+      z: invPhi(0.975),
+      p: 0.5,
+      E: 0.03,
+      n: 1068,
+      SE: Math.sqrt(0.25 / 1068),
+    },
+    startWith: ['E', 'C', 'p'],
+    representation: {
+      kind: 'normalCurve',
+      mean: 'p',
+      sd: 'SE',
+      axis: 'Sample proportion p̂',
+      interval: { center: 'p', margin: 'E' },
+      fixed: true,
+    },
+  },
+  {
+    id: 'm.12.confidence-intervals~capture',
+    title: 'What “95% confident” means',
+    use: 'Use this for “What does it mean to be 95% confident?”: 100 samples, 100 intervals.',
+    assumptions: [
+      'The level is how often the method captures μ over many samples.',
+      'Any one interval either captures μ or doesn’t; 95% is not the chance for that one.',
+      'The picture draws 100 random samples of n and the interval from each.',
+    ],
+    variables: [
+      V('C', 'C', 'Confidence level', {
+        allowed: [0.9, 0.95, 0.99],
+        min: 0.9,
+        max: 0.99,
+        multipleOf: 0.01,
+      }),
+      V('n', 'n', 'Sample size', { integer: true, min: 2, max: 400 }),
+      V('K', 'K', 'Intervals expected to capture μ, of 100', {
+        min: 0,
+        max: 100,
+        step: 0.1,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      derive(
+        'K = 100 × C',
+        '{K} = 100 × {C}',
+        'K',
+        ['C'],
+        (v) => 100 * v.C!,
+        '100 × {C}',
+        'Over many samples the share C of intervals capture μ, so expect C of the 100.',
+      ),
+    ),
+    standalone: {
+      vars: ['n'],
+      why: 'The sample size sets how wide each interval is, not how many of them capture μ.',
+    },
+    example: { C: 0.95, n: 25, K: 95 },
+    startWith: ['C', 'n'],
+    representation: {
+      kind: 'normalCurve',
+      mean: 50,
+      sd: 10,
+      axis: 'Sample mean x̄',
+      intervals: { count: 100, n: 'n', level: 'C' },
     },
   },
 ];
