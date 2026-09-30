@@ -332,3 +332,7 @@ None: every planned page is built, some with an interim picture (below).
   convincing evidence of a positive linear relationship between x and y" / "fail to reject H₀,
   not convincing evidence …"), and a p-value under 0.0001 is written "P < 0.0001" in the note
   (the box still shows 0: shared needs). `~standard-error` gets the same two-sided context.
+- `m.12.anova` main: SST = SSB + SSW (10 values; k and N stay in the assumption). `~groups`:
+  the MSB sentence now says each mean counts n times. `~two-variances`: n₁ and n₂ are the sizes
+  of the larger-SD and smaller-SD samples. `~which-test`: the two-sample card compares students
+  who play a sport with those who don't.

@@ -242,7 +242,11 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Do mean plant heights differ under four kinds of light?', bin: 'anova' },
       { label: 'Do three brands of battery last the same time on average?', bin: 'anova' },
-      { label: 'Do boys and girls sleep the same number of hours on average?', bin: 't2' },
+      {
+        label:
+          'Do students who play a sport and students who don’t sleep the same number of hours on average?',
+        bin: 't2',
+      },
       { label: 'Does a new diet change mean weight loss compared with the old one?', bin: 't2' },
       { label: 'Is favorite sport related to grade level, from a table of counts?', bin: 'chi' },
       { label: 'Is voting yes or no related to age group?', bin: 'chi' },
