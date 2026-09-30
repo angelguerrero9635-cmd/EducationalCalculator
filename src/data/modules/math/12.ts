@@ -336,6 +336,10 @@ const chiTail2 = derive(
   'The area under the chi-square curve with df 2 past the statistic.',
 );
 
+const FIVE = [1, 2, 3, 4, 5];
+const SUB = '₀₁₂₃₄₅₆₇₈₉';
+const FIVE_TERMS = FIVE.map((i) => `({O${i}} − {n} × {p${i}})² ÷ ({n} × {p${i}})`).join(' + ');
+
 /** A number as the steps show it (at most 4 decimals). */
 const fmt = (x: number) => formatNumber(Number(x.toFixed(4)));
 
@@ -1132,6 +1136,115 @@ const MATH_12_STATS: ModuleDef[] = [
     },
   },
   {
+    id: 'm.12.chi-square~five-categories',
+    title: 'Goodness of fit with five categories',
+    use: 'Use this for “Do 200 lunch choices fit the shares 30%, 25%, 20%, 15% and 10%?”',
+    assumptions: [
+      'H₀: the five shares are p₁ to p₅; they add to 1, so p₅ is what is left.',
+      'Every expected count n × p should be at least 5; df = 5 − 1 = 4.',
+      'A large X² (a small p-value) means the counts don’t fit the shares.',
+    ],
+    variables: [
+      ...FIVE.map((i) =>
+        V(`O${i}`, `O${SUB[i]}`, `Count for choice ${i}`, {
+          integer: true,
+          min: 0,
+          max: 100000,
+          group: 'O',
+        }),
+      ),
+      ...FIVE.slice(0, 4).map((i) =>
+        V(`p${i}`, `p${SUB[i]}`, `Expected share of choice ${i}`, {
+          min: 0.01,
+          max: 0.96,
+          step: 0.01,
+          group: 'p',
+        }),
+      ),
+      V('p5', 'p₅', 'Expected share of choice 5', {
+        min: 0.01,
+        max: 0.96,
+        step: 0.01,
+        derived: true,
+      }),
+      V('n', 'n', 'Choices in all', { integer: true, min: 1, max: 500000, derived: true }),
+      V('X', 'X²', 'Chi-square statistic', { min: 0, max: 10000000, step: 0.01, derived: true }),
+      prob('P', 'P', 'p-value', { derived: true }),
+    ],
+    ...rels(
+      derive(
+        'p₅ = 1 − p₁ − p₂ − p₃ − p₄',
+        '{p5} = 1 − {p1} − {p2} − {p3} − {p4}',
+        'p5',
+        ['p1', 'p2', 'p3', 'p4'],
+        (v) => 1 - v.p1! - v.p2! - v.p3! - v.p4!,
+        '1 − {p1} − {p2} − {p3} − {p4}',
+        'The five shares make up the whole, 1.',
+      ),
+      derive(
+        'n = O₁ + … + O₅',
+        '{n} = {O1} + {O2} + {O3} + {O4} + {O5}',
+        'n',
+        FIVE.map((i) => `O${i}`),
+        (v) => FIVE.reduce((t, i) => t + v[`O${i}`]!, 0),
+        '{O1} + {O2} + {O3} + {O4} + {O5}',
+        'Add the counts for the size of the sample.',
+      ),
+      withStep(
+        derive(
+          'X² = Σ(O − E)² ÷ E, 5 categories',
+          `{X} = ${FIVE_TERMS}`,
+          'X',
+          ['n', ...FIVE.flatMap((i) => [`O${i}`, `p${i}`])],
+          (v) =>
+            FIVE.reduce(
+              (t, i) => t + (v[`O${i}`]! - v.n! * v[`p${i}`]!) ** 2 / (v.n! * v[`p${i}`]!),
+              0,
+            ),
+          FIVE_TERMS,
+          'Each expected count is E = n × p; add (O − E)² ÷ E over the five choices.',
+        ),
+        'X',
+        {
+          work: (v) => {
+            const E = FIVE.map((i) => v.n! * v[`p${i}`]!);
+            const terms = FIVE.map((i, k) => (v[`O${i}`]! - E[k]!) ** 2 / E[k]!);
+            return [
+              `Expected counts E = n × p: ${E.map(fmt).join(', ')}`,
+              `${terms.map(fmt).join(' + ')} = ${fmt(terms.reduce((t, x) => t + x, 0))}`,
+            ];
+          },
+        },
+      ),
+      derive(
+        'P = χ²cdf(X, ∞, 4)',
+        '{P} = χ²cdf({X}, ∞, 4)',
+        'P',
+        ['X'],
+        (v) => 1 - chiCdf(v.X!, 4),
+        'χ²cdf({X}, ∞, 4)',
+        'The area under the chi-square curve with df 4 past the statistic.',
+      ),
+    ),
+    example: {
+      O1: 66,
+      O2: 44,
+      O3: 40,
+      O4: 36,
+      O5: 14,
+      p1: 0.3,
+      p2: 0.25,
+      p3: 0.2,
+      p4: 0.15,
+      p5: 0.1,
+      n: 200,
+      X: 4.32,
+      P: 1 - chiCdf(4.32, 4),
+    },
+    startWith: ['O1', 'O2', 'O3', 'O4', 'O5', 'p1', 'p2', 'p3', 'p4'],
+    representation: { kind: 'normalCurve', chiSquare: { df: 4, stat: 'X', p: 'P' } },
+  },
+  {
     id: 'm.12.chi-square~independence',
     title: 'Chi-square test of independence',
     use: 'Use this for “Is the way students get to school independent of their grade?” from a 2 × 3 table.',
@@ -1729,6 +1842,7 @@ const MATH_12_MATRICES: ModuleDef[] = [
     ),
     example: { a: 4, b: 7, c: 2, d: 6, D: 10, e: 0.6, f: -0.7, g: -0.2, h: 0.4 },
     startWith: ['a', 'b', 'c', 'd'],
+    equation: '[[{a}, {b}; {c}, {d}]]^{−1} = [[{e}, {f}; {g}, {h}]]',
     representation: {
       kind: 'matrixGrid',
       mode: 'multiply',
