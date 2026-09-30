@@ -133,6 +133,8 @@ const pythagoras = (x: string, y: string, z: string, why: string) =>
     },
     (v) => v[x]! ** 2 + v[y]! ** 2 - v[z]! ** 2,
   );
+/** The sentence's first letter in capitals. */
+const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1);
 /** f(A) = x ÷ y for sin, cos or tan of an acute angle A, solved for any one. */
 function ratio(
   fn: 'sin' | 'cos' | 'tan',
@@ -146,13 +148,17 @@ function ratio(
   const [top, bottom] = names;
   return rule(
     `${fn} ${A} = ${x}/${y}`,
-    `${fn}({${A}}) = {${x}} ÷ {${y}}`,
+    `${fn}({${A}}°) = {${x}} ÷ {${y}}`,
     {
-      [x]: [(v) => v[y]! * f(v[A]!), `{${y}} × ${fn}({${A}})`, `${top} = ${bottom} × ${fn} ${A}.`],
+      [x]: [
+        (v) => v[y]! * f(v[A]!),
+        `{${y}} × ${fn}({${A}}°)`,
+        `${cap(top)} = ${bottom} × ${fn} ${A}.`,
+      ],
       [y]: [
         (v) => quot(v[x]!, f(v[A]!)),
-        `{${x}} ÷ ${fn}({${A}})`,
-        `${bottom} = ${top} ÷ ${fn} ${A}.`,
+        `{${x}} ÷ ${fn}({${A}}°)`,
+        `${cap(bottom)} = ${top} ÷ ${fn} ${A}.`,
       ],
       [A]: [
         (v) => inv(v[x]! / v[y]!),
@@ -192,7 +198,7 @@ const scaled = (c: string, k: string, a: string, what: string, square = false) =
           [k]: [
             (v) => quot(v[c]!, v[a]!),
             `{${c}} ÷ {${a}}`,
-            `The image’s ${what} over the original’s.`,
+            'The scale factor is a side of the image over its match in the original.',
           ],
           [a]: [
             (v) => quot(v[c]!, v[k]!),
@@ -251,38 +257,38 @@ const TRIG: ModuleDef[] = [
       len('b', 'b', 'Adjacent side b', 10000),
       len('c', 'c', 'Hypotenuse c', 15000),
       deg('A', 'A', 'Angle A', 0.01, 89.99),
-      der(num('s', 'sin A', 'Sine of A', 0, 1)),
-      der(num('k', 'cos A', 'Cosine of A', 0, 1)),
-      der(num('t', 'tan A', 'Tangent of A', 0, 1e6)),
+      der(num('s', 's', 'Sine of A', 0, 1, { fraction: 100 })),
+      der(num('k', 'k', 'Cosine of A', 0, 1, { fraction: 100 })),
+      der(num('t', 't', 'Tangent of A', 0, 1e6, { fraction: 100 })),
     ],
     rules: [
       pythagoras('a', 'b', 'c', 'The legs and the hypotenuse of a right triangle: a² + b² = c².'),
-      ratio('tan', 'A', 'a', 'b', ['Opposite', 'adjacent']),
-      ratio('sin', 'A', 'a', 'c', ['Opposite', 'hypotenuse']),
-      ratio('cos', 'A', 'b', 'c', ['Adjacent', 'hypotenuse']),
+      ratio('tan', 'A', 'a', 'b', ['opposite', 'adjacent']),
+      ratio('sin', 'A', 'a', 'c', ['opposite', 'hypotenuse']),
+      ratio('cos', 'A', 'b', 'c', ['adjacent', 'hypotenuse']),
       derive(
-        'sin A = a ÷ c',
+        's = a ÷ c (sin A)',
         '{s} = {a} ÷ {c}',
         's',
         (v) => quot(v.a!, v.c!),
         '{a} ÷ {c}',
-        'Sine: the opposite side over the hypotenuse.',
+        'The sine of A: the opposite side over the hypotenuse.',
       ),
       derive(
-        'cos A = b ÷ c',
+        'k = b ÷ c (cos A)',
         '{k} = {b} ÷ {c}',
         'k',
         (v) => quot(v.b!, v.c!),
         '{b} ÷ {c}',
-        'Cosine: the adjacent side over the hypotenuse.',
+        'The cosine of A: the adjacent side over the hypotenuse.',
       ),
       derive(
-        'tan A = a ÷ b',
+        't = a ÷ b (tan A)',
         '{t} = {a} ÷ {b}',
         't',
         (v) => quot(v.a!, v.b!),
         '{a} ÷ {b}',
-        'Tangent: the opposite side over the adjacent side.',
+        'The tangent of A: the opposite side over the adjacent side.',
       ),
     ],
     example: { a: 5, b: 12, c: 13, A: atanD(5 / 12), s: 5 / 13, k: 12 / 13, t: 5 / 12 },
@@ -296,24 +302,24 @@ const TRIG: ModuleDef[] = [
   page({
     id: 'm.10.right-triangle-trig~find-side',
     title: 'Find a side from an angle',
-    use: 'Use this for “A 25 ft ladder leans at 38° to the ground. How high up the wall does it reach?”',
+    use: 'Use this for “A 7.5 m ladder leans at 38° to the ground. How high up the wall does it reach?”',
     assumptions: [
       'The wall is straight up from level ground, so the right angle is at its foot.',
       'The ladder is the hypotenuse; the height is opposite the angle A, the foot distance adjacent.',
       'Multiply the hypotenuse by sin A for the opposite side, by cos A for the adjacent side.',
     ],
     variables: [
-      deg('A', 'A', 'Angle with the ground', 0.01, 89.99),
-      len('o', 'o', 'Height up the wall', 10000, { unit: 'ft' }),
-      len('h', 'h', 'Ladder length', 10000, { unit: 'ft' }),
-      len('b', 'b', 'Foot from the wall', 10000, { unit: 'ft' }),
+      deg('A', 'A', 'Angle with the ground', 1, 89),
+      len('o', 'o', 'Height up the wall', 10000, { unit: 'm' }),
+      len('h', 'h', 'Ladder length', 10000, { unit: 'm' }),
+      len('b', 'b', 'Foot from the wall', 10000, { unit: 'm' }),
     ],
     rules: [
-      ratio('sin', 'A', 'o', 'h', ['Opposite', 'hypotenuse']),
-      ratio('cos', 'A', 'b', 'h', ['Adjacent', 'hypotenuse']),
+      ratio('sin', 'A', 'o', 'h', ['opposite', 'hypotenuse']),
+      ratio('cos', 'A', 'b', 'h', ['adjacent', 'hypotenuse']),
       pythagoras('o', 'b', 'h', 'The ladder is the hypotenuse of a right triangle.'),
     ],
-    example: { A: 38, h: 25, o: 25 * sin(38), b: 25 * cos(38) },
+    example: { A: 38, h: 7.5, o: 7.5 * sin(38), b: 7.5 * cos(38) },
     startWith: ['A', 'h'],
     equation: 'sin({A}°) = {o}/{h}',
     representation: {
@@ -326,7 +332,7 @@ const TRIG: ModuleDef[] = [
   page({
     id: 'm.10.right-triangle-trig~find-angle',
     title: 'Find an angle from two sides',
-    use: 'Use this for “A ramp rises 2 ft over a run of 24 ft. What angle does it make with the ground?”',
+    use: 'Use this for “A ramp rises 0.5 m over a run of 6 m. What angle does it make with the ground?”',
     assumptions: [
       'The rise is opposite the angle A and the run is adjacent to it, so tan A = rise ÷ run.',
       'The inverse tangent, tan⁻¹, turns the ratio back into the angle.',
@@ -334,11 +340,11 @@ const TRIG: ModuleDef[] = [
     ],
     variables: [
       deg('A', 'A', 'Ramp angle', 0.01, 89.99),
-      len('o', 'o', 'Rise', 10000, { unit: 'ft' }),
-      len('r', 'r', 'Run', 10000, { unit: 'ft' }),
+      len('o', 'o', 'Rise', 10000, { unit: 'm' }),
+      len('r', 'r', 'Run', 10000, { unit: 'm' }),
     ],
-    rules: [ratio('tan', 'A', 'o', 'r', ['Opposite', 'adjacent'])],
-    example: { o: 2, r: 24, A: atanD(2 / 24) },
+    rules: [ratio('tan', 'A', 'o', 'r', ['opposite', 'adjacent'])],
+    example: { o: 0.5, r: 6, A: atanD(0.5 / 6) },
     startWith: ['o', 'r'],
     equation: 'tan({A}°) = {o}/{r}',
     representation: {
@@ -351,21 +357,21 @@ const TRIG: ModuleDef[] = [
   page({
     id: 'm.10.right-triangle-trig~elevation',
     title: 'Angle of elevation',
-    use: 'Use this for “From 120 ft away, the angle of elevation to the top of a tree is 28°. How tall is the tree?”',
+    use: 'Use this for “From 36 m away, the angle of elevation to the top of a tree is 28°. How tall is the tree?”',
     assumptions: [
       'The angle of elevation is measured up from a level line through the eye.',
       'The height above the eye is opposite the angle: distance × tan A.',
       'Add the eye height for the whole height; use 0 when the angle is measured at the ground.',
     ],
     variables: [
-      len('d', 'd', 'Distance along the ground', 10000, { unit: 'ft', min: 0.1 }),
+      len('d', 'd', 'Distance along the ground', 10000, { unit: 'm', min: 0.1 }),
       deg('A', 'A', 'Angle of elevation', 0.01, 89.99),
-      num('e', 'e', 'Eye height', 0, 10, { unit: 'ft' }),
-      len('u', 'u', 'Height above the eye', 1e6, { unit: 'ft' }),
-      len('H', 'H', 'Height of the top', 1e6, { unit: 'ft' }),
+      num('e', 'e', 'Eye height', 0, 3, { unit: 'm' }),
+      len('u', 'u', 'Height above the eye', 1e6, { unit: 'm' }),
+      len('H', 'H', 'Height of the top', 1e6, { unit: 'm' }),
     ],
     rules: [
-      ratio('tan', 'A', 'u', 'd', ['Opposite', 'adjacent']),
+      ratio('tan', 'A', 'u', 'd', ['opposite', 'adjacent']),
       rule(
         'H = u + e',
         '{H} = {u} + {e}',
@@ -377,7 +383,7 @@ const TRIG: ModuleDef[] = [
         (v) => v.H! - v.u! - v.e!,
       ),
     ],
-    example: { d: 120, A: 28, e: 5, u: 120 * tan(28), H: 120 * tan(28) + 5 },
+    example: { d: 36, A: 28, e: 1.5, u: 36 * tan(28), H: 36 * tan(28) + 1.5 },
     startWith: ['d', 'A', 'e'],
     representation: {
       kind: 'triangleSolver',
@@ -398,8 +404,8 @@ const TRIG: ModuleDef[] = [
     variables: [
       deg('A', 'A', 'Angle A', 0.01, 89.99),
       deg('B', 'B', 'Angle B', 0.01, 89.99),
-      num('s', 'sin A', 'Sine of A', 0.0001, 1),
-      num('k', 'cos B', 'Cosine of B', 0.0001, 1),
+      num('s', 's', 'Sine of A', 0.0001, 1),
+      num('k', 'k', 'Cosine of B', 0.0001, 1),
     ],
     rules: [
       rule(
@@ -413,11 +419,11 @@ const TRIG: ModuleDef[] = [
       ),
       rule(
         's = sin A',
-        '{s} = sin({A})',
+        '{s} = sin({A}°)',
         {
           s: [
             (v) => sin(v.A!),
-            'sin({A})',
+            'sin({A}°)',
             'The sine of A: the side opposite A over the hypotenuse.',
           ],
           A: [
@@ -430,11 +436,11 @@ const TRIG: ModuleDef[] = [
       ),
       rule(
         'k = cos B',
-        '{k} = cos({B})',
+        '{k} = cos({B}°)',
         {
           k: [
             (v) => cos(v.B!),
-            'cos({B})',
+            'cos({B}°)',
             'The cosine of B: the side next to B over the hypotenuse.',
           ],
           B: [
@@ -1390,8 +1396,8 @@ const SPECIAL: ModuleDef[] = [
       len('a', 'a', 'Side a'),
       len('b', 'b', 'Side b'),
       len('c', 'c', 'Longest side c'),
-      der(num('s', 'a² + b²', 'Sum of the squares of a and b', 0, 2e6)),
-      der(num('q', 'c²', 'Square of c', 0, 2e6)),
+      der(num('s', 'S', 'Sum of the squares, a² + b²', 0, 2e6)),
+      der(num('q', 'Q', 'Square of c', 0, 2e6)),
       der(num('r', 'r', 'Sign (1 <, 3 >, 5 =)', 1, 5, { step: 1, integer: true })),
     ],
     rules: [
@@ -1408,17 +1414,17 @@ const SPECIAL: ModuleDef[] = [
         'The two shorter sides must add to more than the longest.',
       ),
       derive(
-        's = a² + b²',
+        'S = a² + b²',
         '{s} = {a}² + {b}²',
         's',
         (v) => v.a! ** 2 + v.b! ** 2,
         '{a}² + {b}²',
         'Square the two shorter sides and add.',
       ),
-      derive('q = c²', '{q} = {c}²', 'q', (v) => v.c! ** 2, '{c}²', 'Square the longest side.'),
+      derive('Q = c²', '{q} = {c}²', 'q', (v) => v.c! ** 2, '{c}²', 'Square the longest side.'),
       {
         relation: {
-          id: 'r = sign between a² + b² and c²',
+          id: 'r = sign between S and Q',
           display: 'sign {r} between {s} and {q}',
           vars: ['r', 's', 'q'],
           check: (v: Values) => `${signOf(v.s!, v.q!)} = ${v.r}`,
@@ -2224,7 +2230,7 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
 // ─── m.10.circle-equations ───────────────────────────────────────────────────
 
 const rSquared = rule(
-  'r² = r × r',
+  'q = r²',
   '{q} = {r}²',
   {
     q: [(v) => v.r! ** 2, '{r}²', 'Square the radius for the right side.'],
@@ -2249,7 +2255,7 @@ const CIRCLE_EQUATIONS: ModuleDef[] = [
       num('h', 'h', 'Center, x', -20, 20, { step: 0.5 }),
       num('k', 'k', 'Center, y', -20, 20, { step: 0.5 }),
       num('r', 'r', 'Radius', 0.1, 100, { step: 0.1 }),
-      num('q', 'r²', 'Right side r²', 0.01, 10000),
+      num('q', 'q', 'Right side, r²', 0.01, 10000),
     ],
     rules: [rSquared],
     example: { h: 3, k: -2, r: 5, q: 25 },
@@ -2326,38 +2332,63 @@ const CIRCLE_EQUATIONS: ModuleDef[] = [
       num('r', 'r', 'Radius', 0.1, 100, { step: 0.1 }),
       num('x', 'x', 'Point, x', -120, 120),
       num('y', 'y', 'Point, y', -120, 120),
+      der(num('x2', 'x₂', 'Other point, x', -240, 240)),
     ],
     rules: [
-      rule(
-        '(x − h)² + (y − k)² = r²',
-        '({x} − {h})² + ({y} − {k})² = {r}²',
-        {
-          x: [
-            (v) => {
-              const d = v.r! ** 2 - (v.y! - v.k!) ** 2;
-              return d < 0 ? undefined : [v.h! + Math.sqrt(d), v.h! - Math.sqrt(d)];
-            },
-            '{h} ± √({r}² − ({y} − {k})²)',
-            'Solve the circle’s equation for x: two points at that height.',
-          ],
-          y: [
-            (v) => {
-              const d = v.r! ** 2 - (v.x! - v.h!) ** 2;
-              return d < 0 ? undefined : [v.k! + Math.sqrt(d), v.k! - Math.sqrt(d)];
-            },
-            '{k} ± √({r}² − ({x} − {h})²)',
-            'Solve the circle’s equation for y: two points above and below.',
-          ],
-          r: [
-            (v) => Math.hypot(v.x! - v.h!, v.y! - v.k!),
-            '√(({x} − {h})² + ({y} − {k})²)',
-            'The radius is the distance from the center to the point.',
-          ],
-        },
-        (v) => (v.x! - v.h!) ** 2 + (v.y! - v.k!) ** 2 - v.r! ** 2,
+      (() => {
+        const r = rule(
+          '(x − h)² + (y − k)² = r²',
+          '({x} − {h})² + ({y} − {k})² = {r}²',
+          {
+            x: [
+              (v) => {
+                const d = v.r! ** 2 - (v.y! - v.k!) ** 2;
+                return d < 0 ? undefined : [v.h! + Math.sqrt(d), v.h! - Math.sqrt(d)];
+              },
+              '{h} ± √({r}² − ({y} − {k})²)',
+              'Solve the circle’s equation for x: two points at that height.',
+            ],
+            y: [
+              (v) => {
+                const d = v.r! ** 2 - (v.x! - v.h!) ** 2;
+                return d < 0 ? undefined : [v.k! + Math.sqrt(d), v.k! - Math.sqrt(d)];
+              },
+              '{k} ± √({r}² − ({x} − {h})²)',
+              'Solve the circle’s equation for y: two points above and below.',
+            ],
+            r: [
+              (v) => Math.hypot(v.x! - v.h!, v.y! - v.k!),
+              '√(({x} − {h})² + ({y} − {k})²)',
+              'The radius is the distance from the center to the point.',
+            ],
+          },
+          (v) => (v.x! - v.h!) ** 2 + (v.y! - v.k!) ** 2 - v.r! ** 2,
+        );
+        // The stages under the ±: the square, the root, then the two points.
+        const pm = (c: string, center: number, other: number, otherCenter: number, r: number) => {
+          const sq = (other - otherCenter) ** 2;
+          const d = r ** 2 - sq;
+          const f = (n: number) => formatNumber(Number(n.toPrecision(12)));
+          return [
+            `${c} = ${f(center)} ± √(${f(r ** 2)} − ${f(sq)})`,
+            `${c} = ${f(center)} ± √${f(d)}`,
+            `${c} = ${f(center)} ± ${f(Math.sqrt(d))}`,
+          ];
+        };
+        r.steps.x!.work = (v: Values) => pm('x', v.h!, v.y!, v.k!, v.r!);
+        r.steps.y!.work = (v: Values) => pm('y', v.k!, v.x!, v.h!, v.r!);
+        return r;
+      })(),
+      derive(
+        'x₂ = 2h − x',
+        '{x2} = 2 × {h} − {x}',
+        'x2',
+        (v) => 2 * v.h! - v.x!,
+        '2 × {h} − {x}',
+        'The other point is the mirror image across x = h.',
       ),
     ],
-    example: { h: 1, k: 2, r: 5, y: 5, x: 5 },
+    example: { h: 1, k: 2, r: 5, y: 5, x: 5, x2: -3 },
     startWith: ['h', 'k', 'r', 'y'],
     representation: {
       kind: 'conicGraph',
@@ -2396,11 +2427,11 @@ function beside(x: number, y: number, X: number) {
 const cosines = (x: string, y: string, z: string, X: string) =>
   rule(
     `${x}² = ${y}² + ${z}² − 2${y}${z} cos ${X}`,
-    `{${x}}² = {${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}})`,
+    `{${x}}² = {${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}}°)`,
     {
       [x]: [
         (v) => root(v[y]! ** 2 + v[z]! ** 2 - 2 * v[y]! * v[z]! * cos(v[X]!)),
-        `√({${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}}))`,
+        `√({${y}}² + {${z}}² − 2 × {${y}} × {${z}} × cos({${X}}°))`,
         `Law of cosines: the two sides beside ${X} and the angle between them give the side across from it.`,
       ],
       [X]: [
@@ -2410,12 +2441,12 @@ const cosines = (x: string, y: string, z: string, X: string) =>
       ],
       [y]: [
         (v) => beside(v[x]!, v[z]!, v[X]!),
-        `{${z}} × cos({${X}}) ± √({${x}}² − ({${z}} × sin({${X}}))²)`,
+        `{${z}} × cos({${X}}°) ± √({${x}}² − ({${z}} × sin({${X}}°))²)`,
         `Law of cosines as a quadratic in ${y}: two lengths fit when both come out positive.`,
       ],
       [z]: [
         (v) => beside(v[x]!, v[y]!, v[X]!),
-        `{${y}} × cos({${X}}) ± √({${x}}² − ({${y}} × sin({${X}}))²)`,
+        `{${y}} × cos({${X}}°) ± √({${x}}² − ({${y}} × sin({${X}}°))²)`,
         `Law of cosines as a quadratic in ${z}: two lengths fit when both come out positive.`,
       ],
     },
@@ -2433,25 +2464,25 @@ const inverseSine = (X: string, inner: string): [StepText['expr'], StepText['how
 const sines = (x: string, X: string, y: string, Y: string): Rule => {
   const r = rule(
     `${x}/sin ${X} = ${y}/sin ${Y}`,
-    `{${x}} ÷ sin({${X}}) = {${y}} ÷ sin({${Y}})`,
+    `{${x}} ÷ sin({${X}}°) = {${y}} ÷ sin({${Y}}°)`,
     {
       [x]: [
         (v) => quot(v[y]! * sin(v[X]!), sin(v[Y]!)),
-        `{${y}} × sin({${X}}) ÷ sin({${Y}})`,
+        `{${y}} × sin({${X}}°) ÷ sin({${Y}}°)`,
         'Law of sines: multiply both sides by the sine of the angle across from the side.',
       ],
       [y]: [
         (v) => quot(v[x]! * sin(v[Y]!), sin(v[X]!)),
-        `{${x}} × sin({${Y}}) ÷ sin({${X}})`,
+        `{${x}} × sin({${Y}}°) ÷ sin({${X}}°)`,
         'Law of sines: multiply both sides by the sine of the angle across from the side.',
       ],
       [X]: [
         (v) => fitAngle(asinBoth((v[x]! * sin(v[Y]!)) / v[y]!), v[Y]!),
-        ...inverseSine(X, `{${x}} × sin({${Y}}) ÷ {${y}}`),
+        ...inverseSine(X, `{${x}} × sin({${Y}}°) ÷ {${y}}`),
       ],
       [Y]: [
         (v) => fitAngle(asinBoth((v[y]! * sin(v[X]!)) / v[x]!), v[X]!),
-        ...inverseSine(Y, `{${y}} × sin({${X}}) ÷ {${x}}`),
+        ...inverseSine(Y, `{${y}} × sin({${X}}°) ÷ {${x}}`),
       ],
     },
     (v) => v[x]! * sin(v[Y]!) - v[y]! * sin(v[X]!),
@@ -2612,21 +2643,21 @@ const LAW_SINES_COSINES: ModuleDef[] = [
     rules: [
       rule(
         'K = ½ab sin C',
-        '{K} = {a} × {b} × sin({C}) ÷ 2',
+        '{K} = {a} × {b} × sin({C}°) ÷ 2',
         {
           K: [
             (v) => (v.a! * v.b! * sin(v.C!)) / 2,
-            '{a} × {b} × sin({C}) ÷ 2',
+            '{a} × {b} × sin({C}°) ÷ 2',
             'Half the base times the height, and the height is b × sin C.',
           ],
           a: [
             (v) => quot(2 * v.K!, v.b! * sin(v.C!)),
-            '2 × {K} ÷ ({b} × sin({C}))',
+            '2 × {K} ÷ ({b} × sin({C}°))',
             'Undo the half, then divide by b × sin C.',
           ],
           b: [
             (v) => quot(2 * v.K!, v.a! * sin(v.C!)),
-            '2 × {K} ÷ ({a} × sin({C}))',
+            '2 × {K} ÷ ({a} × sin({C}°))',
             'Undo the half, then divide by a × sin C.',
           ],
         },
@@ -2979,16 +3010,20 @@ const PROBABILITY_RULES: ModuleDef[] = [
 
 // ─── m.10.constructions ──────────────────────────────────────────────────────
 
-/** p·x + q = r·x + s solved for x (the letter on both sides). */
+/**
+ * p·x + q = r·x + s solved for x (the letter on both sides): the smaller x term is taken from
+ * both sides, so the x term left is positive, then the number beside it, then the division.
+ */
 const bothSides = (x: string) => {
+  const left = (v: Values) => v.p! > v.r!;
   const r = rule(
     `${x}: px + q = rx + s`,
     `{p} × {${x}} + {q} = {r} × {${x}} + {s}`,
     {
       [x]: [
         (v) => quot(v.s! - v.q!, v.p! - v.r!),
-        '({s} − {q}) ÷ ({p} − {r})',
-        'Take the same x and the same number from both sides, then divide by the x left.',
+        (v) => (left(v) ? '({s} − {q}) ÷ ({p} − {r})' : '({q} − {s}) ÷ ({r} − {p})'),
+        'Take the smaller x term from both sides, then the number beside the x left, then divide.',
       ],
     },
     (v) => v.p! * v[x]! + v.q! - (v.r! * v[x]! + v.s!),
@@ -3000,16 +3035,20 @@ const bothSides = (x: string) => {
     },
   );
   const fmt = (n: number) => formatNumber(n);
-  // "3x", "x", "−x"; a negative is added back ("Add 7"), never "Take −7".
-  const xs = (k: number) => (k === 1 ? 'x' : k === -1 ? '−x' : `${fmt(k)}x`);
+  // "3x", "x"; a negative is added back ("Add 7"), never "Take −7".
+  const xs = (k: number) => (k === 1 ? 'x' : `${fmt(k)}x`);
   const move = (k: number, text: (n: number) => string) =>
     k < 0 ? `Add ${text(-k)} to both sides` : `Take ${text(k)} from both sides`;
+  const plus = (n: number) => (n < 0 ? ` − ${fmt(-n)}` : n > 0 ? ` + ${fmt(n)}` : '');
   r.steps[x]!.work = (v: Values) => {
-    const left = v.p! - v.r!;
-    const plus = v.q! < 0 ? ` − ${fmt(-v.q!)}` : v.q! > 0 ? ` + ${fmt(v.q!)}` : '';
+    const [small, big, keep, gone] = left(v) ? [v.r!, v.p!, v.q!, v.s!] : [v.p!, v.r!, v.s!, v.q!];
+    const k = big - small;
+    // The x side and the number side, written in the equation's own order.
+    const eq = (xSide: string, n: number) => (left(v) ? `${xSide} = ${fmt(n)}` : `${fmt(n)} = ${xSide}`);
     return [
-      `${move(v.r!, xs)}: ${xs(left)}${plus} = ${fmt(v.s!)}`,
-      ...(v.q ? [`${move(v.q!, fmt)}: ${xs(left)} = ${fmt(v.s! - v.q!)}`] : []),
+      `${move(small, xs)}: ${eq(`${xs(k)}${plus(keep)}`, gone)}`,
+      ...(keep ? [`${move(keep, fmt)}: ${eq(xs(k), gone - keep)}`] : []),
+      ...(k === 1 ? [] : [`Divide both sides by ${fmt(k)}: x = ${fmt(v[x]!)}`]),
     ];
   };
   r.steps[x]!.written = false;
@@ -3936,7 +3975,6 @@ const CONGRUENCE: ModuleDef[] = [
     assumptions: [
       'Corresponding parts of congruent triangles are congruent, so AB = DE: set the expressions equal.',
       'The order of the letters pairs the parts: A with D, B with E, C with F.',
-      'Here BC = 16 and AC = 12, so AB must be between 4 and 28 for the triangle to close.',
     ],
     variables: [
       coefficient('p', 'x coefficient of AB'),
@@ -3945,6 +3983,9 @@ const CONGRUENCE: ModuleDef[] = [
       constant('s', 'Number in DE', 100),
       der(num('x', 'x', 'x', -1000, 1000)),
       der(num('L', 'AB', 'AB = DE', -1e5, 1e5)),
+      // The drawing's other two sides: a 3-4-5 shape on AB.
+      { ...len('bc', 'BC', 'BC', 1e5, { min: 1e-9 }), derived: true, hidden: true },
+      { ...len('ac', 'AC', 'AC', 1e5, { min: 1e-9 }), derived: true, hidden: true },
     ],
     rules: [
       bothSides('x'),
@@ -3957,18 +3998,32 @@ const CONGRUENCE: ModuleDef[] = [
         'Put x back into AB.',
       ),
       limit(
-        '4 < AB < 28',
-        '{L} is between 4 and 28',
-        (v) => v.L! > 4 && v.L! < 28,
-        'With BC = 16 and AC = 12, AB must be between 4 and 28, or the triangle doesn’t close.',
+        'AB > 0',
+        '{L} is more than 0',
+        (v) => v.L! > 0,
+        'A length can’t be 0 or less: this x gives no segment.',
+      ),
+      rule(
+        'BC = 0.8 AB',
+        '{bc} = 0.8 × {L}',
+        { bc: [(v) => (v.L! > 0 ? 0.8 * v.L! : undefined), '', ''] },
+        (v) => v.bc! - 0.8 * v.L!,
+        { hidden: true },
+      ),
+      rule(
+        'AC = 0.6 AB',
+        '{ac} = 0.6 × {L}',
+        { ac: [(v) => (v.L! > 0 ? 0.6 * v.L! : undefined), '', ''] },
+        (v) => v.ac! - 0.6 * v.L!,
+        { hidden: true },
       ),
     ],
-    example: { p: 3, q: 2, r: 1, s: 14, x: 6, L: 20 },
+    example: { p: 3, q: 2, r: 1, s: 14, x: 6, L: 20, bc: 16, ac: 12 },
     startWith: ['p', 'q', 'r', 's'],
     equation: '{p}x + {q} = {r}x + {s}',
     representation: {
       kind: 'triangleSolver',
-      parts: { c: 'L', a: 16, b: 12 },
+      parts: { c: 'L', a: 'bc', b: 'ac' },
       congruence: {},
     },
   }),
@@ -4271,14 +4326,14 @@ const QUADRILATERALS: ModuleDef[] = [
     variables: [
       len('p', 'p', 'Diagonal AC', 1000, { min: 0.1 }),
       len('q', 'q', 'Diagonal BD', 1000, { min: 0.1 }),
-      der(len('hp', 'p/2', 'Half of AC', 500)),
-      der(len('hq', 'q/2', 'Half of BD', 500)),
+      der(len('hp', 'AO', 'Half of AC (AO)', 500)),
+      der(len('hq', 'BO', 'Half of BD (BO)', 500)),
       der(len('s', 's', 'Side', 1000)),
       der(num('K', 'K', 'Area', 0, 1e6)),
     ],
     rules: [
       derive(
-        'p/2',
+        'AO = p/2',
         '{hp} = {p} ÷ 2',
         'hp',
         (v) => v.p! / 2,
@@ -4286,7 +4341,7 @@ const QUADRILATERALS: ModuleDef[] = [
         'The diagonals bisect each other.',
       ),
       derive(
-        'q/2',
+        'BO = q/2',
         '{hq} = {q} ÷ 2',
         'hq',
         (v) => v.q! / 2,
@@ -4294,7 +4349,7 @@ const QUADRILATERALS: ModuleDef[] = [
         'The diagonals bisect each other.',
       ),
       derive(
-        's = √((p/2)² + (q/2)²)',
+        's = √(AO² + BO²)',
         '{s} = √({hp}² + {hq}²)',
         's',
         (v) => Math.hypot(v.hp!, v.hq!),
