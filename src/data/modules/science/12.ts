@@ -455,6 +455,94 @@ const bracket: ModuleDef = {
   },
 };
 
+// ── The ocean: seafloor, currents and ocean–atmosphere interaction ──
+
+const sonar: ModuleDef = {
+  id: 's.12.ocean-atmosphere',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The ping goes down and back, so halve the path.',
+    'Sound travels about 1,500 m/s in seawater.',
+    'The shelf is under 200 m deep and trenches reach almost 11,000 m.',
+  ],
+  variables: [
+    V('t', 't', 'Echo time, down and back', { unit: 's', min: 0.01, max: 15, step: 0.01 }),
+    V('v', 'v', 'Speed of sound in seawater', { unit: 'm/s', min: 1450, max: 1550, step: 1 }),
+    V('d', 'd', 'Depth', { unit: 'm', min: 1, max: 11000, step: 1 }),
+  ],
+  ...rels(
+    rule('d = v × t ÷ 2', '{d} = {v} × {t} ÷ 2', (v) => v.d! - (v.v! * v.t!) / 2, {
+      d: [
+        (v) => (v.v! * v.t!) / 2,
+        '{v} × {t} ÷ 2',
+        'Speed times time is the path down and back; the depth is half of it.',
+      ],
+      t: [
+        (v) => div(2 * v.d!, v.v!),
+        '2 × {d} ÷ {v}',
+        'The sound goes down and back: twice the depth, over its speed.',
+      ],
+      v: [(v) => div(2 * v.d!, v.t!), '2 × {d} ÷ {t}', 'Twice the depth, over the echo’s time.'],
+    }),
+  ),
+  example: { t: 6, v: 1500, d: 4500 },
+  startWith: ['t', 'v'],
+  representation: { kind: 'oceanProfile', mode: 'profile', depth: 'd', over: 'plain' },
+};
+
+/** The tidal range over the Moon's alone, with the Sun's bulges 0.46 as high at angle θ. */
+const tideRoot = (deg: number) =>
+  Math.sqrt(1 + 0.46 ** 2 + 2 * 0.46 * Math.cos((2 * deg * Math.PI) / 180));
+
+const tides: ModuleDef = {
+  id: 's.12.ocean-atmosphere~tides',
+  title: 'Spring and neap tides',
+  use: 'Use this for “Is the tide a spring or a neap tide at the first-quarter Moon, and how big is the range?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'The Sun’s tidal pull is 0.46 of the Moon’s.',
+    'In line (new or full Moon): spring tides; at right angles (quarter Moon): neap tides.',
+    'Coastlines make real ranges differ.',
+  ],
+  variables: [
+    V('A', 'θ', 'Moon’s angle from the Sun', { unit: '°', min: 0, max: 180, step: 1 }),
+    V('m', 'm', 'Range from the Moon alone', { unit: 'm', min: 0.1, max: 10, step: 0.01 }),
+    V('R', 'R', 'Tidal range', { unit: 'm', min: 0.01, max: 20, step: 0.01, derived: true }),
+  ],
+  ...rels(
+    rule(
+      'R = m × √(1 + 0.46² + 2 × 0.46 × cos 2θ)',
+      '{R} = {m} × √(1 + 0.46² + 2 × 0.46 × cos(2 × {A}))',
+      (v) => v.R! - v.m! * tideRoot(v.A!),
+      {
+        R: [
+          (v) => v.m! * tideRoot(v.A!),
+          '{m} × √(1 + 0.46^2 + 2 × 0.46 × cos(2 × {A}))',
+          'Add the Moon’s and the Sun’s bulges at the angle between them.',
+        ],
+        m: [
+          (v) => div(v.R!, tideRoot(v.A!)),
+          '{R} ÷ √(1 + 0.46^2 + 2 × 0.46 × cos(2 × {A}))',
+          'Undo the Sun’s share: divide the range by the same factor.',
+        ],
+        A: [
+          (v) => {
+            const k = ((v.R! / v.m!) ** 2 - 1 - 0.46 ** 2) / (2 * 0.46);
+            if (!(k >= -1 - 1e-9 && k <= 1 + 1e-9)) return undefined;
+            const a = (Math.acos(Math.max(-1, Math.min(1, k))) * 180) / Math.PI / 2;
+            return [a, 180 - a];
+          },
+          'cos⁻¹((({R} ÷ {m})^2 − 1 − 0.46^2) ÷ (2 × 0.46)) ÷ 2',
+          'Solve the range rule for cos 2θ, then take the inverse cosine and halve it.',
+        ],
+      },
+    ),
+  ),
+  example: { A: 90, m: 2, R: 2 * tideRoot(90) },
+  startWith: ['A', 'm'],
+  representation: { kind: 'oceanProfile', mode: 'tides', angle: 'A', range: 'R' },
+};
+
 export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
@@ -462,4 +550,6 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   carbonDating,
   uranium,
   bracket,
+  sonar,
+  tides,
 ];

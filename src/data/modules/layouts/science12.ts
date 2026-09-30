@@ -124,4 +124,74 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     unit: 'million years',
     totalLabel: 'Earth’s age',
   },
+
+  // ── The ocean: seafloor, currents and ocean–atmosphere interaction (HS-ESS2-4, HS-ESS2-5) ──
+  {
+    kind: 'explore',
+    id: 's.12.ocean-atmosphere~currents',
+    title: 'Surface currents and the deep conveyor',
+    use: 'Use this for “Why is the current on the west side of an ocean basin warm?” and “What drives the deep conveyor?”',
+    assumptions: [
+      'Winds drive the surface currents; differences in density drive the deep ones.',
+      'Currents carry heat from the tropics toward the poles.',
+    ],
+    figure: { kind: 'oceanCurrents' },
+    scenes: [
+      {
+        label: 'Gyres',
+        lines: [
+          'Trade winds and westerlies push the surface water.',
+          'The Coriolis effect turns the flow into gyres, clockwise in the north and counterclockwise in the south.',
+        ],
+        currents: { view: 'gyres' },
+      },
+      {
+        label: 'Warm and cold sides',
+        lines: [
+          'Warm water flows toward the poles on each basin’s west side, like the Gulf Stream.',
+          'Cold water flows back toward the equator on the east side, like the California Current.',
+        ],
+        currents: { view: 'gyres' },
+      },
+      {
+        label: 'The conveyor',
+        lines: [
+          'Cold, salty water sinks near Greenland and Antarctica.',
+          'It creeps through the deep ocean and rises again; one loop takes about 1,000 years.',
+        ],
+        currents: { view: 'conveyor' },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.12.ocean-atmosphere~density',
+    title: 'Sinks or rises?',
+    use: 'Use this for “Why does warm air rise at the equator?” and “Why does water sink near Greenland?”',
+    assumptions: [
+      'Colder and saltier water is denser; warmer and fresher water is less dense.',
+      'Air works the same way: cold air sinks and warm air rises.',
+    ],
+    question: 'Does it sink or rise compared with what is around it?',
+    bins: [
+      {
+        id: 'sinks',
+        label: 'Sinks (denser)',
+        why: 'Cold or salty fluid packs more mass into each liter, so it sinks under lighter fluid.',
+      },
+      {
+        id: 'rises',
+        label: 'Rises or stays on top (less dense)',
+        why: 'Warm or fresh fluid is lighter than what is around it, so it is pushed up.',
+      },
+    ],
+    cards: [
+      { label: 'Cold, salty water near Greenland', bin: 'sinks' },
+      { label: 'Seawater left saltier as sea ice forms', bin: 'sinks' },
+      { label: 'Cold air over the poles', bin: 'sinks' },
+      { label: 'Warm tropical surface water', bin: 'rises' },
+      { label: 'Fresh river water entering the sea', bin: 'rises' },
+      { label: 'Warm, moist air over the equator', bin: 'rises' },
+    ],
+  },
 ];
