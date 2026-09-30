@@ -1367,8 +1367,160 @@ const COORDINATES: ModuleDef[] = [
   }),
 ];
 
+// ─── m.10.special-right-triangles ────────────────────────────────────────────
+
+/** The sign between two numbers as a relation box: 1 <, 3 >, 5 = (equal to 9 digits). */
+const signOf = (x: number, y: number) =>
+  Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(y)) ? 5 : x < y ? 1 : 3;
+const SIGN_TEXT: Record<number, string> = { 1: '<', 3: '>', 5: '=' };
+
+const SPECIAL: ModuleDef[] = [
+  page({
+    id: 'm.10.special-right-triangles',
+    assumptions: [
+      'c is the longest side. Compare a² + b² with c².',
+      'Equal: a right triangle (the converse of the Pythagorean theorem).',
+      'a² + b² less than c²: obtuse. More than c²: acute.',
+    ],
+    variables: [
+      len('a', 'a', 'Side a'),
+      len('b', 'b', 'Side b'),
+      len('c', 'c', 'Longest side c'),
+      der(num('s', 'a² + b²', 'Sum of the squares of a and b', 0, 2e6)),
+      der(num('q', 'c²', 'Square of c', 0, 2e6)),
+      der(num('r', 'r', 'Sign (1 <, 3 >, 5 =)', 1, 5, { step: 1, integer: true })),
+    ],
+    rules: [
+      limit(
+        'c is the longest side',
+        '{c} is at least {a} and {b}',
+        (v) => v.c! >= v.a! && v.c! >= v.b!,
+        'Put the longest side in c.',
+      ),
+      limit(
+        'the sides close',
+        '{a} + {b} is more than {c}',
+        (v) => v.a! + v.b! > v.c!,
+        'The two shorter sides must add to more than the longest.',
+      ),
+      derive(
+        's = a² + b²',
+        '{s} = {a}² + {b}²',
+        's',
+        (v) => v.a! ** 2 + v.b! ** 2,
+        '{a}² + {b}²',
+        'Square the two shorter sides and add.',
+      ),
+      derive('q = c²', '{q} = {c}²', 'q', (v) => v.c! ** 2, '{c}²', 'Square the longest side.'),
+      {
+        relation: {
+          id: 'r = sign between a² + b² and c²',
+          display: 'sign {r} between {s} and {q}',
+          vars: ['r', 's', 'q'],
+          check: (v: Values) => `${signOf(v.s!, v.q!)} = ${v.r}`,
+          residual: (v: Values) => v.r! - signOf(v.s!, v.q!),
+          solve: {
+            r: (v: Values) => signOf(v.s!, v.q!),
+            s: () => undefined,
+            q: () => undefined,
+          },
+        },
+        steps: {
+          r: {
+            expr: (v: Values) => `${signOf(v.s!, v.q!)}`,
+            how: (v: Values) =>
+              ({
+                1: 'a² + b² is less than c²: the angle across from c is obtuse.',
+                3: 'a² + b² is more than c²: every angle is acute.',
+                5: 'a² + b² equals c²: a right triangle, the right angle across from c.',
+              })[signOf(v.s!, v.q!)]!,
+            note: (v: Values) => `(${SIGN_TEXT[signOf(v.s!, v.q!)]})`,
+          },
+        },
+      },
+    ],
+    example: { a: 8, b: 15, c: 17, s: 289, q: 289, r: 5 },
+    startWith: ['a', 'b', 'c'],
+    equation: '{a}^2 + {b}^2 {r:relation} {c}^2',
+    representation: { kind: 'triangleSolver', parts: { a: 'a', b: 'b', c: 'c' } },
+  }),
+  page({
+    id: 'm.10.special-right-triangles~45-45-90',
+    title: 'The 45°-45°-90° triangle',
+    use: 'Use this for “A leg of a 45°-45°-90° triangle is 7. How long is the hypotenuse?”',
+    assumptions: [
+      'A 45°-45°-90° triangle is half a square: its two legs are equal.',
+      'So c² = s² + s² = 2s², and the hypotenuse is a leg times √2.',
+      'Going back, a leg is the hypotenuse ÷ √2.',
+    ],
+    variables: [len('s', 's', 'Leg'), len('c', 'c', 'Hypotenuse', 1500)],
+    rules: [
+      rule(
+        'c = s√2',
+        '{c} = {s} × √2',
+        {
+          c: [(v) => v.s! * Math.SQRT2, '{s} × √2', 'The hypotenuse is √2 times a leg.'],
+          s: [(v) => v.c! / Math.SQRT2, '{c} ÷ √2', 'Divide the hypotenuse by √2.'],
+        },
+        (v) => v.c! - v.s! * Math.SQRT2,
+      ),
+    ],
+    example: { s: 7, c: 7 * Math.SQRT2 },
+    startWith: ['s'],
+    equation: '{c} = {s}√2',
+    representation: {
+      kind: 'triangleSolver',
+      parts: { a: 's', b: 's', c: 'c' },
+      special: '45-45-90',
+    },
+  }),
+  page({
+    id: 'm.10.special-right-triangles~30-60-90',
+    title: 'The 30°-60°-90° triangle',
+    use: 'Use this for “The short leg of a 30°-60°-90° triangle is 5. Find the long leg and the hypotenuse.”',
+    assumptions: [
+      'A 30°-60°-90° triangle is half an equilateral triangle.',
+      'The short leg is across from 30°. The hypotenuse is twice it; the long leg is it times √3.',
+    ],
+    variables: [
+      len('s', 's', 'Short leg'),
+      len('l', 'l', 'Long leg', 2000),
+      len('h', 'h', 'Hypotenuse', 2000),
+    ],
+    rules: [
+      rule(
+        'l = s√3',
+        '{l} = {s} × √3',
+        {
+          l: [(v) => v.s! * Math.sqrt(3), '{s} × √3', 'The long leg is √3 times the short leg.'],
+          s: [(v) => v.l! / Math.sqrt(3), '{l} ÷ √3', 'Divide the long leg by √3.'],
+        },
+        (v) => v.l! - v.s! * Math.sqrt(3),
+      ),
+      rule(
+        'h = 2s',
+        '{h} = 2 × {s}',
+        {
+          h: [(v) => 2 * v.s!, '2 × {s}', 'The hypotenuse is twice the short leg.'],
+          s: [(v) => v.h! / 2, '{h} ÷ 2', 'The short leg is half the hypotenuse.'],
+        },
+        (v) => v.h! - 2 * v.s!,
+      ),
+    ],
+    example: { s: 5, l: 5 * Math.sqrt(3), h: 10 },
+    startWith: ['s'],
+    equation: '{l} = {s}√3',
+    representation: {
+      kind: 'triangleSolver',
+      parts: { a: 's', b: 'l', c: 'h' },
+      special: '30-60-90',
+    },
+  }),
+];
+
 export const MATH_10_MODULES: ModuleDef[] = [
   ...SIMILARITY,
+  ...SPECIAL,
   ...TRIG,
   ...COORDINATES,
   ...CONDITIONAL,
