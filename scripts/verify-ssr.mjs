@@ -29,7 +29,7 @@ const CHECKS = [
     200,
     ['Count to 100 by ones and tens', 'Count objects and tell how many'],
   ],
-  ['/lessons/m.1.add-sub-20', 200, ['Main lesson', 'Compare problems', 'Take from ten']],
+  ['/lessons/m.1.add-sub-20', 200, ['Main lesson', 'compare problems', 'Take from ten']],
   [
     '/skill/m.K.make-10',
     200,
@@ -44,17 +44,20 @@ const CHECKS = [
   [
     '/skill/m.1.add-sub-20~compare',
     200,
-    ['Compare problems: Add and subtract within 20', 'Problem type · Add and subtract within 20'],
+    [
+      'Solve compare problems: Add and subtract within 20',
+      'Problem type · Add and subtract within 20',
+    ],
   ],
   [
     '/skill/m.K.position-words',
     200,
-    ['Position words: in front of, behind, next to', 'The ball is above the box.'],
+    ['Describe positions of objects – Kindergarten Math', 'The ball is above the box.'],
   ],
   [
     '/skill/s.K.pushes-pulls',
     200,
-    ['Pushes and pulls change motion – Kindergarten Science', 'Kindergarten · Science'],
+    ['Pushes and pulls – Kindergarten Science', 'Kindergarten · Science'],
   ],
   [
     '/course/he.math.calc-1',
