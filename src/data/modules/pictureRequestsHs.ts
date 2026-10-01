@@ -2497,8 +2497,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'Germ-layer bins colored as the gastrula card draws them (ectoderm, mesoderm, endoderm)',
       ['s.9.reproduction-development~germ-layers'],
     ),
-    status: 'drawn',
-    gallery: ['g.s9-reproduction-development-germ-layers-colors'],
+    status: 'placed',
+    gallery: [],
     notes:
       "P26. A sort bin can set `color`, a theme color name: a stripe down the bin's side and a swatch before its name. The gastrula icon's colors: ectoderm 'bioAmino', mesoderm 'organDeep', endoderm 'bioSugar'. The harness checks every bin or none has a color, and no two share one. For the page, add to each bin: { id: 'ecto', color: 'bioAmino' }, { id: 'meso', color: 'organDeep' }, { id: 'endo', color: 'bioSugar' }.",
   },

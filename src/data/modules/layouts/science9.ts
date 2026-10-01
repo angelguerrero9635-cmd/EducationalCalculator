@@ -708,19 +708,23 @@ const REPRODUCTION: LayoutDef[] = [
       'Each layer’s cells differentiate into its own set of tissues and organs.',
     ],
     question: 'Which germ layer does it come from?',
+    // H114: each bin in the gastrula card's color for its layer.
     bins: [
       {
         id: 'ecto',
+        color: 'bioAmino',
         label: 'Ectoderm (outer)',
         why: 'The outer layer makes the skin’s surface and the whole nervous system.',
       },
       {
         id: 'meso',
+        color: 'organDeep',
         label: 'Mesoderm (middle)',
         why: 'The middle layer makes muscle, bone, blood, the heart and the kidneys.',
       },
       {
         id: 'endo',
+        color: 'bioSugar',
         label: 'Endoderm (inner)',
         why: 'The inner layer lines the gut and the lungs, and makes the liver and pancreas.',
       },
