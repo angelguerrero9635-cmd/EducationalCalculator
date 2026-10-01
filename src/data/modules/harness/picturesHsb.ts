@@ -219,13 +219,15 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
       const tol = (x: number) => 1e-9 * Math.max(1, Math.abs(x));
       m.terms.forEach((t, i) => {
         const want =
-          rep.type === 'arithmetic'
-            ? a + i * d
-            : rep.type === 'recursive' // H93: k × the term before + c
-              ? i
-                ? d * m.terms[i - 1]! + (get(rep.plus) ?? 0)
-                : a
-              : a * d ** i;
+          rep.type === 'power' // H106: a₁ × nᵖ
+            ? a * (i + 1) ** d
+            : rep.type === 'arithmetic'
+              ? a + i * d
+              : rep.type === 'recursive' // H93: k × the term before + c
+                ? i
+                  ? d * m.terms[i - 1]! + (get(rep.plus) ?? 0)
+                  : a
+                : a * d ** i;
         if (!near(t, want, tol(want))) out.push(`term ${i + 1} is ${t}, not ${want}`);
         const s = m.terms.slice(0, i + 1).reduce((x, y) => x + y, 0);
         if (!near(m.sums[i]!, s, tol(s))) out.push(`partial sum ${i + 1} is ${m.sums[i]}`);

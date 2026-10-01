@@ -988,6 +988,39 @@ const RATIONAL_TOP: ModuleDef[] = [
   ),
 ];
 
+// ── H106 part 17: the squares on a terms chart (m.12.induction~squares) ──
+
+const squares: Representation = {
+  kind: 'termsChart',
+  type: 'power',
+  first: 1,
+  step: 2,
+  count: 'n',
+  as: 'bars',
+  sums: true,
+  sum: 'S',
+  far: true,
+};
+
+const SQUARES: ModuleDef[] = [
+  fromPage(
+    'm.12.induction~squares',
+    'g.m12-induction-squares-chart',
+    'The sum of squares',
+    squares,
+  ),
+  fromPage(
+    'm.12.induction~squares',
+    'g.m12-induction-squares-chart-far',
+    'The sum of the first 40 squares',
+    squares,
+    {
+      use: 'Use this for “Find 1² + 2² + … + 40² and check the step to 41 terms.”',
+      example: { n: 40, S: 22140, a: 1681, T: 23821, F: 23821 },
+    },
+  ),
+];
+
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
@@ -1005,6 +1038,7 @@ export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...TURNED,
   ...RIEMANN,
   ...RATIONAL_TOP,
+  ...SQUARES,
 ];
 
 export const HS3B_GALLERY_LAYOUTS: LayoutDef[] = [];

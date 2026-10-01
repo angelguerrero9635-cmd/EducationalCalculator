@@ -113,7 +113,7 @@ export interface PascalTriangleSpec extends PascalFraction {
 export interface TermsChartSpec extends TermsChartHs2g {
   kind: 'termsChart';
   /** H93: 'recursive', aₙ = step × aₙ₋₁ + plus (see `TermsChartHs2g`). */
-  type: 'arithmetic' | 'geometric' | 'recursive';
+  type: 'arithmetic' | 'geometric' | 'recursive' | 'power'; // H106: 'power', aₙ = a₁ × nᵖ, p = step
   first: NumOrVar;
   /** The common difference d, or the common ratio r. */
   step: NumOrVar;
