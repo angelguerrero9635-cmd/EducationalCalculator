@@ -9,7 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { Arrow, makeFrame } from './graphKit';
-import { HsdGrid, niceWindow } from './hsdGrid';
+import { HsdGrid, handleBox, niceWindow } from './hsdGrid';
 import { magnitudeText, short } from './hsdKit';
 import { MathChip } from './hsdText';
 
@@ -197,11 +197,16 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                 Math.max(0, Math.abs(cy0 - ay0) - 9),
               );
               const inside = cx0 - tw / 2 > 0 && cx0 + tw / 2 < w && cy0 > 10 && cy0 < h - 10;
+              // The axes' numbers run under the x-axis and left of the y-axis: a tag there
+              // covers them (F₁ along the x-axis hid 10 and 20).
+              const onNumbers =
+                (cy0 > ay0 + 2 && cy0 < ay0 + 24) || (cx0 + tw / 2 > ax0 - 34 && cx0 < ax0);
               const score =
                 Math.min(24, toAxes) +
                 Math.min(30, ...arrowPts.map(gap), 30) +
                 Math.min(40, ...placed.map(gap), 40) +
-                (inside ? 20 : 0) +
+                (inside ? 20 : 0) -
+                (onNumbers ? 25 : 0) +
                 (s === (flip ? -1 : 1) ? 3 : 0);
               return { bx, by, anchor, score, cx0, cy0 };
             };
@@ -275,7 +280,20 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
           return (
             <>
               <Svg width={w} height={h}>
-                <HsdGrid f={f} step={{ x: win.value.step, y: win.value.step }} names={spec.axes} />
+                <HsdGrid
+                  f={f}
+                  step={{ x: win.value.step, y: win.value.step }}
+                  names={spec.axes}
+                  // No tick number half hidden under a tip's handle.
+                  clear={
+                    spec.fixed
+                      ? []
+                      : vs.flatMap((r, i) => {
+                          const tip = P(tails[i]!.x + r.x, tails[i]!.y + r.y);
+                          return r.known ? [handleBox(tip.x, tip.y)] : [];
+                        })
+                  }
+                />
                 {/* Components as dashed legs. */}
                 {spec.components
                   ? vs.map((v, i) => {
@@ -287,6 +305,15 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                       // The legs’ lengths beside them, inside the triangle.
                       const showX = Math.abs(p1.x - p0.x) > 30;
                       const showY = Math.abs(p2.y - p1.y) > 24;
+                      // Their places, so the vectors' tags keep off them (vᵧ was hidden).
+                      const half = (t: string) => (t.length * chart.label * 0.58 + 6) / 2;
+                      if (showX)
+                        placed.push({ x: (p0.x + p1.x) / 2, y: p0.y + (v.y >= 0 ? -13 : 12) });
+                      if (showY)
+                        placed.push({
+                          x: p1.x + (v.x >= 0 ? 1 : -1) * (6 + half(short(v.y))),
+                          y: (p1.y + p2.y) / 2 - 1,
+                        });
                       return (
                         <G key={`c${i}`} opacity={v.known ? 1 : 0.35}>
                           <Path

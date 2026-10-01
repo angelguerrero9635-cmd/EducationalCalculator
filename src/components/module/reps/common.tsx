@@ -368,6 +368,9 @@ export function useRep(calc: Calculator) {
   };
 }
 
+/** The most characters of a bold caption line a phone shows on one line. */
+const ONE_LINE = 34;
+
 /** A line of a caption: prose, or a number sentence (only numbers, operators and units). */
 const isNumberSentence = (line: string) =>
   /[=<>]/.test(line) &&
@@ -375,8 +378,8 @@ const isNumberSentence = (line: string) =>
 
 /**
  * The text under a picture, laid out to read: each sentence on its own line, and a chained
- * number sentence ("6 × 7 = 6 × 5 + 6 × 2 = 30 + 12 = 42") stacked one "=" per line, the way
- * a textbook shows working. Number sentences are bold; the words stay regular.
+ * number sentence too long for one line ("6 × 7 = 6 × 5 + 6 × 2 = 30 + 12 = 42") stacked one
+ * "=" per line, the way a textbook shows working. Number sentences are bold; the words stay regular.
  */
 export function Caption({ children }: { children: string }) {
   const c = usePalette();
@@ -385,10 +388,15 @@ export function Caption({ children }: { children: string }) {
     .split(/\s+·\s+|(?<=[.!?])\s+(?=[A-Z0-9“(])/)
     .map((x) => x.trim())
     .filter(Boolean);
+  // A chain of one step short enough for a phone's line stays on one line (vₓ = 20 × cos 30° =
+  // 17.3 m/s); a longer one, or one of more steps, is stacked one "=" a line.
   const chainOf = (sentence: string) => {
     const bare = sentence.replace(/[.]$/, '');
     const parts = bare.split(' = ');
-    return parts.length > 2 && isNumberSentence(bare) ? parts : undefined;
+    return (parts.length > 3 || (parts.length === 3 && bare.length > ONE_LINE)) &&
+      isNumberSentence(bare)
+      ? parts
+      : undefined;
   };
   // Worked chains side by side in the list share one left edge, so three blocks of work
   // start at the same indent instead of each centred on its own.
