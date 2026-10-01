@@ -209,31 +209,38 @@ export const MATH_11_LAYOUTS: LayoutDef[] = [
       'A convenience sample is easy but usually biased.',
     ],
     question: 'Which sampling method is it?',
+    intro:
+      'Random picks give every member a known chance; strata make sure every group is in, clusters save travel, and convenience is easy but usually biased.',
     bins: [
       {
         id: 'random',
         label: 'Simple random',
         why: 'Every member, and every group of that size, has the same chance.',
+        figure: { kind: 'icon', icon: 'simple random sample' },
       },
       {
         id: 'stratified',
         label: 'Stratified',
         why: 'The population is split into groups, and some are picked at random from each.',
+        figure: { kind: 'icon', icon: 'stratified sample' },
       },
       {
         id: 'cluster',
         label: 'Cluster',
         why: 'Whole groups are picked at random, and everyone in them is asked.',
+        figure: { kind: 'icon', icon: 'cluster sample' },
       },
       {
         id: 'systematic',
         label: 'Systematic',
         why: 'Every kth member of a list, from a random start.',
+        figure: { kind: 'icon', icon: 'systematic sample' },
       },
       {
         id: 'convenience',
         label: 'Convenience',
         why: 'Whoever is easiest to reach: not random, so it can be biased.',
+        figure: { kind: 'icon', icon: 'convenience sample' },
       },
     ],
     cards: [
