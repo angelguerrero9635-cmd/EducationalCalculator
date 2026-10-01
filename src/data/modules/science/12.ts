@@ -1191,6 +1191,87 @@ const cloudBase: ModuleDef = {
   },
 };
 
+// ── Climate systems, feedbacks and climate change (the main page is an explore) ──
+
+/** The Stefan–Boltzmann constant, W/m² per K⁴. */
+const SIGMA = 5.67e-8;
+
+const energyBalance: ModuleDef = {
+  id: 's.12.climate-systems~energy-balance',
+  title: 'Earth’s energy balance',
+  use: 'Use this for “If Earth reflects 30 % of sunlight and has no greenhouse gases, how warm is it?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Sunlight falls on Earth’s disk but spreads over the whole globe, 4 times the disk’s area, so each square meter gets S ÷ 4 on average.',
+    'The albedo α is the share reflected by clouds, ice and land; the rest is absorbed.',
+    'In balance the ground sends out as infrared what it absorbs: σTₑ⁴ = F, with σ = 5.67 × 10⁻⁸ W/m² per K⁴.',
+  ],
+  variables: [
+    V('S', 'S', 'Sunlight at the top of the atmosphere', {
+      unit: 'W/m²',
+      min: 1,
+      max: 3000,
+      step: 1,
+    }),
+    V('a', 'α', 'Albedo', { min: 0, max: 0.99, step: 0.01 }),
+    V('F', 'F', 'Sunlight absorbed', {
+      unit: 'W/m²',
+      min: 0,
+      max: 750,
+      step: 0.1,
+      derived: true,
+    }),
+    V('T', 'Tₑ', 'Balance temperature', { unit: 'K', min: 0, max: 400, step: 0.1, derived: true }),
+  ],
+  ...rels(
+    rule('F = S(1 − α) ÷ 4', '{F} = {S} × (1 − {a}) ÷ 4', (v) => 4 * v.F! - v.S! * (1 - v.a!), {
+      F: [
+        (v) => (v.S! * (1 - v.a!)) / 4,
+        '{S} × (1 − {a}) ÷ 4',
+        'The share not reflected, spread over 4 times the disk’s area.',
+      ],
+      S: [
+        (v) => div(4 * v.F!, 1 - v.a!),
+        '4 × {F} ÷ (1 − {a})',
+        'The sunlight that leaves F absorbed after reflection.',
+      ],
+      a: [
+        (v) => (v.S! > 0 ? 1 - (4 * v.F!) / v.S! : undefined),
+        '1 − 4 × {F} ÷ {S}',
+        'The share of the sunlight not absorbed.',
+      ],
+    }),
+    rule(
+      'Tₑ = ∜(F ÷ σ)',
+      '{T} = ∜({F} ÷ (5.67 × 10⁻⁸))',
+      (v) => v.T! - (Math.max(0, v.F!) / SIGMA) ** 0.25,
+      {
+        T: [
+          (v) => (v.F! >= 0 ? (v.F! / SIGMA) ** 0.25 : undefined),
+          '∜({F} ÷ (5.67 × 10⁻⁸))',
+          'The temperature whose infrared, σTₑ⁴, carries away F.',
+        ],
+        F: [(v) => SIGMA * v.T! ** 4, '5.67 × 10⁻⁸ × {T}^4', 'A surface at Tₑ sends out σTₑ⁴.'],
+      },
+    ),
+  ),
+  example: {
+    S: 1361,
+    a: 0.3,
+    F: (1361 * 0.7) / 4,
+    T: ((1361 * 0.7) / 4 / SIGMA) ** 0.25,
+  },
+  startWith: ['S', 'a'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'balance',
+    sunlight: 'S',
+    albedo: 'a',
+    absorbed: 'F',
+    temperature: 'T',
+  },
+};
+
 // ── Human impacts and resource management (the main page is a sort) ──
 
 const pct = (id: string, symbol: string, name: string, derived = false) =>
@@ -2096,6 +2177,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   pressureMap,
   humidity,
   cloudBase,
+  energyBalance,
   energyMix,
   kepler,
   wien,
