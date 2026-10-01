@@ -339,3 +339,19 @@ in `science/11.ts`. `~rope`'s tension drag changes μₖ because `FreeBody` pins
 dragging (marking f derived would not change that): the drag should pin μₖ when it is given and
 let f follow (shared). The rest (subscripts, label rounding, projectile, vector, power-scale,
 oscillator, rotor labels) are component fixes.
+
+### Second page-review fixes
+
+From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.md):
+
+- `~power`: the voltage handle drives P and R while I holds (Circuit pins only typed
+  resistors). `work-energy-power`: the height drag pins m and the top, not the worked-out E, so m
+  stays typed; the caption writes ½.
+- `s.11.circuits`: one resistor across the source drops Kirchhoff's sum ("V = V = 9 V = 9 V").
+- `kinematics-2d`: H right of the apex (clear of the angle's handle); the axis name at the left
+  on its own row (the landing arrow ran through it at the right).
+- `~arc-length`: extent 0.4, so the 0.4 m circle is about 96 px in radius, r under the radius.
+- `~hooke`: "slope k = 245 N/m" inside the plot's top left.
+- `sound-waves`: an amplitude under 30 px is drawn on its own height scale (40 px for the
+  frozen value), marked "heights not to scale", and the drag reads it on that scale.
+- Labels to 3 figures: T = 0.314 s, ω = 12.6 rad/s, V = 71,900 V, U = 0.144 J, and so on.

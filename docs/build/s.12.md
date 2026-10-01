@@ -259,3 +259,13 @@ From `.review/hs-page-s/page-report-s11-12.md` (science role):
   "434" are the picture's number format, shared).
 - Not done, components: wave-arrivals' bent rays (EarthLayers takes no ray shape), tides,
   stretch, orbit, the currents, climate and zones explore labels, half-life ages.
+
+### Second page-review fixes
+
+From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.md):
+
+- `climate-systems`: the CO₂ level on the ground strip (it covered a molecule); "infrared out"
+  in space beside the last ray that escapes (it sat on the ground strip).
+- `~currents`: "California" just east of its cold arrow, toward the coast.
+- `~orbit`: a drawn radius for "a = 2 AU" on a circle; the cube root kept on one line.
+- `radiometric-dating`: ages 3.21 × 10⁹; "2.71 half-lives", (1/2)²·⁷¹ raised and 15.3% left.
