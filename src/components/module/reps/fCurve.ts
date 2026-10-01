@@ -34,6 +34,24 @@ export function fQuantile(tail: number, d1: number, d2: number): number {
 }
 
 /**
+ * H112: the F curve's tails, fixed by `tails` or read from `tailsFrom`, a value holding Hₐ: 1, 3
+ * (>) or 4 (≥) the right tail; 0 or 6 (≠) both tails. Undefined while that value is "?" or
+ * another code.
+ */
+export function fTailsOf(
+  f: { tails?: 'right' | 'two'; tailsFrom?: string },
+  read: (id: string) => number | undefined,
+): 'right' | 'two' | undefined {
+  if (!f.tailsFrom) return f.tails ?? 'right';
+  const code = read(f.tailsFrom);
+  return code === 1 || code === 3 || code === 4
+    ? 'right'
+    : code === 0 || code === 6
+      ? 'two'
+      : undefined;
+}
+
+/**
  * The p-value the picture shades: the right tail past F, or (two-sided) twice the smaller tail,
  * with the cuts each tail is shaded from.
  */

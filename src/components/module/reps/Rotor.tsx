@@ -15,15 +15,18 @@ import { Ball, Metal, url, usePaintIds } from './paint';
 /** The three shapes the pages name, by their factor c in I = cmr². */
 const SHAPES = [
   { c: 1, name: 'hoop', half: 'Hoop' },
+  // H111: the hollow ball, in the compare row only with `hollow` (pages without it keep three).
+  { c: 2 / 3, name: 'hollow ball', half: 'Hollow ball' },
   { c: 0.5, name: 'solid disk', half: 'Solid disk' },
   { c: 0.4, name: 'solid ball', half: 'Solid ball' },
 ] as const;
-type Shape = 'hoop' | 'disk' | 'ball' | 'wheel';
+type Shape = 'hoop' | 'shell' | 'disk' | 'ball' | 'wheel';
 const shapeOf = (c: number | undefined): Shape =>
-  c === undefined ? 'wheel' : c > 0.75 ? 'hoop' : c > 0.45 ? 'disk' : 'ball';
+  c === undefined ? 'wheel' : c > 0.83 ? 'hoop' : c > 0.58 ? 'shell' : c > 0.45 ? 'disk' : 'ball';
 const nameOf = (c: number) => SHAPES.find((s) => Math.abs(s.c - c) < 1e-9)?.name;
-/** c as the pages write it: 1, ½, 0.4. */
-const cText = (c: number) => (Math.abs(c - 0.5) < 1e-9 ? '½' : num(c));
+/** c as the pages write it: 1, ⅔, ½, 0.4. */
+const cText = (c: number) =>
+  Math.abs(c - 0.5) < 1e-9 ? '½' : Math.abs(c - 2 / 3) < 1e-9 ? '⅔' : num(c);
 
 /** Turn dials drawn: two rows at most, then each dial counts more turns. */
 const MAX_DIALS = 20;
@@ -273,6 +276,32 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
             <Circle cx={cx} cy={cy} r={Math.max(2, R * 0.12)} fill={c.metalDark} />
           </G>
         );
+      case 'shell': {
+        // A thin metal shell, cut open to show it is empty inside: the mass is all at radius r.
+        const t = small ? 2.5 : 5;
+        const [a, b] = [-Math.PI / 6, Math.PI / 3];
+        const p = (ang: number, rr: number) => onCircle(cx, cy, rr, ang);
+        const [o1, o2, i1, i2] = [p(a, R), p(b, R), p(a, R - t), p(b, R - t)];
+        return (
+          <G>
+            <Circle cx={cx} cy={cy} r={R} fill={url(ids.ball)} stroke={c.metalDark} />
+            <Path
+              d={`M ${cx} ${cy} L ${o1.x} ${o1.y} A ${R} ${R} 0 0 0 ${o2.x} ${o2.y} Z`}
+              fill={c.card}
+              stroke={c.metalDark}
+              strokeWidth={0.8}
+            />
+            <Path
+              d={`M ${i1.x} ${i1.y} A ${R - t} ${R - t} 0 0 0 ${i2.x} ${i2.y}`}
+              fill="none"
+              stroke={c.metal}
+              strokeWidth={t}
+              strokeOpacity={0.6}
+            />
+            <Circle cx={cx} cy={cy} r={Math.max(1.5, R * 0.06)} fill={c.metalDark} />
+          </G>
+        );
+      }
       case 'ball':
         return (
           <G>
@@ -311,11 +340,13 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
 
   /** The three shapes with the same m, r and τ: I = cmr² and α = τ/I for each. */
   function drawCompare(W: number, y0: number) {
-    const col = W / 3;
+    const shown = SHAPES.filter((s) => spec.hollow || Math.abs(s.c - 2 / 3) > 1e-9);
+    const col = W / shown.length;
+    const four = shown.length > 3;
     return (
       <G>
         <Line x1={8} y1={y0 - 6} x2={W - 8} y2={y0 - 6} stroke={c.chartGrid} />
-        {SHAPES.map((s, i) => {
+        {shown.map((s, i) => {
           const x = col * (i + 0.5);
           const chosen = cf !== undefined && Math.abs(cf - s.c) < 1e-9;
           const Ii = inertiaOf(s.c, m, r);
@@ -334,21 +365,33 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
                 />
               ) : null}
               {drawBody(x, y0 + 30, 22, shapeOf(s.c), true)}
+              {/* Four narrower columns put the shape's name and its c on two lines. */}
               <ChartText
                 x={x}
-                y={y0 + 72}
+                y={y0 + (four ? 64 : 72)}
                 textAnchor="middle"
                 fontSize={chart.label}
                 fontWeight="700"
               >
-                {`${s.half}, c = ${cText(s.c)}`}
+                {four ? s.half : `${s.half}, c = ${cText(s.c)}`}
               </ChartText>
-              <ChartText x={x} y={y0 + 90} textAnchor="middle" fontSize={chart.label}>
+              {four ? (
+                <ChartText
+                  x={x}
+                  y={y0 + 79}
+                  textAnchor="middle"
+                  fontSize={chart.label}
+                  fontWeight="700"
+                >
+                  {`c = ${cText(s.c)}`}
+                </ChartText>
+              ) : null}
+              <ChartText x={x} y={y0 + (four ? 96 : 90)} textAnchor="middle" fontSize={chart.label}>
                 {`I = ${num(Ii)} ${uI}`}
               </ChartText>
               <ChartText
                 x={x}
-                y={y0 + 108}
+                y={y0 + (four ? 112 : 108)}
                 textAnchor="middle"
                 fontSize={chart.label}
                 fill={c.forceApplied}

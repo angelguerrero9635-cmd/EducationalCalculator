@@ -39,3 +39,14 @@ export function expansion(n: number, a: string, b: string): string {
     })
     .join(' + ');
 }
+
+/** The groups that count: C(n, k), or with a second group C(n, k) × C(b, r − k). */
+export function favourable(n: number, k: number, b?: number, r?: number): number {
+  const c = (m: number, j: number) => {
+    if (j < 0 || j > m) return 0;
+    let v = 1;
+    for (let i = 1; i <= j; i++) v = (v * (m - j + i)) / i;
+    return Math.round(v);
+  };
+  return b === undefined || r === undefined ? c(n, k) : c(n, k) * c(b, r - k);
+}

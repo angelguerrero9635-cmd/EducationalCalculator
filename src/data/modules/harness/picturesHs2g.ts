@@ -12,6 +12,7 @@ import { curveOf } from '@/components/module/reps/functionGraphMath';
 import { histModel } from '@/components/module/reps/histModel';
 import { rangeOf } from '@/components/module/reps/histRange';
 import { toDegrees } from '@/components/module/reps/hsdKit';
+import { favourable } from '@/components/module/reps/pascal';
 import { choose } from '@/components/module/reps/statMath';
 import { shadedChance } from '@/components/module/reps/stats';
 import { termsModel } from '@/components/module/reps/termsModel';
@@ -190,7 +191,13 @@ export function hs2gIssues(rep: Representation, val: Val): string[] {
       if ([n, k, fn, fk].some((x) => x === undefined)) break;
       if (fn! > n!) out.push(`the top count's row ${fn} is past row ${n}`);
       if (fk! > fn! || fk! < 0) out.push(`C(${fn}, ${fk}) has no entry ${fk}`);
-      const top = fk! <= fn! ? choose(fn!, fk!) : 0;
+      // H113: "exactly k of r", C(a, k) × C(b, r − k), with a + b everyone and r the bottom's k.
+      const [fb, fr] = [get(f.b), get(f.r)];
+      if (f.b !== undefined && fb !== undefined && fn! + fb !== n)
+        out.push(`the two groups ${fn} + ${fb} are not everyone, ${n}`);
+      if (f.r !== undefined && fr !== undefined && fr !== k)
+        out.push(`the number chosen ${fr} is not the bottom's ${k}`);
+      const top = favourable(fn!, fk!, fb, fr);
       const bottom = choose(n!, k!);
       const [count, chance] = [get(f.count), get(f.chance)];
       if (count !== undefined && count !== top)

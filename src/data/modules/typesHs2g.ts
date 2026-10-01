@@ -114,9 +114,20 @@ export interface TreeChancesHs2g {
  * second colour over the triangle's own C(n, k) (the page's n and k), and drawn as a fraction
  * under it, C(5, 3) ÷ C(9, 3) = 10/84 = 5/42. `count` and `chance` name the top count and the
  * probability (checked).
+ *
+ * H113: with `b` and `r`, "exactly k of r": C(`n`, `k`) × C(`b`, `r` − `k`) on top, k chosen from
+ * the first group (`n` in it) and the rest from the second (`b` in it), over the triangle's
+ * C(n, k). For groups past row 12, the page draws no triangle (`triangle: false`).
  */
 export interface PascalFraction {
-  fraction?: { n: NumOrVar; k: NumOrVar; count?: string; chance?: string };
+  fraction?: {
+    n: NumOrVar;
+    k: NumOrVar;
+    b?: NumOrVar;
+    r?: NumOrVar;
+    count?: string;
+    chance?: string;
+  };
 }
 
 /**
@@ -221,7 +232,14 @@ export function hs2gSpecVars(r: Representation): string[] {
     case 'treeDiagram':
       return 'chances' in r ? ids(...(r.chances.third ?? []).flat(2)) : [];
     case 'pascalTriangle':
-      return ids(r.fraction?.n, r.fraction?.k, r.fraction?.count, r.fraction?.chance);
+      return ids(
+        r.fraction?.n,
+        r.fraction?.k,
+        r.fraction?.b,
+        r.fraction?.r,
+        r.fraction?.count,
+        r.fraction?.chance,
+      );
     case 'complexPlane':
       return ids(r.power, r.roots);
     case 'matrixGrid':

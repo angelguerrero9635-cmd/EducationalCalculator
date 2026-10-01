@@ -7,7 +7,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
-import { fPdf, fQuantile, fTest } from './fCurve';
+import { fPdf, fQuantile, fTailsOf, fTest } from './fCurve';
 import { niceStep } from './hsdGrid';
 import { MathChip } from './hsdText';
 
@@ -33,14 +33,16 @@ export function FCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calculator
   ];
   const F = s.stat === undefined ? undefined : num(s.stat, 1);
   const alpha = s.alpha === undefined ? undefined : num(s.alpha, 0.05);
-  const tails = s.tails ?? 'right';
+  // H112: one tail or two, as the page's Hₐ value says; none shaded while it is "?".
+  const chosen = fTailsOf(s, (id) => (rep.known(id) ? rep.val(id) : undefined));
+  const tails = chosen ?? 'right';
   const crit =
-    alpha === undefined
+    alpha === undefined || chosen === undefined
       ? undefined
       : tails === 'two'
         ? { left: fQuantile(1 - alpha / 2, d1, d2), right: fQuantile(alpha / 2, d1, d2) }
         : { right: fQuantile(alpha, d1, d2) };
-  const test = F === undefined ? undefined : fTest(F, d1, d2, tails);
+  const test = F === undefined || chosen === undefined ? undefined : fTest(F, d1, d2, tails);
   const statKnown = known(s.stat) && known(s.df1) && known(s.df2);
   // The axis: past the statistic and the critical value, and far enough for the tail to fade.
   const xMax = (() => {
@@ -51,6 +53,7 @@ export function FCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calculator
 
   // Caption.
   const lines: string[] = [`The F curve with df₁ = ${d1} on top and df₂ = ${d2} underneath.`];
+  if (chosen === undefined) lines.push('Choose Hₐ to shade one tail or both.');
   if (F !== undefined && test) {
     if (!statKnown) lines.push('F = ?');
     else if (tails === 'two')

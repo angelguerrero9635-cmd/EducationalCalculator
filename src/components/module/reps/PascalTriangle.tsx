@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { expansion, pascalRows, slotsOf } from './pascal';
-import { FRACTION_H, FractionRow, fractionOf } from './PascalFraction';
+import { FractionRow, fractionHeight, fractionOf } from './PascalFraction';
 
 const fmt = (x: number) => formatNumber(x);
 const sup = (e: number) => [...String(e)].map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]).join('');
@@ -81,7 +81,7 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
   }
 
   const triH = (w: number) => (showTriangle ? (R + 1) * cellOf(w).h + 10 : 0);
-  const slotsH = (slots ? (spec.slots!.choose ? 118 : 78) : 0) + (frac ? FRACTION_H : 0);
+  const slotsH = (slots ? (spec.slots!.choose ? 118 : 78) : 0) + (frac ? fractionHeight(frac) : 0);
   function cellOf(w: number) {
     const cw = Math.min(40, (w - 16) / (R + 1));
     return { w: cw, h: Math.min(28, Math.max(20, cw * 0.82)) };
@@ -304,7 +304,7 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
                   <FractionRow
                     frac={frac}
                     x={w / 2}
-                    y={h - FRACTION_H}
+                    y={h - fractionHeight(frac)}
                     ink={c.chartInk}
                     lit={c.chartHighlight}
                     second={c.fnSecond}

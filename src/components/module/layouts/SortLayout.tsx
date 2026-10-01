@@ -121,7 +121,19 @@ export function SortLayout({ spec }: { spec: Spec }) {
                 },
               ]}
             >
+              {bin.color ? (
+                // H114: the group's color, as the page's picture draws it.
+                <View style={[styles.binStripe, { backgroundColor: c[bin.color] }]} />
+              ) : null}
               <View style={styles.binHead}>
+                {bin.color ? (
+                  <View
+                    style={[
+                      styles.binSwatch,
+                      { backgroundColor: c[bin.color], borderColor: c.text },
+                    ]}
+                  />
+                ) : null}
                 {bin.figure ? (
                   // Kept whole beside a long name.
                   <View style={styles.binFigure}>
@@ -206,6 +218,23 @@ const styles = StyleSheet.create({
   },
   binHead: { flexDirection: 'row', justifyContent: 'space-between', gap: space.sm },
   binFigure: { flexShrink: 0 },
+  binStripe: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 6,
+    borderTopLeftRadius: radius.md,
+    borderBottomLeftRadius: radius.md,
+  },
+  binSwatch: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignSelf: 'center',
+    flexShrink: 0,
+  },
   besideFigure: { alignSelf: 'center' },
   // H104: a line of text above the cards.
   intro: { fontSize: font.body, textAlign: 'center' },

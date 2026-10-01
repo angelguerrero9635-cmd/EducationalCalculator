@@ -52,6 +52,9 @@ export function hs3aIssues(rep: Hs3aSpec, val: Val): string[] {
       const c = read(val, rep.shape);
       if (c !== undefined && (c <= 0 || c > 1))
         out.push(`rotor: shape factor ${c} is not in (0, 1]`);
+      // H111: with the hollow ball in the row, the shape is one of the four named ones.
+      if (rep.hollow && c !== undefined && ![1, 2 / 3, 0.5, 0.4].some((k) => near(c, k)))
+        out.push(`rotor: shape factor ${c} is not a hoop, hollow ball, solid disk or solid ball`);
       const [mass, r] = [read(val, rep.mass), read(val, rep.radius)];
       const I =
         c !== undefined && mass !== undefined && r !== undefined

@@ -8,7 +8,7 @@ import { reshapeVars } from '@/components/module/reps/functionGraphHs2g';
 import { toShownUnits } from '@/components/module/reps/functionGraphUnits';
 import { quadAt, quadCrossings } from '@/components/module/reps/lineParabola';
 import { turnedConic } from '@/components/module/reps/conicTurned';
-import { fTest } from '@/components/module/reps/fCurve';
+import { fTailsOf, fTest } from '@/components/module/reps/fCurve';
 import { polarConicParts } from '@/components/module/reps/polarConic';
 import { riemannOf } from '@/components/module/reps/riemann';
 import { ownCenter } from '@/components/module/reps/transformHs3b';
@@ -234,7 +234,14 @@ export function hs3bIssues(
       const F = f.stat === undefined ? undefined : val(f.stat);
       const P = f.p === undefined ? undefined : val(f.p);
       if (d1 === undefined || d2 === undefined || F === undefined || P === undefined) break;
-      const want = fTest(F, d1, d2, f.tails ?? 'right').p;
+      if (f.tailsFrom) {
+        const code = val(f.tailsFrom);
+        if (code !== undefined && ![0, 1, 3, 4, 6].includes(code))
+          out.push(`F curve: Hₐ code ${code} is not 0, 1, 3, 4 or 6`);
+      }
+      const tails = fTailsOf(f, val);
+      if (!tails) break;
+      const want = fTest(F, d1, d2, tails).p;
       if (Math.abs(P - want) > 1e-6) out.push(`F curve: p-value ${P} is not ${want}`);
       break;
     }

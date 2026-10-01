@@ -1,3 +1,5 @@
+import type { Palette } from '@/theme';
+
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
 import type { Hs2bCard } from '../typesHs2b';
@@ -25,6 +27,11 @@ import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
+
+/** A theme color by name (the palette's string entries). */
+export type PaletteColor = {
+  [K in keyof Palette]: Palette[K] extends string ? K : never;
+}[keyof Palette];
 
 /**
  * Module layouts other than the calculator (docs/MODULE_GUIDE.md, "Module layouts"). A
@@ -56,6 +63,12 @@ export interface SortLayout extends LayoutBase {
     why: string;
     /** H104: a small drawing beside the group's name (a card figure, often an icon). */
     figure?: CardFigure;
+    /**
+     * H114: the group's color, a theme color name, as a picture on the page draws it (the
+     * gastrula's germ layers: ectoderm `bioAmino`, mesoderm `organDeep`, endoderm `bioSugar`):
+     * a stripe down the bin's side and a swatch before its name.
+     */
+    color?: PaletteColor;
   }[];
   cards: { label: string; bin: string; figure?: CardFigure }[];
   /** A picture above the cards, so they can be judged by looking (`layouts/offspringFigure.tsx`). */

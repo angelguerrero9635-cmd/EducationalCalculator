@@ -69,6 +69,8 @@ export interface RotorSpec {
   period?: string;
   rim?: string;
   compare?: boolean;
+  /** H111: the hollow ball (c = ⅔) joins the compare row, four shapes instead of three. */
+  hollow?: boolean;
   fixed?: boolean;
 }
 

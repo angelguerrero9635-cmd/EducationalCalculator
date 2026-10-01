@@ -29,6 +29,12 @@ export function hs2eFigureIssues(l: LayoutDef): string[] {
           out.push(`sort: card "${card.label}" wears bin ${b.id}'s icon`);
     }
   }
+  // Sort bins with colors (H114): every bin or none, each its own color.
+  if (l.kind === 'sort' && l.bins.some((b) => b.color)) {
+    if (!l.bins.every((b) => b.color)) out.push('sort: some bins have a color and some do not');
+    const colors = l.bins.map((b) => b.color);
+    if (new Set(colors).size !== colors.length) out.push('sort: two bins share a color');
+  }
   // Gene expression: every scene sets its switch, and a line that says the gene is on or off
   // agrees with the figure.
   if (l.kind === 'explore' && l.figure.kind === 'geneExpression') {

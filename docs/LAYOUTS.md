@@ -225,6 +225,11 @@ a red cell with its A wedges, B knobs, both or none) and body systems (`nervous 
 `endocrine system`, `heart and blood vessels`, `respiratory system`, `excretory system`,
 `digestive system`).
 
+H114: a sort bin can set `color`, a theme color name, for groups a picture on the page colors: a
+stripe down the bin's side and a swatch before its name (the germ layers as the gastrula icon draws
+them: ectoderm `bioAmino`, mesoderm `organDeep`, endoderm `bioSugar`). Every bin or none, each its
+own color.
+
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
 (equal or unequal parts, some shaded), `bar` (a ribbon with cubes laid right or wrong),

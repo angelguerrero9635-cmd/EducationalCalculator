@@ -11,14 +11,26 @@ import { chart } from '@/theme';
 
 import { probText } from './ChanceTree';
 import { ChartText } from './common';
+import { favourable } from './pascal';
 import { choose } from './statMath';
 
 /** The height the fraction takes under the triangle. */
 export const FRACTION_H = 78;
 
+/**
+ * H113: long counts ("C(30, 5) × C(30, 5) = 20,307,960,036") leave no room beside the bar, so
+ * the result goes on its own line under the fraction, 20 px lower.
+ */
+const longCounts = (f: FractionModel) =>
+  f.b !== undefined && Math.max(String(f.top).length, String(f.bottom).length) > 6;
+export const fractionHeight = (f: FractionModel) => FRACTION_H + (longCounts(f) ? 20 : 0);
+
 export interface FractionModel {
   n: number;
   k: number;
+  /** H113: the second group and the number chosen in all, for "exactly k of r". */
+  b?: number;
+  r?: number;
   top: number;
   bottom: number;
   /** The main entry C(n, k). */
@@ -40,15 +52,22 @@ export function fractionOf(
   if (!spec.fraction || K === undefined) return undefined;
   const n = Math.round(get(spec.fraction.n) ?? 0);
   const k = Math.round(get(spec.fraction.k) ?? 0);
-  const top = k >= 0 && k <= n ? choose(n, k) : 0;
+  const two = spec.fraction.b !== undefined && spec.fraction.r !== undefined;
+  const b = two ? Math.round(get(spec.fraction.b) ?? 0) : undefined;
+  const r = two ? Math.round(get(spec.fraction.r) ?? 0) : undefined;
+  const top = favourable(n, k, b, r);
   const bottom = K >= 0 && K <= N ? choose(N, K) : 0;
   const g = gcd(top, bottom) || 1;
   const lowest = top && g > 1 ? ` = ${fmt(top / g)}/${fmt(bottom / g)}` : '';
+  const counted = topText(n, k, b, r);
   const caption = bottom
-    ? `P = C(${n}, ${k}) ÷ C(${N}, ${K}) = ${fmt(top)}/${fmt(bottom)}${lowest} ≈ ${fmt(Number((top / bottom).toFixed(3)))}: the groups that count over all the groups`
+    ? `P = ${counted} ÷ C(${N}, ${K}) = ${fmt(top)}/${fmt(bottom)}${lowest} ≈ ${fmt(Number((top / bottom).toFixed(3)))}: the groups that count over all the groups`
     : `C(${N}, ${K}) has no groups to choose from.`;
-  return { n, k, top, bottom, N, K, caption };
+  return { n, k, b, r, top, bottom, N, K, caption };
 }
+
+const topText = (n: number, k: number, b?: number, r?: number) =>
+  b === undefined || r === undefined ? `C(${n}, ${k})` : `C(${n}, ${k}) × C(${b}, ${r - k})`;
 
 export function FractionRow({
   frac,
@@ -67,7 +86,7 @@ export function FractionRow({
   second: string;
   muted: string;
 }) {
-  const { n, k, top, bottom, N, K } = frac;
+  const { n, k, b, r, top, bottom, N, K } = frac;
   const g = gcd(top, bottom) || 1;
   const right = bottom
     ? `= ${g > 1 && top ? `${fmt(top / g)}/${fmt(bottom / g)}` : probText(top / bottom)}${
@@ -76,8 +95,10 @@ export function FractionRow({
           : ''
       }`
     : '';
-  const barW = 132;
-  const left = x - 110;
+  // "Exactly k of r" has two counts on top: a wider bar; long counts put the result below it.
+  const below = longCounts(frac);
+  const barW = b === undefined ? 132 : below ? 260 : 196;
+  const left = x - (b === undefined ? 110 : below ? barW / 2 : 150);
   const size = chart.emphasis;
   return (
     <G>
@@ -89,7 +110,7 @@ export function FractionRow({
         fontWeight="700"
         fill={second}
       >
-        {`C(${n}, ${k}) = ${fmt(top)}`}
+        {`${topText(n, k, b, r)} = ${fmt(top)}`}
       </ChartText>
       <Line
         x1={left}
@@ -109,10 +130,17 @@ export function FractionRow({
       >
         {`C(${N}, ${K}) = ${fmt(bottom)}`}
       </ChartText>
-      <ChartText x={left + barW + 10} y={y + 37} fontSize={size} fontWeight="700" fill={ink}>
+      <ChartText
+        x={below ? x : left + barW + 10}
+        y={below ? y + 74 : y + 37}
+        textAnchor={below ? 'middle' : 'start'}
+        fontSize={size}
+        fontWeight="700"
+        fill={ink}
+      >
         {right}
       </ChartText>
-      <ChartText x={x} y={y + 72} textAnchor="middle" fill={muted}>
+      <ChartText x={x} y={y + (below ? 92 : 72)} textAnchor="middle" fill={muted}>
         groups that count ÷ all groups
       </ChartText>
     </G>

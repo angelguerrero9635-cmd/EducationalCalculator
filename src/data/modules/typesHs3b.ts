@@ -206,6 +206,11 @@ export interface NormalCurveHs3b {
     alpha?: NumOrVar;
     p?: string;
     tails?: 'right' | 'two';
+    /**
+     * H112: a value holding Hₐ, in place of `tails`: 1 (or a sign box's 3 >, 4 ≥) the right tail,
+     * 0 (or 6 ≠) both tails. While it is "?", the curve draws with no tail shaded.
+     */
+    tailsFrom?: string;
   };
 }
 
@@ -288,7 +293,8 @@ const idsOf = (...xs: (NumOrVar | undefined)[]) =>
 
 /** The variable ids the later H106 options name, beside the kinds' own (for the module tests). */
 export function hs3bSpecVars(r: Representation): string[] {
-  if (r.kind === 'normalCurve' && r.f) return idsOf(r.f.df1, r.f.df2, r.f.stat, r.f.alpha, r.f.p);
+  if (r.kind === 'normalCurve' && r.f)
+    return idsOf(r.f.df1, r.f.df2, r.f.stat, r.f.alpha, r.f.p, r.f.tailsFrom);
   if (r.kind !== 'vectorDiagram' || !r.space) return [];
   const s = r.space;
   return idsOf(

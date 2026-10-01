@@ -2453,4 +2453,53 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       "(7) s.12.starlight-spectra~parallax (not built yet): a new kind `parallax`, { kind: 'parallax', angle: 'p', parsecs?: 'd', lightYears?: 'D' } (p in arcseconds, 0.001–1): the Sun with Earth in January and July 1 AU either side, a near star above, the sight lines past it to the far stars and where it is seen against them each half year, the Sun–Earth–star triangle shaded and p marked at the star, d on the Sun–star line; not to scale (it says so), but the star climbs toward the far stars as d grows, so the angle narrows. The caption works d = 1 ÷ p and 3.26 × d. The harness checks 0 < p ≤ 1, d = 1 ÷ p and D = 3.26 × d. The demos g.s12-starlight-spectra-parallax (p = 0.1″) and -near (Proxima, 0.768″) are the page: variables p (″), d (pc), D (light-years), rules d = 1 ÷ p and D = 3.26 × d.",
     ].join(' '),
   },
+  // ── Round 4 (H111–H114): docs/HS_NEEDS.md P23–P26 ──
+  {
+    ...ask(
+      'H111',
+      'rotor',
+      'The hollow ball (c = 2/3) named and drawn, and in the compare row beside the hoop, solid disk and solid ball',
+      ['s.11.rotation~rotational-inertia'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s11-rotation-hollow-ball'],
+    notes:
+      "P23. c = ⅔ is now drawn and named a hollow ball (a thin shell cut open), not a solid disk, wherever a rotor's shape is ⅔. New option `hollow: true` adds it to the compare row: four shapes, each column's name and c on two lines. Pages without `hollow` keep their three. The harness checks that with `hollow` the shape is one of the four named factors (1, ⅔, ½, 0.4). Spec: { kind: 'rotor', shape: 'c', mass: 'm', radius: 'r', inertia: 'I', torque: 't', acceleration: 'a', compare: true, hollow: true }.",
+  },
+  {
+    ...ask(
+      'H112',
+      'normalCurve',
+      'The F curve shades one tail or two as the page’s Hₐ value says, so it agrees with P for both choices',
+      ['m.12.anova~two-variances'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m12-anova-two-variances-tails-two', 'g.m12-anova-two-variances-tails-right'],
+    notes:
+      "P24. New `f.tailsFrom`: a value holding Hₐ in place of the fixed `tails`. 1 (or a sign box's 3 >, 4 ≥) is the right tail; 0 (or 6 ≠) is both tails, twice the smaller. While it is \"?\", the curve draws with no tail shaded and the caption asks for Hₐ. The harness checks the code (0, 1, 3, 4 or 6) and P against the tails it picks. Spec for the page (h: 0 ≠, 1 >): { kind: 'normalCurve', f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P', tailsFrom: 'h' } }.",
+  },
+  {
+    ...ask(
+      'H113',
+      'pascalTriangle',
+      'A counting fraction for “exactly k of r”: C(a, k) × C(b, r − k) ÷ C(a + b, r), groups up to 60',
+      ['m.10.probability-rules~counting-probability'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m10-probability-rules-exactly-k', 'g.m10-probability-rules-exactly-k-sixty'],
+    notes:
+      "P25. `fraction` takes `b` and `r`: the top becomes C(n, k) × C(b, r − k) (k from the first group of n, the rest from the second group of b), over the triangle's C(n, k) as before. Without `b` and `r` it draws C(n, k) as H97 did. With `triangle: false` no rows are drawn, so groups run to 60. The harness checks that the two groups make everyone, that r is the bottom's k, and the count and chance. Spec for the page: { kind: 'pascalTriangle', n: 'n', k: 'r', triangle: false, slots: { r: 'r', choose: true, result: 't' }, fraction: { n: 'a', k: 'k', b: 'b', r: 'r', count: 'f', chance: 'P' } }. The page's solver leaves P = 1 unknown after edits like b = 0, k = 13 (a deep sampling run of the 60-person demo found it); the demo keeps b ≥ 1.",
+  },
+  {
+    ...ask(
+      'H114',
+      'sort',
+      'Germ-layer bins colored as the gastrula card draws them (ectoderm, mesoderm, endoderm)',
+      ['s.9.reproduction-development~germ-layers'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s9-reproduction-development-germ-layers-colors'],
+    notes:
+      "P26. A sort bin can set `color`, a theme color name: a stripe down the bin's side and a swatch before its name. The gastrula icon's colors: ectoderm 'bioAmino', mesoderm 'organDeep', endoderm 'bioSugar'. The harness checks every bin or none has a color, and no two share one. For the page, add to each bin: { id: 'ecto', color: 'bioAmino' }, { id: 'meso', color: 'organDeep' }, { id: 'endo', color: 'bioSugar' }.",
+  },
 ];
