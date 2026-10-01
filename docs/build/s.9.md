@@ -238,3 +238,9 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   scenes (repressor on, lactose arrives, the promoter, no activator, activator bound).
 - `~fingerprint` (H109 part 2, page C): new explore on the `gel` figure, the demo's eight lanes
   and five scenes (the gel, compare, a match, a family, ruled out).
+- `s.9.classification~domains` (H104 part 1): the three domain icons on the bins and the virus
+  sentence as `intro` (out of the assumptions). Stand-in gone: the icons on six cards (two domain,
+  four kingdom), which gave the cards' bins away.
+- `~key` (H100 need 12): new explore on the `dichotomousKey` figure, the demo's six animals and
+  four scenes. (Sampling has no calculator under this prefix, so its suite reports an empty
+  table; the other suites pass.)

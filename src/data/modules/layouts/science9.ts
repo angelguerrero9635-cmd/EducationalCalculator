@@ -1454,52 +1454,39 @@ const CLASSIFICATION: LayoutDef[] = [
     assumptions: [
       'Bacteria and archaea are single cells with no nucleus; archaea differ in their walls, membranes and genes, and many live in extreme places.',
       'Eukarya have cells with a nucleus: protists, fungi, plants and animals.',
-      'Viruses are not cells, so they are not placed in any domain.',
     ],
     question: 'Which domain does it belong to?',
+    intro: 'Viruses are not cells, so they are not placed in any domain.',
     bins: [
       {
         id: 'bacteria',
         label: 'Bacteria',
         why: 'Prokaryotes with cell walls made of peptidoglycan.',
+        figure: { kind: 'icon', icon: 'domain Bacteria' },
       },
       {
         id: 'archaea',
         label: 'Archaea',
         why: 'Prokaryotes whose walls and membranes are built differently from bacteria’s.',
-      },
-      { id: 'eukarya', label: 'Eukarya', why: 'Every cell has a nucleus inside a membrane.' },
-    ],
-    cards: [
-      {
-        label: 'E. coli in the gut',
-        bin: 'bacteria',
-        figure: { kind: 'icon', icon: 'domain Bacteria' },
-      },
-      { label: 'Streptococcus that causes strep throat', bin: 'bacteria' },
-      { label: 'Cyanobacteria in a pond', bin: 'bacteria' },
-      {
-        label: 'Methane-making microbes in a cow’s stomach',
-        bin: 'archaea',
         figure: { kind: 'icon', icon: 'domain Archaea' },
       },
+      {
+        id: 'eukarya',
+        label: 'Eukarya',
+        why: 'Every cell has a nucleus inside a membrane.',
+        figure: { kind: 'icon', icon: 'domain Eukarya' },
+      },
+    ],
+    cards: [
+      { label: 'E. coli in the gut', bin: 'bacteria' },
+      { label: 'Streptococcus that causes strep throat', bin: 'bacteria' },
+      { label: 'Cyanobacteria in a pond', bin: 'bacteria' },
+      { label: 'Methane-making microbes in a cow’s stomach', bin: 'archaea' },
       { label: 'Halobacterium in a salt pond', bin: 'archaea' },
-      {
-        label: 'Paramecium (protist)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Protista' },
-      },
-      {
-        label: 'Mushrooms (fungi)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Fungi' },
-      },
-      { label: 'A leafy plant', bin: 'eukarya', figure: { kind: 'icon', icon: 'kingdom Plantae' } },
-      {
-        label: 'A fish (animal)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Animalia' },
-      },
+      { label: 'Paramecium (protist)', bin: 'eukarya' },
+      { label: 'Mushrooms (fungi)', bin: 'eukarya' },
+      { label: 'A leafy plant', bin: 'eukarya' },
+      { label: 'A fish (animal)', bin: 'eukarya' },
     ],
   },
   {
@@ -1557,6 +1544,52 @@ const CLASSIFICATION: LayoutDef[] = [
       { label: 'Family Hominidae' },
       { label: 'Genus Homo' },
       { label: 'Species Homo sapiens' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.classification~key',
+    title: 'A dichotomous key',
+    use: 'Use this for “Use the key to name the animal: it has no backbone and a segmented body.”',
+    assumptions: [
+      'A dichotomous key asks one yes-or-no question at a time about a trait you can see.',
+      'Each answer leads to the next question or to a name, so every path ends at one organism.',
+    ],
+    figure: {
+      kind: 'dichotomousKey',
+      steps: [
+        { question: 'Does it have a backbone?', yes: 1, no: 2 },
+        { question: 'Does it have hair?', yes: 'Human', no: 'Fish' },
+        { question: 'Does it have true tissues?', yes: 3, no: 'Sponge' },
+        { question: 'Is its body divided into segments?', yes: 'Earthworm', no: 4 },
+        { question: 'Does it have stinging tentacles?', yes: 'Jellyfish', no: 'Sea star' },
+      ],
+    },
+    scenes: [
+      {
+        label: 'The first question',
+        lines: [
+          'Every animal starts at the top: a backbone or not splits the six into two groups.',
+        ],
+        key: { step: 0 },
+      },
+      {
+        label: 'Earthworm',
+        lines: [
+          'No backbone, true tissues, a segmented body: three answers lead to the earthworm.',
+        ],
+        key: { specimen: 'Earthworm' },
+      },
+      {
+        label: 'Sea star',
+        lines: ['No backbone, true tissues, no segments and no stinging tentacles: a sea star.'],
+        key: { specimen: 'Sea star' },
+      },
+      {
+        label: 'Human',
+        lines: ['A backbone and hair: two questions are enough for a mammal.'],
+        key: { specimen: 'Human' },
+      },
     ],
   },
 ];
