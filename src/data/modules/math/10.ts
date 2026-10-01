@@ -4002,15 +4002,31 @@ const CONSTRUCTIONS: ModuleDef[] = [
       'A bisector cuts the angle into two equal halves: then m∠AOB = m∠BOC.',
     ],
     variables: [
-      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 179.9),
-      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 179.9),
+      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 179),
+      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 179),
       deg('c', 'm∠AOC', 'm∠AOC', 0.2, 180),
     ],
     rules: [sum('c', 'a', 'b', 'The two angles side by side add to the whole angle.')],
     example: { a: 38, b: 47, c: 85 },
     startWith: ['a', 'b'],
     equation: '{a}° + {b}° = {c}°',
-    representation: { kind: 'angles', parts: ['a', 'b'], whole: 'c' },
+    representation: {
+      kind: 'markedFigure',
+      points: {
+        O: [0, 0],
+        A: { from: 'O', angle: 0 },
+        B: { from: 'O', angle: 'a' },
+        C: { from: 'O', angle: 'c' },
+      },
+      parts: [
+        { ray: 'OA' },
+        { ray: 'OB' },
+        { ray: 'OC' },
+        { label: 'AOB', value: 'a' },
+        { label: 'BOC', value: 'b' },
+        { label: 'AOC', value: 'c', inCaption: true },
+      ],
+    },
   }),
   page({
     id: 'm.10.constructions~perpendicular-bisector',
@@ -4110,7 +4126,25 @@ const PROOFS: ModuleDef[] = [
     ],
     example: { a: 52, b: 71, c: 57, d: 123 },
     startWith: ['a', 'b'],
-    representation: { kind: 'angles', parts: ['a', 'b'], whole: 'd', triangle: { third: 'c' } },
+    representation: {
+      kind: 'markedFigure',
+      points: {
+        B: [0, 0],
+        C: [9, 0],
+        D: [12, 0],
+        A: { from: 'B', angle: 'b', meets: { from: 'C', angle: 'd' } },
+      },
+      parts: [
+        { segment: 'AB' },
+        { segment: 'BC' },
+        { segment: 'CA' },
+        { segment: 'CD', dashed: true },
+        { label: 'BAC', value: 'a' },
+        { label: 'ABC', value: 'b' },
+        { label: 'ACB', value: 'c' },
+        { label: 'ACD', value: 'd' },
+      ],
+    },
   }),
   // Figure-only values (the drawing's BD, AD and BC) stay out of the steps: sine comes later.
   page({
