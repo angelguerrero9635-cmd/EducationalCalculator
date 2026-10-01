@@ -237,6 +237,26 @@ Report: `.review/new-sci/lesson-report.md`. Fixed:
   still print after the substituted line; `StepText` has no lines before it. The q step's
   10ⁿ rewriting lines are the engine's.
 
+### Second lesson-review fixes
+
+Report: `.review/new-sci-2/lesson-report.md`.
+
+- ~seesaw: F₁ and F₂ from 1 N; d₂'s range is wide and a check says why instead of a silent
+  clear: past 100 m "The second weight would sit past the end of any plank.", under 0.01 m "The
+  second weight would sit almost on the pivot."
+- ~angular-speed: r to 100 m; the 2,000 m/s cap on v is a check with its reason ("No wheel holds
+  together with its rim past 2,000 m/s."), v's range itself wide.
+- ~rotational-inertia: I from 0.000001 kg·m² (α was free at I = 0); c shows as a fraction up to
+  thirds, so the hollow ball reads "c = 2/3" (and the disk "1/2"), never 0.6667. The simplifier
+  then writes "2/3 × 2 = 1 1/3", a mixed number on a 9–12 page (engine, lead).
+- ~angular-acceleration: "1 × 16" is the engine's (lead).
+- New page `s.11.rotation~arc-length` "Angle in radians and arc length": θ = θ° × π/180 and
+  s = rθ, θ° 0.1–360, θ 0.001 rad–2π (shown as a fraction of π), r 0.001–100 m, s up to
+  1,000 m. Example: a 0.4 m wheel turning 135° (θ = 3π/4, s = 0.9425 m); picture: the `circle`
+  sector (radians) and the radian view. It answers OpenStax 6.1 PP2 (the clock's 60° at 0.2 m:
+  0.2094 m); PP1 is reading the clock. Finding θ° from θ = π/2 prints "π/2 × 180/π",
+  "0.5π × 180/π", "90π/π" (engine, lead).
+
 ### Shared needs (lesson review of the added skills)
 
 - **Engine: a `null` solve part is still filled by the whole-number search** (an `allowed` mass),

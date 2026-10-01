@@ -4302,14 +4302,31 @@ const rotationPages: ModuleDef[] = [
         'The plank is light and pivoted at its middle, so its own weight is left out.',
       ],
       variables: [
-        q('W', 'F₁', 'First weight', 'N', 0.01, 1e5, 0.01),
+        q('W', 'F₁', 'First weight', 'N', 1, 1e5, 0.01),
         q('l', 'd₁', 'First distance', 'm', 0.01, 100, 0.01),
-        q('F', 'F₂', 'Second weight', 'N', 0.01, 1e5, 0.01),
-        q('e', 'd₂', 'Second distance', 'm', 0.01, 100, 0.01),
+        q('F', 'F₂', 'Second weight', 'N', 1, 1e5, 0.01),
+        // Wide, so a d₂ off the plank meets the check below (with its reason), not a silent clear.
+        q('e', 'd₂', 'Second distance', 'm', 0.0000001, 1e7, 0.01),
         { ...TORQUE, name: 'Torque on each side' },
         q('P', 'F_p', 'Pivot force', 'N', 0, 2e5, 0.01),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          {
+            id: 'd₂ from 0.01 to 100',
+            constraint: true,
+            display: '{e} is from 0.01 to 100',
+            vars: ['e'],
+            residual: (v) => (v.e! >= 0.01 - 1e-9 && v.e! <= 100 + 1e-9 ? 0 : 1),
+            solve: {},
+            message: (v) =>
+              v.e! > 100 + 1e-9
+                ? 'The second weight would sit past the end of any plank.'
+                : v.e! < 0.01 - 1e-9
+                  ? 'The second weight would sit almost on the pivot.'
+                  : undefined,
+          },
+        ],
         product('t', 'W', 'l', 'τ = F₁d₁', [
           'The first child’s torque: weight times distance from the pivot.',
           'Divide the torque by the distance.',
@@ -4342,6 +4359,51 @@ const rotationPages: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
+    const [d, r] = [135, 0.4];
+    const t = d * RAD;
+    return {
+      id: 's.11.rotation~arc-length',
+      title: 'Angle in radians and arc length',
+      use: 'Use this for “A wheel of radius 0.4 m turns through 135°. What is that angle in radians, and how far does a point on its rim travel?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'One radian is the angle whose arc is one radius long, so a full turn of 360° is 2π radians.',
+        'To change degrees to radians, multiply by π/180.',
+        'The arc length is s = rθ, with θ in radians: the radius times the angle.',
+      ],
+      variables: [
+        q('d', 'θ°', 'Angle in degrees', '°', 0.1, 360, 1),
+        q('t', 'θ', 'Angle in radians', 'rad', 0.001, 2 * Math.PI, 0.0001, { pi: 'fraction' }),
+        q('r', 'r', 'Radius', 'm', 0.001, 100, 0.001),
+        q('s', 's', 'Arc length', 'm', 0.000001, 1000, 0.0001),
+      ],
+      ...rules(
+        rule('θ = θ° × π/180', '{t} = {d} × π/180', (v) => v.t! - v.d! * RAD, {
+          t: [
+            (v) => v.d! * RAD,
+            '{d} × π/180',
+            'Half a turn is 180°, or π radians: each degree is π/180 radians.',
+          ],
+          d: [(v) => v.t! / RAD, '{t} × 180/π', 'Each radian is 180/π degrees.'],
+        }),
+        product('s', 'r', 't', 's = rθ', [
+          'Each radian of turn moves a point on the rim one radius along the circle.',
+          'Divide the arc length by the angle in radians.',
+          'Divide the arc length by the radius: how many radius lengths the arc is.',
+        ]),
+      ),
+      example: { d, t, r, s: r * t },
+      startWith: ['d', 'r'],
+      representation: {
+        kind: 'circle',
+        radius: 'r',
+        extent: 1,
+        views: ['sector', 'radian'],
+        sector: { angle: 't', unit: 'radians', arc: 's' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
     const [r, N] = [0.3, 120];
     const w = (2 * Math.PI * N) / 60;
     return {
@@ -4355,13 +4417,28 @@ const rotationPages: ModuleDef[] = [
         'The rim’s velocity is along the tangent; the angle must be in radians for v = rω.',
       ],
       variables: [
-        q('r', 'r', 'Radius', 'm', 0.001, 1000, 0.001),
+        q('r', 'r', 'Radius', 'm', 0.001, 100, 0.001),
         q('N', 'N', 'Turning rate', 'rpm', 0.01, 1e5, 0.01),
         q('w', 'ω', 'Angular speed', 'rad/s', 0.001, 1e4, 0.001),
         q('T', 'T', 'Period', 's', 0.0001, 1e5, 0.0001),
-        q('v', 'v', 'Rim speed', 'm/s', 0, 2000, 0.001),
+        // Wide, so a rim past 2,000 m/s meets the check below (with its reason), not a silent clear.
+        q('v', 'v', 'Rim speed', 'm/s', 0, 1e6, 0.001),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          {
+            id: 'v ≤ 2,000',
+            constraint: true,
+            display: '{v} is at most 2,000',
+            vars: ['v'],
+            residual: (v) => (v.v! <= 2000 + 1e-9 ? 0 : 1),
+            solve: {},
+            message: (v) =>
+              v.v! <= 2000 + 1e-9
+                ? undefined
+                : 'No wheel holds together with its rim past 2,000 m/s.',
+          },
+        ],
         withWork(
           rule('ω = 2πN/60', '{w} = 2π × {N}/60', (v) => 60 * v.w! - 2 * Math.PI * v.N!, {
             w: [
@@ -4528,10 +4605,14 @@ const rotationPages: ModuleDef[] = [
         'Newton’s second law for turning: τ = Iα, with α in rad/s².',
       ],
       variables: [
-        q('c', 'c', 'Shape factor', undefined, 0.4, 1, 0.0001, { allowed: [1, 2 / 3, 0.5, 0.4] }),
+        // ⅔ for a hollow ball shows as 2/3 (and ½ as 1/2), never 0.6667.
+        q('c', 'c', 'Shape factor', undefined, 0.4, 1, 0.0001, {
+          allowed: [1, 2 / 3, 0.5, 0.4],
+          fraction: 3,
+        }),
         q('m', 'm', 'Mass', 'kg', 0.001, 1e5, 0.001),
         q('r', 'r', 'Radius', 'm', 0.001, 100, 0.001),
-        q('I', 'I', 'Rotational inertia', 'kg·m²', 0, 1e9, 0.0001),
+        q('I', 'I', 'Rotational inertia', 'kg·m²', 0.000001, 1e9, 0.0001),
         TORQUE,
         q('a', 'α', 'Angular acceleration', 'rad/s²', 0, 1e6, 0.001),
       ],
