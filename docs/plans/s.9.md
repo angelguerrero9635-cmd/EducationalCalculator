@@ -627,7 +627,9 @@ questions from `research/questions/science/9.jsonl`. Every page uses a picture t
 - **~life-cycle (sequence):** pollination, pollen tube, fertilization, seed and fruit, dispersal,
   germination, flowering.
 - **~transpiration (calculator, `doubleNumberLine`):** W water taken up (mL), t hours, R mL each
-  hour; W = R × t every way. Example: 4.8 mL in 6 h → R = 4.8 ÷ 6 = 0.8 mL an hour.
+  hour (mL/h); W = R × t every way. Example: 4.8 mL in 6 h → R = 4.8 ÷ 6 = 0.8 mL/h.
+- **~nutrients (sort, added in the lesson review):** Nitrogen, Phosphorus, Potassium, Magnesium;
+  8 cards (roles, deficiency signs, nitrogen fixation in bean nodules).
 
 ### s.9.biomes — Biomes and aquatic ecosystems
 
@@ -654,6 +656,9 @@ questions from `research/questions/science/9.jsonl`. Every page uses a picture t
 - **~impulse-speed (calculator, `doubleNumberLine`):** d axon length (m), v speed (m/s), t time (ms),
   t = 1,000 × d ÷ v every way; the picture's ms-per-meter k = 1,000 ÷ v is hidden. Example: 1 m at
   50 m/s → t = 1,000 × 1 ÷ 50 = 20 ms.
+- **~synapse (sequence, added in the lesson review):** the impulse reaches the axon end, vesicles
+  release neurotransmitter, it crosses the gap, binds receptors, the next cell fires (or is held
+  back), the transmitter is broken down or taken back up.
 
 ## Engine and picture needs
 

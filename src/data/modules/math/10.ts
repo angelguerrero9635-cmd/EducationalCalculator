@@ -2320,6 +2320,22 @@ const densityRule = rule(
   },
   (v) => v.rho! * v.V! - v.m!,
 );
+/** A rule with more step text (work lines, a note) for the value `x`. */
+const withStep = (r: Rule, x: string, more: Partial<StepText>): Rule => ({
+  ...r,
+  steps: { ...r.steps, [x]: { ...r.steps[x]!, ...more } },
+});
+/** No material is denser than osmium, so a size that asks for more is refused with the reason. */
+const densest = limit(
+  'ρ ≤ 23 g/cm³',
+  '{rho} is at most 23 g/cm³',
+  (v) => v.rho! <= 23,
+  'No material is denser than about 22.6 g/cm³ (osmium): check the mass or the sizes.',
+);
+const fmt4 = (x: number) => formatNumber(Number(x.toPrecision(12)));
+/** The radius of the can of volume V with the least surface: h = 2r, so V = 2πr³. */
+const bestRadius = (V: number) => Math.cbrt(V / (2 * Math.PI));
+
 /**
  * Seven radii around the best one for a can of volume V (h = 2r at r = ∛(V ÷ 2π)), in steps
  * of 1, 2 or 5 times a power of ten, so the table's surface areas dip and rise again.
@@ -2349,7 +2365,7 @@ const MODELING: ModuleDef[] = [
       grams('m', 'm', 'Mass'),
       density('rho', 'ρ', 'Density'),
     ],
-    rules: [cylinderVolume, densityRule],
+    rules: [cylinderVolume, densityRule, densest],
     example: { r: 2, h: 5, V: 20 * Math.PI, m: 170, rho: 170 / (20 * Math.PI) },
     startWith: ['r', 'h', 'm'],
     unitSystems: ['metric'],
@@ -2397,12 +2413,68 @@ const MODELING: ModuleDef[] = [
         (v) => v.V! - (4 * Math.PI * v.r! ** 3) / 3,
       ),
       densityRule,
+      densest,
     ],
     example: { r: 1.5, V: 4.5 * Math.PI, rho: 7.8, m: 7.8 * 4.5 * Math.PI },
     startWith: ['r', 'rho'],
     unitSystems: ['metric'],
     pictureLabels: ['rho', 'm'],
     representation: { kind: 'curvedSolid', shape: 'sphere', radius: 'r', volume: 'V', extent: 4 },
+  }),
+  page({
+    id: 'm.10.modeling-density~cone',
+    title: 'Mass of a cone from its density',
+    use: 'Use this for “A solid aluminum cone (2.7 g/cm³) has radius 3 cm and height 4 cm. Find its mass.”',
+    assumptions: [
+      'Model the object as a cone: V = πr²h ÷ 3, a third of the cylinder on the same base.',
+      'Mass is density times volume: m = ρV.',
+      'Given the mass, work back to the volume first, then the height or the radius.',
+    ],
+    variables: [
+      cm('r', 'r', 'Radius'),
+      cm('h', 'h', 'Height'),
+      num('V', 'V', 'Volume', 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'] }),
+      density('rho', 'ρ', 'Density'),
+      grams('m', 'm', 'Mass'),
+    ],
+    rules: [
+      rule(
+        'V = πr²h ÷ 3',
+        '{V} = π × {r}² × {h} ÷ 3',
+        {
+          V: [
+            (v) => (Math.PI * v.r! ** 2 * v.h!) / 3,
+            'π × {r}² × {h} ÷ 3',
+            'A cone holds a third of the cylinder with the same base and height.',
+          ],
+          h: [
+            (v) => quot(3 * v.V!, Math.PI * v.r! ** 2),
+            '3 × {V} ÷ (π × {r}²)',
+            'Undo the third, then divide by the base’s area.',
+          ],
+          r: [
+            (v) => root(quot(3 * v.V!, Math.PI * v.h!) ?? NaN),
+            '√(3 × {V} ÷ (π × {h}))',
+            'Undo the third, divide by π × h, then take the square root.',
+          ],
+        },
+        (v) => v.V! - (Math.PI * v.r! ** 2 * v.h!) / 3,
+      ),
+      densityRule,
+      densest,
+    ],
+    example: { r: 3, h: 4, V: 12 * Math.PI, rho: 2.7, m: 2.7 * 12 * Math.PI },
+    startWith: ['r', 'h', 'rho'],
+    unitSystems: ['metric'],
+    pictureLabels: ['rho', 'm'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cone',
+      radius: 'r',
+      height: 'h',
+      volume: 'V',
+      extent: 5,
+    },
   }),
   page({
     id: 'm.10.modeling-density~population',
@@ -2414,9 +2486,9 @@ const MODELING: ModuleDef[] = [
       'D is an average over the whole region; some parts are more crowded than others.',
     ],
     variables: [
-      len('r', 'r', 'Radius of the region', 10000, { unit: 'km' }),
+      len('r', 'r', 'Radius of the region', 3000, { unit: 'km' }),
       num('A', 'A', 'Area', 0, 1e9, { unit: 'km²' }),
-      num('N', 'N', 'Population', 1, 1e10, { unit: 'people' }),
+      num('N', 'N', 'Population', 1, 9e9, { unit: 'people' }),
       num('D', 'D', 'Population density', 1e-12, 1e10, { unit: 'people per km²' }),
     ],
     rules: [
@@ -2461,35 +2533,75 @@ const MODELING: ModuleDef[] = [
     assumptions: [
       'The can is a closed cylinder: V = πr²h, and its metal is the surface S = 2πr² + 2πrh.',
       'Hold V and try radii: the table shows S dip and then rise again.',
-      'The least metal comes when the height equals the diameter, h = 2r.',
+      'The least metal comes when the height equals the diameter, h = 2r, so V = 2πr³.',
     ],
     variables: [
       num('V', 'V', 'Volume', 0.01, 1e7, { unit: 'cm³', units: ['cm³'] }),
       len('r', 'r', 'Radius', 1000, { unit: 'cm', units: ['cm'] }),
       len('h', 'h', 'Height', 1e6, { unit: 'cm', units: ['cm'] }),
       num('S', 'S', 'Surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] }),
+      der(
+        num('rb', 'r_best', 'Radius with the least metal', 0, 1000, { unit: 'cm', units: ['cm'] }),
+      ),
+      der(num('Smin', 'S_min', 'Least surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] })),
     ],
     rules: [
       cylinderVolume,
-      rule(
-        'S = 2πr² + 2πrh',
-        '{S} = 2 × π × {r}² + 2 × π × {r} × {h}',
+      derive(
+        'r_best = ∛(V ÷ 2π)',
+        '{rb} = ∛({V} ÷ (2 × π))',
+        'rb',
+        (v) => bestRadius(v.V!),
+        '∛({V} ÷ (2 × π))',
+        'At the best can h = 2r, so V = πr² × 2r = 2πr³: divide by 2π and take the cube root.',
+      ),
+      derive(
+        'S_min = 2πr_best² + 2V ÷ r_best',
+        '{Smin} = 2 × π × {rb}² + 2 × {V} ÷ {rb}',
+        'Smin',
+        (v) => 2 * Math.PI * v.rb! ** 2 + (quot(2 * v.V!, v.rb!) ?? NaN),
+        '2 × π × {rb}² + 2 × {V} ÷ {rb}',
+        'The side 2πrh is 2V ÷ r, because h = V ÷ πr²: put in the best radius.',
+      ),
+      withStep(
+        rule(
+          'S = 2πr² + 2πrh',
+          '{S} = 2 × π × {r}² + 2 × π × {r} × {h}',
+          {
+            S: [
+              (v) => 2 * Math.PI * v.r! ** 2 + 2 * Math.PI * v.r! * v.h!,
+              '2 × π × {r}² + 2 × π × {r} × {h}',
+              'Two circles for the top and bottom, and the side unrolled: a rectangle 2πr by h.',
+            ],
+            h: [
+              (v) => quot(v.S! - 2 * Math.PI * v.r! ** 2, 2 * Math.PI * v.r!),
+              '({S} − 2 × π × {r}²) ÷ (2 × π × {r})',
+              'Take away the two circles; the side is 2πr × h.',
+            ],
+          },
+          (v) => v.S! - 2 * Math.PI * v.r! ** 2 - 2 * Math.PI * v.r! * v.h!,
+        ),
+        'S',
         {
-          S: [
-            (v) => 2 * Math.PI * v.r! ** 2 + 2 * Math.PI * v.r! * v.h!,
-            '2 × π × {r}² + 2 × π × {r} × {h}',
-            'Two circles for the top and bottom, and the side unrolled: a rectangle 2πr by h.',
-          ],
-          h: [
-            (v) => quot(v.S! - 2 * Math.PI * v.r! ** 2, 2 * Math.PI * v.r!),
-            '({S} − 2 × π × {r}²) ÷ (2 × π × {r})',
-            'Take away the two circles; the side is 2πr × h.',
-          ],
+          // With V known, the side is 2V ÷ r exactly: no rounded h in the line.
+          work: (v) =>
+            v.V === undefined
+              ? []
+              : [
+                  `S = 2 × π × ${fmt4(v.r!)}² + 2 × ${fmt4(v.V)} ÷ ${fmt4(v.r!)}`,
+                  `S = ${fmt4(2 * v.r! ** 2)}π + ${fmt4((2 * v.V) / v.r!)}`,
+                ],
         },
-        (v) => v.S! - 2 * Math.PI * v.r! ** 2 - 2 * Math.PI * v.r! * v.h!,
       ),
     ],
-    example: { V: 500, r: 4, h: 500 / (16 * Math.PI), S: 32 * Math.PI + 250 },
+    example: {
+      V: 500,
+      r: 4,
+      h: 500 / (16 * Math.PI),
+      S: 32 * Math.PI + 250,
+      rb: bestRadius(500),
+      Smin: 2 * Math.PI * bestRadius(500) ** 2 + 1000 / bestRadius(500),
+    },
     startWith: ['V', 'r'],
     unitSystems: ['metric'],
     representation: { kind: 'table', sweep: 'r', output: 'S', params: ['V'], rows: canRows },
@@ -2508,8 +2620,26 @@ const MODELING: ModuleDef[] = [
       len('x', 'x', 'Length', 1e5, { unit: 'm' }),
       len('y', 'y', 'Width', 1e5, { unit: 'm' }),
       num('A', 'A', 'Area', 0, 1e9, { unit: 'm²' }),
+      der(len('s', 's', 'Side of the best pen', 1e5, { unit: 'm' })),
+      der(num('Am', 'A_max', 'Most area', 0, 1e9, { unit: 'm²' })),
     ],
     rules: [
+      derive(
+        's = P ÷ 4',
+        '{s} = {P} ÷ 4',
+        's',
+        (v) => v.P! / 4,
+        '{P} ÷ 4',
+        'The best pen is a square: the fence makes four equal sides.',
+      ),
+      derive(
+        'A_max = s²',
+        '{Am} = {s}²',
+        'Am',
+        (v) => v.s! ** 2,
+        '{s}²',
+        'The square’s area is its side times itself; any other sides give less.',
+      ),
       rule(
         'P = 2x + 2y',
         '{P} = 2 × {x} + 2 × {y}',
@@ -2555,7 +2685,7 @@ const MODELING: ModuleDef[] = [
         (v) => v.A! - v.x! * v.y!,
       ),
     ],
-    example: { P: 40, x: 12, y: 8, A: 96 },
+    example: { P: 40, x: 12, y: 8, A: 96, s: 10, Am: 100 },
     startWith: ['P', 'x'],
     unitSystems: ['metric'],
     representation: {

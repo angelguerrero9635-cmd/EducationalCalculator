@@ -39,6 +39,13 @@ export interface VariableDef {
    */
   sigFigs?: number;
   /**
+   * At most this many significant figures once the value is 1 or more, no zeros added: 277.8
+   * m/s, pH 3.602 (the 9–12 science pages set 4). Below 1 every value keeps 4 figures.
+   */
+  figures?: number;
+  /** A worked-out value under half the step reads "< 0.0001" in its box (a p-value), never 0. */
+  belowStep?: boolean;
+  /**
    * A fraction whose decimal repeats shows its repeating digits and "…" (1/3 → 0.333…,
    * 1/6 → 0.1666…) when the block is at most 6 digits; boxes take the same.
    */
@@ -141,4 +148,10 @@ export interface Relation {
    * returns a sentence, the sentence is the reason shown under the box.
    */
   message?: (v: Values) => string | undefined;
+  /**
+   * Why a value this rule would find stays unknown with these numbers, without refusing any of
+   * them ("Both sides are the same for every x: every number is a solution."). Shown in place of
+   * "Type one more number" while values are still missing.
+   */
+  explain?: (v: Values) => string | undefined;
 }

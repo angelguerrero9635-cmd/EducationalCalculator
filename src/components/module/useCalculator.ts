@@ -82,7 +82,9 @@ export function useCalculator(module: ModuleDef): Calculator {
 
   const [state, setState] = useState<{ choice: UnitChoice; calc: CalcState }>(() => {
     const choice: UnitChoice = {
-      system: options.systems.includes(defaultSystem) ? defaultSystem : 'metric',
+      system: options.systems.includes(defaultSystem)
+        ? defaultSystem
+        : (options.systems[0] ?? 'metric'),
     };
     const ctx = makeUnitContext(module, choice);
     return {

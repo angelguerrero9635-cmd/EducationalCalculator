@@ -395,7 +395,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       {
         id: 'lower',
         label: 'Lowers it',
-        why: 'Less pressure pushes on the water, so it boils at a lower temperature.',
+        why: 'Less pressure pushes on the water, so it boils cooler, and food in it cooks more slowly.',
       },
       {
         id: 'same',

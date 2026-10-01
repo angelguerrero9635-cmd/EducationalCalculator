@@ -141,7 +141,12 @@ function affineOf(rel: Relation): Affine | undefined {
   const zero = Object.fromEntries(rel.vars.map((id) => [id, 0]));
   const c0 = at(zero);
   const coef = new Map(rel.vars.map((id) => [id, at({ ...zero, [id]: 1 }) - c0]));
-  let ok = Number.isFinite(c0) && [...coef.values()].every(Number.isFinite);
+  // A rule with no coefficient at all is a pass/fail check that failed every probe (a limit
+  // like "n·p ≥ 10" at small points), not a constant sum that can never be met.
+  let ok =
+    Number.isFinite(c0) &&
+    [...coef.values()].every(Number.isFinite) &&
+    [...coef.values()].some((c) => c !== 0);
   // Probe a few fixed points: a product or a ratio shows up as a miss.
   for (let i = 1; ok && i <= 6; i++) {
     const p = Object.fromEntries(rel.vars.map((id, k) => [id, ((i * 37 + k * 53) % 200) - 50]));
@@ -590,7 +595,15 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     // Already found from newer input: keep it only if it matches or another possible value
     // fits it (e.g. the other answer to a difference); otherwise newer input wins.
     const determined = g.id in known;
-    if (determined && closeTo(normalizeValue(variable, g.value), known[g.id]!)) {
+    // A typed value that is the worked-out one rounded to the box's step (d = 463.6 against
+    // z × σ = 463.601) agrees with it.
+    const typed = normalizeValue(variable, g.value);
+    const rounded =
+      determined &&
+      !variable.integer &&
+      variable.step !== undefined &&
+      Math.abs(typed - known[g.id]!) <= variable.step / 2 + 1e-12;
+    if (determined && (closeTo(typed, known[g.id]!) || rounded)) {
       dropped.push(g.id);
       continue;
     }
@@ -676,6 +689,12 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         const x = first[v.id]!;
         if (!r.solutions.every((sol) => closeTo(sol[v.id]!, x))) continue;
         if (checkValue(v, x) !== undefined) continue;
+        // A value from a list (an allowed mass) that every rule marks "never worked out from
+        // this rule" (a `null` part) is the student's to pick, whatever the search finds. Other
+        // forward-only inputs (10ᵏ − 1 from k) are still filled when the search fixes them.
+        const rules = system.relations.filter((rel) => rel.vars.includes(v.id) && !rel.constraint);
+        if (v.allowed && rules.length && rules.every((rel) => rel.solve?.[v.id]?.length === 0))
+          continue;
         known = { ...known, [v.id]: x };
         filled.push(v.id);
       }

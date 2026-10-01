@@ -112,13 +112,30 @@ describe('simplify chain', () => {
     expect(simplifyChain('2 × 3 + 4 × 5')).toEqual(['6 + 20', '26']);
     expect(simplifyChain('½ × (4 + 6) × 3')).toEqual(['½ × 10 × 3', '5 × 3', '15']);
     expect(simplifyChain('100 ÷ (1 + 5 ÷ 100)^2')).toEqual([
-      '100 ÷ (1 + 0.05)^2',
-      '100 ÷ 1.05^2',
+      '100 ÷ (1 + 0.05)²',
+      '100 ÷ 1.05²',
       '100 ÷ 1.1025',
     ]);
   });
 
   it('keeps single operations, words and impossible stages out', () => {
+    // Through sin, cos and tan of an angle in degrees, when the value is exact.
+    expect(simplifyChain('98 − 50 × sin(30°)')).toEqual(['98 − 50 × 0.5', '98 − 25', '73']);
+    expect(simplifyChain('sin(90° − 60°) × 4 + 1')).toEqual([
+      'sin(30°) × 4 + 1',
+      '0.5 × 4 + 1',
+      '2 + 1',
+      '3',
+    ]);
+    expect(simplifyChain('10 × cos(90°) + 2 × 3')).toEqual(['10 × 0 + 2 × 3', '0 + 6', '6']);
+    expect(simplifyChain('(2^(5 + 1) − 1) ÷ (2 − 1)')).toEqual([
+      '(2⁶ − 1) ÷ (2 − 1)',
+      '(64 − 1) ÷ 1',
+      '63 ÷ 1',
+      '63',
+    ]);
+    // A stage that needs rounding ends the working: √98 is the last line.
+    expect(simplifyChain('√(24.5/0.25)')).toEqual(['√98']);
     expect(simplifyChain('3 + 4')).toEqual([]);
     expect(simplifyChain('4 tens + 5 ones')).toEqual([]);
     expect(simplifyChain('√(3² − 4²)')).toEqual([]);
@@ -139,7 +156,7 @@ describe('simplify chain', () => {
     expect(simplifyChain('5 − 8 + 2')).toEqual(['−3 + 2', '−1']);
     // What is in brackets, under a root or up in an exponent comes first.
     expect(simplifyChain('2 × 1 × 1.5^(2 − 1)')).toEqual([
-      '2 × 1 × 1.5^1',
+      '2 × 1 × 1.5¹',
       '2 × 1 × 1.5',
       '2 × 1.5',
       '3',
@@ -224,7 +241,7 @@ describe('synthetic division', () => {
 
 describe('simplify chain: negatives', () => {
   it('keeps a negative base bracketed under a power, and brackets a minus before a negative', () => {
-    expect(simplifyChain('(−3)^(5 − 3)')).toEqual(['(−3)^2', '9']);
+    expect(simplifyChain('(−3)^(5 − 3)')).toEqual(['(−3)²', '9']);
     expect(simplifyChain('−(−(2 + 2)) + 1')).toEqual(['−(−4) + 1', '4 + 1', '5']);
     expect(simplifyChain('4 × 1 − (−10) × 2')[0]).toBe('4 − (−20)');
     expect(simplifyChain('3 − (−2 + 7) × 2')[0]).toBe('3 − 5 × 2');

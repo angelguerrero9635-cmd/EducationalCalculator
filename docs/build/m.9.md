@@ -169,11 +169,9 @@ None.
 
 ### Changed from the plan
 
-- **Main and ~area-units carry no unit menu.** Their values are named in their units ("Speed in
-  miles per hour", "Area in square feet"), as `g.s10-measurement-rate` does: the `unitChain`
-  chain draws its units as written, and a page's metric system is always offered (even with
-  `unitSystems: ['us']` and pinned `units`), which would convert the numbers under the US chain.
-  The main page's title is the skill's.
+- **Main and ~area-units are US only** (`unitSystems: ['us']`, lesson review): v in mph, u in
+  ft/s, l and w in ft, the areas in ft² and yd², so every answer carries its unit. The main
+  page's u and v steps write the chain with units ("u = 45 mi/h × 5280 ft/1 mi × 1 h/3600 s").
 - **~formula-units is in km/h and km** (18 km/h for 40 min = 12 km), with mph and mi on the unit
   menu: the default system is metric, and the lesson (minutes to hours before d = rt) holds in
   either. t stays in minutes and h in hours (pinned).
@@ -192,5 +190,15 @@ None.
 - **Engine: significant figures of a typed value** — keep the figures a student types (3.10, 250.)
   so n₁ and n₂ are read, not typed, and show a worked-out value to n figures from a value id
   (`sigFigs: 'n'`), so 13.0 shows its zero. Page: m.9.units-precision~significant-figures.
-- **Engine: a US-only page** — `unitSystems: ['us']` with pinned `units` still offers metric and
-  converts; honoring it would let the main page and ~area-units show mph, ft/s, ft², yd² as units.
+- **Engine: a new value that makes an older input impossible** clears the older one; ~bounds now
+  gives the reason ("8 cm is not a reading to the nearest 10 cm …") through the rule's message,
+  but keeping both readings and rejecting the new u needs the engine.
+
+### Lesson-review fixes (`.review/new-math/lesson-report.md`)
+
+- Units on every value of main and ~area-units (the engine's US-only pages); the unit chain in
+  the u and v work lines.
+- ~significant-figures rounds with the engine's `significant` (4.35 → 4.4) and notes the answer
+  with its n figures ("→ written with 2 significant figures: 3.0 m²", "1.6 × 10³ m²").
+- ~bounds: `allowed` adds 5 cm; the side checks say why a side is refused; P_min and P_max added
+  (the Big Ideas perimeter item), 8 values.

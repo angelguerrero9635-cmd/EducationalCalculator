@@ -2217,7 +2217,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ...ask(
       'H106',
       'functionGraph',
-      'Math options for the reviewed and added pages: functionGraph in base units (unit menus back on), two curves on one graph, the power family a·x^(p/q), a log-sum curve; lineSystem with a parabola; polygon apothem; one-event venn; a table with its graph and best point; a population region; symmetry about a center; rectangle measurement bounds',
+      'Math options for the reviewed and added pages: functionGraph in base units (unit menus back on), two curves on one graph, the power family a·x^(p/q), a log-sum curve; lineSystem with a parabola; polygon apothem; one-event venn; a table with its graph and best point; a population region; symmetry about a center; rectangle measurement bounds; 3-D axes with u, v, u × v; polarGrid conic curves; a rotated conicGraph; functionGraph Riemann rectangles and rational by coefficients; termsChart squares; an F curve on normalCurve',
       [
         'm.9.quadratic-functions~projectile',
         'm.9.function-notation',
@@ -2231,10 +2231,17 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         'm.11.radical-functions',
         'm.11.exp-log-equations~two-logs',
         's.11.oscillations',
+        'm.12.vectors-3d',
+        'm.12.polar-conics',
+        'm.12.polar-conics~rotation',
+        'm.12.partial-fractions~quadratic',
+        'm.12.area-under-curve',
+        'm.12.induction~squares',
+        'm.12.anova',
       ],
       'P18: docs/HS_NEEDS.md; the build notes docs/build/m.9.md–m.12.md and s.11.md ("Shared needs") say what each page shows and which values drive it.',
     ),
-    status: 'drawn',
+    status: 'requested',
     gallery: [
       'g.m9-quadratic-functions-projectile-units',
       'g.s11-oscillations-units',

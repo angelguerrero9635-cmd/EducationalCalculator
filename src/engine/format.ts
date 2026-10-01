@@ -1,6 +1,21 @@
 import type { Values, VariableDef } from './types';
 
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
+/**
+ * A worked-out value under half its box's step reads "< 0.0001" (a p-value under 0.0001),
+ * never "0" or 2 × 10⁻⁵, on a variable that asks for it (`belowStep`).
+ */
+export function belowStep(
+  x: number,
+  formatted: string,
+  variable: Pick<VariableDef, 'belowStep' | 'step'>,
+): string {
+  const step = variable.step;
+  return variable.belowStep && step !== undefined && x >= 0 && x < step / 2
+    ? `< ${formatNumber(step)}`
+    : formatted;
+}
+
 export function formatNumber(
   x: number,
   variable?: Pick<
@@ -14,6 +29,7 @@ export function formatNumber(
     | 'repeating'
     | 'full'
     | 'sigFigs'
+    | 'figures'
   >,
 ): string {
   if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
@@ -48,8 +64,16 @@ export function formatNumber(
   // Very big or very small: scientific notation as it is written in class (3 × 10¹⁶), never
   // the calculator's 3e16.
   if (abs >= 1e7 || abs < 1e-4) return scientific(x);
-  // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals.
-  return minus(withSeparators(String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4)))));
+  // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals, or the
+  // variable's figures (277.8, never fewer than the whole digits: 12346).
+  const whole = Math.floor(Math.log10(abs)) + 1;
+  const text =
+    abs < 1
+      ? x.toPrecision(4)
+      : variable?.figures
+        ? x.toPrecision(Math.min(21, Math.max(variable.figures, whole)))
+        : x.toFixed(4);
+  return minus(withSeparators(String(Number(text))));
 }
 
 const minus = (s: string) => s.replace(/^-/, '−');
@@ -149,9 +173,11 @@ const raised = (n: number) =>
  * scientific notation past 10⁷ or under 10⁻⁴ (1.20 × 10⁻⁵).
  */
 export function significant(x: number, sig: number): string {
-  const abs = Math.abs(Number(x.toPrecision(sig)));
+  // A tie rounds up, as on paper: 4.35 is stored as 4.3499…, so nudge it a hair first.
+  const abs = Math.abs(Number((x * (1 + 1e-12)).toPrecision(sig)));
   const e = Math.floor(Math.log10(abs) + 1e-12);
-  if (abs >= 1e7 || abs < 1e-4) {
+  // Zeros that only hold the place (1,600 to 2 figures) would look significant: 1.6 × 10³.
+  if (abs >= 1e7 || abs < 1e-4 || e >= sig) {
     return minus(`${x < 0 ? '-' : ''}${(abs / 10 ** e).toFixed(sig - 1)} × 10${raised(e)}`);
   }
   const text = abs.toFixed(Math.max(0, sig - 1 - e));

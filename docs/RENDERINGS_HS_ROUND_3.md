@@ -59,7 +59,7 @@ Then continue in this order, most pages first:
    numbers today, so pages pin their units), two curves on one graph, the power family
    y = a·x^(p/q), a log-sum curve; `lineSystem` with a parabola; `polygon` with its apothem; a
    one-event `venn`; a `table` with its graph and the best point marked; a region for
-   population density; symmetry about a center on `transformation`.
+   population density; symmetry about a center on `transformation`; 3-D axes for vectors (u, v, u × v, the parallelogram or box); `polarGrid` conic curves with the focus at the pole; a rotated `conicGraph`; Riemann rectangles on `functionGraph`; squares on `termsChart`; an F curve on `normalCurve`.
 3. **H110 (P22): Earth and space.** `geologicClock`, `coralSection`, `transit`,
    `habitableZone` (or `circularMotion` options: a star mass for Kepler's third law, e to 0.97),
    `earthLayers` as an explore figure, a parallax picture.

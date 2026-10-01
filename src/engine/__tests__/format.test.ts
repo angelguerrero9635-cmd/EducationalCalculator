@@ -1,11 +1,13 @@
-import { formatNumber, parseNumber } from '../format';
+import { belowStep, formatNumber, parseNumber } from '../format';
 
 describe('significant figures', () => {
   it.each([
     [2.5, 3, '2.50'],
     [3, 2, '3.0'],
     [0.045, 3, '0.0450'],
-    [1234, 2, '1,200'],
+    [1234, 2, '1.2 × 10³'],
+    [4.35, 2, '4.4'],
+    [2500, 4, '2,500'],
     [0.9996, 3, '1.00'],
     [-12.345, 4, '−12.35'],
     [0.000012, 3, '1.20 × 10⁻⁵'],
@@ -29,5 +31,25 @@ describe('radians as fractions of π', () => {
   it('keeps decimal multiples on pages that write them (2.25π)', () => {
     expect(formatNumber(2.25 * Math.PI, { pi: true })).toBe('2.25π');
     expect(parseNumber('3pi/4')).toBeCloseTo((3 * Math.PI) / 4, 12);
+  });
+});
+
+describe('a worked-out value below its step', () => {
+  it('reads "< step" instead of 0', () => {
+    const P = { belowStep: true, step: 0.0001 };
+    expect(belowStep(0.00002, formatNumber(0.00002), P)).toBe('< 0.0001');
+    expect(belowStep(0, formatNumber(0), P)).toBe('< 0.0001');
+    expect(belowStep(0.0312, formatNumber(0.0312), P)).toBe('0.0312');
+    expect(belowStep(0, formatNumber(0), { step: 0.0001 })).toBe('0');
+  });
+});
+
+describe('figures', () => {
+  it('shows at most that many significant figures from 1 up', () => {
+    expect(formatNumber(277.7778, { figures: 4 })).toBe('277.8');
+    expect(formatNumber(3.60206, { figures: 4 })).toBe('3.602');
+    expect(formatNumber(12345.678, { figures: 4 })).toBe('12,346');
+    expect(formatNumber(2.5, { figures: 4 })).toBe('2.5');
+    expect(formatNumber(0.0012347, { figures: 4 })).toBe('0.001235');
   });
 });

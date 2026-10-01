@@ -923,14 +923,15 @@ student would compare) and names the picture it wants under "Added needs" (12–
     "Today is the next midnight, so each hour stands for about 192 million years." "Event ages
     are rounded; new finds move them."
   - Example: A = 2,300 (oxygen building up in the air) → p = 50 %, m = 720 minutes, t = 12 h,
-    noon. Check: dinosaurs gone, A = 66 → m = 20.7 minutes, t = 23.66 h (about 11:40 pm).
+    noon. Check: dinosaurs gone, A = 66 → m = 20.7 minutes, t = 23.66 h (about 11:40 pm). A note
+    after t gives the clock time ("(11:39 p.m.)"; lesson review).
   - Table rows (million years ago): Earth forms 4,600; first life 3,500; oxygen in the air
     2,300; animals with shells 540; the dinosaurs die out 66; our species 0.3.
   - startWith A.
 - **~day-length — BUILD:** calculator, "Day length from fossil coral", picture `table`
   { sweep: 'N', output: 'D', rows: [365.25, 380, 400, 420, 440] } (interim; need 13).
   - Values:
-    - n, daily growth lines counted, 1–5,000;
+    - n, daily growth lines counted, 360–4,500 (lesson review: every n then fits N);
     - b, yearly bands they span, 1–10;
     - N, days in a year, 360–450;
     - D, day length, hours.
@@ -987,7 +988,7 @@ student would compare) and names the picture it wants under "Added needs" (12–
   { sweep: 'r', output: 'd', params: ['R'], rows: Mars 0.53, Earth 1, Neptune 3.88, Saturn
   9.45, Jupiter 11.21 } (interim; need 14).
   - Values: R, star's radius, R☉, 0.1–10; r, planet's radius, R⊕ (Earth radii), 0.3–25;
-    δ, transit depth, %.
+    δ, transit depth, % (no significant-figure pin: "1%").
   - Relation: δ = 100 × (r ÷ (109 × R))², with 1 R☉ = 109 R⊕. Limit: r < 109 × R, with the
     reason "a planet is smaller than its star, so it blocks only part of it".
   - Assumptions: "The dip is the share of the star's disk the planet covers." "The orbit must be
@@ -1003,13 +1004,16 @@ student would compare) and names the picture it wants under "Added needs" (12–
   - Relations: T = P ÷ 365.25; a³ = M × T² (Kepler's third law with the star's mass).
   - Assumptions: "The planet's mass is tiny beside its star's." "With M = 1 this is the solar
     system's T² = a³." "A heavier star pulls harder, so the same period means a wider orbit."
-  - Example: M = 0.8, P = 36.525 days → T = 0.1 years, a³ = 0.008, a = 0.2 AU.
+  - Example: M = 0.8, P = 36.525 days → T = 0.1 years, a³ = 0.008, a = 0.2 AU (a work line
+    "a = ∛0.008"; the use line says 36.525 days).
   - startWith P, M.
 - **~habitable-zone — BUILD:** calculator, picture `table` { sweep: 'a', output: 'T', params:
   ['L'], rows: [0.25, 0.5, 0.75, 1, 1.5, 2] } (interim; need 15).
   - Values: L, star's luminosity, L☉, 0.001–100; d₁, inner edge, AU; d₂, outer edge, AU; a,
     planet's orbit, AU, 0.01–100; T, planet's temperature, K.
-  - Relations: d₁ = 0.95 × √L; d₂ = 1.37 × √L; T = 278 × L^(1/4) ÷ √a.
+  - Relations: d₁ = 0.95 × √L; d₂ = 1.37 × √L; T = 278 × L^(1/4) ÷ √a; a limit that a is more
+    than 0.005 × √L ("That orbit is inside the star."). A note after T says in the zone, too hot
+    or too cold (lesson review).
   - Assumptions: "Between d₁ and d₂ a planet like Earth could keep liquid water." "Light spreads
     out as the square of distance, so the zone moves out as √L." "T leaves out clouds and
     greenhouse gases: it gives Earth 278 K, but Earth averages about 288 K."

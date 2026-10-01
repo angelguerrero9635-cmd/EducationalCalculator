@@ -564,8 +564,9 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   r = 0.25 m, F = 80 N, θ = 30° → F⊥ = 40 N, τ = 10 N·m (at 90°, 20 N·m). startWith r, F, θ.
 - **~seesaw — BUILD:** `simpleMachine` lever (load F₁ at d₁, effort F₂ at d₂). Values: F₁, d₁, F₂,
   d₂, torque τ, pivot force F_p. Relations: τ = F₁d₁; τ = F₂d₂ (the torques balance); F_p = F₁ + F₂
-  (the forces balance). Assumptions: balanced means no net torque and no net force; the plank's
-  own weight acts at the pivot, so it adds no torque. Example: 300 N child 2 m out, 400 N child
+  (the forces balance). Assumptions: balanced means no net torque and no net force; the plank is
+  light and pivoted at its middle, so its own weight is left out (lesson review). τ is named
+  "Torque on each side". Example: 300 N child 2 m out, 400 N child
   → d₂ = 1.5 m, τ = 600 N·m, F_p = 700 N. startWith F₁, d₁, F₂. Use line: "Use this for 'A 300 N
   child sits 2 m from the pivot. Where must a 400 N child sit to balance?'"
 - **~angular-speed — BUILD:** `circularMotion` string (a point on the rim). Values: radius r,
@@ -577,9 +578,11 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   ω₀, α, t, ω, angle Δθ (rad), turns n. Relations: ω = ω₀ + αt; Δθ = ω₀t + ½αt²; n = Δθ/2π.
   Assumptions: α is constant; the same equations as straight-line motion with θ, ω, α for x, v, a;
   the area under ω–t is the angle. Example: ω₀ = 3 rad/s, α = 2 rad/s², t = 4 s → ω = 11 rad/s,
-  Δθ = 28 rad, n = 4.46 turns. startWith ω₀, α, t.
+  Δθ = 28 rad, n = 4.46 turns. startWith ω₀, α, t. n is "Net turns", limited to ω₀ and ω of one
+  sign (lesson review); t from Δθ by the quadratic.
 - **~rotational-inertia — BUILD:** `table` (interim) sweeping the shape factor c (rows hoop 1,
-  disk ½, solid ball 0.4) for α, with m, r and τ held. Values: c (allowed 1, 0.5, 0.4), m, r,
+  hollow ball ⅔, disk ½, solid ball 0.4) for α, with m, r and τ held. Values: c (allowed 1, ⅔,
+  0.5, 0.4; the hollow ball added in the lesson review), m, r,
   moment of inertia I, τ, α. Relations: I = cmr²; τ = Iα. Assumptions: I is how hard it is to spin
   up: mass farther out counts more; a hoop has all its mass at r. Example: 2 kg disk, r = 0.5 m,
   τ = 3 N·m → I = 0.25 kg·m², α = 12 rad/s² (a hoop: 6 rad/s²).
@@ -604,13 +607,14 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   amplitude and period (shows A and T; interim for a mass on a spring beside its trace). Values:
   mass m (0.001–1000 kg), spring constant k (0.1–10⁶ N/m), period T, frequency f, angular
   frequency ω, amplitude A (m), top speed v_max, energy E. Relations: T = 2π√(m/k); f = 1/T;
-  ω = 2π/T; v_max = Aω; E = ½kA². Assumptions: the spring obeys Hooke's law and nothing rubs;
+  ω = √(k/m) (added in the lesson review, ahead of ω = 2π/T); v_max = Aω; E = ½kA², with k from
+  E and A. Assumptions: the spring obeys Hooke's law and nothing rubs;
   T depends on m and k, not on A; fastest through the middle, still for an instant at each end.
   Example: m = 0.5 kg, k = 200 N/m, A = 0.10 m → T = 0.1π = 0.314 s, f = 3.18 Hz,
   ω = 20 rad/s, v_max = 2 m/s, E = 1 J (= ½ × 0.5 × 2²). startWith m, k, A.
 - **~hooke — BUILD:** `functionGraph` linear F = kx through 0, the point (x, F) traced, the area
   under it shaded (the stored energy). Values: hung mass m, force F, stretch x, k, stored energy U.
-  Relations: F = mg; F = kx; U = ½kx². Example: 2 kg stretches 0.08 m → F = 19.6 N, k = 245 N/m,
+  Relations: F = mg; F = kx; U = ½kx² (k and x from U as well). Example: 2 kg stretches 0.08 m → F = 19.6 N, k = 245 N/m,
   U = 0.784 J. startWith m, x.
 - **~pendulum — BUILD:** `table` sweeping L (0.25, 0.5, 1, 2, 4 m) for T with g held (4× the
   length, 2× the period). Values: L, g (default 9.8; 1.62 on the Moon), T, f. Relations:
@@ -626,13 +630,13 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   Savvas Experience 10.1 (electric potential); Glencoe 21 (Electric Fields; titles only).
 - **Tests ask:** no released items. Common types:
 
-  | Question type                                         | Page                               | Mark   |
-  | ----------------------------------------------------- | ---------------------------------- | ------ |
-  | potential near a point charge; energy of a 2nd charge | main                               | Solves |
-  | energy (eV, J) and speed of an electron through ΔV    | ~voltage-energy                    | Solves |
-  | charge and energy on a capacitor                      | ~capacitor                         | Solves |
-  | capacitance of two plates, with a dielectric          | ~parallel-plate                    | Solves |
-  | field between plates, E = V/d                         | electrostatics~plates (⏳ need 10) | —      |
+  | Question type                                         | Page            | Mark   |
+  | ----------------------------------------------------- | --------------- | ------ |
+  | potential near a point charge; energy of a 2nd charge | main            | Solves |
+  | energy (eV, J) and speed of an electron through ΔV    | ~voltage-energy | Solves |
+  | charge and energy on a capacitor                      | ~capacitor      | Solves |
+  | capacitance of two plates, with a dielectric          | ~parallel-plate | Solves |
+  | field between plates, E = V/d                         | ~parallel-plate | Solves |
 
 - **Main — BUILD `s.11.electric-potential`:** `charges` one charge at r (the `~field` picture).
   Values: charge q (μC), distance r (m), potential V (V), second charge q₀ (μC), its potential
@@ -641,11 +645,11 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   them together). Example: q = +4 μC, r = 0.50 m → V = 71,920 V; q₀ = 2 μC → U = 0.144 J.
   startWith q, r, q₀.
 - **~voltage-energy — BUILD:** `table` (interim; the plates picture is need 10) sweeping ΔV
-  (1, 10, 100, 1000 V) for v. Values: charge q (in e, 1–2), ΔV, energy K (eV), energy K (J), mass
+  (1, 10, 100, 1000 V) for v. Values: charge q (in e, 1–2), ΔV, energy K (eV; J by its unit menu), mass
   m (allowed electron 9.109 × 10⁻³¹, proton 1.673 × 10⁻²⁷ kg), speed v. Relations: K = qΔV (eV);
   K(J) = 1.602 × 10⁻¹⁹ × K(eV); v = √(2K/m). Assumptions: starts at rest, only the electric force
-  works; 1 eV is what one electron charge gains through 1 V; slow next to light (v up to 3 × 10⁷
-  m/s). Example: an electron through 100 V → 100 eV = 1.602 × 10⁻¹⁷ J, v = 5.93 × 10⁶ m/s.
+  works; 1 eV is what one electron charge gains through 1 V; slow next to light (past 3 × 10⁷
+  m/s a note says K = ½mv² fails; see the build notes). Example: an electron through 100 V → 100 eV = 1.602 × 10⁻¹⁷ J, v = 5.93 × 10⁶ m/s.
   startWith ΔV, q, m.
 - **~capacitor — BUILD:** `table` (interim) sweeping V (3, 6, 9, 12 V) for U with C held (2× the
   voltage, 4× the energy). Values: C (μF), V, Q (μC), U (J). Relations: Q = CV; U = ½CV².
@@ -653,7 +657,8 @@ Pictures are existing kinds; where the right one doesn't exist the page uses the
   between its plates. Example: 470 μF at 9 V → Q = 4230 μC, U = 0.0190 J. startWith C, V.
 - **~parallel-plate — BUILD:** `table` (interim) sweeping the gap d (0.5, 1, 2, 4 mm) for C.
   Values: dielectric constant κ (1–100; air 1), plate area A (m²), gap d (mm), C (pF), V, Q (pC).
-  Relations: C = κε₀A/d, ε₀ = 8.85 × 10⁻¹² F/m; Q = CV. Example: κ = 1, A = 0.010 m², d = 1.0 mm →
+  Relations: C = κε₀A/d, ε₀ = 8.85 × 10⁻¹² F/m; Q = CV; E = V/d (V/m, added in the lesson
+  review; 12 V over 1 mm → 12,000 V/m). Example: κ = 1, A = 0.010 m², d = 1.0 mm →
   C = 88.5 pF; at 12 V, Q = 1062 pC.
 - **Verdict:** 4 pages; the four common types Solve, the plates field waits with electrostatics.
 

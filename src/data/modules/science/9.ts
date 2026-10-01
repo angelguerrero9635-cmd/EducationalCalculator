@@ -1352,8 +1352,7 @@ const PLANTS: ModuleDef[] = [
         id: 'R',
         symbol: 'R',
         name: 'Water taken up each hour',
-        unit: 'mL',
-        units: ['mL'],
+        unit: 'mL/h',
         min: 0,
         max: 20,
         step: 0.01,
@@ -1789,26 +1788,35 @@ const NERVOUS: ModuleDef[] = [
       },
     ],
     ...rules(
-      both(
-        't = 1,000 × d ÷ v',
-        '{t} = 1,000 × {d} ÷ {v}',
-        ['t', 'd', 'v'],
-        (v) => v.t! - (1000 * v.d!) / v.v!,
+      withStep(
+        both(
+          't = 1,000 × d ÷ v',
+          '{t} = 1,000 × {d} ÷ {v}',
+          ['t', 'd', 'v'],
+          (v) => v.t! - (1000 * v.d!) / v.v!,
+          {
+            t: [
+              (v) => div(1000 * v.d!, v.v!),
+              '1,000 × {d} ÷ {v}',
+              'Distance ÷ speed is the time in seconds; 1,000 times that is the time in ms.',
+            ],
+            d: [
+              (v) => (v.v! * v.t!) / 1000,
+              '{v} × {t} ÷ 1,000',
+              'Speed × time, with the ms turned into seconds.',
+            ],
+            v: [
+              (v) => div(1000 * v.d!, v.t!),
+              '1,000 × {d} ÷ {t}',
+              'Distance ÷ time, with the ms turned into seconds.',
+            ],
+          },
+        ),
+        't',
         {
-          t: [
-            (v) => div(1000 * v.d!, v.v!),
-            '1,000 × {d} ÷ {v}',
-            'Distance ÷ speed is the time in seconds; 1,000 times that is the time in ms.',
-          ],
-          d: [
-            (v) => (v.v! * v.t!) / 1000,
-            '{v} × {t} ÷ 1,000',
-            'Speed × time, with the ms turned into seconds.',
-          ],
-          v: [
-            (v) => div(1000 * v.d!, v.t!),
-            '1,000 × {d} ÷ {t}',
-            'Distance ÷ time, with the ms turned into seconds.',
+          work: (v) => [
+            `d ÷ v = ${fmt(v.d!)} ÷ ${fmt(v.v!)} = ${fmt(v.d! / v.v!)} s`,
+            `t = ${fmt(v.d! / v.v!)} × 1,000`,
           ],
         },
       ),

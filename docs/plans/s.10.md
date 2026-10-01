@@ -745,15 +745,18 @@ without a skill"), and pages for the three widened titles. Built in `science/10.
   point rise with K_b, a molar mass from ΔT.
 - **Released questions:** NAEP-2005-12S13-#6 (an egg boiled high on a mountain) → the
   boiling-point sort.
-- **Main page, "Freezing and boiling points of a solution":** n (mol), w (kg of water),
-  b = n ÷ w (mol/kg), i (1, 2 or 3), ΔTf = i × 1.86 × b, Tf = 0 − ΔTf, ΔTb = i × 0.512 × b,
+- **Main page, "Freezing and boiling points of a solution":** g (grams of solute), M (g/mol),
+  n = g ÷ M (added in the lesson review), n (mol), w (kg of water),
+  b = n ÷ w (mol/kg, to 6), i (1 to 4), ΔTf = i × 1.86 × b, Tf = 0 − ΔTf, ΔTb = i × 0.512 × b,
   Tb = 100 + ΔTb. Example by hand: 0.25 mol CaCl₂ in 0.5 kg → b = 0.5; ΔTf = 3 × 1.86 × 0.5 =
   2.79, Tf = −2.79 °C; ΔTb = 3 × 0.512 × 0.5 = 0.768, Tb = 100.768 °C. Picture: `heatingCurve`
   with the plateaus at Tf and Tb (a hidden start 10 °C below Tf). No `use` line (main page).
 - **`~vapor-pressure`, "Vapor pressure of a solution":** n = n₁ + n₂, x = n₁ ÷ n,
-  P = x × P°, ΔP = P° − P. Example: 9.5 mol water + 0.5 mol glucose → x = 0.95;
+  P = x × P°, ΔP = n₂ ÷ n × P° (then ΔP = P° − P as a check), x at least 0.5. Example: 9.5 mol water + 0.5 mol glucose → x = 0.95;
   P = 0.95 × 23.8 = 22.61 mmHg; ΔP = 1.19 mmHg. Picture: `pieChart` of the moles. Use: “Glucose
-  is dissolved in water. How much does the vapor pressure drop?”
+  of glucose is dissolved in 9.5 mol of water at 25 °C. How much does the vapor pressure drop?”
+- **`~phase-diagram` (explore, added in the lesson review; waiting on the H108 figure):** triple
+  point, critical point, the melting line (water's leans left), the boiling line, sublimation.
 - **`~boiling-point` (sort):** raises / lowers / no change (salt, sugar, a pressure cooker, a
   mountain, a vacuum jar, a bigger burner, a bigger pot).
 - **`~phase-heat` (sort):** takes heat in / gives heat off, one card per phase change.
@@ -767,12 +770,15 @@ without a skill"), and pages for the three widened titles. Built in `science/10.
 - **Main page, "ΔG = ΔH − TΔS":** ΔH (kJ/mol), ΔS (J/(mol·K)), T (K), ΔG = ΔH − T × ΔS ÷ 1000;
   a work line says spontaneous or not. Example by hand: 50 − 300 × 200 ÷ 1000 = 50 − 60 =
   −10 kJ/mol, spontaneous. Picture: `functionGraph`, the line ΔG against T (slope −ΔS ÷ 1000,
-  hidden) with the point at T.
+  hidden) with the point at T. The verdict is a note after the answer.
 - **`~crossover`, "The temperature where it turns spontaneous":** T = 1000 × ΔH ÷ ΔS, a limit
   that ΔH and ΔS share a sign. Example: 1000 × 60 ÷ 150 = 400 K, spontaneous above it. Picture:
   the same line with its zero marked.
 - **`~entropy-sign` (sort):** ΔS up or down (melting, dissolving, gas made or used up).
 - **`~spontaneity` (sort):** the four sign cases of ΔH and ΔS.
+- **`~from-tables`, "ΔS° from a table, then ΔG°" (added in the lesson review):** ΔS° =
+  S°products − S°reactants, ΔG° = ΔH° − TΔS° ÷ 1000; `integerLine` from S°r to S°p. Example:
+  214 − 188 = 26 J/(mol·K); −50 − 298 × 26 ÷ 1000 = −50 − 7.748 = −57.748 kJ/mol.
 
 ### Widened titles
 
