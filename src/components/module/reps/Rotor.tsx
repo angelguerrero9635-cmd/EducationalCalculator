@@ -372,6 +372,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
       { length: Math.round((win.hi - win.lo) / win.step) + 1 },
       (_, i) => win.lo + i * win.step,
     );
+    const tStep = t <= 10 ? 1 : niceCeil(t / 8);
     const n = turns ?? 0;
     const per = Math.abs(n) <= MAX_DIALS ? 1 : niceCeil(Math.abs(n) / MAX_DIALS);
     const dials = Math.abs(n) / per;
@@ -401,6 +402,23 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
         />
         <Line x1={g.x0} y1={Y(0)} x2={g.x1} y2={Y(0)} stroke={c.chartInk} />
         <Line x1={g.x0} y1={g.y0} x2={g.x0} y2={g.y1} stroke={c.chartInk} />
+        {/* A tick each second (or a round step), numbered but the last ("t = 4 s" says it). */}
+        {Array.from({ length: Math.floor(t / tStep + 1e-9) + 1 }, (_, i) => i * tStep).map((s) => (
+          <G key={`t${s}`}>
+            <Line x1={X(s)} y1={g.y1} x2={X(s)} y2={g.y1 + 4} stroke={c.chartInk} />
+            {X(t) - X(s) > 56 ? (
+              <ChartText
+                x={X(s)}
+                y={g.y1 + 16}
+                textAnchor="middle"
+                fontSize={chart.label}
+                fill={c.chartMuted}
+              >
+                {num(s)}
+              </ChartText>
+            ) : null}
+          </G>
+        ))}
         <Line
           x1={X(0)}
           y1={Y(w0)}
@@ -471,7 +489,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
     if (spin) {
       out.push(`ω = ω₀ + αt = ${num(w0)} + ${num(alpha ?? 0)} × ${num(t)} = ${num(w)} ${uW}`);
       out.push(
-        `Δθ = ω₀t + ½αt² = ${num(up.angle)} rad, the area under the ω–t line`,
+        `Δθ = ω₀t + ½αt² = ${num(up.angle)} rad, the area under the ω\u2060–\u2060t line`,
         `n = Δθ/2π = ${num(up.angle)}/2π = ${num(up.turns)} turns`,
       );
     }
