@@ -3841,7 +3841,12 @@ const MATH_12_POLAR: ModuleDef[] = [
     example: { a: 1, b: 1, n: 8, r: Math.SQRT2, t: 45, R: 16, T: 360, p: 16, q: 0 },
     startWith: ['a', 'b', 'n'],
     equation: '({a} + {b}i)^{n} = {p} + {q}i',
-    representation: { kind: 'complexPlane', z: { modulus: 'R', argument: 'T' }, polar: true },
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'a', im: 'b' },
+      power: 'n',
+      result: { re: 'p', im: 'q' },
+    },
   },
   {
     id: 'm.12.polar~rose',
