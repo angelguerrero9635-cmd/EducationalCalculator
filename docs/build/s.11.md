@@ -308,3 +308,10 @@ Report: `.review/new-sci-2/lesson-report.md`.
 | `s.11.rotation~angular-speed`        | H107.3 | `rotor` (r, N, ω, T, v)                               | `circularMotion` string; pictureLabels N, ω                  |
 | `s.11.rotation~angular-acceleration` | H107.3 | `rotor` (ω₀, α, t, ω, Δθ, n: ω–t line and turn dials) | `motionGraph` speed graph; pictureLabels n                   |
 | `s.11.rotation~rotational-inertia`   | H107.3 | `rotor` with `compare` (hoop, disk, ball)             | `table` by shape; pictureLabels I                            |
+| `s.11.oscillations` | H107.4 | `oscillator` (spring, x–t trace, energy bar); the period's unit menu is back | `functionGraph` x–t cosine; pictureLabels m, k, f, v_max, E |
+| `s.11.oscillations~hooke` | H107.4 | `oscillator` mode `hang`; F and x take their unit menus back, the "type the stretch in meters" assumption gone | `functionGraph` F–x line; pictureLabels m, U |
+| `s.11.oscillations~pendulum` | H107.5 | `pendulum` | `table` of T by L; pictureLabels f |
+
+H106 part 1 (`functionGraph` `unitsOf` on `s.11.oscillations` and `~hooke`) is not used: H107's
+`oscillator` replaces both graphs and reads its values in the formula's units, which is what gave
+the unit menus back.
