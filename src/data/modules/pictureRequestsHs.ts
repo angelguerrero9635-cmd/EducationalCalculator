@@ -1812,11 +1812,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       ],
     ),
     status: 'drawn',
-    gallery: [
-      'g.m9-piecewise-functions-abs',
-      'g.m11-inverse-functions-restrict-domain',
-      'g.m12-limits-intro-infinity-coefficients',
-    ],
+    gallery: ['g.m9-piecewise-functions-abs', 'g.m12-limits-intro-infinity-coefficients'],
     notes:
       'P6 (docs/plans/m.9.md need 6, m.11.md needs 4 and 5, m.12.md need 11). Four options on `functionGraph`, off unless set; the picture and the harness reshape the same curve (functionGraphHs2g.ts). `abs: true` draws |f(x)| for any family: the parts below the x-axis reflected up, the curve before it dashed, the formula in bars, no handles (sliders); a traced point reads |f(x)|. m.9.piecewise-functions~absolute-function (the |f(x)| item): { kind: "functionGraph", family: "quadratic", form: "standard", a: "a", b: "b", c: "c", abs: true, at: { x: "x", y: "y" }, marks: ["zeros"] } with y = |f(x)|. `horizontal: "b"` on the absolute, root, exponential and log families draws y = a·f(b(x − h)) + k, written "√(2x)", "|2(x − 3)|", "√(−(x − 2))"; the graph squeezed toward x = h (stretched for |b| < 1), flipped across it for b < 0; `parent: true` keeps f(x) dashed; handles at x = h stay, the stretch handle moves to h + 1/b. m.11.function-transformations~horizontal: { kind: "functionGraph", family: "root", index: 2, h: "h", horizontal: "b", parent: true, input: "x", at: { x: "X", y: "Y" } } (X = h + p ÷ b, Y = √p). `restrict: { from?, to? }` (numbers or value ids) keeps the domain x ≥ from (x ≤ to): the rest dashed, closed end dots, and with `inverse` only the kept part is reflected; a vertex-form parabola kept on x ≥ h writes f⁻¹(x) = h + √((x − k)/a). `xMin` keeps its meaning (the window’s left edge). m.11.inverse-functions~restrict-domain: { kind: "functionGraph", family: "quadratic", form: "vertex", a: "a", h: "h", k: "k", restrict: { from: "h" }, inverse: true, at: { x: "x", y: "y" } }. Rational by coefficients: `family: "rational", p, q, r, s` draws (px + q) ÷ (rx + s) written as typed, its asymptotes x = −s ÷ r and y = p ÷ r (no handles). m.12.limits-intro~infinity: { kind: "functionGraph", family: "rational", p: "p", q: "q", r: "r", s: "s", shows: { ha: "L" } }, so z and v can go.',
   },

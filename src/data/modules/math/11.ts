@@ -2905,6 +2905,79 @@ export const MATH_11_MODULES: ModuleDef[] = [
       at: { x: 'x', y: 'y' },
     },
   }),
+  page({
+    id: 'm.11.inverse-functions~restrict-domain',
+    title: 'Inverse on a restricted domain',
+    use: 'Use this for “f(x) = 2(x − 1)² + 3 for x ≥ 1. Find f⁻¹(11) and f⁻¹(x).”',
+    assumptions: [
+      'A whole parabola fails the horizontal line test, so keep only the half from the vertex on: x ≥ h.',
+      'On that half f only rises (or only falls when a < 0), so each y comes from one x.',
+      'Undo the steps in reverse order: take k away, divide by a, take the positive root, add h.',
+    ],
+    variables: [
+      V('a', 'a', 'Vertical factor', { min: -5, max: 5, step: 0.5 }),
+      V('h', 'h', 'Vertex x', { min: -10, max: 10, step: 0.5 }),
+      V('k', 'k', 'Vertex y', { min: -10, max: 10, step: 0.5 }),
+      V('x', 'x', 'Input, x ≥ h', { min: -10, max: 30, step: 0.5 }),
+      V('y', 'y', 'Output f(x)', { min: -3000, max: 3000 }),
+    ],
+    rules: [
+      limit('a ≠ 0', '{a} is not 0', ['a'], (v) => v.a !== 0, 'With a = 0 there is no parabola.'),
+      limit(
+        'x ≥ h',
+        '{x} is at least {h}',
+        ['x', 'h'],
+        (v) => v.x! >= v.h!,
+        'Only x ≥ h is kept: take an x at or right of the vertex.',
+      ),
+      rule(
+        'y = a(x − h)² + k, x ≥ h',
+        '{y} = {a} × ({x} − {h})² + {k}',
+        ['y', 'a', 'x', 'h', 'k'],
+        (v) => v.y! - (v.a! * (v.x! - v.h!) ** 2 + v.k!),
+        {
+          y: [
+            (v) => exact(v.a! * (v.x! - v.h!) ** 2 + v.k!),
+            '{a} × ({x} − {h})² + {k}',
+            'Put x into f: take h away, square, multiply by a, then add k.',
+          ],
+          x: [
+            (v) => {
+              const q = (v.y! - v.k!) / v.a!;
+              return !v.a || q < 0 ? undefined : exact(v.h! + Math.sqrt(q));
+            },
+            '{h} + √(({y} − {k}) ÷ {a})',
+            'The inverse undoes f in reverse: take k away, divide by a, take the positive root (x ≥ h), then add h.',
+          ],
+          ...never('a', 'h', 'k'),
+        },
+        {
+          message: (v) =>
+            v.a !== undefined &&
+            v.y !== undefined &&
+            v.k !== undefined &&
+            v.a !== 0 &&
+            (v.y - v.k) / v.a < 0
+              ? 'f never reaches that output: (y − k) ÷ a is negative, and a square is never negative.'
+              : undefined,
+        },
+      ),
+    ],
+    example: { a: 2, h: 1, k: 3, x: 3, y: 11 },
+    startWith: ['a', 'h', 'k', 'y'],
+    equation: '{y} = {a}({x} − {h})² + {k}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'vertex',
+      a: 'a',
+      h: 'h',
+      k: 'k',
+      restrict: { from: 'h' },
+      inverse: true,
+      at: { x: 'x', y: 'y' },
+    },
+  }),
 
   // ── Radical functions and equations (A-REI.2, F-IF.7b) ──
   page({

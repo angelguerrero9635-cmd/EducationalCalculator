@@ -248,79 +248,6 @@ const absGraph = page({
   },
 });
 
-/** f(x) = a(x − h)² + k kept on x ≥ h, and its inverse h + √((x − k) ÷ a). */
-const restrictDomain = page({
-  id: 'g.m11-inverse-functions-restrict-domain',
-  title: 'Inverse on a restricted domain',
-  use: 'Use this for “f(x) = 2(x − 1)² + 3 for x ≥ 1. Find f⁻¹(11).”',
-  assumptions: [
-    'A parabola fails the horizontal line test, so keep only the half from its vertex.',
-    'On x ≥ h the parabola only rises (a > 0), so each y comes from one x.',
-    'Undo the steps in reverse: take k away, divide by a, take the positive root, add h.',
-  ],
-  variables: [
-    num('a', 'a', 'Stretch', -5, 5, { step: 0.5 }),
-    num('h', 'h', 'Vertex x', -10, 10, { step: 0.5 }),
-    num('k', 'k', 'Vertex y', -10, 10, { step: 0.5 }),
-    num('x', 'x', 'Input, x ≥ h', -10, 30, { step: 0.5 }),
-    num('y', 'y', 'Output f(x)', -3000, 3000),
-  ],
-  rules: [
-    limit('a ≠ 0', '{a} ≠ 0', (v) => v.a !== 0, 'With a = 0 there is no parabola.'),
-    limit(
-      'x ≥ h',
-      '{x} ≥ {h}',
-      (v) => v.x! >= v.h!,
-      'Only x ≥ h is kept: take x at or right of h.',
-    ),
-    rule(
-      'y = a(x − h)² + k, x ≥ h',
-      '{y} = {a} × ({x} − {h})² + {k}',
-      ['y', 'a', 'x', 'h', 'k'],
-      (v) => v.y! - (v.a! * (v.x! - v.h!) ** 2 + v.k!),
-      {
-        y: [
-          (v) => exact(v.a! * (v.x! - v.h!) ** 2 + v.k!),
-          '{a} × ({x} − {h})² + {k}',
-          'Put x into f.',
-        ],
-        x: [
-          (v) => {
-            const q = (v.y! - v.k!) / v.a!;
-            return q < 0 ? undefined : exact(v.h! + Math.sqrt(q));
-          },
-          '{h} + √(({y} − {k}) ÷ {a})',
-          'The inverse: take k away, divide by a, take the positive root (x ≥ h), then add h.',
-        ],
-      },
-      {
-        message: (v) =>
-          v.a !== undefined &&
-          v.y !== undefined &&
-          v.k !== undefined &&
-          v.a !== 0 &&
-          (v.y - v.k) / v.a < 0
-            ? 'That output is never reached: (y − k) ÷ a is negative.'
-            : undefined,
-      },
-    ),
-  ],
-  example: { a: 2, h: 1, k: 3, x: 3, y: 11 },
-  startWith: ['a', 'h', 'k', 'y'],
-  equation: '{y} = {a}({x} − {h})² + {k}',
-  representation: {
-    kind: 'functionGraph',
-    family: 'quadratic',
-    form: 'vertex',
-    a: 'a',
-    h: 'h',
-    k: 'k',
-    restrict: { from: 'h' },
-    inverse: true,
-    at: { x: 'x', y: 'y' },
-  },
-});
-
 /** (px + q) ÷ (rx + s) drawn from its coefficients. */
 const ratio = fromPage(
   'm.12.limits-intro~infinity',
@@ -337,7 +264,7 @@ const ratio = fromPage(
   },
 );
 
-const GRAPHS: ModuleDef[] = [absGraph, restrictDomain, ratio];
+const GRAPHS: ModuleDef[] = [absGraph, ratio];
 
 // ── H95: an area box past the tiles; a monomial quotient as factors ──
 
