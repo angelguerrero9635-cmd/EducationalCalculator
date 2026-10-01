@@ -69,85 +69,6 @@ const q = (
 /** Division that gives undefined for a zero divisor (the solver then skips it). */
 const div = (a: number, b: number) => (Math.abs(b) < 1e-12 ? undefined : a / b);
 
-// ─── H102.3 circularMotion `satellite`: v = √(GM/r), T = 2πr/v ──────────────
-
-const GRAV = 6.674e-11;
-
-const orbit: ModuleDef = (() => {
-  const [M, r] = [5.97e24, 7.0e6];
-  const v = Math.sqrt((GRAV * M) / r);
-  return {
-    id: 'g.s11-circular-gravitation-orbit',
-    title: 'A satellite in orbit',
-    use: 'Use this for “A satellite circles Earth (5.97 × 10²⁴ kg) 7 × 10⁶ m from its center. How fast does it go, and how long is one orbit?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'The orbit is a circle, and gravity is the only force: it supplies the centripetal force.',
-      'GMm/r² = mv²/r, so v = √(GM/r), with G = 6.674 × 10⁻¹¹ N·m²/kg²; the satellite’s mass cancels.',
-      'r is measured from the center of the planet, not from its surface.',
-    ],
-    variables: [
-      q('M', 'M', 'Central mass', 'kg', 1e10, 1e32, 1, { scientific: true }),
-      q('r', 'r', 'Orbit radius', 'm', 1, 1e13, 1, { scientific: true }),
-      q('v', 'v', 'Orbital speed', 'm/s', 1e-3, 1e7, 0.1),
-      q('T', 'T', 'Period', 's', 1, 1e11, 1, { scientific: true, units: ['s'] }),
-    ],
-    ...rules(
-      rule(
-        'v = √(GM/r)',
-        '{v} = √(6.674 × 10⁻¹¹ × {M}/{r})',
-        (x) => (x.v! * x.v! * x.r!) / (GRAV * x.M!) - 1,
-        {
-          v: [
-            (x) => Math.sqrt(Math.max(0, div(GRAV * x.M!, x.r!) ?? 0)),
-            '√(6.674 × 10⁻¹¹ × {M}/{r})',
-            'G times the central mass, over r, then the square root.',
-          ],
-          r: [
-            (x) => div(GRAV * x.M!, x.v! * x.v!),
-            '6.674 × 10⁻¹¹ × {M}/({v}²)',
-            'Square both sides: r = GM/v².',
-          ],
-          M: [
-            (x) => div(x.v! * x.v! * x.r!, GRAV),
-            '{v}² × {r}/(6.674 × 10⁻¹¹)',
-            'Square both sides: M = v²r/G.',
-          ],
-        },
-      ),
-      rule('T = 2πr/v', '{T} = 2π × {r}/{v}', (x) => (x.T! * x.v!) / (2 * Math.PI * x.r!) - 1, {
-        T: [
-          (x) => div(2 * Math.PI * x.r!, x.v!),
-          '2π × {r}/{v}',
-          'Once round the circle, 2πr, at speed v.',
-        ],
-        v: [
-          (x) => div(2 * Math.PI * x.r!, x.T!),
-          '2π × {r}/{T}',
-          'Once round the circle in one period.',
-        ],
-        r: [
-          (x) => (x.v! * x.T!) / (2 * Math.PI),
-          '{v} × {T}/(2π)',
-          'The distance in one period is 2πr.',
-        ],
-      }),
-    ),
-    example: { M, r, v, T: (2 * Math.PI * r) / v },
-    startWith: ['M', 'r'],
-    representation: {
-      kind: 'circularMotion',
-      mode: 'satellite',
-      central: 'M',
-      radius: 'r',
-      speed: 'v',
-      period: 'T',
-      body: 'earth',
-      bodyRadius: 6.371e6,
-    },
-  };
-})();
-
 // ─── H102.4 motionGraph `strobe: 'vertical'`: a dropped stone ────────────────
 
 const G_EARTH = 9.8;
@@ -637,7 +558,6 @@ const relativity: ModuleDef = (() => {
 })();
 
 export const HS2C_GALLERY_MODULES: ModuleDef[] = [
-  orbit,
   freeFall,
   work,
   power,
