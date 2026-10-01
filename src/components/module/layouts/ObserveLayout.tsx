@@ -46,6 +46,19 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
   const dense = split && spec.columns.length > 8;
   const rowName = (r: number) =>
     (r ? spec.second!.rowLabel : spec.rowLabel) + (ownUnit ? ` (${scales[r]!.unit})` : '');
+  // The row names' column: as wide as its longest name at one type size on every page (it
+  // shared the width with the readings and wrapped "Species A" in 10 px type).
+  const heads = [
+    two ? (ownUnit ? '' : spec.unit) : spec.rowLabel,
+    ...(two ? [rowName(0), rowName(1)] : [spec.unit]),
+  ];
+  const headW = Math.min(
+    132,
+    Math.max(
+      44,
+      Math.max(...heads.map((t) => (t ?? '').length)) * (font.caption + 1) * 0.6 + 2 * space.sm,
+    ),
+  );
   const setAt = (i: number, y: number, height: number, row = 0) => {
     setPicked(i);
     const raw = ((height - y) / height) * spec.max;
@@ -147,7 +160,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       {/* The table of readings. */}
       <View style={[styles.table, { borderColor: c.border }]}>
         <View style={[styles.row, { backgroundColor: c.surface, borderBottomColor: c.border }]}>
-          <Text style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
+          <Text style={[styles.cellHead, styles.rowHead, { width: headW, color: c.text }]}>
             {two ? (ownUnit ? '' : spec.unit) : spec.rowLabel}
           </Text>
           {spec.columns.map((col) => (
@@ -158,7 +171,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
         </View>
         {(two ? [values, seconds] : [values]).map((row, r) => (
           <View key={r} style={styles.row}>
-            <Text style={[styles.cell, tight && styles.tight, { color: c.textMuted }]}>
+            <Text style={[styles.cell, styles.rowHead, { width: headW, color: c.textMuted }]}>
               {two ? rowName(r) : spec.unit}
             </Text>
             {row.map((x, i) => (
@@ -366,6 +379,7 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
+  rowHead: { flex: 0, paddingHorizontal: space.xs, fontSize: font.caption + 1, textAlign: 'left' },
   // A histogram's intervals meet: no gaps between the bars.
   touching: { gap: 0, paddingLeft: 28 },
   touchingLabels: { gap: 0, paddingLeft: 28 },
