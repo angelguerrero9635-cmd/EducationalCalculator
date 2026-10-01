@@ -4,6 +4,9 @@
  * a variable id; every value is in the variable's shown units.
  */
 import type { NumOrVar } from './typesGraphs';
+import type { SignOf } from './typesHs2a';
+import type { NormalCurveHs3b } from './typesHs3b';
+import type { HistogramHs2g, NormalCurveHs2g, PascalFraction, TermsChartHs2g } from './typesHs2g';
 
 /**
  * A normal curve over mean μ and standard deviation σ, with an x axis (ticks at μ + kσ, the
@@ -29,7 +32,7 @@ import type { NumOrVar } from './typesGraphs';
  * Handles drag the shaded ends, the mark, the test statistic and the chi-square statistic
  * (when they are variables), holding `keep` (default: the mean, the SD, n and the level).
  */
-export interface NormalCurveSpec {
+export interface NormalCurveSpec extends NormalCurveHs2g, NormalCurveHs3b {
   kind: 'normalCurve';
   mean?: NumOrVar;
   sd?: NumOrVar;
@@ -40,8 +43,10 @@ export interface NormalCurveSpec {
   bands?: boolean;
   sample?: { n: NumOrVar; se?: string };
   interval?: { center: NumOrVar; margin: NumOrVar; level?: NumOrVar };
-  intervals?: { count: number; n: NumOrVar; level: NumOrVar; seed?: number };
-  test?: { stat: NumOrVar; alpha: NumOrVar; tail: 'left' | 'right' | 'two'; p?: string };
+  /** H105: `count` may be a value (20 to 100 typed). */
+  intervals?: { count: NumOrVar; n: NumOrVar; level: NumOrVar; seed?: number };
+  /** `tail` from a sign box (H90): Hₐ's sign, 1 < or 2 ≤ left, 3 > or 4 ≥ right, 6 ≠ both. */
+  test?: { stat: NumOrVar; alpha: NumOrVar; tail: 'left' | 'right' | 'two' | SignOf; p?: string };
   chiSquare?: { df: NumOrVar; stat?: NumOrVar; alpha?: NumOrVar; p?: string };
   /** Typed values held while a handle is dragged. */
   keep?: string[];
@@ -61,7 +66,7 @@ export interface NormalCurveSpec {
  * value k. Count and probability bars drag by their tops when they are variables, holding
  * `keep`.
  */
-export interface HistogramSpec {
+export interface HistogramSpec extends HistogramHs2g {
   kind: 'histogram';
   data?: NumOrVar[];
   counts?: NumOrVar[];
@@ -88,7 +93,7 @@ export interface HistogramSpec {
  * n's coefficients in the caption. `triangle: false` leaves the triangle out (slots alone, for
  * n past 12). No handles: n, k and r move with their sliders.
  */
-export interface PascalTriangleSpec {
+export interface PascalTriangleSpec extends PascalFraction {
   kind: 'pascalTriangle';
   n: NumOrVar;
   k?: NumOrVar;
@@ -106,9 +111,10 @@ export interface PascalTriangleSpec {
  * dashed (when |r| < 1), the partial sums closing in on it. `term`, `sum` and `limit` (as a
  * variable id) are checked against the rule. No handles: the values have sliders.
  */
-export interface TermsChartSpec {
+export interface TermsChartSpec extends TermsChartHs2g {
   kind: 'termsChart';
-  type: 'arithmetic' | 'geometric';
+  /** H93: 'recursive', aₙ = step × aₙ₋₁ + plus (see `TermsChartHs2g`). */
+  type: 'arithmetic' | 'geometric' | 'recursive' | 'power'; // H106: 'power', aₙ = a₁ × nᵖ, p = step
   first: NumOrVar;
   /** The common difference d, or the common ratio r. */
   step: NumOrVar;
@@ -162,6 +168,7 @@ export function hsbSpecVars(r: HsbSpec): string[] {
         r.interval?.level,
         r.intervals?.n,
         r.intervals?.level,
+        r.intervals?.count,
         r.test?.stat,
         r.test?.alpha,
         r.test?.p,

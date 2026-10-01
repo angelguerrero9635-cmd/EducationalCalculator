@@ -8,6 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { AtomModel } from './AtomModel';
 import { LewisStructure } from './LewisStructure';
 import { MoleMap } from './MoleMap';
+import { MoleMapLimiting } from './MoleMapLimiting';
 import { OrbitalDiagram } from './OrbitalDiagram';
 import { UnitChain } from './UnitChain';
 import { Vsepr } from './Vsepr';
@@ -25,6 +26,10 @@ export function HsiRep({ spec, calc }: { spec: HsiSpec; calc: Calculator }) {
     case 'vsepr':
       return <Vsepr spec={spec} calc={calc} />;
     case 'moleMap':
-      return <MoleMap spec={spec} calc={calc} />;
+      return spec.limiting ? (
+        <MoleMapLimiting spec={spec} calc={calc} />
+      ) : (
+        <MoleMap spec={spec} calc={calc} />
+      );
   }
 }

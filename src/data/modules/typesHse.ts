@@ -3,7 +3,9 @@
  * apart from `types.ts` so its union only names them. A `NumOrVar` is a fixed number or the id
  * of a variable that holds it.
  */
+import type { TreeChancesHs2g, VennCounts } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
+import type { VennChancesHs3b } from './typesHs3b';
 
 /**
  * H20: a two-way frequency table (`table` with `twoWay`): the counts by row and column
@@ -39,7 +41,7 @@ export interface TwoWaySpec {
  * index) is lit and `chance` is its probability, the product along the path. `total` is the
  * probability of one second-stage outcome (`totalOf`, an index) over every path.
  */
-export interface TreeChances {
+export interface TreeChances extends TreeChancesHs2g {
   first: NumOrVar[];
   second: NumOrVar[][];
   names: [string[], string[]];
@@ -56,7 +58,7 @@ export interface TreeChances {
  * (A ∩ B), 'or' (A ∪ B), 'notA' (the complement of A), 'aOnly' or 'neither'. With `exclusive`,
  * A and B draw apart (P(A and B) is 0). `result` is the shaded probability's value (checked).
  */
-export interface VennChances {
+export interface VennChances extends VennCounts, VennChancesHs3b {
   a: NumOrVar;
   b: NumOrVar;
   both: NumOrVar;

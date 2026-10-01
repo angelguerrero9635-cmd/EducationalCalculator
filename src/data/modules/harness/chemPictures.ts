@@ -56,7 +56,7 @@ export function chemIssues(
         out.push(`${rep.products.length} products (1 to 3 fit)`);
       for (const t of terms) {
         formulaOk(t.formula);
-        whole(val(t.count), `${t.formula} count`, 8);
+        whole(val(t.count), `${t.formula} count`, rep.most ?? (rep.many ? 18 : 8));
       }
       for (const [el, [before, after]] of Object.entries(rep.atoms ?? {})) {
         const side = (ts: typeof terms) => {

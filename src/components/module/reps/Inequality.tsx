@@ -9,7 +9,7 @@ import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
-import { tickStep } from './IntegerLine';
+import { lineStep, lineWindow } from './integerLineWindow';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'integerLine' }>;
@@ -55,17 +55,9 @@ export function InequalityLine({ spec, calc }: { spec: Spec; calc: Calculator })
   const test = ineq.test && rep.known(ineq.test) ? rep.shown(ineq.test) : undefined;
   const unit = spec.unit ?? '';
   const num = (x: number) => `${formatNumber(x)}${unit ? ` ${unit}` : ''}`;
-  const extent = useFrozen(
-    (() => {
-      const pts = [bound, ...(test === undefined ? [] : [test])];
-      const lo = Math.min(spec.min, ...pts.map((p) => p - 1));
-      const hi = Math.max(spec.max, ...pts.map((p) => p + 1));
-      const s = tickStep(hi - lo);
-      return [Math.floor(lo / s) * s, Math.ceil(hi / s) * s] as [number, number];
-    })(),
-  );
+  const extent = useFrozen(lineWindow(spec, [bound, ...(test === undefined ? [] : [test])], 1));
   const [lo, hi] = extent.value;
-  const step = tickStep(hi - lo);
+  const step = lineStep(spec, lo, hi);
   const right = sign === '>' || sign === '≥';
   const closed = sign === '≤' || sign === '≥';
   const holds =

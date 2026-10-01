@@ -46,8 +46,10 @@ shrink (`fewer`). Grade 7 life science adds, in `layouts/figuresLife.tsx`: `leaf
 the light and a cell with its mitochondria, the inputs and outputs as arrows and the word
 equations; `leafCell: { process, lit? }` shows photosynthesis, respiration or both trading
 their outputs), `carbonCycle` (air, a tree, a rabbit, dead matter and mushrooms, coal and oil,
-a factory and the ocean; `carbon: { process? }` lights one process) and `pedigree` (a family
-given as `people` in the standard symbols; `family: { lit?, carriers?, genotypes?, ask? }`).
+a factory and the ocean; `carbon: { process? }` lights one process; the figure's `volcano: true`,
+H103, adds a volcanic island over a magma chamber and its `volcano` arrow up to the air) and
+`pedigree` (a family given as `people` in the standard symbols; `family: { lit?, carriers?,
+genotypes?, ask? }`).
 shrink (`fewer`). Grade 7–8 chemistry (`layouts/chemFigures.tsx`): `molecules` (ball-and-stick
 molecules in the classroom colors: one alone drawn big with each element named, or a scene's
 `items` in a box packed as a `state`, with `after` in a second box behind an arrow),
@@ -65,6 +67,32 @@ metals in their ions' solutions, a wire through a voltmeter or bulb and a KNO₃
 scene's `galvanic: { metals, meter?, lit? }` picks the metals (the anode, E° and both
 half-reactions are worked out from the reduction potentials) and rings the electrons, anode,
 cathode, bridge or meter.
+Grade 9 biology (H100, `layouts/geneExpressionFigure.tsx`): `geneExpression`, a stretch of DNA with a
+promoter, a gene and its switch, RNA polymerase and, when the gene is read, its mRNA; a scene's
+`gene: { control: 'repressor' | 'activator', signal?, lit? }` sets the switch: a repressor sits on
+the operator unless its signal (an inducer) pulls it off, an activator binds only with its
+signal, so the gene is on exactly when the signal is there.
+Also H100 (`layouts/dichotomousKeyFigure.tsx`): `dichotomousKey`, `{ kind: 'dichotomousKey', steps }` with
+`steps: { question, yes, no }[]` (an answer is the next question's index or a name), drawn as a
+tree down the page, each question's Yes then No indented under it; a scene's `key: { specimen?,
+step? }` traces one name's path (answers lit, the name filled) or rings one question.
+H109 (`layouts/gelFigure.tsx`): `gel`, `{ kind: 'gel', lanes: { label, bands }[], ladder? }`, a
+painted gel of fixed samples (up to 8 lanes, 6 a scene) on one log scale; a scene's `gel: { lanes?,
+lit?, compare?, parents? }` picks and rings lanes, carries the compared lane's bands across as
+dashed lines (matching bands lit, counted in the caption) or, with `parents: [mother, father]`,
+colors each of the child's bands by its parent and rings one from neither ("ruled out").
+Also H109 (`layouts/reflexArcFigure.tsx`): `reflexArc`, a hand on a hot pan, the arm and its
+biceps, and the spinal cord in section; a scene's `reflex: { lit?, impulse? }` lights `receptor`,
+`sensory`, `interneuron`, `motor`, `effector` or `brain` and draws the impulse's arrows as far as
+it. Card figure `{ kind: 'reflexArc', lit }` (112 × 76, for sequence stages): the same arc, small,
+one part lit (no arrows); the harness checks the cards come in the impulse's order.
+Also H109: a `parts` figure's `drawing: 'flower'` (`layouts/partsFlower.tsx`), a flower cut in
+half: petal, sepal, anther, filament, stigma, style, ovary, ovule. Card figure `{ kind:
+'flowerCycle', stage }` (`layouts/flowerCycleCard.tsx`, 112 × 76): `pollination`, `pollen tube`,
+`fertilization`, `seed and fruit`, `dispersal`, `germination`, `seedling`, in that order (checked).
+Card icons (`layouts/icons/h3d.tsx`): `zygote`, `morula`, `blastula`, `gastrula` (germ layers
+blue, red, yellow) and the land biomes `tropical rainforest`, `desert`, `grassland`, `temperate
+deciduous forest`, `taiga`, `tundra`.
 
 Earth and space (HS group L, `layouts/hslFigures.tsx`): `mohsScale` (`layouts/mohsFigure.tsx`), the
 ten Mohs minerals as a ladder with the scratch tools dashed at 2.5, 3.5, 5.5 and 6.5; `mohs: { lit?,
@@ -79,8 +107,24 @@ galaxy`, `irregular galaxy`; the forming solar system: `solar nebula`, `spinning
 composite or cinder-cone volcano, folds, a normal, reverse or strike-slip fault, a V- or U-shaped
 valley, a meander, an aquifer or a dune, its parts labeled. `oceanCurrents`
 (`layouts/currentsFigure.tsx`): `currents: { view }`, the `gyres` or the deep `conveyor` on a world map. `greenhouse`
-(`layouts/greenhouseFigure.tsx`): `greenhouse: { view: 'energy', co2? }` (sunlight in, infrared out
-and back, a thermometer) or `{ view: 'zones', lit? }` (climate zones by latitude).
+(`layouts/greenhouseFigure.tsx`): `greenhouse: { view: 'energy', co2?, particles? }` (sunlight in,
+infrared out and back, a thermometer; `particles`, H103: ash and smoke high in the air turn a ray
+of sunlight back to space and the thermometer reads 0.5 °C cooler; not with `co2: 'none'`) or
+`{ view: 'zones', lit? }` (climate zones by latitude).
+
+Earth and space, round 2 (HS group H2F, H103): `spectra` (`layouts/spectraFigure.tsx`), a star's
+absorption spectrum over the lab emission spectra of hydrogen, helium and sodium on one
+wavelength scale; `spectra: { star, lit? }` lists the elements whose dark lines the star shows
+and lights one lab strip, each of its lines joined up to the star, solid and ringed where the
+star has a line within 1 nm, dashed where it doesn't, with "every line matches" or "2 of 7
+lines match: not in the star".
+
+Earth and space, round 3 (HS group H3C, H110): `earthLayers` (`layouts/hs3cFigures.tsx`), Earth
+cut through an earthquake's focus as the calculator picture's `section` mode draws it (layers to
+scale, P paths left, S paths right, the shadow zones); `earthSection: { distance }` puts a
+station that many degrees from the focus on both halves, filled where the wave arrives and
+hollow where it doesn't. The layout check keeps a scene's lines from saying S waves arrive past
+104°.
 
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
@@ -99,6 +143,15 @@ light in and ATP out; `energy: { process?, lit? }` lights the whole `cycle`, `ph
 `{ kind: 'cellDivision', stage, diploid? }` draws interphase, prophase … cytokinesis, or
 prophase I … telophase II, the chromosomes counted from 2n (2, 4 or 6), maternal red and paternal
 blue, crossed-over tips from prophase I, four different cells of n after telophase II.
+Card figure `replication` (H100, `layouts/replicationCard.tsx`, 112 × 76, for sequence stages):
+`{ kind: 'replication', stage }` draws `unzip` (helicase at the fork), `pair` (free nucleotides
+pairing with each old strand), `join` (DNA polymerase and the new strand) or `copies` (two
+helices, each one old strand, dark, and one new, lit: semiconservative).
+
+Grade 11 physics (H102, group H2C): card figure `strobe` (`layouts/strobeCard.tsx`, 140 × 48):
+`{ kind: 'strobe', gaps, dir?, ramp? }` dots the object's place every second, the `gaps` (m)
+to scale and the first dot open, an arrow the way it moves (`dir`, default right); `ramp` tilts
+the track up the way it moves.
 
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by
@@ -127,6 +180,17 @@ Chemistry reaction types (H49) are card icons in `layouts/icons/hi.tsx`: `synthe
 `decomposition reaction`, `single replacement reaction`, `double replacement reaction` and
 `combustion reaction`, lit atom balls with the reactants above an arrow and the products below.
 
+Grade 10 chemistry, round 2 (H101): a `molecules` scene's `hydration: { ions, waters?, crystal? }`
+(`layouts/hydrationFigure.tsx`) draws each ion ("Na+", "Cl-", "Mg2+") ringed by 4 to 8 water
+molecules turned by its charge (O toward a positive ion, an H toward a negative one, δ− and δ+
+marked), `crystal` adding the salt's lattice with its corner ions pulled off. Card figure
+`condensed` (`layouts/condensedCard.tsx`): `{ kind: 'condensed', formula, group }`, a condensed
+formula written with dashes ("CH3-C(=O)-O-CH2-CH3", the carbonyl's O drawn above) with its
+functional group lit (`alcohol`, `acid`, `ester`, `amine`, `ketone`, `aldehyde`, `ether`,
+`halide`). The `molecule` card now draws BF₃, CCl₄, CHCl₃ and CH₂O (`reps/chemLayoutsHs2d.ts`).
+Card icons for the models of the atom (`layouts/icons/h2d.tsx`): `Dalton atom model`, `Thomson
+atom model`, `Rutherford atom model`, `Bohr atom model`, `quantum atom model`.
+
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
 scale, with the sun on the line over the stick's top (higher for a shorter shadow); `sides`
@@ -134,12 +198,27 @@ scale, with the sun on the line over the stick's top (higher for a shorter shado
 `layouts/observeFigures.tsx`: `thermometer`, `plantHeight` (a potted plant beside a cm ruler),
 `ramp` (`heights` per column; the cup slid the value), `flashlight` (`distances` per column;
 the lit circle side on and face on) and `cup` (an open cup, the first column's level dashed).
+An observation can count a second row in the same columns, `second: { rowLabel, initial }`
+(H100, two species a day): its bars beside the first's, a row of its own in the table, a key,
+and `pattern(first, second)` reading both. H109 (`layouts/observeScaled.tsx`): `min` (below 0,
+a membrane potential in mV) grows each bar up or down from a 0 line; `second` may take its own
+`unit`, `max`, `min` and `step` (a climograph: rainfall in mm, temperature in °C), and with its
+own unit each row gets a chart of its own, named with its unit, over the shared month labels.
 
 Drawn explore figures: a `parts` figure with `drawing: 'plant' | 'animal' | 'body'`
 (`layouts/partsDrawings.tsx`) draws the thing, labels every part and lights the scene's part;
 a `dots` scene with `animal: 'deer' | 'penguin'` draws a herd or huddle
 (`layouts/animalFigures.tsx`). A sort can set `header: { kind: 'offspring', animals }`: the
 parents and young (cats or deer) above the cards.
+H104: a sort can set `intro`, a sentence above the cards (what the groups share, or a fact the
+sort needs), and a bin can set `figure` (any card figure, usually `{ kind: 'icon', icon }`), drawn
+beside its name; the harness wants every bin or none with a figure, and no card wearing another
+bin's icon. Grade 9 card icons (H100, H104, `layouts/icons/h2e.tsx`): membrane transport (`simple
+diffusion`, `channel protein`, `carrier protein`, `aquaporin`, `protein pump`, `vesicle
+transport`), ABO blood types (`blood type A`, `blood type B`, `blood type AB`, `blood type O`:
+a red cell with its A wedges, B knobs, both or none) and body systems (`nervous system`,
+`endocrine system`, `heart and blood vessels`, `respiratory system`, `excretory system`,
+`digestive system`).
 
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
@@ -149,4 +228,9 @@ animals, adaptations and classroom, kitchen and drink things drawn in their mate
 `layouts/cardIcons.tsx`, shown on `/gallery` as `g.icons-*`), `fractionBars`, `ray` (segment,
 ray, line or point), `net` (six squares), `inequality` (an open or closed circle and an
 arrow), `scatter` (dots that rise, fall, scatter or curve), `cell` (a small cell) and `rock` (a texture); a `polygon` can mark its `base`, a
-`dashed` height and the base `extend`ed. Every figure and card figure has a page at `/gallery`.
+`dashed` height and the base `extend`ed. Geometry cards (`layouts/cardFiguresHs2b.tsx`):
+`markedTriangles` (two triangles from their sides at one scale, with ticks, arcs, right-angle
+marks and side lengths that mean what they say), `construction` (named points with segments,
+compass arcs, ticks, arcs and angle numbers, a stage's new parts `lit`) and `solidCut` (a
+cube, pyramid, cylinder, cone or sphere with its cutting plane and the section shaded). Every
+figure and card figure has a page at `/gallery`.

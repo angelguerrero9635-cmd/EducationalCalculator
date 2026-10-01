@@ -18,6 +18,7 @@ import { MaterialIcon, inMaterials } from './cardIcons';
 import { Round3Icon } from './icons';
 import { isRound3Icon } from '@/data/modules/layouts/icons';
 import { MoleculeCard } from './chemFigures';
+import { CondensedCardView, condensedWidth } from './condensedCard';
 import {
   CellPartsCard,
   DotPlotCard,
@@ -27,6 +28,11 @@ import {
   r3hFigureWidth,
 } from './cardFiguresR3h';
 import { DIVISION_H, DIVISION_W, DivisionCard } from './divisionCard';
+import { hs3dCardSize, Hs3dCardView } from './hs3dCards';
+import { Hs2bCardView, hs2bFigureSize } from './cardFiguresHs2b';
+import { StrobeCardView } from './strobeCard';
+import { STROBE_W } from '@/data/modules/layouts/strobeCard';
+import { REPLICATION_H, REPLICATION_W, ReplicationCard } from './replicationCard';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -38,6 +44,8 @@ const MARKED = 64;
 export function figureWidth(f: Spec): number {
   const r3h = r3hFigureWidth(f);
   if (r3h) return r3h;
+  const hs2b = hs2bFigureSize(f);
+  if (hs2b) return hs2b[0];
   switch (f.kind) {
     case 'bar':
       return Math.max(S, 16 + (f.length + (f.units === 'offset' ? 2 : 0)) * 8 + 24);
@@ -61,6 +69,15 @@ export function figureWidth(f: Spec): number {
       return 72;
     case 'cellDivision':
       return DIVISION_W;
+    case 'strobe':
+      return STROBE_W;
+    case 'condensed':
+      return condensedWidth(f);
+    case 'replication':
+      return REPLICATION_W;
+    case 'reflexArc':
+    case 'flowerCycle':
+      return hs3dCardSize(f)![0];
     default:
       return S;
   }
@@ -81,11 +98,15 @@ export function CardFigureView({
 }) {
   const w = figureWidth(figure);
   const h =
-    figure.kind === 'polygon' && figure.marks
+    hs2bFigureSize(figure)?.[1] ??
+    hs3dCardSize(figure)?.[1] ??
+    (figure.kind === 'polygon' && figure.marks
       ? MARKED
       : figure.kind === 'cellDivision'
         ? DIVISION_H
-        : S;
+        : figure.kind === 'replication'
+          ? REPLICATION_H
+          : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -194,6 +215,17 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <Icon icon={f.icon} ink={ink} shade={shade} />;
     case 'cellDivision':
       return <DivisionCard f={f} ink={ink} />;
+    case 'markedTriangles':
+    case 'construction':
+    case 'solidCut':
+      return <Hs2bCardView f={f} ink={ink} shade={shade} />;
+    case 'strobe':
+      return <StrobeCardView f={f} ink={ink} />;
+    case 'replication':
+      return <ReplicationCard f={f} ink={ink} />;
+    case 'reflexArc':
+    case 'flowerCycle':
+      return <Hs3dCardView f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;
@@ -320,6 +352,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <RockFigure texture={f.texture} ink={ink} shade={shade} />;
     case 'molecule':
       return <MoleculeCard formula={f.formula} w={w} h={S} />;
+    case 'condensed':
+      return <CondensedCardView f={f} ink={ink} shade={shade} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;

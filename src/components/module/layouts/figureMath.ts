@@ -4,13 +4,14 @@
  * scale ticks.
  */
 
-export type PartsDrawingKind = 'plant' | 'animal' | 'body';
+export type PartsDrawingKind = 'plant' | 'animal' | 'body' | 'flower';
 
 /** The parts each drawing has, by the name a page gives them (any capitals). */
 export const DRAWN_PARTS: Record<PartsDrawingKind, readonly string[]> = {
   plant: ['flower', 'leaves', 'stem', 'roots'],
   animal: ['eyes', 'ears', 'fur', 'claws', 'shell'],
   body: ['brain', 'heart', 'lungs', 'stomach', 'bones', 'skin'],
+  flower: ['petal', 'sepal', 'anther', 'filament', 'stigma', 'style', 'ovary', 'ovule'],
 };
 
 /** The drawn part a page's part name means ("Leaves" → leaves). */

@@ -1,5 +1,6 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
+import type { Hs2bCard } from '../typesHs2b';
 import type { CellDivisionCard, EnergyScene, MacroScene } from '../typesHsg';
 import type {
   CladeScene,
@@ -10,6 +11,7 @@ import type {
   NitrogenProcess,
 } from '../typesHsh';
 import type { GalvanicScene } from '../typesHsj';
+import type { CondensedCard, HydrationScene } from '../typesHs2d';
 import type {
   CurrentsScene,
   GreenhouseScene,
@@ -17,7 +19,12 @@ import type {
   LandformScene,
   MohsScene,
 } from '../typesHsl';
+import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
+import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
+import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
+import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
+import type { StrobeCard } from './strobeCard';
 
 /**
  * Module layouts other than the calculator (docs/MODULE_GUIDE.md, "Module layouts"). A
@@ -47,10 +54,14 @@ export interface SortLayout extends LayoutBase {
     label: string;
     /** One sentence about the property, shown when the group is full. */
     why: string;
+    /** H104: a small drawing beside the group's name (a card figure, often an icon). */
+    figure?: CardFigure;
   }[];
   cards: { label: string; bin: string; figure?: CardFigure }[];
   /** A picture above the cards, so they can be judged by looking (`layouts/offspringFigure.tsx`). */
   header?: SortHeader;
+  /** H104: a sentence above the cards (what the groups have in common, or what to look for). */
+  intro?: string;
 }
 
 /**
@@ -161,6 +172,16 @@ export type CardFigure =
   | { kind: 'molecule'; formula: string }
   /** One stage of mitosis or meiosis, its chromosomes counted from 2n (HS group G). */
   | CellDivisionCard
+  /** Geometry cards (H2B, `typesHs2b.ts`): marked triangles, construction stages, cross sections. */
+  | Hs2bCard
+  /** A motion diagram: dots one second apart, gaps to scale (H102, `strobeCard.ts`). */
+  | StrobeCard
+  /** An organic molecule's condensed formula, its functional group lit (`typesHs2d.ts`, H101). */
+  | CondensedCard
+  /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
+  | ReplicationCard
+  /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */
+  | Hs3dCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -253,17 +274,24 @@ export interface SequenceLayout extends LayoutBase {
 export type Figure =
   /** Earth and space, group HL (`typesHsl.ts`): Mohs scale, landforms, currents, greenhouse. */
   | HslFigure
+  /** Earth and space round 2, group H2F (`typesHs2f.ts`): spectra side by side. */
+  | Hs2fFigure
+  /** Earth and space round 3, group H3C (`typesHs3c.ts`): Earth cut open, a station placed. */
+  | Hs3cFigure
+  /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
+  | Hs3dFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
    * scene's part lit; a part is picked by tapping it. Each part's name must name a drawn part:
    * `plant` flower, leaves, stem, roots; `animal` (a bear and a turtle) eyes, ears, fur,
-   * claws, shell; `body` brain, heart, lungs, stomach, bones, skin (any capitals).
+   * claws, shell; `body` brain, heart, lungs, stomach, bones, skin; `flower` (H109, cut in
+   * half) petal, sepal, anther, filament, stigma, style, ovary, ovule (any capitals).
    */
   | {
       kind: 'parts';
       parts: { name: string; job: string }[];
-      drawing?: 'plant' | 'animal' | 'body';
+      drawing?: 'plant' | 'animal' | 'body' | 'flower';
     }
   /** A ball and a box; a scene puts the ball above, below, beside, in front of or behind. */
   | { kind: 'position' }
@@ -322,7 +350,14 @@ export type Figure =
    * The carbon cycle: the air's carbon dioxide, a tree, an animal, the dead matter and its
    * decomposers, fossil fuels, a factory and the ocean, with the processes as arrows (Grade 7).
    */
-  | { kind: 'carbonCycle' }
+  | {
+      kind: 'carbonCycle';
+      /**
+       * H103: a volcanic island in the ocean over a magma chamber, its outgassing an arrow up
+       * to the air (the `volcano` process). Off unless set.
+       */
+      volcano?: boolean;
+    }
   /**
    * A family's pedigree chart in the standard symbols: squares are males, circles females,
    * filled has the trait, half-filled carries it; a line joins parents, their children hang
@@ -358,7 +393,11 @@ export type Figure =
   /** The immune response: antigen, helper T, B and plasma cells, antibodies, killer T, memory (H42). */
   | { kind: 'immuneStages' }
   /** A galvanic cell: two electrodes, a salt bridge and electrons along the wire (H56). */
-  | { kind: 'electrochemicalCell' };
+  | { kind: 'electrochemicalCell' }
+  /** A gene with its promoter and a repressor or activator switch, read into mRNA or not (H100). */
+  | { kind: 'geneExpression' }
+  /** A branching yes-or-no key from questions to names (H100, `typesHs2e.ts`). */
+  | { kind: 'dichotomousKey'; steps: KeyStep[] };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -394,7 +433,9 @@ export type CarbonProcess =
   | 'decomposition'
   | 'burning'
   | 'dissolving'
-  | 'burial';
+  | 'burial'
+  /** Volcanoes giving off carbon dioxide (a `carbonCycle` figure with `volcano`). */
+  | 'volcano';
 
 /** A substance in a `molecules` scene: its formula ("H2O") and how many (default 1). */
 export interface MoleculeItem {
@@ -468,6 +509,10 @@ export interface Scene {
   landform?: LandformScene;
   currents?: CurrentsScene;
   greenhouse?: GreenhouseScene;
+  /** A `spectra` figure (`typesHs2f.ts`): the star's elements, one lab strip lit. */
+  spectra?: SpectraScene;
+  /** An `earthLayers` figure (`typesHs3c.ts`): the station's distance from the focus. */
+  earthSection?: EarthSectionScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** Where the ball is (a `position` figure). */
@@ -506,6 +551,14 @@ export interface Scene {
   cone?: ConeCut;
   /** The two metals and the part lit (an `electrochemicalCell` figure). */
   galvanic?: GalvanicScene;
+  /** The switch, the signal and the part lit (a `geneExpression` figure; `typesHs2e.ts`). */
+  gene?: GeneScene;
+  /** The name traced and the question ringed (a `dichotomousKey` figure; `typesHs2e.ts`). */
+  key?: KeyScene;
+  /** The lanes shown, ringed and compared (a `gel` figure; `typesHs3d.ts`, H109). */
+  gel?: GelScene;
+  /** The part lit and the impulse so far (a `reflexArc` figure; `typesHs3d.ts`). */
+  reflex?: ReflexScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**
@@ -637,6 +690,8 @@ export interface Scene {
     state?: 'solid' | 'liquid' | 'gas';
     after?: MoleculeItem[];
     afterState?: 'solid' | 'liquid' | 'gas';
+    /** Round 2: ions ringed by water, turned by charge (`typesHs2d.ts`, H101). */
+    hydration?: HydrationScene;
   };
   /**
    * The state lit on a `phases` figure and the change lit among its arrows (melting and
@@ -683,11 +738,15 @@ export interface ObserveLayout extends LayoutBase {
   /** The opening values, one per column. */
   initial: number[];
   /** The pattern in a sentence, from the current values. */
-  pattern: (values: number[]) => string;
+  pattern: (values: number[], second?: number[]) => string;
   /** Columns are intervals of one number line: the bars touch, with a count scale beside. */
   histogram?: boolean;
   /** A picture of the column last tapped, above the chart (`ObserveFigure`). */
   figure?: ObserveFigure;
+  /** H100: a second row counted in the same columns, its bars beside the first (`typesHs2e.ts`). */
+  second?: ObserveSecond & ObserveScale;
+  /** H109: the lowest value (below 0 for a membrane potential); bars grow up or down from 0. */
+  min?: number;
 }
 
 /**

@@ -138,9 +138,19 @@ const PICTURE_NAMES: Record<string, string> = {
   atmosphereLayers: 'the atmosphere’s layers, or a pressure map',
   hrDiagram: 'an H–R diagram with a star plotted',
   expandingUniverse: 'galaxies as space stretches, or a Hubble plot',
+  streamChannel: 'a stream channel: width, depth and the water passing each second',
+  reserve: 'a reserve drawn down year by year',
+  geologicClock: 'Earth’s history as one 24-hour day',
+  coralSection: 'a fossil coral’s daily lines and yearly bands',
+  transit: 'a planet crossing its star, and the dip in its light',
+  habitableZone: 'a star’s habitable zone and a planet’s orbit',
+  parallax: 'a near star’s parallax against far stars',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',
+  macromolecules: 'monomers joining into a polymer, water given off',
+  cellDivision: 'chromosomes of a body cell, a gamete and a zygote',
+  neuron: 'a neuron with its impulse timed along the axon',
   projectile: 'projectile path with its velocity components',
   induction: 'induction: coil and magnet, force on a wire, transformer',
   charges: 'point charges with field lines and forces',
@@ -150,6 +160,15 @@ const PICTURE_NAMES: Record<string, string> = {
   collision: 'carts before and after a collision, with momentum arrows',
   circularMotion: 'circular motion or gravity between two masses',
   freeBody: 'free-body diagram with scaled force arrows',
+  impulse: 'momentum change and the force–time rectangle',
+  powerLift: 'a crate lifted in a time: work, a stopwatch and J/s',
+  photoelectric: 'light on a metal plate freeing electrons',
+  lightClock: 'a light clock at rest and moving: time dilation',
+  torque: 'a wrench or door turned by a force at an angle: τ = rF sin θ',
+  rotor: 'a hoop, disk or ball turning: I = cmr², ω and the turns',
+  oscillator: 'a mass on a spring beside its x–t trace, or hung from one',
+  pendulum: 'a pendulum of length L swinging: T = 2π√(L/g)',
+  capacitor: 'a capacitor on a battery: ±Q, the field and ½CV²',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',
   complexPlane: 'complex number in the plane',
@@ -165,6 +184,7 @@ const PICTURE_NAMES: Record<string, string> = {
   equilibriumChart: 'concentrations reaching equilibrium',
   phScale: 'pH scale or titration curve',
   decayChart: 'atoms decaying and the half-life curve',
+  chemDiagram: 'effusion, isotope abundance, oxidation numbers or a mass defect',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();
@@ -178,9 +198,11 @@ function lessonSummary(id: string, early: boolean): string {
     : getModules(id).slice(0, 1);
   const main = modules[0];
   if (!main) return 'Lesson coming soon, with refresh links to earlier skills.';
-  const pictures = [...new Set(modules.map((m) => pictureName(m.representation.kind)))];
+  // H105: an equation-only page ('none') names no picture.
+  const kinds = modules.map((m) => m.representation.kind).filter((k) => k !== 'none');
+  const pictures = [...new Set(kinds.map(pictureName))];
   return (
-    `Interactive ${pictures.join(', ')}, ${early ? 'number sentences' : 'formulas'}, ` +
+    `Interactive ${[...pictures, early ? 'number sentences' : 'formulas'].join(', ')}, ` +
     `assumptions and step-by-step examples. ${main.assumptions[0] ?? ''}`
   ).trim();
 }

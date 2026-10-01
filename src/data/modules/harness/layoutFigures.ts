@@ -7,10 +7,16 @@ import { DRAWN_PARTS, drawnPart, scaleTicks } from '@/components/module/layouts/
 
 import type { LayoutDef } from '../layouts';
 import { studyFigureIssues } from './layoutFiguresHsb';
+import { hs2bFigureIssues } from './layoutFiguresHs2b';
+import { hs2eFigureIssues } from './layoutFiguresHs2e';
+import { hs3dFigureIssues } from './layoutFiguresHs3d';
 import { hsgFigureIssues } from './layoutFiguresHsg';
 import { hshFigureIssues } from './layoutFiguresHsh';
 import { galvanicFigureIssues } from './layoutFiguresHsj';
 import { hslFigureIssues } from './layoutFiguresHsl';
+import { hs2dFigureIssues } from './layoutFiguresHs2d';
+import { hs2fFigureIssues } from './layoutFiguresHs2f';
+import { hs3cFigureIssues } from './layoutFiguresHs3c';
 
 /** The number in a column label ("20 cm" → 20). */
 const numberIn = (label: string) => {
@@ -84,10 +90,14 @@ export function layoutFigureIssues(l: LayoutDef): string[] {
     }
   }
   out.push(...studyFigureIssues(l));
-  out.push(...hsgFigureIssues(l));
+  out.push(...hsgFigureIssues(l), ...hs2bFigureIssues(l), ...hs2eFigureIssues(l));
+  out.push(...hs3dFigureIssues(l));
   out.push(...hshFigureIssues(l));
   out.push(...galvanicFigureIssues(l));
   out.push(...hslFigureIssues(l));
+  out.push(...hs2dFigureIssues(l));
+  out.push(...hs2fFigureIssues(l));
+  out.push(...hs3cFigureIssues(l));
   if (l.kind === 'sort' && l.header?.kind === 'offspring') {
     const animals = l.header.animals;
     if (animals.length < 2 || animals.length > 4) {

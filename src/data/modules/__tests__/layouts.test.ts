@@ -9,10 +9,16 @@ import { LAYOUTS, gradeOf, moduleOwner } from '..';
 import type { Figure, LayoutDef, Scene } from '../layouts';
 import { isStandIn, pages } from '../harness/scope';
 import { HSL_SCENE_FIELD } from '../typesHsl';
+import { HS2F_SCENE_FIELD } from '../typesHs2f';
+import { HS3C_SCENE_FIELD } from '../typesHs3c';
+import { HS3D_SCENE_FIELD } from '../typesHs3d';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   ...HSL_SCENE_FIELD,
+  ...HS2F_SCENE_FIELD,
+  ...HS3C_SCENE_FIELD,
+  ...HS3D_SCENE_FIELD,
   parts: 'part',
   position: 'position',
   clock: 'time',
@@ -51,6 +57,8 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   feedbackLoop: 'loop',
   immuneStages: 'immune',
   electrochemicalCell: 'galvanic',
+  geneExpression: 'gene',
+  dichotomousKey: 'key',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */
@@ -87,6 +95,7 @@ function studentText(l: LayoutDef): { where: string; text: string; prose: boolea
   switch (l.kind) {
     case 'sort':
       out.push({ where: 'question', text: l.question, prose: true });
+      if (l.intro) out.push({ where: 'intro', text: l.intro, prose: true });
       l.bins.forEach((b) => {
         out.push({ where: `bin ${b.id}`, text: b.label, prose: false });
         out.push({ where: `bin ${b.id} why`, text: b.why, prose: true });
@@ -111,7 +120,7 @@ function studentText(l: LayoutDef): { where: string; text: string; prose: boolea
       }
       break;
     case 'observe':
-      out.push({ where: 'pattern', text: l.pattern(l.initial), prose: true });
+      out.push({ where: 'pattern', text: l.pattern(l.initial, l.second?.initial), prose: true });
       out.push({ where: 'pattern (equal)', text: l.pattern(l.initial.map(() => 10)), prose: true });
       l.columns.forEach((col) => out.push({ where: `column ${col}`, text: col, prose: false }));
       break;
@@ -185,10 +194,26 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
         break;
       case 'observe':
         expect(l.initial).toHaveLength(l.columns.length);
-        for (const x of l.initial) {
-          expect(x).toBeGreaterThanOrEqual(0);
-          expect(x).toBeLessThanOrEqual(l.max);
-          expect(x % l.step).toBe(0);
+        if (l.second) expect(l.second.initial).toHaveLength(l.columns.length);
+        // Each row on its own range (H109: a second row's own scale, values below 0).
+        for (const [xs, lo, hi, step] of [
+          [l.initial, l.min ?? 0, l.max, l.step] as const,
+          ...(l.second
+            ? [
+                [
+                  l.second.initial,
+                  l.second.min ?? l.min ?? 0,
+                  l.second.max ?? l.max,
+                  l.second.step ?? l.step,
+                ] as const,
+              ]
+            : []),
+        ]) {
+          for (const x of xs) {
+            expect(x).toBeGreaterThanOrEqual(lo);
+            expect(x).toBeLessThanOrEqual(hi);
+            expect(Math.abs(x % step)).toBe(0);
+          }
         }
         break;
     }

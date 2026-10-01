@@ -9,13 +9,14 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, useRep } from './common';
 import { MathText } from './hsdText';
 import { entryText, multiply, opText, reduceSteps, type Matrix } from './matrices';
+import { autoRowOps } from './hs2h';
 
-const ROW_H = 24;
+export const ROW_H = 24;
 const SUB = '₀₁₂₃₄₅₆₇₈₉';
 const sub = (n: number) => String(n).replace(/\d/g, (d) => SUB[Number(d)]!);
 
 /** A cell's width for the widest entry of a matrix. */
-const cellWidth = (m: string[][]) =>
+export const cellWidth = (m: string[][]) =>
   Math.max(28, ...m.flat().map((t) => t.length * chart.value * 0.6 + 12));
 
 interface Lit {
@@ -29,7 +30,7 @@ interface Lit {
  * A matrix in square brackets at (x, y) (top left), `bar` a dashed line before that column
  * (augmented), lit rows, columns or a cell; returns its drawing and size.
  */
-function matrixAt(
+export function matrixAt(
   x: number,
   y: number,
   cells: string[][],
@@ -293,10 +294,14 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
     );
   }
 
+  // H99: the determinant mode is MatrixDeterminant's (reps/index.tsx routes it there).
+  if (spec.mode === 'determinant') return null;
   // Row reduction: each matrix under the last, the operation beside the arrow between.
   const M = spec.system.map((r) => r.map(num));
   const known = spec.system.flat().every(isKnown);
-  const all = reduceSteps(M, spec.steps);
+  // H105: the operations worked out from the values, or as the spec lists them.
+  const ops = typeof spec.steps === 'string' ? autoRowOps(M, spec.steps) : spec.steps;
+  const all = reduceSteps(M, ops);
   const width = Math.max(
     ...all.map((m) => cellWidth(m.map((r) => r.map(entryText))) * m[0]!.length + 16),
   );
@@ -306,12 +311,21 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
   const lines: string[] = [
     `${M.length} equations in ${M[0]!.length - 1} unknowns, the right-hand sides after the bar.`,
   ];
+  // H105: worked out from the values, a row of zeros says how many solutions there are.
+  const last = all[all.length - 1]!;
+  const zeroRow = last.find((r) => r.slice(0, -1).every((x) => Math.abs(x) < 1e-9));
+  if (typeof spec.steps === 'string' && known && zeroRow)
+    lines.push(
+      Math.abs(zeroRow[zeroRow.length - 1]!) < 1e-9
+        ? 'A row reads 0 = 0: it says nothing new, so there are infinitely many solutions.'
+        : `A row reads 0 = ${entryText(zeroRow[zeroRow.length - 1]!)}: no values make it true, so there is no solution.`,
+    );
   if (spec.solution && spec.solution.every((id) => rep.known(id)))
     lines.push(
       `The solution: ${spec.solution.map((id) => `${rep.variable(id).symbol} = ${entryText(rep.val(id))}`).join(', ')}.`,
     );
   const target = (k: number) => {
-    const op = spec.steps[k]!;
+    const op = ops[k]!;
     return 'swap' in op ? op.swap.map((r) => r - 1) : 'scale' in op ? [op.scale - 1] : [op.add - 1];
   };
   return (
@@ -362,7 +376,7 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
                           fill="none"
                         />
                         <MathText
-                          text={opText(spec.steps[k]!)}
+                          text={opText(ops[k]!)}
                           x={x + drawn.w / 2 + 14}
                           y={y + mh + gap / 2 + 5}
                           fontSize={chart.value}

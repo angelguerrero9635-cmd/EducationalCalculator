@@ -58,6 +58,8 @@ const light = {
   fnSecond: '#C2570C',
   /** Elimination's sum of two equations (H16), a third line beside the system's two. */
   lineSum: '#0F766E',
+  /** An upright boundary x = k on a line system (H92), beside its two lines. */
+  lineUpright: '#BE185D',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
@@ -169,6 +171,10 @@ const light = {
   bioMaternal: '#E0533F',
   bioPaternal: '#3A73D6',
   bioSpindle: '#9AA3B2',
+  /** H3D (H109): a neuron's cell, its myelin sheath, and the spinal cord's gray matter. */
+  neuronCell: '#E9B44C',
+  neuronMyelin: '#FBF3DC',
+  cordGray: '#C9B8D8',
   dnaA: '#44B552',
   dnaT: '#E8574C',
   dnaG: '#F2B233',
@@ -303,6 +309,9 @@ const light = {
   earthInnerCore: '#FBE38A',
   quakeP: '#2563EB',
   quakeS: '#C2410C',
+  /** Magnetic stripes on the seafloor (H103): rock of normal and of reversed polarity. */
+  magNormal: '#3E4A61',
+  magReversed: '#E3E7EE',
   /** Landforms (H73): lava and its glow, basalt, ash, cinders, magma, dune sand, clay, grass. */
   landLava: '#E8612C',
   landLavaGlow: '#F9A03F',
@@ -339,6 +348,15 @@ const light = {
   starRed: '#F0643C',
   nebulaPink: '#E48BC0',
   nebulaBlue: '#7FB3E8',
+  /** Earth and space round 3 (H110): a fossil coral's wall, its daily ridges and yearly
+   * grooves; a planet's silhouette in transit; the habitable zone, too hot inside, too cold out. */
+  coralFossil: '#DCCBA8',
+  coralRidge: '#9A8460',
+  coralGroove: '#6E5A3C',
+  transitPlanet: '#15171F',
+  zoneHabitable: '#5DBB6E',
+  zoneHot: '#F08A5D',
+  zoneCold: '#86B4E6',
   /** Grades 9–12 group D: sine and cosine legs on the unit circle, algebra tiles (positive and
    * negative), and a resultant vector. */
   unitCircleSine: '#D9480F',
@@ -348,6 +366,16 @@ const light = {
   tileNegative: '#F2A3A3',
   tileNegativeEdge: '#C23A3A',
   vectorResultant: '#0E9F6E',
+  /** H98: the unit circle's two angles in turn, A then B (and a second value's line). */
+  unitCircleAngleA: '#0E7490',
+  unitCircleAngleB: '#C2410C',
+  /** H95: the area box's like-term diagonals, one tint each. */
+  areaBoxBand1: '#DCE9FB',
+  areaBoxBand2: '#FCE7C8',
+  areaBoxBand3: '#DDF3E4',
+  areaBoxBand4: '#F3DDF0',
+  areaBoxBand5: '#FFF5BF',
+  areaBoxBand6: '#E3E0FA',
   /** Weather cards: a rain or snow cloud, a storm cloud, fog, a sandbag's burlap. */
   rainCloud: '#D3D9E2',
   stormCloud: '#6B7486',
@@ -356,6 +384,14 @@ const light = {
   /** The water pie chart (round 4, group F): ice, and liquid fresh water beside the salt sea. */
   ice: '#DDF1F7',
   freshWater: '#38B2A4',
+  /** H108 (round 3, group E): phase diagram regions, and a gas mixture's gases (He, O₂, N₂, …). */
+  phaseSolid: '#DCEBF7',
+  phaseLiquid: '#BFE0F2',
+  phaseGas: '#FBF1DF',
+  gasMixA: '#E0A81E',
+  gasMixB: '#D8413A',
+  gasMixC: '#3563C9',
+  gasMixD: '#2A9D7C',
   /** The brick wall a ladder leans on (triangleSolver's ladder scene) and its mortar lines. */
   ladderWall: '#B5654A',
   ladderWallDark: '#8A4632',
@@ -385,6 +421,13 @@ const light = {
   moss: '#6FA63A',
   rootNodule: '#E9A7A0',
   antibodySecond: '#C2570C',
+  /** Card icons H2E (H100, H104): veins, kidneys, a gland, nerves; A and B antigens on red cells. */
+  h2eVein: '#4C7FD9',
+  h2eKidney: '#A8483E',
+  h2eGland: '#E9B35A',
+  h2eNerve: '#E8B923',
+  h2eAntigenA: '#2E9E5B',
+  h2eAntigenB: '#E08A1C',
   /** Chemistry (HS group I): a unit struck through when it cancels in a chain. */
   unitCancel: '#D9480F',
   /** Bohr models: protons, neutrons and electrons. */
@@ -419,6 +462,12 @@ const light = {
   physCartB: '#E5484D',
   physResistor: '#E6D3B0',
   physIron: '#8D949E',
+  satellitePanel: '#2B4C8C',
+  /** H106: a town's land and its outline on a population map. */
+  populationLand: '#DDEFD6',
+  populationEdge: '#4F8A3C',
+  /** H106: the band a measured rectangle's true edges can be in. */
+  boundsBand: 'rgba(194, 87, 12, 0.18)',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -461,6 +510,7 @@ const dark: Palette = {
   hopBack: '#F08A4B',
   fnSecond: '#F5A04A',
   lineSum: '#2DD4BF',
+  lineUpright: '#F472B6',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
 
@@ -540,6 +590,9 @@ const dark: Palette = {
   bioMaternal: '#EE6E5C',
   bioPaternal: '#6C9CF0',
   bioSpindle: '#6E7788',
+  neuronCell: '#D6A23E',
+  neuronMyelin: '#E6DCC2',
+  cordGray: '#8C7BA3',
   dnaA: '#4CC05A',
   dnaT: '#EE6A60',
   dnaG: '#F5C451',
@@ -643,6 +696,8 @@ const dark: Palette = {
   earthInnerCore: '#D8BE5C',
   quakeP: '#6EA0FF',
   quakeS: '#F08A3C',
+  magNormal: '#8C9AB5',
+  magReversed: '#2A2F3B',
   landLava: '#D5582A',
   landLavaGlow: '#E08A34',
   landBasalt: '#45403E',
@@ -673,6 +728,13 @@ const dark: Palette = {
   starRed: '#F0643C',
   nebulaPink: '#C66EA2',
   nebulaBlue: '#5E93CC',
+  coralFossil: '#9E8D6C',
+  coralRidge: '#5E4F37',
+  coralGroove: '#3F3222',
+  transitPlanet: '#05060A',
+  zoneHabitable: '#3F9150',
+  zoneHot: '#B05A36',
+  zoneCold: '#4F7DB0',
   unitCircleSine: '#FF8A5C',
   unitCircleCosine: '#3CCFAE',
   tilePositive: '#2F5F86',
@@ -680,12 +742,27 @@ const dark: Palette = {
   tileNegative: '#7A3434',
   tileNegativeEdge: '#F2A3A3',
   vectorResultant: '#34D399',
+  unitCircleAngleA: '#38BDF8',
+  unitCircleAngleB: '#FB923C',
+  areaBoxBand1: '#26374F',
+  areaBoxBand2: '#4A3A22',
+  areaBoxBand3: '#223F2E',
+  areaBoxBand4: '#472A45',
+  areaBoxBand5: '#48431F',
+  areaBoxBand6: '#322E55',
   rainCloud: '#687182',
   stormCloud: '#434A58',
   mist: '#5E6676',
   sandbag: '#9B8558',
   ice: '#B7D6E0',
   freshWater: '#2E9488',
+  phaseSolid: '#243447',
+  phaseLiquid: '#1C3A52',
+  phaseGas: '#3A3222',
+  gasMixA: '#E6B43A',
+  gasMixB: '#E2605A',
+  gasMixC: '#5B86E0',
+  gasMixD: '#3DB894',
   ladderWall: '#8C4B37',
   ladderWallDark: '#5E3023',
   normalReject: '#F0716B',
@@ -710,6 +787,12 @@ const dark: Palette = {
   moss: '#78B044',
   rootNodule: '#D98F88',
   antibodySecond: '#F08A3C',
+  h2eVein: '#6F9CF0',
+  h2eKidney: '#C9675B',
+  h2eGland: '#D9A04A',
+  h2eNerve: '#F2CC4A',
+  h2eAntigenA: '#4CC07A',
+  h2eAntigenB: '#F2A64A',
   unitCancel: '#F08A4B',
   atomProton: '#D9573F',
   atomNeutron: '#7D8693',
@@ -735,6 +818,10 @@ const dark: Palette = {
   physCartB: '#DD5357',
   physResistor: '#8A7A5C',
   physIron: '#626A75',
+  satellitePanel: '#3D5FA3',
+  populationLand: '#1F3320',
+  populationEdge: '#7CC46A',
+  boundsBand: 'rgba(245, 160, 74, 0.22)',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

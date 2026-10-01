@@ -5,6 +5,8 @@
  * string is a variable id; a number is a fixed value the page doesn't ask for.
  */
 
+import { circleHs2bVars, regularVars, type CircleHs2b, type RegularPolygon } from './typesHs2b';
+
 /** A triangle's parts: sides a, b, c opposite the angles A, B, C (degrees). */
 export type TriPart = 'a' | 'b' | 'c' | 'A' | 'B' | 'C';
 
@@ -62,7 +64,19 @@ export interface TriangleSolverSpec {
 }
 
 /** A point of a marked figure: numbers, or value ids read as coordinates. */
-export type FigurePoint = [string | number, string | number];
+export type FigurePoint = [string | number, string | number] | FigureRayPoint;
+
+/**
+ * H105: a point on a ray from point `from` at `angle` degrees (counterclockwise from the
+ * positive x-direction), `length` along it (default 4); with `meets`, where that ray meets a
+ * second ray instead (a triangle from two angles). Placed after the coordinate points, in order.
+ */
+export interface FigureRayPoint {
+  from: string;
+  angle: string | number;
+  length?: string | number;
+  meets?: { from: string; angle: string | number };
+}
 
 /**
  * A part of a marked figure, by point names: 'AB' a segment, ray or line, 'ABC' the angle at B.
@@ -129,8 +143,10 @@ export interface MarkedFigureSpec {
   };
   quadrilateral?: {
     family: 'parallelogram' | 'rectangle' | 'rhombus' | 'square' | 'trapezoid' | 'kite';
-    /** The base (AB), or the square's or rhombus's side. */
-    width: string | number;
+    /** The base (AB), or the square's or rhombus's side (left out with `across`). */
+    width?: string | number;
+    /** H105: a rhombus from its diagonals AC and BD, AC level (in place of `width` and `angle`). */
+    across?: [string | number, string | number];
     /** The height (parallelogram, rectangle, trapezoid), or the kite's lower diagonal part. */
     height?: string | number;
     /** The angle at A (parallelogram, rhombus, trapezoid), degrees. */
@@ -142,6 +158,8 @@ export interface MarkedFigureSpec {
   };
   /** Proof steps; `step` (a value id, 1 to the count) picks the one lit. */
   proof?: { step: string; steps: ProofStep[] };
+  /** A regular polygon, its triangles from one corner and an exterior angle (`typesHs2b.ts`). */
+  regular?: RegularPolygon;
 }
 
 /**
@@ -158,9 +176,18 @@ export interface MarkedFigureSpec {
  * A figure the values can't make (an inscribed angle that isn't half its arc, products that
  * differ) draws faded with the reason in the caption.
  */
-export interface CircleTheoremsSpec {
+export interface CircleTheoremsSpec extends CircleHs2b {
   kind: 'circleTheorems';
-  theorem: 'inscribed' | 'semicircle' | 'tangent' | 'chords' | 'secants' | 'secantTangent';
+  /** `cyclic` and `arcAngle`: group H2B (`typesHs2b.ts`, CircleAngles.tsx). */
+  theorem:
+    | 'inscribed'
+    | 'semicircle'
+    | 'tangent'
+    | 'chords'
+    | 'secants'
+    | 'secantTangent'
+    | 'cyclic'
+    | 'arcAngle';
   central?: string;
   inscribed?: string;
   angle?: string;
@@ -191,7 +218,9 @@ export function hscSpecVars(r: HscSpec): string[] {
       ]);
     case 'markedFigure':
       return ids([
-        ...Object.values(r.points ?? {}).flat(),
+        ...Object.values(r.points ?? {}).flatMap((p) =>
+          Array.isArray(p) ? p : [p.angle, p.length, p.meets?.angle],
+        ),
         ...(r.parts ?? []).map((p) => ('value' in p ? p.value : undefined)),
         r.transversal?.angle,
         r.transversal?.second,
@@ -199,11 +228,13 @@ export function hscSpecVars(r: HscSpec): string[] {
         ...(r.triangle?.sides ?? []),
         ...Object.values(r.triangle?.labels ?? {}),
         r.quadrilateral?.width,
+        ...(r.quadrilateral?.across ?? []),
         r.quadrilateral?.height,
         r.quadrilateral?.angle,
         r.quadrilateral?.top,
         ...Object.values(r.quadrilateral?.labels ?? {}),
         r.proof?.step,
+        ...regularVars(r.regular),
       ]);
     case 'circleTheorems':
       return ids([
@@ -216,6 +247,7 @@ export function hscSpecVars(r: HscSpec): string[] {
         r.distance,
         ...(r.segments ?? []),
         r.product,
+        ...circleHs2bVars(r),
       ]);
   }
 }

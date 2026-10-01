@@ -477,6 +477,9 @@ export function CircleTheorems({ spec, calc }: { spec: CircleTheoremsSpec; calc:
         ]
           .filter(Boolean)
           .join(' · ');
+      default:
+        // cyclic and arcAngle are drawn by CircleAngles.tsx (group H2B).
+        return '';
     }
   }
 }

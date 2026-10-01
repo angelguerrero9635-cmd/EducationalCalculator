@@ -27,7 +27,8 @@ const solutionColor = (m: CellMetal, c: Palette) =>
 const signed = (v: number) => v.toFixed(2).replace('-', '−');
 const bracketed = (v: number) => (v < 0 ? `(${signed(v)})` : signed(v));
 
-export function GalvanicFigure({ scene }: { scene: GalvanicScene }) {
+/** `reading` (H108, the calculator picture) replaces the meter's E°; "?" hides the sum under it. */
+export function GalvanicFigure({ scene, reading }: { scene: GalvanicScene; reading?: string }) {
   const c = usePalette();
   const ids = usePaintIds('glass', 'sheen', 'water', 'dial', 'bulbGlass', 'bulbMetal', 'bridge');
   const cell = cellOf(scene.metals);
@@ -328,11 +329,11 @@ export function GalvanicFigure({ scene }: { scene: GalvanicScene }) {
                   fontWeight="700"
                   fill={c.chartInk}
                 >
-                  {cell ? `${cell.voltage.toFixed(2)} V` : '0 V'}
+                  {reading ?? (cell ? `${cell.voltage.toFixed(2)} V` : '0 V')}
                 </ChartText>
               </G>
             )}
-            {cell ? (
+            {reading === '?' ? null : cell ? (
               <ChartText
                 x={meter.x}
                 y={wireY + (scene.meter === 'bulb' ? 50 : 36)}

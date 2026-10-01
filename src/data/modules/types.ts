@@ -22,9 +22,18 @@ import type { HsgSpec, PunnettInheritance } from './typesHsg';
 import type { HshSpec } from './typesHsh';
 import type { HsiSpec } from './typesHsi';
 import type { HslSpec } from './typesHsl';
+import type { ChemDiagramSpec } from './typesHs2d';
+import type { Hs2fKindSpec } from './typesHs2f';
+import type { Hs3cSpec } from './typesHs3c';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
+import type { Hs2cSpec } from './typesHs2c';
+import type { Hs3aSpec } from './typesHs3a';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
+import type { IntegerLineHs2a } from './typesHs2a';
+import type { CircleHs3b, PolygonHs3b, RectangleHs3b, TableHs3b } from './typesHs3b';
+import type { BarFlows, Hs2eSpec } from './typesHs2e';
+import type { Hs3dSpec, PieStage } from './typesHs3d';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -46,6 +55,8 @@ export type MeasuredThing = 'pencil' | 'ribbon' | 'crayon';
  * sets those variables exactly like typing into the formula inputs.
  */
 export type Representation =
+  /** H105: no picture, for an equation-only page: the page opens on its values (no labels). */
+  | { kind: 'none' }
   /**
    * Number line: a point at `start`, a jump of `jump`, landing on `end`. Drag start or end.
    * `tick` sets the labeled tick spacing (default 1).
@@ -220,7 +231,7 @@ export type Representation =
    * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`
    * words (Grade 2) say “angles” and name any 4-sided shape a quadrilateral.
    */
-  | {
+  | ({
       kind: 'polygon';
       /** The number of sides (a stepper changes it). Not used with `sideValues`. */
       sides?: string;
@@ -239,7 +250,7 @@ export type Representation =
        * student switch between an even shape and a stretched one.
        */
       irregular?: boolean | 'toggle';
-    }
+    } & PolygonHs3b)
   /** Balance scale: the counters on each pan are the listed values. Level when equal. */
   | {
       kind: 'balance';
@@ -483,6 +494,8 @@ export type Representation =
       scale?: number | string;
       /** No number on top of each bar: read its height against the scale (scaled graphs). */
       readScale?: boolean;
+      /** Grade 9 (H100): the bars between the first and last are flows in or out (`typesHs2e.ts`). */
+      flows?: BarFlows;
     }
   /** Picture graph: one column of icons per category; tap a cell to set that count. */
   | {
@@ -514,7 +527,7 @@ export type Representation =
    * Rectangle with side lengths and a value written inside. Drag the corner. `extent` is the
    * smallest side length the drawing fits; it grows for larger values.
    */
-  | {
+  | ({
       kind: 'rectangle';
       length: string;
       width: string;
@@ -526,7 +539,7 @@ export type Representation =
       /** Draw it as a real roof in perspective: slate shingles, a gutter and rain falling. */
       roof?: boolean;
       extent: number;
-    }
+    } & RectangleHs3b)
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
   | {
       kind: 'grid100';
@@ -575,7 +588,7 @@ export type Representation =
       splitter?: SideSplitter;
     }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
-  | {
+  | ({
       kind: 'circle';
       radius: string;
       extent: number;
@@ -596,7 +609,7 @@ export type Representation =
        * (the default view when this is set); 'radian' wraps radius-long arcs around the circle.
        */
       sector?: CircleSector;
-    }
+    } & CircleHs3b)
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
   | {
       kind: 'rightTriangle';
@@ -658,12 +671,13 @@ export type Representation =
        * coefficient's value (checked against the points). `leastSquares`: the least-squares
        * line dashed beside the dragged one ('beside'), or the module's slope and intercept are
        * it ('fit': checked to the cent, no handles). `residualOf`: one point (an index) with
-       * its residual labelled, and the residual's value (checked).
+       * its residual labelled, and the residual's value (checked). H105: `point` may be a value
+       * id holding the point's number k, counted from 1 (the student's "point 3").
        */
       residuals?: 'segments' | 'plot';
       r?: string | true;
       leastSquares?: 'beside' | 'fit';
-      residualOf?: { point: number; residual?: string };
+      residualOf?: { point: number | string; residual?: string };
     }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at
@@ -1062,6 +1076,8 @@ export type Representation =
       quadrantLabels?: boolean;
       /** Largest |coordinate| drawn (grows to fit). */
       extent: number;
+      /** Grades 9–12 (H96): sized to the points, 5, 10 or 20 up to `extent` (`coordinateFit.ts`). */
+      fit?: boolean;
       quadrants: 1 | 4;
       /** Grades 9–12: midpoint, partition, a polygon and its side slopes (`PlaneGeometry`). */
       midpoint?: PlaneGeometry['midpoint'];
@@ -1092,6 +1108,10 @@ export type Representation =
   | HscSpec
   /** Grades 9–12 earth and space, group HL (specs in `typesHsl.ts`). */
   | HslSpec
+  /** Grades 9–12 round 2 earth and space, group H2F: stream, reserve (`typesHs2f.ts`). */
+  | Hs2fKindSpec
+  /** Grades 9–12 round 3 earth and space, group H3C: geologic clock, … (`typesHs3c.ts`). */
+  | Hs3cSpec
   /** Grades 9–12 statistics and counting, group HB (specs in `typesHsb.ts`). */
   | HsbSpec
   /** Grades 9–12 group D: unit circle, algebra tiles, vectors, … (specs in `typesHsd.ts`). */
@@ -1104,8 +1124,17 @@ export type Representation =
   | HsiSpec
   /** Grades 9–12 chemistry, group J: gas piston, … (specs in `typesHsj.ts`). */
   | HsjSpec
+  /** Grades 9–12 round 2, group H2D: effusion, isotopes, oxidation numbers, mass defect. */
+  | ChemDiagramSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
+  /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
+  | Hs2cSpec
+  /** Grades 9–12 physics round 3, group H3A: torque, rotor, … (specs in typesHs3a.ts). */
+  | Hs3aSpec
+  /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
+  | Hs2eSpec
+  | Hs3dSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
@@ -1145,6 +1174,8 @@ export type Representation =
       colors?: string[];
       /** Parts that make a named value (fresh = frozen + liquid): pulled out and bracketed. */
       group?: { id: string; parts: string[] };
+      /** H109: one cell-cycle stage per part, drawn beside its name (`typesHs3d.ts`). */
+      stages?: PieStage[];
     }
   /**
    * Fraction × fraction as an area model: a unit square cut into `first.den` columns and
@@ -1243,7 +1274,7 @@ export type Representation =
    * `second` point with the jump between the two (`change`). Shown from `min` to `max`, growing
    * to fit.
    */
-  | {
+  | (IntegerLineHs2a & {
       kind: 'integerLine';
       value: string;
       opposite?: string;
@@ -1286,14 +1317,16 @@ export type Representation =
        * second = center + radius). `test` is a number checked in both parts.
        */
       compound?: {
-        join: 'and' | 'or';
-        closed?: [boolean, boolean];
+        /** H91: 'equal', |x − center| = radius: two closed dots at c ± d, nothing shaded. */
+        join: 'and' | 'or' | 'equal';
+        /** H90: or a value id holding each bound's sign code (2 ≤ and 4 ≥ closed). */
+        closed?: [boolean | string, boolean | string];
         center?: string;
         radius?: string;
         letter?: string;
         test?: string;
       };
-    }
+    })
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {
       kind: 'percentBar';
@@ -1309,6 +1342,8 @@ export type Representation =
        * (a negative percent or a smaller total is down) unless it is given.
        */
       change?: { total: string; direction?: 'up' | 'down'; bars?: 2 | 3 };
+      /** Grade 9 (H104): a second percent (a value id) marked on the same bar, its own band. */
+      second?: string;
     }
   /**
    * A table of equivalent ratios: the parts `first` : `second`, rows 1–4 times them (or `rows`)
@@ -1474,6 +1509,8 @@ export type Representation =
       third?: string;
       total?: string;
       names?: string[][];
+      /** H105: names by a stage's size, for any stage with that many outcomes ({ 2: ['H', 'T'] }). */
+      namesBySize?: Record<number, string[]>;
       stages?: string[];
       path?: number[];
       chance?: string;
@@ -1570,7 +1607,7 @@ export type Representation =
       inheritance?: PunnettInheritance;
     }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
-  | {
+  | ({
       kind: 'table';
       sweep: string;
       output: string;
@@ -1581,7 +1618,7 @@ export type Representation =
       named?: { param: string; names: Record<number, string> };
       /** A name for each swept row ("Moon", "Mars"), in a first column. */
       rowNames?: string[];
-    }
+    } & TableHs3b)
   /** Grades 9–12 (H20): a two-way frequency table (spec in `typesHse.ts`). */
   | { kind: 'table'; twoWay: TwoWaySpec }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */

@@ -4,6 +4,14 @@
  * explore figures. A `NumOrVar` field is a fixed number or a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
+import {
+  hs2fSpecVars,
+  type BalanceSpec,
+  type HrMassSpec,
+  type MagnitudeSpec,
+  type ParcelSpec,
+  type StripesSpec,
+} from './typesHs2f';
 
 // ── Calculator pictures ──
 
@@ -61,7 +69,7 @@ export interface EpicenterSpec {
   stations: [QuakeStation, QuakeStation, QuakeStation];
 }
 
-export type EarthLayersSpec = EarthSectionSpec | SeismogramSpec | EpicenterSpec;
+export type EarthLayersSpec = EarthSectionSpec | SeismogramSpec | EpicenterSpec | MagnitudeSpec;
 
 /** The rocks a dated cliff draws: sediments, a volcanic ash bed and a lava flow. */
 export type DatedRock =
@@ -98,6 +106,12 @@ export interface RockDatingSpec {
       daughterName: string;
       /** Half-lives gone by, when the page names them (parent = 100 × (1/2)ⁿ). */
       halfLives?: NumOrVar;
+      /**
+       * A parent that decays two ways (H103): `share` percent of the decayed atoms become this
+       * second daughter and the rest `daughterName`. Potassium-40: { name: 'calcium-40',
+       * share: 89.3 }, so only 10.7 % of it becomes argon-40.
+       */
+      second?: { name: string; share: number };
     };
   };
 }
@@ -136,7 +150,7 @@ export interface TidesSpec {
   fixed?: boolean;
 }
 
-export type OceanProfileSpec = OceanSonarSpec | TidesSpec;
+export type OceanProfileSpec = OceanSonarSpec | TidesSpec | StripesSpec;
 
 /**
  * The atmosphere (H76), `profile` mode: temperature against altitude to 120 km, the troposphere,
@@ -171,7 +185,8 @@ export interface PressureMapSpec {
   hemisphere?: 'north' | 'south';
 }
 
-export type AtmosphereLayersSpec = AtmosphereProfileSpec | PressureMapSpec;
+export type AtmosphereLayersSpec =
+  AtmosphereProfileSpec | PressureMapSpec | ParcelSpec | BalanceSpec;
 
 /**
  * The Hertzsprung–Russell diagram (H79): surface temperature (K) across, hot on the left, and
@@ -230,7 +245,8 @@ export type HslSpec =
   | RockDatingSpec
   | OceanProfileSpec
   | AtmosphereLayersSpec
-  | HrDiagramSpec;
+  | HrDiagramSpec
+  | HrMassSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hslSpecVars(r: HslSpec): string[] {
@@ -240,16 +256,20 @@ export function hslSpecVars(r: HslSpec): string[] {
     case 'earthLayers':
       if (r.mode === 'section') return ids([r.distance]);
       if (r.mode === 'seismogram') return ids([r.km, r.vp, r.vs, r.lag]);
+      if (r.mode === 'magnitude') return hs2fSpecVars(r);
       return ids(r.stations.map((s) => s.r));
     case 'oceanProfile':
+      if (r.mode === 'stripes') return hs2fSpecVars(r);
       return r.mode === 'profile' ? ids([r.depth]) : ids([r.angle, r.range]);
     case 'hrDiagram':
+      if ('mass' in r) return hs2fSpecVars(r);
       return ids([r.temperature, r.luminosity, r.radius]);
     case 'expandingUniverse':
       return r.mode === 'stretch'
         ? ids([r.scale, r.distance, r.after])
         : ids([r.distance, r.speed, r.constant]);
     case 'atmosphereLayers':
+      if (r.mode === 'parcel' || r.mode === 'balance') return hs2fSpecVars(r);
       return r.mode === 'profile'
         ? ids([r.altitude, r.temperature, r.ground])
         : ids([r.high, r.low, r.distance]);
@@ -313,6 +333,11 @@ export interface GreenhouseScene {
   co2?: 'none' | 'preindustrial' | 'today';
   /** The zone lit (a `zones` view). */
   lit?: 'tropical' | 'temperate' | 'polar';
+  /**
+   * An `energy` view (H103): ash and smoke particles high in the air reflect some sunlight back
+   * to space before it reaches the ground, and the thermometer reads about 0.5 °C cooler.
+   */
+  particles?: boolean;
 }
 
 export type HslFigure =

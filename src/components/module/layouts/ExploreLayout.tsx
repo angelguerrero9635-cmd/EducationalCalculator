@@ -24,10 +24,14 @@ import { MagnetsFigure, PlanetsFigure } from './figures8';
 import { StudyDesignFigure } from './studyDesignFigure';
 import { CladogramFigure } from './cladogramFigure';
 import { NitrogenCycleFigure } from './nitrogenCycleFigure';
+import { DichotomousKeyFigure } from './dichotomousKeyFigure';
 import { FeedbackLoopFigure } from './feedbackLoopFigure';
+import { GeneExpressionFigure } from './geneExpressionFigure';
 import { ImmuneStagesFigure } from './immuneStagesFigure';
 import { GalvanicFigure } from './galvanicFigure';
 import { HslFigureView } from './hslFigures';
+import { SpectraFigure } from './spectraFigure';
+import { Hs3cFigureView } from './hs3cFigures';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -38,6 +42,8 @@ import { CellFigure, Particles } from './figuresR4h';
 import { ConeFigure } from './coneFigure';
 import { MacroFigure } from './macroFigure';
 import { OrganelleFigure } from './organelleFigure';
+import { GelFigure } from './gelFigure';
+import { ReflexArcFigure } from './reflexArcFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -110,6 +116,10 @@ function FigureView({
     case 'oceanCurrents':
     case 'greenhouse':
       return <HslFigureView figure={figure} scene={scene} />;
+    case 'spectra':
+      return <SpectraFigure scene={scene.spectra ?? { star: [] }} />;
+    case 'earthLayers':
+      return <Hs3cFigureView figure={figure} scene={scene} />;
     case 'parts':
       if (figure.drawing) {
         return (
@@ -176,7 +186,7 @@ function FigureView({
     case 'leafCell':
       return <LeafCellFigure scene={scene.leafCell ?? { process: 'photosynthesis' }} c={c} />;
     case 'carbonCycle':
-      return <CarbonCycleFigure carbon={scene.carbon ?? {}} c={c} />;
+      return <CarbonCycleFigure carbon={scene.carbon ?? {}} c={c} volcano={figure.volcano} />;
     case 'pedigree':
       return <PedigreeFigure people={figure.people} family={scene.family ?? {}} />;
     case 'molecules':
@@ -205,6 +215,14 @@ function FigureView({
       return <ImmuneStagesFigure stage={scene.immune?.stage} />;
     case 'electrochemicalCell':
       return <GalvanicFigure scene={scene.galvanic ?? { metals: ['Zn', 'Cu'] }} />;
+    case 'geneExpression':
+      return <GeneExpressionFigure gene={scene.gene ?? { control: 'repressor' }} />;
+    case 'dichotomousKey':
+      return <DichotomousKeyFigure steps={figure.steps} scene={scene.key ?? {}} />;
+    case 'gel':
+      return <GelFigure figure={figure} scene={scene.gel ?? {}} />;
+    case 'reflexArc':
+      return <ReflexArcFigure scene={scene.reflex ?? {}} />;
   }
 }
 

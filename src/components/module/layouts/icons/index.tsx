@@ -23,6 +23,19 @@ import { HI_ICONS } from '@/data/modules/layouts/icons/hi';
 import { HJ_ICONS } from '@/data/modules/layouts/icons/hj';
 import { HK_ICONS } from '@/data/modules/layouts/icons/hk';
 import { HL_ICONS } from '@/data/modules/layouts/icons/hl';
+import { H2A_ICONS } from '@/data/modules/layouts/icons/h2a';
+import { H2B_ICONS } from '@/data/modules/layouts/icons/h2b';
+import { H2C_ICONS } from '@/data/modules/layouts/icons/h2c';
+import { H2D_ICONS } from '@/data/modules/layouts/icons/h2d';
+import { H2E_ICONS } from '@/data/modules/layouts/icons/h2e';
+import { H2F_ICONS } from '@/data/modules/layouts/icons/h2f';
+import { H2G_ICONS } from '@/data/modules/layouts/icons/h2g';
+import { H2H_ICONS } from '@/data/modules/layouts/icons/h2h';
+import { H3A_ICONS } from '@/data/modules/layouts/icons/h3a';
+import { H3B_ICONS } from '@/data/modules/layouts/icons/h3b';
+import { H3C_ICONS } from '@/data/modules/layouts/icons/h3c';
+import { H3D_ICONS } from '@/data/modules/layouts/icons/h3d';
+import { H3E_ICONS } from '@/data/modules/layouts/icons/h3e';
 
 import { R3AIcon } from './r3a';
 import { R3BIcon } from './r3b';
@@ -46,6 +59,19 @@ import { HIIcon } from './hi';
 import { HJIcon } from './hj';
 import { HKIcon } from './hk';
 import { HLIcon } from './hl';
+import { H2AIcon } from './h2a';
+import { H2BIcon } from './h2b';
+import { H2CIcon } from './h2c';
+import { H2DIcon } from './h2d';
+import { H2EIcon } from './h2e';
+import { H2FIcon } from './h2f';
+import { H2GIcon } from './h2g';
+import { H2HIcon } from './h2h';
+import { H3AIcon } from './h3a';
+import { H3BIcon } from './h3b';
+import { H3CIcon } from './h3c';
+import { H3DIcon } from './h3d';
+import { H3EIcon } from './h3e';
 import type { IconProps } from './types';
 
 const GROUPS: [readonly string[], ComponentType<IconProps>][] = [
@@ -71,6 +97,19 @@ const GROUPS: [readonly string[], ComponentType<IconProps>][] = [
   [HJ_ICONS, HJIcon],
   [HK_ICONS, HKIcon],
   [HL_ICONS, HLIcon],
+  [H2A_ICONS, H2AIcon],
+  [H2B_ICONS, H2BIcon],
+  [H2C_ICONS, H2CIcon],
+  [H2D_ICONS, H2DIcon],
+  [H2E_ICONS, H2EIcon],
+  [H2F_ICONS, H2FIcon],
+  [H2G_ICONS, H2GIcon],
+  [H2H_ICONS, H2HIcon],
+  [H3A_ICONS, H3AIcon],
+  [H3B_ICONS, H3BIcon],
+  [H3C_ICONS, H3CIcon],
+  [H3D_ICONS, H3DIcon],
+  [H3E_ICONS, H3EIcon],
 ];
 
 export function Round3Icon({ icon, ink }: IconProps): ReactNode {

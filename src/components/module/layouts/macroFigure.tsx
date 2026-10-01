@@ -12,13 +12,14 @@ import type { ReactNode } from 'react';
 import { Circle, G, Line, Path, Polygon, Rect } from 'react-native-svg';
 
 import { watersOf, type MacroScene } from '@/data/modules/typesHsg';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette, type Palette } from '@/theme';
 
 import { ChartText } from '../reps/common';
 import { BOARD_W, Board, CurveArrow, HaloText } from './earthKit';
 
 /** Monomer and polymer names, by kind and chain length. */
-const NAMES: Record<MacroScene['kind'], { mono: (n: number) => string; poly: string[] }> = {
+const NAMES: Record<MacroScene['kind'], { mono: (n: string) => string; poly: string[] }> = {
   carbohydrate: {
     mono: (n) => `${n} glucose molecules (monosaccharides)`,
     poly: ['Maltose, a disaccharide', 'Part of a starch chain (a polysaccharide)'],
@@ -48,11 +49,28 @@ const ROW: Record<MacroScene['kind'], { mono: [number, number]; poly: [number, n
 const ARROW_H = 76;
 const TITLE = 26;
 
-export function MacroFigure({ macro }: { macro: MacroScene }) {
+/**
+ * `total` (H100, the calculator picture): the monomers a value holds. Past 4 the figure draws the
+ * first two and the last with "…" between them, and writes the count and the water given off;
+ * `faded` draws a count not typed yet ("?"). Without them the explore figure is as it was.
+ */
+export function MacroFigure({
+  macro,
+  total,
+  faded,
+}: {
+  macro: MacroScene;
+  total?: number;
+  faded?: boolean;
+}) {
   const c = usePalette();
   const kind = macro.kind;
-  const n = kind === 'lipid' ? 3 : Math.min(4, Math.max(2, macro.count ?? 3));
-  const waters = watersOf(macro);
+  const lipid = kind === 'lipid';
+  // A long chain draws its first two units and its last, "…" between.
+  const n = lipid ? 3 : (total ?? 0) > 4 ? 3 : Math.min(4, Math.max(2, total ?? macro.count ?? 3));
+  const count = lipid || total === undefined ? n : total;
+  const elide = !lipid && count > 4;
+  const waters = lipid || total === undefined ? watersOf(macro) : Math.max(0, total - 1);
   const split = !!macro.split;
   const { mono, poly } = ROW[kind];
   const [[hTop, cTop], [hBottom, cBottom]] = split ? [poly, mono] : [mono, poly];
@@ -61,18 +79,46 @@ export function MacroFigure({ macro }: { macro: MacroScene }) {
   const yBottomTitle = yArrow + ARROW_H + 10;
   const yBottom = yBottomTitle + TITLE - 8;
   const height = yBottom + hBottom + 10;
-  const monoTitle = NAMES[kind].mono(n);
-  const polyTitle = NAMES[kind].poly[n === 2 || kind === 'lipid' ? 0 : 1]!;
-  const monomers = (y: number) => <Monomers kind={kind} n={n} y={y} lit={!split} c={c} />;
-  const polymer = (y: number) => <Polymer kind={kind} n={n} y={y} fold={!split} c={c} />;
+  const monoTitle = NAMES[kind].mono(faded ? '?' : formatNumber(count));
+  const polyTitle = NAMES[kind].poly[count === 2 || lipid ? 0 : 1]!;
+  const monomers = (y: number) => (
+    <Monomers kind={kind} n={n} y={y} lit={!split} elide={elide} c={c} />
+  );
+  const polymer = (y: number) => (
+    <Polymer kind={kind} n={n} y={y} fold={!split} elide={elide} c={c} />
+  );
   return (
     <Board height={height}>
-      <Title y={TITLE - 6} text={split ? polyTitle : monoTitle} c={c} />
-      {split ? polymer(yTop + cTop) : monomers(yTop + cTop)}
-      <ArrowStage y={yArrow} split={split} waters={waters} c={c} />
-      <Title y={yBottomTitle + 4} text={split ? monoTitle : polyTitle} c={c} />
-      {split ? monomers(yBottom + cBottom) : polymer(yBottom + cBottom)}
+      <G opacity={faded ? 0.35 : 1}>
+        <Title y={TITLE - 6} text={split ? polyTitle : monoTitle} c={c} />
+        {split ? polymer(yTop + cTop) : monomers(yTop + cTop)}
+        <ArrowStage y={yArrow} split={split} waters={waters} faded={faded} c={c} />
+        <Title y={yBottomTitle + 4} text={split ? monoTitle : polyTitle} c={c} />
+        {split ? monomers(yBottom + cBottom) : polymer(yBottom + cBottom)}
+      </G>
     </Board>
+  );
+}
+
+/** Extra room where a long chain is elided ("…" before the last unit). */
+const ELIDE = 26;
+/** x of unit i: `pitch` apart from `x0`, the last pushed on past the "…" when elided. */
+const spread = (n: number, x0: number, pitch: number, elide: boolean) =>
+  Array.from({ length: n }, (_, i) => x0 + i * pitch + (elide && i === n - 1 ? ELIDE : 0));
+
+/** The "…" of an elided chain, centered at x. */
+function Dots({ x, y, c }: { x: number; y: number; c: Palette }) {
+  return (
+    <ChartText
+      x={x}
+      y={y}
+      fontSize={chart.emphasis + 2}
+      fontWeight="800"
+      textAnchor="middle"
+      fill={c.chartInk}
+    >
+      …
+    </ChartText>
   );
 }
 
@@ -96,16 +142,20 @@ function ArrowStage({
   y,
   split,
   waters,
+  faded,
   c,
 }: {
   y: number;
   split: boolean;
   waters: number;
+  faded?: boolean;
   c: Palette;
 }) {
   const x = 48;
-  const words = `${waters} H₂O ${split ? 'added' : 'given off'}`;
+  const words = `${faded ? '?' : formatNumber(waters)} H₂O ${split ? 'added' : 'given off'}`;
   const wx = 70 + words.length * chart.value * 0.58 + 22;
+  // Past 4 the first three are drawn, then "…" (the count is written).
+  const drawn = waters > 4 ? 3 : waters;
   return (
     <G>
       <CurveArrow a={[x, y + 6]} b={[x, y + ARROW_H - 6]} c={c} color={c.chartInk} halo={false} />
@@ -115,9 +165,10 @@ function ArrowStage({
       <ChartText x={70} y={y + 54} fontSize={chart.value} fill={c.chartInk}>
         {words}
       </ChartText>
-      {Array.from({ length: waters }, (_, i) => (
+      {Array.from({ length: drawn }, (_, i) => (
         <Water key={i} x={wx + i * 26} y={y + 48} c={c} />
       ))}
+      {drawn < waters ? <Dots x={wx + drawn * 26 + 2} y={y + 54} c={c} /> : null}
     </G>
   );
 }
@@ -510,16 +561,19 @@ function Monomers({
   n,
   y,
   lit,
+  elide = false,
   c,
 }: {
   kind: MacroScene['kind'];
   n: number;
   y: number;
   lit: boolean;
+  elide?: boolean;
   c: Palette;
 }): ReactNode {
-  const slot = (BOARD_W - 20) / n;
-  const xs = Array.from({ length: n }, (_, i) => 10 + slot * (i + 0.5));
+  const slot = (BOARD_W - 20 - (elide ? ELIDE : 0)) / n;
+  const xs = spread(n, 10 + slot / 2, slot, elide);
+  const dots = elide ? <Dots x={(xs[n - 2]! + xs[n - 1]!) / 2} y={y + 6} c={c} /> : null;
   const joins = (i: number, side: 'left' | 'right') => lit && (side === 'left' ? i > 0 : i < n - 1);
   // Each monomer on its own card: separate molecules until they join.
   const card = (x: number, top: number, bottom: number) => (
@@ -538,6 +592,7 @@ function Monomers({
     case 'carbohydrate':
       return (
         <G>
+          {dots}
           {xs.map((x, i) => (
             <G key={i}>
               {card(x, y - 21, y + 21)}
@@ -558,6 +613,7 @@ function Monomers({
     case 'protein':
       return (
         <G>
+          {dots}
           {xs.map((x, i) => (
             <G key={i}>
               {card(x, y - 25, y + 26)}
@@ -578,6 +634,7 @@ function Monomers({
     case 'nucleicAcid':
       return (
         <G>
+          {dots}
           {xs.map((x, i) => (
             <G key={i}>
               {card(x, y - 36, y + 34)}
@@ -620,26 +677,39 @@ function Polymer({
   n,
   y,
   fold,
+  elide = false,
   c,
 }: {
   kind: MacroScene['kind'];
   n: number;
   y: number;
   fold: boolean;
+  elide?: boolean;
   c: Palette;
 }): ReactNode {
   const bond = { stroke: c.chartHighlight, strokeWidth: chart.strokeHeavy };
+  const gap = elide ? ELIDE : 0;
+  /** The last link of an elided chain: short stubs either side of "…". */
+  const elided = (i: number) => elide && i === n - 2;
   switch (kind) {
     case 'carbohydrate': {
       const pitch = 58;
-      const span = (n - 1) * pitch;
+      const span = (n - 1) * pitch + gap;
       const x0 = BOARD_W / 2 - span / 2;
-      const xs = Array.from({ length: n }, (_, i) => x0 + i * pitch);
+      const xs = spread(n, x0, pitch, elide);
       return (
         <G>
           {xs.slice(1).map((x, i) => {
             const a = xs[i]! + RING;
             const b = x - RING;
+            if (elided(i))
+              return (
+                <G key={i}>
+                  <Line x1={a} y1={y} x2={a + 8} y2={y} {...bond} />
+                  <Line x1={b - 8} y1={y} x2={b} y2={y} {...bond} />
+                  <Dots x={(a + b) / 2} y={y + 5} c={c} />
+                </G>
+              );
             return (
               <G key={i}>
                 <Line x1={a} y1={y} x2={b} y2={y} {...bond} />
@@ -658,15 +728,23 @@ function Polymer({
     }
     case 'protein': {
       const pitch = 52;
-      const span = (n - 1) * pitch;
+      const span = (n - 1) * pitch + gap;
       const x0 = fold ? 40 : BOARD_W / 2 - span / 2;
-      const xs = Array.from({ length: n }, (_, i) => x0 + i * pitch);
+      const xs = spread(n, x0, pitch, elide);
       const cy = y + 6;
       return (
         <G>
-          {xs.slice(1).map((x, i) => (
-            <Line key={i} x1={xs[i]! + 10} y1={cy} x2={x - 10} y2={cy} {...bond} />
-          ))}
+          {xs.slice(1).map((x, i) =>
+            elided(i) ? (
+              <G key={i}>
+                <Line x1={xs[i]! + 10} y1={cy} x2={xs[i]! + 16} y2={cy} {...bond} />
+                <Line x1={x - 16} y1={cy} x2={x - 10} y2={cy} {...bond} />
+                <Dots x={(xs[i]! + x) / 2} y={cy + 5} c={c} />
+              </G>
+            ) : (
+              <Line key={i} x1={xs[i]! + 10} y1={cy} x2={x - 10} y2={cy} {...bond} />
+            ),
+          )}
           {xs.map((x, i) => (
             <AminoAcid key={i} cx={x} cy={cy} i={i} c={c} />
           ))}
@@ -703,15 +781,23 @@ function Polymer({
     }
     case 'nucleicAcid': {
       const pitch = 60;
-      const span = (n - 1) * pitch;
+      const span = (n - 1) * pitch + gap;
       const x0 = BOARD_W / 2 - span / 2 + 6;
-      const xs = Array.from({ length: n }, (_, i) => x0 + i * pitch);
+      const xs = spread(n, x0, pitch, elide);
       const cy = y - 8;
       return (
         <G>
-          {xs.slice(1).map((x, i) => (
-            <Line key={i} x1={xs[i]! + 10} y1={cy - 3} x2={x - 30} y2={cy - 14} {...bond} />
-          ))}
+          {xs.slice(1).map((x, i) =>
+            elided(i) ? (
+              <G key={i}>
+                <Line x1={xs[i]! + 10} y1={cy - 3} x2={xs[i]! + 18} y2={cy - 5} {...bond} />
+                <Line x1={x - 38} y1={cy - 12} x2={x - 30} y2={cy - 14} {...bond} />
+                <Dots x={(xs[i]! + x - 20) / 2} y={cy - 2} c={c} />
+              </G>
+            ) : (
+              <Line key={i} x1={xs[i]! + 10} y1={cy - 3} x2={x - 30} y2={cy - 14} {...bond} />
+            ),
+          )}
           {xs.map((x, i) => (
             <Nucleotide key={i} cx={x} cy={cy} base={BASES[i % 4]!} c={c} />
           ))}

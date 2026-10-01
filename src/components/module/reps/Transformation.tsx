@@ -5,7 +5,10 @@ import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 import type { Mirror, NumOrVar, TransformationSpec } from '@/data/modules/typesGraphs';
 import { imageOf, type MoveValues, type Pt } from './transform';
 import { symmetryOf } from './transformHsf';
+import { mirrorOf } from './hs2h';
 import { readMove, symmetryText, SymmetryMarks } from './TransformationHsf';
+import { PointPairs } from './TransformationHs3b';
+import { ownCenter, pointSymmetryText } from './transformHs3b';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -80,20 +83,30 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
   const pts = fig.map((p) => [p.x.value, p.y.value] as Pt);
   const figKnown = fig.every((p) => p.x.known && p.y.known);
   const none = { value: 0, known: true, text: '0' };
+  // H106: `about: 'center'` turns about the figure's own center (no center values).
+  const own = spec.about === 'center' ? ownCenter(pts) : undefined;
   const center =
     spec.move === 'rotate' || spec.move === 'dilate'
-      ? spec.center
-        ? { x: read(spec.center[0]), y: read(spec.center[1]) }
-        : { x: none, y: none }
+      ? own
+        ? {
+            x: { value: own[0], known: figKnown, text: coef(own[0]) },
+            y: { value: own[1], known: figKnown, text: coef(own[1]) },
+          }
+        : spec.center
+          ? { x: read(spec.center[0]), y: read(spec.center[1]) }
+          : { x: none, y: none }
       : undefined;
   const right = spec.move === 'translate' ? read(spec.right) : none;
   const up = spec.move === 'translate' ? read(spec.up) : none;
-  const mirror = spec.move === 'reflect' ? spec.mirror : undefined;
+  // H105: a value (1 or −1) may pick the mirror y = x or y = −x.
+  const readKnown = (id: string) => (rep.known(id) ? rep.shown(id) : undefined);
+  const mirror = spec.move === 'reflect' ? mirrorOf(spec, readKnown) : undefined;
+  const slopeVal = spec.move === 'reflect' && spec.slope ? read(spec.slope) : undefined;
   const lineVal =
     mirror && typeof mirror === 'object' ? read('x' in mirror ? mirror.x : mirror.y) : undefined;
   const angle = spec.move === 'rotate' ? read(spec.angle) : none;
   const factor = spec.move === 'dilate' ? read(spec.factor) : { ...none, value: 1 };
-  const moveKnown = [right, up, angle, factor, center?.x, center?.y, lineVal].every(
+  const moveKnown = [right, up, angle, factor, center?.x, center?.y, lineVal, slopeVal].every(
     (r) => !r || r.known,
   );
   const v = {
@@ -133,7 +146,7 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
           ? [spec.factor, ...(spec.center ?? [])]
           : mirror && typeof mirror === 'object'
             ? ['x' in mirror ? mirror.x : mirror.y]
-            : []
+            : [spec.slope]
   ).filter((x): x is string => typeof x === 'string');
   const figVars = spec.figure.flat().filter((x): x is string => typeof x === 'string');
   const pinned = (except: string[]) =>
@@ -181,6 +194,7 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
             ? `Each side is ${coef(Math.abs(v.factor))} times as long; the angles stay the same.`
             : 'The image has the same side lengths and angles.',
           ...(sym ? [symmetryText(sym)] : []),
+          ...(own ? [pointSymmetryText(pts, own)] : []),
         ].join(' · ');
 
   return (
@@ -524,6 +538,7 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
                     strokeWidth={chart.stroke + 0.5}
                   />
                 ) : null}
+                {own && known ? <PointPairs pts={pts} center={own} P={P} /> : null}
                 {sym ? (
                   <SymmetryMarks s={sym} P={P} reach={symReach} box={[f.x, f.y]} w={w} h={h} />
                 ) : null}

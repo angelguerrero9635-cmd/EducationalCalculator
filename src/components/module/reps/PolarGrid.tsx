@@ -13,6 +13,7 @@ import { HsdGrid, niceStep, niceWindow } from './hsdGrid';
 import { angleText, short } from './hsdKit';
 import { MathChip, MathText } from './hsdText';
 import { CURVE_FIELDS, PATH_FIELDS, pathAt, petals, polarR, polarSpan } from './polar';
+import { polarConicText } from './polarConic';
 
 const RAD = Math.PI / 180;
 
@@ -30,6 +31,8 @@ function curveText(spec: NonNullable<PolarGridSpec['curve']>, v: Record<string, 
     }
     case 'spiral':
       return `r = ${short(v.a!)}θ`;
+    case 'conic': // H106 (drawn by PolarConic)
+      return polarConicText({ k: v.k!, m: v.m ?? 1, n: v.n!, fn: spec.fn ?? 'cos' });
   }
 }
 

@@ -4,6 +4,17 @@
  * `NumOrVar` field is a fixed number or a variable id; every other string is a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
+import type { PlanetName } from './typesPhysics8';
+import {
+  equipotentialVars,
+  launchVars,
+  movingChargeVars,
+  seesawVars,
+  type ChargeEquipotentials,
+  type MovingCharge,
+  type PlateLaunch,
+  type SeesawOption,
+} from './typesHs3a';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -34,8 +45,11 @@ export interface MotionKinematics {
   slope?: string;
   /** The position at time 0 (default 0). */
   position?: NumOrVar;
-  /** `false` leaves out the strobe diagram. */
-  strobe?: boolean;
+  /**
+   * `false` leaves out the strobe diagram; `'vertical'` (H102) stands it up in a column left of
+   * the graph, + up, for a dropped or thrown object.
+   */
+  strobe?: boolean | 'vertical';
   fixed?: boolean;
 }
 
@@ -52,7 +66,8 @@ export interface MotionKinematics {
 export interface ProjectileSpec {
   kind: 'projectile';
   speed: string;
-  angle: string;
+  /** H105: a number for a launch that never changes (0° off a ledge): no handle. */
+  angle: NumOrVar;
   height?: NumOrVar;
   g?: number;
   /** Flight time, range and maximum height, when the page names them. */
@@ -114,6 +129,12 @@ export interface FreeBodySpec {
   moving?: 'right' | 'left' | 'up' | 'down';
   net?: string;
   acceleration?: string;
+  /**
+   * Floor (H102): the block moves `displacement` d (m) to the right, bracketed under the floor,
+   * with the pull's part along it, F cos θ, dashed; `work` names W = Fd cos θ.
+   */
+  displacement?: NumOrVar;
+  work?: string;
   fixed?: boolean;
 }
 
@@ -131,11 +152,16 @@ export interface FreeBodySpec {
  *   F = Gm₁m₂/r² (drag the second mass for r: the arrows follow the inverse square);
  * - `kepler`: an orbit as an ellipse of `semiMajor` (AU) and `eccentricity`, the sun at one
  *   focus and the empty focus marked, perihelion and aphelion, and two sectors swept in equal
- *   times (1/8 of the period each, from Kepler's equation) with equal areas; T² = a³.
+ *   times (1/8 of the period each, from Kepler's equation) with equal areas; T² = a³;
+ * - `satellite` (H102): a satellite on a circular orbit of `radius` r (m) round a `central`
+ *   mass M (kg): v = √(GM/r) along the orbit, GM/r² toward the center, the period T = 2πr/v
+ *   (`speed`, `acceleration` and `period` name them). The central `body` is drawn in its
+ *   colors (default Earth), to scale when its `bodyRadius` (m) is given. Drag the satellite
+ *   for r.
  */
 export interface CircularMotionSpec {
   kind: 'circularMotion';
-  mode: 'string' | 'car' | 'gravity' | 'kepler';
+  mode: 'string' | 'car' | 'gravity' | 'kepler' | 'satellite';
   radius?: NumOrVar;
   speed?: NumOrVar;
   mass?: NumOrVar;
@@ -148,12 +174,21 @@ export interface CircularMotionSpec {
   /** Gravity: the two masses (kg) and the distance between their centers (m). */
   masses?: [NumOrVar, NumOrVar];
   distance?: NumOrVar;
-  /** Kepler: the semi-major axis in AU and the eccentricity (0 to 0.9). */
+  /** Kepler: the semi-major axis in AU and the eccentricity (0 to 0.97, Halley's Comet). */
   semiMajor?: NumOrVar;
   eccentricity?: NumOrVar;
+  /**
+   * Kepler (H110): the star's mass in Suns (M☉), for a planet round another star: the caption
+   * works a³ = M × T² in place of T² = a³, and the labels say star, closest and farthest.
+   */
+  starMass?: NumOrVar;
   /** Kepler: the closest and farthest distances from the sun (AU). */
   perihelion?: string;
   aphelion?: string;
+  /** Satellite: the central mass (kg), its look and its radius (m) for drawing to scale. */
+  central?: NumOrVar;
+  body?: PlanetName | 'sun';
+  bodyRadius?: NumOrVar;
   fixed?: boolean;
 }
 
@@ -167,20 +202,27 @@ export interface CircularMotionSpec {
  * - `stick`: they couple and move on together at (m₁v₁ + m₂v₂)/(m₁ + m₂) (kinetic energy lost);
  * - `elastic`: they bounce apart with the kinetic energy kept;
  * - `explode`: they start together at `before[0]` and a spring pushes them apart; `after[0]`
- *   is the first cart's velocity, the second's follows from the momentum.
+ *   is the first cart's velocity, the second's follows from the momentum;
+ * - `general` (H102): any collision, `after[0]` the first cart's velocity after (given), the
+ *   second's from the momentum; each cart's kinetic energy is labelled, and `lost` names the
+ *   kinetic energy lost (before − after).
  *
  * `after` names the values the page solves for (one for `stick`, two otherwise); the picture
  * works them out from the masses and the velocities before, and the harness checks the page's.
  */
 export interface CollisionSpec {
   kind: 'collision';
-  type: 'stick' | 'elastic' | 'explode';
+  type: 'stick' | 'elastic' | 'explode' | 'general';
   masses: [NumOrVar, NumOrVar];
   before: [NumOrVar, NumOrVar?];
   after?: [NumOrVar, NumOrVar?];
   /** The total momentum, and the kinetic energy before and after, when the page names them. */
   momentum?: string;
   energy?: [string, string];
+  /** `general`: the kinetic energy lost, before − after (H102). */
+  lost?: string;
+  /** H105, `explode`: the energy the spring gives, after − before, labelled between the carts. */
+  spring?: string;
   fixed?: boolean;
 }
 
@@ -212,6 +254,8 @@ export interface SimpleMachineSpec {
   efficiency?: NumOrVar;
   effortDistance?: string;
   loadDistance?: string;
+  /** H107: a balanced seesaw (lever only; `typesHs3a.ts`). */
+  seesaw?: SeesawOption;
   fixed?: boolean;
 }
 
@@ -356,13 +400,39 @@ export type RayDiagramSpec = { kind: 'rayDiagram'; fixed?: boolean } & (
  * N·m²/C²) on each, equal and opposite: apart for like charges, together for unlike; drag the
  * second charge for r (the arrows follow the inverse square). With one charge, the field
  * E = k|q|/r² at a point r away (`field`, N/C), pointing away from + and toward −.
+ * With two charges and a `point` x (m from q₁ along the line toward q₂; H102), the field
+ * there from each charge, dashed, and their sum E (`field`, N/C, signed: + toward q₂'s side).
  */
 export interface ChargesSpec {
   kind: 'charges';
+  mode?: 'points';
   charges: [NumOrVar, NumOrVar?];
   distance: NumOrVar;
   force?: string;
   field?: string;
+  point?: NumOrVar;
+  /** H107: equal-potential circles round one charge (`typesHs3a.ts`). */
+  equipotentials?: ChargeEquipotentials;
+  fixed?: boolean;
+}
+
+/**
+ * `charges` mode `plates` (H102): two parallel plates `gap` d (m) apart with a potential
+ * difference `voltage` V (V) across them, the uniform field E = V/d (V/m, `field`) drawn as
+ * evenly spaced lines from + to −, and a `charge` q (C, signed; an electron −1.602 × 10⁻¹⁹)
+ * between them with its force F = qE (`force`, N, signed: + along the field).
+ */
+export interface ChargePlatesSpec {
+  kind: 'charges';
+  mode: 'plates';
+  voltage: NumOrVar;
+  /** Needed for the field; a `launch` may leave it out. */
+  gap?: NumOrVar;
+  field?: string;
+  charge?: NumOrVar;
+  force?: string;
+  /** H107: a charge let go at one plate, speeding across (`typesHs3a.ts`). */
+  launch?: PlateLaunch;
   fixed?: boolean;
 }
 
@@ -429,6 +499,8 @@ export type InductionSpec = { kind: 'induction'; fixed?: boolean } & (
       current?: NumOrVar;
       outputCurrent?: string;
     }
+  /** H107: a moving charge in the field (`typesHs3a.ts`). */
+  | MovingCharge
 );
 
 // ─── H70 spectrum options: spectral lines, redshift, photons ────────────────
@@ -446,7 +518,8 @@ export interface SpectrumLines {
   element: 'H' | 'He' | 'Na';
   mode: 'emission' | 'absorption';
   redshift?: NumOrVar;
-  line?: number;
+  /** H105: 'rest' follows the `rest` value: the element's line nearest it (any Balmer line). */
+  line?: number | 'rest';
   rest?: string;
   velocity?: string;
 }
@@ -476,6 +549,7 @@ export type HskSpec =
   | HeatEngineSpec
   | RayDiagramSpec
   | ChargesSpec
+  | ChargePlatesSpec
   | InductionSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
@@ -498,6 +572,8 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.along,
         r.net,
         r.acceleration,
+        r.displacement,
+        r.work,
       );
     case 'circularMotion':
       return ids(
@@ -511,11 +587,22 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.distance,
         r.semiMajor,
         r.eccentricity,
+        r.starMass,
         r.perihelion,
         r.aphelion,
+        r.central,
+        r.bodyRadius,
       );
     case 'collision':
-      return ids(...r.masses, ...r.before, ...(r.after ?? []), r.momentum, ...(r.energy ?? []));
+      return ids(
+        ...r.masses,
+        ...r.before,
+        ...(r.after ?? []),
+        r.momentum,
+        ...(r.energy ?? []),
+        r.lost,
+        r.spring,
+      );
     case 'simpleMachine':
       return ids(
         r.load,
@@ -529,11 +616,17 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.efficiency,
         r.effortDistance,
         r.loadDistance,
+        ...seesawVars(r.seesaw),
       );
     case 'heatEngine':
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
     case 'charges':
-      return ids(...r.charges, r.distance, r.force, r.field);
+      return r.mode === 'plates'
+        ? [...ids(r.voltage, r.gap, r.field, r.charge, r.force), ...launchVars(r.launch)]
+        : [
+            ...ids(...r.charges, r.distance, r.force, r.field, r.point),
+            ...equipotentialVars(r.equipotentials),
+          ];
     case 'induction':
       switch (r.mode) {
         case 'coil':
@@ -542,6 +635,8 @@ export function hskSpecVars(r: HskSpec): string[] {
           return ids(r.field, r.current, r.length, r.angle, r.force);
         case 'transformer':
           return ids(r.primary, r.secondary, r.voltage, r.output, r.current, r.outputCurrent);
+        case 'charge':
+          return movingChargeVars(r);
       }
       break;
     case 'rayDiagram':

@@ -4,6 +4,8 @@
  * number or a variable id.
  */
 
+import type { LineSystemHs2a, ShadeSign } from './typesHs2a';
+import type { LineSystemHs3b, TransformationHs3b } from './typesHs3b';
 import { secondMoveVars, type SecondMove } from './typesHsf';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
@@ -35,7 +37,9 @@ export interface LinearFunctionSpec {
   /** No handles: every value on the line is worked out from points the student typed. */
   fixed?: boolean;
   /** Grades 9–12: the inequality y (sign) mx + b, its half-plane shaded (see `LineOf.shade`). */
-  shade?: InequalitySign;
+  shade?: ShadeSign;
+  /** H105: a point tested in the inequality (solid when it is a solution), as `lineSystem.test`. */
+  test?: { x: NumOrVar; y: NumOrVar };
 }
 
 /**
@@ -43,7 +47,7 @@ export interface LinearFunctionSpec {
  * (none when parallel; the same line twice is every point). Each line's intercept (and a
  * slope point, when the slope is a variable) drags.
  */
-export interface LineSystemSpec {
+export interface LineSystemSpec extends LineSystemHs2a, LineSystemHs3b {
   kind: 'lineSystem';
   lines: [LineOf, LineOf];
   /** The solution's x and y, when the module solves for them (the crossing is labelled). */
@@ -67,6 +71,8 @@ export interface LineSystemSpec {
 export type InequalitySign = '<' | '≤' | '>' | '≥';
 
 export interface LineOf {
+  /** H106: an x² coefficient a, making this y = ax² + mx + b, a parabola (`lineSystem`). */
+  square?: NumOrVar;
   slope: NumOrVar;
   intercept: NumOrVar;
   /** A short name for the line ("Gym A"); default the equation. */
@@ -82,7 +88,7 @@ export interface LineOf {
    * (above for > and ≥, below for < and ≤), the boundary dashed for < and > (left out) and
    * solid for ≤ and ≥; two shaded lines show their overlap, the system's solutions.
    */
-  shade?: InequalitySign;
+  shade?: ShadeSign;
 }
 
 /** One step of a function rule: add, subtract, multiply or divide by a number. */
@@ -139,12 +145,14 @@ export type TransformationSpec = {
   image2?: { x: string; y: string };
   /** Grades 9–12: the figure's lines of symmetry and its order of rotational symmetry. */
   symmetry?: boolean;
-} & (
-  | { move: 'translate'; right: NumOrVar; up: NumOrVar }
-  | { move: 'reflect'; mirror: Mirror }
-  | { move: 'rotate'; angle: NumOrVar; center?: [NumOrVar, NumOrVar] }
-  | { move: 'dilate'; factor: NumOrVar; center?: [NumOrVar, NumOrVar] }
-);
+} & TransformationHs3b &
+  (
+    | { move: 'translate'; right: NumOrVar; up: NumOrVar }
+    // H105: `slope`, a value holding 1 or −1, picks the mirror y = x or y = −x (`mirror` meanwhile).
+    | { move: 'reflect'; mirror: Mirror; slope?: string }
+    | { move: 'rotate'; angle: NumOrVar; center?: [NumOrVar, NumOrVar] }
+    | { move: 'dilate'; factor: NumOrVar; center?: [NumOrVar, NumOrVar] }
+  );
 
 /** The variable ids a spec above names (for the module tests). */
 export function graphSpecVars(
@@ -154,10 +162,11 @@ export function graphSpecVars(
     xs.filter((x): x is string => typeof x === 'string');
   switch (r.kind) {
     case 'linearFunction':
-      return ids(r.slope, r.intercept, r.point?.x, r.point?.y);
+      return ids(r.slope, r.intercept, r.point?.x, r.point?.y, r.test?.x, r.test?.y);
     case 'lineSystem':
       return ids(
-        ...r.lines.flatMap((l) => [l.slope, l.intercept]),
+        ...r.lines.flatMap((l) => [l.slope, l.intercept, l.square]),
+        ...(r.solutions ?? []).flatMap((q) => [q.x, q.y]),
         r.solution?.x,
         r.solution?.y,
         r.sum?.x,
@@ -177,7 +186,7 @@ export function graphSpecVars(
           : r.move === 'reflect'
             ? typeof r.mirror === 'object'
               ? ['x' in r.mirror ? r.mirror.x : r.mirror.y]
-              : []
+              : [r.slope]
             : r.move === 'rotate'
               ? [r.angle, ...(r.center ?? [])]
               : [r.factor, ...(r.center ?? [])];

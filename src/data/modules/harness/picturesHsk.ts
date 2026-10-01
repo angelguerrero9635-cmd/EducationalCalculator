@@ -5,10 +5,18 @@
  */
 import type { VariableDef } from '@/engine/types';
 import * as hm from '@/components/module/reps/hskMath';
+import { labLineIndex } from '@/components/module/reps/hs2h';
 
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
+import {
+  freeBodyWorkIssues,
+  platesIssues,
+  pointFieldIssues,
+  satelliteIssues,
+  strobeColumnIssues,
+} from './picturesHs2c';
 
 const {
   collisionOf,
@@ -38,10 +46,11 @@ export function motionKinematicsIssues(rep: MotionGraphSpec, val: Val): string[]
   const out: string[] = [];
   const k = rep.kinematics;
   if (!k || rep.graph !== 'speed') return out;
-  const [a, v0] = [val(rep.acceleration), read(val, rep.start, 0)];
+  const [a, v0] = [read(val, rep.acceleration), read(val, rep.start, 0)];
   const t1 = k.at ? val(k.at) : undefined;
   const v1 = k.slope ? val(k.slope) : undefined;
   if (k.view === 'position' && !k.at) out.push('a position view needs the tangent time `at`');
+  if (k.strobe === 'vertical') out.push(...strobeColumnIssues(val(rep.time)));
   if (t1 !== undefined && t1 < 0) out.push(`tangent time ${t1} is before the start`);
   if (t1 !== undefined && v1 !== undefined && a !== undefined && v0 !== undefined)
     if (!near(v1, v0 + a * t1)) out.push(`tangent slope ${v1} is not v₀ + a t₁ = ${v0 + a * t1}`);
@@ -65,7 +74,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
   };
   switch (rep.kind) {
     case 'projectile': {
-      const [v, th, h] = [si(rep.speed), si(rep.angle), read(si, rep.height, 0)];
+      const [v, th, h] = [si(rep.speed), read(si, rep.angle), read(si, rep.height, 0)];
       if (v !== undefined && v < 0) out.push(`projectile: launch speed ${v} is negative`);
       if (th !== undefined && (th < -90 || th > 90))
         out.push(`projectile: angle ${th}° is not from −90° to 90°`);
@@ -86,6 +95,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'freeBody': {
+      out.push(...freeBodyWorkIssues(rep, si));
       const m = si(rep.mass);
       if (m !== undefined && m < 0) out.push(`freeBody: mass ${m} is negative`);
       const th = read(si, rep.incline, 0);
@@ -140,6 +150,10 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'circularMotion': {
+      if (rep.mode === 'satellite') {
+        out.push(...satelliteIssues(rep, si));
+        break;
+      }
       if (rep.mode === 'gravity') {
         const [m1, m2] = (rep.masses ?? [1, 1]).map((x) => read(si, x));
         const d = read(si, rep.distance);
@@ -151,12 +165,16 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       if (rep.mode === 'kepler') {
         const [a, e] = [read(si, rep.semiMajor, 1), read(si, rep.eccentricity, 0)];
         if (a === undefined || e === undefined) break;
-        if (e < 0 || e > 0.95) out.push(`circularMotion: eccentricity ${e} is not from 0 to 0.95`);
+        if (e < 0 || e > 0.97) out.push(`circularMotion: eccentricity ${e} is not from 0 to 0.97`);
         if (a <= 0) out.push(`circularMotion: semi-major axis ${a} is not positive`);
-        if (a <= 0 || e < 0 || e > 0.95) break;
+        const M = read(si, rep.starMass, 1);
+        if (M === undefined) break;
+        if (M <= 0) out.push(`circularMotion: star mass ${M} is not positive`);
+        if (a <= 0 || e < 0 || e > 0.97 || M <= 0) break;
         same(rep.perihelion, a * (1 - e), 'perihelion a(1 − e)');
         same(rep.aphelion, a * (1 + e), 'aphelion a(1 + e)');
-        same(rep.period, Math.pow(a, 1.5), 'period (T² = a³)');
+        // Round the Sun T² = a³; round a star of M Suns a³ = M × T² (H110).
+        same(rep.period, Math.sqrt(a ** 3 / M), 'period (a³ = M × T²)');
         // The two shaded sectors: each 1/8 of the period, each 1/8 of the ellipse's area.
         const whole = Math.PI * a * a * Math.sqrt(1 - e * e);
         for (const M of [0, Math.PI]) {
@@ -181,7 +199,8 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       const [m1, m2] = rep.masses.map((x) => read(si, x));
       const v1 = read(si, rep.before[0]);
       const v2 = rep.type === 'explode' ? v1 : read(si, rep.before[1]);
-      const first = rep.type === 'explode' ? read(si, rep.after?.[0]) : 0;
+      const given = rep.type === 'explode' || rep.type === 'general';
+      const first = given ? read(si, rep.after?.[0]) : 0;
       if ([m1, m2, v1, v2, first].some((x) => x === undefined)) break;
       if (m1! <= 0 || m2! <= 0) {
         out.push('collision: a cart with no mass');
@@ -189,7 +208,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       }
       const [u1, u2] = collisionOf(rep.type, m1!, m2!, v1!, v2!, first);
       const a = rep.after ?? [];
-      if (rep.type !== 'explode') same(typeof a[0] === 'string' ? a[0] : undefined, u1, 'v₁ after');
+      if (!given) same(typeof a[0] === 'string' ? a[0] : undefined, u1, 'v₁ after');
       same(typeof a[1] === 'string' ? a[1] : undefined, u2, 'v₂ after');
       same(rep.momentum, m1! * v1! + m2! * v2!, 'total momentum');
       if (!near(m1! * u1 + m2! * u2, m1! * v1! + m2! * v2!))
@@ -197,6 +216,14 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       const ke = (m: number, v: number) => (m * v * v) / 2;
       same(rep.energy?.[0], ke(m1!, v1!) + ke(m2!, v2!), 'kinetic energy before');
       same(rep.energy?.[1], ke(m1!, u1) + ke(m2!, u2), 'kinetic energy after');
+      same(
+        rep.lost,
+        ke(m1!, v1!) + ke(m2!, v2!) - ke(m1!, u1) - ke(m2!, u2),
+        'kinetic energy lost',
+      );
+      // H105: an explosion's spring gives the kinetic energy gained.
+      if (rep.spring && rep.type !== 'explode') out.push('collision: spring energy on a collision');
+      same(rep.spring, ke(m1!, u1) + ke(m2!, u2) - ke(m1!, v1!) - ke(m2!, v2!), 'spring energy');
       if (rep.type === 'elastic' && !near(ke(m1!, u1) + ke(m2!, u2), ke(m1!, v1!) + ke(m2!, v2!)))
         out.push('collision: an elastic collision lost kinetic energy');
       break;
@@ -265,6 +292,11 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'charges': {
+      if (rep.mode === 'plates') {
+        out.push(...platesIssues(rep, si));
+        break;
+      }
+      out.push(...pointFieldIssues(rep, si));
       const [q1, q2] = rep.charges.map((x) => (x === undefined ? undefined : read(si, x)));
       const r = read(si, rep.distance);
       if (q1 === undefined || r === undefined) break;
@@ -473,9 +505,18 @@ function spectrumHsIssues(rep: Extract<Physics8, { kind: 'spectrum' }>, val: Val
   if (rep.lines) {
     const l = rep.lines;
     const lab = hm.SPECTRAL_LINES[l.element];
-    const ref = lab[Math.min(lab.length - 1, Math.max(0, l.line ?? 0))]!.nm;
+    // H105: `line: 'rest'` follows the rest value; that value must be one of the lines.
+    const r0 = l.rest ? val(l.rest) : undefined;
     const z = read(val, l.redshift, 0);
     if (z === undefined) return out;
+    const lam0 = val(rep.wavelength);
+    const ref =
+      lab[
+        labLineIndex(lab, l.line, r0 === undefined ? undefined : (r0 * m) / 1e-9, {
+          nm: lam0 === undefined ? undefined : (lam0 * m) / 1e-9,
+          z,
+        })
+      ]!.nm;
     if (z <= -1) out.push(`spectrum: redshift ${z} is not above −1`);
     check(l.rest, ref, 'lab wavelength');
     // Without a redshift the wavelength may be any of the element's lines.

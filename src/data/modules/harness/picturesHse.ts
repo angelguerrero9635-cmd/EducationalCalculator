@@ -48,8 +48,13 @@ export function scatterIssues(rep: Of<'scatter'>, val: Val): string[] {
       );
   }
   if (rep.residualOf) {
-    const p = rep.points[rep.residualOf.point];
-    if (!p) out.push(`there is no point ${rep.residualOf.point}`);
+    // H105: a value id holds the point's number, counted from 1.
+    const pick = rep.residualOf.point;
+    const k = typeof pick === 'string' ? val(pick) : pick + 1;
+    if (typeof pick === 'string' && k !== undefined && !Number.isInteger(k))
+      out.push(`point number ${k} is not a whole number`);
+    const p = k === undefined ? undefined : rep.points[Math.round(k) - 1];
+    if (!p && k !== undefined) out.push(`there is no point ${typeof pick === 'string' ? k : pick}`);
     const d = rep.residualOf.residual ? val(rep.residualOf.residual) : undefined;
     if (
       p &&
@@ -235,7 +240,7 @@ export function treeChanceIssues(t: TreeChances, val: Val): string[] {
   }
   if (!pA || pB.some((r) => !r)) return out;
   const leaf = (i: number, j: number) => pA[i]! * pB[i]![j]!;
-  if (t.path && t.chance) {
+  if (t.path && t.chance && !t.third) {
     const x = val(t.chance);
     const want = leaf(t.path[0], t.path[1]);
     if (x !== undefined && !close(x, want))
@@ -260,6 +265,7 @@ export function vennChanceIssues(v: VennChances, val: Val): string[] {
   const out: string[] = [];
   const [a, b, both] = [val(v.a), val(v.b), val(v.both)];
   if (v.result && !v.shade) out.push('a Venn result with nothing shaded');
+  if (v.counts) return out; // H97: counts, checked in picturesHs2g.ts
   if (a === undefined || b === undefined || both === undefined) return out;
   for (const [name, x] of [
     ['P(A)', a],

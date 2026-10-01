@@ -5,6 +5,8 @@
  * variable id. Formulas are written plainly ("H2O", "NH4+"); the pictures print subscripts.
  */
 import type { NumOrVar } from './typesGraphs';
+import { ionicChargeVars, type IonicCharges } from './typesHs3e';
+import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
 
 /** One conversion factor in a chain: `top` `topUnit` over `bottom` `bottomUnit` (1000 m / 1 km). */
 export interface ChainFactor {
@@ -180,6 +182,8 @@ export type LewisStructureSpec = { kind: 'lewisStructure' } & (
       metals?: NumOrVar;
       nonmetals?: NumOrVar;
       transferred?: string;
+      /** Round 3: the elements from the ions' charges (`typesHs3e.ts`, H108 part 2). */
+      charges?: IonicCharges;
     }
   | { mode: 'metallic'; element: string; atoms: NumOrVar; electrons?: string }
   | {
@@ -187,6 +191,8 @@ export type LewisStructureSpec = { kind: 'lewisStructure' } & (
       carbons: NumOrVar;
       bond?: 'single' | 'double' | 'triple';
       hydrogens?: string;
+      /** Round 2: methyl branches on an alkane (`typesHs2d.ts`, H101 part 9b). */
+      branches?: number[];
     }
 );
 
@@ -233,6 +239,8 @@ export interface MoleMapSpec {
     mass?: NumOrVar;
     molarMass?: NumOrVar;
   };
+  /** Round 2: two reactants from grams, the limiting one lit (`typesHs2d.ts`, H101). */
+  limiting?: MoleMapLimiting;
 }
 
 export type HsiSpec =
@@ -262,6 +270,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         r.particles,
         r.volume,
         ...(r.second ? [...r.second.ratio, r.second.moles, r.second.mass, r.second.molarMass] : []),
+        ...moleMapHs2dVars(r),
       );
     case 'vsepr':
       return r.mode === 'hbonds' ? ids(r.molecules, r.bonds) : ids(r.bonded, r.lone, r.angle);
@@ -270,7 +279,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         case 'molecule':
           return ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone);
         case 'ionic':
-          return ids(r.metals, r.nonmetals, r.transferred);
+          return ids(r.metals, r.nonmetals, r.transferred, ...ionicChargeVars(r.charges));
         case 'metallic':
           return ids(r.atoms, r.electrons);
         default:

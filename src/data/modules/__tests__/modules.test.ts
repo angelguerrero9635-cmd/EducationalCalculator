@@ -17,19 +17,31 @@ import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
+import { hs2aSpecVars } from '../typesHs2a';
+import { hs2eSpecVars } from '../typesHs2e';
+import { hs3dSpecVars } from '../typesHs3d';
+import { hs2gSpecVars } from '../typesHs2g';
+import { hs3bSpecVars } from '../typesHs3b';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
+import { chemDiagramVars } from '../typesHs2d';
 import { hslSpecVars } from '../typesHsl';
+import { hs2fSpecVars } from '../typesHs2f';
+import { hs3cSpecVars } from '../typesHs3c';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
+import { hs2cSpecVars } from '../typesHs2c';
+import { hs3aSpecVars } from '../typesHs3a';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
   switch (r.kind) {
+    case 'none':
+      return [];
     case 'numberLine':
       return [
         r.start,
@@ -56,6 +68,7 @@ function representationVars(r: Representation): string[] {
         ...(r.corners ? [r.corners] : []),
         ...(r.sideValues ?? []),
         ...(r.around ? [r.around] : []),
+        ...[r.apothem, r.angle, r.area].filter((x): x is string => !!x), // H106
       ];
     case 'balance':
       return [...r.left, ...r.right, ...(r.takeAway ? [r.takeAway] : [])];
@@ -288,6 +301,7 @@ function representationVars(r: Representation): string[] {
       ];
     case 'integerLine':
       return [
+        ...hs2aSpecVars(r),
         r.value,
         ...[r.opposite, r.absolute, r.second, r.change, r.jump?.by, r.jump?.result].filter(
           (x): x is string => !!x,
@@ -309,6 +323,7 @@ function representationVars(r: Representation): string[] {
         r.whole,
         ...(r.onePercent ? [r.onePercent] : []),
         ...(r.change ? [r.change.total] : []),
+        ...(r.second ? [r.second] : []),
       ];
     case 'ratioTable':
       return [r.first, r.second, r.times, ...r.amounts];
@@ -324,7 +339,7 @@ function representationVars(r: Representation): string[] {
         ...(r.quotient ? [r.quotient] : []),
       ];
     case 'venn':
-      if ('chances' in r) return vennChanceVars(r.chances);
+      if ('chances' in r) return [...vennChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'baseHeight':
       return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];
@@ -337,7 +352,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
-      if ('chances' in r) return treeChanceVars(r.chances);
+      if ('chances' in r) return [...treeChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];
@@ -388,7 +403,10 @@ function representationVars(r: Representation): string[] {
     case 'waterfall':
       return [...r.items.map((b) => b.var), r.total, ...(r.caption ?? [])];
     case 'rectangle':
-      return [r.length, r.width, ...(r.inside ? [r.inside] : []), ...(r.around ? [r.around] : [])];
+      return [
+        ...[r.length, r.width, r.inside, r.around],
+        ...[r.bounds?.error, r.bounds?.least, r.bounds?.greatest], // H106
+      ].filter((x): x is string => !!x);
     case 'grid100':
       return [
         r.percent,
@@ -403,6 +421,7 @@ function representationVars(r: Representation): string[] {
           (v): v is string => typeof v === 'string',
         ),
         ...circleSectorVars(r.sector),
+        ...[r.population?.people, r.population?.density].filter((x): x is string => !!x), // H106
       ];
     case 'scaleCopy':
       return [
@@ -439,7 +458,7 @@ function representationVars(r: Representation): string[] {
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'scatter':
       return [
-        ...[r.slope, r.intercept, r.r, r.residualOf?.residual].filter(
+        ...[r.slope, r.intercept, r.r, r.residualOf?.residual, r.residualOf?.point].filter(
           (x): x is string => typeof x === 'string',
         ),
         ...(r.at ? [r.at.x, r.at.y] : []),
@@ -473,9 +492,9 @@ function representationVars(r: Representation): string[] {
     case 'functionMachine':
     case 'mapping':
     case 'transformation':
-      return graphSpecVars(r);
+      return [...graphSpecVars(r), ...hs2aSpecVars(r)];
     case 'functionGraph':
-      return functionGraphVars(r);
+      return [...functionGraphVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r)];
     case 'energyPyramid':
     case 'generations':
       return lifeSpecVars(r);
@@ -501,7 +520,7 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return hsbSpecVars(r);
+      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':
@@ -509,10 +528,15 @@ function representationVars(r: Representation): string[] {
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      return hsdSpecVars(r);
+      return [...hsdSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
     case 'membrane':
     case 'dnaStrand':
       return hsgSpecVars(r);
+    case 'macromolecules':
+    case 'cellDivision':
+      return hs2eSpecVars(r);
+    case 'neuron':
+      return hs3dSpecVars(r);
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':
@@ -530,12 +554,23 @@ function representationVars(r: Representation): string[] {
     case 'phScale':
     case 'decayChart':
       return hsjSpecVars(r);
+    case 'chemDiagram':
+      return chemDiagramVars(r);
     case 'earthLayers':
     case 'oceanProfile':
     case 'atmosphereLayers':
     case 'hrDiagram':
     case 'expandingUniverse':
       return hslSpecVars(r);
+    case 'streamChannel':
+    case 'reserve':
+      return hs2fSpecVars(r);
+    case 'geologicClock':
+    case 'coralSection':
+    case 'transit':
+    case 'habitableZone':
+    case 'parallax':
+      return hs3cSpecVars(r);
     case 'projectile':
     case 'induction':
     case 'charges':
@@ -546,6 +581,17 @@ function representationVars(r: Representation): string[] {
     case 'circularMotion':
     case 'freeBody':
       return hskSpecVars(r);
+    case 'impulse':
+    case 'powerLift':
+    case 'photoelectric':
+    case 'lightClock':
+      return hs2cSpecVars(r);
+    case 'torque':
+    case 'rotor':
+    case 'oscillator':
+    case 'pendulum':
+    case 'capacitor':
+      return hs3aSpecVars(r);
   }
 }
 

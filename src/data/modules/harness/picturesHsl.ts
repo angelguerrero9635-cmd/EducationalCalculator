@@ -60,7 +60,7 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
         const lag = num(rep.lag);
         if (lag !== undefined && !near(lag, a.s - a.p, 1e-4))
           out.push(`lag ${lag} s, but the trace's S − P is ${a.s - a.p} s`);
-      } else {
+      } else if (rep.mode === 'epicenter') {
         const st = rep.stations.map((s) => ({ ...s, r: num(s.r) }));
         if (st.some((s) => s.r === undefined)) break;
         const known = st as { x: number; y: number; r: number }[];
@@ -74,6 +74,7 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'oceanProfile': {
+      if (rep.mode === 'stripes') break; // picturesHs2f.ts
       if (rep.mode === 'profile') {
         const d = num(rep.depth);
         if (d === undefined) break;
@@ -101,6 +102,7 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'atmosphereLayers': {
+      if (rep.mode === 'parcel' || rep.mode === 'balance') break; // picturesHs2f.ts
       if (rep.mode === 'profile') {
         const h = num(rep.altitude);
         const t = num(rep.temperature);
@@ -148,6 +150,7 @@ export function hslIssues(rep: HslSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'hrDiagram': {
+      if ('mass' in rep) break; // picturesHs2f.ts
       const t = num(rep.temperature);
       const l = num(rep.luminosity);
       const r = num(rep.radius);

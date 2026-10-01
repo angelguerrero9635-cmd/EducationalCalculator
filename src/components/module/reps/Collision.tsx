@@ -33,11 +33,11 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
   const [m1, m2] = spec.masses.map((x) => Math.max(0, si(x))) as [number, number];
   const v1 = si(spec.before[0]);
   const v2 = spec.type === 'explode' ? v1 : si(spec.before[1]);
-  const first = spec.type === 'explode' ? si(spec.after?.[0]) : 0;
+  // Explode and general: the first cart's velocity after is given.
+  const given = spec.type === 'explode' || spec.type === 'general';
+  const first = given ? si(spec.after?.[0]) : 0;
   const [u1, u2] = collisionOf(spec.type, m1, m2, v1, v2, first);
-  const all =
-    [...spec.masses, ...spec.before].every(known) &&
-    (spec.type !== 'explode' || known(spec.after?.[0]));
+  const all = [...spec.masses, ...spec.before].every(known) && (!given || known(spec.after?.[0]));
   const pB: [number, number] = [m1 * v1, m2 * v2];
   const pA: [number, number] = [m1 * u1, m2 * u2];
   const total = pB[0] + (spec.type === 'explode' ? pB[1] : pB[1]);
@@ -217,6 +217,16 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                               w={w}
                             />
                           )}
+                          {spec.type === 'general' ? (
+                            <SubLabel
+                              x={q.x}
+                              y={railY + 42}
+                              text={`KE_${q.n}${row.title === 'After' ? '′' : ''} ${sig(0.5 * q.m * q.v * q.v)} J`}
+                              bold={false}
+                              chip={false}
+                              w={w}
+                            />
+                          ) : null}
                           {row.joined && q.n === 2 ? null : (
                             <SubLabel
                               x={row.joined ? q.x + CW / 2 : q.x}
@@ -252,6 +262,16 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                             color={c.forceNet}
                             head={9}
                           />
+                          {/* H105: the spring's energy, named between the carts before. */}
+                          {spec.spring && row.title === 'Before' ? (
+                            <SubLabel
+                              x={w * 0.44}
+                              y={railY + 44}
+                              text={`spring ${rep.label(spec.spring)}`}
+                              color={c.forceNet}
+                              w={w}
+                            />
+                          ) : null}
                         </G>
                       ) : null}
                     </G>
@@ -274,9 +294,11 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                   onEnd={scale.release}
                   onMove={(dx) => {
                     const id = spec.before[0] as string;
-                    const pinned = [...spec.masses, spec.before[1]].filter(
-                      (x): x is string => typeof x === 'string',
-                    );
+                    const pinned = [
+                      ...spec.masses,
+                      spec.before[1],
+                      spec.type === 'general' ? spec.after?.[0] : undefined,
+                    ].filter((x): x is string => typeof x === 'string');
                     calc.set(
                       {
                         ...rep.pin(pinned),
@@ -310,11 +332,19 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
         ? `After: (m₁ + m₂)v′ = ${sig(pb)}, so v′ = ${sig(pb)}/${sig(m1 + m2)} = ${sig(u1)} ${vUnit}`
         : `After: m₁v₁′ + m₂v₂′ = ${sig(m1)} × ${s(u1)} + ${sig(m2)} × ${s(u2)} = ${sig(pa)} kg·m/s`,
       `Kinetic energy: ${sig(keB)} J before, ${sig(keA)} J after${
-        spec.type === 'stick'
-          ? `: ${sig(keB - keA)} J turned to heat and sound.`
-          : spec.type === 'elastic'
-            ? ': kept, the collision is elastic.'
-            : `: the spring gave ${sig(keA - keB)} J.`
+        spec.type === 'general'
+          ? keA > keB * (1 + 1e-9) + 1e-12
+            ? `: ${sig(keA - keB)} J more, which carts that only collide can’t gain.`
+            : keB - keA <= 1e-9 * (1 + keB)
+              ? ': kept, the collision is elastic.'
+              : `: ${sig(keB - keA)} J lost to heat and sound.`
+          : spec.type === 'stick'
+            ? `: ${sig(keB - keA)} J turned to heat and sound.`
+            : spec.type === 'elastic'
+              ? ': kept, the collision is elastic.'
+              : spec.spring
+                ? `: the spring gave ${rep.variable(spec.spring).symbol} = ${sig(keA - keB)} J.`
+                : `: the spring gave ${sig(keA - keB)} J.`
       }`,
     ];
     return out;

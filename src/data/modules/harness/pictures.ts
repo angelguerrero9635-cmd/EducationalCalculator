@@ -19,6 +19,7 @@ import {
   volumeOf,
 } from '@/components/module/reps/section';
 import { imageOf } from '@/components/module/reps/transform';
+import { mirrorOf } from '@/components/module/reps/hs2h';
 import { chemIssues } from './chemPictures';
 
 import { placeParts } from '../helpers';
@@ -45,11 +46,24 @@ import {
   scaleCopyHsfIssues,
   transformationHsfIssues,
 } from './picturesHsf';
+import { hs2bIssues } from './picturesHs2b';
+import { neuronIssues, pieStageIssues } from './picturesHs3d';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import { hshIssues } from './picturesHsh';
 import { chemHsiIssues, hsiIssues } from './picturesHsi';
+import { chemDiagramIssues, chemHs2dIssues, filledChem, moleMapHs2dIssues } from './picturesHs2d';
 import { hslIssues } from './picturesHsl';
+import { hs2aIssues } from './picturesHs2a';
+import { barFlowIssues, hs2eIssues, percentSecondIssues, reactionManyIssues } from './picturesHs2e';
+import { hs2fIssues } from './picturesHs2f';
+import { hs3cIssues } from './picturesHs3c';
+import { hs2gIssues } from './picturesHs2g';
+import { hs2hIssues } from './picturesHs2h';
+import { hs3bCenter, hs3bIssues, hs3bVal } from './picturesHs3b';
 import * as hsk from './picturesHsk';
+import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
+import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
+import { gasMixtureIssues } from './picturesHs3e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -182,9 +196,15 @@ export function repIssues(
       if (rep.side) {
         const [len, p] = [val(rep.side), rep.around ? val(rep.around) : undefined];
         if (len !== undefined && len <= 0) out.push(`side ${rep.side} = ${len}`);
-        if (s !== undefined && len !== undefined && p !== undefined && Math.abs(s * len - p) > 1e-9)
+        if (
+          s !== undefined &&
+          len !== undefined &&
+          p !== undefined &&
+          Math.abs(s * len - p) > 1e-9 * Math.max(1, Math.abs(p)) // relative (H106)
+        )
           out.push(`${s} sides of ${len} labeled, perimeter shows ${p}`);
       }
+      out.push(...hs3bIssues(rep, val, byId));
       break;
     }
     case 'balance': {
@@ -242,7 +262,7 @@ export function repIssues(
         out.push(`circumference ${C} is not 2π × ${r}`);
       if (r !== undefined && A !== undefined && off(A, Math.PI * r * r))
         out.push(`area ${A} is not π × ${r}²`);
-      out.push(...circleSectorIssues(rep, val));
+      out.push(...circleSectorIssues(rep, val), ...hs3bIssues(rep, val, byId));
       break;
     }
     case 'scaleCopy': {
@@ -845,7 +865,7 @@ export function repIssues(
       break;
     }
     case 'coordinatePlane': {
-      out.push(...planeGeometryIssues(rep, val));
+      out.push(...planeGeometryIssues(rep, val), ...hs2bIssues(rep, (id) => val(id)));
       // Plotting draws its path from 0 across then up, in the first quadrant only.
       if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
       if (rep.plot && rep.second) out.push('plotting places one point, not two');
@@ -938,6 +958,7 @@ export function repIssues(
           if (Math.abs(s - g) > 1e-6) out.push(`pie group parts add to ${s}, not ${g}`);
         }
       }
+      out.push(...pieStageIssues(rep, byId));
       break;
     }
     case 'fractionArea': {
@@ -1085,6 +1106,9 @@ export function repIssues(
         out.push(`tape: ${Math.max(a, b)} is not ${k} copies of ${Math.min(a, b)}`);
       break;
     }
+    case 'rectangle':
+      out.push(...hs3bIssues(rep, val, byId)); // H106: bounds
+      break;
     case 'grid100': {
       // Tenths × tenths: columns and rows of one grid, the overlap the product (Grid100.tsx);
       // a factor of 1 or more, or past tenths, draws the area model, so any product fits.
@@ -1177,6 +1201,7 @@ export function repIssues(
       break;
     }
     case 'integerLine': {
+      out.push(...hs2aIssues(rep, val));
       const [a, o, abs, b, d] = [rep.value, rep.opposite, rep.absolute, rep.second, rep.change].map(
         (id) => (id ? val(id) : undefined),
       );
@@ -1233,7 +1258,8 @@ export function repIssues(
           out.push('a compound inequality is drawn across, alone');
         if (!center !== !radius) out.push('a distance needs both its center and its radius');
         const [c, r] = [center, radius].map((x) => (x ? val(x) : undefined));
-        if (c !== undefined && r !== undefined) {
+        // (H91's 'equal' dots come in either order: checked in picturesHs2a.ts.)
+        if (c !== undefined && r !== undefined && rep.compound.join !== 'equal') {
           if (a !== undefined && Math.abs(a - (c - r)) > 1e-6 * Math.max(1, Math.abs(a)))
             out.push(`|x − ${c}| with radius ${r} has its lower bound at ${c - r}, not ${a}`);
           if (b !== undefined && Math.abs(b - (c + r)) > 1e-6 * Math.max(1, Math.abs(b)))
@@ -1264,6 +1290,7 @@ export function repIssues(
         if (up === 'down' && p !== undefined && Math.abs(p) > 100)
           out.push(`a ${Math.abs(p)}% decrease takes more than the whole`);
       }
+      out.push(...percentSecondIssues(rep, val));
       break;
     }
     case 'ratioTable': {
@@ -1330,7 +1357,8 @@ export function repIssues(
     }
     case 'venn':
       if ('chances' in rep) {
-        out.push(...vennChanceIssues(rep.chances, val));
+        out.push(...vennChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
+        out.push(...hs3bIssues(rep, val, byId));
         break;
       }
       count(rep.first, 'Venn number', 1000);
@@ -1446,9 +1474,10 @@ export function repIssues(
     }
     case 'treeDiagram': {
       if ('chances' in rep) {
-        out.push(...treeChanceIssues(rep.chances, val));
+        out.push(...treeChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;
       }
+      out.push(...hs2hIssues(rep, val));
       // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
       count(rep.first, 'first-stage outcomes', 6);
       count(rep.second, 'second-stage outcomes', 6);
@@ -1746,6 +1775,7 @@ export function repIssues(
     case 'rockLayers':
       if ('dating' in rep) {
         out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+        out.push(...hs2fIssues(rep, (id) => val(id)));
         break;
       }
       count(rep.fossils[0], 'layers', 12);
@@ -1821,10 +1851,14 @@ export function repIssues(
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);
       break;
     }
-    case 'functionGraph':
-      out.push(...functionGraphIssues(rep, val));
+    case 'functionGraph': {
+      const v = hs3bVal(rep, val, byId); // H106: `unitsOf` reads formula units
+      out.push(...functionGraphIssues(rep, v), ...hs2aIssues(rep, v), ...hs2gIssues(rep, v));
+      out.push(...hs3bIssues(rep, val, byId));
       break;
+    }
     case 'linearFunction': {
+      out.push(...hs2aIssues(rep, val), ...hs2hIssues(rep, val));
       const [m, b] = [val(rep.slope), val(rep.intercept)];
       const [x, y] = rep.point ? [val(rep.point.x), val(rep.point.y)] : [];
       if ([m, b, x, y].every((v) => v !== undefined) && rep.point) {
@@ -1837,7 +1871,7 @@ export function repIssues(
       if (rep.figure.length < 2 || rep.figure.length > 6)
         out.push(`figure with ${rep.figure.length} corners (2 to 6 are labelled A–F)`);
       const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));
-      const mirror = rep.move === 'reflect' ? rep.mirror : undefined;
+      const mirror = rep.move === 'reflect' ? mirrorOf(rep, (id) => val(id)) : undefined;
       const line =
         mirror && typeof mirror === 'object' ? val('x' in mirror ? mirror.x : mirror.y) : undefined;
       const center = 'center' in rep && rep.center ? rep.center : undefined;
@@ -1846,12 +1880,13 @@ export function repIssues(
         up: rep.move === 'translate' ? num(rep.up, 0) : 0,
         angle: rep.move === 'rotate' ? num(rep.angle, 0) : 0,
         factor: rep.move === 'dilate' ? num(rep.factor, 1) : 1,
-        cx: num(center?.[0], 0),
-        cy: num(center?.[1], 0),
+        // H106: `about: 'center'` turns about the corners' average.
+        cx: rep.about ? hs3bCenter(rep, val)[0] : num(center?.[0], 0),
+        cy: rep.about ? hs3bCenter(rep, val)[1] : num(center?.[1], 0),
       };
       if (move.factor !== undefined && move.factor <= 0)
         out.push(`dilation by scale factor ${move.factor}`);
-      out.push(...transformationHsfIssues(rep, val));
+      out.push(...transformationHsfIssues(rep, val), ...hs2hIssues(rep, val));
       const a = rep.figure[0] && [val(rep.figure[0][0]), val(rep.figure[0][1])];
       const [ix, iy] = rep.image ? [val(rep.image.x), val(rep.image.y)] : [];
       const all = [...Object.values(move), a?.[0], a?.[1], ix, iy];
@@ -1910,14 +1945,22 @@ export function repIssues(
       // Chemistry pictures draw fixed numbers in formula units (a time in hours still meets
       // spans in minutes), so they read every value in formula units.
       out.push(
-        ...chemIssues(rep, (x) => {
+        ...chemIssues(filledChem(rep, val), (x) => {
           const y = val(x);
           return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
         }),
       );
-      out.push(...chemHsiIssues(rep, (x) => val(x)));
+      out.push(...chemHsiIssues(filledChem(rep, val), (x) => val(x)));
+      out.push(...chemHs2dIssues(rep, (x) => val(x)));
+      if (rep.kind === 'reaction' && rep.many) out.push(...reactionManyIssues());
       break;
     case 'lineSystem': {
+      // H106: a parabola in the system (a line with `square`) is checked on its own.
+      if (rep.lines.some((l) => l.square !== undefined)) {
+        out.push(...hs3bIssues(rep, val, byId));
+        break;
+      }
+      out.push(...hs2aIssues(rep, val));
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
       // Elimination (H16): the sum a·x + b·y = c is k₁ × (y − m₁x = b₁) + k₂ × (y − m₂x = b₂).
       const [sa, sb, sc] = rep.sum ? [val(rep.sum.x), val(rep.sum.y), val(rep.sum.c)] : [];
@@ -2052,7 +2095,9 @@ export function repIssues(
       const slopeId = rep.graph === 'distance' ? rep.speed : rep.acceleration;
       const endId = rep.graph === 'distance' ? rep.distance : rep.speed;
       const [t, start, m, end] = [fv(rep.time), fv(rep.start), fv(slopeId), fv(endId)];
-      const [tu, eu, mu] = [unit(rep.time), unit(endId), unit(slopeId)];
+      const [tu, eu] = [unit(rep.time), unit(endId)];
+      // H105: a number acceleration is in the speed's unit per time unit.
+      const mu = typeof slopeId === 'number' ? `${eu}²` : unit(slopeId);
       const agree =
         rep.graph === 'distance' ? mu === `${eu}/${tu}` : mu === `${eu}²` && eu.endsWith(`/${tu}`);
       // Shown values are rounded to 9 places, so a time in hours is only roughly itself.
@@ -2095,13 +2140,19 @@ export function repIssues(
     case 'triangleSolver':
     case 'markedFigure':
     case 'circleTheorems':
-      out.push(...hscIssues(rep, (id) => val(id)));
+      out.push(...hscIssues(rep, (id) => val(id)), ...hs2bIssues(rep, (id) => val(id)));
+      out.push(...hs2hIssues(rep, val));
       break;
     case 'normalCurve':
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      out.push(...hsbIssues(rep, (id) => val(id)));
+      out.push(
+        ...hsbIssues(rep, (id) => val(id)),
+        ...hs2aIssues(rep, val),
+        ...hs2gIssues(rep, val),
+      );
+      out.push(...hs3bIssues(rep, val, byId)); // H106: the F curve
       break;
     case 'unitCircle':
     case 'algebraTiles':
@@ -2110,11 +2161,19 @@ export function repIssues(
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      out.push(...hsdIssues(rep, (id) => val(id)));
+      out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
+      out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
       break;
     case 'membrane':
     case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
+      break;
+    case 'macromolecules':
+    case 'cellDivision':
+      out.push(...hs2eIssues(rep, (id) => val(id)));
+      break;
+    case 'neuron':
+      out.push(...neuronIssues(rep, (id) => val(id)));
       break;
     case 'gel':
     case 'alleleFrequencies':
@@ -2128,6 +2187,7 @@ export function repIssues(
     case 'vsepr':
     case 'moleMap':
       out.push(...hsiIssues(rep, (id) => val(id)));
+      if (rep.kind === 'moleMap') out.push(...moleMapHs2dIssues(rep, (id) => val(id)));
       break;
     case 'gasPiston':
     case 'energyProfile':
@@ -2135,6 +2195,12 @@ export function repIssues(
     case 'phScale':
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
+      if (rep.kind === 'gasPiston') out.push(...gasEnergyIssues(rep, siOf(val, byId)));
+      if (rep.kind === 'gasPiston')
+        out.push(...gasMixtureIssues(rep.mixture, (x) => (x === undefined ? undefined : val(x))));
+      break;
+    case 'chemDiagram':
+      out.push(...chemDiagramIssues(rep, (id) => val(id)));
       break;
     case 'earthLayers':
     case 'oceanProfile':
@@ -2143,6 +2209,18 @@ export function repIssues(
     case 'expandingUniverse':
       // In formula units (km, s), as the picture draws them.
       out.push(...hslIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'streamChannel':
+    case 'reserve':
+      out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'geologicClock':
+    case 'coralSection':
+    case 'transit':
+    case 'habitableZone':
+    case 'parallax':
+      out.push(...hs3cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'projectile':
     case 'induction':
@@ -2154,6 +2232,23 @@ export function repIssues(
     case 'circularMotion':
     case 'freeBody':
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
+      out.push(...hs3aOptionIssues(rep, siOf(val, byId)));
+      break;
+    case 'impulse':
+    case 'powerLift':
+    case 'photoelectric':
+    case 'lightClock':
+      out.push(...hs2cIssues(rep, siOf(val, byId)));
+      break;
+    case 'torque':
+    case 'rotor':
+    case 'oscillator':
+    case 'pendulum':
+    case 'capacitor':
+      out.push(...hs3aIssues(rep, siOf(val, byId)));
+      break;
+    case 'bars':
+      out.push(...barFlowIssues(rep, val));
       break;
     case 'table':
       if ('twoWay' in rep) {
@@ -2162,6 +2257,7 @@ export function repIssues(
       }
       if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)
         out.push(`${rep.rowNames.length} row names for ${rep.rows.length} rows`);
+      out.push(...hs3bIssues(rep, val, byId));
       break;
     default:
       break;

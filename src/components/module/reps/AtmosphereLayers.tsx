@@ -12,6 +12,8 @@ import { chart, usePalette } from '@/theme';
 
 import { HaloText } from '../layouts/earthKit';
 import type { Calculator } from '../useCalculator';
+import { AirParcel } from './AirParcel';
+import { EnergyBalance } from './EnergyBalance';
 import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
 import {
   ATMO_LAYERS,
@@ -29,6 +31,8 @@ const BW = 360;
 
 /** The atmosphere's layers, or a pressure map (see `AtmosphereLayersSpec` in typesHsl.ts). */
 export function AtmosphereLayers({ spec, calc }: { spec: AtmosphereLayersSpec; calc: Calculator }) {
+  if (spec.mode === 'parcel') return <AirParcel spec={spec} calc={calc} />;
+  if (spec.mode === 'balance') return <EnergyBalance spec={spec} calc={calc} />;
   return spec.mode === 'profile' ? (
     <Profile spec={spec} calc={calc} />
   ) : (

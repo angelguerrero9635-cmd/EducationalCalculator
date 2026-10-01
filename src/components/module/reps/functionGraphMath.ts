@@ -13,6 +13,9 @@ import type {
 import { formatNumber } from '@/engine/format';
 
 import { toFraction } from './exact';
+import { buildHs3b } from './functionGraphFamiliesHs3b';
+import { rationalByTopCurve } from './functionGraphRationalHs3b';
+import { ratioCurve, reshape } from './functionGraphHs2g';
 
 // ─── Exact numbers ─────────────────────────────────────────────────────────────
 
@@ -52,7 +55,9 @@ export function surdText(x: number): string | undefined {
   const f = toFraction(x * x, 100);
   if (!f || f[0] <= 0 || f[0] * f[1] > 1e8) return undefined;
   const [s, m] = squarePart(f[0] * f[1]);
-  if (m === 1) return undefined;
+  // A radicand past 1,000 is a decimal that only looks exact (64.3045 → 2√2283589/47, a value
+  // converted to other units): write it as a decimal.
+  if (m === 1 || m > 1000) return undefined;
   const g = gcd(s, f[1]);
   const [top, bottom] = [s / g, f[1] / g];
   return signed(x < 0, `${top === 1 ? '' : top}√${m}${bottom === 1 ? '' : `/${bottom}`}`);
@@ -325,17 +330,17 @@ export function plain(toks: Tok[]): string {
 export type Say = (name: string, pi?: boolean) => string;
 
 /** "x − 2", "x + 2" or "x" for x − h. */
-const shiftText = (x: string, h: number, say: string) =>
+export const shiftText = (x: string, h: number, say: string) =>
   h === 0 && say !== '?'
     ? x
     : say.startsWith(MINUS)
       ? `${x} + ${say.slice(1)}`
       : `${x} ${MINUS} ${say}`;
 /** " + 3", " − 3" or "" for + k. */
-const plusText = (k: number, say: string) =>
+export const plusText = (k: number, say: string) =>
   k === 0 && say !== '?' ? '' : say.startsWith(MINUS) ? ` ${MINUS} ${say.slice(1)}` : ` + ${say}`;
 /** A leading coefficient: "" for 1, "−" for −1, else the number ("(2/3)" when a fraction). */
-const lead = (a: number, say: string) =>
+export const lead = (a: number, say: string) =>
   say === '?' ? '?' : a === 1 ? '' : a === -1 ? MINUS : say.includes('/') ? `(${say})` : say;
 
 // ─── Families ─────────────────────────────────────────────────────────────────
@@ -862,10 +867,19 @@ export function buildCurve(
     }
     case 'polynomial': {
       const byZeros = 'zeros' in fam;
-      const zs = byZeros ? fam.zeros.map((z) => ({ x: get(z.x, 0), times: z.times ?? 1 })) : [];
+      // H105: a multiplicity from a value is kept to a whole number 1 to 9.
+      const zs = byZeros
+        ? fam.zeros.map((z) => ({
+            x: get(z.x, 0),
+            times: Math.min(9, Math.max(1, Math.round(get(z.times, 1)))),
+          }))
+        : [];
       const a = byZeros ? get(fam.a, 1) : 1;
       const cs = byZeros ? polyFromZeros(a, zs) : fam.coefficients.map((c) => get(c, 0));
-      const f = (t: number) => polyAt(cs, t);
+      // By zeros, the product itself: expanded coefficients lose a repeated zero's sign.
+      const f = byZeros
+        ? (t: number) => zs.reduce((p, z) => p * (t - z.x) ** z.times, a)
+        : (t: number) => polyAt(cs, t);
       const deg = cs.length - 1;
       let text: string;
       const handles: HandleDef[] = [];
@@ -876,7 +890,8 @@ export function buildCurve(
           fam.zeros
             .map((z, i) => {
               const s = shiftText(x, zs[i]!.x, say(z.x, 0));
-              const pow = zs[i]!.times > 1 ? SUP[zs[i]!.times] : '';
+              const pow =
+                say(z.times, 1) === '?' ? '^?' : zs[i]!.times > 1 ? SUP[zs[i]!.times] : '';
               return s === x ? `${x}${pow}` : `(${s})${pow}`;
             })
             .join('');
@@ -934,6 +949,9 @@ export function buildCurve(
       };
     }
     case 'rational': {
+      if ('p' in fam) return ratioCurve(fam, get, say, x, (g, l) => buildCurve(g, get, say, l));
+      if ('top' in fam)
+        return rationalByTopCurve(fam, get, x, (g, l) => buildCurve(g, get, say, l));
       const a = get(fam.a, 1);
       const k = get(fam.k, 0);
       const zs = fam.zeros.map((z) => get(z, 0));
@@ -1109,6 +1127,9 @@ export function buildCurve(
         vas: (lo, hi) => pieces.flatMap((p) => p.c.vas(lo, hi)),
       };
     }
+    case 'power':
+    case 'logSum':
+      return buildHs3b(fam, get, say, x); // H106
     case 'sin':
     case 'cos':
     case 'tan': {
@@ -1225,8 +1246,12 @@ export function buildCurve(
       const g =
         fam.family === 'arcsin' ? Math.asin : fam.family === 'arccos' ? Math.acos : Math.atan;
       const tan = fam.family === 'arctan';
-      const f = (t: number) => (tan || Math.abs(t) <= 1 ? a * g(t) + k : NaN);
-      const [lo, hi] = fam.family === 'arccos' ? [0, Math.PI] : [-Math.PI / 2, Math.PI / 2];
+      // H105: in degrees, the angle is 180/π times the radian one.
+      const u = fam.degrees ? 180 / Math.PI : 1;
+      const f = (t: number) => (tan || Math.abs(t) <= 1 ? a * u * g(t) + k : NaN);
+      const [lo, hi] = (fam.family === 'arccos' ? [0, Math.PI] : [-Math.PI / 2, Math.PI / 2]).map(
+        (x) => x * u,
+      ) as [number, number];
       const [r0, r1] = [a * lo + k, a * hi + k].sort((p, q) => p - q) as [number, number];
       const coef = lead(a, say(fam.a, 1));
       const name = fam.family.slice(3);
@@ -1241,10 +1266,10 @@ export function buildCurve(
         text: [
           T(`${coef}${coef && coef !== MINUS ? ' ' : ''}${name}`),
           T(`${MINUS}1`, { sup: true }),
-          T(`(${x})${plusText(k, say(fam.k, 0, true))}`),
+          T(`(${x})${plusText(k, say(fam.k, 0, !fam.degrees))}`),
         ],
-        parent: { family: fam.family },
-        piY: true,
+        parent: { family: fam.family, ...(fam.degrees ? { degrees: true } : {}) },
+        piY: !fam.degrees,
         handles: [
           {
             name: 'the shift',
@@ -1261,7 +1286,9 @@ export function buildCurve(
             axis: 'y',
             sets: ['a'],
             to: (_, Y) => ({
-              a: (Y - k) / (fam.family === 'arccos' ? Math.PI : tan ? Math.PI / 4 : Math.PI / 2),
+              a:
+                (Y - k) /
+                (u * (fam.family === 'arccos' ? Math.PI : tan ? Math.PI / 4 : Math.PI / 2)),
             }),
           },
         ],
@@ -1328,7 +1355,17 @@ export function zerosIn(c: Curve, lo: number, hi: number): Feature[] {
 export function extremaIn(c: Curve, lo: number, hi: number): (Feature & { kind: 'max' | 'min' })[] {
   const out: (Feature & { kind: 'max' | 'min' })[] = [];
   for (const [a, b] of spans(c, lo, hi))
-    for (const x of criticalPoints(c.f, a, b, 800)) {
+    for (const x0 of criticalPoints(c.f, a, b, 800)) {
+      // A turn on the x-axis is a repeated zero: taken at the zero itself, since a flat
+      // (x − r)⁴ leaves the numeric search a little off it (H105).
+      const z =
+        Math.abs(c.f(x0)) < 1e-9 && c.zeros
+          ? c
+              .zeros(a, b)
+              .filter((q) => Math.abs(q.x - x0) < 1e-3 * (hi - lo))
+              .sort((p, q) => Math.abs(p.x - x0) - Math.abs(q.x - x0))[0]
+          : undefined;
+      const x = z ? z.x : x0;
       const y = c.f(x);
       const e = Math.max(1e-4, (hi - lo) * 1e-3);
       const kind = c.f(x - e) < y ? 'max' : 'min';
@@ -1519,5 +1556,9 @@ export function curveOf(
   val: (v: NumOrVar) => number | undefined,
 ) {
   const get: Get = (v, fallback) => (v === undefined ? fallback : (val(v) ?? fallback));
-  return buildCurve(spec, get, (v, d) => numText(get(v, d)));
+  const say = (v: NumOrVar | undefined, d: number) => numText(get(v, d));
+  // H94: |f(x)|, a horizontal factor and a kept domain, as the picture draws them.
+  return 'kind' in spec
+    ? reshape(spec, get, say, 'x', (f, x) => buildCurve(f, get, say, x)).curve
+    : buildCurve(spec, get, say);
 }

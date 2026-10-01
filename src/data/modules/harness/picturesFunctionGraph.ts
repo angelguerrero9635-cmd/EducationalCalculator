@@ -41,6 +41,12 @@ function familyIssues(f: FunctionFamily, val: (v: NumOrVar) => number | undefine
       break;
     case 'polynomial':
       if ('coefficients' in f && v(f.coefficients[0], 1) === 0) out.push('leading coefficient 0');
+      // H105: a multiplicity from a value is a whole number 1 to 9.
+      if ('zeros' in f)
+        for (const z of f.zeros) {
+          const t = v(z.times, 1);
+          if (!Number.isInteger(t) || t < 1 || t > 9) out.push(`multiplicity ${t} (1 to 9)`);
+        }
       break;
     case 'piecewise': {
       let prev = -Infinity;
@@ -105,7 +111,10 @@ function featureIssues(c: Curve, lo: number, hi: number, out: string[], what = '
     if (!sides.length || !grows) out.push(`${what}: asymptote x = ${v} doesn't blow up`);
   }
   for (const a of c.has) {
-    const ends = [c.f(-1e7), c.f(1e7), c.f(-60), c.f(60)].filter(Number.isFinite);
+    // (±1e300: a small power like x^(−1/9) nears its asymptote only far out, H106)
+    const ends = [c.f(-1e7), c.f(1e7), c.f(-60), c.f(60), c.f(-1e300), c.f(1e300)].filter(
+      Number.isFinite,
+    );
     if (!ends.some((y) => Math.abs(y - a) < 1e-3 * Math.max(1, Math.abs(a))))
       out.push(`${what}: horizontal asymptote y = ${a} isn't approached`);
   }

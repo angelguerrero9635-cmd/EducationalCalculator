@@ -6,6 +6,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type { PeriodicTrend, ReactionLimiting } from './typesHsi';
+import { reactionHs2dVars, type ReactionHs2d, type ReactionTermHs2d } from './typesHs2d';
 
 /**
  * Ball-and-stick molecules of one substance (atoms in the classroom colors: hydrogen white,
@@ -25,7 +26,7 @@ export interface MoleculesSpec {
 }
 
 /** One substance in a reaction: its formula and how many particles (the coefficient). */
-export interface ReactionTerm {
+export interface ReactionTerm extends ReactionTermHs2d {
   formula: string;
   count: NumOrVar;
 }
@@ -35,7 +36,7 @@ export interface ReactionTerm {
  * drawn, then a row per element with its atoms counted on each side as counters, = when they
  * match (the atoms are rearranged, none lost), ≠ when not. Coefficients up to 8 each.
  */
-export interface ReactionSpec {
+export interface ReactionSpec extends ReactionHs2d {
   kind: 'reaction';
   /** One to three substances on each side. */
   reactants: ReactionTerm[];
@@ -44,6 +45,8 @@ export interface ReactionSpec {
   atoms?: Record<string, [string, string]>;
   /** Grades 9–12: amounts on hand, the limiting reactant and the leftover (`typesHsi.ts`, H49). */
   limiting?: ReactionLimiting;
+  /** Grade 9 (H100): up to 18 molecules a formula, in rows; glucose as its ring (`ReactionMany.tsx`). */
+  many?: boolean;
 }
 
 /**
@@ -111,6 +114,7 @@ export function chemSpecVars(r: ChemSpec): string[] {
               ...(r.limiting.left ?? []),
             ]
           : []),
+        ...reactionHs2dVars(r),
       );
     case 'heatingCurve':
       return ids(r.start, r.melt, r.boil, r.end, ...r.spans, r.at, r.temp);

@@ -4,13 +4,7 @@
  */
 import { MEMBRANE_MAX, MOVED_MAX, flowOf } from '@/components/module/reps/membraneMath';
 
-import {
-  CODON_TABLE,
-  chargaffPairs,
-  effectOf,
-  mutate,
-  transcribe,
-} from '@/components/module/reps/dnaMath';
+import { CODON_TABLE, chargaffPairs, mutate, transcribe } from '@/components/module/reps/dnaMath';
 import {
   dihybridBoxes,
   dihybridCounts,
@@ -19,6 +13,8 @@ import {
 } from '@/components/module/reps/punnettMath';
 
 import type { Representation } from '../types';
+import { dnaGeneIssues } from './picturesHs2e';
+import { mutationEffectIssues } from './picturesHs3d';
 import type { HsgSpec } from '../typesHsg';
 
 const whole = (x: number) => Math.abs(x - Math.round(x)) < 1e-9;
@@ -198,6 +194,7 @@ function dnaIssues(
     }
     return out;
   }
+  if (rep.gene) return [...out, ...dnaGeneIssues(rep, num)];
   const seq = rep.sequence ?? '';
   if (!/^[ATGC]{1,12}$/.test(seq)) out.push(`dna: sequence "${seq}" is not 1–12 bases`);
   const len = num(rep.length) ?? seq.length;
@@ -221,8 +218,7 @@ function dnaIssues(
     const after = mutate(template, { type: m.type, at, base: m.base });
     const want = len + (m.type === 'insertion' ? 1 : m.type === 'deletion' ? -1 : 0);
     if (after.length !== want) out.push(`dna: the mutated strand has ${after.length} bases`);
-    if (m.type !== 'substitution' && effectOf(template, { type: m.type, at }) !== 'frameshift')
-      out.push('dna: an insertion or deletion not read as a frameshift');
+    out.push(...mutationEffectIssues(template, { type: m.type, at, base: m.base }));
   }
   return out;
 }

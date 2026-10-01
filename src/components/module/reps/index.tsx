@@ -51,12 +51,15 @@ import { Tape } from './Tape';
 import { TapeEquation } from './TapeEquation';
 import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
+import { BarsFlows } from './BarsFlows';
 import { CircleDiagram } from './CircleDiagram';
 import { ScaleCopy } from './ScaleCopy';
 import { ForceDiagram } from './ForceDiagram';
 import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
+import { LineParabola } from './LineParabola';
+import { PolygonApothem } from './PolygonApothem';
 import { LinearFunction, LineSystem } from './Lines';
 import { FunctionGraph } from './FunctionGraph';
 import { FunctionMachine } from './FunctionMachine';
@@ -92,7 +95,16 @@ import { BoxPlot } from './BoxPlot';
 import { BoxPlotPair } from './BoxPlotPair';
 import { TwoWayTable } from './TwoWayTable';
 import { ChanceTree } from './ChanceTree';
+import { ChanceTree3 } from './ChanceTree3';
 import { VennChance } from './VennChance';
+import { VennOne } from './VennOne';
+import { TableGraph } from './TableGraph';
+import { CirclePopulation } from './CirclePopulation';
+import { RectangleBounds } from './RectangleBounds';
+import { VectorSpace } from './VectorSpace';
+import { PolarConic } from './PolarConic';
+import { ConicTurned } from './ConicTurned';
+import { FCurve } from './FCurve';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -127,22 +139,31 @@ import { Skaters } from './Skaters';
 import { EnergyTrack } from './EnergyTrack';
 import { TriangleSolver } from './TriangleSolver';
 import { MarkedFigure } from './MarkedFigure';
+import { RegularPolygon } from './RegularPolygon';
 import { CircleTheorems } from './CircleTheorems';
+import { CircleAngles } from './CircleAngles';
 import { NormalCurve } from './NormalCurve';
+import { CltHistogram } from './CltHistogram';
 import { Histogram } from './Histogram';
 import { PascalTriangle } from './PascalTriangle';
 import { TermsChart } from './TermsChart';
 import { UnitCircle } from './UnitCircle';
+import { UnitCircleHs2g } from './UnitCircleHs2g';
+import { MatrixDeterminant } from './MatrixDeterminant';
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
 import { ConicGraph } from './ConicGraph';
 import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
+import { ComplexPowers } from './ComplexPowers';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
+import { AlgebraTilesHs2g } from './AlgebraTilesHs2g';
 import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
+import { Neuron } from './Neuron';
+import { Hs2eView } from './Hs2eView';
 import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
 import { AlleleFrequencies } from './AlleleFrequencies';
@@ -150,9 +171,15 @@ import { ImmuneResponse } from './ImmuneResponse';
 import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
 import { ReactionLimiting } from './ReactionLimiting';
+import { ChemDiagram } from './ChemDiagram';
+import { ReactionMany } from './ReactionMany';
 import { HslPicture } from './HslPicture';
+import { Hs2fPicture } from './Hs2fPicture';
+import { Hs3cPicture } from './Hs3cPicture';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
+import { Hs2cView } from './Hs2cView';
+import { Hs3aView } from './Hs3aView';
 import { EnergySpring } from './EnergySpring';
 import { WaveDoppler } from './WaveDoppler';
 import { CircuitMixed } from './CircuitMixed';
@@ -190,6 +217,8 @@ export const representationTitle = (r: Representation) =>
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'none':
+      return null; // H105: an equation-only page (ModuleSections leaves out the section)
     case 'unitChain':
     case 'atomModel':
     case 'orbitalDiagram':
@@ -198,19 +227,34 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'moleMap':
       return <HsiRep spec={spec} calc={calc} />;
     case 'unitCircle':
-      return <UnitCircle spec={spec} calc={calc} />;
+      return spec.through || spec.pair || spec.solutions?.also !== undefined ? (
+        <UnitCircleHs2g spec={spec} calc={calc} />
+      ) : (
+        <UnitCircle spec={spec} calc={calc} />
+      );
     case 'matrixGrid':
-      return <MatrixGrid spec={spec} calc={calc} />;
+      return spec.mode === 'determinant' ? (
+        <MatrixDeterminant spec={spec} calc={calc} />
+      ) : (
+        <MatrixGrid spec={spec} calc={calc} />
+      );
     case 'membrane':
       return <Membrane spec={spec} calc={calc} />;
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
+    case 'macromolecules':
+    case 'cellDivision':
+      return <Hs2eView spec={spec} calc={calc} />;
+    case 'neuron':
+      return <Neuron spec={spec} calc={calc} />;
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':
     case 'phScale':
     case 'decayChart':
       return <HsjView spec={spec} calc={calc} />;
+    case 'chemDiagram':
+      return <ChemDiagram spec={spec} calc={calc} />;
     case 'projectile':
     case 'induction':
     case 'charges':
@@ -221,16 +265,38 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'circularMotion':
     case 'freeBody':
       return <HskView spec={spec} calc={calc} />;
+    case 'impulse':
+    case 'powerLift':
+    case 'photoelectric':
+    case 'lightClock':
+      return <Hs2cView spec={spec} calc={calc} />;
+    case 'torque':
+    case 'rotor':
+    case 'oscillator':
+    case 'pendulum':
+    case 'capacitor':
+      return <Hs3aView spec={spec} calc={calc} />;
     case 'conicGraph':
+      if (spec.conic === 'turned') return <ConicTurned spec={spec} calc={calc} />; // H106
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':
+      if (spec.curve?.shape === 'conic') return <PolarConic spec={spec} calc={calc} />; // H106
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
-      return <ComplexPlane spec={spec} calc={calc} />;
+      return spec.power !== undefined || spec.roots !== undefined ? (
+        <ComplexPowers spec={spec} calc={calc} />
+      ) : (
+        <ComplexPlane spec={spec} calc={calc} />
+      );
     case 'vectorDiagram':
+      if (spec.space) return <VectorSpace spec={spec} calc={calc} />; // H106
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':
-      return <AlgebraTiles spec={spec} calc={calc} />;
+      return spec.mode === 'box' || spec.mode === 'monomial' ? (
+        <AlgebraTilesHs2g spec={spec} calc={calc} />
+      ) : (
+        <AlgebraTiles spec={spec} calc={calc} />
+      );
     case 'gel':
       return <Gel spec={spec} calc={calc} />;
     case 'alleleFrequencies':
@@ -243,20 +309,38 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'hrDiagram':
     case 'expandingUniverse':
       return <HslPicture spec={spec} calc={calc} />;
+    case 'streamChannel':
+    case 'reserve':
+      return <Hs2fPicture spec={spec} calc={calc} />;
+    case 'geologicClock':
+    case 'coralSection':
+    case 'transit':
+    case 'habitableZone':
+    case 'parallax':
+      return <Hs3cPicture spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
+      if (spec.lines.some((l) => l.square !== undefined))
+        return <LineParabola spec={spec} calc={calc} />; // H106
       return <LineSystem spec={spec} calc={calc} />;
     case 'functionGraph':
       return <FunctionGraph spec={spec} calc={calc} />;
     case 'motionGraph':
-      if (spec.kinematics && spec.graph === 'speed')
-        return <MotionGraphHs spec={spec} k={spec.kinematics} calc={calc} />;
+      if (spec.graph === 'speed' && (spec.kinematics || typeof spec.acceleration === 'number'))
+        return (
+          <MotionGraphHs spec={spec} k={spec.kinematics ?? { view: 'velocity' }} calc={calc} />
+        );
       return <MotionGraph spec={spec} calc={calc} />;
     case 'normalCurve':
+      if (spec.f) return <FCurve spec={spec} calc={calc} />; // H106
       return <NormalCurve spec={spec} calc={calc} />;
     case 'histogram':
-      return <Histogram spec={spec} calc={calc} />;
+      return spec.clt ? (
+        <CltHistogram spec={spec} calc={calc} />
+      ) : (
+        <Histogram spec={spec} calc={calc} />
+      );
     case 'pascalTriangle':
       return <PascalTriangle spec={spec} calc={calc} />;
     case 'termsChart':
@@ -338,7 +422,9 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'molecules':
       return <Molecules spec={spec} calc={calc} />;
     case 'reaction':
-      return spec.limiting ? (
+      return spec.many && !spec.limiting ? (
+        <ReactionMany spec={spec} calc={calc} />
+      ) : spec.limiting ? (
         <ReactionLimiting spec={spec} calc={calc} />
       ) : (
         <Reaction spec={spec} calc={calc} />
@@ -383,12 +469,14 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'partnerList':
       return <PartnerList spec={spec} calc={calc} />;
     case 'bars':
-      return <Bars spec={spec} calc={calc} />;
+      return spec.flows ? <BarsFlows spec={spec} calc={calc} /> : <Bars spec={spec} calc={calc} />;
     case 'rectangle':
+      if (spec.bounds) return <RectangleBounds spec={spec} calc={calc} />; // H106
       return <RectangleDiagram spec={spec} calc={calc} />;
     case 'grid100':
       return <Grid100 spec={spec} calc={calc} />;
     case 'circle':
+      if (spec.population) return <CirclePopulation spec={spec} calc={calc} />; // H106
       return <CircleDiagram spec={spec} calc={calc} />;
     case 'scaleCopy':
       return <ScaleCopy spec={spec} calc={calc} />;
@@ -399,6 +487,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'table':
       return 'twoWay' in spec ? (
         <TwoWayTable spec={spec.twoWay} calc={calc} />
+      ) : spec.graph || spec.rowsFrom ? (
+        <TableGraph spec={spec} calc={calc} /> // H106
       ) : (
         <ValueTable spec={spec} calc={calc} />
       );
@@ -419,6 +509,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'compareRows':
       return <CompareRows spec={spec} calc={calc} />;
     case 'polygon':
+      if (spec.apothem && spec.sides) return <PolygonApothem spec={spec} calc={calc} />; // H106
       return <PolygonShape spec={spec} calc={calc} />;
     case 'balance':
       return <Balance spec={spec} calc={calc} />;
@@ -496,7 +587,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':
       return 'chances' in spec ? (
-        <VennChance spec={spec.chances} calc={calc} />
+        spec.chances.one ? (
+          <VennOne spec={spec.chances} calc={calc} /> // H106
+        ) : (
+          <VennChance spec={spec.chances} calc={calc} />
+        )
       ) : (
         <Venn spec={spec} calc={calc} />
       );
@@ -520,7 +615,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
       return 'chances' in spec ? (
-        <ChanceTree spec={spec.chances} calc={calc} />
+        spec.chances.third ? (
+          <ChanceTree3 spec={spec.chances} calc={calc} />
+        ) : (
+          <ChanceTree spec={spec.chances} calc={calc} />
+        )
       ) : (
         <TreeDiagram spec={spec} calc={calc} />
       );
@@ -537,8 +636,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'triangleSolver':
       return <TriangleSolver spec={spec} calc={calc} />;
     case 'markedFigure':
+      if (spec.regular) return <RegularPolygon spec={spec} calc={calc} />;
       return <MarkedFigure spec={spec} calc={calc} />;
     case 'circleTheorems':
+      if (spec.theorem === 'cyclic' || spec.theorem === 'arcAngle')
+        return <CircleAngles spec={spec} calc={calc} />;
       return <CircleTheorems spec={spec} calc={calc} />;
   }
 }

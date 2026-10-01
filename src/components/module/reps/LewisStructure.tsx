@@ -17,6 +17,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { chargeSup } from './AtomModel';
+import { BranchedAlkane } from './BranchedAlkane';
 import { elementName, subscript } from './chem';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { reader } from './graphKit';
@@ -32,6 +33,7 @@ import {
   valenceElectrons,
   type Lewis,
 } from './lewis';
+import { METALS_BY_CHARGE, NONMETALS_BY_CHARGE, ionsFromCharges } from './ionicCharges';
 import { Ball, url, usePaintIds } from './paint';
 
 const RAD = Math.PI / 180;
@@ -44,7 +46,11 @@ export function LewisStructure({ spec, calc }: { spec: LewisStructureSpec; calc:
     case 'metallic':
       return <Metallic spec={spec} calc={calc} />;
     case 'hydrocarbon':
-      return <Hydrocarbon spec={spec} calc={calc} />;
+      return spec.branches?.length ? (
+        <BranchedAlkane spec={spec} calc={calc} />
+      ) : (
+        <Hydrocarbon spec={spec} calc={calc} />
+      );
     default:
       return <Molecule spec={spec} calc={calc} />;
   }
@@ -297,10 +303,17 @@ function Ionic({
   const c = usePalette();
   const rep = useRep(calc);
   const read = reader(rep);
-  const ion = ionic(spec.metal, spec.nonmetal);
+  // Round 3 (H108 part 2): the elements may come from the ions' charges.
+  const pick = ionsFromCharges(spec.charges, spec, (x) => {
+    const r = read(x);
+    return r.known ? Math.round(r.value) : undefined;
+  });
+  const { metal, nonmetal } = pick;
+  const ion = ionic(metal, nonmetal);
   const ar = spec.metals === undefined ? undefined : read(spec.metals);
   const br = spec.nonmetals === undefined ? undefined : read(spec.nonmetals);
   const known =
+    pick.known &&
     [spec.transferred].every((id) => id === undefined || rep.known(id)) &&
     (ar?.known ?? true) &&
     (br?.known ?? true);
@@ -310,7 +323,7 @@ function Ionic({
   const balanced = va >= 1 && vb >= 1 && va * ion.give === vb * ion.take && va + vb <= 6;
   const [na, nb] = balanced ? [va, vb] : [ion.metals, ion.nonmetals];
   const vm = ion.give;
-  const vn = valenceElectrons(spec.nonmetal);
+  const vn = valenceElectrons(nonmetal);
   // Alternate the ions, starting with the more numerous: Cl Mg Cl, Na Cl, O Al O Al O.
   const order: ('m' | 'n')[] = [];
   let [a, b] = [na, nb];
@@ -325,7 +338,7 @@ function Ionic({
     }
     turn = turn === 'm' ? 'n' : 'm';
   }
-  const formula = `${spec.metal}${ion.metals > 1 ? ion.metals : ''}${spec.nonmetal}${ion.nonmetals > 1 ? ion.nonmetals : ''}`;
+  const formula = `${metal}${ion.metals > 1 ? ion.metals : ''}${nonmetal}${ion.nonmetals > 1 ? ion.nonmetals : ''}`;
 
   const art = (w: number, h: number): ReactNode => {
     const sp = (w - 40) / order.length;
@@ -365,7 +378,7 @@ function Ionic({
         </ChartText>
         <G opacity={known && balanced ? 1 : 0.4}>
           {order.map((t, i) => {
-            const el = t === 'm' ? spec.metal : spec.nonmetal;
+            const el = t === 'm' ? metal : nonmetal;
             const v = t === 'm' ? vm : vn;
             return (
               <G key={`a${i}`}>
@@ -394,8 +407,8 @@ function Ionic({
             );
           })}
           {moves.map((m, k) => {
-            const p = spot(X(m.from), y1, m.k, spec.metal.length > 1 ? 20 : 17);
-            const q = spot(X(m.to), y1, m.slot, spec.nonmetal.length > 1 ? 20 : 17);
+            const p = spot(X(m.from), y1, m.k, metal.length > 1 ? 20 : 17);
+            const q = spot(X(m.to), y1, m.slot, nonmetal.length > 1 ? 20 : 17);
             const lift = 26 + (k % 3) * 8;
             const mx = (p.x + q.x) / 2;
             const my = Math.min(p.y, q.y) - lift;
@@ -425,7 +438,7 @@ function Ionic({
             );
           })}
           {order.map((t, i) => {
-            const el = t === 'm' ? spec.metal : spec.nonmetal;
+            const el = t === 'm' ? metal : nonmetal;
             const x = X(i);
             const half = Math.min(sp / 2 - 10, 26);
             return (
@@ -483,7 +496,14 @@ function Ionic({
       <Canvas aspect={(w) => 256 / w}>{({ w, h }) => art(w, h)}</Canvas>
       <Caption>
         {[
-          `Each ${elementName(spec.metal).toLowerCase()} atom gives ${vm} electron${vm > 1 ? 's' : ''} (lit); each ${elementName(spec.nonmetal).toLowerCase()} atom takes ${ion.take} to fill its octet.`,
+          ...(spec.charges
+            ? [
+                pick.known
+                  ? `Charges ${ion.give} and ${ion.take}: ${metal}${chargeSup(ion.give)} with ${nonmetal}${chargeSup(-ion.take)}.`
+                  : `The charges pick the ions (1, 2, 3: ${(spec.charges.metals ?? METALS_BY_CHARGE).join(', ')} and ${(spec.charges.nonmetals ?? NONMETALS_BY_CHARGE).join(', ')}).`,
+              ]
+            : []),
+          `Each ${elementName(metal).toLowerCase()} atom gives ${vm} electron${vm > 1 ? 's' : ''} (lit); each ${elementName(nonmetal).toLowerCase()} atom takes ${ion.take} to fill its octet.`,
           balanced
             ? `${na} × ${vm} = ${nb} × ${ion.take} = ${na * vm} electrons move; the smallest whole-number ratio gives ${subscript(formula)}.`
             : `${va} × ${vm} ≠ ${vb} × ${ion.take}: those ions' charges do not balance${va + vb > 6 ? ' (or there are more than 6)' : ''}, so the formula unit ${subscript(formula)} is drawn faded.`,

@@ -10,6 +10,7 @@ import type { Calculator } from '../useCalculator';
 import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
 import { PercentChange } from './PercentChange';
+import { SecondMark } from './PercentSecond';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'percentBar' }>;
@@ -33,10 +34,14 @@ function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const pct = Math.max(0, rep.shown(spec.percent));
+  // H104: a second percent marked on the same bar (a band under the shading, and a labelled line).
+  const second = spec.second ? Math.max(0, rep.shown(spec.second)) : undefined;
   const whole = Math.max(0, rep.shown(spec.whole));
   const ticks = spec.ticks ?? 10;
   // The bar ends at 100%, or at the next tick past the percent when it is bigger.
-  const top = useFrozen(Math.max(100, Math.ceil(pct / (100 / ticks)) * (100 / ticks)));
+  const top = useFrozen(
+    Math.max(100, Math.ceil(Math.max(pct, second ?? 0) / (100 / ticks)) * (100 / ticks)),
+  );
 
   return (
     <View>
@@ -99,6 +104,16 @@ function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fill={c.chartHighlight}
                   fillOpacity={0.55}
                 />
+                {second !== undefined && spec.second ? (
+                  <SecondMark
+                    x0={x(0)}
+                    x1={x(second)}
+                    y={barY}
+                    h={barH}
+                    label={rep.known(spec.second) ? rep.label(spec.second) : '?'}
+                    w={w}
+                  />
+                ) : null}
                 {marks.map((m) => (
                   <Line
                     key={`t${m}`}
@@ -176,7 +191,7 @@ function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {rep.known(spec.percent) && rep.known(spec.whole)
-          ? `${formatNumber(pct)}% of ${rep.value(spec.whole)} is ${rep.value(spec.part)}.${spec.onePercent ? ` 1% is ${rep.value(spec.onePercent)}.` : ''}`
+          ? `${formatNumber(pct)}% of ${rep.value(spec.whole)} is ${rep.value(spec.part)}.${spec.onePercent ? ` 1% is ${rep.value(spec.onePercent)}.` : ''}${spec.second && rep.known(spec.second) ? ` The line marks ${rep.label(spec.second)}.` : ''}`
           : 'The whole is 100%. Type the numbers you know.'}
       </Caption>
       <Steppers

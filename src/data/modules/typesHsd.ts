@@ -4,7 +4,15 @@
  * apart from `types.ts` so that file's union only lists them. A `NumOrVar` field is a fixed
  * number or a variable id.
  */
+import type {
+  AlgebraTilesHs2g,
+  ComplexPlaneHs2g,
+  MatrixDeterminant,
+  SolutionsAlso,
+  UnitCircleHs2g,
+} from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
+import type { ConicTurnedHs3b, PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
 
 /** A trig function of the unit circle. */
 export type TrigFn = 'sin' | 'cos' | 'tan';
@@ -15,7 +23,7 @@ export type TrigFn = 'sin' | 'cos' | 'tan';
  * (the cosine and sine as its legs) and the reference angle, and the special angles marked.
  * Drag the point around the circle to change θ.
  */
-export interface UnitCircleSpec {
+export interface UnitCircleSpec extends UnitCircleHs2g {
   kind: 'unitCircle';
   /** The angle θ. */
   angle: NumOrVar;
@@ -39,7 +47,12 @@ export interface UnitCircleSpec {
    * `principal` marks only the inverse function's answer and shades its range (arcsin and
    * arctan: −90° to 90°; arccos: 0° to 180°).
    */
-  solutions?: { fn: TrigFn; value: NumOrVar; angles?: string[]; principal?: boolean };
+  solutions?: {
+    fn: TrigFn;
+    value: NumOrVar;
+    angles?: string[];
+    principal?: boolean;
+  } & SolutionsAlso;
   /** The arc from 0 to θ, its length the angle in radians (a variable holding it, checked). */
   arc?: string;
   /** Typed values held while the point is dragged (see `LineOf.keep`). */
@@ -88,6 +101,7 @@ export type AlgebraTilesSpec = { kind: 'algebraTiles' } & (
       right: { x: NumOrVar; unit: NumOrVar };
       solution?: string;
     }
+  | AlgebraTilesHs2g // H95: 'box' and 'monomial'
 );
 
 /**
@@ -100,6 +114,7 @@ export interface VectorOf {
   y?: NumOrVar;
   magnitude?: NumOrVar;
   direction?: NumOrVar;
+  z?: NumOrVar; // H106: the third component, with `space`
 }
 
 /**
@@ -108,7 +123,7 @@ export interface VectorOf {
  * draws k times the first vector; `angle` marks the angle between two vectors, with the dot
  * product's sign. Physics pages pass `unit` (m/s, N) and `axes` names. Drag a vector's tip.
  */
-export interface VectorDiagramSpec {
+export interface VectorDiagramSpec extends VectorDiagramHs3b {
   kind: 'vectorDiagram';
   vectors: [VectorOf] | [VectorOf, VectorOf];
   sum?: 'tipToTail' | 'parallelogram';
@@ -137,12 +152,14 @@ export type ComplexOf = { re: NumOrVar; im: NumOrVar } | { modulus: NumOrVar; ar
  * `argument` mark |z| and arg z (variables checked); `polar` writes z = r(cos θ + i sin θ).
  * Drag z's point.
  */
-export interface ComplexPlaneSpec {
+export interface ComplexPlaneSpec extends ComplexPlaneHs2g {
   kind: 'complexPlane';
   z: ComplexOf;
   conjugate?: boolean;
   w?: { re: NumOrVar; im: NumOrVar };
   op?: 'sum' | 'difference' | 'product';
+  /** H105: a value holding 1 (sum), 2 (difference) or 3 (product), in place of `op`. */
+  opFrom?: string;
   /** The answer's parts, when the page works them out (checked). */
   result?: { re?: string; im?: string };
   modulus?: string;
@@ -161,7 +178,8 @@ export type PolarCurve =
   /** r = a + b cos θ (or sin): a cardioid when a = b, a limaçon otherwise. */
   | { shape: 'cardioid'; a: NumOrVar; b?: NumOrVar; fn?: 'cos' | 'sin' }
   /** r = aθ, θ in radians, for `turns` turns (default 2). */
-  | { shape: 'spiral'; a: NumOrVar; turns?: number };
+  | { shape: 'spiral'; a: NumOrVar; turns?: number }
+  | PolarConicHs3b; // H106: r = k ÷ (m − n cos θ), focus at the pole, directrix dashed
 
 /** A path x(t), y(t) by family; t in degrees for the circle and ellipse, seconds otherwise. */
 export type ParametricPath =
@@ -220,6 +238,7 @@ export type ConicGraphSpec = {
   | { conic: 'parabola'; p: NumOrVar; axis?: 'vertical' | 'horizontal' }
   | { conic: 'ellipse'; a: NumOrVar; b: NumOrVar }
   | { conic: 'hyperbola'; a: NumOrVar; b: NumOrVar; axis?: 'horizontal' | 'vertical' }
+  | ConicTurnedHs3b // H106: Ax² + Bxy + Cy² = 1 and the axes turned by θ
 );
 
 /** One row operation on an augmented matrix; rows count from 1. */
@@ -252,9 +271,11 @@ export type MatrixGridSpec = { kind: 'matrixGrid' } & (
   | {
       mode: 'rowReduce';
       system: NumOrVar[][];
-      steps: RowOp[];
+      /** H105: 'echelon' or 'reduced' works the row operations out from the values. */
+      steps: RowOp[] | 'echelon' | 'reduced';
       solution?: string[];
     }
+  | MatrixDeterminant // H99
 );
 
 export type HsdSpec =
@@ -292,11 +313,13 @@ export function hsdSpecVars(r: HsdSpec): string[] {
           return ids(r.b, r.c, r.k, r.missing);
         case 'equation':
           return ids(r.left.x, r.left.unit, r.right.x, r.right.unit, r.solution);
+        default:
+          return []; // H95's modes: hs2gSpecVars
       }
     }
     case 'vectorDiagram':
       return ids(
-        ...r.vectors.flatMap((v) => [v.x, v.y, v.magnitude, v.direction]),
+        ...r.vectors.flatMap((v) => [v.x, v.y, v.z, v.magnitude, v.direction]),
         r.result?.x,
         r.result?.y,
         r.result?.magnitude,
@@ -312,6 +335,7 @@ export function hsdSpecVars(r: HsdSpec): string[] {
         ...('modulus' in r.z ? [r.z.modulus, r.z.argument] : [r.z.re, r.z.im]),
         r.w?.re,
         r.w?.im,
+        r.opFrom,
         r.result?.re,
         r.result?.im,
         r.modulus,
@@ -329,7 +353,9 @@ export function hsdSpecVars(r: HsdSpec): string[] {
     case 'matrixGrid':
       return r.mode === 'multiply'
         ? ids(...r.a.flat(), ...r.b.flat(), ...(r.product ?? []).flat())
-        : ids(...r.system.flat(), ...(r.solution ?? []));
+        : r.mode === 'rowReduce'
+          ? ids(...r.system.flat(), ...(r.solution ?? []))
+          : []; // H99's determinant: hs2gSpecVars
     case 'conicGraph':
       return ids(
         r.h,
@@ -337,7 +363,13 @@ export function hsdSpecVars(r: HsdSpec): string[] {
         r.c,
         r.point?.x,
         r.point?.y,
-        ...(r.conic === 'circle' ? [r.r] : r.conic === 'parabola' ? [r.p] : [r.a, r.b]),
+        ...(r.conic === 'turned' // H106
+          ? [r.A, r.B, r.C, r.F, r.angle, r.turned?.A, r.turned?.C, r.discriminant]
+          : r.conic === 'circle'
+            ? [r.r]
+            : r.conic === 'parabola'
+              ? [r.p]
+              : [r.a, r.b]),
       );
   }
 }

@@ -6,10 +6,20 @@ import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { atomsOf, elementName, elementsIn, subscript } from './chem';
+import { atomsOf, elementName, elementsIn, extentOf, moleculeOf, subscript } from './chem';
+import {
+  drawableChain,
+  fillFormula,
+  hydrocarbon,
+  hydrocarbonCounts,
+  ionicUnit,
+  isIonic,
+  isTemplate,
+  symbolFormula,
+} from './chemHs2d';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { reader } from './graphKit';
-import { AtomBall, MoleculeArt, moleculeSize, useAtomPaint } from './MoleculeArt';
+import { AtomBall, MoleculeArt, useAtomPaint } from './MoleculeArt';
 
 type Spec = Extract<Representation, { kind: 'reaction' }>;
 
@@ -35,23 +45,47 @@ export function Reaction({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const read = reader(rep);
   const paint = useAtomPaint();
+  const most = spec.most ?? 8;
   const terms = [
     ...spec.reactants.map((t) => ({ ...t, side: 0 })),
     ...spec.products.map((t) => ({ ...t, side: 1 })),
   ].map((t) => {
     const r = read(t.count);
     const n = r.known ? Math.max(0, Math.round(r.value)) : undefined;
-    return { ...t, n, text: r.known ? r.text : '?' };
+    // A formula from values (H101): C{x}H{y} with the page's x and y, faded while one is "?".
+    const template = isTemplate(t.formula);
+    const filled = template
+      ? fillFormula(t.formula, (id) => (rep.known(id) ? rep.val(id) : undefined))
+      : t.formula;
+    const formula = filled ?? fillFormula(t.formula, () => 1)!;
+    const hc = template ? hydrocarbonCounts(formula) : undefined;
+    const shape =
+      hc && drawableChain(hc.x, hc.y)
+        ? hydrocarbon(hc.x, hc.y)
+        : spec.ions && isIonic(formula)
+          ? ionicUnit(formula)
+          : moleculeOf(formula);
+    const molar = t.molar ? read(t.molar) : undefined;
+    return {
+      ...t,
+      formula,
+      known: filled !== undefined,
+      shape,
+      n,
+      text: r.known ? r.text : '?',
+      name: filled ? subscript(filled) : symbolFormula(t.formula, (id) => rep.variable(id).symbol),
+      molar: molar ? `${molar.known ? molar.text : '?'} g/mol` : undefined,
+    };
   });
   const els = elementsIn(terms.map((t) => t.formula));
   /** Atoms of an element on one side, or undefined while a count is "?". */
   const atomsOn = (side: number, el: string) => {
     const ts = terms.filter((t) => t.side === side);
-    if (ts.some((t) => t.n === undefined && atomsOf(t.formula, el) > 0)) return undefined;
+    if (ts.some((t) => (t.n === undefined || !t.known) && atomsOf(t.formula, el) > 0))
+      return undefined;
     return ts.reduce((s, t) => s + atomsOf(t.formula, el) * (t.n ?? 0), 0);
   };
-  const label = (t: (typeof terms)[number]) =>
-    `${t.text === '1' ? '' : `${t.text} `}${subscript(t.formula)}`;
+  const label = (t: (typeof terms)[number]) => `${t.text === '1' ? '' : `${t.text} `}${t.name}`;
   const equation = [0, 1]
     .map((side) =>
       terms
@@ -65,7 +99,7 @@ export function Reaction({ spec, calc }: { spec: Spec; calc: Calculator }) {
     const work = (side: number) =>
       terms
         .filter((t) => t.side === side && atomsOf(t.formula, el) > 0)
-        .map((t) => `${t.text} × ${atomsOf(t.formula, el)}`)
+        .map((t) => `${t.text} × ${t.known ? atomsOf(t.formula, el) : '?'}`)
         .join(' + ');
     return {
       el,
@@ -77,12 +111,18 @@ export function Reaction({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const known = rows.every((r) => r.a !== undefined && r.b !== undefined);
   const off = rows.filter((r) => r.a !== r.b);
 
+  // With `most` (H101), columns grow so a term of many molecules stays about three wide.
+  const perColumn = spec.most
+    ? Math.max(PER_COLUMN, Math.ceil(Math.max(...terms.map((t) => Math.min(most, t.n ?? 1))) / 3))
+    : PER_COLUMN;
+  const molarRow = terms.some((t) => t.molar) ? 16 : 0;
   /** Columns and rows of a term's molecules, and its box at bond length s. */
   const box = (t: (typeof terms)[number], s: number) => {
-    const k = Math.max(1, Math.min(8, t.n ?? 1));
-    const cols = Math.ceil(k / PER_COLUMN);
-    const perCol = Math.min(k, PER_COLUMN);
-    const m = moleculeSize(t.formula, s);
+    const k = Math.max(1, Math.min(most, t.n ?? 1));
+    const cols = Math.ceil(k / perColumn);
+    const perCol = Math.min(k, perColumn);
+    const [x0, y0, x1, y1] = extentOf(t.shape);
+    const m = { w: (x1 - x0) * s, h: (y1 - y0) * s };
     return {
       k,
       cols,
@@ -103,7 +143,7 @@ export function Reaction({ spec, calc }: { spec: Spec; calc: Calculator }) {
     Math.max(1, Math.ceil((n ?? 0) / Math.max(1, Math.floor((w / 2 - 58) / STEP))));
   const layoutH = (w: number) => {
     const s = scaleFor(w);
-    const top = Math.max(...terms.map((t) => box(t, s).h)) + 24;
+    const top = Math.max(...terms.map((t) => box(t, s).h)) + 24 + molarRow;
     const counters = rows.reduce(
       (sum, r) => sum + ROW + (Math.max(counterLines(r.b, w), counterLines(r.a, w)) - 1) * STEP,
       0,
@@ -119,7 +159,7 @@ export function Reaction({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const boxes = terms.map((t) => box(t, s));
           const total = boxes.reduce((sum, b) => sum + b.w, 0) + seps;
           let x = (w - total) / 2;
-          const midY = (top - 20) / 2 + 2;
+          const midY = (top - molarRow - 20) / 2 + 2;
           const parts: ReactElement[] = [];
           terms.forEach((t, i) => {
             const b = boxes[i]!;
@@ -156,18 +196,18 @@ export function Reaction({ spec, calc }: { spec: Spec; calc: Calculator }) {
             }
             const y0 = midY - b.h / 2;
             for (let k = 0; k < b.k; k++) {
-              const col = Math.floor(k / PER_COLUMN);
-              const inCol = Math.min(PER_COLUMN, b.k - col * PER_COLUMN);
-              const row = k % PER_COLUMN;
+              const col = Math.floor(k / perColumn);
+              const inCol = Math.min(perColumn, b.k - col * perColumn);
+              const row = k % perColumn;
               parts.push(
                 <MoleculeArt
                   key={`m${i}-${k}`}
-                  formula={t.formula}
+                  molecule={t.shape}
                   cx={x + (col + 0.5) * b.mw}
                   cy={y0 + ((b.perCol - inCol) * b.mh) / 2 + (row + 0.5) * b.mh}
                   scale={s}
                   ids={paint.ids}
-                  opacity={t.n === undefined ? 0.3 : t.n === 0 ? 0.12 : 1}
+                  opacity={t.n === undefined || !t.known ? 0.3 : t.n === 0 ? 0.12 : 1}
                   symbols={s >= 14}
                 />,
               );
@@ -176,15 +216,28 @@ export function Reaction({ spec, calc }: { spec: Spec; calc: Calculator }) {
               <ChartText
                 key={`l${i}`}
                 x={x + b.w / 2}
-                y={top - 6}
+                y={top - 6 - molarRow}
                 fontSize={chart.value}
                 fontWeight="700"
                 textAnchor="middle"
-                fill={t.n === undefined ? c.chartMuted : c.chartInk}
+                fill={t.n === undefined || !t.known ? c.chartMuted : c.chartInk}
               >
                 {label(t)}
               </ChartText>,
             );
+            if (t.molar)
+              parts.push(
+                <ChartText
+                  key={`M${i}`}
+                  x={x + b.w / 2}
+                  y={top - 6}
+                  fontSize={chart.label}
+                  textAnchor="middle"
+                  fill={c.chartMuted}
+                >
+                  {t.molar}
+                </ChartText>,
+              );
             x += b.w;
           });
           // Counters: a row per element, before on the left, after on the right.
@@ -264,6 +317,7 @@ export function Reaction({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Caption>
         {[
           equation,
+          ...terms.flatMap((t) => (t.molar ? [`Molar mass of ${t.name}: ${t.molar}`] : [])),
           ...rows.map((r) => r.line),
           known
             ? off.length === 0

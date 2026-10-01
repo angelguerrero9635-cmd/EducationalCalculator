@@ -66,6 +66,7 @@ export function SortLayout({ spec }: { spec: Spec }) {
     <View style={styles.wrap}>
       <Text style={[styles.question, { color: c.text }]}>{spec.question}</Text>
       <Text style={[styles.how, { color: c.textMuted }]}>Tap a card, then tap its group.</Text>
+      {spec.intro ? <Text style={[styles.intro, { color: c.text }]}>{spec.intro}</Text> : null}
       {spec.header?.kind === 'offspring' ? <OffspringFigure animals={spec.header.animals} /> : null}
       {/* The cards still to sort. */}
       <View style={styles.cards}>
@@ -121,8 +122,22 @@ export function SortLayout({ spec }: { spec: Spec }) {
               ]}
             >
               <View style={styles.binHead}>
-                <Text style={[styles.binLabel, { color: c.text }]}>{bin.label}</Text>
-                <Text style={[styles.count, { color: c.accent }]}>{here.length}</Text>
+                {bin.figure ? (
+                  // Kept whole beside a long name.
+                  <View style={styles.binFigure}>
+                    <CardFigureView figure={bin.figure} ink={c.text} shade={c.chartHighlight} />
+                  </View>
+                ) : null}
+                <Text
+                  style={[styles.binLabel, bin.figure && styles.besideFigure, { color: c.text }]}
+                >
+                  {bin.label}
+                </Text>
+                <Text
+                  style={[styles.count, bin.figure && styles.besideFigure, { color: c.accent }]}
+                >
+                  {here.length}
+                </Text>
               </View>
               {here.map((card) => (
                 <Text key={card.i} style={[styles.inBin, { color: c.text }]}>
@@ -190,6 +205,10 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   binHead: { flexDirection: 'row', justifyContent: 'space-between', gap: space.sm },
+  binFigure: { flexShrink: 0 },
+  besideFigure: { alignSelf: 'center' },
+  // H104: a line of text above the cards.
+  intro: { fontSize: font.body, textAlign: 'center' },
   binLabel: { fontSize: font.body, fontWeight: '700', flexShrink: 1 },
   count: { fontSize: font.body, fontWeight: '700', fontVariant: ['tabular-nums'] },
   inBin: { fontSize: font.body - 1 },

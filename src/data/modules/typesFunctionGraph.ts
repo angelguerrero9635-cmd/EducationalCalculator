@@ -3,6 +3,16 @@
  * family, its features marked. Kept apart from `types.ts` so that file's union only lists it. A
  * `number | string` field is a fixed number or a variable id.
  */
+import type { FunctionGraphHs2a } from './typesHs2a';
+import type { FunctionGraphHs2g, RationalByCoefficients } from './typesHs2g';
+import {
+  familyHs3bVars,
+  functionGraphHs3bVars,
+  type FamilyHs3b,
+  type FunctionGraphHs3b,
+  rationalByTopVars,
+  type RationalByTop,
+} from './typesHs3b';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -34,11 +44,16 @@ export type FunctionFamily =
   | { family: 'log'; a?: NumOrVar; b?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   | { family: 'root'; index: 2 | 3; a?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   | { family: 'polynomial'; coefficients: NumOrVar[] }
-  | { family: 'polynomial'; a?: NumOrVar; zeros: { x: NumOrVar; times?: number }[] }
+  // H105: `times` (a zero's multiplicity) may be a value id, a whole number 1 to 9.
+  | { family: 'polynomial'; a?: NumOrVar; zeros: { x: NumOrVar; times?: NumOrVar }[] }
   | { family: 'rational'; a?: NumOrVar; zeros: NumOrVar[]; poles: NumOrVar[]; k?: NumOrVar }
+  | RationalByCoefficients // H94: (px + q) ÷ (rx + s)
+  | RationalByTop // H106: the top's coefficients over (x − p)… and (x² + jx + k)…
   | { family: 'piecewise'; pieces: Piece[] }
   | { family: 'sin' | 'cos' | 'tan'; a?: NumOrVar; b?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
-  | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar };
+  // H105: `degrees` reads the angle in degrees (sin⁻¹ from −90° to 90°), not radians.
+  | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar; degrees?: boolean }
+  | FamilyHs3b; // H106: a·(x − h)^(p/q) + k and log_b(x) + log_b(x + c)
 
 /** One piece of a piecewise function: a family over from … to (unbounded when left out). */
 export interface Piece {
@@ -114,7 +129,9 @@ export type FunctionGraphSpec = FunctionFamily & {
   keep?: string[];
   /** No handles: a drag couldn't solve backwards to the values typed. */
   fixed?: boolean;
-};
+} & FunctionGraphHs2a &
+  FunctionGraphHs2g &
+  FunctionGraphHs3b;
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -135,9 +152,12 @@ export function familyVars(f: FunctionFamily): string[] {
     case 'logistic':
       return ids(f.K, f.start, f.r);
     case 'polynomial':
-      return 'coefficients' in f ? ids(...f.coefficients) : ids(f.a, ...f.zeros.map((z) => z.x));
+      return 'coefficients' in f
+        ? ids(...f.coefficients)
+        : ids(f.a, ...f.zeros.flatMap((z) => [z.x, z.times]));
     case 'rational':
-      return ids(f.a, ...f.zeros, ...f.poles, f.k);
+      if ('top' in f) return rationalByTopVars(f); // H106
+      return 'p' in f ? ids(f.p, f.q, f.r, f.s) : ids(f.a, ...f.zeros, ...f.poles, f.k);
     case 'piecewise':
       return f.pieces.flatMap((p) => [...familyVars(p.f), ...ids(p.from, p.to)]);
     case 'arcsin':
@@ -146,6 +166,9 @@ export function familyVars(f: FunctionFamily): string[] {
       return ids(f.a, f.k);
     case 'log':
       return ids(f.a, f.b, f.h, f.k);
+    case 'power':
+    case 'logSum':
+      return familyHs3bVars(f);
     default:
       return ids(f.a, f.h, f.k, 'b' in f ? f.b : undefined);
   }
@@ -163,5 +186,6 @@ export function functionGraphVars(r: FunctionGraphSpec): string[] {
     ...ids(r.limit?.x, r.secant?.x, r.secant?.h, r.secant?.slope),
     ...ids(s?.vertex?.x, s?.vertex?.y, ...(s?.zeros ?? []), s?.intercept, s?.va, s?.ha),
     ...ids(s?.period, s?.amplitude),
+    ...functionGraphHs3bVars(r),
   ];
 }

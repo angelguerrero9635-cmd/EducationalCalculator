@@ -24,6 +24,7 @@ import { arrowHead } from '../reps/graphKit';
 import { MoleculeArt, fitScale, useAtomPaint, type AtomIds } from '../reps/MoleculeArt';
 import { Ball, usePaintIds, url } from '../reps/paint';
 import { TableArt, tableSize } from '../reps/PeriodicTable';
+import { HydrationFigure } from './hydrationFigure';
 
 type State = 'solid' | 'liquid' | 'gas';
 
@@ -217,6 +218,7 @@ export function MoleculesFigure({ scene }: { scene: NonNullable<Scene['molecules
   const c = usePalette();
   const paint = useAtomPaint();
   const ids = usePaintIds('ball');
+  if (scene.hydration) return <HydrationFigure scene={scene.hydration} />;
   const single =
     scene.items.length === 1 && (scene.items[0]!.count ?? 1) === 1 && !scene.state && !scene.after;
   if (single) {

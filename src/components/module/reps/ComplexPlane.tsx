@@ -12,6 +12,7 @@ import { Arrow, makeFrame } from './graphKit';
 import { HsdGrid, niceWindow } from './hsdGrid';
 import { magnitudeText, short } from './hsdKit';
 import { MathChip } from './hsdText';
+import { complexOp } from './hs2h';
 
 const RAD = Math.PI / 180;
 
@@ -61,7 +62,10 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
   const w = spec.w
     ? { a: num(spec.w.re), b: num(spec.w.im), known: isKnown(spec.w.re) && isKnown(spec.w.im) }
     : undefined;
-  const op = w ? (spec.op ?? 'sum') : undefined;
+  // H105: the operation may come from a value (1 sum, 2 difference, 3 product); none while "?".
+  const op = w
+    ? complexOp(spec.op, spec.opFrom, (id) => (rep.known(id) ? rep.shown(id) : undefined))
+    : undefined;
   const res =
     w && op === 'sum'
       ? { a: z.a + w.a, b: z.b + w.b }
@@ -376,7 +380,7 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
                             put(spec.z.im, b);
                           }
                           const others = spec.w
-                            ? [spec.w.re, spec.w.im].filter(
+                            ? [spec.w.re, spec.w.im, spec.opFrom].filter(
                                 (x): x is string => typeof x === 'string',
                               )
                             : [];

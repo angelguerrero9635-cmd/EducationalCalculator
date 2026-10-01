@@ -5,6 +5,8 @@
  * lists them. A `NumOrVar` field is a fixed number or a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
+import { ladderVars, type EnergyLadderSpec } from './typesHs2d';
+import { gasMixtureVars, type GasMixture } from './typesHs3e';
 
 // ─── H51 gasPiston ───────────────────────────────────────────────────────────
 
@@ -39,6 +41,14 @@ export interface GasPistonSpec extends GasState {
   R?: number;
   keep?: string[];
   fixed?: boolean;
+  /**
+   * H102: the first law instead of a gas law (pass `law: 'ideal'` and no state): heat `heat` Q
+   * in (+) or out (−) and work `work` W by the gas (+) or on it (−) as bands, and
+   * ΔU = Q − W (`change`) in a waterfall beside the cylinder.
+   */
+  energy?: { heat: NumOrVar; work: NumOrVar; change?: string };
+  /** Round 3: a gas mixture colored by gas (`typesHs3e.ts`, H108 part 6). */
+  mixture?: GasMixture;
 }
 
 // ─── H52 beaker: solutions ───────────────────────────────────────────────────
@@ -141,7 +151,9 @@ export type EnergyProfileSpec =
       change?: NumOrVar;
       q?: NumOrVar;
       metal?: { name: string; mass: NumOrVar; start: NumOrVar; heat?: NumOrVar };
-    };
+    }
+  /** Round 2: an enthalpy ladder, levels only (`typesHs2d.ts`, H101). */
+  | EnergyLadderSpec;
 
 // ─── H54 equilibriumChart ────────────────────────────────────────────────────
 
@@ -294,8 +306,13 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.before?.pressure,
         r.before?.volume,
         r.before?.temperature,
+        r.energy?.heat,
+        r.energy?.work,
+        r.energy?.change,
+        ...gasMixtureVars(r.mixture),
       );
     case 'energyProfile':
+      if (r.mode === 'ladder') return ladderVars(r);
       return r.mode === 'calorimeter'
         ? ids(
             r.mass,

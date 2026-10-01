@@ -9,6 +9,8 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { chiStep, normalModel, type Span } from './normalModel';
+import { tailWords } from './signBox';
+import { tCurveWords } from './tCurve';
 import { normalArea, zStar } from './statMath';
 import { usePaintIds } from './paint';
 
@@ -47,9 +49,12 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
   const sym = (v: number | string | undefined, fallback: string) =>
     typeof v === 'string' ? rep.variable(v).symbol : fallback;
   const X = spec.sample ? 'X̄' : chi ? 'χ²' : 'X';
+  /** H99: the standardized axis's letter, t on a t curve. */
+  const Z = model.t !== undefined ? 't' : 'z';
 
   // ── Caption ──
   const lines: string[] = [];
+  if (!model.problem && model.t !== undefined) lines.push(tCurveWords(model.t));
   if (model.problem) lines.push(`${model.problem} The curve can’t be drawn.`);
   else if (chi) {
     lines.push(`Chi-square curve with df = ${model.df}.`);
@@ -132,17 +137,19 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
       : p <= alpha
         ? ` ≤ α = ${num(alpha)}: reject H₀.`
         : ` > α = ${num(alpha)}: fail to reject H₀.`;
+  if (spec.test && typeof spec.test.tail === 'object')
+    lines.push(tailWords(spec.test.tail, (id) => (rep.known(id) ? rep.shown(id) : undefined)));
   if (spec.test && !model.problem) {
     const z = get(spec.test.stat);
     const alpha = get(spec.test.alpha);
     const zc = model.critical?.map((x) => (x - model.m) / model.s);
     if (zc)
       lines.push(
-        `Red: the rejection region, area α = ${num(alpha!)}, past z = ${zc.map(num).join(' and z = ')}.`,
+        `Red: the rejection region, area α = ${num(alpha!)}, past ${Z} = ${zc.map(num).join(` and ${Z} = `)}.`,
       );
     if (z !== undefined && model.pValue !== undefined && known(spec.test.stat))
       lines.push(
-        `Test statistic z = ${num(z)}. Amber: the p-value, ${prob4(model.pValue)}${decision(model.pValue, alpha)}`,
+        `Test statistic ${Z} = ${num(z)}. Amber: the p-value, ${prob4(model.pValue)}${decision(model.pValue, alpha)}`,
       );
   }
   if (chi && !model.problem) {
@@ -207,6 +214,7 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
       spec.sample?.n,
       spec.intervals?.n,
       spec.intervals?.level,
+      spec.intervals?.count,
       spec.interval?.level,
       spec.test?.alpha,
       spec.chiSquare?.df,
@@ -382,7 +390,7 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
                   ? (() => {
                       const text = chi
                         ? `${sym(spec.chiSquare!.stat, 'χ²')} = ${num(model.stat)}`
-                        : `z = ${num((model.stat - model.m) / model.s)}`;
+                        : `${Z} = ${num((model.stat - model.m) / model.s)}`;
                       const y = Math.max(T - 12, sy(model.pdf(model.stat)) - 30);
                       return (
                         <ChartText
@@ -470,7 +478,7 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
                   : null}
                 {showZ && showX ? (
                   <ChartText x={2} y={zY} fill={c.chartMuted} fontStyle="italic" fontWeight="700">
-                    z
+                    {Z}
                   </ChartText>
                 ) : null}
                 {spec.axis || chi ? (

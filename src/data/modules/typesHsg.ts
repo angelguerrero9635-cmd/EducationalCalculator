@@ -4,6 +4,8 @@
  * name them.
  */
 
+import type { DnaLongGene } from './typesHs2e';
+
 // ─── H31 macromolecules (explore) ────────────────────────────────────────────
 
 /** The four kinds of biological molecule a `macromolecules` figure builds. */
@@ -220,6 +222,8 @@ export interface DnaStrandSpec {
   percentA?: NumOrVar;
   pairs?: number;
   codons?: string;
+  /** H100: a long gene, its first bases, "…" and its stop (`typesHs2e.ts`). */
+  gene?: DnaLongGene;
 }
 
 /** Group HG's calculator pictures. */
@@ -233,6 +237,6 @@ export function hsgSpecVars(r: HsgSpec): string[] {
     case 'membrane':
       return ids([r.outside, r.inside, r.moved, r.atp, r.gradient]);
     case 'dnaStrand':
-      return ids([r.length, r.mutation?.at, r.percentA, r.codons]);
+      return ids([r.length, r.mutation?.at, r.percentA, r.codons, r.gene?.bases]);
   }
 }
