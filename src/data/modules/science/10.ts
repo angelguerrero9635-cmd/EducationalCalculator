@@ -4575,7 +4575,7 @@ const ADDED: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       'A reactant is used up, so its concentration falls: the rate is −Δ[A]/Δt, a positive number.',
-      'It is an average: the line through the two readings has slope Δ[A]/Δt, though the true curve is steepest at the start.',
+      'It is an average: the secant through the two readings has slope Δ[A]/Δt, though the curve is steepest at the start.',
     ],
     variables: [
       conc('A1', '[A]₁', 'Concentration at the first time'),
@@ -4585,16 +4585,6 @@ const ADDED: ModuleDef[] = [
       quantity('dt', 'Δt', 'Time between', 's', 0.1, 100000, 0.1),
       quantity('dA', 'Δ[A]', 'Change in concentration', 'mol/L', -100, 0, 0.0001),
       quantity('r', 'r', 'Average rate', 'mol/(L·s)', 0, 1000, 0.000001),
-      {
-        ...quantity('m', 'm', 'Slope of the line', undefined, -1000, 0, 0.000001),
-        derived: true,
-        hidden: true,
-      },
-      {
-        ...quantity('b0', 'b', 'Where the line meets the axis', undefined, -1e7, 1e7, 0.000001),
-        derived: true,
-        hidden: true,
-      },
     ],
     ...rules(
       {
@@ -4653,30 +4643,6 @@ const ADDED: ModuleDef[] = [
           dt: { expr: '−{dA}/{r}', how: 'Divide the drop by the rate.' },
         },
       },
-      {
-        relation: {
-          id: 'slope of the line',
-          hidden: true,
-          display: '{m} = {dA}/{dt}',
-          vars: ['m', 'dA', 'dt'],
-          residual: (v) => v.m! * v.dt! - v.dA!,
-          solve: { m: (v) => div(v.dA!, v.dt!) },
-        },
-        steps: { m: { expr: '{dA}/{dt}', how: 'Rise over run between the two readings.' } },
-      },
-      {
-        relation: {
-          id: 'line through the first reading',
-          hidden: true,
-          display: '{b0} = {A1} − {m} × {t1}',
-          vars: ['b0', 'A1', 'm', 't1'],
-          residual: (v) => v.b0! - (v.A1! - v.m! * v.t1!),
-          solve: { b0: (v) => v.A1! - v.m! * v.t1! },
-        },
-        steps: {
-          b0: { expr: '{A1} − {m} × {t1}', how: 'The line passes through the first reading.' },
-        },
-      },
     ),
     example: {
       A1: 1.2,
@@ -4686,19 +4652,16 @@ const ADDED: ModuleDef[] = [
       dt: 90,
       dA: -0.45,
       r: 0.005,
-      m: -0.005,
-      b0: 1.35,
     },
     startWith: ['A1', 'A2', 't1', 't2'],
     representation: {
-      kind: 'functionGraph',
-      family: 'linear',
-      m: 'm',
-      b: 'b0',
-      secant: { x: 't1', h: 'dt' },
-      xMin: 0,
-      axes: { x: 'Time t (s)', y: 'Concentration [A] (mol/L)' },
-      fixed: true,
+      kind: 'chemDiagram',
+      mode: 'rate',
+      times: ['t1', 't2'],
+      concentrations: ['A1', 'A2'],
+      span: 'dt',
+      change: 'dA',
+      rate: 'r',
     },
   },
   {
