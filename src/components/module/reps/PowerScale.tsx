@@ -9,7 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { sup } from './FactorRows';
-import { LOG_GAP, LOG_ROOM, LogScale } from './PowerScaleHsf';
+import { LOG_ROOM, LogScale } from './PowerScaleHsf';
 
 type Spec = Extract<Representation, { kind: 'powerScale' }>;
 
@@ -276,7 +276,8 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 ) : null}
                 <ChartText
                   x={w / 2}
-                  y={zoomY + 44 + (spec.log ? LOG_GAP : 0)}
+                  // Under the 1–10 ruler it is about (the log ruler has its own line).
+                  y={zoomY + 40}
                   fontSize={chart.label}
                   fill={c.chartMuted}
                   textAnchor="middle"

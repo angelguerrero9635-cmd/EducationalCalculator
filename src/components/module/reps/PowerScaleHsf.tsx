@@ -11,8 +11,8 @@ import { chart, usePalette } from '@/theme';
 import { ChartText, fitLabel } from './common';
 
 /** How far below the 1–10 ruler the log scale sits, and the extra height it needs. */
-export const LOG_GAP = 44;
-export const LOG_ROOM = 44;
+export const LOG_GAP = 62;
+export const LOG_ROOM = 70;
 
 /** log₁₀ to 2 places for the picture ("0.67"); the caption gives 3. */
 const two = (x: number) => x.toFixed(2);
@@ -59,6 +59,15 @@ export function LogScale({
       <ChartText x={zx(0)} y={ly - 8} fontSize={chart.label} fill={c.chartMuted}>
         log₁₀
       </ChartText>
+      <ChartText
+        x={(zx(0) + zx(1)) / 2}
+        y={ly + 38}
+        fontSize={chart.label}
+        fill={c.chartMuted}
+        textAnchor="middle"
+      >
+        the log of the number above
+      </ChartText>
       <G opacity={known ? 1 : 0.35}>
         {/* The mantissa's point, dropped straight down to its log. */}
         <Line
@@ -70,8 +79,10 @@ export function LogScale({
           strokeWidth={chart.strokeLight}
           strokeDasharray={chart.dashFine}
         />
+        {/* Right of the dropped line, on the log ruler's own row: the 1–10 numbers are
+            well above it now. */}
         <ChartText
-          {...fitLabel(pointX + 6, two(logA), chart.value, w, 'start', 6)}
+          {...fitLabel(Math.max(pointX + 8, zx(0) + 40), two(logA), chart.value, w, 'start', 8)}
           y={ly - 8}
           fontSize={chart.value}
           fontWeight="700"
