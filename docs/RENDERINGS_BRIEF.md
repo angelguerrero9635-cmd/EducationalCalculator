@@ -91,10 +91,11 @@ NODE_PATH=$(npm root -g) pnpm shots -- <ids> --widths 390
 **Before a push**, once per group (a tracker group or a subject), not after every kind:
 
 - `pnpm -s format:check`;
-- `node scripts/ci-test.mjs`. It runs every cheap suite. It runs the two heavy suites for what
-  the push changed, and in full when a picture component changed.
+- `node scripts/ci-test.mjs`. It runs every cheap suite, and the two heavy suites for the
+  pages the push changed: a picture component or check runs the pages of the kinds it names.
 
-That is one full heavy run per group instead of one per picture.
+No full runs and no deep runs: the lesson chat runs everything when it merges, and CI's
+nightly run does every test.
 
 ## What exists (don't rebuild)
 

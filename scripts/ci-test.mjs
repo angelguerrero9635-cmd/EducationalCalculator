@@ -172,6 +172,8 @@ if (!full && (outputFiles.length || pictureFiles.length)) {
       console.log(
         `  ${outputFiles.length} engine or helper file(s) changed; ${pageIds.size} of ${Object.keys(head).length} pages say something different.`,
       );
+      // Most pages changed: that is a full run anyway, without the long id list.
+      if (pageIds.size > Object.keys(head).length / 2) full = true;
     }
   }
   if (!full && pictureFiles.length) {

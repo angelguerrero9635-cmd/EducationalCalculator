@@ -36,7 +36,7 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 | Command                                                                     | Use                                                                                                         |
 | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | `pnpm new-module m.5.skill[~slug] ["Title"]`                                | Scaffold a module in the right grade file                                                                   |
-| `MODULE_IDS=m.5. pnpm test src/data/modules`                                | Module, standards and sampling tests for a prefix (`SAMPLES=100 SEQUENCES=15 UNIT_CASES=10` for a deep run) |
+| `MODULE_IDS=m.5. pnpm test src/data/modules`                                | Module, standards and sampling tests for a prefix (the review evidence alone samples deeply)                |
 | `pnpm check`                                                                | Typecheck, lint, format check, all tests                                                                    |
 | `pnpm review -- --prefix m.5. --stage lesson [--changed]`                   | Lesson evidence (dump, deep harness, questions): no build, no browser                                       |
 | `pnpm review -- --prefix m.5. --stage page [--changed]`                     | Page evidence: builds only the pages in scope when `dist/` is stale, screenshots, drags, sheets             |
@@ -62,7 +62,7 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
 3. A new phrase in step text is taught to the harness in `harness/evaluate.ts` (PHRASES); a new
    picture kind gets a check in `harness/pictures.ts`.
 4. Problem types carry their `use` line ("Use this for …") in the module itself.
-5. When the grade is done: `pnpm check`, build, then the review (`docs/MODULE_GUIDE.md`,
+5. When the grade is done: `node scripts/ci-test.mjs`, build, then the review (`docs/MODULE_GUIDE.md`,
    "Review process"): evidence, the two reviewers, fix every finding, improve the engine and
    the reviewers, log it, push.
 
@@ -70,6 +70,10 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
 
 - Commit after each unit of work with a clear message; push to the working branch; no pull
   requests unless asked.
+- Testing: the page tests for the ids you changed while working; `node scripts/ci-test.mjs`
+  before a push (it scopes the heavy suites to the pages that changed), then push: CI runs it
+  again and the nightly run does everything. No local full runs and no deep runs in fixers or
+  placers (the review evidence samples deeply).
 - Don't add dependencies without asking.
 - Never edit `taxonomy.ts` casually; it is kept byte-for-byte and Prettier ignores it.
 - Licensed material is never used; lesson text is original. Any licensed or restricted material

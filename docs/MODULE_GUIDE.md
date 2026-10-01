@@ -164,7 +164,10 @@ the assumptions and a table or diagram.
 1. **Tests while building:** `MODULE_IDS=<prefix> pnpm test src/data/modules` after each page
    (the module, standards, layouts and sampling suites for that prefix). Before a push,
    `node scripts/ci-test.mjs` runs every cheap suite in full and the two heavy ones for the
-   grades the push changed. What the tests enforce (reading level and notation by grade,
+   pages the push changed (a grade's pages for its data file; for an engine change, the pages
+   whose fingerprint changed; it runs everything when most pages changed). Then push: CI runs
+   the same, and the nightly run does every test. Fixers and placers don't deep-run; only the
+   review evidence samples deeply. What the tests enforce (reading level and notation by grade,
    formatting, value counts, every rearrangement and walkthrough, every step line the harness
    can read, layout data, the picture tracker) is listed in each test file's header; a new
    phrase in step text is taught to `PHRASES` in `harness/evaluate.ts`, a new picture kind gets
