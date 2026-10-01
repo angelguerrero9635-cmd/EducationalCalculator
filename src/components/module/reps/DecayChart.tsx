@@ -25,9 +25,11 @@ type Rep = ReturnType<typeof useRep>;
 type Decay = Exclude<DecayChartSpec, { mode: 'equation' }>;
 type Equation = Extract<DecayChartSpec, { mode: 'equation' }>;
 
-/** Big times read as 4.47 × 10⁹; the rest in full. */
+/** Big times read as 4.47 × 10⁹ (3 figures, never 3.2091 × 10⁹); the rest in full. */
 const big = (x: number) =>
-  Math.abs(x) >= 1e6 ? scientific(x) : formatNumber(Number(x.toPrecision(6)));
+  Math.abs(x) >= 1e6
+    ? scientific(Number(x.toPrecision(3)))
+    : formatNumber(Number(x.toPrecision(6)));
 
 /** A value as the picture says it: past a million, 3 figures in powers of ten (3.21 × 10⁹, never 3,209,219,858). */
 const readOf = (rep: Rep) => (x: NumOrVar) =>

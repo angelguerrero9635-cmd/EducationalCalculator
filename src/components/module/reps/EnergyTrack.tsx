@@ -445,7 +445,7 @@ export function EnergyTrack({ spec, calc }: { spec: EnergyTrackSpec; calc: Calcu
             : []),
           ...(spec.mass !== undefined && spec.speed
             ? [
-                `${sym(spec.kinetic)} = 1/2 × ${massSym()} × ${sym(spec.speed)}² = 1/2 × ${massText()} × (${rep.value(spec.speed)})² = ${rep.value(spec.kinetic)}`,
+                `${sym(spec.kinetic)} = ½ × ${massSym()} × ${sym(spec.speed)}² = ½ × ${massText()} × (${rep.value(spec.speed)})² = ${rep.value(spec.kinetic)}`,
               ]
             : []),
           'Going down, potential energy turns into kinetic energy; the total stays the same',

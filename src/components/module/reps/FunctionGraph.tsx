@@ -288,12 +288,15 @@ function Chip({
 
 // ─── Words for the caption ─────────────────────────────────────────────────────
 
-/** An exact value, with its decimal after ≈ when it isn't a short decimal. */
-const withApprox = (x: number, text?: string) => {
+/**
+ * An exact value, with its decimal after ≈ when it isn't a short decimal; `fmt` writes the
+ * decimal (a science page's measurements read to 3 figures: t ≈ 4.39, not 4.3944).
+ */
+const withApprox = (x: number, text?: string, fmt: (x: number) => string = formatNumber) => {
   const t = text ?? exactText(x);
   const short = Math.abs(x * 1e4 - Math.round(x * 1e4)) < 1e-7;
   if (t && (short || t === formatNumber(x))) return t;
-  return t ? `${t} ≈ ${formatNumber(x)}` : `≈ ${formatNumber(x)}`;
+  return t ? `${t} ≈ ${fmt(x)}` : `≈ ${fmt(x)}`;
 };
 
 const endText = (v: number, pi: boolean) =>
@@ -310,8 +313,8 @@ const intervalText = (list: Interval[], pi = false) =>
         .join(' ∪ ');
 
 /** "= 3", "= 2√2 ≈ 2.8284" or "≈ 10.5935": a value after its name. */
-const eq = (x: number, text?: string) => {
-  const w = withApprox(x, text);
+const eq = (x: number, text?: string, fmt?: (x: number) => string) => {
+  const w = withApprox(x, text, fmt);
   return w.startsWith('≈') ? w : `= ${w}`;
 };
 
@@ -1668,6 +1671,10 @@ export function FunctionGraph({
 
   /** The caption: the formula, then each feature marked, in words with exact values. */
   function captionOf() {
+    // A science page's model reads its worked-out decimals to 3 figures (N(6) ≈ 691).
+    const measured = calc.module.id.startsWith('s.')
+      ? (x: number) => formatNumber(Number(x.toPrecision(3)))
+      : undefined;
     const lines = [...captions];
     if (!allKnown) return [...lines, 'Type every value to draw the graph.'].join(' · ');
     const pi = !!main.piX;
@@ -1708,7 +1715,7 @@ export function FunctionGraph({
     }
     if (main.inflection && marks.has('extrema'))
       lines.push(
-        `Fastest growth at ${xName} ${eq(main.inflection.x)}, where it reaches half the limit, ${numText(main.inflection.y)}`,
+        `Fastest growth at ${xName} ${eq(main.inflection.x, undefined, measured)}, where it reaches half the limit, ${numText(main.inflection.y)}`,
       );
     if (marks.has('asymptotes')) {
       const v = main.vas(win[0], win[1]);
@@ -1740,7 +1747,7 @@ export function FunctionGraph({
       lines.push(`Range: ${intervalText(main.range, !!main.piY)}`);
     if (spec.at && rep.known(spec.at.x) && atX !== undefined) {
       const y = main.f(atX);
-      const said = withApprox(y, exactText(y, !!main.piY));
+      const said = withApprox(y, exactText(y, !!main.piY), measured);
       lines.push(
         Number.isFinite(y)
           ? `${fName}(${numText(atX, pi)}) ${said.startsWith('≈') ? said : `= ${said}`}`
