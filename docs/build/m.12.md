@@ -386,13 +386,14 @@ None: every planned page is built, some with an interim picture (below).
 - `m.12.regression-inference` main and `~correlation`: the P rule line reads "P = the t tail
   past t on Hₐ's side, with df degrees of freedom"; P is worked from tcdf's value ("P = 2 × (1 −
   0.997519)", "P = 2 × 0.002481"; "P = 1 − …" for >; none when the tail is under 0.0001). The
-  interim for the coded Hₐ: the decision note opens with it in words ("Hₐ: β ≠ 0, two tails:
-  …"). t runs ±10⁹ on all three pages. `~interval`: E, L and U to ±10⁸ (the n = 3, 99% case no
+  coded Hₐ shows its meaning (`labels`: its box and the "we know" line read "Hₐ: β ≠ 0"), so
+  the decision note opens with the tail alone ("Two tails: …"; the interim wording, "Hₐ: β ≠ 0,
+  two tails", stays only on `~standard-error`, which has no Hₐ box). t runs ±10⁹ on all three pages. `~interval`: E, L and U to ±10⁸ (the n = 3, 99% case no
   longer turns C into 0.9); a note on U says whether 0 is in the interval.
 - `m.12.anova` main and `~groups`: the decision is in context ("reject H₀: convincing
   evidence that at least one group mean differs"), with "P < 0.0001 < α = 0.05" for a tiny
   p-value. `~two-variances`: a side value Hₐ (0 for ≠, 1 for σ₁² > σ₂²; 10 values), P = Fcdf(F,
-  ∞, df₁, df₂) for >, and the note opens with Hₐ in words and ends "… that the population
+  ∞, df₁, df₂) for >, shown as its meaning (`labels`), and the note opens with the tail and ends "… that the population
   variances differ" (or "… the first population's variance is larger").
 - Every p-value already goes through `prob(…, 'p-value')`, so `belowStep` is set; the box's
   "P = 0" is the engine's (the lead's).

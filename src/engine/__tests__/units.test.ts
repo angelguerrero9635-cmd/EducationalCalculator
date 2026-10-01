@@ -221,6 +221,23 @@ describe('unit context', () => {
     expect(makeUnitContext(k, { system: 'metric', units: { d: 'mi' } }).display.d).toBe('m');
   });
 
+  it('converts charge and capacitance, offered only where a value lists them', () => {
+    expect(close(convert(4, 'μC', 'C'), 4e-6)).toBe(true);
+    expect(close(convert(1062, 'pC', 'nC'), 1.062)).toBe(true);
+    expect(close(convert(470, 'μF', 'F'), 4.7e-4)).toBe(true);
+    const q = { id: 'q', symbol: 'q', name: 'Charge', unit: 'μC' };
+    expect(unitChoices(q, 'metric')).toEqual([]);
+    expect(unitChoices({ ...q, units: ['nC', 'μC', 'C'] }, 'metric')).toEqual(['nC', 'μC', 'C']);
+  });
+
+  it('shows a value first in `shownIn`, the unit picked from the menu winning', () => {
+    const page = mod('s.11.electric-potential~parallel-plate');
+    const ctx = makeUnitContext(page, { system: 'metric' });
+    expect(ctx.display.d).toBe('mm');
+    expect(ctx.toDisplay('d', 0.001)).toBeCloseTo(1);
+    expect(makeUnitContext(page, { system: 'metric', units: { d: 'm' } }).display.d).toBe('m');
+  });
+
   it('links length, area and volume units in whole-number lessons', () => {
     const area = mod('m.3.area');
     expect(linkedUnits(area.variables, 'l', 'm')).toEqual({ l: 'm', w: 'm', A: 'm²' });

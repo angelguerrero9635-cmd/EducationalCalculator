@@ -31,6 +31,15 @@ export interface VariableDef {
    * `'fraction'` writes radians as fractions of π (5π/2, π/6, −3π/4) and takes them typed.
    */
   pi?: boolean | 'fraction';
+  /**
+   * Show the value exactly when it is exact (E22): a square root in simplest form (√3/2, 3√2,
+   * √31/4, with a bottom up to `fraction` or 12) or a special-angle value ((√6 + √2)/4,
+   * 2 − √3), with its decimal beside the answer ("√2/2 ≈ 0.7071"). A function gives the exact
+   * form from the page's values when the value alone can't (a quadratic's root,
+   * (−3 + √17)/4: `quadraticRoot`); it is used where the values are at hand (steps and boxes).
+   * Any other value keeps the usual display.
+   */
+  exact?: true | ((v: Values) => string | undefined);
   /** Show the value in scientific notation (4.7 × 10⁵); boxes take "4.7 × 10^5" and "4.7e5". */
   scientific?: boolean;
   /**
@@ -60,10 +69,22 @@ export interface VariableDef {
    * and the unit systems keep to these.
    */
   units?: string[];
+  /**
+   * The unit the value is shown in at first when it isn't the formula's (a charge typed in μC
+   * for a rule in coulombs): one of `units`. The steps then convert it ("q = 4 μC = 4 × 10⁻⁶ C")
+   * and work in the formula's units, so the rule needs no 10⁻⁶ of its own.
+   */
+  shownIn?: string;
   /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
   multipleOf?: number;
   /** Only these values (shown units), when a lesson names them: count by 5s, 10s or 100s. */
   allowed?: number[];
+  /**
+   * What each of the `allowed` codes means, when the value is a choice and not a number (Hₐ:
+   * 0 is "β ≠ 0"): the box shows the meaning and is tapped through the codes in `allowed`
+   * order, and the "we know" line reads "Hₐ: β ≠ 0", never the code.
+   */
+  labels?: Record<number, string>;
   /**
    * Worked out, never typed: a working value the steps show (the ones with the ten, an
    * estimate's parts). Its box is read-only and the walkthrough never starts from it.

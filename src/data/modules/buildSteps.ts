@@ -1,5 +1,12 @@
-import { CHOICE_BOX, choiceOf, choiceSign } from '@/engine/choices';
-import { dollarsOf, formatNumber, lowerFirst, renderTemplate, unitFor } from '@/engine/format';
+import { CHOICE_BOX, choiceOf, choiceSign, codeLabel } from '@/engine/choices';
+import {
+  dollarsOf,
+  formatNumber,
+  lowerFirst,
+  renderTemplate,
+  superscript,
+  unitFor,
+} from '@/engine/format';
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
@@ -99,7 +106,11 @@ export interface Walkthrough {
  * (tan(2 × 45.0005°) = 634.06 ÷ (999.99 − 1000)), its numbers are printed with 8, so the sides
  * agree as written.
  */
-const checkLine = (display: string, vars: readonly VariableDef[], values: Values) => {
+const checkLine = (
+  display: string,
+  vars: readonly (VariableDef & { scientificFigures?: number })[],
+  values: Values,
+) => {
   const line = renderTemplate(display, vars, values);
   const sides = (text: string) => {
     const parts = text.split(' = ');
@@ -116,7 +127,7 @@ const checkLine = (display: string, vars: readonly VariableDef[], values: Values
   if (!off(line)) return line;
   const fine = renderTemplate(
     display,
-    vars.map((v) => ({ ...v, figures: 8 })),
+    vars.map((v) => ({ ...v, figures: 8, scientificFigures: undefined })),
     values,
   );
   return off(fine) ? line : fine;
@@ -264,14 +275,16 @@ export function buildSteps(
     // A typed value reads as typed (36.525); `figures` and the page's worked figures round
     // only worked-out values (the working lines keep their extra figures).
     const typed = result.given.some((g) => g.id === id);
-    const n = formatNumber(
-      x,
-      inShownUnit && v
-        ? typed
-          ? { ...v, digits: undefined, figures: undefined }
-          : withWorkedFigures({ ...v, digits: undefined }, figures)
-        : undefined,
-    );
+    const shownAs = (w: VariableDef) =>
+      typed
+        ? { ...w, digits: undefined, figures: undefined }
+        : withWorkedFigures({ ...w, digits: undefined }, figures);
+    // An exact value (√2/2, (−3 + √17)/4) is worked from the values the steps show.
+    const exactValues = inShownUnit && direct ? working : undefined;
+    let n = formatNumber(x, inShownUnit && v ? { ...shownAs(v), values: exactValues } : undefined);
+    // A root written exactly says its decimal beside it: √2/2 ≈ 0.7071.
+    if (inShownUnit && v?.exact && n.includes('√'))
+      n = `${n} ≈ ${formatNumber(x, shownAs({ ...v, exact: undefined, fraction: undefined }))}`;
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return dollarsOf(x, n);
@@ -298,6 +311,10 @@ export function buildSteps(
    * row itself when the choice is its only box), else "s: >".
    */
   const choiceLabel = (id: string) => {
+    // A coded value reads as its meaning: "Hₐ: β ≠ 0", never "Hₐ = 0".
+    const v = byId.get(id)!;
+    const meaning = codeLabel(v, result.values[id]);
+    if (meaning !== undefined) return `${v.symbol}: ${meaning}`;
     const choices = choiceOf(module.equation, id);
     const sign = choices && choiceSign(choices, result.values[id]);
     if (!sign) return undefined;
@@ -309,7 +326,9 @@ export function buildSteps(
   const quantity = (id: string): Quantity => {
     const v = byId.get(id)!;
     const known = result.values[id] !== undefined;
-    const value = known ? fmt(id, shownValue(id), shownUnit(id)) : '?';
+    const value = known
+      ? (codeLabel(v, result.values[id]) ?? fmt(id, shownValue(id), shownUnit(id)))
+      : '?';
     return {
       id,
       symbol: v.symbol,
@@ -327,6 +346,20 @@ export function buildSteps(
   const known: Values = Object.fromEntries(givenIdsOf(result).map((id) => [id, working[id]!]));
   /** The values the student typed (exact as shown). */
   const typed = new Set(givenIdsOf(result));
+  /**
+   * The lines' values: a worked-out one in scientific notation reads to the page's figures
+   * (5.93 × 10⁶, as its box and answer show it), a typed one as typed; decimals keep their
+   * extra figures, so the lines still add up. (A value with a display of its own keeps it,
+   * as `withWorkedFigures` leaves it.)
+   */
+  const lineVars =
+    figures === undefined
+      ? workVars
+      : workVars.map((w) =>
+          typed.has(w.id) || withWorkedFigures(w, figures).worked === undefined
+            ? w
+            : { ...w, scientificFigures: figures },
+        );
   // Figure-only values are found for the picture, never written as a step.
   const trace = result.trace.filter((t) => !byId.get(t.id)?.hidden);
   const steps = trace.map((t): Step => {
@@ -346,13 +379,13 @@ export function buildSteps(
       sentence: agree(
         relation.sentence
           ? relation.sentence(knownHere)
-          : renderTemplate(relation.display, workVars, knownHere),
+          : renderTemplate(relation.display, lineVars, knownHere),
       ),
       // A p-value under 0.0001 is written "P < 0.0001", never "P = 0".
       result:
         v.belowStep && v.step !== undefined && workValue(t.id) < v.step / 2
           ? `${v.symbol} < ${formatNumber(v.step)}`
-          : `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
+          : `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct || !needsConversion(t.id))}`,
     };
     // Grade 3–5 boxes open with the number sentence, then the rule in words; K–2 with the
     // sentence only; Grade 6 on with the rule in letters.
@@ -392,7 +425,7 @@ export function buildSteps(
     const rearranged = `${v.symbol} = ${renderTemplate(expr, vars)}`;
     // A line whose printed numbers nearly cancel (1/(1/1 + 1/(−0.994))) can miss the answer
     // at the usual figures: its numbers are then printed with 8, so the line adds up.
-    const printed = (vs: typeof workVars) => renderTemplate(expr, vs, working);
+    const printed = (vs: typeof lineVars) => renderTemplate(expr, vs, working);
     const misses = (line: string) => {
       const x = evaluatePrinted(line);
       const want = working[t.id];
@@ -400,9 +433,9 @@ export function buildSteps(
         x !== undefined && want !== undefined && Math.abs(x - want) > 1e-3 * Math.abs(want) + 1e-9
       );
     };
-    const fine = workVars.map((w) => ({ ...w, figures: 8 }));
+    const fine = lineVars.map((w) => ({ ...w, figures: 8, scientificFigures: undefined }));
     const substituted = agree(
-      `${v.symbol} = ${misses(printed(workVars)) && !misses(printed(fine)) ? printed(fine) : printed(workVars)}`,
+      `${v.symbol} = ${misses(printed(lineVars)) && !misses(printed(fine)) ? printed(fine) : printed(lineVars)}`,
     );
     // Lines that only repeat the one before ("c = 4", then "c = 4") are left out.
     const same = (x: string, y: string) => x === y.split(' (')[0];
@@ -416,7 +449,7 @@ export function buildSteps(
         : noted;
     const workLines = work?.length
       ? byGrade(
-          work.map((line) => agree(renderTemplate(line, workVars, working))),
+          work.map((line) => agree(renderTemplate(line, lineVars, working))),
           grade,
         )
       : undefined;
@@ -526,7 +559,12 @@ export function buildSteps(
     const formula = fmt(id, result.values[id]!, formulaUnit(id), false);
     // State the factor in the direction that reads as a number ≥ 1 ("1 kg = 2.20462 lb").
     const f = units.factor(id);
-    const sig = (x: number) => String(Number(x.toPrecision(6)));
+    // (a power of ten from 10⁴ up as written in class: 1 C = 10⁶ μC, never 1000000)
+    const sig = (x: number) => {
+      const e = Math.round(Math.log10(x));
+      if (e >= 4 && Math.abs(x / 10 ** e - 1) < 1e-9) return superscript(`10^${e}`);
+      return String(Number(x.toPrecision(6)));
+    };
     const one =
       offsetRule(shownUnit(id), formulaUnit(id)) ??
       (f >= 1
@@ -576,7 +614,7 @@ export function buildSteps(
       )
       .map((r) => ({
         formula: agree(
-          r.check && direct ? r.check(working) : checkLine(r.display, workVars, working),
+          r.check && direct ? r.check(working) : checkLine(r.display, lineVars, working),
         ),
         ok: holds(r, result.values),
       })),

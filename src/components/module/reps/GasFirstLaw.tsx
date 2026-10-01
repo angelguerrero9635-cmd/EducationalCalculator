@@ -60,6 +60,10 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
           const qb = band(Q.value);
           const qy = bottom - 26;
           const qIn = Q.value >= 0;
+          // Its label sits over the band when it fits left of the cylinder; on a phone it would
+          // run under the glass ("Q = 500 J in"), so it goes under the cylinder's base instead.
+          const qText = `Q = ${sig(Q.value)} ${unit} ${qIn ? 'in' : 'out'}`;
+          const qFits = 8 + qText.length * chart.label * 0.58 + 6 <= left - 4;
           const heatPath = qIn
             ? `M 6 ${qy - qb / 2} L ${left - 14} ${qy - qb / 2} L ${left - 14} ${qy - qb / 2 - 6} L ${left - 1} ${qy} L ${left - 14} ${qy + qb / 2 + 6} L ${left - 14} ${qy + qb / 2} L 6 ${qy + qb / 2} Z`
             : `M ${left - 2} ${qy - qb / 2} L 20 ${qy - qb / 2} L 20 ${qy - qb / 2 - 6} L 6 ${qy} L 20 ${qy + qb / 2 + 6} L 20 ${qy + qb / 2} L ${left - 2} ${qy + qb / 2} Z`;
@@ -99,8 +103,8 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
                 ) : null}
                 <SubLabel
                   x={8}
-                  y={qy - qb / 2 - 24}
-                  text={`Q = ${sig(Q.value)} ${unit} ${qIn ? 'in' : 'out'}`}
+                  y={qFits ? qy - qb / 2 - 24 : bottom + 40}
+                  text={qText}
                   anchor="start"
                   color={qIn ? c.physHot : c.physCold}
                   w={w}

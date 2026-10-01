@@ -175,12 +175,16 @@ export function makeUnitContext(module: ModuleLike, asked: UnitChoice): UnitCont
     let shown = v.unit;
     if (unit) {
       const picked = choice.units?.[v.id];
+      const offered = unitChoices(v, choice.system, module.variables);
       shown =
-        picked && unitChoices(v, choice.system, module.variables).includes(picked)
+        picked && offered.includes(picked)
           ? picked
-          : choice.system === 'mixed'
-            ? v.unit
-            : unitInSystem(v.unit!, choice.system);
+          : // A value shown at first in another unit than its rule's (μC for coulombs).
+            v.shownIn && offered.includes(v.shownIn)
+            ? v.shownIn
+            : choice.system === 'mixed'
+              ? v.unit
+              : unitInSystem(v.unit!, choice.system);
     }
     display[v.id] = shown;
     factors[v.id] = unit && shown ? convert(1, shown, v.unit!) : 1;

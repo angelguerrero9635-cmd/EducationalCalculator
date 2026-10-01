@@ -6,6 +6,7 @@
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math11.ts`.
  */
 import { binomialPmf, choose, invPhi, Phi } from '@/components/module/reps/statMath';
+import { complexRoots, quadraticRoot, radical, radicalParts } from '@/engine/exact';
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -297,15 +298,25 @@ const rootOf = (a: number, b: number, c: number, sign: 1 | -1) => {
   const D = b ** 2 - 4 * a * c;
   return a === 0 || D < -1e-9 ? undefined : (-b + sign * Math.sqrt(Math.max(0, D))) / (2 * a);
 };
-/** The quadratic formula worked with numbers, −b written as its value: (−3 + √25) ÷ 4. */
+/**
+ * The quadratic formula worked with numbers, −b written as its value: (−3 + √25) ÷ 4, then
+ * the root taken: (−3 + 5) ÷ 4, or simplified when it is not whole: (2 + 2√3) ÷ 4 (a root
+ * already simplest, √17, stays as it is: the answer is written exactly).
+ */
 const quadWork = (a: number, b: number, c: number, sign: 1 | -1) => {
   const D = Math.max(0, b ** 2 - 4 * a * c);
   const op = sign > 0 ? '+' : '−';
-  return [
-    `(${fmt(-b)} ${op} √${par(D)}) ÷ ${par(2 * a)}`,
-    `(${fmt(-b)} ${op} ${fmt(Math.sqrt(D))}) ÷ ${par(2 * a)}`,
-  ];
+  const first = `(${fmt(-b)} ${op} √${par(D)}) ÷ ${par(2 * a)}`;
+  const [k, r] = Number.isInteger(D) ? radicalParts(D) : [0, 0];
+  if (r > 1 && k === 1) return [first];
+  const root = r > 1 ? radical(D) : fmt(Math.sqrt(D));
+  return [first, `(${fmt(-b)} ${op} ${root}) ÷ ${par(2 * a)}`];
 };
+/** A root of the quotient ax² + q₁x + q₀ exactly, once r is a root (R = 0). */
+const quotientRoot = (sign: 1 | -1) => (v: Values) =>
+  v.R !== undefined && Math.abs(v.R) < 1e-9 && [v.a, v.q1, v.q0].every((x) => x !== undefined)
+    ? quadraticRoot(v.a!, v.q1!, v.q0!, sign)
+    : undefined;
 
 /** A number as a fraction when it is one with a bottom up to `most` (the page's `fraction`). */
 const fr = (x: number, most = 12) => formatNumber(x, { fraction: most, improper: true });
@@ -345,13 +356,6 @@ const cx = (re: number, im: number, show: (x: number) => string = fmt) =>
     ],
     show,
   );
-/** √n in simplest form for a whole n > 0: √36 → "6", √124 → "2√31", √31 → "√31". */
-const radical = (n: number) => {
-  let k = Math.floor(Math.sqrt(n));
-  while (k > 1 && n % (k * k) !== 0) k--;
-  const rest = n / (k * k);
-  return rest === 1 ? String(k) : `${k > 1 ? k : ''}√${rest}`;
-};
 /** A sine or cosine as written: 6 × 10⁻¹⁷ is 0. */
 const tidy = (x: number) => Math.round(x * 1e10) / 1e10 || 0;
 /** An angle in radians as a fraction of π when it is one (π/2, −3π/4), else its decimal. */
@@ -2608,7 +2612,13 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('c', 'c', 'Constant', { integer: true, min: -20, max: 20 }),
       V('D', 'D', 'Discriminant b² − 4ac', { integer: true, min: -2000, max: -1, derived: true }),
       V('p', 'p', 'Real part', { min: -20, max: 20, fraction: 40, derived: true }),
-      V('q', 'q', 'Imaginary part', { min: -20, max: 20, fraction: 40, derived: true }),
+      V('q', 'q', 'Imaginary part', {
+        min: -20,
+        max: 20,
+        fraction: 40,
+        derived: true,
+        exact: true,
+      }),
     ],
     rules: [
       limit(
@@ -2657,13 +2667,18 @@ export const MATH_11_MODULES: ModuleDef[] = [
             const [D, a2] = [-v.D!, 2 * v.a!];
             if (v.b === undefined) return [];
             const root = radical(D);
-            const iRoot = root === '1' ? 'i' : root.includes('√') ? `i${root}` : `${root}i`;
-            const [re, im] = [fr(-v.b! / a2, 40), fr(Math.abs(Math.sqrt(D) / a2), 40)];
-            const iPart = im === '1' ? 'i' : `${im}${im.includes('/') ? ' ' : ''}i`;
+            // (i before the root: i√31, 6i√2, never i6√2)
+            const iRoot =
+              root === '1' ? 'i' : root.includes('√') ? root.replace('√', 'i√') : `${root}i`;
+            // The pair written exactly: 2 ± 3i, −1/2 ± (√3/2)i.
+            const pair = complexRoots(v.a!, v.b!, v.c ?? (v.b! ** 2 + D) / (4 * v.a!));
             return [
               `q = √${fmt(D)} ÷ ${par(a2)}`,
-              `q = ${fmt(Math.sqrt(D))} ÷ ${par(a2)}`,
-              `x = (${fmt(-v.b!)} ± ${iRoot}) ÷ ${par(a2)} = ${v.b === 0 ? '' : `${re} `}±${v.b === 0 ? '' : ' '}${iPart}`,
+              // (a root that isn't whole is simplified, √72 = 6√2, and stays exact)
+              ...(root === `√${D}`
+                ? []
+                : [`q = ${root.includes('√') ? root : fmt(Math.sqrt(D))} ÷ ${par(a2)}`]),
+              ...(pair ? [`x = (${fmt(-v.b!)} ± ${iRoot}) ÷ ${par(a2)} = ${pair}`] : []),
             ];
           },
         },
@@ -4518,8 +4533,20 @@ export const MATH_11_MODULES: ModuleDef[] = [
       }),
       V('q0', 'q₀', 'Quotient’s constant', { min: -1e5, max: 1e5, fraction: 12, derived: true }),
       V('R', 'R', 'Remainder', { min: -1e6, max: 1e6, fraction: 12, derived: true }),
-      V('x2', 'x₂', 'Larger other root', { min: -1000, max: 1000, fraction: 12, derived: true }),
-      V('x3', 'x₃', 'Smaller other root', { min: -1000, max: 1000, fraction: 12, derived: true }),
+      V('x2', 'x₂', 'Larger other root', {
+        min: -1000,
+        max: 1000,
+        fraction: 12,
+        derived: true,
+        exact: quotientRoot(1),
+      }),
+      V('x3', 'x₃', 'Smaller other root', {
+        min: -1000,
+        max: 1000,
+        fraction: 12,
+        derived: true,
+        exact: quotientRoot(-1),
+      }),
       V('z', 'z', 'Root found', { min: -20, max: 20, derived: true, hidden: true }),
     ],
     rules: [
@@ -4594,7 +4621,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '(−{q1} + √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
         'The quadratic formula on the quotient, with the plus sign.',
         {
-          check: (v) => `${fr(v.x2!)} = ${quadWork(v.a!, v.q1!, v.q0!, 1)[0]}`,
+          check: (v) =>
+            `${quotientRoot(1)(v) ?? fr(v.x2!)} = ${quadWork(v.a!, v.q1!, v.q0!, 1)[0]}`,
           work: (v) => quadWork(v.a!, v.q1!, v.q0!, 1).map((l) => `x₂ = ${l}`),
         },
       ),
@@ -4607,13 +4635,19 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '(−{q1} − √({q1}² − 4 × {a} × {q0})) ÷ (2 × {a})',
         'The same formula with the minus sign.',
         {
-          check: (v) => `${fr(v.x3!)} = ${quadWork(v.a!, v.q1!, v.q0!, -1)[0]}`,
+          check: (v) =>
+            `${quotientRoot(-1)(v) ?? fr(v.x3!)} = ${quadWork(v.a!, v.q1!, v.q0!, -1)[0]}`,
           work: (v) => {
             const [a, q1, q0, r] = [v.a!, v.q1!, v.q0!, v.r!];
-            const roots = [r, rootOf(a, q1, q0, 1)!, rootOf(a, q1, q0, -1)!];
+            // The roots written exactly: x = 3, (−3 + √17)/4, (−3 − √17)/4.
+            const roots = [
+              fr(r),
+              quadraticRoot(a, q1, q0, 1) ?? fr(rootOf(a, q1, q0, 1)!),
+              quadraticRoot(a, q1, q0, -1) ?? fr(rootOf(a, q1, q0, -1)!),
+            ];
             return [
               ...quadWork(a, q1, q0, -1).map((l) => `x₃ = ${l}`),
-              `(${lin(r, fr)})(${poly([a, q1, q0], fr)}) = 0; x = ${[...new Set(roots.map((x) => fr(x)))].join(', ')}`,
+              `(${lin(r, fr)})(${poly([a, q1, q0], fr)}) = 0; x = ${[...new Set(roots)].join(', ')}`,
             ];
           },
         },
@@ -4644,9 +4678,15 @@ export const MATH_11_MODULES: ModuleDef[] = [
     variables: [
       V('t', 'θ', 'Angle (radians)', { pi: 'fraction', min: -4 * PI, max: 4 * PI, step: PI / 12 }),
       V('d', 'θ°', 'Angle in degrees', { min: -720, max: 720, derived: true }),
-      V('x', 'x', 'cos θ', { min: -1, max: 1, derived: true }),
-      V('y', 'y', 'sin θ', { min: -1, max: 1, derived: true }),
-      V('m', 'm', 'Tangent, tan θ (the slope y ÷ x)', { min: -1e6, max: 1e6, derived: true }),
+      V('x', 'x', 'cos θ', { min: -1, max: 1, fraction: 12, derived: true, exact: true }),
+      V('y', 'y', 'sin θ', { min: -1, max: 1, fraction: 12, derived: true, exact: true }),
+      V('m', 'm', 'Tangent, tan θ (the slope y ÷ x)', {
+        min: -1e6,
+        max: 1e6,
+        fraction: 12,
+        derived: true,
+        exact: true,
+      }),
     ],
     rules: [
       limit(

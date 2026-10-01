@@ -1,3 +1,5 @@
+import type { VariableDef } from './types';
+
 /**
  * Choice boxes: a sign the student taps through in an equation row ({s:sign}, {h:alt}). The
  * value stored is a code the relations read; the box and the steps show the sign.
@@ -46,4 +48,24 @@ export const CHOICE_BOX = /\{(\w+):(sign|relation|op|alt|pm)\}/g;
 export function choiceOf(template: string | undefined, id: string): Choices | undefined {
   for (const m of (template ?? '').matchAll(CHOICE_BOX)) if (m[1] === id) return m[2] as Choices;
   return undefined;
+}
+
+/** What a coded value means on a variable with `labels` ("β ≠ 0" for Hₐ's 0), or undefined. */
+export function codeLabel(
+  variable: Pick<VariableDef, 'labels'>,
+  value: number | undefined,
+): string | undefined {
+  if (!variable.labels || value === undefined) return undefined;
+  return variable.labels[Math.round(value)];
+}
+
+/** The code a labelled box moves to on a tap: the next in `allowed` (or the labels), round. */
+export function nextCode(
+  variable: Pick<VariableDef, 'labels' | 'allowed'>,
+  value: number | undefined,
+): number | undefined {
+  const codes = variable.allowed ?? Object.keys(variable.labels ?? {}).map(Number);
+  if (codes.length === 0) return undefined;
+  const at = value === undefined ? -1 : codes.indexOf(Math.round(value));
+  return codes[(at + 1) % codes.length];
 }

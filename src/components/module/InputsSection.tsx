@@ -12,7 +12,7 @@ import {
   workedFigures,
 } from '@/data/modules';
 import type { ModuleDef } from '@/data/modules/types';
-import { choiceCode, choiceIndex } from '@/engine/choices';
+import { choiceCode, choiceIndex, codeLabel, nextCode } from '@/engine/choices';
 import { belowStep, formatNumber, parseCents, parseNumber } from '@/engine/format';
 import { outOfCount } from '@/engine/solve';
 import type { VariableDef } from '@/engine/types';
@@ -173,8 +173,20 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
       ? ''
       : status !== 'derived' || display !== value
         ? // A typed value shows as typed (36.525), whatever figures a worked-out one gets.
-          formatNumber(display, withWorkedFigures({ ...variable, figures: undefined }, figures))
-        : belowStep(display, formatNumber(display, withWorkedFigures(variable, figures)), variable);
+          formatNumber(display, {
+            ...withWorkedFigures({ ...variable, figures: undefined }, figures),
+            values: display === value ? calc.values : undefined,
+          })
+        : belowStep(
+            display,
+            formatNumber(display, { ...withWorkedFigures(variable, figures), values: calc.values }),
+            variable,
+          );
+  // A root shown exactly (√2/2) says its decimal beside the box: ≈ 0.7071.
+  const approx =
+    display !== undefined && formatted.includes('√')
+      ? `≈ ${formatNumber(display, withWorkedFigures({ ...variable, exact: undefined, fraction: undefined }, figures))}`
+      : undefined;
   // While typing, and after a number the range refused, the box keeps the typed text beside
   // its message, so the student can fix it instead of retyping it.
   // A value cleared because it no longer fits shows "?" (the picture and sentences drop it too),
@@ -204,6 +216,7 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
   };
   return {
     shown,
+    approx,
     error,
     status,
     statusWord,
@@ -220,8 +233,19 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
 /** One row: the value's letter (from Grade 3), its name and status, and the box with its unit. */
 function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
   const c = usePalette();
-  const { shown, error, status, statusWord, unit, picker, letters, onChangeText, onFocus, onBlur } =
-    useVariableBox(variable, calc);
+  const {
+    shown,
+    approx,
+    error,
+    status,
+    statusWord,
+    unit,
+    picker,
+    letters,
+    onChangeText,
+    onFocus,
+    onBlur,
+  } = useVariableBox(variable, calc);
 
   return (
     <View style={[styles.row, { borderBottomColor: c.border }]}>
@@ -230,37 +254,43 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         <View style={styles.names}>
           <Text style={[styles.name, { color: c.text }]}>{variable.name}</Text>
           <Text style={[styles.meta, { color: error ? c.text : c.textMuted }]}>
-            {error ?? `${statusWord}${unit && !picker ? ` · ${unit}` : ''}`}
+            {error ??
+              `${statusWord}${unit && !picker ? ` · ${unit}` : ''}${approx ? ` · ${approx}` : ''}`}
           </Text>
         </View>
       </View>
-      <TextInput
-        testID={`input-${variable.id}`}
-        {...statusData(status)}
-        accessibilityLabel={`${variable.name}${unit ? ` in ${unit}` : ''}`}
-        value={shown}
-        placeholder="?"
-        placeholderTextColor={c.textMuted}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onChangeText={onChangeText}
-        editable={!variable.derived}
-        keyboardType={keyboardFor(variable)}
-        returnKeyType="done"
-        selectTextOnFocus
-        style={[
-          styles.input,
-          picker && styles.inputNarrow,
-          // Long values (576,000,000,000) get a wider box and smaller digits, so none is cut off.
-          (shown ?? '').length > 11 && (picker ? styles.inputLongNarrow : styles.inputLong),
-          {
-            color: c.text,
-            borderColor: error ? c.text : c.border,
-            backgroundColor: status === 'given' || status === 'example' ? c.background : c.surface,
-            fontWeight: status === 'given' ? '600' : '400',
-          },
-        ]}
-      />
+      {variable.labels ? (
+        <LabelBox variable={variable} calc={calc} />
+      ) : (
+        <TextInput
+          testID={`input-${variable.id}`}
+          {...statusData(status)}
+          accessibilityLabel={`${variable.name}${unit ? ` in ${unit}` : ''}`}
+          value={shown}
+          placeholder="?"
+          placeholderTextColor={c.textMuted}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onChangeText={onChangeText}
+          editable={!variable.derived}
+          keyboardType={keyboardFor(variable)}
+          returnKeyType="done"
+          selectTextOnFocus
+          style={[
+            styles.input,
+            picker && styles.inputNarrow,
+            // Long values (576,000,000,000) get a wider box and smaller digits, so none is cut off.
+            (shown ?? '').length > 11 && (picker ? styles.inputLongNarrow : styles.inputLong),
+            {
+              color: c.text,
+              borderColor: error ? c.text : c.border,
+              backgroundColor:
+                status === 'given' || status === 'example' ? c.background : c.surface,
+              fontWeight: status === 'given' ? '600' : '400',
+            },
+          ]}
+        />
+      )}
       {picker ? <UnitPicker variable={variable} calc={calc} /> : null}
     </View>
   );
@@ -457,6 +487,49 @@ function ChoiceBox({
           {sign ?? '?'}
         </Text>
       </View>
+    </Pressable>
+  );
+}
+
+/**
+ * A coded value's box (`labels`: Hₐ's 0 is "β ≠ 0"): it shows what the code means and is tapped
+ * through the codes, never typed, so no number stands for a choice on the page.
+ */
+function LabelBox({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
+  const c = usePalette();
+  const value = calc.values[variable.id];
+  const status = calc.status(variable.id);
+  const label = codeLabel(variable, value);
+  const next = nextCode(variable, value);
+  const nextLabel = next === undefined ? undefined : codeLabel(variable, next);
+  const error = calc.errors[variable.id];
+  return (
+    <Pressable
+      testID={`input-${variable.id}`}
+      {...statusData(status)}
+      accessibilityRole="button"
+      accessibilityLabel={`${variable.name}: ${label ?? 'not chosen'}`}
+      accessibilityHint={nextLabel ? `Tap for ${nextLabel}` : undefined}
+      disabled={variable.derived || next === undefined}
+      onPress={() => next !== undefined && calc.set({ [variable.id]: next })}
+      style={[
+        styles.input,
+        styles.labelBox,
+        {
+          borderColor: error ? c.text : c.border,
+          borderStyle: variable.derived ? 'dashed' : 'solid',
+          backgroundColor: status === 'given' || status === 'example' ? c.background : c.surface,
+        },
+      ]}
+    >
+      <Text
+        style={[
+          styles.labelText,
+          { color: label ? c.text : c.textMuted, fontWeight: status === 'given' ? '600' : '400' },
+        ]}
+      >
+        {label ?? '?'}
+      </Text>
     </Pressable>
   );
 }
@@ -887,6 +960,8 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   inputNarrow: { width: 96 },
+  labelBox: { alignItems: 'flex-end', justifyContent: 'center' },
+  labelText: { fontSize: font.body },
   inputLong: { width: 156, fontSize: font.body - 3 },
   inputLongNarrow: { width: 124, fontSize: font.body - 3 },
   equation: { paddingHorizontal: space.lg, paddingVertical: space.md, gap: space.xs },

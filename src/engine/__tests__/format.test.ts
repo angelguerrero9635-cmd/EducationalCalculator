@@ -67,3 +67,24 @@ describe('ties below 1', () => {
     expect(formatNumber(2.00005)).toBe('2.0001');
   });
 });
+
+describe('scientific notation to the page’s figures', () => {
+  it('shows a worked-out value to them, alone in scientific form', () => {
+    expect(formatNumber(5930767.55, { scientific: true })).toBe('5.9308 × 10⁶');
+    expect(formatNumber(5930767.55, { scientific: true, scientificFigures: 3 })).toBe('5.93 × 10⁶');
+    // Under 10⁻⁴ the usual switch to scientific form takes them too; decimals keep theirs.
+    expect(formatNumber(3.0302e-19, { scientificFigures: 3 })).toBe('3.03 × 10⁻¹⁹');
+    expect(formatNumber(0.14384, { scientificFigures: 3 })).toBe('0.1438');
+    // `worked` (a box's figures) wins.
+    expect(formatNumber(3.0302e-19, { worked: 2, scientificFigures: 3 })).toBe('3 × 10⁻¹⁹');
+  });
+});
+
+describe('a power of ten alone', () => {
+  it('reads as 1 × 10ⁿ (a conversion factor: 1 C = 10⁶ μC)', () => {
+    expect(parseNumber('10⁶')).toBe(1e6);
+    expect(parseNumber('10^12')).toBe(1e12);
+    expect(parseNumber('10⁻³')).toBeCloseTo(1e-3, 15);
+    expect(parseNumber('10')).toBe(10);
+  });
+});

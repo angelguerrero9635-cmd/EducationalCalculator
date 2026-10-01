@@ -113,6 +113,12 @@ describe('toLatex', () => {
     expect(toLatex('π ≈ 3.14159…', 'middle')).toBeUndefined();
   });
 
+  it('stacks a root written exactly over its bottom, and never divides from a bottom (E22)', () => {
+    expect(both('x = −√3/2 ≈ −0.866', 'standard')).toBe('x = −$\\frac{\\sqrt{3}}{2}$ ≈ −0.866');
+    expect(both('(−3 + √17)/4', 'standard')).toBe('$\\frac{−3 + \\sqrt{17}}{4}$');
+    expect(both('1/2 ÷ (−3/2)', 'standard')).toBe('$\\frac{1}{2}$ ÷ (−$\\frac{3}{2}$)');
+  });
+
   it('parses the commands it draws, and refuses others', () => {
     expect(splitLine('$\\frac{1}{2}$ of 8').map((p) => p.t)).toEqual(['math', 'text']);
     expect(parseMath('3 \\times 4 \\le 12')).toEqual([{ t: 'text', s: '3 × 4 ≤ 12' }]);

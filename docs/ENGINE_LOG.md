@@ -51,6 +51,61 @@ per review; each line names the finding and what the engine now does about it.
 - Tests: `solve.test.ts` "a newer value that doesn’t fit the older ones", "typed values rounded
   to their step", "values the search fills in (E21)".
 
+## Display open items: exact answers, coded values, charge units, figures
+
+- **E22: special-angle values, radicals and complex roots were answered in decimals** (cos 5π/6
+  = −0.866, q = 1.3919 for √31/4, x₂ = 0.2808 for (−3 + √17)/4) → `VariableDef.exact` with
+  `src/engine/exact.ts`: `true` finds the exact form from the value itself, only when it is
+  exact (k√n/q when x² is a whole number over q² to within float error, q up to the
+  variable's `fraction` or 12; a table of the special values that are not one root,
+  (√6 ± √2)/4 and 2 ± √3); a function gives it from the page's values (`quadraticRoot`, the
+  roots from the discriminant). `formatNumber` writes it in the box, the lines and the checks
+  (`renderTemplate` passes its values and brackets an exact sum, 3 × (2 − √3)); the answer and
+  the box say the decimal beside it ("√2/2 ≈ 0.7071"; the box under its name). `complexRoots`
+  writes a conjugate pair (2 ± 3i, −1/2 ± (√3/2)i, ±3i√2); `radical` moved to the engine.
+  `parseNumber` takes "√3/2", "3√2", "sqrt(2)/2". LaTeX stacks a root over its bottom
+  (\frac{\sqrt{3}}{2}, (√6 + √2)/4) and no longer divides from a fraction's bottom (1/2 ÷ 3 was
+  drawn 1 over 2 ÷ 3). Harness: `evaluate` reads 3√2 as 3 × √2 and √3/2 as √3 over 2 (it read
+  √(3/2)); the sampling reads an answer's decimal after "≈". Pages: m.11 unit-circle (x, y, m),
+  complex-numbers~quadratic (q, the pair), polynomial-equations (x₂, x₃, the check and the
+  factored line; a root that simplifies is simplified in the work, (2 + 2√2) ÷ 2), m.12
+  trig-formulas-equations and ~difference (S, K; the work line no longer repeats the decimal).
+- **A coded value showed its code** ("Hₐ = 0" in the "we know" line and a 0 in the box, the
+  page names carrying "β ≠ 0 (0), > 0 (1) or < 0 (−1)") → `VariableDef.labels`, what each
+  `allowed` code means: the row's box shows the meaning and is tapped through the codes
+  (`LabelBox`, `nextCode`), and the "we know" line reads "Hₐ: β ≠ 0" (`codeLabel` in
+  buildSteps). `modules.test` checks every allowed code has a label. m.12 regression-inference,
+  ~correlation and anova~two-variances: the name is "Alternative hypothesis" and the decision
+  note opens with the tail alone ("Two tails: …").
+- **Charge and capacitance had no unit menu, and the parallel-plate gap carried its own 10⁻³**
+  → `charge` (pC, nC, μC, mC, C) and `capacitance` (pF, nF, μF, F) dimensions in `units.ts`
+  (opt-in: a menu only where a value lists its `units`), and `VariableDef.shownIn`, the unit a
+  value is shown in first when the rule counts another (`makeUnitContext`; a unit picked from the
+  menu still wins). A conversion factor that is a power of ten reads 1 C = 10⁶ μC (never
+  1000000), and `parseNumber` takes a bare 10⁶; an answer whose unit needs no converting keeps
+  its own display on a converting page (V = 7.19 × 10⁴ V, not 71,920). s.11 electric-potential
+  main and ~capacitor offer nC/μC/C and pF/nF/μF/F; ~parallel-plate counts the gap in meters,
+  shown in mm (C = κ × 8.85 × A/d, E = V/d: no 10⁻³ in either rule; gap from 0.01 mm and plates
+  from 1 cm², where the solver's tolerance still tells values apart). **Not done: the rules in
+  coulombs and farads.** The solver compares values to 10⁻⁶ absolute (`closeTo`, `TOLERANCE`)
+  and rounds |x| < 10⁻¹² to 0 (`normalizeValue`), so a charge of 4 × 10⁻⁶ C or a capacitance
+  of 8.85 × 10⁻¹¹ F counts as equal to any other: conflicts went unseen in the sampling. The rules
+  keep μC, μF, pF and pC, with the main page's 10⁻⁶ and its “q = 4 μC = 4 × 10⁻⁶ C” line and
+  ~capacitor's 10ⁿ lines (dropping them skipped the step they show). A relative tolerance in
+  `solve.ts` (another agent's) would let these pages count in SI.
+- **Scientific notation in the lines kept 5 figures on 3-figure pages** ("check: 5.9308 × 10⁶ =
+  …" under "v = 5.93 × 10⁶ m/s"; "E = 6.626 × 10⁻³⁴ × (4.5732 × 10¹⁴)") → `formatNumber` takes
+  `scientificFigures`, figures for scientific notation alone, and buildSteps gives the lines and
+  checks the page's worked figures for every worked-out value that `withWorkedFigures` would
+  round (`lineVars`): 5.93 × 10⁶, 4.57 × 10¹⁴. Typed values read as typed, decimals keep their
+  extra figures (the lines still add up), and the 8-figure fallback for a line that would miss
+  its answer clears it. 19 pages' lines changed (s.10 mole, photon, ksp; s.11 gravitation,
+  electrostatics, electric potential, modern physics; s.12 dating, starlight, stellar evolution).
+- **s.11.thermodynamics~first-law: "Q = 500 J in" ran under the cylinder's left edge** at
+  phone width (the label starts at the left margin, the glass at 0.3 of the width) → the
+  `gasPiston` energy view (`GasFirstLaw.tsx`) keeps the label over the heat band only when it
+  fits left of the cylinder, and otherwise sets it under the cylinder's base, clear of the glass.
+
 ## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
 
 - **Twelve picture requests stayed `drawn` though every part was on its page** (H89–H110 span
