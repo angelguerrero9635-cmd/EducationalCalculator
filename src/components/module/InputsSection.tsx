@@ -25,6 +25,9 @@ import {
 import { Fenced, Radical } from './EquationMarks';
 import type { Calculator } from './useCalculator';
 
+/** Web: the box's status as data-status (given, example, derived, unknown), for the review scripts. */
+const statusData = (status: string) => ({ dataSet: { status } }) as object;
+
 /**
  * The keyboard for a value. iOS's numbers-and-punctuation pad has the point and the minus sign;
  * Android's numeric pad has both. On the web (iPhone Safari) the numeric pad has neither, so a
@@ -223,6 +226,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
       </View>
       <TextInput
         testID={`input-${variable.id}`}
+        {...statusData(status)}
         accessibilityLabel={`${variable.name}${unit ? ` in ${unit}` : ''}`}
         value={shown}
         placeholder="?"
@@ -308,6 +312,7 @@ function EquationBox({
     <TextInput
       ref={ref}
       testID={`input-${variable.id}`}
+      {...statusData(status)}
       accessibilityLabel={blank ? `${variable.name}: 1` : variable.name}
       value={blank ? '' : shown}
       placeholder={blank ? '' : '?'}

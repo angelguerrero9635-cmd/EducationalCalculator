@@ -419,6 +419,7 @@ function Tides({ spec, calc }: { spec: TidesSpec; calc: Calculator }) {
                   x={mx * k}
                   y={my * k}
                   label="the Moon's angle"
+                  testID={`drag-${id}`}
                   onStart={() => {
                     start.current = deg;
                   }}

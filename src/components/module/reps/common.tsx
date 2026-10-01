@@ -87,7 +87,14 @@ export function DragHandle({
 
   return (
     <View
-      testID={testID}
+      // Every handle can be found by the review scripts: drag-<id>, or drag-<its label>.
+      testID={
+        testID ??
+        `drag-${label
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')}`
+      }
       accessibilityLabel={`Drag to change ${label}`}
       ref={ref}
       onStartShouldSetResponder={RESPONDER ? () => true : undefined}
