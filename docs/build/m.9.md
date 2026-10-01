@@ -202,3 +202,14 @@ None.
   with its n figures ("→ written with 2 significant figures: 3.0 m²", "1.6 × 10³ m²").
 - ~bounds: `allowed` adds 5 cm; the side checks say why a side is refused; P_min and P_max added
   (the Big Ideas perimeter item), 8 values.
+
+### Second lesson-review fixes (`.review/new-math-2/lesson-report.md`)
+
+- Main: the unit chain is the line the numbers go into ("u = 45 mi/h × 5280 ft/1 mi × 1 h/3600
+  s"), so the bare "u = 45 × 5280/3600" is gone; the same for v.
+- `~formula-units`: the time in hours is t_h ("t_h = 2/3 h"), not h beside the unit h.
+- `~significant-figures`: the "written with n significant figures" note shows only when the box
+  hides the figures (3.0, 1.6 × 10³), not when it repeats the answer (13).
+- `~bounds`: assumption 2 names the area and the perimeter.
+- Not done (engine, the lead's): the harness still enumerates units outside `units` (v and u, t
+  and h are already pinned to one unit each).

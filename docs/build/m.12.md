@@ -348,3 +348,68 @@ None: every planned page is built, some with an interim picture (below).
   "2 + 3 = 11" tail as a sum); directrix notes show d as its box does (no "x = −0"); `~ellipse`
   c is worked out only (c = ae); the one-sided t check shows t as its box does, and
   `phrasesM12.ts` reads tcdf of a t in scientific notation.
+
+### Second lesson-review fixes (`.review/new-math-2/lesson-report.md`)
+
+- `m.12.vectors-3d~cross`: the |u × v| step says why a length is an area (|u||v| sin θ, base
+  times height).
+- `m.12.matrix-transformations` main and `~compose`: rule lines read "c = cos(θ)", not
+        "cos(θ°)" (the engine adds ° to the numbers: cos(30°)). `~compose`: at a multiple of 30° or
+        45° (not of 90°) the x″ and y″ steps add the exact line ("x″ = 2 − √3", "y″ = 1 + 2√3"), and c
+        and s note their exact value ("(= √3/2 exactly)"). The 4-decimal option did not help (0.8660 ×
+        2 is still 1.732), so only the exact line is added. `~identify`: the use line asks "Which
+        transformation does [[0, 1], [1, 0]] make?".
+- `m.12.polar-conics`: the "°" is dropped after θ in every rule (main, `~sine`, `~parabola`,
+  `~rotation`, `~rotated-equation`). n is "Number before cos θ" (sin θ), and assumption 3 says
+  - cos θ is n = −1. `~ellipse`: R = k ÷ (1 − e) and S = k ÷ (1 + e) from the typed k ("R = 3 ÷
+    (1 − 0.99)"). `~parabola`: the p note states the vertex ("the vertex is (−2, 0): r = 2 at θ =
+    180°; the directrix is x = −4"). The tan 2θ step works "θ = 45° ÷ 2" (or "(180° − w°) ÷ 2"
+    for a negative 2θ). `~rotation`: the B ≠ 0 limit is gone: B = 0 gives θ = 0° with "no xy
+    term: no turn needed", and Δ < 0 with B = 0 and A = C says "a circle".
+    `~rotated-equation`: A′ and C′ work lines ("A′ = 4 × 0.8536 + 2 × 0.3536 + 2 × 0.1464",
+    "A′ = 3.4142 + 0.7071 + 0.2929"); F, the number alone, is a `standalone` value (7 values), so
+    the note reads "4.4142x′² + 1.5858y′² = 1", with a negative C′ joined as "− 1,000.001y′²".
+- `m.12.partial-fractions`: b is "Number alone on top" (main and `~repeated`). `~quadratic`: B
+  and C are "Number before x over the quadratic" and "Number alone over the quadratic"; the
+  check's work lines are "Top: 3 + (−2) × 2 + 3 × 4 = 11" and "Bottom: 1 × 5 = 5" (the number alone first: the harness reads "2 + 3 = 11" in "… × 2 + 3 = 11" as a sum, so the report's order fails the deep run); the note
+  is "A ÷ (x − p) + (Bx + C) ÷ (x² + jx + k) = 2 ÷ 1 + (1 × 2 + (−1)) ÷ 5 = 2.2".
+- `m.12.induction` main, `~odd`, `~powers`, `~squares`: step 4 has no work lines, so the
+  numbers are simplified to the answer ("F = 5 × 6 ÷ 2", "F = 30 ÷ 2"; `~powers` reaches
+  "(2⁶ − 1) ÷ (2 − 1)", "(64 − 1) ÷ 1"); the step with k follows in the note. `~squares`: the
+  second k line is "= (k + 1)(k + 2)(2k + 3)/6, since 2k² + 7k + 6 = (k + 2)(2k + 3)".
+  `~divisible`: n is "Whole number n"; f(n) ÷ 3 is the value q ("q = f(n) ÷ 3"); the D step
+  gives the k algebra, then "3n(n + 1) = 3 × 4 × 5 = 60", and the note says a multiple of 3
+  plus a multiple of 3 is a multiple of 3.
+- `m.12.area-under-curve` main: the work line is "1² + 2² + … + 6² = 6 × 7 × 13 ÷ 6 = 91" and
+  the note after the answer is gone. `~line`: "1 + 2 + … + 8 = 8 × 9 ÷ 2 = 36", "S = 2 × 0.5² ×
+  36 + 1 × 4", "S = 18 + 4". `~degrees`: a limit j + k > 0 ("With both powers 0 there is no n
+  left …"); the note names the power ("divide the top and bottom by n², and only 2 ÷ 1 is
+  left").
+- Merge: `~sequence` is removed; it was `~degrees` with j = k = 1. Its example is now the first
+  half of `~degrees`' use line ("Find the limit of (3n + 1) ÷ (2n − 1) as n → ∞” or “of (2n² +
+  1. ÷ (n² − 3) …"). No released questions exist for this skill, and the textbook items the
+     report checked (equal and unequal degrees) all solve on `~degrees`; nothing else (pictures,
+     corpus, docs) named the page.
+- `m.12.regression-inference` main and `~correlation`: the P rule line reads "P = the t tail
+  past t on Hₐ's side, with df degrees of freedom"; P is worked from tcdf's value ("P = 2 × (1 −
+  0.997519)", "P = 2 × 0.002481"; "P = 1 − …" for >; none when the tail is under 0.0001). The
+  interim for the coded Hₐ: the decision note opens with it in words ("Hₐ: β ≠ 0, two tails:
+  …"). t runs ±10⁹ on all three pages. `~interval`: E, L and U to ±10⁸ (the n = 3, 99% case no
+  longer turns C into 0.9); a note on U says whether 0 is in the interval.
+- `m.12.anova` main and `~groups`: the decision is in context ("reject H₀: convincing
+  evidence that at least one group mean differs"), with "P < 0.0001 < α = 0.05" for a tiny
+  p-value. `~two-variances`: a side value Hₐ (0 for ≠, 1 for σ₁² > σ₂²; 10 values), P = Fcdf(F,
+  ∞, df₁, df₂) for >, and the note opens with Hₐ in words and ends "… that the population
+  variances differ" (or "… the first population's variance is larger").
+- Every p-value already goes through `prob(…, 'p-value')`, so `belowStep` is set; the box's
+  "P = 0" is the engine's (the lead's).
+- Not done (engine, the lead's): the box and answer line "P = 0"; labels for `allowed` codes
+  (interim words in the notes above); a limit's message losing to a derived range (`~line` m =
+  −100, `~fence` handled by its range); inputs cleared silently.
+- For the lead (harness, not edited here): the worked-line check in `sampling.test.ts` reads
+  the tail of "… × 2 + 3 = 11" as the sum 2 + 3; with it fixed, `~quadratic`'s Top line can go
+  back to ax² + bx + c order. The deep run also flagged the "1 + 2 = 2 × 3 ÷ 2 = 3" chain, so up
+  to three terms the area pages write the sum alone ("1 + 2 = 3"), and the A = C case of the
+  tan 2θ step now notes "cot 2θ = 0" (its check showed a 0 nothing else did).
+  `evaluatePrinted` reads "√3/2" as √(3/2) (−0.449 for "1/2 × 4 − √3/2 × 2"), so the exact
+  `~compose` line is written combined ("2 − √3") rather than with the entries.

@@ -215,3 +215,17 @@ so the table's radii are in the unit shown.
   22.6 g/cm³ (osmium) …").
 - New page `~cone` (mass of a cone from its density, `curvedSolid` cone; r = 3, h = 4, aluminum
   2.7 g/cm³: V = 12π cm³, m ≈ 101.79 g). The box version waits (shared needs).
+
+### Second lesson-review fixes (`.review/new-math-2/lesson-report.md`)
+
+- `~sphere`: m runs 10⁻⁶..10¹¹ g, as V's range times ρ's implies, so r = 0.01 and 1000 no
+  longer clear ρ.
+- `~population`: a limit D ≤ 2,000,000 people per km² ("No place is more crowded than about 2
+  million people per km² …").
+- `~can-design`: with V known the S step's line is "S = 2 × π × r² + 2 × 500 ÷ r" (V's value is
+  written in, since V is not in that rule), so no rounded h is multiplied; the how adds "The
+  side 2πrh is 2V ÷ r, since h = V ÷ πr²". V 1..100,000 cm³ and h max 10,000 cm.
+- `~fence`: s runs from 0.0025 m (a quarter of the least fence), so P = 0.01 after x = 12 is
+  refused with the x < P ÷ 2 reason.
+- Not done (engine, the lead's): main's r = 0.01 and 1000 still clear h silently; `~cone` and
+  `~can-design` "÷ 4π" brackets (`simplify.ts`). The box page still waits.

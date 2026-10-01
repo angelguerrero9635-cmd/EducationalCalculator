@@ -2392,7 +2392,8 @@ const MODELING: ModuleDef[] = [
       cm('r', 'r', 'Radius'),
       num('V', 'V', 'Volume', 0, 1e11, { unit: 'cm³', units: ['mm³', 'cm³', 'm³'] }),
       density('rho', 'ρ', 'Density'),
-      grams('m', 'm', 'Mass'),
+      // The mass any radius and density on the page can give (V's range times ρ's).
+      num('m', 'm', 'Mass', 1e-6, 1e11, { unit: 'g', units: ['g', 'kg'] }),
     ],
     rules: [
       rule(
@@ -2519,6 +2520,12 @@ const MODELING: ModuleDef[] = [
         },
         (v) => v.D! * v.A! - v.N!,
       ),
+      limit(
+        'D ≤ 2,000,000',
+        '{D} is at most 2,000,000 people per km²',
+        (v) => v.D! <= 2e6,
+        'No place is more crowded than about 2 million people per km²: check the people or the radius.',
+      ),
     ],
     example: { r: 3, A: 9 * Math.PI, N: 45000, D: 5000 / Math.PI },
     startWith: ['r', 'N'],
@@ -2536,9 +2543,9 @@ const MODELING: ModuleDef[] = [
       'The least metal comes when the height equals the diameter, h = 2r, so V = 2πr³.',
     ],
     variables: [
-      num('V', 'V', 'Volume', 0.01, 1e7, { unit: 'cm³', units: ['cm³'] }),
+      num('V', 'V', 'Volume', 1, 100000, { unit: 'cm³', units: ['cm³'] }),
       len('r', 'r', 'Radius', 1000, { unit: 'cm', units: ['cm'] }),
-      len('h', 'h', 'Height', 1e6, { unit: 'cm', units: ['cm'] }),
+      len('h', 'h', 'Height', 10000, { unit: 'cm', units: ['cm'] }),
       num('S', 'S', 'Surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] }),
       der(
         num('rb', 'r_best', 'Radius with the least metal', 0, 1000, { unit: 'cm', units: ['cm'] }),
@@ -2583,14 +2590,18 @@ const MODELING: ModuleDef[] = [
         ),
         'S',
         {
-          // With V known, the side is 2V ÷ r exactly: no rounded h in the line.
-          work: (v) =>
+          // With V known, the side is 2V ÷ r exactly: the numbers go into that line, so no
+          // rounded h is ever multiplied. (V is not in this rule, so its value is written in.)
+          expr: (v) =>
             v.V === undefined
-              ? []
-              : [
-                  `S = 2 × π × ${fmt4(v.r!)}² + 2 × ${fmt4(v.V)} ÷ ${fmt4(v.r!)}`,
-                  `S = ${fmt4(2 * v.r! ** 2)}π + ${fmt4((2 * v.V) / v.r!)}`,
-                ],
+              ? '2 × π × {r}² + 2 × π × {r} × {h}'
+              : `2 × π × {r}² + 2 × ${fmt4(v.V)} ÷ {r}`,
+          how: (v) =>
+            v.V === undefined
+              ? 'Two circles for the top and bottom, and the side unrolled: a rectangle 2πr by h.'
+              : 'Two circles for the top and bottom, and the side. The side 2πrh is 2V ÷ r, since h = V ÷ πr².',
+          work: (v) =>
+            v.V === undefined ? [] : [`S = ${fmt4(2 * v.r! ** 2)}π + ${fmt4((2 * v.V) / v.r!)}`],
         },
       ),
     ],
@@ -2620,7 +2631,8 @@ const MODELING: ModuleDef[] = [
       len('x', 'x', 'Length', 1e5, { unit: 'm' }),
       len('y', 'y', 'Width', 1e5, { unit: 'm' }),
       num('A', 'A', 'Area', 0, 1e9, { unit: 'm²' }),
-      der(len('s', 's', 'Side of the best pen', 1e5, { unit: 'm' })),
+      // From 0.0025 m (a quarter of the least fence), so the limit x < P ÷ 2 gives the reason.
+      der(num('s', 's', 'Side of the best pen', 0.0025, 1e5, { unit: 'm' })),
       der(num('Am', 'A_max', 'Most area', 0, 1e9, { unit: 'm²' })),
     ],
     rules: [

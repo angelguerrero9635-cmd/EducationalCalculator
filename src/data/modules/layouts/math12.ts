@@ -10,7 +10,7 @@ export const MATH_12_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.12.matrix-transformations~identify',
     title: 'Which move does the matrix make?',
-    use: 'Use this for “Describe the transformation [[0, 1], [1, 0]] makes.”',
+    use: 'Use this for “Which transformation does [[0, 1], [1, 0]] make?”',
     assumptions: [
       'The first column is where (1, 0) lands and the second where (0, 1) lands: sketch the two.',
       'A turn keeps lengths and the order of the corners; a reflection keeps lengths but flips the order.',
