@@ -5584,27 +5584,18 @@ const UNITS_PRECISION: ModuleDef[] = [
         ['u', 'v'],
         (v) => v.u! - (v.v! * 5280) / 3600,
         {
+          // The chain with its units is the line the numbers go into: no bare "45 × 5280/3600".
           u: [
             (v) => exact((v.v! * 5280) / 3600),
-            '{v} × 5280/3600',
+            '{v} mi/h × 5280 ft/1 mi × 1 h/3600 s',
             'Multiply by 5280 ft per mi and by 1 h per 3600 s: mi and h cancel, leaving ft/s.',
-            {
-              work: (v) => [
-                `u = ${fmt(v.v!)} mi/h × 5280 ft/1 mi × 1 h/3600 s`,
-                `u = ${fmt(exact(v.v! * 5280))} ft ÷ 3600 s`,
-              ],
-            },
+            { work: (v) => [`u = ${fmt(exact(v.v! * 5280))} ft ÷ 3600 s`] },
           ],
           v: [
             (v) => exact((v.u! * 3600) / 5280),
-            '{u} × 3600/5280',
+            '{u} ft/s × 3600 s/1 h × 1 mi/5280 ft',
             'Run the chain backwards: multiply by 3600 s per h and by 1 mi per 5280 ft.',
-            {
-              work: (v) => [
-                `v = ${fmt(v.u!)} ft/s × 3600 s/1 h × 1 mi/5280 ft`,
-                `v = ${fmt(exact(v.u! * 3600))} mi ÷ 5280 h`,
-              ],
-            },
+            { work: (v) => [`v = ${fmt(exact(v.u! * 3600))} mi ÷ 5280 h`] },
           ],
         },
       ),
@@ -5693,7 +5684,7 @@ const UNITS_PRECISION: ModuleDef[] = [
     variables: [
       num('r', 'r', 'Rate', 0.1, 300, { unit: 'km/h', units: ['km/h', 'mph'], step: 0.1 }),
       num('t', 't', 'Time in minutes', 1, 600, { unit: 'min', units: ['min'], step: 1 }),
-      num('h', 'h', 'Time in hours', 1 / 60, 10, {
+      num('h', 't_h', 'Time in hours', 1 / 60, 10, {
         unit: 'h',
         units: ['h'],
         derived: true,
@@ -5702,7 +5693,7 @@ const UNITS_PRECISION: ModuleDef[] = [
       num('d', 'd', 'Distance', 0, 3000, { unit: 'km', units: ['km', 'mi'] }),
     ],
     rules: [
-      rule('h = t ÷ 60', '{h} = {t} ÷ 60', ['h', 't'], (v) => v.h! - v.t! / 60, {
+      rule('t_h = t ÷ 60', '{h} = {t} ÷ 60', ['h', 't'], (v) => v.h! - v.t! / 60, {
         h: [
           (v) => exact(v.t! / 60),
           '{t} ÷ 60',
@@ -5710,7 +5701,7 @@ const UNITS_PRECISION: ModuleDef[] = [
         ],
         t: [(v) => exact(v.h! * 60), '{h} × 60', 'Each hour is 60 minutes.'],
       }),
-      rule('d = r × h', '{d} = {r} × {h}', ['d', 'r', 'h'], (v) => v.d! - v.r! * v.h!, {
+      rule('d = r × t_h', '{d} = {r} × {h}', ['d', 'r', 'h'], (v) => v.d! - v.r! * v.h!, {
         d: [
           (v) => exact(v.r! * v.h!),
           '{r} × {h}',
@@ -5731,7 +5722,7 @@ const UNITS_PRECISION: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       'A length measured to the nearest u is off by at most half of u, the greatest possible error.',
-      'The true sides lie between l − e and l + e, so the true area lies between the two products.',
+      'The true sides lie between l − e and l + e, so the true area and perimeter lie between their least and greatest values.',
       'A finer tool (a smaller u) narrows the range of possible areas.',
     ],
     variables: [
@@ -5894,9 +5885,12 @@ const UNITS_PRECISION: ModuleDef[] = [
         '{P} rounded to {n} significant figures',
         'Round the calculated area; the digits past n are not known from these measurements.',
         {
-          // The box drops a trailing zero (3.0 shows 3): write the answer with its n figures.
+          // The box drops a trailing zero (3.0 shows 3) or writes 1600 for 1.6 × 10³: then the
+          // answer is written with its n figures; when the box already shows them, no note.
           note: (v) =>
-            v.P === undefined || v.n === undefined
+            v.P === undefined ||
+            v.n === undefined ||
+            significant(v.P, v.n) === fmt(toFigures(v.P, v.n))
               ? ''
               : `→ written with ${v.n} significant figures: ${significant(v.P, v.n)} m²`,
         },
