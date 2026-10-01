@@ -150,6 +150,10 @@ describe('unit conversions (exact definitions)', () => {
       'μF',
       'pF',
       'pC',
+      // s.11 and s.12 pages that waited on pictures
+      'C',
+      'mm/yr',
+      'm³/s',
     ];
     const unknown = new Set(
       MODULES.flatMap((m) =>
