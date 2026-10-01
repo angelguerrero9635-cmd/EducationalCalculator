@@ -63,10 +63,18 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   const unit = variable.displayUnit ? ` ${variable.displayUnit}` : '';
   // Money in dollars reads "$84", not "84 $".
   const withUnit = (n: string) => (variable.displayUnit === '$' ? dollars(n) : `${n}${unit}`);
-  if (variable.integer && Math.abs(x / f - Math.round(x / f)) > 1e-9) {
+  // Relative to the size (a count of 60,300 worked out as E ÷ P from an E rounded to 12
+  // figures is 60,300.00000008), as for a multiple below.
+  if (
+    variable.integer &&
+    Math.abs(x / f - Math.round(x / f)) > 1e-9 * Math.max(1, Math.abs(x / f))
+  ) {
     return 'Must be a whole number';
   }
-  if (variable.allowed && !variable.allowed.some((a) => Math.abs(x / f - a) < 1e-9)) {
+  if (
+    variable.allowed &&
+    !variable.allowed.some((a) => Math.abs(x / f - a) < 1e-9 * Math.max(1, Math.abs(a)))
+  ) {
     const list = variable.allowed.map((a) => formatNumber(a));
     return `Must be ${list.length > 1 ? `${list.slice(0, -1).join(', ')} or ${list[list.length - 1]}` : list[0]}`;
   }
@@ -203,6 +211,9 @@ function whyNot(system: System, v: VariableDef, x: number, values: Values): stri
   }
   const range = checkValue(v, x);
   if (!range) return undefined;
+  // 60,300.00000008 "must be a whole number" reads as nonsense: no sentence for rounding dust.
+  const f = v.unitFactor ?? 1;
+  if (checkValue(v, Number((x / f).toPrecision(6)) * f) === undefined) return undefined;
   const need = `${v.name} would have to be ${shownWithUnit(v, x)}, but it`;
   if (v.max !== undefined && /^Must be at most/.test(range))
     return `${need} can be at most ${shownWithUnit(v, v.max)}`;
@@ -520,9 +531,12 @@ function narrow(system: System, vals: Values, bounds: Bounds): boolean {
         const b = bounds.get(open[i]!)!;
         // Values are whole steps apart, so a millionth of a step absorbs rounding without ever
         // admitting a value that doesn't fit.
-        const lo = Math.max(b.lo, Math.ceil(x1 / b.f - 1e-6) * b.f);
+        let lo = Math.max(b.lo, Math.ceil(x1 / b.f - 1e-6) * b.f);
         const hi = Math.min(b.hi, Math.floor(x2 / b.f + 1e-6) * b.f);
-        if (lo > hi) return false;
+        // The same step counted two ways (6563 × 0.1 is 656.3000000000001, the list's last
+        // value 656.3) is one value, not an empty range.
+        if (lo > hi + 1e-9 * Math.max(b.f, Math.abs(hi))) return false;
+        lo = Math.min(lo, hi);
         if (lo !== b.lo || hi !== b.hi) {
           bounds.set(open[i]!, { lo, hi, f: b.f });
           changed = true;
@@ -622,6 +636,67 @@ const widened = (system: System): System => ({
 });
 
 /**
+ * Half a typed value's step: how far a number typed into the box may be from the value it
+ * stands for (a rounded shown value, d = 463.6 for 463.601). 0 for whole numbers, lists and
+ * boxes with no step.
+ */
+const slackOf = (v: VariableDef | undefined) =>
+  v && !v.integer && !v.allowed && !v.multipleOf && v.step !== undefined && v.step > 0
+    ? v.step / 2
+    : 0;
+
+/**
+ * Typed values that miss only by their rounding: each is a shown value, within half its step
+ * of what the others work out (d = 463.6 for z × σ = 463.601), and the rounding may run
+ * through several values (E → P → z → d; λ₀, λ, z and v). Finds the fewest such values (one,
+ * else two) that, left out, leave the other typed values fitting together and are each worked
+ * out from them within half a step of the number typed. Those are then worked out, not typed
+ * (as a direct match is); the others are kept exactly as typed. Undefined when none do.
+ */
+function roundedOut(
+  system: System,
+  given: readonly Given[],
+  previous: Values,
+): string[] | undefined {
+  const byId = new Map(system.variables.map((v) => [v.id, v]));
+  const valid = given.filter((g) => {
+    const v = byId.get(g.id);
+    return v && checkValue(v, g.value) === undefined;
+  });
+  const soft = valid.filter((g) => slackOf(byId.get(g.id)) > 0);
+  if (soft.length === 0) return undefined;
+  const typed = Object.fromEntries(
+    valid.map((g) => [g.id, normalizeValue(byId.get(g.id)!, g.value)]),
+  );
+  let tries = 60;
+  const fits = (out: readonly Given[]) => {
+    tries--;
+    const rest = { ...typed };
+    for (const g of out) delete rest[g.id];
+    const r = propagate(system, rest, previous, [], { left: 200 });
+    return (
+      r.ok &&
+      out.every((g) => {
+        const x = r.values[g.id];
+        return x !== undefined && Math.abs(x - typed[g.id]!) <= slackOf(byId.get(g.id)) + 1e-12;
+      })
+    );
+  };
+  // Older values first: the newest is the one the student just typed.
+  for (const g of soft) {
+    if (tries <= 0) return undefined;
+    if (fits([g])) return [g.id];
+  }
+  for (let i = 0; i < soft.length; i++) {
+    for (let j = i + 1; j < soft.length; j++) {
+      if (tries <= 0) return undefined;
+      if (fits([soft[i]!, soft[j]!])) return [soft[i]!.id, soft[j]!.id];
+    }
+  }
+  return undefined;
+}
+
+/**
  * Solves the system from the givens. Newer givens take priority: an older given is dropped
  * when newer ones already determine it or conflict with it.
  */
@@ -707,6 +782,17 @@ export function solve(system: System, given: readonly Given[], previous: Values 
           ? { ok: false, reason: message, said: true }
           : { ok: false, reason: 'These numbers can’t all be true together' }
         : propagated;
+    // Typed values that miss only by their rounding (each within half its step) fit: the
+    // ones the others work out are worked out, the rest kept as typed.
+    const out = !trial.ok && !isNewest ? roundedOut(system, given, previous) : undefined;
+    if (out) {
+      const after = solve(
+        system,
+        given.filter((k) => !out.includes(k.id)),
+        previous,
+      );
+      return { ...after, dropped: [...after.dropped, ...out] };
+    }
     // Why an older input doesn't fit: a rule's sentence, or the range a value would break.
     const why = trial.ok || isNewest ? undefined : trial.said ? trial.reason : trial.why?.();
     if (trial.ok) {

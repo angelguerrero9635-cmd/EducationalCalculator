@@ -311,6 +311,71 @@ describe('a rule that explains why it has no answer', () => {
   });
 });
 
+describe('typed values rounded to their step', () => {
+  // λ = λ₀ × (1 + z) and v = 300,000 × z, λ₀ from a list (as on the Doppler page).
+  const doppler: System = {
+    variables: [
+      { id: 'r', symbol: 'λ₀', name: 'Lab wavelength', allowed: [410.2, 656.3], min: 410.2 },
+      { id: 'l', symbol: 'λ', name: 'Observed wavelength', min: 400, max: 665, step: 0.01 },
+      { id: 'z', symbol: 'z', name: 'Shift', min: -0.012, max: 0.012, step: 0.000001 },
+      { id: 'v', symbol: 'v', name: 'Speed', min: -3600, max: 3600, step: 0.1 },
+    ],
+    relations: [
+      {
+        id: 'z = (λ − λ₀) ÷ λ₀',
+        display: '',
+        vars: ['z', 'l', 'r'],
+        residual: (v) => v.z! * v.r! - (v.l! - v.r!),
+        solve: { z: (v) => (v.l! - v.r!) / v.r!, l: (v) => v.r! * (1 + v.z!) },
+      },
+      {
+        id: 'v = c × z',
+        display: '',
+        vars: ['v', 'z'],
+        residual: (v) => v.v! - 300000 * v.z!,
+        solve: { v: (v) => 300000 * v.z!, z: (v) => v.v! / 300000 },
+      },
+    ],
+  };
+
+  it('finds a listed value worked out a hair off the list (656.2999999 for 656.3)', () => {
+    // 656.3 × 1.012 ÷ 1.012 is 656.2999999999999 in floats; the search must still find 656.3.
+    const r = solve(doppler, [
+      { id: 'r', value: 656.3 },
+      { id: 'l', value: 656.3 * 1.012 },
+      { id: 'v', value: 3600 },
+    ]);
+    expect(r.cleared).toEqual([]);
+    expect(r.rejected).toBeUndefined();
+  });
+
+  it('accepts shown values whose rounding runs through a listed value', () => {
+    // λ₀ = 656.3 and z = 0.0112345 give λ = 663.6732 (shown 663.67): λ typed as shown, after
+    // z, would make λ₀ 656.2968, off the list, so λ is worked out instead of refusing or
+    // clearing.
+    const r = solve(doppler, [
+      { id: 'r', value: 656.3 },
+      { id: 'z', value: 0.0112345 },
+      { id: 'l', value: 663.67 },
+    ]);
+    expect(r.rejected).toBeUndefined();
+    expect(r.cleared).toEqual([]);
+    expect(r.given.map((g) => g.id)).toEqual(['r', 'z']);
+    expect(r.values.l).toBeCloseTo(663.6732, 4);
+  });
+
+  it('still treats a miss past the rounding as a conflict', () => {
+    const r = solve(doppler, [
+      { id: 'r', value: 656.3 },
+      { id: 'z', value: 0.0112345 },
+      { id: 'l', value: 663.8 },
+    ]);
+    // Nothing says why, so the older z is cleared as before.
+    expect(r.cleared).toEqual(['z']);
+    expect(r.given.map((g) => g.id)).toEqual(['r', 'l']);
+  });
+});
+
 describe('a newer value that doesn’t fit the older ones', () => {
   // ρ = m ÷ V with V = s³: a density the range (and a rule) can say no to.
   const block = (message?: Relation['message']): System => ({
