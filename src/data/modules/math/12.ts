@@ -4706,7 +4706,9 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
       crossPart('x', 'b', 'f', 'c', 'e', 'x'),
       crossPart('y', 'c', 'd', 'a', 'f', 'y'),
       crossPart('z', 'a', 'e', 'b', 'd', 'z'),
-      length3('A', ['x', 'y', 'z'], 'u × v'),
+      withStep(length3('A', ['x', 'y', 'z'], 'u × v'), 'A', {
+        how: 'The length of u × v, by the Pythagorean theorem twice. |u × v| = |u||v| sin θ, base times height: the parallelogram’s area.',
+      }),
       derive(
         'Area of the triangle = |u × v| ÷ 2',
         '{Tri} = {A} ÷ 2',
