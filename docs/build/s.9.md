@@ -244,3 +244,7 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
 - `~key` (H100 need 12): new explore on the `dichotomousKey` figure, the demo's six animals and
   four scenes. (Sampling has no calculator under this prefix, so its suite reports an empty
   table; the other suites pass.)
+- `s.9.population-ecology~rates` (H100 need 8): its `bars` add `flows: { out: ['D', 'E'] }`, the
+  four counts drawn as steps from N to N₁. No other change.
+- `~competition` (H100 need 4): new observe page with two rows (Species A and B per mL, days 0–20)
+  and a pattern reading both, as the demo.

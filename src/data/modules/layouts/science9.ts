@@ -1791,6 +1791,9 @@ const PLANTS: LayoutDef[] = [
   },
 ];
 
+/** Species B in the shared dish (~competition): it peaks, then is competed out. */
+const COMPETITION_B = [10, 50, 70, 50, 20, 0];
+
 const POPULATION: LayoutDef[] = [
   // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
   {
@@ -1844,6 +1847,34 @@ const POPULATION: LayoutDef[] = [
       { label: 'Stationary: births equal deaths as food runs low' },
       { label: 'Death: wastes build up and deaths exceed births' },
     ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.population-ecology~competition',
+    title: 'Two species, one food',
+    use: 'Use this for “Two protist species grow together in one dish. Which one wins, and why?”',
+    assumptions: [
+      'Two species that need the same food compete; the one that gets it faster grows, and the other shrinks.',
+      'Grown apart, each species levels off at its own carrying capacity.',
+      'When one species dies out in the shared dish, it has been competed out (competitive exclusion).',
+    ],
+    columns: ['Day 0', 'Day 4', 'Day 8', 'Day 12', 'Day 16', 'Day 20'],
+    rowLabel: 'Species A',
+    unit: 'per mL',
+    max: 200,
+    step: 10,
+    initial: [10, 60, 130, 170, 180, 190],
+    second: { rowLabel: 'Species B', initial: COMPETITION_B },
+    pattern: (a, b = COMPETITION_B) => {
+      const [la, lb] = [a[a.length - 1]!, b[b.length - 1]!];
+      const peakB = Math.max(...b);
+      if (lb === 0 && la > 0)
+        return `Species B peaks at ${peakB} per mL, then dies out while species A reaches ${la}: A competes B out.`;
+      if (la === 0 && lb > 0)
+        return `Species A dies out while species B reaches ${lb}: B competes A out.`;
+      if (la === 0 && lb === 0) return 'Both species die out: neither holds on to the food.';
+      return `By the last day A has ${la} and B has ${lb} per mL: both still share the food.`;
+    },
   },
 ];
 

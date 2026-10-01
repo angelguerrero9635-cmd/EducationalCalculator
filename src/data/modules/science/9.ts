@@ -1766,6 +1766,8 @@ const POPULATION: ModuleDef[] = [
       bars: [{ var: 'N' }, { var: 'B' }, { var: 'D' }, { var: 'I' }, { var: 'E' }, { var: 'N1' }],
       min: 0,
       max: 600,
+
+      flows: { out: ['D', 'E'] },
     },
   },
   {
