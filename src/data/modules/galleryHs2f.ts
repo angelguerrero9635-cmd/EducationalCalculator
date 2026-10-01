@@ -273,55 +273,9 @@ export const HS2F_GALLERY_MODULES: ModuleDef[] = [
   dischargeRiver,
 ];
 
-// ── Part 7: spectra side by side (explore figure `spectra`) and ash in the greenhouse view ──
+// ── Part 7: ash in the greenhouse view (the `spectra` figure is on s.12.starlight-spectra~lines) ──
 
-const spectraLayouts: LayoutDef[] = [
-  {
-    id: 'g.s12-starlight-spectra-lines',
-    title: 'Matching a star’s lines to elements',
-    kind: 'explore',
-    use: 'Use this for “Which elements are in this star?” from its dark lines and lab spectra.',
-    assumptions: [
-      'Each element absorbs and gives off light only at its own wavelengths: its lines are a fingerprint.',
-      'Cooler gas in a star’s outer layers absorbs those wavelengths, leaving dark lines in its rainbow.',
-      'An element is in the star only if every one of its lines appears there.',
-    ],
-    figure: { kind: 'spectra' },
-    scenes: [
-      {
-        label: 'The star',
-        lines: [
-          'The star’s light, spread into a rainbow, has dark lines where some wavelengths are missing.',
-          'Below it are the bright lines of hydrogen, helium and sodium measured in a lab.',
-        ],
-        spectra: { star: ['H', 'Na'] },
-      },
-      {
-        label: 'Hydrogen',
-        lines: [
-          'Each of hydrogen’s four visible lines lines up with a dark line in the star.',
-          'The star contains hydrogen.',
-        ],
-        spectra: { star: ['H', 'Na'], lit: 'H' },
-      },
-      {
-        label: 'Helium',
-        lines: [
-          'Helium’s yellow line sits close to sodium’s, but its blue and red lines have no dark line to match.',
-          'Helium does not show in this star’s spectrum.',
-        ],
-        spectra: { star: ['H', 'Na'], lit: 'He' },
-      },
-      {
-        label: 'Sodium',
-        lines: [
-          'Sodium’s pair of yellow lines and its fainter lines all match dark lines in the star.',
-          'The star contains sodium.',
-        ],
-        spectra: { star: ['H', 'Na'], lit: 'Na' },
-      },
-    ],
-  },
+const particleLayouts: LayoutDef[] = [
   {
     id: 'g.s12-climate-systems-particles',
     title: 'Ash and smoke in the energy balance',
@@ -398,4 +352,4 @@ const carbonVolcano: LayoutDef = {
   ],
 };
 
-export const HS2F_GALLERY_LAYOUTS: LayoutDef[] = [...spectraLayouts, carbonVolcano];
+export const HS2F_GALLERY_LAYOUTS: LayoutDef[] = [...particleLayouts, carbonVolcano];
