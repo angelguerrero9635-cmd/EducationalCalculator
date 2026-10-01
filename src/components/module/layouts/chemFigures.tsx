@@ -23,7 +23,7 @@ import { Canvas, ChartText, fitLabel } from '../reps/common';
 import { arrowHead } from '../reps/graphKit';
 import { MoleculeArt, fitScale, useAtomPaint, type AtomIds } from '../reps/MoleculeArt';
 import { Ball, usePaintIds, url } from '../reps/paint';
-import { TableArt, tableSize } from '../reps/PeriodicTable';
+import { TableArt, tableSize, WideTable } from '../reps/PeriodicTable';
 import { HydrationFigure } from './hydrationFigure';
 
 type State = 'solid' | 'liquid' | 'gas';
@@ -706,8 +706,8 @@ const zOf = (e: number | string | undefined) =>
 /** The periodic table with the scene's element, group, period or ringed elements lit. */
 export function PeriodicTableFigure({ elements }: { elements: NonNullable<Scene['elements']> }) {
   return (
-    <Canvas aspect={(w) => tableSize(w, elements.families).h / w}>
-      {({ w }) => (
+    <WideTable height={(w) => tableSize(w, elements.families).h}>
+      {(w) => (
         <TableArt
           w={w}
           lit={zOf(elements.element)}
@@ -717,7 +717,7 @@ export function PeriodicTableFigure({ elements }: { elements: NonNullable<Scene[
           families={elements.families}
         />
       )}
-    </Canvas>
+    </WideTable>
   );
 }
 
