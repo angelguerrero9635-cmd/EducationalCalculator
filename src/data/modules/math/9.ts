@@ -780,19 +780,18 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
       'The ball lands when h = 0; take the positive time.',
     ],
     variables: [
-      num('g', 'g', 'Gravity', 0.1, 30, { unit: 'm/s²', units: ['m/s²'], step: 0.1 }),
-      num('v', 'v', 'Launch speed', 0, 100, { unit: 'm/s', units: ['m/s'], step: 0.1 }),
-      num('h0', 'h₀', 'Starting height', 0, 500, { unit: 'm', units: ['m'], step: 0.1 }),
-      num('t', 't', 'Time', 0, 60, { unit: 's', units: ['s'], step: 0.1 }),
-      num('H', 'h', 'Height', 0, 10000, { unit: 'm', units: ['m'] }),
+      num('g', 'g', 'Gravity', 0.1, 30, { unit: 'm/s²', step: 0.1 }),
+      num('v', 'v', 'Launch speed', 0, 100, { unit: 'm/s', step: 0.1 }),
+      num('h0', 'h₀', 'Starting height', 0, 500, { unit: 'm', step: 0.1 }),
+      num('t', 't', 'Time', 0, 60, { unit: 's', step: 0.1 }),
+      num('H', 'h', 'Height', 0, 10000, { unit: 'm' }),
       num('A', 'a', 't² coefficient, −½g', -15, -0.05, {
         unit: 'm/s²',
-        units: ['m/s²'],
         derived: true,
       }),
-      num('T', 't_top', 'Time at the top', 0, 1000, { unit: 's', units: ['s'], derived: true }),
-      num('M', 'h_max', 'Greatest height', 0, 100000, { unit: 'm', units: ['m'], derived: true }),
-      num('L', 't_land', 'Landing time', 0, 10000, { unit: 's', units: ['s'], derived: true }),
+      num('T', 't_top', 'Time at the top', 0, 1000, { unit: 's', derived: true }),
+      num('M', 'h_max', 'Greatest height', 0, 100000, { unit: 'm', derived: true }),
+      num('L', 't_land', 'Landing time', 0, 10000, { unit: 's', derived: true }),
     ],
     rules: [
       derive(
@@ -872,8 +871,6 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
       M: 21.6,
       L: (19.6 + Math.sqrt(19.6 ** 2 + 2 * 9.8 * 2)) / 9.8,
     },
-    // The graph's axes are in meters and seconds, so the units stay put.
-    unitSystems: ['metric'],
     startWith: ['t', 'g', 'v', 'h0'],
     pictureLabels: ['L'],
     representation: {
@@ -886,7 +883,8 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
       name: 'h',
       at: { x: 't', y: 'H' },
       xMin: 0,
-      axes: { x: 'Time t (s)', y: 'Height h (m)' },
+      axes: { x: 'Time t', y: 'Height h' },
+      unitsOf: { x: 't', y: 'H' },
       shows: { vertex: { x: 'T', y: 'M' } },
       marks: ['vertex', 'zeros'],
     },
@@ -1154,6 +1152,75 @@ const POLYNOMIAL_OPERATIONS: ModuleDef[] = [
       given: 'factors',
       factors: { p: 'a', q: 'b', r: 'a', s: 'b' },
       product: { x2: 'p', x: 'q', unit: 'r' },
+    },
+  }),
+  page({
+    id: 'm.9.polynomial-operations~box',
+    title: 'Binomial times trinomial: the area box',
+    use: 'Use this for “Multiply (x + 2)(x² − 3x + 4).”',
+    assumptions: [
+      'Each term of one factor multiplies each term of the other: 2 × 3 = 6 products.',
+      'Each cell of the box holds one product: its row term times its column term.',
+      'Like terms sit on the same diagonal: add them to finish.',
+    ],
+    variables: [
+      int('a', 'a', 'x in the first factor', -10, 10),
+      int('b', 'b', 'Number in the first factor', -10, 10),
+      int('c', 'c', 'x² in the second factor', -10, 10),
+      int('d', 'd', 'x in the second factor', -10, 10),
+      int('e', 'e', 'Number in the second factor', -10, 10),
+      int('p', 'p', 'x³ in the product', -100, 100, { derived: true }),
+      int('q', 'q', 'x² in the product', -200, 200, { derived: true }),
+      int('r', 'r', 'x in the product', -200, 200, { derived: true }),
+      int('t', 't', 'Number in the product', -100, 100, { derived: true }),
+    ],
+    rules: [
+      derive(
+        'p = ac',
+        'p',
+        ['a', 'c'],
+        '{p} = {a} × {c}',
+        (v) => v.a! * v.c!,
+        '{a} × {c}',
+        'Only x times x² makes x³.',
+      ),
+      derive(
+        'q = ad + bc',
+        'q',
+        ['a', 'd', 'b', 'c'],
+        '{q} = {a} × {d} + {b} × {c}',
+        (v) => v.a! * v.d! + v.b! * v.c!,
+        '{a} × {d} + {b} × {c}',
+        'Two cells make x²: x times the x term, and the number times x².',
+      ),
+      derive(
+        'r = ae + bd',
+        'r',
+        ['a', 'e', 'b', 'd'],
+        '{r} = {a} × {e} + {b} × {d}',
+        (v) => v.a! * v.e! + v.b! * v.d!,
+        '{a} × {e} + {b} × {d}',
+        'Two cells make x: x times the number, and the number times the x term.',
+      ),
+      derive(
+        't = be',
+        't',
+        ['b', 'e'],
+        '{t} = {b} × {e}',
+        (v) => v.b! * v.e!,
+        '{b} × {e}',
+        'The two numbers multiply to the number term.',
+      ),
+    ],
+    example: { a: 1, b: 2, c: 1, d: -3, e: 4, p: 1, q: -1, r: -2, t: 8 },
+    startWith: ['a', 'b', 'c', 'd', 'e'],
+    equation: '({a}x + {b})({c}x² + {d}x + {e}) = {p}x³ + {q}x² + {r}x + {t}',
+    representation: {
+      kind: 'algebraTiles',
+      mode: 'box',
+      side: ['a', 'b'],
+      top: ['c', 'd', 'e'],
+      product: ['p', 'q', 'r', 't'],
     },
   }),
 ];
@@ -1616,7 +1683,7 @@ function formulaRules(a = 'a', b = 'b', c = 'c'): Rule[] {
 }
 
 /** The zeros of x² + bx + c, smallest first, from D = b² − 4c. */
-function monicZeros(set: (lo: string, hi: string) => string): Rule[] {
+function monicZeros(set: (lo: string, hi: string, v: Values) => string): Rule[] {
   const root = (id: string, sign: 1 | -1) =>
     derive(
       `${id} = (−b ${sign < 0 ? '−' : '+'} √D) ÷ 2`,
@@ -1630,7 +1697,8 @@ function monicZeros(set: (lo: string, hi: string) => string): Rule[] {
         : 'The plus sign gives the larger zero.',
       sign > 0
         ? {
-            note: (v) => (known(v, 'x1', 'x2') ? `→ ${set(fr(v.x1!, 20), fr(v.x2!, 20))}` : ''),
+            note: (v) =>
+              known(v, 'x1', 'x2', 's') ? `→ ${set(fr(v.x1!, 20), fr(v.x2!, 20), v)}` : '',
           }
         : {},
     );
@@ -1656,28 +1724,75 @@ function monicZeros(set: (lo: string, hi: string) => string): Rule[] {
   ];
 }
 
+/** The solution set of x² + bx + c (sign s) 0 from its zeros: between them for < and ≤. */
+const quadraticSet = (s: number | undefined, lo: string, hi: string) =>
+  s === undefined
+    ? ''
+    : s <= 2
+      ? `${lo} ${s === 1 ? '<' : '≤'} x ${s === 1 ? '<' : '≤'} ${hi}`
+      : `x ${s === 3 ? '<' : '≤'} ${lo} or x ${s === 3 ? '>' : '≥'} ${hi}`;
+
+/** x² + bx + c at n, the value written out: (3)² − 2(3) − 8 = −5. */
+const monicAt = (b: number, c: number, n: number) =>
+  `(${fmt(n)})²${b ? ` ${b < 0 ? '−' : '+'} ${fmt(Math.abs(b))}(${fmt(n)})` : ''}${c ? ` ${c < 0 ? '−' : '+'} ${fmt(Math.abs(c))}` : ''} = ${fmt(exact(n * n + b * n + c))}`;
+
 const QUADRATIC_INEQUALITIES: ModuleDef[] = [
   page({
     id: 'm.9.quadratic-formula~inequality',
-    title: 'Quadratic inequality: between the zeros',
-    use: 'Use this for “Solve x² − 2x − 8 < 0.”',
+    title: 'Quadratic inequality',
+    use: 'Use this for “Solve x² − 2x − 8 < 0” or “x² − x − 6 ≥ 0.”',
     assumptions: [
       'Solve the equation x² + bx + c = 0 first: its zeros split the number line.',
-      'The parabola opens up, so it is below the x-axis between its zeros.',
-      'The zeros make it 0, not less than 0, so they are left out: x₁ < x < x₂.',
+      'The parabola opens up: below the x-axis between its zeros, above it outside them.',
+      'The zeros make it 0: ≤ and ≥ take them in, < and > leave them out.',
     ],
     variables: [
       int('b', 'b', 'x coefficient', -20, 20),
       int('c', 'c', 'Number term', -100, 100),
+      int('s', 's', 'Sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4, { allowed: [1, 2, 3, 4] }),
       num('D', 'D', 'Discriminant', -400, 800, { derived: true }),
       num('x1', 'x₁', 'Smaller zero', -40, 40, { derived: true }),
       num('x2', 'x₂', 'Larger zero', -40, 40, { derived: true }),
+      num('n', 'x₀', 'Test number', -40, 40, { step: 0.5 }),
+      int('h', 'h', 'Test is true (1) or false (0)', 0, 1, { derived: true }),
     ],
-    rules: monicZeros((lo, hi) => `${lo} < x < ${hi}`),
-    example: { b: -2, c: -8, D: 36, x1: -2, x2: 4 },
-    startWith: ['b', 'c'],
-    equation: 'x² + {b}x + {c} < 0',
-    pictureLabels: ['D'],
+    rules: [
+      ...monicZeros((lo, hi, v) => quadraticSet(v.s, lo, hi)),
+      rule(
+        'h = test',
+        'test {n} in x² + {b}x + {c} (sign {s}) 0: {h}',
+        ['h', 'n', 'b', 'c', 's'],
+        (v) => tested(v.h!, truth(compare(v.n! ** 2 + v.b! * v.n! + v.c!, v.s!, 0))),
+        {
+          h: [
+            (v) => truth(compare(v.n! ** 2 + v.b! * v.n! + v.c!, v.s!, 0)),
+            (v) => `${truth(compare(v.n! ** 2 + v.b! * v.n! + v.c!, v.s!, 0))}`,
+            'Put the test number into the left side: 1 is true (a solution), 0 is false.',
+            {
+              note: (v) => (v.h === undefined ? '' : `→ ${v.h ? 'true' : 'false'}`),
+              work: (v) => {
+                const left = exact(v.n! ** 2 + v.b! * v.n! + v.c!);
+                return [
+                  monicAt(v.b!, v.c!, v.n!),
+                  `${fmt(left)} ${SIGNS[v.s! - 1]} 0 is ${compare(left, v.s!, 0) ? 'true' : 'false'}`,
+                ];
+              },
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) => {
+            const left = exact(v.n! ** 2 + v.b! * v.n! + v.c!);
+            return testCheck(left, 0, compare(left, v.s!, 0));
+          },
+        },
+      ),
+    ],
+    example: { b: -2, c: -8, s: 1, D: 36, x1: -2, x2: 4, n: 0, h: 1 },
+    startWith: ['b', 'c', 's', 'n'],
+    equation: 'x² + {b}x + {c} {s:sign} 0',
+    pictureLabels: ['D', 'n', 'h'],
     representation: {
       kind: 'functionGraph',
       family: 'quadratic',
@@ -1685,39 +1800,8 @@ const QUADRATIC_INEQUALITIES: ModuleDef[] = [
       a: 1,
       b: 'b',
       c: 'c',
-      shade: { from: 'x1', to: 'x2' },
+      inequality: { sign: 's' },
       shows: { zeros: ['x1', 'x2'] },
-      marks: ['zeros'],
-    },
-  }),
-  page({
-    id: 'm.9.quadratic-formula~inequality-outside',
-    title: 'Quadratic inequality: outside the zeros',
-    use: 'Use this for “Solve x² − x − 6 ≥ 0.”',
-    assumptions: [
-      'Solve the equation x² + bx + c = 0 first: its zeros split the number line.',
-      'The parabola opens up, so it is on or above the x-axis outside its zeros.',
-      'The zeros make it 0, so ≥ takes them in: x ≤ x₁ or x ≥ x₂.',
-    ],
-    variables: [
-      int('b', 'b', 'x coefficient', -10, 10),
-      int('c', 'c', 'Number term', -25, 25),
-      num('D', 'D', 'Discriminant', -100, 200, { derived: true }),
-      num('x1', 'x₁', 'Smaller zero', -10, 10, { derived: true }),
-      num('x2', 'x₂', 'Larger zero', -10, 10, { derived: true }),
-    ],
-    rules: monicZeros((lo, hi) => `x ≤ ${lo} or x ≥ ${hi}`),
-    example: { b: -1, c: -6, D: 25, x1: -2, x2: 3 },
-    startWith: ['b', 'c'],
-    equation: 'x² + {b}x + {c} ≥ 0',
-    pictureLabels: ['D'],
-    representation: {
-      kind: 'integerLine',
-      value: 'x1',
-      second: 'x2',
-      min: -10,
-      max: 10,
-      compound: { join: 'or', closed: [true, true] },
     },
   }),
 ];
@@ -2489,6 +2573,72 @@ const FUNCTION_NOTATION: ModuleDef[] = [
       fixed: true,
     },
   }),
+  page({
+    id: 'm.9.function-notation~transform',
+    title: 'Transform a function: g(x) = a·f(x − h) + k',
+    use: 'Use this for “f(x) = x². Graph g(x) = 2f(x − 3) + 1. Where does the point (1, 1) of f go?”',
+    assumptions: [
+      'f(x − h) moves the graph h to the right; a negative h moves it left.',
+      'a·f(x) stretches every height by a (a negative a flips it), then + k moves it up by k.',
+      'So the point (p, f(p)) of f lands at (p + h, a·f(p) + k) on g.',
+    ],
+    variables: [
+      num('a', 'a', 'Stretch', -5, 5, { step: 0.5 }),
+      num('h', 'h', 'Shift right', -10, 10, { step: 0.5 }),
+      num('k', 'k', 'Shift up', -10, 10, { step: 0.5 }),
+      num('p', 'p', 'Point of f: x', -10, 10, { step: 0.5 }),
+      num('q', 'q', 'f(p) = p²', 0, 100, { derived: true }),
+      num('X', 'X', 'Image x, p + h', -20, 20, { derived: true }),
+      num('Y', 'Y', 'Image y, a·f(p) + k', -600, 600, { derived: true }),
+    ],
+    rules: [
+      constraint(
+        'a ≠ 0',
+        '{a} ≠ 0',
+        ['a'],
+        (v) => v.a === 0,
+        () => 'With a = 0, g is the flat line y = k.',
+      ),
+      derive(
+        'q = p²',
+        'q',
+        ['p'],
+        '{q} = {p}²',
+        (v) => fin(v.p! * v.p!),
+        '{p}²',
+        'Put p into f: square it.',
+      ),
+      derive(
+        'X = p + h',
+        'X',
+        ['p', 'h'],
+        '{X} = {p} + {h}',
+        (v) => fin(v.p! + v.h!),
+        '{p} + {h}',
+        'Inside the brackets, x − h = p when x = p + h: the point moves h across.',
+      ),
+      derive(
+        'Y = a × q + k',
+        'Y',
+        ['a', 'q', 'k'],
+        '{Y} = {a} × {q} + {k}',
+        (v) => fin(v.a! * v.q! + v.k!),
+        '{a} × {q} + {k}',
+        'Outside, the height is multiplied by a, then k is added.',
+      ),
+    ],
+    example: { a: 2, h: 3, k: 1, p: 1, q: 1, X: 4, Y: 3 },
+    startWith: ['a', 'h', 'k', 'p'],
+    equation: 'g(x) = {a}·f(x − {h}) + {k}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'vertex',
+      h: 0,
+      k: 0,
+      transform: { a: 'a', h: 'h', k: 'k', from: 'p', image: { x: 'X', y: 'Y' } },
+    },
+  }),
 ];
 
 // ── Linear modeling ──
@@ -2899,6 +3049,7 @@ const LINEAR_INEQUALITIES: ModuleDef[] = [
       value: 'k',
       min: -20,
       max: 20,
+      ticks: 5,
       inequality: { sign: 'f', test: 't' },
     },
   }),
@@ -2943,17 +3094,19 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
     use: 'Use this for “Solve −5 < 3x + 4 ≤ 13.”',
     assumptions: [
       'Do the same to all three parts: take b from each, then divide each by a.',
+      'Here a is positive, so the signs stay: < leaves a bound out, ≤ takes it in.',
       'The solutions are between the two bounds: both parts must be true.',
-      'Here a is positive, so the signs stay; dividing by a negative would flip both.',
     ],
     variables: [
-      int('l', 'l', 'Left number', -50, 50),
+      int('l', 'l', 'Left number', -1000, 1000),
+      int('s', 's', 'Left sign (1 <, 2 ≤)', 1, 2, { allowed: [1, 2] }),
       int('a', 'a', 'x in the middle', 1, 10),
-      int('b', 'b', 'Number in the middle', -50, 50),
-      int('r', 'r', 'Right number', -50, 50),
-      num('L', 'L', 'Lower bound', -20, 20, { derived: true, fraction: 12 }),
-      num('U', 'U', 'Upper bound', -20, 20, { derived: true, fraction: 12 }),
-      num('t', 't', 'Test number', -20, 20, { step: 0.5 }),
+      int('b', 'b', 'Number in the middle', -1000, 1000),
+      int('t', 't', 'Right sign (1 <, 2 ≤)', 1, 2, { allowed: [1, 2] }),
+      int('r', 'r', 'Right number', -1000, 1000),
+      num('L', 'L', 'Lower bound', -2000, 2000, { derived: true, fraction: 12 }),
+      num('U', 'U', 'Upper bound', -2000, 2000, { derived: true, fraction: 12 }),
+      num('n', 'x₀', 'Test number', -2000, 2000, { step: 0.5 }),
       holdsVar(),
     ],
     rules: [
@@ -2976,45 +3129,50 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
         'Do the same to the right part.',
         {
           // (no interval when the bounds cross: the message says why)
-          note: (v) => (known(v, 'L', 'U') && v.L! < v.U! ? `→ ${fr(v.L!)} < x ≤ ${fr(v.U!)}` : ''),
+          note: (v) =>
+            known(v, 'L', 'U', 's', 't') && v.L! < v.U!
+              ? `→ ${fr(v.L!)} ${SIGNS[v.s! - 1]} x ${SIGNS[v.t! - 1]} ${fr(v.U!)}`
+              : '',
         },
         {
           message: (v) =>
-            known(v, 'l', 'r') && v.l! >= v.r!
+            known(v, 'l', 'r') && (v.l! > v.r! || (v.l === v.r && (v.s === 1 || v.t === 1)))
               ? 'The left number is not below the right one: no number is between them.'
               : undefined,
         },
       ),
       compoundTest(
-        'test {t} in {l} < {a}x + {b} ≤ {r}: {h}',
-        ['t', 'l', 'a', 'b', 'r'],
-        (v) => v.l! < v.a! * v.t! + v.b! && v.a! * v.t! + v.b! <= v.r!,
+        'test {n} in {l} (sign {s}) {a}x + {b} (sign {t}) {r}: {h}',
+        ['n', 'l', 's', 'a', 'b', 't', 'r'],
+        (v) => compare(v.l!, v.s!, v.a! * v.n! + v.b!) && compare(v.a! * v.n! + v.b!, v.t!, v.r!),
         (v) => {
-          const m = at(v.a!, v.b!, v.t!);
-          const ok = v.l! < m.total && m.total <= v.r!;
+          const m = at(v.a!, v.b!, v.n!);
+          const ok = compare(v.l!, v.s!, m.total) && compare(m.total, v.t!, v.r!);
           return [
             m.line,
-            `${fmt(v.l!)} < ${fmt(m.total)} ≤ ${fmt(v.r!)} is ${ok ? 'true' : 'false'}`,
+            `${fmt(v.l!)} ${SIGNS[v.s! - 1]} ${fmt(m.total)} ${SIGNS[v.t! - 1]} ${fmt(v.r!)} is ${ok ? 'true' : 'false'}`,
           ];
         },
         'Put the test number in the middle: both parts must be true. 1 is true, 0 is false.',
         (v) => {
-          const m = exact(v.a! * v.t! + v.b!);
-          const ok = v.l! < m && m <= v.r!;
-          return `${atLine(v.a!, v.t!, v.b!)}, so ${fmt(v.t!)} ${ok ? 'is' : 'is not'} a solution`;
+          const m = exact(v.a! * v.n! + v.b!);
+          const ok = compare(v.l!, v.s!, m) && compare(m, v.t!, v.r!);
+          return `${atLine(v.a!, v.n!, v.b!)}, so ${fmt(v.n!)} ${ok ? 'is' : 'is not'} a solution`;
         },
       ),
     ],
-    example: { l: -5, a: 3, b: 4, r: 13, L: -3, U: 3, t: 0, h: 1 },
-    startWith: ['l', 'a', 'b', 'r', 't'],
-    equation: '{l} < {a}x + {b} ≤ {r}',
+    example: { l: -5, s: 1, a: 3, b: 4, t: 2, r: 13, L: -3, U: 3, n: 0, h: 1 },
+    startWith: ['l', 's', 'a', 'b', 't', 'r', 'n'],
+    equation: '{l} {s:sign} {a}x + {b} {t:sign} {r}',
     representation: {
       kind: 'integerLine',
       value: 'L',
       second: 'U',
       min: -20,
       max: 20,
-      compound: { join: 'and', closed: [false, true], test: 't' },
+      fit: true,
+      ticks: 5,
+      compound: { join: 'and', closed: ['s', 't'], test: 'n' },
     },
   }),
   page({
@@ -3098,80 +3256,72 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
       compound: { join: 'or', closed: [false, true], test: 't' },
     },
   }),
-  ...(
-    [
-      ['~two-variables', 'Graph y ≥ mx + b', '≥', 'y ≥ 2x − 3', 'above', 'solid', 4],
-      ['~two-variables-below', 'Graph y < mx + b', '<', 'y < −x + 4', 'below', 'dashed', 1],
-    ] as const
-  ).map(([slug, title, sign, eg, side, line, code]) =>
-    page({
-      id: `m.9.linear-inequalities${slug}`,
-      title,
-      use: `Use this for “Graph ${eg} and test a point.”`,
-      assumptions: [
-        `Draw the boundary y = mx + b, ${line}: ${sign === '≥' ? '≥ includes' : '< leaves out'} the points on it.`,
-        `Shade ${side} the line: every point there makes y ${sign} mx + b true.`,
-        'A test point is a solution when its y is in the shaded part at its x.',
-      ],
-      variables: [
-        num('m', 'm', 'Slope', -10, 10, { step: 0.5 }),
-        num('b', 'b', 'y-intercept', -10, 10, { step: 0.5 }),
-        num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
-        num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
-        num('yl', 'y_line', 'Height of the line at x₀', -120, 120, { derived: true }),
-        holdsVar(),
-      ],
-      rules: [
-        derive(
-          'y_line = m x₀ + b',
-          'yl',
-          ['m', 'tx', 'b'],
-          '{yl} = {m} × {tx} + {b}',
-          (v) => v.m! * v.tx! + v.b!,
-          '{m} × {tx} + {b}',
-          'The boundary’s height at the test point’s x.',
-        ),
-        rule(
-          'h = test',
-          `test: {ty} ${sign} {yl} gives {h}`,
-          ['h', 'ty', 'yl'],
-          (v) => tested(v.h!, truth(compare(v.ty!, code, v.yl!))),
-          {
-            h: [
-              (v) => truth(compare(v.ty!, code, v.yl!)),
-              (v) => `${truth(compare(v.ty!, code, v.yl!))}`,
-              `Compare the test point’s y with the line’s: 1 is true (shaded), 0 is false.`,
-              {
-                note: truthNote(),
-                work: (v) => [
-                  `${fmt(v.ty!)} ${sign} ${fmt(v.yl!)} is ${compare(v.ty!, code, v.yl!) ? 'true' : 'false'}`,
-                ],
-                written: false,
-              },
-            ],
-          },
-          {
-            check: (v) => testCheck(v.ty!, v.yl!, compare(v.ty!, code, v.yl!), 'the test point'),
-          },
-        ),
-      ],
-      example:
-        sign === '≥'
-          ? { m: 2, b: -3, tx: 1, ty: 0, yl: -1, h: 1 }
-          : { m: -1, b: 4, tx: 3, ty: 2, yl: 1, h: 0 },
-      startWith: ['m', 'b', 'tx', 'ty'],
-      equation: `y ${sign} {m}x + {b}`,
-      pictureLabels: ['tx', 'ty', 'yl', 'h'],
-      representation: {
-        kind: 'linearFunction',
-        slope: 'm',
-        intercept: 'b',
-        shade: sign,
-        keep: ['tx', 'ty'],
-        extent: 10,
-      },
-    }),
-  ),
+  page({
+    id: 'm.9.linear-inequalities~two-variables',
+    title: 'Graph y (sign) mx + b',
+    use: 'Use this for “Graph y ≥ 2x − 3 and test a point”, or with <, ≤ or >.',
+    assumptions: [
+      'The boundary is y = mx + b: dashed for < and > (left out), solid for ≤ and ≥ (included).',
+      'Shade above the line for > and ≥, below it for < and ≤.',
+      'A test point is a solution when its y is in the shaded part at its x.',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -10, 10, { step: 0.5 }),
+      num('b', 'b', 'y-intercept', -10, 10, { step: 0.5 }),
+      int('s', 's', 'Sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4, { allowed: [1, 2, 3, 4] }),
+      num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
+      num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
+      num('yl', 'y_line', 'Height of the line at x₀', -120, 120, { derived: true }),
+      holdsVar(),
+    ],
+    rules: [
+      derive(
+        'y_line = m x₀ + b',
+        'yl',
+        ['m', 'tx', 'b'],
+        '{yl} = {m} × {tx} + {b}',
+        (v) => v.m! * v.tx! + v.b!,
+        '{m} × {tx} + {b}',
+        'The boundary’s height at the test point’s x.',
+      ),
+      rule(
+        'h = test',
+        'test: {ty} (sign {s}) {yl} gives {h}',
+        ['h', 'ty', 's', 'yl'],
+        (v) => tested(v.h!, truth(compare(v.ty!, v.s!, v.yl!))),
+        {
+          h: [
+            (v) => truth(compare(v.ty!, v.s!, v.yl!)),
+            (v) => `${truth(compare(v.ty!, v.s!, v.yl!))}`,
+            'Compare the test point’s y with the line’s: 1 is true (shaded), 0 is false.',
+            {
+              note: truthNote(),
+              work: (v) => [
+                `${fmt(v.ty!)} ${SIGNS[v.s! - 1]} ${fmt(v.yl!)} is ${compare(v.ty!, v.s!, v.yl!) ? 'true' : 'false'}`,
+              ],
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) => testCheck(v.ty!, v.yl!, compare(v.ty!, v.s!, v.yl!), 'the test point'),
+        },
+      ),
+    ],
+    example: { m: 2, b: -3, s: 4, tx: 1, ty: 0, yl: -1, h: 1 },
+    startWith: ['m', 'b', 's', 'tx', 'ty'],
+    equation: 'y {s:sign} {m}x + {b}',
+    pictureLabels: ['yl', 'h'],
+    representation: {
+      kind: 'linearFunction',
+      slope: 'm',
+      intercept: 'b',
+      shade: { sign: 's' },
+      test: { x: 'tx', y: 'ty' },
+      keep: ['tx', 'ty'],
+      extent: 10,
+    },
+  }),
   page({
     id: 'm.9.linear-inequalities~whole-number-answers',
     title: 'Whole-number answers',
@@ -3467,11 +3617,106 @@ const ABSOLUTE_VALUE: ModuleDef[] = [
     example: { a: 2, b: -3, c: 7, h: 1.5, d: 3.5, x1: 5, x2: -2 },
     startWith: ['c', 'a', 'b'],
     equation: '|{a}x + {b}| = {c}',
-    pictureLabels: ['h', 'd'],
-    representation: { kind: 'integerLine', value: 'x1', second: 'x2', min: -20, max: 20 },
+    representation: {
+      kind: 'integerLine',
+      value: 'x1',
+      second: 'x2',
+      min: -20,
+      max: 20,
+      compound: { join: 'equal', center: 'h', radius: 'd' },
+    },
   }),
   absInequality(true),
   absInequality(false),
+  page({
+    id: 'm.9.absolute-value~tolerance',
+    title: 'Tolerance: within d of a target',
+    use: 'Use this for “A 350 g box may be off by 6 g. Is a 343 g box all right?”',
+    assumptions: [
+      'Within d of the target T means |w − T| ≤ d: the weight is at most d from T.',
+      'So T − d ≤ w ≤ T + d, both ends allowed.',
+      'A weight is all right when its distance from T is at most d.',
+    ],
+    variables: [
+      num('T', 'T', 'Target weight (g)', 1, 100000, { step: 0.5 }),
+      num('d', 'd', 'Allowed difference (g)', 0, 10000, { step: 0.5 }),
+      num('L', 'L', 'Lowest allowed weight (g)', -10000, 110000, { derived: true }),
+      num('U', 'U', 'Highest allowed weight (g)', -10000, 110000, { derived: true }),
+      num('w', 'w', 'Weight measured (g)', 0, 110000, { step: 0.5 }),
+      num('k', 'k', 'Distance from the target (g)', 0, 110000, { derived: true }),
+      holdsVar(),
+    ],
+    rules: [
+      derive(
+        'L = T − d',
+        'L',
+        ['T', 'd'],
+        '{L} = {T} − {d}',
+        (v) => exact(v.T! - v.d!),
+        '{T} − {d}',
+        'The lightest box allowed: d below the target.',
+      ),
+      derive(
+        'U = T + d',
+        'U',
+        ['T', 'd'],
+        '{U} = {T} + {d}',
+        (v) => exact(v.T! + v.d!),
+        '{T} + {d}',
+        'The heaviest box allowed: d above the target.',
+      ),
+      derive(
+        'k = |w − T|',
+        'k',
+        ['w', 'T'],
+        '{k} = |{w} − {T}|',
+        (v) => exact(Math.abs(v.w! - v.T!)),
+        '|{w} − {T}|',
+        'How far the weight is from the target, as a distance (never negative).',
+      ),
+      rule(
+        'h = (k ≤ d)',
+        'test: {k} ≤ {d} gives {h}',
+        ['h', 'k', 'd'],
+        (v) => tested(v.h!, truth(v.k! <= v.d!)),
+        {
+          h: [
+            (v) => truth(v.k! <= v.d!),
+            (v) => `${truth(v.k! <= v.d!)}`,
+            'Compare the distance with the allowed difference: 1 is all right, 0 is not.',
+            {
+              note: truthNote(),
+              work: (v) => [`${fmt(v.k!)} ≤ ${fmt(v.d!)} is ${v.k! <= v.d! ? 'true' : 'false'}`],
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) =>
+            `${fmt(v.k!)} ${cmp(v.k!, v.d!)} ${fmt(v.d!)}, so the weight ${v.k! <= v.d! ? 'is' : 'is not'} within the allowed difference`,
+        },
+      ),
+    ],
+    example: { T: 350, d: 6, L: 344, U: 356, w: 343, k: 7, h: 0 },
+    startWith: ['T', 'd', 'w'],
+    representation: {
+      kind: 'integerLine',
+      value: 'L',
+      second: 'U',
+      min: 0,
+      max: 10,
+      unit: 'g',
+      fit: true,
+      compound: {
+        join: 'and',
+        closed: [true, true],
+        center: 'T',
+        radius: 'd',
+        letter: 'w',
+        test: 'w',
+      },
+    },
+  }),
 ];
 
 // ── Systems: elimination and inequalities ──
@@ -3505,6 +3750,56 @@ function crossRules(m1: string, b1: string, m2: string, b2: string, x = 'x', y =
       'Put x into the first boundary.',
     ),
   ];
+}
+
+/** Whether the test point is in the box a ≤ x ≤ b, c ≤ y ≤ d. */
+const inBox = (v: Values) => v.a! <= v.tx! && v.tx! <= v.b! && v.c! <= v.ty! && v.ty! <= v.d!;
+
+/** The crossings of y = ax² + px + q and y = mx + k: ax² + (p − m)x + (q − k) = 0 (a > 0). */
+const meet = (v: Values, sign: 1 | -1) => {
+  const [A, B, C] = [v.a!, v.p! - v.m!, v.q! - v.k!];
+  const D = B * B - 4 * A * C;
+  if (!A || D < 0) return undefined;
+  return fin((-B + sign * Math.sqrt(D)) / (2 * A));
+};
+
+/**
+ * h = 1 when lhs (sign s) rhs holds for the test values, 0 when not: a test put into one
+ * inequality, its work lines the substituted sides.
+ */
+function signTest(
+  h: string,
+  s: string,
+  vars: string[],
+  display: string,
+  lhs: (v: Values) => number,
+  rhs: (v: Values) => number,
+  work: (v: Values) => string[],
+  how: string,
+): Rule {
+  const ok = (v: Values) => truth(compare(lhs(v), v[s]!, rhs(v)));
+  return rule(
+    `${h} = test (${vars.join(', ')})`,
+    display,
+    [h, s, ...vars],
+    (v) => tested(v[h]!, ok(v)),
+    {
+      [h]: [
+        (v) => ok(v),
+        (v) => `${ok(v)}`,
+        how,
+        {
+          note: truthNote(h),
+          work: (v) => [
+            ...work(v),
+            `${fmt(exact(lhs(v)))} ${SIGNS[v[s]! - 1]} ${fmt(exact(rhs(v)))} is ${ok(v) ? 'true' : 'false'}`,
+          ],
+          written: false,
+        },
+      ],
+    },
+    { check: (v) => testCheck(exact(lhs(v)), exact(rhs(v)), ok(v) === 1, 'the test point') },
+  );
 }
 
 const INEQUALITY_SYSTEMS: ModuleDef[] = [
@@ -3907,6 +4202,312 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
       fixed: true,
     },
   }),
+  page({
+    id: 'm.9.inequality-systems~standard-form',
+    title: 'System of inequalities in standard form',
+    use: 'Use this for “Graph x − 2y < 2 and 2x + y ≤ 4 and test (−6, 2).”',
+    assumptions: [
+      'Solve each for y: divide by the y term, flipping the sign when it is negative.',
+      'Dashed lines (< or >) are left out; solid ones (≤ or ≥) are included.',
+      'The solutions are where the two shadings overlap.',
+    ],
+    variables: [
+      num('a', 'a', 'First x term', -20, 20),
+      num('b', 'b', 'First y term', -20, 20),
+      int('s', 's', 'First sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4, { allowed: [1, 2, 3, 4] }),
+      num('c', 'c', 'First number', -100, 100),
+      num('d', 'd', 'Second x term', -20, 20),
+      num('e', 'e', 'Second y term', -20, 20),
+      int('t', 't', 'Second sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4, { allowed: [1, 2, 3, 4] }),
+      num('f', 'f', 'Second number', -100, 100),
+      num('m1', 'm₁', 'First slope', -400, 400, { derived: true, fraction: 20 }),
+      num('b1', 'b₁', 'First y-intercept', -2000, 2000, { derived: true, fraction: 20 }),
+      num('m2', 'm₂', 'Second slope', -400, 400, { derived: true, fraction: 20 }),
+      num('b2', 'b₂', 'Second y-intercept', -2000, 2000, { derived: true, fraction: 20 }),
+      num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
+      num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
+      holdsVar('h1'),
+      holdsVar('h2'),
+    ],
+    rules: [
+      signTest(
+        'h1',
+        's',
+        ['a', 'tx', 'b', 'ty', 'c'],
+        'test ({tx}, {ty}) in {a}x + {b}y (sign {s}) {c}: {h1}',
+        (v) => v.a! * v.tx! + v.b! * v.ty!,
+        (v) => v.c!,
+        (v) => [
+          `${fmt(v.a!)}(${fmt(v.tx!)}) ${v.b! < 0 ? '−' : '+'} ${fmt(Math.abs(v.b!))}(${fmt(v.ty!)}) = ${fmt(exact(v.a! * v.tx! + v.b! * v.ty!))}`,
+        ],
+        'Put the test point into the first inequality: 1 is true, 0 is false.',
+      ),
+      signTest(
+        'h2',
+        't',
+        ['d', 'tx', 'e', 'ty', 'f'],
+        'test ({tx}, {ty}) in {d}x + {e}y (sign {t}) {f}: {h2}',
+        (v) => v.d! * v.tx! + v.e! * v.ty!,
+        (v) => v.f!,
+        (v) => [
+          `${fmt(v.d!)}(${fmt(v.tx!)}) ${v.e! < 0 ? '−' : '+'} ${fmt(Math.abs(v.e!))}(${fmt(v.ty!)}) = ${fmt(exact(v.d! * v.tx! + v.e! * v.ty!))}`,
+        ],
+        'And into the second: the point is a solution when both are 1.',
+      ),
+      nonzero('b', 'The first y term'),
+      nonzero('e', 'The second y term'),
+      derive(
+        'm₁ = −a ÷ b',
+        'm1',
+        ['a', 'b'],
+        '{m1} = −{a} ÷ {b}',
+        (v) => div(-v.a!, v.b!),
+        '−{a} ÷ {b}',
+        'Take ax from both sides, then divide by b: the slope is −a ÷ b.',
+      ),
+      derive(
+        'b₁ = c ÷ b',
+        'b1',
+        ['c', 'b'],
+        '{b1} = {c} ÷ {b}',
+        (v) => div(v.c!, v.b!),
+        '{c} ÷ {b}',
+        (v) =>
+          v.b! < 0
+            ? `b is negative: dividing by it flips ${SIGNS[v.s! - 1] ?? 'the sign'}.`
+            : 'Divide the number by b too; b is positive, so the sign stays.',
+      ),
+      derive(
+        'm₂ = −d ÷ e',
+        'm2',
+        ['d', 'e'],
+        '{m2} = −{d} ÷ {e}',
+        (v) => div(-v.d!, v.e!),
+        '−{d} ÷ {e}',
+        'The same for the second: the slope is −d ÷ e.',
+      ),
+      derive(
+        'b₂ = f ÷ e',
+        'b2',
+        ['f', 'e'],
+        '{b2} = {f} ÷ {e}',
+        (v) => div(v.f!, v.e!),
+        '{f} ÷ {e}',
+        (v) =>
+          v.e! < 0
+            ? `e is negative: dividing by it flips ${SIGNS[v.t! - 1] ?? 'the sign'}.`
+            : 'Divide by e; e is positive, so the sign stays.',
+      ),
+    ],
+    example: {
+      a: 1,
+      b: -2,
+      s: 1,
+      c: 2,
+      d: 2,
+      e: 1,
+      t: 2,
+      f: 4,
+      m1: 0.5,
+      b1: -1,
+      m2: -2,
+      b2: 4,
+      tx: -6,
+      ty: 2,
+      h1: 1,
+      h2: 1,
+    },
+    startWith: ['a', 'b', 's', 'c', 'd', 'e', 't', 'f', 'tx', 'ty'],
+    equation: '{a}x + {b}y {s:sign} {c}\n{d}x + {e}y {t:sign} {f}',
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 'm1', intercept: 'b1', shade: { sign: 's', flip: 'b' } },
+        { slope: 'm2', intercept: 'b2', shade: { sign: 't', flip: 'e' } },
+      ],
+      test: { x: 'tx', y: 'ty' },
+      extent: 10,
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.inequality-systems~box',
+    title: 'A box of points: a ≤ x ≤ b and c ≤ y ≤ d',
+    use: 'Use this for “Shade the points with −3 ≤ x ≤ 2 and −1 ≤ y ≤ 4.”',
+    assumptions: [
+      'a ≤ x ≤ b is the strip between two upright lines, x = a and x = b.',
+      'c ≤ y ≤ d is the strip between two flat lines, y = c and y = d.',
+      'Where the strips overlap is a box: every point in it makes all four true.',
+    ],
+    variables: [
+      num('a', 'a', 'Least x', -10, 10, { step: 0.5 }),
+      num('b', 'b', 'Greatest x', -10, 10, { step: 0.5 }),
+      num('c', 'c', 'Least y', -10, 10, { step: 0.5 }),
+      num('d', 'd', 'Greatest y', -10, 10, { step: 0.5 }),
+      num('W', 'W', 'Width of the box', -20, 20, { derived: true }),
+      num('H', 'H', 'Height of the box', -20, 20, { derived: true }),
+      num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
+      num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
+      holdsVar(),
+    ],
+    rules: [
+      derive(
+        'W = b − a',
+        'W',
+        ['b', 'a'],
+        '{W} = {b} − {a}',
+        (v) => exact(v.b! - v.a!),
+        '{b} − {a}',
+        'The box runs from x = a to x = b: its width is b − a.',
+        {},
+        {
+          message: (v) =>
+            known(v, 'a', 'b') && v.a! > v.b!
+              ? 'a is past b: no x is between them, so there is no box.'
+              : undefined,
+        },
+      ),
+      derive(
+        'H = d − c',
+        'H',
+        ['d', 'c'],
+        '{H} = {d} − {c}',
+        (v) => exact(v.d! - v.c!),
+        '{d} − {c}',
+        'And from y = c up to y = d: its height is d − c.',
+        {},
+        {
+          message: (v) =>
+            known(v, 'c', 'd') && v.c! > v.d!
+              ? 'c is past d: no y is between them, so there is no box.'
+              : undefined,
+        },
+      ),
+      rule(
+        'h = test in the box',
+        'test ({tx}, {ty}) in {a} ≤ x ≤ {b} and {c} ≤ y ≤ {d}: {h}',
+        ['h', 'tx', 'ty', 'a', 'b', 'c', 'd'],
+        (v) => tested(v.h!, truth(inBox(v))),
+        {
+          h: [
+            (v) => truth(inBox(v)),
+            (v) => `${truth(inBox(v))}`,
+            'Check x₀ between a and b, and y₀ between c and d: 1 when all four are true.',
+            {
+              note: truthNote(),
+              work: (v) => [
+                `${fmt(v.a!)} ≤ ${fmt(v.tx!)} ≤ ${fmt(v.b!)} is ${v.a! <= v.tx! && v.tx! <= v.b! ? 'true' : 'false'}`,
+                `${fmt(v.c!)} ≤ ${fmt(v.ty!)} ≤ ${fmt(v.d!)} is ${v.c! <= v.ty! && v.ty! <= v.d! ? 'true' : 'false'}`,
+              ],
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) =>
+            `(${fmt(v.tx!)}, ${fmt(v.ty!)}) ${inBox(v) ? 'is' : 'is not'} in the box, so it ${inBox(v) ? 'is' : 'is not'} a solution`,
+        },
+      ),
+    ],
+    example: { a: -3, b: 2, c: -1, d: 4, W: 5, H: 5, tx: 1, ty: 2, h: 1 },
+    startWith: ['a', 'b', 'c', 'd', 'tx', 'ty'],
+    equation: '{a} ≤ x ≤ {b}\n{c} ≤ y ≤ {d}',
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 0, intercept: 'c', shade: '≥' },
+        { slope: 0, intercept: 'd', shade: '≤' },
+      ],
+      upright: [
+        { x: 'a', shade: '≥' },
+        { x: 'b', shade: '≤' },
+      ],
+      test: { x: 'tx', y: 'ty' },
+      extent: 10,
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.inequality-systems~nonlinear',
+    title: 'A line and a parabola',
+    use: 'Use this for “Solve y = x² − 2x − 3 and y = x + 1.”',
+    assumptions: [
+      'At a crossing both equations give the same y, so set ax² + px + q equal to mx + k.',
+      'Gather everything on one side: ax² + (p − m)x + (q − k) = 0, then use the quadratic formula.',
+      'Two roots: the line cuts the parabola twice; one: it touches; none: it misses.',
+    ],
+    variables: [
+      num('a', 'a', 'x² coefficient of the parabola (opens up)', 0.5, 5, { step: 0.5 }),
+      num('p', 'p', 'x coefficient of the parabola', -10, 10, { step: 0.5 }),
+      num('q', 'q', 'Constant of the parabola', -20, 20, { step: 0.5 }),
+      num('m', 'm', 'Slope of the line', -10, 10, { step: 0.5 }),
+      num('k', 'k', 'y-intercept of the line', -20, 20, { step: 0.5 }),
+      num('x1', 'x₁', 'Left crossing x', -100, 100, { derived: true }),
+      num('y1', 'y₁', 'Left crossing y', -10000, 10000, { derived: true }),
+      num('x2', 'x₂', 'Right crossing x', -100, 100, { derived: true }),
+      num('y2', 'y₂', 'Right crossing y', -10000, 10000, { derived: true }),
+    ],
+    rules: [
+      constraint(
+        'they meet',
+        '({p} − {m})² − 4 × {a} × ({q} − {k}) ≥ 0',
+        ['p', 'm', 'a', 'q', 'k'],
+        (v) => (v.p! - v.m!) ** 2 - 4 * v.a! * (v.q! - v.k!) < 0,
+        () => 'The line misses the parabola: ax² + (p − m)x + (q − k) = 0 has no real root.',
+      ),
+      derive(
+        'x₁ = smaller root',
+        'x1',
+        ['a', 'p', 'q', 'm', 'k'],
+        '{x1} = smaller root of {a}x² + ({p} − {m})x + ({q} − {k}) = 0',
+        (v) => meet(v, -1),
+        '(−({p} − {m}) − √(({p} − {m})² − 4 × {a} × ({q} − {k}))) ÷ (2 × {a})',
+        'Set the two right sides equal, gather on one side, and take the smaller root.',
+      ),
+      derive(
+        'y₁ = m x₁ + k',
+        'y1',
+        ['m', 'x1', 'k'],
+        '{y1} = {m} × {x1} + {k}',
+        (v) => fin(v.m! * v.x1! + v.k!),
+        '{m} × {x1} + {k}',
+        'Put x₁ into the line (the simpler equation) for its y.',
+      ),
+      derive(
+        'x₂ = larger root',
+        'x2',
+        ['a', 'p', 'q', 'm', 'k'],
+        '{x2} = larger root of {a}x² + ({p} − {m})x + ({q} − {k}) = 0',
+        (v) => meet(v, 1),
+        '(−({p} − {m}) + √(({p} − {m})² − 4 × {a} × ({q} − {k}))) ÷ (2 × {a})',
+        'The other root: the second crossing (the same point when the line only touches).',
+      ),
+      derive(
+        'y₂ = m x₂ + k',
+        'y2',
+        ['m', 'x2', 'k'],
+        '{y2} = {m} × {x2} + {k}',
+        (v) => fin(v.m! * v.x2! + v.k!),
+        '{m} × {x2} + {k}',
+        'Put x₂ into the line for its y.',
+      ),
+    ],
+    example: { a: 1, p: -2, q: -3, m: 1, k: 1, x1: -1, y1: 0, x2: 4, y2: 5 },
+    startWith: ['a', 'p', 'q', 'm', 'k'],
+    equation: 'y = {a}x² + {p}x + {q}\ny = {m}x + {k}',
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { square: 'a', slope: 'p', intercept: 'q' },
+        { slope: 'm', intercept: 'k' },
+      ],
+      solutions: [
+        { x: 'x1', y: 'y1' },
+        { x: 'x2', y: 'y2' },
+      ],
+      extent: 10,
+    },
+  }),
 ];
 
 // ── Radicals and exponents ──
@@ -4097,7 +4698,7 @@ const RADICALS: ModuleDef[] = [
     assumptions: [
       'Divide the numbers in front, and subtract the exponents of x: xᵐ ÷ xⁿ = xᵐ⁻ⁿ.',
       'A negative exponent means 1 over the power: x⁻² = 1/x².',
-      'The table checks both sides at a few values of x.',
+      'Check: the answer and the first expression agree at any x, such as x = 2.',
     ],
     variables: [
       int('a', 'a', 'Number in front, top', -50, 50),
@@ -4183,11 +4784,14 @@ const RADICALS: ModuleDef[] = [
     startWith: ['a', 'm', 'b', 'n', 'x'],
     equation: '{a}x^{m} ÷ {b}x^{n} = {c}x^{k}',
     representation: {
-      kind: 'table',
-      sweep: 'x',
-      output: 'y',
-      params: ['a', 'm', 'b', 'n'],
-      rows: [1, 2, 3],
+      kind: 'algebraTiles',
+      mode: 'monomial',
+      a: 'a',
+      m: 'm',
+      b: 'b',
+      n: 'n',
+      c: 'c',
+      k: 'k',
     },
   }),
   page({
@@ -4253,9 +4857,6 @@ const SEQUENCES: ModuleDef[] = [
       num('d', 'd', 'Common difference', -50, 50, { step: 0.5 }),
       int('n', 'n', 'Term number', 1, 1000),
       num('an', 'aₙ', 'nth term', -100000, 100000),
-      // The chart draws the first 30 terms at most; the nth is marked when it is one of them.
-      num('nc', 'n_drawn', 'Terms drawn', 1, 30, pictureOnly),
-      num('tl', 'a_drawn', 'Last term drawn', -100000, 100000, pictureOnly),
     ],
     rules: [
       rule(
@@ -4296,28 +4897,8 @@ const SEQUENCES: ModuleDef[] = [
               : undefined,
         },
       ),
-      figure(
-        derive(
-          'terms drawn = n, at most 30',
-          'nc',
-          ['n'],
-          '{nc} = {n}, at most 30',
-          (v) => Math.min(v.n!, 30),
-          '{n}',
-          'The chart draws the first 30 terms at most.',
-        ),
-      ),
-      figure(
-        rule(
-          'the nth term is drawn when n ≤ 30',
-          '{tl} = {an} when {n} ≤ 30',
-          ['tl', 'an', 'n'],
-          (v) => (v.n! > 30 ? 0 : v.tl! - v.an!),
-          { tl: [(v) => (v.n! > 30 ? undefined : v.an), '{an}', 'The nth term, marked.'] },
-        ),
-      ),
     ],
-    example: { a1: 7, d: 4, n: 20, an: 83, nc: 20, tl: 83 },
+    example: { a1: 7, d: 4, n: 100, an: 403 },
     startWith: ['n', 'a1', 'd'],
     equation: 'aₙ = {a1} + ({n} − 1){d} = {an}',
     representation: {
@@ -4325,9 +4906,10 @@ const SEQUENCES: ModuleDef[] = [
       type: 'arithmetic',
       first: 'a1',
       step: 'd',
-      count: 'nc',
+      count: 'n',
       as: 'points',
-      term: 'tl',
+      term: 'an',
+      far: true,
     },
   }),
   page({
@@ -4395,7 +4977,7 @@ const SEQUENCES: ModuleDef[] = [
     assumptions: [
       'A recursive rule gives the first term and how each term comes from the one before.',
       'Here aₙ = k × aₙ₋₁ + c: multiply the term before by k, then add c.',
-      'Work out the terms in order; the table lists the first eight.',
+      'Work out the terms in order: the chart draws each term from the one before.',
     ],
     variables: [
       num('a1', 'a₁', 'First term', -100, 100, { step: 0.5 }),
@@ -4437,11 +5019,13 @@ const SEQUENCES: ModuleDef[] = [
     example: { a1: 2, k: 3, c: -1, n: 4, an: 41 },
     startWith: ['a1', 'k', 'c', 'n'],
     representation: {
-      kind: 'table',
-      sweep: 'n',
-      output: 'an',
-      params: ['a1', 'k', 'c'],
-      rows: [1, 2, 3, 4, 5, 6, 7, 8],
+      kind: 'termsChart',
+      type: 'recursive',
+      first: 'a1',
+      step: 'k',
+      plus: 'c',
+      count: 'n',
+      term: 'an',
     },
   }),
 ];
@@ -4493,6 +5077,9 @@ const prediction = (m: string | number, b: string | number, note?: (v: Values) =
   });
 };
 
+/** Point k of the practice data (k counted from 1). */
+const pointK = (v: Values) => PRACTICE_POINTS[Math.round(v.k!) - 1];
+
 const REGRESSION: ModuleDef[] = [
   page({
     id: 'm.9.regression',
@@ -4506,22 +5093,41 @@ const REGRESSION: ModuleDef[] = [
       num('b', 'b', 'y-intercept', 0, 100, { step: 0.1 }),
       num('x', 'x', 'Practice hours', 1, 8, { step: 0.5 }),
       num('y', 'ŷ', 'Predicted points', -200, 300),
-      num('e', 'e', 'Residual of point 3, (3, 61)', -300, 300, { derived: true }),
+      int('k', 'k', 'Point number', 1, 8, { allowed: PRACTICE_POINTS.map((_, i) => i + 1) }),
+      num('e', 'e', 'Residual of point k', -300, 300, { derived: true }),
     ],
     rules: [
       prediction('m', 'b'),
       derive(
-        'e = 61 − (3m + b)',
+        'e = y_k − (m x_k + b)',
         'e',
-        ['m', 'b'],
-        '{e} = 61 − ({m} × 3 + {b})',
-        (v) => 61 - (v.m! * 3 + v.b!),
-        '61 − ({m} × 3 + {b})',
-        'Point 3 is (3, 61): its actual points minus the line’s prediction at x = 3.',
+        ['k', 'm', 'b'],
+        '{e} = y_k − ({m} × x_k + {b}) for point {k}',
+        (v) => {
+          const p = pointK(v);
+          return p ? exact(p[1] - (v.m! * p[0] + v.b!)) : undefined;
+        },
+        (v) => {
+          const p = pointK(v);
+          return p ? `${p[1]} − ({m} × ${p[0]} + {b})` : '?';
+        },
+        (v) => {
+          const p = pointK(v);
+          return p
+            ? `Point ${v.k} is (${p[0]}, ${p[1]}): its actual points minus the line’s prediction at x = ${p[0]}.`
+            : 'Pick a point from 1 to 8.';
+        },
+        {},
+        {
+          check: (v) => {
+            const p = pointK(v)!;
+            return `${fmt(v.e!)} = ${p[1]} − (${fmt(v.m!)} × ${p[0]} + ${fmt(v.b!)})`;
+          },
+        },
       ),
     ],
-    example: { m: 5, b: 47, x: 4.5, y: 69.5, e: -1 },
-    startWith: ['x', 'm', 'b'],
+    example: { m: 5, b: 47, x: 4.5, y: 69.5, k: 3, e: -1 },
+    startWith: ['x', 'm', 'b', 'k'],
     representation: {
       kind: 'scatter',
       x: { label: 'Practice hours', min: 0, max: 9 },
@@ -4531,7 +5137,7 @@ const REGRESSION: ModuleDef[] = [
       intercept: 'b',
       at: { x: 'x', y: 'y' },
       residuals: 'plot',
-      residualOf: { point: 2, residual: 'e' },
+      residualOf: { point: 'k', residual: 'e' },
     },
   }),
   page({
@@ -5549,6 +6155,59 @@ const PIECEWISE_FUNCTIONS: ModuleDef[] = [
       marks: ['vertex', 'zeros'],
     },
   }),
+  page({
+    id: 'm.9.piecewise-functions~absolute-of-function',
+    title: 'Graph of |f(x)|',
+    use: 'Use this for “Graph y = |x² − 2x − 3|” from the graph of f.',
+    assumptions: [
+      '|f(x)| is f(x) where f(x) ≥ 0 and −f(x) where f(x) < 0.',
+      'So the parts of the graph below the x-axis flip up over it; the rest stays.',
+      'The zeros of f stay put: there the graph touches the x-axis and turns sharply.',
+    ],
+    variables: [
+      num('a', 'a', 'x² coefficient', -5, 5, { step: 0.5 }),
+      num('b', 'b', 'x coefficient', -20, 20, { step: 0.5 }),
+      num('c', 'c', 'Number term', -50, 50, { step: 0.5 }),
+      num('x', 'x', 'Input', -20, 20, { step: 0.5 }),
+      num('u', 'u', 'f(x) before the bars', -5000, 5000, { derived: true }),
+      num('y', 'y', 'Output |f(x)|', 0, 5000, { derived: true }),
+    ],
+    rules: [
+      nonzero('a', 'The x² coefficient'),
+      derive(
+        'u = ax² + bx + c',
+        'u',
+        ['a', 'b', 'c', 'x'],
+        '{u} = {a} × {x}² + {b} × {x} + {c}',
+        (v) => exact(v.a! * v.x! ** 2 + v.b! * v.x! + v.c!),
+        '{a} × {x}² + {b} × {x} + {c}',
+        'Put x into f first.',
+      ),
+      derive(
+        'y = |u|',
+        'y',
+        ['u'],
+        '{y} = |{u}|',
+        (v) => exact(Math.abs(v.u!)),
+        '|{u}|',
+        'Then take its absolute value: a negative f(x) turns positive.',
+      ),
+    ],
+    example: { a: 1, b: -2, c: -3, x: 1, u: -4, y: 4 },
+    startWith: ['a', 'b', 'c', 'x'],
+    equation: 'y = |{a}x² + {b}x + {c}|',
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 'a',
+      b: 'b',
+      c: 'c',
+      abs: true,
+      at: { x: 'x', y: 'y' },
+      marks: ['zeros'],
+    },
+  }),
 ];
 
 // ── Units, accuracy and precision (N-Q.1–3) ──
@@ -5828,7 +6487,14 @@ const UNITS_PRECISION: ModuleDef[] = [
     ],
     example: { l: 8, w: 5, u: 1, e: 0.5, A: 40, lo: 33.75, hi: 46.75, plo: 24, phi: 28 },
     startWith: ['u', 'l', 'w'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 10 },
+    representation: {
+      kind: 'rectangle',
+      length: 'l',
+      width: 'w',
+      inside: 'A',
+      extent: 10,
+      bounds: { error: 'e', least: 'lo', greatest: 'hi' },
+    },
   }),
   page({
     id: 'm.9.units-precision~significant-figures',

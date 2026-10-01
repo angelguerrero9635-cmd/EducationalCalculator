@@ -1074,50 +1074,58 @@ const CONDITIONAL: ModuleDef[] = [
   }),
   page({
     id: 'm.10.conditional-probability~independent',
-    title: 'Independent events',
-    use: 'Use this for “A and B are independent, P(A) = 0.6 and P(B) = 0.3. Find P(A and B) and P(A or B).”',
+    title: 'Independent events: three stages',
+    use: 'Use this for “Three trains are on time with chances 0.9, 0.8 and 0.7. What is the chance all three are? That at least one is late?”',
     assumptions: [
-      'A and B are independent: P(B | A) is the same as P(B), on every first branch.',
-      'So P(A and B) = P(A) × P(B).',
-      'The addition rule then gives P(A or B) = P(A) + P(B) − P(A and B).',
+      'Each train is on time or late, whatever the others do: the stages are independent.',
+      'Along one path, multiply the chances: P(A and B and C) = P(A) × P(B) × P(C).',
+      'At least one late is every other path: 1 − P(all on time).',
     ],
     variables: [
-      chance('a', 'P(A)', 'P(A)'),
-      chance('b', 'P(B)', 'P(B)'),
-      chanceOut('j', 'P(A and B)', 'P(A and B)'),
-      chanceOut('o', 'P(A or B)', 'P(A or B)'),
+      chance('a', 'P(A)', 'First on time'),
+      chance('b', 'P(B)', 'Second on time'),
+      chance('c', 'P(C)', 'Third on time'),
+      chanceOut('j', 'P(all)', 'All three on time'),
+      chanceOut('m', 'P(some late)', 'At least one late'),
     ],
     rules: [
       derive(
-        'P(A and B) = P(A) × P(B)',
-        '{j} = {a} × {b}',
+        'P(all) = P(A) × P(B) × P(C)',
+        '{j} = {a} × {b} × {c}',
         'j',
-        (v) => v.a! * v.b!,
-        '{a} × {b}',
-        'Independent: multiply the two chances.',
+        (v) => v.a! * v.b! * v.c!,
+        '{a} × {b} × {c}',
+        'Independent stages: multiply along the path.',
       ),
       derive(
-        'P(A or B) = P(A) + P(B) − P(A and B)',
-        '{o} = {a} + {b} − {j}',
-        'o',
-        (v) => v.a! + v.b! - v.j!,
-        '{a} + {b} − {j}',
-        'Add the two, then take off the overlap counted twice.',
+        'P(some late) = 1 − P(all)',
+        '{m} = 1 − {j}',
+        'm',
+        (v) => 1 - v.j!,
+        '1 − {j}',
+        'Every path but the all-on-time one.',
       ),
     ],
-    example: { a: 0.6, b: 0.3, j: 0.18, o: 0.72 },
-    startWith: ['a', 'b'],
+    example: { a: 0.9, b: 0.8, c: 0.7, j: 0.504, m: 0.496 },
+    startWith: ['a', 'b', 'c'],
     representation: {
       kind: 'treeDiagram',
       chances: {
         first: ['a'],
         second: [['b'], ['b']],
-        names: [
-          ['A', 'Not A'],
-          ['B', 'Not B'],
+        third: [
+          [['c'], ['c']],
+          [['c'], ['c']],
         ],
-        stages: ['First event', 'Second event'],
+        names: [
+          ['On time', 'Late'],
+          ['On time', 'Late'],
+        ],
+        thirdNames: ['On time', 'Late'],
+        stages: ['First', 'Second'],
+        thirdStage: 'Third',
         path: [0, 0],
+        path3: 0,
         chance: 'j',
       },
     },
@@ -1192,29 +1200,51 @@ const CONDITIONAL: ModuleDef[] = [
   page({
     id: 'm.10.conditional-probability~venn',
     title: 'Conditional probability on a Venn diagram',
-    use: 'Use this for “P(A) = 0.5, P(B) = 0.4 and P(A and B) = 0.15. Find P(B | A). Are A and B independent?”',
+    use: 'Use this for “Of 60 students, 25 drink juice, 30 milk and 10 both. What fraction of the juice drinkers drink milk?”',
     assumptions: [
-      'Given A, only the A circle counts: P(B | A) = P(A and B) ÷ P(A).',
-      'A and B are independent only when P(B | A) = P(B).',
-      'Compare P(B | A) with P(B): equal means independent; different means knowing A changes the chance of B.',
+      'Given A, only the A circle counts: P(B | A) is the overlap out of everyone in A, both ÷ a.',
+      'P(A | B) looks inside circle B instead: both ÷ b. The order of the events matters.',
+      'A and B are independent only when P(B | A) = P(B) = b ÷ the total.',
     ],
     variables: [
-      chance('a', 'P(A)', 'P(A)'),
-      chance('b', 'P(B)', 'P(B)'),
-      chance('ab', 'P(A ∩ B)', 'P(A and B)'),
-      chanceOut('c', 'P(B | A)', 'P(B | A)'),
-      chanceOut('d', 'P(A | B)', 'P(A | B)'),
+      count('a', 'Drink juice (A)'),
+      count('b', 'Drink milk (B)'),
+      count('ab', 'Drink both'),
+      count('N', 'Students in all'),
+      chanceFrac('j', 'P(A ∩ B)', 'P(A and B)'),
+      chanceFrac('c', 'P(B | A)', 'P(B | A)'),
+      chanceFrac('d', 'P(A | B)', 'P(A | B)'),
     ],
     rules: [
-      ...vennFits,
-      share('c', 'ab', 'a', 'Only the A circle counts: the overlap’s share of A.'),
-      share('d', 'ab', 'b', 'Only the B circle counts: the overlap’s share of B.'),
+      limit(
+        'both ≤ A, B',
+        '{ab} is at most {a} and {b}',
+        (v) => v.ab! <= Math.min(v.a!, v.b!),
+        'The overlap is part of both circles: it can’t be bigger than either.',
+      ),
+      limit(
+        'A or B ≤ total',
+        '{a} + {b} − {ab} is at most {N}',
+        (v) => v.a! + v.b! - v.ab! <= v.N!,
+        'The circles hold more people than there are in all.',
+      ),
+      share('j', 'ab', 'N', 'The overlap out of everyone.'),
+      share('c', 'ab', 'a', 'Given A: only the people in A count, and ab of them are in B.'),
+      share('d', 'ab', 'b', 'Given B: only the people in B count, and ab of them are in A.'),
     ],
-    example: { a: 0.5, b: 0.4, ab: 0.15, c: 0.3, d: 0.375 },
-    startWith: ['a', 'b', 'ab'],
+    example: { a: 25, b: 30, ab: 10, N: 60, j: 1 / 6, c: 0.4, d: 1 / 3 },
+    startWith: ['a', 'b', 'ab', 'N'],
     representation: {
       kind: 'venn',
-      chances: { a: 'a', b: 'b', both: 'ab', names: ['A', 'B'], shade: 'and' },
+      chances: {
+        a: 'a',
+        b: 'b',
+        both: 'ab',
+        names: ['Juice', 'Milk'],
+        shade: 'and',
+        result: 'j',
+        counts: { total: 'N' },
+      },
     },
   }),
 ];
@@ -1310,6 +1340,7 @@ const COORDINATES: ModuleDef[] = [
       legs: true,
       distance: 'd',
       extent: 20,
+      fit: true,
       quadrants: 4,
     },
   }),
@@ -1345,6 +1376,7 @@ const COORDINATES: ModuleDef[] = [
       segment: true,
       midpoint: { x: 'mx', y: 'my' },
       extent: 20,
+      fit: true,
       quadrants: 4,
     },
   }),
@@ -1399,6 +1431,7 @@ const COORDINATES: ModuleDef[] = [
       segment: true,
       partition: { ratio: ['m', 'n'], x: 'px', y: 'py' },
       extent: 20,
+      fit: true,
       quadrants: 4,
     },
   }),
@@ -1451,6 +1484,7 @@ const COORDINATES: ModuleDef[] = [
       ],
       slopes: true,
       extent: 20,
+      fit: true,
       quadrants: 4,
     },
   }),
@@ -1527,6 +1561,7 @@ const COORDINATES: ModuleDef[] = [
       ],
       slopes: true,
       extent: 20,
+      fit: true,
       quadrants: 4,
     },
   }),
@@ -1579,6 +1614,7 @@ const COORDINATES: ModuleDef[] = [
         ['cx', 'cy'],
       ],
       extent: 20,
+      fit: true,
       quadrants: 4,
     },
   }),
@@ -2350,6 +2386,15 @@ function canRows(v: Values): number[] {
   return Array.from({ length: 7 }, (_, i) => exact((first + i) * step)!);
 }
 
+/** Seven pen lengths in 1-2-5 steps up to half the fence (the square's side among them). */
+function fenceRows(v: Values): number[] {
+  const P = v.P !== undefined && v.P > 0 ? v.P : 40;
+  const raw = P / 16;
+  const p = 10 ** Math.floor(Math.log10(raw));
+  const step = [5, 2, 1].map((k) => k * p).find((t) => t <= raw * 1.01)!;
+  return Array.from({ length: 7 }, (_, i) => exact((i + 1) * step)!).filter((x) => x < P / 2);
+}
+
 const MODELING: ModuleDef[] = [
   page({
     id: 'm.10.modeling-density',
@@ -2530,8 +2575,13 @@ const MODELING: ModuleDef[] = [
     example: { r: 3, A: 9 * Math.PI, N: 45000, D: 5000 / Math.PI },
     startWith: ['r', 'N'],
     unitSystems: ['metric'],
-    pictureLabels: ['N', 'D'],
-    representation: { kind: 'circle', radius: 'r', area: 'A', extent: 4 },
+    representation: {
+      kind: 'circle',
+      radius: 'r',
+      area: 'A',
+      extent: 4,
+      population: { people: 'N', density: 'D' },
+    },
   }),
   page({
     id: 'm.10.modeling-density~can-design',
@@ -2539,18 +2589,16 @@ const MODELING: ModuleDef[] = [
     use: 'Use this for “A can must hold 500 cm³. Which radius uses the least metal?”',
     assumptions: [
       'The can is a closed cylinder: V = πr²h, and its metal is the surface S = 2πr² + 2πrh.',
-      'Hold V and try radii: the table shows S dip and then rise again.',
+      'Hold V and try radii: the table and its graph show S dip and then rise again.',
       'The least metal comes when the height equals the diameter, h = 2r, so V = 2πr³.',
     ],
     variables: [
-      num('V', 'V', 'Volume', 1, 100000, { unit: 'cm³', units: ['cm³'] }),
-      len('r', 'r', 'Radius', 1000, { unit: 'cm', units: ['cm'] }),
-      len('h', 'h', 'Height', 10000, { unit: 'cm', units: ['cm'] }),
-      num('S', 'S', 'Surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] }),
-      der(
-        num('rb', 'r_best', 'Radius with the least metal', 0, 1000, { unit: 'cm', units: ['cm'] }),
-      ),
-      der(num('Smin', 'S_min', 'Least surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] })),
+      num('V', 'V', 'Volume', 1, 100000, { unit: 'cm³' }),
+      len('r', 'r', 'Radius', 1000, { unit: 'cm' }),
+      len('h', 'h', 'Height', 10000, { unit: 'cm' }),
+      num('S', 'S', 'Surface area', 0, 1e9, { unit: 'cm²' }),
+      der(num('rb', 'r_best', 'Radius with the least metal', 0, 1000, { unit: 'cm' })),
+      der(num('Smin', 'S_min', 'Least surface area', 0, 1e9, { unit: 'cm²' })),
     ],
     rules: [
       cylinderVolume,
@@ -2614,8 +2662,15 @@ const MODELING: ModuleDef[] = [
       Smin: 2 * Math.PI * bestRadius(500) ** 2 + 1000 / bestRadius(500),
     },
     startWith: ['V', 'r'],
-    unitSystems: ['metric'],
-    representation: { kind: 'table', sweep: 'r', output: 'S', params: ['V'], rows: canRows },
+    representation: {
+      kind: 'table',
+      sweep: 'r',
+      output: 'S',
+      params: ['V'],
+      rows: canRows,
+      graph: { best: 'min' },
+      rowsFrom: 'shown',
+    },
   }),
   page({
     id: 'm.10.modeling-density~fence',
@@ -2701,17 +2756,57 @@ const MODELING: ModuleDef[] = [
     startWith: ['P', 'x'],
     unitSystems: ['metric'],
     representation: {
-      kind: 'rectangle',
-      length: 'x',
-      width: 'y',
-      around: 'P',
-      inside: 'A',
-      extent: 20,
+      kind: 'table',
+      sweep: 'x',
+      output: 'A',
+      params: ['P'],
+      rows: fenceRows,
+      graph: { best: 'max' },
+      rowsFrom: 'shown',
     },
   }),
 ];
 
 // ─── m.10.circle-theorems ────────────────────────────────────────────────────
+
+/**
+ * x = (p ± q) ÷ 2, the sign from the + − box o (1 +, 2 −). 3 − 2o is 1 for + and −1 for −: a
+ * product, so the solver never reads the relation as a straight-line sum while o is still open.
+ */
+const arcSign = (v: Values) => 3 - 2 * v.o!;
+const arcOp = (v: Values) => (v.o === 2 ? '−' : '+');
+const arcAngleRule: Rule = {
+  relation: {
+    id: 'x = (p ± q)/2',
+    display: '{x} = ({p} + (3 − 2 × {o}) × {q}) ÷ 2',
+    vars: ['x', 'p', 'q', 'o'],
+    residual: (v) => 2 * v.x! - (v.p! + arcSign(v) * v.q!),
+    solve: {
+      x: (v) => (v.p! + arcSign(v) * v.q!) / 2,
+      p: (v) => 2 * v.x! - arcSign(v) * v.q!,
+      q: (v) => arcSign(v) * (2 * v.x! - v.p!),
+      // The + − box is typed, never worked out.
+      o: () => undefined,
+    },
+  },
+  steps: {
+    x: {
+      expr: (v: Values) => `({p} ${arcOp(v)} {q}) ÷ 2`,
+      how: (v: Values) =>
+        v.o === 2
+          ? 'Outside the circle: half the far arc minus the near arc.'
+          : 'Inside the circle: half the sum of the two arcs.',
+    },
+    p: {
+      expr: (v: Values) => (v.o === 2 ? '2 × {x} + {q}' : '2 × {x} − {q}'),
+      how: 'Double the angle, then undo the other arc.',
+    },
+    q: {
+      expr: (v: Values) => (v.o === 2 ? '{p} − 2 × {x}' : '2 × {x} − {p}'),
+      how: 'Double the angle, then undo the first arc.',
+    },
+  },
+};
 
 const CIRCLE_THEOREMS: ModuleDef[] = [
   page({
@@ -2908,6 +3003,72 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
     example: { t: 8, a: 4, b: 16 },
     startWith: ['a', 'b'],
     representation: { kind: 'circleTheorems', theorem: 'secantTangent', segments: ['t', 'a', 'b'] },
+  }),
+  page({
+    id: 'm.10.circle-theorems~cyclic-quadrilateral',
+    title: 'Opposite angles of an inscribed quadrilateral',
+    use: 'Use this for “ABCD is inscribed in a circle and m∠A = 84°. Find m∠C.”',
+    assumptions: [
+      'ABCD is inscribed: all four corners are on the circle.',
+      'Each angle is half the arc across from it; the arcs across from A and from C make the whole circle.',
+      'So opposite angles add to 180°: m∠A + m∠C = 180° and m∠B + m∠D = 180°.',
+    ],
+    variables: [deg('a', 'm∠A', 'm∠A'), deg('c', 'm∠C', 'm∠C')],
+    rules: [
+      rule(
+        'A + C = 180',
+        '{a} + {c} = 180',
+        {
+          c: [
+            (v) => 180 - v.a!,
+            '180 − {a}',
+            'Opposite angles of an inscribed quadrilateral add to 180°.',
+          ],
+          a: [
+            (v) => 180 - v.c!,
+            '180 − {c}',
+            'Opposite angles of an inscribed quadrilateral add to 180°.',
+          ],
+        },
+        (v) => v.a! + v.c! - 180,
+      ),
+    ],
+    example: { a: 84, c: 96 },
+    startWith: ['a'],
+    representation: {
+      kind: 'circleTheorems',
+      theorem: 'cyclic',
+      cyclic: { A: 'a', C: 'c' },
+    },
+  }),
+  page({
+    id: 'm.10.circle-theorems~chord-angle',
+    title: 'Angles from arcs',
+    use: 'Use this for “Two chords cross inside a circle, cutting off arcs of 70° and 110°. Find the angle.”',
+    assumptions: [
+      'Two chords crossing inside the circle (+): the angle is half the sum of its arc and its vertical angle’s arc.',
+      'Two secants meeting outside (−): the angle is half the far arc minus the near arc.',
+      'p is arc AC inside, or the far arc outside; q is the other arc.',
+    ],
+    variables: [
+      deg('p', 'p', 'First arc (far arc outside)', 0.1, 359.9),
+      deg('q', 'q', 'Second arc (near arc outside)', 0.1, 359.9),
+      num('o', 'o', 'Inside (1, +) or outside (2, −)', 1, 2, {
+        allowed: [1, 2],
+        integer: true,
+        step: 1,
+      }),
+      deg('x', 'x', 'The angle'),
+    ],
+    rules: [arcAngleRule],
+    example: { p: 70, q: 110, o: 1, x: 90 },
+    startWith: ['p', 'o', 'q'],
+    equation: '{x}° = ({p}° {o:op} {q}°) ÷ 2',
+    representation: {
+      kind: 'circleTheorems',
+      theorem: 'arcAngle',
+      arcAngle: { arcs: ['p', 'q'], angle: 'x', where: 'o' },
+    },
   }),
 ];
 
@@ -3683,7 +3844,7 @@ const PROBABILITY_RULES: ModuleDef[] = [
     example: { a: 0.25, b: 0.4, s: 0.65 },
     exclusive: true,
   }),
-  vennPage({
+  page({
     id: 'm.10.probability-rules~complement',
     title: 'The complement rule',
     use: 'Use this for “The chance of rain is 0.35. What is the chance of no rain?”',
@@ -3692,45 +3853,109 @@ const PROBABILITY_RULES: ModuleDef[] = [
       'A and not A together fill the rectangle, whose probability is 1.',
       'So P(not A) = 1 − P(A).',
     ],
-    names: ['Rain', 'Wind'],
-    shade: 'notA',
-    result: {
-      symbol: 'P(not Rain)',
-      name: 'P(not Rain)',
-      display: '{s} = 1 − {a}',
-      fn: (v) => 1 - v.a!,
-      how: 'Everything outside Rain: take P(Rain) from 1.',
+    variables: [chance('a', 'P(Rain)', 'P(Rain)'), chanceOut('s', 'P(not Rain)', 'P(not Rain)')],
+    rules: [
+      rule(
+        'P(not A) = 1 − P(A)',
+        '{s} = 1 − {a}',
+        {
+          s: [(v) => 1 - v.a!, '1 − {a}', 'Everything outside Rain: take P(Rain) from 1.'],
+          a: [
+            (v) => 1 - v.s!,
+            '1 − {s}',
+            'Rain and not Rain fill the rectangle: take P(not Rain) from 1.',
+          ],
+        },
+        (v) => v.s! + v.a! - 1,
+      ),
+    ],
+    example: { a: 0.35, s: 0.65 },
+    startWith: ['a'],
+    representation: {
+      kind: 'venn',
+      chances: {
+        a: 'a',
+        b: 0,
+        both: 0,
+        names: ['Rain', 'Wind'],
+        shade: 'notA',
+        result: 's',
+        one: true,
+      },
     },
-    example: { a: 0.35, b: 0.4, ab: 0.2, s: 0.65 },
   }),
-  vennPage({
+  page({
     id: 'm.10.probability-rules~neither',
     title: 'Neither event',
-    use: 'Use this for “P(band) = 0.45, P(sport) = 0.30, P(both) = 0.12. What is the chance of neither?”',
+    use: 'Use this for “Of 40 students, 22 play soccer, 15 basketball and 8 both. How many play neither, and what is the chance of neither?”',
     assumptions: [
-      'Outside both circles is neither A nor B.',
-      'First find P(A or B) by the addition rule.',
-      'Then the rest of the rectangle is 1 − P(A or B).',
+      'Each circle counts the people in it; the overlap counts those in both.',
+      'Soccer or basketball counts the overlap once: a + b − both.',
+      'Neither is everyone else in the rectangle: the total minus that.',
     ],
-    names: ['Band', 'Sport'],
-    shade: 'neither',
-    result: {
-      symbol: 'P(neither)',
-      name: 'P(neither)',
-      display: '{s} = 1 − ({a} + {b} − {ab})',
-      fn: (v) => 1 - (v.a! + v.b! - v.ab!),
-      how: 'Everything outside the union: take P(A or B) from 1.',
+    variables: [
+      count('a', 'In Soccer'),
+      count('b', 'In Basketball'),
+      count('ab', 'In both'),
+      count('N', 'In all'),
+      der(count('u', 'In Soccer or Basketball', 2000)),
+      der(count('s', 'In neither')),
+      der(num('P', 'P(neither)', 'P(neither)', 0, 1, { fraction: 1000 })),
+    ],
+    rules: [
+      limit(
+        'both ≤ A, B',
+        '{ab} is at most {a} and {b}',
+        (v) => v.ab! <= Math.min(v.a!, v.b!),
+        'The overlap is part of both circles: it can’t be bigger than either.',
+      ),
+      limit(
+        'A or B ≤ total',
+        '{a} + {b} − {ab} is at most {N}',
+        (v) => v.a! + v.b! - v.ab! <= v.N!,
+        'The circles hold more people than there are in all.',
+      ),
+      derive(
+        'u = a + b − ab',
+        '{u} = {a} + {b} − {ab}',
+        'u',
+        (v) => v.a! + v.b! - v.ab!,
+        '{a} + {b} − {ab}',
+        'Add the two circles, then take off the overlap counted twice.',
+      ),
+      derive(
+        's = N − u',
+        '{s} = {N} − {u}',
+        's',
+        (v) => v.N! - v.u!,
+        '{N} − {u}',
+        'Everyone not in either circle.',
+      ),
+      share('P', 's', 'N', 'The count in neither over everyone.'),
+    ],
+    example: { a: 22, b: 15, ab: 8, N: 40, u: 29, s: 11, P: 0.275 },
+    startWith: ['a', 'b', 'ab', 'N'],
+    representation: {
+      kind: 'venn',
+      chances: {
+        a: 'a',
+        b: 'b',
+        both: 'ab',
+        names: ['Soccer', 'Basketball'],
+        shade: 'neither',
+        result: 'P',
+        counts: { total: 'N', count: 's' },
+      },
     },
-    example: { a: 0.45, b: 0.3, ab: 0.12, s: 0.37 },
   }),
   page({
     id: 'm.10.probability-rules~sample-space',
     title: 'Listing equally likely outcomes',
-    use: 'Use this for “Three coins are tossed. What is the chance of exactly two heads?” (code heads as 1, tails as 2).',
+    use: 'Use this for “Three coins are tossed. What is the chance of exactly two heads?”',
     assumptions: [
       'A tree lists every outcome: each branch splits into every outcome of the next stage.',
       'When every path is equally likely, P(event) = favorable outcomes ÷ all outcomes.',
-      'Code heads as 1 and tails as 2 for three coins: 1-1-2, 1-2-1 and 2-1-1 are exactly two heads, 3 of 8.',
+      'A stage of 2 is a coin (H, T), of 3 a spinner (R, G, B), of 4 a four-sided die (1 to 4).',
     ],
     variables: [
       num('a', 'a', 'First-stage outcomes', 2, 4, { step: 1, integer: true }),
@@ -3765,11 +3990,7 @@ const PROBABILITY_RULES: ModuleDef[] = [
       second: 'b',
       third: 'c',
       total: 'n',
-      names: [
-        ['1', '2', '3', '4'],
-        ['1', '2', '3', '4'],
-        ['1', '2', '3', '4'],
-      ],
+      namesBySize: { 2: ['H', 'T'], 3: ['R', 'G', 'B'], 4: ['1', '2', '3', '4'] },
       stages: ['First', 'Second', 'Third'],
       path: [0, 0, 1],
     },
@@ -4002,15 +4223,31 @@ const CONSTRUCTIONS: ModuleDef[] = [
       'A bisector cuts the angle into two equal halves: then m∠AOB = m∠BOC.',
     ],
     variables: [
-      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 179.9),
-      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 179.9),
+      deg('a', 'm∠AOB', 'm∠AOB', 0.1, 179),
+      deg('b', 'm∠BOC', 'm∠BOC', 0.1, 179),
       deg('c', 'm∠AOC', 'm∠AOC', 0.2, 180),
     ],
     rules: [sum('c', 'a', 'b', 'The two angles side by side add to the whole angle.')],
     example: { a: 38, b: 47, c: 85 },
     startWith: ['a', 'b'],
     equation: '{a}° + {b}° = {c}°',
-    representation: { kind: 'angles', parts: ['a', 'b'], whole: 'c' },
+    representation: {
+      kind: 'markedFigure',
+      points: {
+        O: [0, 0],
+        A: { from: 'O', angle: 0 },
+        B: { from: 'O', angle: 'a' },
+        C: { from: 'O', angle: 'c' },
+      },
+      parts: [
+        { ray: 'OA' },
+        { ray: 'OB' },
+        { ray: 'OC' },
+        { label: 'AOB', value: 'a' },
+        { label: 'BOC', value: 'b' },
+        { label: 'AOC', value: 'c', inCaption: true },
+      ],
+    },
   }),
   page({
     id: 'm.10.constructions~perpendicular-bisector',
@@ -4110,7 +4347,25 @@ const PROOFS: ModuleDef[] = [
     ],
     example: { a: 52, b: 71, c: 57, d: 123 },
     startWith: ['a', 'b'],
-    representation: { kind: 'angles', parts: ['a', 'b'], whole: 'd', triangle: { third: 'c' } },
+    representation: {
+      kind: 'markedFigure',
+      points: {
+        B: [0, 0],
+        C: [9, 0],
+        D: [12, 0],
+        A: { from: 'B', angle: 'b', meets: { from: 'C', angle: 'd' } },
+      },
+      parts: [
+        { segment: 'AB' },
+        { segment: 'BC' },
+        { segment: 'CA' },
+        { segment: 'CD', dashed: true },
+        { label: 'BAC', value: 'a' },
+        { label: 'ABC', value: 'b' },
+        { label: 'ACB', value: 'c' },
+        { label: 'ACD', value: 'd' },
+      ],
+    },
   }),
   // Figure-only values (the drawing's BD, AD and BC) stay out of the steps: sine comes later.
   page({
@@ -4425,6 +4680,8 @@ const PARALLEL_LINES: ModuleDef[] = [
       extent: 20,
       quadrants: 4,
       fixed: true,
+      marks: true,
+      given: { x: 'x0', y: 'y0' },
     },
   }),
   page({
@@ -4484,6 +4741,8 @@ const PARALLEL_LINES: ModuleDef[] = [
       extent: 20,
       quadrants: 4,
       fixed: true,
+      marks: true,
+      given: { x: 'x0', y: 'y0' },
     },
   }),
 ];
@@ -4503,6 +4762,28 @@ const carry = (to: string, from: string, how: string, sign = 1) =>
       [from]: [(v) => sign * v[to]!, sign === 1 ? `{${to}}` : `−{${to}}`, how],
     },
     (v) => v[to]! - sign * v[from]!,
+  );
+/** x′ = s × (the other coordinate): s = 1 swaps them, s = −1 swaps them and changes both signs. */
+const swapBy = (to: string, from: string, name: string) =>
+  rule(
+    `${to} = s × ${from}`,
+    `{${to}} = {s} × {${from}}`,
+    {
+      [to]: [
+        (v) => v.s! * v[from]!,
+        `{s} × {${from}}`,
+        (v: Values) =>
+          v.s === 1
+            ? `Across y = x, the new ${name} is the old ${name === 'x' ? 'y' : 'x'}.`
+            : `Across y = −x, the new ${name} is the old ${name === 'x' ? 'y' : 'x'} with its sign changed.`,
+      ],
+      [from]: [
+        (v) => v.s! * v[to]!,
+        `{s} × {${to}}`,
+        'Undo the swap: s × s = 1, so multiply the image’s coordinate by s.',
+      ],
+    },
+    (v) => v[to]! - v.s! * v[from]!,
   );
 const RIGID_MOTIONS: ModuleDef[] = [
   page({
@@ -4676,26 +4957,27 @@ const RIGID_MOTIONS: ModuleDef[] = [
   }),
   page({
     id: 'm.10.rigid-motions~reflect-line',
-    title: 'Reflecting across y = −x',
-    use: 'Use this for “Reflect A(4, 1) across the line y = −x.”',
+    title: 'Reflecting across y = x or y = −x',
+    use: 'Use this for “Reflect A(4, 1) across the line y = x” or “across y = −x.”',
     assumptions: [
-      'Across y = −x the coordinates swap and both signs change: (x, y) → (−y, −x).',
-      'Across y = x they only swap: (x, y) → (y, x).',
+      'Across y = x the coordinates swap: (x, y) → (y, x).',
+      'Across y = −x they swap and both signs change: (x, y) → (−y, −x).',
       'Each point and its image are the same distance from the line, on a segment at right angles to it.',
     ],
-    standalone: { vars: ['ay', 'px'], why: 'The new x comes from the old y alone.' },
     variables: [
       grid('ax', 'x', 'x of A', 6),
       grid('ay', 'y', 'y of A', 6),
+      num('s', 's', 'Mirror y = sx: 1 for y = x, −1 for y = −x', -1, 1, {
+        step: 1,
+        integer: true,
+        allowed: [-1, 1],
+      }),
       grid('px', 'x′', 'x of A′', 6),
       grid('py', 'y′', 'y of A′', 6),
     ],
-    rules: [
-      carry('px', 'ay', 'Across y = −x, the new x is the old y with its sign changed.', -1),
-      carry('py', 'ax', 'Across y = −x, the new y is the old x with its sign changed.', -1),
-    ],
-    example: { ax: 4, ay: 1, px: -1, py: -4 },
-    startWith: ['ax', 'ay'],
+    rules: [swapBy('px', 'ay', 'x'), swapBy('py', 'ax', 'y')],
+    example: { ax: 4, ay: 1, s: -1, px: -1, py: -4 },
+    startWith: ['ax', 'ay', 's'],
     representation: {
       kind: 'transformation',
       figure: [
@@ -4705,6 +4987,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
       ],
       move: 'reflect',
       mirror: 'y = −x',
+      slope: 's',
       image: { x: 'px', y: 'py' },
       extent: 6,
     },
@@ -4722,15 +5005,13 @@ const RIGID_MOTIONS: ModuleDef[] = [
       num('w', 'w', 'Width', 1, 8, { step: 1, integer: true }),
       num('h', 'h', 'Height', 1, 8, { step: 1, integer: true }),
       num('t', 't', 'Turn', 90, 360, { unit: '°', allowed: [90, 180, 270, 360] }),
-      // The drawing's corners and center only place the rectangle on the grid.
+      // The drawing's corners only place the rectangle on the grid.
       {
         ...num('r', 'r', 'Right side at x =', 2, 9, { integer: true }),
         derived: true,
         hidden: true,
       },
       { ...num('u', 'u', 'Top side at y =', 2, 9, { integer: true }), derived: true, hidden: true },
-      { ...num('a', 'a', 'x of the center', 1.5, 5), derived: true, hidden: true },
-      { ...num('b', 'b', 'y of the center', 1.5, 5), derived: true, hidden: true },
       der(num('L', 'L', 'Lines of symmetry', 2, 4, { integer: true })),
       der(num('n', 'n', 'Order of rotational symmetry', 2, 4, { integer: true })),
       der(num('f', 'f', 'Carried onto itself (1 yes, 0 no)', 0, 1, { integer: true })),
@@ -4742,20 +5023,6 @@ const RIGID_MOTIONS: ModuleDef[] = [
       rule('u = 1 + h', '{u} = 1 + {h}', { u: [(v) => 1 + v.h!, '', ''] }, (v) => v.u! - 1 - v.h!, {
         hidden: true,
       }),
-      rule(
-        'a = (1 + r)/2',
-        '{a} = (1 + {r}) ÷ 2',
-        { a: [(v) => (1 + v.r!) / 2, '', ''] },
-        (v) => v.a! - (1 + v.r!) / 2,
-        { hidden: true },
-      ),
-      rule(
-        'b = (1 + u)/2',
-        '{b} = (1 + {u}) ÷ 2',
-        { b: [(v) => (1 + v.u!) / 2, '', ''] },
-        (v) => v.b! - (1 + v.u!) / 2,
-        { hidden: true },
-      ),
       pick(
         'L from w and h',
         '{L} lines when the sides are {w} and {h}',
@@ -4791,7 +5058,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
         return r;
       })(),
     ],
-    example: { w: 6, h: 4, t: 180, r: 7, u: 5, a: 4, b: 3, L: 2, n: 2, f: 1 },
+    example: { w: 6, h: 4, t: 180, r: 7, u: 5, L: 2, n: 2, f: 1 },
     startWith: ['w', 'h', 't'],
     representation: {
       kind: 'transformation',
@@ -4803,7 +5070,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
       ],
       move: 'rotate',
       angle: 't',
-      center: ['a', 'b'],
+      about: 'center',
       symmetry: true,
       extent: 10,
       quadrants: 1,
@@ -5100,6 +5367,65 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
 
 const QUADRILATERALS: ModuleDef[] = [
   page({
+    id: 'm.10.quadrilaterals',
+    assumptions: [
+      'The diagonals from one corner cut a convex polygon with n sides into n − 2 triangles.',
+      'Each triangle’s angles add to 180°, so the interior angles add to (n − 2) × 180°.',
+      'A regular polygon’s angles are equal: each is the sum ÷ n. Its exterior angles add to 360°, so each is 360° ÷ n.',
+    ],
+    variables: [
+      num('n', 'n', 'Number of sides', 3, 30, { step: 1, integer: true }),
+      num('S', 'S', 'Sum of the interior angles', 180, 5040, { unit: '°', step: 1 }),
+      deg('e', 'e', 'Each interior angle', 60, 168),
+      deg('x', 'x', 'Each exterior angle', 12, 120),
+    ],
+    rules: [
+      rule(
+        'S = (n − 2) × 180',
+        '{S} = ({n} − 2) × 180',
+        {
+          S: [
+            (v) => (v.n! - 2) * 180,
+            '({n} − 2) × 180',
+            'The n − 2 triangles from one corner each add 180°.',
+          ],
+          n: [(v) => v.S! / 180 + 2, '{S} ÷ 180 + 2', 'Count the triangles, then add 2.'],
+        },
+        (v) => v.S! - (v.n! - 2) * 180,
+      ),
+      rule(
+        'e = S/n',
+        '{e} = {S} ÷ {n}',
+        {
+          e: [(v) => v.S! / v.n!, '{S} ÷ {n}', 'The n equal angles share the sum.'],
+          S: [(v) => v.e! * v.n!, '{e} × {n}', 'n equal angles make the sum.'],
+          n: [(v) => v.S! / v.e!, '{S} ÷ {e}', 'How many equal angles make the sum.'],
+        },
+        (v) => v.e! * v.n! - v.S!,
+      ),
+      rule(
+        'x = 360/n',
+        '{x} = 360 ÷ {n}',
+        {
+          x: [(v) => 360 / v.n!, '360 ÷ {n}', 'The n equal exterior angles add to 360°.'],
+          n: [(v) => 360 / v.x!, '360 ÷ {x}', 'How many equal exterior angles make 360°.'],
+        },
+        (v) => v.x! * v.n! - 360,
+      ),
+    ],
+    example: { n: 9, S: 1260, e: 140, x: 40 },
+    startWith: ['n'],
+    representation: {
+      kind: 'markedFigure',
+      regular: {
+        sides: 'n',
+        triangles: true,
+        exterior: true,
+        labels: { sum: 'S', interior: 'e', exterior: 'x' },
+      },
+    },
+  }),
+  page({
     id: 'm.10.quadrilaterals~parallelogram',
     title: 'Angles of a parallelogram',
     use: 'Use this for “In parallelogram ABCD, m∠A = 58°. Find m∠B and m∠C.”',
@@ -5208,27 +5534,15 @@ const QUADRILATERALS: ModuleDef[] = [
     ],
     example: { p: 12, q: 16, hp: 6, hq: 8, s: 10, K: 96 },
     startWith: ['p', 'q'],
+    pictureLabels: ['p', 'q', 'K'],
     representation: {
       kind: 'markedFigure',
-      points: { A: [0, 'hq'], B: ['hp', 0], C: ['p', 'hq'], D: ['hp', 'q'], O: ['hp', 'hq'] },
-      parts: [
-        { segment: 'AB' },
-        { segment: 'BC' },
-        { segment: 'CD' },
-        { segment: 'DA' },
-        { segment: 'AC', dashed: true },
-        { segment: 'BD', dashed: true },
-        { right: 'AOB' },
-        { ticks: 'AB', count: 1 },
-        { ticks: 'BC', count: 1 },
-        { ticks: 'CD', count: 1 },
-        { ticks: 'DA', count: 1 },
-        { label: 'AO', value: 'hp' },
-        { label: 'BO', value: 'hq' },
-        { label: 'AB', value: 's' },
-        { label: 'AC', value: 'p', inCaption: true },
-        { label: 'BD', value: 'q', inCaption: true },
-      ],
+      quadrilateral: {
+        family: 'rhombus',
+        across: ['p', 'q'],
+        diagonals: true,
+        labels: { AB: 's', AO: 'hp', BO: 'hq' },
+      },
     },
   }),
   page({
@@ -5382,7 +5696,15 @@ const QUADRILATERALS: ModuleDef[] = [
     example: { n: 6, s: 4, P: 24, t: 30, a: 2 * Math.sqrt(3), K: 24 * Math.sqrt(3) },
     startWith: ['n', 's'],
     unitSystems: ['metric'],
-    representation: { kind: 'polygon', sides: 'n', side: 's' },
+    representation: {
+      kind: 'polygon',
+      sides: 'n',
+      side: 's',
+      apothem: 'a',
+      angle: 't',
+      around: 'P',
+      area: 'K',
+    },
   }),
 ];
 

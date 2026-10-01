@@ -213,3 +213,30 @@ None.
 - `~bounds`: assumption 2 names the area and the perimeter.
 - Not done (engine, the lead's): the harness still enumerates units outside `units` (v and u, t
   and h are already pinned to one unit each).
+
+### Pictures placed (H89–H110)
+
+| Page                                               | Entry        | What changed                                                                                                                   | Stand-in gone                                               |
+| -------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| m.9.linear-inequalities                            | H89          | `integerLine` `ticks: 5` (±20 by 5s)                                                                                           | —                                                           |
+| m.9.linear-inequalities~compound                   | H89, H90     | sign boxes s and t drive the circles (`closed: ['s', 't']`, < or ≤); `fit`, `ticks: 5`; l, b, r to ±1000; the test number is n | the fixed l < ax + b ≤ r                                    |
+| m.9.linear-inequalities~two-variables              | H90, H105(6) | one page for all four signs (`shade: { sign: 's' }`), the test point drawn (`test`)                                            | ~two-variables-below (merged in); tx, ty labels             |
+| m.9.absolute-value                                 | H91          | `compound: { join: 'equal', center: 'h', radius: 'd' }`                                                                        | the h and d labels under the picture                        |
+| m.9.absolute-value~tolerance (new)                 | H89          | \|w − T\| ≤ d on a fitted line in grams (350 g within 6 g; a 343 g box is out)                                                 | — (was waiting)                                             |
+| m.9.inequality-systems~standard-form (new)         | H90          | `{a}x + {b}y {s:sign} {c}` twice; `shade: { sign, flip }` on both lines, `fixed`                                               | — (was waiting)                                             |
+| m.9.inequality-systems~box (new)                   | H92          | a ≤ x ≤ b and c ≤ y ≤ d with `upright` boundaries (NAEP-2024-12M11-#11)                                                        | — (was waiting)                                             |
+| m.9.inequality-systems~nonlinear (new)             | H106(5)      | a line and a parabola (`square` on a line), the crossings in `solutions`                                                       | — (was waiting)                                             |
+| m.9.quadratic-formula~inequality                   | H90          | x² + bx + c {s:sign} 0, `functionGraph` `inequality: { sign: 's' }`, a test number                                             | ~inequality-outside (merged in); the fixed shading          |
+| m.9.sequences                                      | H93          | `far: true`, n to 1000 (a₁₀₀ = 403)                                                                                            | the picture-only nc, tl and their rules                     |
+| m.9.sequences~recursive                            | H93          | `termsChart` `type: 'recursive'`                                                                                               | the table                                                   |
+| m.9.piecewise-functions~absolute-of-function (new) | H94          | y = \|ax² + bx + c\| with `abs: true` (NAEP-1992-12M15-#8)                                                                     | — (~absolute-function keeps a\|x − h\| + k)                 |
+| m.9.polynomial-operations~box (new)                | H95          | `algebraTiles` `mode: 'box'`, (x + 2)(x² − 3x + 4)                                                                             | — (was waiting)                                             |
+| m.9.radicals~monomials                             | H95          | `algebraTiles` `mode: 'monomial'`                                                                                              | the table (x and y stay: they join c and k into one lesson) |
+| m.9.regression                                     | H105(1)      | k (1–8) picks the point; e = y_k − (m x_k + b); `residualOf.point: 'k'`                                                        | the fixed point 3                                           |
+| m.9.quadratic-functions~projectile                 | H106(1)      | `unitsOf: { x: 't', y: 'H' }`, axes "Time t" and "Height h"                                                                    | the pinned units and `unitSystems: ['metric']`              |
+| m.9.function-notation~transform (new)              | H106(2)      | g(x) = a·f(x − h) + k beside f(x) = x² (`transform`), (p, f(p)) carried to its image                                           | — (was waiting)                                             |
+| m.9.units-precision~bounds                         | H106(11)     | `rectangle` `bounds: { error: 'e', least: 'lo', greatest: 'hi' }`                                                              | the plain rectangle                                         |
+
+Gallery demos built from these pages that no longer pass (the lead's to retire):
+`g.m9-linear-inequalities-compound-fit` (its example lacks the new s, t and n) and
+`g.m9-regression-point-k` (it adds k a second time).
