@@ -685,13 +685,15 @@ export interface Scene {
   /**
    * What a `molecules` figure shows. One item with no count, state or `after`: the molecule
    * big, each element's atom named. Otherwise the items' molecules mixed in a box, packed as
-   * a `state` (spread out when left out); `after` draws a second box behind an arrow.
+   * a `state` (spread out when left out); `after` draws a second box behind an arrow. `ice`
+   * (water only) sets the molecules on open hexagons, each O–H pointing at a neighbor's O
+   * with the hydrogen bond dashed: 6 molecules make one ring, 10 two, 13 three.
    */
   molecules?: {
     items: MoleculeItem[];
-    state?: 'solid' | 'liquid' | 'gas';
+    state?: 'solid' | 'liquid' | 'gas' | 'ice';
     after?: MoleculeItem[];
-    afterState?: 'solid' | 'liquid' | 'gas';
+    afterState?: 'solid' | 'liquid' | 'gas' | 'ice';
     /** Round 2: ions ringed by water, turned by charge (`typesHs2d.ts`, H101). */
     hydration?: HydrationScene;
   };

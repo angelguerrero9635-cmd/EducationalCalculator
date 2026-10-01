@@ -52,7 +52,9 @@ H103, adds a volcanic island over a magma chamber and its `volcano` arrow up to 
 genotypes?, ask? }`).
 shrink (`fewer`). Grade 7–8 chemistry (`layouts/chemFigures.tsx`): `molecules` (ball-and-stick
 molecules in the classroom colors: one alone drawn big with each element named, or a scene's
-`items` in a box packed as a `state`, with `after` in a second box behind an arrow),
+`items` in a box packed as a `state`, with `after` in a second box behind an arrow; `ice`
+sets water on open hexagons, 6, 10 or 13 molecules for 1 to 3 rings, each O–H pointing at the
+next O with the hydrogen bond dashed),
 `phases` (solid, liquid and gas boxes of the same particles, the changes between them as
 arrows; a scene lights a `state` and a `change`) and `periodicTable` (an `element` with its
 card, a `group`, a `period`, a `ring` of elements, `families` filled).

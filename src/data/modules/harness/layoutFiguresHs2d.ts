@@ -12,6 +12,21 @@ export function hs2dFigureIssues(l: LayoutDef): string[] {
   const out: string[] = [];
   if (l.kind === 'explore' && l.figure.kind === 'molecules')
     for (const s of l.scenes) {
+      // Ice is water on whole hexagons: one ring is 6 molecules, two 10, three 13.
+      const m = s.molecules;
+      const iceBoxes = [
+        ...(m?.state === 'ice' ? [m.items] : []),
+        ...(m?.afterState === 'ice' && m.after ? [m.after] : []),
+      ];
+      for (const items of iceBoxes) {
+        const n = items.reduce((t, it) => t + (it.count ?? 1), 0);
+        if (items.some((it) => it.formula !== 'H2O'))
+          out.push(`scene "${s.label}": ice is drawn for water (H2O) only`);
+        if (![6, 10, 13, 16, 19].includes(n))
+          out.push(
+            `scene "${s.label}": ${n} molecules of ice (6, 10, 13, 16 or 19 close the rings)`,
+          );
+      }
       const h = s.molecules?.hydration;
       if (!h) continue;
       if (h.ions.length < 1 || h.ions.length > 2)

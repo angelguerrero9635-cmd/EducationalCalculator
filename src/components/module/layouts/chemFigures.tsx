@@ -27,6 +27,7 @@ import { TableArt, tableSize } from '../reps/PeriodicTable';
 import { HydrationFigure } from './hydrationFigure';
 
 type State = 'solid' | 'liquid' | 'gas';
+type BoxState = State | 'ice';
 
 /** Fixed turns for molecules in a liquid or gas, so a scene always draws the same. */
 const TURNS = [0, 35, -50, 90, 20, -25, 140, 65, -80, 110, -15, 50, 170, -120, 75, -60];
@@ -70,6 +71,135 @@ interface Placed {
   x: number;
   y: number;
   turn: number;
+  /** (x, y) is the molecule's first atom (ice's O on its lattice point), not its middle. */
+  atAtom?: boolean;
+}
+
+/** A hydrogen bond in ice: from molecule `from`'s H atom `h` to molecule `to`'s O. */
+interface HBond {
+  from: number;
+  h: number;
+  to: number;
+}
+
+/** Ice's rings, in the order they are added: each new one touches two before it (or one). */
+const ICE_RINGS: [number, number][] = [
+  [0, 0],
+  [1, 0],
+  [0, 1],
+  [-1, 1],
+  [1, 1],
+  [-1, 0],
+  [2, 0],
+  [0, -1],
+  [1, -1],
+];
+
+/** How far apart two angles are (radians, 0 to π). */
+const apart = (t: number, u: number) => Math.abs(Math.atan2(Math.sin(t - u), Math.cos(t - u)));
+
+/**
+ * Ice: water molecules on a honeycomb (open hexagons), O to O one lattice step apart, a ring
+ * added at a time until there are `n` points. Each O–H points along a step to the next O,
+ * where the hydrogen bond is drawn; every molecule gives at most two and takes the rest.
+ */
+function packIce(
+  n: number,
+  box: { x: number; y: number; w: number; h: number },
+): { scale: number; placed: Placed[]; hbonds: HBond[] } {
+  // Lattice points one step apart: pointy-top hexagons, rings in ICE_RINGS order.
+  const pts: [number, number][] = [];
+  const seen = new Set<string>();
+  for (const [i, j] of ICE_RINGS) {
+    if (pts.length >= n) break;
+    const [cx, cy] = [Math.sqrt(3) * (i + j / 2), 1.5 * j];
+    for (let k = 0; k < 6; k++) {
+      const t = ((-90 + 60 * k) * Math.PI) / 180;
+      const [x, y] = [cx + Math.cos(t), cy + Math.sin(t)];
+      const id = `${Math.round(x * 1000)},${Math.round(y * 1000)}`;
+      if (!seen.has(id)) {
+        seen.add(id);
+        pts.push([x, y]);
+      }
+    }
+  }
+  const used = pts.slice(0, n);
+  // The step in px: the cluster and about half a step round it (a molecule's reach) fit.
+  const xs = used.map((p) => p[0]);
+  const ys = used.map((p) => p[1]);
+  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  const L = Math.min(box.w / (x1 - x0 + 1.1), box.h / (y1 - y0 + 1.1));
+  const ox = box.x + box.w / 2 - ((x0 + x1) / 2) * L;
+  const oy = box.y + box.h / 2 - ((y0 + y1) / 2) * L;
+  // Steps between points, and which end gives the H: at most two each, and a molecule with
+  // three neighbors gives two and takes one (it has no free step to point a spare H along).
+  const edges: [number, number][] = [];
+  used.forEach((a, i) =>
+    used.forEach((b, j) => {
+      if (j > i && Math.abs(Math.hypot(a[0] - b[0], a[1] - b[1]) - 1) < 1e-6) edges.push([i, j]);
+    }),
+  );
+  const degree = used.map((_, v) => edges.filter((e) => e.includes(v)).length);
+  const gives = used.map(() => [] as number[]);
+  const takes = used.map(() => [] as number[]);
+  const fits = (v: number) => gives[v]!.length <= 2 && (degree[v]! < 3 || takes[v]!.length <= 1);
+  const orient = (k: number): boolean => {
+    if (k === edges.length) return true;
+    const [a, b] = edges[k]!;
+    for (const [d, r] of [
+      [a, b],
+      [b, a],
+    ] as const) {
+      gives[d]!.push(r);
+      takes[r]!.push(d);
+      if (fits(d) && fits(r) && orient(k + 1)) return true;
+      gives[d]!.pop();
+      takes[r]!.pop();
+    }
+    return false;
+  };
+  orient(0);
+  const angle = (i: number, j: number) =>
+    Math.atan2(used[j]![1] - used[i]![1], used[j]![0] - used[i]![0]);
+  const water = moleculeOf('H2O');
+  const hs = water.atoms.map((a, k) => (a.el === 'H' ? k : -1)).filter((k) => k >= 0);
+  const hbonds: HBond[] = [];
+  const placed = used.map(([x, y], i): Placed => {
+    // The point's three steps: up, lower right and lower left, or the opposites.
+    const ups = [-90, 30, 150].map((d) => (d * Math.PI) / 180);
+    const linked = [...gives[i]!, ...takes[i]!];
+    const steps =
+      linked.length === 0 || ups.some((t) => apart(t, angle(i, linked[0]!)) < 0.1)
+        ? ups
+        : ups.map((t) => t + Math.PI);
+    const free = steps.filter((t) => !linked.some((j) => apart(t, angle(i, j)) < 0.1));
+    // The H's: along the bonds given, then along a free step out of the cluster. Giving
+    // none, both H's straddle a free step (their bonds leave the drawing's plane).
+    const hDirs = [...gives[i]!.map((j) => angle(i, j)), ...free].slice(0, 2);
+    const mid =
+      gives[i]!.length === 0
+        ? (free[0] ?? 0)
+        : hDirs.length < 2
+          ? hDirs[0]!
+          : Math.atan2(
+              Math.sin(hDirs[0]!) + Math.sin(hDirs[1]!),
+              Math.cos(hDirs[0]!) + Math.cos(hDirs[1]!),
+            );
+    // Turned so the H–O–H bisector (straight down unturned) points at `mid`.
+    const turn = (mid * 180) / Math.PI - 90;
+    const m = turned(water, turn);
+    const toward = (k: number) =>
+      Math.atan2(m.atoms[k]!.y - m.atoms[0]!.y, m.atoms[k]!.x - m.atoms[0]!.x);
+    // Each bond given starts at the H nearer its direction.
+    for (const j of gives[i]!) {
+      const t = angle(i, j);
+      const h = hs.reduce((best, k) => (apart(toward(k), t) < apart(toward(best), t) ? k : best));
+      hbonds.push({ from: i, h, to: j });
+    }
+    return { formula: 'H2O', x: ox + x * L, y: oy + y * L, turn, atAtom: true };
+  });
+  // One O–H bond is 1 in the molecule's units: a step is 2.6 of them.
+  return { scale: L / 2.6, placed, hbonds };
 }
 
 /**
@@ -79,10 +209,11 @@ interface Placed {
  */
 function pack(
   formulas: string[],
-  state: State | undefined,
+  state: BoxState | undefined,
   box: { x: number; y: number; w: number; h: number },
   sizeFor = formulas.length,
-): { scale: number; placed: Placed[] } {
+): { scale: number; placed: Placed[]; hbonds?: HBond[] } {
+  if (state === 'ice') return packIce(formulas.length, box);
   const n = formulas.length;
   const u = unitOf(formulas);
   const tight = cellFor(Math.max(1, sizeFor), box.w, box.h);
@@ -149,6 +280,7 @@ function Particles({
   ball,
   bounds,
   moving,
+  hbonds,
 }: {
   placed: Placed[];
   scale: number;
@@ -156,16 +288,50 @@ function Particles({
   ball: string;
   bounds: { x: number; y: number; w: number; h: number };
   moving?: boolean;
+  hbonds?: HBond[];
 }) {
   const c = usePalette();
+  // Each molecule turned, and its middle (ice: moved off the O on its lattice point).
+  const shapes = placed.map((p) => {
+    const m = p.formula ? turned(moleculeOf(p.formula), p.turn) : undefined;
+    const [x0, y0, x1, y1] = m ? extentOf(m) : [-0.42, -0.42, 0.42, 0.42];
+    const first = m?.atoms[0];
+    const [cx, cy] =
+      p.atAtom && first
+        ? [p.x + ((x0 + x1) / 2 - first.x) * scale, p.y + ((y0 + y1) / 2 - first.y) * scale]
+        : [p.x, p.y];
+    return { m, x0, y0, x1, y1, cx, cy };
+  });
   return (
     <G>
+      {/* Hydrogen bonds: dashed, from an H to the next molecule's O. */}
+      {(hbonds ?? []).map((b) => {
+        const from = placed[b.from]!;
+        const to = placed[b.to]!;
+        const m = shapes[b.from]!.m!;
+        const hx = from.x + (m.atoms[b.h]!.x - m.atoms[0]!.x) * scale;
+        const hy = from.y + (m.atoms[b.h]!.y - m.atoms[0]!.y) * scale;
+        const d = Math.hypot(to.x - hx, to.y - hy) || 1;
+        const [ux, uy] = [(to.x - hx) / d, (to.y - hy) / d];
+        const [r0, r1] = [atomRadius('H') * scale + 1, atomRadius('O') * scale + 1];
+        return (
+          <Line
+            key={`${b.from}-${b.to}`}
+            x1={hx + ux * r0}
+            y1={hy + uy * r0}
+            x2={to.x - ux * r1}
+            y2={to.y - uy * r1}
+            stroke={c.chartInk}
+            strokeWidth={1.3}
+            strokeDasharray="3 3"
+          />
+        );
+      })}
       {placed.map((p, i) => {
-        const m = p.formula ? turned(moleculeOf(p.formula), p.turn) : undefined;
-        const [x0, y0, x1, y1] = m ? extentOf(m) : [-0.42, -0.42, 0.42, 0.42];
+        const { m, x0, y0, x1, y1, cx, cy } = shapes[i]!;
         const [hw, hh] = [((x1 - x0) / 2) * scale, ((y1 - y0) / 2) * scale];
-        const x = Math.min(bounds.x + bounds.w - hw, Math.max(bounds.x + hw, p.x));
-        const y = Math.min(bounds.y + bounds.h - hh, Math.max(bounds.y + hh, p.y));
+        const x = Math.min(bounds.x + bounds.w - hw, Math.max(bounds.x + hw, cx));
+        const y = Math.min(bounds.y + bounds.h - hh, Math.max(bounds.y + hh, cy));
         const a = ((TURNS[(i + 3) % TURNS.length]! + 200) * Math.PI) / 180;
         const r = Math.max(hw, hh);
         return (
@@ -364,6 +530,7 @@ export function MoleculesFigure({ scene }: { scene: NonNullable<Scene['molecules
                   ball={ids.ball}
                   bounds={inset(b, 3)}
                   moving={(k === 0 ? scene.state : (scene.afterState ?? scene.state)) === 'gas'}
+                  hbonds={packs[k]!.hbonds}
                 />
                 <ChartText
                   {...fitLabel(b.x + b.w / 2, labels[k]!, chart.value, w)}

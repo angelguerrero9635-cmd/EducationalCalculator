@@ -281,7 +281,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       },
       {
         label: 'Ice',
-        molecules: { items: [{ formula: 'H2O', count: 12 }], state: 'solid' },
+        molecules: { items: [{ formula: 'H2O', count: 13 }], state: 'ice' },
         lines: [
           'In ice each molecule is hydrogen-bonded to four others in open hexagons.',
           'The open rings hold the molecules farther apart than in the liquid.',
@@ -290,9 +290,9 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       {
         label: 'Liquid water',
         molecules: {
-          items: [{ formula: 'H2O', count: 12 }],
-          state: 'solid',
-          after: [{ formula: 'H2O', count: 12 }],
+          items: [{ formula: 'H2O', count: 13 }],
+          state: 'ice',
+          after: [{ formula: 'H2O', count: 13 }],
           afterState: 'liquid',
         },
         lines: [
