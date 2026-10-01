@@ -286,7 +286,7 @@ export function HabitableZone({ spec, calc }: { spec: HabitableZoneSpec; calc: C
                       : where === 'hot'
                         ? 'nearer than the zone: too hot'
                         : 'beyond the zone: too cold'
-                  }, T = 278 × ${formatNumber(L)}^(1/4) ÷ √${formatNumber(round(a))} = ${formatNumber(round(T))} K.`
+                  }, T = 278 × ⁴√${formatNumber(L)} ÷ √${formatNumber(round(a))} = ${formatNumber(round(T))} K.`
                 : ''
             }`}
       </Caption>

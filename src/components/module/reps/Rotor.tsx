@@ -196,7 +196,11 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
   function sideLines(): [string, string][] {
     const out: [string, string][] = [];
     if (cf !== undefined)
-      out.push([`c = ${text(spec.shape, cf)}${nameOf(cf) ? ` (${nameOf(cf)})` : ''}`, c.chartInk]);
+      // ½ as the compare cards write it (the box may show 1/2).
+      out.push([
+        `c = ${nameOf(cf) ? cText(cf) : text(spec.shape, cf)}${nameOf(cf) ? ` (${nameOf(cf)})` : ''}`,
+        c.chartInk,
+      ]);
     if (has(spec.mass)) out.push([`m = ${text(spec.mass, m, 'kg')}`, c.chartInk]);
     if (Number.isFinite(I) && (has(spec.inertia) || cf !== undefined))
       out.push([`I = ${text(spec.inertia, I, uI)}`, c.chartInk]);
@@ -254,9 +258,10 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
           </G>
         );
       case 'disk':
+        // Flat, unlike the ball: an even fill, a thick rim (its edge seen) and a hub.
         return (
           <G>
-            <Circle cx={cx} cy={cy} r={R} fill={url(ids.metal)} stroke={c.metalDark} />
+            <Circle cx={cx} cy={cy} r={R} fill={c.metal} stroke={c.metalDark} strokeWidth={3} />
             <Circle
               cx={cx}
               cy={cy}
@@ -265,6 +270,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
               stroke={c.metalDark}
               strokeOpacity={0.35}
             />
+            <Circle cx={cx} cy={cy} r={Math.max(2, R * 0.12)} fill={c.metalDark} />
           </G>
         );
       case 'ball':
@@ -338,7 +344,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
                 {`${s.half}, c = ${cText(s.c)}`}
               </ChartText>
               <ChartText x={x} y={y0 + 90} textAnchor="middle" fontSize={chart.label}>
-                {`I = ${num(Ii)}`}
+                {`I = ${num(Ii)} ${uI}`}
               </ChartText>
               <ChartText
                 x={x}
@@ -347,7 +353,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
                 fontSize={chart.label}
                 fill={c.forceApplied}
               >
-                {`α = ${num((tau ?? 0) / Ii)}`}
+                {`α = ${num((tau ?? 0) / Ii)} ${uA}`}
               </ChartText>
             </G>
           );

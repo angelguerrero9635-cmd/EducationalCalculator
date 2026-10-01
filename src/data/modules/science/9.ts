@@ -494,6 +494,7 @@ const MEMBRANE: ModuleDef[] = [
       inside: 'i',
       transport: 'active',
       particle: 'Na⁺',
+      counter: 'K⁺',
       moved: 's',
       atp: 'a',
     },
