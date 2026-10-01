@@ -103,6 +103,7 @@ import { CirclePopulation } from './CirclePopulation';
 import { RectangleBounds } from './RectangleBounds';
 import { VectorSpace } from './VectorSpace';
 import { PolarConic } from './PolarConic';
+import { ConicTurned } from './ConicTurned';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -275,6 +276,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'capacitor':
       return <Hs3aView spec={spec} calc={calc} />;
     case 'conicGraph':
+      if (spec.conic === 'turned') return <ConicTurned spec={spec} calc={calc} />; // H106
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':
       if (spec.curve?.shape === 'conic') return <PolarConic spec={spec} calc={calc} />; // H106

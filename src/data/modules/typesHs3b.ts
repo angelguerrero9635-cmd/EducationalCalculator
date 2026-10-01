@@ -208,6 +208,25 @@ export interface PolarConicHs3b {
   d?: string;
 }
 
+/**
+ * H106: a conic with an xy term, turned (`conicGraph` `conic: 'turned'`): Ax² + Bxy + Cy² + F = 0
+ * (`F` defaults to −1, the page's "= 1"), centered at the origin. The x′ and y′ axes are drawn at
+ * θ, where tan 2θ = B ÷ (A − C) (θ from 0° to 90°; 45° when A = C), the angle marked; in them the
+ * conic reads A′x′² + C′y′² + F = 0, with its own axes (an ellipse), asymptotes (a hyperbola) or
+ * two parallel lines (B² − 4AC = 0, no x or y term). `angle`, `turned.A` and `turned.C` name the
+ * values the page works out (θ, A′, C′; checked); `discriminant` B² − 4AC (checked).
+ */
+export interface ConicTurnedHs3b {
+  conic: 'turned';
+  A: NumOrVar;
+  B: NumOrVar;
+  C: NumOrVar;
+  F?: NumOrVar;
+  angle?: string;
+  turned?: { A?: string; C?: string };
+  discriminant?: string;
+}
+
 const idsOf = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
 

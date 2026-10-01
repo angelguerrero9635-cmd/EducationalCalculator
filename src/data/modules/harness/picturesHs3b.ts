@@ -7,6 +7,7 @@ import { curveOf, zerosIn } from '@/components/module/reps/functionGraphMath';
 import { reshapeVars } from '@/components/module/reps/functionGraphHs2g';
 import { toShownUnits } from '@/components/module/reps/functionGraphUnits';
 import { quadAt, quadCrossings } from '@/components/module/reps/lineParabola';
+import { turnedConic } from '@/components/module/reps/conicTurned';
 import { polarConicParts } from '@/components/module/reps/polarConic';
 import { ownCenter } from '@/components/module/reps/transformHs3b';
 import { angle3, cross3, dot3, len3, sub3, type V3 } from '@/components/module/reps/vectorSpace';
@@ -221,6 +222,23 @@ export function hs3bIssues(
     case 'vectorDiagram':
       out.push(...spaceIssues(rep, val));
       break;
+    case 'conicGraph': {
+      // A turned conic: θ, A′, C′ and B² − 4AC as the picture works them out.
+      if (rep.conic !== 'turned') break;
+      const [A, B, C] = [val(rep.A), val(rep.B), val(rep.C)];
+      if (A === undefined || B === undefined || C === undefined) break;
+      const t = turnedConic(A, B, C, rep.F === undefined ? -1 : (val(rep.F) ?? -1));
+      const chk = (id: string | undefined, want: number, what: string) => {
+        const got = id === undefined ? undefined : val(id);
+        if (got !== undefined && Math.abs(got - want) > 1e-6 * Math.max(1, Math.abs(want)))
+          out.push(`turned conic: ${what} ${got} is not ${want}`);
+      };
+      chk(rep.angle, t.theta, 'θ');
+      chk(rep.turned?.A, t.A1, 'A′');
+      chk(rep.turned?.C, t.C1, 'C′');
+      chk(rep.discriminant, t.D, 'B² − 4AC');
+      break;
+    }
     case 'polarGrid': {
       // A polar conic: e = |n| ÷ m and d = k ÷ |n|, as the picture draws them.
       const cv = rep.curve;

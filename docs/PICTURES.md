@@ -245,6 +245,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `rectangle`        | `bounds: { error, least?, greatest? }`   | (l ± e) by (w ± e) dashed, the band between shaded, a corner close-up (H106)  |
 | `vectorDiagram`    | `space`, `z`; `cross`, `w`, `points`     | x, y, z axes, turnable: u × v, θ, areas, the box of u, v, w; PQ, M (H106)     |
 | `polarGrid`        | `curve.shape: 'conic'`, `k, m, n, fn`    | r = k ÷ (m − n cos θ): focus at the pole, directrix, PF ÷ PD = e at P (H106)  |
+| `conicGraph`       | `conic: 'turned'`, `A, B, C, F`; `angle` | Ax² + Bxy + Cy² = 1 with x′, y′ at θ, A′x′² + C′y′² = 1, its shape (H106)     |
 | `algebraTiles`     | `mode: 'box'`, `side`, `top`, `product`  | area box: row × column terms, like-term diagonals tinted, collected (H95)     |
 | `algebraTiles`     | `mode: 'monomial'`, `a, m, b, n, c, k`   | a·xᵐ ÷ b·xⁿ as factors over a bar, cancelled pairs struck, c·xᵏ (H95)         |
 | `integerLine`      | `compound.closed: [id, id]`              | each bound's circle from a sign box: 2 ≤, 4 ≥ closed; 1 <, 3 > open (H90)     |

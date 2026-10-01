@@ -851,6 +851,41 @@ const POLAR_CONICS: ModuleDef[] = [
   ),
 ];
 
+// ── H106 part 14: a conic turned by θ (m.12.polar-conics~rotation, ~rotated-equation) ──
+
+const TURNED: ModuleDef[] = [
+  fromPage(
+    'm.12.polar-conics~rotation',
+    'g.m12-polar-conics-rotation-turned',
+    'Turning the axes of an ellipse',
+    { kind: 'conicGraph', conic: 'turned', A: 'A', B: 'B', C: 'C', angle: 't', discriminant: 'D' },
+  ),
+  fromPage(
+    'm.12.polar-conics~rotation',
+    'g.m12-polar-conics-rotation-turned-hyperbola',
+    'Turning the axes of a hyperbola',
+    { kind: 'conicGraph', conic: 'turned', A: 'A', B: 'B', C: 'C', angle: 't', discriminant: 'D' },
+    {
+      use: 'Use this for “Through what angle should the axes turn to remove the xy term of x² + 4xy + y² = 1? Which conic is it?”',
+      example: { A: 1, B: 4, C: 1, D: 12, t: 45 },
+    },
+  ),
+  fromPage(
+    'm.12.polar-conics~rotated-equation',
+    'g.m12-polar-conics-rotated-equation-turned',
+    'The equation in the turned axes',
+    {
+      kind: 'conicGraph',
+      conic: 'turned',
+      A: 'A',
+      B: 'B',
+      C: 'C',
+      angle: 't',
+      turned: { A: 'P', C: 'Q' },
+    },
+  ),
+];
+
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
@@ -865,6 +900,7 @@ export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...BOUNDS,
   ...SPACE,
   ...POLAR_CONICS,
+  ...TURNED,
 ];
 
 export const HS3B_GALLERY_LAYOUTS: LayoutDef[] = [];

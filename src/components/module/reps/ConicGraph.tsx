@@ -21,7 +21,13 @@ type Pt = { x: number; y: number };
  * axes, foci, directrix and asymptotes. Drag the center and the radius, the axes' ends or the
  * focus.
  */
-export function ConicGraph({ spec, calc }: { spec: ConicGraphSpec; calc: Calculator }) {
+export function ConicGraph({
+  spec,
+  calc,
+}: {
+  spec: Exclude<ConicGraphSpec, { conic: 'turned' }>; // H106: 'turned' is ConicTurned
+  calc: Calculator;
+}) {
   const c = usePalette();
   const rep = useRep(calc);
   const num = (x: number | string | undefined, d = 0) =>

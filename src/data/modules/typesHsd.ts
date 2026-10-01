@@ -12,7 +12,7 @@ import type {
   UnitCircleHs2g,
 } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
-import type { PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
+import type { ConicTurnedHs3b, PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
 
 /** A trig function of the unit circle. */
 export type TrigFn = 'sin' | 'cos' | 'tan';
@@ -238,6 +238,7 @@ export type ConicGraphSpec = {
   | { conic: 'parabola'; p: NumOrVar; axis?: 'vertical' | 'horizontal' }
   | { conic: 'ellipse'; a: NumOrVar; b: NumOrVar }
   | { conic: 'hyperbola'; a: NumOrVar; b: NumOrVar; axis?: 'horizontal' | 'vertical' }
+  | ConicTurnedHs3b // H106: Ax² + Bxy + Cy² = 1 and the axes turned by θ
 );
 
 /** One row operation on an augmented matrix; rows count from 1. */
@@ -362,7 +363,13 @@ export function hsdSpecVars(r: HsdSpec): string[] {
         r.c,
         r.point?.x,
         r.point?.y,
-        ...(r.conic === 'circle' ? [r.r] : r.conic === 'parabola' ? [r.p] : [r.a, r.b]),
+        ...(r.conic === 'turned' // H106
+          ? [r.A, r.B, r.C, r.F, r.angle, r.turned?.A, r.turned?.C, r.discriminant]
+          : r.conic === 'circle'
+            ? [r.r]
+            : r.conic === 'parabola'
+              ? [r.p]
+              : [r.a, r.b]),
       );
   }
 }
