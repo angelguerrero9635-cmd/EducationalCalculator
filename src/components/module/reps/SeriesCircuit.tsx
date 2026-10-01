@@ -251,6 +251,8 @@ export function SeriesCircuit({ spec, calc }: { spec: Spec; calc: Calculator }) 
     const rs = spec.resistors.map((r) => r.r);
     const sum = (xs: string[]) => (xs.length > 1 ? `(${xs.join(' + ')})` : xs[0]!);
     const ohm = `${sym(spec.current)} = ${sym(spec.source)} ÷ ${sum(rs.map(sym))} = ${rep.value(spec.source)} ÷ ${sum(rs.map((id) => rep.value(id)))} = ${rep.value(spec.current)}`;
-    return `${kvl} · ${ohm} · Drag the source or a resistor up or down to change it.`;
+    // One resistor across the source itself: Kirchhoff's sum would read "V = V = 9 V = 9 V".
+    const alone = drops.length === 1 && drops[0] === spec.source;
+    return `${alone ? '' : `${kvl} · `}${ohm} · Drag the source or a resistor up or down to change it.`;
   }
 }

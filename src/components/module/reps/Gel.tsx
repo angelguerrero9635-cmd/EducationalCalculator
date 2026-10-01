@@ -192,7 +192,10 @@ function GelSlab({ spec, calc }: { spec: GelSpec; calc: Calculator }) {
                           !spec.fixed &&
                           typeof b === 'string' &&
                           on &&
-                          !rep.variable(b).derived;
+                          !rep.variable(b).derived &&
+                          // A band worked out from the others (b = L − a) has no handle of its
+                          // own: it would only drive the typed band beside it.
+                          rep.typed(b);
                         if (drag) handles.push({ id: b, x: cx(i), y });
                         // Ladder sizes sit left of the gel; sample sizes under their bands.
                         // A size goes under its band (clear of a handle), else over it, where

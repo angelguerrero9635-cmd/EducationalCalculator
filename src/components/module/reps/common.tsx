@@ -293,6 +293,10 @@ export function useRep(calc: Calculator) {
     if (unit === '$') return dollarsOf(units.toDisplay(id, x), shown);
     return `${shown}${['¢', '%', '°', '×'].includes(unit) ? '' : ' '}${unitFor(units.toDisplay(id, x), unit)}`;
   };
+  const typedOf = (id: string) => {
+    const st = calc.status(id);
+    return st === 'given' || st === 'example';
+  };
   return {
     variable: (id: string) => byId.get(id)!,
     known: (id: string) => values[id] !== undefined,
@@ -333,6 +337,17 @@ export function useRep(calc: Calculator) {
     /** Current values of `ids` that are known, for pinning them during a drag. */
     pin: (ids: string[]): Values =>
       Object.fromEntries(ids.flatMap((id) => (values[id] === undefined ? [] : [[id, values[id]]]))),
+    /** Whether the student typed `id` (or the example gave it), not worked it out. */
+    typed: (id: string) => typedOf(id),
+    /**
+     * Current values of the `ids` the student typed, for pinning them during a drag. A worked-out
+     * value is left to follow: pinning it would turn it into a typed one and make the solver work
+     * a typed value out from it (a circuit's R worked out from V and I).
+     */
+    pinTyped: (ids: string[]): Values =>
+      Object.fromEntries(
+        ids.flatMap((id) => (values[id] === undefined || !typedOf(id) ? [] : [[id, values[id]]])),
+      ),
     /**
      * Snaps a formula-unit value to the variable's step in the shown unit, within its limits
      * (taken from the unit context's system, which is always in formula units).
