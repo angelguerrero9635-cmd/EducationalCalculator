@@ -22,14 +22,30 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
     question: 'Put the models of the atom in the order they were proposed.',
     stages: [
-      { label: 'Dalton: atoms are solid spheres that can’t be split', span: 94 },
+      {
+        label: 'Dalton: atoms are solid spheres that can’t be split',
+        span: 94,
+        figure: { kind: 'icon', icon: 'Dalton atom model' },
+      },
       {
         label: 'Thomson: electrons found, stuck in a positive ball like plums in a pudding',
         span: 14,
+        figure: { kind: 'icon', icon: 'Thomson atom model' },
       },
-      { label: 'Rutherford: gold foil shows a tiny, dense, positive nucleus', span: 2 },
-      { label: 'Bohr: electrons on fixed energy levels around the nucleus', span: 13 },
-      { label: 'Quantum model: electrons in clouds of probability, still used today' },
+      {
+        label: 'Rutherford: gold foil shows a tiny, dense, positive nucleus',
+        span: 2,
+        figure: { kind: 'icon', icon: 'Rutherford atom model' },
+      },
+      {
+        label: 'Bohr: electrons on fixed energy levels around the nucleus',
+        span: 13,
+        figure: { kind: 'icon', icon: 'Bohr atom model' },
+      },
+      {
+        label: 'Quantum model: electrons in clouds of probability, still used today',
+        figure: { kind: 'icon', icon: 'quantum atom model' },
+      },
     ],
     unit: 'years',
     totalLabel: 'From Dalton (1803) to the quantum model (1926)',

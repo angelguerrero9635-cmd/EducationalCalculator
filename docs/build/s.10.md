@@ -254,3 +254,10 @@ Report: `.review/new-sci-2/lesson-report.md`.
 7. **Engine, a value in an exponent:** a power whose exponent shows in scientific notation is not
    bracketed (`2^4.8292 × 10⁻⁵`), so the step and check read wrong at tiny half-life counts
    (`s.10.nuclear-chemistry`, deep run only; the page writes (1/2)^n as the report asked).
+
+### Pictures placed (H89–H110)
+
+- `s.10.atomic-structure~average-mass` (H101 need 7): built (it was waiting) from the demo, m₁, m₂,
+  f₁, f₂ = 100 − f₁ and A, on `chemDiagram` mode `isotopes` (boron). No stand-in.
+- `~models` (H101 need 13): each stage wears its atom-model icon (Dalton, Thomson, Rutherford,
+  Bohr, quantum). Stand-in gone: text-only stages.

@@ -419,6 +419,78 @@ const ATOMS: ModuleDef[] = [
     sliders: true,
     representation: { kind: 'atomModel', protons: 'p', electrons: 'e', charge: 'q' },
   },
+  {
+    id: 's.10.atomic-structure~average-mass',
+    title: 'Average atomic mass from isotopes',
+    use: 'Use this for “Boron is 19.9% boron-10 (10.01 u) and 80.1% boron-11 (11.01 u). Find its atomic mass.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The element has two isotopes; their percents add to 100%.',
+      'The atomic mass on the periodic table is the average over the atoms, weighted by how common each isotope is.',
+    ],
+    variables: [
+      quantity('m1', 'm₁', 'Mass of the first isotope', 'u', 0.1, 300, 0.01),
+      quantity('m2', 'm₂', 'Mass of the second isotope', 'u', 0.1, 300, 0.01),
+      quantity('f1', 'f₁', 'Abundance of the first isotope', '%', 0, 100, 0.1),
+      {
+        ...quantity('f2', 'f₂', 'Abundance of the second isotope', '%', 0, 100, 0.1),
+        derived: true,
+      },
+      { ...quantity('A', 'A', 'Average atomic mass', 'u', 0.1, 300, 0.01), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'f2 = 100 − f1',
+          display: '{f2} = 100 − {f1}',
+          vars: ['f2', 'f1'],
+          residual: (v) => v.f2! - (100 - v.f1!),
+          solve: { f2: (v) => 100 - v.f1!, f1: (v) => 100 - v.f2! },
+        },
+        steps: {
+          f2: { expr: '100 − {f1}', how: 'The two isotopes make up all the atoms: 100%.' },
+          f1: { expr: '100 − {f2}', how: 'The rest of the 100% is the first isotope.' },
+        },
+      },
+      {
+        relation: {
+          id: 'A = m1 f1 + m2 f2',
+          display: '{A} = {m1} × {f1}/100 + {m2} × {f2}/100',
+          vars: ['A', 'm1', 'f1', 'm2', 'f2'],
+          residual: (v) => 100 * v.A! - (v.m1! * v.f1! + v.m2! * v.f2!),
+          solve: {
+            A: (v) => (v.m1! * v.f1! + v.m2! * v.f2!) / 100,
+            m1: (v) => (v.f1! > 0 ? (100 * v.A! - v.m2! * v.f2!) / v.f1! : undefined),
+            m2: (v) => (v.f2! > 0 ? (100 * v.A! - v.m1! * v.f1!) / v.f2! : undefined),
+          },
+        },
+        steps: {
+          A: {
+            expr: '{m1} × {f1}/100 + {m2} × {f2}/100',
+            how: 'Each isotope counts as much as its share of the atoms.',
+          },
+          m1: {
+            expr: '(100 × {A} − {m2} × {f2})/{f1}',
+            how: 'Take the second isotope’s share away and divide by the first one’s percent.',
+          },
+          m2: {
+            expr: '(100 × {A} − {m1} × {f1})/{f2}',
+            how: 'Take the first isotope’s share away and divide by the second one’s percent.',
+          },
+        },
+      },
+    ),
+    example: { m1: 10.01, m2: 11.01, f1: 19.9, f2: 80.1, A: (10.01 * 19.9 + 11.01 * 80.1) / 100 },
+    startWith: ['m1', 'm2', 'f1'],
+    representation: {
+      kind: 'chemDiagram',
+      mode: 'isotopes',
+      element: 'B',
+      masses: ['m1', 'm2'],
+      percents: ['f1', 'f2'],
+      average: 'A',
+    },
+  },
 ];
 
 // ─── Electrons in atoms ──────────────────────────────────────────────────────
