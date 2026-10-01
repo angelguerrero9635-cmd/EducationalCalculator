@@ -7,7 +7,8 @@ import {
   unitFor,
 } from '../format';
 import { findRoots, holds, solve, type System } from '../solve';
-import { initialState, setValues } from '../state';
+import { initialState, setInput, setValues } from '../state';
+import type { Relation, Values } from '../types';
 
 const area: System = {
   variables: [
@@ -307,6 +308,77 @@ describe('a rule that explains why it has no answer', () => {
       { id: 'd', value: 5 },
     ]);
     expect(ok.values.x).toBe(2);
+  });
+});
+
+describe('a newer value that doesn’t fit the older ones', () => {
+  // ρ = m ÷ V with V = s³: a density the range (and a rule) can say no to.
+  const block = (message?: Relation['message']): System => ({
+    variables: [
+      { id: 's', symbol: 's', name: 'Side', min: 0, max: 100, unit: 'cm' },
+      { id: 'V', symbol: 'V', name: 'Volume', min: 0, max: 1e6, unit: 'cm³' },
+      { id: 'm', symbol: 'm', name: 'Mass', min: 0, max: 1e6, unit: 'g' },
+      { id: 'rho', symbol: 'ρ', name: 'Density', min: 0.001, max: 100, unit: 'g/cm³' },
+    ],
+    relations: [
+      {
+        id: 'V = s³',
+        display: '',
+        vars: ['V', 's'],
+        residual: (v) => v.V! - v.s! ** 3,
+        solve: { V: (v) => v.s! ** 3, s: (v) => Math.cbrt(v.V!) },
+      },
+      {
+        id: 'ρ = m ÷ V',
+        display: '',
+        vars: ['rho', 'm', 'V'],
+        residual: (v) => v.rho! * v.V! - v.m!,
+        solve: { rho: (v) => (v.V ? v.m! / v.V : undefined), m: (v) => v.rho! * v.V! },
+      },
+      ...(message
+        ? [
+            {
+              id: 'ρ ≤ 23',
+              display: '',
+              vars: ['rho'],
+              constraint: true,
+              residual: (v: Values) => (v.rho! <= 23 ? 0 : 1),
+              message,
+            },
+          ]
+        : []),
+    ],
+  });
+  const older = [
+    { id: 's', value: 2 },
+    { id: 'm', value: 40 },
+  ];
+
+  it('refuses the newest with the range it breaks, and keeps the older values', () => {
+    // m = 40 g in a 0.1 cm cube is 40,000 g/cm³: the side is refused, the mass stays.
+    const s = setInput(block(), initialState(block(), older), { s: 0.1 });
+    expect(s.errors).toEqual({
+      s: 'Density would have to be 40,000 g/cm³, but it can be at most 100 g/cm³',
+    });
+    expect(s.result.given).toEqual(older);
+    expect(s.result.cleared).toEqual([]);
+  });
+
+  it('refuses it with a rule’s sentence when one speaks for those numbers', () => {
+    const sys = block((v) => (v.rho! > 23 ? 'Nothing is that dense.' : undefined));
+    const s = setValues(sys, initialState(sys, older), { s: 0.5 });
+    // 40 g in 0.125 cm³ is 320 g/cm³: past the range too, but the rule says why.
+    expect(s.errors).toEqual({ s: 'Nothing is that dense.' });
+    expect(s.result.rejected).toMatchObject({ id: 's', older: true });
+    expect(s.result.values.m).toBe(40);
+  });
+
+  it('still works out an older value again when the newer ones fix it', () => {
+    // A side typed after the volume: the volume is worked out again, not refused (a conflict
+    // nothing explains still clears the older value: see "calculator state").
+    const s = setValues(block(), initialState(block(), [{ id: 'V', value: 8 }]), { s: 3 });
+    expect(s.result.values.V).toBe(27);
+    expect(s.result.rejected).toBeUndefined();
   });
 });
 

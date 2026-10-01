@@ -21,8 +21,12 @@ export interface SolveResult {
   dropped: string[];
   /** The subset of `dropped` removed because they conflicted with newer input (tell the user). */
   cleared: string[];
-  /** The newest given, if it could not be accepted, with a reason to show the user. */
-  rejected?: { id: string; reason: string };
+  /**
+   * The newest given, if it could not be accepted, with a reason to show the user. `older`:
+   * the value is possible alone but not with the older inputs, which stay (a rule or a range
+   * says why).
+   */
+  rejected?: { id: string; reason: string; older?: boolean };
 }
 
 export interface TraceStep {
@@ -172,6 +176,41 @@ function affineOf(rel: Relation): Affine | undefined {
   return out ?? undefined;
 }
 
+/** A value as the student reads it: in the box's unit, to 6 significant figures. */
+function shownWithUnit(v: VariableDef, x: number): string {
+  const f = v.unitFactor ?? 1;
+  const unit = v.displayUnit ?? v.unit;
+  return `${formatNumber(Number((x / f).toPrecision(6)))}${unit && !/^[$¢%°]/.test(unit) ? ` ${unit}` : ''}`;
+}
+
+/**
+ * Why `x` can't be `v`'s value, in a sentence: a rule's own message when one speaks for the
+ * values with `x` in them ("No material is denser than …"), else the range it breaks
+ * ("Density would have to be 108,225 g/cm³, but it can be at most 100 g/cm³"). Undefined
+ * when `x` is not a number.
+ */
+function whyNot(system: System, v: VariableDef, x: number, values: Values): string | undefined {
+  if (!Number.isFinite(x)) return undefined;
+  const all = { ...values, [v.id]: x };
+  for (const r of system.relations) {
+    if (!r.message || !r.vars.every((id) => id in all)) continue;
+    try {
+      const text = r.message(all);
+      if (text) return text;
+    } catch {
+      // A message that needs values not known yet stays quiet.
+    }
+  }
+  const range = checkValue(v, x);
+  if (!range) return undefined;
+  const need = `${v.name} would have to be ${shownWithUnit(v, x)}, but it`;
+  if (v.max !== undefined && /^Must be at most/.test(range))
+    return `${need} can be at most ${shownWithUnit(v, v.max)}`;
+  if (v.min !== undefined && /^Must be at least/.test(range))
+    return `${need} can be at least ${shownWithUnit(v, v.min)}`;
+  return `${need} ${range[0]!.toLowerCase()}${range.slice(1)}`;
+}
+
 /**
  * A sum the unknown values can't reach, whatever they are within their ranges (a total of 10
  * with 12 already typed and the rest at least 0): the inputs can never be completed. Returns
@@ -218,10 +257,7 @@ function outOfReach(system: System, values: Values): string | undefined {
     if (open.length === 1) {
       const v = byId.get(open[0]!)!;
       const k = aff.coef.get(v.id)!;
-      const f = v.unitFactor ?? 1;
-      const unit = v.displayUnit ?? v.unit;
-      const shown = (x: number) =>
-        `${formatNumber(Number((x / f).toPrecision(6)))}${unit && !/^[$¢%°]/.test(unit) ? ` ${unit}` : ''}`;
+      const shown = (x: number) => shownWithUnit(v, x);
       const need = -rest / k;
       const over = need > v.max!;
       return `${v.name} would have to be ${shown(need)}, but it can be at ${over ? 'most' : 'least'} ${shown(over ? v.max! : v.min!)}`;
@@ -304,8 +340,12 @@ function candidatesFor(
 
 type Propagation =
   | { ok: true; values: Values; trace: TraceStep[] }
-  /** `said`: the reason is a rule's own sentence (its `message`), not a generic conflict. */
-  | { ok: false; reason: string; said?: boolean };
+  /**
+   * `said`: the reason is a rule's own sentence (its `message`), not a generic conflict.
+   * `why`: a sentence that explains it (a rule's message or the range a value would break),
+   * worked out only when asked (the search tries thousands of values).
+   */
+  | { ok: false; reason: string; said?: boolean; why?: () => string | undefined };
 
 /**
  * Repeatedly solves any relation with exactly one unknown until nothing changes. When a
@@ -354,7 +394,14 @@ function propagate(
           const hasCandidate =
             direct !== undefined && (!Array.isArray(direct) || direct.length > 0);
           if (hasCandidate) {
-            return { ok: false, reason: `Makes ${variable.name.toLowerCase()} impossible` };
+            const xs = (Array.isArray(direct) ? direct : [direct]).filter(Number.isFinite);
+            const at = { ...values };
+            return {
+              ok: false,
+              reason: `Makes ${variable.name.toLowerCase()} impossible`,
+              why: () =>
+                xs.map((x) => whyNot(system, variable, x, at)).find((t) => t !== undefined),
+            };
           }
           continue;
         }
@@ -652,21 +699,27 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       }
       return undefined;
     };
+    const message = unreachable || none ? said() : undefined;
     const trial: Propagation = unreachable
-      ? { ok: false, reason: said() ?? unreachable }
+      ? { ok: false, reason: message ?? unreachable, said: true }
       : none
-        ? { ok: false, reason: said() ?? 'These numbers can’t all be true together' }
+        ? message
+          ? { ok: false, reason: message, said: true }
+          : { ok: false, reason: 'These numbers can’t all be true together' }
         : propagated;
+    // Why an older input doesn't fit: a rule's sentence, or the range a value would break.
+    const why = trial.ok || isNewest ? undefined : trial.said ? trial.reason : trial.why?.();
     if (trial.ok) {
       known = trial.values;
       trace = trial.trace;
       kept.unshift({ id: g.id, value: normalizeValue(variable, g.value) });
-    } else if (trial.said && !isNewest) {
-      // A rule says why these numbers have no single answer (parallel lines): the newest
-      // input is refused with that sentence, and the older numbers stay as they were.
+    } else if (why !== undefined) {
+      // A rule or a range says why the newest input doesn't fit the older ones (parallel
+      // lines; no material denser than osmium): the newest is refused with that sentence, and
+      // the older numbers stay as they were. Only a conflict nothing explains clears the older.
       const newest = given[given.length - 1]!;
       const before = solve(system, given.slice(0, -1), previous);
-      return { ...before, rejected: { id: newest.id, reason: trial.reason } };
+      return { ...before, rejected: { id: newest.id, reason: why, older: true } };
     } else if (isNewest) {
       rejected = { id: g.id, reason: trial.reason };
     } else {

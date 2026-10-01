@@ -246,7 +246,8 @@ export function setInput(
     const first = target > from ? -1 : 1;
     // When only a typed value would move (nothing of its own refused), a step rarely cures
     // it: look a few steps out, not 400 (each try is a solve).
-    const reach = misfits(next, ids) ? 400 : 25;
+    // (A value refused only because it doesn't fit the older ones is the same case.)
+    const reach = misfits(next, ids) && !next.result.rejected?.older ? 400 : 25;
     for (let k = 1; k <= reach; k++) {
       for (const dir of [first, -first]) {
         const x = target + dir * k * slide.step;
