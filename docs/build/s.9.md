@@ -212,3 +212,6 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
 - `s.9.biomolecules~dehydration` (H100 need 1): built (it was waiting) as the plan has it, n, b,
   w, m, M, with `macromolecules` { macro: carbohydrate, count: n, bonds: b, water: w }. No
   stand-in.
+- `s.9.cellular-energy~equation` (H100 need 9): built (it was waiting) as the plan has it, g 1–3
+  and the nine counts, with `reaction` `many: true` (up to 18 molecules a formula, glucose as its
+  ring). No stand-in.

@@ -503,6 +503,85 @@ const MEMBRANE: ModuleDef[] = [
   },
 ];
 
+/** out = k₁ × a (+ k₂ × b): an atom or molecule count, worked forward. */
+const tally = (out: string, terms: [number, string][], how: string): Rule => {
+  const text = terms.map(([k, a]) => (k === 1 ? `{${a}}` : `${k} × {${a}}`)).join(' + ');
+  return forward(
+    `${out} = ${text.replace(/[{}]/g, '')}`,
+    `{${out}} = ${text}`,
+    out,
+    terms.map(([, a]) => a),
+    (v) => terms.reduce((s, [k, a]) => s + k * v[a]!, 0),
+    text,
+    how,
+  );
+};
+
+const ENERGY: ModuleDef[] = [
+  // ── Cellular energy: ATP, photosynthesis and cellular respiration (HS-LS1-5, 1-7, 2-3, 2-5) ──
+  {
+    id: 's.9.cellular-energy~equation',
+    title: 'The photosynthesis equation',
+    use: 'Use this for “How many CO₂ molecules make 2 glucose molecules, and are the atoms conserved?”',
+    assumptions: [
+      'Photosynthesis: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂. Respiration is the same equation read backward.',
+      'Atoms are rearranged, never made or lost: each element has as many atoms after as before.',
+    ],
+    variables: [
+      count('g', 'g', 'Glucose molecules made', 1, 3),
+      count('c', 'c', 'CO₂ molecules', 6, 18, true),
+      count('w', 'w', 'H₂O molecules', 6, 18, true),
+      count('o', 'o', 'O₂ molecules', 6, 18, true),
+      count('C1', 'C₁', 'Carbon atoms before', 6, 18, true),
+      count('C2', 'C₂', 'Carbon atoms after', 6, 18, true),
+      count('H1', 'H₁', 'Hydrogen atoms before', 12, 36, true),
+      count('H2', 'H₂', 'Hydrogen atoms after', 12, 36, true),
+      count('O1', 'O₁', 'Oxygen atoms before', 18, 54, true),
+      count('O2', 'O₂', 'Oxygen atoms after', 18, 54, true),
+    ],
+    ...rules(
+      tally('c', [[6, 'g']], 'Each glucose takes 6 CO₂.'),
+      tally('w', [[6, 'g']], 'Each glucose takes 6 H₂O.'),
+      tally('o', [[6, 'g']], 'Each glucose gives off 6 O₂.'),
+      tally('C1', [[1, 'c']], 'One carbon in each CO₂.'),
+      tally('C2', [[6, 'g']], 'Six carbons in each glucose.'),
+      tally('H1', [[2, 'w']], 'Two hydrogens in each H₂O.'),
+      tally('H2', [[12, 'g']], 'Twelve hydrogens in each glucose.'),
+      tally(
+        'O1',
+        [
+          [2, 'c'],
+          [1, 'w'],
+        ],
+        'Two oxygens in each CO₂ and one in each H₂O.',
+      ),
+      tally(
+        'O2',
+        [
+          [6, 'g'],
+          [2, 'o'],
+        ],
+        'Six oxygens in each glucose and two in each O₂.',
+      ),
+    ),
+    example: { g: 1, c: 6, w: 6, o: 6, C1: 6, C2: 6, H1: 12, H2: 12, O1: 18, O2: 18 },
+    startWith: ['g'],
+    representation: {
+      kind: 'reaction',
+      reactants: [
+        { formula: 'CO2', count: 'c' },
+        { formula: 'H2O', count: 'w' },
+      ],
+      products: [
+        { formula: 'C6H12O6', count: 'g' },
+        { formula: 'O2', count: 'o' },
+      ],
+      atoms: { C: ['C1', 'C2'], H: ['H1', 'H2'], O: ['O1', 'O2'] },
+      many: true,
+    },
+  },
+];
+
 const DIVISION: ModuleDef[] = [
   // ── The cell cycle and its control (HS-LS1-4) ──
   {
@@ -2099,6 +2178,7 @@ const IMMUNE: ModuleDef[] = [
 export const SCIENCE_9_MODULES: ModuleDef[] = [
   ...BIOMOLECULES,
   ...MEMBRANE,
+  ...ENERGY,
   ...DIVISION,
   ...INHERITANCE,
   ...DNA,
