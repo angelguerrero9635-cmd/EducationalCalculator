@@ -38,6 +38,11 @@ export function formatNumber(
      * 3), in decimals and scientific notation alike; a whole number stays whole.
      */
     worked?: number;
+    /**
+     * Significant figures for scientific notation alone (a step line's worked-out 5.93 × 10⁶,
+     * as its box shows it), decimals keeping theirs; `worked` wins when both are set.
+     */
+    scientificFigures?: number;
     /** The page's values, for an `exact` that works its form out from them. */
     values?: Values;
   },
@@ -60,7 +65,8 @@ export function formatNumber(
     const p = (variable.pi === 'fraction' ? asPiFraction(x) : undefined) ?? asPiMultiple(x);
     if (p) return p;
   }
-  if (variable?.scientific && x !== 0) return scientific(x, variable.worked);
+  if (variable?.scientific && x !== 0)
+    return scientific(x, variable.worked ?? variable.scientificFigures);
   if (variable?.fraction && !Number.isInteger(x)) {
     const f = asFraction(x, variable.fraction, variable.improper);
     if (f) return f;
@@ -77,7 +83,8 @@ export function formatNumber(
   if (Number.isInteger(x) && abs < 1e15) return minus(withSeparators(String(x)));
   // Very big or very small: scientific notation as it is written in class (3 × 10¹⁶), never
   // the calculator's 3e16.
-  if (abs >= 1e7 || abs < 1e-4) return scientific(x, variable?.worked);
+  if (abs >= 1e7 || abs < 1e-4)
+    return scientific(x, variable?.worked ?? variable?.scientificFigures);
   if (variable?.worked)
     return minus(withSeparators(String(Number((x * (1 + 1e-12)).toPrecision(variable.worked)))));
   // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals, or the
@@ -414,7 +421,7 @@ export function parseCents(text: string): number | undefined | 'invalid' {
 /** Fills a display template: `{id}` → the symbol (symbolic) or the formatted value / "?". */
 export function renderTemplate(
   template: string,
-  variables: readonly VariableDef[],
+  variables: readonly (VariableDef & { scientificFigures?: number })[],
   values?: Values,
 ): string {
   const byId = new Map(variables.map((v) => [v.id, v]));

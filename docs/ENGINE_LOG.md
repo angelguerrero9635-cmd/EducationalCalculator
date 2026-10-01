@@ -47,6 +47,14 @@ per review; each line names the finding and what the engine now does about it.
   keep μC, μF, pF and pC, with the main page's 10⁻⁶ and its “q = 4 μC = 4 × 10⁻⁶ C” line and
   ~capacitor's 10ⁿ lines (dropping them skipped the step they show). A relative tolerance in
   `solve.ts` (another agent's) would let these pages count in SI.
+- **Scientific notation in the lines kept 5 figures on 3-figure pages** ("check: 5.9308 × 10⁶ =
+  …" under "v = 5.93 × 10⁶ m/s"; "E = 6.626 × 10⁻³⁴ × (4.5732 × 10¹⁴)") → `formatNumber` takes
+  `scientificFigures`, figures for scientific notation alone, and buildSteps gives the lines and
+  checks the page's worked figures for every worked-out value that `withWorkedFigures` would
+  round (`lineVars`): 5.93 × 10⁶, 4.57 × 10¹⁴. Typed values read as typed, decimals keep their
+  extra figures (the lines still add up), and the 8-figure fallback for a line that would miss
+  its answer clears it. 19 pages' lines changed (s.10 mole, photon, ksp; s.11 gravitation,
+  electrostatics, electric potential, modern physics; s.12 dating, starlight, stellar evolution).
 
 ## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
 

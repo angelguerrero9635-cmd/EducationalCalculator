@@ -274,8 +274,9 @@ Report: `.review/new-sci-2/lesson-report.md`.
   re-solved before q the whole-number search over q finds nothing, and `solve` drops the older
   input there even though a rule's message speaks (it refuses the newest only on the `said`
   path). The K-from-v step has the work lines "v² = (5.931 × 10⁶)² = 3.517 × 10¹³" and
-  "K = 9.109 × 10⁻³¹ × 3.517 × 10¹³/(3.204 × 10⁻¹⁹)". Not done: v in 4 figures. A `scientific`
-  value always shows 5 ("5.9308 × 10⁶"; engine).
+  "K = 9.109 × 10⁻³¹ × 3.517 × 10¹³/(3.204 × 10⁻¹⁹)". A worked-out `scientific` value now reads
+  to the page's 3 figures in the lines and checks too ("5.93 × 10⁶"; engine); a typed one as
+  typed.
 - ~capacitor: the 5-figure pin on U is gone ("40.5 J"); V from 0.000001 V (35 μF holding 0.025
   μC: 7.143 × 10⁻⁴ V); the C-from-U step has "C = 0.03807/(8.1 × 10⁻⁵)". The example now shows
   U = 0.01903 J: the tie fix rounds up only values of 1 or more, and a value under 1
