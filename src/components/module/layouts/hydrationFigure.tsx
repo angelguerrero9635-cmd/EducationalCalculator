@@ -59,17 +59,18 @@ export function HydrationFigure({ scene }: { scene: HydrationScene }) {
               />,
             );
             if (j === 0) {
-              // δ− on the O end, δ+ on the H end of the top water, beside it (the ring has no
-              // room inside), saying which end.
+              // δ− on the O end, δ+ on the H end, saying which end, centred over the ring on
+              // a halo (beside the top water it ran onto the next water round).
               const mark = ion.charge > 0 ? 'δ− (O end)' : 'δ+ (H end)';
               parts.push(
                 <ChartText
                   key={`d${k}`}
-                  {...fitLabel(wx + s * 1.25, mark, chart.label, w, 'start', s * 1.25)}
-                  y={wy - s * 0.5}
+                  {...fitLabel(cx, mark, chart.label, w, 'middle')}
+                  y={Math.max(12, cy - R - s * 1.15)}
                   fontSize={chart.label}
                   fontWeight="700"
                   fill={ion.charge > 0 ? c.physMinus : c.physPlus}
+                  halo
                 >
                   {mark}
                 </ChartText>,

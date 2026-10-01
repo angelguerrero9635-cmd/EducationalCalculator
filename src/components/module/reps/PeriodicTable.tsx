@@ -40,29 +40,32 @@ export function tableSize(w: number, families = false) {
 const MIN_W = 24 * 18 + LEFT + 2;
 
 /**
- * The table at the width it has, or, on a phone, at MIN_W in a frame that scrolls sideways: at
- * 358 px the cells were 19 px and the symbols 8 px.
+ * A periodic table at the width it has, or, on a phone, at `minW` in a frame that scrolls
+ * sideways: at 358 px the cells were 19 px and the symbols 8 px. Used by the calculator's table,
+ * its trend shading and the explore figure.
  */
-function WideTable({
-  families,
+export function WideTable({
+  minW = MIN_W,
+  height,
   children,
 }: {
-  families?: boolean;
+  minW?: number;
+  height: (w: number) => number;
   children: (w: number) => ReactNode;
 }) {
   // Pre-rendered web pages start at a phone's width, as Canvas does.
   const [avail, setAvail] = useState(Platform.OS === 'web' ? 358 : 0);
-  const w = Math.max(avail, MIN_W);
+  const w = Math.max(avail, minW);
   return (
     <View
       style={{ width: '100%', alignItems: 'center' }}
       onLayout={(e) => setAvail(Math.min(Math.floor(e.nativeEvent.layout.width), chart.maxWidth))}
     >
-      {avail <= 0 ? null : avail >= MIN_W ? (
-        <View style={{ width: w, height: tableSize(w, families).h }}>{children(w)}</View>
+      {avail <= 0 ? null : avail >= minW ? (
+        <View style={{ width: w, height: height(w) }}>{children(w)}</View>
       ) : (
         <ScrollView horizontal style={{ width: avail }} contentContainerStyle={{ width: w }}>
-          <View style={{ width: w, height: tableSize(w, families).h }}>{children(w)}</View>
+          <View style={{ width: w, height: height(w) }}>{children(w)}</View>
         </ScrollView>
       )}
     </View>
@@ -379,7 +382,7 @@ export function PeriodicTable({ spec, calc }: { spec: Spec; calc: Calculator }) 
     typeof id === 'string' ? rep.named(id) : `${what} ${id}`;
   return (
     <View>
-      <WideTable families={spec.families}>
+      <WideTable height={(w) => tableSize(w, spec.families).h}>
         {(w) => (
           <TableArt
             w={w}

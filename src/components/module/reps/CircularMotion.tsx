@@ -7,7 +7,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, Caption, DragHandle, nowrap, useFrozen, useRep } from './common';
 import { G_EARTH, G_NEWTON, keplerPoint } from './hskMath';
 import { RAD, sig, SubLabel, Vec, withUnit } from './hskKit';
 import { Ball, url, usePaintIds } from './paint';
@@ -300,7 +300,25 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
           />
         ) : null}
         {star && e === 0 ? (
-          <SubLabel x={X(-a) + 2} y={Y(b) - 10} text={`a = ${sig(a)} AU`} anchor="start" w={w} />
+          // A circle: a is its radius, drawn straight up from the star (clear of the sectors
+          // and the planet) and labelled at its middle.
+          <>
+            <Line
+              x1={O.x}
+              y1={O.y - 12}
+              x2={O.x}
+              y2={Y(b)}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            <SubLabel
+              x={O.x + 6}
+              y={(O.y + Y(b)) / 2 + 4}
+              text={`a = ${sig(a)} AU`}
+              anchor="start"
+              w={w}
+            />
+          </>
         ) : (
           <>
             <SubLabel
@@ -407,7 +425,7 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
         // The way the page solves it: a from a typed period, or T from a typed orbit. The days
         // whole (1,461, as typed), not to 3 figures (1,460).
         typeof spec.semiMajor === 'string' && calc.status(spec.semiMajor) === 'derived'
-          ? `a³ = M × T² for a star of M = ${sig(M)} Suns: a = ∛(M × T²) = ∛(${sig(M)} × ${sig(T)}²) = ${sig(a)} AU`
+          ? `a³ = M × T² for a star of M = ${sig(M)} Suns: a = ${nowrap('∛(M × T²)')} = ${nowrap(`∛(${sig(M)} × ${sig(T)}²)`)} = ${sig(a)} AU`
           : `a³ = M × T² for a star of M = ${sig(M)} Suns: T = √(${sig(a)}³ ÷ ${sig(M)}) = ${sig(T)} years (${formatNumber(Math.round(T * 365.25))} days)`,
       ];
     }

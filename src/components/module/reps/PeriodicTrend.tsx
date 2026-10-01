@@ -15,7 +15,8 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { ELEMENTS, cellOf, element } from './chem';
 import { TRENDS, trendValue } from './chemTrends';
-import { Canvas, Caption, ChartText, useRep } from './common';
+import { Caption, ChartText, useRep } from './common';
+import { WideTable } from './PeriodicTable';
 import { reader } from './graphKit';
 
 type Spec = Extract<Representation, { kind: 'periodicTable' }>;
@@ -59,9 +60,10 @@ export function PeriodicTrend({ spec, calc }: { spec: Spec; calc: Calculator }) 
 
   return (
     <View>
-      <Canvas aspect={(w) => tableHeight(w).h / w}>
-        {({ w, h }) => {
-          const { cell } = tableHeight(w);
+      {/* On a phone the table keeps 24 px cells and scrolls sideways (symbols of 12 px). */}
+      <WideTable minW={24 * 18 + LEFT + 4} height={(w) => tableHeight(w).h}>
+        {(w) => {
+          const { cell, h } = tableHeight(w);
           const fs = Math.min(12, cell * 0.6);
           const right = LEFT + 18 * cell;
           const bottom = TOP + 7 * cell;
@@ -282,7 +284,7 @@ export function PeriodicTrend({ spec, calc }: { spec: Spec; calc: Calculator }) 
             </View>
           );
         }}
-      </Canvas>
+      </WideTable>
       <Caption>
         {[
           el

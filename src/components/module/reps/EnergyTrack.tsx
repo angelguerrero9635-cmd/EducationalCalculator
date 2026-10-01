@@ -60,10 +60,12 @@ export function EnergyTrack({ spec, calc }: { spec: EnergyTrackSpec; calc: Calcu
     u !== undefined && Math.abs(trackY(u) - frac) < 0.02
       ? u
       : trackAt(frac, u === undefined ? 1 : pieceOf(u));
+  // Only the typed ones hold: a worked-out E (from m and the top) follows them, and pinning it
+  // would make E typed and m worked out from it.
   const pins = [spec.mass, spec.top, spec.total].filter((x): x is string => typeof x === 'string');
   const setHeight = (x: number) =>
     calc.set(
-      { ...rep.pin(pins), [spec.height]: rep.snapTo(spec.height, Math.max(0, x)) },
+      { ...rep.pinTyped(pins), [spec.height]: rep.snapTo(spec.height, Math.max(0, x)) },
       rep.slide(spec.height),
     );
   const hKnown = rep.known(spec.height);
@@ -443,7 +445,7 @@ export function EnergyTrack({ spec, calc }: { spec: EnergyTrackSpec; calc: Calcu
             : []),
           ...(spec.mass !== undefined && spec.speed
             ? [
-                `${sym(spec.kinetic)} = 1/2 × ${massSym()} × ${sym(spec.speed)}² = 1/2 × ${massText()} × (${rep.value(spec.speed)})² = ${rep.value(spec.kinetic)}`,
+                `${sym(spec.kinetic)} = ½ × ${massSym()} × ${sym(spec.speed)}² = ½ × ${massText()} × (${rep.value(spec.speed)})² = ${rep.value(spec.kinetic)}`,
               ]
             : []),
           'Going down, potential energy turns into kinetic energy; the total stays the same',

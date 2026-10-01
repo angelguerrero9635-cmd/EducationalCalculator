@@ -304,3 +304,31 @@ From `.review/hs-page-s/page-report-s9-10.md` (science role):
 - Left for the shared role (components): the mitotic-index pie label and #418, `drag-p`
   snapping to 0.01 (AlleleFrequencies), population-ecology's caret caption and 4-decimal values
   (FunctionGraph), herd-immunity's 84.2105% (PercentBar), the pump's K⁺ (Membrane).
+
+### Second page-review fixes
+
+From `.review/hs-page2-s/page-report2-science.md` (science, s.9–s.12; the shared parts are
+listed here once):
+
+- `~mitotic-index` React #418: the pre-rendered bar said "Home" (its route id had lost its
+  trailing "index") while the live page named the skill. `skillPageId` (selectors) restores the
+  id for the page, its back label and its title; a build of the page loads with no error at 390,
+  1024 and dark. The interphase card sits on its plate; a pie's fifth part is red, so prophase
+  (amber) and telophase no longer share one brown in dark mode.
+- Observe table (competition, hormones, membrane-potential, every observe page): one type size
+  (13 px) for headers, row names and readings; the row-name column holds its width (it was
+  `flex: 0` with a width, a 0% basis on the web, so it shrank to 45 px and wrapped "Species /
+  A"); equal columns that never grow to their text, so readings sit under their headers; a
+  twelve-month table scrolls sideways; one row reads its name with its unit, "Membrane
+  potential (mV)".
+- Drags pin only typed values (`rep.typed`, `rep.pinTyped` in `useRep`): gel has no handle on
+  a band worked out from the others (drag-b dropped).
+- `~pump`: "K⁺ in" at its arrow's tail on a halo; the side counts read "20 Na⁺", not "o = 20
+  Na⁺". Ecosystem pyramid: level names at label size in full ink (dark mode).
+- `s.9.population-ecology`: t ≈ 4.39 and N(6) ≈ 691 (a science page's FunctionGraph decimals to
+  3 figures).
+- Grades 9–12 science pictures write worked-out values to 3 significant figures, in plain digits
+  between 10⁻⁴ and 10⁷ (`useRep`); typed values and variables with their own figures unchanged.
+- Not done: `s.9.evolution-evidence`'s expected counts after a drag (344.45 people). They are
+  N × p², worked out from a p on its 0.01 step; no step of p makes all three whole, and the
+  steps already add "(about 344 people)".

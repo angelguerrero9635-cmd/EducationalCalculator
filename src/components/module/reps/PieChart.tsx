@@ -51,7 +51,9 @@ function wrap(text: string, width: number, size = NAME) {
 }
 
 /** Fills for parts whose colors mean nothing but "a different part" (each is named beside it). */
-const DEFAULT_FILLS = ['blockBlue', 'chartSecond', 'blockGreen', 'purple', 'orange', 'blockRed'];
+// The fifth is red, not orange: in dark mode orange and the second's amber were one brown
+// (mitotic index: prophase and telophase).
+const DEFAULT_FILLS = ['blockBlue', 'chartSecond', 'blockGreen', 'purple', 'blockRed', 'orange'];
 
 /** A part's fill: the palette color the page names for it, or a distinct color of its own. */
 function partFill(i: number, colors: string[] | undefined, c: Palette) {
@@ -316,15 +318,15 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
             const th = lines.length * LINE + 8;
             const x = full ? cx - tw / 2 : Math.max(cx - r + 6, Math.min(px - tw / 2, cx - tw - 4));
             const stage = spec.stages?.[big];
-            // The stage card above the pie when there is room there, else above the plate.
-            const above = cy - r - PIE_ICON_W >= 0;
+            // The stage card sits on the plate's top edge, beside the name it shows (above the
+            // pie's rim it floated, unlabelled, at the top left).
             inside = (
               <G>
                 {stage ? (
                   <PieStageIcon
                     stage={stage}
-                    x={(above ? cx - r * 0.5 : x + tw / 2) - PIE_ICON_W / 2}
-                    y={above ? cy - r - 38 : py - th / 2 - 36}
+                    x={x + tw / 2 - PIE_ICON_W / 2}
+                    y={py - th / 2 - 36}
                   />
                 ) : null}
                 <Rect

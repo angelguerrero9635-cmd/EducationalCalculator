@@ -135,7 +135,8 @@ function Energy({
   const irX = [160, 205, 250, 295];
   const back = level.back;
   // The particles' label sits past the last infrared ray that escapes to space.
-  const labelX = Math.max(...irX.slice(0, irX.length - back)) + 12;
+  const escapeX = Math.max(...irX.slice(0, irX.length - back));
+  const labelX = escapeX + 12;
   // The rays sent back: absorbed by a molecule above them and re-emitted down.
   const rays: ReactNode[] = irX.map((x, i) => {
     const absorbed = i >= irX.length - back;
@@ -228,23 +229,29 @@ function Energy({
           <Circle cx={x + 10} cy={y} r={5} fill={url(ids.o)} />
         </G>
       ))}
+      {/* The level names the scene on the ground strip, under the rays: in the air it covered
+          a CO₂ molecule. */}
       <HaloText
         x={BOARD_W - 6}
-        y={AIR_TOP + 36}
+        y={GROUND + 20}
         text={level.label}
         c={c}
         size={chart.label}
         bold
         anchor="end"
       />
+      {/* "infrared out" in space, where the infrared leaves: right of the last ray that
+          escapes, or, when all four escape, under "space" on a halo across its own last ray
+          (left of the rays it hit the Sun). On the ground strip it named the soil. */}
       <HaloText
-        x={250}
-        y={GROUND + 18}
+        x={back > 0 ? escapeX + 8 : BOARD_W - 6}
+        y={back > 0 ? 26 : 40}
         text="infrared out"
         c={c}
         size={chart.label}
         fill={c.spectrumRed}
         bold
+        anchor={back > 0 ? 'start' : 'end'}
       />
       {back > 0 ? (
         <HaloText

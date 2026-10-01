@@ -283,11 +283,39 @@ export function useRep(calc: Calculator) {
   const early = isEarlyGrade(module.id);
   // K–5 captions name values in words ("Rows: 3"), never "r = 3".
   const words = early || isElementary(module.id);
-  const valueText = (id: string, withUnit: boolean) => {
+  const typedOf = (id: string) => {
+    const st = calc.status(id);
+    return st === 'given' || st === 'example';
+  };
+  // Grades 9–12 science: a worked-out value in a picture reads to 3 significant figures, as the
+  // picture's own working does ("V = 71,900 V", "T = 0.314 s", "3.21 × 10⁹ years"), not at the
+  // box's 4 decimals. A typed value reads as typed; a variable with its own figures keeps them.
+  const threeFigures = /^s\.(9|1[0-2])\./.test(module.id);
+  const pictureNumber = (id: string, x: number) => {
     const v = byId.get(id)!;
+    const plain =
+      !threeFigures ||
+      typedOf(id) ||
+      x === 0 ||
+      !Number.isFinite(x) ||
+      v.integer ||
+      v.sigFigs ||
+      v.figures ||
+      v.pi ||
+      v.fraction ||
+      v.repeating ||
+      v.full ||
+      v.allowed;
+    if (plain) return formatNumber(x, v);
+    const r = Number(x.toPrecision(3));
+    const abs = Math.abs(r);
+    // Scientific form only where plain digits would be too long (71,900 V, not 7.19 × 10⁴ V).
+    return formatNumber(r, { ...v, scientific: v.scientific && (abs >= 1e7 || abs < 1e-4) });
+  };
+  const valueText = (id: string, withUnit: boolean) => {
     const x = values[id];
     const unit = units.display[id];
-    const shown = x === undefined ? '?' : formatNumber(units.toDisplay(id, x), v);
+    const shown = x === undefined ? '?' : pictureNumber(id, units.toDisplay(id, x));
     if (!withUnit || !unit || x === undefined) return shown;
     // $ goes before the number; ¢, % and ° go right after it; other units after a space.
     if (unit === '$') return dollarsOf(units.toDisplay(id, x), shown);
@@ -333,6 +361,17 @@ export function useRep(calc: Calculator) {
     /** Current values of `ids` that are known, for pinning them during a drag. */
     pin: (ids: string[]): Values =>
       Object.fromEntries(ids.flatMap((id) => (values[id] === undefined ? [] : [[id, values[id]]]))),
+    /** Whether the student typed `id` (or the example gave it), not worked it out. */
+    typed: (id: string) => typedOf(id),
+    /**
+     * Current values of the `ids` the student typed, for pinning them during a drag. A worked-out
+     * value is left to follow: pinning it would turn it into a typed one and make the solver work
+     * a typed value out from it (a circuit's R worked out from V and I).
+     */
+    pinTyped: (ids: string[]): Values =>
+      Object.fromEntries(
+        ids.flatMap((id) => (values[id] === undefined || !typedOf(id) ? [] : [[id, values[id]]])),
+      ),
     /**
      * Snaps a formula-unit value to the variable's step in the shown unit, within its limits
      * (taken from the unit context's system, which is always in formula units).

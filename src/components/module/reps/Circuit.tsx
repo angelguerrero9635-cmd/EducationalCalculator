@@ -301,7 +301,8 @@ export function Circuit({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   const step = vVar.step ?? 0.5;
                   calc.set(
                     {
-                      ...rep.pin([
+                      // The typed resistors hold; a worked-out one (R = V ÷ I) follows.
+                      ...rep.pinTyped([
                         ...new Set([...spec.bulbs, ...(spec.count ? [spec.count] : [])]),
                       ]),
                       ...(spec.switch ? rep.pin([spec.switch]) : {}),

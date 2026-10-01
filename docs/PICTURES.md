@@ -220,6 +220,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `lineSystem`       | `shade` (a line), `test`, `sum`, `fixed` | inequalities: half-planes, dashed < >, overlap; elimination sum line (H16)    |
 | `linearFunction`   | `shade`                                  | one inequality y < mx + b: its half-plane shaded, the boundary dashed (H16)   |
 | `integerLine`      | `compound: { join, closed?, center? }`   | and / or between two bounds; abs(x − c) < d as a distance from c (H17)        |
+| `integerLine`      | `names: [first, second]` (with `second`) | each point named with its number under the line: "reactants 188"              |
 | `linearFunction`   | `shade: { sign, flip? }`                 | the sign box's side (1 < 2 ≤ 3 > 4 ≥), reversed while `flip` < 0 (H90)        |
 | `linearFunction`   | `test: { x, y }`                         | a point tested in the inequality: solid when true, worked below (H105)        |
 | `lineSystem`       | `lines[i].shade: { sign, flip? }`        | each line's half-plane from its sign box; ax + by (sign) c, `flip: 'b'` (H90) |

@@ -15,6 +15,12 @@ type Spec = Extract<Representation, { kind: 'wave' }>;
 /** Tallest crest drawn (px above the middle line); a wave with no amplitude value uses 36. */
 const MAX_AMP = 70;
 const PLAIN_AMP = 36;
+/**
+ * The least crest drawn to scale; a smaller amplitude (2 cm on a 1.5 m wave) is drawn on a
+ * height scale of its own, STRETCHED px tall, marked "not to scale".
+ */
+const MIN_AMP = 30;
+const STRETCHED = 40;
 /** Room above the crests for the wavelength bracket and its label. */
 const TOP = 42;
 /** Room under the troughs for the handle. */
@@ -64,21 +70,27 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // Room to the right of the wave for the amplitude arrow and its label.
   const side = ampText.length * chart.label * 0.58 + 34;
 
-  /** Pixels per shown unit, the crest height, and the canvas height, for a width. */
+  /**
+   * Pixels per shown unit across and up (one scale, unless the amplitude would be a flat strip),
+   * the crest height, and the canvas height, for a width.
+   */
   const layout = (w: number) => {
     const across = (w - 16 - side) / (cycles * scale.value.L);
-    const perUnit = spec.amplitude ? Math.min(across, MAX_AMP / scale.value.A) : across;
-    const amp = spec.amplitude ? A * perUnit : PLAIN_AMP;
-    const tall = spec.amplitude ? Math.max(amp, scale.value.A * perUnit) : PLAIN_AMP;
+    const shared = spec.amplitude ? Math.min(across, MAX_AMP / scale.value.A) : across;
+    const stretched = !!spec.amplitude && scale.value.A * shared < MIN_AMP;
+    const perUnit = stretched ? across : shared;
+    const perY = stretched ? STRETCHED / scale.value.A : shared;
+    const amp = spec.amplitude ? A * perY : PLAIN_AMP;
+    const tall = spec.amplitude ? Math.max(amp, scale.value.A * perY) : PLAIN_AMP;
     const half = Math.max(tall, 14);
-    return { perUnit, amp, mid: TOP + half, h: TOP + 2 * half + BOTTOM };
+    return { perUnit, perY, stretched, amp, mid: TOP + half, h: TOP + 2 * half + BOTTOM };
   };
 
   return (
     <View>
       <Canvas aspect={(w) => layout(w).h / w}>
         {({ w, h }) => {
-          const { perUnit, amp, mid } = layout(w);
+          const { perUnit, perY, stretched, amp, mid } = layout(w);
           const waveW = cycles * L * perUnit;
           const x0 = Math.max(16, (w - side - waveW) / 2);
           const x1 = x0 + waveW;
@@ -176,6 +188,17 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 >
                   {ampText}
                 </ChartText>
+                {stretched ? (
+                  <ChartText
+                    x={w - 4}
+                    y={h - 4}
+                    fontSize={chart.tiny}
+                    fill={c.chartMuted}
+                    textAnchor="end"
+                  >
+                    heights not to scale
+                  </ChartText>
+                ) : null}
               </Svg>
               {known ? (
                 <DragHandle
@@ -204,8 +227,7 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             // The trough moves down as far as the crest moves up.
                             [spec.amplitude]: rep.snapTo(
                               spec.amplitude,
-                              Math.max(0, start.current.A + dy / perUnit) *
-                                rep.factor(spec.amplitude),
+                              Math.max(0, start.current.A + dy / perY) * rep.factor(spec.amplitude),
                             ),
                           }
                         : {}),

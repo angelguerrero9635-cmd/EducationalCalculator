@@ -214,6 +214,28 @@ function PointLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fill={c.chartHighlight}
                   opacity={aKnown ? 1 : 0.4}
                 />
+                {/* Each point named with its number under the line ("reactants 188"). */}
+                {spec.names && q && !vertical
+                  ? (
+                      [
+                        [p, a, aKnown, spec.names[0], c.chartHighlight],
+                        [q, b, bKnown, spec.names[1], c.chartInk],
+                      ] as const
+                    ).map(([pt, x, known, name, fill]) => (
+                      <ChartText
+                        key={name}
+                        x={pt.x}
+                        y={lineAt + 38}
+                        fontSize={chart.label}
+                        fontWeight="700"
+                        fill={fill}
+                        textAnchor="middle"
+                        halo
+                      >
+                        {known && x !== undefined ? `${name} ${formatNumber(x)}` : `${name} ?`}
+                      </ChartText>
+                    ))
+                  : null}
                 {q ? (
                   <Circle cx={q.x} cy={q.y} r={6} fill={c.chartInk} opacity={bKnown ? 1 : 0.4} />
                 ) : null}

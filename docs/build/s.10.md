@@ -317,3 +317,17 @@ From `.review/hs-page-s/page-report-s9-10.md` (science role):
   dilution label, phase-colligative ΔT labels and units, the pH caret and plain-number format,
   the salt scene's δ labels (hydration figure), from-tables' point labels, the periodic table's
   size at 390 px.
+
+### Second page-review fixes
+
+From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.md):
+
+- `s.10.periodic-trends` family: the trend table keeps 24 px cells and scrolls sideways at
+  phone widths (`WideTable`, shared with the calculator's table and the explore figure).
+- `~base` (and the main page, `~from-ph`): with the concentration typed, the pH handle sets it
+  to 2 figures (2.1 × 10⁻¹ mol/L, pH 13.32), not 5.6234 × 10⁻¹.
+- `~from-tables`: integerLine `names` writes "reactants 188" and "products 214" under the points.
+- `~water` (salt): δ+ (H end) and δ− (O end) centred over each ring on a halo.
+- `s.10.bonding`: n_H, n_C, n_N, n_O. `~photon`: "656 nm (visible)" on a halo, not a chip.
+- `s.10.gas-laws`: "R = 0.0821 L·atm/(mol·K)." then "PV = nRT, which gives …", which the caption
+  no longer stacks at each "=".

@@ -1280,6 +1280,11 @@ export type Representation =
       opposite?: string;
       absolute?: string;
       second?: string;
+      /**
+       * Names for `value` and `second` written under their points with their numbers
+       * ("reactants 188", "products 214"), across only.
+       */
+      names?: [string, string];
       change?: string;
       min: number;
       max: number;
