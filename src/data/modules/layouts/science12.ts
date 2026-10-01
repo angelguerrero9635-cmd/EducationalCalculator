@@ -882,7 +882,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
           'A big eruption sends sulfur gas high into the air, where it forms tiny droplets; smoke from big fires adds particles too.',
           'They reflect sunlight before it reaches the ground, which cools Earth for a year or two.',
         ],
-        greenhouse: { view: 'energy', co2: 'today' },
+        greenhouse: { view: 'energy', co2: 'today', particles: true },
       },
     ],
   },
