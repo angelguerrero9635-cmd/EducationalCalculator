@@ -171,23 +171,6 @@ const seesawFar = fromPage(
 
 // ─── H107.3 rotor: s.11.rotation~rotational-inertia, ~angular-acceleration, ~angular-speed ──
 
-const inertia = fromPage(
-  's.11.rotation~rotational-inertia',
-  'g.s-11-rotation-rotational-inertia',
-  'Hoop, disk or ball: torque and rotational inertia',
-  {
-    kind: 'rotor',
-    shape: 'c',
-    mass: 'm',
-    radius: 'r',
-    inertia: 'I',
-    torque: 't',
-    acceleration: 'a',
-    compare: true,
-  },
-  { pictureLabels: [] },
-);
-
 const SPIN_PICTURE: Representation = {
   kind: 'rotor',
   start: 'u',
@@ -599,7 +582,6 @@ export const HS3A_GALLERY_MODULES: ModuleDef[] = [
   door,
   seesaw,
   seesawFar,
-  inertia,
   spinUp,
   spinDown,
   steadySpin,

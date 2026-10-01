@@ -1032,15 +1032,6 @@ const F_CURVE: ModuleDef[] = [
     kind: 'normalCurve',
     f: { df1: 2, df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
   }),
-  fromPage(
-    'm.12.anova~two-variances',
-    'g.m12-anova-two-variances-f-curve',
-    'Two variances: both tails of the F curve',
-    {
-      kind: 'normalCurve',
-      f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P', tails: 'two' },
-    },
-  ),
 ];
 
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
