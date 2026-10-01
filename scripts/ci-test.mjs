@@ -232,6 +232,20 @@ const heavy = [
   'src/data/modules/__tests__/modules.test.ts',
   'src/data/modules/__tests__/sampling.test.ts',
 ];
+// The format check CI runs first (a misformatted doc stopped three nightly runs before any
+// test): the files this push changed, or everything on a full run.
+{
+  const files = full ? ['.'] : [...new Set(changed)].filter((f) => existsSync(f));
+  if (files.length) {
+    console.log('▶ prettier --check');
+    const r = dry
+      ? { status: 0 }
+      : spawnSync('npx', ['prettier', '--check', '--ignore-unknown', ...files], {
+          stdio: 'inherit',
+        });
+    if (r.status !== 0) process.exit(r.status ?? 1);
+  }
+}
 run('every suite but the two heavy ones', [
   '--ci',
   '--testPathIgnorePatterns',

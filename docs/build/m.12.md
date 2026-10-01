@@ -353,12 +353,11 @@ None: every planned page is built, some with an interim picture (below).
 
 - `m.12.vectors-3d~cross`: the |u × v| step says why a length is an area (|u||v| sin θ, base
   times height).
-- `m.12.matrix-transformations` main and `~compose`: rule lines read "c = cos(θ)", not
-          "cos(θ°)" (the engine adds ° to the numbers: cos(30°)). `~compose`: at a multiple of 30° or
-          45° (not of 90°) the x″ and y″ steps add the exact line ("x″ = 2 − √3", "y″ = 1 + 2√3"), and c
-          and s note their exact value ("(= √3/2 exactly)"). The 4-decimal option did not help (0.8660 ×
-          2 is still 1.732), so only the exact line is added. `~identify`: the use line asks "Which
-          transformation does [[0, 1], [1, 0]] make?".
+- `m.12.matrix-transformations`:
+  - Main and `~compose`: rule lines read c = cos(θ), not cos(θ°); the engine adds the degrees.
+  - `~compose` at multiples of 30° or 45°: the x″ and y″ steps add an exact line (x″ = 2 − √3).
+  - c and s note their exact value (= √3/2 exactly); 4 decimals alone did not fix the mismatch.
+  - `~identify`: the use line asks which transformation [[0, 1], [1, 0]] makes.
 - `m.12.polar-conics`: the "°" is dropped after θ in every rule (main, `~sine`, `~parabola`,
   `~rotation`, `~rotated-equation`). n is "Number before cos θ" (sin θ), and assumption 3 says
   - cos θ is n = −1. `~ellipse`: R = k ÷ (1 − e) and S = k ÷ (1 + e) from the typed k ("R = 3 ÷
