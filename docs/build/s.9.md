@@ -215,3 +215,8 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
 - `s.9.cellular-energy~equation` (H100 need 9): built (it was waiting) as the plan has it, g 1–3
   and the nine counts, with `reaction` `many: true` (up to 18 molecules a formula, glucose as its
   ring). No stand-in.
+- `s.9.mitosis-meiosis~chromosome-count` (H100 need 3, H109 part 3): built (it was waiting) as the
+  plan has it, 2n 2–100 (multipleOf 2), n, X, Z, C, with `cellDivision` { diploid, haploid,
+  chromatids, zygote, combinations }. No stand-in.
+- `s.9.mitosis-meiosis~mitotic-index` (H109 part 3): its `pieChart` adds `stages` (interphase to
+  telophase), a phase card beside each part. No stand-in.
