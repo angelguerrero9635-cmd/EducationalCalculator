@@ -704,6 +704,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
       sd: 's',
       axis: 'Value',
       shade: { from: 'lo', to: 'hi', outside: true, area: 'P' },
+      // A cutoff's drag moves d (the mean held), so the other cutoff follows.
+      keep: ['m', 's', 'N'],
     },
   }),
   page({
@@ -1853,7 +1855,6 @@ export const MATH_11_MODULES: ModuleDef[] = [
     example: { b: 3, c: -8, y: 2, u: 9, x1: 9, x2: -1 },
     startWith: ['b', 'c', 'y'],
     equation: 'log_{b}(x) + log_{b}(x + {c}) = {y}',
-    pictureLabels: ['u'],
     representation: {
       kind: 'functionGraph',
       family: 'logSum',
@@ -2265,6 +2266,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
       parent: true,
       at: { x: 'X', y: 'Y' },
       marks: ['asymptotes'],
+      // The key point's drag sets the shifts h and k; the point on the parent stays put.
+      keep: ['p', 'a', 'h', 'k'],
     },
   }),
 
@@ -2365,7 +2368,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     variables: [
       V('a', 'a', 'Real part of the first', { integer: true, min: -10, max: 10 }),
       V('b', 'b', 'Imaginary part of the first', { integer: true, min: -10, max: 10 }),
-      V('sg', 's', 'Add (1) or subtract (−1)', { allowed: [-1, 1], min: -1, max: 1 }),
+      V('sg', 's', 'Add (1) or subtract (2)', { allowed: [1, 2], min: 1, max: 2, integer: true }),
       V('c', 'c', 'Real part of the second', { integer: true, min: -10, max: 10 }),
       V('d', 'd', 'Imaginary part of the second', { integer: true, min: -10, max: 10 }),
       V('C', 'C', 'Real part added', { integer: true, min: -10, max: 10, derived: true }),
@@ -2380,28 +2383,38 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     rules: [
       derive(
-        'C = s × c',
+        'C = ±c',
         'C',
         ['sg', 'c'],
-        '{C} = {sg} × {c}',
-        (v) => v.sg! * v.c!,
-        '{sg} × {c}',
+        '{C} = {c} × (1 or −1, as {sg} says)',
+        // 1 for +, −1 for − (s is 1 or 2): one smooth rule, so the search reads it right.
+        (v) => v.c! * (3 - 2 * v.sg!),
+        (v) => (v.sg === 2 ? '−1 × {c}' : '{c}'),
         (v) =>
-          v.sg! < 0
+          v.sg === 2
             ? 'Subtracting: change the sign of the second real part.'
             : 'Adding: the second real part as it is.',
+        {
+          check: (v) =>
+            v.sg === 2 ? `${fmt(v.C!)} = −1 × ${par(v.c!)}` : `${fmt(v.C!)} = ${fmt(v.c!)}`,
+        },
       ),
       derive(
-        'D = s × d',
+        'D = ±d',
         'D',
         ['sg', 'd'],
-        '{D} = {sg} × {d}',
-        (v) => v.sg! * v.d!,
-        '{sg} × {d}',
+        '{D} = {d} × (1 or −1, as {sg} says)',
+        // 1 for +, −1 for − (s is 1 or 2): one smooth rule, so the search reads it right.
+        (v) => v.d! * (3 - 2 * v.sg!),
+        (v) => (v.sg === 2 ? '−1 × {d}' : '{d}'),
         (v) =>
-          v.sg! < 0
+          v.sg === 2
             ? 'Subtracting: change the sign of the second imaginary part.'
             : 'Adding: the second imaginary part as it is.',
+        {
+          check: (v) =>
+            v.sg === 2 ? `${fmt(v.D!)} = −1 × ${par(v.d!)}` : `${fmt(v.D!)} = ${fmt(v.d!)}`,
+        },
       ),
       derive(
         'p = a + C',
@@ -2425,17 +2438,17 @@ export const MATH_11_MODULES: ModuleDef[] = [
             [v.a, v.c, v.d, v.sg].some((x) => x === undefined)
               ? []
               : [
-                  `(${cx(v.a!, v.b!)}) ${v.sg! < 0 ? '−' : '+'} (${cx(v.c!, v.d!)}) = ${cx(
-                    v.a! + v.sg! * v.c!,
-                    v.b! + v.sg! * v.d!,
+                  `(${cx(v.a!, v.b!)}) ${v.sg === 2 ? '−' : '+'} (${cx(v.c!, v.d!)}) = ${cx(
+                    v.a! + (3 - 2 * v.sg!) * v.c!,
+                    v.b! + (3 - 2 * v.sg!) * v.d!,
                   )}`,
                 ],
         },
       ),
     ],
-    example: { a: 4, b: -2, sg: -1, c: -1, d: 5, C: 1, D: -5, p: 5, q: -7 },
+    example: { a: 4, b: -2, sg: 2, c: -1, d: 5, C: 1, D: -5, p: 5, q: -7 },
     startWith: ['a', 'b', 'sg', 'c', 'd'],
-    equation: '({a} + {b}i) ± ({c} + {d}i) = {p} + {q}i',
+    equation: '({a} + {b}i) {sg:op} ({c} + {d}i) = {p} + {q}i',
     representation: {
       kind: 'complexPlane',
       z: { re: 'a', im: 'b' },
@@ -2527,6 +2540,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
       kind: 'complexPlane',
       z: { re: 'p', im: 'q' },
       conjugate: true,
+      fixed: true,
     },
   }),
 
@@ -3897,6 +3911,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
       kind: 'complexPlane',
       z: { modulus: 1, argument: 'A' },
       polar: true,
+      fixed: true,
     },
   }),
   page({
