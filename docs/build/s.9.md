@@ -203,3 +203,9 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   `s.9.reproduction-development`.
 - **A biome map** (or biome icons for sort cards): `s.9.biomes`, ~land.
 - **Search corpus**: rerun `scripts/build-match-corpus.mjs` for the 23 new pages.
+
+### Pictures placed (H89–H110)
+
+- `s.9.membrane-transport~transport-types` (H100 need 10, H104 part 1): the five bins wear the
+  transport icons (simple diffusion, channel protein, aquaporin, protein pump, vesicle transport)
+  and an `intro` says what they show; the cards stay text. No stand-in (text bins before).

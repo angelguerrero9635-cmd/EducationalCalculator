@@ -188,31 +188,38 @@ const MEMBRANE: LayoutDef[] = [
       'Facilitated diffusion and osmosis are passive but go through a channel or carrier protein.',
     ],
     question: 'How does it cross the membrane?',
+    intro:
+      'Each group’s picture shows the membrane, outside above, and how the particles cross it.',
     bins: [
       {
         id: 'simple',
         label: 'Simple diffusion',
         why: 'Small nonpolar molecules slip between the phospholipids, from more to fewer.',
+        figure: { kind: 'icon', icon: 'simple diffusion' },
       },
       {
         id: 'facilitated',
         label: 'Facilitated diffusion',
         why: 'A channel or carrier protein lets it through, still from more to fewer, with no ATP.',
+        figure: { kind: 'icon', icon: 'channel protein' },
       },
       {
         id: 'osmosis',
         label: 'Osmosis',
         why: 'Water crosses, through aquaporins, toward the side with more solute.',
+        figure: { kind: 'icon', icon: 'aquaporin' },
       },
       {
         id: 'active',
         label: 'Active transport',
         why: 'A pump moves it from fewer to more, against the gradient, spending ATP.',
+        figure: { kind: 'icon', icon: 'protein pump' },
       },
       {
         id: 'bulk',
         label: 'Bulk transport',
         why: 'Large particles or many molecules move inside vesicles made from membrane.',
+        figure: { kind: 'icon', icon: 'vesicle transport' },
       },
     ],
     cards: [
