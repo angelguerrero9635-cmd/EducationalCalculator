@@ -570,6 +570,15 @@ export interface ParentLink {
 const HOME: ParentLink = { label: 'Home', target: { pathname: '/' } };
 
 /**
+ * A skill page's id from its route. Static rendering drops a trailing "index" from the path
+ * ("s.9.mitosis-meiosis~mitotic-index" arrives as "…~mitotic-"), so the pre-rendered page (and
+ * its bar's back label and title) named nothing and the live page hydrated over it (React #418):
+ * put it back. The page and the bar both read the id through this.
+ */
+export const skillPageId = (raw: string) =>
+  !getSkill(raw) && !getProblemType(raw) && getProblemType(`${raw}index`) ? `${raw}index` : raw;
+
+/**
  * The page one level up from a stack screen, for the navigation bar's back button:
  * skill → its grade, topic → its course, course → its field, field → its division.
  */
@@ -579,7 +588,8 @@ export function parentOf(screen: string, params: Record<string, unknown>): Paren
     case 'skill/[id]': {
       // A problem type, or a main lesson with problem types → the skill's lessons page;
       // any other lesson → its strand.
-      const skill = getSkill(p('id')) ?? getProblemType(p('id'))?.skill;
+      const id = skillPageId(p('id'));
+      const skill = getSkill(id) ?? getProblemType(id)?.skill;
       if (!skill) return HOME;
       return problemTypes(skill.id).length
         ? { label: skill.title, target: lessonsRoute(skill.id) }
@@ -631,8 +641,10 @@ export function parentOf(screen: string, params: Record<string, unknown>): Paren
 export function screenTitle(screen: string, params: Record<string, unknown>): string | undefined {
   const p = (k: string) => (params[k] === undefined ? '' : String(params[k]));
   switch (screen) {
-    case 'skill/[id]':
-      return getSkill(p('id'))?.title ?? getProblemType(p('id'))?.title;
+    case 'skill/[id]': {
+      const id = skillPageId(p('id'));
+      return getSkill(id)?.title ?? getProblemType(id)?.title;
+    }
     case 'course/[id]/index':
       return getCourse(p('id'))?.title;
     case 'course/[id]/topic/[index]':
