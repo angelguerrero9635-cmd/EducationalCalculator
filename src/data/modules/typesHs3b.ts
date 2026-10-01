@@ -55,6 +55,19 @@ export interface FunctionGraphHs3b {
    * "x = −1 rejected", and a caption line saying why. Checked to be outside the domain.
    */
   reject?: NumOrVar;
+  /**
+   * Riemann rectangles: `n` strips of equal width from `from` (default 0) to `to`, each as tall
+   * as the curve at its right edge (`side` 'left' or 'middle' to read elsewhere), filled under
+   * the curve with the point each height is read at; past 60 they are one stepped outline. The
+   * caption gives n, the width and their sum S; `sum` names the page's S (checked).
+   */
+  riemann?: {
+    n: NumOrVar;
+    to: NumOrVar;
+    from?: NumOrVar;
+    side?: 'right' | 'left' | 'middle';
+    sum?: string;
+  };
 }
 
 /**
@@ -150,6 +163,10 @@ export function functionGraphHs3bVars(r: FunctionGraphHs3b): string[] {
     t?.image?.x,
     t?.image?.y,
     r.reject,
+    r.riemann?.n,
+    r.riemann?.to,
+    r.riemann?.from,
+    r.riemann?.sum,
   ].filter((x): x is string => typeof x === 'string');
 }
 

@@ -9,6 +9,7 @@ import { toShownUnits } from '@/components/module/reps/functionGraphUnits';
 import { quadAt, quadCrossings } from '@/components/module/reps/lineParabola';
 import { turnedConic } from '@/components/module/reps/conicTurned';
 import { polarConicParts } from '@/components/module/reps/polarConic';
+import { riemannOf } from '@/components/module/reps/riemann';
 import { ownCenter } from '@/components/module/reps/transformHs3b';
 import { angle3, cross3, dot3, len3, sub3, type V3 } from '@/components/module/reps/vectorSpace';
 import type { VariableDef } from '@/engine/types';
@@ -268,6 +269,18 @@ export function hs3bIssues(
           const b = g(f.b, 10);
           if (!(b > 0) || b === 1) out.push(`log base ${b} (positive, not 1)`);
         }
+      }
+      if (rep.riemann) {
+        // The rectangles: a whole n of at least 1, and their sum is the page's S.
+        const g = (v: string | number | undefined, d: number) =>
+          v === undefined ? d : (val(v) ?? d);
+        const n = rep.riemann.n === undefined ? undefined : val(rep.riemann.n);
+        if (n !== undefined && (!Number.isInteger(n) || n < 1)) out.push(`riemann n = ${n}`);
+        const S = rep.riemann.sum === undefined ? undefined : val(rep.riemann.sum);
+        const f = curveOf(rep, (v) => val(v));
+        const want = riemannOf(rep.riemann, f.f, g).sum;
+        if (S !== undefined && Number.isFinite(want) && off(S, want))
+          out.push(`riemann sum ${S} is not the rectangles' ${want}`);
       }
       if (rep.reject !== undefined) {
         const r = val(rep.reject);

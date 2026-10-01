@@ -886,6 +886,53 @@ const TURNED: ModuleDef[] = [
   ),
 ];
 
+// ── H106 part 15: Riemann rectangles under a curve (m.12.area-under-curve, ~line) ──
+
+const underSquare: Representation = {
+  kind: 'functionGraph',
+  family: 'quadratic',
+  form: 'vertex',
+  a: 'c',
+  h: 0,
+  k: 0,
+  shade: { from: 0, to: 'b' },
+  riemann: { n: 'n', to: 'b', sum: 'S' },
+  fixed: true,
+};
+
+const RIEMANN: ModuleDef[] = [
+  fromPage(
+    'm.12.area-under-curve',
+    'g.m12-area-under-curve-rectangles',
+    'Right rectangles under y = cx²',
+    underSquare,
+  ),
+  fromPage(
+    'm.12.area-under-curve',
+    'g.m12-area-under-curve-rectangles-many',
+    'A hundred rectangles under y = cx²',
+    underSquare,
+    {
+      use: 'Use this for “Estimate the area under y = x² from 0 to 3 with 100 rectangles. How close is it to 9?”',
+      example: { c: 1, b: 3, n: 100, w: 0.03, S: (0.03 ** 3 * 100 * 101 * 201) / 6, A: 9 },
+    },
+  ),
+  fromPage(
+    'm.12.area-under-curve~line',
+    'g.m12-area-under-curve-line-rectangles',
+    'Right rectangles under a line',
+    {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'k',
+      shade: { from: 0, to: 'b' },
+      riemann: { n: 'n', to: 'b', sum: 'S' },
+      fixed: true,
+    },
+  ),
+];
+
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
@@ -901,6 +948,7 @@ export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...SPACE,
   ...POLAR_CONICS,
   ...TURNED,
+  ...RIEMANN,
 ];
 
 export const HS3B_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -44,6 +44,8 @@ import {
 import { SignBand, SignFill, signCaption } from './FunctionSign';
 import { reshape, reshapeCaption, reshapeVars } from './functionGraphHs2g';
 import { transformCurve, transformText } from './functionGraphHs3b';
+import { RiemannRects, riemannCaption } from './functionGraphRiemann';
+import { riemannXs } from './riemann';
 import { toShownUnits, unitPositionIds } from './functionGraphUnits';
 import { usePaintIds, url } from './paint';
 import { signOf } from './signBox';
@@ -430,6 +432,7 @@ export function FunctionGraph({
     ...(sec ? [sec.x, sec.x + sec.h] : []),
     ...(limX !== undefined ? [limX] : []),
     ...(shadeRange ?? []),
+    ...riemannXs(spec.riemann, get), // H106
     ...main.domain
       .flatMap((i) => [i.lo, i.hi])
       .filter((v) => Number.isFinite(v) && Math.abs(v) < 50),
@@ -1291,6 +1294,16 @@ export function FunctionGraph({
                       opacity={0.16}
                     />
                   ) : null}
+                  {spec.riemann ? ( // H106: Riemann rectangles, under the curve
+                    <RiemannRects
+                      r={spec.riemann}
+                      curve={main}
+                      get={get}
+                      sx={sx}
+                      sy={sy}
+                      faded={!allKnown}
+                    />
+                  ) : null}
                   {dashes.map((d, i) => (
                     <Line
                       key={`d${i}`}
@@ -1747,6 +1760,7 @@ export function FunctionGraph({
       lines.push(
         `Shaded: the points ${shade} the curve, y ${shade === 'above' ? '>' : '<'} ${fName}(${xName})`,
       );
+    if (spec.riemann) lines.push(riemannCaption(spec.riemann, main.f, get, xName)); // H106
     if (spec.inequality) lines.push(signCaption(main, ineq, fName, xName));
     lines.push(...reshapeCaption(spec, shaped, fName, xName));
     if (spec.inverse) lines.push(`The inverse is the reflection across the line y = ${xName}`);
