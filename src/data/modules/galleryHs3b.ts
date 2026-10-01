@@ -781,6 +781,268 @@ const BOUNDS: ModuleDef[] = [
   ),
 ];
 
+// ── H106 part 12: vectors in space on x, y, z axes (m.12.vectors-3d) ──
+
+const U3 = { name: 'u', x: 'a', y: 'b', z: 'c' };
+const V3 = { name: 'v', x: 'd', y: 'e', z: 'f' };
+
+const SPACE: ModuleDef[] = [
+  fromPage('m.12.vectors-3d', 'g.m12-vectors-3d-angle', 'The angle between vectors in space', {
+    kind: 'vectorDiagram',
+    vectors: [U3, V3],
+    space: { dot: 'p', angle: 't' },
+  }),
+  fromPage('m.12.vectors-3d~cross', 'g.m12-vectors-3d-cross-axes', 'The cross product in space', {
+    kind: 'vectorDiagram',
+    vectors: [U3, V3],
+    space: { cross: { x: 'x', y: 'y', z: 'z' }, area: 'A', triangle: 'Tri' },
+  }),
+  fromPage('m.12.vectors-3d~triple', 'g.m12-vectors-3d-triple-box', 'The box three vectors span', {
+    kind: 'vectorDiagram',
+    vectors: [U3, V3],
+    space: { w: { name: 'w', x: 'g', y: 'h', z: 'k' }, triple: 'T', volume: 'Vol' },
+  }),
+  fromPage(
+    'm.12.vectors-3d~distance',
+    'g.m12-vectors-3d-distance-axes',
+    'Distance and midpoint on x, y, z axes',
+    {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'P', x: 'p', y: 'q', z: 'r' },
+        { name: 'Q', x: 's', y: 't', z: 'u' },
+      ],
+      space: { points: true, distance: 'd', mid: { x: 'mx', y: 'my', z: 'mz' } },
+    },
+  ),
+];
+
+// ── H106 part 13: a conic on the polar grid (m.12.polar-conics, ~sine) ──
+
+const polarConic = (fn: 'cos' | 'sin'): Representation => ({
+  kind: 'polarGrid',
+  curve: { shape: 'conic', k: 'k', m: 'm', n: 'n', fn, e: 'e', d: 'd' },
+  point: { r: 'r', theta: 't' },
+});
+
+const POLAR_CONICS: ModuleDef[] = [
+  fromPage(
+    'm.12.polar-conics',
+    'g.m12-polar-conics-ellipse-curve',
+    'A polar ellipse with its focus and directrix',
+    polarConic('cos'),
+  ),
+  fromPage(
+    'm.12.polar-conics',
+    'g.m12-polar-conics-hyperbola-curve',
+    'A polar hyperbola with its focus and directrix',
+    polarConic('cos'),
+    {
+      use: 'Use this for “Name the conic r = 6 ÷ (1 − 2 cos θ), its eccentricity and its directrix.”',
+      example: { k: 6, m: 1, n: 2, e: 2, d: 3, t: 120, r: 3 },
+    },
+  ),
+  fromPage(
+    'm.12.polar-conics~sine',
+    'g.m12-polar-conics-sine-parabola-curve',
+    'A polar parabola with sin θ',
+    polarConic('sin'),
+    { example: { k: 4, m: 1, n: -1, e: 1, d: 4, t: 30, r: 4 / 1.5 } },
+  ),
+];
+
+// ── H106 part 14: a conic turned by θ (m.12.polar-conics~rotation, ~rotated-equation) ──
+
+const TURNED: ModuleDef[] = [
+  fromPage(
+    'm.12.polar-conics~rotation',
+    'g.m12-polar-conics-rotation-turned',
+    'Turning the axes of an ellipse',
+    { kind: 'conicGraph', conic: 'turned', A: 'A', B: 'B', C: 'C', angle: 't', discriminant: 'D' },
+  ),
+  fromPage(
+    'm.12.polar-conics~rotation',
+    'g.m12-polar-conics-rotation-turned-hyperbola',
+    'Turning the axes of a hyperbola',
+    { kind: 'conicGraph', conic: 'turned', A: 'A', B: 'B', C: 'C', angle: 't', discriminant: 'D' },
+    {
+      use: 'Use this for “Through what angle should the axes turn to remove the xy term of x² + 4xy + y² = 1? Which conic is it?”',
+      example: { A: 1, B: 4, C: 1, D: 12, t: 45 },
+    },
+  ),
+  fromPage(
+    'm.12.polar-conics~rotated-equation',
+    'g.m12-polar-conics-rotated-equation-turned',
+    'The equation in the turned axes',
+    {
+      kind: 'conicGraph',
+      conic: 'turned',
+      A: 'A',
+      B: 'B',
+      C: 'C',
+      angle: 't',
+      turned: { A: 'P', C: 'Q' },
+    },
+  ),
+];
+
+// ── H106 part 15: Riemann rectangles under a curve (m.12.area-under-curve, ~line) ──
+
+const underSquare: Representation = {
+  kind: 'functionGraph',
+  family: 'quadratic',
+  form: 'vertex',
+  a: 'c',
+  h: 0,
+  k: 0,
+  shade: { from: 0, to: 'b' },
+  riemann: { n: 'n', to: 'b', sum: 'S' },
+  fixed: true,
+};
+
+const RIEMANN: ModuleDef[] = [
+  fromPage(
+    'm.12.area-under-curve',
+    'g.m12-area-under-curve-rectangles',
+    'Right rectangles under y = cx²',
+    underSquare,
+  ),
+  fromPage(
+    'm.12.area-under-curve',
+    'g.m12-area-under-curve-rectangles-many',
+    'A hundred rectangles under y = cx²',
+    underSquare,
+    {
+      use: 'Use this for “Estimate the area under y = x² from 0 to 3 with 100 rectangles. How close is it to 9?”',
+      example: { c: 1, b: 3, n: 100, w: 0.03, S: (0.03 ** 3 * 100 * 101 * 201) / 6, A: 9 },
+    },
+  ),
+  fromPage(
+    'm.12.area-under-curve~line',
+    'g.m12-area-under-curve-line-rectangles',
+    'Right rectangles under a line',
+    {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'k',
+      shade: { from: 0, to: 'b' },
+      riemann: { n: 'n', to: 'b', sum: 'S' },
+      fixed: true,
+    },
+  ),
+];
+
+// ── H106 part 16: a rational function by its top's coefficients (m.12.partial-fractions) ──
+
+const RATIONAL_TOP: ModuleDef[] = [
+  fromPage(
+    'm.12.partial-fractions~quadratic',
+    'g.m12-partial-fractions-quadratic-graph',
+    'A quadratic factor: the graph',
+    {
+      kind: 'functionGraph',
+      family: 'rational',
+      top: ['a', 'b', 'c'],
+      poles: ['p'],
+      quadratics: [{ j: 'j', k: 'k' }],
+      at: { x: 'x', y: 'y' },
+      marks: ['asymptotes'],
+    },
+  ),
+  without(
+    fromPage(
+      'm.12.partial-fractions',
+      'g.m12-partial-fractions-number-top-graph',
+      'A number alone on top: the graph',
+      {
+        kind: 'functionGraph',
+        family: 'rational',
+        top: ['a', 'b'],
+        poles: ['p', 'q'],
+        marks: ['asymptotes'],
+        fixed: true,
+      },
+      {
+        use: 'Use this for “Write 4 ÷ ((x − 1)(x + 3)) as partial fractions.”',
+        example: { a: 0, b: 4, p: 1, q: -3, A: 1, B: -1 },
+      },
+    ),
+    ['z', 'L'],
+  ),
+  without(
+    fromPage(
+      'm.12.partial-fractions~repeated',
+      'g.m12-partial-fractions-repeated-top-graph',
+      'A repeated factor: the graph',
+      {
+        kind: 'functionGraph',
+        family: 'rational',
+        top: ['a', 'b'],
+        poles: ['p', 'p'],
+        marks: ['asymptotes'],
+        fixed: true,
+      },
+    ),
+    ['z', 'L'],
+  ),
+];
+
+// ── H106 part 17: the squares on a terms chart (m.12.induction~squares) ──
+
+const squares: Representation = {
+  kind: 'termsChart',
+  type: 'power',
+  first: 1,
+  step: 2,
+  count: 'n',
+  as: 'bars',
+  sums: true,
+  sum: 'S',
+  far: true,
+};
+
+const SQUARES: ModuleDef[] = [
+  fromPage(
+    'm.12.induction~squares',
+    'g.m12-induction-squares-chart',
+    'The sum of squares',
+    squares,
+  ),
+  fromPage(
+    'm.12.induction~squares',
+    'g.m12-induction-squares-chart-far',
+    'The sum of the first 40 squares',
+    squares,
+    {
+      use: 'Use this for “Find 1² + 2² + … + 40² and check the step to 41 terms.”',
+      example: { n: 40, S: 22140, a: 1681, T: 23821, F: 23821 },
+    },
+  ),
+];
+
+// ── H106 part 18: the F curve (m.12.anova, ~groups, ~two-variances) ──
+
+const F_CURVE: ModuleDef[] = [
+  fromPage('m.12.anova', 'g.m12-anova-f-curve', 'The ANOVA F test on its curve', {
+    kind: 'normalCurve',
+    f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
+  }),
+  fromPage('m.12.anova~groups', 'g.m12-anova-groups-f-curve', 'Three groups: the F curve', {
+    kind: 'normalCurve',
+    f: { df1: 2, df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
+  }),
+  fromPage(
+    'm.12.anova~two-variances',
+    'g.m12-anova-two-variances-f-curve',
+    'Two variances: both tails of the F curve',
+    {
+      kind: 'normalCurve',
+      f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P', tails: 'two' },
+    },
+  ),
+];
+
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
@@ -793,6 +1055,13 @@ export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...POPULATION,
   ...SYMMETRY,
   ...BOUNDS,
+  ...SPACE,
+  ...POLAR_CONICS,
+  ...TURNED,
+  ...RIEMANN,
+  ...RATIONAL_TOP,
+  ...SQUARES,
+  ...F_CURVE,
 ];
 
 export const HS3B_GALLERY_LAYOUTS: LayoutDef[] = [];

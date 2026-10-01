@@ -10,6 +10,8 @@ import {
   functionGraphHs3bVars,
   type FamilyHs3b,
   type FunctionGraphHs3b,
+  rationalByTopVars,
+  type RationalByTop,
 } from './typesHs3b';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
@@ -46,6 +48,7 @@ export type FunctionFamily =
   | { family: 'polynomial'; a?: NumOrVar; zeros: { x: NumOrVar; times?: NumOrVar }[] }
   | { family: 'rational'; a?: NumOrVar; zeros: NumOrVar[]; poles: NumOrVar[]; k?: NumOrVar }
   | RationalByCoefficients // H94: (px + q) ÷ (rx + s)
+  | RationalByTop // H106: the top's coefficients over (x − p)… and (x² + jx + k)…
   | { family: 'piecewise'; pieces: Piece[] }
   | { family: 'sin' | 'cos' | 'tan'; a?: NumOrVar; b?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   // H105: `degrees` reads the angle in degrees (sin⁻¹ from −90° to 90°), not radians.
@@ -153,6 +156,7 @@ export function familyVars(f: FunctionFamily): string[] {
         ? ids(...f.coefficients)
         : ids(f.a, ...f.zeros.flatMap((z) => [z.x, z.times]));
     case 'rational':
+      if ('top' in f) return rationalByTopVars(f); // H106
       return 'p' in f ? ids(f.p, f.q, f.r, f.s) : ids(f.a, ...f.zeros, ...f.poles, f.k);
     case 'piecewise':
       return f.pieces.flatMap((p) => [...familyVars(p.f), ...ids(p.from, p.to)]);

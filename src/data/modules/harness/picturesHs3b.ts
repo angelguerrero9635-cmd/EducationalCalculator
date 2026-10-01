@@ -7,7 +7,12 @@ import { curveOf, zerosIn } from '@/components/module/reps/functionGraphMath';
 import { reshapeVars } from '@/components/module/reps/functionGraphHs2g';
 import { toShownUnits } from '@/components/module/reps/functionGraphUnits';
 import { quadAt, quadCrossings } from '@/components/module/reps/lineParabola';
+import { turnedConic } from '@/components/module/reps/conicTurned';
+import { fTest } from '@/components/module/reps/fCurve';
+import { polarConicParts } from '@/components/module/reps/polarConic';
+import { riemannOf } from '@/components/module/reps/riemann';
 import { ownCenter } from '@/components/module/reps/transformHs3b';
+import { angle3, cross3, dot3, len3, sub3, type V3 } from '@/components/module/reps/vectorSpace';
 import type { VariableDef } from '@/engine/types';
 
 import type { Representation } from '../types';
@@ -70,6 +75,47 @@ export function hs3bCenter(
   if (ps.some((p) => p[0] === undefined || p[1] === undefined)) return [undefined, undefined];
   const c = ownCenter(ps as [number, number][]);
   return [c[0], c[1]];
+}
+
+/** `space`: three components each; u × v, the areas, u · v, θ, the box, PQ and M worked out. */
+function spaceIssues(rep: Extract<Representation, { kind: 'vectorDiagram' }>, val: Val) {
+  const out: string[] = [];
+  const s = rep.space;
+  if (!s) return out;
+  if (rep.vectors.some((v) => v.z === undefined || v.x === undefined || v.y === undefined))
+    out.push('space: every vector needs x, y and z');
+  const vec = (v: { x?: string | number; y?: string | number; z?: string | number }) => {
+    const p = [v.x ?? 0, v.y ?? 0, v.z ?? 0].map((x) => val(x));
+    return p.every((x) => x !== undefined) ? (p as V3) : undefined;
+  };
+  const [u, v] = rep.vectors.map(vec);
+  const w = s.w ? vec(s.w) : undefined;
+  const check = (id: string | undefined, want: number, what: string) => {
+    const got = id === undefined ? undefined : val(id);
+    if (got !== undefined && !near(got, want)) out.push(`space: ${what} is ${got}, not ${want}`);
+  };
+  if (s.points) {
+    if (!u || !v) return out;
+    check(s.distance, len3(sub3(v, u)), 'PQ');
+    (['x', 'y', 'z'] as const).forEach((k, i) =>
+      check(s.mid?.[k], (u[i]! + v[i]!) / 2, `the midpoint's ${k}`),
+    );
+    return out;
+  }
+  if (!u || !v) return out;
+  const n = cross3(u, v);
+  (['x', 'y', 'z'] as const).forEach((k, i) => check(s.cross?.[k], n[i]!, `u × v's ${k}`));
+  check(s.area, len3(n), 'the area |u × v|');
+  check(s.triangle, len3(n) / 2, 'the triangle |u × v| ÷ 2');
+  check(s.dot, dot3(u, v), 'u · v');
+  const th = angle3(u, v);
+  if (th !== undefined) check(s.angle, th, 'the angle');
+  if (w) {
+    const T = dot3(u, cross3(v, w));
+    check(s.triple, T, 'u · (v × w)');
+    check(s.volume, Math.abs(T), 'the volume');
+  }
+  return out;
 }
 
 export function hs3bIssues(
@@ -175,6 +221,54 @@ export function hs3bIssues(
         if (rep.solutions && sols[i]!.x < sols[i - 1]!.x) out.push('solutions not left to right');
       break;
     }
+    case 'vectorDiagram':
+      out.push(...spaceIssues(rep, val));
+      break;
+    case 'normalCurve': {
+      // The F curve: whole df of at least 1, and the p-value the picture shades.
+      const f = rep.f;
+      if (!f) break;
+      const [d1, d2] = [val(f.df1), val(f.df2)];
+      for (const d of [d1, d2])
+        if (d !== undefined && (!Number.isInteger(d) || d < 1)) out.push(`F curve: df ${d}`);
+      const F = f.stat === undefined ? undefined : val(f.stat);
+      const P = f.p === undefined ? undefined : val(f.p);
+      if (d1 === undefined || d2 === undefined || F === undefined || P === undefined) break;
+      const want = fTest(F, d1, d2, f.tails ?? 'right').p;
+      if (Math.abs(P - want) > 1e-6) out.push(`F curve: p-value ${P} is not ${want}`);
+      break;
+    }
+    case 'conicGraph': {
+      // A turned conic: θ, A′, C′ and B² − 4AC as the picture works them out.
+      if (rep.conic !== 'turned') break;
+      const [A, B, C] = [val(rep.A), val(rep.B), val(rep.C)];
+      if (A === undefined || B === undefined || C === undefined) break;
+      const t = turnedConic(A, B, C, rep.F === undefined ? -1 : (val(rep.F) ?? -1));
+      const chk = (id: string | undefined, want: number, what: string) => {
+        const got = id === undefined ? undefined : val(id);
+        if (got !== undefined && Math.abs(got - want) > 1e-6 * Math.max(1, Math.abs(want)))
+          out.push(`turned conic: ${what} ${got} is not ${want}`);
+      };
+      chk(rep.angle, t.theta, 'θ');
+      chk(rep.turned?.A, t.A1, 'A′');
+      chk(rep.turned?.C, t.C1, 'C′');
+      chk(rep.discriminant, t.D, 'B² − 4AC');
+      break;
+    }
+    case 'polarGrid': {
+      // A polar conic: e = |n| ÷ m and d = k ÷ |n|, as the picture draws them.
+      const cv = rep.curve;
+      if (cv?.shape !== 'conic') break;
+      const [k, m, n] = [val(cv.k), cv.m === undefined ? 1 : val(cv.m), val(cv.n)];
+      if (k === undefined || m === undefined || n === undefined) break;
+      if (!(m > 0)) out.push(`polar conic: m = ${m} (must be above 0)`);
+      const p = polarConicParts(cv, { k, m, n });
+      const [e, d] = [cv.e && val(cv.e), cv.d && val(cv.d)];
+      if (typeof e === 'number' && off(e, p.e)) out.push(`polar conic: e ${e} is not ${p.e}`);
+      if (typeof d === 'number' && p.d !== undefined && off(d, p.d))
+        out.push(`polar conic: d ${d} is not ${p.d}`);
+      break;
+    }
     case 'functionGraph': {
       out.push(...transformIssues(rep, val));
       // The power family and the log sum draw only from values they can take.
@@ -190,6 +284,18 @@ export function hs3bIssues(
           const b = g(f.b, 10);
           if (!(b > 0) || b === 1) out.push(`log base ${b} (positive, not 1)`);
         }
+      }
+      if (rep.riemann) {
+        // The rectangles: a whole n of at least 1, and their sum is the page's S.
+        const g = (v: string | number | undefined, d: number) =>
+          v === undefined ? d : (val(v) ?? d);
+        const n = rep.riemann.n === undefined ? undefined : val(rep.riemann.n);
+        if (n !== undefined && (!Number.isInteger(n) || n < 1)) out.push(`riemann n = ${n}`);
+        const S = rep.riemann.sum === undefined ? undefined : val(rep.riemann.sum);
+        const f = curveOf(rep, (v) => val(v));
+        const want = riemannOf(rep.riemann, f.f, g).sum;
+        if (S !== undefined && Number.isFinite(want) && off(S, want))
+          out.push(`riemann sum ${S} is not the rectangles' ${want}`);
       }
       if (rep.reject !== undefined) {
         const r = val(rep.reject);

@@ -30,13 +30,15 @@ export function termsModel(
   const terms: number[] = [];
   for (let i = 0; i < Math.max(n, Math.min(lit, 30)); i++)
     terms.push(
-      spec.type === 'arithmetic'
-        ? a + i * d
-        : spec.type === 'recursive'
-          ? i
-            ? d * terms[i - 1]! + c
-            : a
-          : a * d ** i,
+      spec.type === 'power' // H106: a₁ × nᵖ
+        ? a * (i + 1) ** d
+        : spec.type === 'arithmetic'
+          ? a + i * d
+          : spec.type === 'recursive'
+            ? i
+              ? d * terms[i - 1]! + c
+              : a
+            : a * d ** i,
     );
   if (!terms.every(Number.isFinite))
     return { terms: [], sums: [], count: 0, problem: `The terms grow too large to draw.` };

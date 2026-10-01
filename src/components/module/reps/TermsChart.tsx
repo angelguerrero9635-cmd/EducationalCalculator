@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, fitLabel, useRep } from './common';
 import { niceStep } from './Plot';
+import { powerLines, powerName } from './termsPowerHs3b';
 import { termsModel } from './termsModel';
 
 const num = (x: number) => formatNumber(Number(x.toPrecision(10)));
@@ -46,7 +47,12 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
   const lit2 = second >= 0 && second < terms.length && second !== n - 1 ? second : -1;
   const powers = spec.powers && !arith && !recursive && a === d;
   /** A term's name: aₙ, or as a power of the first term (2³). */
-  const termName = (i: number) => (powers ? `${num(a)}${sup(i + 1)}` : `a${sub(i + 1)}`);
+  const termName = (i: number) =>
+    spec.type === 'power' // H106
+      ? powerName(i + 1, d)
+      : powers
+        ? `${num(a)}${sup(i + 1)}`
+        : `a${sub(i + 1)}`;
   // Past 30 terms: the first six, a break, then the nth.
   const gap = spec.far && n > 30;
   const HEAD = 6;
@@ -54,7 +60,8 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
   // ── Caption ──
   const lines: string[] = [];
   if (model.problem) lines.push(model.problem);
-  if (n) {
+  if (n && spec.type === 'power') lines.push(...powerLines(a, d, n, terms, sums, !!spec.sums));
+  else if (n) {
     const shown =
       n <= 6
         ? terms.slice(0, n).map(num).join(', ')
@@ -98,7 +105,7 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
           const L = 46;
           const R = 16;
           // Room over the tallest term for the recursive arrows or the lit labels (H93).
-          const T = recursive ? 44 : lit2 >= 0 || powers ? 34 : 18;
+          const T = recursive ? 44 : lit2 >= 0 || powers || spec.type === 'power' ? 34 : 18;
           const B = 64;
           // The terms drawn: every one, or past 30 the first six and the nth (H93).
           const drawn = gap

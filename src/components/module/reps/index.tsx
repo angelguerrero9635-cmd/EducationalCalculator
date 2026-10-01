@@ -101,6 +101,10 @@ import { VennOne } from './VennOne';
 import { TableGraph } from './TableGraph';
 import { CirclePopulation } from './CirclePopulation';
 import { RectangleBounds } from './RectangleBounds';
+import { VectorSpace } from './VectorSpace';
+import { PolarConic } from './PolarConic';
+import { ConicTurned } from './ConicTurned';
+import { FCurve } from './FCurve';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -273,8 +277,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'capacitor':
       return <Hs3aView spec={spec} calc={calc} />;
     case 'conicGraph':
+      if (spec.conic === 'turned') return <ConicTurned spec={spec} calc={calc} />; // H106
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':
+      if (spec.curve?.shape === 'conic') return <PolarConic spec={spec} calc={calc} />; // H106
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
       return spec.power !== undefined || spec.roots !== undefined ? (
@@ -283,6 +289,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <ComplexPlane spec={spec} calc={calc} />
       );
     case 'vectorDiagram':
+      if (spec.space) return <VectorSpace spec={spec} calc={calc} />; // H106
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':
       return spec.mode === 'box' || spec.mode === 'monomial' ? (
@@ -326,6 +333,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         );
       return <MotionGraph spec={spec} calc={calc} />;
     case 'normalCurve':
+      if (spec.f) return <FCurve spec={spec} calc={calc} />; // H106
       return <NormalCurve spec={spec} calc={calc} />;
     case 'histogram':
       return spec.clt ? (

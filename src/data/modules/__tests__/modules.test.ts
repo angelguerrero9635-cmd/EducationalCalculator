@@ -21,6 +21,7 @@ import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
 import { hs2gSpecVars } from '../typesHs2g';
+import { hs3bSpecVars } from '../typesHs3b';
 import { hsdSpecVars } from '../typesHsd';
 import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
@@ -519,7 +520,7 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r)];
+      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':
@@ -527,7 +528,7 @@ function representationVars(r: Representation): string[] {
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      return [...hsdSpecVars(r), ...hs2gSpecVars(r)];
+      return [...hsdSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
     case 'membrane':
     case 'dnaStrand':
       return hsgSpecVars(r);

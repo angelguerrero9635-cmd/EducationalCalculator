@@ -5,6 +5,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type { SignOf } from './typesHs2a';
+import type { NormalCurveHs3b } from './typesHs3b';
 import type { HistogramHs2g, NormalCurveHs2g, PascalFraction, TermsChartHs2g } from './typesHs2g';
 
 /**
@@ -31,7 +32,7 @@ import type { HistogramHs2g, NormalCurveHs2g, PascalFraction, TermsChartHs2g } f
  * Handles drag the shaded ends, the mark, the test statistic and the chi-square statistic
  * (when they are variables), holding `keep` (default: the mean, the SD, n and the level).
  */
-export interface NormalCurveSpec extends NormalCurveHs2g {
+export interface NormalCurveSpec extends NormalCurveHs2g, NormalCurveHs3b {
   kind: 'normalCurve';
   mean?: NumOrVar;
   sd?: NumOrVar;
@@ -113,7 +114,7 @@ export interface PascalTriangleSpec extends PascalFraction {
 export interface TermsChartSpec extends TermsChartHs2g {
   kind: 'termsChart';
   /** H93: 'recursive', aₙ = step × aₙ₋₁ + plus (see `TermsChartHs2g`). */
-  type: 'arithmetic' | 'geometric' | 'recursive';
+  type: 'arithmetic' | 'geometric' | 'recursive' | 'power'; // H106: 'power', aₙ = a₁ × nᵖ, p = step
   first: NumOrVar;
   /** The common difference d, or the common ratio r. */
   step: NumOrVar;

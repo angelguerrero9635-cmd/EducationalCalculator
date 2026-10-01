@@ -284,6 +284,7 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'conicGraph': {
+      if (rep.conic === 'turned') break; // H106: picturesHs3b.ts
       const [h, k] = [num(rep.h ?? 0), num(rep.k ?? 0)];
       const size =
         rep.conic === 'circle'

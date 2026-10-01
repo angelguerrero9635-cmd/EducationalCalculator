@@ -2152,6 +2152,7 @@ export function repIssues(
         ...hs2aIssues(rep, val),
         ...hs2gIssues(rep, val),
       );
+      out.push(...hs3bIssues(rep, val, byId)); // H106: the F curve
       break;
     case 'unitCircle':
     case 'algebraTiles':
@@ -2161,6 +2162,7 @@ export function repIssues(
     case 'conicGraph':
     case 'matrixGrid':
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
+      out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
       break;
     case 'membrane':
     case 'dnaStrand':
