@@ -265,6 +265,25 @@ Report: `.review/new-sci-2/lesson-report.md`.
   its line (the graph plots x in the shown unit against k in N/m: "traced point (525.59, 66,304)
   is off the curve (6,630,399)"). A picture need for the lead; until then an assumption says
   "Type the stretch in meters: 8 cm is 0.08 m."
+- ~voltage-energy: v runs to 3 × 10⁸ m/s with a check at a tenth of light's speed ("That is past
+  a tenth of light’s speed, where K = ½mv² no longer works."), also said by the v rule when the
+  speed it gives is past the range; the faster-than-light note is gone. m keeps to kg: in mg the
+  unit context read the allowed list in mg and the search tried 9.1 × 10⁻³⁷ kg (the deep harness's
+  "retyping a shown value shows an error"). The harness finds no swapped particle. Still open
+  (engine, lead): typing ΔV = 10⁶ V after the electron clears m with no reason. When m is
+  re-solved before q the whole-number search over q finds nothing, and `solve` drops the older
+  input there even though a rule's message speaks (it refuses the newest only on the `said`
+  path). The K-from-v step has the work lines "v² = (5.931 × 10⁶)² = 3.517 × 10¹³" and
+  "K = 9.109 × 10⁻³¹ × 3.517 × 10¹³/(3.204 × 10⁻¹⁹)". Not done: v in 4 figures. A `scientific`
+  value always shows 5 ("5.9308 × 10⁶"; engine).
+- ~capacitor: the 5-figure pin on U is gone ("40.5 J"); V from 0.000001 V (35 μF holding 0.025
+  μC: 7.143 × 10⁻⁴ V); the C-from-U step has "C = 0.03807/(8.1 × 10⁻⁵)". The example now shows
+  U = 0.01903 J: the tie fix rounds up only values of 1 or more, and a value under 1
+  (0.019035) still rounds down (engine, lead).
+- Main and ~capacitor, ~parallel-plate: μC, nC, μF, pF and mm as units with a base unit (so the
+  rule reads V = kq/r and "−10 nC" can be typed) need a charge and a capacitance dimension in
+  `src/engine/units.ts` (lead). The five 10ⁿ lines and the unit-change line after the
+  substituted line stay until then.
 
 ### Shared needs (lesson review of the added skills)
 

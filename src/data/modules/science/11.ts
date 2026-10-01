@@ -44,12 +44,6 @@ const withWork = (r: Rule, id: string, work: StepText['work']): Rule => ({
   steps: { ...r.steps, [id]: { ...r.steps[id]!, work } },
 });
 
-/** A rule with a note after the answer on the step for `id`. */
-const withNote = (r: Rule, id: string, note: StepText['note']): Rule => ({
-  relation: r.relation,
-  steps: { ...r.steps, [id]: { ...r.steps[id]!, note } },
-});
-
 /** A rule that only places the picture: solved like any other, never shown as a step. */
 const hide = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, steps: {} });
 
@@ -4929,6 +4923,26 @@ const sep = (x: number) =>
 
 /** The top speed K = ½mv² is used for: a tenth of light's, in m/s. */
 const SLOW = 3e7;
+const TOO_FAST = 'That is past a tenth of light’s speed, where K = ½mv² no longer works.';
+
+/**
+ * The v = √(2K/m) rule, saying why when the speed it gives is past SLOW: a speed past v's
+ * range would otherwise leave no answer and clear a value without a reason.
+ */
+const withSlowLimit = (r: Rule): Rule => ({
+  ...r,
+  relation: {
+    ...r.relation,
+    message: (v) =>
+      v.K !== undefined &&
+      v.m !== undefined &&
+      v.K >= 0 &&
+      v.m > 0 &&
+      Math.sqrt((2 * v.K * E_CHARGE) / v.m) > SLOW * (1 + 1e-9)
+        ? TOO_FAST
+        : undefined,
+  },
+});
 
 const potentialPages: ModuleDef[] = [
   (() => {
@@ -5022,48 +5036,62 @@ const potentialPages: ModuleDef[] = [
         q('m', 'm', 'Mass', 'kg', 9.109e-31, 1.673e-27, 1e-34, {
           scientific: true,
           allowed: [9.109e-31, 1.673e-27],
+          // The two masses are listed in kg: in g or mg the list would be read in that unit.
+          units: ['kg'],
         }),
-        // Wide enough for both particles at every energy: a narrower range would let the search
-        // swap the student's particle for one slow enough. Past SLOW a note says so.
-        q('v', 'v', 'Speed', 'm/s', 0, 3e9, 1, { scientific: true, units: ['m/s'] }),
+        // Up to light's speed; past SLOW the check below (and the v rule's message, for a speed
+        // past this range) says why. The typed particle stays: its mass is never searched.
+        q('v', 'v', 'Speed', 'm/s', 0, 3e8, 1, { scientific: true, units: ['m/s'] }),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          {
+            id: 'v ≤ 3 × 10⁷',
+            constraint: true,
+            display: '{v} is at most 3 × 10⁷',
+            vars: ['v'],
+            residual: (v) => (v.v! <= SLOW * (1 + 1e-9) ? 0 : 1),
+            solve: {},
+            message: (v) => (v.v! <= SLOW * (1 + 1e-9) ? undefined : TOO_FAST),
+          },
+        ],
         product('K', 'q', 'V', 'K = qΔV', [
           'Each electron charge gains 1 eV for every volt it crosses.',
           'Divide the energy by the potential difference.',
           'Divide the energy by the charge.',
         ]),
-        withNote(
+        withSlowLimit(
           withWork(
-            rule(
-              'v = √(2K/m)',
-              `{v} = √(2 × {K} × 1.602 × 10⁻¹⁹/{m})`,
-              (v) => (v.K! >= 0 && v.m! > 0 ? v.v! - Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : 1),
-              {
-                v: [
-                  (v) =>
-                    v.K! >= 0 && v.m! > 0 ? Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : undefined,
-                  '√(2 × {K} × 1.602 × 10⁻¹⁹/{m})',
-                  'Change eV to joules, then solve K = ½mv² for v.',
-                ],
-                K: [
-                  (v) => (v.m! * v.v! * v.v!) / (2 * E_CHARGE),
-                  '{m} × {v}²/(2 × 1.602 × 10⁻¹⁹)',
-                  'K = ½mv² in joules, then divide by 1.602 × 10⁻¹⁹ J for each eV.',
-                ],
-                m: null,
-              },
+            withWork(
+              rule(
+                'v = √(2K/m)',
+                `{v} = √(2 × {K} × 1.602 × 10⁻¹⁹/{m})`,
+                (v) => (v.K! >= 0 && v.m! > 0 ? v.v! - Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : 1),
+                {
+                  v: [
+                    (v) =>
+                      v.K! >= 0 && v.m! > 0 ? Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : undefined,
+                    '√(2 × {K} × 1.602 × 10⁻¹⁹/{m})',
+                    'Change eV to joules, then solve K = ½mv² for v.',
+                  ],
+                  K: [
+                    (v) => (v.m! * v.v! * v.v!) / (2 * E_CHARGE),
+                    '{m} × {v}²/(2 × 1.602 × 10⁻¹⁹)',
+                    'K = ½mv² in joules, then divide by 1.602 × 10⁻¹⁹ J for each eV.',
+                  ],
+                  m: null,
+                },
+              ),
+              'v',
+              (v) => [`K = ${sep(v.K!)} eV × 1.602 × 10⁻¹⁹ = ${sci(v.K! * E_CHARGE)} J`],
             ),
-            'v',
-            (v) => [`K = ${sep(v.K!)} eV × 1.602 × 10⁻¹⁹ = ${sci(v.K! * E_CHARGE)} J`],
+            'K',
+            // The square in scientific form, never 35,174,388,640,000 written out.
+            (v) => [
+              `v² = (${sci4(v.v!)})² = ${sci4(v.v! * v.v!)}`,
+              `K = ${sci4(v.m!)} × ${sci4(v.v! * v.v!)}/(3.204 × 10⁻¹⁹)`,
+            ],
           ),
-          'v',
-          (v) =>
-            v.v! >= 3e8
-              ? '(faster than light, which is impossible: K = ½mv² fails here, and the true speed is just under 3 × 10⁸ m/s)'
-              : v.v! > SLOW
-                ? '(past a tenth of light’s speed: K = ½mv² no longer works, so the true speed is less)'
-                : '',
         ),
       ),
       example: {
@@ -5098,9 +5126,9 @@ const potentialPages: ModuleDef[] = [
       ],
       variables: [
         q('C', 'C', 'Capacitance', 'μF', 0.001, 1e6, 0.001),
-        q('V', 'V', 'Voltage', 'V', 0.001, 1e5, 0.001),
+        q('V', 'V', 'Voltage', 'V', 0.000001, 1e5, 0.000001),
         q('Q', 'Q', 'Charge', 'μC', 0, 1e11, 0.001),
-        q('U', 'U', 'Stored energy', 'J', 0, 1e10, 0.000001, { sigFigs: 5 }),
+        q('U', 'U', 'Stored energy', 'J', 0, 1e10, 0.000001),
       ],
       ...rules(
         product('Q', 'C', 'V', 'Q = CV', [
@@ -5109,30 +5137,34 @@ const potentialPages: ModuleDef[] = [
           'Divide the charge by the capacitance.',
         ]),
         withWork(
-          rule(
-            'U = ½CV²',
-            '{U} = ½ × {C} × 10⁻⁶ × {V}²',
-            (v) => v.U! - 0.5e-6 * v.C! * v.V! * v.V!,
-            {
-              U: [
-                (v) => 0.5e-6 * v.C! * v.V! * v.V!,
-                '½ × {C} × 10⁻⁶ × {V}²',
-                'Half the capacitance in farads times the voltage squared.',
-              ],
-              C: [
-                (v) => div(v.U!, 0.5e-6 * v.V! * v.V!),
-                '2 × {U}/({V}² × 10⁻⁶)',
-                'Double the energy and divide by V², in microfarads.',
-              ],
-              V: [
-                (v) => (v.U! >= 0 && v.C! > 0 ? Math.sqrt(v.U! / (0.5e-6 * v.C!)) : undefined),
-                '√(2 × {U}/({C} × 10⁻⁶))',
-                'Double the energy, divide by C in farads, take the square root.',
-              ],
-            },
+          withWork(
+            rule(
+              'U = ½CV²',
+              '{U} = ½ × {C} × 10⁻⁶ × {V}²',
+              (v) => v.U! - 0.5e-6 * v.C! * v.V! * v.V!,
+              {
+                U: [
+                  (v) => 0.5e-6 * v.C! * v.V! * v.V!,
+                  '½ × {C} × 10⁻⁶ × {V}²',
+                  'Half the capacitance in farads times the voltage squared.',
+                ],
+                C: [
+                  (v) => div(v.U!, 0.5e-6 * v.V! * v.V!),
+                  '2 × {U}/({V}² × 10⁻⁶)',
+                  'Double the energy and divide by V², in microfarads.',
+                ],
+                V: [
+                  (v) => (v.U! >= 0 && v.C! > 0 ? Math.sqrt(v.U! / (0.5e-6 * v.C!)) : undefined),
+                  '√(2 × {U}/({C} × 10⁻⁶))',
+                  'Double the energy, divide by C in farads, take the square root.',
+                ],
+              },
+            ),
+            'U',
+            (v) => [`U = ½ × ${sci(v.C! * 1e-6)} × ${sep(v.V! * v.V!)}`],
           ),
-          'U',
-          (v) => [`U = ½ × ${sci(v.C! * 1e-6)} × ${sep(v.V! * v.V!)}`],
+          'C',
+          (v) => [`C = ${sci(2 * v.U!)}/(${sci(v.V! * v.V! * 1e-6)})`],
         ),
       ),
       example: { C, V, Q: C * V, U: 0.5e-6 * C * V * V },
