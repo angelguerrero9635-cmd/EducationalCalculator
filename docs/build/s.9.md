@@ -250,3 +250,8 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   and a pattern reading both, as the demo.
 - `s.9.homeostasis~systems` (H104 part 1): the plan's sentence as `intro` and the six system
   icons on the bins. No stand-in.
+- `s.9.immune-disease~pathogens` (H104 part 1): the antibiotics sentence as `intro` (out of the
+  assumptions) and the virus, bacterium, fungus and parasite icons on the bins. Stand-in gone: the
+  four "A virus" … "A parasite" icon cards.
+- `~herd-immunity` (H104 part 3): `percentBar` adds `second: 'H'`, so H is marked on the bar beside
+  the shaded C (it was a value only).

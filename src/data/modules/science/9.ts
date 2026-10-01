@@ -2225,7 +2225,7 @@ const IMMUNE: ModuleDef[] = [
     ),
     example: { R0: 5, H: 80, e: 95, C: 8000 / 95, P: 19000, V: 16000 },
     startWith: ['R0', 'e', 'P'],
-    representation: { kind: 'percentBar', percent: 'C', part: 'V', whole: 'P' },
+    representation: { kind: 'percentBar', percent: 'C', part: 'V', whole: 'P', second: 'H' },
   },
 ];
 
