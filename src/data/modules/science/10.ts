@@ -5575,12 +5575,12 @@ const FREE: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       'Each sum is over one side of the balanced equation: every S° is multiplied by its coefficient first.',
-      'A change is products minus reactants, so ΔS° = S°products − S°reactants; ΔG°f values from a table subtract the same way.',
+      'A change is products minus reactants, so ΔS° = S°ₚ − S°ᵣ (p for products, r for reactants); ΔG°f values from a table subtract the same way.',
       'ΔG° = ΔH° − TΔS°, with ΔS° divided by 1,000 to match ΔH°’s kJ; tables are for 298 K.',
     ],
     variables: [
-      quantity('Sp', 'S°products', 'Entropy of the products (sum)', 'J/(mol·K)', 0, 10000, 0.01),
-      quantity('Sr', 'S°reactants', 'Entropy of the reactants (sum)', 'J/(mol·K)', 0, 10000, 0.01),
+      quantity('Sp', 'S°ₚ', 'Entropy of the products (sum)', 'J/(mol·K)', 0, 10000, 0.01),
+      quantity('Sr', 'S°ᵣ', 'Entropy of the reactants (sum)', 'J/(mol·K)', 0, 10000, 0.01),
       quantity('dS', 'ΔS°', 'Standard entropy change', 'J/(mol·K)', -10000, 10000, 0.01),
       quantity('dH', 'ΔH°', 'Standard enthalpy change', 'kJ/mol', -10000, 10000, 0.01),
       quantity('T', 'T', 'Temperature', 'K', 1, 5000, 0.1),
@@ -5649,6 +5649,9 @@ const FREE: ModuleDef[] = [
       second: 'Sp',
       // No `change`: the line draws the jump from the two sums itself, and the harness's
       // absolute 10⁻⁹ check misreads sums past 1,000 rounded to 12 figures (lead).
+      // `fit`: the line spans the two sums (180 to 220 for 188 and 214), so their handles
+      // stand apart instead of 8 px apart on 0 to 1,000.
+      fit: true,
       min: 0,
       max: 1000,
       unit: 'J/(mol·K)',

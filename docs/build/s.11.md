@@ -331,3 +331,11 @@ Not placed, and why:
   what gave the unit menus back.
 - `~rotational-inertia` allows a hollow ball (c = ⅔), which `rotor` draws as a disk with no name
   and leaves out of the compare row (it knows c = 1, ½, 0.4): a picture need for the lead.
+
+### Page-review fixes
+
+From `.review/hs-page-s/page-report-s11-12.md` (science role): nothing on these pages is fixed
+in `science/11.ts`. `~rope`'s tension drag changes μₖ because `FreeBody` pins `friction` while
+dragging (marking f derived would not change that): the drag should pin μₖ when it is given and
+let f follow (shared). The rest (subscripts, label rounding, projectile, vector, power-scale,
+oscillator, rotor labels) are component fixes.

@@ -515,6 +515,8 @@ export interface Scene {
   earthSection?: EarthSectionScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
+  /** More parts lit with `part`, on a drawn `parts` figure (a stamen: anther and filament). */
+  alsoLit?: string[];
   /** Where the ball is (a `position` figure). */
   position?: 'above' | 'below' | 'beside' | 'in front of' | 'behind';
   /** [hour, minutes] (a `clock` figure). */
@@ -683,13 +685,15 @@ export interface Scene {
   /**
    * What a `molecules` figure shows. One item with no count, state or `after`: the molecule
    * big, each element's atom named. Otherwise the items' molecules mixed in a box, packed as
-   * a `state` (spread out when left out); `after` draws a second box behind an arrow.
+   * a `state` (spread out when left out); `after` draws a second box behind an arrow. `ice`
+   * (water only) sets the molecules on open hexagons, each O–H pointing at a neighbor's O
+   * with the hydrogen bond dashed: 6 molecules make one ring, 10 two, 13 three.
    */
   molecules?: {
     items: MoleculeItem[];
-    state?: 'solid' | 'liquid' | 'gas';
+    state?: 'solid' | 'liquid' | 'gas' | 'ice';
     after?: MoleculeItem[];
-    afterState?: 'solid' | 'liquid' | 'gas';
+    afterState?: 'solid' | 'liquid' | 'gas' | 'ice';
     /** Round 2: ions ringed by water, turned by charge (`typesHs2d.ts`, H101). */
     hydration?: HydrationScene;
   };
@@ -747,6 +751,11 @@ export interface ObserveLayout extends LayoutBase {
   second?: ObserveSecond & ObserveScale;
   /** H109: the lowest value (below 0 for a membrane potential); bars grow up or down from 0. */
   min?: number;
+  /**
+   * Dashed reference lines across a chart with a `min` (a threshold, a resting level): each
+   * value is marked on a scale beside the bars, with 0, and named in a key under the chart.
+   */
+  guides?: { at: number; label: string }[];
 }
 
 /**

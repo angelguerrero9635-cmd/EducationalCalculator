@@ -52,7 +52,9 @@ H103, adds a volcanic island over a magma chamber and its `volcano` arrow up to 
 genotypes?, ask? }`).
 shrink (`fewer`). Grade 7–8 chemistry (`layouts/chemFigures.tsx`): `molecules` (ball-and-stick
 molecules in the classroom colors: one alone drawn big with each element named, or a scene's
-`items` in a box packed as a `state`, with `after` in a second box behind an arrow),
+`items` in a box packed as a `state`, with `after` in a second box behind an arrow; `ice`
+sets water on open hexagons, 6, 10 or 13 molecules for 1 to 3 rings, each O–H pointing at the
+next O with the hydrogen bond dashed),
 `phases` (solid, liquid and gas boxes of the same particles, the changes between them as
 arrows; a scene lights a `state` and a `change`) and `periodicTable` (an `element` with its
 card, a `group`, a `period`, a `ring` of elements, `families` filled).
@@ -87,7 +89,8 @@ biceps, and the spinal cord in section; a scene's `reflex: { lit?, impulse? }` l
 it. Card figure `{ kind: 'reflexArc', lit }` (112 × 76, for sequence stages): the same arc, small,
 one part lit (no arrows); the harness checks the cards come in the impulse's order.
 Also H109: a `parts` figure's `drawing: 'flower'` (`layouts/partsFlower.tsx`), a flower cut in
-half: petal, sepal, anther, filament, stigma, style, ovary, ovule. Card figure `{ kind:
+half: petal, sepal, anther, filament, stigma, style, ovary, ovule; a scene's `alsoLit` lights
+more parts with its `part` (the stamen: anther and filament). Card figure `{ kind:
 'flowerCycle', stage }` (`layouts/flowerCycleCard.tsx`, 112 × 76): `pollination`, `pollen tube`,
 `fertilization`, `seed and fruit`, `dispersal`, `germination`, `seedling`, in that order (checked).
 Card icons (`layouts/icons/h3d.tsx`): `zygote`, `morula`, `blastula`, `gastrula` (germ layers
@@ -204,6 +207,8 @@ and `pattern(first, second)` reading both. H109 (`layouts/observeScaled.tsx`): `
 a membrane potential in mV) grows each bar up or down from a 0 line; `second` may take its own
 `unit`, `max`, `min` and `step` (a climograph: rainfall in mm, temperature in °C), and with its
 own unit each row gets a chart of its own, named with its unit, over the shared month labels.
+`guides: [{ at, label }]` on a chart with `min` draws dashed lines across the bars (a
+threshold, a resting level), their values and 0 on a scale at the left, named in a key.
 
 Drawn explore figures: a `parts` figure with `drawing: 'plant' | 'animal' | 'body'`
 (`layouts/partsDrawings.tsx`) draws the thing, labels every part and lights the scene's part;

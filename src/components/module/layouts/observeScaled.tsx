@@ -46,11 +46,16 @@ export const isScaled = (spec: Spec) =>
       spec.second.min !== undefined ||
       spec.second.step !== undefined));
 
-/** A reading with a true minus sign (−70). */
-export const signed = (x: number) => (x < 0 ? `−${-x}` : String(x));
+/** A reading with a true minus sign (−70); with `plus`, a + on readings above 0 (+30). */
+export const signed = (x: number, plus = false) =>
+  x < 0 ? `−${-x}` : plus && x > 0 ? `+${x}` : String(x);
 
 /** Room above and below the bars for their values. */
-const PAD = 18;
+export const PAD = 18;
+
+/** How far down a chart `h` px tall the value `v` sits on the row's range. */
+export const yOnScale = (v: number, h: number, r: RowScale) =>
+  PAD + ((r.hi - v) / (r.hi - r.lo)) * (h - 2 * PAD);
 
 /** The value a tap `y` px down a column of height `h` means on the row's range. */
 export function valueAt(y: number, h: number, r: RowScale): number {
@@ -98,8 +103,7 @@ export function ScaledBar({
     },
     move: (_x, y) => onSet(y - top.current),
   });
-  const a = height - 2 * PAD;
-  const yOf = (v: number) => PAD + ((r.hi - v) / (r.hi - r.lo)) * a;
+  const yOf = (v: number) => yOnScale(v, height, r);
   const base = yOf(Math.max(r.lo, Math.min(r.hi, 0)));
   const end = yOf(x);
   const down = end > base;
@@ -143,7 +147,7 @@ export function ScaledBar({
         pointerEvents="none"
         style={[styles.value, { color: c.text, top: down ? end + 1 : end - 17 }]}
       >
-        {signed(x)}
+        {signed(x, r.lo < 0)}
       </Text>
     </View>
   );

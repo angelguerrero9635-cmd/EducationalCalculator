@@ -44,11 +44,14 @@ export function PartsDrawing({
   drawing,
   parts,
   highlight,
+  alsoLit,
   onPart,
 }: {
   drawing: PartsDrawingKind;
   parts: { name: string }[];
   highlight: string | undefined;
+  /** More parts lit with `highlight` (a stamen's anther and filament). */
+  alsoLit?: string[];
   onPart: (name: string) => void;
 }) {
   const def = DRAWINGS[drawing];
@@ -63,6 +66,7 @@ export function PartsDrawing({
           k={scaleAt(w)}
           parts={parts}
           highlight={highlight}
+          alsoLit={alsoLit}
           onPart={onPart}
         />
       )}
@@ -77,6 +81,7 @@ function DrawingView({
   k,
   parts,
   highlight,
+  alsoLit,
   onPart,
 }: {
   def: Drawing;
@@ -85,12 +90,15 @@ function DrawingView({
   k: number;
   parts: { name: string }[];
   highlight: string | undefined;
+  alsoLit?: string[];
   onPart: (name: string) => void;
 }) {
   const kit = useDrawKit(k);
   const { c } = kit;
   const ox = (w - W * k) / 2;
   const lit = highlight === undefined ? undefined : drawnPart(highlight);
+  const litKeys = new Set([lit, ...(alsoLit ?? []).map(drawnPart)]);
+  const isLit = (key: string) => lit !== undefined && litKeys.has(key);
   const fs = chart.label / k;
   const named = def.regions
     .map((r) => ({ r, part: parts.find((p) => drawnPart(p.name) === r.key) }))
@@ -102,10 +110,10 @@ function DrawingView({
         <G transform={`translate(${ox} ${-(def.top ?? 0) * k}) scale(${k})`}>
           {def.back?.(kit)}
           {def.regions.map((r) => (
-            <G key={r.key}>{r.art(kit, r.key === lit)}</G>
+            <G key={r.key}>{r.art(kit, isLit(r.key))}</G>
           ))}
           {named.map(({ r, part }) => {
-            const on = r.key === lit;
+            const on = isLit(r.key);
             const [lx, ly, side] = r.label;
             const tw = part.name.length * fs * 0.6;
             const x0 = side === 'end' ? lx - tw : lx;

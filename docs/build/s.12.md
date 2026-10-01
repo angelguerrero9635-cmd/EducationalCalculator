@@ -245,3 +245,17 @@ Not placed, and why:
 - The demo `g.s12-starlight-spectra-doppler-any-line` builds on `~doppler` by adding λ₀ and the
   z = (λ − λ₀) ÷ λ₀ rule, which the page now has: it shows them twice and fails its module tests
   until it is dropped or reduced to the page itself (gallery files are the lead's).
+
+### Page-review fixes
+
+From `.review/hs-page-s/page-report-s11-12.md` (science role):
+
+- `~habitable-zone` and `s.12.stellar-evolution`: the fourth roots in the step text are written
+  ∜ (278 × ∜L ÷ √a; 5,772 × ∜(L ÷ R²)) in place of ^(1/4); the harness reads ∜ of a number or a
+  bracket (`evaluate.ts`, with a test). The caption's caret is HabitableZone's (shared).
+- `~density`: ρ up to 25 g/cm³ (osmium is 22.6). The drag that clears the mass needs the
+  GradCylinder clamp (shared).
+- `~doppler`: λ₀'s name lists Hγ 434.0, one decimal like the others (the caption's and label's
+  "434" are the picture's number format, shared).
+- Not done, components: wave-arrivals' bent rays (EarthLayers takes no ray shape), tides,
+  stretch, orbit, the currents, climate and zones explore labels, half-life ages.

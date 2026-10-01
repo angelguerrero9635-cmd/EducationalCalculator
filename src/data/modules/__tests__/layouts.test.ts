@@ -175,6 +175,9 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
           expect(s.lines.length).toBeGreaterThanOrEqual(1);
           if (l.figure.kind === 'parts') {
             expect(l.figure.parts.map((p) => p.name)).toContain(s.part);
+            for (const also of s.alsoLit ?? []) {
+              expect(l.figure.parts.map((p) => p.name)).toContain(also);
+            }
           }
           // Every figure but `parts` reads its scene from one field.
           const field = SCENE_FIELD[l.figure.kind];

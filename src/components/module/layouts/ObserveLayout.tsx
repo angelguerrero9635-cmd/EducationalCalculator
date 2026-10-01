@@ -15,7 +15,15 @@ import {
   ThermometerFigure,
 } from './observeFigures';
 import { ShadowStick } from './ShadowStick';
-import { isScaled, rowScales, ScaledBar, signed, SplitCharts, valueAt } from './observeScaled';
+import {
+  isScaled,
+  rowScales,
+  ScaledBar,
+  signed,
+  SplitCharts,
+  valueAt,
+  yOnScale,
+} from './observeScaled';
 
 const CHART_HEIGHT = 180;
 /** The browser must not pan the page while a finger moves along a bar. */
@@ -44,8 +52,19 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
   const ownUnit = two && spec.second!.unit !== undefined && spec.second!.unit !== spec.unit;
   const split = scaled && ownUnit;
   const dense = split && spec.columns.length > 8;
+  // Reference lines (a threshold, a resting level) on a chart with a range below 0.
+  const guides = scaled && !split && spec.guides?.length ? spec.guides : undefined;
   const rowName = (r: number) =>
     (r ? spec.second!.rowLabel : spec.rowLabel) + (ownUnit ? ` (${scales[r]!.unit})` : '');
+  // The table's first column is as wide as its longest name needs ("Progesterone", "Species A"),
+  // in one type size on every page, so a name doesn't wrap into small grey lines.
+  const heads = two
+    ? [rowName(0), rowName(1), ownUnit ? '' : spec.unit]
+    : [spec.rowLabel, spec.unit];
+  const longest = Math.max(...heads.map((h) => h.length));
+  const headFlex = {
+    flex: Math.min(spec.columns.length > 8 ? 1.6 : 2.6, Math.max(1, longest / 6)),
+  };
   const setAt = (i: number, y: number, height: number, row = 0) => {
     setPicked(i);
     const raw = ((height - y) / height) * spec.max;
@@ -70,7 +89,8 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
           onSet={(i, y, h, r) => setAt(i, y, h, r)}
         />
       ) : (
-        <View style={[styles.chart, spec.histogram && styles.touching]}>
+        <View style={[styles.chart, spec.histogram && styles.touching, guides && styles.guided]}>
+          {guides ? <GuideLines guides={guides} scale={scales[0]} /> : null}
           {spec.histogram ? (
             // The count scale: 0, half and the top, level with the bars.
             <View style={styles.scale}>
@@ -137,17 +157,37 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
           )}
         </View>
       )}
-      <View style={[styles.labels, spec.histogram && styles.touchingLabels, dense && styles.dense]}>
+      <View
+        style={[
+          styles.labels,
+          spec.histogram && styles.touchingLabels,
+          dense && styles.dense,
+          guides && styles.guided,
+        ]}
+      >
         {spec.columns.map((col) => (
           <Text key={col} style={[styles.label, few && styles.fewColumn, { color: c.text }]}>
             {col}
           </Text>
         ))}
       </View>
+      {guides ? (
+        // The key: what each dashed line marks.
+        <View style={styles.key}>
+          {guides.map((g) => (
+            <View key={g.at} style={styles.keyItem}>
+              <View style={[styles.dash, { borderColor: c.chartInk }]} />
+              <Text style={[styles.keyText, { color: c.text }]}>
+                {`${g.label}, ${signed(g.at)} ${spec.unit}`}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
       {/* The table of readings. */}
       <View style={[styles.table, { borderColor: c.border }]}>
         <View style={[styles.row, { backgroundColor: c.surface, borderBottomColor: c.border }]}>
-          <Text style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
+          <Text style={[styles.cellHead, styles.rowHead, headFlex, { color: c.text }]}>
             {two ? (ownUnit ? '' : spec.unit) : spec.rowLabel}
           </Text>
           {spec.columns.map((col) => (
@@ -158,7 +198,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
         </View>
         {(two ? [values, seconds] : [values]).map((row, r) => (
           <View key={r} style={styles.row}>
-            <Text style={[styles.cell, tight && styles.tight, { color: c.textMuted }]}>
+            <Text style={[styles.cell, styles.rowHead, headFlex, { color: c.text }]}>
               {two ? rowName(r) : spec.unit}
             </Text>
             {row.map((x, i) => (
@@ -166,7 +206,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
                 key={spec.columns[i]}
                 style={[styles.cell, tight && styles.tight, { color: c.text }]}
               >
-                {scaled ? signed(x) : x}
+                {scaled ? signed(x, scales[r]!.lo < 0) : x}
               </Text>
             ))}
           </View>
@@ -193,6 +233,47 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       ) : null}
       <Caption>{two ? spec.pattern(values, seconds) : spec.pattern(values)}</Caption>
       <Text style={[styles.hint, { color: c.textMuted }]}>Tap a bar at the height you want.</Text>
+    </View>
+  );
+}
+
+/**
+ * The dashed reference lines across the bars, and the scale beside them: 0 and each line's
+ * value, level with it (the bars' own 0 line is drawn by each bar).
+ */
+function GuideLines({
+  guides,
+  scale,
+}: {
+  guides: { at: number; label: string }[];
+  scale: { lo: number; hi: number; step: number; unit: string };
+}) {
+  const c = usePalette();
+  const ticks = [...new Set([0, ...guides.map((g) => g.at)])].filter(
+    (v) => v >= scale.lo && v <= scale.hi,
+  );
+  return (
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+      {guides.map((g) => (
+        <View
+          key={g.at}
+          style={[
+            styles.guide,
+            { top: yOnScale(g.at, CHART_HEIGHT, scale), borderColor: c.chartInk },
+          ]}
+        />
+      ))}
+      {ticks.map((v) => (
+        <Text
+          key={v}
+          style={[
+            styles.guideText,
+            { top: yOnScale(v, CHART_HEIGHT, scale) - 8, color: c.textMuted },
+          ]}
+        >
+          {v === 0 ? `0 ${scale.unit}` : signed(v)}
+        </Text>
+      ))}
     </View>
   );
 }
@@ -386,6 +467,21 @@ const styles = StyleSheet.create({
   keyItem: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   swatch: { width: 14, height: 14, borderRadius: 3, borderWidth: 1 },
   keyText: { fontSize: font.caption + 1 },
+  // The table's row names: one size on every page, left-aligned.
+  rowHead: { paddingHorizontal: space.xs, fontSize: font.caption + 1, textAlign: 'left' },
+  // Reference lines: a scale of 40 px at the left, the dashes across the bars.
+  guided: { paddingLeft: 40 },
+  guide: { position: 'absolute', left: 36, right: 0, borderTopWidth: 1, borderStyle: 'dashed' },
+  guideText: {
+    position: 'absolute',
+    left: 0,
+    width: 34,
+    textAlign: 'right',
+    fontSize: font.caption,
+    lineHeight: 16,
+    fontVariant: ['tabular-nums'],
+  },
+  dash: { width: 18, borderTopWidth: 1, borderStyle: 'dashed' },
   // H109: twelve months under a split chart: less room between columns.
   dense: { gap: space.xs },
   // Six columns and the row label share a phone's width: less padding, smaller type.
