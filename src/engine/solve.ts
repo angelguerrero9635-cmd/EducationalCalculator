@@ -63,17 +63,17 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   const unit = variable.displayUnit ? ` ${variable.displayUnit}` : '';
   // Money in dollars reads "$84", not "84 $".
   const withUnit = (n: string) => (variable.displayUnit === '$' ? dollars(n) : `${n}${unit}`);
-  // Relative to the size (a count of 60,300 worked out as E ÷ P from an E rounded to 12
-  // figures is 60,300.00000008), as for a multiple below.
+  // To 11 figures of the size (a count of 60,300 worked out as E ÷ P from an E rounded to 12
+  // figures is 60,300.00000008), while −999,999,999.5 is still not whole.
   if (
     variable.integer &&
-    Math.abs(x / f - Math.round(x / f)) > 1e-9 * Math.max(1, Math.abs(x / f))
+    Math.abs(x / f - Math.round(x / f)) > Math.max(1e-9, 1e-11 * Math.abs(x / f))
   ) {
     return 'Must be a whole number';
   }
   if (
     variable.allowed &&
-    !variable.allowed.some((a) => Math.abs(x / f - a) < 1e-9 * Math.max(1, Math.abs(a)))
+    !variable.allowed.some((a) => Math.abs(x / f - a) < Math.max(1e-9, 1e-11 * Math.abs(a)))
   ) {
     const list = variable.allowed.map((a) => formatNumber(a));
     return `Must be ${list.length > 1 ? `${list.slice(0, -1).join(', ')} or ${list[list.length - 1]}` : list[0]}`;
@@ -136,6 +136,17 @@ export function holds(relation: Relation, values: Values): boolean {
   if (!Number.isFinite(r)) return false;
   const scale = 1 + Math.max(...relation.vars.map((id) => Math.abs(values[id] ?? 0)));
   return Math.abs(r) <= TOLERANCE * scale * scale;
+}
+
+/**
+ * True when a relation holds whatever `id` is, the other values as they are (the distance
+ * rule at t = 0 and Δx = 0, for any v): it then says nothing about `id`.
+ */
+export function indifferent(relation: Relation, values: Values, id: string): boolean {
+  return [0, 1, -7.3].every((x) => {
+    const r = relation.residual({ ...values, [id]: x });
+    return Number.isFinite(r) && Math.abs(r) <= 1e-12;
+  });
 }
 
 /** A relation that is a straight-line sum of its values: the constant and each coefficient. */
@@ -264,6 +275,9 @@ function outOfReach(system: System, values: Values): string | undefined {
     if (unbounded) continue;
     const tol = 1e-9 * (1 + size);
     if (!(lo > tol || hi < -tol)) continue;
+    // No open value moves it: a lookup (dice pairs for a sum) read as flat at the probes, not a
+    // sum that can't be reached.
+    if (open.every((id) => aff.coef.get(id) === 0)) continue;
     // One value left to find: say what it would have to be and its limit.
     if (open.length === 1) {
       const v = byId.get(open[0]!)!;
@@ -402,8 +416,12 @@ function propagate(
           // No valid value exists (e.g. out of range, or a negative length). Only a conflict
           // if every other variable in the relation is pinned; otherwise just leave it unknown.
           const direct = relation.solve?.[id]?.(values);
+          // A rule these values leave indifferent to it (Δx = (v₀ + v) ÷ 2 × t with t = 0 and
+          // Δx = 0: v = 2Δx ÷ t − v₀ is 0 ÷ 0) says nothing about it.
           const hasCandidate =
-            direct !== undefined && (!Array.isArray(direct) || direct.length > 0);
+            direct !== undefined &&
+            (!Array.isArray(direct) || direct.length > 0) &&
+            !indifferent(relation, values, id);
           if (hasCandidate) {
             const xs = (Array.isArray(direct) ? direct : [direct]).filter(Number.isFinite);
             const at = { ...values };
@@ -661,10 +679,10 @@ const slackOf = (v: VariableDef | undefined) =>
 /**
  * Typed values that miss only by their rounding: each is a shown value, within half its step
  * of what the others work out (d = 463.6 for z × σ = 463.601), and the rounding may run
- * through several values (E → P → z → d; λ₀, λ, z and v). Finds the fewest such values (one,
- * else two) that, left out, leave the other typed values fitting together and are each worked
- * out from them within half a step of the number typed. Those are then worked out, not typed
- * (as a direct match is); the others are kept exactly as typed. Undefined when none do.
+ * through several values (E → P → z → d; λ₀, λ, z and v). Finds one, newest first, that left
+ * out leaves the other typed values fitting together and is worked out from them within half a
+ * step of the number typed. It is then worked out, not typed (as a direct match is); the others
+ * are kept exactly as typed. Undefined when none does.
  */
 function roundedOut(
   system: System,
@@ -681,9 +699,7 @@ function roundedOut(
   const typed = Object.fromEntries(
     valid.map((g) => [g.id, normalizeValue(byId.get(g.id)!, g.value)]),
   );
-  let tries = 60;
   const fits = (out: readonly Given[]) => {
-    tries--;
     const rest = { ...typed };
     for (const g of out) delete rest[g.id];
     const r = propagate(system, rest, previous, [], { left: 200 });
@@ -695,17 +711,10 @@ function roundedOut(
       })
     );
   };
-  // Older values first: the newest is the one the student just typed.
-  for (const g of soft) {
-    if (tries <= 0) return undefined;
-    if (fits([g])) return [g.id];
-  }
-  for (let i = 0; i < soft.length; i++) {
-    for (let j = i + 1; j < soft.length; j++) {
-      if (tries <= 0) return undefined;
-      if (fits([soft[i]!, soft[j]!])) return [soft[i]!.id, soft[j]!.id];
-    }
-  }
+  // Newest first: a shown value typed again is the one to work out again (older first worked
+  // z out as invNorm(0.99999999614), shown invNorm(1), where the typed P was the rounded one).
+  for (const g of [...soft].reverse()) if (fits([g])) return [g.id];
+  // (Two at once was tried: it worked out more typed values than needed. One is enough.)
   return undefined;
 }
 
@@ -807,7 +816,9 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       return { ...after, dropped: [...after.dropped, ...out] };
     }
     // Why an older input doesn't fit: a rule's sentence, or the range a value would break.
-    const why = trial.ok || isNewest ? undefined : trial.said ? trial.reason : trial.why?.();
+    // (Not when the newest was already refused for its own range: that reason stands.)
+    const why =
+      trial.ok || isNewest || rejected ? undefined : trial.said ? trial.reason : trial.why?.();
     if (trial.ok) {
       known = trial.values;
       trace = trial.trace;
@@ -902,19 +913,23 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       if (fixing >= group.size) continue;
       const rest = { ...known };
       for (const v of group) delete rest[v];
-      // Dropped only when the solutions with every range widened differ on it: a value the
-      // formulas fix through a cancelling unknown (the lone pairs l = 2 whatever the carbon
-      // count) stays, as does one the search can't tell about.
+      // Only the values that differ among the solutions with every range widened are dropped:
+      // a value the formulas fix through a cancelling unknown (the lone pairs l = 2 whatever
+      // the carbon count; ΔTf = ΔTb × Kf ÷ Kb whatever i) stays, as does one the search can't
+      // tell about.
       const r = wholeSolutions(loosened(system), rest, previous, 40);
       const first = r.solutions[0];
-      const varies =
-        !!first &&
-        [...group].some((v) =>
-          r.solutions.some((sol) => !(v in sol) || !closeTo(sol[v]!, first[v]!)),
-        );
-      if (!varies) continue;
-      for (const v of group) filled.splice(filled.indexOf(v), 1);
-      known = rest;
+      if (!first) continue;
+      const loose = [...group].filter((v) =>
+        r.solutions.some((sol) => !(v in sol) || !closeTo(sol[v]!, first[v]!)),
+      );
+      if (!loose.length) continue;
+      const next = { ...known };
+      for (const v of loose) {
+        delete next[v];
+        filled.splice(filled.indexOf(v), 1);
+      }
+      known = next;
     }
   }
   // Explain each filled value with a formula that gives it directly once everything is known,
