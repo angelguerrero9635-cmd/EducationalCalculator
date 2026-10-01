@@ -377,13 +377,14 @@ function Tides({ spec, calc }: { spec: TidesSpec; calc: Calculator }) {
                       d={`M ${mx} ${my - 11} A 11 11 0 0 0 ${mx} ${my + 11} Z`}
                       fill={c.moonLit}
                     />
+                    {/* Beside the Moon, where its handle doesn't cover the name. */}
                     <HaloText
-                      x={mx + (my > EY + 60 ? 0 : 18)}
-                      y={my + (my > EY + 60 ? 26 : 4)}
+                      x={mx + 18}
+                      y={my + 4}
                       text="Moon"
                       c={c}
                       size={chart.label}
-                      anchor={my > EY + 60 ? 'middle' : 'start'}
+                      anchor="start"
                     />
                   </G>
                   <HaloText
@@ -404,13 +405,14 @@ function Tides({ spec, calc }: { spec: TidesSpec; calc: Calculator }) {
                     size={chart.label}
                     anchor="end"
                   />
+                  {/* Top left, clear of the Moon's path (at the bottom it covered its name). */}
                   <HaloText
-                    x={BW - 6}
-                    y={TH - 8}
+                    x={6}
+                    y={20}
                     text="seen from above the North Pole"
                     c={c}
                     size={chart.label}
-                    anchor="end"
+                    anchor="start"
                   />
                 </G>
               </Svg>
