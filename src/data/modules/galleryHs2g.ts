@@ -672,72 +672,7 @@ const differencePair = fromPage(
   },
 );
 
-/** a·s² + b·s + c = 0 in s = sin x: two values of sin x, each with its angles. */
-const twoValues = page({
-  id: 'g.m12-trig-formulas-equations-quadratic',
-  title: 'A quadratic in sin x',
-  use: 'Use this for “Solve 2 sin²x − sin x − 1 = 0 for 0° ≤ x < 360°.”',
-  assumptions: [
-    'Treat sin x as one unknown s: 2s² − s − 1 = 0 is a quadratic.',
-    'Its two roots are two values of sin x; each gives its own angles.',
-    'A root past −1 or 1 gives no angle: sin x stays from −1 to 1.',
-  ],
-  variables: [
-    num('a', 'a', 'Number before sin²x', -10, 10, { step: 0.5 }),
-    num('b', 'b', 'Number before sin x', -10, 10, { step: 0.5 }),
-    num('c', 'c', 'Number term', -10, 10, { step: 0.5 }),
-    num('s1', 's₁', 'Smaller value of sin x', -40, 40, { derived: true, fraction: 12 }),
-    num('s2', 's₂', 'Larger value of sin x', -40, 40, { derived: true, fraction: 12 }),
-  ],
-  rules: [
-    limit('a ≠ 0', '{a} ≠ 0', (v) => v.a !== 0, 'With a = 0 it is not a quadratic.'),
-    limit(
-      'b² − 4ac ≥ 0',
-      '{b}² − 4 × {a} × {c} ≥ 0',
-      (v) => v.b! ** 2 - 4 * v.a! * v.c! >= 0,
-      'No real roots: sin x takes no value here.',
-    ),
-    derive(
-      's₁ = (−b − √(b² − 4ac)) ÷ 2a',
-      's1',
-      ['a', 'b', 'c'],
-      '{s1} = (−{b} − √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
-      (v) => {
-        const d = v.b! ** 2 - 4 * v.a! * v.c!;
-        if (d < 0 || !v.a) return undefined;
-        const r = [(-v.b! - Math.sqrt(d)) / (2 * v.a), (-v.b! + Math.sqrt(d)) / (2 * v.a)];
-        return fin(Math.min(...r));
-      },
-      '(−{b} − √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
-      'The quadratic formula in s = sin x: one root.',
-    ),
-    derive(
-      's₂ = (−b + √(b² − 4ac)) ÷ 2a',
-      's2',
-      ['a', 'b', 'c'],
-      '{s2} = (−{b} + √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
-      (v) => {
-        const d = v.b! ** 2 - 4 * v.a! * v.c!;
-        if (d < 0 || !v.a) return undefined;
-        const r = [(-v.b! - Math.sqrt(d)) / (2 * v.a), (-v.b! + Math.sqrt(d)) / (2 * v.a)];
-        return fin(Math.max(...r));
-      },
-      '(−{b} + √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
-      'And the other root.',
-    ),
-  ],
-  example: { a: 2, b: -1, c: -1, s1: -0.5, s2: 1 },
-  startWith: ['a', 'b', 'c'],
-  equation: '{a} sin²x + {b} sin x + {c} = 0',
-  representation: {
-    kind: 'unitCircle',
-    angle: 0,
-    fixed: true,
-    solutions: { fn: 'sin', value: 's1', also: 's2' },
-  },
-});
-
-const CIRCLES: ModuleDef[] = [sumPair, differencePair, twoValues];
+const CIRCLES: ModuleDef[] = [sumPair, differencePair];
 
 // ── H99: complexPlane powers and roots ──
 

@@ -2819,6 +2819,25 @@ const oneSolution = (v: Values) =>
     ? '→ the same angle as x₁: one solution'
     : '';
 
+/** The smaller (−1) or larger (1) real root of a·s² + b·s + c = 0, or nothing. */
+const sinRoot = (v: Values, which: 1 | -1) => {
+  const d = v.b! ** 2 - 4 * v.a! * v.c!;
+  if (d < 0 || !v.a) return undefined;
+  const r = [(-v.b! - Math.sqrt(d)) / (2 * v.a), (-v.b! + Math.sqrt(d)) / (2 * v.a)];
+  return which < 0 ? Math.min(...r) : Math.max(...r);
+};
+/** The check line of a root, with the sign the root takes when a is negative. */
+const rootCheck = (v: Values, s: string, which: 1 | -1) =>
+  `${fmt(v[s]!)} = (−${par(v.b!)} ${which * Math.sign(v.a!) < 0 ? '−' : '+'} √(${par(v.b!)}² − 4 × ${par(v.a!)} × ${par(v.c!)})) ÷ (2 × ${par(v.a!)})`;
+/** The angles from 0° up to 360° whose sine is s, said after its step. */
+const sinAngles = (s: number | undefined) => {
+  if (s === undefined) return '';
+  if (Math.abs(s) > 1 + 1e-12) return '→ past −1 or 1: no angle';
+  const first = (Math.asin(Math.max(-1, Math.min(1, s))) / RAD + 360) % 360;
+  const xs = [...new Set([first, (540 - first) % 360].map((x) => fmt(x)))];
+  return `→ x = ${xs.map((x) => `${x}°`).join(' or ')}`;
+};
+
 const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
   // ── m.12.trig-formulas-equations (F-TF.9, F-TF.7) ──
   {
@@ -3223,6 +3242,86 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
       angle: 'x1',
       fixed: true,
       solutions: { fn: 'tan', value: 'k', angles: ['x1', 'x2'] },
+    },
+  },
+  {
+    id: 'm.12.trig-formulas-equations~quadratic',
+    title: 'A quadratic in sin x',
+    use: 'Use this for “Solve 2 sin²x − sin x − 1 = 0 for 0° ≤ x < 360°.”',
+    assumptions: [
+      'Treat sin x as one unknown s: 2 sin²x − sin x − 1 = 0 is the quadratic 2s² − s − 1 = 0.',
+      'Its two roots are two values of sin x, and each gives its own angles.',
+      'A root less than −1 or more than 1 gives no angle, since sin x stays from −1 to 1.',
+    ],
+    variables: [
+      V('a', 'a', 'Number before sin²x', { min: -10, max: 10, step: 0.5 }),
+      V('b', 'b', 'Number before sin x', { min: -10, max: 10, step: 0.5 }),
+      V('c', 'c', 'Number term', { min: -10, max: 10, step: 0.5 }),
+      V('s1', 's₁', 'Smaller value of sin x', { min: -40, max: 40, derived: true, fraction: 12 }),
+      V('s2', 's₂', 'Larger value of sin x', { min: -40, max: 40, derived: true, fraction: 12 }),
+    ],
+    ...rels(
+      limit(
+        'a ≠ 0',
+        'The number before sin²x, {a}, is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 it is not a quadratic: use the sin x equation page.',
+      ),
+      limit(
+        'b² − 4ac ≥ 0',
+        '{b}² − 4 × {a} × {c} is at least 0',
+        ['a', 'b', 'c'],
+        (v) => v.b! ** 2 - 4 * v.a! * v.c! >= 0,
+        'b² − 4ac is negative, so the quadratic has no real roots and sin x takes no value.',
+      ),
+      withStep(
+        withCheck(
+          derive(
+            's₁ = (−b − √(b² − 4ac)) ÷ 2a',
+            '{s1} = (−{b} − √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
+            's1',
+            ['a', 'b', 'c'],
+            (v) => sinRoot(v, -1),
+            (v: Values) =>
+              v.a! > 0
+                ? '(−{b} − √({b}² − 4 × {a} × {c})) ÷ (2 × {a})'
+                : '(−{b} + √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
+            'The quadratic formula in s = sin x: the smaller root.',
+          ),
+          (v) => rootCheck(v, 's1', -1),
+        ),
+        's1',
+        { note: (v) => sinAngles(v.s1) },
+      ),
+      withStep(
+        withCheck(
+          derive(
+            's₂ = (−b + √(b² − 4ac)) ÷ 2a',
+            '{s2} = (−{b} + √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
+            's2',
+            ['a', 'b', 'c'],
+            (v) => sinRoot(v, 1),
+            (v: Values) =>
+              v.a! > 0
+                ? '(−{b} + √({b}² − 4 × {a} × {c})) ÷ (2 × {a})'
+                : '(−{b} − √({b}² − 4 × {a} × {c})) ÷ (2 × {a})',
+            'And the larger root; when b² − 4ac = 0 the two are the same.',
+          ),
+          (v) => rootCheck(v, 's2', 1),
+        ),
+        's2',
+        { note: (v) => sinAngles(v.s2) },
+      ),
+    ),
+    example: { a: 2, b: -1, c: -1, s1: -0.5, s2: 1 },
+    startWith: ['a', 'b', 'c'],
+    equation: '{a} sin²x + {b} sin x + {c} = 0',
+    representation: {
+      kind: 'unitCircle',
+      angle: 0,
+      fixed: true,
+      solutions: { fn: 'sin', value: 's1', also: 's2' },
     },
   },
 ];
