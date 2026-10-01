@@ -2485,10 +2485,10 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'A counting fraction for “exactly k of r”: C(a, k) × C(b, r − k) ÷ C(a + b, r), groups up to 60',
       ['m.10.probability-rules~counting-probability'],
     ),
-    status: 'drawn',
-    gallery: ['g.m10-probability-rules-exactly-k', 'g.m10-probability-rules-exactly-k-sixty'],
+    status: 'placed',
+    gallery: [],
     notes:
-      "P25. `fraction` takes `b` and `r`: the top becomes C(n, k) × C(b, r − k) (k from the first group of n, the rest from the second group of b), over the triangle's C(n, k) as before. Without `b` and `r` it draws C(n, k) as H97 did. With `triangle: false` no rows are drawn, so groups run to 60. The harness checks that the two groups make everyone, that r is the bottom's k, and the count and chance. Spec for the page: { kind: 'pascalTriangle', n: 'n', k: 'r', triangle: false, slots: { r: 'r', choose: true, result: 't' }, fraction: { n: 'a', k: 'k', b: 'b', r: 'r', count: 'f', chance: 'P' } }. The page's solver leaves P = 1 unknown after edits like b = 0, k = 13 (a deep sampling run of the 60-person demo found it); the demo keeps b ≥ 1.",
+      "P25. `fraction` takes `b` and `r`: the top becomes C(n, k) × C(b, r − k) (k from the first group of n, the rest from the second group of b), over the triangle's C(n, k) as before. Without `b` and `r` it draws C(n, k) as H97 did. With `triangle: false` no rows are drawn, so groups run to 60. The harness checks that the two groups make everyone, that r is the bottom's k, and the count and chance. Spec for the page: { kind: 'pascalTriangle', n: 'n', k: 'r', triangle: false, slots: { r: 'r', choose: true, result: 't' }, fraction: { n: 'a', k: 'k', b: 'b', r: 'r', count: 'f', chance: 'P' } }. Placed: the page keeps b ≥ 1 (two groups; b = 0 left P = 1 unknown), adds rules for k = 0 (f = C(b, r)) and k = r (f = C(a, r)) so f is found before the group that gives no one is typed, and the slots put the product, and the ÷ r! line's groups, on lines of their own when they pass the width.",
   },
   {
     ...ask(

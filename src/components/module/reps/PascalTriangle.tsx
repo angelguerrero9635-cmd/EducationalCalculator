@@ -11,6 +11,9 @@ import { expansion, pascalRows, slotsOf } from './pascal';
 import { FractionRow, fractionHeight, fractionOf } from './PascalFraction';
 
 const fmt = (x: number) => formatNumber(x);
+/** A place's box and the gap (with its ×) to the next. */
+const SLOT_W = 38;
+const SLOT_GAP = 16;
 const sup = (e: number) => [...String(e)].map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]).join('');
 
 /**
@@ -81,7 +84,30 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
   }
 
   const triH = (w: number) => (showTriangle ? (R + 1) * cellOf(w).h + 10 : 0);
-  const slotsH = (slots ? (spec.slots!.choose ? 118 : 78) : 0) + (frac ? fractionHeight(frac) : 0);
+  // The boxes for the places; past 6, the first 4, "…" and the last.
+  const shownSlots: (number | null)[] = !slots
+    ? []
+    : slots.factors.length > 6
+      ? [...slots.factors.slice(0, 4), null, slots.factors[slots.factors.length - 1]!]
+      : slots.factors;
+  const result = slots ? `= ${fmt(slots.product)}` : '';
+  const divide = slots ? `÷ ${r}! = ${fmt(slots.divisor)} orders` : '';
+  const groups = slots ? `→ ${fmt(slots.value)} groups` : '';
+  /**
+   * H113: at 10 or more places from up to 60 the product ("= 2.7359 × 10¹⁷") and the ÷ r! line
+   * pass a phone's width, so each goes on a line of its own when it doesn't fit (8 px a figure).
+   */
+  function slotsLayout(w: number) {
+    const room = w - 16;
+    const boxes =
+      Math.max(1, shownSlots.length) * SLOT_W + Math.max(0, shownSlots.length - 1) * SLOT_GAP;
+    const wrap = boxes + 14 + result.length * 8 > room;
+    const split = !!spec.slots?.choose && (divide.length + groups.length + 1) * 8 > room;
+    return { boxes, wrap, split, extra: (wrap ? 26 : 0) + (split ? 22 : 0) };
+  }
+  const slotsH = (w: number) =>
+    (slots ? (spec.slots!.choose ? 118 : 78) + slotsLayout(w).extra : 0) +
+    (frac ? fractionHeight(frac) : 0);
   function cellOf(w: number) {
     const cw = Math.min(40, (w - 16) / (R + 1));
     return { w: cw, h: Math.min(28, Math.max(20, cw * 0.82)) };
@@ -89,7 +115,7 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
 
   return (
     <View>
-      <Canvas aspect={(w) => (triH(w) + slotsH + 8) / w}>
+      <Canvas aspect={(w) => (triH(w) + slotsH(w) + 8) / w}>
         {({ w, h }) => {
           const cell = cellOf(w);
           const at = (row: number, col: number) => ({
@@ -197,18 +223,13 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
               {slots && slotsFit ? (
                 <G opacity={op}>
                   {(() => {
-                    // Boxes for the places; past 6, the first 4, "…" and the last.
-                    const all = slots.factors;
-                    const shown: (number | null)[] =
-                      all.length > 6 ? [...all.slice(0, 4), null, all[all.length - 1]!] : all;
-                    const bw = 38;
-                    const gap = 16;
-                    const result = `= ${fmt(slots.product)}`;
-                    const total =
-                      Math.max(1, shown.length) * bw +
-                      Math.max(0, shown.length - 1) * gap +
-                      14 +
-                      result.length * 8;
+                    const shown = shownSlots;
+                    const bw = SLOT_W;
+                    const gap = SLOT_GAP;
+                    const fit = slotsLayout(w);
+                    const total = fit.boxes + (fit.wrap ? 0 : 14 + result.length * 8);
+                    // Lines below the boxes move down by the product's line when it wraps.
+                    const down = fit.wrap ? 26 : 0;
                     let x = Math.max(8, (w - total) / 2);
                     const y = top + 14;
                     const parts = shown.map((f, i) => {
@@ -271,27 +292,45 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
                           </ChartText>
                         ) : (
                           <ChartText
-                            x={x - gap + 10}
-                            y={y + 20}
+                            x={fit.wrap ? w / 2 : x - gap + 10}
+                            y={y + 20 + down}
+                            textAnchor={fit.wrap ? 'middle' : 'start'}
                             fontSize={chart.value}
                             fontWeight="700"
                           >
                             {result}
                           </ChartText>
                         )}
-                        <ChartText x={w / 2} y={y + 48} textAnchor="middle" fill={c.chartMuted}>
+                        <ChartText
+                          x={w / 2}
+                          y={y + 48 + down}
+                          textAnchor="middle"
+                          fill={c.chartMuted}
+                        >
                           {`choices for each of the ${r} ${r === 1 ? 'place' : 'places'}, in order`}
                         </ChartText>
                         {spec.slots!.choose ? (
                           <ChartText
                             x={w / 2}
-                            y={y + 82}
+                            y={y + 82 + down}
                             textAnchor="middle"
                             fontSize={chart.value}
                             fontWeight="700"
                             fill={c.chartHighlight}
                           >
-                            {`÷ ${r}! = ${fmt(slots.divisor)} orders → ${fmt(slots.value)} groups`}
+                            {fit.split ? divide : `${divide} ${groups}`}
+                          </ChartText>
+                        ) : null}
+                        {spec.slots!.choose && fit.split ? (
+                          <ChartText
+                            x={w / 2}
+                            y={y + 104 + down}
+                            textAnchor="middle"
+                            fontSize={chart.value}
+                            fontWeight="700"
+                            fill={c.chartHighlight}
+                          >
+                            {groups}
                           </ChartText>
                         ) : null}
                       </>

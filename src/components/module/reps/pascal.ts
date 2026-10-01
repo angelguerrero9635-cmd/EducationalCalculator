@@ -22,7 +22,9 @@ export function slotsOf(n: number, r: number, choose: boolean) {
   const product = factors.reduce((t, x) => t * x, 1);
   const orders = Array.from({ length: Math.max(0, r) }, (_, i) => r - i);
   const divisor = choose ? orders.reduce((t, x) => t * x, 1) : 1;
-  return { factors, product, orders: choose ? orders : [], divisor, value: product / divisor };
+  // Past 2⁵³ the product is not exact, so a count of groups is rounded to the whole number it is.
+  const value = choose ? Math.round(product / divisor) : product;
+  return { factors, product, orders: choose ? orders : [], divisor, value };
 }
 
 /** "a⁵ + 5a⁴b + 10a³b² + …": (a + b)ⁿ with row n's coefficients. */

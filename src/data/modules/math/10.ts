@@ -3660,6 +3660,15 @@ const choose = (n: number, r: number) => {
   for (let i = 1; i <= r; i++) out = (out * (n - r + i)) / i;
   return Math.round(out);
 };
+/**
+ * The favorable count C(a, k) × C(b, r − k) when a and b are known (a case rule whose case doesn't
+ * apply gives the main rule's value; the main rule, listed first, finds it then anyway).
+ */
+const favorable = (v: Values) =>
+  v.a === undefined || v.b === undefined ? undefined : choose(v.a, v.k!) * choose(v.b, v.r! - v.k!);
+/** The favorable count's own check line, for a case rule whose case doesn't apply. */
+const favorableCheck = (v: Values) =>
+  `${formatNumber(v.f!)} = C(${v.a}, ${v.k}) × C(${v.b}, ${v.r} − ${v.k})`;
 /** One shaded probability on a Venn diagram of P(A), P(B) and P(A and B). */
 function vennPage(d: {
   id: string;
@@ -4007,11 +4016,13 @@ const PROBABILITY_RULES: ModuleDef[] = [
       'All groups: C(a + b, r). The probability is the first over the second.',
     ],
     variables: [
-      num('a', 'a', 'First group', 1, 60, { step: 1, integer: true }),
-      num('b', 'b', 'Second group', 0, 59, { step: 1, integer: true }),
+      // Two groups, each with someone in it: with no second group every pick is "all from the
+      // first", P = 1, and nothing is left to count.
+      num('a', 'a', 'First group', 1, 59, { step: 1, integer: true }),
+      num('b', 'b', 'Second group', 1, 59, { step: 1, integer: true }),
       num('r', 'r', 'Chosen', 1, 14, { step: 1, integer: true }),
       num('k', 'k', 'Chosen from the first group', 0, 14, { step: 1, integer: true }),
-      der(num('n', 'n', 'Everyone', 1, 60, { integer: true })),
+      der(num('n', 'n', 'Everyone', 2, 60, { integer: true })),
       der(num('f', 'f', 'Favorable groups', 0, MOST_WAYS, { integer: true })),
       der(num('t', 't', 'Groups in all', 1, MOST_WAYS, { integer: true })),
       der(num('P', 'P', 'Probability', 0, 1, { fraction: 1000 })),
@@ -4056,6 +4067,40 @@ const PROBABILITY_RULES: ModuleDef[] = [
         'C({a}, {k}) × C({b}, {r} − {k})',
         'Pick k from the first group and the other r − k from the second: multiply the ways.',
       ),
+      // C(a, 0) = 1 whatever a is, and C(b, 0) = 1 whatever b is: with none (or all) from the
+      // first group, f is known before the group that gives no one is.
+      rule(
+        'f = C(b, r) when k = 0',
+        '{f} = C({b}, {r}) when {k} is 0',
+        {
+          f: [
+            (v) => (v.k === 0 ? choose(v.b!, v.r!) : favorable(v)),
+            'C({b}, {r})',
+            'None come from the first group (1 way), so all r come from the second.',
+          ],
+        },
+        (v) => (v.k === 0 ? v.f! - choose(v.b!, v.r!) : 0),
+        {
+          check: (v) =>
+            v.k === 0 ? `${formatNumber(v.f!)} = C(${v.b}, ${v.r})` : favorableCheck(v),
+        },
+      ),
+      rule(
+        'f = C(a, r) when k = r',
+        '{f} = C({a}, {r}) when {k} is {r}',
+        {
+          f: [
+            (v) => (v.k === v.r ? choose(v.a!, v.r!) : favorable(v)),
+            'C({a}, {r})',
+            'All r come from the first group, and the second gives no one (1 way).',
+          ],
+        },
+        (v) => (v.k === v.r ? v.f! - choose(v.a!, v.r!) : 0),
+        {
+          check: (v) =>
+            v.k === v.r ? `${formatNumber(v.f!)} = C(${v.a}, ${v.r})` : favorableCheck(v),
+        },
+      ),
       derive(
         't = C(n, r)',
         '{t} = C({n}, {r})',
@@ -4068,11 +4113,14 @@ const PROBABILITY_RULES: ModuleDef[] = [
     ],
     example: { a: 5, b: 4, r: 3, k: 3, n: 9, f: 10, t: 84, P: 10 / 84 },
     startWith: ['a', 'b', 'r', 'k'],
+    // H113: the counting fraction C(a, k) × C(b, r − k) over C(n, r) under the slots.
     representation: {
       kind: 'pascalTriangle',
       n: 'n',
+      k: 'r',
       triangle: false,
       slots: { r: 'r', choose: true, result: 't' },
+      fraction: { n: 'a', k: 'k', b: 'b', r: 'r', count: 'f', chance: 'P' },
     },
   }),
 ];
