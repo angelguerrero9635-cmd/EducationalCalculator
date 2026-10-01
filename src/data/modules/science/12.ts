@@ -1136,6 +1136,61 @@ const humidity: ModuleDef = {
   representation: { kind: 'percentBar', percent: 'RH', part: 'w', whole: 'ws', ticks: 10 },
 };
 
+const cloudBase: ModuleDef = {
+  id: 's.12.atmosphere-weather~cloud-base',
+  title: 'The height of a cloud’s base',
+  use: 'Use this for “The air is 24 °C with a dew point of 12 °C. How high is the cloud base?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Rising air expands and cools about 10 °C per km until it is saturated.',
+    'Its dew point falls only about 2 °C per km, so the two close 8 °C per km.',
+    'Where they meet, water vapor condenses: the flat base of a cumulus cloud.',
+  ],
+  variables: [
+    V('T', 'T', 'Temperature at the ground', { unit: '°C', min: -40, max: 50, step: 0.1 }),
+    V('Td', 'T_d', 'Dew point at the ground', { unit: '°C', min: -60, max: 50, step: 0.1 }),
+    V('h', 'h', 'Height of the cloud base', {
+      unit: 'km',
+      min: 0,
+      max: 15,
+      step: 0.001,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    {
+      relation: {
+        id: 'T_d ≤ T',
+        constraint: true,
+        display: 'the dew point {Td} is at most the temperature {T}',
+        vars: ['Td', 'T'],
+        residual: (v: Values) => (v.Td! <= v.T! ? 0 : 1),
+        solve: {},
+        message: () => 'The dew point can’t be above the air’s temperature.',
+      },
+      steps: {},
+    },
+    rule('h = (T − T_d) ÷ 8', '{h} = ({T} − {Td}) ÷ 8', (v) => 8 * v.h! - (v.T! - v.Td!), {
+      h: [
+        (v) => (v.T! - v.Td!) / 8,
+        '({T} − {Td}) ÷ 8',
+        'The gap closes 10 − 2 = 8 °C for each km the parcel rises.',
+      ],
+      T: [(v) => v.Td! + 8 * v.h!, '{Td} + 8 × {h}', 'The dew point plus 8 °C for each km.'],
+      Td: [(v) => v.T! - 8 * v.h!, '{T} − 8 × {h}', 'The temperature less 8 °C for each km.'],
+    }),
+  ),
+  example: { T: 24, Td: 12, h: 1.5 },
+  startWith: ['T', 'Td'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'parcel',
+    temperature: 'T',
+    dewPoint: 'Td',
+    base: 'h',
+  },
+};
+
 // ── Human impacts and resource management (the main page is a sort) ──
 
 const pct = (id: string, symbol: string, name: string, derived = false) =>
@@ -2040,6 +2095,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   lapse,
   pressureMap,
   humidity,
+  cloudBase,
   energyMix,
   kepler,
   wien,
