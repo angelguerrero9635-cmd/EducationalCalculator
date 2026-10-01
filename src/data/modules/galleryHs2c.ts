@@ -198,71 +198,6 @@ const pointField: ModuleDef = (() => {
   };
 })();
 
-// ─── H102.11 photoelectric: photons free electrons above a threshold ─────────
-
-const photoelectric: ModuleDef = (() => {
-  const [lam, phi] = [250, 2.3];
-  return {
-    id: 'g.s11-modern-physics-photoelectric',
-    title: 'The photoelectric effect',
-    use: 'Use this for “Light of 250 nm falls on a metal with a work function of 2.3 eV. What is the most kinetic energy an electron can leave with? What is the threshold wavelength?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'Light comes in photons of E = hc/λ = 1240/λ eV, with λ in nm.',
-      'One photon frees at most one electron; the work function φ is the least energy that takes.',
-      'Below the threshold wavelength λ₀ = 1240/φ no electron leaves, however bright the light.',
-    ],
-    variables: [
-      q('l', 'λ', 'Wavelength of the light', 'nm', 10, 2000, 0.1, { units: ['nm'] }),
-      q('E', 'E', 'Photon energy', 'eV', 0.62, 124, 0.001),
-      q('p', 'φ', 'Work function of the metal', 'eV', 0.5, 10, 0.01),
-      q('K', 'Kₘₐₓ', 'Greatest kinetic energy of an electron', 'eV', 0, 124, 0.001),
-      q('z', 'λ₀', 'Threshold wavelength', 'nm', 124, 2480, 0.1, { units: ['nm'] }),
-    ],
-    ...rules(
-      rule('E = 1240/λ', '{E} = 1240/{l}', (x) => x.E! * x.l! - 1240, {
-        E: [(x) => div(1240, x.l!), '1240/{l}', 'hc in eV·nm over the wavelength in nm.'],
-        l: [(x) => div(1240, x.E!), '1240/{E}', 'The wavelength whose photons carry E.'],
-      }),
-      rule('Kₘₐₓ = E − φ', '{K} = {E} − {p}', (x) => x.K! - (x.E! - x.p!), {
-        K: [
-          (x) => x.E! - x.p!,
-          '{E} − {p}',
-          'What is left of the photon’s energy after freeing the electron.',
-        ],
-        E: [
-          (x) => x.K! + x.p!,
-          '{K} + {p}',
-          'The photon paid the work function and the kinetic energy.',
-        ],
-        p: [
-          (x) => x.E! - x.K!,
-          '{E} − {K}',
-          'The part of the photon’s energy that freed the electron.',
-        ],
-      }),
-      rule('λ₀ = 1240/φ', '{z} = 1240/{p}', (x) => x.z! * x.p! - 1240, {
-        z: [(x) => div(1240, x.p!), '1240/{p}', 'The wavelength whose photons carry just φ.'],
-        p: [
-          (x) => div(1240, x.z!),
-          '1240/{z}',
-          'A photon at the threshold carries just the work function.',
-        ],
-      }),
-    ),
-    example: { l: lam, E: 1240 / lam, p: phi, K: 1240 / lam - phi, z: 1240 / phi },
-    startWith: ['l', 'p'],
-    representation: {
-      kind: 'photoelectric',
-      wavelength: 'l',
-      workFunction: 'p',
-      energy: 'E',
-      kinetic: 'K',
-      threshold: 'z',
-    },
-  };
-})();
-
 // ─── H102.12 lightClock: time dilation and length contraction ────────────────
 
 const relativity: ModuleDef = (() => {
@@ -329,7 +264,7 @@ const relativity: ModuleDef = (() => {
   };
 })();
 
-export const HS2C_GALLERY_MODULES: ModuleDef[] = [freeFall, pointField, photoelectric, relativity];
+export const HS2C_GALLERY_MODULES: ModuleDef[] = [freeFall, pointField, relativity];
 
 // ─── H102.5 card figure `strobe`: sorting motion diagrams ───────────────────
 
