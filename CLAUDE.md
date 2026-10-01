@@ -40,7 +40,7 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 | `pnpm check`                                                                | Typecheck, lint, format check, all tests                                                                    |
 | `pnpm review -- --prefix m.5. --stage lesson [--changed]`                   | Lesson evidence (dump, deep harness, questions): no build, no browser                                       |
 | `pnpm review -- --prefix m.5. --stage page [--changed]`                     | Page evidence: builds only the pages in scope when `dist/` is stale, screenshots, drags, sheets             |
-| `node scripts/ci-test.mjs`                                                  | Before a push: every cheap suite, the heavy ones for the grades changed                                     |
+| `node scripts/ci-test.mjs [--dry]`                                          | Before a push: every cheap suite, the heavy ones for the pages changed (engine changes by page fingerprint) |
 | `node scripts/plan-brief.mjs --grade 8 --subject m`                         | The brief a direction plan starts from (`.review/plans/m.8/brief.md`)                                       |
 | `node scripts/promote-demo.mjs g.demo-id m.8.skill~slug ["Title"]`          | Copy a gallery demo into its grade file as a page                                                           |
 | `node scripts/review-questions.mjs --prefix m.5.`                           | The released questions for a section's skills into `.review/questions.md`                                   |

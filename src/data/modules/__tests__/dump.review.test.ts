@@ -12,8 +12,8 @@ import { solve } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 
 import { LAYOUTS, MODULES } from '..';
-import { buildSteps, type Walkthrough } from '../buildSteps';
-import { writtenText, type Written } from '../written';
+import { buildSteps } from '../buildSteps';
+import { walkthroughText } from '../harness/walkText';
 
 // Jest runs in Node; the test tsconfig has no Node types, so the few Node calls are declared here.
 declare const require: (name: string) => {
@@ -27,37 +27,6 @@ const OUT = env.REVIEW_DUMP;
 const PREFIXES = (env.MODULE_IDS ?? '').split(',').filter(Boolean);
 const inScope = (m: { id: string }) =>
   PREFIXES.length === 0 || PREFIXES.some((p) => m.id === p || m.id.startsWith(p));
-
-/** The written work as text, boxed so it reads apart from the lines around it. */
-const grid = (w: Written) => [
-  `    ┌ written work: ${w.says}`,
-  ...writtenText(w).flatMap((l) => l.split('\n').map((x) => `    │ ${x}`)),
-  '    └',
-];
-
-function walkthroughText(w: Walkthrough): string[] {
-  const out = [
-    `  we know: ${w.given.map((q) => q.label).join('; ') || 'nothing'}`,
-    ...(w.find.length ? [`  find: ${w.find.map((q) => q.ask).join(', ')}`] : []),
-    ...w.convertIn.map((l) => `  convert: ${l}`),
-  ];
-  w.steps.forEach((s, i) => {
-    out.push(`  step ${i + 1} · ${s.heading}`);
-    if (s.lead.sentence) out.push(`    ${s.lead.sentence}`);
-    if (s.lead.formula) out.push(`    ${s.lead.formula}`);
-    out.push(`    how: ${s.how}`);
-    s.lines.forEach((line, k) => {
-      if (k === s.writtenAfter && s.written) out.push(...grid(s.written));
-      out.push(`    ${line}`);
-    });
-    if (s.lines.length <= s.writtenAfter && s.written) out.push(...grid(s.written));
-    out.push(`    → ${s.answer}`);
-  });
-  out.push(...w.convertOut.map((l) => `  convert back: ${l}`));
-  if (w.nextHint) out.push(`  next: ${w.nextHint}`);
-  for (const k of w.check) out.push(`  check: ${k.formula} ${k.ok ? '✓' : w.checkFail}`);
-  return out;
-}
 
 const describeOrSkip = OUT ? describe : describe.skip;
 
