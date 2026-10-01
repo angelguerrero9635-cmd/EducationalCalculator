@@ -5,7 +5,7 @@ import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
 
 import { gradeBand, gradeOf, quantityLabel, wordRule, type GradeBand } from './grade';
-import { operationCount, simplifyChain } from './simplify';
+import { evaluatePrinted, operationCount, simplifyChain } from './simplify';
 import type { ModuleDef } from './types';
 import { factWork } from './work';
 import { autoWritten, type Written } from './written';
@@ -325,7 +325,20 @@ export function buildSteps(
     const expr = typeof text.expr === 'function' ? text.expr(working) : text.expr;
     const work = typeof text.work === 'function' ? text.work(working) : text.work;
     const rearranged = `${v.symbol} = ${renderTemplate(expr, vars)}`;
-    const substituted = agree(`${v.symbol} = ${renderTemplate(expr, workVars, working)}`);
+    // A line whose printed numbers nearly cancel (1/(1/1 + 1/(−0.994))) can miss the answer
+    // at the usual figures: its numbers are then printed with 8, so the line adds up.
+    const printed = (vs: typeof workVars) => renderTemplate(expr, vs, working);
+    const misses = (line: string) => {
+      const x = evaluatePrinted(line);
+      const want = working[t.id];
+      return (
+        x !== undefined && want !== undefined && Math.abs(x - want) > 1e-3 * Math.abs(want) + 1e-9
+      );
+    };
+    const fine = workVars.map((w) => ({ ...w, figures: 8 }));
+    const substituted = agree(
+      `${v.symbol} = ${misses(printed(workVars)) && !misses(printed(fine)) ? printed(fine) : printed(workVars)}`,
+    );
     // Lines that only repeat the one before ("c = 4", then "c = 4") are left out.
     const same = (x: string, y: string) => x === y.split(' (')[0];
     const noted =

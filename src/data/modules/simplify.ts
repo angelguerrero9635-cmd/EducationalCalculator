@@ -499,6 +499,15 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
   }
 }
 
+/** The value of a plain arithmetic expression as printed, or undefined when it isn't one. */
+export function evaluatePrinted(text: string): number | undefined {
+  const tokens = tokenize(text);
+  const tree = tokens && parse(tokens);
+  if (!tree) return undefined;
+  const x = compute(tree);
+  return Number.isFinite(x) ? x : undefined;
+}
+
 /** How many operations the expression has, or undefined when it isn't plain arithmetic. */
 export function operationCount(text: string): number | undefined {
   const tokens = tokenize(text);

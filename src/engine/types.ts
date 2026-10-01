@@ -40,7 +40,7 @@ export interface VariableDef {
   sigFigs?: number;
   /**
    * At most this many significant figures once the value is 1 or more, no zeros added: 277.8
-   * m/s, pH 3.602 (the 9–12 science pages set 4). Below 1 every value keeps 4 figures.
+   * m/s, pH 3.602 (the 9–12 science pages set 4). Below 1 a value keeps 4 figures, or this many when more.
    */
   figures?: number;
   /** A worked-out value under half the step reads "< 0.0001" in its box (a p-value), never 0. */

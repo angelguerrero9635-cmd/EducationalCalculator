@@ -2514,22 +2514,7 @@ const opticsPage = (
       q('k', 'hᵢ', 'Image height', 'cm', -1e6, 1e6, 0.01),
     ],
     ...withChecks(
-      [
-        {
-          // Closer than a tenth of the focal length, 1/dₒ and 1/dᵢ nearly cancel and a printed
-          // line can't add up to the answer; no textbook object sits that close.
-          id: '|f| ≤ 10 dₒ',
-          constraint: true,
-          display: '|{f}| ≤ 10 × {o}',
-          vars: ['f', 'o'],
-          residual: (v) => (Math.abs(v.f!) <= 10 * v.o! + 1e-9 ? 0 : 1),
-          solve: {},
-          message: (v) =>
-            Math.abs(v.f!) <= 10 * v.o! + 1e-9
-              ? undefined
-              : `The object is too close to the ${mode} for this page: keep it at least |f| ÷ 10 = ${Math.abs(v.f! / 10)} cm away.`,
-        },
-      ],
+      [],
       rule('1/f = 1/dₒ + 1/dᵢ', '1/{f} = 1/{o} + 1/{i}', (v) => 1 / v.f! - 1 / v.o! - 1 / v.i!, {
         i: [
           (v) => div(1, 1 / v.f! - 1 / v.o!),

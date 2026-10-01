@@ -33,11 +33,18 @@ needs (`docs/HS_NEEDS.md`, E20–E29) were worked through:
   number, not a stage.
 - **p-values.** A variable can set `belowStep`: a worked-out value under half its step reads
   "< 0.0001" in its box. The m.12 p-values set it, so a tiny p-value no longer shows 0.
+- **4 significant figures on science pages** (E24). A variable's `figures` caps the figures shown
+  from 1 up (277.8 m/s, pH 3.602, not 277.7778 and 3.6021); `index.ts` sets 4 on every 9–12
+  science value without its own sig figs.
+- **A value picked from a list stays the student's.** A value with an `allowed` list that every
+  rule marks never worked out (an electron or proton mass) is not filled by the search.
+- **Lines that nearly cancel** (E27). A substituted line is evaluated as printed; when it misses
+  the answer (1/(1/1 + 1/(−0.994)) for f = −166.4), its numbers are printed with 8 figures. The
+  optics pages' "object at least |f| ÷ 10 away" limit, added to dodge this, is gone.
 - **Named constants** (E28). No change: every page writes its constant as a number in the rule
   line (6.674 × 10⁻¹¹, 8.99 × 10⁹), which the check line evaluates.
 - **Still open:** circular fills after a clear (E21), exact trig and radical answers (E22),
-  4 significant figures on science pages (E24), digits kept through a near-cancelling sum
-  (E27), a rounding that runs through several values (E29).
+  a rounding that runs through several values (E29).
 
 ## Grades 9–12 lesson review: fractions, powers, names and reasons
 
