@@ -636,6 +636,19 @@ const widened = (system: System): System => ({
 });
 
 /**
+ * The same system with every bounded range widened tenfold, whole number or not: what the
+ * formulas fix even past the ranges (as the sampling harness's `relax` reads it).
+ */
+const loosened = (system: System): System => ({
+  relations: system.relations,
+  variables: system.variables.map((v) => {
+    if (v.min === undefined || v.max === undefined) return v;
+    const w = 10 * (v.max - v.min + (v.unitFactor ?? 1));
+    return { ...v, min: v.min - w, max: v.max + w };
+  }),
+});
+
+/**
  * Half a typed value's step: how far a number typed into the box may be from the value it
  * stands for (a rounded shown value, d = 463.6 for 463.601). 0 for whole numbers, lists and
  * boxes with no step.
@@ -837,6 +850,71 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         known = { ...known, [v.id]: x };
         filled.push(v.id);
       }
+    }
+  }
+  // A filled value must follow from the values known without it (E21): one at a time, by a
+  // formula whose other values are known or already explained, or as a group that the
+  // group's own formulas fix together (c + s = 20 with c = s: two formulas, two values). A
+  // group pinned only through a value still unknown is a cycle, and is left for the student:
+  // with n₂ = 2 and n₁ cleared, the search's n₁ = ±1 both give E = 10.2, but E's only formula
+  // needs n₁, and "E from λ, λ from E" explains nothing.
+  if (filled.length) {
+    const explained = new Set(Object.keys(known).filter((id) => !filled.includes(id)));
+    const rules = system.relations.filter((rel) => !rel.constraint);
+    let open = [...filled];
+    for (let changed = true; changed;) {
+      changed = false;
+      for (const id of open) {
+        const by = rules.some(
+          (rel) =>
+            rel.vars.includes(id) &&
+            rel.solve?.[id]?.length !== 0 &&
+            rel.vars.every((v) => v === id || explained.has(v)),
+        );
+        if (by) {
+          explained.add(id);
+          changed = true;
+        }
+      }
+      open = open.filter((id) => !explained.has(id));
+    }
+    // The rest in groups joined by formulas whose values are all known (or in the group).
+    const inGroup = (rel: Relation, group: Set<string>) =>
+      rel.vars.some((v) => group.has(v)) && rel.vars.every((v) => group.has(v) || explained.has(v));
+    const left = new Set(open);
+    for (const start of open) {
+      if (!left.has(start)) continue;
+      const group = new Set([start]);
+      for (let grew = true; grew;) {
+        grew = false;
+        for (const rel of rules) {
+          if (!rel.vars.some((v) => group.has(v))) continue;
+          for (const v of rel.vars) {
+            if (left.has(v) && !group.has(v)) {
+              group.add(v);
+              grew = true;
+            }
+          }
+        }
+      }
+      for (const v of group) left.delete(v);
+      const fixing = rules.filter((rel) => inGroup(rel, group)).length;
+      if (fixing >= group.size) continue;
+      const rest = { ...known };
+      for (const v of group) delete rest[v];
+      // Dropped only when the solutions with every range widened differ on it: a value the
+      // formulas fix through a cancelling unknown (the lone pairs l = 2 whatever the carbon
+      // count) stays, as does one the search can't tell about.
+      const r = wholeSolutions(loosened(system), rest, previous, 40);
+      const first = r.solutions[0];
+      const varies =
+        !!first &&
+        [...group].some((v) =>
+          r.solutions.some((sol) => !(v in sol) || !closeTo(sol[v]!, first[v]!)),
+        );
+      if (!varies) continue;
+      for (const v of group) filled.splice(filled.indexOf(v), 1);
+      known = rest;
     }
   }
   // Explain each filled value with a formula that gives it directly once everything is known,

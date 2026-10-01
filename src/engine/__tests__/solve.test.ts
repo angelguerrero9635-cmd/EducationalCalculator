@@ -376,6 +376,81 @@ describe('typed values rounded to their step', () => {
   });
 });
 
+describe('values the search fills in (E21)', () => {
+  const whole = (id: string, min: number, max: number) => ({
+    id,
+    symbol: id,
+    name: id,
+    integer: true,
+    min,
+    max,
+  });
+
+  it('leaves a value pinned only through an unknown for the student', () => {
+    // E = 13.6(1/l² − 1/u²) and λ = 1240/E. With u = 2 and l unknown, l = ±1 both give
+    // E = 10.2, but E's only formula needs l: "E from λ, λ from E" would be a circle.
+    const ladder: System = {
+      variables: [
+        whole('u', 2, 8),
+        whole('l', 1, 7),
+        { id: 'E', symbol: 'E', name: 'Energy', min: 0.01, max: 13.6, step: 0.0001 },
+        { id: 'w', symbol: 'λ', name: 'Wavelength', min: 50, max: 20000, step: 0.1 },
+      ],
+      relations: [
+        {
+          id: 'u > l',
+          display: '',
+          vars: ['u', 'l'],
+          constraint: true,
+          residual: (v) => (v.u! > v.l! ? 0 : 1),
+          solve: {},
+        },
+        {
+          id: 'E = 13.6(1/l² − 1/u²)',
+          display: '',
+          vars: ['E', 'l', 'u'],
+          residual: (v) => v.E! - 13.6 * (1 / v.l! ** 2 - 1 / v.u! ** 2),
+          solve: { E: (v) => 13.6 * (1 / v.l! ** 2 - 1 / v.u! ** 2) },
+        },
+        {
+          id: 'λ = 1240/E',
+          display: '',
+          vars: ['w', 'E'],
+          residual: (v) => v.w! * v.E! - 1240,
+          solve: { w: (v) => 1240 / v.E!, E: (v) => 1240 / v.w! },
+        },
+      ],
+    };
+    const r = solve(ladder, [{ id: 'u', value: 2 }]);
+    expect(r.values).toEqual({ u: 2 });
+    expect(r.trace).toEqual([]);
+  });
+
+  it('still fills two values their own formulas fix together (c + s = 20, c = s)', () => {
+    const pair: System = {
+      variables: [whole('c', 0, 20), whole('s', 0, 20), whole('t', 0, 40)],
+      relations: [
+        {
+          id: 'c + s = t',
+          display: '',
+          vars: ['c', 's', 't'],
+          residual: (v) => v.c! + v.s! - v.t!,
+          solve: { t: (v) => v.c! + v.s!, c: (v) => v.t! - v.s!, s: (v) => v.t! - v.c! },
+        },
+        {
+          id: 'c = s',
+          display: '',
+          vars: ['c', 's'],
+          residual: (v) => v.c! - v.s!,
+          solve: { c: (v) => v.s!, s: (v) => v.c! },
+        },
+      ],
+    };
+    const r = solve(pair, [{ id: 't', value: 20 }]);
+    expect(r.values).toEqual({ t: 20, c: 10, s: 10 });
+  });
+});
+
 describe('a newer value that doesn’t fit the older ones', () => {
   // ρ = m ÷ V with V = s³: a density the range (and a rule) can say no to.
   const block = (message?: Relation['message']): System => ({
