@@ -1908,7 +1908,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ),
     status: 'drawn',
     gallery: [
-      'g.m11-unit-circle-point-on-side',
       'g.m12-trig-formulas-equations-pair',
       'g.m12-trig-formulas-equations-difference-pair',
       'g.m12-trig-formulas-equations-quadratic',

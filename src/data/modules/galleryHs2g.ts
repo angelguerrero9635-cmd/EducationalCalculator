@@ -646,80 +646,6 @@ const CHANCES: ModuleDef[] = [neitherCounts, vennCountsGiven, threeStages, count
 
 // ── H98: unitCircle through a point, two angles in turn, two values ──
 
-const pointOnSide = page({
-  id: 'g.m11-unit-circle-point-on-side',
-  title: 'A point on the terminal side',
-  use: 'Use this for “(−3, 4) is on the terminal side of θ. Find sin θ, cos θ and tan θ.”',
-  assumptions: [
-    'The point is r = √(x² + y²) from the origin, on the ray that ends θ.',
-    'Scale it by 1/r and it lands on the unit circle: (x/r, y/r) = (cos θ, sin θ).',
-    'So sin θ = y/r, cos θ = x/r and tan θ = y/x; the signs come from the quadrant.',
-  ],
-  variables: [
-    num('x', 'x', 'x of the point', -20, 20, { step: 0.5 }),
-    num('y', 'y', 'y of the point', -20, 20, { step: 0.5 }),
-    num('r', 'r', 'Distance from the origin', 0, 30, { derived: true }),
-    num('s', 'sin θ', 'sin θ', -1, 1, { derived: true, fraction: 100 }),
-    num('c', 'cos θ', 'cos θ', -1, 1, { derived: true, fraction: 100 }),
-    num('t', 'tan θ', 'tan θ', -1000, 1000, { derived: true, fraction: 100 }),
-  ],
-  rules: [
-    limit(
-      'not (0, 0)',
-      '({x}, {y}) is not (0, 0)',
-      (v) => v.x !== 0 || v.y !== 0,
-      'The origin is on every ray: pick another point.',
-    ),
-    derive(
-      'r = √(x² + y²)',
-      'r',
-      ['x', 'y'],
-      '{r} = √({x}² + {y}²)',
-      (v) => fin(Math.hypot(v.x!, v.y!)),
-      '√({x}² + {y}²)',
-      'The distance from the origin, by the Pythagorean theorem.',
-    ),
-    derive(
-      'sin θ = y ÷ r',
-      's',
-      ['y', 'r'],
-      '{s} = {y} ÷ {r}',
-      (v) => (v.r ? fin(v.y! / v.r!) : undefined),
-      '{y} ÷ {r}',
-      'The unit point’s y: the point scaled by 1/r.',
-    ),
-    derive(
-      'cos θ = x ÷ r',
-      'c',
-      ['x', 'r'],
-      '{c} = {x} ÷ {r}',
-      (v) => (v.r ? fin(v.x! / v.r!) : undefined),
-      '{x} ÷ {r}',
-      'The unit point’s x.',
-    ),
-    derive(
-      'tan θ = y ÷ x',
-      't',
-      ['y', 'x'],
-      '{t} = {y} ÷ {x}',
-      (v) => (v.x ? fin(v.y! / v.x!) : undefined),
-      '{y} ÷ {x}',
-      'Rise over run along the ray; there is none when x = 0.',
-    ),
-  ],
-  example: { x: -3, y: 4, r: 5, s: 0.8, c: -0.6, t: -4 / 3 },
-  startWith: ['x', 'y'],
-  representation: {
-    kind: 'unitCircle',
-    angle: 0,
-    through: { x: 'x', y: 'y', r: 'r' },
-    sin: 's',
-    cos: 'c',
-    tan: 't',
-    fixed: true,
-  },
-});
-
 const sumPair = fromPage(
   'm.12.trig-formulas-equations',
   'g.m12-trig-formulas-equations-pair',
@@ -811,7 +737,7 @@ const twoValues = page({
   },
 });
 
-const CIRCLES: ModuleDef[] = [pointOnSide, sumPair, differencePair, twoValues];
+const CIRCLES: ModuleDef[] = [sumPair, differencePair, twoValues];
 
 // ── H99: complexPlane powers and roots ──
 
