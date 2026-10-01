@@ -214,12 +214,22 @@ function ScaleView({ spec, rep, calc }: { spec: Scale; rep: Rep; calc: Calculato
                   }}
                   onMove={(dx) => {
                     const next = Math.min(14, Math.max(0, start.current + dx / cell));
+                    // A typed concentration behind a worked-out pH moves itself, to 2 figures
+                    // (2.1 × 10⁻¹ mol/L, pH 13.32), not to the pH's step (5.6234 × 10⁻¹).
+                    const conc = [
+                      [spec.hydrogen, -next],
+                      [spec.hydroxide, next - 14],
+                    ].find(([id]) => typeof id === 'string' && rep.typed(id)) as
+                      [string, number] | undefined;
                     calc.set(
                       {
                         ...(spec.keep ? rep.pin(spec.keep) : {}),
-                        [phId]: rep.snapTo(phId, next * rep.factor(phId)),
+                        ...(conc && !rep.typed(phId)
+                          ? { [conc[0]]: Number((10 ** conc[1]).toPrecision(2)) }
+                          : { [phId]: rep.snapTo(phId, next * rep.factor(phId)) }),
                       },
-                      rep.slide(phId),
+                      // (0 to 14 always fits 1 to 10⁻¹⁴ mol/L: no slide in 10⁻¹⁵ steps.)
+                      conc && !rep.typed(phId) ? undefined : rep.slide(phId),
                     );
                   }}
                 />
