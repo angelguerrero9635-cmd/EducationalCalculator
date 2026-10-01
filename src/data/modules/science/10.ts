@@ -2192,6 +2192,32 @@ function limitingPage(
   };
 }
 
+/** out = x ÷ k or x × k with a fixed factor k: grams to moles, moles to grams, a mole ratio. */
+const scaleBy = (
+  out: string,
+  x: string,
+  k: number,
+  kText: string,
+  how: [string, string],
+): Rule => ({
+  relation: {
+    id: `${out} = ${x} × ${kText}`,
+    display: `{${out}} = {${x}} × ${kText}`,
+    vars: [out, x],
+    residual: (v) => v[out]! - v[x]! * k,
+    solve: { [out]: (v) => v[x]! * k, [x]: (v) => v[out]! / k },
+  },
+  steps: {
+    [out]: { expr: `{${x}} × ${kText}`, how: how[0] },
+    [x]: { expr: `{${out}}/(${kText})`, how: how[1] },
+  },
+});
+
+/** Molar masses from the table, to 2 decimals (molarMassOf): N₂ 28.01, H₂ 2.02, NH₃ 17.03. */
+const M_N2 = 28.01;
+const M_H2 = 2.02;
+const M_NH3 = 17.03;
+
 const STOICHIOMETRY: ModuleDef[] = [
   {
     id: 's.10.stoichiometry',
@@ -2256,6 +2282,94 @@ const STOICHIOMETRY: ModuleDef[] = [
     ],
     [['NH3', 2]],
   ),
+  {
+    id: 's.10.stoichiometry~limiting-grams',
+    title: 'The limiting reactant from grams',
+    use: 'Use this for “28.01 g of N₂ and 5.05 g of H₂ react. How many grams of NH₃ form?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The equation is balanced: N₂ + 3 H₂ → 2 NH₃.',
+      'Grams can’t be compared directly: change each to moles, then to the product’s moles.',
+      'The reactant that makes less product runs out first: it is the limiting reactant.',
+    ],
+    variables: [
+      quantity('m1', 'm₁', 'Mass of N₂', 'g', 0.01, 10000),
+      quantity('m2', 'm₂', 'Mass of H₂', 'g', 0.01, 10000),
+      { ...quantity('n1', 'n₁', 'Moles of N₂', 'mol', 0.0001, 1000, 0.0001), derived: true },
+      { ...quantity('n2', 'n₂', 'Moles of H₂', 'mol', 0.0001, 1000, 0.0001), derived: true },
+      {
+        ...quantity('y1', 'y₁', 'NH₃ the N₂ could make', 'mol', 0.0001, 2000, 0.0001),
+        derived: true,
+      },
+      {
+        ...quantity('y2', 'y₂', 'NH₃ the H₂ could make', 'mol', 0.0001, 2000, 0.0001),
+        derived: true,
+      },
+      { ...quantity('n', 'n', 'Moles of NH₃ made', 'mol', 0.0001, 2000, 0.0001), derived: true },
+      { ...quantity('m', 'm', 'Mass of NH₃ made', 'g', 0.001, 40000, 0.01), derived: true },
+    ],
+    ...rules(
+      scaleBy('n1', 'm1', 1 / M_N2, `1/${M_N2}`, [
+        `Divide the grams of N₂ by its molar mass, ${M_N2} g/mol.`,
+        `Multiply the moles by ${M_N2} g/mol.`,
+      ]),
+      scaleBy('n2', 'm2', 1 / M_H2, `1/${M_H2}`, [
+        `Divide the grams of H₂ by its molar mass, ${M_H2} g/mol.`,
+        `Multiply the moles by ${M_H2} g/mol.`,
+      ]),
+      scaleBy('y1', 'n1', 2, '2', [
+        'Mole ratio: 1 N₂ makes 2 NH₃.',
+        'Mole ratio: 2 NH₃ come from 1 N₂.',
+      ]),
+      scaleBy('y2', 'n2', 2 / 3, '2/3', [
+        'Mole ratio: 3 H₂ make 2 NH₃.',
+        'Mole ratio: 2 NH₃ come from 3 H₂.',
+      ]),
+      {
+        relation: {
+          id: 'n = smaller yield',
+          display: '{n} = the smaller of {y1} and {y2}',
+          vars: ['n', 'y1', 'y2'],
+          residual: (v) => v.n! - Math.min(v.y1!, v.y2!),
+          solve: { n: (v) => Math.min(v.y1!, v.y2!), y1: () => undefined, y2: () => undefined },
+        },
+        steps: {
+          n: {
+            expr: 'the smaller of {y1} and {y2}',
+            how: 'The reaction stops when the limiting reactant runs out, so only the smaller amount forms.',
+          },
+        },
+      },
+      scaleBy('m', 'n', M_NH3, String(M_NH3), [
+        `Multiply the moles of NH₃ by its molar mass, ${M_NH3} g/mol.`,
+        `Divide the grams by ${M_NH3} g/mol.`,
+      ]),
+    ),
+    example: {
+      m1: 28.01,
+      m2: 5.05,
+      n1: 1,
+      n2: 2.5,
+      y1: 2,
+      y2: 5 / 3,
+      n: 5 / 3,
+      m: (5 / 3) * M_NH3,
+    },
+    startWith: ['m1', 'm2'],
+    representation: {
+      kind: 'moleMap',
+      formula: 'NH3',
+      moles: 'n',
+      mass: 'm',
+      limiting: {
+        coef: 2,
+        reactants: [
+          { formula: 'N2', coef: 1, mass: 'm1', moles: 'n1', yields: 'y1' },
+          { formula: 'H2', coef: 3, mass: 'm2', moles: 'n2', yields: 'y2' },
+        ],
+      },
+    },
+  },
   {
     id: 's.10.stoichiometry~percent-yield',
     title: 'Percent yield',

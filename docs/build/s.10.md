@@ -274,3 +274,6 @@ Report: `.review/new-sci-2/lesson-report.md`.
 - `~synthesis`, `~replacement` (H101 need 1, H105 part 15): `ions: true` (Al₂O₃ and ZnCl₂ drawn
   as ions; an assumption says so) and `most: 16`, so the ranges open up: Al 4–16 atoms (was 4
   or 8), Zn 1–8 (was 1–4).
+- `s.10.stoichiometry~limiting-grams` (H101 need 4): built (it was waiting) from the demo, grams of
+  N₂ and H₂ → moles → NH₃ each could make → the smaller → grams of NH₃, on `moleMap` with
+  `limiting` (two columns, the smaller lit). No stand-in.
