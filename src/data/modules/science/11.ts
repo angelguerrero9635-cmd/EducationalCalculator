@@ -179,12 +179,6 @@ const sum = (out: string, a: string, b: string, sym: string, how: string): Rule 
     [b]: [(v) => v[out]! - v[a]!, `{${out}} − {${a}}`, 'Take the first part from the total.'],
   });
 
-/** A value fixed by the page (g, a level launch): `id = value`, worked out, never typed. */
-const fixed = (id: string, sym: string, value: number, how: string): Rule =>
-  rule(`${sym} = ${value}`, `{${id}} = ${String(value).replace('-', '−')}`, (v) => v[id]! - value, {
-    [id]: [(v) => value + 0 * (v[id] ?? 0), String(value).replace('-', '−'), how],
-  });
-
 /** |r| = √(x² + y²), worked forward only. */
 const magnitude = (out: string, x: string, y: string, sym: string, how: string): Rule => ({
   relation: {
@@ -327,17 +321,11 @@ const kinematicsPages: ModuleDef[] = [
         'Up is +, so the velocity is negative on the way down; the drop d is how far it fell.',
       ],
       variables: [
-        { ...ACC1, name: 'Acceleration of gravity', derived: true, hidden: true },
         { ...TIME, max: 30 },
         { ...V1, name: 'Velocity', min: -300, max: 0, derived: true },
         q('d', 'd', 'Drop', 'm', 0, 5000, 0.01),
       ],
       ...rules(
-        hide(
-          rule('a = v/t', '{a} = {v}/{t}', (v) => v.a! * v.t! - v.v!, {
-            a: [(v) => div(v.v!, v.t!), '{v}/{t}', ''],
-          }),
-        ),
         rule('v = −gt', '{v} = −9.8 × {t}', (v) => v.v! + G * v.t!, {
           v: [
             (v) => -G * v.t!,
@@ -363,16 +351,16 @@ const kinematicsPages: ModuleDef[] = [
           ],
         }),
       ),
-      example: { a: -G, t, v: -G * t, d: 0.5 * G * t * t },
+      example: { t, v: -G * t, d: 0.5 * G * t * t },
       startWith: ['t'],
       representation: {
         kind: 'motionGraph',
         graph: 'speed',
         time: 't',
-        acceleration: 'a',
+        acceleration: -G,
         speed: 'v',
         start: 0,
-        kinematics: { view: 'velocity' },
+        kinematics: { view: 'velocity', strobe: 'vertical' },
       },
       pictureLabels: ['d'],
     } satisfies ModuleDef;
@@ -726,18 +714,12 @@ const projectilePages: ModuleDef[] = [
         'No air resistance, and g = 9.8 m/s².',
       ],
       variables: [
-        { ...LAUNCH_ANGLE, derived: true, hidden: true },
         { ...LAUNCH_V, name: 'Speed off the edge' },
         { ...LAUNCH_H, name: 'Height of the ledge', min: 0.01 },
         FLIGHT,
         RANGE,
       ],
-      standalone: {
-        vars: ['q'],
-        why: 'The launch is level on this page: θ = 0 is drawn but never changes.',
-      },
       ...rules(
-        hide(fixed('q', 'θ', 0, 'Rolled straight off the edge, the launch is level.')),
         rule('T = √(2h/g)', '{T} = √(2 × {h}/9.8)', (v) => v.T! - Math.sqrt((2 * v.h!) / G), {
           T: [
             (v) => (v.h! >= 0 ? Math.sqrt((2 * v.h!) / G) : undefined),
@@ -752,12 +734,12 @@ const projectilePages: ModuleDef[] = [
           'Divide the range by the speed off the edge.',
         ]),
       ),
-      example: { q: 0, v, h, T, R: v * T },
+      example: { v, h, T, R: v * T },
       startWith: ['v', 'h'],
       representation: {
         kind: 'projectile',
         speed: 'v',
-        angle: 'q',
+        angle: 0,
         height: 'h',
         time: 'T',
         range: 'R',
