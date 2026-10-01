@@ -228,3 +228,13 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   their rules, `show: ['mrna']`, and c and a under the picture (the caption reads them).
 - `~replication` (H100 need 6): the four stages wear the `replication` card (unzip, pair, join,
   copies), labels as they were; an assumption says old strands are dark, new ones lit.
+- `s.9.biotechnology` main (H109 part 1): p runs 1–12 (k 1–4), so a change to the start or stop
+  codon reads start lost or stop lost; the assumption "this page changes the codons between
+  them" went, and one says what start lost and stop lost mean.
+- `~frameshift` (H109 part 1): p runs 2–12 (k and s 1–4): p = 2 or 3 breaks the start codon
+  (start lost); p = 1 is kept out because s would read 1 while nothing shifts. The "p ≥ 4"
+  assumption went.
+- `~gene-expression` (H100 need 5): new explore on the `geneExpression` figure, the demo's five
+  scenes (repressor on, lactose arrives, the promoter, no activator, activator bound).
+- `~fingerprint` (H109 part 2, page C): new explore on the `gel` figure, the demo's eight lanes
+  and five scenes (the gel, compare, a match, a family, ruled out).

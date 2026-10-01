@@ -1213,13 +1213,13 @@ const BIOTECH: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       `The template strand is ${GENE}; its mRNA AUG GCC AAG UAA codes Met–Ala–Lys, then stop.`,
-      'Bases 1–3 are the start codon and 10–12 the stop; this page changes the codons between them.',
-      'One base swapped changes at most one codon: the caption names the effect, silent or missense.',
+      'Bases 1–3 are the start codon and 10–12 the stop; one base swapped changes at most one codon, and the caption names the effect.',
+      'A change to AUG loses the start: no protein is made from here. A stop turned into an amino acid loses the stop: the ribosome reads on.',
       'The base changed swaps A with G or C with T, the most common kind of substitution.',
     ],
     variables: [
-      count('p', 'p', 'Base changed', 4, 9),
-      count('k', 'k', 'Codon holding it', 2, 3, true),
+      count('p', 'p', 'Base changed', 1, 12),
+      count('k', 'k', 'Codon holding it', 1, 4, true),
       count('j', 'j', 'Its place in the codon', 1, 3, true),
     ],
     ...rules(
@@ -1250,14 +1250,14 @@ const BIOTECH: ModuleDef[] = [
     assumptions: [
       `The template strand is the first L bases of ${GENE}; an A is inserted before base p.`,
       'The ribosome reads in threes, so every codon from the one holding the insertion on is read in a shifted frame.',
-      'The insertion comes after the start codon (p ≥ 4); a deletion shifts the frame the same way, and inserting 3 bases keeps it.',
+      'Inside the start codon (p = 2 or 3) the insertion breaks AUG, so no protein starts there; a deletion shifts the frame the same way.',
     ],
     variables: [
       { ...count('L', 'L', 'Template bases', 6, 12), multipleOf: 3 },
       count('c', 'c', 'Codons', 2, 4, true),
-      count('p', 'p', 'Base the insertion goes before', 4, 12),
-      count('k', 'k', 'Codon holding it', 2, 4, true),
-      count('s', 's', 'Codons read in a shifted frame', 1, 3, true),
+      count('p', 'p', 'Base the insertion goes before', 2, 12),
+      count('k', 'k', 'Codon holding it', 1, 4, true),
+      count('s', 's', 'Codons read in a shifted frame', 1, 4, true),
     ],
     ...rules(
       forward(

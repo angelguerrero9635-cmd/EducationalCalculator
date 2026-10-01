@@ -1025,6 +1025,144 @@ const BIOTECH: LayoutDef[] = [
       { label: 'Corn with a bacterial gene that kills caterpillars', bin: 'engineering' },
     ],
   },
+  {
+    kind: 'explore',
+    id: 's.9.biotechnology~gene-expression',
+    title: 'Genes switched on and off',
+    use: 'Use this for “Why does a bacterium make the enzymes for lactose only when lactose is there?”',
+    assumptions: [
+      'Every cell has the same genes, but it reads only some of them: those genes are expressed.',
+      'RNA polymerase binds the promoter in front of a gene and copies the gene into mRNA.',
+      'Proteins on the DNA near the promoter switch the gene off (repressors) or on (activators).',
+    ],
+    figure: { kind: 'geneExpression' },
+    scenes: [
+      {
+        label: 'Repressor on',
+        lines: [
+          'With no lactose, the repressor sits on the operator and blocks RNA polymerase.',
+          'The gene is off: no mRNA, so no lactose enzymes are wasted.',
+        ],
+        gene: { control: 'repressor', lit: 'protein' },
+      },
+      {
+        label: 'Lactose arrives',
+        lines: [
+          'Lactose binds the repressor and changes its shape, so it lets go of the operator.',
+          'The gene is on: RNA polymerase reads it into mRNA.',
+        ],
+        gene: { control: 'repressor', signal: true, lit: 'signal' },
+      },
+      {
+        label: 'The promoter',
+        lines: [
+          'RNA polymerase always starts at the promoter, the stretch just in front of the gene.',
+        ],
+        gene: { control: 'repressor', signal: true, lit: 'promoter' },
+      },
+      {
+        label: 'No activator',
+        lines: [
+          'Some genes need an activator: without its signal the activator stays off the DNA.',
+          'The gene is off: the polymerase does not start.',
+        ],
+        gene: { control: 'activator', lit: 'switch' },
+      },
+      {
+        label: 'Activator bound',
+        lines: [
+          'With its signal the activator binds in front of the promoter and helps the polymerase on.',
+          'The gene is on.',
+        ],
+        gene: { control: 'activator', signal: true, lit: 'mRNA' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.biotechnology~fingerprint',
+    title: 'DNA fingerprinting',
+    use: 'Use this for “Which suspect’s DNA matches the evidence?” or “Could this man be the father?”',
+    assumptions: [
+      'Restriction enzymes cut DNA at set sequences; the lengths of the pieces differ from person to person.',
+      'Only identical twins share every band; a child gets each band from the mother or the father.',
+      'The pieces run through a gel toward +, the shorter ones farther.',
+    ],
+    figure: {
+      kind: 'gel',
+      ladder: [10000, 5000, 2000, 1000, 500, 250],
+      lanes: [
+        { label: 'Evidence', bands: [8200, 4100, 2300, 900] },
+        { label: 'Suspect 1', bands: [7000, 4100, 1600, 600] },
+        { label: 'Suspect 2', bands: [8200, 4100, 2300, 900] },
+        { label: 'Suspect 3', bands: [9000, 3000, 2300, 450] },
+        { label: 'Mother', bands: [6500, 3600, 1800, 700] },
+        { label: 'Child', bands: [6500, 2800, 1800, 400] },
+        { label: 'Man A', bands: [5200, 2800, 1200, 400] },
+        { label: 'Man B', bands: [5200, 3200, 1100, 550] },
+      ],
+    },
+    scenes: [
+      {
+        label: 'The gel',
+        lines: [
+          'DNA from blood at the scene and from three suspects is cut by the same enzyme and run side by side.',
+          'The ladder’s pieces of known length give the scale.',
+        ],
+        gel: { lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'] },
+      },
+      {
+        label: 'Compare',
+        lines: [
+          'Dashed lines carry the evidence’s bands across the gel.',
+          'Suspects 1 and 3 share one band each with it: many people share a band or two, so that is not a match.',
+        ],
+        gel: {
+          lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'],
+          lit: ['Suspect 1', 'Suspect 2', 'Suspect 3'],
+          compare: 'Evidence',
+        },
+      },
+      {
+        label: 'A match',
+        lines: [
+          'Suspect 2 matches the evidence in every band.',
+          'Real tests compare 20 or so places in the DNA, so a full match is very unlikely by chance.',
+        ],
+        gel: {
+          lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'],
+          lit: ['Suspect 2'],
+          compare: 'Evidence',
+        },
+      },
+      {
+        label: 'A family',
+        lines: [
+          'The child’s bands that match the mother are red; the rest must come from the father.',
+          'Man A has both of the others, in blue, so he could be the father.',
+        ],
+        gel: {
+          lanes: ['Mother', 'Child', 'Man A', 'Man B'],
+          lit: ['Child'],
+          compare: 'Child',
+          parents: ['Mother', 'Man A'],
+        },
+      },
+      {
+        label: 'Ruled out',
+        lines: [
+          'Two of the child’s bands are in neither the mother nor Man B.',
+          'So Man B is ruled out as the father, whatever bands he shares with Man A.',
+        ],
+        gel: {
+          lanes: ['Mother', 'Child', 'Man A', 'Man B'],
+          lit: ['Child'],
+          compare: 'Child',
+          parents: ['Mother', 'Man B'],
+        },
+      },
+    ],
+  },
 ];
 
 const EVOLUTION: LayoutDef[] = [
