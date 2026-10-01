@@ -911,6 +911,81 @@ const halfLife: ModuleDef = {
   },
 };
 
+/** Potassium-40's half-life (million years) and the share of its decays that make argon-40. */
+const K40_MA = 1250;
+const ARGON_SHARE = 0.107;
+
+const potassium: ModuleDef = {
+  id: 's.12.radiometric-dating~potassium',
+  title: 'Dating volcanic ash with potassium-argon',
+  use: 'Use this for “Volcanic ash holds 0.01 argon-40 atom for every potassium-40 atom. How old is the ash?”',
+  assumptions: [
+    'Potassium-40 has a half-life of 1,250 million years: 10.7% of its decays make argon-40 and 89.3% make calcium-40.',
+    'Argon is a gas that escapes molten rock but is trapped once the ash cools, so the clock starts at the eruption.',
+    'Only the argon is counted: rock is already full of calcium-40, so the new calcium cannot be told apart.',
+    'Nothing on Earth is older than about 4,570 million years, so R is at most about 1.25.',
+  ],
+  variables: [
+    V('R', 'R', 'Argon-40 atoms per potassium-40 atom', { min: 0.0001, max: 1.25, step: 0.0001 }),
+    V('P', 'P', 'Potassium-40 left', {
+      unit: '%',
+      min: 7.9,
+      max: 99.999,
+      step: 0.001,
+      derived: true,
+    }),
+    V('n', 'n', 'Half-lives passed', { min: 0, max: 3.66, step: 0.0001, derived: true }),
+    V('t', 't', 'Age of the ash', { unit: 'million years', min: 0, max: 4570, step: 0.1 }),
+  ],
+  ...rels(
+    rule(
+      'P = 100 ÷ (1 + R ÷ 0.107)',
+      '{P} = 100 ÷ (1 + {R} ÷ 0.107)',
+      (v) => v.P! * (1 + v.R! / ARGON_SHARE) - 100,
+      {
+        P: [
+          (v) => 100 / (1 + v.R! / ARGON_SHARE),
+          '100 ÷ (1 + {R} ÷ 0.107)',
+          'Each argon atom stands for 1 ÷ 0.107 decayed potassium atoms, so R ÷ 0.107 atoms decayed for each one left.',
+        ],
+        R: [
+          (v) => (v.P! > 0 ? ARGON_SHARE * (100 / v.P! - 1) : undefined),
+          '0.107 × (100 ÷ {P} − 1)',
+          'The atoms decayed for each one left, of which 10.7% became argon.',
+        ],
+      },
+    ),
+    leftAfter('P', 'potassium-40'),
+    fixedAge(K40_MA, '1250'),
+  ),
+  example: (() => {
+    const R = 0.01;
+    const P = 100 / (1 + R / ARGON_SHARE);
+    const n = Math.log2(100 / P);
+    return { R, P, n, t: n * K40_MA };
+  })(),
+  startWith: ['R'],
+  representation: {
+    kind: 'rockLayers',
+    dating: {
+      layers: [
+        { rock: 'sandstone', fossil: 'fern' },
+        { rock: 'shale' },
+        { rock: 'ash', age: 't' },
+        { rock: 'limestone', fossil: 'trilobite' },
+      ],
+      sample: {
+        parent: 'P',
+        layer: 2,
+        parentName: 'potassium-40',
+        daughterName: 'argon-40',
+        halfLives: 'n',
+        second: { name: 'calcium-40', share: 89.3 },
+      },
+    },
+  },
+};
+
 // ── The ocean: seafloor, currents and ocean–atmosphere interaction ──
 
 const sonar: ModuleDef = {
@@ -2301,6 +2376,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   uranium,
   bracket,
   halfLife,
+  potassium,
   sonar,
   tides,
   lapse,
