@@ -300,21 +300,31 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
             const [px, py] = full ? [cx, cy] : polar(cx, cy, r * 0.5, (wd.a0 + wd.a1) / 2);
             // Name, amount and percent on their own lines, so the plate stays inside the wedge.
             const v = parts[big]!;
+            // The plate stays in the wedge's half, left of the centre, where the other wedges'
+            // edges and leaders never run: a long name wraps to fit.
+            const room = full ? 2 * r - 12 : r - 10;
+            const nameLines = wrap(name(spec.parts[big]!), room - 14);
             const lines = [
-              name(spec.parts[big]!),
+              ...nameLines,
               ...(!known ? ['?'] : spec.total ? [rep.value(spec.parts[big]!), pct(v)] : [pct(v)]),
             ];
-            const tw = Math.max(...lines.map((l, k) => l.length * (k ? VALUE : NAME))) * 0.6 + 14;
+            const bold = (k: number) => k < nameLines.length;
+            const tw = Math.min(
+              room,
+              Math.max(...lines.map((l, k) => l.length * (bold(k) ? NAME : VALUE))) * 0.6 + 14,
+            );
             const th = lines.length * LINE + 8;
-            const x = Math.max(cx - r + 6, Math.min(px - tw / 2, cx - tw - 2));
+            const x = full ? cx - tw / 2 : Math.max(cx - r + 6, Math.min(px - tw / 2, cx - tw - 4));
             const stage = spec.stages?.[big];
+            // The stage card above the pie when there is room there, else above the plate.
+            const above = cy - r - PIE_ICON_W >= 0;
             inside = (
               <G>
                 {stage ? (
                   <PieStageIcon
                     stage={stage}
-                    x={x + tw / 2 - PIE_ICON_W / 2}
-                    y={py - th / 2 - 36}
+                    x={(above ? cx - r * 0.5 : x + tw / 2) - PIE_ICON_W / 2}
+                    y={above ? cy - r - 38 : py - th / 2 - 36}
                   />
                 ) : null}
                 <Rect
@@ -331,8 +341,8 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     key={k}
                     x={x + tw / 2}
                     y={py - th / 2 + 4 + (k + 1) * LINE - 4}
-                    fontSize={k ? VALUE : NAME}
-                    fontWeight={k ? '400' : '700'}
+                    fontSize={bold(k) ? NAME : VALUE}
+                    fontWeight={bold(k) ? '700' : '400'}
                     textAnchor="middle"
                   >
                     {l}

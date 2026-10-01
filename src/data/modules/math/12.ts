@@ -214,8 +214,9 @@ const leftTail = (
   });
 
 /** Hₐ's side as the sign box codes it: 1 for <, 3 for >, 6 for ≠ (the picture's tail). */
-const tailVar = (what: string, of: string) =>
-  V('h', 'Hₐ', `Hₐ: ${what} < ${of} (1), > ${of} (3) or ≠ ${of} (6)`, {
+/** Hₐ, chosen in the row "Hₐ: p {h:alt} p₀" as <, > or ≠ (stored 1, 3, 6). */
+const tailVar = () =>
+  V('h', 'Hₐ', 'Alternative hypothesis', {
     integer: true,
     min: 1,
     max: 6,
@@ -466,13 +467,13 @@ const MATH_12_STATS: ModuleDef[] = [
   {
     id: 'm.12.hypothesis-testing',
     assumptions: [
-      'H₀: p = p₀; Hₐ says p < p₀, p > p₀ or p ≠ p₀ (typed as 1, 3 or 6).',
+      'H₀: p = p₀; Hₐ says p < p₀, p > p₀ or p ≠ p₀ (tap the sign in the Hₐ row).',
       'The sample is random, with np₀ ≥ 10 and n(1 − p₀) ≥ 10, so p̂ is close to normal.',
       'Reject H₀ when the p-value is below α; “fail to reject” never proves H₀ true.',
     ],
     variables: [
       V('p0', 'p₀', 'Proportion if H₀ is true', { min: 0.01, max: 0.99, step: 0.01 }),
-      tailVar('p', 'p₀'),
+      tailVar(),
       V('n', 'n', 'Sample size', { integer: true, min: 1, max: 100000 }),
       V('k', 'k', 'Successes in the sample', { integer: true, min: 0, max: 100000 }),
       prob('p', 'p̂', 'Sample proportion', { derived: true }),
@@ -523,6 +524,7 @@ const MATH_12_STATS: ModuleDef[] = [
       a: 0.05,
     },
     startWith: ['p0', 'h', 'n', 'k', 'a'],
+    equation: 'Hₐ: p {h:alt} p₀',
     representation: {
       kind: 'normalCurve',
       mean: 'p0',
@@ -537,13 +539,13 @@ const MATH_12_STATS: ModuleDef[] = [
     title: 'One-mean z-test',
     use: 'Use this for “Is the mean less than μ₀?” (or more than, or different from) with σ known.',
     assumptions: [
-      'H₀: μ = μ₀; Hₐ says μ < μ₀, μ > μ₀ or μ ≠ μ₀ (typed as 1, 3 or 6).',
+      'H₀: μ = μ₀; Hₐ says μ < μ₀, μ > μ₀ or μ ≠ μ₀ (tap the sign in the Hₐ row).',
       'The sample is random, σ is known, and x̄ is close to normal (a normal population or n ≥ 30).',
       'Reject H₀ when the p-value is below α.',
     ],
     variables: [
       V('m', 'μ₀', 'Mean if H₀ is true', { unit: 'g', min: 0.1, max: 100000, step: 0.5 }),
-      tailVar('μ', 'μ₀'),
+      tailVar(),
       V('s', 'σ', 'Standard deviation', { unit: 'g', min: 0.01, max: 10000, step: 0.1 }),
       V('n', 'n', 'Sample size', { integer: true, min: 2, max: 100000 }),
       V('x', 'x̄', 'Sample mean', { unit: 'g', min: 0.1, max: 100000, step: 0.1 }),
@@ -556,6 +558,7 @@ const MATH_12_STATS: ModuleDef[] = [
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: { m: 500, h: 1, s: 12, n: 36, x: 496, E: 2, z: -2, P: Phi(-2), a: 0.05 },
     startWith: ['m', 'h', 's', 'n', 'x', 'a'],
+    equation: 'Hₐ: μ {h:alt} μ₀',
     unitSystems: ['metric'],
     representation: {
       kind: 'normalCurve',
@@ -702,6 +705,7 @@ const MATH_12_STATS: ModuleDef[] = [
     representation: {
       kind: 'normalCurve',
       mean: 0,
+      meanName: 'μ_d',
       sd: 'E',
       axis: 'Mean difference d̄ if H₀ is true',
       t: { df: 'df' },

@@ -282,7 +282,23 @@ export function plain(toks: Tok[]): string {
     '8': '⁸',
     '9': '⁹',
     [MINUS]: '⁻',
+    '+': '⁺',
+    '.': '·',
+    '(': '⁽',
+    ')': '⁾',
+    a: 'ᵃ',
+    b: 'ᵇ',
+    c: 'ᶜ',
+    d: 'ᵈ',
+    e: 'ᵉ',
+    h: 'ʰ',
+    k: 'ᵏ',
+    m: 'ᵐ',
+    n: 'ⁿ',
+    r: 'ʳ',
+    t: 'ᵗ',
     x: 'ˣ',
+    y: 'ʸ',
   };
   const SUBS: Record<string, string> = {
     '0': '₀',
@@ -544,13 +560,18 @@ export function buildCurve(
             to: (X, Y) => ({ b: -2 * a * X, c: a * X * X + Y }),
           },
           {
+            // The stretch keeps the vertex where it is (b and c follow a), as the vertex form's
+            // does: with b and c held the vertex slid away from the handle.
             name: 'the stretch',
             x: h0 + 1,
             y: a * (h0 + 1) ** 2 + b * (h0 + 1) + c,
             axis: 'y',
-            sets: ['a'],
-            to: (_, Y) =>
-              h0 + 1 === 0 ? undefined : { a: (Y - b * (h0 + 1) - c) / (h0 + 1) ** 2 },
+            sets: ['a', 'b', 'c'],
+            to: (_, Y) => {
+              const k0 = c - (b * b) / (4 * a);
+              const a1 = Y - k0;
+              return a1 === 0 ? undefined : { a: a1, b: -2 * a1 * h0, c: a1 * h0 * h0 + k0 };
+            },
           },
         );
       } else if (fam.form === 'vertex') {

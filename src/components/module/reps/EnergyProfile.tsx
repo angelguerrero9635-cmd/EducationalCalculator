@@ -171,17 +171,20 @@ function ProfileView({ spec, rep, calc }: { spec: Profile; rep: Rep; calc: Calcu
                 </G>
                 <G opacity={known && !problem ? 1 : 0.35}>
                   <MathChip
-                    x={X(PEAK) + (cat ? 6 : -6)}
-                    y={mid(r.value, peak)}
+                    // Left of its arrow, always: the reverse barrier's tag is on the right.
+                    // Over a catalyst's lower arrow it rides higher, clear of that tag.
+                    x={X(PEAK) - 6}
+                    y={mid(r.value, peak) - (cat ? 10 : 0)}
                     text={eaText}
-                    anchor={cat ? 'start' : 'end'}
+                    anchor="end"
                     w={w}
                     h={h}
                   />
                   {cat && !catProblem ? (
                     <MathChip
                       x={X(0.41) - 6}
-                      y={mid(r.value, r.value + cat.value) + 12}
+                      // Above the dashed reactants' level, not on it.
+                      y={Math.min(mid(r.value, r.value + cat.value) + 8, pl.sy(r.value) - 8)}
                       text={labelOf(rep, cat, 'Eₐ,cat', unit)}
                       anchor="end"
                       color={c.energyCatalyst}

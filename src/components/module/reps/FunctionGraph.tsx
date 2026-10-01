@@ -186,6 +186,9 @@ function layout(
       down = Math.max(down, h1 - y);
       cx += 19 + fw + Math.max(...laid.map((l) => l.when.w));
     } else if (t.sup || t.sub) {
+      // A superscript after ")" starts a little right, so the italic letter clears the bracket.
+      const prev = toks[i - 1];
+      if (t.sup && prev && 't' in prev && !prev.sup && prev.t.endsWith(')')) cx += size * 0.18;
       nodes.push(
         <ChartText
           key={k}
@@ -571,7 +574,10 @@ export function FunctionGraph({
             (v): v is string => typeof v === 'string',
           ),
         ]
-      ).filter((id) => !moving.includes(id)),
+      )
+        // Only typed values are held: holding a worked-out one (X = p + h) made the drag
+        // change the typed value behind it (p) instead.
+        .filter((id) => !moving.includes(id) && calc.status(id) !== 'derived'),
     );
 
   const captions: string[] = [];
@@ -1562,7 +1568,17 @@ export function FunctionGraph({
                 <DragHandle
                   testID="drag-point"
                   x={sx(atPt.x)}
-                  y={sy(atPt.y)}
+                  // Near a hole (the point the limit is about) the handle steps below the
+                  // curve, so the open circle stays in sight.
+                  y={
+                    sy(atPt.y) +
+                    (main.holes.some(
+                      (p) =>
+                        Math.hypot(sx(p.x) - sx(atPt.x), sy(p.y) - sy(atPt.y)) < chart.handleTouch,
+                    )
+                      ? chart.handleTouch * 0.8
+                      : 0)
+                  }
                   label={`the point on the curve`}
                   onStart={() => {
                     start.current = { x: atPt.x, y: atPt.y };

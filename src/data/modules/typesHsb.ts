@@ -35,6 +35,8 @@ import type { HistogramHs2g, NormalCurveHs2g, PascalFraction, TermsChartHs2g } f
 export interface NormalCurveSpec extends NormalCurveHs2g, NormalCurveHs3b {
   kind: 'normalCurve';
   mean?: NumOrVar;
+  /** The mean's symbol when `mean` is a number (default μ): "μ_d" for a mean difference. */
+  meanName?: string;
   sd?: NumOrVar;
   /** The x axis's name with its unit, "Height (cm)". */
   axis?: string;

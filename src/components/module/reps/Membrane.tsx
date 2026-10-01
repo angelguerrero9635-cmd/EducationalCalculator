@@ -49,7 +49,9 @@ export function Membrane({ spec, calc }: { spec: MembraneSpec; calc: Calculator 
   const water = spec.transport === 'osmosis';
   // Room kept clear of particles: the arrow's column and the ATP chip under a pump.
   const clear: [number, number, number, number][] = [[ax - 30, 0, ax + 30, H]];
-  if (spec.transport === 'active') clear.push([ax - 100, 190, W, 222]);
+  // The ATP chip sits left of the pump's arrows, under the membrane.
+  if (spec.transport === 'active') clear.push([ax - 200, 190, ax + 30, 222]);
+  if (spec.counter) clear.push([ax + 10, 0, ax + 60, H]);
   const countText = (x: string | number, where: string) =>
     typeof x === 'number' ? `${x} ${where}` : `${rep.label(x)} ${where}`;
 
@@ -95,6 +97,9 @@ export function Membrane({ spec, calc }: { spec: MembraneSpec; calc: Calculator 
                 c={c}
               />
               <FlowArrow x={ax} flow={flow} water={water} faded={!bothKnown} c={c} />
+              {spec.counter && (flow === 'in' || flow === 'out') ? (
+                <CounterArrow x={ax + 30} into={flow === 'out'} name={spec.counter} c={c} />
+              ) : null}
               {Array.from({ length: moved }, (_, k) => {
                 // Two columns beside the arrow, from the membrane toward where they go.
                 const side = k % 2 ? 1 : -1;
@@ -164,7 +169,7 @@ function captionOf(
       const [lo, hi] = flow === 'out' ? [i, o] : [o, i];
       if (flow === 'both')
         return `${o} ${name} on each side: the pump still moves them, using ATP.${crossing}`;
-      return `The pump carries ${name} from ${from} (${lo}) to ${to} (${hi}): low to high, against the gradient, so it uses ATP.${gradient}${crossing}`;
+      return `The pump carries ${name} from ${from} (${lo}) to ${to} (${hi}): low to high, against the gradient, so it uses ATP.${spec.counter ? ` At the same time it carries ${spec.counter} the other way, ${to === 'outside' ? 'into' : 'out of'} the cell.` : ''}${gradient}${crossing}`;
     }
   }
 }
@@ -367,12 +372,51 @@ function Particles({
   );
 }
 
+/** A pump's second particle crossing the other way: a thinner arrow and its name. */
+function CounterArrow({
+  x,
+  into,
+  name,
+  c,
+}: {
+  x: number;
+  into: boolean;
+  name: string;
+  c: Palette;
+}) {
+  const [a, b] = into ? [OUT[0] + 40, IN[1] - 40] : [IN[1] - 40, OUT[0] + 40];
+  const s = into ? 1 : -1;
+  return (
+    <G>
+      <Line x1={x} y1={a} x2={x} y2={b} stroke={c.chartSecond} strokeWidth={chart.stroke} />
+      <Path
+        d={`M ${x - 6} ${b - s * 9} L ${x} ${b} L ${x + 6} ${b - s * 9}`}
+        stroke={c.chartSecond}
+        strokeWidth={chart.stroke}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <ChartText
+        x={x + 8}
+        y={(a + b) / 2 + 4}
+        fontSize={chart.label}
+        fontWeight="700"
+        fill={c.chartInk}
+      >
+        {`${name} ${into ? 'in' : 'out'}`}
+      </ChartText>
+    </G>
+  );
+}
+
 /** ATP spent at the pump: "2 ATP → 2 ADP + 2 P" on the cytoplasm side. */
 function AtpChip({ x, n, c }: { x: number; n: number | undefined; c: Palette }) {
   const k = n === undefined ? '' : `${n} `;
   const text = `${k}ATP → ${k}ADP + ${k}P`;
   const tw = text.length * chart.label * 0.6;
-  const cx = Math.min(W - tw / 2 - 12, x - 10);
+  // Left of the pump's arrow column, never on an arrow.
+  const cx = Math.max(tw / 2 + 12, x - 30 - tw / 2 - 8);
   return (
     <G>
       <Rect

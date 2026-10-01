@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, Defs, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { CircularMotionSpec } from '@/data/modules/typesHsk';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -403,7 +404,11 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
             ]
           : []),
         `Each shaded sector is swept in 1/8 of the period: equal areas in equal times.`,
-        `a³ = M × T² for a star of M = ${sig(M)} Suns: T = √(${sig(a)}³ ÷ ${sig(M)}) = ${sig(T)} years (${sig(T * 365.25)} days)`,
+        // The way the page solves it: a from a typed period, or T from a typed orbit. The days
+        // whole (1,461, as typed), not to 3 figures (1,460).
+        typeof spec.semiMajor === 'string' && calc.status(spec.semiMajor) === 'derived'
+          ? `a³ = M × T² for a star of M = ${sig(M)} Suns: a = ∛(M × T²) = ∛(${sig(M)} × ${sig(T)}²) = ${sig(a)} AU`
+          : `a³ = M × T² for a star of M = ${sig(M)} Suns: T = √(${sig(a)}³ ÷ ${sig(M)}) = ${sig(T)} years (${formatNumber(Math.round(T * 365.25))} days)`,
       ];
     }
     if (spec.mode === 'kepler') {

@@ -33,7 +33,9 @@ export function countsCaption(
     return `${Math.abs(d - p) < 1e-12 ? '=' : '≈'} ${formatNumber(d)}`;
   };
   const parts = [
-    `${nA} only ${n(a)} − ${n(both)} = ${n(r.aOnly)}, ${nB} only ${n(b)} − ${n(both)} = ${n(r.bOnly)}`,
+    // Two lines (one wrapped, leaving "= 7" alone).
+    `${nA} only ${n(a)} − ${n(both)} = ${n(r.aOnly)}`,
+    `${nB} only ${n(b)} − ${n(both)} = ${n(r.bOnly)}`,
     `${nA} or ${nB}: ${n(a)} + ${n(b)} − ${n(both)} = ${n(r.union)} of ${n(1)}`,
   ];
   const shade = spec.shade;

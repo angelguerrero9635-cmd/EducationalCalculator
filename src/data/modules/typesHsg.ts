@@ -186,6 +186,11 @@ export interface MembraneSpec {
   moved?: NumOrVar;
   atp?: NumOrVar;
   gradient?: string;
+  /**
+   * A pump's second particle, carried the other way at the same time (the sodium–potassium
+   * pump's "K⁺" going in as Na⁺ goes out): its own arrow beside the first, named.
+   */
+  counter?: string;
 }
 
 // ─── H36 dnaStrand (calculator picture) ──────────────────────────────────────

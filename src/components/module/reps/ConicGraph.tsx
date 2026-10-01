@@ -1,16 +1,17 @@
 import { useRef } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { ConicGraphSpec } from '@/data/modules/typesHsd';
 import type { Values } from '@/engine/types';
+import { Text } from '@/components/Text';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { makeFrame } from './graphKit';
 import { conicEquation, focalDistance, type ConicOf } from './conics';
-import { HsdGrid, niceWindow } from './hsdGrid';
+import { HsdGrid, handleBox, niceWindow } from './hsdGrid';
 import { short, sqrtText } from './hsdKit';
 import { MathChip } from './hsdText';
 
@@ -114,7 +115,8 @@ export function ConicGraph({
       case 'ellipse': {
         const major = q.a! >= q.b! ? 'across' : 'up and down';
         lines.push(
-          `Center ${at(q.h, q.k)} · c = √|${short(q.a!)}² − ${short(q.b!)}²| = ${cText}: the foci are ${short(cF)} from the center, ${major}.`,
+          // c² from the squares themselves (16 − 12), not from a rounded b (3.46²).
+          `Center ${at(q.h, q.k)} · c = √(${short(Math.max(q.a!, q.b!) ** 2)} − ${short(Math.min(q.a!, q.b!) ** 2)}) = ${cText}: the foci are ${short(cF)} from the center, ${major}.`,
         );
         lines.push('From any point, the distances to the two foci add to the long axis.');
         break;
@@ -132,6 +134,10 @@ export function ConicGraph({
 
   return (
     <View>
+      {/* The equation as the plot's key, above it (inside, it covered the corner). */}
+      <Text style={[styles.key, { color: c.chartHighlight }]}>
+        {known ? conicEquation(q) : '?'}
+      </Text>
       <Canvas
         aspect={Math.max(
           0.65,
@@ -276,7 +282,18 @@ export function ConicGraph({
           return (
             <>
               <Svg width={w} height={h}>
-                <HsdGrid f={f} step={{ x: win.value.step, y: win.value.step }} />
+                <HsdGrid
+                  f={f}
+                  step={{ x: win.value.step, y: win.value.step }}
+                  // No tick number half hidden under a handle.
+                  clear={
+                    spec.fixed || !known
+                      ? []
+                      : [C, ...sizeHandles.map((s) => P(s.at.x, s.at.y))].map((p) =>
+                          handleBox(p.x, p.y),
+                        )
+                  }
+                />
                 <G opacity={fade}>
                   {/* Guides: the box and asymptotes, the axes, the directrix, the radius. */}
                   {q.conic === 'hyperbola'
@@ -327,8 +344,9 @@ export function ConicGraph({
                         strokeWidth={chart.strokeLight}
                       />
                       <MathChip
-                        x={f.sx(q.h + q.a! / 2)}
-                        y={C.y - 6}
+                        // Below the axis and clear of the focus (its F tag is above it).
+                        x={f.sx(q.h + (q.a! >= q.b! ? (cF + q.a!) / 2 : q.a! / 2))}
+                        y={C.y + 16}
                         text={`a = ${short(q.a!)}`}
                         w={w}
                         h={h}
@@ -391,9 +409,10 @@ export function ConicGraph({
                         strokeWidth={chart.stroke}
                       />
                       <MathChip
-                        x={f.sx(q.h + (q.r! * Math.SQRT1_2) / 2) + 8}
-                        y={f.sy(q.k + (q.r! * Math.SQRT1_2) / 2) + 10}
-                        anchor="start"
+                        // Above the radius (up and left of its middle), off the axes' numbers.
+                        x={f.sx(q.h + (q.r! * Math.SQRT1_2) / 2) - 6}
+                        y={f.sy(q.k + (q.r! * Math.SQRT1_2) / 2) - 6}
+                        anchor="end"
                         text={`r = ${short(q.r!)}`}
                         w={w}
                         h={h}
@@ -452,16 +471,6 @@ export function ConicGraph({
                     </G>
                   ) : null}
                 </G>
-                <MathChip
-                  x={6}
-                  y={16}
-                  text={known ? conicEquation(q) : '?'}
-                  anchor="start"
-                  w={w}
-                  h={h}
-                  color={c.chartHighlight}
-                  size={chart.value}
-                />
               </Svg>
               {!spec.fixed &&
               known &&
@@ -515,3 +524,7 @@ export function ConicGraph({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  key: { textAlign: 'center', fontSize: chart.value, fontWeight: '700', marginBottom: 4 },
+});

@@ -236,9 +236,13 @@ export function AlleleFrequencies({
                     calc.set(
                       {
                         ...(spec.keep ? rep.pin(spec.keep) : {}),
-                        [pId]: rep.snapTo(pId, Math.min(1, Math.max(0, start.current + dx / S))),
+                        // To hundredths: a frequency reads 0.37, never 0.3674.
+                        [pId]: rep.snapTo(
+                          pId,
+                          Math.round(Math.min(1, Math.max(0, start.current + dx / S)) * 100) / 100,
+                        ),
                       },
-                      rep.slide(pId),
+                      { slide: { id: pId, step: 0.01 } },
                     )
                   }
                 />

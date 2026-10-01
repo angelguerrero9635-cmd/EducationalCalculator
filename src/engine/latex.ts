@@ -38,7 +38,7 @@ const SUB = '[₀₁₂₃₄₅₆₇₈₉ₜ]*';
 /** A letter right after "number space" is a unit (36 m², 4 V), never a variable. */
 const NOT_UNIT = String.raw`(?<!\d[  ])`;
 /** An operand of a stacked division: a bracket, a number (maybe times a letter), a name. */
-const OPERAND = String.raw`\([^()]*\)|\d[\d,]*(?:\.\d+)?\p{L}?|\p{L}+${SUB}`;
+const OPERAND = String.raw`\([^()]*\)|\d[\d,]*(?:\.\d+)?\p{L}?|\p{L}+(?:_[A-Za-z0-9]+)?${SUB}`;
 
 const letterBand = (band: MathBand) => band === 'middle' || band === 'standard';
 
@@ -51,15 +51,15 @@ function atomPattern(band: MathBand): RegExp {
       // Mixed number: a whole, one space, a fraction.
       String.raw`(?<![\d/.,])(?<mw>${INT}) (?<mn>${INT})\/(?<md>${INT})${END}`,
       // Fraction: numbers (3/4, 8/?), or from Grade 6 letters one letter over a number (r/100).
-      String.raw`(?<![\d/.,?\p{L}])(?<fn>${side})\/(?<fd>${side})${END}(?!\p{L})`,
+      String.raw`(?<![\d/.,?\p{L}_])(?<fn>${side})\/(?<fd>${side})${END}(?!\p{L})`,
       // Power of a bracket: (1 + 0.1)³.
       ...(letters ? [String.raw`\((?<gb>[^()]*)\)(?<ge>${SUP})`] : []),
       // Power of a number, or from Grade 6 letters of one letter (10³, x²; never cm²).
-      String.raw`(?<![\p{L}\d.])(?<pb>\d+(?:\.\d+)?${letters ? String.raw`|${NOT_UNIT}\p{L}${SUB}` : ''})(?<pe>${SUP})`,
+      String.raw`(?<![\p{L}\d._])(?<pb>\d+(?:\.\d+)?${letters ? String.raw`|${NOT_UNIT}\p{L}(?:_[A-Za-z0-9]+)?${SUB}` : ''})(?<pe>${SUP})`,
       // A power written with ^ (x^(n − 1), 1.5^1): high school and college.
       ...(band === 'standard'
         ? [
-            String.raw`(?<cb>\([^()]*\)|\d+(?:\.\d+)?|(?<!\p{L})\p{L})\^(?<ce>\([^()]*\)|\d+(?:\.\d+)?|\p{L}(?!\p{L}))`,
+            String.raw`(?<cb>\([^()]*\)|\d+(?:\.\d+)?|(?<![\p{L}_])\p{L})\^(?<ce>\([^()]*\)|\d+(?:\.\d+)?|\p{L}(?!\p{L}))`,
           ]
         : []),
       // Square root of a bracket or of a number.
@@ -138,7 +138,7 @@ function italics(segs: Seg[], symbols: string[], products: boolean): Seg[] {
   const sym = symbolPattern(symbols);
   if (sym) {
     const re = new RegExp(
-      String.raw`(?<![\p{L}\d.])(?<k>\d+(?:\.\d+)?)?(?<v>(?:${sym})${products ? '{1,3}' : ''})(?![\p{L}\d₀-₉])`,
+      String.raw`(?<![\p{L}\d._])(?<k>\d+(?:\.\d+)?)?(?<v>(?:${sym})${products ? '{1,3}' : ''})(?![\p{L}\d₀-₉_])`,
       'gu',
     );
     const one = new RegExp(`^(?:${sym})$`, 'u');
@@ -152,7 +152,7 @@ function italics(segs: Seg[], symbols: string[], products: boolean): Seg[] {
       return `${k ?? ''}${v!.replace(each, (x) => `\\mathit{${x}}`)}`;
     });
   }
-  return pass(segs, /(?<![\p{L}\d])[fgh](?=′?\()/gu, (m) => `\\mathit{${m[0]}}`);
+  return pass(segs, /(?<![\p{L}\d_])[fgh](?=′?\()/gu, (m) => `\\mathit{${m[0]}}`);
 }
 
 /** Divisions drawn stacked (a ÷ b), inside `segs`. */

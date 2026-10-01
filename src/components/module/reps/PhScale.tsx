@@ -34,6 +34,8 @@ const RAISED: Record<string, string> = {
   '8': '⁸',
   '9': '⁹',
   '-': '⁻',
+  '−': '⁻',
+  '.': '·',
 };
 /** 10 to a whole power, raised: 10⁻⁴. */
 const tenTo = (n: number) =>
@@ -41,6 +43,9 @@ const tenTo = (n: number) =>
     .split('')
     .map((ch) => RAISED[ch] ?? ch)
     .join('')}`;
+/** 10 to a typed decimal power, raised: 10⁻³·⁶⁰² (never a caret). */
+const raisedTen = (text: string) =>
+  `10⁻${[...text.replace(/,/g, '')].map((ch) => RAISED[ch] ?? ch).join('')}`;
 const fmt = (x: number) => formatNumber(Number(x.toPrecision(4)));
 
 const readOf = (rep: Rep) => (x: NumOrVar) =>
@@ -225,7 +230,7 @@ function ScaleView({ spec, rep, calc }: { spec: Scale; rep: Rep; calc: Calculato
       </Canvas>
       <Caption>
         {[
-          `Since pH = −log₁₀[H⁺], here [H⁺] = ${Number.isInteger(ph.value) ? tenTo(-ph.value) : `10^−${ph.text}`} = ${formatNumber(h)} mol/L.`,
+          `Since pH = −log₁₀[H⁺], here [H⁺] = ${Number.isInteger(ph.value) ? tenTo(-ph.value) : raisedTen(ph.text)} = ${formatNumber(h)} mol/L.`,
           ph.value < 7 - 1e-9
             ? 'Below 7: acidic.'
             : ph.value > 7 + 1e-9

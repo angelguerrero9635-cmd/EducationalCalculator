@@ -4,6 +4,8 @@
  * parser is tested on its own (`__tests__/equationTemplate.test.ts`).
  */
 
+import type { Choices } from '@/engine/choices';
+
 /**
  * A box (`{a}`), a fixed number or letters (the 1 of `1/{b}`, the x of `{b}^x`), or a small
  * expression (`{{x} − {m}}`, the top of a z-score) drawn as a row of its own parts.
@@ -42,8 +44,8 @@ export type EquationPart =
 
 /** A box id starts with a letter: {4} is the number 4. */
 const BOX = /^[A-Za-z]\w*$/;
-/** `{s:sign}`, `{s:relation}`, `{o:op}`: a box the student taps to change its sign. */
-const CHOICE = /^(\w+):(sign|relation|op)$/;
+/** `{s:sign}`, `{s:relation}`, `{o:op}`, `{h:alt}`, `{g:pm}`: a box the student taps to change its sign. */
+const CHOICE = /^(\w+):(sign|relation|op|alt|pm)$/;
 
 /**
  * `{a:unit}`: a box with its unit after it, the one the unit menu shows; `{a:coef}`: a chemical
@@ -51,14 +53,7 @@ const CHOICE = /^(\w+):(sign|relation|op)$/;
  */
 const MARKED = /^(\w+):(unit|coef)$/;
 
-/** What a choice box cycles through; the value is the sign's place, counted from 1. */
-export type Choices = 'sign' | 'relation' | 'op';
-export const CHOICES: Record<Choices, readonly string[]> = {
-  // As the inequality pages code it: 1 <, 2 ≤, 3 >, 4 ≥ (and 5 = for `relation`).
-  sign: ['<', '≤', '>', '≥'],
-  relation: ['<', '≤', '>', '≥', '='],
-  op: ['+', '−'],
-};
+export { CHOICES, type Choices } from '@/engine/choices';
 
 /** The index just past the `}` closing the `{` at `i` (braces nest). */
 function closeBrace(s: string, i: number): number {

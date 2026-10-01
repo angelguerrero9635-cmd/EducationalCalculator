@@ -229,9 +229,11 @@ function Beakers({ spec, rep }: { spec: Exclude<Solution, { mode: 'solubility' }
                     y2={bottom - 60}
                     color={c.chartInk}
                   />
+                  {/* Under the arrow, where the big beaker's scale has no number (above it,
+                      "150 mL" ran into the "100 mL" tick). */}
                   <ChartText
                     x={w / 2 + 3}
-                    y={bottom - 90}
+                    y={bottom - 42}
                     textAnchor="middle"
                     fontSize={chart.label}
                     fill={c.chartMuted}
@@ -241,7 +243,7 @@ function Beakers({ spec, rep }: { spec: Exclude<Solution, { mode: 'solubility' }
                   {spec.water !== undefined ? (
                     <ChartText
                       x={w / 2 + 3}
-                      y={bottom - 72}
+                      y={bottom - 25}
                       textAnchor="middle"
                       fontSize={chart.label}
                       fontWeight="700"

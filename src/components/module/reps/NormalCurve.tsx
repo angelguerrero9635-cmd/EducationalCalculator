@@ -62,8 +62,8 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
     const spread = sym(spec.sd, 'σ');
     lines.push(
       spread === 'σ'
-        ? `${spec.sample ? 'The population is' : 'X is'} normal with ${sym(spec.mean, 'μ')} = ${val(spec.mean, mu)} and σ = ${val(spec.sd, sigma)}.`
-        : `The curve is centered at ${sym(spec.mean, 'μ')} = ${val(spec.mean, mu)} with standard error ${spread} = ${val(spec.sd, sigma)}.`,
+        ? `${spec.sample ? 'The population is' : 'X is'} normal with ${sym(spec.mean, spec.meanName ?? 'μ')} = ${val(spec.mean, mu)} and σ = ${val(spec.sd, sigma)}.`
+        : `The curve is centered at ${sym(spec.mean, spec.meanName ?? 'μ')} = ${val(spec.mean, mu)} with standard error ${spread} = ${val(spec.sd, sigma)}.`,
     );
   }
   if (spec.sample && model.pop) {
@@ -134,9 +134,9 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
   const decision = (p: number, alpha: number | undefined) =>
     alpha === undefined
       ? ''
-      : p <= alpha
-        ? ` ≤ α = ${num(alpha)}: reject H₀.`
-        : ` > α = ${num(alpha)}: fail to reject H₀.`;
+      : p < alpha
+        ? ` < α = ${num(alpha)}: reject H₀.`
+        : ` ≥ α = ${num(alpha)}: fail to reject H₀.`;
   if (spec.test && typeof spec.test.tail === 'object')
     lines.push(tailWords(spec.test.tail, (id) => (rep.known(id) ? rep.shown(id) : undefined)));
   if (spec.test && !model.problem) {
@@ -145,7 +145,7 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
     const zc = model.critical?.map((x) => (x - model.m) / model.s);
     if (zc)
       lines.push(
-        `Red: the rejection region, area α = ${num(alpha!)}, past ${Z} = ${zc.map(num).join(` and ${Z} = `)}.`,
+        `Red outline: the rejection region, area α = ${num(alpha!)}, past ${Z} = ${zc.map(num).join(` and ${Z} = `)}.`,
       );
     if (z !== undefined && model.pValue !== undefined && known(spec.test.stat))
       lines.push(
@@ -177,7 +177,8 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
     interval: spec.interval ? 30 : 0,
   };
   const stackCount = model.intervals?.length ?? 0;
-  const rowH = stackCount ? Math.max(3, Math.min(8, 300 / stackCount)) : 0;
+  // The stack fits a phone with the first input: 50 or 100 intervals in about 220 px.
+  const rowH = stackCount ? Math.max(2.2, Math.min(8, 220 / stackCount)) : 0;
   const stackH = stackCount ? stackCount * rowH + 26 : 0;
   const T = 30;
   const curveH = (w: number) => (stackCount ? 0.34 : 0.46) * w;
@@ -187,8 +188,18 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
   type Handle = { id: string; x: number; toValue: (x: number) => number; label: string };
   const handles: Handle[] = [];
   if (!spec.fixed && !model.problem) {
-    const add = (v: number | string | undefined, label: string) => {
-      if (typeof v !== 'string' || !rep.known(v) || handles.some((h) => h.id === v)) return;
+    // A statistic worked out from the data gets no handle (dragging it could only change the
+    // data). A worked-out cutoff (m − d) keeps its handle: the drag moves the typed value
+    // behind it (d), the others held (useCalculator's set).
+    const typed = (v: string) => calc.status(v) !== 'derived';
+    const add = (v: number | string | undefined, label: string, worked = true) => {
+      if (
+        typeof v !== 'string' ||
+        !rep.known(v) ||
+        (!worked && !typed(v)) ||
+        handles.some((h) => h.id === v)
+      )
+        return;
       handles.push({ id: v, x: rep.shown(v), toValue: (x) => x, label });
     };
     if (spec.shade) {
@@ -196,7 +207,12 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
       add(spec.shade.to, 'where the shading ends');
     }
     if (spec.mark) add(spec.mark.x, 'the value');
-    if (spec.test && typeof spec.test.stat === 'string' && rep.known(spec.test.stat)) {
+    if (
+      spec.test &&
+      typeof spec.test.stat === 'string' &&
+      rep.known(spec.test.stat) &&
+      typed(spec.test.stat)
+    ) {
       handles.push({
         id: spec.test.stat,
         x: model.m + rep.shown(spec.test.stat) * model.s,
@@ -204,7 +220,7 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
         label: 'the test statistic',
       });
     }
-    if (chi) add(spec.chiSquare!.stat, 'the chi-square statistic');
+    if (chi) add(spec.chiSquare!.stat, 'the chi-square statistic', false);
   }
   const keep =
     spec.keep ??
@@ -346,7 +362,27 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
                     region(s, c.chartHighlight, shadeKnown ? 0.38 : 0.15, `r${i}`),
                   )}
                   {(model.pRegions ?? []).map((s, i) => region(s, c.chartSecond, 0.6, `p${i}`))}
-                  {(model.reject ?? []).map((s, i) => region(s, c.normalReject, 0.35, `x${i}`))}
+                  {/* The rejection region as a red outline over the amber p-value, and a red
+                      bar on the axis under it: the two read apart even where they overlap. */}
+                  {(model.reject ?? []).map((s, i) => (
+                    <G key={`x${i}`}>
+                      <Path
+                        d={pathOf(model.pdf, s[0], s[1], true)}
+                        fill={c.normalReject}
+                        fillOpacity={0.06}
+                        stroke={c.normalReject}
+                        strokeWidth={chart.stroke}
+                        strokeDasharray={chart.dash}
+                      />
+                      <Rect
+                        x={Math.min(sx(s[0]), sx(s[1]))}
+                        y={axisY}
+                        width={Math.abs(sx(s[1]) - sx(s[0]))}
+                        height={4}
+                        fill={c.normalReject}
+                      />
+                    </G>
+                  ))}
                   {model.pop ? (
                     <Path
                       d={pathOf(normalPdfPop)}
@@ -494,7 +530,7 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
                   ? (() => {
                       const items = [
                         ...(model.reject?.length
-                          ? [['reject H₀ (area α)', c.normalReject, 0.5]]
+                          ? [['reject H₀ (area α)', c.normalReject, 0]]
                           : []),
                         ...(model.pRegions?.length ? [['p-value', c.chartSecond, 0.8]] : []),
                       ] as [string, string, number][];
@@ -513,6 +549,10 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
                               rx={2}
                               fill={color}
                               fillOpacity={o}
+                              // The rejection key is an outline, as the region is drawn.
+                              stroke={o === 0 ? color : undefined}
+                              strokeWidth={o === 0 ? chart.stroke : undefined}
+                              strokeDasharray={o === 0 ? chart.dash : undefined}
                             />
                             <ChartText x={at + 18} y={keyY}>
                               {text}

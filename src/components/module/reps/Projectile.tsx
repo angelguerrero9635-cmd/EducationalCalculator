@@ -13,7 +13,7 @@ import { G_EARTH, projectileOf } from './hskMath';
 import { RAD, sig, SubLabel, Vec, withUnit } from './hskKit';
 import { Ball, TopLight, url, usePaintIds } from './paint';
 
-const [L, R, T, B] = [34, 14, 14, 44];
+const [L, R, T, B] = [34, 14, 24, 58];
 
 /** A signed number in brackets for substituting: (−9.8). */
 const par = (s: string) => (s.startsWith('−') ? `(${s})` : s);
@@ -205,11 +205,11 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                       stroke={c.chartMuted}
                       strokeDasharray={chart.dashFine}
                     />
+                    {/* H over the top of the arc, R at the landing: they no longer meet. */}
                     <SubLabel
-                      x={sx(pos(tTop).x) + 6}
-                      y={sy(p.H) + (ground - sy(p.H)) * 0.5 + 6}
+                      x={sx(pos(tTop).x)}
+                      y={sy(p.H) - 9}
                       text={`H = ${withUnit(sig(p.H), lenU)}`}
-                      anchor="start"
                       w={w}
                     />
                   </G>
@@ -330,11 +330,12 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                       w={w}
                     />
                   ))}
+                {/* The axis's name under its numbers at the right end (at the left it hid 0). */}
                 <SubLabel
-                  x={sx(W.x0) + 2}
-                  y={ground + 30}
+                  x={sx(W.x1)}
+                  y={ground + 48}
                   text={spec.parametric ? `x (${lenU})` : `distance (${lenU})`}
-                  anchor="start"
+                  anchor="end"
                   size={chart.label}
                   bold={false}
                   color={c.chartMuted}
@@ -370,9 +371,10 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                   />
                 ) : null}
                 <SubLabel
-                  x={(sx(0) + sx(p.R)) / 2}
-                  y={ground - 8}
+                  x={sx(p.R) - 6}
+                  y={ground - 7}
                   text={`R = ${withUnit(sig(p.R), lenU)}`}
+                  anchor="end"
                   w={w}
                 />
                 {tAt !== undefined ? (

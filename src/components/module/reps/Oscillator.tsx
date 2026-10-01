@@ -344,19 +344,15 @@ function Hanging({ spec, calc }: { spec: Hang; calc: Calculator }) {
                   size={chart.label}
                   w={w}
                 />
-                {/* Balanced: the spring's pull kx up, the weight mg down. */}
-                <Vec
-                  x1={sx - 30}
-                  y1={end + 8}
-                  x2={sx - 30}
-                  y2={end + 8 - arrow}
-                  color={c.forceTension}
-                />
+                {/* Balanced: the spring's pull kx up, the weight mg down, the same length
+                    from the block's edges (kx started inside the block and read shorter). */}
+                <Vec x1={sx - 30} y1={end} x2={sx - 30} y2={end - arrow} color={c.forceTension} />
                 <SubLabel
-                  x={sx - 36}
-                  y={end - arrow + 20}
-                  text="kx"
-                  anchor="end"
+                  // Over the arrow's tip: left of it there is no room for the value.
+                  x={sx - 34}
+                  y={end - arrow - 6}
+                  text={`kx = ${text(spec.force, F, uF)}`}
+                  anchor="middle"
                   color={c.forceTension}
                   w={w}
                 />

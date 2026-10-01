@@ -212,9 +212,19 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
               ps.reduce((s, p) => s + p[1], 0) / ps.length,
             ] as Pt;
           /** Corner labels, pushed out from the middle of the shape. */
-          const labels = (ps: Pt[], name: (i: number) => string, color: string, gap = 16) => {
+          /** Two points drawn at one place. */
+          const same = (p?: Pt, q?: Pt) =>
+            !!p && !!q && Math.abs(p[0] - q[0]) < 1e-9 && Math.abs(p[1] - q[1]) < 1e-9;
+          const labels = (
+            ps: Pt[],
+            name: (i: number) => string,
+            color: string,
+            gap = 16,
+            skip: (i: number) => boolean = () => false,
+          ) => {
             const [mx, my] = P(centroid(ps));
             return ps.map((p, i) => {
+              if (skip(i)) return null;
               const [x, y] = P(p);
               // Out from the middle of the shape; turned (by eighths of a turn) off the axes'
               // numbers when it would land on them.
@@ -556,9 +566,40 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
                       />
                     ))
                   : null}
-                {labels(pts, (i) => LETTERS[i]!, c.chartInk)}
-                {known ? labels(img, prime, mid, onto ? 30 : 16) : null}
-                {known && img2 ? labels(img2, prime2, c.chartHighlight) : null}
+                {/* A point its moves leave where it was (B at the origin, turned and
+                    dilated about it) gets one tag, "B = B′ = B″", not three on top of each
+                    other. */}
+                {labels(
+                  pts,
+                  (i) =>
+                    [
+                      LETTERS[i]!,
+                      ...(known && same(img[i], pts[i]) ? [prime(i)] : []),
+                      ...(known && img2 && same(img2[i], pts[i]) ? [prime2(i)] : []),
+                    ].join(' = '),
+                  c.chartInk,
+                )}
+                {known
+                  ? labels(
+                      img,
+                      (i) =>
+                        img2 && same(img2[i], img[i]) && !same(img[i], pts[i])
+                          ? `${prime(i)} = ${prime2(i)}`
+                          : prime(i),
+                      mid,
+                      onto ? 30 : 16,
+                      (i) => same(img[i], pts[i]),
+                    )
+                  : null}
+                {known && img2
+                  ? labels(
+                      img2,
+                      prime2,
+                      c.chartHighlight,
+                      16,
+                      (i) => same(img2[i], pts[i]) || same(img2[i], img[i]),
+                    )
+                  : null}
                 {v2 && then && (then.move === 'rotate' || then.move === 'dilate') ? (
                   <Circle
                     cx={P(v2.center)[0]}

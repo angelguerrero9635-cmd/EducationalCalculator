@@ -17,6 +17,9 @@ type Spec = Extract<Representation, { kind: 'spectrum' }>;
 const [LO, HI] = [380, 750];
 const NAMES = { H: 'Hydrogen', He: 'Helium', Na: 'Sodium' } as const;
 
+/** A lab wavelength as the tables give it, to a tenth of a nm: 434.0, never 434. */
+const nm1 = (nm: number) => nm.toFixed(1);
+
 /** The color of light of a wavelength (nm), from the theme's rainbow; grey outside it. */
 export function nmColor(c: Palette, nm: number) {
   if (nm < LO || nm > HI) return c.chartMuted;
@@ -137,11 +140,11 @@ export function SpectrumLinesView({ spec, l, calc }: { spec: Spec; l: Lines; cal
       : undefined;
   const shifted = z === undefined ? undefined : lab.map((q) => q.nm * (1 + z));
   const lines: string[] = [
-    `${NAMES[l.element]} ${l.mode === 'emission' ? 'glows at' : 'absorbs at'} ${lab.map((q) => `${sig(q.nm, 4)}`).join(', ')} nm: its fingerprint.`,
+    `${NAMES[l.element]} ${l.mode === 'emission' ? 'glows at' : 'absorbs at'} ${lab.map((q) => nm1(q.nm)).join(', ')} nm: its fingerprint.`,
   ];
   if (z !== undefined)
     lines.push(
-      `λ = λ₀(1 + z) = ${sig(ref.nm, 4)} × (1 + ${sig(z)}) = ${sig(ref.nm * (1 + z), 4)} nm`,
+      `λ = λ₀(1 + z) = ${nm1(ref.nm)} × (1 + ${sig(z)}) = ${sig(ref.nm * (1 + z), 4)} nm`,
       `v ≈ cz = 300,000 km/s × ${sig(z)} = ${sig(300000 * z)} km/s ${z >= 0 ? 'away from us (redshift)' : 'toward us (blueshift)'}`,
     );
   return (

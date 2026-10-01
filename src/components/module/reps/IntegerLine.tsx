@@ -220,7 +220,21 @@ function PointLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
               </Svg>
               {[
                 { id: spec.value, at: p },
-                ...(spec.second && q ? [{ id: spec.second, at: q }] : []),
+                ...(spec.second && q
+                  ? [
+                      {
+                        id: spec.second,
+                        // Two points closer than a handle: the second's handle steps off the
+                        // line (below it, or right of a vertical one), so both can be grabbed.
+                        at:
+                          Math.hypot(q.x - p.x, q.y - p.y) < chart.handleTouch
+                            ? vertical
+                              ? { x: q.x + chart.handleTouch * 0.8, y: q.y }
+                              : { x: q.x, y: q.y + chart.handleTouch * 0.8 }
+                            : q,
+                      },
+                    ]
+                  : []),
               ]
                 .filter(({ id }) => rep.known(id))
                 .map(({ id, at }) => (

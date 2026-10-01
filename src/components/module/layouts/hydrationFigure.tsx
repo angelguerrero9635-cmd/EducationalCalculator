@@ -13,7 +13,7 @@ import { chart, usePalette } from '@/theme';
 
 import { atomRadius, moleculeOf, turned } from '../reps/chem';
 import { chargeSuperscript } from '../reps/chemHs2d';
-import { Canvas, ChartText } from '../reps/common';
+import { Canvas, ChartText, fitLabel } from '../reps/common';
 import { AtomBall, MoleculeArt, useAtomPaint } from '../reps/MoleculeArt';
 
 /** The direction of one O–H bond in the water layout (degrees, y down). */
@@ -59,12 +59,13 @@ export function HydrationFigure({ scene }: { scene: HydrationScene }) {
               />,
             );
             if (j === 0) {
-              // δ− on the O end, δ+ on the H end of the top water.
-              const mark = ion.charge > 0 ? 'δ−' : 'δ+';
+              // δ− on the O end, δ+ on the H end of the top water, beside it (the ring has no
+              // room inside), saying which end.
+              const mark = ion.charge > 0 ? 'δ− (O end)' : 'δ+ (H end)';
               parts.push(
                 <ChartText
                   key={`d${k}`}
-                  x={wx + s * 1.25}
+                  {...fitLabel(wx + s * 1.25, mark, chart.label, w, 'start', s * 1.25)}
                   y={wy - s * 0.5}
                   fontSize={chart.label}
                   fontWeight="700"
@@ -122,7 +123,7 @@ export function HydrationFigure({ scene }: { scene: HydrationScene }) {
               y={h - 2}
               fontSize={chart.label}
               textAnchor="middle"
-              fill={c.chartMuted}
+              fill={c.chartInk}
             >
               {`${a.formula}${b.formula} crystal: water pulls the ions at its edges away`}
             </ChartText>,

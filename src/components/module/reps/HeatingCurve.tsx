@@ -112,6 +112,9 @@ export function HeatingCurve({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const total = corners[corners.length - 1]![0];
   const tempUnit = (tempRef ? rep.unit(tempRef) : undefined) ?? spec.units?.temp ?? '°C';
   const timeUnit = (timeRef ? rep.unit(timeRef) : undefined) ?? spec.units?.time ?? 'min';
+  // A curve against energy (J, kJ, cal) has heat added on its axis, not time.
+  const heat = ['J', 'kJ', 'MJ', 'cal', 'kcal'].includes(timeUnit);
+  const axisName = heat ? 'Heat added' : 'Time';
   const names = spec.names ?? ['solid', 'liquid', 'gas'];
   const partNames = [names[0], 'melting', names[1], 'boiling', names[2]];
   const withUnit = (x: string, u: string) => `${x}${u === '°' ? '' : ' '}${u}`;
@@ -140,6 +143,12 @@ export function HeatingCurve({ spec, calc }: { spec: Spec; calc: Calculator }) {
     const next = Math.min(total, Math.max(0, start.current + dx / scale));
     calc.set({ [spec.at]: rep.snapTo(spec.at, next * rep.factor(spec.at)) }, rep.slide(spec.at));
   };
+
+  const atWords = at
+    ? heat
+      ? `After ${withUnit(at.text, timeUnit)} of heat`
+      : `At ${withUnit(at.text, timeUnit)}`
+    : '';
 
   return (
     <View>
@@ -218,10 +227,10 @@ export function HeatingCurve({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         strokeWidth={1}
                       />
                       <ChartText
-                        x={sx(x)}
+                        // The last number slides in from the edge instead of being cut.
+                        {...fitLabel(sx(x), formatNumber(x), chart.small, w)}
                         y={h - B + 15}
                         fontSize={chart.small}
-                        textAnchor="middle"
                         fill={c.chartMuted}
                       >
                         {formatNumber(x)}
@@ -246,7 +255,7 @@ export function HeatingCurve({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   strokeWidth={chart.strokeLight}
                 />
                 <ChartText x={(L + w - R) / 2} y={h - 6} fontSize={chart.label} textAnchor="middle">
-                  {`Time (${timeUnit})`}
+                  {`${axisName} (${timeUnit})`}
                 </ChartText>
                 <ChartText
                   x={12}
@@ -294,12 +303,16 @@ export function HeatingCurve({ spec, calc }: { spec: Spec; calc: Calculator }) {
                           strokeLinecap="round"
                         />
                         <ChartText
-                          // Melting: under its step, starting at its left end (the rising
-                          // line leaves from its right end); boiling: over its step.
+                          // Melting: over its step, ending at its right end (the solid's
+                          // name sits under the step's left end, the rising line leaves from
+                          // its right end upward); boiling: over its step, centred.
                           {...(i === 1
-                            ? { x: sx(x0) + 4, textAnchor: 'start' as const }
+                            ? {
+                                x: Math.max(L + 4 + tw(text, chart.label), sx(x1) - 4),
+                                textAnchor: 'end' as const,
+                              }
                             : { x: inPlot((sx(x0) + sx(x1)) / 2, text, chart.label) })}
-                          y={i === 1 ? sy(v) + 17 : sy(v) - 8}
+                          y={sy(v) - 8}
                           fontSize={chart.label}
                           fontWeight="700"
                         >
@@ -438,12 +451,12 @@ export function HeatingCurve({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {[
           `Melting point = ${tempText(vals[1]!)}`,
           `Boiling point = ${tempText(vals[2]!)}`,
-          `Time = ${spans.map((x) => x.text).join(' + ')} = ${known ? withUnit(formatNumber(Number(total.toFixed(6))), timeUnit) : '?'}`,
+          `${axisName} = ${spans.map((x) => x.text).join(' + ')} = ${known ? withUnit(formatNumber(Number(total.toFixed(6))), timeUnit) : '?'}`,
           ...(t !== undefined && part !== undefined
             ? [
                 part === 1 || part === 3
-                  ? `At ${withUnit(at!.text, timeUnit)} it is ${partNames[part]}: the temperature stays at ${withUnit(yText, tempUnit)}`
-                  : `At ${withUnit(at!.text, timeUnit)} the ${partNames[part]} is at ${withUnit(yText, tempUnit)}`,
+                  ? `${atWords} it is ${partNames[part]}: the temperature stays at ${withUnit(yText, tempUnit)}`
+                  : `${atWords} the ${partNames[part]} is at ${withUnit(yText, tempUnit)}`,
               ]
             : []),
         ].join(' · ')}

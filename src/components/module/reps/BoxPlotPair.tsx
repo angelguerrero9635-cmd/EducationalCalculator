@@ -332,7 +332,13 @@ export function BoxPlotPair({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             key={id}
                             testID={`drag-${id}`}
                             x={sx(vals[i]![k]!)}
-                            y={mid(i) + (k % 2 ? -8 : 8)}
+                            // An end that is an outlier: its handle above the plot, so the
+                            // outlier's ring under it shows.
+                            y={
+                              i === 0 && (k === 0 || k === 4) && past(vals[i]![k]!)
+                                ? mid(i) - boxH / 2 - 14
+                                : mid(i) + (k % 2 ? -8 : 8)
+                            }
                             label={rep.variable(id).name}
                             onStart={() => {
                               start.current = vals[i]![k]!;

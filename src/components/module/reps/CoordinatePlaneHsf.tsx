@@ -145,6 +145,7 @@ export function PlaneGeometryMarks({
         y={y + ny * 14 + 5}
         fontWeight="700"
         fill={color}
+        halo
       >
         {text}
       </ChartText>
@@ -313,6 +314,7 @@ export function PlaneGeometryMarks({
             {...fitLabel(x + Math.cos(t) * 9, text, chart.label, w, anchor, 9)}
             y={y + Math.sin(t) * 14 + 4}
             fontWeight="700"
+            halo
           >
             {text}
           </ChartText>

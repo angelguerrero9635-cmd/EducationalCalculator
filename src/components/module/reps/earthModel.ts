@@ -56,7 +56,8 @@ export function mantleRay(delta: number, side: 1 | -1 = 1, n = 40): [number, num
 
 /**
  * A P wave through the core to Δ (140°–180°) degrees: down through the mantle to the core, bent
- * through it, and out: [focus, entry, exit, station] in Earth radii, y up.
+ * through it, and out: points from the focus to the station in Earth radii, y up, each leg
+ * curved, kinked where it crosses the core's edge.
  */
 export function coreRay(delta: number, side: 1 | -1 = 1): [number, number][] {
   const rc = EARTH.core / EARTH.radius;
@@ -66,7 +67,38 @@ export function coreRay(delta: number, side: 1 | -1 = 1): [number, number][] {
     side * r * Math.sin(rad(a)),
     r * Math.cos(rad(a)),
   ];
-  return [at(1, 0), at(rc, theta), at(rc, delta - theta), at(1, delta)];
+  const [focus, entry, exit, station] = [
+    at(1, 0),
+    at(rc, theta),
+    at(rc, delta - theta),
+    at(1, delta),
+  ];
+  // Each leg curves like the direct rays (speed rises with depth, so a ray bows below its
+  // chord, toward the center), and the path kinks at the core's edge both ways: P waves slow in
+  // the liquid and bend toward the boundary's normal going in, away from it coming out.
+  return [
+    ...bowed(focus, entry, 0.12),
+    ...bowed(entry, exit, 0.08).slice(1),
+    ...bowed(exit, station, 0.12).slice(1),
+  ];
+}
+
+/** Points along a curve from a to b bowed toward Earth's center by `bow` of its length. */
+function bowed(a: [number, number], b: [number, number], bow: number, n = 12): [number, number][] {
+  const [mx, my] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  let [nx, ny] = [-(b[1] - a[1]) / (len || 1), (b[0] - a[0]) / (len || 1)];
+  // The normal that points toward the center (0, 0).
+  if (nx * -mx + ny * -my < 0) [nx, ny] = [-nx, -ny];
+  const [qx, qy] = [mx + nx * bow * len, my + ny * bow * len];
+  return Array.from({ length: n + 1 }, (_, i) => {
+    const t = i / n;
+    const u = 1 - t;
+    return [
+      u * u * a[0] + 2 * u * t * qx + t * t * b[0],
+      u * u * a[1] + 2 * u * t * qy + t * t * b[1],
+    ];
+  });
 }
 
 /** Which waves reach a station Δ degrees from the focus, directly or through the core. */

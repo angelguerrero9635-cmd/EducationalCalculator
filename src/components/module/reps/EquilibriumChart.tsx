@@ -15,7 +15,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { approach, quotient, stages, type Species } from './equilibriumModel';
-import { axisOf, makePlot, PlotFrame, spread } from './hsjPlot';
+import { axisOf, makePlot, PlotFrame, spread, ticksOf } from './hsjPlot';
 
 const fmt = (x: number) => formatNumber(Number(x.toPrecision(4)));
 
@@ -69,12 +69,32 @@ export function EquilibriumChart({ spec, calc }: { spec: EquilibriumChartSpec; c
   const y = axisOf(0, Math.max(...all, 1e-6) * 1.08, 5);
   const last = st.eq2 ?? st.eq1;
   const name = (i: number) => `[${spec.species[i]!.formula}]`;
+  // Two substances whose lines are the same all the way (Ag⁺ and Cl⁻ from AgCl): one line,
+  // one label naming both.
+  const same = (i: number, j: number) =>
+    Math.abs(c0[i]! - c0[j]!) <= 1e-12 * Math.max(1, c0[i]!) &&
+    species[i]!.sign * species[i]!.coef === species[j]!.sign * species[j]!.coef &&
+    (!add || (add.index !== i && add.index !== j));
+  const firstOf = spec.species.map((_, i) => spec.species.findIndex((__, j) => same(i, j)));
+  const shown = spec.species.map((_, i) => i).filter((i) => firstOf[i] === i);
+  const labelOf = (i: number) => {
+    const group = spec.species.map((_, j) => j).filter((j) => firstOf[j] === i);
+    return group.length > 1
+      ? `${group.map(name).join(' = ')} = ${fmt(last[i]!)} M`
+      : `${name(i)} ${fmt(last[i]!)}`;
+  };
+  // Room on the left for the widest number up the axis, past the axis title.
+  const widest = Math.max(...ticksOf(y).map((v) => formatNumber(v).length)) * chart.label * 0.58;
 
   return (
     <View>
       <Canvas aspect={0.78}>
         {({ w, h }) => {
-          const p = makePlot(w, h, { lo: 0, hi: tEnd, step: 0.5 }, y, { L: 52, R: 96, B: 30 });
+          const p = makePlot(w, h, { lo: 0, hi: tEnd, step: 0.5 }, y, {
+            L: Math.max(52, widest + 30),
+            R: 12,
+            B: 30,
+          });
           const ts = (from: number, to: number) =>
             Array.from({ length: 81 }, (_, k) => from + ((to - from) * k) / 80);
           const lineOf = (i: number) => {
@@ -84,8 +104,9 @@ export function EquilibriumChart({ spec, calc }: { spec: EquilibriumChartSpec; c
             ];
             return pts.map(([t, v]) => `${p.sx(t)},${p.sy(v)}`).join(' ');
           };
+          // The end labels inside the plot, right-aligned above their line's level end.
           const ends = spread(
-            last.map((v) => p.sy(v) + 4),
+            shown.map((i) => p.sy(last[i]!) - 7),
             15,
           );
           return (
@@ -115,7 +136,7 @@ export function EquilibriumChart({ spec, calc }: { spec: EquilibriumChartSpec; c
                 </G>
               ) : null}
               <G opacity={known ? 1 : 0.4}>
-                {spec.species.map((_, i) => (
+                {shown.map((i) => (
                   <Polyline
                     key={i}
                     points={lineOf(i)}
@@ -125,16 +146,18 @@ export function EquilibriumChart({ spec, calc }: { spec: EquilibriumChartSpec; c
                     strokeLinejoin="round"
                   />
                 ))}
-                {spec.species.map((_, i) => (
+                {shown.map((i, k) => (
                   <ChartText
                     key={`n${i}`}
-                    x={p.sx(tEnd) + 6}
-                    y={ends[i]!}
+                    x={p.sx(tEnd) - 4}
+                    y={Math.max(p.T + 10, ends[k]!)}
+                    textAnchor="end"
                     fontSize={chart.label}
                     fontWeight="700"
                     fill={colors[i % colors.length]}
+                    halo
                   >
-                    {`${name(i)} ${fmt(last[i]!)}`}
+                    {labelOf(i)}
                   </ChartText>
                 ))}
               </G>

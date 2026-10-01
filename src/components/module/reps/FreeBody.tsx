@@ -383,13 +383,19 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                     const len = Math.hypot(d.x, d.y) || 1;
                     // Along the arrow: its length in newtons.
                     const along2 = (d.x * dx + d.y * dy) / len;
+                    // A typed μ is the surface's: it holds, and the friction (μN) follows the
+                    // normal force; otherwise the friction holds.
+                    const holdMu =
+                      typeof spec.mu === 'string' &&
+                      rep.known(spec.mu) &&
+                      calc.status(spec.mu) !== 'derived';
                     calc.set(
                       {
                         ...rep.pin(
                           [
                             spec.mass,
                             spec.incline,
-                            spec.friction,
+                            holdMu ? spec.mu : spec.friction,
                             spec.appliedAngle,
                             spec.tensionAngle,
                           ].filter((x): x is string => typeof x === 'string'),

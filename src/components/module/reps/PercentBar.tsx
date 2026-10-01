@@ -34,6 +34,11 @@ function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const pct = Math.max(0, rep.shown(spec.percent));
+  // A worked-out percent reads to a tenth (84.2%, not 84.2105%); a typed one as typed.
+  const pctText =
+    calc.status(spec.percent) === 'derived'
+      ? formatNumber(Number(pct.toFixed(1)))
+      : rep.value(spec.percent, false);
   // H104: a second percent marked on the same bar (a band under the shading, and a labelled line).
   const second = spec.second ? Math.max(0, rep.shown(spec.second)) : undefined;
   const whole = Math.max(0, rep.shown(spec.whole));
@@ -191,7 +196,7 @@ function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {rep.known(spec.percent) && rep.known(spec.whole)
-          ? `${formatNumber(pct)}% of ${rep.value(spec.whole)} is ${rep.value(spec.part)}.${spec.onePercent ? ` 1% is ${rep.value(spec.onePercent)}.` : ''}${spec.second && rep.known(spec.second) ? ` The line marks ${rep.label(spec.second)}.` : ''}`
+          ? `${pctText}% of ${rep.value(spec.whole)} is ${rep.value(spec.part)}.${spec.onePercent ? ` 1% is ${rep.value(spec.onePercent)}.` : ''}${spec.second && rep.known(spec.second) ? ` The line marks ${rep.label(spec.second)}.` : ''}`
           : 'The whole is 100%. Type the numbers you know.'}
       </Caption>
       <Steppers

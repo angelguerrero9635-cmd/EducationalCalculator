@@ -34,9 +34,17 @@ export function generateStaticParams(): { id: string }[] {
   return prerenderIds([...SKILLS.map((s) => s.id), ...PROBLEM_TYPE_IDS]).map((id) => ({ id }));
 }
 
+/**
+ * The page id from the route. Static rendering drops a trailing "index" from the path
+ * ("s.9.mitosis-meiosis~mitotic-index" arrives as "…~mitotic-"), so the pre-rendered page said
+ * "Skill not found" and the live page hydrated over it (React #418): put it back.
+ */
+const pageId = (raw: string) =>
+  !getSkill(raw) && !getProblemType(raw) && getProblemType(`${raw}index`) ? `${raw}index` : raw;
+
 export default function SkillScreen() {
   const c = usePalette();
-  const id = String(useLocalSearchParams<{ id: string }>().id);
+  const id = pageId(String(useLocalSearchParams<{ id: string }>().id));
   // A skill's main module, or one of its problem types ("m.1.add-sub-20~compare").
   const type = getProblemType(id);
   const skill = getSkill(id) ?? type?.skill;

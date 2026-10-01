@@ -6,10 +6,11 @@ import {
   type ViewStyle,
   StyleSheet,
 } from 'react-native';
-import { Text as SvgText, type TextProps as SvgTextProps } from 'react-native-svg';
+import { G, Text as SvgText, TSpan, type TextProps as SvgTextProps } from 'react-native-svg';
 
 import { isEarlyGrade, isElementary } from '@/data/modules';
 import { dollarsOf, formatNumber, unitFor } from '@/engine/format';
+import { subscriptRuns } from '@/engine/subscripts';
 import type { Values } from '@/engine/types';
 import { chart, font, space, usePalette } from '@/theme';
 
@@ -86,7 +87,14 @@ export function DragHandle({
 
   return (
     <View
-      testID={testID}
+      // Every handle can be found by the review scripts: drag-<id>, or drag-<its label>.
+      testID={
+        testID ??
+        `drag-${label
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')}`
+      }
       accessibilityLabel={`Drag to change ${label}`}
       ref={ref}
       onStartShouldSetResponder={RESPONDER ? () => true : undefined}
@@ -167,9 +175,58 @@ export function niceCeil(x: number): number {
 }
 
 /** Text inside charts: theme font family, chart ink color and label size by default. */
-export function ChartText(props: SvgTextProps) {
+export function ChartText({
+  halo,
+  ...props
+}: SvgTextProps & {
+  /**
+   * A callout over a plot (a point's name, a slope, a radius): drawn on a halo of the page's
+   * colour (or this colour), so it wins over the grid, the axis numbers and lines under it.
+   */
+  halo?: boolean | string;
+}) {
   const c = usePalette();
+  if (halo) {
+    const color = typeof halo === 'string' ? halo : c.background;
+    return (
+      <G>
+        <ChartText
+          {...props}
+          fill={color}
+          stroke={color}
+          strokeWidth={4}
+          strokeLinejoin="round"
+          accessible={false}
+        />
+        <ChartText {...props} />
+      </G>
+    );
+  }
   const family = font.family ?? (Platform.OS === 'web' ? font.webSystem : undefined);
+  const { children } = props;
+  if (typeof children === 'string' && children.includes('_')) {
+    // "v_y", "T_c": a subscript drawn small and lowered, never a raw underscore.
+    const size = Number(props.fontSize ?? chart.label);
+    const runs = subscriptRuns(children);
+    const drop = size * 0.3;
+    return (
+      <SvgText fontFamily={family} fill={c.chartInk} fontSize={chart.label} {...props}>
+        {runs.length === 1 && !runs[0]!.sub
+          ? runs[0]!.s
+          : runs.map((r, i) =>
+              r.sub ? (
+                <TSpan key={i} dy={drop} fontSize={size * 0.72}>
+                  {r.s}
+                </TSpan>
+              ) : (
+                <TSpan key={i} dy={i > 0 && runs[i - 1]!.sub ? -drop : 0}>
+                  {r.s}
+                </TSpan>
+              ),
+            )}
+      </SvgText>
+    );
+  }
   return <SvgText fontFamily={family} fill={c.chartInk} fontSize={chart.label} {...props} />;
 }
 
@@ -311,6 +368,9 @@ export function useRep(calc: Calculator) {
   };
 }
 
+/** The most characters of a bold caption line a phone shows on one line. */
+const ONE_LINE = 34;
+
 /** A line of a caption: prose, or a number sentence (only numbers, operators and units). */
 const isNumberSentence = (line: string) =>
   /[=<>]/.test(line) &&
@@ -318,8 +378,8 @@ const isNumberSentence = (line: string) =>
 
 /**
  * The text under a picture, laid out to read: each sentence on its own line, and a chained
- * number sentence ("6 × 7 = 6 × 5 + 6 × 2 = 30 + 12 = 42") stacked one "=" per line, the way
- * a textbook shows working. Number sentences are bold; the words stay regular.
+ * number sentence too long for one line ("6 × 7 = 6 × 5 + 6 × 2 = 30 + 12 = 42") stacked one
+ * "=" per line, the way a textbook shows working. Number sentences are bold; the words stay regular.
  */
 export function Caption({ children }: { children: string }) {
   const c = usePalette();
@@ -328,10 +388,15 @@ export function Caption({ children }: { children: string }) {
     .split(/\s+·\s+|(?<=[.!?])\s+(?=[A-Z0-9“(])/)
     .map((x) => x.trim())
     .filter(Boolean);
+  // A chain of one step short enough for a phone's line stays on one line (vₓ = 20 × cos 30° =
+  // 17.3 m/s); a longer one, or one of more steps, is stacked one "=" a line.
   const chainOf = (sentence: string) => {
     const bare = sentence.replace(/[.]$/, '');
     const parts = bare.split(' = ');
-    return parts.length > 2 && isNumberSentence(bare) ? parts : undefined;
+    return (parts.length > 3 || (parts.length === 3 && bare.length > ONE_LINE)) &&
+      isNumberSentence(bare)
+      ? parts
+      : undefined;
   };
   // Worked chains side by side in the list share one left edge, so three blocks of work
   // start at the same indent instead of each centred on its own.

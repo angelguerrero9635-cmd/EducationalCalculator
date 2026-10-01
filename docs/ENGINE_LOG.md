@@ -5,6 +5,39 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grades 9–12 page review (shared fixes)
+
+### Page-review fixes
+
+The four page reports (m.9–10, m.11–12, s.9–10, s.11–12) found errors whose cause was shared.
+What the engine and the pictures now do:
+
+- **Drags keep typed values.** A drag or a slider (`set` with `slide`) may change only the values
+  it sends: one that would clear or change another typed value (or the example's) is refused, and
+  the handle stops at the last value that keeps them all (`movedGivens`). A handle on a worked-out
+  value moves the one typed value behind it instead (`driveTyped`: from a rule when one gives it,
+  else by secant steps): the radius of x² + y² + Dx + Ey + F = 0 sets F, a parabola's focus sets
+  q = 4p, normal~outside's cutoffs set d. A statistic worked out from data gets no handle.
+  FunctionGraph holds only typed values; FreeBody holds a typed μ.
+- **Subscripts.** `v_y`, `t_h`, `T_c` in steps, captions, input rows and picture labels are drawn
+  as subscripts (`engine/subscripts.ts`: Unicode where every character has one, a small lowered
+  run otherwise); the typesetter no longer splits a subscripted symbol.
+- **Sign boxes with codes.** `engine/choices.ts`: `{h:alt}` (< > ≠ stored 1, 3, 6) and `{g:pm}`
+  (+ − stored 1, −1); "we know" prints the sign ("Hₐ: p ≠ p₀"), never the code.
+- **Labels over plots.** `ChartText halo` puts a callout on a band of the page colour; HsdGrid
+  `clear` leaves out a tick number under a handle; captions keep a one-step chain on one line.
+- **Pictures.** AlgebraTiles mats under the tiles; letter superscripts (ᵗ ˣ ⁿ); NormalCurve
+  rejects when p < α and draws the rejection region as an outline; HeatingCurve's energy axis
+  reads "Heat added"; the periodic table scrolls sideways at 24 px cells; ice drawn as open
+  hexagons; many label placements (projectile, vectors, tides, Ksp, catalyst, dilution, phase
+  diagram, power scale, box plot, transformations).
+- **Mitotic index React #418.** Static rendering drops a trailing "index" from a route, so the
+  page was pre-rendered as "Skill not found"; the skill screen puts it back.
+- **Review scripts.** Every DragHandle has a `drag-` test id; input boxes carry `data-status`;
+  `review-interact.mjs` marks as ERROR a drag that leaves "?", changes a typed value besides the
+  one it drives or changes nothing, overlapping handles, a handle with no test id, and a scene
+  shot under 100 px.
+
 ## Grades 9–12 follow-up: the shared engine needs
 
 The 21 added Grade 9–12 skills had their own lesson review (math: 13 errors, 29 improvements;

@@ -204,7 +204,12 @@ export function SectionDrawing({
       <G key={`${deg}${side}`}>
         <Line x1={x0} y1={y0} x2={x1} y2={y1} stroke={c.chartInk} strokeWidth={1} />
         <ChartText
-          x={x}
+          // Inset from the drawing's edges (the left 104° started at x = 0).
+          x={
+            side === 1
+              ? Math.min(x, BW - 4 - `${deg}°`.length * chart.label * 0.58)
+              : Math.max(x, 4 + `${deg}°`.length * chart.label * 0.58)
+          }
           y={y + 4}
           fontSize={chart.label}
           textAnchor={side === 1 ? 'start' : 'end'}

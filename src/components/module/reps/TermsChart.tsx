@@ -83,7 +83,8 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
             ? `${termName(n - 1)} = ${num(terms[n - 1]!)}`
             : `a${sub(n)} = ${num(a)} × ${br(d)}${sup(n - 1)} = ${num(terms[n - 1]!)}`,
     );
-    if (lit2 >= 0) lines.push(`${termName(lit2)} = ${num(terms[lit2]!)} is lit too.`);
+    // Named by its colour, the way the reader sees it ("lit" meant nothing).
+    if (lit2 >= 0) lines.push(`Amber bar: ${termName(lit2)} = ${num(terms[lit2]!)}.`);
     if (gap) lines.push(`The chart skips from n = ${HEAD} to n = ${n}.`);
     if (spec.sums)
       lines.push(

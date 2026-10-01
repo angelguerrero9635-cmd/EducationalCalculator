@@ -196,7 +196,11 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
   function sideLines(): [string, string][] {
     const out: [string, string][] = [];
     if (cf !== undefined)
-      out.push([`c = ${text(spec.shape, cf)}${nameOf(cf) ? ` (${nameOf(cf)})` : ''}`, c.chartInk]);
+      // ½ as the compare cards write it (the box may show 1/2).
+      out.push([
+        `c = ${nameOf(cf) ? cText(cf) : text(spec.shape, cf)}${nameOf(cf) ? ` (${nameOf(cf)})` : ''}`,
+        c.chartInk,
+      ]);
     if (has(spec.mass)) out.push([`m = ${text(spec.mass, m, 'kg')}`, c.chartInk]);
     if (Number.isFinite(I) && (has(spec.inertia) || cf !== undefined))
       out.push([`I = ${text(spec.inertia, I, uI)}`, c.chartInk]);
@@ -254,9 +258,10 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
           </G>
         );
       case 'disk':
+        // Flat, unlike the ball: an even fill, a thick rim (its edge seen) and a hub.
         return (
           <G>
-            <Circle cx={cx} cy={cy} r={R} fill={url(ids.metal)} stroke={c.metalDark} />
+            <Circle cx={cx} cy={cy} r={R} fill={c.metal} stroke={c.metalDark} strokeWidth={3} />
             <Circle
               cx={cx}
               cy={cy}
@@ -265,6 +270,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
               stroke={c.metalDark}
               strokeOpacity={0.35}
             />
+            <Circle cx={cx} cy={cy} r={Math.max(2, R * 0.12)} fill={c.metalDark} />
           </G>
         );
       case 'ball':
@@ -338,7 +344,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
                 {`${s.half}, c = ${cText(s.c)}`}
               </ChartText>
               <ChartText x={x} y={y0 + 90} textAnchor="middle" fontSize={chart.label}>
-                {`I = ${num(Ii)}`}
+                {`I = ${num(Ii)} ${uI}`}
               </ChartText>
               <ChartText
                 x={x}
@@ -347,7 +353,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
                 fontSize={chart.label}
                 fill={c.forceApplied}
               >
-                {`α = ${num((tau ?? 0) / Ii)}`}
+                {`α = ${num((tau ?? 0) / Ii)} ${uA}`}
               </ChartText>
             </G>
           );
@@ -366,6 +372,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
       { length: Math.round((win.hi - win.lo) / win.step) + 1 },
       (_, i) => win.lo + i * win.step,
     );
+    const tStep = t <= 10 ? 1 : niceCeil(t / 8);
     const n = turns ?? 0;
     const per = Math.abs(n) <= MAX_DIALS ? 1 : niceCeil(Math.abs(n) / MAX_DIALS);
     const dials = Math.abs(n) / per;
@@ -395,6 +402,23 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
         />
         <Line x1={g.x0} y1={Y(0)} x2={g.x1} y2={Y(0)} stroke={c.chartInk} />
         <Line x1={g.x0} y1={g.y0} x2={g.x0} y2={g.y1} stroke={c.chartInk} />
+        {/* A tick each second (or a round step), numbered but the last ("t = 4 s" says it). */}
+        {Array.from({ length: Math.floor(t / tStep + 1e-9) + 1 }, (_, i) => i * tStep).map((s) => (
+          <G key={`t${s}`}>
+            <Line x1={X(s)} y1={g.y1} x2={X(s)} y2={g.y1 + 4} stroke={c.chartInk} />
+            {X(t) - X(s) > 56 ? (
+              <ChartText
+                x={X(s)}
+                y={g.y1 + 16}
+                textAnchor="middle"
+                fontSize={chart.label}
+                fill={c.chartMuted}
+              >
+                {num(s)}
+              </ChartText>
+            ) : null}
+          </G>
+        ))}
         <Line
           x1={X(0)}
           y1={Y(w0)}
@@ -465,7 +489,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
     if (spin) {
       out.push(`ω = ω₀ + αt = ${num(w0)} + ${num(alpha ?? 0)} × ${num(t)} = ${num(w)} ${uW}`);
       out.push(
-        `Δθ = ω₀t + ½αt² = ${num(up.angle)} rad, the area under the ω–t line`,
+        `Δθ = ω₀t + ½αt² = ${num(up.angle)} rad, the area under the ω\u2060–\u2060t line`,
         `n = Δθ/2π = ${num(up.angle)}/2π = ${num(up.turns)} turns`,
       );
     }

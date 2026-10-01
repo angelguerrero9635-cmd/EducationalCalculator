@@ -57,12 +57,21 @@ const range = (lo: number, hi: number, step: number) => {
 };
 
 /** Grid lines every `step`, the axes, their numbers (every other when crowded) and names. */
+/** Screen box of a drag handle at (x, y), for `HsdGrid`'s `clear`. */
+export const handleBox = (x: number, y: number) => ({
+  l: x - chart.handle / 2 - 2,
+  t: y - chart.handle / 2 - 2,
+  r: x + chart.handle / 2 + 2,
+  b: y + chart.handle / 2 + 2,
+});
+
 export function HsdGrid({
   f,
   step,
   names = { x: 'x', y: 'y' },
   numbers = true,
   yText = formatNumber,
+  clear = [],
 }: {
   f: Frame;
   step: { x: number; y: number };
@@ -70,6 +79,11 @@ export function HsdGrid({
   numbers?: boolean;
   /** How the numbers up the y-axis read ("2i" on the imaginary axis). */
   yText?: (v: number) => string;
+  /**
+   * Boxes (screen px) a number may not sit under: a handle, a point's tag. A tick number
+   * there is left out rather than drawn half hidden.
+   */
+  clear?: { l: number; t: number; r: number; b: number }[];
 }) {
   const c = usePalette();
   const ax = f.sx(Math.min(f.x[1], Math.max(f.x[0], 0)));
@@ -80,6 +94,13 @@ export function HsdGrid({
   const xEvery = step.x * f.ux < widest * 7.5 + 8 ? 2 : 1;
   const yEvery = step.y * f.uy < 18 ? 2 : 1;
   const on = (v: number, s: number, every: number) => v !== 0 && Math.round(v / s) % every === 0;
+  /** A number's box, by its anchor point, is clear of every box in `clear`. */
+  const free = (x: number, y: number, text: string, anchor: 'middle' | 'end') => {
+    const tw = text.length * chart.label * 0.58;
+    const [l, r] = anchor === 'middle' ? [x - tw / 2, x + tw / 2] : [x - tw, x];
+    const [t, b] = [y - chart.label, y + 2];
+    return clear.every((k) => r < k.l || l > k.r || b < k.t || t > k.b);
+  };
   return (
     <G>
       {xs.map((v) => (
@@ -122,7 +143,9 @@ export function HsdGrid({
       />
       {numbers
         ? xs
-            .filter((v) => on(v, step.x, xEvery))
+            .filter(
+              (v) => on(v, step.x, xEvery) && free(f.sx(v), ay + 15, formatNumber(v), 'middle'),
+            )
             .map((v) => (
               <MathText
                 key={`nx${v}`}
@@ -137,7 +160,7 @@ export function HsdGrid({
         : null}
       {numbers
         ? ys
-            .filter((v) => on(v, step.y, yEvery))
+            .filter((v) => on(v, step.y, yEvery) && free(ax - 5, f.sy(v) + 4, yText(v), 'end'))
             .map((v) => (
               <MathText
                 key={`ny${v}`}
