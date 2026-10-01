@@ -1,4 +1,5 @@
-import { Pressable, View } from 'react-native';
+import { useState, type ReactNode } from 'react';
+import { Platform, Pressable, ScrollView, View } from 'react-native';
 import Svg, { G, Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
@@ -6,7 +7,7 @@ import { chart, usePalette, type Palette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { ELEMENTS, cellOf, element, familyOf, groupOf, periodOf, type Family } from './chem';
-import { Canvas, Caption, ChartText, useRep } from './common';
+import { Caption, ChartText, useRep } from './common';
 import { reader } from './graphKit';
 
 type Spec = Extract<Representation, { kind: 'periodicTable' }>;
@@ -33,6 +34,39 @@ const FAMILY_NAME: Record<Family, string> = {
 export function tableSize(w: number, families = false) {
   const cell = (w - LEFT - 2) / 18;
   return { cell, h: TOP + cell * 9.4 + (families ? KEY : 0) + 4 };
+}
+
+/** The narrowest table whose symbols read on their own (cells of 24 px, numbers shown). */
+const MIN_W = 24 * 18 + LEFT + 2;
+
+/**
+ * The table at the width it has, or, on a phone, at MIN_W in a frame that scrolls sideways: at
+ * 358 px the cells were 19 px and the symbols 8 px.
+ */
+function WideTable({
+  families,
+  children,
+}: {
+  families?: boolean;
+  children: (w: number) => ReactNode;
+}) {
+  // Pre-rendered web pages start at a phone's width, as Canvas does.
+  const [avail, setAvail] = useState(Platform.OS === 'web' ? 358 : 0);
+  const w = Math.max(avail, MIN_W);
+  return (
+    <View
+      style={{ width: '100%', alignItems: 'center' }}
+      onLayout={(e) => setAvail(Math.min(Math.floor(e.nativeEvent.layout.width), chart.maxWidth))}
+    >
+      {avail <= 0 ? null : avail >= MIN_W ? (
+        <View style={{ width: w, height: tableSize(w, families).h }}>{children(w)}</View>
+      ) : (
+        <ScrollView horizontal style={{ width: avail }} contentContainerStyle={{ width: w }}>
+          <View style={{ width: w, height: tableSize(w, families).h }}>{children(w)}</View>
+        </ScrollView>
+      )}
+    </View>
+  );
 }
 
 /** Where a table cell sits (row 7 is the gap before the two rows under the table). */
@@ -345,8 +379,8 @@ export function PeriodicTable({ spec, calc }: { spec: Spec; calc: Calculator }) 
     typeof id === 'string' ? rep.named(id) : `${what} ${id}`;
   return (
     <View>
-      <Canvas aspect={(w) => tableSize(w, spec.families).h / w}>
-        {({ w }) => (
+      <WideTable families={spec.families}>
+        {(w) => (
           <TableArt
             w={w}
             lit={z}
@@ -357,7 +391,7 @@ export function PeriodicTable({ spec, calc }: { spec: Spec; calc: Calculator }) 
             onTap={tap}
           />
         )}
-      </Canvas>
+      </WideTable>
       <Caption>
         {[
           card

@@ -104,6 +104,8 @@ export function ChemPhase({ spec, calc }: { spec: Spec; calc: Calculator }) {
             fontSize={chart.label}
             fontWeight="700"
             fill={lit}
+            // On a band of the background, so the dashed curves don't run through it.
+            halo
           >
             {text}
           </ChartText>
@@ -189,8 +191,18 @@ export function ChemPhase({ spec, calc }: { spec: Spec; calc: Calculator }) {
         </G>
         <Circle cx={xA(0)} cy={y1} r={3.5} fill={lineColor} />
         <Circle cx={xB(100)} cy={y1} r={3.5} fill={lineColor} />
-        {bracket(xA(0), xA(tf), `ΔTf = ${dropText === undefined ? '?' : fmt(dropText)}`, fKnown)}
-        {bracket(xB(100), xB(tb), `ΔTb = ${riseText === undefined ? '?' : fmt(riseText)}`, bKnown)}
+        {bracket(
+          xA(0),
+          xA(tf),
+          `ΔTf = ${dropText === undefined ? '?' : `${fmt(dropText)} °C`}`,
+          fKnown,
+        )}
+        {bracket(
+          xB(100),
+          xB(tb),
+          `ΔTb = ${riseText === undefined ? '?' : `${fmt(riseText)} °C`}`,
+          bKnown,
+        )}
         {/* The axes, the temperature axis broken between its two parts. */}
         <Line x1={pl} y1={pt} x2={pl} y2={pb} stroke={c.chartInk} strokeWidth={1.2} />
         <Line x1={pl} y1={pb} x2={aEnd} y2={pb} stroke={c.chartInk} strokeWidth={1.2} />
