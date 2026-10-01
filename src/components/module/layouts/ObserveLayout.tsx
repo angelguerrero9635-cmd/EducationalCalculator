@@ -472,7 +472,6 @@ const styles = StyleSheet.create({
   keyItem: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
   swatch: { width: 14, height: 14, borderRadius: 3, borderWidth: 1 },
   keyText: { fontSize: font.caption + 1 },
-  // The table's row names: one size on every page, left-aligned.
   // Reference lines: a scale of 40 px at the left, the dashes across the bars.
   guided: { paddingLeft: 40 },
   guide: { position: 'absolute', left: 36, right: 0, borderTopWidth: 1, borderStyle: 'dashed' },
