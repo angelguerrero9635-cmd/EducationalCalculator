@@ -251,3 +251,10 @@ Gallery demos built from these pages that no longer pass (the lead's to retire):
 - Left for the shared fixer (component only): the AlgebraTiles mats, `SUPS` letters and the
   "$900.41" money label (~percent-growth), the test-point tag over the corner label
   (inequality-systems, ~modeling's line labels too), the outlier under the max handle.
+
+### Second page-review fixes (`.review/hs-page2-m/page-report2-math.md`)
+
+- Each handle on a worked-out value names the typed value it drives (`drives`):
+  linear-inequalities k → d; ~compound L → l, U → r; ~or L → c, U → f;
+  ~whole-number-answers n → B; absolute-value, ~inequality, ~inequality-beyond h → b, d → c.
+  These handles were dead and froze the page (see ENGINE_LOG, "drag rule").

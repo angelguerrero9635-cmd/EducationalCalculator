@@ -5,6 +5,29 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grades 9–12 second page review: the drag rule
+
+- **A handle on a worked-out value froze the page and did nothing** (12 handles on m.9:
+  linear-inequalities k, ~compound and ~or L and U, ~whole-number-answers n, the three
+  absolute-value pages' h and d; 15–30 s per move event). `set` judged a handle "stuck" by
+  giving it its own current value, which always fits, so `driveTyped` never ran and the
+  400 × 2 step search tried about 800 solves per move; each try put the handle's value on top
+  of the values it comes from, and on that overdetermined input the solver can take seconds.
+  → **The drag rule** (`setInput` in `engine/state.ts`, which `useCalculator.set` now calls):
+  a handle whose value is worked out (not among the typed values) never tries its own value
+  and never steps; it goes straight to `driveTyped`, which moves one typed value, holds the
+  rest and keeps every worked-out value the handle pinned (dragging d leaves h). A page names
+  that typed value per handle with `drives` (`{ h: 'b', d: 'c' }`); without it the typed
+  values are tried newest first. `driveTyped` tries secant steps first (on the typed value's
+  own step: a whole-number l is tried at −4, never −4.95) and the slower solve with the value
+  freed second. A typed handle's step search looks only 25 steps out when nothing of its own
+  was refused (only a typed value would move). `drag.test.ts` checks every one of the 12
+  handles moves only its typed value in fewer than 10 solves (2 today). In the browser a move
+  event now takes 40–90 ms on absolute-value h and d, whole-number-answers n and
+  linear-inequalities k (was 15–31 s, and k hung), and 0.4–0.65 s on ~or.
+- Still slow: one solve on linear-inequalities~or takes about 0.4 s under Jest even with
+  nothing to clear (its test rule); worth a look in the solver.
+
 ## Grades 9–12 page review (shared fixes)
 
 ### Page-review fixes

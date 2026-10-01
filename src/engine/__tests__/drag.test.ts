@@ -1,5 +1,6 @@
 import { getModule } from '@/data/modules';
-import { driveTyped, initialState, movedGivens, setValues } from '../state';
+import * as solver from '../solve';
+import { driveTyped, initialState, movedGivens, setInput, setValues } from '../state';
 import { makeUnitContext } from '../unitContext';
 
 /** The example's state, as a page opens. */
@@ -36,6 +37,72 @@ describe('a handle on a worked-out value moves the typed value behind it', () =>
     const next = driveTyped(system, state, { h: 3, k: -2, r: 6 }, 'r', 6)!;
     expect(next.result.values.F).toBeCloseTo(9 + 4 - 36);
     expect([next.result.values.D, next.result.values.E]).toEqual([-6, 4]);
+  });
+});
+
+describe('a handle on a worked-out value moves its typed value at once', () => {
+  /** One drag move: the handle's new value, with the values it pins. */
+  function drag(id: string, handle: string, to: number, pin: string[]) {
+    const { m, system, state } = opened(id);
+    const updates = {
+      ...Object.fromEntries(pin.map((p) => [p, state.result.values[p]])),
+      [handle]: to,
+    };
+    const calls = jest.spyOn(solver, 'solve');
+    const begun = Date.now();
+    const next = setInput(system, state, updates, { id: handle, step: 0.1 }, m.drives);
+    const took = Date.now() - begun;
+    const solves = calls.mock.calls.length;
+    calls.mockRestore();
+    return { state, next, took, solves };
+  }
+  it('the center h of |2x − 3| = 7 moves b; a, c and the distance stay', () => {
+    const { state, next, took, solves } = drag('m.9.absolute-value', 'h', 2.5, ['d']);
+    expect(next.result.values.h).toBeCloseTo(2.5);
+    expect(next.result.values.b).toBe(-5);
+    expect([next.result.values.a, next.result.values.c]).toEqual([2, 7]);
+    expect(next.result.values.d).toBe(state.result.values.d);
+    expect(solves).toBeLessThan(10);
+    expect(took).toBeLessThan(5000);
+  });
+  it('the distance d moves c, not a (the center stays)', () => {
+    const { next, solves } = drag('m.9.absolute-value', 'd', 4.5, ['h']);
+    expect(next.result.values.c).toBe(9);
+    expect([next.result.values.a, next.result.values.b, next.result.values.h]).toEqual([
+      2, -3, 1.5,
+    ]);
+    expect(solves).toBeLessThan(10);
+  });
+  it('the bound k of 3x − 4 > 5x + 6 moves d', () => {
+    const { next, took, solves } = drag('m.9.linear-inequalities', 'k', -7, []);
+    expect(next.result.values.k).toBeCloseTo(-7);
+    expect(next.result.values.d).toBe(10);
+    expect(solves).toBeLessThan(10);
+    expect(took).toBeLessThan(5000);
+  });
+  it.each([
+    ['m.9.linear-inequalities~compound', 'L', 'U', 'l'],
+    ['m.9.linear-inequalities~compound', 'U', 'L', 'r'],
+    ['m.9.linear-inequalities~or', 'L', 'U', 'c'],
+    ['m.9.linear-inequalities~or', 'U', 'L', 'f'],
+    ['m.9.linear-inequalities~whole-number-answers', 'n', '', 'B'],
+    ['m.9.absolute-value~inequality', 'h', 'd', 'b'],
+    ['m.9.absolute-value~inequality', 'd', 'h', 'c'],
+    ['m.9.absolute-value~inequality-beyond', 'h', 'd', 'b'],
+    ['m.9.absolute-value~inequality-beyond', 'd', 'h', 'c'],
+  ])('%s: %s moves only %4$s', (id, handle, pin, typed) => {
+    const { state, next, solves } = drag(
+      id,
+      handle,
+      opened(id).state.result.values[handle]! + 1,
+      pin ? [pin] : [],
+    );
+    expect(next.result.values[handle]).toBeCloseTo(state.result.values[handle]! + 1);
+    const moved = state.result.given
+      .filter((g) => next.result.values[g.id] !== g.value)
+      .map((g) => g.id);
+    expect(moved).toEqual([typed]);
+    expect(solves).toBeLessThan(10);
   });
 });
 

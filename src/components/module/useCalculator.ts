@@ -4,9 +4,9 @@ import type { ModuleDef } from '@/data/modules';
 import type { SolveResult } from '@/engine/solve';
 import {
   changeUnits,
-  driveTyped,
   initialState,
-  movedGivens,
+  misfits,
+  setInput,
   setValues,
   typeValue,
   type CalcState,
@@ -63,11 +63,6 @@ export interface Calculator {
   setUnits: (choice: UnitChoice) => void;
 }
 
-/** True when an update's own values didn't all fit: the newest rejected, or one cleared. */
-const misfits = (c: CalcState, ids: string[]) =>
-  (!!c.result.rejected && ids.includes(c.result.rejected.id)) ||
-  c.result.cleared.some((id) => ids.includes(id));
-
 /**
  * The example's opening inputs. Whole-number lesson values (e.g. Grade 3 side lengths) keep
  * their numbers in any unit (4 cm or 4 in); physical quantities are converted.
@@ -112,75 +107,7 @@ export function useCalculator(module: ModuleDef): Calculator {
     ) =>
       setState((s) => {
         const system = makeUnitContext(module, s.choice).system;
-        const ids = Object.keys(updates);
-        // A slider or a drag sends a value with the others it holds still. If that doesn't
-        // fit (10 − 30 left; a product no top and bottom can make), the value is not
-        // taken and nothing goes blank.
-        const slide = options?.slide;
-        // A drag or a slider also keeps every typed value as it is (see `movedGivens`).
-        const misfit = (c: CalcState) =>
-          misfits(c, ids) || (!!slide && movedGivens(s.calc, c, ids).length > 0);
-        let next = setValues(system, s.calc, updates);
-        const target = slide ? updates[slide.id] : undefined;
-        const from = slide ? s.calc.result.values[slide.id] : undefined;
-        // When even the value it starts from changes a typed one (a handle on a worked-out
-        // value), no value fits: skip the search.
-        const stuck =
-          !!slide &&
-          from !== undefined &&
-          misfit(setValues(system, s.calc, { ...updates, [slide.id]: from }));
-        if (
-          misfit(next) &&
-          !stuck &&
-          slide &&
-          target !== undefined &&
-          from !== undefined &&
-          slide.step > 0
-        ) {
-          // The nearest value that fits, one step out at a time on both sides of the
-          // target (the side toward the old value first), within the variable's range: a
-          // count of parts lands on the next divisor, a product on the next product.
-          const v = system.variables.find((x) => x.id === slide.id);
-          const inRange = (x: number) =>
-            (v?.min === undefined || x >= v.min - 1e-9) &&
-            (v?.max === undefined || x <= v.max + 1e-9);
-          const first = target > from ? -1 : 1;
-          for (let k = 1; k <= 400; k++) {
-            for (const dir of [first, -first]) {
-              const x = target + dir * k * slide.step;
-              if (!inRange(x)) continue;
-              const trial = setValues(system, s.calc, { ...updates, [slide.id]: x });
-              if (!misfit(trial)) return { ...s, calc: trial };
-            }
-            if (!inRange(target - k * slide.step) && !inRange(target + k * slide.step)) break;
-          }
-        }
-        // A handle on a worked-out value moves the typed value behind it instead.
-        if (misfit(next) && stuck && slide && target !== undefined) {
-          const driven = driveTyped(system, s.calc, updates, slide.id, target);
-          if (driven) return { ...s, calc: driven };
-        }
-        if (misfit(next)) {
-          const own = misfits(next, ids);
-          const lost = own
-            ? next.result.cleared.filter((id) => ids.includes(id))
-            : movedGivens(s.calc, next, ids);
-          const names = lost.map(
-            (id) => system.variables.find((v) => v.id === id)?.name.toLowerCase() ?? id,
-          );
-          const reason = own
-            ? (next.result.rejected?.reason ?? `Doesn’t fit with ${names.join(' and ')} as it is`)
-            : `Stops here: going on would change your ${names.join(' and ')}`;
-          next = {
-            ...s.calc,
-            // A drag marks only the value it moves: the ones it held still keep their numbers.
-            errors: {
-              ...s.calc.errors,
-              ...Object.fromEntries((slide ? [slide.id] : ids).map((id) => [id, reason])),
-            },
-          };
-        }
-        return { ...s, calc: next };
+        return { ...s, calc: setInput(system, s.calc, updates, options?.slide, module.drives) };
       }),
     [module],
   );

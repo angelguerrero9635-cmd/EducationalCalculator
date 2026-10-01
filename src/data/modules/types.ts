@@ -1697,6 +1697,12 @@ export interface ModuleDef {
    */
   clearTo?: Values;
   /**
+   * A handle on a worked-out value moves one typed value (`{ h: 'b', d: 'c' }`: the center of
+   * |ax + b| = c moves b, its distance moves c). Without it the newest typed value that can
+   * take the handle there is moved.
+   */
+  drives?: Record<string, string>;
+  /**
    * Values the picture doesn't draw, labeled under it ("How much heavier: d = 3 cubes"), so
    * every value in the number sentences can be found in the picture.
    */
