@@ -213,6 +213,42 @@ const leftTail = (
     ],
   });
 
+/** Hₐ's side as the sign box codes it: 1 for <, 3 for >, 6 for ≠ (the picture's tail). */
+const tailVar = (what: string, of: string) =>
+  V('h', 'Hₐ', `Hₐ: ${what} < ${of} (1), > ${of} (3) or ≠ ${of} (6)`, {
+    integer: true,
+    min: 1,
+    max: 6,
+    allowed: [1, 3, 6],
+  });
+/** The z tail on Hₐ's side: left of z (1), right of z (3), or both past |z| (6). */
+const zTail = (v: Values, z: string, h: string) =>
+  v[h] === 1 ? Phi(v[z]!) : v[h] === 3 ? 1 - Phi(v[z]!) : 2 * (1 - Phi(Math.abs(v[z]!)));
+/** P from z on Hₐ's side, with the decision after it. */
+const zSided = (P: string, z: string, h: string) =>
+  decided(
+    withCheck(
+      derive(
+        `${P} = the z tail on the side of Hₐ`,
+        `{${P}} = the tail past {${z}} on {${h}}’s side`,
+        P,
+        [z, h],
+        (v) => ([1, 3, 6].includes(v[h]!) ? zTail(v, z, h) : undefined),
+        (v: Values) =>
+          v[h] === 1 ? `Φ({${z}})` : v[h] === 3 ? `1 − Φ({${z}})` : `2 × (1 − Φ(|{${z}}|))`,
+        'Hₐ < takes the area left of z; Hₐ > the area right of z; Hₐ ≠ both tails past |z|.',
+      ),
+      (v) => {
+        const [P0, z0] = [shown(v[P]!), shown(v[z]!)];
+        return v[h] === 1
+          ? `${P0} = Φ(${z0})`
+          : v[h] === 3
+            ? `${P0} = 1 − Φ(${z0})`
+            : `${P0} = 2 × (1 − Φ(|${z0}|))`;
+      },
+    ),
+  );
+
 /** P = 1 − Φ(z): the tail right of z. */
 const rightTail = (P: string, z: string, how: string) =>
   rel(`${P} = 1 − Φ(${z})`, `{${P}} = 1 − Φ({${z}})`, [P, z], (v) => v[P]! - (1 - Phi(v[z]!)), {
@@ -430,12 +466,13 @@ const MATH_12_STATS: ModuleDef[] = [
   {
     id: 'm.12.hypothesis-testing',
     assumptions: [
-      'H₀: p = p₀ and Hₐ: p ≠ p₀, a two-sided test (a one-sided Hₐ is its own page).',
+      'H₀: p = p₀; Hₐ says p < p₀, p > p₀ or p ≠ p₀ (typed as 1, 3 or 6).',
       'The sample is random, with np₀ ≥ 10 and n(1 − p₀) ≥ 10, so p̂ is close to normal.',
       'Reject H₀ when the p-value is below α; “fail to reject” never proves H₀ true.',
     ],
     variables: [
       V('p0', 'p₀', 'Proportion if H₀ is true', { min: 0.01, max: 0.99, step: 0.01 }),
+      tailVar('p', 'p₀'),
       V('n', 'n', 'Sample size', { integer: true, min: 1, max: 100000 }),
       V('k', 'k', 'Successes in the sample', { integer: true, min: 0, max: 100000 }),
       prob('p', 'p̂', 'Sample proportion', { derived: true }),
@@ -446,7 +483,7 @@ const MATH_12_STATS: ModuleDef[] = [
         derived: true,
       }),
       zVar(),
-      prob('P', 'P', 'p-value'),
+      prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
     ...rels(
@@ -471,11 +508,12 @@ const MATH_12_STATS: ModuleDef[] = [
         },
       ),
       zScore('z', 'p', 'p0', 'E'),
-      decided(twoTail('P', 'z')),
+      zSided('P', 'z', 'h'),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
       p0: 0.5,
+      h: 6,
       n: 100,
       k: 60,
       p: 0.6,
@@ -484,46 +522,47 @@ const MATH_12_STATS: ModuleDef[] = [
       P: 2 * (1 - Phi(2)),
       a: 0.05,
     },
-    startWith: ['p0', 'n', 'k', 'a'],
+    startWith: ['p0', 'h', 'n', 'k', 'a'],
     representation: {
       kind: 'normalCurve',
       mean: 'p0',
       sd: 'E',
       axis: 'Sample proportion p̂ if H₀ is true',
-      test: { stat: 'z', alpha: 'a', tail: 'two', p: 'P' },
+      test: { stat: 'z', alpha: 'a', tail: { sign: 'h' }, p: 'P' },
       fixed: true,
     },
   },
   {
     id: 'm.12.hypothesis-testing~mean',
-    title: 'One-mean z-test (left-tailed)',
-    use: 'Use this for “Is the mean less than μ₀?” with σ known: a left-tailed z-test.',
+    title: 'One-mean z-test',
+    use: 'Use this for “Is the mean less than μ₀?” (or more than, or different from) with σ known.',
     assumptions: [
-      'H₀: μ = μ₀ and Hₐ: μ < μ₀, so only a low sample mean counts against H₀.',
+      'H₀: μ = μ₀; Hₐ says μ < μ₀, μ > μ₀ or μ ≠ μ₀ (typed as 1, 3 or 6).',
       'The sample is random, σ is known, and x̄ is close to normal (a normal population or n ≥ 30).',
       'Reject H₀ when the p-value is below α.',
     ],
     variables: [
       V('m', 'μ₀', 'Mean if H₀ is true', { unit: 'g', min: 0.1, max: 100000, step: 0.5 }),
+      tailVar('μ', 'μ₀'),
       V('s', 'σ', 'Standard deviation', { unit: 'g', min: 0.01, max: 10000, step: 0.1 }),
       V('n', 'n', 'Sample size', { integer: true, min: 2, max: 100000 }),
       V('x', 'x̄', 'Sample mean', { unit: 'g', min: 0.1, max: 100000, step: 0.1 }),
       V('E', 'SE', 'Standard error', { unit: 'g', min: 0.0001, max: 10000, step: 0.01 }),
       zVar(),
-      prob('P', 'P', 'p-value'),
+      prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
-    ...rels(seMean('E', 's', 'n'), zScore('z', 'x', 'm', 'E'), decided(leftTail('P', 'z'))),
+    ...rels(seMean('E', 's', 'n'), zScore('z', 'x', 'm', 'E'), zSided('P', 'z', 'h')),
     standalone: { vars: ['a'], why: ALPHA_WHY },
-    example: { m: 500, s: 12, n: 36, x: 496, E: 2, z: -2, P: Phi(-2), a: 0.05 },
-    startWith: ['m', 's', 'n', 'x', 'a'],
+    example: { m: 500, h: 1, s: 12, n: 36, x: 496, E: 2, z: -2, P: Phi(-2), a: 0.05 },
+    startWith: ['m', 'h', 's', 'n', 'x', 'a'],
     unitSystems: ['metric'],
     representation: {
       kind: 'normalCurve',
       mean: 'm',
       sd: 'E',
       axis: 'Sample mean x̄ (g) if H₀ is true',
-      test: { stat: 'z', alpha: 'a', tail: 'left', p: 'P' },
+      test: { stat: 'z', alpha: 'a', tail: { sign: 'h' }, p: 'P' },
       fixed: true,
     },
   },
@@ -603,7 +642,8 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 'm',
       sd: 'E',
       axis: 'Sample mean x̄ (g) if H₀ is true',
-      mark: { x: 'x' },
+      t: { df: 'df' },
+      test: { stat: 't', alpha: 'a', tail: 'two', p: 'P' },
       fixed: true,
     },
   },
@@ -664,7 +704,8 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 0,
       sd: 'E',
       axis: 'Mean difference d̄ if H₀ is true',
-      mark: { x: 'x' },
+      t: { df: 'df' },
+      test: { stat: 't', alpha: 'a', tail: 'two', p: 'P' },
       fixed: true,
     },
   },
@@ -880,7 +921,8 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 0,
       sd: 'E',
       axis: 'Difference x̄₁ − x̄₂ (cm) if H₀ is true',
-      mark: { x: 'd' },
+      t: { df: 'df' },
+      test: { stat: 't', alpha: 'a', tail: 'two', p: 'P' },
       fixed: true,
     },
   },
