@@ -5971,44 +5971,6 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
 const coef = (id: string, symbol: string, name: string, range = 1000, extra = {}) =>
   V(id, symbol, name, { min: -range, max: range, step: 0.01, ...extra });
 
-/** The top's zero z = −b ÷ a, worked out only to draw the graph. */
-const topZero = hide(
-  derive(
-    'z = −b ÷ a',
-    '{z} = −{b} ÷ {a}',
-    'z',
-    ['b', 'a'],
-    (v) => div(-v.b!, v.a!),
-    '−{b} ÷ {a}',
-    'Where the top is 0, to draw the graph.',
-  ),
-);
-const zeroVar = V('z', 'z', 'Zero of the top', {
-  min: -1e9,
-  max: 1e9,
-  step: 0.0001,
-  derived: true,
-  hidden: true,
-});
-/** The graph's scale: the top's x term, or the number alone when the top has none. */
-const leadVar = V('L', 'L', 'Leading number of the top', {
-  min: -1000,
-  max: 1000,
-  step: 0.01,
-  derived: true,
-  hidden: true,
-});
-const topLead = hide(
-  derive(
-    'L = a, or b when a = 0',
-    '{L} = {a} or {b}',
-    'L',
-    ['a', 'b'],
-    (v) => (v.a !== 0 ? v.a! : v.b!),
-    '{a}',
-    'The top’s leading number, to draw the graph.',
-  ),
-);
 /** The top ax + b is not 0 (then there is nothing to split). */
 const topNotZero = limit(
   'top ≠ 0',
@@ -6038,8 +6000,6 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       coef('q', 'q', 'Zero of the second factor', 100),
       coef('A', 'A', 'Top of the first fraction', 1000000, { fraction: 200 }),
       coef('B', 'B', 'Top of the second fraction', 1000000, { fraction: 200 }),
-      zeroVar,
-      leadVar,
     ],
     ...rels(
       rel(
@@ -6086,16 +6046,13 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         'p = q is a repeated factor, (x − p)²: it needs A ÷ (x − p) + B ÷ (x − p)², the repeated-factor page.',
       ),
       topNotZero,
-      topZero,
-      topLead,
     ),
-    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3, z: -0.2, L: 5 },
+    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3 },
     startWith: ['a', 'b', 'p', 'q'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'L',
-      zeros: ['z'],
+      top: ['a', 'b'],
       poles: ['p', 'q'],
       marks: ['asymptotes'],
       fixed: true,
@@ -6116,8 +6073,6 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       coef('p', 'p', 'Zero of the factor', 100),
       coef('A', 'A', 'Top over (x − p)'),
       coef('B', 'B', 'Top over (x − p)²', 200000),
-      zeroVar,
-      leadVar,
     ],
     ...rels(
       rel('A = a', '{A} = {a}', ['A', 'a'], (v) => v.A! - v.a!, {
@@ -6140,16 +6095,13 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         },
       ),
       topNotZero,
-      topZero,
-      topLead,
     ),
-    example: { a: 3, b: -1, p: 2, A: 3, B: 5, z: 1 / 3, L: 3 },
+    example: { a: 3, b: -1, p: 2, A: 3, B: 5 },
     startWith: ['a', 'b', 'p'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'L',
-      zeros: ['z'],
+      top: ['a', 'b'],
       poles: ['p', 'p'],
       marks: ['asymptotes'],
       fixed: true,
@@ -6270,11 +6222,13 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
     example: { a: 3, b: -2, c: 3, p: 1, j: 0, k: 1, A: 2, B: 1, C: -1, x: 2, y: 11 / 5 },
     startWith: ['a', 'b', 'c', 'p', 'j', 'k', 'x'],
     representation: {
-      kind: 'table',
-      sweep: 'x',
-      output: 'y',
-      params: ['a', 'b', 'c', 'p', 'j', 'k'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2, 3, 4].filter((x) => x !== v.p).slice(0, 5),
+      kind: 'functionGraph',
+      family: 'rational',
+      top: ['a', 'b', 'c'],
+      poles: ['p'],
+      quadratics: [{ j: 'j', k: 'k' }],
+      at: { x: 'x', y: 'y' },
+      marks: ['asymptotes'],
     },
   },
 ];
