@@ -60,14 +60,6 @@ const product = (a: string, b: string, c: string, how: [string, string, string])
     [c]: [(v) => div(v[a]!, v[b]!), `{${a}} ÷ {${b}}`, how[2]],
   });
 
-/** a = b ÷ c, each way round. */
-const quotient = (a: string, b: string, c: string, how: [string, string, string]) =>
-  rule(`${a} = ${b} ÷ ${c}`, `{${a}} = {${b}} ÷ {${c}}`, (v) => v[a]! * v[c]! - v[b]!, {
-    [a]: [(v) => div(v[b]!, v[c]!), `{${b}} ÷ {${c}}`, how[0]],
-    [b]: [(v) => v[a]! * v[c]!, `{${a}} × {${c}}`, how[1]],
-    [c]: [(v) => div(v[b]!, v[a]!), `{${b}} ÷ {${a}}`, how[2]],
-  });
-
 // ── Part 1: two seismograms by magnitude (earthLayers mode `magnitude`) ──
 
 const magnitudeHalf: ModuleDef = {
@@ -162,46 +154,8 @@ const energyBalanceMars: ModuleDef = {
 
 // ── Part 6: a reserve drawn down (new kind `reserve`) ──
 
-const reserves: ModuleDef = {
-  id: 'g.s12-resource-management-reserves',
-  unitSystems: ['metric'],
-  title: 'How long a reserve lasts',
-  use: 'Use this for “400 billion barrels of oil are used at 12.5 billion a year. How many years will they last?”',
-  assumptions: [
-    'Use and reserves stay the same.',
-    'Reserves are the amount that can be recovered at today’s prices with today’s technology.',
-    'Nonrenewable resources form over millions of years, far slower than they are used.',
-  ],
-  variables: [
-    V('Q', 'Q', 'Reserve', { unit: 'billion barrels', min: 0.01, max: 100000, step: 0.01 }),
-    V('r', 'r', 'Use each year', {
-      unit: 'billion barrels a year',
-      min: 0.01,
-      max: 1000,
-      step: 0.01,
-    }),
-    V('y', 'y', 'Years it lasts', {
-      unit: 'years',
-      min: 0,
-      max: 10000000,
-      step: 0.01,
-      derived: true,
-    }),
-  ],
-  ...rels(
-    quotient('y', 'Q', 'r', [
-      'How many years of use the reserve holds.',
-      'The reserve: the use each year times the years.',
-      'The use each year: the reserve over the years.',
-    ]),
-  ),
-  example: { Q: 400, r: 12.5, y: 32 },
-  startWith: ['Q', 'r'],
-  representation: { kind: 'reserve', reserve: 'Q', rate: 'r', years: 'y' },
-};
-
 const reservesSmall: ModuleDef = {
-  ...reserves,
+  ...pageOf('s.12.resource-management~reserves'),
   id: 'g.s12-resource-management-reserves-field',
   title: 'A small oil field',
   use: 'Use this for a small reserve that lasts only a few years, part of a year at the end.',
@@ -209,7 +163,7 @@ const reservesSmall: ModuleDef = {
 };
 
 const reservesLong: ModuleDef = {
-  ...reserves,
+  ...pageOf('s.12.resource-management~reserves'),
   id: 'g.s12-resource-management-reserves-long',
   title: 'A reserve that lasts a century',
   use: 'Use this for a large reserve used slowly, over a hundred years.',
@@ -358,7 +312,6 @@ export const HS2F_GALLERY_MODULES: ModuleDef[] = [
   lifetimeDwarf,
   lifetimeMassive,
   potassium,
-  reserves,
   reservesSmall,
   reservesLong,
   energyBalanceIce,

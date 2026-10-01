@@ -1378,6 +1378,44 @@ const energyMix: ModuleDef = {
   },
 };
 
+const reserves: ModuleDef = {
+  id: 's.12.resource-management~reserves',
+  title: 'How long a reserve lasts',
+  use: 'Use this for “400 billion barrels of oil are used at 12.5 billion a year. How many years will they last?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Use and reserves stay the same.',
+    'Reserves are the amount that can be recovered at today’s prices with today’s technology.',
+    'Nonrenewable resources form over millions of years, far slower than they are used.',
+  ],
+  variables: [
+    V('Q', 'Q', 'Reserve', { unit: 'billion barrels', min: 0.01, max: 100000, step: 0.01 }),
+    V('r', 'r', 'Use each year', {
+      unit: 'billion barrels a year',
+      min: 0.01,
+      max: 1000,
+      step: 0.01,
+    }),
+    V('y', 'y', 'Years it lasts', {
+      unit: 'years',
+      min: 0,
+      max: 10000000,
+      step: 0.01,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    quotient('y', 'Q', 'r', 'y = Q ÷ r', [
+      'How many years of use the reserve holds.',
+      'The reserve: the use each year times the years.',
+      'The use each year: the reserve over the years.',
+    ]),
+  ),
+  example: { Q: 400, r: 12.5, y: 32 },
+  startWith: ['Q', 'r'],
+  representation: { kind: 'reserve', reserve: 'Q', rate: 'r', years: 'y' },
+};
+
 // ── The solar system: formation, planets and small bodies ──
 
 const kepler: ModuleDef = {
@@ -2179,6 +2217,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   cloudBase,
   energyBalance,
   energyMix,
+  reserves,
   kepler,
   wien,
   doppler,

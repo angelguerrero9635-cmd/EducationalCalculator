@@ -154,6 +154,8 @@ describe('unit conversions (exact definitions)', () => {
       'C',
       'mm/yr',
       'm³/s',
+      'billion barrels',
+      'billion barrels a year',
     ];
     const unknown = new Set(
       MODULES.flatMap((m) =>
