@@ -269,3 +269,28 @@ From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.m
 - `~currents`: "California" just east of its cold arrow, toward the coast.
 - `~orbit`: a drawn radius for "a = 2 AU" on a circle; the cube root kept on one line.
 - `radiometric-dating`: ages 3.21 × 10⁹; "2.71 half-lives", (1/2)²·⁷¹ raised and 15.3% left.
+
+### Waiting pages built
+
+Every page the "Waiting" list named is built from its gallery demo, then retired from
+`galleryHs2f.ts` and `galleryHs3c.ts` and the tracker's gallery lists; the demos that show a page
+with other values (magnitude -half and -far, spreading -fast and -young, discharge -creek and
+-river, cloud-base -humid and -dry, energy-balance -ice and -mars, reserves -field and -long,
+lifetime -dwarf and -massive, parallax -near) now spread the built page (`pageOf`). The tracker
+names each page (H103, H110). Each passes `MODULE_IDS=<id> npx jest --maxWorkers=1
+src/data/modules`; one screenshot each at 390 px.
+
+| Page                                  | Picture                      | Changed from the demo                                   |
+| ------------------------------------- | ---------------------------- | ------------------------------------------------------- |
+| `s.12.earth-interior~magnitude`       | `earthLayers` `magnitude`    | none                                                    |
+| `s.12.earth-interior~spreading-rate`  | `oceanProfile` `stripes`     | US spelling (kilometer, millimeter)                     |
+| `s.12.surface-processes~discharge`    | `streamChannel`              | US spelling                                             |
+| `s.12.atmosphere-weather~cloud-base`  | `atmosphereLayers` `parcel`  | the T_d ≤ T check says why it refuses                   |
+| `s.12.climate-systems~energy-balance` | `atmosphereLayers` `balance` | the fourth root written ∜ (as `~habitable-zone`); "30%" |
+| `s.12.resource-management~reserves`   | `reserve`                    | none                                                    |
+| `s.12.starlight-spectra~parallax`     | `parallax`                   | none (the lesson review's N2)                           |
+| `s.12.starlight-spectra~lines`        | explore, `spectra`           | "matches a dark line" (the demo's "lines lines up")     |
+| `s.12.stellar-evolution~lifetime`     | `hrDiagram` `mass`           | the assumption writes ÷ M^2.5, as the step does         |
+
+New fixed unit labels: mm/yr, m³/s, billion barrels, billion barrels a year, ″, pc,
+light-years. No new step phrases.
