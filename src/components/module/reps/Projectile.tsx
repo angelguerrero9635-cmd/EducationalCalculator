@@ -205,11 +205,13 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                       stroke={c.chartMuted}
                       strokeDasharray={chart.dashFine}
                     />
-                    {/* H over the top of the arc, R at the landing: they no longer meet. */}
+                    {/* H over the top of the arc, right of the apex (the angle's handle near the
+                        top hid it centred), R at the landing: they no longer meet. */}
                     <SubLabel
-                      x={sx(pos(tTop).x)}
+                      x={sx(pos(tTop).x) + 14}
                       y={sy(p.H) - 9}
                       text={`H = ${withUnit(sig(p.H), lenU)}`}
+                      anchor="start"
                       w={w}
                     />
                   </G>
@@ -330,12 +332,13 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                       w={w}
                     />
                   ))}
-                {/* The axis's name under its numbers at the right end (at the left it hid 0). */}
+                {/* The axis's name on a row under its numbers, at the left end: at the right the
+                    landing's velocity arrow ran through it. */}
                 <SubLabel
-                  x={sx(W.x1)}
+                  x={sx(W.x0)}
                   y={ground + 48}
                   text={spec.parametric ? `x (${lenU})` : `distance (${lenU})`}
-                  anchor="end"
+                  anchor="start"
                   size={chart.label}
                   bold={false}
                   color={c.chartMuted}

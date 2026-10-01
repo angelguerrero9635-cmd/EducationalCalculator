@@ -471,8 +471,11 @@ function captionOf(
       const [p, v, t, m] = [num(b.p), num(b.v), num(b.t), num(n)];
       const pv =
         p !== undefined && v !== undefined ? formatNumber(Number((p * v).toFixed(4))) : '?';
+      // Two sentences: the constant with its unit, then the law with the numbers, led by a
+      // word so it reads as one line (one sentence mixing them was stacked at each "=").
       out.push(
-        `With R = ${formatNumber(r)}, PV = nRT: ${q(b.p)} × ${q(b.v)} = ${q(n)} × ${formatNumber(r)} × ${q(b.t)} = ${pv}.`,
+        `R = ${formatNumber(r)}${r === R_LATM ? ' L·atm/(mol·K)' : ''}.`,
+        `With PV = nRT: ${q(b.p)} × ${q(b.v)} = ${q(n)} × ${formatNumber(r)} × ${q(b.t)} = ${pv}.`,
       );
       if (m !== undefined && t !== undefined && per !== undefined) {
         const whole = Math.abs(m / per - Math.round(m / per)) < 1e-9;

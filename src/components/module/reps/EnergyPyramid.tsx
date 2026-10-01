@@ -126,8 +126,10 @@ export function EnergyPyramid({ spec, calc }: { spec: Spec; calc: Calculator }) 
                       <ChartText
                         x={nameW}
                         y={y + ROW / 2 + 4}
-                        fontSize={chart.small}
-                        fill={c.chartMuted}
+                        // The chart's label size at full ink: small grey names were faint in
+                        // dark mode.
+                        fontSize={chart.label}
+                        fill={c.chartInk}
                         textAnchor="end"
                       >
                         {names[i]}

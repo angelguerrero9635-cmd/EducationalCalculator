@@ -247,13 +247,15 @@ export function CurrentsFigure({ view }: { view: CurrentsScene['view'] }) {
             size={chart.label}
             anchor="start"
           />
+          {/* Just east of its cold arrow (the gyre's east side, 132–143° W), running to the
+              coast it flows along: west of the arrow it read as mid-Pacific. */}
           <HaloText
-            x={at([-126, 20])[0] + 360}
-            y={at([-126, 20])[1]}
+            x={at([-130, 30])[0] + 360}
+            y={at([-130, 30])[1]}
             text="California"
             c={c}
             size={chart.label}
-            anchor="end"
+            anchor="start"
           />
           <HaloText
             x={at([-80, -30])[0] + 360}

@@ -306,13 +306,17 @@ export function PhotonView({ p, calc }: { spec: Spec; p: PhotonEnergy; calc: Cal
                 <Path d={d} stroke={col} strokeWidth={3} fill="none" />
                 <Rect x={x0} y={sy} width={x1 - x0} height={22} rx={2} fill={url(ids.rainbow)} />
                 <Path d={`M ${mark} ${sy - 2} l -7 -12 h 14 Z`} fill={c.chartInk} />
-                <SubLabel
+                {/* On a halo of the page's own background (a chip was a near-black box in dark mode). */}
+                <ChartText
                   x={mark}
                   y={sy - 18}
-                  text={`${sig(ph.nm)} nm (${band})`}
-                  anchor={mark > w * 0.6 ? 'end' : mark < w * 0.4 ? 'start' : 'middle'}
-                  w={w}
-                />
+                  textAnchor={mark > w * 0.6 ? 'end' : mark < w * 0.4 ? 'start' : 'middle'}
+                  fontSize={chart.label}
+                  fontWeight="700"
+                  halo
+                >
+                  {`${sig(ph.nm)} nm (${band})`}
+                </ChartText>
                 {[400, 500, 600, 700].map((nm) => (
                   <ChartText
                     key={nm}

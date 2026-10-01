@@ -415,10 +415,11 @@ function Hanging({ spec, calc }: { spec: Hang; calc: Calculator }) {
                 >
                   {`x (${uX})`}
                 </ChartText>
+                {/* Inside the plot, in its empty top-left corner above the rising line. */}
                 <SubLabel
-                  x={gr.x0}
-                  y={h - 12}
-                  text={`k = ${text(spec.spring, k, 'N/m')}: the slope`}
+                  x={gr.x0 + 6}
+                  y={gr.y0 + 14}
+                  text={`slope k = ${text(spec.spring, k, 'N/m')}`}
                   anchor="start"
                   color={c.chartHighlight}
                   w={w}

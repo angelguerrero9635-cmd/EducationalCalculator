@@ -52,8 +52,10 @@ export function Membrane({ spec, calc }: { spec: MembraneSpec; calc: Calculator 
   // The ATP chip sits left of the pump's arrows, under the membrane.
   if (spec.transport === 'active') clear.push([ax - 200, 190, ax + 30, 222]);
   if (spec.counter) clear.push([ax + 10, 0, ax + 60, H]);
+  // The count beside its side's name ("Outside the cell … 20 Na⁺"): "o = 20 Na⁺" read as
+  // letters.
   const countText = (x: string | number, where: string) =>
-    typeof x === 'number' ? `${x} ${where}` : `${rep.label(x)} ${where}`;
+    typeof x === 'number' ? `${x} ${where}` : `${rep.value(x)} ${where}`;
 
   return (
     <>
@@ -397,12 +399,14 @@ function CounterArrow({
         strokeLinecap="round"
         fill="none"
       />
+      {/* At the arrow's tail, in the water beside it: on the membrane the heads hid it. */}
       <ChartText
         x={x + 8}
-        y={(a + b) / 2 + 4}
+        y={into ? a + 10 : a - 2}
         fontSize={chart.label}
         fontWeight="700"
         fill={c.chartInk}
+        halo
       >
         {`${name} ${into ? 'in' : 'out'}`}
       </ChartText>
