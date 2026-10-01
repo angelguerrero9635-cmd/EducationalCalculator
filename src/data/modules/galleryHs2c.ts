@@ -69,73 +69,6 @@ const q = (
 /** Division that gives undefined for a zero divisor (the solver then skips it). */
 const div = (a: number, b: number) => (Math.abs(b) < 1e-12 ? undefined : a / b);
 
-// ─── H102.2 impulse: the force–time rectangle, and a slower stop ─────────────
-
-const impulse: ModuleDef = (() => {
-  const [m, u, v, t] = [0.2, 25, -15, 0.05];
-  const P = m * (v - u);
-  return {
-    id: 'g.s11-momentum-impulse',
-    title: 'Impulse: force × time = change in momentum',
-    use: 'Use this for “A 0.2 kg ball at 25 m/s is stopped by a glove in 0.05 s. What average force acts on it? Why does pulling the glove back help?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      '+ is the way the object first moves; a force against it is negative.',
-      'F is the average force over the time Δt.',
-      'The dashed rectangle is the same change in momentum spread over 0.2 s.',
-    ],
-    variables: [
-      q('m', 'm', 'Mass', 'kg', 0.001, 1e5, 0.001),
-      q('u', 'v₀', 'Velocity before', 'm/s', -300, 300, 0.1),
-      q('v', 'v', 'Velocity after', 'm/s', -300, 300, 0.1),
-      q('P', 'Δp', 'Change in momentum', 'kg·m/s', -1e7, 1e7, 0.001),
-      q('t', 'Δt', 'Time of the push', 's', 0.0001, 100, 0.001),
-      q('F', 'F', 'Average force', 'N', -1e9, 1e9, 0.01),
-    ],
-    ...rules(
-      rule('Δp = m(v − v₀)', '{P} = {m} × ({v} − {u})', (x) => x.P! - x.m! * (x.v! - x.u!), {
-        P: [
-          (x) => x.m! * (x.v! - x.u!),
-          '{m} × ({v} − {u})',
-          'The momentum after less the momentum before.',
-        ],
-        m: [
-          (x) => div(x.P!, x.v! - x.u!),
-          '{P}/({v} − {u})',
-          'Divide Δp by the change in velocity.',
-        ],
-        v: [
-          (x) => div(x.P! + x.m! * x.u!, x.m!),
-          '{u} + {P}/{m}',
-          'Add Δp/m to the velocity before.',
-        ],
-        u: [
-          (x) => div(x.m! * x.v! - x.P!, x.m!),
-          '{v} − {P}/{m}',
-          'Take Δp/m from the velocity after.',
-        ],
-      }),
-      rule('F = Δp/Δt', '{F} = {P}/{t}', (x) => x.F! * x.t! - x.P!, {
-        F: [(x) => div(x.P!, x.t!), '{P}/{t}', 'The change in momentum per second.'],
-        P: [(x) => x.F! * x.t!, '{F} × {t}', 'The impulse: force × time.'],
-        t: [(x) => div(x.P!, x.F!), '{P}/{F}', 'How long the force must push for this Δp.'],
-      }),
-    ),
-    example: { m, u, v, P, t, F: P / t },
-    startWith: ['m', 'u', 'v', 't'],
-    representation: {
-      kind: 'impulse',
-      mass: 'm',
-      before: 'u',
-      after: 'v',
-      time: 't',
-      change: 'P',
-      force: 'F',
-      compare: 0.2,
-    },
-  };
-})();
-
 // ─── H102.3 circularMotion `satellite`: v = √(GM/r), T = 2πr/v ──────────────
 
 const GRAV = 6.674e-11;
@@ -704,7 +637,6 @@ const relativity: ModuleDef = (() => {
 })();
 
 export const HS2C_GALLERY_MODULES: ModuleDef[] = [
-  impulse,
   orbit,
   freeFall,
   work,
