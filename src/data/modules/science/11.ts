@@ -3501,6 +3501,44 @@ const thermoPages: ModuleDef[] = [
       pictureLabels: ['m', 'P', 'f', 'q', 'v', 'Q'],
     } satisfies ModuleDef;
   })(),
+  {
+    id: 's.11.thermodynamics~first-law',
+    title: 'The first law of thermodynamics',
+    use: 'Use this for “A gas takes in 500 J of heat and does 200 J of work pushing a piston out. How much does its internal energy change?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Energy is kept: the heat in goes to the gas’s internal energy or out as work. ΔU = Q − W.',
+      'Q is + for heat into the gas and − for heat out of it.',
+      'W is + when the gas does work by expanding and − when work is done on it (it is squeezed).',
+    ],
+    variables: [
+      q('Q', 'Q', 'Heat into the gas', 'J', -1e9, 1e9, 0.01),
+      q('W', 'W', 'Work done by the gas', 'J', -1e9, 1e9, 0.01),
+      q('U', 'ΔU', 'Change in internal energy', 'J', -1e9, 1e9, 0.01),
+    ],
+    ...rules(
+      rule('ΔU = Q − W', '{U} = {Q} − {W}', (x) => x.U! - (x.Q! - x.W!), {
+        U: [(x) => x.Q! - x.W!, '{Q} − {W}', 'The heat in less the work out.'],
+        Q: [
+          (x) => x.U! + x.W!,
+          '{U} + {W}',
+          'The heat must cover the rise in internal energy and the work.',
+        ],
+        W: [
+          (x) => x.Q! - x.U!,
+          '{Q} − {U}',
+          'What the heat did not keep in the gas went out as work.',
+        ],
+      }),
+    ),
+    example: { Q: 500, W: 200, U: 300 },
+    startWith: ['Q', 'W'],
+    representation: {
+      kind: 'gasPiston',
+      law: 'ideal',
+      energy: { heat: 'Q', work: 'W', change: 'U' },
+    },
+  },
   (() => {
     const [Q, W, H, L] = [2000, 500, 600, 300];
     const e = (100 * W) / Q;
