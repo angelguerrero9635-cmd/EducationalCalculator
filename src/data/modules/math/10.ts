@@ -2713,6 +2713,45 @@ const MODELING: ModuleDef[] = [
 
 // ─── m.10.circle-theorems ────────────────────────────────────────────────────
 
+/**
+ * x = (p ± q) ÷ 2, the sign from the + − box o (1 +, 2 −). 3 − 2o is 1 for + and −1 for −: a
+ * product, so the solver never reads the relation as a straight-line sum while o is still open.
+ */
+const arcSign = (v: Values) => 3 - 2 * v.o!;
+const arcOp = (v: Values) => (v.o === 2 ? '−' : '+');
+const arcAngleRule: Rule = {
+  relation: {
+    id: 'x = (p ± q)/2',
+    display: '{x} = ({p} + (3 − 2 × {o}) × {q}) ÷ 2',
+    vars: ['x', 'p', 'q', 'o'],
+    residual: (v) => 2 * v.x! - (v.p! + arcSign(v) * v.q!),
+    solve: {
+      x: (v) => (v.p! + arcSign(v) * v.q!) / 2,
+      p: (v) => 2 * v.x! - arcSign(v) * v.q!,
+      q: (v) => arcSign(v) * (2 * v.x! - v.p!),
+      // The + − box is typed, never worked out.
+      o: () => undefined,
+    },
+  },
+  steps: {
+    x: {
+      expr: (v: Values) => `({p} ${arcOp(v)} {q}) ÷ 2`,
+      how: (v: Values) =>
+        v.o === 2
+          ? 'Outside the circle: half the far arc minus the near arc.'
+          : 'Inside the circle: half the sum of the two arcs.',
+    },
+    p: {
+      expr: (v: Values) => (v.o === 2 ? '2 × {x} + {q}' : '2 × {x} − {q}'),
+      how: 'Double the angle, then undo the other arc.',
+    },
+    q: {
+      expr: (v: Values) => (v.o === 2 ? '{p} − 2 × {x}' : '2 × {x} − {p}'),
+      how: 'Double the angle, then undo the first arc.',
+    },
+  },
+};
+
 const CIRCLE_THEOREMS: ModuleDef[] = [
   page({
     id: 'm.10.circle-theorems',
@@ -2908,6 +2947,72 @@ const CIRCLE_THEOREMS: ModuleDef[] = [
     example: { t: 8, a: 4, b: 16 },
     startWith: ['a', 'b'],
     representation: { kind: 'circleTheorems', theorem: 'secantTangent', segments: ['t', 'a', 'b'] },
+  }),
+  page({
+    id: 'm.10.circle-theorems~cyclic-quadrilateral',
+    title: 'Opposite angles of an inscribed quadrilateral',
+    use: 'Use this for “ABCD is inscribed in a circle and m∠A = 84°. Find m∠C.”',
+    assumptions: [
+      'ABCD is inscribed: all four corners are on the circle.',
+      'Each angle is half the arc across from it; the arcs across from A and from C make the whole circle.',
+      'So opposite angles add to 180°: m∠A + m∠C = 180° and m∠B + m∠D = 180°.',
+    ],
+    variables: [deg('a', 'm∠A', 'm∠A'), deg('c', 'm∠C', 'm∠C')],
+    rules: [
+      rule(
+        'A + C = 180',
+        '{a} + {c} = 180',
+        {
+          c: [
+            (v) => 180 - v.a!,
+            '180 − {a}',
+            'Opposite angles of an inscribed quadrilateral add to 180°.',
+          ],
+          a: [
+            (v) => 180 - v.c!,
+            '180 − {c}',
+            'Opposite angles of an inscribed quadrilateral add to 180°.',
+          ],
+        },
+        (v) => v.a! + v.c! - 180,
+      ),
+    ],
+    example: { a: 84, c: 96 },
+    startWith: ['a'],
+    representation: {
+      kind: 'circleTheorems',
+      theorem: 'cyclic',
+      cyclic: { A: 'a', C: 'c' },
+    },
+  }),
+  page({
+    id: 'm.10.circle-theorems~chord-angle',
+    title: 'Angles from arcs',
+    use: 'Use this for “Two chords cross inside a circle, cutting off arcs of 70° and 110°. Find the angle.”',
+    assumptions: [
+      'Two chords crossing inside the circle (+): the angle is half the sum of its arc and its vertical angle’s arc.',
+      'Two secants meeting outside (−): the angle is half the far arc minus the near arc.',
+      'p is arc AC inside, or the far arc outside; q is the other arc.',
+    ],
+    variables: [
+      deg('p', 'p', 'First arc (far arc outside)', 0.1, 359.9),
+      deg('q', 'q', 'Second arc (near arc outside)', 0.1, 359.9),
+      num('o', 'o', 'Inside (1, +) or outside (2, −)', 1, 2, {
+        allowed: [1, 2],
+        integer: true,
+        step: 1,
+      }),
+      deg('x', 'x', 'The angle'),
+    ],
+    rules: [arcAngleRule],
+    example: { p: 70, q: 110, o: 1, x: 90 },
+    startWith: ['p', 'o', 'q'],
+    equation: '{x}° = ({p}° {o:op} {q}°) ÷ 2',
+    representation: {
+      kind: 'circleTheorems',
+      theorem: 'arcAngle',
+      arcAngle: { arcs: ['p', 'q'], angle: 'x', where: 'o' },
+    },
   }),
 ];
 
