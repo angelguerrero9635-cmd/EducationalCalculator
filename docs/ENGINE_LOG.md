@@ -39,6 +39,17 @@ per review; each line names the finding and what the engine now does about it.
   or a drag-turn as live and tries a longer drag before "nothing changed"; flags a move event
   over 500 ms (it would have caught the freeze); says "made typed m worked out" when only the
   status changed. review-shots no longer flags a haloed label against its own backing copy.
+- **Labels that knew only their own point.** Several pictures placed a tag beside its point
+  without the tags or numbers nearby: a test point's and the crossing's tags swapped sides
+  (~modeling), an angle's tag under a vector's name, a point's tag over a rim label or an
+  axis number, "d = 13" on O (a label's middle, not its box, was kept off point names), "c"
+  on B′. → Tags near another point go on the far side; vector names are placed after the
+  angle tags and try three spots along the arrow; ComplexPlane and ComplexPowers leave out
+  an axis number under a tag (`HsdGrid clear`), and arc tags keep off arrows and go above
+  the real axis; TriangleSolver measures a side's outward normal from its true middle.
+- Still open from the report: constructions' 80 px stage figures (and bisectors through the
+  arc crossings), the cone scenes' hyperbola arms and plane, the percent-growth start handle
+  over the "800" tick, the limits caption's final periods.
 - Still slow: one solve on linear-inequalities~or takes about 0.4 s under Jest even with
   nothing to clear (its test rule); worth a look in the solver.
 
