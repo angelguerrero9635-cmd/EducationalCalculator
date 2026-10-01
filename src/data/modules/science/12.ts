@@ -107,7 +107,7 @@ const mineralDensity: ModuleDef = {
     V('a', 'V₁', 'Water before', { unit: 'mL', min: 0, max: 90, step: 0.1 }),
     V('b', 'V₂', 'Water after', { unit: 'mL', min: 1, max: 100, step: 0.1 }),
     V('V', 'V', 'Volume', { unit: 'cm³', min: 0.1, max: 100, step: 0.1 }),
-    V('rho', 'ρ', 'Density', { unit: 'g/cm³', min: 1, max: 20, step: 0.01 }),
+    V('rho', 'ρ', 'Density', { unit: 'g/cm³', min: 1, max: 25, step: 0.01 }),
   ],
   ...rels(
     below('a', 'b', 'V₁ < V₂', 'the water before {a} is below the water after {b}'),
@@ -1249,7 +1249,7 @@ const doppler: ModuleDef = {
     'Pick the hydrogen line you measured: its lab wavelength is λ₀, and the other lines shift the same way.',
   ],
   variables: [
-    V('r', 'λ₀', 'Lab wavelength (Hα 656.3, Hβ 486.1, Hγ 434, Hδ 410.2)', {
+    V('r', 'λ₀', 'Lab wavelength (Hα 656.3, Hβ 486.1, Hγ 434.0, Hδ 410.2)', {
       unit: 'nm',
       min: 410.2,
       max: 656.3,
@@ -1392,7 +1392,7 @@ const hr: ModuleDef = {
       ],
       T: [
         (v) => (v.L! > 0 && v.R! > 0 ? SUN_K * (v.L! / v.R! ** 2) ** 0.25 : undefined),
-        '5,772 × ({L} ÷ {R}²)^(1/4)',
+        '5,772 × ∜({L} ÷ {R}²)',
         'The light for each unit of surface, then its fourth root.',
       ],
     }),
@@ -1833,12 +1833,12 @@ const habitable: ModuleDef = {
         {
           T: [
             (v) => habTemp(v.L!, v.a!),
-            '278 × {L}^(1/4) ÷ √{a}',
+            '278 × ∜{L} ÷ √{a}',
             'A planet at 1 AU from the Sun comes to 278 K; more light warms it, more distance cools it.',
           ],
           a: [
             (v) => (v.T! > 0 ? ((278 * v.L! ** 0.25) / v.T!) ** 2 : undefined),
-            '(278 × {L}^(1/4) ÷ {T})²',
+            '(278 × ∜{L} ÷ {T})²',
             'Undo the square root of the distance: square the ratio.',
           ],
           L: [

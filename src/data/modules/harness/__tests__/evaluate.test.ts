@@ -15,3 +15,8 @@ it('raises a fraction’s bottom before dividing', () => {
   expect(evaluate('3/4')).toBe(0.75);
   expect(evaluate('100 × e^(−0.5 × 6)')).toBeCloseTo(4.9787, 3);
 });
+
+it('reads a fourth root of a number or a bracket', () => {
+  expect(evaluate('278 × ∜0.25 ÷ √0.5')).toBeCloseTo(278, 9);
+  expect(evaluate('5772 × ∜(16 ÷ 4)')).toBeCloseTo(5772 * Math.SQRT2, 6);
+});
