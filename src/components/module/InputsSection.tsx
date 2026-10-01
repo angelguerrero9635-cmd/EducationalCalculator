@@ -6,6 +6,7 @@ import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
 import { gradeBand, isEarlyGrade, wordRule } from '@/data/modules';
 import type { ModuleDef } from '@/data/modules/types';
+import { choiceCode, choiceIndex } from '@/engine/choices';
 import { belowStep, formatNumber, parseCents, parseNumber } from '@/engine/format';
 import { outOfCount } from '@/engine/solve';
 import type { VariableDef } from '@/engine/types';
@@ -386,13 +387,14 @@ const CHOICE_WORDS: Record<string, string> = {
   '>': 'greater than',
   '≥': 'greater than or equal to',
   '=': 'equal to',
+  '≠': 'not equal to',
   '+': 'plus',
   '−': 'minus',
 };
 
 /**
- * A sign in the equation the student taps to change (< ≤ > ≥, or + −): the value is the sign's
- * place in `CHOICES` (1 is <), as the inequality pages store it. Outlined like a box, dashed
+ * A sign in the equation the student taps to change (< ≤ > ≥, + −, or Hₐ's < > ≠): the value
+ * is the sign's code (`choiceCode`: its place in `CHOICES`, 1 is <, or Hₐ's 1, 3, 6). Outlined like a box, dashed
  * when worked out; in a long equation as small as its boxes, the tap target still 44 px.
  */
 function ChoiceBox({
@@ -410,16 +412,17 @@ function ChoiceBox({
   const signs = CHOICES[choices];
   const value = calc.values[variable.id];
   const status = calc.status(variable.id);
-  const at = value === undefined ? undefined : Math.round(value) - 1;
-  const sign = at !== undefined && at >= 0 && at < signs.length ? signs[at] : undefined;
+  const at = choiceIndex(choices, value);
+  const sign = at === undefined ? undefined : signs[at];
   const error = calc.errors[variable.id];
-  const next = sign === undefined ? 1 : ((at! + 1) % signs.length) + 1;
+  const nextAt = at === undefined ? 0 : (at + 1) % signs.length;
+  const next = choiceCode(choices, nextAt);
   return (
     <Pressable
       testID={`input-${variable.id}`}
       accessibilityRole="button"
       accessibilityLabel={`${variable.name}: ${sign ? CHOICE_WORDS[sign] : 'not chosen'}`}
-      accessibilityHint={`Tap for ${CHOICE_WORDS[signs[next - 1]!]}`}
+      accessibilityHint={`Tap for ${CHOICE_WORDS[signs[nextAt]!]}`}
       disabled={variable.derived}
       onPress={() => calc.set({ [variable.id]: next })}
       style={compact ? styles.eqHit : undefined}

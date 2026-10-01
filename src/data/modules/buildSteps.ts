@@ -1,3 +1,4 @@
+import { CHOICE_BOX, choiceOf, choiceSign } from '@/engine/choices';
 import { dollarsOf, formatNumber, lowerFirst, renderTemplate, unitFor } from '@/engine/format';
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
@@ -280,6 +281,19 @@ export function buildSteps(
     Object.keys(result.values).map((id) => [id, workValue(id)]),
   );
 
+  /**
+   * A sign chosen in the equation row reads as the sign, never its code: "Hₐ: p ≠ p₀" (the
+   * row itself when the choice is its only box), else "s: >".
+   */
+  const choiceLabel = (id: string) => {
+    const choices = choiceOf(module.equation, id);
+    const sign = choices && choiceSign(choices, result.values[id]);
+    if (!sign) return undefined;
+    const line = module.equation!.split('\n').find((l) => l.includes(`{${id}:`))!;
+    if (!/\{(?!\w+:(?:sign|relation|op|alt)\})/.test(line))
+      return line.replace(CHOICE_BOX, (_, b: string) => (b === id ? sign : '?')).trim();
+    return `${byId.get(id)!.symbol}: ${sign}`;
+  };
   const quantity = (id: string): Quantity => {
     const v = byId.get(id)!;
     const known = result.values[id] !== undefined;
@@ -289,7 +303,7 @@ export function buildSteps(
       symbol: v.symbol,
       name: v.name,
       value,
-      label: quantityLabel(band, v.name, v.symbol, value),
+      label: choiceLabel(id) ?? quantityLabel(band, v.name, v.symbol, value),
       ask:
         band === 'standard' || band === 'middle'
           ? `${lowerFirst(v.name)} (${v.symbol})`
