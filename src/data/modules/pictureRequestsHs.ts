@@ -2059,6 +2059,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.11.thermodynamics~first-law',
         's.11.electrostatics~plates',
         's.11.modern-physics~photoelectric',
+        's.11.modern-physics~relativity',
       ],
       'P14: docs/plans/s.11.md needs 1–12.',
     ),
@@ -2067,7 +2068,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s11-kinematics-1d-free-fall-vertical',
       'g.s11-kinematics-1d-motion-diagrams',
       'g.s11-electrostatics-point-field',
-      'g.s11-modern-physics-relativity',
     ],
     notes: [
       'P14: docs/plans/s.11.md needs 1–12, drawn part by part.',
