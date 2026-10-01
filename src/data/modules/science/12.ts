@@ -1096,7 +1096,8 @@ const kepler: ModuleDef = {
   ],
   variables: [
     V('a', 'a', 'Semi-major axis', { unit: 'AU', min: 0.1, max: 100, step: 0.01 }),
-    V('e', 'e', 'Eccentricity', { min: 0, max: 0.95, step: 0.001 }),
+    // To 0.97: Halley's Comet (e = 0.967) fits.
+    V('e', 'e', 'Eccentricity', { min: 0, max: 0.97, step: 0.001 }),
     V('q', 'q', 'Perihelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
     V('Q', 'Q', 'Aphelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
     V('T', 'T', 'Period', { unit: 'years', min: 0.03, max: 1000, step: 0.01 }),
@@ -1624,15 +1625,6 @@ const stretch: ModuleDef = {
 const RE_PER_RSUN = 109;
 const depthOf = (r: number, R: number) => 100 * (r / (RE_PER_RSUN * R)) ** 2;
 
-/** Planets of the solar system by radius (Earth radii), for the transit table. */
-const TRANSIT_ROWS: [number, string][] = [
-  [0.53, 'Mars'],
-  [1, 'Earth'],
-  [3.88, 'Neptune'],
-  [9.45, 'Saturn'],
-  [11.21, 'Jupiter'],
-];
-
 const transit: ModuleDef = {
   id: 's.12.exoplanets',
   unitSystems: ['metric'],
@@ -1704,14 +1696,7 @@ const transit: ModuleDef = {
   ),
   example: { R: 1, r: 10.9, d: 1 },
   startWith: ['d', 'R'],
-  representation: {
-    kind: 'table',
-    sweep: 'r',
-    output: 'd',
-    params: ['R'],
-    rows: TRANSIT_ROWS.map(([r]) => r),
-    rowNames: TRANSIT_ROWS.map(([, name]) => name),
-  },
+  representation: { kind: 'transit', star: 'R', planet: 'r', depth: 'd' },
 };
 
 const exoOrbit: ModuleDef = {
@@ -1760,13 +1745,12 @@ const exoOrbit: ModuleDef = {
   example: { M: 0.5, P: 1461, T: 4, a: 2 },
   startWith: ['P', 'M'],
   representation: {
-    kind: 'table',
-    sweep: 'P',
-    output: 'a',
-    params: ['M'],
-    rows: [10, 100, 365.25, 1461, 3652.5],
+    kind: 'circularMotion',
+    mode: 'kepler',
+    semiMajor: 'a',
+    starMass: 'M',
+    period: 'T',
   },
-  pictureLabels: ['T'],
 };
 
 const habTemp = (L: number, a: number) => (278 * L ** 0.25) / Math.sqrt(a);
@@ -1869,13 +1853,13 @@ const habitable: ModuleDef = {
   example: { L: 0.25, d1: 0.475, d2: 0.685, a: 0.5, T: 278 },
   startWith: ['L', 'a'],
   representation: {
-    kind: 'table',
-    sweep: 'a',
-    output: 'T',
-    params: ['L'],
-    rows: [0.25, 0.5, 0.75, 1, 1.5, 2],
+    kind: 'habitableZone',
+    luminosity: 'L',
+    inner: 'd1',
+    outer: 'd2',
+    orbit: 'a',
+    temperature: 'T',
   },
-  pictureLabels: ['d1', 'd2'],
 };
 
 export const SCIENCE_12_MODULES: ModuleDef[] = [
