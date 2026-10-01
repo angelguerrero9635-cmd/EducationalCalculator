@@ -1925,7 +1925,7 @@ const BIOMES: LayoutDef[] = [
         return `About ${cm} cm a year: enough for grassland, but dry for most forests.`;
       if (dry > 0)
         return `About ${cm} cm a year, with ${dry} dry month${dry === 1 ? '' : 's'}: a seasonal forest if it is warm.`;
-      return `About ${cm} cm a year, spread through the year: enough for a forest: temperate deciduous where summers are warm, taiga where winters are long and cold.`;
+      return `About ${cm} cm a year, spread through the year. That is enough for a forest: temperate deciduous where summers are warm, taiga where winters are long and cold.`;
     },
   },
 ];
@@ -2225,6 +2225,7 @@ const NERVOUS: LayoutDef[] = [
     assumptions: [
       'The central nervous system is the brain and spinal cord; every nerve outside them is peripheral.',
       'The peripheral system has a somatic part (the muscles you choose to move) and an autonomic part (the organs).',
+      'The autonomic part has two sides: the sympathetic readies the body for action, the parasympathetic calms it.',
     ],
     question: 'Which part of the nervous system is it?',
     bins: [
@@ -2239,9 +2240,14 @@ const NERVOUS: LayoutDef[] = [
         why: 'Motor nerves to skeletal muscles, which you control.',
       },
       {
-        id: 'autonomic',
-        label: 'Autonomic (involuntary)',
-        why: 'Nerves to the heart, gut and glands, working without thought.',
+        id: 'sympathetic',
+        label: 'Sympathetic (fight or flight)',
+        why: 'Autonomic nerves that ready the body for danger: a faster heart, wider pupils.',
+      },
+      {
+        id: 'parasympathetic',
+        label: 'Parasympathetic (rest and digest)',
+        why: 'Autonomic nerves that calm the body: a slower heart, digestion, narrower pupils.',
       },
     ],
     cards: [
@@ -2250,9 +2256,10 @@ const NERVOUS: LayoutDef[] = [
       { label: 'The brainstem keeps you breathing', bin: 'cns' },
       { label: 'Motor nerves carry the kick to the leg muscles', bin: 'somatic' },
       { label: 'Fingers typing a message', bin: 'somatic' },
-      { label: 'The heart speeds up when you are frightened', bin: 'autonomic' },
-      { label: 'The stomach churns food after a meal', bin: 'autonomic' },
-      { label: 'The pupils narrow in bright light', bin: 'autonomic' },
+      { label: 'The heart speeds up when you are frightened', bin: 'sympathetic' },
+      { label: 'The pupils widen when you are startled', bin: 'sympathetic' },
+      { label: 'The stomach churns food after a meal', bin: 'parasympathetic' },
+      { label: 'The pupils narrow in bright light', bin: 'parasympathetic' },
     ],
   },
   {
@@ -2296,6 +2303,7 @@ const NERVOUS: LayoutDef[] = [
       { label: 'Taste buds detect sweet and salty', bin: 'chemo' },
       { label: 'The nose picks up the smell of smoke', bin: 'chemo' },
       { label: 'Stepping into a cold pool', bin: 'thermo' },
+      { label: 'A warm mug in your hands', bin: 'thermo' },
     ],
   },
 ];

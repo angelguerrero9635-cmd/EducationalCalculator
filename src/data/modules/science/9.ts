@@ -1790,14 +1790,14 @@ const NERVOUS: ModuleDef[] = [
     ...rules(
       withStep(
         both(
-          't = 1,000 × d ÷ v',
-          '{t} = 1,000 × {d} ÷ {v}',
+          't = d ÷ v × 1,000',
+          '{t} = {d} ÷ {v} × 1,000',
           ['t', 'd', 'v'],
           (v) => v.t! - (1000 * v.d!) / v.v!,
           {
             t: [
               (v) => div(1000 * v.d!, v.v!),
-              '1,000 × {d} ÷ {v}',
+              '{d} ÷ {v} × 1,000',
               'Distance ÷ speed is the time in seconds; 1,000 times that is the time in ms.',
             ],
             d: [
