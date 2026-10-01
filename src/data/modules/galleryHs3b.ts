@@ -297,84 +297,6 @@ const TRANSFORM: ModuleDef[] = [
   }),
 ];
 
-// ── H106 part 3: the power family y = a·x^(p/q) (m.11.radical-functions~rational-exponent) ──
-
-/** x^(p/q) over the reals: an odd q takes the real root of a negative x. */
-const realPow = (x: number, p: number, q: number) =>
-  x < 0 ? (q % 2 ? (-((-x) ** (1 / q))) ** p : NaN) : x === 0 && p < 0 ? NaN : x ** (p / q);
-
-function powerDemo(id: string, title: string, example: Values): ModuleDef {
-  return page({
-    id,
-    title,
-    use: 'Use this for “Graph y = x^(2/3). What is y at x = 8?” or “Evaluate 2 × 4^(−1/2).”',
-    assumptions: [
-      'x^(p/q) is the qth root of x, raised to the power p: 8^(2/3) = (∛8)² = 4.',
-      'An even root needs x ≥ 0; an odd root also takes negative numbers.',
-      'A negative p puts x^(p/q) under 1, so x = 0 has no value.',
-    ],
-    variables: [
-      num('a', 'a', 'Stretch', -10, 10, { step: 0.5 }),
-      num('p', 'p', 'Power p (top of the exponent)', -6, 6, { integer: true }),
-      num('q', 'q', 'Root q (bottom of the exponent)', 1, 12, { integer: true }),
-      // x ≥ 0: the step text can't raise a negative number to a fraction (the graph can).
-      num('x', 'x', 'Input', 0, 100, { step: 0.5 }),
-      num('y', 'y', 'Output', -1e6, 1e6, { derived: true }),
-    ],
-    rules: [
-      limit('p ≠ 0', '{p} ≠ 0', (v) => v.p !== 0, 'With p = 0, x⁰ is 1: take a p that is not 0.'),
-      limit(
-        'x in the domain',
-        '{x}^({p}/{q})',
-        (v) =>
-          v.x === undefined ||
-          v.p === undefined ||
-          v.q === undefined ||
-          Number.isFinite(realPow(v.x, v.p, v.q)),
-        'This x has no value: an even root needs x ≥ 0, and a negative power needs x ≠ 0.',
-      ),
-      derive(
-        'y = a × x^(p/q)',
-        'y',
-        ['a', 'x', 'p', 'q'],
-        '{y} = {a} × {x}^({p}/{q})',
-        (v) => fin(v.a! * realPow(v.x!, v.p!, v.q!)),
-        '{a} × {x}^({p}/{q})',
-        'Take the qth root of x, raise it to the power p, then multiply by a.',
-      ),
-    ],
-    example,
-    startWith: ['a', 'p', 'q', 'x'],
-    equation: 'y = {a}·x^({p}/{q})',
-    representation: {
-      kind: 'functionGraph',
-      family: 'power',
-      a: 'a',
-      p: 'p',
-      q: 'q',
-      at: { x: 'x', y: 'y' },
-      marks: ['vertex', 'asymptotes', 'domain'],
-    },
-  });
-}
-
-const POWER: ModuleDef[] = [
-  powerDemo('g.m11-radical-functions-rational-exponent', 'y = a·x^(p/q)', {
-    a: 1,
-    p: 2,
-    q: 3,
-    x: 8,
-    y: 4,
-  }),
-  powerDemo('g.m11-radical-functions-rational-exponent-negative', 'y = a·x^(p/q), p < 0', {
-    a: 2,
-    p: -1,
-    q: 2,
-    x: 4,
-    y: 1,
-  }),
-];
-
 // ── H106 part 4: the log-sum curve (m.11.exp-log-equations~two-logs) ──
 
 const logSumPicture: Representation = {
@@ -1037,7 +959,6 @@ const F_CURVE: ModuleDef[] = [
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
-  ...POWER,
   ...LOG_SUM,
   ...NONLINEAR,
   ...APOTHEM,

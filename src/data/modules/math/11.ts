@@ -3302,6 +3302,83 @@ export const MATH_11_MODULES: ModuleDef[] = [
       marks: ['domain', 'range'],
     },
   }),
+  page({
+    id: 'm.11.radical-functions~rational-exponent',
+    title: 'Rational exponents',
+    use: 'Use this for “Evaluate 8^(2/3)”, “Graph y = 2x^(−1/2)” or “Solve x^(3/2) = 27.”',
+    assumptions: [
+      'x^(p/q) is the qth root of x, raised to the power p: 8^(2/3) = (∛8)² = 4.',
+      'A negative p puts the power under 1, x^(−p/q) = 1 ÷ x^(p/q), so x = 0 has no value.',
+      'To solve for x, divide by a and raise both sides to q/p, the reciprocal power; here x ≥ 0.',
+    ],
+    variables: [
+      V('a', 'a', 'Vertical factor', { min: -10, max: 10, step: 0.5 }),
+      V('p', 'p', 'Power p, top of the exponent', { integer: true, min: -6, max: 6 }),
+      V('q', 'q', 'Root q, bottom of the exponent', { integer: true, min: 1, max: 12 }),
+      // x ≥ 0: an odd root of a negative x is drawn, but the steps raise only x ≥ 0 to p/q.
+      V('x', 'x', 'Input', { min: 0, max: 1000, step: 0.5 }),
+      V('y', 'y', 'Output', { min: -1e6, max: 1e6 }),
+    ],
+    rules: [
+      limit('a ≠ 0', '{a} is not 0', ['a'], (v) => v.a !== 0, 'With a = 0 every y is 0.'),
+      limit(
+        'p ≠ 0',
+        '{p} is not 0',
+        ['p'],
+        (v) => v.p !== 0,
+        'With p = 0 the power x⁰ is 1 for every x: take a p that is not 0.',
+      ),
+      limit(
+        'x ≠ 0 for p < 0',
+        '{x}^({p}/{q}) has a value',
+        ['x', 'p', 'q'],
+        (v) => !(v.x === 0 && v.p! < 0),
+        'A negative power of 0 would divide by 0: take an x more than 0.',
+      ),
+      rule(
+        'y = a × x^(p/q)',
+        '{y} = {a} × {x}^({p}/{q})',
+        ['y', 'a', 'x', 'p', 'q'],
+        (v) => v.y! - v.a! * v.x! ** (v.p! / v.q!),
+        {
+          y: [
+            (v) => fin(v.a! * v.x! ** (v.p! / v.q!)),
+            '{a} × {x}^({p}/{q})',
+            'Take the qth root of x, raise it to the power p, then multiply by a.',
+          ],
+          x: [
+            (v) => {
+              const r = v.y! / v.a!;
+              return !v.a || !v.p || r < 0 || (r === 0 && v.p < 0)
+                ? undefined
+                : fin(r ** (v.q! / v.p));
+            },
+            '({y} ÷ {a})^({q}/{p})',
+            'Divide by a, then raise both sides to q/p: the powers multiply to 1, leaving x.',
+          ],
+          ...never('a', 'p', 'q'),
+        },
+        {
+          message: (v) =>
+            v.a && v.y !== undefined && v.y / v.a < 0
+              ? 'x^(p/q) is never negative for x ≥ 0, so y ÷ a must be 0 or more.'
+              : undefined,
+        },
+      ),
+    ],
+    example: { a: 1, p: 2, q: 3, x: 8, y: 4 },
+    startWith: ['x', 'a', 'p', 'q'],
+    equation: 'y = {a}·x^({p}/{q})',
+    representation: {
+      kind: 'functionGraph',
+      family: 'power',
+      a: 'a',
+      p: 'p',
+      q: 'q',
+      at: { x: 'x', y: 'y' },
+      marks: ['vertex', 'asymptotes', 'domain'],
+    },
+  }),
 
   // ── Rational expressions, equations and functions (A-APR.6, A-REI.2, F-IF.7d) ──
   page({

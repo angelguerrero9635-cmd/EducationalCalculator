@@ -2231,8 +2231,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s11-oscillations-hooke-units',
       'g.m9-function-notation-transform-square',
       'g.m9-function-notation-transform-root',
-      'g.m11-radical-functions-rational-exponent',
-      'g.m11-radical-functions-rational-exponent-negative',
       'g.m11-exp-log-equations-two-logs-curve',
       'g.m11-exp-log-equations-two-logs-curve-plus',
       'g.m9-inequality-systems-nonlinear',
