@@ -1036,7 +1036,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     title: 'The fast and slow carbon cycles',
     use: 'Use this for “How do volcanoes and burning fuels return buried carbon to the air, and which is faster?”',
     assumptions: [
-      'Every arrow is carbon moving from one store to another; the dashed arrow takes millions of years.',
+      'Every arrow is carbon moving from one store to another.',
       'Photosynthesis, respiration, decay and the ocean move carbon within years: the fast cycle.',
       'Burial, weathering and volcanoes move it over millions of years: the slow cycle.',
     ],

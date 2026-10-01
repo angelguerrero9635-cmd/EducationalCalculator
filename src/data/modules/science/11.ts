@@ -4261,7 +4261,7 @@ const inductionPages: ModuleDef[] = [
     return {
       id: 's.11.electromagnetism~charge-circle',
       title: 'A charge circling in a magnetic field',
-      use: 'Use this for “A proton moves at 3 × 10⁶ m/s square to a 0.2 T field. What force acts on it, how wide is its circle, and how long is one lap?”',
+      use: 'Use this for “A proton moves at 3 × 10⁶ m/s square to a 0.2 T field. What force acts on it, what is the radius of its circle, and how long is one lap?”',
       unitSystems: ['metric'],
       assumptions: [
         'The field is square to the velocity, so F = |q|vB, with q counted in charges of e = 1.602 × 10⁻¹⁹ C.',

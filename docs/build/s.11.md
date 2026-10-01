@@ -400,3 +400,19 @@ cylinder's left edge.
   whole, and a value with its own display (`figures`, `sigFigs`, `integer`, a fraction) keeps
   it; the working lines and the check keep their extra figures, as a worked answer is rounded
   only at the end.
+
+### The last H102 and H107 parts
+
+The two demos the "Waiting pages built" note kept are pages now, so H102 is placed with every
+part on a page (H107 was already placed). Each passes `MODULE_IDS=<id> npx jest --maxWorkers=1
+src/data/modules`; one screenshot each at 390 px.
+
+| Page                                  | Picture                           | From the demo                                                                                                                                                            |
+| ------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `s.11.electrostatics~two-charges`     | `charges` with `point` (H102 10b) | E₁ = kq₁/x² and E₂ = −kq₂/(r − x)² as values of their own (+ toward q₂), then E = E₁ + E₂; a check that the point lies between the charges says why it refuses           |
+| `s.11.electromagnetism~charge-circle` | `induction` `charge` with a mass  | a proton at 3 × 10⁶ m/s in 0.2 T (r = 0.157 m); T = 2πr/v added, the lap time that does not change with speed; the masses of a proton and an electron in the assumptions |
+
+Part 10b is a page, not only a demo: MCAS-2026-HSPHY-#11 compares the field at points round two
+unlike charges, which `~field` (one charge) could only half answer. The point-field,
+free-fall-vertical and proton-circle demos are retired (`galleryHs2c.ts` is gone). No new step
+phrases or unit labels.

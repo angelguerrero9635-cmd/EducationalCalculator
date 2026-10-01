@@ -304,3 +304,20 @@ light-years. No new step phrases.
   whole, and a value with its own display (`figures`, `sigFigs`, `integer`, a fraction) keeps
   it; the working lines and the check keep their extra figures, as a worked answer is rounded
   only at the end.
+
+### The last H103 parts
+
+H103's two parts with no page (need 9, the K-40 second daughter; need 11, the carbon-cycle
+volcano) are on pages now, so H103 is placed. Each passes `MODULE_IDS=<id> npx jest
+--maxWorkers=1 src/data/modules`; one screenshot each at 390 px.
+
+| Page                                | Picture                                | What it teaches                                                                                                                                                                     |
+| ----------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `s.12.radiometric-dating~potassium` | `rockLayers` `dating.sample.second`    | a K–Ar age from argon-40 per potassium-40 atom: only 10.7% of decays make argon, so P = 100 ÷ (1 + R ÷ 0.107), then n and t = n × 1250 million years (R = 0.01 → 161 million years) |
+| `s.12.climate-systems~carbon-cycle` | explore, `carbonCycle` `volcano: true` | the fast cycle (photosynthesis, respiration, the ocean) and the slow one (burial, volcanoes), and burning, about 100 times the volcanoes' CO₂; before the `~carbon` sort            |
+
+Need 8's `particles` was already on `s.12.climate-systems`; its demo is retired, with the
+potassium and carbon-volcano demos (`HS2F_GALLERY_LAYOUTS` is empty). The K–Ar page is not
+in the research textbooks' grade lists (tarbuck teaches it in Geologic Time); it is the
+potassium-40 clock the `~bracket` plan set aside (only about 11% of K-40 becomes argon). No new
+step phrases or unit labels.
