@@ -4115,7 +4115,7 @@ const inductionPages: ModuleDef[] = [
       ],
       variables: [
         q('a', 'q', 'Charge', 'μC', -1e4, 1e4, 0.001),
-        q('v', 'v', 'Speed', 'm/s', 0.001, 1e8, 0.001, { scientific: true, units: ['m/s'] }),
+        q('v', 'v', 'Speed', 'm/s', 0.001, 1e8, 0.001, { units: ['m/s'] }),
         q('B', 'B', 'Magnetic field', 'T', 0.0001, 10, 0.0001),
         q('t', 'θ', 'Angle to the field', '°', 1, 179, 1),
         q('F', 'F', 'Force', 'N', 0, 1e6, 0.000001, { scientific: true }),

@@ -1199,7 +1199,7 @@ const SIGMA = 5.67e-8;
 const energyBalance: ModuleDef = {
   id: 's.12.climate-systems~energy-balance',
   title: 'Earth’s energy balance',
-  use: 'Use this for “If Earth reflects 30 % of sunlight and has no greenhouse gases, how warm is it?”',
+  use: 'Use this for “If Earth reflects 30% of sunlight and has no greenhouse gases, how warm is it?”',
   unitSystems: ['metric'],
   assumptions: [
     'Sunlight falls on Earth’s disk but spreads over the whole globe, 4 times the disk’s area, so each square meter gets S ÷ 4 on average.',
