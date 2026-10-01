@@ -268,3 +268,8 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
 - `~flower` (H109 part 5): new explore on the `parts` flower drawing (petal, sepal, anther,
   filament, stigma, style, ovary, ovule), the demo's five scenes; the main page's Flower scene
   stays on the whole plant.
+- `s.9.reproduction-development` main (H109 part 5): the zygote, morula, blastula and gastrula
+  icons on fertilization, cleavage, blastula and gastrulation (the last two stages stay text).
+  ~germ-layers keeps its bin names (the gastrula's colors are not named there).
+- `~hormones` (H109 part 7): new observe page beside ~menstrual-cycle, estrogen and progesterone
+  (0–100 of each one's peak) on days 1–28, as the demo.

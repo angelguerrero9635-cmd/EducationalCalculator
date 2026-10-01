@@ -645,10 +645,22 @@ const REPRODUCTION: LayoutDef[] = [
     ],
     question: 'Put the stages of animal development in order, from fertilization.',
     stages: [
-      { label: 'Fertilization: a sperm joins an egg, making a zygote' },
-      { label: 'Cleavage: the zygote divides into a solid ball of cells' },
-      { label: 'Blastula: a hollow ball of cells forms' },
-      { label: 'Gastrulation: the cells fold in to form three germ layers' },
+      {
+        label: 'Fertilization: a sperm joins an egg, making a zygote',
+        figure: { kind: 'icon', icon: 'zygote' },
+      },
+      {
+        label: 'Cleavage: the zygote divides into a solid ball of cells',
+        figure: { kind: 'icon', icon: 'morula' },
+      },
+      {
+        label: 'Blastula: a hollow ball of cells forms',
+        figure: { kind: 'icon', icon: 'blastula' },
+      },
+      {
+        label: 'Gastrulation: the cells fold in to form three germ layers',
+        figure: { kind: 'icon', icon: 'gastrula' },
+      },
       { label: 'Organogenesis: the germ layers form tissues and organs' },
       { label: 'The embryo grows until birth or hatching' },
     ],
@@ -751,6 +763,31 @@ const REPRODUCTION: LayoutDef[] = [
     ],
     unit: 'days',
     totalLabel: 'One typical cycle',
+  },
+  {
+    kind: 'observe',
+    id: 's.9.reproduction-development~hormones',
+    title: 'Hormone levels through a cycle',
+    use: 'Use this for “Which hormone keeps the uterine lining in the second half of the cycle?”',
+    assumptions: [
+      'Levels are shown as a share of each hormone’s highest level, 0 to 100.',
+      'The days are for a typical 28-day cycle; real cycles vary.',
+    ],
+    columns: ['Day 1', 'Day 7', 'Day 14', 'Day 21', 'Day 28'],
+    rowLabel: 'Estrogen',
+    unit: 'Level',
+    max: 100,
+    step: 5,
+    initial: [10, 40, 90, 50, 15],
+    second: { rowLabel: 'Progesterone', initial: [5, 5, 10, 80, 10] },
+    pattern: (e, p = []) => {
+      const ei = e.indexOf(Math.max(...e));
+      const pi = p.indexOf(Math.max(...p));
+      const days = ['day 1', 'day 7', 'day 14', 'day 21', 'day 28'];
+      if (pi > ei)
+        return `Estrogen peaks first, by ${days[ei]}, rebuilding the lining; progesterone peaks later, by ${days[pi]}, keeping it.`;
+      return `Here progesterone peaks by ${days[pi]}, before estrogen: in a real cycle estrogen leads, before ovulation.`;
+    },
   },
 ];
 
