@@ -909,7 +909,12 @@ function stageUnits(m: ModuleDef, f: Findings, r: Rng) {
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
-describe.each(selected.map((m) => [m.id, m] as [string, ModuleDef]))('sampling %s', (_, m) => {
+// A scope with no calculator pages (a sort-only skill) has nothing to sample: one skipped
+// placeholder, since .each refuses an empty list.
+const samplingRows = selected.map((m) => [m.id, m] as [string, ModuleDef]);
+(samplingRows.length
+  ? describe.each(samplingRows)
+  : describe.skip.each([['none', undefined as unknown as ModuleDef]]))('sampling %s', (_, m) => {
   it('solves, steps and draws correctly for sampled inputs', () => {
     const f = new Findings();
     const r = rng(hash(m.id) ^ SEED);

@@ -665,26 +665,6 @@ const ticksBy5 = (() => {
   };
 })();
 
-/** 12 < 2x − 8 ≤ 28: the line fits 10 to 18 (5 to 20), ticks by 5. */
-const compoundFit = (() => {
-  const base = fromPage(
-    'm.9.linear-inequalities~compound',
-    'g.m9-linear-inequalities-compound-fit',
-    'Compound inequality far from 0, the line fitted',
-    {},
-  );
-  return {
-    ...base,
-    use: 'Use this for “Solve 12 < 2x − 8 ≤ 28”: the line runs 5 to 20, where the answers are.',
-    example: { l: 12, a: 2, b: -8, r: 28, L: 10, U: 18, t: 15, h: 1 },
-    representation: {
-      ...(base.representation as Extract<ModuleDef['representation'], { kind: 'integerLine' }>),
-      fit: true,
-      ticks: 5,
-    },
-  };
-})();
-
 /** Within d grams of a target: T − d ≤ w ≤ T + d on a line around T. */
 const tolerance = page({
   id: 'g.m9-absolute-value-tolerance',
@@ -933,7 +913,6 @@ export const HS2A_GALLERY_MODULES: ModuleDef[] = [
   equalTwo!,
   equalOne!,
   ticksBy5,
-  compoundFit,
   tolerance,
   halfPlane,
   standardSystem,

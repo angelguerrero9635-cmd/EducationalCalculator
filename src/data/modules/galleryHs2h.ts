@@ -143,70 +143,6 @@ function fromPage(
   };
 }
 
-// ── H105 (1): scatter, the residual of point k ──
-
-const regression = pageOf('m.9.regression');
-const PRACTICE = (regression.representation as Extract<Representation, { kind: 'scatter' }>).points;
-/** Point k's coordinates (k counted from 1). */
-const pointK = (v: Values) => PRACTICE[Math.round(v.k!) - 1];
-
-const residualK = fromPage(
-  'm.9.regression',
-  'g.m9-regression-point-k',
-  'Residual of the point you pick',
-  {
-    ...(regression.representation as Extract<Representation, { kind: 'scatter' }>),
-    residualOf: { point: 'k', residual: 'e' },
-  },
-  {
-    vars: { e: { name: 'Residual of point k' } },
-    add: [
-      {
-        id: 'k',
-        symbol: 'k',
-        name: 'Point number',
-        min: 1,
-        max: PRACTICE.length,
-        integer: true,
-        allowed: PRACTICE.map((_, i) => i + 1),
-      },
-    ],
-    drop: ['e = 61 − (3m + b)'],
-    rules: [
-      derive(
-        'e = y_k − (m x_k + b)',
-        'e',
-        ['k', 'm', 'b'],
-        '{e} = y_k − ({m} × x_k + {b}) for point {k}',
-        (v) => {
-          const p = pointK(v);
-          return p ? exact(p[1] - (v.m! * p[0] + v.b!)) : undefined;
-        },
-        (v) => {
-          const p = pointK(v);
-          return p ? `${p[1]} − ({m} × ${p[0]} + {b})` : '?';
-        },
-        (v) => {
-          const p = pointK(v);
-          return p
-            ? `Point ${v.k} is (${p[0]}, ${p[1]}): its actual points minus the line’s prediction at x = ${p[0]}.`
-            : 'Pick a point from 1 to 8.';
-        },
-        {},
-        {
-          check: (v) => {
-            const p = pointK(v)!;
-            return `${v.e} = ${p[1]} − (${v.m} × ${p[0]} + ${v.b})`;
-          },
-        },
-      ),
-    ],
-    example: { m: 5, b: 47, x: 4.5, y: 69.5, k: 3, e: -1 },
-    startWith: ['x', 'm', 'b', 'k'],
-    use: 'Use this for “Find the residual of point 5 for the line ŷ = 5x + 47.”',
-  },
-);
-
 // ── H105 (3): complexPlane, the operation from a sign box ──
 
 const complexSign = fromPage(
@@ -219,70 +155,6 @@ const complexSign = fromPage(
     w: { re: 'c', im: 'd' },
     opFrom: 'sg',
     result: { re: 'p', im: 'q' },
-  },
-);
-
-// ── H105 (4): transformation, the mirror y = x or y = −x from a value ──
-
-/** x′ = s × (the other coordinate): s = 1 swaps them, s = −1 swaps them and changes both signs. */
-const swapBy = (to: string, from: string, name: string) =>
-  rule(
-    `${to} = s × ${from}`,
-    `{${to}} = {s} × {${from}}`,
-    [to, 's', from],
-    (v) => v[to]! - v.s! * v[from]!,
-    {
-      [to]: [
-        (v) => v.s! * v[from]!,
-        `{s} × {${from}}`,
-        (v) =>
-          v.s === 1
-            ? `Across y = x, the new ${name} is the old ${name === 'x' ? 'y' : 'x'}.`
-            : `Across y = −x, the new ${name} is the old ${name === 'x' ? 'y' : 'x'} with its sign changed.`,
-      ],
-      [from]: [
-        (v) => v.s! * v[to]!,
-        `{s} × {${to}}`,
-        'Undo the swap: s × s = 1, so multiply the image’s coordinate by s.',
-      ],
-    },
-  );
-
-const mirrorSign = fromPage(
-  'm.10.rigid-motions~reflect-line',
-  'g.m10-rigid-motions-mirror-sign',
-  'Reflecting across y = x or y = −x',
-  {
-    kind: 'transformation',
-    figure: [
-      ['ax', 'ay'],
-      [4, 4],
-      [2, 4],
-    ],
-    move: 'reflect',
-    mirror: 'y = −x',
-    slope: 's',
-    image: { x: 'px', y: 'py' },
-    extent: 6,
-  },
-  {
-    add: [
-      {
-        id: 's',
-        symbol: 's',
-        name: 'Mirror y = sx: 1 for y = x, −1 for y = −x',
-        min: -1,
-        max: 1,
-        integer: true,
-        allowed: [-1, 1],
-      },
-    ],
-    drop: ['px = −ay', 'py = −ax'],
-    rules: [swapBy('px', 'ay', 'x'), swapBy('py', 'ax', 'y')],
-    standalone: undefined,
-    example: { ax: 4, ay: 1, s: -1, px: -1, py: -4 },
-    startWith: ['ax', 'ay', 's'],
-    use: 'Use this for “Reflect A(4, 1) across the line y = x.”',
   },
 );
 
@@ -609,9 +481,7 @@ export const HS2H_GALLERY_MODULES: ModuleDef[] = [
   arcsinDegrees,
   arctanDegrees,
   halfPlaneTest,
-  residualK,
   complexSign,
-  mirrorSign,
   freeFall,
   ledge,
 ];
