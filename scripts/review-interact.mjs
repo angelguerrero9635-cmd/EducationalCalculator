@@ -2,7 +2,8 @@
 //
 //   NODE_PATH=$(npm root -g) node scripts/review-interact.mjs --out .review/x <ids...>
 //
-// For each page: taps every scene chip and saves the picture (scenes/<id>-<n>.png); then drags
+// For each page: taps every scene chip and saves the picture (scenes/<id>-<n>.png, and in dark
+// mode scenes/<id>-<n>-dark.png); then drags
 // each handle (testID drag-…) right and up and writes the input values before and after to
 // drags.md, so a reviewer can see a point leave its line or a value land somewhere odd.
 // drags.md marks as **ERROR**: a drag that leaves a "?" where a typed number was, changes or
@@ -38,12 +39,19 @@ for (let i = 0; i < 50; i++) {
   }
 }
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
-const page = await browser.newPage({ viewport: { width: 390, height: 900 } });
-await page.goto(base + '/');
-await page
-  .getByText('Skip', { exact: true })
-  .click({ timeout: 5000 })
-  .catch(() => {});
+/** A phone-sized page past the first-launch onboarding, light or dark. */
+async function phone(colorScheme) {
+  const p = await browser.newPage({ viewport: { width: 390, height: 900 }, colorScheme });
+  await p.goto(base + '/');
+  await p
+    .getByText('Skip', { exact: true })
+    .click({ timeout: 5000 })
+    .catch(() => {});
+  return p;
+}
+const page = await phone('light');
+// Explore scenes are shot in dark mode too (a figure's colours on the dark card).
+const dark = await phone('dark');
 
 const safe = (id) => id.replace(/[^\w.~-]/g, '_');
 // Each box: its id, its value ("?" when empty) and its status (given, example, derived).
@@ -129,27 +137,37 @@ let scenes = 0;
 for (const id of ids) {
   await page.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(300);
-  // Every scene of an exploration.
+  // Every scene of an exploration, light and then dark.
   const n = await page.locator('[data-testid^="scene-"]').count();
-  for (let i = 0; i < n; i++) {
-    await page.locator(`[data-testid="scene-${i}"]`).click();
-    await page.waitForTimeout(120);
-    // The picture is the largest drawing on the page (the first svg is the header's home icon).
-    const sizes = await page
-      .locator('svg')
-      .evaluateAll((els) =>
-        els.map((e) => e.getBoundingClientRect().width * e.getBoundingClientRect().height),
-      );
-    const biggest = sizes.indexOf(Math.max(...sizes, 0));
-    const svg = page.locator('svg').nth(Math.max(0, biggest));
-    const shot = await svg.boundingBox();
-    if (!shot || shot.width < 100 || shot.height < 100) {
-      errors.push(
-        `- **ERROR** ${id} scene ${i}: the shot is ${shot ? `${Math.round(shot.width)}×${Math.round(shot.height)}` : 'missing'} px, not the picture`,
-      );
+  if (n) await dark.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
+  for (const [p, suffix] of n
+    ? [
+        [page, ''],
+        [dark, '-dark'],
+      ]
+    : []) {
+    for (let i = 0; i < n; i++) {
+      await p.locator(`[data-testid="scene-${i}"]`).click();
+      await p.waitForTimeout(120);
+      // The picture is the largest drawing on the page (the first svg is the header's home icon).
+      const sizes = await p
+        .locator('svg')
+        .evaluateAll((els) =>
+          els.map((e) => e.getBoundingClientRect().width * e.getBoundingClientRect().height),
+        );
+      const biggest = sizes.indexOf(Math.max(...sizes, 0));
+      const svg = p.locator('svg').nth(Math.max(0, biggest));
+      const shot = await svg.boundingBox();
+      if (!shot || shot.width < 100 || shot.height < 100) {
+        errors.push(
+          `- **ERROR** ${id} scene ${i}${suffix ? ' (dark)' : ''}: the shot is ${shot ? `${Math.round(shot.width)}×${Math.round(shot.height)}` : 'missing'} px, not the picture`,
+        );
+      }
+      await svg
+        .screenshot({ path: join(out, 'scenes', `${safe(id)}-${i}${suffix}.png`) })
+        .catch(() => {});
+      scenes++;
     }
-    await svg.screenshot({ path: join(out, 'scenes', `${safe(id)}-${i}.png`) }).catch(() => {});
-    scenes++;
   }
   // A handle drawn without a drag- test id can't be dragged here.
   const unnamed = await page

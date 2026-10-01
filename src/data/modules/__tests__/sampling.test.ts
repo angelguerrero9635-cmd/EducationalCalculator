@@ -60,6 +60,7 @@ import {
   type Rng,
 } from '../harness/search';
 import { buildSteps } from '../buildSteps';
+import { workedFigures } from '../grade';
 import type { ModuleDef } from '../types';
 import { scoped } from '../harness/scope';
 
@@ -226,6 +227,13 @@ function resultNumber(result: string, exp = false): number {
 
 // ─── Checks on one solver result ─────────────────────────────────────────────
 
+/**
+ * Close once a page's worked figures are allowed for: a worked-out value shown to n significant
+ * figures (Grades 9–12 science: 3) is off its working by up to half a unit in its last figure.
+ */
+const figuresClose = (a: number, b: number, n: number | undefined) =>
+  n !== undefined && Math.abs(a - b) <= 0.5 * 10 ** (1 - n) * Math.max(Math.abs(a), Math.abs(b));
+
 interface Ctx {
   module: ModuleDef;
   sys: System;
@@ -358,6 +366,7 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
 
 /** Step-by-step: substituted expressions compute to the result, checks balance, text is clean. */
 function checkSteps(c: Ctx, res: SolveResult, where: string) {
+  const figures = workedFigures(c.module);
   let w;
   try {
     // The steps show 1,000; the arithmetic checks read 1000.
@@ -429,7 +438,10 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
         `${c.label}can't evaluate step text "${expr.replace(/[\d.]+/g, 'N')}"`,
         where,
       );
-    } else if (!xs.some((x) => shownClose(x, value, expr)) && !withinRounding(value, expr)) {
+    } else if (
+      !xs.some((x) => shownClose(x, value, expr) || figuresClose(x, value, figures)) &&
+      !withinRounding(value, expr)
+    ) {
       c.f.add('error', `${c.label}step "${s.substituted}" ≠ "${s.result}"`, where);
     }
   }
@@ -578,7 +590,9 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     if (/^about \$|^less than 1 cent/.test(q.value) && res.values[q.id] !== undefined)
       shown.add(res.values[q.id]!);
   for (const chk of w.check) {
-    const strays = numbersIn(chk.formula).filter((x) => ![...shown].some((y) => shownClose(x, y)));
+    const strays = numbersIn(chk.formula).filter(
+      (x) => ![...shown].some((y) => shownClose(x, y) || figuresClose(x, y, figures)),
+    );
     if (strays.length) {
       c.f.add(
         'error',
@@ -640,7 +654,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       const n = parseNumber(t.replace(/^\((.*)\)$/, '$1'));
       return typeof n === 'number' ? n : NaN;
     };
-    if (!shownClose(convert(num(a!), u1!, u2!), num(b!))) {
+    const into = convert(num(a!), u1!, u2!);
+    if (!shownClose(into, num(b!)) && !figuresClose(into, num(b!), figures)) {
       c.f.add('error', `${c.label}conversion is wrong: "${line}"`, where);
     }
     if (!close(convert(1, x!, y!), num(factor!), 1e-5)) {

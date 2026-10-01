@@ -5,6 +5,37 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
+
+- **Twelve picture requests stayed `drawn` though every part was on its page** (H89–H110 span
+  several kinds and pages, and the tracker test wanted one kind on every page named). → `uses`
+  may now map each page to the text that shows its part (`ask` takes that map in place of the
+  page list, so `pages` are its keys, the real `~` pages rather than the skills), and
+  `pictureRequests.test.ts` checks every built page shows its part, even while the request
+  waits on a page not built yet. H90, H92, H93, H95–H97, H100, H101, H104, H105, H108 and H109
+  are `placed`; H94, H98, H99, H102, H103, H106, H107 and H110 stay `drawn`, their notes naming
+  the unbuilt pages (each in `pages` with its mark, so a builder adding one is told if the
+  picture is missing).
+- **Pictures the second math page review left** → a y-axis number gives way to a handle drawn
+  on it (`FunctionGraph`: percent-growth's start sat on "800"); the slope triangle keeps its
+  run and rise labels off the test point's label (`LinearFunction`, `triangleAt`'s
+  `labelsFree`); construction stage figures draw 1.5× (`ZOOM`, 156 px) and find-center's
+  bisectors cross short X arcs with O between each pair; the double cone runs each curve to the
+  rim exactly and fits its plane inside the picture, the hyperbola's plane facing the viewer.
+- **Science 9–12 boxes and steps showed 5 figures where the pictures show 3** (1.9231 × 10⁻¹²
+  beside a picture's 1.92 × 10⁻¹²) → `ModuleDef.workedFigures`, 3 by default on s.9–s.12
+  (`workedFigures`, `withWorkedFigures` in grade.ts): `formatNumber` takes `worked`, rounding a
+  worked-out value's decimals and its scientific mantissa (`scientific(x, figures)`) but never a
+  whole number, in the box (InputsSection), the picture labels (ModuleSections) and the step
+  answers and quantities (buildSteps); typed values as typed. The sampling harness allows half a
+  unit in the last figure where a step's answer, a check's number or a conversion meets such a
+  value (`figuresClose`), and `helpers.test.ts` pins the display.
+- **Review scripts** → `review-shots.mjs` leaves an intended sideways-scroll frame alone
+  (WideTable's ScrollView carries `testID="wide-frame"`; what it scrolls to is meant to be
+  wider), so the periodic-table pages no longer report "wider than the screen" and "sticks out
+  past the screen" at 390 px; `review-interact.mjs` shoots every explore scene in dark mode
+  too (`scenes/<id>-<n>-dark.png`).
+
 ## Grades 9–12 second page review: the drag rule
 
 - **A handle on a worked-out value froze the page and did nothing** (12 handles on m.9:

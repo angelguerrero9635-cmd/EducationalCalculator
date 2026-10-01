@@ -62,6 +62,13 @@ export function layTriangles(f: MarkedTrianglesCard): [Q, Q, Q][] | undefined {
 
 /** Side of a construction card: its 0–100 box with a 2 px margin. */
 export const BOX = 104;
+/**
+ * A construction stage is drawn ZOOM times its 0–100 box (its marks and letters stay their size),
+ * so a compass arc and its crossings read on a phone: 156 px, not 104.
+ */
+export const ZOOM = 1.5;
+/** The side of a construction stage on screen. */
+export const SIDE = Math.round(BOX * ZOOM);
 
 /** The one-letter point names in a part ('ABC' → A, B, C). */
 export const partPoints = (s: string) => [...s];

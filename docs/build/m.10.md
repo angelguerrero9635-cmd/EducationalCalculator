@@ -297,3 +297,14 @@ Gallery demos built from these pages that no longer pass (the lead's to retire):
   and split the ÷ r! line before "→ … groups" when they pass the width (10 or more places at
   390 px), and a count of groups past 2⁵³ is rounded (C(36, 14) read 3,796,297,200.0000005).
   Demos `g.m10-probability-rules-exactly-k` and `g.m10-probability-rules-exactly-k-sixty` retired.
+
+### Leftovers (`.review/hs-page2-m/page-report2-math.md`)
+
+- constructions (and every `construction` stage figure: ~bisector-steps,
+  ~angle-bisector-steps, ~find-center, proofs, ~triangle-sum-proof, ~cpctc-proof): drawn 1.5
+  times their 0–100 box, 156 px instead of 104 (the marks and letters keep their size).
+- constructions~find-center: the bisectors now run through the arc crossings where you can see
+  them. Each chord end draws two short arcs that cross at the marks (an X, as by hand), not one
+  long arc from crossing to crossing that met the other chord's arcs in stray crossings; the
+  chords (155°–270° and 285°–40°, compass 0.7 of the chord) put O between each chord's two
+  crossings, so both drawn bisectors pass through O.

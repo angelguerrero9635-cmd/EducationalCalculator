@@ -108,6 +108,8 @@ export {
   namedVariables,
   wordRule,
   quantityLabel,
+  withWorkedFigures,
+  workedFigures,
   type GradeBand,
 } from './grade';
 

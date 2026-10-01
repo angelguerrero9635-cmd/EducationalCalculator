@@ -119,7 +119,8 @@ function useGrid(
 /**
  * The slope triangle's start: at the intercept if it fits, else the nearest run that does.
  * `from` keeps it clear of the intercept's label (a first-quadrant grid labels it inside);
- * its top corner (the slope's handle) stays a finger's width from the other handles.
+ * its top corner (the slope's handle) stays a finger's width from the other handles, and
+ * `labelsFree` (when given) keeps its run and rise labels off other labels.
  */
 function triangleAt(
   m: number,
@@ -128,6 +129,7 @@ function triangleAt(
   f: Frame,
   from: number,
   handles: [number, number][],
+  labelsFree: (x0: number) => boolean = () => true,
 ) {
   const inside = (x: number) =>
     x >= f.x[0] - 1e-9 &&
@@ -135,6 +137,7 @@ function triangleAt(
     m * x + b >= f.y[0] - 1e-9 &&
     m * x + b <= f.y[1] + 1e-9;
   const clear = (x0: number) =>
+    labelsFree(x0) &&
     handles.every(
       ([hx, hy]) => Math.hypot(f.sx(x0 + run) - f.sx(hx), f.sy(m * (x0 + run) + b) - f.sy(hy)) > 32,
     );
@@ -212,13 +215,51 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
           const run = rr.run * k;
           const rise = rr.rise * k;
           const q1 = f.x[0] === 0;
+          /** A chip's box [left, top, right, bottom] as Chip draws it, its text's baseline at y. */
+          const chipBox = (left: number, y: number, text: string) =>
+            [left, y - chart.small, left + chipWidth(text), y + 4] as const;
+          // The test point's label (drawn right of it) keeps the run and rise labels off it.
+          const testBox = testIn
+            ? chipBox(
+                f.sx(testIn.x.value) + 6,
+                f.sy(testIn.y.value) - 8,
+                pointText(testIn.x.value, testIn.y.value),
+              )
+            : undefined;
+          const labelsFree = (x0: number) => {
+            if (!testBox) return true;
+            const y0 = m.value * x0 + b.value;
+            const runText = `run ${coef(run)}`;
+            const riseText = `rise ${coef(rise)}`;
+            const boxes = [
+              chipBox(
+                f.sx(x0 + run / 2) - chipWidth(runText) / 2,
+                f.sy(y0) + (rise >= 0 ? 15 : -6),
+                runText,
+              ),
+              chipBox(f.sx(x0 + run) + 2, f.sy(y0 + rise / 2) + 4, riseText),
+            ];
+            const [l, t, r, btm] = testBox;
+            return boxes.every(
+              ([bl, bt, br, bb]) => br + 3 < l || bl - 3 > r || bb + 3 < t || bt - 3 > btm,
+            );
+          };
           const x0 = known
-            ? triangleAt(m.value, b.value, run, f, q1 ? 70 / f.ux : -Infinity, [
-                [0, b.value],
-                ...(pt?.x.known && pt.y.known
-                  ? [[pt.x.value, pt.y.value] as [number, number]]
-                  : []),
-              ])
+            ? triangleAt(
+                m.value,
+                b.value,
+                run,
+                f,
+                q1 ? 70 / f.ux : -Infinity,
+                [
+                  [0, b.value],
+                  ...(pt?.x.known && pt.y.known
+                    ? [[pt.x.value, pt.y.value] as [number, number]]
+                    : []),
+                  ...(testIn ? [[testIn.x.value, testIn.y.value] as [number, number]] : []),
+                ],
+                labelsFree,
+              )
             : undefined;
           const seg = clipLine(m.value, b.value, f);
           const y0 = x0 === undefined ? 0 : m.value * x0 + b.value;

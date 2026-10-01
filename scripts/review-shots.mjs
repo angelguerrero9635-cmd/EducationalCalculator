@@ -104,8 +104,12 @@ try {
             `page scrolls sideways (${document.documentElement.scrollWidth}px > ${vw}px)`,
           );
         }
+        // A frame that scrolls sideways on purpose (WideTable's periodic table on a phone,
+        // `data-testid="wide-frame"`) fits the screen; what it scrolls to is meant to be wider.
+        const framed = (el) => !!el.parentElement?.closest('[data-testid="wide-frame"]');
         // Visible text and buttons past the right or left edge.
         for (const el of document.querySelectorAll('div[dir], [role="button"], input, svg')) {
+          if (framed(el)) continue;
           const r = el.getBoundingClientRect();
           if (r.width > 0 && (r.right > vw + 1 || r.left < -1)) {
             const text = (el.textContent ?? '').trim().slice(0, 40);
@@ -117,7 +121,7 @@ try {
         // innermost one is named.
         const wide = [...document.querySelectorAll('div')].filter((el) => {
           const r = el.getBoundingClientRect();
-          return r.width > 0 && r.right > vw + 1;
+          return r.width > 0 && r.right > vw + 1 && !framed(el);
         });
         for (const el of wide
           .filter((el) => !wide.some((o) => o !== el && el.contains(o)))

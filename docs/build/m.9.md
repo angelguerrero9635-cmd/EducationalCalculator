@@ -258,3 +258,14 @@ Gallery demos built from these pages that no longer pass (the lead's to retire):
   linear-inequalities k → d; ~compound L → l, U → r; ~or L → c, U → f;
   ~whole-number-answers n → B; absolute-value, ~inequality, ~inequality-beyond h → b, d → c.
   These handles were dead and froze the page (see ENGINE_LOG, "drag rule").
+
+### Leftovers (`.review/hs-page2-m/page-report2-math.md`)
+
+- exponential-functions~percent-growth: the start handle sat on the y-axis's "800". A y-axis
+  number now gives way to a handle drawn on it (`FunctionGraph`); the point's own chip says
+  (0, 800).
+- radicals~rational-exponent: the use line raises its exponents, "Evaluate 27²ᐟ³" or "16³ᐟ²",
+  not 27^(2/3).
+- linear-inequalities~two-variables: "run 2" sat on the test point's "(1, 0)" at 1024 px. The
+  slope triangle (`LinearFunction`) now moves on until its run and rise labels clear the test
+  point's label, and keeps its corner off the test point.

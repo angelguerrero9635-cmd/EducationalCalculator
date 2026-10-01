@@ -11,12 +11,21 @@ import { chart } from '@/theme';
 
 import { Arcs, RightMark, Ticks, inside, type Pt } from '../reps/geoMarks';
 import { VIEW, planeBasis, planeOf, project, sectionOf, type V3 } from './solidCutMath';
-import { BOX, TRI_H, TRI_W, arcPath, layTriangles, partPoints, type Q } from './cardHs2bMath';
+import {
+  SIDE,
+  TRI_H,
+  TRI_W,
+  ZOOM,
+  arcPath,
+  layTriangles,
+  partPoints,
+  type Q,
+} from './cardHs2bMath';
 
 /** [width, height] of a group H2B card figure, or undefined for any other. */
 export function hs2bFigureSize(f: CardFigure): [number, number] | undefined {
   if (f.kind === 'markedTriangles') return [TRI_W, TRI_H];
-  if (f.kind === 'construction') return [BOX, BOX];
+  if (f.kind === 'construction') return [SIDE, SIDE];
   if (f.kind === 'solidCut') return [CUT_W, CUT_H];
   return undefined;
 }
@@ -155,7 +164,7 @@ function Construction({
 }) {
   const P = (n: string): Q => {
     const p = f.points[n] ?? [50, 50];
-    return [p[0] + 2, p[1] + 2];
+    return [(p[0] + 2) * ZOOM, (p[1] + 2) * ZOOM];
   };
   const names = Object.keys(f.points);
   const mid: Q = [
@@ -316,7 +325,7 @@ function Construction({
         return (
           <SvgText
             key={i}
-            x={Math.max(5, Math.min(BOX - 5, x))}
+            x={Math.max(5, Math.min(SIDE - 5, x))}
             y={y + 4}
             fontSize={chart.label}
             fontWeight="700"
@@ -334,8 +343,8 @@ function Construction({
           <G key={`n${n}`}>
             <Circle cx={p[0]} cy={p[1]} r={2} fill={ink} />
             <SvgText
-              x={Math.max(5, Math.min(BOX - 5, x))}
-              y={Math.max(11, Math.min(BOX - 1, y + 4))}
+              x={Math.max(5, Math.min(SIDE - 5, x))}
+              y={Math.max(11, Math.min(SIDE - 1, y + 4))}
               fontSize={chart.label}
               fontWeight="700"
               fill={ink}

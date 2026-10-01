@@ -294,3 +294,13 @@ src/data/modules`; one screenshot each at 390 px.
 
 New fixed unit labels: mm/yr, m³/s, billion barrels, billion barrels a year, ″, pc,
 light-years. No new step phrases.
+
+### Worked-out values to 3 figures
+
+- Every Grades 9–12 science page shows a worked-out value to 3 significant figures in its box,
+  under the picture and in its step's answer, as the pictures label values (F = −3.37 N,
+  1.92 × 10⁻¹², not −3.3713 or 1.9231 × 10⁻¹²): `workedFigures` in grade.ts (a page can set
+  `workedFigures`), `formatNumber`'s `worked`. Typed values show as typed, whole numbers stay
+  whole, and a value with its own display (`figures`, `sigFigs`, `integer`, a fraction) keeps
+  it; the working lines and the check keep their extra figures, as a worked answer is rounded
+  only at the end.

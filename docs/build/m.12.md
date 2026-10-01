@@ -477,3 +477,12 @@ mark.
 
 `m.12.vectors~cross` (need 10) is built as `m.12.vectors-3d~cross`. No new step phrases or unit
 labels were needed.
+
+### Leftovers (`.review/hs-page2-m/page-report2-math.md`)
+
+- conics~cone: each curve now runs exactly to the rim (the crossing found by halving between
+  samples, not the last sample inside), and the cutting plane is only as long as the curve with
+  a margin, shortened until its corners are in the picture (the ellipse's ran off the left
+  edge). The hyperbola's plane faces the viewer, 0.3 in front of the axis, so both branches
+  open out to the rims' edges; seen at an angle, one arm of each ended on a rim's near or far
+  side and looked cut off mid-cone.

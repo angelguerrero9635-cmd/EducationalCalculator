@@ -88,16 +88,18 @@ const angStage = (k: number): CardFigure => {
   return card(ang, parts, lit, k >= 3 ? ['O', 'A', 'B', 'P'] : ['O', 'A', 'B']);
 };
 
-// The center of a circle: the perpendicular bisectors of two chords cross at it.
+// The center of a circle: the perpendicular bisectors of two chords cross at it. The chords and
+// the compass opening put O between each chord's two crossings, so both bisectors drawn through
+// their crossings run through O, and no crossing sits on another's arcs.
 const ctr = (() => {
   const O: P2 = [50, 50];
-  const R = 36;
-  const [K, L, M, N] = [150, 250, 285, 25].map((d) => polar(O, R, d)) as [P2, P2, P2, P2];
-  /** The two crossings of equal arcs from a chord's ends (compass 0.6 of the chord). */
+  const R = 32;
+  const [K, L, M, N] = [155, 270, 285, 40].map((d) => polar(O, R, d)) as [P2, P2, P2, P2];
+  /** The two crossings of equal arcs from a chord's ends (compass 0.7 of the chord). */
   const cross = (p: P2, q: P2): [P2, P2] => {
     const len = Math.hypot(q[0] - p[0], q[1] - p[1]);
     const m: P2 = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
-    const t = Math.sqrt((0.6 * len) ** 2 - (len / 2) ** 2);
+    const t = Math.sqrt((0.7 * len) ** 2 - (len / 2) ** 2);
     const n: P2 = [-(q[1] - p[1]) / len, (q[0] - p[0]) / len];
     return [
       [m[0] + n[0] * t, m[1] + n[1] * t],
@@ -114,12 +116,15 @@ const ctrStage = (k: number): CardFigure => {
     { segment: 'KL', id: 'c1' },
     { segment: 'MN', id: 'c2' },
   ];
+  // Short arcs crossing at each mark (a compass arc from each end of each chord), as drawn by hand.
   if (k >= 2)
     parts.push(
-      { compass: 'K', from: 'E', to: 'F', id: 'a1' },
-      { compass: 'L', from: 'E', to: 'F', id: 'a2' },
-      { compass: 'M', from: 'G', to: 'H', id: 'a3' },
-      { compass: 'N', from: 'G', to: 'H', id: 'a4' },
+      ...(['KE', 'LE', 'KF', 'LF', 'MG', 'NG', 'MH', 'NH'] as const).map((a): CardPart => ({
+        compass: a[0]!,
+        through: a[1]!,
+        span: 30,
+        id: 'a',
+      })),
       { line: 'EF', id: 'b1' },
       { line: 'GH', id: 'b2' },
     );
@@ -133,13 +138,9 @@ const ctrStage = (k: number): CardFigure => {
       { ticks: 'OM', count: 1, id: 'k2' },
       { ticks: 'OT', count: 1, id: 'k3' },
     );
-  const lit = [
-    [],
-    ['c1', 'c2'],
-    ['a1', 'a2', 'a3', 'a4', 'b1', 'b2'],
-    ['o'],
-    ['r1', 'r2', 'r3', 'k1', 'k2', 'k3'],
-  ][k]!;
+  const lit = [[], ['c1', 'c2'], ['a', 'b1', 'b2'], ['o'], ['r1', 'r2', 'r3', 'k1', 'k2', 'k3']][
+    k
+  ]!;
   return card(ctr, parts, lit, k >= 3 ? ['O'] : []);
 };
 
