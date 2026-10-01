@@ -3,16 +3,14 @@
  * P23–P26). Each demo is the page that waits, with the option it will pass. Spread into
  * gallery.ts.
  */
-import { fTest } from '@/components/module/reps/fCurve';
 import type { VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import { SCIENCE_9_LAYOUTS } from './layouts/science9';
 import { MATH_10_MODULES } from './math/10';
-import { MATH_12_MODULES } from './math/12';
 import type { ModuleDef, Representation } from './types';
 
-const PAGES = [...MATH_10_MODULES, ...MATH_12_MODULES];
+const PAGES = [...MATH_10_MODULES];
 
 /**
  * A demo from the page that waits, with the picture the page will pass. `vars` changes
@@ -37,41 +35,6 @@ function fromPage(
     ...rest,
   };
 }
-
-// ── H112 (P24): normalCurve's F curve, one tail or two from the page's Hₐ value ──
-
-const F_TAILS: Representation = {
-  kind: 'normalCurve',
-  f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P', tailsFrom: 'h' },
-};
-
-const twoVariances = fromPage(
-  'm.12.anova~two-variances',
-  'g.m12-anova-two-variances-tails-two',
-  'Two variances: Hₐ picks the tails (≠, both)',
-  F_TAILS,
-);
-
-const twoVariancesRight = fromPage(
-  'm.12.anova~two-variances',
-  'g.m12-anova-two-variances-tails-right',
-  'Two variances: Hₐ picks the tails (>, the right one)',
-  F_TAILS,
-  {
-    example: {
-      s1: 6,
-      s2: 4,
-      n1: 16,
-      n2: 16,
-      d1: 15,
-      d2: 15,
-      F: 2.25,
-      h: 1,
-      P: fTest(2.25, 15, 15, 'right').p,
-      a: 0.05,
-    },
-  },
-);
 
 // ── H113 (P25): pascalTriangle's fraction for "exactly k of r", groups up to 60 ──
 
@@ -120,12 +83,7 @@ const exactlySixty = fromPage(
   },
 );
 
-export const HS4_GALLERY_MODULES: ModuleDef[] = [
-  twoVariances,
-  twoVariancesRight,
-  exactlyTwo,
-  exactlySixty,
-];
+export const HS4_GALLERY_MODULES: ModuleDef[] = [exactlyTwo, exactlySixty];
 
 // ── H114 (P26): the germ-layer bins in the gastrula card's colors ──
 

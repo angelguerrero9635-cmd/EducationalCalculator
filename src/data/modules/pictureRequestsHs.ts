@@ -2473,8 +2473,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'The F curve shades one tail or two as the page’s Hₐ value says, so it agrees with P for both choices',
       ['m.12.anova~two-variances'],
     ),
-    status: 'drawn',
-    gallery: ['g.m12-anova-two-variances-tails-two', 'g.m12-anova-two-variances-tails-right'],
+    status: 'placed',
+    gallery: [],
     notes:
       "P24. New `f.tailsFrom`: a value holding Hₐ in place of the fixed `tails`. 1 (or a sign box's 3 >, 4 ≥) is the right tail; 0 (or 6 ≠) is both tails, twice the smaller. While it is \"?\", the curve draws with no tail shaded and the caption asks for Hₐ. The harness checks the code (0, 1, 3, 4 or 6) and P against the tails it picks. Spec for the page (h: 0 ≠, 1 >): { kind: 'normalCurve', f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P', tailsFrom: 'h' } }.",
   },

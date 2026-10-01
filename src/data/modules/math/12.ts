@@ -7285,8 +7285,6 @@ const decideF =
       : `→ ${P} ≥ α = ${fmt(v.a)}: fail to reject H₀: not convincing evidence that ${evidence(v)}`;
   };
 const groupsDiffer = decideF(() => 'at least one group mean differs');
-const fTable = (params: string[], rows: number[]) =>
-  ({ kind: 'table', sweep: 'F', output: 'P', params, rows }) as const;
 
 const MATH_12_ANOVA: ModuleDef[] = [
   // ── m.12.anova (OpenStax Statistics 13) ──
@@ -7566,7 +7564,11 @@ const MATH_12_ANOVA: ModuleDef[] = [
       a: 0.05,
     },
     startWith: ['s1', 's2', 'n1', 'n2', 'h', 'a'],
-    representation: fTable(['d1', 'd2'], [1, 1.5, 2, 2.5, 3, 4]),
+    // The F curve's tails follow Hₐ: both for ≠ (0), the right one for > (1).
+    representation: {
+      kind: 'normalCurve',
+      f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P', tailsFrom: 'h' },
+    },
   },
 ];
 
