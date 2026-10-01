@@ -75,7 +75,7 @@ export function FCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calculator
           // The height: the curve's top past the first sliver (df₁ = 1 runs off at 0).
           const xs = Array.from({ length: 301 }, (_, i) => (xMax.max * i) / 300);
           const top = Math.max(
-            ...xs.filter((x) => x >= xMax.max * 0.03).map((x) => fPdf(x, d1, d2)),
+            ...xs.filter((x) => d1 > 1 || x >= xMax.max * 0.03).map((x) => fPdf(x, d1, d2)),
           );
           const sy = (y: number) => B - Math.min(1.08, y / top) * (B - T) * 0.92;
           const curve = xs
@@ -182,6 +182,19 @@ export function FCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calculator
                     h={h}
                     color={c.chartHighlight}
                   />
+                  {test ? (
+                    // The p-value beside its right tail.
+                    <MathChip
+                      x={Math.min(R, sx(test.cuts.right ?? F) + 8)}
+                      y={B - 10}
+                      text={`P ${p4(test.p)}`}
+                      anchor="start"
+                      w={w}
+                      h={h}
+                      color={c.chartHighlight}
+                      bold={false}
+                    />
+                  ) : null}
                 </G>
               ) : null}
               <MathChip
