@@ -5394,7 +5394,12 @@ const turnAngle = withCheck(
           ? [`θ = (180° − ${fmt(-w)}°) ÷ 2`, `θ = ${fmt(180 + w)}° ÷ 2`]
           : [`θ = ${fmt(w)}° ÷ 2`];
       },
-      note: (v) => (v.B === 0 ? '→ no xy term: no turn needed' : ''),
+      note: (v) =>
+        v.B === 0
+          ? '→ no xy term: no turn needed'
+          : v.A === v.C
+            ? '→ A = C, so cot 2θ = 0 and 2θ = 90°'
+            : '',
     },
   ),
   (v) =>
@@ -6240,7 +6245,9 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
             const top = v.a! * v.x! ** 2 + v.b! * v.x! + v.c!;
             const bottom = (v.x! - v.p!) * quadAt(v, v.x!);
             return [
-              `Top: ${shown(v.a!)} × ${shown(v.x! ** 2)} + ${par(v.b!)} × ${par(v.x!)} + ${par(v.c!)} = ${fmt(top)}`,
+              // The number alone first: every + is then followed by a product, so no part of
+              // the line reads as a bare sum (the harness would add "2 + 3" in "… × 2 + 3").
+              `Top: ${par(v.c!)} + ${par(v.b!)} × ${par(v.x!)} + ${par(v.a!)} × ${shown(v.x! ** 2)} = ${fmt(top)}`,
               `Bottom: ${par(v.x! - v.p!)} × ${par(quadAt(v, v.x!))} = ${fmt(bottom)}`,
               `y = ${par(top)} ÷ ${par(bottom)}`,
             ];
@@ -6629,6 +6636,17 @@ const termsTo = (n: number, power = '') =>
     ? Array.from({ length: n }, (_, i) => `${i + 1}${power}`).join(' + ')
     : `1${power} + 2${power} + … + ${shown(n)}${power}`;
 
+/**
+ * "1 + 2 + … + 8 = 8 × 9 ÷ 2 = 36"; up to three terms the sum is short enough to add as it
+ * is ("1 + 2 = 3"), and one term needs no line.
+ */
+const sumLine = (n: number, power: string, formula: string, value: number): string[] =>
+  n === 1
+    ? []
+    : n <= 3
+      ? [`${termsTo(n, power)} = ${shown(value)}`]
+      : [`${termsTo(n, power)} = ${formula} = ${shown(value)}`];
+
 const MATH_12_AREA: ModuleDef[] = [
   // ── m.12.area-under-curve (Larson 12.4–12.5) ──
   {
@@ -6669,7 +6687,12 @@ const MATH_12_AREA: ModuleDef[] = [
           work: (v) => {
             const sq = (v.n! * (v.n! + 1) * (2 * v.n! + 1)) / 6;
             return [
-              `${termsTo(v.n!, '²')} = ${shown(v.n!)} × ${shown(v.n! + 1)} × ${shown(2 * v.n! + 1)} ÷ 6 = ${shown(sq)}`,
+              ...sumLine(
+                v.n!,
+                '²',
+                `${shown(v.n!)} × ${shown(v.n! + 1)} × ${shown(2 * v.n! + 1)} ÷ 6`,
+                sq,
+              ),
               `S = ${shown(v.c!)} × ${shown(v.w!)}³ × ${shown(sq)}`,
               `S = ${shown(exact(v.c! * v.w! ** 3))} × ${shown(sq)}`,
             ];
@@ -6756,7 +6779,7 @@ const MATH_12_AREA: ModuleDef[] = [
             const first = exact(v.m! * v.w! ** 2 * tri);
             const second = exact(v.k! * v.b!);
             return [
-              `${termsTo(v.n!)} = ${shown(v.n!)} × ${shown(v.n! + 1)} ÷ 2 = ${shown(tri)}`,
+              ...sumLine(v.n!, '', `${shown(v.n!)} × ${shown(v.n! + 1)} ÷ 2`, tri),
               `S = ${shown(v.m!)} × ${shown(v.w!)}² × ${shown(tri)} + ${shown(v.k!)} × ${shown(v.b!)}`,
               `S = ${shown(first)} + ${shown(second)}`,
             ];
