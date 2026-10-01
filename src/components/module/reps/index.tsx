@@ -104,6 +104,7 @@ import { RectangleBounds } from './RectangleBounds';
 import { VectorSpace } from './VectorSpace';
 import { PolarConic } from './PolarConic';
 import { ConicTurned } from './ConicTurned';
+import { FCurve } from './FCurve';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -332,6 +333,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         );
       return <MotionGraph spec={spec} calc={calc} />;
     case 'normalCurve':
+      if (spec.f) return <FCurve spec={spec} calc={calc} />; // H106
       return <NormalCurve spec={spec} calc={calc} />;
     case 'histogram':
       return spec.clt ? (

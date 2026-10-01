@@ -8,6 +8,7 @@ import { reshapeVars } from '@/components/module/reps/functionGraphHs2g';
 import { toShownUnits } from '@/components/module/reps/functionGraphUnits';
 import { quadAt, quadCrossings } from '@/components/module/reps/lineParabola';
 import { turnedConic } from '@/components/module/reps/conicTurned';
+import { fTest } from '@/components/module/reps/fCurve';
 import { polarConicParts } from '@/components/module/reps/polarConic';
 import { riemannOf } from '@/components/module/reps/riemann';
 import { ownCenter } from '@/components/module/reps/transformHs3b';
@@ -223,6 +224,20 @@ export function hs3bIssues(
     case 'vectorDiagram':
       out.push(...spaceIssues(rep, val));
       break;
+    case 'normalCurve': {
+      // The F curve: whole df of at least 1, and the p-value the picture shades.
+      const f = rep.f;
+      if (!f) break;
+      const [d1, d2] = [val(f.df1), val(f.df2)];
+      for (const d of [d1, d2])
+        if (d !== undefined && (!Number.isInteger(d) || d < 1)) out.push(`F curve: df ${d}`);
+      const F = f.stat === undefined ? undefined : val(f.stat);
+      const P = f.p === undefined ? undefined : val(f.p);
+      if (d1 === undefined || d2 === undefined || F === undefined || P === undefined) break;
+      const want = fTest(F, d1, d2, f.tails ?? 'right').p;
+      if (Math.abs(P - want) > 1e-6) out.push(`F curve: p-value ${P} is not ${want}`);
+      break;
+    }
     case 'conicGraph': {
       // A turned conic: θ, A′, C′ and B² − 4AC as the picture works them out.
       if (rep.conic !== 'turned') break;

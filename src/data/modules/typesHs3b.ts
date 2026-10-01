@@ -189,6 +189,24 @@ export function functionGraphHs3bVars(r: FunctionGraphHs3b): string[] {
   ].filter((x): x is string => typeof x === 'string');
 }
 
+/**
+ * H106: the F curve on `normalCurve` (`f`), in place of the normal curve: the F distribution with
+ * `df1` and `df2` degrees of freedom, the statistic `stat` marked and the p-value shaded (the
+ * right tail past F, or with `tails: 'two'` both tails, twice the smaller), the critical value
+ * for `alpha` dashed with the rejection region tinted, and the decision in the caption. `p` names
+ * the page's p-value (checked). No handles: F is worked out from the page's values.
+ */
+export interface NormalCurveHs3b {
+  f?: {
+    df1: NumOrVar;
+    df2: NumOrVar;
+    stat?: NumOrVar;
+    alpha?: NumOrVar;
+    p?: string;
+    tails?: 'right' | 'two';
+  };
+}
+
 /** A vector in space by its three components. */
 export interface Vector3Of {
   name: string;
@@ -268,6 +286,7 @@ const idsOf = (...xs: (NumOrVar | undefined)[]) =>
 
 /** The variable ids the later H106 options name, beside the kinds' own (for the module tests). */
 export function hs3bSpecVars(r: Representation): string[] {
+  if (r.kind === 'normalCurve' && r.f) return idsOf(r.f.df1, r.f.df2, r.f.stat, r.f.alpha, r.f.p);
   if (r.kind !== 'vectorDiagram' || !r.space) return [];
   const s = r.space;
   return idsOf(

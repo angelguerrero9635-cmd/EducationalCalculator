@@ -5,6 +5,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type { SignOf } from './typesHs2a';
+import type { NormalCurveHs3b } from './typesHs3b';
 import type { HistogramHs2g, NormalCurveHs2g, PascalFraction, TermsChartHs2g } from './typesHs2g';
 
 /**
@@ -31,7 +32,7 @@ import type { HistogramHs2g, NormalCurveHs2g, PascalFraction, TermsChartHs2g } f
  * Handles drag the shaded ends, the mark, the test statistic and the chi-square statistic
  * (when they are variables), holding `keep` (default: the mean, the SD, n and the level).
  */
-export interface NormalCurveSpec extends NormalCurveHs2g {
+export interface NormalCurveSpec extends NormalCurveHs2g, NormalCurveHs3b {
   kind: 'normalCurve';
   mean?: NumOrVar;
   sd?: NumOrVar;

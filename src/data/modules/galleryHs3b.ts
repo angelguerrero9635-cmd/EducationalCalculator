@@ -1021,6 +1021,28 @@ const SQUARES: ModuleDef[] = [
   ),
 ];
 
+// ── H106 part 18: the F curve (m.12.anova, ~groups, ~two-variances) ──
+
+const F_CURVE: ModuleDef[] = [
+  fromPage('m.12.anova', 'g.m12-anova-f-curve', 'The ANOVA F test on its curve', {
+    kind: 'normalCurve',
+    f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
+  }),
+  fromPage('m.12.anova~groups', 'g.m12-anova-groups-f-curve', 'Three groups: the F curve', {
+    kind: 'normalCurve',
+    f: { df1: 2, df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
+  }),
+  fromPage(
+    'm.12.anova~two-variances',
+    'g.m12-anova-two-variances-f-curve',
+    'Two variances: both tails of the F curve',
+    {
+      kind: 'normalCurve',
+      f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P', tails: 'two' },
+    },
+  ),
+];
+
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
@@ -1039,6 +1061,7 @@ export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...RIEMANN,
   ...RATIONAL_TOP,
   ...SQUARES,
+  ...F_CURVE,
 ];
 
 export const HS3B_GALLERY_LAYOUTS: LayoutDef[] = [];
