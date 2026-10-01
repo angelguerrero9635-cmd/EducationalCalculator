@@ -1616,7 +1616,7 @@ function formulaRules(a = 'a', b = 'b', c = 'c'): Rule[] {
 }
 
 /** The zeros of x² + bx + c, smallest first, from D = b² − 4c. */
-function monicZeros(set: (lo: string, hi: string) => string): Rule[] {
+function monicZeros(set: (lo: string, hi: string, v: Values) => string): Rule[] {
   const root = (id: string, sign: 1 | -1) =>
     derive(
       `${id} = (−b ${sign < 0 ? '−' : '+'} √D) ÷ 2`,
@@ -1630,7 +1630,8 @@ function monicZeros(set: (lo: string, hi: string) => string): Rule[] {
         : 'The plus sign gives the larger zero.',
       sign > 0
         ? {
-            note: (v) => (known(v, 'x1', 'x2') ? `→ ${set(fr(v.x1!, 20), fr(v.x2!, 20))}` : ''),
+            note: (v) =>
+              known(v, 'x1', 'x2', 's') ? `→ ${set(fr(v.x1!, 20), fr(v.x2!, 20), v)}` : '',
           }
         : {},
     );
@@ -1656,28 +1657,75 @@ function monicZeros(set: (lo: string, hi: string) => string): Rule[] {
   ];
 }
 
+/** The solution set of x² + bx + c (sign s) 0 from its zeros: between them for < and ≤. */
+const quadraticSet = (s: number | undefined, lo: string, hi: string) =>
+  s === undefined
+    ? ''
+    : s <= 2
+      ? `${lo} ${s === 1 ? '<' : '≤'} x ${s === 1 ? '<' : '≤'} ${hi}`
+      : `x ${s === 3 ? '<' : '≤'} ${lo} or x ${s === 3 ? '>' : '≥'} ${hi}`;
+
+/** x² + bx + c at n, the value written out: (3)² − 2(3) − 8 = −5. */
+const monicAt = (b: number, c: number, n: number) =>
+  `(${fmt(n)})²${b ? ` ${b < 0 ? '−' : '+'} ${fmt(Math.abs(b))}(${fmt(n)})` : ''}${c ? ` ${c < 0 ? '−' : '+'} ${fmt(Math.abs(c))}` : ''} = ${fmt(exact(n * n + b * n + c))}`;
+
 const QUADRATIC_INEQUALITIES: ModuleDef[] = [
   page({
     id: 'm.9.quadratic-formula~inequality',
-    title: 'Quadratic inequality: between the zeros',
-    use: 'Use this for “Solve x² − 2x − 8 < 0.”',
+    title: 'Quadratic inequality',
+    use: 'Use this for “Solve x² − 2x − 8 < 0” or “x² − x − 6 ≥ 0.”',
     assumptions: [
       'Solve the equation x² + bx + c = 0 first: its zeros split the number line.',
-      'The parabola opens up, so it is below the x-axis between its zeros.',
-      'The zeros make it 0, not less than 0, so they are left out: x₁ < x < x₂.',
+      'The parabola opens up: below the x-axis between its zeros, above it outside them.',
+      'The zeros make it 0: ≤ and ≥ take them in, < and > leave them out.',
     ],
     variables: [
       int('b', 'b', 'x coefficient', -20, 20),
       int('c', 'c', 'Number term', -100, 100),
+      int('s', 's', 'Sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4, { allowed: [1, 2, 3, 4] }),
       num('D', 'D', 'Discriminant', -400, 800, { derived: true }),
       num('x1', 'x₁', 'Smaller zero', -40, 40, { derived: true }),
       num('x2', 'x₂', 'Larger zero', -40, 40, { derived: true }),
+      num('n', 'x₀', 'Test number', -40, 40, { step: 0.5 }),
+      int('h', 'h', 'Test is true (1) or false (0)', 0, 1, { derived: true }),
     ],
-    rules: monicZeros((lo, hi) => `${lo} < x < ${hi}`),
-    example: { b: -2, c: -8, D: 36, x1: -2, x2: 4 },
-    startWith: ['b', 'c'],
-    equation: 'x² + {b}x + {c} < 0',
-    pictureLabels: ['D'],
+    rules: [
+      ...monicZeros((lo, hi, v) => quadraticSet(v.s, lo, hi)),
+      rule(
+        'h = test',
+        'test {n} in x² + {b}x + {c} (sign {s}) 0: {h}',
+        ['h', 'n', 'b', 'c', 's'],
+        (v) => tested(v.h!, truth(compare(v.n! ** 2 + v.b! * v.n! + v.c!, v.s!, 0))),
+        {
+          h: [
+            (v) => truth(compare(v.n! ** 2 + v.b! * v.n! + v.c!, v.s!, 0)),
+            (v) => `${truth(compare(v.n! ** 2 + v.b! * v.n! + v.c!, v.s!, 0))}`,
+            'Put the test number into the left side: 1 is true (a solution), 0 is false.',
+            {
+              note: (v) => (v.h === undefined ? '' : `→ ${v.h ? 'true' : 'false'}`),
+              work: (v) => {
+                const left = exact(v.n! ** 2 + v.b! * v.n! + v.c!);
+                return [
+                  monicAt(v.b!, v.c!, v.n!),
+                  `${fmt(left)} ${SIGNS[v.s! - 1]} 0 is ${compare(left, v.s!, 0) ? 'true' : 'false'}`,
+                ];
+              },
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) => {
+            const left = exact(v.n! ** 2 + v.b! * v.n! + v.c!);
+            return testCheck(left, 0, compare(left, v.s!, 0));
+          },
+        },
+      ),
+    ],
+    example: { b: -2, c: -8, s: 1, D: 36, x1: -2, x2: 4, n: 0, h: 1 },
+    startWith: ['b', 'c', 's', 'n'],
+    equation: 'x² + {b}x + {c} {s:sign} 0',
+    pictureLabels: ['D', 'n', 'h'],
     representation: {
       kind: 'functionGraph',
       family: 'quadratic',
@@ -1685,39 +1733,8 @@ const QUADRATIC_INEQUALITIES: ModuleDef[] = [
       a: 1,
       b: 'b',
       c: 'c',
-      shade: { from: 'x1', to: 'x2' },
+      inequality: { sign: 's' },
       shows: { zeros: ['x1', 'x2'] },
-      marks: ['zeros'],
-    },
-  }),
-  page({
-    id: 'm.9.quadratic-formula~inequality-outside',
-    title: 'Quadratic inequality: outside the zeros',
-    use: 'Use this for “Solve x² − x − 6 ≥ 0.”',
-    assumptions: [
-      'Solve the equation x² + bx + c = 0 first: its zeros split the number line.',
-      'The parabola opens up, so it is on or above the x-axis outside its zeros.',
-      'The zeros make it 0, so ≥ takes them in: x ≤ x₁ or x ≥ x₂.',
-    ],
-    variables: [
-      int('b', 'b', 'x coefficient', -10, 10),
-      int('c', 'c', 'Number term', -25, 25),
-      num('D', 'D', 'Discriminant', -100, 200, { derived: true }),
-      num('x1', 'x₁', 'Smaller zero', -10, 10, { derived: true }),
-      num('x2', 'x₂', 'Larger zero', -10, 10, { derived: true }),
-    ],
-    rules: monicZeros((lo, hi) => `x ≤ ${lo} or x ≥ ${hi}`),
-    example: { b: -1, c: -6, D: 25, x1: -2, x2: 3 },
-    startWith: ['b', 'c'],
-    equation: 'x² + {b}x + {c} ≥ 0',
-    pictureLabels: ['D'],
-    representation: {
-      kind: 'integerLine',
-      value: 'x1',
-      second: 'x2',
-      min: -10,
-      max: 10,
-      compound: { join: 'or', closed: [true, true] },
     },
   }),
 ];
