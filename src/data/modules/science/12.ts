@@ -619,6 +619,53 @@ const coralDays: ModuleDef = {
   representation: { kind: 'coralSection', lines: 'n', bands: 'b', days: 'N', day: 'D' },
 };
 
+// ── Weathering, erosion and deposition (the main page is an explore) ──
+
+/** A stream's size or flow, 0.01–100,000 in its unit. */
+const flow = (id: string, symbol: string, name: string, unit: string, derived = false) =>
+  V(id, symbol, name, { unit, min: 0.01, max: 100000, step: 0.01, derived });
+
+const discharge: ModuleDef = {
+  id: 's.12.surface-processes~discharge',
+  title: 'A stream’s discharge',
+  use: 'Use this for “A stream is 12 m wide and 1.5 m deep and flows at 0.8 m/s. What is its discharge?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Discharge is the volume of water that flows past a point each second.',
+    'The channel is taken as a rectangle, and the speed is the average across it.',
+    'A stream carries more sediment, and erodes faster, when its discharge rises in a flood.',
+  ],
+  variables: [
+    flow('w', 'w', 'Width of the water', 'm'),
+    flow('d', 'd', 'Depth of the water', 'm'),
+    flow('v', 'v', 'Flow speed', 'm/s'),
+    flow('A', 'A', 'Cross-section area', 'm²', true),
+    flow('Q', 'Q', 'Discharge', 'm³/s', true),
+  ],
+  ...rels(
+    product('A', 'w', 'd', 'A = w × d', [
+      'The cross-section is a rectangle, width by depth.',
+      'Width: the area over the depth.',
+      'Depth: the area over the width.',
+    ]),
+    product('Q', 'A', 'v', 'Q = A × v', [
+      'Each second a slab of water v meters long and A square meters across passes.',
+      'The area: the discharge over the speed.',
+      'The speed: the discharge over the area.',
+    ]),
+  ),
+  example: { w: 12, d: 1.5, v: 0.8, A: 18, Q: 14.4 },
+  startWith: ['w', 'd', 'v'],
+  representation: {
+    kind: 'streamChannel',
+    width: 'w',
+    depth: 'd',
+    speed: 'v',
+    area: 'A',
+    discharge: 'Q',
+  },
+};
+
 // ── Geologic time and radiometric dating ──
 
 /** n = t ÷ T: the half-lives in an age. */
@@ -1983,6 +2030,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   spreading,
   earthDay,
   coralDays,
+  discharge,
   carbonDating,
   uranium,
   bracket,
