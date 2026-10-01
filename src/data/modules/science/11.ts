@@ -2231,6 +2231,54 @@ const energyPages: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const [m, h, t] = [60, 4.5, 6];
+    const W = m * G * h;
+    return {
+      id: 's.11.work-energy-power~power',
+      title: 'Power: work done each second',
+      use: 'Use this for “A 60 kg student runs up 4.5 m of stairs in 6 s. How much work does she do, and what is her power?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Lifting at a steady speed takes a force equal to the weight, mg, over the height: W = mgh.',
+        'Power is work per second: P = W/t. One watt is one joule each second.',
+        'The path does not matter, only the height gained: stairs or a rope, the work is the same.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass', 'kg', 0.1, 1e5, 0.1),
+        q('h', 'h', 'Height raised', 'm', 0.01, 1e4, 0.01),
+        q('t', 't', 'Time taken', 's', 0.01, 1e6, 0.01, { units: ['s'] }),
+        q('W', 'W', 'Work done', 'J', 0, 1e10, 0.01),
+        q('P', 'P', 'Power', 'W', 0, 1e9, 0.01),
+      ],
+      ...rules(
+        rule('W = mgh', '{W} = {m} × 9.8 × {h}', (x) => x.W! - x.m! * G * x.h!, {
+          W: [
+            (x) => x.m! * G * x.h!,
+            '{m} × 9.8 × {h}',
+            'The weight, mg, times the height raised.',
+          ],
+          m: [(x) => div(x.W!, G * x.h!), '{W}/(9.8 × {h})', 'Divide the work by gh.'],
+          h: [(x) => div(x.W!, x.m! * G), '{W}/({m} × 9.8)', 'Divide the work by the weight.'],
+        }),
+        rule('P = W/t', '{P} = {W}/{t}', (x) => x.P! * x.t! - x.W!, {
+          P: [(x) => div(x.W!, x.t!), '{W}/{t}', 'The joules for each second.'],
+          W: [(x) => x.P! * x.t!, '{P} × {t}', 'Joules each second times the seconds.'],
+          t: [(x) => div(x.W!, x.P!), '{W}/{P}', 'How many seconds at P joules each second.'],
+        }),
+      ),
+      example: { m, h, t, W, P: W / t },
+      startWith: ['m', 'h', 't'],
+      representation: {
+        kind: 'powerLift',
+        mass: 'm',
+        height: 'h',
+        time: 't',
+        work: 'W',
+        power: 'P',
+      },
+    } satisfies ModuleDef;
+  })(),
   {
     id: 's.11.work-energy-power~lever',
     title: 'A lever',
