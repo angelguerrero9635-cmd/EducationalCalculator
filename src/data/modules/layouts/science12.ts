@@ -1031,6 +1031,68 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     ],
   },
   {
+    kind: 'explore',
+    id: 's.12.climate-systems~carbon-cycle',
+    title: 'The fast and slow carbon cycles',
+    use: 'Use this for “How do volcanoes and burning fuels return buried carbon to the air, and which is faster?”',
+    assumptions: [
+      'Every arrow is carbon moving from one store to another; the dashed arrow takes millions of years.',
+      'Photosynthesis, respiration, decay and the ocean move carbon within years: the fast cycle.',
+      'Burial, weathering and volcanoes move it over millions of years: the slow cycle.',
+    ],
+    figure: { kind: 'carbonCycle', volcano: true },
+    scenes: [
+      {
+        label: 'Whole cycle',
+        lines: [
+          'Carbon is stored in the air, living things, dead matter, the ocean, fossil fuels and rock deep underground.',
+          'Most of Earth’s carbon sits in rock, where it stays for millions of years.',
+        ],
+        carbon: {},
+      },
+      {
+        label: 'Fast cycle',
+        lines: [
+          'Plants take CO₂ out of the air in spring and summer; respiration and decay give it back.',
+          'This swap is why the CO₂ in the air rises and falls a little every year.',
+        ],
+        carbon: { process: 'photosynthesis' },
+      },
+      {
+        label: 'Burial',
+        lines: [
+          'A little dead matter is buried before it decays and, over millions of years, becomes coal, oil and gas.',
+          'Burial takes carbon out of the fast cycle.',
+        ],
+        carbon: { process: 'burial' },
+      },
+      {
+        label: 'Volcanoes',
+        lines: [
+          'Rock carried down into the mantle melts, and volcanoes let its carbon out as CO₂.',
+          'Over millions of years this balances the carbon that weathering and burial lock away.',
+        ],
+        carbon: { process: 'volcano' },
+      },
+      {
+        label: 'Burning',
+        lines: [
+          'Burning coal, oil and gas returns carbon buried for millions of years in a few decades.',
+          'People now release about 100 times as much CO₂ each year as all the world’s volcanoes.',
+        ],
+        carbon: { process: 'burning' },
+      },
+      {
+        label: 'Dissolving',
+        lines: [
+          'The ocean takes in about a quarter of the CO₂ people release.',
+          'The dissolved CO₂ makes seawater more acidic.',
+        ],
+        carbon: { process: 'dissolving' },
+      },
+    ],
+  },
+  {
     kind: 'sort',
     id: 's.12.climate-systems~carbon',
     title: 'Adds CO₂ or takes it out?',

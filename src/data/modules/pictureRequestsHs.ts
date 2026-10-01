@@ -2130,9 +2130,10 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.12.resource-management~reserves': '"kind":"reserve"',
         's.12.starlight-spectra~lines': '"kind":"spectra"',
         's.12.stellar-evolution~lifetime': '"mass":"M"',
+        's.12.climate-systems~carbon-cycle': '"volcano":true',
       },
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.s12-earth-interior-magnitude-half',
       'g.s12-earth-interior-magnitude-far',
@@ -2146,10 +2147,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s12-climate-systems-energy-balance-mars',
       'g.s12-resource-management-reserves-field',
       'g.s12-resource-management-reserves-long',
-      'g.s12-climate-systems-particles',
       'g.s12-stellar-evolution-lifetime-dwarf',
       'g.s12-stellar-evolution-lifetime-massive',
-      'g.s12-climate-systems-carbon-volcano',
     ],
     notes: [
       'P15: docs/plans/s.12.md needs 2–11, drawn part by part (group H2F, demos in galleryHs2f.ts, checks in harness/picturesHs2f.ts).',
@@ -2163,7 +2162,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       "Need 9 (s.12.radiometric-dating~bracket): the built page already uses U-235 → Pb-207, as the plan chose, so no page change there. The K-40 fix is an option for any page or demo that dates by potassium: `rockLayers` `dating.sample.second: { name, share }`, a parent that decays two ways, `share` percent of the decayed atoms drawn as the second daughter in a third color and the rest as `daughterName`, each row of the key with its share of decays and the caption splitting the count. Example: sample { parent: 'P', layer: 2, parentName: 'potassium-40', daughterName: 'argon-40', halfLives: 'n', second: { name: 'calcium-40', share: 89.3 } }: after 1 half-life, 50 potassium-40, 5 argon-40 and 45 calcium-40 (demo g.s12-radiometric-dating-potassium). Round 1's two K-40 demos (g.s12-radiometric-dating-half-life and -young in galleryHsl.ts) now pass it and their assumption says 89.3% becomes calcium-40 and 10.7% argon-40. A sample without `second` draws exactly as before. The harness checks 0 < share < 100.",
       "Need 10 (s.12.stellar-evolution~lifetime): `hrDiagram` with `mass` (a spec without temperature, told apart by its `mass` field), { kind: 'hrDiagram', mass: 'M', luminosity?: 'L', lifetime?: 't', name? }: the same H–R diagram, the star at L = M^3.5 (the page's L when given) where the drawn main sequence reaches that luminosity, in its color, with 3, 10 and 30 M☉ marked along the band (a mark within 0.8 decades of the star is left out) and the caption giving L, the temperature there and the lifetime t = 10¹⁰ ÷ M^2.5 years. Masses 0.08–50 M☉ stay on the diagram. The harness checks the mass range, L = M^3.5 and t = 10¹⁰ ÷ M^2.5. Step text: write t = 10¹⁰ ÷ M^2.5, not × M^(−2.5) (the harness reads a negative power as a negative count). Example: M = 2 → L = 11.3 L☉, about 7,960 K, t = 1.77 × 10⁹ years (demo g.s12-stellar-evolution-lifetime).",
       "Need 11 (optional; NAEP-2009-12S9-#9, NAEP-2019-12S7-#13): `carbonCycle` takes a figure option `volcano: true` (a volcanic island at the ocean's right edge rising from the seafloor over a magma chamber, lava at its crater, and a `volcanoes` arrow up the right edge to the air; the ocean's \"dissolving\" label moves 12 px in to clear it) and CarbonProcess gains 'volcano' to light that arrow. Without the option the figure draws exactly as before (the K–8 carbon-cycle pages are pixel-identical). A scene lighting 'volcano' on a figure without it fails the layout check. Example: figure { kind: 'carbonCycle', volcano: true }, scene carbon: { process: 'volcano' } (demo g.s12-climate-systems-carbon-volcano).",
-      "Parts by page (`uses`): need 8's `particles` is placed on s.12.climate-systems; need 9 changes no page (no Grade 12 page dates by potassium) and need 11 has no page (no Grade 12 page draws the carbon cycle). Waiting on pages not built yet (each in `pages` with its mark, so the test checks it once built; the demos hold the specs): ~magnitude, ~spreading-rate, ~discharge, ~cloud-base, ~energy-balance, ~reserves, ~lines and ~lifetime.",
+      "Parts by page (`uses`): every part is placed, each on the page it names. Need 8's `particles` is on s.12.climate-systems (\"Ash and smoke\"); need 9's `second` is on s.12.radiometric-dating~potassium (a K–Ar age from the argon per potassium atom, P = 100 ÷ (1 + R ÷ 0.107)); need 11's `volcano` is on s.12.climate-systems~carbon-cycle (the fast and slow carbon cycles). The demos those pages equal (potassium, particles, carbon volcano) are retired; the rest show built pages with other values.",
     ].join(' '),
   },
   {
