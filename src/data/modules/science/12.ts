@@ -349,6 +349,117 @@ const shadowZone: ModuleDef = {
   representation: { kind: 'earthLayers', mode: 'section', distance: 'D' },
 };
 
+/** A magnitude, 0–10. */
+const mag = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { min: 0, max: 10, step: 0.1 });
+
+const magnitude: ModuleDef = {
+  id: 's.12.earth-interior~magnitude',
+  title: 'Comparing earthquakes by magnitude',
+  use: 'Use this for “A magnitude 6 quake and a magnitude 4 quake: how much more shaking, and how much more energy?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Magnitude is read from the largest swing of a seismogram, corrected for the station’s distance.',
+    'Each step of 1 in magnitude is 10 times the ground motion and about 32 times the energy.',
+    'Both quakes are measured on the same magnitude scale.',
+  ],
+  variables: [
+    mag('M1', 'M₁', 'Magnitude of the first quake'),
+    mag('M2', 'M₂', 'Magnitude of the second quake'),
+    V('d', 'ΔM', 'Difference in magnitude', { min: -10, max: 10, step: 0.1, derived: true }),
+    V('A', 'A', 'Amplitude ratio', { min: 1e-10, max: 1e10, step: 0.01, derived: true }),
+    V('E', 'E', 'Energy ratio', { min: 1e-15, max: 1e15, step: 0.01, derived: true }),
+  ],
+  ...rels(
+    difference('d', 'M2', 'M1', 'ΔM = M₂ − M₁', [
+      'How many steps of magnitude apart the two quakes are.',
+      'The second quake is ΔM steps above the first.',
+      'The first quake is ΔM steps below the second.',
+    ]),
+    rule('A = 10^ΔM', '{A} = 10^{d}', (v) => Math.log10(v.A!) - v.d!, {
+      A: [(v) => 10 ** v.d!, '10^{d}', 'Each step of magnitude is 10 times the ground motion.'],
+      d: [
+        (v) => (v.A! > 0 ? Math.log10(v.A!) : undefined),
+        'log_10({A})',
+        'How many factors of 10 make the amplitude ratio.',
+      ],
+    }),
+    rule('E = 10^(1.5 ΔM)', '{E} = 10^(1.5 × {d})', (v) => Math.log10(v.E!) - 1.5 * v.d!, {
+      E: [
+        (v) => 10 ** (1.5 * v.d!),
+        '10^(1.5 × {d})',
+        'Each step of magnitude is about 32 times the energy: 10^1.5.',
+      ],
+      d: [
+        (v) => (v.E! > 0 ? Math.log10(v.E!) / 1.5 : undefined),
+        'log_10({E}) ÷ 1.5',
+        'The energy ratio’s factors of 10, over 1.5 per step.',
+      ],
+    }),
+  ),
+  example: { M1: 4, M2: 6, d: 2, A: 100, E: 1000 },
+  startWith: ['M1', 'M2'],
+  representation: {
+    kind: 'earthLayers',
+    mode: 'magnitude',
+    m1: 'M1',
+    m2: 'M2',
+    amplitude: 'A',
+    energy: 'E',
+  },
+};
+
+const spreading: ModuleDef = {
+  id: 's.12.earth-interior~spreading-rate',
+  title: 'Seafloor spreading from magnetic stripes',
+  use: 'Use this for “Rock 100 km from the ridge is 4 million years old. How fast is the seafloor spreading?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'New seafloor forms at the ridge and moves away on both sides at the same rate.',
+    'Cooling rock records the direction of Earth’s magnetic field, which has flipped many times, so the seafloor is striped the same on both sides.',
+    'A kilometer per million years is a millimeter per year.',
+  ],
+  variables: [
+    V('x', 'x', 'Distance from the ridge', { unit: 'km', min: 1, max: 1000, step: 1 }),
+    V('t', 't', 'Age of the rock', { unit: 'million years', min: 0.1, max: 12, step: 0.01 }),
+    V('v', 'v', 'Spreading rate, one side', {
+      unit: 'mm/yr',
+      min: 0.1,
+      max: 10000,
+      step: 0.1,
+      derived: true,
+    }),
+    V('w', 'w', 'Full spreading rate', {
+      unit: 'mm/yr',
+      min: 0.2,
+      max: 20000,
+      step: 0.1,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    quotient('v', 'x', 't', 'v = x ÷ t', [
+      'The rock moved x kilometers in t million years; a kilometer per million years is a millimeter per year.',
+      'Distance is the rate times the time.',
+      'Time is the distance over the rate.',
+    ]),
+    rule('w = 2v', '{w} = 2 × {v}', (v) => v.w! - 2 * v.v!, {
+      w: [(v) => 2 * v.v!, '2 × {v}', 'The plates move apart on both sides, each at v.'],
+      v: [(v) => v.w! / 2, '{w} ÷ 2', 'Each side moves at half the full rate.'],
+    }),
+  ),
+  example: { x: 100, t: 4, v: 25, w: 50 },
+  startWith: ['x', 't'],
+  representation: {
+    kind: 'oceanProfile',
+    mode: 'stripes',
+    distance: 'x',
+    age: 't',
+    rate: 'v',
+    full: 'w',
+  },
+};
+
 // ── Earth's history: the early Earth, its atmosphere and the history of life ──
 
 /** Rounded ages (million years ago) of the events round the one-day clock. */
@@ -506,6 +617,53 @@ const coralDays: ModuleDef = {
   example: { n: 1200, b: 3, N: 400, D: YEAR_H / 400 },
   startWith: ['n', 'b'],
   representation: { kind: 'coralSection', lines: 'n', bands: 'b', days: 'N', day: 'D' },
+};
+
+// ── Weathering, erosion and deposition (the main page is an explore) ──
+
+/** A stream's size or flow, 0.01–100,000 in its unit. */
+const flow = (id: string, symbol: string, name: string, unit: string, derived = false) =>
+  V(id, symbol, name, { unit, min: 0.01, max: 100000, step: 0.01, derived });
+
+const discharge: ModuleDef = {
+  id: 's.12.surface-processes~discharge',
+  title: 'A stream’s discharge',
+  use: 'Use this for “A stream is 12 m wide and 1.5 m deep and flows at 0.8 m/s. What is its discharge?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Discharge is the volume of water that flows past a point each second.',
+    'The channel is taken as a rectangle, and the speed is the average across it.',
+    'A stream carries more sediment, and erodes faster, when its discharge rises in a flood.',
+  ],
+  variables: [
+    flow('w', 'w', 'Width of the water', 'm'),
+    flow('d', 'd', 'Depth of the water', 'm'),
+    flow('v', 'v', 'Flow speed', 'm/s'),
+    flow('A', 'A', 'Cross-section area', 'm²', true),
+    flow('Q', 'Q', 'Discharge', 'm³/s', true),
+  ],
+  ...rels(
+    product('A', 'w', 'd', 'A = w × d', [
+      'The cross-section is a rectangle, width by depth.',
+      'Width: the area over the depth.',
+      'Depth: the area over the width.',
+    ]),
+    product('Q', 'A', 'v', 'Q = A × v', [
+      'Each second a slab of water v meters long and A square meters across passes.',
+      'The area: the discharge over the speed.',
+      'The speed: the discharge over the area.',
+    ]),
+  ),
+  example: { w: 12, d: 1.5, v: 0.8, A: 18, Q: 14.4 },
+  startWith: ['w', 'd', 'v'],
+  representation: {
+    kind: 'streamChannel',
+    width: 'w',
+    depth: 'd',
+    speed: 'v',
+    area: 'A',
+    discharge: 'Q',
+  },
 };
 
 // ── Geologic time and radiometric dating ──
@@ -978,6 +1136,142 @@ const humidity: ModuleDef = {
   representation: { kind: 'percentBar', percent: 'RH', part: 'w', whole: 'ws', ticks: 10 },
 };
 
+const cloudBase: ModuleDef = {
+  id: 's.12.atmosphere-weather~cloud-base',
+  title: 'The height of a cloud’s base',
+  use: 'Use this for “The air is 24 °C with a dew point of 12 °C. How high is the cloud base?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Rising air expands and cools about 10 °C per km until it is saturated.',
+    'Its dew point falls only about 2 °C per km, so the two close 8 °C per km.',
+    'Where they meet, water vapor condenses: the flat base of a cumulus cloud.',
+  ],
+  variables: [
+    V('T', 'T', 'Temperature at the ground', { unit: '°C', min: -40, max: 50, step: 0.1 }),
+    V('Td', 'T_d', 'Dew point at the ground', { unit: '°C', min: -60, max: 50, step: 0.1 }),
+    V('h', 'h', 'Height of the cloud base', {
+      unit: 'km',
+      min: 0,
+      max: 15,
+      step: 0.001,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    {
+      relation: {
+        id: 'T_d ≤ T',
+        constraint: true,
+        display: 'the dew point {Td} is at most the temperature {T}',
+        vars: ['Td', 'T'],
+        residual: (v: Values) => (v.Td! <= v.T! ? 0 : 1),
+        solve: {},
+        message: () => 'The dew point can’t be above the air’s temperature.',
+      },
+      steps: {},
+    },
+    rule('h = (T − T_d) ÷ 8', '{h} = ({T} − {Td}) ÷ 8', (v) => 8 * v.h! - (v.T! - v.Td!), {
+      h: [
+        (v) => (v.T! - v.Td!) / 8,
+        '({T} − {Td}) ÷ 8',
+        'The gap closes 10 − 2 = 8 °C for each km the parcel rises.',
+      ],
+      T: [(v) => v.Td! + 8 * v.h!, '{Td} + 8 × {h}', 'The dew point plus 8 °C for each km.'],
+      Td: [(v) => v.T! - 8 * v.h!, '{T} − 8 × {h}', 'The temperature less 8 °C for each km.'],
+    }),
+  ),
+  example: { T: 24, Td: 12, h: 1.5 },
+  startWith: ['T', 'Td'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'parcel',
+    temperature: 'T',
+    dewPoint: 'Td',
+    base: 'h',
+  },
+};
+
+// ── Climate systems, feedbacks and climate change (the main page is an explore) ──
+
+/** The Stefan–Boltzmann constant, W/m² per K⁴. */
+const SIGMA = 5.67e-8;
+
+const energyBalance: ModuleDef = {
+  id: 's.12.climate-systems~energy-balance',
+  title: 'Earth’s energy balance',
+  use: 'Use this for “If Earth reflects 30% of sunlight and has no greenhouse gases, how warm is it?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Sunlight falls on Earth’s disk but spreads over the whole globe, 4 times the disk’s area, so each square meter gets S ÷ 4 on average.',
+    'The albedo α is the share reflected by clouds, ice and land; the rest is absorbed.',
+    'In balance the ground sends out as infrared what it absorbs: σTₑ⁴ = F, with σ = 5.67 × 10⁻⁸ W/m² per K⁴.',
+  ],
+  variables: [
+    V('S', 'S', 'Sunlight at the top of the atmosphere', {
+      unit: 'W/m²',
+      min: 1,
+      max: 3000,
+      step: 1,
+    }),
+    V('a', 'α', 'Albedo', { min: 0, max: 0.99, step: 0.01 }),
+    V('F', 'F', 'Sunlight absorbed', {
+      unit: 'W/m²',
+      min: 0,
+      max: 750,
+      step: 0.1,
+      derived: true,
+    }),
+    V('T', 'Tₑ', 'Balance temperature', { unit: 'K', min: 0, max: 400, step: 0.1, derived: true }),
+  ],
+  ...rels(
+    rule('F = S(1 − α) ÷ 4', '{F} = {S} × (1 − {a}) ÷ 4', (v) => 4 * v.F! - v.S! * (1 - v.a!), {
+      F: [
+        (v) => (v.S! * (1 - v.a!)) / 4,
+        '{S} × (1 − {a}) ÷ 4',
+        'The share not reflected, spread over 4 times the disk’s area.',
+      ],
+      S: [
+        (v) => div(4 * v.F!, 1 - v.a!),
+        '4 × {F} ÷ (1 − {a})',
+        'The sunlight that leaves F absorbed after reflection.',
+      ],
+      a: [
+        (v) => (v.S! > 0 ? 1 - (4 * v.F!) / v.S! : undefined),
+        '1 − 4 × {F} ÷ {S}',
+        'The share of the sunlight not absorbed.',
+      ],
+    }),
+    rule(
+      'Tₑ = ∜(F ÷ σ)',
+      '{T} = ∜({F} ÷ (5.67 × 10⁻⁸))',
+      (v) => v.T! - (Math.max(0, v.F!) / SIGMA) ** 0.25,
+      {
+        T: [
+          (v) => (v.F! >= 0 ? (v.F! / SIGMA) ** 0.25 : undefined),
+          '∜({F} ÷ (5.67 × 10⁻⁸))',
+          'The temperature whose infrared, σTₑ⁴, carries away F.',
+        ],
+        F: [(v) => SIGMA * v.T! ** 4, '5.67 × 10⁻⁸ × {T}^4', 'A surface at Tₑ sends out σTₑ⁴.'],
+      },
+    ),
+  ),
+  example: {
+    S: 1361,
+    a: 0.3,
+    F: (1361 * 0.7) / 4,
+    T: ((1361 * 0.7) / 4 / SIGMA) ** 0.25,
+  },
+  startWith: ['S', 'a'],
+  representation: {
+    kind: 'atmosphereLayers',
+    mode: 'balance',
+    sunlight: 'S',
+    albedo: 'a',
+    absorbed: 'F',
+    temperature: 'T',
+  },
+};
+
 // ── Human impacts and resource management (the main page is a sort) ──
 
 const pct = (id: string, symbol: string, name: string, derived = false) =>
@@ -1082,6 +1376,44 @@ const energyMix: ModuleDef = {
     max: 50,
     scale: 10,
   },
+};
+
+const reserves: ModuleDef = {
+  id: 's.12.resource-management~reserves',
+  title: 'How long a reserve lasts',
+  use: 'Use this for “400 billion barrels of oil are used at 12.5 billion a year. How many years will they last?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Use and reserves stay the same.',
+    'Reserves are the amount that can be recovered at today’s prices with today’s technology.',
+    'Nonrenewable resources form over millions of years, far slower than they are used.',
+  ],
+  variables: [
+    V('Q', 'Q', 'Reserve', { unit: 'billion barrels', min: 0.01, max: 100000, step: 0.01 }),
+    V('r', 'r', 'Use each year', {
+      unit: 'billion barrels a year',
+      min: 0.01,
+      max: 1000,
+      step: 0.01,
+    }),
+    V('y', 'y', 'Years it lasts', {
+      unit: 'years',
+      min: 0,
+      max: 10000000,
+      step: 0.01,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    quotient('y', 'Q', 'r', 'y = Q ÷ r', [
+      'How many years of use the reserve holds.',
+      'The reserve: the use each year times the years.',
+      'The use each year: the reserve over the years.',
+    ]),
+  ),
+  example: { Q: 400, r: 12.5, y: 32 },
+  startWith: ['Q', 'r'],
+  representation: { kind: 'reserve', reserve: 'Q', rate: 'r', years: 'y' },
 };
 
 // ── The solar system: formation, planets and small bodies ──
@@ -1360,6 +1692,45 @@ const telescope: ModuleDef = {
   },
 };
 
+const parallax: ModuleDef = {
+  id: 's.12.starlight-spectra~parallax',
+  title: 'Distance from parallax',
+  use: 'Use this for “A star’s parallax is 0.1″. How far away is it, in parsecs and light-years?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Earth is on opposite sides of the Sun six months apart, 2 AU apart.',
+    'p is half the near star’s shift against the far stars: the angle 1 AU makes at the star.',
+    '1 parsec = 3.26 light-years.',
+  ],
+  variables: [
+    V('p', 'p', 'Parallax angle', { unit: '″', min: 0.001, max: 1, step: 0.001 }),
+    V('d', 'd', 'Distance in parsecs', { unit: 'pc', min: 1, max: 1000, step: 0.01 }),
+    V('D', 'D', 'Distance in light-years', {
+      unit: 'light-years',
+      min: 3.26,
+      max: 3260,
+      step: 0.01,
+    }),
+  ],
+  ...rels(
+    rule('d = 1 ÷ p', '{d} = 1 ÷ {p}', (v) => v.d! * v.p! - 1, {
+      d: [
+        (v) => div(1, v.p!),
+        '1 ÷ {p}',
+        'A parsec is the distance at which 1 AU looks 1″ wide: the smaller the angle, the farther the star.',
+      ],
+      p: [(v) => div(1, v.d!), '1 ÷ {d}', 'The angle shrinks as the star is farther: 1 over d.'],
+    }),
+    rule('D = 3.26 × d', '{D} = 3.26 × {d}', (v) => v.D! - 3.26 * v.d!, {
+      D: [(v) => 3.26 * v.d!, '3.26 × {d}', 'Light takes 3.26 years to cross a parsec.'],
+      d: [(v) => v.D! / 3.26, '{D} ÷ 3.26', 'Each parsec is 3.26 light-years: divide.'],
+    }),
+  ),
+  example: { p: 0.1, d: 10, D: 32.6 },
+  startWith: ['p'],
+  representation: { kind: 'parallax', angle: 'p', parsecs: 'd', lightYears: 'D' },
+};
+
 // ── The sun and stellar evolution ──
 
 /** The Sun's surface temperature, K. */
@@ -1465,6 +1836,59 @@ const fusion: ModuleDef = {
       { particle: 'positron', count: 2 },
     ],
   },
+};
+
+const lifetime: ModuleDef = {
+  id: 's.12.stellar-evolution~lifetime',
+  title: 'A star’s mass sets its life',
+  use: 'Use this for “A star has twice the Sun’s mass. How bright is it, and how long will it last?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'On the main sequence a star’s luminosity grows about as its mass to the power 3.5.',
+    'Its life there is its fuel (its mass) over the rate it burns it (its luminosity): the Sun’s 10¹⁰ years ÷ M^2.5.',
+    'Masses and luminosities are in Suns.',
+  ],
+  variables: [
+    V('M', 'M', 'Mass', { unit: 'M☉', min: 0.08, max: 50, step: 0.01 }),
+    V('L', 'L', 'Luminosity', { unit: 'L☉', min: 0, max: 1e7, step: 0.001, derived: true }),
+    V('t', 't', 'Main-sequence lifetime', {
+      unit: 'years',
+      min: 0,
+      max: 1e14,
+      step: 1,
+      scientific: true,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    rule('L = M^3.5', '{L} = {M}^3.5', (v) => v.L! - v.M! ** 3.5, {
+      L: [
+        (v) => v.M! ** 3.5,
+        '{M}^3.5',
+        'Luminosity rises steeply with mass on the main sequence.',
+      ],
+      M: [
+        (v) => (v.L! > 0 ? v.L! ** (1 / 3.5) : undefined),
+        '{L}^(1/3.5)',
+        'The mass that shines L.',
+      ],
+    }),
+    rule('t = 10¹⁰ ÷ M^2.5', '{t} = 10¹⁰ ÷ {M}^2.5', (v) => v.t! / (1e10 * v.M! ** -2.5) - 1, {
+      t: [
+        (v) => 1e10 * v.M! ** -2.5,
+        '10¹⁰ ÷ {M}^2.5',
+        'M times the fuel burned L = M^3.5 times as fast: the Sun’s life × M ÷ M^3.5.',
+      ],
+      M: [
+        (v) => (v.t! > 0 ? (v.t! / 1e10) ** (-1 / 2.5) : undefined),
+        '(10¹⁰ ÷ {t})^(1/2.5)',
+        'The mass whose life is t.',
+      ],
+    }),
+  ),
+  example: { M: 2, L: 2 ** 3.5, t: 1e10 * 2 ** -2.5 },
+  startWith: ['M'],
+  representation: { kind: 'hrDiagram', mass: 'M', luminosity: 'L', lifetime: 't' },
 };
 
 // ── Galaxies, the Big Bang and the expanding universe ──
@@ -1868,8 +2292,11 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
   shadowZone,
+  magnitude,
+  spreading,
   earthDay,
   coralDays,
+  discharge,
   carbonDating,
   uranium,
   bracket,
@@ -1879,13 +2306,18 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   lapse,
   pressureMap,
   humidity,
+  cloudBase,
+  energyBalance,
   energyMix,
+  reserves,
   kepler,
   wien,
   doppler,
   telescope,
+  parallax,
   hr,
   fusion,
+  lifetime,
   hubble,
   redshift,
   stretch,

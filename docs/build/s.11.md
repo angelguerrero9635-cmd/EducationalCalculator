@@ -363,3 +363,30 @@ From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.m
   solid ball. No other page uses a rotor shape, so c = ⅔ drawing a hollow ball changes nothing
   else. Demo `g.s11-rotation-hollow-ball` retired; the H107 demo
   `g.s-11-rotation-rotational-inertia` (three shapes) is kept.
+
+### Waiting pages built
+
+Every page the "Waiting" table listed, and `~moving-charge`, is built from its gallery demo
+(the drawn picture's spec, tested), then retired from `galleryHs2c.ts`, `galleryHs3a.ts` and the
+tracker's gallery lists; the tracker names each page (H102, H107). Each passes
+`MODULE_IDS=<id> npx jest --maxWorkers=1 src/data/modules`; one screenshot each at 390 px.
+
+| Page                                  | Picture                      | Changed from the demo                                                                                                                                                                                                         |
+| ------------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `s.11.kinematics-1d~motion-diagrams`  | sort, `strobe` cards         | none (the plan's six cards)                                                                                                                                                                                                   |
+| `s.11.circular-gravitation~orbit`     | `circularMotion` `satellite` | none                                                                                                                                                                                                                          |
+| `s.11.momentum~one-after`             | `collision` `general`        | only v₂′ is worked out from the momentum: working v₁′, v₁ or v₂ back cancels badly when one cart is far heavier (the sampling found ΔKE off); the use line matches the example's oncoming cart (no zero velocity with a unit) |
+| `s.11.momentum~impulse`               | `impulse`                    | the ball bounces back at 15 m/s (the demo's use line said it stopped, its example bounced); mass up to 10⁴ kg, so a small Δp from two large velocities stays within the picture check                                         |
+| `s.11.work-energy-power~work`         | `freeBody` `displacement`    | none; placed after the main page, as the plan orders it                                                                                                                                                                       |
+| `s.11.work-energy-power~power`        | `powerLift`                  | none                                                                                                                                                                                                                          |
+| `s.11.thermodynamics~first-law`       | `gasPiston` `energy`         | none; before `~engine`                                                                                                                                                                                                        |
+| `s.11.electrostatics~plates`          | `charges` `plates`           | none                                                                                                                                                                                                                          |
+| `s.11.modern-physics~photoelectric`   | `photoelectric`              | none                                                                                                                                                                                                                          |
+| `s.11.modern-physics~relativity`      | `lightClock`                 | none                                                                                                                                                                                                                          |
+| `s.11.electromagnetism~moving-charge` | `induction` `charge`         | the speed is m/s only and not scientific: a km/h speed put a number in the check line shown nowhere else, and 400 m/s read "4 × 10²"; after `~force`                                                                          |
+
+The proton-circle demo (`r = mv/(|q|B)`) and the point-field demo (H102 10b) stay: no page
+here uses them. New fixed unit label: C. No new step phrases.
+
+Seen in the screenshots, for the lead (components): `~first-law`'s "Q = 500 J in" runs under the
+cylinder's left edge.

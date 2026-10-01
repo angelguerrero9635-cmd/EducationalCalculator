@@ -1564,6 +1564,80 @@ const circularPages: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const [M, r] = [5.97e24, 7.0e6];
+    const v = Math.sqrt((6.674e-11 * M) / r);
+    return {
+      id: 's.11.circular-gravitation~orbit',
+      title: 'A satellite in orbit',
+      use: 'Use this for “A satellite circles Earth (5.97 × 10²⁴ kg) 7 × 10⁶ m from its center. How fast does it go, and how long is one orbit?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The orbit is a circle, and gravity is the only force: it supplies the centripetal force.',
+        'GMm/r² = mv²/r, so v = √(GM/r), with G = 6.674 × 10⁻¹¹ N·m²/kg²; the satellite’s mass cancels.',
+        'r is measured from the center of the planet, not from its surface.',
+      ],
+      variables: [
+        q('M', 'M', 'Central mass', 'kg', 1e10, 1e32, 1, { scientific: true }),
+        q('r', 'r', 'Orbit radius', 'm', 1, 1e13, 1, { scientific: true }),
+        q('v', 'v', 'Orbital speed', 'm/s', 1e-3, 1e7, 0.1),
+        q('T', 'T', 'Period', 's', 1, 1e11, 1, { scientific: true, units: ['s'] }),
+      ],
+      ...rules(
+        rule(
+          'v = √(GM/r)',
+          '{v} = √(6.674 × 10⁻¹¹ × {M}/{r})',
+          (x) => (x.v! * x.v! * x.r!) / (6.674e-11 * x.M!) - 1,
+          {
+            v: [
+              (x) => Math.sqrt(Math.max(0, div(6.674e-11 * x.M!, x.r!) ?? 0)),
+              '√(6.674 × 10⁻¹¹ × {M}/{r})',
+              'G times the central mass, over r, then the square root.',
+            ],
+            r: [
+              (x) => div(6.674e-11 * x.M!, x.v! * x.v!),
+              '6.674 × 10⁻¹¹ × {M}/({v}²)',
+              'Square both sides: r = GM/v².',
+            ],
+            M: [
+              (x) => div(x.v! * x.v! * x.r!, 6.674e-11),
+              '{v}² × {r}/(6.674 × 10⁻¹¹)',
+              'Square both sides: M = v²r/G.',
+            ],
+          },
+        ),
+        rule('T = 2πr/v', '{T} = 2π × {r}/{v}', (x) => (x.T! * x.v!) / (2 * Math.PI * x.r!) - 1, {
+          T: [
+            (x) => div(2 * Math.PI * x.r!, x.v!),
+            '2π × {r}/{v}',
+            'Once round the circle, 2πr, at speed v.',
+          ],
+          v: [
+            (x) => div(2 * Math.PI * x.r!, x.T!),
+            '2π × {r}/{T}',
+            'Once round the circle in one period.',
+          ],
+          r: [
+            (x) => (x.v! * x.T!) / (2 * Math.PI),
+            '{v} × {T}/(2π)',
+            'The distance in one period is 2πr.',
+          ],
+        }),
+      ),
+      example: { M, r, v, T: (2 * Math.PI * r) / v },
+      startWith: ['M', 'r'],
+      representation: {
+        kind: 'circularMotion',
+        mode: 'satellite',
+        central: 'M',
+        radius: 'r',
+        speed: 'v',
+        period: 'T',
+        body: 'earth',
+        bodyRadius: 6.371e6,
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
 
 // ─── s.11.momentum ──────────────────────────────────────────────────────────
@@ -1819,6 +1893,149 @@ const momentumPages: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const [m, n, v, w, a] = [0.6, 0.4, 0.5, -0.25, 0.1];
+    const b = (m * v + n * w - m * a) / n;
+    const X = 0.5 * m * v * v + 0.5 * n * w * w - 0.5 * m * a * a - 0.5 * n * b * b;
+    return {
+      id: 's.11.momentum~one-after',
+      title: 'One velocity after, the other from momentum',
+      use: 'Use this for “A 0.6 kg cart at 0.5 m/s meets a 0.4 kg cart rolling the other way at 0.25 m/s. The first cart slows to 0.1 m/s. How fast does the other cart move, and how much kinetic energy is lost?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'No outside push along the track, so the total momentum is the same before and after.',
+        '+ is to the right: a cart moving left has a negative velocity.',
+        'Kinetic energy is not always kept: what is lost turns to heat and sound.',
+      ],
+      variables: [
+        M1,
+        M2,
+        V1B,
+        V2B,
+        V1A,
+        { ...V2A, step: 0.0001 },
+        KE('X', 'ΔKE', 'Kinetic energy lost'),
+      ],
+      ...rules(
+        rule(
+          'm₁v₁ + m₂v₂ = m₁v₁′ + m₂v₂′',
+          '{m} × {v} + {n} × {w} = {m} × {a} + {n} × {b}',
+          (x) => x.m! * x.v! + x.n! * x.w! - x.m! * x.a! - x.n! * x.b!,
+          {
+            b: [
+              (x) => div(x.m! * x.v! + x.n! * x.w! - x.m! * x.a!, x.n!),
+              '({m} × {v} + {n} × {w} − {m} × {a})/{n}',
+              'The momentum before, less cart 1’s after, is cart 2’s after; divide by m₂.',
+            ],
+            a: null,
+            v: null,
+            w: null,
+          },
+        ),
+        rule(
+          'ΔKE = KE before − KE after',
+          '{X} = ½ × {m} × {v}² + ½ × {n} × {w}² − ½ × {m} × {a}² − ½ × {n} × {b}²',
+          (x) =>
+            x.X! -
+            (0.5 * x.m! * x.v! ** 2 +
+              0.5 * x.n! * x.w! ** 2 -
+              0.5 * x.m! * x.a! ** 2 -
+              0.5 * x.n! * x.b! ** 2),
+          {
+            X: [
+              (x) =>
+                0.5 * x.m! * x.v! ** 2 +
+                0.5 * x.n! * x.w! ** 2 -
+                0.5 * x.m! * x.a! ** 2 -
+                0.5 * x.n! * x.b! ** 2,
+              '½ × {m} × {v}² + ½ × {n} × {w}² − ½ × {m} × {a}² − ½ × {n} × {b}²',
+              'Each cart’s ½mv² before, less each cart’s ½mv² after.',
+            ],
+            m: null,
+            n: null,
+            v: null,
+            w: null,
+            a: null,
+            b: null,
+          },
+        ),
+      ),
+      example: { m, n, v, w, a, b, X },
+      startWith: ['m', 'v', 'n', 'w', 'a'],
+      representation: {
+        kind: 'collision',
+        type: 'general',
+        masses: ['m', 'n'],
+        before: ['v', 'w'],
+        after: ['a', 'b'],
+        lost: 'X',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, u, v, t] = [0.2, 25, -15, 0.05];
+    const P = m * (v - u);
+    return {
+      id: 's.11.momentum~impulse',
+      title: 'Impulse: force × time = change in momentum',
+      use: 'Use this for “A 0.2 kg ball at 25 m/s bounces straight back at 15 m/s after touching a wall for 0.05 s. What average force acts on it? Why would a softer wall push less hard?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        '+ is the way the object first moves; a force against it is negative.',
+        'F is the average force over the time Δt.',
+        'The dashed rectangle is the same change in momentum spread over 0.2 s: a longer push is a smaller force.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass', 'kg', 0.001, 1e4, 0.001),
+        q('u', 'v₀', 'Velocity before', 'm/s', -300, 300, 0.1),
+        q('v', 'v', 'Velocity after', 'm/s', -300, 300, 0.1),
+        q('P', 'Δp', 'Change in momentum', 'kg·m/s', -1e7, 1e7, 0.001),
+        q('t', 'Δt', 'Time of the push', 's', 0.0001, 100, 0.001),
+        q('F', 'F', 'Average force', 'N', -1e9, 1e9, 0.01),
+      ],
+      ...rules(
+        rule('Δp = m(v − v₀)', '{P} = {m} × ({v} − {u})', (x) => x.P! - x.m! * (x.v! - x.u!), {
+          P: [
+            (x) => x.m! * (x.v! - x.u!),
+            '{m} × ({v} − {u})',
+            'The momentum after less the momentum before.',
+          ],
+          m: [
+            (x) => div(x.P!, x.v! - x.u!),
+            '{P}/({v} − {u})',
+            'Divide Δp by the change in velocity.',
+          ],
+          v: [
+            (x) => div(x.P! + x.m! * x.u!, x.m!),
+            '{u} + {P}/{m}',
+            'Add Δp/m to the velocity before.',
+          ],
+          u: [
+            (x) => div(x.m! * x.v! - x.P!, x.m!),
+            '{v} − {P}/{m}',
+            'Take Δp/m from the velocity after.',
+          ],
+        }),
+        rule('F = Δp/Δt', '{F} = {P}/{t}', (x) => x.F! * x.t! - x.P!, {
+          F: [(x) => div(x.P!, x.t!), '{P}/{t}', 'The change in momentum per second.'],
+          P: [(x) => x.F! * x.t!, '{F} × {t}', 'The impulse: force × time.'],
+          t: [(x) => div(x.P!, x.F!), '{P}/{F}', 'How long the force must push for this Δp.'],
+        }),
+      ),
+      example: { m, u, v, P, t, F: P / t },
+      startWith: ['m', 'u', 'v', 't'],
+      representation: {
+        kind: 'impulse',
+        mass: 'm',
+        before: 'u',
+        after: 'v',
+        time: 't',
+        change: 'P',
+        force: 'F',
+        compare: 0.2,
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
 
 // ─── s.11.work-energy-power ─────────────────────────────────────────────────
@@ -1926,6 +2143,139 @@ const energyPages: ModuleDef[] = [
         top: 'H',
         mass: 'm',
         speed: 'v',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, F, a, d] = [5, 40, 30, 15];
+    return {
+      id: 's.11.work-energy-power~work',
+      title: 'Work done by a pull at an angle',
+      use: 'Use this for “A crate is pulled 15 m across a floor by a 40 N force at 30° above level. How much work does the force do?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Only the part of the force along the motion, F cos θ, does work: W = Fd cos θ.',
+        'At θ = 0 the whole force is along the motion; at 90° it does no work.',
+        'The weight and the normal force are at right angles to the motion, so they do no work.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass of the crate', 'kg', 0.1, 1e4, 0.1),
+        q('G', 'F_g', 'Weight', 'N', 0, 1e6, 0.01),
+        q('N', 'F_N', 'Normal force', 'N', 0, 1e6, 0.01),
+        q('F', 'F', 'Pull', 'N', 0.1, 1e5, 0.1),
+        q('q', 'θ', 'Angle above level', '°', 0, 89, 1),
+        q('d', 'd', 'Distance moved', 'm', 0.01, 1e4, 0.01),
+        q('W', 'W', 'Work done by the pull', 'J', 0, 1e9, 0.01),
+      ],
+      ...rules(
+        rule('F_g = mg', '{G} = {m} × 9.8', (x) => x.G! - x.m! * G, {
+          G: [(x) => x.m! * G, '{m} × 9.8', 'The weight is the mass times g.'],
+          m: [(x) => x.G! / G, '{G}/9.8', 'Divide the weight by g.'],
+        }),
+        rule(
+          'F_N = F_g − F sin θ',
+          '{N} = {G} − {F} × sin({q})',
+          (x) => x.N! - (x.G! - x.F! * Math.sin(x.q! * RAD)),
+          {
+            N: [
+              (x) => x.G! - x.F! * Math.sin(x.q! * RAD),
+              '{G} − {F} × sin({q})',
+              'The pull’s part up, F sin θ, lifts a little: the floor pushes up less.',
+            ],
+          },
+        ),
+        rule(
+          'W = Fd cos θ',
+          '{W} = {F} × {d} × cos({q})',
+          (x) => x.W! - x.F! * x.d! * Math.cos(x.q! * RAD),
+          {
+            W: [
+              (x) => x.F! * x.d! * Math.cos(x.q! * RAD),
+              '{F} × {d} × cos({q})',
+              'The pull’s part along the floor, F cos θ, times the distance.',
+            ],
+            F: [
+              (x) => div(x.W!, x.d! * Math.cos(x.q! * RAD)),
+              '{W}/(cos({q}) × {d})',
+              'Divide the work by d cos θ.',
+            ],
+            d: [
+              (x) => div(x.W!, x.F! * Math.cos(x.q! * RAD)),
+              '{W}/(cos({q}) × {F})',
+              'Divide the work by the pull’s part along the floor.',
+            ],
+            q: undefined,
+          },
+        ),
+      ),
+      example: {
+        m,
+        G: m * G,
+        N: m * G - F * Math.sin(a * RAD),
+        F,
+        q: a,
+        d,
+        W: F * d * Math.cos(a * RAD),
+      },
+      startWith: ['m', 'F', 'q', 'd'],
+      representation: {
+        kind: 'freeBody',
+        support: 'floor',
+        mass: 'm',
+        weight: 'G',
+        normal: 'N',
+        applied: 'F',
+        appliedAngle: 'q',
+        displacement: 'd',
+        work: 'W',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [m, h, t] = [60, 4.5, 6];
+    const W = m * G * h;
+    return {
+      id: 's.11.work-energy-power~power',
+      title: 'Power: work done each second',
+      use: 'Use this for “A 60 kg student runs up 4.5 m of stairs in 6 s. How much work does she do, and what is her power?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Lifting at a steady speed takes a force equal to the weight, mg, over the height: W = mgh.',
+        'Power is work per second: P = W/t. One watt is one joule each second.',
+        'The path does not matter, only the height gained: stairs or a rope, the work is the same.',
+      ],
+      variables: [
+        q('m', 'm', 'Mass', 'kg', 0.1, 1e5, 0.1),
+        q('h', 'h', 'Height raised', 'm', 0.01, 1e4, 0.01),
+        q('t', 't', 'Time taken', 's', 0.01, 1e6, 0.01, { units: ['s'] }),
+        q('W', 'W', 'Work done', 'J', 0, 1e10, 0.01),
+        q('P', 'P', 'Power', 'W', 0, 1e9, 0.01),
+      ],
+      ...rules(
+        rule('W = mgh', '{W} = {m} × 9.8 × {h}', (x) => x.W! - x.m! * G * x.h!, {
+          W: [
+            (x) => x.m! * G * x.h!,
+            '{m} × 9.8 × {h}',
+            'The weight, mg, times the height raised.',
+          ],
+          m: [(x) => div(x.W!, G * x.h!), '{W}/(9.8 × {h})', 'Divide the work by gh.'],
+          h: [(x) => div(x.W!, x.m! * G), '{W}/({m} × 9.8)', 'Divide the work by the weight.'],
+        }),
+        rule('P = W/t', '{P} = {W}/{t}', (x) => x.P! * x.t! - x.W!, {
+          P: [(x) => div(x.W!, x.t!), '{W}/{t}', 'The joules for each second.'],
+          W: [(x) => x.P! * x.t!, '{P} × {t}', 'Joules each second times the seconds.'],
+          t: [(x) => div(x.W!, x.P!), '{W}/{P}', 'How many seconds at P joules each second.'],
+        }),
+      ),
+      example: { m, h, t, W, P: W / t },
+      startWith: ['m', 'h', 't'],
+      representation: {
+        kind: 'powerLift',
+        mass: 'm',
+        height: 'h',
+        time: 't',
+        work: 'W',
+        power: 'P',
       },
     } satisfies ModuleDef;
   })(),
@@ -3151,6 +3501,44 @@ const thermoPages: ModuleDef[] = [
       pictureLabels: ['m', 'P', 'f', 'q', 'v', 'Q'],
     } satisfies ModuleDef;
   })(),
+  {
+    id: 's.11.thermodynamics~first-law',
+    title: 'The first law of thermodynamics',
+    use: 'Use this for “A gas takes in 500 J of heat and does 200 J of work pushing a piston out. How much does its internal energy change?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Energy is kept: the heat in goes to the gas’s internal energy or out as work. ΔU = Q − W.',
+      'Q is + for heat into the gas and − for heat out of it.',
+      'W is + when the gas does work by expanding and − when work is done on it (it is squeezed).',
+    ],
+    variables: [
+      q('Q', 'Q', 'Heat into the gas', 'J', -1e9, 1e9, 0.01),
+      q('W', 'W', 'Work done by the gas', 'J', -1e9, 1e9, 0.01),
+      q('U', 'ΔU', 'Change in internal energy', 'J', -1e9, 1e9, 0.01),
+    ],
+    ...rules(
+      rule('ΔU = Q − W', '{U} = {Q} − {W}', (x) => x.U! - (x.Q! - x.W!), {
+        U: [(x) => x.Q! - x.W!, '{Q} − {W}', 'The heat in less the work out.'],
+        Q: [
+          (x) => x.U! + x.W!,
+          '{U} + {W}',
+          'The heat must cover the rise in internal energy and the work.',
+        ],
+        W: [
+          (x) => x.Q! - x.U!,
+          '{Q} − {U}',
+          'What the heat did not keep in the gas went out as work.',
+        ],
+      }),
+    ),
+    example: { Q: 500, W: 200, U: 300 },
+    startWith: ['Q', 'W'],
+    representation: {
+      kind: 'gasPiston',
+      law: 'ideal',
+      energy: { heat: 'Q', work: 'W', change: 'U' },
+    },
+  },
   (() => {
     const [Q, W, H, L] = [2000, 500, 600, 300];
     const e = (100 * W) / Q;
@@ -3457,6 +3845,58 @@ const electroPages: ModuleDef[] = [
       pictureLabels: ['t', 'F'],
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const [V, d, e] = [12, 0.003, -1.602e-19];
+    return {
+      id: 's.11.electrostatics~plates',
+      title: 'The field between charged plates',
+      use: 'Use this for “Two plates 3 mm apart have 12 V across them. What is the field between them, and the force on an electron there?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Between large parallel plates the field is uniform: E = V/d, from the + plate to the − plate.',
+        'A charge there feels F = qE: a + charge along the field, a − charge against it.',
+        'An electron’s charge is −1.602 × 10⁻¹⁹ C; a proton’s is +1.602 × 10⁻¹⁹ C.',
+      ],
+      variables: [
+        q('V', 'V', 'Voltage across the plates', 'V', 0.001, 1e6, 0.001),
+        q('d', 'd', 'Gap between the plates', 'm', 1e-6, 10, 1e-6, { scientific: true }),
+        q('E', 'E', 'Field between the plates', 'V/m', 0, 1e12, 0.01, { scientific: true }),
+        q('q', 'q', 'Charge', 'C', -1, 1, 1e-22, { scientific: true }),
+        q('F', 'F', 'Force on the charge', 'N', -1e12, 1e12, 1e-22, {
+          scientific: true,
+          units: ['N'],
+        }),
+      ],
+      ...rules(
+        rule('E = V/d', '{E} = {V}/{d}', (x) => x.E! * x.d! - x.V!, {
+          E: [(x) => div(x.V!, x.d!), '{V}/{d}', 'The voltage for each meter of the gap.'],
+          V: [(x) => x.E! * x.d!, '{E} × {d}', 'The field times the gap.'],
+          d: [(x) => div(x.V!, x.E!), '{V}/{E}', 'Divide the voltage by the field.'],
+        }),
+        rule('F = qE', '{F} = {q} × {E}', (x) => x.F! - x.q! * x.E!, {
+          // A charge of 10⁻¹⁹ C is far below `div`'s zero.
+          E: [
+            (x) => (x.q === 0 ? undefined : x.F! / x.q!),
+            '{F}/{q}',
+            'The force for each coulomb of charge.',
+          ],
+          F: [(x) => x.q! * x.E!, '{q} × {E}', 'Charge times field; its sign gives the direction.'],
+          q: [(x) => div(x.F!, x.E!), '{F}/{E}', 'Divide the force by the field.'],
+        }),
+      ),
+      example: { V, d, E: V / d, q: e, F: (e * V) / d },
+      startWith: ['V', 'd', 'q'],
+      representation: {
+        kind: 'charges',
+        mode: 'plates',
+        voltage: 'V',
+        gap: 'd',
+        field: 'E',
+        charge: 'q',
+        force: 'F',
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
 
 // ─── s.11.electromagnetism ──────────────────────────────────────────────────
@@ -3656,6 +4096,66 @@ const inductionPages: ModuleDef[] = [
         current: 'I',
         length: 'L',
         angle: 'q',
+        force: 'F',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [a, v, B, t] = [5, 400, 0.3, 90];
+    const sinOf = (x: Values) => Math.sin(x.t! * RAD);
+    return {
+      id: 's.11.electromagnetism~moving-charge',
+      title: 'The force on a moving charge',
+      use: 'Use this for “A 5 μC charge moves at 400 m/s across a 0.3 T field. What force acts on it? What if it moves at 30° to the field?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'A charge moving through a magnetic field feels F = |q|vB sin θ, θ the angle between v and B.',
+        'The force is square to both v and B (F = qv × B): a − charge is pushed the other way.',
+        'A charge moving along the field feels no force.',
+      ],
+      variables: [
+        q('a', 'q', 'Charge', 'μC', -1e4, 1e4, 0.001),
+        q('v', 'v', 'Speed', 'm/s', 0.001, 1e8, 0.001, { units: ['m/s'] }),
+        q('B', 'B', 'Magnetic field', 'T', 0.0001, 10, 0.0001),
+        q('t', 'θ', 'Angle to the field', '°', 1, 179, 1),
+        q('F', 'F', 'Force', 'N', 0, 1e6, 0.000001, { scientific: true }),
+      ],
+      ...rules(
+        rule(
+          'F = |q|vB sin θ',
+          '{F} = |{a}| × 10⁻⁶ × {v} × {B} × sin({t})',
+          (x) => x.F! - Math.abs(x.a!) * 1e-6 * x.v! * x.B! * sinOf(x),
+          {
+            F: [
+              (x) => Math.abs(x.a!) * 1e-6 * x.v! * x.B! * sinOf(x),
+              '|{a}| × 10⁻⁶ × {v} × {B} × sin({t})',
+              'The charge in coulombs times the speed, the field and sin θ.',
+            ],
+            v: [
+              (x) => div(x.F!, Math.abs(x.a!) * 1e-6 * x.B! * sinOf(x)),
+              '{F} ÷ (|{a}| × 10⁻⁶ × {B} × sin({t}))',
+              'Divide the force by the charge, the field and sin θ.',
+            ],
+            B: [
+              (x) => div(x.F!, Math.abs(x.a!) * 1e-6 * x.v! * sinOf(x)),
+              '{F} ÷ (|{a}| × 10⁻⁶ × {v} × sin({t}))',
+              'Divide the force by the charge, the speed and sin θ.',
+            ],
+            a: null,
+            t: null,
+          },
+        ),
+      ),
+      example: { a, v, B, t, F: a * 1e-6 * v * B * Math.sin(t * RAD) },
+      startWith: ['a', 'v', 'B', 't'],
+      representation: {
+        kind: 'induction',
+        mode: 'charge',
+        charge: 'a',
+        coulombs: 1e-6,
+        speed: 'v',
+        field: 'B',
+        angle: 't',
         force: 'F',
       },
     } satisfies ModuleDef;
@@ -3874,6 +4374,131 @@ const modernPages: ModuleDef[] = [
         energy: 'E',
         wavelength: 'w',
         levels: 8,
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [l, p] = [250, 2.3];
+    return {
+      id: 's.11.modern-physics~photoelectric',
+      title: 'The photoelectric effect',
+      use: 'Use this for “Light of 250 nm falls on a metal with a work function of 2.3 eV. What is the most kinetic energy an electron can leave with? What is the threshold wavelength?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Light comes in photons of E = hc/λ = 1240/λ eV, with λ in nm.',
+        'One photon frees at most one electron; the work function φ is the least energy that takes.',
+        'Below the threshold wavelength λ₀ = 1240/φ no electron leaves, however bright the light.',
+      ],
+      variables: [
+        q('l', 'λ', 'Wavelength of the light', 'nm', 10, 2000, 0.1, { units: ['nm'] }),
+        q('E', 'E', 'Photon energy', 'eV', 0.62, 124, 0.001),
+        q('p', 'φ', 'Work function of the metal', 'eV', 0.5, 10, 0.01),
+        q('K', 'Kₘₐₓ', 'Greatest kinetic energy of an electron', 'eV', 0, 124, 0.001),
+        q('z', 'λ₀', 'Threshold wavelength', 'nm', 124, 2480, 0.1, { units: ['nm'] }),
+      ],
+      ...rules(
+        rule('E = 1240/λ', '{E} = 1240/{l}', (x) => x.E! * x.l! - 1240, {
+          E: [(x) => div(1240, x.l!), '1240/{l}', 'hc in eV·nm over the wavelength in nm.'],
+          l: [(x) => div(1240, x.E!), '1240/{E}', 'The wavelength whose photons carry E.'],
+        }),
+        rule('Kₘₐₓ = E − φ', '{K} = {E} − {p}', (x) => x.K! - (x.E! - x.p!), {
+          K: [
+            (x) => x.E! - x.p!,
+            '{E} − {p}',
+            'What is left of the photon’s energy after freeing the electron.',
+          ],
+          E: [
+            (x) => x.K! + x.p!,
+            '{K} + {p}',
+            'The photon paid the work function and the kinetic energy.',
+          ],
+          p: [
+            (x) => x.E! - x.K!,
+            '{E} − {K}',
+            'The part of the photon’s energy that freed the electron.',
+          ],
+        }),
+        rule('λ₀ = 1240/φ', '{z} = 1240/{p}', (x) => x.z! * x.p! - 1240, {
+          z: [(x) => div(1240, x.p!), '1240/{p}', 'The wavelength whose photons carry just φ.'],
+          p: [
+            (x) => div(1240, x.z!),
+            '1240/{z}',
+            'A photon at the threshold carries just the work function.',
+          ],
+        }),
+      ),
+      example: { l, E: 1240 / l, p, K: 1240 / l - p, z: 1240 / p },
+      startWith: ['l', 'p'],
+      representation: {
+        kind: 'photoelectric',
+        wavelength: 'l',
+        workFunction: 'p',
+        energy: 'E',
+        kinetic: 'K',
+        threshold: 'z',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const [b, s, L] = [0.6, 10, 100];
+    const g = 1 / Math.sqrt(1 - b * b);
+    return {
+      id: 's.11.modern-physics~relativity',
+      title: 'Moving clocks run slow',
+      use: 'Use this for “A spaceship passes at 0.6c. A clock on board ticks 10 s. How long does that take as we see it? How long is the 100 m ship to us?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Light moves at c for every observer, however they move.',
+        'γ = 1/√(1 − β²), with β = v/c. It is 1 at rest and grows without limit near c.',
+        'Δt₀ and L₀ are measured beside the clock or rod; moving past us, Δt = γΔt₀ and L = L₀/γ.',
+      ],
+      variables: [
+        q('b', 'β', 'Speed as a fraction of c', undefined, 0, 0.99, 0.001),
+        q('g', 'γ', 'Lorentz factor', undefined, 1, 7.09, 0.0001),
+        q('s', 'Δt₀', 'Time on the moving clock', 's', 0.001, 1e9, 0.001),
+        q('t', 'Δt', 'Time as we measure it', 's', 0.001, 1e11, 0.001),
+        q('L', 'L₀', 'Length at rest', 'm', 0.001, 1e9, 0.001),
+        q('m', 'L', 'Length as we measure it moving', 'm', 0.0001, 1e9, 0.0001),
+      ],
+      ...rules(
+        rule(
+          'γ = 1/√(1 − β²)',
+          '{g} = 1/√(1 − {b}²)',
+          (x) => x.g! * Math.sqrt(Math.max(0, 1 - x.b! * x.b!)) - 1,
+          {
+            g: [
+              (x) => (x.b! < 1 ? 1 / Math.sqrt(1 - x.b! * x.b!) : undefined),
+              '1/√(1 − {b}²)',
+              'The Lorentz factor for this speed.',
+            ],
+            b: [
+              (x) => (x.g! >= 1 ? Math.sqrt(1 - 1 / (x.g! * x.g!)) : undefined),
+              '√(1 − 1/({g}²))',
+              'Undo γ: 1 − β² = 1/γ².',
+            ],
+          },
+        ),
+        rule('Δt = γΔt₀', '{t} = {g} × {s}', (x) => x.t! - x.g! * x.s!, {
+          t: [(x) => x.g! * x.s!, '{g} × {s}', 'The moving clock’s tick, stretched by γ.'],
+          s: [(x) => div(x.t!, x.g!), '{t}/{g}', 'The time on the moving clock itself.'],
+          g: [(x) => div(x.t!, x.s!), '{t}/{s}', 'How many times longer we measure it.'],
+        }),
+        rule('L = L₀/γ', '{m} = {L}/{g}', (x) => x.m! * x.g! - x.L!, {
+          m: [(x) => div(x.L!, x.g!), '{L}/{g}', 'Shorter along the motion by γ.'],
+          L: [(x) => x.m! * x.g!, '{m} × {g}', 'The length at rest is γ times longer.'],
+          g: [(x) => div(x.L!, x.m!), '{L}/{m}', 'How many times shorter it looks.'],
+        }),
+      ),
+      example: { b, g, s, t: g * s, L, m: L / g },
+      startWith: ['b', 's', 'L'],
+      representation: {
+        kind: 'lightClock',
+        speed: 'b',
+        gamma: 'g',
+        proper: 's',
+        dilated: 't',
+        length: 'L',
+        contracted: 'm',
       },
     } satisfies ModuleDef;
   })(),

@@ -1238,6 +1238,52 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
 
   // ── Light, spectra and telescopes: how we study stars (HS-ESS1-1, HS-PS4-3) ──
   {
+    kind: 'explore',
+    id: 's.12.starlight-spectra~lines',
+    title: 'Matching a star’s lines to elements',
+    use: 'Use this for “Which elements are in this star?” from its dark lines and lab spectra.',
+    assumptions: [
+      'Each element absorbs and gives off light only at its own wavelengths: its lines are a fingerprint.',
+      'Cooler gas in a star’s outer layers absorbs those wavelengths, leaving dark lines in its rainbow.',
+      'An element is in the star only if every one of its lines appears there.',
+    ],
+    figure: { kind: 'spectra' },
+    scenes: [
+      {
+        label: 'The star',
+        lines: [
+          'The star’s light, spread into a rainbow, has dark lines where some wavelengths are missing.',
+          'Below it are the bright lines of hydrogen, helium and sodium measured in a lab.',
+        ],
+        spectra: { star: ['H', 'Na'] },
+      },
+      {
+        label: 'Hydrogen',
+        lines: [
+          'Each of hydrogen’s four visible lines matches a dark line in the star.',
+          'The star contains hydrogen.',
+        ],
+        spectra: { star: ['H', 'Na'], lit: 'H' },
+      },
+      {
+        label: 'Helium',
+        lines: [
+          'Helium’s yellow line sits close to sodium’s, but its blue and red lines have no dark line to match.',
+          'Helium does not show in this star’s spectrum.',
+        ],
+        spectra: { star: ['H', 'Na'], lit: 'He' },
+      },
+      {
+        label: 'Sodium',
+        lines: [
+          'Sodium’s pair of yellow lines and its fainter lines all match dark lines in the star.',
+          'The star contains sodium.',
+        ],
+        spectra: { star: ['H', 'Na'], lit: 'Na' },
+      },
+    ],
+  },
+  {
     kind: 'sort',
     id: 's.12.starlight-spectra~space-telescopes',
     title: 'From the ground or only from space?',

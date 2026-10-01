@@ -89,9 +89,6 @@ const q = (
   extra: Partial<VariableDef> = {},
 ): VariableDef => ({ id, symbol, name, ...(unit ? { unit } : {}), min, max, step, ...extra });
 
-/** Division that gives undefined for a zero divisor. */
-const div = (a: number, b: number) => (Math.abs(b) < 1e-12 ? undefined : a / b);
-
 /** Division for values far below 1 (a proton's mass, its charge): undefined only for 0. */
 const quot = (a: number, b: number) => (b === 0 || !Number.isFinite(b) ? undefined : a / b);
 
@@ -422,68 +419,6 @@ const launchProton = fromPage(
 
 // ─── H107.9 induction, a moving charge: s.11.electromagnetism (~moving-charge) ─
 
-const movingCharge: ModuleDef = (() => {
-  const [a, v, B, t] = [5, 400, 0.3, 90];
-  const F = a * 1e-6 * v * B * Math.sin(t * RAD);
-  const sinOf = (x: Values) => Math.sin(x.t! * RAD);
-  return {
-    id: 'g.s-11-electromagnetism-moving-charge',
-    title: 'The force on a moving charge',
-    use: 'Use this for “A 5 μC charge moves at 400 m/s across a 0.3 T field. What force acts on it? What if it moves at 30° to the field?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'A charge moving through a magnetic field feels F = |q|vB sin θ, θ the angle between v and B.',
-      'The force is square to both v and B (F = qv × B): a − charge is pushed the other way.',
-      'A charge moving along the field feels no force.',
-    ],
-    variables: [
-      q('a', 'q', 'Charge', 'μC', -1e4, 1e4, 0.001),
-      q('v', 'v', 'Speed', 'm/s', 0.001, 1e8, 0.001, { scientific: true }),
-      q('B', 'B', 'Magnetic field', 'T', 0.0001, 10, 0.0001),
-      q('t', 'θ', 'Angle to the field', '°', 1, 179, 1),
-      q('F', 'F', 'Force', 'N', 0, 1e6, 0.000001, { scientific: true }),
-    ],
-    ...rules(
-      rule(
-        'F = |q|vB sin θ',
-        '{F} = |{a}| × 10⁻⁶ × {v} × {B} × sin({t})',
-        (x) => x.F! - Math.abs(x.a!) * 1e-6 * x.v! * x.B! * sinOf(x),
-        {
-          F: [
-            (x) => Math.abs(x.a!) * 1e-6 * x.v! * x.B! * sinOf(x),
-            '|{a}| × 10⁻⁶ × {v} × {B} × sin({t})',
-            'The charge in coulombs times the speed, the field and sin θ.',
-          ],
-          v: [
-            (x) => div(x.F!, Math.abs(x.a!) * 1e-6 * x.B! * sinOf(x)),
-            '{F} ÷ (|{a}| × 10⁻⁶ × {B} × sin({t}))',
-            'Divide the force by the charge, the field and sin θ.',
-          ],
-          B: [
-            (x) => div(x.F!, Math.abs(x.a!) * 1e-6 * x.v! * sinOf(x)),
-            '{F} ÷ (|{a}| × 10⁻⁶ × {v} × sin({t}))',
-            'Divide the force by the charge, the speed and sin θ.',
-          ],
-          a: null,
-          t: null,
-        },
-      ),
-    ),
-    example: { a, v, B, t, F },
-    startWith: ['a', 'v', 'B', 't'],
-    representation: {
-      kind: 'induction',
-      mode: 'charge',
-      charge: 'a',
-      coulombs: 1e-6,
-      speed: 'v',
-      field: 'B',
-      angle: 't',
-      force: 'F',
-    },
-  };
-})();
-
 const E = 1.602e-19;
 
 const movingCircle: ModuleDef = (() => {
@@ -564,7 +499,6 @@ const movingCircle: ModuleDef = (() => {
 })();
 
 export const HS3A_GALLERY_MODULES: ModuleDef[] = [
-  movingCharge,
   movingCircle,
   launch,
   launchProton,
