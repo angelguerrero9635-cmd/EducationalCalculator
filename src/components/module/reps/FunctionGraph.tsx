@@ -574,7 +574,10 @@ export function FunctionGraph({
             (v): v is string => typeof v === 'string',
           ),
         ]
-      ).filter((id) => !moving.includes(id)),
+      )
+        // Only typed values are held: holding a worked-out one (X = p + h) made the drag
+        // change the typed value behind it (p) instead.
+        .filter((id) => !moving.includes(id) && calc.status(id) !== 'derived'),
     );
 
   const captions: string[] = [];
