@@ -4273,14 +4273,7 @@ const rotationPages: ModuleDef[] = [
       ),
       example: { r, F, a, p: 40, t: 10 },
       startWith: ['r', 'F', 'a'],
-      representation: {
-        kind: 'vectorDiagram',
-        vectors: [{ name: 'F', magnitude: 'F', direction: 'a' }],
-        components: true,
-        unit: 'N',
-        axes: { x: 'Along the arm', y: 'Across the arm' },
-      },
-      pictureLabels: ['r', 'p', 't'],
+      representation: { kind: 'torque', arm: 'r', force: 'F', angle: 'a', across: 'p', torque: 't' },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4348,8 +4341,8 @@ const rotationPages: ModuleDef[] = [
         loadArm: 'l',
         effortArm: 'e',
         effort: 'F',
+        seesaw: { torque: 't', pivot: 'P' },
       },
-      pictureLabels: ['t', 'P'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4465,14 +4458,7 @@ const rotationPages: ModuleDef[] = [
       ),
       example: { r, N, w, T: (2 * Math.PI) / w, v: r * w },
       startWith: ['r', 'N'],
-      representation: {
-        kind: 'circularMotion',
-        mode: 'string',
-        radius: 'r',
-        speed: 'v',
-        period: 'T',
-      },
-      pictureLabels: ['N', 'w'],
+      representation: { kind: 'rotor', radius: 'r', rpm: 'N', speed: 'w', period: 'T', rim: 'v' },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4573,16 +4559,14 @@ const rotationPages: ModuleDef[] = [
       example: { u, a, t, w: u + a * t, d, n: d / (2 * Math.PI) },
       startWith: ['u', 'a', 't'],
       representation: {
-        kind: 'motionGraph',
-        graph: 'speed',
-        time: 't',
-        acceleration: 'a',
-        speed: 'w',
+        kind: 'rotor',
         start: 'u',
-        distance: 'd',
-        kinematics: { view: 'velocity', strobe: false },
+        acceleration: 'a',
+        time: 't',
+        speed: 'w',
+        angle: 'd',
+        turns: 'n',
       },
-      pictureLabels: ['n'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4637,14 +4621,15 @@ const rotationPages: ModuleDef[] = [
       example: { c, m, r, I, t, a: t / I },
       startWith: ['c', 'm', 'r', 't'],
       representation: {
-        kind: 'table',
-        sweep: 'c',
-        output: 'a',
-        params: ['m', 'r', 't'],
-        rows: [1, 2 / 3, 0.5, 0.4],
-        rowNames: ['Hoop', 'Hollow ball', 'Solid disk', 'Solid ball'],
+        kind: 'rotor',
+        shape: 'c',
+        mass: 'm',
+        radius: 'r',
+        inertia: 'I',
+        torque: 't',
+        acceleration: 'a',
+        compare: true,
       },
-      pictureLabels: ['I'],
     } satisfies ModuleDef;
   })(),
 ];

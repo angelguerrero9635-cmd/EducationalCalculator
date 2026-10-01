@@ -298,3 +298,13 @@ Report: `.review/new-sci-2/lesson-report.md`.
 
 `pictureRequests.test.ts` (H49, `s.10.reaction-types~combustion`) and `units.test.ts` (five
 `s.10` labels) fail on the branch as it came to this build; neither is from these pages.
+
+### Pictures placed (H89–H110)
+
+| Page                                 | Entry  | What changed                                          | Stand-in gone                                                |
+| ------------------------------------ | ------ | ----------------------------------------------------- | ------------------------------------------------------------ |
+| `s.11.rotation`                      | H107.1 | `torque` (wrench on its nut)                          | `vectorDiagram` of F with components; pictureLabels r, F⊥, τ |
+| `s.11.rotation~seesaw`               | H107.2 | `simpleMachine` lever `seesaw: { torque, pivot }`     | pictureLabels τ, F_p                                         |
+| `s.11.rotation~angular-speed`        | H107.3 | `rotor` (r, N, ω, T, v)                               | `circularMotion` string; pictureLabels N, ω                  |
+| `s.11.rotation~angular-acceleration` | H107.3 | `rotor` (ω₀, α, t, ω, Δθ, n: ω–t line and turn dials) | `motionGraph` speed graph; pictureLabels n                   |
+| `s.11.rotation~rotational-inertia`   | H107.3 | `rotor` with `compare` (hoop, disk, ball)             | `table` by shape; pictureLabels I                            |
