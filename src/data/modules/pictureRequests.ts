@@ -23,8 +23,13 @@ export interface PictureRequest {
   status: PictureStatus;
   /** Gallery demo ids once drawn. */
   gallery: string[];
-  /** Text that shows the picture is on a page (`"inequality"`); default the kind in quotes. */
-  uses?: string;
+  /**
+   * Text that shows the picture is on a page (`"inequality"`); default the kind in quotes. A
+   * request whose parts go on different pages gives each page its own text (its keys are then
+   * `pages`): a built page must show its part even while the request is `drawn` because another
+   * part waits on a page not built yet.
+   */
+  uses?: string | Record<string, string>;
   /** What the page needs from the picture, or what the page still needs. */
   notes?: string;
 }

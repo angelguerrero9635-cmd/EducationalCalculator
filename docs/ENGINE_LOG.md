@@ -5,6 +5,18 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
+
+- **Twelve picture requests stayed `drawn` though every part was on its page** (H89–H110 span
+  several kinds and pages, and the tracker test wanted one kind on every page named). → `uses`
+  may now map each page to the text that shows its part (`ask` takes that map in place of the
+  page list, so `pages` are its keys, the real `~` pages rather than the skills), and
+  `pictureRequests.test.ts` checks every built page shows its part, even while the request
+  waits on a page not built yet. H90, H92, H93, H95–H97, H100, H101, H104, H105, H108 and H109
+  are `placed`; H94, H98, H99, H102, H103, H106, H107 and H110 stay `drawn`, their notes naming
+  the unbuilt pages (each in `pages` with its mark, so a builder adding one is told if the
+  picture is missing).
+
 ## Grades 9–12 second page review: the drag rule
 
 - **A handle on a worked-out value froze the page and did nothing** (12 handles on m.9:
