@@ -38,3 +38,14 @@ describe('a handle on a worked-out value moves the typed value behind it', () =>
     expect([next.result.values.D, next.result.values.E]).toEqual([-6, 4]);
   });
 });
+
+describe('the rope pull holds the typed μ', () => {
+  it('friction follows the normal force; μ, the mass and the angle stay as typed', () => {
+    const { m, system, state } = opened('s.11.dynamics-vectors~rope');
+    const held = { m: m.example.m!, q: m.example.q!, k: m.example.k! };
+    const next = setValues(system, state, { ...held, T: 100 });
+    expect(movedGivens(state, next, ['m', 'q', 'k', 'T'])).toEqual([]);
+    expect(next.result.values.k).toBe(m.example.k);
+    expect(next.result.values.f).not.toBeCloseTo(m.example.f!);
+  });
+});
