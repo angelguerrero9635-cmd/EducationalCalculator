@@ -114,6 +114,8 @@ describe('unit conversions (exact definitions)', () => {
       'clips',
       'mL/h',
       'V/m',
+      'u',
+      'MeV',
       // Grades 9–12 science labels (no conversion offered)
       'mol/L',
       'g/mol',
