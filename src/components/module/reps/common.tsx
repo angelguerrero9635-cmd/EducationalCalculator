@@ -6,7 +6,7 @@ import {
   type ViewStyle,
   StyleSheet,
 } from 'react-native';
-import { Text as SvgText, TSpan, type TextProps as SvgTextProps } from 'react-native-svg';
+import { G, Text as SvgText, TSpan, type TextProps as SvgTextProps } from 'react-native-svg';
 
 import { isEarlyGrade, isElementary } from '@/data/modules';
 import { dollarsOf, formatNumber, unitFor } from '@/engine/format';
@@ -175,8 +175,33 @@ export function niceCeil(x: number): number {
 }
 
 /** Text inside charts: theme font family, chart ink color and label size by default. */
-export function ChartText(props: SvgTextProps) {
+export function ChartText({
+  halo,
+  ...props
+}: SvgTextProps & {
+  /**
+   * A callout over a plot (a point's name, a slope, a radius): drawn on a halo of the page's
+   * colour (or this colour), so it wins over the grid, the axis numbers and lines under it.
+   */
+  halo?: boolean | string;
+}) {
   const c = usePalette();
+  if (halo) {
+    const color = typeof halo === 'string' ? halo : c.background;
+    return (
+      <G>
+        <ChartText
+          {...props}
+          fill={color}
+          stroke={color}
+          strokeWidth={4}
+          strokeLinejoin="round"
+          accessible={false}
+        />
+        <ChartText {...props} />
+      </G>
+    );
+  }
   const family = font.family ?? (Platform.OS === 'web' ? font.webSystem : undefined);
   const { children } = props;
   if (typeof children === 'string' && children.includes('_')) {
