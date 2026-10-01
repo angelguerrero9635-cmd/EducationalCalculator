@@ -43,7 +43,7 @@ export function ExpandingUniverse({
 // ── Space stretching ──
 
 const BW = 360;
-const SH = 226;
+const SH = 242;
 const PANEL = 170;
 const PY = 30;
 const G0 = 18;
@@ -199,28 +199,42 @@ function Stretch({ spec, calc }: { spec: StretchSpec; calc: Calculator }) {
                 {`space stretched × ${formatNumber(Number(a.toFixed(2)))}`}
               </ChartText>
               {spec.distance !== undefined ? (
-                <ChartText
-                  x={6 + PANEL / 2}
-                  y={SH - 8}
-                  fontSize={chart.label}
-                  textAnchor="middle"
-                  fill={c.chartHighlight}
-                  fontWeight="700"
-                >
-                  {`marked galaxy: ${known(spec.distance) ? text(spec.distance) : '?'}`}
-                </ChartText>
+                // Two lines under each panel, each inside its panel's width (one line ran
+                // into the other panel's and was cut).
+                <G>
+                  {['marked galaxy:', known(spec.distance) ? text(spec.distance) : '?'].map(
+                    (line, k) => (
+                      <ChartText
+                        key={k}
+                        x={6 + PANEL / 2}
+                        y={SH - 24 + k * 16}
+                        fontSize={chart.label}
+                        textAnchor="middle"
+                        fill={c.chartHighlight}
+                        fontWeight="700"
+                      >
+                        {line}
+                      </ChartText>
+                    ),
+                  )}
+                </G>
               ) : null}
               {spec.after !== undefined ? (
-                <ChartText
-                  x={184 + PANEL / 2}
-                  y={SH - 8}
-                  fontSize={chart.label}
-                  textAnchor="middle"
-                  fill={c.chartHighlight}
-                  fontWeight="700"
-                >
-                  {`now ${known(spec.after) ? text(spec.after) : '?'}`}
-                </ChartText>
+                <G>
+                  {['now:', known(spec.after) ? text(spec.after) : '?'].map((line, k) => (
+                    <ChartText
+                      key={k}
+                      x={184 + PANEL / 2}
+                      y={SH - 24 + k * 16}
+                      fontSize={chart.label}
+                      textAnchor="middle"
+                      fill={c.chartHighlight}
+                      fontWeight="700"
+                    >
+                      {line}
+                    </ChartText>
+                  ))}
+                </G>
               ) : null}
             </G>
           </Svg>
