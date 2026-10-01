@@ -277,3 +277,7 @@ Report: `.review/new-sci-2/lesson-report.md`.
 - `s.10.stoichiometry~limiting-grams` (H101 need 4): built (it was waiting) from the demo, grams of
   N₂ and H₂ → moles → NH₃ each could make → the smaller → grams of NH₃, on `moleMap` with
   `limiting` (two columns, the smaller lit). No stand-in.
+- `s.10.gas-laws~effusion` (H101 need 6): built (it was waiting) from the demo, M₁, M₂ and
+  r = √(M₂ ÷ M₁) for H₂ and O₂, on `chemDiagram` mode `effusion`. No stand-in.
+- `~partial-pressure` (H108 part 6): `gasPiston` `mixture` (He, O₂, N₂ by partial pressure, the
+  total and helium's mole fraction). Stand-in gone: the pie of the three pressures.

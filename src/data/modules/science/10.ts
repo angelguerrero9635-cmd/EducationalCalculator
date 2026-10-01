@@ -2743,6 +2743,57 @@ const GAS: ModuleDef[] = [
       keep: ['P1', 'V1', 'T1', 'T2'],
     },
   },
+  {
+    id: 's.10.gas-laws~effusion',
+    title: 'Effusion: Graham’s law',
+    use: 'Use this for “Hydrogen and oxygen leak from one balloon. Which escapes faster, and how many times as fast?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Both gases are at the same temperature, so their molecules have the same average kinetic energy.',
+      'Lighter molecules move faster, so they find the pinhole more often.',
+      'rate₁ ÷ rate₂ = √(M₂ ÷ M₁).',
+    ],
+    variables: [
+      quantity('M1', 'M₁', 'Molar mass of H₂', 'g/mol', 0.1, 1000, 0.001),
+      quantity('M2', 'M₂', 'Molar mass of O₂', 'g/mol', 0.1, 1000, 0.001),
+      {
+        ...quantity('r', 'r', 'How many times as fast H₂ escapes', undefined, 0.01, 100, 0.01),
+        derived: true,
+      },
+    ],
+    ...rules({
+      relation: {
+        id: 'r = √(M2/M1)',
+        display: '{r} = √({M2}/{M1})',
+        vars: ['r', 'M1', 'M2'],
+        residual: (v) => v.r! * v.r! * v.M1! - v.M2!,
+        solve: {
+          r: (v) => (v.M1! > 0 && v.M2! > 0 ? Math.sqrt(v.M2! / v.M1!) : undefined),
+          M1: (v) => (v.r! > 0 ? v.M2! / (v.r! * v.r!) : undefined),
+          M2: (v) => v.r! * v.r! * v.M1!,
+        },
+      },
+      steps: {
+        r: {
+          expr: '√({M2}/{M1})',
+          how: 'Graham’s law: the rate goes as 1 over the square root of the molar mass.',
+        },
+        M1: { expr: '{M2}/{r}²', how: 'Square the ratio and divide it into M₂.' },
+        M2: { expr: '{r}² × {M1}', how: 'Square the ratio and multiply by M₁.' },
+      },
+    }),
+    example: { M1: 2.016, M2: 32, r: Math.sqrt(32 / 2.016) },
+    startWith: ['M1', 'M2'],
+    representation: {
+      kind: 'chemDiagram',
+      mode: 'effusion',
+      gases: [
+        { formula: 'H2', molarMass: 'M1' },
+        { formula: 'O2', molarMass: 'M2' },
+      ],
+      ratio: 'r',
+    },
+  },
 ];
 
 // ─── Molarity ────────────────────────────────────────────────────────────────
@@ -4610,7 +4661,19 @@ const ADDED: ModuleDef[] = [
     ),
     example: { P1: 2, P2: 0.5, P3: 1.5, P: 4, x: 0.5 },
     startWith: ['P1', 'P2', 'P3'],
-    representation: { kind: 'pieChart', parts: ['P1', 'P2', 'P3'], total: 'P' },
+    representation: {
+      kind: 'gasPiston',
+      law: 'ideal',
+      mixture: {
+        gases: [
+          { formula: 'He', pressure: 'P1' },
+          { formula: 'O2', pressure: 'P2' },
+          { formula: 'N2', pressure: 'P3' },
+        ],
+        total: 'P',
+        fraction: 'x',
+      },
+    },
   },
   {
     id: 's.10.molarity~percent-mass',
