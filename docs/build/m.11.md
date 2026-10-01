@@ -2,7 +2,8 @@
 
 Built from `.review/plans/m.11/plan.md`, in its Priority order. 61 of the plan's 65 pages are
 built (53 calculators in `src/data/modules/math/11.ts`, 8 layout pages in
-`src/data/modules/layouts/math11.ts`); 4 wait on picture needs. The second round (after the
+`src/data/modules/layouts/math11.ts`); 4 waited on picture needs and are built since, with
+`~rational-exponent` ("Waiting pages built"). The second round (after the
 merge of E2–E4 and E6, `docs/HS_NEEDS.md`) built the 13 pages that waited on needs 1, 2, 3
 and 11.
 
@@ -11,20 +12,20 @@ and 11.
 | Skill                     | Pages | Which                                                          |
 | ------------------------- | ----- | -------------------------------------------------------------- |
 | normal-distribution       | 6     | main, ~between, ~outside, ~empirical, ~percentile, ~margin     |
-| probability-distributions | 2     | main, ~expected-value                                          |
+| probability-distributions | 3     | main, ~expected-value, ~at-least                               |
 | binomial-theorem          | 3     | main, ~expand, ~pascal-rule                                    |
 | logarithms                | 4     | main, ~change-of-base, ~common-log, ~properties (sort)         |
 | exp-log-equations         | 4     | main, ~same-base (interim picture), ~continuous, ~log-equation |
 | series                    | 4     | main, ~arithmetic, ~sigma (rows, interim), ~infinite           |
 | study-design              | 4     | main (explore), ~sampling-methods, ~study-type, ~bias (sorts)  |
-| function-transformations  | 3     | main, ~point, ~name-the-move (sort)                            |
+| function-transformations  | 4     | main, ~point, ~horizontal, ~name-the-move (sort)               |
 | complex-numbers           | 5     | main, ~add-subtract, ~quadratic, ~powers-of-i, ~divide         |
-| inverse-functions         | 3     | main, ~operations, ~inverse                                    |
-| radical-functions         | 3     | main, ~extraneous, ~graph                                      |
+| inverse-functions         | 4     | main, ~operations, ~inverse, ~restrict-domain                  |
+| radical-functions         | 4     | main, ~extraneous, ~graph, ~rational-exponent                  |
 | rational-functions        | 4     | main, ~add-subtract, ~solve, ~variation                        |
 | polynomial-functions      | 3     | main, ~divide, ~end-behavior (sort)                            |
 | polynomial-equations      | 3     | main, ~complex-pair, ~quadratic-form                           |
-| unit-circle               | 3     | main, ~convert, ~coterminal                                    |
+| unit-circle               | 4     | main, ~convert, ~coterminal, ~point-on-side                    |
 | trig-graphs               | 4     | main, ~from-features, ~tangent, ~model                         |
 | pythagorean-identities    | 3     | main, ~tangent, ~simplify (sort)                               |
 
@@ -34,13 +35,8 @@ Phrases added to `harness/phrasesM11.ts`: "share within k standard deviations" (
 
 ## Waiting
 
-| Page                                     | Need | Why                                                                |
-| ---------------------------------------- | ---- | ------------------------------------------------------------------ |
-| m.11.unit-circle~point-on-side           | 6    | unitCircle `through: { x, y }` for a point off the circle (P10)    |
-| m.11.function-transformations~horizontal | 4    | functionGraph horizontal factor b (y = f(b(x − h))) (P6)           |
-| m.11.inverse-functions~restrict-domain   | 5    | functionGraph `xMin` as a value, the inverse of the kept half (P6) |
-| m.11.probability-distributions~at-least  | 7    | A binomcdf relation and histogram `lit` as a range (P11)           |
-| m.11.radical-functions~rational-exponent | —    | functionGraph has no power family y = a·x^(p/q) (lesson review)    |
+None: the five pages that waited on pictures (needs 4–7 and the power family) are built;
+see "Waiting pages built" at the end.
 
 Need 9 (limits with a reason) is met by a `constraint: true` relation with a `message` (the
 `limit` helper at the top of `11.ts`). Needs 8 (Σ) and 10 (termsChart second term) have their
@@ -232,13 +228,7 @@ leaving p unknown after E = 0 clears the older p.
 | `m.11.complex-numbers~add-subtract`  | H105 (3)        | complexPlane `opFrom: 'sg'` with w = c + di (the picture draws −w for a difference); C and D stay as values                     | w drawn as (C, D) with `op: 'sum'`                                   |
 | `m.11.study-design~sampling-methods` | H104, H105 (16) | the five sampling icons on the bins and an `intro` sentence                                                                     | none (no figures before)                                             |
 
-Not placed (the page is not built yet; each plan entry says BUILD, waiting on this picture, and
-its gallery demo is a full page `promote-demo.mjs` can copy): `m.11.function-transformations~horizontal`
-(H94, `g.m11-function-transformations-horizontal`), `m.11.inverse-functions~restrict-domain`
-(H94, `g.m11-inverse-functions-restrict-domain`), `m.11.unit-circle~point-on-side` (H98,
-`g.m11-unit-circle-point-on-side`), `m.11.probability-distributions~at-least` (H99,
-`g.m11-probability-distributions-at-least`), `m.11.radical-functions~rational-exponent` (H106,
-`g.m11-radical-functions-rational-exponent`).
+The five pages that were not placed here are now built: "Waiting pages built" below.
 
 ### Page-review fixes (`.review/hs-page-m/page-report-m11-12.md`)
 
@@ -252,3 +242,20 @@ its gallery demo is a full page `promote-demo.mjs` can copy): `m.11.function-tra
 - exp-log-equations~two-logs: the caption no longer prints the unnamed "u = 9".
 - Left for the shared fixer (component only): the same-base caption ("lit"), the two-logs
   legend's double space, the w tag over the −5i tick.
+
+### Waiting pages built
+
+Each started from its gallery demo, ported to the grade file's toolkit; the demo is retired
+(gone from the gallery file and the tracker's gallery list). H94 and H98 are now `placed`: every
+part is on a page. H99 and H106 stay `drawn` (their parts are on pages of several kinds, or
+other parts wait).
+
+| Page                                       | Picture                                                                         | Changed from the demo                                                                                                                                      |
+| ------------------------------------------ | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `m.11.function-transformations~horizontal` | H94: functionGraph root, `horizontal: 'b'`, `parent: true`                      | √x only (the plan's \|x\| is the main page's); the flip demo (b = −1) went too, since it is this page with another b                                       |
+| `m.11.inverse-functions~restrict-domain`   | H94: functionGraph quadratic vertex, `restrict: { from: 'h' }`, `inverse: true` | the assumption covers a < 0 (the kept half only falls)                                                                                                     |
+| `m.11.unit-circle~point-on-side`           | H98: unitCircle `through: { x, y, r }`                                          | none but the wording                                                                                                                                       |
+| `m.11.probability-distributions~at-least`  | H99: histogram binomial, `range: { from: 'k', total: 'P' }`                     | n to 20 (the demo stopped at 12): the step adds the shorter run of bars, k to n or 0 to k − 1 taken from 1; a work line lists the bars; k from 1           |
+| `m.11.radical-functions~rational-exponent` | H106 (3): functionGraph `family: 'power'`                                       | y is typable: x = (y ÷ a)^(q/p) solves "x^(3/2) = 27" (x ≥ 0 keeps it to one answer); limits a ≠ 0, p ≠ 0, x ≠ 0 for p < 0; both demos (p > 0, p < 0) went |
+
+No new step phrases or unit labels were needed.

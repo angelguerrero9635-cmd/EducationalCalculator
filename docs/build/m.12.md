@@ -11,7 +11,7 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   `~two-sample` (t), `~hypotheses` (sort: which Hₐ), `~errors` (sort).
 - `m.12.confidence-intervals` (5): main (mean, σ known), `~t-interval`, `~proportion`,
   `~sample-size`, `~capture`.
-- `m.12.sampling-distributions` (3): main (x̄), `~proportion` (p̂), `~counts` (binomial).
+- `m.12.sampling-distributions` (4): main (x̄), `~proportion` (p̂), `~counts` (binomial), `~clt`.
 - `m.12.chi-square` (3): main (goodness of fit, 3 categories), `~five-categories` (the counts
   and shares each a group, E7), `~independence` (2 × 3 table).
 - `m.12.conics` (5): main (ellipse), `~parabola`, `~hyperbola`, `~identify` (sort), `~cone`
@@ -19,26 +19,20 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
 - `m.12.matrices` (6): main (row reduction, right sides typed), `~multiply`, `~determinant`
   (3 × 3), `~inverse`, `~inverse-system` (X = A⁻¹B), `~cramer`.
 - `m.12.inverse-trig` (4): main (sin⁻¹), `~arccos`, `~arctan` (rise over run), `~compose`.
-- `m.12.trig-formulas-equations` (6): main (sin(A + B)), `~difference` (cos(A − B)),
-  `~double-angle`, `~half-angle`, `~sine-equation`, `~tangent-equation`.
+- `m.12.trig-formulas-equations` (7): main (sin(A + B)), `~difference` (cos(A − B)),
+  `~double-angle`, `~half-angle`, `~sine-equation`, `~tangent-equation`, `~quadratic`.
 - `m.12.vectors` (5): main (components, length and direction), `~add`, `~scalar`, `~dot`,
   `~resultant`.
-- `m.12.polar` (6): main (polar point), `~complex-form`, `~product`, `~de-moivre`, `~rose`,
-  `~limacon`.
+- `m.12.polar` (7): main (polar point), `~complex-form`, `~product`, `~de-moivre`, `~roots`,
+  `~rose`, `~limacon`.
 - `m.12.parametric` (3): main (a line), `~ellipse`, `~projectile`.
 - `m.12.limits-intro` (4): main (a hole), `~one-sided`, `~derivative`, `~infinity`.
 
 ## Waiting
 
 Every page the plan marks BUILD is built (50, one per plan line; the interims are under
-"Changed from the plan"). These pages wait on an engine or picture need and are not built:
-
-- `m.12.trig-formulas-equations~quadratic` (2 sin²x − sin x − 1 = 0) — need 7 (`unitCircle`
-  solutions for two values of sin x).
-- `m.12.polar~roots` (the cube roots of 8i) — need 8 (`complexPlane` `roots: n`).
-- `m.12.sampling-distributions~clt` (sample means from a skewed population) — need 9 (a CLT
-  simulation histogram).
-- `m.12.vectors~cross` (3-D vectors and the cross product) — need 10 (3-D axes).
+"Changed from the plan"). The pages that waited on a picture are built (`~quadratic`, `~roots`, `~clt`: "Waiting pages
+built" at the end); `m.12.vectors~cross` (need 10) is `m.12.vectors-3d~cross`.
 
 Built with an interim, to change when the need lands:
 
@@ -442,10 +436,8 @@ None: every planned page is built, some with an interim picture (below).
 Not placed: `m.12.anova~two-variances` (H106 (18)): its h picks one tail or two, and `f.tails` is
 fixed per page, so the curve would disagree with P for one of them (needs `tails` from a value);
 it keeps its table. `m.12.matrices` typed coefficients (H105 (9), optional): the main page's rules
-are the fixed system's; typing them is lesson work. Pages not built yet (plan BUILD entries, demos
-ready for `promote-demo.mjs`): `m.12.polar~roots` (H99, `g.m12-polar-roots`),
-`m.12.sampling-distributions~clt` (H99, `g.m12-sampling-distributions-clt`),
-`m.12.trig-formulas-equations~quadratic` (H98, `g.m12-trig-formulas-equations-quadratic`).
+are the fixed system's; typing them is lesson work. The three pages not built then (`~roots`, `~clt`, `~quadratic`)
+are built now: "Waiting pages built" at the end.
 There is no `m.12.confidence-intervals~two-sample`; the t curve went on the hypothesis test's.
 
 ### Page-review fixes (`.review/hs-page-m/page-report-m11-12.md`)
@@ -468,3 +460,20 @@ There is no `m.12.confidence-intervals~two-sample`; the t curve went on the hypo
   so the curve agrees with P either way. The table of P by F (the stand-in, and `fTable`) is gone.
   Demos `g.m12-anova-two-variances-tails-two` and `g.m12-anova-two-variances-tails-right`
   retired; the H106 (18) demo `g.m12-anova-two-variances-f-curve` (fixed two tails) is kept.
+
+### Waiting pages built
+
+Each started from its gallery demo, ported to the grade file's toolkit; the demo is retired
+(gone from the gallery file and the tracker's gallery list). H98 is now `placed` (with the m.11
+point-on-side page every part is on a page); H99 stays `drawn`, since its parts are on pages of
+several kinds (histogram, complexPlane, normalCurve, matrixGrid) and the tracker test reads one
+mark.
+
+| Page                                     | Picture                                                             | Changed from the demo                                                                                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `m.12.trig-formulas-equations~quadratic` | H98: unitCircle `solutions: { fn: 'sin', value: 's1', also: 's2' }` | each root's step notes its angles from 0° to 360° ("→ x = 210° or 330°", or "no angle" past ±1); the check line takes the root's sign when a < 0 |
+| `m.12.polar~roots`                       | H99: complexPlane `roots: 'n'`                                      | arg z from the grade's `direction` helper; θ₀'s step notes the other roots' arguments, 360° ÷ n apart                                            |
+| `m.12.sampling-distributions~clt`        | H99: histogram `clt`                                                | μ and σ/√n in minutes as a pinned unit (the demo wrote "(min)" in the names)                                                                     |
+
+`m.12.vectors~cross` (need 10) is built as `m.12.vectors-3d~cross`. No new step phrases or unit
+labels were needed.
