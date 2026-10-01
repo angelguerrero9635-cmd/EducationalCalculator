@@ -248,3 +248,5 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   four counts drawn as steps from N to N₁. No other change.
 - `~competition` (H100 need 4): new observe page with two rows (Species A and B per mL, days 0–20)
   and a pattern reading both, as the demo.
+- `s.9.homeostasis~systems` (H104 part 1): the plan's sentence as `intro` and the six system
+  icons on the bins. No stand-in.
