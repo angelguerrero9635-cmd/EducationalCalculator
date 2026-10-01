@@ -239,60 +239,8 @@ const potassium: ModuleDef = {
 
 // ── Part 9: mass on the H–R diagram (hrDiagram `mass`) ──
 
-const lifetime: ModuleDef = {
-  id: 'g.s12-stellar-evolution-lifetime',
-  title: 'A star’s mass sets its life',
-  use: 'Use this for “A star has twice the Sun’s mass. How bright is it, and how long will it last?”',
-  assumptions: [
-    'On the main sequence a star’s luminosity grows about as its mass to the power 3.5.',
-    'Its life there is its fuel (its mass) over the rate it burns it (its luminosity): the Sun’s 10¹⁰ years × M^−2.5.',
-    'Masses and luminosities are in Suns.',
-  ],
-  variables: [
-    V('M', 'M', 'Mass', { unit: 'M☉', min: 0.08, max: 50, step: 0.01 }),
-    V('L', 'L', 'Luminosity', { unit: 'L☉', min: 0, max: 1e7, step: 0.001, derived: true }),
-    V('t', 't', 'Main-sequence lifetime', {
-      unit: 'years',
-      min: 0,
-      max: 1e14,
-      step: 1,
-      scientific: true,
-      derived: true,
-    }),
-  ],
-  ...rels(
-    rule('L = M^3.5', '{L} = {M}^3.5', (v) => v.L! - v.M! ** 3.5, {
-      L: [
-        (v) => v.M! ** 3.5,
-        '{M}^3.5',
-        'Luminosity rises steeply with mass on the main sequence.',
-      ],
-      M: [
-        (v) => (v.L! > 0 ? v.L! ** (1 / 3.5) : undefined),
-        '{L}^(1/3.5)',
-        'The mass that shines L.',
-      ],
-    }),
-    rule('t = 10¹⁰ ÷ M^2.5', '{t} = 10¹⁰ ÷ {M}^2.5', (v) => v.t! / (1e10 * v.M! ** -2.5) - 1, {
-      t: [
-        (v) => 1e10 * v.M! ** -2.5,
-        '10¹⁰ ÷ {M}^2.5',
-        'M times the fuel burned L = M^3.5 times as fast: the Sun’s life × M ÷ M^3.5.',
-      ],
-      M: [
-        (v) => (v.t! > 0 ? (v.t! / 1e10) ** (-1 / 2.5) : undefined),
-        '(10¹⁰ ÷ {t})^(1/2.5)',
-        'The mass whose life is t.',
-      ],
-    }),
-  ),
-  example: { M: 2, L: 2 ** 3.5, t: 1e10 * 2 ** -2.5 },
-  startWith: ['M'],
-  representation: { kind: 'hrDiagram', mass: 'M', luminosity: 'L', lifetime: 't' },
-};
-
 const lifetimeDwarf: ModuleDef = {
-  ...lifetime,
+  ...pageOf('s.12.stellar-evolution~lifetime'),
   id: 'g.s12-stellar-evolution-lifetime-dwarf',
   title: 'A red dwarf lives the longest',
   use: 'Use this for a small star, a fifth of the Sun’s mass, dim and very long-lived.',
@@ -300,7 +248,7 @@ const lifetimeDwarf: ModuleDef = {
 };
 
 const lifetimeMassive: ModuleDef = {
-  ...lifetime,
+  ...pageOf('s.12.stellar-evolution~lifetime'),
   id: 'g.s12-stellar-evolution-lifetime-massive',
   title: 'A massive star burns out fast',
   use: 'Use this for a star of 20 Suns, blue and brilliant for only a few million years.',
@@ -308,7 +256,6 @@ const lifetimeMassive: ModuleDef = {
 };
 
 export const HS2F_GALLERY_MODULES: ModuleDef[] = [
-  lifetime,
   lifetimeDwarf,
   lifetimeMassive,
   potassium,
