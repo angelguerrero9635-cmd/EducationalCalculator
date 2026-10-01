@@ -3160,7 +3160,7 @@ const CIRCLE_EQUATIONS: ModuleDef[] = [
     example: { D: -6, E: 4, F: -12, h: 3, k: -2, r: 5 },
     startWith: ['D', 'E', 'F'],
     equation: 'x² + y² + {D}x + {E}y + {F} = 0',
-    representation: { kind: 'conicGraph', conic: 'circle', h: 'h', k: 'k', r: 'r' },
+    representation: { kind: 'conicGraph', conic: 'circle', h: 'h', k: 'k', r: 'r', fixed: true },
   }),
   page({
     id: 'm.10.circle-equations~point',
@@ -4306,7 +4306,7 @@ const CONSTRUCTIONS: ModuleDef[] = [
         { ticks: 'BP', count: 2 },
         { right: 'PMB' },
         { label: 'AB', value: 'ab', inCaption: true },
-        { label: 'AM', value: 'm' },
+        { label: 'AM', value: 'm', inCaption: true },
         { label: 'MP', value: 'h', inCaption: true },
         { label: 'AP', value: 'r' },
       ],
@@ -4630,7 +4630,7 @@ const PARALLEL_LINES: ModuleDef[] = [
     equation: '({p}x + {q})° = ({r}x + {s})°',
     representation: {
       kind: 'markedFigure',
-      transversal: { angle: 't', highlight: [1, 5], labels: { 1: 't', 5: 't' } },
+      transversal: { angle: 't', highlight: [1, 5], labels: { 1: 't', 5: 't' }, fixed: true },
     },
   }),
   page({
@@ -4872,7 +4872,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
       kind: 'transformation',
       figure: [
         ['ax', 'ay'],
-        [-4, 2],
+        [-3, 5],
         [-6, 5],
       ],
       move: 'translate',
@@ -4881,7 +4881,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
       image: { x: 'px', y: 'py' },
       then: { move: 'reflect', mirror: 'x-axis' },
       image2: { x: 'qx', y: 'qy' },
-      extent: 7,
+      extent: 8,
     },
   }),
   page({

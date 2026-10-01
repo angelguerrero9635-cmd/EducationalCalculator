@@ -151,9 +151,9 @@ const vertStage = (k: number): CardFigure => {
     { line: 'BD', id: 'm' },
     { text: 'ℓ', at: 'C', id: 'l' },
     { text: 'm', at: 'D', id: 'm' },
-    { text: '1', at: 'AXB', id: 'a1' },
-    { text: '2', at: 'BXC', id: 'a2' },
-    { text: '3', at: 'CXD', id: 'a3' },
+    { text: '1', at: 'AXB', r: 22, id: 'a1' },
+    { text: '2', at: 'BXC', r: 22, id: 'a2' },
+    { text: '3', at: 'CXD', r: 22, id: 'a3' },
   ];
   if (k >= 5) parts.push({ arcs: 'AXB', count: 1, id: 'a1' }, { arcs: 'CXD', count: 1, id: 'a3' });
   const lit = [[], ['l', 'm'], ['a1', 'a2', 'a3'], ['a2'], ['a1', 'a3'], ['a1', 'a3']][k]!;

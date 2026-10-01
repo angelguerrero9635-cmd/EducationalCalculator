@@ -109,7 +109,12 @@ export type CardPart = { id?: string } & (
   | { arcs: string; count: number }
   | { right: string }
   /** A short text (an angle's number, a line's name): in the angle 'ABC', or beside point 'A'. */
-  | { text: string; at: string }
+  | {
+      text: string;
+      at: string;
+      /** In an angle: how far out from its corner, in the 0–100 box (default 16). */
+      r?: number;
+    }
 );
 
 /**

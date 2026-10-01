@@ -58,7 +58,7 @@ export function hs2bCardIssues(f: CardFigure): string[] {
     for (const part of f.parts) {
       if (part.id) ids.add(part.id);
       const names = Object.entries(part)
-        .filter(([k]) => !['id', 'dashed', 'count', 'span', 'text'].includes(k))
+        .filter(([k]) => !['id', 'dashed', 'count', 'span', 'text', 'r'].includes(k))
         .flatMap(([, v]) => [...String(v)]);
       const missing = names.filter((n) => !(n in pts));
       if (missing.length) {

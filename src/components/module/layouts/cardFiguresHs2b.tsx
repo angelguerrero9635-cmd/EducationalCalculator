@@ -307,7 +307,7 @@ function Construction({
         let y: number;
         if (at.length === 3) {
           const [p, v, q] = at as [Q, Q, Q];
-          [x, y] = inside(v, p, q, 16);
+          [x, y] = inside(v, p, q, part.r ?? 16);
         } else {
           const p = at[0]!;
           const d = Math.hypot(p[0] - mid[0], p[1] - mid[1]) || 1;

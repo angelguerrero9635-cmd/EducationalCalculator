@@ -261,7 +261,12 @@ function triangleParts(f: Figure, t: NonNullable<MarkedFigureSpec['triangle']>) 
         f.ticks.push({ a: p, b: m, count: 1 + ['D', 'E', 'F'].indexOf(m) });
         f.ticks.push({ a: m, b: q, count: 1 + ['D', 'E', 'F'].indexOf(m) });
       }
-      f.named.push('D', 'E', 'F');
+      // A right triangle's circumcenter is its hypotenuse's midpoint: name the point once, O.
+      f.named.push(
+        ...(['D', 'E', 'F'] as const).filter(
+          (m) => !t.center || len(f.pts[m]!, O) > 1e-6 * Math.max(a, b, c),
+        ),
+      );
       if (t.center) {
         f.circles.push({ c: 'O', r: len(O, A), dashed: true });
         f.segs.push({ a: 'O', b: 'A', kind: 'segment', dashed: true });

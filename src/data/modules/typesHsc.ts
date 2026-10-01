@@ -131,6 +131,8 @@ export interface MarkedFigureSpec {
     highlight?: number[];
     /** Values labelled in angles by number, e.g. { 1: 'x', 6: 'y' }. */
     labels?: Record<number, string>;
+    /** No handle: the angle is worked out (from typed expressions), not dragged. */
+    fixed?: boolean;
   };
   triangle?: {
     /** Three side values (BC, CA, AB) instead of `points`: the triangle from its sides. */
