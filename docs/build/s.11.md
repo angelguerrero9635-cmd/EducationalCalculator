@@ -256,6 +256,15 @@ Report: `.review/new-sci-2/lesson-report.md`.
   sector (radians) and the radian view. It answers OpenStax 6.1 PP2 (the clock's 60° at 0.2 m:
   0.2094 m); PP1 is reading the clock. Finding θ° from θ = π/2 prints "π/2 × 180/π",
   "0.5π × 180/π", "90π/π" (engine, lead).
+- Oscillations main and ~pendulum (`periodWithWork`): the T step writes "√5 = 2.236" (no
+  brackets round a plain number, 4 figures) and keeps "= kπ" only for a short multiple
+  ("T = 2π × 0.05 = 0.1π"; otherwise "T = 2π × 2.236"); the step for L or m ends with the
+  multiplication ("L = 9.8 × 0.08163").
+- ~hooke: the U how reads "½ × k × x², half the stretch times the force kx". Not done: x in cm
+  and mm. With `units: ['m', 'cm', 'mm']` the deep harness found the F–x graph's traced point off
+  its line (the graph plots x in the shown unit against k in N/m: "traced point (525.59, 66,304)
+  is off the curve (6,630,399)"). A picture need for the lead; until then an assumption says
+  "Type the stretch in meters: 8 cm is 0.08 m."
 
 ### Shared needs (lesson review of the added skills)
 

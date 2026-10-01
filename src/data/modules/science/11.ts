@@ -4677,18 +4677,40 @@ const periodRule = (sym: string, a: string, b: string, hows: [string, string, st
     },
   );
 
-/** `periodRule` with the square root worked out first on the step for T. */
+/** A number for a work line to 4 significant figures, as the values show (2.236, 0.08163). */
+const sci4 = (x: number) =>
+  Math.abs(x) >= 0.001 && Math.abs(x) < 10000
+    ? String(Number(x.toPrecision(4))).replace('-', '−')
+    : scientific(Number(x.toPrecision(4)));
+
+/** A square root in a work line: √5 for a plain number, √(2.5 × 10⁻⁵) for a longer one. */
+const root = (x: string) => (/^[\d.]+$/.test(x) ? `√${x}` : `√(${x})`);
+
+/**
+ * `periodRule` with the square root worked out first on the step for T, and T ÷ 2π squared,
+ * then the multiplication, on the step for `a` (the value under the root's top: m or L).
+ */
 const periodWithWork = (sym: string, a: string, b: string, hows: [string, string, string]) =>
   withWork(
     withWork(periodRule(sym, a, b, hows), 'T', (v) => {
       const x = v[a]! / v[b]!;
       const r = Math.sqrt(x);
-      return [`√(${sci(x)}) = ${sci(r)}`, `T = 2π × ${sci(r)} = ${sci(2 * r)}π`];
+      const k = 2 * r;
+      // "= 0.1π" only for a short multiple of π; "4.4721π" reads worse than the number.
+      const short = Math.abs(k * 100 - Math.round(k * 100)) < 1e-9;
+      return [
+        `${root(sci4(x))} = ${sci4(r)}`,
+        `T = 2π × ${sci4(r)}${short ? ` = ${sci4(k)}π` : ''}`,
+      ];
     }),
     a,
     (v) => {
       const h = v.T! / (2 * Math.PI);
-      return [`T ÷ 2π = ${sci(h)}`, `(${sci(h)})² = ${sci(h * h)}`];
+      return [
+        `T ÷ 2π = ${sci4(h)}`,
+        `(${sci4(h)})² = ${sci4(h * h)}`,
+        `${a} = ${sci4(v[b]!)} × ${sci4(h * h)}`,
+      ];
     },
   );
 
@@ -4801,6 +4823,7 @@ const oscillationPages: ModuleDef[] = [
         'The spring pulls back in proportion to the stretch: F = kx, until it is overstretched.',
         'A hung mass at rest stretches it until the spring’s pull equals the weight mg.',
         'The stored energy is the area under the F–x line: ½kx².',
+        'Type the stretch in meters: 8 cm is 0.08 m.',
       ],
       variables: [
         q('m', 'm', 'Hung mass', 'kg', 0.001, 10000, 0.001),
@@ -4823,7 +4846,7 @@ const oscillationPages: ModuleDef[] = [
           U: [
             (v) => 0.5 * v.k! * v.x! * v.x!,
             '½ × {k} × {x}²',
-            'The triangle under the F–x line: half the stretch times the force.',
+            'The triangle under the F–x line: ½ × k × x², half the stretch times the force kx.',
           ],
           k: [
             (v) => (v.x! > 0 ? (2 * v.U!) / (v.x! * v.x!) : undefined),
