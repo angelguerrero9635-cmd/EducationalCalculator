@@ -5531,6 +5531,14 @@ const withSlowLimit = (r: Rule): Rule => ({
   },
 });
 
+/** A charge offered in nC, μC and C (its rules count μC); the steps convert a picked unit. */
+const chargeIn = (id: string, symbol: string, name: string) => ({
+  ...charge(id, symbol, name),
+  units: ['nC', 'μC', 'C'],
+});
+/** Capacitance units the capacitor pages offer (the rules count μF or pF). */
+const FARADS = ['pF', 'nF', 'μF', 'F'];
+
 const potentialPages: ModuleDef[] = [
   (() => {
     const [a, r, t] = [4, 0.5, 2];
@@ -5544,10 +5552,10 @@ const potentialPages: ModuleDef[] = [
         'A second charge there has potential energy U = q₀V: like charges give U > 0, the work done to push them together.',
       ],
       variables: [
-        charge('a', 'q', 'Charge'),
+        chargeIn('a', 'q', 'Charge'),
         q('r', 'r', 'Distance', 'm', 0.001, 100, 0.001),
         q('V', 'V', 'Potential', 'V', -1e13, 1e13, 0.01, { scientific: true }),
-        charge('t', 'q₀', 'Second charge'),
+        chargeIn('t', 'q₀', 'Second charge'),
         q('U', 'U', 'Potential energy', 'J', -1e10, 1e10, 0.0001),
       ],
       ...rules(
@@ -5714,9 +5722,9 @@ const potentialPages: ModuleDef[] = [
         '1 μF = 10⁻⁶ F, so μF × V gives μC.',
       ],
       variables: [
-        q('C', 'C', 'Capacitance', 'μF', 0.001, 1e6, 0.001),
+        q('C', 'C', 'Capacitance', 'μF', 0.001, 1e6, 0.001, { units: FARADS }),
         q('V', 'V', 'Voltage', 'V', 0.000001, 1e5, 0.000001),
-        q('Q', 'Q', 'Charge', 'μC', 0, 1e11, 0.001),
+        q('Q', 'Q', 'Charge', 'μC', 0, 1e11, 0.001, { units: ['nC', 'μC', 'C'] }),
         q('U', 'U', 'Stored energy', 'J', 0, 1e10, 0.000001),
       ],
       ...rules(
@@ -5769,8 +5777,8 @@ const potentialPages: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
-    const [k, A, d, V] = [1, 0.01, 1, 12];
-    const C = (8.85 * k * A) / (d * 1e-3);
+    const [k, A, d, V] = [1, 0.01, 1e-3, 12];
+    const C = (8.85 * k * A) / d;
     return {
       id: 's.11.electric-potential~parallel-plate',
       title: 'A parallel-plate capacitor',
@@ -5783,68 +5791,59 @@ const potentialPages: ModuleDef[] = [
       ],
       variables: [
         q('k', 'κ', 'Dielectric constant', undefined, 1, 100, 0.1),
-        q('A', 'A', 'Plate area', 'm²', 0.000001, 100, 0.000001, { units: ['m²'] }),
-        q('d', 'd', 'Gap', 'mm', 0.001, 1000, 0.001, { units: ['mm'] }),
-        q('C', 'C', 'Capacitance', 'pF', 0, 1e12, 0.001),
+        q('A', 'A', 'Plate area', 'm²', 0.0001, 100, 0.0001, { units: ['m²'] }),
+        // The rules count the gap in meters; it is typed in mm (or m, from the menu), from 0.01 mm.
+        q('d', 'd', 'Gap', 'm', 1e-5, 1, 1e-6, { units: ['mm', 'm'], shownIn: 'mm' }),
+        q('C', 'C', 'Capacitance', 'pF', 0, 1e12, 0.001, { units: FARADS }),
         q('V', 'V', 'Voltage', 'V', 0.001, 1e5, 0.001),
-        q('Q', 'Q', 'Charge', 'pC', 0, 1e17, 0.001),
+        q('Q', 'Q', 'Charge', 'pC', 0, 1e17, 0.001, { units: ['pC', 'nC', 'μC', 'C'] }),
         q('E', 'E', 'Field between the plates', 'V/m', 0, 1e11, 0.001),
       ],
       ...rules(
-        rule(
-          'C = κε₀A/d',
-          '{C} = {k} × 8.85 × {A}/({d} × 10⁻³)',
-          (v) => v.C! * v.d! * 1e-3 - 8.85 * v.k! * v.A!,
-          {
-            C: [
-              (v) => div(8.85 * v.k! * v.A!, v.d! * 1e-3),
-              '{k} × 8.85 × {A}/({d} × 10⁻³)',
-              'κ times ε₀ = 8.85 pF/m times the area, over the gap in meters.',
-            ],
-            A: [
-              (v) => (v.C! * v.d! * 1e-3) / (8.85 * v.k!),
-              '{C} × {d} × 10⁻³/(8.85 × {k})',
-              'Solve for the area: C times the gap, over κε₀.',
-            ],
-            d: [
-              (v) => div(8.85 * v.k! * v.A!, v.C! * 1e-3),
-              '{k} × 8.85 × {A}/({C} × 10⁻³)',
-              'Swap d and C: κε₀A over the capacitance, in millimeters.',
-            ],
-            k: [
-              (v) => (v.C! * v.d! * 1e-3) / (8.85 * v.A!),
-              '{C} × {d} × 10⁻³/(8.85 × {A})',
-              'How many times the air value the capacitance is.',
-            ],
-          },
-        ),
+        rule('C = κε₀A/d', '{C} = {k} × 8.85 × {A}/{d}', (v) => v.C! * v.d! - 8.85 * v.k! * v.A!, {
+          C: [
+            (v) => div(8.85 * v.k! * v.A!, v.d!),
+            '{k} × 8.85 × {A}/{d}',
+            'κ times ε₀ = 8.85 pF/m times the area, over the gap in meters.',
+          ],
+          A: [
+            (v) => (v.C! * v.d!) / (8.85 * v.k!),
+            '{C} × {d}/(8.85 × {k})',
+            'Solve for the area: C times the gap, over κε₀.',
+          ],
+          d: [
+            (v) => div(8.85 * v.k! * v.A!, v.C!),
+            '{k} × 8.85 × {A}/{C}',
+            'Swap d and C: κε₀A over the capacitance, in meters.',
+          ],
+          k: [
+            (v) => (v.C! * v.d!) / (8.85 * v.A!),
+            '{C} × {d}/(8.85 × {A})',
+            'How many times the air value the capacitance is.',
+          ],
+        }),
         product('Q', 'C', 'V', 'Q = CV', [
           'Each volt puts C more picocoulombs on each plate.',
           'Divide the charge by the voltage.',
           'Divide the charge by the capacitance.',
         ]),
-        rule('E = ΔV/d', '{E} = {V}/({d} × 10⁻³)', (v) => v.E! * v.d! * 1e-3 - v.V!, {
+        rule('E = ΔV/d', '{E} = {V}/{d}', (v) => v.E! * v.d! - v.V!, {
           E: [
-            (v) => div(v.V!, v.d! * 1e-3),
-            '{V}/({d} × 10⁻³)',
+            (v) => div(v.V!, v.d!),
+            '{V}/{d}',
             'The field is even between the plates: the voltage over the gap in meters.',
           ],
-          V: [(v) => v.E! * v.d! * 1e-3, '{E} × {d} × 10⁻³', 'The field times the gap in meters.'],
-          d: [
-            (v) => div(v.V!, v.E! * 1e-3),
-            '{V}/({E} × 10⁻³)',
-            'The voltage over the field, in millimeters.',
-          ],
+          V: [(v) => v.E! * v.d!, '{E} × {d}', 'The field times the gap in meters.'],
+          d: [(v) => div(v.V!, v.E!), '{V}/{E}', 'The voltage over the field, in meters.'],
         }),
       ),
-      example: { k, A, d, C, V, Q: C * V, E: V / (d * 1e-3) },
+      example: { k, A, d, C, V, Q: C * V, E: V / d },
       startWith: ['k', 'A', 'd', 'V'],
       representation: {
         kind: 'capacitor',
         dielectric: 'k',
         area: 'A',
         gap: 'd',
-        meters: 1e-3,
         capacitance: 'C',
         voltage: 'V',
         charge: 'Q',

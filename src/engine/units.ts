@@ -25,7 +25,9 @@ export type Dimension =
   | 'energy'
   | 'amount'
   | 'specificHeat'
-  | 'longTime';
+  | 'longTime'
+  | 'charge'
+  | 'capacitance';
 
 /** Dimensions whose menu a value opts into by listing its `units`. */
 export const OPT_IN: ReadonlySet<Dimension> = new Set([
@@ -35,6 +37,8 @@ export const OPT_IN: ReadonlySet<Dimension> = new Set([
   'amount',
   'specificHeat',
   'longTime',
+  'charge',
+  'capacitance',
 ]);
 
 export type UnitSystem = 'metric' | 'us';
@@ -208,6 +212,16 @@ export const UNITS: readonly UnitDef[] = [
   u('kyr', 'thousand years', 'longTime', 1e3, 'both'),
   u('Ma', 'million years', 'longTime', 1e6, 'both'),
   u('Ga', 'billion years', 'longTime', 1e9, 'both'),
+  // Electric charge (C) and capacitance (F), for the capacitor and potential pages
+  u('pC', 'picocoulombs', 'charge', 1e-12, 'both'),
+  u('nC', 'nanocoulombs', 'charge', 1e-9, 'both'),
+  u('μC', 'microcoulombs', 'charge', 1e-6, 'both'),
+  u('mC', 'millicoulombs', 'charge', 1e-3, 'both'),
+  u('C', 'coulombs', 'charge', 1, 'both'),
+  u('pF', 'picofarads', 'capacitance', 1e-12, 'both'),
+  u('nF', 'nanofarads', 'capacitance', 1e-9, 'both'),
+  u('μF', 'microfarads', 'capacitance', 1e-6, 'both'),
+  u('F', 'farads', 'capacitance', 1, 'both'),
 ];
 
 const BY_ID = new Map(UNITS.map((x) => [x.id, x]));

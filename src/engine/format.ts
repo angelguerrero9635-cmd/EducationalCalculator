@@ -346,7 +346,7 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
   }
   // Scientific notation: "4.7 × 10^5", "4.7 x 10^-3", "4.7*10⁵", "4.7 × 10⁻³".
   const sci = new RegExp(
-    '^([-+]?(?:\\d+\\.?\\d*|\\.\\d+))\\s*[×x*]\\s*10(?:\\^\\(?([-+]?\\d+)\\)?|([⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))$',
+    '^(?:([-+]?(?:\\d+\\.?\\d*|\\.\\d+))\\s*[×x*]\\s*)?10(?:\\^\\(?([-+]?\\d+)\\)?|([⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))$',
     'i',
   ).exec(cleaned);
   if (sci) {
@@ -356,7 +356,8 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
         : Number(
             [...sci[3]!].map((c) => (c === '⁻' ? '-' : String(SUPERSCRIPT.indexOf(c)))).join(''),
           );
-    return Number(sci[1]) * 10 ** exp;
+    // (a bare power of ten, "10⁶" or "10^6", is 1 × 10⁶)
+    return Number(sci[1] ?? 1) * 10 ** exp;
   }
   // A repeating decimal: "0.333…", "0.1666...", "2.0909…" (the last block written twice or more).
   const rep = /^([-+]?)(\d*)\.(\d+)(?:…|\.\.\.)$/.exec(cleaned);

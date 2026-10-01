@@ -67,3 +67,12 @@ describe('ties below 1', () => {
     expect(formatNumber(2.00005)).toBe('2.0001');
   });
 });
+
+describe('a power of ten alone', () => {
+  it('reads as 1 × 10ⁿ (a conversion factor: 1 C = 10⁶ μC)', () => {
+    expect(parseNumber('10⁶')).toBe(1e6);
+    expect(parseNumber('10^12')).toBe(1e12);
+    expect(parseNumber('10⁻³')).toBeCloseTo(1e-3, 15);
+    expect(parseNumber('10')).toBe(10);
+  });
+});

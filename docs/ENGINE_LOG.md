@@ -31,6 +31,22 @@ per review; each line names the finding and what the engine now does about it.
   buildSteps). `modules.test` checks every allowed code has a label. m.12 regression-inference,
   ~correlation and anova~two-variances: the name is "Alternative hypothesis" and the decision
   note opens with the tail alone ("Two tails: …").
+- **Charge and capacitance had no unit menu, and the parallel-plate gap carried its own 10⁻³**
+  → `charge` (pC, nC, μC, mC, C) and `capacitance` (pF, nF, μF, F) dimensions in `units.ts`
+  (opt-in: a menu only where a value lists its `units`), and `VariableDef.shownIn`, the unit a
+  value is shown in first when the rule counts another (`makeUnitContext`; a unit picked from the
+  menu still wins). A conversion factor that is a power of ten reads 1 C = 10⁶ μC (never
+  1000000), and `parseNumber` takes a bare 10⁶; an answer whose unit needs no converting keeps
+  its own display on a converting page (V = 7.19 × 10⁴ V, not 71,920). s.11 electric-potential
+  main and ~capacitor offer nC/μC/C and pF/nF/μF/F; ~parallel-plate counts the gap in meters,
+  shown in mm (C = κ × 8.85 × A/d, E = V/d: no 10⁻³ in either rule; gap from 0.01 mm and plates
+  from 1 cm², where the solver's tolerance still tells values apart). **Not done: the rules in
+  coulombs and farads.** The solver compares values to 10⁻⁶ absolute (`closeTo`, `TOLERANCE`)
+  and rounds |x| < 10⁻¹² to 0 (`normalizeValue`), so a charge of 4 × 10⁻⁶ C or a capacitance
+  of 8.85 × 10⁻¹¹ F counts as equal to any other: conflicts went unseen in the sampling. The rules
+  keep μC, μF, pF and pC, with the main page's 10⁻⁶ and its “q = 4 μC = 4 × 10⁻⁶ C” line and
+  ~capacitor's 10ⁿ lines (dropping them skipped the step they show). A relative tolerance in
+  `solve.ts` (another agent's) would let these pages count in SI.
 
 ## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
 

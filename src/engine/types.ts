@@ -69,6 +69,12 @@ export interface VariableDef {
    * and the unit systems keep to these.
    */
   units?: string[];
+  /**
+   * The unit the value is shown in at first when it isn't the formula's (a charge typed in μC
+   * for a rule in coulombs): one of `units`. The steps then convert it ("q = 4 μC = 4 × 10⁻⁶ C")
+   * and work in the formula's units, so the rule needs no 10⁻⁶ of its own.
+   */
+  shownIn?: string;
   /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
   multipleOf?: number;
   /** Only these values (shown units), when a lesson names them: count by 5s, 10s or 100s. */

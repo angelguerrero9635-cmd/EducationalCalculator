@@ -1,5 +1,12 @@
 import { CHOICE_BOX, choiceOf, choiceSign, codeLabel } from '@/engine/choices';
-import { dollarsOf, formatNumber, lowerFirst, renderTemplate, unitFor } from '@/engine/format';
+import {
+  dollarsOf,
+  formatNumber,
+  lowerFirst,
+  renderTemplate,
+  superscript,
+  unitFor,
+} from '@/engine/format';
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
@@ -360,7 +367,7 @@ export function buildSteps(
       result:
         v.belowStep && v.step !== undefined && workValue(t.id) < v.step / 2
           ? `${v.symbol} < ${formatNumber(v.step)}`
-          : `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
+          : `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct || !needsConversion(t.id))}`,
     };
     // Grade 3–5 boxes open with the number sentence, then the rule in words; K–2 with the
     // sentence only; Grade 6 on with the rule in letters.
@@ -534,7 +541,12 @@ export function buildSteps(
     const formula = fmt(id, result.values[id]!, formulaUnit(id), false);
     // State the factor in the direction that reads as a number ≥ 1 ("1 kg = 2.20462 lb").
     const f = units.factor(id);
-    const sig = (x: number) => String(Number(x.toPrecision(6)));
+    // (a power of ten from 10⁴ up as written in class: 1 C = 10⁶ μC, never 1000000)
+    const sig = (x: number) => {
+      const e = Math.round(Math.log10(x));
+      if (e >= 4 && Math.abs(x / 10 ** e - 1) < 1e-9) return superscript(`10^${e}`);
+      return String(Number(x.toPrecision(6)));
+    };
     const one =
       offsetRule(shownUnit(id), formulaUnit(id)) ??
       (f >= 1
