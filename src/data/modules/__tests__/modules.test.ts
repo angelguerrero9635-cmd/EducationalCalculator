@@ -625,6 +625,13 @@ describe.each(pages(TESTED_MODULES))('module %s', (id, m) => {
     for (const id of m.pictureLabels ?? []) expect([id, ids.has(id)]).toEqual([id, true]);
   });
 
+  it('drives a typed value from each worked-out handle it names', () => {
+    for (const [handle, typed] of Object.entries(m.drives ?? {})) {
+      expect([handle, m.variables.find((v) => v.id === handle)?.derived]).toEqual([handle, true]);
+      expect([typed, m.startWith.includes(typed)]).toEqual([typed, true]);
+    }
+  });
+
   it('says what it is for, when it is a problem type', () => {
     if (m.id.includes('~'))
       expect([m.id, (m.use ?? '').startsWith('Use this')]).toEqual([m.id, true]);

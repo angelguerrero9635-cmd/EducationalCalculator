@@ -87,7 +87,9 @@ export const movedGivens = (before: CalcState, after: CalcState, ids: string[]):
  * found from the typed 4p) moves the typed value behind it: the one typed value that, freed
  * while every other is held, takes the handle to `target`. The page keeps its shape (the typed
  * value stays typed, the handle's value stays worked out). Undefined when no single typed value
- * can do it, or the new value doesn't fit.
+ * can do it, or the new value doesn't fit. `only` names the one typed value this handle
+ * drives (the page's `drives`: the center h of |ax + b| moves b, never a); without it the typed
+ * values are tried newest first.
  */
 export function driveTyped(
   system: System,
@@ -95,23 +97,34 @@ export function driveTyped(
   updates: Record<string, number | undefined>,
   id: string,
   target: number,
+  only?: string,
 ): CalcState | undefined {
   const typedIds = new Set(state.result.given.map((g) => g.id));
   // What the handle holds still among the typed values; worked-out values it pinned stay so.
   const held = Object.fromEntries(
     Object.entries(updates).filter(([k, v]) => k !== id && typedIds.has(k) && v !== undefined),
   );
-  const candidates = state.result.given
-    .map((g) => g.id)
-    .filter((g) => !(g in held))
-    .reverse();
+  const pinned = Object.entries(updates).filter(
+    (e): e is [string, number] => e[0] !== id && !typedIds.has(e[0]) && e[1] !== undefined,
+  );
+  const candidates = (
+    only !== undefined
+      ? [only].filter((g) => typedIds.has(g))
+      : state.result.given.map((g) => g.id).reverse()
+  ).filter((g) => !(g in held));
   const tol = 1e-6 * Math.max(1, Math.abs(target));
-  /** The state with g at `x`, everything else typed held, if it fits. */
+  const same = (a: number | undefined, b: number) =>
+    a !== undefined && Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+  /**
+   * The state with g at `x`, everything else typed held, if it fits and keeps the worked-out
+   * values the handle pinned (dragging the distance d leaves the center h where it is).
+   */
   const at = (g: string, x: number) => {
     const next = setValues(system, state, { ...held, [g]: x });
     return next.result.rejected ||
       next.result.cleared.length ||
-      movedGivens(state, next, [g, ...Object.keys(held)]).length
+      movedGivens(state, next, [g, ...Object.keys(held)]).length ||
+      pinned.some(([k, v]) => !same(next.result.values[k], v))
       ? undefined
       : next;
   };
@@ -119,38 +132,149 @@ export function driveTyped(
     const v = next?.result.values[id];
     return v !== undefined && Math.abs(v - target) <= tol;
   };
-  /** The typed value as the student could type it: on its box's step (12, not 12.0000003). */
-  const typed = (g: string, next: CalcState) => {
+  /** The step of g's box (1 for a whole number), if it has one. */
+  const stepOf = (g: string) => {
     const v = system.variables.find((x) => x.id === g);
-    const step = v?.integer ? 1 : v?.step;
-    const x = next.result.values[g]!;
-    if (!step) return next;
-    const snapped = Number((Math.round(x / step) * step).toFixed(10));
-    return snapped === x ? next : (at(g, snapped) ?? next);
+    return v?.integer ? 1 : v?.step;
   };
+  /** x on g's step, as the student could type it (12, not 12.0000003). */
+  const onStep = (g: string, x: number) => {
+    const step = stepOf(g);
+    return step ? Number((Math.round(x / step) * step).toFixed(10)) : x;
+  };
+  /**
+   * g at the value that takes the handle to `target`, on its box's step: a whole-number g
+   * lands on the nearest whole number (the handle then goes as near as it can).
+   */
+  const land = (g: string, x: number) => at(g, onStep(g, x)) ?? at(g, x);
   for (const g of candidates) {
-    // Worked out directly, when a rule gives g from the handle's value (F from r).
+    const step = stepOf(g);
+    // Found by trying values of g near where it is (secant steps): each try is a quick solve
+    // with every value accounted for, and a straight-line rule (k from d) lands in one or two.
+    // A stepped g is tried on its steps only (a whole-number l can't be −4.95).
+    let [x0, y0] = [state.result.values[g], state.result.values[id]];
+    if (x0 !== undefined && y0 !== undefined) {
+      let x1 = x0 + (step ?? Math.max(1e-3, Math.abs(x0) * 0.01));
+      let y1: number | undefined = at(g, x1)?.result.values[id];
+      for (let k = 0; k < 16 && y1 !== undefined && Math.abs(y1 - y0) > 1e-12; k++) {
+        const x2: number = onStep(g, x1 + ((target - y1) * (x1 - x0)) / (y1 - y0));
+        // On steps, the search ends when it lands where it was: the nearest step to the target.
+        if (step && (x2 === x1 || x2 === x0)) {
+          const near = at(g, x2);
+          if (near) return near;
+          break;
+        }
+        const next = at(g, x2);
+        if (!next) break;
+        if (reaches(next)) return next;
+        [x0, y0, x1, y1] = [x1, y1, x2, next.result.values[id]];
+      }
+    }
+    // Else worked out from the handle's value with g free (F from r on a circle); slower, as
+    // the solver may have to search for g.
     const freed = setValues(system, state, { [g]: undefined });
     const trial = setValues(system, freed, { ...held, [id]: target });
     const x = trial.result.values[g];
     if (x !== undefined && !trial.result.rejected && !trial.result.cleared.length) {
-      const next = at(g, x);
-      if (reaches(next)) return typed(g, next!);
-    }
-    // Else found by trying values of g (secant steps): q from p when only p = q ÷ 4 is written.
-    let [x0, y0] = [state.result.values[g], state.result.values[id]];
-    if (x0 === undefined || y0 === undefined) continue;
-    let x1 = x0 + Math.max(1e-3, Math.abs(x0) * 0.01);
-    let y1: number | undefined = at(g, x1)?.result.values[id];
-    for (let k = 0; k < 16 && y1 !== undefined && Math.abs(y1 - y0) > 1e-12; k++) {
-      const x2: number = x1 + ((target - y1) * (x1 - x0)) / (y1 - y0);
-      const next = at(g, x2);
-      if (!next) break;
-      if (reaches(next)) return typed(g, next);
-      [x0, y0, x1, y1] = [x1, y1, x2, next.result.values[id]];
+      const next = land(g, x);
+      if (next && (step || reaches(next))) return next;
     }
   }
   return undefined;
+}
+
+/** True when an update's own values didn't all fit: the newest rejected, or one cleared. */
+export const misfits = (c: CalcState, ids: string[]) =>
+  (!!c.result.rejected && ids.includes(c.result.rejected.id)) ||
+  c.result.cleared.some((id) => ids.includes(id));
+
+/**
+ * Sets one or more variables as the newest input (`undefined` clears). With `slide` (a slider
+ * or a handle), a value that doesn't fit with the others held still moves back toward where it
+ * was, one step at a time, and stops at the last value that fits; a handle on a worked-out value
+ * moves the typed value behind it (`drives` names which, per handle). A drag never changes a
+ * typed value it doesn't send (see `movedGivens`).
+ */
+export function setInput(
+  system: System,
+  state: CalcState,
+  updates: Record<string, number | undefined>,
+  slide?: { id: string; step: number },
+  drives?: Record<string, string>,
+): CalcState {
+  const ids = Object.keys(updates);
+  // A slider or a drag sends a value with the others it holds still. If that doesn't fit
+  // (10 − 30 left; a product no top and bottom can make), the value is not taken and nothing
+  // goes blank. A drag or a slider also keeps every typed value as it is.
+  const misfit = (c: CalcState) =>
+    misfits(c, ids) || (!!slide && movedGivens(state, c, ids).length > 0);
+  const target = slide ? updates[slide.id] : undefined;
+  const from = slide ? state.result.values[slide.id] : undefined;
+  // A handle on a worked-out value (no typed value of its own, but typed values it comes
+  // from) can't take a new value without changing a typed one: it moves the typed value
+  // behind it, first, and never tries the value itself (on top of the values it comes from,
+  // the solver can take seconds to find what to clear) or steps toward it.
+  const stuck =
+    !!slide &&
+    target !== undefined &&
+    from !== undefined &&
+    state.result.given.length > 0 &&
+    !state.result.given.some((g) => g.id === slide.id);
+  if (stuck && Math.abs(target! - from!) <= 1e-9 * Math.max(1, Math.abs(from!))) return state;
+  if (stuck) {
+    const driven = driveTyped(system, state, updates, slide!.id, target!, drives?.[slide!.id]);
+    if (driven) return driven;
+    const typed = drives?.[slide!.id];
+    const name = typed && system.variables.find((v) => v.id === typed)?.name.toLowerCase();
+    return {
+      ...state,
+      errors: {
+        ...state.errors,
+        [slide!.id]: `Stops here: going on would change your ${name || 'typed values'}`,
+      },
+    };
+  }
+  const next = setValues(system, state, updates);
+  if (!misfit(next)) return next;
+  if (slide && target !== undefined && from !== undefined && slide.step > 0) {
+    // The nearest value that fits, one step out at a time on both sides of the target (the
+    // side toward the old value first), within the variable's range: a count of parts lands
+    // on the next divisor, a product on the next product.
+    const v = system.variables.find((x) => x.id === slide.id);
+    const inRange = (x: number) =>
+      (v?.min === undefined || x >= v.min - 1e-9) && (v?.max === undefined || x <= v.max + 1e-9);
+    const first = target > from ? -1 : 1;
+    // When only a typed value would move (nothing of its own refused), a step rarely cures
+    // it: look a few steps out, not 400 (each try is a solve).
+    const reach = misfits(next, ids) ? 400 : 25;
+    for (let k = 1; k <= reach; k++) {
+      for (const dir of [first, -first]) {
+        const x = target + dir * k * slide.step;
+        if (!inRange(x)) continue;
+        const trial = setValues(system, state, { ...updates, [slide.id]: x });
+        if (!misfit(trial)) return trial;
+      }
+      if (!inRange(target - k * slide.step) && !inRange(target + k * slide.step)) break;
+    }
+  }
+  const own = misfits(next, ids);
+  const lost = own
+    ? next.result.cleared.filter((id) => ids.includes(id))
+    : movedGivens(state, next, ids);
+  const names = lost.map(
+    (id) => system.variables.find((v) => v.id === id)?.name.toLowerCase() ?? id,
+  );
+  const reason = own
+    ? (next.result.rejected?.reason ?? `Doesn’t fit with ${names.join(' and ')} as it is`)
+    : `Stops here: going on would change your ${names.join(' and ')}`;
+  return {
+    ...state,
+    // A drag marks only the value it moves: the ones it held still keep their numbers.
+    errors: {
+      ...state.errors,
+      ...Object.fromEntries((slide ? [slide.id] : ids).map((id) => [id, reason])),
+    },
+  };
 }
 
 export const clearAll = (system: System): CalcState => initialState(system);

@@ -3043,6 +3043,7 @@ const LINEAR_INEQUALITIES: ModuleDef[] = [
     ],
     example: { a: 3, b: -4, s: 3, c: 5, d: 6, k: -5, f: 1, t: -6, h: 1 },
     startWith: ['d', 'a', 'b', 'c', 's', 't'],
+    drives: { k: 'd' },
     equation: '{a}x + {b} {s:sign} {c}x + {d}',
     representation: {
       kind: 'integerLine',
@@ -3163,6 +3164,7 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
     ],
     example: { l: -5, s: 1, a: 3, b: 4, t: 2, r: 13, L: -3, U: 3, n: 0, h: 1 },
     startWith: ['l', 's', 'a', 'b', 't', 'r', 'n'],
+    drives: { L: 'l', U: 'r' },
     equation: '{l} {s:sign} {a}x + {b} {t:sign} {r}',
     representation: {
       kind: 'integerLine',
@@ -3246,6 +3248,7 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
     ],
     example: { a: 2, b: 3, c: -1, d: 3, e: -2, f: 7, L: -2, U: 3, t: 4, h: 1 },
     startWith: ['a', 'b', 'c', 'd', 'e', 'f', 't'],
+    drives: { L: 'c', U: 'f' },
     equation: '{a}x + {b} < {c} or {d}x + {e} ≥ {f}',
     representation: {
       kind: 'integerLine',
@@ -3391,6 +3394,7 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
     ],
     example: { F: 12, p: 4, s: 2, B: 50, n: 9.5, N: 9 },
     startWith: ['F', 'p', 's', 'B'],
+    drives: { n: 'B' },
     pictureLabels: ['F', 'p', 'B'],
     representation: {
       kind: 'integerLine',
@@ -3533,6 +3537,7 @@ function absInequality(within: boolean): ModuleDef {
       ? { a: 2, b: 1, c: 7, h: -0.5, d: 3.5, L: -4, U: 3, t: 1, k: 1 }
       : { a: 2, b: -1, c: 5, h: 0.5, d: 2.5, L: -2, U: 3, t: 1, k: 0 },
     startWith: ['a', 'b', 'c', 't'],
+    drives: { h: 'b', d: 'c' },
     equation: `|{a}x + {b}| ${sign} {c}`,
     representation: {
       kind: 'integerLine',
@@ -3616,6 +3621,7 @@ const ABSOLUTE_VALUE: ModuleDef[] = [
     ],
     example: { a: 2, b: -3, c: 7, h: 1.5, d: 3.5, x1: 5, x2: -2 },
     startWith: ['c', 'a', 'b'],
+    drives: { h: 'b', d: 'c' },
     equation: '|{a}x + {b}| = {c}',
     representation: {
       kind: 'integerLine',
