@@ -154,7 +154,13 @@ export function TriangleSolver({ spec, calc }: { spec: TriangleSolverSpec; calc:
       return f === undefined ? undefined : `${sym(p)} = ${f}°`;
     }
     const e = exact(p);
-    return e ? `${sym(p)} = ${e}` : rep.label(x);
+    if (e) return `${sym(p)} = ${e}`;
+    // A worked-out side or angle to 2 decimals, as the caption gives it (93.56°, not 93.5573°).
+    if (!rep.words && calc.status(x) === 'derived') {
+      const u = rep.unit(x);
+      return `${rep.variable(x).symbol} = ${n2(rep.shown(x))}${!u ? '' : u === '°' ? u : ` ${u}`}`;
+    }
+    return rep.label(x);
   };
   const sideText = (i: number) => partText(SIDES[i]!);
   const angleText = (i: number) => {
