@@ -119,9 +119,12 @@ const ctrStage = (k: number): CardFigure => {
   // Short arcs crossing at each mark (a compass arc from each end of each chord), as drawn by hand.
   if (k >= 2)
     parts.push(
-      ...(['KE', 'LE', 'KF', 'LF', 'MG', 'NG', 'MH', 'NH'] as const).map(
-        (a): CardPart => ({ compass: a[0]!, through: a[1]!, span: 30, id: 'a' }),
-      ),
+      ...(['KE', 'LE', 'KF', 'LF', 'MG', 'NG', 'MH', 'NH'] as const).map((a): CardPart => ({
+        compass: a[0]!,
+        through: a[1]!,
+        span: 30,
+        id: 'a',
+      })),
       { line: 'EF', id: 'b1' },
       { line: 'GH', id: 'b2' },
     );
@@ -135,13 +138,9 @@ const ctrStage = (k: number): CardFigure => {
       { ticks: 'OM', count: 1, id: 'k2' },
       { ticks: 'OT', count: 1, id: 'k3' },
     );
-  const lit = [
-    [],
-    ['c1', 'c2'],
-    ['a', 'b1', 'b2'],
-    ['o'],
-    ['r1', 'r2', 'r3', 'k1', 'k2', 'k3'],
-  ][k]!;
+  const lit = [[], ['c1', 'c2'], ['a', 'b1', 'b2'], ['o'], ['r1', 'r2', 'r3', 'k1', 'k2', 'k3']][
+    k
+  ]!;
   return card(ctr, parts, lit, k >= 3 ? ['O'] : []);
 };
 
