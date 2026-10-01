@@ -354,11 +354,11 @@ None: every planned page is built, some with an interim picture (below).
 - `m.12.vectors-3d~cross`: the |u × v| step says why a length is an area (|u||v| sin θ, base
   times height).
 - `m.12.matrix-transformations` main and `~compose`: rule lines read "c = cos(θ)", not
-        "cos(θ°)" (the engine adds ° to the numbers: cos(30°)). `~compose`: at a multiple of 30° or
-        45° (not of 90°) the x″ and y″ steps add the exact line ("x″ = 2 − √3", "y″ = 1 + 2√3"), and c
-        and s note their exact value ("(= √3/2 exactly)"). The 4-decimal option did not help (0.8660 ×
-        2 is still 1.732), so only the exact line is added. `~identify`: the use line asks "Which
-        transformation does [[0, 1], [1, 0]] make?".
+          "cos(θ°)" (the engine adds ° to the numbers: cos(30°)). `~compose`: at a multiple of 30° or
+          45° (not of 90°) the x″ and y″ steps add the exact line ("x″ = 2 − √3", "y″ = 1 + 2√3"), and c
+          and s note their exact value ("(= √3/2 exactly)"). The 4-decimal option did not help (0.8660 ×
+          2 is still 1.732), so only the exact line is added. `~identify`: the use line asks "Which
+          transformation does [[0, 1], [1, 0]] make?".
 - `m.12.polar-conics`: the "°" is dropped after θ in every rule (main, `~sine`, `~parabola`,
   `~rotation`, `~rotated-equation`). n is "Number before cos θ" (sin θ), and assumption 3 says
   - cos θ is n = −1. `~ellipse`: R = k ÷ (1 − e) and S = k ÷ (1 + e) from the typed k ("R = 3 ÷
@@ -448,3 +448,16 @@ ready for `promote-demo.mjs`): `m.12.polar~roots` (H99, `g.m12-polar-roots`),
 `m.12.sampling-distributions~clt` (H99, `g.m12-sampling-distributions-clt`),
 `m.12.trig-formulas-equations~quadratic` (H98, `g.m12-trig-formulas-equations-quadratic`).
 There is no `m.12.confidence-intervals~two-sample`; the t curve went on the hypothesis test's.
+
+### Page-review fixes (`.review/hs-page-m/page-report-m11-12.md`)
+
+- chi-square, ~five-categories: `fixed`: X² can't be solved back to the observed counts.
+- conics~parabola: the number before (y − k) solves back as 4p, and `keep: ['h', 'k', 'x']`,
+  so the focus drag writes q = 4p instead of clearing it.
+- limits-intro: the example x is 2.5, so the handle starts clear of the hole at (3, 6).
+- Waiting on the shared fixer: hypothesis-testing and ~mean need `CHOICES.alt` before their
+  equation row can read "Hₐ: p {h:alt} p₀"; ~paired's "μ_d" needs a mean-symbol option on
+  `normalCurve` (the mean is the number 0). Component only: the NormalCurve wording and
+  colors, the F-curve tail, cramer's caption, the compose, projectile, ellipse, resultant,
+  polar and polar-conics tags, the conic keys, the hyperbola slope, the area-under-curve
+  exact line, capture's row height, the matrices stages.

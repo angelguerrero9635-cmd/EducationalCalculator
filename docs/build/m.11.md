@@ -239,3 +239,16 @@ its gallery demo is a full page `promote-demo.mjs` can copy): `m.11.function-tra
 `g.m11-unit-circle-point-on-side`), `m.11.probability-distributions~at-least` (H99,
 `g.m11-probability-distributions-at-least`), `m.11.radical-functions~rational-exponent` (H106,
 `g.m11-radical-functions-rational-exponent`).
+
+### Page-review fixes (`.review/hs-page-m/page-report-m11-12.md`)
+
+- complex-numbers~add-subtract: + or − is a choice box in the equation row,
+  "(4 − 2i) {s:op} (−1 + 5i)", s stored 1 (+) or 2 (−); C and D are c and d times 1 or −1.
+- complex-numbers~quadratic, ~powers-of-i: `fixed`, no handle on the worked-out point.
+- normal-distribution~outside: `keep: ['m', 's', 'N']`, so a cutoff's drag moves d and the
+  other cutoff follows (the two cutoffs were both held, so a drag did nothing).
+- function-transformations~point: `keep: ['p', 'a', 'h', 'k']`, so the key point's drag sets h
+  and k and keeps the typed p (the moved point X was held, which cleared p).
+- exp-log-equations~two-logs: the caption no longer prints the unnamed "u = 9".
+- Left for the shared fixer (component only): the same-base caption ("lit"), the two-logs
+  legend's double space, the w tag over the −5i tick.

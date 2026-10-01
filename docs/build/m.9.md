@@ -240,3 +240,14 @@ None.
 Gallery demos built from these pages that no longer pass (the lead's to retire):
 `g.m9-linear-inequalities-compound-fit` (its example lacks the new s, t and n) and
 `g.m9-regression-point-k` (it adds k a second time).
+
+### Page-review fixes (`.review/hs-page-m/page-report-m9-10.md`)
+
+- ~significant-figures: the rectangle is `fixed` (new `rectangle` option): the corner drag no
+  longer clears the typed significant-figure counts.
+- ~formula-units: the time in hours is `tₕ`, not `t_h`, in the input row, steps and caption.
+- inequality-systems~modeling: `extent: 25`, so the region fills the chart (was 0–50).
+- quadratic-functions~standard-form: a snaps to 0.1, so the stretch handle moves it.
+- Left for the shared fixer (component only): the AlgebraTiles mats, `SUPS` letters and the
+  "$900.41" money label (~percent-growth), the test-point tag over the corner label
+  (inequality-systems, ~modeling's line labels too), the outlier under the max handle.

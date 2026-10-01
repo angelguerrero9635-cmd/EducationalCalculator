@@ -270,3 +270,17 @@ Not placed:
 
 Gallery demos built from these pages that no longer pass (the lead's to retire):
 `g.m10-rigid-motions-mirror-sign` (it adds s a second time).
+
+### Page-review fixes (`.review/hs-page-m/page-report-m9-10.md`)
+
+- parallel-lines~algebra: the transversal is `fixed` (new `transversal.fixed`): its angle is
+  worked out from the typed expressions, so the drag no longer clears p, q, r.
+- circle-equations~general-form: the circle is `fixed`; the drags erased D, E and F.
+- constructions~perpendicular-bisector: AM moves to the caption, off M and its tick.
+- rigid-motions~glide: the figure's B is (−3, 5), so B′ no longer lands beside A, and the
+  extent is 8, so A′ at x = 7 sits inside the plot.
+- proofs: the vertical-angle numbers sit 22 out from the crossing (new `r` on a card text).
+- Left for the shared fixer (component only): "r = 5" on a tick, the circumcenter O over F,
+  "d = 13" over O (rectangle), the find-angle ramp drawn to scale and its labels, the
+  ambiguous-case labels and decimals, the coordinate-geometry label halos, the Venn "only"
+  caption lines (~neither), the 80 px stage figures (constructions).
