@@ -273,3 +273,9 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   ~germ-layers keeps its bin names (the gastrula's colors are not named there).
 - `~hormones` (H109 part 7): new observe page beside ~menstrual-cycle, estrogen and progesterone
   (0–100 of each one's peak) on days 1–28, as the demo.
+- `s.9.biomes~land` (H109 part 6): the six biome icons on the bins; the cards stay text. No
+  stand-in.
+- `~rainfall` (H109 part 7): a second row, Temperature in °C (−30 to 40) on its own chart, and a
+  pattern reading both (tundra by the warmest month, rainforest and savanna only when warm all
+  year, taiga by freezing winters). Retitled "Rainfall and temperature by month". Stand-in gone:
+  the assumption that temperature matters too, and the "if it is warm all year" hedges.

@@ -2135,6 +2135,9 @@ const ECOSYSTEMS: LayoutDef[] = [
   },
 ];
 
+/** ~rainfall's monthly temperatures (°C): cold winters, warm summers. */
+const RAINFALL_TEMPERATURE = [-5, -3, 3, 10, 16, 21, 24, 23, 18, 11, 4, -2];
+
 const BIOMES: LayoutDef[] = [
   // ── Biomes and aquatic ecosystems (HS-LS2-1, HS-LS2-2) ──
   {
@@ -2192,16 +2195,42 @@ const BIOMES: LayoutDef[] = [
     ],
     question: 'Which biome does it describe?',
     bins: [
-      { id: 'rainforest', label: 'Tropical rainforest', why: 'Warm and wet all year.' },
-      { id: 'desert', label: 'Desert', why: 'Under 25 cm of rain a year, hot or cold.' },
-      { id: 'grassland', label: 'Grassland', why: 'Too dry for many trees; grasses and fires.' },
+      {
+        id: 'rainforest',
+        label: 'Tropical rainforest',
+        why: 'Warm and wet all year.',
+        figure: { kind: 'icon', icon: 'tropical rainforest' },
+      },
+      {
+        id: 'desert',
+        label: 'Desert',
+        why: 'Under 25 cm of rain a year, hot or cold.',
+        figure: { kind: 'icon', icon: 'desert' },
+      },
+      {
+        id: 'grassland',
+        label: 'Grassland',
+        why: 'Too dry for many trees; grasses and fires.',
+        figure: { kind: 'icon', icon: 'grassland' },
+      },
       {
         id: 'deciduous',
         label: 'Temperate deciduous forest',
         why: 'Four seasons and steady rain; broad leaves fall in autumn.',
+        figure: { kind: 'icon', icon: 'temperate deciduous forest' },
       },
-      { id: 'taiga', label: 'Taiga', why: 'Long, cold winters; conifer forest.' },
-      { id: 'tundra', label: 'Tundra', why: 'Very cold, no trees, permafrost below.' },
+      {
+        id: 'taiga',
+        label: 'Taiga',
+        why: 'Long, cold winters; conifer forest.',
+        figure: { kind: 'icon', icon: 'taiga' },
+      },
+      {
+        id: 'tundra',
+        label: 'Tundra',
+        why: 'Very cold, no trees, permafrost below.',
+        figure: { kind: 'icon', icon: 'tundra' },
+      },
     ],
     cards: [
       { label: 'Layers of canopy trees, vines and orchids', bin: 'rainforest' },
@@ -2249,11 +2278,11 @@ const BIOMES: LayoutDef[] = [
   {
     kind: 'observe',
     id: 's.9.biomes~rainfall',
-    title: 'Rainfall by month',
-    use: 'Use this to record a place’s rainfall each month and see which biome it suits.',
+    title: 'Rainfall and temperature by month',
+    use: 'Use this to record a place’s rainfall and temperature each month and see which biome it suits.',
     assumptions: [
       'Rainfall is in millimeters: 10 mm is 1 cm of water over the ground.',
-      'Temperature matters too: a cold place with little rain is tundra or a cold desert.',
+      'Temperature is the month’s average, in °C; bars below the line are below freezing.',
     ],
     columns: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     rowLabel: 'Rainfall',
@@ -2261,21 +2290,35 @@ const BIOMES: LayoutDef[] = [
     max: 400,
     step: 10,
     initial: [80, 70, 90, 90, 100, 100, 110, 100, 90, 80, 90, 90],
-    pattern: (v) => {
+    second: {
+      rowLabel: 'Temperature',
+      unit: '°C',
+      min: -30,
+      max: 40,
+      step: 1,
+      initial: RAINFALL_TEMPERATURE,
+    },
+    pattern: (v, temp = RAINFALL_TEMPERATURE) => {
       const total = v.reduce((a, b) => a + b, 0);
       const wet = v.filter((x) => x >= 100).length;
       const dry = v.filter((x) => x < 20).length;
       const cm = Math.round(total / 10);
-      if (total < 250) return `About ${cm} cm a year: dry enough for a desert.`;
-      if (total >= 2000 && dry === 0)
-        return `About ${cm} cm a year, wet every month: a tropical rainforest, if it is warm all year.`;
-      if (dry >= 3 && wet >= 3)
-        return `About ${cm} cm a year with a long dry season: a savanna, if it is warm all year.`;
+      const warmest = Math.max(...temp);
+      const coldest = Math.min(...temp);
+      if (warmest < 10)
+        return `About ${cm} cm a year, and no month above 10 °C: too cold for trees, tundra.`;
+      if (total < 250) return `About ${cm} cm a year: dry enough for a desert, hot or cold.`;
+      if (coldest >= 18 && total >= 2000 && dry === 0)
+        return `About ${cm} cm a year, wet and warm every month: a tropical rainforest.`;
+      if (coldest >= 18 && dry >= 3 && wet >= 3)
+        return `About ${cm} cm a year, warm all year with a long dry season: a savanna.`;
+      if (coldest < -10)
+        return `About ${cm} cm a year with long, freezing winters: taiga, a conifer forest.`;
       if (total < 750)
         return `About ${cm} cm a year: enough for grassland, but dry for most forests.`;
-      if (dry > 0)
-        return `About ${cm} cm a year, with ${dry} dry month${dry === 1 ? '' : 's'}: a seasonal forest if it is warm.`;
-      return `About ${cm} cm a year, spread through the year. That is enough for a forest: temperate deciduous where summers are warm, taiga where winters are long and cold.`;
+      if (coldest >= 18)
+        return `About ${cm} cm a year and warm all year: a tropical forest, seasonal if some months are dry.`;
+      return `About ${cm} cm a year, with winters near or below freezing and warm summers: a temperate deciduous forest.`;
     },
   },
 ];
