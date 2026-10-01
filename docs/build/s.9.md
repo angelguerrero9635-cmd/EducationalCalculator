@@ -279,3 +279,28 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   pattern reading both (tundra by the warmest month, rainforest and savanna only when warm all
   year, taiga by freezing winters). Retitled "Rainfall and temperature by month". Stand-in gone:
   the assumption that temperature matters too, and the "if it is warm all year" hedges.
+
+### Page-review fixes
+
+From `.review/hs-page-s/page-report-s9-10.md` (science role):
+
+- `~flower`: the "Male parts" scene lights the anther and the filament, "Female parts" the
+  stigma, style and ovary (new scene field `alsoLit` on a drawn `parts` figure; the layout test
+  checks its names). The Filament leader ends on the filament, not the petal. "Attract" is now
+  "Pollinators".
+- `~hormones`: estrogen and progesterone each peak at 100 (the assumption's 0–100 of each one's
+  peak), and the table's corner reads "% of peak", not "Level".
+- `~membrane-potential`: new observe field `guides` draws dashed lines at the threshold
+  (−55 mV) and rest (−70 mV) with a scale (0 mV, −55, −70) at the left and a key under the
+  chart; bars and table on a range below 0 show + on positive readings (+30).
+- The observe table's row names (all three observe pages): one size on every page, in a column
+  as wide as the longest name needs, so "Species A" no longer wraps in small grey type.
+- `~mitotic-index`: I 0–300 and P, M, A, T 0–100 (N to 700, m to 400), one field's counts, so the
+  sliders sit where the values are.
+- `s.9.evolution-evidence`: the expected AA, Aa and aa counts add "(about 347 people)" when the
+  product isn't whole.
+- `~gene-expression`: the signal reads "inducer (lactose)". `~fingerprint`: the "A match" scene
+  drops its line repeating the gel's own "matches in all 4 bands".
+- Left for the shared role (components): the mitotic-index pie label and #418, `drag-p`
+  snapping to 0.01 (AlleleFrequencies), population-ecology's caret caption and 4-decimal values
+  (FunctionGraph), herd-immunity's 84.2105% (PercentBar), the pump's K⁺ (Membrane).

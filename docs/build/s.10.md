@@ -302,3 +302,18 @@ Report: `.review/new-sci-2/lesson-report.md`.
 - `s.10.phase-colligative` main (H108 part 3): `chemDiagram` mode `phase`, water's phase diagram
   with the solution's lines dashed and ΔTf and ΔTb bracketed. Stand-ins gone: the heating curve
   and its hidden T₀ with the rule placing it.
+
+### Page-review fixes
+
+From `.review/hs-page-s/page-report-s9-10.md` (science role):
+
+- `~water`: the ice and melt scenes use the new `molecules` state `ice`: 13 water molecules on
+  three open hexagons, each O–H pointing at the next O with the hydrogen bond dashed (the
+  harness checks ice is water in 6, 10, 13, 16 or 19 molecules). The liquid box beside it holds
+  13 too.
+- `~from-tables`: the line is `fit` to the two sums (about 180 to 220), so the handles stand
+  apart; the symbols are S°ₚ and S°ᵣ, the assumption saying p is products and r reactants.
+- Left for the shared role (components): HeatingCurve's axis, Ksp and catalyst labels, the
+  dilution label, phase-colligative ΔT labels and units, the pH caret and plain-number format,
+  the salt scene's δ labels (hydration figure), from-tables' point labels, the periodic table's
+  size at 390 px.
