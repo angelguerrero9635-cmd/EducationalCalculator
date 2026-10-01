@@ -209,11 +209,13 @@ const spinUp = fromPage(
 const spinDown = fromPage(
   's.11.rotation~angular-acceleration',
   'g.s-11-rotation-angular-acceleration-reverse',
-  'Slowing, stopping and turning back',
+  'A wheel slowing down',
   SPIN_PICTURE,
   {
-    use: 'Use this for “A wheel turning at 20 rad/s slows at 2 rad/s² for 12 s. How fast is it turning then, and how many turns does it make?”',
-    example: { u: 20, a: -2, t: 12, w: -4, d: 96, n: 96 / (2 * Math.PI) },
+    // The page counts turns one way only (ω₀ and ω keep their sign), so the demo slows but
+    // doesn't turn back.
+    use: 'Use this for “A wheel turning at 20 rad/s slows at 2 rad/s² for 8 s. How fast is it turning then, and how many turns does it make?”',
+    example: { u: 20, a: -2, t: 8, w: 4, d: 96, n: 96 / (2 * Math.PI) },
     pictureLabels: [],
   },
 );
@@ -342,7 +344,9 @@ const parallelPlate = fromPage(
   'g.s-11-electric-potential-parallel-plate',
   'A parallel-plate capacitor in air',
   PLATES_PICTURE,
-  { pictureLabels: [] },
+  // The page's solver reports consistent values as a conflict when the area is near 0 (sent to
+  // the lesson chat); the demo keeps the area at 1 cm² or more.
+  { pictureLabels: [], vars: { A: { min: 0.0001 } } },
 );
 
 const dielectric = fromPage(
@@ -355,7 +359,7 @@ const dielectric = fromPage(
     example: (() => {
       const [k, A, d, V] = [3.5, 0.05, 0.2, 9];
       const C = (8.85 * k * A) / (d * 1e-3);
-      return { k, A, d, C, V, Q: C * V };
+      return { k, A, d, C, V, Q: C * V, E: V / (d * 1e-3) };
     })(),
     pictureLabels: [],
   },

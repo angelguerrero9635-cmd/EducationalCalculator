@@ -507,9 +507,16 @@ function spectrumHsIssues(rep: Extract<Physics8, { kind: 'spectrum' }>, val: Val
     const lab = hm.SPECTRAL_LINES[l.element];
     // H105: `line: 'rest'` follows the rest value; that value must be one of the lines.
     const r0 = l.rest ? val(l.rest) : undefined;
-    const ref = lab[labLineIndex(lab, l.line, r0 === undefined ? undefined : (r0 * m) / 1e-9)]!.nm;
     const z = read(val, l.redshift, 0);
     if (z === undefined) return out;
+    const lam0 = val(rep.wavelength);
+    const ref =
+      lab[
+        labLineIndex(lab, l.line, r0 === undefined ? undefined : (r0 * m) / 1e-9, {
+          nm: lam0 === undefined ? undefined : (lam0 * m) / 1e-9,
+          z,
+        })
+      ]!.nm;
     if (z <= -1) out.push(`spectrum: redshift ${z} is not above −1`);
     check(l.rest, ref, 'lab wavelength');
     // Without a redshift the wavelength may be any of the element's lines.

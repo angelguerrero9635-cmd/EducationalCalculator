@@ -128,13 +128,22 @@ export function rayPoint(
   return { at: along(s), reason };
 }
 
-/** The lab line a spectrum refers to: `line`'s index, or the element's line nearest `rest` nm. */
+/**
+ * The lab line a spectrum refers to: `line`'s index, or the element's line nearest `rest` nm.
+ * While the rest value is "?", the line nearest the observed wavelength unshifted, λ ÷ (1 + z).
+ */
 export function labLineIndex(
   lab: { nm: number }[],
   line: number | 'rest' | undefined,
-  restNm: number | undefined,
+  restKnown: number | undefined,
+  observed?: { nm: number | undefined; z: number | undefined },
 ): number {
   if (line === 'rest') {
+    const restNm =
+      restKnown ??
+      (observed?.nm !== undefined && observed.z !== undefined && observed.z > -1
+        ? observed.nm / (1 + observed.z)
+        : undefined);
     if (restNm === undefined) return 0;
     let best = 0;
     lab.forEach((q, i) => {

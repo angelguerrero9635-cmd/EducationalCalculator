@@ -125,7 +125,11 @@ export function SpectrumLinesView({ spec, l, calc }: { spec: Spec; l: Lines; cal
   // H105: `line: 'rest'` follows the lab wavelength typed (the nearest of the element's lines).
   const restNm =
     l.rest && rep.known(l.rest) ? (rep.val(l.rest) * (spec.meters ?? 1)) / 1e-9 : undefined;
-  const ref = lab[labLineIndex(lab, l.line, restNm)]!;
+  const observedNm = rep.known(spec.wavelength)
+    ? (rep.val(spec.wavelength) * (spec.meters ?? 1)) / 1e-9
+    : undefined;
+  const ref =
+    lab[labLineIndex(lab, l.line, restNm, { nm: observedNm, z: zKnown ? z : undefined })]!;
   // Without a redshift the page's wavelength picks one line: marked under the strip.
   const picked =
     z === undefined && rep.known(spec.wavelength)
