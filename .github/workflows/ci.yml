@@ -3,6 +3,8 @@ name: CI
 on:
   push:
   pull_request:
+  # A full run by hand (Actions → CI → Run workflow), as the nightly one does.
+  workflow_dispatch:
   schedule:
     # Nightly: every test in full (a push runs the cheap suites only).
     - cron: '17 6 * * *'
