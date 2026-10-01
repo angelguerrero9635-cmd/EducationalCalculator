@@ -10,7 +10,7 @@ import Svg, { Circle, Defs, G, Line, Polyline } from 'react-native-svg';
 
 import type { DecayChartSpec, Nuclide } from '@/data/modules/typesHsj';
 import type { NumOrVar } from '@/data/modules/typesGraphs';
-import { formatNumber, scientific, superscript } from '@/engine/format';
+import { formatNumber, scientific } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -25,11 +25,31 @@ type Rep = ReturnType<typeof useRep>;
 type Decay = Exclude<DecayChartSpec, { mode: 'equation' }>;
 type Equation = Extract<DecayChartSpec, { mode: 'equation' }>;
 
-/** Big times read as 4.47 × 10⁹ (3 figures, never 3.2091 × 10⁹); the rest in full. */
+/**
+ * A worked-out amount or time as the picture says it, to 3 figures: big times as 4.47 × 10⁹
+ * (never 3.2091 × 10⁹), the rest plain (15.3, never 15.2905).
+ */
 const big = (x: number) =>
   Math.abs(x) >= 1e6
     ? scientific(Number(x.toPrecision(3)))
-    : formatNumber(Number(x.toPrecision(6)));
+    : formatNumber(Number(x.toPrecision(3)));
+
+const RAISED: Record<string, string> = {
+  '0': '⁰',
+  '1': '¹',
+  '2': '²',
+  '3': '³',
+  '4': '⁴',
+  '5': '⁵',
+  '6': '⁶',
+  '7': '⁷',
+  '8': '⁸',
+  '9': '⁹',
+  '.': '·',
+};
+/** ½ to a power, raised even when it is a decimal: (1/2)²·⁷¹, never (1/2)^2.71. */
+const halfTo = (power: string) =>
+  `(1/2)${[...power.replace(/,/g, '')].map((ch) => RAISED[ch] ?? ch).join('')}`;
 
 /** A value as the picture says it: past a million, 3 figures in powers of ten (3.21 × 10⁹, never 3,209,219,858). */
 const readOf = (rep: Rep) => (x: NumOrVar) =>
@@ -68,9 +88,9 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
     [spec.start, spec.left]
       .map((v) => (typeof v === 'string' ? rep.unit(v) : undefined))
       .find(Boolean) ?? '';
-  const halvesText = formatNumber(Number(halves.toFixed(4)));
+  const halvesText = formatNumber(Number(halves.toPrecision(3)));
   const halvesWord = `${halvesText} half-li${halves === 1 ? 'fe' : 'ves'}`;
-  const pow = superscript(`(1/2)^${halvesText}`);
+  const pow = halfTo(halvesText);
   const span = Math.max(4, Math.ceil(halves * 1.15));
   const liveX = { lo: 0, hi: T.value * span, step: T.value * (span > 8 ? 2 : 1) };
   const frame = useFrozen(liveX);
@@ -147,7 +167,7 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
                   {halvesWord}
                 </ChartText>
                 <ChartText x={lx} y={98} fontSize={chart.label} fill={c.chartMuted}>
-                  {`100 × ${superscript(`(1/2)^${formatNumber(Number(halves.toFixed(2)))}`)} ≈ ${left}`}
+                  {`100 × ${pow} ≈ ${left}`}
                 </ChartText>
                 <ChartText x={lx} y={116} fontSize={chart.label} fill={c.chartMuted}>
                   Which atoms decay is random.
