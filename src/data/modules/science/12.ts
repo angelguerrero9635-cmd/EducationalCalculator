@@ -1249,7 +1249,7 @@ const doppler: ModuleDef = {
     'Pick the hydrogen line you measured: its lab wavelength is λ₀, and the other lines shift the same way.',
   ],
   variables: [
-    V('r', 'λ₀', 'Lab wavelength (Hα 656.3, Hβ 486.1, Hγ 434.0, Hδ 410.2)', {
+    V('r', 'λ₀', 'Lab wavelength (Hα 656.3, Hβ 486.1, Hγ 434, Hδ 410.2)', {
       unit: 'nm',
       min: 410.2,
       max: 656.3,
