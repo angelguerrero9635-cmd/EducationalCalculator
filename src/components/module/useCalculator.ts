@@ -2,7 +2,14 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import type { ModuleDef } from '@/data/modules';
 import type { SolveResult } from '@/engine/solve';
-import { changeUnits, initialState, setValues, typeValue, type CalcState } from '@/engine/state';
+import {
+  changeUnits,
+  initialState,
+  movedGivens,
+  setValues,
+  typeValue,
+  type CalcState,
+} from '@/engine/state';
 import type { Values } from '@/engine/types';
 import {
   makeUnitContext,
@@ -108,12 +115,27 @@ export function useCalculator(module: ModuleDef): Calculator {
         // A slider or a drag sends a value with the others it holds still. If that doesn't
         // fit (10 − 30 left; a product no top and bottom can make), the value is not
         // taken and nothing goes blank.
-        const misfit = (c: CalcState) => misfits(c, ids);
-        let next = setValues(system, s.calc, updates);
         const slide = options?.slide;
+        // A drag or a slider also keeps every typed value as it is (see `movedGivens`).
+        const misfit = (c: CalcState) =>
+          misfits(c, ids) || (!!slide && movedGivens(s.calc, c, ids).length > 0);
+        let next = setValues(system, s.calc, updates);
         const target = slide ? updates[slide.id] : undefined;
         const from = slide ? s.calc.result.values[slide.id] : undefined;
-        if (misfit(next) && slide && target !== undefined && from !== undefined && slide.step > 0) {
+        // When even the value it starts from changes a typed one (a handle on a worked-out
+        // value), no value fits: skip the search.
+        const stuck =
+          !!slide &&
+          from !== undefined &&
+          misfit(setValues(system, s.calc, { ...updates, [slide.id]: from }));
+        if (
+          misfit(next) &&
+          !stuck &&
+          slide &&
+          target !== undefined &&
+          from !== undefined &&
+          slide.step > 0
+        ) {
           // The nearest value that fits, one step out at a time on both sides of the
           // target (the side toward the old value first), within the variable's range: a
           // count of parts lands on the next divisor, a product on the next product.
@@ -133,12 +155,16 @@ export function useCalculator(module: ModuleDef): Calculator {
           }
         }
         if (misfit(next)) {
-          const lost = next.result.cleared.filter((id) => ids.includes(id));
+          const own = misfits(next, ids);
+          const lost = own
+            ? next.result.cleared.filter((id) => ids.includes(id))
+            : movedGivens(s.calc, next, ids);
           const names = lost.map(
             (id) => system.variables.find((v) => v.id === id)?.name.toLowerCase() ?? id,
           );
-          const reason =
-            next.result.rejected?.reason ?? `Doesn’t fit with ${names.join(' and ')} as it is`;
+          const reason = own
+            ? (next.result.rejected?.reason ?? `Doesn’t fit with ${names.join(' and ')} as it is`)
+            : `Stops here: going on would change your ${names.join(' and ')}`;
           next = {
             ...s.calc,
             // A drag marks only the value it moves: the ones it held still keep their numbers.

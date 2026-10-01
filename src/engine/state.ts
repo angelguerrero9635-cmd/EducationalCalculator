@@ -69,6 +69,19 @@ export function setValues(
   return next;
 }
 
+/**
+ * The typed values (or the example's) that `after` changed or stopped holding, other than
+ * `ids`: a drag or a slider moves only the values it sends, never one the student typed.
+ */
+export const movedGivens = (before: CalcState, after: CalcState, ids: string[]): string[] =>
+  before.result.given
+    .filter((g) => !ids.includes(g.id))
+    .filter((g) => {
+      const now = after.result.given.find((k) => k.id === g.id);
+      return !now || Math.abs(now.value - g.value) > 1e-9 * Math.max(1, Math.abs(g.value));
+    })
+    .map((g) => g.id);
+
 export const clearAll = (system: System): CalcState => initialState(system);
 
 /**
