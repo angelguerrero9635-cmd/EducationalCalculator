@@ -1,6 +1,10 @@
 // The tests a push needs, not all of them every time:
 //
-//   node scripts/ci-test.mjs [--since <git ref>] [--full] [--dry]
+//   node scripts/ci-test.mjs [--since <git ref>] [--heavy | --full] [--dry]
+//
+// By default only the cheap suites run: the two heavy ones (modules and sampling) run on the
+// nightly workflow (--full). --heavy runs them for the pages the push changed, worked out as
+// below.
 //
 // The cheap suites (engine, selectors, standards, layouts, tracker, …) always run in full. The
 // two heavy suites (modules.test.ts and sampling.test.ts, about 5 minutes together) run only for
@@ -35,6 +39,9 @@ const git = (cmd) => {
 const branch = git('rev-parse --abbrev-ref HEAD');
 const since = flag('--since', git(`rev-parse --verify origin/${branch}`) || 'HEAD~1');
 // No usable base (a first push, a shallow clone): run everything.
+// The heavy suites run nightly only (--full); a push runs the cheap suites. --heavy runs them
+// for the pages the push changed, when a change needs it.
+const quick = !args.includes('--full') && !args.includes('--heavy');
 let full = args.includes('--full') || !git(`rev-parse --verify ${since}^{commit}`);
 
 const changed = full
@@ -161,7 +168,7 @@ function fingerprints(ref) {
 }
 
 const pageIds = new Set();
-if (!full && (outputFiles.length || pictureFiles.length)) {
+if (!quick && !full && (outputFiles.length || pictureFiles.length)) {
   const head = fingerprints('work');
   if (!head) full = true;
   if (!full && outputFiles.length) {
@@ -230,7 +237,11 @@ run('every suite but the two heavy ones', [
   '--testPathIgnorePatterns',
   ...heavy.map((f) => f.replace(/\./g, '\\.')),
 ]);
-if (full) {
+if (quick) {
+  console.log(
+    '▶ modules and sampling: nightly only (--heavy for the pages changed, --full for all)',
+  );
+} else if (full) {
   run('modules and sampling, every page', ['--ci', ...heavy]);
 } else if (prefixes.size || pageIds.size) {
   // Pages under a changed grade prefix are covered by it already.

@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    # Nightly: every test in full (a push runs the heavy module suites only for the grades it changed).
+    # Nightly: every test in full (a push runs the cheap suites only).
     - cron: '17 6 * * *'
 
 permissions:
@@ -38,8 +38,8 @@ jobs:
       - name: Format
         run: pnpm format:check
 
-      # Every cheap suite in full; the modules and sampling suites for the grades this push changed
-      # (scripts/ci-test.mjs), or for every page on the nightly run and on a pull request.
+      # A push: the cheap suites (scripts/ci-test.mjs). The nightly run and a pull request: every
+      # test, the heavy modules and sampling suites included.
       - name: Test
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
