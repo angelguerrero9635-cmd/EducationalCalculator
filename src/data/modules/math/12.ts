@@ -1387,10 +1387,18 @@ const MATH_12_STATS: ModuleDef[] = [
       'For n of about 30 or more the sample means are close to normal, though the waits are not.',
     ],
     variables: [
-      V('mu', 'μ', 'Population mean wait (min)', { min: 0.5, max: 60, step: 0.5 }),
+      V('mu', 'μ', 'Population mean wait', {
+        unit: 'min',
+        units: ['min'],
+        min: 0.5,
+        max: 60,
+        step: 0.5,
+      }),
       V('n', 'n', 'Sample size', { integer: true, min: 1, max: 100 }),
       V('m', 'm', 'Samples taken', { integer: true, min: 10, max: 2000, step: 10 }),
-      V('E', 'σ/√n', 'Spread of the sample means (min)', {
+      V('E', 'σ/√n', 'Spread of the sample means', {
+        unit: 'min',
+        units: ['min'],
         min: 0,
         max: 60,
         step: 0.0001,
@@ -2883,7 +2891,7 @@ const sinAngles = (s: number | undefined) => {
   if (s === undefined) return '';
   if (Math.abs(s) > 1 + 1e-12) return '→ past −1 or 1: no angle';
   const first = (Math.asin(Math.max(-1, Math.min(1, s))) / RAD + 360) % 360;
-  const xs = [...new Set([first, (540 - first) % 360].map((x) => fmt(x)))];
+  const xs = [...new Set([first, (540 - first) % 360].sort((p, q) => p - q).map((x) => fmt(x)))];
   return `→ x = ${xs.map((x) => `${x}°`).join(' or ')}`;
 };
 
