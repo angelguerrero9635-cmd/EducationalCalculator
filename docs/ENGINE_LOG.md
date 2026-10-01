@@ -30,6 +30,11 @@ per review; each line names the finding and what the engine now does about it.
   answers and quantities (buildSteps); typed values as typed. The sampling harness allows half a
   unit in the last figure where a step's answer, a check's number or a conversion meets such a
   value (`figuresClose`), and `helpers.test.ts` pins the display.
+- **Review scripts** → `review-shots.mjs` leaves an intended sideways-scroll frame alone
+  (WideTable's ScrollView carries `testID="wide-frame"`; what it scrolls to is meant to be
+  wider), so the periodic-table pages no longer report "wider than the screen" and "sticks out
+  past the screen" at 390 px; `review-interact.mjs` shoots every explore scene in dark mode
+  too (`scenes/<id>-<n>-dark.png`).
 
 ## Grades 9–12 second page review: the drag rule
 

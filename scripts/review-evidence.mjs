@@ -24,8 +24,9 @@
 //   harness.txt     the sampling harness report for the section (SAMPLING_REPORT=1)
 //   shots/          full-page screenshots at 390 px for every module, plus a few at 1024 px
 //                   and a few in dark mode, with the layout checks (review-shots.mjs)
-//   scenes/         every scene of every exploration; drags.md: every handle dragged, with
-//                   the values before and after (review-interact.mjs)
+//   scenes/         every scene of every exploration, light and dark (-dark.png); drags.md:
+//                   every handle dragged, with the values before and after
+//                   (review-interact.mjs)
 //   questions.md    released test and practice questions for the section's skills
 //                   (review-questions.mjs, from research/questions/)
 //   evidence.md     an index: module ids, the files, and any problems the scripts flagged

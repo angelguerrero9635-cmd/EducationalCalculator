@@ -64,7 +64,14 @@ export function WideTable({
       {avail <= 0 ? null : avail >= minW ? (
         <View style={{ width: w, height: height(w) }}>{children(w)}</View>
       ) : (
-        <ScrollView horizontal style={{ width: avail }} contentContainerStyle={{ width: w }}>
+        // `wide-frame`: an intended sideways scroll, which the layout checks (review-shots.mjs)
+        // leave alone.
+        <ScrollView
+          horizontal
+          testID="wide-frame"
+          style={{ width: avail }}
+          contentContainerStyle={{ width: w }}
+        >
           <View style={{ width: w, height: height(w) }}>{children(w)}</View>
         </ScrollView>
       )}
