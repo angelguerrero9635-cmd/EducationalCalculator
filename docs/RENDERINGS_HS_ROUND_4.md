@@ -12,9 +12,11 @@ into it.
 
 Every round-3 picture (H106–H110) is placed on its pages, and Grades 9–12 had two page reviews.
 The lesson chat fixed what they found, including shared component work you will see in the merge:
-drags keep typed values (`useCalculator.set`), subscripts and superscript letters, label halos
-(`ChartText halo`), `CHOICES.alt` and `CHOICES.pm`, `normalCurve` `meanName`, curved rays in
-`EarthLayers`, the ice lattice (`molecules` state `ice`). Six gallery demos were removed because
+drags keep typed values (`useCalculator.set`, `setInput` and `driveTyped` in `engine/state.ts`,
+a module's `drives` field), subscripts and superscript letters, label halos (`ChartText halo`),
+`CHOICES.alt` and `CHOICES.pm`, `normalCurve` `meanName`, curved rays in `EarthLayers`, the ice
+lattice (`molecules` state `ice`), `rep.typed` / `rep.pinTyped` in `useRep`, pictures showing
+worked-out values to 3 significant figures on s.9–s.12. Six gallery demos were removed because
 their pages now carry the same options.
 
 ## This round: four small parts (docs/HS_NEEDS.md, P23–P26)
