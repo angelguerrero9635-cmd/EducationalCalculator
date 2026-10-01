@@ -134,97 +134,6 @@ const freeFall: ModuleDef = (() => {
   };
 })();
 
-// ─── H102.6 freeBody `displacement`: work W = Fd cos θ ──────────────────────
-
-const RAD = Math.PI / 180;
-
-const work: ModuleDef = (() => {
-  const [m, F, q0, d] = [5, 40, 30, 15];
-  const Wg = m * G_EARTH;
-  return {
-    id: 'g.s11-work-energy-power-work',
-    title: 'Work done by a pull at an angle',
-    use: 'Use this for “A crate is pulled 15 m across a floor by a 40 N force at 30° above level. How much work does the force do?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'Only the part of the force along the motion, F cos θ, does work: W = Fd cos θ.',
-      'At θ = 0 the whole force is along the motion; at 90° it does no work.',
-      'The weight and the normal force are at right angles to the motion, so they do no work.',
-    ],
-    variables: [
-      q('m', 'm', 'Mass of the crate', 'kg', 0.1, 1e4, 0.1),
-      q('G', 'F_g', 'Weight', 'N', 0, 1e6, 0.01),
-      q('N', 'F_N', 'Normal force', 'N', 0, 1e6, 0.01),
-      q('F', 'F', 'Pull', 'N', 0.1, 1e5, 0.1),
-      q('q', 'θ', 'Angle above level', '°', 0, 89, 1),
-      q('d', 'd', 'Distance moved', 'm', 0.01, 1e4, 0.01),
-      q('W', 'W', 'Work done by the pull', 'J', 0, 1e9, 0.01),
-    ],
-    ...rules(
-      rule('F_g = mg', '{G} = {m} × 9.8', (x) => x.G! - x.m! * G_EARTH, {
-        G: [(x) => x.m! * G_EARTH, '{m} × 9.8', 'The weight is the mass times g.'],
-        m: [(x) => x.G! / G_EARTH, '{G}/9.8', 'Divide the weight by g.'],
-      }),
-      rule(
-        'F_N = F_g − F sin θ',
-        '{N} = {G} − {F} × sin({q})',
-        (x) => x.N! - (x.G! - x.F! * Math.sin(x.q! * RAD)),
-        {
-          N: [
-            (x) => x.G! - x.F! * Math.sin(x.q! * RAD),
-            '{G} − {F} × sin({q})',
-            'The pull’s part up, F sin θ, lifts a little: the floor pushes up less.',
-          ],
-        },
-      ),
-      rule(
-        'W = Fd cos θ',
-        '{W} = {F} × {d} × cos({q})',
-        (x) => x.W! - x.F! * x.d! * Math.cos(x.q! * RAD),
-        {
-          W: [
-            (x) => x.F! * x.d! * Math.cos(x.q! * RAD),
-            '{F} × {d} × cos({q})',
-            'The pull’s part along the floor, F cos θ, times the distance.',
-          ],
-          F: [
-            (x) => div(x.W!, x.d! * Math.cos(x.q! * RAD)),
-            '{W}/(cos({q}) × {d})',
-            'Divide the work by d cos θ.',
-          ],
-          d: [
-            (x) => div(x.W!, x.F! * Math.cos(x.q! * RAD)),
-            '{W}/(cos({q}) × {F})',
-            'Divide the work by the pull’s part along the floor.',
-          ],
-          q: undefined,
-        },
-      ),
-    ),
-    example: {
-      m,
-      G: Wg,
-      N: Wg - F * Math.sin(q0 * RAD),
-      F,
-      q: q0,
-      d,
-      W: F * d * Math.cos(q0 * RAD),
-    },
-    startWith: ['m', 'F', 'q', 'd'],
-    representation: {
-      kind: 'freeBody',
-      support: 'floor',
-      mass: 'm',
-      weight: 'G',
-      normal: 'N',
-      applied: 'F',
-      appliedAngle: 'q',
-      displacement: 'd',
-      work: 'W',
-    },
-  };
-})();
-
 // ─── H102.7 powerLift: work and power, a stopwatch and J/s ──────────────────
 
 const power: ModuleDef = (() => {
@@ -559,7 +468,6 @@ const relativity: ModuleDef = (() => {
 
 export const HS2C_GALLERY_MODULES: ModuleDef[] = [
   freeFall,
-  work,
   power,
   firstLaw,
   plates,
