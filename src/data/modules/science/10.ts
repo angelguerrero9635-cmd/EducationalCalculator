@@ -1539,11 +1539,16 @@ function combustionPage(
     startWith: ['x'],
     equation: '{a:coef} C_{x}H_{y} + {b:coef} O₂ → {c:coef} CO₂ + {d:coef} H₂O',
     representation: {
-      kind: 'lewisStructure',
-      mode: 'hydrocarbon',
-      carbons: 'x',
-      bond,
-      hydrogens: 'y',
+      kind: 'reaction',
+      reactants: [
+        { formula: 'C{x}H{y}', count: 'a' },
+        { formula: 'O2', count: 'b' },
+      ],
+      products: [
+        { formula: 'CO2', count: 'c' },
+        { formula: 'H2O', count: 'd' },
+      ],
+      most: 25,
     },
   };
 }
@@ -1572,11 +1577,12 @@ const BALANCING: ModuleDef[] = [
       'Aluminum burns in oxygen to make aluminum oxide, one product from two reactants.',
       'Oxygen comes in pairs and Al₂O₃ holds 3, so the oxygen atoms must be a multiple of 6: 4 aluminum atoms at a time.',
       'The balanced equation uses the smallest whole numbers, 4, 3 and 2; larger inputs are the same reaction run more times.',
+      'Aluminum oxide is ionic: each formula unit is two Al³⁺ and three O²⁻, drawn as ions with no bonds.',
     ],
     variables: [
-      { ...coefficient('a', 'Aluminum atoms', 4, 8), multipleOf: 4 },
-      { ...coefficient('b', 'Oxygen molecules', 0, 6), derived: true },
-      { ...coefficient('c', 'Aluminum oxide formula units', 0, 4), derived: true },
+      { ...coefficient('a', 'Aluminum atoms', 4, 16), multipleOf: 4 },
+      { ...coefficient('b', 'Oxygen molecules', 0, 12), derived: true },
+      { ...coefficient('c', 'Aluminum oxide formula units', 0, 8), derived: true },
     ],
     ...rules(
       scaled(
@@ -1610,6 +1616,8 @@ const BALANCING: ModuleDef[] = [
         { formula: 'O2', count: 'b' },
       ],
       products: [{ formula: 'Al2O3', count: 'c' }],
+      ions: true,
+      most: 16,
     },
   },
   {
@@ -1621,12 +1629,13 @@ const BALANCING: ModuleDef[] = [
       'Zinc takes the place of hydrogen: the hydrogen leaves as a gas.',
       'Each ZnCl₂ needs 2 chlorine atoms, so 2 HCl for each zinc atom.',
       'The balanced equation uses the smallest whole numbers, 1, 2, 1 and 1; larger inputs are the same reaction run more times.',
+      'Zinc chloride is ionic: one Zn²⁺ and two Cl⁻, drawn as ions with no shared bonds.',
     ],
     variables: [
-      coefficient('a', 'Zinc atoms', 1, 4),
-      { ...coefficient('b', 'Hydrogen chloride molecules', 0, 8), derived: true },
-      { ...coefficient('c', 'Zinc chloride formula units', 0, 4), derived: true },
-      { ...coefficient('d', 'Hydrogen molecules', 0, 4), derived: true },
+      coefficient('a', 'Zinc atoms', 1, 8),
+      { ...coefficient('b', 'Hydrogen chloride molecules', 0, 16), derived: true },
+      { ...coefficient('c', 'Zinc chloride formula units', 0, 8), derived: true },
+      { ...coefficient('d', 'Hydrogen molecules', 0, 8), derived: true },
     ],
     ...rules(
       scaled('c', 1, 'a', ['Zinc: one ZnCl₂ for each zinc atom.', 'Zinc: one atom per ZnCl₂.']),
@@ -1655,6 +1664,8 @@ const BALANCING: ModuleDef[] = [
         { formula: 'ZnCl2', count: 'c' },
         { formula: 'H2', count: 'd' },
       ],
+      ions: true,
+      most: 16,
     },
   },
 ];

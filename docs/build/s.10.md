@@ -268,3 +268,9 @@ Report: `.review/new-sci-2/lesson-report.md`.
   `molecule` cards. Stand-in gone: the four text cards (every card is drawn now).
 - `~water` (H101 need 10): the planned "Salt in water" scene, `hydration` { ions Na⁺ and Cl⁻,
   crystal }; the use line adds the dissolving question (NAEP-2009-12S10-#14).
+- `s.10.reaction-types~combustion`, `~combustion-alkene` (H101 need 1, H108 part 1): `reaction`
+  with the fuel `C{x}H{y}` drawn from the values and `most: 25` (octane's 25 O₂), so the atom
+  tally shows again. Stand-in gone: the `lewisStructure` hydrocarbon drawing of the fuel alone.
+- `~synthesis`, `~replacement` (H101 need 1, H105 part 15): `ions: true` (Al₂O₃ and ZnCl₂ drawn
+  as ions; an assumption says so) and `most: 16`, so the ranges open up: Al 4–16 atoms (was 4
+  or 8), Zn 1–8 (was 1–4).
