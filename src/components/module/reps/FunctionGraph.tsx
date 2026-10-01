@@ -1568,7 +1568,17 @@ export function FunctionGraph({
                 <DragHandle
                   testID="drag-point"
                   x={sx(atPt.x)}
-                  y={sy(atPt.y)}
+                  // Near a hole (the point the limit is about) the handle steps below the
+                  // curve, so the open circle stays in sight.
+                  y={
+                    sy(atPt.y) +
+                    (main.holes.some(
+                      (p) =>
+                        Math.hypot(sx(p.x) - sx(atPt.x), sy(p.y) - sy(atPt.y)) < chart.handleTouch,
+                    )
+                      ? chart.handleTouch * 0.8
+                      : 0)
+                  }
                   label={`the point on the curve`}
                   onStart={() => {
                     start.current = { x: atPt.x, y: atPt.y };
