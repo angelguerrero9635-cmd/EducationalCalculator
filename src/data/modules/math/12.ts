@@ -5,7 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math12.ts`.
  */
-import { chiCdf, invPhi, Phi, tCdf, tStar } from '@/components/module/reps/statMath';
+import { betaI, chiCdf, invPhi, Phi, tCdf, tStar } from '@/components/module/reps/statMath';
 import { formatNumber, superscript } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -212,6 +212,42 @@ const leftTail = (
       'invNorm undoes Φ: the z with that area to its left.',
     ],
   });
+
+/** Hₐ's side as the sign box codes it: 1 for <, 3 for >, 6 for ≠ (the picture's tail). */
+const tailVar = (what: string, of: string) =>
+  V('h', 'Hₐ', `Hₐ: ${what} < ${of} (1), > ${of} (3) or ≠ ${of} (6)`, {
+    integer: true,
+    min: 1,
+    max: 6,
+    allowed: [1, 3, 6],
+  });
+/** The z tail on Hₐ's side: left of z (1), right of z (3), or both past |z| (6). */
+const zTail = (v: Values, z: string, h: string) =>
+  v[h] === 1 ? Phi(v[z]!) : v[h] === 3 ? 1 - Phi(v[z]!) : 2 * (1 - Phi(Math.abs(v[z]!)));
+/** P from z on Hₐ's side, with the decision after it. */
+const zSided = (P: string, z: string, h: string) =>
+  decided(
+    withCheck(
+      derive(
+        `${P} = the z tail on the side of Hₐ`,
+        `{${P}} = the tail past {${z}} on {${h}}’s side`,
+        P,
+        [z, h],
+        (v) => ([1, 3, 6].includes(v[h]!) ? zTail(v, z, h) : undefined),
+        (v: Values) =>
+          v[h] === 1 ? `Φ({${z}})` : v[h] === 3 ? `1 − Φ({${z}})` : `2 × (1 − Φ(|{${z}}|))`,
+        'Hₐ < takes the area left of z; Hₐ > the area right of z; Hₐ ≠ both tails past |z|.',
+      ),
+      (v) => {
+        const [P0, z0] = [shown(v[P]!), shown(v[z]!)];
+        return v[h] === 1
+          ? `${P0} = Φ(${z0})`
+          : v[h] === 3
+            ? `${P0} = 1 − Φ(${z0})`
+            : `${P0} = 2 × (1 − Φ(|${z0}|))`;
+      },
+    ),
+  );
 
 /** P = 1 − Φ(z): the tail right of z. */
 const rightTail = (P: string, z: string, how: string) =>
@@ -430,12 +466,13 @@ const MATH_12_STATS: ModuleDef[] = [
   {
     id: 'm.12.hypothesis-testing',
     assumptions: [
-      'H₀: p = p₀ and Hₐ: p ≠ p₀, a two-sided test (a one-sided Hₐ is its own page).',
+      'H₀: p = p₀; Hₐ says p < p₀, p > p₀ or p ≠ p₀ (typed as 1, 3 or 6).',
       'The sample is random, with np₀ ≥ 10 and n(1 − p₀) ≥ 10, so p̂ is close to normal.',
       'Reject H₀ when the p-value is below α; “fail to reject” never proves H₀ true.',
     ],
     variables: [
       V('p0', 'p₀', 'Proportion if H₀ is true', { min: 0.01, max: 0.99, step: 0.01 }),
+      tailVar('p', 'p₀'),
       V('n', 'n', 'Sample size', { integer: true, min: 1, max: 100000 }),
       V('k', 'k', 'Successes in the sample', { integer: true, min: 0, max: 100000 }),
       prob('p', 'p̂', 'Sample proportion', { derived: true }),
@@ -446,7 +483,7 @@ const MATH_12_STATS: ModuleDef[] = [
         derived: true,
       }),
       zVar(),
-      prob('P', 'P', 'p-value'),
+      prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
     ...rels(
@@ -471,11 +508,12 @@ const MATH_12_STATS: ModuleDef[] = [
         },
       ),
       zScore('z', 'p', 'p0', 'E'),
-      decided(twoTail('P', 'z')),
+      zSided('P', 'z', 'h'),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
       p0: 0.5,
+      h: 6,
       n: 100,
       k: 60,
       p: 0.6,
@@ -484,46 +522,47 @@ const MATH_12_STATS: ModuleDef[] = [
       P: 2 * (1 - Phi(2)),
       a: 0.05,
     },
-    startWith: ['p0', 'n', 'k', 'a'],
+    startWith: ['p0', 'h', 'n', 'k', 'a'],
     representation: {
       kind: 'normalCurve',
       mean: 'p0',
       sd: 'E',
       axis: 'Sample proportion p̂ if H₀ is true',
-      test: { stat: 'z', alpha: 'a', tail: 'two', p: 'P' },
+      test: { stat: 'z', alpha: 'a', tail: { sign: 'h' }, p: 'P' },
       fixed: true,
     },
   },
   {
     id: 'm.12.hypothesis-testing~mean',
-    title: 'One-mean z-test (left-tailed)',
-    use: 'Use this for “Is the mean less than μ₀?” with σ known: a left-tailed z-test.',
+    title: 'One-mean z-test',
+    use: 'Use this for “Is the mean less than μ₀?” (or more than, or different from) with σ known.',
     assumptions: [
-      'H₀: μ = μ₀ and Hₐ: μ < μ₀, so only a low sample mean counts against H₀.',
+      'H₀: μ = μ₀; Hₐ says μ < μ₀, μ > μ₀ or μ ≠ μ₀ (typed as 1, 3 or 6).',
       'The sample is random, σ is known, and x̄ is close to normal (a normal population or n ≥ 30).',
       'Reject H₀ when the p-value is below α.',
     ],
     variables: [
       V('m', 'μ₀', 'Mean if H₀ is true', { unit: 'g', min: 0.1, max: 100000, step: 0.5 }),
+      tailVar('μ', 'μ₀'),
       V('s', 'σ', 'Standard deviation', { unit: 'g', min: 0.01, max: 10000, step: 0.1 }),
       V('n', 'n', 'Sample size', { integer: true, min: 2, max: 100000 }),
       V('x', 'x̄', 'Sample mean', { unit: 'g', min: 0.1, max: 100000, step: 0.1 }),
       V('E', 'SE', 'Standard error', { unit: 'g', min: 0.0001, max: 10000, step: 0.01 }),
       zVar(),
-      prob('P', 'P', 'p-value'),
+      prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
-    ...rels(seMean('E', 's', 'n'), zScore('z', 'x', 'm', 'E'), decided(leftTail('P', 'z'))),
+    ...rels(seMean('E', 's', 'n'), zScore('z', 'x', 'm', 'E'), zSided('P', 'z', 'h')),
     standalone: { vars: ['a'], why: ALPHA_WHY },
-    example: { m: 500, s: 12, n: 36, x: 496, E: 2, z: -2, P: Phi(-2), a: 0.05 },
-    startWith: ['m', 's', 'n', 'x', 'a'],
+    example: { m: 500, h: 1, s: 12, n: 36, x: 496, E: 2, z: -2, P: Phi(-2), a: 0.05 },
+    startWith: ['m', 'h', 's', 'n', 'x', 'a'],
     unitSystems: ['metric'],
     representation: {
       kind: 'normalCurve',
       mean: 'm',
       sd: 'E',
       axis: 'Sample mean x̄ (g) if H₀ is true',
-      test: { stat: 'z', alpha: 'a', tail: 'left', p: 'P' },
+      test: { stat: 'z', alpha: 'a', tail: { sign: 'h' }, p: 'P' },
       fixed: true,
     },
   },
@@ -603,7 +642,8 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 'm',
       sd: 'E',
       axis: 'Sample mean x̄ (g) if H₀ is true',
-      mark: { x: 'x' },
+      t: { df: 'df' },
+      test: { stat: 't', alpha: 'a', tail: 'two', p: 'P' },
       fixed: true,
     },
   },
@@ -664,7 +704,8 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 0,
       sd: 'E',
       axis: 'Mean difference d̄ if H₀ is true',
-      mark: { x: 'x' },
+      t: { df: 'df' },
+      test: { stat: 't', alpha: 'a', tail: 'two', p: 'P' },
       fixed: true,
     },
   },
@@ -880,7 +921,8 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 0,
       sd: 'E',
       axis: 'Difference x̄₁ − x̄₂ (cm) if H₀ is true',
-      mark: { x: 'd' },
+      t: { df: 'df' },
+      test: { stat: 't', alpha: 'a', tail: 'two', p: 'P' },
       fixed: true,
     },
   },
@@ -1003,7 +1045,8 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 'x',
       sd: 'SE',
       axis: 'Sample mean x̄',
-      interval: { center: 'x', margin: 'E' },
+      t: { df: 'df' },
+      interval: { center: 'x', margin: 'E', level: 'C' },
       fixed: true,
     },
   },
@@ -1154,11 +1197,11 @@ const MATH_12_STATS: ModuleDef[] = [
   {
     id: 'm.12.confidence-intervals~capture',
     title: 'What “95% confident” means',
-    use: 'Use this for “What does it mean to be 95% confident?”: 100 samples, 100 intervals.',
+    use: 'Use this for “Draw 50 samples: how many of the 95% intervals should capture μ?”',
     assumptions: [
       'The level is how often the method captures μ over many samples.',
       'Any one interval either captures μ or doesn’t; 95% is not the chance for that one.',
-      'The picture draws 100 random samples of n and the interval from each.',
+      'The picture draws N random samples of n and the interval from each: 20, 50 or 100.',
     ],
     variables: [
       V('C', 'C', 'Confidence level', {
@@ -1168,7 +1211,8 @@ const MATH_12_STATS: ModuleDef[] = [
         multipleOf: 0.01,
       }),
       V('n', 'n', 'Sample size', { integer: true, min: 2, max: 400 }),
-      V('K', 'K', 'Intervals expected to capture μ, of 100', {
+      V('N', 'N', 'Samples drawn', { integer: true, allowed: [20, 50, 100], min: 20, max: 100 }),
+      V('K', 'K', 'Intervals expected to capture μ, of N', {
         min: 0,
         max: 100,
         step: 0.1,
@@ -1177,27 +1221,27 @@ const MATH_12_STATS: ModuleDef[] = [
     ],
     ...rels(
       derive(
-        'K = 100 × C',
-        '{K} = 100 × {C}',
+        'K = N × C',
+        '{K} = {N} × {C}',
         'K',
-        ['C'],
-        (v) => 100 * v.C!,
-        '100 × {C}',
-        'Over many samples the share C of intervals capture μ, so expect C of the 100.',
+        ['N', 'C'],
+        (v) => v.N! * v.C!,
+        '{N} × {C}',
+        'Over many samples the share C of intervals capture μ, so expect C of the N.',
       ),
     ),
     standalone: {
       vars: ['n'],
       why: 'The sample size sets how wide each interval is, not how many of them capture μ.',
     },
-    example: { C: 0.95, n: 25, K: 95 },
-    startWith: ['C', 'n'],
+    example: { C: 0.95, n: 25, N: 100, K: 95 },
+    startWith: ['C', 'n', 'N'],
     representation: {
       kind: 'normalCurve',
       mean: 50,
       sd: 10,
       axis: 'Sample mean x̄',
-      intervals: { count: 100, n: 'n', level: 'C' },
+      intervals: { count: 'N', n: 'n', level: 'C' },
     },
   },
 
@@ -1928,49 +1972,6 @@ const inverseEntry = (x: string, top: string, sign: 1 | -1) =>
     ),
   );
 
-/** A line's slope and intercept, worked out only to draw it (the Cramer page's picture). */
-const lineOf = (n: string, which: string) => [
-  V(`m${n}`, `m${n}`, `Slope of the ${which} line`, {
-    min: -1e9,
-    max: 1e9,
-    step: 0.0001,
-    derived: true,
-    hidden: true,
-  }),
-  V(`i${n}`, `i${n}`, `Intercept of the ${which} line`, {
-    min: -1e9,
-    max: 1e9,
-    step: 0.0001,
-    derived: true,
-    hidden: true,
-  }),
-];
-/** ax + by = p as y = (−a ÷ b)x + p ÷ b, for the picture only (no line when b = 0). */
-const lineRels = (n: string, a: string, b: string, p: string): Rel[] => [
-  hide(
-    derive(
-      `m${n} = −${a} ÷ ${b}`,
-      `{m${n}} = −{${a}} ÷ {${b}}`,
-      `m${n}`,
-      [a, b],
-      (v) => div(-v[a]!, v[b]!),
-      `−{${a}} ÷ {${b}}`,
-      'The slope of the line, to draw it.',
-    ),
-  ),
-  hide(
-    derive(
-      `i${n} = ${p} ÷ ${b}`,
-      `{i${n}} = {${p}} ÷ {${b}}`,
-      `i${n}`,
-      [p, b],
-      (v) => div(v[p]!, v[b]!),
-      `{${p}} ÷ {${b}}`,
-      'Where the line crosses the y-axis, to draw it.',
-    ),
-  ),
-];
-
 const MATH_12_MATRICES: ModuleDef[] = [
   // ── m.12.matrices (A-REI.8, A-REI.9, N-VM.6–12) ──
   {
@@ -2066,13 +2067,7 @@ const MATH_12_MATRICES: ModuleDef[] = [
         [2, -1, 1, 'd2'],
         [1, 2, -1, 'd3'],
       ],
-      steps: [
-        { add: 2, from: 1, times: -2 },
-        { add: 3, from: 1, times: -1 },
-        { swap: [2, 3] },
-        { add: 3, from: 2, times: 3 },
-        { scale: 3, by: -1 / 7 },
-      ],
+      steps: 'echelon',
       solution: ['x', 'y', 'z'],
     },
   },
@@ -2172,11 +2167,14 @@ const MATH_12_MATRICES: ModuleDef[] = [
     startWith: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
     equation: '||{a}, {b}, {c}; {d}, {e}, {f}; {g}, {h}, {k}|| = {D}',
     representation: {
-      kind: 'table',
-      sweep: 'k',
-      output: 'D',
-      params: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.k ?? 4) + i),
+      kind: 'matrixGrid',
+      mode: 'determinant',
+      matrix: [
+        ['a', 'b', 'c'],
+        ['d', 'e', 'f'],
+        ['g', 'h', 'k'],
+      ],
+      value: 'D',
     },
   },
   {
@@ -2428,8 +2426,6 @@ const MATH_12_MATRICES: ModuleDef[] = [
       }),
       V('x', 'x', 'Solution x', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
       V('y', 'y', 'Solution y', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
-      ...lineOf('1', 'first'),
-      ...lineOf('2', 'second'),
     ],
     ...rels(
       derive(
@@ -2477,34 +2473,19 @@ const MATH_12_MATRICES: ModuleDef[] = [
           ],
         },
       ),
-      ...lineRels('1', 'a', 'b', 'p'),
-      ...lineRels('2', 'c', 'd', 'q'),
     ),
-    example: {
-      a: 2,
-      b: 3,
-      p: 13,
-      c: 1,
-      d: -1,
-      q: -1,
-      D: -5,
-      x: 2,
-      y: 3,
-      m1: -2 / 3,
-      i1: 13 / 3,
-      m2: 1,
-      i2: 1,
-    },
+    example: { a: 2, b: 3, p: 13, c: 1, d: -1, q: -1, D: -5, x: 2, y: 3 },
     startWith: ['a', 'b', 'p', 'c', 'd', 'q'],
     equation: '{a}x + {b}y = {p}\n{c}x + {d}y = {q}',
     representation: {
-      kind: 'lineSystem',
-      lines: [
-        { slope: 'm1', intercept: 'i1', label: 'First' },
-        { slope: 'm2', intercept: 'i2', label: 'Second' },
+      kind: 'matrixGrid',
+      mode: 'determinant',
+      matrix: [
+        ['a', 'b'],
+        ['c', 'd'],
       ],
-      solution: { x: 'x', y: 'y' },
-      fixed: true,
+      value: 'D',
+      cramer: { rhs: ['p', 'q'], solution: ['x', 'y'] },
     },
   },
 ];
@@ -2512,8 +2493,6 @@ const MATH_12_MATRICES: ModuleDef[] = [
 // ── Trigonometry ──
 
 const RAD = Math.PI / 180;
-/** Degrees to a y axis: sin⁻¹ and tan⁻¹ graphs stretched by 180/π read in degrees. */
-const DEG = 180 / Math.PI;
 const deg = (id: string, symbol: string, name: string, min: number, max: number, extra = {}) =>
   V(id, symbol, name, { unit: '°', min, max, step: 0.01, ...extra });
 const unitValue = (id: string, symbol: string, name: string, extra = {}) =>
@@ -2589,7 +2568,7 @@ const MATH_12_TRIG: ModuleDef[] = [
     representation: {
       kind: 'functionGraph',
       family: 'arcsin',
-      a: DEG,
+      degrees: true,
       at: { x: 'x', y: 'A' },
       marks: ['domain', 'range'],
       axes: { x: 'x', y: 'A (°)' },
@@ -2651,7 +2630,7 @@ const MATH_12_TRIG: ModuleDef[] = [
     representation: {
       kind: 'functionGraph',
       family: 'arctan',
-      a: DEG,
+      degrees: true,
       at: { x: 'x', y: 'A' },
       marks: ['asymptotes', 'range'],
       axes: { x: 'Rise over run x', y: 'A (°)' },
@@ -2873,7 +2852,13 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
     example: { A: 45, B: 30, C: 75, S: Math.sin(75 * RAD) },
     startWith: ['A', 'B'],
     equation: 'sin({A}° + {B}°) = {S}',
-    representation: { kind: 'unitCircle', angle: 'C', sin: 'S', fixed: true },
+    representation: {
+      kind: 'unitCircle',
+      angle: 'C',
+      sin: 'S',
+      fixed: true,
+      pair: { a: 'A', b: 'B' },
+    },
   },
   {
     id: 'm.12.trig-formulas-equations~difference',
@@ -2919,7 +2904,13 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
     example: { A: 45, B: 30, C: 15, K: Math.cos(15 * RAD) },
     startWith: ['A', 'B'],
     equation: 'cos({A}° − {B}°) = {K}',
-    representation: { kind: 'unitCircle', angle: 'C', cos: 'K', fixed: true },
+    representation: {
+      kind: 'unitCircle',
+      angle: 'C',
+      cos: 'K',
+      fixed: true,
+      pair: { a: 'A', b: 'B', op: 'difference' },
+    },
   },
   {
     id: 'm.12.trig-formulas-equations~double-angle',
@@ -3850,7 +3841,12 @@ const MATH_12_POLAR: ModuleDef[] = [
     example: { a: 1, b: 1, n: 8, r: Math.SQRT2, t: 45, R: 16, T: 360, p: 16, q: 0 },
     startWith: ['a', 'b', 'n'],
     equation: '({a} + {b}i)^{n} = {p} + {q}i',
-    representation: { kind: 'complexPlane', z: { modulus: 'R', argument: 'T' }, polar: true },
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'a', im: 'b' },
+      power: 'n',
+      result: { re: 'p', im: 'q' },
+    },
   },
   {
     id: 'm.12.polar~rose',
@@ -4483,7 +4479,6 @@ const MATH_12_LIMITS: ModuleDef[] = [
       real('q', 'q', 'Constant on top', -100, 100),
       real('r', 'r', 'Number before x below', -50, 50),
       real('s', 's', 'Constant below', -100, 100),
-      V('z', 'z', 'Zero, −q ÷ p', { min: -10000, max: 10000, step: 0.0001, derived: true }),
       V('v', 'v', 'Vertical asymptote, −s ÷ r', {
         min: -10000,
         max: 10000,
@@ -4517,15 +4512,6 @@ const MATH_12_LIMITS: ModuleDef[] = [
         'The bottom is 0 at that x: pick another x.',
       ),
       derive(
-        'z = −q ÷ p',
-        '{z} = −{q} ÷ {p}',
-        'z',
-        ['q', 'p'],
-        (v) => div(-v.q!, v.p!),
-        '−{q} ÷ {p}',
-        'The top is 0 there: px + q = 0.',
-      ),
-      derive(
         'v = −s ÷ r',
         '{v} = −{s} ÷ {r}',
         'v',
@@ -4557,15 +4543,16 @@ const MATH_12_LIMITS: ModuleDef[] = [
         },
       ),
     ),
-    example: { p: 2, q: 1, r: 1, s: -3, z: -0.5, v: 3, L: 2, x: 1000, y: 2001 / 997 },
+    example: { p: 2, q: 1, r: 1, s: -3, v: 3, L: 2, x: 1000, y: 2001 / 997 },
     startWith: ['p', 'q', 'r', 's', 'x'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'L',
-      zeros: ['z'],
-      poles: ['v'],
-      shows: { ha: 'L' },
+      p: 'p',
+      q: 'q',
+      r: 'r',
+      s: 's',
+      shows: { ha: 'L', va: 'v' },
     },
   },
 ];
@@ -4670,13 +4657,13 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
     example: { a: 1, b: 2, c: 2, d: 4, e: 0, f: 3, p: 10, m1: 3, m2: 5, t: Math.acos(2 / 3) / RAD },
     startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
     equation: '⟨{a}, {b}, {c}⟩ · ⟨{d}, {e}, {f}⟩ = {p}',
-    pictureLabels: ['m1', 'm2', 't'],
     representation: {
-      kind: 'matrixGrid',
-      mode: 'multiply',
-      a: [['a', 'b', 'c']],
-      b: [['d'], ['e'], ['f']],
-      product: [['p']],
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'a', y: 'b', z: 'c' },
+        { name: 'v', x: 'd', y: 'e', z: 'f' },
+      ],
+      space: { dot: 'p', angle: 't' },
     },
   },
   {
@@ -4735,11 +4722,12 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
     startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
     equation: '⟨{a}, {b}, {c}⟩ × ⟨{d}, {e}, {f}⟩ = ⟨{x}, {y}, {z}⟩',
     representation: {
-      kind: 'table',
-      sweep: 'f',
-      output: 'A',
-      params: ['a', 'b', 'c', 'd', 'e'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.f ?? 1) + i),
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'a', y: 'b', z: 'c' },
+        { name: 'v', x: 'd', y: 'e', z: 'f' },
+      ],
+      space: { cross: { x: 'x', y: 'y', z: 'z' }, area: 'A', triangle: 'Tri' },
     },
   },
   {
@@ -4793,11 +4781,12 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
     startWith: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
     equation: '||{a}, {b}, {c}; {d}, {e}, {f}; {g}, {h}, {k}|| = {T}',
     representation: {
-      kind: 'table',
-      sweep: 'k',
-      output: 'Vol',
-      params: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.k ?? 1) + i),
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'a', y: 'b', z: 'c' },
+        { name: 'v', x: 'd', y: 'e', z: 'f' },
+      ],
+      space: { w: { name: 'w', x: 'g', y: 'h', z: 'k' }, triple: 'T', volume: 'Vol' },
     },
   },
   {
@@ -4881,11 +4870,12 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
     startWith: ['p', 'q', 'r', 's', 't', 'u'],
     // Interim until the 3-D axes picture (H106): the distance as Q's z moves.
     representation: {
-      kind: 'table',
-      sweep: 'u',
-      output: 'd',
-      params: ['p', 'q', 'r', 's', 't'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.u ?? 9) + i),
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'P', x: 'p', y: 'q', z: 'r' },
+        { name: 'Q', x: 's', y: 't', z: 'u' },
+      ],
+      space: { points: true, distance: 'd', mid: { x: 'mx', y: 'my', z: 'mz' } },
     },
   },
 ];
@@ -5537,8 +5527,8 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     equation: '{r} = {k}/{{m} − {n} cos {t}°}',
     representation: {
       kind: 'polarGrid',
+      curve: { shape: 'conic', k: 'k', m: 'm', n: 'n', e: 'e', d: 'd' },
       point: { r: 'r', theta: 't' },
-      fixed: true,
     },
   },
   {
@@ -5633,8 +5623,8 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     equation: '{r} = {k}/{{m} − {n} sin {t}°}',
     representation: {
       kind: 'polarGrid',
+      curve: { shape: 'conic', k: 'k', m: 'm', n: 'n', fn: 'sin', e: 'e', d: 'd' },
       point: { r: 'r', theta: 't' },
-      fixed: true,
     },
   },
   {
@@ -5883,7 +5873,15 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     ),
     example: { A: 4, B: 2, C: 2, D: -28, t: 22.5 },
     startWith: ['A', 'B', 'C'],
-    representation: { kind: 'unitCircle', angle: 't', fixed: true },
+    representation: {
+      kind: 'conicGraph',
+      conic: 'turned',
+      A: 'A',
+      B: 'B',
+      C: 'C',
+      angle: 't',
+      discriminant: 'D',
+    },
   },
   {
     id: 'm.12.polar-conics~rotated-equation',
@@ -5955,7 +5953,16 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
       F: -1,
     },
     startWith: ['A', 'B', 'C', 'F'],
-    representation: { kind: 'unitCircle', angle: 't', fixed: true },
+    representation: {
+      kind: 'conicGraph',
+      conic: 'turned',
+      A: 'A',
+      B: 'B',
+      C: 'C',
+      F: 'F',
+      angle: 't',
+      turned: { A: 'P', C: 'Q' },
+    },
   },
 ];
 
@@ -5964,44 +5971,6 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
 const coef = (id: string, symbol: string, name: string, range = 1000, extra = {}) =>
   V(id, symbol, name, { min: -range, max: range, step: 0.01, ...extra });
 
-/** The top's zero z = −b ÷ a, worked out only to draw the graph. */
-const topZero = hide(
-  derive(
-    'z = −b ÷ a',
-    '{z} = −{b} ÷ {a}',
-    'z',
-    ['b', 'a'],
-    (v) => div(-v.b!, v.a!),
-    '−{b} ÷ {a}',
-    'Where the top is 0, to draw the graph.',
-  ),
-);
-const zeroVar = V('z', 'z', 'Zero of the top', {
-  min: -1e9,
-  max: 1e9,
-  step: 0.0001,
-  derived: true,
-  hidden: true,
-});
-/** The graph's scale: the top's x term, or the number alone when the top has none. */
-const leadVar = V('L', 'L', 'Leading number of the top', {
-  min: -1000,
-  max: 1000,
-  step: 0.01,
-  derived: true,
-  hidden: true,
-});
-const topLead = hide(
-  derive(
-    'L = a, or b when a = 0',
-    '{L} = {a} or {b}',
-    'L',
-    ['a', 'b'],
-    (v) => (v.a !== 0 ? v.a! : v.b!),
-    '{a}',
-    'The top’s leading number, to draw the graph.',
-  ),
-);
 /** The top ax + b is not 0 (then there is nothing to split). */
 const topNotZero = limit(
   'top ≠ 0',
@@ -6031,8 +6000,6 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       coef('q', 'q', 'Zero of the second factor', 100),
       coef('A', 'A', 'Top of the first fraction', 1000000, { fraction: 200 }),
       coef('B', 'B', 'Top of the second fraction', 1000000, { fraction: 200 }),
-      zeroVar,
-      leadVar,
     ],
     ...rels(
       rel(
@@ -6079,16 +6046,13 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         'p = q is a repeated factor, (x − p)²: it needs A ÷ (x − p) + B ÷ (x − p)², the repeated-factor page.',
       ),
       topNotZero,
-      topZero,
-      topLead,
     ),
-    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3, z: -0.2, L: 5 },
+    example: { a: 5, b: 1, p: 1, q: -2, A: 2, B: 3 },
     startWith: ['a', 'b', 'p', 'q'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'L',
-      zeros: ['z'],
+      top: ['a', 'b'],
       poles: ['p', 'q'],
       marks: ['asymptotes'],
       fixed: true,
@@ -6109,8 +6073,6 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
       coef('p', 'p', 'Zero of the factor', 100),
       coef('A', 'A', 'Top over (x − p)'),
       coef('B', 'B', 'Top over (x − p)²', 200000),
-      zeroVar,
-      leadVar,
     ],
     ...rels(
       rel('A = a', '{A} = {a}', ['A', 'a'], (v) => v.A! - v.a!, {
@@ -6133,16 +6095,13 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         },
       ),
       topNotZero,
-      topZero,
-      topLead,
     ),
-    example: { a: 3, b: -1, p: 2, A: 3, B: 5, z: 1 / 3, L: 3 },
+    example: { a: 3, b: -1, p: 2, A: 3, B: 5 },
     startWith: ['a', 'b', 'p'],
     representation: {
       kind: 'functionGraph',
       family: 'rational',
-      a: 'L',
-      zeros: ['z'],
+      top: ['a', 'b'],
       poles: ['p', 'p'],
       marks: ['asymptotes'],
       fixed: true,
@@ -6263,11 +6222,13 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
     example: { a: 3, b: -2, c: 3, p: 1, j: 0, k: 1, A: 2, B: 1, C: -1, x: 2, y: 11 / 5 },
     startWith: ['a', 'b', 'c', 'p', 'j', 'k', 'x'],
     representation: {
-      kind: 'table',
-      sweep: 'x',
-      output: 'y',
-      params: ['a', 'b', 'c', 'p', 'j', 'k'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2, 3, 4].filter((x) => x !== v.p).slice(0, 5),
+      kind: 'functionGraph',
+      family: 'rational',
+      top: ['a', 'b', 'c'],
+      poles: ['p'],
+      quadratics: [{ j: 'j', k: 'k' }],
+      at: { x: 'x', y: 'y' },
+      marks: ['asymptotes'],
     },
   },
 ];
@@ -6510,11 +6471,15 @@ const MATH_12_INDUCTION: ModuleDef[] = [
     example: { n: 3, S: 14, a: 16, T: 30, F: 30 },
     startWith: ['n'],
     representation: {
-      kind: 'table',
-      sweep: 'n',
-      output: 'S',
-      params: [],
-      rows: (v: Values) => [1, 2, 3, 4, 5].map((i) => Math.max(0, (v.n ?? 3) - 3) + i),
+      kind: 'termsChart',
+      type: 'power',
+      first: 1,
+      step: 2,
+      count: 'n',
+      as: 'bars',
+      sums: true,
+      sum: 'S',
+      far: true,
     },
   },
   {
@@ -6734,6 +6699,7 @@ const MATH_12_AREA: ModuleDef[] = [
       h: 0,
       k: 0,
       shade: { from: 0, to: 'b' },
+      riemann: { n: 'n', to: 'b', sum: 'S' },
       fixed: true,
     },
   },
@@ -6816,6 +6782,7 @@ const MATH_12_AREA: ModuleDef[] = [
       m: 'm',
       b: 'k',
       shade: { from: 0, to: 'b' },
+      riemann: { n: 'n', to: 'b', sum: 'S' },
       fixed: true,
     },
   },
@@ -7255,52 +7222,6 @@ const MATH_12_REGRESSION: ModuleDef[] = [
 
 // ── ANOVA and the F distribution (added skill 20) ──
 
-/** ln Γ(x) (Lanczos), for the F distribution below (statMath keeps its own private). */
-function lnGamma(x: number): number {
-  const g = [
-    676.5203681218851, -1259.1392167224028, 771.3234287776531, -176.6150291621406,
-    12.507343278686905, -0.13857109526572012, 9.984369578019572e-6, 1.5056327351493116e-7,
-  ];
-  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lnGamma(1 - x);
-  const y = x - 1;
-  let a = 0.9999999999998099;
-  const t = y + 7.5;
-  g.forEach((c, i) => (a += c / (y + i + 1)));
-  return 0.5 * Math.log(2 * Math.PI) + (y + 0.5) * Math.log(t) - t + Math.log(a);
-}
-/** The continued fraction of the incomplete beta function (modified Lentz). */
-function betaFraction(a: number, b: number, x: number): number {
-  const tiny = 1e-300;
-  const fix = (z: number) => (Math.abs(z) < tiny ? tiny : z);
-  let c = 1;
-  let d = 1 / fix(1 - ((a + b) * x) / (a + 1));
-  let h = d;
-  for (let m = 1; m < 500; m++) {
-    const m2 = 2 * m;
-    let aa = (m * (b - m) * x) / ((a + m2 - 1) * (a + m2));
-    d = 1 / fix(1 + aa * d);
-    c = fix(1 + aa / c);
-    h *= d * c;
-    aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + m2 + 1));
-    d = 1 / fix(1 + aa * d);
-    c = fix(1 + aa / c);
-    const del = d * c;
-    h *= del;
-    if (Math.abs(del - 1) < 1e-15) break;
-  }
-  return h;
-}
-/** The regularized incomplete beta function I_x(a, b). */
-function betaI(x: number, a: number, b: number): number {
-  if (x <= 0) return 0;
-  if (x >= 1) return 1;
-  const front = Math.exp(
-    lnGamma(a + b) - lnGamma(a) - lnGamma(b) + a * Math.log(x) + b * Math.log(1 - x),
-  );
-  return x < (a + 1) / (a + b + 2)
-    ? (front * betaFraction(a, b, x)) / a
-    : 1 - (front * betaFraction(b, a, 1 - x)) / b;
-}
 /** P(F ≥ f) with d1 and d2 degrees of freedom: a calculator's Fcdf(f, ∞, d1, d2). */
 export const fTail = (f: number, d1: number, d2: number) =>
   f <= 0 ? 1 : 1 - betaI((d1 * f) / (d1 * f + d2), d1 / 2, d2 / 2);
@@ -7421,7 +7342,10 @@ const MATH_12_ANOVA: ModuleDef[] = [
       a: 0.05,
     },
     startWith: ['B', 'd1', 'W', 'd2', 'a'],
-    representation: fTable(['d1', 'd2'], [1, 2, 3, 4, 5, 6, 8, 10]),
+    representation: {
+      kind: 'normalCurve',
+      f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
+    },
   },
   {
     id: 'm.12.anova~groups',
@@ -7507,10 +7431,8 @@ const MATH_12_ANOVA: ModuleDef[] = [
     },
     startWith: ['n', 'm1', 'm2', 'm3', 's1', 's2', 's3', 'a'],
     representation: {
-      kind: 'bars',
-      bars: [{ var: 'm1' }, { var: 'm2' }, { var: 'm3' }],
-      min: 0,
-      max: 20,
+      kind: 'normalCurve',
+      f: { df1: 2, df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
     },
   },
   {
