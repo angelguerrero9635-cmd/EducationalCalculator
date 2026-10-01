@@ -7315,6 +7315,20 @@ const fRatio = rel(
     M1: [(v) => v.F! * v.M2!, '{F} × {M2}', 'Undo the division by MSW.'],
   },
 );
+/**
+ * The decision after an F test's p-value, in context: "P < 0.0001 < α = 0.05: reject H₀:
+ * convincing evidence that …" (a p-value is never 0).
+ */
+const decideF =
+  (evidence: (v: Values) => string) =>
+  (v: Values): string => {
+    if (v.P === undefined || v.a === undefined) return '';
+    const P = v.P < 0.0001 ? 'P < 0.0001' : shown(v.P);
+    return v.P < v.a
+      ? `→ ${P} < α = ${fmt(v.a)}: reject H₀: convincing evidence that ${evidence(v)}`
+      : `→ ${P} ≥ α = ${fmt(v.a)}: fail to reject H₀: not convincing evidence that ${evidence(v)}`;
+  };
+const groupsDiffer = decideF(() => 'at least one group mean differs');
 const fTable = (params: string[], rows: number[]) =>
   ({ kind: 'table', sweep: 'F', output: 'P', params, rows }) as const;
 
@@ -7367,7 +7381,7 @@ const MATH_12_ANOVA: ModuleDef[] = [
         'The total spread of every value about the grand mean splits into between and within.',
       ),
       fRatio,
-      decided(fTailRel('d1', 'd2')),
+      withStep(fTailRel('d1', 'd2'), 'P', { note: groupsDiffer }),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
@@ -7448,7 +7462,7 @@ const MATH_12_ANOVA: ModuleDef[] = [
         'Equal groups: the pooled variance is the average of the three variances.',
       ),
       fRatio,
-      decided(fTailRel(2, 'd2')),
+      withStep(fTailRel(2, 'd2'), 'P', { note: groupsDiffer }),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
@@ -7480,8 +7494,8 @@ const MATH_12_ANOVA: ModuleDef[] = [
     title: 'Comparing two variances',
     use: 'Use this for “Two samples of 16 have SDs 6 and 4. Are the population variances different?”',
     assumptions: [
-      'H₀: σ₁² = σ₂² and Hₐ: σ₁² ≠ σ₂²; put the larger SD first so F = s₁² ÷ s₂² ≥ 1.',
-      'F has df₁ = n₁ − 1 on top and df₂ = n₂ − 1 underneath; the p-value doubles the tail past F.',
+      'H₀: σ₁² = σ₂²; Hₐ is σ₁² ≠ σ₂², or σ₁² > σ₂² for a larger first variance. Put the larger SD first so F = s₁² ÷ s₂² ≥ 1.',
+      'F has df₁ = n₁ − 1 on top and df₂ = n₂ − 1 underneath; for ≠ the p-value doubles the tail past F, for > it is that tail.',
       'Both populations must be normal: this test is very sensitive to skew.',
     ],
     variables: [
@@ -7496,6 +7510,12 @@ const MATH_12_ANOVA: ModuleDef[] = [
       dfOf('d1', 'df₁', 'Degrees of freedom on top', { derived: true }),
       dfOf('d2', 'df₂', 'Degrees of freedom underneath', { derived: true }),
       fVar({ derived: true }),
+      V('h', 'Hₐ', 'Hₐ: σ₁² ≠ σ₂² (0) or σ₁² > σ₂² (1)', {
+        integer: true,
+        min: 0,
+        max: 1,
+        allowed: [0, 1],
+      }),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
@@ -7527,22 +7547,45 @@ const MATH_12_ANOVA: ModuleDef[] = [
         '{s1}² ÷ {s2}²',
         'The ratio of the variances: near 1 when the spreads match.',
       ),
-      decided(
-        derive(
-          'P = 2 × Fcdf(F, ∞, df₁, df₂)',
-          '{P} = 2 × Fcdf({F}, ∞, {d1}, {d2})',
-          'P',
-          ['F', 'd1', 'd2'],
+      withStep(
+        withCheck(
+          derive(
+            'P = the F tail on the side of Hₐ',
+            '{P} = the F tail past {F} on {h}’s side, with {d1} and {d2} degrees of freedom',
+            'P',
+            ['F', 'd1', 'd2', 'h'],
+            (v) => {
+              const q = fTail(v.F!, v.d1!, v.d2!);
+              return v.h === 1 ? q : 2 * Math.min(q, 1 - q);
+            },
+            (v: Values) =>
+              v.h === 1
+                ? 'Fcdf({F}, ∞, {d1}, {d2})'
+                : fTail(v.F!, v.d1!, v.d2!) > 0.5
+                  ? '2 × (1 − Fcdf({F}, ∞, {d1}, {d2}))'
+                  : '2 × Fcdf({F}, ∞, {d1}, {d2})',
+            'Hₐ ≠ doubles the smaller tail of the F curve at F; Hₐ > takes the right tail past F alone.',
+          ),
           (v) => {
-            const q = fTail(v.F!, v.d1!, v.d2!);
-            return 2 * Math.min(q, 1 - q);
+            const f = `Fcdf(${shown(v.F!)}, ∞, ${shown(v.d1!)}, ${shown(v.d2!)})`;
+            return `${shown(v.P!)} = ${
+              v.h === 1 ? f : fTail(v.F!, v.d1!, v.d2!) > 0.5 ? `2 × (1 − ${f})` : `2 × ${f}`
+            }`;
           },
-          (v: Values) =>
-            fTail(v.F!, v.d1!, v.d2!) > 0.5
-              ? '2 × (1 − Fcdf({F}, ∞, {d1}, {d2}))'
-              : '2 × Fcdf({F}, ∞, {d1}, {d2})',
-          'Hₐ says “not equal”, so double the smaller tail of the F curve at F.',
         ),
+        'P',
+        {
+          // Hₐ in words first (its box shows the code), then the decision in context.
+          note: (v) => {
+            const side = v.h === 1 ? 'Hₐ: σ₁² > σ₂², the right tail' : 'Hₐ: σ₁² ≠ σ₂², two tails';
+            const d = decideF((w) =>
+              w.h === 1
+                ? 'the first population’s variance is larger'
+                : 'the population variances differ',
+            )(v);
+            return d ? `→ ${side}; ${d.slice(2)}` : '';
+          },
+        },
       ),
       limit(
         's₁ ≥ s₂',
@@ -7561,10 +7604,11 @@ const MATH_12_ANOVA: ModuleDef[] = [
       d1: 15,
       d2: 15,
       F: 2.25,
+      h: 0,
       P: 2 * fTail(2.25, 15, 15),
       a: 0.05,
     },
-    startWith: ['s1', 's2', 'n1', 'n2', 'a'],
+    startWith: ['s1', 's2', 'n1', 'n2', 'h', 'a'],
     representation: fTable(['d1', 'd2'], [1, 1.5, 2, 2.5, 3, 4]),
   },
 ];
