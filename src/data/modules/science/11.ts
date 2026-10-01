@@ -3846,6 +3846,98 @@ const electroPages: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
+    const [a, b, r, x] = [4, -2, 0.5, 0.2];
+    const E1 = (8.99e3 * a) / (x * x);
+    const E2 = (-8.99e3 * b) / ((r - x) * (r - x));
+    const between: Relation = {
+      id: 'x < r',
+      constraint: true,
+      display: '{x} is less than {r}',
+      vars: ['x', 'r'],
+      residual: (v) => (v.x! < v.r! ? 0 : 1),
+      solve: {},
+      message: (v) =>
+        v.x! < v.r! ? undefined : 'The point must lie between the charges: x is less than r.',
+    };
+    return {
+      id: 's.11.electrostatics~two-charges',
+      title: 'The field between two charges',
+      use: 'Use this for “A +4 μC and a −2 μC charge are 0.5 m apart. What is the electric field 0.2 m from the +4 μC charge?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The point is on the line between the charges, x from q₁; + means toward q₂.',
+        'Each charge’s field points away from it if it is + and toward it if it is −.',
+        'The fields add: between unlike charges both point the same way; between like charges they partly cancel.',
+        'k = 8.99 × 10⁹ N·m²/C², and 1 μC = 10⁻⁶ C.',
+      ],
+      variables: [
+        charge('a', 'q₁', 'First charge'),
+        charge('b', 'q₂', 'Second charge'),
+        q('r', 'r', 'Distance between the charges', 'm', 0.001, 100, 0.001),
+        q('x', 'x', 'Distance of the point from q₁', 'm', 0.0001, 100, 0.0001),
+        q('c', 'E₁', 'Field from q₁ (+ toward q₂)', 'N/C', -1e15, 1e15, 0.01, {
+          scientific: true,
+        }),
+        q('d', 'E₂', 'Field from q₂ (+ toward q₂)', 'N/C', -1e15, 1e15, 0.01, {
+          scientific: true,
+        }),
+        q('E', 'E', 'Field at the point (+ toward q₂)', 'N/C', -1e15, 1e15, 0.01, {
+          scientific: true,
+        }),
+      ],
+      ...withChecks(
+        [between],
+        rule(
+          'E₁ = kq₁/x²',
+          '{c} = 8.99 × 10⁹ × {a} × 10⁻⁶/({x}²)',
+          (v) => v.c! * v.x! * v.x! - 8.99e3 * v.a!,
+          {
+            c: [
+              (v) => div(8.99e3 * v.a!, v.x! * v.x!),
+              '8.99 × 10⁹ × {a} × 10⁻⁶/({x}²)',
+              'q₁’s field points away from a + q₁, which is toward q₂, so it is + when q₁ is +.',
+            ],
+            a: [(v) => (v.c! * v.x! * v.x!) / 8.99e3, '{c} × {x}²/(8.99 × 10³)', 'Solve for q₁.'],
+            x: null,
+          },
+        ),
+        rule(
+          'E₂ = −kq₂/(r − x)²',
+          '{d} = −8.99 × 10⁹ × {b} × 10⁻⁶/(({r} − {x})²)',
+          (v) => v.d! * (v.r! - v.x!) * (v.r! - v.x!) + 8.99e3 * v.b!,
+          {
+            d: [
+              (v) => div(-8.99e3 * v.b!, (v.r! - v.x!) * (v.r! - v.x!)),
+              '−8.99 × 10⁹ × {b} × 10⁻⁶/(({r} − {x})²)',
+              'The point is r − x from q₂. A + q₂ pushes back toward q₁, so its field gets a minus sign.',
+            ],
+            b: [
+              (v) => (-v.d! * (v.r! - v.x!) * (v.r! - v.x!)) / 8.99e3,
+              '−{d} × ({r} − {x})²/(8.99 × 10³)',
+              'Solve for q₂.',
+            ],
+            r: null,
+            x: null,
+          },
+        ),
+        rule('E = E₁ + E₂', '{E} = {c} + {d}', (v) => v.E! - v.c! - v.d!, {
+          E: [(v) => v.c! + v.d!, '{c} + {d}', 'The two fields add as arrows along the line.'],
+          c: [(v) => v.E! - v.d!, '{E} − {d}', 'The total less q₂’s part.'],
+          d: [(v) => v.E! - v.c!, '{E} − {c}', 'The total less q₁’s part.'],
+        }),
+      ),
+      example: { a, b, r, x, c: E1, d: E2, E: E1 + E2 },
+      startWith: ['a', 'b', 'r', 'x'],
+      representation: {
+        kind: 'charges',
+        charges: ['a', 'b'],
+        distance: 'r',
+        point: 'x',
+        field: 'E',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
     const [V, d, e] = [12, 0.003, -1.602e-19];
     return {
       id: 's.11.electrostatics~plates',
