@@ -255,3 +255,11 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   four "A virus" … "A parasite" icon cards.
 - `~herd-immunity` (H104 part 3): `percentBar` adds `second: 'H'`, so H is marked on the bar beside
   the shaded C (it was a value only).
+- `s.9.nervous-system` main (H109 part 4): the six stages wear the `reflexArc` card, receptor to
+  brain, labels as they were. Stand-in gone: text-only stages. (The optional reflex-arc explore
+  page, g.s9-nervous-system-reflex-arc, is not added.)
+- `~impulse-speed` (H109 part 4): `neuron` { length: d, speed: v, time: t } in place of the
+  `doubleNumberLine`. Stand-ins gone: the hidden k (ms per meter) and its rule, and v under the
+  picture; the unused `hide` helper went with them.
+- `~membrane-potential` (H109 part 7): new observe page beside the ~action-potential sequence, the
+  demo's membrane-potential trace (−90 to 40 mV, 0–6 ms, bars up and down from 0).

@@ -208,9 +208,6 @@ const withStep = (r: Rule, id: string, extra: Partial<StepText>): Rule => ({
   steps: { ...r.steps, [id]: { ...r.steps[id]!, ...extra } },
 });
 
-/** A rule that only places the picture (its values `hidden`): no row, step or check. */
-const hide = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, steps: {} });
-
 /** A rule that says why its value can't be found, when `why` returns a sentence. */
 const saying = (r: Rule, why: (v: Values) => string | undefined): Rule => ({
   ...r,
@@ -1983,16 +1980,6 @@ const NERVOUS: ModuleDef[] = [
         max: 6000,
         step: 0.1,
       },
-      {
-        id: 'k',
-        symbol: 'k',
-        name: 'Milliseconds per meter',
-        min: 0,
-        max: 2000,
-        step: 0.01,
-        derived: true,
-        hidden: true,
-      },
     ],
     ...rules(
       withStep(
@@ -2027,14 +2014,10 @@ const NERVOUS: ModuleDef[] = [
           ],
         },
       ),
-      hide(
-        forward('k = 1,000 ÷ v', '{k} = 1,000 ÷ {v}', 'k', ['v'], (v) => div(1000, v.v!), '', ''),
-      ),
     ),
-    example: { d: 1, v: 50, t: 20, k: 20 },
+    example: { d: 1, v: 50, t: 20 },
     startWith: ['d', 'v'],
-    pictureLabels: ['v'],
-    representation: { kind: 'doubleNumberLine', top: 'd', bottom: 't', per: 'k', ticks: 3 },
+    representation: { kind: 'neuron', length: 'd', speed: 'v', time: 't' },
   },
 ];
 

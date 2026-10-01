@@ -2438,12 +2438,30 @@ const NERVOUS: LayoutDef[] = [
     ],
     question: 'Put the steps of a reflex in order: a hand touches a hot pan.',
     stages: [
-      { label: 'Receptors in the skin detect the heat' },
-      { label: 'A sensory neuron carries the impulse to the spinal cord' },
-      { label: 'An interneuron in the spinal cord passes it on' },
-      { label: 'A motor neuron carries the impulse to an arm muscle' },
-      { label: 'The muscle contracts and pulls the hand away' },
-      { label: 'The message reaches the brain, and you feel the pain' },
+      {
+        label: 'Receptors in the skin detect the heat',
+        figure: { kind: 'reflexArc', lit: 'receptor' },
+      },
+      {
+        label: 'A sensory neuron carries the impulse to the spinal cord',
+        figure: { kind: 'reflexArc', lit: 'sensory' },
+      },
+      {
+        label: 'An interneuron in the spinal cord passes it on',
+        figure: { kind: 'reflexArc', lit: 'interneuron' },
+      },
+      {
+        label: 'A motor neuron carries the impulse to an arm muscle',
+        figure: { kind: 'reflexArc', lit: 'motor' },
+      },
+      {
+        label: 'The muscle contracts and pulls the hand away',
+        figure: { kind: 'reflexArc', lit: 'effector' },
+      },
+      {
+        label: 'The message reaches the brain, and you feel the pain',
+        figure: { kind: 'reflexArc', lit: 'brain' },
+      },
     ],
   },
   {
@@ -2465,6 +2483,33 @@ const NERVOUS: LayoutDef[] = [
       { label: 'The inside dips just below −70 mV' },
       { label: 'The pump restores the ions: resting again' },
     ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.nervous-system~membrane-potential',
+    title: 'Membrane potential through an impulse',
+    use: 'Use this to record a neuron’s membrane potential through one impulse.',
+    assumptions: [
+      'At rest the inside of a neuron is about −70 mV, more negative than the outside.',
+      'Past the threshold, about −55 mV, Na⁺ rushes in; then K⁺ flows out and the inside turns negative again.',
+    ],
+    columns: ['0 ms', '1 ms', '2 ms', '3 ms', '4 ms', '5 ms', '6 ms'],
+    rowLabel: 'Membrane potential',
+    unit: 'mV',
+    min: -90,
+    max: 40,
+    step: 5,
+    initial: [-70, -55, 30, -40, -80, -75, -70],
+    pattern: (v) => {
+      const peak = Math.max(...v);
+      const low = Math.min(...v);
+      const sign = (x: number) => (x > 0 ? `+${x}` : x < 0 ? `−${-x}` : '0');
+      if (peak < -55)
+        return `It never passes the threshold of −55 mV, so no impulse fires: the neuron stays near rest.`;
+      const dip =
+        low < -70 ? ` It dips to ${sign(low)} mV, below rest, before the pump restores it.` : '';
+      return `It passes the threshold and peaks at ${sign(peak)} mV as Na⁺ rushes in; then K⁺ flows out.${dip}`;
+    },
   },
   {
     kind: 'sequence',
