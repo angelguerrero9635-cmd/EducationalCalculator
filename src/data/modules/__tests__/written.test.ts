@@ -1,5 +1,5 @@
 import { evaluate } from '../harness/evaluate';
-import { operationCount, simplifyChain } from '../simplify';
+import { evaluatePrinted, operationCount, simplifyChain } from '../simplify';
 import {
   syntheticDivision,
   autoWritten,
@@ -245,5 +245,13 @@ describe('simplify chain: negatives', () => {
     expect(simplifyChain('−(−(2 + 2)) + 1')).toEqual(['−(−4) + 1', '4 + 1', '5']);
     expect(simplifyChain('4 × 1 − (−10) × 2')[0]).toBe('4 − (−20)');
     expect(simplifyChain('3 − (−2 + 7) × 2')[0]).toBe('3 − 5 × 2');
+  });
+});
+
+describe('a printed line', () => {
+  it('evaluates as written, or not at all', () => {
+    expect(evaluatePrinted('1/(1/1 + 1/(−0.994))')).toBeCloseTo(-165.67, 1);
+    expect(evaluatePrinted('98 − 50 × sin(30°)')).toBe(73);
+    expect(evaluatePrinted('4 tens + 5 ones')).toBeUndefined();
   });
 });

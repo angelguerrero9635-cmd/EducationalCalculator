@@ -69,7 +69,7 @@ export function formatNumber(
   const whole = Math.floor(Math.log10(abs)) + 1;
   const text =
     abs < 1
-      ? x.toPrecision(4)
+      ? x.toPrecision(Math.max(4, variable?.figures ?? 4))
       : variable?.figures
         ? x.toPrecision(Math.min(21, Math.max(variable.figures, whole)))
         : x.toFixed(4);
