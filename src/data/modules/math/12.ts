@@ -2817,7 +2817,7 @@ const surdSum = (p: Surd, q: Surd): string => {
 type Factor = ['sin' | 'cos', number];
 /**
  * The four special values exactly, then the two products as surds and their sum, ending at
- * the decimal: sin 45° = √2/2, …; √2/2 × √3/2 + √2/2 × 1/2 = √6/4 + √2/4 = (√6 + √2)/4 ≈ 0.9659.
+ * the answer: sin 45° = √2/2, …; √2/2 × √3/2 + √2/2 × 1/2 = √6/4 + √2/4 = (√6 + √2)/4.
  */
 const exactWork = (a: Factor, b: Factor, c: Factor, d: Factor, value: number): string[] => {
   const all = [a, b, c, d];
@@ -2832,7 +2832,8 @@ const exactWork = (a: Factor, b: Factor, c: Factor, d: Factor, value: number): s
     p.n !== 0 && q.n !== 0
       ? ` = ${surdText(p)} ${q.n < 0 ? '−' : '+'} ${surdText({ ...q, n: Math.abs(q.n) })}`
       : '';
-  const tail = /√/.test(sum) ? ` ≈ ${fmt(value)}` : /\//.test(sum) ? ` = ${fmt(value)}` : '';
+  // (a root's decimal is beside the answer, written exactly: S = (√6 + √2)/4 ≈ 0.9659)
+  const tail = /√/.test(sum) ? '' : /\//.test(sum) ? ` = ${fmt(value)}` : '';
   return [
     all.map(([fn, x], i) => `${fn} ${fmt(x)}° = ${surdText(vals[i]!)}`).join(', '),
     `${factor(sa!, true)} × ${factor(sb!)} + ${factor(sc!)} × ${factor(sd!)}${middle} = ${sum}${tail}`,
@@ -2908,7 +2909,7 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
       deg('A', 'A', 'First angle', 0, 360, { allowed: SPECIAL_ANGLES }),
       deg('B', 'B', 'Second angle', 0, 360, { allowed: SPECIAL_ANGLES }),
       deg('C', 'C', 'The sum of the angles, A + B', 0, 720, { derived: true }),
-      unitValue('S', 'S', 'sin(A + B)', { derived: true }),
+      unitValue('S', 'S', 'sin(A + B)', { derived: true, exact: true }),
     ],
     ...rels(
       derive(
@@ -2960,7 +2961,7 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
       deg('A', 'A', 'First angle', 0, 360, { allowed: SPECIAL_ANGLES }),
       deg('B', 'B', 'Second angle', 0, 360, { allowed: SPECIAL_ANGLES }),
       deg('C', 'C', 'The difference of the angles, A − B', -360, 360, { derived: true }),
-      unitValue('K', 'K', 'cos(A − B)', { derived: true }),
+      unitValue('K', 'K', 'cos(A − B)', { derived: true, exact: true }),
     ],
     ...rels(
       derive(

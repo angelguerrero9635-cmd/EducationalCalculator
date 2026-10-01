@@ -264,14 +264,16 @@ export function buildSteps(
     // A typed value reads as typed (36.525); `figures` and the page's worked figures round
     // only worked-out values (the working lines keep their extra figures).
     const typed = result.given.some((g) => g.id === id);
-    const n = formatNumber(
-      x,
-      inShownUnit && v
-        ? typed
-          ? { ...v, digits: undefined, figures: undefined }
-          : withWorkedFigures({ ...v, digits: undefined }, figures)
-        : undefined,
-    );
+    const shownAs = (w: VariableDef) =>
+      typed
+        ? { ...w, digits: undefined, figures: undefined }
+        : withWorkedFigures({ ...w, digits: undefined }, figures);
+    // An exact value (√2/2, (−3 + √17)/4) is worked from the values the steps show.
+    const exactValues = inShownUnit && direct ? working : undefined;
+    let n = formatNumber(x, inShownUnit && v ? { ...shownAs(v), values: exactValues } : undefined);
+    // A root written exactly says its decimal beside it: √2/2 ≈ 0.7071.
+    if (inShownUnit && v?.exact && n.includes('√'))
+      n = `${n} ≈ ${formatNumber(x, shownAs({ ...v, exact: undefined, fraction: undefined }))}`;
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return dollarsOf(x, n);

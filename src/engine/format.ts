@@ -1,3 +1,4 @@
+import { exactRoot } from './exact';
 import type { Values, VariableDef } from './types';
 
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
@@ -30,14 +31,21 @@ export function formatNumber(
     | 'full'
     | 'sigFigs'
     | 'figures'
+    | 'exact'
   > & {
     /**
      * A worked-out value's significant figures on a page that sets them (Grades 9–12 science:
      * 3), in decimals and scientific notation alike; a whole number stays whole.
      */
     worked?: number;
+    /** The page's values, for an `exact` that works its form out from them. */
+    values?: Values;
   },
 ): string {
+  if (variable?.exact) {
+    const e = exactText(x, variable, variable.values);
+    if (e) return e;
+  }
   if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
   if (variable?.full && x !== 0 && Number.isFinite(x)) {
     const e = Math.floor(Math.log10(Math.abs(x)) + 1e-12);
@@ -88,6 +96,29 @@ export function formatNumber(
 }
 
 const minus = (s: string) => s.replace(/^-/, '−');
+
+/**
+ * A value's exact form on a variable that asks for it (`exact`): from the page's values when
+ * the variable gives a function and the values are at hand, else a root or special-angle value
+ * found from the value itself. Undefined when the value has none (it shows as usual).
+ */
+export function exactText(
+  x: number,
+  variable: Pick<VariableDef, 'exact' | 'fraction'>,
+  values?: Values,
+): string | undefined {
+  const { exact } = variable;
+  if (!exact || !Number.isFinite(x)) return undefined;
+  if (typeof exact === 'function') {
+    if (!values) return undefined;
+    try {
+      return exact(values);
+    } catch {
+      return undefined;
+    }
+  }
+  return exactRoot(x, Math.max(12, variable.fraction ?? 12));
+}
 
 /**
  * a × 10ⁿ written out in full from a's digits (up to 4 decimals), so no floating-point error
@@ -302,6 +333,17 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
     if (!Number.isFinite(k)) return 'invalid';
     return (pi[1] === '-' ? -k : k) * Math.PI;
   }
+  // A square root as written exactly: "√3/2", "−√3/2", "3√2", "2√31/3", "sqrt(2)/2".
+  const root =
+    /^([-+]?)(\d+\.?\d*)?\s*\*?\s*(?:√|sqrt)\s*\(?(\d+\.?\d*)\)?(?:\s*\/\s*(\d+\.?\d*))?$/i.exec(
+      cleaned,
+    );
+  if (root) {
+    const k = root[2] === undefined ? 1 : Number(root[2]);
+    const x = (k * Math.sqrt(Number(root[3]))) / (root[4] === undefined ? 1 : Number(root[4]));
+    if (!Number.isFinite(x)) return 'invalid';
+    return root[1] === '-' ? -x : x;
+  }
   // Scientific notation: "4.7 × 10^5", "4.7 x 10^-3", "4.7*10⁵", "4.7 × 10⁻³".
   const sci = new RegExp(
     '^([-+]?(?:\\d+\\.?\\d*|\\.\\d+))\\s*[×x*]\\s*10(?:\\^\\(?([-+]?\\d+)\\)?|([⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))$',
@@ -385,7 +427,10 @@ export function renderTemplate(
     if (x === undefined) return '?';
     // Zero padding is for clock times ("3:05"); in sums and words the minutes are plain (5 + 20).
     const clockPart = template[at - 1] === ':';
-    const s = formatNumber(x, clockPart ? variable : { ...variable, digits: undefined });
+    const s = formatNumber(
+      x,
+      clockPart ? { ...variable, values } : { ...variable, digits: undefined, values },
+    );
     // A negative is bracketed only where its sign would meet another one ("3 × (−4)") or a
     // power; alone, first in a line or in an ordered pair it reads as itself: (−4, 3), |−4|.
     const before = template.slice(0, at).trimEnd();
@@ -401,7 +446,10 @@ export function renderTemplate(
     // would be radians.
     if (variable.unit === '°' && /(sin|cos|tan)\($/.test(before) && after.startsWith(')'))
       return `${s}°`;
-    return (x < 0 || s.includes(' × 10')) && needs ? `(${s})` : s;
+    // An exact sum (2 − √3, but not (√6 + √2)/4, already one bracket) reads as one number
+    // only in brackets: 3 × (2 − √3).
+    const sum = / [+−] /.test(s) && !/^\([^()]*\)\/\d+$/.test(s);
+    return (x < 0 || s.includes(' × 10') || sum) && needs ? `(${s})` : s;
   });
   if (!values) return filled;
   // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0; a

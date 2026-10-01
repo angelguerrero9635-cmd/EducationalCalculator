@@ -5,6 +5,26 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Display open items: exact answers, coded values, charge units, figures
+
+- **E22: special-angle values, radicals and complex roots were answered in decimals** (cos 5π/6
+  = −0.866, q = 1.3919 for √31/4, x₂ = 0.2808 for (−3 + √17)/4) → `VariableDef.exact` with
+  `src/engine/exact.ts`: `true` finds the exact form from the value itself, only when it is
+  exact (k√n/q when x² is a whole number over q² to within float error, q up to the
+  variable's `fraction` or 12; a table of the special values that are not one root,
+  (√6 ± √2)/4 and 2 ± √3); a function gives it from the page's values (`quadraticRoot`, the
+  roots from the discriminant). `formatNumber` writes it in the box, the lines and the checks
+  (`renderTemplate` passes its values and brackets an exact sum, 3 × (2 − √3)); the answer and
+  the box say the decimal beside it ("√2/2 ≈ 0.7071"; the box under its name). `complexRoots`
+  writes a conjugate pair (2 ± 3i, −1/2 ± (√3/2)i, ±3i√2); `radical` moved to the engine.
+  `parseNumber` takes "√3/2", "3√2", "sqrt(2)/2". LaTeX stacks a root over its bottom
+  (\frac{\sqrt{3}}{2}, (√6 + √2)/4) and no longer divides from a fraction's bottom (1/2 ÷ 3 was
+  drawn 1 over 2 ÷ 3). Harness: `evaluate` reads 3√2 as 3 × √2 and √3/2 as √3 over 2 (it read
+  √(3/2)); the sampling reads an answer's decimal after "≈". Pages: m.11 unit-circle (x, y, m),
+  complex-numbers~quadratic (q, the pair), polynomial-equations (x₂, x₃, the check and the
+  factored line; a root that simplifies is simplified in the work, (2 + 2√2) ÷ 2), m.12
+  trig-formulas-equations and ~difference (S, K; the work line no longer repeats the decimal).
+
 ## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
 
 - **Twelve picture requests stayed `drawn` though every part was on its page** (H89–H110 span

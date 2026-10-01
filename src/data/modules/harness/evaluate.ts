@@ -417,8 +417,11 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     // A fourth root (a star's light in the habitable-zone rule): ∜0.25, ∜(L ÷ R²).
     .replace(/∜\(/g, 'qrt(')
     .replace(/∜(\d+(?:\.\d+)?)/g, 'qrt($1)')
+    // A root written exactly: 3√2 is 3 × √2, and √3/2 is √3 over 2 (bracketed, so no
+    // fraction rule reads it as √(3/2)).
+    .replace(/(\d)√/g, '$1*√')
     .replace(/√\(/g, 'sqrt(')
-    .replace(/√(\d+(?:\.\d+)?)/g, 'sqrt($1)')
+    .replace(/√(\d+(?:\.\d+)?)/g, '(sqrt($1))')
     // Natural logs from the exponential lessons: ln(x) and ln|x|.
     .replace(/ln\|([^|]*)\|/g, 'log(abs($1))')
     .replace(/ln\(/g, 'log(')

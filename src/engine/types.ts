@@ -31,6 +31,15 @@ export interface VariableDef {
    * `'fraction'` writes radians as fractions of π (5π/2, π/6, −3π/4) and takes them typed.
    */
   pi?: boolean | 'fraction';
+  /**
+   * Show the value exactly when it is exact (E22): a square root in simplest form (√3/2, 3√2,
+   * √31/4, with a bottom up to `fraction` or 12) or a special-angle value ((√6 + √2)/4,
+   * 2 − √3), with its decimal beside the answer ("√2/2 ≈ 0.7071"). A function gives the exact
+   * form from the page's values when the value alone can't (a quadratic's root,
+   * (−3 + √17)/4: `quadraticRoot`); it is used where the values are at hand (steps and boxes).
+   * Any other value keeps the usual display.
+   */
+  exact?: true | ((v: Values) => string | undefined);
   /** Show the value in scientific notation (4.7 × 10⁵); boxes take "4.7 × 10^5" and "4.7e5". */
   scientific?: boolean;
   /**

@@ -199,6 +199,9 @@ function resultNumber(result: string, exp = false): number {
   // "about $3.33": a price rounded to the cent.
   // A negative amount of money is written with its sign first (−$10).
   const rhs = (result.split(' = ')[1] ?? '').replace(/^about /, '').replace(/^[−-]\$/, '-');
+  // A root written exactly says its decimal beside it (√2/2 ≈ 0.7071): read the decimal.
+  const approx = / ≈ (-?[\d.,]+)/.exec(rhs.replace(/−/g, '-'));
+  if (approx) return Number(approx[1]!.replace(/,/g, ''));
   const mixed = /^(-?)(?:(\d+) )?(\d+)\/(\d+)(?![\d.])/.exec(rhs);
   if (mixed) {
     const x = Number(mixed[2] ?? 0) + Number(mixed[3]) / Number(mixed[4]);

@@ -20,3 +20,11 @@ it('reads a fourth root of a number or a bracket', () => {
   expect(evaluate('278 × ∜0.25 ÷ √0.5')).toBeCloseTo(278, 9);
   expect(evaluate('5772 × ∜(16 ÷ 4)')).toBeCloseTo(5772 * Math.SQRT2, 6);
 });
+
+it('reads a root written exactly (E22)', () => {
+  expect(evaluate('√3/2')).toBeCloseTo(Math.sqrt(3) / 2, 12);
+  expect(evaluate('−√911/24')).toBeCloseTo(-Math.sqrt(911) / 24, 12);
+  expect(evaluate('3√2')).toBeCloseTo(3 * Math.SQRT2, 12);
+  expect(evaluate('−(√6 + √2)/4')).toBeCloseTo(-(Math.sqrt(6) + Math.SQRT2) / 4, 12);
+  expect(evaluate('(√6 − √2)/4 ÷ ((√6 + √2)/4)')).toBeCloseTo(2 - Math.sqrt(3), 12);
+});

@@ -62,6 +62,9 @@ function atomPattern(band: MathBand): RegExp {
             String.raw`(?<cb>\([^()]*\)|\d+(?:\.\d+)?|(?<![\p{L}_])\p{L})\^(?<ce>\([^()]*\)|\d+(?:\.\d+)?|\p{L}(?!\p{L}))`,
           ]
         : []),
+      // A root written exactly over its bottom (E22): √3/2, 2√31/3, (√6 + √2)/4.
+      String.raw`(?<![\d/.,])(?<sk>\d*)√(?<sn>\d+)\/(?<sd>\d+)${END}`,
+      String.raw`\((?<sb>[^()]*√[^()]*)\)\/(?<sbd>\d+)${END}`,
       // Square root of a bracket or of a number.
       String.raw`√(?<rb>\([^()]*\))|√(?<rn>\d+(?:\.\d+)?)`,
       '(?<half>½)',
@@ -109,6 +112,8 @@ function atom(m: RegExpMatchArray, band: MathBand, prose: boolean, symbols: stri
   if (g.gb !== undefined) return `{(${inner(g.gb)})}^{${fromSuper(g.ge!)}}`;
   if (g.pb) return `{${inner(g.pb)}}^{${fromSuper(g.pe!)}}`;
   if (g.cb) return `\\pow{${inner(g.cb)}}{${inner(g.ce!)}}`;
+  if (g.sn) return `${frac}{${g.sk}\\sqrt{${g.sn}}}{${g.sd}}`;
+  if (g.sb) return `${frac}{${inner(g.sb)}}{${g.sbd}}`;
   if (g.rb) return `\\sqrt{${inner(g.rb)}}`;
   if (g.rn) return `\\sqrt{${g.rn}}`;
   return '\\half';
@@ -157,7 +162,8 @@ function italics(segs: Seg[], symbols: string[], products: boolean): Seg[] {
 
 /** Divisions drawn stacked (a ÷ b), inside `segs`. */
 function divisions(segs: Seg[], band: MathBand, symbols: string[]): Seg[] {
-  const div = new RegExp(String.raw`(?<a>${OPERAND}) ÷ (?<b>${OPERAND})`, 'gu');
+  // (never from the bottom of a fraction: 1/2 ÷ 3 is not 1 over 2 ÷ 3)
+  const div = new RegExp(String.raw`(?<![\d/.,])(?<a>${OPERAND}) ÷ (?<b>${OPERAND})`, 'gu');
   return pass(segs, div, (m) =>
     // A long top (a sum of eight distances) stays plain text that wraps: stacked, it is
     // wider than a phone.
@@ -415,7 +421,8 @@ export function plainMath(nodes: MathNode[]): string {
       else {
         // A mixed number's whole is the text right before it: "2" + "1/4" → "2 1/4".
         const mixed = prev?.t === 'text' && /\d$/.test(prev.s);
-        out += `${mixed ? ' ' : ''}${a}/${b}`;
+        // A top that is a sum ((√6 + √2)/4, drawn stacked) keeps its brackets.
+        out += `${mixed ? ' ' : ''}${/ /.test(a) ? `(${a})` : a}/${b}`;
       }
     } else if (n.t === 'sup') {
       out += n.caret
