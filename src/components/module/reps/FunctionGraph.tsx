@@ -1204,18 +1204,25 @@ export function FunctionGraph({
                     </ChartText>
                   );
                 })}
-                {yTicks.map((v, i) => (
-                  <ChartText
-                    key={`ny${v}`}
-                    x={L - 5}
-                    y={sy(v) + 4}
-                    fontSize={chart.label}
-                    fill={c.chartMuted}
-                    textAnchor="end"
-                  >
-                    {yLabels[i]}
-                  </ChartText>
-                ))}
+                {yTicks.map((v, i) =>
+                  // A handle on the y-axis (a start value at x = 0) would sit on its number:
+                  // the number gives way, as the point's own label names the value.
+                  handlePx.some(
+                    ([hx, hy]) =>
+                      hx - L < chart.handle / 2 + 4 && Math.abs(hy - sy(v)) < chart.handle / 2 + 6,
+                  ) ? null : (
+                    <ChartText
+                      key={`ny${v}`}
+                      x={L - 5}
+                      y={sy(v) + 4}
+                      fontSize={chart.label}
+                      fill={c.chartMuted}
+                      textAnchor="end"
+                    >
+                      {yLabels[i]}
+                    </ChartText>
+                  ),
+                )}
                 {named ? (
                   <>
                     {spec.axes?.x ? (

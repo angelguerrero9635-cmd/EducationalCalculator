@@ -468,3 +468,12 @@ There is no `m.12.confidence-intervals~two-sample`; the t curve went on the hypo
   so the curve agrees with P either way. The table of P by F (the stand-in, and `fTable`) is gone.
   Demos `g.m12-anova-two-variances-tails-two` and `g.m12-anova-two-variances-tails-right`
   retired; the H106 (18) demo `g.m12-anova-two-variances-f-curve` (fixed two tails) is kept.
+
+### Leftovers (`.review/hs-page2-m/page-report2-math.md`)
+
+- conics~cone: each curve now runs exactly to the rim (the crossing found by halving between
+  samples, not the last sample inside), and the cutting plane is only as long as the curve with
+  a margin, shortened until its corners are in the picture (the ellipse's ran off the left
+  edge). The hyperbola's plane faces the viewer, 0.3 in front of the axis, so both branches
+  open out to the rims' edges; seen at an angle, one arm of each ended on a rim's near or far
+  side and looked cut off mid-cone.

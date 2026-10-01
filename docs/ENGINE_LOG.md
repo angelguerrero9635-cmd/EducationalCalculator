@@ -16,6 +16,12 @@ per review; each line names the finding and what the engine now does about it.
   are `placed`; H94, H98, H99, H102, H103, H106, H107 and H110 stay `drawn`, their notes naming
   the unbuilt pages (each in `pages` with its mark, so a builder adding one is told if the
   picture is missing).
+- **Pictures the second math page review left** → a y-axis number gives way to a handle drawn
+  on it (`FunctionGraph`: percent-growth's start sat on "800"); the slope triangle keeps its
+  run and rise labels off the test point's label (`LinearFunction`, `triangleAt`'s
+  `labelsFree`); construction stage figures draw 1.5× (`ZOOM`, 156 px) and find-center's
+  bisectors cross short X arcs with O between each pair; the double cone runs each curve to the
+  rim exactly and fits its plane inside the picture, the hyperbola's plane facing the viewer.
 
 ## Grades 9–12 second page review: the drag rule
 

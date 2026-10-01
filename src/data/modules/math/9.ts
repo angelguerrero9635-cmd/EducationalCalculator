@@ -4650,7 +4650,7 @@ const RADICALS: ModuleDef[] = [
   page({
     id: 'm.9.radicals~rational-exponent',
     title: 'Rational exponents',
-    use: 'Use this for “Evaluate 27^(2/3)” or “16^(3/2)”.',
+    use: 'Use this for “Evaluate 27²ᐟ³” or “16³ᐟ²”.',
     assumptions: [
       'b^(1/q) is the qth root of b: 27^(1/3) = ∛27 = 3.',
       'b^(p/q) is that root raised to the power p: take the root first, the numbers stay small.',
