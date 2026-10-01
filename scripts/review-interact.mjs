@@ -58,7 +58,14 @@ for (const id of ids) {
   for (let i = 0; i < n; i++) {
     await page.locator(`[data-testid="scene-${i}"]`).click();
     await page.waitForTimeout(120);
-    const svg = page.locator('svg').first();
+    // The picture is the largest drawing on the page (the first svg is the header's home icon).
+    const sizes = await page
+      .locator('svg')
+      .evaluateAll((els) =>
+        els.map((e) => e.getBoundingClientRect().width * e.getBoundingClientRect().height),
+      );
+    const biggest = sizes.indexOf(Math.max(...sizes, 0));
+    const svg = page.locator('svg').nth(Math.max(0, biggest));
     await svg.screenshot({ path: join(out, 'scenes', `${safe(id)}-${i}.png`) }).catch(() => {});
     scenes++;
   }
