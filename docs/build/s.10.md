@@ -209,6 +209,20 @@ Report: `.review/new-sci/lesson-report.md`. Fixed:
 - Waiting: `s.10.phase-colligative~phase-diagram` (explore) on the H108 phase-diagram figure
   (P20, open).
 
+### Second lesson-review fixes
+
+Report: `.review/new-sci-2/lesson-report.md`.
+
+- `s.10.phase-colligative`: the "100.8 = 100 + 0.768" check and the find-n line are fixed by the
+  engine (4 figures are opt-in again; Tb shows 100.768). g runs 0.01–1,000 g, n from 0.00001 mol
+  (to 1,000), b is wide, and two limits right after b = n/w say why instead of a silent clear:
+  b at most 6 ("Past about 6 mol/kg the freezing-point rule no longer fits.") and b at least
+  0.001 ("Below 0.001 mol/kg the freezing and boiling points barely move."; the deep harness found
+  a boiling point of 100 that lost its 7 × 10⁻⁷ rise). ΔTf, Tf, ΔTb, Tb and the curve start are
+  widened to fit i = 4 at 6 mol/kg.
+- `~vapor-pressure`: the check line "0.01189 = 23.8 − 23.79" is the engine's (near-cancelling
+  check lines; lead).
+
 ## Shared needs (lesson review)
 
 1. **Tracker, `pictureRequestsHs.ts` H49:** lists `s.10.reaction-types~combustion`, which now

@@ -4577,21 +4577,22 @@ const PHASE: ModuleDef[] = [
       'The rule fits dilute solutions (up to about 1 mol/kg); stronger ones stray from it.',
     ],
     variables: [
-      quantity('g', 'g', 'Mass of solute', 'g', 0.001, 5000, 0.001),
+      quantity('g', 'g', 'Mass of solute', 'g', 0.01, 1000, 0.001),
       quantity('M', 'M', 'Molar mass', 'g/mol', 1, 1000, 0.01),
-      quantity('n', 'n', 'Moles of solute', 'mol', 0.001, 50, 0.001),
+      quantity('n', 'n', 'Moles of solute', 'mol', 0.00001, 1000, 0.00001),
       quantity('w', 'w', 'Mass of water', 'kg', 0.01, 100, 0.001),
-      quantity('b', 'b', 'Molality', 'mol/kg', 0.0001, 6, 0.0001),
+      // Wide, so a strong solution meets the limit below (with its reason), not a silent clear.
+      quantity('b', 'b', 'Molality', 'mol/kg', 0.0000001, 100000, 0.0001),
       {
         ...whole('i', 'i', 'Particles each unit gives (van ’t Hoff factor)', 1, 4),
         allowed: [1, 2, 3, 4],
       },
-      quantity('dTf', 'ΔTf', 'Freezing point drop', '°C', 0, 35, 0.0001),
-      quantity('Tf', 'Tf', 'Freezing point of the solution', '°C', -35, 0, 0.0001),
-      quantity('dTb', 'ΔTb', 'Boiling point rise', '°C', 0, 10, 0.0001),
-      quantity('Tb', 'Tb', 'Boiling point of the solution', '°C', 100, 110, 0.0001),
+      quantity('dTf', 'ΔTf', 'Freezing point drop', '°C', 0, 45, 0.0001),
+      quantity('Tf', 'Tf', 'Freezing point of the solution', '°C', -45, 0, 0.0001),
+      quantity('dTb', 'ΔTb', 'Boiling point rise', '°C', 0, 13, 0.0001),
+      quantity('Tb', 'Tb', 'Boiling point of the solution', '°C', 100, 113, 0.0001),
       {
-        ...quantity('T0', 'T₀', 'Where the curve starts', '°C', -45, -10, 0.0001),
+        ...quantity('T0', 'T₀', 'Where the curve starts', '°C', -55, -10, 0.0001),
         derived: true,
         hidden: true,
       },
@@ -4627,6 +4628,37 @@ const PHASE: ModuleDef[] = [
           n: { expr: '{b} × {w}', how: 'Multiply the moles in each kilogram by the kilograms.' },
           w: { expr: '{n}/{b}', how: 'Divide the moles by the moles in each kilogram.' },
         },
+      },
+      // Checked right after b is worked out, so its reason shows before a range clears a value.
+      {
+        relation: {
+          id: 'b ≥ 0.001',
+          constraint: true,
+          display: '{b} is at least 0.001',
+          vars: ['b'],
+          residual: (v) => (v.b! >= 0.001 - 1e-12 ? 0 : 1),
+          solve: {},
+          message: (v) =>
+            v.b! >= 0.001 - 1e-12
+              ? undefined
+              : 'Below 0.001 mol/kg the freezing and boiling points barely move.',
+        },
+        steps: {},
+      },
+      {
+        relation: {
+          id: 'b ≤ 6',
+          constraint: true,
+          display: '{b} is at most 6',
+          vars: ['b'],
+          residual: (v) => (v.b! <= 6 + 1e-9 ? 0 : 1),
+          solve: {},
+          message: (v) =>
+            v.b! <= 6 + 1e-9
+              ? undefined
+              : 'Past about 6 mol/kg the freezing-point rule no longer fits.',
+        },
+        steps: {},
       },
       colligativeRule('dTf', 1.86, '1.86', 'freezing point'),
       {
