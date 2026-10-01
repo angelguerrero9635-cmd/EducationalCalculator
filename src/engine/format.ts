@@ -433,6 +433,9 @@ export function renderTemplate(
     if (!values) return variable.symbol;
     const x = values[id];
     if (x === undefined) return '?';
+    // A coded value reads as what it means ("on β ≠ 0’s side"), never its code.
+    const meaning = variable.labels?.[Math.round(x)];
+    if (meaning !== undefined) return meaning;
     // Zero padding is for clock times ("3:05"); in sums and words the minutes are plain (5 + 20).
     const clockPart = template[at - 1] === ':';
     const s = formatNumber(

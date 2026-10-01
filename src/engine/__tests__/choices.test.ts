@@ -1,4 +1,5 @@
 import { codeLabel, nextCode } from '../choices';
+import { renderTemplate } from '../format';
 import type { VariableDef } from '../types';
 
 describe('coded values in words', () => {
@@ -13,6 +14,11 @@ describe('coded values in words', () => {
     expect(codeLabel(side, 2)).toBeUndefined();
     expect(codeLabel(side, undefined)).toBeUndefined();
     expect(codeLabel({}, 0)).toBeUndefined();
+  });
+
+  it('reads as its meaning in a filled-in line', () => {
+    const h = { id: 'h', symbol: 'Hₐ', name: 'Alternative hypothesis', ...side };
+    expect(renderTemplate('on {h}’s side', [h], { h: 0 })).toBe('on β ≠ 0’s side');
   });
 
   it('taps through the codes in their order, round', () => {
