@@ -292,3 +292,8 @@ Report: `.review/new-sci-2/lesson-report.md`.
   SO₄²⁻, H₂S …). No stand-in.
 - `~cell-voltage` (H108 part 5): `chemDiagram` mode `cell`, the galvanic cell of the two metals
   with its meter and the E° scale. Stand-in gone: the vertical number line of potentials.
+- `s.10.organic~functional-groups` (H101 need 9): every card wears its `condensed` formula with the
+  group lit; an assumption says so. Stand-in gone: text-only cards.
+- `~isomers` (H101 need 9b): new calculator, a methyl group on the main chain's second carbon
+  (n 3–7, c = n + 1, h = 2c + 2), on `lewisStructure` hydrocarbon `branches: [2]` (2-methylbutane
+  is C₅H₁₂, like pentane). The plan had structural isomers as "No (need 9b)".

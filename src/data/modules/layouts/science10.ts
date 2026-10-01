@@ -810,6 +810,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A functional group is the part of an organic molecule that reacts; the rest is a carbon chain.',
       'Look at what is bonded to the carbon chain: –OH, –COOH, –COO–, –NH₂ or C=O between carbons.',
+      'The lit part of each formula is its functional group.',
     ],
     question: 'Which functional group does the molecule have?',
     bins: [
@@ -824,16 +825,56 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       { id: 'ketone', label: 'Ketone (C=O)', why: 'A C=O between two carbons.' },
     ],
     cards: [
-      { label: 'Methanol, CH₃OH', bin: 'alcohol' },
-      { label: 'Ethanol, CH₃CH₂OH', bin: 'alcohol' },
-      { label: 'Acetic acid, CH₃COOH', bin: 'acid' },
-      { label: 'Formic acid, HCOOH', bin: 'acid' },
-      { label: 'Ethyl acetate, CH₃COOCH₂CH₃', bin: 'ester' },
-      { label: 'Methyl butanoate, CH₃CH₂CH₂COOCH₃', bin: 'ester' },
-      { label: 'Methylamine, CH₃NH₂', bin: 'amine' },
-      { label: 'Ethylamine, CH₃CH₂NH₂', bin: 'amine' },
-      { label: 'Acetone, CH₃COCH₃', bin: 'ketone' },
-      { label: '2-Butanone, CH₃COCH₂CH₃', bin: 'ketone' },
+      {
+        label: 'Methanol, CH₃OH',
+        bin: 'alcohol',
+        figure: { kind: 'condensed', formula: 'CH3-OH', group: 'alcohol' },
+      },
+      {
+        label: 'Ethanol, CH₃CH₂OH',
+        bin: 'alcohol',
+        figure: { kind: 'condensed', formula: 'CH3-CH2-OH', group: 'alcohol' },
+      },
+      {
+        label: 'Acetic acid, CH₃COOH',
+        bin: 'acid',
+        figure: { kind: 'condensed', formula: 'CH3-C(=O)-OH', group: 'acid' },
+      },
+      {
+        label: 'Formic acid, HCOOH',
+        bin: 'acid',
+        figure: { kind: 'condensed', formula: 'H-C(=O)-OH', group: 'acid' },
+      },
+      {
+        label: 'Ethyl acetate, CH₃COOCH₂CH₃',
+        bin: 'ester',
+        figure: { kind: 'condensed', formula: 'CH3-C(=O)-O-CH2-CH3', group: 'ester' },
+      },
+      {
+        label: 'Methyl butanoate, CH₃CH₂CH₂COOCH₃',
+        bin: 'ester',
+        figure: { kind: 'condensed', formula: 'CH3-CH2-CH2-C(=O)-O-CH3', group: 'ester' },
+      },
+      {
+        label: 'Methylamine, CH₃NH₂',
+        bin: 'amine',
+        figure: { kind: 'condensed', formula: 'CH3-NH2', group: 'amine' },
+      },
+      {
+        label: 'Ethylamine, CH₃CH₂NH₂',
+        bin: 'amine',
+        figure: { kind: 'condensed', formula: 'CH3-CH2-NH2', group: 'amine' },
+      },
+      {
+        label: 'Acetone, CH₃COCH₃',
+        bin: 'ketone',
+        figure: { kind: 'condensed', formula: 'CH3-C(=O)-CH3', group: 'ketone' },
+      },
+      {
+        label: '2-Butanone, CH₃COCH₂CH₃',
+        bin: 'ketone',
+        figure: { kind: 'condensed', formula: 'CH3-C(=O)-CH2-CH3', group: 'ketone' },
+      },
     ],
   },
 

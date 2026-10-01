@@ -4246,6 +4246,61 @@ const ORGANIC: ModuleDef[] = [
     'triple',
     2,
   ),
+  {
+    id: 's.10.organic~isomers',
+    title: 'Isomers: a branched alkane',
+    use: 'Use this for “Draw an isomer of pentane” or “How many hydrogens does 2-methylbutane have?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The main chain is the longest chain of carbons; a methyl group, CH₃, hangs off its second carbon.',
+      'Isomers have the same formula but different structures: 2-methylbutane and pentane are both C₅H₁₂.',
+    ],
+    variables: [
+      whole('n', 'n', 'Carbons in the main chain', 3, 7),
+      { ...whole('c', 'c', 'Carbons in all', 4, 8), derived: true },
+      { ...whole('h', 'h', 'Hydrogen atoms', 10, 18), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'c = n + 1',
+          display: '{c} = {n} + 1',
+          vars: ['c', 'n'],
+          residual: (v) => v.c! - v.n! - 1,
+          solve: { c: (v) => v.n! + 1, n: (v) => v.c! - 1 },
+        },
+        steps: {
+          c: {
+            expr: '{n} + 1',
+            how: 'The methyl group adds one carbon to the main chain’s carbons.',
+          },
+          n: { expr: '{c} − 1', how: 'Take the methyl carbon away.' },
+        },
+      },
+      {
+        relation: {
+          id: 'h = 2c + 2',
+          display: '{h} = 2 × {c} + 2',
+          vars: ['h', 'c'],
+          residual: (v) => v.h! - (2 * v.c! + 2),
+          solve: { h: (v) => 2 * v.c! + 2, c: (v) => (v.h! - 2) / 2 },
+        },
+        steps: {
+          h: { expr: '2 × {c} + 2', how: 'Any alkane, branched or not, is CₙH₂ₙ₊₂.' },
+          c: { expr: '({h} − 2)/2', how: 'Undo 2 × carbons + 2.' },
+        },
+      },
+    ),
+    example: { n: 4, c: 5, h: 12 },
+    startWith: ['n'],
+    representation: {
+      kind: 'lewisStructure',
+      mode: 'hydrocarbon',
+      carbons: 'n',
+      hydrogens: 'h',
+      branches: [2],
+    },
+  },
 ];
 
 // ─── Nuclear chemistry ───────────────────────────────────────────────────────
