@@ -3,6 +3,7 @@
  * math options the reviewed and added pages wait on. Kept apart from the kinds' own type files so
  * those only gain a line each. A `NumOrVar` field is a fixed number or a variable id.
  */
+import type { Representation } from './types';
 import type { NumOrVar } from './typesGraphs';
 
 /**
@@ -150,4 +151,68 @@ export function functionGraphHs3bVars(r: FunctionGraphHs3b): string[] {
     t?.image?.y,
     r.reject,
   ].filter((x): x is string => typeof x === 'string');
+}
+
+/** A vector in space by its three components. */
+export interface Vector3Of {
+  name: string;
+  x: NumOrVar;
+  y: NumOrVar;
+  z: NumOrVar;
+}
+
+/**
+ * H106: `vectorDiagram` in space. With `space` the vectors take a third component `z` and are
+ * drawn on x, y and z axes seen from above and to one side (drag the turn handle to spin the
+ * view about z), each tip dropped dashed to the floor. The first two vectors span a
+ * parallelogram. Options:
+ * - `cross`: u × v drawn from the origin in its own colour, square to the shaded parallelogram;
+ *   its components' ids (checked); `area` |u × v| (checked), `triangle` half of it, shaded;
+ * - `dot`, `angle`: u · v and the angle between them (degrees), marked by an arc (checked);
+ * - `w`, a third vector: the slanted box of u, v and w; `triple` u · (v × w) and `volume` its
+ *   absolute value (checked);
+ * - `points`: the two vectors are the points P and Q, joined by a segment with its legs Δx, Δy
+ *   and Δz along the axes; `distance` |PQ| and `mid` the midpoint M (checked).
+ */
+export interface VectorDiagramHs3b {
+  space?: {
+    w?: Vector3Of;
+    points?: boolean;
+    cross?: { name?: string; x?: string; y?: string; z?: string };
+    area?: string;
+    triangle?: string;
+    dot?: string;
+    angle?: string;
+    triple?: string;
+    volume?: string;
+    distance?: string;
+    mid?: { x?: string; y?: string; z?: string };
+  };
+}
+
+const idsOf = (...xs: (NumOrVar | undefined)[]) =>
+  xs.filter((x): x is string => typeof x === 'string');
+
+/** The variable ids the later H106 options name, beside the kinds' own (for the module tests). */
+export function hs3bSpecVars(r: Representation): string[] {
+  if (r.kind !== 'vectorDiagram' || !r.space) return [];
+  const s = r.space;
+  return idsOf(
+    s.w?.x,
+    s.w?.y,
+    s.w?.z,
+    s.cross?.x,
+    s.cross?.y,
+    s.cross?.z,
+    s.area,
+    s.triangle,
+    s.dot,
+    s.angle,
+    s.triple,
+    s.volume,
+    s.distance,
+    s.mid?.x,
+    s.mid?.y,
+    s.mid?.z,
+  );
 }

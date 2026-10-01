@@ -12,6 +12,7 @@ import type {
   UnitCircleHs2g,
 } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
+import type { VectorDiagramHs3b } from './typesHs3b';
 
 /** A trig function of the unit circle. */
 export type TrigFn = 'sin' | 'cos' | 'tan';
@@ -113,6 +114,7 @@ export interface VectorOf {
   y?: NumOrVar;
   magnitude?: NumOrVar;
   direction?: NumOrVar;
+  z?: NumOrVar; // H106: the third component, with `space`
 }
 
 /**
@@ -121,7 +123,7 @@ export interface VectorOf {
  * draws k times the first vector; `angle` marks the angle between two vectors, with the dot
  * product's sign. Physics pages pass `unit` (m/s, N) and `axes` names. Drag a vector's tip.
  */
-export interface VectorDiagramSpec {
+export interface VectorDiagramSpec extends VectorDiagramHs3b {
   kind: 'vectorDiagram';
   vectors: [VectorOf] | [VectorOf, VectorOf];
   sum?: 'tipToTail' | 'parallelogram';
@@ -315,7 +317,7 @@ export function hsdSpecVars(r: HsdSpec): string[] {
     }
     case 'vectorDiagram':
       return ids(
-        ...r.vectors.flatMap((v) => [v.x, v.y, v.magnitude, v.direction]),
+        ...r.vectors.flatMap((v) => [v.x, v.y, v.z, v.magnitude, v.direction]),
         r.result?.x,
         r.result?.y,
         r.result?.magnitude,

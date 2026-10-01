@@ -101,6 +101,7 @@ import { VennOne } from './VennOne';
 import { TableGraph } from './TableGraph';
 import { CirclePopulation } from './CirclePopulation';
 import { RectangleBounds } from './RectangleBounds';
+import { VectorSpace } from './VectorSpace';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -283,6 +284,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <ComplexPlane spec={spec} calc={calc} />
       );
     case 'vectorDiagram':
+      if (spec.space) return <VectorSpace spec={spec} calc={calc} />; // H106
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':
       return spec.mode === 'box' || spec.mode === 'monomial' ? (

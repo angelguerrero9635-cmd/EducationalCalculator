@@ -243,6 +243,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `circle`           | `population: { people, density? }`       | a town's outline on a km grid, people as dots, the model circle r (H106)      |
 | `transformation`   | `about: 'center'`                        | turns about the figure's own center; point symmetry pairs through it (H106)   |
 | `rectangle`        | `bounds: { error, least?, greatest? }`   | (l ± e) by (w ± e) dashed, the band between shaded, a corner close-up (H106)  |
+| `vectorDiagram`    | `space`, `z`; `cross`, `w`, `points`     | x, y, z axes, turnable: u × v, θ, areas, the box of u, v, w; PQ, M (H106)     |
 | `algebraTiles`     | `mode: 'box'`, `side`, `top`, `product`  | area box: row × column terms, like-term diagonals tinted, collected (H95)     |
 | `algebraTiles`     | `mode: 'monomial'`, `a, m, b, n, c, k`   | a·xᵐ ÷ b·xⁿ as factors over a bar, cancelled pairs struck, c·xᵏ (H95)         |
 | `integerLine`      | `compound.closed: [id, id]`              | each bound's circle from a sign box: 2 ≤, 4 ≥ closed; 1 <, 3 > open (H90)     |

@@ -781,6 +781,42 @@ const BOUNDS: ModuleDef[] = [
   ),
 ];
 
+// ── H106 part 12: vectors in space on x, y, z axes (m.12.vectors-3d) ──
+
+const U3 = { name: 'u', x: 'a', y: 'b', z: 'c' };
+const V3 = { name: 'v', x: 'd', y: 'e', z: 'f' };
+
+const SPACE: ModuleDef[] = [
+  fromPage('m.12.vectors-3d', 'g.m12-vectors-3d-angle', 'The angle between vectors in space', {
+    kind: 'vectorDiagram',
+    vectors: [U3, V3],
+    space: { dot: 'p', angle: 't' },
+  }),
+  fromPage('m.12.vectors-3d~cross', 'g.m12-vectors-3d-cross-axes', 'The cross product in space', {
+    kind: 'vectorDiagram',
+    vectors: [U3, V3],
+    space: { cross: { x: 'x', y: 'y', z: 'z' }, area: 'A', triangle: 'Tri' },
+  }),
+  fromPage('m.12.vectors-3d~triple', 'g.m12-vectors-3d-triple-box', 'The box three vectors span', {
+    kind: 'vectorDiagram',
+    vectors: [U3, V3],
+    space: { w: { name: 'w', x: 'g', y: 'h', z: 'k' }, triple: 'T', volume: 'Vol' },
+  }),
+  fromPage(
+    'm.12.vectors-3d~distance',
+    'g.m12-vectors-3d-distance-axes',
+    'Distance and midpoint on x, y, z axes',
+    {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'P', x: 'p', y: 'q', z: 'r' },
+        { name: 'Q', x: 's', y: 't', z: 'u' },
+      ],
+      space: { points: true, distance: 'd', mid: { x: 'mx', y: 'my', z: 'mz' } },
+    },
+  ),
+];
+
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
@@ -793,6 +829,7 @@ export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...POPULATION,
   ...SYMMETRY,
   ...BOUNDS,
+  ...SPACE,
 ];
 
 export const HS3B_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -8,6 +8,7 @@ import { reshapeVars } from '@/components/module/reps/functionGraphHs2g';
 import { toShownUnits } from '@/components/module/reps/functionGraphUnits';
 import { quadAt, quadCrossings } from '@/components/module/reps/lineParabola';
 import { ownCenter } from '@/components/module/reps/transformHs3b';
+import { angle3, cross3, dot3, len3, sub3, type V3 } from '@/components/module/reps/vectorSpace';
 import type { VariableDef } from '@/engine/types';
 
 import type { Representation } from '../types';
@@ -70,6 +71,47 @@ export function hs3bCenter(
   if (ps.some((p) => p[0] === undefined || p[1] === undefined)) return [undefined, undefined];
   const c = ownCenter(ps as [number, number][]);
   return [c[0], c[1]];
+}
+
+/** `space`: three components each; u × v, the areas, u · v, θ, the box, PQ and M worked out. */
+function spaceIssues(rep: Extract<Representation, { kind: 'vectorDiagram' }>, val: Val) {
+  const out: string[] = [];
+  const s = rep.space;
+  if (!s) return out;
+  if (rep.vectors.some((v) => v.z === undefined || v.x === undefined || v.y === undefined))
+    out.push('space: every vector needs x, y and z');
+  const vec = (v: { x?: string | number; y?: string | number; z?: string | number }) => {
+    const p = [v.x ?? 0, v.y ?? 0, v.z ?? 0].map((x) => val(x));
+    return p.every((x) => x !== undefined) ? (p as V3) : undefined;
+  };
+  const [u, v] = rep.vectors.map(vec);
+  const w = s.w ? vec(s.w) : undefined;
+  const check = (id: string | undefined, want: number, what: string) => {
+    const got = id === undefined ? undefined : val(id);
+    if (got !== undefined && !near(got, want)) out.push(`space: ${what} is ${got}, not ${want}`);
+  };
+  if (s.points) {
+    if (!u || !v) return out;
+    check(s.distance, len3(sub3(v, u)), 'PQ');
+    (['x', 'y', 'z'] as const).forEach((k, i) =>
+      check(s.mid?.[k], (u[i]! + v[i]!) / 2, `the midpoint's ${k}`),
+    );
+    return out;
+  }
+  if (!u || !v) return out;
+  const n = cross3(u, v);
+  (['x', 'y', 'z'] as const).forEach((k, i) => check(s.cross?.[k], n[i]!, `u × v's ${k}`));
+  check(s.area, len3(n), 'the area |u × v|');
+  check(s.triangle, len3(n) / 2, 'the triangle |u × v| ÷ 2');
+  check(s.dot, dot3(u, v), 'u · v');
+  const th = angle3(u, v);
+  if (th !== undefined) check(s.angle, th, 'the angle');
+  if (w) {
+    const T = dot3(u, cross3(v, w));
+    check(s.triple, T, 'u · (v × w)');
+    check(s.volume, Math.abs(T), 'the volume');
+  }
+  return out;
 }
 
 export function hs3bIssues(
@@ -175,6 +217,9 @@ export function hs3bIssues(
         if (rep.solutions && sols[i]!.x < sols[i - 1]!.x) out.push('solutions not left to right');
       break;
     }
+    case 'vectorDiagram':
+      out.push(...spaceIssues(rep, val));
+      break;
     case 'functionGraph': {
       out.push(...transformIssues(rep, val));
       // The power family and the log sum draw only from values they can take.
