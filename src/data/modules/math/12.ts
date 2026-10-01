@@ -1377,6 +1377,55 @@ const MATH_12_STATS: ModuleDef[] = [
       axis: 'Successes',
     },
   },
+  {
+    id: 'm.12.sampling-distributions~clt',
+    title: 'The central limit theorem, simulated',
+    use: 'Use this for “Wait times are skewed right with mean 4 minutes. How are the means of samples of 30 spread?”',
+    assumptions: [
+      'The population of waits is skewed right: most are short and a few are long. Here σ = μ.',
+      'The sample means center on μ and spread by σ ÷ √n, whatever the population’s shape.',
+      'For n of about 30 or more the sample means are close to normal, though the waits are not.',
+    ],
+    variables: [
+      V('mu', 'μ', 'Population mean wait (min)', { min: 0.5, max: 60, step: 0.5 }),
+      V('n', 'n', 'Sample size', { integer: true, min: 1, max: 100 }),
+      V('m', 'm', 'Samples taken', { integer: true, min: 10, max: 2000, step: 10 }),
+      V('E', 'σ/√n', 'Spread of the sample means (min)', {
+        min: 0,
+        max: 60,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('N', 'N', 'Waits drawn in all', { integer: true, min: 10, max: 200000, derived: true }),
+    ],
+    ...rels(
+      derive(
+        'N = n × m',
+        '{N} = {n} × {m}',
+        'N',
+        ['n', 'm'],
+        (v) => v.n! * v.m!,
+        '{n} × {m}',
+        'Each of the m samples draws n waits from the population.',
+      ),
+      derive(
+        'σ/√n',
+        '{E} = {mu} ÷ √{n}',
+        'E',
+        ['mu', 'n'],
+        (v) => v.mu! / Math.sqrt(v.n!),
+        '{mu} ÷ √{n}',
+        'Here σ = μ: divide it by √n, the square root of the sample size.',
+      ),
+    ),
+    example: { mu: 4, n: 30, m: 1000, E: 4 / Math.sqrt(30), N: 30000 },
+    startWith: ['mu', 'n', 'm'],
+    sliders: true,
+    representation: {
+      kind: 'histogram',
+      clt: { mean: 'mu', n: 'n', samples: 'm', se: 'E' },
+    },
+  },
 
   // ── m.12.chi-square (AP Statistics unit 8) ──
   {
