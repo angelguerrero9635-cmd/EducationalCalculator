@@ -319,6 +319,15 @@ Report: `.review/new-sci-2/lesson-report.md`.
 | `s.11.kinematics-2d~cliff`               | H105.5         | `projectile` `angle: 0` (a number)                                                                                | the hidden fixed θ = 0 value, its rule and its `standalone` note; the unused `fixed` helper |
 | `s.11.momentum~explode`                  | H105.13        | `collision` explode `spring: 'E'` (the spring's energy between the carts)                                         | pictureLabels E                                                                             |
 
+Not placed, and why:
+
+- H102 parts 1–3, 5–8, 10–12 (`~one-after`, `~impulse`, `~orbit`, `~motion-diagrams`, `~work`,
+  `~power`, `~first-law`, `~plates`, `~photoelectric`, `~relativity`) and H107 part 9
+  (`~moving-charge`): those pages are still waiting, not built; the demos hold their specs.
+  Part 10b (two charges with a point) is a demo of a released question, not a page here.
+- H102 part 9 (`~latent-heat`): no change was asked.
 - H106 part 1 (`functionGraph` `unitsOf` on `s.11.oscillations` and `~hooke`) is not used:
   H107's `oscillator` replaces both graphs and reads its values in the formula's units, which is
   what gave the unit menus back.
+- `~rotational-inertia` allows a hollow ball (c = ⅔), which `rotor` draws as a disk with no name
+  and leaves out of the compare row (it knows c = 1, ½, 0.4): a picture need for the lead.

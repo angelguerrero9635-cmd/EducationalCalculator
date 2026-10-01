@@ -231,3 +231,17 @@ Report: `.review/new-sci-2/lesson-report.md`.
 | `s.12.solar-system`                               | H110.5      | eccentricity up to 0.97 (Halley's Comet, e = 0.967), no picture change                                                                                                                                                           | the 0.95 cap the kepler picture needed                                                                      |
 | `s.12.climate-systems` (explore)                  | H103 need 8 | the "Ash and smoke" scene's `greenhouse` takes `particles: true` (particles high in the air, a sunlight ray turned back, the thermometer 0.5 °C cooler)                                                                          | the planned interim: that scene drew the plain "Today" energy view and only its lines told of the particles |
 | `s.12.earth-interior~wave-arrivals` (new explore) | H110.6      | `earthLayers` as an explore figure, scenes at 60°, 104°, 120° and 150° (`earthSection.distance`), as the demo; the calculator `~shadow-zone` stays as it is                                                                      | none (the lesson review's explore, which no figure could draw)                                              |
+
+Not placed, and why:
+
+- H103 needs 2, 3, 4, 5, 6, 7, 8 (the `spectra` figure) and 10: their pages
+  (`~magnitude`, `~spreading-rate`, `~discharge`, `~cloud-base`, `~energy-balance`, `~reserves`,
+  `~lines`, `~lifetime`) are still waiting, not built; the demos in `galleryHs2f.ts` hold them.
+- H103 need 9 (`rockLayers` `sample.second`, potassium-40): no page here dates by potassium
+  (`~bracket` uses U-235 → Pb-207), so nothing changes.
+- H103 need 11 (`carbonCycle` `volcano`): no Grade 12 page draws the carbon cycle (`~carbon` is
+  a sort of cards), so there is nowhere to set it.
+- H110 part 7 (`parallax`): `s.12.starlight-spectra~parallax` is not built.
+- The demo `g.s12-starlight-spectra-doppler-any-line` builds on `~doppler` by adding λ₀ and the
+  z = (λ − λ₀) ÷ λ₀ rule, which the page now has: it shows them twice and fails its module tests
+  until it is dropped or reduced to the page itself (gallery files are the lead's).

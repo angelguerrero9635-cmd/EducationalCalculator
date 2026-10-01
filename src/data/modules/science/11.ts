@@ -4255,7 +4255,14 @@ const rotationPages: ModuleDef[] = [
       ),
       example: { r, F, a, p: 40, t: 10 },
       startWith: ['r', 'F', 'a'],
-      representation: { kind: 'torque', arm: 'r', force: 'F', angle: 'a', across: 'p', torque: 't' },
+      representation: {
+        kind: 'torque',
+        arm: 'r',
+        force: 'F',
+        angle: 'a',
+        across: 'p',
+        torque: 't',
+      },
     } satisfies ModuleDef;
   })(),
   (() => {
