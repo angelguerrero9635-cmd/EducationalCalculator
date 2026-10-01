@@ -351,7 +351,7 @@ const shadowZone: ModuleDef = {
 
 // ── Earth's history: the early Earth, its atmosphere and the history of life ──
 
-/** Rounded ages (million years ago) of the events in the one-day table. */
+/** Rounded ages (million years ago) of the events round the one-day clock. */
 const EARTH_EVENTS: [number, string][] = [
   [4600, 'Earth forms'],
   [3500, 'First life'],
@@ -448,14 +448,13 @@ const earthDay: ModuleDef = {
   example: { A: 2300, p: 50, m: 720, t: 12 },
   startWith: ['A'],
   representation: {
-    kind: 'table',
-    sweep: 'A',
-    output: 't',
-    params: [],
-    rows: EARTH_EVENTS.map(([a]) => a),
-    rowNames: EARTH_EVENTS.map(([, name]) => name),
+    kind: 'geologicClock',
+    ago: 'A',
+    time: 't',
+    minutes: 'm',
+    share: 'p',
+    events: EARTH_EVENTS.map(([age, name]) => ({ age, name })),
   },
-  pictureLabels: ['p', 'm'],
 };
 
 /** Hours in a year: 365.25 days of 24 hours. The year's length has not changed. */
@@ -506,14 +505,7 @@ const coralDays: ModuleDef = {
   ),
   example: { n: 1200, b: 3, N: 400, D: YEAR_H / 400 },
   startWith: ['n', 'b'],
-  representation: {
-    kind: 'table',
-    sweep: 'N',
-    output: 'D',
-    params: [],
-    rows: [365.25, 380, 400, 420, 440],
-  },
-  pictureLabels: ['n', 'b'],
+  representation: { kind: 'coralSection', lines: 'n', bands: 'b', days: 'N', day: 'D' },
 };
 
 // ── Geologic time and radiometric dating ──
