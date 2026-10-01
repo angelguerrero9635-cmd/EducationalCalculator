@@ -5013,6 +5013,9 @@ const prediction = (m: string | number, b: string | number, note?: (v: Values) =
   });
 };
 
+/** Point k of the practice data (k counted from 1). */
+const pointK = (v: Values) => PRACTICE_POINTS[Math.round(v.k!) - 1];
+
 const REGRESSION: ModuleDef[] = [
   page({
     id: 'm.9.regression',
@@ -5026,22 +5029,41 @@ const REGRESSION: ModuleDef[] = [
       num('b', 'b', 'y-intercept', 0, 100, { step: 0.1 }),
       num('x', 'x', 'Practice hours', 1, 8, { step: 0.5 }),
       num('y', 'ŷ', 'Predicted points', -200, 300),
-      num('e', 'e', 'Residual of point 3, (3, 61)', -300, 300, { derived: true }),
+      int('k', 'k', 'Point number', 1, 8, { allowed: PRACTICE_POINTS.map((_, i) => i + 1) }),
+      num('e', 'e', 'Residual of point k', -300, 300, { derived: true }),
     ],
     rules: [
       prediction('m', 'b'),
       derive(
-        'e = 61 − (3m + b)',
+        'e = y_k − (m x_k + b)',
         'e',
-        ['m', 'b'],
-        '{e} = 61 − ({m} × 3 + {b})',
-        (v) => 61 - (v.m! * 3 + v.b!),
-        '61 − ({m} × 3 + {b})',
-        'Point 3 is (3, 61): its actual points minus the line’s prediction at x = 3.',
+        ['k', 'm', 'b'],
+        '{e} = y_k − ({m} × x_k + {b}) for point {k}',
+        (v) => {
+          const p = pointK(v);
+          return p ? exact(p[1] - (v.m! * p[0] + v.b!)) : undefined;
+        },
+        (v) => {
+          const p = pointK(v);
+          return p ? `${p[1]} − ({m} × ${p[0]} + {b})` : '?';
+        },
+        (v) => {
+          const p = pointK(v);
+          return p
+            ? `Point ${v.k} is (${p[0]}, ${p[1]}): its actual points minus the line’s prediction at x = ${p[0]}.`
+            : 'Pick a point from 1 to 8.';
+        },
+        {},
+        {
+          check: (v) => {
+            const p = pointK(v)!;
+            return `${fmt(v.e!)} = ${p[1]} − (${fmt(v.m!)} × ${p[0]} + ${fmt(v.b!)})`;
+          },
+        },
       ),
     ],
-    example: { m: 5, b: 47, x: 4.5, y: 69.5, e: -1 },
-    startWith: ['x', 'm', 'b'],
+    example: { m: 5, b: 47, x: 4.5, y: 69.5, k: 3, e: -1 },
+    startWith: ['x', 'm', 'b', 'k'],
     representation: {
       kind: 'scatter',
       x: { label: 'Practice hours', min: 0, max: 9 },
@@ -5051,7 +5073,7 @@ const REGRESSION: ModuleDef[] = [
       intercept: 'b',
       at: { x: 'x', y: 'y' },
       residuals: 'plot',
-      residualOf: { point: 2, residual: 'e' },
+      residualOf: { point: 'k', residual: 'e' },
     },
   }),
   page({
