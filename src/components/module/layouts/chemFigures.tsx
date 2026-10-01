@@ -82,11 +82,13 @@ function pack(
   state: State | undefined,
   box: { x: number; y: number; w: number; h: number },
   sizeFor = formulas.length,
-): { scale: number; placed: Placed[] } {
+): { scale: number; placed: Placed[]; bonds?: [number, number][] } {
   const n = formulas.length;
   const u = unitOf(formulas);
   const tight = cellFor(Math.max(1, sizeFor), box.w, box.h);
   const scale = Math.min(26, (tight * 0.86) / u);
+  // Ice: water molecules in open hexagons, each hydrogen-bonded to its neighbors.
+  if (state === 'solid' && n >= 6 && formulas.every((f) => f === 'H2O')) return ice(n, box, scale);
   if (state === 'solid' || state === 'liquid') {
     const s = state === 'solid' ? Math.min(tight, u * scale * 1.08) : tight;
     const most = Math.max(1, Math.floor(box.w / s));
@@ -136,6 +138,75 @@ function pack(
       };
     }),
   };
+}
+
+/**
+ * n water molecules on a honeycomb (ice's open hexagons) filling `box`: the vertices nearest
+ * the patch's middle, each molecule's H side turned toward two of its neighbors, and the
+ * hydrogen bonds (pairs of molecules one side apart) to draw dashed between them.
+ */
+function ice(
+  n: number,
+  box: { x: number; y: number; w: number; h: number },
+  scale: number,
+): { scale: number; placed: Placed[]; bonds: [number, number][] } {
+  const pts: [number, number][] = [];
+  const key = (x: number, y: number) => `${x.toFixed(3)},${y.toFixed(3)}`;
+  const seen = new Set<string>();
+  // Flat-topped hexagons of side 1: columns 1.5 apart, every other one half a row down.
+  for (let col = 0; col < 5; col++)
+    for (let row = 0; row < 4; row++) {
+      const cx = col * 1.5;
+      const cy = row * Math.sqrt(3) + (col % 2 ? Math.sqrt(3) / 2 : 0);
+      for (let k = 0; k < 6; k++) {
+        const [x, y] = [cx + Math.cos((k * Math.PI) / 3), cy + Math.sin((k * Math.PI) / 3)];
+        if (!seen.has(key(x, y))) {
+          seen.add(key(x, y));
+          pts.push([x, y]);
+        }
+      }
+    }
+  const [mx, my] = [3, 2.6];
+  const chosen = pts
+    .map((p) => ({ p, d: Math.hypot((p[0] - mx) * 0.8, p[1] - my) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, n)
+    .map((x) => x.p);
+  const xs = chosen.map((p) => p[0]);
+  const ys = chosen.map((p) => p[1]);
+  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  // A side as long as fits, the molecules' own size kept clear of the box's edges.
+  const pad = scale * 1.1;
+  const side = Math.min((box.w - 2 * pad) / (x1 - x0 || 1), (box.h - 2 * pad) / (y1 - y0 || 1));
+  const ox = box.x + (box.w - (x1 - x0) * side) / 2 - x0 * side;
+  const oy = box.y + (box.h - (y1 - y0) * side) / 2 - y0 * side;
+  const bonds: [number, number][] = [];
+  chosen.forEach((a, i) =>
+    chosen.forEach((b, j) => {
+      if (j > i && Math.abs(Math.hypot(a[0] - b[0], a[1] - b[1]) - 1) < 1e-6) bonds.push([i, j]);
+    }),
+  );
+  // A molecule's H side (its +y, turned) between two of its neighbors.
+  const placed = chosen.map((a, i) => {
+    const near = bonds
+      .filter(([p, q]) => p === i || q === i)
+      .map(([p, q]) => chosen[p === i ? q : p]!)
+      .slice(0, 2);
+    const dir = near.length
+      ? Math.atan2(
+          near.reduce((t, b) => t + (b[1] - a[1]), 0),
+          near.reduce((t, b) => t + (b[0] - a[0]), 0),
+        )
+      : Math.PI / 2;
+    return {
+      formula: 'H2O',
+      x: ox + a[0] * side,
+      y: oy + a[1] * side,
+      turn: (dir * 180) / Math.PI - 90,
+    };
+  });
+  // Molecules a little smaller than a side, so the bonds between them show.
+  return { scale: Math.min(scale, side / 2.6), placed, bonds };
 }
 
 /**
@@ -357,6 +428,19 @@ export function MoleculesFigure({ scene }: { scene: NonNullable<Scene['molecules
                   stroke={c.chartInk}
                   strokeWidth={chart.strokeLight}
                 />
+                {/* Ice's hydrogen bonds, dashed, under the molecules. */}
+                {(packs[k]!.bonds ?? []).map(([i, j]) => (
+                  <Line
+                    key={`hb${i}-${j}`}
+                    x1={packs[k]!.placed[i]!.x}
+                    y1={packs[k]!.placed[i]!.y}
+                    x2={packs[k]!.placed[j]!.x}
+                    y2={packs[k]!.placed[j]!.y}
+                    stroke={c.chartMuted}
+                    strokeWidth={1.2}
+                    strokeDasharray="3 3"
+                  />
+                ))}
                 <Particles
                   placed={packs[k]!.placed}
                   scale={scale}
