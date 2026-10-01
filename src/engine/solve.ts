@@ -689,10 +689,12 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         const x = first[v.id]!;
         if (!r.solutions.every((sol) => closeTo(sol[v.id]!, x))) continue;
         if (checkValue(v, x) !== undefined) continue;
-        // A value every rule marks "never worked out from this rule" (a `null` part, an allowed
-        // mass) is the student's to type, whatever the search finds.
+        // A value from a list (an allowed mass) that every rule marks "never worked out from
+        // this rule" (a `null` part) is the student's to pick, whatever the search finds. Other
+        // forward-only inputs (10ᵏ − 1 from k) are still filled when the search fixes them.
         const rules = system.relations.filter((rel) => rel.vars.includes(v.id) && !rel.constraint);
-        if (rules.length && rules.every((rel) => rel.solve?.[v.id]?.length === 0)) continue;
+        if (v.allowed && rules.length && rules.every((rel) => rel.solve?.[v.id]?.length === 0))
+          continue;
         known = { ...known, [v.id]: x };
         filled.push(v.id);
       }
