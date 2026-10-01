@@ -281,3 +281,6 @@ Report: `.review/new-sci-2/lesson-report.md`.
   r = √(M₂ ÷ M₁) for H₂ and O₂, on `chemDiagram` mode `effusion`. No stand-in.
 - `~partial-pressure` (H108 part 6): `gasPiston` `mixture` (He, O₂, N₂ by partial pressure, the
   total and helium's mole fraction). Stand-in gone: the pie of the three pressures.
+- `s.10.thermochemistry~formation`, `~hess` (H101 need 5): built (they were waiting) from the
+  demos, on `energyProfile` mode `ladder`: CH₄'s combustion from heats of formation (elements at
+  0, reactants and products, ΔH lit) and C → CO → CO₂ with the given step flipped. No stand-in.

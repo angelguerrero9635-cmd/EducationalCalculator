@@ -3270,6 +3270,39 @@ const stageRule = (q: string, k: number, kText: string, how: string): Rule => ({
   },
 });
 
+/** An enthalpy on the ladder pages, in kJ to a tenth. */
+const ladderKJ = (id: string, symbol: string, name: string): VariableDef =>
+  quantity(id, symbol, name, 'kJ', -100000, 100000, 0.1);
+
+/** out = a + b, or out = a − b. */
+const addRule = (
+  out: string,
+  a: string,
+  b: string,
+  op: '+' | '−',
+  how: [string, string, string],
+): Rule => {
+  const s = op === '+' ? 1 : -1;
+  return {
+    relation: {
+      id: `${out} = ${a} ${op} ${b}`,
+      display: `{${out}} = {${a}} ${op} {${b}}`,
+      vars: [out, a, b],
+      residual: (v) => v[out]! - (v[a]! + s * v[b]!),
+      solve: {
+        [out]: (v) => v[a]! + s * v[b]!,
+        [a]: (v) => v[out]! - s * v[b]!,
+        [b]: (v) => s * (v[out]! - v[a]!),
+      },
+    },
+    steps: {
+      [out]: { expr: `{${a}} ${op} {${b}}`, how: how[0] },
+      [a]: { expr: op === '+' ? `{${out}} − {${b}}` : `{${out}} + {${b}}`, how: how[1] },
+      [b]: { expr: op === '+' ? `{${out}} − {${a}}` : `{${a}} − {${out}}`, how: how[2] },
+    },
+  };
+};
+
 const THERMO: ModuleDef[] = [
   {
     id: 's.10.thermochemistry',
@@ -3455,6 +3488,131 @@ const THERMO: ModuleDef[] = [
       names: ['ice', 'water', 'steam'],
       units: { time: 'J' },
       formula: 'H2O',
+    },
+  },
+  {
+    id: 's.10.thermochemistry~formation',
+    title: 'ΔH from heats of formation',
+    use: 'Use this for “Find ΔH for CH₄ + 2O₂ → CO₂ + 2H₂O from the heats of formation.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'An element in its standard state has a heat of formation of 0, so O₂ adds nothing.',
+      'Each heat of formation is per mole, so multiply it by the coefficient.',
+      'The water is liquid.',
+    ],
+    variables: [
+      ladderKJ('f1', 'ΔHf(CH₄)', 'Heat of formation of CH₄'),
+      ladderKJ('f2', 'ΔHf(CO₂)', 'Heat of formation of CO₂'),
+      ladderKJ('f3', 'ΔHf(H₂O)', 'Heat of formation of H₂O'),
+      { ...ladderKJ('Hr', 'Hᵣ', 'Reactants’ heats of formation, added'), derived: true },
+      { ...ladderKJ('Hp', 'Hₚ', 'Products’ heats of formation, added'), derived: true },
+      { ...ladderKJ('dH', 'ΔH', 'Enthalpy change of the reaction'), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Hr = f1',
+          display: '{Hr} = {f1} + 2 × 0',
+          vars: ['Hr', 'f1'],
+          residual: (v) => v.Hr! - v.f1!,
+          solve: { Hr: (v) => v.f1!, f1: (v) => v.Hr! },
+        },
+        steps: {
+          Hr: { expr: '{f1} + 2 × 0', how: 'One CH₄, and O₂ is an element: 0.' },
+          f1: { expr: '{Hr} − 2 × 0', how: 'The O₂ adds nothing, so it is all CH₄.' },
+        },
+      },
+      {
+        relation: {
+          id: 'Hp = f2 + 2 f3',
+          display: '{Hp} = {f2} + 2 × {f3}',
+          vars: ['Hp', 'f2', 'f3'],
+          residual: (v) => v.Hp! - (v.f2! + 2 * v.f3!),
+          solve: {
+            Hp: (v) => v.f2! + 2 * v.f3!,
+            f2: (v) => v.Hp! - 2 * v.f3!,
+            f3: (v) => (v.Hp! - v.f2!) / 2,
+          },
+        },
+        steps: {
+          Hp: { expr: '{f2} + 2 × {f3}', how: 'One CO₂ and two H₂O, each times its coefficient.' },
+          f2: { expr: '{Hp} − 2 × {f3}', how: 'Take the two waters away.' },
+          f3: {
+            expr: '({Hp} − {f2})/2',
+            how: 'Take the CO₂ away and share the rest between two waters.',
+          },
+        },
+      },
+      addRule('dH', 'Hp', 'Hr', '−', [
+        'Products minus reactants: both are measured from the same elements.',
+        'Add the reactants back to ΔH.',
+        'The products less ΔH.',
+      ]),
+    ),
+    example: { f1: -74.8, f2: -393.5, f3: -285.8, Hr: -74.8, Hp: -965.1, dH: -890.3 },
+    startWith: ['f1', 'f2', 'f3'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'ladder',
+      levels: [
+        { name: 'Elements', value: 0 },
+        { name: 'CH₄ + 2 O₂', value: 'Hr' },
+        { name: 'CO₂ + 2 H₂O', value: 'Hp' },
+      ],
+      steps: [
+        { from: 0, to: 1, value: 'Hr', label: 'Reactants' },
+        { from: 0, to: 2, value: 'Hp', label: 'Products' },
+      ],
+      total: { from: 1, to: 2, value: 'dH' },
+    },
+  },
+  {
+    id: 's.10.thermochemistry~hess',
+    title: 'Hess’s law: adding steps',
+    use: 'Use this for “Find ΔH for C + O₂ → CO₂ from C + ½O₂ → CO and CO₂ → CO + ½O₂.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'ΔH depends only on where a reaction starts and ends, not on the path.',
+      'Reversing an equation flips the sign of its ΔH.',
+      'The steps add up to the overall equation: the CO made in step 1 is used in step 2.',
+    ],
+    variables: [
+      ladderKJ('d1', 'ΔH₁', 'Step 1: C + ½O₂ → CO'),
+      ladderKJ('g2', 'ΔHgiven', 'Given: CO₂ → CO + ½O₂'),
+      { ...ladderKJ('d2', 'ΔH₂', 'Step 2 reversed: CO + ½O₂ → CO₂'), derived: true },
+      { ...ladderKJ('dH', 'ΔH', 'Overall: C + O₂ → CO₂'), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'd2 = −g2',
+          display: '{d2} = −{g2}',
+          vars: ['d2', 'g2'],
+          residual: (v) => v.d2! + v.g2!,
+          solve: { d2: (v) => -v.g2!, g2: (v) => -v.d2! },
+        },
+        steps: {
+          d2: { expr: '−{g2}', how: 'The step is used backwards, so its ΔH changes sign.' },
+          g2: { expr: '−{d2}', how: 'The given equation runs the other way: flip the sign.' },
+        },
+      },
+      addRule('dH', 'd1', 'd2', '+', [
+        'Hess’s law: add the steps’ ΔH.',
+        'The overall change less step 2.',
+        'The overall change less step 1.',
+      ]),
+    ),
+    example: { d1: -110.5, g2: 283, d2: -283, dH: -393.5 },
+    startWith: ['d1', 'g2'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'ladder',
+      levels: [{ name: 'C + O₂', value: 0 }, { name: 'CO + ½O₂' }, { name: 'CO₂' }],
+      steps: [
+        { from: 0, to: 1, value: 'd1' },
+        { from: 1, to: 2, value: 'd2', flipped: true },
+      ],
+      total: { from: 0, to: 2, value: 'dH' },
     },
   },
 ];
