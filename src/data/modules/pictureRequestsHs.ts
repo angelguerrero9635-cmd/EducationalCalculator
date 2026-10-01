@@ -2190,13 +2190,11 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: [
       'g.m9-regression-point-k',
-      'g.m11-polynomial-functions-multiplicity',
       'g.m11-complex-numbers-sign-box',
       'g.m10-rigid-motions-mirror-sign',
       'g.s11-kinematics-1d-free-fall-number',
       'g.s11-kinematics-2d-cliff-level',
       'g.m9-linear-inequalities-test-point',
-      'g.m12-confidence-intervals-capture-count',
       'g.m12-inverse-trig-degrees',
       'g.m12-inverse-trig-arctan-degrees',
       'g.m12-matrices-row-reduce-typed',

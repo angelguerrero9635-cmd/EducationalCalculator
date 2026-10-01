@@ -207,55 +207,6 @@ const residualK = fromPage(
   },
 );
 
-// ── H105 (2): functionGraph, a zero's multiplicity from a value ──
-
-const multiplicity = fromPage(
-  'm.11.polynomial-functions',
-  'g.m11-polynomial-functions-multiplicity',
-  'Zeros and their multiplicity',
-  {
-    kind: 'functionGraph',
-    family: 'polynomial',
-    a: 'a',
-    zeros: [{ x: 'r1', times: 'n' }, { x: 'r2' }, { x: 'r3' }],
-    at: { x: 'x', y: 'y' },
-    marks: ['zeros', 'intercept'],
-  },
-  {
-    vars: { r1: { name: 'Repeated zero' } },
-    add: [
-      {
-        id: 'n',
-        symbol: 'n',
-        name: 'Multiplicity of r₁',
-        min: 1,
-        max: 4,
-        integer: true,
-        allowed: [1, 2, 3, 4],
-      },
-    ],
-    drop: ['y = a(x − r₁)²(x − r₂)(x − r₃)'],
-    rules: [
-      derive(
-        'y = a(x − r₁)ⁿ(x − r₂)(x − r₃)',
-        'y',
-        ['a', 'x', 'r1', 'n', 'r2', 'r3'],
-        '{y} = {a} × ({x} − {r1})^{n} × ({x} − {r2}) × ({x} − {r3})',
-        (v) => exact(v.a! * (v.x! - v.r1!) ** v.n! * (v.x! - v.r2!) * (v.x! - v.r3!)),
-        '{a} × ({x} − {r1})^{n} × ({x} − {r2}) × ({x} − {r3})',
-        'Put x into each factor, the repeated one n times, then multiply.',
-      ),
-    ],
-    assumptions: [
-      'y = a(x − r₁)ⁿ(x − r₂)(x − r₃) has degree n + 2: r₁ is a zero n times over.',
-      'An even multiplicity touches the x-axis and turns; an odd one crosses it, flatter when 3 or more.',
-      'The leading term decides the ends, and the degree says how many turns at most.',
-    ],
-    example: { a: 1, r1: -2, n: 2, r2: 1, r3: 3, x: 0, y: 12 },
-    startWith: ['a', 'r1', 'n', 'r2', 'r3', 'x'],
-  },
-);
-
 // ── H105 (3): complexPlane, the operation from a sign box ──
 
 const complexSign = fromPage(
@@ -396,55 +347,6 @@ const halfPlaneTest = fromPage(
     extent: 10,
   },
   { pictureLabels: ['yl', 'h'] },
-);
-
-// ── H105 (7): normalCurve, how many simulated intervals from a value ──
-
-const captureN = fromPage(
-  'm.12.confidence-intervals~capture',
-  'g.m12-confidence-intervals-capture-count',
-  'What “95% confident” means: N intervals',
-  {
-    kind: 'normalCurve',
-    mean: 50,
-    sd: 10,
-    axis: 'Sample mean x̄',
-    intervals: { count: 'N', n: 'n', level: 'C' },
-  },
-  {
-    vars: { K: { name: 'Intervals expected to capture μ, of N' } },
-    add: [
-      {
-        id: 'N',
-        symbol: 'N',
-        name: 'Samples drawn',
-        min: 20,
-        max: 100,
-        integer: true,
-        allowed: [20, 50, 100],
-      },
-    ],
-    drop: ['K = 100 × C'],
-    rules: [
-      derive(
-        'K = N × C',
-        'K',
-        ['N', 'C'],
-        '{K} = {N} × {C}',
-        (v) => exact(v.N! * v.C!),
-        '{N} × {C}',
-        'Over many samples the share C of intervals capture μ, so expect C of the N.',
-      ),
-    ],
-    assumptions: [
-      'The level is how often the method captures μ over many samples.',
-      'Any one interval either captures μ or doesn’t; 95% is not the chance for that one.',
-      'The picture draws N random samples of n and the interval from each: 20, 50 or 100.',
-    ],
-    example: { C: 0.95, n: 25, N: 100, K: 95 },
-    startWith: ['C', 'n', 'N'],
-    use: 'Use this for “Draw 50 samples: how many of the 95% intervals should capture μ?”',
-  },
 );
 
 // ── H105 (8): functionGraph, inverse trig in degrees ──
@@ -706,10 +608,8 @@ export const HS2H_GALLERY_MODULES: ModuleDef[] = [
   echelonTyped,
   arcsinDegrees,
   arctanDegrees,
-  captureN,
   halfPlaneTest,
   residualK,
-  multiplicity,
   complexSign,
   mirrorSign,
   freeFall,
