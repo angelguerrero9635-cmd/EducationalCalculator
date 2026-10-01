@@ -767,11 +767,32 @@ const INHERITANCE: LayoutDef[] = [
       'Tests often write these as AA, AO, BB, BO, AB and OO.',
     ],
     question: 'Which blood type does the genotype give?',
+    intro: 'Three alleles: Iᴬ and Iᴮ are codominant, and i is recessive to both.',
     bins: [
-      { id: 'A', label: 'Type A', why: 'At least one Iᴬ and no Iᴮ: i is hidden.' },
-      { id: 'B', label: 'Type B', why: 'At least one Iᴮ and no Iᴬ: i is hidden.' },
-      { id: 'AB', label: 'Type AB', why: 'Codominance: both A and B markers show on the cells.' },
-      { id: 'O', label: 'Type O', why: 'Two recessive i alleles: no A or B marker.' },
+      {
+        id: 'A',
+        label: 'Type A',
+        why: 'At least one Iᴬ and no Iᴮ: i is hidden.',
+        figure: { kind: 'icon', icon: 'blood type A' },
+      },
+      {
+        id: 'B',
+        label: 'Type B',
+        why: 'At least one Iᴮ and no Iᴬ: i is hidden.',
+        figure: { kind: 'icon', icon: 'blood type B' },
+      },
+      {
+        id: 'AB',
+        label: 'Type AB',
+        why: 'Codominance: both A and B markers show on the cells.',
+        figure: { kind: 'icon', icon: 'blood type AB' },
+      },
+      {
+        id: 'O',
+        label: 'Type O',
+        why: 'Two recessive i alleles: no A or B marker.',
+        figure: { kind: 'icon', icon: 'blood type O' },
+      },
     ],
     cards: [
       { label: 'IᴬIᴬ', bin: 'A' },

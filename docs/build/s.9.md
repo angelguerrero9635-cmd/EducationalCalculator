@@ -220,3 +220,5 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   chromatids, zygote, combinations }. No stand-in.
 - `s.9.mitosis-meiosis~mitotic-index` (H109 part 3): its `pieChart` adds `stages` (interphase to
   telophase), a phase card beside each part. No stand-in.
+- `s.9.inheritance-patterns~blood-types` (H104 part 1): the plan's header sentence as `intro` and
+  the four blood-type icons on the bins. No stand-in.
