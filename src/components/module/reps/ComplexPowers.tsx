@@ -17,7 +17,7 @@ import { argOf, powersOf, rootsOf } from './complexPowers';
 import { Arrow, makeFrame } from './graphKit';
 import { HsdGrid, symmetricWindow } from './hsdGrid';
 import { magnitudeText, short } from './hsdKit';
-import { MathChip } from './hsdText';
+import { MathChip, textWidth } from './hsdText';
 
 const RAD = Math.PI / 180;
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
@@ -81,7 +81,7 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
             text: string,
             color: string,
             bold = true,
-            mirror = false,
+            below = false,
           ) => {
             const q = P(p);
             const len = Math.hypot(q.x - O.x, q.y - O.y) || 1;
@@ -91,8 +91,8 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
             const upright = Math.abs(ux) < 0.3;
             return (
               <MathChip
-                x={flat ? q.x - ux * 4 : upright ? q.x + 10 : q.x + (mirror ? -ux : ux) * 12}
-                y={flat ? q.y - 12 : upright ? q.y + 4 : q.y + uy * 14 + 4}
+                x={flat ? q.x - ux * 4 : upright ? q.x + 10 : q.x + ux * 12}
+                y={flat ? q.y + (below ? 22 : -12) : upright ? q.y + 4 : q.y + uy * 14 + 4}
                 text={text}
                 anchor={
                   flat
@@ -101,9 +101,9 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                       : 'start'
                     : upright
                       ? 'start'
-                      : (mirror ? -ux : ux) > 0.3
+                      : ux > 0.3
                         ? 'start'
-                        : (mirror ? -ux : ux) < -0.3
+                        : ux < -0.3
                           ? 'end'
                           : 'middle'
                 }
@@ -121,6 +121,21 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
               return `${i ? 'L' : 'M'} ${O.x + rr * Math.cos(d)} ${O.y - rr * Math.sin(d)}`;
             }).join(' ');
           };
+          // zⁿ on the real axis level with z's tag (z⁸ = 16 touched z = 1 + i): its tag goes
+          // under the axis, and the axis numbers there are left out.
+          const lastQ = P(pts[n - 1] ?? z);
+          const lastText = `z${sup(n)} = ${complexText((pts[n - 1] ?? z).a, (pts[n - 1] ?? z).b)}`;
+          const lastBelow =
+            !roots &&
+            n > 1 &&
+            Math.abs(lastQ.y - O.y) < 0.3 * Math.hypot(lastQ.x - O.x, lastQ.y - O.y) &&
+            Math.abs(lastQ.y - P(pts[0]!).y) < 30;
+          const lastTw = textWidth(lastText, chart.label) + 6;
+          const lastX = lastQ.x - Math.sign(lastQ.x - O.x) * 4;
+          const lastL = lastQ.x > O.x ? lastX - lastTw + 3 : lastX - 3;
+          const clear = lastBelow
+            ? [{ l: lastL, t: lastQ.y + 22 - chart.label, r: lastL + lastTw, b: lastQ.y + 28 }]
+            : [];
           const path = (list: { a: number; b: number }[], close: boolean) =>
             list.map((p, i) => `${i ? 'L' : 'M'} ${P(p).x} ${P(p).y}`).join(' ') +
             (close ? ' Z' : '');
@@ -131,6 +146,7 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                 step={{ x: win.step, y: win.step }}
                 names={{ x: 'Re', y: 'Im' }}
                 yText={(v) => complexText(0, v)}
+                clear={clear}
               />
               <G opacity={known && r > 0 ? 1 : 0.35}>
                 {roots ? (
@@ -244,21 +260,14 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                         </ChartText>
                       );
                     })}
-                    {tip(
-                      pts[0]!,
-                      `z = ${complexText(z.a, z.b)}`,
-                      c.chartHighlight,
-                      true,
-                      // zⁿ's tag on the same level, to the right: z's goes the other way.
-                      n > 1 &&
-                        Math.abs(P(pts[n - 1]!).y - P(pts[0]!).y) < 30 &&
-                        P(pts[n - 1]!).x > P(pts[0]!).x,
-                    )}
+                    {tip(pts[0]!, `z = ${complexText(z.a, z.b)}`, c.chartHighlight)}
                     {n > 1
                       ? tip(
                           pts[n - 1]!,
                           `z${sup(n)} = ${complexText(pts[n - 1]!.a, pts[n - 1]!.b)}`,
                           c.vectorResultant,
+                          true,
+                          lastBelow,
                         )
                       : null}
                   </G>

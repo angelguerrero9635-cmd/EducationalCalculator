@@ -239,7 +239,13 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
             // The label at the arc's middle, moved off an axis (its numbers sit there).
             let m = (from + to) / 2;
             const axis = [0, 90, 180, 270, 360].find((k) => Math.abs(m - k) < 22);
-            if (axis !== undefined && Math.abs(to - from) > 60) m = axis + (m >= axis ? 26 : -26);
+            if (axis !== undefined && Math.abs(to - from) > 60) {
+              m = axis + (m >= axis ? 26 : -26);
+              // By the real axis, above it when the arc reaches there: its numbers are below.
+              const lift = axis + (m >= axis ? -26 : 26);
+              const inArc = (x: number) => x >= Math.min(from, to) && x <= Math.max(from, to);
+              if (axis % 180 === 0 && Math.sin(m * RAD) < 0 && inArc(lift)) m = lift;
+            }
             // Off the arrows too: w's 0°–60° arc has its middle on z at 30°.
             const gapTo = (x: number) =>
               Math.min(
@@ -327,7 +333,8 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
                     ) : null}
                     {op === 'product' ? (
                       <G>
-                        {arc(0, argOf(w.a, w.b), 22, `${short(argOf(w.a, w.b))}°`, c.hopBack)}
+                        {/* w's turn drawn from z to zw: multiplying by w turns z by arg w. */}
+                        {arc(za, za + argOf(w.a, w.b), 22, `${short(argOf(w.a, w.b))}°`, c.hopBack)}
                         {arc(
                           0,
                           argOf(res.a, res.b) < argOf(z.a, z.b)
@@ -356,8 +363,8 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
                     ? arc(
                         0,
                         za,
-                        op === 'product' ? Math.max(30, Math.min(46, zr * f.ux - 24)) : 24,
-                        spec.argument || spec.polar || zPolar
+                        op === 'product' ? Math.max(18, Math.min(46, zr * f.ux - 34)) : 24,
+                        (spec.argument || spec.polar || zPolar) && op !== 'product'
                           ? `θ = ${short(za)}°`
                           : `${short(za)}°`,
                         c.chartInk,
