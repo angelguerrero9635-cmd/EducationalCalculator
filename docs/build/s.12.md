@@ -317,7 +317,6 @@ volcano) are on pages now, so H103 is placed. Each passes `MODULE_IDS=<id> npx j
 | `s.12.climate-systems~carbon-cycle` | explore, `carbonCycle` `volcano: true` | the fast cycle (photosynthesis, respiration, the ocean) and the slow one (burial, volcanoes), and burning, about 100 times the volcanoes' CO₂; before the `~carbon` sort            |
 
 Need 8's `particles` was already on `s.12.climate-systems`; its demo is retired, with the
-potassium and carbon-volcano demos (`HS2F_GALLERY_LAYOUTS` is empty). The K–Ar page is not
-in the research textbooks' grade lists (tarbuck teaches it in Geologic Time); it is the
-potassium-40 clock the `~bracket` plan set aside (only about 11% of K-40 becomes argon). No new
+potassium and carbon-volcano demos (`HS2F_GALLERY_LAYOUTS` is empty). No released question or
+research practice problem names potassium-argon (checked); the page is the potassium-40 clock the `~bracket` plan set aside (only about 11% of K-40 becomes argon). No new
 step phrases or unit labels.
