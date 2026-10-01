@@ -6,10 +6,11 @@ import {
   type ViewStyle,
   StyleSheet,
 } from 'react-native';
-import { Text as SvgText, type TextProps as SvgTextProps } from 'react-native-svg';
+import { Text as SvgText, TSpan, type TextProps as SvgTextProps } from 'react-native-svg';
 
 import { isEarlyGrade, isElementary } from '@/data/modules';
 import { dollarsOf, formatNumber, unitFor } from '@/engine/format';
+import { subscriptRuns } from '@/engine/subscripts';
 import type { Values } from '@/engine/types';
 import { chart, font, space, usePalette } from '@/theme';
 
@@ -170,6 +171,30 @@ export function niceCeil(x: number): number {
 export function ChartText(props: SvgTextProps) {
   const c = usePalette();
   const family = font.family ?? (Platform.OS === 'web' ? font.webSystem : undefined);
+  const { children } = props;
+  if (typeof children === 'string' && children.includes('_')) {
+    // "v_y", "T_c": a subscript drawn small and lowered, never a raw underscore.
+    const size = Number(props.fontSize ?? chart.label);
+    const runs = subscriptRuns(children);
+    const drop = size * 0.3;
+    return (
+      <SvgText fontFamily={family} fill={c.chartInk} fontSize={chart.label} {...props}>
+        {runs.length === 1 && !runs[0]!.sub
+          ? runs[0]!.s
+          : runs.map((r, i) =>
+              r.sub ? (
+                <TSpan key={i} dy={drop} fontSize={size * 0.72}>
+                  {r.s}
+                </TSpan>
+              ) : (
+                <TSpan key={i} dy={i > 0 && runs[i - 1]!.sub ? -drop : 0}>
+                  {r.s}
+                </TSpan>
+              ),
+            )}
+      </SvgText>
+    );
+  }
   return <SvgText fontFamily={family} fill={c.chartInk} fontSize={chart.label} {...props} />;
 }
 
