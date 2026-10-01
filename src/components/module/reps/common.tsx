@@ -374,7 +374,8 @@ const ONE_LINE = 34;
 /** A line of a caption: prose, or a number sentence (only numbers, operators and units). */
 const isNumberSentence = (line: string) =>
   /[=<>]/.test(line) &&
-  !/[A-Za-z]{4,}/.test(line.replace(/[a-z]+\b/g, (w) => (w.length <= 3 ? '' : w)));
+  // (Whole words: "With" is a word, not "W" and a unit "ith".)
+  !/[A-Za-z]{4,}/.test(line.replace(/\b[a-z]+\b/g, (w) => (w.length <= 3 ? '' : w)));
 
 /**
  * The text under a picture, laid out to read: each sentence on its own line, and a chained
@@ -388,15 +389,25 @@ export function Caption({ children }: { children: string }) {
     .split(/\s+·\s+|(?<=[.!?])\s+(?=[A-Z0-9“(])/)
     .map((x) => x.trim())
     .filter(Boolean);
-  // A chain of one step short enough for a phone's line stays on one line (vₓ = 20 × cos 30° =
-  // 17.3 m/s); a longer one, or one of more steps, is stacked one "=" a line.
+  // A chain short enough for a phone's line stays on one line (vₓ = 20 × cos 30° = 17.3 m/s);
+  // a longer one is stacked, each line as many "= …" steps as fit (d² = 3² + 4² / = 9 + 16 =
+  // 25), not one a line. A sentence that only ends in a chain ("With R = 0.0821, PV = nRT: …")
+  // is never stacked: its first part has a comma, a colon or a word.
   const chainOf = (sentence: string) => {
     const bare = sentence.replace(/[.]$/, '');
     const parts = bare.split(' = ');
-    return (parts.length > 3 || (parts.length === 3 && bare.length > ONE_LINE)) &&
-      isNumberSentence(bare)
-      ? parts
-      : undefined;
+    if (parts.length < 3 || bare.length <= ONE_LINE || !isNumberSentence(bare)) return undefined;
+    if (/[,:;]/.test(parts[0]!) || /\b(?!(?:sin|cos|tan|log|lim)\b)[A-Za-z]{3,}/.test(parts[0]!))
+      return undefined;
+    const lines: string[] = [parts[0]!];
+    for (const part of parts.slice(1)) {
+      const last = lines[lines.length - 1]!;
+      const joined = `${last} = ${part}`;
+      if (lines.length > 1 && joined.length + 2 <= ONE_LINE) lines[lines.length - 1] = joined;
+      else if (lines.length === 1 && joined.length <= ONE_LINE) lines[0] = joined;
+      else lines.push(part);
+    }
+    return lines;
   };
   // Worked chains side by side in the list share one left edge, so three blocks of work
   // start at the same indent instead of each centred on its own.

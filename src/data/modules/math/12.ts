@@ -1890,7 +1890,7 @@ const MATH_12_CONICS: ModuleDef[] = [
         max: 40,
         step: 0.0001,
         derived: true,
-        fraction: 100,
+        fraction: 20,
       }),
     ],
     ...rels(
@@ -4303,7 +4303,7 @@ const MATH_12_LIMITS: ModuleDef[] = [
         x: [(v) => v.y! + v.b!, '{y} + {b}', 'Add b to f(x).'],
       }),
     ),
-    example: { a: 3, b: -3, L: 6, x: 2.5, y: 5.5 },
+    example: { a: 3, b: -3, L: 6, x: 2, y: 5 },
     startWith: ['a', 'b', 'x'],
     representation: {
       kind: 'functionGraph',

@@ -323,8 +323,21 @@ export function plain(toks: Tok[]): string {
     return true;
   };
   const group = (s: string) => (/^[\w.,π√]+$/u.test(s) || wrapped(s) ? s : `(${s})`);
+  /** Factors side by side in brackets, "(x − 3)(x + 3)": a product, no sum outside them. */
+  const product = (s: string) => {
+    if (!s.startsWith('(') || wrapped(s)) return false;
+    let depth = 0;
+    for (const ch of s) {
+      depth += ch === '(' ? 1 : ch === ')' ? -1 : 0;
+      if (depth === 0 && /[\s+−/]/.test(ch)) return false;
+    }
+    return true;
+  };
   return toks
     .map((k) => {
+      // A product over a bracket reads "(x − 3)(x + 3) ÷ (x − 3)", not "((x − 3)(x + 3))/…".
+      if ('frac' in k && product(plain(k.frac[0])))
+        return `${plain(k.frac[0])} ÷ ${group(plain(k.frac[1]))}`;
       if ('frac' in k) return `${group(plain(k.frac[0]))}/${group(plain(k.frac[1]))}`;
       if ('root' in k) return `${k.root === 2 ? '√' : '∛'}${group(plain(k.body))}`;
       if ('cases' in k)
@@ -560,18 +573,16 @@ export function buildCurve(
             to: (X, Y) => ({ b: -2 * a * X, c: a * X * X + Y }),
           },
           {
-            // The stretch keeps the vertex where it is (b and c follow a), as the vertex form's
-            // does: with b and c held the vertex slid away from the handle.
+            // The stretch sets a alone: the student's b and c stay as typed, so the vertex
+            // moves, which is what changing a does in standard form. (Following with b and c
+            // to keep the vertex rewrote all three, clamped b at its max and still moved it.)
             name: 'the stretch',
             x: h0 + 1,
             y: a * (h0 + 1) ** 2 + b * (h0 + 1) + c,
             axis: 'y',
-            sets: ['a', 'b', 'c'],
-            to: (_, Y) => {
-              const k0 = c - (b * b) / (4 * a);
-              const a1 = Y - k0;
-              return a1 === 0 ? undefined : { a: a1, b: -2 * a1 * h0, c: a1 * h0 * h0 + k0 };
-            },
+            sets: ['a'],
+            to: (_, Y) =>
+              h0 + 1 === 0 ? undefined : { a: (Y - b * (h0 + 1) - c) / (h0 + 1) ** 2 },
           },
         );
       } else if (fam.form === 'vertex') {

@@ -617,6 +617,7 @@ const uranium: ModuleDef = {
   ),
   example: { R: 1, p: 50, n: 1, t: U238 },
   startWith: ['R'],
+  drives: { t: 'R' },
   representation: {
     kind: 'decayChart',
     halfLife: U238,

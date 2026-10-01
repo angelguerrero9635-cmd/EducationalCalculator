@@ -380,7 +380,15 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                 {tAt !== undefined ? (
                   <SubLabel
                     x={sx(pos(tAt).x) + 12}
-                    y={sy(pos(tAt).y) - 10}
+                    // Near the top, H's tag is above: the point's goes under it.
+                    y={
+                      sy(pos(tAt).y) +
+                      (tTop !== undefined &&
+                      Math.abs(sx(pos(tAt).x) - sx(pos(tTop).x)) < 90 &&
+                      Math.abs(sy(pos(tAt).y) - sy(p.H)) < 20
+                        ? 24
+                        : -10)
+                    }
                     text={`(${sig(pos(tAt).x)}, ${sig(pos(tAt).y)})`}
                     anchor="start"
                     color={c.chartHighlight}

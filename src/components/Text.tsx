@@ -4,8 +4,12 @@ import { Platform, StyleSheet, Text as RNText, type TextProps, type TextStyle } 
 import { subscriptRuns } from '@/engine/subscripts';
 import { font, usePalette } from '@/theme';
 
-// Web: a subscript run sits below the line (native draws it small on the baseline).
-const LOWERED = Platform.OS === 'web' ? ({ verticalAlign: 'sub' } as unknown as TextStyle) : null;
+// Web: a subscript run sits below the line (native draws it small on the baseline), moved
+// down rather than vertical-align: sub, so its line is no taller than the others (μ_d).
+const LOWERED =
+  Platform.OS === 'web'
+    ? ({ position: 'relative', top: '0.3em', lineHeight: 0 } as unknown as TextStyle)
+    : null;
 
 /** String children with their "_" subscripts (v_y, T_c) drawn as subscripts. */
 function withSubscripts(children: ReactNode, style: TextProps['style']): ReactNode {

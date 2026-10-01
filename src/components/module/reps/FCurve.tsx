@@ -86,9 +86,13 @@ export function FCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calculator
               ? Math.min(peak, Math.max(peak * 0.25, 6 * fPdf(tailAt, d1, d2)))
               : peak;
           const sy = (y: number) => B - Math.min(1.08, y / top) * (B - T) * 0.92;
-          const curve = xs
+          // Where the scale clips the curve, it isn't drawn (a flat top read as a constant
+          // density): it enters at the top edge, and a dashed stub says it goes on up.
+          const shown = xs.filter((x) => !(fPdf(x, d1, d2) > top * 1.08));
+          const curve = shown
             .map((x, i) => `${i ? 'L' : 'M'} ${sx(x)} ${sy(fPdf(x, d1, d2))}`)
             .join(' ');
+          const cut = shown.length < xs.length && shown.length ? shown[0]! : undefined;
           const area = (a: number, b: number) => {
             if (!(b > a)) return '';
             const pts = Array.from({ length: 81 }, (_, i) => a + ((b - a) * i) / 80);
@@ -146,6 +150,17 @@ export function FCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calculator
                 </G>
               ))}
               <Path d={curve} stroke={c.chartInk} strokeWidth={chart.strokeHeavy} fill="none" />
+              {cut !== undefined ? (
+                <Line
+                  x1={sx(cut)}
+                  y1={sy(fPdf(cut, d1, d2))}
+                  x2={sx(cut) - 3}
+                  y2={T - 14}
+                  stroke={c.chartInk}
+                  strokeWidth={chart.strokeLight}
+                  strokeDasharray={chart.dashFine}
+                />
+              ) : null}
               {crit
                 ? [crit.left, crit.right]
                     .filter((x): x is number => x !== undefined)

@@ -177,11 +177,11 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
             const p1 = P(x1, y1);
             const len = Math.hypot(p1.x - p0.x, p1.y - p0.y) || 1;
             const tw = text.length * chart.label * 0.58 + 6;
-            const option = (s: number) => {
+            const option = (s: number, at = 0.6) => {
               const nx = (-(p1.y - p0.y) / len) * s;
               const ny = ((p1.x - p0.x) / len) * s;
-              const bx = p0.x + (p1.x - p0.x) * 0.6 - nx * 16;
-              const by = p0.y + (p1.y - p0.y) * 0.6 - ny * 16 + 4;
+              const bx = p0.x + (p1.x - p0.x) * at - nx * 16;
+              const by = p0.y + (p1.y - p0.y) * at - ny * 16 + 4;
               const anchor: 'start' | 'middle' | 'end' =
                 Math.abs(nx) < 0.35 ? 'middle' : -nx > 0 ? 'start' : 'end';
               const cx0 = anchor === 'start' ? bx + tw / 2 : anchor === 'end' ? bx - tw / 2 : bx;
@@ -207,11 +207,15 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                 Math.min(40, ...placed.map(gap), 40) +
                 (inside ? 20 : 0) -
                 (onNumbers ? 25 : 0) +
-                (s === (flip ? -1 : 1) ? 3 : 0);
+                (s === (flip ? -1 : 1) ? 3 : 0) +
+                (at === 0.6 ? 2 : 0);
               return { bx, by, anchor, score, cx0, cy0 };
             };
-            const [p, q] = [option(1), option(-1)];
-            const best = q.score > p.score ? q : p;
+            // 60% along by default; nearer the tip or the tail when that side is crowded (an
+            // angle's tag by the tail covered F₁'s).
+            const best = [0.6, 0.8, 0.42]
+              .flatMap((at) => [option(1, at), option(-1, at)])
+              .reduce((m, o) => (o.score > m.score ? o : m));
             placed.push({ x: best.cx0, y: best.cy0 });
             return (
               <MathChip
@@ -263,6 +267,11 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
               return `${i ? 'L' : 'M'} ${o.x + r * Math.cos(t)} ${o.y - r * Math.sin(t)}`;
             }).join(' ');
             const mid = ((from + to) / 2) * RAD;
+            // The angle's tag is placed before the vectors' names, which keep off it.
+            const tx = o.x + (r + 16) * Math.cos(mid);
+            const ty = o.y - (r + 16) * Math.sin(mid);
+            const half = text.length * chart.label * 0.29;
+            placed.push({ x: tx - half, y: ty }, { x: tx, y: ty }, { x: tx + half, y: ty });
             return (
               <G>
                 <Path d={d} stroke={c.chartInk} strokeWidth={chart.strokeLight} fill="none" />

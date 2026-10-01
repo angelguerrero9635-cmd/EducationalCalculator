@@ -627,7 +627,9 @@ describe.each(pages(TESTED_MODULES))('module %s', (id, m) => {
 
   it('drives a typed value from each worked-out handle it names', () => {
     for (const [handle, typed] of Object.entries(m.drives ?? {})) {
-      expect([handle, m.variables.find((v) => v.id === handle)?.derived]).toEqual([handle, true]);
+      // The handle's value is worked out; the value it drives is typed.
+      expect([handle, m.startWith.includes(handle)]).toEqual([handle, false]);
+      expect([handle, !!m.variables.find((v) => v.id === handle)]).toEqual([handle, true]);
       expect([typed, m.startWith.includes(typed)]).toEqual([typed, true]);
     }
   });

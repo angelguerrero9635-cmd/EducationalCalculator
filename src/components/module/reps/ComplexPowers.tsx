@@ -11,13 +11,13 @@ import type { ComplexPlaneSpec } from '@/data/modules/typesHsd';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, useRep } from './common';
+import { Canvas, Caption, ChartText, useRep } from './common';
 import { complexText } from './ComplexPlane';
 import { argOf, powersOf, rootsOf } from './complexPowers';
 import { Arrow, makeFrame } from './graphKit';
 import { HsdGrid, symmetricWindow } from './hsdGrid';
 import { magnitudeText, short } from './hsdKit';
-import { MathChip } from './hsdText';
+import { MathChip, textWidth } from './hsdText';
 
 const RAD = Math.PI / 180;
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
@@ -76,7 +76,13 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
           const f = makeFrame(w, h, [win.lo, win.hi], [win.lo, win.hi], true, true);
           const O = { x: f.sx(0), y: f.sy(0) };
           const P = (p: { a: number; b: number }) => ({ x: f.sx(p.a), y: f.sy(p.b) });
-          const tip = (p: { a: number; b: number }, text: string, color: string, bold = true) => {
+          const tip = (
+            p: { a: number; b: number },
+            text: string,
+            color: string,
+            bold = true,
+            below = false,
+          ) => {
             const q = P(p);
             const len = Math.hypot(q.x - O.x, q.y - O.y) || 1;
             const [ux, uy] = [(q.x - O.x) / len, (q.y - O.y) / len];
@@ -86,7 +92,7 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
             return (
               <MathChip
                 x={flat ? q.x - ux * 4 : upright ? q.x + 10 : q.x + ux * 12}
-                y={flat ? q.y - 12 : upright ? q.y + 4 : q.y + uy * 14 + 4}
+                y={flat ? q.y + (below ? 22 : -12) : upright ? q.y + 4 : q.y + uy * 14 + 4}
                 text={text}
                 anchor={
                   flat
@@ -115,6 +121,21 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
               return `${i ? 'L' : 'M'} ${O.x + rr * Math.cos(d)} ${O.y - rr * Math.sin(d)}`;
             }).join(' ');
           };
+          // zⁿ on the real axis level with z's tag (z⁸ = 16 touched z = 1 + i): its tag goes
+          // under the axis, and the axis numbers there are left out.
+          const lastQ = P(pts[n - 1] ?? z);
+          const lastText = `z${sup(n)} = ${complexText((pts[n - 1] ?? z).a, (pts[n - 1] ?? z).b)}`;
+          const lastBelow =
+            !roots &&
+            n > 1 &&
+            Math.abs(lastQ.y - O.y) < 0.3 * Math.hypot(lastQ.x - O.x, lastQ.y - O.y) &&
+            Math.abs(lastQ.y - P(pts[0]!).y) < 30;
+          const lastTw = textWidth(lastText, chart.label) + 6;
+          const lastX = lastQ.x - Math.sign(lastQ.x - O.x) * 4;
+          const lastL = lastQ.x > O.x ? lastX - lastTw + 3 : lastX - 3;
+          const clear = lastBelow
+            ? [{ l: lastL, t: lastQ.y + 22 - chart.label, r: lastL + lastTw, b: lastQ.y + 28 }]
+            : [];
           const path = (list: { a: number; b: number }[], close: boolean) =>
             list.map((p, i) => `${i ? 'L' : 'M'} ${P(p).x} ${P(p).y}`).join(' ') +
             (close ? ' Z' : '');
@@ -125,6 +146,7 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                 step={{ x: win.step, y: win.step }}
                 names={{ x: 'Re', y: 'Im' }}
                 yText={(v) => complexText(0, v)}
+                clear={clear}
               />
               <G opacity={known && r > 0 ? 1 : 0.35}>
                 {roots ? (
@@ -220,12 +242,32 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                         width={chart.strokeHeavy}
                       />
                     ) : null}
+                    {/* Each power in between named small (z², z³, …), out from the origin. */}
+                    {pts.slice(1, n - 1).map((p, i) => {
+                      const q = P(p);
+                      const len = Math.hypot(q.x - O.x, q.y - O.y) || 1;
+                      return (
+                        <ChartText
+                          key={`k${i}`}
+                          x={q.x + ((q.x - O.x) / len) * 12}
+                          y={q.y + ((q.y - O.y) / len) * 12 + 4}
+                          textAnchor="middle"
+                          fontSize={chart.tiny}
+                          fill={c.chartMuted}
+                          halo
+                        >
+                          {`z${sup(i + 2)}`}
+                        </ChartText>
+                      );
+                    })}
                     {tip(pts[0]!, `z = ${complexText(z.a, z.b)}`, c.chartHighlight)}
                     {n > 1
                       ? tip(
                           pts[n - 1]!,
                           `z${sup(n)} = ${complexText(pts[n - 1]!.a, pts[n - 1]!.b)}`,
                           c.vectorResultant,
+                          true,
+                          lastBelow,
                         )
                       : null}
                   </G>

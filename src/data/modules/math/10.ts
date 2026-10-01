@@ -358,7 +358,7 @@ const TRIG: ModuleDef[] = [
   page({
     id: 'm.10.right-triangle-trig~find-angle',
     title: 'Find an angle from two sides',
-    use: 'Use this for “A ramp rises 0.5 m over a run of 6 m. What angle does it make with the ground?”',
+    use: 'Use this for “A ramp rises 1.5 m over a run of 6 m. What angle does it make with the ground?”',
     assumptions: [
       'The rise is opposite the angle A and the run is adjacent to it, so tan A = rise ÷ run.',
       'The inverse tangent, tan⁻¹, turns the ratio back into the angle.',
@@ -370,7 +370,7 @@ const TRIG: ModuleDef[] = [
       len('r', 'r', 'Run', 10000, { unit: 'm' }),
     ],
     rules: [ratio('tan', 'A', 'o', 'r', ['opposite', 'adjacent'])],
-    example: { o: 0.5, r: 6, A: atanD(0.5 / 6) },
+    example: { o: 1.5, r: 6, A: atanD(1.5 / 6) },
     startWith: ['o', 'r'],
     equation: 'tan({A}°) = {o}/{r}',
     representation: {
@@ -4836,7 +4836,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
   page({
     id: 'm.10.rigid-motions~glide',
     title: 'A glide reflection',
-    use: 'Use this for “Translate A(1, 2) 6 units right, then reflect it across the x-axis.”',
+    use: 'Use this for “Translate A(1, 2) 5 units right, then reflect it across the x-axis.”',
     assumptions: [
       'First slide h units right: (x, y) → (x + h, y). Then reflect across the x-axis: (x, y) → (x, −y).',
       'A slide along a line followed by a flip in that line is a glide reflection.',
@@ -4866,7 +4866,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
       carry('qx', 'px', 'Reflecting across the x-axis keeps x.'),
       carry('qy', 'py', 'Reflecting across the x-axis changes the sign of y.', -1),
     ],
-    example: { ax: 1, ay: 2, h: 6, px: 7, py: 2, qx: 7, qy: -2 },
+    example: { ax: 1, ay: 2, h: 5, px: 6, py: 2, qx: 6, qy: -2 },
     startWith: ['ax', 'ay', 'h'],
     representation: {
       kind: 'transformation',

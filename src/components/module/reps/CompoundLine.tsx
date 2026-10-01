@@ -175,7 +175,18 @@ export function CompoundLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
             ...(distance
               ? [
                   { id: distance.c, at: px(center!), y: lineAt + 44, pin: [distance.r] },
-                  { id: distance.r, at: U, y: lineAt + 44, pin: [distance.c], grows: true },
+                  {
+                    id: distance.r,
+                    // On the bound h + d; a short distance's handle steps right of the center's
+                    // so the two don't overlap (a drag moves by how far it goes, not where).
+                    at:
+                      Math.abs(U - px(center!)) < chart.handleTouch
+                        ? px(center!) + chart.handleTouch
+                        : U,
+                    y: lineAt + 44,
+                    pin: [distance.c],
+                    grows: true,
+                  },
                 ]
               : [
                   { id: spec.value, at: L, y: lineAt + 44, pin: [spec.second!] },

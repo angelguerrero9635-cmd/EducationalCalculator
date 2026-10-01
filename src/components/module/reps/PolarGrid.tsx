@@ -59,6 +59,8 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
   const par = spec.parametric;
   const pv = par ? read(par, PATH_FIELDS[par.family]) : {};
   const t = par ? num(par.t) : 0;
+  // The ellipse's t is an angle, in degrees.
+  const tText = par?.family === 'ellipse' ? `${short(t)}°` : short(t);
   // The path over its range, stretched to reach a t typed past either end.
   const [t0, t1] = par ? [Math.min(par.range[0], t), Math.max(par.range[1], t)] : [0, 0];
   const samples = par
@@ -154,7 +156,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
     const p = pathAt(par, pv, t);
     lines.push(
       isKnown(par.t)
-        ? `At t = ${short(t)} the point is (${short(p.x)}, ${short(p.y)}). The arrows show the way t runs.`
+        ? `At t = ${tText} the point is (${short(p.x)}, ${short(p.y)}). The arrows show the way t runs.`
         : 't = ?',
     );
   }
@@ -237,11 +239,12 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                       stroke={c.card}
                       strokeWidth={1.5}
                     />
+                    {/* Below the point, away from the y-axis numbers (the edge clamps it). */}
                     <MathChip
-                      x={f.sx(at.x) + 14}
-                      y={f.sy(at.y) - 12}
-                      text={`t = ${short(t)}: (${short(at.x)}, ${short(at.y)})`}
-                      anchor="start"
+                      x={f.sx(at.x) + (at.x < 0 ? -10 : 10)}
+                      y={f.sy(at.y) + 24}
+                      text={`t = ${tText}: (${short(at.x)}, ${short(at.y)})`}
+                      anchor={at.x < 0 ? 'end' : 'start'}
                       w={w}
                       h={h}
                       color={c.hopBack}
@@ -419,15 +422,24 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                       stroke={c.card}
                       strokeWidth={1.5}
                     />
-                    <MathChip
-                      x={p.x + (p.x >= cx ? 12 : -12)}
-                      y={p.y + (p.y <= cy ? -12 : 22)}
-                      text={`(${short(pt.r)}, ${angleText(pt.th, show)})`}
-                      anchor={p.x >= cx ? 'start' : 'end'}
-                      w={w}
-                      h={h}
-                      color={c.hopBack}
-                    />
+                    {(() => {
+                      // Near the rim the tag goes inward, toward the pole, off the rim's
+                      // angle labels ("(4, 150°)" covered 150°).
+                      const rim = Math.hypot(p.x - cx, p.y - cy) > 0.7 * R;
+                      const right = rim ? p.x < cx : p.x >= cx;
+                      const up = rim ? p.y > cy : p.y <= cy;
+                      return (
+                        <MathChip
+                          x={p.x + (right ? 12 : -12)}
+                          y={p.y + (up ? -12 : 22)}
+                          text={`(${short(pt.r)}, ${angleText(pt.th, show)})`}
+                          anchor={right ? 'start' : 'end'}
+                          w={w}
+                          h={h}
+                          color={c.hopBack}
+                        />
+                      );
+                    })()}
                   </G>
                 ) : null}
               </Svg>
