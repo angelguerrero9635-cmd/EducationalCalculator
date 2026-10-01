@@ -1972,49 +1972,6 @@ const inverseEntry = (x: string, top: string, sign: 1 | -1) =>
     ),
   );
 
-/** A line's slope and intercept, worked out only to draw it (the Cramer page's picture). */
-const lineOf = (n: string, which: string) => [
-  V(`m${n}`, `m${n}`, `Slope of the ${which} line`, {
-    min: -1e9,
-    max: 1e9,
-    step: 0.0001,
-    derived: true,
-    hidden: true,
-  }),
-  V(`i${n}`, `i${n}`, `Intercept of the ${which} line`, {
-    min: -1e9,
-    max: 1e9,
-    step: 0.0001,
-    derived: true,
-    hidden: true,
-  }),
-];
-/** ax + by = p as y = (−a ÷ b)x + p ÷ b, for the picture only (no line when b = 0). */
-const lineRels = (n: string, a: string, b: string, p: string): Rel[] => [
-  hide(
-    derive(
-      `m${n} = −${a} ÷ ${b}`,
-      `{m${n}} = −{${a}} ÷ {${b}}`,
-      `m${n}`,
-      [a, b],
-      (v) => div(-v[a]!, v[b]!),
-      `−{${a}} ÷ {${b}}`,
-      'The slope of the line, to draw it.',
-    ),
-  ),
-  hide(
-    derive(
-      `i${n} = ${p} ÷ ${b}`,
-      `{i${n}} = {${p}} ÷ {${b}}`,
-      `i${n}`,
-      [p, b],
-      (v) => div(v[p]!, v[b]!),
-      `{${p}} ÷ {${b}}`,
-      'Where the line crosses the y-axis, to draw it.',
-    ),
-  ),
-];
-
 const MATH_12_MATRICES: ModuleDef[] = [
   // ── m.12.matrices (A-REI.8, A-REI.9, N-VM.6–12) ──
   {
@@ -2110,13 +2067,7 @@ const MATH_12_MATRICES: ModuleDef[] = [
         [2, -1, 1, 'd2'],
         [1, 2, -1, 'd3'],
       ],
-      steps: [
-        { add: 2, from: 1, times: -2 },
-        { add: 3, from: 1, times: -1 },
-        { swap: [2, 3] },
-        { add: 3, from: 2, times: 3 },
-        { scale: 3, by: -1 / 7 },
-      ],
+      steps: 'echelon',
       solution: ['x', 'y', 'z'],
     },
   },
@@ -2216,11 +2167,14 @@ const MATH_12_MATRICES: ModuleDef[] = [
     startWith: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
     equation: '||{a}, {b}, {c}; {d}, {e}, {f}; {g}, {h}, {k}|| = {D}',
     representation: {
-      kind: 'table',
-      sweep: 'k',
-      output: 'D',
-      params: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.k ?? 4) + i),
+      kind: 'matrixGrid',
+      mode: 'determinant',
+      matrix: [
+        ['a', 'b', 'c'],
+        ['d', 'e', 'f'],
+        ['g', 'h', 'k'],
+      ],
+      value: 'D',
     },
   },
   {
@@ -2472,8 +2426,6 @@ const MATH_12_MATRICES: ModuleDef[] = [
       }),
       V('x', 'x', 'Solution x', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
       V('y', 'y', 'Solution y', { min: -10000000, max: 10000000, step: 0.0001, derived: true }),
-      ...lineOf('1', 'first'),
-      ...lineOf('2', 'second'),
     ],
     ...rels(
       derive(
@@ -2521,34 +2473,19 @@ const MATH_12_MATRICES: ModuleDef[] = [
           ],
         },
       ),
-      ...lineRels('1', 'a', 'b', 'p'),
-      ...lineRels('2', 'c', 'd', 'q'),
     ),
-    example: {
-      a: 2,
-      b: 3,
-      p: 13,
-      c: 1,
-      d: -1,
-      q: -1,
-      D: -5,
-      x: 2,
-      y: 3,
-      m1: -2 / 3,
-      i1: 13 / 3,
-      m2: 1,
-      i2: 1,
-    },
+    example: { a: 2, b: 3, p: 13, c: 1, d: -1, q: -1, D: -5, x: 2, y: 3 },
     startWith: ['a', 'b', 'p', 'c', 'd', 'q'],
     equation: '{a}x + {b}y = {p}\n{c}x + {d}y = {q}',
     representation: {
-      kind: 'lineSystem',
-      lines: [
-        { slope: 'm1', intercept: 'i1', label: 'First' },
-        { slope: 'm2', intercept: 'i2', label: 'Second' },
+      kind: 'matrixGrid',
+      mode: 'determinant',
+      matrix: [
+        ['a', 'b'],
+        ['c', 'd'],
       ],
-      solution: { x: 'x', y: 'y' },
-      fixed: true,
+      value: 'D',
+      cramer: { rhs: ['p', 'q'], solution: ['x', 'y'] },
     },
   },
 ];
