@@ -5150,11 +5150,6 @@ const PHASE: ModuleDef[] = [
       quantity('Tf', 'Tf', 'Freezing point of the solution', '°C', -45, 0, 0.0001),
       quantity('dTb', 'ΔTb', 'Boiling point rise', '°C', 0, 13, 0.0001),
       quantity('Tb', 'Tb', 'Boiling point of the solution', '°C', 100, 113, 0.0001),
-      {
-        ...quantity('T0', 'T₀', 'Where the curve starts', '°C', -55, -10, 0.0001),
-        derived: true,
-        hidden: true,
-      },
     ],
     ...rules(
       {
@@ -5250,17 +5245,6 @@ const PHASE: ModuleDef[] = [
           dTb: { expr: '{Tb} − 100', how: 'How far above 100 °C the solution boils.' },
         },
       },
-      {
-        relation: {
-          id: 'curve start',
-          hidden: true,
-          display: '{T0} = {Tf} − 10',
-          vars: ['T0', 'Tf'],
-          residual: (v) => v.T0! - (v.Tf! - 10),
-          solve: { T0: (v) => v.Tf! - 10 },
-        },
-        steps: {},
-      },
     ),
     example: {
       g: 27.75,
@@ -5273,17 +5257,15 @@ const PHASE: ModuleDef[] = [
       Tf: -3 * 1.86 * 0.5,
       dTb: 3 * 0.512 * 0.5,
       Tb: 100 + 3 * 0.512 * 0.5,
-      T0: -3 * 1.86 * 0.5 - 10,
     },
     startWith: ['g', 'M', 'w', 'i'],
     representation: {
-      kind: 'heatingCurve',
-      start: 'T0',
-      melt: 'Tf',
-      boil: 'Tb',
-      spans: [4, 8, 10, 20],
-      names: ['ice', 'solution', 'steam'],
-      formula: 'H2O',
+      kind: 'chemDiagram',
+      mode: 'phase',
+      freezing: 'Tf',
+      boiling: 'Tb',
+      drop: 'dTf',
+      rise: 'dTb',
     },
   },
   {

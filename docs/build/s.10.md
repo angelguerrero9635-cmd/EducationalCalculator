@@ -300,3 +300,6 @@ Report: `.review/new-sci-2/lesson-report.md`.
 - `s.10.nuclear-chemistry~mass-defect` (H101 need 14): built (it was waiting) from the demo,
   U-238 → Th-234 + He-4, Δm and E = 931.5 × Δm, on `chemDiagram` mode `massDefect` (a broken
   axis so 0.0046 u shows; a limit keeps the mass after below the mass before). No stand-in.
+- `s.10.phase-colligative` main (H108 part 3): `chemDiagram` mode `phase`, water's phase diagram
+  with the solution's lines dashed and ΔTf and ΔTb bracketed. Stand-ins gone: the heating curve
+  and its hidden T₀ with the rule placing it.
