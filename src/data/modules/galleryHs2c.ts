@@ -134,59 +134,7 @@ const freeFall: ModuleDef = (() => {
   };
 })();
 
-// ─── H102.10 charges `plates`, and the field at a point between two charges ──
-
-const plates: ModuleDef = (() => {
-  const [V, d, qe] = [12, 0.003, -1.602e-19];
-  return {
-    id: 'g.s11-electrostatics-plates',
-    title: 'The field between charged plates',
-    use: 'Use this for “Two plates 3 mm apart have 12 V across them. What is the field between them, and the force on an electron there?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'Between large parallel plates the field is uniform: E = V/d, from the + plate to the − plate.',
-      'A charge there feels F = qE: a + charge along the field, a − charge against it.',
-      'An electron’s charge is −1.602 × 10⁻¹⁹ C; a proton’s is +1.602 × 10⁻¹⁹ C.',
-    ],
-    variables: [
-      q('V', 'V', 'Voltage across the plates', 'V', 0.001, 1e6, 0.001),
-      q('d', 'd', 'Gap between the plates', 'm', 1e-6, 10, 1e-6, { scientific: true }),
-      q('E', 'E', 'Field between the plates', 'V/m', 0, 1e12, 0.01, { scientific: true }),
-      q('q', 'q', 'Charge', 'C', -1, 1, 1e-22, { scientific: true }),
-      q('F', 'F', 'Force on the charge', 'N', -1e12, 1e12, 1e-22, {
-        scientific: true,
-        units: ['N'],
-      }),
-    ],
-    ...rules(
-      rule('E = V/d', '{E} = {V}/{d}', (x) => x.E! * x.d! - x.V!, {
-        E: [(x) => div(x.V!, x.d!), '{V}/{d}', 'The voltage for each meter of the gap.'],
-        V: [(x) => x.E! * x.d!, '{E} × {d}', 'The field times the gap.'],
-        d: [(x) => div(x.V!, x.E!), '{V}/{E}', 'Divide the voltage by the field.'],
-      }),
-      rule('F = qE', '{F} = {q} × {E}', (x) => x.F! - x.q! * x.E!, {
-        E: [
-          (x) => (x.q === 0 ? undefined : x.F! / x.q!),
-          '{F}/{q}',
-          'The force for each coulomb of charge.',
-        ],
-        F: [(x) => x.q! * x.E!, '{q} × {E}', 'Charge times field; its sign gives the direction.'],
-        q: [(x) => div(x.F!, x.E!), '{F}/{E}', 'Divide the force by the field.'],
-      }),
-    ),
-    example: { V, d, E: V / d, q: qe, F: (qe * V) / d },
-    startWith: ['V', 'd', 'q'],
-    representation: {
-      kind: 'charges',
-      mode: 'plates',
-      voltage: 'V',
-      gap: 'd',
-      field: 'E',
-      charge: 'q',
-      force: 'F',
-    },
-  };
-})();
+// ─── H102.10b charges: the field at a point between two charges ─────────────
 
 const K_E = 8.99e9;
 
@@ -381,13 +329,7 @@ const relativity: ModuleDef = (() => {
   };
 })();
 
-export const HS2C_GALLERY_MODULES: ModuleDef[] = [
-  freeFall,
-  plates,
-  pointField,
-  photoelectric,
-  relativity,
-];
+export const HS2C_GALLERY_MODULES: ModuleDef[] = [freeFall, pointField, photoelectric, relativity];
 
 // ─── H102.5 card figure `strobe`: sorting motion diagrams ───────────────────
 
