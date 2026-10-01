@@ -54,7 +54,9 @@ export function surdText(x: number): string | undefined {
   const f = toFraction(x * x, 100);
   if (!f || f[0] <= 0 || f[0] * f[1] > 1e8) return undefined;
   const [s, m] = squarePart(f[0] * f[1]);
-  if (m === 1) return undefined;
+  // A radicand past 1,000 is a decimal that only looks exact (64.3045 → 2√2283589/47, a value
+  // converted to other units): write it as a decimal.
+  if (m === 1 || m > 1000) return undefined;
   const g = gcd(s, f[1]);
   const [top, bottom] = [s / g, f[1] / g];
   return signed(x < 0, `${top === 1 ? '' : top}√${m}${bottom === 1 ? '' : `/${bottom}`}`);
