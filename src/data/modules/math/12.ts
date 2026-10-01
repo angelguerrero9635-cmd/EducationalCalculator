@@ -6020,7 +6020,7 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
     ],
     variables: [
       coef('a', 'a', 'Number before x on top'),
-      coef('b', 'b', 'Number on top'),
+      coef('b', 'b', 'Number alone on top'),
       coef('p', 'p', 'Zero of the first factor', 100),
       coef('q', 'q', 'Zero of the second factor', 100),
       coef('A', 'A', 'Top of the first fraction', 1000000, { fraction: 200 }),
@@ -6099,7 +6099,7 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
     ],
     variables: [
       coef('a', 'a', 'Number before x on top'),
-      coef('b', 'b', 'Number on top'),
+      coef('b', 'b', 'Number alone on top'),
       coef('p', 'p', 'Zero of the factor', 100),
       coef('A', 'A', 'Top over (x − p)'),
       coef('B', 'B', 'Top over (x − p)²', 200000),
@@ -6164,8 +6164,8 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
         group: 'quadratic',
       }),
       coef('A', 'A', 'Top over (x − p)', 1000000),
-      coef('B', 'B', 'Number before x over x² + k', 1000000),
-      coef('C', 'C', 'Number over x² + k', 100000000),
+      coef('B', 'B', 'Number before x over the quadratic', 1000000),
+      coef('C', 'C', 'Number alone over the quadratic', 100000000),
       coef('x', 'x', 'An x to check', 100),
       coef('y', 'y', 'The fraction’s value at x', 1e12, { derived: true }),
     ],
@@ -6240,15 +6240,15 @@ const MATH_12_PARTIAL_FRACTIONS: ModuleDef[] = [
             const top = v.a! * v.x! ** 2 + v.b! * v.x! + v.c!;
             const bottom = (v.x! - v.p!) * quadAt(v, v.x!);
             return [
-              `(${shown(v.a!)} × ${shown(v.x! ** 2)}) + (${par(v.b!)} × ${par(v.x!)}) + ${par(v.c!)} = ${fmt(top)}`,
-              `${par(v.x! - v.p!)} × ${par(quadAt(v, v.x!))} = ${fmt(bottom)}`,
+              `Top: ${shown(v.a!)} × ${shown(v.x! ** 2)} + ${par(v.b!)} × ${par(v.x!)} + ${par(v.c!)} = ${fmt(top)}`,
+              `Bottom: ${par(v.x! - v.p!)} × ${par(quadAt(v, v.x!))} = ${fmt(bottom)}`,
               `y = ${par(top)} ÷ ${par(bottom)}`,
             ];
           },
           note: (v) =>
             [v.A, v.B, v.C, v.x, v.p, v.j, v.k].some((x) => x === undefined)
               ? ''
-              : `→ the partial fractions: ${fmt(v.A!)} ÷ ${par(v.x! - v.p!)} + ${par(v.B! * v.x! + v.C!)} ÷ ${fmt(quadAt(v, v.x!))} = ${fmt(v.A! / (v.x! - v.p!) + (v.B! * v.x! + v.C!) / quadAt(v, v.x!))}`,
+              : `→ A ÷ (x − p) + (Bx + C) ÷ (x² + jx + k) = ${fmt(v.A!)} ÷ ${par(v.x! - v.p!)} + (${fmt(v.B!)} × ${par(v.x!)} + ${par(v.C!)}) ÷ ${fmt(quadAt(v, v.x!))} = ${fmt(v.A! / (v.x! - v.p!) + (v.B! * v.x! + v.C!) / quadAt(v, v.x!))}`,
         },
       ),
     ),
