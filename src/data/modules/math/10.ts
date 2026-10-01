@@ -4425,6 +4425,8 @@ const PARALLEL_LINES: ModuleDef[] = [
       extent: 20,
       quadrants: 4,
       fixed: true,
+      marks: true,
+      given: { x: 'x0', y: 'y0' },
     },
   }),
   page({
@@ -4484,6 +4486,8 @@ const PARALLEL_LINES: ModuleDef[] = [
       extent: 20,
       quadrants: 4,
       fixed: true,
+      marks: true,
+      given: { x: 'x0', y: 'y0' },
     },
   }),
 ];
