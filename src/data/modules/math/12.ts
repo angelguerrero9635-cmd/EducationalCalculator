@@ -1465,6 +1465,8 @@ const MATH_12_STATS: ModuleDef[] = [
     representation: {
       kind: 'normalCurve',
       chiSquare: { df: 2, stat: 'X', p: 'P', alpha: 'a' },
+      // X² can't be solved back to the observed counts: no handle.
+      fixed: true,
     },
   },
   {
@@ -1583,6 +1585,8 @@ const MATH_12_STATS: ModuleDef[] = [
     representation: {
       kind: 'normalCurve',
       chiSquare: { df: 4, stat: 'X', p: 'P', alpha: 'a' },
+      // X² can't be solved back to the observed counts: no handle.
+      fixed: true,
     },
   },
   {
@@ -1811,6 +1815,8 @@ const MATH_12_CONICS: ModuleDef[] = [
       ),
       rel('p = (number before (y − k)) ÷ 4', '{p} = {q} ÷ 4', ['p', 'q'], (v) => 4 * v.p! - v.q!, {
         p: [(v) => v.q! / 4, '{q} ÷ 4', 'The number before (y − k) is 4p: divide it by 4.'],
+        // The focus handle sets p: the number before (y − k) follows as 4p.
+        q: [(v) => 4 * v.p!, '4 × {p}', 'The number before (y − k) is 4 times p.'],
       }),
       rel('F = k + p', '{F} = {k} + {p}', ['F', 'k', 'p'], (v) => v.F! - v.k! - v.p!, {
         F: [(v) => v.k! + v.p!, '{k} + {p}', 'The focus is p from the vertex, along the axis.'],
@@ -1857,6 +1863,7 @@ const MATH_12_CONICS: ModuleDef[] = [
       p: 'p',
       c: 'p',
       point: { x: 'x', y: 'y' },
+      keep: ['h', 'k', 'x'],
     },
   },
   {
@@ -4292,7 +4299,7 @@ const MATH_12_LIMITS: ModuleDef[] = [
         x: [(v) => v.y! + v.b!, '{y} + {b}', 'Add b to f(x).'],
       }),
     ),
-    example: { a: 3, b: -3, L: 6, x: 2.9, y: 5.9 },
+    example: { a: 3, b: -3, L: 6, x: 2.5, y: 5.5 },
     startWith: ['a', 'b', 'x'],
     representation: {
       kind: 'functionGraph',
