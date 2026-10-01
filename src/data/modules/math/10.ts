@@ -4653,6 +4653,28 @@ const carry = (to: string, from: string, how: string, sign = 1) =>
     },
     (v) => v[to]! - sign * v[from]!,
   );
+/** x′ = s × (the other coordinate): s = 1 swaps them, s = −1 swaps them and changes both signs. */
+const swapBy = (to: string, from: string, name: string) =>
+  rule(
+    `${to} = s × ${from}`,
+    `{${to}} = {s} × {${from}}`,
+    {
+      [to]: [
+        (v) => v.s! * v[from]!,
+        `{s} × {${from}}`,
+        (v: Values) =>
+          v.s === 1
+            ? `Across y = x, the new ${name} is the old ${name === 'x' ? 'y' : 'x'}.`
+            : `Across y = −x, the new ${name} is the old ${name === 'x' ? 'y' : 'x'} with its sign changed.`,
+      ],
+      [from]: [
+        (v) => v.s! * v[to]!,
+        `{s} × {${to}}`,
+        'Undo the swap: s × s = 1, so multiply the image’s coordinate by s.',
+      ],
+    },
+    (v) => v[to]! - v.s! * v[from]!,
+  );
 const RIGID_MOTIONS: ModuleDef[] = [
   page({
     id: 'm.10.rigid-motions',
@@ -4825,26 +4847,27 @@ const RIGID_MOTIONS: ModuleDef[] = [
   }),
   page({
     id: 'm.10.rigid-motions~reflect-line',
-    title: 'Reflecting across y = −x',
-    use: 'Use this for “Reflect A(4, 1) across the line y = −x.”',
+    title: 'Reflecting across y = x or y = −x',
+    use: 'Use this for “Reflect A(4, 1) across the line y = x” or “across y = −x.”',
     assumptions: [
-      'Across y = −x the coordinates swap and both signs change: (x, y) → (−y, −x).',
-      'Across y = x they only swap: (x, y) → (y, x).',
+      'Across y = x the coordinates swap: (x, y) → (y, x).',
+      'Across y = −x they swap and both signs change: (x, y) → (−y, −x).',
       'Each point and its image are the same distance from the line, on a segment at right angles to it.',
     ],
-    standalone: { vars: ['ay', 'px'], why: 'The new x comes from the old y alone.' },
     variables: [
       grid('ax', 'x', 'x of A', 6),
       grid('ay', 'y', 'y of A', 6),
+      num('s', 's', 'Mirror y = sx: 1 for y = x, −1 for y = −x', -1, 1, {
+        step: 1,
+        integer: true,
+        allowed: [-1, 1],
+      }),
       grid('px', 'x′', 'x of A′', 6),
       grid('py', 'y′', 'y of A′', 6),
     ],
-    rules: [
-      carry('px', 'ay', 'Across y = −x, the new x is the old y with its sign changed.', -1),
-      carry('py', 'ax', 'Across y = −x, the new y is the old x with its sign changed.', -1),
-    ],
-    example: { ax: 4, ay: 1, px: -1, py: -4 },
-    startWith: ['ax', 'ay'],
+    rules: [swapBy('px', 'ay', 'x'), swapBy('py', 'ax', 'y')],
+    example: { ax: 4, ay: 1, s: -1, px: -1, py: -4 },
+    startWith: ['ax', 'ay', 's'],
     representation: {
       kind: 'transformation',
       figure: [
@@ -4854,6 +4877,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
       ],
       move: 'reflect',
       mirror: 'y = −x',
+      slope: 's',
       image: { x: 'px', y: 'py' },
       extent: 6,
     },
@@ -4871,15 +4895,13 @@ const RIGID_MOTIONS: ModuleDef[] = [
       num('w', 'w', 'Width', 1, 8, { step: 1, integer: true }),
       num('h', 'h', 'Height', 1, 8, { step: 1, integer: true }),
       num('t', 't', 'Turn', 90, 360, { unit: '°', allowed: [90, 180, 270, 360] }),
-      // The drawing's corners and center only place the rectangle on the grid.
+      // The drawing's corners only place the rectangle on the grid.
       {
         ...num('r', 'r', 'Right side at x =', 2, 9, { integer: true }),
         derived: true,
         hidden: true,
       },
       { ...num('u', 'u', 'Top side at y =', 2, 9, { integer: true }), derived: true, hidden: true },
-      { ...num('a', 'a', 'x of the center', 1.5, 5), derived: true, hidden: true },
-      { ...num('b', 'b', 'y of the center', 1.5, 5), derived: true, hidden: true },
       der(num('L', 'L', 'Lines of symmetry', 2, 4, { integer: true })),
       der(num('n', 'n', 'Order of rotational symmetry', 2, 4, { integer: true })),
       der(num('f', 'f', 'Carried onto itself (1 yes, 0 no)', 0, 1, { integer: true })),
@@ -4891,20 +4913,6 @@ const RIGID_MOTIONS: ModuleDef[] = [
       rule('u = 1 + h', '{u} = 1 + {h}', { u: [(v) => 1 + v.h!, '', ''] }, (v) => v.u! - 1 - v.h!, {
         hidden: true,
       }),
-      rule(
-        'a = (1 + r)/2',
-        '{a} = (1 + {r}) ÷ 2',
-        { a: [(v) => (1 + v.r!) / 2, '', ''] },
-        (v) => v.a! - (1 + v.r!) / 2,
-        { hidden: true },
-      ),
-      rule(
-        'b = (1 + u)/2',
-        '{b} = (1 + {u}) ÷ 2',
-        { b: [(v) => (1 + v.u!) / 2, '', ''] },
-        (v) => v.b! - (1 + v.u!) / 2,
-        { hidden: true },
-      ),
       pick(
         'L from w and h',
         '{L} lines when the sides are {w} and {h}',
@@ -4940,7 +4948,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
         return r;
       })(),
     ],
-    example: { w: 6, h: 4, t: 180, r: 7, u: 5, a: 4, b: 3, L: 2, n: 2, f: 1 },
+    example: { w: 6, h: 4, t: 180, r: 7, u: 5, L: 2, n: 2, f: 1 },
     startWith: ['w', 'h', 't'],
     representation: {
       kind: 'transformation',
@@ -4952,7 +4960,7 @@ const RIGID_MOTIONS: ModuleDef[] = [
       ],
       move: 'rotate',
       angle: 't',
-      center: ['a', 'b'],
+      about: 'center',
       symmetry: true,
       extent: 10,
       quadrants: 1,
