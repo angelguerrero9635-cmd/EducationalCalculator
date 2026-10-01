@@ -4657,13 +4657,13 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
     example: { a: 1, b: 2, c: 2, d: 4, e: 0, f: 3, p: 10, m1: 3, m2: 5, t: Math.acos(2 / 3) / RAD },
     startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
     equation: '⟨{a}, {b}, {c}⟩ · ⟨{d}, {e}, {f}⟩ = {p}',
-    pictureLabels: ['m1', 'm2', 't'],
     representation: {
-      kind: 'matrixGrid',
-      mode: 'multiply',
-      a: [['a', 'b', 'c']],
-      b: [['d'], ['e'], ['f']],
-      product: [['p']],
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'a', y: 'b', z: 'c' },
+        { name: 'v', x: 'd', y: 'e', z: 'f' },
+      ],
+      space: { dot: 'p', angle: 't' },
     },
   },
   {
@@ -4722,11 +4722,12 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
     startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
     equation: '⟨{a}, {b}, {c}⟩ × ⟨{d}, {e}, {f}⟩ = ⟨{x}, {y}, {z}⟩',
     representation: {
-      kind: 'table',
-      sweep: 'f',
-      output: 'A',
-      params: ['a', 'b', 'c', 'd', 'e'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.f ?? 1) + i),
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'a', y: 'b', z: 'c' },
+        { name: 'v', x: 'd', y: 'e', z: 'f' },
+      ],
+      space: { cross: { x: 'x', y: 'y', z: 'z' }, area: 'A', triangle: 'Tri' },
     },
   },
   {
@@ -4780,11 +4781,12 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
     startWith: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'],
     equation: '||{a}, {b}, {c}; {d}, {e}, {f}; {g}, {h}, {k}|| = {T}',
     representation: {
-      kind: 'table',
-      sweep: 'k',
-      output: 'Vol',
-      params: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.k ?? 1) + i),
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'a', y: 'b', z: 'c' },
+        { name: 'v', x: 'd', y: 'e', z: 'f' },
+      ],
+      space: { w: { name: 'w', x: 'g', y: 'h', z: 'k' }, triple: 'T', volume: 'Vol' },
     },
   },
   {
@@ -4868,11 +4870,12 @@ const MATH_12_VECTORS_3D: ModuleDef[] = [
     startWith: ['p', 'q', 'r', 's', 't', 'u'],
     // Interim until the 3-D axes picture (H106): the distance as Q's z moves.
     representation: {
-      kind: 'table',
-      sweep: 'u',
-      output: 'd',
-      params: ['p', 'q', 'r', 's', 't'],
-      rows: (v: Values) => [-2, -1, 0, 1, 2].map((i) => (v.u ?? 9) + i),
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'P', x: 'p', y: 'q', z: 'r' },
+        { name: 'Q', x: 's', y: 't', z: 'u' },
+      ],
+      space: { points: true, distance: 'd', mid: { x: 'mx', y: 'my', z: 'mz' } },
     },
   },
 ];
