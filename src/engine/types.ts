@@ -74,6 +74,12 @@ export interface VariableDef {
   /** Only these values (shown units), when a lesson names them: count by 5s, 10s or 100s. */
   allowed?: number[];
   /**
+   * What each of the `allowed` codes means, when the value is a choice and not a number (Hₐ:
+   * 0 is "β ≠ 0"): the box shows the meaning and is tapped through the codes in `allowed`
+   * order, and the "we know" line reads "Hₐ: β ≠ 0", never the code.
+   */
+  labels?: Record<number, string>;
+  /**
    * Worked out, never typed: a working value the steps show (the ones with the ten, an
    * estimate's parts). Its box is read-only and the walkthrough never starts from it.
    */

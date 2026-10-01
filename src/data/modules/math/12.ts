@@ -7180,13 +7180,14 @@ const slopeCurve = {
   fixed: true,
 } as const;
 
-/** The side of Hₐ, coded as a choice: 0 for ≠, 1 for >, −1 for <. */
+/** The side of Hₐ, coded as a choice (0 for ≠, 1 for >, −1 for <) and shown as its meaning. */
 const sideVar = (what: string) =>
-  V('h', 'Hₐ', `Hₐ: ${what} ≠ 0 (0), > 0 (1) or < 0 (−1)`, {
+  V('h', 'Hₐ', 'Alternative hypothesis', {
     integer: true,
     min: -1,
     max: 1,
-    allowed: [-1, 0, 1],
+    allowed: [0, 1, -1],
+    labels: { 0: `${what} ≠ 0`, 1: `${what} > 0`, [-1]: `${what} < 0` },
   });
 /** The t tail Hₐ asks for: both tails past |t|, the right tail, or the left tail. */
 const tTail = (v: Values) =>
@@ -7238,19 +7239,21 @@ const tSided = withCheck(
 );
 /**
  * The decision in context: below α is convincing evidence of the relationship Hₐ names. It
- * opens with Hₐ in words (the box shows its code), as "Hₐ: β ≠ 0, two tails".
+ * opens with the tail Hₐ asks for ("Two tails"): Hₐ itself is in its box and the "we know"
+ * line, or, on a page with no Hₐ box (`named`), written here ("Hₐ: β ≠ 0, two tails").
  */
 const decideSlope =
-  (what = 'β') =>
+  (what = 'β', named = false) =>
   (v: Values) => {
     if (v.P === undefined || v.a === undefined) return '';
     const kind = v.h === 1 ? 'a positive ' : v.h === -1 ? 'a negative ' : 'a ';
-    const side =
-      v.h === 1
-        ? `Hₐ: ${what} > 0, the right tail`
+    const side = named
+      ? `Hₐ: ${what} ≠ 0, two tails`
+      : v.h === 1
+        ? 'The right tail'
         : v.h === -1
-          ? `Hₐ: ${what} < 0, the left tail`
-          : `Hₐ: ${what} ≠ 0, two tails`;
+          ? 'The left tail'
+          : 'Two tails';
     // A p-value is never 0: one the box rounds to 0 is written P < 0.0001.
     const tiny = v.P < 0.0001 ? 'P < 0.0001, ' : '';
     return v.P < v.a
@@ -7449,7 +7452,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       dfLine,
       withStep(tTwoTail('P', 't', 'df'), 'P', {
         work: (v) => tTailWork({ ...v, h: 0 }),
-        note: (v) => decideSlope('β')({ ...v, h: 0 }),
+        note: (v) => decideSlope('β', true)({ ...v, h: 0 }),
       }),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
@@ -7703,11 +7706,12 @@ const MATH_12_ANOVA: ModuleDef[] = [
       dfOf('d1', 'df₁', 'Degrees of freedom on top', { derived: true }),
       dfOf('d2', 'df₂', 'Degrees of freedom underneath', { derived: true }),
       fVar({ derived: true }),
-      V('h', 'Hₐ', 'Hₐ: σ₁² ≠ σ₂² (0) or σ₁² > σ₂² (1)', {
+      V('h', 'Hₐ', 'Alternative hypothesis', {
         integer: true,
         min: 0,
         max: 1,
         allowed: [0, 1],
+        labels: { 0: 'σ₁² ≠ σ₂²', 1: 'σ₁² > σ₂²' },
       }),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
@@ -7768,9 +7772,9 @@ const MATH_12_ANOVA: ModuleDef[] = [
         ),
         'P',
         {
-          // Hₐ in words first (its box shows the code), then the decision in context.
+          // The tail Hₐ asks for, then the decision in context.
           note: (v) => {
-            const side = v.h === 1 ? 'Hₐ: σ₁² > σ₂², the right tail' : 'Hₐ: σ₁² ≠ σ₂², two tails';
+            const side = v.h === 1 ? 'The right tail' : 'Two tails';
             const d = decideF((w) =>
               w.h === 1
                 ? 'the first population’s variance is larger'

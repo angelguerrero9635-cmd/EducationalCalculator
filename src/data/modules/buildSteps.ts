@@ -1,4 +1,4 @@
-import { CHOICE_BOX, choiceOf, choiceSign } from '@/engine/choices';
+import { CHOICE_BOX, choiceOf, choiceSign, codeLabel } from '@/engine/choices';
 import { dollarsOf, formatNumber, lowerFirst, renderTemplate, unitFor } from '@/engine/format';
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
@@ -300,6 +300,10 @@ export function buildSteps(
    * row itself when the choice is its only box), else "s: >".
    */
   const choiceLabel = (id: string) => {
+    // A coded value reads as its meaning: "Hₐ: β ≠ 0", never "Hₐ = 0".
+    const v = byId.get(id)!;
+    const meaning = codeLabel(v, result.values[id]);
+    if (meaning !== undefined) return `${v.symbol}: ${meaning}`;
     const choices = choiceOf(module.equation, id);
     const sign = choices && choiceSign(choices, result.values[id]);
     if (!sign) return undefined;
@@ -311,7 +315,9 @@ export function buildSteps(
   const quantity = (id: string): Quantity => {
     const v = byId.get(id)!;
     const known = result.values[id] !== undefined;
-    const value = known ? fmt(id, shownValue(id), shownUnit(id)) : '?';
+    const value = known
+      ? (codeLabel(v, result.values[id]) ?? fmt(id, shownValue(id), shownUnit(id)))
+      : '?';
     return {
       id,
       symbol: v.symbol,

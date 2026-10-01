@@ -24,6 +24,13 @@ per review; each line names the finding and what the engine now does about it.
   complex-numbers~quadratic (q, the pair), polynomial-equations (x₂, x₃, the check and the
   factored line; a root that simplifies is simplified in the work, (2 + 2√2) ÷ 2), m.12
   trig-formulas-equations and ~difference (S, K; the work line no longer repeats the decimal).
+- **A coded value showed its code** ("Hₐ = 0" in the "we know" line and a 0 in the box, the
+  page names carrying "β ≠ 0 (0), > 0 (1) or < 0 (−1)") → `VariableDef.labels`, what each
+  `allowed` code means: the row's box shows the meaning and is tapped through the codes
+  (`LabelBox`, `nextCode`), and the "we know" line reads "Hₐ: β ≠ 0" (`codeLabel` in
+  buildSteps). `modules.test` checks every allowed code has a label. m.12 regression-inference,
+  ~correlation and anova~two-variances: the name is "Alternative hypothesis" and the decision
+  note opens with the tail alone ("Two tails: …").
 
 ## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
 

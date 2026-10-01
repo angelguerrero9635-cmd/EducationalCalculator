@@ -664,6 +664,10 @@ describe.each(pages(TESTED_MODULES))('module %s', (id, m) => {
       expect((r.shows ?? []).filter((v) => !ids.includes(v) || r.vars.includes(v))).toEqual([]);
     }
     expect(representationVars(m.representation).filter((v) => !ids.includes(v))).toEqual([]);
+    // A coded value names every code it takes (`labels`), so no box shows a bare number.
+    for (const v of m.variables.filter((x) => x.labels)) {
+      expect((v.allowed ?? []).filter((x) => v.labels![x] === undefined)).toEqual([]);
+    }
   });
 
   it('draws a hundred chart big enough for every mark on it', () => {
