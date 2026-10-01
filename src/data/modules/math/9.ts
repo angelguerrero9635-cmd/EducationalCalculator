@@ -649,7 +649,7 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
       'c is the y-intercept, the value at x = 0.',
     ],
     variables: [
-      num('a', 'a', 'x² coefficient', -10, 10, { step: 0.5, fraction: 12 }),
+      num('a', 'a', 'x² coefficient', -10, 10, { step: 0.1, fraction: 12 }),
       num('b', 'b', 'x coefficient', -20, 20, { step: 0.5 }),
       num('c', 'c', 'Constant (y-intercept)', -50, 50, { step: 0.5 }),
       num('h', 'h', 'Vertex x', -1000, 1000, { derived: true, fraction: 40 }),
@@ -4198,6 +4198,7 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
       solution: { x: 'cx', y: 'cy' },
       test: { x: 'ta', y: 'ts' },
       quadrants: 1,
+      extent: 25,
       axes: { x: 'Adult tickets a', y: 'Student tickets s' },
       fixed: true,
     },
@@ -6343,7 +6344,7 @@ const UNITS_PRECISION: ModuleDef[] = [
     variables: [
       num('r', 'r', 'Rate', 0.1, 300, { unit: 'km/h', units: ['km/h', 'mph'], step: 0.1 }),
       num('t', 't', 'Time in minutes', 1, 600, { unit: 'min', units: ['min'], step: 1 }),
-      num('h', 't_h', 'Time in hours', 1 / 60, 10, {
+      num('h', 'tₕ', 'Time in hours', 1 / 60, 10, {
         unit: 'h',
         units: ['h'],
         derived: true,
@@ -6352,7 +6353,7 @@ const UNITS_PRECISION: ModuleDef[] = [
       num('d', 'd', 'Distance', 0, 3000, { unit: 'km', units: ['km', 'mi'] }),
     ],
     rules: [
-      rule('t_h = t ÷ 60', '{h} = {t} ÷ 60', ['h', 't'], (v) => v.h! - v.t! / 60, {
+      rule('tₕ = t ÷ 60', '{h} = {t} ÷ 60', ['h', 't'], (v) => v.h! - v.t! / 60, {
         h: [
           (v) => exact(v.t! / 60),
           '{t} ÷ 60',
@@ -6360,7 +6361,7 @@ const UNITS_PRECISION: ModuleDef[] = [
         ],
         t: [(v) => exact(v.h! * 60), '{h} × 60', 'Each hour is 60 minutes.'],
       }),
-      rule('d = r × t_h', '{d} = {r} × {h}', ['d', 'r', 'h'], (v) => v.d! - v.r! * v.h!, {
+      rule('d = r × tₕ', '{d} = {r} × {h}', ['d', 'r', 'h'], (v) => v.d! - v.r! * v.h!, {
         d: [
           (v) => exact(v.r! * v.h!),
           '{r} × {h}',
@@ -6564,7 +6565,14 @@ const UNITS_PRECISION: ModuleDef[] = [
     ],
     example: { l: 4.25, w: 3.1, n1: 3, n2: 2, n: 2, P: 13.175, R: 13 },
     startWith: ['l', 'w', 'n1', 'n2'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'R', extent: 5 },
+    representation: {
+      kind: 'rectangle',
+      length: 'l',
+      width: 'w',
+      inside: 'R',
+      extent: 5,
+      fixed: true,
+    },
   }),
 ];
 

@@ -167,6 +167,8 @@ export interface TransformationHs3b {
  */
 export interface RectangleHs3b {
   bounds?: { error: string; least?: string; greatest?: string };
+  /** No corner handle: the page is about digits the student types, not the sides' sizes. */
+  fixed?: boolean;
 }
 
 /** The variable ids the H106 function-graph options name (for the module tests). */

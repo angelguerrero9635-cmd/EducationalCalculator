@@ -63,6 +63,32 @@ const chipY = (y: number, axisY: number, below: boolean, q1: boolean) => {
 /** A chip's width, as `Chip` draws it. */
 const chipWidth = (text: string, size: number = chart.small) => text.length * size * 0.58 + 6;
 
+/**
+ * Where the test point's tag goes: above-right, or the first other quarter (below-left first)
+ * clear of the crossing's label, so (0, 0) never covers the corner (2, 0).
+ */
+function testTagPlace(
+  px: number,
+  py: number,
+  text: string,
+  avoid: { l: number; r: number; t: number; b: number } | undefined,
+): { dx: number; dy: number; anchor: 'start' | 'end' } {
+  const places = [
+    { dx: 9, dy: -8, anchor: 'start' as const },
+    { dx: -9, dy: 18, anchor: 'end' as const },
+    { dx: 9, dy: 18, anchor: 'start' as const },
+    { dx: -9, dy: -8, anchor: 'end' as const },
+  ];
+  if (!avoid) return places[0]!;
+  const tw = chipWidth(text);
+  const clear = (p: (typeof places)[number]) => {
+    const l = p.anchor === 'start' ? px + p.dx - 3 : px + p.dx - tw + 3;
+    const t = py + p.dy - chart.small - 2;
+    return !(l < avoid.r && l + tw > avoid.l && t < avoid.b && py + p.dy + 4 > avoid.t);
+  };
+  return places.find(clear) ?? places[1]!;
+}
+
 /** "m × x + b" as a number sentence: "2 × 4 + 3 = 11", "−1 × 2 − 5 = −7". */
 const worked = (m: number, x: number, b: number) =>
   `${coef(m)} × ${x < 0 ? `(${coef(x)})` : coef(x)} ${b < 0 ? '−' : '+'} ${coef(Math.abs(b))} = ${coef(m * x + b)}`;
@@ -1023,14 +1049,24 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                       stroke={c.chartInk}
                       strokeWidth={chart.stroke}
                     />
-                    <Chip
-                      x={f.sx(testIn.x.value) + 9}
-                      y={f.sy(testIn.y.value) - 8}
-                      text={pointText(testIn.x.value, testIn.y.value)}
-                      anchor="start"
-                      w={w}
-                      h={h}
-                    />
+                    {(() => {
+                      const at = testTagPlace(
+                        f.sx(testIn.x.value),
+                        f.sy(testIn.y.value),
+                        pointText(testIn.x.value, testIn.y.value),
+                        crossBox,
+                      );
+                      return (
+                        <Chip
+                          x={f.sx(testIn.x.value) + at.dx}
+                          y={f.sy(testIn.y.value) + at.dy}
+                          text={pointText(testIn.x.value, testIn.y.value)}
+                          anchor={at.anchor}
+                          w={w}
+                          h={h}
+                        />
+                      );
+                    })()}
                   </G>
                 ) : null}
               </Svg>

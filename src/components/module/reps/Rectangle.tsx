@@ -268,23 +268,25 @@ function Flat({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 )
               ) : null}
             </Svg>
-            <DragHandle
-              testID="drag-corner"
-              x={x0 + rw}
-              y={top + rh}
-              label={`${rep.variable(spec.length).name} and ${rep.variable(spec.width).name}`}
-              onStart={() => {
-                start.current = { l, w: wd };
-                fit.freeze();
-              }}
-              onEnd={fit.release}
-              onMove={(dx, dy) =>
-                calc.set({
-                  [spec.length]: rep.snapTo(spec.length, start.current.l + dx / unit),
-                  [spec.width]: rep.snapTo(spec.width, start.current.w + dy / unit),
-                })
-              }
-            />
+            {spec.fixed ? null : (
+              <DragHandle
+                testID="drag-corner"
+                x={x0 + rw}
+                y={top + rh}
+                label={`${rep.variable(spec.length).name} and ${rep.variable(spec.width).name}`}
+                onStart={() => {
+                  start.current = { l, w: wd };
+                  fit.freeze();
+                }}
+                onEnd={fit.release}
+                onMove={(dx, dy) =>
+                  calc.set({
+                    [spec.length]: rep.snapTo(spec.length, start.current.l + dx / unit),
+                    [spec.width]: rep.snapTo(spec.width, start.current.w + dy / unit),
+                  })
+                }
+              />
+            )}
           </>
         );
       }}
