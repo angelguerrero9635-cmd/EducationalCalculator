@@ -298,3 +298,36 @@ Report: `.review/new-sci-2/lesson-report.md`.
 
 `pictureRequests.test.ts` (H49, `s.10.reaction-types~combustion`) and `units.test.ts` (five
 `s.10` labels) fail on the branch as it came to this build; neither is from these pages.
+
+### Pictures placed (H89–H110)
+
+| Page                                     | Entry          | What changed                                                                                                      | Stand-in gone                                                                               |
+| ---------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `s.11.rotation`                          | H107.1         | `torque` (wrench on its nut)                                                                                      | `vectorDiagram` of F with components; pictureLabels r, F⊥, τ                                |
+| `s.11.rotation~seesaw`                   | H107.2         | `simpleMachine` lever `seesaw: { torque, pivot }`                                                                 | pictureLabels τ, F_p                                                                        |
+| `s.11.rotation~angular-speed`            | H107.3         | `rotor` (r, N, ω, T, v)                                                                                           | `circularMotion` string; pictureLabels N, ω                                                 |
+| `s.11.rotation~angular-acceleration`     | H107.3         | `rotor` (ω₀, α, t, ω, Δθ, n: ω–t line and turn dials)                                                             | `motionGraph` speed graph; pictureLabels n                                                  |
+| `s.11.rotation~rotational-inertia`       | H107.3         | `rotor` with `compare` (hoop, disk, ball)                                                                         | `table` by shape; pictureLabels I                                                           |
+| `s.11.oscillations`                      | H107.4         | `oscillator` (spring, x–t trace, energy bar); the period's unit menu is back                                      | `functionGraph` x–t cosine; pictureLabels m, k, f, v_max, E                                 |
+| `s.11.oscillations~hooke`                | H107.4         | `oscillator` mode `hang`; F and x take their unit menus back, the "type the stretch in meters" assumption gone    | `functionGraph` F–x line; pictureLabels m, U                                                |
+| `s.11.oscillations~pendulum`             | H107.5         | `pendulum`                                                                                                        | `table` of T by L; pictureLabels f                                                          |
+| `s.11.electric-potential`                | H107.7         | `charges` option `equipotentials` (V, q₀, U)                                                                      | the bare charge and its field lines; pictureLabels V, q₀, U                                 |
+| `s.11.electric-potential~voltage-energy` | H107.8         | `charges` mode `plates` with `launch`                                                                             | `table` of v by ΔV; pictureLabels K                                                         |
+| `s.11.electric-potential~capacitor`      | H107.6         | `capacitor` (C in μF)                                                                                             | `table` of U by V; pictureLabels Q                                                          |
+| `s.11.electric-potential~parallel-plate` | H107.6         | `capacitor` with κ, A, d (C in pF, d in mm); E stays a picture label (the picture draws the field, not its value) | `table` of C by d; pictureLabels V, Q                                                       |
+| `s.11.kinematics-1d~free-fall`           | H105.5, H102.4 | `motionGraph` `acceleration: −9.8` (a number) and `kinematics.strobe: 'vertical'`; d stays a picture label        | the hidden worked-out a and its hidden rule a = v/t                                         |
+| `s.11.kinematics-2d~cliff`               | H105.5         | `projectile` `angle: 0` (a number)                                                                                | the hidden fixed θ = 0 value, its rule and its `standalone` note; the unused `fixed` helper |
+| `s.11.momentum~explode`                  | H105.13        | `collision` explode `spring: 'E'` (the spring's energy between the carts)                                         | pictureLabels E                                                                             |
+
+Not placed, and why:
+
+- H102 parts 1–3, 5–8, 10–12 (`~one-after`, `~impulse`, `~orbit`, `~motion-diagrams`, `~work`,
+  `~power`, `~first-law`, `~plates`, `~photoelectric`, `~relativity`) and H107 part 9
+  (`~moving-charge`): those pages are still waiting, not built; the demos hold their specs.
+  Part 10b (two charges with a point) is a demo of a released question, not a page here.
+- H102 part 9 (`~latent-heat`): no change was asked.
+- H106 part 1 (`functionGraph` `unitsOf` on `s.11.oscillations` and `~hooke`) is not used:
+  H107's `oscillator` replaces both graphs and reads its values in the formula's units, which is
+  what gave the unit menus back.
+- `~rotational-inertia` allows a hollow ball (c = ⅔), which `rotor` draws as a disk with no name
+  and leaves out of the compare row (it knows c = 1, ½, 0.4): a picture need for the lead.

@@ -243,6 +243,52 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
     ],
   },
   {
+    kind: 'explore',
+    id: 's.12.earth-interior~wave-arrivals',
+    title: 'Which waves reach a station',
+    use: 'Use this for “Which seismic waves reach a station 120° from an earthquake, and why?”',
+    assumptions: [
+      'P waves travel through solids and liquids; S waves travel only through solids.',
+      'The outer core, 2,890 km down, is liquid, and waves bend where they cross into it.',
+      'Angles are measured round Earth’s center from the earthquake’s focus.',
+    ],
+    figure: { kind: 'earthLayers' },
+    scenes: [
+      {
+        label: '60°',
+        lines: [
+          'A station 60° away gets both P and S waves, straight through the mantle.',
+          'P waves arrive first because they are faster.',
+        ],
+        earthSection: { distance: 60 },
+      },
+      {
+        label: '104°',
+        lines: [
+          'At 104° the deepest direct waves just graze the core.',
+          'Farther away, no wave reaches a station straight through the mantle.',
+        ],
+        earthSection: { distance: 104 },
+      },
+      {
+        label: '120°',
+        lines: [
+          'At 120° the station is in the P-wave shadow zone: P waves that meet the core bend away from it.',
+          'No S waves arrive, since they cannot cross the liquid outer core.',
+        ],
+        earthSection: { distance: 120 },
+      },
+      {
+        label: '150°',
+        lines: [
+          'At 150° P waves arrive again, bent through the core.',
+          'Still no S waves: the liquid outer core stops them, which is how we know it is liquid.',
+        ],
+        earthSection: { distance: 150 },
+      },
+    ],
+  },
+  {
     kind: 'sort',
     id: 's.12.earth-interior~heat-sources',
     title: 'Earth’s heat or the Sun’s?',
@@ -882,7 +928,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
           'A big eruption sends sulfur gas high into the air, where it forms tiny droplets; smoke from big fires adds particles too.',
           'They reflect sunlight before it reaches the ground, which cools Earth for a year or two.',
         ],
-        greenhouse: { view: 'energy', co2: 'today' },
+        greenhouse: { view: 'energy', co2: 'today', particles: true },
       },
     ],
   },

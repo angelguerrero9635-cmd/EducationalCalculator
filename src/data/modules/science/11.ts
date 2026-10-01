@@ -179,12 +179,6 @@ const sum = (out: string, a: string, b: string, sym: string, how: string): Rule 
     [b]: [(v) => v[out]! - v[a]!, `{${out}} − {${a}}`, 'Take the first part from the total.'],
   });
 
-/** A value fixed by the page (g, a level launch): `id = value`, worked out, never typed. */
-const fixed = (id: string, sym: string, value: number, how: string): Rule =>
-  rule(`${sym} = ${value}`, `{${id}} = ${String(value).replace('-', '−')}`, (v) => v[id]! - value, {
-    [id]: [(v) => value + 0 * (v[id] ?? 0), String(value).replace('-', '−'), how],
-  });
-
 /** |r| = √(x² + y²), worked forward only. */
 const magnitude = (out: string, x: string, y: string, sym: string, how: string): Rule => ({
   relation: {
@@ -327,17 +321,11 @@ const kinematicsPages: ModuleDef[] = [
         'Up is +, so the velocity is negative on the way down; the drop d is how far it fell.',
       ],
       variables: [
-        { ...ACC1, name: 'Acceleration of gravity', derived: true, hidden: true },
         { ...TIME, max: 30 },
         { ...V1, name: 'Velocity', min: -300, max: 0, derived: true },
         q('d', 'd', 'Drop', 'm', 0, 5000, 0.01),
       ],
       ...rules(
-        hide(
-          rule('a = v/t', '{a} = {v}/{t}', (v) => v.a! * v.t! - v.v!, {
-            a: [(v) => div(v.v!, v.t!), '{v}/{t}', ''],
-          }),
-        ),
         rule('v = −gt', '{v} = −9.8 × {t}', (v) => v.v! + G * v.t!, {
           v: [
             (v) => -G * v.t!,
@@ -363,16 +351,16 @@ const kinematicsPages: ModuleDef[] = [
           ],
         }),
       ),
-      example: { a: -G, t, v: -G * t, d: 0.5 * G * t * t },
+      example: { t, v: -G * t, d: 0.5 * G * t * t },
       startWith: ['t'],
       representation: {
         kind: 'motionGraph',
         graph: 'speed',
         time: 't',
-        acceleration: 'a',
+        acceleration: -G,
         speed: 'v',
         start: 0,
-        kinematics: { view: 'velocity' },
+        kinematics: { view: 'velocity', strobe: 'vertical' },
       },
       pictureLabels: ['d'],
     } satisfies ModuleDef;
@@ -726,18 +714,12 @@ const projectilePages: ModuleDef[] = [
         'No air resistance, and g = 9.8 m/s².',
       ],
       variables: [
-        { ...LAUNCH_ANGLE, derived: true, hidden: true },
         { ...LAUNCH_V, name: 'Speed off the edge' },
         { ...LAUNCH_H, name: 'Height of the ledge', min: 0.01 },
         FLIGHT,
         RANGE,
       ],
-      standalone: {
-        vars: ['q'],
-        why: 'The launch is level on this page: θ = 0 is drawn but never changes.',
-      },
       ...rules(
-        hide(fixed('q', 'θ', 0, 'Rolled straight off the edge, the launch is level.')),
         rule('T = √(2h/g)', '{T} = √(2 × {h}/9.8)', (v) => v.T! - Math.sqrt((2 * v.h!) / G), {
           T: [
             (v) => (v.h! >= 0 ? Math.sqrt((2 * v.h!) / G) : undefined),
@@ -752,12 +734,12 @@ const projectilePages: ModuleDef[] = [
           'Divide the range by the speed off the edge.',
         ]),
       ),
-      example: { q: 0, v, h, T, R: v * T },
+      example: { v, h, T, R: v * T },
       startWith: ['v', 'h'],
       representation: {
         kind: 'projectile',
         speed: 'v',
-        angle: 'q',
+        angle: 0,
         height: 'h',
         time: 'T',
         range: 'R',
@@ -1833,8 +1815,8 @@ const momentumPages: ModuleDef[] = [
         masses: ['m', 'n'],
         before: [0],
         after: ['a', 'b'],
+        spring: 'E',
       },
-      pictureLabels: ['E'],
     } satisfies ModuleDef;
   })(),
 ];
@@ -4274,13 +4256,13 @@ const rotationPages: ModuleDef[] = [
       example: { r, F, a, p: 40, t: 10 },
       startWith: ['r', 'F', 'a'],
       representation: {
-        kind: 'vectorDiagram',
-        vectors: [{ name: 'F', magnitude: 'F', direction: 'a' }],
-        components: true,
-        unit: 'N',
-        axes: { x: 'Along the arm', y: 'Across the arm' },
+        kind: 'torque',
+        arm: 'r',
+        force: 'F',
+        angle: 'a',
+        across: 'p',
+        torque: 't',
       },
-      pictureLabels: ['r', 'p', 't'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4348,8 +4330,8 @@ const rotationPages: ModuleDef[] = [
         loadArm: 'l',
         effortArm: 'e',
         effort: 'F',
+        seesaw: { torque: 't', pivot: 'P' },
       },
-      pictureLabels: ['t', 'P'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4465,14 +4447,7 @@ const rotationPages: ModuleDef[] = [
       ),
       example: { r, N, w, T: (2 * Math.PI) / w, v: r * w },
       startWith: ['r', 'N'],
-      representation: {
-        kind: 'circularMotion',
-        mode: 'string',
-        radius: 'r',
-        speed: 'v',
-        period: 'T',
-      },
-      pictureLabels: ['N', 'w'],
+      representation: { kind: 'rotor', radius: 'r', rpm: 'N', speed: 'w', period: 'T', rim: 'v' },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4573,16 +4548,14 @@ const rotationPages: ModuleDef[] = [
       example: { u, a, t, w: u + a * t, d, n: d / (2 * Math.PI) },
       startWith: ['u', 'a', 't'],
       representation: {
-        kind: 'motionGraph',
-        graph: 'speed',
-        time: 't',
-        acceleration: 'a',
-        speed: 'w',
+        kind: 'rotor',
         start: 'u',
-        distance: 'd',
-        kinematics: { view: 'velocity', strobe: false },
+        acceleration: 'a',
+        time: 't',
+        speed: 'w',
+        angle: 'd',
+        turns: 'n',
       },
-      pictureLabels: ['n'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4637,14 +4610,15 @@ const rotationPages: ModuleDef[] = [
       example: { c, m, r, I, t, a: t / I },
       startWith: ['c', 'm', 'r', 't'],
       representation: {
-        kind: 'table',
-        sweep: 'c',
-        output: 'a',
-        params: ['m', 'r', 't'],
-        rows: [1, 2 / 3, 0.5, 0.4],
-        rowNames: ['Hoop', 'Hollow ball', 'Solid disk', 'Solid ball'],
+        kind: 'rotor',
+        shape: 'c',
+        mass: 'm',
+        radius: 'r',
+        inertia: 'I',
+        torque: 't',
+        acceleration: 'a',
+        compare: true,
       },
-      pictureLabels: ['I'],
     } satisfies ModuleDef;
   })(),
 ];
@@ -4733,7 +4707,7 @@ const oscillationPages: ModuleDef[] = [
       variables: [
         q('m', 'm', 'Mass', 'kg', 0.001, 1000, 0.001),
         q('k', 'k', 'Spring constant', 'N/m', 0.1, 1e6, 0.1),
-        { ...PERIOD, units: ['s'] },
+        PERIOD,
         FREQUENCY,
         q('w', 'ω', 'Angular frequency', 'rad/s', 0.001, 1e5, 0.001),
         q('A', 'A', 'Amplitude', 'm', 0.001, 10, 0.001),
@@ -4790,18 +4764,16 @@ const oscillationPages: ModuleDef[] = [
       example: { m, k, T, f: 1 / T, w, A, v: A * w, E: 0.5 * k * A * A },
       startWith: ['m', 'k', 'A'],
       representation: {
-        kind: 'functionGraph',
-        family: 'cos',
-        a: 'A',
-        b: 'w',
-        name: 'x',
-        input: 't',
-        shows: { amplitude: 'A', period: 'T' },
-        marks: ['amplitude', 'period'],
-        xMin: 0,
-        axes: { x: 'Time t (s)', y: 'Position x (m)' },
+        kind: 'oscillator',
+        mass: 'm',
+        spring: 'k',
+        amplitude: 'A',
+        period: 'T',
+        frequency: 'f',
+        angular: 'w',
+        top: 'v',
+        energy: 'E',
       },
-      pictureLabels: ['m', 'k', 'f', 'v', 'E'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4817,12 +4789,11 @@ const oscillationPages: ModuleDef[] = [
         'The spring pulls back in proportion to the stretch: F = kx, until it is overstretched.',
         'A hung mass at rest stretches it until the spring’s pull equals the weight mg.',
         'The stored energy is the area under the F–x line: ½kx².',
-        'Type the stretch in meters: 8 cm is 0.08 m.',
       ],
       variables: [
         q('m', 'm', 'Hung mass', 'kg', 0.001, 10000, 0.001),
-        q('F', 'F', 'Force', 'N', 0, 1e6, 0.001, { units: ['N'] }),
-        q('x', 'x', 'Stretch', 'm', 0.0001, 10, 0.0001, { units: ['m'] }),
+        q('F', 'F', 'Force', 'N', 0, 1e6, 0.001),
+        q('x', 'x', 'Stretch', 'm', 0.0001, 10, 0.0001),
         q('k', 'k', 'Spring constant', 'N/m', 0.1, 1e7, 0.1),
         q('U', 'U', 'Stored energy', 'J', 0, 1e8, 0.0001),
       ],
@@ -4857,18 +4828,14 @@ const oscillationPages: ModuleDef[] = [
       example: { m, F, x, k, U: 0.5 * k * x * x },
       startWith: ['m', 'x'],
       representation: {
-        kind: 'functionGraph',
-        family: 'linear',
-        m: 'k',
-        b: 0,
-        name: 'F',
-        input: 'x',
-        at: { x: 'x', y: 'F' },
-        shade: { from: 0, to: 'x' },
-        xMin: 0,
-        axes: { x: 'Stretch x (m)', y: 'Force F (N)' },
+        kind: 'oscillator',
+        mode: 'hang',
+        mass: 'm',
+        stretch: 'x',
+        spring: 'k',
+        force: 'F',
+        energy: 'U',
       },
-      pictureLabels: ['m', 'U'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -4900,14 +4867,7 @@ const oscillationPages: ModuleDef[] = [
       ),
       example: { L, g, T, f: 1 / T },
       startWith: ['L', 'g'],
-      representation: {
-        kind: 'table',
-        sweep: 'L',
-        output: 'T',
-        params: ['g'],
-        rows: [0.25, 0.5, 1, 2, 4],
-      },
-      pictureLabels: ['f'],
+      representation: { kind: 'pendulum', length: 'L', gravity: 'g', period: 'T', frequency: 'f' },
     } satisfies ModuleDef;
   })(),
 ];
@@ -5013,8 +4973,12 @@ const potentialPages: ModuleDef[] = [
       ),
       example: { a, r, V, t, U: t * 1e-6 * V },
       startWith: ['a', 'r', 't'],
-      representation: { kind: 'charges', charges: ['a'], distance: 'r' },
-      pictureLabels: ['V', 't', 'U'],
+      representation: {
+        kind: 'charges',
+        charges: ['a'],
+        distance: 'r',
+        equipotentials: { potential: 'V', test: 't', energy: 'U' },
+      },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -5103,13 +5067,11 @@ const potentialPages: ModuleDef[] = [
       },
       startWith: ['V', 'q', 'm'],
       representation: {
-        kind: 'table',
-        sweep: 'V',
-        output: 'v',
-        params: ['q', 'm'],
-        rows: [1, 10, 100, 1000],
+        kind: 'charges',
+        mode: 'plates',
+        voltage: 'V',
+        launch: { charge: 'q', mass: 'm', energy: 'K', speed: 'v' },
       },
-      pictureLabels: ['K'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -5170,13 +5132,13 @@ const potentialPages: ModuleDef[] = [
       example: { C, V, Q: C * V, U: 0.5e-6 * C * V * V },
       startWith: ['C', 'V'],
       representation: {
-        kind: 'table',
-        sweep: 'V',
-        output: 'U',
-        params: ['C'],
-        rows: [3, 6, 9, 12],
+        kind: 'capacitor',
+        capacitance: 'C',
+        voltage: 'V',
+        charge: 'Q',
+        energy: 'U',
+        farads: 1e-6,
       },
-      pictureLabels: ['Q'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -5251,13 +5213,18 @@ const potentialPages: ModuleDef[] = [
       example: { k, A, d, C, V, Q: C * V, E: V / (d * 1e-3) },
       startWith: ['k', 'A', 'd', 'V'],
       representation: {
-        kind: 'table',
-        sweep: 'd',
-        output: 'C',
-        params: ['k', 'A'],
-        rows: [0.5, 1, 2, 4],
+        kind: 'capacitor',
+        dielectric: 'k',
+        area: 'A',
+        gap: 'd',
+        meters: 1e-3,
+        capacitance: 'C',
+        voltage: 'V',
+        charge: 'Q',
+        farads: 1e-12,
       },
-      pictureLabels: ['V', 'Q', 'E'],
+      // The capacitor draws the even field but not its value.
+      pictureLabels: ['E'],
     } satisfies ModuleDef;
   })(),
 ];

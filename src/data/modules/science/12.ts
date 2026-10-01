@@ -351,7 +351,7 @@ const shadowZone: ModuleDef = {
 
 // ── Earth's history: the early Earth, its atmosphere and the history of life ──
 
-/** Rounded ages (million years ago) of the events in the one-day table. */
+/** Rounded ages (million years ago) of the events round the one-day clock. */
 const EARTH_EVENTS: [number, string][] = [
   [4600, 'Earth forms'],
   [3500, 'First life'],
@@ -448,14 +448,13 @@ const earthDay: ModuleDef = {
   example: { A: 2300, p: 50, m: 720, t: 12 },
   startWith: ['A'],
   representation: {
-    kind: 'table',
-    sweep: 'A',
-    output: 't',
-    params: [],
-    rows: EARTH_EVENTS.map(([a]) => a),
-    rowNames: EARTH_EVENTS.map(([, name]) => name),
+    kind: 'geologicClock',
+    ago: 'A',
+    time: 't',
+    minutes: 'm',
+    share: 'p',
+    events: EARTH_EVENTS.map(([age, name]) => ({ age, name })),
   },
-  pictureLabels: ['p', 'm'],
 };
 
 /** Hours in a year: 365.25 days of 24 hours. The year's length has not changed. */
@@ -506,14 +505,7 @@ const coralDays: ModuleDef = {
   ),
   example: { n: 1200, b: 3, N: 400, D: YEAR_H / 400 },
   startWith: ['n', 'b'],
-  representation: {
-    kind: 'table',
-    sweep: 'N',
-    output: 'D',
-    params: [],
-    rows: [365.25, 380, 400, 420, 440],
-  },
-  pictureLabels: ['n', 'b'],
+  representation: { kind: 'coralSection', lines: 'n', bands: 'b', days: 'N', day: 'D' },
 };
 
 // ── Geologic time and radiometric dating ──
@@ -1104,7 +1096,8 @@ const kepler: ModuleDef = {
   ],
   variables: [
     V('a', 'a', 'Semi-major axis', { unit: 'AU', min: 0.1, max: 100, step: 0.01 }),
-    V('e', 'e', 'Eccentricity', { min: 0, max: 0.95, step: 0.001 }),
+    // To 0.97: Halley's Comet (e = 0.967) fits.
+    V('e', 'e', 'Eccentricity', { min: 0, max: 0.97, step: 0.001 }),
     V('q', 'q', 'Perihelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
     V('Q', 'Q', 'Aphelion distance', { unit: 'AU', min: 0, max: 200, step: 0.01, sigFigs: 3 }),
     V('T', 'T', 'Period', { unit: 'years', min: 0.03, max: 1000, step: 0.01 }),
@@ -1220,6 +1213,25 @@ const redshiftRel = rule(
   },
 );
 
+/** z = (λ − λ₀) ÷ λ₀, the lab line λ₀ a value (any Balmer line). */
+const restShiftRel = rule(
+  'z = (λ − λ₀) ÷ λ₀',
+  '{z} = ({l} − {r}) ÷ {r}',
+  (v) => v.z! * v.r! - (v.l! - v.r!),
+  {
+    z: [
+      (v) => Number(((v.l! - v.r!) / v.r!).toPrecision(12)),
+      '({l} − {r}) ÷ {r}',
+      'The shift as a fraction of the lab wavelength.',
+    ],
+    l: [
+      (v) => Number((v.r! * (1 + v.z!)).toPrecision(12)),
+      '{r} × (1 + {z})',
+      'The lab wavelength stretched by 1 + z.',
+    ],
+  },
+);
+
 /** v = c × z, c in km/s. */
 const czRel = rule('v = c × z', '{v} = 300,000 × {z}', (v) => v.v! - 300000 * v.z!, {
   v: [(v) => 300000 * v.z!, '300,000 × {z}', 'Multiply the shift by light’s speed, 300,000 km/s.'],
@@ -1234,10 +1246,17 @@ const doppler: ModuleDef = {
   assumptions: [
     'Moving away stretches the lines red (+v); moving toward shifts them blue (−v).',
     'Only motion along our line of sight shows.',
-    'The pattern of lines names the element; here it is hydrogen’s Hα line, 656.3 nm in the lab.',
+    'Pick the hydrogen line you measured: its lab wavelength is λ₀, and the other lines shift the same way.',
   ],
   variables: [
-    V('l', 'λ', 'Observed wavelength of Hα', { unit: 'nm', min: 649, max: 663, step: 0.01 }),
+    V('r', 'λ₀', 'Lab wavelength (Hα 656.3, Hβ 486.1, Hγ 434, Hδ 410.2)', {
+      unit: 'nm',
+      min: 410.2,
+      max: 656.3,
+      multipleOf: 0.1,
+      allowed: [410.2, 434.0, 486.1, 656.3],
+    }),
+    V('l', 'λ', 'Observed wavelength', { unit: 'nm', min: 400, max: 665, step: 0.01 }),
     V('z', 'z', 'Shift', { min: -0.012, max: 0.012, step: 0.000001, sigFigs: 5 }),
     V('v', 'v', 'Line-of-sight speed', {
       unit: 'km/s',
@@ -1248,18 +1267,26 @@ const doppler: ModuleDef = {
       sigFigs: 4,
     }),
   ],
-  ...rels(redshiftRel, czRel),
+  ...rels(restShiftRel, czRel),
   example: {
+    r: H_ALPHA,
     l: 656.5,
     z: (656.5 - H_ALPHA) / H_ALPHA,
     v: (300000 * (656.5 - H_ALPHA)) / H_ALPHA,
   },
-  startWith: ['l'],
+  startWith: ['r', 'l'],
   representation: {
     kind: 'spectrum',
     wavelength: 'l',
     meters: 1e-9,
-    lines: { element: 'H', mode: 'absorption', redshift: 'z', velocity: 'v' },
+    lines: {
+      element: 'H',
+      mode: 'absorption',
+      redshift: 'z',
+      velocity: 'v',
+      rest: 'r',
+      line: 'rest',
+    },
   },
 };
 
@@ -1598,15 +1625,6 @@ const stretch: ModuleDef = {
 const RE_PER_RSUN = 109;
 const depthOf = (r: number, R: number) => 100 * (r / (RE_PER_RSUN * R)) ** 2;
 
-/** Planets of the solar system by radius (Earth radii), for the transit table. */
-const TRANSIT_ROWS: [number, string][] = [
-  [0.53, 'Mars'],
-  [1, 'Earth'],
-  [3.88, 'Neptune'],
-  [9.45, 'Saturn'],
-  [11.21, 'Jupiter'],
-];
-
 const transit: ModuleDef = {
   id: 's.12.exoplanets',
   unitSystems: ['metric'],
@@ -1678,14 +1696,7 @@ const transit: ModuleDef = {
   ),
   example: { R: 1, r: 10.9, d: 1 },
   startWith: ['d', 'R'],
-  representation: {
-    kind: 'table',
-    sweep: 'r',
-    output: 'd',
-    params: ['R'],
-    rows: TRANSIT_ROWS.map(([r]) => r),
-    rowNames: TRANSIT_ROWS.map(([, name]) => name),
-  },
+  representation: { kind: 'transit', star: 'R', planet: 'r', depth: 'd' },
 };
 
 const exoOrbit: ModuleDef = {
@@ -1734,13 +1745,12 @@ const exoOrbit: ModuleDef = {
   example: { M: 0.5, P: 1461, T: 4, a: 2 },
   startWith: ['P', 'M'],
   representation: {
-    kind: 'table',
-    sweep: 'P',
-    output: 'a',
-    params: ['M'],
-    rows: [10, 100, 365.25, 1461, 3652.5],
+    kind: 'circularMotion',
+    mode: 'kepler',
+    semiMajor: 'a',
+    starMass: 'M',
+    period: 'T',
   },
-  pictureLabels: ['T'],
 };
 
 const habTemp = (L: number, a: number) => (278 * L ** 0.25) / Math.sqrt(a);
@@ -1843,13 +1853,13 @@ const habitable: ModuleDef = {
   example: { L: 0.25, d1: 0.475, d2: 0.685, a: 0.5, T: 278 },
   startWith: ['L', 'a'],
   representation: {
-    kind: 'table',
-    sweep: 'a',
-    output: 'T',
-    params: ['L'],
-    rows: [0.25, 0.5, 0.75, 1, 1.5, 2],
+    kind: 'habitableZone',
+    luminosity: 'L',
+    inner: 'd1',
+    outer: 'd2',
+    orbit: 'a',
+    temperature: 'T',
   },
-  pictureLabels: ['d1', 'd2'],
 };
 
 export const SCIENCE_12_MODULES: ModuleDef[] = [
