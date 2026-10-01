@@ -2461,8 +2461,8 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'The hollow ball (c = 2/3) named and drawn, and in the compare row beside the hoop, solid disk and solid ball',
       ['s.11.rotation~rotational-inertia'],
     ),
-    status: 'drawn',
-    gallery: ['g.s11-rotation-hollow-ball'],
+    status: 'placed',
+    gallery: [],
     notes:
       "P23. c = ⅔ is now drawn and named a hollow ball (a thin shell cut open), not a solid disk, wherever a rotor's shape is ⅔. New option `hollow: true` adds it to the compare row: four shapes, each column's name and c on two lines. Pages without `hollow` keep their three. The harness checks that with `hollow` the shape is one of the four named factors (1, ⅔, ½, 0.4). Spec: { kind: 'rotor', shape: 'c', mass: 'm', radius: 'r', inertia: 'I', torque: 't', acceleration: 'a', compare: true, hollow: true }.",
   },

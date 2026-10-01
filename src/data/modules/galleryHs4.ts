@@ -10,10 +10,9 @@ import type { LayoutDef } from './layouts';
 import { SCIENCE_9_LAYOUTS } from './layouts/science9';
 import { MATH_10_MODULES } from './math/10';
 import { MATH_12_MODULES } from './math/12';
-import { SCIENCE_11_MODULES } from './science/11';
 import type { ModuleDef, Representation } from './types';
 
-const PAGES = [...MATH_10_MODULES, ...MATH_12_MODULES, ...SCIENCE_11_MODULES];
+const PAGES = [...MATH_10_MODULES, ...MATH_12_MODULES];
 
 /**
  * A demo from the page that waits, with the picture the page will pass. `vars` changes
@@ -38,34 +37,6 @@ function fromPage(
     ...rest,
   };
 }
-
-// ── H111 (P23): rotor, the hollow ball in the compare row ──
-
-const hollowBall = (() => {
-  const [c, m, r, t] = [2 / 3, 2, 0.5, 3];
-  const I = c * m * r * r;
-  return fromPage(
-    's.11.rotation~rotational-inertia',
-    'g.s11-rotation-hollow-ball',
-    'A hollow ball beside the hoop, disk and solid ball',
-    {
-      kind: 'rotor',
-      shape: 'c',
-      mass: 'm',
-      radius: 'r',
-      inertia: 'I',
-      torque: 't',
-      acceleration: 'a',
-      compare: true,
-      hollow: true,
-    },
-    {
-      use: 'Use this for “A 3 N·m torque turns a 2 kg hollow ball of radius 0.5 m. What is its angular acceleration?”',
-      example: { c, m, r, I, t, a: t / I },
-      pictureLabels: [],
-    },
-  );
-})();
 
 // ── H112 (P24): normalCurve's F curve, one tail or two from the page's Hₐ value ──
 
@@ -150,7 +121,6 @@ const exactlySixty = fromPage(
 );
 
 export const HS4_GALLERY_MODULES: ModuleDef[] = [
-  hollowBall,
   twoVariances,
   twoVariancesRight,
   exactlyTwo,

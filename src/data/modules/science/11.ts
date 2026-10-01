@@ -4619,6 +4619,7 @@ const rotationPages: ModuleDef[] = [
         torque: 't',
         acceleration: 'a',
         compare: true,
+        hollow: true,
       },
     } satisfies ModuleDef;
   })(),
