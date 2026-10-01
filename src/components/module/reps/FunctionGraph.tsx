@@ -45,7 +45,7 @@ import { SignBand, SignFill, signCaption } from './FunctionSign';
 import { reshape, reshapeCaption, reshapeVars } from './functionGraphHs2g';
 import { transformCurve, transformText } from './functionGraphHs3b';
 import { RiemannRects, riemannCaption } from './functionGraphRiemann';
-import { riemannXs } from './riemann';
+import { riemannOf, riemannXs } from './riemann';
 import { toShownUnits, unitPositionIds } from './functionGraphUnits';
 import { usePaintIds, url } from './paint';
 import { signOf } from './signBox';
@@ -471,6 +471,7 @@ export function FunctionGraph({
     ...(tfP ? [tfP.y, tfP.Y] : []),
     ...(moved?.curve.key ? [moved.curve.key.y] : []),
     ...(atX !== undefined ? [main.f(atX)] : []),
+    ...(spec.riemann ? riemannOf(spec.riemann, main.f, get).strips.map((q) => q.y) : []), // H106
     ...(sec ? [main.f(sec.x), main.f(sec.x + sec.h)] : []),
     ...(limX !== undefined ? [main.side(limX, -1), main.side(limX, 1)] : []),
     ...(main.midline !== undefined && main.amplitude !== undefined
