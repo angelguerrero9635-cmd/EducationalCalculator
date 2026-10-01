@@ -4,6 +4,7 @@ import type { ModuleDef } from '@/data/modules';
 import type { SolveResult } from '@/engine/solve';
 import {
   changeUnits,
+  driveTyped,
   initialState,
   movedGivens,
   setValues,
@@ -153,6 +154,11 @@ export function useCalculator(module: ModuleDef): Calculator {
             }
             if (!inRange(target - k * slide.step) && !inRange(target + k * slide.step)) break;
           }
+        }
+        // A handle on a worked-out value moves the typed value behind it instead.
+        if (misfit(next) && stuck && slide && target !== undefined) {
+          const driven = driveTyped(system, s.calc, updates, slide.id, target);
+          if (driven) return { ...s, calc: driven };
         }
         if (misfit(next)) {
           const own = misfits(next, ids);

@@ -187,10 +187,17 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
   type Handle = { id: string; x: number; toValue: (x: number) => number; label: string };
   const handles: Handle[] = [];
   if (!spec.fixed && !model.problem) {
-    // A worked-out value gets no handle: dragging it would have to change a typed one.
+    // A statistic worked out from the data gets no handle (dragging it could only change the
+    // data). A worked-out cutoff (m − d) keeps its handle: the drag moves the typed value
+    // behind it (d), the others held (useCalculator's set).
     const typed = (v: string) => calc.status(v) !== 'derived';
-    const add = (v: number | string | undefined, label: string) => {
-      if (typeof v !== 'string' || !rep.known(v) || !typed(v) || handles.some((h) => h.id === v))
+    const add = (v: number | string | undefined, label: string, worked = true) => {
+      if (
+        typeof v !== 'string' ||
+        !rep.known(v) ||
+        (!worked && !typed(v)) ||
+        handles.some((h) => h.id === v)
+      )
         return;
       handles.push({ id: v, x: rep.shown(v), toValue: (x) => x, label });
     };
@@ -212,7 +219,7 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
         label: 'the test statistic',
       });
     }
-    if (chi) add(spec.chiSquare!.stat, 'the chi-square statistic');
+    if (chi) add(spec.chiSquare!.stat, 'the chi-square statistic', false);
   }
   const keep =
     spec.keep ??
