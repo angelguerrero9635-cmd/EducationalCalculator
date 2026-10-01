@@ -21,8 +21,12 @@ export interface SolveResult {
   dropped: string[];
   /** The subset of `dropped` removed because they conflicted with newer input (tell the user). */
   cleared: string[];
-  /** The newest given, if it could not be accepted, with a reason to show the user. */
-  rejected?: { id: string; reason: string };
+  /**
+   * The newest given, if it could not be accepted, with a reason to show the user. `older`:
+   * the value is possible alone but not with the older inputs, which stay (a rule or a range
+   * says why).
+   */
+  rejected?: { id: string; reason: string; older?: boolean };
 }
 
 export interface TraceStep {
@@ -59,10 +63,18 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   const unit = variable.displayUnit ? ` ${variable.displayUnit}` : '';
   // Money in dollars reads "$84", not "84 $".
   const withUnit = (n: string) => (variable.displayUnit === '$' ? dollars(n) : `${n}${unit}`);
-  if (variable.integer && Math.abs(x / f - Math.round(x / f)) > 1e-9) {
+  // To 11 figures of the size (a count of 60,300 worked out as E ÷ P from an E rounded to 12
+  // figures is 60,300.00000008), while −999,999,999.5 is still not whole.
+  if (
+    variable.integer &&
+    Math.abs(x / f - Math.round(x / f)) > Math.max(1e-9, 1e-11 * Math.abs(x / f))
+  ) {
     return 'Must be a whole number';
   }
-  if (variable.allowed && !variable.allowed.some((a) => Math.abs(x / f - a) < 1e-9)) {
+  if (
+    variable.allowed &&
+    !variable.allowed.some((a) => Math.abs(x / f - a) < Math.max(1e-9, 1e-11 * Math.abs(a)))
+  ) {
     const list = variable.allowed.map((a) => formatNumber(a));
     return `Must be ${list.length > 1 ? `${list.slice(0, -1).join(', ')} or ${list[list.length - 1]}` : list[0]}`;
   }
@@ -126,6 +138,17 @@ export function holds(relation: Relation, values: Values): boolean {
   return Math.abs(r) <= TOLERANCE * scale * scale;
 }
 
+/**
+ * True when a relation holds whatever `id` is, the other values as they are (the distance
+ * rule at t = 0 and Δx = 0, for any v): it then says nothing about `id`.
+ */
+export function indifferent(relation: Relation, values: Values, id: string): boolean {
+  return [0, 1, -7.3].every((x) => {
+    const r = relation.residual({ ...values, [id]: x });
+    return Number.isFinite(r) && Math.abs(r) <= 1e-12;
+  });
+}
+
 /** A relation that is a straight-line sum of its values: the constant and each coefficient. */
 type Affine = { c0: number; coef: Map<string, number> };
 const affineCache = new WeakMap<Relation, Affine | null>();
@@ -172,6 +195,44 @@ function affineOf(rel: Relation): Affine | undefined {
   return out ?? undefined;
 }
 
+/** A value as the student reads it: in the box's unit, to 6 significant figures. */
+function shownWithUnit(v: VariableDef, x: number): string {
+  const f = v.unitFactor ?? 1;
+  const unit = v.displayUnit ?? v.unit;
+  return `${formatNumber(Number((x / f).toPrecision(6)))}${unit && !/^[$¢%°]/.test(unit) ? ` ${unit}` : ''}`;
+}
+
+/**
+ * Why `x` can't be `v`'s value, in a sentence: a rule's own message when one speaks for the
+ * values with `x` in them ("No material is denser than …"), else the range it breaks
+ * ("Density would have to be 108,225 g/cm³, but it can be at most 100 g/cm³"). Undefined
+ * when `x` is not a number.
+ */
+function whyNot(system: System, v: VariableDef, x: number, values: Values): string | undefined {
+  if (!Number.isFinite(x)) return undefined;
+  const all = { ...values, [v.id]: x };
+  for (const r of system.relations) {
+    if (!r.message || !r.vars.every((id) => id in all)) continue;
+    try {
+      const text = r.message(all);
+      if (text) return text;
+    } catch {
+      // A message that needs values not known yet stays quiet.
+    }
+  }
+  const range = checkValue(v, x);
+  if (!range) return undefined;
+  // 60,300.00000008 "must be a whole number" reads as nonsense: no sentence for rounding dust.
+  const f = v.unitFactor ?? 1;
+  if (checkValue(v, Number((x / f).toPrecision(6)) * f) === undefined) return undefined;
+  const need = `${v.name} would have to be ${shownWithUnit(v, x)}, but it`;
+  if (v.max !== undefined && /^Must be at most/.test(range))
+    return `${need} can be at most ${shownWithUnit(v, v.max)}`;
+  if (v.min !== undefined && /^Must be at least/.test(range))
+    return `${need} can be at least ${shownWithUnit(v, v.min)}`;
+  return `${need} ${range[0]!.toLowerCase()}${range.slice(1)}`;
+}
+
 /**
  * A sum the unknown values can't reach, whatever they are within their ranges (a total of 10
  * with 12 already typed and the rest at least 0): the inputs can never be completed. Returns
@@ -214,14 +275,14 @@ function outOfReach(system: System, values: Values): string | undefined {
     if (unbounded) continue;
     const tol = 1e-9 * (1 + size);
     if (!(lo > tol || hi < -tol)) continue;
+    // No open value moves it: a lookup (dice pairs for a sum) read as flat at the probes, not a
+    // sum that can't be reached.
+    if (open.every((id) => aff.coef.get(id) === 0)) continue;
     // One value left to find: say what it would have to be and its limit.
     if (open.length === 1) {
       const v = byId.get(open[0]!)!;
       const k = aff.coef.get(v.id)!;
-      const f = v.unitFactor ?? 1;
-      const unit = v.displayUnit ?? v.unit;
-      const shown = (x: number) =>
-        `${formatNumber(Number((x / f).toPrecision(6)))}${unit && !/^[$¢%°]/.test(unit) ? ` ${unit}` : ''}`;
+      const shown = (x: number) => shownWithUnit(v, x);
       const need = -rest / k;
       const over = need > v.max!;
       return `${v.name} would have to be ${shown(need)}, but it can be at ${over ? 'most' : 'least'} ${shown(over ? v.max! : v.min!)}`;
@@ -304,8 +365,12 @@ function candidatesFor(
 
 type Propagation =
   | { ok: true; values: Values; trace: TraceStep[] }
-  /** `said`: the reason is a rule's own sentence (its `message`), not a generic conflict. */
-  | { ok: false; reason: string; said?: boolean };
+  /**
+   * `said`: the reason is a rule's own sentence (its `message`), not a generic conflict.
+   * `why`: a sentence that explains it (a rule's message or the range a value would break),
+   * worked out only when asked (the search tries thousands of values).
+   */
+  | { ok: false; reason: string; said?: boolean; why?: () => string | undefined };
 
 /**
  * Repeatedly solves any relation with exactly one unknown until nothing changes. When a
@@ -351,10 +416,21 @@ function propagate(
           // No valid value exists (e.g. out of range, or a negative length). Only a conflict
           // if every other variable in the relation is pinned; otherwise just leave it unknown.
           const direct = relation.solve?.[id]?.(values);
+          // A rule these values leave indifferent to it (Δx = (v₀ + v) ÷ 2 × t with t = 0 and
+          // Δx = 0: v = 2Δx ÷ t − v₀ is 0 ÷ 0) says nothing about it.
           const hasCandidate =
-            direct !== undefined && (!Array.isArray(direct) || direct.length > 0);
+            direct !== undefined &&
+            (!Array.isArray(direct) || direct.length > 0) &&
+            !indifferent(relation, values, id);
           if (hasCandidate) {
-            return { ok: false, reason: `Makes ${variable.name.toLowerCase()} impossible` };
+            const xs = (Array.isArray(direct) ? direct : [direct]).filter(Number.isFinite);
+            const at = { ...values };
+            return {
+              ok: false,
+              reason: `Makes ${variable.name.toLowerCase()} impossible`,
+              why: () =>
+                xs.map((x) => whyNot(system, variable, x, at)).find((t) => t !== undefined),
+            };
           }
           continue;
         }
@@ -473,9 +549,12 @@ function narrow(system: System, vals: Values, bounds: Bounds): boolean {
         const b = bounds.get(open[i]!)!;
         // Values are whole steps apart, so a millionth of a step absorbs rounding without ever
         // admitting a value that doesn't fit.
-        const lo = Math.max(b.lo, Math.ceil(x1 / b.f - 1e-6) * b.f);
+        let lo = Math.max(b.lo, Math.ceil(x1 / b.f - 1e-6) * b.f);
         const hi = Math.min(b.hi, Math.floor(x2 / b.f + 1e-6) * b.f);
-        if (lo > hi) return false;
+        // The same step counted two ways (6563 × 0.1 is 656.3000000000001, the list's last
+        // value 656.3) is one value, not an empty range.
+        if (lo > hi + 1e-9 * Math.max(b.f, Math.abs(hi))) return false;
+        lo = Math.min(lo, hi);
         if (lo !== b.lo || hi !== b.hi) {
           bounds.set(open[i]!, { lo, hi, f: b.f });
           changed = true;
@@ -575,6 +654,71 @@ const widened = (system: System): System => ({
 });
 
 /**
+ * The same system with every bounded range widened tenfold, whole number or not: what the
+ * formulas fix even past the ranges (as the sampling harness's `relax` reads it).
+ */
+const loosened = (system: System): System => ({
+  relations: system.relations,
+  variables: system.variables.map((v) => {
+    if (v.min === undefined || v.max === undefined) return v;
+    const w = 10 * (v.max - v.min + (v.unitFactor ?? 1));
+    return { ...v, min: v.min - w, max: v.max + w };
+  }),
+});
+
+/**
+ * Half a typed value's step: how far a number typed into the box may be from the value it
+ * stands for (a rounded shown value, d = 463.6 for 463.601). 0 for whole numbers, lists and
+ * boxes with no step.
+ */
+const slackOf = (v: VariableDef | undefined) =>
+  v && !v.integer && !v.allowed && !v.multipleOf && v.step !== undefined && v.step > 0
+    ? v.step / 2
+    : 0;
+
+/**
+ * Typed values that miss only by their rounding: each is a shown value, within half its step
+ * of what the others work out (d = 463.6 for z × σ = 463.601), and the rounding may run
+ * through several values (E → P → z → d; λ₀, λ, z and v). Finds one, newest first, that left
+ * out leaves the other typed values fitting together and is worked out from them within half a
+ * step of the number typed. It is then worked out, not typed (as a direct match is); the others
+ * are kept exactly as typed. Undefined when none does.
+ */
+function roundedOut(
+  system: System,
+  given: readonly Given[],
+  previous: Values,
+): string[] | undefined {
+  const byId = new Map(system.variables.map((v) => [v.id, v]));
+  const valid = given.filter((g) => {
+    const v = byId.get(g.id);
+    return v && checkValue(v, g.value) === undefined;
+  });
+  const soft = valid.filter((g) => slackOf(byId.get(g.id)) > 0);
+  if (soft.length === 0) return undefined;
+  const typed = Object.fromEntries(
+    valid.map((g) => [g.id, normalizeValue(byId.get(g.id)!, g.value)]),
+  );
+  const fits = (out: readonly Given[]) => {
+    const rest = { ...typed };
+    for (const g of out) delete rest[g.id];
+    const r = propagate(system, rest, previous, [], { left: 200 });
+    return (
+      r.ok &&
+      out.every((g) => {
+        const x = r.values[g.id];
+        return x !== undefined && Math.abs(x - typed[g.id]!) <= slackOf(byId.get(g.id)) + 1e-12;
+      })
+    );
+  };
+  // Newest first: a shown value typed again is the one to work out again (older first worked
+  // z out as invNorm(0.99999999614), shown invNorm(1), where the typed P was the rounded one).
+  for (const g of [...soft].reverse()) if (fits([g])) return [g.id];
+  // (Two at once was tried: it worked out more typed values than needed. One is enough.)
+  return undefined;
+}
+
+/**
  * Solves the system from the givens. Newer givens take priority: an older given is dropped
  * when newer ones already determine it or conflict with it.
  */
@@ -652,21 +796,40 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       }
       return undefined;
     };
+    const message = unreachable || none ? said() : undefined;
     const trial: Propagation = unreachable
-      ? { ok: false, reason: said() ?? unreachable }
+      ? { ok: false, reason: message ?? unreachable, said: true }
       : none
-        ? { ok: false, reason: said() ?? 'These numbers can’t all be true together' }
+        ? message
+          ? { ok: false, reason: message, said: true }
+          : { ok: false, reason: 'These numbers can’t all be true together' }
         : propagated;
+    // Typed values that miss only by their rounding (each within half its step) fit: the
+    // ones the others work out are worked out, the rest kept as typed.
+    const out = !trial.ok && !isNewest ? roundedOut(system, given, previous) : undefined;
+    if (out) {
+      const after = solve(
+        system,
+        given.filter((k) => !out.includes(k.id)),
+        previous,
+      );
+      return { ...after, dropped: [...after.dropped, ...out] };
+    }
+    // Why an older input doesn't fit: a rule's sentence, or the range a value would break.
+    // (Not when the newest was already refused for its own range: that reason stands.)
+    const why =
+      trial.ok || isNewest || rejected ? undefined : trial.said ? trial.reason : trial.why?.();
     if (trial.ok) {
       known = trial.values;
       trace = trial.trace;
       kept.unshift({ id: g.id, value: normalizeValue(variable, g.value) });
-    } else if (trial.said && !isNewest) {
-      // A rule says why these numbers have no single answer (parallel lines): the newest
-      // input is refused with that sentence, and the older numbers stay as they were.
+    } else if (why !== undefined) {
+      // A rule or a range says why the newest input doesn't fit the older ones (parallel
+      // lines; no material denser than osmium): the newest is refused with that sentence, and
+      // the older numbers stay as they were. Only a conflict nothing explains clears the older.
       const newest = given[given.length - 1]!;
       const before = solve(system, given.slice(0, -1), previous);
-      return { ...before, rejected: { id: newest.id, reason: trial.reason } };
+      return { ...before, rejected: { id: newest.id, reason: why, older: true } };
     } else if (isNewest) {
       rejected = { id: g.id, reason: trial.reason };
     } else {
@@ -698,6 +861,75 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         known = { ...known, [v.id]: x };
         filled.push(v.id);
       }
+    }
+  }
+  // A filled value must follow from the values known without it (E21): one at a time, by a
+  // formula whose other values are known or already explained, or as a group that the
+  // group's own formulas fix together (c + s = 20 with c = s: two formulas, two values). A
+  // group pinned only through a value still unknown is a cycle, and is left for the student:
+  // with n₂ = 2 and n₁ cleared, the search's n₁ = ±1 both give E = 10.2, but E's only formula
+  // needs n₁, and "E from λ, λ from E" explains nothing.
+  if (filled.length) {
+    const explained = new Set(Object.keys(known).filter((id) => !filled.includes(id)));
+    const rules = system.relations.filter((rel) => !rel.constraint);
+    let open = [...filled];
+    for (let changed = true; changed;) {
+      changed = false;
+      for (const id of open) {
+        const by = rules.some(
+          (rel) =>
+            rel.vars.includes(id) &&
+            rel.solve?.[id]?.length !== 0 &&
+            rel.vars.every((v) => v === id || explained.has(v)),
+        );
+        if (by) {
+          explained.add(id);
+          changed = true;
+        }
+      }
+      open = open.filter((id) => !explained.has(id));
+    }
+    // The rest in groups joined by formulas whose values are all known (or in the group).
+    const inGroup = (rel: Relation, group: Set<string>) =>
+      rel.vars.some((v) => group.has(v)) && rel.vars.every((v) => group.has(v) || explained.has(v));
+    const left = new Set(open);
+    for (const start of open) {
+      if (!left.has(start)) continue;
+      const group = new Set([start]);
+      for (let grew = true; grew;) {
+        grew = false;
+        for (const rel of rules) {
+          if (!rel.vars.some((v) => group.has(v))) continue;
+          for (const v of rel.vars) {
+            if (left.has(v) && !group.has(v)) {
+              group.add(v);
+              grew = true;
+            }
+          }
+        }
+      }
+      for (const v of group) left.delete(v);
+      const fixing = rules.filter((rel) => inGroup(rel, group)).length;
+      if (fixing >= group.size) continue;
+      const rest = { ...known };
+      for (const v of group) delete rest[v];
+      // Only the values that differ among the solutions with every range widened are dropped:
+      // a value the formulas fix through a cancelling unknown (the lone pairs l = 2 whatever
+      // the carbon count; ΔTf = ΔTb × Kf ÷ Kb whatever i) stays, as does one the search can't
+      // tell about.
+      const r = wholeSolutions(loosened(system), rest, previous, 40);
+      const first = r.solutions[0];
+      if (!first) continue;
+      const loose = [...group].filter((v) =>
+        r.solutions.some((sol) => !(v in sol) || !closeTo(sol[v]!, first[v]!)),
+      );
+      if (!loose.length) continue;
+      const next = { ...known };
+      for (const v of loose) {
+        delete next[v];
+        filled.splice(filled.indexOf(v), 1);
+      }
+      known = next;
     }
   }
   // Explain each filled value with a formula that gives it directly once everything is known,

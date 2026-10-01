@@ -560,6 +560,9 @@ const LADDER_RULES: Rule[] = [
       vars: ['u', 'l'],
       residual: (v) => (v.u! > v.l! ? 0 : 1),
       solve: {},
+      // A level at or below the lower one is refused with the reason; the other level stays.
+      message: (v) =>
+        v.u! > v.l! ? undefined : 'The electron drops from a higher level: n₂ must be above n₁.',
     },
     steps: {},
   },

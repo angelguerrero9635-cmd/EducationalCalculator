@@ -5,6 +5,52 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Solver open items: silent clears, rounding chains (E29), circular fills (E21)
+
+- **A newer value cleared an older one with no reason** (m.10 modeling-density main r = 0.01
+  and 1000 cleared h; m.12 area-under-curve~line m = −100 cleared k; s.11 ~voltage-energy
+  ΔV = 10⁶ after the electron cleared m). → When a rule's message or the range a worked-out
+  value would break says why, `solve` refuses the newest entry with that sentence and keeps the
+  older inputs (`rejected.older`): "No material is denser than about 22.6 g/cm³ …", "The line
+  dips below the x-axis before b …", "That is past a tenth of light’s speed …", else "Density
+  would have to be 1.0823 × 10⁻⁵ g/cm³, but it can be at least 0.0001 g/cm³". A propagation
+  that fails on an out-of-range value carries `why` (worked out only when asked); the
+  whole-number search's sentence (`none`, `outOfReach`) now counts as a reason too. Only a
+  conflict nothing explains still clears the oldest. A slider refused this way looks 25 steps
+  out, as for a moved typed value. Rounding dust gets no sentence ("60,300 must be a whole
+  number").
+- **Rounding through several values** (E29: normal-distribution~outside, starlight-spectra
+  ~doppler). Three causes: whole numbers and listed values were checked to 1e-9 absolute (N =
+  E ÷ P from an E rounded to 12 figures is 60,300.00000008), now to 11 figures of their size (1e-9 the floor, so −999,999,999.5 is still not whole); the
+  whole-number search's `narrow` emptied a range when one step was counted two ways (6563 × 0.1
+  = 656.3000000000001 against the list's 656.3), which cleared λ for consistent λ₀, λ, z and v;
+  and a typed shown value whose rounding runs through a listed or whole value. → `roundedOut`:
+  on a conflict, one typed value (newest first) that the other typed values work out within
+  half its step is worked out instead, the rest kept exactly as typed (two at once worked out
+  more than needed) (tried before
+  a refusal or a clear, so a retyped shown value is never refused for its rounding). Both pages
+  pass the deep run (SAMPLES=100, SEQUENCES=15, UNIT_CASES=10) on seeds 1–5.
+- **Circular fills** (E21: emission's E and λ were filled from n₁ = ±1 after n₁ was cleared,
+  and explained as "E from λ, λ from E"). → A filled value must follow from the values known
+  without it: one at a time by a formula whose other values are known, or as a group its own
+  formulas fix (c + s = 20 with c = s). A group only an unknown pins is left for the student,
+  except the values the solutions with every range widened (`loosened`, as the harness's
+  `relax`) agree on (bonding's lone pairs l = 2 whatever the carbon count; ΔTf = ΔTb × Kf ÷ Kb
+  whatever i). The emission page's n₂ > n₁ rule
+  now has its message, so a level at or below the other is refused and the other stays.
+- **From the heavy run** (`ci-test --heavy`: 433 of 1,768 pages say something different).
+  An older conflict no longer replaces the newest entry's own range message (g.r4f-waterfall);
+  `outOfReach` skips a rule no open value moves (the dice-pairs lookup said "Sum would have to
+  be NaN × 10" on m.7 probability~two-dice's own example, and m.9 ~whole-number-answers'); a
+  rule the values leave indifferent to a value (Δx = (v₀ + v) ÷ 2 × t at t = 0 and Δx = 0, where
+  v = 0 ÷ 0) says nothing about it, in the solver (`indifferent`) and the harness search alike.
+  Still failing, not the solver's: m.10 law-sines-cosines~area's picture check on a = 1000,
+  b = 0.1, C = 178° (reachable now that K = 10⁶ is refused instead of clearing b), and
+  g.m11-normal-distribution-left's "invNorm(1)" step for P = 0.99999999614 (z worked out from a
+  P shown as 1; the base solver does the same, a new sample reaches it).
+- Tests: `solve.test.ts` "a newer value that doesn’t fit the older ones", "typed values rounded
+  to their step", "values the search fills in (E21)".
+
 ## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
 
 - **Twelve picture requests stayed `drawn` though every part was on its page** (H89–H110 span

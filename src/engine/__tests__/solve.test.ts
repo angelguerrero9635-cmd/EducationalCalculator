@@ -7,7 +7,8 @@ import {
   unitFor,
 } from '../format';
 import { findRoots, holds, solve, type System } from '../solve';
-import { initialState, setValues } from '../state';
+import { initialState, setInput, setValues } from '../state';
+import type { Relation, Values } from '../types';
 
 const area: System = {
   variables: [
@@ -307,6 +308,217 @@ describe('a rule that explains why it has no answer', () => {
       { id: 'd', value: 5 },
     ]);
     expect(ok.values.x).toBe(2);
+  });
+});
+
+describe('typed values rounded to their step', () => {
+  // λ = λ₀ × (1 + z) and v = 300,000 × z, λ₀ from a list (as on the Doppler page).
+  const doppler: System = {
+    variables: [
+      { id: 'r', symbol: 'λ₀', name: 'Lab wavelength', allowed: [410.2, 656.3], min: 410.2 },
+      { id: 'l', symbol: 'λ', name: 'Observed wavelength', min: 400, max: 665, step: 0.01 },
+      { id: 'z', symbol: 'z', name: 'Shift', min: -0.012, max: 0.012, step: 0.000001 },
+      { id: 'v', symbol: 'v', name: 'Speed', min: -3600, max: 3600, step: 0.1 },
+    ],
+    relations: [
+      {
+        id: 'z = (λ − λ₀) ÷ λ₀',
+        display: '',
+        vars: ['z', 'l', 'r'],
+        residual: (v) => v.z! * v.r! - (v.l! - v.r!),
+        solve: { z: (v) => (v.l! - v.r!) / v.r!, l: (v) => v.r! * (1 + v.z!) },
+      },
+      {
+        id: 'v = c × z',
+        display: '',
+        vars: ['v', 'z'],
+        residual: (v) => v.v! - 300000 * v.z!,
+        solve: { v: (v) => 300000 * v.z!, z: (v) => v.v! / 300000 },
+      },
+    ],
+  };
+
+  it('finds a listed value worked out a hair off the list (656.2999999 for 656.3)', () => {
+    // 656.3 × 1.012 ÷ 1.012 is 656.2999999999999 in floats; the search must still find 656.3.
+    const r = solve(doppler, [
+      { id: 'r', value: 656.3 },
+      { id: 'l', value: 656.3 * 1.012 },
+      { id: 'v', value: 3600 },
+    ]);
+    expect(r.cleared).toEqual([]);
+    expect(r.rejected).toBeUndefined();
+  });
+
+  it('accepts shown values whose rounding runs through a listed value', () => {
+    // λ₀ = 656.3 and z = 0.0112345 give λ = 663.6732 (shown 663.67): λ typed as shown, after
+    // z, would make λ₀ 656.2968, off the list, so λ is worked out instead of refusing or
+    // clearing.
+    const r = solve(doppler, [
+      { id: 'r', value: 656.3 },
+      { id: 'z', value: 0.0112345 },
+      { id: 'l', value: 663.67 },
+    ]);
+    expect(r.rejected).toBeUndefined();
+    expect(r.cleared).toEqual([]);
+    expect(r.given.map((g) => g.id)).toEqual(['r', 'z']);
+    expect(r.values.l).toBeCloseTo(663.6732, 4);
+  });
+
+  it('still treats a miss past the rounding as a conflict', () => {
+    const r = solve(doppler, [
+      { id: 'r', value: 656.3 },
+      { id: 'z', value: 0.0112345 },
+      { id: 'l', value: 663.8 },
+    ]);
+    // Nothing says why, so the older z is cleared as before.
+    expect(r.cleared).toEqual(['z']);
+    expect(r.given.map((g) => g.id)).toEqual(['r', 'l']);
+  });
+});
+
+describe('values the search fills in (E21)', () => {
+  const whole = (id: string, min: number, max: number) => ({
+    id,
+    symbol: id,
+    name: id,
+    integer: true,
+    min,
+    max,
+  });
+
+  it('leaves a value pinned only through an unknown for the student', () => {
+    // E = 13.6(1/l² − 1/u²) and λ = 1240/E. With u = 2 and l unknown, l = ±1 both give
+    // E = 10.2, but E's only formula needs l: "E from λ, λ from E" would be a circle.
+    const ladder: System = {
+      variables: [
+        whole('u', 2, 8),
+        whole('l', 1, 7),
+        { id: 'E', symbol: 'E', name: 'Energy', min: 0.01, max: 13.6, step: 0.0001 },
+        { id: 'w', symbol: 'λ', name: 'Wavelength', min: 50, max: 20000, step: 0.1 },
+      ],
+      relations: [
+        {
+          id: 'u > l',
+          display: '',
+          vars: ['u', 'l'],
+          constraint: true,
+          residual: (v) => (v.u! > v.l! ? 0 : 1),
+          solve: {},
+        },
+        {
+          id: 'E = 13.6(1/l² − 1/u²)',
+          display: '',
+          vars: ['E', 'l', 'u'],
+          residual: (v) => v.E! - 13.6 * (1 / v.l! ** 2 - 1 / v.u! ** 2),
+          solve: { E: (v) => 13.6 * (1 / v.l! ** 2 - 1 / v.u! ** 2) },
+        },
+        {
+          id: 'λ = 1240/E',
+          display: '',
+          vars: ['w', 'E'],
+          residual: (v) => v.w! * v.E! - 1240,
+          solve: { w: (v) => 1240 / v.E!, E: (v) => 1240 / v.w! },
+        },
+      ],
+    };
+    const r = solve(ladder, [{ id: 'u', value: 2 }]);
+    expect(r.values).toEqual({ u: 2 });
+    expect(r.trace).toEqual([]);
+  });
+
+  it('still fills two values their own formulas fix together (c + s = 20, c = s)', () => {
+    const pair: System = {
+      variables: [whole('c', 0, 20), whole('s', 0, 20), whole('t', 0, 40)],
+      relations: [
+        {
+          id: 'c + s = t',
+          display: '',
+          vars: ['c', 's', 't'],
+          residual: (v) => v.c! + v.s! - v.t!,
+          solve: { t: (v) => v.c! + v.s!, c: (v) => v.t! - v.s!, s: (v) => v.t! - v.c! },
+        },
+        {
+          id: 'c = s',
+          display: '',
+          vars: ['c', 's'],
+          residual: (v) => v.c! - v.s!,
+          solve: { c: (v) => v.s!, s: (v) => v.c! },
+        },
+      ],
+    };
+    const r = solve(pair, [{ id: 't', value: 20 }]);
+    expect(r.values).toEqual({ t: 20, c: 10, s: 10 });
+  });
+});
+
+describe('a newer value that doesn’t fit the older ones', () => {
+  // ρ = m ÷ V with V = s³: a density the range (and a rule) can say no to.
+  const block = (message?: Relation['message']): System => ({
+    variables: [
+      { id: 's', symbol: 's', name: 'Side', min: 0, max: 100, unit: 'cm' },
+      { id: 'V', symbol: 'V', name: 'Volume', min: 0, max: 1e6, unit: 'cm³' },
+      { id: 'm', symbol: 'm', name: 'Mass', min: 0, max: 1e6, unit: 'g' },
+      { id: 'rho', symbol: 'ρ', name: 'Density', min: 0.001, max: 100, unit: 'g/cm³' },
+    ],
+    relations: [
+      {
+        id: 'V = s³',
+        display: '',
+        vars: ['V', 's'],
+        residual: (v) => v.V! - v.s! ** 3,
+        solve: { V: (v) => v.s! ** 3, s: (v) => Math.cbrt(v.V!) },
+      },
+      {
+        id: 'ρ = m ÷ V',
+        display: '',
+        vars: ['rho', 'm', 'V'],
+        residual: (v) => v.rho! * v.V! - v.m!,
+        solve: { rho: (v) => (v.V ? v.m! / v.V : undefined), m: (v) => v.rho! * v.V! },
+      },
+      ...(message
+        ? [
+            {
+              id: 'ρ ≤ 23',
+              display: '',
+              vars: ['rho'],
+              constraint: true,
+              residual: (v: Values) => (v.rho! <= 23 ? 0 : 1),
+              message,
+            },
+          ]
+        : []),
+    ],
+  });
+  const older = [
+    { id: 's', value: 2 },
+    { id: 'm', value: 40 },
+  ];
+
+  it('refuses the newest with the range it breaks, and keeps the older values', () => {
+    // m = 40 g in a 0.1 cm cube is 40,000 g/cm³: the side is refused, the mass stays.
+    const s = setInput(block(), initialState(block(), older), { s: 0.1 });
+    expect(s.errors).toEqual({
+      s: 'Density would have to be 40,000 g/cm³, but it can be at most 100 g/cm³',
+    });
+    expect(s.result.given).toEqual(older);
+    expect(s.result.cleared).toEqual([]);
+  });
+
+  it('refuses it with a rule’s sentence when one speaks for those numbers', () => {
+    const sys = block((v) => (v.rho! > 23 ? 'Nothing is that dense.' : undefined));
+    const s = setValues(sys, initialState(sys, older), { s: 0.5 });
+    // 40 g in 0.125 cm³ is 320 g/cm³: past the range too, but the rule says why.
+    expect(s.errors).toEqual({ s: 'Nothing is that dense.' });
+    expect(s.result.rejected).toMatchObject({ id: 's', older: true });
+    expect(s.result.values.m).toBe(40);
+  });
+
+  it('still works out an older value again when the newer ones fix it', () => {
+    // A side typed after the volume: the volume is worked out again, not refused (a conflict
+    // nothing explains still clears the older value: see "calculator state").
+    const s = setValues(block(), initialState(block(), [{ id: 'V', value: 8 }]), { s: 3 });
+    expect(s.result.values.V).toBe(27);
+    expect(s.result.rejected).toBeUndefined();
   });
 });
 

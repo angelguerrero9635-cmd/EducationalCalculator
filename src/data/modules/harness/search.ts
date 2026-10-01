@@ -3,7 +3,7 @@
  * formulas within the ranges (or with the ranges widened), used to check what the solver
  * found, rejected or left unknown. Test-only: imported by sampling.test.ts.
  */
-import { checkValue, holds, type Given, type System } from '@/engine/solve';
+import { checkValue, holds, indifferent, type Given, type System } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
 
 export function hash(s: string): number {
@@ -188,6 +188,8 @@ export function complete(
               .filter((x) => holds(rel, { ...vals, [id]: x })),
           ),
         ];
+        // A rule these values leave indifferent to it (0 ÷ 0 at t = 0), as for the solver.
+        if (cands.length === 0 && indifferent(rel, vals, id)) continue;
         if (cands.length === 0) return;
         if (cands.length > 1) {
           for (const x of cands) search({ ...vals, [id]: x });
