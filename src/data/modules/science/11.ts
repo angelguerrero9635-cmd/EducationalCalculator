@@ -4253,6 +4253,97 @@ const inductionPages: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
+    const [n, m, v, B] = [1, 1.673e-27, 3e6, 0.2];
+    const e = 1.602e-19;
+    /** Division for these tiny numbers (`div` treats 10⁻¹⁹ as zero). */
+    const per = (a: number, b: number) => (b === 0 ? undefined : a / b);
+    const r = (m * v) / (n * e * B);
+    return {
+      id: 's.11.electromagnetism~charge-circle',
+      title: 'A charge circling in a magnetic field',
+      use: 'Use this for “A proton moves at 3 × 10⁶ m/s square to a 0.2 T field. What force acts on it, how wide is its circle, and how long is one lap?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'The field is square to the velocity, so F = |q|vB, with q counted in charges of e = 1.602 × 10⁻¹⁹ C.',
+        'The force is always square to v: it turns the charge without speeding it up, so the path is a circle.',
+        'That force is the centripetal force: |q|vB = mv²/r, so r = mv/(|q|B).',
+        'A proton’s mass is 1.673 × 10⁻²⁷ kg; an electron’s is 9.109 × 10⁻³¹ kg.',
+      ],
+      variables: [
+        q('n', 'q', 'Charge', 'e', 1, 10, 1, { integer: true }),
+        q('m', 'm', 'Mass', 'kg', 9.109e-31, 1e-24, 1e-34, { scientific: true }),
+        q('v', 'v', 'Speed', 'm/s', 1, 3e7, 1, { scientific: true, units: ['m/s'] }),
+        q('B', 'B', 'Magnetic field', 'T', 0.0001, 10, 0.0001),
+        q('F', 'F', 'Force', 'N', 0, 1, 1e-20, { scientific: true }),
+        q('r', 'r', 'Radius', 'm', 0, 1e6, 1e-15, { scientific: true, units: ['m'] }),
+        q('T', 'T', 'Time for one lap', 's', 0, 1, 1e-15, { scientific: true, units: ['s'] }),
+      ],
+      ...rules(
+        rule(
+          'F = |q|vB',
+          '{F} = {n} × 1.602 × 10⁻¹⁹ × {v} × {B}',
+          (x) => x.F! / (e * x.n! * x.v! * x.B!) - 1,
+          {
+            F: [
+              (x) => x.n! * e * x.v! * x.B!,
+              '{n} × 1.602 × 10⁻¹⁹ × {v} × {B}',
+              'The charge in coulombs times the speed and the field.',
+            ],
+            n: null,
+            v: null,
+            B: null,
+          },
+        ),
+        rule(
+          'r = mv/(|q|B)',
+          '{r} = {m} × {v}/({n} × 1.602 × 10⁻¹⁹ × {B})',
+          (x) => x.r! * x.n! * e * x.B! - x.m! * x.v!,
+          {
+            r: [
+              (x) => per(x.m! * x.v!, x.n! * e * x.B!),
+              '{m} × {v}/({n} × 1.602 × 10⁻¹⁹ × {B})',
+              'Momentum over charge times field: a faster or heavier charge circles wider.',
+            ],
+            v: [
+              (x) => per(x.r! * x.n! * e * x.B!, x.m!),
+              '{r} × {n} × 1.602 × 10⁻¹⁹ × {B}/{m}',
+              'Solve r = mv/(|q|B) for the speed.',
+            ],
+            B: [
+              (x) => per(x.m! * x.v!, x.r! * x.n! * e),
+              '{m} × {v}/({r} × {n} × 1.602 × 10⁻¹⁹)',
+              'Solve r = mv/(|q|B) for the field.',
+            ],
+            n: null,
+            m: null,
+          },
+        ),
+        rule('T = 2πr/v', '{T} = 2π × {r}/{v}', (x) => x.T! * x.v! - 2 * Math.PI * x.r!, {
+          T: [
+            (x) => per(2 * Math.PI * x.r!, x.v!),
+            '2π × {r}/{v}',
+            'One lap of the circle at speed v. A faster charge circles wider, so the lap takes the same time.',
+          ],
+          r: null,
+          v: null,
+        }),
+      ),
+      example: { n, m, v, B, F: n * e * v * B, r, T: (2 * Math.PI * r) / v },
+      startWith: ['n', 'm', 'v', 'B'],
+      representation: {
+        kind: 'induction',
+        mode: 'charge',
+        charge: 'n',
+        coulombs: e,
+        speed: 'v',
+        field: 'B',
+        mass: 'm',
+        force: 'F',
+        radius: 'r',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
     const [p, s, V, I] = [400, 20, 120, 0.1];
     return {
       id: 's.11.electromagnetism~transformer',

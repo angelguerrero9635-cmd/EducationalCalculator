@@ -4,11 +4,11 @@
  * (its variables, rules, steps and example) with the picture it will pass. Spread into
  * gallery.ts.
  */
-import type { Relation, Values, VariableDef } from '@/engine/types';
+import type { VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import { SCIENCE_11_MODULES } from './science/11';
-import type { ModuleDef, Representation, StepText } from './types';
+import type { ModuleDef, Representation } from './types';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -40,57 +40,6 @@ function fromPage(
     ...rest,
   };
 }
-
-/** A relation and its step text, built together. */
-interface Rule {
-  relation: Relation;
-  steps: Record<string, StepText>;
-}
-type Solve = (v: Values) => number | number[] | undefined;
-
-/** A rule from its display, its residual and, per variable, `[solve, expr, how]`. */
-const rule = (
-  id: string,
-  display: string,
-  residual: (v: Values) => number,
-  parts: Record<string, [Solve, string, string] | null>,
-): Rule => ({
-  relation: {
-    id,
-    display,
-    vars: [
-      ...new Set([...Object.keys(parts), ...[...display.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!)]),
-    ],
-    residual,
-    solve: Object.fromEntries(
-      Object.entries(parts).map(([k, p]) => [k, p ? p[0] : () => undefined]),
-    ) as Relation['solve'],
-  },
-  steps: Object.fromEntries(
-    Object.entries(parts).flatMap(([k, p]) => (p ? [[k, { expr: p[1], how: p[2] }]] : [])),
-  ),
-});
-
-/** Gathers rules into a module's `relations` and `steps`. */
-const rules = (...rs: Rule[]) => ({
-  relations: rs.map((r) => r.relation),
-  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
-});
-
-/** A measured value with its unit and range. */
-const q = (
-  id: string,
-  symbol: string,
-  name: string,
-  unit: string | undefined,
-  min: number,
-  max: number,
-  step = 0.1,
-  extra: Partial<VariableDef> = {},
-): VariableDef => ({ id, symbol, name, ...(unit ? { unit } : {}), min, max, step, ...extra });
-
-/** Division for values far below 1 (a proton's mass, its charge): undefined only for 0. */
-const quot = (a: number, b: number) => (b === 0 || !Number.isFinite(b) ? undefined : a / b);
 
 const RAD = Math.PI / 180;
 
@@ -417,89 +366,7 @@ const launchProton = fromPage(
   },
 );
 
-// ─── H107.9 induction, a moving charge: s.11.electromagnetism (~moving-charge) ─
-
-const E = 1.602e-19;
-
-const movingCircle: ModuleDef = (() => {
-  const [n, m, v, B] = [1, 1.673e-27, 2e6, 0.5];
-  return {
-    id: 'g.s-11-electromagnetism-moving-charge-circle',
-    title: 'A proton circling in a magnetic field',
-    use: 'Use this for “A proton moves at 2 × 10⁶ m/s square to a 0.5 T field. What force acts on it, and what is the radius of its circle?”',
-    unitSystems: ['metric'],
-    assumptions: [
-      'The field is square to the velocity, so F = |q|vB, with q in electron charges e = 1.602 × 10⁻¹⁹ C.',
-      'The force is always square to v: it turns the charge without speeding it up, so the path is a circle.',
-      'That force is the centripetal force: |q|vB = mv²/r, so r = mv/(|q|B).',
-    ],
-    variables: [
-      q('n', 'q', 'Charge', 'e', 1, 10, 1, { integer: true }),
-      q('m', 'm', 'Mass', 'kg', 9.109e-31, 1e-24, 1e-34, { scientific: true }),
-      q('v', 'v', 'Speed', 'm/s', 1, 3e7, 1, { scientific: true, units: ['m/s'] }),
-      q('B', 'B', 'Magnetic field', 'T', 0.0001, 10, 0.0001),
-      q('F', 'F', 'Force', 'N', 0, 1, 1e-20, { scientific: true }),
-      q('r', 'r', 'Radius', 'm', 0, 1e6, 1e-15, { scientific: true, units: ['m'] }),
-    ],
-    ...rules(
-      rule(
-        'F = |q|vB',
-        '{F} = {n} × 1.602 × 10⁻¹⁹ × {v} × {B}',
-        (x) => x.F! / (E * x.n! * x.v! * x.B!) - 1,
-        {
-          F: [
-            (x) => x.n! * E * x.v! * x.B!,
-            '{n} × 1.602 × 10⁻¹⁹ × {v} × {B}',
-            'The charge in coulombs times the speed and the field.',
-          ],
-          n: null,
-          v: null,
-          B: null,
-        },
-      ),
-      rule(
-        'r = mv/(|q|B)',
-        '{r} = {m} × {v}/({n} × 1.602 × 10⁻¹⁹ × {B})',
-        (x) => x.r! * x.n! * E * x.B! - x.m! * x.v!,
-        {
-          r: [
-            (x) => quot(x.m! * x.v!, x.n! * E * x.B!),
-            '{m} × {v}/({n} × 1.602 × 10⁻¹⁹ × {B})',
-            'Momentum over charge times field: a faster or heavier charge circles wider.',
-          ],
-          v: [
-            (x) => quot(x.r! * x.n! * E * x.B!, x.m!),
-            '{r} × {n} × 1.602 × 10⁻¹⁹ × {B}/{m}',
-            'Solve r = mv/(|q|B) for the speed.',
-          ],
-          B: [
-            (x) => quot(x.m! * x.v!, x.r! * x.n! * E),
-            '{m} × {v}/({r} × {n} × 1.602 × 10⁻¹⁹)',
-            'Solve r = mv/(|q|B) for the field.',
-          ],
-          n: null,
-          m: null,
-        },
-      ),
-    ),
-    example: { n, m, v, B, F: n * E * v * B, r: (m * v) / (n * E * B) },
-    startWith: ['n', 'm', 'v', 'B'],
-    representation: {
-      kind: 'induction',
-      mode: 'charge',
-      charge: 'n',
-      coulombs: E,
-      speed: 'v',
-      field: 'B',
-      mass: 'm',
-      force: 'F',
-      radius: 'r',
-    },
-  };
-})();
-
 export const HS3A_GALLERY_MODULES: ModuleDef[] = [
-  movingCircle,
   launch,
   launchProton,
   equipotentials,

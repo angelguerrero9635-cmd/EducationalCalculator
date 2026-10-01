@@ -2349,6 +2349,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.11.electric-potential~capacitor': '"kind":"capacitor"',
         's.11.electric-potential~parallel-plate': '"dielectric"',
         's.11.electromagnetism~moving-charge': '"mode":"charge"',
+        's.11.electromagnetism~charge-circle': '"radius"',
       },
       'P19: docs/build/s.11.md, "Added skills" and "Shared needs (pictures)".',
     ),
@@ -2373,7 +2374,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s-11-electric-potential-unlike',
       'g.s-11-electric-potential-launch',
       'g.s-11-electric-potential-launch-proton',
-      'g.s-11-electromagnetism-moving-charge-circle',
     ],
     notes: [
       'P19: docs/build/s.11.md, "Added skills" and "Shared needs (pictures)", drawn part by part (types in typesHs3a.ts, drawings in reps/Torque.tsx, Seesaw.tsx, Rotor.tsx, Oscillator.tsx, Pendulum.tsx, Capacitor.tsx, ChargesPotential.tsx, PlatesLaunch.tsx, MovingCharge.tsx with hs3aKit.tsx and hs3aMath.ts, checks in harness/picturesHs3a.ts, demos in galleryHs3a.ts). Every picture reads its values in the formula\'s units (rep.val, the harness through siOf) and labels them in the unit shown, so the pages keep their unit menus. Every option is off unless a page sets it.',
@@ -2386,7 +2386,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       "7 (s.11.electric-potential): charges option equipotentials: { potential?, test?, energy? } with one charge: dashed circles at r/2, r and 2r labelled 2V, V and V/2 (V = kq/r, q in μC), field lines out of + or into −, and q₀ on the circle at r with U = q₀V; drag q₀ for r. { kind: 'charges', charges: ['a'], distance: 'r', equipotentials: { potential: 'V', test: 't', energy: 'U' } } (checked V = kq/r, U = q₀V); pictureLabels can go.",
       "8 (~voltage-energy): charges mode 'plates' option launch: { charge (e), mass (kg), energy? (eV), speed? (m/s) }, and the plates' gap may now be left out: an electron let go at the − plate (a proton or + ion at the + plate), strobed at equal times ∝ t² with its velocity growing, K = qΔV in eV and joules, and its speed on a bar up to a tenth of light's. { kind: 'charges', mode: 'plates', voltage: 'V', launch: { charge: 'q', mass: 'm', energy: 'K', speed: 'v' } } (checked K = qΔV, v = √(2K/m)); pictureLabels can go.",
       "9 (s.11.electromagnetism~moving-charge, a page not built yet; the build note's shared need): induction mode 'charge': { field, charge, coulombs? (C per unit: 1e-6 for μC, 1.602e-19 for e), speed, angle?, force?, mass?, radius?, fieldDir? }. With no angle B is × into the page (or • out), F = |q|vB in the page from F = qv × B, and with a mass the path is a dashed circle of r = mv/(|q|B) with its turning sense; with an angle B runs along the page, v at θ, F into or out of the page. Examples { kind: 'induction', mode: 'charge', charge: 'a', coulombs: 1e-6, speed: 'v', field: 'B', angle: 't', force: 'F' } and { kind: 'induction', mode: 'charge', charge: 'n', coulombs: 1.602e-19, speed: 'v', field: 'B', mass: 'm', force: 'F', radius: 'r' } (checked F = |q|vB sin θ, r = mv/(|q|B)); the page's rules are in the two demos.",
-      'Parts by page (`uses`): parts 1–8 are placed. Waiting on pages not built yet (each in `pages` with its mark, so the test checks it once built; the demos hold the specs): s.11.electromagnetism~moving-charge (part 9, `induction` mode `charge`).',
+      'Parts by page (`uses`): every part is placed; part 9 is on s.11.electromagnetism~moving-charge (the angle) and s.11.electromagnetism~charge-circle (the mass and the circle, r = mv/(|q|B)), whose demo is retired.',
     ].join(' '),
   },
   {
