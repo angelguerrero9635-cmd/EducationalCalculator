@@ -2359,7 +2359,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     use: 'Use this for “(4 − 2i) − (−1 + 5i)”.',
     assumptions: [
       'Combine real parts with real parts and imaginary parts with imaginary parts.',
-      'Subtracting a + bi is adding its opposite, −a − bi: the picture adds that.',
+      'Subtracting c + di is adding its opposite, −c − di: the picture draws that opposite and adds it.',
       'On the plane, adding is joining the arrows end to end.',
     ],
     variables: [
@@ -2439,8 +2439,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
     representation: {
       kind: 'complexPlane',
       z: { re: 'a', im: 'b' },
-      w: { re: 'C', im: 'D' },
-      op: 'sum',
+      w: { re: 'c', im: 'd' },
+      opFrom: 'sg',
       result: { re: 'p', im: 'q' },
     },
   }),
