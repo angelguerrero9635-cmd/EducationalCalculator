@@ -1819,6 +1819,85 @@ const momentumPages: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const [m, n, v, w, a] = [0.6, 0.4, 0.5, -0.25, 0.1];
+    const b = (m * v + n * w - m * a) / n;
+    const X = 0.5 * m * v * v + 0.5 * n * w * w - 0.5 * m * a * a - 0.5 * n * b * b;
+    return {
+      id: 's.11.momentum~one-after',
+      title: 'One velocity after, the other from momentum',
+      use: 'Use this for “A 0.6 kg cart at 0.5 m/s meets a 0.4 kg cart rolling the other way at 0.25 m/s. The first cart slows to 0.1 m/s. How fast does the other cart move, and how much kinetic energy is lost?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'No outside push along the track, so the total momentum is the same before and after.',
+        '+ is to the right: a cart moving left has a negative velocity.',
+        'Kinetic energy is not always kept: what is lost turns to heat and sound.',
+      ],
+      variables: [
+        M1,
+        M2,
+        V1B,
+        V2B,
+        V1A,
+        { ...V2A, step: 0.0001 },
+        KE('X', 'ΔKE', 'Kinetic energy lost'),
+      ],
+      ...rules(
+        rule(
+          'm₁v₁ + m₂v₂ = m₁v₁′ + m₂v₂′',
+          '{m} × {v} + {n} × {w} = {m} × {a} + {n} × {b}',
+          (x) => x.m! * x.v! + x.n! * x.w! - x.m! * x.a! - x.n! * x.b!,
+          {
+            b: [
+              (x) => div(x.m! * x.v! + x.n! * x.w! - x.m! * x.a!, x.n!),
+              '({m} × {v} + {n} × {w} − {m} × {a})/{n}',
+              'The momentum before, less cart 1’s after, is cart 2’s after; divide by m₂.',
+            ],
+            a: null,
+            v: null,
+            w: null,
+          },
+        ),
+        rule(
+          'ΔKE = KE before − KE after',
+          '{X} = ½ × {m} × {v}² + ½ × {n} × {w}² − ½ × {m} × {a}² − ½ × {n} × {b}²',
+          (x) =>
+            x.X! -
+            (0.5 * x.m! * x.v! ** 2 +
+              0.5 * x.n! * x.w! ** 2 -
+              0.5 * x.m! * x.a! ** 2 -
+              0.5 * x.n! * x.b! ** 2),
+          {
+            X: [
+              (x) =>
+                0.5 * x.m! * x.v! ** 2 +
+                0.5 * x.n! * x.w! ** 2 -
+                0.5 * x.m! * x.a! ** 2 -
+                0.5 * x.n! * x.b! ** 2,
+              '½ × {m} × {v}² + ½ × {n} × {w}² − ½ × {m} × {a}² − ½ × {n} × {b}²',
+              'Each cart’s ½mv² before, less each cart’s ½mv² after.',
+            ],
+            m: null,
+            n: null,
+            v: null,
+            w: null,
+            a: null,
+            b: null,
+          },
+        ),
+      ),
+      example: { m, n, v, w, a, b, X },
+      startWith: ['m', 'v', 'n', 'w', 'a'],
+      representation: {
+        kind: 'collision',
+        type: 'general',
+        masses: ['m', 'n'],
+        before: ['v', 'w'],
+        after: ['a', 'b'],
+        lost: 'X',
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
 
 // ─── s.11.work-energy-power ─────────────────────────────────────────────────

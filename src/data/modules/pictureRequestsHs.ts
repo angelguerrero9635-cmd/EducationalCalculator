@@ -2051,12 +2051,12 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.11.thermodynamics',
         's.11.electrostatics',
         's.11.modern-physics',
+        's.11.momentum~one-after',
       ],
       'P14: docs/plans/s.11.md needs 1–12.',
     ),
     status: 'drawn',
     gallery: [
-      'g.s11-momentum-one-after',
       'g.s11-momentum-impulse',
       'g.s11-circular-gravitation-orbit',
       'g.s11-kinematics-1d-free-fall-vertical',
