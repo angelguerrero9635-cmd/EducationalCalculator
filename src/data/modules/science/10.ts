@@ -1237,7 +1237,7 @@ const BONDING: ModuleDef[] = [
       'The drawn molecules are H₂O, NH₃, CH₄, CO₂, HCN, CH₂O, H₂, O₂ and N₂; the rule works for any molecule whose atoms all reach full shells.',
     ],
     variables: [
-      ...BOND_ATOMS.map(([, vid, name, max]) => whole(vid, `n${vid.toUpperCase()}`, name, 0, max)),
+      ...BOND_ATOMS.map(([, vid, name, max]) => whole(vid, `n_${vid.toUpperCase()}`, name, 0, max)),
       whole('V', 'V', 'Valence electrons', 0, 40),
       { ...whole('b', 'b', 'Shared pairs', 0, 8), derived: true },
       { ...whole('l', 'l', 'Lone pairs', 0, 8), derived: true },
@@ -5655,6 +5655,7 @@ const FREE: ModuleDef[] = [
       min: 0,
       max: 1000,
       unit: 'J/(mol·K)',
+      names: ['reactants', 'products'],
     },
   },
 ];

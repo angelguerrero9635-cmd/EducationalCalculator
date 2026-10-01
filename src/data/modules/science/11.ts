@@ -4373,7 +4373,8 @@ const rotationPages: ModuleDef[] = [
       representation: {
         kind: 'circle',
         radius: 'r',
-        extent: 1,
+        // The example's 0.4 m fills the picture (at 1 m its radius was 40 px).
+        extent: 0.4,
         views: ['sector', 'radian'],
         sector: { angle: 't', unit: 'radians', arc: 's' },
       },
