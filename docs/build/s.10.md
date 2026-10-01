@@ -264,3 +264,7 @@ Report: `.review/new-sci-2/lesson-report.md`.
 - `s.10.bonding~ionic` (H108 part 2): `lewisStructure` ionic adds `charges: { metal: cp,
   nonmetal: cn }`, so every pair it solves is drawn (Al³⁺ with O²⁻ draws Al₂O₃). Stand-in gone:
   the assumption that the picture draws magnesium chloride only (it now names the ions drawn).
+- `s.10.molecular-shape~polarity`, `~imf` (H101 need 9): CHCl₃, BF₃, CCl₄ and CH₂O get their
+  `molecule` cards. Stand-in gone: the four text cards (every card is drawn now).
+- `~water` (H101 need 10): the planned "Salt in water" scene, `hydration` { ions Na⁺ and Cl⁻,
+  crystal }; the use line adds the dissolving question (NAEP-2009-12S10-#14).

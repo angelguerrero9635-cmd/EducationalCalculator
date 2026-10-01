@@ -212,11 +212,11 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       { label: 'H₂O (bent)', bin: 'polar', figure: molecule('H2O') },
       { label: 'NH₃ (trigonal pyramidal)', bin: 'polar', figure: molecule('NH3') },
       { label: 'HCl', bin: 'polar', figure: molecule('HCl') },
-      { label: 'CHCl₃ (tetrahedral, one H)', bin: 'polar' },
+      { label: 'CHCl₃ (tetrahedral, one H)', bin: 'polar', figure: molecule('CHCl3') },
       { label: 'CO₂ (linear)', bin: 'nonpolar', figure: molecule('CO2') },
       { label: 'CH₄ (tetrahedral)', bin: 'nonpolar', figure: molecule('CH4') },
-      { label: 'BF₃ (trigonal planar)', bin: 'nonpolar' },
-      { label: 'CCl₄ (tetrahedral)', bin: 'nonpolar' },
+      { label: 'BF₃ (trigonal planar)', bin: 'nonpolar', figure: molecule('BF3') },
+      { label: 'CCl₄ (tetrahedral)', bin: 'nonpolar', figure: molecule('CCl4') },
     ],
   },
   {
@@ -253,7 +253,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       { label: 'CO₂', bin: 'dispersion', figure: molecule('CO2') },
       { label: 'HCl', bin: 'dipole', figure: molecule('HCl') },
       { label: 'H₂S', bin: 'dipole', figure: molecule('H2S') },
-      { label: 'CH₂O (formaldehyde)', bin: 'dipole' },
+      { label: 'CH₂O (formaldehyde)', bin: 'dipole', figure: molecule('CH2O') },
       { label: 'H₂O', bin: 'hbond', figure: molecule('H2O') },
       { label: 'NH₃', bin: 'hbond', figure: molecule('NH3') },
       { label: 'HF', bin: 'hbond', figure: molecule('HF') },
@@ -264,7 +264,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     kind: 'explore',
     id: 's.10.molecular-shape~water',
     title: 'Why ice floats',
-    use: 'Use this for “Why does ice float on liquid water?”',
+    use: 'Use this for “Why does ice float on liquid water?” or “Why does water dissolve salt?”',
     assumptions: [
       'Water is bent and polar: its O is partly negative and its H atoms partly positive.',
       'A hydrogen bond is an attraction between molecules, much weaker than a covalent bond.',
@@ -298,6 +298,17 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
         lines: [
           'When ice melts, hydrogen bonds break and re-form, and the rings collapse.',
           'The molecules pack closer, so liquid water is denser: ice floats on it.',
+        ],
+      },
+      {
+        label: 'Salt in water',
+        molecules: {
+          items: [{ formula: 'NaCl' }],
+          hydration: { ions: ['Na+', 'Cl-'], crystal: true },
+        },
+        lines: [
+          'Water’s O ends face each Na⁺ and its H ends face each Cl⁻: opposite charges attract.',
+          'Many of these attractions pull the ions out of the crystal, one at a time.',
         ],
       },
     ],
