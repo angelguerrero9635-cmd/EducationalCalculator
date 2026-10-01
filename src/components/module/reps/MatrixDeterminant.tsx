@@ -152,7 +152,10 @@ export function MatrixDeterminant({
     const mats = [M, ...M[0]!.map((_, j) => withColumn(M, j, rhs))];
     const names = ['D', ...M[0]!.map((_, j) => `D${SUB[j]}`)];
     lines.push(
-      `D = ${entryText(cr.D)}${n === 2 ? ` = ${par(M[0]![0]!)} × ${par(M[1]![1]!)} − ${par(M[0]![1]!)} × ${par(M[1]![0]!)}` : ''}`,
+      // The working first, the result last, as it is written by hand.
+      n === 2
+        ? `D = ${par(M[0]![0]!)} × ${par(M[1]![1]!)} − ${par(M[0]![1]!)} × ${par(M[1]![0]!)} = ${entryText(cr.D)}`
+        : `D = ${entryText(cr.D)}`,
     );
     if (cr.solution)
       lines.push(
@@ -164,7 +167,9 @@ export function MatrixDeterminant({
           .join(' · '),
       );
     else lines.push('D = 0: the system has no single solution, so Cramer’s rule stops here.');
-    lines.push('Each Dᵢ puts the right sides in that unknown’s column (lit)');
+    lines.push(
+      `${names.slice(1, -1).join(', ')} and ${names[names.length - 1]} put the right sides in that unknown’s column (shaded).`,
+    );
     const boxW = Math.max(...mats.map((m) => cellWidth(cells(m)) * n + 12));
     const boxH = n * ROW_H + 8;
     const place = (w: number) => {
