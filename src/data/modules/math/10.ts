@@ -2386,6 +2386,15 @@ function canRows(v: Values): number[] {
   return Array.from({ length: 7 }, (_, i) => exact((first + i) * step)!);
 }
 
+/** Seven pen lengths in 1-2-5 steps up to half the fence (the square's side among them). */
+function fenceRows(v: Values): number[] {
+  const P = v.P !== undefined && v.P > 0 ? v.P : 40;
+  const raw = P / 16;
+  const p = 10 ** Math.floor(Math.log10(raw));
+  const step = [5, 2, 1].map((k) => k * p).find((t) => t <= raw * 1.01)!;
+  return Array.from({ length: 7 }, (_, i) => exact((i + 1) * step)!).filter((x) => x < P / 2);
+}
+
 const MODELING: ModuleDef[] = [
   page({
     id: 'm.10.modeling-density',
@@ -2566,8 +2575,13 @@ const MODELING: ModuleDef[] = [
     example: { r: 3, A: 9 * Math.PI, N: 45000, D: 5000 / Math.PI },
     startWith: ['r', 'N'],
     unitSystems: ['metric'],
-    pictureLabels: ['N', 'D'],
-    representation: { kind: 'circle', radius: 'r', area: 'A', extent: 4 },
+    representation: {
+      kind: 'circle',
+      radius: 'r',
+      area: 'A',
+      extent: 4,
+      population: { people: 'N', density: 'D' },
+    },
   }),
   page({
     id: 'm.10.modeling-density~can-design',
@@ -2575,18 +2589,16 @@ const MODELING: ModuleDef[] = [
     use: 'Use this for “A can must hold 500 cm³. Which radius uses the least metal?”',
     assumptions: [
       'The can is a closed cylinder: V = πr²h, and its metal is the surface S = 2πr² + 2πrh.',
-      'Hold V and try radii: the table shows S dip and then rise again.',
+      'Hold V and try radii: the table and its graph show S dip and then rise again.',
       'The least metal comes when the height equals the diameter, h = 2r, so V = 2πr³.',
     ],
     variables: [
-      num('V', 'V', 'Volume', 1, 100000, { unit: 'cm³', units: ['cm³'] }),
-      len('r', 'r', 'Radius', 1000, { unit: 'cm', units: ['cm'] }),
-      len('h', 'h', 'Height', 10000, { unit: 'cm', units: ['cm'] }),
-      num('S', 'S', 'Surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] }),
-      der(
-        num('rb', 'r_best', 'Radius with the least metal', 0, 1000, { unit: 'cm', units: ['cm'] }),
-      ),
-      der(num('Smin', 'S_min', 'Least surface area', 0, 1e9, { unit: 'cm²', units: ['cm²'] })),
+      num('V', 'V', 'Volume', 1, 100000, { unit: 'cm³' }),
+      len('r', 'r', 'Radius', 1000, { unit: 'cm' }),
+      len('h', 'h', 'Height', 10000, { unit: 'cm' }),
+      num('S', 'S', 'Surface area', 0, 1e9, { unit: 'cm²' }),
+      der(num('rb', 'r_best', 'Radius with the least metal', 0, 1000, { unit: 'cm' })),
+      der(num('Smin', 'S_min', 'Least surface area', 0, 1e9, { unit: 'cm²' })),
     ],
     rules: [
       cylinderVolume,
@@ -2650,8 +2662,15 @@ const MODELING: ModuleDef[] = [
       Smin: 2 * Math.PI * bestRadius(500) ** 2 + 1000 / bestRadius(500),
     },
     startWith: ['V', 'r'],
-    unitSystems: ['metric'],
-    representation: { kind: 'table', sweep: 'r', output: 'S', params: ['V'], rows: canRows },
+    representation: {
+      kind: 'table',
+      sweep: 'r',
+      output: 'S',
+      params: ['V'],
+      rows: canRows,
+      graph: { best: 'min' },
+      rowsFrom: 'shown',
+    },
   }),
   page({
     id: 'm.10.modeling-density~fence',
@@ -2737,12 +2756,13 @@ const MODELING: ModuleDef[] = [
     startWith: ['P', 'x'],
     unitSystems: ['metric'],
     representation: {
-      kind: 'rectangle',
-      length: 'x',
-      width: 'y',
-      around: 'P',
-      inside: 'A',
-      extent: 20,
+      kind: 'table',
+      sweep: 'x',
+      output: 'A',
+      params: ['P'],
+      rows: fenceRows,
+      graph: { best: 'max' },
+      rowsFrom: 'shown',
     },
   }),
 ];
