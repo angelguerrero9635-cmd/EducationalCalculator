@@ -4721,9 +4721,6 @@ const SEQUENCES: ModuleDef[] = [
       num('d', 'd', 'Common difference', -50, 50, { step: 0.5 }),
       int('n', 'n', 'Term number', 1, 1000),
       num('an', 'aₙ', 'nth term', -100000, 100000),
-      // The chart draws the first 30 terms at most; the nth is marked when it is one of them.
-      num('nc', 'n_drawn', 'Terms drawn', 1, 30, pictureOnly),
-      num('tl', 'a_drawn', 'Last term drawn', -100000, 100000, pictureOnly),
     ],
     rules: [
       rule(
@@ -4764,28 +4761,8 @@ const SEQUENCES: ModuleDef[] = [
               : undefined,
         },
       ),
-      figure(
-        derive(
-          'terms drawn = n, at most 30',
-          'nc',
-          ['n'],
-          '{nc} = {n}, at most 30',
-          (v) => Math.min(v.n!, 30),
-          '{n}',
-          'The chart draws the first 30 terms at most.',
-        ),
-      ),
-      figure(
-        rule(
-          'the nth term is drawn when n ≤ 30',
-          '{tl} = {an} when {n} ≤ 30',
-          ['tl', 'an', 'n'],
-          (v) => (v.n! > 30 ? 0 : v.tl! - v.an!),
-          { tl: [(v) => (v.n! > 30 ? undefined : v.an), '{an}', 'The nth term, marked.'] },
-        ),
-      ),
     ],
-    example: { a1: 7, d: 4, n: 20, an: 83, nc: 20, tl: 83 },
+    example: { a1: 7, d: 4, n: 100, an: 403 },
     startWith: ['n', 'a1', 'd'],
     equation: 'aₙ = {a1} + ({n} − 1){d} = {an}',
     representation: {
@@ -4793,9 +4770,10 @@ const SEQUENCES: ModuleDef[] = [
       type: 'arithmetic',
       first: 'a1',
       step: 'd',
-      count: 'nc',
+      count: 'n',
       as: 'points',
-      term: 'tl',
+      term: 'an',
+      far: true,
     },
   }),
   page({
@@ -4863,7 +4841,7 @@ const SEQUENCES: ModuleDef[] = [
     assumptions: [
       'A recursive rule gives the first term and how each term comes from the one before.',
       'Here aₙ = k × aₙ₋₁ + c: multiply the term before by k, then add c.',
-      'Work out the terms in order; the table lists the first eight.',
+      'Work out the terms in order: the chart draws each term from the one before.',
     ],
     variables: [
       num('a1', 'a₁', 'First term', -100, 100, { step: 0.5 }),
@@ -4905,11 +4883,13 @@ const SEQUENCES: ModuleDef[] = [
     example: { a1: 2, k: 3, c: -1, n: 4, an: 41 },
     startWith: ['a1', 'k', 'c', 'n'],
     representation: {
-      kind: 'table',
-      sweep: 'n',
-      output: 'an',
-      params: ['a1', 'k', 'c'],
-      rows: [1, 2, 3, 4, 5, 6, 7, 8],
+      kind: 'termsChart',
+      type: 'recursive',
+      first: 'a1',
+      step: 'k',
+      plus: 'c',
+      count: 'n',
+      term: 'an',
     },
   }),
 ];
