@@ -349,6 +349,66 @@ const shadowZone: ModuleDef = {
   representation: { kind: 'earthLayers', mode: 'section', distance: 'D' },
 };
 
+/** A magnitude, 0–10. */
+const mag = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { min: 0, max: 10, step: 0.1 });
+
+const magnitude: ModuleDef = {
+  id: 's.12.earth-interior~magnitude',
+  title: 'Comparing earthquakes by magnitude',
+  use: 'Use this for “A magnitude 6 quake and a magnitude 4 quake: how much more shaking, and how much more energy?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Magnitude is read from the largest swing of a seismogram, corrected for the station’s distance.',
+    'Each step of 1 in magnitude is 10 times the ground motion and about 32 times the energy.',
+    'Both quakes are measured on the same magnitude scale.',
+  ],
+  variables: [
+    mag('M1', 'M₁', 'Magnitude of the first quake'),
+    mag('M2', 'M₂', 'Magnitude of the second quake'),
+    V('d', 'ΔM', 'Difference in magnitude', { min: -10, max: 10, step: 0.1, derived: true }),
+    V('A', 'A', 'Amplitude ratio', { min: 1e-10, max: 1e10, step: 0.01, derived: true }),
+    V('E', 'E', 'Energy ratio', { min: 1e-15, max: 1e15, step: 0.01, derived: true }),
+  ],
+  ...rels(
+    difference('d', 'M2', 'M1', 'ΔM = M₂ − M₁', [
+      'How many steps of magnitude apart the two quakes are.',
+      'The second quake is ΔM steps above the first.',
+      'The first quake is ΔM steps below the second.',
+    ]),
+    rule('A = 10^ΔM', '{A} = 10^{d}', (v) => Math.log10(v.A!) - v.d!, {
+      A: [(v) => 10 ** v.d!, '10^{d}', 'Each step of magnitude is 10 times the ground motion.'],
+      d: [
+        (v) => (v.A! > 0 ? Math.log10(v.A!) : undefined),
+        'log_10({A})',
+        'How many factors of 10 make the amplitude ratio.',
+      ],
+    }),
+    rule('E = 10^(1.5 ΔM)', '{E} = 10^(1.5 × {d})', (v) => Math.log10(v.E!) - 1.5 * v.d!, {
+      E: [
+        (v) => 10 ** (1.5 * v.d!),
+        '10^(1.5 × {d})',
+        'Each step of magnitude is about 32 times the energy: 10^1.5.',
+      ],
+      d: [
+        (v) => (v.E! > 0 ? Math.log10(v.E!) / 1.5 : undefined),
+        'log_10({E}) ÷ 1.5',
+        'The energy ratio’s factors of 10, over 1.5 per step.',
+      ],
+    }),
+  ),
+  example: { M1: 4, M2: 6, d: 2, A: 100, E: 1000 },
+  startWith: ['M1', 'M2'],
+  representation: {
+    kind: 'earthLayers',
+    mode: 'magnitude',
+    m1: 'M1',
+    m2: 'M2',
+    amplitude: 'A',
+    energy: 'E',
+  },
+};
+
 // ── Earth's history: the early Earth, its atmosphere and the history of life ──
 
 /** Rounded ages (million years ago) of the events round the one-day clock. */
@@ -1868,6 +1928,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   earthInterior,
   epicenter,
   shadowZone,
+  magnitude,
   earthDay,
   coralDays,
   carbonDating,

@@ -2096,11 +2096,11 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.12.starlight-spectra',
         's.12.radiometric-dating',
         's.12.stellar-evolution',
+        's.12.earth-interior~magnitude',
       ],
     ),
     status: 'drawn',
     gallery: [
-      'g.s12-earth-interior-magnitude',
       'g.s12-earth-interior-magnitude-half',
       'g.s12-earth-interior-magnitude-far',
       'g.s12-earth-interior-spreading-rate',
