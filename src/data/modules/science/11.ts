@@ -4984,8 +4984,12 @@ const potentialPages: ModuleDef[] = [
       ),
       example: { a, r, V, t, U: t * 1e-6 * V },
       startWith: ['a', 'r', 't'],
-      representation: { kind: 'charges', charges: ['a'], distance: 'r' },
-      pictureLabels: ['V', 't', 'U'],
+      representation: {
+        kind: 'charges',
+        charges: ['a'],
+        distance: 'r',
+        equipotentials: { potential: 'V', test: 't', energy: 'U' },
+      },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -5074,13 +5078,11 @@ const potentialPages: ModuleDef[] = [
       },
       startWith: ['V', 'q', 'm'],
       representation: {
-        kind: 'table',
-        sweep: 'V',
-        output: 'v',
-        params: ['q', 'm'],
-        rows: [1, 10, 100, 1000],
+        kind: 'charges',
+        mode: 'plates',
+        voltage: 'V',
+        launch: { charge: 'q', mass: 'm', energy: 'K', speed: 'v' },
       },
-      pictureLabels: ['K'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -5141,13 +5143,13 @@ const potentialPages: ModuleDef[] = [
       example: { C, V, Q: C * V, U: 0.5e-6 * C * V * V },
       startWith: ['C', 'V'],
       representation: {
-        kind: 'table',
-        sweep: 'V',
-        output: 'U',
-        params: ['C'],
-        rows: [3, 6, 9, 12],
+        kind: 'capacitor',
+        capacitance: 'C',
+        voltage: 'V',
+        charge: 'Q',
+        energy: 'U',
+        farads: 1e-6,
       },
-      pictureLabels: ['Q'],
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -5222,13 +5224,18 @@ const potentialPages: ModuleDef[] = [
       example: { k, A, d, C, V, Q: C * V, E: V / (d * 1e-3) },
       startWith: ['k', 'A', 'd', 'V'],
       representation: {
-        kind: 'table',
-        sweep: 'd',
-        output: 'C',
-        params: ['k', 'A'],
-        rows: [0.5, 1, 2, 4],
+        kind: 'capacitor',
+        dielectric: 'k',
+        area: 'A',
+        gap: 'd',
+        meters: 1e-3,
+        capacitance: 'C',
+        voltage: 'V',
+        charge: 'Q',
+        farads: 1e-12,
       },
-      pictureLabels: ['V', 'Q', 'E'],
+      // The capacitor draws the even field but not its value.
+      pictureLabels: ['E'],
     } satisfies ModuleDef;
   })(),
 ];
