@@ -6623,6 +6623,12 @@ const towardA = (v: Values) =>
 /** The limit of (pnʲ + q) ÷ (rnᵏ + s): p ÷ r for equal powers, 0 for a bigger bottom, none else. */
 const degreeLimit = (v: Values) => (v.j === v.k ? div(v.p!, v.r!) : v.j! < v.k! ? 0 : undefined);
 
+/** 1 + 2 + … + n (or with squares, power "²"), written out in full up to three terms. */
+const termsTo = (n: number, power = '') =>
+  n <= 3
+    ? Array.from({ length: n }, (_, i) => `${i + 1}${power}`).join(' + ')
+    : `1${power} + 2${power} + … + ${shown(n)}${power}`;
+
 const MATH_12_AREA: ModuleDef[] = [
   // ── m.12.area-under-curve (Larson 12.4–12.5) ──
   {
@@ -6659,19 +6665,15 @@ const MATH_12_AREA: ModuleDef[] = [
         ),
         'S',
         {
-          // The sum of squares is the idea of the step: work it out as a number first.
+          // The sum of squares is the idea of the step: work it out as a number first, named.
           work: (v) => {
             const sq = (v.n! * (v.n! + 1) * (2 * v.n! + 1)) / 6;
             return [
-              `${shown(v.n!)} × ${shown(v.n! + 1)} × ${shown(2 * v.n! + 1)} ÷ 6 = ${shown(sq)}`,
+              `${termsTo(v.n!, '²')} = ${shown(v.n!)} × ${shown(v.n! + 1)} × ${shown(2 * v.n! + 1)} ÷ 6 = ${shown(sq)}`,
               `S = ${shown(v.c!)} × ${shown(v.w!)}³ × ${shown(sq)}`,
               `S = ${shown(exact(v.c! * v.w! ** 3))} × ${shown(sq)}`,
             ];
           },
-          note: (v) =>
-            v.n === undefined
-              ? ''
-              : `→ ${shown((v.n * (v.n + 1) * (2 * v.n + 1)) / 6)} is 1² + 2² + … + ${shown(v.n)}²`,
         },
       ),
       withStep(
@@ -6736,14 +6738,30 @@ const MATH_12_AREA: ModuleDef[] = [
     ],
     ...rels(
       widthOf,
-      derive(
-        'S = mw² × n(n + 1) ÷ 2 + kb',
-        '{S} = {m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+      withStep(
+        derive(
+          'S = mw² × n(n + 1) ÷ 2 + kb',
+          '{S} = {m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+          'S',
+          ['m', 'w', 'n', 'k', 'b'],
+          (v) => (v.m! * v.w! ** 2 * v.n! * (v.n! + 1)) / 2 + v.k! * v.b!,
+          '{m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
+          'Each rectangle is w by m(iw) + k; the m parts add to mw²(1 + 2 + … + n), the k parts to kb.',
+        ),
         'S',
-        ['m', 'w', 'n', 'k', 'b'],
-        (v) => (v.m! * v.w! ** 2 * v.n! * (v.n! + 1)) / 2 + v.k! * v.b!,
-        '{m} × {w}² × {n} × ({n} + 1) ÷ 2 + {k} × {b}',
-        'Each rectangle is w by m(iw) + k; the m parts add to mw²(1 + 2 + … + n), the k parts to kb.',
+        {
+          // The sum 1 + 2 + … + n as a number first, as on the main page.
+          work: (v) => {
+            const tri = (v.n! * (v.n! + 1)) / 2;
+            const first = exact(v.m! * v.w! ** 2 * tri);
+            const second = exact(v.k! * v.b!);
+            return [
+              `${termsTo(v.n!)} = ${shown(v.n!)} × ${shown(v.n! + 1)} ÷ 2 = ${shown(tri)}`,
+              `S = ${shown(v.m!)} × ${shown(v.w!)}² × ${shown(tri)} + ${shown(v.k!)} × ${shown(v.b!)}`,
+              `S = ${shown(first)} + ${shown(second)}`,
+            ];
+          },
+        },
       ),
       withStep(
         derive(
@@ -6778,74 +6796,9 @@ const MATH_12_AREA: ModuleDef[] = [
     },
   },
   {
-    id: 'm.12.area-under-curve~sequence',
-    title: 'The limit of a sequence',
-    use: 'Use this for “Find the limit of aₙ = (3n + 1) ÷ (2n − 1) as n → ∞.”',
-    assumptions: [
-      'Divide the top and bottom by n: (p + q/n) ÷ (r + s/n).',
-      'As n grows, q/n and s/n go to 0, so aₙ → p ÷ r.',
-      'The table shows the terms closing in on the limit.',
-    ],
-    variables: [
-      coef('p', 'p', 'Number before n on top', 100),
-      coef('q', 'q', 'Constant on top', 1000),
-      coef('r', 'r', 'Number before n in the bottom', 100),
-      coef('s', 's', 'Constant in the bottom', 1000),
-      V('n', 'n', 'Term number', { integer: true, min: 1, max: 1000000 }),
-      coef('a', 'aₙ', 'Term n', 1e9),
-      coef('L', 'L', 'Limit', 1e6, { derived: true }),
-    ],
-    ...rels(
-      rel(
-        'aₙ = (pn + q) ÷ (rn + s)',
-        '{a} = ({p} × {n} + {q}) ÷ ({r} × {n} + {s})',
-        ['a', 'p', 'n', 'q', 'r', 's'],
-        (v) => v.a! * (v.r! * v.n! + v.s!) - (v.p! * v.n! + v.q!),
-        {
-          a: [
-            (v) => div(v.p! * v.n! + v.q!, v.r! * v.n! + v.s!),
-            '({p} × {n} + {q}) ÷ ({r} × {n} + {s})',
-            'Put n into the rule.',
-          ],
-        },
-        {
-          message: (v) =>
-            v.r !== undefined && v.n !== undefined && v.s !== undefined && v.r * v.n + v.s === 0
-              ? 'The bottom is 0 for this n: that term doesn’t exist.'
-              : undefined,
-        },
-      ),
-      derive(
-        'L = p ÷ r',
-        '{L} = {p} ÷ {r}',
-        'L',
-        ['p', 'r'],
-        (v) => div(v.p!, v.r!),
-        '{p} ÷ {r}',
-        'Divide the top and bottom by n: q ÷ n and s ÷ n go to 0, leaving p ÷ r.',
-      ),
-      limit(
-        'r ≠ 0',
-        'The bottom has an n term: {r} is not 0',
-        ['r'],
-        (v) => v.r !== 0,
-        'With r = 0 the bottom stays s while the top grows: the terms have no limit (unless p = 0).',
-      ),
-    ),
-    example: { p: 3, q: 1, r: 2, s: -1, n: 10, a: 31 / 19, L: 1.5 },
-    startWith: ['p', 'q', 'r', 's', 'n'],
-    representation: {
-      kind: 'table',
-      sweep: 'n',
-      output: 'a',
-      params: ['p', 'q', 'r', 's'],
-      rows: [1, 10, 100, 1000, 10000],
-    },
-  },
-  {
     id: 'm.12.area-under-curve~degrees',
     title: 'Limits at infinity by degree',
-    use: 'Use this for “Find the limit of (2n² + 1) ÷ (n² − 3) as n → ∞, or say there is none.”',
+    use: 'Use this for “Find the limit of (3n + 1) ÷ (2n − 1) as n → ∞” or “of (2n² + 1) ÷ (n² − 3), or say there is none.”',
     assumptions: [
       'Divide the top and bottom by the bottom’s highest power of n; every term with n left under it goes to 0.',
       'Same power on top and bottom: the limit is the ratio of the leading numbers. A higher power in the bottom: 0.',
@@ -6911,7 +6864,7 @@ const MATH_12_AREA: ModuleDef[] = [
             v.j === undefined || v.k === undefined
               ? ''
               : v.j === v.k
-                ? '→ equal powers: divide by the power and only the leading numbers are left'
+                ? `→ equal powers: divide the top and bottom by ${v.k === 1 ? 'n' : superscript(`n^${v.k}`)}, and only ${shown(v.p!)} ÷ ${par(v.r!)} is left`
                 : '→ the bottom’s power is higher: the bottom outgrows the top',
         },
       ),
@@ -6921,6 +6874,13 @@ const MATH_12_AREA: ModuleDef[] = [
         ['p', 'r'],
         (v) => v.p !== 0 && v.r !== 0,
         'A leading number of 0 means that power isn’t there: type the highest power the expression really has.',
+      ),
+      limit(
+        'j + k > 0',
+        'There is an n on top or in the bottom: {j} + {k} > 0',
+        ['j', 'k'],
+        (v) => v.j! + v.k! > 0,
+        'With both powers 0 there is no n left: the expression is the number (p + q) ÷ (r + s).',
       ),
     ),
     example: { p: 2, j: 2, q: 1, r: 1, k: 2, s: -3, n: 10, a: 201 / 97, L: 2 },
