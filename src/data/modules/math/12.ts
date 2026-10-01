@@ -2852,7 +2852,13 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
     example: { A: 45, B: 30, C: 75, S: Math.sin(75 * RAD) },
     startWith: ['A', 'B'],
     equation: 'sin({A}° + {B}°) = {S}',
-    representation: { kind: 'unitCircle', angle: 'C', sin: 'S', fixed: true },
+    representation: {
+      kind: 'unitCircle',
+      angle: 'C',
+      sin: 'S',
+      fixed: true,
+      pair: { a: 'A', b: 'B' },
+    },
   },
   {
     id: 'm.12.trig-formulas-equations~difference',
@@ -2898,7 +2904,13 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
     example: { A: 45, B: 30, C: 15, K: Math.cos(15 * RAD) },
     startWith: ['A', 'B'],
     equation: 'cos({A}° − {B}°) = {K}',
-    representation: { kind: 'unitCircle', angle: 'C', cos: 'K', fixed: true },
+    representation: {
+      kind: 'unitCircle',
+      angle: 'C',
+      cos: 'K',
+      fixed: true,
+      pair: { a: 'A', b: 'B', op: 'difference' },
+    },
   },
   {
     id: 'm.12.trig-formulas-equations~double-angle',
