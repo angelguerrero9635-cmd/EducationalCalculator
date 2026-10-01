@@ -5527,8 +5527,8 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     equation: '{r} = {k}/{{m} − {n} cos {t}°}',
     representation: {
       kind: 'polarGrid',
+      curve: { shape: 'conic', k: 'k', m: 'm', n: 'n', e: 'e', d: 'd' },
       point: { r: 'r', theta: 't' },
-      fixed: true,
     },
   },
   {
@@ -5623,8 +5623,8 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     equation: '{r} = {k}/{{m} − {n} sin {t}°}',
     representation: {
       kind: 'polarGrid',
+      curve: { shape: 'conic', k: 'k', m: 'm', n: 'n', fn: 'sin', e: 'e', d: 'd' },
       point: { r: 'r', theta: 't' },
-      fixed: true,
     },
   },
   {
@@ -5873,7 +5873,15 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
     ),
     example: { A: 4, B: 2, C: 2, D: -28, t: 22.5 },
     startWith: ['A', 'B', 'C'],
-    representation: { kind: 'unitCircle', angle: 't', fixed: true },
+    representation: {
+      kind: 'conicGraph',
+      conic: 'turned',
+      A: 'A',
+      B: 'B',
+      C: 'C',
+      angle: 't',
+      discriminant: 'D',
+    },
   },
   {
     id: 'm.12.polar-conics~rotated-equation',
@@ -5945,7 +5953,16 @@ const MATH_12_POLAR_CONICS: ModuleDef[] = [
       F: -1,
     },
     startWith: ['A', 'B', 'C', 'F'],
-    representation: { kind: 'unitCircle', angle: 't', fixed: true },
+    representation: {
+      kind: 'conicGraph',
+      conic: 'turned',
+      A: 'A',
+      B: 'B',
+      C: 'C',
+      F: 'F',
+      angle: 't',
+      turned: { A: 'P', C: 'Q' },
+    },
   },
 ];
 
