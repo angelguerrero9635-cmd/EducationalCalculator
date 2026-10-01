@@ -67,7 +67,10 @@ function tokenize(text: string): Token[] | undefined {
       continue;
     }
     const frac = FRACTION.exec(s.slice(i));
-    if (frac && Number(frac[3]) !== 0) {
+    // Under a root a fraction is not one number: √3/2 is (√3)/2, as it is read.
+    const before = out[out.length - 1];
+    const rooted = before?.t === 'op' && before.v === '√';
+    if (frac && Number(frac[3]) !== 0 && !rooted) {
       const value = Number(frac[1] ?? 0) + Number(frac[2]) / Number(frac[3]);
       out.push({ t: 'num', value, text: frac[0] });
       i += frac[0].length;

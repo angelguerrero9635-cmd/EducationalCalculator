@@ -255,3 +255,10 @@ describe('a printed line', () => {
     expect(evaluatePrinted('4 tens + 5 ones')).toBeUndefined();
   });
 });
+
+describe('a root before a fraction', () => {
+  it('reads √3/2 as (√3)/2', () => {
+    expect(evaluatePrinted('√3/2')).toBeCloseTo(Math.sqrt(3) / 2, 9);
+    expect(evaluatePrinted('2 − √3')).toBeCloseTo(2 - Math.sqrt(3), 9);
+  });
+});

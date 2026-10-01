@@ -489,8 +489,10 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   for (const s of w.steps) {
     for (const line of s.work ?? []) {
       // Not the tail of a letter term: "x + 7 − 7 = 12 − 7" undoes a step, it doesn't add 7 − 7.
+      // Nor of a product ("3 × 4 + 2 = 14" is not 4 + 2), nor a sum equal to a product that goes
+      // on ("1 + 2 = 2 × 3 ÷ 2 = 3").
       const m =
-        /(?<![\d.]|[A-Za-z]\s*[+−×÷-]\s*)((?:\d+(?:\.\d+)?¢?\s*[+−-]\s*)+\d+(?:\.\d+)?¢?)\s*=\s*(\d+(?:\.\d+)?(?:e[-+]?\d+)?)/.exec(
+        /(?<![\d.]|[A-Za-z]\s*[+−×÷-]\s*|[\d)²³]\s*[×÷/·*^]\s*)((?:\d+(?:\.\d+)?¢?\s*[+−-]\s*)+\d+(?:\.\d+)?¢?)\s*=\s*(\d+(?:\.\d+)?(?:e[-+]?\d+)?)(?![\d.]|\s*[×÷/·*^])/.exec(
           line,
         );
       if (!m) continue;
