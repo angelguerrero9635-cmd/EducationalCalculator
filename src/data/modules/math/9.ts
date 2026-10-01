@@ -4565,7 +4565,7 @@ const RADICALS: ModuleDef[] = [
     assumptions: [
       'Divide the numbers in front, and subtract the exponents of x: xᵐ ÷ xⁿ = xᵐ⁻ⁿ.',
       'A negative exponent means 1 over the power: x⁻² = 1/x².',
-      'The table checks both sides at a few values of x.',
+      'Check: the answer and the first expression agree at any x, such as x = 2.',
     ],
     variables: [
       int('a', 'a', 'Number in front, top', -50, 50),
@@ -4651,11 +4651,14 @@ const RADICALS: ModuleDef[] = [
     startWith: ['a', 'm', 'b', 'n', 'x'],
     equation: '{a}x^{m} ÷ {b}x^{n} = {c}x^{k}',
     representation: {
-      kind: 'table',
-      sweep: 'x',
-      output: 'y',
-      params: ['a', 'm', 'b', 'n'],
-      rows: [1, 2, 3],
+      kind: 'algebraTiles',
+      mode: 'monomial',
+      a: 'a',
+      m: 'm',
+      b: 'b',
+      n: 'n',
+      c: 'c',
+      k: 'k',
     },
   }),
   page({
