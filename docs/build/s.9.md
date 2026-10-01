@@ -209,3 +209,6 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
 - `s.9.membrane-transport~transport-types` (H100 need 10, H104 part 1): the five bins wear the
   transport icons (simple diffusion, channel protein, aquaporin, protein pump, vesicle transport)
   and an `intro` says what they show; the cards stay text. No stand-in (text bins before).
+- `s.9.biomolecules~dehydration` (H100 need 1): built (it was waiting) as the plan has it, n, b,
+  w, m, M, with `macromolecules` { macro: carbohydrate, count: n, bonds: b, water: w }. No
+  stand-in.

@@ -308,6 +308,80 @@ const bp = (id: string, symbol: string, name: string, min: number, max: number):
 
 // ─── The pages, in taxonomy order ───────────────────────────────────────────
 
+const BIOMOLECULES: ModuleDef[] = [
+  // ── The chemistry of life: water and biomolecules (HS-LS1-6, HS-LS1-1) ──
+  {
+    id: 's.9.biomolecules~dehydration',
+    title: 'Dehydration synthesis: water and mass',
+    use: 'Use this for “How many water molecules leave, and what is the polymer’s mass?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each bond joining two monomers gives off one water molecule, 18 g/mol.',
+      'The monomers form one chain, not a ring, so a chain of n units has n − 1 bonds.',
+      'A fat is the exception: three fatty acids join one glycerol and give off 3 water.',
+      'Glucose is 180 g/mol, so two glucose make maltose, 2 × 180 − 18 = 342 g/mol.',
+    ],
+    variables: [
+      count('n', 'n', 'Monomers joined', 2, 1000),
+      count('b', 'b', 'Bonds formed', 1, 999, true),
+      count('w', 'w', 'Water molecules given off', 1, 999, true),
+      {
+        id: 'm',
+        symbol: 'm',
+        name: 'Mass of one monomer',
+        unit: 'g/mol',
+        min: 50,
+        max: 1000,
+        step: 1,
+      },
+      {
+        id: 'M',
+        symbol: 'M',
+        name: 'Mass of the polymer',
+        unit: 'g/mol',
+        min: 0,
+        max: 1000000,
+        step: 1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      both('b = n − 1', '{b} = {n} − 1', ['b', 'n'], (v) => v.b! - (v.n! - 1), {
+        b: [(v) => v.n! - 1, '{n} − 1', 'A chain has one bond fewer than its units.'],
+        n: [(v) => v.b! + 1, '{b} + 1', 'One more unit than bonds.'],
+      }),
+      same('w', 'b', 'Every bond gives off one water molecule.'),
+      both(
+        'M = n × m − 18 × w',
+        '{M} = {n} × {m} − 18 × {w}',
+        ['M', 'n', 'm', 'w'],
+        (v) => v.M! - (v.n! * v.m! - 18 * v.w!),
+        {
+          M: [
+            (v) => v.n! * v.m! - 18 * v.w!,
+            '{n} × {m} − 18 × {w}',
+            'Add the monomers’ masses, then take away 18 g/mol for each water molecule given off.',
+          ],
+          m: [
+            (v) => div(v.M! + 18 * v.w!, v.n!),
+            '({M} + 18 × {w}) ÷ {n}',
+            'Put the water back on, then share the mass among the monomers.',
+          ],
+        },
+      ),
+    ),
+    example: { n: 3, b: 2, w: 2, m: 180, M: 504 },
+    startWith: ['n', 'm'],
+    representation: {
+      kind: 'macromolecules',
+      macro: 'carbohydrate',
+      count: 'n',
+      bonds: 'b',
+      water: 'w',
+    },
+  },
+];
+
 const MEMBRANE: ModuleDef[] = [
   // ── Cell membranes and transport (HS-LS1-2, HS-LS1-3) ──
   {
@@ -2023,6 +2097,7 @@ const IMMUNE: ModuleDef[] = [
 ];
 
 export const SCIENCE_9_MODULES: ModuleDef[] = [
+  ...BIOMOLECULES,
   ...MEMBRANE,
   ...DIVISION,
   ...INHERITANCE,
