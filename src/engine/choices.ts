@@ -4,7 +4,7 @@
  */
 
 /** What a choice box cycles through. */
-export type Choices = 'sign' | 'relation' | 'op' | 'alt';
+export type Choices = 'sign' | 'relation' | 'op' | 'alt' | 'pm';
 
 export const CHOICES: Record<Choices, readonly string[]> = {
   // As the inequality pages code it: 1 <, 2 ≤, 3 >, 4 ≥ (and 5 = for `relation`).
@@ -13,11 +13,14 @@ export const CHOICES: Record<Choices, readonly string[]> = {
   op: ['+', '−'],
   // A test's alternative hypothesis Hₐ: <, > or ≠, stored as the hypothesis pages code it.
   alt: ['<', '>', '≠'],
+  // Add or subtract, stored as the sign it multiplies by: + 1, − −1.
+  pm: ['+', '−'],
 };
 
 /** The value stored for each sign, when it isn't the sign's place counted from 1. */
 const CODES: Partial<Record<Choices, readonly number[]>> = {
   alt: [1, 3, 6],
+  pm: [1, -1],
 };
 
 /** The value stored for the sign at `index` (from 0). */
@@ -37,7 +40,7 @@ export function choiceSign(choices: Choices, value: number | undefined): string 
 }
 
 /** `{h:alt}` in a template: the box's id and what it cycles through. */
-export const CHOICE_BOX = /\{(\w+):(sign|relation|op|alt)\}/g;
+export const CHOICE_BOX = /\{(\w+):(sign|relation|op|alt|pm)\}/g;
 
 /** The choice box for `id` in an equation template, if the template has one. */
 export function choiceOf(template: string | undefined, id: string): Choices | undefined {

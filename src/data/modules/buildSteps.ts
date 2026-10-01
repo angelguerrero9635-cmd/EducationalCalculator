@@ -290,7 +290,7 @@ export function buildSteps(
     const sign = choices && choiceSign(choices, result.values[id]);
     if (!sign) return undefined;
     const line = module.equation!.split('\n').find((l) => l.includes(`{${id}:`))!;
-    if (!/\{(?!\w+:(?:sign|relation|op|alt)\})/.test(line))
+    if (!/\{(?!\w+:(?:sign|relation|op|alt|pm)\})/.test(line))
       return line.replace(CHOICE_BOX, (_, b: string) => (b === id ? sign : '?')).trim();
     return `${byId.get(id)!.symbol}: ${sign}`;
   };

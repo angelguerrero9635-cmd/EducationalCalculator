@@ -2365,7 +2365,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     variables: [
       V('a', 'a', 'Real part of the first', { integer: true, min: -10, max: 10 }),
       V('b', 'b', 'Imaginary part of the first', { integer: true, min: -10, max: 10 }),
-      V('sg', 's', 'Add (1) or subtract (−1)', { allowed: [-1, 1], min: -1, max: 1 }),
+      V('sg', 's', 'Add or subtract', { allowed: [-1, 1], min: -1, max: 1 }),
       V('c', 'c', 'Real part of the second', { integer: true, min: -10, max: 10 }),
       V('d', 'd', 'Imaginary part of the second', { integer: true, min: -10, max: 10 }),
       V('C', 'C', 'Real part added', { integer: true, min: -10, max: 10, derived: true }),
@@ -2435,7 +2435,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     example: { a: 4, b: -2, sg: -1, c: -1, d: 5, C: 1, D: -5, p: 5, q: -7 },
     startWith: ['a', 'b', 'sg', 'c', 'd'],
-    equation: '({a} + {b}i) ± ({c} + {d}i) = {p} + {q}i',
+    equation: '({a} + {b}i) {sg:pm} ({c} + {d}i) = {p} + {q}i',
     representation: {
       kind: 'complexPlane',
       z: { re: 'a', im: 'b' },

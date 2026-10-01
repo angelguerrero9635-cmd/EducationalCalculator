@@ -44,8 +44,8 @@ export type EquationPart =
 
 /** A box id starts with a letter: {4} is the number 4. */
 const BOX = /^[A-Za-z]\w*$/;
-/** `{s:sign}`, `{s:relation}`, `{o:op}`, `{h:alt}`: a box the student taps to change its sign. */
-const CHOICE = /^(\w+):(sign|relation|op|alt)$/;
+/** `{s:sign}`, `{s:relation}`, `{o:op}`, `{h:alt}`, `{g:pm}`: a box the student taps to change its sign. */
+const CHOICE = /^(\w+):(sign|relation|op|alt|pm)$/;
 
 /**
  * `{a:unit}`: a box with its unit after it, the one the unit menu shows; `{a:coef}`: a chemical

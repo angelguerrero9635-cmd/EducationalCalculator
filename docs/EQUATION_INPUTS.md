@@ -32,23 +32,24 @@ Keep rows for:
 
 ## Template syntax
 
-| Write                                  | Draws                                                      |
-| -------------------------------------- | ---------------------------------------------------------- |
-| `{a}`                                  | A box for value `a` (dashed when worked out).              |
-| `{a}/{b}`, `1/{b}`                     | A stacked fraction (a fixed top or bottom is a number).    |
-| `{w} {a}/{b}`                          | A mixed number.                                            |
-| `{b}^{n}`, `10^{n}`, `{a}^2`           | A power (the base or exponent can be a fixed number).      |
-| `{p}x + {q}`, `{a}°`, `{p}%`, `f({x})` | Text written against a box touches it: no space between.   |
-| `{{x} − {m}}/{s}`, `{r}^{{n} − 1}`     | A group in braces: an expression slot (boxes, text).       |
-| `√{n}`, `∛{n}`, `√({a}x + {b})`        | A radical, its bar over the box or the group.              |
-| `{s:sign}`, `{s:relation}`, `{o:op}`   | A sign box to tap: < ≤ > ≥ (= too), or + −; value 1, 2…    |
-| `{h:alt}`                              | Hₐ's sign: < > ≠, stored 1, 3, 6; the steps print the sign |
-| `log_{b}`, `a_{n}`, `^{A}_{Z}X`        | A subscript; scripts stacked on the left of a symbol.      |
-| `[[{a}, {b}; {c}, {d}]]`               | A matrix: rows split by ;, cells by a comma.               |
-| `\|\|{a}, {b}; {c}, {d}\|\|`           | A determinant; `\|` inside a row: the augmented bar.       |
-| `{a:unit}`                             | A box with its unit after it, as the unit menu shows it.   |
-| `{a:coef}`                             | A coefficient: a worked-out 1 is left blank.               |
-| A line break (`\n`)                    | A second equation under the first (a system).              |
+| Write                                  | Draws                                                        |
+| -------------------------------------- | ------------------------------------------------------------ |
+| `{a}`                                  | A box for value `a` (dashed when worked out).                |
+| `{a}/{b}`, `1/{b}`                     | A stacked fraction (a fixed top or bottom is a number).      |
+| `{w} {a}/{b}`                          | A mixed number.                                              |
+| `{b}^{n}`, `10^{n}`, `{a}^2`           | A power (the base or exponent can be a fixed number).        |
+| `{p}x + {q}`, `{a}°`, `{p}%`, `f({x})` | Text written against a box touches it: no space between.     |
+| `{{x} − {m}}/{s}`, `{r}^{{n} − 1}`     | A group in braces: an expression slot (boxes, text).         |
+| `√{n}`, `∛{n}`, `√({a}x + {b})`        | A radical, its bar over the box or the group.                |
+| `{s:sign}`, `{s:relation}`, `{o:op}`   | A sign box to tap: < ≤ > ≥ (= too), or + −; value 1, 2…      |
+| `{h:alt}`                              | Hₐ's sign: < > ≠, stored 1, 3, 6; the steps print the sign   |
+| `{g:pm}`                               | add or subtract: + −, stored 1, −1 (a sign it multiplies by) |
+| `log_{b}`, `a_{n}`, `^{A}_{Z}X`        | A subscript; scripts stacked on the left of a symbol.        |
+| `[[{a}, {b}; {c}, {d}]]`               | A matrix: rows split by ;, cells by a comma.                 |
+| `\|\|{a}, {b}; {c}, {d}\|\|`           | A determinant; `\|` inside a row: the augmented bar.         |
+| `{a:unit}`                             | A box with its unit after it, as the unit menu shows it.     |
+| `{a:coef}`                             | A coefficient: a worked-out 1 is left blank.                 |
+| A line break (`\n`)                    | A second equation under the first (a system).                |
 
 Line breaks and brackets:
 
