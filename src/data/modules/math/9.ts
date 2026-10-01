@@ -3602,6 +3602,56 @@ function crossRules(m1: string, b1: string, m2: string, b2: string, x = 'x', y =
   ];
 }
 
+/** Whether the test point is in the box a ≤ x ≤ b, c ≤ y ≤ d. */
+const inBox = (v: Values) => v.a! <= v.tx! && v.tx! <= v.b! && v.c! <= v.ty! && v.ty! <= v.d!;
+
+/** The crossings of y = ax² + px + q and y = mx + k: ax² + (p − m)x + (q − k) = 0 (a > 0). */
+const meet = (v: Values, sign: 1 | -1) => {
+  const [A, B, C] = [v.a!, v.p! - v.m!, v.q! - v.k!];
+  const D = B * B - 4 * A * C;
+  if (!A || D < 0) return undefined;
+  return fin((-B + sign * Math.sqrt(D)) / (2 * A));
+};
+
+/**
+ * h = 1 when lhs (sign s) rhs holds for the test values, 0 when not: a test put into one
+ * inequality, its work lines the substituted sides.
+ */
+function signTest(
+  h: string,
+  s: string,
+  vars: string[],
+  display: string,
+  lhs: (v: Values) => number,
+  rhs: (v: Values) => number,
+  work: (v: Values) => string[],
+  how: string,
+): Rule {
+  const ok = (v: Values) => truth(compare(lhs(v), v[s]!, rhs(v)));
+  return rule(
+    `${h} = test (${vars.join(', ')})`,
+    display,
+    [h, s, ...vars],
+    (v) => tested(v[h]!, ok(v)),
+    {
+      [h]: [
+        (v) => ok(v),
+        (v) => `${ok(v)}`,
+        how,
+        {
+          note: truthNote(h),
+          work: (v) => [
+            ...work(v),
+            `${fmt(exact(lhs(v)))} ${SIGNS[v[s]! - 1]} ${fmt(exact(rhs(v)))} is ${ok(v) ? 'true' : 'false'}`,
+          ],
+          written: false,
+        },
+      ],
+    },
+    { check: (v) => testCheck(exact(lhs(v)), exact(rhs(v)), ok(v) === 1, 'the test point') },
+  );
+}
+
 const INEQUALITY_SYSTEMS: ModuleDef[] = [
   page({
     id: 'm.9.inequality-systems',
@@ -4000,6 +4050,312 @@ const INEQUALITY_SYSTEMS: ModuleDef[] = [
       quadrants: 1,
       axes: { x: 'Adult tickets a', y: 'Student tickets s' },
       fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.inequality-systems~standard-form',
+    title: 'System of inequalities in standard form',
+    use: 'Use this for “Graph x − 2y < 2 and 2x + y ≤ 4 and test (−6, 2).”',
+    assumptions: [
+      'Solve each for y: divide by the y term, flipping the sign when it is negative.',
+      'Dashed lines (< or >) are left out; solid ones (≤ or ≥) are included.',
+      'The solutions are where the two shadings overlap.',
+    ],
+    variables: [
+      num('a', 'a', 'First x term', -20, 20),
+      num('b', 'b', 'First y term', -20, 20),
+      int('s', 's', 'First sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4, { allowed: [1, 2, 3, 4] }),
+      num('c', 'c', 'First number', -100, 100),
+      num('d', 'd', 'Second x term', -20, 20),
+      num('e', 'e', 'Second y term', -20, 20),
+      int('t', 't', 'Second sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4, { allowed: [1, 2, 3, 4] }),
+      num('f', 'f', 'Second number', -100, 100),
+      num('m1', 'm₁', 'First slope', -400, 400, { derived: true, fraction: 20 }),
+      num('b1', 'b₁', 'First y-intercept', -2000, 2000, { derived: true, fraction: 20 }),
+      num('m2', 'm₂', 'Second slope', -400, 400, { derived: true, fraction: 20 }),
+      num('b2', 'b₂', 'Second y-intercept', -2000, 2000, { derived: true, fraction: 20 }),
+      num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
+      num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
+      holdsVar('h1'),
+      holdsVar('h2'),
+    ],
+    rules: [
+      signTest(
+        'h1',
+        's',
+        ['a', 'tx', 'b', 'ty', 'c'],
+        'test ({tx}, {ty}) in {a}x + {b}y (sign {s}) {c}: {h1}',
+        (v) => v.a! * v.tx! + v.b! * v.ty!,
+        (v) => v.c!,
+        (v) => [
+          `${fmt(v.a!)}(${fmt(v.tx!)}) ${v.b! < 0 ? '−' : '+'} ${fmt(Math.abs(v.b!))}(${fmt(v.ty!)}) = ${fmt(exact(v.a! * v.tx! + v.b! * v.ty!))}`,
+        ],
+        'Put the test point into the first inequality: 1 is true, 0 is false.',
+      ),
+      signTest(
+        'h2',
+        't',
+        ['d', 'tx', 'e', 'ty', 'f'],
+        'test ({tx}, {ty}) in {d}x + {e}y (sign {t}) {f}: {h2}',
+        (v) => v.d! * v.tx! + v.e! * v.ty!,
+        (v) => v.f!,
+        (v) => [
+          `${fmt(v.d!)}(${fmt(v.tx!)}) ${v.e! < 0 ? '−' : '+'} ${fmt(Math.abs(v.e!))}(${fmt(v.ty!)}) = ${fmt(exact(v.d! * v.tx! + v.e! * v.ty!))}`,
+        ],
+        'And into the second: the point is a solution when both are 1.',
+      ),
+      nonzero('b', 'The first y term'),
+      nonzero('e', 'The second y term'),
+      derive(
+        'm₁ = −a ÷ b',
+        'm1',
+        ['a', 'b'],
+        '{m1} = −{a} ÷ {b}',
+        (v) => div(-v.a!, v.b!),
+        '−{a} ÷ {b}',
+        'Take ax from both sides, then divide by b: the slope is −a ÷ b.',
+      ),
+      derive(
+        'b₁ = c ÷ b',
+        'b1',
+        ['c', 'b'],
+        '{b1} = {c} ÷ {b}',
+        (v) => div(v.c!, v.b!),
+        '{c} ÷ {b}',
+        (v) =>
+          v.b! < 0
+            ? `b is negative: dividing by it flips ${SIGNS[v.s! - 1] ?? 'the sign'}.`
+            : 'Divide the number by b too; b is positive, so the sign stays.',
+      ),
+      derive(
+        'm₂ = −d ÷ e',
+        'm2',
+        ['d', 'e'],
+        '{m2} = −{d} ÷ {e}',
+        (v) => div(-v.d!, v.e!),
+        '−{d} ÷ {e}',
+        'The same for the second: the slope is −d ÷ e.',
+      ),
+      derive(
+        'b₂ = f ÷ e',
+        'b2',
+        ['f', 'e'],
+        '{b2} = {f} ÷ {e}',
+        (v) => div(v.f!, v.e!),
+        '{f} ÷ {e}',
+        (v) =>
+          v.e! < 0
+            ? `e is negative: dividing by it flips ${SIGNS[v.t! - 1] ?? 'the sign'}.`
+            : 'Divide by e; e is positive, so the sign stays.',
+      ),
+    ],
+    example: {
+      a: 1,
+      b: -2,
+      s: 1,
+      c: 2,
+      d: 2,
+      e: 1,
+      t: 2,
+      f: 4,
+      m1: 0.5,
+      b1: -1,
+      m2: -2,
+      b2: 4,
+      tx: -6,
+      ty: 2,
+      h1: 1,
+      h2: 1,
+    },
+    startWith: ['a', 'b', 's', 'c', 'd', 'e', 't', 'f', 'tx', 'ty'],
+    equation: '{a}x + {b}y {s:sign} {c}\n{d}x + {e}y {t:sign} {f}',
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 'm1', intercept: 'b1', shade: { sign: 's', flip: 'b' } },
+        { slope: 'm2', intercept: 'b2', shade: { sign: 't', flip: 'e' } },
+      ],
+      test: { x: 'tx', y: 'ty' },
+      extent: 10,
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.inequality-systems~box',
+    title: 'A box of points: a ≤ x ≤ b and c ≤ y ≤ d',
+    use: 'Use this for “Shade the points with −3 ≤ x ≤ 2 and −1 ≤ y ≤ 4.”',
+    assumptions: [
+      'a ≤ x ≤ b is the strip between two upright lines, x = a and x = b.',
+      'c ≤ y ≤ d is the strip between two flat lines, y = c and y = d.',
+      'Where the strips overlap is a box: every point in it makes all four true.',
+    ],
+    variables: [
+      num('a', 'a', 'Least x', -10, 10, { step: 0.5 }),
+      num('b', 'b', 'Greatest x', -10, 10, { step: 0.5 }),
+      num('c', 'c', 'Least y', -10, 10, { step: 0.5 }),
+      num('d', 'd', 'Greatest y', -10, 10, { step: 0.5 }),
+      num('W', 'W', 'Width of the box', -20, 20, { derived: true }),
+      num('H', 'H', 'Height of the box', -20, 20, { derived: true }),
+      num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
+      num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
+      holdsVar(),
+    ],
+    rules: [
+      derive(
+        'W = b − a',
+        'W',
+        ['b', 'a'],
+        '{W} = {b} − {a}',
+        (v) => exact(v.b! - v.a!),
+        '{b} − {a}',
+        'The box runs from x = a to x = b: its width is b − a.',
+        {},
+        {
+          message: (v) =>
+            known(v, 'a', 'b') && v.a! > v.b!
+              ? 'a is past b: no x is between them, so there is no box.'
+              : undefined,
+        },
+      ),
+      derive(
+        'H = d − c',
+        'H',
+        ['d', 'c'],
+        '{H} = {d} − {c}',
+        (v) => exact(v.d! - v.c!),
+        '{d} − {c}',
+        'And from y = c up to y = d: its height is d − c.',
+        {},
+        {
+          message: (v) =>
+            known(v, 'c', 'd') && v.c! > v.d!
+              ? 'c is past d: no y is between them, so there is no box.'
+              : undefined,
+        },
+      ),
+      rule(
+        'h = test in the box',
+        'test ({tx}, {ty}) in {a} ≤ x ≤ {b} and {c} ≤ y ≤ {d}: {h}',
+        ['h', 'tx', 'ty', 'a', 'b', 'c', 'd'],
+        (v) => tested(v.h!, truth(inBox(v))),
+        {
+          h: [
+            (v) => truth(inBox(v)),
+            (v) => `${truth(inBox(v))}`,
+            'Check x₀ between a and b, and y₀ between c and d: 1 when all four are true.',
+            {
+              note: truthNote(),
+              work: (v) => [
+                `${fmt(v.a!)} ≤ ${fmt(v.tx!)} ≤ ${fmt(v.b!)} is ${v.a! <= v.tx! && v.tx! <= v.b! ? 'true' : 'false'}`,
+                `${fmt(v.c!)} ≤ ${fmt(v.ty!)} ≤ ${fmt(v.d!)} is ${v.c! <= v.ty! && v.ty! <= v.d! ? 'true' : 'false'}`,
+              ],
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) =>
+            `(${fmt(v.tx!)}, ${fmt(v.ty!)}) ${inBox(v) ? 'is' : 'is not'} in the box, so it ${inBox(v) ? 'is' : 'is not'} a solution`,
+        },
+      ),
+    ],
+    example: { a: -3, b: 2, c: -1, d: 4, W: 5, H: 5, tx: 1, ty: 2, h: 1 },
+    startWith: ['a', 'b', 'c', 'd', 'tx', 'ty'],
+    equation: '{a} ≤ x ≤ {b}\n{c} ≤ y ≤ {d}',
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 0, intercept: 'c', shade: '≥' },
+        { slope: 0, intercept: 'd', shade: '≤' },
+      ],
+      upright: [
+        { x: 'a', shade: '≥' },
+        { x: 'b', shade: '≤' },
+      ],
+      test: { x: 'tx', y: 'ty' },
+      extent: 10,
+      fixed: true,
+    },
+  }),
+  page({
+    id: 'm.9.inequality-systems~nonlinear',
+    title: 'A line and a parabola',
+    use: 'Use this for “Solve y = x² − 2x − 3 and y = x + 1.”',
+    assumptions: [
+      'At a crossing both equations give the same y, so set ax² + px + q equal to mx + k.',
+      'Gather everything on one side: ax² + (p − m)x + (q − k) = 0, then use the quadratic formula.',
+      'Two roots: the line cuts the parabola twice; one: it touches; none: it misses.',
+    ],
+    variables: [
+      num('a', 'a', 'x² coefficient of the parabola (opens up)', 0.5, 5, { step: 0.5 }),
+      num('p', 'p', 'x coefficient of the parabola', -10, 10, { step: 0.5 }),
+      num('q', 'q', 'Constant of the parabola', -20, 20, { step: 0.5 }),
+      num('m', 'm', 'Slope of the line', -10, 10, { step: 0.5 }),
+      num('k', 'k', 'y-intercept of the line', -20, 20, { step: 0.5 }),
+      num('x1', 'x₁', 'Left crossing x', -100, 100, { derived: true }),
+      num('y1', 'y₁', 'Left crossing y', -10000, 10000, { derived: true }),
+      num('x2', 'x₂', 'Right crossing x', -100, 100, { derived: true }),
+      num('y2', 'y₂', 'Right crossing y', -10000, 10000, { derived: true }),
+    ],
+    rules: [
+      constraint(
+        'they meet',
+        '({p} − {m})² − 4 × {a} × ({q} − {k}) ≥ 0',
+        ['p', 'm', 'a', 'q', 'k'],
+        (v) => (v.p! - v.m!) ** 2 - 4 * v.a! * (v.q! - v.k!) < 0,
+        () => 'The line misses the parabola: ax² + (p − m)x + (q − k) = 0 has no real root.',
+      ),
+      derive(
+        'x₁ = smaller root',
+        'x1',
+        ['a', 'p', 'q', 'm', 'k'],
+        '{x1} = smaller root of {a}x² + ({p} − {m})x + ({q} − {k}) = 0',
+        (v) => meet(v, -1),
+        '(−({p} − {m}) − √(({p} − {m})² − 4 × {a} × ({q} − {k}))) ÷ (2 × {a})',
+        'Set the two right sides equal, gather on one side, and take the smaller root.',
+      ),
+      derive(
+        'y₁ = m x₁ + k',
+        'y1',
+        ['m', 'x1', 'k'],
+        '{y1} = {m} × {x1} + {k}',
+        (v) => fin(v.m! * v.x1! + v.k!),
+        '{m} × {x1} + {k}',
+        'Put x₁ into the line (the simpler equation) for its y.',
+      ),
+      derive(
+        'x₂ = larger root',
+        'x2',
+        ['a', 'p', 'q', 'm', 'k'],
+        '{x2} = larger root of {a}x² + ({p} − {m})x + ({q} − {k}) = 0',
+        (v) => meet(v, 1),
+        '(−({p} − {m}) + √(({p} − {m})² − 4 × {a} × ({q} − {k}))) ÷ (2 × {a})',
+        'The other root: the second crossing (the same point when the line only touches).',
+      ),
+      derive(
+        'y₂ = m x₂ + k',
+        'y2',
+        ['m', 'x2', 'k'],
+        '{y2} = {m} × {x2} + {k}',
+        (v) => fin(v.m! * v.x2! + v.k!),
+        '{m} × {x2} + {k}',
+        'Put x₂ into the line for its y.',
+      ),
+    ],
+    example: { a: 1, p: -2, q: -3, m: 1, k: 1, x1: -1, y1: 0, x2: 4, y2: 5 },
+    startWith: ['a', 'p', 'q', 'm', 'k'],
+    equation: 'y = {a}x² + {p}x + {q}\ny = {m}x + {k}',
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { square: 'a', slope: 'p', intercept: 'q' },
+        { slope: 'm', intercept: 'k' },
+      ],
+      solutions: [
+        { x: 'x1', y: 'y1' },
+        { x: 'x2', y: 'y2' },
+      ],
+      extent: 10,
     },
   }),
 ];
