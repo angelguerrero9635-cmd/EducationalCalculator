@@ -2899,6 +2899,7 @@ const LINEAR_INEQUALITIES: ModuleDef[] = [
       value: 'k',
       min: -20,
       max: 20,
+      ticks: 5,
       inequality: { sign: 'f', test: 't' },
     },
   }),
@@ -2943,17 +2944,19 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
     use: 'Use this for “Solve −5 < 3x + 4 ≤ 13.”',
     assumptions: [
       'Do the same to all three parts: take b from each, then divide each by a.',
+      'Here a is positive, so the signs stay: < leaves a bound out, ≤ takes it in.',
       'The solutions are between the two bounds: both parts must be true.',
-      'Here a is positive, so the signs stay; dividing by a negative would flip both.',
     ],
     variables: [
-      int('l', 'l', 'Left number', -50, 50),
+      int('l', 'l', 'Left number', -1000, 1000),
+      int('s', 's', 'Left sign (1 <, 2 ≤)', 1, 2, { allowed: [1, 2] }),
       int('a', 'a', 'x in the middle', 1, 10),
-      int('b', 'b', 'Number in the middle', -50, 50),
-      int('r', 'r', 'Right number', -50, 50),
-      num('L', 'L', 'Lower bound', -20, 20, { derived: true, fraction: 12 }),
-      num('U', 'U', 'Upper bound', -20, 20, { derived: true, fraction: 12 }),
-      num('t', 't', 'Test number', -20, 20, { step: 0.5 }),
+      int('b', 'b', 'Number in the middle', -1000, 1000),
+      int('t', 't', 'Right sign (1 <, 2 ≤)', 1, 2, { allowed: [1, 2] }),
+      int('r', 'r', 'Right number', -1000, 1000),
+      num('L', 'L', 'Lower bound', -2000, 2000, { derived: true, fraction: 12 }),
+      num('U', 'U', 'Upper bound', -2000, 2000, { derived: true, fraction: 12 }),
+      num('n', 'x₀', 'Test number', -2000, 2000, { step: 0.5 }),
       holdsVar(),
     ],
     rules: [
@@ -2976,45 +2979,50 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
         'Do the same to the right part.',
         {
           // (no interval when the bounds cross: the message says why)
-          note: (v) => (known(v, 'L', 'U') && v.L! < v.U! ? `→ ${fr(v.L!)} < x ≤ ${fr(v.U!)}` : ''),
+          note: (v) =>
+            known(v, 'L', 'U', 's', 't') && v.L! < v.U!
+              ? `→ ${fr(v.L!)} ${SIGNS[v.s! - 1]} x ${SIGNS[v.t! - 1]} ${fr(v.U!)}`
+              : '',
         },
         {
           message: (v) =>
-            known(v, 'l', 'r') && v.l! >= v.r!
+            known(v, 'l', 'r') && (v.l! > v.r! || (v.l === v.r && (v.s === 1 || v.t === 1)))
               ? 'The left number is not below the right one: no number is between them.'
               : undefined,
         },
       ),
       compoundTest(
-        'test {t} in {l} < {a}x + {b} ≤ {r}: {h}',
-        ['t', 'l', 'a', 'b', 'r'],
-        (v) => v.l! < v.a! * v.t! + v.b! && v.a! * v.t! + v.b! <= v.r!,
+        'test {n} in {l} (sign {s}) {a}x + {b} (sign {t}) {r}: {h}',
+        ['n', 'l', 's', 'a', 'b', 't', 'r'],
+        (v) => compare(v.l!, v.s!, v.a! * v.n! + v.b!) && compare(v.a! * v.n! + v.b!, v.t!, v.r!),
         (v) => {
-          const m = at(v.a!, v.b!, v.t!);
-          const ok = v.l! < m.total && m.total <= v.r!;
+          const m = at(v.a!, v.b!, v.n!);
+          const ok = compare(v.l!, v.s!, m.total) && compare(m.total, v.t!, v.r!);
           return [
             m.line,
-            `${fmt(v.l!)} < ${fmt(m.total)} ≤ ${fmt(v.r!)} is ${ok ? 'true' : 'false'}`,
+            `${fmt(v.l!)} ${SIGNS[v.s! - 1]} ${fmt(m.total)} ${SIGNS[v.t! - 1]} ${fmt(v.r!)} is ${ok ? 'true' : 'false'}`,
           ];
         },
         'Put the test number in the middle: both parts must be true. 1 is true, 0 is false.',
         (v) => {
-          const m = exact(v.a! * v.t! + v.b!);
-          const ok = v.l! < m && m <= v.r!;
-          return `${atLine(v.a!, v.t!, v.b!)}, so ${fmt(v.t!)} ${ok ? 'is' : 'is not'} a solution`;
+          const m = exact(v.a! * v.n! + v.b!);
+          const ok = compare(v.l!, v.s!, m) && compare(m, v.t!, v.r!);
+          return `${atLine(v.a!, v.n!, v.b!)}, so ${fmt(v.n!)} ${ok ? 'is' : 'is not'} a solution`;
         },
       ),
     ],
-    example: { l: -5, a: 3, b: 4, r: 13, L: -3, U: 3, t: 0, h: 1 },
-    startWith: ['l', 'a', 'b', 'r', 't'],
-    equation: '{l} < {a}x + {b} ≤ {r}',
+    example: { l: -5, s: 1, a: 3, b: 4, t: 2, r: 13, L: -3, U: 3, n: 0, h: 1 },
+    startWith: ['l', 's', 'a', 'b', 't', 'r', 'n'],
+    equation: '{l} {s:sign} {a}x + {b} {t:sign} {r}',
     representation: {
       kind: 'integerLine',
       value: 'L',
       second: 'U',
       min: -20,
       max: 20,
-      compound: { join: 'and', closed: [false, true], test: 't' },
+      fit: true,
+      ticks: 5,
+      compound: { join: 'and', closed: ['s', 't'], test: 'n' },
     },
   }),
   page({
@@ -3098,80 +3106,72 @@ const LINEAR_INEQUALITIES_MORE: ModuleDef[] = [
       compound: { join: 'or', closed: [false, true], test: 't' },
     },
   }),
-  ...(
-    [
-      ['~two-variables', 'Graph y ≥ mx + b', '≥', 'y ≥ 2x − 3', 'above', 'solid', 4],
-      ['~two-variables-below', 'Graph y < mx + b', '<', 'y < −x + 4', 'below', 'dashed', 1],
-    ] as const
-  ).map(([slug, title, sign, eg, side, line, code]) =>
-    page({
-      id: `m.9.linear-inequalities${slug}`,
-      title,
-      use: `Use this for “Graph ${eg} and test a point.”`,
-      assumptions: [
-        `Draw the boundary y = mx + b, ${line}: ${sign === '≥' ? '≥ includes' : '< leaves out'} the points on it.`,
-        `Shade ${side} the line: every point there makes y ${sign} mx + b true.`,
-        'A test point is a solution when its y is in the shaded part at its x.',
-      ],
-      variables: [
-        num('m', 'm', 'Slope', -10, 10, { step: 0.5 }),
-        num('b', 'b', 'y-intercept', -10, 10, { step: 0.5 }),
-        num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
-        num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
-        num('yl', 'y_line', 'Height of the line at x₀', -120, 120, { derived: true }),
-        holdsVar(),
-      ],
-      rules: [
-        derive(
-          'y_line = m x₀ + b',
-          'yl',
-          ['m', 'tx', 'b'],
-          '{yl} = {m} × {tx} + {b}',
-          (v) => v.m! * v.tx! + v.b!,
-          '{m} × {tx} + {b}',
-          'The boundary’s height at the test point’s x.',
-        ),
-        rule(
-          'h = test',
-          `test: {ty} ${sign} {yl} gives {h}`,
-          ['h', 'ty', 'yl'],
-          (v) => tested(v.h!, truth(compare(v.ty!, code, v.yl!))),
-          {
-            h: [
-              (v) => truth(compare(v.ty!, code, v.yl!)),
-              (v) => `${truth(compare(v.ty!, code, v.yl!))}`,
-              `Compare the test point’s y with the line’s: 1 is true (shaded), 0 is false.`,
-              {
-                note: truthNote(),
-                work: (v) => [
-                  `${fmt(v.ty!)} ${sign} ${fmt(v.yl!)} is ${compare(v.ty!, code, v.yl!) ? 'true' : 'false'}`,
-                ],
-                written: false,
-              },
-            ],
-          },
-          {
-            check: (v) => testCheck(v.ty!, v.yl!, compare(v.ty!, code, v.yl!), 'the test point'),
-          },
-        ),
-      ],
-      example:
-        sign === '≥'
-          ? { m: 2, b: -3, tx: 1, ty: 0, yl: -1, h: 1 }
-          : { m: -1, b: 4, tx: 3, ty: 2, yl: 1, h: 0 },
-      startWith: ['m', 'b', 'tx', 'ty'],
-      equation: `y ${sign} {m}x + {b}`,
-      pictureLabels: ['tx', 'ty', 'yl', 'h'],
-      representation: {
-        kind: 'linearFunction',
-        slope: 'm',
-        intercept: 'b',
-        shade: sign,
-        keep: ['tx', 'ty'],
-        extent: 10,
-      },
-    }),
-  ),
+  page({
+    id: 'm.9.linear-inequalities~two-variables',
+    title: 'Graph y (sign) mx + b',
+    use: 'Use this for “Graph y ≥ 2x − 3 and test a point”, or with <, ≤ or >.',
+    assumptions: [
+      'The boundary is y = mx + b: dashed for < and > (left out), solid for ≤ and ≥ (included).',
+      'Shade above the line for > and ≥, below it for < and ≤.',
+      'A test point is a solution when its y is in the shaded part at its x.',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -10, 10, { step: 0.5 }),
+      num('b', 'b', 'y-intercept', -10, 10, { step: 0.5 }),
+      int('s', 's', 'Sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4, { allowed: [1, 2, 3, 4] }),
+      num('tx', 'x₀', 'Test point x', -10, 10, { step: 0.5 }),
+      num('ty', 'y₀', 'Test point y', -10, 10, { step: 0.5 }),
+      num('yl', 'y_line', 'Height of the line at x₀', -120, 120, { derived: true }),
+      holdsVar(),
+    ],
+    rules: [
+      derive(
+        'y_line = m x₀ + b',
+        'yl',
+        ['m', 'tx', 'b'],
+        '{yl} = {m} × {tx} + {b}',
+        (v) => v.m! * v.tx! + v.b!,
+        '{m} × {tx} + {b}',
+        'The boundary’s height at the test point’s x.',
+      ),
+      rule(
+        'h = test',
+        'test: {ty} (sign {s}) {yl} gives {h}',
+        ['h', 'ty', 's', 'yl'],
+        (v) => tested(v.h!, truth(compare(v.ty!, v.s!, v.yl!))),
+        {
+          h: [
+            (v) => truth(compare(v.ty!, v.s!, v.yl!)),
+            (v) => `${truth(compare(v.ty!, v.s!, v.yl!))}`,
+            'Compare the test point’s y with the line’s: 1 is true (shaded), 0 is false.',
+            {
+              note: truthNote(),
+              work: (v) => [
+                `${fmt(v.ty!)} ${SIGNS[v.s! - 1]} ${fmt(v.yl!)} is ${compare(v.ty!, v.s!, v.yl!) ? 'true' : 'false'}`,
+              ],
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) => testCheck(v.ty!, v.yl!, compare(v.ty!, v.s!, v.yl!), 'the test point'),
+        },
+      ),
+    ],
+    example: { m: 2, b: -3, s: 4, tx: 1, ty: 0, yl: -1, h: 1 },
+    startWith: ['m', 'b', 's', 'tx', 'ty'],
+    equation: 'y {s:sign} {m}x + {b}',
+    pictureLabels: ['yl', 'h'],
+    representation: {
+      kind: 'linearFunction',
+      slope: 'm',
+      intercept: 'b',
+      shade: { sign: 's' },
+      test: { x: 'tx', y: 'ty' },
+      keep: ['tx', 'ty'],
+      extent: 10,
+    },
+  }),
   page({
     id: 'm.9.linear-inequalities~whole-number-answers',
     title: 'Whole-number answers',
@@ -3467,11 +3467,106 @@ const ABSOLUTE_VALUE: ModuleDef[] = [
     example: { a: 2, b: -3, c: 7, h: 1.5, d: 3.5, x1: 5, x2: -2 },
     startWith: ['c', 'a', 'b'],
     equation: '|{a}x + {b}| = {c}',
-    pictureLabels: ['h', 'd'],
-    representation: { kind: 'integerLine', value: 'x1', second: 'x2', min: -20, max: 20 },
+    representation: {
+      kind: 'integerLine',
+      value: 'x1',
+      second: 'x2',
+      min: -20,
+      max: 20,
+      compound: { join: 'equal', center: 'h', radius: 'd' },
+    },
   }),
   absInequality(true),
   absInequality(false),
+  page({
+    id: 'm.9.absolute-value~tolerance',
+    title: 'Tolerance: within d of a target',
+    use: 'Use this for “A 350 g box may be off by 6 g. Is a 343 g box all right?”',
+    assumptions: [
+      'Within d of the target T means |w − T| ≤ d: the weight is at most d from T.',
+      'So T − d ≤ w ≤ T + d, both ends allowed.',
+      'A weight is all right when its distance from T is at most d.',
+    ],
+    variables: [
+      num('T', 'T', 'Target weight (g)', 1, 100000, { step: 0.5 }),
+      num('d', 'd', 'Allowed difference (g)', 0, 10000, { step: 0.5 }),
+      num('L', 'L', 'Lowest allowed weight (g)', -10000, 110000, { derived: true }),
+      num('U', 'U', 'Highest allowed weight (g)', -10000, 110000, { derived: true }),
+      num('w', 'w', 'Weight measured (g)', 0, 110000, { step: 0.5 }),
+      num('k', 'k', 'Distance from the target (g)', 0, 110000, { derived: true }),
+      holdsVar(),
+    ],
+    rules: [
+      derive(
+        'L = T − d',
+        'L',
+        ['T', 'd'],
+        '{L} = {T} − {d}',
+        (v) => exact(v.T! - v.d!),
+        '{T} − {d}',
+        'The lightest box allowed: d below the target.',
+      ),
+      derive(
+        'U = T + d',
+        'U',
+        ['T', 'd'],
+        '{U} = {T} + {d}',
+        (v) => exact(v.T! + v.d!),
+        '{T} + {d}',
+        'The heaviest box allowed: d above the target.',
+      ),
+      derive(
+        'k = |w − T|',
+        'k',
+        ['w', 'T'],
+        '{k} = |{w} − {T}|',
+        (v) => exact(Math.abs(v.w! - v.T!)),
+        '|{w} − {T}|',
+        'How far the weight is from the target, as a distance (never negative).',
+      ),
+      rule(
+        'h = (k ≤ d)',
+        'test: {k} ≤ {d} gives {h}',
+        ['h', 'k', 'd'],
+        (v) => tested(v.h!, truth(v.k! <= v.d!)),
+        {
+          h: [
+            (v) => truth(v.k! <= v.d!),
+            (v) => `${truth(v.k! <= v.d!)}`,
+            'Compare the distance with the allowed difference: 1 is all right, 0 is not.',
+            {
+              note: truthNote(),
+              work: (v) => [`${fmt(v.k!)} ≤ ${fmt(v.d!)} is ${v.k! <= v.d! ? 'true' : 'false'}`],
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) =>
+            `${fmt(v.k!)} ${cmp(v.k!, v.d!)} ${fmt(v.d!)}, so the weight ${v.k! <= v.d! ? 'is' : 'is not'} within the allowed difference`,
+        },
+      ),
+    ],
+    example: { T: 350, d: 6, L: 344, U: 356, w: 343, k: 7, h: 0 },
+    startWith: ['T', 'd', 'w'],
+    representation: {
+      kind: 'integerLine',
+      value: 'L',
+      second: 'U',
+      min: 0,
+      max: 10,
+      unit: 'g',
+      fit: true,
+      compound: {
+        join: 'and',
+        closed: [true, true],
+        center: 'T',
+        radius: 'd',
+        letter: 'w',
+        test: 'w',
+      },
+    },
+  }),
 ];
 
 // ── Systems: elimination and inequalities ──
