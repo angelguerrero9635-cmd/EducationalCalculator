@@ -2299,6 +2299,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.11.electric-potential~capacitor',
         's.11.electric-potential~parallel-plate',
         's.11.electromagnetism',
+        's.11.electromagnetism~moving-charge',
       ],
       'P19: docs/build/s.11.md, "Added skills" and "Shared needs (pictures)".',
     ),
@@ -2323,7 +2324,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s-11-electric-potential-unlike',
       'g.s-11-electric-potential-launch',
       'g.s-11-electric-potential-launch-proton',
-      'g.s-11-electromagnetism-moving-charge',
       'g.s-11-electromagnetism-moving-charge-circle',
     ],
     notes: [
