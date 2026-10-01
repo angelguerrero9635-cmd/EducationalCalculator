@@ -6333,12 +6333,12 @@ function inductionRels({ S, a, F, what, term, more = [], algebra }: SumFormula):
       ),
       'F',
       {
-        work: algebra.map((line) => `With k for n: ${line}`),
+        // The numbers are worked to the answer first; the step with k comes after it.
         note: (v) =>
           v.T === undefined || v.F === undefined
             ? ''
             : Math.abs(v.T - v.F) < 1e-9 * Math.max(1, Math.abs(v.F))
-              ? `→ T = F = ${fmt(v.F)}: adding the next term gives the formula at n + 1`
+              ? `→ T = F = ${fmt(v.F)}: adding the next term gives the formula at n + 1. With k for n: ${algebra.join(' ')}`
               : `→ T = ${fmt(v.T)} is not F: the formula fails`,
       },
     ),
@@ -6495,7 +6495,7 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         term: '(n + 1)²',
         algebra: [
           'k(k + 1)(2k + 1)/6 + (k + 1)² = (k + 1)(2k² + 7k + 6)/6',
-          '(k + 1)(2k² + 7k + 6)/6 = (k + 1)(k + 2)(2k + 3)/6',
+          '= (k + 1)(k + 2)(2k + 3)/6, since 2k² + 7k + 6 = (k + 2)(2k + 3)',
         ],
       }),
     ),
@@ -6519,9 +6519,9 @@ const MATH_12_INDUCTION: ModuleDef[] = [
       'The numbers check the step at one n; the algebra with k proves every case.',
     ],
     variables: [
-      count(30),
+      V('n', 'n', 'Whole number n', { integer: true, min: 1, max: 30 }),
       V('f', 'f(n)', 'n³ − n', { integer: true, min: 0, max: 27000, derived: true }),
-      V('g', 'f(n) ÷ 3', 'f(n) divided by 3', { integer: true, min: 0, max: 9000, derived: true }),
+      V('g', 'q', 'f(n) divided by 3', { integer: true, min: 0, max: 9000, derived: true }),
       V('F', 'f(n + 1)', 'The next one, (n + 1)³ − (n + 1)', {
         integer: true,
         min: 6,
@@ -6547,7 +6547,7 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         },
       ),
       derive(
-        'f(n) ÷ 3',
+        'q = f(n) ÷ 3',
         '{g} = {f} ÷ 3',
         'g',
         ['f'],
@@ -6576,14 +6576,15 @@ const MATH_12_INDUCTION: ModuleDef[] = [
         ),
         'D',
         {
+          // The algebra with k, then the same jump in numbers, ending at the answer.
           work: (v) => [
-            `3 × ${shown(v.n!)} × ${shown(v.n! + 1)} = ${shown(3 * v.n! * (v.n! + 1))}`,
             'With k for n: (k + 1)³ − (k + 1) − (k³ − k) = 3k² + 3k = 3k(k + 1)',
+            `3n(n + 1) = 3 × ${shown(v.n!)} × ${shown(v.n! + 1)} = ${shown(3 * v.n! * (v.n! + 1))}`,
           ],
           note: (v) =>
             v.D === undefined
               ? ''
-              : `→ the jump is 3n(n + 1), a multiple of 3: f(n) + ${shown(v.D)} stays a multiple of 3`,
+              : '→ f(n + 1) = f(n) + 3n(n + 1): a multiple of 3 plus a multiple of 3 is a multiple of 3',
         },
       ),
     ),
