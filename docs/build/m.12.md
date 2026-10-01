@@ -461,3 +461,11 @@ There is no `m.12.confidence-intervals~two-sample`; the t curve went on the hypo
   colors, the F-curve tail, cramer's caption, the compose, projectile, ellipse, resultant,
   polar and polar-conics tags, the conic keys, the hyperbola slope, the area-under-curve
   exact line, capture's row height, the matrices stages.
+
+### Round 4 placed
+
+- `m.12.anova~two-variances` (H112, P24): `normalCurve` `f` with `tailsFrom: 'h'` (df₁, df₂, F,
+  α and P as before): both tails for ≠ (h = 0), the right one for > (h = 1),
+  so the curve agrees with P either way. The table of P by F (the stand-in, and `fTable`) is gone.
+  Demos `g.m12-anova-two-variances-tails-two` and `g.m12-anova-two-variances-tails-right`
+  retired; the H106 (18) demo `g.m12-anova-two-variances-f-curve` (fixed two tails) is kept.

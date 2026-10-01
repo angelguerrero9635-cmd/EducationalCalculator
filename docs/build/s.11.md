@@ -355,3 +355,11 @@ From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.m
 - `sound-waves`: an amplitude under 30 px is drawn on its own height scale (40 px for the
   frozen value), marked "heights not to scale", and the drag reads it on that scale.
 - Labels to 3 figures: T = 0.314 s, ω = 12.6 rad/s, V = 71,900 V, U = 0.144 J, and so on.
+
+### Round 4 placed
+
+- `s.11.rotation~rotational-inertia` (H111, P23): `rotor` `hollow: true`, so the compare row has
+  the hollow ball (c = ⅔, which the assumptions already name) beside the hoop, solid disk and
+  solid ball. No other page uses a rotor shape, so c = ⅔ drawing a hollow ball changes nothing
+  else. Demo `g.s11-rotation-hollow-ball` retired; the H107 demo
+  `g.s-11-rotation-rotational-inertia` (three shapes) is kept.

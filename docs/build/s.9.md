@@ -332,3 +332,9 @@ listed here once):
 - Not done: `s.9.evolution-evidence`'s expected counts after a drag (344.45 people). They are
   N × p², worked out from a p on its 0.01 step; no step of p makes all three whole, and the
   steps already add "(about 344 people)".
+
+### Round 4 placed
+
+- `s.9.reproduction-development~germ-layers` (H114, P26): the sort bins take the gastrula card's
+  colors, ectoderm `bioAmino`, mesoderm `organDeep`, endoderm `bioSugar` (a stripe and a swatch).
+  Demo `g.s9-reproduction-development-germ-layers-colors` retired.

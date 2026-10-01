@@ -284,3 +284,16 @@ Gallery demos built from these pages that no longer pass (the lead's to retire):
   "d = 13" over O (rectangle), the find-angle ramp drawn to scale and its labels, the
   ambiguous-case labels and decimals, the coordinate-geometry label halos, the Venn "only"
   caption lines (~neither), the 80 px stage figures (constructions).
+
+### Round 4 placed
+
+- `m.10.probability-rules~counting-probability` (H113, P25): `pascalTriangle` with `k: 'r'` and
+  `fraction: { n: 'a', k: 'k', b: 'b', r: 'r', count: 'f', chance: 'P' }` under the slots, so it
+  draws C(a, k) × C(b, r − k) over C(n, r) (the "not placed" note above is done). Two fixes the
+  pictures chat found: b runs from 1 (the lesson is two groups; with b = 0 every pick is "all
+  from the first", and P = 1 was left unknown), a to 59; and two case rules, f = C(b, r) when
+  k = 0 and f = C(a, r) when k = r, find f before the group that gives no one is typed (a page
+  sampling run found f left unknown there too). The slots put "= 2.7359 × 10¹⁷" on its own line
+  and split the ÷ r! line before "→ … groups" when they pass the width (10 or more places at
+  390 px), and a count of groups past 2⁵³ is rounded (C(36, 14) read 3,796,297,200.0000005).
+  Demos `g.m10-probability-rules-exactly-k` and `g.m10-probability-rules-exactly-k-sixty` retired.
