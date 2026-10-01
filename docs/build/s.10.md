@@ -287,3 +287,8 @@ Report: `.review/new-sci-2/lesson-report.md`.
 - `s.10.rates-equilibrium~average-rate` (H108 part 4): `chemDiagram` mode `rate`, [A] against t
   through both readings with the secant, the Δt and Δ[A] triangle and the rate. Stand-ins gone:
   the straight `functionGraph` line and its hidden m and b0 with their rules.
+- `s.10.redox~oxidation-numbers` (H101 need 8): built (it was waiting) from the demo, the plan's
+  x + h(+1) + o(−2) = q on `chemDiagram` mode `oxidation` with the formula H{h}SO{o} (H₂SO₄,
+  SO₄²⁻, H₂S …). No stand-in.
+- `~cell-voltage` (H108 part 5): `chemDiagram` mode `cell`, the galvanic cell of the two metals
+  with its meter and the E° scale. Stand-in gone: the vertical number line of potentials.
