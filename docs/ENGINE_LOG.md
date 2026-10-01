@@ -25,6 +25,20 @@ per review; each line names the finding and what the engine now does about it.
   handles moves only its typed value in fewer than 10 solves (2 today). In the browser a move
   event now takes 40–90 ms on absolute-value h and d, whole-number-answers n and
   linear-inequalities k (was 15–31 s, and k hung), and 0.4–0.65 s on ~or.
+- The science pages' dead handles had the same cause: s.9 herd-immunity's C now drives R₀
+  (e and P held), s.12 uranium's age drives R.
+- Other drag fixes from the review: the standard-form stretch sets a alone again (b and c stay
+  as typed; following with b and c clamped b and still moved the vertex); a short distance's
+  handle and a near focus's handle step clear of the center's.
+- **Captions.** A chain too long for one line is stacked with as many "= …" steps a line as
+  fit, not one a line (they ran 100–250 px tall); a sentence that only ends in a chain ("With
+  R = 0.0821, PV = nRT: …") is never stacked, and "With" counts as a word (the number-sentence
+  test read it as "W" plus a unit).
+- **Review scripts.** review-interact allows (and names, "drove b") the one typed value a
+  handle on a worked-out value moves; flags "?" only on typed boxes; counts a changed picture
+  or a drag-turn as live and tries a longer drag before "nothing changed"; flags a move event
+  over 500 ms (it would have caught the freeze); says "made typed m worked out" when only the
+  status changed. review-shots no longer flags a haloed label against its own backing copy.
 - Still slow: one solve on linear-inequalities~or takes about 0.4 s under Jest even with
   nothing to clear (its test rule); worth a look in the solver.
 

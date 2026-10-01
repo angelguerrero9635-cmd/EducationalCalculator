@@ -90,6 +90,7 @@ describe('a handle on a worked-out value moves its typed value at once', () => {
     ['m.9.absolute-value~inequality', 'd', 'h', 'c'],
     ['m.9.absolute-value~inequality-beyond', 'h', 'd', 'b'],
     ['m.9.absolute-value~inequality-beyond', 'd', 'h', 'c'],
+    ['s.9.immune-disease~herd-immunity', 'C', 'e', 'R0'],
   ])('%s: %s moves only %4$s', (id, handle, pin, typed) => {
     const { state, next, solves } = drag(
       id,
@@ -97,11 +98,18 @@ describe('a handle on a worked-out value moves its typed value at once', () => {
       opened(id).state.result.values[handle]! + 1,
       pin ? [pin] : [],
     );
-    expect(next.result.values[handle]).toBeCloseTo(state.result.values[handle]! + 1);
+    // (On the typed value's step: R₀ in tenths moves C by about 0.2.)
+    expect(next.result.values[handle]).toBeCloseTo(state.result.values[handle]! + 1, 0);
     const moved = state.result.given
       .filter((g) => next.result.values[g.id] !== g.value)
       .map((g) => g.id);
     expect(moved).toEqual([typed]);
+    expect(solves).toBeLessThan(10);
+  });
+  it('the age of a uranium-dated rock moves R', () => {
+    const { state, next, solves } = drag('s.12.radiometric-dating~uranium', 't', 3e9, []);
+    expect(next.result.values.t).toBeCloseTo(3e9, -7);
+    expect(next.result.values.R).toBeLessThan(state.result.values.R!);
     expect(solves).toBeLessThan(10);
   });
 });
