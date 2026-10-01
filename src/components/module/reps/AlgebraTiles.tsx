@@ -398,6 +398,20 @@ export function AlgebraTiles({ spec, calc }: { spec: AlgebraTilesSpec; calc: Cal
           return (
             <Svg width={w} height={h}>
               <G opacity={faded ? 0.4 : 1}>
+                {/* The mats go under the tiles: drawn after, their fill hid them. */}
+                {(scene.mats ?? []).map((m, i) => (
+                  <Rect
+                    key={`m${i}`}
+                    x={px(m.x)}
+                    y={py(m.y)}
+                    width={m.w * u}
+                    height={m.h * u}
+                    rx={6}
+                    fill={c.chartSurface}
+                    stroke={c.chartGrid}
+                    strokeWidth={1}
+                  />
+                ))}
                 {scene.tiles.map((t, i) => {
                   const [tw, th] = dims(t.size);
                   const [x, y, ww, hh] = [
@@ -447,19 +461,6 @@ export function AlgebraTiles({ spec, calc }: { spec: AlgebraTilesSpec; calc: Cal
                     </G>
                   );
                 })}
-                {(scene.mats ?? []).map((m, i) => (
-                  <Rect
-                    key={`m${i}`}
-                    x={px(m.x)}
-                    y={py(m.y)}
-                    width={m.w * u}
-                    height={m.h * u}
-                    rx={6}
-                    fill={c.chartSurface}
-                    stroke={c.chartGrid}
-                    strokeWidth={1}
-                  />
-                ))}
                 {scene.lines.map((l, i) => (
                   <Line
                     key={`l${i}`}
