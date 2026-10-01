@@ -44,12 +44,6 @@ const withWork = (r: Rule, id: string, work: StepText['work']): Rule => ({
   steps: { ...r.steps, [id]: { ...r.steps[id]!, work } },
 });
 
-/** A rule with a note after the answer on the step for `id`. */
-const withNote = (r: Rule, id: string, note: StepText['note']): Rule => ({
-  relation: r.relation,
-  steps: { ...r.steps, [id]: { ...r.steps[id]!, note } },
-});
-
 /** A rule that only places the picture: solved like any other, never shown as a step. */
 const hide = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, steps: {} });
 
@@ -4302,14 +4296,31 @@ const rotationPages: ModuleDef[] = [
         'The plank is light and pivoted at its middle, so its own weight is left out.',
       ],
       variables: [
-        q('W', 'F₁', 'First weight', 'N', 0.01, 1e5, 0.01),
+        q('W', 'F₁', 'First weight', 'N', 1, 1e5, 0.01),
         q('l', 'd₁', 'First distance', 'm', 0.01, 100, 0.01),
-        q('F', 'F₂', 'Second weight', 'N', 0.01, 1e5, 0.01),
-        q('e', 'd₂', 'Second distance', 'm', 0.01, 100, 0.01),
+        q('F', 'F₂', 'Second weight', 'N', 1, 1e5, 0.01),
+        // Wide, so a d₂ off the plank meets the check below (with its reason), not a silent clear.
+        q('e', 'd₂', 'Second distance', 'm', 0.0000001, 1e7, 0.01),
         { ...TORQUE, name: 'Torque on each side' },
         q('P', 'F_p', 'Pivot force', 'N', 0, 2e5, 0.01),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          {
+            id: 'd₂ from 0.01 to 100',
+            constraint: true,
+            display: '{e} is from 0.01 to 100',
+            vars: ['e'],
+            residual: (v) => (v.e! >= 0.01 - 1e-9 && v.e! <= 100 + 1e-9 ? 0 : 1),
+            solve: {},
+            message: (v) =>
+              v.e! > 100 + 1e-9
+                ? 'The second weight would sit past the end of any plank.'
+                : v.e! < 0.01 - 1e-9
+                  ? 'The second weight would sit almost on the pivot.'
+                  : undefined,
+          },
+        ],
         product('t', 'W', 'l', 'τ = F₁d₁', [
           'The first child’s torque: weight times distance from the pivot.',
           'Divide the torque by the distance.',
@@ -4342,6 +4353,51 @@ const rotationPages: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
+    const [d, r] = [135, 0.4];
+    const t = d * RAD;
+    return {
+      id: 's.11.rotation~arc-length',
+      title: 'Angle in radians and arc length',
+      use: 'Use this for “A wheel of radius 0.4 m turns through 135°. What is that angle in radians, and how far does a point on its rim travel?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'One radian is the angle whose arc is one radius long, so a full turn of 360° is 2π radians.',
+        'To change degrees to radians, multiply by π/180.',
+        'The arc length is s = rθ, with θ in radians: the radius times the angle.',
+      ],
+      variables: [
+        q('d', 'θ°', 'Angle in degrees', '°', 0.1, 360, 1),
+        q('t', 'θ', 'Angle in radians', 'rad', 0.001, 2 * Math.PI, 0.0001, { pi: 'fraction' }),
+        q('r', 'r', 'Radius', 'm', 0.001, 100, 0.001),
+        q('s', 's', 'Arc length', 'm', 0.000001, 1000, 0.0001),
+      ],
+      ...rules(
+        rule('θ = θ° × π/180', '{t} = {d} × π/180', (v) => v.t! - v.d! * RAD, {
+          t: [
+            (v) => v.d! * RAD,
+            '{d} × π/180',
+            'Half a turn is 180°, or π radians: each degree is π/180 radians.',
+          ],
+          d: [(v) => v.t! / RAD, '{t} × 180/π', 'Each radian is 180/π degrees.'],
+        }),
+        product('s', 'r', 't', 's = rθ', [
+          'Each radian of turn moves a point on the rim one radius along the circle.',
+          'Divide the arc length by the angle in radians.',
+          'Divide the arc length by the radius: how many radius lengths the arc is.',
+        ]),
+      ),
+      example: { d, t, r, s: r * t },
+      startWith: ['d', 'r'],
+      representation: {
+        kind: 'circle',
+        radius: 'r',
+        extent: 1,
+        views: ['sector', 'radian'],
+        sector: { angle: 't', unit: 'radians', arc: 's' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
     const [r, N] = [0.3, 120];
     const w = (2 * Math.PI * N) / 60;
     return {
@@ -4355,13 +4411,28 @@ const rotationPages: ModuleDef[] = [
         'The rim’s velocity is along the tangent; the angle must be in radians for v = rω.',
       ],
       variables: [
-        q('r', 'r', 'Radius', 'm', 0.001, 1000, 0.001),
+        q('r', 'r', 'Radius', 'm', 0.001, 100, 0.001),
         q('N', 'N', 'Turning rate', 'rpm', 0.01, 1e5, 0.01),
         q('w', 'ω', 'Angular speed', 'rad/s', 0.001, 1e4, 0.001),
         q('T', 'T', 'Period', 's', 0.0001, 1e5, 0.0001),
-        q('v', 'v', 'Rim speed', 'm/s', 0, 2000, 0.001),
+        // Wide, so a rim past 2,000 m/s meets the check below (with its reason), not a silent clear.
+        q('v', 'v', 'Rim speed', 'm/s', 0, 1e6, 0.001),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          {
+            id: 'v ≤ 2,000',
+            constraint: true,
+            display: '{v} is at most 2,000',
+            vars: ['v'],
+            residual: (v) => (v.v! <= 2000 + 1e-9 ? 0 : 1),
+            solve: {},
+            message: (v) =>
+              v.v! <= 2000 + 1e-9
+                ? undefined
+                : 'No wheel holds together with its rim past 2,000 m/s.',
+          },
+        ],
         withWork(
           rule('ω = 2πN/60', '{w} = 2π × {N}/60', (v) => 60 * v.w! - 2 * Math.PI * v.N!, {
             w: [
@@ -4528,10 +4599,14 @@ const rotationPages: ModuleDef[] = [
         'Newton’s second law for turning: τ = Iα, with α in rad/s².',
       ],
       variables: [
-        q('c', 'c', 'Shape factor', undefined, 0.4, 1, 0.0001, { allowed: [1, 2 / 3, 0.5, 0.4] }),
+        // ⅔ for a hollow ball shows as 2/3 (and ½ as 1/2), never 0.6667.
+        q('c', 'c', 'Shape factor', undefined, 0.4, 1, 0.0001, {
+          allowed: [1, 2 / 3, 0.5, 0.4],
+          fraction: 3,
+        }),
         q('m', 'm', 'Mass', 'kg', 0.001, 1e5, 0.001),
         q('r', 'r', 'Radius', 'm', 0.001, 100, 0.001),
-        q('I', 'I', 'Rotational inertia', 'kg·m²', 0, 1e9, 0.0001),
+        q('I', 'I', 'Rotational inertia', 'kg·m²', 0.000001, 1e9, 0.0001),
         TORQUE,
         q('a', 'α', 'Angular acceleration', 'rad/s²', 0, 1e6, 0.001),
       ],
@@ -4596,18 +4671,40 @@ const periodRule = (sym: string, a: string, b: string, hows: [string, string, st
     },
   );
 
-/** `periodRule` with the square root worked out first on the step for T. */
+/** A number for a work line to 4 significant figures, as the values show (2.236, 0.08163). */
+const sci4 = (x: number) =>
+  Math.abs(x) >= 0.001 && Math.abs(x) < 10000
+    ? String(Number(x.toPrecision(4))).replace('-', '−')
+    : scientific(Number(x.toPrecision(4)));
+
+/** A square root in a work line: √5 for a plain number, √(2.5 × 10⁻⁵) for a longer one. */
+const root = (x: string) => (/^[\d.]+$/.test(x) ? `√${x}` : `√(${x})`);
+
+/**
+ * `periodRule` with the square root worked out first on the step for T, and T ÷ 2π squared,
+ * then the multiplication, on the step for `a` (the value under the root's top: m or L).
+ */
 const periodWithWork = (sym: string, a: string, b: string, hows: [string, string, string]) =>
   withWork(
     withWork(periodRule(sym, a, b, hows), 'T', (v) => {
       const x = v[a]! / v[b]!;
       const r = Math.sqrt(x);
-      return [`√(${sci(x)}) = ${sci(r)}`, `T = 2π × ${sci(r)} = ${sci(2 * r)}π`];
+      const k = 2 * r;
+      // "= 0.1π" only for a short multiple of π; "4.4721π" reads worse than the number.
+      const short = Math.abs(k * 100 - Math.round(k * 100)) < 1e-9;
+      return [
+        `${root(sci4(x))} = ${sci4(r)}`,
+        `T = 2π × ${sci4(r)}${short ? ` = ${sci4(k)}π` : ''}`,
+      ];
     }),
     a,
     (v) => {
       const h = v.T! / (2 * Math.PI);
-      return [`T ÷ 2π = ${sci(h)}`, `(${sci(h)})² = ${sci(h * h)}`];
+      return [
+        `T ÷ 2π = ${sci4(h)}`,
+        `(${sci4(h)})² = ${sci4(h * h)}`,
+        `${a} = ${sci4(v[b]!)} × ${sci4(h * h)}`,
+      ];
     },
   );
 
@@ -4720,6 +4817,7 @@ const oscillationPages: ModuleDef[] = [
         'The spring pulls back in proportion to the stretch: F = kx, until it is overstretched.',
         'A hung mass at rest stretches it until the spring’s pull equals the weight mg.',
         'The stored energy is the area under the F–x line: ½kx².',
+        'Type the stretch in meters: 8 cm is 0.08 m.',
       ],
       variables: [
         q('m', 'm', 'Hung mass', 'kg', 0.001, 10000, 0.001),
@@ -4742,7 +4840,7 @@ const oscillationPages: ModuleDef[] = [
           U: [
             (v) => 0.5 * v.k! * v.x! * v.x!,
             '½ × {k} × {x}²',
-            'The triangle under the F–x line: half the stretch times the force.',
+            'The triangle under the F–x line: ½ × k × x², half the stretch times the force kx.',
           ],
           k: [
             (v) => (v.x! > 0 ? (2 * v.U!) / (v.x! * v.x!) : undefined),
@@ -4825,6 +4923,26 @@ const sep = (x: number) =>
 
 /** The top speed K = ½mv² is used for: a tenth of light's, in m/s. */
 const SLOW = 3e7;
+const TOO_FAST = 'That is past a tenth of light’s speed, where K = ½mv² no longer works.';
+
+/**
+ * The v = √(2K/m) rule, saying why when the speed it gives is past SLOW: a speed past v's
+ * range would otherwise leave no answer and clear a value without a reason.
+ */
+const withSlowLimit = (r: Rule): Rule => ({
+  ...r,
+  relation: {
+    ...r.relation,
+    message: (v) =>
+      v.K !== undefined &&
+      v.m !== undefined &&
+      v.K >= 0 &&
+      v.m > 0 &&
+      Math.sqrt((2 * v.K * E_CHARGE) / v.m) > SLOW * (1 + 1e-9)
+        ? TOO_FAST
+        : undefined,
+  },
+});
 
 const potentialPages: ModuleDef[] = [
   (() => {
@@ -4918,48 +5036,62 @@ const potentialPages: ModuleDef[] = [
         q('m', 'm', 'Mass', 'kg', 9.109e-31, 1.673e-27, 1e-34, {
           scientific: true,
           allowed: [9.109e-31, 1.673e-27],
+          // The two masses are listed in kg: in g or mg the list would be read in that unit.
+          units: ['kg'],
         }),
-        // Wide enough for both particles at every energy: a narrower range would let the search
-        // swap the student's particle for one slow enough. Past SLOW a note says so.
-        q('v', 'v', 'Speed', 'm/s', 0, 3e9, 1, { scientific: true, units: ['m/s'] }),
+        // Up to light's speed; past SLOW the check below (and the v rule's message, for a speed
+        // past this range) says why. The typed particle stays: its mass is never searched.
+        q('v', 'v', 'Speed', 'm/s', 0, 3e8, 1, { scientific: true, units: ['m/s'] }),
       ],
-      ...rules(
+      ...withChecks(
+        [
+          {
+            id: 'v ≤ 3 × 10⁷',
+            constraint: true,
+            display: '{v} is at most 3 × 10⁷',
+            vars: ['v'],
+            residual: (v) => (v.v! <= SLOW * (1 + 1e-9) ? 0 : 1),
+            solve: {},
+            message: (v) => (v.v! <= SLOW * (1 + 1e-9) ? undefined : TOO_FAST),
+          },
+        ],
         product('K', 'q', 'V', 'K = qΔV', [
           'Each electron charge gains 1 eV for every volt it crosses.',
           'Divide the energy by the potential difference.',
           'Divide the energy by the charge.',
         ]),
-        withNote(
+        withSlowLimit(
           withWork(
-            rule(
-              'v = √(2K/m)',
-              `{v} = √(2 × {K} × 1.602 × 10⁻¹⁹/{m})`,
-              (v) => (v.K! >= 0 && v.m! > 0 ? v.v! - Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : 1),
-              {
-                v: [
-                  (v) =>
-                    v.K! >= 0 && v.m! > 0 ? Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : undefined,
-                  '√(2 × {K} × 1.602 × 10⁻¹⁹/{m})',
-                  'Change eV to joules, then solve K = ½mv² for v.',
-                ],
-                K: [
-                  (v) => (v.m! * v.v! * v.v!) / (2 * E_CHARGE),
-                  '{m} × {v}²/(2 × 1.602 × 10⁻¹⁹)',
-                  'K = ½mv² in joules, then divide by 1.602 × 10⁻¹⁹ J for each eV.',
-                ],
-                m: null,
-              },
+            withWork(
+              rule(
+                'v = √(2K/m)',
+                `{v} = √(2 × {K} × 1.602 × 10⁻¹⁹/{m})`,
+                (v) => (v.K! >= 0 && v.m! > 0 ? v.v! - Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : 1),
+                {
+                  v: [
+                    (v) =>
+                      v.K! >= 0 && v.m! > 0 ? Math.sqrt((2 * v.K! * E_CHARGE) / v.m!) : undefined,
+                    '√(2 × {K} × 1.602 × 10⁻¹⁹/{m})',
+                    'Change eV to joules, then solve K = ½mv² for v.',
+                  ],
+                  K: [
+                    (v) => (v.m! * v.v! * v.v!) / (2 * E_CHARGE),
+                    '{m} × {v}²/(2 × 1.602 × 10⁻¹⁹)',
+                    'K = ½mv² in joules, then divide by 1.602 × 10⁻¹⁹ J for each eV.',
+                  ],
+                  m: null,
+                },
+              ),
+              'v',
+              (v) => [`K = ${sep(v.K!)} eV × 1.602 × 10⁻¹⁹ = ${sci(v.K! * E_CHARGE)} J`],
             ),
-            'v',
-            (v) => [`K = ${sep(v.K!)} eV × 1.602 × 10⁻¹⁹ = ${sci(v.K! * E_CHARGE)} J`],
+            'K',
+            // The square in scientific form, never 35,174,388,640,000 written out.
+            (v) => [
+              `v² = (${sci4(v.v!)})² = ${sci4(v.v! * v.v!)}`,
+              `K = ${sci4(v.m!)} × ${sci4(v.v! * v.v!)}/(3.204 × 10⁻¹⁹)`,
+            ],
           ),
-          'v',
-          (v) =>
-            v.v! >= 3e8
-              ? '(faster than light, which is impossible: K = ½mv² fails here, and the true speed is just under 3 × 10⁸ m/s)'
-              : v.v! > SLOW
-                ? '(past a tenth of light’s speed: K = ½mv² no longer works, so the true speed is less)'
-                : '',
         ),
       ),
       example: {
@@ -4994,9 +5126,9 @@ const potentialPages: ModuleDef[] = [
       ],
       variables: [
         q('C', 'C', 'Capacitance', 'μF', 0.001, 1e6, 0.001),
-        q('V', 'V', 'Voltage', 'V', 0.001, 1e5, 0.001),
+        q('V', 'V', 'Voltage', 'V', 0.000001, 1e5, 0.000001),
         q('Q', 'Q', 'Charge', 'μC', 0, 1e11, 0.001),
-        q('U', 'U', 'Stored energy', 'J', 0, 1e10, 0.000001, { sigFigs: 5 }),
+        q('U', 'U', 'Stored energy', 'J', 0, 1e10, 0.000001),
       ],
       ...rules(
         product('Q', 'C', 'V', 'Q = CV', [
@@ -5005,30 +5137,34 @@ const potentialPages: ModuleDef[] = [
           'Divide the charge by the capacitance.',
         ]),
         withWork(
-          rule(
-            'U = ½CV²',
-            '{U} = ½ × {C} × 10⁻⁶ × {V}²',
-            (v) => v.U! - 0.5e-6 * v.C! * v.V! * v.V!,
-            {
-              U: [
-                (v) => 0.5e-6 * v.C! * v.V! * v.V!,
-                '½ × {C} × 10⁻⁶ × {V}²',
-                'Half the capacitance in farads times the voltage squared.',
-              ],
-              C: [
-                (v) => div(v.U!, 0.5e-6 * v.V! * v.V!),
-                '2 × {U}/({V}² × 10⁻⁶)',
-                'Double the energy and divide by V², in microfarads.',
-              ],
-              V: [
-                (v) => (v.U! >= 0 && v.C! > 0 ? Math.sqrt(v.U! / (0.5e-6 * v.C!)) : undefined),
-                '√(2 × {U}/({C} × 10⁻⁶))',
-                'Double the energy, divide by C in farads, take the square root.',
-              ],
-            },
+          withWork(
+            rule(
+              'U = ½CV²',
+              '{U} = ½ × {C} × 10⁻⁶ × {V}²',
+              (v) => v.U! - 0.5e-6 * v.C! * v.V! * v.V!,
+              {
+                U: [
+                  (v) => 0.5e-6 * v.C! * v.V! * v.V!,
+                  '½ × {C} × 10⁻⁶ × {V}²',
+                  'Half the capacitance in farads times the voltage squared.',
+                ],
+                C: [
+                  (v) => div(v.U!, 0.5e-6 * v.V! * v.V!),
+                  '2 × {U}/({V}² × 10⁻⁶)',
+                  'Double the energy and divide by V², in microfarads.',
+                ],
+                V: [
+                  (v) => (v.U! >= 0 && v.C! > 0 ? Math.sqrt(v.U! / (0.5e-6 * v.C!)) : undefined),
+                  '√(2 × {U}/({C} × 10⁻⁶))',
+                  'Double the energy, divide by C in farads, take the square root.',
+                ],
+              },
+            ),
+            'U',
+            (v) => [`U = ½ × ${sci(v.C! * 1e-6)} × ${sep(v.V! * v.V!)}`],
           ),
-          'U',
-          (v) => [`U = ½ × ${sci(v.C! * 1e-6)} × ${sep(v.V! * v.V!)}`],
+          'C',
+          (v) => [`C = ${sci(2 * v.U!)}/(${sci(v.V! * v.V! * 1e-6)})`],
         ),
       ),
       example: { C, V, Q: C * V, U: 0.5e-6 * C * V * V },

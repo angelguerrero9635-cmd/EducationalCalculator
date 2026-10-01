@@ -170,6 +170,19 @@ Report: `.review/new-sci/lesson-report.md`. Every finding is fixed:
 - ~action-potential's "the pump restores the ions" stays (the report accepted it).
 - New pages: `s.9.nervous-system~synapse` (sequence) and `s.9.plant-biology~nutrients` (sort).
 
+### Second lesson-review fixes
+
+Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
+
+- ~divisions: the Autonomic bin is split into Sympathetic (fight or flight: the heart speeds up;
+  new card "The pupils widen when you are startled") and Parasympathetic (rest and digest: the
+  stomach churns food; the pupils narrow in bright light). Each card still has one right bin.
+- ~senses: a second thermoreceptor card, "A warm mug in your hands".
+- ~rainfall: the last pattern sentence no longer has two colons ("… spread through the year.
+  That is enough for a forest: …").
+- ~impulse-speed: the rule is now t = d ÷ v × 1,000, so the substituted line and the work lines
+  follow one order. The rule printed twice is the engine's (lead).
+
 ## Shared needs (lesson review and added skills)
 
 - **`dnaMath.effectOf` start-lost and stop-lost** (with their captions): then

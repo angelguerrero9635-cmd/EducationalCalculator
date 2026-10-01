@@ -182,6 +182,28 @@ Report: `.review/new-sci/lesson-report.md`. Fixed:
   0.005 × √L AU ("That orbit is inside the star.").
 - Not built: a ~drake page (the report's "Not in the taxonomy" note, not a proposed page).
 
+### Second lesson-review fixes
+
+Report: `.review/new-sci-2/lesson-report.md`.
+
+- Earth-history main: under a minute before midnight the t note gives the seconds ("Our species":
+  "(about 6 seconds before midnight)"), not "12:00 midnight".
+- ~day-length: the 21.915 → 21.91 tie is the engine's (fixed by the lead: 21.915 now shows as
+  typed or rounds up). A count giving a year outside 360–450 days no longer drops b silently: the
+  N = n ÷ b rule says "That many lines across those bands gives a year shorter than 360 or longer
+  than 450 days." (on the rule, not a separate check: a check whose residual is 1 at every probe
+  of the harness's `affineOf`, as "N from 360 to 450" is, reads as a constant and marks every
+  branch hopeless; a harness note for the lead).
+- ~atmosphere: "About 21% oxygen" (no space before %).
+- Exoplanets main: δ that gives a planet past 25 R⊕ or under 0.3 R⊕ says why ("That dip needs a
+  body over 25 Earths wide: a small star, not a planet." / "… too small to find this way.");
+  r's range is wide behind the check. "× 1" carried through the r step is the engine's (lead).
+- ~orbit: example M 0.5 M☉, P 1,461 days, so T = 4 years and a = ∛8 = 2 AU, with the use line
+  "A planet circles a star of 0.5 solar masses every 1,461 days. …"; the table's periods are 10,
+  100, 365.25, 1,461 and 3,652.5 days.
+- ~habitable-zone: no brackets round a lone value: "T = 278 × L^(1/4) ÷ √a", "d₁ = 0.95 × √L",
+  so the lines read "÷ √0.5".
+
 ### Shared needs (pictures)
 
 - `geologicClock` (new kind, or a `timeline` mode): a 24-hour dial with Earth's formation at

@@ -4577,21 +4577,22 @@ const PHASE: ModuleDef[] = [
       'The rule fits dilute solutions (up to about 1 mol/kg); stronger ones stray from it.',
     ],
     variables: [
-      quantity('g', 'g', 'Mass of solute', 'g', 0.001, 5000, 0.001),
+      quantity('g', 'g', 'Mass of solute', 'g', 0.01, 1000, 0.001),
       quantity('M', 'M', 'Molar mass', 'g/mol', 1, 1000, 0.01),
-      quantity('n', 'n', 'Moles of solute', 'mol', 0.001, 50, 0.001),
+      quantity('n', 'n', 'Moles of solute', 'mol', 0.00001, 1000, 0.00001),
       quantity('w', 'w', 'Mass of water', 'kg', 0.01, 100, 0.001),
-      quantity('b', 'b', 'Molality', 'mol/kg', 0.0001, 6, 0.0001),
+      // Wide, so a strong solution meets the limit below (with its reason), not a silent clear.
+      quantity('b', 'b', 'Molality', 'mol/kg', 0.0000001, 100000, 0.0001),
       {
         ...whole('i', 'i', 'Particles each unit gives (van ’t Hoff factor)', 1, 4),
         allowed: [1, 2, 3, 4],
       },
-      quantity('dTf', 'ΔTf', 'Freezing point drop', '°C', 0, 35, 0.0001),
-      quantity('Tf', 'Tf', 'Freezing point of the solution', '°C', -35, 0, 0.0001),
-      quantity('dTb', 'ΔTb', 'Boiling point rise', '°C', 0, 10, 0.0001),
-      quantity('Tb', 'Tb', 'Boiling point of the solution', '°C', 100, 110, 0.0001),
+      quantity('dTf', 'ΔTf', 'Freezing point drop', '°C', 0, 45, 0.0001),
+      quantity('Tf', 'Tf', 'Freezing point of the solution', '°C', -45, 0, 0.0001),
+      quantity('dTb', 'ΔTb', 'Boiling point rise', '°C', 0, 13, 0.0001),
+      quantity('Tb', 'Tb', 'Boiling point of the solution', '°C', 100, 113, 0.0001),
       {
-        ...quantity('T0', 'T₀', 'Where the curve starts', '°C', -45, -10, 0.0001),
+        ...quantity('T0', 'T₀', 'Where the curve starts', '°C', -55, -10, 0.0001),
         derived: true,
         hidden: true,
       },
@@ -4627,6 +4628,37 @@ const PHASE: ModuleDef[] = [
           n: { expr: '{b} × {w}', how: 'Multiply the moles in each kilogram by the kilograms.' },
           w: { expr: '{n}/{b}', how: 'Divide the moles by the moles in each kilogram.' },
         },
+      },
+      // Checked right after b is worked out, so its reason shows before a range clears a value.
+      {
+        relation: {
+          id: 'b ≥ 0.001',
+          constraint: true,
+          display: '{b} is at least 0.001',
+          vars: ['b'],
+          residual: (v) => (v.b! >= 0.001 - 1e-12 ? 0 : 1),
+          solve: {},
+          message: (v) =>
+            v.b! >= 0.001 - 1e-12
+              ? undefined
+              : 'Below 0.001 mol/kg the freezing and boiling points barely move.',
+        },
+        steps: {},
+      },
+      {
+        relation: {
+          id: 'b ≤ 6',
+          constraint: true,
+          display: '{b} is at most 6',
+          vars: ['b'],
+          residual: (v) => (v.b! <= 6 + 1e-9 ? 0 : 1),
+          solve: {},
+          message: (v) =>
+            v.b! <= 6 + 1e-9
+              ? undefined
+              : 'Past about 6 mol/kg the freezing-point rule no longer fits.',
+        },
+        steps: {},
       },
       colligativeRule('dTf', 1.86, '1.86', 'freezing point'),
       {
@@ -4850,6 +4882,8 @@ const freeVars = (): VariableDef[] => [
     hidden: true,
   },
 ];
+/** A number after a minus or division sign in a work line: a negative one bracketed, − (−56.02). */
+const signed = (x: number) => (x < 0 ? `(${fmt(x)})` : fmt(x));
 const FREE_AXES = { x: 'Temperature T (K)', y: 'ΔG (kJ/mol)' };
 
 const FREE: ModuleDef[] = [
@@ -4858,7 +4892,7 @@ const FREE: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       'A reaction is spontaneous, able to go on its own, when ΔG is below 0.',
-      'ΔG = ΔH − TΔS, with T in kelvins; ΔS is in J/(mol·K), so divide it by 1000 to match ΔH’s kJ.',
+      'ΔG = ΔH − TΔS, with T in kelvins; ΔS is in J/(mol·K), so divide it by 1,000 to match ΔH’s kJ.',
       'Spontaneous says nothing about speed: diamond turning to graphite is spontaneous but far too slow to see.',
     ],
     variables: [
@@ -4869,7 +4903,7 @@ const FREE: ModuleDef[] = [
     ...rules(slopeRule, {
       relation: {
         id: 'ΔG = ΔH − TΔS',
-        display: '{dG} = {dH} − {T} × {dS}/1000',
+        display: '{dG} = {dH} − {T} × {dS}/1,000',
         vars: ['dG', 'dH', 'T', 'dS'],
         residual: (v) => v.dG! - (v.dH! - (v.T! * v.dS!) / 1000),
         solve: {
@@ -4881,9 +4915,9 @@ const FREE: ModuleDef[] = [
       },
       steps: {
         dG: {
-          expr: '{dH} − {T} × {dS}/1000',
+          expr: '{dH} − {T} × {dS}/1,000',
           how: 'The heat given off pushes a reaction forward; spreading out (ΔS) pushes it more at high T.',
-          work: (v) => [`ΔG = ${fmt(v.dH!)} − ${fmt((v.T! * v.dS!) / 1000)}`],
+          work: (v) => [`ΔG = ${fmt(v.dH!)} − ${signed((v.T! * v.dS!) / 1000)}`],
           note: (v) =>
             v.dG === 0
               ? '(0: at equilibrium)'
@@ -4891,13 +4925,13 @@ const FREE: ModuleDef[] = [
                 ? `(below 0: spontaneous at ${fmt(v.T!)} K)`
                 : `(above 0: not spontaneous at ${fmt(v.T!)} K)`,
         },
-        dH: { expr: '{dG} + {T} × {dS}/1000', how: 'Add TΔS back to ΔG.' },
+        dH: { expr: '{dG} + {T} × {dS}/1,000', how: 'Add TΔS back to ΔG.' },
         T: {
-          expr: '1000 × ({dH} − {dG})/{dS}',
+          expr: '1,000 × ({dH} − {dG})/{dS}',
           how: 'TΔS is what ΔH and ΔG differ by: divide it by ΔS.',
         },
         dS: {
-          expr: '1000 × ({dH} − {dG})/{T}',
+          expr: '1,000 × ({dH} − {dG})/{T}',
           how: 'TΔS is what ΔH and ΔG differ by: divide it by T.',
         },
       },
@@ -4949,7 +4983,7 @@ const FREE: ModuleDef[] = [
       {
         relation: {
           id: 'T = ΔH/ΔS',
-          display: '{Tc} = 1000 × {dH}/{dS}',
+          display: '{Tc} = 1,000 × {dH}/{dS}',
           vars: ['Tc', 'dH', 'dS'],
           residual: (v) => v.Tc! * v.dS! - 1000 * v.dH!,
           solve: {
@@ -4958,22 +4992,24 @@ const FREE: ModuleDef[] = [
             dS: (v) => div(1000 * v.dH!, v.Tc!),
           },
           message: (v) =>
-            v.dH! * v.dS! > 0
-              ? undefined
-              : 'ΔH and ΔS have opposite signs, so ΔG never changes sign: there is no switching temperature.',
+            v.dH! * v.dS! <= 0
+              ? 'ΔH and ΔS have opposite signs, so ΔG never changes sign: there is no switching temperature.'
+              : v.Tc === undefined && (1000 * v.dH!) / v.dS! > 10000
+                ? 'That switch would be past 10,000 K, hotter than any compound survives.'
+                : undefined,
         },
         steps: {
           Tc: {
-            expr: '1000 × {dH}/{dS}',
+            expr: '1,000 × {dH}/{dS}',
             how: 'Set ΔG = 0: then ΔH = TΔS, so T = ΔH ÷ ΔS; ΔS is in J, so multiply by 1,000 to match ΔH’s kJ.',
-            work: (v) => [`T = ${fmt(1000 * v.dH!)}/${fmt(v.dS!)}`],
+            work: (v) => [`T = ${fmt(1000 * v.dH!)}/${signed(v.dS!)}`],
             note: (v) =>
               v.dS! > 0
                 ? `(both positive: spontaneous above ${fmt(v.Tc!)} K)`
                 : `(both negative: spontaneous below ${fmt(v.Tc!)} K)`,
           },
-          dH: { expr: '{Tc} × {dS}/1000', how: 'At the switch ΔH equals TΔS.' },
-          dS: { expr: '1000 × {dH}/{Tc}', how: 'At the switch ΔS is ΔH over T.' },
+          dH: { expr: '{Tc} × {dS}/1,000', how: 'At the switch ΔH equals TΔS.' },
+          dS: { expr: '1,000 × {dH}/{Tc}', how: 'At the switch ΔS is ΔH over T.' },
         },
       },
     ),
@@ -5002,12 +5038,12 @@ const FREE: ModuleDef[] = [
       'ΔG° = ΔH° − TΔS°, with ΔS° divided by 1,000 to match ΔH°’s kJ; tables are for 298 K.',
     ],
     variables: [
-      quantity('Sp', 'S°products', 'Entropy of the products (sum)', 'J/(mol·K)', 0, 1000, 0.01),
-      quantity('Sr', 'S°reactants', 'Entropy of the reactants (sum)', 'J/(mol·K)', 0, 1000, 0.01),
-      quantity('dS', 'ΔS°', 'Standard entropy change', 'J/(mol·K)', -1000, 1000, 0.01),
+      quantity('Sp', 'S°products', 'Entropy of the products (sum)', 'J/(mol·K)', 0, 10000, 0.01),
+      quantity('Sr', 'S°reactants', 'Entropy of the reactants (sum)', 'J/(mol·K)', 0, 10000, 0.01),
+      quantity('dS', 'ΔS°', 'Standard entropy change', 'J/(mol·K)', -10000, 10000, 0.01),
       quantity('dH', 'ΔH°', 'Standard enthalpy change', 'kJ/mol', -10000, 10000, 0.01),
       quantity('T', 'T', 'Temperature', 'K', 1, 5000, 0.1),
-      quantity('dG', 'ΔG°', 'Standard free energy change', 'kJ/mol', -15000, 15000, 0.0001),
+      quantity('dG', 'ΔG°', 'Standard free energy change', 'kJ/mol', -60000, 60000, 0.0001),
     ],
     ...rules(
       {
@@ -5030,7 +5066,7 @@ const FREE: ModuleDef[] = [
       {
         relation: {
           id: 'ΔG° = ΔH° − TΔS°',
-          display: '{dG} = {dH} − {T} × {dS}/1000',
+          display: '{dG} = {dH} − {T} × {dS}/1,000',
           vars: ['dG', 'dH', 'T', 'dS'],
           residual: (v) => v.dG! - (v.dH! - (v.T! * v.dS!) / 1000),
           solve: {
@@ -5042,9 +5078,9 @@ const FREE: ModuleDef[] = [
         },
         steps: {
           dG: {
-            expr: '{dH} − {T} × {dS}/1000',
+            expr: '{dH} − {T} × {dS}/1,000',
             how: 'Take TΔS°, in kJ, from ΔH°.',
-            work: (v) => [`ΔG° = ${fmt(v.dH!)} − ${fmt((v.T! * v.dS!) / 1000)}`],
+            work: (v) => [`ΔG° = ${fmt(v.dH!)} − ${signed((v.T! * v.dS!) / 1000)}`],
             note: (v) =>
               v.dG === 0
                 ? '(0: at equilibrium)'
@@ -5052,13 +5088,13 @@ const FREE: ModuleDef[] = [
                   ? `(below 0: spontaneous at ${fmt(v.T!)} K)`
                   : `(above 0: not spontaneous at ${fmt(v.T!)} K)`,
           },
-          dH: { expr: '{dG} + {T} × {dS}/1000', how: 'Add TΔS° back to ΔG°.' },
+          dH: { expr: '{dG} + {T} × {dS}/1,000', how: 'Add TΔS° back to ΔG°.' },
           T: {
-            expr: '1000 × ({dH} − {dG})/{dS}',
+            expr: '1,000 × ({dH} − {dG})/{dS}',
             how: 'TΔS° is what ΔH° and ΔG° differ by: divide it by ΔS°.',
           },
           dS: {
-            expr: '1000 × ({dH} − {dG})/{T}',
+            expr: '1,000 × ({dH} − {dG})/{T}',
             how: 'TΔS° is what ΔH° and ΔG° differ by: divide it by T.',
           },
         },
@@ -5070,7 +5106,8 @@ const FREE: ModuleDef[] = [
       kind: 'integerLine',
       value: 'Sr',
       second: 'Sp',
-      change: 'dS',
+      // No `change`: the line draws the jump from the two sums itself, and the harness's
+      // absolute 10⁻⁹ check misreads sums past 1,000 rounded to 12 figures (lead).
       min: 0,
       max: 1000,
       unit: 'J/(mol·K)',

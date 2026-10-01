@@ -209,6 +209,30 @@ Report: `.review/new-sci/lesson-report.md`. Fixed:
 - Waiting: `s.10.phase-colligative~phase-diagram` (explore) on the H108 phase-diagram figure
   (P20, open).
 
+### Second lesson-review fixes
+
+Report: `.review/new-sci-2/lesson-report.md`.
+
+- `s.10.phase-colligative`: the "100.8 = 100 + 0.768" check and the find-n line are fixed by the
+  engine (4 figures are opt-in again; Tb shows 100.768). g runs 0.01–1,000 g, n from 0.00001 mol
+  (to 1,000), b is wide, and two limits right after b = n/w say why instead of a silent clear:
+  b at most 6 ("Past about 6 mol/kg the freezing-point rule no longer fits.") and b at least
+  0.001 ("Below 0.001 mol/kg the freezing and boiling points barely move."; the deep harness found
+  a boiling point of 100 that lost its 7 × 10⁻⁷ rise). ΔTf, Tf, ΔTb, Tb and the curve start are
+  widened to fit i = 4 at 6 mol/kg.
+- `~vapor-pressure`: the check line "0.01189 = 23.8 − 23.79" is the engine's (near-cancelling
+  check lines; lead).
+- `s.10.entropy-free-energy` (main, ~from-tables, ~crossover): a negative term in a work line is
+  bracketed ("ΔG° = −50 − (−56.024)", "T = −60,000/(−150)"); the rules and their steps write
+  1,000 ("T × ΔS/1,000", "T = 1,000 × ΔH/ΔS"), as the work lines do.
+- `~from-tables`: S°products and S°reactants run 0–10,000 J/(mol·K) (propane's combustion sums
+  past 1,000), ΔS° ±10,000, ΔG° ±60,000. The number line grows to fit. Its `change` is dropped:
+  the line draws the jump from the two sums itself, and the deep harness flagged "jump from
+  5,259.86159951 to 5,260.35 shows 0.4884004884" (values rounded to 12 figures, checked to an
+  absolute 10⁻⁹: a harness tolerance for the lead).
+- `~crossover`: ΔH = 10,000 with ΔS = 150 no longer drops ΔS silently; the rule's message says
+  "That switch would be past 10,000 K, hotter than any compound survives."
+
 ## Shared needs (lesson review)
 
 1. **Tracker, `pictureRequestsHs.ts` H49:** lists `s.10.reaction-types~combustion`, which now
