@@ -5138,6 +5138,65 @@ const TRIANGLE_RELATIONSHIPS: ModuleDef[] = [
 
 const QUADRILATERALS: ModuleDef[] = [
   page({
+    id: 'm.10.quadrilaterals',
+    assumptions: [
+      'The diagonals from one corner cut a convex polygon with n sides into n − 2 triangles.',
+      'Each triangle’s angles add to 180°, so the interior angles add to (n − 2) × 180°.',
+      'A regular polygon’s angles are equal: each is the sum ÷ n. Its exterior angles add to 360°, so each is 360° ÷ n.',
+    ],
+    variables: [
+      num('n', 'n', 'Number of sides', 3, 30, { step: 1, integer: true }),
+      num('S', 'S', 'Sum of the interior angles', 180, 5040, { unit: '°', step: 1 }),
+      deg('e', 'e', 'Each interior angle', 60, 168),
+      deg('x', 'x', 'Each exterior angle', 12, 120),
+    ],
+    rules: [
+      rule(
+        'S = (n − 2) × 180',
+        '{S} = ({n} − 2) × 180',
+        {
+          S: [
+            (v) => (v.n! - 2) * 180,
+            '({n} − 2) × 180',
+            'The n − 2 triangles from one corner each add 180°.',
+          ],
+          n: [(v) => v.S! / 180 + 2, '{S} ÷ 180 + 2', 'Count the triangles, then add 2.'],
+        },
+        (v) => v.S! - (v.n! - 2) * 180,
+      ),
+      rule(
+        'e = S/n',
+        '{e} = {S} ÷ {n}',
+        {
+          e: [(v) => v.S! / v.n!, '{S} ÷ {n}', 'The n equal angles share the sum.'],
+          S: [(v) => v.e! * v.n!, '{e} × {n}', 'n equal angles make the sum.'],
+          n: [(v) => v.S! / v.e!, '{S} ÷ {e}', 'How many equal angles make the sum.'],
+        },
+        (v) => v.e! * v.n! - v.S!,
+      ),
+      rule(
+        'x = 360/n',
+        '{x} = 360 ÷ {n}',
+        {
+          x: [(v) => 360 / v.n!, '360 ÷ {n}', 'The n equal exterior angles add to 360°.'],
+          n: [(v) => 360 / v.x!, '360 ÷ {x}', 'How many equal exterior angles make 360°.'],
+        },
+        (v) => v.x! * v.n! - 360,
+      ),
+    ],
+    example: { n: 9, S: 1260, e: 140, x: 40 },
+    startWith: ['n'],
+    representation: {
+      kind: 'markedFigure',
+      regular: {
+        sides: 'n',
+        triangles: true,
+        exterior: true,
+        labels: { sum: 'S', interior: 'e', exterior: 'x' },
+      },
+    },
+  }),
+  page({
     id: 'm.10.quadrilaterals~parallelogram',
     title: 'Angles of a parallelogram',
     use: 'Use this for “In parallelogram ABCD, m∠A = 58°. Find m∠B and m∠C.”',
@@ -5246,27 +5305,15 @@ const QUADRILATERALS: ModuleDef[] = [
     ],
     example: { p: 12, q: 16, hp: 6, hq: 8, s: 10, K: 96 },
     startWith: ['p', 'q'],
+    pictureLabels: ['p', 'q', 'K'],
     representation: {
       kind: 'markedFigure',
-      points: { A: [0, 'hq'], B: ['hp', 0], C: ['p', 'hq'], D: ['hp', 'q'], O: ['hp', 'hq'] },
-      parts: [
-        { segment: 'AB' },
-        { segment: 'BC' },
-        { segment: 'CD' },
-        { segment: 'DA' },
-        { segment: 'AC', dashed: true },
-        { segment: 'BD', dashed: true },
-        { right: 'AOB' },
-        { ticks: 'AB', count: 1 },
-        { ticks: 'BC', count: 1 },
-        { ticks: 'CD', count: 1 },
-        { ticks: 'DA', count: 1 },
-        { label: 'AO', value: 'hp' },
-        { label: 'BO', value: 'hq' },
-        { label: 'AB', value: 's' },
-        { label: 'AC', value: 'p', inCaption: true },
-        { label: 'BD', value: 'q', inCaption: true },
-      ],
+      quadrilateral: {
+        family: 'rhombus',
+        across: ['p', 'q'],
+        diagonals: true,
+        labels: { AB: 's', AO: 'hp', BO: 'hq' },
+      },
     },
   }),
   page({
@@ -5420,7 +5467,15 @@ const QUADRILATERALS: ModuleDef[] = [
     example: { n: 6, s: 4, P: 24, t: 30, a: 2 * Math.sqrt(3), K: 24 * Math.sqrt(3) },
     startWith: ['n', 's'],
     unitSystems: ['metric'],
-    representation: { kind: 'polygon', sides: 'n', side: 's' },
+    representation: {
+      kind: 'polygon',
+      sides: 'n',
+      side: 's',
+      apothem: 'a',
+      angle: 't',
+      around: 'P',
+      area: 'K',
+    },
   }),
 ];
 
