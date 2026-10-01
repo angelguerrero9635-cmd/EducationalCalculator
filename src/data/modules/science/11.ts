@@ -1815,8 +1815,8 @@ const momentumPages: ModuleDef[] = [
         masses: ['m', 'n'],
         before: [0],
         after: ['a', 'b'],
+        spring: 'E',
       },
-      pictureLabels: ['E'],
     } satisfies ModuleDef;
   })(),
 ];

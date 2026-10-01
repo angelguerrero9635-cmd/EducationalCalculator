@@ -317,6 +317,7 @@ Report: `.review/new-sci-2/lesson-report.md`.
 | `s.11.electric-potential~parallel-plate` | H107.6         | `capacitor` with κ, A, d (C in pF, d in mm); E stays a picture label (the picture draws the field, not its value) | `table` of C by d; pictureLabels V, Q                                                       |
 | `s.11.kinematics-1d~free-fall`           | H105.5, H102.4 | `motionGraph` `acceleration: −9.8` (a number) and `kinematics.strobe: 'vertical'`; d stays a picture label        | the hidden worked-out a and its hidden rule a = v/t                                         |
 | `s.11.kinematics-2d~cliff`               | H105.5         | `projectile` `angle: 0` (a number)                                                                                | the hidden fixed θ = 0 value, its rule and its `standalone` note; the unused `fixed` helper |
+| `s.11.momentum~explode`                  | H105.13        | `collision` explode `spring: 'E'` (the spring's energy between the carts)                                         | pictureLabels E                                                                             |
 
 - H106 part 1 (`functionGraph` `unitsOf` on `s.11.oscillations` and `~hooke`) is not used:
   H107's `oscillator` replaces both graphs and reads its values in the formula's units, which is
