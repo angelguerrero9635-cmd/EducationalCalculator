@@ -74,9 +74,17 @@ export function FCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calculator
           const sx = (x: number) => L + (x / xMax.max) * (R - L);
           // The height: the curve's top past the first sliver (df₁ = 1 runs off at 0).
           const xs = Array.from({ length: 301 }, (_, i) => (xMax.max * i) / 300);
-          const top = Math.max(
+          const peak = Math.max(
             ...xs.filter((x) => d1 > 1 || x >= xMax.max * 0.03).map((x) => fPdf(x, d1, d2)),
           );
+          // df₁ ≤ 2 rises without a hump toward 0, so the tails past F and the critical value
+          // were 1–2 px tall: the scale is set by the tail (six times its height there), the
+          // curve clipped at the top.
+          const tailAt = Math.min(F ?? Infinity, crit?.right ?? Infinity);
+          const top =
+            d1 <= 2 && Number.isFinite(tailAt)
+              ? Math.min(peak, Math.max(peak * 0.25, 6 * fPdf(tailAt, d1, d2)))
+              : peak;
           const sy = (y: number) => B - Math.min(1.08, y / top) * (B - T) * 0.92;
           const curve = xs
             .map((x, i) => `${i ? 'L' : 'M'} ${sx(x)} ${sy(fPdf(x, d1, d2))}`)
@@ -184,9 +192,10 @@ export function FCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calculator
                   />
                   {test ? (
                     // The p-value beside its right tail.
+                    // Above the shaded tail, off the axis line.
                     <MathChip
                       x={Math.min(R, sx(test.cuts.right ?? F) + 8)}
-                      y={B - 10}
+                      y={Math.min(B - 16, sy(fPdf(test.cuts.right ?? F, d1, d2)) - 8)}
                       text={`P ${p4(test.p)}`}
                       anchor="start"
                       w={w}

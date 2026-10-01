@@ -177,7 +177,8 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
     interval: spec.interval ? 30 : 0,
   };
   const stackCount = model.intervals?.length ?? 0;
-  const rowH = stackCount ? Math.max(3, Math.min(8, 300 / stackCount)) : 0;
+  // The stack fits a phone with the first input: 50 or 100 intervals in about 220 px.
+  const rowH = stackCount ? Math.max(2.2, Math.min(8, 220 / stackCount)) : 0;
   const stackH = stackCount ? stackCount * rowH + 26 : 0;
   const T = 30;
   const curveH = (w: number) => (stackCount ? 0.34 : 0.46) * w;
