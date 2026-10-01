@@ -217,3 +217,9 @@ Report: `.review/new-sci-2/lesson-report.md`.
   or `M`, the zone from `d₁` to `d₂` shaded green, the planet's orbit at `a` with `T`
   (s.12.exoplanets~habitable-zone, ~orbit). The `kepler` mode can't serve ~orbit: its caption
   always states T² = a³, true only round the Sun; a `starMass` option would fix it.
+
+### Pictures placed (H89–H110)
+
+| Page                             | Entry   | What changed                                                                                                                                                                                                                     | Stand-in gone                                                                              |
+| -------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `s.12.starlight-spectra~doppler` | H105.14 | `spectrum` `lines.rest: 'r', line: 'rest'`; a new value λ₀ (`allowed` 410.2, 434.0, 486.1, 656.3 nm) and the rule z = (λ − λ₀) ÷ λ₀; λ is "Observed wavelength", 400–665 nm; the third assumption says to pick the measured line | the Hα-only rule z = (λ − 656.3) ÷ 656.3 (kept for `~redshift`) and the Hα-only assumption |

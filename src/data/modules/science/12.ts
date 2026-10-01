@@ -1220,6 +1220,25 @@ const redshiftRel = rule(
   },
 );
 
+/** z = (λ − λ₀) ÷ λ₀, the lab line λ₀ a value (any Balmer line). */
+const restShiftRel = rule(
+  'z = (λ − λ₀) ÷ λ₀',
+  '{z} = ({l} − {r}) ÷ {r}',
+  (v) => v.z! * v.r! - (v.l! - v.r!),
+  {
+    z: [
+      (v) => Number(((v.l! - v.r!) / v.r!).toPrecision(12)),
+      '({l} − {r}) ÷ {r}',
+      'The shift as a fraction of the lab wavelength.',
+    ],
+    l: [
+      (v) => Number((v.r! * (1 + v.z!)).toPrecision(12)),
+      '{r} × (1 + {z})',
+      'The lab wavelength stretched by 1 + z.',
+    ],
+  },
+);
+
 /** v = c × z, c in km/s. */
 const czRel = rule('v = c × z', '{v} = 300,000 × {z}', (v) => v.v! - 300000 * v.z!, {
   v: [(v) => 300000 * v.z!, '300,000 × {z}', 'Multiply the shift by light’s speed, 300,000 km/s.'],
@@ -1234,10 +1253,17 @@ const doppler: ModuleDef = {
   assumptions: [
     'Moving away stretches the lines red (+v); moving toward shifts them blue (−v).',
     'Only motion along our line of sight shows.',
-    'The pattern of lines names the element; here it is hydrogen’s Hα line, 656.3 nm in the lab.',
+    'Pick the hydrogen line you measured: its lab wavelength is λ₀, and the other lines shift the same way.',
   ],
   variables: [
-    V('l', 'λ', 'Observed wavelength of Hα', { unit: 'nm', min: 649, max: 663, step: 0.01 }),
+    V('r', 'λ₀', 'Lab wavelength (Hα 656.3, Hβ 486.1, Hγ 434, Hδ 410.2)', {
+      unit: 'nm',
+      min: 410.2,
+      max: 656.3,
+      multipleOf: 0.1,
+      allowed: [410.2, 434.0, 486.1, 656.3],
+    }),
+    V('l', 'λ', 'Observed wavelength', { unit: 'nm', min: 400, max: 665, step: 0.01 }),
     V('z', 'z', 'Shift', { min: -0.012, max: 0.012, step: 0.000001, sigFigs: 5 }),
     V('v', 'v', 'Line-of-sight speed', {
       unit: 'km/s',
@@ -1248,18 +1274,26 @@ const doppler: ModuleDef = {
       sigFigs: 4,
     }),
   ],
-  ...rels(redshiftRel, czRel),
+  ...rels(restShiftRel, czRel),
   example: {
+    r: H_ALPHA,
     l: 656.5,
     z: (656.5 - H_ALPHA) / H_ALPHA,
     v: (300000 * (656.5 - H_ALPHA)) / H_ALPHA,
   },
-  startWith: ['l'],
+  startWith: ['r', 'l'],
   representation: {
     kind: 'spectrum',
     wavelength: 'l',
     meters: 1e-9,
-    lines: { element: 'H', mode: 'absorption', redshift: 'z', velocity: 'v' },
+    lines: {
+      element: 'H',
+      mode: 'absorption',
+      redshift: 'z',
+      velocity: 'v',
+      rest: 'r',
+      line: 'rest',
+    },
   },
 };
 
