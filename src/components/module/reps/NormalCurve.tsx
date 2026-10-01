@@ -62,8 +62,8 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
     const spread = sym(spec.sd, 'σ');
     lines.push(
       spread === 'σ'
-        ? `${spec.sample ? 'The population is' : 'X is'} normal with ${sym(spec.mean, 'μ')} = ${val(spec.mean, mu)} and σ = ${val(spec.sd, sigma)}.`
-        : `The curve is centered at ${sym(spec.mean, 'μ')} = ${val(spec.mean, mu)} with standard error ${spread} = ${val(spec.sd, sigma)}.`,
+        ? `${spec.sample ? 'The population is' : 'X is'} normal with ${sym(spec.mean, spec.meanName ?? 'μ')} = ${val(spec.mean, mu)} and σ = ${val(spec.sd, sigma)}.`
+        : `The curve is centered at ${sym(spec.mean, spec.meanName ?? 'μ')} = ${val(spec.mean, mu)} with standard error ${spread} = ${val(spec.sd, sigma)}.`,
     );
   }
   if (spec.sample && model.pop) {

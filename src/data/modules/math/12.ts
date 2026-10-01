@@ -705,6 +705,7 @@ const MATH_12_STATS: ModuleDef[] = [
     representation: {
       kind: 'normalCurve',
       mean: 0,
+      meanName: 'μ_d',
       sd: 'E',
       axis: 'Mean difference d̄ if H₀ is true',
       t: { df: 'df' },
