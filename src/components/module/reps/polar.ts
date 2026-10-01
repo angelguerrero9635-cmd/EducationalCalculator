@@ -22,6 +22,8 @@ export function polarR(c: PolarCurve, v: Numbers, deg: number): number {
       return v.a! + (v.b ?? v.a!) * trig(c.fn, deg);
     case 'spiral':
       return v.a! * deg * RAD;
+    case 'conic': // H106: r = k ÷ (m − n cos θ), or sin θ
+      return v.k! / ((v.m ?? 1) - v.n! * trig(c.fn, deg));
   }
 }
 
@@ -37,6 +39,8 @@ export function polarSpan(c: PolarCurve, v: Numbers): [number, number] {
       return [0, 360];
     case 'spiral':
       return [0, 360 * (c.turns ?? 2)];
+    case 'conic':
+      return [0, 360];
   }
 }
 
@@ -71,4 +75,5 @@ export const CURVE_FIELDS: Record<PolarCurve['shape'], string[]> = {
   rose: ['a', 'n'],
   cardioid: ['a', 'b'],
   spiral: ['a'],
+  conic: ['k', 'm', 'n'],
 };

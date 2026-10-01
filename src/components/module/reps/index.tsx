@@ -102,6 +102,7 @@ import { TableGraph } from './TableGraph';
 import { CirclePopulation } from './CirclePopulation';
 import { RectangleBounds } from './RectangleBounds';
 import { VectorSpace } from './VectorSpace';
+import { PolarConic } from './PolarConic';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -276,6 +277,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':
+      if (spec.curve?.shape === 'conic') return <PolarConic spec={spec} calc={calc} />; // H106
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
       return spec.power !== undefined || spec.roots !== undefined ? (

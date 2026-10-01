@@ -817,6 +817,40 @@ const SPACE: ModuleDef[] = [
   ),
 ];
 
+// ── H106 part 13: a conic on the polar grid (m.12.polar-conics, ~sine) ──
+
+const polarConic = (fn: 'cos' | 'sin'): Representation => ({
+  kind: 'polarGrid',
+  curve: { shape: 'conic', k: 'k', m: 'm', n: 'n', fn, e: 'e', d: 'd' },
+  point: { r: 'r', theta: 't' },
+});
+
+const POLAR_CONICS: ModuleDef[] = [
+  fromPage(
+    'm.12.polar-conics',
+    'g.m12-polar-conics-ellipse-curve',
+    'A polar ellipse with its focus and directrix',
+    polarConic('cos'),
+  ),
+  fromPage(
+    'm.12.polar-conics',
+    'g.m12-polar-conics-hyperbola-curve',
+    'A polar hyperbola with its focus and directrix',
+    polarConic('cos'),
+    {
+      use: 'Use this for “Name the conic r = 6 ÷ (1 − 2 cos θ), its eccentricity and its directrix.”',
+      example: { k: 6, m: 1, n: 2, e: 2, d: 3, t: 120, r: 3 },
+    },
+  ),
+  fromPage(
+    'm.12.polar-conics~sine',
+    'g.m12-polar-conics-sine-parabola-curve',
+    'A polar parabola with sin θ',
+    polarConic('sin'),
+    { example: { k: 4, m: 1, n: -1, e: 1, d: 4, t: 30, r: 4 / 1.5 } },
+  ),
+];
+
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
@@ -830,6 +864,7 @@ export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...SYMMETRY,
   ...BOUNDS,
   ...SPACE,
+  ...POLAR_CONICS,
 ];
 
 export const HS3B_GALLERY_LAYOUTS: LayoutDef[] = [];

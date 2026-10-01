@@ -190,6 +190,24 @@ export interface VectorDiagramHs3b {
   };
 }
 
+/**
+ * H106: a conic on the polar grid (`polarGrid` `curve`), r = k ÷ (m − n cos θ) as a page types it
+ * (`fn: 'sin'` for sin θ; `m` is 1 when left out), so e = |n| ÷ m and d = k ÷ |n|: the focus at
+ * the pole, the directrix dashed (x = −d for − cos θ, x = d for + cos θ; y = ∓d with sin θ), the
+ * vertices marked. With `point` on it, PF (= |r|) and PD (to the directrix) are drawn and
+ * PF ÷ PD = e worked in the caption; the point is dragged along the curve (θ only). `e` and `d`
+ * name the values the page works out (checked).
+ */
+export interface PolarConicHs3b {
+  shape: 'conic';
+  k: NumOrVar;
+  m?: NumOrVar;
+  n: NumOrVar;
+  fn?: 'cos' | 'sin';
+  e?: string;
+  d?: string;
+}
+
 const idsOf = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
 

@@ -7,6 +7,7 @@ import { curveOf, zerosIn } from '@/components/module/reps/functionGraphMath';
 import { reshapeVars } from '@/components/module/reps/functionGraphHs2g';
 import { toShownUnits } from '@/components/module/reps/functionGraphUnits';
 import { quadAt, quadCrossings } from '@/components/module/reps/lineParabola';
+import { polarConicParts } from '@/components/module/reps/polarConic';
 import { ownCenter } from '@/components/module/reps/transformHs3b';
 import { angle3, cross3, dot3, len3, sub3, type V3 } from '@/components/module/reps/vectorSpace';
 import type { VariableDef } from '@/engine/types';
@@ -220,6 +221,20 @@ export function hs3bIssues(
     case 'vectorDiagram':
       out.push(...spaceIssues(rep, val));
       break;
+    case 'polarGrid': {
+      // A polar conic: e = |n| ÷ m and d = k ÷ |n|, as the picture draws them.
+      const cv = rep.curve;
+      if (cv?.shape !== 'conic') break;
+      const [k, m, n] = [val(cv.k), cv.m === undefined ? 1 : val(cv.m), val(cv.n)];
+      if (k === undefined || m === undefined || n === undefined) break;
+      if (!(m > 0)) out.push(`polar conic: m = ${m} (must be above 0)`);
+      const p = polarConicParts(cv, { k, m, n });
+      const [e, d] = [cv.e && val(cv.e), cv.d && val(cv.d)];
+      if (typeof e === 'number' && off(e, p.e)) out.push(`polar conic: e ${e} is not ${p.e}`);
+      if (typeof d === 'number' && p.d !== undefined && off(d, p.d))
+        out.push(`polar conic: d ${d} is not ${p.d}`);
+      break;
+    }
     case 'functionGraph': {
       out.push(...transformIssues(rep, val));
       // The power family and the log sum draw only from values they can take.

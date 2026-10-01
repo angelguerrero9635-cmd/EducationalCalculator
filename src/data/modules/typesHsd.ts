@@ -12,7 +12,7 @@ import type {
   UnitCircleHs2g,
 } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
-import type { VectorDiagramHs3b } from './typesHs3b';
+import type { PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
 
 /** A trig function of the unit circle. */
 export type TrigFn = 'sin' | 'cos' | 'tan';
@@ -178,7 +178,8 @@ export type PolarCurve =
   /** r = a + b cos θ (or sin): a cardioid when a = b, a limaçon otherwise. */
   | { shape: 'cardioid'; a: NumOrVar; b?: NumOrVar; fn?: 'cos' | 'sin' }
   /** r = aθ, θ in radians, for `turns` turns (default 2). */
-  | { shape: 'spiral'; a: NumOrVar; turns?: number };
+  | { shape: 'spiral'; a: NumOrVar; turns?: number }
+  | PolarConicHs3b; // H106: r = k ÷ (m − n cos θ), focus at the pole, directrix dashed
 
 /** A path x(t), y(t) by family; t in degrees for the circle and ellipse, seconds otherwise. */
 export type ParametricPath =
