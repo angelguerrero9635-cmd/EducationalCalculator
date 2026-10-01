@@ -1,6 +1,6 @@
 import { dollarsOf, formatNumber, lowerFirst, renderTemplate, unitFor } from '@/engine/format';
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
-import type { Values } from '@/engine/types';
+import type { Values, VariableDef } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
 
@@ -85,6 +85,34 @@ export interface Walkthrough {
  * Grades 9–12 add a list at once: "(10 + 75 + 200) ÷ 25" goes straight to "285 ÷ 25", not
  * through "85 + 200". A stage that only adds two numbers is dropped when the next one does too.
  */
+/**
+ * A check line as printed. When its two sides nearly cancel at the usual figures
+ * (tan(2 × 45.0005°) = 634.06 ÷ (999.99 − 1000)), its numbers are printed with 8, so the sides
+ * agree as written.
+ */
+const checkLine = (display: string, vars: readonly VariableDef[], values: Values) => {
+  const line = renderTemplate(display, vars, values);
+  const sides = (text: string) => {
+    const parts = text.split(' = ');
+    return parts.length === 2 ? parts.map(evaluatePrinted) : [];
+  };
+  const off = (text: string) => {
+    const [a, b] = sides(text);
+    return (
+      a !== undefined &&
+      b !== undefined &&
+      Math.abs(a - b) > 1e-3 * Math.max(Math.abs(a), Math.abs(b)) + 1e-9
+    );
+  };
+  if (!off(line)) return line;
+  const fine = renderTemplate(
+    display,
+    vars.map((v) => ({ ...v, figures: 8 })),
+    values,
+  );
+  return off(fine) ? line : fine;
+};
+
 const sumsAtOnce = (lines: string[], start: string, grade: string) => {
   if (!['9', '10', '11', '12'].includes(grade)) return lines;
   const ops = (l: string) =>
@@ -522,7 +550,7 @@ export function buildSteps(
       )
       .map((r) => ({
         formula: agree(
-          r.check && direct ? r.check(working) : renderTemplate(r.display, workVars, working),
+          r.check && direct ? r.check(working) : checkLine(r.display, workVars, working),
         ),
         ok: holds(r, result.values),
       })),

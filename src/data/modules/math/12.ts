@@ -5407,7 +5407,8 @@ const turnAngle = withCheck(
       ? `tan(2 × ${fmt(v.t!)}°) = 0`
       : v.A === v.C
         ? `cos(2 × ${fmt(v.t!)}°) = 0`
-        : `tan(2 × ${fmt(v.t!)}°) = ${fmt(v.B!)} ÷ (${fmt(v.A!)} − ${par(v.C!)})`,
+        : // Near 2θ = 90° a tangent is steep: θ carries 8 figures so the sides agree as written.
+          `tan(2 × ${Math.abs(v.B! / (v.A! - v.C!)) > 100 ? formatNumber(v.t!, { figures: 8 }) : fmt(v.t!)}°) = ${fmt(v.B!)} ÷ (${fmt(v.A!)} − ${par(v.C!)})`,
 );
 const noXyTerm = limit(
   'B ≠ 0',
