@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
+import { useRef, useState, type ReactNode } from 'react';
+import { Platform, ScrollView, StyleSheet, View, type ViewStyle } from 'react-native';
 
 import { Text } from '@/components/Text';
 import type { ObserveFigure, ObserveLayout as Spec } from '@/data/modules/layouts';
@@ -26,6 +26,20 @@ import {
 } from './observeScaled';
 
 const CHART_HEIGHT = 180;
+/** The table's one type size: headers, row names and readings, on every observe page. */
+const TABLE_FONT = font.caption + 1;
+/** A column's width when a long table (twelve months) scrolls sideways instead of squeezing. */
+const WIDE_COLUMN = 40;
+
+/** A table too wide for a phone scrolls sideways at its full size; any other stays put. */
+function TableFrame({ wide, children }: { wide: number; children: ReactNode }) {
+  if (!wide) return <>{children}</>;
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator>
+      <View style={{ width: wide }}>{children}</View>
+    </ScrollView>
+  );
+}
 /** The browser must not pan the page while a finger moves along a bar. */
 const WEB_BAR_STYLE =
   Platform.OS === 'web'
@@ -58,17 +72,22 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
     (r ? spec.second!.rowLabel : spec.rowLabel) + (ownUnit ? ` (${scales[r]!.unit})` : '');
   // The row names' column: as wide as its longest name at one type size on every page (it
   // shared the width with the readings and wrapped "Species A" in 10 px type).
-  const heads = [
-    two ? (ownUnit ? '' : spec.unit) : spec.rowLabel,
-    ...(two ? [rowName(0), rowName(1)] : [spec.unit]),
-  ];
+  // One row: the corner stays empty and the row reads its name with its unit, "Membrane
+  // potential (mV)" (the row read only "mV" under a corner naming it).
+  const corner = two ? (ownUnit ? '' : spec.unit) : '';
+  const rowHeads = two ? [rowName(0), rowName(1)] : [`${spec.rowLabel} (${spec.unit})`];
+  const heads = [corner, ...rowHeads];
+  // (A fixed basis, not `flex: 0` with a width: on the web that is a 0% basis and the column
+  // shrank back to 45 px.)
+  // A name longer than 112 px wraps at a space, so the readings keep their room.
   const headW = Math.min(
-    132,
+    112,
     Math.max(
-      44,
-      Math.max(...heads.map((t) => (t ?? '').length)) * (font.caption + 1) * 0.6 + 2 * space.sm,
+      48,
+      Math.max(...heads.map((t) => (t ?? '').length)) * TABLE_FONT * 0.62 + 2 * space.xs + 4,
     ),
   );
+  const headCol = { flexBasis: headW, width: headW };
   const setAt = (i: number, y: number, height: number, row = 0) => {
     setPicked(i);
     const raw = ((height - y) / height) * spec.max;
@@ -189,33 +208,35 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
         </View>
       ) : null}
       {/* The table of readings. */}
-      <View style={[styles.table, { borderColor: c.border }]}>
-        <View style={[styles.row, { backgroundColor: c.surface, borderBottomColor: c.border }]}>
-          <Text style={[styles.cellHead, styles.rowHead, { width: headW, color: c.text }]}>
-            {two ? (ownUnit ? '' : spec.unit) : spec.rowLabel}
-          </Text>
-          {spec.columns.map((col) => (
-            <Text key={col} style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
-              {col}
+      <TableFrame wide={spec.columns.length > 8 ? headW + spec.columns.length * WIDE_COLUMN : 0}>
+        <View style={[styles.table, { borderColor: c.border }]}>
+          <View style={[styles.row, { backgroundColor: c.surface, borderBottomColor: c.border }]}>
+            <Text style={[styles.cellHead, styles.rowHead, headCol, { color: c.text }]}>
+              {corner}
             </Text>
-          ))}
-        </View>
-        {(two ? [values, seconds] : [values]).map((row, r) => (
-          <View key={r} style={styles.row}>
-            <Text style={[styles.cell, styles.rowHead, { width: headW, color: c.textMuted }]}>
-              {two ? rowName(r) : spec.unit}
-            </Text>
-            {row.map((x, i) => (
-              <Text
-                key={spec.columns[i]}
-                style={[styles.cell, tight && styles.tight, { color: c.text }]}
-              >
-                {scaled ? signed(x, scales[r]!.lo < 0) : x}
+            {spec.columns.map((col) => (
+              <Text key={col} style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
+                {col}
               </Text>
             ))}
           </View>
-        ))}
-      </View>
+          {(two ? [values, seconds] : [values]).map((row, r) => (
+            <View key={r} style={[styles.row, { borderBottomColor: c.border }]}>
+              <Text style={[styles.cell, styles.rowHead, headCol, { color: c.text }]}>
+                {rowHeads[r]}
+              </Text>
+              {row.map((x, i) => (
+                <Text
+                  key={spec.columns[i]}
+                  style={[styles.cell, tight && styles.tight, { color: c.text }]}
+                >
+                  {scaled ? signed(x, scales[r]!.lo < 0) : x}
+                </Text>
+              ))}
+            </View>
+          ))}
+        </View>
+      </TableFrame>
       {two ? (
         // The key: which colour is which row.
         <View style={styles.key}>
@@ -436,22 +457,32 @@ const styles = StyleSheet.create({
   label: { flex: 1, maxWidth: 56, textAlign: 'center', fontSize: font.caption + 1 },
   table: { borderWidth: StyleSheet.hairlineWidth, borderRadius: radius.sm, overflow: 'hidden' },
   row: { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth },
+  // Headers and readings in one type size on every page, each reading centred under its
+  // header (equal columns that never grow to fit their text).
   cellHead: {
-    flex: 1,
-    padding: space.sm,
-    fontSize: font.caption + 1,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    minWidth: 0,
+    paddingVertical: space.sm,
+    paddingHorizontal: space.xs,
+    fontSize: TABLE_FONT,
     fontWeight: '700',
     textAlign: 'center',
   },
   cell: {
-    flex: 1,
-    padding: space.sm,
-    fontSize: font.body,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    minWidth: 0,
+    paddingVertical: space.sm,
+    paddingHorizontal: space.xs,
+    fontSize: TABLE_FONT,
     textAlign: 'center',
     fontVariant: ['tabular-nums'],
   },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
-  rowHead: { flex: 0, paddingHorizontal: space.xs, fontSize: font.caption + 1, textAlign: 'left' },
+  rowHead: { flexGrow: 0, flexShrink: 0, paddingHorizontal: space.xs, textAlign: 'left' },
   // A histogram's intervals meet: no gaps between the bars.
   touching: { gap: 0, paddingLeft: 28 },
   touchingLabels: { gap: 0, paddingLeft: 28 },
@@ -487,6 +518,7 @@ const styles = StyleSheet.create({
   dash: { width: 18, borderTopWidth: 1, borderStyle: 'dashed' },
   // H109: twelve months under a split chart: less room between columns.
   dense: { gap: space.xs },
-  // Six columns and the row label share a phone's width: less padding, smaller type.
-  tight: { paddingHorizontal: 1, fontSize: font.caption - 1 },
+  // Six columns and more share a phone's width with the row label: less padding (the type
+  // stays the table's one size).
+  tight: { paddingHorizontal: 1 },
 });
