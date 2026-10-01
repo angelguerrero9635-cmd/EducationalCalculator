@@ -685,71 +685,6 @@ const explodeSpring = fromPage(
   { pictureLabels: undefined },
 );
 
-// ── H105 (14): spectrum, the lab line from a rest-wavelength value ──
-
-const dopplerAnyLine = fromPage(
-  's.12.starlight-spectra~doppler',
-  'g.s12-starlight-spectra-doppler-any-line',
-  'Doppler shift of any hydrogen line',
-  {
-    kind: 'spectrum',
-    wavelength: 'l',
-    meters: 1e-9,
-    lines: {
-      element: 'H',
-      mode: 'absorption',
-      redshift: 'z',
-      velocity: 'v',
-      rest: 'r',
-      line: 'rest',
-    },
-  },
-  {
-    vars: { l: { name: 'Observed wavelength', min: 400, max: 665 } },
-    add: [
-      {
-        id: 'r',
-        symbol: 'λ₀',
-        name: 'Lab wavelength (Hα 656.3, Hβ 486.1, Hγ 434, Hδ 410.2)',
-        unit: 'nm',
-        min: 410.2,
-        max: 656.3,
-        multipleOf: 0.1,
-        allowed: [410.2, 434.0, 486.1, 656.3],
-      },
-    ],
-    drop: ['z = (λ − 656.3) ÷ 656.3'],
-    rules: [
-      rule(
-        'z = (λ − λ₀) ÷ λ₀',
-        '{z} = ({l} − {r}) ÷ {r}',
-        ['z', 'l', 'r'],
-        (v) => v.z! * v.r! - (v.l! - v.r!),
-        {
-          z: [
-            (v) => exact((v.l! - v.r!) / v.r!),
-            '({l} − {r}) ÷ {r}',
-            'The shift as a fraction of the lab wavelength.',
-          ],
-          l: [
-            (v) => exact(v.r! * (1 + v.z!)),
-            '{r} × (1 + {z})',
-            'The lab wavelength stretched by 1 + z.',
-          ],
-        },
-      ),
-    ],
-    assumptions: [
-      'Moving away stretches the lines red (+v); moving toward shifts them blue (−v).',
-      'Only motion along our line of sight shows.',
-      'Pick the hydrogen line you measured: its lab wavelength is λ₀, and the other lines shift the same way.',
-    ],
-    example: { r: 486.1, l: 486.3, z: (486.3 - 486.1) / 486.1, v: (300000 * 0.2) / 486.1 },
-    startWith: ['r', 'l'],
-    use: 'Use this for “A star’s Hβ line is seen at 486.3 nm. How fast is it moving?”',
-  },
-);
-
 // ── H105 (17): no picture, for an equation-only page ──
 
 const noPicture = fromPage(
@@ -762,7 +697,6 @@ const noPicture = fromPage(
 
 export const HS2H_GALLERY_MODULES: ModuleDef[] = [
   noPicture,
-  dopplerAnyLine,
   explodeSpring,
   angleAddition,
   exteriorAngle,

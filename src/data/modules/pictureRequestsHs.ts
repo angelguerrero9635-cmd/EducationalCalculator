@@ -2206,7 +2206,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.m10-proofs-exterior-angle-rays',
       'g.m10-quadrilaterals-rhombus-across',
       'g.s11-momentum-explode-spring',
-      'g.s12-starlight-spectra-doppler-any-line',
       'g.m12-matrices-determinant-none',
     ],
     notes:
