@@ -1931,7 +1931,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: [
       'g.m12-polar-de-moivre-powers',
-      'g.m12-polar-roots',
       'g.m12-sampling-distributions-clt',
       'g.m12-hypothesis-testing-t-curve',
       'g.m12-confidence-intervals-t-curve',

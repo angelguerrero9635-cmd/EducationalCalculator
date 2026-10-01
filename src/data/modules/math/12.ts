@@ -3757,6 +3757,13 @@ const polarPart = (out: string, r: string, t: string, fn: 'cos' | 'sin', how: st
   );
 
 /** r² = x² + y²: the distance from the pole, either sign (the positive one first). */
+/** After θ₀: the other roots' arguments, 360° ÷ n apart (up to six named). */
+const otherRoots = (v: Values) => {
+  if (v.t === undefined || v.n === undefined) return '';
+  const rest = Array.from({ length: v.n - 1 }, (_, k) => `${fmt(v.t! + (360 * (k + 1)) / v.n!)}°`);
+  return `→ the others: ${rest.length > 6 ? `${rest.slice(0, 5).join(', ')}, …, ${rest.at(-1)}` : rest.join(', ')} (each ${fmt(360 / v.n)}° on)`;
+};
+
 const polarDistance = (r: string, x: string, y: string, signed: boolean) =>
   rel(
     `${r}² = ${x}² + ${y}²`,
@@ -3956,6 +3963,80 @@ const MATH_12_POLAR: ModuleDef[] = [
       z: { re: 'a', im: 'b' },
       power: 'n',
       result: { re: 'p', im: 'q' },
+    },
+  },
+  {
+    id: 'm.12.polar~roots',
+    title: 'The nth roots of a complex number',
+    use: 'Use this for “Find the cube roots of 8i” or “the fourth roots of −16.”',
+    assumptions: [
+      'Write z = a + bi in polar form first: modulus √(a² + b²), argument in the quadrant of (a, b).',
+      'Each nth root has modulus the nth root of |z|; the first has argument arg z ÷ n.',
+      'The n roots are 360° ÷ n apart on one circle, the corners of a regular polygon.',
+    ],
+    variables: [
+      real('a', 'a', 'Real part of z', -100, 100),
+      real('b', 'b', 'Imaginary part of z', -100, 100),
+      V('n', 'n', 'Which root (n)', { integer: true, min: 2, max: 12 }),
+      deg('A', 'arg z', 'Argument of z', 0, 360, { derived: true }),
+      V('m', 'ρ', 'Modulus of each root', { min: 0, max: 20, step: 0.0001, derived: true }),
+      deg('t', 'θ₀', 'Argument of the first root', 0, 180, { derived: true }),
+      V('p', 'p', 'Real part of the first root', { min: -20, max: 20, step: 0.01, derived: true }),
+      V('q', 'q', 'Imaginary part of the first root', {
+        min: -20,
+        max: 20,
+        step: 0.01,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      limit(
+        'z ≠ 0',
+        '{a} + {b}i is not 0',
+        ['a', 'b'],
+        (v) => v.a !== 0 || v.b !== 0,
+        'Every root of 0 is 0: take a z that is not 0.',
+      ),
+      direction('A', 'a', 'b', 'point'),
+      derive(
+        'ρ = |z|^(1/n)',
+        '{m} = √({a}² + {b}²)^(1 ÷ {n})',
+        'm',
+        ['a', 'b', 'n'],
+        (v) => Math.hypot(v.a!, v.b!) ** (1 / v.n!),
+        '√({a}² + {b}²)^(1 ÷ {n})',
+        'The modulus of z, then its nth root: ρⁿ must equal |z|.',
+      ),
+      withStep(
+        derive(
+          'θ₀ = arg z ÷ n',
+          '{t} = {A} ÷ {n}',
+          't',
+          ['A', 'n'],
+          (v) => v.A! / v.n!,
+          '{A} ÷ {n}',
+          'n times the root’s argument must be arg z, so share it among n equal turns.',
+        ),
+        't',
+        { note: otherRoots },
+      ),
+      polarPart(
+        'p',
+        'm',
+        't',
+        'cos',
+        'Back to a + bi: the real part of the first root is ρ cos θ₀.',
+      ),
+      polarPart('q', 'm', 't', 'sin', 'And its imaginary part is ρ sin θ₀.'),
+    ),
+    example: { a: 0, b: 8, n: 3, A: 90, m: 2, t: 30, p: Math.sqrt(3), q: 1 },
+    startWith: ['a', 'b', 'n'],
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'a', im: 'b' },
+      roots: 'n',
+      result: { re: 'p', im: 'q' },
+      fixed: true,
     },
   },
   {
