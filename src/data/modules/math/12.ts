@@ -2493,8 +2493,6 @@ const MATH_12_MATRICES: ModuleDef[] = [
 // ── Trigonometry ──
 
 const RAD = Math.PI / 180;
-/** Degrees to a y axis: sin⁻¹ and tan⁻¹ graphs stretched by 180/π read in degrees. */
-const DEG = 180 / Math.PI;
 const deg = (id: string, symbol: string, name: string, min: number, max: number, extra = {}) =>
   V(id, symbol, name, { unit: '°', min, max, step: 0.01, ...extra });
 const unitValue = (id: string, symbol: string, name: string, extra = {}) =>
@@ -2570,7 +2568,7 @@ const MATH_12_TRIG: ModuleDef[] = [
     representation: {
       kind: 'functionGraph',
       family: 'arcsin',
-      a: DEG,
+      degrees: true,
       at: { x: 'x', y: 'A' },
       marks: ['domain', 'range'],
       axes: { x: 'x', y: 'A (°)' },
@@ -2632,7 +2630,7 @@ const MATH_12_TRIG: ModuleDef[] = [
     representation: {
       kind: 'functionGraph',
       family: 'arctan',
-      a: DEG,
+      degrees: true,
       at: { x: 'x', y: 'A' },
       marks: ['asymptotes', 'range'],
       axes: { x: 'Rise over run x', y: 'A (°)' },
