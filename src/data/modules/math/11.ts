@@ -135,6 +135,22 @@ function page(m: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
 const nCk = (n: number, k: number) =>
   Number.isInteger(n) && Number.isInteger(k) && k >= 0 && k <= n ? choose(n, k) : undefined;
 
+/**
+ * The bars a student adds for P(X ≥ k): k up to n, or 0 up to k − 1 (`rest`, taken from 1)
+ * when those are fewer.
+ */
+const atLeastBars = (n: number, k: number) => {
+  const rest = k < n - k + 1;
+  const [from, to] = rest ? [0, k - 1] : [k, n];
+  return { js: Array.from({ length: to - from + 1 }, (_, i) => from + i), rest };
+};
+/** P(X ≥ k) for n trials at p, added the way `atLeastBars` says. */
+const atLeast = (n: number, p: number, k: number) => {
+  const { js, rest } = atLeastBars(n, k);
+  const sum = js.reduce((t, j) => t + binomialPmf(n, p, j), 0);
+  return rest ? 1 - sum : sum;
+};
+
 const inOpen = (p: number) => p > 0 && p < 1;
 /** A probability, 0 to 1. */
 const prob = (id: string, symbol: string, name: string, extra: Partial<VariableDef> = {}) =>
@@ -1083,6 +1099,72 @@ export const MATH_11_MODULES: ModuleDef[] = [
       },
       axis: 'Points (x)',
       keep: ['x1', 'x2', 'x3', 'x4', 'p1', 'p2', 'p3'],
+    },
+  }),
+  page({
+    id: 'm.11.probability-distributions~at-least',
+    title: 'Binomial: at least k successes',
+    use: 'Use this for “A fair coin is tossed 5 times. What is the chance of at least 4 heads?”',
+    assumptions: [
+      'At least k means k, k + 1, … up to n successes: add those bars.',
+      'Each bar is P(X = j) = C(n, j) × pʲ × (1 − p)ⁿ⁻ʲ, with the same p on every independent trial.',
+      'When fewer bars lie below k, add those instead and take them from 1: P(X ≥ k) = 1 − P(X < k).',
+    ],
+    variables: [
+      W('n', 'n', 'Trials', 1, 20),
+      prob('p', 'p', 'Chance of success on each trial', { min: 0.01, max: 0.99, step: 0.01 }),
+      W('k', 'k', 'At least this many successes', 1, 20),
+      prob('P', 'P', 'Probability of at least k successes, P(X ≥ k)', { derived: true }),
+    ],
+    rules: [
+      limit(
+        'k ≤ n',
+        '{k} is at most {n}',
+        ['n', 'k'],
+        (v) => v.k! <= v.n!,
+        'There can’t be more successes than trials, so k is at most n.',
+      ),
+      derive(
+        'P(X ≥ k) = P(k) + … + P(n)',
+        'P',
+        ['n', 'p', 'k'],
+        '{P} = P(X ≥ {k}) in {n} trials at {p}',
+        (v) => (v.k! > v.n! ? undefined : atLeast(v.n!, v.p!, v.k!)),
+        (v) => {
+          const { js, rest } = atLeastBars(v.n!, v.k!);
+          const sum = js.map((j) => `${choose(v.n!, j)} × {p}^${j} × (1 − {p})^${v.n! - j}`);
+          return rest ? `1 − (${sum.join(' + ')})` : sum.join(' + ');
+        },
+        (v) =>
+          atLeastBars(v.n!, v.k!).rest
+            ? 'Fewer bars lie below k: add P(0) up to P(k − 1), the chance of fewer than k, and take it from 1.'
+            : 'Add the bars from k up to n: each is the orders of j successes, C(n, j), times the chance of one order.',
+        {
+          check: (v) => {
+            const { js, rest } = atLeastBars(v.n!, v.k!);
+            const sum = js
+              .map((j) => `${choose(v.n!, j)} × ${fmt(v.p!)}^${j} × (1 − ${fmt(v.p!)})^${v.n! - j}`)
+              .join(' + ');
+            return `${fmt(v.P!)} = ${rest ? `1 − (${sum})` : sum}`;
+          },
+          work: (v) => {
+            const { js, rest } = atLeastBars(v.n!, v.k!);
+            const bars = js.map((j) => fmt(Number(binomialPmf(v.n!, v.p!, j).toPrecision(4))));
+            return js.length > 1 || rest
+              ? [rest ? `P = 1 − (${bars.join(' + ')})` : `P = ${bars.join(' + ')}`]
+              : [];
+          },
+        },
+      ),
+    ],
+    example: { n: 5, p: 0.5, k: 4, P: 0.1875 },
+    startWith: ['n', 'p', 'k'],
+    sliders: true,
+    representation: {
+      kind: 'histogram',
+      binomial: { n: 'n', p: 'p' },
+      range: { from: 'k', total: 'P' },
+      axis: 'Successes (k)',
     },
   }),
 

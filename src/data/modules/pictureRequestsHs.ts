@@ -1933,7 +1933,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     gallery: [
       'g.m12-polar-de-moivre-powers',
       'g.m12-polar-roots',
-      'g.m11-probability-distributions-at-least',
       'g.m12-sampling-distributions-clt',
       'g.m12-hypothesis-testing-t-curve',
       'g.m12-confidence-intervals-t-curve',
