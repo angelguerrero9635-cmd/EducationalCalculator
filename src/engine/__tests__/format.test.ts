@@ -60,3 +60,10 @@ describe('figures ties', () => {
     expect(formatNumber(-8766 / 400, { figures: 4 })).toBe('−21.92');
   });
 });
+
+describe('ties below 1', () => {
+  it('round up', () => {
+    expect(formatNumber(0.019035)).toBe('0.01904');
+    expect(formatNumber(2.00005)).toBe('2.0001');
+  });
+});

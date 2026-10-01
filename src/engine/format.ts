@@ -67,13 +67,15 @@ export function formatNumber(
   // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals, or the
   // variable's figures (277.8, never fewer than the whole digits: 12346).
   const whole = Math.floor(Math.log10(abs)) + 1;
+  // A tie rounds up, as by hand (21.915 → 21.92, 0.019035 → 0.01904), not down as its binary
+  // value would.
+  const up = x * (1 + 1e-12);
   const text =
     abs < 1
-      ? x.toPrecision(Math.max(4, variable?.figures ?? 4))
+      ? up.toPrecision(Math.max(4, variable?.figures ?? 4))
       : variable?.figures
-        ? // A tie rounds up, as by hand (21.915 → 21.92), not down as its binary value would.
-          (x * (1 + 1e-12)).toPrecision(Math.min(21, Math.max(variable.figures, whole)))
-        : x.toFixed(4);
+        ? up.toPrecision(Math.min(21, Math.max(variable.figures, whole)))
+        : up.toFixed(4);
   return minus(withSeparators(String(Number(text))));
 }
 
