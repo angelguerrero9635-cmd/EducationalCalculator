@@ -222,3 +222,9 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   telophase), a phase card beside each part. No stand-in.
 - `s.9.inheritance-patterns~blood-types` (H104 part 1): the plan's header sentence as `intro` and
   the four blood-type icons on the bins. No stand-in.
+- `s.9.dna-protein-synthesis` main (H100 need 2): `dnaStrand` { sequence TACCGGTTCGGA, gene: {
+  bases: b }, codons: c }, the protein row back on, b 6–3,000 drawn whole to 15 and past that the
+  first 12, "…" and the stop. Stand-ins gone: the hidden bases-drawn and codons-drawn values and
+  their rules, `show: ['mrna']`, and c and a under the picture (the caption reads them).
+- `~replication` (H100 need 6): the four stages wear the `replication` card (unzip, pair, join,
+  copies), labels as they were; an assumption says old strands are dark, new ones lit.

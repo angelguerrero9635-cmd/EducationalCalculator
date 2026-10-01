@@ -1061,7 +1061,7 @@ const DNA: ModuleDef[] = [
       'Three mRNA bases make a codon; AUG starts the chain and codes Met, and a stop codon adds no amino acid.',
       'So a coding mRNA of b bases, ending in its stop codon, codes b ÷ 3 − 1 amino acids.',
       'Each peptide bond joining two amino acids releases one water molecule.',
-      'The picture draws the start of the gene TACCGGTTCATT: all of it up to 12 bases, the first 9 of a longer gene.',
+      'The picture draws a gene of up to 15 bases whole; a longer one, its first 12 bases, “…” and its stop codon.',
     ],
     variables: [
       { ...count('b', 'b', 'Bases in the coding mRNA', 6, 3000), multipleOf: 3 },
@@ -1069,8 +1069,6 @@ const DNA: ModuleDef[] = [
       count('a', 'a', 'Amino acids in the chain', 1, 999, true),
       count('p', 'p', 'Peptide bonds', 0, 998, true),
       count('w', 'w', 'Water molecules released', 0, 998, true),
-      { ...count('bd', 'b_d', 'Bases drawn', 6, 12, true), hidden: true },
-      { ...count('cd', 'c_d', 'Codons drawn', 2, 4, true), hidden: true },
     ],
     ...rules(
       forward(
@@ -1109,28 +1107,15 @@ const DNA: ModuleDef[] = [
         '{p}',
         'Each peptide bond releases one water molecule.',
       ),
-      hide(
-        forward(
-          'b_d = b up to 12, else 9',
-          '{bd} = {b}',
-          'bd',
-          ['b'],
-          (v) => (v.b! <= 12 ? v.b! : 9),
-          '{b}',
-          '',
-        ),
-      ),
-      hide(forward('c_d = b_d ÷ 3', '{cd} = {bd} ÷ 3', 'cd', ['bd'], (v) => v.bd! / 3, '', '')),
     ),
-    example: { b: 12, c: 4, a: 3, p: 2, w: 2, bd: 12, cd: 4 },
+    example: { b: 12, c: 4, a: 3, p: 2, w: 2 },
     startWith: ['b'],
-    pictureLabels: ['c', 'a', 'p', 'w'],
+    pictureLabels: ['p', 'w'],
     representation: {
       kind: 'dnaStrand',
-      sequence: GENE,
-      length: 'bd',
-      codons: 'cd',
-      show: ['mrna'],
+      sequence: 'TACCGGTTCGGA',
+      gene: { bases: 'b' },
+      codons: 'c',
     },
   },
   {

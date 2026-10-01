@@ -892,16 +892,27 @@ const DNA: LayoutDef[] = [
     assumptions: [
       'Each old strand is a template: A pairs with T and G with C, so the new strand’s order is fixed.',
       'Replication is semiconservative: each new DNA molecule keeps one old strand.',
+      'In the pictures the old strands are dark and the new ones lit.',
     ],
     question: 'Put the steps of DNA replication in order.',
     stages: [
-      { label: 'Helicase unzips the double helix at an origin' },
+      {
+        label: 'Helicase unzips the double helix at an origin',
+        figure: { kind: 'replication', stage: 'unzip' },
+      },
       {
         label:
           'DNA polymerase adds matching nucleotides along each old strand, A with T and G with C',
+        figure: { kind: 'replication', stage: 'pair' },
       },
-      { label: 'Ligase seals the gaps between the new pieces' },
-      { label: 'Two DNA molecules, each with one old strand and one new' },
+      {
+        label: 'Ligase seals the gaps between the new pieces',
+        figure: { kind: 'replication', stage: 'join' },
+      },
+      {
+        label: 'Two DNA molecules, each with one old strand and one new',
+        figure: { kind: 'replication', stage: 'copies' },
+      },
     ],
   },
   {
