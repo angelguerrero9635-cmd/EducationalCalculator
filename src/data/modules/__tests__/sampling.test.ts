@@ -400,6 +400,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   for (const s of w.steps) {
     // A price under a cent has no number to compare.
     if (/ = less than 1 cent/.test(s.result)) continue;
+    // (nor does a p-value under its step: "P < 0.0001")
+    if (/^\S+ < /.test(s.result)) continue;
     // The answer's leading number ("536¢ ($5.36)" → 536).
     const value = resultNumber(s.result, true);
     // The substituted line is left out when it would only repeat the rearranged line (numbers

@@ -223,7 +223,14 @@ export function buildSteps(
    */
   const fmt = (id: string, x: number, unit: string | undefined, inShownUnit = true) => {
     const v = byId.get(id);
-    const n = formatNumber(x, inShownUnit && v ? { ...v, digits: undefined } : undefined);
+    // A typed value reads as typed (36.525); `figures` rounds only worked-out values.
+    const typed = result.given.some((g) => g.id === id);
+    const n = formatNumber(
+      x,
+      inShownUnit && v
+        ? { ...v, digits: undefined, ...(typed ? { figures: undefined } : {}) }
+        : undefined,
+    );
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return dollarsOf(x, n);
@@ -287,7 +294,11 @@ export function buildSteps(
           ? relation.sentence(knownHere)
           : renderTemplate(relation.display, workVars, knownHere),
       ),
-      result: `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
+      // A p-value under 0.0001 is written "P < 0.0001", never "P = 0".
+      result:
+        v.belowStep && v.step !== undefined && workValue(t.id) < v.step / 2
+          ? `${v.symbol} < ${formatNumber(v.step)}`
+          : `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
     };
     // Grade 3–5 boxes open with the number sentence, then the rule in words; K–2 with the
     // sentence only; Grade 6 on with the rule in letters.

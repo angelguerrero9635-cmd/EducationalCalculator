@@ -9,6 +9,7 @@
  * unless REVIEW_DUMP names an output file.
  */
 import { solve } from '@/engine/solve';
+import type { Values } from '@/engine/types';
 
 import { LAYOUTS, MODULES } from '..';
 import { buildSteps, type Walkthrough } from '../buildSteps';
@@ -76,9 +77,29 @@ describeOrSkip('review dump', () => {
       );
       lines.push(`relations: ${m.relations.map((r) => `${r.id} [${r.display}]`).join(' | ')}`);
       // The sentences a rule can say when numbers conflict (read from its code), for the reviewer.
+      // Sentences only (with a space): never a typeof word such as 'string'. A message built by
+      // a helper has no sentence in its code, so it is also asked with each example value pushed
+      // far out (× 10⁶, ÷ 10⁶, negated).
       const says = m.relations.flatMap((r) => {
-        const quoted = r.message?.toString().match(/(['`])(?:(?!\1).)+\1/g) ?? [];
-        return quoted.length ? [`${r.id}: ${quoted.join(' / ')}`] : [];
+        if (!r.message) return [];
+        const quoted = (r.message.toString().match(/(['`])(?:(?!\1).)+\1/g) ?? []).filter((q) =>
+          q.includes(' '),
+        );
+        const asked = new Set<string>();
+        for (const id of r.vars) {
+          const x = m.example[id];
+          if (typeof x !== 'number') continue;
+          for (const y of [x * 1e6, x / 1e6, -x]) {
+            try {
+              const said = r.message({ ...m.example, [id]: y } as Values);
+              if (said) asked.add(`'${said}'`);
+            } catch {
+              // a message that needs other values: its code sentences stand
+            }
+          }
+        }
+        const all = [...new Set([...quoted, ...asked])];
+        return all.length ? [`${r.id}: ${all.join(' / ')}`] : [];
       });
       if (says.length) lines.push(`messages: ${says.join(' | ')}`);
       lines.push(`example: ${JSON.stringify(m.example)} start: ${m.startWith.join(', ')}`);

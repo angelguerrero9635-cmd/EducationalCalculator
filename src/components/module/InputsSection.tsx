@@ -159,7 +159,8 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
     display === undefined
       ? ''
       : status !== 'derived' || display !== value
-        ? formatNumber(display, variable)
+        ? // A typed value shows as typed (36.525), whatever figures a worked-out one gets.
+          formatNumber(display, { ...variable, figures: undefined })
         : belowStep(display, formatNumber(display, variable), variable);
   // While typing, and after a number the range refused, the box keeps the typed text beside
   // its message, so the student can fix it instead of retyping it.

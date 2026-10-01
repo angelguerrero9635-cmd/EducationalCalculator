@@ -71,7 +71,8 @@ export function formatNumber(
     abs < 1
       ? x.toPrecision(Math.max(4, variable?.figures ?? 4))
       : variable?.figures
-        ? x.toPrecision(Math.min(21, Math.max(variable.figures, whole)))
+        ? // A tie rounds up, as by hand (21.915 → 21.92), not down as its binary value would.
+          (x * (1 + 1e-12)).toPrecision(Math.min(21, Math.max(variable.figures, whole)))
         : x.toFixed(4);
   return minus(withSeparators(String(Number(text))));
 }

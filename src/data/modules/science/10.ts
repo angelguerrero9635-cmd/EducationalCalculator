@@ -233,7 +233,7 @@ const MEASUREMENT: ModuleDef[] = [
     ],
     variables: [
       quantity('v', 'v', 'Speed in kilometers per hour', 'km/h', 1, 1000, 0.1),
-      quantity('w', 'w', 'Speed in meters per second', 'm/s', 0.1, 300, 0.0001),
+      { ...quantity('w', 'w', 'Speed in meters per second', 'm/s', 0.1, 300, 0.0001), figures: 4 },
     ],
     ...rules(
       chainRule(
@@ -3455,6 +3455,8 @@ const phVar = (id: string, symbol: string, name: string): VariableDef => ({
   id,
   symbol,
   name,
+  // 3.602, not 3.6021: a pH shows 4 significant figures.
+  figures: 4,
   min: 0,
   max: 14,
   step: 0.01,

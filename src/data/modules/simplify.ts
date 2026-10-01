@@ -399,8 +399,22 @@ const signed = (n: Node): Node => {
       return isNum(n.arg) && n.arg.value > 0
         ? { ...n.arg, value: -n.arg.value, ...(n.arg.text ? { text: `−${n.arg.text}` } : {}) }
         : { ...n, arg: signed(n.arg) };
-    case 'bin':
-      return { ...n, left: signed(n.left), right: signed(n.right) };
+    case 'bin': {
+      const [left, right] = [signed(n.left), signed(n.right)];
+      // 4 × π is the number 4π, not a stage of its own.
+      if (n.op === '×' && isNum(left) && isNum(right) && !!left.pi !== !!right.pi) {
+        const [k, p] = left.pi ? [right, left] : [left, right];
+        if (p.text === 'π' && !k.pi && Number.isFinite(k.value) && !k.text?.includes(' ')) {
+          return {
+            kind: 'num',
+            value: k.value * Math.PI,
+            text: `${k.text ?? fmt(k.value)}π`,
+            pi: true,
+          };
+        }
+      }
+      return { ...n, left, right };
+    }
     case 'pow':
       return { ...n, base: signed(n.base) };
     case 'sqrt':
@@ -483,7 +497,16 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
           : base.startsWith('−')
             ? `(${base})`
             : base;
-      const right = print(n.right, r, true, true);
+      const printedRight = print(n.right, r, true, true);
+      // Divided by a multiple of π: ÷ (4π), which would read as ÷ 4, then × π.
+      const right =
+        (n.op === '÷' || n.op === '/') &&
+        isNum(n.right) &&
+        n.right.pi &&
+        printedRight !== 'π' &&
+        !printedRight.startsWith('(')
+          ? `(${printedRight})`
+          : printedRight;
       const text =
         n.op === '/'
           ? `${left}/${right}`

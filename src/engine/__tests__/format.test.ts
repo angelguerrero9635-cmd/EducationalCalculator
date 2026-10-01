@@ -53,3 +53,10 @@ describe('figures', () => {
     expect(formatNumber(0.0012347, { figures: 4 })).toBe('0.001235');
   });
 });
+
+describe('figures ties', () => {
+  it('round a tie up, as by hand', () => {
+    expect(formatNumber(8766 / 400, { figures: 4 })).toBe('21.92');
+    expect(formatNumber(-8766 / 400, { figures: 4 })).toBe('−21.92');
+  });
+});
