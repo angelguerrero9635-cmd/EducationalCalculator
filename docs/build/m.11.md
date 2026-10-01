@@ -221,3 +221,21 @@ leaving p unknown after E = 0 clears the older p.
     the quadratic's zeros meanwhile).
 18. **The solver re-solving after a newer entry clears an older one** (p = E ÷ n left unknown
     once E = 0 clears p). Page: m.11.probability-distributions.
+
+### Pictures placed (H89–H110)
+
+| Page                                 | Entry           | What changed                                                                                                                    | Stand-in that went                                                   |
+| ------------------------------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `m.11.exp-log-equations~same-base`   | H93             | termsChart `lit: 'p'`, `litTerm: 'B1'`, `powers: true`: g^p lit beside g^q, terms as powers                                     | B₁ under the picture (`pictureLabels`)                               |
+| `m.11.exp-log-equations~two-logs`    | H106 (4)        | functionGraph `logSum` with y = y, the crossing at x₁ and x₂ rejected; a limit u ≥ 0.000001 (the curve can't be drawn below it) | the quadratic's zeros (factored parabola); b and y under the picture |
+| `m.11.polynomial-functions`          | H105 (2)        | new value n (multiplicity of r₁, 1–4), y = a(x − r₁)ⁿ(x − r₂)(x − r₃); `times: 'n'`; assumptions for any n                      | the fixed double zero                                                |
+| `m.11.complex-numbers~add-subtract`  | H105 (3)        | complexPlane `opFrom: 'sg'` with w = c + di (the picture draws −w for a difference); C and D stay as values                     | w drawn as (C, D) with `op: 'sum'`                                   |
+| `m.11.study-design~sampling-methods` | H104, H105 (16) | the five sampling icons on the bins and an `intro` sentence                                                                     | none (no figures before)                                             |
+
+Not placed (the page is not built yet; each plan entry says BUILD, waiting on this picture, and
+its gallery demo is a full page `promote-demo.mjs` can copy): `m.11.function-transformations~horizontal`
+(H94, `g.m11-function-transformations-horizontal`), `m.11.inverse-functions~restrict-domain`
+(H94, `g.m11-inverse-functions-restrict-domain`), `m.11.unit-circle~point-on-side` (H98,
+`g.m11-unit-circle-point-on-side`), `m.11.probability-distributions~at-least` (H99,
+`g.m11-probability-distributions-at-least`), `m.11.radical-functions~rational-exponent` (H106,
+`g.m11-radical-functions-rational-exponent`).

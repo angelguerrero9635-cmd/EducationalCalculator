@@ -413,3 +413,38 @@ None: every planned page is built, some with an interim picture (below).
   tan 2θ step now notes "cot 2θ = 0" (its check showed a 0 nothing else did).
   `evaluatePrinted` reads "√3/2" as √(3/2) (−0.449 for "1/2 × 4 − √3/2 × 2"), so the exact
   `~compose` line is written combined ("2 − √3") rather than with the entries.
+
+### Pictures placed (H89–H110)
+
+| Page                                                   | Entry            | What changed                                                                                              | Stand-in that went                                                                              |
+| ------------------------------------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `m.12.hypothesis-testing`                              | H90              | new value h, Hₐ's code (1 <, 3 >, 6 ≠); P = Φ(z), 1 − Φ(z) or 2(1 − Φ(\|z\|)) by h; `tail: { sign: 'h' }` | the fixed two-sided test (need 2 interim)                                                       |
+| `m.12.hypothesis-testing~mean`                         | H90              | the same h; title "One-mean z-test"                                                                       | the fixed left tail                                                                             |
+| `m.12.hypothesis-testing~t-test`                       | H99 (4)          | normalCurve `t: { df }` with the two-tailed test shaded (tcdf areas)                                      | the sample's mark alone                                                                         |
+| `m.12.hypothesis-testing~paired`, `~two-sample`        | H99 (4), adapted | the same t curve and test (the notes' "~two-sample the same with its df"; ~paired had the same stand-in)  | the mark alone                                                                                  |
+| `m.12.confidence-intervals~t-interval`                 | H99 (4)          | the interval on the t curve with its level                                                                | the normal curve                                                                                |
+| `m.12.confidence-intervals~capture`                    | H105 (7)         | new value N (20, 50 or 100 samples), K = N × C; `intervals.count: 'N'`                                    | the fixed 100                                                                                   |
+| `m.12.matrices`                                        | H105 (9)         | rowReduce `steps: 'echelon'` (the same five operations, worked out)                                       | the listed row operations                                                                       |
+| `m.12.matrices~determinant`                            | H99 (5)          | matrixGrid `determinant`, the first-row expansion                                                         | the table of D against k                                                                        |
+| `m.12.matrices~cramer`                                 | H99 (5)          | matrixGrid `determinant` with `cramer` (D, Dx, Dy)                                                        | the two lines (and their hidden slopes and intercepts)                                          |
+| `m.12.inverse-trig`, `~arctan`                         | H105 (8)         | functionGraph `degrees: true`                                                                             | the 180/π stretch (`a: DEG`)                                                                    |
+| `m.12.limits-intro~infinity`                           | H94              | rational by p, q, r, s with `shows: { ha: 'L', va: 'v' }`                                                 | the zero z (worked out only to draw)                                                            |
+| `m.12.trig-formulas-equations`, `~difference`          | H98              | unitCircle `pair` (A then B, back for the difference)                                                     | A ± B alone                                                                                     |
+| `m.12.polar~de-moivre`                                 | H99 (1)          | complexPlane `power: 'n'`: z, z², …, zⁿ                                                                   | zⁿ alone in polar form                                                                          |
+| `m.12.vectors-3d` and `~cross`, `~triple`, `~distance` | H106 (12)        | vectorDiagram `space` on all four                                                                         | main: the 1 × 3 by 3 × 1 product and m₁, m₂, θ labels; the others: tables against one component |
+| `m.12.polar-conics`, `~sine`                           | H106 (13)        | polarGrid `curve: { shape: 'conic' }` (fn 'sin' on ~sine); the point drags along the curve                | the bare point, `fixed`                                                                         |
+| `m.12.polar-conics~rotation`, `~rotated-equation`      | H106 (14)        | conicGraph `turned` (with D; with A′, C′ and F)                                                           | θ alone on the unit circle                                                                      |
+| `m.12.area-under-curve`, `~line`                       | H106 (15)        | `riemann: { n, to: 'b', sum: 'S' }` beside the exact shade                                                | none (shade only)                                                                               |
+| `m.12.partial-fractions`, `~repeated`                  | H106 (16)        | rational `top: ['a', 'b']` over the poles                                                                 | the hidden z and L                                                                              |
+| `m.12.partial-fractions~quadratic`                     | H106 (16)        | rational with `quadratics: [{ j, k }]` and the point at x                                                 | the table of y against x                                                                        |
+| `m.12.induction~squares`                               | H106 (17)        | termsChart `type: 'power'`, bars with the sum, `far`                                                      | the table of S against n                                                                        |
+| `m.12.anova`, `~groups`                                | H106 (18)        | normalCurve `f` (df₁ = 2 on ~groups); the grade file's lnGamma and betaI copies go                        | the table of P against F; the bars of the means                                                 |
+
+Not placed: `m.12.anova~two-variances` (H106 (18)): its h picks one tail or two, and `f.tails` is
+fixed per page, so the curve would disagree with P for one of them (needs `tails` from a value);
+it keeps its table. `m.12.matrices` typed coefficients (H105 (9), optional): the main page's rules
+are the fixed system's; typing them is lesson work. Pages not built yet (plan BUILD entries, demos
+ready for `promote-demo.mjs`): `m.12.polar~roots` (H99, `g.m12-polar-roots`),
+`m.12.sampling-distributions~clt` (H99, `g.m12-sampling-distributions-clt`),
+`m.12.trig-formulas-equations~quadratic` (H98, `g.m12-trig-formulas-equations-quadratic`).
+There is no `m.12.confidence-intervals~two-sample`; the t curve went on the hypothesis test's.
