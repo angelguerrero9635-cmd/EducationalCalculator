@@ -297,3 +297,6 @@ Report: `.review/new-sci-2/lesson-report.md`.
 - `~isomers` (H101 need 9b): new calculator, a methyl group on the main chain's second carbon
   (n 3–7, c = n + 1, h = 2c + 2), on `lewisStructure` hydrocarbon `branches: [2]` (2-methylbutane
   is C₅H₁₂, like pentane). The plan had structural isomers as "No (need 9b)".
+- `s.10.nuclear-chemistry~mass-defect` (H101 need 14): built (it was waiting) from the demo,
+  U-238 → Th-234 + He-4, Δm and E = 931.5 × Δm, on `chemDiagram` mode `massDefect` (a broken
+  axis so 0.0046 u shows; a limit keeps the mass after below the mass before). No stand-in.

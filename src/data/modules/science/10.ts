@@ -4611,6 +4611,86 @@ const NUCLEAR: ModuleDef[] = [
       ],
     },
   },
+  {
+    id: 's.10.nuclear-chemistry~mass-defect',
+    title: 'The mass defect: where the energy comes from',
+    use: 'Use this for “U-238 gives off an alpha particle. How much mass is lost, and how much energy is released?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The masses are of the nuclei with their electrons (atomic masses), in unified atomic mass units.',
+      'The mass lost becomes energy, E = mc²: 931.5 MeV for each unit of mass.',
+    ],
+    variables: [
+      quantity('mb', 'm', 'Mass of U-238', 'u', 0.000001, 300, 0.000001),
+      quantity('m1', 'm₁', 'Mass of Th-234', 'u', 0.000001, 300, 0.000001),
+      quantity('m2', 'm₂', 'Mass of He-4', 'u', 0.000001, 300, 0.000001),
+      {
+        ...quantity('dm', 'Δm', 'Mass lost', 'u', 0.000001, 300, 0.000001),
+        min: -300,
+        derived: true,
+      },
+      {
+        ...quantity('E', 'E', 'Energy released', 'MeV', -100000, 100000, 0.01),
+        derived: true,
+      },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'mass is lost',
+          constraint: true,
+          display: 'The mass after, {m1} + {m2}, is less than {mb}',
+          vars: ['mb', 'm1', 'm2'],
+          residual: (v) => (v.m1! + v.m2! < v.mb! ? 0 : 1),
+          solve: {},
+        },
+        steps: {},
+      },
+      {
+        relation: {
+          id: 'dm = mb − (m1 + m2)',
+          display: '{dm} = {mb} − ({m1} + {m2})',
+          vars: ['dm', 'mb', 'm1', 'm2'],
+          residual: (v) => v.dm! - (v.mb! - v.m1! - v.m2!),
+          solve: {
+            dm: (v) => v.mb! - v.m1! - v.m2!,
+            mb: (v) => v.dm! + v.m1! + v.m2!,
+            m1: (v) => v.mb! - v.dm! - v.m2!,
+            m2: (v) => v.mb! - v.dm! - v.m1!,
+          },
+        },
+        steps: {
+          dm: { expr: '{mb} − ({m1} + {m2})', how: 'The mass before less the mass after.' },
+          mb: { expr: '{dm} + {m1} + {m2}', how: 'The mass after plus what was lost.' },
+          m1: { expr: '{mb} − {dm} − {m2}', how: 'What is left of the mass for the thorium.' },
+          m2: { expr: '{mb} − {dm} − {m1}', how: 'What is left of the mass for the helium.' },
+        },
+      },
+      scaleBy('E', 'dm', 931.5, '931.5', [
+        'Each unit of mass lost becomes 931.5 MeV of energy.',
+        'Divide the energy by 931.5 MeV per unit.',
+      ]),
+    ),
+    example: {
+      mb: 238.050788,
+      m1: 234.043601,
+      m2: 4.002603,
+      dm: 238.050788 - 234.043601 - 4.002603,
+      E: (238.050788 - 234.043601 - 4.002603) * 931.5,
+    },
+    startWith: ['mb', 'm1', 'm2'],
+    representation: {
+      kind: 'chemDiagram',
+      mode: 'massDefect',
+      before: [{ name: 'U-238', mass: 'mb' }],
+      after: [
+        { name: 'Th-234', mass: 'm1' },
+        { name: 'He-4', mass: 'm2' },
+      ],
+      defect: 'dm',
+      energy: 'E',
+    },
+  },
 ];
 
 // ─── Pages the lesson review added ───────────────────────────────────────────
