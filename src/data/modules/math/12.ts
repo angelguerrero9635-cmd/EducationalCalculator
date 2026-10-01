@@ -1045,7 +1045,8 @@ const MATH_12_STATS: ModuleDef[] = [
       mean: 'x',
       sd: 'SE',
       axis: 'Sample mean x̄',
-      interval: { center: 'x', margin: 'E' },
+      t: { df: 'df' },
+      interval: { center: 'x', margin: 'E', level: 'C' },
       fixed: true,
     },
   },
@@ -1196,11 +1197,11 @@ const MATH_12_STATS: ModuleDef[] = [
   {
     id: 'm.12.confidence-intervals~capture',
     title: 'What “95% confident” means',
-    use: 'Use this for “What does it mean to be 95% confident?”: 100 samples, 100 intervals.',
+    use: 'Use this for “Draw 50 samples: how many of the 95% intervals should capture μ?”',
     assumptions: [
       'The level is how often the method captures μ over many samples.',
       'Any one interval either captures μ or doesn’t; 95% is not the chance for that one.',
-      'The picture draws 100 random samples of n and the interval from each.',
+      'The picture draws N random samples of n and the interval from each: 20, 50 or 100.',
     ],
     variables: [
       V('C', 'C', 'Confidence level', {
@@ -1210,7 +1211,8 @@ const MATH_12_STATS: ModuleDef[] = [
         multipleOf: 0.01,
       }),
       V('n', 'n', 'Sample size', { integer: true, min: 2, max: 400 }),
-      V('K', 'K', 'Intervals expected to capture μ, of 100', {
+      V('N', 'N', 'Samples drawn', { integer: true, allowed: [20, 50, 100], min: 20, max: 100 }),
+      V('K', 'K', 'Intervals expected to capture μ, of N', {
         min: 0,
         max: 100,
         step: 0.1,
@@ -1219,27 +1221,27 @@ const MATH_12_STATS: ModuleDef[] = [
     ],
     ...rels(
       derive(
-        'K = 100 × C',
-        '{K} = 100 × {C}',
+        'K = N × C',
+        '{K} = {N} × {C}',
         'K',
-        ['C'],
-        (v) => 100 * v.C!,
-        '100 × {C}',
-        'Over many samples the share C of intervals capture μ, so expect C of the 100.',
+        ['N', 'C'],
+        (v) => v.N! * v.C!,
+        '{N} × {C}',
+        'Over many samples the share C of intervals capture μ, so expect C of the N.',
       ),
     ),
     standalone: {
       vars: ['n'],
       why: 'The sample size sets how wide each interval is, not how many of them capture μ.',
     },
-    example: { C: 0.95, n: 25, K: 95 },
-    startWith: ['C', 'n'],
+    example: { C: 0.95, n: 25, N: 100, K: 95 },
+    startWith: ['C', 'n', 'N'],
     representation: {
       kind: 'normalCurve',
       mean: 50,
       sd: 10,
       axis: 'Sample mean x̄',
-      intervals: { count: 100, n: 'n', level: 'C' },
+      intervals: { count: 'N', n: 'n', level: 'C' },
     },
   },
 
