@@ -254,3 +254,51 @@ Report: `.review/new-sci-2/lesson-report.md`.
 7. **Engine, a value in an exponent:** a power whose exponent shows in scientific notation is not
    bracketed (`2^4.8292 × 10⁻⁵`), so the step and check read wrong at tiny half-life counts
    (`s.10.nuclear-chemistry`, deep run only; the page writes (1/2)^n as the report asked).
+
+### Pictures placed (H89–H110)
+
+- `s.10.atomic-structure~average-mass` (H101 need 7): built (it was waiting) from the demo, m₁, m₂,
+  f₁, f₂ = 100 − f₁ and A, on `chemDiagram` mode `isotopes` (boron). No stand-in.
+- `~models` (H101 need 13): each stage wears its atom-model icon (Dalton, Thomson, Rutherford,
+  Bohr, quantum). Stand-in gone: text-only stages.
+- `s.10.bonding~ionic` (H108 part 2): `lewisStructure` ionic adds `charges` (cp and cn), so
+  every pair it solves is drawn (Al³⁺ with O²⁻ draws Al₂O₃). Stand-in gone: the assumption that the picture draws magnesium chloride only (it now names the ions drawn).
+- `s.10.molecular-shape~polarity`, `~imf` (H101 need 9): CHCl₃, BF₃, CCl₄ and CH₂O get their
+  `molecule` cards. Stand-in gone: the four text cards (every card is drawn now).
+- `~water` (H101 need 10): the planned "Salt in water" scene, `hydration` { ions Na⁺ and Cl⁻,
+  crystal }; the use line adds the dissolving question (NAEP-2009-12S10-#14).
+- `s.10.reaction-types~combustion`, `~combustion-alkene` (H101 need 1, H108 part 1): `reaction`
+  with the fuel `C{x}H{y}` drawn from the values and `most: 25` (octane's 25 O₂), so the atom
+  tally shows again. Stand-in gone: the `lewisStructure` hydrocarbon drawing of the fuel alone.
+- `~synthesis`, `~replacement` (H101 need 1, H105 part 15): `ions: true` (Al₂O₃ and ZnCl₂ drawn
+  as ions; an assumption says so) and `most: 16`, so the ranges open up: Al 4–16 atoms (was 4
+  or 8), Zn 1–8 (was 1–4).
+- `s.10.stoichiometry~limiting-grams` (H101 need 4): built (it was waiting) from the demo, grams of
+  N₂ and H₂ → moles → NH₃ each could make → the smaller → grams of NH₃, on `moleMap` with
+  `limiting` (two columns, the smaller lit). No stand-in.
+- `s.10.gas-laws~effusion` (H101 need 6): built (it was waiting) from the demo, M₁, M₂ and
+  r = √(M₂ ÷ M₁) for H₂ and O₂, on `chemDiagram` mode `effusion`. No stand-in.
+- `~partial-pressure` (H108 part 6): `gasPiston` `mixture` (He, O₂, N₂ by partial pressure, the
+  total and helium's mole fraction). Stand-in gone: the pie of the three pressures.
+- `s.10.thermochemistry~formation`, `~hess` (H101 need 5): built (they were waiting) from the
+  demos, on `energyProfile` mode `ladder`: CH₄'s combustion from heats of formation (elements at
+  0, reactants and products, ΔH lit) and C → CO → CO₂ with the given step flipped. No stand-in.
+- `s.10.rates-equilibrium~average-rate` (H108 part 4): `chemDiagram` mode `rate`, [A] against t
+  through both readings with the secant, the Δt and Δ[A] triangle and the rate. Stand-ins gone:
+  the straight `functionGraph` line and its hidden m and b0 with their rules.
+- `s.10.redox~oxidation-numbers` (H101 need 8): built (it was waiting) from the demo, the plan's
+  x + h(+1) + o(−2) = q on `chemDiagram` mode `oxidation` with the formula H{h}SO{o} (H₂SO₄,
+  SO₄²⁻, H₂S …). No stand-in.
+- `~cell-voltage` (H108 part 5): `chemDiagram` mode `cell`, the galvanic cell of the two metals
+  with its meter and the E° scale. Stand-in gone: the vertical number line of potentials.
+- `s.10.organic~functional-groups` (H101 need 9): every card wears its `condensed` formula with the
+  group lit; an assumption says so. Stand-in gone: text-only cards.
+- `~isomers` (H101 need 9b): new calculator, a methyl group on the main chain's second carbon
+  (n 3–7, c = n + 1, h = 2c + 2), on `lewisStructure` hydrocarbon `branches: [2]` (2-methylbutane
+  is C₅H₁₂, like pentane). The plan had structural isomers as "No (need 9b)".
+- `s.10.nuclear-chemistry~mass-defect` (H101 need 14): built (it was waiting) from the demo,
+  U-238 → Th-234 + He-4, Δm and E = 931.5 × Δm, on `chemDiagram` mode `massDefect` (a broken
+  axis so 0.0046 u shows; a limit keeps the mass after below the mass before). No stand-in.
+- `s.10.phase-colligative` main (H108 part 3): `chemDiagram` mode `phase`, water's phase diagram
+  with the solution's lines dashed and ΔTf and ΔTb bracketed. Stand-ins gone: the heating curve
+  and its hidden T₀ with the rule placing it.

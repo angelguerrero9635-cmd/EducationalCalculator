@@ -203,3 +203,79 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   `s.9.reproduction-development`.
 - **A biome map** (or biome icons for sort cards): `s.9.biomes`, ~land.
 - **Search corpus**: rerun `scripts/build-match-corpus.mjs` for the 23 new pages.
+
+### Pictures placed (H89–H110)
+
+- `s.9.membrane-transport~transport-types` (H100 need 10, H104 part 1): the five bins wear the
+  transport icons (simple diffusion, channel protein, aquaporin, protein pump, vesicle transport)
+  and an `intro` says what they show; the cards stay text. No stand-in (text bins before).
+- `s.9.biomolecules~dehydration` (H100 need 1): built (it was waiting) as the plan has it, n, b,
+  w, m, M, with `macromolecules` { macro: carbohydrate, count: n, bonds: b, water: w }. No
+  stand-in.
+- `s.9.cellular-energy~equation` (H100 need 9): built (it was waiting) as the plan has it, g 1–3
+  and the nine counts, with `reaction` `many: true` (up to 18 molecules a formula, glucose as its
+  ring). No stand-in.
+- `s.9.mitosis-meiosis~chromosome-count` (H100 need 3, H109 part 3): built (it was waiting) as the
+  plan has it, 2n 2–100 (multipleOf 2), n, X, Z, C, with `cellDivision` { diploid, haploid,
+  chromatids, zygote, combinations }. No stand-in.
+- `s.9.mitosis-meiosis~mitotic-index` (H109 part 3): its `pieChart` adds `stages` (interphase to
+  telophase), a phase card beside each part. No stand-in.
+- `s.9.inheritance-patterns~blood-types` (H104 part 1): the plan's header sentence as `intro` and
+  the four blood-type icons on the bins. No stand-in.
+- `s.9.dna-protein-synthesis` main (H100 need 2): `dnaStrand` { sequence TACCGGTTCGGA, gene: {
+  bases: b }, codons: c }, the protein row back on, b 6–3,000 drawn whole to 15 and past that the
+  first 12, "…" and the stop. Stand-ins gone: the hidden bases-drawn and codons-drawn values and
+  their rules, `show: ['mrna']`, and c and a under the picture (the caption reads them).
+- `~replication` (H100 need 6): the four stages wear the `replication` card (unzip, pair, join,
+  copies), labels as they were; an assumption says old strands are dark, new ones lit.
+- `s.9.biotechnology` main (H109 part 1): p runs 1–12 (k 1–4), so a change to the start or stop
+  codon reads start lost or stop lost; the assumption "this page changes the codons between
+  them" went, and one says what start lost and stop lost mean.
+- `~frameshift` (H109 part 1): p runs 2–12 (k and s 1–4): p = 2 or 3 breaks the start codon
+  (start lost); p = 1 is kept out because s would read 1 while nothing shifts. The "p ≥ 4"
+  assumption went.
+- `~gene-expression` (H100 need 5): new explore on the `geneExpression` figure, the demo's five
+  scenes (repressor on, lactose arrives, the promoter, no activator, activator bound).
+- `~fingerprint` (H109 part 2, page C): new explore on the `gel` figure, the demo's eight lanes
+  and five scenes (the gel, compare, a match, a family, ruled out).
+- `s.9.classification~domains` (H104 part 1): the three domain icons on the bins and the virus
+  sentence as `intro` (out of the assumptions). Stand-in gone: the icons on six cards (two domain,
+  four kingdom), which gave the cards' bins away.
+- `~key` (H100 need 12): new explore on the `dichotomousKey` figure, the demo's six animals and
+  four scenes. (Sampling has no calculator under this prefix, so its suite reports an empty
+  table; the other suites pass.)
+- `s.9.population-ecology~rates` (H100 need 8): its `bars` add `flows: { out: ['D', 'E'] }`, the
+  four counts drawn as steps from N to N₁. No other change.
+- `~competition` (H100 need 4): new observe page with two rows (Species A and B per mL, days 0–20)
+  and a pattern reading both, as the demo.
+- `s.9.homeostasis~systems` (H104 part 1): the plan's sentence as `intro` and the six system
+  icons on the bins. No stand-in.
+- `s.9.immune-disease~pathogens` (H104 part 1): the antibiotics sentence as `intro` (out of the
+  assumptions) and the virus, bacterium, fungus and parasite icons on the bins. Stand-in gone: the
+  four "A virus" … "A parasite" icon cards.
+- `~herd-immunity` (H104 part 3): `percentBar` adds `second: 'H'`, so H is marked on the bar beside
+  the shaded C (it was a value only).
+- `s.9.nervous-system` main (H109 part 4): the six stages wear the `reflexArc` card, receptor to
+  brain, labels as they were. Stand-in gone: text-only stages. (The optional reflex-arc explore
+  page, g.s9-nervous-system-reflex-arc, is not added.)
+- `~impulse-speed` (H109 part 4): `neuron` { length: d, speed: v, time: t } in place of the
+  `doubleNumberLine`. Stand-ins gone: the hidden k (ms per meter) and its rule, and v under the
+  picture; the unused `hide` helper went with them.
+- `~membrane-potential` (H109 part 7): new observe page beside the ~action-potential sequence, the
+  demo's membrane-potential trace (−90 to 40 mV, 0–6 ms, bars up and down from 0).
+- `s.9.plant-biology~life-cycle` (H109 part 5): the seven stages wear the `flowerCycle` card,
+  pollination to seedling, labels as they were. Stand-in gone: text-only stages.
+- `~flower` (H109 part 5): new explore on the `parts` flower drawing (petal, sepal, anther,
+  filament, stigma, style, ovary, ovule), the demo's five scenes; the main page's Flower scene
+  stays on the whole plant.
+- `s.9.reproduction-development` main (H109 part 5): the zygote, morula, blastula and gastrula
+  icons on fertilization, cleavage, blastula and gastrulation (the last two stages stay text).
+  ~germ-layers keeps its bin names (the gastrula's colors are not named there).
+- `~hormones` (H109 part 7): new observe page beside ~menstrual-cycle, estrogen and progesterone
+  (0–100 of each one's peak) on days 1–28, as the demo.
+- `s.9.biomes~land` (H109 part 6): the six biome icons on the bins; the cards stay text. No
+  stand-in.
+- `~rainfall` (H109 part 7): a second row, Temperature in °C (−30 to 40) on its own chart, and a
+  pattern reading both (tundra by the warmest month, rainforest and savanna only when warm all
+  year, taiga by freezing winters). Retitled "Rainfall and temperature by month". Stand-in gone:
+  the assumption that temperature matters too, and the "if it is warm all year" hedges.

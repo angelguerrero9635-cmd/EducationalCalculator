@@ -188,31 +188,38 @@ const MEMBRANE: LayoutDef[] = [
       'Facilitated diffusion and osmosis are passive but go through a channel or carrier protein.',
     ],
     question: 'How does it cross the membrane?',
+    intro:
+      'Each group’s picture shows the membrane, outside above, and how the particles cross it.',
     bins: [
       {
         id: 'simple',
         label: 'Simple diffusion',
         why: 'Small nonpolar molecules slip between the phospholipids, from more to fewer.',
+        figure: { kind: 'icon', icon: 'simple diffusion' },
       },
       {
         id: 'facilitated',
         label: 'Facilitated diffusion',
         why: 'A channel or carrier protein lets it through, still from more to fewer, with no ATP.',
+        figure: { kind: 'icon', icon: 'channel protein' },
       },
       {
         id: 'osmosis',
         label: 'Osmosis',
         why: 'Water crosses, through aquaporins, toward the side with more solute.',
+        figure: { kind: 'icon', icon: 'aquaporin' },
       },
       {
         id: 'active',
         label: 'Active transport',
         why: 'A pump moves it from fewer to more, against the gradient, spending ATP.',
+        figure: { kind: 'icon', icon: 'protein pump' },
       },
       {
         id: 'bulk',
         label: 'Bulk transport',
         why: 'Large particles or many molecules move inside vesicles made from membrane.',
+        figure: { kind: 'icon', icon: 'vesicle transport' },
       },
     ],
     cards: [
@@ -638,10 +645,22 @@ const REPRODUCTION: LayoutDef[] = [
     ],
     question: 'Put the stages of animal development in order, from fertilization.',
     stages: [
-      { label: 'Fertilization: a sperm joins an egg, making a zygote' },
-      { label: 'Cleavage: the zygote divides into a solid ball of cells' },
-      { label: 'Blastula: a hollow ball of cells forms' },
-      { label: 'Gastrulation: the cells fold in to form three germ layers' },
+      {
+        label: 'Fertilization: a sperm joins an egg, making a zygote',
+        figure: { kind: 'icon', icon: 'zygote' },
+      },
+      {
+        label: 'Cleavage: the zygote divides into a solid ball of cells',
+        figure: { kind: 'icon', icon: 'morula' },
+      },
+      {
+        label: 'Blastula: a hollow ball of cells forms',
+        figure: { kind: 'icon', icon: 'blastula' },
+      },
+      {
+        label: 'Gastrulation: the cells fold in to form three germ layers',
+        figure: { kind: 'icon', icon: 'gastrula' },
+      },
       { label: 'Organogenesis: the germ layers form tissues and organs' },
       { label: 'The embryo grows until birth or hatching' },
     ],
@@ -745,6 +764,31 @@ const REPRODUCTION: LayoutDef[] = [
     unit: 'days',
     totalLabel: 'One typical cycle',
   },
+  {
+    kind: 'observe',
+    id: 's.9.reproduction-development~hormones',
+    title: 'Hormone levels through a cycle',
+    use: 'Use this for “Which hormone keeps the uterine lining in the second half of the cycle?”',
+    assumptions: [
+      'Levels are shown as a share of each hormone’s highest level, 0 to 100.',
+      'The days are for a typical 28-day cycle; real cycles vary.',
+    ],
+    columns: ['Day 1', 'Day 7', 'Day 14', 'Day 21', 'Day 28'],
+    rowLabel: 'Estrogen',
+    unit: 'Level',
+    max: 100,
+    step: 5,
+    initial: [10, 40, 90, 50, 15],
+    second: { rowLabel: 'Progesterone', initial: [5, 5, 10, 80, 10] },
+    pattern: (e, p = []) => {
+      const ei = e.indexOf(Math.max(...e));
+      const pi = p.indexOf(Math.max(...p));
+      const days = ['day 1', 'day 7', 'day 14', 'day 21', 'day 28'];
+      if (pi > ei)
+        return `Estrogen peaks first, by ${days[ei]}, rebuilding the lining; progesterone peaks later, by ${days[pi]}, keeping it.`;
+      return `Here progesterone peaks by ${days[pi]}, before estrogen: in a real cycle estrogen leads, before ovulation.`;
+    },
+  },
 ];
 
 const INHERITANCE: LayoutDef[] = [
@@ -760,11 +804,32 @@ const INHERITANCE: LayoutDef[] = [
       'Tests often write these as AA, AO, BB, BO, AB and OO.',
     ],
     question: 'Which blood type does the genotype give?',
+    intro: 'Three alleles: Iᴬ and Iᴮ are codominant, and i is recessive to both.',
     bins: [
-      { id: 'A', label: 'Type A', why: 'At least one Iᴬ and no Iᴮ: i is hidden.' },
-      { id: 'B', label: 'Type B', why: 'At least one Iᴮ and no Iᴬ: i is hidden.' },
-      { id: 'AB', label: 'Type AB', why: 'Codominance: both A and B markers show on the cells.' },
-      { id: 'O', label: 'Type O', why: 'Two recessive i alleles: no A or B marker.' },
+      {
+        id: 'A',
+        label: 'Type A',
+        why: 'At least one Iᴬ and no Iᴮ: i is hidden.',
+        figure: { kind: 'icon', icon: 'blood type A' },
+      },
+      {
+        id: 'B',
+        label: 'Type B',
+        why: 'At least one Iᴮ and no Iᴬ: i is hidden.',
+        figure: { kind: 'icon', icon: 'blood type B' },
+      },
+      {
+        id: 'AB',
+        label: 'Type AB',
+        why: 'Codominance: both A and B markers show on the cells.',
+        figure: { kind: 'icon', icon: 'blood type AB' },
+      },
+      {
+        id: 'O',
+        label: 'Type O',
+        why: 'Two recessive i alleles: no A or B marker.',
+        figure: { kind: 'icon', icon: 'blood type O' },
+      },
     ],
     cards: [
       { label: 'IᴬIᴬ', bin: 'A' },
@@ -864,16 +929,27 @@ const DNA: LayoutDef[] = [
     assumptions: [
       'Each old strand is a template: A pairs with T and G with C, so the new strand’s order is fixed.',
       'Replication is semiconservative: each new DNA molecule keeps one old strand.',
+      'In the pictures the old strands are dark and the new ones lit.',
     ],
     question: 'Put the steps of DNA replication in order.',
     stages: [
-      { label: 'Helicase unzips the double helix at an origin' },
+      {
+        label: 'Helicase unzips the double helix at an origin',
+        figure: { kind: 'replication', stage: 'unzip' },
+      },
       {
         label:
           'DNA polymerase adds matching nucleotides along each old strand, A with T and G with C',
+        figure: { kind: 'replication', stage: 'pair' },
       },
-      { label: 'Ligase seals the gaps between the new pieces' },
-      { label: 'Two DNA molecules, each with one old strand and one new' },
+      {
+        label: 'Ligase seals the gaps between the new pieces',
+        figure: { kind: 'replication', stage: 'join' },
+      },
+      {
+        label: 'Two DNA molecules, each with one old strand and one new',
+        figure: { kind: 'replication', stage: 'copies' },
+      },
     ],
   },
   {
@@ -984,6 +1060,144 @@ const BIOTECH: LayoutDef[] = [
       { label: 'Cas9 led to a gene by a guide RNA', bin: 'cut' },
       { label: 'Bacteria given the human insulin gene', bin: 'engineering' },
       { label: 'Corn with a bacterial gene that kills caterpillars', bin: 'engineering' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.biotechnology~gene-expression',
+    title: 'Genes switched on and off',
+    use: 'Use this for “Why does a bacterium make the enzymes for lactose only when lactose is there?”',
+    assumptions: [
+      'Every cell has the same genes, but it reads only some of them: those genes are expressed.',
+      'RNA polymerase binds the promoter in front of a gene and copies the gene into mRNA.',
+      'Proteins on the DNA near the promoter switch the gene off (repressors) or on (activators).',
+    ],
+    figure: { kind: 'geneExpression' },
+    scenes: [
+      {
+        label: 'Repressor on',
+        lines: [
+          'With no lactose, the repressor sits on the operator and blocks RNA polymerase.',
+          'The gene is off: no mRNA, so no lactose enzymes are wasted.',
+        ],
+        gene: { control: 'repressor', lit: 'protein' },
+      },
+      {
+        label: 'Lactose arrives',
+        lines: [
+          'Lactose binds the repressor and changes its shape, so it lets go of the operator.',
+          'The gene is on: RNA polymerase reads it into mRNA.',
+        ],
+        gene: { control: 'repressor', signal: true, lit: 'signal' },
+      },
+      {
+        label: 'The promoter',
+        lines: [
+          'RNA polymerase always starts at the promoter, the stretch just in front of the gene.',
+        ],
+        gene: { control: 'repressor', signal: true, lit: 'promoter' },
+      },
+      {
+        label: 'No activator',
+        lines: [
+          'Some genes need an activator: without its signal the activator stays off the DNA.',
+          'The gene is off: the polymerase does not start.',
+        ],
+        gene: { control: 'activator', lit: 'switch' },
+      },
+      {
+        label: 'Activator bound',
+        lines: [
+          'With its signal the activator binds in front of the promoter and helps the polymerase on.',
+          'The gene is on.',
+        ],
+        gene: { control: 'activator', signal: true, lit: 'mRNA' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.biotechnology~fingerprint',
+    title: 'DNA fingerprinting',
+    use: 'Use this for “Which suspect’s DNA matches the evidence?” or “Could this man be the father?”',
+    assumptions: [
+      'Restriction enzymes cut DNA at set sequences; the lengths of the pieces differ from person to person.',
+      'Only identical twins share every band; a child gets each band from the mother or the father.',
+      'The pieces run through a gel toward +, the shorter ones farther.',
+    ],
+    figure: {
+      kind: 'gel',
+      ladder: [10000, 5000, 2000, 1000, 500, 250],
+      lanes: [
+        { label: 'Evidence', bands: [8200, 4100, 2300, 900] },
+        { label: 'Suspect 1', bands: [7000, 4100, 1600, 600] },
+        { label: 'Suspect 2', bands: [8200, 4100, 2300, 900] },
+        { label: 'Suspect 3', bands: [9000, 3000, 2300, 450] },
+        { label: 'Mother', bands: [6500, 3600, 1800, 700] },
+        { label: 'Child', bands: [6500, 2800, 1800, 400] },
+        { label: 'Man A', bands: [5200, 2800, 1200, 400] },
+        { label: 'Man B', bands: [5200, 3200, 1100, 550] },
+      ],
+    },
+    scenes: [
+      {
+        label: 'The gel',
+        lines: [
+          'DNA from blood at the scene and from three suspects is cut by the same enzyme and run side by side.',
+          'The ladder’s pieces of known length give the scale.',
+        ],
+        gel: { lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'] },
+      },
+      {
+        label: 'Compare',
+        lines: [
+          'Dashed lines carry the evidence’s bands across the gel.',
+          'Suspects 1 and 3 share one band each with it: many people share a band or two, so that is not a match.',
+        ],
+        gel: {
+          lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'],
+          lit: ['Suspect 1', 'Suspect 2', 'Suspect 3'],
+          compare: 'Evidence',
+        },
+      },
+      {
+        label: 'A match',
+        lines: [
+          'Suspect 2 matches the evidence in every band.',
+          'Real tests compare 20 or so places in the DNA, so a full match is very unlikely by chance.',
+        ],
+        gel: {
+          lanes: ['Evidence', 'Suspect 1', 'Suspect 2', 'Suspect 3'],
+          lit: ['Suspect 2'],
+          compare: 'Evidence',
+        },
+      },
+      {
+        label: 'A family',
+        lines: [
+          'The child’s bands that match the mother are red; the rest must come from the father.',
+          'Man A has both of the others, in blue, so he could be the father.',
+        ],
+        gel: {
+          lanes: ['Mother', 'Child', 'Man A', 'Man B'],
+          lit: ['Child'],
+          compare: 'Child',
+          parents: ['Mother', 'Man A'],
+        },
+      },
+      {
+        label: 'Ruled out',
+        lines: [
+          'Two of the child’s bands are in neither the mother nor Man B.',
+          'So Man B is ruled out as the father, whatever bands he shares with Man A.',
+        ],
+        gel: {
+          lanes: ['Mother', 'Child', 'Man A', 'Man B'],
+          lit: ['Child'],
+          compare: 'Child',
+          parents: ['Mother', 'Man B'],
+        },
+      },
     ],
   },
 ];
@@ -1277,52 +1491,39 @@ const CLASSIFICATION: LayoutDef[] = [
     assumptions: [
       'Bacteria and archaea are single cells with no nucleus; archaea differ in their walls, membranes and genes, and many live in extreme places.',
       'Eukarya have cells with a nucleus: protists, fungi, plants and animals.',
-      'Viruses are not cells, so they are not placed in any domain.',
     ],
     question: 'Which domain does it belong to?',
+    intro: 'Viruses are not cells, so they are not placed in any domain.',
     bins: [
       {
         id: 'bacteria',
         label: 'Bacteria',
         why: 'Prokaryotes with cell walls made of peptidoglycan.',
+        figure: { kind: 'icon', icon: 'domain Bacteria' },
       },
       {
         id: 'archaea',
         label: 'Archaea',
         why: 'Prokaryotes whose walls and membranes are built differently from bacteria’s.',
-      },
-      { id: 'eukarya', label: 'Eukarya', why: 'Every cell has a nucleus inside a membrane.' },
-    ],
-    cards: [
-      {
-        label: 'E. coli in the gut',
-        bin: 'bacteria',
-        figure: { kind: 'icon', icon: 'domain Bacteria' },
-      },
-      { label: 'Streptococcus that causes strep throat', bin: 'bacteria' },
-      { label: 'Cyanobacteria in a pond', bin: 'bacteria' },
-      {
-        label: 'Methane-making microbes in a cow’s stomach',
-        bin: 'archaea',
         figure: { kind: 'icon', icon: 'domain Archaea' },
       },
+      {
+        id: 'eukarya',
+        label: 'Eukarya',
+        why: 'Every cell has a nucleus inside a membrane.',
+        figure: { kind: 'icon', icon: 'domain Eukarya' },
+      },
+    ],
+    cards: [
+      { label: 'E. coli in the gut', bin: 'bacteria' },
+      { label: 'Streptococcus that causes strep throat', bin: 'bacteria' },
+      { label: 'Cyanobacteria in a pond', bin: 'bacteria' },
+      { label: 'Methane-making microbes in a cow’s stomach', bin: 'archaea' },
       { label: 'Halobacterium in a salt pond', bin: 'archaea' },
-      {
-        label: 'Paramecium (protist)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Protista' },
-      },
-      {
-        label: 'Mushrooms (fungi)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Fungi' },
-      },
-      { label: 'A leafy plant', bin: 'eukarya', figure: { kind: 'icon', icon: 'kingdom Plantae' } },
-      {
-        label: 'A fish (animal)',
-        bin: 'eukarya',
-        figure: { kind: 'icon', icon: 'kingdom Animalia' },
-      },
+      { label: 'Paramecium (protist)', bin: 'eukarya' },
+      { label: 'Mushrooms (fungi)', bin: 'eukarya' },
+      { label: 'A leafy plant', bin: 'eukarya' },
+      { label: 'A fish (animal)', bin: 'eukarya' },
     ],
   },
   {
@@ -1380,6 +1581,52 @@ const CLASSIFICATION: LayoutDef[] = [
       { label: 'Family Hominidae' },
       { label: 'Genus Homo' },
       { label: 'Species Homo sapiens' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.classification~key',
+    title: 'A dichotomous key',
+    use: 'Use this for “Use the key to name the animal: it has no backbone and a segmented body.”',
+    assumptions: [
+      'A dichotomous key asks one yes-or-no question at a time about a trait you can see.',
+      'Each answer leads to the next question or to a name, so every path ends at one organism.',
+    ],
+    figure: {
+      kind: 'dichotomousKey',
+      steps: [
+        { question: 'Does it have a backbone?', yes: 1, no: 2 },
+        { question: 'Does it have hair?', yes: 'Human', no: 'Fish' },
+        { question: 'Does it have true tissues?', yes: 3, no: 'Sponge' },
+        { question: 'Is its body divided into segments?', yes: 'Earthworm', no: 4 },
+        { question: 'Does it have stinging tentacles?', yes: 'Jellyfish', no: 'Sea star' },
+      ],
+    },
+    scenes: [
+      {
+        label: 'The first question',
+        lines: [
+          'Every animal starts at the top: a backbone or not splits the six into two groups.',
+        ],
+        key: { step: 0 },
+      },
+      {
+        label: 'Earthworm',
+        lines: [
+          'No backbone, true tissues, a segmented body: three answers lead to the earthworm.',
+        ],
+        key: { specimen: 'Earthworm' },
+      },
+      {
+        label: 'Sea star',
+        lines: ['No backbone, true tissues, no segments and no stinging tentacles: a sea star.'],
+        key: { specimen: 'Sea star' },
+      },
+      {
+        label: 'Human',
+        lines: ['A backbone and hair: two questions are enough for a mammal.'],
+        key: { specimen: 'Human' },
+      },
     ],
   },
 ];
@@ -1570,16 +1817,91 @@ const PLANTS: LayoutDef[] = [
     ],
     question: 'Put the stages in order, starting at the flower.',
     stages: [
-      { label: 'Pollination: pollen lands on a stigma' },
-      { label: 'A pollen tube grows down to an ovule' },
-      { label: 'Fertilization: a sperm joins the egg' },
-      { label: 'The ovule becomes a seed, and the ovary a fruit' },
-      { label: 'Seed dispersal by wind, water or animals' },
-      { label: 'Germination: the root and shoot break out' },
-      { label: 'The seedling grows and flowers' },
+      {
+        label: 'Pollination: pollen lands on a stigma',
+        figure: { kind: 'flowerCycle', stage: 'pollination' },
+      },
+      {
+        label: 'A pollen tube grows down to an ovule',
+        figure: { kind: 'flowerCycle', stage: 'pollen tube' },
+      },
+      {
+        label: 'Fertilization: a sperm joins the egg',
+        figure: { kind: 'flowerCycle', stage: 'fertilization' },
+      },
+      {
+        label: 'The ovule becomes a seed, and the ovary a fruit',
+        figure: { kind: 'flowerCycle', stage: 'seed and fruit' },
+      },
+      {
+        label: 'Seed dispersal by wind, water or animals',
+        figure: { kind: 'flowerCycle', stage: 'dispersal' },
+      },
+      {
+        label: 'Germination: the root and shoot break out',
+        figure: { kind: 'flowerCycle', stage: 'germination' },
+      },
+      {
+        label: 'The seedling grows and flowers',
+        figure: { kind: 'flowerCycle', stage: 'seedling' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.plant-biology~flower',
+    title: 'The parts of a flower',
+    use: 'Use this for “Which part of the flower becomes the fruit?”',
+    assumptions: [
+      'The flower is cut in half from top to bottom, so the parts inside show.',
+      'The stamen (anther and filament) is the male part; the pistil (stigma, style and ovary) is the female part.',
+    ],
+    figure: {
+      kind: 'parts',
+      drawing: 'flower',
+      parts: [
+        { name: 'Petal', job: 'Bright petals attract the insects and birds that carry pollen.' },
+        { name: 'Sepal', job: 'Sepals wrap and protect the flower while it is a bud.' },
+        { name: 'Anther', job: 'Makes pollen, which carries the sperm.' },
+        { name: 'Filament', job: 'The stalk that holds the anther up.' },
+        { name: 'Stigma', job: 'The sticky tip that catches pollen.' },
+        { name: 'Style', job: 'The stalk a pollen tube grows down to reach the ovary.' },
+        { name: 'Ovary', job: 'Holds the ovules; after fertilization it becomes the fruit.' },
+        { name: 'Ovule', job: 'Holds an egg; after fertilization it becomes a seed.' },
+      ],
+    },
+    scenes: [
+      {
+        label: 'Male parts',
+        part: 'Anther',
+        lines: ['Each stamen is a filament with an anther on top, full of pollen.'],
+      },
+      {
+        label: 'Female parts',
+        part: 'Stigma',
+        lines: ['The pistil is the stigma, the style and the ovary at the base.'],
+      },
+      {
+        label: 'Egg',
+        part: 'Ovule',
+        lines: ['Each ovule inside the ovary holds one egg cell.'],
+      },
+      {
+        label: 'Fruit',
+        part: 'Ovary',
+        lines: ['After fertilization the ovules become seeds and the ovary swells into the fruit.'],
+      },
+      {
+        label: 'Attract',
+        part: 'Petal',
+        lines: ['Colored petals, and often scent and nectar, bring pollinators to the flower.'],
+      },
     ],
   },
 ];
+
+/** Species B in the shared dish (~competition): it peaks, then is competed out. */
+const COMPETITION_B = [10, 50, 70, 50, 20, 0];
 
 const POPULATION: LayoutDef[] = [
   // ── Population growth and carrying capacity (HS-LS2-1, HS-LS2-2) ──
@@ -1634,6 +1956,34 @@ const POPULATION: LayoutDef[] = [
       { label: 'Stationary: births equal deaths as food runs low' },
       { label: 'Death: wastes build up and deaths exceed births' },
     ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.population-ecology~competition',
+    title: 'Two species, one food',
+    use: 'Use this for “Two protist species grow together in one dish. Which one wins, and why?”',
+    assumptions: [
+      'Two species that need the same food compete; the one that gets it faster grows, and the other shrinks.',
+      'Grown apart, each species levels off at its own carrying capacity.',
+      'When one species dies out in the shared dish, it has been competed out (competitive exclusion).',
+    ],
+    columns: ['Day 0', 'Day 4', 'Day 8', 'Day 12', 'Day 16', 'Day 20'],
+    rowLabel: 'Species A',
+    unit: 'per mL',
+    max: 200,
+    step: 10,
+    initial: [10, 60, 130, 170, 180, 190],
+    second: { rowLabel: 'Species B', initial: COMPETITION_B },
+    pattern: (a, b = COMPETITION_B) => {
+      const [la, lb] = [a[a.length - 1]!, b[b.length - 1]!];
+      const peakB = Math.max(...b);
+      if (lb === 0 && la > 0)
+        return `Species B peaks at ${peakB} per mL, then dies out while species A reaches ${la}: A competes B out.`;
+      if (la === 0 && lb > 0)
+        return `Species A dies out while species B reaches ${lb}: B competes A out.`;
+      if (la === 0 && lb === 0) return 'Both species die out: neither holds on to the food.';
+      return `By the last day A has ${la} and B has ${lb} per mL: both still share the food.`;
+    },
   },
 ];
 
@@ -1785,6 +2135,9 @@ const ECOSYSTEMS: LayoutDef[] = [
   },
 ];
 
+/** ~rainfall's monthly temperatures (°C): cold winters, warm summers. */
+const RAINFALL_TEMPERATURE = [-5, -3, 3, 10, 16, 21, 24, 23, 18, 11, 4, -2];
+
 const BIOMES: LayoutDef[] = [
   // ── Biomes and aquatic ecosystems (HS-LS2-1, HS-LS2-2) ──
   {
@@ -1842,16 +2195,42 @@ const BIOMES: LayoutDef[] = [
     ],
     question: 'Which biome does it describe?',
     bins: [
-      { id: 'rainforest', label: 'Tropical rainforest', why: 'Warm and wet all year.' },
-      { id: 'desert', label: 'Desert', why: 'Under 25 cm of rain a year, hot or cold.' },
-      { id: 'grassland', label: 'Grassland', why: 'Too dry for many trees; grasses and fires.' },
+      {
+        id: 'rainforest',
+        label: 'Tropical rainforest',
+        why: 'Warm and wet all year.',
+        figure: { kind: 'icon', icon: 'tropical rainforest' },
+      },
+      {
+        id: 'desert',
+        label: 'Desert',
+        why: 'Under 25 cm of rain a year, hot or cold.',
+        figure: { kind: 'icon', icon: 'desert' },
+      },
+      {
+        id: 'grassland',
+        label: 'Grassland',
+        why: 'Too dry for many trees; grasses and fires.',
+        figure: { kind: 'icon', icon: 'grassland' },
+      },
       {
         id: 'deciduous',
         label: 'Temperate deciduous forest',
         why: 'Four seasons and steady rain; broad leaves fall in autumn.',
+        figure: { kind: 'icon', icon: 'temperate deciduous forest' },
       },
-      { id: 'taiga', label: 'Taiga', why: 'Long, cold winters; conifer forest.' },
-      { id: 'tundra', label: 'Tundra', why: 'Very cold, no trees, permafrost below.' },
+      {
+        id: 'taiga',
+        label: 'Taiga',
+        why: 'Long, cold winters; conifer forest.',
+        figure: { kind: 'icon', icon: 'taiga' },
+      },
+      {
+        id: 'tundra',
+        label: 'Tundra',
+        why: 'Very cold, no trees, permafrost below.',
+        figure: { kind: 'icon', icon: 'tundra' },
+      },
     ],
     cards: [
       { label: 'Layers of canopy trees, vines and orchids', bin: 'rainforest' },
@@ -1899,11 +2278,11 @@ const BIOMES: LayoutDef[] = [
   {
     kind: 'observe',
     id: 's.9.biomes~rainfall',
-    title: 'Rainfall by month',
-    use: 'Use this to record a place’s rainfall each month and see which biome it suits.',
+    title: 'Rainfall and temperature by month',
+    use: 'Use this to record a place’s rainfall and temperature each month and see which biome it suits.',
     assumptions: [
       'Rainfall is in millimeters: 10 mm is 1 cm of water over the ground.',
-      'Temperature matters too: a cold place with little rain is tundra or a cold desert.',
+      'Temperature is the month’s average, in °C; bars below the line are below freezing.',
     ],
     columns: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     rowLabel: 'Rainfall',
@@ -1911,21 +2290,35 @@ const BIOMES: LayoutDef[] = [
     max: 400,
     step: 10,
     initial: [80, 70, 90, 90, 100, 100, 110, 100, 90, 80, 90, 90],
-    pattern: (v) => {
+    second: {
+      rowLabel: 'Temperature',
+      unit: '°C',
+      min: -30,
+      max: 40,
+      step: 1,
+      initial: RAINFALL_TEMPERATURE,
+    },
+    pattern: (v, temp = RAINFALL_TEMPERATURE) => {
       const total = v.reduce((a, b) => a + b, 0);
       const wet = v.filter((x) => x >= 100).length;
       const dry = v.filter((x) => x < 20).length;
       const cm = Math.round(total / 10);
-      if (total < 250) return `About ${cm} cm a year: dry enough for a desert.`;
-      if (total >= 2000 && dry === 0)
-        return `About ${cm} cm a year, wet every month: a tropical rainforest, if it is warm all year.`;
-      if (dry >= 3 && wet >= 3)
-        return `About ${cm} cm a year with a long dry season: a savanna, if it is warm all year.`;
+      const warmest = Math.max(...temp);
+      const coldest = Math.min(...temp);
+      if (warmest < 10)
+        return `About ${cm} cm a year, and no month above 10 °C: too cold for trees, tundra.`;
+      if (total < 250) return `About ${cm} cm a year: dry enough for a desert, hot or cold.`;
+      if (coldest >= 18 && total >= 2000 && dry === 0)
+        return `About ${cm} cm a year, wet and warm every month: a tropical rainforest.`;
+      if (coldest >= 18 && dry >= 3 && wet >= 3)
+        return `About ${cm} cm a year, warm all year with a long dry season: a savanna.`;
+      if (coldest < -10)
+        return `About ${cm} cm a year with long, freezing winters: taiga, a conifer forest.`;
       if (total < 750)
         return `About ${cm} cm a year: enough for grassland, but dry for most forests.`;
-      if (dry > 0)
-        return `About ${cm} cm a year, with ${dry} dry month${dry === 1 ? '' : 's'}: a seasonal forest if it is warm.`;
-      return `About ${cm} cm a year, spread through the year. That is enough for a forest: temperate deciduous where summers are warm, taiga where winters are long and cold.`;
+      if (coldest >= 18)
+        return `About ${cm} cm a year and warm all year: a tropical forest, seasonal if some months are dry.`;
+      return `About ${cm} cm a year, with winters near or below freezing and warm summers: a temperate deciduous forest.`;
     },
   },
 ];
@@ -2070,17 +2463,44 @@ const HOMEOSTASIS: LayoutDef[] = [
       'Body systems work together to keep homeostasis.',
     ],
     question: 'Which system does the job?',
+    intro: 'The nervous and endocrine systems coordinate the rest.',
     bins: [
-      { id: 'nervous', label: 'Nervous', why: 'Neurons carry fast electrical signals.' },
-      { id: 'endocrine', label: 'Endocrine', why: 'Glands release hormones into the blood.' },
-      { id: 'circulatory', label: 'Circulatory', why: 'Blood carries gases, food and heat.' },
-      { id: 'respiratory', label: 'Respiratory', why: 'The lungs trade O₂ and CO₂ with the air.' },
+      {
+        id: 'nervous',
+        label: 'Nervous',
+        why: 'Neurons carry fast electrical signals.',
+        figure: { kind: 'icon', icon: 'nervous system' },
+      },
+      {
+        id: 'endocrine',
+        label: 'Endocrine',
+        why: 'Glands release hormones into the blood.',
+        figure: { kind: 'icon', icon: 'endocrine system' },
+      },
+      {
+        id: 'circulatory',
+        label: 'Circulatory',
+        why: 'Blood carries gases, food and heat.',
+        figure: { kind: 'icon', icon: 'heart and blood vessels' },
+      },
+      {
+        id: 'respiratory',
+        label: 'Respiratory',
+        why: 'The lungs trade O₂ and CO₂ with the air.',
+        figure: { kind: 'icon', icon: 'respiratory system' },
+      },
       {
         id: 'excretory',
         label: 'Excretory',
         why: 'The kidneys remove wastes and set the blood’s water.',
+        figure: { kind: 'icon', icon: 'excretory system' },
       },
-      { id: 'digestive', label: 'Digestive', why: 'Food is broken down and absorbed.' },
+      {
+        id: 'digestive',
+        label: 'Digestive',
+        why: 'Food is broken down and absorbed.',
+        figure: { kind: 'icon', icon: 'digestive system' },
+      },
     ],
     cards: [
       { label: 'Neurons carry signals from sense receptors', bin: 'nervous' },
@@ -2170,12 +2590,30 @@ const NERVOUS: LayoutDef[] = [
     ],
     question: 'Put the steps of a reflex in order: a hand touches a hot pan.',
     stages: [
-      { label: 'Receptors in the skin detect the heat' },
-      { label: 'A sensory neuron carries the impulse to the spinal cord' },
-      { label: 'An interneuron in the spinal cord passes it on' },
-      { label: 'A motor neuron carries the impulse to an arm muscle' },
-      { label: 'The muscle contracts and pulls the hand away' },
-      { label: 'The message reaches the brain, and you feel the pain' },
+      {
+        label: 'Receptors in the skin detect the heat',
+        figure: { kind: 'reflexArc', lit: 'receptor' },
+      },
+      {
+        label: 'A sensory neuron carries the impulse to the spinal cord',
+        figure: { kind: 'reflexArc', lit: 'sensory' },
+      },
+      {
+        label: 'An interneuron in the spinal cord passes it on',
+        figure: { kind: 'reflexArc', lit: 'interneuron' },
+      },
+      {
+        label: 'A motor neuron carries the impulse to an arm muscle',
+        figure: { kind: 'reflexArc', lit: 'motor' },
+      },
+      {
+        label: 'The muscle contracts and pulls the hand away',
+        figure: { kind: 'reflexArc', lit: 'effector' },
+      },
+      {
+        label: 'The message reaches the brain, and you feel the pain',
+        figure: { kind: 'reflexArc', lit: 'brain' },
+      },
     ],
   },
   {
@@ -2197,6 +2635,33 @@ const NERVOUS: LayoutDef[] = [
       { label: 'The inside dips just below −70 mV' },
       { label: 'The pump restores the ions: resting again' },
     ],
+  },
+  {
+    kind: 'observe',
+    id: 's.9.nervous-system~membrane-potential',
+    title: 'Membrane potential through an impulse',
+    use: 'Use this to record a neuron’s membrane potential through one impulse.',
+    assumptions: [
+      'At rest the inside of a neuron is about −70 mV, more negative than the outside.',
+      'Past the threshold, about −55 mV, Na⁺ rushes in; then K⁺ flows out and the inside turns negative again.',
+    ],
+    columns: ['0 ms', '1 ms', '2 ms', '3 ms', '4 ms', '5 ms', '6 ms'],
+    rowLabel: 'Membrane potential',
+    unit: 'mV',
+    min: -90,
+    max: 40,
+    step: 5,
+    initial: [-70, -55, 30, -40, -80, -75, -70],
+    pattern: (v) => {
+      const peak = Math.max(...v);
+      const low = Math.min(...v);
+      const sign = (x: number) => (x > 0 ? `+${x}` : x < 0 ? `−${-x}` : '0');
+      if (peak < -55)
+        return `It never passes the threshold of −55 mV, so no impulse fires: the neuron stays near rest.`;
+      const dip =
+        low < -70 ? ` It dips to ${sign(low)} mV, below rest, before the pump restores it.` : '';
+      return `It passes the threshold and peaks at ${sign(peak)} mV as Na⁺ rushes in; then K⁺ flows out.${dip}`;
+    },
   },
   {
     kind: 'sequence',
@@ -2318,39 +2783,43 @@ const IMMUNE: LayoutDef[] = [
     assumptions: [
       'A pathogen is anything that causes disease: a virus, a bacterium, a fungus or a parasite.',
       'Bacteria, fungi and parasites are cells; a virus is not, and copies itself only inside a host cell.',
-      'Antibiotics work on bacteria only: they do nothing to viruses.',
     ],
     question: 'What kind of pathogen causes it?',
+    intro: 'Antibiotics work on bacteria only: they do nothing to viruses.',
     bins: [
       {
         id: 'virus',
         label: 'Virus',
         why: 'Genes in a protein coat, copied only inside a host’s cells.',
+        figure: { kind: 'icon', icon: 'virus' },
       },
-      { id: 'bacterium', label: 'Bacterium', why: 'A single cell with no nucleus.' },
+      {
+        id: 'bacterium',
+        label: 'Bacterium',
+        why: 'A single cell with no nucleus.',
+        figure: { kind: 'icon', icon: 'bacterium' },
+      },
       {
         id: 'fungus',
         label: 'Fungus',
         why: 'Cells with a nucleus and a wall, living on the host.',
+        figure: { kind: 'icon', icon: 'fungus' },
       },
       {
         id: 'parasite',
         label: 'Parasite',
         why: 'A protist or an animal that lives on or in the host.',
+        figure: { kind: 'icon', icon: 'parasite' },
       },
     ],
     cards: [
-      { label: 'A virus', bin: 'virus', figure: { kind: 'icon', icon: 'virus' } },
       { label: 'Influenza', bin: 'virus' },
       { label: 'Measles', bin: 'virus' },
       { label: 'The common cold', bin: 'virus' },
-      { label: 'A bacterium', bin: 'bacterium', figure: { kind: 'icon', icon: 'bacterium' } },
       { label: 'Strep throat', bin: 'bacterium' },
       { label: 'Tuberculosis', bin: 'bacterium' },
-      { label: 'A fungus', bin: 'fungus', figure: { kind: 'icon', icon: 'fungus' } },
       { label: 'Athlete’s foot', bin: 'fungus' },
       { label: 'Ringworm', bin: 'fungus' },
-      { label: 'A parasite', bin: 'parasite', figure: { kind: 'icon', icon: 'parasite' } },
       { label: 'Malaria', bin: 'parasite' },
       { label: 'Tapeworm', bin: 'parasite' },
     ],

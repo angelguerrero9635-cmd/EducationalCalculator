@@ -22,14 +22,30 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     ],
     question: 'Put the models of the atom in the order they were proposed.',
     stages: [
-      { label: 'Dalton: atoms are solid spheres that can’t be split', span: 94 },
+      {
+        label: 'Dalton: atoms are solid spheres that can’t be split',
+        span: 94,
+        figure: { kind: 'icon', icon: 'Dalton atom model' },
+      },
       {
         label: 'Thomson: electrons found, stuck in a positive ball like plums in a pudding',
         span: 14,
+        figure: { kind: 'icon', icon: 'Thomson atom model' },
       },
-      { label: 'Rutherford: gold foil shows a tiny, dense, positive nucleus', span: 2 },
-      { label: 'Bohr: electrons on fixed energy levels around the nucleus', span: 13 },
-      { label: 'Quantum model: electrons in clouds of probability, still used today' },
+      {
+        label: 'Rutherford: gold foil shows a tiny, dense, positive nucleus',
+        span: 2,
+        figure: { kind: 'icon', icon: 'Rutherford atom model' },
+      },
+      {
+        label: 'Bohr: electrons on fixed energy levels around the nucleus',
+        span: 13,
+        figure: { kind: 'icon', icon: 'Bohr atom model' },
+      },
+      {
+        label: 'Quantum model: electrons in clouds of probability, still used today',
+        figure: { kind: 'icon', icon: 'quantum atom model' },
+      },
     ],
     unit: 'years',
     totalLabel: 'From Dalton (1803) to the quantum model (1926)',
@@ -196,11 +212,11 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       { label: 'H₂O (bent)', bin: 'polar', figure: molecule('H2O') },
       { label: 'NH₃ (trigonal pyramidal)', bin: 'polar', figure: molecule('NH3') },
       { label: 'HCl', bin: 'polar', figure: molecule('HCl') },
-      { label: 'CHCl₃ (tetrahedral, one H)', bin: 'polar' },
+      { label: 'CHCl₃ (tetrahedral, one H)', bin: 'polar', figure: molecule('CHCl3') },
       { label: 'CO₂ (linear)', bin: 'nonpolar', figure: molecule('CO2') },
       { label: 'CH₄ (tetrahedral)', bin: 'nonpolar', figure: molecule('CH4') },
-      { label: 'BF₃ (trigonal planar)', bin: 'nonpolar' },
-      { label: 'CCl₄ (tetrahedral)', bin: 'nonpolar' },
+      { label: 'BF₃ (trigonal planar)', bin: 'nonpolar', figure: molecule('BF3') },
+      { label: 'CCl₄ (tetrahedral)', bin: 'nonpolar', figure: molecule('CCl4') },
     ],
   },
   {
@@ -237,7 +253,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       { label: 'CO₂', bin: 'dispersion', figure: molecule('CO2') },
       { label: 'HCl', bin: 'dipole', figure: molecule('HCl') },
       { label: 'H₂S', bin: 'dipole', figure: molecule('H2S') },
-      { label: 'CH₂O (formaldehyde)', bin: 'dipole' },
+      { label: 'CH₂O (formaldehyde)', bin: 'dipole', figure: molecule('CH2O') },
       { label: 'H₂O', bin: 'hbond', figure: molecule('H2O') },
       { label: 'NH₃', bin: 'hbond', figure: molecule('NH3') },
       { label: 'HF', bin: 'hbond', figure: molecule('HF') },
@@ -248,7 +264,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     kind: 'explore',
     id: 's.10.molecular-shape~water',
     title: 'Why ice floats',
-    use: 'Use this for “Why does ice float on liquid water?”',
+    use: 'Use this for “Why does ice float on liquid water?” or “Why does water dissolve salt?”',
     assumptions: [
       'Water is bent and polar: its O is partly negative and its H atoms partly positive.',
       'A hydrogen bond is an attraction between molecules, much weaker than a covalent bond.',
@@ -282,6 +298,17 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
         lines: [
           'When ice melts, hydrogen bonds break and re-form, and the rings collapse.',
           'The molecules pack closer, so liquid water is denser: ice floats on it.',
+        ],
+      },
+      {
+        label: 'Salt in water',
+        molecules: {
+          items: [{ formula: 'NaCl' }],
+          hydration: { ions: ['Na+', 'Cl-'], crystal: true },
+        },
+        lines: [
+          'Water’s O ends face each Na⁺ and its H ends face each Cl⁻: opposite charges attract.',
+          'Many of these attractions pull the ions out of the crystal, one at a time.',
         ],
       },
     ],
@@ -783,6 +810,7 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A functional group is the part of an organic molecule that reacts; the rest is a carbon chain.',
       'Look at what is bonded to the carbon chain: –OH, –COOH, –COO–, –NH₂ or C=O between carbons.',
+      'The lit part of each formula is its functional group.',
     ],
     question: 'Which functional group does the molecule have?',
     bins: [
@@ -797,16 +825,56 @@ export const SCIENCE_10_LAYOUTS: LayoutDef[] = [
       { id: 'ketone', label: 'Ketone (C=O)', why: 'A C=O between two carbons.' },
     ],
     cards: [
-      { label: 'Methanol, CH₃OH', bin: 'alcohol' },
-      { label: 'Ethanol, CH₃CH₂OH', bin: 'alcohol' },
-      { label: 'Acetic acid, CH₃COOH', bin: 'acid' },
-      { label: 'Formic acid, HCOOH', bin: 'acid' },
-      { label: 'Ethyl acetate, CH₃COOCH₂CH₃', bin: 'ester' },
-      { label: 'Methyl butanoate, CH₃CH₂CH₂COOCH₃', bin: 'ester' },
-      { label: 'Methylamine, CH₃NH₂', bin: 'amine' },
-      { label: 'Ethylamine, CH₃CH₂NH₂', bin: 'amine' },
-      { label: 'Acetone, CH₃COCH₃', bin: 'ketone' },
-      { label: '2-Butanone, CH₃COCH₂CH₃', bin: 'ketone' },
+      {
+        label: 'Methanol, CH₃OH',
+        bin: 'alcohol',
+        figure: { kind: 'condensed', formula: 'CH3-OH', group: 'alcohol' },
+      },
+      {
+        label: 'Ethanol, CH₃CH₂OH',
+        bin: 'alcohol',
+        figure: { kind: 'condensed', formula: 'CH3-CH2-OH', group: 'alcohol' },
+      },
+      {
+        label: 'Acetic acid, CH₃COOH',
+        bin: 'acid',
+        figure: { kind: 'condensed', formula: 'CH3-C(=O)-OH', group: 'acid' },
+      },
+      {
+        label: 'Formic acid, HCOOH',
+        bin: 'acid',
+        figure: { kind: 'condensed', formula: 'H-C(=O)-OH', group: 'acid' },
+      },
+      {
+        label: 'Ethyl acetate, CH₃COOCH₂CH₃',
+        bin: 'ester',
+        figure: { kind: 'condensed', formula: 'CH3-C(=O)-O-CH2-CH3', group: 'ester' },
+      },
+      {
+        label: 'Methyl butanoate, CH₃CH₂CH₂COOCH₃',
+        bin: 'ester',
+        figure: { kind: 'condensed', formula: 'CH3-CH2-CH2-C(=O)-O-CH3', group: 'ester' },
+      },
+      {
+        label: 'Methylamine, CH₃NH₂',
+        bin: 'amine',
+        figure: { kind: 'condensed', formula: 'CH3-NH2', group: 'amine' },
+      },
+      {
+        label: 'Ethylamine, CH₃CH₂NH₂',
+        bin: 'amine',
+        figure: { kind: 'condensed', formula: 'CH3-CH2-NH2', group: 'amine' },
+      },
+      {
+        label: 'Acetone, CH₃COCH₃',
+        bin: 'ketone',
+        figure: { kind: 'condensed', formula: 'CH3-C(=O)-CH3', group: 'ketone' },
+      },
+      {
+        label: '2-Butanone, CH₃COCH₂CH₃',
+        bin: 'ketone',
+        figure: { kind: 'condensed', formula: 'CH3-C(=O)-CH2-CH3', group: 'ketone' },
+      },
     ],
   },
 

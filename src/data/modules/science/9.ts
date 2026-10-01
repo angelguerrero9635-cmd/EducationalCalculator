@@ -208,9 +208,6 @@ const withStep = (r: Rule, id: string, extra: Partial<StepText>): Rule => ({
   steps: { ...r.steps, [id]: { ...r.steps[id]!, ...extra } },
 });
 
-/** A rule that only places the picture (its values `hidden`): no row, step or check. */
-const hide = (r: Rule): Rule => ({ relation: { ...r.relation, hidden: true }, steps: {} });
-
 /** A rule that says why its value can't be found, when `why` returns a sentence. */
 const saying = (r: Rule, why: (v: Values) => string | undefined): Rule => ({
   ...r,
@@ -307,6 +304,80 @@ const bp = (id: string, symbol: string, name: string, min: number, max: number):
 });
 
 // ─── The pages, in taxonomy order ───────────────────────────────────────────
+
+const BIOMOLECULES: ModuleDef[] = [
+  // ── The chemistry of life: water and biomolecules (HS-LS1-6, HS-LS1-1) ──
+  {
+    id: 's.9.biomolecules~dehydration',
+    title: 'Dehydration synthesis: water and mass',
+    use: 'Use this for “How many water molecules leave, and what is the polymer’s mass?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each bond joining two monomers gives off one water molecule, 18 g/mol.',
+      'The monomers form one chain, not a ring, so a chain of n units has n − 1 bonds.',
+      'A fat is the exception: three fatty acids join one glycerol and give off 3 water.',
+      'Glucose is 180 g/mol, so two glucose make maltose, 2 × 180 − 18 = 342 g/mol.',
+    ],
+    variables: [
+      count('n', 'n', 'Monomers joined', 2, 1000),
+      count('b', 'b', 'Bonds formed', 1, 999, true),
+      count('w', 'w', 'Water molecules given off', 1, 999, true),
+      {
+        id: 'm',
+        symbol: 'm',
+        name: 'Mass of one monomer',
+        unit: 'g/mol',
+        min: 50,
+        max: 1000,
+        step: 1,
+      },
+      {
+        id: 'M',
+        symbol: 'M',
+        name: 'Mass of the polymer',
+        unit: 'g/mol',
+        min: 0,
+        max: 1000000,
+        step: 1,
+        derived: true,
+      },
+    ],
+    ...rules(
+      both('b = n − 1', '{b} = {n} − 1', ['b', 'n'], (v) => v.b! - (v.n! - 1), {
+        b: [(v) => v.n! - 1, '{n} − 1', 'A chain has one bond fewer than its units.'],
+        n: [(v) => v.b! + 1, '{b} + 1', 'One more unit than bonds.'],
+      }),
+      same('w', 'b', 'Every bond gives off one water molecule.'),
+      both(
+        'M = n × m − 18 × w',
+        '{M} = {n} × {m} − 18 × {w}',
+        ['M', 'n', 'm', 'w'],
+        (v) => v.M! - (v.n! * v.m! - 18 * v.w!),
+        {
+          M: [
+            (v) => v.n! * v.m! - 18 * v.w!,
+            '{n} × {m} − 18 × {w}',
+            'Add the monomers’ masses, then take away 18 g/mol for each water molecule given off.',
+          ],
+          m: [
+            (v) => div(v.M! + 18 * v.w!, v.n!),
+            '({M} + 18 × {w}) ÷ {n}',
+            'Put the water back on, then share the mass among the monomers.',
+          ],
+        },
+      ),
+    ),
+    example: { n: 3, b: 2, w: 2, m: 180, M: 504 },
+    startWith: ['n', 'm'],
+    representation: {
+      kind: 'macromolecules',
+      macro: 'carbohydrate',
+      count: 'n',
+      bonds: 'b',
+      water: 'w',
+    },
+  },
+];
 
 const MEMBRANE: ModuleDef[] = [
   // ── Cell membranes and transport (HS-LS1-2, HS-LS1-3) ──
@@ -429,6 +500,85 @@ const MEMBRANE: ModuleDef[] = [
   },
 ];
 
+/** out = k₁ × a (+ k₂ × b): an atom or molecule count, worked forward. */
+const tally = (out: string, terms: [number, string][], how: string): Rule => {
+  const text = terms.map(([k, a]) => (k === 1 ? `{${a}}` : `${k} × {${a}}`)).join(' + ');
+  return forward(
+    `${out} = ${text.replace(/[{}]/g, '')}`,
+    `{${out}} = ${text}`,
+    out,
+    terms.map(([, a]) => a),
+    (v) => terms.reduce((s, [k, a]) => s + k * v[a]!, 0),
+    text,
+    how,
+  );
+};
+
+const ENERGY: ModuleDef[] = [
+  // ── Cellular energy: ATP, photosynthesis and cellular respiration (HS-LS1-5, 1-7, 2-3, 2-5) ──
+  {
+    id: 's.9.cellular-energy~equation',
+    title: 'The photosynthesis equation',
+    use: 'Use this for “How many CO₂ molecules make 2 glucose molecules, and are the atoms conserved?”',
+    assumptions: [
+      'Photosynthesis: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂. Respiration is the same equation read backward.',
+      'Atoms are rearranged, never made or lost: each element has as many atoms after as before.',
+    ],
+    variables: [
+      count('g', 'g', 'Glucose molecules made', 1, 3),
+      count('c', 'c', 'CO₂ molecules', 6, 18, true),
+      count('w', 'w', 'H₂O molecules', 6, 18, true),
+      count('o', 'o', 'O₂ molecules', 6, 18, true),
+      count('C1', 'C₁', 'Carbon atoms before', 6, 18, true),
+      count('C2', 'C₂', 'Carbon atoms after', 6, 18, true),
+      count('H1', 'H₁', 'Hydrogen atoms before', 12, 36, true),
+      count('H2', 'H₂', 'Hydrogen atoms after', 12, 36, true),
+      count('O1', 'O₁', 'Oxygen atoms before', 18, 54, true),
+      count('O2', 'O₂', 'Oxygen atoms after', 18, 54, true),
+    ],
+    ...rules(
+      tally('c', [[6, 'g']], 'Each glucose takes 6 CO₂.'),
+      tally('w', [[6, 'g']], 'Each glucose takes 6 H₂O.'),
+      tally('o', [[6, 'g']], 'Each glucose gives off 6 O₂.'),
+      tally('C1', [[1, 'c']], 'One carbon in each CO₂.'),
+      tally('C2', [[6, 'g']], 'Six carbons in each glucose.'),
+      tally('H1', [[2, 'w']], 'Two hydrogens in each H₂O.'),
+      tally('H2', [[12, 'g']], 'Twelve hydrogens in each glucose.'),
+      tally(
+        'O1',
+        [
+          [2, 'c'],
+          [1, 'w'],
+        ],
+        'Two oxygens in each CO₂ and one in each H₂O.',
+      ),
+      tally(
+        'O2',
+        [
+          [6, 'g'],
+          [2, 'o'],
+        ],
+        'Six oxygens in each glucose and two in each O₂.',
+      ),
+    ),
+    example: { g: 1, c: 6, w: 6, o: 6, C1: 6, C2: 6, H1: 12, H2: 12, O1: 18, O2: 18 },
+    startWith: ['g'],
+    representation: {
+      kind: 'reaction',
+      reactants: [
+        { formula: 'CO2', count: 'c' },
+        { formula: 'H2O', count: 'w' },
+      ],
+      products: [
+        { formula: 'C6H12O6', count: 'g' },
+        { formula: 'O2', count: 'o' },
+      ],
+      atoms: { C: ['C1', 'C2'], H: ['H1', 'H2'], O: ['O1', 'O2'] },
+      many: true,
+    },
+  },
+];
+
 const DIVISION: ModuleDef[] = [
   // ── The cell cycle and its control (HS-LS1-4) ──
   {
@@ -533,6 +683,73 @@ const DIVISION: ModuleDef[] = [
       parts: ['I', 'P', 'M', 'A', 'T'],
       total: 'N',
       group: { id: 'm', parts: ['P', 'M', 'A', 'T'] },
+      stages: ['interphase', 'prophase', 'metaphase', 'anaphase', 'telophase'],
+    },
+  },
+  {
+    id: 's.9.mitosis-meiosis~chromosome-count',
+    title: 'Counting chromosomes',
+    use: 'Use this for “A body cell has 46 chromosomes. How many are in a gamete, and in a zygote?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A body cell holds 2n chromosomes: n pairs, one of each pair from each parent.',
+      'Meiosis leaves one chromosome of each pair in a gamete; fertilization joins two gametes.',
+      'A human has 2n = 46 and a fruit fly 2n = 8; crossing over is left out of the count of gametes.',
+    ],
+    variables: [
+      { ...count('D', '2n', 'Chromosomes in a body cell', 2, 100), multipleOf: 2 },
+      count('n', 'n', 'Chromosomes in a gamete', 1, 50, true),
+      count('X', 'X', 'Chromatids at metaphase', 4, 200, true),
+      count('Z', 'Z', 'Chromosomes in a zygote', 2, 100, true),
+      count('C', 'C', 'Kinds of gamete', 2, 2 ** 50, true),
+    ],
+    ...rules(
+      forward(
+        'n = D ÷ 2',
+        '{n} = {D} ÷ 2',
+        'n',
+        ['D'],
+        (v) => v.D! / 2,
+        '{D} ÷ 2',
+        'A gamete keeps one chromosome of each pair.',
+      ),
+      forward(
+        'X = 2 × D',
+        '{X} = 2 × {D}',
+        'X',
+        ['D'],
+        (v) => 2 * v.D!,
+        '2 × {D}',
+        'Before division each chromosome is copied: two sister chromatids.',
+      ),
+      forward(
+        'Z = n + n',
+        '{Z} = {n} + {n}',
+        'Z',
+        ['n'],
+        (v) => 2 * v.n!,
+        '{n} + {n}',
+        'An egg and a sperm join, each with n chromosomes.',
+      ),
+      forward(
+        'C = 2^n',
+        '{C} = 2^{n}',
+        'C',
+        ['n'],
+        (v) => 2 ** v.n!,
+        '2^{n}',
+        'Each pair lines up either way round, so every pair doubles the kinds of gamete.',
+      ),
+    ),
+    example: { D: 8, n: 4, X: 16, Z: 8, C: 16 },
+    startWith: ['D'],
+    representation: {
+      kind: 'cellDivision',
+      diploid: 'D',
+      haploid: 'n',
+      chromatids: 'X',
+      zygote: 'Z',
+      combinations: 'C',
     },
   },
 ];
@@ -841,7 +1058,7 @@ const DNA: ModuleDef[] = [
       'Three mRNA bases make a codon; AUG starts the chain and codes Met, and a stop codon adds no amino acid.',
       'So a coding mRNA of b bases, ending in its stop codon, codes b ÷ 3 − 1 amino acids.',
       'Each peptide bond joining two amino acids releases one water molecule.',
-      'The picture draws the start of the gene TACCGGTTCATT: all of it up to 12 bases, the first 9 of a longer gene.',
+      'The picture draws a gene of up to 15 bases whole; a longer one, its first 12 bases, “…” and its stop codon.',
     ],
     variables: [
       { ...count('b', 'b', 'Bases in the coding mRNA', 6, 3000), multipleOf: 3 },
@@ -849,8 +1066,6 @@ const DNA: ModuleDef[] = [
       count('a', 'a', 'Amino acids in the chain', 1, 999, true),
       count('p', 'p', 'Peptide bonds', 0, 998, true),
       count('w', 'w', 'Water molecules released', 0, 998, true),
-      { ...count('bd', 'b_d', 'Bases drawn', 6, 12, true), hidden: true },
-      { ...count('cd', 'c_d', 'Codons drawn', 2, 4, true), hidden: true },
     ],
     ...rules(
       forward(
@@ -889,28 +1104,15 @@ const DNA: ModuleDef[] = [
         '{p}',
         'Each peptide bond releases one water molecule.',
       ),
-      hide(
-        forward(
-          'b_d = b up to 12, else 9',
-          '{bd} = {b}',
-          'bd',
-          ['b'],
-          (v) => (v.b! <= 12 ? v.b! : 9),
-          '{b}',
-          '',
-        ),
-      ),
-      hide(forward('c_d = b_d ÷ 3', '{cd} = {bd} ÷ 3', 'cd', ['bd'], (v) => v.bd! / 3, '', '')),
     ),
-    example: { b: 12, c: 4, a: 3, p: 2, w: 2, bd: 12, cd: 4 },
+    example: { b: 12, c: 4, a: 3, p: 2, w: 2 },
     startWith: ['b'],
-    pictureLabels: ['c', 'a', 'p', 'w'],
+    pictureLabels: ['p', 'w'],
     representation: {
       kind: 'dnaStrand',
-      sequence: GENE,
-      length: 'bd',
-      codons: 'cd',
-      show: ['mrna'],
+      sequence: 'TACCGGTTCGGA',
+      gene: { bases: 'b' },
+      codons: 'c',
     },
   },
   {
@@ -1008,13 +1210,13 @@ const BIOTECH: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       `The template strand is ${GENE}; its mRNA AUG GCC AAG UAA codes Met–Ala–Lys, then stop.`,
-      'Bases 1–3 are the start codon and 10–12 the stop; this page changes the codons between them.',
-      'One base swapped changes at most one codon: the caption names the effect, silent or missense.',
+      'Bases 1–3 are the start codon and 10–12 the stop; one base swapped changes at most one codon, and the caption names the effect.',
+      'A change to AUG loses the start: no protein is made from here. A stop turned into an amino acid loses the stop: the ribosome reads on.',
       'The base changed swaps A with G or C with T, the most common kind of substitution.',
     ],
     variables: [
-      count('p', 'p', 'Base changed', 4, 9),
-      count('k', 'k', 'Codon holding it', 2, 3, true),
+      count('p', 'p', 'Base changed', 1, 12),
+      count('k', 'k', 'Codon holding it', 1, 4, true),
       count('j', 'j', 'Its place in the codon', 1, 3, true),
     ],
     ...rules(
@@ -1045,14 +1247,14 @@ const BIOTECH: ModuleDef[] = [
     assumptions: [
       `The template strand is the first L bases of ${GENE}; an A is inserted before base p.`,
       'The ribosome reads in threes, so every codon from the one holding the insertion on is read in a shifted frame.',
-      'The insertion comes after the start codon (p ≥ 4); a deletion shifts the frame the same way, and inserting 3 bases keeps it.',
+      'Inside the start codon (p = 2 or 3) the insertion breaks AUG, so no protein starts there; a deletion shifts the frame the same way.',
     ],
     variables: [
       { ...count('L', 'L', 'Template bases', 6, 12), multipleOf: 3 },
       count('c', 'c', 'Codons', 2, 4, true),
-      count('p', 'p', 'Base the insertion goes before', 4, 12),
-      count('k', 'k', 'Codon holding it', 2, 4, true),
-      count('s', 's', 'Codons read in a shifted frame', 1, 3, true),
+      count('p', 'p', 'Base the insertion goes before', 2, 12),
+      count('k', 'k', 'Codon holding it', 1, 4, true),
+      count('s', 's', 'Codons read in a shifted frame', 1, 4, true),
     ],
     ...rules(
       forward(
@@ -1561,6 +1763,8 @@ const POPULATION: ModuleDef[] = [
       bars: [{ var: 'N' }, { var: 'B' }, { var: 'D' }, { var: 'I' }, { var: 'E' }, { var: 'N1' }],
       min: 0,
       max: 600,
+
+      flows: { out: ['D', 'E'] },
     },
   },
   {
@@ -1776,16 +1980,6 @@ const NERVOUS: ModuleDef[] = [
         max: 6000,
         step: 0.1,
       },
-      {
-        id: 'k',
-        symbol: 'k',
-        name: 'Milliseconds per meter',
-        min: 0,
-        max: 2000,
-        step: 0.01,
-        derived: true,
-        hidden: true,
-      },
     ],
     ...rules(
       withStep(
@@ -1820,14 +2014,10 @@ const NERVOUS: ModuleDef[] = [
           ],
         },
       ),
-      hide(
-        forward('k = 1,000 ÷ v', '{k} = 1,000 ÷ {v}', 'k', ['v'], (v) => div(1000, v.v!), '', ''),
-      ),
     ),
-    example: { d: 1, v: 50, t: 20, k: 20 },
+    example: { d: 1, v: 50, t: 20 },
     startWith: ['d', 'v'],
-    pictureLabels: ['v'],
-    representation: { kind: 'doubleNumberLine', top: 'd', bottom: 't', per: 'k', ticks: 3 },
+    representation: { kind: 'neuron', length: 'd', speed: 'v', time: 't' },
   },
 ];
 
@@ -2018,12 +2208,14 @@ const IMMUNE: ModuleDef[] = [
     ),
     example: { R0: 5, H: 80, e: 95, C: 8000 / 95, P: 19000, V: 16000 },
     startWith: ['R0', 'e', 'P'],
-    representation: { kind: 'percentBar', percent: 'C', part: 'V', whole: 'P' },
+    representation: { kind: 'percentBar', percent: 'C', part: 'V', whole: 'P', second: 'H' },
   },
 ];
 
 export const SCIENCE_9_MODULES: ModuleDef[] = [
+  ...BIOMOLECULES,
   ...MEMBRANE,
+  ...ENERGY,
   ...DIVISION,
   ...INHERITANCE,
   ...DNA,

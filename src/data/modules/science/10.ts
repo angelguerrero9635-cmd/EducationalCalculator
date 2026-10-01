@@ -419,6 +419,78 @@ const ATOMS: ModuleDef[] = [
     sliders: true,
     representation: { kind: 'atomModel', protons: 'p', electrons: 'e', charge: 'q' },
   },
+  {
+    id: 's.10.atomic-structure~average-mass',
+    title: 'Average atomic mass from isotopes',
+    use: 'Use this for “Boron is 19.9% boron-10 (10.01 u) and 80.1% boron-11 (11.01 u). Find its atomic mass.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The element has two isotopes; their percents add to 100%.',
+      'The atomic mass on the periodic table is the average over the atoms, weighted by how common each isotope is.',
+    ],
+    variables: [
+      quantity('m1', 'm₁', 'Mass of the first isotope', 'u', 0.1, 300, 0.01),
+      quantity('m2', 'm₂', 'Mass of the second isotope', 'u', 0.1, 300, 0.01),
+      quantity('f1', 'f₁', 'Abundance of the first isotope', '%', 0, 100, 0.1),
+      {
+        ...quantity('f2', 'f₂', 'Abundance of the second isotope', '%', 0, 100, 0.1),
+        derived: true,
+      },
+      { ...quantity('A', 'A', 'Average atomic mass', 'u', 0.1, 300, 0.01), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'f2 = 100 − f1',
+          display: '{f2} = 100 − {f1}',
+          vars: ['f2', 'f1'],
+          residual: (v) => v.f2! - (100 - v.f1!),
+          solve: { f2: (v) => 100 - v.f1!, f1: (v) => 100 - v.f2! },
+        },
+        steps: {
+          f2: { expr: '100 − {f1}', how: 'The two isotopes make up all the atoms: 100%.' },
+          f1: { expr: '100 − {f2}', how: 'The rest of the 100% is the first isotope.' },
+        },
+      },
+      {
+        relation: {
+          id: 'A = m1 f1 + m2 f2',
+          display: '{A} = {m1} × {f1}/100 + {m2} × {f2}/100',
+          vars: ['A', 'm1', 'f1', 'm2', 'f2'],
+          residual: (v) => 100 * v.A! - (v.m1! * v.f1! + v.m2! * v.f2!),
+          solve: {
+            A: (v) => (v.m1! * v.f1! + v.m2! * v.f2!) / 100,
+            m1: (v) => (v.f1! > 0 ? (100 * v.A! - v.m2! * v.f2!) / v.f1! : undefined),
+            m2: (v) => (v.f2! > 0 ? (100 * v.A! - v.m1! * v.f1!) / v.f2! : undefined),
+          },
+        },
+        steps: {
+          A: {
+            expr: '{m1} × {f1}/100 + {m2} × {f2}/100',
+            how: 'Each isotope counts as much as its share of the atoms.',
+          },
+          m1: {
+            expr: '(100 × {A} − {m2} × {f2})/{f1}',
+            how: 'Take the second isotope’s share away and divide by the first one’s percent.',
+          },
+          m2: {
+            expr: '(100 × {A} − {m1} × {f1})/{f2}',
+            how: 'Take the first isotope’s share away and divide by the second one’s percent.',
+          },
+        },
+      },
+    ),
+    example: { m1: 10.01, m2: 11.01, f1: 19.9, f2: 80.1, A: (10.01 * 19.9 + 11.01 * 80.1) / 100 },
+    startWith: ['m1', 'm2', 'f1'],
+    representation: {
+      kind: 'chemDiagram',
+      mode: 'isotopes',
+      element: 'B',
+      masses: ['m1', 'm2'],
+      percents: ['f1', 'f2'],
+      average: 'A',
+    },
+  },
 ];
 
 // ─── Electrons in atoms ──────────────────────────────────────────────────────
@@ -1066,7 +1138,7 @@ const IONIC: ModuleDef = {
   assumptions: [
     'The metal gives electrons and the nonmetal takes them: the total positive charge equals the total negative charge.',
     'The formula uses the lowest whole-number ratio of ions.',
-    'The picture draws magnesium chloride, Mg²⁺ with Cl⁻; other charges are worked in the rows.',
+    'The picture draws Na⁺, Mg²⁺ or Al³⁺ for a charge of 1, 2 or 3, and Cl⁻, O²⁻ or N³⁻ for the nonmetal.',
   ],
   variables: [
     whole('cp', 'c₊', 'Charge of the metal ion', 1, 3),
@@ -1135,6 +1207,7 @@ const IONIC: ModuleDef = {
     metals: 'a',
     nonmetals: 'b',
     transferred: 't',
+    charges: { metal: 'cp', nonmetal: 'cn' },
   },
 };
 
@@ -1466,11 +1539,16 @@ function combustionPage(
     startWith: ['x'],
     equation: '{a:coef} C_{x}H_{y} + {b:coef} O₂ → {c:coef} CO₂ + {d:coef} H₂O',
     representation: {
-      kind: 'lewisStructure',
-      mode: 'hydrocarbon',
-      carbons: 'x',
-      bond,
-      hydrogens: 'y',
+      kind: 'reaction',
+      reactants: [
+        { formula: 'C{x}H{y}', count: 'a' },
+        { formula: 'O2', count: 'b' },
+      ],
+      products: [
+        { formula: 'CO2', count: 'c' },
+        { formula: 'H2O', count: 'd' },
+      ],
+      most: 25,
     },
   };
 }
@@ -1499,11 +1577,12 @@ const BALANCING: ModuleDef[] = [
       'Aluminum burns in oxygen to make aluminum oxide, one product from two reactants.',
       'Oxygen comes in pairs and Al₂O₃ holds 3, so the oxygen atoms must be a multiple of 6: 4 aluminum atoms at a time.',
       'The balanced equation uses the smallest whole numbers, 4, 3 and 2; larger inputs are the same reaction run more times.',
+      'Aluminum oxide is ionic: each formula unit is two Al³⁺ and three O²⁻, drawn as ions with no bonds.',
     ],
     variables: [
-      { ...coefficient('a', 'Aluminum atoms', 4, 8), multipleOf: 4 },
-      { ...coefficient('b', 'Oxygen molecules', 0, 6), derived: true },
-      { ...coefficient('c', 'Aluminum oxide formula units', 0, 4), derived: true },
+      { ...coefficient('a', 'Aluminum atoms', 4, 16), multipleOf: 4 },
+      { ...coefficient('b', 'Oxygen molecules', 0, 12), derived: true },
+      { ...coefficient('c', 'Aluminum oxide formula units', 0, 8), derived: true },
     ],
     ...rules(
       scaled(
@@ -1537,6 +1616,8 @@ const BALANCING: ModuleDef[] = [
         { formula: 'O2', count: 'b' },
       ],
       products: [{ formula: 'Al2O3', count: 'c' }],
+      ions: true,
+      most: 16,
     },
   },
   {
@@ -1548,12 +1629,13 @@ const BALANCING: ModuleDef[] = [
       'Zinc takes the place of hydrogen: the hydrogen leaves as a gas.',
       'Each ZnCl₂ needs 2 chlorine atoms, so 2 HCl for each zinc atom.',
       'The balanced equation uses the smallest whole numbers, 1, 2, 1 and 1; larger inputs are the same reaction run more times.',
+      'Zinc chloride is ionic: one Zn²⁺ and two Cl⁻, drawn as ions with no shared bonds.',
     ],
     variables: [
-      coefficient('a', 'Zinc atoms', 1, 4),
-      { ...coefficient('b', 'Hydrogen chloride molecules', 0, 8), derived: true },
-      { ...coefficient('c', 'Zinc chloride formula units', 0, 4), derived: true },
-      { ...coefficient('d', 'Hydrogen molecules', 0, 4), derived: true },
+      coefficient('a', 'Zinc atoms', 1, 8),
+      { ...coefficient('b', 'Hydrogen chloride molecules', 0, 16), derived: true },
+      { ...coefficient('c', 'Zinc chloride formula units', 0, 8), derived: true },
+      { ...coefficient('d', 'Hydrogen molecules', 0, 8), derived: true },
     ],
     ...rules(
       scaled('c', 1, 'a', ['Zinc: one ZnCl₂ for each zinc atom.', 'Zinc: one atom per ZnCl₂.']),
@@ -1582,6 +1664,8 @@ const BALANCING: ModuleDef[] = [
         { formula: 'ZnCl2', count: 'c' },
         { formula: 'H2', count: 'd' },
       ],
+      ions: true,
+      most: 16,
     },
   },
 ];
@@ -2108,6 +2192,32 @@ function limitingPage(
   };
 }
 
+/** out = x ÷ k or x × k with a fixed factor k: grams to moles, moles to grams, a mole ratio. */
+const scaleBy = (
+  out: string,
+  x: string,
+  k: number,
+  kText: string,
+  how: [string, string],
+): Rule => ({
+  relation: {
+    id: `${out} = ${x} × ${kText}`,
+    display: `{${out}} = {${x}} × ${kText}`,
+    vars: [out, x],
+    residual: (v) => v[out]! - v[x]! * k,
+    solve: { [out]: (v) => v[x]! * k, [x]: (v) => v[out]! / k },
+  },
+  steps: {
+    [out]: { expr: `{${x}} × ${kText}`, how: how[0] },
+    [x]: { expr: `{${out}}/(${kText})`, how: how[1] },
+  },
+});
+
+/** Molar masses from the table, to 2 decimals (molarMassOf): N₂ 28.01, H₂ 2.02, NH₃ 17.03. */
+const M_N2 = 28.01;
+const M_H2 = 2.02;
+const M_NH3 = 17.03;
+
 const STOICHIOMETRY: ModuleDef[] = [
   {
     id: 's.10.stoichiometry',
@@ -2172,6 +2282,94 @@ const STOICHIOMETRY: ModuleDef[] = [
     ],
     [['NH3', 2]],
   ),
+  {
+    id: 's.10.stoichiometry~limiting-grams',
+    title: 'The limiting reactant from grams',
+    use: 'Use this for “28.01 g of N₂ and 5.05 g of H₂ react. How many grams of NH₃ form?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The equation is balanced: N₂ + 3 H₂ → 2 NH₃.',
+      'Grams can’t be compared directly: change each to moles, then to the product’s moles.',
+      'The reactant that makes less product runs out first: it is the limiting reactant.',
+    ],
+    variables: [
+      quantity('m1', 'm₁', 'Mass of N₂', 'g', 0.01, 10000),
+      quantity('m2', 'm₂', 'Mass of H₂', 'g', 0.01, 10000),
+      { ...quantity('n1', 'n₁', 'Moles of N₂', 'mol', 0.0001, 1000, 0.0001), derived: true },
+      { ...quantity('n2', 'n₂', 'Moles of H₂', 'mol', 0.0001, 1000, 0.0001), derived: true },
+      {
+        ...quantity('y1', 'y₁', 'NH₃ the N₂ could make', 'mol', 0.0001, 2000, 0.0001),
+        derived: true,
+      },
+      {
+        ...quantity('y2', 'y₂', 'NH₃ the H₂ could make', 'mol', 0.0001, 2000, 0.0001),
+        derived: true,
+      },
+      { ...quantity('n', 'n', 'Moles of NH₃ made', 'mol', 0.0001, 2000, 0.0001), derived: true },
+      { ...quantity('m', 'm', 'Mass of NH₃ made', 'g', 0.001, 40000, 0.01), derived: true },
+    ],
+    ...rules(
+      scaleBy('n1', 'm1', 1 / M_N2, `1/${M_N2}`, [
+        `Divide the grams of N₂ by its molar mass, ${M_N2} g/mol.`,
+        `Multiply the moles by ${M_N2} g/mol.`,
+      ]),
+      scaleBy('n2', 'm2', 1 / M_H2, `1/${M_H2}`, [
+        `Divide the grams of H₂ by its molar mass, ${M_H2} g/mol.`,
+        `Multiply the moles by ${M_H2} g/mol.`,
+      ]),
+      scaleBy('y1', 'n1', 2, '2', [
+        'Mole ratio: 1 N₂ makes 2 NH₃.',
+        'Mole ratio: 2 NH₃ come from 1 N₂.',
+      ]),
+      scaleBy('y2', 'n2', 2 / 3, '2/3', [
+        'Mole ratio: 3 H₂ make 2 NH₃.',
+        'Mole ratio: 2 NH₃ come from 3 H₂.',
+      ]),
+      {
+        relation: {
+          id: 'n = smaller yield',
+          display: '{n} = the smaller of {y1} and {y2}',
+          vars: ['n', 'y1', 'y2'],
+          residual: (v) => v.n! - Math.min(v.y1!, v.y2!),
+          solve: { n: (v) => Math.min(v.y1!, v.y2!), y1: () => undefined, y2: () => undefined },
+        },
+        steps: {
+          n: {
+            expr: 'the smaller of {y1} and {y2}',
+            how: 'The reaction stops when the limiting reactant runs out, so only the smaller amount forms.',
+          },
+        },
+      },
+      scaleBy('m', 'n', M_NH3, String(M_NH3), [
+        `Multiply the moles of NH₃ by its molar mass, ${M_NH3} g/mol.`,
+        `Divide the grams by ${M_NH3} g/mol.`,
+      ]),
+    ),
+    example: {
+      m1: 28.01,
+      m2: 5.05,
+      n1: 1,
+      n2: 2.5,
+      y1: 2,
+      y2: 5 / 3,
+      n: 5 / 3,
+      m: (5 / 3) * M_NH3,
+    },
+    startWith: ['m1', 'm2'],
+    representation: {
+      kind: 'moleMap',
+      formula: 'NH3',
+      moles: 'n',
+      mass: 'm',
+      limiting: {
+        coef: 2,
+        reactants: [
+          { formula: 'N2', coef: 1, mass: 'm1', moles: 'n1', yields: 'y1' },
+          { formula: 'H2', coef: 3, mass: 'm2', moles: 'n2', yields: 'y2' },
+        ],
+      },
+    },
+  },
   {
     id: 's.10.stoichiometry~percent-yield',
     title: 'Percent yield',
@@ -2543,6 +2741,57 @@ const GAS: ModuleDef[] = [
       volume: 'V2',
       temperature: 'T2',
       keep: ['P1', 'V1', 'T1', 'T2'],
+    },
+  },
+  {
+    id: 's.10.gas-laws~effusion',
+    title: 'Effusion: Graham’s law',
+    use: 'Use this for “Hydrogen and oxygen leak from one balloon. Which escapes faster, and how many times as fast?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Both gases are at the same temperature, so their molecules have the same average kinetic energy.',
+      'Lighter molecules move faster, so they find the pinhole more often.',
+      'rate₁ ÷ rate₂ = √(M₂ ÷ M₁).',
+    ],
+    variables: [
+      quantity('M1', 'M₁', 'Molar mass of H₂', 'g/mol', 0.1, 1000, 0.001),
+      quantity('M2', 'M₂', 'Molar mass of O₂', 'g/mol', 0.1, 1000, 0.001),
+      {
+        ...quantity('r', 'r', 'How many times as fast H₂ escapes', undefined, 0.01, 100, 0.01),
+        derived: true,
+      },
+    ],
+    ...rules({
+      relation: {
+        id: 'r = √(M2/M1)',
+        display: '{r} = √({M2}/{M1})',
+        vars: ['r', 'M1', 'M2'],
+        residual: (v) => v.r! * v.r! * v.M1! - v.M2!,
+        solve: {
+          r: (v) => (v.M1! > 0 && v.M2! > 0 ? Math.sqrt(v.M2! / v.M1!) : undefined),
+          M1: (v) => (v.r! > 0 ? v.M2! / (v.r! * v.r!) : undefined),
+          M2: (v) => v.r! * v.r! * v.M1!,
+        },
+      },
+      steps: {
+        r: {
+          expr: '√({M2}/{M1})',
+          how: 'Graham’s law: the rate goes as 1 over the square root of the molar mass.',
+        },
+        M1: { expr: '{M2}/{r}²', how: 'Square the ratio and divide it into M₂.' },
+        M2: { expr: '{r}² × {M1}', how: 'Square the ratio and multiply by M₁.' },
+      },
+    }),
+    example: { M1: 2.016, M2: 32, r: Math.sqrt(32 / 2.016) },
+    startWith: ['M1', 'M2'],
+    representation: {
+      kind: 'chemDiagram',
+      mode: 'effusion',
+      gases: [
+        { formula: 'H2', molarMass: 'M1' },
+        { formula: 'O2', molarMass: 'M2' },
+      ],
+      ratio: 'r',
     },
   },
 ];
@@ -3021,6 +3270,39 @@ const stageRule = (q: string, k: number, kText: string, how: string): Rule => ({
   },
 });
 
+/** An enthalpy on the ladder pages, in kJ to a tenth. */
+const ladderKJ = (id: string, symbol: string, name: string): VariableDef =>
+  quantity(id, symbol, name, 'kJ', -100000, 100000, 0.1);
+
+/** out = a + b, or out = a − b. */
+const addRule = (
+  out: string,
+  a: string,
+  b: string,
+  op: '+' | '−',
+  how: [string, string, string],
+): Rule => {
+  const s = op === '+' ? 1 : -1;
+  return {
+    relation: {
+      id: `${out} = ${a} ${op} ${b}`,
+      display: `{${out}} = {${a}} ${op} {${b}}`,
+      vars: [out, a, b],
+      residual: (v) => v[out]! - (v[a]! + s * v[b]!),
+      solve: {
+        [out]: (v) => v[a]! + s * v[b]!,
+        [a]: (v) => v[out]! - s * v[b]!,
+        [b]: (v) => s * (v[out]! - v[a]!),
+      },
+    },
+    steps: {
+      [out]: { expr: `{${a}} ${op} {${b}}`, how: how[0] },
+      [a]: { expr: op === '+' ? `{${out}} − {${b}}` : `{${out}} + {${b}}`, how: how[1] },
+      [b]: { expr: op === '+' ? `{${out}} − {${a}}` : `{${a}} − {${out}}`, how: how[2] },
+    },
+  };
+};
+
 const THERMO: ModuleDef[] = [
   {
     id: 's.10.thermochemistry',
@@ -3206,6 +3488,131 @@ const THERMO: ModuleDef[] = [
       names: ['ice', 'water', 'steam'],
       units: { time: 'J' },
       formula: 'H2O',
+    },
+  },
+  {
+    id: 's.10.thermochemistry~formation',
+    title: 'ΔH from heats of formation',
+    use: 'Use this for “Find ΔH for CH₄ + 2O₂ → CO₂ + 2H₂O from the heats of formation.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'An element in its standard state has a heat of formation of 0, so O₂ adds nothing.',
+      'Each heat of formation is per mole, so multiply it by the coefficient.',
+      'The water is liquid.',
+    ],
+    variables: [
+      ladderKJ('f1', 'ΔHf(CH₄)', 'Heat of formation of CH₄'),
+      ladderKJ('f2', 'ΔHf(CO₂)', 'Heat of formation of CO₂'),
+      ladderKJ('f3', 'ΔHf(H₂O)', 'Heat of formation of H₂O'),
+      { ...ladderKJ('Hr', 'Hᵣ', 'Reactants’ heats of formation, added'), derived: true },
+      { ...ladderKJ('Hp', 'Hₚ', 'Products’ heats of formation, added'), derived: true },
+      { ...ladderKJ('dH', 'ΔH', 'Enthalpy change of the reaction'), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Hr = f1',
+          display: '{Hr} = {f1} + 2 × 0',
+          vars: ['Hr', 'f1'],
+          residual: (v) => v.Hr! - v.f1!,
+          solve: { Hr: (v) => v.f1!, f1: (v) => v.Hr! },
+        },
+        steps: {
+          Hr: { expr: '{f1} + 2 × 0', how: 'One CH₄, and O₂ is an element: 0.' },
+          f1: { expr: '{Hr} − 2 × 0', how: 'The O₂ adds nothing, so it is all CH₄.' },
+        },
+      },
+      {
+        relation: {
+          id: 'Hp = f2 + 2 f3',
+          display: '{Hp} = {f2} + 2 × {f3}',
+          vars: ['Hp', 'f2', 'f3'],
+          residual: (v) => v.Hp! - (v.f2! + 2 * v.f3!),
+          solve: {
+            Hp: (v) => v.f2! + 2 * v.f3!,
+            f2: (v) => v.Hp! - 2 * v.f3!,
+            f3: (v) => (v.Hp! - v.f2!) / 2,
+          },
+        },
+        steps: {
+          Hp: { expr: '{f2} + 2 × {f3}', how: 'One CO₂ and two H₂O, each times its coefficient.' },
+          f2: { expr: '{Hp} − 2 × {f3}', how: 'Take the two waters away.' },
+          f3: {
+            expr: '({Hp} − {f2})/2',
+            how: 'Take the CO₂ away and share the rest between two waters.',
+          },
+        },
+      },
+      addRule('dH', 'Hp', 'Hr', '−', [
+        'Products minus reactants: both are measured from the same elements.',
+        'Add the reactants back to ΔH.',
+        'The products less ΔH.',
+      ]),
+    ),
+    example: { f1: -74.8, f2: -393.5, f3: -285.8, Hr: -74.8, Hp: -965.1, dH: -890.3 },
+    startWith: ['f1', 'f2', 'f3'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'ladder',
+      levels: [
+        { name: 'Elements', value: 0 },
+        { name: 'CH₄ + 2 O₂', value: 'Hr' },
+        { name: 'CO₂ + 2 H₂O', value: 'Hp' },
+      ],
+      steps: [
+        { from: 0, to: 1, value: 'Hr', label: 'Reactants' },
+        { from: 0, to: 2, value: 'Hp', label: 'Products' },
+      ],
+      total: { from: 1, to: 2, value: 'dH' },
+    },
+  },
+  {
+    id: 's.10.thermochemistry~hess',
+    title: 'Hess’s law: adding steps',
+    use: 'Use this for “Find ΔH for C + O₂ → CO₂ from C + ½O₂ → CO and CO₂ → CO + ½O₂.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'ΔH depends only on where a reaction starts and ends, not on the path.',
+      'Reversing an equation flips the sign of its ΔH.',
+      'The steps add up to the overall equation: the CO made in step 1 is used in step 2.',
+    ],
+    variables: [
+      ladderKJ('d1', 'ΔH₁', 'Step 1: C + ½O₂ → CO'),
+      ladderKJ('g2', 'ΔHgiven', 'Given: CO₂ → CO + ½O₂'),
+      { ...ladderKJ('d2', 'ΔH₂', 'Step 2 reversed: CO + ½O₂ → CO₂'), derived: true },
+      { ...ladderKJ('dH', 'ΔH', 'Overall: C + O₂ → CO₂'), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'd2 = −g2',
+          display: '{d2} = −{g2}',
+          vars: ['d2', 'g2'],
+          residual: (v) => v.d2! + v.g2!,
+          solve: { d2: (v) => -v.g2!, g2: (v) => -v.d2! },
+        },
+        steps: {
+          d2: { expr: '−{g2}', how: 'The step is used backwards, so its ΔH changes sign.' },
+          g2: { expr: '−{d2}', how: 'The given equation runs the other way: flip the sign.' },
+        },
+      },
+      addRule('dH', 'd1', 'd2', '+', [
+        'Hess’s law: add the steps’ ΔH.',
+        'The overall change less step 2.',
+        'The overall change less step 1.',
+      ]),
+    ),
+    example: { d1: -110.5, g2: 283, d2: -283, dH: -393.5 },
+    startWith: ['d1', 'g2'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'ladder',
+      levels: [{ name: 'C + O₂', value: 0 }, { name: 'CO + ½O₂' }, { name: 'CO₂' }],
+      steps: [
+        { from: 0, to: 1, value: 'd1' },
+        { from: 1, to: 2, value: 'd2', flipped: true },
+      ],
+      total: { from: 0, to: 2, value: 'dH' },
     },
   },
 ];
@@ -3839,6 +4246,61 @@ const ORGANIC: ModuleDef[] = [
     'triple',
     2,
   ),
+  {
+    id: 's.10.organic~isomers',
+    title: 'Isomers: a branched alkane',
+    use: 'Use this for “Draw an isomer of pentane” or “How many hydrogens does 2-methylbutane have?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The main chain is the longest chain of carbons; a methyl group, CH₃, hangs off its second carbon.',
+      'Isomers have the same formula but different structures: 2-methylbutane and pentane are both C₅H₁₂.',
+    ],
+    variables: [
+      whole('n', 'n', 'Carbons in the main chain', 3, 7),
+      { ...whole('c', 'c', 'Carbons in all', 4, 8), derived: true },
+      { ...whole('h', 'h', 'Hydrogen atoms', 10, 18), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'c = n + 1',
+          display: '{c} = {n} + 1',
+          vars: ['c', 'n'],
+          residual: (v) => v.c! - v.n! - 1,
+          solve: { c: (v) => v.n! + 1, n: (v) => v.c! - 1 },
+        },
+        steps: {
+          c: {
+            expr: '{n} + 1',
+            how: 'The methyl group adds one carbon to the main chain’s carbons.',
+          },
+          n: { expr: '{c} − 1', how: 'Take the methyl carbon away.' },
+        },
+      },
+      {
+        relation: {
+          id: 'h = 2c + 2',
+          display: '{h} = 2 × {c} + 2',
+          vars: ['h', 'c'],
+          residual: (v) => v.h! - (2 * v.c! + 2),
+          solve: { h: (v) => 2 * v.c! + 2, c: (v) => (v.h! - 2) / 2 },
+        },
+        steps: {
+          h: { expr: '2 × {c} + 2', how: 'Any alkane, branched or not, is CₙH₂ₙ₊₂.' },
+          c: { expr: '({h} − 2)/2', how: 'Undo 2 × carbons + 2.' },
+        },
+      },
+    ),
+    example: { n: 4, c: 5, h: 12 },
+    startWith: ['n'],
+    representation: {
+      kind: 'lewisStructure',
+      mode: 'hydrocarbon',
+      carbons: 'n',
+      hydrogens: 'h',
+      branches: [2],
+    },
+  },
 ];
 
 // ─── Nuclear chemistry ───────────────────────────────────────────────────────
@@ -4149,6 +4611,86 @@ const NUCLEAR: ModuleDef[] = [
       ],
     },
   },
+  {
+    id: 's.10.nuclear-chemistry~mass-defect',
+    title: 'The mass defect: where the energy comes from',
+    use: 'Use this for “U-238 gives off an alpha particle. How much mass is lost, and how much energy is released?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The masses are of the nuclei with their electrons (atomic masses), in unified atomic mass units.',
+      'The mass lost becomes energy, E = mc²: 931.5 MeV for each unit of mass.',
+    ],
+    variables: [
+      quantity('mb', 'm', 'Mass of U-238', 'u', 0.000001, 300, 0.000001),
+      quantity('m1', 'm₁', 'Mass of Th-234', 'u', 0.000001, 300, 0.000001),
+      quantity('m2', 'm₂', 'Mass of He-4', 'u', 0.000001, 300, 0.000001),
+      {
+        ...quantity('dm', 'Δm', 'Mass lost', 'u', 0.000001, 300, 0.000001),
+        min: -300,
+        derived: true,
+      },
+      {
+        ...quantity('E', 'E', 'Energy released', 'MeV', -100000, 100000, 0.01),
+        derived: true,
+      },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'mass is lost',
+          constraint: true,
+          display: 'The mass after, {m1} + {m2}, is less than {mb}',
+          vars: ['mb', 'm1', 'm2'],
+          residual: (v) => (v.m1! + v.m2! < v.mb! ? 0 : 1),
+          solve: {},
+        },
+        steps: {},
+      },
+      {
+        relation: {
+          id: 'dm = mb − (m1 + m2)',
+          display: '{dm} = {mb} − ({m1} + {m2})',
+          vars: ['dm', 'mb', 'm1', 'm2'],
+          residual: (v) => v.dm! - (v.mb! - v.m1! - v.m2!),
+          solve: {
+            dm: (v) => v.mb! - v.m1! - v.m2!,
+            mb: (v) => v.dm! + v.m1! + v.m2!,
+            m1: (v) => v.mb! - v.dm! - v.m2!,
+            m2: (v) => v.mb! - v.dm! - v.m1!,
+          },
+        },
+        steps: {
+          dm: { expr: '{mb} − ({m1} + {m2})', how: 'The mass before less the mass after.' },
+          mb: { expr: '{dm} + {m1} + {m2}', how: 'The mass after plus what was lost.' },
+          m1: { expr: '{mb} − {dm} − {m2}', how: 'What is left of the mass for the thorium.' },
+          m2: { expr: '{mb} − {dm} − {m1}', how: 'What is left of the mass for the helium.' },
+        },
+      },
+      scaleBy('E', 'dm', 931.5, '931.5', [
+        'Each unit of mass lost becomes 931.5 MeV of energy.',
+        'Divide the energy by 931.5 MeV per unit.',
+      ]),
+    ),
+    example: {
+      mb: 238.050788,
+      m1: 234.043601,
+      m2: 4.002603,
+      dm: 238.050788 - 234.043601 - 4.002603,
+      E: (238.050788 - 234.043601 - 4.002603) * 931.5,
+    },
+    startWith: ['mb', 'm1', 'm2'],
+    representation: {
+      kind: 'chemDiagram',
+      mode: 'massDefect',
+      before: [{ name: 'U-238', mass: 'mb' }],
+      after: [
+        { name: 'Th-234', mass: 'm1' },
+        { name: 'He-4', mass: 'm2' },
+      ],
+      defect: 'dm',
+      energy: 'E',
+    },
+  },
 ];
 
 // ─── Pages the lesson review added ───────────────────────────────────────────
@@ -4168,7 +4710,7 @@ const ADDED: ModuleDef[] = [
     unitSystems: ['metric'],
     assumptions: [
       'A reactant is used up, so its concentration falls: the rate is −Δ[A]/Δt, a positive number.',
-      'It is an average: the line through the two readings has slope Δ[A]/Δt, though the true curve is steepest at the start.',
+      'It is an average: the secant through the two readings has slope Δ[A]/Δt, though the curve is steepest at the start.',
     ],
     variables: [
       conc('A1', '[A]₁', 'Concentration at the first time'),
@@ -4178,16 +4720,6 @@ const ADDED: ModuleDef[] = [
       quantity('dt', 'Δt', 'Time between', 's', 0.1, 100000, 0.1),
       quantity('dA', 'Δ[A]', 'Change in concentration', 'mol/L', -100, 0, 0.0001),
       quantity('r', 'r', 'Average rate', 'mol/(L·s)', 0, 1000, 0.000001),
-      {
-        ...quantity('m', 'm', 'Slope of the line', undefined, -1000, 0, 0.000001),
-        derived: true,
-        hidden: true,
-      },
-      {
-        ...quantity('b0', 'b', 'Where the line meets the axis', undefined, -1e7, 1e7, 0.000001),
-        derived: true,
-        hidden: true,
-      },
     ],
     ...rules(
       {
@@ -4246,30 +4778,6 @@ const ADDED: ModuleDef[] = [
           dt: { expr: '−{dA}/{r}', how: 'Divide the drop by the rate.' },
         },
       },
-      {
-        relation: {
-          id: 'slope of the line',
-          hidden: true,
-          display: '{m} = {dA}/{dt}',
-          vars: ['m', 'dA', 'dt'],
-          residual: (v) => v.m! * v.dt! - v.dA!,
-          solve: { m: (v) => div(v.dA!, v.dt!) },
-        },
-        steps: { m: { expr: '{dA}/{dt}', how: 'Rise over run between the two readings.' } },
-      },
-      {
-        relation: {
-          id: 'line through the first reading',
-          hidden: true,
-          display: '{b0} = {A1} − {m} × {t1}',
-          vars: ['b0', 'A1', 'm', 't1'],
-          residual: (v) => v.b0! - (v.A1! - v.m! * v.t1!),
-          solve: { b0: (v) => v.A1! - v.m! * v.t1! },
-        },
-        steps: {
-          b0: { expr: '{A1} − {m} × {t1}', how: 'The line passes through the first reading.' },
-        },
-      },
     ),
     example: {
       A1: 1.2,
@@ -4279,19 +4787,16 @@ const ADDED: ModuleDef[] = [
       dt: 90,
       dA: -0.45,
       r: 0.005,
-      m: -0.005,
-      b0: 1.35,
     },
     startWith: ['A1', 'A2', 't1', 't2'],
     representation: {
-      kind: 'functionGraph',
-      family: 'linear',
-      m: 'm',
-      b: 'b0',
-      secant: { x: 't1', h: 'dt' },
-      xMin: 0,
-      axes: { x: 'Time t (s)', y: 'Concentration [A] (mol/L)' },
-      fixed: true,
+      kind: 'chemDiagram',
+      mode: 'rate',
+      times: ['t1', 't2'],
+      concentrations: ['A1', 'A2'],
+      span: 'dt',
+      change: 'dA',
+      rate: 'r',
     },
   },
   {
@@ -4412,7 +4917,19 @@ const ADDED: ModuleDef[] = [
     ),
     example: { P1: 2, P2: 0.5, P3: 1.5, P: 4, x: 0.5 },
     startWith: ['P1', 'P2', 'P3'],
-    representation: { kind: 'pieChart', parts: ['P1', 'P2', 'P3'], total: 'P' },
+    representation: {
+      kind: 'gasPiston',
+      law: 'ideal',
+      mixture: {
+        gases: [
+          { formula: 'He', pressure: 'P1' },
+          { formula: 'O2', pressure: 'P2' },
+          { formula: 'N2', pressure: 'P3' },
+        ],
+        total: 'P',
+        fraction: 'x',
+      },
+    },
   },
   {
     id: 's.10.molarity~percent-mass',
@@ -4528,15 +5045,57 @@ const ADDED: ModuleDef[] = [
     }),
     example: { Ec: 0.34, Ea: -0.76, E: 1.1 },
     startWith: ['Ec', 'Ea'],
+    representation: { kind: 'chemDiagram', mode: 'cell', cathode: 'Ec', anode: 'Ea', voltage: 'E' },
+  },
+  {
+    id: 's.10.redox~oxidation-numbers',
+    title: 'Oxidation numbers: the atom to find',
+    use: 'Use this for “What is the oxidation number of S in H₂SO₄?” or in SO₄²⁻.',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Hydrogen is +1 and oxygen −2 in most compounds.',
+      'The oxidation numbers of all the atoms add up to the charge: 0 for a neutral compound.',
+    ],
+    variables: [
+      whole('x', 'x', 'Oxidation number of the sulfur', -4, 8),
+      whole('h', 'h', 'Hydrogen atoms', 0, 4),
+      whole('o', 'o', 'Oxygen atoms', 0, 4),
+      whole('q', 'q', 'Charge of the particle', -3, 3),
+    ],
+    ...rules({
+      relation: {
+        id: 'x + h − 2o = q',
+        display: '{x} + {h} × (+1) + {o} × (−2) = {q}',
+        vars: ['x', 'h', 'o', 'q'],
+        residual: (v) => v.x! + v.h! - 2 * v.o! - v.q!,
+        solve: {
+          x: (v) => v.q! - v.h! + 2 * v.o!,
+          h: (v) => v.q! - v.x! + 2 * v.o!,
+          o: (v) => (v.x! + v.h! - v.q!) / 2,
+          q: (v) => v.x! + v.h! - 2 * v.o!,
+        },
+      },
+      steps: {
+        x: {
+          expr: '{q} − {h} + 2 × {o}',
+          how: 'Take the hydrogens’ +1 each away from the charge and add back the oxygens’ −2 each.',
+        },
+        h: { expr: '{q} − {x} + 2 × {o}', how: 'What the charge still needs, +1 per hydrogen.' },
+        o: {
+          expr: '({x} + {h} − {q})/2',
+          how: 'What the other atoms have too much of, −2 per oxygen.',
+        },
+        q: { expr: '{x} + {h} − 2 × {o}', how: 'Add every atom’s oxidation number.' },
+      },
+    }),
+    example: { x: 6, h: 2, o: 4, q: 0 },
+    startWith: ['h', 'o', 'q'],
     representation: {
-      kind: 'integerLine',
-      value: 'Ea',
-      second: 'Ec',
-      change: 'E',
-      min: -3,
-      max: 1,
-      vertical: true,
-      unit: 'V',
+      kind: 'chemDiagram',
+      mode: 'oxidation',
+      formula: 'H{h}SO{o}',
+      numbers: { H: 1, S: 'x', O: -2 },
+      charge: 'q',
     },
   },
 ];
@@ -4591,11 +5150,6 @@ const PHASE: ModuleDef[] = [
       quantity('Tf', 'Tf', 'Freezing point of the solution', '°C', -45, 0, 0.0001),
       quantity('dTb', 'ΔTb', 'Boiling point rise', '°C', 0, 13, 0.0001),
       quantity('Tb', 'Tb', 'Boiling point of the solution', '°C', 100, 113, 0.0001),
-      {
-        ...quantity('T0', 'T₀', 'Where the curve starts', '°C', -55, -10, 0.0001),
-        derived: true,
-        hidden: true,
-      },
     ],
     ...rules(
       {
@@ -4691,17 +5245,6 @@ const PHASE: ModuleDef[] = [
           dTb: { expr: '{Tb} − 100', how: 'How far above 100 °C the solution boils.' },
         },
       },
-      {
-        relation: {
-          id: 'curve start',
-          hidden: true,
-          display: '{T0} = {Tf} − 10',
-          vars: ['T0', 'Tf'],
-          residual: (v) => v.T0! - (v.Tf! - 10),
-          solve: { T0: (v) => v.Tf! - 10 },
-        },
-        steps: {},
-      },
     ),
     example: {
       g: 27.75,
@@ -4714,17 +5257,15 @@ const PHASE: ModuleDef[] = [
       Tf: -3 * 1.86 * 0.5,
       dTb: 3 * 0.512 * 0.5,
       Tb: 100 + 3 * 0.512 * 0.5,
-      T0: -3 * 1.86 * 0.5 - 10,
     },
     startWith: ['g', 'M', 'w', 'i'],
     representation: {
-      kind: 'heatingCurve',
-      start: 'T0',
-      melt: 'Tf',
-      boil: 'Tb',
-      spans: [4, 8, 10, 20],
-      names: ['ice', 'solution', 'steam'],
-      formula: 'H2O',
+      kind: 'chemDiagram',
+      mode: 'phase',
+      freezing: 'Tf',
+      boiling: 'Tb',
+      drop: 'dTf',
+      rise: 'dTb',
     },
   },
   {
