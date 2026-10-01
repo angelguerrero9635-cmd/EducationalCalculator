@@ -11,7 +11,7 @@ import type { ComplexPlaneSpec } from '@/data/modules/typesHsd';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, useRep } from './common';
+import { Canvas, Caption, ChartText, useRep } from './common';
 import { complexText } from './ComplexPlane';
 import { argOf, powersOf, rootsOf } from './complexPowers';
 import { Arrow, makeFrame } from './graphKit';
@@ -76,7 +76,13 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
           const f = makeFrame(w, h, [win.lo, win.hi], [win.lo, win.hi], true, true);
           const O = { x: f.sx(0), y: f.sy(0) };
           const P = (p: { a: number; b: number }) => ({ x: f.sx(p.a), y: f.sy(p.b) });
-          const tip = (p: { a: number; b: number }, text: string, color: string, bold = true) => {
+          const tip = (
+            p: { a: number; b: number },
+            text: string,
+            color: string,
+            bold = true,
+            mirror = false,
+          ) => {
             const q = P(p);
             const len = Math.hypot(q.x - O.x, q.y - O.y) || 1;
             const [ux, uy] = [(q.x - O.x) / len, (q.y - O.y) / len];
@@ -85,7 +91,7 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
             const upright = Math.abs(ux) < 0.3;
             return (
               <MathChip
-                x={flat ? q.x - ux * 4 : upright ? q.x + 10 : q.x + ux * 12}
+                x={flat ? q.x - ux * 4 : upright ? q.x + 10 : q.x + (mirror ? -ux : ux) * 12}
                 y={flat ? q.y - 12 : upright ? q.y + 4 : q.y + uy * 14 + 4}
                 text={text}
                 anchor={
@@ -95,9 +101,9 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                       : 'start'
                     : upright
                       ? 'start'
-                      : ux > 0.3
+                      : (mirror ? -ux : ux) > 0.3
                         ? 'start'
-                        : ux < -0.3
+                        : (mirror ? -ux : ux) < -0.3
                           ? 'end'
                           : 'middle'
                 }
@@ -220,7 +226,34 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                         width={chart.strokeHeavy}
                       />
                     ) : null}
-                    {tip(pts[0]!, `z = ${complexText(z.a, z.b)}`, c.chartHighlight)}
+                    {/* Each power in between named small (z², z³, …), out from the origin. */}
+                    {pts.slice(1, n - 1).map((p, i) => {
+                      const q = P(p);
+                      const len = Math.hypot(q.x - O.x, q.y - O.y) || 1;
+                      return (
+                        <ChartText
+                          key={`k${i}`}
+                          x={q.x + ((q.x - O.x) / len) * 12}
+                          y={q.y + ((q.y - O.y) / len) * 12 + 4}
+                          textAnchor="middle"
+                          fontSize={chart.tiny}
+                          fill={c.chartMuted}
+                          halo
+                        >
+                          {`z${sup(i + 2)}`}
+                        </ChartText>
+                      );
+                    })}
+                    {tip(
+                      pts[0]!,
+                      `z = ${complexText(z.a, z.b)}`,
+                      c.chartHighlight,
+                      true,
+                      // zⁿ's tag on the same level, to the right: z's goes the other way.
+                      n > 1 &&
+                        Math.abs(P(pts[n - 1]!).y - P(pts[0]!).y) < 30 &&
+                        P(pts[n - 1]!).x > P(pts[0]!).x,
+                    )}
                     {n > 1
                       ? tip(
                           pts[n - 1]!,

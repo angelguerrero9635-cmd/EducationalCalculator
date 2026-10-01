@@ -802,6 +802,26 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
               gap = g;
             }
           });
+          // A test point near the crossing: each tag goes on its own point's side away from the
+          // other point, so "(6, 14)" can't be read as the test point's tag (~modeling).
+          const near =
+            cross && testIn
+              ? {
+                  dx: f.sx(testIn.x.value) - f.sx(cross.x),
+                  dy: f.sy(testIn.y.value) - f.sy(cross.y),
+                }
+              : undefined;
+          const crowded = near && Math.hypot(near.dx, near.dy) < 90 && (near.dx || near.dy);
+          // (Side by side on a level line, both tags go up: the axis numbers are below.)
+          if (crowded) {
+            gap = Math.atan2(-near.dy, -near.dx);
+            if (Math.abs(Math.sin(gap)) < 0.5)
+              gap = Math.cos(gap) > 0 ? -Math.PI / 4 : (-3 * Math.PI) / 4;
+          }
+          const testSide = {
+            x: crowded && near.dx < 0 ? -1 : 1,
+            y: crowded && near.dy > 4 ? 1 : -1,
+          };
           // A line's name that would sit on the crossing or its label moves to the line's
           // left end (inside the grid, above a rising line, below a falling one).
           const crossBox =
@@ -1024,10 +1044,10 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                       strokeWidth={chart.stroke}
                     />
                     <Chip
-                      x={f.sx(testIn.x.value) + 9}
-                      y={f.sy(testIn.y.value) - 8}
+                      x={f.sx(testIn.x.value) + 9 * testSide.x}
+                      y={f.sy(testIn.y.value) + (testSide.y < 0 ? -8 : 20)}
                       text={pointText(testIn.x.value, testIn.y.value)}
-                      anchor="start"
+                      anchor={testSide.x < 0 ? 'end' : 'start'}
                       w={w}
                       h={h}
                     />

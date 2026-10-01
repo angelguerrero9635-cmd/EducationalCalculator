@@ -323,8 +323,21 @@ export function plain(toks: Tok[]): string {
     return true;
   };
   const group = (s: string) => (/^[\w.,π√]+$/u.test(s) || wrapped(s) ? s : `(${s})`);
+  /** Factors side by side in brackets, "(x − 3)(x + 3)": a product, no sum outside them. */
+  const product = (s: string) => {
+    if (!s.startsWith('(') || wrapped(s)) return false;
+    let depth = 0;
+    for (const ch of s) {
+      depth += ch === '(' ? 1 : ch === ')' ? -1 : 0;
+      if (depth === 0 && /[\s+−/]/.test(ch)) return false;
+    }
+    return true;
+  };
   return toks
     .map((k) => {
+      // A product over a bracket reads "(x − 3)(x + 3) ÷ (x − 3)", not "((x − 3)(x + 3))/…".
+      if ('frac' in k && product(plain(k.frac[0])))
+        return `${plain(k.frac[0])} ÷ ${group(plain(k.frac[1]))}`;
       if ('frac' in k) return `${group(plain(k.frac[0]))}/${group(plain(k.frac[1]))}`;
       if ('root' in k) return `${k.root === 2 ? '√' : '∛'}${group(plain(k.body))}`;
       if ('cases' in k)

@@ -126,7 +126,8 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
     const level = get(spec.intervals.level)!;
     const ns = get(spec.intervals.n)!;
     lines.push(
-      `Each interval is x̄ ± ${num(zStar(level))} × ${num(sigma)}, with SE = ${num(sigma * Math.sqrt(ns))}/√${num(ns)} = ${num(sigma)}.`,
+      `Each interval is x̄ ± ${num(zStar(level))} × SE.`,
+      `SE = ${num(sigma * Math.sqrt(ns))}/√${num(ns)} = ${num(sigma)}.`,
       `${hits} of ${n} intervals capture μ = ${num(mu)} (${formatNumber(Math.round((1000 * hits) / n) / 10)}%). The red ones miss it.`,
       `At ${formatNumber(Number((level * 100).toFixed(2)))}% confidence, about ${formatNumber(Number((level * n).toFixed(1)))} of ${n} would.`,
     );

@@ -266,6 +266,11 @@ function triangleParts(f: Figure, t: NonNullable<MarkedFigureSpec['triangle']>) 
         f.circles.push({ c: 'O', r: len(O, A), dashed: true });
         f.segs.push({ a: 'O', b: 'A', kind: 'segment', dashed: true });
         f.named.push('O');
+        // A right triangle's O is the hypotenuse's midpoint: one name there, not O over F.
+        const scale = Math.max(a, b, c);
+        f.named = f.named.filter(
+          (n) => !['D', 'E', 'F'].includes(n) || len(f.pts[n]!, O) > 1e-6 * scale,
+        );
       }
       break;
     }

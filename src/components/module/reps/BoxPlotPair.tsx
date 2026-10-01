@@ -197,7 +197,8 @@ export function BoxPlotPair({ spec, calc }: { spec: Spec; calc: Calculator }) {
                           strokeDasharray={chart.dash}
                         />
                         <ChartText
-                          {...fitLabel(sx(v), `fence ${fmt(v)}`, chart.label, w)}
+                          // Left of its line: off the box and off the max handle past the upper fence.
+                          {...fitLabel(sx(v) - 4, `fence ${fmt(v)}`, chart.label, w, 'end', 4)}
                           y={8 + band + 12}
                           fontSize={chart.label}
                           fontWeight="700"

@@ -188,7 +188,7 @@ function layout(
     } else if (t.sup || t.sub) {
       // A superscript after ")" starts a little right, so the italic letter clears the bracket.
       const prev = toks[i - 1];
-      if (t.sup && prev && 't' in prev && !prev.sup && prev.t.endsWith(')')) cx += size * 0.18;
+      if (t.sup && prev && 't' in prev && !prev.sup && prev.t.endsWith(')')) cx += size * 0.18 + 2;
       nodes.push(
         <ChartText
           key={k}
@@ -433,7 +433,8 @@ export function FunctionGraph({
     ...(main.inflection ? [main.inflection.x, 2 * main.inflection.x] : []),
     ...(atX !== undefined ? [atX] : []),
     ...(sec ? [sec.x, sec.x + sec.h] : []),
-    ...(limX !== undefined ? [limX] : []),
+    // Room on both sides for the approach arrows and their "x → 3⁻", "x → 3⁺" tags.
+    ...(limX !== undefined ? [limX - 3, limX, limX + 3] : []),
     ...(shadeRange ?? []),
     ...riemannXs(spec.riemann, get), // H106
     ...main.domain
@@ -1568,13 +1569,14 @@ export function FunctionGraph({
                 <DragHandle
                   testID="drag-point"
                   x={sx(atPt.x)}
-                  // Near a hole (the point the limit is about) the handle steps below the
-                  // curve, so the open circle stays in sight.
+                  // On the point; only one so near a hole (the point the limit is about) that
+                  // the knob would cover the open circle steps below the curve.
                   y={
                     sy(atPt.y) +
                     (main.holes.some(
                       (p) =>
-                        Math.hypot(sx(p.x) - sx(atPt.x), sy(p.y) - sy(atPt.y)) < chart.handleTouch,
+                        Math.hypot(sx(p.x) - sx(atPt.x), sy(p.y) - sy(atPt.y)) <
+                        chart.handle / 2 + 8,
                     )
                       ? chart.handleTouch * 0.8
                       : 0)

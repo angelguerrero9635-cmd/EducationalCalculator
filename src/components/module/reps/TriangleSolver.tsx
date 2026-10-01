@@ -327,6 +327,13 @@ export function TriangleSolver({ spec, calc }: { spec: TriangleSolverSpec; calc:
                 ) : null}
                 {drawn.map((d, ti) => {
                   const P = L.shift[ti]!.map(([x, y]) => [X(x), Y(y)] as Pt);
+                  // The SSA pair's moved corner (B′), named on the base: side labels keep off.
+                  const ghost =
+                    !pair && drawn.length > 1
+                      ? L.shift[1]!.map(([x, y]) => [X(x), Y(y)] as Pt).filter((g) =>
+                          L.shift[0]!.every(([x, y]) => Math.hypot(X(x) - g[0], Y(y) - g[1]) > 1),
+                        )
+                      : [];
                   const C0 = cen(P);
                   const mirror = ti > 0 && pair;
                   const ink = d.dashed ? c.chartMuted : c.chartInk;
@@ -459,14 +466,36 @@ export function TriangleSolver({ spec, calc }: { spec: TriangleSolverSpec; calc:
                         const lines = role ? [role, t] : [t];
                         // Outside the side's middle, far enough that the whole block clears it.
                         const n = outside(p, q, C0, 1);
-                        const mid: Pt = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
-                        const [nx, ny] = [n[0] - mid[0], n[1] - mid[1]];
+                        // The middle, or a third of the way from either end when B′'s name
+                        // is there ("c = 11.98" covered B′).
+                        const k = [0.5, 0.3, 0.7].reduce((best, kk) => {
+                          const room = (x: number) =>
+                            Math.min(
+                              60,
+                              ...ghost.map((g) =>
+                                Math.hypot(
+                                  p[0] + (q[0] - p[0]) * x - g[0],
+                                  p[1] + (q[1] - p[1]) * x - g[1],
+                                ),
+                              ),
+                            );
+                          return room(kk) > room(best) + 1 ? kk : best;
+                        }, 0.5);
+                        const mid: Pt = [p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k];
+                        // (The normal from the true middle: `outside` measures from there.)
+                        const [nx, ny] = [n[0] - (p[0] + q[0]) / 2, n[1] - (p[1] + q[1]) / 2];
                         const tw = Math.max(...lines.map((x) => x.length)) * chart.label * 0.58;
                         const bh = lines.length * 15;
                         const off =
                           sceneRoom(i) + 5 + Math.abs(nx) * (tw / 2) + Math.abs(ny) * (bh / 2);
                         const cx = mid[0] + nx * off;
-                        const top = Math.max(2, Math.min(L.h - bh, mid[1] + ny * off - bh / 2));
+                        // Beside an upright side, the block starts below the upper corner,
+                        // whose name sits above it (B over "opposite A" on a low ramp).
+                        const upright = Math.abs(nx) > 0.9;
+                        const top = Math.max(
+                          upright ? Math.min(p[1], q[1]) + 6 : 2,
+                          Math.min(L.h - bh, mid[1] + ny * off - bh / 2),
+                        );
                         return (
                           <G key={`l${i}`}>
                             {lines.map((line, j) => (
@@ -592,13 +621,9 @@ export function TriangleSolver({ spec, calc }: { spec: TriangleSolverSpec; calc:
       const opp = SIDES[ti]!;
       const adj = SIDES[ti === 0 ? 1 : 0]!;
       const th = sym(t);
-      const words: Record<string, string> = {
-        sin: 'opposite/hypotenuse',
-        cos: 'adjacent/hypotenuse',
-        tan: 'opposite/adjacent',
-      };
+      // One line each on a phone ("opposite/hypotenuse =" pushed "≈ 0.083" onto its own line).
       const ratio = (f: string, top: TriPart, bottom: TriPart, x: number) =>
-        `${f} ${th} = ${words[f]} = ${sym(top)}/${sym(bottom)} = ${num(top)}/${num(bottom)} ≈ ${formatNumber(Number(x.toFixed(4)))}`;
+        `${f} ${th} = ${sym(top)}/${sym(bottom)} = ${num(top)}/${num(bottom)} ≈ ${formatNumber(Number(x.toFixed(4)))}`;
       lines.push(
         ratio('sin', opp, 'c', main[opp] / main.c),
         ratio('cos', adj, 'c', main[adj] / main.c),

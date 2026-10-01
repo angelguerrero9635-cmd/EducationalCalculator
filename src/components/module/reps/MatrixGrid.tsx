@@ -3,6 +3,7 @@ import { Pressable, View } from 'react-native';
 import Svg, { G, Line, Path, Rect } from 'react-native-svg';
 
 import type { MatrixGridSpec } from '@/data/modules/typesHsd';
+import { Text } from '@/components/Text';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -129,6 +130,9 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
   const [entry, setEntry] = useState<[number, number]>(
     spec.mode === 'multiply' && spec.entry ? [spec.entry[0] - 1, spec.entry[1] - 1] : [0, 0],
   );
+  // Row reduction: the first and last matrices, with every stage a tap away (five stages ran
+  // 681 px, the first box at 880).
+  const [everyStage, setEveryStage] = useState(false);
 
   if (spec.mode === 'multiply') {
     const A = spec.a.map((r) => r.map(num));
@@ -307,7 +311,9 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
   );
   const mh = M.length * ROW_H + 8;
   const gap = 28;
-  const height = all.length * mh + (all.length - 1) * gap + 12;
+  const folds = all.length > 3;
+  const shown = folds && !everyStage ? [0, all.length - 1] : all.map((_, k) => k);
+  const height = shown.length * mh + (shown.length - 1) * gap + 12;
   const lines: string[] = [
     `${M.length} equations in ${M[0]!.length - 1} unknowns, the right-hand sides after the bar.`,
   ];
@@ -335,9 +341,12 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
           const x = Math.max(8, (w - width) / 2 - 40);
           return (
             <Svg width={w} height={h}>
-              {all.map((m, k) => {
-                const y = 6 + k * (mh + gap);
-                const lit = k > 0 ? target(k - 1) : [];
+              {shown.map((k, row) => {
+                const m = all[k]!;
+                const y = 6 + row * (mh + gap);
+                const next = shown[row + 1];
+                // Lit: the rows the operation just before changed (none past a fold).
+                const lit = k > 0 && shown[row - 1] === k - 1 ? target(k - 1) : [];
                 const drawn = matrixAt(
                   x,
                   y,
@@ -362,7 +371,7 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
                       />
                     ))}
                     {drawn.el}
-                    {k < all.length - 1 ? (
+                    {next !== undefined ? (
                       <G>
                         <Path
                           d={`M ${x + drawn.w / 2} ${y + mh + 4} L ${x + drawn.w / 2} ${y + mh + gap - 6}`}
@@ -376,7 +385,7 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
                           fill="none"
                         />
                         <MathText
-                          text={opText(ops[k]!)}
+                          text={next === k + 1 ? opText(ops[k]!) : `${next - k} row operations`}
                           x={x + drawn.w / 2 + 14}
                           y={y + mh + gap / 2 + 5}
                           fontSize={chart.value}
@@ -392,6 +401,25 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
           );
         }}
       </Canvas>
+      {folds ? (
+        <Pressable
+          testID="row-operations"
+          accessibilityRole="button"
+          onPress={() => setEveryStage((v) => !v)}
+          style={{
+            alignSelf: 'center',
+            minHeight: 44,
+            justifyContent: 'center',
+            paddingHorizontal: 12,
+          }}
+        >
+          <Text style={{ color: c.accent, fontWeight: '600' }}>
+            {everyStage
+              ? 'Show only the first and last'
+              : `Show the ${all.length - 1} row operations`}
+          </Text>
+        </Pressable>
+      ) : null}
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );

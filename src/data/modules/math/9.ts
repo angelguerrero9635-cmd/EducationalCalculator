@@ -270,7 +270,7 @@ const EXPONENTIAL: ModuleDef[] = [
       num('r', 'r', 'Rate per period', 0.1, 50, { unit: '%', step: 0.1 }),
       int('t', 't', 'Periods', 0, 100),
       num('g', 'g', 'Growth factor', 1.001, 1.5, { derived: true }),
-      num('A', 'A', 'Amount after t periods', 0.01, 9999999.99, { unit: '$' }),
+      num('A', 'A', 'Amount after t periods', 0.01, 9999999.99, { unit: '$', step: 0.01 }),
     ],
     rules: percentChange(true),
     example: { P: 800, r: 3, t: 4, g: 1.03, A: 900.407048 },

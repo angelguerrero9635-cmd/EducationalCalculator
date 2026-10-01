@@ -11,7 +11,7 @@ import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { Arrow, makeFrame } from './graphKit';
 import { HsdGrid, niceWindow } from './hsdGrid';
 import { magnitudeText, short } from './hsdKit';
-import { MathChip } from './hsdText';
+import { MathChip, textWidth } from './hsdText';
 import { complexOp } from './hs2h';
 
 const RAD = Math.PI / 180;
@@ -95,7 +95,16 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
       lo: Math.floor(x.lo / step) * step,
       hi: Math.ceil(x.hi / step) * step,
     });
-    return { x: r(wx), y: r(wy), step };
+    // The picture's shape is kept between 0.6 and 1.15 (height ÷ width) with square units: a
+    // narrow window is widened on both sides to fill it (−2…2 left 140 px empty each side).
+    const grow = (a: { lo: number; hi: number }, span: number) => {
+      const add = Math.ceil((span - (a.hi - a.lo)) / 2 / step) * step;
+      return add > 0 ? { lo: a.lo - add, hi: a.hi + add } : a;
+    };
+    let [x, y] = [r(wx), r(wy)];
+    x = grow(x, (y.hi - y.lo) / 1.15);
+    y = grow(y, (x.hi - x.lo) * 0.6);
+    return { x, y, step };
   })();
   const win = useFrozen(live);
   const drag = useRef({ a: 0, b: 0 });
@@ -174,25 +183,51 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
                 dash={dash}
               />
             ) : null;
-          /** A point's label: outside the arrow's tip, in its direction. */
-          const tipLabel = (p: { a: number; b: number }, text: string, color: string) => {
+          /** Where a point's label goes: outside the arrow's tip, in its direction. */
+          const tipAt = (p: { a: number; b: number }, text: string) => {
             const q = P(p.a, p.b);
             const o = P(0, 0);
             const len = Math.hypot(q.x - o.x, q.y - o.y) || 1;
             const ux = (q.x - o.x) / len;
             const uy = (q.y - o.y) / len;
-            return (
-              <MathChip
-                x={q.x + ux * 12}
-                y={q.y + uy * 14 + 4}
-                text={text}
-                anchor={ux > 0.3 ? 'start' : ux < -0.3 ? 'end' : 'middle'}
-                w={cw}
-                h={h}
-                color={color}
-              />
-            );
+            const anchor: 'start' | 'end' | 'middle' =
+              ux > 0.3 ? 'start' : ux < -0.3 ? 'end' : 'middle';
+            const [x, y] = [q.x + ux * 12, q.y + uy * 14 + 4];
+            const tw = textWidth(text, chart.label) + 6;
+            const left = anchor === 'start' ? x - 3 : anchor === 'end' ? x - tw + 3 : x - tw / 2;
+            return {
+              x,
+              y,
+              anchor,
+              box: { l: left, t: y - chart.label + 1, r: left + tw, b: y + 6 },
+            };
           };
+          // The point labels drawn below, so no axis number sits under one (w's tag hid −5i).
+          const tips: [{ a: number; b: number }, string][] = [
+            ...(spec.conjugate && z.known && Math.abs(z.b) > 1e-9
+              ? [[{ a: z.a, b: -z.b }, `z̄ = ${complexText(z.a, -z.b)}`] as [typeof z, string]]
+              : []),
+            ...(w && res && op === 'difference'
+              ? [[{ a: -w.a, b: -w.b }, '−w'] as [typeof z, string]]
+              : []),
+            ...(w && res
+              ? [
+                  [w, `w = ${complexText(w.a, w.b)}`] as [typeof z, string],
+                  [
+                    res,
+                    `${op === 'sum' ? 'z + w' : op === 'difference' ? 'z − w' : 'zw'} = ${complexText(res.a, res.b)}`,
+                  ] as [typeof z, string],
+                ]
+              : []),
+            [{ a: z.a, b: z.b }, `z = ${zText}`],
+          ];
+          const tipLabel = (p: { a: number; b: number }, text: string, color: string) => {
+            const { x, y, anchor } = tipAt(p, text);
+            return <MathChip x={x} y={y} text={text} anchor={anchor} w={cw} h={h} color={color} />;
+          };
+          const arrowAngles = [z, ...(w ? [w] : []), ...(res ? [res] : [])]
+            .filter((p) => Math.hypot(p.a, p.b) > 1e-9)
+            .map((p) => argOf(p.a, p.b));
           const arc = (from: number, to: number, r: number, text: string, color: string) => {
             if (Math.abs(to - from) < 1) return null;
             const o = P(0, 0);
@@ -205,6 +240,16 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
             let m = (from + to) / 2;
             const axis = [0, 90, 180, 270, 360].find((k) => Math.abs(m - k) < 22);
             if (axis !== undefined && Math.abs(to - from) > 60) m = axis + (m >= axis ? 26 : -26);
+            // Off the arrows too: w's 0°–60° arc has its middle on z at 30°.
+            const gapTo = (x: number) =>
+              Math.min(
+                180,
+                ...arrowAngles.map((a) => Math.abs(((((x - a) % 360) + 540) % 360) - 180)),
+              );
+            const span = to - from;
+            m = [m, m + span * 0.25, m - span * 0.25, m + span * 0.4, m - span * 0.4].reduce(
+              (best, x) => (gapTo(best) >= 12 || gapTo(x) <= gapTo(best) ? best : x),
+            );
             const mid = m * RAD;
             // A wide arc sweeps past the axis numbers: its value stays in the caption.
             if (Math.abs(to - from) > 150 && text.startsWith('θ')) text = 'θ';
@@ -213,7 +258,13 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
                 <Path d={d} stroke={color} strokeWidth={chart.strokeLight} fill="none" />
                 <MathChip
                   x={o.x + (r + 14) * Math.cos(mid)}
-                  y={o.y - (r + 14) * Math.sin(mid) + 4}
+                  // A small arc by the real axis: its tag lifted clear of the axis line.
+                  y={
+                    o.y -
+                    (r + 14) * Math.sin(mid) +
+                    4 -
+                    (Math.abs(Math.sin(mid)) < 0.35 ? (Math.sin(mid) >= 0 ? 8 : -8) : 0)
+                  }
                   text={text}
                   w={cw}
                   h={h}
@@ -233,6 +284,7 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
                   step={{ x: win.value.step, y: win.value.step }}
                   names={{ x: 'Re', y: 'Im' }}
                   yText={(v) => complexText(0, v)}
+                  clear={tips.map(([p, text]) => tipAt(p, text).box)}
                 />
                 {/* The conjugate: z reflected across the real axis. */}
                 {spec.conjugate && z.known && Math.abs(z.b) > 1e-9 ? (
@@ -304,7 +356,7 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
                     ? arc(
                         0,
                         za,
-                        op === 'product' ? 46 : 24,
+                        op === 'product' ? Math.max(30, Math.min(46, zr * f.ux - 24)) : 24,
                         spec.argument || spec.polar || zPolar
                           ? `θ = ${short(za)}°`
                           : `${short(za)}°`,

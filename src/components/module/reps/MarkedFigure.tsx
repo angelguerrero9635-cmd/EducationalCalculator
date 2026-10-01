@@ -320,8 +320,17 @@ export function MarkedFigure({ spec, calc }: { spec: MarkedFigureSpec; calc: Cal
                       const room = (text: string, pt: Pt) =>
                         Math.min(
                           clearance(pt[0], pt[1], text.length * chart.label * 0.58),
+                          // From the label's box, not its middle ("d = 13" sat on O).
                           ...fig.named.map(
-                            (n) => Math.hypot(at(n)[0] - pt[0], at(n)[1] - pt[1]) - 8,
+                            (n) =>
+                              Math.hypot(
+                                Math.max(
+                                  0,
+                                  Math.abs(at(n)[0] - pt[0]) -
+                                    (text.length * chart.label * 0.58) / 2,
+                                ),
+                                Math.max(0, Math.abs(at(n)[1] - pt[1]) - 7),
+                              ) - 8,
                           ),
                         );
                       const pick = (text: string) =>

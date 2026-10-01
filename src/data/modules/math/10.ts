@@ -358,7 +358,7 @@ const TRIG: ModuleDef[] = [
   page({
     id: 'm.10.right-triangle-trig~find-angle',
     title: 'Find an angle from two sides',
-    use: 'Use this for “A ramp rises 0.5 m over a run of 6 m. What angle does it make with the ground?”',
+    use: 'Use this for “A ramp rises 1.5 m over a run of 6 m. What angle does it make with the ground?”',
     assumptions: [
       'The rise is opposite the angle A and the run is adjacent to it, so tan A = rise ÷ run.',
       'The inverse tangent, tan⁻¹, turns the ratio back into the angle.',
@@ -370,7 +370,7 @@ const TRIG: ModuleDef[] = [
       len('r', 'r', 'Run', 10000, { unit: 'm' }),
     ],
     rules: [ratio('tan', 'A', 'o', 'r', ['opposite', 'adjacent'])],
-    example: { o: 0.5, r: 6, A: atanD(0.5 / 6) },
+    example: { o: 1.5, r: 6, A: atanD(1.5 / 6) },
     startWith: ['o', 'r'],
     equation: 'tan({A}°) = {o}/{r}',
     representation: {
