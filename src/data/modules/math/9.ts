@@ -780,19 +780,18 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
       'The ball lands when h = 0; take the positive time.',
     ],
     variables: [
-      num('g', 'g', 'Gravity', 0.1, 30, { unit: 'm/s²', units: ['m/s²'], step: 0.1 }),
-      num('v', 'v', 'Launch speed', 0, 100, { unit: 'm/s', units: ['m/s'], step: 0.1 }),
-      num('h0', 'h₀', 'Starting height', 0, 500, { unit: 'm', units: ['m'], step: 0.1 }),
-      num('t', 't', 'Time', 0, 60, { unit: 's', units: ['s'], step: 0.1 }),
-      num('H', 'h', 'Height', 0, 10000, { unit: 'm', units: ['m'] }),
+      num('g', 'g', 'Gravity', 0.1, 30, { unit: 'm/s²', step: 0.1 }),
+      num('v', 'v', 'Launch speed', 0, 100, { unit: 'm/s', step: 0.1 }),
+      num('h0', 'h₀', 'Starting height', 0, 500, { unit: 'm', step: 0.1 }),
+      num('t', 't', 'Time', 0, 60, { unit: 's', step: 0.1 }),
+      num('H', 'h', 'Height', 0, 10000, { unit: 'm' }),
       num('A', 'a', 't² coefficient, −½g', -15, -0.05, {
         unit: 'm/s²',
-        units: ['m/s²'],
         derived: true,
       }),
-      num('T', 't_top', 'Time at the top', 0, 1000, { unit: 's', units: ['s'], derived: true }),
-      num('M', 'h_max', 'Greatest height', 0, 100000, { unit: 'm', units: ['m'], derived: true }),
-      num('L', 't_land', 'Landing time', 0, 10000, { unit: 's', units: ['s'], derived: true }),
+      num('T', 't_top', 'Time at the top', 0, 1000, { unit: 's', derived: true }),
+      num('M', 'h_max', 'Greatest height', 0, 100000, { unit: 'm', derived: true }),
+      num('L', 't_land', 'Landing time', 0, 10000, { unit: 's', derived: true }),
     ],
     rules: [
       derive(
@@ -872,8 +871,6 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
       M: 21.6,
       L: (19.6 + Math.sqrt(19.6 ** 2 + 2 * 9.8 * 2)) / 9.8,
     },
-    // The graph's axes are in meters and seconds, so the units stay put.
-    unitSystems: ['metric'],
     startWith: ['t', 'g', 'v', 'h0'],
     pictureLabels: ['L'],
     representation: {
@@ -886,7 +883,8 @@ const QUADRATIC_FUNCTIONS: ModuleDef[] = [
       name: 'h',
       at: { x: 't', y: 'H' },
       xMin: 0,
-      axes: { x: 'Time t (s)', y: 'Height h (m)' },
+      axes: { x: 'Time t', y: 'Height h' },
+      unitsOf: { x: 't', y: 'H' },
       shows: { vertex: { x: 'T', y: 'M' } },
       marks: ['vertex', 'zeros'],
     },
