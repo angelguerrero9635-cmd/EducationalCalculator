@@ -5,7 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math12.ts`.
  */
-import { chiCdf, invPhi, Phi, tCdf, tStar } from '@/components/module/reps/statMath';
+import { betaI, chiCdf, invPhi, Phi, tCdf, tStar } from '@/components/module/reps/statMath';
 import { formatNumber, superscript } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -7222,52 +7222,6 @@ const MATH_12_REGRESSION: ModuleDef[] = [
 
 // ── ANOVA and the F distribution (added skill 20) ──
 
-/** ln Γ(x) (Lanczos), for the F distribution below (statMath keeps its own private). */
-function lnGamma(x: number): number {
-  const g = [
-    676.5203681218851, -1259.1392167224028, 771.3234287776531, -176.6150291621406,
-    12.507343278686905, -0.13857109526572012, 9.984369578019572e-6, 1.5056327351493116e-7,
-  ];
-  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lnGamma(1 - x);
-  const y = x - 1;
-  let a = 0.9999999999998099;
-  const t = y + 7.5;
-  g.forEach((c, i) => (a += c / (y + i + 1)));
-  return 0.5 * Math.log(2 * Math.PI) + (y + 0.5) * Math.log(t) - t + Math.log(a);
-}
-/** The continued fraction of the incomplete beta function (modified Lentz). */
-function betaFraction(a: number, b: number, x: number): number {
-  const tiny = 1e-300;
-  const fix = (z: number) => (Math.abs(z) < tiny ? tiny : z);
-  let c = 1;
-  let d = 1 / fix(1 - ((a + b) * x) / (a + 1));
-  let h = d;
-  for (let m = 1; m < 500; m++) {
-    const m2 = 2 * m;
-    let aa = (m * (b - m) * x) / ((a + m2 - 1) * (a + m2));
-    d = 1 / fix(1 + aa * d);
-    c = fix(1 + aa / c);
-    h *= d * c;
-    aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + m2 + 1));
-    d = 1 / fix(1 + aa * d);
-    c = fix(1 + aa / c);
-    const del = d * c;
-    h *= del;
-    if (Math.abs(del - 1) < 1e-15) break;
-  }
-  return h;
-}
-/** The regularized incomplete beta function I_x(a, b). */
-function betaI(x: number, a: number, b: number): number {
-  if (x <= 0) return 0;
-  if (x >= 1) return 1;
-  const front = Math.exp(
-    lnGamma(a + b) - lnGamma(a) - lnGamma(b) + a * Math.log(x) + b * Math.log(1 - x),
-  );
-  return x < (a + 1) / (a + b + 2)
-    ? (front * betaFraction(a, b, x)) / a
-    : 1 - (front * betaFraction(b, a, 1 - x)) / b;
-}
 /** P(F ≥ f) with d1 and d2 degrees of freedom: a calculator's Fcdf(f, ∞, d1, d2). */
 export const fTail = (f: number, d1: number, d2: number) =>
   f <= 0 ? 1 : 1 - betaI((d1 * f) / (d1 * f + d2), d1 / 2, d2 / 2);
@@ -7388,7 +7342,10 @@ const MATH_12_ANOVA: ModuleDef[] = [
       a: 0.05,
     },
     startWith: ['B', 'd1', 'W', 'd2', 'a'],
-    representation: fTable(['d1', 'd2'], [1, 2, 3, 4, 5, 6, 8, 10]),
+    representation: {
+      kind: 'normalCurve',
+      f: { df1: 'd1', df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
+    },
   },
   {
     id: 'm.12.anova~groups',
@@ -7474,10 +7431,8 @@ const MATH_12_ANOVA: ModuleDef[] = [
     },
     startWith: ['n', 'm1', 'm2', 'm3', 's1', 's2', 's3', 'a'],
     representation: {
-      kind: 'bars',
-      bars: [{ var: 'm1' }, { var: 'm2' }, { var: 'm3' }],
-      min: 0,
-      max: 20,
+      kind: 'normalCurve',
+      f: { df1: 2, df2: 'd2', stat: 'F', alpha: 'a', p: 'P' },
     },
   },
   {
