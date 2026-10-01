@@ -308,7 +308,7 @@ export function MarkedFigure({ spec, calc }: { spec: MarkedFigureSpec; calc: Cal
                         const nx = -(q[1] - p[1]) / d;
                         const ny = (q[0] - p[0]) / d;
                         const off = 8 + Math.abs(nx) * (tw / 2) + Math.abs(ny) * 7;
-                        return [0.5, 0.38, 0.62, 0.27, 0.73].flatMap((k) => {
+                        return [0.5, 0.38, 0.62].flatMap((k) => {
                           const m: Pt = [p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k];
                           const out =
                             (center[0] - m[0]) * nx + (center[1] - m[1]) * ny > 0 ? -1 : 1;
@@ -320,13 +320,8 @@ export function MarkedFigure({ spec, calc }: { spec: MarkedFigureSpec; calc: Cal
                       const room = (text: string, pt: Pt) =>
                         Math.min(
                           clearance(pt[0], pt[1], text.length * chart.label * 0.58),
-                          // Clear of the named points by half the label's width too
-                          // ("d = 13" off the rectangle's center O).
                           ...fig.named.map(
-                            (n) =>
-                              Math.hypot(at(n)[0] - pt[0], at(n)[1] - pt[1]) -
-                              8 -
-                              (text.length * chart.label * 0.58) / 2,
+                            (n) => Math.hypot(at(n)[0] - pt[0], at(n)[1] - pt[1]) - 8,
                           ),
                         );
                       const pick = (text: string) =>
