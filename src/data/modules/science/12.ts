@@ -1692,6 +1692,45 @@ const telescope: ModuleDef = {
   },
 };
 
+const parallax: ModuleDef = {
+  id: 's.12.starlight-spectra~parallax',
+  title: 'Distance from parallax',
+  use: 'Use this for “A star’s parallax is 0.1″. How far away is it, in parsecs and light-years?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Earth is on opposite sides of the Sun six months apart, 2 AU apart.',
+    'p is half the near star’s shift against the far stars: the angle 1 AU makes at the star.',
+    '1 parsec = 3.26 light-years.',
+  ],
+  variables: [
+    V('p', 'p', 'Parallax angle', { unit: '″', min: 0.001, max: 1, step: 0.001 }),
+    V('d', 'd', 'Distance in parsecs', { unit: 'pc', min: 1, max: 1000, step: 0.01 }),
+    V('D', 'D', 'Distance in light-years', {
+      unit: 'light-years',
+      min: 3.26,
+      max: 3260,
+      step: 0.01,
+    }),
+  ],
+  ...rels(
+    rule('d = 1 ÷ p', '{d} = 1 ÷ {p}', (v) => v.d! * v.p! - 1, {
+      d: [
+        (v) => div(1, v.p!),
+        '1 ÷ {p}',
+        'A parsec is the distance at which 1 AU looks 1″ wide: the smaller the angle, the farther the star.',
+      ],
+      p: [(v) => div(1, v.d!), '1 ÷ {d}', 'The angle shrinks as the star is farther: 1 over d.'],
+    }),
+    rule('D = 3.26 × d', '{D} = 3.26 × {d}', (v) => v.D! - 3.26 * v.d!, {
+      D: [(v) => 3.26 * v.d!, '3.26 × {d}', 'Light takes 3.26 years to cross a parsec.'],
+      d: [(v) => v.D! / 3.26, '{D} ÷ 3.26', 'Each parsec is 3.26 light-years: divide.'],
+    }),
+  ),
+  example: { p: 0.1, d: 10, D: 32.6 },
+  startWith: ['p'],
+  representation: { kind: 'parallax', angle: 'p', parsecs: 'd', lightYears: 'D' },
+};
+
 // ── The sun and stellar evolution ──
 
 /** The Sun's surface temperature, K. */
@@ -2275,6 +2314,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   wien,
   doppler,
   telescope,
+  parallax,
   hr,
   fusion,
   lifetime,

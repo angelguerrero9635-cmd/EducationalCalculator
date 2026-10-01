@@ -3,12 +3,9 @@
  * docs/HS_NEEDS.md). Each demo shows one option or part in a page stand-in. Spread into
  * gallery.ts.
  */
-import type { Relation, Values, VariableDef } from '@/engine/types';
-
-import { div } from './helpers';
 import type { LayoutDef } from './layouts';
 import { SCIENCE_12_MODULES } from './science/12';
-import type { ModuleDef, Representation, StepText } from './types';
+import type { ModuleDef, Representation } from './types';
 
 const pageOf = (id: string) => {
   const found = SCIENCE_12_MODULES.find((m) => m.id === id);
@@ -201,89 +198,16 @@ const halley = fromPage(
 
 // ── Part 7: a star's parallax (parallax) ──
 
-/** A relation from its id, display and residual, and per variable `[solve, expr, how]`. */
-const rule = (
-  id: string,
-  display: string,
-  residual: (v: Values) => number,
-  parts: Record<string, [(v: Values) => number | undefined, string, string]>,
-) => ({
-  relation: {
-    id,
-    display,
-    vars: [
-      ...new Set([...Object.keys(parts), ...[...display.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!)]),
-    ],
-    residual,
-    solve: Object.fromEntries(Object.entries(parts).map(([k, part]) => [k, part[0]])),
-  } satisfies Relation,
-  steps: Object.fromEntries(
-    Object.entries(parts).map(([k, part]) => [k, { expr: part[1], how: part[2] }]),
-  ) as Record<string, StepText>,
-});
-
-const V = (id: string, symbol: string, name: string, extra: Partial<VariableDef>): VariableDef => ({
-  id,
-  symbol,
-  name,
-  ...extra,
-});
-
-const parallaxRules = [
-  rule('d = 1 ÷ p', '{d} = 1 ÷ {p}', (v) => v.d! * v.p! - 1, {
-    d: [
-      (v) => div(1, v.p!),
-      '1 ÷ {p}',
-      'A parsec is the distance at which 1 AU looks 1″ wide: the smaller the angle, the farther the star.',
-    ],
-    p: [(v) => div(1, v.d!), '1 ÷ {d}', 'The angle shrinks as the star is farther: 1 over d.'],
-  }),
-  rule('D = 3.26 × d', '{D} = 3.26 × {d}', (v) => v.D! - 3.26 * v.d!, {
-    D: [(v) => 3.26 * v.d!, '3.26 × {d}', 'Light takes 3.26 years to cross a parsec.'],
-    d: [(v) => v.D! / 3.26, '{D} ÷ 3.26', 'Each parsec is 3.26 light-years: divide.'],
-  }),
-];
-
-const parallaxPage = (id: string, title: string, use: string, p: number): ModuleDef => ({
-  id,
-  title,
-  use,
-  unitSystems: ['metric'],
-  assumptions: [
-    'Earth is on opposite sides of the Sun six months apart, 2 AU apart.',
-    'p is half the near star’s shift against the far stars: the angle 1 AU makes at the star.',
-    '1 parsec = 3.26 light-years.',
-  ],
-  variables: [
-    V('p', 'p', 'Parallax angle', { unit: '″', min: 0.001, max: 1, step: 0.001 }),
-    V('d', 'd', 'Distance in parsecs', { unit: 'pc', min: 1, max: 1000, step: 0.01 }),
-    V('D', 'D', 'Distance in light-years', {
-      unit: 'light-years',
-      min: 3.26,
-      max: 3260,
-      step: 0.01,
-    }),
-  ],
-  relations: parallaxRules.map((r) => r.relation),
-  steps: Object.fromEntries(parallaxRules.map((r) => [r.relation.id, r.steps])),
-  example: { p, d: 1 / p, D: 3.26 / p },
-  startWith: ['p'],
-  representation: { kind: 'parallax', angle: 'p', parsecs: 'd', lightYears: 'D' },
-});
-
-const parallax = parallaxPage(
-  'g.s12-starlight-spectra-parallax',
-  'Distance from parallax',
-  'Use this for “A star’s parallax is 0.1″. How far away is it, in parsecs and light-years?”',
-  0.1,
-);
-
 /** The nearest stars: Proxima Centauri's parallax is 0.768″, about 1.3 parsecs. */
-const parallaxNear = parallaxPage(
+const parallaxNear = fromPage(
+  's.12.starlight-spectra~parallax',
   'g.s12-starlight-spectra-parallax-near',
   'Distance from parallax: the nearest star',
-  'Use this for “Proxima Centauri has a parallax of 0.768″. How many light-years away is it?”',
-  0.768,
+  { kind: 'parallax', angle: 'p', parsecs: 'd', lightYears: 'D' },
+  {
+    use: 'Use this for “Proxima Centauri has a parallax of 0.768″. How many light-years away is it?”',
+    example: { p: 0.768, d: 1 / 0.768, D: 3.26 / 0.768 },
+  },
 );
 
 export const HS3C_GALLERY_MODULES: ModuleDef[] = [
@@ -297,7 +221,6 @@ export const HS3C_GALLERY_MODULES: ModuleDef[] = [
   zoneBright,
   exoOrbit,
   halley,
-  parallax,
   parallaxNear,
 ];
 

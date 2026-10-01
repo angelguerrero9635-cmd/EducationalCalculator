@@ -2419,6 +2419,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.12.earth-interior',
         's.12.starlight-spectra',
         's.12.solar-system',
+        's.12.starlight-spectra~parallax',
       ],
     ),
     status: 'drawn',
@@ -2434,7 +2435,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.s12-exoplanets-orbit-star-mass',
       'g.s12-solar-system-halley',
       'g.s12-earth-interior-shadow-zone-explore',
-      'g.s12-starlight-spectra-parallax',
       'g.s12-starlight-spectra-parallax-near',
     ],
     notes: [
