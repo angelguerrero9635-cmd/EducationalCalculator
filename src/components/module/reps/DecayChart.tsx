@@ -29,10 +29,18 @@ type Equation = Extract<DecayChartSpec, { mode: 'equation' }>;
 const big = (x: number) =>
   Math.abs(x) >= 1e6 ? scientific(x) : formatNumber(Number(x.toPrecision(6)));
 
+/** A value as the picture says it: past a million, 3 figures in powers of ten (3.21 × 10⁹, never 3,209,219,858). */
 const readOf = (rep: Rep) => (x: NumOrVar) =>
   typeof x === 'number'
     ? { value: x, known: true, text: big(x) }
-    : { value: rep.shown(x), known: rep.known(x), text: rep.value(x, false) };
+    : {
+        value: rep.shown(x),
+        known: rep.known(x),
+        text:
+          rep.known(x) && Math.abs(rep.shown(x)) >= 1e6
+            ? scientific(Number(rep.shown(x).toPrecision(3)))
+            : rep.value(x, false),
+      };
 
 export function DecayChart({ spec, calc }: { spec: DecayChartSpec; calc: Calculator }) {
   const rep = useRep(calc);
