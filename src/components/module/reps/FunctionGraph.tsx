@@ -186,6 +186,9 @@ function layout(
       down = Math.max(down, h1 - y);
       cx += 19 + fw + Math.max(...laid.map((l) => l.when.w));
     } else if (t.sup || t.sub) {
+      // A superscript after ")" starts a little right, so the italic letter clears the bracket.
+      const prev = toks[i - 1];
+      if (t.sup && prev && 't' in prev && !prev.sup && prev.t.endsWith(')')) cx += size * 0.18;
       nodes.push(
         <ChartText
           key={k}
