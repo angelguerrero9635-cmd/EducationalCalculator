@@ -13,6 +13,44 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Grades 9–12 pages: two page reviews, placements, and the testing change
+
+- **Setup.**
+  - Second lesson review of the 21 added skills (two reviewers), then four picture placers for
+    H89–H110 (about 110 pages, 30 new pages, two merged away), then the first page review of
+    Grades 9–12: 696 pages, four page reviewers, report-only, about 90k–100k tokens each.
+  - Three fixers after it (shared components, math pages, science pages), then a second page
+    review (two reviewers) to verify, and two more fixers.
+- **Found.**
+  - First page review: 50 errors, 58 improvements. Drags that cleared or changed typed numbers
+    on every grade; raw `v_y` and `^t` in steps and captions; labels on axis numbers and on each
+    other; blank algebra-tile mats; a mitotic-index page pre-rendered as "Skill not found".
+  - Second page review: most fixes held (31 of 51 math, 27 of 44 science fixed outright), but the
+    new drag rule left handles on worked-out values dead, and on two pages each drag move froze
+    the tab for 15–30 s (about 800 solver calls per move).
+- **What went wrong.**
+  - Every scene screenshot was the header's home icon: the script took the first svg on the
+    page. Two reviewers walked the explore pages in a browser instead.
+  - Dark-mode and 1024 px shots covered only the first three pages of a run, all Grade 9.
+  - The drag report listed only before → after values, so a drag that cleared a typed number read
+    like any other drag; reviewers found them by reading the numbers.
+  - One page fixer and the shared fixer both drew the ice lattice and the observe table's name
+    column; the merge kept one of each.
+  - A page-evidence run of both subjects hit the 2-hour background limit; run one subject at a
+    time.
+- **Reviewer and evidence improvements.**
+  - Scene shots capture the largest svg (the picture); a shot under 100 px is an error.
+  - `drags.md` marks **ERROR** for a drag that leaves "?", changes a typed value other than the
+    one it drives, does nothing, or overlaps another handle, and for a handle with no test id.
+    False positives seen and being taught to the script: a handle on a worked-out box moving the
+    one typed value behind it, snapped turns, and a haloed label against its own backing text.
+  - The second review ran with `--interact all --wide 40 --dark 60`, which caught what the first
+    missed.
+  - Fixer briefs now split shared files between parallel fixers explicitly.
+- **Testing.** The heavy suites moved to the nightly CI run; a push runs the cheap suites
+  (`ci-test.mjs`), and fixers test only the page ids they change. The page review is where
+  pictures and drags get checked, in a browser.
+
 ## Grades 9–12 lessons: eight lesson reviewers, eight fixers
 
 - **Setup.**
