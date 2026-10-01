@@ -229,3 +229,44 @@ so the table's radii are in the unit shown.
   refused with the x < P ÷ 2 reason.
 - Not done (engine, the lead's): main's r = 0.01 and 1000 still clear h silently; `~cone` and
   `~can-design` "÷ 4π" brackets (`simplify.ts`). The box page still waits.
+
+### Pictures placed (H89–H110)
+
+| Page                                                                             | Entry       | What changed                                                                                                                                          | Stand-in gone                                 |
+| -------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| m.10.parallel-lines~parallel-line, ~perpendicular-line                           | H92         | `lineSystem` `marks: true`, `given: { x: 'x0', y: 'y0' }`                                                                                             | — (the point wasn't drawn)                    |
+| m.10.constructions~bisector-steps, ~angle-bisector-steps, ~find-center           | H96 need 5  | a `construction` card figure on every stage, its new step lit                                                                                         | text-only stages                              |
+| m.10.proofs, m.10.parallel-lines~triangle-sum-proof, m.10.congruence~cpctc-proof | H96 need 5  | `construction` stage figures, following each page's own stages (triangle sum: ∠1, ∠3 and ∠B; CPCTC: the given midpoint, the ticks, SAS, then PR ≅ QS) | text-only stages                              |
+| m.10.congruence (12 cards), m.10.similarity~similar-or-not (8 cards)             | H96 need 6  | `markedTriangles` card figures, the marks saying what each card says                                                                                  | text-only cards                               |
+| m.10.volume-derivations~cross-section-shapes                                     | H96 need 12 | `solidCut` on all eleven cards                                                                                                                        | text-only cards                               |
+| m.10.quadrilaterals (new main)                                                   | H96 need 4  | polygon angle sums on `markedFigure` `regular` (n 3–30, a 9-gon example)                                                                              | — (the skill had no main page)                |
+| m.10.quadrilaterals~rhombus                                                      | H105(12)    | `quadrilateral: { family: 'rhombus', across: ['p', 'q'] }`; p, q, K under the picture                                                                 | the hand-placed points                        |
+| m.10.quadrilaterals~regular-area                                                 | H106(6)     | `polygon` with `apothem`, `angle`, `around` and `area`                                                                                                | the plain polygon                             |
+| m.10.circle-theorems~cyclic-quadrilateral (new)                                  | H96 need 7  | `circleTheorems` `cyclic` (m∠A = 84°, m∠C = 96°)                                                                                                      | — (was waiting)                               |
+| m.10.circle-theorems~chord-angle (new)                                           | H96 need 7  | `circleTheorems` `arcAngle`: chords inside (+) or secants outside (−) from the + − box                                                                | — (was waiting)                               |
+| m.10.coordinate-geometry (all six pages)                                         | H96 need 11 | `fit: true` with extent 20                                                                                                                            | the fixed ±20 grid                            |
+| m.10.constructions~angle-addition                                                | H105(11)    | `markedFigure` rays OA, OB and OC at the typed angles (a and b to 179°)                                                                               | the `angles` picture                          |
+| m.10.proofs~exterior-angle                                                       | H105(11)    | `markedFigure`, A where the rays from B (at b) and C (at d) meet                                                                                      | the `angles` picture                          |
+| m.10.rigid-motions~reflect-line                                                  | H105(4)     | s (1 or −1) picks y = x or y = −x (`slope: 's'`); x′ = s·y, y′ = s·x                                                                                  | the y = −x-only rules and the standalone note |
+| m.10.rigid-motions~symmetry                                                      | H106(10)    | `about: 'center'`                                                                                                                                     | the hidden center a, b and their rules        |
+| m.10.probability-rules~neither                                                   | H97         | a Venn of counts out of N (NAEP-2024-12M4-#18): the union, neither and P(neither) worked out                                                          | the chances version                           |
+| m.10.probability-rules~sample-space                                              | H105(10)    | `namesBySize` (H, T; R, G, B; 1 to 4)                                                                                                                 | the 1/2 code for heads and tails              |
+| m.10.probability-rules~complement                                                | H106(7)     | a one-event Venn (`one: true`)                                                                                                                        | P(Wind) and P(Rain and Wind)                  |
+| m.10.conditional-probability~venn                                                | H97         | a Venn of counts; P(A and B), P(B \| A) and P(A \| B) as fractions                                                                                    | the chances version                           |
+| m.10.conditional-probability~independent                                         | H97         | a three-stage chance tree (NAEP-2009-12M7-#12): all on time, at least one late                                                                        | the two-stage tree                            |
+| m.10.modeling-density~can-design                                                 | H106(8)     | the table with its graph (`graph: { best: 'min' }`, `rowsFrom: 'shown'`)                                                                              | the cm pins and `unitSystems: ['metric']`     |
+| m.10.modeling-density~fence                                                      | H106(8)     | the table of A over x with its graph (`best: 'max'`)                                                                                                  | the rectangle                                 |
+| m.10.modeling-density~population                                                 | H106(9)     | `circle` `population: { people: 'N', density: 'D' }`                                                                                                  | N and D under the picture                     |
+
+Not placed:
+
+- **m.10.probability-rules~counting-probability (H97, `pascalTriangle` `fraction`)**: the fraction
+  draws C(a, r) ÷ C(a + b, r), the case k = r alone, and the triangle only to row 12, while the page
+  counts k of the r from the first group (C(a, k) × C(b, r − k)) among up to 60 people. Placing it
+  would cut the "exactly 2" half of the lesson and the range, so the slots stay.
+- **H96 need 14 (a parallelogram turning about its center)**: ~symmetry is a rectangle page, and
+  H106(10) (`about: 'center'`) went on it instead. The MCAS-2026-G10M-#41 parallelogram would be a
+  page of its own.
+
+Gallery demos built from these pages that no longer pass (the lead's to retire):
+`g.m10-rigid-motions-mirror-sign` (it adds s a second time).
