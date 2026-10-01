@@ -127,6 +127,7 @@ function FigureView({
             drawing={figure.drawing}
             parts={figure.parts}
             highlight={scene.part}
+            alsoLit={scene.alsoLit}
             onPart={onPart}
           />
         );

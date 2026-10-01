@@ -515,6 +515,8 @@ export interface Scene {
   earthSection?: EarthSectionScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
+  /** More parts lit with `part`, on a drawn `parts` figure (a stamen: anther and filament). */
+  alsoLit?: string[];
   /** Where the ball is (a `position` figure). */
   position?: 'above' | 'below' | 'beside' | 'in front of' | 'behind';
   /** [hour, minutes] (a `clock` figure). */
@@ -747,6 +749,11 @@ export interface ObserveLayout extends LayoutBase {
   second?: ObserveSecond & ObserveScale;
   /** H109: the lowest value (below 0 for a membrane potential); bars grow up or down from 0. */
   min?: number;
+  /**
+   * Dashed reference lines across a chart with a `min` (a threshold, a resting level): each
+   * value is marked on a scale beside the bars, with 0, and named in a key under the chart.
+   */
+  guides?: { at: number; label: string }[];
 }
 
 /**

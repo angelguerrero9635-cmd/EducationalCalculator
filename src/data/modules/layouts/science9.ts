@@ -775,11 +775,12 @@ const REPRODUCTION: LayoutDef[] = [
     ],
     columns: ['Day 1', 'Day 7', 'Day 14', 'Day 21', 'Day 28'],
     rowLabel: 'Estrogen',
-    unit: 'Level',
+    unit: '% of peak',
     max: 100,
     step: 5,
-    initial: [10, 40, 90, 50, 15],
-    second: { rowLabel: 'Progesterone', initial: [5, 5, 10, 80, 10] },
+    // Each hormone reaches its own highest level, 100, on one of the days shown.
+    initial: [10, 40, 100, 50, 15],
+    second: { rowLabel: 'Progesterone', initial: [5, 5, 10, 100, 10] },
     pattern: (e, p = []) => {
       const ei = e.indexOf(Math.max(...e));
       const pi = p.indexOf(Math.max(...p));
@@ -1163,7 +1164,7 @@ const BIOTECH: LayoutDef[] = [
       {
         label: 'A match',
         lines: [
-          'Suspect 2 matches the evidence in every band.',
+          // (The gel's own line already says Suspect 2 matches in every band.)
           'Real tests compare 20 or so places in the DNA, so a full match is very unlikely by chance.',
         ],
         gel: {
@@ -1874,11 +1875,13 @@ const PLANTS: LayoutDef[] = [
       {
         label: 'Male parts',
         part: 'Anther',
+        alsoLit: ['Filament'],
         lines: ['Each stamen is a filament with an anther on top, full of pollen.'],
       },
       {
         label: 'Female parts',
         part: 'Stigma',
+        alsoLit: ['Style', 'Ovary'],
         lines: ['The pistil is the stigma, the style and the ovary at the base.'],
       },
       {
@@ -1892,7 +1895,7 @@ const PLANTS: LayoutDef[] = [
         lines: ['After fertilization the ovules become seeds and the ovary swells into the fruit.'],
       },
       {
-        label: 'Attract',
+        label: 'Pollinators',
         part: 'Petal',
         lines: ['Colored petals, and often scent and nectar, bring pollinators to the flower.'],
       },
@@ -2652,6 +2655,10 @@ const NERVOUS: LayoutDef[] = [
     max: 40,
     step: 5,
     initial: [-70, -55, 30, -40, -80, -75, -70],
+    guides: [
+      { at: -55, label: 'Threshold' },
+      { at: -70, label: 'Rest' },
+    ],
     pattern: (v) => {
       const peak = Math.max(...v);
       const low = Math.min(...v);

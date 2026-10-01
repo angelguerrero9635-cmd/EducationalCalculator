@@ -138,16 +138,28 @@ const freq = (id: string, symbol: string, name: string, derived = false): Variab
   ...(derived ? { derived: true } : {}),
 });
 
-/** Expected people with a genotype: N × its share (one way). */
+/**
+ * Expected people with a genotype: N × its share (one way), with the whole number of people
+ * it means when the product isn't whole ("(about 347 people)").
+ */
 const expected = (out: string, share: string, what: string): Rule =>
-  forward(
-    `${out} = N × ${share}`,
-    `{${out}} = {N} × {${share}}`,
+  withStep(
+    forward(
+      `${out} = N × ${share}`,
+      `{${out}} = {N} × {${share}}`,
+      out,
+      ['N', share],
+      (v) => v.N! * v[share]!,
+      `{N} × {${share}}`,
+      `The ${what} share of the N people.`,
+    ),
     out,
-    ['N', share],
-    (v) => v.N! * v[share]!,
-    `{N} × {${share}}`,
-    `The ${what} share of the N people.`,
+    {
+      note: (v) =>
+        Math.abs(v[out]! - Math.round(v[out]!)) > 1e-6
+          ? `(about ${fmt(Math.round(v[out]!))} people)`
+          : '',
+    },
   );
 
 /** A value the story keeps strictly below another (a start below the carrying capacity). */
@@ -592,13 +604,15 @@ const DIVISION: ModuleDef[] = [
       'The mitotic index is the percent of cells in mitosis; a fast-growing tissue, or a tumor, has a high one.',
     ],
     variables: [
-      count('I', 'I', 'Cells in interphase', 0, 1000),
-      count('P', 'P', 'Cells in prophase', 0, 500),
-      count('M', 'M', 'Cells in metaphase', 0, 500),
-      count('A', 'A', 'Cells in anaphase', 0, 500),
-      count('T', 'T', 'Cells in telophase', 0, 500),
-      count('N', 'N', 'Cells counted', 1, 3000, true),
-      count('m', 'm', 'Cells in mitosis', 0, 2000, true),
+      // One field of a root tip holds a few hundred cells: ranges that fit, so the sliders
+      // sit where the counts are, not all at the bottom.
+      count('I', 'I', 'Cells in interphase', 0, 300),
+      count('P', 'P', 'Cells in prophase', 0, 100),
+      count('M', 'M', 'Cells in metaphase', 0, 100),
+      count('A', 'A', 'Cells in anaphase', 0, 100),
+      count('T', 'T', 'Cells in telophase', 0, 100),
+      count('N', 'N', 'Cells counted', 1, 700, true),
+      count('m', 'm', 'Cells in mitosis', 0, 400, true),
       {
         id: 'x',
         symbol: 'x',

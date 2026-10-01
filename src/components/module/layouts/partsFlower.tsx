@@ -59,7 +59,8 @@ export const FLOWER: PartsDrawingDef = {
           {line('M 172 198 C 180 170 192 142 196 112', c.flowerWhite, 2.2, lit)}
         </>
       ),
-      anchor: [133, 160],
+      // On the left filament itself (its curve passes 134.5, 156), not the petal behind it.
+      anchor: [134.5, 156],
       label: [80, 176, 'end'],
       hit: [118, 120, 30, 76],
     },

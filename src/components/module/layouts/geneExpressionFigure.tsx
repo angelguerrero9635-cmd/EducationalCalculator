@@ -189,7 +189,7 @@ export function GeneExpressionFigure({ gene }: { gene: GeneScene }) {
         </ChartText>
         {signal ? (
           <ChartText x={swX + 11} y={swY - 22} fontSize={chart.label} fill={c.chartMuted}>
-            {rep ? 'inducer' : 'signal'}
+            {rep ? 'inducer (lactose)' : 'signal'}
           </ChartText>
         ) : null}
       </G>
