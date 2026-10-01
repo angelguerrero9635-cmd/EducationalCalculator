@@ -55,6 +55,10 @@ per review; each line names the finding and what the engine now does about it.
   extra figures (the lines still add up), and the 8-figure fallback for a line that would miss
   its answer clears it. 19 pages' lines changed (s.10 mole, photon, ksp; s.11 gravitation,
   electrostatics, electric potential, modern physics; s.12 dating, starlight, stellar evolution).
+- **s.11.thermodynamics~first-law: "Q = 500 J in" ran under the cylinder's left edge** at
+  phone width (the label starts at the left margin, the glass at 0.3 of the width) → the
+  `gasPiston` energy view (`GasFirstLaw.tsx`) keeps the label over the heat band only when it
+  fits left of the cylinder, and otherwise sets it under the cylinder's base, clear of the glass.
 
 ## Grades 9–12 leftovers: the tracker by parts, figures, science figures, review scripts
 
