@@ -1814,8 +1814,6 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: [
       'g.m9-piecewise-functions-abs',
-      'g.m11-function-transformations-horizontal',
-      'g.m11-function-transformations-horizontal-flip',
       'g.m11-inverse-functions-restrict-domain',
       'g.m12-limits-intro-infinity-coefficients',
     ],

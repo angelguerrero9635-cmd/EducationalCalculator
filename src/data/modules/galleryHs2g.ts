@@ -248,59 +248,6 @@ const absGraph = page({
   },
 });
 
-/** y = √(b(x − h)): the parent point (p, √p) lands at (h + p ÷ b, √p). */
-const horizontal = (id: string, title: string, example: Values) =>
-  page({
-    id,
-    title,
-    use: 'Use this for “Where does (4, 2) on y = √x go on y = √(2x)?”',
-    assumptions: [
-      'y = f(b(x − h)) acts on x: it squeezes the graph toward x = h by 1/b.',
-      'A negative b also flips the graph across the line x = h.',
-      'The point (p, f(p)) of the parent lands at (h + p ÷ b, f(p)): only x changes.',
-    ],
-    variables: [
-      num('b', 'b', 'Horizontal factor', -3, 3, { allowed: [-3, -2, -1, -0.5, 0.5, 2, 3] }),
-      num('h', 'h', 'Shift right', -10, 10, { step: 0.5 }),
-      num('p', 'p', 'Parent point x', 0, 25, { step: 0.5 }),
-      num('Y', 'Y', 'Image y = √p', 0, 5, { derived: true }),
-      num('X', 'X', 'Image x', -60, 60, { derived: true }),
-    ],
-    rules: [
-      derive(
-        'Y = √p',
-        'Y',
-        ['p'],
-        '{Y} = √{p}',
-        (v) => fin(Math.sqrt(v.p!)),
-        '√{p}',
-        'The parent point is (p, √p); a change inside the root leaves y alone.',
-      ),
-      derive(
-        'X = h + p ÷ b',
-        'X',
-        ['h', 'p', 'b'],
-        '{X} = {h} + {p} ÷ {b}',
-        (v) => (v.b ? fin(v.h! + v.p! / v.b!) : undefined),
-        '{h} + {p} ÷ {b}',
-        'b(X − h) must equal p, so X − h = p ÷ b.',
-      ),
-    ],
-    example,
-    startWith: ['b', 'h', 'p'],
-    equation: 'y = √({b}(x − {h}))',
-    representation: {
-      kind: 'functionGraph',
-      family: 'root',
-      index: 2,
-      h: 'h',
-      horizontal: 'b',
-      parent: true,
-      input: 'x',
-      at: { x: 'X', y: 'Y' },
-    },
-  });
-
 /** f(x) = a(x − h)² + k kept on x ≥ h, and its inverse h + √((x − k) ÷ a). */
 const restrictDomain = page({
   id: 'g.m11-inverse-functions-restrict-domain',
@@ -390,25 +337,7 @@ const ratio = fromPage(
   },
 );
 
-const GRAPHS: ModuleDef[] = [
-  absGraph,
-  horizontal('g.m11-function-transformations-horizontal', 'Horizontal stretch: y = √(b(x − h))', {
-    b: 2,
-    h: 0,
-    p: 4,
-    Y: 2,
-    X: 2,
-  }),
-  horizontal('g.m11-function-transformations-horizontal-flip', 'Horizontal flip: y = √(−(x − h))', {
-    b: -1,
-    h: 2,
-    p: 4,
-    Y: 2,
-    X: -2,
-  }),
-  restrictDomain,
-  ratio,
-];
+const GRAPHS: ModuleDef[] = [absGraph, restrictDomain, ratio];
 
 // ── H95: an area box past the tiles; a monomial quotient as factors ──
 

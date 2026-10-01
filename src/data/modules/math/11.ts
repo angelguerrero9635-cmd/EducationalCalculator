@@ -2270,6 +2270,60 @@ export const MATH_11_MODULES: ModuleDef[] = [
       keep: ['p', 'a', 'h', 'k'],
     },
   }),
+  page({
+    id: 'm.11.function-transformations~horizontal',
+    title: 'Horizontal stretch and flip',
+    use: 'Use this for “(4, 2) is on y = √x. Where is it on y = √(2x)? On y = √(−x)?”',
+    assumptions: [
+      'Here f(x) = √x, dashed. A number b inside, f(b(x − h)), acts on x: the graph is squeezed toward x = h by 1/b.',
+      'A b between −1 and 1 stretches the graph instead, and a negative b also flips it across x = h.',
+      'The parent’s point (p, √p) lands at (h + p ÷ b, √p): only x changes.',
+    ],
+    variables: [
+      V('b', 'b', 'Horizontal factor', {
+        allowed: [-3, -2, -1, -0.5, 0.5, 2, 3],
+        min: -3,
+        max: 3,
+      }),
+      V('h', 'h', 'Shift right', { min: -10, max: 10, step: 0.5 }),
+      V('p', 'p', 'x on the parent', { min: 0, max: 25, step: 0.5 }),
+      V('Y', 'Y', 'y of the point, √p', { min: 0, max: 5, derived: true }),
+      V('X', 'X', 'x of the moved point', { min: -60, max: 60, derived: true }),
+    ],
+    rules: [
+      derive(
+        'Y = √p',
+        'Y',
+        ['p'],
+        '{Y} = √{p}',
+        (v) => Math.sqrt(v.p!),
+        '√{p}',
+        'The point on the parent is (p, √p); a change inside the root leaves y alone.',
+      ),
+      derive(
+        'X = h + p ÷ b',
+        'X',
+        ['h', 'p', 'b'],
+        '{X} = {h} + {p} ÷ {b}',
+        (v) => (v.b ? v.h! + v.p! / v.b! : undefined),
+        '{h} + {p} ÷ {b}',
+        'The new graph reads the root of b(X − h), which must be p: so X − h = p ÷ b.',
+      ),
+    ],
+    example: { b: 2, h: 0, p: 4, Y: 2, X: 2 },
+    startWith: ['b', 'h', 'p'],
+    equation: 'y = √({b}(x − {h}))',
+    representation: {
+      kind: 'functionGraph',
+      family: 'root',
+      index: 2,
+      h: 'h',
+      horizontal: 'b',
+      parent: true,
+      input: 'x',
+      at: { x: 'X', y: 'Y' },
+    },
+  }),
 
   // ── Complex numbers (N-CN.1–N-CN.3, N-CN.7) ──
   page({
