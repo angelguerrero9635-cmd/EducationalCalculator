@@ -409,6 +409,57 @@ const magnitude: ModuleDef = {
   },
 };
 
+const spreading: ModuleDef = {
+  id: 's.12.earth-interior~spreading-rate',
+  title: 'Seafloor spreading from magnetic stripes',
+  use: 'Use this for “Rock 100 km from the ridge is 4 million years old. How fast is the seafloor spreading?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'New seafloor forms at the ridge and moves away on both sides at the same rate.',
+    'Cooling rock records the direction of Earth’s magnetic field, which has flipped many times, so the seafloor is striped the same on both sides.',
+    'A kilometer per million years is a millimeter per year.',
+  ],
+  variables: [
+    V('x', 'x', 'Distance from the ridge', { unit: 'km', min: 1, max: 1000, step: 1 }),
+    V('t', 't', 'Age of the rock', { unit: 'million years', min: 0.1, max: 12, step: 0.01 }),
+    V('v', 'v', 'Spreading rate, one side', {
+      unit: 'mm/yr',
+      min: 0.1,
+      max: 10000,
+      step: 0.1,
+      derived: true,
+    }),
+    V('w', 'w', 'Full spreading rate', {
+      unit: 'mm/yr',
+      min: 0.2,
+      max: 20000,
+      step: 0.1,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    quotient('v', 'x', 't', 'v = x ÷ t', [
+      'The rock moved x kilometers in t million years; a kilometer per million years is a millimeter per year.',
+      'Distance is the rate times the time.',
+      'Time is the distance over the rate.',
+    ]),
+    rule('w = 2v', '{w} = 2 × {v}', (v) => v.w! - 2 * v.v!, {
+      w: [(v) => 2 * v.v!, '2 × {v}', 'The plates move apart on both sides, each at v.'],
+      v: [(v) => v.w! / 2, '{w} ÷ 2', 'Each side moves at half the full rate.'],
+    }),
+  ),
+  example: { x: 100, t: 4, v: 25, w: 50 },
+  startWith: ['x', 't'],
+  representation: {
+    kind: 'oceanProfile',
+    mode: 'stripes',
+    distance: 'x',
+    age: 't',
+    rate: 'v',
+    full: 'w',
+  },
+};
+
 // ── Earth's history: the early Earth, its atmosphere and the history of life ──
 
 /** Rounded ages (million years ago) of the events round the one-day clock. */
@@ -1929,6 +1980,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   epicenter,
   shadowZone,
   magnitude,
+  spreading,
   earthDay,
   coralDays,
   carbonDating,
