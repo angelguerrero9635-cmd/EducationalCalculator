@@ -1138,7 +1138,7 @@ const IONIC: ModuleDef = {
   assumptions: [
     'The metal gives electrons and the nonmetal takes them: the total positive charge equals the total negative charge.',
     'The formula uses the lowest whole-number ratio of ions.',
-    'The picture draws magnesium chloride, Mg²⁺ with Cl⁻; other charges are worked in the rows.',
+    'The picture draws Na⁺, Mg²⁺ or Al³⁺ for a charge of 1, 2 or 3, and Cl⁻, O²⁻ or N³⁻ for the nonmetal.',
   ],
   variables: [
     whole('cp', 'c₊', 'Charge of the metal ion', 1, 3),
@@ -1207,6 +1207,7 @@ const IONIC: ModuleDef = {
     metals: 'a',
     nonmetals: 'b',
     transferred: 't',
+    charges: { metal: 'cp', nonmetal: 'cn' },
   },
 };
 

@@ -261,3 +261,6 @@ Report: `.review/new-sci-2/lesson-report.md`.
   f₁, f₂ = 100 − f₁ and A, on `chemDiagram` mode `isotopes` (boron). No stand-in.
 - `~models` (H101 need 13): each stage wears its atom-model icon (Dalton, Thomson, Rutherford,
   Bohr, quantum). Stand-in gone: text-only stages.
+- `s.10.bonding~ionic` (H108 part 2): `lewisStructure` ionic adds `charges: { metal: cp,
+  nonmetal: cn }`, so every pair it solves is drawn (Al³⁺ with O²⁻ draws Al₂O₃). Stand-in gone:
+  the assumption that the picture draws magnesium chloride only (it now names the ions drawn).
