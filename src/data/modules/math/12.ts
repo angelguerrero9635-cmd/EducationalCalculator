@@ -6955,10 +6955,26 @@ const tTail = (v: Values) =>
     : v.h! > 0
       ? 1 - tCdf(v.t!, v.df!)
       : tCdf(v.t!, v.df!);
+/**
+ * The tail worked from tcdf's value: "P = 2 × (1 − 0.997519)", "P = 2 × 0.002481" (h 0), or
+ * "P = 1 − 0.997519" (h 1). Nothing when the tail is under 0.0001 (P < 0.0001) or for h −1,
+ * where tcdf is the answer itself.
+ */
+const tTailWork = (v: Values): string[] => {
+  if (v.t === undefined || v.df === undefined || v.h === -1) return [];
+  const c = tCdf(v.h === 0 ? Math.abs(v.t) : v.t, v.df);
+  const tail = 1 - c;
+  if (tail < 0.0001) return [];
+  // Enough decimals that the tail keeps 4 significant figures.
+  const d = Math.max(4, 3 - Math.floor(Math.log10(tail)));
+  // Written out to d decimals (the box's 4 figures would round 0.997519 to 0.9975).
+  const cut = (x: number) => String(Number(x.toFixed(d)));
+  return v.h === 0 ? [`P = 2 × (1 − ${cut(c)})`, `P = 2 × ${cut(tail)}`] : [`P = 1 − ${cut(c)}`];
+};
 const tSided = withCheck(
   derive(
     'P = the t tail on the side of Hₐ',
-    '{P} = the tail past {t} on the side {h} names, df = {df}',
+    '{P} = the t tail past {t} on {h}’s side, with {df} degrees of freedom',
     'P',
     ['t', 'df', 'h'],
     tTail,
@@ -6980,17 +6996,31 @@ const tSided = withCheck(
         : `${P} = tcdf(${t}, ${df})`;
   },
 );
-/** The decision in context: below α is convincing evidence of the relationship Hₐ names. */
-const decideSlope = (v: Values) => {
-  if (v.P === undefined || v.a === undefined) return '';
-  const kind = v.h === 1 ? 'a positive ' : v.h === -1 ? 'a negative ' : 'a ';
-  // A p-value is never 0: one the box rounds to 0 is written P < 0.0001.
-  const tiny = v.P < 0.0001 ? 'P < 0.0001, ' : '';
-  return v.P < v.a
-    ? `→ ${tiny}below α = ${fmt(v.a)}: reject H₀, convincing evidence of ${kind}linear relationship between x and y`
-    : `→ not below α = ${fmt(v.a)}: fail to reject H₀, not convincing evidence of ${kind}linear relationship`;
-};
-const slopeP = withStep(tSided, 'P', { note: decideSlope });
+/**
+ * The decision in context: below α is convincing evidence of the relationship Hₐ names. It
+ * opens with Hₐ in words (the box shows its code), as "Hₐ: β ≠ 0, two tails".
+ */
+const decideSlope =
+  (what = 'β') =>
+  (v: Values) => {
+    if (v.P === undefined || v.a === undefined) return '';
+    const kind = v.h === 1 ? 'a positive ' : v.h === -1 ? 'a negative ' : 'a ';
+    const side =
+      v.h === 1
+        ? `Hₐ: ${what} > 0, the right tail`
+        : v.h === -1
+          ? `Hₐ: ${what} < 0, the left tail`
+          : `Hₐ: ${what} ≠ 0, two tails`;
+    // A p-value is never 0: one the box rounds to 0 is written P < 0.0001.
+    const tiny = v.P < 0.0001 ? 'P < 0.0001, ' : '';
+    return v.P < v.a
+      ? `→ ${side}: ${tiny}below α = ${fmt(v.a)}, so reject H₀: convincing evidence of ${kind}linear relationship between x and y`
+      : `→ ${side}: not below α = ${fmt(v.a)}, so fail to reject H₀: not convincing evidence of ${kind}linear relationship`;
+  };
+const slopeP = (what: string) =>
+  withStep(tSided, 'P', { work: tTailWork, note: decideSlope(what) });
+/** t on the slope pages: past ±1000 when SE_b is tiny, never a reason to clear an input. */
+const tSlopeVar = () => ({ ...tVar(), min: -1e9, max: 1e9 });
 
 const MATH_12_REGRESSION: ModuleDef[] = [
   // ── m.12.regression-inference (S-ID.8 carried on; AP Statistics unit 9) ──
@@ -7006,12 +7036,12 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       seSlope(),
       pointsVar,
       dfVar,
-      tVar(),
+      tSlopeVar(),
       sideVar('β'),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
-    ...rels(dfLine, tSlope, slopeP),
+    ...rels(dfLine, tSlope, slopeP('β')),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
       b: 0.8,
@@ -7051,9 +7081,10 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       }),
       dfVar,
       V('ts', 't⋆', 'Critical value', { min: 0.1, max: 700, step: 0.001, derived: true }),
-      V('E', 'E', 'Margin of error', { min: 0.000001, max: 1000000, step: 0.001, derived: true }),
-      V('lo', 'L', 'Lower end', { min: -1000000, max: 1000000, step: 0.001, derived: true }),
-      V('hi', 'U', 'Upper end', { min: -1000000, max: 1000000, step: 0.001, derived: true }),
+      // Room for t⋆ = 63.66 (n = 3, 99%) times a big SE_b, so a typed 99% is never replaced.
+      V('E', 'E', 'Margin of error', { min: 0.000001, max: 1e8, step: 0.001, derived: true }),
+      V('lo', 'L', 'Lower end', { min: -1e8, max: 1e8, step: 0.001, derived: true }),
+      V('hi', 'U', 'Upper end', { min: -1e8, max: 1e8, step: 0.001, derived: true }),
     ],
     ...rels(
       dfLine,
@@ -7063,7 +7094,14 @@ const MATH_12_REGRESSION: ModuleDef[] = [
         SE: [(v) => div(v.E!, v.ts!), '{E} ÷ {ts}', 'Divide the margin by t⋆.'],
       }),
       end('lo', 'b', 'E', -1),
-      end('hi', 'b', 'E', 1),
+      withStep(end('hi', 'b', 'E', 1), 'hi', {
+        note: (v) =>
+          v.lo === undefined || v.hi === undefined || v.C === undefined
+            ? ''
+            : v.lo > 0 || v.hi < 0
+              ? `→ 0 is not between ${shown(v.lo)} and ${shown(v.hi)}: the slope differs from 0 at the ${shown(v.C * 100)}% level`
+              : `→ 0 is between ${shown(v.lo)} and ${shown(v.hi)}: a slope of 0 can’t be ruled out at the ${shown(v.C * 100)}% level`,
+      }),
       ordered,
     ),
     example: {
@@ -7101,7 +7139,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       V('r', 'r', 'Correlation coefficient', { min: -0.9999, max: 0.9999, step: 0.0001 }),
       pointsVar,
       dfVar,
-      tVar(),
+      tSlopeVar(),
       sideVar('ρ'),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
@@ -7121,7 +7159,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
           ],
         },
       ),
-      slopeP,
+      slopeP('ρ'),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: { r: 0.6, n: 18, df: 16, t: 3, h: 0, P: 2 * (1 - tCdf(3, 16)), a: 0.05 },
@@ -7153,7 +7191,7 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       seSlope({ min: 1e-10, derived: true }),
       slopeVar,
       dfVar,
-      tVar(),
+      tSlopeVar(),
       prob('P', 'P', 'p-value', { derived: true }),
       alphaVar,
     ],
@@ -7169,7 +7207,10 @@ const MATH_12_REGRESSION: ModuleDef[] = [
       ),
       tSlope,
       dfLine,
-      withStep(tTwoTail('P', 't', 'df'), 'P', { note: (v) => decideSlope({ ...v, h: 0 }) }),
+      withStep(tTwoTail('P', 't', 'df'), 'P', {
+        work: (v) => tTailWork({ ...v, h: 0 }),
+        note: (v) => decideSlope('β')({ ...v, h: 0 }),
+      }),
     ),
     standalone: { vars: ['a'], why: ALPHA_WHY },
     example: {
