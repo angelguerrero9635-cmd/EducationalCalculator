@@ -4899,13 +4899,55 @@ const coord = (id: string, symbol: string, name: string, range = 1000, extra = {
 const trigOf = (out: string, fn: 'cos' | 'sin', t: string, which: string) =>
   derive(
     `${out} = ${fn} ${t === 'g' ? 'γ' : 'θ'}`,
-    `{${out}} = ${fn}({${t}}°)`,
+    // No "°" on the letter (cos(θ)): the numbers get theirs when filled in, cos(30°).
+    `{${out}} = ${fn}({${t}})`,
     out,
     [t],
     (v) => (fn === 'cos' ? cosd(v[t]!) : sind(v[t]!)),
-    `${fn}({${t}}°)`,
+    `${fn}({${t}})`,
     which,
   );
+
+/** "(= √3/2 exactly)" after a rounded entry, or nothing. */
+const exactNote = (e: Surd | undefined) => (e && e.k !== 1 ? `(= ${surdText(e)} exactly)` : '');
+/** cos γ or sin γ exactly (1/2, √3/2), at a multiple of 30° or 45° that isn't one of 90°. */
+const exactEntry = (fn: 'sin' | 'cos', g: number | undefined): Surd | undefined => {
+  if (g === undefined || g % 90 === 0) return undefined;
+  return exactTrig(fn, g);
+};
+/** n√k with a decimal n: 2, √3, −2√3, 1.5√2. */
+const rootTerm = (n: number, k: number) =>
+  k === 1 ? shown(n) : `${n === 1 ? '' : n === -1 ? '−' : fmt(n)}√${k}`;
+/**
+ * A row of R(γ) times (x, y) with the exact entries, when γ is a multiple of 30° or 45°:
+ * cos γ × x ∓ sin γ × y = 2 − √3, so the line meets the answer (0.866 × 2 is not √3).
+ */
+const exactRow =
+  (sym: string, first: ['sin' | 'cos', string], sign: 1 | -1, second: ['sin' | 'cos', string]) =>
+  (v: Values): string[] => {
+    const p = exactEntry(first[0], v.g);
+    const q = exactEntry(second[0], v.g);
+    if (!p || !q) return [];
+    const terms = new Map<number, number>();
+    for (const [e, x, k] of [
+      [p, v[first[1]]!, 1],
+      [q, v[second[1]]!, sign],
+    ] as const) {
+      const n = (k * e.n * x) / e.d;
+      terms.set(e.k, (terms.get(e.k) ?? 0) + n);
+    }
+    const parts = [...terms]
+      .map(([k, n]) => [k, Number(n.toFixed(4))] as const)
+      .filter(([, n]) => n !== 0)
+      .sort(([a], [b]) => a - b);
+    if (parts.length === 0) return [];
+    const text = parts
+      .map(([k, n], i) =>
+        i === 0 ? rootTerm(n, k) : `${n < 0 ? '−' : '+'} ${rootTerm(Math.abs(n), k)}`,
+      )
+      .join(' ');
+    return [`${sym} = ${text}`];
+  };
 
 const MATH_12_TRANSFORMS: ModuleDef[] = [
   // ── m.12.matrix-transformations (N-VM.12) ──
@@ -5239,38 +5281,50 @@ const MATH_12_TRANSFORMS: ModuleDef[] = [
         '{a} + {b}',
         'R(β)R(α) = R(α + β): multiplying the two matrices adds the angles (the sum formulas).',
       ),
-      trigOf('c', 'cos', 'g', 'The first column of R(γ) is where (1, 0) lands: (cos γ, sin γ).'),
+      withStep(
+        trigOf('c', 'cos', 'g', 'The first column of R(γ) is where (1, 0) lands: (cos γ, sin γ).'),
+        'c',
+        { note: (v) => exactNote(exactEntry('cos', v.g)) },
+      ),
       withStep(trigOf('s', 'sin', 'g', 'The same column’s second entry.'), 's', {
         note: (v) =>
           v.c === undefined || v.s === undefined
             ? ''
-            : `→ the single matrix R(γ) = [[${fmt(v.c)}, ${fmt(-v.s)}], [${fmt(v.s)}, ${fmt(v.c)}]]`,
+            : `${exactNote(exactEntry('sin', v.g))} → the single matrix R(γ) = [[${fmt(v.c)}, ${fmt(-v.s)}], [${fmt(v.s)}, ${fmt(v.c)}]]`.trimStart(),
       }),
-      rel(
-        'x″ = cx − sy',
-        '{X} = {c} × {x} − {s} × {y}',
-        ['X', 'c', 'x', 's', 'y'],
-        (v) => v.X! - (v.c! * v.x! - v.s! * v.y!),
-        {
-          X: [
-            (v) => v.c! * v.x! - v.s! * v.y!,
-            '{c} × {x} − {s} × {y}',
-            'The first row of R(γ), [cos γ, −sin γ], times the column (x, y).',
-          ],
-        },
+      withStep(
+        rel(
+          'x″ = cx − sy',
+          '{X} = {c} × {x} − {s} × {y}',
+          ['X', 'c', 'x', 's', 'y'],
+          (v) => v.X! - (v.c! * v.x! - v.s! * v.y!),
+          {
+            X: [
+              (v) => v.c! * v.x! - v.s! * v.y!,
+              '{c} × {x} − {s} × {y}',
+              'The first row of R(γ), [cos γ, −sin γ], times the column (x, y).',
+            ],
+          },
+        ),
+        'X',
+        { work: exactRow('x″', ['cos', 'x'], -1, ['sin', 'y']) },
       ),
-      rel(
-        'y″ = sx + cy',
-        '{Y} = {s} × {x} + {c} × {y}',
-        ['Y', 's', 'x', 'c', 'y'],
-        (v) => v.Y! - (v.s! * v.x! + v.c! * v.y!),
-        {
-          Y: [
-            (v) => v.s! * v.x! + v.c! * v.y!,
-            '{s} × {x} + {c} × {y}',
-            'The second row of R(γ), [sin γ, cos γ], times the column (x, y).',
-          ],
-        },
+      withStep(
+        rel(
+          'y″ = sx + cy',
+          '{Y} = {s} × {x} + {c} × {y}',
+          ['Y', 's', 'x', 'c', 'y'],
+          (v) => v.Y! - (v.s! * v.x! + v.c! * v.y!),
+          {
+            Y: [
+              (v) => v.s! * v.x! + v.c! * v.y!,
+              '{s} × {x} + {c} × {y}',
+              'The second row of R(γ), [sin γ, cos γ], times the column (x, y).',
+            ],
+          },
+        ),
+        'Y',
+        { work: exactRow('y″', ['sin', 'x'], 1, ['cos', 'y']) },
       ),
     ),
     example: { a: 30, b: 60, g: 90, c: 0, s: 1, x: 4, y: 2, X: -2, Y: 4 },
