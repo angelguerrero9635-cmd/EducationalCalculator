@@ -418,7 +418,18 @@ const earthDay: ModuleDef = {
     }),
     ((r: Rel): Rel => ({
       ...r,
-      steps: { ...r.steps, t: { ...r.steps.t!, note: (v) => `(${clockText(v.t!)})` } },
+      steps: {
+        ...r.steps,
+        t: {
+          ...r.steps.t!,
+          // Under a minute the clock reads midnight; the seconds keep the point of the lesson.
+          note: (v) => {
+            if (!(v.m! > 0 && v.m! < 1)) return `(${clockText(v.t!)})`;
+            const s = Math.max(1, Math.round(v.m! * 60));
+            return `(about ${s} second${s === 1 ? '' : 's'} before midnight)`;
+          },
+        },
+      },
     }))(
       rule('t = 24 − m ÷ 60', '{t} = 24 − {m} ÷ 60', (v) => v.t! - (24 - v.m! / 60), {
         t: [
@@ -467,11 +478,23 @@ const coralDays: ModuleDef = {
     V('D', 'D', 'Length of a day', { unit: 'hours', min: 19, max: 24.5, step: 0.001 }),
   ],
   ...rels(
-    quotient('N', 'n', 'b', 'N = n ÷ b', [
-      'Share the daily lines among the yearly bands: the days in one year.',
-      'Each band holds a year of N lines: multiply.',
-      'How many years of N lines fit in the count.',
-    ]),
+    // Says why when the count gives a year outside N's range, instead of a silent clear.
+    ((r: Rel): Rel => ({
+      ...r,
+      relation: {
+        ...r.relation,
+        message: (v: Values) =>
+          v.n !== undefined && v.b! > 0 && (v.n / v.b! < 360 - 1e-9 || v.n / v.b! > 450 + 1e-9)
+            ? 'That many lines across those bands gives a year shorter than 360 or longer than 450 days.'
+            : undefined,
+      },
+    }))(
+      quotient('N', 'n', 'b', 'N = n ÷ b', [
+        'Share the daily lines among the yearly bands: the days in one year.',
+        'Each band holds a year of N lines: multiply.',
+        'How many years of N lines fit in the count.',
+      ]),
+    ),
     rule('D = 8,766 ÷ N', '{D} = 8,766 ÷ {N}', (v) => v.D! * v.N! - YEAR_H, {
       D: [
         (v) => div(YEAR_H, v.N!),
@@ -1595,7 +1618,9 @@ const transit: ModuleDef = {
   ],
   variables: [
     V('R', 'R', 'Star’s radius', { unit: 'R☉', min: 0.1, max: 10, step: 0.001 }),
-    V('r', 'r', 'Planet’s radius', { unit: 'R⊕', min: 0.3, max: 25, step: 0.01 }),
+    // Wide, so a dip that gives a planet outside 0.3–25 R⊕ meets the check below (with its
+    // reason), not a silent clear.
+    V('r', 'r', 'Planet’s radius', { unit: 'R⊕', min: 0.0001, max: 1090, step: 0.01 }),
     V('d', 'δ', 'Transit depth', { unit: '%', min: 1e-6, max: 100, step: 1e-6 }),
   ],
   ...rels(
@@ -1608,6 +1633,23 @@ const transit: ModuleDef = {
         residual: (v: Values) => (v.r! < RE_PER_RSUN * v.R! ? 0 : 1),
         solve: {},
         message: () => 'A planet is smaller than its star, so it blocks only part of the light.',
+      },
+      steps: {},
+    },
+    {
+      relation: {
+        id: 'r from 0.3 to 25',
+        constraint: true,
+        display: '{r} is from 0.3 to 25',
+        vars: ['r'],
+        residual: (v: Values) => (v.r! >= 0.3 - 1e-9 && v.r! <= 25 + 1e-9 ? 0 : 1),
+        solve: {},
+        message: (v: Values) =>
+          v.r! > 25 + 1e-9
+            ? 'That dip needs a body over 25 Earths wide: a small star, not a planet.'
+            : v.r! < 0.3 - 1e-9
+              ? 'That dip is from a body under 0.3 Earths wide, too small to find this way.'
+              : undefined,
       },
       steps: {},
     },
@@ -1649,7 +1691,7 @@ const transit: ModuleDef = {
 const exoOrbit: ModuleDef = {
   id: 's.12.exoplanets~orbit',
   title: 'An exoplanet’s orbit from its period',
-  use: 'Use this for “A planet circles a star of 0.8 solar masses every 36.525 days. How far is it from its star?”',
+  use: 'Use this for “A planet circles a star of 0.5 solar masses every 1,461 days. How far is it from its star?”',
   unitSystems: ['metric'],
   assumptions: [
     'The planet’s mass is tiny beside its star’s.',
@@ -1689,14 +1731,14 @@ const exoOrbit: ModuleDef = {
       }),
     ),
   ),
-  example: { M: 0.8, P: 36.525, T: 0.1, a: 0.2 },
+  example: { M: 0.5, P: 1461, T: 4, a: 2 },
   startWith: ['P', 'M'],
   representation: {
     kind: 'table',
     sweep: 'P',
     output: 'a',
     params: ['M'],
-    rows: [1, 10, 36.525, 100, 365.25],
+    rows: [10, 100, 365.25, 1461, 3652.5],
   },
   pictureLabels: ['T'],
 };
@@ -1737,7 +1779,7 @@ const habitable: ModuleDef = {
       relation: {
         id: 'a > 0.005 × √L',
         constraint: true,
-        display: '{a} is more than 0.005 × √({L})',
+        display: '{a} is more than 0.005 × √{L}',
         vars: ['a', 'L'],
         residual: (v: Values) => (v.a! > 0.005 * Math.sqrt(v.L!) ? 0 : 1),
         solve: {},
@@ -1746,16 +1788,16 @@ const habitable: ModuleDef = {
       },
       steps: {},
     },
-    rule('d₁ = 0.95 × √L', '{d1} = 0.95 × √({L})', (v) => v.d1! - 0.95 * Math.sqrt(v.L!), {
+    rule('d₁ = 0.95 × √L', '{d1} = 0.95 × √{L}', (v) => v.d1! - 0.95 * Math.sqrt(v.L!), {
       d1: [
         (v) => 0.95 * Math.sqrt(v.L!),
-        '0.95 × √({L})',
+        '0.95 × √{L}',
         'Nearer than this, a planet like Earth grows too hot and loses its water.',
       ],
       L: [(v) => (v.d1! / 0.95) ** 2, '({d1} ÷ 0.95)²', 'Undo the square root: square d₁ ÷ 0.95.'],
     }),
-    rule('d₂ = 1.37 × √L', '{d2} = 1.37 × √({L})', (v) => v.d2! - 1.37 * Math.sqrt(v.L!), {
-      d2: [(v) => 1.37 * Math.sqrt(v.L!), '1.37 × √({L})', 'Farther than this, its water freezes.'],
+    rule('d₂ = 1.37 × √L', '{d2} = 1.37 × √{L}', (v) => v.d2! - 1.37 * Math.sqrt(v.L!), {
+      d2: [(v) => 1.37 * Math.sqrt(v.L!), '1.37 × √{L}', 'Farther than this, its water freezes.'],
       L: [(v) => (v.d2! / 1.37) ** 2, '({d2} ÷ 1.37)²', 'Undo the square root: square d₂ ÷ 1.37.'],
     }),
     ((r: Rel): Rel => ({
@@ -1776,22 +1818,22 @@ const habitable: ModuleDef = {
     }))(
       rule(
         'T = 278 × L^(1/4) ÷ √a',
-        '{T} = 278 × ({L})^(1/4) ÷ √({a})',
+        '{T} = 278 × {L}^(1/4) ÷ √{a}',
         (v) => v.T! - habTemp(v.L!, v.a!),
         {
           T: [
             (v) => habTemp(v.L!, v.a!),
-            '278 × ({L})^(1/4) ÷ √({a})',
+            '278 × {L}^(1/4) ÷ √{a}',
             'A planet at 1 AU from the Sun comes to 278 K; more light warms it, more distance cools it.',
           ],
           a: [
             (v) => (v.T! > 0 ? ((278 * v.L! ** 0.25) / v.T!) ** 2 : undefined),
-            '(278 × ({L})^(1/4) ÷ {T})²',
+            '(278 × {L}^(1/4) ÷ {T})²',
             'Undo the square root of the distance: square the ratio.',
           ],
           L: [
             (v) => ((v.T! * Math.sqrt(v.a!)) / 278) ** 4,
-            '({T} × √({a}) ÷ 278)⁴',
+            '({T} × √{a} ÷ 278)⁴',
             'Undo the fourth root of the light: raise to the fourth power.',
           ],
         },

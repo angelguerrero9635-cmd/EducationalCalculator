@@ -491,7 +491,7 @@ export const SCIENCE_12_LAYOUTS: LayoutDef[] = [
       { label: 'Far more carbon dioxide', bin: 'early' },
       { label: 'No ozone layer, so UV reaches the ground', bin: 'early' },
       { label: 'Rich in water vapor that later rained out', bin: 'early' },
-      { label: 'About 21 % oxygen', bin: 'today' },
+      { label: 'About 21% oxygen', bin: 'today' },
       { label: 'Mostly nitrogen and oxygen', bin: 'today' },
       { label: 'An ozone layer blocks most UV', bin: 'today' },
       { label: 'Its oxygen was made by photosynthesis', bin: 'today' },
