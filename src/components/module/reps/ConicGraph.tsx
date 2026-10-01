@@ -256,8 +256,18 @@ export function ConicGraph({
               (p) => Math.hypot(p.x - q.h, p.y - q.k),
               'the radius r',
             );
-          if (spec.conic === 'parabola')
-            addSize(spec.p, foci[0]!, (p) => (vertical ? p.y - q.k : p.x - q.h), 'the focus, p');
+          if (spec.conic === 'parabola') {
+            // A focus closer to the vertex than a handle: its handle moves out to the end of
+            // the latus rectum (2p across from the focus), still at height p, so both grab.
+            const near = Math.abs(q.p!) * (vertical ? f.uy : f.ux) < chart.handleTouch;
+            const focus = foci[0]!;
+            const at = !near
+              ? focus
+              : vertical
+                ? { x: focus.x + 2 * Math.abs(q.p!), y: focus.y }
+                : { x: focus.x, y: focus.y + 2 * Math.abs(q.p!) };
+            addSize(spec.p, at, (p) => (vertical ? p.y - q.k : p.x - q.h), 'the focus, p');
+          }
           if (spec.conic === 'ellipse' || spec.conic === 'hyperbola') {
             const along = vertical && spec.conic === 'hyperbola';
             addSize(

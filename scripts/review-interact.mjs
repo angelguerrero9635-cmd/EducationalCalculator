@@ -5,9 +5,10 @@
 // For each page: taps every scene chip and saves the picture (scenes/<id>-<n>.png); then drags
 // each handle (testID drag-…) right and up and writes the input values before and after to
 // drags.md, so a reviewer can see a point leave its line or a value land somewhere odd.
-// drags.md marks as **ERROR**: a drag that leaves a "?" where a number was, changes or drops a
-// typed value besides one it drives, or changes nothing; two handles drawn on top of each
-// other; a handle with no drag- test id; and a scene shot under 100 px (not the picture).
+// drags.md marks as **ERROR**: a drag that leaves a "?" where a typed number was, changes or
+// drops a typed value besides one it drives, changes nothing (no box and not the picture, even
+// dragged further), or has a move event over 500 ms; two handles drawn on top of each other; a
+// handle with no drag- test id; and a scene shot under 100 px (not the picture).
 // Uses the globally installed Playwright and the pre-installed Chromium; serves dist/ itself.
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -56,25 +57,65 @@ const boxes = () =>
   );
 const typed = (b) => b.status === 'given' || b.status === 'example';
 /**
- * What a drag broke: "?" left behind, a typed value changed or dropped besides the one the
- * handle drives (drag-<id> names it; otherwise a point's x and y, two, are allowed), or nothing
- * moved at all.
+ * What a drag broke: "?" left in a box that was typed (a worked-out box may go "?" by design,
+ * as the other roots do while r is not a root), a typed value changed or dropped besides the
+ * one the handle drives (drag-<id> names it; a handle on a worked-out value may drive one typed
+ * value, named in `notes`; otherwise a point's x and y, two, are allowed), or nothing moved at
+ * all (`live`: the picture changed, so the handle works; a drag-turn turns the view).
  */
-function problems(before, after, handle) {
+function problems(before, after, handle, live, notes = []) {
   const out = [];
-  const blanked = before.filter((b, i) => b.value !== '?' && after[i]?.value === '?');
-  if (blanked.length) out.push(`left ? in ${blanked.map((b) => b.id).join(', ')}`);
+  const blanked = before.filter((b, i) => typed(b) && after[i]?.value === '?');
+  if (blanked.length) out.push(`left ? in ${uniq(blanked.map((b) => b.id)).join(', ')}`);
   const driven = handle.replace(/^drag-/, '');
-  const named = before.some((b) => b.id === driven);
+  const own = before.find((b) => b.id === driven);
   const changed = before.filter(
     (b, i) => typed(b) && after[i] && (after[i].value !== b.value || !typed(after[i])),
   );
-  const extra = named ? changed.filter((b) => b.id !== driven) : changed;
+  // (A value shown in two boxes counts once.)
+  let extra = (own ? changed.filter((b) => b.id !== driven) : changed).filter(
+    (b, i, all) => all.findIndex((o) => o.id === b.id) === i,
+  );
   const dropped = changed.filter((b) => !typed(after[before.indexOf(b)]));
-  if (dropped.length || extra.length > (named ? 0 : 2))
-    out.push(`changed typed ${(dropped.length ? dropped : extra).map((b) => b.id).join(', ')}`);
-  if (before.every((b, i) => after[i]?.value === b.value)) out.push('nothing changed');
+  // A handle on a worked-out value moves the one typed value behind it (h moves b).
+  if (own && !typed(own) && !dropped.length && uniq(extra.map((b) => b.id)).length === 1) {
+    notes.push(`drove ${extra[0].id}`);
+    extra = [];
+  }
+  // A typed value now worked out to the same number: the drag made it worked out, no number
+  // changed.
+  const kept = (b) => after[before.indexOf(b)].value === b.value;
+  const madeWorked = dropped.filter(kept);
+  const lost = dropped.filter((b) => !kept(b));
+  if (madeWorked.length)
+    out.push(`made typed ${uniq(madeWorked.map((b) => b.id)).join(', ')} worked out`);
+  if (lost.length || (!dropped.length && extra.length > (own ? 0 : 2)))
+    out.push(`changed typed ${uniq((lost.length ? lost : extra).map((b) => b.id)).join(', ')}`);
+  if (!live && handle !== 'drag-turn' && before.every((b, i) => after[i]?.value === b.value))
+    out.push('nothing changed');
   return out;
+}
+const uniq = (xs) => [...new Set(xs)];
+/** The picture: the largest drawing on the page (the first svg is the header's home icon). */
+const picture = () =>
+  page.$$eval('svg', (els) => {
+    const area = (e) => e.getBoundingClientRect().width * e.getBoundingClientRect().height;
+    const big = els.reduce((m, e) => (area(e) > area(m) ? e : m), els[0]);
+    return big ? big.innerHTML : '';
+  });
+/** Drags the handle by (dx, dy) in two moves; the slowest move event in ms. */
+async function dragBy(x, y, dx, dy) {
+  await page.mouse.move(x, y);
+  await page.mouse.down();
+  let slowest = 0;
+  for (const k of [1, 2]) {
+    const t = Date.now();
+    await page.mouse.move(x + (dx * k) / 2, y + (dy * k) / 2, { steps: 4 });
+    slowest = Math.max(slowest, (Date.now() - t) / 4);
+  }
+  await page.mouse.up();
+  await page.waitForTimeout(150);
+  return slowest;
 }
 const errors = [];
 const lines = [
@@ -147,19 +188,26 @@ for (const id of ids) {
     const box = await page.locator(`[data-testid="${h}"]`).first().boundingBox();
     if (!box) continue;
     const [x, y] = [box.x + box.width / 2, box.y + box.height / 2];
-    await page.mouse.move(x, y);
-    await page.mouse.down();
-    await page.mouse.move(x + 20, y - 15, { steps: 4 });
-    await page.mouse.move(x + 40, y - 30, { steps: 4 });
-    await page.mouse.up();
-    await page.waitForTimeout(150);
-    const after = await boxes();
-    const bad = problems(before, after, h);
+    const shape = await picture();
+    const slowest = await dragBy(x, y, 40, -30);
+    let after = await boxes();
+    let live = (await picture()) !== shape;
+    const notes = [];
+    // Nothing moved: a value that snaps (a turn in 90° steps) may need a longer drag.
+    if (!live && before.every((b, i) => after[i]?.value === b.value)) {
+      await dragBy(x + 40, y - 30, 80, -60);
+      after = await boxes();
+      live = (await picture()) !== shape;
+      if (live) notes.push('moves in steps (a longer drag)');
+    }
+    const bad = problems(before, after, h, live, notes);
+    // A move event over 500 ms freezes the page (a solver search on every move).
+    if (slowest > 500) bad.push(`a move event took ${Math.round(slowest)} ms`);
     const line = `${id} ${h}: ${before.map((b) => b.value).join(', ')} → ${after.map((b) => b.value).join(', ')}`;
     if (bad.length) {
-      lines.push(`- **ERROR** ${line} (${bad.join('; ')})`);
+      lines.push(`- **ERROR** ${line} (${[...bad, ...notes].join('; ')})`);
       errors.push(`- **ERROR** ${id} ${h}: ${bad.join('; ')}`);
-    } else lines.push(`- ${line}`);
+    } else lines.push(`- ${line}${notes.length ? ` (${notes.join('; ')})` : ''}`);
   }
 }
 lines.push('', '## Errors', '', ...(errors.length ? errors : ['None.']));

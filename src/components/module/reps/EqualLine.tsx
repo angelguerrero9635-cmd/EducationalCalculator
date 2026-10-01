@@ -91,7 +91,12 @@ export function EqualLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
             ...(cp.center && cp.radius
               ? [
                   { id: cp.center, at: C, pin: [cp.radius] },
-                  { id: cp.radius, at: U, pin: [cp.center] },
+                  {
+                    id: cp.radius,
+                    // On c + d; a short distance's handle steps right of the center's.
+                    at: Math.abs(U - C) < chart.handleTouch ? C + chart.handleTouch : U,
+                    pin: [cp.center],
+                  },
                 ]
               : []),
             ...(test !== undefined && cp.test

@@ -1690,6 +1690,19 @@ export function FunctionGraph({
           ? `Zero${zs.length > 1 ? 's' : ''}: ${zs.map((z) => `${xName} ${eq(z.x, shortOr(z.text ?? exactText(z.x, pi)))}`).join(', ')}${pi && main.period ? `, repeating every ${numText(main.period, true)}` : ''}`
           : 'No zeros: the graph never meets the x-axis',
       );
+      // A tested root that isn't one (synthetic division, R ≠ 0): the other zeros the page
+      // works out wait for a root, so their boxes show "?". Say why.
+      const tried = spec.at;
+      if (
+        tried?.y &&
+        rep.known(tried.x) &&
+        rep.known(tried.y) &&
+        Math.abs(rep.shown(tried.y)) > 1e-9 &&
+        spec.shows?.zeros?.some((id) => !rep.known(id))
+      )
+        lines.push(
+          `${xName} = ${numText(rep.shown(tried.x))} is not a root (${rep.variable(tried.y).symbol} = ${numText(rep.shown(tried.y))}): no quotient, so no other roots yet`,
+        );
     }
     if (marks.has('intercept') && Number.isFinite(main.f(0)))
       lines.push(`y-intercept (0, ${withApprox(main.f(0))})`);

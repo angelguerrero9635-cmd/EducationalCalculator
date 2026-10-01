@@ -136,7 +136,12 @@ try {
               const b = texts[j].r;
               const w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
               const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
-              if (w > 2 && h > 2) {
+              // A haloed label is drawn twice (its backing, then the text) at one place.
+              const twin =
+                texts[i].t === texts[j].t &&
+                Math.abs(a.left - b.left) < 2 &&
+                Math.abs(a.top - b.top) < 2;
+              if (w > 2 && h > 2 && !twin) {
                 issues.push(`chart labels overlap: "${texts[i].t}" and "${texts[j].t}"`);
               }
             }
