@@ -2060,15 +2060,12 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.11.electrostatics~plates',
         's.11.modern-physics~photoelectric',
         's.11.modern-physics~relativity',
+        's.11.kinematics-1d~motion-diagrams',
       ],
       'P14: docs/plans/s.11.md needs 1–12.',
     ),
     status: 'drawn',
-    gallery: [
-      'g.s11-kinematics-1d-free-fall-vertical',
-      'g.s11-kinematics-1d-motion-diagrams',
-      'g.s11-electrostatics-point-field',
-    ],
+    gallery: ['g.s11-kinematics-1d-free-fall-vertical', 'g.s11-electrostatics-point-field'],
     notes: [
       'P14: docs/plans/s.11.md needs 1–12, drawn part by part.',
       "1 (~one-after): collision type 'general' with after [v₁′, v₂′] (v₁′ given, v₂′ from the momentum) and lost (the KE lost); each cart's KE is labelled. { kind: 'collision', type: 'general', masses: ['m', 'n'], before: ['v', 'w'], after: ['a', 'b'], lost: 'X' }.",
