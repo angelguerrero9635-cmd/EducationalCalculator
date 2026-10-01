@@ -263,3 +263,8 @@ Report: `.review/new-sci-2/lesson-report.md`. Every s.9 finding is fixed:
   picture; the unused `hide` helper went with them.
 - `~membrane-potential` (H109 part 7): new observe page beside the ~action-potential sequence, the
   demo's membrane-potential trace (−90 to 40 mV, 0–6 ms, bars up and down from 0).
+- `s.9.plant-biology~life-cycle` (H109 part 5): the seven stages wear the `flowerCycle` card,
+  pollination to seedling, labels as they were. Stand-in gone: text-only stages.
+- `~flower` (H109 part 5): new explore on the `parts` flower drawing (petal, sepal, anther,
+  filament, stigma, style, ovary, ovule), the demo's five scenes; the main page's Flower scene
+  stays on the whole plant.

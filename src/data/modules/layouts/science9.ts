@@ -1780,13 +1780,85 @@ const PLANTS: LayoutDef[] = [
     ],
     question: 'Put the stages in order, starting at the flower.',
     stages: [
-      { label: 'Pollination: pollen lands on a stigma' },
-      { label: 'A pollen tube grows down to an ovule' },
-      { label: 'Fertilization: a sperm joins the egg' },
-      { label: 'The ovule becomes a seed, and the ovary a fruit' },
-      { label: 'Seed dispersal by wind, water or animals' },
-      { label: 'Germination: the root and shoot break out' },
-      { label: 'The seedling grows and flowers' },
+      {
+        label: 'Pollination: pollen lands on a stigma',
+        figure: { kind: 'flowerCycle', stage: 'pollination' },
+      },
+      {
+        label: 'A pollen tube grows down to an ovule',
+        figure: { kind: 'flowerCycle', stage: 'pollen tube' },
+      },
+      {
+        label: 'Fertilization: a sperm joins the egg',
+        figure: { kind: 'flowerCycle', stage: 'fertilization' },
+      },
+      {
+        label: 'The ovule becomes a seed, and the ovary a fruit',
+        figure: { kind: 'flowerCycle', stage: 'seed and fruit' },
+      },
+      {
+        label: 'Seed dispersal by wind, water or animals',
+        figure: { kind: 'flowerCycle', stage: 'dispersal' },
+      },
+      {
+        label: 'Germination: the root and shoot break out',
+        figure: { kind: 'flowerCycle', stage: 'germination' },
+      },
+      {
+        label: 'The seedling grows and flowers',
+        figure: { kind: 'flowerCycle', stage: 'seedling' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.9.plant-biology~flower',
+    title: 'The parts of a flower',
+    use: 'Use this for “Which part of the flower becomes the fruit?”',
+    assumptions: [
+      'The flower is cut in half from top to bottom, so the parts inside show.',
+      'The stamen (anther and filament) is the male part; the pistil (stigma, style and ovary) is the female part.',
+    ],
+    figure: {
+      kind: 'parts',
+      drawing: 'flower',
+      parts: [
+        { name: 'Petal', job: 'Bright petals attract the insects and birds that carry pollen.' },
+        { name: 'Sepal', job: 'Sepals wrap and protect the flower while it is a bud.' },
+        { name: 'Anther', job: 'Makes pollen, which carries the sperm.' },
+        { name: 'Filament', job: 'The stalk that holds the anther up.' },
+        { name: 'Stigma', job: 'The sticky tip that catches pollen.' },
+        { name: 'Style', job: 'The stalk a pollen tube grows down to reach the ovary.' },
+        { name: 'Ovary', job: 'Holds the ovules; after fertilization it becomes the fruit.' },
+        { name: 'Ovule', job: 'Holds an egg; after fertilization it becomes a seed.' },
+      ],
+    },
+    scenes: [
+      {
+        label: 'Male parts',
+        part: 'Anther',
+        lines: ['Each stamen is a filament with an anther on top, full of pollen.'],
+      },
+      {
+        label: 'Female parts',
+        part: 'Stigma',
+        lines: ['The pistil is the stigma, the style and the ovary at the base.'],
+      },
+      {
+        label: 'Egg',
+        part: 'Ovule',
+        lines: ['Each ovule inside the ovary holds one egg cell.'],
+      },
+      {
+        label: 'Fruit',
+        part: 'Ovary',
+        lines: ['After fertilization the ovules become seeds and the ovary swells into the fruit.'],
+      },
+      {
+        label: 'Attract',
+        part: 'Petal',
+        lines: ['Colored petals, and often scent and nectar, bring pollinators to the flower.'],
+      },
     ],
   },
 ];
