@@ -4,7 +4,13 @@ import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
-import { gradeBand, isEarlyGrade, wordRule } from '@/data/modules';
+import {
+  gradeBand,
+  isEarlyGrade,
+  withWorkedFigures,
+  wordRule,
+  workedFigures,
+} from '@/data/modules';
 import type { ModuleDef } from '@/data/modules/types';
 import { choiceCode, choiceIndex } from '@/engine/choices';
 import { belowStep, formatNumber, parseCents, parseNumber } from '@/engine/format';
@@ -159,13 +165,16 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
         unknown: early ? '?' : 'unknown',
       }[status];
   const display = value === undefined ? undefined : calc.units.toDisplay(variable.id, value);
+  // A worked-out value shows the page's figures (Grades 9–12 science: 3), as its picture
+  // labels it; a typed one shows as typed.
+  const figures = status === 'derived' ? workedFigures(calc.module) : undefined;
   const formatted =
     display === undefined
       ? ''
       : status !== 'derived' || display !== value
         ? // A typed value shows as typed (36.525), whatever figures a worked-out one gets.
-          formatNumber(display, { ...variable, figures: undefined })
-        : belowStep(display, formatNumber(display, variable), variable);
+          formatNumber(display, withWorkedFigures({ ...variable, figures: undefined }, figures))
+        : belowStep(display, formatNumber(display, withWorkedFigures(variable, figures)), variable);
   // While typing, and after a number the range refused, the box keeps the typed text beside
   // its message, so the student can fix it instead of retyping it.
   // A value cleared because it no longer fits shows "?" (the picture and sentences drop it too),

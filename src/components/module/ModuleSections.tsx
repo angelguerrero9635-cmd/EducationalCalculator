@@ -10,6 +10,8 @@ import {
   gradeBand,
   isEarlyGrade,
   quantityLabel,
+  withWorkedFigures,
+  workedFigures,
   type ModuleDef,
 } from '@/data/modules';
 import { dollarsOf, formatNumber } from '@/engine/format';
@@ -36,7 +38,19 @@ function PictureLabels({ ids, calc }: { ids: string[]; calc: Calculator }) {
         const v = byId.get(id)!;
         const x = calc.values[id];
         const unit = calc.units.display[id] ?? v.unit;
-        const num = x === undefined ? '?' : formatNumber(calc.units.toDisplay(id, x), v);
+        const display = x === undefined ? undefined : calc.units.toDisplay(id, x);
+        // As in its box: a worked-out value shows the page's figures, a typed one as typed.
+        const derived = calc.status(id) === 'derived';
+        const num =
+          display === undefined
+            ? '?'
+            : formatNumber(
+                display,
+                withWorkedFigures(
+                  derived && display === x ? v : { ...v, figures: undefined },
+                  derived ? workedFigures(calc.module) : undefined,
+                ),
+              );
         // $ goes before the number; ¢, % and ° go right after it; other units after a space.
         const shown =
           x === undefined || !unit

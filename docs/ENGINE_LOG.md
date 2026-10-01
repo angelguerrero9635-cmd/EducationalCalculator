@@ -22,6 +22,14 @@ per review; each line names the finding and what the engine now does about it.
   `labelsFree`); construction stage figures draw 1.5× (`ZOOM`, 156 px) and find-center's
   bisectors cross short X arcs with O between each pair; the double cone runs each curve to the
   rim exactly and fits its plane inside the picture, the hyperbola's plane facing the viewer.
+- **Science 9–12 boxes and steps showed 5 figures where the pictures show 3** (1.9231 × 10⁻¹²
+  beside a picture's 1.92 × 10⁻¹²) → `ModuleDef.workedFigures`, 3 by default on s.9–s.12
+  (`workedFigures`, `withWorkedFigures` in grade.ts): `formatNumber` takes `worked`, rounding a
+  worked-out value's decimals and its scientific mantissa (`scientific(x, figures)`) but never a
+  whole number, in the box (InputsSection), the picture labels (ModuleSections) and the step
+  answers and quantities (buildSteps); typed values as typed. The sampling harness allows half a
+  unit in the last figure where a step's answer, a check's number or a conversion meets such a
+  value (`figuresClose`), and `helpers.test.ts` pins the display.
 
 ## Grades 9–12 second page review: the drag rule
 

@@ -1680,6 +1680,14 @@ export interface StepText {
 
 export interface ModuleDef {
   /**
+   * Significant figures a worked-out value shows in its box, under the picture and in its step's
+   * answer (Number(x.toPrecision(n))), as the pictures label them; typed values show as typed and
+   * the working lines keep their extra figures. Grades 9–12 science default to 3
+   * (`workedFigures` in grade.ts); a variable with its own display (`figures`, `sigFigs`,
+   * `integer`, a fraction, π) keeps it.
+   */
+  workedFigures?: number;
+  /**
    * Grade 6 only: `letters` for a page that teaches letters (6.EE, the area and cube
    * formulas); every other Grade 6 page names its values in words, as Grades 3–5 do.
    */

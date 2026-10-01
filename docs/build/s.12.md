@@ -269,3 +269,13 @@ From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.m
 - `~currents`: "California" just east of its cold arrow, toward the coast.
 - `~orbit`: a drawn radius for "a = 2 AU" on a circle; the cube root kept on one line.
 - `radiometric-dating`: ages 3.21 × 10⁹; "2.71 half-lives", (1/2)²·⁷¹ raised and 15.3% left.
+
+### Worked-out values to 3 figures
+
+- Every Grades 9–12 science page shows a worked-out value to 3 significant figures in its box,
+  under the picture and in its step's answer, as the pictures label values (F = −3.37 N,
+  1.92 × 10⁻¹², not −3.3713 or 1.9231 × 10⁻¹²): `workedFigures` in grade.ts (a page can set
+  `workedFigures`), `formatNumber`'s `worked`. Typed values show as typed, whole numbers stay
+  whole, and a value with its own display (`figures`, `sigFigs`, `integer`, a fraction) keeps
+  it; the working lines and the check keep their extra figures, as a worked answer is rounded
+  only at the end.

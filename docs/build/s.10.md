@@ -331,3 +331,13 @@ From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.m
 - `s.10.bonding`: n_H, n_C, n_N, n_O. `~photon`: "656 nm (visible)" on a halo, not a chip.
 - `s.10.gas-laws`: "R = 0.0821 L·atm/(mol·K)." then "PV = nRT, which gives …", which the caption
   no longer stacks at each "=".
+
+### Worked-out values to 3 figures
+
+- Every Grades 9–12 science page shows a worked-out value to 3 significant figures in its box,
+  under the picture and in its step's answer, as the pictures label values (F = −3.37 N,
+  1.92 × 10⁻¹², not −3.3713 or 1.9231 × 10⁻¹²): `workedFigures` in grade.ts (a page can set
+  `workedFigures`), `formatNumber`'s `worked`. Typed values show as typed, whole numbers stay
+  whole, and a value with its own display (`figures`, `sigFigs`, `integer`, a fraction) keeps
+  it; the working lines and the check keep their extra figures, as a worked answer is rounded
+  only at the end.

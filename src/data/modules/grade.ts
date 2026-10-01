@@ -1,3 +1,5 @@
+import type { VariableDef } from '@/engine/types';
+
 /**
  * Grade bands decide how the calculator talks to the student (the reviewer's checks E and K):
  * - early (Kindergarten–Grade 2): no letters standing for numbers anywhere; values are named
@@ -20,6 +22,27 @@ export type GradeBand = 'early' | 'elementary' | 'middle' | 'standard';
 const LETTER_PAGES = new Set<string>();
 export function registerLetterPages(ids: Iterable<string>) {
   for (const id of ids) LETTER_PAGES.add(id);
+}
+
+/**
+ * Significant figures for a page's worked-out values (`ModuleDef.workedFigures`): Grades 9–12
+ * science pages show 3, as their pictures label values (1.92 × 10⁻¹², not 1.9231 × 10⁻¹²).
+ */
+export const workedFigures = (m: { id: string; workedFigures?: number }): number | undefined =>
+  m.workedFigures ?? (/^s\.(9|1[0-2])\./.test(m.id) ? 3 : undefined);
+
+/**
+ * A variable's display with the page's worked figures (`formatNumber`'s `worked`), unless it sets
+ * its own display (whole numbers, fractions, π, its own figures, a list of choices).
+ */
+export function withWorkedFigures<V extends Partial<VariableDef>>(
+  v: V,
+  figures: number | undefined,
+): V & { worked?: number } {
+  if (figures === undefined) return v;
+  if (v.integer || v.fraction || v.pi || v.sigFigs || v.figures !== undefined) return v;
+  if (v.full || v.repeating || v.allowed || v.digits) return v;
+  return { ...v, worked: figures };
 }
 
 /** The grade of a K–12 module id ("m.3.area~split" → "3"), or undefined for college topics. */

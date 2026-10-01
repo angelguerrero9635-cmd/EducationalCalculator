@@ -30,7 +30,13 @@ export function formatNumber(
     | 'full'
     | 'sigFigs'
     | 'figures'
-  >,
+  > & {
+    /**
+     * A worked-out value's significant figures on a page that sets them (Grades 9–12 science:
+     * 3), in decimals and scientific notation alike; a whole number stays whole.
+     */
+    worked?: number;
+  },
 ): string {
   if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
   if (variable?.full && x !== 0 && Number.isFinite(x)) {
@@ -46,7 +52,7 @@ export function formatNumber(
     const p = (variable.pi === 'fraction' ? asPiFraction(x) : undefined) ?? asPiMultiple(x);
     if (p) return p;
   }
-  if (variable?.scientific && x !== 0) return scientific(x);
+  if (variable?.scientific && x !== 0) return scientific(x, variable.worked);
   if (variable?.fraction && !Number.isInteger(x)) {
     const f = asFraction(x, variable.fraction, variable.improper);
     if (f) return f;
@@ -63,7 +69,9 @@ export function formatNumber(
   if (Number.isInteger(x) && abs < 1e15) return minus(withSeparators(String(x)));
   // Very big or very small: scientific notation as it is written in class (3 × 10¹⁶), never
   // the calculator's 3e16.
-  if (abs >= 1e7 || abs < 1e-4) return scientific(x);
+  if (abs >= 1e7 || abs < 1e-4) return scientific(x, variable?.worked);
+  if (variable?.worked)
+    return minus(withSeparators(String(Number((x * (1 + 1e-12)).toPrecision(variable.worked)))));
   // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals, or the
   // variable's figures (277.8, never fewer than the whole digits: 12346).
   const whole = Math.floor(Math.log10(abs)) + 1;
@@ -187,10 +195,10 @@ export function significant(x: number, sig: number): string {
   return minus(`${x < 0 ? '-' : ''}${withSeparators(text)}`);
 }
 
-export function scientific(x: number): string {
+export function scientific(x: number, figures = 5): string {
   if (x === 0) return '0';
   let n = Math.floor(Math.log10(Math.abs(x)));
-  let m = Number((x / 10 ** n).toPrecision(5));
+  let m = Number((x / 10 ** n).toPrecision(figures));
   // Rounding can carry the mantissa to 10 (9.9999 → 10): move it to the exponent.
   if (Math.abs(m) >= 10) {
     m /= 10;

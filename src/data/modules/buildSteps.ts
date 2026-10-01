@@ -5,7 +5,15 @@ import type { Values, VariableDef } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
 
-import { gradeBand, gradeOf, quantityLabel, wordRule, type GradeBand } from './grade';
+import {
+  gradeBand,
+  gradeOf,
+  quantityLabel,
+  withWorkedFigures,
+  wordRule,
+  workedFigures,
+  type GradeBand,
+} from './grade';
 import { evaluatePrinted, operationCount, simplifyChain } from './simplify';
 import type { ModuleDef } from './types';
 import { factWork } from './work';
@@ -223,6 +231,7 @@ export function buildSteps(
   const byId = new Map(vars.map((v) => [v.id, v]));
   const band = gradeBand(module.id);
   const grade = gradeOf(module.id);
+  const figures = workedFigures(module);
   const early = band === 'early';
   /**
    * K–2: "a = 7 − 4" → "7 − 4", "a = 3" → "First group: 3" (the name, not the letter).
@@ -252,12 +261,15 @@ export function buildSteps(
    */
   const fmt = (id: string, x: number, unit: string | undefined, inShownUnit = true) => {
     const v = byId.get(id);
-    // A typed value reads as typed (36.525); `figures` rounds only worked-out values.
+    // A typed value reads as typed (36.525); `figures` and the page's worked figures round
+    // only worked-out values (the working lines keep their extra figures).
     const typed = result.given.some((g) => g.id === id);
     const n = formatNumber(
       x,
       inShownUnit && v
-        ? { ...v, digits: undefined, ...(typed ? { figures: undefined } : {}) }
+        ? typed
+          ? { ...v, digits: undefined, figures: undefined }
+          : withWorkedFigures({ ...v, digits: undefined }, figures)
         : undefined,
     );
     if (!unit) return n;

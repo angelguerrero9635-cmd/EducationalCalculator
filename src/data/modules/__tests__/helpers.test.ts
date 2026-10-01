@@ -1,3 +1,6 @@
+import { formatNumber } from '@/engine/format';
+
+import { withWorkedFigures, workedFigures } from '../grade';
 import { direction, wholeRatio } from '../helpers';
 
 describe('wholeRatio', () => {
@@ -39,5 +42,31 @@ describe('direction', () => {
     [0, 5, 90],
   ])('(%p, %p) points %p°', (x, y, deg) => {
     expect(direction(x, y)).toBeCloseTo(deg, 2);
+  });
+});
+
+describe('worked figures (Grades 9–12 science show worked-out values as their pictures do)', () => {
+  it('defaults to 3 on s.9–s.12 pages only, a page may set its own', () => {
+    expect(workedFigures({ id: 's.11.modern-physics' })).toBe(3);
+    expect(workedFigures({ id: 's.9.biomolecules~dehydration' })).toBe(3);
+    expect(workedFigures({ id: 's.8.forces' })).toBeUndefined();
+    expect(workedFigures({ id: 'm.12.vectors' })).toBeUndefined();
+    expect(workedFigures({ id: 's.10.gas-laws', workedFigures: 4 })).toBe(4);
+  });
+  it.each([
+    [1.9230769e-12, '1.92 × 10⁻¹²'],
+    [1.5804e7 + 0.5, '1.58 × 10⁷'],
+    [0.019035, '0.019'],
+    [277.77, '278'],
+    [12345.6, '12,300'],
+    [12346, '12,346'],
+    [2.5, '2.5'],
+  ])('%p shows %p', (x, text) => {
+    expect(formatNumber(x, withWorkedFigures({}, 3))).toBe(text);
+  });
+  it('leaves a value with its own display alone', () => {
+    expect(withWorkedFigures({ integer: true }, 3)).toEqual({ integer: true });
+    expect(withWorkedFigures({ figures: 4 }, 3)).toEqual({ figures: 4 });
+    expect(withWorkedFigures({}, undefined)).toEqual({});
   });
 });
