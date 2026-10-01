@@ -6487,7 +6487,14 @@ const UNITS_PRECISION: ModuleDef[] = [
     ],
     example: { l: 8, w: 5, u: 1, e: 0.5, A: 40, lo: 33.75, hi: 46.75, plo: 24, phi: 28 },
     startWith: ['u', 'l', 'w'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 10 },
+    representation: {
+      kind: 'rectangle',
+      length: 'l',
+      width: 'w',
+      inside: 'A',
+      extent: 10,
+      bounds: { error: 'e', least: 'lo', greatest: 'hi' },
+    },
   }),
   page({
     id: 'm.9.units-precision~significant-figures',
