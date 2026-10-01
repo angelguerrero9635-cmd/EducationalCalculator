@@ -14,6 +14,7 @@ import { formatNumber } from '@/engine/format';
 
 import { toFraction } from './exact';
 import { buildHs3b } from './functionGraphFamiliesHs3b';
+import { rationalByTopCurve } from './functionGraphRationalHs3b';
 import { ratioCurve, reshape } from './functionGraphHs2g';
 
 // ─── Exact numbers ─────────────────────────────────────────────────────────────
@@ -947,6 +948,8 @@ export function buildCurve(
     }
     case 'rational': {
       if ('p' in fam) return ratioCurve(fam, get, say, x, (g, l) => buildCurve(g, get, say, l));
+      if ('top' in fam)
+        return rationalByTopCurve(fam, get, x, (g, l) => buildCurve(g, get, say, l));
       const a = get(fam.a, 1);
       const k = get(fam.k, 0);
       const zs = fam.zeros.map((z) => get(z, 0));

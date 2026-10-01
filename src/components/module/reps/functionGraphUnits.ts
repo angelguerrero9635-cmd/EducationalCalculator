@@ -144,6 +144,7 @@ function convert(fam: FunctionFamily, num: Num, fx: number, fy: number, put: Put
       };
     }
     case 'rational':
+      if ('top' in fam) throw new Error('a rational by its top is not converted'); // H106
       if ('p' in fam)
         return {
           ...fam,

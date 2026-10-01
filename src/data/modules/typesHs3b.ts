@@ -18,6 +18,25 @@ export type FamilyHs3b =
   | { family: 'power'; a?: NumOrVar; p: NumOrVar; q?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   | { family: 'logSum'; b?: NumOrVar; c: NumOrVar };
 
+/**
+ * H106: a rational function by its top's coefficients (highest power first, up to x²) over its
+ * factors: the poles (x − p) and quadratics x² + jx + k with no real zeros. So a number alone on
+ * top (4 ÷ ((x − 1)(x + 3))) and a quadratic top with complex zeros can be drawn; asymptotes,
+ * holes and zeros as for the zeros-and-poles form; no handles.
+ */
+export interface RationalByTop {
+  family: 'rational';
+  top: NumOrVar[];
+  poles: NumOrVar[];
+  quadratics?: { j: NumOrVar; k: NumOrVar }[];
+}
+
+/** Its variable ids. */
+export const rationalByTopVars = (f: RationalByTop): string[] =>
+  [...f.top, ...f.poles, ...(f.quadratics ?? []).flatMap((q) => [q.j, q.k])].filter(
+    (x): x is string => typeof x === 'string',
+  );
+
 /** The variable ids an H106 family names. */
 export function familyHs3bVars(f: FamilyHs3b): string[] {
   const xs = f.family === 'power' ? [f.a, f.p, f.q, f.h, f.k] : [f.b, f.c];

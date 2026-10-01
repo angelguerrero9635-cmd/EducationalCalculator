@@ -933,6 +933,61 @@ const RIEMANN: ModuleDef[] = [
   ),
 ];
 
+// ── H106 part 16: a rational function by its top's coefficients (m.12.partial-fractions) ──
+
+const RATIONAL_TOP: ModuleDef[] = [
+  fromPage(
+    'm.12.partial-fractions~quadratic',
+    'g.m12-partial-fractions-quadratic-graph',
+    'A quadratic factor: the graph',
+    {
+      kind: 'functionGraph',
+      family: 'rational',
+      top: ['a', 'b', 'c'],
+      poles: ['p'],
+      quadratics: [{ j: 'j', k: 'k' }],
+      at: { x: 'x', y: 'y' },
+      marks: ['asymptotes'],
+    },
+  ),
+  without(
+    fromPage(
+      'm.12.partial-fractions',
+      'g.m12-partial-fractions-number-top-graph',
+      'A number alone on top: the graph',
+      {
+        kind: 'functionGraph',
+        family: 'rational',
+        top: ['a', 'b'],
+        poles: ['p', 'q'],
+        marks: ['asymptotes'],
+        fixed: true,
+      },
+      {
+        use: 'Use this for “Write 4 ÷ ((x − 1)(x + 3)) as partial fractions.”',
+        example: { a: 0, b: 4, p: 1, q: -3, A: 1, B: -1 },
+      },
+    ),
+    ['z', 'L'],
+  ),
+  without(
+    fromPage(
+      'm.12.partial-fractions~repeated',
+      'g.m12-partial-fractions-repeated-top-graph',
+      'A repeated factor: the graph',
+      {
+        kind: 'functionGraph',
+        family: 'rational',
+        top: ['a', 'b'],
+        poles: ['p', 'p'],
+        marks: ['asymptotes'],
+        fixed: true,
+      },
+    ),
+    ['z', 'L'],
+  ),
+];
+
 export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_MENU,
   ...TRANSFORM,
@@ -949,6 +1004,7 @@ export const HS3B_GALLERY_MODULES: ModuleDef[] = [
   ...POLAR_CONICS,
   ...TURNED,
   ...RIEMANN,
+  ...RATIONAL_TOP,
 ];
 
 export const HS3B_GALLERY_LAYOUTS: LayoutDef[] = [];
