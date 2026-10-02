@@ -84,4 +84,26 @@ export const HE4C_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-pendulum-rod', 'g.he-pendulum-rod-offset', 'g.he-pendulum-rod-near-center'],
   },
+  {
+    ...ask(
+      'HC104',
+      'spacetime',
+      'A Minkowski diagram: x and ct on one scale, the light lines at 45°, the moving frame’s axes tilted by tan⁻¹β, an event read on both sets of axes with its invariant hyperbola; for velocity addition, the world lines of S′, the object and the Galilean sum',
+      [`${P}university-3#2~lorentz`, `${P}university-3#2~velocity-addition`],
+      [
+        'From P-P16. New kind (typesHe4c.ts SpacetimeSpec, reps/Spacetime.tsx, sums in reps/he4cMath.ts; registered in types.ts, reps/index.tsx, meta.ts, modules.test.ts, harness/pictures.ts, docs/PICTURES.md).',
+        "Fields: { kind: 'spacetime', mode: 'lorentz', speed (β = v ÷ c), x (m), ct (m), gamma? (γ), xPrime? (x′, m), ctPrime? (ct′, m), interval? (s², m²), fixed? } · { kind: 'spacetime', mode: 'addition', speed (v, in c), other (u′, in c), result? (u, in c), fixed? }. x and ct may be in any one length unit (the labels follow x's).",
+        "Example (~lorentz): { kind: 'spacetime', mode: 'lorentz', speed: 'b', x: 'x', ct: 'ct', gamma: 'g', xPrime: 'xp', ctPrime: 'ctp', interval: 's2' }. Example (~velocity-addition): { kind: 'spacetime', mode: 'addition', speed: 'v', other: 'up', result: 'u' }.",
+        'Lorentz: the window fits the origin, the event and the four points it is read at (on x, ct, x′ and ct′), on one scale; S′’s axes in their own colour with the tilt arcs; the reading lines dashed parallel to each axis; the hyperbola (ct)² − x² = s² dashed through the event; β, γ, x, ct, x′, ct′ and s² listed above in the colours of their axes. The caption works γ, x′, ct′ and s² in both frames and says timelike or spacelike. Drag the event (x and ct). Addition: a legend above; S′’s world line (its ct′ axis) with its x′ axis faint, the object’s world line at u ending in a handle (drag for u′), and v + u′ dashed, past the light line when it beats c. A "?" draws nothing for that value.',
+        'Harness (harness/picturesHe4c.ts): β below 1; the drawn tilt is tan⁻¹β; γ, x′, ct′ and s²; the event read back from S′; (ct′)² − (x′)² = s²; u = (v + u′) ÷ (1 + vu′) with |u| < 1.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-spacetime-lorentz',
+      'g.he-spacetime-lorentz-fast',
+      'g.he-spacetime-addition',
+      'g.he-spacetime-addition-near-c',
+    ],
+  },
 ];

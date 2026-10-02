@@ -210,6 +210,7 @@ import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { He2fView } from './He2fView';
 import { He4cView } from './He4cView';
+import { Spacetime } from './Spacetime';
 import { RayHe3l } from './RayHe3l';
 import { PhaseSpace } from './PhaseSpace';
 import { WaveHe3l } from './WaveHe3l';
@@ -386,6 +387,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PotentialWell spec={spec} calc={calc} />;
     case 'phaseSpace':
       return <PhaseSpace spec={spec} calc={calc} />; // HC69
+    case 'spacetime':
+      return <Spacetime spec={spec} calc={calc} />; // HC104
     case 'unitCell':
       return <UnitCell spec={spec} calc={calc} />;
     case 'globe':

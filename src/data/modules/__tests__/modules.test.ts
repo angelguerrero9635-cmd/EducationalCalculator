@@ -621,6 +621,8 @@ function representationVars(r: Representation): string[] {
       return he2bSpecVars(r);
     case 'phaseSpace':
       return he3lSpecVars(r); // HC69
+    case 'spacetime':
+      return he4cSpecVars(r); // HC104
     case 'globe':
       return globeVars(r);
     case 'stressStrain':

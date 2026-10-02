@@ -4,7 +4,10 @@
  * reads formula units (see `siOf`).
  */
 import {
+  addVelocities,
   cubicAt,
+  fromPrimed,
+  lorentzOf,
   PULSE_SHARE,
   pulseForce,
   rodPendulum,
@@ -18,18 +21,20 @@ import type { NumOrVar } from '../typesGraphs';
 type Val = (id: string) => number | undefined;
 
 /** Equal to 1e-4 of the larger (shown values are rounded, then worked on). */
-const near = (a: number, b: number, tol = 1e-4) =>
-  Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b));
+const near = (a: number, b: number, tol = 1e-4, scale = 0) =>
+  Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b), scale);
 
 export function he4cIssues(rep: He4cSpec, val: Val): string[] {
   const out: string[] = [];
   const read = (x: NumOrVar | undefined) =>
     x === undefined ? undefined : typeof x === 'number' ? x : val(x);
   /** The page's value of `id` agrees with what the picture draws. */
-  const same = (id: string | undefined, want: number | undefined, what: string) => {
+  /** `scale`: the size of the terms `want` is worked from (a difference of big numbers). */
+  const same = (id: string | undefined, want: number | undefined, what: string, scale = 0) => {
     const x = id ? val(id) : undefined;
     if (x === undefined || want === undefined || !Number.isFinite(want)) return;
-    if (!near(x, want)) out.push(`${rep.kind}: ${what} ${id} = ${x}, the picture draws ${want}`);
+    if (!near(x, want, 1e-4, scale))
+      out.push(`${rep.kind}: ${what} ${id} = ${x}, the picture draws ${want}`);
   };
   switch (rep.kind) {
     case 'motionGraph': {
@@ -72,6 +77,38 @@ export function he4cIssues(rep: He4cSpec, val: Val): string[] {
       if (avg !== undefined && !near(avg * dt, J))
         out.push(`impulse: F_avg·Δt ${avg * dt} ≠ J ${J}`);
       if (m !== undefined && m > 0) same(rep.change, J / m, 'Δv = J ÷ m');
+      break;
+    }
+    case 'spacetime': {
+      // HC104: the drawn tilt is tan⁻¹β; s² read on both frames agrees; u from the addition law.
+      const b = read(rep.speed);
+      if (b !== undefined && Math.abs(b) >= 1) out.push(`spacetime: speed ${b} is not below c`);
+      if (b === undefined || Math.abs(b) >= 1) break;
+      if (rep.mode === 'addition') {
+        const up = read(rep.other);
+        if (up === undefined) break;
+        if (Math.abs(up) >= 1) out.push(`spacetime: u′ = ${up} is not below c`);
+        const u = addVelocities(b, up);
+        if (Math.abs(u) >= 1) out.push(`spacetime: u = ${u} is not below c`);
+        same(rep.result, u, 'u = (v + u′) ÷ (1 + vu′):');
+        break;
+      }
+      // The ct′ axis is drawn along (β, 1): its angle from the ct axis is tan⁻¹β.
+      const drawn = Math.atan2(b, 1);
+      if (!near(drawn, Math.atan(b))) out.push(`spacetime: the drawn tilt ${drawn} is not tan⁻¹β`);
+      same(rep.gamma, 1 / Math.sqrt(1 - b * b), 'γ = 1 ÷ √(1 − β²):');
+      const [x, ct] = [read(rep.x), read(rep.ct)];
+      if (x === undefined || ct === undefined) break;
+      const lz = lorentzOf(b, x, ct);
+      const size = lz.gamma * (Math.abs(x) + Math.abs(ct));
+      same(rep.xPrime, lz.xp, 'x′ = γ(x − βct):', size);
+      same(rep.ctPrime, lz.ctp, 'ct′ = γ(ct − βx):', size);
+      same(rep.interval, lz.s2, 's² = (ct)² − x²:', x * x + ct * ct);
+      const back = fromPrimed(b, lz.xp, lz.ctp);
+      if (!near(back.x, x, 1e-4, size) || !near(back.ct, ct, 1e-4, size))
+        out.push(`spacetime: the event read back from S′ is (${back.x}, ${back.ct})`);
+      if (!near(lz.ctp ** 2 - lz.xp ** 2, lz.s2, 1e-6, size * size))
+        out.push(`spacetime: s² in S′ ${lz.ctp ** 2 - lz.xp ** 2} ≠ s² in S ${lz.s2}`);
       break;
     }
     case 'pendulum': {

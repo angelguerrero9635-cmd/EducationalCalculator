@@ -1,6 +1,6 @@
 /**
  * College pictures, round 4, group C (docs/RENDERINGS_HE.md): HC99 `motionGraph` `polynomial`,
- * HC101 `impulse` `shape`, HC103 `pendulum` `rod`.
+ * HC101 `impulse` `shape`, HC103 `pendulum` `rod`, HC104 the new kind `spacetime`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -88,13 +88,47 @@ export interface PendulumRodSpec {
   fixed?: boolean;
 }
 
+// ─── HC104 spacetime (new kind) ──────────────────────────────────────────────
+
+/**
+ * A Minkowski diagram, x across and ct up on one scale, the light lines x = ±ct at 45°.
+ *
+ * - `lorentz`: the frame S′ moving at `speed` β = v ÷ c, its ct′ axis (x = βct) and x′ axis
+ *   (ct = βx) tilted toward the light line by tan⁻¹β; the event at (`x`, `ct`) (m) read on both
+ *   sets of axes with dashed lines parallel to each, x′ = γ(x − βct) and ct′ = γ(ct − βx), and
+ *   the invariant hyperbola (ct)² − x² = s² through it. Drag the event.
+ * - `addition`: world lines from the origin: S′ moving at `speed` v, an object moving at `other`
+ *   u′ in S′, and the object in S at u = (v + u′) ÷ (1 + vu′), always inside the light line; the
+ *   Galilean v + u′ dashed beside it (past the light line when it would beat c). Speeds in c.
+ */
+export type SpacetimeSpec = { kind: 'spacetime'; fixed?: boolean } & (
+  | {
+      mode: 'lorentz';
+      speed: NumOrVar;
+      x: NumOrVar;
+      ct: NumOrVar;
+      /** γ, x′ and ct′ (m), the interval s² = (ct)² − x² (m²). */
+      gamma?: string;
+      xPrime?: string;
+      ctPrime?: string;
+      interval?: string;
+    }
+  | {
+      mode: 'addition';
+      speed: NumOrVar;
+      other: NumOrVar;
+      /** u (in c). */
+      result?: string;
+    }
+);
+
 // ─── The union ───────────────────────────────────────────────────────────────
 
 /** Group HE4C's options on kinds that exist (sent to He4cView before the kind's own picture). */
 export type He4cOptionSpec = MotionGraphHe4cSpec | ImpulseShapeSpec | PendulumRodSpec;
 
 /** Every picture of group HE4C. */
-export type He4cSpec = He4cOptionSpec;
+export type He4cSpec = He4cOptionSpec | SpacetimeSpec;
 
 /** Whether a picture is one of group HE4C's options on an existing kind. */
 export function isHe4cOption(r: Representation): r is He4cOptionSpec {
@@ -116,6 +150,10 @@ export function he4cSpecVars(r: He4cSpec): string[] {
     }
     case 'impulse':
       return ids(r.peak, r.time, r.impulse, r.average, r.mass, r.change);
+    case 'spacetime':
+      return r.mode === 'lorentz'
+        ? ids(r.speed, r.x, r.ct, r.gamma, r.xPrime, r.ctPrime, r.interval)
+        : ids(r.speed, r.other, r.result);
     case 'pendulum':
       return ids(
         r.rod.length,

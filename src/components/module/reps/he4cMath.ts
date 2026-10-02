@@ -101,3 +101,25 @@ export function rodPendulum(L: number, p: number, m: number, g: number, inertia?
     Leq: swings ? I / (m * d) : undefined,
   };
 }
+
+// ─── HC104 spacetime ─────────────────────────────────────────────────────────
+
+/** γ and an event's coordinates in S′ (moving at β): x′ = γ(x − βct), ct′ = γ(ct − βx). */
+export function lorentzOf(beta: number, x: number, ct: number) {
+  const gamma = 1 / Math.sqrt(1 - beta * beta);
+  return {
+    gamma,
+    xp: gamma * (x - beta * ct),
+    ctp: gamma * (ct - beta * x),
+    s2: ct * ct - x * x,
+  };
+}
+
+/** Where a point with S′ coordinates (x′, ct′) sits in S: x = γ(x′ + βct′), ct = γ(ct′ + βx′). */
+export function fromPrimed(beta: number, xp: number, ctp: number) {
+  const gamma = 1 / Math.sqrt(1 - beta * beta);
+  return { x: gamma * (xp + beta * ctp), ct: gamma * (ctp + beta * xp) };
+}
+
+/** Relativistic velocity addition in units of c: u = (v + u′) ÷ (1 + vu′). */
+export const addVelocities = (v: number, up: number) => (v + up) / (1 + v * up);

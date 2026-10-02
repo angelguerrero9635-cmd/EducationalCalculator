@@ -2385,6 +2385,9 @@ export function repIssues(
     case 'phaseSpace':
       out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC69
       break;
+    case 'spacetime':
+      out.push(...he4cIssues(rep, siOf(val, byId))); // HC104
+      break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21
       break;

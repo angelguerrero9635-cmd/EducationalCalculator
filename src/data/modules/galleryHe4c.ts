@@ -571,16 +571,233 @@ const rodNearCenter = rodDemo(
   [0.15, 1, 0.45],
 );
 
+// ── HC104: spacetime diagrams (university-3#2~lorentz, ~velocity-addition) ──
+
+const lorentzDemo = (
+  id: string,
+  title: string,
+  use: string,
+  [b, x, ct]: [number, number, number],
+) => {
+  const g = 1 / Math.sqrt(1 - b * b);
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'S′ moves at v = βc along +x; the two frames’ origins meet at t = 0.',
+      'x and ct are both lengths: ct is how far light goes in the time t.',
+      'The interval s² = (ct)² − x² is the same in every frame.',
+    ],
+    variables: [
+      quantity('b', 'β', 'Speed of S′ (v ÷ c)', undefined, -0.9999, 0.9999, 0.0001),
+      quantity('g', 'γ', 'Lorentz factor', undefined, 1, 100, 0.0001, { derived: true }),
+      quantity('x', 'x', 'Event’s position in S', 'm', -1e9, 1e9, 1),
+      quantity('ct', 'ct', 'Event’s time in S, as ct', 'm', -1e9, 1e9, 1),
+      quantity('xp', 'x′', 'Event’s position in S′', 'm', -1e11, 1e11, 0.01),
+      quantity('ctp', 'ct′', 'Event’s time in S′, as ct′', 'm', -1e11, 1e11, 0.01),
+      quantity('s2', 's²', 'Interval', 'm²', -1e19, 1e19, 1),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'γ = 1 ÷ √(1 − β²)',
+          display: '{g} = 1 ÷ √(1 − {b}²)',
+          vars: ['g', 'b'],
+          residual: (v) => v.g! * Math.sqrt(Math.max(0, 1 - v.b! ** 2)) - 1,
+          solve: {
+            g: (v) => (Math.abs(v.b!) >= 1 ? undefined : 1 / Math.sqrt(1 - v.b! ** 2)),
+            b: (v) => (v.g! < 1 ? undefined : Math.sqrt(1 - 1 / v.g! ** 2)),
+          },
+        },
+        steps: {
+          g: st(
+            '1 ÷ √(1 − {b}²)',
+            'Square β, take it from 1, take the square root and turn it over.',
+          ),
+          b: st('√(1 − 1 ÷ {g}²)', 'Undo each step of γ: 1 − 1 ÷ γ² is β².'),
+        },
+      },
+      {
+        relation: {
+          id: 'x′ = γ(x − βct)',
+          display: '{xp} = {g} × ({x} − {b} × {ct})',
+          vars: ['xp', 'g', 'x', 'b', 'ct'],
+          residual: (v) => v.xp! - v.g! * (v.x! - v.b! * v.ct!),
+          solve: {
+            xp: (v) => v.g! * (v.x! - v.b! * v.ct!),
+            x: (v) => v.xp! / v.g! + v.b! * v.ct!,
+            ct: (v) => div(v.x! - v.xp! / v.g!, v.b!),
+          },
+        },
+        steps: {
+          xp: st(
+            '{g} × ({x} − {b} × {ct})',
+            'The Lorentz transformation: take βct from x, then times γ.',
+          ),
+          x: st('{xp} ÷ {g} + {b} × {ct}', 'Divide x′ by γ, then add βct back.'),
+          ct: st('({x} − {xp} ÷ {g}) ÷ {b}', 'Take x′ ÷ γ from x, then divide by β.'),
+        },
+      },
+      {
+        relation: {
+          id: 'ct′ = γ(ct − βx)',
+          display: '{ctp} = {g} × ({ct} − {b} × {x})',
+          vars: ['ctp', 'g', 'ct', 'b', 'x'],
+          residual: (v) => v.ctp! - v.g! * (v.ct! - v.b! * v.x!),
+          solve: {
+            ctp: (v) => v.g! * (v.ct! - v.b! * v.x!),
+            ct: (v) => v.ctp! / v.g! + v.b! * v.x!,
+            x: (v) => div(v.ct! - v.ctp! / v.g!, v.b!),
+          },
+        },
+        steps: {
+          ctp: st(
+            '{g} × ({ct} − {b} × {x})',
+            'Time transforms the same way with x and ct swapped.',
+          ),
+          ct: st('{ctp} ÷ {g} + {b} × {x}', 'Divide ct′ by γ, then add βx back.'),
+          x: st('({ct} − {ctp} ÷ {g}) ÷ {b}', 'Take ct′ ÷ γ from ct, then divide by β.'),
+        },
+      },
+      {
+        relation: {
+          id: 's² = (ct)² − x²',
+          display: '{s2} = {ct}² − {x}²',
+          vars: ['s2', 'ct', 'x'],
+          residual: (v) => v.s2! - (v.ct! ** 2 - v.x! ** 2),
+          solve: {
+            s2: (v) => v.ct! ** 2 - v.x! ** 2,
+            ct: (v) => (v.s2! + v.x! ** 2 < 0 ? undefined : Math.sqrt(v.s2! + v.x! ** 2)),
+            x: (v) => (v.ct! ** 2 - v.s2! < 0 ? undefined : Math.sqrt(v.ct! ** 2 - v.s2!)),
+          },
+        },
+        steps: {
+          s2: st('{ct}² − {x}²', 'Square each coordinate and take x² from (ct)².'),
+          ct: st(
+            '√({s2} + {x}²)',
+            'Add x² back and take the square root (the event after the origin).',
+          ),
+          x: st(
+            '√({ct}² − {s2})',
+            'Take s² from (ct)² and take the square root (x ahead of the origin).',
+          ),
+        },
+      },
+    ),
+    example: {
+      b,
+      g,
+      x,
+      ct,
+      xp: g * (x - b * ct),
+      ctp: g * (ct - b * x),
+      s2: ct * ct - x * x,
+    },
+    startWith: ['b', 'x', 'ct'],
+    representation: {
+      kind: 'spacetime',
+      mode: 'lorentz',
+      speed: 'b',
+      x: 'x',
+      ct: 'ct',
+      gamma: 'g',
+      xPrime: 'xp',
+      ctPrime: 'ctp',
+      interval: 's2',
+    },
+  });
+};
+
+const lorentz = lorentzDemo(
+  'g.he-spacetime-lorentz',
+  'An event in two frames: the Lorentz transformation',
+  'Use this for an event at x = 900 m, ct = 600 m seen from a frame moving at 0.6c: its x′ and ct′, and the interval in both.',
+  [0.6, 900, 600],
+);
+
+const lorentzFast = lorentzDemo(
+  'g.he-spacetime-lorentz-fast',
+  'A frame at 0.8c: the axes close on the light line',
+  'Use this for a timelike event (x = 300 m, ct = 900 m) seen from a frame at 0.8c, where it lands behind the moving origin.',
+  [0.8, 300, 900],
+);
+
+const additionDemo = (id: string, title: string, use: string, [vv, up]: [number, number]) =>
+  demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'S′ moves at v along +x in S; the object moves at u′ along +x in S′.',
+      'Speeds are in units of c, so c itself is 1.',
+      'Nothing with mass reaches c: u stays below 1 whatever v and u′ are.',
+    ],
+    variables: [
+      quantity('v', 'v', 'Speed of S′ in S', 'c', -0.9999, 0.9999, 0.0001),
+      quantity('up', 'u′', 'Object’s speed in S′', 'c', -0.9999, 0.9999, 0.0001),
+      quantity('u', 'u', 'Object’s speed in S', 'c', -0.9999999, 0.9999999, 0.0001),
+    ],
+    ...rules({
+      relation: {
+        id: 'u = (v + u′) ÷ (1 + vu′)',
+        display: '{u} = ({v} + {up}) ÷ (1 + {v} × {up})',
+        vars: ['u', 'v', 'up'],
+        residual: (x) => x.u! * (1 + x.v! * x.up!) - (x.v! + x.up!),
+        solve: {
+          u: (x) => div(x.v! + x.up!, 1 + x.v! * x.up!),
+          v: (x) => div(x.u! - x.up!, 1 - x.u! * x.up!),
+          up: (x) => div(x.u! - x.v!, 1 - x.u! * x.v!),
+        },
+      },
+      steps: {
+        u: st(
+          '({v} + {up}) ÷ (1 + {v} × {up})',
+          'Add the speeds, then divide by 1 + vu′ (in c), which keeps the sum below c.',
+        ),
+        v: st('({u} − {up}) ÷ (1 − {u} × {up})', 'The same law run backwards, with u′ taken away.'),
+        up: st('({u} − {v}) ÷ (1 − {u} × {v})', 'The same law run backwards, with v taken away.'),
+      },
+    }),
+    example: { v: vv, up, u: (vv + up) / (1 + vv * up) },
+    startWith: ['v', 'up'],
+    representation: {
+      kind: 'spacetime',
+      mode: 'addition',
+      speed: 'v',
+      other: 'up',
+      result: 'u',
+    },
+  });
+
+const addition = additionDemo(
+  'g.he-spacetime-addition',
+  'Adding 0.6c to 0.6c: still slower than light',
+  'Use this for a probe fired forward at 0.6c from a ship moving at 0.6c: how fast it goes as seen from Earth.',
+  [0.6, 0.6],
+);
+
+const additionNearC = additionDemo(
+  'g.he-spacetime-addition-near-c',
+  'Adding 0.9c to 0.9c: the world line hugs the light line',
+  'Use this for two speeds near c added: why 0.9c on 0.9c gives 0.9945c, not 1.8c.',
+  [0.9, 0.9],
+);
+
 export const HE4C_GALLERY_MODULES: ModuleDef[] = [
-  rodEnd,
-  rodOffset,
-  rodNearCenter,
   polynomial,
   polynomialLong,
   impulseTriangle,
   impulseRectangle,
   impulseSine,
   impulseGolf,
+  rodEnd,
+  rodOffset,
+  rodNearCenter,
+  lorentz,
+  lorentzFast,
+  addition,
+  additionNearC,
 ];
 
 export const HE4C_GALLERY_LAYOUTS: LayoutDef[] = [];
