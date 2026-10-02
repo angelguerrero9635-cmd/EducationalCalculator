@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card, Chip, EmptyState, Icon, ListRow, SectionHeader } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { matchProblem } from '@/data/match';
-import { countLabel, nodeContext, search, type SearchKind } from '@/data/selectors';
+import { countLabel, search, type SearchKind } from '@/data/selectors';
 import { COURSES, SKILLS } from '@/data/taxonomy';
 import { font, radius, space, useCardShadow, usePalette } from '@/theme';
 
@@ -86,11 +86,13 @@ export default function SearchScreen() {
                 {problem.map((r, i) => (
                   <ListRow
                     key={r.id}
-                    overline={`${i === 0 ? 'Best match · ' : ''}${nodeContext(r.skill)}${
-                      r.title === r.skill.title ? '' : ` · ${r.skill.title}`
+                    overline={`${i === 0 ? 'Best match · ' : ''}${r.owner.context}${
+                      r.title === r.owner.title ? '' : ` · ${r.owner.title}`
                     }`}
                     title={r.title}
-                    subtitle={r.use ?? 'The main lesson for this skill'}
+                    subtitle={
+                      r.use ?? `The main lesson for this ${r.owner.grade ? 'skill' : 'topic'}`
+                    }
                     route={r.route}
                   />
                 ))}

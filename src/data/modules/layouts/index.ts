@@ -12,7 +12,10 @@ import { SCIENCE_9_LAYOUTS } from './science9';
 import { SCIENCE_10_LAYOUTS } from './science10';
 import { SCIENCE_11_LAYOUTS } from './science11';
 import { SCIENCE_12_LAYOUTS } from './science12';
+import { COLLEGE_LAYOUTS } from './college';
 import type { LayoutDef } from './types';
+
+export { COLLEGE_LAYOUTS };
 
 export type {
   CardFigure,
@@ -52,11 +55,15 @@ export const LAYOUTS: readonly LayoutDef[] = [
   ...SCIENCE_10_LAYOUTS,
   ...SCIENCE_11_LAYOUTS,
   ...SCIENCE_12_LAYOUTS,
+  ...COLLEGE_LAYOUTS,
 ];
 
 const BY_ID = new Map(LAYOUTS.map((l) => [l.id, l]));
 
-/** The layout page for a skill id or problem-type id, if it has one. */
+/**
+ * The layout page for a page id, if it has one: a skill or course topic (`<courseId>#<i>`), or
+ * a problem type of either (`…~<slug>`).
+ */
 export const getLayout = (id: string): LayoutDef | undefined => BY_ID.get(id);
 
 /** What the page offers, for search and page descriptions. */

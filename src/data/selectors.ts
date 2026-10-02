@@ -53,45 +53,77 @@ export const getSkill = (id: string): Skill | undefined => {
 };
 
 // ─── Problem types ────────────────────────────────────────────────────────────
-// A skill can have extra modules for other question types ("<skill id>~<slug>"). Each is its
-// own page and its own row in lists, next to the skill it belongs to.
+// A skill or a college course topic can have extra modules for other question types
+// ("<skill id>~<slug>", "<courseId>#<i>~<slug>"). Each is its own page and its own row in
+// lists, next to the skill or topic it belongs to (its owner).
+
+/** A college course topic: its course, index and title, and its key (`<courseId>#<i>`). */
+export interface Topic {
+  course: Course;
+  index: number;
+  title: string;
+  key: string;
+}
 
 export interface ProblemType {
-  /** Module id, e.g. "m.1.add-sub-20~compare". */
+  /** Module id, e.g. "m.1.add-sub-20~compare" or "he.geography.human-geography#0~rates". */
   id: string;
   title: string;
-  skill: Skill;
+  /** The skill or topic key it belongs to ("m.1.add-sub-20", "he.math.calc-1#1"). */
+  owner: string;
+  /** Its skill (K–12 problem types). */
+  skill?: Skill;
+  /** Its course topic (college problem types). */
+  topic?: Topic;
   /** What the page is for, in one line ("Use this for …"). */
   use?: string;
 }
 
-/** The extra problem-type modules of a skill, in content order. */
-export const problemTypes = (skillId: string): ProblemType[] => {
-  const skill = getSkill(skillId);
-  if (!skill) return [];
-  return getPageIds(skillId)
-    .filter((id) => id !== skillId)
+/** A skill or topic key's owner fields for a ProblemType, if it is one. */
+function ownerOf(id: string): Pick<ProblemType, 'skill' | 'topic'> | undefined {
+  const skill = getSkill(id);
+  if (skill) return { skill };
+  const topic = topicOf(id);
+  return topic ? { topic } : undefined;
+}
+
+/** The extra problem-type modules of a skill or course topic (`<courseId>#<i>`), in content order. */
+export const problemTypes = (ownerId: string): ProblemType[] => {
+  const owner = ownerOf(ownerId);
+  if (!owner) return [];
+  return getPageIds(ownerId)
+    .filter((id) => id !== ownerId)
     .map((id) => getPage(id)!)
-    .map((m) => ({ id: m.id, title: m.title ?? m.id, skill, use: m.use }));
+    .map((m) => ({ id: m.id, title: m.title ?? m.id, owner: ownerId, ...owner, use: m.use }));
 };
 
-/** A problem-type page id ("m.1.add-sub-20~compare") → its module title and skill. */
+/**
+ * A problem-type page id ("m.1.add-sub-20~compare", "he.math.calc-1#1~chain") → its module
+ * title and its skill or topic.
+ */
 export const getProblemType = (id: string): ProblemType | undefined => {
   if (!id.includes('~')) return undefined;
-  const skill = getSkill(moduleOwner(id));
+  const ownerId = moduleOwner(id);
+  const owner = ownerOf(ownerId);
   const module = getPage(id);
-  return skill && module ? { id, title: module.title ?? id, skill, use: module.use } : undefined;
+  return owner && module
+    ? { id, title: module.title ?? id, owner: ownerId, ...owner, use: module.use }
+    : undefined;
 };
 
-const ALL_SKILLS_PAGE_IDS = [...MODULES.map((m) => m.id), ...LAYOUTS.map((l) => l.id)];
+const ALL_PAGE_IDS = [...MODULES.map((m) => m.id), ...LAYOUTS.map((l) => l.id)];
 
-/** Every problem-type page id (for pre-rendering pages). */
-export const PROBLEM_TYPE_IDS = ALL_SKILLS_PAGE_IDS.filter((id) => getProblemType(id));
+/** Every skill problem-type page id (for pre-rendering skill pages). */
+export const PROBLEM_TYPE_IDS = ALL_PAGE_IDS.filter((id) => getProblemType(id)?.skill);
 
-export const getCourse = (id: string): Course | undefined => {
+/** Every course-topic problem-type page id (for pre-rendering topic pages). */
+export const TOPIC_TYPE_IDS = ALL_PAGE_IDS.filter((id) => getProblemType(id)?.topic);
+
+// A function declaration (hoisted): the problem-type id lists below call it at load time.
+export function getCourse(id: string): Course | undefined {
   const node = getNode(id);
-  return node && !isSkill(node) ? node : undefined;
-};
+  return node && !('grade' in node) ? node : undefined;
+}
 
 /** A course's field title, e.g. "Mechanical" (every course belongs to one field). */
 export function fieldsSummary(course: Course): string {
@@ -121,9 +153,10 @@ export const courseRoute = (id: string): RouteTarget => ({
   pathname: '/course/[id]',
   params: { id },
 });
-export const topicRoute = (courseId: string, index: number): RouteTarget => ({
+/** A course topic's page, or one of its problem types (`slug`): /course/<id>/topic/<i>[~<slug>]. */
+export const topicRoute = (courseId: string, index: number, slug?: string): RouteTarget => ({
   pathname: '/course/[id]/topic/[index]',
-  params: { id: courseId, index: String(index) },
+  params: { id: courseId, index: slug ? `${index}~${slug}` : String(index) },
 });
 export const gradeRoute = (grade: Grade, subject?: K12Subject): RouteTarget => ({
   pathname: '/grade/[grade]',
@@ -137,6 +170,21 @@ export const fieldRoute = (division: Division, field: string): RouteTarget =>
   skipsFieldLevel(division)
     ? divisionRoute(division)
     : { pathname: '/he/[division]/[field]', params: { division, field } };
+
+/**
+ * The page of any lesson id: a skill or its problem type (/skill/…), a course topic or its
+ * problem type (/course/<id>/topic/<i>[~<slug>]).
+ */
+export function pageRoute(id: string): RouteTarget | undefined {
+  const [owner = '', slug] = id.split('~');
+  const topic = topicOf(owner);
+  if (topic)
+    return slug === undefined || getProblemType(id)
+      ? topicRoute(topic.course.id, topic.index, slug)
+      : undefined;
+  if (getSkill(id) || getProblemType(id)) return skillRoute(id);
+  return undefined;
+}
 
 export function nodeRoute(id: string): RouteTarget | undefined {
   const node = getNode(id);
@@ -344,14 +392,25 @@ export function buildSearchIndex(
       text: normalize(`${c.title} ${label}`),
     });
     c.topics.forEach((topic, index) => {
+      const key = topicKey(c.id, index);
       entries.push({
-        key: topicKey(c.id, index),
+        key,
         kind: 'topic',
         title: topic,
         label: `${divisionLabel(c.division)} · ${c.title}`,
         route: topicRoute(c.id, index),
         text: normalize(topic),
       });
+      for (const t of problemTypes(key)) {
+        entries.push({
+          key: t.id,
+          kind: 'topic',
+          title: t.title,
+          label: `${divisionLabel(c.division)} · ${c.title} · ${topic}`,
+          route: pageRoute(t.id)!,
+          text: normalize(`${t.title} ${topic} ${c.title}`),
+        });
+      }
     });
   }
   return entries;
@@ -384,12 +443,32 @@ export function search(query: string, index = getSearchIndex(), limit = 100): Se
 
 // ─── Topics ──────────────────────────────────────────────────────────────────
 
-export const topicKey = (courseId: string, index: number) => `${courseId}#${index}`;
+export function topicKey(courseId: string, index: number) {
+  return `${courseId}#${index}`;
+}
 
-export function getTopic(courseId: string, index: number) {
+export function getTopic(courseId: string, index: number): Topic | undefined {
   const course = getCourse(courseId);
-  const title = course?.topics[index];
-  return course && title !== undefined ? { course, index, title } : undefined;
+  const title = Number.isInteger(index) ? course?.topics[index] : undefined;
+  return course && title !== undefined
+    ? { course, index, title, key: topicKey(course.id, index) }
+    : undefined;
+}
+
+/** A topic key (`<courseId>#<i>`) → its topic, if the course has it. */
+export function topicOf(key: string): Topic | undefined {
+  const m = /^(.+)#(\d+)$/.exec(key);
+  return m ? getTopic(m[1]!, Number(m[2])) : undefined;
+}
+
+/**
+ * A topic page's id from its route: the course id and the `index` segment ("1", or "1~chain"
+ * for a problem type) → "he.math.calc-1#1~chain". Static rendering drops a trailing "index"
+ * from a path (see `skillPageId`), so a type whose slug ends in it is put back.
+ */
+export function topicPageId(courseId: string, index: string): string {
+  const id = `${courseId}#${index}`;
+  return !topicOf(id) && !getProblemType(id) && getProblemType(`${id}index`) ? `${id}index` : id;
 }
 
 // ─── Onboarding levels ───────────────────────────────────────────────────────
@@ -531,11 +610,8 @@ export interface ResolvedItem {
 
 /** Resolves a recents key (node id or topic key); undefined if it no longer exists. */
 export function resolveItem(key: string): ResolvedItem | undefined {
-  const hash = key.lastIndexOf('#');
-  if (hash !== -1) {
-    const index = Number(key.slice(hash + 1));
-    const topic = Number.isInteger(index) ? getTopic(key.slice(0, hash), index) : undefined;
-    if (!topic) return undefined;
+  const topic = topicOf(key);
+  if (topic) {
     return {
       key,
       title: topic.title,
@@ -544,7 +620,15 @@ export function resolveItem(key: string): ResolvedItem | undefined {
     };
   }
   const type = getProblemType(key);
-  if (type) {
+  if (type?.topic) {
+    return {
+      key,
+      title: type.title,
+      label: `${type.topic.course.title} · ${type.topic.title}`,
+      route: pageRoute(key)!,
+    };
+  }
+  if (type?.skill) {
     return {
       key,
       title: type.title,
@@ -552,6 +636,7 @@ export function resolveItem(key: string): ResolvedItem | undefined {
       route: skillRoute(key),
     };
   }
+  if (key.includes('#')) return undefined;
   const node = getNode(key);
   const route = nodeRoute(key);
   if (!node || !route) return undefined;
@@ -608,6 +693,14 @@ export function parentOf(screen: string, params: Record<string, unknown>): Paren
     case 'grade/[grade]/index':
       return { label: 'Browse', target: { pathname: '/browse' } };
     case 'course/[id]/topic/[index]': {
+      // A topic's problem type → its topic; a topic → its course.
+      const type = getProblemType(topicPageId(p('id'), p('index')));
+      if (type?.topic) {
+        return {
+          label: type.topic.title,
+          target: topicRoute(type.topic.course.id, type.topic.index),
+        };
+      }
       const course = getCourse(p('id'));
       return course ? { label: 'Course', target: courseRoute(course.id) } : HOME;
     }
@@ -647,8 +740,10 @@ export function screenTitle(screen: string, params: Record<string, unknown>): st
     }
     case 'course/[id]/index':
       return getCourse(p('id'))?.title;
-    case 'course/[id]/topic/[index]':
-      return getTopic(p('id'), Number(p('index')))?.title;
+    case 'course/[id]/topic/[index]': {
+      const id = topicPageId(p('id'), p('index'));
+      return topicOf(id)?.title ?? getProblemType(id)?.title;
+    }
     case 'grade/[grade]/index':
       return isGrade(p('grade')) ? gradeLabel(p('grade') as Grade) : undefined;
     case 'grade/[grade]/[strand]':

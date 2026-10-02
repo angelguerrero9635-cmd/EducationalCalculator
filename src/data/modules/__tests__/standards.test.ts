@@ -39,6 +39,12 @@ function valueLimit(grade: string | undefined): number | undefined {
   return g === 0 ? 6 : g <= 8 ? 8 : 10;
 }
 
+/**
+ * The grade whose reading and value rules a page meets: its own, or Grade 12 for a college page
+ * (`he.…`, HE-E3: sentences ≤ 35 words, ≤ 10 values, as every college plan adopted).
+ */
+const rulesGrade = (id: string) => gradeOf(id) ?? (id.startsWith('he.') ? '12' : undefined);
+
 /** Shorthand and jargon by grade (check K). */
 const SHORTHAND = /\b(?:incl|e\.g|i\.e|vs|etc|approx)\.|\bw\/(?=\w)/;
 const JARGON_K3 = /\bquotient\b/i;
@@ -136,6 +142,7 @@ const COUNT_ALLOWED: Record<string, string> = {
   'g.s9-immune-disease-herd-immunity R0': AVERAGE_CASES,
   'g.s9-immune-disease-herd-immunity-measles R0': AVERAGE_CASES,
   'he.geography.human-geography#0 Pop': RATE_POPULATION,
+  'he.geography.human-geography#0~rates Pop': RATE_POPULATION,
   'g.r4f-waterfall Pop': RATE_POPULATION,
   // Found when this check came in, in a file being edited elsewhere; fix and remove.
   's.9.biotechnology~pcr N': 'to fix: N₀ × 2ⁿ is always whole, so mark it integer',
@@ -244,7 +251,7 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
   });
 
   it('reads at the grade level (sentence length)', () => {
-    const limit = wordLimit(grade);
+    const limit = wordLimit(rulesGrade(m.id));
     if (limit === undefined) return;
     expect(
       failures(text.prose, (t) => {
@@ -409,7 +416,7 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
   });
 
   it('has about as many values as the grade can hold', () => {
-    const limit = valueLimit(grade);
+    const limit = valueLimit(rulesGrade(m.id));
     // Derived values are read-only boxes the lesson fills in, not values the student holds;
     // a data set (3 to 10 values and their count) is one list, held as one value, and so is a
     // group (a matrix's cells, a fixed data list).
@@ -417,6 +424,12 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
     const groups = new Set(held.flatMap((v) => (v.group ? [v.group] : [])));
     if (limit !== undefined)
       expect(held.filter((v) => !v.group).length + groups.size).toBeLessThanOrEqual(limit);
+  });
+
+  it('states 2–4 assumptions on a college page', () => {
+    if (!m.id.startsWith('he.')) return;
+    expect(m.assumptions.length).toBeGreaterThanOrEqual(2);
+    expect(m.assumptions.length).toBeLessThanOrEqual(4);
   });
 
   it('names each value with a symbol a student can read aloud', () => {

@@ -1,5 +1,5 @@
-import { courseMeta, gradeMeta, skillMeta, topicMeta } from '../meta';
-import { screenTitle } from '../selectors';
+import { courseMeta, gradeMeta, problemTypeMeta, skillMeta, topicMeta } from '../meta';
+import { getProblemType, screenTitle } from '../selectors';
 import { COURSES, SKILLS, getNode, type Course, type Skill } from '../taxonomy';
 
 describe('page metadata (titles and descriptions in pre-rendered HTML)', () => {
@@ -24,6 +24,11 @@ describe('page metadata (titles and descriptions in pre-rendered HTML)', () => {
     expect(topicMeta('he.math.calc-1', 1)?.title).toBe(
       'Derivatives and differentiation rules – Calculus I',
     );
+    const rates = problemTypeMeta(getProblemType('he.geography.human-geography#0~rates')!);
+    expect(rates.title).toBe(
+      'Birth, death and growth rates: Population and migration – Human Geography',
+    );
+    expect(rates.description.length).toBeLessThanOrEqual(160);
   });
 
   it('knows each detail page’s navigation bar title from its route', () => {
@@ -38,5 +43,11 @@ describe('page metadata (titles and descriptions in pre-rendered HTML)', () => {
     expect(screenTitle('course/[id]/topic/[index]', { id: 'he.math.calc-1', index: '1' })).toBe(
       'Derivatives and differentiation rules',
     );
+    expect(
+      screenTitle('course/[id]/topic/[index]', {
+        id: 'he.geography.human-geography',
+        index: '0~rates',
+      }),
+    ).toBe('Birth, death and growth rates');
   });
 });

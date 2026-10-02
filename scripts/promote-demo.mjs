@@ -3,10 +3,13 @@
 // being typed again:
 //
 //   node scripts/promote-demo.mjs g.cart-force s.8.newtons-laws ["Title"]
+//   node scripts/promote-demo.mjs g.series-loop he.engineering.circuits-1#0~divider ["Title"]
 //
 // Finds the demo's element in the gallery files (an object literal, a helper call or a `demo(`
 // call), appends a copy to the grade file's array (src/data/modules/<math|science>/<grade>.ts,
-// or layouts/<math|science><grade>.ts for a layout demo) with the new id, the title (problem
+// or layouts/<math|science><grade>.ts for a layout demo; a college page goes to
+// src/data/modules/college/<field>.ts or layouts/college<Field>.ts, the course's home field,
+// created when new) with the new id, the title (problem
 // types only; a main page takes the skill's title) and a `use` line to fill in, adds the page
 // to the picture tracker entry that lists the demo, and reports the helpers the copy calls so
 // their imports can be added. The copy is a start: edit its assumptions, ranges and use line to
@@ -15,15 +18,26 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { collegeLayoutFile, collegeModuleFile, parseCollegeId } from './college-files.mjs';
+
 const noTracker = process.argv.includes('--no-tracker');
 const [demoId, pageId, title] = process.argv.slice(2).filter((a) => a !== '--no-tracker');
-if (!demoId?.startsWith('g.') || !/^[ms]\.\w+\.[\w-]+(~[\w-]+)?$/.test(pageId ?? '')) {
+const college = pageId?.startsWith('he.') ? parseCollegeId(pageId) : undefined;
+if (college?.error) {
+  console.log(college.error);
+  process.exit(2);
+}
+if (
+  !demoId?.startsWith('g.') ||
+  (!college && !/^[ms]\.\w+\.[\w-]+(~[\w-]+)?$/.test(pageId ?? ''))
+) {
   console.log(
-    'Usage: node scripts/promote-demo.mjs g.<demo> <m|s>.<grade>.<skill>[~<slug>] ["Title"]',
+    'Usage: node scripts/promote-demo.mjs g.<demo> <m|s>.<grade>.<skill>[~<slug>] ["Title"]\n' +
+      '       node scripts/promote-demo.mjs g.<demo> he.<field>.<course>#<topic>[~<slug>] ["Title"]',
   );
   process.exit(2);
 }
-const [, subject, grade] = /^([ms])\.(\w+)\./.exec(pageId);
+const [, subject, grade] = college ? [] : /^([ms])\.(\w+)\./.exec(pageId);
 const isType = pageId.includes('~');
 if (isType && !title) {
   console.log('A problem type needs a title.');
@@ -103,10 +117,14 @@ if (found.text.startsWith('{')) {
   copy = `// promoted from ${demoId}: set the id${isType ? ', title and use line' : ''} inside the helper call\n  ${copy}`;
 }
 
-// 3. Append to the grade file's array (before its closing `];`).
-const target = found.layout
-  ? `src/data/modules/layouts/${subject === 'm' ? 'math' : 'science'}${grade}.ts`
-  : `src/data/modules/${subject === 'm' ? 'math' : 'science'}/${grade}.ts`;
+// 3. Append to the grade (or college field) file's array (before its closing `];`).
+const target = college
+  ? found.layout
+    ? collegeLayoutFile(college.field)
+    : collegeModuleFile(college.field)
+  : found.layout
+    ? `src/data/modules/layouts/${subject === 'm' ? 'math' : 'science'}${grade}.ts`
+    : `src/data/modules/${subject === 'm' ? 'math' : 'science'}/${grade}.ts`;
 if (!existsSync(target)) {
   console.log(`No grade file ${target}: create it first (pnpm new-module).`);
   process.exit(1);
@@ -155,7 +173,7 @@ console.log(
     calls.length
       ? `It calls: ${calls.join(', ')} — import what the grade file lacks (helpers.ts, work.ts, reps).`
       : '',
-    `Then: pnpm -s exec prettier --write ${target} src/data/modules/pictureRequests*.ts && MODULE_IDS=${pageId} pnpm test src/data/modules`,
+    `Then: pnpm -s exec prettier --write ${target} src/data/modules/pictureRequests*.ts && MODULE_IDS='${pageId}' pnpm test src/data/modules`,
   ]
     .filter(Boolean)
     .join('\n'),

@@ -37,6 +37,37 @@ per review; each line names the finding and what the engine now does about it.
   s.10 entropy-free-energy, nuclear-chemistry, gas-laws; m.6 unit-rates; m.7
   proportional-relationships; s.8 newtons-laws; every college page.
 
+## E32: the four college blockers (HE-E1–E4) and the pilots redone
+
+- **College pages had one file, no problem types, no layouts and no value cap**
+  (docs/HE_NEEDS.md HE-E1–E4: 1,456 planned pages blocked). → `college.ts` is one file per field
+  (`college/<field>.ts`, `layouts/college<Field>.ts`; `scripts/college-files.mjs` reads a
+  course's home field from taxonomy.ts and creates a missing file for `new-module` and
+  `promote-demo`). `problemTypes` and `getProblemType` take a topic key as they take a skill id
+  (`ProblemType.owner`, `.topic`; `.skill` is now optional), and every view that lists a
+  skill's types lists a topic's: the topic page (its types as tiles, a type's related lessons),
+  the side menu, search, recents, the nav bar (a type's back button goes to its topic), page
+  meta, the matcher (`MatchResult.owner` replaces `.skill`) and the corpus script. A type lives
+  at `/course/<id>/topic/<i>~<slug>` (`topicRoute(course, i, slug)`, `pageRoute(id)`) and is
+  pre-rendered (`TOPIC_TYPE_IDS`; a review build's PRERENDER_PREFIX now limits topic pages
+  too). College layouts are read under `#` ids. `standards.test.ts` holds `he.` pages to the
+  Grade 12 rules (35 words, 10 values, 2–4 assumptions); `layouts.test.ts` reads them at 35.
+- **The problem-type id lists are computed when selectors.ts loads**, and the first topic type
+  made them call `getCourse`, a `const` defined further down (a temporal-dead-zone crash in
+  every suite that imports the menu). → `getCourse` and `topicKey` are function declarations.
+- **The kinematics pilot on `motionGraph`: a time of −1 × 10⁻⁶ s** (d typed in mm, the
+  quadratic's root a rounding crumb below 0) fails the graph's check, where the old `plot`
+  drew it. → `atLeastZero` (college/shared.ts) reads such a crumb as 0 in each time solver.
+- **A scratch build drew another checkout's routes**: with node_modules symlinked to the main
+  checkout, the shared Metro cache served expo-router's `_ctx` transform from a build there, so
+  the export rendered that checkout's `src/app` with this one's data (no `~` topic pages, and
+  PRERENDER_PREFIX ignored on topics). → Build a copy with its own cache (`TMPDIR=<scratch>`), or
+  `--clear`.
+- Pilots: circuits-1#0 "Resistance 1 (R₁)", "Resistance 2 (R₂)"; human-geography#0 trimmed to 9
+  values, `~rates` (P₀, B, D, CBR, CDR, RNI, T₂; bars of CBR and CDR) and the plan's
+  `~transition` sequence; university-1#0 on the s.11 v–t graph with Δx and g = 9.81; calc-1#1
+  waits for HC37. Tested by id (`MODULE_IDS=he.`) and in `src/data/__tests__`.
+
 ## E30: checks with ln, log or e^ printed worked-out values with their extra figures
 
 - **A check whose right side has a logarithm or e to a power kept its extra figures**
