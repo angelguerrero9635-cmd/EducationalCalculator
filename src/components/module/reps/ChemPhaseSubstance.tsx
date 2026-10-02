@@ -258,18 +258,28 @@ export function ChemPhaseSubstance({ spec, calc }: { spec: Spec; calc: Calculato
       };
       [rp, dirs] = placed[at]();
     }
-    const label = (x: number, y: number, text: string, anchor: 'start' | 'end', dy = -8) => (
-      <ChartText
-        x={x + (anchor === 'start' ? 8 : -8)}
-        y={y + dy}
-        textAnchor={anchor}
-        fontSize={chart.label}
-        fontWeight="700"
-        halo
-      >
-        {text}
-      </ChartText>
-    );
+    /** A point's name beside it, turned to the other side where it would leave the plot. */
+    const label = (x: number, y: number, text: string, side: 'start' | 'end', dy = -8) => {
+      const tw = [...text].length * chart.label * 0.6;
+      const anchor =
+        side === 'start' && x + 8 + tw > r
+          ? 'end'
+          : side === 'end' && x - 8 - tw < l
+            ? 'start'
+            : side;
+      return (
+        <ChartText
+          x={x + (anchor === 'start' ? 8 : -8)}
+          y={y + dy}
+          textAnchor={anchor}
+          fontSize={chart.label}
+          fontWeight="700"
+          halo
+        >
+          {text}
+        </ChartText>
+      );
+    };
     const midRight = (x: number) => (x > (l + r) / 2 ? 'end' : 'start');
     // Slope triangle in the zoom: a run of 1 K and its rise.
     const tri1 =
@@ -284,6 +294,9 @@ export function ChemPhaseSubstance({ spec, calc }: { spec: Spec; calc: Calculato
             };
           })()
         : undefined;
+    const slopeFits =
+      !!tri1 &&
+      tri1.bq[0] + 8 + [...`dP/dT = ${slopeV.text} ${unit}/K`].length * chart.value * 0.6 < r;
     return (
       <Svg width={w} height={h}>
         <Rect x={l} y={t} width={r - l} height={b - t} fill={c.phaseGas} />
@@ -410,8 +423,9 @@ export function ChemPhaseSubstance({ spec, calc }: { spec: Spec; calc: Calculato
         <ChartText x={l + 6} y={zoom ? b - 30 : t + 16} fontSize={chart.value} fontWeight="700">
           Solid
         </ChartText>
+        {/* Clear of "Solid" where the solid is a narrow strip (water). */}
         <ChartText
-          x={Math.min(crit[0], meltTop[0] + (r - l) * 0.12)}
+          x={Math.max(Math.min(crit[0], meltTop[0] + (r - l) * 0.12), zoom ? 0 : l + 62)}
           y={t + 16}
           fontSize={chart.value}
           fontWeight="700"
@@ -500,9 +514,15 @@ export function ChemPhaseSubstance({ spec, calc }: { spec: Spec; calc: Calculato
             >
               1 K
             </ChartText>
+            {/* Beside the rise, or over the triangle where it would leave the plot. */}
             <ChartText
-              x={tri1.bq[0] + 8}
-              y={(tri1.bq[1] + tri1.cq[1]) / 2 + 4}
+              x={slopeFits ? tri1.bq[0] + 8 : r - 4}
+              y={
+                slopeFits
+                  ? (tri1.bq[1] + tri1.cq[1]) / 2 + 4
+                  : Math.min(tri1.bq[1], tri1.cq[1], tri1.a[1]) - 10
+              }
+              textAnchor={slopeFits ? 'start' : 'end'}
               fontSize={chart.value}
               fontWeight="700"
               fill={c.chartHighlight}
