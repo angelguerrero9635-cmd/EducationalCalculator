@@ -1,6 +1,15 @@
 import { holds, type System } from './solve';
 import type { Values, VariableDef } from './types';
-import { OPT_IN, convert, getUnit, unitInSystem, unitsOf, type UnitSystem } from './units';
+import { unitInSet, unitSetFor, type ModuleUnitSet } from './unitSets';
+import {
+  convert,
+  getUnit,
+  menuOptIn,
+  unitInSystem,
+  unitOf,
+  unitsOf,
+  type UnitSystem,
+} from './units';
 
 /**
  * Unit choice: a system (metric, US customary, or mixed = any unit), plus optional per-variable
@@ -13,6 +22,16 @@ export interface UnitChoice {
 }
 
 /**
+ * A value's unit as the menus and systems see it. A unit added for college (`listed`: μm, Hz,
+ * g/mol…) acts as one only on a value that lists another unit beside it in `units`; elsewhere
+ * (the K–12 pages that write it) it stays the plain label it always was.
+ */
+export function unitHere(v: VariableDef) {
+  const unit = unitOf(v);
+  return unit && (!unit.listed || v.units?.some((id) => id !== v.unit)) ? unit : undefined;
+}
+
+/**
  * The units a variable can be shown in under a system ("mixed" = all units of its kind). With
  * the module's `variables`, a whole-number lesson that measures lengths offers only the
  * matching squares and cubes for its areas and volumes (cm² and cm³, never liters).
@@ -22,17 +41,17 @@ export function unitChoices(
   system: UnitChoice['system'],
   variables?: readonly VariableDef[],
 ): string[] {
-  const unit = getUnit(variable.unit);
-  // Temperature, pressure, energy…: a menu only when the value lists its units.
-  if (!unit || (OPT_IN.has(unit.dimension) && !variable.units)) return [];
+  const unit = unitHere(variable);
+  // Temperature, pressure, energy, μm…: a menu only when the value lists its units.
+  if (!unit || (menuOptIn(unit) && !variable.units)) return [];
   const cubes =
     (unit.dimension === 'area' || unit.dimension === 'volume') &&
-    variables?.some((v) => v.integer && getUnit(v.unit)) &&
-    variables.some((v) => getUnit(v.unit)?.dimension === 'length');
+    variables?.some((v) => v.integer && unitHere(v)) &&
+    variables.some((v) => unitHere(v)?.dimension === 'length');
   return unitsOf(unit.dimension)
     .filter((u) => system === 'mixed' || u.system === system || u.system === 'both')
     .filter((u) => !cubes || LENGTHS.some((l) => u.id === `${l}²` || u.id === `${l}³`))
-    .filter((u) => !variable.units || variable.units.includes(u.id))
+    .filter((u) => (!variable.units && !u.listed) || variable.units?.includes(u.id))
     .map((u) => u.id);
 }
 
@@ -44,7 +63,7 @@ const LENGTHS = ['mm', 'cm', 'm', 'km', 'in', 'ft', 'yd', 'mi'];
  * them together, so they share one length unit.
  */
 const isShape = (variables: readonly VariableDef[]) => {
-  const dims = variables.map((v) => getUnit(v.unit)?.dimension).filter(Boolean);
+  const dims = variables.map((v) => unitHere(v)?.dimension).filter(Boolean);
   const set = new Set(dims);
   // Two values of one kind (water levels before and after) are read in the same unit too.
   return (set.has('length') && (set.has('area') || set.has('volume'))) || dims.length > set.size;
@@ -60,8 +79,8 @@ export function linkedUnits(
   id: string,
   unitId: string,
 ): Record<string, string> {
-  const lesson = variables.some((v) => v.integer && getUnit(v.unit)) || isShape(variables);
-  const picked = getUnit(unitId);
+  const lesson = variables.some((v) => v.integer && unitHere(v)) || isShape(variables);
+  const picked = getUnit(unitId, variables.find((v) => v.id === id)?.difference);
   const family = ['length', 'area', 'volume'];
   if (!lesson || !picked) return { [id]: unitId };
   const length = LENGTHS.find((l) => l === unitId || `${l}²` === unitId || `${l}³` === unitId);
@@ -69,13 +88,13 @@ export function linkedUnits(
     // Masses, liters, …: every value of the same kind takes the picked unit (g → kg for all).
     return Object.fromEntries(
       variables
-        .filter((v) => v.id === id || getUnit(v.unit)?.dimension === picked.dimension)
+        .filter((v) => v.id === id || unitHere(v)?.dimension === picked.dimension)
         .map((v) => [v.id, unitId]),
     );
   }
   const out: Record<string, string> = {};
   for (const v of variables) {
-    const d = getUnit(v.unit)?.dimension;
+    const d = unitHere(v)?.dimension;
     const candidate =
       d === 'length' ? length : d === 'area' ? `${length}²` : d === 'volume' ? `${length}³` : null;
     if (candidate && getUnit(candidate)) out[v.id] = candidate;
@@ -105,24 +124,31 @@ export interface UnitOptions {
 export function unitOptions(
   variables: readonly VariableDef[],
   allowed: readonly UnitSystem[] = ['metric', 'us'],
+  unitSet?: ModuleUnitSet,
 ): UnitOptions {
   const convertible = variables.filter((v) => {
-    const unit = getUnit(v.unit);
-    return unit && (!OPT_IN.has(unit.dimension) || v.units);
+    const unit = unitHere(v);
+    return unit && (!menuOptIn(unit) || v.units);
   });
-  const differsInUs = convertible.some(
-    (v) => unitInSystem(v.unit!, 'us') !== unitInSystem(v.unit!, 'metric'),
-  );
+  // A page naming a set for each system (N–mm–MPa and kip–in–ksi) is offered in both.
+  const twoSets = !!unitSetFor(unitSet, 'metric') && !!unitSetFor(unitSet, 'us');
+  const differsInUs =
+    twoSets ||
+    convertible.some(
+      (v) =>
+        unitInSystem(v.unit!, 'us', v.difference) !== unitInSystem(v.unit!, 'metric', v.difference),
+    );
   return {
     metricUnits: differsInUs,
     // A US-only page (a customary-units lesson) offers US units alone.
-    systems: convertible.length
-      ? !allowed.includes('metric')
-        ? ['us']
-        : differsInUs && allowed.includes('us')
-          ? ['metric', 'us']
-          : ['metric']
-      : [],
+    systems:
+      convertible.length || twoSets
+        ? !allowed.includes('metric')
+          ? ['us']
+          : differsInUs && allowed.includes('us')
+            ? ['metric', 'us']
+            : ['metric']
+        : [],
     // Mixed (any unit, from either system) only adds something when a value has both metric
     // and US units; whole-number lessons (e.g. Grade 3 area) don't offer it.
     // Metric-only pages (middle-school science) offer no US units, Mixed included.
@@ -131,7 +157,7 @@ export function unitOptions(
       allowed.includes('metric') &&
       !convertible.some((v) => v.integer) &&
       convertible.some((v) => {
-        const all = unitsOf(getUnit(v.unit)!.dimension);
+        const all = unitsOf(unitHere(v)!.dimension);
         return all.some((u) => u.system === 'metric') && all.some((u) => u.system === 'us');
       }),
     linked: convertible.some((v) => v.integer) || isShape(variables),
@@ -160,6 +186,7 @@ export interface UnitContext {
 interface ModuleLike extends System {
   example: Values;
   unitSystems?: readonly UnitSystem[];
+  unitSet?: ModuleUnitSet;
 }
 
 export function makeUnitContext(module: ModuleLike, asked: UnitChoice): UnitContext {
@@ -170,24 +197,31 @@ export function makeUnitContext(module: ModuleLike, asked: UnitChoice): UnitCont
     usOnly && asked.system === 'metric' ? { ...asked, system: 'us' } : asked;
   const display: Record<string, string | undefined> = {};
   const factors: Record<string, number> = {};
+  // The page's working set under this system (kip–in–ksi under US customary), if it names one.
+  const set = unitSetFor(module.unitSet, choice.system);
   for (const v of module.variables) {
-    const unit = getUnit(v.unit);
+    const unit = unitHere(v);
+    const inSet = set && unitInSet(set, v);
     let shown = v.unit;
-    if (unit) {
+    if (unit || inSet) {
       const picked = choice.units?.[v.id];
-      const offered = unitChoices(v, choice.system, module.variables);
+      const offered = unit ? unitChoices(v, choice.system, module.variables) : [];
       shown =
         picked && offered.includes(picked)
           ? picked
           : // A value shown at first in another unit than its rule's (μC for coulombs).
             v.shownIn && offered.includes(v.shownIn)
             ? v.shownIn
-            : choice.system === 'mixed'
-              ? v.unit
-              : unitInSystem(v.unit!, choice.system);
+            : inSet && (!v.units || v.units.includes(inSet))
+              ? inSet
+              : choice.system === 'mixed'
+                ? v.unit
+                : unitInSystem(v.unit!, choice.system, v.difference);
     }
     display[v.id] = shown;
-    factors[v.id] = unit && shown ? convert(1, shown, v.unit!) : 1;
+    // (a scale only: a difference has no offset, and a thermometer reading listing °C and K
+    // would need one, so such a page lists one temperature unit)
+    factors[v.id] = (unit || inSet) && shown ? convert(1, shown, v.unit!, v.difference) : 1;
   }
 
   const factor = (id: string) => factors[id] ?? 1;
