@@ -475,10 +475,16 @@ export function buildSteps(
       relation.display.startsWith(`{${t.id}} =`) || relation.display.endsWith(`= {${t.id}}`);
     const letterSentence = base.sentence.replaceAll('?', v.symbol);
     const answer = plain(base.result, t.id, true);
+    // A value only the search pins says so: no formula found it from the values before it.
+    const pinnedValue = base.result.startsWith(`${v.symbol} = `)
+      ? base.result.slice(v.symbol.length + 3)
+      : undefined;
     if (!text || !t.exact) {
       return {
         ...base,
-        how: 'Try numbers until both sides match.',
+        how: t.pinned
+          ? `Only ${pinnedValue ?? 'one number'} fits every rule here: no other number works.`
+          : 'Try numbers until both sides match.',
         heading,
         lead,
         lines: [],
@@ -594,6 +600,9 @@ export function buildSteps(
             // needs rounding (√98) keeps its last line.
             .filter((line, i, all) => i < all.length - 1 || (operationCount(line) ?? 0) > 0)
             .map((line) => plain(`${v.symbol} = ${line}`, t.id, false));
+    // Grades 9–12 open with the rule; a rearrangement that reads the same ("SE = σ ÷ √n" for
+    // SE = σ ÷ √n) would only print it twice.
+    const rearrangedShown = band === 'standard' && rearranged !== lead.formula;
     return {
       ...base,
       result,
@@ -605,7 +614,7 @@ export function buildSteps(
       lead,
       lines: [
         // K–5 skip the letter rearrangement ("a = c − b"): the numbers carry the idea.
-        ...(band === 'standard' ? [rearranged] : []),
+        ...(rearrangedShown ? [rearranged] : []),
         ...(letterShown ? [letterSentence] : []),
         // K–2: a line with brackets or words ("h = hundreds digit of 347") is skipped when the
         // work lines show the arithmetic.
@@ -615,7 +624,7 @@ export function buildSteps(
       ],
       ...(written ? { written } : {}),
       writtenAfter:
-        (band === 'standard' ? 1 : 0) +
+        (rearrangedShown ? 1 : 0) +
         (letterShown ? 1 : 0) +
         (substitutedShown ? 1 : 0) +
         (text.writtenLast ? chain.length + (shownWork?.length ?? 0) : 0),

@@ -249,8 +249,9 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
       'd',
       'a',
       'b',
-      'bare tray',
-      'grass tray',
+      // (the soil is more, never the tray)
+      'soil from the bare tray',
+      'soil from the grass tray',
       ['more', 'less'],
       '2',
       'Take the grass tray’s soil from the bare tray’s. That is the soil the grass saved.',

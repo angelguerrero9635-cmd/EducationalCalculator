@@ -77,6 +77,10 @@ function limitMessage(message: string, module: ModuleDef): string {
   return `This page only works when ${rule[0]!.toLowerCase()}${rule.slice(1)}`;
 }
 
+/** The solver's own refusals, as opposed to a rule's sentence written for the page. */
+const ENGINE_SENTENCE =
+  /^(Makes|No whole numbers|Doesn’t fit|That would|That wouldn’t|These numbers can’t|The other numbers can’t|[^.]* would have to be )/;
+
 /** Solver messages in words for Kindergarten–Grade 2. */
 function kidMessage(message: string): string {
   if (message === 'Enter a number') return 'Type a number';
@@ -87,8 +91,11 @@ function kidMessage(message: string): string {
   const most = /^Must be at most (.+)$/.exec(message);
   if (most) return `Use ${most[1]} or less`;
   if (/^Must be \d/.test(message)) return message.replace('Must be ', 'Use ');
-  if (/^(Makes|No whole numbers|Doesn’t fit|That would)/.test(message)) {
-    return 'That doesn’t fit. Try another number.';
+  // The engine's own sentences (a value it would make, a sum out of reach, numbers that can't
+  // all be true): a child reads only that it doesn't fit, and which way to go when it knows.
+  if (ENGINE_SENTENCE.test(message)) {
+    const way = /Try a (smaller|larger) number/.exec(message)?.[1];
+    return `That doesn’t fit. Try ${way ? `a ${way}` : 'another'} number.`;
   }
   return message;
 }

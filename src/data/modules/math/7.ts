@@ -702,7 +702,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
   {
     id: 'm.7.percent-applications~percent-change',
     title: 'Percent increase and decrease',
-    use: 'Use this for “The price went from 50¢ to 60¢. What is the percent increase?”',
+    use: 'Use this for “The price went from 50¢ to 60¢. What is the percent increase?” or “After a 25% increase it costs $50. What was the original price?”',
     assumptions: [
       'The change is the new amount minus the original; it is negative for a decrease.',
       'Percent change = change ÷ original × 100: always divide by the original.',
@@ -747,6 +747,22 @@ export const MATH_7_MODULES: ModuleDef[] = [
           b: (v: Values) => q(v.c! * 100, v.p!),
         },
       },
+      // The original from the new amount and the percent (7.RP.3): after a 25% increase it
+      // costs $50, so the original was 50 ÷ 1.25. Only the original is found from it; the
+      // other two rules find the new amount and the percent.
+      {
+        id: 'a = b × (1 + p ÷ 100)',
+        display: '{a} = {b} × (1 + {p} ÷ 100)',
+        check: (v: Values) =>
+          `${fmt(v.a!)} = ${fmt(v.b!)} × (1 ${v.p! < 0 ? '−' : '+'} ${fmt(Math.abs(v.p!))} ÷ 100)`,
+        vars: ['a', 'b', 'p'],
+        residual: (v: Values) => v.a! - v.b! * (1 + v.p! / 100),
+        solve: {
+          b: (v: Values) => q(v.a! * 100, 100 + v.p!),
+          a: () => undefined,
+          p: () => undefined,
+        },
+      },
     ],
     steps: {
       'c = a − b': {
@@ -758,6 +774,12 @@ export const MATH_7_MODULES: ModuleDef[] = [
         p: { expr: '{c} ÷ {b} × 100', how: 'Divide the change by the original, then × 100.' },
         c: { expr: '{p} × {b} ÷ 100', how: 'The change is p% of the original.' },
         b: { expr: '{c} × 100 ÷ {p}', how: 'Multiply by 100, then divide by the percent.' },
+      },
+      'a = b × (1 + p ÷ 100)': {
+        b: {
+          expr: '{a} ÷ (1 + {p} ÷ 100)',
+          how: 'The new amount is the original times 1 + p ÷ 100: divide to undo it.',
+        },
       },
     },
     example: { b: 40, a: 50, c: 10, p: 25 },

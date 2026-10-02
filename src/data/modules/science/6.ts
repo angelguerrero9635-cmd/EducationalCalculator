@@ -391,10 +391,20 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
           name: 'Water level before',
           unit: 'mL',
           min: 5,
+          // Room for the least object (0.1 cm³) below the 1000 mL mark.
+          max: 999.9,
+          step: 1,
+        },
+        // At least the lowest level before (5 mL) and the least object (0.1 cm³).
+        {
+          id: 'c',
+          symbol: 'c',
+          name: 'Water level after',
+          unit: 'mL',
+          min: 5.1,
           max: 1000,
           step: 1,
         },
-        { id: 'c', symbol: 'c', name: 'Water level after', unit: 'mL', min: 0, max: 1000, step: 1 },
         { id: 'V', symbol: 'V', name: 'Object volume', unit: 'cm³', min: 0.1, max: 1000 },
         { id: 'm', symbol: 'm', name: 'Mass', unit: 'g', min: 0.1, max: 10000 },
         { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'g/cm³', min: 0.01, max: 25 },
@@ -403,6 +413,10 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         {
           ...rise.relation,
           words: 'Water level after − water level before = object volume',
+          message: (v: Values) =>
+            v.c !== undefined && v.a !== undefined && v.c <= v.a
+              ? 'The water level after must be higher than before: the object pushes the water up.'
+              : undefined,
           solve: {
             V: (v: Values) => exact(v.c! - v.a!),
             c: (v: Values) => exact(v.V! + v.a!),
@@ -712,7 +726,8 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         name: 'Distance moved',
         unit: 'km',
         units: ['km'],
-        min: 0,
+        // The least speed (0.1 cm a year) over the least time (0.1 million years): 0.1 km.
+        min: 0.1,
         max: 10000,
       },
       { id: 't', symbol: 't', name: 'Time in millions of years', min: 0.1, max: 300, step: 0.1 },

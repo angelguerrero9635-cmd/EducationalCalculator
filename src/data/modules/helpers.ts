@@ -322,6 +322,29 @@ export function apart(
 // ─── Kindergarten–Grade 2 helpers (from the former math-k2.ts) ───────────────
 
 export const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
+
+/**
+ * The K–5 labels that aren't nouns, as they read inside a sentence (`VariableDef.inSentence`):
+ * "That would make the total 14, but it can be at most 10.", never "the in all".
+ */
+const IN_SENTENCE: Record<string, string> = {
+  Left: 'what is left',
+  'In all': 'the total',
+  'In each group': 'the number in each group',
+  'In each row': 'the number in each row',
+  'In each box': 'the number in each box',
+  'In each pack': 'the number in each pack',
+  'In the boxes': 'the number in the boxes',
+  'How many more': 'the difference',
+  'How many more (or fewer)': 'the difference',
+  'How far apart': 'the difference',
+  'Not shaded': 'the parts not shaded',
+  Shaded: 'the shaded parts',
+  'Still needed': 'the amount still needed',
+  'Each picture stands for': 'the number each picture stands for',
+  'Each line stands for': 'the number each line stands for',
+};
+
 /** A whole-number variable (counts, digits…). */
 export const whole = (
   id: string,
@@ -333,6 +356,7 @@ export const whole = (
   id,
   symbol,
   name,
+  ...(IN_SENTENCE[name] ? { inSentence: IN_SENTENCE[name] } : {}),
   min,
   max,
   step: 1,

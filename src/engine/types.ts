@@ -7,6 +7,12 @@ export interface VariableDef {
   symbol: string;
   /** Plain-language name, e.g. "Area". */
   name: string;
+  /**
+   * The name as it reads inside a sentence, with its article, when `name` is not a noun ("In
+   * all" → "the total", "In each group" → "the number in each group"): "That would make the
+   * total 14, but it can be at most 10." Without it such a label is quoted (“In all”).
+   */
+  inSentence?: string;
   unit?: string;
   /** Allowed range. Values outside it are rejected (as input) or treated as a conflict (derived). */
   min?: number;
