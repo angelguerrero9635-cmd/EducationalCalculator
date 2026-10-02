@@ -110,11 +110,13 @@ export function he3jIssues(rep: He3jSpec, val: (id: string) => number | undefine
   if (rep.kind === 'roadCurve') {
     const g = get(rep.g) ?? 9.81;
     if (rep.mode === 'stopping') {
-      const [V, t, a, G] = [get(rep.speed), get(rep.reaction), get(rep.decel), get(rep.grade) ?? 0];
+      const [V, t, a] = [get(rep.speed), get(rep.reaction), get(rep.decel)];
+      // A grade the page names but leaves "?" draws nothing to check against.
+      const G = rep.grade === undefined ? 0 : get(rep.grade);
       if (V !== undefined && t !== undefined) {
         const r = reactionDistance(V, t);
         expect('reaction distance', rep.reactionDistance, r);
-        if (a !== undefined) {
+        if (a !== undefined && G !== undefined) {
           const d = brakingDistance(V, a, G, g);
           if (!(a / g + G > 0)) out.push('the car cannot stop on this grade');
           expect('braking distance', rep.brakingDistance, d);
@@ -141,7 +143,8 @@ export function he3jIssues(rep: He3jSpec, val: (id: string) => number | undefine
       const [h1, h2] = [rep.eye ?? 1.08, rep.object ?? 0.6];
       if (g1 !== undefined && g2 !== undefined) {
         expect('A', rep.A, Math.abs(g1 - g2));
-        if (!(g1 > g2)) out.push('a crest curve needs G₁ > G₂');
+        // A sag (G₁ ≤ G₂) draws faded with the reason: not a fault of the picture.
+        if (!(g1 > g2)) out.push('~a crest curve needs G₁ > G₂');
         if (L !== undefined && S !== undefined && g1 > g2) {
           const A = g1 - g2;
           const K = crestConstant(h1, h2);
