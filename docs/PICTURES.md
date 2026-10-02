@@ -131,6 +131,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `supersonicFlow`   | normal shock and ratio bars, pitot; wedge θ, β; fan; plate; Mach cone | College shocks, supersonic (HC31)   |
 | `fieldPlot`        | slope field + Euler; F with a path's work; x′ = Ax phases; isoclines  | College ODEs, line integrals (HC21) |
 | `surfacePlot`      | z = f(x, y): traces, slopes, tangent plane, extrema, prisms; contours | College partials, ∬ (HC46)          |
+| solidOfRevolution  | a region turned about x or y; one disk, washer or shell; V checked    | College volumes (HC65)              |
 | `propertyDiagram`  | T–v, P–v, T–s: IAPWS vapor dome, tie line, states, cycles; vdW P–v    | College thermodynamics (HC17)       |
 | `thermalWall`      | layered wall, pipe, fin, tube, wire: T profile, R network; εσT⁴       | College heat transfer (HC23)        |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |

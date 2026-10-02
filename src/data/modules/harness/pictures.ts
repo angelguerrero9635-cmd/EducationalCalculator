@@ -83,7 +83,7 @@ import { he2jIssues } from './picturesHe2j';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
-import { surfacePlotIssues } from './picturesHe3b';
+import { solidIssues, spaceObjectsIssues, surfacePlotIssues } from './picturesHe3b';
 import { he2cIssues } from './picturesHe2c';
 import type { ModuleDef, Representation } from '../types';
 
@@ -2200,6 +2200,7 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
+      if (rep.kind === 'vectorDiagram') out.push(...spaceObjectsIssues(rep, val)); // HC47
       break;
     case 'membrane':
     case 'dnaStrand':
@@ -2360,6 +2361,9 @@ export function repIssues(
       break;
     case 'surfacePlot':
       out.push(...surfacePlotIssues(rep, val)); // HC46
+      break;
+    case 'solidOfRevolution':
+      out.push(...solidIssues(rep, val)); // HC65
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));

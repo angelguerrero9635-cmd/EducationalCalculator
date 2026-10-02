@@ -204,4 +204,4 @@ export function spaceObjectsVars(s: SpaceObjectsHe3b | undefined): string[] {
   ];
 }
 
-export type He3bSpec = SurfacePlotSpec;
+export type He3bSpec = SurfacePlotSpec | SolidOfRevolutionSpec;

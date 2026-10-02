@@ -255,14 +255,15 @@ export function formulaText(src: string, env: Record<string, number>, inputs: st
     '9': '⁹',
     '−': '⁻',
     '-': '⁻',
-    '.': '·',
   };
   return runs
     .map((r) =>
       r.sup
         ? [...r.t].every((ch) => ch in SUP)
           ? [...r.t].map((ch) => SUP[ch]).join('')
-          : `^(${r.t})`
+          : /^[\d.]+$/.test(r.t)
+            ? `^${r.t}`
+            : `^(${r.t})`
         : r.t,
     )
     .join('')

@@ -144,7 +144,7 @@ export function SurfacePlot({ spec, calc }: { spec: SurfacePlotSpec; calc: Calcu
     if (!u || !at) lines.push('The direction: ?');
     else
       lines.push(
-        `u = ⟨${say(dir!.p)}, ${say(dir!.q)}⟩ ÷ ${say(Math.hypot(dir!.p, dir!.q))} = ⟨${say(u[0]!)}, ${say(u[1]!)}⟩, so Dᵤ${name} = ∇${name} · u = ${say(at.fx)} × ${par(u[0]!)} + ${say(at.fy)} × ${par(u[1]!)} = ${say(at.fx * u[0]! + at.fy * u[1]!)}, at most |∇${name}| = ${say(Math.hypot(at.fx, at.fy))}.`,
+        `u = ⟨${say(dir!.p)}, ${say(dir!.q)}⟩ ÷ ${say(Math.hypot(dir!.p, dir!.q))} = ⟨${say(u[0]!)}, ${say(u[1]!)}⟩, so Dᵤ${name} = ∇${name}·u = ${say(at.fx)} × ${par(u[0]!)} + ${say(at.fy)} × ${par(u[1]!)} = ${say(at.fx * u[0]! + at.fy * u[1]!)}, at most |∇${name}| = ${say(Math.hypot(at.fx, at.fy))}.`,
       );
   }
   const K = spec.constraint;
