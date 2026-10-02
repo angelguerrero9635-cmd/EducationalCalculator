@@ -41,6 +41,7 @@ import { convert, getUnit } from '@/engine/units';
 import { TESTED_MODULES } from '..';
 import { checkAlgebraLines } from '../harness/algebraLines';
 import { checkIntegerLines, formValueAt } from '../harness/integerLines';
+import { checkAngleLines } from '../harness/angles';
 import {
   BAD_TEXT,
   PLURAL,
@@ -243,6 +244,12 @@ function resultNumber(result: string, exp = false): number {
     const k =
       pi[1] === '' ? 1 : pi[1] === '−' || pi[1] === '-' ? -1 : Number(pi[1]!.replace('−', '-'));
     return (k * Math.PI) / Number(pi[2] ?? 1);
+  }
+  // An angle in degrees, minutes and seconds, or a bearing (HE-E19): 4°30′00″, N 52°10′ E.
+  const angle = /^[-−]?\d+°\d+(?:\.\d+)?′(?:\d+(?:\.\d+)?″)?|^[NS] \S+ [EW]\b/.exec(rhs);
+  if (angle) {
+    const n = parseNumber(angle[0]);
+    if (typeof n === 'number') return n;
   }
   const re = exp ? /^\$?(-?[\d.]+(?:e[-+]?\d+)?)/ : /^\$?(-?[\d.]+)/;
   return Number(re.exec(rhs)?.[1]);
@@ -583,6 +590,11 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     for (const p of checkIntegerLines(s.lines))
       c.f.add('error', `${c.label}line doesn't hold: ${p}`, where);
   }
+  // Angle lines (HE-E19): DMS, bearings, atan2 and its quadrant, conversions.
+  for (const s of w.steps) {
+    for (const p of checkAngleLines(s.lines))
+      c.f.add(p.kind === 'wrong' ? 'error' : 'harness', `${c.label}${p.text}`, where);
+  }
   // A sum with its limits said equal to a number ("Σ from k = 1 to 8 of (3k − 1) = 100", in a
   // step's lines or its sentence) must add up to it, term by term.
   for (const s of w.steps) {
@@ -735,7 +747,17 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     }
   }
   // Conversion lines: "s = A u1 = B u2   (1 X = f Y)".
-  for (const line of [...w.convertIn, ...w.convertOut]) {
+  for (const raw of [...w.convertIn, ...w.convertOut]) {
+    // (an angle unit written on its number, 45° or 25″, and a rule from a number other than 1,
+    // "180° = π rad" or "400 grad = 360°" (HE-E19), read as "45 °" and "(1 rad = 57.29… °)")
+    const line = raw
+      .replace(/(\d)([°′″])(?= |\)|$)/g, '$1 $2')
+      .replace(/\(([^() ]+) (\S+) = ([^() ]+) (\S+)\)$/, (whole, a, x, b, y) => {
+        const [na, nb] = [parseNumber(a), parseNumber(b)];
+        return typeof na === 'number' && typeof nb === 'number' && na !== 1
+          ? `(1 ${x} = ${nb / na} ${y})`
+          : whole;
+      });
     // A number is one token, or scientific notation (3 × 10⁷).
     const N = String.raw`(?:\(?[-−]?[\d.,]+ × 10⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+\)?|\S+)`;
     const m = new RegExp(

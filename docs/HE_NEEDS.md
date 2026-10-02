@@ -407,6 +407,40 @@ Calculus pages in radians, polar and parametric pictures in degrees with a deriv
 - **Waiting:** M calc-1#1~trig, calc-2#5, diff-eq#1; P 3 (university-1#5, #0~projectile-at-t,
   #3); EG geophysics#0, #1~paleolatitude, mineralogy#0, cartography#1, physical-geography#0,
   #2, gis#2; ACC surveying#0–2; EC every phasor page.
+- **Status: done but for a picture's DMS label and a check in letters (2026-10-02).**
+  `src/engine/angles.ts`: trig in degrees for relations (`sinD`, `cosD`, `tanD`, `asinD`,
+  `acosD`, `atanD`, `atan2D`, `azimuthD`; both answers `asinBothD` (θ, 180° − θ) and `acosBothD`
+  (±θ) as a relation's candidates), `wrap360`/`wrap180`. Units: dimension `angle` in `units.ts`
+  (°, rad, grad, ′, ″, rev, mrad, μrad), all `listed`, so a K–12 page writing ° or rad keeps its
+  label; a value listing two (`units: ['rad', '°', 'grad']`) gets a menu and the steps convert
+  ("θ = 45° = 0.7854 rad (180° = π rad)"; `conversionRule` states "180° = π rad", "π rad =
+  200 grad", "400 grad = 360°", "1° = 60′", "1 rev = 2π rad"). DMS and bearings:
+  `VariableDef.angleForm` ('dms' "4°30′00″", 'dm' "52°10′", 'bearing' "N 52°10′ E",
+  'bearing-decimal' "S 56.31° W", 'azimuth' "052°"; `decimals` of the last part) shows the value
+  that way in boxes, steps, checks and substituted lines (no unit after it); every box takes
+  "34°12′30″", `34° 12' 30"`, "N 52°10′ E" or "052°" typed (`parseNumber`). Lines: `atan2Lines`
+  (the quadrant line "(−8, 6) is in quadrant II: add 180°", then "θ = tan⁻¹(6 ÷ (−8)) + 180° =
+  −36.87° + 180° = 143.13°"; radians with π; −180°…180° or `full` 0°…360°; form 'atan2' opens
+  "θ = atan2(6, −8)"), `bearingLines` ("(east, north) = (−0.6, −0.4) points south-west: add
+  180°", the azimuth, "236.31° = S 56.31° W"), `toDmsLines`/`fromDmsLine`,
+  `angleConversionLine` ("45° × π ÷ 180 = 0.7854 rad"), `inverseTrigLines` ("θ = sin⁻¹(0.5) =
+  30°, or θ = 180° − 30° = 150°", "θ = ±cos⁻¹(0.5) = ±60°"). Pages (`data/modules/angles.ts`):
+  `angleVariable`, `angleFormVariable`, `atan2Rule` (forward only, its step opens "β =
+  atan2(229.29, 129.29)" and shows `atan2Lines`), `bearingRule` (azimuth = atan2(east, north)).
+  Degrees or radians per page: a page with a ° value reads trig in degrees, else radians; a line
+  marked "rad" reads in radians on either. Harness: `evaluate` reads DMS, bearings, azimuths,
+  atan2(y, x), a degree mark on a number and rad/grad after one; `harness/angles.ts`
+  (`checkAngleLines`, run by `sampling.test.ts` on every step) checks each chain (DMS to half its
+  last part), each quadrant, axis and compass claim against the point's signs, and that
+  tan⁻¹(y ÷ (−x)) never ends in the wrong quadrant; the conversion check reads "(180° = π rad)".
+  Tested on test-only pages from the plans (a resultant in every quadrant, an SHM phase in
+  radians, a traverse course at 52°10′ and its bearing back, a slope reading at 4°30′00″ worked
+  both ways, an angle misclosure of 25″ spread −5″ each, an arc with θ typed in ° or grad).
+  **Left:** a picture label of an `angleForm` value appends its ° (`reps/common.tsx`, the
+  picture components'); a relation's check falls back to its display when the page's units
+  aren't coherent, which for `atan2Rule`/`bearingRule` reads the bearing against the signed
+  atan2; a lone 25″ in a line reads as the number 25 (lines mix DMS with lone minutes only in
+  DMS form).
 
 ### HE-E20 Special functions
 

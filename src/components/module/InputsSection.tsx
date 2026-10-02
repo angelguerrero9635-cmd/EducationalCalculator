@@ -158,7 +158,8 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
   const [typo, setTypo] = useState(false);
   const [focused, setFocused] = useState(false);
   const value = calc.values[variable.id];
-  const unit = calc.units.display[variable.id];
+  // (an angle in DMS or a bearing carries its own marks: no unit beside it, HE-E19)
+  const unit = variable.angleForm ? undefined : calc.units.display[variable.id];
   // A unit menu whenever this value has more than one unit in the current system.
   const picker = unitChoices(variable, calc.units.choice.system, calc.module.variables).length > 1;
   const status = calc.status(variable.id);
