@@ -497,7 +497,7 @@ const REPEAT = page({
 
 const SPECIES_AREA = page({
   id: 'g.he-functionGraph-power-real',
-  title: 'Species and area: S = cA^z',
+  title: 'Species and area: S = cAᶻ',
   use: 'Use this for “If a reserve keeps half its area and z = 0.25, what share of species remains?”',
   workedFigures: 3,
   unitSystems: ['metric'],
@@ -567,13 +567,14 @@ const SPECIES_AREA = page({
     input: 'A',
     at: { x: 'A', y: 'S' },
     xMin: 0,
+    window: { x: [0, 12000], y: [0, 250] },
     axes: { x: 'Area A (km²)', y: 'Species S' },
   },
 });
 
 const HEART_RATE = page({
   id: 'g.he-functionGraph-power-negative',
-  title: 'Heart rate falls with body mass: f = aM^b',
+  title: 'Heart rate falls with body mass: f = aMᵇ',
   use: 'Use this for “With f = 241M^(−0.25), what resting heart rate fits a 70 kg mammal?”',
   workedFigures: 3,
   unitSystems: ['metric'],
@@ -619,6 +620,7 @@ const HEART_RATE = page({
     input: 'M',
     at: { x: 'M', y: 'f' },
     xMin: 0,
+    window: { x: [0, 100], y: [0, 300] },
     marks: ['asymptotes'],
     axes: { x: 'Body mass M (kg)', y: 'Heart rate f (per minute)' },
   },
