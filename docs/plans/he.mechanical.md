@@ -125,10 +125,10 @@ Courses in scope (field, id, topics):
   result magnitude W at 90°, unit N; ⏳ P26 for the closed force triangle with W drawn.
   Use line: "Use this for 'A 500 N sign hangs from two cables at 30° and 60°. Find each tension.'"
 - **~components:** resultant of three coplanar forces. Values F₁, α₁, F₂, α₂, F₃, α₃ (angles from
-  - x), R_x, R_y, R, direction β (10). Relations: R_x = ΣF cos α; R_y = ΣF sin α; R = √(R_x² + R_y²);
-    β = atan2(R_y, R_x). Example: 200 N at 0°, 300 N at 90°, 100 N at 225° → R_x = 129.3 N,
-    R_y = 229.3 N, R = 263.2 N at 60.6°. ⏳ P26 (three arrows tip to tail); interim `vectorDiagram`
-    of R alone with `components`.
+  the positive x-axis), R_x, R_y, R, direction β (10). Relations: R_x = ΣF cos α; R_y = ΣF sin α;
+  R = √(R_x² + R_y²); β = atan2(R_y, R_x). Example: 200 N at 0°, 300 N at 90°, 100 N at 225° →
+  R_x = 129.3 N, R_y = 229.3 N, R = 263.2 N at 60.6°. ⏳ P26 (three arrows tip to tail); interim
+  `vectorDiagram` of R alone with `components`.
 - **~moment:** M_O = xF_y − yF_x (2-D cross product), and |M| = Fd. Values x, y (m), F_x, F_y (N),
   M_O (N·m, + counterclockwise), F, d. Example: F = (30, 40) N at (2, 1) m → M_O = 80 − 30 =
   50 N·m counterclockwise; F = 50 N, d = 1 m. Picture: `vectorDiagram` `space` with z = 0 and
@@ -636,8 +636,8 @@ Courses in scope (field, id, topics):
 - **~gauss-seidel:** 2 × 2: x₁ = (b₁ − a₁₂y₀) ÷ a₁₁; y₁ = (b₂ − a₂₁x₁) ÷ a₂₂. Values a₁₁, a₁₂, a₂₁, a₂₂,
   b₁, b₂, x₀, y₀, x₁, y₁ (10). Example: 4x + y = 9, x + 3y = 5 from (0, 0) → (2.25, 0.917); the
   answer is (2, 1).
-- **~condition:** κ∞ = ‖A‖∞‖A⁻¹‖∞ for 2 × 2. Example: [[1, 1], [1, 1.001]] → det 0.001, κ = 4004.
-        Picture: `matrixGrid` `determinant`.
+- **~condition:** κ∞ = ‖A‖∞‖A⁻¹‖∞ for 2 × 2. Example: `[[1, 1], [1, 1.001]]` → det 0.001, κ = 4004.
+  Picture: `matrixGrid` `determinant`.
 - **Verdict:** 3 pages; the three types Solve (LU is Partly: same eliminations, no L shown).
 
 #### #2 — Interpolation and curve fitting
@@ -695,8 +695,8 @@ Courses in scope (field, id, topics):
   20, −30, 15 MPa → in plane 65 and 15 → σ₁ = 65, σ₂ = 15, σ₃ = −30, τ_max = 47.5 MPa. Ordering three
   roots is E4. ⏳ P4 three Mohr circles.
 - **~invariants:** I₁ = σₓ + σ_y + σ_z; I₂ = σₓσ_y + σ_yσ_z + σ_zσₓ − τₓ_y² − τ_yz² − τ_zx²; I₃ = det σ.
-        Example: [[50, 20, 0], [20, −10, 10], [0, 10, 30]] → I₁ = 70, I₂ = 200, I₃ = −32,000 (MPa³).
-        Picture: `matrixGrid` `determinant` (existing). Principal stresses from the cubic wait on E4.
+  Example: `[[50, 20, 0], [20, −10, 10], [0, 10, 30]]` → I₁ = 70, I₂ = 200, I₃ = −32,000 (MPa³).
+  Picture: `matrixGrid` `determinant` (existing). Principal stresses from the cubic wait on E4.
 - **~octahedral:** σ_oct = I₁ ÷ 3; τ_oct = (1/3)√((σ₁ − σ₂)² + (σ₂ − σ₃)² + (σ₃ − σ₁)²). Example: main's
   principals → 16.67 and 38.80 MPa.
 - **~rosette:** 45° rosette: εₓ = ε_a, ε_y = ε_c, γₓ_y = 2ε_b − ε_a − ε_c; principal strains.
@@ -762,9 +762,9 @@ Courses in scope (field, id, topics):
 - **Asks:** assemble two springs in series and solve (main); bar element stiffness and stress
   (~bar); load between two fixed ends (~fixed-fixed).
 - **Main — calculator:** node 1 fixed, force F at node 3. Values k₁, k₂, F, u₂, u₃, element forces
-        f₁, f₂, reaction R₁ (8). Relations: reduced K = [[k₁ + k₂, −k₂], [−k₂, k₂]]; K u = (0, F); f = k(Δu);
-        R₁ = −k₁u₂. Example: 1000 and 500 N/mm, 2000 N → u₂ = 2 mm, u₃ = 6 mm, f = 2000 N each,
-        R₁ = −2000 N. Picture: `matrixGrid` `rowReduce` (existing); ⏳ P25 `elementChain` beside it.
+  f₁, f₂, reaction R₁ (8). Relations: reduced K = `[[k₁ + k₂, −k₂], [−k₂, k₂]]`; K u = (0, F); f = k(Δu);
+  R₁ = −k₁u₂. Example: 1000 and 500 N/mm, 2000 N → u₂ = 2 mm, u₃ = 6 mm, f = 2000 N each,
+  R₁ = −2000 N. Picture: `matrixGrid` `rowReduce` (existing); ⏳ P25 `elementChain` beside it.
 - **~bar:** k = AE ÷ L; f = k(u₂ − u₁); σ = f ÷ A. Example: 100 mm², 200 GPa, 1 m → 20,000 N/mm;
   Δu = 0.1 mm → 2000 N, 20 MPa.
 - **~fixed-fixed:** u₂ = F ÷ (k₁ + k₂); R₁ = −k₁u₂; R₃ = −k₂u₂. Example: 3000 N, 1000 and 2000 N/mm →
@@ -794,9 +794,9 @@ Courses in scope (field, id, topics):
   `vectorDiagram` (Δ and its part along the member, `angle.dot`).
 - **~k-matrix:** (AE ÷ L)c², cs, s². Example: 50,000 N/mm, 30° → 37,500, 21,651, 12,500 N/mm.
   Picture `matrixGrid` (4 × 4 with ± signs).
-- **~beam:** reduced [[12, 6L], [6L, 4L²]]EI ÷ L³ with P at the tip → v = PL³ ÷ (3EI), θ = PL² ÷ (2EI).
-        Example: the MoM#4 beam → 8.333 mm, 0.00625 rad (one element is exact for a tip load).
-        Picture `matrixGrid` `rowReduce`.
+- **~beam:** reduced `[[12, 6L], [6L, 4L²]]` × EI ÷ L³ with P at the tip → v = PL³ ÷ (3EI), θ = PL² ÷ (2EI).
+  Example: the MoM#4 beam → 8.333 mm, 0.00625 rad (one element is exact for a tip load).
+  Picture `matrixGrid` `rowReduce`.
 - **Verdict:** 3 pages; truss and beam types Solve; 2-D elements are Partly.
 
 #### #3 — Meshing and convergence
