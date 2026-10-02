@@ -21,7 +21,15 @@ import {
   vonMises,
 } from '@/components/module/reps/shaftMath';
 
-import type { HeatExchangerSpec, He3hSpec, ShaftSpec } from '../typesHe3h';
+import {
+  basquinReversals,
+  goodmanN,
+  lifeAt,
+  minerDamage,
+  snLine,
+} from '@/components/module/reps/fatigueMath';
+
+import type { FatigueDiagramSpec, HeatExchangerSpec, He3hSpec, ShaftSpec } from '../typesHe3h';
 
 type Val = (x: string | number) => number | undefined;
 type NumOrVar = number | string | undefined;
@@ -41,6 +49,8 @@ export function he3hIssues(rep: He3hSpec, val: Val, byId: Map<string, VariableDe
       return exchangerIssues(rep, get);
     case 'shaft':
       return shaftIssues(rep, get);
+    case 'fatigueDiagram':
+      return fatigueIssues(rep, get);
   }
   return [];
 }
@@ -132,5 +142,67 @@ function shaftIssues(spec: ShaftSpec, get: Get): string[] {
     out.push(`σ′ ${sv} is not √(σ² + 3τ²)`);
   if (P !== undefined && rpm !== undefined && T !== undefined && !near(T, torqueOf(P, rpm)))
     out.push(`T ${T} is not P ÷ ω = ${torqueOf(P, rpm)}`);
+  return out;
+}
+
+function fatigueIssues(spec: FatigueDiagramSpec, get: Get): string[] {
+  const out: string[] = [];
+  const s = (x: NumOrVar) => get(x, 'stress');
+  if (spec.mode === 'goodman') {
+    const [Se, Sut, n] = [s(spec.Se), s(spec.Sut), get(spec.n)];
+    const [smax, smin] = [s(spec.smax), s(spec.smin)];
+    let [sa, sm] = [s(spec.sa), s(spec.sm)];
+    if (smax !== undefined && smin !== undefined) {
+      if (sa !== undefined && !near(sa, (smax - smin) / 2))
+        out.push(`σ_a ${sa} is not (σ_max − σ_min) ÷ 2`);
+      if (sm !== undefined && !near(sm, (smax + smin) / 2))
+        out.push(`σ_m ${sm} is not (σ_max + σ_min) ÷ 2`);
+      sa ??= (smax - smin) / 2;
+      sm ??= (smax + smin) / 2;
+    }
+    if (
+      Se !== undefined &&
+      Sut !== undefined &&
+      sa !== undefined &&
+      sm !== undefined &&
+      n !== undefined
+    ) {
+      const drawn = goodmanN(sa, sm, Se, Sut);
+      if (!near(n, drawn))
+        out.push(`n ${n} is not where the load line meets the Goodman line (${drawn})`);
+    }
+    return out;
+  }
+  if (spec.mode === 'miner') {
+    const blocks = (spec.blocks ?? []).map((x) => ({ n: get(x.n), N: get(x.N) }));
+    if (blocks.some((x) => x.n === undefined || x.N === undefined)) return out;
+    const D = minerDamage(blocks as { n: number; N: number }[]);
+    const Dp = get(spec.D);
+    if (Dp !== undefined && !near(Dp, D)) out.push(`D ${Dp} is not Σn ÷ N = ${D}`);
+    const rep = get(spec.repeats);
+    if (rep !== undefined && !near(rep, 1 / D)) out.push(`repeats ${rep} is not 1 ÷ D`);
+    return out;
+  }
+  if (spec.mode === 'basquin') {
+    const [sf, b, sa] = [s(spec.sigmaF), get(spec.b), s(spec.sa)];
+    if (sf === undefined || b === undefined || sa === undefined) return out;
+    const rev = basquinReversals(sa, sf, b);
+    const r = get(spec.reversals);
+    if (r !== undefined && !near(r, rev)) out.push(`2N ${r} is not read off the line (${rev})`);
+    const N = get(spec.N);
+    if (N !== undefined && !near(N, rev / 2))
+      out.push(`N ${N} is not half the reversals read off the line`);
+    return out;
+  }
+  const [Sut, Se] = [s(spec.Sut), s(spec.Se)];
+  const f = spec.f === undefined ? 0.9 : get(spec.f);
+  if (f === undefined || Sut === undefined || Se === undefined || !(f * Sut > Se)) return out;
+  const { a, b } = snLine(Sut, Se, f);
+  const [ap, bp] = [s(spec.a), get(spec.b)];
+  if (ap !== undefined && !near(ap, a)) out.push(`a ${ap} is not (fS_ut)² ÷ S_e = ${a}`);
+  if (bp !== undefined && !near(bp, b)) out.push(`b ${bp} is not −log(fS_ut ÷ S_e) ÷ 3 = ${b}`);
+  const [Sf, N] = [s(spec.Sf), get(spec.N)];
+  if (Sf !== undefined && N !== undefined && Sf >= Se && !near(N, lifeAt(Sf, a, b)))
+    out.push(`N ${N} is not read off the line at S_f (${lifeAt(Sf, a, b)})`);
   return out;
 }

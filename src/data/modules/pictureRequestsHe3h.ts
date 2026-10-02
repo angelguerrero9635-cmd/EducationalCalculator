@@ -85,4 +85,33 @@ export const HE3H_REQUESTS: PictureRequest[] = [
       'g.he-shaft-long',
     ],
   },
+  {
+    ...ask(
+      'HC52',
+      'fatigueDiagram',
+      'Fatigue, flat and from the values: the Goodman diagram with the load line through the point to the Goodman line and n; the S–N line on log–log axes from 10³ to 10⁶, flat at S_e after, with the page’s stress read across to its life; Basquin’s line over reversals; a Miner damage bar',
+      [
+        `${E}machine-design#1`,
+        `${E}machine-design#1~sn`,
+        `${E}machine-design#1~miner`,
+        `${E}aerospace-structures#3~basquin`,
+      ],
+      [
+        'From ME-P17 and ACC-P37’s S–N part (its gradation part stays with HC9). A new kind (typesHe3h.ts, reps/FatigueDiagram.tsx, the sums in reps/fatigueMath.ts).',
+        "Fields: { kind: 'fatigueDiagram', mode: 'goodman' | 'sn' | 'basquin' | 'miner', Se?, Sut?, Sy?, sa?, sm?, smax?, smin?, n?, f? (default 0.9), Sf?, N?, a?, b?, sigmaF?, reversals?, blocks?: [{ n, N }], D?, repeats?, more? }. Stresses by unit (MPa, kPa, GPa, psi, ksi); a fixed number in MPa.",
+        "Example (machine-design#1): { kind: 'fatigueDiagram', mode: 'goodman', Se: 'Se', Sut: 'Sut', sa: 'sa', sm: 'sm', n: 'n', more: ['Sep', 'k'] } (aerospace-structures#3 main may pass smax and smin instead of sa and sm). ~sn: { mode: 'sn', Sut, Se, f, a, b, Sf, N }. ~miner: { mode: 'miner', blocks: [{ n: 'n1', N: 'N1' }, { n: 'n2', N: 'N2' }], D: 'D', repeats: 'rep' }. aerospace-structures#3~basquin: { mode: 'basquin', sigmaF: 'sf', b: 'b', sa: 'sa', reversals: 'rev', N: 'N' }.",
+        'Draws: Goodman with the safe side shaded, S_e and S_ut on the axes, the yield line dashed when S_y is given, the point red past the line (n under 1, said); S–N with fS_ut at 10³ and S_e at 10⁶ dotted, the stress dashed across and down to N (a stress under S_e said to last indefinitely); Basquin from σ′_f at one reversal, straight on log–log axes; Miner’s blocks in turn to D, failure at 1, the set repeated 1 ÷ D times below.',
+        'The harness (harness/picturesHe3h.ts) checks: σ_a and σ_m from σ_max and σ_min; n where the load line meets the Goodman line; a and b from S_ut, S_e and f; N read off the line at S_f; 2N from Basquin and N = 2N ÷ 2; D = Σn ÷ N and repeats = 1 ÷ D.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-fatigueDiagram-goodman',
+      'g.he-fatigueDiagram-goodman-fails',
+      'g.he-fatigueDiagram-sn',
+      'g.he-fatigueDiagram-sn-low-cycle',
+      'g.he-fatigueDiagram-basquin',
+      'g.he-fatigueDiagram-miner',
+    ],
+  },
 ];

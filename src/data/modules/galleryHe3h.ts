@@ -7,6 +7,9 @@
  *
  * HC59: `shaft` (ME-P6): a solid and a hollow shaft in torsion, sizing for power and speed,
  * bending with torsion, and a long thin rod twisting tens of degrees.
+ *
+ * HC52: `fatigueDiagram` (ME-P17, ACC-P37 S–N part): Goodman (safe and failing), the S–N line
+ * (mid life and low cycle), Basquin's law, Miner's rule.
  */
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
@@ -1024,6 +1027,356 @@ const shaftBending: ModuleDef = (() => {
   };
 })();
 
+// ─── HC52: fatigue (machine-design#1, aerospace-structures#3~basquin) ────────
+
+const FATIGUE_ASSUMPTIONS = [
+  'Fully reversed or steady-plus-alternating stress, the same every cycle.',
+  'The stresses at the critical point are below the yield strength.',
+];
+
+function goodmanDemo(o: {
+  id: string;
+  title: string;
+  use: string;
+  sa: number;
+  sm: number;
+}): ModuleDef {
+  const [Sut, k] = [600, 0.7];
+  const Sep = 0.5 * Sut;
+  const Se = k * Sep;
+  return {
+    id: o.id,
+    title: o.title,
+    use: o.use,
+    assumptions: [
+      ...FATIGUE_ASSUMPTIONS,
+      'The modified Goodman line; S_e′ = 0.5S_ut (S_ut up to 1400 MPa).',
+    ],
+    variables: [
+      mpaVar('Sut', 'S_ut', 'Ultimate tensile strength'),
+      mpaVar('Sep', 'S_e′', 'Endurance limit of the test specimen'),
+      q('k', 'k', 'Marin factors multiplied', undefined, 0.01, 1, 0.001),
+      mpaVar('Se', 'S_e', 'Endurance limit of the part'),
+      mpaVar('sa', 'σ_a', 'Alternating stress'),
+      mpaVar('sm', 'σ_m', 'Mean stress'),
+      q('n', 'n', 'Factor of safety', undefined, 0.0001, 1e4, 0.01),
+    ],
+    ...rules(
+      rule('S_e′ = 0.5S_ut', '{Sep} = 0.5 × {Sut}', ['Sep', 'Sut'], (v) => v.Sep! - 0.5 * v.Sut!, {
+        Sep: [
+          (v) => 0.5 * v.Sut!,
+          '0.5 × {Sut}',
+          'A polished steel specimen lasts forever below about half its ultimate strength.',
+        ],
+        Sut: [(v) => 2 * v.Sep!, '2 × {Sep}', 'Double the specimen’s endurance limit.'],
+      }),
+      rule('S_e = kS_e′', '{Se} = {k} × {Sep}', ['Se', 'k', 'Sep'], (v) => v.Se! - v.k! * v.Sep!, {
+        Se: [
+          (v) => v.k! * v.Sep!,
+          '{k} × {Sep}',
+          'The Marin factors (surface, size, load …) take the part below the specimen.',
+        ],
+        k: [
+          (v) => div(v.Se!, v.Sep!),
+          '{Se} ÷ {Sep}',
+          'Divide the part’s limit by the specimen’s.',
+        ],
+        Sep: [(v) => div(v.Se!, v.k!), '{Se} ÷ {k}', 'Divide S_e by the Marin product.'],
+      }),
+      rule(
+        'σ_a ÷ S_e + σ_m ÷ S_ut = 1 ÷ n',
+        '{sa} ÷ {Se} + {sm} ÷ {Sut} = 1 ÷ {n}',
+        ['sa', 'Se', 'sm', 'Sut', 'n'],
+        (v) => v.n! * (v.sa! / v.Se! + v.sm! / v.Sut!) - 1,
+        {
+          n: [
+            (v) => div(1, v.sa! / v.Se! + v.sm! / v.Sut!),
+            '1 ÷ ({sa} ÷ {Se} + {sm} ÷ {Sut})',
+            'Each stress over its strength, added, is the share of the Goodman line used; n is its reciprocal.',
+          ],
+          sa: [
+            (v) => fin(v.Se! * (1 / v.n! - v.sm! / v.Sut!)),
+            '{Se} × (1 ÷ {n} − {sm} ÷ {Sut})',
+            'Take the mean stress’s share from 1 ÷ n, then multiply by S_e.',
+          ],
+          sm: [
+            (v) => fin(v.Sut! * (1 / v.n! - v.sa! / v.Se!)),
+            '{Sut} × (1 ÷ {n} − {sa} ÷ {Se})',
+            'Take the alternating stress’s share from 1 ÷ n, then multiply by S_ut.',
+          ],
+          Se: [
+            (v) => {
+              const x = 1 / v.n! - v.sm! / v.Sut!;
+              return x > 0 ? v.sa! / x : undefined;
+            },
+            '{sa} ÷ (1 ÷ {n} − {sm} ÷ {Sut})',
+            'Divide σ_a by what is left of 1 ÷ n after the mean stress’s share.',
+          ],
+        },
+      ),
+    ),
+    example: { Sut, Sep, k, Se, sa: o.sa, sm: o.sm, n: 1 / (o.sa / Se + o.sm / Sut) },
+    startWith: ['Sut', 'k', 'sa', 'sm'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fatigueDiagram',
+      mode: 'goodman',
+      Se: 'Se',
+      Sut: 'Sut',
+      sa: 'sa',
+      sm: 'sm',
+      n: 'n',
+      more: ['Sep', 'k'],
+    },
+  };
+}
+
+const fatigueGoodman = goodmanDemo({
+  id: 'g.he-fatigueDiagram-goodman',
+  title: 'The Goodman diagram: a factor of safety in fatigue',
+  use: 'Use this for the Goodman factor of safety of a part under a mean and an alternating stress.',
+  sa: 80,
+  sm: 120,
+});
+
+const fatigueGoodmanFails = goodmanDemo({
+  id: 'g.he-fatigueDiagram-goodman-fails',
+  title: 'Past the Goodman line: a part that fails in fatigue',
+  use: 'Use this for a load whose point falls outside the Goodman line (n under 1).',
+  sa: 150,
+  sm: 300,
+});
+
+function snDemo(o: { id: string; title: string; use: string; Sf: number }): ModuleDef {
+  const [Sut, Se, f] = [600, 210, 0.9];
+  const a = (f * Sut) ** 2 / Se;
+  const b = -Math.log10((f * Sut) / Se) / 3;
+  return {
+    id: o.id,
+    title: o.title,
+    use: o.use,
+    assumptions: [
+      ...FATIGUE_ASSUMPTIONS,
+      'The S–N line through fS_ut at 10³ cycles and S_e at 10⁶ (f typed, 0.9 here).',
+    ],
+    variables: [
+      mpaVar('Sut', 'S_ut', 'Ultimate tensile strength'),
+      mpaVar('Se', 'S_e', 'Endurance limit'),
+      q('f', 'f', 'Fatigue strength fraction at 10³ cycles', undefined, 0.5, 1, 0.01),
+      mpaVar('a', 'a', 'S–N coefficient'),
+      q('b', 'b', 'S–N exponent', undefined, -1, -0.0001, 0.0001),
+      mpaVar('Sf', 'S_f', 'Fully reversed stress'),
+      q('N', 'N', 'Cycles to failure', 'cycles', 1, 1e12, 1),
+    ],
+    ...rules(
+      rule(
+        'a = (fS_ut)² ÷ S_e',
+        '{a} = ({f} × {Sut})² ÷ {Se}',
+        ['a', 'f', 'Sut', 'Se'],
+        (v) => v.a! * v.Se! - (v.f! * v.Sut!) ** 2,
+        {
+          a: [
+            (v) => div((v.f! * v.Sut!) ** 2, v.Se!),
+            '({f} × {Sut})² ÷ {Se}',
+            'The line’s coefficient, from its two ends.',
+          ],
+          Se: [
+            (v) => div((v.f! * v.Sut!) ** 2, v.a!),
+            '({f} × {Sut})² ÷ {a}',
+            'Turn the rule round for S_e.',
+          ],
+        },
+      ),
+      rule(
+        'b = −log(fS_ut ÷ S_e) ÷ 3',
+        '{b} = −log₁₀({f} × {Sut} ÷ {Se}) ÷ 3',
+        ['b', 'f', 'Sut', 'Se'],
+        (v) => v.b! + Math.log10((v.f! * v.Sut!) / v.Se!) / 3,
+        {
+          b: [
+            (v) => -Math.log10((v.f! * v.Sut!) / v.Se!) / 3,
+            '−log₁₀({f} × {Sut} ÷ {Se}) ÷ 3',
+            'The slope on log–log axes: the fall from fS_ut to S_e over three decades.',
+          ],
+          Se: [
+            (v) => v.f! * v.Sut! * 10 ** (3 * v.b!),
+            '{f} × {Sut} × 10^(3 × {b})',
+            'Undo the log: S_e = fS_ut × 10^(3b).',
+          ],
+        },
+      ),
+      rule(
+        'N = (S_f ÷ a)^(1 ÷ b)',
+        '{N} = ({Sf} ÷ {a})^(1 ÷ {b})',
+        ['N', 'Sf', 'a', 'b'],
+        (v) => Math.log(v.N!) * v.b! - Math.log(v.Sf! / v.a!),
+        {
+          N: [
+            (v) => fin((v.Sf! / v.a!) ** (1 / v.b!)),
+            '({Sf} ÷ {a})^(1 ÷ {b})',
+            'S_f = aN^b turned round for the life.',
+          ],
+          Sf: [
+            (v) => v.a! * v.N! ** v.b!,
+            '{a} × {N}^{b}',
+            'The strength the line gives at this life.',
+          ],
+        },
+      ),
+    ),
+    example: { Sut, Se, f, a, b, Sf: o.Sf, N: (o.Sf / a) ** (1 / b) },
+    startWith: ['Sut', 'Se', 'f', 'Sf'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fatigueDiagram',
+      mode: 'sn',
+      Sut: 'Sut',
+      Se: 'Se',
+      f: 'f',
+      a: 'a',
+      b: 'b',
+      Sf: 'Sf',
+      N: 'N',
+    },
+  };
+}
+
+const fatigueSn = snDemo({
+  id: 'g.he-fatigueDiagram-sn',
+  title: 'Life on the S–N line',
+  use: 'Use this for the cycles to failure at a fully reversed stress between S_e and fS_ut.',
+  Sf: 300,
+});
+
+const fatigueSnLow = snDemo({
+  id: 'g.he-fatigueDiagram-sn-low-cycle',
+  title: 'A high stress: a short life near 10³ cycles',
+  use: 'Use this for a stress near fS_ut, where the part lasts only a few thousand cycles.',
+  Sf: 500,
+});
+
+const fatigueBasquin: ModuleDef = (() => {
+  const [sf, b, sa] = [1000, -0.1, 300];
+  const rev = (sa / sf) ** (1 / b);
+  return {
+    id: 'g.he-fatigueDiagram-basquin',
+    title: 'Basquin’s law: cycles to failure of an aluminum part',
+    use: 'Use this for the reversals and cycles to failure from σ′_f, b and the stress amplitude.',
+    assumptions: [
+      ...FATIGUE_ASSUMPTIONS,
+      'Fully reversed stress; aluminum has no endurance limit.',
+    ],
+    variables: [
+      mpaVar('sf', 'σ′_f', 'Fatigue strength coefficient'),
+      q('b', 'b', 'Fatigue strength exponent', undefined, -1, -0.0001, 0.0001),
+      mpaVar('sa', 'σ_a', 'Stress amplitude'),
+      q('rev', '2N', 'Reversals to failure', 'reversals', 1, 1e14, 1),
+      q('N', 'N', 'Cycles to failure', 'cycles', 0.5, 1e14, 1),
+    ],
+    ...rules(
+      rule(
+        'σ_a = σ′_f(2N)^b',
+        '{sa} = {sf} × {rev}^{b}',
+        ['sa', 'sf', 'rev', 'b'],
+        (v) => Math.log(v.sa! / v.sf!) - v.b! * Math.log(v.rev!),
+        {
+          sa: [(v) => v.sf! * v.rev! ** v.b!, '{sf} × {rev}^{b}', 'Basquin’s power law.'],
+          rev: [
+            (v) => fin((v.sa! / v.sf!) ** (1 / v.b!)),
+            '({sa} ÷ {sf})^(1 ÷ {b})',
+            'Turn the power law round for the reversals.',
+          ],
+          sf: [
+            (v) => v.sa! / v.rev! ** v.b!,
+            '{sa} ÷ {rev}^{b}',
+            'Turn the power law round for σ′_f.',
+          ],
+        },
+      ),
+      rule('N = 2N ÷ 2', '{N} = {rev} ÷ 2', ['N', 'rev'], (v) => 2 * v.N! - v.rev!, {
+        N: [(v) => v.rev! / 2, '{rev} ÷ 2', 'Each cycle is two reversals.'],
+        rev: [(v) => 2 * v.N!, '2 × {N}', 'Each cycle is two reversals.'],
+      }),
+    ),
+    example: { sf, b, sa, rev, N: rev / 2 },
+    startWith: ['sf', 'b', 'sa'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fatigueDiagram',
+      mode: 'basquin',
+      sigmaF: 'sf',
+      b: 'b',
+      sa: 'sa',
+      reversals: 'rev',
+      N: 'N',
+    },
+  };
+})();
+
+const fatigueMiner: ModuleDef = (() => {
+  const [n1, N1, n2, N2] = [20000, 80000, 100000, 500000];
+  const D = n1 / N1 + n2 / N2;
+  return {
+    id: 'g.he-fatigueDiagram-miner',
+    title: 'Miner’s rule: the life used by two load blocks',
+    use: 'Use this for the damage used by blocks of cycles at two stress levels, and how often the set can repeat.',
+    assumptions: [
+      ...FATIGUE_ASSUMPTIONS,
+      'Damage adds in proportion to cycles, in any order (Miner’s rule).',
+    ],
+    variables: [
+      q('n1', 'n₁', 'Cycles at the first stress', 'cycles', 0.0001, 1e12, 1),
+      q('N1', 'N₁', 'Life at the first stress', 'cycles', 1, 1e14, 1),
+      q('n2', 'n₂', 'Cycles at the second stress', 'cycles', 0.0001, 1e12, 1),
+      q('N2', 'N₂', 'Life at the second stress', 'cycles', 1, 1e14, 1),
+      q('D', 'D', 'Damage used', undefined, 0.000001, 100, 0.0001),
+      q('rep', 'Repeats', 'Times the set can repeat to failure', undefined, 0.0001, 1e8, 0.01),
+    ],
+    ...rules(
+      rule(
+        'D = n₁ ÷ N₁ + n₂ ÷ N₂',
+        '{D} = {n1} ÷ {N1} + {n2} ÷ {N2}',
+        ['D', 'n1', 'N1', 'n2', 'N2'],
+        (v) => v.D! - v.n1! / v.N1! - v.n2! / v.N2!,
+        {
+          D: [
+            (v) => v.n1! / v.N1! + v.n2! / v.N2!,
+            '{n1} ÷ {N1} + {n2} ÷ {N2}',
+            'Each block uses its cycles’ share of the life at its stress; the shares add.',
+          ],
+          n1: [
+            (v) => v.N1! * (v.D! - v.n2! / v.N2!),
+            '{N1} × ({D} − {n2} ÷ {N2})',
+            'Take the second block’s share from D, then multiply by N₁.',
+          ],
+          n2: [
+            (v) => v.N2! * (v.D! - v.n1! / v.N1!),
+            '{N2} × ({D} − {n1} ÷ {N1})',
+            'Take the first block’s share from D, then multiply by N₂.',
+          ],
+        },
+      ),
+      rule('repeats = 1 ÷ D', '{rep} = 1 ÷ {D}', ['rep', 'D'], (v) => v.rep! * v.D! - 1, {
+        rep: [(v) => div(1, v.D!), '1 ÷ {D}', 'The part fails when the damage reaches 1.'],
+        D: [(v) => div(1, v.rep!), '1 ÷ {rep}', 'Each set uses 1 ÷ repeats of the life.'],
+      }),
+    ),
+    example: { n1, N1, n2, N2, D, rep: 1 / D },
+    startWith: ['n1', 'N1', 'n2', 'N2'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fatigueDiagram',
+      mode: 'miner',
+      blocks: [
+        { n: 'n1', N: 'N1' },
+        { n: 'n2', N: 'N2' },
+      ],
+      D: 'D',
+      repeats: 'rep',
+    },
+  };
+})();
+
 export const HE3H_GALLERY_MODULES: ModuleDef[] = [
   exchangerCounter,
   exchangerParallel,
@@ -1036,6 +1389,12 @@ export const HE3H_GALLERY_MODULES: ModuleDef[] = [
   shaftPower,
   shaftBending,
   shaftLong,
+  fatigueGoodman,
+  fatigueGoodmanFails,
+  fatigueSn,
+  fatigueSnLow,
+  fatigueBasquin,
+  fatigueMiner,
 ];
 
 export const HE3H_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -1,6 +1,6 @@
 /**
- * College picture kinds of round 3, group H (docs/RENDERINGS_HE.md): HC40 `heatExchanger`, HC59
- * `shaft`.
+ * College picture kinds of round 3, group H (docs/RENDERINGS_HE.md): HC40 `heatExchanger`, HC52
+ * `fatigueDiagram`, HC59 `shaft`.
  * Kept apart from `types.ts` so its union only names them. A `NumOrVar` is a fixed number or a
  * variable id; a variable is read in its own unit and turned into the kind's base unit
  * (`reps/he3hUnits.ts`: W for heat rates, W/K for capacity rates, m² for areas); a fixed number
@@ -93,13 +93,66 @@ export interface ShaftSpec {
   more?: string[];
 }
 
-export type He3hSpec = HeatExchangerSpec | ShaftSpec;
+// ─── HC52: fatigue: Goodman, S–N, Basquin, Miner ─────────────────────────────
+
+/**
+ * Fatigue diagrams, flat, drawn from the values. Modes:
+ * - `goodman`: σ_m against σ_a; the Goodman line from (0, S_e) to (S_ut, 0) with the safe side
+ *   shaded, the yield line (S_y) dashed, the point (σ_m, σ_a) (from σ_max and σ_min when given)
+ *   and the load line from the origin to the Goodman line, where n is the ratio of the lengths.
+ * - `sn`: the S–N line on log–log axes from (10³, fS_ut) to (10⁶, S_e), flat after; the page's
+ *   S_f read across to its life N (a and b worked out when not given; f defaults to 0.9).
+ * - `basquin`: σ_a = σ′_f(2N)^b over reversals 2N from 1, the page's σ_a read across to 2N.
+ * - `miner`: a bar to failure at D = 1, each block's nᵢ ÷ Nᵢ in turn, D bracketed, the set
+ *   repeated until the bar fills (1 ÷ D).
+ * Stresses by their unit (MPa, kPa, GPa, psi, ksi); a fixed number in MPa.
+ */
+export interface FatigueDiagramSpec {
+  kind: 'fatigueDiagram';
+  mode: 'goodman' | 'sn' | 'basquin' | 'miner';
+  /** Endurance limit (or fatigue strength at the design life), ultimate and yield strengths. */
+  Se?: NumOrVar;
+  Sut?: NumOrVar;
+  Sy?: NumOrVar;
+  /** The load: alternating and mean stress, or the cycle's largest and smallest stress. */
+  sa?: NumOrVar;
+  sm?: NumOrVar;
+  smax?: NumOrVar;
+  smin?: NumOrVar;
+  /** The factor of safety. */
+  n?: NumOrVar;
+  /** `sn`: the fraction f of S_ut at 10³ cycles, the stress level S_f, the life N, a and b. */
+  f?: NumOrVar;
+  Sf?: NumOrVar;
+  N?: NumOrVar;
+  a?: NumOrVar;
+  b?: NumOrVar;
+  /** `basquin`: σ′_f and reversals 2N (b, σ_a and N shared). */
+  sigmaF?: NumOrVar;
+  reversals?: NumOrVar;
+  /** `miner`: each block's cycles n and life N, the damage D and repeats to failure. */
+  blocks?: { n: NumOrVar; N: NumOrVar }[];
+  D?: NumOrVar;
+  repeats?: NumOrVar;
+  /** Further values said in the caption. */
+  more?: string[];
+}
+
+export type He3hSpec = HeatExchangerSpec | ShaftSpec | FatigueDiagramSpec;
 
 const ids = (xs: (NumOrVar | NumOrVar[] | undefined)[]) =>
   xs.flat().filter((x): x is string => typeof x === 'string');
 
 /** The variable ids a group H picture reads (for the module tests). */
 export function he3hSpecVars(r: He3hSpec): string[] {
+  if (r.kind === 'fatigueDiagram') {
+    const { kind: _k, mode: _m, blocks, more, ...rest } = r;
+    return ids([
+      ...Object.values(rest),
+      ...(blocks ?? []).flatMap((x) => [x.n, x.N]),
+      ...(more ?? []),
+    ]);
+  }
   if (r.kind === 'shaft') {
     const { kind: _k, more, ...rest } = r;
     return ids([...Object.values(rest), ...(more ?? [])]);

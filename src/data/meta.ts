@@ -161,6 +161,7 @@ const PICTURE_NAMES: Record<string, string> = {
   supersonicFlow: 'shocks, expansion fans and Mach cones in supersonic flow',
   fieldPlot: 'a slope or vector field, a phase portrait, or two species’ isoclines',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
+  fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',
   shaft: 'a shaft twisting under torque: τ across its face, the angle φ, bending',
   heatExchanger: 'a heat exchanger: hot and cold temperatures along it, ΔT₁, ΔT₂ and the LMTD',
   thermalWall: 'heat through a layered wall, a pipe, a fin, a tube or a wire, or radiated away',
