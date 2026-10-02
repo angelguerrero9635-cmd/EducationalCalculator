@@ -357,3 +357,15 @@ listed here once):
 | `s.9.biotechnology~deletion`          | H36   | a one-base deletion: the codon holding it and every codon after read in a shifted frame, L − 1 bases left and ⌊(L − 1) ÷ 3⌋ whole codons, so the end stop is lost |
 | `s.9.ecosystem-dynamics~numbers`      | H40   | a pyramid of numbers: trees × caterpillars per tree, then ÷ caterpillars per warbler; one oak feeds thousands, so the tiers need not narrow upward                |
 | `s.9.ecosystem-dynamics~biomass`      | H40   | an ocean pyramid of biomass standing upside down: k = Z ÷ P, zooplankton outweighing fast-dividing phytoplankton at one moment                                    |
+
+### Pages the reviewers proposed
+
+| Page                             | What it teaches                                                                                                                                                                                            |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `s.9.biotechnology~substitution` | a one-base substitution at base p (4 to 9) to a chosen base: the codon k = ⌈p ÷ 3⌉ and the place j in it, the amino acid before and after from the codon table, and the kind: silent, missense or nonsense |
+
+The new base and the three results are coded values with labels (`labels`): the step answers now
+read as the label ("e = nonsense", `buildSteps.ts`), the sampling test reads a labelled answer back
+through PHRASES, and `phrasesS9.ts` reads "amino acid of mRNA codon AAG", the amino acid names and
+"kind of change from Lys to Stop". The picture draws the gene unmutated: `dnaStrand`'s
+`mutation.base` takes a fixed letter, not a variable (H36 notes; the nonsense demo stays until it does).
