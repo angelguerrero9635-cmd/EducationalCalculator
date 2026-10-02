@@ -15,7 +15,7 @@ import {
 } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { Text } from '@/components/Text';
-import { SITE_NAME } from '@/config/site';
+import { SITE_NAME, SITE_SLOGAN } from '@/config/site';
 import { countLabel, myCourseCards } from '@/data/selectors';
 import { COURSES, SKILLS } from '@/data/taxonomy';
 import { useRecents, useSelectedLevels } from '@/state';
@@ -39,7 +39,7 @@ function Hero() {
         <Rect width="100%" height="100%" fill="url(#hero)" />
       </Svg>
       <Text style={[styles.heroKicker, { color: c.onHero }]}>{SITE_NAME}</Text>
-      <Text style={[styles.heroTitle, { color: c.onHero }]}>Learn it step by step.</Text>
+      <Text style={[styles.heroTitle, { color: c.onHero }]}>{SITE_SLOGAN}</Text>
       <Text style={[styles.heroText, { color: c.onHero }]}>
         {`${countLabel(SKILLS.length, 'skill')} and ${countLabel(COURSES.length, 'course')}, from Kindergarten to university, with pictures you can move and every step shown.`}
       </Text>
@@ -71,7 +71,7 @@ export default function HomeScreen() {
     <>
       <PageMeta
         title={SITE_NAME}
-        description="Your courses and recently viewed lessons: interactive math and science lessons from Kindergarten to university, with diagrams, formulas and step-by-step examples."
+        description={`${SITE_SLOGAN}. Your courses and recently viewed lessons: interactive math and science lessons from Kindergarten to university, with diagrams, formulas and step-by-step examples.`}
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"

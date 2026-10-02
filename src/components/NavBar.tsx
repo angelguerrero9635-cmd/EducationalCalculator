@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEADER_ACTIONS_WIDTH, HeaderActions } from '@/components/HeaderActions';
+import { Logo } from '@/components/Logo';
 import { Text } from '@/components/Text';
 import { parentOf, screenTitle } from '@/data/selectors';
 import { font, space, usePalette } from '@/theme';
@@ -11,8 +12,8 @@ import { font, space, usePalette } from '@/theme';
 const UNTITLED = new Set(['skill/[id]', 'course/[id]/topic/[index]', 'gallery/[id]']);
 
 /**
- * Navigation bar for every stacked page: a back button, the page's name (not on lesson pages),
- * and Home, Search and the lessons menu. Back returns to the previous page; with no history (opened from a link or a
+ * Navigation bar for every stacked page: a back button, the $U logo in the middle with the page's
+ * name under it (not on lesson pages), and Home, Search and the lessons menu. Back returns to the previous page; with no history (opened from a link or a
  * reload) it goes one level up instead, e.g. from a skill to its grade.
  */
 export function NavBar({ navigation, route, options, back }: NativeStackHeaderProps) {
@@ -55,28 +56,25 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
           accessibilityLabel={modal ? 'Close' : `Back to ${backLabel}`}
           onPress={goBack}
           hitSlop={8}
-          style={({ pressed }) => [
-            styles.back,
-            untitled && styles.backWide,
-            { opacity: pressed ? 0.5 : 1 },
-          ]}
+          style={({ pressed }) => [styles.back, { opacity: pressed ? 0.5 : 1 }]}
         >
           {modal ? null : <Text style={[styles.chevron, { color: c.accent }]}>‹</Text>}
           <Text style={[styles.backLabel, { color: c.accent }]} numberOfLines={1}>
             {backLabel}
           </Text>
         </Pressable>
-        {untitled ? (
-          <View style={styles.title} />
-        ) : (
-          <Text
-            accessibilityRole="header"
-            style={[styles.title, { color: c.text }]}
-            numberOfLines={1}
-          >
-            {title}
-          </Text>
-        )}
+        <View style={styles.middle}>
+          <Logo size={untitled ? 28 : 22} />
+          {untitled ? null : (
+            <Text
+              accessibilityRole="header"
+              style={[styles.title, { color: c.textMuted }]}
+              numberOfLines={1}
+            >
+              {title}
+            </Text>
+          )}
+        </View>
         {/* Home, Search and the lessons menu. */}
         <View style={styles.side}>{modal ? null : <HeaderActions />}</View>
       </View>
@@ -84,13 +82,13 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
   );
 }
 
-/** The back button's width; the buttons on the right take what they need. */
-const SIDE = 96;
+/** Both sides are as wide as the buttons on the right, so the logo sits in the middle. */
+const SIDE = HEADER_ACTIONS_WIDTH;
 
 const styles = StyleSheet.create({
   bar: { borderBottomWidth: StyleSheet.hairlineWidth },
   row: {
-    height: 48,
+    minHeight: 52,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: space.sm,
@@ -102,10 +100,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 2,
   },
-  // With no title beside it, the back label can use the room (sized to its text).
-  backWide: { width: 'auto', flexShrink: 1, paddingRight: space.sm },
   chevron: { fontSize: 30, lineHeight: 32, marginTop: -3 },
   backLabel: { flexShrink: 1, fontSize: font.body, fontWeight: '500' },
-  title: { flex: 1, textAlign: 'center', fontSize: font.body + 1, fontWeight: '700' },
-  side: { width: HEADER_ACTIONS_WIDTH, alignItems: 'flex-end' },
+  middle: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 1, paddingVertical: 4 },
+  title: { maxWidth: '100%', textAlign: 'center', fontSize: font.caption, fontWeight: '600' },
+  side: { width: SIDE, alignItems: 'flex-end' },
 });

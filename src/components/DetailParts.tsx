@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import { monthly, PRICES } from '@/config/pricing';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/Text';
 
@@ -76,8 +77,8 @@ export function RefreshSection({
 export function LockedState() {
   return (
     <EmptyState
-      title="Premium content"
-      message="Start a free trial to unlock this."
+      title="Part of a plan"
+      message={`Kindergarten to Grade 12 is ${monthly(PRICES.k12.usd)}, and each college course is ${monthly(PRICES.course.usd)}.`}
       actionLabel="See plans"
       onAction={() => router.push('/paywall')}
     />

@@ -1,6 +1,6 @@
 # Working in this repository
 
-A study app (Expo SDK 57, Expo Router, TypeScript strict) that ships as an iOS app and a
+One Dollar University ("Education For Everyone"; `src/config/site.ts`): a study app (Expo SDK 57, Expo Router, TypeScript strict) that ships as an iOS app and a
 static website. Users are often minors: no accounts, analytics, tracking or network calls.
 Course content is data, never hardcoded in UI code. `src/data/taxonomy.ts` is the source of
 truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).

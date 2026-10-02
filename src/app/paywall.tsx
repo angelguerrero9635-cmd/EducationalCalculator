@@ -1,53 +1,52 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text } from '@/components/Text';
 
-import { Button, ListRow } from '@/components';
-import { font, space, usePalette } from '@/theme';
+import { Button, ListRow, Logo } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
+import { Text } from '@/components/Text';
+import { monthly, PRICES } from '@/config/pricing';
+import { SITE_NAME, SITE_SLOGAN } from '@/config/site';
+import { font, space, usePalette } from '@/theme';
 
-type Plan = 'monthly' | 'annual';
+const PLANS = [PRICES.k12, PRICES.course];
 
-const PLANS: { value: Plan; title: string; price: string }[] = [
-  { value: 'monthly', title: 'Monthly', price: '$—.— / month' },
-  { value: 'annual', title: 'Annual', price: '$—.— / year' },
-];
-
-/** Placeholder paywall. No purchase logic: Continue is disabled and Restore does nothing. */
+/** The plans and their prices. No purchase logic yet: Continue is disabled. */
 export default function PaywallScreen() {
   const c = usePalette();
-  const [plan, setPlan] = useState<Plan>('annual');
 
   return (
     <>
-      <PageMeta title={'Premium'} description="Premium lessons and features (coming soon)." />
+      <PageMeta
+        title="Plans"
+        description={`${SITE_NAME} plans: Kindergarten to Grade 12 for ${monthly(PRICES.k12.usd)}, and each college course for ${monthly(PRICES.course.usd)}.`}
+      />
       <ScrollView style={{ backgroundColor: c.background }} contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          <View style={[styles.art, { backgroundColor: c.placeholder, borderColor: c.border }]} />
+          <Logo size={56} />
           <Text accessibilityRole="header" style={[styles.headline, { color: c.text }]}>
-            7-day free trial
+            {SITE_SLOGAN}
           </Text>
           <Text style={[styles.body, { color: c.textMuted }]}>
-            Formulas, calculators and step-by-step solutions for every course. [Copy placeholder]
+            Every lesson, picture and worked step, one dollar at a time.
           </Text>
         </View>
 
         <View style={[styles.plans, { borderColor: c.border }]}>
           {PLANS.map((p) => (
             <ListRow
-              key={p.value}
-              title={p.title}
-              subtitle={p.price}
-              selected={plan === p.value}
-              onPress={() => setPlan(p.value)}
+              key={p.label}
+              title={`${p.label}: ${monthly(p.usd)}`}
+              subtitle={p.detail}
+              accessory="none"
             />
           ))}
         </View>
 
         <View style={styles.actions}>
           <Button testID="paywall-continue" label="Continue" disabled />
-          <Button label="Restore Purchases" variant="link" />
+          <Text style={[styles.note, { color: c.textMuted }]}>
+            Purchases are not open yet. Everything is free to use in this build.
+          </Text>
           <Button label="Not now" variant="link" onPress={() => router.back()} />
         </View>
       </ScrollView>
@@ -58,9 +57,9 @@ export default function PaywallScreen() {
 const styles = StyleSheet.create({
   content: { padding: space.lg, gap: space.xl },
   hero: { alignItems: 'center', gap: space.sm },
-  art: { width: 96, height: 96, borderRadius: 20, borderWidth: 1, borderStyle: 'dashed' },
   headline: { fontSize: font.headline, fontWeight: '700', textAlign: 'center' },
   body: { fontSize: font.body, textAlign: 'center' },
   plans: { borderTopWidth: StyleSheet.hairlineWidth },
   actions: { gap: space.sm },
+  note: { fontSize: font.caption + 1, textAlign: 'center' },
 });

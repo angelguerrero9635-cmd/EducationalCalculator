@@ -3,6 +3,7 @@ import { Platform, type ColorValue } from 'react-native';
 
 import { Icon, type IconName } from '@/components/Icon';
 import { HeaderActions } from '@/components/HeaderActions';
+import { Logo } from '@/components/Logo';
 import { font, usePalette } from '@/theme';
 
 /** A tab's icon: outlined, and filled (or bolder) when it is the open tab. */
@@ -34,6 +35,9 @@ export default function TabsLayout() {
         },
         headerStyle: { backgroundColor: c.background },
         headerShadowVisible: false,
+        // The $U logo in the middle of every tab's header; the tab bar names the tab.
+        headerTitle: () => <Logo />,
+        headerTitleAlign: 'center',
         // Every tab's header has Home, Search and the lessons menu too.
         headerRight: () => <HeaderActions />,
         headerRightContainerStyle: { paddingRight: 8 },

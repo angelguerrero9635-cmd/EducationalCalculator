@@ -14,7 +14,7 @@ const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
 
 /** [url, expected status, text that must appear in the HTML]. */
 const CHECKS = [
-  ['/browse', 200, ['Browse | Educational Calculator', 'Kindergarten', 'Grade 12']],
+  ['/browse', 200, ['Browse | One Dollar University', 'Kindergarten', 'Grade 12']],
   [
     '/grade/K',
     200,
@@ -34,7 +34,7 @@ const CHECKS = [
     '/skill/m.K.make-10',
     200,
     [
-      'Add to make 10 – Kindergarten Math | Educational Calculator',
+      'Add to make 10 – Kindergarten Math | One Dollar University',
       '<meta data-rh="true" name="description"',
       'A ten-frame has 10 boxes.',
       'Count the open counters. They fill the empty boxes.',

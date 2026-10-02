@@ -11,6 +11,12 @@ Where the work stands, for the next session. Everything listed as merged is on
 - College decisions: `docs/HE_NEEDS.md` "Decisions (settled 2026-10-02)" (g = 9.81, wait for
   pictures, titles only for OpenStax, split by field, pilots redone, taxonomy updates authorized).
 
+- Brand (2026-10-02): One Dollar University, slogan "Education For Everyone", logo $U in the
+  middle of every header (`src/components/Logo.tsx` is a placeholder until the designed logo
+  arrives). Prices: K–12 $1 a month; each college course $1 a month (`src/config/pricing.ts`,
+  shown on the plans page). No purchases yet: taking payments needs a decision (App Store
+  subscriptions need a dependency; the web needs a payment provider and network calls).
+
 ## Done and merged
 
 - K–12: every skill has pages; reviews done; site-wide "?" and drag sweep merged (`70fa18d`).

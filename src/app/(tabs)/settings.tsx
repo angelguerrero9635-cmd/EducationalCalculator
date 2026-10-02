@@ -17,6 +17,7 @@ import {
 import type { UnitSystem } from '@/engine/units';
 import type { AppearancePref } from '@/state';
 import { font, space, usePalette } from '@/theme';
+import { monthly, PRICES } from '@/config/pricing';
 
 const APPEARANCES: { value: AppearancePref; label: string }[] = [
   { value: 'system', label: 'System' },
@@ -92,11 +93,11 @@ export default function SettingsScreen() {
           {`${units === 'metric' ? 'cm, m, kg, N, …' : 'in, ft, lb, lbf, …'} The default for every module. Each module can also switch units, or mix units value by value.`}
         </Note>
 
-        <SectionHeader title="Premium" />
+        <SectionHeader title="Plans" />
         <Group>
           <ListRow
-            title="Plans & free trial"
-            subtitle="Preview only. No purchases in this build."
+            title="Plans and prices"
+            subtitle={`K–12 ${monthly(PRICES.k12.usd)}; each college course ${monthly(PRICES.course.usd)}`}
             onPress={() => router.push('/paywall')}
           />
         </Group>

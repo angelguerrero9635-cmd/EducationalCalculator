@@ -1,4 +1,6 @@
-# Educational Calculator (wireframe)
+# One Dollar University (wireframe)
+
+Education For Everyone. ($U: placeholder logo in `src/components/Logo.tsx`; prices in `src/config/pricing.ts`.)
 
 A study app covering every course in one place. One codebase ships as an **iOS app** (Expo) and a
 **website** (Expo web, hosted on Vercel):

@@ -53,7 +53,7 @@ export default function RootLayout() {
           <Stack.Screen name="course/[id]/index" options={{ title: 'Course' }} />
           <Stack.Screen name="course/[id]/topic/[index]" options={{ title: 'Topic' }} />
           <Stack.Screen name="levels" options={{ title: 'What You Study' }} />
-          <Stack.Screen name="paywall" options={{ presentation: 'modal', title: 'Premium' }} />
+          <Stack.Screen name="paywall" options={{ presentation: 'modal', title: 'Plans' }} />
         </Stack.Protected>
         <Stack.Protected guard={!showApp}>
           <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
