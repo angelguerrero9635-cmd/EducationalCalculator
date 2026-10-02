@@ -8,6 +8,7 @@ import type { ReactNode } from 'react';
 import type { FluidSystemSpec } from '@/data/modules/typesHe1g';
 
 import type { Calculator } from '../useCalculator';
+import { FluidJet, FluidPitot, FluidVenturi } from './FluidFlow';
 import { FluidBuoyancy, FluidGate, FluidManometer, FluidTank } from './FluidStatics';
 
 export function FluidSystem({
@@ -26,6 +27,12 @@ export function FluidSystem({
       return <FluidGate spec={spec} calc={calc} />;
     case 'buoyancy':
       return <FluidBuoyancy spec={spec} calc={calc} />;
+    case 'venturi':
+      return <FluidVenturi spec={spec} calc={calc} />;
+    case 'pitot':
+      return <FluidPitot spec={spec} calc={calc} />;
+    case 'jet':
+      return <FluidJet spec={spec} calc={calc} />;
     default:
       return null;
   }

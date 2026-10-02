@@ -123,13 +123,10 @@ export function he1gIssues(rep: He1gSpec, val: Val, byId: Map<string, VariableDe
       const [V, dP, rho] = [si(rep.speed), si(rep.difference), si(rep.density)];
       if (V !== undefined && rho !== undefined) same(rep.difference, 0.5 * rho * V * V, 'ΔP');
       const rhoM = si(rep.gaugeDensity);
-      if (
-        dP !== undefined &&
-        rhoM !== undefined &&
-        rho !== undefined &&
-        !(dP / ((rhoM - rho) * g) > 0)
-      )
-        out.push(`${tag}: the gauge reading is not above zero`);
+      // The U-tube reads h = ΔP ÷ ((ρ_m − ρ)g); a stream as dense as the gauge fluid has none.
+      if (rhoM !== undefined && rho !== undefined && rhoM <= rho)
+        out.push(`~${tag}: the stream is no lighter than the gauge fluid (no reading drawn)`);
+      else if (dP !== undefined && dP < 0) out.push(`${tag}: the gauge reading is below zero`);
       break;
     }
     case 'jet': {

@@ -9,7 +9,7 @@
 import { atLeast } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
-import type { FluidManometerSpec } from './typesHe1g';
+import type { FluidManometerSpec, FluidPitotSpec } from './typesHe1g';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 /** g on the engineering pages, m/s². */
@@ -467,6 +467,362 @@ const buoyancyIce = buoyancyDemo(
   'ice',
 );
 
+// ── Bernoulli and momentum (fluid-mechanics#1, #2): venturi, pitot, jet ──
+
+const ASSUME_FLOW = [
+  'Steady, incompressible flow with no losses, along a streamline.',
+  'The meter is level, so the heights cancel.',
+];
+
+/** A diameter kept in metres for the formulas and shown in mm. */
+const mm = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'm', 0.001, 10, 0.001, { units: ['mm', 'cm', 'm'], shownIn: 'mm' });
+
+function venturiDemo(
+  id: string,
+  title: string,
+  use: string,
+  values: { D1: number; D2: number; rho: number; dP: number },
+): ModuleDef {
+  const { D1, D2, rho, dP } = values;
+  const V1 = Math.sqrt((2 * dP) / (rho * ((D1 / D2) ** 4 - 1)));
+  const V2 = V1 * (D1 / D2) ** 2;
+  return demo(id, title, use, {
+    assumptions: ASSUME_FLOW,
+    variables: [
+      kPa('dP', 'ΔP', 'Pressure difference P₁ − P₂'),
+      mm('D1', 'D₁', 'Inlet diameter'),
+      mm('D2', 'D₂', 'Throat diameter'),
+      q('rho', 'ρ', 'Density', 'kg/m³', 0.1, 20000, 0.1),
+      q('V1', 'V₁', 'Inlet speed', 'm/s', 0, 1000, 0.01),
+      q('V2', 'V₂', 'Throat speed', 'm/s', 0, 1000, 0.01),
+      q('Q', 'Q', 'Flow rate', 'm³/s', 0, 1000, 0.0001),
+    ],
+    ...rules(
+      rule(
+        'ΔP = ½ρV₁²((D₁ ÷ D₂)⁴ − 1)',
+        '{dP} = ½ × {rho} × {V1}² × (({D1} ÷ {D2})⁴ − 1)',
+        (v) => v.dP! - 0.5 * v.rho! * v.V1! ** 2 * ((v.D1! / v.D2!) ** 4 - 1),
+        {
+          V1: [
+            (v) => root((2 * v.dP!) / (v.rho! * ((v.D1! / v.D2!) ** 4 - 1))),
+            '√(2 × {dP} ÷ ({rho} × (({D1} ÷ {D2})⁴ − 1)))',
+            'Put V₂ = V₁(D₁ ÷ D₂)² from continuity into Bernoulli’s ΔP = ½ρ(V₂² − V₁²), then solve for V₁.',
+          ],
+          dP: [
+            (v) => 0.5 * v.rho! * v.V1! ** 2 * ((v.D1! / v.D2!) ** 4 - 1),
+            '½ × {rho} × {V1}² × (({D1} ÷ {D2})⁴ − 1)',
+            'Bernoulli with V₂ written through V₁ by continuity.',
+          ],
+          rho: [
+            (v) => div(2 * v.dP!, v.V1! ** 2 * ((v.D1! / v.D2!) ** 4 - 1)),
+            '2 × {dP} ÷ ({V1}² × (({D1} ÷ {D2})⁴ − 1))',
+            'Solve the same equation for ρ.',
+          ],
+          D1: null,
+          D2: null,
+        },
+      ),
+      rule(
+        'A₁V₁ = A₂V₂',
+        '{D1}² × {V1} = {D2}² × {V2}',
+        (v) => v.D1! ** 2 * v.V1! - v.D2! ** 2 * v.V2!,
+        {
+          V2: [
+            (v) => div(v.D1! ** 2 * v.V1!, v.D2! ** 2),
+            '{V1} × ({D1} ÷ {D2})²',
+            'The same water passes each section: the area shrinks by (D₂ ÷ D₁)², so the speed grows by (D₁ ÷ D₂)².',
+          ],
+          V1: [
+            (v) => div(v.D2! ** 2 * v.V2!, v.D1! ** 2),
+            '{V2} × ({D2} ÷ {D1})²',
+            'Continuity the other way: the wider inlet is slower.',
+          ],
+          D1: [
+            (v) => (v.V1! > 0 ? v.D2! * Math.sqrt(v.V2! / v.V1!) : undefined),
+            '{D2} × √({V2} ÷ {V1})',
+            'The areas go inversely as the speeds.',
+          ],
+          D2: [
+            (v) => (v.V2! > 0 ? v.D1! * Math.sqrt(v.V1! / v.V2!) : undefined),
+            '{D1} × √({V1} ÷ {V2})',
+            'The areas go inversely as the speeds.',
+          ],
+        },
+      ),
+      rule(
+        'ΔP = ½ρ(V₂² − V₁²)',
+        '{dP} = ½ × {rho} × ({V2}² − {V1}²)',
+        (v) => v.dP! - 0.5 * v.rho! * (v.V2! ** 2 - v.V1! ** 2),
+        {
+          dP: [
+            (v) => 0.5 * v.rho! * (v.V2! ** 2 - v.V1! ** 2),
+            '½ × {rho} × ({V2}² − {V1}²)',
+            'Bernoulli on a level line: the pressure falls by the gain in ½ρV².',
+          ],
+          rho: [
+            (v) => div(2 * v.dP!, v.V2! ** 2 - v.V1! ** 2),
+            '2 × {dP} ÷ ({V2}² − {V1}²)',
+            'Solve Bernoulli for ρ.',
+          ],
+          V2: [
+            (v) => root(v.V1! ** 2 + (2 * v.dP!) / v.rho!),
+            '√({V1}² + 2 × {dP} ÷ {rho})',
+            'Add 2ΔP ÷ ρ to V₁², then take the square root.',
+          ],
+          V1: [
+            (v) => root(v.V2! ** 2 - (2 * v.dP!) / v.rho!),
+            '√({V2}² − 2 × {dP} ÷ {rho})',
+            'Take 2ΔP ÷ ρ from V₂², then take the square root.',
+          ],
+        },
+      ),
+      rule(
+        'Q = A₁V₁',
+        '{Q} = π ÷ 4 × {D1}² × {V1}',
+        (v) => v.Q! - (Math.PI / 4) * v.D1! ** 2 * v.V1!,
+        {
+          Q: [
+            (v) => (Math.PI / 4) * v.D1! ** 2 * v.V1!,
+            'π ÷ 4 × {D1}² × {V1}',
+            'The flow is the inlet’s area times its speed.',
+          ],
+          V1: [
+            (v) => div(v.Q!, (Math.PI / 4) * v.D1! ** 2),
+            '{Q} ÷ (π ÷ 4 × {D1}²)',
+            'Divide the flow by the inlet’s area.',
+          ],
+          D1: [
+            (v) => (v.V1! > 0 ? Math.sqrt((4 * v.Q!) / (Math.PI * v.V1!)) : undefined),
+            '√(4 × {Q} ÷ (π × {V1}))',
+            'The area is Q ÷ V; turn it into a diameter.',
+          ],
+        },
+      ),
+    ),
+    example: { dP, D1, D2, rho, V1, V2, Q: (Math.PI / 4) * D1 * D1 * V1 },
+    startWith: ['dP', 'D1', 'D2', 'rho'],
+    representation: {
+      kind: 'fluidSystem',
+      mode: 'venturi',
+      inlet: 'D1',
+      throat: 'D2',
+      density: 'rho',
+      difference: 'dP',
+      speed1: 'V1',
+      speed2: 'V2',
+      flow: 'Q',
+      g: G,
+      fluid: 'water',
+    },
+  });
+}
+
+const venturi = venturiDemo(
+  'g.he-fluid-system-venturi',
+  'A venturi meter: the throat’s pressure falls',
+  'Use this for “Water in a venturi narrows from 100 mm to 50 mm and the pressure falls 30 kPa. Find Q.”',
+  { D1: 0.1, D2: 0.05, rho: 1000, dP: 30000 },
+);
+
+const venturiGentle = venturiDemo(
+  'g.he-fluid-system-venturi-gentle',
+  'A gentle venturi: a small drop, a slight neck',
+  'Use this for “A 200 mm main necks to 160 mm and the gauges differ by 4 kPa. What is the flow?”',
+  { D1: 0.2, D2: 0.16, rho: 1000, dP: 4000 },
+);
+
+function pitotDemo(
+  id: string,
+  title: string,
+  use: string,
+  values: { rho: number; dP: number; rhoM: number },
+  fluids: Pick<FluidPitotSpec, 'fluid' | 'gaugeFluid'>,
+): ModuleDef {
+  const { rho, dP, rhoM } = values;
+  return demo(id, title, use, {
+    assumptions: [
+      'The stream stops at the nose with no loss (a stagnation point); the static ports read the stream’s own pressure.',
+      'Incompressible: the speed is well under a third of the speed of sound.',
+      `The gauge fluid is ${rhoM} kg/m³ and g = 9.81 m/s².`,
+    ],
+    variables: [
+      q('dP', 'ΔP', 'Stagnation minus static pressure', 'Pa', 0, 1e7, 1, { units: ['Pa', 'kPa'] }),
+      q('rho', 'ρ', 'Density of the stream', 'kg/m³', 0.01, 20000, 0.01),
+      q('V', 'V', 'Stream speed', 'm/s', 0, 500, 0.01),
+    ],
+    ...rules(
+      rule(
+        'V = √(2ΔP ÷ ρ)',
+        '{V} = √(2 × {dP} ÷ {rho})',
+        (v) => v.V! - Math.sqrt((2 * v.dP!) / v.rho!),
+        {
+          V: [
+            (v) => root((2 * v.dP!) / v.rho!),
+            '√(2 × {dP} ÷ {rho})',
+            'Bernoulli from the stream to the nose, where it stops: ΔP = ½ρV², so V = √(2ΔP ÷ ρ).',
+          ],
+          dP: [
+            (v) => 0.5 * v.rho! * v.V! ** 2,
+            '½ × {rho} × {V}²',
+            'The pressure rise where the stream stops is ½ρV².',
+          ],
+          rho: [(v) => div(2 * v.dP!, v.V! ** 2), '2 × {dP} ÷ {V}²', 'Solve ΔP = ½ρV² for ρ.'],
+        },
+      ),
+    ),
+    example: { dP, rho, V: Math.sqrt((2 * dP) / rho) },
+    startWith: ['dP', 'rho'],
+    representation: {
+      kind: 'fluidSystem',
+      mode: 'pitot',
+      speed: 'V',
+      difference: 'dP',
+      density: 'rho',
+      gaugeDensity: rhoM,
+      g: G,
+      ...fluids,
+    },
+  });
+}
+
+const pitot = pitotDemo(
+  'g.he-fluid-system-pitot',
+  'A pitot-static tube in an air stream',
+  'Use this for “A pitot tube in air of 1.2 kg/m³ reads 600 Pa. How fast is the air?”',
+  { rho: 1.2, dP: 600, rhoM: 1000 },
+  { fluid: 'air', gaugeFluid: 'water' },
+);
+
+const pitotWater = pitotDemo(
+  'g.he-fluid-system-pitot-water',
+  'A pitot tube in a water channel, on mercury',
+  'Use this for “A pitot tube in a water channel reads 2 kPa on a mercury gauge. Find the speed.”',
+  { rho: 1000, dP: 2000, rhoM: 13600 },
+  { fluid: 'water', gaugeFluid: 'mercury' },
+);
+
+const RAD = Math.PI / 180;
+
+function jetDemo(
+  id: string,
+  title: string,
+  use: string,
+  values: { rho: number; V: number; A: number; th: number },
+): ModuleDef {
+  const { rho, V, A, th } = values;
+  const m = rho * V * A;
+  return demo(id, title, use, {
+    assumptions: [
+      'The vane is fixed; the jet keeps its speed across it (no friction).',
+      'Atmospheric pressure all round, so only momentum crosses the control volume.',
+      'Steady flow; the jet’s weight is ignored.',
+    ],
+    variables: [
+      q('th', 'θ', 'Turning angle', '°', 1, 180, 1),
+      q('V', 'V', 'Jet speed', 'm/s', 0.1, 500, 0.1),
+      q('A', 'A', 'Jet area', 'm²', 1e-6, 10, 0.0001),
+      q('rho', 'ρ', 'Density', 'kg/m³', 1, 20000, 1),
+      q('m', 'ṁ', 'Mass flow rate', 'kg/s', 0, 1e7, 0.1),
+      q('Fx', 'Fₓ', 'Force along the jet', 'N', 0, 1e9, 1),
+      q('Fy', 'F_y', 'Force across the jet', 'N', 0, 1e9, 1),
+    ],
+    ...rules(
+      rule('ṁ = ρVA', '{m} = {rho} × {V} × {A}', (v) => v.m! - v.rho! * v.V! * v.A!, {
+        m: [
+          (v) => v.rho! * v.V! * v.A!,
+          '{rho} × {V} × {A}',
+          'Mass per second is the density times the speed times the area.',
+        ],
+        rho: [(v) => div(v.m!, v.V! * v.A!), '{m} ÷ ({V} × {A})', 'Divide ṁ by VA.'],
+        V: [(v) => div(v.m!, v.rho! * v.A!), '{m} ÷ ({rho} × {A})', 'Divide ṁ by ρA.'],
+        A: [(v) => div(v.m!, v.rho! * v.V!), '{m} ÷ ({rho} × {V})', 'Divide ṁ by ρV.'],
+      }),
+      rule(
+        'Fₓ = ṁV(1 − cos θ)',
+        '{Fx} = {m} × {V} × (1 − cos({th}))',
+        (v) => v.Fx! - v.m! * v.V! * (1 - Math.cos(v.th! * RAD)),
+        {
+          Fx: [
+            (v) => v.m! * v.V! * (1 - Math.cos(v.th! * RAD)),
+            '{m} × {V} × (1 − cos({th}))',
+            'The jet comes in with ṁV along x and leaves with ṁV cos θ: the vane takes the difference.',
+          ],
+          m: [
+            (v) => div(v.Fx!, v.V! * (1 - Math.cos(v.th! * RAD))),
+            '{Fx} ÷ ({V} × (1 − cos({th})))',
+            'Divide Fₓ by V(1 − cos θ).',
+          ],
+          V: null,
+          th: [
+            (v) => {
+              const k = div(v.Fx!, v.m! * v.V!);
+              return k !== undefined && Math.abs(1 - k) <= 1 ? Math.acos(1 - k) / RAD : undefined;
+            },
+            'cos⁻¹(1 − {Fx} ÷ ({m} × {V}))',
+            'Divide Fₓ by ṁV, take it from 1, and find the angle with that cosine.',
+          ],
+        },
+      ),
+      rule(
+        'F_y = ṁV sin θ',
+        '{Fy} = {m} × {V} × sin({th})',
+        (v) => v.Fy! - v.m! * v.V! * Math.sin(v.th! * RAD),
+        {
+          Fy: [
+            (v) => v.m! * v.V! * Math.sin(v.th! * RAD),
+            '{m} × {V} × sin({th})',
+            'The jet leaves with ṁV sin θ across: the vane is pushed the other way by as much.',
+          ],
+          m: [
+            (v) => div(v.Fy!, v.V! * Math.sin(v.th! * RAD)),
+            '{Fy} ÷ ({V} × sin({th}))',
+            'Divide F_y by V sin θ.',
+          ],
+          V: null,
+          th: null,
+        },
+      ),
+    ),
+    example: {
+      th,
+      V,
+      A,
+      rho,
+      m,
+      Fx: m * V * (1 - Math.cos(th * RAD)),
+      Fy: m * V * Math.sin(th * RAD),
+    },
+    startWith: ['th', 'V', 'A', 'rho'],
+    representation: {
+      kind: 'fluidSystem',
+      mode: 'jet',
+      speed: 'V',
+      angle: 'th',
+      area: 'A',
+      density: 'rho',
+      massFlow: 'm',
+      forceX: 'Fx',
+      forceY: 'Fy',
+      g: G,
+    },
+  });
+}
+
+const jet = jetDemo(
+  'g.he-fluid-system-jet',
+  'A water jet on a fixed vane',
+  'Use this for “A 20 m/s jet of 0.002 m² is turned 120° by a fixed vane. Find the force on the vane.”',
+  { rho: 1000, V: 20, A: 0.002, th: 120 },
+);
+
+const jetBucket = jetDemo(
+  'g.he-fluid-system-jet-bucket',
+  'A jet turned almost back: a turbine bucket',
+  'Use this for “A bucket turns a 30 m/s jet of 0.005 m² through 165°. How hard does it push the bucket?”',
+  { rho: 1000, V: 30, A: 0.005, th: 165 },
+);
+
 export const HE1G_GALLERY_MODULES: ModuleDef[] = [
   tank,
   tankDeep,
@@ -476,6 +832,12 @@ export const HE1G_GALLERY_MODULES: ModuleDef[] = [
   gateDeep,
   buoyancy,
   buoyancyIce,
+  venturi,
+  venturiGentle,
+  pitot,
+  pitotWater,
+  jet,
+  jetBucket,
 ];
 
 export const HE1G_GALLERY_LAYOUTS: LayoutDef[] = [];
