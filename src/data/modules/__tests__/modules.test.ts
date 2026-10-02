@@ -37,6 +37,7 @@ import { he1gSpecVars } from '../typesHe1g';
 import { he1fSpecVars } from '../typesHe1f';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he1hSpecVars } from '../typesHe1h';
+import { he2dSpecVars } from '../typesHe2d';
 import { hs2cSpecVars } from '../typesHs2c';
 import { hs3aSpecVars } from '../typesHs3a';
 import { he1bSpecVars } from '../typesHe1b';
@@ -494,6 +495,7 @@ function representationVars(r: Representation): string[] {
       return [r.force, r.mass, r.acceleration];
     case 'seriesCircuit':
       if ('net' in r) return he1hSpecVars(r); // HC7
+      if ('amp' in r) return he2dSpecVars(r); // HC18
       return [r.source, r.current, ...r.resistors.flatMap((x) => [x.r, x.v])];
     case 'linearFunction':
     case 'lineSystem':
