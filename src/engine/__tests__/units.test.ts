@@ -159,6 +159,8 @@ describe('unit conversions (exact definitions)', () => {
       '″',
       'pc',
       'light-years',
+      // s.9 pyramid of biomass (dry mass per square meter)
+      'g/m²',
     ];
     const unknown = new Set(
       MODULES.flatMap((m) =>
