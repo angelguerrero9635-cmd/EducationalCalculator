@@ -48,6 +48,8 @@ import { transformCurve, transformText } from './functionGraphHs3b';
 import { RiemannRects, riemannCaption } from './functionGraphRiemann';
 import { he1eLayer, type He1eLayerProps } from './FunctionGraphMarksHe1e';
 import { he2gLayer } from './FunctionGraphMarksHe2g';
+import { he3aLayer } from './FunctionGraphMarksHe3a';
+import { he3aCaption, he3aWindow, he3aXs, he3aYs } from './functionGraphHe3a';
 import { he2gCaption, he2gWindow, he2gXs, he2gYs } from './functionGraphHe2g';
 import { he1eCaption, he1ePanel, he1eXs, he1eYs, repeatCurve } from './functionGraphHe1e';
 import { riemannOf, riemannXs } from './riemann';
@@ -513,6 +515,7 @@ export function FunctionGraph({
     ...riemannXs(spec.riemann, get), // H106
     ...he1eXs(spec, main, other, get), // HC10, HC12
     ...he2gXs(spec, main, get), // HC37, HC38
+    ...he3aXs(spec, main, get), // HC45
     ...main.domain
       .flatMap((i) => [i.lo, i.hi])
       .filter((v) => Number.isFinite(v) && Math.abs(v) < 50),
@@ -579,6 +582,7 @@ export function FunctionGraph({
     ...(main.family === 'logSum' ? [-2.5] : []),
     ...he1eYs(spec, main, other, get), // HC10, HC12
     ...he2gYs(spec, main, get), // HC37, HC38
+    ...he3aYs(spec, main, get), // HC45
   ].filter((v) => Number.isFinite(v) && Math.abs(v) < 1e6);
 
   const legend: { toks: Tok[]; name: string; color: string; dash?: string }[] = [
@@ -639,7 +643,7 @@ export function FunctionGraph({
       ys,
       pw,
       ph,
-      fixed: spec.window ?? he2gWindow(spec, get), // HC37: the ε–δ zoom
+      fixed: spec.window ?? he2gWindow(spec, get) ?? he3aWindow(spec, get, known, main), // HC37, HC42, HC92
       xMin: spec.xMin,
       square: !!spec.inverse,
     });
@@ -1102,6 +1106,7 @@ export function FunctionGraph({
           };
           const he1e = he1eLayer(layerProps);
           const he2g = he2gLayer(layerProps); // HC37, HC38
+          const he3a = he3aLayer(layerProps); // HC42, HC45, HC92
           // Limit: arrows along the curve from both sides.
           const lim =
             limX !== undefined && inX(limX)
@@ -1465,6 +1470,7 @@ export function FunctionGraph({
                   ) : null}
                   {he1e.under}
                   {he2g.under}
+                  {he3a.under}
                   {dashes.map((d, i) => (
                     <Line
                       key={`d${i}`}
@@ -1689,6 +1695,7 @@ export function FunctionGraph({
                 </G>
                 {he1e.over}
                 {he2g.over}
+                {he3a.over}
                 {ineq && allKnown ? (
                   <SignBand curve={main} sign={ineq} sx={sx} sy={sy} win={win} />
                 ) : null}
@@ -1966,6 +1973,7 @@ export function FunctionGraph({
     if (spec.riemann) lines.push(riemannCaption(spec.riemann, main.f, get, xName)); // H106
     lines.push(...he1eCaption(spec, main, other, get, xName, fName, gName)); // HC10, HC12
     lines.push(...he2gCaption(spec, main, get, xName, fName)); // HC37, HC38
+    lines.push(...he3aCaption(spec, main, get, known, xName, fName)); // HC42, HC45, HC92
     if (spec.inequality) lines.push(signCaption(main, ineq, fName, xName));
     lines.push(...reshapeCaption(spec, shaped, fName, xName));
     if (spec.inverse) lines.push(`The inverse is the reflection across the line y = ${xName}`);

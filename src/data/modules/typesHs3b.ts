@@ -84,7 +84,7 @@ export interface FunctionGraphHs3b {
     n: NumOrVar;
     to: NumOrVar;
     from?: NumOrVar;
-    side?: 'right' | 'left' | 'middle';
+    side?: 'right' | 'left' | 'middle' | 'trapezoid' | 'simpson'; // HC45: functionGraphHe3a.ts
     sum?: string;
   };
 }

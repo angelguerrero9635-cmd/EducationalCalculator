@@ -299,6 +299,14 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `band: { x, y, dx, dy }`                 | ε–δ: y ± ε across, x ± δ up, the window zoomed to them (HC37)                 |
 | `functionGraph`    | `series: { of / derivatives, degree }`   | a Taylor polynomial dashed over f, the gap at x bracketed; ∫P shaded (HC38)   |
 | `functionGraph`    | `family: 'linearOde'`, `'taylor'`        | y″ = (cx − ω²)y solved numerically; a polynomial from f(a), f′(a), … (HC38)   |
+| `functionGraph`    | `family: 'distribution'`, `maxwell`      | f(v) with vₚ, ⟨v⟩, vᵣₘₛ marked; a second gas or T dashed (HC42)               |
+| `functionGraph`    | `distribution: 'planck'`, `others`       | E_bλ against λ, λₘₐₓ = b ÷ T marked, the visible band tinted (HC42)           |
+| `functionGraph`    | `distribution: 'occupancy'`              | Fermi–Dirac, Bose–Einstein, Boltzmann against x, the point at x (HC42)        |
+| `functionGraph`    | `newton`, `bisect`                       | Newton's tangents to the axis; bisection's brackets under it (HC45)           |
+| `functionGraph`    | `steps: { method, dy, h, n, y0 }`        | Euler, Heun or RK4 points over the exact curve, yₙ named (HC45)               |
+| `functionGraph`    | `riemann.side: 'trapezoid'`              | trapezoids or Simpson's panel pairs (`'simpson'`), nodes dotted (HC45)        |
+| `functionGraph`    | `family: 'lagrange'`, `through`          | the polynomial through the nodes, ringed and labelled (HC45)                  |
+| `functionGraph`    | `family: 'quantizer'`, `mode`            | an ADC or DAC staircase, the input's step lit, 1 LSB; zoom past 16 (HC92)     |
 | `bars`             | `log`                                    | bars on a log scale, decade grid lines; a value ≤ 0 refused (HC9)             |
 | `termsChart`       | `type: 'power'`, `step` (p)              | aₙ = a₁ × nᵖ: the squares 1, 4, 9 …, nᵖ labels, sums of squares, cubes (H106) |
 | `normalCurve`      | `f: { df1, df2, stat, alpha, tails }`    | the F curve: P past F (or both tails), the critical value, decision (H106)    |

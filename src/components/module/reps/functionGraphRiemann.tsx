@@ -10,6 +10,8 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Curve } from './functionGraphMath';
+import { isQuadrature, quadratureCaption } from './functionGraphHe3a';
+import { QuadratureFill } from './FunctionGraphMarksHe3a';
 import { short } from './hsdKit';
 import { type Riemann, riemannOf } from './riemann';
 
@@ -35,6 +37,8 @@ export function RiemannRects({
   faded: boolean;
 }) {
   const c = usePalette();
+  if (isQuadrature(r))
+    return <QuadratureFill r={r} f={curve.f} get={get} sx={sx} sy={sy} faded={faded} />; // HC45
   const { n, strips } = riemannOf(r, curve.f, get);
   const ok = strips.filter((q) => Number.isFinite(q.y));
   if (n > DRAWN) {
@@ -92,6 +96,7 @@ export function RiemannRects({
 
 /** The caption's line: how many rectangles, how wide, read where, and what they add to. */
 export function riemannCaption(r: Riemann, f: (x: number) => number, get: Get, x: string) {
+  if (isQuadrature(r)) return quadratureCaption(r, f, get, x); // HC45
   const { n, a, b, w, sum } = riemannOf(r, f, get);
   const edge = r.side === 'left' ? 'left-edge' : r.side === 'middle' ? 'midpoint' : 'right-edge';
   const s4 = Number(sum.toFixed(4));

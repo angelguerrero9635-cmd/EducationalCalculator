@@ -12,12 +12,14 @@ import type {
 } from '@/data/modules/typesFunctionGraph';
 import { isFamilyHe1e } from '@/data/modules/typesHe1e';
 import { isFamilyHe2g } from '@/data/modules/typesHe2g';
+import { isFamilyHe3a } from '@/data/modules/typesHe3a';
 import { formatNumber } from '@/engine/format';
 
 import { toFraction } from './exact';
 import { buildHs3b } from './functionGraphFamiliesHs3b';
 import { buildHe1e, repeatCurve } from './functionGraphHe1e';
 import { buildHe2g } from './functionGraphHe2g';
+import { buildHe3a } from './functionGraphHe3a';
 import { rationalByTopCurve } from './functionGraphRationalHs3b';
 import { ratioCurve, reshape } from './functionGraphHs2g';
 
@@ -480,6 +482,7 @@ export function buildCurve(
 ): Curve {
   if (isFamilyHe1e(fam)) return buildHe1e(fam, get, say, x); // HC10, HC12
   if (isFamilyHe2g(fam)) return buildHe2g(fam, get, say, x); // HC38
+  if (isFamilyHe3a(fam)) return buildHe3a(fam, get, say, x); // HC42, HC45, HC92
   const base = {
     family: fam.family,
     has: [] as number[],
