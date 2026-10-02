@@ -265,7 +265,7 @@ export function he3jIssues(rep: He3jSpec, val: (id: string) => number | undefine
     const [Kc, Kp, tau, r] = [get(rep.Kc), get(rep.Kp), get(rep.tau), get(rep.setpoint)];
     if (rep.mode !== 'feedforward' && rep.Kp === undefined)
       out.push('the process block has no gain');
-    if (rep.mode === 'feedback' || rep.mode === 'cascade') {
+    if (rep.mode === 'feedback') {
       if (rep.Kc === undefined) out.push('the controller block has no gain');
       if (Kc !== undefined && Kp !== undefined && tau !== undefined && r !== undefined) {
         const loop = proportionalLoop(Kc, Kp, tau, r);
@@ -276,7 +276,7 @@ export function he3jIssues(rep: He3jSpec, val: (id: string) => number | undefine
       }
     }
     if (rep.mode === 'lags' && tau !== undefined) {
-      const L = equalLags(rep.lags ?? 3, tau);
+      const L = equalLags(get(rep.lags) ?? 3, tau);
       if (Kp !== undefined) expect('K_c,u', rep.Kcu, L.loop / Kp);
       expect('ω_u', rep.wu, L.wu);
       expect('P_u', rep.Pu, L.Pu);

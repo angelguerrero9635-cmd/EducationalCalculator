@@ -29,6 +29,28 @@ const E = 'he.engineering.';
 export const HE3J_REQUESTS: PictureRequest[] = [
   {
     ...ask(
+      'HC90',
+      'blockDiagram',
+      'A process-control loop as flat blocks: setpoint R, the comparator with + in and − from the sensor, the controller K_c, the process K_p ÷ (τs + 1) (or ÷ (τs + 1)ⁿ for equal lags), the output Y and the sensor back to the minus; a measured disturbance through K_d to the output and through K_ff to the process input, alone or inside the loop. Every block shows its value',
+      [`${E}process-control#1`, `${E}process-control#3`, `${E}process-control#3~feedforward`],
+      [
+        'From ACC-P34. A new kind (typesHe3j.ts BlockDiagramSpec, reps/BlockDiagram.tsx, the sums in reps/he3jMath.ts). The plan’s `cascade` wiring is not drawn: no listed page asks for it (process-control#3~architecture is a sort page); it can follow when a page does.',
+        "Fields: { kind: 'blockDiagram', mode: 'feedback' | 'lags' | 'feedforward', Kc?, Kp?, tau?, setpoint?, lags? (3, a number or a variable), loopGain?, final?, offset?, tauCl?, Kcu?, wu?, Pu?, Kd?, Kff?, valve? (a valve block, when given), sensor? (1), timeUnit? ('min') }. A field is a variable id or a number; a \"?\" block shows its symbol, never a number.",
+        "Example (process-control#1): { kind: 'blockDiagram', mode: 'feedback', Kc: 'Kc', Kp: 'Kp', tau: 'tau', setpoint: 'r', loopGain: 'K', final: 'y', offset: 'e', tauCl: 'tcl', sensor: 1 }. #3: { mode: 'lags', lags: 'n' (or 3), tau: 'tau', Kp: 'Kp', Kc: 'Kcu', Kcu: 'Kcu', wu: 'wu', Pu: 'Pu' }. ~feedforward: { mode: 'feedforward', Kd: 'Kd', Kp: 'Kp', Kff: 'Kff' } (add Kc: 'Kc' to draw it inside the loop).",
+        'The comparator always takes the sensor with a minus (red), the setpoint with a plus. The harness (harness/picturesHe3j.ts) checks the controller and process blocks have values, K = K_cK_p, the final value R × K ÷ (1 + K), the offset and τ_cl = τ ÷ (1 + K); for n equal lags K_c,uK_p = sec(π ÷ n)ⁿ (8 for three), ω_u = tan(π ÷ n) ÷ τ and P_u = 2π ÷ ω_u; K_ff = −K_d ÷ K_p and K_d + K_ffK_p = 0. The three-lag demo takes n as a value so its two results share one page.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-blockDiagram-feedback',
+      'g.he-blockDiagram-feedback-high',
+      'g.he-blockDiagram-lags',
+      'g.he-blockDiagram-feedforward',
+      'g.he-blockDiagram-feedforward-loop',
+    ],
+  },
+  {
+    ...ask(
       'HC89',
       'hydrograph',
       'Rainfall and runoff: the storm’s depth P hanging from the top as a column cut into I_a, infiltration F and runoff Q, beside the curve-number curve Q(P) with the storm on it; rain on a painted watershed with the share C running off to the outlet (and, with t_c, the rain bar on a time chart and the runoff peaking at t_c); inflow and outflow triangles over t_b with the storage between them shaded',

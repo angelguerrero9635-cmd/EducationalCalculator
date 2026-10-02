@@ -192,20 +192,20 @@ export interface HydrographSpec {
  * `blockDiagram` (HC90, ACC-P34), flat. `feedback`: setpoint, comparator (+ and −), controller
  * K_c, process K_p ÷ (τs + 1), output, and the sensor back to the minus sign. `lags`: the same
  * loop around K_p ÷ (τs + 1)³. `feedforward`: the disturbance through K_d to the output, and
- * measured through K_ff to the process input, cancelling it. `cascade`: an inner loop (K_c2 and
- * the fast process) inside the outer one. Every gain in a block is a value.
+ * measured through K_ff to the process input, cancelling it (with K_c, inside the feedback
+ * loop). Every gain in a block is a value; a "?" block shows its symbol.
  */
 export interface BlockDiagramSpec {
   kind: 'blockDiagram';
-  mode: 'feedback' | 'lags' | 'feedforward' | 'cascade';
+  mode: 'feedback' | 'lags' | 'feedforward';
   /** Controller gain, process gain and time constant (min). */
   Kc?: NumOrVar;
   Kp?: NumOrVar;
   tau?: NumOrVar;
   /** The setpoint change. */
   setpoint?: NumOrVar;
-  /** Equal lags in `lags` mode (3). */
-  lags?: number;
+  /** Equal lags in `lags` mode (3), a number or a variable. */
+  lags?: NumOrVar;
   /** The worked values of the loop: K_cK_p, the final value, the offset, τ_cl. */
   loopGain?: NumOrVar;
   final?: NumOrVar;
@@ -218,10 +218,6 @@ export interface BlockDiagramSpec {
   /** `feedforward`: the disturbance gain K_d and the feedforward gain K_ff. */
   Kd?: NumOrVar;
   Kff?: NumOrVar;
-  /** `cascade`: the inner controller and process. */
-  Kc2?: NumOrVar;
-  Kp2?: NumOrVar;
-  tau2?: NumOrVar;
   /** The valve's and the sensor's gains (1, ideal, when left out). */
   valve?: NumOrVar;
   sensor?: NumOrVar;

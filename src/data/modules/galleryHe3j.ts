@@ -13,6 +13,9 @@
  *
  * HC89: `hydrograph` (ACC-P21): the curve-number split, the rational method, detention storage
  * (hydraulics-hydrology#2, #3~detention).
+ *
+ * HC90: `blockDiagram` (ACC-P34): P feedback with its offset, three equal lags, static feedforward
+ * (process-control#1, #3).
  */
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
@@ -20,6 +23,7 @@ import type { Relation, Values, VariableDef } from '@/engine/types';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
 import type {
+  BlockDiagramSpec,
   ConnectionSpec,
   HydrographSpec,
   RoadCurveSpec,
@@ -1486,6 +1490,258 @@ const hydroDetentionSmall: ModuleDef = {
   representation: { ...DETENTION_SPEC },
 };
 
+// ─── HC90: proportional feedback (process-control#1) ─────────────────────────
+
+const LOOP = rules(
+  product('K', 'Kc', 'Kp', 'Around the loop the gains multiply.'),
+  rule(
+    'final = R × K ÷ (1 + K)',
+    '{y} = {r} × {K} ÷ (1 + {K})',
+    ['y', 'r', 'K'],
+    (v) => v.y! * (1 + v.K!) - v.r! * v.K!,
+    {
+      y: [
+        (v) => (v.r! * v.K!) / (1 + v.K!),
+        '{r} × {K} ÷ (1 + {K})',
+        'With P control alone the output settles short of the setpoint.',
+      ],
+      r: [
+        (v) => div(v.y! * (1 + v.K!), v.K!),
+        '{y} × (1 + {K}) ÷ {K}',
+        'Solve for the setpoint change.',
+      ],
+    },
+  ),
+  rule('offset = R − final', '{e} = {r} − {y}', ['e', 'r', 'y'], (v) => v.e! - (v.r! - v.y!), {
+    e: [(v) => v.r! - v.y!, '{r} − {y}', 'What is left over: the offset.'],
+    y: [(v) => v.r! - v.e!, '{r} − {e}', 'Take the offset from the setpoint.'],
+  }),
+  rule(
+    'τ_cl = τ ÷ (1 + K)',
+    '{tcl} = {tau} ÷ (1 + {K})',
+    ['tcl', 'tau', 'K'],
+    (v) => v.tcl! * (1 + v.K!) - v.tau!,
+    {
+      tcl: [
+        (v) => v.tau! / (1 + v.K!),
+        '{tau} ÷ (1 + {K})',
+        'Feedback speeds the response by 1 + K.',
+      ],
+      tau: [(v) => v.tcl! * (1 + v.K!), '{tcl} × (1 + {K})', 'Solve for the process’s τ.'],
+    },
+  ),
+);
+
+const loopVars = (): VariableDef[] => [
+  q('Kc', 'K_c', 'Controller gain', undefined, 0.01, 1000, 0.01),
+  q('Kp', 'K_p', 'Process gain', undefined, 0.01, 1000, 0.01),
+  q('tau', 'τ', 'Process time constant', 'min', 0.01, 1000, 0.01),
+  q('r', 'R', 'Setpoint change', undefined, 0.01, 1000, 0.01),
+  q('K', 'K_cK_p', 'Loop gain', undefined, 0.0001, 1e6, 0.0001),
+  q('y', 'Y_final', 'Final value', undefined, 0.0001, 1000, 0.0001),
+  q('e', 'offset', 'Offset', undefined, 0.0001, 1000, 0.0001),
+  q('tcl', 'τ_cl', 'Closed-loop time constant', 'min', 0.0001, 1000, 0.0001),
+];
+
+const loopExample = (Kc: number, Kp: number, tau: number, r: number): Values => {
+  const K = Kc * Kp;
+  const y = (r * K) / (1 + K);
+  return { Kc, Kp, tau, r, K, y, e: r - y, tcl: tau / (1 + K) };
+};
+
+const LOOP_SPEC: BlockDiagramSpec = {
+  kind: 'blockDiagram',
+  mode: 'feedback',
+  Kc: 'Kc',
+  Kp: 'Kp',
+  tau: 'tau',
+  setpoint: 'r',
+  loopGain: 'K',
+  final: 'y',
+  offset: 'e',
+  tauCl: 'tcl',
+  sensor: 1,
+};
+
+const LOOP_ASSUMPTIONS = [
+  'Proportional-only control of a first-order process.',
+  'An ideal sensor and valve (gain 1); deviation variables.',
+];
+
+const blockFeedback: ModuleDef = {
+  id: 'g.he-blockDiagram-feedback',
+  title: 'Proportional control: the offset and the faster loop',
+  use: 'Use this for the offset and the closed-loop time constant of P control on a first-order process.',
+  assumptions: LOOP_ASSUMPTIONS,
+  unitSystems: ['metric'],
+  variables: loopVars(),
+  ...LOOP,
+  pictureLabels: ['K', 'y', 'e', 'tcl'],
+  example: loopExample(4, 2, 10, 5),
+  startWith: ['Kc', 'Kp', 'tau', 'r'],
+  representation: { ...LOOP_SPEC },
+};
+
+const blockFeedbackHigh: ModuleDef = {
+  id: 'g.he-blockDiagram-feedback-high',
+  title: 'A high controller gain: a small offset and a fast loop',
+  use: 'Use this for P control with a large gain, where the offset shrinks but never vanishes.',
+  assumptions: LOOP_ASSUMPTIONS,
+  unitSystems: ['metric'],
+  variables: loopVars(),
+  ...LOOP,
+  pictureLabels: ['K', 'y', 'e', 'tcl'],
+  example: loopExample(25, 2, 10, 5),
+  startWith: ['Kc', 'Kp', 'tau', 'r'],
+  representation: { ...LOOP_SPEC },
+};
+
+// ─── HC90: three equal lags (process-control#3) ──────────────────────────────
+
+const secPow = (n: number) => (1 / Math.cos(Math.PI / n)) ** n;
+
+const LAGS = rules(
+  rule(
+    'K_c,uK_p = sec(π ÷ n)ⁿ',
+    '{Kcu} = (1 ÷ cos(π ÷ {n}))^{n} ÷ {Kp}',
+    ['Kcu', 'n', 'Kp'],
+    (v) => v.Kcu! * v.Kp! - secPow(v.n!),
+    {
+      Kcu: [
+        (v) => div(secPow(v.n!), v.Kp!),
+        '(1 ÷ cos(π ÷ {n}))^{n} ÷ {Kp}',
+        'At the edge each lag turns π ÷ n and the loop gain reaches sec(π ÷ n)ⁿ: 8 for three lags.',
+      ],
+      Kp: [(v) => div(secPow(v.n!), v.Kcu!), '(1 ÷ cos(π ÷ {n}))^{n} ÷ {Kcu}', 'Solve for K_p.'],
+    },
+  ),
+  rule(
+    'ω_u = tan(π ÷ n) ÷ τ',
+    '{wu} = tan(π ÷ {n}) ÷ {tau}',
+    ['wu', 'n', 'tau'],
+    (v) => v.wu! * v.tau! - Math.tan(Math.PI / v.n!),
+    {
+      wu: [
+        (v) => div(Math.tan(Math.PI / v.n!), v.tau!),
+        'tan(π ÷ {n}) ÷ {tau}',
+        'Where the phase reaches −180°: tan 60° = √3 for three lags.',
+      ],
+      tau: [(v) => div(Math.tan(Math.PI / v.n!), v.wu!), 'tan(π ÷ {n}) ÷ {wu}', 'Solve for τ.'],
+    },
+  ),
+  rule('P_u = 2π ÷ ω_u', '{Pu} = 2 × π ÷ {wu}', ['Pu', 'wu'], (v) => v.Pu! * v.wu! - 2 * Math.PI, {
+    Pu: [(v) => div(2 * Math.PI, v.wu!), '2 × π ÷ {wu}', 'The period of the steady oscillation.'],
+    wu: [(v) => div(2 * Math.PI, v.Pu!), '2 × π ÷ {Pu}', 'Solve for ω_u.'],
+  }),
+);
+
+const blockLags: ModuleDef = {
+  id: 'g.he-blockDiagram-lags',
+  title: 'Three equal lags: the ultimate gain and period',
+  use: 'Use this for the gain that brings a loop of equal lags to the edge of stability, and its period.',
+  assumptions: [
+    'n equal first-order lags under P control (three on this page).',
+    'The Routh array, or s = iω, gives K_cK_p = 8 and ω_uτ = √3 for three lags.',
+  ],
+  unitSystems: ['metric'],
+  variables: [
+    q('n', 'n', 'Equal lags', undefined, 3, 8, 1, { integer: true }),
+    q('tau', 'τ', 'Each lag’s time constant', 'min', 0.01, 1000, 0.01),
+    q('Kp', 'K_p', 'Process gain', undefined, 0.01, 1000, 0.01),
+    q('Kcu', 'K_c,u', 'Ultimate gain', undefined, 0.0001, 1e6, 0.0001),
+    q('wu', 'ω_u', 'Crossover frequency', 'rad/min', 0.0001, 1000, 0.0001),
+    q('Pu', 'P_u', 'Ultimate period', 'min', 0.001, 1e6, 0.001),
+  ],
+  ...LAGS,
+  example: {
+    n: 3,
+    tau: 2,
+    Kp: 0.5,
+    Kcu: 16,
+    wu: Math.sqrt(3) / 2,
+    Pu: (4 * Math.PI) / Math.sqrt(3),
+  },
+  startWith: ['n', 'tau', 'Kp'],
+  representation: {
+    kind: 'blockDiagram',
+    mode: 'lags',
+    lags: 'n',
+    tau: 'tau',
+    Kp: 'Kp',
+    Kc: 'Kcu',
+    Kcu: 'Kcu',
+    wu: 'wu',
+    Pu: 'Pu',
+  },
+};
+
+// ─── HC90: static feedforward (process-control#3~feedforward) ────────────────
+
+const FEEDFORWARD = rules(
+  rule(
+    'K_ff = −K_d ÷ K_p',
+    '{Kff} = −{Kd} ÷ {Kp}',
+    ['Kff', 'Kd', 'Kp'],
+    (v) => v.Kff! * v.Kp! + v.Kd!,
+    {
+      Kff: [
+        (v) => div(-v.Kd!, v.Kp!),
+        '−{Kd} ÷ {Kp}',
+        'Through the process it must cancel K_d at the output.',
+      ],
+      Kd: [(v) => -v.Kff! * v.Kp!, '−{Kff} × {Kp}', 'Solve for K_d.'],
+      Kp: [(v) => div(-v.Kd!, v.Kff!), '−{Kd} ÷ {Kff}', 'Solve for K_p.'],
+    },
+  ),
+);
+
+const ffVars = (): VariableDef[] => [
+  q('Kd', 'K_d', 'Disturbance gain', undefined, -100, 100, 0.01),
+  q('Kp', 'K_p', 'Process gain', undefined, 0.01, 100, 0.01),
+  q('Kff', 'K_ff', 'Feedforward gain', undefined, -1000, 1000, 0.0001),
+];
+
+const blockFeedforward: ModuleDef = {
+  id: 'g.he-blockDiagram-feedforward',
+  title: 'Static feedforward: cancelling a measured disturbance',
+  use: 'Use this for the feedforward gain that cancels a measured disturbance at steady state.',
+  assumptions: ['Steady-state gains only (no dynamics); the disturbance is measured.'],
+  unitSystems: ['metric'],
+  variables: ffVars(),
+  ...FEEDFORWARD,
+  example: { Kd: 1.5, Kp: 3, Kff: -0.5 },
+  startWith: ['Kd', 'Kp'],
+  representation: { kind: 'blockDiagram', mode: 'feedforward', Kd: 'Kd', Kp: 'Kp', Kff: 'Kff' },
+};
+
+const blockFeedforwardLoop: ModuleDef = {
+  id: 'g.he-blockDiagram-feedforward-loop',
+  title: 'Feedforward inside a feedback loop',
+  use: 'Use this for feedforward added to a feedback loop: the feedforward takes the measured disturbance.',
+  assumptions: [
+    'Steady-state gains only; the disturbance is measured.',
+    'The feedback controller trims what the feedforward misses.',
+  ],
+  unitSystems: ['metric'],
+  standalone: {
+    vars: ['Kc'],
+    why: 'K_c is the feedback controller’s gain; the feedforward gain does not depend on it.',
+  },
+  variables: [...ffVars(), q('Kc', 'K_c', 'Controller gain', undefined, 0.01, 1000, 0.01)],
+  ...FEEDFORWARD,
+  example: { Kd: -0.8, Kp: 2.5, Kff: 0.32, Kc: 2 },
+  startWith: ['Kd', 'Kp', 'Kc'],
+  representation: {
+    kind: 'blockDiagram',
+    mode: 'feedforward',
+    Kd: 'Kd',
+    Kp: 'Kp',
+    Kff: 'Kff',
+    Kc: 'Kc',
+    sensor: 1,
+  },
+};
+
 export const HE3J_GALLERY_MODULES: ModuleDef[] = [
   streamManning,
   streamManningSteep,
@@ -1513,6 +1769,11 @@ export const HE3J_GALLERY_MODULES: ModuleDef[] = [
   hydroRationalPeak,
   hydroDetention,
   hydroDetentionSmall,
+  blockFeedback,
+  blockFeedbackHigh,
+  blockLags,
+  blockFeedforward,
+  blockFeedforwardLoop,
 ];
 
 export const HE3J_GALLERY_LAYOUTS: LayoutDef[] = [];
