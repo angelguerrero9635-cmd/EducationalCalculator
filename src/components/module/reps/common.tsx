@@ -315,6 +315,21 @@ export function setPair(
   calc.set({ ...pins, [first]: updates[first]! }, rep.slide(first));
 }
 
+/**
+ * The values a drag holds still while it sends `updates`: `ids` as they are, unless holding a
+ * worked-out one would change a typed value the drag does not send (a rate worked out from two
+ * typed totals); then only the typed ones, and the worked-out one gives way.
+ */
+export function pinHeld(
+  calc: Calculator,
+  rep: ReturnType<typeof useRep>,
+  ids: string[],
+  updates: Record<string, number>,
+): Values {
+  const all = rep.pin(ids);
+  return calc.fitsHeld({ ...all, ...updates }) ? all : rep.pinTyped(ids);
+}
+
 export function useRep(calc: Calculator) {
   const { module, values, units } = calc;
   const byId = new Map(module.variables.map((v) => [v.id, v]));

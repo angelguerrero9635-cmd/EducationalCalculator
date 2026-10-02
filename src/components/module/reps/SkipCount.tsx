@@ -16,6 +16,7 @@ import {
   useFrozen,
   useRep,
   Caption,
+  pinHeld,
 } from './common';
 import { quotientText } from './exact';
 import { Steppers } from './Steppers';
@@ -326,18 +327,16 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fit.freeze();
                   }}
                   onEnd={fit.release}
-                  onMove={(dx) =>
+                  onMove={(dx) => {
+                    const n = rep.snapTo(countVar, start.current + (dir * dx) / (px(s) - px(0)));
                     calc.set(
                       {
-                        ...rep.pin(stepVar ? [stepVar] : []),
-                        [countVar]: rep.snapTo(
-                          countVar,
-                          start.current + (dir * dx) / (px(s) - px(0)),
-                        ),
+                        ...pinHeld(calc, rep, stepVar ? [stepVar] : [], { [countVar]: n }),
+                        [countVar]: n,
                       },
                       rep.slide(countVar),
-                    )
-                  }
+                    );
+                  }}
                 />
               ) : null}
             </>

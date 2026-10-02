@@ -18,6 +18,7 @@ import {
   useFrozen,
   useRep,
   Caption,
+  pinHeld,
 } from './common';
 
 type Spec = Extract<Representation, { kind: 'plot' }>;
@@ -401,15 +402,13 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     axes.freeze();
                   }}
                   onEnd={axes.release}
-                  onMove={(dx) =>
+                  onMove={(dx) => {
+                    const x = rep.snapTo(spec.x.var, (start.current + dx / xScale) * fx);
                     calc.set(
-                      {
-                        ...pinned,
-                        [spec.x.var]: rep.snapTo(spec.x.var, (start.current + dx / xScale) * fx),
-                      },
+                      { ...pinHeld(calc, rep, spec.params, { [spec.x.var]: x }), [spec.x.var]: x },
                       rep.slide(spec.x.var),
-                    )
-                  }
+                    );
+                  }}
                 />
               ) : null}
               {/* Mid-drag (the axes held) the handle stays mounted past them, kept on the picture. */}
