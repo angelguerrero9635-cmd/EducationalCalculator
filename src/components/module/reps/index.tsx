@@ -186,6 +186,7 @@ import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
+import { Bode } from './Bode';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { Hs2cView } from './Hs2cView';
@@ -344,6 +345,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FluidSystem spec={spec} calc={calc} />;
     case 'controlVolume':
       return <ControlVolume spec={spec} calc={calc} />;
+    case 'bode':
+      return <Bode spec={spec} calc={calc} />; // HC22
     case 'velocityProfile':
       return <VelocityProfile spec={spec} calc={calc} />;
     case 'linearFunction':

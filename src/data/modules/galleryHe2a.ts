@@ -955,6 +955,605 @@ const locusEdge = rootLocus(
   45,
 );
 
+// ── HC22: Bode plots (circuits-2#2, control-systems#3, electronics#3) ──
+
+const TWO_PI = 2 * Math.PI;
+const dbOf = (x: number) => (x > 0 ? 20 * Math.log10(x) : undefined);
+
+/** |H| in dB, solved either way. */
+const decibels = (G: string, H: string) =>
+  rule(
+    `${G} = 20 log₁₀ ${H}`,
+    `{${G}} = 20 × log₁₀({${H}})`,
+    [G, H],
+    (v) => 10 ** (v[G]! / 20) - v[H]!,
+    {
+      [G]: [
+        (v) => dbOf(v[H]!),
+        `20 × log₁₀({${H}})`,
+        'A gain ratio in decibels is 20 log₁₀ of it.',
+      ],
+      [H]: [
+        (v) => 10 ** (v[G]! / 20),
+        `10^({${G}} ÷ 20)`,
+        'Undo the decibels: 10 to the dB over 20.',
+      ],
+    },
+  );
+
+/** circuits-2#2 main and ~high-pass: an RC filter's cutoff, gain and phase at f. */
+function rcFilter(
+  id: string,
+  title: string,
+  use: string,
+  high: boolean,
+  ex: { R: number; C: number; f: number },
+): ModuleDef {
+  const fc = 1000 / (TWO_PI * ex.R * ex.C);
+  const r = ex.f / fc;
+  const H = high ? r / Math.hypot(1, r) : 1 / Math.hypot(1, r);
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'No load on the output; the source is ideal.',
+      high
+        ? 'High-pass: at f_c the gain is −3.01 dB and the phase +45°; far below f_c it falls 20 dB per decade.'
+        : 'Low-pass: at f_c the gain is −3.01 dB and the phase −45°; far above f_c it falls 20 dB per decade.',
+      'R in kΩ and C in μF make RC in ms, so f_c = 1000 ÷ (2πRC) in Hz.',
+    ],
+    variables: [
+      num('R', 'R', 'Resistance', 'kΩ', 0.001, 10000, { step: 0.1 }),
+      num('C', 'C', 'Capacitance', 'μF', 0.0001, 10000, { step: 0.01 }),
+      num('fc', 'f_c', 'Cutoff frequency', 'Hz', 0.001, 1e9),
+      num('f', 'f', 'Frequency', 'Hz', 0.01, 1e9, { step: 1 }),
+      num('H', '|H|', 'Gain (ratio)', undefined, 0, 1),
+      num('G', 'G', 'Gain', 'dB', -400, 0),
+      num('phi', 'φ', 'Phase', '°', high ? 0 : -90, high ? 90 : 0),
+    ],
+    rules: [
+      rule(
+        'f_c = 1/(2πRC)',
+        '{fc} = 1000 ÷ (2π × {R} × {C})',
+        ['fc', 'R', 'C'],
+        (v) => v.fc! * TWO_PI * v.R! * v.C! - 1000,
+        {
+          fc: [
+            (v) => div(1000, TWO_PI * v.R! * v.C!),
+            '1000 ÷ (2π × {R} × {C})',
+            'One over 2πRC; RC in ms, so 1000 ÷ gives Hz.',
+          ],
+          R: [
+            (v) => div(1000, TWO_PI * v.fc! * v.C!),
+            '1000 ÷ (2π × {fc} × {C})',
+            'Solve f_c = 1/(2πRC) for R.',
+          ],
+          C: [
+            (v) => div(1000, TWO_PI * v.fc! * v.R!),
+            '1000 ÷ (2π × {fc} × {R})',
+            'Solve f_c = 1/(2πRC) for C.',
+          ],
+        },
+      ),
+      high
+        ? rule(
+            '|H| = (f/f_c)/√(1 + (f/f_c)²)',
+            '{H} = ({f} ÷ {fc}) ÷ √(1 + ({f} ÷ {fc})²)',
+            ['H', 'f', 'fc'],
+            (v) => v.H! * Math.hypot(1, v.f! / v.fc!) - v.f! / v.fc!,
+            {
+              H: [
+                (v) => v.f! / v.fc! / Math.hypot(1, v.f! / v.fc!),
+                '({f} ÷ {fc}) ÷ √(1 + ({f} ÷ {fc})²)',
+                'The capacitor passes high frequencies: the ratio f/f_c over the RC’s size.',
+              ],
+            },
+          )
+        : rule(
+            '|H| = 1/√(1 + (f/f_c)²)',
+            '{H} = 1 ÷ √(1 + ({f} ÷ {fc})²)',
+            ['H', 'f', 'fc'],
+            (v) => v.H! * Math.hypot(1, v.f! / v.fc!) - 1,
+            {
+              H: [
+                (v) => 1 / Math.hypot(1, v.f! / v.fc!),
+                '1 ÷ √(1 + ({f} ÷ {fc})²)',
+                'The divider of R and the capacitor’s reactance.',
+              ],
+              f: [
+                (v) => (v.H! > 0 && v.H! < 1 ? v.fc! * Math.sqrt(1 / v.H! ** 2 - 1) : undefined),
+                '{fc} × √(1 ÷ {H}² − 1)',
+                'Solve the gain for f/f_c.',
+              ],
+            },
+          ),
+      decibels('G', 'H'),
+      high
+        ? rule(
+            'φ = 90° − tan⁻¹(f/f_c)',
+            '{phi} = 90 − tan⁻¹({f} ÷ {fc})',
+            ['phi', 'f', 'fc'],
+            (v) => Math.tan((90 - v.phi!) * RAD) * v.fc! - v.f!,
+            {
+              phi: [
+                (v) => 90 - Math.atan(v.f! / v.fc!) / RAD,
+                '90 − tan⁻¹({f} ÷ {fc})',
+                'The output leads: 90° at low f, 45° at f_c, toward 0° above.',
+              ],
+            },
+          )
+        : rule(
+            'φ = −tan⁻¹(f/f_c)',
+            '{phi} = −tan⁻¹({f} ÷ {fc})',
+            ['phi', 'f', 'fc'],
+            (v) => Math.tan(-v.phi! * RAD) * v.fc! - v.f!,
+            {
+              phi: [
+                (v) => -Math.atan(v.f! / v.fc!) / RAD,
+                '−tan⁻¹({f} ÷ {fc})',
+                'The output lags: 0° at low f, −45° at f_c, toward −90° above.',
+              ],
+            },
+          ),
+    ],
+    example: {
+      ...ex,
+      fc,
+      H,
+      G: 20 * Math.log10(H),
+      phi: high ? 90 - Math.atan(r) / RAD : -Math.atan(r) / RAD,
+    },
+    startWith: ['R', 'C', 'f'],
+    representation: {
+      kind: 'bode',
+      ...(high ? { gain: 1, integrators: -1 } : { dc: 1 }),
+      poles: ['fc'],
+      cornerNames: ['f_c'],
+      at: 'f',
+      read: { ratio: 'H', db: 'G', phase: 'phi' },
+    },
+  });
+}
+
+const lowPass = rcFilter(
+  'g.he-bode-low-pass',
+  'RC low-pass: f_c, the gain and phase at 10 kHz',
+  'Use this for “Find the cutoff frequency of an RC low-pass filter with R = 1 kΩ and C = 0.1 μF, and its gain at 10 kHz.”',
+  false,
+  { R: 1, C: 0.1, f: 10000 },
+);
+
+const lowPassFar = rcFilter(
+  'g.he-bode-low-pass-far',
+  'RC low-pass two decades up: −40 dB, almost −90°',
+  'Use this for “How far down is the same RC low-pass at 100 times its cutoff?”',
+  false,
+  { R: 1, C: 0.1, f: 159155 },
+);
+
+const highPass = rcFilter(
+  'g.he-bode-high-pass',
+  'RC high-pass: a decade below f_c, −20 dB and 84.3°',
+  'Use this for “The same R and C as a high-pass filter: find the gain and phase at 159.2 Hz.”',
+  true,
+  { R: 1, C: 0.1, f: 159.2 },
+);
+
+/** circuits-2#2~band-pass: a series RLC across R. */
+const bandPass = page({
+  id: 'g.he-bode-band-pass',
+  title: 'Series RLC band-pass: f₀, Q and the bandwidth',
+  use: 'Use this for “A series RLC with R = 10 Ω, L = 10 mH, C = 1 μF: find the resonant frequency, Q and the bandwidth.”',
+  assumptions: [
+    'The output is across R: 0 dB at f₀, where the L and C reactances cancel.',
+    'Q = (1/R)√(L/C); the −3 dB band is B = f₀ ÷ Q wide.',
+    'L in mH and C in μF: LC in s² is L × C ÷ 10⁹.',
+  ],
+  variables: [
+    num('R', 'R', 'Resistance', 'Ω', 0.01, 1e6, { step: 0.5 }),
+    num('L', 'L', 'Inductance', 'mH', 0.001, 1e6, { step: 0.1 }),
+    num('C', 'C', 'Capacitance', 'μF', 0.0001, 1e6, { step: 0.01 }),
+    num('f0', 'f₀', 'Resonant frequency', 'Hz', 0.001, 1e9),
+    num('Q', 'Q', 'Quality factor', undefined, 0.001, 1e6),
+    num('B', 'B', 'Bandwidth', 'Hz', 0.001, 1e9),
+  ],
+  rules: [
+    rule(
+      'f₀ = 1/(2π√(LC))',
+      '{f0} = 1 ÷ (2π × √({L} × {C} ÷ 1000000000))',
+      ['f0', 'L', 'C'],
+      (v) => v.f0! * TWO_PI * Math.sqrt((v.L! * v.C!) / 1e9) - 1,
+      {
+        f0: [
+          (v) => div(1, TWO_PI * Math.sqrt((v.L! * v.C!) / 1e9)),
+          '1 ÷ (2π × √({L} × {C} ÷ 1000000000))',
+          'Where ωL = 1/(ωC): ω₀ = 1/√(LC), and f₀ = ω₀ ÷ 2π.',
+        ],
+        C: [
+          (v) => div(1e9, (TWO_PI * v.f0!) ** 2 * v.L!),
+          '1000000000 ÷ ((2π × {f0})² × {L})',
+          'Solve f₀ for C, in μF.',
+        ],
+      },
+    ),
+    rule(
+      'Q = (1/R)√(L/C)',
+      '{Q} = √({L} ÷ {C} × 1000) ÷ {R}',
+      ['Q', 'L', 'C', 'R'],
+      (v) => v.Q! * v.R! - Math.sqrt((v.L! / v.C!) * 1000),
+      {
+        Q: [
+          (v) => div(Math.sqrt((v.L! / v.C!) * 1000), v.R!),
+          '√({L} ÷ {C} × 1000) ÷ {R}',
+          'L/C in H/F is 1000 × (mH ÷ μF); its root over R.',
+        ],
+        R: [
+          (v) => div(Math.sqrt((v.L! / v.C!) * 1000), v.Q!),
+          '√({L} ÷ {C} × 1000) ÷ {Q}',
+          'Solve Q for R.',
+        ],
+      },
+    ),
+    quotient('B = f₀/Q', 'B', 'f0', 'Q', [
+      'The sharper the resonance, the narrower the band.',
+      'Multiply the bandwidth by Q.',
+      'Divide f₀ by the bandwidth.',
+    ]),
+  ],
+  example: {
+    R: 10,
+    L: 10,
+    C: 1,
+    f0: 1 / (TWO_PI * Math.sqrt(1e-8)),
+    Q: 10,
+    B: 1 / (TWO_PI * Math.sqrt(1e-8)) / 10,
+  },
+  startWith: ['R', 'L', 'C'],
+  representation: {
+    kind: 'bode',
+    gain: 'B',
+    integrators: -1,
+    pairs: [{ freq: 'f0', q: 'Q' }],
+    cornerNames: ['f₀'],
+    at: 'f0',
+    fixed: true,
+  },
+});
+
+/** control-systems#3 main: K/(s(s + a)), the gain crossover and phase margin. */
+const phaseMargin = page({
+  id: 'g.he-bode-phase-margin',
+  title: 'G(s) = K/(s(s + a)): gain crossover and phase margin',
+  use: 'Use this for “Find the phase margin of G(s) = 20/(s(s + 3)).”',
+  assumptions: [
+    'Unity feedback; ω_c is where |G(jω)| = 1 (0 dB).',
+    'The phase is −90° − tan⁻¹(ω/a), so PM = 180° + ∠G(jω_c) = 90° − tan⁻¹(ω_c/a).',
+    'A PM above about 45° means little overshoot.',
+  ],
+  variables: [
+    num('K', 'K', 'Gain', undefined, 0.01, 1e6, { step: 0.5 }),
+    num('a', 'a', 'Pole at −a', 'rad/s', 0.01, 1e5, { step: 0.1 }),
+    num('wc', 'ω_c', 'Gain crossover', 'rad/s', 0.0001, 1e6),
+    num('PM', 'PM', 'Phase margin', '°', 0.0001, 90),
+  ],
+  rules: [
+    rule(
+      'ω_c² = (−a² + √(a⁴ + 4K²))/2',
+      '{wc} = √((−{a}² + √({a}⁴ + 4 × {K}²)) ÷ 2)',
+      ['wc', 'a', 'K'],
+      (v) => v.wc! ** 2 * Math.hypot(v.wc!, v.a!) - v.K! * v.wc!,
+      {
+        wc: [
+          (v) => Math.sqrt((-(v.a! ** 2) + Math.sqrt(v.a! ** 4 + 4 * v.K! ** 2)) / 2),
+          '√((−{a}² + √({a}⁴ + 4 × {K}²)) ÷ 2)',
+          'Set K ÷ (ω√(ω² + a²)) = 1 and solve the quadratic in ω².',
+        ],
+        K: [
+          (v) => v.wc! * Math.hypot(v.wc!, v.a!),
+          '{wc} × √({wc}² + {a}²)',
+          'The gain that makes |G| = 1 at ω_c.',
+        ],
+      },
+    ),
+    rule(
+      'PM = 90° − tan⁻¹(ω_c/a)',
+      '{PM} = 90 − tan⁻¹({wc} ÷ {a})',
+      ['PM', 'wc', 'a'],
+      (v) => Math.tan((90 - v.PM!) * RAD) * v.a! - v.wc!,
+      {
+        PM: [
+          (v) => 90 - Math.atan(v.wc! / v.a!) / RAD,
+          '90 − tan⁻¹({wc} ÷ {a})',
+          '180° plus the phase −90° − tan⁻¹(ω_c/a).',
+        ],
+        wc: [
+          (v) => div(v.a!, Math.tan(v.PM! * RAD)),
+          '{a} ÷ tan({PM}°)',
+          'Undo the arctangent: tan(90° − PM) = 1 ÷ tan PM.',
+        ],
+      },
+    ),
+  ],
+  example: { K: 20, a: 3, wc: 4, PM: 90 - Math.atan(4 / 3) / RAD },
+  startWith: ['K', 'a'],
+  representation: {
+    kind: 'bode',
+    gain: 'K',
+    integrators: 1,
+    poles: ['a'],
+    cornerNames: ['a'],
+    unit: 'rad/s',
+    crossover: { freq: 'wc', margin: 'PM' },
+  },
+});
+
+/** control-systems#3~asymptotes: K/(s + p), the straight lines and the exact gain. */
+const asymptotes = page({
+  id: 'g.he-bode-asymptotes',
+  title: 'K/(s + p): the asymptotes and the exact gain',
+  use: 'Use this for “Sketch the Bode magnitude of 100/(s + 10) and find the exact gain at 100 rad/s.”',
+  assumptions: [
+    'Below the corner p the asymptote is flat at 20 log₁₀(K/p); above it falls 20 dB a decade, 20 log₁₀(K/ω).',
+    'The exact curve sits 3.01 dB under the corner of the lines and meets them far away.',
+  ],
+  variables: [
+    num('K', 'K', 'Gain', 'rad/s', 0.01, 1e6, { step: 1 }),
+    num('p', 'p', 'Corner (pole at −p)', 'rad/s', 0.01, 1e6, { step: 1 }),
+    num('w', 'ω', 'Frequency', 'rad/s', 0.001, 1e7, { step: 1 }),
+    num('dc', 'G_dc', 'DC gain', 'dB', -200, 200),
+    num('G', 'G', 'Exact gain at ω', 'dB', -300, 200),
+    num('Ga', 'G_a', 'Asymptote at ω', 'dB', -300, 200),
+  ],
+  rules: [
+    rule(
+      'G_dc = 20 log₁₀(K/p)',
+      '{dc} = 20 × log₁₀({K} ÷ {p})',
+      ['dc', 'K', 'p'],
+      (v) => 10 ** (v.dc! / 20) * v.p! - v.K!,
+      {
+        dc: [(v) => dbOf(v.K! / v.p!), '20 × log₁₀({K} ÷ {p})', 'At s = 0 the gain is K/p.'],
+        K: [
+          (v) => v.p! * 10 ** (v.dc! / 20),
+          '{p} × 10^({dc} ÷ 20)',
+          'Undo the decibels and multiply by p.',
+        ],
+      },
+    ),
+    rule(
+      'G = 20 log₁₀(K/√(ω² + p²))',
+      '{G} = 20 × log₁₀({K} ÷ √({w}² + {p}²))',
+      ['G', 'K', 'w', 'p'],
+      (v) => 10 ** (v.G! / 20) * Math.hypot(v.w!, v.p!) - v.K!,
+      {
+        G: [
+          (v) => dbOf(v.K! / Math.hypot(v.w!, v.p!)),
+          '20 × log₁₀({K} ÷ √({w}² + {p}²))',
+          '|jω + p| is √(ω² + p²).',
+        ],
+      },
+    ),
+    rule(
+      'G_a = 20 log₁₀(K/max(ω, p))',
+      '{Ga} = 20 × log₁₀({K} ÷ max({w}, {p}))',
+      ['Ga', 'K', 'w', 'p'],
+      (v) => 10 ** (v.Ga! / 20) * Math.max(v.w!, v.p!) - v.K!,
+      {
+        Ga: [
+          (v) => dbOf(v.K! / Math.max(v.w!, v.p!)),
+          (v) => (v.w! > v.p! ? '20 × log₁₀({K} ÷ {w})' : '20 × log₁₀({K} ÷ {p})'),
+          (v) =>
+            v.w! > v.p!
+              ? 'Above the corner the line is 20 log₁₀(K/ω).'
+              : 'Below the corner the line is flat at 20 log₁₀(K/p).',
+        ],
+      },
+    ),
+  ],
+  example: { K: 100, p: 10, w: 100, dc: 20, G: 20 * Math.log10(100 / Math.hypot(100, 10)), Ga: 0 },
+  startWith: ['K', 'p', 'w'],
+  representation: {
+    kind: 'bode',
+    gain: 'K',
+    poles: ['p'],
+    cornerNames: ['p'],
+    unit: 'rad/s',
+    at: 'w',
+    read: { db: 'G', asymptote: 'Ga' },
+  },
+});
+
+/** control-systems#3~gain-margin: K/(s(s + a)(s + b)), the phase crossover and GM. */
+const gainMargin = page({
+  id: 'g.he-bode-gain-margin',
+  title: 'K/(s(s + 1)(s + 2)): the phase crossover and gain margin',
+  use: 'Use this for “Find the gain margin of G(s) = 2/(s(s + 1)(s + 2)).”',
+  assumptions: [
+    'The phase is −90° − tan⁻¹(ω/a) − tan⁻¹(ω/b); it reaches −180° where ω² = ab.',
+    'There |G| = K ÷ (ab(a + b)), and GM = 1 ÷ |G| (Routh agrees: K_max = ab(a + b)).',
+  ],
+  variables: [
+    num('K', 'K', 'Gain', undefined, 0.01, 1e6, { step: 0.1 }),
+    num('a', 'a', 'First pole at −a', 'rad/s', 0.01, 1e4, { step: 0.1 }),
+    num('b', 'b', 'Second pole at −b', 'rad/s', 0.01, 1e4, { step: 0.1 }),
+    num('w180', 'ω₁₈₀', 'Phase crossover', 'rad/s', 0.0001, 1e4),
+    num('GM', 'GM', 'Gain margin (ratio)', undefined, 0.000001, 1e9),
+    num('GMdb', 'GM_dB', 'Gain margin', 'dB', -200, 200),
+  ],
+  rules: [
+    rule(
+      'ω₁₈₀ = √(ab)',
+      '{w180} = √({a} × {b})',
+      ['w180', 'a', 'b'],
+      (v) => v.w180! ** 2 - v.a! * v.b!,
+      {
+        w180: [
+          (v) => Math.sqrt(v.a! * v.b!),
+          '√({a} × {b})',
+          'tan⁻¹(ω/a) + tan⁻¹(ω/b) = 90° when ω² = ab.',
+        ],
+      },
+    ),
+    rule(
+      'GM = ab(a + b)/K',
+      '{GM} = {a} × {b} × ({a} + {b}) ÷ {K}',
+      ['GM', 'a', 'b', 'K'],
+      (v) => v.GM! * v.K! - v.a! * v.b! * (v.a! + v.b!),
+      {
+        GM: [
+          (v) => div(v.a! * v.b! * (v.a! + v.b!), v.K!),
+          '{a} × {b} × ({a} + {b}) ÷ {K}',
+          'At ω₁₈₀, |G| = K ÷ (ab(a + b)); the margin is one over it.',
+        ],
+        K: [
+          (v) => div(v.a! * v.b! * (v.a! + v.b!), v.GM!),
+          '{a} × {b} × ({a} + {b}) ÷ {GM}',
+          'The gain that leaves this margin.',
+        ],
+      },
+    ),
+    decibels('GMdb', 'GM'),
+  ],
+  example: { K: 2, a: 1, b: 2, w180: Math.SQRT2, GM: 3, GMdb: 20 * Math.log10(3) },
+  startWith: ['K', 'a', 'b'],
+  representation: {
+    kind: 'bode',
+    gain: 'K',
+    integrators: 1,
+    poles: ['a', 'b'],
+    cornerNames: ['a', 'b'],
+    unit: 'rad/s',
+    margin: { freq: 'w180', gain: 'GM', db: 'GMdb' },
+  },
+});
+
+/** electronics#3 main: an op-amp's closed-loop bandwidth under its open-loop line. */
+const opAmp = page({
+  id: 'g.he-bode-op-amp',
+  title: 'Op-amp: the closed-loop gain meets the open-loop line at GBW ÷ G',
+  use: 'Use this for “An op-amp with GBW = 1 MHz has a gain of 20. Find its bandwidth.”',
+  assumptions: [
+    'A single-pole op-amp: above its low corner the open-loop gain is GBW ÷ f, −20 dB a decade.',
+    'G is the noise gain 1 + R_f/R_g; the closed loop is flat at G until it meets that line.',
+    'The smaller of f_3dB and f_max limits a full-swing output.',
+  ],
+  variables: [
+    num('GBW', 'GBW', 'Gain-bandwidth product', 'kHz', 1, 1e7, { step: 1 }),
+    num('G', 'G', 'Closed-loop gain', undefined, 1, 1e5, { step: 1 }),
+    num('f3', 'f_3dB', 'Bandwidth', 'kHz', 0.00001, 1e7),
+    num('SR', 'SR', 'Slew rate', 'V/μs', 0.01, 10000, { step: 0.1 }),
+    num('Vp', 'V_p', 'Output peak', 'V', 0.01, 1000, { step: 0.5 }),
+    num('fmax', 'f_max', 'Full-power frequency', 'kHz', 0.00001, 1e9),
+  ],
+  rules: [
+    quotient('f_3dB = GBW/G', 'f3', 'GBW', 'G', [
+      'The flat line at G meets GBW ÷ f where f = GBW ÷ G.',
+      'Multiply the bandwidth by the gain.',
+      'Divide GBW by the bandwidth.',
+    ]),
+    rule(
+      'f_max = SR/(2πV_p)',
+      '{fmax} = {SR} × 1000 ÷ (2π × {Vp})',
+      ['fmax', 'SR', 'Vp'],
+      (v) => v.fmax! * TWO_PI * v.Vp! - v.SR! * 1000,
+      {
+        fmax: [
+          (v) => div(v.SR! * 1000, TWO_PI * v.Vp!),
+          '{SR} × 1000 ÷ (2π × {Vp})',
+          'A sine’s steepest slope is 2πfV_p; V/μs ÷ V is MHz, × 1000 for kHz.',
+        ],
+        SR: [
+          (v) => (v.fmax! * TWO_PI * v.Vp!) / 1000,
+          '2π × {fmax} × {Vp} ÷ 1000',
+          'The slope a full swing at f_max needs.',
+        ],
+      },
+    ),
+  ],
+  example: { GBW: 1000, G: 20, f3: 50, SR: 0.5, Vp: 10, fmax: 500 / (TWO_PI * 10) },
+  startWith: ['GBW', 'G', 'SR', 'Vp'],
+  representation: {
+    kind: 'bode',
+    gain: 'GBW',
+    integrators: 1,
+    unit: 'kHz',
+    closed: { gain: 'G', bandwidth: 'f3' },
+    phase: false,
+  },
+});
+
+/** electronics#3~active-lowpass: an inverting op-amp low-pass, its gain and cutoff. */
+const activeLowPass = page({
+  id: 'g.he-bode-active-low-pass',
+  title: 'Active low-pass: −10 (20 dB) to f_c = 1 kHz, the phase from 180°',
+  use: 'Use this for “An inverting low-pass has R₁ = 10 kΩ, R_f = 100 kΩ and C = 1.59 nF. Find its gain and cutoff.”',
+  assumptions: [
+    'An ideal op-amp; C across R_f sets the corner.',
+    'A = −R_f ÷ R₁ in the passband: 20 log₁₀|A| dB, the phase 180° (inverting), falling to 90°.',
+    'R_f in kΩ and C in nF make R_fC in μs, so f_c = 1,000,000 ÷ (2πR_fC) in Hz.',
+  ],
+  variables: [
+    num('R1', 'R₁', 'Input resistor', 'kΩ', 0.01, 10000, { step: 0.5 }),
+    num('Rf', 'R_f', 'Feedback resistor', 'kΩ', 0.01, 10000, { step: 0.5 }),
+    num('C', 'C', 'Capacitor', 'nF', 0.001, 1e6, { step: 0.01 }),
+    num('A', 'A', 'Passband gain', undefined, -1e6, -0.0001),
+    num('Adb', 'A_dB', 'Passband gain', 'dB', -100, 200),
+    num('fc', 'f_c', 'Cutoff frequency', 'Hz', 0.001, 1e9),
+  ],
+  rules: [
+    rule('A = −R_f/R₁', '{A} = −{Rf} ÷ {R1}', ['A', 'Rf', 'R1'], (v) => v.A! * v.R1! + v.Rf!, {
+      A: [
+        (v) => div(-v.Rf!, v.R1!),
+        '−{Rf} ÷ {R1}',
+        'An inverting amplifier: minus the ratio of the resistors.',
+      ],
+      Rf: [(v) => -v.A! * v.R1!, '−{A} × {R1}', 'Solve for R_f.'],
+      R1: [(v) => div(-v.Rf!, v.A!), '−{Rf} ÷ {A}', 'Solve for R₁.'],
+    }),
+    rule(
+      'A_dB = 20 log₁₀|A|',
+      '{Adb} = 20 × log₁₀(|{A}|)',
+      ['Adb', 'A'],
+      (v) => 10 ** (v.Adb! / 20) + v.A!,
+      {
+        Adb: [
+          (v) => dbOf(Math.abs(v.A!)),
+          '20 × log₁₀(|{A}|)',
+          'The size of the gain in dB; the minus sign is the 180° phase.',
+        ],
+      },
+    ),
+    rule(
+      'f_c = 1/(2πR_fC)',
+      '{fc} = 1000000 ÷ (2π × {Rf} × {C})',
+      ['fc', 'Rf', 'C'],
+      (v) => v.fc! * TWO_PI * v.Rf! * v.C! - 1e6,
+      {
+        fc: [
+          (v) => div(1e6, TWO_PI * v.Rf! * v.C!),
+          '1000000 ÷ (2π × {Rf} × {C})',
+          'The corner of R_f and C; R_fC in μs.',
+        ],
+        C: [
+          (v) => div(1e6, TWO_PI * v.Rf! * v.fc!),
+          '1000000 ÷ (2π × {Rf} × {fc})',
+          'Solve the corner for C, in nF.',
+        ],
+      },
+    ),
+  ],
+  example: { R1: 10, Rf: 100, C: 1.59, A: -10, Adb: 20, fc: 1e6 / (TWO_PI * 100 * 1.59) },
+  startWith: ['R1', 'Rf', 'C'],
+  representation: {
+    kind: 'bode',
+    dc: 'A',
+    poles: ['fc'],
+    cornerNames: ['f_c'],
+    at: 'fc',
+    fixed: true,
+  },
+});
+
 export const HE2A_GALLERY_MODULES: ModuleDef[] = [
   impedance,
   capacitive,
@@ -969,6 +1568,15 @@ export const HE2A_GALLERY_MODULES: ModuleDef[] = [
   dcGain,
   locus,
   locusEdge,
+  lowPass,
+  lowPassFar,
+  highPass,
+  bandPass,
+  phaseMargin,
+  asymptotes,
+  gainMargin,
+  opAmp,
+  activeLowPass,
 ];
 
 export const HE2A_GALLERY_LAYOUTS: LayoutDef[] = [];

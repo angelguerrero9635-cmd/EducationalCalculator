@@ -41,7 +41,7 @@ import { hs2cSpecVars } from '../typesHs2c';
 import { hs3aSpecVars } from '../typesHs3a';
 import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
-import { complexPlaneHe2aVars } from '../typesHe2a';
+import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -620,6 +620,8 @@ function representationVars(r: Representation): string[] {
       return he1bSpecVars(r);
     case 'beam':
       return he1aSpecVars(r);
+    case 'bode':
+      return bodeVars(r); // HC22
   }
 }
 
