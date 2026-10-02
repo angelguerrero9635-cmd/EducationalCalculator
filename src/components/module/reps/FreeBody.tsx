@@ -410,7 +410,12 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                             spec.tensionAngle,
                           ].filter((x): x is string => typeof x === 'string'),
                         ),
-                        [handleId]: rep.snapTo(handleId, d.v + along2 / k),
+                        // At least one step: a pull dragged to 0 has no arrow, and its handle
+                        // went with it mid-drag.
+                        [handleId]: rep.snapTo(
+                          handleId,
+                          Math.max(rep.slide(handleId)?.slide.step ?? 0.01, d.v + along2 / k),
+                        ),
                       },
                       rep.slide(handleId),
                     );

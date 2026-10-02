@@ -19,7 +19,7 @@ import {
   uprightTest,
 } from './LineSystemMarks';
 import { shadeSaid, shadeSign } from './signBox';
-import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, Caption, DragHandle, pinHeld, useFrozen, useRep } from './common';
 import {
   above,
   holds,
@@ -432,11 +432,14 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                   }}
                   onMove={(_, dy) => {
                     const id = spec.intercept as string;
+                    const value = rep.snapTo(id, (start.current.b - dy / f.uy) * rep.factor(id));
                     calc.set(
                       {
                         ...(spec.keep ? rep.pin(spec.keep) : rep.pin(vars.filter((v) => v !== id))),
-                        ...(spec.point ? rep.pin([spec.point.x]) : {}),
-                        [id]: rep.snapTo(id, (start.current.b - dy / f.uy) * rep.factor(id)),
+                        // The point's x is held only when that changes no typed value (x worked
+                        // out from the equation, held, stopped the intercept dead).
+                        ...(spec.point ? pinHeld(calc, rep, [spec.point.x], { [id]: value }) : {}),
+                        [id]: value,
                       },
                       rep.slide(id),
                     );
@@ -466,7 +469,11 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                     calc.set(
                       {
                         ...(spec.keep ? rep.pin(spec.keep) : rep.pin(vars.filter((v) => v !== id))),
-                        ...(spec.point ? rep.pin([spec.point.x]) : {}),
+                        ...(spec.point
+                          ? pinHeld(calc, rep, [spec.point.x], {
+                              [id]: rep.snapTo(id, (riseNow / s.run) * rep.factor(id)),
+                            })
+                          : {}),
                         [id]: rep.snapTo(id, (riseNow / s.run) * rep.factor(id)),
                       },
                       rep.slide(id),

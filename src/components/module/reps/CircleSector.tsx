@@ -12,7 +12,16 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
+import {
+  Canvas,
+  Caption,
+  ChartText,
+  DragHandle,
+  fitLabel,
+  pinHeld,
+  useFrozen,
+  useRep,
+} from './common';
 import { toFraction } from './exact';
 import { Chip, coef } from './graphKit';
 
@@ -254,19 +263,23 @@ export function CircleSector({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fit.freeze();
                     }}
                     onEnd={fit.release}
-                    onMove={(dx, dy) =>
+                    onMove={(dx, dy) => {
+                      const value = rep.snapTo(
+                        spec.radius,
+                        Math.hypot(start.current.x + dx - cx, start.current.y + dy - cy) / scale,
+                      );
+                      // The angle is held only when that changes no typed value (θ in radians
+                      // worked out from typed degrees, held, made the degrees worked out).
                       calc.set(
                         {
-                          ...(angleId ? rep.pin([angleId]) : {}),
-                          [spec.radius]: rep.snapTo(
-                            spec.radius,
-                            Math.hypot(start.current.x + dx - cx, start.current.y + dy - cy) /
-                              scale,
-                          ),
+                          ...(angleId
+                            ? pinHeld(calc, rep, [angleId], { [spec.radius]: value })
+                            : {}),
+                          [spec.radius]: value,
                         },
                         rep.slide(spec.radius),
-                      )
-                    }
+                      );
+                    }}
                   />
                   {angleId ? (
                     <DragHandle

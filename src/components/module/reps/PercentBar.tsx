@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { LitRect, TopLight, usePaintIds } from './paint';
-import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, Caption, ChartText, DragHandle, pinHeld, useFrozen, useRep } from './common';
 import { PercentChange } from './PercentChange';
 import { SecondMark } from './PercentSecond';
 import { Steppers } from './Steppers';
@@ -181,18 +181,21 @@ function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   top.freeze();
                 }}
                 onEnd={top.release}
-                onMove={(dx) =>
+                onMove={(dx) => {
+                  const value = rep.snapTo(
+                    spec.percent,
+                    start.current + (dx / (w - 2 * pad)) * top.value,
+                  );
+                  // The whole is held only when that changes no typed value (a whole worked
+                  // out from two typed parts, held, stopped the percent dead).
                   calc.set(
                     {
-                      ...rep.pin([spec.whole]),
-                      [spec.percent]: rep.snapTo(
-                        spec.percent,
-                        start.current + (dx / (w - 2 * pad)) * top.value,
-                      ),
+                      ...pinHeld(calc, rep, [spec.whole], { [spec.percent]: value }),
+                      [spec.percent]: value,
                     },
                     rep.slide(spec.percent),
-                  )
-                }
+                  );
+                }}
               />
             </>
           );
