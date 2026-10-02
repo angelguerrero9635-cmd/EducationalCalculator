@@ -153,6 +153,7 @@ const PICTURE_NAMES: Record<string, string> = {
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
   aquifer:
     'a cross-section of an aquifer: wells, the water table, a piezometer or a cone of depression',
+  refraction: 'a seismic or radar survey: rays through layers and the travel-time graph',
   globe:
     'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
   stressStrain:

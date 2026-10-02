@@ -54,4 +54,31 @@ export const HE3M_REQUESTS: PictureRequest[] = [
       'g.he-aquifer-well-wide',
     ],
   },
+  {
+    ...ask(
+      'HC76',
+      'refraction',
+      'A seismic or radar survey in section with its travel-time graph: two layers with the direct, head-wave (i_c marked) and reflected rays and the t–x lines crossing at x_c; a reflector with the hyperbola t(x), t₀ and the moveout; ground-penetrating radar with depth beside two-way time',
+      {
+        'he.earth-science.geophysics#0': '"refraction"',
+        'he.earth-science.geophysics#0~reflection': '"reflection"',
+        'he.earth-science.geophysics#3~gpr': '"gpr"',
+      },
+      [
+        'From EG-P20 (new kind `refraction`). Depths and offsets share one scale, so every ray angle is true; rock painted, the graph flat.',
+        'Fields: { kind: "refraction", mode: "refraction", v1, v2 (m/s), crossover? (x_c, m), depth? (h), critical? (i_c, °), intercept? (tᵢ, ms) }; { mode: "reflection", depth (h), speed (v), offset (x), t0?, time?, moveout? (s) }; { mode: "gpr", permittivity (εᵣ), time (two-way, ns), speed? (m/ns), depth? (m), light? (c in m/ns, default 0.3: the page passes its own) }.',
+        'geophysics#0 main: { mode: "refraction", v1: "v1", v2: "v2", crossover: "xc", depth: "h", critical: "ic", intercept: "ti" } (the page refuses v₂ ≤ v₁: no head wave; the picture fades and says why); ~reflection: { mode: "reflection", depth: "h", speed: "v", offset: "x", t0: "t0", time: "t", moveout: "dt" }; geophysics#3~gpr: { mode: "gpr", permittivity: "eps", time: "t", speed: "v", depth: "d", light: 0.3 }.',
+        'Checks (harness/picturesHe3m.ts): i_c = sin⁻¹(v₁ ÷ v₂); h from x_c; the direct and head-wave lines cross at x_c; tᵢ = 2h cos i_c ÷ v₁ (ms); t₀ = 2h ÷ v, t(x) = √(x² + 4h²) ÷ v, Δt = t − t₀, never below t₀; v = c ÷ √εᵣ, d = vt ÷ 2, εᵣ ≥ 1.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-refraction',
+      'g.he-refraction-small-contrast',
+      'g.he-refraction-reflection',
+      'g.he-refraction-reflection-far',
+      'g.he-refraction-gpr',
+      'g.he-refraction-gpr-wet',
+    ],
+  },
 ];

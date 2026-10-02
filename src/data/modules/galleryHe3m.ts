@@ -3,8 +3,18 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  *
  * HC75: the `aquifer` kind (EG-P17): section, head and well.
+ * HC76: the `refraction` kind (EG-P20): refraction, reflection and gpr.
  */
 import { thiemRate } from '@/components/module/reps/aquiferMath';
+import {
+  criticalAngle,
+  crossoverOf,
+  depthFromCrossover,
+  interceptTime,
+  radarDepth,
+  radarSpeed,
+  reflectionTime,
+} from '@/components/module/reps/refractionMath';
 import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -412,6 +422,327 @@ const AQUIFER_DEMOS: ModuleDef[] = [
   aquiferWellWide,
 ];
 
-export const HE3M_GALLERY_MODULES: ModuleDef[] = [...AQUIFER_DEMOS];
+// ─── HC76 refraction (EG-P20) ────────────────────────────────────────────────
+
+/** sin i_c = v₁ ÷ v₂. */
+const criticalRule: Rule = {
+  relation: {
+    id: 'sin i_c = v₁ ÷ v₂',
+    display: 'sin({ic}°) = {v1} ÷ {v2}',
+    vars: ['ic', 'v1', 'v2'],
+    residual: (v) => v.ic! - criticalAngle(v.v1!, v.v2!),
+    solve: { ic: (v) => (v.v2! > v.v1! ? criticalAngle(v.v1!, v.v2!) : undefined) },
+  },
+  steps: {
+    ic: st(
+      'arcsin({v1} ÷ {v2})',
+      'The ray bends to run along the faster layer when sin i = v₁ ÷ v₂.',
+    ),
+  },
+};
+
+/** h = (x_c ÷ 2)√((v₂ − v₁) ÷ (v₂ + v₁)). */
+const crossoverRule: Rule = {
+  relation: {
+    id: 'h = (x_c ÷ 2)√((v₂ − v₁) ÷ (v₂ + v₁))',
+    display: '{h} = ({xc} ÷ 2) × √(({v2} − {v1}) ÷ ({v2} + {v1}))',
+    vars: ['h', 'xc', 'v1', 'v2'],
+    residual: (v) => v.h! - depthFromCrossover(v.xc!, v.v1!, v.v2!),
+    solve: {
+      h: (v) => (v.v2! > v.v1! ? depthFromCrossover(v.xc!, v.v1!, v.v2!) : undefined),
+      xc: (v) => (v.v2! > v.v1! ? crossoverOf(v.h!, v.v1!, v.v2!) : undefined),
+    },
+  },
+  steps: {
+    h: st(
+      '({xc} ÷ 2) × √(({v2} − {v1}) ÷ ({v2} + {v1}))',
+      'Half the crossover distance, times the root of the speeds’ difference over their sum.',
+    ),
+    xc: st(
+      '2 × {h} × √(({v2} + {v1}) ÷ ({v2} − {v1}))',
+      'Twice the depth, times the root of the speeds’ sum over their difference.',
+    ),
+  },
+};
+
+/** tᵢ = 2h cos i_c ÷ v₁, in ms. */
+const interceptRule: Rule = {
+  relation: {
+    id: 'tᵢ = 2h cos i_c ÷ v₁',
+    display: '{ti} = 2 × {h} × cos({ic}°) ÷ {v1} × 1000',
+    vars: ['ti', 'h', 'ic', 'v1'],
+    residual: (v) => v.ti! - ((2 * v.h! * Math.cos((v.ic! * Math.PI) / 180)) / v.v1!) * 1000,
+    solve: {
+      ti: (v) => ((2 * v.h! * Math.cos((v.ic! * Math.PI) / 180)) / v.v1!) * 1000,
+    },
+  },
+  steps: {
+    ti: st(
+      '2 × {h} × cos({ic}°) ÷ {v1} × 1000',
+      'The head wave’s extra time down and up through layer 1, in milliseconds.',
+    ),
+  },
+};
+
+const refractionDemo = (
+  id: string,
+  title: string,
+  v1: number,
+  v2: number,
+  xc: number,
+): ModuleDef => {
+  const h = depthFromCrossover(xc, v1, v2);
+  return {
+    id,
+    title,
+    use: 'Use this for the depth to a layer from a refraction crossover distance.',
+    assumptions: [
+      'Flat layers; the lower layer is faster, or no head wave comes back up.',
+      'Beyond the crossover distance the head wave arrives first.',
+    ],
+    variables: [
+      quantity('v1', 'v₁', 'Upper layer speed', 'm/s', 300, 6000, 1),
+      quantity('v2', 'v₂', 'Lower layer speed', 'm/s', 301, 8500, 1),
+      quantity('xc', 'x_c', 'Crossover distance', 'm', 1, 10000, 0.1),
+      quantity('ic', 'i_c', 'Critical angle', '°', 0.01, 89.99, 0.01),
+      quantity('ti', 'tᵢ', 'Intercept time', 'ms', 0.0001, 1e5, 0.01),
+      quantity('h', 'h', 'Depth to layer 2', 'm', 0.01, 1e5, 0.01),
+    ],
+    ...rules(
+      criticalRule,
+      crossoverRule,
+      interceptRule,
+      limit(
+        'v₂ > v₁',
+        '{v2} > {v1}',
+        (v) => v.v2! > v.v1!,
+        'The lower layer must be faster: v₂ > v₁.',
+      ),
+    ),
+    example: {
+      v1,
+      v2,
+      xc,
+      h,
+      ic: criticalAngle(v1, v2),
+      ti: interceptTime(h, v1, v2) * 1000,
+    },
+    startWith: ['v1', 'v2', 'xc'],
+    representation: {
+      kind: 'refraction',
+      mode: 'refraction',
+      v1: 'v1',
+      v2: 'v2',
+      crossover: 'xc',
+      depth: 'h',
+      critical: 'ic',
+      intercept: 'ti',
+    },
+  };
+};
+
+/** geophysics#0 main: 1,500 and 4,500 m/s, x_c = 60 m → 19.47°, 21.2 m, 26.7 ms. */
+const refractionMain = refractionDemo(
+  'g.he-refraction',
+  'Depth to a faster layer from the crossover',
+  1500,
+  4500,
+  60,
+);
+/** A small speed contrast: the crossover is far out for the depth. */
+const refractionContrast = refractionDemo(
+  'g.he-refraction-small-contrast',
+  'A small speed contrast: a far crossover',
+  2000,
+  2400,
+  200,
+);
+
+/** t₀ = 2h ÷ v. */
+const zeroOffsetRule: Rule = {
+  relation: {
+    id: 't₀ = 2h ÷ v',
+    display: '{t0} = 2 × {h} ÷ {v}',
+    vars: ['t0', 'h', 'v'],
+    residual: (v) => v.t0! * v.v! - 2 * v.h!,
+    solve: {
+      t0: (v) => div(2 * v.h!, v.v!),
+      h: (v) => (v.t0! * v.v!) / 2,
+      v: (v) => div(2 * v.h!, v.t0!),
+    },
+  },
+  steps: {
+    t0: st('2 × {h} ÷ {v}', 'Straight down and back up: twice the depth over the speed.'),
+    h: st('{t0} × {v} ÷ 2', 'The speed times the time, halved for the trip down.'),
+    v: st('2 × {h} ÷ {t0}', 'Twice the depth over the zero-offset time.'),
+  },
+};
+
+/** t = √(x² + 4h²) ÷ v. */
+const offsetRule: Rule = {
+  relation: {
+    id: 't = √(x² + 4h²) ÷ v',
+    display: '{t} = √({x}² + 4 × {h}²) ÷ {v}',
+    vars: ['t', 'x', 'h', 'v'],
+    residual: (v) => v.t! - reflectionTime(v.x!, v.h!, v.v!),
+    solve: { t: (v) => reflectionTime(v.x!, v.h!, v.v!) },
+  },
+  steps: {
+    t: st(
+      '√({x}² + 4 × {h}²) ÷ {v}',
+      'The path down to the reflector’s midpoint and up is √(x² + 4h²) long.',
+    ),
+  },
+};
+
+/** Δt = t − t₀. */
+const moveoutRule: Rule = {
+  relation: {
+    id: 'Δt = t − t₀',
+    display: '{dt} = {t} − {t0}',
+    vars: ['dt', 't', 't0'],
+    residual: (v) => v.dt! - v.t! + v.t0!,
+    solve: { dt: (v) => v.t! - v.t0!, t: (v) => v.dt! + v.t0!, t0: (v) => v.t! - v.dt! },
+  },
+  steps: {
+    dt: st('{t} − {t0}', 'The extra time at the offset over the zero-offset time.'),
+    t: st('{t0} + {dt}', 'Add the moveout to the zero-offset time.'),
+    t0: st('{t} − {dt}', 'Take the moveout from the time at the offset.'),
+  },
+};
+
+const reflectionDemo = (id: string, title: string, h: number, v: number, x: number): ModuleDef => {
+  const t0 = (2 * h) / v;
+  const t = reflectionTime(x, h, v);
+  return {
+    id,
+    title,
+    use: 'Use this for the reflection time at an offset and its normal moveout.',
+    assumptions: [
+      'One flat reflector under a layer of even speed; the source and receiver are on the surface.',
+      'The ray reflects halfway between them.',
+    ],
+    variables: [
+      quantity('h', 'h', 'Depth to the reflector', 'm', 1, 1e5, 1),
+      quantity('v', 'v', 'Speed', 'm/s', 300, 8500, 1),
+      quantity('x', 'x', 'Offset', 'm', 0, 1e5, 1),
+      quantity('t0', 't₀', 'Zero-offset time', 's', 1e-6, 1000, 0.001),
+      quantity('t', 't', 'Time at the offset', 's', 1e-6, 1000, 0.001),
+      quantity('dt', 'Δt', 'Moveout', 's', 0, 1000, 0.001),
+    ],
+    ...rules(zeroOffsetRule, offsetRule, moveoutRule),
+    example: { h, v, x, t0, t, dt: t - t0 },
+    startWith: ['h', 'v', 'x'],
+    representation: {
+      kind: 'refraction',
+      mode: 'reflection',
+      depth: 'h',
+      speed: 'v',
+      offset: 'x',
+      t0: 't0',
+      time: 't',
+      moveout: 'dt',
+    },
+  };
+};
+
+/** geophysics#0~reflection: 600 m, 2,000 m/s, x = 800 m → 0.600, 0.721, 0.121 s. */
+const reflectionMain = reflectionDemo(
+  'g.he-refraction-reflection',
+  'Reflection time and moveout at an offset',
+  600,
+  2000,
+  800,
+);
+/** A far offset, five times the depth: the hyperbola nears its slope 1 ÷ v. */
+const reflectionFar = reflectionDemo(
+  'g.he-refraction-reflection-far',
+  'A far offset: the hyperbola straightens',
+  600,
+  2000,
+  3000,
+);
+
+/** v = 0.3 ÷ √εᵣ. */
+const radarSpeedRule: Rule = {
+  relation: {
+    id: 'v = 0.3 ÷ √εᵣ',
+    display: '{v} = 0.3 ÷ √{eps}',
+    vars: ['v', 'eps'],
+    residual: (v) => v.v! - radarSpeed(v.eps!, 0.3),
+    solve: { v: (v) => radarSpeed(v.eps!, 0.3), eps: (v) => pos(div(0.09, v.v! * v.v!)) },
+  },
+  steps: {
+    v: st('0.3 ÷ √{eps}', 'Light’s 0.3 m/ns in air, slowed by the root of the permittivity.'),
+    eps: st('(0.3 ÷ {v})²', 'How many times slower than light, squared.'),
+  },
+};
+
+/** d = vt ÷ 2. */
+const radarDepthRule: Rule = {
+  relation: {
+    id: 'd = vt ÷ 2',
+    display: '{d} = {v} × {t} ÷ 2',
+    vars: ['d', 'v', 't'],
+    residual: (v) => 2 * v.d! - v.v! * v.t!,
+    solve: {
+      d: (v) => radarDepth(v.v!, v.t!),
+      t: (v) => div(2 * v.d!, v.v!),
+      v: (v) => div(2 * v.d!, v.t!),
+    },
+  },
+  steps: {
+    d: st('{v} × {t} ÷ 2', 'Speed times the two-way time, halved for the trip down.'),
+    t: st('2 × {d} ÷ {v}', 'Down and back: twice the depth over the speed.'),
+    v: st('2 × {d} ÷ {t}', 'Twice the depth over the two-way time.'),
+  },
+};
+
+const gprDemo = (id: string, title: string, eps: number, t: number): ModuleDef => {
+  const v = radarSpeed(eps, 0.3);
+  return {
+    id,
+    title,
+    use: 'Use this for the depth of a buried target from radar’s two-way time.',
+    assumptions: [
+      'Light travels 0.3 m/ns in air; in the ground it is slower by √εᵣ.',
+      'The time is two-way: down to the target and back to the antenna.',
+    ],
+    variables: [
+      quantity('eps', 'εᵣ', 'Relative permittivity', undefined, 1, 81, 0.1),
+      quantity('v', 'v', 'Radar speed', 'm/ns', 0.0333, 0.3, 0.0001),
+      quantity('t', 't', 'Two-way time', 'ns', 0.1, 10000, 0.1),
+      quantity('d', 'd', 'Depth', 'm', 0.001, 1000, 0.001),
+    ],
+    ...rules(radarSpeedRule, radarDepthRule),
+    example: { eps, v, t, d: radarDepth(v, t) },
+    startWith: ['eps', 't'],
+    representation: {
+      kind: 'refraction',
+      mode: 'gpr',
+      permittivity: 'eps',
+      time: 't',
+      speed: 'v',
+      depth: 'd',
+      light: 0.3,
+    },
+  };
+};
+
+/** geophysics#3~gpr: εᵣ 9 → 0.1 m/ns; 40 ns → 2.0 m. */
+const gprMain = gprDemo('g.he-refraction-gpr', 'Radar depth from two-way time', 9, 40);
+/** Water-soaked ground, εᵣ near 81: radar slows to a ninth of light's speed. */
+const gprWet = gprDemo('g.he-refraction-gpr-wet', 'Radar in water-soaked ground', 81, 100);
+
+const REFRACTION_DEMOS: ModuleDef[] = [
+  refractionMain,
+  refractionContrast,
+  reflectionMain,
+  reflectionFar,
+  gprMain,
+  gprWet,
+];
+
+export const HE3M_GALLERY_MODULES: ModuleDef[] = [...AQUIFER_DEMOS, ...REFRACTION_DEMOS];
 
 export const HE3M_GALLERY_LAYOUTS: LayoutDef[] = [];

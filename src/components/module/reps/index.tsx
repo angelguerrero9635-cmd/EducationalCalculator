@@ -194,6 +194,8 @@ import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
 import { Globe } from './Globe';
 import { Aquifer } from './Aquifer';
+import { Refraction } from './Refraction';
+import { CoordinatePlaneHe3m, isGisPlane } from './CoordinatePlaneHe3m';
 import { StressStrain } from './StressStrain';
 import { StressElement } from './StressElement';
 import { Wing } from './Wing';
@@ -374,6 +376,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Globe spec={spec} calc={calc} />;
     case 'aquifer':
       return <Aquifer spec={spec} calc={calc} />; // HC75
+    case 'refraction':
+      return <Refraction spec={spec} calc={calc} />; // HC76
     case 'stressStrain':
       return <StressStrain spec={spec} calc={calc} />;
     case 'stressElement':
@@ -618,6 +622,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'doubleNumberLine':
       return <DoubleNumberLine spec={spec} calc={calc} />;
     case 'coordinatePlane':
+      if (isGisPlane(spec)) return <CoordinatePlaneHe3m spec={spec} calc={calc} />; // HC77
       return <CoordinatePlane spec={spec} calc={calc} />;
     case 'boxPlot':
       return spec.fences || spec.second ? (

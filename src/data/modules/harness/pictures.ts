@@ -77,7 +77,7 @@ import { isHe2fSpec } from '../typesHe2f';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
-import { he3mIssues } from './picturesHe3m';
+import { he3mIssues, planeGisIssues } from './picturesHe3m';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import { he2jIssues } from './picturesHe2j';
@@ -887,6 +887,14 @@ export function repIssues(
     }
     case 'coordinatePlane': {
       out.push(...planeGeometryIssues(rep, val), ...hs2bIssues(rep, (id) => val(id)));
+      // HC77, in formula units as the picture draws them.
+      out.push(
+        ...planeGisIssues(rep, (x) =>
+          typeof x === 'number'
+            ? x
+            : ((v) => (v === undefined ? v : v * (byId.get(x)?.unitFactor ?? 1)))(val(x)),
+        ),
+      );
       // Plotting draws its path from 0 across then up, in the first quadrant only.
       if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
       if (rep.plot && rep.second) out.push('plotting places one point, not two');
@@ -2303,6 +2311,7 @@ export function repIssues(
       );
       break;
     case 'aquifer':
+    case 'refraction':
       // In formula units, as the picture draws them (HC75).
       out.push(
         ...he3mIssues(rep, (x) =>

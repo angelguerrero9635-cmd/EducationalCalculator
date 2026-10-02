@@ -37,7 +37,7 @@ import { he1gSpecVars } from '../typesHe1g';
 import { he1fSpecVars } from '../typesHe1f';
 import { he2bSpecVars } from '../typesHe2b';
 import { globeVars } from '../typesHe2k';
-import { he3mVars } from '../typesHe3m';
+import { he3mVars, planeGisVars } from '../typesHe3m';
 import { he2jSpecVars } from '../typesHe2j';
 import { fieldPlotVars } from '../typesHe2g';
 import { he2cSpecVars } from '../typesHe2c';
@@ -246,6 +246,7 @@ function representationVars(r: Representation): string[] {
           ? [r.trail.across, r.trail.up].filter((v): v is string => typeof v === 'string')
           : []),
         ...planeGeometryVars(r),
+        ...planeGisVars(r),
       ];
     case 'boxPlot':
       return [

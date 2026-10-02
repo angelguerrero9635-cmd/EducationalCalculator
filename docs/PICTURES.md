@@ -124,6 +124,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ    | College quantum, chemistry (HC15)   |
 | `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg     | College solids, minerals (HC16)     |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air | College earth and geography (HC36)  |
+| `refraction`       | layers, shot and geophones, rays at i_c; t–x lines, x_c; hyperbola    | College geophysics (HC76)           |
 | `aquifer`          | wells, water table, Δh over L, flow; piezometer z + ψ; Thiem cone     | College hydrology (HC75)            |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members  | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line  | College stress, soil (HC33)         |

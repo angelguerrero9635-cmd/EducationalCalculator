@@ -36,7 +36,7 @@ import type { He1bSpec } from './typesHe1b';
 import type { He1fSpec } from './typesHe1f';
 import type { He2bSpec } from './typesHe2b';
 import type { GlobeSpec } from './typesHe2k';
-import type { He3mSpec } from './typesHe3m';
+import type { He3mSpec, PlaneGis } from './typesHe3m';
 import type { He2jSpec } from './typesHe2j';
 import type { FieldPlotSpec } from './typesHe2g';
 import type { CardIcon } from './layouts/types';
@@ -1103,6 +1103,10 @@ export type Representation =
       partition?: PlaneGeometry['partition'];
       polygon?: PlaneGeometry['polygon'];
       slopes?: boolean;
+      /** College GIS (HC77, `typesHe3m.ts`): shoelace area, a buffer, the mean centre. */
+      shoelace?: PlaneGis['shoelace'];
+      buffer?: PlaneGis['buffer'];
+      center?: PlaneGis['center'];
     }
   /** Grade 8 functions, systems and transformations (specs in `typesGraphs.ts`). */
   | LinearFunctionSpec
