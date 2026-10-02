@@ -131,11 +131,29 @@ const wire = demo({
     tesla('B', 'B', 'Magnetic flux density'),
   ],
   rules: [
-    rule('H = I ÷ (2πr)', '{H} = {I} ÷ (2π × {r})', ['H', 'I', 'r'], (x) => x.H! * 2 * Math.PI * x.r! - x.I!, {
-      H: [(x) => div(x.I!, 2 * Math.PI * x.r!), '{I} ÷ (2π × {r})', 'Ampère’s law: the current spread round the circle.'],
-      I: [(x) => x.H! * 2 * Math.PI * x.r!, '{H} × 2π × {r}', 'Ampère’s law: H round the circle is the current.'],
-      r: [(x) => div(x.I!, 2 * Math.PI * x.H!), '{I} ÷ (2π × {H})', 'Ampère’s law, solved for r.'],
-    }),
+    rule(
+      'H = I ÷ (2πr)',
+      '{H} = {I} ÷ (2π × {r})',
+      ['H', 'I', 'r'],
+      (x) => x.H! * 2 * Math.PI * x.r! - x.I!,
+      {
+        H: [
+          (x) => div(x.I!, 2 * Math.PI * x.r!),
+          '{I} ÷ (2π × {r})',
+          'Ampère’s law: the current spread round the circle.',
+        ],
+        I: [
+          (x) => x.H! * 2 * Math.PI * x.r!,
+          '{H} × 2π × {r}',
+          'Ampère’s law: H round the circle is the current.',
+        ],
+        r: [
+          (x) => div(x.I!, 2 * Math.PI * x.H!),
+          '{I} ÷ (2π × {H})',
+          'Ampère’s law, solved for r.',
+        ],
+      },
+    ),
     rule('B = μ₀H', `{B} = ${MU} × {H}`, ['B', 'H'], (x) => x.B! - MU0 * x.H!, {
       B: [(x) => MU0 * x.H!, `${MU} × {H}`, 'In air, B is μ₀ times H.'],
       H: [(x) => x.B! / MU0, `{B} ÷ (${MU})`, 'Divide B by μ₀.'],
@@ -143,7 +161,15 @@ const wire = demo({
   ],
   example: { I: 10, r: 0.02, H: 10 / (2 * Math.PI * 0.02), B: (MU0 * 10) / (2 * Math.PI * 0.02) },
   startWith: ['I', 'r'],
-  representation: { kind: 'induction', mode: 'field', source: 'wire', current: 'I', r: 'r', field: 'B', H: 'H' },
+  representation: {
+    kind: 'induction',
+    mode: 'field',
+    source: 'wire',
+    current: 'I',
+    r: 'r',
+    field: 'B',
+    H: 'H',
+  },
 });
 
 // ─── UP2#3~wire-field: two parallel wires ─────────────────────────────────────
@@ -167,7 +193,11 @@ const pair = demo({
   rules: [
     wireRule('B', 'I1', 'r'),
     rule('F/L = I₂B', '{F} = {I2} × {B}', ['F', 'I2', 'B'], (x) => x.F! - x.I2! * x.B!, {
-      F: [(x) => x.I2! * x.B!, '{I2} × {B}', 'The force per length on a current I₂ in the field B.'],
+      F: [
+        (x) => x.I2! * x.B!,
+        '{I2} × {B}',
+        'The force per length on a current I₂ in the field B.',
+      ],
       I2: [(x) => div(x.F!, x.B!), '{F} ÷ {B}', 'Divide the force per length by B.'],
       B: [(x) => div(x.F!, x.I2!), '{F} ÷ {I2}', 'Divide the force per length by I₂.'],
     }),
@@ -283,11 +313,25 @@ const thickOutside = demo({
 // ─── EM#1 main: a loop on its axis (and far along it) ─────────────────────────
 
 const loopRules = [
-  rule('B₀ = μ₀I ÷ (2R)', `{B0} = ${MU} × {I} ÷ (2 × {R})`, ['B0', 'I', 'R'], (x) => x.B0! * 2 * x.R! - MU0 * x.I!, {
-    B0: [(x) => div(MU0 * x.I!, 2 * x.R!), `${MU} × {I} ÷ (2 × {R})`, 'At the center every piece dl is R away and square to it.'],
-    I: [(x) => (x.B0! * 2 * x.R!) / MU0, `{B0} × 2 × {R} ÷ (${MU})`, 'Solve for the current.'],
-    R: [(x) => div(MU0 * x.I!, 2 * x.B0!), `${MU} × {I} ÷ (2 × {B0})`, 'Solve for the radius.'],
-  }),
+  rule(
+    'B₀ = μ₀I ÷ (2R)',
+    `{B0} = ${MU} × {I} ÷ (2 × {R})`,
+    ['B0', 'I', 'R'],
+    (x) => x.B0! * 2 * x.R! - MU0 * x.I!,
+    {
+      B0: [
+        (x) => div(MU0 * x.I!, 2 * x.R!),
+        `${MU} × {I} ÷ (2 × {R})`,
+        'At the center every piece dl is R away and square to it.',
+      ],
+      I: [(x) => (x.B0! * 2 * x.R!) / MU0, `{B0} × 2 × {R} ÷ (${MU})`, 'Solve for the current.'],
+      R: [
+        (x) => (x.I! * x.B0! > 0 ? (MU0 * x.I!) / (2 * x.B0!) : undefined),
+        `${MU} × {I} ÷ (2 × {B0})`,
+        'Solve for the radius.',
+      ],
+    },
+  ),
   rule(
     'B = μ₀IR² ÷ (2(z² + R²)^(3/2))',
     `{B} = ${MU} × {I} × {R}² ÷ (2 × (√({z}² + {R}²))³)`,
@@ -320,7 +364,10 @@ const loopVars = (zShown: 'cm' | 'm') => [
   amps('I', 'I', 'Current'),
   meters('R', 'R', 'Loop radius', 'm'),
   tesla('B0', 'B₀', 'Field at the center'),
-  vr('z', 'z', 'Distance along the axis', 'm', -1e4, 1e4, { units: ['mm', 'cm', 'm'], ...(zShown === 'cm' ? { shownIn: 'cm' } : {}) }),
+  vr('z', 'z', 'Distance along the axis', 'm', -1e4, 1e4, {
+    units: ['mm', 'cm', 'm'],
+    ...(zShown === 'cm' ? { shownIn: 'cm' } : {}),
+  }),
   tesla('B', 'B', 'Field on the axis'),
 ];
 
@@ -330,7 +377,8 @@ const loopAssumptions = [
   'Far away (z ≫ R) it acts as a magnetic dipole: B ≈ μ₀IR² ÷ (2z³).',
 ];
 
-const loopB = (I: number, R: number, z: number) => (MU0 * I * R * R) / (2 * Math.sqrt(z * z + R * R) ** 3);
+const loopB = (I: number, R: number, z: number) =>
+  (MU0 * I * R * R) / (2 * Math.sqrt(z * z + R * R) ** 3);
 
 const loop = demo({
   id: 'g.he-induction-loop',
@@ -341,7 +389,16 @@ const loop = demo({
   rules: loopRules,
   example: { I: 5, R: 0.1, B0: (MU0 * 5) / 0.2, z: 0.1, B: loopB(5, 0.1, 0.1) },
   startWith: ['I', 'R', 'z'],
-  representation: { kind: 'induction', mode: 'field', source: 'loop', current: 'I', radius: 'R', z: 'z', center: 'B0', field: 'B' },
+  representation: {
+    kind: 'induction',
+    mode: 'field',
+    source: 'loop',
+    current: 'I',
+    radius: 'R',
+    z: 'z',
+    center: 'B0',
+    field: 'B',
+  },
 });
 
 const loopFar = demo({
@@ -353,7 +410,16 @@ const loopFar = demo({
   rules: loopRules,
   example: { I: 5, R: 0.1, B0: (MU0 * 5) / 0.2, z: 0.5, B: loopB(5, 0.1, 0.5) },
   startWith: ['I', 'R', 'z'],
-  representation: { kind: 'induction', mode: 'field', source: 'loop', current: 'I', radius: 'R', z: 'z', center: 'B0', field: 'B' },
+  representation: {
+    kind: 'induction',
+    mode: 'field',
+    source: 'loop',
+    current: 'I',
+    radius: 'R',
+    z: 'z',
+    center: 'B0',
+    field: 'B',
+  },
 });
 
 // ─── EM#1~loop-torque: a coil in a uniform field ──────────────────────────────
@@ -379,19 +445,53 @@ const torque = demo({
     vr('U', 'U', 'Energy', 'J', -1e9, 1e9),
   ],
   rules: [
-    rule('μ = NIA', '{mu} = {N} × {I} × {A}', ['mu', 'N', 'I', 'A'], (x) => x.mu! - x.N! * x.I! * x.A!, {
-      mu: [(x) => x.N! * x.I! * x.A!, '{N} × {I} × {A}', 'Turns times current times area.'],
-      I: [(x) => div(x.mu!, x.N! * x.A!), '{mu} ÷ ({N} × {A})', 'Solve for the current.'],
-      A: [(x) => div(x.mu!, x.N! * x.I!), '{mu} ÷ ({N} × {I})', 'Solve for the area.'],
-    }),
-    rule('τ = μB sin θ', '{tau} = {mu} × {B} × sin({th})', ['tau', 'mu', 'B', 'th'], (x) => x.tau! - x.mu! * x.B! * Math.sin(x.th! * RAD), {
-      tau: [(x) => x.mu! * x.B! * Math.sin(x.th! * RAD), '{mu} × {B} × sin({th})', 'The torque on a magnetic moment in a field.'],
-      B: [(x) => div(x.tau!, x.mu! * Math.sin(x.th! * RAD)), '{tau} ÷ ({mu} × sin({th}))', 'Solve for the field.'],
-      mu: [(x) => div(x.tau!, x.B! * Math.sin(x.th! * RAD)), '{tau} ÷ ({B} × sin({th}))', 'Solve for the moment.'],
-    }),
-    rule('U = −μB cos θ', '{U} = −{mu} × {B} × cos({th})', ['U', 'mu', 'B', 'th'], (x) => x.U! + x.mu! * x.B! * Math.cos(x.th! * RAD), {
-      U: [(x) => -x.mu! * x.B! * Math.cos(x.th! * RAD), '−{mu} × {B} × cos({th})', 'The moment’s energy in the field.'],
-    }),
+    rule(
+      'μ = NIA',
+      '{mu} = {N} × {I} × {A}',
+      ['mu', 'N', 'I', 'A'],
+      (x) => x.mu! - x.N! * x.I! * x.A!,
+      {
+        mu: [(x) => x.N! * x.I! * x.A!, '{N} × {I} × {A}', 'Turns times current times area.'],
+        I: [(x) => div(x.mu!, x.N! * x.A!), '{mu} ÷ ({N} × {A})', 'Solve for the current.'],
+        A: [(x) => div(x.mu!, x.N! * x.I!), '{mu} ÷ ({N} × {I})', 'Solve for the area.'],
+      },
+    ),
+    rule(
+      'τ = μB sin θ',
+      '{tau} = {mu} × {B} × sin({th})',
+      ['tau', 'mu', 'B', 'th'],
+      (x) => x.tau! - x.mu! * x.B! * Math.sin(x.th! * RAD),
+      {
+        tau: [
+          (x) => x.mu! * x.B! * Math.sin(x.th! * RAD),
+          '{mu} × {B} × sin({th})',
+          'The torque on a magnetic moment in a field.',
+        ],
+        B: [
+          (x) => div(x.tau!, x.mu! * Math.sin(x.th! * RAD)),
+          '{tau} ÷ ({mu} × sin({th}))',
+          'Solve for the field.',
+        ],
+        mu: [
+          (x) => div(x.tau!, x.B! * Math.sin(x.th! * RAD)),
+          '{tau} ÷ ({B} × sin({th}))',
+          'Solve for the moment.',
+        ],
+      },
+    ),
+    rule(
+      'U = −μB cos θ',
+      '{U} = −{mu} × {B} × cos({th})',
+      ['U', 'mu', 'B', 'th'],
+      (x) => x.U! + x.mu! * x.B! * Math.cos(x.th! * RAD),
+      {
+        U: [
+          (x) => -x.mu! * x.B! * Math.cos(x.th! * RAD),
+          '−{mu} × {B} × cos({th})',
+          'The moment’s energy in the field.',
+        ],
+      },
+    ),
   ],
   example: {
     N: 50,
@@ -447,14 +547,34 @@ const solenoid = demo({
       I: [(x) => div(x.B!, MU0 * x.n!), `{B} ÷ (${MU} × {n})`, 'Solve for the current.'],
       n: [(x) => div(x.B!, MU0 * x.I!), `{B} ÷ (${MU} × {I})`, 'Solve for the turns per meter.'],
     }),
-    rule('L = μ₀N²A ÷ ℓ', `{L} = ${MU} × {N}² × {A} ÷ {l}`, ['L', 'N', 'A', 'l'], (x) => x.L! * x.l! - MU0 * x.N! ** 2 * x.A!, {
-      L: [(x) => div(MU0 * x.N! ** 2 * x.A!, x.l!), `${MU} × {N}² × {A} ÷ {l}`, 'N turns each with flux μ₀nIA, per amp.'],
-      A: [(x) => div(x.L! * x.l!, MU0 * x.N! ** 2), `{L} × {l} ÷ (${MU} × {N}²)`, 'Solve for the area.'],
-    }),
-    rule('U = ½LI²', '{U} = ½ × {L} × {I}²', ['U', 'L', 'I'], (x) => x.U! - 0.5 * x.L! * x.I! ** 2, {
-      U: [(x) => 0.5 * x.L! * x.I! ** 2, '½ × {L} × {I}²', 'The energy stored in the field.'],
-      L: [(x) => div(2 * x.U!, x.I! ** 2), '2 × {U} ÷ {I}²', 'Solve for the inductance.'],
-    }),
+    rule(
+      'L = μ₀N²A ÷ ℓ',
+      `{L} = ${MU} × {N}² × {A} ÷ {l}`,
+      ['L', 'N', 'A', 'l'],
+      (x) => x.L! * x.l! - MU0 * x.N! ** 2 * x.A!,
+      {
+        L: [
+          (x) => div(MU0 * x.N! ** 2 * x.A!, x.l!),
+          `${MU} × {N}² × {A} ÷ {l}`,
+          'N turns each with flux μ₀nIA, per amp.',
+        ],
+        A: [
+          (x) => div(x.L! * x.l!, MU0 * x.N! ** 2),
+          `{L} × {l} ÷ (${MU} × {N}²)`,
+          'Solve for the area.',
+        ],
+      },
+    ),
+    rule(
+      'U = ½LI²',
+      '{U} = ½ × {L} × {I}²',
+      ['U', 'L', 'I'],
+      (x) => x.U! - 0.5 * x.L! * x.I! ** 2,
+      {
+        U: [(x) => 0.5 * x.L! * x.I! ** 2, '½ × {L} × {I}²', 'The energy stored in the field.'],
+        L: [(x) => div(2 * x.U!, x.I! ** 2), '2 × {U} ÷ {I}²', 'Solve for the inductance.'],
+      },
+    ),
   ],
   example: {
     N: 100,
@@ -500,15 +620,41 @@ const toroid = demo({
     tesla('B', 'B', 'Field at r'),
   ],
   rules: [
-    rule('B = μ₀NI ÷ (2πr)', `{B} = ${MU} × {N} × {I} ÷ (2π × {r})`, ['B', 'N', 'I', 'r'], (x) => x.B! * 2 * Math.PI * x.r! - MU0 * x.N! * x.I!, {
-      B: [(x) => div(MU0 * x.N! * x.I!, 2 * Math.PI * x.r!), `${MU} × {N} × {I} ÷ (2π × {r})`, 'Ampère’s law round the ring.'],
-      I: [(x) => div(x.B! * 2 * Math.PI * x.r!, MU0 * x.N!), `{B} × 2π × {r} ÷ (${MU} × {N})`, 'Solve for the current.'],
-      r: [(x) => div(MU0 * x.N! * x.I!, 2 * Math.PI * x.B!), `${MU} × {N} × {I} ÷ (2π × {B})`, 'Solve for the radius.'],
-    }),
+    rule(
+      'B = μ₀NI ÷ (2πr)',
+      `{B} = ${MU} × {N} × {I} ÷ (2π × {r})`,
+      ['B', 'N', 'I', 'r'],
+      (x) => x.B! * 2 * Math.PI * x.r! - MU0 * x.N! * x.I!,
+      {
+        B: [
+          (x) => div(MU0 * x.N! * x.I!, 2 * Math.PI * x.r!),
+          `${MU} × {N} × {I} ÷ (2π × {r})`,
+          'Ampère’s law round the ring.',
+        ],
+        I: [
+          (x) => div(x.B! * 2 * Math.PI * x.r!, MU0 * x.N!),
+          `{B} × 2π × {r} ÷ (${MU} × {N})`,
+          'Solve for the current.',
+        ],
+        r: [
+          (x) => div(MU0 * x.N! * x.I!, 2 * Math.PI * x.B!),
+          `${MU} × {N} × {I} ÷ (2π × {B})`,
+          'Solve for the radius.',
+        ],
+      },
+    ),
   ],
   example: { N: 500, I: 2, r: 0.1, B: (MU0 * 500 * 2) / (2 * Math.PI * 0.1) },
   startWith: ['N', 'I', 'r'],
-  representation: { kind: 'induction', mode: 'field', source: 'toroid', current: 'I', turns: 'N', r: 'r', field: 'B' },
+  representation: {
+    kind: 'induction',
+    mode: 'field',
+    source: 'toroid',
+    current: 'I',
+    turns: 'N',
+    r: 'r',
+    field: 'B',
+  },
 });
 
 // ─── EM#2~displacement-current: charging plates ───────────────────────────────
@@ -527,23 +673,65 @@ const plates = demo({
     meters('R', 'R', 'Plate radius', 'cm'),
     meters('r', 'r', 'Distance from the axis', 'cm'),
     vr('dE', 'dE/dt', 'Rate E grows', 'V/(m·s)', 0, 1e30, { scientific: true }),
-    amps('Id', 'I_d', 'Displacement current inside r'),
+    vr('Id', 'I_d', 'Displacement current inside r', 'A', 0, 1e5, { scientific: true }),
     tesla('B', 'B', 'Field at r'),
   ],
   rules: [
-    rule('dE/dt = I ÷ (ε₀πR²)', `{dE} = {I} ÷ (${EPS} × π × {R}²)`, ['dE', 'I', 'R'], (x) => x.dE! * EPS0 * Math.PI * x.R! ** 2 - x.I!, {
-      dE: [(x) => div(x.I!, EPS0 * Math.PI * x.R! ** 2), `{I} ÷ (${EPS} × π × {R}²)`, 'The charge on the plates grows at I, so E = σ/ε₀ grows at I ÷ (ε₀πR²).'],
-      I: [(x) => x.dE! * EPS0 * Math.PI * x.R! ** 2, `{dE} × ${EPS} × π × {R}²`, 'Solve for the current.'],
-    }),
-    rule('I_d = I(r ÷ R)²', '{Id} = {I} × ({r} ÷ {R})²', ['Id', 'I', 'r', 'R'], (x) => x.Id! * x.R! ** 2 - x.I! * x.r! ** 2, {
-      Id: [(x) => div(x.I! * x.r! ** 2, x.R! ** 2), '{I} × ({r} ÷ {R})²', 'The circle takes in the share (r/R)² of the plates’ area.'],
-      I: [(x) => div(x.Id! * x.R! ** 2, x.r! ** 2), '{Id} × ({R} ÷ {r})²', 'Solve for the current.'],
-      r: [(x) => sqrtOf((x.Id! * x.R! ** 2) / x.I!), '{R} × √({Id} ÷ {I})', 'Solve for r.'],
-    }),
-    rule('B = μ₀I_d ÷ (2πr)', `{B} = ${MU} × {Id} ÷ (2π × {r})`, ['B', 'Id', 'r'], (x) => x.B! * 2 * Math.PI * x.r! - MU0 * x.Id!, {
-      B: [(x) => div(MU0 * x.Id!, 2 * Math.PI * x.r!), `${MU} × {Id} ÷ (2π × {r})`, 'Ampère–Maxwell round the circle.'],
-      Id: [(x) => (x.B! * 2 * Math.PI * x.r!) / MU0, `{B} × 2π × {r} ÷ (${MU})`, 'Solve for the displacement current.'],
-    }),
+    rule(
+      'dE/dt = I ÷ (ε₀πR²)',
+      `{dE} = {I} ÷ (${EPS} × π × {R}²)`,
+      ['dE', 'I', 'R'],
+      (x) => x.dE! * EPS0 * Math.PI * x.R! ** 2 - x.I!,
+      {
+        dE: [
+          (x) => div(x.I!, EPS0 * Math.PI * x.R! ** 2),
+          `{I} ÷ (${EPS} × π × {R}²)`,
+          'The charge on the plates grows at I, so E = σ/ε₀ grows at I ÷ (ε₀πR²).',
+        ],
+        I: [
+          (x) => x.dE! * EPS0 * Math.PI * x.R! ** 2,
+          `{dE} × ${EPS} × π × {R}²`,
+          'Solve for the current.',
+        ],
+      },
+    ),
+    rule(
+      'I_d = I(r ÷ R)²',
+      '{Id} = {I} × ({r} ÷ {R})²',
+      ['Id', 'I', 'r', 'R'],
+      (x) => x.Id! * x.R! ** 2 - x.I! * x.r! ** 2,
+      {
+        Id: [
+          (x) => div(x.I! * x.r! ** 2, x.R! ** 2),
+          '{I} × ({r} ÷ {R})²',
+          'The circle takes in the share (r/R)² of the plates’ area.',
+        ],
+        I: [
+          (x) => div(x.Id! * x.R! ** 2, x.r! ** 2),
+          '{Id} × ({R} ÷ {r})²',
+          'Solve for the current.',
+        ],
+        r: [(x) => sqrtOf((x.Id! * x.R! ** 2) / x.I!), '{R} × √({Id} ÷ {I})', 'Solve for r.'],
+      },
+    ),
+    rule(
+      'B = μ₀I_d ÷ (2πr)',
+      `{B} = ${MU} × {Id} ÷ (2π × {r})`,
+      ['B', 'Id', 'r'],
+      (x) => x.B! * 2 * Math.PI * x.r! - MU0 * x.Id!,
+      {
+        B: [
+          (x) => div(MU0 * x.Id!, 2 * Math.PI * x.r!),
+          `${MU} × {Id} ÷ (2π × {r})`,
+          'Ampère–Maxwell round the circle.',
+        ],
+        Id: [
+          (x) => (x.B! * 2 * Math.PI * x.r!) / MU0,
+          `{B} × 2π × {r} ÷ (${MU})`,
+          'Solve for the displacement current.',
+        ],
+      },
+    ),
   ],
   example: {
     I: 2,
@@ -590,29 +778,52 @@ const rails = demo({
     vr('P', 'P', 'Power', 'W', 0, 1e9),
   ],
   rules: [
-    rule('ε = BLv', '{e} = {B} × {L} × {v}', ['e', 'B', 'L', 'v'], (x) => x.e! - x.B! * x.L! * x.v!, {
-      e: [(x) => x.B! * x.L! * x.v!, '{B} × {L} × {v}', 'Faraday: the flux grows at BLv.'],
-      B: [(x) => div(x.e!, x.L! * x.v!), '{e} ÷ ({L} × {v})', 'Solve for the field.'],
-      L: [(x) => div(x.e!, x.B! * x.v!), '{e} ÷ ({B} × {v})', 'Solve for the rod’s length.'],
-      v: [(x) => div(x.e!, x.B! * x.L!), '{e} ÷ ({B} × {L})', 'Solve for the speed.'],
-    }),
+    rule(
+      'ε = BLv',
+      '{e} = {B} × {L} × {v}',
+      ['e', 'B', 'L', 'v'],
+      (x) => x.e! - x.B! * x.L! * x.v!,
+      {
+        e: [(x) => x.B! * x.L! * x.v!, '{B} × {L} × {v}', 'Faraday: the flux grows at BLv.'],
+        B: [(x) => div(x.e!, x.L! * x.v!), '{e} ÷ ({L} × {v})', 'Solve for the field.'],
+        L: [(x) => div(x.e!, x.B! * x.v!), '{e} ÷ ({B} × {v})', 'Solve for the rod’s length.'],
+        v: [(x) => div(x.e!, x.B! * x.L!), '{e} ÷ ({B} × {L})', 'Solve for the speed.'],
+      },
+    ),
     rule('I = ε ÷ R', '{I} = {e} ÷ {R}', ['I', 'e', 'R'], (x) => x.I! * x.R! - x.e!, {
       I: [(x) => div(x.e!, x.R!), '{e} ÷ {R}', 'Ohm’s law round the loop.'],
       e: [(x) => x.I! * x.R!, '{I} × {R}', 'Ohm’s law: the emf drives I through R.'],
       R: [(x) => div(x.e!, x.I!), '{e} ÷ {I}', 'Solve for the resistance.'],
     }),
-    rule('F = BIL', '{F} = {B} × {I} × {L}', ['F', 'B', 'I', 'L'], (x) => x.F! - x.B! * x.I! * x.L!, {
-      F: [(x) => x.B! * x.I! * x.L!, '{B} × {I} × {L}', 'The field’s push on the current in the rod.'],
-      I: [(x) => div(x.F!, x.B! * x.L!), '{F} ÷ ({B} × {L})', 'Solve for the current.'],
-    }),
+    rule(
+      'F = BIL',
+      '{F} = {B} × {I} × {L}',
+      ['F', 'B', 'I', 'L'],
+      (x) => x.F! - x.B! * x.I! * x.L!,
+      {
+        F: [
+          (x) => x.B! * x.I! * x.L!,
+          '{B} × {I} × {L}',
+          'The field’s push on the current in the rod.',
+        ],
+        I: [(x) => div(x.F!, x.B! * x.L!), '{F} ÷ ({B} × {L})', 'Solve for the current.'],
+      },
+    ),
     rule('P = Fv', '{P} = {F} × {v}', ['P', 'F', 'v'], (x) => x.P! - x.F! * x.v!, {
-      P: [(x) => x.F! * x.v!, '{F} × {v}', 'The power to keep the rod moving, all turned to heat in R.'],
+      P: [
+        (x) => x.F! * x.v!,
+        '{F} × {v}',
+        'The power to keep the rod moving, all turned to heat in R.',
+      ],
       F: [(x) => div(x.P!, x.v!), '{P} ÷ {v}', 'Solve for the force.'],
     }),
   ],
   example: { B: 0.5, L: 0.4, v: 5, e: 1, R: 2, I: 0.5, F: 0.1, P: 0.5 },
   startWith: ['B', 'L', 'v', 'R'],
-  representation: { kind: 'induction', rails: { B: 'B', L: 'L', v: 'v', R: 'R', emf: 'e', I: 'I', F: 'F', P: 'P' } },
+  representation: {
+    kind: 'induction',
+    rails: { B: 'B', L: 'L', v: 'v', R: 'R', emf: 'e', I: 'I', F: 'F', P: 'P' },
+  },
 });
 
 export const HE2E_GALLERY_MODULES: ModuleDef[] = [

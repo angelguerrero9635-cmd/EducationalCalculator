@@ -388,6 +388,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `charges`          | `equipotentials: { potential, … }`       | dashed circles r/2, r, 2r with V = kq/r; q₀ on r with U = q₀V (H107)          |
 | `charges`          | plates `launch: { charge, mass }`        | a charge let go at a plate: strobed ∝ t², K = qΔV eV, v vs c/10 (H107)        |
 | `induction`        | `mode: 'charge'`, `coulombs`             | a moving charge: F = qvB sin θ along qv × B; square to B, r = mv/qB (H107)    |
+| `induction`        | `mode: 'field'`, `source`                | wire, loop, solenoid, toroid, plates: B lines, Amperian loop, B at r (HC19)   |
+| `induction`        | `rails: { B, L, v, R }`                  | a rod on rails: ε = BLv, I round the loop by Lenz, F = BIL against v (HC19)   |
 | `earthLayers`      | `mode: 'magnitude'`, `m1`, `m2`, …       | two seismograms to one scale; bars on a magnitude scale, 10^ΔM marked (H103)  |
 | `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | ridge from above: stripes mirrored, hatched past 12 Ma; a rock x km, t (H103) |
 | `atmosphereLayers` | `mode: 'parcel'`, `temperature`, …       | a parcel cooling 10 °C/km, dew point 2 °C/km, meeting at a cloud base (H103)  |

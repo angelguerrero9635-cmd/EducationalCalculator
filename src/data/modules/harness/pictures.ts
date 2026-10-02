@@ -2267,7 +2267,10 @@ export function repIssues(
     case 'collision':
     case 'circularMotion':
     case 'freeBody':
-      if (isHe2e(rep)) { out.push(...he2eIssues(rep, siOf(val, byId))); break; } // HC19, HC29
+      if (isHe2e(rep)) {
+        out.push(...he2eIssues(rep, siOf(val, byId)));
+        break;
+      } // HC19, HC29
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
       out.push(...hs3aOptionIssues(rep, siOf(val, byId)));
       break;

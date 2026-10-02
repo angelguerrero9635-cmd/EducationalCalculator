@@ -114,7 +114,12 @@ function WireEnd({
 }
 
 /** A drag along a line from an origin: the value scales with the handle's distance. */
-function useScaleDrag(r: Reader, calc: Calculator, id: string | number | undefined, pins: string[]) {
+function useScaleDrag(
+  r: Reader,
+  calc: Calculator,
+  id: string | number | undefined,
+  pins: string[],
+) {
   const start = useRef({ value: 0, px: 1 });
   return (px: number) =>
     typeof id !== 'string'
@@ -155,7 +160,10 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
   const B = inner ? (mu0 * I * r) / (2 * Math.PI * a * a) : wireField(mu0, I, r);
   // A page for one side of the surface with r on the other: faded, and the reason said.
   const wrongSide =
-    thick && okR && okA && ((spec.region === 'inside' && r > a) || (spec.region === 'outside' && r < a));
+    thick &&
+    okR &&
+    okA &&
+    ((spec.region === 'inside' && r > a) || (spec.region === 'outside' && r < a));
   const second = spec.second !== undefined;
   const I2 = R.v(spec.second, 0);
   const ok2 = R.known(spec.second);
@@ -163,7 +171,12 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
   const out = I >= 0;
   const reach = Math.max(r, a * 1.15);
   const frozen = useFrozen(reach);
-  const drag = useScaleDrag(R, calc, spec.fixed ? undefined : spec.r, ids(spec.current, spec.radius, spec.second));
+  const drag = useScaleDrag(
+    R,
+    calc,
+    spec.fixed ? undefined : spec.r,
+    ids(spec.current, spec.radius, spec.second),
+  );
   const aspect = thick ? 1.12 : 0.8;
   const Bsay = R.out(spec.field, B, 'T', okB);
   const lines = [
@@ -173,7 +186,9 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
         ? `B = μ₀Ir ÷ (2πa²) = ${n3(mu0)} × ${n3(I)} × ${n3(r)} ÷ (2π × ${n3(a)}²) = ${n3(B)} T`
         : `B = μ₀I ÷ (2πr) = ${n3(mu0)} × ${n3(I)} ÷ (2π × ${n3(r)}) = ${n3(B)} T`,
     ),
-    ...(spec.H ? worked(okI && okR, `H = I ÷ (2πr) = ${n3(Math.abs(I / (2 * Math.PI * r)))} A/m`) : []),
+    ...(spec.H
+      ? worked(okI && okR, `H = I ÷ (2πr) = ${n3(Math.abs(I / (2 * Math.PI * r)))} A/m`)
+      : []),
     ...(wrongSide
       ? [
           spec.region === 'inside'
@@ -181,7 +196,9 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
             : 'r is inside the wire (r < a): this rule is for outside it.',
         ]
       : []),
-    ...(thick ? [`Inside the wire B grows with r; outside it falls as 1/r. The peak is at r = a.`] : []),
+    ...(thick
+      ? [`Inside the wire B grows with r; outside it falls as 1/r. The peak is at r = a.`]
+      : []),
     ...(second
       ? worked(
           okI && okR && ok2,
@@ -291,7 +308,14 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
                       strokeDasharray={chart.dash}
                       fill="none"
                     />
-                    <Line x1={O.x} y1={O.y} x2={P.x} y2={P.y} stroke={c.chartMuted} strokeWidth={1.2} />
+                    <Line
+                      x1={O.x}
+                      y1={O.y}
+                      x2={P.x}
+                      y2={P.y}
+                      stroke={c.chartMuted}
+                      strokeWidth={1.2}
+                    />
                     {second ? (
                       <WireEnd x={P.x} y={P.y} r={8} out={I2 >= 0} paint={paint.wire2} mark={ok2} />
                     ) : (
@@ -518,7 +542,7 @@ function LoopView({ spec, calc }: { spec: Field<'loop'>; calc: Calculator }) {
   const okZ = spec.z !== undefined && R.known(spec.z);
   const B0 = loopAxial(mu0, N, I, Rr, 0);
   const Bz = loopAxial(mu0, N, I, Rr, z);
-  const lines = useMemo(loopLinesOf, []);
+  const lines = loopLinesOf();
   const right = I >= 0;
   const drag = useScaleDrag(
     R,
@@ -730,9 +754,7 @@ function TorqueView({ spec, calc }: { spec: Field<'loop'>; calc: Calculator }) {
       okMu && okB && okTh,
       `τ = μB sin θ = ${n3(t.mu)} × ${n3(B)} × sin ${n3(th)}° = ${n3(t.torque)} N·m`,
     ),
-    ...(u.energy
-      ? worked(okMu && okB && okTh, `U = −μB cos θ = ${n3(t.energy)} J`)
-      : []),
+    ...(u.energy ? worked(okMu && okB && okTh, `U = −μB cos θ = ${n3(t.energy)} J`) : []),
     'The torque turns μ toward B.',
   ];
   return (
@@ -752,13 +774,28 @@ function TorqueView({ spec, calc }: { spec: Field<'loop'>; calc: Calculator }) {
               {okB && B !== 0
                 ? ys.map((y) => (
                     <G key={y}>
-                      <Line x1={8} y1={y} x2={w - 8} y2={y} stroke={c.he2eField} strokeWidth={1.3} />
+                      <Line
+                        x1={8}
+                        y1={y}
+                        x2={w - 8}
+                        y2={y}
+                        stroke={c.he2eField}
+                        strokeWidth={1.3}
+                      />
                       <Path d={arrowHead(w - 8, y, B > 0 ? 1 : -1, 0, 8)} fill={c.he2eField} />
                     </G>
                   ))
                 : null}
               {okB ? (
-                <Lab x={w - 10} y={ys[0]! - 6} sym="B" value={R.say(u.field, B, 'T')} anchor="end" bold color={c.he2eField} />
+                <Lab
+                  x={w - 10}
+                  y={ys[0]! - 6}
+                  sym="B"
+                  value={R.say(u.field, B, 'T')}
+                  anchor="end"
+                  bold
+                  color={c.he2eField}
+                />
               ) : null}
               {/* The coil edge-on-ish: its plane square to μ; • and × where it crosses the page. */}
               <G transform={`rotate(${-(okTh ? th : 0)} ${C.x} ${C.y})`}>
@@ -846,14 +883,7 @@ function TorqueView({ spec, calc }: { spec: Field<'loop'>; calc: Calculator }) {
                     color={c.forceApplied}
                     width={2.4}
                   />
-                  <Lab
-                    x={8}
-                    y={h - 10}
-                    sym="τ"
-                    value={tauSay}
-                    bold
-                    color={c.forceApplied}
-                  />
+                  <Lab x={8} y={h - 10} sym="τ" value={tauSay} bold color={c.forceApplied} />
                 </G>
               ) : null}
             </Svg>
@@ -968,7 +998,13 @@ function SolenoidView({ spec, calc }: { spec: Field<'solenoid'>; calc: Calculato
                     anchor="end"
                   />
                   {wide ? (
-                    <ChartText x={C.x} y={h - 8} fontSize={chart.tiny} textAnchor="middle" fill={c.chartMuted}>
+                    <ChartText
+                      x={C.x}
+                      y={h - 8}
+                      fontSize={chart.tiny}
+                      textAnchor="middle"
+                      fill={c.chartMuted}
+                    >
                       diameter drawn wider
                     </ChartText>
                   ) : null}
@@ -979,9 +1015,10 @@ function SolenoidView({ spec, calc }: { spec: Field<'solenoid'>; calc: Calculato
         }}
       </Canvas>
       <Caption>
-        {[...capLines, 'Inside, the lines run straight and evenly spaced: B is the same everywhere.'].join(
-          ' · ',
-        )}
+        {[
+          ...capLines,
+          'Inside, the lines run straight and evenly spaced: B is the same everywhere.',
+        ].join(' · ')}
       </Caption>
     </View>
   );
@@ -1019,10 +1056,7 @@ function SolenoidDrawing({
   const traced = useMemo(() => {
     const f = (rho: number, z: number) => loopsField(1, zs, rho, z, 24);
     const box = { r0: -C.y / a, r1: (h - C.y) / a, z0: -C.x / a, z1: (w - C.x) / a };
-    const wires = zs.flatMap((z) => [
-      [1, z] as [number, number],
-      [-1, z] as [number, number],
-    ]);
+    const wires = zs.flatMap((z) => [[1, z] as [number, number], [-1, z] as [number, number]]);
     const starts = solenoidStarts(1, 3).flatMap((r) => [r, -r]);
     return [
       [
@@ -1042,14 +1076,27 @@ function SolenoidDrawing({
         <Sheen id={paint.body} vertical />
       </Defs>
       {/* A faint former the turns are wound on. */}
-      <Rect x={C.x - Lp / 2} y={C.y - a} width={Lp} height={2 * a} fill={c.chartSurface} opacity={0.6} />
+      <Rect
+        x={C.x - Lp / 2}
+        y={C.y - a}
+        width={Lp}
+        height={2 * a}
+        fill={c.chartSurface}
+        opacity={0.6}
+      />
       {showB
         ? traced.map((pts, i) => {
             const scr = pts.map(([rho, z]) => [X(z), Y(rho)] as [number, number]);
             const at = arrowAt(scr, i === 0 ? 0.8 : 0.5);
             return (
               <G key={i}>
-                <Path d={pathOf(scr)} stroke={c.he2eField} strokeWidth={1.3} fill="none" opacity={0.8} />
+                <Path
+                  d={pathOf(scr)}
+                  stroke={c.he2eField}
+                  strokeWidth={1.3}
+                  fill="none"
+                  opacity={0.8}
+                />
                 {at ? (
                   <Path
                     d={arrowHead(
@@ -1071,13 +1118,20 @@ function SolenoidDrawing({
         <G key={z}>
           {[1, -1].map((side) => (
             <G key={side}>
-              <Circle cx={X(z)} cy={Y(side)} r={tr} fill={url(paint.turn)} stroke={c.copperDark} strokeWidth={0.8} />
+              <Circle
+                cx={X(z)}
+                cy={Y(side)}
+                r={tr}
+                fill={url(paint.turn)}
+                stroke={c.copperDark}
+                strokeWidth={0.8}
+              />
               {showB && tr >= 3.5 ? (
                 <PageMark
                   x={X(z)}
                   y={Y(side)}
                   r={tr * 0.75}
-                  out={(side > 0) === out}
+                  out={side > 0 === out}
                   color={c.chartInk}
                   ring={false}
                   width={1}
@@ -1138,7 +1192,14 @@ function ToroidView({ spec, calc }: { spec: Field<'toroid'>; calc: Calculator })
               {okI && I !== 0
                 ? [ri + (ro - ri) * 0.22, ri + (ro - ri) * 0.78].map((rad) => (
                     <G key={rad}>
-                      <Circle cx={C.x} cy={C.y} r={rad} stroke={c.he2eField} strokeWidth={1.3} fill="none" />
+                      <Circle
+                        cx={C.x}
+                        cy={C.y}
+                        r={rad}
+                        stroke={c.he2eField}
+                        strokeWidth={1.3}
+                        fill="none"
+                      />
                       {[0.15, 0.65, 1.15, 1.65].map((t) => (
                         <CircleHead
                           key={t}
@@ -1205,12 +1266,7 @@ function ToroidView({ spec, calc }: { spec: Field<'toroid'>; calc: Calculator })
                     stroke={c.chartMuted}
                     strokeWidth={1.2}
                   />
-                  <Lab
-                    x={C.x + 8}
-                    y={C.y + 26}
-                    sym="r"
-                    value={R.say(spec.r, r, 'm')}
-                  />
+                  <Lab x={C.x + 8} y={C.y + 26} sym="r" value={R.say(spec.r, r, 'm')} />
                 </G>
               ) : null}
               <Lab
@@ -1223,7 +1279,13 @@ function ToroidView({ spec, calc }: { spec: Field<'toroid'>; calc: Calculator })
                 color={c.he2eField}
               />
               <Lab x={inside(C.x + ro + 10, 50, w)} y={C.y + 4} sym="B" value="0" />
-              <Lab x={C.x} y={C.y - 4} sym="N" value={R.say(spec.turns, N, '').trim()} anchor="middle" />
+              <Lab
+                x={C.x}
+                y={C.y - 4}
+                sym="N"
+                value={R.say(spec.turns, N, '').trim()}
+                anchor="middle"
+              />
               <Lab x={w - 8} y={h - 8} sym="I" value={R.say(spec.current, I, 'A')} anchor="end" />
             </Svg>
           );
@@ -1293,14 +1355,25 @@ function PlatesView({ spec, calc }: { spec: Field<'plates'>; calc: Calculator })
               ))}
               {okI && I !== 0
                 ? [w * 0.1, w * 0.88].map((x) => (
-                    <Path key={x} d={arrowHead(x + dir * 8, C.y - 9, dir, 0, 9)} fill={c.chartInk} />
+                    <Path
+                      key={x}
+                      d={arrowHead(x + dir * 8, C.y - 9, dir, 0, 9)}
+                      fill={c.chartInk}
+                    />
                   ))
                 : null}
               {/* The plates, round, at a slant. */}
               {okR
                 ? [xl, xr].map((x) => (
                     <G key={x}>
-                      <Ellipse cx={x} cy={C.y} rx={Rpx * slant} ry={Rpx} fill={c.metal} stroke={c.metalDark} />
+                      <Ellipse
+                        cx={x}
+                        cy={C.y}
+                        rx={Rpx * slant}
+                        ry={Rpx}
+                        fill={c.metal}
+                        stroke={c.metalDark}
+                      />
                       <Ellipse cx={x} cy={C.y} rx={Rpx * slant} ry={Rpx} fill={url(paint.plate)} />
                     </G>
                   ))
@@ -1353,13 +1426,15 @@ function PlatesView({ spec, calc }: { spec: Field<'plates'>; calc: Calculator })
                       />
                     </G>
                   ) : null}
-                  <Line x1={C.x} y1={C.y} x2={C.x} y2={C.y - rpx} stroke={c.chartMuted} strokeWidth={1.2} />
-                  <Lab
-                    x={C.x + 6}
-                    y={C.y - rpx / 2 + 4}
-                    sym="r"
-                    value={R.say(spec.r, r, 'm')}
+                  <Line
+                    x1={C.x}
+                    y1={C.y}
+                    x2={C.x}
+                    y2={C.y - rpx}
+                    stroke={c.chartMuted}
+                    strokeWidth={1.2}
                   />
+                  <Lab x={C.x + 6} y={C.y - rpx / 2 + 4} sym="r" value={R.say(spec.r, r, 'm')} />
                 </G>
               ) : null}
               <Lab
@@ -1392,7 +1467,13 @@ function PlatesView({ spec, calc }: { spec: Field<'plates'>; calc: Calculator })
 
 // ─── A rod sliding on rails ───────────────────────────────────────────────────
 
-function RailsView({ spec, calc }: { spec: InductionRails & { fixed?: boolean }; calc: Calculator }) {
+function RailsView({
+  spec,
+  calc,
+}: {
+  spec: InductionRails & { fixed?: boolean };
+  calc: Calculator;
+}) {
   const c = usePalette();
   const R = useHe2e(calc);
   const paint = usePaintIds('rail', 'rod');
@@ -1459,12 +1540,35 @@ function RailsView({ spec, calc }: { spec: InductionRails & { fixed?: boolean };
                     )
                   : null}
                 {/* The loop's area, growing as the rod slides. */}
-                <Rect x={xR} y={y1} width={xRod - xR} height={y2 - y1} fill={c.he2eEnclosed} opacity={0.3} />
+                <Rect
+                  x={xR}
+                  y={y1}
+                  width={xRod - xR}
+                  height={y2 - y1}
+                  fill={c.he2eEnclosed}
+                  opacity={0.3}
+                />
                 {/* Steel rails and the resistor across the left end. */}
                 {[y1, y2].map((y) => (
                   <G key={y}>
-                    <Rect x={xR - 4} y={y - 4} width={w - xR - 2} height={8} rx={2} fill={c.metal} stroke={c.metalDark} strokeWidth={0.8} />
-                    <Rect x={xR - 4} y={y - 4} width={w - xR - 2} height={8} rx={2} fill={url(paint.rail)} />
+                    <Rect
+                      x={xR - 4}
+                      y={y - 4}
+                      width={w - xR - 2}
+                      height={8}
+                      rx={2}
+                      fill={c.metal}
+                      stroke={c.metalDark}
+                      strokeWidth={0.8}
+                    />
+                    <Rect
+                      x={xR - 4}
+                      y={y - 4}
+                      width={w - xR - 2}
+                      height={8}
+                      rx={2}
+                      fill={url(paint.rail)}
+                    />
                   </G>
                 ))}
                 <Path
@@ -1478,8 +1582,23 @@ function RailsView({ spec, calc }: { spec: InductionRails & { fixed?: boolean };
                   <Lab x={xR + 14} y={(y1 + y2) / 2 + 4} sym="R" value={R.say(x.R, Rr ?? 0, 'Ω')} />
                 ) : null}
                 {/* The copper rod. */}
-                <Rect x={xRod - 5} y={y1 - 12} width={10} height={y2 - y1 + 24} rx={3} fill={c.copper} stroke={c.copperDark} />
-                <Rect x={xRod - 5} y={y1 - 12} width={10} height={y2 - y1 + 24} rx={3} fill={url(paint.rod)} />
+                <Rect
+                  x={xRod - 5}
+                  y={y1 - 12}
+                  width={10}
+                  height={y2 - y1 + 24}
+                  rx={3}
+                  fill={c.copper}
+                  stroke={c.copperDark}
+                />
+                <Rect
+                  x={xRod - 5}
+                  y={y1 - 12}
+                  width={10}
+                  height={y2 - y1 + 24}
+                  rx={3}
+                  fill={url(paint.rod)}
+                />
                 {okL ? (
                   <G>
                     <Line x1={xRod - 16} y1={y1} x2={xRod - 16} y2={y2} stroke={c.chartMuted} />
@@ -1514,7 +1633,10 @@ function RailsView({ spec, calc }: { spec: InductionRails & { fixed?: boolean };
                 {/* The induced current round the loop, and the force on the rod against v. */}
                 {okE && q.emf !== 0 ? (
                   <G>
-                    <Path d={arrowHead(xRod, (y1 + y2) / 2 + (ccw ? -8 : 8), 0, ccw ? -1 : 1, 10)} fill={head} />
+                    <Path
+                      d={arrowHead(xRod, (y1 + y2) / 2 + (ccw ? -8 : 8), 0, ccw ? -1 : 1, 10)}
+                      fill={head}
+                    />
                     <Path d={arrowHead((xR + xRod) / 2, y1, ccw ? -1 : 1, 0, 10)} fill={head} />
                     <Path d={arrowHead((xR + xRod) / 2, y2, ccw ? 1 : -1, 0, 10)} fill={head} />
                     <Lab
@@ -1526,13 +1648,7 @@ function RailsView({ spec, calc }: { spec: InductionRails & { fixed?: boolean };
                       bold
                       color={head}
                     />
-                    <Lab
-                      x={(xR + xRod) / 2}
-                      y={y2 + 22}
-                      sym="ε"
-                      value={emfSay}
-                      anchor="middle"
-                    />
+                    <Lab x={(xR + xRod) / 2} y={y2 + 22} sym="ε" value={emfSay} anchor="middle" />
                   </G>
                 ) : null}
                 {okI && q.F !== 0 ? (
@@ -1557,7 +1673,14 @@ function RailsView({ spec, calc }: { spec: InductionRails & { fixed?: boolean };
                   </G>
                 ) : null}
                 {okB ? (
-                  <Lab x={w - 8} y={h - 6} sym="B" value={R.say(x.B, B, 'T')} anchor="end" color={c.he2eField} />
+                  <Lab
+                    x={w - 8}
+                    y={h - 6}
+                    sym="B"
+                    value={R.say(x.B, B, 'T')}
+                    anchor="end"
+                    color={c.he2eField}
+                  />
                 ) : null}
               </Svg>
               {dragAt && okV ? (

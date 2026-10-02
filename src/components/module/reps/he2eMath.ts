@@ -55,7 +55,14 @@ export const toroidField = (mu0: number, N: number, I: number, r: number, inside
  * current inside r, I_d = I(r/R)² (all of I past the rim, unless `between`: the pages' rule
  * for r ≤ R, kept past it), and B = μ₀I_d/(2πr).
  */
-export function platesOf(mu0: number, eps0: number, I: number, R: number, r: number, between = false) {
+export function platesOf(
+  mu0: number,
+  eps0: number,
+  I: number,
+  R: number,
+  r: number,
+  between = false,
+) {
   const rate = R > 0 ? I / (eps0 * Math.PI * R * R) : NaN;
   const Id = r >= R && !between ? I : R > 0 ? I * (r / R) ** 2 : NaN;
   return { rate, Id, B: r > 0 ? (mu0 * Id) / (2 * Math.PI * r) : 0 };

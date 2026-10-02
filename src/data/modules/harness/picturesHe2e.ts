@@ -52,7 +52,8 @@ export const isHe2e = (rep: { kind: string }) =>
   (rep.kind === 'charges' && ('gauss' in rep || 'distribution' in rep));
 
 export function he2eIssues(rep: { kind: string }, val: Val): string[] {
-  if (rep.kind === 'induction') return inductionIssues(rep as unknown as InductionField | InductionRails, val);
+  if (rep.kind === 'induction')
+    return inductionIssues(rep as unknown as InductionField | InductionRails, val);
   return [];
 }
 
