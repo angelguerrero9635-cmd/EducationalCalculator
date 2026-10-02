@@ -7,6 +7,7 @@
 import type { NumOrVar } from './typesGraphs';
 import { ladderVars, type EnergyLadderSpec } from './typesHs2d';
 import { gasMixtureVars, type GasMixture } from './typesHs3e';
+import { gasHe3gVars, type GasPv, type GasReal } from './typesHe3g';
 
 // ─── H51 gasPiston ───────────────────────────────────────────────────────────
 
@@ -49,6 +50,9 @@ export interface GasPistonSpec extends GasState {
   energy?: { heat: NumOrVar; work: NumOrVar; change?: string };
   /** Round 3: a gas mixture colored by gas (`typesHs3e.ts`, H108 part 6). */
   mixture?: GasMixture;
+  /** HC43: the P–V diagram beside the piston, and a van der Waals gas (`typesHe3g.ts`). */
+  pv?: GasPv;
+  real?: GasReal;
 }
 
 // ─── H52 beaker: solutions ───────────────────────────────────────────────────
@@ -310,6 +314,7 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.energy?.work,
         r.energy?.change,
         ...gasMixtureVars(r.mixture),
+        ...gasHe3gVars(r),
       );
     case 'energyProfile':
       if (r.mode === 'ladder') return ladderVars(r);

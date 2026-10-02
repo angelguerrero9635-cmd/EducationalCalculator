@@ -411,6 +411,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `freeBody`         | `aircraft` `view: 'stability'`           | AC, CG and neutral point on the mean chord, the static margin bracket (HC25)  |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
 | `gasPiston`        | `mixture: { gases, total?, fraction? }`  | 24 particles shared by partial pressure, colored by gas; stacked P bar (H108) |
+| `gasPiston`        | `pv: { path, v1, v2, … }`; `real`        | P–V path, W shaded and signed, isotherms; vdW nb band, two gauges (HC43)      |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
 | `simpleMachine`    | `seesaw: { torque?, pivot? }`            | lever as a seesaw: F₁d₁ = F₂d₂ as curved arrows, Fₚ = F₁ + F₂ (H107)          |
 | `charges`          | `equipotentials: { potential, … }`       | dashed circles r/2, r, 2r with V = kq/r; q₀ on r with U = q₀V (H107)          |

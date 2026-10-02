@@ -407,6 +407,12 @@ const light = {
   /** HC17 propertyDiagram: the liquid + vapor region under water's vapor dome. */
   propDome: '#E2EBF7',
   /** HC23 thermalWall: a brick layer and its mortar, a foam layer and its cells. */
+  /** HC43 gasPiston pv and real: work by and on the gas, the molecules' own volume, their pull. */
+  gasPiston3gWorkBy: '#4F46E5',
+  gasPiston3gWorkOn: '#C2410C',
+  gasPiston3gBand: '#C9D3E6',
+  gasPiston3gHatch: '#5B6B8C',
+  gasPiston3gPull: '#B4462F',
   thermalBrick: '#B9603F',
   thermalMortar: '#E9DFCF',
   thermalFoam: '#F2E2A4',
@@ -914,6 +920,11 @@ const dark: Palette = {
   gasMixC: '#5B86E0',
   gasMixD: '#3DB894',
   propDome: '#1C2A3D',
+  gasPiston3gWorkBy: '#8B83FF',
+  gasPiston3gWorkOn: '#F08A4B',
+  gasPiston3gBand: '#3A4458',
+  gasPiston3gHatch: '#9AA8C4',
+  gasPiston3gPull: '#F08A6B',
   thermalBrick: '#9A4E33',
   thermalMortar: '#5E554A',
   thermalFoam: '#8C7C3E',
