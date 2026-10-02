@@ -146,12 +146,12 @@ export function BarsLogHe1d({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     key={`t${i}`}
                     x={cx}
                     y={bottom + 32}
-                    fontSize={chart.small}
+                    fontSize={chart.label}
                     fill={c.chartMuted}
                     textAnchor="middle"
                   >
-                    {b.name.length * chart.small * 0.56 > slot - 4
-                      ? `${b.name.slice(0, Math.max(3, Math.floor((slot - 4) / (chart.small * 0.56)) - 1))}…`
+                    {b.name.length * chart.label * 0.56 > slot - 4
+                      ? `${b.name.slice(0, Math.max(3, Math.floor((slot - 4) / (chart.label * 0.56)) - 1))}…`
                       : b.name}
                   </ChartText>,
                 ];
