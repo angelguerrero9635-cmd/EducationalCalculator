@@ -581,6 +581,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `energyProfile`    | `quantity: 'G'`, `steps`, `mode: 'bomb'` | ΔG (°′) labels; 2–3 humps, rate-determining lit; a bomb calorimeter (HC44)    |
 | `lewisStructure`   | hydrocarbon `branches: number[]`         | methyl groups on an alkane’s chain, named: 2,2-dimethylpropane (H101)         |
 | `lewisStructure`   | ionic `charges: { metal, nonmetal }`     | the ions from their charges 1–3: Na⁺ Mg²⁺ Al³⁺, Cl⁻ O²⁻ N³⁻ → Al₂O₃ (H108)    |
+| `lewisStructure`   | molecule `formal`, `resonance`           | FC circled on each atom, the v, N, B atom ringed; forms ↔; SF₆, I₃⁻ (HC111)   |
 | `chemDiagram`      | `mode: 'phase'`, `freezing`, `boiling`   | water's phase diagram, the solution's lines dashed at Tf and Tb (H108)        |
 | `chemDiagram`      | `mode: 'rate'`, `times, concentrations`  | [A] against t through two readings, the secant, Δt and Δ[A], the rate (H108)  |
 | `chemDiagram`      | `mode: 'cell'`, `cathode`, `anode`       | the galvanic cell of two E° values, its meter E°cell, the E° scale (H108)     |
@@ -594,6 +595,11 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `phScale`          | `mode: 'buffer'`, `'aminoAcid'`          | HH curve, pKₐ ± 1 band, HA and A⁻ bars; amino acid curve and pI (HC71)        |
 | `phScale`          | `mode: 'pka'`                            | pKₐ ladder −10 to 50, two acids lit, arrow to the weaker; log K (HC73)        |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
+| `orbitalDiagram`   | `mode: 'ladder'`, `Z`, `n`, `l`          | −13.6Z² ÷ n² to scale, level n lit; n² boxes; ring and line nodes (HC109)     |
+| `orbitalDiagram`   | `mode: 'radial'`, `Z`, `n`, `l`          | P(r) = r²R² in a₀, area 1; radial nodes, ⟨r⟩ dashed, r_mp ringed (HC109)      |
+| `orbitalDiagram`   | `mode: 'crystalField'`, `d`, `split`     | d boxes split by Δ beside P to scale, high or low spin; CFSE, μ (HC110)       |
+| `beaker`           | `cuvette: { path, absorbance, … }`       | lamp, cuvette of path b, beam narrowing to T × its width; A, %T, εbc (HC112)  |
+| `macromolecules`   | `level` (protein)                        | sequence, helix and sheet, fold, 2 chains; the same residues; one lit (HC115) |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
 | `energyTrack`      | `spring: { k, compression, … }`          | spring launcher, rough patch (heat fd), ramp; start and now bars (H63)        |

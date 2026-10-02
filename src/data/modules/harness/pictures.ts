@@ -93,6 +93,8 @@ import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import { he3iIssues, limbIssues } from './picturesHe3i';
 import { he2jIssues } from './picturesHe2j';
+import { cuvetteIssues, orbitalHe4dIssues, proteinLevelIssues, siHe4d } from './picturesHe4d';
+import { isOrbitalHe4d } from '../typesHe4d';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
@@ -801,6 +803,10 @@ export function repIssues(
       break;
     }
     case 'beaker': {
+      if ('cuvette' in rep) {
+        out.push(...cuvetteIssues(rep.cuvette, siHe4d(val, byId))); // HC112
+        break;
+      }
       if ('solution' in rep) {
         out.push(...solutionIssues(rep.solution, (id) => val(id), byId));
         break;
@@ -2283,6 +2289,7 @@ export function repIssues(
     case 'macromolecules':
     case 'cellDivision':
       out.push(...hs2eIssues(rep, (id) => val(id)));
+      if (rep.kind === 'macromolecules') out.push(...proteinLevelIssues(rep, siHe4d(val, byId))); // HC115
       break;
     case 'neuron':
       out.push(...neuronIssues(rep, (id) => val(id)));
@@ -2310,6 +2317,7 @@ export function repIssues(
     case 'lewisStructure':
     case 'vsepr':
     case 'moleMap':
+      if (isOrbitalHe4d(rep)) out.push(...orbitalHe4dIssues(rep, siHe4d(val, byId))); // HC109, HC110
       out.push(...hsiIssues(rep, (id) => val(id)));
       if (rep.kind === 'orbitalDiagram' && rep.mode === 'mo')
         out.push(...orbitalMoIssues(rep, val)); // HC70

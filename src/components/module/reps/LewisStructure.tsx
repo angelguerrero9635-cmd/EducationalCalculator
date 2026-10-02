@@ -33,6 +33,8 @@ import {
   valenceElectrons,
   type Lewis,
 } from './lewis';
+import { isLewisHe4d } from './lewisHe4d';
+import { LewisFormal } from './LewisFormal';
 import { METALS_BY_CHARGE, NONMETALS_BY_CHARGE, ionsFromCharges } from './ionicCharges';
 import { Ball, url, usePaintIds } from './paint';
 
@@ -40,6 +42,7 @@ const RAD = Math.PI / 180;
 const SYM = 22;
 
 export function LewisStructure({ spec, calc }: { spec: LewisStructureSpec; calc: Calculator }) {
+  if (spec.mode === 'molecule' && isLewisHe4d(spec)) return <LewisFormal spec={spec} calc={calc} />; // HC111
   switch (spec.mode) {
     case 'ionic':
       return <Ionic spec={spec} calc={calc} />;

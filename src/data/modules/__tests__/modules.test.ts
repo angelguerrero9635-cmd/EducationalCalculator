@@ -29,6 +29,7 @@ import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
+import { cuvetteVars } from '../typesHe4d';
 import { chemDiagramVars } from '../typesHs2d';
 import { phaseEnvelopeVars } from '../typesHe1i';
 import { hslSpecVars } from '../typesHsl';
@@ -227,6 +228,7 @@ function representationVars(r: Representation): string[] {
         r.total,
       ];
     case 'beaker':
+      if ('cuvette' in r) return cuvetteVars(r.cuvette); // HC112
       return 'solution' in r ? solutionVars(r.solution) : [...r.parts, r.total];
     case 'quadrilateral':
       return [r.first, r.second, r.rightAngles];

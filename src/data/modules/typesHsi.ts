@@ -4,6 +4,13 @@
  * `types.ts` so that file's union only lists them. A `NumOrVar` field is a fixed number or a
  * variable id. Formulas are written plainly ("H2O", "NH4+"); the pictures print subscripts.
  */
+import {
+  isOrbitalHe4d,
+  lewisFormalVars,
+  orbitalHe4dVars,
+  type LewisFormal,
+  type OrbitalHe4dSpec,
+} from './typesHe4d';
 import type { NumOrVar } from './typesGraphs';
 import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
@@ -108,6 +115,8 @@ export interface AtomModelSpec {
  *   (nm, 1240 ÷ E) are checked.
  */
 export type OrbitalDiagramSpec =
+  /** College HC109, HC110: ladder with Z, radial, crystal field (`typesHe4d.ts`). */
+  | OrbitalHe4dSpec
   | {
       kind: 'orbitalDiagram';
       mode: 'boxes';
@@ -184,6 +193,9 @@ export type LewisStructureSpec = { kind: 'lewisStructure' } & (
       bonding?: string;
       lone?: string;
       dots?: boolean;
+      /** College HC111: formal charges, resonance forms (`typesHe4d.ts`). */
+      formal?: LewisFormal;
+      resonance?: boolean;
     }
   | {
       mode: 'ionic';
@@ -261,6 +273,7 @@ export type HsiSpec =
 
 /** Every variable id a group I spec refers to (for the module tests). */
 export function hsiSpecVars(r: HsiSpec): string[] {
+  if (isOrbitalHe4d(r)) return orbitalHe4dVars(r); // HC109, HC110
   const ids = (...xs: (NumOrVar | undefined)[]) =>
     xs.filter((x): x is string => typeof x === 'string');
   switch (r.kind) {
@@ -293,7 +306,10 @@ export function hsiSpecVars(r: HsiSpec): string[] {
     case 'lewisStructure':
       switch (r.mode) {
         case 'molecule':
-          return ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone);
+          return [
+            ...ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone),
+            ...lewisFormalVars(r.formal), // HC111
+          ];
         case 'ionic':
           return ids(r.metals, r.nonmetals, r.transferred, ...ionicChargeVars(r.charges));
         case 'metallic':
