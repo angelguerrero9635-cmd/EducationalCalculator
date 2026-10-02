@@ -5,6 +5,38 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## E31: college units, temperature differences, unit sets and constants (HE-E5, E26, E9)
+
+- **The college plans need about 300 units the registry lacked, and a temperature difference
+  converted like a thermometer reading** (a rise of 10 °C shown as 50 °F; `kJ/(kg·K)` and ΔT_lm
+  pages blocked). → `units.ts` adds 298 units in 63 dimensions (stress, moment, line load,
+  second moment, specific energy, conductivity, film coefficient, viscosity, flows, rpm, Hz,
+  inductance, field, conductance, VA and var, dB/dBm/dBi, pu, bits and bytes, molarity, mass
+  concentration, molar energy, rate constants, cm⁻¹, Da, dose, activity, traffic…) and a
+  `temperatureDifference` dimension: `difference: true` on a value makes `getUnit`, `convert`,
+  `unitInSystem` and the conversion line read K, °C, °F and R without the offset. dBm/dBW and
+  dBi/dBd are affine within their own dimensions; years convert to seconds.
+- **New units must not change a K–12 page** (s.10 writes g/mol, u, nm and kJ/mol as labels,
+  s.11 N·m and N/m, which have US counterparts now). → every added unit is `listed`: a menu,
+  a system switch and a conversion only on a value listing another unit beside it, or on a page
+  with a unit set (`unitHere`). Checked by comparing every page's unit options, menus, shown
+  units and factors in all three systems before and after: identical.
+- **Solid mechanics reads in N–mm–MPa or kip–in–ksi, not SI base** (HE-E26). → `unitSets.ts`
+  and `ModuleDef.unitSet`; the unit context shows a page's values in its set for the chosen
+  system, so the US steps are written in kip, in² and ksi with no conversion lines, and
+  `unitSetProblems` keeps every page that names a set honest.
+- **Constants were typed per page, and g must be 9.81 on college pages and 9.8 on K–12**
+  (decision 1). → `constants.ts`: one registry with symbols, printed values and the precise
+  values, `gFor(pageId)`, `constantLine` and `readConstant` for the harness.
+- **The absolute-temperature menu is still a scale only**: the unit context converts by a
+  factor, so a thermometer reading offered in both °C and K would show the wrong number. No
+  page lists both today; a page that needs it waits for an affine unit context.
+- Tests: `units.test.ts` (college conversions, logarithmic and reactive units kept apart, ΔT
+  against T, K–12 labels unchanged), `unitSets.test.ts`, `constants.test.ts`; the pages tested
+  by id: s.11 rotation, oscillations, thermodynamics; s.12 surface-processes, climate-systems;
+  s.10 entropy-free-energy, nuclear-chemistry, gas-laws; m.6 unit-rates; m.7
+  proportional-relationships; s.8 newtons-laws; every college page.
+
 ## E30: checks with ln, log or e^ printed worked-out values with their extra figures
 
 - **A check whose right side has a logarithm or e to a power kept its extra figures**

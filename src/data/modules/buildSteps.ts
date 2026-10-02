@@ -13,7 +13,7 @@ import {
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
-import { getUnit } from '@/engine/units';
+import { offsetRule } from '@/engine/units';
 
 import {
   gradeBand,
@@ -659,7 +659,7 @@ export function buildSteps(
       return String(Number(x.toPrecision(6)));
     };
     const one =
-      offsetRule(shownUnit(id), formulaUnit(id)) ??
+      offsetRule(shownUnit(id), formulaUnit(id), v.difference) ??
       (f >= 1
         ? `1 ${shownUnit(id)} = ${sig(f)} ${formulaUnit(id)}`
         : `1 ${formulaUnit(id)} = ${sig(1 / f)} ${shownUnit(id)}`);
@@ -799,20 +799,4 @@ function byGrade(lines: string[], grade: string | undefined): string[] {
     }
   }
   return out.filter((_, i) => !chained.has(i));
-}
-
-/**
- * The rule between two temperature units, which differ by an offset as well as a factor: no
- * "1 °C = …" holds, so the step writes "K = °C + 273.15" or "°F = °C × 9/5 + 32" instead.
- */
-function offsetRule(shown: string | undefined, formula: string | undefined): string | undefined {
-  const a = getUnit(shown);
-  const b = getUnit(formula);
-  if (!a || !b || !(a.offset || b.offset)) return undefined;
-  const pair = (x: string, y: string) =>
-    (shown === x && formula === y) || (shown === y && formula === x);
-  if (pair('°C', '°F')) return '°F = °C × 9/5 + 32';
-  if (pair('K', '°C')) return 'K = °C + 273.15';
-  if (pair('K', '°F')) return 'K = (°F + 459.67) × 5/9';
-  return undefined;
 }

@@ -81,6 +81,12 @@ export interface VariableDef {
    * and work in the formula's units, so the rule needs no 10⁻⁶ of its own.
    */
   shownIn?: string;
+  /**
+   * A temperature difference (ΔT, a rise, the ΔT_lm of an exchanger), not a temperature: its K,
+   * °C, °F or R convert by the factor alone (a rise of 10 °C is 10 K and 18 °F), never with the
+   * 273.15 or 32 of a thermometer reading.
+   */
+  difference?: boolean;
   /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
   multipleOf?: number;
   /** Only these values (shown units), when a lesson names them: count by 5s, 10s or 100s. */
