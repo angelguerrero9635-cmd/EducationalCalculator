@@ -556,6 +556,132 @@ describe('a newer value that doesn’t fit the older ones', () => {
   });
 });
 
+describe('refusals a student reads', () => {
+  const whole = (id: string, name: string, min: number, max: number) => ({
+    id,
+    symbol: id,
+    name,
+    min,
+    max,
+    step: 1,
+    integer: true,
+  });
+  // a − b = c (the K–5 subtraction page), c found only when b ≤ a.
+  const subtract = (id: string): System => ({
+    id,
+    variables: [
+      whole('a', 'Start', 0, 1000),
+      whole('b', 'Take away', 0, 1000),
+      whole('c', 'Left', 0, 1000),
+    ],
+    relations: [
+      {
+        id: 'a − b = c',
+        display: '',
+        vars: ['a', 'b', 'c'],
+        residual: (v) => v.a! - v.b! - v.c!,
+        solve: {
+          c: (v) => (v.b! > v.a! ? undefined : v.a! - v.b!),
+          a: (v) => v.b! + v.c!,
+          b: (v) => v.a! - v.c!,
+        },
+      },
+    ],
+  });
+
+  it('builds the out-of-reach sentence from the range, and names no negative before Grade 6', () => {
+    const typed = [
+      { id: 'a', value: 0 },
+      { id: 'b', value: 178 },
+    ];
+    expect(solve(subtract('m.2.x'), typed).rejected?.reason).toBe(
+      'That would make “Left” less than 0.',
+    );
+    expect(solve(subtract('m.7.x'), typed).rejected?.reason).toBe(
+      'That would make “Left” −178, but it must be at least 0.',
+    );
+  });
+
+  it('says a K–5 value isn’t whole without naming it, and bounds products', () => {
+    const groups = (id: string): System => ({
+      id,
+      variables: [
+        whole('k', 'Groups', 1, 10),
+        { ...whole('s', 'In each group', 1, 10), inSentence: 'the number in each group' },
+        whole('n', 'Total', 1, 100),
+      ],
+      relations: [
+        {
+          id: 'n = k × s',
+          display: '',
+          vars: ['n', 'k', 's'],
+          residual: (v) => v.n! - v.k! * v.s!,
+          solve: { n: (v) => v.k! * v.s!, k: (v) => v.n! / v.s!, s: (v) => v.n! / v.k! },
+        },
+      ],
+    });
+    const r = solve(groups('m.3.x'), [
+      { id: 's', value: 6 },
+      { id: 'n', value: 1 },
+    ]);
+    expect(r.rejected?.reason).toBe('That wouldn’t make the groups a whole number.');
+    expect(
+      solve(groups('m.7.x'), [
+        { id: 's', value: 6 },
+        { id: 'n', value: 1 },
+      ]).rejected?.reason,
+    ).toBe('That would make the groups 0.1667, but it must be a whole number.');
+    // A total of 150 is past 10 × 10, whatever the groups and their size.
+    const far = solve(groups('m.3.x'), [{ id: 'n', value: 150 }]);
+    expect(far.rejected?.reason).toBe('Must be at most 100');
+    const wide: System = {
+      ...groups('m.3.x'),
+      variables: groups('m.3.x').variables.map((v) => (v.id === 'n' ? { ...v, max: 1000 } : v)),
+    };
+    expect(solve(wide, [{ id: 'n', value: 150 }]).rejected?.reason).toBe(
+      'The other numbers can’t reach this: they would go past their limits.',
+    );
+  });
+
+  it('reads a value in its own format and unit', () => {
+    const sys: System = {
+      id: 's.6.x',
+      variables: [
+        { id: 'h', symbol: 'h', name: 'Air', unit: '°C', min: -60, max: 60 },
+        { id: 'd', symbol: 'd', name: 'Temperature difference', unit: '°C', min: 0, max: 100 },
+        { id: 'p', symbol: 'p', name: 'Pictures', min: 0, max: 10, multipleOf: 0.5, fraction: 2 },
+        { id: 'k', symbol: 'k', name: 'Each stands for', min: 1, max: 10 },
+        { id: 'n', symbol: 'n', name: 'Count', min: 0, max: 100 },
+      ],
+      relations: [
+        {
+          id: 'd = h − 3',
+          display: '',
+          vars: ['d', 'h'],
+          residual: (v) => v.d! - v.h! + 3,
+          solve: { d: (v) => v.h! - 3, h: (v) => v.d! + 3 },
+        },
+        {
+          id: 'n = p × k',
+          display: '',
+          vars: ['n', 'p', 'k'],
+          residual: (v) => v.n! - v.p! * v.k!,
+          solve: { n: (v) => v.p! * v.k!, p: (v) => v.n! / v.k!, k: (v) => v.n! / v.p! },
+        },
+      ],
+    };
+    expect(solve(sys, [{ id: 'h', value: -54 }]).rejected?.reason).toBe(
+      'That would make the temperature difference −57 °C, but it must be at least 0 °C.',
+    );
+    expect(
+      solve(sys, [
+        { id: 'k', value: 4 },
+        { id: 'n', value: 1 },
+      ]).rejected?.reason,
+    ).toMatch(/^That would make the pictures 1\/4, but it must be 0, 1\/2, 1, …( Try|$)/);
+  });
+});
+
 describe('calculator state', () => {
   it('sets, replaces and clears values', () => {
     let s = initialState(area, [

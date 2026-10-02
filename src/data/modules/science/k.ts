@@ -199,8 +199,12 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
         'A bigger number means a warmer day.',
       ],
       variables: [
-        { ...whole('t', 't', 'Today', 20, 100), unit: F },
-        { ...whole('y', 'y', 'Yesterday', 20, 100), unit: F },
+        { ...whole('t', 't', 'Today', 20, 100), unit: F, inSentence: 'today’s temperature' },
+        {
+          ...whole('y', 'y', 'Yesterday', 20, 100),
+          unit: F,
+          inSentence: 'yesterday’s temperature',
+        },
         { ...whole('w', 'w', 'Warmer or cooler by', 0, 40), unit: F },
       ],
       relations: [warmer.relation],

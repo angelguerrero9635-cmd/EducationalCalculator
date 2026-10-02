@@ -195,6 +195,7 @@ export function makeUnitContext(module: ModuleLike, asked: UnitChoice): UnitCont
   const fromDisplay = (id: string, x: number) => x * factor(id);
 
   const system: System = {
+    id: module.id,
     relations: module.relations,
     variables: module.variables.map((v) => {
       const f = factor(v.id);

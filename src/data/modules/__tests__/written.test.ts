@@ -110,6 +110,9 @@ describe('simplify chain', () => {
     expect(simplifyChain('√(3² + 4²)')).toEqual(['√(9 + 16)', '√25', '5']);
     expect(simplifyChain('(24 − 7 − 7) ÷ 2')).toEqual(['(17 − 7) ÷ 2', '10 ÷ 2', '5']);
     expect(simplifyChain('2 × 3 + 4 × 5')).toEqual(['6 + 20', '26']);
+    // A decimal times a square of 10 is not scientific notation (s.8 kinetic energy).
+    expect(simplifyChain('1/2 × 0.1 × 10²')).toEqual(['1/2 × 0.1 × 100', '0.05 × 100', '5']);
+    expect(simplifyChain('0.1 × 10² × 9.8')).toEqual(['0.1 × 100 × 9.8', '10 × 9.8', '98']);
     expect(simplifyChain('½ × (4 + 6) × 3')).toEqual(['½ × 10 × 3', '5 × 3', '15']);
     expect(simplifyChain('100 ÷ (1 + 5 ÷ 100)^2')).toEqual([
       '100 ÷ (1 + 0.05)²',

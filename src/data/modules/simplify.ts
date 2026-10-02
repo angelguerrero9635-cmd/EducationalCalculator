@@ -43,10 +43,11 @@ const superValue = (raised: string) =>
 
 /**
  * Whether a line is worked in scientific notation: it has a number that can only be one (a
- * decimal in front, 6.674 × 10⁻¹¹, or a power other than ² or ³, 7 × 10⁶). Its 4 × 10³ is then
+ * power of ten other than ² or ³: 6.674 × 10⁻¹¹, 7 × 10⁶; never 0.1 × 10², a mass times a
+ * speed squared, whose work lines read 1/2 × 0.1 × 100). Its 4 × 10³ is then
  * one number too, never 4 × 1,000, and its large results are written the same way.
  */
-const SCI_WORK = /\d\.\d+ × 10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]|\d × 10(?:⁻|[⁰¹⁴⁵⁶⁷⁸⁹]|[²³][⁰¹²³⁴⁵⁶⁷⁸⁹])/;
+const SCI_WORK = /\d(?:\.\d+)? × 10(?:⁻|[⁰¹⁴⁵⁶⁷⁸⁹]|[²³][⁰¹²³⁴⁵⁶⁷⁸⁹])/;
 
 function tokenize(
   text: string,

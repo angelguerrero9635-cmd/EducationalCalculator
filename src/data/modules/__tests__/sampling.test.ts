@@ -374,7 +374,7 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
       !/^(Doesn’t fit|Makes .* impossible|That would leave no possible|Must be|These numbers)/.test(
         reason,
       ) &&
-      !(/^That would make /.test(reason) && !res.rejected.older);
+      !(/^That (would|wouldn’t) make /.test(reason) && !res.rejected.older);
     const alone = complete(c.sys, { [g.id]: g.value });
     if (alone.feasible === true && !said) {
       c.f.add('error', `${c.label}rejects ${g.id} although it is possible`, where);

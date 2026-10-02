@@ -1,4 +1,4 @@
-import { dollars, formatNumber, lowerFirst } from './format';
+import { dollars, formatNumber, lowerFirst, parseNumber, unitFor } from './format';
 import type { Relation, Values, VariableDef } from './types';
 
 export interface Given {
@@ -41,7 +41,12 @@ export interface TraceStep {
 export interface System {
   variables: VariableDef[];
   relations: Relation[];
+  /** The page's id ("m.3.area~split"): its grade sets how a refusal reads (K–5: no decimals). */
+  id?: string;
 }
+
+/** Kindergarten–Grade 5: a refusal names no decimal or negative a student hasn't met. */
+const youngPage = (system: System) => /^[ms]\.(K|[1-5])\./.test(system.id ?? '');
 
 const TOLERANCE = 1e-6;
 
@@ -60,6 +65,8 @@ export function outOfCount(v: VariableDef | undefined, values: Values): boolean 
 export function checkValue(variable: VariableDef, x: number): string | undefined {
   if (!Number.isFinite(x)) return 'Not a number';
   const f = variable.unitFactor ?? 1;
+  // A fraction page's numbers read as fractions (0, 1/2, 1, …), as its boxes show them.
+  const asFraction = variable.fraction ? { fraction: variable.fraction } : undefined;
   const unit = variable.displayUnit ? ` ${variable.displayUnit}` : '';
   // Money in dollars reads "$84", not "84 $".
   const withUnit = (n: string) => (variable.displayUnit === '$' ? dollars(n) : `${n}${unit}`);
@@ -75,7 +82,7 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
     variable.allowed &&
     !variable.allowed.some((a) => Math.abs(x / f - a) < Math.max(1e-9, 1e-11 * Math.abs(a)))
   ) {
-    const list = variable.allowed.map((a) => formatNumber(a));
+    const list = variable.allowed.map((a) => formatNumber(a, asFraction));
     return `Must be ${list.length > 1 ? `${list.slice(0, -1).join(', ')} or ${list[list.length - 1]}` : list[0]}`;
   }
   const m = variable.multipleOf;
@@ -84,11 +91,11 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   if (m && Math.abs(steps - Math.round(steps)) > 1e-9 * Math.max(1, Math.abs(steps))) {
     // Start the list at the smallest allowed multiple (12, 24, 36, … when the minimum is 12).
     const first = Math.max(0, Math.ceil((variable.min ?? 0) / f / m - 1e-9)) * m;
-    return `Must be ${[first, first + m, first + 2 * m].map((x) => formatNumber(x)).join(', ')}, …`;
+    return `Must be ${[first, first + m, first + 2 * m].map((x) => formatNumber(x, asFraction)).join(', ')}, …`;
   }
   // Limits converted to another unit are shown to 3 significant figures.
   const limit = (bound: number) =>
-    formatNumber(f === 1 ? bound : Number((bound / f).toPrecision(3)));
+    formatNumber(f === 1 ? bound : Number((bound / f).toPrecision(3)), asFraction);
   // Whole numbers are compared exactly (the tolerance would let 2,000,000,001 pass 2e9).
   const shown = variable.integer ? Math.round(x / f) * f : x;
   const slack = (bound: number) =>
@@ -230,44 +237,128 @@ function affineOf(rel: Relation): Affine | undefined {
   return out ?? undefined;
 }
 
-/** A value as the student reads it: in the box's unit, to 6 significant figures. */
-function shownWithUnit(v: VariableDef, x: number): string {
+/**
+ * A number as the value's box shows it (a fraction page's 1/4, a step of 0.001's 19,996.468),
+ * in shown units. `failing`: the number a refusal is about, given as many more decimals as it
+ * takes to still break the rule it breaks (35.96 is not whole; 36 would be).
+ */
+function shownNumber(v: VariableDef, y: number, failing = false): string {
+  const opts = {
+    fraction: v.fraction ? Math.max(v.fraction, 12) : undefined,
+    improper: v.improper,
+    pi: v.pi,
+    scientific: v.scientific,
+    sigFigs: v.sigFigs,
+    figures: v.figures,
+    full: v.full,
+    repeating: v.repeating,
+  };
+  const plain = formatNumber(y, opts);
+  if (!failing || Number.isInteger(y)) return plain;
   const f = v.unitFactor ?? 1;
-  const unit = v.displayUnit ?? v.unit;
-  const n = formatNumber(Number((x / f).toPrecision(6)));
-  if (!unit) return n;
-  if (unit === '$') return dollars(n);
-  // 91.5%, 40°, 5¢: no space.
-  return /^[¢%°]/.test(unit) ? `${n}${unit}` : `${n} ${unit}`;
+  // (the same rule: 0.1667 groups rounded to 0 breaks the minimum, not the whole-number rule)
+  const why = checkValue(v, y * f);
+  const fails = (text: string) => {
+    const n = parseNumber(text);
+    return typeof n === 'number' && checkValue(v, n * f) === why;
+  };
+  // Exactly as the box would show it (1/4, 19,996.468), else to the step's decimals (a step
+  // of 0.001: 3), then one more at a time.
+  const exact = parseNumber(plain);
+  if (typeof exact === 'number' && Math.abs(exact - y) <= 1e-12 * Math.max(1, Math.abs(y)))
+    return plain;
+  // (A value that isn't whole, or not on the list, keeps its decimals: 0.1667 groups, not 0.2.)
+  const ranged = /^Must be at (least|most)/.test(why ?? '');
+  const step = ranged && v.step !== undefined && v.step > 0 ? v.step : undefined;
+  const base = step ? Math.max(0, Math.ceil(-Math.log10(step) - 1e-9)) : undefined;
+  const whole = Math.max(1, Math.floor(Math.log10(Math.abs(y) || 1)) + 1);
+  const texts = [
+    ...(base === undefined
+      ? [plain]
+      : Array.from({ length: 5 }, (_, i) => {
+          const r = Number(y.toFixed(Math.min(20, base + i)));
+          return formatNumber(r, {
+            ...opts,
+            figures: Math.abs(r) < 1 ? 4 + i : whole + base + i,
+          });
+        })),
+    ...[6, 8, 10].map((n) => formatNumber(Number(y.toPrecision(n)), { ...opts, figures: n })),
+  ];
+  return texts.find(fails) ?? plain;
 }
 
-/** A value's name inside a sentence: "the potassium-40 left", "the Carnot limit", "the IQR". */
-export const theName = (v: Pick<VariableDef, 'name'>) => `the ${lowerFirst(v.name)}`;
+/** A value as the student reads it, with its unit: "16 cm", "$5", "91.5%", "−57 °C", "1 cube". */
+function shownWithUnit(v: VariableDef, x: number, failing = false): string {
+  const f = v.unitFactor ?? 1;
+  const unit = v.displayUnit ?? v.unit;
+  const n = shownNumber(v, x / f, failing);
+  if (!unit) return n;
+  if (unit === '$') return dollars(n);
+  const u = unitFor(parseNumber(n) === 1 ? 1 : 2, unit);
+  // 91.5%, 40°, 5¢: no space ("−57 °C" keeps its).
+  return /^([¢%]|°$)/.test(u) ? `${n}${u}` : `${n} ${u}`;
+}
+
+/**
+ * A label that isn't a noun ("In all", "How many more", "Still needed", "Left", "Today"):
+ * "the in all" reads wrong, so it is quoted instead ("That would make “In all” 14").
+ */
+const NOT_A_NOUN =
+  /^(?:(?:in|on|at|for|to|from|after|before|by|with|without|of|per|over|under|into|out|each|all|altogether|together|how|what|which|who|whose|when|where|why|still|not|now|today|tonight|yesterday|tomorrow|already|also|only|just|then|than)\b|(?:left|needed|used|shaded|unshaded|spent|eaten|given|taken|sold|saved|lost|found|added|removed|leftover)$)/i;
+
+/**
+ * A value's name inside a sentence: "the potassium-40 left", "the Carnot limit", "the IQR";
+ * the value's own `inSentence` when it sets one ("the number in each group"), and a label that
+ * isn't a noun, or ends in a number, in quotes (“In all”, “Side 4”).
+ */
+export const theName = (v: Pick<VariableDef, 'name' | 'inSentence'>) =>
+  v.inSentence ??
+  // (a name ending in a number too: "the side 4 170 cm" reads as one number)
+  (NOT_A_NOUN.test(v.name.trim()) || /\d$/.test(v.name.trim())
+    ? `“${v.name}”`
+    : `the ${lowerFirst(v.name)}`);
 
 /**
  * Why a value can't be `x`, in a sentence a student reads: "That would make the density
- * 108,225 g/cm³, but it can be at most 100 g/cm³." Undefined when its range allows `x`.
+ * 108,225 g/cm³, but it can be at most 100 g/cm³." On a K–5 page a value that isn't whole is
+ * not named ("That wouldn’t make the groups a whole number.") and a negative one is "less than
+ * 0". Undefined when its range allows `x`.
  */
-function rangeSentence(v: VariableDef, x: number): string | undefined {
+function rangeSentence(system: System, v: VariableDef, x: number): string | undefined {
   const range = checkValue(v, x);
   if (!range) return undefined;
   // 60,300.00000008 "must be a whole number" reads as nonsense: no sentence for rounding dust.
   const f = v.unitFactor ?? 1;
   if (checkValue(v, Number((x / f).toPrecision(6)) * f) === undefined) return undefined;
-  const need = `That would make ${theName(v)} ${shownWithUnit(v, x)}, but it`;
+  const name = theName(v);
+  if (youngPage(system)) {
+    if (x < 0) {
+      const least =
+        v.min !== undefined && v.min > 0
+          ? `, but it must be at least ${shownWithUnit(v, v.min)}`
+          : '';
+      return `That would make ${name} less than 0${least}.`;
+    }
+    if (range === 'Must be a whole number') return `That wouldn’t make ${name} a whole number.`;
+  }
+  const need = `That would make ${name} ${shownWithUnit(v, x, true)}, but it`;
   if (v.max !== undefined && /^Must be at most/.test(range))
     return `${need} can be at most ${shownWithUnit(v, v.max)}.`;
   if (v.min !== undefined && /^Must be at least/.test(range))
     return `${need} must be at least ${shownWithUnit(v, v.min)}.`;
-  return `${need} ${range[0]!.toLowerCase()}${range.slice(1)}.`;
+  const tail = `${range[0]!.toLowerCase()}${range.slice(1)}`;
+  return `${need} ${tail}${tail.endsWith('…') ? '' : '.'}`;
 }
 
 /**
  * What the engine says when no value of `v` fits the other numbers and nothing more precise
  * can be said (a root of a negative, a log of 0).
  */
-export const noValueFor = (v: Pick<VariableDef, 'name'>) =>
+export const noValueFor = (v: Pick<VariableDef, 'name' | 'inSentence'>) =>
   `That would leave no possible value for ${theName(v)}.`;
+
+/** The engine's fallback when the open values can't meet a rule and no one value says why. */
+export const CANT_REACH = 'The other numbers can’t reach this: they would go past their limits.';
 
 /**
  * Why `x` can't be `v`'s value, in a sentence: a rule's own message when one speaks for the
@@ -287,64 +378,110 @@ function whyNot(system: System, v: VariableDef, x: number, values: Values): stri
       // A message that needs values not known yet stays quiet.
     }
   }
-  return rangeSentence(v, x);
+  return rangeSentence(system, v, x);
 }
 
 /**
- * A sum the unknown values can't reach, whatever they are within their ranges (a total of 10
- * with 12 already typed and the rest at least 0): the inputs can never be completed. Returns
- * the reason in words a young student reads ("In all would have to be 14, but it can be at
- * most 10"), or undefined when every sum is still in reach.
+ * True when a relation is a straight line in each of its values on its own, the others held
+ * (a sum, a product n × x, ρ × V − m): over a box of ranges it is then least and greatest at
+ * the box's corners.
  */
-function outOfReach(system: System, values: Values): string | undefined {
+const multilinearCache = new WeakMap<Relation, boolean>();
+function multilinear(rel: Relation): boolean {
+  const cached = multilinearCache.get(rel);
+  if (cached !== undefined) return cached;
+  const at = (p: Values) => {
+    try {
+      return rel.residual(p);
+    } catch {
+      return NaN;
+    }
+  };
+  let ok = true;
+  for (let i = 1; ok && i <= 4; i++) {
+    const p = Object.fromEntries(
+      rel.vars.map((id, k) => [id, (((i * 37 + k * 53) % 200) - 50) / 7 + 0.3]),
+    );
+    for (const id of rel.vars) {
+      const [a, b, c] = [0.5, 2.25, 6.75].map((t) => at({ ...p, [id]: t })) as [
+        number,
+        number,
+        number,
+      ];
+      const s1 = (b - a) / 1.75;
+      const s2 = (c - a) / 6.25;
+      if (
+        ![a, b, c].every(Number.isFinite) ||
+        Math.abs(s1 - s2) > 1e-9 * (1 + Math.abs(s1) + Math.abs(s2) + Math.abs(a))
+      ) {
+        ok = false;
+        break;
+      }
+    }
+  }
+  multilinearCache.set(rel, ok);
+  return ok;
+}
+
+/**
+ * A rule the unknown values can't meet, whatever they are within their ranges (a total of 10
+ * with 12 already typed and the rest at least 0; a product of two values at most 10 that must
+ * be 150): the inputs can never be completed. Sums and products are bounded at the corners of
+ * their ranges. Returns the reason in words: with one value left open, the range sentence it
+ * would break ("That would make “Left” less than 0."; `single`), else `CANT_REACH`. Undefined
+ * when every rule is still in reach.
+ */
+function outOfReach(
+  system: System,
+  values: Values,
+): { reason: string; single: boolean } | undefined {
   const byId = new Map(system.variables.map((v) => [v.id, v]));
   for (const rel of system.relations) {
     if (rel.constraint || rel.vars.every((id) => id in values)) continue;
-    const aff = affineOf(rel);
-    if (!aff) continue;
-    let lo = aff.c0;
-    let hi = aff.c0;
-    let rest = aff.c0;
-    // Tolerance scaled by the size of the terms, not of the sum (which is near 0 exactly when
-    // it matters): with values in miles a true 0 comes out as 0.00003.
-    let size = Math.abs(aff.c0);
-    let unbounded = false;
-    const open: string[] = [];
-    for (const id of rel.vars) {
-      const k = aff.coef.get(id)!;
-      if (id in values) {
-        lo += k * values[id]!;
-        hi += k * values[id]!;
-        rest += k * values[id]!;
-        size += Math.abs(k * values[id]!);
-        continue;
+    if (!affineOf(rel) && !multilinear(rel)) continue;
+    const open = rel.vars.filter((id) => !(id in values));
+    if (open.length > 6) continue;
+    const ranges = open.map((id) => byId.get(id));
+    if (ranges.some((v) => v?.min === undefined || v.max === undefined)) continue;
+    const at = (p: Values) => {
+      try {
+        return rel.residual(p);
+      } catch {
+        return NaN;
       }
-      open.push(id);
-      const v = byId.get(id);
-      if (v?.min === undefined || v.max === undefined) {
-        unbounded = true;
-        break;
-      }
-      lo += Math.min(k * v.min, k * v.max);
-      hi += Math.max(k * v.min, k * v.max);
-      size += Math.max(Math.abs(k * v.min), Math.abs(k * v.max));
-    }
-    if (unbounded) continue;
+    };
+    const corners = Array.from({ length: 2 ** open.length }, (_, k) => {
+      const p: Values = { ...values };
+      open.forEach((id, i) => {
+        const v = byId.get(id)!;
+        p[id] = (k >> i) & 1 ? v.max! : v.min!;
+      });
+      return at(p);
+    });
+    if (!corners.every(Number.isFinite)) continue;
+    const lo = Math.min(...corners);
+    const hi = Math.max(...corners);
+    // Tolerance scaled by the size of the terms, not of the result (which is near 0 exactly
+    // when it matters): with values in miles a true 0 comes out as 0.00003.
+    const size =
+      rel.vars.reduce((t, id) => t + Math.abs(values[id] ?? 0), 0) +
+      ranges.reduce((t, v) => t + Math.max(Math.abs(v!.min!), Math.abs(v!.max!)), 0) +
+      Math.max(...corners.map(Math.abs));
     const tol = 1e-9 * (1 + size);
     if (!(lo > tol || hi < -tol)) continue;
     // No open value moves it: a lookup (dice pairs for a sum) read as flat at the probes, not a
-    // sum that can't be reached.
-    if (open.every((id) => aff.coef.get(id) === 0)) continue;
-    // One value left to find: say what it would have to be and its limit.
+    // rule that can't be met.
+    if (hi - lo <= tol) continue;
+    // One value left to find: the range it would have to break.
     if (open.length === 1) {
       const v = byId.get(open[0]!)!;
-      const k = aff.coef.get(v.id)!;
-      const shown = (x: number) => shownWithUnit(v, x);
-      const need = -rest / k;
-      const over = need > v.max!;
-      return `${v.name} would have to be ${shown(need)}, but it can be at ${over ? 'most' : 'least'} ${shown(over ? v.max! : v.min!)}`;
+      const f0 = at({ ...values, [v.id]: 0 });
+      const f1 = at({ ...values, [v.id]: 1 });
+      const need = -f0 / (f1 - f0);
+      const said = Number.isFinite(need) ? rangeSentence(system, v, need) : undefined;
+      if (said) return { reason: said, single: true };
     }
-    return 'The other numbers can’t reach this: they would go past their limits';
+    return { reason: CANT_REACH, single: false };
   }
   return undefined;
 }
@@ -777,7 +914,7 @@ function roundedOut(
 }
 
 /** The engine's own sentence for a value past its range (`rangeSentence`). */
-const RANGE_SENTENCE = /^That would make /;
+const RANGE_SENTENCE = /^That (would|wouldn’t) make /;
 
 /**
  * Which way to move the newest value so it fits the older ones, when halving or doubling it
@@ -888,12 +1025,32 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       return undefined;
     };
     const message = unreachable || none ? said() : undefined;
+    // No one open value says why the rule can't be met with the inputs so far (P = 4 and
+    // side 3 = 10, sides 1, 2 and 4 open): with every typed value in, one may (side 4 would
+    // have to be −26 cm).
+    const explainAll = () => {
+      const all: Values = {};
+      for (const k of given) {
+        const v = byId.get(k.id);
+        if (v && checkValue(v, k.value) === undefined) all[k.id] = normalizeValue(v, k.value);
+      }
+      const p = propagate(system, all, previous, [], { left: 200 });
+      if (!p.ok) return p.said ? p.reason : p.why?.();
+      const r = outOfReach(system, p.values);
+      return r?.single ? r.reason : undefined;
+    };
     const trial: Propagation = unreachable
-      ? { ok: false, reason: message ?? unreachable, said: true }
+      ? {
+          ok: false,
+          reason:
+            message ??
+            (unreachable.single ? unreachable.reason : (explainAll() ?? unreachable.reason)),
+          said: true,
+        }
       : none
         ? message
           ? { ok: false, reason: message, said: true }
-          : { ok: false, reason: 'These numbers can’t all be true together' }
+          : { ok: false, reason: 'These numbers can’t all be true together.' }
         : propagated;
     // Typed values that miss only by their rounding (each within half its step) fit: the
     // ones the others work out are worked out, the rest kept as typed.
