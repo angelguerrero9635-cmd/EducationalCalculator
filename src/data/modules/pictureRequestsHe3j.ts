@@ -29,6 +29,33 @@ const E = 'he.engineering.';
 export const HE3J_REQUESTS: PictureRequest[] = [
   {
     ...ask(
+      'HC89',
+      'hydrograph',
+      'Rainfall and runoff: the storm’s depth P hanging from the top as a column cut into I_a, infiltration F and runoff Q, beside the curve-number curve Q(P) with the storm on it; rain on a painted watershed with the share C running off to the outlet (and, with t_c, the rain bar on a time chart and the runoff peaking at t_c); inflow and outflow triangles over t_b with the storage between them shaded',
+      [
+        `${E}hydraulics-hydrology#2`,
+        `${E}hydraulics-hydrology#2~rational`,
+        `${E}hydraulics-hydrology#3~detention`,
+      ],
+      [
+        'From ACC-P21. A new kind (typesHe3j.ts HydrographSpec, reps/Hydrograph.tsx, the sums in reps/he3jMath.ts). EG’s `catchment` (HC129) is the same rational method from above and stays its own request.',
+        "Fields: { kind: 'hydrograph', mode: 'split' | 'rational' | 'detention', P?, Ia?, F?, Q?, S?, CN?, depthUnit? ('in'), C?, i? (mm/h), A? (ha), Qp? (m³/s), tc? (min), Qin?, Qout? (m³/s), tb?, V? (m³), tbSeconds? (3600: t_b in hours), peakAt? (0.375 of t_b, the SCS triangle), keep? }. A field is a variable id or a number. Drags: the bottom of the rain column (P) and the outflow peak (Q_o) when the page types them.",
+        "Example (main): { kind: 'hydrograph', mode: 'split', CN: 'CN', S: 'S', Ia: 'Ia', P: 'P', Q: 'Q', F: 'F', depthUnit: 'in', keep: ['CN'] } (the page adds F = P − I_a − Q, or the picture works it out). ~rational: { mode: 'rational', C: 'C', i: 'i', A: 'A', Qp: 'Q' } (add tc: 'tc' for the time chart). ~detention: { mode: 'detention', Qin: 'Qi', Qout: 'Qo', tb: 'tb', V: 'V', tbSeconds: 3600 }.",
+        'The harness (harness/picturesHe3j.ts) checks S = 1000 ÷ CN − 10, I_a = 0.2S, Q = (P − I_a)² ÷ (P + 0.8S) (0 when P ≤ I_a), F and I_a + F + Q = P with F ≥ 0; 0 ≤ C ≤ 1 and Q = CiA ÷ 360; Q_o < Q_i and V = ½t_b(Q_i − Q_o) (the shaded triangle between the two hydrographs, which meet on the inflow’s falling limb). The watershed outline is drawn for show and says so.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-hydrograph-split',
+      'g.he-hydrograph-split-light',
+      'g.he-hydrograph-rational',
+      'g.he-hydrograph-rational-tc',
+      'g.he-hydrograph-detention',
+      'g.he-hydrograph-detention-small',
+    ],
+  },
+  {
+    ...ask(
       'HC61',
       'connection',
       'Steel connections, painted: a plate with a row of bolt holes and the net section lit through them (the edge view gives t); a lap splice with n bolts in rows of two, in plan and in edge view with its one shear plane; a plate lapped on a gusset with two fillet welds and the throat in an enlarged section; a plate end with a line of holes and the block that tears out along the shear and tension planes',

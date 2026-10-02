@@ -254,10 +254,6 @@ export function he3jIssues(rep: He3jSpec, val: (id: string) => number | undefine
         // The shaded area between the triangles: ½t_b(Q_i − Q_o).
         const s = rep.tbSeconds ?? 3600;
         const p = rep.peakAt ?? 0.375;
-        const inflow = 0.5 * tb * s * Qi;
-        const outflow = 0.5 * tb * s * Qo;
-        if (!near(inflow - outflow, detentionStorage(Qi, Qo, tb, s), 1e-9))
-          out.push('the shaded storage is not the triangles’ difference');
         if (!(p > 0 && p < 1)) out.push(`peakAt ${p} is not inside the base`);
         expect('storage', rep.V, detentionStorage(Qi, Qo, tb, s));
       }

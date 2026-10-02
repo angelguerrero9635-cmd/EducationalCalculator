@@ -10,13 +10,21 @@
  *
  * HC61: `connection` (ACC-P24): a plate in tension and its net section, a bolt group in a lap
  * splice, fillet welds, block shear (steel-design#1~tension, #3).
+ *
+ * HC89: `hydrograph` (ACC-P21): the curve-number split, the rational method, detention storage
+ * (hydraulics-hydrology#2, #3~detention).
  */
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
-import type { ConnectionSpec, RoadCurveSpec, StreamChannelHeSpec } from './typesHe3j';
+import type {
+  ConnectionSpec,
+  HydrographSpec,
+  RoadCurveSpec,
+  StreamChannelHeSpec,
+} from './typesHe3j';
 
 // ─── Building blocks ─────────────────────────────────────────────────────────
 
@@ -1192,6 +1200,292 @@ const connBlockRupture: ModuleDef = {
   representation: { ...BLOCK_SPEC },
 };
 
+// ─── HC89: the NRCS curve number (hydraulics-hydrology#2) ────────────────────
+
+const runoff = (v: Values) => (v.P! > v.Ia! ? (v.P! - v.Ia!) ** 2 / (v.P! + 0.8 * v.S!) : 0);
+
+const CURVE_NUMBER = rules(
+  rule(
+    'S = 1000 ÷ CN − 10',
+    '{S} = 1000 ÷ {CN} − 10',
+    ['S', 'CN'],
+    (v) => v.S! - (1000 / v.CN! - 10),
+    {
+      S: [
+        (v) => div(1000, v.CN!)! - 10,
+        '1000 ÷ {CN} − 10',
+        'The most the ground can hold, in inches.',
+      ],
+      CN: [(v) => div(1000, v.S! + 10), '1000 ÷ ({S} + 10)', 'Solve for the curve number.'],
+    },
+  ),
+  rule('I_a = 0.2S', '{Ia} = 0.2 × {S}', ['Ia', 'S'], (v) => v.Ia! - 0.2 * v.S!, {
+    Ia: [(v) => 0.2 * v.S!, '0.2 × {S}', 'The first rain, caught before any runs off.'],
+    S: [(v) => v.Ia! / 0.2, '{Ia} ÷ 0.2', 'Solve for S.'],
+  }),
+  {
+    relation: {
+      id: 'Q = (P − I_a)² ÷ (P + 0.8S)',
+      display: '{Q} = ({P} − {Ia})² ÷ ({P} + 0.8 × {S})',
+      vars: ['Q', 'P', 'Ia', 'S'],
+      residual: (v: Values) => v.Q! - runoff(v),
+      solve: { Q: (v: Values) => runoff(v) },
+      check: (v: Values) =>
+        v.P! > v.Ia!
+          ? `${fmt(v.Q!)} = (${fmt(v.P!)} − ${fmt(v.Ia!)})² ÷ (${fmt(v.P!)} + 0.8 × ${fmt(v.S!)})`
+          : `${fmt(v.Q!)} = 0`,
+    } satisfies Relation,
+    steps: {
+      Q: {
+        expr: (v: Values) => (v.P! > v.Ia! ? '({P} − {Ia})² ÷ ({P} + 0.8 × {S})' : '0'),
+        how: (v: Values) =>
+          v.P! > v.Ia!
+            ? 'Past I_a, the runoff grows toward the rain as the ground fills.'
+            : 'The rain is no more than I_a: none runs off.',
+      },
+    },
+  },
+  rule(
+    'F = P − I_a − Q',
+    '{F} = {P} − {Ia} − {Q}',
+    ['F', 'P', 'Ia', 'Q'],
+    (v) => v.F! - (v.P! - v.Ia! - v.Q!),
+    {
+      F: [(v) => v.P! - v.Ia! - v.Q!, '{P} − {Ia} − {Q}', 'What is left of the rain soaks in.'],
+    },
+  ),
+);
+
+const cnVars = (): VariableDef[] => [
+  q('CN', 'CN', 'Curve number', undefined, 30, 98, 1),
+  q('S', 'S', 'Potential retention', 'in', 0.2, 24, 0.01),
+  q('Ia', 'I_a', 'Initial abstraction', 'in', 0.04, 5, 0.01),
+  q('P', 'P', 'Rainfall', 'in', 0.1, 20, 0.01),
+  q('Q', 'Q', 'Runoff', 'in', 0, 20, 0.01),
+  q('F', 'F', 'Infiltration', 'in', 0, 20, 0.01),
+];
+
+const cnExample = (CN: number, P: number): Values => {
+  const S = 1000 / CN - 10;
+  const Ia = 0.2 * S;
+  const Q = P > Ia ? (P - Ia) ** 2 / (P + 0.8 * S) : 0;
+  return { CN, S, Ia, P, Q, F: P - Ia - Q };
+};
+
+const CN_SPEC: HydrographSpec = {
+  kind: 'hydrograph',
+  mode: 'split',
+  CN: 'CN',
+  S: 'S',
+  Ia: 'Ia',
+  P: 'P',
+  Q: 'Q',
+  F: 'F',
+  depthUnit: 'in',
+  keep: ['CN'],
+};
+
+const CN_ASSUMPTIONS = [
+  'US units, as NRCS TR-55 publishes the method; average soil moisture.',
+  'I_a = 0.2S, the ratio of the method.',
+];
+
+const hydroSplit: ModuleDef = {
+  id: 'g.he-hydrograph-split',
+  title: 'Runoff by the curve number: where a storm’s rain goes',
+  use: 'Use this for the runoff depth from a storm by the NRCS curve number.',
+  assumptions: CN_ASSUMPTIONS,
+  unitSystems: ['us'],
+  variables: cnVars(),
+  ...CURVE_NUMBER,
+  example: cnExample(80, 4),
+  startWith: ['CN', 'P'],
+  representation: { ...CN_SPEC },
+};
+
+const hydroSplitLight: ModuleDef = {
+  id: 'g.he-hydrograph-split-light',
+  title: 'A light storm on woodland: almost nothing runs off',
+  use: 'Use this for a small storm on absorbent ground, where the rain barely passes I_a.',
+  assumptions: CN_ASSUMPTIONS,
+  unitSystems: ['us'],
+  variables: cnVars(),
+  ...CURVE_NUMBER,
+  example: cnExample(65, 1.5),
+  startWith: ['CN', 'P'],
+  representation: { ...CN_SPEC },
+};
+
+// ─── HC89: the rational method (~rational) ───────────────────────────────────
+
+const RATIONAL = rules(
+  rule(
+    'Q = CiA ÷ 360',
+    '{Q} = {C} × {i} × {A} ÷ 360',
+    ['Q', 'C', 'i', 'A'],
+    (v) => v.Q! - (v.C! * v.i! * v.A!) / 360,
+    {
+      Q: [
+        (v) => (v.C! * v.i! * v.A!) / 360,
+        '{C} × {i} × {A} ÷ 360',
+        'The share C of the rain falling on A runs off.',
+      ],
+      C: [(v) => div(360 * v.Q!, v.i! * v.A!), '360 × {Q} ÷ ({i} × {A})', 'Solve for C.'],
+      i: [
+        (v) => div(360 * v.Q!, v.C! * v.A!),
+        '360 × {Q} ÷ ({C} × {A})',
+        'Solve for the intensity.',
+      ],
+      A: [(v) => div(360 * v.Q!, v.C! * v.i!), '360 × {Q} ÷ ({C} × {i})', 'Solve for the area.'],
+    },
+  ),
+);
+
+const rationalVars = (): VariableDef[] => [
+  q('C', 'C', 'Runoff coefficient', undefined, 0.05, 1, 0.01),
+  q('i', 'i', 'Rainfall intensity', 'mm/h', 1, 500, 0.1),
+  q('A', 'A', 'Watershed area', 'ha', 0.1, 5000, 0.1),
+  q('Q', 'Q_p', 'Peak flow', 'm³/s', 0.0001, 10000, 0.001),
+];
+
+const RATIONAL_ASSUMPTIONS = [
+  'A small watershed; the storm lasts at least the time of concentration.',
+  'i in mm/h and A in hectares: dividing by 360 gives m³/s.',
+];
+
+const hydroRational: ModuleDef = {
+  id: 'g.he-hydrograph-rational',
+  title: 'The rational method: peak flow from a small watershed',
+  use: 'Use this for the peak flow from a small watershed by Q = CiA.',
+  assumptions: RATIONAL_ASSUMPTIONS,
+  unitSystems: ['metric'],
+  variables: rationalVars(),
+  ...RATIONAL,
+  example: { C: 0.6, i: 50, A: 20, Q: (0.6 * 50 * 20) / 360 },
+  startWith: ['C', 'i', 'A'],
+  representation: { kind: 'hydrograph', mode: 'rational', C: 'C', i: 'i', A: 'A', Qp: 'Q' },
+};
+
+const hydroRationalPeak: ModuleDef = {
+  id: 'g.he-hydrograph-rational-tc',
+  title: 'A paved catchment: the peak arrives at the time of concentration',
+  use: 'Use this for the peak flow of a paved catchment and when it arrives.',
+  assumptions: RATIONAL_ASSUMPTIONS,
+  unitSystems: ['metric'],
+  standalone: {
+    vars: ['tc'],
+    why: 't_c is when the peak arrives (the storm lasts that long); no formula here uses it.',
+  },
+  variables: [...rationalVars(), q('tc', 't_c', 'Time of concentration', 'min', 1, 600, 0.1)],
+  ...RATIONAL,
+  example: { C: 0.85, i: 120, A: 5, Q: (0.85 * 120 * 5) / 360, tc: 16.7 },
+  startWith: ['C', 'i', 'A', 'tc'],
+  representation: {
+    kind: 'hydrograph',
+    mode: 'rational',
+    C: 'C',
+    i: 'i',
+    A: 'A',
+    Qp: 'Q',
+    tc: 'tc',
+  },
+};
+
+// ─── HC89: detention storage (hydraulics-hydrology#3~detention) ──────────────
+
+const DETENTION = rules(
+  rule(
+    'V = ½t_b(Q_i − Q_o)',
+    '{V} = 0.5 × {tb} × 3600 × ({Qi} − {Qo})',
+    ['V', 'tb', 'Qi', 'Qo'],
+    (v) => v.V! - 0.5 * v.tb! * 3600 * (v.Qi! - v.Qo!),
+    {
+      V: [
+        (v) => pos(0.5 * v.tb! * 3600 * (v.Qi! - v.Qo!)),
+        '0.5 × {tb} × 3600 × ({Qi} − {Qo})',
+        'The two triangles share their base; the storage is their difference (3600 s an hour).',
+      ],
+      Qo: [
+        (v) => v.Qi! - v.V! / (1800 * v.tb!),
+        '{Qi} − {V} ÷ (1800 × {tb})',
+        'Solve for the outflow peak.',
+      ],
+      Qi: [
+        (v) => v.Qo! + v.V! / (1800 * v.tb!),
+        '{Qo} + {V} ÷ (1800 × {tb})',
+        'Solve for the inflow peak.',
+      ],
+    },
+  ),
+  {
+    relation: {
+      id: 'Q_o < Q_i',
+      constraint: true,
+      display: '{Qo} is less than {Qi}',
+      vars: ['Qo', 'Qi'],
+      residual: (v: Values) => (v.Qo! < v.Qi! ? 0 : 1),
+      solve: {},
+    } satisfies Relation,
+    steps: {},
+  },
+);
+
+const detentionVars = (): VariableDef[] => [
+  q('Qi', 'Q_i', 'Inflow peak', 'm³/s', 0.01, 1000, 0.01),
+  q('Qo', 'Q_o', 'Allowed outflow peak', 'm³/s', 0.01, 1000, 0.01),
+  q('tb', 't_b', 'Base time', 'h', 0.1, 48, 0.1),
+  q('V', 'V', 'Storage volume', 'm³', 1, 1e8, 1),
+];
+
+const DETENTION_SPEC: HydrographSpec = {
+  kind: 'hydrograph',
+  mode: 'detention',
+  Qin: 'Qi',
+  Qout: 'Qo',
+  tb: 'tb',
+  V: 'V',
+  tbSeconds: 3600,
+  keep: ['Qi', 'tb'],
+};
+
+const DETENTION_ASSUMPTIONS = [
+  'Triangular inflow and outflow hydrographs on the same base t_b.',
+  'The outflow peaks where it meets the inflow’s falling limb.',
+];
+
+const detExample = (Qi: number, Qo: number, tb: number): Values => ({
+  Qi,
+  Qo,
+  tb,
+  V: 0.5 * tb * 3600 * (Qi - Qo),
+});
+
+const hydroDetention: ModuleDef = {
+  id: 'g.he-hydrograph-detention',
+  title: 'A detention pond: the storage between inflow and outflow',
+  use: 'Use this for the storage a detention pond needs to cut a peak flow to an allowed outflow.',
+  assumptions: DETENTION_ASSUMPTIONS,
+  unitSystems: ['metric'],
+  variables: detentionVars(),
+  ...DETENTION,
+  example: detExample(3, 1.2, 2),
+  startWith: ['Qi', 'Qo', 'tb'],
+  representation: { ...DETENTION_SPEC },
+};
+
+const hydroDetentionSmall: ModuleDef = {
+  id: 'g.he-hydrograph-detention-small',
+  title: 'Trimming a peak only a little: a small pond',
+  use: 'Use this for a pond that only trims the peak, so it stores little.',
+  assumptions: DETENTION_ASSUMPTIONS,
+  unitSystems: ['metric'],
+  variables: detentionVars(),
+  ...DETENTION,
+  example: detExample(3, 2.7, 2),
+  startWith: ['Qi', 'Qo', 'tb'],
+  representation: { ...DETENTION_SPEC },
+};
+
 export const HE3J_GALLERY_MODULES: ModuleDef[] = [
   streamManning,
   streamManningSteep,
@@ -1213,6 +1507,12 @@ export const HE3J_GALLERY_MODULES: ModuleDef[] = [
   connWeld,
   connBlock,
   connBlockRupture,
+  hydroSplit,
+  hydroSplitLight,
+  hydroRational,
+  hydroRationalPeak,
+  hydroDetention,
+  hydroDetentionSmall,
 ];
 
 export const HE3J_GALLERY_LAYOUTS: LayoutDef[] = [];
