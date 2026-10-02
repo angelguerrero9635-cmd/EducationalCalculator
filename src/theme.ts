@@ -38,6 +38,12 @@ const light = {
   /** The "dollar" gold: the $ in the mark, plan badges, the K–12 plan ribbon. Never text on white. */
   gold: '#F5B82E',
   onGold: '#1F1600',
+  /** The seal's carved $U: the $'s extruded side and bevel, the U's face, side and bevel. */
+  goldDeep: '#B7791F',
+  goldLight: '#FFE9A8',
+  markFace: '#F4F5FF',
+  markDeep: '#AEB2EE',
+  markLight: '#FFFFFF',
   /** Status: purchase confirmed, pending, errors. */
   success: '#15803D',
   warning: '#B45309',
@@ -809,6 +815,11 @@ const dark: Palette = {
   accentHover: '#A39DFF',
   gold: '#E9B949',
   onGold: '#1F1600',
+  goldDeep: '#8A6414',
+  goldLight: '#FBE3A0',
+  markFace: '#15161E',
+  markDeep: '#04050A',
+  markLight: '#46425F',
   success: '#4ADE80',
   warning: '#FBBF24',
   danger: '#F87171',
