@@ -48,7 +48,7 @@
             "basin sizing by overflow rate",
             "filter collector efficiency"
           ],
-          "ranges": "overflow 20–40 m/d; detention 2–4 h; filtration 5–15 m/h"
+          "ranges": ["overflow 20–40 m/d; detention 2–4 h; filtration 5–15 m/h"]
         },
         {
           "n": "8–12",
@@ -70,7 +70,7 @@
             "activated sludge by Monod constants",
             "facultative lagoon"
           ],
-          "notation": "θ_c SRT; Y yield; k_d decay; MLVSS"
+          "notation": ["θ_c SRT; Y yield; k_d decay; MLVSS"]
         }
       ]
     }

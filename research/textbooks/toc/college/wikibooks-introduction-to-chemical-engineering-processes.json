@@ -49,7 +49,7 @@
           "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Problem_Solving_with_Multiple_Components",
           "topics": ["he.engineering.material-energy-balances#1"],
           "examples": ["mixture densities", "book plant (limiting input)"],
-          "notation": "degrees-of-freedom table before solving"
+          "notation": ["degrees-of-freedom table before solving"]
         },
         {
           "n": "4",
@@ -64,7 +64,7 @@
           "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Reactions_with_Recycle",
           "topics": ["he.engineering.material-energy-balances#2"],
           "examples": ["ethylene hydrogenation with membrane separator and purge"],
-          "notation": "extent of reaction ξ; fractional conversion"
+          "notation": ["extent of reaction ξ; fractional conversion"]
         },
         {
           "n": "6",
@@ -86,7 +86,8 @@
           "title": "Statistics; root finding; linear systems; plotting; Excel; MATLAB; unit-operation reference; notation",
           "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Numerical_Root_Finding_Methods",
           "topics": [],
-          "notes": "Mathematical methods: he.engineering.numerical-methods."
+          "notes": "Mathematical methods: he.engineering.numerical-methods.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

@@ -535,3 +535,12 @@ in `galleryHsk.ts`. Step text must put a divisor before a sine (`{a}/{b} × sin(
 H66 and H69 notes say.
 
 With physics, every Grades 9–12 entry (H01–H88) is drawn.
+
+2026-10-02, college round 1 (`docs/RENDERINGS_HE.md`): HC1 `beam`, HC2 `skeletal` (and its
+card), HC3 `section`, HC4 `functionGraph` time responses (`family: 'response'`), HC5
+`controlVolume`, HC6 `fluidSystem`, HC7 schematics (`net` on `seriesCircuit` and `circuit`),
+HC8 `phaseEnvelope` and `chemDiagram` `substance`, HC9 log and flipped axes, HC10 families,
+HC11 `oscillator` options, HC12 regions and HC13 `velocityProfile` are drawn. The tracker is
+`pictureRequestsHe.ts` (one file per group, `pictureRequestsHe1<x>.ts`); each entry's notes give
+the fields a page passes and an example, and its demos (`g.he-…`) are in `galleryHe1<x>.ts`.
+Still requested: HC3's `interaction` (P–M curve).

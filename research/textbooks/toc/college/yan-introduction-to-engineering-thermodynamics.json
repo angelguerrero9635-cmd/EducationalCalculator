@@ -314,9 +314,11 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/07%3A_Appendices",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "Introduction to Engineering Thermodynamics"
     }
   ]
 }

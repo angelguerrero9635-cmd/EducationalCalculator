@@ -38,7 +38,7 @@
           "title": "Reinforced-concrete beams for flexure and shear; bond, anchorage, serviceability",
           "topics": ["he.engineering.concrete-design#0", "he.engineering.concrete-design#1"],
           "examples": ["parking-structure beam", "cantilever beam flexure and stirrups"],
-          "notation": "ACI 318 of the time; f′c in psi; #3 stirrups"
+          "notation": ["ACI 318 of the time; f′c in psi; #3 stirrups"]
         },
         {
           "n": "L14–L20",

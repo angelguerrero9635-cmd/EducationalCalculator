@@ -37,19 +37,21 @@
           "n": "4–5",
           "title": "Quasi-1-D isentropic flow, choking, corrected flow; converging–diverging nozzles and starting",
           "topics": ["he.engineering.compressible-flow#0", "he.engineering.compressible-flow#2"],
-          "notation": "corrected flow and flow function; A/A*"
+          "notation": ["corrected flow and flow function; A/A*"]
         },
         {
           "n": "6–8",
           "title": "Generalized 1-D flow with friction, heat and mass addition; ramjets and scramjets",
           "topics": [],
-          "notes": "Fanno and Rayleigh flow: taxonomy gap (the plan proposes a topic or folding into Nozzle flow)."
+          "notes": "Fanno and Rayleigh flow: taxonomy gap (the plan proposes a topic or folding into Nozzle flow).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "9–11",
           "title": "Swirling and compound-compressible flow",
           "topics": [],
-          "notes": "Graduate; no taxonomy topic."
+          "notes": "Graduate; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "12–13",

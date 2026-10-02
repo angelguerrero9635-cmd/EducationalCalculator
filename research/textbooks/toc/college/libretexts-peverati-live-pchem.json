@@ -442,7 +442,8 @@
               "title": "Hamiltonian Mechanics",
               "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/17%3A_Classical_Mechanics/17.03%3A_Hamiltonian_Mechanics"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "18",
@@ -527,7 +528,8 @@
               "title": "Spin Operators",
               "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/22%3A_Spin/22.03%3A_Spin_Operators"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "23",
@@ -607,7 +609,8 @@
               "title": "Approximated Hamiltonians",
               "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/25%3A_Many-Electron_Atoms/25.02%3A_Approximated_Hamiltonians"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "26",
@@ -713,9 +716,11 @@
               "title": "Thermodynamic Data of Organic Substances at 298 K",
               "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/30%3A_Appendix/30.02%3A_Thermodynamic_Data_of_Organic_Substances_at_298_K"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "Peverati, The Live Textbook of Physical Chemistry"
     }
   ]
 }

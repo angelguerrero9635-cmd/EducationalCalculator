@@ -62,7 +62,7 @@
             "taper ratio and stall margin",
             "max L/D and endurance C_L"
           ],
-          "notation": "C_L, C_Di, AR, e; λ = c_t ÷ c_r"
+          "notation": ["C_L, C_Di, AR, e; λ = c_t ÷ c_r"]
         },
         {
           "n": "F11–F16 (spring)",

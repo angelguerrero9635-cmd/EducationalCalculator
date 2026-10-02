@@ -11,10 +11,14 @@
     "lesson": null,
     "part": "Section"
   },
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://www.pearson.com/en-us/subject-catalog/p/transport-phenomena-in-biological-systems/P200000003212/9780131569881",
+    "attribution": "Pearson (Prentice Hall)"
+  },
   "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/transport-phenomena-in-biological-systems/P200000003212/9780131569881",
   "retrieved": "2026-10-02",
-  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. ",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page.  No licence is stated: titles only.",
   "books": [
     {
       "url": "https://www.pearson.com/en-us/subject-catalog/p/transport-phenomena-in-biological-systems/P200000003212/9780131569881",
@@ -119,9 +123,11 @@
           "title": "Heat Transfer in Biological Systems",
           "topics": [],
           "part": "C. The Effect of Mass Transport upon Biochemical Interactions",
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "Truskey, Yuan and Katz, Transport Phenomena in Biological Systems"
     }
   ]
 }

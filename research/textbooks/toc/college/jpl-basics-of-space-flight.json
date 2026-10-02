@@ -6,13 +6,17 @@
   "subject": "aerospace",
   "level": "college",
   "content": "titles",
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://science.nasa.gov/learn/basics-of-space-flight/",
+    "attribution": "NASA Jet Propulsion Laboratory / NASA Science"
+  },
   "terms": {
     "unit": "Chapter"
   },
   "sourceUrl": "https://science.nasa.gov/learn/basics-of-space-flight/",
   "retrieved": "2026-10-02",
-  "notes": "Chapter titles from the index page only. No reuse statement was found on the pages read; JPL is a contractor-run center, so the licence stays \"to confirm\" and nothing beyond titles is recorded. Also on the site: \"A Gravity Assist Primer\", a glossary and a units page. No worked problems were found, so no question records.",
+  "notes": "Chapter titles from the index page only. No reuse statement was found on the pages read; JPL is a contractor-run center, so the licence stays \"to confirm\" and nothing beyond titles is recorded. Also on the site: \"A Gravity Assist Primer\", a glossary and a units page. No worked problems were found, so no question records. No licence is stated: titles only.",
   "books": [
     {
       "course": "he.engineering.orbital-mechanics",
@@ -54,56 +58,64 @@
           "title": "Electromagnetics",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter6-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "7",
           "title": "Mission Inception",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter7-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "8",
           "title": "Experiments",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter8-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "9",
           "title": "Spacecraft Classification",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter9-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "10",
           "title": "Telecom",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter10-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "11",
           "title": "Onboard Systems",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter11-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "12",
           "title": "Science Instruments",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter12-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "13",
           "title": "Navigation",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter13-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "14",
@@ -116,7 +128,8 @@
           "title": "Cruise",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter15-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "16",
@@ -129,14 +142,16 @@
           "title": "Extended Ops",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter17-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "18",
           "title": "Deep Space Network",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter18-1/",
           "topics": [],
-          "notes": "Spacecraft systems and operations; no taxonomy topic."
+          "notes": "Spacecraft systems and operations; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

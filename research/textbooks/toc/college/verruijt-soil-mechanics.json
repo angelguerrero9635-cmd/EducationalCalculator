@@ -6,13 +6,17 @@
   "subject": "civil",
   "level": "college",
   "content": "titles",
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://geo.verruijt.net/software.html",
+    "attribution": "Delft University of Technology (author’s site)"
+  },
   "terms": {
     "unit": "Chapter"
   },
   "sourceUrl": "https://geo.verruijt.net/software.html",
   "retrieved": "2026-10-02",
-  "notes": "Chapter titles from the PDF bookmarks (55 chapters; selected chapters listed). Free to download; no licence stated, so titles and problem types only. Every chapter ends with short problems, answered in \"Answers to Problems\". Uses the Dutch logarithmic compression constant C₁₀ beside C_c. Chapters without a topic (permeability, flow nets, lateral earth pressure, sheet piles, slopes, piles) are the gaps the plan lists.",
+  "notes": "Chapter titles from the PDF bookmarks (55 chapters; selected chapters listed). Free to download; no licence stated, so titles and problem types only. Every chapter ends with short problems, answered in \"Answers to Problems\". Uses the Dutch logarithmic compression constant C₁₀ beside C_c. Chapters without a topic (permeability, flow nets, lateral earth pressure, sheet piles, slopes, piles) are the gaps the plan lists. No licence is stated: titles only.",
   "books": [
     {
       "course": "he.engineering.soil-mechanics",
@@ -43,25 +47,29 @@
           "n": "6",
           "title": "Darcy's Law",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "7",
           "title": "Permeability",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "8",
           "title": "Groundwater Flow",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "10",
           "title": "Flow Net",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "14",
@@ -107,19 +115,22 @@
           "n": "33",
           "title": "Rankine",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "34",
           "title": "Coulomb",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "36",
           "title": "Sheet Pile Walls",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "40",
@@ -140,13 +151,15 @@
           "n": "46",
           "title": "Slope Stability",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "49",
           "title": "Pile Foundations",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

@@ -28,7 +28,8 @@
           "title": "Introduction; Modes; Planning; Trip Generation; Destination Choice; Modal Split; Route Choice; Evaluation",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Planning",
           "topics": [],
-          "notes": "Travel demand modeling: no taxonomy topic."
+          "notes": "Travel demand modeling: no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "2",
@@ -47,8 +48,8 @@
             "crash reconstruction",
             "SSD with 2.5 s reaction"
           ],
-          "ranges": "V 60–150 km/h; f 0.14–0.47; G ±3%",
-          "notation": "d_b = (V₁² − V₂²) ÷ (2g(f ± G)); perception-reaction 2.5 s (AASHTO)"
+          "ranges": ["V 60–150 km/h; f 0.14–0.47; G ±3%"],
+          "notation": ["d_b = (V₁² − V₂²) ÷ (2g(f ± G)); perception-reaction 2.5 s (AASHTO)"]
         },
         {
           "n": "4",
@@ -72,7 +73,7 @@
             "stationing of PC and PT",
             "sightline offset on a racetrack"
           ],
-          "notation": "R = V² ÷ (g(e + f_s)); stations 100+00 (metres)"
+          "notation": ["R = V² ÷ (g(e + f_s)); stations 100+00 (metres)"]
         },
         {
           "n": "6",
@@ -84,14 +85,15 @@
             "clearance under a railroad",
             "crest length for SSD"
           ],
-          "notation": "y = ax² + bx + c; A in percent; eye 1.0 m (book example), object 0.5 m"
+          "notation": ["y = ax² + bx + c; A in percent; eye 1.0 m (book example), object 0.5 m"]
         },
         {
           "n": "7",
           "title": "Earthwork",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Earthwork",
           "topics": [],
-          "notes": "Mass diagrams: plan gap (construction engineering)."
+          "notes": "Mass diagrams: plan gap (construction engineering).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "8",
@@ -99,7 +101,7 @@
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Traffic_Flow",
           "topics": ["he.engineering.transportation#0"],
           "examples": ["time- and space-mean speed", "flow, density, headway from a count"],
-          "notation": "q = kv̄_s; h_t = 1 ÷ q; Greenshields parabolic model"
+          "notation": ["q = kv̄_s; h_t = 1 ÷ q; Greenshields parabolic model"]
         },
         {
           "n": "9",
@@ -126,14 +128,15 @@
             "HCM uniform and random delay",
             "minimum and optimal cycle"
           ],
-          "notation": "C_opt = (1.5L + 5) ÷ (1 − ΣY)"
+          "notation": ["C_opt = (1.5L + 5) ÷ (1 − ΣY)"]
         },
         {
           "n": "12",
           "title": "Transit operations and capacity; Networks; Timetabling",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Transit_Operations_and_Capacity",
           "topics": [],
-          "notes": "Transit: no taxonomy topic."
+          "notes": "Transit: no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

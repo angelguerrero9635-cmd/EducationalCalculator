@@ -114,12 +114,14 @@
             {
               "n": "16",
               "title": "Intermolecular interactions",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "17",
               "title": "Polarizability",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "18",
@@ -209,11 +211,13 @@
             {
               "n": "36",
               "title": "Nuclear chemistry and the Cardiolite story",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         }
-      ]
+      ],
+      "title": "5.112"
     }
   ]
 }

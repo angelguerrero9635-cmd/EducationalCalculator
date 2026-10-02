@@ -79,7 +79,8 @@
               "title": "Essential Skills 1",
               "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.10%3A_Essential_Skills_1"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "2",
@@ -118,7 +119,8 @@
               "title": "Industrially Important Chemicals",
               "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/02%3A_Molecules_Ions_and_Chemical_Formulas/2.06%3A_Industrially_Important_Chemicals"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "3",
@@ -559,7 +561,8 @@
               "title": "Essential Skills 6",
               "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.09%3A_Essential_Skills_6"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "12",
@@ -656,7 +659,8 @@
               "title": "Aggregate Particles in Aqueous Solution",
               "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions/13.07%3A_Aggregate_Particles_in_Aqueous_Solution"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "14",
@@ -987,7 +991,8 @@
               "title": "Periodic Trends and the s-Block Elements (Exercises)",
               "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements/20.E%3A_Periodic_Trends_and_the_s-Block_Elements_(Exercises)"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "21",
@@ -1031,7 +1036,8 @@
               "title": "The p-Block Elements (Exercises)",
               "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements/21.E%3A_The_p-Block_Elements_(Exercises)"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "22",
@@ -1113,7 +1119,8 @@
               "title": "The Molecules of Life",
               "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds/23.07%3A_The_Molecules_of_Life"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "24",
@@ -1162,9 +1169,11 @@
               "title": "Nuclear Chemistry (Exercises)",
               "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.E%3A_Nuclear_Chemistry_(Exercises)"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "Averill and Eldredge, General Chemistry: Principles, Patterns, and Applications"
     }
   ]
 }

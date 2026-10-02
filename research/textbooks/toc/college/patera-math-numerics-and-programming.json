@@ -82,7 +82,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/08%3A_Introduction",
           "topics": [],
           "notes": "Unit introduction.",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "9",
@@ -90,7 +91,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/09%3A_Introduction_to_Random_Variables",
           "topics": [],
           "notes": "Probability: no topic in this group.",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "10",
@@ -98,7 +100,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/10%3A_Statistical_Estimation-_the_Normal_Density",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "11",
@@ -121,7 +124,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/13%3A_Statistical_Estimation-_the_Normal_Density",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "14",
@@ -129,7 +133,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/14%3A_Monte_Carlo-_Failure_Probabilities",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "15",
@@ -137,7 +142,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/03%3A_Unit_III_-_Linear_Algebra_1_-_Matrices_Least_Squares_and_Regression/15%3A_Motivation",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "16",
@@ -173,7 +179,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/04%3A_Unit_IV_-_(Numerical)_Differential_Equations/20%3A_Motivation",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "21",
@@ -195,7 +202,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/04%3A_Unit_IV_-_(Numerical)_Differential_Equations/23%3A_Partial_Differential_Equations",
           "topics": [],
           "notes": "PDEs: no topic in this group.",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "24",
@@ -203,7 +211,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/05%3A_Unit_V_-_(Numerical)_Linear_Algebra_2_-_Solution_of_Linear_Systems/24%3A_Motivation",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "25",
@@ -240,7 +249,8 @@
           "topics": ["he.engineering.numerical-methods#0"],
           "lessons": []
         }
-      ]
+      ],
+      "title": "Math, Numerics, and Programming (for Mechanical Engineers)"
     }
   ]
 }

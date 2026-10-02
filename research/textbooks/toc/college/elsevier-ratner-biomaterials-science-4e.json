@@ -10,10 +10,14 @@
     "unit": "Part",
     "lesson": "Section"
   },
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://shop.elsevier.com/books/biomaterials-science/wagner/978-0-12-816137-1",
+    "attribution": "Elsevier (Academic Press)"
+  },
   "sourceUrl": "https://shop.elsevier.com/books/biomaterials-science/wagner/978-0-12-816137-1",
   "retrieved": "2026-10-02",
-  "notes": "Titles only (all rights reserved). Parts and sections from the publisher's product page (robots.txt allows it); the page also lists the many chapter headings, which are not copied here.",
+  "notes": "Titles only (all rights reserved). Parts and sections from the publisher's product page (robots.txt allows it); the page also lists the many chapter headings, which are not copied here. No licence is stated: titles only.",
   "books": [
     {
       "url": "https://shop.elsevier.com/books/biomaterials-science/wagner/978-0-12-816137-1",
@@ -83,7 +87,8 @@
           "topics": ["he.engineering.biomaterials#3"],
           "lessons": []
         }
-      ]
+      ],
+      "title": "Wagner, Sakiyama-Elbert, Zhang and Yaszemski (eds.), Biomaterials Science: An Introduction to Materials in Medicine (Ratner)"
     }
   ]
 }

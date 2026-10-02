@@ -156,27 +156,32 @@
             {
               "n": "24",
               "title": "Introduction to statistical mechanics",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "25",
               "title": "Partition function q: large N limit",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "26",
               "title": "Partition function q: many particles",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "27",
               "title": "Statistical mechanics and discrete energy levels",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "28",
               "title": "Model systems",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "29",
@@ -220,7 +225,8 @@
             }
           ]
         }
-      ]
+      ],
+      "title": "5.60"
     }
   ]
 }

@@ -43,14 +43,14 @@
             "R_min and N_min",
             "packed stripper"
           ],
-          "notation": "q-line; Fenske; Underwood; HETP"
+          "notation": ["q-line; Fenske; Underwood; HETP"]
         },
         {
           "n": "11–16",
           "title": "Membrane processes; tubular membranes; membrane system design; electrodialysis",
           "topics": ["he.engineering.separations#3"],
           "examples": ["RO of pulping liquor", "ultrafiltration of whey", "RO with salt leakage"],
-          "notation": "J_w = A(ΔP − Δπ); rejection; concentration polarization"
+          "notation": ["J_w = A(ΔP − Δπ); rejection; concentration polarization"]
         },
         {
           "n": "17–23",

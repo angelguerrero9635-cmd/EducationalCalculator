@@ -46,13 +46,15 @@
           "n": "10–13",
           "title": "Nonlinear truss analysis; elastic stability of trusses and frames",
           "topics": [],
-          "notes": "Stability: nearest aerospace-structures#2 / mechanics-of-materials#5."
+          "notes": "Stability: nearest aerospace-structures#2 / mechanics-of-materials#5.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "15–27",
           "title": "Active structural control; state-space formulation; LQR",
           "topics": [],
-          "notes": "Control: no civil topic (nearest control-systems)."
+          "notes": "Control: no civil topic (nearest control-systems).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

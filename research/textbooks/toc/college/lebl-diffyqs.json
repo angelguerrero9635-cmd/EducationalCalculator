@@ -227,61 +227,71 @@
               "n": "4.1",
               "title": "Boundary value problems",
               "url": "https://www.jirka.org/diffyqs/html/bvp_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.2",
               "title": "The trigonometric series",
               "url": "https://www.jirka.org/diffyqs/html/ts_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.3",
               "title": "More on the Fourier series",
               "url": "https://www.jirka.org/diffyqs/html/moreonfourier_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.4",
               "title": "Sine and cosine series",
               "url": "https://www.jirka.org/diffyqs/html/sec_scs.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.5",
               "title": "Applications of Fourier series",
               "url": "https://www.jirka.org/diffyqs/html/appoffourier_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.6",
               "title": "PDEs, separation of variables, and the heat equation",
               "url": "https://www.jirka.org/diffyqs/html/heateq_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.7",
               "title": "One-dimensional wave equation",
               "url": "https://www.jirka.org/diffyqs/html/we_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.8",
               "title": "D’Alembert solution of the wave equation",
               "url": "https://www.jirka.org/diffyqs/html/dalemb_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.9",
               "title": "Steady state temperature and the Laplacian",
               "url": "https://www.jirka.org/diffyqs/html/dirich_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "4.10",
               "title": "Dirichlet problem in the circle and the Poisson kernel",
               "url": "https://www.jirka.org/diffyqs/html/dirichdisc_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         },
@@ -295,19 +305,22 @@
               "n": "5.1",
               "title": "Sturm–Liouville problems",
               "url": "https://www.jirka.org/diffyqs/html/slproblems_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "5.2",
               "title": "Higher-order eigenvalue problems",
               "url": "https://www.jirka.org/diffyqs/html/sec_appeig.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "5.3",
               "title": "Steady periodic solutions",
               "url": "https://www.jirka.org/diffyqs/html/sps_section.html",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         },

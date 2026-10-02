@@ -11,10 +11,14 @@
     "lesson": null,
     "part": "Part"
   },
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://shop.elsevier.com/books/introduction-to-biomedical-engineering/enderle/978-0-12-374979-6",
+    "attribution": "Elsevier (Academic Press)"
+  },
   "sourceUrl": "https://shop.elsevier.com/books/introduction-to-biomedical-engineering/enderle/978-0-12-374979-6",
   "retrieved": "2026-10-02",
-  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. ",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page.  No licence is stated: titles only.",
   "books": [
     {
       "url": "https://shop.elsevier.com/books/introduction-to-biomedical-engineering/enderle/978-0-12-374979-6",
@@ -23,13 +27,15 @@
           "n": "1",
           "title": "Biomedical Engineering",
           "topics": [],
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "2",
           "title": "Moral and Ethical Issues",
           "topics": [],
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "3",
@@ -118,7 +124,8 @@
           "title": "Biomedical Optics and Lasers",
           "topics": ["he.engineering.bioinstrumentation#2"]
         }
-      ]
+      ],
+      "title": "Enderle and Bronzino, Introduction to Biomedical Engineering"
     }
   ]
 }

@@ -39,7 +39,9 @@
           "title": "Static stability; wing and tail contributions",
           "topics": ["he.engineering.flight-mechanics#1"],
           "examples": ["tail incidence and CG limits from C_m0 > 0, C_mα < 0", "trim α and δe"],
-          "notation": "h CG position as a fraction of c̄; h_n neutral point; V_H tail volume; dε/dα downwash gradient"
+          "notation": [
+            "h CG position as a fraction of c̄; h_n neutral point; V_H tail volume; dε/dα downwash gradient"
+          ]
         },
         {
           "n": "3–5",
@@ -55,7 +57,7 @@
             "short-period and phugoid roots from derivatives",
             "Dutch roll, spiral, roll modes"
           ],
-          "ranges": "U₀ 600–1450 ft/s; altitude 15,000–45,000 ft"
+          "ranges": ["U₀ 600–1450 ft/s; altitude 15,000–45,000 ft"]
         },
         {
           "n": "9–13",
@@ -67,7 +69,8 @@
           "n": "14–17",
           "title": "Gusts; inertial sensors and filtering; system identification",
           "topics": [],
-          "notes": "No taxonomy topic (estimation)."
+          "notes": "No taxonomy topic (estimation).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

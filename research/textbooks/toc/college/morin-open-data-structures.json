@@ -33,7 +33,7 @@
           "title": "Array-Based Lists",
           "topics": ["he.engineering.data-structures#0"],
           "examples": ["rotate an array", "amortized resizing"],
-          "notation": "0-based arrays; amortized O(1)"
+          "notation": ["0-based arrays; amortized O(1)"]
         },
         {
           "n": "3",
@@ -68,7 +68,7 @@
           "title": "Heaps",
           "topics": ["he.engineering.data-structures#1"],
           "examples": ["heap insert and remove traces", "d-ary heap indices"],
-          "notation": "Eytzinger layout: children 2i + 1, 2i + 2"
+          "notation": ["Eytzinger layout: children 2i + 1, 2i + 2"]
         },
         {
           "n": "11",
@@ -86,7 +86,8 @@
           "n": "13–14",
           "title": "Data structures for integers; external memory",
           "topics": [],
-          "notes": "Beyond the course topics."
+          "notes": "Beyond the course topics.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

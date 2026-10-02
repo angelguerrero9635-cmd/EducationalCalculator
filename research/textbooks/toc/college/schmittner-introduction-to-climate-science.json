@@ -92,7 +92,8 @@
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.09%3A_Economics",
           "topics": [],
           "notes": "Economics, ethics and solutions: no topic.",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "1.10",
@@ -100,7 +101,8 @@
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.10%3A_Ethics",
           "topics": [],
           "notes": "Economics, ethics and solutions: no topic.",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "1.11",
@@ -109,9 +111,11 @@
           "topics": [],
           "notes": "Economics, ethics and solutions: no topic.",
           "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "Introduction to Climate Science"
     }
   ]
 }

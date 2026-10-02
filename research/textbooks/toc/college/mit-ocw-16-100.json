@@ -33,7 +33,7 @@
           "url": "https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/pages/calendar/",
           "topics": ["he.engineering.aerodynamics#1"],
           "examples": ["control-volume force on a body", "jet turned by a cylinder"],
-          "notation": "L′ and D′ per span; c_l, c_d section coefficients"
+          "notation": ["L′ and D′ per span; c_l, c_d section coefficients"]
         },
         {
           "n": "2",
@@ -56,14 +56,16 @@
           "title": "2-D panel methods",
           "topics": ["he.engineering.aerodynamics#0"],
           "examples": ["three-vortex triangle airfoil with the Kutta condition (3 × 3 system)"],
-          "ranges": "α −5 to 5°; 12% thick"
+          "ranges": ["α −5 to 5°; 12% thick"]
         },
         {
           "n": "5",
           "title": "Thin airfoil theory and vortex lattice methods",
           "topics": ["he.engineering.aerodynamics#0"],
           "examples": ["flap effectiveness dc_l/dη", "camber design for a target c_l"],
-          "notation": "c_l = 2π(α − α_L0) in radians; camber line z(x); η flap angle positive down"
+          "notation": [
+            "c_l = 2π(α − α_L0) in radians; camber line z(x); η flap angle positive down"
+          ]
         },
         {
           "n": "6",
@@ -73,8 +75,8 @@
             "two-term Fourier lifting line for a tapered wing",
             "twist and span efficiency"
           ],
-          "ranges": "AR 5–10; taper 0.6–1; C_L 0.5",
-          "notation": "Γ(θ) = 2bV∞ΣA_n sin nθ; e span efficiency; C_Di = C_L² ÷ (πeAR)"
+          "ranges": ["AR 5–10; taper 0.6–1; C_L 0.5"],
+          "notation": ["Γ(θ) = 2bV∞ΣA_n sin nθ; e span efficiency; C_Di = C_L² ÷ (πeAR)"]
         },
         {
           "n": "7",
@@ -98,7 +100,7 @@
             "fighter wing friction drag full scale and 1/10 model",
             "wall suction"
           ],
-          "ranges": "Re 10⁵–10⁷; transition Re_x ≈ 5 × 10⁵",
+          "ranges": ["Re 10⁵–10⁷; transition Re_x ≈ 5 × 10⁵"],
           "notes": "Boundary layers belong to he.engineering.fluid-mechanics#5 too; aerodynamics#1 pages cover Re and drag only."
         },
         {

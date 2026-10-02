@@ -102,7 +102,8 @@
               "title": "Fitting Statistical Models to Data (Summary)",
               "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data/2.0S%3A_2.S%3A_Fitting_Statistical_Models_to_Data_(Summary)"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "3",
@@ -584,9 +585,11 @@
               "title": "What have we learned from the trees? (Summary)",
               "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/14%3A_What_have_we_learned_from_the_trees/14.0S%3A_14.S%3A_What_have_we_learned_from_the_trees%3F_(Summary)"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "Harmon, Phylogenetic Comparative Methods"
     }
   ]
 }

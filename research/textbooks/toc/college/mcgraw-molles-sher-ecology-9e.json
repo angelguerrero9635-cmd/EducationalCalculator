@@ -11,10 +11,14 @@
     "lesson": null,
     "part": "Section"
   },
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://www.mheducation.com/highered/product/ecology-concepts-applications-molles-sher/M9781260722208.html",
+    "attribution": "McGraw Hill"
+  },
   "sourceUrl": "https://www.mheducation.com/highered/product/ecology-concepts-applications-molles-sher/M9781260722208.html",
   "retrieved": "2026-10-02",
-  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. ",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page.  No licence is stated: titles only.",
   "books": [
     {
       "url": "https://www.mheducation.com/highered/product/ecology-concepts-applications-molles-sher/M9781260722208.html",
@@ -24,7 +28,8 @@
           "title": "Introduction to Ecology: Historical Foundations and Developing Frontiers",
           "topics": [],
           "part": "Section I: Natural History and Evolution",
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "2",
@@ -67,7 +72,8 @@
           "title": "Social Relations",
           "topics": [],
           "part": "Section II: Adaptations to the Environment",
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "9",
@@ -159,7 +165,8 @@
           "topics": ["he.biology.ecology#2"],
           "part": "Section VI: Large-Scale Ecology"
         }
-      ]
+      ],
+      "title": "Molles and Sher, Ecology: Concepts and Applications"
     }
   ]
 }

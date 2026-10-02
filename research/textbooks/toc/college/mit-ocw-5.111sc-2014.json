@@ -313,11 +313,13 @@
             {
               "n": "35",
               "title": "Applying Chemical Principles",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         }
-      ]
+      ],
+      "title": "5.111SC"
     }
   ]
 }

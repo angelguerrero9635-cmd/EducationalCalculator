@@ -68,7 +68,8 @@
             {
               "n": "5",
               "title": "Statistical thermodynamics of small systems; ligand binding",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "6",
@@ -83,7 +84,8 @@
             {
               "n": "8",
               "title": "Partitioning; polymer mixing and size",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "9",
@@ -97,7 +99,8 @@
             }
           ]
         }
-      ]
+      ],
+      "title": "20.110J / 2.772J / 5.601J"
     }
   ]
 }

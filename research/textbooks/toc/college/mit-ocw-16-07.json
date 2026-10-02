@@ -32,7 +32,8 @@
           "title": "Particle kinematics and kinetics, impulse, work and energy",
           "url": "https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/pages/calendar/",
           "topics": [],
-          "notes": "Dynamics prerequisite (he.engineering.dynamics, owned by the mechanical plan)."
+          "notes": "Dynamics prerequisite (he.engineering.dynamics, owned by the mechanical plan).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "L14",
@@ -53,13 +54,14 @@
             "ellipse in Earth radii: period, time to an anomaly",
             "Hubble-to-station transfer with plane change"
           ],
-          "ranges": "perigee 5 R_E, apogee 20 R_E; inclinations 28.5–51.6°"
+          "ranges": ["perigee 5 R_E, apogee 20 R_E; inclinations 28.5–51.6°"]
         },
         {
           "n": "L19–L31",
           "title": "Vibration; Lagrange; 2-D and 3-D rigid bodies; gyroscopes; inertial navigation",
           "topics": [],
-          "notes": "Mechanical-plan topics."
+          "notes": "Mechanical-plan topics.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

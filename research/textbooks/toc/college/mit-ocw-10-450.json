@@ -37,7 +37,7 @@
           "title": "Blending tank; two tanks in series (first-order and interacting responses)",
           "topics": ["he.engineering.process-control#0"],
           "examples": ["first-order step table", "sketch in time constants"],
-          "notation": "τ, K; y/y∞ = 1 − e^(−t/τ)"
+          "notation": ["τ, K; y/y∞ = 1 − e^(−t/τ)"]
         },
         {
           "n": "14–20",

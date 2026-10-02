@@ -33,7 +33,7 @@
           "title": "Structural Loads and Loading System",
           "topics": ["he.engineering.steel-design#0", "he.engineering.structural-analysis#0"],
           "examples": ["governing LRFD combination", "dead load on a beam from tributary width"],
-          "notation": "LRFD 1.4D; 1.2D + 1.6L + 0.5(L_r or S or R); ASD set"
+          "notation": ["LRFD 1.4D; 1.2D + 1.6L + 0.5(L_r or S or R); ASD set"]
         },
         {
           "n": "3",
@@ -57,19 +57,22 @@
           "n": "6",
           "title": "Arches and Cables",
           "topics": [],
-          "notes": "Not a plan row."
+          "notes": "Not a plan row.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "7",
           "title": "Deflection of Beams: Geometric Methods",
           "topics": [],
-          "notes": "Deflections: taxonomy gap (the plan proposes a topic)."
+          "notes": "Deflections: taxonomy gap (the plan proposes a topic).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "8",
           "title": "Deflections of Structures: Work-Energy Methods",
           "topics": [],
-          "notes": "Deflections: taxonomy gap."
+          "notes": "Deflections: taxonomy gap.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "9",

@@ -31,7 +31,8 @@
           "n": "L1–L13",
           "title": "Fluid concepts, hydrostatics, dams and gates, flow nets, Bernoulli, momentum",
           "topics": [],
-          "notes": "Fluid mechanics (mechanical plan): he.engineering.fluid-mechanics#0–2."
+          "notes": "Fluid mechanics (mechanical plan): he.engineering.fluid-mechanics#0–2.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "L14–L20",
@@ -44,8 +45,8 @@
             "hydro plant penstocks",
             "pump and system curve"
           ],
-          "ranges": "D 0.1–5 m; ε 0.06–2 mm; Q 0.05–0.5 m³/s",
-          "notation": "Darcy f from the Moody diagram; mwc (metres of water column)"
+          "ranges": ["D 0.1–5 m; ε 0.06–2 mm; Q 0.05–0.5 m³/s"],
+          "notation": ["Darcy f from the Moody diagram; mwc (metres of water column)"]
         },
         {
           "n": "L21–end",
@@ -58,8 +59,8 @@
             "spillway, normal depth and jump",
             "profiles at a sluice gate"
           ],
-          "ranges": "S₀ 10⁻⁴–5 × 10⁻³; q 2–10 m²/s",
-          "notation": "h_n normal and h_c critical depth; profile names M1, S1 …; Chezy C in SI"
+          "ranges": ["S₀ 10⁻⁴–5 × 10⁻³; q 2–10 m²/s"],
+          "notation": ["h_n normal and h_c critical depth; profile names M1, S1 …; Chezy C in SI"]
         }
       ]
     }

@@ -181,17 +181,20 @@
             {
               "n": "7.1",
               "title": "Singular Values and Singular Vectors",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "7.2",
               "title": "Image Processing by Linear Algebra",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "7.3",
               "title": "Principal Component Analysis (PCA by the SVD)",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         },
@@ -224,22 +227,26 @@
             {
               "n": "9.1",
               "title": "Minimizing a Multivariable Function",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "9.2",
               "title": "Backpropagation and Stochastic Gradient Descent",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "9.3",
               "title": "Constraints, Lagrange Multipliers, Minimum Norms",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "9.4",
               "title": "Linear Programming, Game Theory, and Duality",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         },
@@ -252,17 +259,20 @@
             {
               "n": "10.1",
               "title": "Piecewise Linear Learning Functions",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "10.2",
               "title": "Creating and Experimenting",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "10.3",
               "title": "Mean, Variance, and Covariance",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         }

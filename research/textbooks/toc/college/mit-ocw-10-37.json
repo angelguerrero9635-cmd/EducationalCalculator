@@ -53,7 +53,7 @@
             "two CSTR layouts",
             "parallel CSTR feed split"
           ],
-          "notation": "τ = V ÷ v₀; X; Levenspiel F_A0 ÷ (−r_A)"
+          "notation": ["τ = V ÷ v₀; X; Levenspiel F_A0 ÷ (−r_A)"]
         },
         {
           "n": "10–11",

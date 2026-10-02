@@ -6,13 +6,17 @@
   "subject": "chemical",
   "level": "college",
   "content": "titles",
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://learncheme.com/screencasts/",
+    "attribution": "LearnChemE, University of Colorado Boulder"
+  },
   "terms": {
     "unit": "Course page"
   },
   "sourceUrl": "https://learncheme.com/screencasts/",
   "retrieved": "2026-10-02",
-  "notes": "Topic headings and video counts per course page (titles only). No licence statement was found on the pages read (the plan listed CC BY-SA 4.0 as confirmed); the ConcepTest inventory is behind an instructor sign-in (\"Click here to sign in to the ConcepTest Inventory … For access, email us using your university account to verify instructor status\") and is off limits, so no ConcepTest records.",
+  "notes": "Topic headings and video counts per course page (titles only). No licence statement was found on the pages read (the plan listed CC BY-SA 4.0 as confirmed); the ConcepTest inventory is behind an instructor sign-in (\"Click here to sign in to the ConcepTest Inventory … For access, email us using your university account to verify instructor status\") and is off limits, so no ConcepTest records. No licence is stated: titles only.",
   "books": [
     {
       "course": null,

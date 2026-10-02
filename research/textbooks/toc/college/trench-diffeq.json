@@ -319,17 +319,20 @@
             {
               "n": "11.1",
               "title": "Eigenvalue Problems for y'' + λy = 0",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "11.2",
               "title": "Fourier Series I",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "11.3",
               "title": "Fourier Series II",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         },
@@ -342,22 +345,26 @@
             {
               "n": "12.1",
               "title": "The Heat Equation",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "12.2",
               "title": "The Wave Equation",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "12.3",
               "title": "Laplace's Equation in Rectangular Coordinates",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "12.4",
               "title": "Laplace's Equation in Polar Coordinates",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         },
@@ -370,12 +377,14 @@
             {
               "n": "13.1",
               "title": "Boundary Value Problems",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "13.2",
               "title": "Sturm-Liouville Problems",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         }

@@ -32,7 +32,7 @@
           "title": "Two-body problem; Barker and Kepler equations; initial-value problem",
           "url": "https://ocw.mit.edu/courses/16-346-astrodynamics-fall-2008/pages/lecture-notes/",
           "topics": ["he.engineering.orbital-mechanics#0", "he.engineering.orbital-mechanics#1"],
-          "notation": "vector h and e; μ normalized (e.g. 4π² in AU–year units)"
+          "notation": ["vector h and e; μ normalized (e.g. 4π² in AU–year units)"]
         },
         {
           "n": "5",
@@ -53,7 +53,8 @@
           "n": "18–23",
           "title": "Orbit determination; state transition matrix; guidance; navigation and estimation",
           "topics": [],
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "24–26",
@@ -65,7 +66,8 @@
           "n": "27–33",
           "title": "Perturbations (drag, J2); calculus of variations; Runge–Kutta integration",
           "topics": [],
-          "notes": "Perturbations not in the taxonomy course."
+          "notes": "Perturbations not in the taxonomy course.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

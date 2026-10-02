@@ -121,12 +121,14 @@
             {
               "n": "15",
               "title": "Non-degenerate perturbation theory I",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "16",
               "title": "Non-degenerate perturbation theory II",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "17",
@@ -156,12 +158,14 @@
             {
               "n": "22",
               "title": "Helium atom",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "23",
               "title": "Many-electron atoms",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "24",
@@ -181,7 +185,8 @@
             {
               "n": "27",
               "title": "Non-degenerate perturbation theory III",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "28",
@@ -206,7 +211,8 @@
             {
               "n": "32",
               "title": "Intermolecular interactions by perturbation theory",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "33",
@@ -221,7 +227,8 @@
             {
               "n": "35",
               "title": "δ-functions, eigenfunctions of x, DVR",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "36",
@@ -230,7 +237,8 @@
             }
           ]
         }
-      ]
+      ],
+      "title": "5.61"
     }
   ]
 }

@@ -250,9 +250,11 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/07%3A_Appendices",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "Mechanics of Materials"
     }
   ]
 }

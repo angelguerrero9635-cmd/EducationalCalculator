@@ -69,16 +69,20 @@
             {
               "n": "3–10",
               "title": "Cholinergic, autonomic, local anaesthetics, antidysrhythmics, vasoactive, lipid-lowering, antihistamines, immunosuppression",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "12–16",
               "title": "Neuropharmacology, antimicrobials, chemotherapy, opioids",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "HST.151"
     }
   ]
 }

@@ -101,12 +101,14 @@
             {
               "n": "10",
               "title": "Ethers, epoxides, and sulfides",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "11",
               "title": "Ethers, epoxides, and sulfides (cont.)",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "12",
@@ -121,27 +123,32 @@
             {
               "n": "14",
               "title": "Pericyclic reactions: introduction",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "15",
               "title": "Pericyclic reactions: electrocyclic processes",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "16",
               "title": "Pericyclic reactions: cycloadditions",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "17",
               "title": "Pericyclic reactions: cycloadditions, sigmatropic rearrangements",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "18",
               "title": "Pericyclic reactions: sigmatropic rearrangements",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "19",
@@ -196,41 +203,49 @@
             {
               "n": "29",
               "title": "Carbocations",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "30",
               "title": "Carbocations (cont.)",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "31",
               "title": "Carbocations (cont.)",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "32",
               "title": "Carbocations (cont.)",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "33",
               "title": "Radicals",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "34",
               "title": "Radicals (cont.)",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             },
             {
               "n": "35",
               "title": "Photochemistry",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         }
-      ]
+      ],
+      "title": "5.13"
     }
   ]
 }

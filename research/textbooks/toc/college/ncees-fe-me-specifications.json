@@ -111,7 +111,8 @@
               "url": null
             }
           ],
-          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "3",
@@ -141,7 +142,8 @@
               "url": null
             }
           ],
-          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "4",
@@ -166,7 +168,8 @@
               "url": null
             }
           ],
-          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "5",
@@ -744,7 +747,8 @@
             }
           ]
         }
-      ]
+      ],
+      "title": "NCEES FE Mechanical CBT exam specifications"
     }
   ]
 }

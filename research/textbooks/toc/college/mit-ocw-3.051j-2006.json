@@ -88,7 +88,8 @@
             {
               "n": "15–16",
               "title": "Statistical analysis",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         },
@@ -132,7 +133,8 @@
             }
           ]
         }
-      ]
+      ],
+      "title": "3.051J / 20.340J"
     }
   ]
 }

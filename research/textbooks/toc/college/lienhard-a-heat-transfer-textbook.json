@@ -89,7 +89,8 @@
           "url": "https://ahtt.mit.edu/",
           "topics": [],
           "notes": "Boiling, condensation and mass transfer: no topic in this group (taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "10",
@@ -104,9 +105,11 @@
           "url": "https://ahtt.mit.edu/",
           "topics": [],
           "notes": "Boiling, condensation and mass transfer: no topic in this group (taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "A Heat Transfer Textbook"
     }
   ]
 }

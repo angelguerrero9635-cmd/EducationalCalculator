@@ -890,7 +890,8 @@
               "title": "Homework Exercises",
               "url": null
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "15",
@@ -929,7 +930,8 @@
               "title": "Homework Exercises",
               "url": null
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "16",
@@ -993,7 +995,8 @@
               "title": "Homework Exercises",
               "url": null
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "17",
@@ -1067,7 +1070,8 @@
               "title": "Homework Exercises",
               "url": null
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "18",
@@ -1116,7 +1120,8 @@
               "title": "Homework Exercises",
               "url": null
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "19",
@@ -1165,7 +1170,8 @@
               "title": "Homework Exercises",
               "url": null
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "20",
@@ -1337,9 +1343,11 @@
               "title": "Homework Exercises",
               "url": null
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
-      ]
+      ],
+      "title": "Practical Meteorology: An Algebra-based Survey of Atmospheric Science"
     }
   ]
 }

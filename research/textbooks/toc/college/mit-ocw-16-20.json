@@ -43,8 +43,8 @@
             "strains of a graphite/epoxy ply under biaxial stress",
             "off-axis ply strain gauge"
           ],
-          "ranges": "E₁₁ 130 GPa class, E₂₂ ≈ 10 GPa, G₁₂ ≈ 6 GPa, ν₁₂ ≈ 0.3",
-          "notation": "tensor (σ_mn, ε_mn) and engineering notation; microstrain"
+          "ranges": ["E₁₁ 130 GPa class, E₂₂ ≈ 10 GPa, G₁₂ ≈ 6 GPa, ν₁₂ ≈ 0.3"],
+          "notation": ["tensor (σ_mn, ε_mn) and engineering notation; microstrain"]
         },
         {
           "n": "8",
@@ -63,7 +63,7 @@
           "title": "St. Venant torsion; membrane analogy; thin closed sections (Bredt)",
           "topics": ["he.engineering.aerospace-structures#0"],
           "examples": ["open channel vs I vs closed box under torque"],
-          "notation": "q shear flow; J torsion constant; 2A enclosed area"
+          "notation": ["q shear flow; J torsion constant; 2A enclosed area"]
         },
         {
           "n": "13–15",
@@ -87,7 +87,8 @@
           "n": "19–23",
           "title": "Structural dynamics: spring–mass, influence coefficients, MDOF and continuous systems",
           "topics": [],
-          "notes": "No aerospace-structures topic; nearest he.engineering.vibrations."
+          "notes": "No aerospace-structures topic; nearest he.engineering.vibrations.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

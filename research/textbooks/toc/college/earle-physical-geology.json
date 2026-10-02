@@ -576,7 +576,8 @@
               "title": "Summary",
               "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/12%3A_Geological_Structures/12.05%3A_Summary"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "13",
@@ -902,7 +903,8 @@
               "title": "Summary",
               "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/20%3A_Geological_Resources/20.05%3A_Summary"
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "21",
@@ -982,7 +984,8 @@
             }
           ]
         }
-      ]
+      ],
+      "title": "Physical Geology"
     }
   ]
 }

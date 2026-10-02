@@ -11,10 +11,14 @@
     "lesson": null,
     "part": "Unit"
   },
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://www.pearson.com/en-us/subject-catalog/p/campbell-biology/P200000007019/9780135988046",
+    "attribution": "Pearson"
+  },
   "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/campbell-biology/P200000007019/9780135988046",
   "retrieved": "2026-10-02",
-  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. The page lists unit headings and chapter titles without numbers; the introductory chapter is numbered 1 here.",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. The page lists unit headings and chapter titles without numbers; the introductory chapter is numbered 1 here. No licence is stated: titles only.",
   "books": [
     {
       "url": "https://www.pearson.com/en-us/subject-catalog/p/campbell-biology/P200000007019/9780135988046",
@@ -293,14 +297,16 @@
           "title": "Animal Reproduction",
           "topics": [],
           "part": "Unit 7: Animal Form and Function",
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "47",
           "title": "Animal Development",
           "topics": [],
           "part": "Unit 7: Animal Form and Function",
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "48",
@@ -356,7 +362,8 @@
           "topics": ["he.biology.ecology#3"],
           "part": "Unit 8: Ecology"
         }
-      ]
+      ],
+      "title": "Urry, Cain, Wasserman, Minorsky, Orr, Campbell Biology"
     }
   ]
 }

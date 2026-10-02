@@ -11,10 +11,14 @@
     "lesson": null,
     "part": "Part"
   },
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://www.macmillanlearning.com/college/us/product/Introduction-to-Genetic-Analysis/p/1319114784",
+    "attribution": "Macmillan Learning (W. H. Freeman)"
+  },
   "sourceUrl": "https://www.macmillanlearning.com/college/us/product/Introduction-to-Genetic-Analysis/p/1319114784",
   "retrieved": "2026-10-02",
-  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. The page prints chapter 13 as \"1.\"; numbered 13 here by order.",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. The page prints chapter 13 as \"1.\"; numbered 13 here by order. No licence is stated: titles only.",
   "books": [
     {
       "url": "https://www.macmillanlearning.com/college/us/product/Introduction-to-Genetic-Analysis/p/1319114784",
@@ -119,7 +123,8 @@
           "title": "Evolution of Genes, Traits, and Species",
           "topics": ["he.biology.evolution#0", "he.biology.evolution#3"]
         }
-      ]
+      ],
+      "title": "Griffiths, Doebley, Peichel and Wassarman, Introduction to Genetic Analysis"
     }
   ]
 }

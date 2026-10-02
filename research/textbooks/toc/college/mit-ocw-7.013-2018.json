@@ -153,11 +153,13 @@
             {
               "n": "36",
               "title": "Future of biology",
-              "topics": []
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
             }
           ]
         }
-      ]
+      ],
+      "title": "7.013"
     }
   ]
 }

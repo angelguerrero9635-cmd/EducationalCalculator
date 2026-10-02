@@ -53,7 +53,8 @@
           "n": "5",
           "title": "Logical Modeling",
           "topics": [],
-          "notes": "Boolean logic and alarms: no topic."
+          "notes": "Boolean logic and alarms: no topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "6",
@@ -69,7 +70,8 @@
           "n": "8",
           "title": "Optimization",
           "topics": [],
-          "notes": "No topic."
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "9",
@@ -80,7 +82,7 @@
             "robustness from ISE and ISC",
             "diagnosing a P response"
           ],
-          "notation": "K_c, T_i, T_d; Cohen–Coon; IMC"
+          "notation": ["K_c, T_i, T_d; Cohen–Coon; IMC"]
         },
         {
           "n": "10",
@@ -103,13 +105,15 @@
           "n": "12",
           "title": "MIMO Control",
           "topics": [],
-          "notes": "No topic."
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "13–14",
           "title": "Statistics and Design of Experiments",
           "topics": [],
-          "notes": "No topic."
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

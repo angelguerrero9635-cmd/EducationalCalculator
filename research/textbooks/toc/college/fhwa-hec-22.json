@@ -33,7 +33,7 @@
             "rational peak with an IDF curve",
             "SCS peak and unit hydrograph"
           ],
-          "notation": "Q = CiA ÷ K_u (K_u = 360 SI, 1.0 US); CN; t_c"
+          "notation": ["Q = CiA ÷ K_u (K_u = 360 SI, 1.0 US); CN; t_c"]
         },
         {
           "n": "4",
@@ -58,7 +58,7 @@
           "title": "Storm Drains",
           "topics": ["he.engineering.hydraulics-hydrology#3"],
           "examples": ["pipe size for a flow", "full-flow capacity", "HGL and EGL computation"],
-          "notation": "Q = (K_Q ÷ n)D^2.67 S^0.5"
+          "notation": ["Q = (K_Q ÷ n)D^2.67 S^0.5"]
         },
         {
           "n": "8",
@@ -76,7 +76,8 @@
           "n": "9",
           "title": "Pump Stations",
           "topics": [],
-          "notes": "Pumps: taxonomy gap the plan names."
+          "notes": "Pumps: taxonomy gap the plan names.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "10",

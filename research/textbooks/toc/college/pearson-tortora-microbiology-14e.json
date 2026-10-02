@@ -11,10 +11,14 @@
     "lesson": null,
     "part": "Part"
   },
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://www.pearson.com/en-us/subject-catalog/p/microbiology-an-introduction/P200000009851/9780138200398",
+    "attribution": "Pearson"
+  },
   "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/microbiology-an-introduction/P200000009851/9780138200398",
   "retrieved": "2026-10-02",
-  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. ",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page.  No licence is stated: titles only.",
   "books": [
     {
       "url": "https://www.pearson.com/en-us/subject-catalog/p/microbiology-an-introduction/P200000009851/9780138200398",
@@ -187,7 +191,8 @@
           "topics": ["he.biology.microbiology#1"],
           "part": "Part Five: Environmental and Applied Microbiology"
         }
-      ]
+      ],
+      "title": "Tortora, Funke, Case, Weber and Bair, Microbiology: An Introduction"
     }
   ]
 }

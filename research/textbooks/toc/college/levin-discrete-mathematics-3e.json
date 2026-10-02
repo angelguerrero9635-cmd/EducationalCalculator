@@ -152,7 +152,8 @@
           "title": "Generating functions; number theory",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_addtops-genfun.html",
           "topics": [],
-          "notes": "No topic (number theory is not in discrete-math)."
+          "notes": "No topic (number theory is not in discrete-math).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

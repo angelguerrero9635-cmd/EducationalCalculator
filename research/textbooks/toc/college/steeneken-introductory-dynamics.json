@@ -29,7 +29,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/01%3A_Introduction/01%3A_Preface",
           "topics": [],
           "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "2",
@@ -37,7 +38,8 @@
           "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/01%3A_Introduction/02%3A_Notation_Math_and_Engineering_Basics",
           "topics": [],
           "notes": "Notation, math and engineering basics (no dynamics topic).",
-          "lessons": []
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "3",
@@ -128,7 +130,8 @@
           "notes": "Solution strategy.",
           "lessons": []
         }
-      ]
+      ],
+      "title": "Introductory Dynamics: 2D Kinematics and Kinetics of Point Masses and Rigid Bodies"
     }
   ]
 }

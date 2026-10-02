@@ -231,7 +231,8 @@
               "title": "Endnotes",
               "url": null
             }
-          ]
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "4",
@@ -349,7 +350,8 @@
             }
           ]
         }
-      ]
+      ],
+      "title": "Fundamentals of Remote Sensing (tutorial)"
     }
   ]
 }

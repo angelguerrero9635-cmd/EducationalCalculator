@@ -33,7 +33,7 @@
           "url": "https://ocw.mit.edu/courses/16-50-introduction-to-propulsion-systems-spring-2012/pages/lecture-notes/",
           "topics": ["he.engineering.propulsion#1", "he.engineering.orbital-mechanics#3"],
           "examples": ["3-stage solid launcher", "chemical vs electric Earth–Mars"],
-          "ranges": "I_sp 250–460 s chemical; ε 0.1"
+          "ranges": ["I_sp 250–460 s chemical; ε 0.1"]
         },
         {
           "n": "6–8",
@@ -45,7 +45,8 @@
           "n": "9",
           "title": "Solid propellant gas generators",
           "topics": [],
-          "notes": "Internal ballistics: no taxonomy topic."
+          "notes": "Internal ballistics: no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "10–12",
@@ -57,7 +58,8 @@
           "n": "13–16",
           "title": "Casings; heat transfer and cooling; ablative cooling; thrust vectoring; cycles",
           "topics": [],
-          "notes": "Rocket cooling: no taxonomy topic (examples: throat heat flux, copper wall thickness)."
+          "notes": "Rocket cooling: no taxonomy topic (examples: throat heat flux, copper wall thickness).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "17–23",
@@ -68,7 +70,9 @@
             "turbofan with limited fan pressure ratio",
             "supersonic inlet spill"
           ],
-          "notation": "τ, π temperature and pressure ratios; θ_t peak temperature parameter; α bypass ratio"
+          "notation": [
+            "τ, π temperature and pressure ratios; θ_t peak temperature parameter; α bypass ratio"
+          ]
         },
         {
           "n": "24–33",
