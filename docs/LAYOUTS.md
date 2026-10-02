@@ -254,3 +254,9 @@ College card figure `skeletal` (HC2, `layouts/skeletalCard.tsx`, `typesHe1c.ts`)
 112 × 76 from a SMILES-like spec (`CC(=O)OCC`, `c1cc[nH]c1`, `C[C@H](O)CC`), its group lit
 (`carboxyl`, `ester`, `amide`, `nitrile`, `aldehyde`, `ketone`, `hydroxyl`, `amine`, … or atom
 numbers), the parent chain numbered, and CIP ranks with R or S on `center`.
+
+College card figure `projection` (HC78, `layouts/projectionCard.tsx`, `typesHe3m.ts`): `{ kind:
+'projection', projection, tissot?, land? }`, one map projection at 84 × 52 computed from its
+formulas (Mercator, Lambert conformal conic, stereographic, Albers, Mollweide, Gall–Peters,
+azimuthal equidistant, equirectangular, Winkel tripel, cylindrical equal-area): the outline, the
+graticule every 30°, hand-written land shapes shaded, and Tissot dots that show what it keeps.

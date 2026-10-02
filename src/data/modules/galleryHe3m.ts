@@ -5,6 +5,7 @@
  * HC75: the `aquifer` kind (EG-P17): section, head and well.
  * HC76: the `refraction` kind (EG-P20): refraction, reflection and gpr.
  * HC77: the GIS options of `coordinatePlane` (EG-P26): shoelace, buffer, center.
+ * HC78: the `projection` kind and its card figure (EG-P28).
  */
 import { thiemRate } from '@/components/module/reps/aquiferMath';
 import {
@@ -14,6 +15,7 @@ import {
   sidesCross,
   standardDistance,
 } from '@/components/module/reps/gisMath';
+import { latitudeAt, parallelY } from '@/components/module/reps/projectionMath';
 import {
   criticalAngle,
   crossoverOf,
@@ -27,6 +29,7 @@ import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
+import type { ProjectionCard, ProjectionName } from './typesHe3m';
 
 /** A relation and its step text, built together so a demo lists both from one place. */
 interface Rule {
@@ -1041,10 +1044,351 @@ const GIS_DEMOS: ModuleDef[] = [
   planeCenterSpread,
 ];
 
+// ─── HC78 projection (EG-P28) ────────────────────────────────────────────────
+
+const cosd = (x: number) => Math.cos((x * Math.PI) / 180);
+
+const latVar = (max: number) => quantity('lat', 'φ', 'Latitude', '°', -max, max, 0.1);
+const radiusVar = quantity('R', 'R', 'Globe radius', 'cm', 1, 100, 0.1);
+
+/** Mercator: k = 1 ÷ cos φ. */
+const mercatorScaleRule: Rule = {
+  relation: {
+    id: 'k = 1 ÷ cos φ',
+    display: '{k} = 1 ÷ cos({lat}°)',
+    vars: ['k', 'lat'],
+    residual: (v) => v.k! * cosd(v.lat!) - 1,
+    solve: {
+      k: (v) => div(1, cosd(v.lat!)),
+    },
+  },
+  steps: {
+    k: st('1 ÷ cos({lat}°)', 'A parallel is stretched to the equator’s length: 1 ÷ cos φ times.'),
+  },
+};
+
+/** Mercator: area factor = k². */
+const mercatorAreaRule: Rule = {
+  relation: {
+    id: 'area = k²',
+    display: '{area} = {k}²',
+    vars: ['area', 'k'],
+    residual: (v) => v.area! - v.k! * v.k!,
+    solve: { area: (v) => v.k! * v.k!, k: (v) => pos(Math.sqrt(v.area!)) },
+  },
+  steps: {
+    area: st('{k}²', 'Stretched k times both ways, so areas grow k² times.'),
+    k: st('√{area}', 'The root of the area factor.'),
+  },
+};
+
+/** Mercator: y = R ln tan(45° + φ ÷ 2). */
+const mercatorYRule: Rule = {
+  relation: {
+    id: 'y = R ln tan(45° + φ ÷ 2)',
+    // tan(45° + φ ÷ 2) = 1 ÷ cos φ + tan φ: the same rule with one angle in each function.
+    display: '{y} = {R} × ln(1 ÷ cos({lat}°) + tan({lat}°))',
+    vars: ['y', 'R', 'lat'],
+    residual: (v) => v.y! - parallelY('mercator', v.lat!, v.R!),
+    solve: {
+      y: (v) => parallelY('mercator', v.lat!, v.R!),
+      R: (v) => (v.lat! !== 0 ? pos(v.y! / parallelY('mercator', v.lat!, 1)) : undefined),
+    },
+  },
+  steps: {
+    y: st(
+      '{R} × ln(1 ÷ cos({lat}°) + tan({lat}°))',
+      'Mercator’s rule, R ln tan(45° + φ ÷ 2), written with φ alone.',
+    ),
+    R: st(
+      '{y} ÷ ln(1 ÷ cos({lat}°) + tan({lat}°))',
+      'Divide the height by the rule’s factor at φ.',
+    ),
+  },
+};
+
+const mercatorDemo = (id: string, title: string, lat: number, R: number): ModuleDef => {
+  const k = 1 / cosd(lat);
+  return {
+    id,
+    title,
+    use: 'Use this for Mercator’s scale factor, area distortion and where a parallel is drawn.',
+    assumptions: [
+      'The Earth is a sphere of radius R on the globe being projected.',
+      'Mercator is conformal: small shapes keep their angles while areas grow as k²; the poles never fit.',
+    ],
+    variables: [
+      latVar(85),
+      radiusVar,
+      quantity('k', 'k', 'Scale factor', undefined, 1, 12, 0.001),
+      quantity('area', 'a', 'Area factor', undefined, 1, 144, 0.001),
+      quantity('y', 'y', 'Height of the parallel', 'cm', -400, 400, 0.01),
+    ],
+    ...rules(mercatorScaleRule, mercatorAreaRule, mercatorYRule),
+    example: { lat, R, k, area: k * k, y: parallelY('mercator', lat, R) },
+    startWith: ['lat', 'R'],
+    representation: {
+      kind: 'projection',
+      projection: 'mercator',
+      latitude: 'lat',
+      radius: 'R',
+      y: 'y',
+      kE: 'k',
+      kN: 'k',
+      area: 'area',
+      land: true,
+    },
+  };
+};
+
+/** cartography#0 main: 60° → k = 2, area × 4; R = 10 cm → y = 13.2 cm. */
+const projectionMercator = mercatorDemo(
+  'g.he-projection-mercator',
+  'Mercator: scale, area and where a parallel goes',
+  60,
+  10,
+);
+/** Far north, 80°: Greenland's latitude, k near 6 and areas 33 times too big. */
+const projectionMercatorHigh = mercatorDemo(
+  'g.he-projection-mercator-high',
+  'Mercator near the pole: 80° N',
+  80,
+  10,
+);
+
+/** Cylindrical equal-area: y = R sin φ. */
+const ceaYRule: Rule = {
+  relation: {
+    id: 'y = R sin φ',
+    display: '{y} = {R} × sin({lat}°)',
+    vars: ['y', 'R', 'lat'],
+    residual: (v) => v.y! - parallelY('cylindricalEqualArea', v.lat!, v.R!),
+    solve: {
+      y: (v) => parallelY('cylindricalEqualArea', v.lat!, v.R!),
+      lat: (v) =>
+        Math.abs(v.y!) <= v.R! ? latitudeAt('cylindricalEqualArea', v.y!, v.R!) : undefined,
+    },
+  },
+  steps: {
+    y: st('{R} × sin({lat}°)', 'Straight across from the globe onto the cylinder: R sin φ.'),
+    lat: st('arcsin({y} ÷ {R})', 'Undo the rule: the latitude drawn at height y.'),
+  },
+};
+
+/** k_E = 1 ÷ cos φ. */
+const eastRule: Rule = {
+  relation: {
+    id: 'k_E = 1 ÷ cos φ',
+    display: '{kE} = 1 ÷ cos({lat}°)',
+    vars: ['kE', 'lat'],
+    residual: (v) => v.kE! * cosd(v.lat!) - 1,
+    solve: { kE: (v) => div(1, cosd(v.lat!)) },
+  },
+  steps: {
+    kE: st('1 ÷ cos({lat}°)', 'Every parallel is drawn as long as the equator.'),
+  },
+};
+
+/** k_N = cos φ. */
+const northRule: Rule = {
+  relation: {
+    id: 'k_N = cos φ',
+    display: '{kN} = cos({lat}°)',
+    vars: ['kN', 'lat'],
+    residual: (v) => v.kN! - cosd(v.lat!),
+    solve: { kN: (v) => cosd(v.lat!) },
+  },
+  steps: {
+    kN: st('cos({lat}°)', 'North–south is squeezed by just as much: cos φ.'),
+  },
+};
+
+/** area = k_E k_N. */
+const productRule: Rule = {
+  relation: {
+    id: 'area = k_E × k_N',
+    display: '{area} = {kE} × {kN}',
+    vars: ['area', 'kE', 'kN'],
+    residual: (v) => v.area! - v.kE! * v.kN!,
+    solve: { area: (v) => v.kE! * v.kN! },
+  },
+  steps: {
+    area: st('{kE} × {kN}', 'The area factor is the two stretches multiplied.'),
+  },
+};
+
+const equalAreaDemo = (id: string, title: string, lat: number, R: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for where a parallel goes on the cylindrical equal-area map and its two scales.',
+  assumptions: [
+    'The Earth is a sphere of radius R; parallels are projected straight across onto the cylinder.',
+    'Stretched east–west and squeezed north–south by the same factor, so areas stay true.',
+  ],
+  variables: [
+    latVar(89),
+    radiusVar,
+    quantity('y', 'y', 'Height of the parallel', 'cm', -100, 100, 0.01),
+    quantity('kE', 'k_E', 'East–west scale', undefined, 1, 100, 0.001),
+    quantity('kN', 'k_N', 'North–south scale', undefined, 0.01, 1, 0.001),
+    quantity('area', 'a', 'Area factor', undefined, 0.01, 10, 0.001),
+  ],
+  ...rules(ceaYRule, eastRule, northRule, productRule),
+  example: {
+    lat,
+    R,
+    y: parallelY('cylindricalEqualArea', lat, R),
+    kE: 1 / cosd(lat),
+    kN: cosd(lat),
+    area: 1,
+  },
+  startWith: ['lat', 'R'],
+  representation: {
+    kind: 'projection',
+    projection: 'cylindricalEqualArea',
+    latitude: 'lat',
+    radius: 'R',
+    y: 'y',
+    kE: 'kE',
+    kN: 'kN',
+    area: 'area',
+    land: true,
+  },
+});
+
+/** cartography#0~equal-area: 60° → y = 8.66 cm, k_E = 2, k_N = 0.5, area 1. */
+const projectionEqualArea = equalAreaDemo(
+  'g.he-projection-equal-area',
+  'Cylindrical equal-area: shapes squashed, areas true',
+  60,
+  10,
+);
+/** Far south, 75° S: the shapes are squashed four times flat. */
+const projectionEqualAreaSouth = equalAreaDemo(
+  'g.he-projection-equal-area-south',
+  'Equal-area far south: 75° S',
+  -75,
+  10,
+);
+
+/** Equirectangular: y = R × φ (radians). */
+const plateRule: Rule = {
+  relation: {
+    id: 'y = Rφ',
+    display: '{y} = {R} × {lat} × π ÷ 180',
+    vars: ['y', 'R', 'lat'],
+    residual: (v) => v.y! - parallelY('equirectangular', v.lat!, v.R!),
+    solve: {
+      y: (v) => parallelY('equirectangular', v.lat!, v.R!),
+      lat: (v) => latitudeAt('equirectangular', v.y!, v.R!),
+      R: (v) => (v.lat! !== 0 ? pos(v.y! / parallelY('equirectangular', v.lat!, 1)) : undefined),
+    },
+  },
+  steps: {
+    y: st(
+      '{R} × {lat} × π ÷ 180',
+      'Parallels are evenly spaced: the arc from the equator, R times φ in radians.',
+    ),
+    lat: st('{y} ÷ {R} × 180 ÷ π', 'The arc divided by R, turned into degrees.'),
+    R: st('{y} ÷ ({lat} × π ÷ 180)', 'The arc divided by φ in radians.'),
+  },
+};
+
+const projectionPlate: ModuleDef = {
+  id: 'g.he-projection-equirectangular',
+  title: 'Equirectangular: parallels evenly spaced',
+  use: 'Use this for where a parallel goes on an equirectangular (plate carrée) map.',
+  assumptions: [
+    'The Earth is a sphere of radius R; every meridian keeps its true length.',
+    'Parallels are stretched east–west by 1 ÷ cos φ, so shapes widen toward the poles.',
+  ],
+  variables: [
+    latVar(90),
+    radiusVar,
+    quantity('y', 'y', 'Height of the parallel', 'cm', -160, 160, 0.01),
+    quantity('kE', 'k_E', 'East–west scale', undefined, 1, 1e4, 0.001),
+  ],
+  ...rules(plateRule, eastRule),
+  example: { lat: 45, R: 10, y: parallelY('equirectangular', 45, 10), kE: 1 / cosd(45) },
+  startWith: ['lat', 'R'],
+  representation: {
+    kind: 'projection',
+    projection: 'equirectangular',
+    latitude: 'lat',
+    radius: 'R',
+    y: 'y',
+    kE: 'kE',
+    land: true,
+  },
+};
+
+const PROJECTION_DEMOS: ModuleDef[] = [
+  projectionMercator,
+  projectionMercatorHigh,
+  projectionEqualArea,
+  projectionEqualAreaSouth,
+  projectionPlate,
+];
+
+const card = (projection: ProjectionName): ProjectionCard => ({
+  kind: 'projection',
+  projection,
+  tissot: true,
+});
+
+/** Stands in for he.geography.cartography#0~properties (the sort, with the card figure). */
+const projectionCards: LayoutDef = {
+  kind: 'sort',
+  id: 'g.he-projection-card-properties',
+  title: 'What a projection keeps',
+  use: 'Use this for “Is the Mollweide projection conformal, equal-area, equidistant or a compromise?”',
+  assumptions: [
+    'No flat map keeps shapes, areas and distances all at once.',
+    'The dots are Tissot circles: equal-sized circles on the globe, drawn as the map draws them.',
+  ],
+  question: 'What does the projection keep?',
+  bins: [
+    {
+      id: 'conformal',
+      label: 'Conformal',
+      why: 'Angles and small shapes: the dots stay round, though their sizes change.',
+    },
+    {
+      id: 'area',
+      label: 'Equal-area',
+      why: 'Areas: the dots keep one area, though they are squashed.',
+    },
+    {
+      id: 'distance',
+      label: 'Equidistant',
+      why: 'Distances along the meridians (or from the centre) are true.',
+    },
+    {
+      id: 'compromise',
+      label: 'Compromise',
+      why: 'A little of each: nothing is true, nothing is badly wrong.',
+    },
+  ],
+  cards: (
+    [
+      ['Mercator', 'mercator', 'conformal'],
+      ['Lambert conformal conic', 'lambertConformalConic', 'conformal'],
+      ['Stereographic', 'stereographic', 'conformal'],
+      ['Albers equal-area conic', 'albersEqualAreaConic', 'area'],
+      ['Mollweide', 'mollweide', 'area'],
+      ['Gall–Peters', 'gallPeters', 'area'],
+      ['Azimuthal equidistant', 'azimuthalEquidistant', 'distance'],
+      ['Equirectangular', 'equirectangular', 'distance'],
+      ['Winkel tripel', 'winkelTripel', 'compromise'],
+    ] as const
+  ).map(([label, p, bin]) => ({ label, bin, figure: card(p) })),
+};
+
 export const HE3M_GALLERY_MODULES: ModuleDef[] = [
   ...AQUIFER_DEMOS,
   ...REFRACTION_DEMOS,
   ...GIS_DEMOS,
+  ...PROJECTION_DEMOS,
 ];
 
-export const HE3M_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HE3M_GALLERY_LAYOUTS: LayoutDef[] = [projectionCards];

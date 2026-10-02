@@ -154,6 +154,7 @@ const PICTURE_NAMES: Record<string, string> = {
   aquifer:
     'a cross-section of an aquifer: wells, the water table, a piezometer or a cone of depression',
   refraction: 'a seismic or radar survey: rays through layers and the travel-time graph',
+  projection: 'a world map projection: its graticule, Tissot circles and a parallel’s height',
   globe:
     'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
   stressStrain:

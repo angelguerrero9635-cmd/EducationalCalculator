@@ -2312,7 +2312,8 @@ export function repIssues(
       break;
     case 'aquifer':
     case 'refraction':
-      // In formula units, as the picture draws them (HC75).
+    case 'projection':
+      // In formula units, as the picture draws them (HC75, HC76, HC78).
       out.push(
         ...he3mIssues(rep, (x) =>
           typeof x === 'number'

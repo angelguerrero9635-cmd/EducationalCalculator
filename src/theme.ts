@@ -593,6 +593,10 @@ const light = {
   mohrLoad: '#0F766E',
   mohrPlane: '#BE185D',
   mohrSoil: '#C9AE84',
+  /** HC78 projection: land shapes, their coast line, and Tissot's ellipses. */
+  mapLand: '#D9CFA8',
+  mapCoast: '#8C7F5A',
+  tissot: '#C2410C',
   /** HC6 fluidSystem: oil, mercury, air; the grade lines; concrete; a car, a hull, ice. */
   fluidOil: '#E2A93F',
   fluidOilDeep: '#B7791F',
@@ -1055,6 +1059,9 @@ const dark: Palette = {
   mohrLoad: '#2DD4BF',
   mohrPlane: '#F472B6',
   mohrSoil: '#7D6A4C',
+  mapLand: '#5C5638',
+  mapCoast: '#A39A72',
+  tissot: '#F08A4B',
   fluidOil: '#B8862F',
   fluidOilDeep: '#86601C',
   fluidMercury: '#9AA3AF',

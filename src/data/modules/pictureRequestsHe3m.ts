@@ -108,4 +108,32 @@ export const HE3M_REQUESTS: PictureRequest[] = [
       'g.he-coordinatePlane-center-spread',
     ],
   },
+  {
+    ...ask(
+      'HC78',
+      'projection',
+      'A world map on a cylinder (Mercator, cylindrical equal-area or equirectangular) computed from its formulas: the graticule every 15°, rough land shapes written in code, Tissot ellipses at the equator and at φ with their axes k_E and k_N, and the parallel φ lit with its height y; and a `projection` card figure for the properties sort',
+      {
+        'he.geography.cartography#0': '"mercator"',
+        'he.geography.cartography#0~equal-area': '"cylindricalEqualArea"',
+        'he.geography.cartography#0~properties': '"projection"',
+      },
+      [
+        'From EG-P28 (new kind `projection`, with a card figure). Projections are computed from their formulas; the land shapes are a few dozen corners each written by hand in code (landShapes.ts), never traced from a map; no table-defined projection (Robinson) is drawn, so the ~properties sort shows Robinson as a card with no figure or leaves it out.',
+        'Fields: { kind: "projection", projection: "mercator" | "cylindricalEqualArea" | "equirectangular", latitude (φ, °), radius? (R, the page’s unit), y?, kE? (Mercator’s k), kN?, area? (area factor), land? }. Mercator stops at 80° (or 5° past φ, to 85°). Drag the lit ellipse to move φ.',
+        'Card figure (layouts/types.ts CardFigure, drawn by layouts/projectionCard.tsx, 84 × 52): { kind: "projection", projection: "mercator" | "lambertConformalConic" | "stereographic" | "albersEqualAreaConic" | "mollweide" | "gallPeters" | "azimuthalEquidistant" | "equirectangular" | "winkelTripel" | "cylindricalEqualArea", tissot?: true, land?: false }: outline, graticule every 30°, land shaded, Tissot dots.',
+        'cartography#0 main: { kind: "projection", projection: "mercator", latitude: "lat", radius: "R", y: "y", kE: "k", kN: "k", area: "area", land: true }; ~equal-area: { projection: "cylindricalEqualArea", latitude: "lat", radius: "R", y: "y", kE: "kE", kN: "kN", area: "area", land: true }; ~properties: each card { figure: { kind: "projection", projection: "mollweide", tissot: true } }.',
+        'Checks (harness/picturesHe3m.ts): y(φ) by the projection’s formula; the drawn Tissot axes (from the map’s own Jacobian) equal k_E and k_N; area = k_E k_N, 1 on the equal-area map; φ inside ±90° (±85° on Mercator). Cards: each projection keeps what its class says, tested on its Jacobian (conformal k_E = k_N; equal-area a constant area factor; equidistant k_N = 1; a compromise neither).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-projection-mercator',
+      'g.he-projection-mercator-high',
+      'g.he-projection-equal-area',
+      'g.he-projection-equal-area-south',
+      'g.he-projection-equirectangular',
+      'g.he-projection-card-properties',
+    ],
+  },
 ];
