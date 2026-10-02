@@ -83,15 +83,15 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Minerals and rocks
 
-| Question type                                          | Page         | Mark          |
-| ------------------------------------------------------ | ------------ | ------------- |
-| name a plutonic rock from its mineral percents (QAP)   | main         | Solves (⏳ P1) |
-| formula and charge of a silicate structure             | ~silicates   | Solves (⏳ P2) |
-| density or specific gravity of a mineral from a sample | ~density     | Solves        |
-| igneous, sedimentary or metamorphic from a texture     | ~textures    | Solves        |
-| order of crystallization (Bowen's series)              | ~bowen       | Solves        |
+| Question type                                          | Page       | Mark           |
+| ------------------------------------------------------ | ---------- | -------------- |
+| name a plutonic rock from its mineral percents (QAP)   | main       | Solves (⏳ P1) |
+| formula and charge of a silicate structure             | ~silicates | Solves (⏳ P2) |
+| density or specific gravity of a mineral from a sample | ~density   | Solves         |
+| igneous, sedimentary or metamorphic from a texture     | ~textures  | Solves         |
+| order of crystallization (Bowen's series)              | ~bowen     | Solves         |
 
-- **Main — BUILD `…#0`:** the IUGS QAP classification. Picture: new `ternary` (P1) with
+- **Main — BUILD `…#0` (⏳):** the IUGS QAP classification. Picture: new `ternary` (P1) with
   `fields: 'qap'`; interim `bars` (Q′, A′, P′). Values: quartz Q, alkali feldspar A, plagioclase P,
   mafic minerals M (% of the rock, 0–100 each, Q + A + P + M = 100), the sum Q + A + P (derived),
   normalized Q′, A′, P′ (%), plagioclase share P ÷ (A + P) (%). Relations: Q′ = 100Q ÷ (Q + A + P),
@@ -122,14 +122,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Plate tectonics
 
-| Question type                                            | Page        | Mark          |
-| -------------------------------------------------------- | ----------- | ------------- |
-| plate speed at a point from the Euler pole and rotation  | main        | Solves (⏳ P3) |
-| plate speed from a hotspot track; an island's age        | ~hotspot    | Solves        |
-| boundary type of a named feature                         | ~boundaries | Solves        |
-| spreading rate from magnetic stripes                     | Refresh `s.12.earth-interior~spreading-rate` | cross-listed |
+| Question type                                           | Page                                         | Mark           |
+| ------------------------------------------------------- | -------------------------------------------- | -------------- |
+| plate speed at a point from the Euler pole and rotation | main                                         | Solves (⏳ P3) |
+| plate speed from a hotspot track; an island's age       | ~hotspot                                     | Solves         |
+| boundary type of a named feature                        | ~boundaries                                  | Solves         |
+| spreading rate from magnetic stripes                    | Refresh `s.12.earth-interior~spreading-rate` | cross-listed   |
 
-- **Main — BUILD `…#1`:** speed on a rotating plate. Picture: new `globe` mode `euler` (P3); interim
+- **Main — BUILD `…#1` (⏳):** speed on a rotating plate. Picture: new `globe` mode `euler` (P3); interim
   `functionGraph` sine (v against Δ, 0–180°). Values: rotation rate ω (°/Myr, 0–5), angular distance
   from the Euler pole Δ (°, 0–180), rotation rate in rad/Myr (derived), speed v (mm/yr, 0–250).
   Relations: ω_rad = ω × π ÷ 180; v = ω_rad × 6,371 km × sin Δ (km/Myr = mm/yr). Assumptions: a
@@ -150,14 +150,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Earthquakes and volcanoes
 
-| Question type                                         | Page       | Mark          |
-| ----------------------------------------------------- | ---------- | ------------- |
+| Question type                                         | Page       | Mark           |
+| ----------------------------------------------------- | ---------- | -------------- |
 | moment magnitude from fault size and slip             | main       | Solves (⏳ P5) |
-| distance to a quake from the S − P lag                | ~lag       | Solves        |
-| yearly rate and 30-year chance from Gutenberg–Richter | ~frequency | Solves        |
-| volcano type from magma and shape                     | ~volcanoes | Solves        |
+| distance to a quake from the S − P lag                | ~lag       | Solves         |
+| yearly rate and 30-year chance from Gutenberg–Richter | ~frequency | Solves         |
+| volcano type from magma and shape                     | ~volcanoes | Solves         |
 
-- **Main — BUILD `…#2`:** moment magnitude. Picture: new `earthLayers` mode `rupture` (P5); interim
+- **Main — BUILD `…#2` (⏳):** moment magnitude. Picture: new `earthLayers` mode `rupture` (P5); interim
   `earthLayers` mode `magnitude` (m1 fixed 6.0, m2 = Mw). Values: rigidity μ (GPa, 10–70; default
   30), rupture length L (km, 0.01–1,500), width W (km, 0.01–300), slip D (m, 0.001–60), area A (km²,
   derived), seismic moment M₀ (N·m), moment magnitude Mw (0–9.6). Relations: A = LW; M₀ = μAD (in
@@ -181,15 +181,15 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Surface processes
 
-| Question type                                      | Page      | Mark          |
-| -------------------------------------------------- | --------- | ------------- |
-| factor of safety of a soil slope                   | main      | Solves (⏳ P4) |
-| shear stress under a glacier; thickness for flow   | ~glacier  | Solves (⏳ P4) |
-| settling speed and time of silt and clay           | ~settling | Solves        |
-| landform → agent (water, ice, wind, gravity)       | ~agents   | Solves        |
-| stream discharge Q = Av                            | Refresh `s.12.surface-processes~discharge` | cross-listed |
+| Question type                                    | Page                                       | Mark           |
+| ------------------------------------------------ | ------------------------------------------ | -------------- |
+| factor of safety of a soil slope                 | main                                       | Solves (⏳ P4) |
+| shear stress under a glacier; thickness for flow | ~glacier                                   | Solves (⏳ P4) |
+| settling speed and time of silt and clay         | ~settling                                  | Solves         |
+| landform → agent (water, ice, wind, gravity)     | ~agents                                    | Solves         |
+| stream discharge Q = Av                          | Refresh `s.12.surface-processes~discharge` | cross-listed   |
 
-- **Main — BUILD `…#3`:** an infinite slope. Picture: `freeBody` incline with the new `slab` option
+- **Main — BUILD `…#3` (⏳):** an infinite slope. Picture: `freeBody` incline with the new `slab` option
   (P4); interim `freeBody` incline. Values: cohesion c (kPa, 0–100), unit weight γ (kN/m³, 10–25),
   depth to the slip surface z (m, 0.1–50), slope θ (°, 1–70), friction angle φ (°, 10–50), normal
   stress σ, driving shear τ, strength s (kPa), factor of safety FS. Relations: σ = γz cos²θ;
@@ -219,12 +219,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Stratigraphy
 
-| Question type                                             | Page             | Mark           |
-| --------------------------------------------------------- | ---------------- | -------------- |
-| order the events in a cross-section                       | main             | Solves (⏳ P6b) |
-| deposition rate between two dated beds; a layer's age     | ~deposition-rate | Solves         |
-| which principle dates this relation                       | ~principles      | Solves         |
-| name the unconformity                                     | ~unconformities  | Solves         |
+| Question type                                         | Page             | Mark            |
+| ----------------------------------------------------- | ---------------- | --------------- |
+| order the events in a cross-section                   | main             | Solves (⏳ P6b) |
+| deposition rate between two dated beds; a layer's age | ~deposition-rate | Solves          |
+| which principle dates this relation                   | ~principles      | Solves          |
+| name the unconformity                                 | ~unconformities  | Solves          |
 
 - **Main — BUILD `…#0` (sequence, ⏳ P6b for the cross-section above the stages):** a cross-section
   of three tilted beds, an angular unconformity, two flat beds and a dike through all of them.
@@ -252,12 +252,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Radiometric dating
 
-| Question type                                    | Page           | Mark   |
-| ------------------------------------------------ | -------------- | ------ |
-| age from the daughter-to-parent ratio            | main           | Solves |
-| age from an isochron's slope                     | ~isochron      | Solves |
-| K–Ar age with the branching decay                | ~potassium-argon | Solves |
-| radiocarbon age from activity                    | ~radiocarbon   | Solves |
+| Question type                         | Page             | Mark   |
+| ------------------------------------- | ---------------- | ------ |
+| age from the daughter-to-parent ratio | main             | Solves |
+| age from an isochron's slope          | ~isochron        | Solves |
+| K–Ar age with the branching decay     | ~potassium-argon | Solves |
+| radiocarbon age from activity         | ~radiocarbon     | Solves |
 
 - **Main — BUILD `…#1`:** `decayChart` (halfLife, time, start 100, left; parent "U-238", daughter
   "Pb-206"). Values: half-life t½ (Ma, 0.001–50,000), decay constant λ (per Myr), daughter-to-parent
@@ -272,7 +272,7 @@ original and was worked by hand; nothing is copied from `research/` or from a te
   grows with age, so no starting daughter needs guessing. Example: m = 0.0145 → t = ln 1.0145 ÷ λ =
   1,014 Ma; with initial 0.7045, x = 2.0 → y = 0.7335.
 - **~potassium-argon — BUILD:** `rockLayers` `dating.sample` with `second: { name: 'calcium-40',
-  share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation: t = (1 ÷ λ) ×
+share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation: t = (1 ÷ λ) ×
   ln(1 + (Ar/K) ÷ 0.105). Assumptions: argon is a gas, so heating resets the clock; 10.5 % of
   decays give argon-40. Example: Ar/K = 0.01 → ln 1.0952 = 0.0910 → 164 Ma.
 - **~radiocarbon — BUILD:** `decayChart` (parent "C-14", daughter "N-14"). Values: activity A
@@ -284,10 +284,10 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 The fossil record
 
-| Question type                                   | Page           | Mark          |
-| ----------------------------------------------- | -------------- | ------------- |
-| age window from two index fossils' ranges       | main           | Solves (⏳ P6) |
-| body fossil or trace fossil                     | ~preservation  | Solves        |
+| Question type                             | Page          | Mark           |
+| ----------------------------------------- | ------------- | -------------- |
+| age window from two index fossils' ranges | main          | Solves (⏳ P6) |
+| body fossil or trace fossil               | ~preservation | Solves         |
 
 - **Main — BUILD `…#2` (⏳ P6, `rockLayers` `ranges`; interim `table`):** values: fossil A first
   appears (Ma) and last appears (Ma), fossil B the same, oldest possible age (derived: the younger of
@@ -304,11 +304,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Earth history
 
-| Question type                                       | Page        | Mark   |
-| --------------------------------------------------- | ----------- | ------ |
-| order the eons and eras, with their lengths         | main        | Solves |
-| which eon an event belongs to                       | ~events     | Solves |
-| the faint young Sun: how cold without more CO₂      | ~faint-sun  | Solves |
+| Question type                                  | Page       | Mark   |
+| ---------------------------------------------- | ---------- | ------ |
+| order the eons and eras, with their lengths    | main       | Solves |
+| which eon an event belongs to                  | ~events    | Solves |
+| the faint young Sun: how cold without more CO₂ | ~faint-sun | Solves |
 
 - **Main — BUILD `…#3` (sequence, spans in Myr, sum "Earth's history"):** Hadean 600; Archean
   1,500; Proterozoic 1,961; Paleozoic 287; Mesozoic 186; Cenozoic 66 (sum 4,600). Sentence: "The
@@ -334,14 +334,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Crystallography
 
-| Question type                                           | Page             | Mark          |
-| ------------------------------------------------------- | ---------------- | ------------- |
-| d-spacing from a diffraction angle (Bragg)              | main             | Solves (⏳ P7) |
-| d-spacing of a cubic plane (hkl); its 2θ peak           | ~cubic-d         | Solves (⏳ P8) |
-| density of a mineral from its unit cell                 | ~cell-density    | Solves (⏳ P8) |
-| crystal system from axes and angles                     | ~crystal-systems | Solves        |
+| Question type                                 | Page             | Mark           |
+| --------------------------------------------- | ---------------- | -------------- |
+| d-spacing from a diffraction angle (Bragg)    | main             | Solves (⏳ P7) |
+| d-spacing of a cubic plane (hkl); its 2θ peak | ~cubic-d         | Solves (⏳ P8) |
+| density of a mineral from its unit cell       | ~cell-density    | Solves (⏳ P8) |
+| crystal system from axes and angles           | ~crystal-systems | Solves         |
 
-- **Main — BUILD `…#0`:** Bragg's law. Picture: `rayDiagram` mode `bragg` (P7); interim `table`
+- **Main — BUILD `…#0` (⏳):** Bragg's law. Picture: `rayDiagram` mode `bragg` (P7); interim `table`
   (2θ = 20°, 30°, 40°, 50° → d). Values: order n (whole, 1–4), X-ray wavelength λ (Å, 0.5–3;
   copper Kα 1.5406), detector angle 2θ (°, 2–170), Bragg angle θ (derived), spacing d (Å).
   Relations: θ = 2θ ÷ 2; nλ = 2d sin θ. Assumptions: diffractometers report 2θ, the angle between
@@ -364,11 +364,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Mineral chemistry
 
-| Question type                                         | Page             | Mark          |
-| ----------------------------------------------------- | ---------------- | ------------- |
-| formula from an oxide analysis; forsterite content    | main             | Solves        |
-| plagioclase An content; coupled substitution balance  | ~plagioclase     | Solves (⏳ P1) |
-| mineral class from a formula                          | ~mineral-classes | Solves        |
+| Question type                                        | Page             | Mark           |
+| ---------------------------------------------------- | ---------------- | -------------- |
+| formula from an oxide analysis; forsterite content   | main             | Solves         |
+| plagioclase An content; coupled substitution balance | ~plagioclase     | Solves (⏳ P1) |
+| mineral class from a formula                         | ~mineral-classes | Solves         |
 
 - **Main — BUILD `…#1`:** `table` (oxide, wt %, moles, oxygens, cations per 4 O). Values: SiO₂,
   MgO, FeO (wt %, 0–100, sum ≤ 100), oxygen moles (derived), normalizing factor (derived), Si, Mg, Fe
@@ -390,14 +390,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Optical mineralogy
 
-| Question type                                         | Page        | Mark          |
-| ----------------------------------------------------- | ----------- | ------------- |
-| retardation and interference color from δ and t       | main        | Solves (⏳ P9) |
-| birefringence from a color and a thickness            | main        | Solves (⏳ P9) |
-| relief from refractive index                          | ~relief     | Solves        |
-| isotropic or anisotropic under crossed polars         | ~isotropic  | Solves        |
+| Question type                                   | Page       | Mark           |
+| ----------------------------------------------- | ---------- | -------------- |
+| retardation and interference color from δ and t | main       | Solves (⏳ P9) |
+| birefringence from a color and a thickness      | main       | Solves (⏳ P9) |
+| relief from refractive index                    | ~relief    | Solves         |
+| isotropic or anisotropic under crossed polars   | ~isotropic | Solves         |
 
-- **Main — BUILD `…#2`:** retardation. Picture: new `michelLevy` (P9); interim `bars` (Γ against
+- **Main — BUILD `…#2` (⏳):** retardation. Picture: new `michelLevy` (P9); interim `bars` (Γ against
   the 550, 1,100, 1,650 nm order lines). Values: thickness t (μm, 1–100; a standard section is 30),
   birefringence δ (0.001–0.30), retardation Γ (nm), order (derived, `floor(Γ ÷ 550) + 1`). Relation:
   Γ = 1,000 tδ. Assumptions: δ is n_high − n_low for the grain as cut, so grains of one mineral show
@@ -420,13 +420,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Atmospheric structure
 
-| Question type                                         | Page               | Mark           |
-| ----------------------------------------------------- | ------------------ | -------------- |
-| thickness between two pressure levels                 | main               | Solves (⏳ P10) |
-| pressure at an altitude; altitude of a pressure       | ~pressure-altitude | Solves         |
-| layer of the atmosphere from a feature                | ~layers            | Solves         |
+| Question type                                   | Page               | Mark            |
+| ----------------------------------------------- | ------------------ | --------------- |
+| thickness between two pressure levels           | main               | Solves (⏳ P10) |
+| pressure at an altitude; altitude of a pressure | ~pressure-altitude | Solves          |
+| layer of the atmosphere from a feature          | ~layers            | Solves          |
 
-- **Main — BUILD `…#0`:** the hypsometric equation. Picture: `atmosphereLayers` mode `thickness`
+- **Main — BUILD `…#0` (⏳):** the hypsometric equation. Picture: `atmosphereLayers` mode `thickness`
   (P10); interim `functionGraph` exponential (p against z). Values: lower pressure p₁ (hPa, 100–
   1,050), upper p₂ (hPa, 1–1,050, below p₁), mean temperature T̄ (K, 180–320), scale height H (m),
   thickness Δz (m). Relations: H = R_d T̄ ÷ g; Δz = H ln(p₁ ÷ p₂). Assumptions: dry air in
@@ -444,20 +444,20 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Atmospheric thermodynamics
 
-| Question type                                          | Page       | Mark           |
-| ------------------------------------------------------ | ---------- | -------------- |
-| potential temperature of a parcel                      | main       | Solves (⏳ P11) |
-| lifting condensation level; temperature at cloud base  | ~lcl       | Solves (⏳ P12) |
-| saturation vapor pressure, RH and mixing ratio         | ~humidity  | Solves (⏳ P11) |
-| stable, conditionally unstable or unstable air         | ~stability | Solves         |
+| Question type                                         | Page       | Mark            |
+| ----------------------------------------------------- | ---------- | --------------- |
+| potential temperature of a parcel                     | main       | Solves (⏳ P11) |
+| lifting condensation level; temperature at cloud base | ~lcl       | Solves (⏳ P12) |
+| saturation vapor pressure, RH and mixing ratio        | ~humidity  | Solves (⏳ P11) |
+| stable, conditionally unstable or unstable air        | ~stability | Solves          |
 
-- **Main — BUILD `…#1`:** potential temperature. Picture: `atmosphereLayers` mode `adiabat` (P11);
+- **Main — BUILD `…#1` (⏳):** potential temperature. Picture: `atmosphereLayers` mode `adiabat` (P11);
   interim `functionGraph` power (θ against p). Values: temperature T (K, 180–330), pressure p (hPa,
   10–1,050), exponent κ (0.286, fixed), potential temperature θ (K). Relation: θ = T(1,000 ÷ p)^κ.
   Assumptions: θ is the temperature the air would have brought dry and adiabatically to 1,000 hPa;
   it stays the same for a parcel rising or sinking without heat or condensation. Example: 263.15 K at
   700 hPa → 1.4286^0.286 = 1.1074, θ = 291.4 K. startWith T, p.
-- **~lcl — BUILD:** `atmosphereLayers` mode `parcel` (temperature, dewPoint, base), with the `dry`
+- **~lcl — BUILD (⏳):** `atmosphereLayers` mode `parcel` (temperature, dewPoint, base), with the `dry`
   and `dewLapse` options of P12 (until then the picture's 10 and 2 °C/km give the same base).
   Values: temperature T and dew point T_d at the ground (°C), spread (°C), cloud base z_LCL (m),
   temperature at the base (°C). Relations: z_LCL = 125 m × (T − T_d); T_base = T − 9.8 × z_LCL ÷ 1,000.
@@ -475,13 +475,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Clouds and precipitation
 
-| Question type                                         | Page         | Mark   |
-| ----------------------------------------------------- | ------------ | ------ |
-| how many cloud droplets make one raindrop             | main         | Solves |
-| a droplet's fall speed and time to fall 1 km          | main         | Solves |
-| rain rate from radar reflectivity (Z–R)               | ~radar       | Solves |
-| cloud genus from height and form                      | ~cloud-types | Solves |
-| the ice-crystal (Bergeron) process in order           | ~bergeron    | Solves |
+| Question type                                | Page         | Mark   |
+| -------------------------------------------- | ------------ | ------ |
+| how many cloud droplets make one raindrop    | main         | Solves |
+| a droplet's fall speed and time to fall 1 km | main         | Solves |
+| rain rate from radar reflectivity (Z–R)      | ~radar       | Solves |
+| cloud genus from height and form             | ~cloud-types | Solves |
+| the ice-crystal (Bergeron) process in order  | ~bergeron    | Solves |
 
 - **Main — BUILD `…#2`:** `powerScale` with `second` (the droplet's and the drop's radii on one 10ⁿ
   ruler). Values: droplet radius r (μm, 1–50), raindrop radius R (mm, 0.1–3), droplets per drop N,
@@ -540,11 +540,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Ocean basins
 
-| Question type                                     | Page        | Mark   |
-| ------------------------------------------------- | ----------- | ------ |
-| depth from an echo sounder's two-way time         | main        | Solves |
-| seafloor depth from crust age (ridge subsidence)  | ~age-depth  | Solves |
-| active or passive margin                          | ~margins    | Solves |
+| Question type                                    | Page       | Mark   |
+| ------------------------------------------------ | ---------- | ------ |
+| depth from an echo sounder's two-way time        | main       | Solves |
+| seafloor depth from crust age (ridge subsidence) | ~age-depth | Solves |
+| active or passive margin                         | ~margins   | Solves |
 
 - **Main — BUILD `…#0`:** `oceanProfile` mode `profile` (depth, over). Values: two-way time t (s,
   0–15), sound speed v (m/s, 1,450–1,550; default 1,500), depth d (m, 0–11,000), the part of the floor
@@ -563,14 +563,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Seawater chemistry
 
-| Question type                                      | Page        | Mark           |
-| -------------------------------------------------- | ----------- | -------------- |
-| density of seawater from temperature and salinity  | main        | Solves (⏳ P15) |
-| freezing point of seawater                         | main        | Solves (⏳ P15) |
-| salinity from chlorinity; one ion's mass in a kg   | ~salinity   | Solves         |
-| residence time of a dissolved element              | ~residence  | Solves         |
+| Question type                                     | Page       | Mark            |
+| ------------------------------------------------- | ---------- | --------------- |
+| density of seawater from temperature and salinity | main       | Solves (⏳ P15) |
+| freezing point of seawater                        | main       | Solves (⏳ P15) |
+| salinity from chlorinity; one ion's mass in a kg  | ~salinity  | Solves          |
+| residence time of a dissolved element             | ~residence | Solves          |
 
-- **Main — BUILD `…#1`:** a linear equation of state. Picture: new `tsDiagram` (P15); interim `table`
+- **Main — BUILD `…#1` (⏳):** a linear equation of state. Picture: new `tsDiagram` (P15); interim `table`
   (T = 0, 5, 10, 15, 20 °C at the page's S). Values: temperature T (°C, −2–35), salinity S (g/kg,
   0–42), density ρ (kg/m³), freezing point T_f (°C). Relations: ρ = 1,027(1 − 1.7 × 10⁻⁴(T − 10) +
   7.6 × 10⁻⁴(S − 35)); T_f = −0.054S. Assumptions: a straight-line fit near 10 °C and 35 g/kg (cold
@@ -590,14 +590,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Currents and circulation
 
-| Question type                                         | Page        | Mark           |
-| ----------------------------------------------------- | ----------- | -------------- |
-| geostrophic current from the sea-surface slope        | main        | Solves (⏳ P14) |
-| Ekman transport and coastal upwelling                 | ~ekman      | Solves         |
-| volume transport of a current in sverdrups            | ~transport  | Solves (⏳ E1)  |
-| gyres, western intensification, the conveyor          | ~gyres      | Solves         |
+| Question type                                  | Page       | Mark            |
+| ---------------------------------------------- | ---------- | --------------- |
+| geostrophic current from the sea-surface slope | main       | Solves (⏳ P14) |
+| Ekman transport and coastal upwelling          | ~ekman     | Solves          |
+| volume transport of a current in sverdrups     | ~transport | Solves (⏳ E1)  |
+| gyres, western intensification, the conveyor   | ~gyres     | Solves          |
 
-- **Main — BUILD `…#2`:** `oceanProfile` mode `slope` (P14); interim `vectorDiagram` (the
+- **Main — BUILD `…#2` (⏳):** `oceanProfile` mode `slope` (P14); interim `vectorDiagram` (the
   pressure-gradient and Coriolis arrows, equal and opposite). Values: sea-surface rise Δη (m, 0–3),
   across Δx (km, 10–1,000), latitude φ (°, 5–90), f (s⁻¹), current speed v (m/s). Relations:
   f = 2Ω sin φ; v = (g ÷ f) Δη ÷ Δx. Assumptions: steady flow, no friction, below the wind-driven
@@ -620,12 +620,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Waves and tides
 
-| Question type                                          | Page          | Mark           |
-| ------------------------------------------------------ | ------------- | -------------- |
-| deep-water wavelength and speed from the period        | main          | Solves         |
-| tsunami speed and crossing time                        | ~tsunami      | Solves (⏳ P16) |
-| wave energy and power per metre of crest               | ~wave-energy  | Solves         |
-| why spring tides; the Sun's share of the tide          | ~tides        | Solves         |
+| Question type                                   | Page         | Mark            |
+| ----------------------------------------------- | ------------ | --------------- |
+| deep-water wavelength and speed from the period | main         | Solves          |
+| tsunami speed and crossing time                 | ~tsunami     | Solves (⏳ P16) |
+| wave energy and power per metre of crest        | ~wave-energy | Solves          |
+| why spring tides; the Sun's share of the tide   | ~tides       | Solves          |
 
 - **Main — BUILD `…#3`:** `wave` (wavelength, amplitude), with P16's `depth` when drawn. Values:
   period T (s, 1–25), wavelength L (m), speed c (m/s), water depth d (m), depth ÷ wavelength
@@ -657,11 +657,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Water budgets
 
-| Question type                                             | Page        | Mark   |
-| --------------------------------------------------------- | ----------- | ------ |
-| runoff from P, ET and storage change; volume and mean Q   | main        | Solves |
-| monthly surplus and deficit (P against PET)               | ~monthly    | Solves |
-| residence time of a lake                                  | ~residence  | Solves |
+| Question type                                           | Page       | Mark   |
+| ------------------------------------------------------- | ---------- | ------ |
+| runoff from P, ET and storage change; volume and mean Q | main       | Solves |
+| monthly surplus and deficit (P against PET)             | ~monthly   | Solves |
+| residence time of a lake                                | ~residence | Solves |
 
 - **Main — BUILD `…#0`:** `waterfall` (items: precipitation +, evapotranspiration −, runoff −; total
   the storage change), as on the pilot. Values: precipitation P, evapotranspiration ET, runoff Q,
@@ -682,14 +682,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Surface runoff
 
-| Question type                                         | Page        | Mark           |
-| ----------------------------------------------------- | ----------- | -------------- |
-| peak discharge by the rational method                 | main        | Solves (⏳ P18) |
-| storm runoff depth by the SCS curve number            | ~curve-number | Solves       |
-| channel velocity and discharge by Manning's equation  | ~manning    | Solves         |
-| lag between rain peak and flow peak (hydrograph)      | ~hydrograph | Solves         |
+| Question type                                        | Page          | Mark            |
+| ---------------------------------------------------- | ------------- | --------------- |
+| peak discharge by the rational method                | main          | Solves (⏳ P18) |
+| storm runoff depth by the SCS curve number           | ~curve-number | Solves          |
+| channel velocity and discharge by Manning's equation | ~manning      | Solves          |
+| lag between rain peak and flow peak (hydrograph)     | ~hydrograph   | Solves          |
 
-- **Main — BUILD `…#1`:** the rational method. Picture: new `catchment` (P18); interim `percentBar`
+- **Main — BUILD `…#1` (⏳):** the rational method. Picture: new `catchment` (P18); interim `percentBar`
   (C as the share that runs off). Values: runoff coefficient C (0.05–0.95), rainfall intensity i
   (mm/h, 1–300), area A (km², 0.01–10), peak discharge Q_p (m³/s). Relation: Q_p = CiA ÷ 3.6.
   Assumptions: small basins only (under about 10 km² as the page allows); rain lasts at least the
@@ -704,7 +704,7 @@ original and was worked by hand; nothing is copied from `research/` or from a te
   slope S (0.00001–0.1), velocity v (m/s), discharge Q (m³/s). Relations: A = by; P_w = b + 2y;
   R = A ÷ P_w; v = R^(2/3)S^(1/2) ÷ n; Q = Av. Assumptions: steady uniform flow in a rectangular
   channel; n from tables (0.035 for a natural stream). Example: 10 m × 2 m, n 0.035, S 0.001 →
-  R = 1.43 m, v = 1.15 m/s, Q = 22.9 m³/s; depth for a given Q is found by trial (E8).
+  R = 1.43 m, v = 1.15 m/s, Q = 22.9 m³/s; depth for a given Q is found by trial (E7).
 - **~hydrograph — BUILD (observe, `second` with its own unit):** columns hours 0–12; rows rain (mm
   each hour) and discharge (m³/s). Made-up storm: rain 2, 10, 14, 6, 1, 0 …; flow 3, 3, 5, 12, 25, 34,
   30, 22, 15, 10, 7, 5, 4. Pattern: "The flow peaks about three hours after the heaviest rain, then
@@ -713,15 +713,15 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Groundwater flow (Darcy's law)
 
-| Question type                                            | Page        | Mark           |
-| -------------------------------------------------------- | ----------- | -------------- |
-| flow through an aquifer; seepage speed; travel time      | main        | Solves (⏳ P17) |
-| hydraulic conductivity from a permeameter                | main        | Solves (⏳ P17) |
-| hydraulic head from elevation and pressure               | ~head       | Solves (⏳ P17) |
-| well yield from two observation wells (Thiem)            | ~thiem      | Solves (⏳ P17) |
-| aquifer or aquitard                                      | ~materials  | Solves         |
+| Question type                                       | Page       | Mark            |
+| --------------------------------------------------- | ---------- | --------------- |
+| flow through an aquifer; seepage speed; travel time | main       | Solves (⏳ P17) |
+| hydraulic conductivity from a permeameter           | main       | Solves (⏳ P17) |
+| hydraulic head from elevation and pressure          | ~head      | Solves (⏳ P17) |
+| well yield from two observation wells (Thiem)       | ~thiem     | Solves (⏳ P17) |
+| aquifer or aquitard                                 | ~materials | Solves          |
 
-- **Main — BUILD `…#2`:** Darcy's law. Picture: new `aquifer` mode `section` (P17); interim
+- **Main — BUILD `…#2` (⏳):** Darcy's law. Picture: new `aquifer` mode `section` (P17); interim
   `functionGraph` linear (head against distance). Values: hydraulic conductivity K (m/day, 10⁻⁶–
   1,000), head drop Δh (m), flow length L (m), gradient i (derived), area A (m²), discharge Q
   (m³/day), Darcy flux q (m/day), porosity n (0.01–0.5), seepage velocity v (m/day), travel time t
@@ -743,11 +743,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Flood frequency
 
-| Question type                                        | Page      | Mark   |
-| ---------------------------------------------------- | --------- | ------ |
-| chance of at least one T-year flood in N years       | main      | Solves |
-| return period from a flood's rank in the record      | ~weibull  | Solves |
-| the 100-year flood from the mean and SD (Gumbel)     | ~gumbel   | Solves |
+| Question type                                    | Page     | Mark   |
+| ------------------------------------------------ | -------- | ------ |
+| chance of at least one T-year flood in N years   | main     | Solves |
+| return period from a flood's rank in the record  | ~weibull | Solves |
+| the 100-year flood from the mean and SD (Gumbel) | ~gumbel  | Solves |
 
 - **Main — BUILD `…#3`:** `functionGraph` exponential (risk against N: 1 − (1 − p)^N). Values: return
   period T (years, 1.01–10,000), yearly chance p (%), years N (1–200), risk R (%). Relations: p =
@@ -772,13 +772,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Seismology
 
-| Question type                                          | Page            | Mark           |
-| ------------------------------------------------------ | --------------- | -------------- |
-| depth to a layer from a refraction crossover distance  | main            | Solves (⏳ P20) |
-| reflection time at an offset; normal moveout           | ~reflection     | Solves (⏳ P20) |
-| critical angle; refraction of a seismic ray            | ~critical-angle | Solves (⏳ P21) |
+| Question type                                         | Page            | Mark            |
+| ----------------------------------------------------- | --------------- | --------------- |
+| depth to a layer from a refraction crossover distance | main            | Solves (⏳ P20) |
+| reflection time at an offset; normal moveout          | ~reflection     | Solves (⏳ P20) |
+| critical angle; refraction of a seismic ray           | ~critical-angle | Solves (⏳ P21) |
 
-- **Main — BUILD `…#0`:** two-layer refraction. Picture: new `refraction` (P20); interim
+- **Main — BUILD `…#0` (⏳):** two-layer refraction. Picture: new `refraction` (P20); interim
   `functionGraph` two lines (direct t = x ÷ v₁, head wave t = tᵢ + x ÷ v₂). Values: upper speed v₁
   (m/s, 300–6,000), lower speed v₂ (m/s, above v₁, to 8,500), crossover distance x_c (m, 1–10,000),
   critical angle i_c (°), intercept time tᵢ (ms), depth h (m). Relations: sin i_c = v₁ ÷ v₂;
@@ -797,12 +797,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Gravity and magnetics
 
-| Question type                                            | Page            | Mark           |
-| -------------------------------------------------------- | --------------- | -------------- |
-| free-air and Bouguer corrections; the Bouguer anomaly    | main            | Solves         |
-| anomaly over a buried sphere                             | ~sphere         | Solves (⏳ P22) |
-| depth of a mountain's root (Airy isostasy)               | ~isostasy       | Solves (⏳ P22) |
-| paleolatitude from magnetic inclination                  | ~paleolatitude  | Solves (⏳ P3)  |
+| Question type                                         | Page           | Mark            |
+| ----------------------------------------------------- | -------------- | --------------- |
+| free-air and Bouguer corrections; the Bouguer anomaly | main           | Solves          |
+| anomaly over a buried sphere                          | ~sphere        | Solves (⏳ P22) |
+| depth of a mountain's root (Airy isostasy)            | ~isostasy      | Solves (⏳ P22) |
+| paleolatitude from magnetic inclination               | ~paleolatitude | Solves (⏳ P3)  |
 
 - **Main — BUILD `…#1`:** `waterfall` (items: observed minus normal gravity, + free-air correction,
   − Bouguer slab; total the Bouguer anomaly). Values: station elevation h (m, 0–6,000), slab density ρ
@@ -828,12 +828,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Heat flow
 
-| Question type                                          | Page            | Mark   |
-| ------------------------------------------------------ | --------------- | ------ |
-| heat flow from conductivity and geothermal gradient    | main            | Solves |
-| temperature at depth (no heat production)              | main            | Solves |
-| temperature at depth with radiogenic heat              | ~heat-production| Solves |
-| seafloor heat flow from its age (half-space cooling)   | ~cooling        | Solves |
+| Question type                                        | Page             | Mark   |
+| ---------------------------------------------------- | ---------------- | ------ |
+| heat flow from conductivity and geothermal gradient  | main             | Solves |
+| temperature at depth (no heat production)            | main             | Solves |
+| temperature at depth with radiogenic heat            | ~heat-production | Solves |
+| seafloor heat flow from its age (half-space cooling) | ~cooling         | Solves |
 
 - **Main — BUILD `…#2`:** `functionGraph` linear (T against depth; `invertY` of P19 when drawn).
   Values: conductivity k (W/(m·K), 0.5–6), gradient G (°C/km, 5–100), heat flow q (mW/m²), surface
@@ -845,19 +845,19 @@ original and was worked by hand; nothing is copied from `research/` or from a te
   10 km → 10 + 250 − 20 = 240 °C.
 - **~cooling — BUILD:** `functionGraph` power (q against t, p/q = −1/2). Values: age t (Myr,
   0.1–180), k (3.3), temperature drop ΔT (K, 1,300), diffusivity κ (10⁻⁶ m²/s), heat flow q
-  (mW/m²). Relation: q = kΔT ÷ √(πκt) (t in seconds, E12). Example: 50 Myr → √(π × 10⁻⁶ ×
+  (mW/m²). Relation: q = kΔT ÷ √(πκt) (t in seconds, E8). Example: 50 Myr → √(π × 10⁻⁶ ×
   1.578 × 10¹⁵) = 70,400 m, q = 60.9 mW/m².
 - **Verdict:** 3 calculators; every type Solves.
 
 #### #3 Geophysical imaging
 
-| Question type                                         | Page      | Mark           |
-| ----------------------------------------------------- | --------- | -------------- |
-| apparent resistivity from a Wenner survey             | main      | Solves (⏳ P23) |
-| GPR depth from two-way time and permittivity          | ~gpr      | Solves (⏳ P20) |
-| which method finds this target                        | ~methods  | Solves         |
+| Question type                                | Page     | Mark            |
+| -------------------------------------------- | -------- | --------------- |
+| apparent resistivity from a Wenner survey    | main     | Solves (⏳ P23) |
+| GPR depth from two-way time and permittivity | ~gpr     | Solves (⏳ P20) |
+| which method finds this target               | ~methods | Solves          |
 
-- **Main — BUILD `…#3`:** Wenner resistivity. Picture: new `electrodeArray` (P23); interim `table`
+- **Main — BUILD `…#3` (⏳):** Wenner resistivity. Picture: new `electrodeArray` (P23); interim `table`
   (a = 1, 2, 5, 10, 20 m at the page's V ÷ I). Values: spacing a (m, 0.1–500), voltage V (V),
   current I (A), resistance V ÷ I (Ω), apparent resistivity ρ_a (Ω·m). Relations: R = V ÷ I;
   ρ_a = 2πaR. Assumptions: four electrodes evenly spaced in a line, current through the outer two;
@@ -881,14 +881,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Earth–sun relationships
 
-| Question type                                         | Page          | Mark           |
-| ----------------------------------------------------- | ------------- | -------------- |
-| noon sun angle at a latitude on a date                | main          | Solves (⏳ P3)  |
-| day length at a latitude on a date                    | main          | Solves (⏳ P3)  |
-| the Sun's declination on a day of the year            | ~declination  | Solves         |
-| daily sunlight at the top of the atmosphere           | ~insolation   | Solves (⏳ P3)  |
+| Question type                               | Page         | Mark           |
+| ------------------------------------------- | ------------ | -------------- |
+| noon sun angle at a latitude on a date      | main         | Solves (⏳ P3) |
+| day length at a latitude on a date          | main         | Solves (⏳ P3) |
+| the Sun's declination on a day of the year  | ~declination | Solves         |
+| daily sunlight at the top of the atmosphere | ~insolation  | Solves (⏳ P3) |
 
-- **Main — BUILD `…#0`:** `globe` mode `sun` (P3); interim `functionGraph` (day length against
+- **Main — BUILD `…#0` (⏳):** `globe` mode `sun` (P3); interim `functionGraph` (day length against
   latitude at the page's δ). Values: latitude φ (°, −90–90), declination δ (°, −23.44–23.44), noon
   sun angle (°), sunrise hour angle H (°), day length (h). Relations: noon angle = 90 − |φ − δ|;
   cos H = −tan φ tan δ; day = 2H ÷ 15. Assumptions: δ is the latitude where the Sun is overhead at
@@ -906,11 +906,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Climate classification
 
-| Question type                                         | Page         | Mark   |
-| ----------------------------------------------------- | ------------ | ------ |
-| Köppen group from monthly temperatures and rain       | main         | Solves |
-| arid (B) or not; steppe or desert                     | ~arid        | Solves |
-| read a climograph and name its climate                | ~climograph  | Solves |
+| Question type                                   | Page        | Mark   |
+| ----------------------------------------------- | ----------- | ------ |
+| Köppen group from monthly temperatures and rain | main        | Solves |
+| arid (B) or not; steppe or desert               | ~arid       | Solves |
+| read a climograph and name its climate          | ~climograph | Solves |
 
 - **Main — BUILD `…#1` (sort, `pickBar`):** bins A Tropical, B Dry, C Temperate, D Continental,
   E Polar; `intro` gives the rules (A: coldest month 18 °C or more; C: coldest between 0 and 18 °C;
@@ -931,13 +931,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Landforms
 
-| Question type                                        | Page       | Mark           |
-| ---------------------------------------------------- | ---------- | -------------- |
-| slope and gradient along a line on a contour map     | main       | Solves (⏳ P24) |
-| drainage density and bifurcation ratio of a basin    | ~drainage  | Solves         |
-| landform from its shape and process                  | ~landforms | Solves         |
+| Question type                                     | Page       | Mark            |
+| ------------------------------------------------- | ---------- | --------------- |
+| slope and gradient along a line on a contour map  | main       | Solves (⏳ P24) |
+| drainage density and bifurcation ratio of a basin | ~drainage  | Solves          |
+| landform from its shape and process               | ~landforms | Solves          |
 
-- **Main — BUILD `…#2`:** a contour-map profile. Picture: new `contourMap` (P24); interim
+- **Main — BUILD `…#2` (⏳):** a contour-map profile. Picture: new `contourMap` (P24); interim
   `triangleSolver` (rise over run, the angle). Values: contour interval CI (m, 1–500), intervals
   crossed n (whole, 0–100), rise (m), map distance (cm, 0.1–100), scale denominator (whole,
   1,000–10,000,000), ground distance (m), gradient (%), slope angle (°). Relations: rise = n × CI;
@@ -956,12 +956,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Biogeography
 
-| Question type                                         | Page           | Mark   |
-| ----------------------------------------------------- | -------------- | ------ |
-| species expected on an island of a given area         | main           | Solves |
-| share of species lost when habitat shrinks            | ~habitat-loss  | Solves |
-| treeline elevation from sea-level temperature         | ~treeline      | Solves |
-| biome from its climate                                | ~biomes        | Solves |
+| Question type                                 | Page          | Mark   |
+| --------------------------------------------- | ------------- | ------ |
+| species expected on an island of a given area | main          | Solves |
+| share of species lost when habitat shrinks    | ~habitat-loss | Solves |
+| treeline elevation from sea-level temperature | ~treeline     | Solves |
+| biome from its climate                        | ~biomes       | Solves |
 
 - **Main — BUILD `…#3`:** `functionGraph` power (S against A; `logX`/`logY` of P19 later). Values:
   constant c (0.1–1,000), exponent z (0.1–0.5; islands near 0.25–0.35), area A (km², 0.001–10⁷),
@@ -990,14 +990,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Population and migration (pilot)
 
-| Question type                                          | Page         | Mark           |
-| ------------------------------------------------------ | ------------ | -------------- |
-| natural increase, net migration, population change     | main (pilot) | Solves         |
-| CBR, CDR, RNI; doubling time by the rule of 70         | ~rates       | Solves         |
-| population after t years; exact doubling time         | ~doubling    | Solves         |
-| which city draws more migrants (gravity model)         | ~gravity     | Solves         |
-| dependency ratio from age groups                       | ~dependency  | Solves (⏳ P29) |
-| stage of the demographic transition                    | ~transition  | Solves         |
+| Question type                                      | Page         | Mark            |
+| -------------------------------------------------- | ------------ | --------------- |
+| natural increase, net migration, population change | main (pilot) | Solves          |
+| CBR, CDR, RNI; doubling time by the rule of 70     | ~rates       | Solves          |
+| population after t years; exact doubling time      | ~doubling    | Solves          |
+| which city draws more migrants (gravity model)     | ~gravity     | Solves          |
+| dependency ratio from age groups                   | ~dependency  | Solves (⏳ P29) |
+| stage of the demographic transition                | ~transition  | Solves          |
 
 - **Main — REVIEW the pilot `…#0`:** trim to 9 values as in Decisions (P₀, B, D, I, E, N, M, ΔP,
   RNI = N ÷ P₀ × 100), `waterfall` unchanged. Its use line: "Use this for 'A city of 500,000 had 6,000
@@ -1025,12 +1025,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Urbanization
 
-| Question type                                          | Page              | Mark   |
-| ------------------------------------------------------ | ----------------- | ------ |
-| expected size of the nth city (rank–size rule)         | main              | Solves |
-| density at a distance from the centre                  | ~density-gradient | Solves |
-| a city's yearly growth rate; its doubling time         | ~growth-rate      | Solves |
-| concentric, sector or multiple-nuclei model            | ~models           | Solves |
+| Question type                                  | Page              | Mark   |
+| ---------------------------------------------- | ----------------- | ------ |
+| expected size of the nth city (rank–size rule) | main              | Solves |
+| density at a distance from the centre          | ~density-gradient | Solves |
+| a city's yearly growth rate; its doubling time | ~growth-rate      | Solves |
+| concentric, sector or multiple-nuclei model    | ~models           | Solves |
 
 - **Main — BUILD `…#1`:** `bars` (expected and actual size, the largest city beside them). Values:
   largest city P₁ (people), rank n (whole, 1–100), expected P_n, actual P_n, actual ÷ expected.
@@ -1052,12 +1052,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Economic geography
 
-| Question type                                         | Page       | Mark   |
-| ----------------------------------------------------- | ---------- | ------ |
-| location quotient of an industry                      | main       | Solves |
-| land rent at a distance from market (von Thünen)      | ~bid-rent  | Solves |
-| least-cost site: at the mine or the market (Weber)    | ~weber     | Solves |
-| economic sector of a job                              | ~sectors   | Solves |
+| Question type                                      | Page      | Mark   |
+| -------------------------------------------------- | --------- | ------ |
+| location quotient of an industry                   | main      | Solves |
+| land rent at a distance from market (von Thünen)   | ~bid-rent | Solves |
+| least-cost site: at the mine or the market (Weber) | ~weber    | Solves |
+| economic sector of a job                           | ~sectors  | Solves |
 
 - **Main — BUILD `…#2`:** `percentBar` with `second` (the local share as a band, the national share
   dashed). Values: local jobs in the industry eᵢ, all local jobs e, national jobs in it Eᵢ, all
@@ -1082,10 +1082,10 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Cultural landscapes
 
-| Question type                                          | Page        | Mark   |
-| ------------------------------------------------------ | ----------- | ------ |
-| type of cultural diffusion from an example             | main        | Solves |
-| language or religious diversity of a country           | ~diversity  | Solves |
+| Question type                                | Page       | Mark   |
+| -------------------------------------------- | ---------- | ------ |
+| type of cultural diffusion from an example   | main       | Solves |
+| language or religious diversity of a country | ~diversity | Solves |
 
 - **Main — BUILD `…#3` (sort):** bins Relocation, Contagious, Hierarchical, Stimulus diffusion.
   Cards: emigrants bring their cuisine to a new country; a song spreads friend to friend online;
@@ -1107,13 +1107,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Map projections
 
-| Question type                                          | Page          | Mark           |
-| ------------------------------------------------------ | ------------- | -------------- |
-| Mercator scale factor and area distortion at φ         | main          | Solves (⏳ P28) |
-| where a parallel is drawn (Mercator, equal-area)       | main, ~equal-area | Solves (⏳ P28) |
-| conformal, equal-area, equidistant or compromise       | ~properties   | Solves         |
+| Question type                                    | Page              | Mark            |
+| ------------------------------------------------ | ----------------- | --------------- |
+| Mercator scale factor and area distortion at φ   | main              | Solves (⏳ P28) |
+| where a parallel is drawn (Mercator, equal-area) | main, ~equal-area | Solves (⏳ P28) |
+| conformal, equal-area, equidistant or compromise | ~properties       | Solves          |
 
-- **Main — BUILD `…#0`:** Mercator. Picture: new `projection` (P28) with a Tissot circle at φ;
+- **Main — BUILD `…#0` (⏳):** Mercator. Picture: new `projection` (P28) with a Tissot circle at φ;
   interim `table` (φ = 0, 30, 45, 60, 75° → k, area, y). Values: latitude φ (°, −85–85), scale factor
   k, area factor, globe radius R (cm, 1–100), map height of the parallel y (cm). Relations: k =
   1 ÷ cos φ; area = k²; y = R ln tan(45° + φ ÷ 2). Assumptions: a sphere; conformal, so small shapes
@@ -1129,11 +1129,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Scale and coordinate systems
 
-| Question type                                         | Page           | Mark          |
-| ----------------------------------------------------- | -------------- | ------------- |
-| ground distance from a map distance and scale         | main           | Solves        |
-| great-circle distance between two places              | ~great-circle  | Solves (⏳ P3) |
-| degrees–minutes–seconds to decimal degrees            | ~dms           | Solves        |
+| Question type                                 | Page          | Mark           |
+| --------------------------------------------- | ------------- | -------------- |
+| ground distance from a map distance and scale | main          | Solves         |
+| great-circle distance between two places      | ~great-circle | Solves (⏳ P3) |
+| degrees–minutes–seconds to decimal degrees    | ~dms          | Solves         |
 
 - **Main — BUILD `…#1`:** `doubleNumberLine` (map cm over ground m or km). Values: map distance
   (cm, 0.01–200), scale denominator (whole, 100–100,000,000), ground distance (m, unit menu km, mi).
@@ -1152,12 +1152,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Thematic mapping
 
-| Question type                                        | Page           | Mark   |
-| ---------------------------------------------------- | -------------- | ------ |
-| equal-interval class breaks; a value's class         | main           | Solves |
-| rates, not counts, on a choropleth                   | ~normalize     | Solves |
-| proportional-symbol radius                           | ~proportional  | Solves |
-| best map type for a data set                         | ~map-types     | Solves |
+| Question type                                | Page          | Mark   |
+| -------------------------------------------- | ------------- | ------ |
+| equal-interval class breaks; a value's class | main          | Solves |
+| rates, not counts, on a choropleth           | ~normalize    | Solves |
+| proportional-symbol radius                   | ~proportional | Solves |
+| best map type for a data set                 | ~map-types    | Solves |
 
 - **Main — BUILD `…#2`:** `histogram` (the data's bins at the class breaks). Values: minimum, maximum,
   classes k (whole, 2–9), class width w, a value v, its class (derived, `floor((v − min) ÷ w) + 1`).
@@ -1178,10 +1178,10 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Map design
 
-| Question type                                         | Page               | Mark   |
-| ----------------------------------------------------- | ------------------ | ------ |
-| color scheme for a data set                           | main               | Solves |
-| visual variable for nominal or ordered data           | ~visual-variables  | Solves |
+| Question type                               | Page              | Mark   |
+| ------------------------------------------- | ----------------- | ------ |
+| color scheme for a data set                 | main              | Solves |
+| visual variable for nominal or ordered data | ~visual-variables | Solves |
 
 - **Main — BUILD `…#3` (sort):** bins Sequential, Diverging, Qualitative. Cards: elevation above sea
   level; percent change in population (+ and −); land-use classes; temperature anomaly from the
@@ -1200,13 +1200,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Vector and raster data
 
-| Question type                                           | Page          | Mark           |
-| ------------------------------------------------------- | ------------- | -------------- |
-| rows, columns, cells and file size of a raster          | main          | Solves (⏳ P25) |
-| vector or raster for a data set                         | ~data-model   | Solves         |
-| point, line or polygon for a feature at a scale         | ~geometry     | Solves         |
+| Question type                                   | Page        | Mark            |
+| ----------------------------------------------- | ----------- | --------------- |
+| rows, columns, cells and file size of a raster  | main        | Solves (⏳ P25) |
+| vector or raster for a data set                 | ~data-model | Solves          |
+| point, line or polygon for a feature at a scale | ~geometry   | Solves          |
 
-- **Main — BUILD `…#0`:** raster size. Picture: new `rasterGrid` (P25); interim `rectangle` with
+- **Main — BUILD `…#0` (⏳):** raster size. Picture: new `rasterGrid` (P25); interim `rectangle` with
   `grid` at a coarse cell. Values: extent width and height (km, 0.01–20,000), cell size c (m, 0.1–
   100,000), columns, rows, cells, bytes per cell (allowed 1, 2, 4, 8), file size (MB). Relations:
   columns = 1,000 × width ÷ c; rows likewise; cells = columns × rows; size = cells × bytes ÷ 10⁶.
@@ -1223,13 +1223,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Spatial analysis
 
-| Question type                                         | Page       | Mark           |
-| ----------------------------------------------------- | ---------- | -------------- |
-| area of a polygon from its vertices                   | main       | Solves (⏳ P26) |
-| area inside a buffer round a line or point            | ~buffer    | Solves (⏳ P26) |
-| straight-line and grid (Manhattan) distance           | ~distance  | Solves         |
+| Question type                               | Page      | Mark            |
+| ------------------------------------------- | --------- | --------------- |
+| area of a polygon from its vertices         | main      | Solves (⏳ P26) |
+| area inside a buffer round a line or point  | ~buffer   | Solves (⏳ P26) |
+| straight-line and grid (Manhattan) distance | ~distance | Solves          |
 
-- **Main — BUILD `…#1`:** the shoelace formula. Picture: `coordinatePlane` option `polygon` (P26);
+- **Main — BUILD `…#1` (⏳):** the shoelace formula. Picture: `coordinatePlane` option `polygon` (P26);
   interim `coordinatePlane` `plot` of the four points. Values: x₁, y₁ … x₄, y₄ (m, −10⁶–10⁶), area
   (m², ha by the menu). Relation: area = ½|x₁y₂ − x₂y₁ + x₂y₃ − x₃y₂ + x₃y₄ − x₄y₃ + x₄y₁ − x₁y₄|.
   Assumptions: vertices in order round the edge, which doesn't cross itself; projected coordinates
@@ -1245,12 +1245,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Geoprocessing
 
-| Question type                                         | Page             | Mark           |
-| ----------------------------------------------------- | ---------------- | -------------- |
-| slope and aspect of a DEM cell                        | main             | Solves (⏳ P25) |
-| weighted-overlay suitability score                    | ~weighted-overlay| Solves         |
+| Question type                      | Page              | Mark            |
+| ---------------------------------- | ----------------- | --------------- |
+| slope and aspect of a DEM cell     | main              | Solves (⏳ P25) |
+| weighted-overlay suitability score | ~weighted-overlay | Solves          |
 
-- **Main — BUILD `…#2`:** slope from a 3 × 3 window. Picture: `rasterGrid` mode `window` (P25);
+- **Main — BUILD `…#2` (⏳):** slope from a 3 × 3 window. Picture: `rasterGrid` mode `window` (P25);
   interim `vectorDiagram` (the gradient's east and north parts). Values: cell size c (m), elevations
   east, west, north and south of the cell (m), east gradient, north gradient, slope (°), slope (%),
   aspect (° from north). Relations: east = (z_E − z_W) ÷ 2c; north = (z_N − z_S) ÷ 2c; slope =
@@ -1264,13 +1264,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Spatial statistics
 
-| Question type                                         | Page          | Mark           |
-| ----------------------------------------------------- | ------------- | -------------- |
-| nearest-neighbor index and its z-score                | main          | Solves (⏳ P27) |
-| clustering from quadrat counts (variance ÷ mean)      | ~quadrat      | Solves         |
-| mean center and standard distance                     | ~mean-center  | Solves (⏳ P26) |
+| Question type                                    | Page         | Mark            |
+| ------------------------------------------------ | ------------ | --------------- |
+| nearest-neighbor index and its z-score           | main         | Solves (⏳ P27) |
+| clustering from quadrat counts (variance ÷ mean) | ~quadrat     | Solves          |
+| mean center and standard distance                | ~mean-center | Solves (⏳ P26) |
 
-- **Main — BUILD `…#3`:** nearest-neighbor analysis. Picture: `sample` option `pattern` (P27); interim
+- **Main — BUILD `…#3` (⏳):** nearest-neighbor analysis. Picture: `sample` option `pattern` (P27); interim
   `normalCurve` (the z-score). Values: points n (whole, 2–10,000), area A (km²), observed mean
   distance d̄ (km), expected mean distance (km), index R, standard error, z. Relations: expected =
   0.5 ÷ √(n ÷ A); R = d̄ ÷ expected; SE = 0.26136 ÷ √(n² ÷ A); z = (d̄ − expected) ÷ SE.
@@ -1294,13 +1294,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Energy balance
 
-| Question type                                          | Page    | Mark           |
-| ------------------------------------------------------ | ------- | -------------- |
-| surface temperature with a one-layer greenhouse        | main    | Solves (⏳ P13) |
-| peak wavelength of the Sun's and Earth's radiation     | ~wien   | Solves         |
-| balance temperature with no greenhouse                 | Refresh `s.12.climate-systems~energy-balance` | cross-listed |
+| Question type                                      | Page                                          | Mark            |
+| -------------------------------------------------- | --------------------------------------------- | --------------- |
+| surface temperature with a one-layer greenhouse    | main                                          | Solves (⏳ P13) |
+| peak wavelength of the Sun's and Earth's radiation | ~wien                                         | Solves          |
+| balance temperature with no greenhouse             | Refresh `s.12.climate-systems~energy-balance` | cross-listed    |
 
-- **Main — BUILD `…#0`:** `atmosphereLayers` mode `balance` with the `layer` option (P13; until then
+- **Main — BUILD `…#0` (⏳):** `atmosphereLayers` mode `balance` with the `layer` option (P13; until then
   the mode draws Tₑ only). Values: sunlight S (W/m², 0–3,000), albedo α (0–1), absorbed F (W/m²),
   balance temperature Tₑ (K), layer emissivity ε (0–1), surface temperature T_s (K). Relations:
   F = S(1 − α) ÷ 4; Tₑ = (F ÷ σ)^(1/4); T_s = Tₑ(2 ÷ (2 − ε))^(1/4). Assumptions: one atmospheric
@@ -1314,13 +1314,13 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 General circulation
 
-| Question type                                            | Page        | Mark          |
-| -------------------------------------------------------- | ----------- | ------------- |
-| wind of air carried poleward keeping angular momentum    | main        | Solves (⏳ P3) |
-| Coriolis parameter; inertial circle radius and period    | ~coriolis   | Solves        |
-| which cell holds the trades, westerlies, ITCZ            | ~cells      | Solves        |
+| Question type                                         | Page      | Mark           |
+| ----------------------------------------------------- | --------- | -------------- |
+| wind of air carried poleward keeping angular momentum | main      | Solves (⏳ P3) |
+| Coriolis parameter; inertial circle radius and period | ~coriolis | Solves         |
+| which cell holds the trades, westerlies, ITCZ         | ~cells    | Solves         |
 
-- **Main — BUILD `…#1`:** `globe` mode `momentum` (P3); interim `table` (φ = 10, 20, 30, 40° → u).
+- **Main — BUILD `…#1` (⏳):** `globe` mode `momentum` (P3); interim `table` (φ = 10, 20, 30, 40° → u).
   Values: latitude φ (°, 0–60), Earth's rim speed ΩR (464.6 m/s), eastward wind u (m/s). Relation:
   u = ΩR sin²φ ÷ cos φ. Assumptions: air leaves the equator at rest with the ground and keeps its
   angular momentum, so it turns east as its distance from the axis shrinks; real Hadley flow loses
@@ -1337,11 +1337,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Climate variability
 
-| Question type                                            | Page       | Mark          |
-| -------------------------------------------------------- | ---------- | ------------- |
-| El Niño or La Niña from the Niño-3.4 index               | main       | Solves        |
-| which orbital cycle (Milankovitch) from its description  | ~orbital   | Solves        |
-| warming trend per decade from yearly anomalies           | ~trend     | Solves (⏳ E2) |
+| Question type                                           | Page     | Mark           |
+| ------------------------------------------------------- | -------- | -------------- |
+| El Niño or La Niña from the Niño-3.4 index              | main     | Solves         |
+| which orbital cycle (Milankovitch) from its description | ~orbital | Solves         |
+| warming trend per decade from yearly anomalies          | ~trend   | Solves (⏳ E2) |
 
 - **Main — BUILD `…#2` (observe, `min` −2, `guides` at +0.5 and −0.5 named "El Niño threshold",
   "La Niña threshold"):** columns are overlapping three-month seasons (JJA … FMA), the Niño-3.4 sea
@@ -1359,12 +1359,12 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Climate models
 
-| Question type                                           | Page        | Mark   |
-| ------------------------------------------------------- | ----------- | ------ |
-| CO₂ forcing and equilibrium warming                     | main        | Solves |
-| warming after t years of a slow response                | ~response   | Solves |
-| warming with feedbacks from the no-feedback warming     | ~feedback   | Solves |
-| cost of a finer model grid                              | ~grid       | Solves |
+| Question type                                       | Page      | Mark   |
+| --------------------------------------------------- | --------- | ------ |
+| CO₂ forcing and equilibrium warming                 | main      | Solves |
+| warming after t years of a slow response            | ~response | Solves |
+| warming with feedbacks from the no-feedback warming | ~feedback | Solves |
+| cost of a finer model grid                          | ~grid     | Solves |
 
 - **Main — BUILD `…#3`:** `functionGraph` log (ΔF against C). Values: starting CO₂ C₀ (ppm, 180–
   2,000; 280), CO₂ C (ppm), forcing ΔF (W/m²), sensitivity parameter λ (K per W/m², 0.3–1.5; 0.8),
@@ -1393,14 +1393,14 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #0 Electromagnetic radiation and sensors
 
-| Question type                                         | Page          | Mark           |
-| ----------------------------------------------------- | ------------- | -------------- |
-| ground pixel size and swath from altitude and angles  | main          | Solves (⏳ P30) |
-| frequency and photon energy of a band                 | ~wavelength   | Solves         |
-| orbital period and orbits a day of a satellite        | ~orbit        | Solves         |
-| spatial, spectral, radiometric or temporal resolution | ~resolutions  | Solves         |
+| Question type                                         | Page         | Mark            |
+| ----------------------------------------------------- | ------------ | --------------- |
+| ground pixel size and swath from altitude and angles  | main         | Solves (⏳ P30) |
+| frequency and photon energy of a band                 | ~wavelength  | Solves          |
+| orbital period and orbits a day of a satellite        | ~orbit       | Solves          |
+| spatial, spectral, radiometric or temporal resolution | ~resolutions | Solves          |
 
-- **Main — BUILD `…#0`:** sensor geometry. Picture: new `sensorGeometry` (P30); interim
+- **Main — BUILD `…#0` (⏳):** sensor geometry. Picture: new `sensorGeometry` (P30); interim
   `triangleSolver` (half the swath over the altitude). Values: altitude H (km, 100–40,000),
   instantaneous field of view IFOV (μrad, 1–10,000), ground pixel (m), field of view FOV (°, 0.1–
   120), swath (km). Relations: pixel = 1,000 H × IFOV × 10⁻⁶ (H in km gives m); swath = 2H tan(FOV ÷ 2).
@@ -1420,11 +1420,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #1 Image processing
 
-| Question type                                          | Page         | Mark           |
-| ------------------------------------------------------ | ------------ | -------------- |
-| linear contrast stretch of a pixel                     | main         | Solves         |
-| radiance and top-of-atmosphere reflectance from DN     | ~reflectance | Solves         |
-| NDVI of a pixel                                        | ~ndvi        | Solves (⏳ P31) |
+| Question type                                      | Page         | Mark            |
+| -------------------------------------------------- | ------------ | --------------- |
+| linear contrast stretch of a pixel                 | main         | Solves          |
+| radiance and top-of-atmosphere reflectance from DN | ~reflectance | Solves          |
+| NDVI of a pixel                                    | ~ndvi        | Solves (⏳ P31) |
 
 - **Main — BUILD `…#1`:** `functionGraph` linear (output against input brightness, clipped at 0 and
   255). Values: pixel value DN (0–255), image minimum and maximum (DN), stretched value. Relation:
@@ -1442,11 +1442,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #2 Classification
 
-| Question type                                            | Page           | Mark           |
-| -------------------------------------------------------- | -------------- | -------------- |
-| overall, producer's and user's accuracy; kappa           | main           | Solves         |
-| minimum-distance class of a pixel                        | ~min-distance  | Solves (⏳ P32) |
-| supervised or unsupervised step                          | ~methods       | Solves         |
+| Question type                                  | Page          | Mark            |
+| ---------------------------------------------- | ------------- | --------------- |
+| overall, producer's and user's accuracy; kappa | main          | Solves          |
+| minimum-distance class of a pixel              | ~min-distance | Solves (⏳ P32) |
+| supervised or unsupervised step                | ~methods      | Solves          |
 
 - **Main — BUILD `…#2`:** `table` `twoWay` (rows: classified forest, non-forest; columns: reference;
   the diagonal lit). Values: the four counts (whole), total N, overall accuracy OA (%), producer's
@@ -1466,10 +1466,10 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Change detection
 
-| Question type                                         | Page          | Mark   |
-| ----------------------------------------------------- | ------------- | ------ |
-| burn severity from pre- and post-fire NBR (dNBR)      | main          | Solves |
-| percent and yearly rate of area change                | ~area-change  | Solves |
+| Question type                                    | Page         | Mark   |
+| ------------------------------------------------ | ------------ | ------ |
+| burn severity from pre- and post-fire NBR (dNBR) | main         | Solves |
+| percent and yearly rate of area change           | ~area-change | Solves |
 
 - **Main — BUILD `…#3`:** `bars` (NBR before, after and the difference; P31's `spectralCurve` beside
   it later). Values: NIR and SWIR before, NIR and SWIR after (0–1), NBR before, NBR after, dNBR.
@@ -1644,3 +1644,142 @@ picture reads is a variable id or a number (`NumOrVar`), as in `typesHsl.ts`.
     sort ships now). Earth from the side with the Hadley, Ferrel and polar cells, the ITCZ, the
     subtropical highs and the surface winds; a scene lights a cell or a wind. Must stay true: cell
     edges at 0°, 30°, 60° and 90°; trades blow toward the equator, westerlies poleward.
+
+## Part 4. Research to do (for the research chat)
+
+Everything found is reference only, whatever its licence: no problem, text, number or figure goes
+into a page (`research/textbooks/README.md`). Follow the K–12 collection's rules
+(`research/questions/SOURCES.md`): read robots.txt first, one request a second, the research
+User-Agent, quote each licence with its URL, record `retrieved`. Licences marked "checked" were
+confirmed for this plan by a web search on 2026-10-02; the rest are to confirm. No robots.txt was read
+for this plan. OpenStax has no geology, meteorology or geography book.
+
+### Textbooks (tables of contents, worked-example types, typical numbers, notation)
+
+| Title (author)                                                                                                                                                                        | URL                                                                               | Licence                                          | Courses and topics                                                     | Extract                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Physical Geology 2e (Earle, BCcampus)                                                                                                                                                 | https://opentextbc.ca/physicalgeology2ed/                                         | CC BY 4.0 (checked)                              | Physical Geology all; Hist. Geology #0–1; Hydrology #2                 | chapter list; end-of-chapter exercises (types, number sizes); the slope, stream, quake data |
+| An Introduction to Geology (Johnson, Affolter et al., OpenGeology)                                                                                                                    | https://opengeology.org/textbook/                                                 | CC BY-NC-SA 4.0 (to confirm)                     | Physical Geology                                                       | topic order; its rock and mineral tables (names only)                                       |
+| Historical Geology (OpenGeology)                                                                                                                                                      | https://opengeology.org/historicalgeology/                                        | CC BY-NC-SA 4.0 (to confirm)                     | Historical Geology all                                                 | dating principles, isotope systems and constants used, eon/era boundaries                   |
+| Mineralogy (Perkins, OpenGeology)                                                                                                                                                     | https://opengeology.org/Mineralogy/                                               | CC BY-NC-SA 4.0 (to confirm)                     | Mineralogy all                                                         | formula recalculation method, Bragg and d-spacing examples, optics terms                    |
+| Practical Meteorology (Stull, UBC)                                                                                                                                                    | https://www.eoas.ubc.ca/books/Practical_Meteorology/                              | CC BY-NC-SA 4.0 (checked)                        | Meteorology all; Climatology #0–1; Remote Sensing radar                | equations as written (θ, LCL, e_s, V_g), constants, its many numerical exercises' types     |
+| Introduction to Oceanography (Webb, Roger Williams Univ.)                                                                                                                             | https://rwu.pressbooks.pub/webboceanography/                                      | CC BY 4.0 (checked)                              | Oceanography all                                                       | chapter list, salinity and density conventions, wave and tide numbers                       |
+| Groundwater (Freeze and Cherry 1979, Groundwater Project)                                                                                                                             | https://fc79.gw-project.org/english/                                              | CC BY-NC-ND 4.0 (checked)                        | Hydrology #2                                                           | Darcy, head, Thiem notation; typical K and porosity tables (ranges only)                    |
+| Basic Ground-Water Hydrology (Heath, USGS WSP 2220)                                                                                                                                   | https://pubs.usgs.gov/publication/wsp2220                                         | public domain (US government; confirm)           | Hydrology #2                                                           | the short-topic order, units (ft/day and m/day), worked numbers' sizes                      |
+| Guidelines for Flood Flow Frequency (Bulletin 17C, USGS T&M 4-B5)                                                                                                                     | https://pubs.usgs.gov/publication/tm4B5                                           | public domain (confirm)                          | Hydrology #3                                                           | return period and plotting-position wording                                                 |
+| An open hydrology text (e.g. Margulis, Introduction to Hydrology)                                                                                                                     | search LibreTexts Geosciences and the author's page                               | to confirm                                       | Hydrology #0–1, #3                                                     | water budget, rational method, SCS-CN, Manning examples                                     |
+| Geophysics for Practicing Geoscientists (UBC GIF)                                                                                                                                     | https://gpg.geosci.xyz/                                                           | CC BY 4.0 (to confirm)                           | Geophysics #0, #1, #3                                                  | survey geometry, the Wenner and Bouguer formulas as written, typical values                 |
+| Physical Geography and Natural Disasters (Dastrup, SLCC)                                                                                                                              | https://slcc.pressbooks.pub/physicalgeography/                                    | CC BY-NC-SA 4.0 (checked)                        | Physical Geography all; Climatology                                    | Earth–sun, Köppen, landform and biome chapters' order and terms                             |
+| Introduction to Human Geography (Dastrup)                                                                                                                                             | https://pressbooks.pub/humangeography/                                            | CC BY 4.0 (checked; an SLCC copy is CC BY-NC-SA) | Human Geography all                                                    | population measures, models named (Burgess, von Thünen, Weber), diffusion terms             |
+| Map Projections — A Working Manual (Snyder, USGS PP 1395)                                                                                                                             | https://pubs.usgs.gov/publication/pp1395                                          | public domain (confirm)                          | Cartography #0–1                                                       | projection formulas and their notation (φ, λ, k, h)                                         |
+| Essentials of Geographic Information Systems (Campbell and Shin)                                                                                                                      | https://saylordotorg.github.io/text_essentials-of-geographic-information-systems/ | CC BY-NC-SA 3.0 (to confirm)                     | GIS #0–2; Cartography #2–3                                             | data models, classification methods, geoprocessing tool list                                |
+| The Nature of Geographic Information (DiBiase, Penn State)                                                                                                                            | https://www.e-education.psu.edu/natureofgeoinfo/                                  | CC BY-NC-SA (to confirm)                         | Cartography, GIS, Remote Sensing                                       | scale, coordinate systems, raster resolution examples                                       |
+| Penn State GEOG 486, 586, 883 course notes                                                                                                                                            | https://www.e-education.psu.edu/                                                  | CC BY-NC-SA 4.0 (to confirm per course)          | Cartography #2–3; GIS #3; Remote Sensing #1–3                          | map design rules, nearest-neighbor and quadrat methods, accuracy assessment                 |
+| Introduction to Climate Science (Schmittner, Oregon State)                                                                                                                            | https://open.oregonstate.education/climatescience/                                | CC BY-NC 4.0 (checked)                           | Climatology all                                                        | the one-layer model, forcing and sensitivity numbers, variability chapter                   |
+| Fundamentals of Remote Sensing (Natural Resources Canada)                                                                                                                             | https://natural-resources.canada.ca/ (tutorial)                                   | Open Government Licence – Canada (to confirm)    | Remote Sensing #0–2                                                    | sensor and resolution terms, image-processing order                                         |
+| Landsat 8–9 Data Users Handbook (USGS)                                                                                                                                                | https://www.usgs.gov/landsat-missions                                             | public domain (confirm)                          | Remote Sensing #0–1, #3                                                | radiance and reflectance equations as written, band wavelengths, orbit numbers              |
+| MIT OpenCourseWare notes: 12.001, 12.003, 12.201, 12.510, 1.72, 11.205 (numbers to confirm)                                                                                           | https://ocw.mit.edu/                                                              | CC BY-NC-SA 4.0 (to confirm)                     | Physical Geology, Meteorology, Climatology, Geophysics, Hydrology, GIS | lecture topic order; problem-set types (also under questions)                               |
+| Commercial texts, titles only (Tarbuck and Lutgens; Wicander and Monroe; Klein and Dutrow; Ahrens; Garrison; Dingman; Lowrie; Christopherson; Rubenstein; Slocum; Bolstad; Lillesand) | publishers' pages                                                                 | all rights reserved: titles only                 | every course                                                           | chapter titles and order, to check coverage (as `toc/*.json` with `"content": "titles"`)    |
+
+### Questions (released or openly licensed; record per question: course id, topic index, the type
+
+of question in our words, where the unknown sits, the sizes of its numbers as a range, the picture
+it shows, licence, URL, retrieved date)
+
+| Source                                                                                                                     | URL                                                                                                               | Licence and notes                                           | Courses                                       | Target |
+| -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------- | ------ |
+| Earle, Physical Geology 2e: exercises and chapter reviews (answers in the appendix)                                        | https://opentextbc.ca/physicalgeology2ed/                                                                         | CC BY 4.0                                                   | Physical Geology, Hist. Geology, Hydrology #2 | 60     |
+| Stull, Practical Meteorology: end-of-chapter exercises                                                                     | https://www.eoas.ubc.ca/books/Practical_Meteorology/                                                              | CC BY-NC-SA 4.0                                             | Meteorology, Climatology #0–1                 | 60     |
+| Webb, Introduction to Oceanography: review questions                                                                       | https://rwu.pressbooks.pub/webboceanography/                                                                      | CC BY 4.0                                                   | Oceanography                                  | 30     |
+| Schmittner, Introduction to Climate Science: questions                                                                     | https://open.oregonstate.education/climatescience/                                                                | CC BY-NC 4.0                                                | Climatology                                   | 25     |
+| Dastrup (both books): review questions                                                                                     | as above                                                                                                          | CC BY / CC BY-NC-SA                                         | Physical and Human Geography                  | 40     |
+| MIT OCW problem sets and exams (geology, atmosphere–ocean dynamics, seismology, geophysics, groundwater, spatial analysis) | https://ocw.mit.edu/                                                                                              | CC BY-NC-SA 4.0; check robots.txt                           | Geophysics, Hydrology, Meteorology, GIS       | 60     |
+| NAEP Geography released items, grades 8 and 12 (NQT)                                                                       | https://www.nationsreportcard.gov/nqt/                                                                            | public domain (same terms as `SOURCES.md` §1); bridge level | Physical and Human Geography, Cartography     | 30     |
+| NAEP grade 12 science items already filed under s.12 earth skills                                                          | `research/questions/science/`                                                                                     | public domain; cross-list only                              | Physical and Historical Geology, Oceanography | 10     |
+| AP Human Geography and AP Environmental Science free-response (College Board)                                              | https://apcentral.collegeboard.org/                                                                               | all rights reserved: record the type only, no text          | Human Geography; Hydrology, Climatology       | 30     |
+| International Earth Science Olympiad and International Geography Olympiad past tests                                       | https://www.ieso-info.org/, https://www.geoolympiad.org/                                                          | terms unclear: types only                                   | every Earth Science course; Geography         | 40     |
+| NCEES FE Civil and Environmental reference handbook and sample items                                                       | https://ncees.org/                                                                                                | all rights reserved: notation and types only                | Hydrology #1–3                                | 15     |
+| NOAA JetStream, USGS Water Science School, NASA ARSET exercises                                                            | https://www.noaa.gov/jetstream, https://www.usgs.gov/water-science-school, https://appliedsciences.nasa.gov/arset | public domain (US government; confirm)                      | Meteorology, Hydrology, Remote Sensing        | 40     |
+| Penn State e-Education lesson quizzes (GEOG 486, 586, 883)                                                                 | https://www.e-education.psu.edu/                                                                                  | CC BY-NC-SA 4.0 (to confirm)                                | Cartography, GIS, Remote Sensing              | 30     |
+
+Target: about 470 records, at least 25 per course (Mineralogy, Cartography, GIS and Remote Sensing
+have the thinnest open sources; there is no GRE geology subject test any more). The research chat
+should also note, per course, a question type the plan lacks, for a `[new-page]`.
+
+### Engine needs
+
+1. **E1 Units.** Flow: m³/s, L/s, ft³/s, Sv (10⁶ m³/s) — `…oceanography#2~transport`, `…hydrology#0`,
+   `#1`. Speeds: m/day and cm/s for K, mm/h for rain, mm/yr = km/Myr for plates, °/Myr — Hydrology
+   #1–2, Physical Geology #1, Oceanography #0. Energy flux: W/m², mW/m², W/(m·K), J/(kg·K) —
+   Climatology #0, Geophysics #2, Meteorology. Gradients: °C/km. Lengths: Å, nm, μm — Mineralogy #0,
+   Remote Sensing #0. Geophysics: mGal (10⁻⁵ m/s²), nT, Ω·m, GPa, N·m (a moment, not a joule).
+   Others: μrad, ha, kg/(m·s), m²/s, s⁻¹, dpm/g; fixed labels g/kg, dBZ, mm⁶/m³, people/km².
+2. **E2 List values** (a typed data list with its length) for least squares and summaries —
+   `…climatology#2~trend`; later quadrat counts and flood records.
+3. **E3 Logs and powers in the simplifying chain:** ln, log₁₀, eˣ, 10ˣ, a power of a quotient
+   ((1,000 ÷ p)^0.286), fractional powers (R^(2/3)), ∜ — Meteorology #0–2, Historical Geology #1,
+   Hydrology #1, Climatology, Physical Geography #3; teach the harness each phrase.
+4. **E4 Inverse trig in degrees and atan2 as a compass bearing (0–360°)** — Geophysics #0, Mineralogy
+   #0, Cartography #1, Physical Geography #0 and #2, GIS #2, Geophysics #1~paleolatitude.
+5. **E5 A category result** (a text answer from thresholds, checked by the harness): QAP field, Köppen
+   BSh, ENSO phase, dNBR severity, FS stable or not, NNI pattern, interference order, deep or shallow
+   water, nearest class — about 10 pages; until then the class is in the picture's caption.
+6. **E6 One-way relations** with min, max and floor (`derived: true`) and a rejection for an empty
+   result — `…historical-geology#2`, `…mineralogy#2`, `…cartography#2`.
+7. **E7 "Found by trial" steps** for an unknown with no rearrangement (Manning depth from Q, rain
+   from SCS runoff, a day of the year from δ, which has two answers) — Hydrology #1, Physical
+   Geography #0~declination; the solver already bisects.
+8. **E8 longTime ↔ time** (Myr and years to seconds inside one relation) — `…geophysics#2~cooling`,
+   `…hydrology#0` (mean discharge), `…oceanography#1~residence`.
+9. **E9 Out-of-domain messages:** |tan φ tan δ| > 1 → "midnight sun" or "polar night" instead of a
+   day length; P ≤ I_a → no runoff; v₂ ≤ v₁ → no head wave — Physical Geography #0, Hydrology #1,
+   Geophysics #0.
+10. **E10 g per page.** College pages use 9.81 m/s²; pictures that assume 9.8 or 10 °C/km read the
+    page's value (s.11's need 13 asks the same) — Meteorology #1, Oceanography, Geophysics #1.
+
+## Not in the taxonomy
+
+- **Soils** (formation, horizons, texture triangle): taught in every physical geography text; no topic.
+  Add a fifth Physical Geography topic, or Hydrology's infiltration. P1's `ternary` serves it.
+- **Structural geology** (stress, strain, folds, faults, strike and dip): no course and no topic
+  (Earle ch. 12 is "Geological structures"). Add a Physical Geology topic or a course.
+- **Petrology and sedimentology:** no course; Mineralogy and Historical Geology touch them.
+- **Coasts and glaciers** both sit inside Physical Geology's "Surface processes".
+- **Political geography and development** (AP Human Geography units 4 and 7: states, boundaries,
+  HDI, Rostow): Human Geography's four topics leave them out.
+- **Active remote sensing** (radar, lidar): Remote Sensing's topics are passive optical only.
+- **Severe weather** (thunderstorms, tornadoes, hurricanes): only partly in Meteorology #3.
+- **Biological oceanography** (productivity, food webs in the sea): Oceanography has none.
+- **Paleoclimate proxies** (δ¹⁸O, ice cores): neither Climatology nor Historical Geology names them.
+
+## Priority
+
+1. Pages whose pictures are drawn (no ⏳): Hydrology #0, #3; Oceanography #0, #3 (main,
+   ~wave-energy, ~tides); Climatology #3; Human Geography #1–#3; Historical Geology #1, #3; Meteorology
+   #2, #3; Geophysics #1 main and #2; Remote Sensing #1 main, ~reflectance, #2 main, #3; Cartography
+   #1 main, ~dms, #2; all the sorts.
+2. The pilot trim and `~rates` (Human Geography #0).
+3. P3 `globe` (5 pages in 4 courses), P1 `ternary`, P17 `aquifer`, P20 `refraction`, P25 `rasterGrid`
+   and P28 `projection`: the pictures with the most pages or the most teaching.
+4. E1 units and E4 inverse trig, then E5 categories.
+
+## Summary
+
+- **Pages:** 51 topics, 170 pages (169 to build plus the pilot, which is trimmed to 9 values with a
+  new `~rates`): **125 calculators and 45 layouts** (33 sorts, 5 sequences, 3 explores, 4 observes;
+  6 of the 51 main pages are layouts). **52 pages are marked ⏳**: 50 wait on a picture (most ship
+  now on a named interim), 2 on an engine need only (Sv units, list values).
+- **Pictures:** 33 requests, `HE-earth-geography-P1` to `P33`: 16 options on drawn kinds
+  (`freeBody`, `earthLayers`, `rockLayers`, `rayDiagram` ×2, `crossSection`, `atmosphereLayers` ×4,
+  `oceanProfile`, `wave`, `functionGraph`, `coordinatePlane`, `sample`, `scatter`), 16 new kinds
+  (`ternary`, `silicateChain`, `globe`, `michelLevy`, `tsDiagram`, `aquifer`, `catchment`,
+  `refraction`, `gravityProfile`, `electrodeArray`, `contourMap`, `rasterGrid`, `projection`,
+  `populationPyramid`, `sensorGeometry`, `spectralCurve`) and one explore figure (`circulationCells`).
+  The globe (P3) serves the most pages.
+- **Engine:** 10 needs: units (E1), list values (E2), logs and powers in the chain (E3), inverse trig
+  and bearings (E4), category results (E5), one-way min/max/floor relations (E6), steps found by trial
+  (E7), long-time to seconds (E8), out-of-domain messages (E9), g per page (E10). No calculus,
+  matrices or ODEs are needed in this group.
+- **Research:** 21 open or free textbook sources plus a titles-only list (7 licences checked: Earle CC BY, Webb CC BY, Stull CC BY-NC-SA,
+  Schmittner CC BY-NC, Freeze and Cherry CC BY-NC-ND, both Dastrup books, the human geography one
+  CC BY), 13 question sources, about 470 question records, at least 25 per course.
