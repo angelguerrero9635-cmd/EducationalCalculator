@@ -20,6 +20,8 @@ import { isRound3Icon } from '@/data/modules/layouts/icons';
 import { MoleculeCard } from './chemFigures';
 import { CondensedCardView, condensedWidth } from './condensedCard';
 import { SkeletalCardView } from './skeletalCard';
+import { TrussJointCardView } from './trussJointCard';
+import { TRUSS_CARD_H, TRUSS_CARD_W } from '@/data/modules/typesHe2i';
 import { SKELETAL_CARD_H, SKELETAL_CARD_W } from '@/data/modules/typesHe1c';
 import {
   CellPartsCard,
@@ -77,6 +79,8 @@ export function figureWidth(f: Spec): number {
       return condensedWidth(f);
     case 'skeletal':
       return SKELETAL_CARD_W;
+    case 'trussJoint':
+      return TRUSS_CARD_W;
     case 'replication':
       return REPLICATION_W;
     case 'reflexArc':
@@ -112,7 +116,9 @@ export function CardFigureView({
           ? REPLICATION_H
           : figure.kind === 'skeletal'
             ? SKELETAL_CARD_H
-            : S);
+            : figure.kind === 'trussJoint'
+              ? TRUSS_CARD_H
+              : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -362,6 +368,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <CondensedCardView f={f} ink={ink} shade={shade} />;
     case 'skeletal':
       return <SkeletalCardView f={f} ink={ink} shade={shade} />;
+    case 'trussJoint':
+      return <TrussJointCardView f={f} ink={ink} shade={shade} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;

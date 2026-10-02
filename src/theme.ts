@@ -325,6 +325,10 @@ const light = {
   landSand: '#E9CE8E',
   landClay: '#B98568',
   landGrass: '#8CC26B',
+  /** HC27 truss (college): tension and compression members, the free body of a section. */
+  trussTension: '#B91C1C',
+  trussCompression: '#0F766E',
+  trussFreeBody: 'rgba(79, 70, 229, 0.12)',
   /** The ocean (H75): warm and cold currents on the map, and seafloor sediment. */
   currentWarm: '#D93A3A',
   currentCold: '#2F6FD0',
@@ -767,6 +771,9 @@ const dark: Palette = {
   landSand: '#A8905C',
   landClay: '#86604B',
   landGrass: '#5E8C45',
+  trussTension: '#F87171',
+  trussCompression: '#2DD4BF',
+  trussFreeBody: 'rgba(139, 131, 255, 0.18)',
   currentWarm: '#F0625A',
   currentCold: '#5B9BFF',
   seafloor: '#6B5D50',
