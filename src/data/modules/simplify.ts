@@ -48,7 +48,11 @@ const superValue = (raised: string) =>
  */
 const SCI_WORK = /\d\.\d+ × 10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]|\d × 10(?:⁻|[⁰¹⁴⁵⁶⁷⁸⁹]|[²³][⁰¹²³⁴⁵⁶⁷⁸⁹])/;
 
-function tokenize(text: string, sciWork = SCI_WORK.test(text)): Token[] | undefined {
+function tokenize(
+  text: string,
+  sciWork = SCI_WORK.test(text),
+  timesPi = false,
+): Token[] | undefined {
   const s = plainDigits(text).replace(/\s+/g, ' ').trim();
   const out: Token[] = [];
   let i = 0;
@@ -101,8 +105,12 @@ function tokenize(text: string, sciWork = SCI_WORK.test(text)): Token[] | undefi
       i += trig[0].length;
       continue;
     }
-    if (ch === 'π') out.push({ t: 'num', value: Math.PI, text: 'π', pi: true });
-    else if (ch === '½') out.push({ t: 'num', value: 0.5, text: '½' });
+    if (ch === 'π') {
+      // 2π is 2 × π when a line is checked (2π × r/v); the working writes it as one number.
+      const last = out[out.length - 1];
+      if (timesPi && last?.t === 'num' && !last.pi) out.push({ t: 'op', v: '×' });
+      out.push({ t: 'num', value: Math.PI, text: 'π', pi: true });
+    } else if (ch === '½') out.push({ t: 'num', value: 0.5, text: '½' });
     else if (ch === '(') out.push({ t: '(' });
     else if (ch === ')') out.push({ t: ')' });
     else if ('+−×÷/^²³√-'.includes(ch)) out.push({ t: 'op', v: ch === '-' ? '−' : ch });
@@ -549,7 +557,7 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
 
 /** The value of a plain arithmetic expression as printed, or undefined when it isn't one. */
 export function evaluatePrinted(text: string): number | undefined {
-  const tokens = tokenize(text);
+  const tokens = tokenize(text, undefined, true);
   const tree = tokens && parse(tokens);
   if (!tree) return undefined;
   const x = compute(tree);

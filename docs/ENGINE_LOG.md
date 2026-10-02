@@ -5,6 +5,69 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Lesson review of the new Grades 11–12 pages: tiny values, lines as shown; today's regressions
+
+- **Checks on tiny values always passed.** `closeTo` was |x − t| ≤ 10⁻⁶ × (1 + |t|), so any
+  two values under 10⁻⁶ were equal: s.11 electromagnetism~charge-circle printed "1 × 10⁻⁹ =
+  2π × (1.57 × 10⁻¹)/(3 × 10⁶) ✓" (the right side is 3.28 × 10⁻⁷) and F = 5 × 10⁻¹⁴ N checked
+  against 9.61 × 10⁻¹⁴ N; the harness's `complete` and `holds` inherited it. → Values are
+  compared relative to the larger size, |x − t| ≤ 10⁻⁶ × max(|x|, |t|), with a floor only near
+  0: a millionth of the value's step (`floorOf`; a millionth with no step, next to nothing for
+  scientific notation with none). `holds` takes the variables for it (the solver, the step
+  check marks, the unit context, the harness search and modules.test pass them), and the
+  sampling test's own comparisons do the same.
+- **A fraction exponent lost its brackets** (m.11 radical-functions~rational-exponent, a = 1,
+  p = 3, q = 2, y = 27: "x = 27²/3", which reads as 243). → `simplify` brackets a printed
+  exponent that is not a plain whole number: 27^(2/3), drawn raised.
+- **Scientific notation and rounding in chains.** Three figures dropped their zeros (1.9978 ×
+  10⁵ → "2 × 10⁵"; E = "1.1 × 10⁶" on ~two-charges) → a page's figures keep them (2.00 × 10⁵,
+  1.10 × 10⁶), and × 10⁰ is left out (1.2 N). Later lines used more digits than the answer
+  showed (orbit v = 7,540 then 7,544.5136; work W = 520 then a check with 519.6152;
+  charge-circle r = 1.57 × 10⁻¹ then 1.5665 × 10⁻¹; potassium n = 0.129 then the false
+  "161.1222 = 0.1289 × 1250") → a worked-out value reads in every later line, work line and
+  check as its box shows it, and a line that is then not true as printed takes one more figure
+  at a time, up to 8 (`firstTrue`). True as printed: sides within 10⁻³ (plus a millionth of
+  the line's largest term, for lines that cancel to near 0); a substituted line that rounds to
+  the answer it shows; a check whose left side, shown to the page's figures, is what the right
+  side rounds to ("161 = 0.129 × 1250", 161.25). A line no set makes true (½ × 10⁵ × (25.04² −
+  25²) for a ΔKE of 6.08 J), or one `evaluatePrinted` can't work out (arcsin(0.417)), is
+  printed as before, decimals with their extra figures. `evaluatePrinted` reads 2π as 2 × π
+  (only when checking; the working still writes it as one number). Mixed forms: 10^(−6) is
+  raised to 10⁻⁶; a line worked in scientific notation keeps its results in it (no
+  "√(398,437,800,000,000/(7 × 10⁶))"), reads 4 × 10³ as one number (never "(4 × 1,000)"),
+  and brackets a root of one (√(5.692 × 10⁷)). The harness's check-line test knows the same
+  rounding rule, and its fraction phrase no longer reads 2/(5)² as 2/(5 with the bracket left
+  open (it returned nothing, or worse, for any N/(…)²: s.11 gravitation's "F = G × m₁ ×
+  m₂/(2.53 × 10¹²)²" check went unread).
+- **Fallback refusals a student couldn't read** ("Makes potassium-40 left impossible";
+  "Density would have to be 1.08 × 10⁻⁵ g/cm³, but it can be at least 0.0001 g/cm³"). → "That
+  would leave no possible value for the potassium-40 left." and "That would make the density
+  1.08 × 10⁻⁵ g/cm³, but it must be at least 0.0001 g/cm³.", the name as the steps write it
+  (the Carnot limit), and "Try a smaller (larger) number for the …" when halving or doubling
+  the newest value fits and the other doesn't. A newest value impossible on its own now gives
+  that sentence too, not the generic one. The harness counts both forms as the engine's own
+  refusals (a range sentence on the newest alone, not against older inputs, is not a rule
+  speaking), and K–2 read them as "That doesn’t fit."
+- **Reviewer gap**: the 27²/3 line only showed when x was the value to find, and x is an
+  opening value. → The dump's "find …" walkthroughs cover every value that isn't derived, the
+  opening ones too.
+- **Today's regressions.** m.9 units-precision~bounds (and two demos) said "not a reading to
+  the nearest NaN cm": the refuse-with-reason pass asked every rule's message, and a check rule
+  speaks for a missing u as if it failed → a check rule explains a conflict only once its
+  values are known. g.s-11-electric-potential-parallel-plate and ~dielectric drew C 1000 times
+  the relation's: the page now counts the gap in meters, the demos still said `meters: 1e-3`
+  (and the dielectric demo's example d = 0.2) → the demos follow the page (d = 2 × 10⁻⁴ m).
+  m.10 law-sines-cosines~area at a = 1000, b = 0.1, C = 178° was the picture's SAS solve, not
+  the solver: acos near 1 loses half the digits of a 0.0002° angle → the triangle's angles come
+  from its area (Kahan's form) with atan2, the largest by subtraction. The absolute-value graph
+  marked a vertex and zeros at a = 0 (the line y = k): no longer. g.m9-absolute-value-vertex and
+  g.m12-chi-square-independence are retired; the pages they stood for (m.9
+  piecewise-functions~absolute-function, m.11 function-transformations, m.12
+  chi-square~independence) pass at SAMPLES=150, SEQUENCES=30.
+- Tests: `solve.test.ts` "tiny values are compared relative to their size", the refusal
+  sentences and the hint; `format.test.ts` figures with their zeros, no × 10⁰;
+  `written.test.ts` the bracketed fraction exponent.
+
 ## Grades 9–12 picture tracker: H01–H88 by parts, demos retired
 
 - **H01–H88 all still said `drawn`** though most pictures had long been on their pages, and a

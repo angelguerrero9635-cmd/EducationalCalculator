@@ -3,6 +3,8 @@ import {
   dollarsOf,
   formatNumber,
   lowerFirst,
+  parseNumber,
+  plainDigits,
   renderTemplate,
   significant,
   superscript,
@@ -98,63 +100,92 @@ export interface Walkthrough {
 }
 
 /** A line with brackets or words after "x =": the work lines say it better for K–2. */
-/**
- * Grades 9–12 add a list at once: "(10 + 75 + 200) ÷ 25" goes straight to "285 ÷ 25", not
- * through "85 + 200". A stage that only adds two numbers is dropped when the next one does too.
- */
 type LineVars = readonly (VariableDef & { scientificFigures?: number })[];
 
-/**
- * Two printed numbers that agree: within 10⁻³ of each other, or the same to the page's figures
- * (161.25 and 161.1222 both read 161), as the answer line shows them.
- */
-const agreeAt = (a: number, b: number, figures: number | undefined) =>
-  Math.abs(a - b) <= 1e-3 * Math.max(Math.abs(a), Math.abs(b)) + 1e-9 ||
-  (figures !== undefined && significant(a, figures) === significant(b, figures));
+/** The largest number printed in a line (its terms set how near 0 its sides can come). */
+const largest = (text: string) =>
+  Math.max(0, ...(plainDigits(text).match(/\d+(?:\.\d+)?/g) ?? []).map(Number));
 
-/** Whether a printed line's sides (each part between " = " that is plain arithmetic) disagree. */
-const lineOff = (text: string, figures: number | undefined) => {
+/** Two sides of a printed line that agree: within 10⁻³, or a millionth of its largest term. */
+const agreeIn = (a: number, b: number, text: string) =>
+  Math.abs(a - b) <= 1e-3 * Math.max(Math.abs(a), Math.abs(b)) + 1e-6 * largest(text) + 1e-9;
+
+/** Whether `x` to the page's figures is `shown` (162.3 → 162: true as a 3-figure value). */
+const roundsTo = (x: number, shown: number, figures: number | undefined) =>
+  figures !== undefined && Number(parseNumber(significant(x, figures))) === shown;
+
+/** A lone number as printed (7,540; −2.5; 1.57 × 10⁻¹), not an expression. */
+const LONE = /^[−-]?[\d,]+(?:\.\d+)?(?: × 10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+)?$/;
+
+/**
+ * Whether a printed line's sides (each part between " = " that is plain arithmetic) disagree;
+ * undefined when no two sides side by side can be worked out.
+ */
+const lineOff = (text: string) => {
   const parts = text.split(' = ').map(evaluatePrinted);
+  let read = false;
   for (let i = 0; i + 1 < parts.length; i++) {
     const [a, b] = [parts[i], parts[i + 1]];
-    if (a !== undefined && b !== undefined && !agreeAt(a, b, figures)) return true;
+    if (a === undefined || b === undefined) continue;
+    if (!agreeIn(a, b, text)) return true;
+    read = true;
   }
-  return false;
+  return read ? false : undefined;
 };
 
 /**
  * A line as printed from the first set of line values that makes it true as printed (`off`
  * says when it is not): the values as their boxes show them, then with more figures. A line
- * that nearly cancels (tan(2 × 45.0005°) = 634.06 ÷ (999.99 − 1000)) needs the most; one that
- * no set makes true is printed with the first.
+ * that nearly cancels (tan(2 × 45.0005°) = 634.06 ÷ (999.99 − 1000)) needs the most. One that
+ * no set makes true, or that can't be worked out here (`off` undefined: arcsin(0.417)), keeps
+ * its decimals' extra figures (`unread`), as lines were printed before they were checked.
  */
 const firstTrue = (
   render: (vars: LineVars) => string,
   sets: readonly LineVars[],
-  off: (line: string) => boolean,
+  off: (line: string) => boolean | undefined,
+  unread: LineVars,
 ) => {
   const first = render(sets[0]!);
-  if (!off(first)) return first;
+  const firstOff = off(first);
+  if (firstOff === undefined) return render(unread);
+  if (!firstOff) return first;
   for (const vs of sets.slice(1)) {
     const line = render(vs);
     if (!off(line)) return line;
   }
-  return first;
+  return render(unread);
 };
 
-/** A check line as printed, from the first set of line values that makes it true. */
+/**
+ * A check line as printed, from the first set of line values that makes it true: its sides
+ * agree, or its left side is a value shown to the page's figures that the right side rounds
+ * to (161 = 0.129 × 1250, which is 161.25).
+ */
 const checkLine = (
   display: string,
   sets: readonly LineVars[],
+  unread: LineVars,
   values: Values,
   figures: number | undefined,
 ) =>
   firstTrue(
     (vs) => renderTemplate(display, vs, values),
     sets,
-    (line) => line.split(' = ').length === 2 && lineOff(line, figures),
+    (line) => {
+      const sides = line.split(' = ');
+      if (sides.length !== 2) return false;
+      const [a, b] = sides.map(evaluatePrinted);
+      if (a === undefined || b === undefined) return undefined;
+      return !(agreeIn(a, b, line) || (LONE.test(sides[0]!) && roundsTo(b, a, figures)));
+    },
+    unread,
   );
 
+/**
+ * Grades 9–12 add a list at once: "(10 + 75 + 200) ÷ 25" goes straight to "285 ÷ 25", not
+ * through "85 + 200". A stage that only adds two numbers is dropped when the next one does too.
+ */
 const sumsAtOnce = (lines: string[], start: string, grade: string) => {
   if (!['9', '10', '11', '12'].includes(grade)) return lines;
   const ops = (l: string) =>
@@ -386,6 +417,16 @@ export function buildSteps(
       ? [workVars, fine]
       : [...Array.from({ length: Math.max(1, 9 - figures) }, (_, i) => shownAt(figures + i)), fine];
   const lineVars = lineSets[0]!;
+  // (a line that can't be worked out: decimals with their extra figures, scientific notation
+  // to the page's, as before lines were checked)
+  const unread: LineVars =
+    figures === undefined
+      ? workVars
+      : workVars.map((w) =>
+          typed.has(w.id) || withWorkedFigures(w, figures).worked === undefined
+            ? w
+            : { ...w, scientificFigures: figures },
+        );
   // Figure-only values are found for the picture, never written as a step.
   const trace = result.trace.filter((t) => !byId.get(t.id)?.hidden);
   const steps = trace.map((t): Step => {
@@ -454,10 +495,15 @@ export function buildSteps(
     const misses = (line: string) => {
       const x = evaluatePrinted(line);
       const want = working[t.id];
-      return x !== undefined && want !== undefined && !agreeAt(x, want, figures);
+      if (x === undefined || want === undefined) return undefined;
+      // (true as printed: the answer it shows, to the page's figures, or within 10⁻³)
+      return (
+        !agreeIn(x, want, line) &&
+        !roundsTo(x, Number(parseNumber(significant(want, figures ?? 1))), figures)
+      );
     };
     const substituted = agree(
-      `${v.symbol} = ${firstTrue((vs) => renderTemplate(expr, vs, working), lineSets, misses)}`,
+      `${v.symbol} = ${firstTrue((vs) => renderTemplate(expr, vs, working), lineSets, misses, unread)}`,
     );
     // Lines that only repeat the one before ("c = 4", then "c = 4") are left out.
     const same = (x: string, y: string) => x === y.split(' (')[0];
@@ -472,13 +518,7 @@ export function buildSteps(
     const workLines = work?.length
       ? byGrade(
           work.map((line) =>
-            agree(
-              firstTrue(
-                (vs) => renderTemplate(line, vs, working),
-                lineSets,
-                (l) => lineOff(l, figures),
-              ),
-            ),
+            agree(firstTrue((vs) => renderTemplate(line, vs, working), lineSets, lineOff, unread)),
           ),
           grade,
         )
@@ -644,7 +684,9 @@ export function buildSteps(
       )
       .map((r) => ({
         formula: agree(
-          r.check && direct ? r.check(working) : checkLine(r.display, lineSets, working, figures),
+          r.check && direct
+            ? r.check(working)
+            : checkLine(r.display, lineSets, unread, working, figures),
         ),
         ok: holds(r, result.values, module.variables),
       })),

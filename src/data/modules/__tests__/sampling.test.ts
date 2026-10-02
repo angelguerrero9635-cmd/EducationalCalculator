@@ -24,7 +24,7 @@ import {
   type SolveResult,
   type System,
 } from '@/engine/solve';
-import { parseNumber } from '@/engine/format';
+import { parseNumber, significant } from '@/engine/format';
 import { SIGMA } from '@/engine/latex';
 import { changeUnits, initialState, setValues, type CalcState } from '@/engine/state';
 import type { Values, VariableDef } from '@/engine/types';
@@ -668,7 +668,14 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     } else if (
       !shownClose(l, r, chk.formula) &&
       !withinRounding(l, sides[1]!) &&
-      !withinRounding(r, sides[0]!)
+      !withinRounding(r, sides[0]!) &&
+      // A left side shown to the page's figures that the right side rounds to (161 = 0.129 ×
+      // 1250, which is 161.25): true to the precision it is shown with.
+      !(
+        figures !== undefined &&
+        /^-?[\d.]+(?: × 10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+)?$/.test(sides[0]!.trim()) &&
+        Number(parseNumber(significant(r, figures))) === l
+      )
     ) {
       c.f.add('error', `${c.label}check line shows unequal sides: "${chk.formula}"`, where);
     }
