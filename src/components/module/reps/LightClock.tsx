@@ -41,7 +41,8 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
   const all = [spec.speed, spec.proper, spec.length].every(known);
   // A "?" box reads "?" on the picture, not the example's number behind it.
   const q = (ok: boolean, text: string) => (ok ? text : '?');
-  const tOk = known(spec.proper) && known(spec.speed);
+  const bOk = known(spec.speed);
+  const tOk = known(spec.proper) && bOk;
   const lOk = known(spec.length) && known(spec.speed);
   const rod = L0 !== undefined;
   // The clock's height, frozen while the slant is dragged so the drawing doesn't jump.
@@ -100,7 +101,7 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
                     fontSize={chart.label}
                     fontWeight="700"
                   >
-                    {`Moving at ${sig(beta)}c`}
+                    {bOk ? `Moving at ${sig(beta)}c` : 'Moving at β = ?'}
                   </ChartText>
                   {/* At rest: straight up and back. */}
                   {mirrors(rest, false)}
@@ -202,7 +203,7 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
                     color={c.physRay}
                     w={w}
                   />
-                  <SubLabel x={w - 8} y={40} text={`γ = ${sig(g, 4)}`} anchor="end" w={w} />
+                  <SubLabel x={w - 8} y={40} text={`γ = ${q(bOk, sig(g, 4))}`} anchor="end" w={w} />
                   {t0 !== undefined ? (
                     <SubLabel
                       x={w - 8}
@@ -308,7 +309,11 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
   );
 
   function captionLines(): string[] {
-    const out = [`Lorentz factor: γ = 1/√(1 − β²) = 1/√(1 − ${sig(beta)}²) = ${sig(g, 4)}`];
+    const out = [
+      bOk
+        ? `Lorentz factor: γ = 1/√(1 − β²) = 1/√(1 − ${sig(beta)}²) = ${sig(g, 4)}`
+        : 'Lorentz factor: γ = 1/√(1 − β²)',
+    ];
     if (t0 !== undefined && tOk)
       out.push(`Moving clock: Δt = γΔt₀ = ${sig(g, 4)} × ${sig(t0)} = ${sig(g * t0, 4)} s`);
     if (L0 !== undefined && lOk)

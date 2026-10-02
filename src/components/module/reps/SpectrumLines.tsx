@@ -142,7 +142,9 @@ export function SpectrumLinesView({ spec, l, calc }: { spec: Spec; l: Lines; cal
   const lines: string[] = [
     `${NAMES[l.element]} ${l.mode === 'emission' ? 'glows at' : 'absorbs at'} ${lab.map((q) => nm1(q.nm)).join(', ')} nm: its fingerprint.`,
   ];
-  if (z !== undefined)
+  // A "?" redshift reads "?" on the picture, not the example's number drawn faded behind it.
+  if (z !== undefined && !zKnown) lines.push('λ = λ₀(1 + z)', 'v ≈ cz, with c = 300,000 km/s');
+  else if (z !== undefined)
     lines.push(
       `λ = λ₀(1 + z) = ${nm1(ref.nm)} × (1 + ${sig(z)}) = ${sig(ref.nm * (1 + z), 4)} nm`,
       `v ≈ cz = 300,000 km/s × ${sig(z)} = ${sig(300000 * z)} km/s ${z >= 0 ? 'away from us (redshift)' : 'toward us (blueshift)'}`,
@@ -227,7 +229,7 @@ export function SpectrumLinesView({ spec, l, calc }: { spec: Spec; l: Lines; cal
                   <SubLabel
                     x={x0}
                     y={y2 - 8}
-                    text={`observed, z = ${sig(z!)}`}
+                    text={`observed, z = ${zKnown ? sig(z!) : '?'}`}
                     anchor="start"
                     size={chart.label}
                     w={w}

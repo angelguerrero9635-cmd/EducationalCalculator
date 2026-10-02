@@ -156,8 +156,18 @@ function triangleAt(
     starts.find((x0) => x0 >= from - 1e-9 && clear(x0) && offAxes(x0) && fits(x0)) ??
     starts.find((x0) => x0 >= from - 1e-9 && clear(x0) && fits(x0)) ??
     starts.find((x0) => clear(x0) && fits(x0)) ??
-    starts.find(fits)
+    starts.find(fits) ??
+    // A steep line may fit no whole run from the intercept (a slope of 7 on a ±10 grid): then
+    // the triangle centered up and down, so the slope's handle stays on the picture.
+    centered(m, b, run, f, fits)
   );
+}
+
+/** The slope triangle's start with its middle at the grid's middle height, if it fits. */
+function centered(m: number, b: number, run: number, f: Frame, fits: (x0: number) => boolean) {
+  if (m === 0) return undefined;
+  const x0 = ((f.y[0] + f.y[1]) / 2 - b) / m - run / 2;
+  return fits(x0) ? x0 : undefined;
 }
 
 /**

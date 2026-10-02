@@ -44,6 +44,9 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
   const t = argOf(z.a, z.b);
   const pts = roots ? rootsOf(z.a, z.b, n) : powersOf(z.a, z.b, n);
   const rho = r ** (1 / n);
+  // A "?" box reads "?" on the picture too: z's tag, and no roots or powers named with the
+  // example's numbers drawn faded behind it.
+  const zText = z.known ? `z = ${complexText(z.a, z.b)}` : 'z = ?';
 
   const lines: string[] = [];
   if (!known) lines.push('Type z and n.');
@@ -181,7 +184,7 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                       color={c.hopBack}
                       width={chart.stroke}
                     />
-                    {tip(z, `z = ${complexText(z.a, z.b)}`, c.hopBack)}
+                    {tip(z, zText, c.hopBack)}
                     <Path
                       d={arcD(0, pts[0]!.deg, 26)}
                       fill="none"
@@ -197,7 +200,7 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                           fill={c.chartHighlight}
                           fillOpacity={i === 0 ? 1 : 0.75}
                         />
-                        {n <= 6 || i === 0
+                        {known && (n <= 6 || i === 0)
                           ? tip(p, complexText(p.a, p.b), c.chartHighlight, i === 0)
                           : null}
                       </G>
@@ -264,11 +267,13 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
                         </ChartText>
                       );
                     })}
-                    {tip(pts[0]!, `z = ${complexText(z.a, z.b)}`, c.chartHighlight)}
+                    {tip(pts[0]!, zText, c.chartHighlight)}
                     {n > 1
                       ? tip(
                           pts[n - 1]!,
-                          `z${sup(n)} = ${complexText(pts[n - 1]!.a, pts[n - 1]!.b)}`,
+                          known
+                            ? `z${sup(n)} = ${complexText(pts[n - 1]!.a, pts[n - 1]!.b)}`
+                            : `z${isKnown(nv) ? sup(n) : 'ⁿ'} = ?`,
                           c.vectorResultant,
                           true,
                           lastBelow,

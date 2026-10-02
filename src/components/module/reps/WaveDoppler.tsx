@@ -30,6 +30,10 @@ export function WaveDoppler({ d, calc }: { d: DopplerWave; calc: Calculator }) {
   const M = vs / v;
   const heard = dopplerOf(f, v, vs);
   const all = [d.sourceSpeed, d.waveSpeed, d.frequency].every(known);
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const q = (ok: boolean, text: string) => (ok ? text : '?');
+  const sOk = known(d.sourceSpeed);
+  const lamOk = sOk && known(d.waveSpeed) && known(d.frequency);
   const lines = captionLines();
 
   return (
@@ -109,7 +113,7 @@ export function WaveDoppler({ d, calc }: { d: DopplerWave; calc: Calculator }) {
                 <SubLabel
                   x={sx + 8}
                   y={mid + 42}
-                  text={`v_s ${sig(vs)} m/s`}
+                  text={`v_s ${q(sOk, sig(vs))} m/s`}
                   anchor="start"
                   size={chart.label}
                   w={w}
@@ -127,7 +131,7 @@ export function WaveDoppler({ d, calc }: { d: DopplerWave; calc: Calculator }) {
                     <SubLabel
                       x={w - 6}
                       y={16}
-                      text={`ahead: f′ ${sig(heard.ahead)} Hz`}
+                      text={`ahead: f′ ${q(all, sig(heard.ahead))} Hz`}
                       anchor="end"
                       color={c.chartHighlight}
                       w={w}
@@ -135,7 +139,7 @@ export function WaveDoppler({ d, calc }: { d: DopplerWave; calc: Calculator }) {
                     <SubLabel
                       x={6}
                       y={16}
-                      text={`behind: f′ ${sig(heard.behind)} Hz`}
+                      text={`behind: f′ ${q(all, sig(heard.behind))} Hz`}
                       anchor="start"
                       color={c.chartHighlight}
                       w={w}
@@ -143,7 +147,7 @@ export function WaveDoppler({ d, calc }: { d: DopplerWave; calc: Calculator }) {
                     <SubLabel
                       x={Math.min(w - 40, (sx + ahead1) / 2 + 20)}
                       y={mid - 36}
-                      text={`λ ahead ${sig((v - vs) / Math.max(f, 1e-9))} m`}
+                      text={`λ ahead ${q(lamOk, sig((v - vs) / Math.max(f, 1e-9)))} m`}
                       size={chart.label}
                       w={w}
                     />
@@ -158,7 +162,7 @@ export function WaveDoppler({ d, calc }: { d: DopplerWave; calc: Calculator }) {
                     <SubLabel
                       x={(behind1 + sx) / 2}
                       y={mid + 82}
-                      text={`λ behind ${sig((v + vs) / Math.max(f, 1e-9))} m`}
+                      text={`λ behind ${q(lamOk, sig((v + vs) / Math.max(f, 1e-9)))} m`}
                       size={chart.label}
                       w={w}
                     />
@@ -188,7 +192,13 @@ export function WaveDoppler({ d, calc }: { d: DopplerWave; calc: Calculator }) {
 
   function captionLines(): string[] {
     const out: string[] = [];
-    if (M < 1)
+    if (!all)
+      out.push(
+        'Ahead: f′ = f v/(v − vₛ)',
+        'Behind: f′ = f v/(v + vₛ)',
+        'Fronts bunch up ahead (shorter wavelength, higher pitch) and spread out behind (lower pitch).',
+      );
+    else if (M < 1)
       out.push(
         `Ahead: f′ = f v/(v − vₛ) = ${sig(f)} × ${sig(v)}/(${sig(v)} − ${sig(vs)}) = ${sig(heard.ahead)} Hz`,
         `Behind: f′ = f v/(v + vₛ) = ${sig(f)} × ${sig(v)}/(${sig(v)} + ${sig(vs)}) = ${sig(heard.behind)} Hz`,

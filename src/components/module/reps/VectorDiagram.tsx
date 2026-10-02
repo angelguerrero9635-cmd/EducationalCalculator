@@ -528,8 +528,12 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                           win.freeze();
                         }}
                         onMove={(dx, dy) => {
-                          const nx = drag.current.x + dx / f.ux;
-                          const ny = drag.current.y - dy / f.uy;
+                          // The tip stays inside the picture (the window is frozen while
+                          // dragging): dragged past an edge it runs along it.
+                          const clamp = (x: number, [lo, hi]: readonly number[]) =>
+                            Math.min(hi!, Math.max(lo!, x));
+                          const nx = clamp(t.x + drag.current.x + dx / f.ux, f.x) - t.x;
+                          const ny = clamp(t.y + drag.current.y - dy / f.uy, f.y) - t.y;
                           const next: Values = {};
                           const put = (id: number | string | undefined, x: number) => {
                             if (typeof id === 'string')
