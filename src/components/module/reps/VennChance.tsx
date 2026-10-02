@@ -33,7 +33,9 @@ export function VennChance({ spec, calc }: { spec: VennChances; calc: Calculator
   const N = total ? total.value : 1;
   const known = A.known && B.known && AB.known && (!total || total.known);
   const [a, b, both] = [A.value / N, B.value / N, spec.exclusive ? 0 : AB.value / N];
-  const say = spec.counts ? (x: number) => countText(x, N) : p4;
+  // With a value "?" every region reads "?" (never the example's numbers behind the "?").
+  const say0 = spec.counts ? (x: number) => countText(x, N) : p4;
+  const say = (x: number) => (known ? say0(x) : '?');
   const apart = !!spec.exclusive || both === 0;
   const r = vennRegions(a, b, both);
   const [nA, nB] = spec.names ?? ['A', 'B'];

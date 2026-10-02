@@ -402,8 +402,15 @@ export function MarkedFigure({ spec, calc }: { spec: MarkedFigureSpec; calc: Cal
     const lines: string[] = [];
     const named = (id: string) => rep.label(id);
     if (t) {
-      const one = num(t.angle)!;
-      const five = t.second === undefined ? one : num(t.second)!;
+      const one0 = num(t.angle);
+      const five0 = t.second === undefined ? one0 : num(t.second);
+      // An angle still "?" (cleared, or worked out from a "?"): the rule only, no measures.
+      if (one0 === undefined || five0 === undefined)
+        return [
+          'With parallel lines, angles 1, 4, 5 and 8 are equal, and 2, 3, 6 and 7 are 180° minus them.',
+          ...Object.values(t.labels ?? {}).map(named),
+        ].join(' · ');
+      const [one, five] = [one0, five0];
       const parallel = Math.abs(one - five) < 1e-9;
       const v = (x: number) => `${formatNumber(Number(x.toFixed(2)))}°`;
       const angleOf = (n: number) => {

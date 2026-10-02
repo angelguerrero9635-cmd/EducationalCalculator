@@ -102,7 +102,7 @@ export function ChanceTree3({ spec, calc }: { spec: TreeChances; calc: Calculato
           const stroke = (lit: boolean) => (lit ? c.chartHighlight : c.chartMuted);
           const width = (lit: boolean) => (lit ? chart.strokeHeavy : chart.strokeLight);
           const chip = (x: number, y: number, p: number, lit: boolean, key: string) => {
-            const t = chanceText(p);
+            const t = known ? chanceText(p) : '?'; // never the example's behind a "?"
             const tw = t.length * chart.small * 0.6 + 8;
             return (
               <G key={key}>
@@ -216,7 +216,7 @@ export function ChanceTree3({ spec, calc }: { spec: TreeChances; calc: Calculato
                     fontWeight={lit ? '700' : '400'}
                     fill={lit ? c.chartHighlight : c.chartMuted}
                   >
-                    {chanceText(leafP(i, j, k))}
+                    {known ? chanceText(leafP(i, j, k)) : '?'}
                   </ChartText>,
                 );
               });
