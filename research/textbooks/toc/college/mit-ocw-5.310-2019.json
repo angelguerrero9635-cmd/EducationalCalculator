@@ -1,0 +1,70 @@
+{
+  "id": "mit-ocw-5.310-2019",
+  "curriculum": "MIT OCW 5.310 Laboratory Chemistry",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2019",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "John J. Dolhun and Sarah Hewett. 5.310 Laboratory Chemistry. Fall 2019. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Experiment"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-310-laboratory-chemistry-fall-2019/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Lab list and lecture titles from the course pages; lab manuals were not read for problems.",
+  "books": [
+    {
+      "course": "5.310",
+      "url": "https://ocw.mit.edu/courses/5-310-laboratory-chemistry-fall-2019/",
+      "units": [
+        {
+          "n": "Labs",
+          "title": "Experiments",
+          "topics": [
+            "he.chemistry.analytical#0",
+            "he.chemistry.analytical#2",
+            "he.chemistry.analytical#3"
+          ],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Ferrocene lab: synthesis, sublimation, TLC and column chromatography",
+              "topics": ["he.chemistry.analytical#3"]
+            },
+            {
+              "n": "2",
+              "title": "Ellen Swallow Richards lab: atomic absorption and ICP-MS, UV-vis, calibration curves and error analysis",
+              "topics": ["he.chemistry.analytical#2", "he.chemistry.analytical#0"]
+            },
+            {
+              "n": "3",
+              "title": "Essential oils",
+              "topics": ["he.chemistry.analytical#3"]
+            },
+            {
+              "n": "4",
+              "title": "Fischer esterification (with MS and NMR)",
+              "topics": ["he.chemistry.organic-2#2", "he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "5",
+              "title": "Catalase kinetics",
+              "topics": ["he.chemistry.biochemistry#1"]
+            },
+            {
+              "n": "L4",
+              "title": "Lecture: What's significant in laboratory measurement (error analysis)",
+              "topics": ["he.chemistry.analytical#0"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

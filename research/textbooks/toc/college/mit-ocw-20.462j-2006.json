@@ -1,0 +1,114 @@
+{
+  "id": "mit-ocw-20.462j-2006",
+  "curriculum": "MIT OCW 20.462J / 3.962J Molecular Principles of Biomaterials",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2006",
+  "subject": "bio",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Darrell Irvine. 20.462J / 3.962J Molecular Principles of Biomaterials. Spring 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/20-462j-molecular-principles-of-biomaterials-spring-2006/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Problem sets 1–5 and exams 1–2 read for the records.",
+  "books": [
+    {
+      "course": "20.462J / 3.962J",
+      "url": "https://ocw.mit.edu/courses/20-462j-molecular-principles-of-biomaterials-spring-2006/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Degradable solids and controlled release",
+          "topics": ["he.engineering.biomaterials#2", "he.engineering.biotransport#2"],
+          "examples": [
+            "rank degradation rates",
+            "first-order k from molecular weight against time",
+            "erosion number",
+            "Charlier vs Higuchi release"
+          ],
+          "notation": ["M = M₀e^(−kt)", "erosion number ε"],
+          "lessons": [
+            {
+              "n": "1–2",
+              "title": "Biodegradable polymeric solids; erosion theory",
+              "topics": ["he.engineering.biomaterials#2"]
+            },
+            {
+              "n": "3–4",
+              "title": "Controlled release devices; release from eroding systems",
+              "topics": ["he.engineering.biotransport#2"]
+            },
+            {
+              "n": "5",
+              "title": "Pulsatile release; microchips",
+              "topics": ["he.engineering.biomaterials#3"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Hydrogels",
+          "topics": ["he.engineering.biomaterials#1", "he.engineering.tissue-engineering#0"],
+          "examples": [
+            "swelling ratio against time for a degradable gel",
+            "microsphere diameter in stomach vs intestine"
+          ],
+          "notation": ["Q = 1/φ₂,s", "Flory–Rehner/Peppas swelling"],
+          "lessons": [
+            {
+              "n": "6–10",
+              "title": "Hydrogel structure, swelling theory, polyelectrolyte gels, applications",
+              "topics": ["he.engineering.biomaterials#1"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Biological recognition",
+          "topics": ["he.engineering.tissue-engineering#1"],
+          "lessons": [
+            {
+              "n": "11–13",
+              "title": "Protein-resistant surfaces; adhesion; enzymatic recognition; tethered signals",
+              "topics": ["he.engineering.tissue-engineering#1"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Bioceramics, devices and carriers",
+          "topics": ["he.engineering.biomaterials#1", "he.engineering.biotransport#3"],
+          "lessons": [
+            {
+              "n": "14–16",
+              "title": "Bioceramics and biocomposites",
+              "topics": ["he.engineering.biomaterials#1"]
+            },
+            {
+              "n": "17",
+              "title": "Molecular devices",
+              "topics": ["he.engineering.biomaterials#3"]
+            },
+            {
+              "n": "18–19",
+              "title": "Nano- and microparticle carriers",
+              "topics": ["he.engineering.biotransport#3"]
+            },
+            {
+              "n": "20–25",
+              "title": "Vaccines, targeting and DNA vaccines",
+              "topics": ["he.biology.microbiology#3"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "id": "shareok-breen-bme-lab-manual-v1",
+  "curriculum": "Breen, Biomedical Engineering Lab Manual, Volume 1 (BME 3171 Core Lab I)",
+  "publisher": "University of Oklahoma (SHAREOK repository); listed in the Open Textbook Library",
+  "edition": "2023",
+  "subject": "bio",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Sarah Breen, Biomedical Engineering Lab Manual, Volume 1, University of Oklahoma, 2023 (SHAREOK). License: CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Module",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://open.umn.edu/opentextbooks/textbooks/1472",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Licence from the SHAREOK item record (dc.rights \"Attribution-NonCommercial-ShareAlike 4.0 International\"); the PDF says only \"released under the Creative Commons License\". The PDF came from the SHAREOK bitstream content endpoint (robots.txt allows it). Pre-lab and post-lab questions of all seven modules read for the records (type only); figures are BioRender drawings, not used.",
+  "books": [
+    {
+      "url": "https://shareok.org/bitstreams/2cfbb4c9-ea1b-4b45-92aa-b4156de0af3c/download",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction to Functional Human Models",
+          "topics": ["he.engineering.biomechanics#1", "he.biology.anatomy-physiology#1"],
+          "lessons": [
+            {
+              "n": "Pre-lab 1",
+              "title": "Lever Systems in the Human Body"
+            },
+            {
+              "n": "Lab",
+              "title": "Arm and leg models"
+            }
+          ],
+          "examples": [
+            "label effort, resistance and fulcrum at the elbow",
+            "joint movements by plane"
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Functional Human Models",
+          "topics": ["he.engineering.biomechanics#1"],
+          "lessons": [
+            {
+              "n": "Pre-lab 2",
+              "title": "Functional Human Models"
+            },
+            {
+              "n": "Lab",
+              "title": "Arm and leg models with assumptions"
+            }
+          ],
+          "examples": [
+            "effort moment arm from a hand-held mass, its distance and the muscle force"
+          ],
+          "ranges": [
+            "masses up to about 10 kg",
+            "load arms 30–40 cm",
+            "muscle forces of several hundred N"
+          ],
+          "notation": ["ΣF = 0, ΣM = 0", "g = 9.81 m/s²"]
+        },
+        {
+          "n": "3",
+          "title": "Musculoskeletal Lever Systems",
+          "topics": ["he.engineering.biomechanics#1"],
+          "lessons": [
+            {
+              "n": "Pre-lab 3",
+              "title": "Musculoskeletal Lever Systems"
+            },
+            {
+              "n": "Lab",
+              "title": "Mechanical advantage and distance advantage"
+            }
+          ],
+          "examples": [
+            "first-, second- and third-class levers in the body",
+            "mechanical advantage = effort arm / resistance arm"
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Bioimaging Introduction",
+          "topics": ["he.engineering.bioinstrumentation#2"],
+          "lessons": [
+            {
+              "n": "Pre-lab 4",
+              "title": "Ultrasound and phantoms"
+            },
+            {
+              "n": "Lab",
+              "title": "Imaging a vessel phantom"
+            }
+          ],
+          "examples": [
+            "acoustic impedance from density and sound speed",
+            "probe frequency: resolution vs depth",
+            "artifacts"
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Factors Influencing Force Production",
+          "topics": ["he.engineering.bioinstrumentation#1", "he.biology.anatomy-physiology#1"],
+          "lessons": [
+            {
+              "n": "Pre-lab 5",
+              "title": "Electromyography Introduction"
+            },
+            {
+              "n": "Lab",
+              "title": "EMG and grip strength"
+            }
+          ],
+          "examples": [
+            "motor-unit recruitment against force",
+            "surface EMG amplitudes (fibre signals under 100 μV)"
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Uniaxial Testing & Anisotropy",
+          "topics": ["he.engineering.biomechanics#0", "he.engineering.biomaterials#1"],
+          "lessons": [
+            {
+              "n": "Pre-lab 6",
+              "title": "Introduction to Uniaxial Testing"
+            },
+            {
+              "n": "Lab",
+              "title": "Tensile tests by orientation"
+            }
+          ],
+          "examples": ["stress–strain curve: modulus, yield, ultimate strength"],
+          "notation": ["σ = Eε"]
+        },
+        {
+          "n": "7",
+          "title": "Uniaxial Testing of Viscoelastic Material",
+          "topics": ["he.engineering.biomechanics#3"],
+          "lessons": [
+            {
+              "n": "Pre-lab 7",
+              "title": "Uniaxial Testing of Viscoelastic Material"
+            },
+            {
+              "n": "Lab",
+              "title": "Stress relaxation and hysteresis"
+            }
+          ],
+          "examples": [
+            "fit stress relaxation with exponentials; time constants",
+            "peak stress against cycle number"
+          ]
+        }
+      ]
+    }
+  ]
+}

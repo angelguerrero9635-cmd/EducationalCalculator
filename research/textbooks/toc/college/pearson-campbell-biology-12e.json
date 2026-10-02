@@ -1,0 +1,362 @@
+{
+  "id": "pearson-campbell-biology-12e",
+  "curriculum": "Urry, Cain, Wasserman, Minorsky, Orr, Campbell Biology",
+  "publisher": "Pearson",
+  "edition": "12th edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": null,
+    "part": "Unit"
+  },
+  "license": null,
+  "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/campbell-biology/P200000007019/9780135988046",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. The page lists unit headings and chapter titles without numbers; the introductory chapter is numbered 1 here.",
+  "books": [
+    {
+      "url": "https://www.pearson.com/en-us/subject-catalog/p/campbell-biology/P200000007019/9780135988046",
+      "units": [
+        {
+          "n": "1",
+          "title": "Evolution, the Themes of Biology, and Scientific Inquiry",
+          "topics": ["he.biology.principles-2#0"]
+        },
+        {
+          "n": "2",
+          "title": "The Chemical Context of Life",
+          "topics": ["he.biology.principles-1#0"],
+          "part": "Unit 1: The Chemistry of Life"
+        },
+        {
+          "n": "3",
+          "title": "Water and Life",
+          "topics": ["he.biology.principles-1#0"],
+          "part": "Unit 1: The Chemistry of Life"
+        },
+        {
+          "n": "4",
+          "title": "Carbon and the Molecular Diversity of Life",
+          "topics": ["he.biology.principles-1#0"],
+          "part": "Unit 1: The Chemistry of Life"
+        },
+        {
+          "n": "5",
+          "title": "The Structure and Function of Large Biological Molecules",
+          "topics": ["he.biology.principles-1#0"],
+          "part": "Unit 1: The Chemistry of Life"
+        },
+        {
+          "n": "6",
+          "title": "A Tour of the Cell",
+          "topics": ["he.biology.principles-1#1"],
+          "part": "Unit 2: The Cell"
+        },
+        {
+          "n": "7",
+          "title": "Membrane Structure and Function",
+          "topics": ["he.biology.cell-molecular#0", "he.biology.principles-1#1"],
+          "part": "Unit 2: The Cell"
+        },
+        {
+          "n": "8",
+          "title": "An Introduction to Metabolism",
+          "topics": ["he.biology.principles-1#2"],
+          "part": "Unit 2: The Cell"
+        },
+        {
+          "n": "9",
+          "title": "Cellular Respiration and Fermentation",
+          "topics": ["he.biology.principles-1#2"],
+          "part": "Unit 2: The Cell"
+        },
+        {
+          "n": "10",
+          "title": "Photosynthesis",
+          "topics": ["he.biology.principles-1#2"],
+          "part": "Unit 2: The Cell"
+        },
+        {
+          "n": "11",
+          "title": "Cell Communication",
+          "topics": ["he.biology.cell-molecular#1"],
+          "part": "Unit 2: The Cell"
+        },
+        {
+          "n": "12",
+          "title": "The Cell Cycle",
+          "topics": ["he.biology.principles-1#3", "he.biology.cell-molecular#3"],
+          "part": "Unit 2: The Cell"
+        },
+        {
+          "n": "13",
+          "title": "Meiosis and Sexual Life Cycles",
+          "topics": ["he.biology.principles-1#3"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "14",
+          "title": "Mendel and the Gene Idea",
+          "topics": ["he.biology.principles-1#4", "he.biology.genetics#0"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "15",
+          "title": "The Chromosomal Basis of Inheritance",
+          "topics": ["he.biology.genetics#1", "he.biology.genetics#0"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "16",
+          "title": "The Molecular Basis of Inheritance",
+          "topics": ["he.biology.genetics#2"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "17",
+          "title": "Gene Expression: From Gene to Protein",
+          "topics": ["he.biology.genetics#2"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "18",
+          "title": "Regulation of Gene Expression",
+          "topics": ["he.biology.cell-molecular#2"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "19",
+          "title": "Viruses",
+          "topics": ["he.biology.microbiology#0"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "20",
+          "title": "DNA Tools and Biotechnology",
+          "topics": ["he.biology.genetics#2"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "21",
+          "title": "Genomes and Their Evolution",
+          "topics": ["he.biology.evolution#2"],
+          "part": "Unit 3: Genetics"
+        },
+        {
+          "n": "22",
+          "title": "Descent with Modification: A Darwinian View of Life",
+          "topics": ["he.biology.principles-2#0", "he.biology.evolution#0"],
+          "part": "Unit 4: Mechanisms of Evolution"
+        },
+        {
+          "n": "23",
+          "title": "The Evolution of Populations",
+          "topics": ["he.biology.genetics#3", "he.biology.evolution#0", "he.biology.evolution#1"],
+          "part": "Unit 4: Mechanisms of Evolution"
+        },
+        {
+          "n": "24",
+          "title": "The Origin of Species",
+          "topics": ["he.biology.evolution#3"],
+          "part": "Unit 4: Mechanisms of Evolution"
+        },
+        {
+          "n": "25",
+          "title": "The History of Life on Earth",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Unit 4: Mechanisms of Evolution"
+        },
+        {
+          "n": "26",
+          "title": "Phylogeny and the Tree of Life",
+          "topics": ["he.biology.evolution#2"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "27",
+          "title": "Bacteria and Archaea",
+          "topics": ["he.biology.principles-2#1", "he.biology.microbiology#0"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "28",
+          "title": "Protists",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "29",
+          "title": "Plant Diversity I: How Plants Colonized Land",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "30",
+          "title": "Plant Diversity II: The Evolution of Seed Plants",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "31",
+          "title": "Fungi",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "32",
+          "title": "An Overview of Animal Diversity",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "33",
+          "title": "An Introduction to Invertebrates",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "34",
+          "title": "The Origin and Evolution of Vertebrates",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Unit 5: The Evolutionary History of Biological Diversity"
+        },
+        {
+          "n": "35",
+          "title": "Vascular Plant Structure, Growth, and Development",
+          "topics": ["he.biology.principles-2#2"],
+          "part": "Unit 6: Plant Form and Function"
+        },
+        {
+          "n": "36",
+          "title": "Resource Acquisition and Transport in Vascular Plants",
+          "topics": ["he.biology.principles-2#2"],
+          "part": "Unit 6: Plant Form and Function"
+        },
+        {
+          "n": "37",
+          "title": "Soil and Plant Nutrition",
+          "topics": ["he.biology.principles-2#2"],
+          "part": "Unit 6: Plant Form and Function"
+        },
+        {
+          "n": "38",
+          "title": "Angiosperm Reproduction and Biotechnology",
+          "topics": ["he.biology.principles-2#2"],
+          "part": "Unit 6: Plant Form and Function"
+        },
+        {
+          "n": "39",
+          "title": "Plant Responses to Internal and External Signals",
+          "topics": ["he.biology.principles-2#2"],
+          "part": "Unit 6: Plant Form and Function"
+        },
+        {
+          "n": "40",
+          "title": "Basic Principles of Animal Form and Function",
+          "topics": ["he.biology.principles-2#3", "he.biology.anatomy-physiology#0"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "41",
+          "title": "Animal Nutrition",
+          "topics": ["he.biology.principles-2#3"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "42",
+          "title": "Circulation and Gas Exchange",
+          "topics": ["he.biology.anatomy-physiology#3", "he.biology.principles-2#3"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "43",
+          "title": "The Immune System",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "44",
+          "title": "Osmoregulation and Excretion",
+          "topics": ["he.biology.principles-2#3"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "45",
+          "title": "Hormones and the Endocrine System",
+          "topics": ["he.biology.principles-2#3"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "46",
+          "title": "Animal Reproduction",
+          "topics": [],
+          "part": "Unit 7: Animal Form and Function",
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "47",
+          "title": "Animal Development",
+          "topics": [],
+          "part": "Unit 7: Animal Form and Function",
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "48",
+          "title": "Neurons, Synapses, and Signaling",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "49",
+          "title": "Nervous Systems",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "50",
+          "title": "Sensory and Motor Mechanisms",
+          "topics": ["he.biology.anatomy-physiology#1"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "51",
+          "title": "Animal Behavior",
+          "topics": ["he.biology.principles-2#3"],
+          "part": "Unit 7: Animal Form and Function"
+        },
+        {
+          "n": "52",
+          "title": "An Introduction to Ecology and the Biosphere",
+          "topics": ["he.biology.principles-2#4"],
+          "part": "Unit 8: Ecology"
+        },
+        {
+          "n": "53",
+          "title": "Population Ecology",
+          "topics": ["he.biology.ecology#0"],
+          "part": "Unit 8: Ecology"
+        },
+        {
+          "n": "54",
+          "title": "Community Ecology",
+          "topics": ["he.biology.ecology#1"],
+          "part": "Unit 8: Ecology"
+        },
+        {
+          "n": "55",
+          "title": "Ecosystems and Restoration Ecology",
+          "topics": ["he.biology.ecology#2"],
+          "part": "Unit 8: Ecology"
+        },
+        {
+          "n": "56",
+          "title": "Conservation Biology and Global Change",
+          "topics": ["he.biology.ecology#3"],
+          "part": "Unit 8: Ecology"
+        }
+      ]
+    }
+  ]
+}

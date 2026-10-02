@@ -90,14 +90,20 @@ Prerequisites `s.10.stoichiometry`, `s.10.gas-laws`. Textbooks: OpenStax Chemist
 - **Refresh:** `s.10.electrons-in-atoms` (configurations, the eV ladder), `s.10.periodic-trends`.
 - **Tests ask:**
 
-  | Question type                                       | Page              | Mark   |
-  | --------------------------------------------------- | ----------------- | ------ |
-  | wavelength, frequency, energy of a hydrogen line    | main              | Solves |
-  | energy per mole of photons (kJ/mol)                 | main              | Solves |
-  | de Broglie wavelength of an electron or a ball      | ~de-broglie       | Solves |
-  | least uncertainty in speed from a position          | ~uncertainty      | Solves |
-  | effective nuclear charge (Slater) and the trend     | ~zeff             | Solves |
-  | explain an ionization-energy exception (Mg/Al, P/S) | ~ionization-order | Solves |
+  | Question type                                                                                         | Page                                           | Mark                                                 |
+  | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------- |
+  | wavelength, frequency, energy of a hydrogen line                                                      | main                                           | Partly                                               |
+  | energy per mole of photons (kJ/mol)                                                                   | main                                           | Solves                                               |
+  | de Broglie wavelength of an electron or a ball                                                        | ~de-broglie                                    | Solves                                               |
+  | least uncertainty in speed from a position                                                            | ~uncertainty                                   | Solves                                               |
+  | effective nuclear charge (Slater) and the trend                                                       | ~zeff                                          | Partly                                               |
+  | explain an ionization-energy exception (Mg/Al, P/S)                                                   | ~ionization-order                              | Partly                                               |
+  | photoelectric effect: work function, threshold, kinetic energy, electrons per pulse                   | `s.11.modern-physics~photoelectric` (linked)   | Partly (graphs and explanations are not on the page) |
+  | nodes, most probable radius, sketch a radial distribution                                             | `physical-2#2~radius`, `physical-2#2` (linked) | Partly (no sketching)                                |
+  | which quantum-number sets are allowed; name the orbital                                               | `physical-2#2~quantum-numbers` (linked)        | Solves                                               |
+  | configurations of heavy atoms and transition-metal ions                                               | `s.10.electrons-in-atoms` (Refresh)            | Partly                                               |
+  | rank radii, second ionization energies, electron affinities; explain the trend [new-page]             | ~trends                                        | No                                                   |
+  | photoelectron spectroscopy: binding energy = photon energy − kinetic energy; which element [new-page] | ~pes                                           | No                                                   |
 
 - **Main — BUILD `he.chemistry.gen-chem-1#0`:** `orbitalDiagram` mode `ladder` (start from
   `g.s10-electrons-in-atoms` ladder demo; `upper`, `lower`, `energy` in eV, `wavelength`).
@@ -143,13 +149,14 @@ Prerequisites `s.10.stoichiometry`, `s.10.gas-laws`. Textbooks: OpenStax Chemist
   `~percent-yield`, `s.10.molarity`.
 - **Tests ask:**
 
-  | Question type                                        | Page               | Mark             |
-  | ---------------------------------------------------- | ------------------ | ---------------- |
-  | empirical formula from combustion analysis (C, H, O) | main               | Solves           |
-  | molecular formula from the empirical formula and M   | ~molecular-formula | Solves           |
-  | water of hydration from a heating experiment         | ~hydrate           | Solves           |
-  | volume of titrant to react (mole ratio ≠ 1)          | ~solution-stoich   | Solves (⏳ P24)  |
-  | limiting reactant, percent yield                     | Grade 10 pages     | Solves (Refresh) |
+  | Question type                                        | Page                      | Mark             |
+  | ---------------------------------------------------- | ------------------------- | ---------------- |
+  | empirical formula from combustion analysis (C, H, O) | main                      | Partly           |
+  | molecular formula from the empirical formula and M   | ~molecular-formula        | Solves           |
+  | water of hydration from a heating experiment         | ~hydrate                  | Solves           |
+  | volume of titrant to react (mole ratio ≠ 1)          | ~solution-stoich          | Solves (⏳ P24)  |
+  | limiting reactant, percent yield                     | Grade 10 pages            | Solves (Refresh) |
+  | mass of solute for a volume and molarity             | `s.10.molarity` (Refresh) | Solves           |
 
 - **Main — BUILD `he.chemistry.gen-chem-1#1`:** `bars` (interim: moles of C, H, O side by side,
   the ratio over each; P24 draws the combustion train). Values: sample mass m (g, 0.001–100),
@@ -183,13 +190,14 @@ Prerequisites `s.10.stoichiometry`, `s.10.gas-laws`. Textbooks: OpenStax Chemist
 - **Refresh:** `s.10.gas-laws` and its six problem types.
 - **Tests ask:**
 
-  | Question type                              | Page        | Mark            |
-  | ------------------------------------------ | ----------- | --------------- |
-  | molar mass from gas density                | main        | Solves          |
-  | real-gas pressure (van der Waals) vs ideal | ~real-gas   | Solves (⏳ P10) |
-  | rms speed and average kinetic energy       | ~kinetic    | Solves          |
-  | gas collected over water                   | ~over-water | Solves          |
-  | volume of gas a reaction makes at T and P  | ~gas-stoich | Solves (⏳ P24) |
+  | Question type                                                       | Page                      | Mark            |
+  | ------------------------------------------------------------------- | ------------------------- | --------------- |
+  | molar mass from gas density                                         | main                      | Solves          |
+  | real-gas pressure (van der Waals) vs ideal                          | ~real-gas                 | Solves (⏳ P10) |
+  | rms speed and average kinetic energy                                | ~kinetic                  | Solves          |
+  | gas collected over water                                            | ~over-water               | Solves          |
+  | volume of gas a reaction makes at T and P                           | ~gas-stoich               | Solves (⏳ P24) |
+  | n, P, V or T from PV = nRT; STP volumes; Dalton's partial pressures | `s.10.gas-laws` (Refresh) | Solves          |
 
 - **Main — BUILD `he.chemistry.gen-chem-1#2`:** `gasPiston` ideal (`g.s10-gas-laws-ideal`).
   Values: pressure P (atm, 0.001–1000), volume V (L), amount n (mol), temperature T (K,
@@ -225,12 +233,14 @@ Prerequisites `s.10.stoichiometry`, `s.10.gas-laws`. Textbooks: OpenStax Chemist
 - **Refresh:** `s.10.thermochemistry~calorimetry`, `~hess`, `~formation`.
 - **Tests ask:**
 
-  | Question type                                   | Page           | Mark             |
-  | ----------------------------------------------- | -------------- | ---------------- |
-  | ΔH per mole from a coffee-cup temperature rise  | main           | Solves           |
-  | ΔU and ΔH of combustion from a bomb calorimeter | ~bomb          | Solves (⏳ P15)  |
-  | estimate ΔH from bond enthalpies                | ~bond-enthalpy | Solves (⏳ E3)   |
-  | ΔH°rxn from ΔH°f, Hess's law                    | Grade 10 pages | Solves (Refresh) |
+  | Question type                                                                     | Page                              | Mark             |
+  | --------------------------------------------------------------------------------- | --------------------------------- | ---------------- |
+  | ΔH per mole from a coffee-cup temperature rise                                    | main                              | Solves           |
+  | ΔU and ΔH of combustion from a bomb calorimeter                                   | ~bomb                             | Solves (⏳ P15)  |
+  | estimate ΔH from bond enthalpies                                                  | ~bond-enthalpy                    | Solves (⏳ E3)   |
+  | ΔH°rxn from ΔH°f, Hess's law                                                      | Grade 10 pages                    | Solves (Refresh) |
+  | specific heat of a metal from heat lost = heat gained                             | `s.10.thermochemistry` (Refresh)  | Solves           |
+  | sign of ΔH° from bond strengths or how K or spontaneity changes with T [new-page] | `gen-chem-2#3~signs` (new, below) | No               |
 
 - **Main — BUILD `he.chemistry.gen-chem-1#3`:** `energyProfile` calorimeter
   (`g.s10-thermochemistry-calorimeter`). Values: solution mass m (g), specific heat c
@@ -261,12 +271,15 @@ Prerequisites `s.10.stoichiometry`, `s.10.gas-laws`. Textbooks: OpenStax Chemist
 - **Refresh:** `s.10.bonding`, `s.10.molecular-shape` (2–4 domains).
 - **Tests ask:**
 
-  | Question type                                     | Page           | Mark            |
-  | ------------------------------------------------- | -------------- | --------------- |
-  | shape, angle and hybridization of SF₄, XeF₄, PCl₅ | main           | Solves (⏳ P13) |
-  | formal charges; the best resonance structure      | ~formal-charge | Solves (⏳ P12) |
-  | lattice energy from a Born–Haber cycle            | ~born-haber    | Solves          |
-  | bond order and magnetism of O₂, N₂⁺ from MOs      | ~bond-order    | Solves (⏳ P3)  |
+  | Question type                                                                                              | Page                             | Mark                                                  |
+  | ---------------------------------------------------------------------------------------------------------- | -------------------------------- | ----------------------------------------------------- |
+  | shape, angle and hybridization of SF₄, XeF₄, PCl₅                                                          | main                             | Partly (⏳ P13)                                       |
+  | formal charges; the best resonance structure                                                               | ~formal-charge                   | Solves (⏳ P12)                                       |
+  | lattice energy from a Born–Haber cycle                                                                     | ~born-haber                      | Solves                                                |
+  | bond order and magnetism of O₂, N₂⁺ from MOs                                                               | ~bond-order                      | Partly (⏳ P3)                                        |
+  | energy of an ion pair from IE, EA and the Coulomb energy at a distance; largest stable distance [new-page] | ~ion-pair                        | No                                                    |
+  | bond length and dissociation energy from (or sketched as) an energy–distance curve                         | —                                | No                                                    |
+  | intermolecular forces; which liquid boils higher                                                           | `s.10.molecular-shape` (Refresh) | Partly (college reasoning; see "Not in the taxonomy") |
 
 - **Main — BUILD `he.chemistry.gen-chem-1#4` (⏳ P13):** `vsepr` with 5–6 domains and the hybrid
   named. Values: total valence electrons V (2–60), bonded atoms b (1–6), electrons on the outer
@@ -304,14 +317,17 @@ Prerequisite `he.chemistry.gen-chem-1`. Textbooks: OpenStax Chemistry 2e ch. 12�
 - **Refresh:** `s.10.rates-equilibrium~average-rate`, `~rate-factors`, `~catalyst`.
 - **Tests ask:**
 
-  | Question type                                     | Page           | Mark   |
-  | ------------------------------------------------- | -------------- | ------ |
-  | concentration after t, time to reach a level, t½  | main           | Solves |
-  | second-order: [A] at t, half-life depends on [A]₀ | ~second-order  | Solves |
-  | zero-order: when it runs out                      | ~zero-order    | Solves |
-  | order and k from a table of initial rates         | ~initial-rates | Solves |
-  | Eₐ from k at two temperatures; k at a new T       | ~arrhenius     | Solves |
-  | which mechanism fits the observed rate law        | ~mechanism     | Solves |
+  | Question type                                                                                          | Page           | Mark                        |
+  | ------------------------------------------------------------------------------------------------------ | -------------- | --------------------------- |
+  | concentration after t, time to reach a level, t½                                                       | main           | Solves                      |
+  | second-order: [A] at t, half-life depends on [A]₀                                                      | ~second-order  | Solves                      |
+  | zero-order: when it runs out                                                                           | ~zero-order    | Solves                      |
+  | order and k from a table of initial rates                                                              | ~initial-rates | Solves                      |
+  | Eₐ from k at two temperatures; k at a new T                                                            | ~arrhenius     | Solves                      |
+  | which mechanism fits the observed rate law                                                             | ~mechanism     | Solves                      |
+  | K = k_f ÷ k_r and ΔE = Eₐ,f − Eₐ,r on a reaction-coordinate diagram [new-page]                         | ~reversible    | No                          |
+  | derive a rate law from a mechanism (steady-state intermediate)                                         | —              | No (as `physical-1#3`, E10) |
+  | rate of one species from another's (coefficients); order from which plot is straight or how t½ changes | —              | No                          |
 
 - **Main — BUILD `he.chemistry.gen-chem-2#0`:** `chemDiagram` mode `rate` (H108, interim: [A]
   against t through (0, [A]₀) and (t, [A]); P7 adds the ln[A] line and half-lives). Values: rate
@@ -353,12 +369,15 @@ Prerequisite `he.chemistry.gen-chem-1`. Textbooks: OpenStax Chemistry 2e ch. 12�
 - **Refresh:** `s.10.rates-equilibrium` (ICE chart), `~shift`, `~le-chatelier`, `~ksp`.
 - **Tests ask:**
 
-  | Question type                                 | Page          | Mark   |
-  | --------------------------------------------- | ------------- | ------ |
-  | equilibrium concentrations from K (quadratic) | main          | Solves |
-  | convert Kc to Kp                              | ~kp-kc        | Solves |
-  | K of a reversed, scaled or added reaction     | ~manipulate-k | Solves |
-  | solubility with a common ion                  | ~common-ion   | Solves |
+  | Question type                                                                  | Page                               | Mark                                  |
+  | ------------------------------------------------------------------------------ | ---------------------------------- | ------------------------------------- |
+  | equilibrium concentrations from K (quadratic)                                  | main                               | Solves                                |
+  | convert Kc to Kp                                                               | ~kp-kc                             | Solves                                |
+  | K of a reversed, scaled or added reaction                                      | ~manipulate-k                      | Solves                                |
+  | solubility with a common ion                                                   | ~common-ion                        | Solves                                |
+  | direction of shift for a stress (Le Châtelier; inert gas, volume, temperature) | `s.10.rates-equilibrium` (Refresh) | Solves                                |
+  | molar solubility from Ksp, Ksp from a measured ion concentration               | `s.10.rates-equilibrium` (Refresh) | Solves                                |
+  | Henry's law: solubility of a gas against partial pressure                      | —                                  | No ("Not in the taxonomy": solutions) |
 
 - **Main — BUILD `he.chemistry.gen-chem-2#1`:** `equilibriumChart` (species H₂, I₂ reactants, HI
   product with coef 2, `K: 'K'`, each `eq` checked; from `g.s10-rates-equilibrium-add`). Values:
@@ -429,12 +448,14 @@ hydrogen: 'x'`). Values: acid constant Kₐ (10⁻¹⁴–10), starting concentr
 - **Refresh:** `s.10.entropy-free-energy` (ΔG = ΔH − TΔS, crossover, from tables, sign of ΔS).
 - **Tests ask:**
 
-  | Question type                               | Page           | Mark   |
-  | ------------------------------------------- | -------------- | ------ |
-  | K from ΔG°, and ΔG° from K                  | main           | Solves |
-  | ΔG under non-standard conditions; which way | ~nonstandard   | Solves |
-  | entropy of vaporization or fusion           | ~phase-entropy | Solves |
-  | ΔS of the universe; is it spontaneous       | ~second-law    | Solves |
+  | Question type                                                               | Page                                 | Mark   |
+  | --------------------------------------------------------------------------- | ------------------------------------ | ------ |
+  | K from ΔG°, and ΔG° from K                                                  | main                                 | Solves |
+  | ΔG under non-standard conditions; which way                                 | ~nonstandard                         | Solves |
+  | entropy of vaporization or fusion                                           | ~phase-entropy                       | Solves |
+  | ΔS of the universe; is it spontaneous                                       | ~second-law                          | Solves |
+  | predict the signs of ΔH and ΔS and when a process is spontaneous [new-page] | ~signs (sort)                        | No     |
+  | ΔG° = ΔH° − TΔS° at a temperature; the crossover temperature                | `s.10.entropy-free-energy` (Refresh) | Solves |
 
 - **Main — BUILD `he.chemistry.gen-chem-2#3`:** `table` (interim) sweeping ΔG° (−20, −10, 0, 10,
   20 kJ/mol) for K at the page's T (each 10 kJ/mol is a factor of 56.5 at 25 °C); P23 draws
@@ -461,12 +482,14 @@ hydrogen: 'x'`). Values: acid constant Kₐ (10⁻¹⁴–10), starting concentr
 - **Refresh:** `s.10.redox~cell-voltage`, `~oxidation-numbers`, `~electrolysis` (the sort).
 - **Tests ask:**
 
-  | Question type                                 | Page                | Mark           |
-  | --------------------------------------------- | ------------------- | -------------- |
-  | cell potential at non-standard concentrations | main                | Solves         |
-  | ΔG° and K from E°cell                         | ~free-energy-k      | Solves         |
-  | mass plated by a current in a time            | ~electrolysis       | Solves (⏳ P9) |
-  | voltage of a concentration cell               | ~concentration-cell | Solves         |
+  | Question type                                                                           | Page                | Mark           |
+  | --------------------------------------------------------------------------------------- | ------------------- | -------------- |
+  | cell potential at non-standard concentrations                                           | main                | Solves         |
+  | ΔG° and K from E°cell                                                                   | ~free-energy-k      | Solves         |
+  | mass plated by a current in a time                                                      | ~electrolysis       | Solves (⏳ P9) |
+  | voltage of a concentration cell                                                         | ~concentration-cell | Solves         |
+  | balance a redox equation by half-reactions (acid or base) [new-page]                    | ~balance (sequence) | No             |
+  | strongest oxidizing or reducing agent; which metals reduce an ion (E° table) [new-page] | ~agents (sort)      | No             |
 
 - **Main — BUILD `he.chemistry.gen-chem-2#4`:** `chemDiagram` mode `cell` (H108, `cathode`,
   `anode` E° values; P9 adds each beaker's concentration and Q). Values: standard cell
@@ -503,13 +526,14 @@ sequences; text cards ship now and P14 (skeletal cards) adds the structures.
 - **Refresh:** `s.10.organic` (hydrocarbons), `s.10.organic~functional-groups`, `~isomers`.
 - **Tests ask:**
 
-  | Question type                                       | Page               | Mark   |
-  | --------------------------------------------------- | ------------------ | ------ |
-  | IUPAC name of a branched alkane                     | main               | Solves |
-  | name a compound with two functional groups (suffix) | ~functional-groups | Solves |
-  | degree of unsaturation from a formula               | ~unsaturation      | Solves |
-  | which way an acid–base reaction lies; its K         | ~pka-equilibrium   | Solves |
-  | rank acids by strength                              | ~acid-order        | Solves |
+  | Question type                                                                     | Page               | Mark                      |
+  | --------------------------------------------------------------------------------- | ------------------ | ------------------------- |
+  | IUPAC name of a branched alkane                                                   | main               | Solves                    |
+  | name a compound with two functional groups (suffix)                               | ~functional-groups | Solves                    |
+  | degree of unsaturation from a formula                                             | ~unsaturation      | Solves                    |
+  | which way an acid–base reaction lies; its K                                       | ~pka-equilibrium   | Solves                    |
+  | rank acids by strength                                                            | ~acid-order        | Solves                    |
+  | draw resonance contributors; formal charges; nucleophilic and electrophilic atoms | —                  | No (needs P14 structures) |
 
 - **Main — BUILD `he.chemistry.organic-1#0` (sequence):** "Name a branched alkane." Stages:
   "Find the longest carbon chain: the parent", "Number the chain from the end nearer the first
@@ -544,12 +568,13 @@ sequences; text cards ship now and P14 (skeletal cards) adds the structures.
   activity, diastereomers, meso compounds).
 - **Tests ask:**
 
-  | Question type                                           | Page              | Mark                            |
-  | ------------------------------------------------------- | ----------------- | ------------------------------- |
-  | enantiomers, diastereomers, identical or constitutional | main              | Solves                          |
-  | rank groups by CIP priority; assign R or S              | ~cip              | Partly (ranking; R/S needs P14) |
-  | specific rotation; enantiomeric excess                  | ~optical-rotation | Solves                          |
-  | percent of the equatorial chair conformer               | ~chair            | Solves                          |
+  | Question type                                                                       | Page              | Mark                            |
+  | ----------------------------------------------------------------------------------- | ----------------- | ------------------------------- |
+  | enantiomers, diastereomers, identical or constitutional                             | main              | Solves                          |
+  | rank groups by CIP priority; assign R or S                                          | ~cip              | Partly (ranking; R/S needs P14) |
+  | specific rotation; enantiomeric excess                                              | ~optical-rotation | Solves                          |
+  | percent of the equatorial chair conformer                                           | ~chair            | Solves                          |
+  | rotation barrier and conformer energies from Newman interaction energies [new-page] | ~conformers       | No                              |
 
 - **Main — BUILD `he.chemistry.organic-1#1` (sort):** bins "Identical", "Enantiomers",
   "Diastereomers", "Constitutional isomers". Cards (pairs): (R)- and (S)-butan-2-ol;
@@ -580,12 +605,13 @@ sequences; text cards ship now and P14 (skeletal cards) adds the structures.
   which).
 - **Tests ask:**
 
-  | Question type                                        | Page            | Mark            |
-  | ---------------------------------------------------- | --------------- | --------------- |
-  | predict SN1, SN2, E1 or E2 from the conditions       | main            | Solves          |
-  | rank substrates by SN2 rate                          | ~sn2-order      | Solves          |
-  | how the rate changes when [RX] or [Nu] changes       | ~rate-law       | Solves          |
-  | read a reaction energy diagram (steps, intermediate) | ~energy-diagram | Solves (⏳ P15) |
+  | Question type                                                                                            | Page            | Mark            |
+  | -------------------------------------------------------------------------------------------------------- | --------------- | --------------- |
+  | predict SN1, SN2, E1 or E2 from the conditions                                                           | main            | Solves          |
+  | rank substrates by SN2 rate                                                                              | ~sn2-order      | Solves          |
+  | how the rate changes when [RX] or [Nu] changes                                                           | ~rate-law       | Solves          |
+  | read a reaction energy diagram (steps, intermediate)                                                     | ~energy-diagram | Solves (⏳ P15) |
+  | draw the substitution or elimination product, or the starting material and reagent, with stereochemistry | —               | No (needs P14)  |
 
 - **Main — BUILD `he.chemistry.organic-1#2` (sort):** bins SN2, SN1, E2, E1. Cards:
   CH₃CH₂Br + NaCN in DMSO; CH₃I + NaOCH₃ in CH₃OH (SN2); (CH₃)₃CBr in water at 25 °C;
@@ -611,12 +637,13 @@ sequences; text cards ship now and P14 (skeletal cards) adds the structures.
   Markovnikov's rule, hydroboration, halogenation, oxidation; alkynes).
 - **Tests ask:**
 
-  | Question type                                  | Page                          | Mark                  |
-  | ---------------------------------------------- | ----------------------------- | --------------------- |
-  | where the new group goes (Markovnikov or not)  | main                          | Solves                |
-  | syn or anti addition; which stereoisomer forms | ~stereo                       | Solves                |
-  | rings and π bonds from formula and H₂ uptake   | ~hydrogenation                | Solves                |
-  | deprotonate a terminal alkyne with NaNH₂?      | `organic-1#0~pka-equilibrium` | Solves (pKₐ 25 vs 38) |
+  | Question type                                                   | Page                          | Mark                  |
+  | --------------------------------------------------------------- | ----------------------------- | --------------------- |
+  | where the new group goes (Markovnikov or not)                   | main                          | Solves                |
+  | syn or anti addition; which stereoisomer forms                  | ~stereo                       | Solves                |
+  | rings and π bonds from formula and H₂ uptake                    | ~hydrogenation                | Solves                |
+  | deprotonate a terminal alkyne with NaNH₂?                       | `organic-1#0~pka-equilibrium` | Solves (pKₐ 25 vs 38) |
+  | mechanism of an addition (halonium, carbocation, rearrangement) | —                             | No                    |
 
 - **Main — BUILD `he.chemistry.organic-1#3` (sort):** bins "The new group goes to the more
   substituted carbon (Markovnikov)", "… to the less substituted carbon (anti-Markovnikov)",
@@ -639,13 +666,14 @@ sequences; text cards ship now and P14 (skeletal cards) adds the structures.
   splitting).
 - **Tests ask:**
 
-  | Question type                                       | Page       | Mark                                                |
-  | --------------------------------------------------- | ---------- | --------------------------------------------------- |
-  | how many H each signal stands for (integration)     | main       | Solves                                              |
-  | multiplicity and intensities from neighbors (n + 1) | ~splitting | Solves                                              |
-  | convert Hz from TMS to δ (ppm) at a field           | ~splitting | Solves                                              |
-  | which functional group a band shows                 | ~ir-bands  | Solves                                              |
-  | propose a structure from IR, NMR and the formula    | —          | No (a multi-clue puzzle; see "Not in the taxonomy") |
+  | Question type                                            | Page                | Mark                                                    |
+  | -------------------------------------------------------- | ------------------- | ------------------------------------------------------- |
+  | how many H each signal stands for (integration)          | main                | Solves                                                  |
+  | multiplicity and intensities from neighbors (n + 1)      | ~splitting          | Solves                                                  |
+  | convert Hz from TMS to δ (ppm) at a field                | ~splitting          | Solves                                                  |
+  | which functional group a band shows                      | ~ir-bands           | Solves                                                  |
+  | propose a structure from IR, NMR and the formula         | —                   | Partly (a multi-clue puzzle; see "Not in the taxonomy") |
+  | which hydrogen is most shielded (shift order) [new-page] | ~shift-order (sort) | No                                                      |
 
 - **Main — BUILD `he.chemistry.organic-1#4`:** `bars` (interim: one bar per signal by its
   integral, its H count over it; P5 `nmr` later). Values: H in the formula (1–60), integrals
@@ -676,12 +704,13 @@ MIT OCW 5.13.
   (electrophilic aromatic substitution, substituent effects).
 - **Tests ask:**
 
-  | Question type                                         | Page                  | Mark                          |
-  | ----------------------------------------------------- | --------------------- | ----------------------------- |
-  | aromatic, antiaromatic or nonaromatic                 | main                  | Solves                        |
-  | activating or deactivating; where the next group goes | ~directing            | Solves                        |
-  | π energies of benzene; delocalization energy          | `physical-2#3~huckel` | Solves (⏳ P3)                |
-  | product of a nitration, bromination, acylation        | —                     | Partly (needs P14 structures) |
+  | Question type                                                                      | Page                       | Mark                          |
+  | ---------------------------------------------------------------------------------- | -------------------------- | ----------------------------- |
+  | aromatic, antiaromatic or nonaromatic                                              | main                       | Solves                        |
+  | activating or deactivating; where the next group goes                              | ~directing                 | Solves                        |
+  | π energies of benzene; delocalization energy                                       | `physical-2#3~huckel`      | Solves (⏳ P3)                |
+  | product of a nitration, bromination, acylation                                     | —                          | Partly (needs P14 structures) |
+  | mechanism of electrophilic aromatic substitution; rate-determining step [new-page] | `organic-2#0` (a sequence) | No                            |
 
 - **Main — BUILD `he.chemistry.organic-2#0` (sort):** bins "Aromatic", "Antiaromatic",
   "Nonaromatic". Cards: benzene; the cyclopentadienyl anion; the cycloheptatrienyl cation;
@@ -701,11 +730,13 @@ MIT OCW 5.13.
   hydride, imines, acetals, Wittig), 22–23 (enols, enolates, aldol).
 - **Tests ask:**
 
-  | Question type                                  | Page                 | Mark   |
-  | ---------------------------------------------- | -------------------- | ------ |
-  | product of a Grignard, hydride, Wittig, acetal | main                 | Solves |
-  | how much is hydrate (or enol) at equilibrium   | ~equilibrium-percent | Solves |
-  | steps of the aldol reaction in order           | ~aldol               | Solves |
+  | Question type                                                        | Page                                   | Mark                                               |
+  | -------------------------------------------------------------------- | -------------------------------------- | -------------------------------------------------- |
+  | product of a Grignard, hydride, Wittig, acetal                       | main                                   | Solves                                             |
+  | how much is hydrate (or enol) at equilibrium                         | ~equilibrium-percent                   | Solves                                             |
+  | steps of the aldol reaction in order                                 | ~aldol                                 | Solves                                             |
+  | pKₐ of α-hydrogens; which base deprotonates a carbonyl fully         | `organic-1#0~pka-equilibrium` (linked) | Partly                                             |
+  | mechanisms of condensations, conjugate additions, enolate alkylation | —                                      | No (see "Not in the taxonomy": enolate alkylation) |
 
 - **Main — BUILD `he.chemistry.organic-2#1` (sort):** bins "Primary alcohol", "Secondary
   alcohol", "Tertiary alcohol", "Alkene", "Acetal", "Imine". Cards: methanal + CH₃MgBr, then
@@ -730,11 +761,12 @@ MIT OCW 5.13.
   acyl substitution; acid halides, anhydrides, esters, amides).
 - **Tests ask:**
 
-  | Question type                                   | Page               | Mark   |
-  | ----------------------------------------------- | ------------------ | ------ |
-  | rank derivatives by reactivity                  | main               | Solves |
-  | product of an acyl substitution                 | ~acyl-substitution | Solves |
-  | percent ionized at a pH; compare acid strengths | ~ionized           | Solves |
+  | Question type                                                                      | Page                       | Mark   |
+  | ---------------------------------------------------------------------------------- | -------------------------- | ------ |
+  | rank derivatives by reactivity                                                     | main                       | Solves |
+  | product of an acyl substitution                                                    | ~acyl-substitution         | Solves |
+  | percent ionized at a pH; compare acid strengths                                    | ~ionized                   | Solves |
+  | mechanism of nucleophilic acyl substitution; isotope-labelling evidence [new-page] | `organic-2#2` (a sequence) | No     |
 
 - **Main — BUILD `he.chemistry.organic-2#2` (sequence):** "Order from most to least reactive
   toward a nucleophile": acid chloride, acid anhydride, thioester, ester, amide, carboxylate.
@@ -757,12 +789,14 @@ MIT OCW 5.13.
   heterocycles, extraction).
 - **Tests ask:**
 
-  | Question type                              | Page                  | Mark   |
-  | ------------------------------------------ | --------------------- | ------ |
-  | rank amines by basicity                    | main                  | Solves |
-  | primary, secondary, tertiary or quaternary | ~classify             | Solves |
-  | which layer an amine is in at a pH         | ~extraction           | Solves |
-  | percent protonated at pH 7.4               | `organic-2#2~ionized` | Solves |
+  | Question type                                                                                           | Page                    | Mark   |
+  | ------------------------------------------------------------------------------------------------------- | ----------------------- | ------ |
+  | rank amines by basicity                                                                                 | main                    | Solves |
+  | primary, secondary, tertiary or quaternary                                                              | ~classify               | Solves |
+  | which layer an amine is in at a pH                                                                      | ~extraction             | Solves |
+  | percent protonated at pH 7.4                                                                            | `organic-2#2~ionized`   | Solves |
+  | reactions of amines: diazonium and Sandmeyer products; Hofmann elimination and rearrangement [new-page] | ~amine-reactions (sort) | No     |
+  | judge or design an amine synthesis                                                                      | `organic-2#4`           | No     |
 
 - **Main — BUILD `he.chemistry.organic-2#3` (sequence):** "Order from strongest base to
   weakest": dimethylamine, ammonia, pyridine, aniline, pyrrole (conjugate-acid pKₐ about 10.7,
@@ -819,13 +853,15 @@ MIT OCW 5.35 (lab notes).
 - **Refresh:** `s.10.measurement~accuracy`; the statistics pages of `m.12` (normal curve).
 - **Tests ask:**
 
-  | Question type                                  | Page         | Mark                      |
-  | ---------------------------------------------- | ------------ | ------------------------- |
-  | 95% confidence interval of a mean              | main         | Solves (⏳ P19)           |
-  | uncertainty of a computed result               | ~propagation | Solves                    |
-  | may a suspect value be rejected (Q test)       | ~q-test      | Solves                    |
-  | does a mean differ from a known value (t-test) | ~t-test      | Solves (⏳ P19)           |
-  | mean and s from a list of replicates           | main         | Partly (E13: a data list) |
+  | Question type                                                                      | Page         | Mark                      |
+  | ---------------------------------------------------------------------------------- | ------------ | ------------------------- |
+  | 95% confidence interval of a mean                                                  | main         | Solves (⏳ P19)           |
+  | uncertainty of a computed result                                                   | ~propagation | Solves                    |
+  | may a suspect value be rejected (Q test)                                           | ~q-test      | Solves                    |
+  | does a mean differ from a known value (t-test)                                     | ~t-test      | Solves (⏳ P19)           |
+  | mean and s from a list of replicates                                               | main         | Partly (E13: a data list) |
+  | descriptive statistics and normal-distribution fractions from a data list          | main         | Partly (E13: a data list) |
+  | detection, identification and quantitation limits from blank replicates [new-page] | ~lod         | No                        |
 
 - **Main — BUILD `he.chemistry.analytical#0` (⏳ P19):** `normalCurve` with `family: 't', df`.
   Values: measurements n (whole, 2–30), mean x̄, standard deviation s, t for n − 1 degrees of
@@ -857,13 +893,15 @@ MIT OCW 5.35 (lab notes).
 - **Refresh:** `gen-chem-2#2~equivalence-ph`, `s.10.acids-bases~titration`.
 - **Tests ask:**
 
-  | Question type                                 | Page            | Mark           |
-  | --------------------------------------------- | --------------- | -------------- |
-  | standardize NaOH with KHP                     | main            | Solves         |
-  | analyte from a back titration (antacid)       | ~back-titration | Solves         |
-  | water hardness by EDTA (mg/L CaCO₃)           | ~edta           | Solves         |
-  | equivalence volumes and pH of a diprotic acid | ~polyprotic     | Solves (⏳ P6) |
-  | choose an indicator                           | ~indicator      | Solves         |
+  | Question type                                                                                        | Page                  | Mark           |
+  | ---------------------------------------------------------------------------------------------------- | --------------------- | -------------- |
+  | standardize NaOH with KHP                                                                            | main                  | Solves         |
+  | analyte from a back titration (antacid)                                                              | ~back-titration       | Solves         |
+  | water hardness by EDTA (mg/L CaCO₃)                                                                  | ~edta                 | Solves         |
+  | equivalence volumes and pH of a diprotic acid                                                        | ~polyprotic           | Solves (⏳ P6) |
+  | choose an indicator                                                                                  | ~indicator            | Solves         |
+  | redox, iodometric and precipitation titrations: % of analyte from volumes and mole ratios [new-page] | ~redox-titration      | No             |
+  | calculate or sketch a titration curve; end point from derivative or Gran plots                       | `analytical#1` (main) | Partly         |
 
 - **Main — BUILD `he.chemistry.analytical#1`:** `phScale` titration (from
   `g.s10-acids-bases-weak-titration`; acid KHP, Kₐ 3.9 × 10⁻⁶, `name: 'KHP'`). Values: KHP mass
@@ -900,13 +938,15 @@ MIT OCW 5.35 (lab notes).
   (Beer's law, mixtures).
 - **Tests ask:**
 
-  | Question type                                  | Page               | Mark         |
-  | ---------------------------------------------- | ------------------ | ------------ |
-  | absorbance, %T, ε or c from Beer's law         | main               | Solves       |
-  | unknown from a calibration line, with dilution | ~calibration       | Solves       |
-  | two absorbing species at two wavelengths       | ~mixture           | Solves       |
-  | standard addition                              | ~standard-addition | Solves       |
-  | least-squares line from standards              | ~calibration       | Partly (E13) |
+  | Question type                                                                                                      | Page               | Mark         |
+  | ------------------------------------------------------------------------------------------------------------------ | ------------------ | ------------ |
+  | absorbance, %T, ε or c from Beer's law                                                                             | main               | Solves       |
+  | unknown from a calibration line, with dilution                                                                     | ~calibration       | Solves       |
+  | two absorbing species at two wavelengths                                                                           | ~mixture           | Solves       |
+  | standard addition                                                                                                  | ~standard-addition | Solves       |
+  | least-squares line from standards                                                                                  | ~calibration       | Partly (E13) |
+  | single-point standardization; internal standard; fluorescence or emission proportional to concentration [new-page] | ~internal-standard | No           |
+  | complex stoichiometry by continuous variations, mole ratio or slope ratio [new-page]                               | ~job               | No           |
 
 - **Main — BUILD `he.chemistry.analytical#2`:** `functionGraph` linear (interim: A against c,
   slope εb, the point marked; P16 draws the cuvette and the light). Values: molar absorptivity
@@ -936,12 +976,13 @@ MIT OCW 5.35 (lab notes).
   GC, HPLC, ion-exchange and size-exclusion).
 - **Tests ask:**
 
-  | Question type                                     | Page         | Mark           |
-  | ------------------------------------------------- | ------------ | -------------- |
-  | resolution, retention factor, selectivity, plates | main         | Solves (⏳ P5) |
-  | best flow rate from the van Deemter equation      | ~van-deemter | Solves         |
-  | plates needed for a resolution                    | ~purnell     | Solves         |
-  | which technique for a sample                      | ~technique   | Solves         |
+  | Question type                                                                                        | Page         | Mark           |
+  | ---------------------------------------------------------------------------------------------------- | ------------ | -------------- |
+  | resolution, retention factor, selectivity, plates                                                    | main         | Solves (⏳ P5) |
+  | best flow rate from the van Deemter equation                                                         | ~van-deemter | Solves         |
+  | plates needed for a resolution                                                                       | ~purnell     | Solves         |
+  | which technique for a sample                                                                         | ~technique   | Solves         |
+  | quantitation by calibration or internal standard; Kovats index; size-exclusion molar mass [new-page] | ~quant       | No             |
 
 - **Main — BUILD `he.chemistry.analytical#3` (⏳ P5):** `instrumentTrace` `chromatogram`.
   Values: dead time t_M (min), retention times t₁, t₂, base widths w₁, w₂, resolution R,
@@ -970,12 +1011,13 @@ MIT OCW 5.35 (lab notes).
   electrodes, coulometry, voltammetry).
 - **Tests ask:**
 
-  | Question type                                   | Page                        | Mark                           |
-  | ----------------------------------------------- | --------------------------- | ------------------------------ |
-  | concentration from an ion-selective electrode   | main                        | Solves                         |
-  | calibrate a pH meter with two buffers           | ~ph-meter                   | Solves                         |
-  | moles from a constant-current (coulometric) run | `gen-chem-2#4~electrolysis` | Solves (⏳ P9)                 |
-  | current in voltammetry against concentration    | —                           | No (see "Not in the taxonomy") |
+  | Question type                                                 | Page                                 | Mark                           |
+  | ------------------------------------------------------------- | ------------------------------------ | ------------------------------ |
+  | concentration from an ion-selective electrode                 | main                                 | Solves                         |
+  | calibrate a pH meter with two buffers                         | ~ph-meter                            | Solves                         |
+  | moles from a constant-current (coulometric) run               | `gen-chem-2#4~electrolysis`          | Solves (⏳ P9)                 |
+  | current in voltammetry against concentration                  | —                                    | No (see "Not in the taxonomy") |
+  | controlled-potential coulometry: moles and purity from charge | `gen-chem-2#4~electrolysis` (linked) | Solves                         |
 
 - **Main — BUILD `he.chemistry.analytical#4`:** `functionGraph` linear (E against log c, slope
   0.05916 ÷ z, the standard and the sample marked). Values: ion charge z (allowed ±1, ±2),
@@ -1005,13 +1047,18 @@ Calculus is stated once (Decisions) and the steps use the integrated forms.
   rebuilt), `gen-chem-2#3`.
 - **Tests ask:**
 
-  | Question type                                        | Page             | Mark   |
-  | ---------------------------------------------------- | ---------------- | ------ |
-  | w, q, ΔU, ΔS of a reversible isothermal expansion    | main             | Solves |
-  | final T and work of a reversible adiabatic expansion | ~adiabatic       | Solves |
-  | ΔH and ΔS of heating at constant pressure            | ~heating-entropy | Solves |
-  | ΔH at another temperature (Kirchhoff)                | ~kirchhoff       | Solves |
-  | state or path function                               | ~state-functions | Solves |
+  | Question type                                                                  | Page                             | Mark                                                   |
+  | ------------------------------------------------------------------------------ | -------------------------------- | ------------------------------------------------------ |
+  | w, q, ΔU, ΔS of a reversible isothermal expansion                              | main                             | Solves                                                 |
+  | final T and work of a reversible adiabatic expansion                           | ~adiabatic                       | Solves                                                 |
+  | ΔH and ΔS of heating at constant pressure                                      | ~heating-entropy                 | Solves                                                 |
+  | ΔH at another temperature (Kirchhoff)                                          | ~kirchhoff                       | Solves                                                 |
+  | state or path function                                                         | ~state-functions                 | Solves                                                 |
+  | which of q, w, ΔU, ΔH, ΔS are zero; open, closed, isolated; true or false      | ~state-functions (sort)          | Partly                                                 |
+  | q, w, ΔU, ΔH, ΔS around a cycle or for a reversible vs irreversible path       | main                             | Partly (one step at a time)                            |
+  | partition function, populations and entropy of a small system                  | —                                | No (statistical thermodynamics: "Not in the taxonomy") |
+  | real-gas pressure (van der Waals) against ideal                                | `gen-chem-1#2~real-gas` (linked) | Solves                                                 |
+  | reaction enthalpies from formation or bond data; heat exchanged between bodies | `gen-chem-1#3` pages (linked)    | Partly                                                 |
 
 - **Main — BUILD `he.chemistry.physical-1#0`:** `gasPiston` ideal (interim; P11 draws the P–V
   path with the work as the area under it). Values: amount n (mol), T (K), V₁ (L), V₂ (L), work
@@ -1045,12 +1092,13 @@ Calculus is stated once (Decisions) and the steps use the integrated forms.
 - **Refresh:** `s.10.phase-colligative~vapor-pressure`, `s.10.phase-colligative`.
 - **Tests ask:**
 
-  | Question type                                       | Page        | Mark   |
-  | --------------------------------------------------- | ----------- | ------ |
-  | vapor pressure at another T; ΔH_vap from two points | main        | Solves |
-  | slope of the melting line; pressure to melt ice     | ~clapeyron  | Solves |
-  | vapor pressure and vapor composition of a mixture   | ~raoult     | Solves |
-  | degrees of freedom at a point of a phase diagram    | ~phase-rule | Solves |
+  | Question type                                        | Page        | Mark                                  |
+  | ---------------------------------------------------- | ----------- | ------------------------------------- |
+  | vapor pressure at another T; ΔH_vap from two points  | main        | Solves                                |
+  | slope of the melting line; pressure to melt ice      | ~clapeyron  | Solves                                |
+  | vapor pressure and vapor composition of a mixture    | ~raoult     | Solves                                |
+  | degrees of freedom at a point of a phase diagram     | ~phase-rule | Solves                                |
+  | freezing-point depression; mixing; regular solutions | —           | No ("Not in the taxonomy": solutions) |
 
 - **Main — BUILD `he.chemistry.physical-1#1`:** `table` (interim) sweeping T (300, 325, 350,
   375 K) for the vapor pressure; P8 draws the curve through both points. Values ΔH_vap
@@ -1080,11 +1128,13 @@ Calculus is stated once (Decisions) and the steps use the integrated forms.
 - **Refresh:** `gen-chem-2#3` (ΔG° = −RT ln K), `gen-chem-2#1`.
 - **Tests ask:**
 
-  | Question type                           | Page          | Mark   |
-  | --------------------------------------- | ------------- | ------ |
-  | K at another T; ΔH° from K at two T     | main          | Solves |
-  | degree of dissociation from Kp and P    | ~dissociation | Solves |
-  | ionic strength and activity coefficient | ~debye-huckel | Solves |
+  | Question type                                                    | Page                                | Mark   |
+  | ---------------------------------------------------------------- | ----------------------------------- | ------ |
+  | K at another T; ΔH° from K at two T                              | main                                | Solves |
+  | degree of dissociation from Kp and P                             | ~dissociation                       | Solves |
+  | ionic strength and activity coefficient                          | ~debye-huckel                       | Solves |
+  | ΔG = ΔG° + RT ln Q at cell concentrations; ΔΔG from a ratio of K | `gen-chem-2#3~nonstandard` (linked) | Solves |
+  | melting temperature of a DNA duplex from ΔH° and ΔS° [new-page]  | ~melting                            | No     |
 
 - **Main — BUILD `he.chemistry.physical-1#2`:** `functionGraph` linear (ln K against 1/T,
   slope −ΔH°/R, both points marked). Values ΔH° (kJ/mol), K₁, T₁, T₂, K₂. Relation:
@@ -1110,12 +1160,13 @@ Calculus is stated once (Decisions) and the steps use the integrated forms.
 - **Refresh:** `gen-chem-2#0` and its `~arrhenius` (Eₐ and A; not rebuilt here).
 - **Tests ask:**
 
-  | Question type                                         | Page       | Mark                                               |
-  | ----------------------------------------------------- | ---------- | -------------------------------------------------- |
-  | intermediate's concentration; when it peaks (A→B→C)   | main       | Solves                                             |
-  | rate constant from ΔG‡ (Eyring); ΔH‡ and ΔS‡          | ~eyring    | Solves                                             |
-  | unimolecular rate against pressure (steady state)     | ~lindemann | Solves                                             |
-  | rate law from a mechanism with a fast pre-equilibrium | —          | No (a symbolic derivation; see "Engine needs" E10) |
+  | Question type                                                                                      | Page                 | Mark                                               |
+  | -------------------------------------------------------------------------------------------------- | -------------------- | -------------------------------------------------- |
+  | intermediate's concentration; when it peaks (A→B→C)                                                | main                 | Solves                                             |
+  | rate constant from ΔG‡ (Eyring); ΔH‡ and ΔS‡                                                       | ~eyring              | Solves                                             |
+  | unimolecular rate against pressure (steady state)                                                  | ~lindemann           | Solves                                             |
+  | rate law from a mechanism with a fast pre-equilibrium                                              | —                    | No (a symbolic derivation; see "Engine needs" E10) |
+  | order and rate constant from absorbance or heat-flow data; relaxation after a jump; isotope effect | `gen-chem-2#0` pages | Partly                                             |
 
 - **Main — BUILD `he.chemistry.physical-1#3`:** `table` (interim) sweeping t (0, 5, 10, 20, 40 s)
   for [A], [B], [C]; P7 `consecutive` draws the three curves. Values k₁, k₂ (s⁻¹), [A]₀, t,
@@ -1147,11 +1198,13 @@ Theoretical Chemistry (quantum chapters), MIT OCW 5.61.
 - **Refresh:** `gen-chem-1#0~de-broglie`, `~uncertainty`.
 - **Tests ask:**
 
-  | Question type                                        | Page           | Mark                          |
-  | ---------------------------------------------------- | -------------- | ----------------------------- |
-  | energy and momentum of a free particle from λ or k   | main           | Solves                        |
-  | is f an eigenfunction of an operator; its eigenvalue | ~eigenfunction | Solves (which, not the value) |
-  | normalize a wavefunction; ⟨x⟩                        | —              | No (symbolic integrals, E10)  |
+  | Question type                                                                               | Page                                      | Mark                          |
+  | ------------------------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------- |
+  | energy and momentum of a free particle from λ or k                                          | main                                      | Solves                        |
+  | is f an eigenfunction of an operator; its eigenvalue                                        | ~eigenfunction                            | Solves (which, not the value) |
+  | normalize a wavefunction; ⟨x⟩                                                               | —                                         | No (symbolic integrals, E10)  |
+  | photon momentum, photons in a pulse, photoelectric h and φ from a plot                      | `s.11.modern-physics~photoelectric`, main | Partly                        |
+  | operators: Hermitian, commutators, acceptable wavefunctions; measurement of a superposition | ~eigenfunction                            | Partly (which, not proofs)    |
 
 - **Main — BUILD `he.chemistry.physical-2#0`:** `functionGraph` cos (the real part of e^(ikx),
   `marks: ['period']`, period λ). Values: mass m (allowed electron, proton, neutron; or typed),
@@ -1170,11 +1223,13 @@ Theoretical Chemistry (quantum chapters), MIT OCW 5.61.
 - **Textbooks:** 5.61 (the box, conjugated dyes, the harmonic oscillator, zero-point energy).
 - **Tests ask:**
 
-  | Question type                                        | Page         | Mark           |
-  | ---------------------------------------------------- | ------------ | -------------- |
-  | energy levels; wavelength of a transition; a dye     | main         | Solves (⏳ P1) |
-  | probability of finding it in part of the box         | ~probability | Solves         |
-  | vibrational frequency, wavenumber, zero-point energy | ~oscillator  | Solves (⏳ P1) |
+  | Question type                                                                | Page         | Mark               |
+  | ---------------------------------------------------------------------------- | ------------ | ------------------ |
+  | energy levels; wavelength of a transition; a dye                             | main         | Solves (⏳ P1)     |
+  | probability of finding it in part of the box                                 | ~probability | Solves             |
+  | vibrational frequency, wavenumber, zero-point energy                         | ~oscillator  | Solves (⏳ P1)     |
+  | wavepackets, ladder-operator integrals, perturbation corrections, tunnelling | —            | No (symbolic; E10) |
+  | degeneracies of a 3-D box                                                    | main         | Partly (1-D only)  |
 
 - **Main — BUILD `he.chemistry.physical-2#1` (⏳ P1):** `orbitalDiagram` mode `well` (`model:
 'box'`). Values: mass m (default electron), box length L (nm), lower level n₁, upper level n₂,
@@ -1200,11 +1255,12 @@ Theoretical Chemistry (quantum chapters), MIT OCW 5.61.
 - **Refresh:** `gen-chem-1#0` (Rydberg lines).
 - **Tests ask:**
 
-  | Question type                                    | Page             | Mark           |
-  | ------------------------------------------------ | ---------------- | -------------- |
-  | energy, nodes and degeneracy of an orbital (He⁺) | main             | Solves (⏳ P2) |
-  | mean and most probable radius                    | ~radius          | Solves (⏳ P2) |
-  | which quantum-number sets are allowed            | ~quantum-numbers | Solves         |
+  | Question type                                                      | Page             | Mark                                            |
+  | ------------------------------------------------------------------ | ---------------- | ----------------------------------------------- |
+  | energy, nodes and degeneracy of an orbital (He⁺)                   | main             | Solves (⏳ P2)                                  |
+  | mean and most probable radius                                      | ~radius          | Solves (⏳ P2)                                  |
+  | which quantum-number sets are allowed                              | ~quantum-numbers | Solves                                          |
+  | many-electron atoms; quantum defects; finite-mass Rydberg constant | —                | No ("Not in the taxonomy": many-electron atoms) |
 
 - **Main — BUILD `he.chemistry.physical-2#2` (⏳ P2):** `orbitalDiagram` ladder with `Z`. Values:
   nuclear charge Z (1–10), n (1–10), l (0 to n − 1), energy E (eV), radial nodes, angular
@@ -1226,11 +1282,12 @@ Theoretical Chemistry (quantum chapters), MIT OCW 5.61.
 - **Refresh:** `gen-chem-1#4~bond-order` (diatomic MO diagrams and bond order; not rebuilt).
 - **Tests ask:**
 
-  | Question type                                       | Page      | Mark           |
-  | --------------------------------------------------- | --------- | -------------- |
-  | bonding and antibonding energies of two AOs (2 × 2) | main      | Solves         |
-  | Hückel energies; delocalization energy of a ring    | ~huckel   | Solves (⏳ P3) |
-  | σ, σ*, π or π* from how two orbitals overlap        | ~mo-types | Solves         |
+  | Question type                                                                      | Page      | Mark           |
+  | ---------------------------------------------------------------------------------- | --------- | -------------- |
+  | bonding and antibonding energies of two AOs (2 × 2)                                | main      | Solves         |
+  | Hückel energies; delocalization energy of a ring                                   | ~huckel   | Solves (⏳ P3) |
+  | σ, σ*, π or π* from how two orbitals overlap                                       | ~mo-types | Solves         |
+  | LCAO energies from Coulomb, exchange and overlap integrals; matrix diagonalization | main      | Solves         |
 
 - **Main — BUILD `he.chemistry.physical-2#3`:** `matrixGrid` (interim: the secular determinant
   |α_A − E, β; β, α_B − E| = 0; P3 `heteronuclear` draws the two AO levels and the MOs). Values
@@ -1255,12 +1312,14 @@ Theoretical Chemistry (quantum chapters), MIT OCW 5.61.
   vibrational spectra in #1).
 - **Tests ask:**
 
-  | Question type                                   | Page             | Mark           |
-  | ----------------------------------------------- | ---------------- | -------------- |
-  | B, I, bond length from line spacing (microwave) | main             | Solves (⏳ P5) |
-  | population ratio of two levels                  | ~boltzmann       | Solves         |
-  | allowed or forbidden transition                 | ~selection-rules | Solves         |
-  | absorbance and concentration (UV–vis)           | `analytical#2`   | Solves         |
+  | Question type                                                                                         | Page                                   | Mark                            |
+  | ----------------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------- |
+  | B, I, bond length from line spacing (microwave)                                                       | main                                   | Partly (⏳ P5)                  |
+  | population ratio of two levels                                                                        | ~boltzmann                             | Solves                          |
+  | allowed or forbidden transition                                                                       | ~selection-rules                       | Solves                          |
+  | absorbance and concentration (UV–vis)                                                                 | `analytical#2`                         | Solves                          |
+  | reduced mass and force constant from a wavenumber; ω_e and ω_e x_e from overtones; Morse k [new-page] | `physical-2#1~oscillator`, ~anharmonic | Partly                          |
+  | P and R branches; B and D from line positions; combination differences                                | main                                   | Partly (main: B from a spacing) |
 
 - **Main — BUILD `he.chemistry.physical-2#4` (⏳ P5, `rotational`):** values m₁, m₂ (u), μ (kg),
   bond length r (pm), moment of inertia I (kg·m²), rotational constant B (cm⁻¹), lower level J,
@@ -1290,13 +1349,15 @@ For All (protein structure, catalysis, energy, metabolism); MIT OCW 5.07SC.
 - **Refresh:** `s.9.biomolecules` (macromolecules), `organic-2#2~ionized`.
 - **Tests ask:**
 
-  | Question type                                      | Page        | Mark                                               |
-  | -------------------------------------------------- | ----------- | -------------------------------------------------- |
-  | isoelectric point of an amino acid                 | main        | Solves                                             |
-  | net charge of an amino acid at a pH                | main        | Solves                                             |
-  | which level of structure a feature belongs to      | ~levels     | Solves                                             |
-  | length of a helix or strand of n residues          | ~dimensions | Solves                                             |
-  | net charge of a peptide (several ionizable groups) | —           | Partly (main takes one side chain; E11 for a list) |
+  | Question type                                                       | Page                                   | Mark                                               |
+  | ------------------------------------------------------------------- | -------------------------------------- | -------------------------------------------------- |
+  | isoelectric point of an amino acid                                  | main                                   | Solves                                             |
+  | net charge of an amino acid at a pH                                 | main                                   | Solves                                             |
+  | which level of structure a feature belongs to                       | ~levels                                | Solves                                             |
+  | length of a helix or strand of n residues                           | ~dimensions                            | Solves                                             |
+  | net charge of a peptide (several ionizable groups)                  | —                                      | Partly (main takes one side chain; E11 for a list) |
+  | peptide sequence from composition and cleavage fragments [new-page] | ~sequencing                            | No                                                 |
+  | oxygen binding and cooperativity (allosteric effector)              | `he.biology.cell-molecular#1` (linked) | Partly                                             |
 
 - **Main — BUILD `he.chemistry.biochemistry#0`:** `phScale` (interim, the pH and the pI marked;
   P6 draws the amino acid's titration curve). Values: α-carboxyl pKₐ₁, α-amino pKₐ₂, side-chain
@@ -1324,13 +1385,15 @@ For All (protein structure, catalysis, energy, metabolism); MIT OCW 5.07SC.
   Lineweaver–Burk); 5.07SC.
 - **Tests ask:**
 
-  | Question type                                       | Page             | Mark   |
-  | --------------------------------------------------- | ---------------- | ------ |
-  | rate at a substrate level; V_max from k_cat and [E] | main             | Solves |
-  | K_m and V_max from two (or more) rate readings      | ~lineweaver      | Solves |
-  | rate with an inhibitor; apparent K_m and V_max      | ~inhibition      | Solves |
-  | which inhibitor type a graph or result shows        | ~inhibitor-types | Solves |
-  | specificity constant k_cat/K_m                      | main             | Solves |
+  | Question type                                                             | Page             | Mark   |
+  | ------------------------------------------------------------------------- | ---------------- | ------ |
+  | rate at a substrate level; V_max from k_cat and [E]                       | main             | Solves |
+  | K_m and V_max from two (or more) rate readings                            | ~lineweaver      | Solves |
+  | rate with an inhibitor; apparent K_m and V_max                            | ~inhibition      | Solves |
+  | which inhibitor type a graph or result shows                              | ~inhibitor-types | Solves |
+  | specificity constant k_cat/K_m                                            | main             | Solves |
+  | K_d, ΔG° of binding, k_on and k_off; IC₅₀ and Kᵢ                          | ~inhibition      | Partly |
+  | catalytic mechanism of an enzyme (curved arrows; transition-state mimics) | —                | No     |
 
 - **Main — BUILD `he.chemistry.biochemistry#1`:** `functionGraph` rational (`a: 'V', zeros: [0],
 poles: [-Km]` from a derived value, `marks: ['asymptotes']`, `at` the point). Values total
@@ -1367,12 +1430,13 @@ poles: [-Km]` from a derived value, `marks: ['asymptotes']`, `at` the point). Va
 - **Refresh:** `s.9.cellular-energy` (the `organelleEnergy` explore).
 - **Tests ask:**
 
-  | Question type                                    | Page            | Mark   |
-  | ------------------------------------------------ | --------------- | ------ |
-  | glycolysis steps and enzymes in order            | main            | Solves |
-  | citric acid cycle in order; where NADH, CO₂ form | ~krebs          | Solves |
-  | ATP from one glucose (with either shuttle)       | ~atp-yield      | Solves |
-  | ATP from a fatty acid                            | ~beta-oxidation | Solves |
+  | Question type                                                                          | Page                        | Mark   |
+  | -------------------------------------------------------------------------------------- | --------------------------- | ------ |
+  | glycolysis steps and enzymes in order                                                  | main                        | Solves |
+  | citric acid cycle in order; where NADH, CO₂ form                                       | ~krebs                      | Solves |
+  | ATP from one glucose (with either shuttle)                                             | ~atp-yield                  | Solves |
+  | ATP from a fatty acid                                                                  | ~beta-oxidation             | Solves |
+  | cofactor mechanisms; isotope tracing through pathways; regulation from activity curves | main and ~krebs (sequences) | Partly |
 
 - **Main — BUILD `he.chemistry.biochemistry#2` (sequence):** "Glycolysis, from glucose": hexokinase
   (glucose → glucose 6-phosphate, uses ATP); phosphoglucose isomerase (→ fructose 6-phosphate);
@@ -1409,12 +1473,13 @@ poles: [-Km]` from a derived value, `marks: ['asymptotes']`, `at` the point). Va
 - **Refresh:** `gen-chem-2#3~nonstandard`, `gen-chem-2#4~free-energy-k`.
 - **Tests ask:**
 
-  | Question type                                      | Page           | Mark            |
-  | -------------------------------------------------- | -------------- | --------------- |
-  | ΔG of ATP hydrolysis in a cell                     | main           | Solves          |
-  | ΔG°′ and K′ of a coupled reaction                  | ~coupled       | Solves (⏳ P15) |
-  | ΔG°′ from reduction potentials (NADH → O₂)         | ~redox         | Solves          |
-  | free energy of moving one H⁺ (proton-motive force) | ~proton-motive | Solves          |
+  | Question type                                                                                | Page           | Mark            |
+  | -------------------------------------------------------------------------------------------- | -------------- | --------------- |
+  | ΔG of ATP hydrolysis in a cell                                                               | main           | Solves          |
+  | ΔG°′ and K′ of a coupled reaction                                                            | ~coupled       | Solves (⏳ P15) |
+  | ΔG°′ from reduction potentials (NADH → O₂)                                                   | ~redox         | Solves          |
+  | free energy of moving one H⁺ (proton-motive force)                                           | ~proton-motive | Solves          |
+  | maximum ATP from ΔG and E°′ (ATP made per electron pair); far-from-equilibrium steps from ΔG | ~redox         | Partly          |
 
 - **Main — BUILD `he.chemistry.biochemistry#3`:** `none` (P23 later). Values ΔG°′ (kJ/mol,
   default −30.5), T (K, default 310.15), [ATP], [ADP], [Pᵢ] (mM), Q, ΔG. Relations: Q = [ADP][Pᵢ]
@@ -1451,12 +1516,13 @@ the general-chemistry level; MIT OCW 5.03 and 5.04.
 - **Refresh:** `gen-chem-1#4` (shapes).
 - **Tests ask:**
 
-  | Question type                                   | Page               | Mark                               |
-  | ----------------------------------------------- | ------------------ | ---------------------------------- |
-  | point group of a molecule                       | main               | Solves                             |
-  | reduce Γ; how many IR-active vibrations (C₂ᵥ)   | ~reduce            | Solves                             |
-  | the order of questions in the point-group chart | ~point-group-steps | Solves                             |
-  | reduce Γ in C₃ᵥ, D₄ₕ …                          | —                  | Partly (E9: more character tables) |
+  | Question type                                                             | Page               | Mark                               |
+  | ------------------------------------------------------------------------- | ------------------ | ---------------------------------- |
+  | point group of a molecule                                                 | main               | Solves                             |
+  | reduce Γ; how many IR-active vibrations (C₂ᵥ)                             | ~reduce            | Solves                             |
+  | the order of questions in the point-group chart                           | ~point-group-steps | Solves                             |
+  | reduce Γ in C₃ᵥ, D₄ₕ …                                                    | —                  | Partly (E9: more character tables) |
+  | matrix representations, group tables, SALCs, IR/Raman activity beyond C₂ᵥ | ~reduce            | Partly (E9)                        |
 
 - **Main — BUILD `he.chemistry.inorganic#0` (sort):** bins C₂ᵥ, C₃ᵥ, D₃ₕ, T_d, D₄ₕ, O_h, D∞h,
   C∞v (`pickBar: true`). Cards (`molecule` card where drawn; text with the shape named until
@@ -1480,12 +1546,15 @@ the general-chemistry level; MIT OCW 5.03 and 5.04.
   and organometallic chapters (the 18-electron rule).
 - **Tests ask:**
 
-  | Question type                                 | Page               | Mark                                |
-  | --------------------------------------------- | ------------------ | ----------------------------------- |
-  | oxidation state, d count, coordination number | main               | Solves                              |
-  | does a complex obey the 18-electron rule      | ~eighteen-electron | Solves                              |
-  | which isomers a complex has                   | ~isomers           | Solves                              |
-  | name a complex                                | —                  | No (naming rules; a later sequence) |
+  | Question type                                                                 | Page                     | Mark                                |
+  | ----------------------------------------------------------------------------- | ------------------------ | ----------------------------------- |
+  | oxidation state, d count, coordination number                                 | main                     | Solves                              |
+  | does a complex obey the 18-electron rule                                      | ~eighteen-electron       | Solves                              |
+  | which isomers a complex has                                                   | ~isomers                 | Solves                              |
+  | name a complex                                                                | —                        | No (naming rules; a later sequence) |
+  | MO diagrams of complexes from fragment orbitals (σ donation, π back-donation) | —                        | No                                  |
+  | stoichiometry of a complex by continuous variations                           | `analytical#2~job` (new) | No                                  |
+  | chelate and macrocyclic effects on stability                                  | —                        | No                                  |
 
 - **Main — BUILD `he.chemistry.inorganic#1`:** `none` (P13 `complex` later). Values: charge of
   the complex ion q (−4 to 4), total ligand charge (−6 to 0), metal oxidation state, metal group
@@ -1507,11 +1576,13 @@ the general-chemistry level; MIT OCW 5.03 and 5.04.
   state, spectrochemical series).
 - **Tests ask:**
 
-  | Question type                                   | Page             | Mark           |
-  | ----------------------------------------------- | ---------------- | -------------- |
-  | high or low spin; unpaired electrons; CFSE; μ   | main             | Solves (⏳ P4) |
-  | Δₒ from the absorbed wavelength; the color seen | ~color           | Solves         |
-  | rank ligands by field strength                  | ~spectrochemical | Solves         |
+  | Question type                                                      | Page             | Mark                                           |
+  | ------------------------------------------------------------------ | ---------------- | ---------------------------------------------- |
+  | high or low spin; unpaired electrons; CFSE; μ                      | main             | Solves (⏳ P4)                                 |
+  | Δₒ from the absorbed wavelength; the color seen                    | ~color           | Solves                                         |
+  | rank ligands by field strength                                     | ~spectrochemical | Solves                                         |
+  | assign d–d bands with a Tanabe–Sugano diagram; Jahn–Teller         | —                | No ("Not in the taxonomy": electronic spectra) |
+  | shapes of d orbitals and their energies in a linear or other field | —                | No                                             |
 
 - **Main — BUILD `he.chemistry.inorganic#2` (⏳ P4, E8):** `orbitalDiagram` mode `crystalField`.
   Values d electrons (0–10), splitting Δₒ (cm⁻¹), pairing energy P (cm⁻¹), electrons in t₂g,
@@ -1536,12 +1607,15 @@ the general-chemistry level; MIT OCW 5.03 and 5.04.
 - **Refresh:** `gen-chem-1#4~born-haber`.
 - **Tests ask:**
 
-  | Question type                                           | Page          | Mark            |
-  | ------------------------------------------------------- | ------------- | --------------- |
-  | density, radius or edge from the unit cell              | main          | Solves (⏳ P17) |
-  | coordination number from the radius ratio; NaCl density | ~radius-ratio | Solves (⏳ P17) |
-  | diffraction angle or spacing (Bragg)                    | ~bragg        | Solves          |
-  | lattice energy from Born–Landé                          | ~born-lande   | Solves          |
+  | Question type                                                                                 | Page                           | Mark                                       |
+  | --------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------ |
+  | density, radius or edge from the unit cell                                                    | main                           | Solves (⏳ P17)                            |
+  | coordination number from the radius ratio; NaCl density                                       | ~radius-ratio                  | Solves (⏳ P17)                            |
+  | diffraction angle or spacing (Bragg)                                                          | ~bragg                         | Solves                                     |
+  | lattice energy from Born–Landé                                                                | ~born-lande                    | Solves                                     |
+  | packing fraction; structure type and coordination from a layer sequence or unit-cell sections | main                           | Partly                                     |
+  | Born–Haber with the Kapustinskii equation; stability of a salt                                | ~born-lande                    | Partly (Kapustinskii form not on the page) |
+  | band structure of a chain; metal or insulator                                                 | `physical-2#3~huckel` (linked) | Partly                                     |
 
 - **Main — BUILD `he.chemistry.inorganic#3` (⏳ P17):** `unitCell`. Values: lattice (allowed
   simple, body-centered, face-centered cubic; E11), atoms per cell Z (1, 2, 4), atomic radius r

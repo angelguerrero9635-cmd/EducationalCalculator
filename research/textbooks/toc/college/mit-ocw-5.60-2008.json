@@ -1,0 +1,226 @@
+{
+  "id": "mit-ocw-5.60-2008",
+  "curriculum": "MIT OCW 5.60 Thermodynamics & Kinetics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2008",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Keith A. Nelson and Moungi Bawendi. 5.60 Thermodynamics & Kinetics. Spring 2008. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-60-thermodynamics-kinetics-spring-2008/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Lecture list from the course pages; notation from the lecture notes. Question types for physical-1 come from 20.110J (same instructors).",
+  "books": [
+    {
+      "course": "5.60",
+      "url": "https://ocw.mit.edu/courses/5-60-thermodynamics-kinetics-spring-2008/",
+      "units": [
+        {
+          "n": "L",
+          "title": "Lectures",
+          "topics": [
+            "he.chemistry.physical-1#0",
+            "he.chemistry.physical-1#1",
+            "he.chemistry.physical-1#2",
+            "he.chemistry.physical-1#3"
+          ],
+          "notation": [
+            "w = −p_ext ΔV: positive work is work done on the system (lecture 2 notes)",
+            "ΔU = q + w"
+          ],
+          "notes": "Statistical mechanics (L24–28) has no taxonomy topic (plan gap). No exams or problem sets are published for this run (only exam information sheets and a kinetics summary).",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "State of a system, 0th law, equation of state",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "2",
+              "title": "Work, heat, first law",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "3",
+              "title": "Internal energy, expansion work",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "4",
+              "title": "Enthalpy",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "5",
+              "title": "Adiabatic changes",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "6",
+              "title": "Thermochemistry",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "7",
+              "title": "Calorimetry",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "8",
+              "title": "Second law",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "9",
+              "title": "Entropy and the Clausius inequality",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "10",
+              "title": "Entropy and irreversibility",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "11",
+              "title": "Fundamental equation, absolute S, third law",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "12",
+              "title": "Criteria for spontaneous change",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "13",
+              "title": "Gibbs free energy",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "14",
+              "title": "Multicomponent systems, chemical potential",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "15",
+              "title": "Chemical equilibrium",
+              "topics": ["he.chemistry.physical-1#2"]
+            },
+            {
+              "n": "16",
+              "title": "Temperature, pressure and Kp",
+              "topics": ["he.chemistry.physical-1#2"]
+            },
+            {
+              "n": "17",
+              "title": "Equilibrium: application to drug design",
+              "topics": ["he.chemistry.physical-1#2"]
+            },
+            {
+              "n": "18",
+              "title": "Phase equilibria: one component",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "19",
+              "title": "Clausius–Clapeyron equation",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "20",
+              "title": "Phase equilibria: two components",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "21",
+              "title": "Ideal solutions",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "22",
+              "title": "Non-ideal solutions",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "23",
+              "title": "Colligative properties",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "24",
+              "title": "Introduction to statistical mechanics",
+              "topics": []
+            },
+            {
+              "n": "25",
+              "title": "Partition function q: large N limit",
+              "topics": []
+            },
+            {
+              "n": "26",
+              "title": "Partition function q: many particles",
+              "topics": []
+            },
+            {
+              "n": "27",
+              "title": "Statistical mechanics and discrete energy levels",
+              "topics": []
+            },
+            {
+              "n": "28",
+              "title": "Model systems",
+              "topics": []
+            },
+            {
+              "n": "29",
+              "title": "Applications: chemical and phase equilibria",
+              "topics": ["he.chemistry.physical-1#2", "he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "30",
+              "title": "Introduction to reaction kinetics",
+              "topics": ["he.chemistry.physical-1#3"]
+            },
+            {
+              "n": "31",
+              "title": "Complex reactions and mechanisms",
+              "topics": ["he.chemistry.physical-1#3"]
+            },
+            {
+              "n": "32",
+              "title": "Steady-state and equilibrium approximations",
+              "topics": ["he.chemistry.physical-1#3"]
+            },
+            {
+              "n": "33",
+              "title": "Chain reactions",
+              "topics": ["he.chemistry.physical-1#3"]
+            },
+            {
+              "n": "34",
+              "title": "Temperature dependence, Eₐ, catalysis",
+              "topics": ["he.chemistry.physical-1#3"]
+            },
+            {
+              "n": "35",
+              "title": "Enzyme catalysis",
+              "topics": ["he.chemistry.physical-1#3", "he.chemistry.biochemistry#1"]
+            },
+            {
+              "n": "36",
+              "title": "Autocatalysis and oscillators",
+              "topics": ["he.chemistry.physical-1#3"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

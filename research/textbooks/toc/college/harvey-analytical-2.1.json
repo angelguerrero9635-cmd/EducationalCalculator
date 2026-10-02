@@ -1,0 +1,913 @@
+{
+  "id": "harvey-analytical-2.1",
+  "curriculum": "Harvey, Analytical Chemistry 2.1",
+  "publisher": "David Harvey (DePauw University); LibreTexts edition",
+  "edition": "2.1 (2016; LibreTexts web edition)",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "David Harvey, Analytical Chemistry 2.1. LibreTexts. License: CC BY-NC-SA 4.0 (license:ccbyncsa on every chapter and section page)."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA). Chapters 1–15 and their sections as listed on LibreTexts (chapter 16, the appendix, not listed). Examples, ranges and notation are our words from the section pages' worked examples; no problem text or number copied. The Open Textbook Library page (open.umn.edu, textbook \"analytical-chemistry-2-1\") lists the same book as CC BY-NC-SA.",
+  "books": [
+    {
+      "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction to Analytical Chemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/01%3A_Introduction_to_Analytical_Chemistry",
+          "topics": [],
+          "notes": "Introduction; no topic.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "What is Analytical Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/01%3A_Introduction_to_Analytical_Chemistry/1.01%3A_What_is_Analytical_Chemistry"
+            },
+            {
+              "n": "1.2",
+              "title": "The Analytical Perspective",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/01%3A_Introduction_to_Analytical_Chemistry/1.02%3A_The_Analytical_Perspective"
+            },
+            {
+              "n": "1.3",
+              "title": "Common Analytical Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/01%3A_Introduction_to_Analytical_Chemistry/1.03%3A_Common_Analytical_Problems"
+            },
+            {
+              "n": "1.4",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/01%3A_Introduction_to_Analytical_Chemistry/1.04%3A_Problems"
+            },
+            {
+              "n": "1.5",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/01%3A_Introduction_to_Analytical_Chemistry/1.05%3A_Additional_Resources"
+            },
+            {
+              "n": "1.6",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/01%3A_Introduction_to_Analytical_Chemistry/1.06%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Basic Tools of Analytical Chemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry",
+          "topics": ["he.chemistry.gen-chem-1#1"],
+          "notes": "Concentration units and stoichiometric calculations (Grade 10 and gen-chem-1#1 level).",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Measurements in Analytical Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.01%3A_Measurements_in_Analytical_Chemistry"
+            },
+            {
+              "n": "2.2",
+              "title": "Concentration",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.02%3A_Concentration",
+              "examples": ["convert between %w/w, molarity, ppm and p-functions"],
+              "ranges": ["ppm–% levels"]
+            },
+            {
+              "n": "2.3",
+              "title": "Stoichiometric Calculations",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.03%3A_Stoichiometric_Calculations"
+            },
+            {
+              "n": "2.4",
+              "title": "Basic Equipment",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.04%3A_Basic_Equipment"
+            },
+            {
+              "n": "2.5",
+              "title": "Preparing Solutions",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.05%3A_Preparing_Solutions",
+              "examples": ["prepare a solution of approximate or exact concentration; dilution"],
+              "ranges": ["0.1–0.2 M stocks; 100–1000 mL flasks"]
+            },
+            {
+              "n": "2.6",
+              "title": "Spreadsheets and Computational Software",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.06%3A_Spreadsheets_and_Computational_Software"
+            },
+            {
+              "n": "2.7",
+              "title": "The Laboratory Notebook",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.07%3A_The_Laboratory_Notebook"
+            },
+            {
+              "n": "2.8",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.08%3A_Problems"
+            },
+            {
+              "n": "2.9",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.09%3A_Additional_Resources"
+            },
+            {
+              "n": "2.10",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/02%3A_Basic_Tools_of_Analytical_Chemistry/2.10%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "The Vocabulary of Analytical Chemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry",
+          "topics": [],
+          "notes": "Method vocabulary (sensitivity, selectivity); no topic of its own.",
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Analysis, Determination, and Measurement",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.01%3A_Analysis_Determination_and_Measurement"
+            },
+            {
+              "n": "3.2",
+              "title": "Techniques, Methods, Procedures, and Protocols",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.02%3A_Techniques_Methods_Procedures_and_Protocols"
+            },
+            {
+              "n": "3.3",
+              "title": "Classifying Analytical Techniques",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.03%3A_Classifying_Analytical_Techniques"
+            },
+            {
+              "n": "3.4",
+              "title": "Selecting an Analytical Method",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.04%3A_Selecting_an_Analytical_Method"
+            },
+            {
+              "n": "3.5",
+              "title": "Developing the Procedure",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.05%3A_Developing_the_Procedure"
+            },
+            {
+              "n": "3.6",
+              "title": "Protocols",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.06%3A_Protocols"
+            },
+            {
+              "n": "3.7",
+              "title": "The Importance of Analytical Methodology",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.07%3A_The_Importance_of_Analytical_Methodology"
+            },
+            {
+              "n": "3.8",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.08%3A_Problems"
+            },
+            {
+              "n": "3.9",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.09%3A_Additional_Resources"
+            },
+            {
+              "n": "3.10",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/03%3A__The_Vocabulary_of_Analytical_Chemistry/3.10%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Evaluating Analytical Data",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data",
+          "topics": ["he.chemistry.analytical#0"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Characterizing Measurements and Results",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.01%3A_Characterizing_Measurements_and_Results",
+              "examples": ["mean, median, range, standard deviation, variance of replicates"],
+              "ranges": ["5–12 replicates"]
+            },
+            {
+              "n": "4.2",
+              "title": "Characterizing Experimental Errors",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.02%3A_Characterizing_Experimental_Errors"
+            },
+            {
+              "n": "4.3",
+              "title": "Propagation of Uncertainty",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.03%3A_Propagation_of_Uncertainty",
+              "examples": [
+                "propagate tolerance of pipets and balances through sums, products, logs"
+              ],
+              "notation": ["absolute vs relative uncertainty; u_R for a result R"]
+            },
+            {
+              "n": "4.4",
+              "title": "The Distribution of Measurements and Results",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.04%3A_The_Distribution_of_Measurements_and_Results",
+              "examples": [
+                "probability within limits from the normal distribution; binomial ¹³C counts"
+              ],
+              "notation": ["μ, σ for populations; X̄, s for samples"]
+            },
+            {
+              "n": "4.5",
+              "title": "Statistical Analysis of Data",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.05%3A_Statistical_Analysis_of_Data"
+            },
+            {
+              "n": "4.6",
+              "title": "Statistical Methods for Normal Distributions",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.06%3A_Statistical_Methods_for_Normal_Distributions",
+              "examples": [
+                "confidence interval about a mean (t)",
+                "compare a mean to a known value (t-test)",
+                "F-test of variances; unpaired and paired t-tests",
+                "Dixon Q and Grubbs tests for an outlier"
+              ],
+              "ranges": ["n 3–12; α = 0.05"],
+              "notation": ["t(α, ν) two-tailed; Q table and G table in an appendix"]
+            },
+            {
+              "n": "4.7",
+              "title": "Detection Limits",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.07%3A_Detection_Limits",
+              "examples": ["detection, identification and quantitation limits from blanks (IUPAC)"]
+            },
+            {
+              "n": "4.8",
+              "title": "Using Excel and R to Analyze Data",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.08%3A_Using_Excel_and_R_to_Analyze_Data"
+            },
+            {
+              "n": "4.9",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.09%3A_Problems"
+            },
+            {
+              "n": "4.10",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.10%3A_Additional_Resources"
+            },
+            {
+              "n": "4.11",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/04%3A_Evaluating_Analytical_Data/4.11%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Standardizing Analytical Methods",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods",
+          "topics": ["he.chemistry.analytical#2", "he.chemistry.analytical#0"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Analytical Signals",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.01%3A_Analytical_Signals"
+            },
+            {
+              "n": "5.2",
+              "title": "Calibrating the Signal",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.02%3A_Calibrating_the_Signal"
+            },
+            {
+              "n": "5.3",
+              "title": "Determining the Sensitivity",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.03%3A_Determining_the_Sensitivity",
+              "examples": [
+                "single-point and multiple-point external standards",
+                "standard additions (single and multiple, same or different volume)",
+                "internal standards"
+              ]
+            },
+            {
+              "n": "5.4",
+              "title": "Linear Regression and Calibration Curves",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.04%3A_Linear_Regression_and_Calibration_Curves",
+              "examples": [
+                "unweighted linear regression: slope, intercept, s_b1, s_b0; sample concentration with its confidence interval",
+                "weighted regression"
+              ],
+              "notation": ["S_std = k_A C_std; b₀, b₁ for intercept and slope"]
+            },
+            {
+              "n": "5.5",
+              "title": "Compensating for the Reagent Blank",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.05%3A_Compensating_for_the_Reagent_Blank"
+            },
+            {
+              "n": "5.6",
+              "title": "Using Excel and R for a Linear Regression",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.06%3A_Using_Excel_and_R_for_a_Linear_Regression"
+            },
+            {
+              "n": "5.7",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.07%3A_Problems"
+            },
+            {
+              "n": "5.8",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.08%3A_Additional_Resources"
+            },
+            {
+              "n": "5.9",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/05%3A_Standardizing_Analytical_Methods/5.09%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Equilibrium Chemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry",
+          "topics": ["he.chemistry.gen-chem-2#1", "he.chemistry.gen-chem-2#2"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Reversible Reactions and Chemical Equilibria",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.01%3A_Reversible_Reactions_and_Chemical_Equilibria"
+            },
+            {
+              "n": "6.2",
+              "title": "Thermodynamics and Equilibrium Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.02%3A_Thermodynamics_and_Equilibrium_Chemistry"
+            },
+            {
+              "n": "6.3",
+              "title": "Manipulating Equilibrium Constants",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.03%3A_Manipulating_Equilibrium_Constants"
+            },
+            {
+              "n": "6.4",
+              "title": "Equilibrium Constants for Chemical Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.04%3A_Equilibrium_Constants_for_Chemical_Reactions",
+              "examples": [
+                "K for acid–base, solubility, complexation, redox reactions; pH of water at another temperature"
+              ]
+            },
+            {
+              "n": "6.5",
+              "title": "Le Chatelier’s Principle",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.05%3A_Le_Chateliers_Principle"
+            },
+            {
+              "n": "6.6",
+              "title": "Ladder Diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.06%3A_Ladder_Diagrams",
+              "examples": ["ladder diagrams to predict species and approximate pH"]
+            },
+            {
+              "n": "6.7",
+              "title": "Solving Equilibrium Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.07%3A_Solving_Equilibrium_Problems"
+            },
+            {
+              "n": "6.8",
+              "title": "Buffer Solutions",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.08%3A_Buffer_Solutions",
+              "examples": ["buffer pH and capacity (Henderson–Hasselbalch)"]
+            },
+            {
+              "n": "6.9",
+              "title": "Activity Effects",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.09%3A_Activity_Effects",
+              "examples": [
+                "ionic strength, activity coefficients (Debye–Hückel), solubility with activities"
+              ]
+            },
+            {
+              "n": "6.10",
+              "title": "Using Excel and R to Solve Equilibrium Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.10%3A_Using_Excel_and_R_to_Solve_Equilibrium_Problems"
+            },
+            {
+              "n": "6.11",
+              "title": "Some Final Thoughts on Equilibrium Calculations",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.11%3A_Some_Final_Thoughts_on_Equilibrium_Calculations"
+            },
+            {
+              "n": "6.12",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.12%3A_Problems"
+            },
+            {
+              "n": "6.13",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.13%3A_Additional_Resources"
+            },
+            {
+              "n": "6.14",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/06%3A_Equilibrium_Chemistry/6.14%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Obtaining and Preparing Samples for Analysis",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis",
+          "topics": [],
+          "notes": "Sampling and separations (extraction): plan gap \"sampling\".",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "The Importance of Sampling",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.01%3A_The_Importance_of_Sampling"
+            },
+            {
+              "n": "7.2",
+              "title": "Designing a Sampling Plan",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.02%3A_Designing_a_Sampling_Plan"
+            },
+            {
+              "n": "7.3",
+              "title": "Implementing the Sampling Plan",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.03%3A_Implementing_the_Sampling_Plan"
+            },
+            {
+              "n": "7.4",
+              "title": "Separating the Analyte From Interferents",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.04%3A_Separating_the_Analyte_From_Interferents"
+            },
+            {
+              "n": "7.5",
+              "title": "General Theory of Separation Effiiciency",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.05%3A_General_Theory_of_Separation_Effiiciency"
+            },
+            {
+              "n": "7.6",
+              "title": "Classifying Separation Techniques",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.06%3A_Classifying_Separation_Techniques"
+            },
+            {
+              "n": "7.7",
+              "title": "Liquid-Liquid Extractions",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.07%3A_Liquid-Liquid_Extractions"
+            },
+            {
+              "n": "7.8",
+              "title": "Separation Versus Preconcentration",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.08%3A_Separation_Versus_Preconcentration"
+            },
+            {
+              "n": "7.9",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.09%3A_Problems"
+            },
+            {
+              "n": "7.10",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.10%3A_Additional_Resources"
+            },
+            {
+              "n": "7.11",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/07%3A_Obtaining_and_Preparing_Samples_for_Analysis/7.11%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Gravimetric Methods",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/08%3A_Gravimetric_Methods",
+          "topics": [],
+          "notes": "Gravimetric analysis: plan gap.",
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Overview of Gravimetric Methods",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/08%3A_Gravimetric_Methods/8.01%3A_Overview_of_Gravimetric_Methods"
+            },
+            {
+              "n": "8.2",
+              "title": "Precipitation Gravimetry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/08%3A_Gravimetric_Methods/8.02%3A_Precipitation_Gravimetry"
+            },
+            {
+              "n": "8.3",
+              "title": "Volatilization Gravimetry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/08%3A_Gravimetric_Methods/8.03%3A_Volatilization_Gravimetry"
+            },
+            {
+              "n": "8.4",
+              "title": "Particulate Gravimetry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/08%3A_Gravimetric_Methods/8.04%3A_Particulate_Gravimetry"
+            },
+            {
+              "n": "8.5",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/08%3A_Gravimetric_Methods/8.05%3A_Problems"
+            },
+            {
+              "n": "8.6",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/08%3A_Gravimetric_Methods/8.06%3A_Additional_Resources"
+            },
+            {
+              "n": "8.7",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/08%3A_Gravimetric_Methods/8.07%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Titrimetric Methods",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods",
+          "topics": ["he.chemistry.analytical#1"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Overview of Titrimetry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods/9.01%3A_Overview_of_Titrimetry"
+            },
+            {
+              "n": "9.2",
+              "title": "Acid–Base Titrations",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods/9.02%3A_AcidBase_Titrations",
+              "examples": [
+                "acid–base titration curves by calculation or sketch",
+                "end points by derivative and Gran plots",
+                "alkalinity, Kjeldahl nitrogen, equivalent weight"
+              ],
+              "ranges": ["25–50 mL analyte; 0.05–0.1 M"]
+            },
+            {
+              "n": "9.3",
+              "title": "Complexation Titrations",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods/9.03%3A_Complexation_Titrations",
+              "examples": [
+                "EDTA titration curve with conditional K (α_Y⁴⁻, auxiliary ligand)",
+                "hardness, Ca and Mg by EDTA"
+              ]
+            },
+            {
+              "n": "9.4",
+              "title": "Redox Titrations",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods/9.04%3A_Redox_Titrations",
+              "examples": [
+                "redox titration curve; equivalence potential",
+                "%w/w Fe by dichromate; Winkler dissolved oxygen"
+              ]
+            },
+            {
+              "n": "9.5",
+              "title": "Precipitation Titrations",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods/9.05%3A_Precipitation_Titrations",
+              "examples": ["precipitation titration curves (pAg); Mohr, Volhard, Fajans analyses"]
+            },
+            {
+              "n": "9.6",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods/9.06%3A_Problems"
+            },
+            {
+              "n": "9.7",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods/9.07%3A_Additional_Resources"
+            },
+            {
+              "n": "9.8",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/09%3A_Titrimetric_Methods/9.08%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Spectroscopic Methods",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods",
+          "topics": ["he.chemistry.analytical#2"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Overview of Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.01%3A_Overview_of_Spectroscopy",
+              "examples": ["photon energy, wavelength, frequency, wavenumber conversions"]
+            },
+            {
+              "n": "10.2",
+              "title": "Spectroscopy Based on Absorption",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.02%3A_Spectroscopy_Based_on_Absorption",
+              "examples": ["absorbance from %T; molar absorptivity and concentration (Beer’s law)"],
+              "ranges": ["ε 10²–10⁴ M⁻¹cm⁻¹; b 1.00 cm; A 0.1–1"],
+              "notation": ["A = εbC; %T = 100 × P/P₀"]
+            },
+            {
+              "n": "10.3",
+              "title": "UV/Vis and IR Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.03%3A_UV_Vis_and_IR_Spectroscopy",
+              "examples": [
+                "calibration-curve determinations; mixtures at two wavelengths; Job, mole-ratio, slope-ratio methods; indicator pKₐ"
+              ]
+            },
+            {
+              "n": "10.4",
+              "title": "Atomic Absorption Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.04%3A_Atomic_Absorption_Spectroscopy",
+              "examples": ["flame and furnace AA with external standards and standard additions"]
+            },
+            {
+              "n": "10.5",
+              "title": "Emission Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.05%3A_Emission_Spectroscopy"
+            },
+            {
+              "n": "10.6",
+              "title": "Photoluminescent Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.06%3A_Photoluminescent_Spectroscopy"
+            },
+            {
+              "n": "10.7",
+              "title": "Atomic Emission Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.07%3A_Atomic_Emission_Spectroscopy"
+            },
+            {
+              "n": "10.8",
+              "title": "Spectroscopy Based on Scattering",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.08%3A_Spectroscopy_Based_on_Scattering"
+            },
+            {
+              "n": "10.9",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.09%3A_Problems"
+            },
+            {
+              "n": "10.10",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.10%3A_Additional_Resources"
+            },
+            {
+              "n": "10.11",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.11%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Electrochemical Methods",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/11%3A_Electrochemical_Methods",
+          "topics": ["he.chemistry.analytical#4"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Overview of Electrochemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/11%3A_Electrochemical_Methods/11.01%3A_Overview_of_Electrochemistry"
+            },
+            {
+              "n": "11.2",
+              "title": "Potentiometric Methods",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/11%3A_Electrochemical_Methods/11.02%3A_Potentiometric_Methods",
+              "examples": [
+                "cell potentials and Nernst; ion-selective electrode calibration and standard addition"
+              ],
+              "notation": ["E = K − (0.05916/z) log a (or + for cations) at 25 °C"]
+            },
+            {
+              "n": "11.3",
+              "title": "Coulometric Methods",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/11%3A_Electrochemical_Methods/11.03%3A_Coulometric_Methods",
+              "examples": [
+                "controlled-potential and controlled-current coulometry: moles from charge"
+              ]
+            },
+            {
+              "n": "11.4",
+              "title": "Voltammetric and Amperometric Methods",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/11%3A_Electrochemical_Methods/11.04%3A_Voltammetric_and_Amperometric_Methods",
+              "examples": ["voltammetric peak and limiting currents; standard additions; stripping"]
+            },
+            {
+              "n": "11.5",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/11%3A_Electrochemical_Methods/11.05%3A_Problems"
+            },
+            {
+              "n": "11.6",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/11%3A_Electrochemical_Methods/11.06%3A_Additional_Resources"
+            },
+            {
+              "n": "11.7",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/11%3A_Electrochemical_Methods/11.07%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Chromatographic and Electrophoretic Methods",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods",
+          "topics": ["he.chemistry.analytical#3"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Overview of Analytical Separations",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.01%3A_Overview_of_Analytical_Separations"
+            },
+            {
+              "n": "12.2",
+              "title": "General Theory of Column Chromatography",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.02%3A_General_Theory_of_Column_Chromatography",
+              "examples": [
+                "retention factor, selectivity, resolution, plate number and plate height from a chromatogram"
+              ],
+              "ranges": ["t_r 1–20 min; N 10³–10⁵"],
+              "notation": [
+                "k = (t_r − t_m)/t_m; α = k_B/k_A; R = 2Δt_r/(w_A + w_B); N = 16(t_r/w)²; H = L/N"
+              ]
+            },
+            {
+              "n": "12.3",
+              "title": "Optimizing Chromatographic Separations",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.03%3A_Optimizing_Chromatographic_Separations",
+              "examples": ["Purnell equation; van Deemter H = A + B/u + Cu"]
+            },
+            {
+              "n": "12.4",
+              "title": "Gas Chromatography",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.04%3A_Gas_Chromatography",
+              "examples": ["GC quantitation with internal standards; Kovats retention index"]
+            },
+            {
+              "n": "12.5",
+              "title": "High-Performance Liquid Chromatography",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.05%3A_High-Performance_Liquid_Chromatography",
+              "examples": ["HPLC polarity index; calibration of an analgesic"]
+            },
+            {
+              "n": "12.6",
+              "title": "Other Forms of Chromatography",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.06%3A_Other_Forms_of_Chromatography"
+            },
+            {
+              "n": "12.7",
+              "title": "Electrophoresis",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.07%3A_Electrophoresis",
+              "examples": ["electrophoretic mobility; injection volume"]
+            },
+            {
+              "n": "12.8",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.08%3A_Problems"
+            },
+            {
+              "n": "12.9",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.09%3A_Additional_Resources"
+            },
+            {
+              "n": "12.10",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/12%3A_Chromatographic_and_Electrophoretic_Methods/12.10%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Kinetic Methods",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/13%3A_Kinetic_Methods",
+          "topics": [],
+          "notes": "Kinetic methods, radiochemistry, flow injection: plan gap.",
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Kinetic Techniques versus  Equilibrium Techniques",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/13%3A_Kinetic_Methods/13.01%3A_Kinetic_Techniques_versus__Equilibrium_Techniques"
+            },
+            {
+              "n": "13.2",
+              "title": "Chemical Kinetics",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/13%3A_Kinetic_Methods/13.02%3A_Chemical_Kinetics"
+            },
+            {
+              "n": "13.3",
+              "title": "Radiochemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/13%3A_Kinetic_Methods/13.03%3A_Radiochemistry"
+            },
+            {
+              "n": "13.4",
+              "title": "Flow Injection Analysis",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/13%3A_Kinetic_Methods/13.04%3A_Flow_Injection_Analysis"
+            },
+            {
+              "n": "13.5",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/13%3A_Kinetic_Methods/13.05%3A_Problems"
+            },
+            {
+              "n": "13.6",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/13%3A_Kinetic_Methods/13.06%3A_Additional_Resources"
+            },
+            {
+              "n": "13.7",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/13%3A_Kinetic_Methods/13.07%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Developing a Standard Method",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/14%3A_Developing_a_Standard_Method",
+          "topics": ["he.chemistry.analytical#0"],
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Optimizing the Experimental Procedure",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/14%3A_Developing_a_Standard_Method/14.01%3A_Optimizing_the_Experimental_Procedure"
+            },
+            {
+              "n": "14.2",
+              "title": "Verifying the Method",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/14%3A_Developing_a_Standard_Method/14.02%3A_Verifying_the_Method"
+            },
+            {
+              "n": "14.3",
+              "title": "Validating the Method as a Standard Method",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/14%3A_Developing_a_Standard_Method/14.03%3A_Validating_the_Method_as_a_Standard_Method"
+            },
+            {
+              "n": "14.4",
+              "title": "Using Excel and R for an Analysis of Variance",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/14%3A_Developing_a_Standard_Method/14.04%3A_Using_Excel_and_R_for_an_Analysis_of_Variance"
+            },
+            {
+              "n": "14.5",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/14%3A_Developing_a_Standard_Method/14.05%3A_Problems"
+            },
+            {
+              "n": "14.6",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/14%3A_Developing_a_Standard_Method/14.06%3A_Additional_Resources"
+            },
+            {
+              "n": "14.7",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/14%3A_Developing_a_Standard_Method/14.07%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Quality Assurance",
+          "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/15%3A_Quality_Assurance",
+          "topics": ["he.chemistry.analytical#0"],
+          "notes": "Quality assurance: plan gap (control charts, spike recovery).",
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "The Analytical Perspective Revisited",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/15%3A_Quality_Assurance/15.01%3A_The_Analytical_Perspective_Revisited"
+            },
+            {
+              "n": "15.2",
+              "title": "Quality Control",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/15%3A_Quality_Assurance/15.02%3A_Quality_Control"
+            },
+            {
+              "n": "15.3",
+              "title": "Quality Assessment",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/15%3A_Quality_Assurance/15.03%3A_Quality_Assessment"
+            },
+            {
+              "n": "15.4",
+              "title": "Evaluating Quality Assurance Data",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/15%3A_Quality_Assurance/15.04%3A_Evaluating_Quality_Assurance_Data"
+            },
+            {
+              "n": "15.5",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/15%3A_Quality_Assurance/15.05%3A_Problems"
+            },
+            {
+              "n": "15.6",
+              "title": "Additional Resources",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/15%3A_Quality_Assurance/15.06%3A_Additional_Resources"
+            },
+            {
+              "n": "15.7",
+              "title": "Chapter Summary and Key Terms",
+              "url": "https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_by_David_Harvey/Analytical_Chemistry_2.1_(Harvey)/15%3A_Quality_Assurance/15.07%3A_Chapter_Summary_and_Key_Terms"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

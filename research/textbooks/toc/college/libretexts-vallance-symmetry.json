@@ -1,0 +1,191 @@
+{
+  "id": "libretexts-vallance-symmetry",
+  "curriculum": "Vallance, Symmetry",
+  "publisher": "Claire Vallance (Oxford); LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Claire Vallance, Symmetry, LibreTexts. License: CC BY."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter and section titles as listed on LibreTexts (fetched at its 5 s Crawl-delay); topics are our mapping; examples, ranges and notation in our words from the problem pages read for question records. No text, problem or number copied. One-chapter book of numbered sections. Licence tags seen on chapter pages: license:ccby.",
+  "books": [
+    {
+      "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Chapters",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters",
+          "topics": ["he.chemistry.inorganic#0", "he.chemistry.physical-2#4"],
+          "examples": [
+            "assign point groups",
+            "matrix representations and character tables",
+            "reduce representations; SALCs; vibrational modes and selection rules"
+          ],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Introduction to Symmetry",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.01%3A_Introduction_to_Symmetry"
+            },
+            {
+              "n": "1.2",
+              "title": "Symmetry Operations and Symmetry Elements",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.02%3A_Symmetry_Operations_and_Symmetry_Elements"
+            },
+            {
+              "n": "1.3",
+              "title": "Symmetry Classification of Molecules- Point Groups",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.03%3A_Symmetry_Classification_of_Molecules-_Point_Groups"
+            },
+            {
+              "n": "1.4",
+              "title": "Symmetry and Physical Properties",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.04%3A_Symmetry_and_Physical_Properties"
+            },
+            {
+              "n": "1.5",
+              "title": "Combining Symmetry Operations - ‘Group Multiplication’",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.05%3A_Combining_Symmetry_Operations_-_Group_Multiplication"
+            },
+            {
+              "n": "1.6",
+              "title": "Constructing higher groups from simpler groups",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.06%3A_Constructing_higher_groups_from_simpler_groups"
+            },
+            {
+              "n": "1.7",
+              "title": "Mathematical Definition of a Group",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.07%3A_Mathematical_Definition_of_a_Group"
+            },
+            {
+              "n": "1.8",
+              "title": "Review of Matrices",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.08%3A_Review_of_Matrices"
+            },
+            {
+              "n": "1.9",
+              "title": "Transformation matrices",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.09%3A_Transformation_matrices"
+            },
+            {
+              "n": "1.10",
+              "title": "Matrix Representations of Groups",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.10%3A_Matrix_Representations_of_Groups"
+            },
+            {
+              "n": "1.11",
+              "title": "Properties of Matrix Representations",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.11%3A_Properties_of_Matrix_Representations"
+            },
+            {
+              "n": "1.12",
+              "title": "Reduction of Representations I",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.12%3A_Reduction_of_Representations_I"
+            },
+            {
+              "n": "1.13",
+              "title": "Irreducible representations and symmetry species",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.13%3A_Irreducible_representations_and_symmetry_species"
+            },
+            {
+              "n": "1.14",
+              "title": "Character Tables",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.14%3A_Character_Tables"
+            },
+            {
+              "n": "1.15",
+              "title": "Reduction of representations II",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.15%3A_Reduction_of_representations_II"
+            },
+            {
+              "n": "1.16",
+              "title": "Symmetry Adapted Linear Combinations (SALCs)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.16%3A_Symmetry_Adapted_Linear_Combinations_(SALCs)"
+            },
+            {
+              "n": "1.17",
+              "title": "Determining whether an Integral can be Non-zero",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.17%3A_Determining_whether_an_Integral_can_be_Non-zero"
+            },
+            {
+              "n": "1.18",
+              "title": "Bonding in Diatomics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.18%3A_Bonding_in_Diatomics"
+            },
+            {
+              "n": "1.19",
+              "title": "Bonding in Polyatomics- Constructing Molecular Orbitals from SALCs",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.19%3A_Bonding_in_Polyatomics-_Constructing_Molecular_Orbitals_from_SALCs"
+            },
+            {
+              "n": "1.20",
+              "title": "Calculating Orbital Energies and Expansion Coefficients",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.20%3A_Calculating_Orbital_Energies_and_Expansion_Coefficients"
+            },
+            {
+              "n": "1.21",
+              "title": "Solving the Secular Equations",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.21%3A_Solving_the_Secular_Equations"
+            },
+            {
+              "n": "1.22",
+              "title": "Summary of the Steps Involved in Constructing Molecular Orbitals",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.22%3A_Summary_of_the_Steps_Involved_in_Constructing_Molecular_Orbitals"
+            },
+            {
+              "n": "1.23",
+              "title": "A more complicated bonding example",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.23%3A_A_more_complicated_bonding_example"
+            },
+            {
+              "n": "1.24",
+              "title": "Molecular Vibrations",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.24%3A_Molecular_Vibrations"
+            },
+            {
+              "n": "1.25",
+              "title": "Summary of applying group theory to molecular motions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.25%3A_Summary_of_applying_group_theory_to_molecular_motions"
+            },
+            {
+              "n": "1.26",
+              "title": "Group theory and Molecular Electronic States",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.26%3A_Group_theory_and_Molecular_Electronic_States"
+            },
+            {
+              "n": "1.27",
+              "title": "Spectroscopy - Interaction of Atoms and Molecules with Light",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.27%3A_Spectroscopy_-_Interaction_of_Atoms_and_Molecules_with_Light"
+            },
+            {
+              "n": "1.28",
+              "title": "Summary",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.28%3A_Summary"
+            },
+            {
+              "n": "1.29",
+              "title": "Appendix A",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.29%3A_Appendix_A"
+            },
+            {
+              "n": "1.30",
+              "title": "Appendix B- Point Groups",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Symmetry_(Vallance)/01%3A_Chapters/1.30%3A_Appendix_B-_Point_Groups"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

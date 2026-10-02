@@ -1,0 +1,1236 @@
+{
+  "id": "libretexts-wakim-human-biology",
+  "curriculum": "Wakim and Grewal, Human Biology",
+  "publisher": "Suzanne Wakim and Mandeep Grewal (Butte College); LibreTexts (CK-12 based)",
+  "edition": "LibreTexts edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CK-12 licence (CC BY-NC 3.0)",
+    "url": "https://creativecommons.org/licenses/by-nc/3.0/",
+    "attribution": "Suzanne Wakim and Mandeep Grewal, Human Biology, LibreTexts Biology. CK-12 licence (CC BY-NC 3.0)."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter pages tagged license:ck12 (CK-12 content under CC BY-NC 3.0; pages also link CC BY-NC 3.0). A general-education human biology text: section review questions of 9.4–9.6, 10.3, 10.7, 11.4, 14.4, 14.6, 15.4, 16.3, 17.3 and 17.4 read for the records (type only). Licence tags seen on chapter pages: license:ck12.",
+  "books": [
+    {
+      "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)",
+      "units": [
+        {
+          "n": "1",
+          "title": "The Nature and Process of Science",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science",
+          "topics": [],
+          "notes": "Nature of science.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Case Study: Why Should You Learn About Science?",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science/1.1%3A_Case_Study_-_Why_Should_You_Learn_About_Science"
+            },
+            {
+              "n": "1.2",
+              "title": "What Is Science?",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science/1.2%3A_What_Is_Science"
+            },
+            {
+              "n": "1.3",
+              "title": "The Nature of Science",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science/1.3%3A_The_Nature_of_Science"
+            },
+            {
+              "n": "1.4",
+              "title": "Theories in Science",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science/1.4%3A_Theories_in_Science"
+            },
+            {
+              "n": "1.5",
+              "title": "Scientific Investigations",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science/1.5%3A_Scientific_Investigations"
+            },
+            {
+              "n": "1.6",
+              "title": "Scientific Experiments",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science/1.6%3A_Scientific_Experiments"
+            },
+            {
+              "n": "1.7",
+              "title": "Extrapolations of Scientific Investigations",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science/1.7%3A_Extrapolations_of_Scientific_Investigations"
+            },
+            {
+              "n": "1.8",
+              "title": "Case Study Conclusion:  Shot and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/01%3A_The_Nature_and_Process_of_Science/1.8%3A__Case_Study_Conclusion%3A__Shot_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Introduction to Human Biology",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/02%3A_Introduction_to_Human_Biology",
+          "topics": [],
+          "notes": "Overview.",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Case Study:  Why Should You Study Human Biology?",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/02%3A_Introduction_to_Human_Biology/2.1%3A_Case_Study_-_Why_Should_You_Study_Human_Biology"
+            },
+            {
+              "n": "2.2",
+              "title": "Shared Traits of All Living Things",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/02%3A_Introduction_to_Human_Biology/2.2%3A_Shared_Traits_of_All_Living_Things"
+            },
+            {
+              "n": "2.3",
+              "title": "Diversity of Life",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/02%3A_Introduction_to_Human_Biology/2.3%3A_Diversity_of_Life"
+            },
+            {
+              "n": "2.4",
+              "title": "The Human Animal",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/02%3A_Introduction_to_Human_Biology/2.4%3A_The_Human_Animal"
+            },
+            {
+              "n": "2.5",
+              "title": "Case Study Conclusion:  Inhabitants and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/02%3A_Introduction_to_Human_Biology/2.5%3A_Case_Study_Conclusion%3A__Inhabitants_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Chemistry of Life",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life",
+          "topics": ["he.biology.principles-1#0"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Case Study: Chemistry and Your Life",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.01%3A_Case_Study%3A_Chemistry_and_Your_Life"
+            },
+            {
+              "n": "3.2",
+              "title": "Elements and Compounds",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.02%3A_Elements_and_Compounds"
+            },
+            {
+              "n": "3.3",
+              "title": "Chemical Bonding",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.03%3A_Chemical_Bonding"
+            },
+            {
+              "n": "3.4",
+              "title": "Biochemical Compounds",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.04%3A_Biochemical_Compounds"
+            },
+            {
+              "n": "3.5",
+              "title": "Carbohydrates",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.05%3A_Carbohydrates"
+            },
+            {
+              "n": "3.6",
+              "title": "Lipids",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.06%3A_Lipids"
+            },
+            {
+              "n": "3.7",
+              "title": "Proteins",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.07%3A_Proteins"
+            },
+            {
+              "n": "3.8",
+              "title": "Nucleic Acids",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.08%3A_Nucleic_Acids"
+            },
+            {
+              "n": "3.9",
+              "title": "Energy in Chemical Reactions",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.09%3A_Energy_in_Chemical_Reactions"
+            },
+            {
+              "n": "3.10",
+              "title": "Chemical Reactions in Living Things",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.10%3A_Chemical_Reactions_in_Living_Things"
+            },
+            {
+              "n": "3.11",
+              "title": "Biochemical Properties of Water",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.11%3A_Biochemical_Properties_of_Water"
+            },
+            {
+              "n": "3.12",
+              "title": "Acids and Bases",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.12%3A_Acids_and_Bases"
+            },
+            {
+              "n": "3.13",
+              "title": "Case Study Conclusion: Diet and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/03%3A_Chemistry_of_Life/3.13%3A_Case_Study_Conclusion%3A_Diet_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Nutrition",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition",
+          "topics": [],
+          "notes": "Nutrition: no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Case Study: Fueling Our Bodies Properly",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition/4.1%3A_Case_Study%3A_Fueling_Our_Bodies_Properly"
+            },
+            {
+              "n": "4.2",
+              "title": "Nutrients",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition/4.2%3A_Nutrients"
+            },
+            {
+              "n": "4.3",
+              "title": "Healthy Eating",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition/4.3%3A_Healthy_Eating"
+            },
+            {
+              "n": "4.4",
+              "title": "Eating Disorders",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition/4.4%3A_Eating_Disorders"
+            },
+            {
+              "n": "4.5",
+              "title": "Obesity",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition/4.5%3A_Obesity"
+            },
+            {
+              "n": "4.6",
+              "title": "Undernutrition",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition/4.6%3A_Undernutrition"
+            },
+            {
+              "n": "4.7",
+              "title": "Foodborne Diseases",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition/4.7%3A_Foodborne_Diseases"
+            },
+            {
+              "n": "4.8",
+              "title": "Case Study Conclusion: Fast Food and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/04%3A_Nutrition/4.8%3A_Case_Study_Conclusion%3A_Fast_Food_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Cells",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells",
+          "topics": [
+            "he.biology.principles-1#1",
+            "he.biology.cell-molecular#0",
+            "he.biology.principles-1#2"
+          ],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Case Study:  The Importance of Cells",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.01%3A_Case_Study%3A_The_Importance_of_Cells"
+            },
+            {
+              "n": "5.2",
+              "title": "Discovery of Cells and Cell Theory",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.02%3A_Discovery_of_Cells_and_Cell_Theory"
+            },
+            {
+              "n": "5.3",
+              "title": "Variation in Cells",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.03%3A_Variation_in_Cells"
+            },
+            {
+              "n": "5.4",
+              "title": "Plasma Membrane",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.04%3A_Plasma_Membrane"
+            },
+            {
+              "n": "5.5",
+              "title": "Cytoplasm and Cytoskeleton",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.05%3A_Cytoplasm_and_Cytoskeleton"
+            },
+            {
+              "n": "5.6",
+              "title": "Cell Organelles",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.06%3A_Cell_Organelles"
+            },
+            {
+              "n": "5.7",
+              "title": "Cell Transport",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.07%3A_Cell_Transport"
+            },
+            {
+              "n": "5.8",
+              "title": "Active Transport and Homeostasis",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.08%3A_Active_Transport_and_Homeostasis"
+            },
+            {
+              "n": "5.9",
+              "title": "Cellular Respiration",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.09%3A_Cellular_Respiration"
+            },
+            {
+              "n": "5.10",
+              "title": "Fermentation",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.10%3A_Fermentation"
+            },
+            {
+              "n": "5.11",
+              "title": "Case Study Conclusion: Tired and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/05%3A_Cells/5.11%3A_Case_Study_Conclusion%3A_Tired_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "DNA and Protein Synthesis",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis",
+          "topics": ["he.biology.genetics#2"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Case Study:  Why do we need to sequence everybody's genome?",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.01%3A_Case_Study%3A_Why_do_we_need_to_sequence_everybody's_genome"
+            },
+            {
+              "n": "6.2",
+              "title": "DNA and RNA",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.02%3A_DNA_and_RNA"
+            },
+            {
+              "n": "6.3",
+              "title": "Chromosomes and Genes",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.03%3A_Chromosomes_and_Genes"
+            },
+            {
+              "n": "6.4",
+              "title": "Protein Synthesis",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.04%3A_Protein_Synthesis"
+            },
+            {
+              "n": "6.5",
+              "title": "Genetic Code",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.05%3A_Genetic_Code"
+            },
+            {
+              "n": "6.6",
+              "title": "Mutations",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.06%3A_Mutations"
+            },
+            {
+              "n": "6.7",
+              "title": "Regulation of Gene Expression",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.07%3A_Regulation_of_Gene_Expression"
+            },
+            {
+              "n": "6.8",
+              "title": "Biotechnology",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.08%3A_Biotechnology"
+            },
+            {
+              "n": "6.9",
+              "title": "The Human Genome",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.09%3A_The_Human_Genome"
+            },
+            {
+              "n": "6.10",
+              "title": "Case Study Conclusion:  Parmacogenomics and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/06%3A_DNA_and_Protein_Synthesis/6.10%3A_Case_Study_Conclusion%3A__Parmacogenomics_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Cell Reproduction",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction",
+          "topics": ["he.biology.principles-1#3"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Case Study: Genetic Similarities and Differences",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction/7.1%3A_Case_Study%3A_Genetic_Similarities_and_Differences"
+            },
+            {
+              "n": "7.2",
+              "title": "Cell Cycle and Cell Division",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction/7.2%3A_Cell_Cycle_and_Cell_Division"
+            },
+            {
+              "n": "7.3",
+              "title": "Mitotic Phase - Mitosis and Cytokinesis",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction/7.3%3A_Mitotic_Phase_-_Mitosis_and_Cytokinesis"
+            },
+            {
+              "n": "7.4",
+              "title": "Mutations and Cancer",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction/7.4%3A_Mutations_and_Cancer"
+            },
+            {
+              "n": "7.5",
+              "title": "Sexual Reproduction: Meiosis and gametogenesis",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction/7.5%3A_Sexual_Reproduction%3A_Meiosis_and_gametogenesis"
+            },
+            {
+              "n": "7.6",
+              "title": "Genetic Variation",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction/7.6%3A_Genetic_Variation"
+            },
+            {
+              "n": "7.7",
+              "title": "Mitosis vs. Meiosis and Disorders",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction/7.7%3A_Mitosis_vs._Meiosis_and_Disorders"
+            },
+            {
+              "n": "7.8",
+              "title": "Case Study Conclusion: Genes and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/07%3A_Cell_Reproduction/7.8%3A_Case_Study_Conclusion%3A_Genes_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Inheritance",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/08%3A_Inheritance",
+          "topics": ["he.biology.principles-1#4", "he.biology.genetics#0"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Case Study: Genes and Inheritance",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/08%3A_Inheritance/8.1%3A_Case_Study%3A_Genes_and_Inheritance"
+            },
+            {
+              "n": "8.2",
+              "title": "Laws of Inheritance",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/08%3A_Inheritance/8.2%3A_Laws_of_Inheritance"
+            },
+            {
+              "n": "8.3",
+              "title": "Genetics of Inheritance",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/08%3A_Inheritance/8.3%3A_Genetics_of_Inheritance"
+            },
+            {
+              "n": "8.4",
+              "title": "Simple Inheritance",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/08%3A_Inheritance/8.4%3A_Simple_Inheritance"
+            },
+            {
+              "n": "8.5",
+              "title": "Complex Inheritance",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/08%3A_Inheritance/8.5%3A_Complex_Inheritance"
+            },
+            {
+              "n": "8.6",
+              "title": "Genetic Disorders",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/08%3A_Inheritance/8.6%3A_Genetic_Disorders"
+            },
+            {
+              "n": "8.7",
+              "title": "Case Study Conclusion: Cancer and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/08%3A_Inheritance/8.7%3A_Case_Study_Conclusion%3A_Cancer_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Biological Evolution",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution",
+          "topics": [
+            "he.biology.principles-2#0",
+            "he.biology.evolution#0",
+            "he.biology.evolution#1",
+            "he.biology.evolution#3"
+          ],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Case Study: Everyday Evolution",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution/9.1%3A_Case_Study%3A_Everyday_Evolution"
+            },
+            {
+              "n": "9.2",
+              "title": "Darwin, Wallace, and the Theory of Evolution by Natural Selection",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution/9.2%3A_Darwin_Wallace_and_the_Theory_of_Evolution_by_Natural_Selection"
+            },
+            {
+              "n": "9.3",
+              "title": "Evidence for Evolution",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution/9.3%3A_Evidence_for_Evolution"
+            },
+            {
+              "n": "9.4",
+              "title": "Microevolution",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution/9.4%3A_Microevolution"
+            },
+            {
+              "n": "9.5",
+              "title": "Macroevolution",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution/9.5%3A_Macroevolution"
+            },
+            {
+              "n": "9.6",
+              "title": "Tools for Studying Evolution",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution/9.6%3A_Tools_for_Studying_Evolution"
+            },
+            {
+              "n": "9.7",
+              "title": "Adaptation in Humans",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution/9.7%3A_Adaptation_in_Humans"
+            },
+            {
+              "n": "9.8",
+              "title": "Case Study Conclusion: Flu and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/09%3A_Biological_Evolution/9.8%3A_Case_Study_Conclusion%3A_Flu_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Introduction to the Human Body",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body",
+          "topics": ["he.biology.anatomy-physiology#0", "he.biology.principles-2#3"],
+          "examples": [
+            "four tissue types; kinds of epithelium; connective tissues",
+            "negative vs positive feedback"
+          ],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Case Study: Getting to Know Your Body",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body/10.1%3A_Case_Study%3A_Getting_to_Know_Your_Body"
+            },
+            {
+              "n": "10.2",
+              "title": "Organization of the Body",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body/10.2%3A_Organization_of_the_Body"
+            },
+            {
+              "n": "10.3",
+              "title": "Human Cells and Tissues",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body/10.3%3A_Human_Cells_and_Tissues"
+            },
+            {
+              "n": "10.4",
+              "title": "Human Organs and Organ Systems",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body/10.4%3A_Human_Organs_and_Organ_Systems"
+            },
+            {
+              "n": "10.5",
+              "title": "Human Body Cavities",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body/10.5%3A_Human_Body_Cavities"
+            },
+            {
+              "n": "10.6",
+              "title": "Interaction of Organ Systems",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body/10.6%3A_Interaction_of_Organ_Systems"
+            },
+            {
+              "n": "10.7",
+              "title": "Homeostasis and Feedback",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body/10.7%3A_Homeostasis_and_Feedback"
+            },
+            {
+              "n": "10.8",
+              "title": "Case Study Conclusion:  Pressure  and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/10%3A_Introduction_to_the_Human_Body/10.8%3A_Case_Study_Conclusion%3A__Pressure__and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Nervous System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "examples": ["resting and action potentials; synapse", "Na⁺/K⁺ pump"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Case Study:  The Control Center of Your Body",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.1%3A_Case_Study%3A__The_Control_Center_of_Your_Body"
+            },
+            {
+              "n": "11.2",
+              "title": "Introduction to the Nervous System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.2%3A_Introduction_to_the_Nervous_System"
+            },
+            {
+              "n": "11.3",
+              "title": "Neurons",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.3%3A_Neurons"
+            },
+            {
+              "n": "11.4",
+              "title": "Nerve Impulses",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.4%3A_Nerve_Impulses"
+            },
+            {
+              "n": "11.5",
+              "title": "Central Nervous System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.5%3A_Central_Nervous_System"
+            },
+            {
+              "n": "11.6",
+              "title": "Peripheral Nervous System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.6%3A_Peripheral_Nervous_System"
+            },
+            {
+              "n": "11.7",
+              "title": "Human Senses",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.7%3A_Human_Senses"
+            },
+            {
+              "n": "11.8",
+              "title": "Psychoactive Drugs",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.8%3A_Psychoactive_Drugs"
+            },
+            {
+              "n": "11.9",
+              "title": "Case Study Conclusion:  Memory and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/11%3A_Nervous_System/11.9%3A_Case_Study_Conclusion%3A__Memory_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Endocrine System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System",
+          "topics": ["he.biology.principles-2#3"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Case Study: Hormones and Health",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System/12.1%3A_Case_Study%3A_Hormones_and_Health"
+            },
+            {
+              "n": "12.2",
+              "title": "Introduction to the Endocrine System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System/12.2%3A_Introduction_to_the_Endocrine_System"
+            },
+            {
+              "n": "12.3",
+              "title": "Endocrine Hormones",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System/12.3%3A_Endocrine_Hormones"
+            },
+            {
+              "n": "12.4",
+              "title": "Pituitary Gland",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System/12.4%3A_Pituitary_Gland"
+            },
+            {
+              "n": "12.5",
+              "title": "Thyroid Gland",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System/12.5%3A_Thyroid_Gland"
+            },
+            {
+              "n": "12.6",
+              "title": "Adrenal Glands",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System/12.6%3A_Adrenal_Glands"
+            },
+            {
+              "n": "12.7",
+              "title": "Pancreas",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System/12.7%3A_Pancreas"
+            },
+            {
+              "n": "12.8",
+              "title": "Case Study Conclusion:  Hormonal and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/12%3A_Endocrine_System/12.8%3A_Case_Study_Conclusion%3A__Hormonal_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Integumentary System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/13%3A_Integumentary_System",
+          "topics": ["he.biology.anatomy-physiology#0"],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Case Study:  Skin Cancer",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/13%3A_Integumentary_System/13.1%3A_Case_Study%3A__Skin_Cancer"
+            },
+            {
+              "n": "13.2",
+              "title": "Introduction to the Integumentary System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/13%3A_Integumentary_System/13.2%3A_Introduction_to_the_Integumentary_System"
+            },
+            {
+              "n": "13.3",
+              "title": "Skin",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/13%3A_Integumentary_System/13.3%3A_Skin"
+            },
+            {
+              "n": "13.4",
+              "title": "Hair and Nails",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/13%3A_Integumentary_System/13.4%3A_Hair_and_Nails"
+            },
+            {
+              "n": "13.5",
+              "title": "Case Study Conclusion: Skin Cancer and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/13%3A_Integumentary_System/13.5%3A_Case_Study_Conclusion%3A_Skin_Cancer_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Skeletal System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System",
+          "topics": ["he.biology.anatomy-physiology#1"],
+          "examples": ["compact vs spongy bone; bone cells", "six synovial joint types"],
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Case Study: Your Support System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System/14.1%3A_Case_Study%3A_Your_Support_System"
+            },
+            {
+              "n": "14.2",
+              "title": "Introduction to the Skeletal System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System/14.2%3A_Introduction_to_the_Skeletal_System"
+            },
+            {
+              "n": "14.3",
+              "title": "Divisions of the Skeletal System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System/14.3%3A_Divisions_of_the_Skeletal_System"
+            },
+            {
+              "n": "14.4",
+              "title": "Structure of Bone",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System/14.4%3A_Structure_of_Bone"
+            },
+            {
+              "n": "14.5",
+              "title": "Bone Growth, Remodeling, and Repair",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System/14.5%3A_Bone_Growth_Remodeling_and_Repair"
+            },
+            {
+              "n": "14.6",
+              "title": "Joints",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System/14.6%3A_Joints"
+            },
+            {
+              "n": "14.7",
+              "title": "Disorders of the Skeletal System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System/14.7%3A_Disorders_of_the_Skeletal_System"
+            },
+            {
+              "n": "14.8",
+              "title": "Case Study Conclusion:  Heels and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/14%3A_Skeletal_System/14.8%3A_Case_Study_Conclusion%3A__Heels_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Muscular System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/15%3A_Muscular_System",
+          "topics": ["he.biology.anatomy-physiology#1"],
+          "examples": ["sliding filaments and cross-bridge cycling", "isometric vs isotonic"],
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "Case Study: Muscles and Movement",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/15%3A_Muscular_System/15.1%3A_Case_Study%3A_Muscles_and_Movement"
+            },
+            {
+              "n": "15.2",
+              "title": "Introduction to the Muscular System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/15%3A_Muscular_System/15.2%3A_Introduction_to_the_Muscular_System"
+            },
+            {
+              "n": "15.3",
+              "title": "Types of Muscle Tissue",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/15%3A_Muscular_System/15.3%3A_Types_of_Muscle_Tissue"
+            },
+            {
+              "n": "15.4",
+              "title": "Muscle Contraction",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/15%3A_Muscular_System/15.4%3A_Muscle_Contraction"
+            },
+            {
+              "n": "15.5",
+              "title": "Physical Exercise",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/15%3A_Muscular_System/15.5%3A_Physical_Exercise"
+            },
+            {
+              "n": "15.6",
+              "title": "Disorders of the Muscular System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/15%3A_Muscular_System/15.6%3A_Disorders_of_the_Muscular_System"
+            },
+            {
+              "n": "15.7",
+              "title": "Case Study Conclusion: Needing to Relax and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/15%3A_Muscular_System/15.7%3A_Case_Study_Conclusion%3A_Needing_to_Relax_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Respiratory System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/16%3A_Respiratory_System",
+          "topics": ["he.biology.anatomy-physiology#3"],
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "Case Study: Respiratory System and Gas Exchange",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/16%3A_Respiratory_System/16.1%3A_Case_Study%3A_Respiratory_System_and_Gas_Exchange"
+            },
+            {
+              "n": "16.2",
+              "title": "Structure and Function of the Respiratory System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/16%3A_Respiratory_System/16.2%3A_Structure_and_Function_of_the_Respiratory_System"
+            },
+            {
+              "n": "16.3",
+              "title": "Breathing",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/16%3A_Respiratory_System/16.3%3A_Breathing"
+            },
+            {
+              "n": "16.4",
+              "title": "Disorders of the Respiratory System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/16%3A_Respiratory_System/16.4%3A_Disorders_of_the_Respiratory_System"
+            },
+            {
+              "n": "16.5",
+              "title": "Smoking and Health",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/16%3A_Respiratory_System/16.5%3A_Smoking_and_Health"
+            },
+            {
+              "n": "16.6",
+              "title": "Case Study Conclusion:  Bronchitis and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/16%3A_Respiratory_System/16.6%3A_Case_Study_Conclusion%3A__Bronchitis_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Cardiovascular System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System",
+          "topics": ["he.biology.anatomy-physiology#3"],
+          "examples": [
+            "path of blood through the heart",
+            "arteries, veins and capillaries; blood pressure"
+          ],
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Case Study:  Your Body's Transportation System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System/17.1%3A_Case_Study%3A__Your_Body's_Transportation_System"
+            },
+            {
+              "n": "17.2",
+              "title": "Introduction to the Cardiovascular System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System/17.2%3A_Introduction_to_the_Cardiovascular_System"
+            },
+            {
+              "n": "17.3",
+              "title": "Heart",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System/17.3%3A_Heart"
+            },
+            {
+              "n": "17.4",
+              "title": "Blood Vessels",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System/17.4%3A_Blood_Vessels"
+            },
+            {
+              "n": "17.5",
+              "title": "Blood",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System/17.5%3A_Blood"
+            },
+            {
+              "n": "17.6",
+              "title": "Blood Types",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System/17.6%3A_Blood_Types"
+            },
+            {
+              "n": "17.7",
+              "title": "Cardiovascular Disease",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System/17.7%3A_Cardiovascular_Disease"
+            },
+            {
+              "n": "17.8",
+              "title": "Case Study Conclusion:  Flight and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/17%3A_Cardiovascular_System/17.8%3A_Case_Study_Conclusion%3A__Flight_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "18",
+          "title": "Digestive System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System",
+          "topics": ["he.biology.principles-2#3"],
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "Case Study:  Food Processing",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System/18.1%3A_Case_Study%3A__Food_Processing"
+            },
+            {
+              "n": "18.2",
+              "title": "Introduction to the Digestive System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System/18.2%3A_Introduction_to_the_Digestive_System"
+            },
+            {
+              "n": "18.3",
+              "title": "Digestion and Absorption",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System/18.3%3A_Digestion_and_Absorption"
+            },
+            {
+              "n": "18.4",
+              "title": "Upper Gastrointestinal Tract",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System/18.4%3A_Upper_Gastrointestinal_Tract"
+            },
+            {
+              "n": "18.5",
+              "title": "Lower Gastrointestinal Tract",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System/18.5%3A_Lower_Gastrointestinal_Tract"
+            },
+            {
+              "n": "18.6",
+              "title": "Accessory Organs of Digestion",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System/18.6%3A_Accessory_Organs_of_Digestion"
+            },
+            {
+              "n": "18.7",
+              "title": "Disorders of the Gastrointestinal Tract",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System/18.7%3A_Disorders_of_the_Gastrointestinal_Tract"
+            },
+            {
+              "n": "18.8",
+              "title": "Case Study Conclusion:  Celiac and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/18%3A_Digestive_System/18.8%3A_Case_Study_Conclusion%3A__Celiac_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "19",
+          "title": "Urinary System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/19%3A_Urinary_System",
+          "topics": [],
+          "notes": "Urinary system: no taxonomy topic (renal physiology).",
+          "lessons": [
+            {
+              "n": "19.1",
+              "title": "Case Study:  Waste Management",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/19%3A_Urinary_System/19.1%3A_Case_Study%3A__Waste_Management"
+            },
+            {
+              "n": "19.2",
+              "title": "Introduction to the Urinary System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/19%3A_Urinary_System/19.2%3A_Introduction_to_the_Urinary_System"
+            },
+            {
+              "n": "19.3",
+              "title": "Kidneys",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/19%3A_Urinary_System/19.3%3A_Kidneys"
+            },
+            {
+              "n": "19.4",
+              "title": "Ureters, Urinary Bladder, and Urethra",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/19%3A_Urinary_System/19.4%3A_Ureters_Urinary_Bladder_and_Urethra"
+            },
+            {
+              "n": "19.5",
+              "title": "Disorders of the Urinary System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/19%3A_Urinary_System/19.5%3A_Disorders_of_the_Urinary_System"
+            },
+            {
+              "n": "19.6",
+              "title": "Case Study Conclusion:  Alcohol and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/19%3A_Urinary_System/19.6%3A_Case_Study_Conclusion%3A__Alcohol_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "20",
+          "title": "Immune System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System",
+          "topics": ["he.biology.microbiology#3"],
+          "lessons": [
+            {
+              "n": "20.1",
+              "title": "Case Study: Your Defense System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System/20.1%3A_Case_Study%3A_Your_Defense_System"
+            },
+            {
+              "n": "20.2",
+              "title": "Introduction to the Immune System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System/20.2%3A_Introduction_to_the_Immune_System"
+            },
+            {
+              "n": "20.3",
+              "title": "Lymphatic System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System/20.3%3A_Lymphatic_System"
+            },
+            {
+              "n": "20.4",
+              "title": "Innate Immune System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System/20.4%3A_Innate_Immune_System"
+            },
+            {
+              "n": "20.5",
+              "title": "Adaptive Immune System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System/20.5%3A_Adaptive_Immune_System"
+            },
+            {
+              "n": "20.6",
+              "title": "Disorders of the Immune System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System/20.6%3A_Disorders_of_the_Immune_System"
+            },
+            {
+              "n": "20.7",
+              "title": "Human Microbiome",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System/20.7%3A_Human_Microbiome"
+            },
+            {
+              "n": "20.8",
+              "title": "Case Study Conclusion:  Lymphoma and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/20%3A_Immune_System/20.8%3A_Case_Study_Conclusion%3A__Lymphoma_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "21",
+          "title": "Disease",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease",
+          "topics": ["he.biology.microbiology#3"],
+          "lessons": [
+            {
+              "n": "21.1",
+              "title": "Case Study:  Threats to Our Health",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease/21.1%3A__Case_Study%3A__Threats_to_Our_Health"
+            },
+            {
+              "n": "21.2",
+              "title": "Homeostasis and Disease",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease/21.2%3A_Homeostasis_and_Disease"
+            },
+            {
+              "n": "21.3",
+              "title": "Infectious Diseases",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease/21.3%3A_Infectious_Diseases"
+            },
+            {
+              "n": "21.4",
+              "title": "Sexually Transmitted Infections",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease/21.4%3A_Sexually_Transmitted_Infections"
+            },
+            {
+              "n": "21.5",
+              "title": "HIV and AIDS",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease/21.5%3A_HIV_and_AIDS"
+            },
+            {
+              "n": "21.6",
+              "title": "Noninfectious Diseases",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease/21.6%3A_Noninfectious_Diseases"
+            },
+            {
+              "n": "21.7",
+              "title": "Cancer",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease/21.7%3A_Cancer"
+            },
+            {
+              "n": "21.8",
+              "title": "Case Study Conclusion:  Lyme and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/21%3A_Disease/21.8%3A_Case_Study_Conclusion%3A__Lyme_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "22",
+          "title": "Reproductive System",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System",
+          "topics": [],
+          "notes": "Reproductive system: no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "22.1",
+              "title": "Case Study: Making Babies",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.01%3A__Case_Study%3A_Making_Babies"
+            },
+            {
+              "n": "22.2",
+              "title": "Introduction to the Reproductive System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.02%3A_Introduction_to_the_Reproductive_System"
+            },
+            {
+              "n": "22.3",
+              "title": "Structures of the Male Reproductive System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.03%3A_Structures_of_the_Male_Reproductive_System"
+            },
+            {
+              "n": "22.4",
+              "title": "Functions of the Male Reproductive System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.04%3A_Functions_of_the_Male_Reproductive_System"
+            },
+            {
+              "n": "22.5",
+              "title": "Disorders of the Male Reproductive System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.05%3A_Disorders_of_the_Male_Reproductive_System"
+            },
+            {
+              "n": "22.6",
+              "title": "Structures of the Female Reproductive System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.06%3A_Structures_of_the_Female_Reproductive_System"
+            },
+            {
+              "n": "22.7",
+              "title": "Menstrual Cycle",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.07%3A_Menstrual_Cycle"
+            },
+            {
+              "n": "22.8",
+              "title": "Functions of the Female Reproductive System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.08%3A_Functions_of_the_Female_Reproductive_System"
+            },
+            {
+              "n": "22.9",
+              "title": "Disorders of the Female Reproductive System",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.09%3A__Disorders_of_the_Female_Reproductive_System"
+            },
+            {
+              "n": "22.10",
+              "title": "Infertility",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.10%3A_Infertility"
+            },
+            {
+              "n": "22.11",
+              "title": "Contraception",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.11%3A_Contraception"
+            },
+            {
+              "n": "22.12",
+              "title": "Case Study Conclusion: Trying to Conceive and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/22%3A_Reproductive_System/22.12%3A_Case_Study_Conclusion%3A_Trying_to_Conceive_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "23",
+          "title": "Human Growth and Development",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development",
+          "topics": [],
+          "notes": "Growth and development: no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "23.1",
+              "title": "Case Study:  How Our Bodies Change Throughout Life",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.1%3A_Case_Study%3A__How_Our_Bodies_Change_Throughout_Life"
+            },
+            {
+              "n": "23.2",
+              "title": "Germinal Stage",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.2%3A_Germinal_Stage"
+            },
+            {
+              "n": "23.3",
+              "title": "Embryonic Stage",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.3%3A_Embryonic_Stage"
+            },
+            {
+              "n": "23.4",
+              "title": "Fetal Stage",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.4%3A_Fetal_Stage"
+            },
+            {
+              "n": "23.5",
+              "title": "Infancy",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.5%3A_Infancy"
+            },
+            {
+              "n": "23.6",
+              "title": "Childhood",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.6%3A_Childhood"
+            },
+            {
+              "n": "23.7",
+              "title": "Adolescence and Puberty",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.7%3A_Adolescence_and_Puberty"
+            },
+            {
+              "n": "23.8",
+              "title": "Adulthood",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.8%3A_Adulthood"
+            },
+            {
+              "n": "23.9",
+              "title": "Case Study Conclusion: Lead Danger and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/23%3A_Human_Growth_and_Development/23.9%3A_Case_Study_Conclusion%3A_Lead_Danger_and_Chapter_Summary"
+            }
+          ]
+        },
+        {
+          "n": "24",
+          "title": "Ecology",
+          "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology",
+          "topics": ["he.biology.principles-2#4"],
+          "lessons": [
+            {
+              "n": "24.1",
+              "title": "Case Study:  The Web of Life",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.01%3A_Case_Study_-_The_Web_of_Life"
+            },
+            {
+              "n": "24.2",
+              "title": "Introduction to Ecology",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.02%3A_Introduction_to_Ecology"
+            },
+            {
+              "n": "24.3",
+              "title": "Ecosystems",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.03%3A_Ecosystems"
+            },
+            {
+              "n": "24.4",
+              "title": "Community Relationships",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.04%3A_Community_Relationships"
+            },
+            {
+              "n": "24.5",
+              "title": "Energy in Ecosystems",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.05%3A_Energy_in_Ecosystems"
+            },
+            {
+              "n": "24.6",
+              "title": "Cycles of Matter",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.06%3A_Cycles_of_Matter"
+            },
+            {
+              "n": "24.7",
+              "title": "Introduction to Human Populations",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.07%3A_Introduction_to_Human_Populations"
+            },
+            {
+              "n": "24.8",
+              "title": "Population Dynamics",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.08%3A_Population_Dynamics"
+            },
+            {
+              "n": "24.9",
+              "title": "Climate Change",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.09%3A_Climate_Change"
+            },
+            {
+              "n": "24.10",
+              "title": "Case Study Conclusion:  Organic and Chapter Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Human_Biology/Human_Biology_(Wakim_and_Grewal)/24%3A_Ecology/24.10%3A_Case_Study_Conclusion%3A__Organic_and_Chapter_Summary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

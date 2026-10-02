@@ -1,0 +1,155 @@
+{
+  "id": "mit-ocw-5.07sc-2013",
+  "curriculum": "MIT OCW 5.07SC Biological Chemistry I",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2013",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "John Essigmann, JoAnne Stubbe and Bogdan Fedeles. 5.07SC Biological Chemistry I. Fall 2013. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Module",
+    "lesson": "Session"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-07sc-biological-chemistry-i-fall-2013/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Sessions by module; problem sets 1–10 read for types (OCW-5.07SC-F13-*). The course is mechanism-heavy (curved arrows, cofactors); numeric work is ΔG°′, E°′ and ATP counts. Carbohydrate, lipid and amino-acid metabolism beyond the four topics are plan gaps.",
+  "books": [
+    {
+      "course": "5.07SC",
+      "url": "https://ocw.mit.edu/courses/5-07sc-biological-chemistry-i-fall-2013/",
+      "units": [
+        {
+          "n": "I",
+          "title": "Module I: Protein structure and enzymes",
+          "topics": ["he.chemistry.biochemistry#0", "he.chemistry.biochemistry#1"],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "What is biochemistry?",
+              "topics": ["he.chemistry.biochemistry#0"]
+            },
+            {
+              "n": "2",
+              "title": "Protein structure and function",
+              "topics": ["he.chemistry.biochemistry#0"]
+            },
+            {
+              "n": "3",
+              "title": "Enzymes and catalysis",
+              "topics": ["he.chemistry.biochemistry#1"]
+            },
+            {
+              "n": "4",
+              "title": "Enzyme kinetics and enzyme inhibition",
+              "topics": ["he.chemistry.biochemistry#1"]
+            },
+            {
+              "n": "5",
+              "title": "Biochemical transformations I",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "6",
+              "title": "Biochemical transformations II",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "7",
+              "title": "Biochemical transformations III",
+              "topics": ["he.chemistry.biochemistry#2"]
+            }
+          ]
+        },
+        {
+          "n": "II",
+          "title": "Module II: Catabolism and respiration",
+          "topics": ["he.chemistry.biochemistry#2", "he.chemistry.biochemistry#3"],
+          "lessons": [
+            {
+              "n": "8",
+              "title": "Introduction to sugar chemistry and carbohydrate catabolism",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "9",
+              "title": "Glycolysis and early stages of respiration",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "10",
+              "title": "Respiration: TCA cycle",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "11",
+              "title": "Maintenance of redox neutrality",
+              "topics": ["he.chemistry.biochemistry#3"]
+            },
+            {
+              "n": "12",
+              "title": "Respiration: electron transport and oxidative phosphorylation",
+              "topics": ["he.chemistry.biochemistry#3"]
+            },
+            {
+              "n": "13",
+              "title": "Respiration: proton pumps and ATP synthesis",
+              "topics": ["he.chemistry.biochemistry#3"]
+            },
+            {
+              "n": "14",
+              "title": "Lipid catabolism: fatty acid β-oxidation",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "15",
+              "title": "Special cases in fatty acid metabolism",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "16",
+              "title": "Ketogenesis, diabetes and starvation",
+              "topics": ["he.chemistry.biochemistry#2"]
+            }
+          ]
+        },
+        {
+          "n": "III",
+          "title": "Module III: Biosynthesis and regulation",
+          "topics": ["he.chemistry.biochemistry#2"],
+          "lessons": [
+            {
+              "n": "17",
+              "title": "Fatty acid and lipid biosynthesis",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "18",
+              "title": "Carbohydrate biosynthesis I: glycogen synthesis",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "19",
+              "title": "Carbohydrate biosynthesis II: gluconeogenesis",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "20",
+              "title": "Carbohydrate biosynthesis III: pentose phosphate pathway",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "21",
+              "title": "Regulation of metabolism",
+              "topics": ["he.chemistry.biochemistry#2", "he.chemistry.biochemistry#1"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

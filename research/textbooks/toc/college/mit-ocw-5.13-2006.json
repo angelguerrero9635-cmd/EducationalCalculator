@@ -1,0 +1,236 @@
+{
+  "id": "mit-ocw-5.13-2006",
+  "curriculum": "MIT OCW 5.13 Organic Chemistry II",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2006",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Kimberly Berkowski and Timothy F. Jamison. 5.13 Organic Chemistry II. Fall 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-13-organic-chemistry-ii-fall-2006/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Course calendar; exams 1, 2 and final, exam 3 extra problems, practice exams 3–4 and problem sets 5–8 read for types.",
+  "books": [
+    {
+      "course": "5.13",
+      "url": "https://ocw.mit.edu/courses/5-13-organic-chemistry-ii-fall-2006/",
+      "units": [
+        {
+          "n": "L",
+          "title": "Lectures",
+          "topics": [
+            "he.chemistry.organic-1#4",
+            "he.chemistry.organic-2#0",
+            "he.chemistry.organic-2#1",
+            "he.chemistry.organic-2#2",
+            "he.chemistry.organic-2#3"
+          ],
+          "examples": [
+            "structure from EA, M, IR, ¹H/¹³C NMR with IHD",
+            "π MO arrays of polyenes; con/disrotatory",
+            "acyl-derivative reactivity, hydride and organometallic additions",
+            "amine basicity, diazonium chemistry, Hofmann elimination and rearrangement",
+            "enolate alkylation, aldol, Claisen, Michael, Robinson annulation",
+            "retrosynthesis from allowed starting materials"
+          ],
+          "ranges": [
+            "¹H shifts 0–10 ppm; ¹³C 0–215 ppm; J 2–15 Hz",
+            "IR 1500–3300 cm⁻¹",
+            "M 100–170 g/mol",
+            "pKₐ 5–50"
+          ],
+          "notation": [
+            "IHD (index of hydrogen deficiency) = (2C + 2 + N − H − X)/2",
+            "Δ for heat, hν for light"
+          ],
+          "notes": "Ethers/epoxides, pericyclic reactions, carbocation rearrangements, radicals and photochemistry (L10–11, L14–18, L29–35) have no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Molecular formula and index of hydrogen deficiency [EA]",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "2",
+              "title": "Molecular formula and IHD [MS]",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "3",
+              "title": "Functional groups [IR]",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "4",
+              "title": "Functional groups: fragmentation [MS]",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "5",
+              "title": "Functional groups [¹³C NMR]",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "6",
+              "title": "Connectivity [¹H NMR]",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "7",
+              "title": "Connectivity [¹H NMR] (cont.)",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "8",
+              "title": "Organic structure elucidation",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "9",
+              "title": "Organic structure elucidation (cont.)",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "10",
+              "title": "Ethers, epoxides, and sulfides",
+              "topics": []
+            },
+            {
+              "n": "11",
+              "title": "Ethers, epoxides, and sulfides (cont.)",
+              "topics": []
+            },
+            {
+              "n": "12",
+              "title": "Conjugated systems and molecular orbital theory",
+              "topics": ["he.chemistry.organic-2#0", "he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "13",
+              "title": "Conjugated systems and MO theory (cont.)",
+              "topics": ["he.chemistry.organic-2#0"]
+            },
+            {
+              "n": "14",
+              "title": "Pericyclic reactions: introduction",
+              "topics": []
+            },
+            {
+              "n": "15",
+              "title": "Pericyclic reactions: electrocyclic processes",
+              "topics": []
+            },
+            {
+              "n": "16",
+              "title": "Pericyclic reactions: cycloadditions",
+              "topics": []
+            },
+            {
+              "n": "17",
+              "title": "Pericyclic reactions: cycloadditions, sigmatropic rearrangements",
+              "topics": []
+            },
+            {
+              "n": "18",
+              "title": "Pericyclic reactions: sigmatropic rearrangements",
+              "topics": []
+            },
+            {
+              "n": "19",
+              "title": "Amines",
+              "topics": ["he.chemistry.organic-2#3"]
+            },
+            {
+              "n": "20",
+              "title": "Amines (cont.)",
+              "topics": ["he.chemistry.organic-2#3"]
+            },
+            {
+              "n": "21",
+              "title": "Carboxylic acids and derivatives",
+              "topics": ["he.chemistry.organic-2#2"]
+            },
+            {
+              "n": "22",
+              "title": "Carboxylic acids and derivatives (cont.)",
+              "topics": ["he.chemistry.organic-2#2"]
+            },
+            {
+              "n": "23",
+              "title": "Carboxylic acids and derivatives (cont.)",
+              "topics": ["he.chemistry.organic-2#2"]
+            },
+            {
+              "n": "24",
+              "title": "Carboxylic acids and derivatives (cont.)",
+              "topics": ["he.chemistry.organic-2#2"]
+            },
+            {
+              "n": "25",
+              "title": "Enols and enolates",
+              "topics": ["he.chemistry.organic-2#1"]
+            },
+            {
+              "n": "26",
+              "title": "Enols and enolates (cont.)",
+              "topics": ["he.chemistry.organic-2#1"]
+            },
+            {
+              "n": "27",
+              "title": "Enols and enolates (cont.)",
+              "topics": ["he.chemistry.organic-2#1"]
+            },
+            {
+              "n": "28",
+              "title": "Enols and enolates (cont.)",
+              "topics": ["he.chemistry.organic-2#1"]
+            },
+            {
+              "n": "29",
+              "title": "Carbocations",
+              "topics": []
+            },
+            {
+              "n": "30",
+              "title": "Carbocations (cont.)",
+              "topics": []
+            },
+            {
+              "n": "31",
+              "title": "Carbocations (cont.)",
+              "topics": []
+            },
+            {
+              "n": "32",
+              "title": "Carbocations (cont.)",
+              "topics": []
+            },
+            {
+              "n": "33",
+              "title": "Radicals",
+              "topics": []
+            },
+            {
+              "n": "34",
+              "title": "Radicals (cont.)",
+              "topics": []
+            },
+            {
+              "n": "35",
+              "title": "Photochemistry",
+              "topics": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
