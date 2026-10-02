@@ -5,9 +5,13 @@
 import { Platform } from 'react-native';
 import { G, Line, Text as SvgText } from 'react-native-svg';
 
+import type { NumOrVar } from '@/data/modules/typesGraphs';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
-import { ChartText } from './common';
+import type { Calculator } from '../useCalculator';
+import { ChartText, useRep } from './common';
+import { useValueLabel } from './he1fKit';
 
 /** A code font: the system's monospace (Menlo on iOS). */
 export const MONO =
@@ -152,13 +156,45 @@ export function VBracket({
   );
 }
 
-/** Seconds per unit of a time the pages write (ns, μs, ms, s), 1 when unknown. */
-export const TIME_UNITS: Record<string, number> = {
-  ps: 1e-12,
-  ns: 1e-9,
-  μs: 1e-6,
-  µs: 1e-6,
-  us: 1e-6,
-  ms: 1e-3,
-  s: 1,
-};
+/** A number to 4 significant figures for a label. */
+export const fmt4 = (x: number) => formatNumber(Number(x.toPrecision(4)));
+
+/** A time in seconds in the unit that reads best (ns, μs, ms, s), to 4 figures. */
+export function fmtTime(sec: number): string {
+  const a = Math.abs(sec);
+  if (a > 0 && a < 1e-6) return `${fmt4(sec * 1e9)} ns`;
+  if (a > 0 && a < 1e-3) return `${fmt4(sec * 1e6)} μs`;
+  if (a > 0 && a < 1) return `${fmt4(sec * 1e3)} ms`;
+  return `${fmt4(sec)} s`;
+}
+
+/**
+ * Reads a group D spec's fields: a number as it is, a variable's value when known (a "?" is
+ * undefined: nothing is drawn for it), scaled from the variable's unit by a unit table; and its
+ * label as the page shows it ("t_cq = 1 ns").
+ */
+export function useReader(calc: Calculator) {
+  const rep = useRep(calc);
+  const valueLabel = useValueLabel(calc);
+  const get = (x: NumOrVar | undefined): number | undefined => {
+    if (x === undefined) return undefined;
+    if (typeof x === 'number') return x;
+    return rep.known(x) ? rep.val(x) : undefined;
+  };
+  const unit = (x: NumOrVar | undefined) =>
+    typeof x === 'string' ? rep.variable(x).unit : undefined;
+  /** The value in base units by `table` (seconds, hertz), as it is when its unit isn't listed. */
+  const base = (x: NumOrVar | undefined, table: Record<string, number>) => {
+    const v = get(x);
+    if (v === undefined) return undefined;
+    const u = unit(x);
+    return v * (u !== undefined && table[u] !== undefined ? table[u]! : 1);
+  };
+  /** The page's label for a field, or `symbol = number` for a fixed number. */
+  const lab = (x: NumOrVar | undefined, symbol: string, u = '') => {
+    if (typeof x === 'string') return valueLabel(x);
+    if (typeof x === 'number') return `${symbol} = ${fmt4(x)}${u ? ` ${u}` : ''}`;
+    return undefined;
+  };
+  return { rep, get, unit, base, lab };
+}

@@ -45,6 +45,7 @@ import type { CircleHs3b, PolygonHs3b, RectangleHs3b, TableHs3b } from './typesH
 import type { BarFlows, Hs2eSpec } from './typesHs2e';
 import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
+import type { He3dSpec } from './typesHe3d';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
 import type { He2cSpec } from './typesHe2c';
 import type { BeamSpec } from './typesHe1a';
@@ -1179,6 +1180,8 @@ export type Representation =
   | Hs3dSpec
   /** College round 1, group C (HC2): a line-angle structure (`typesHe1c.ts`). */
   | SkeletalSpec
+  /** College round 3, group D (`typesHe3d.ts`): timing diagrams, graphs, schedules, bit fields. */
+  | He3dSpec
   /** College round 1, group A: the `beam` (HC1; specs in `typesHe1a.ts`). */
   | BeamSpec
   /** College round 2, group A: the Bode plot (HC22; `typesHe2a.ts`). */

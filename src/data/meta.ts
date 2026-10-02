@@ -162,6 +162,7 @@ const PICTURE_NAMES: Record<string, string> = {
   fieldPlot: 'a slope or vector field, a phase portrait, or two species’ isoclines',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   thermalWall: 'heat through a layered wall, a pipe, a fin, a tube or a wire, or radiated away',
+  timingDiagram: 'digital waveforms on one time axis with their intervals bracketed',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

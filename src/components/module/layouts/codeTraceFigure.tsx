@@ -177,7 +177,7 @@ function CodeTraceDrawing({
             fontWeight="700"
             fill={test.holds ? c.chartInk : c.codeLitEdge}
           >
-            {test.holds ? '→ true: run the body again' : '→ false: the loop ends'}
+            {test.holds ? '→ true: the body runs' : '→ false: the loop ends'}
           </ChartText>
         </G>
       ) : null}
