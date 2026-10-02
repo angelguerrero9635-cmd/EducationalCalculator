@@ -15,6 +15,7 @@ import type {
 import type { GalvanicScene } from '../typesHsj';
 import type { CondensedCard, HydrationScene } from '../typesHs2d';
 import type { SkeletalCard } from '../typesHe1c';
+import type { PathwayStepCard } from '../typesHe3g';
 import type {
   CurrentsScene,
   GreenhouseScene,
@@ -199,6 +200,8 @@ export type CardFigure =
   | CondensedCard
   /** College HC2 (`typesHe1c.ts`): a line-angle structure, 112 × 76, a group lit. */
   | SkeletalCard
+  /** College HC57 (`typesHe3g.ts`): one step of glycolysis or the citric acid cycle, 112 × 76. */
+  | PathwayStepCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
   /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */

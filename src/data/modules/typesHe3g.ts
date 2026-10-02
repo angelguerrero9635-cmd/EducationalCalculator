@@ -1,6 +1,6 @@
 /**
  * College pictures of round 3, group G (docs/RENDERINGS_HE.md): HC43 `gasPiston` options `pv`
- * and `real`. Kept apart from the shared type files, which name these with one line each. A
+ * and `real`, HC44 `energyProfile` options, HC57 the pathway detail and card. Kept apart from the shared type files, which name these with one line each. A
  * `NumOrVar` is a fixed number or a variable id; values are read in the variable's own unit.
  */
 import type { NumOrVar } from './typesGraphs';
@@ -170,3 +170,165 @@ export function energyHe3gVars(r: object): string[] {
     );
   return out;
 }
+
+// ─── HC57: organelleEnergy `detail` and the `pathwayStep` card ───────────────
+
+/** The pathways a detail scene or a stage card can draw. */
+export type PathwayName = 'glycolysis' | 'krebs' | 'etc';
+
+/** A molecule drawn as its carbon chain: carbons, phosphates on it, a CoA tag. */
+export interface Metabolite {
+  name: string;
+  /** Its short name in the detail rows ("G3P"). */
+  short: string;
+  carbons: number;
+  phosphates: number;
+  coa?: boolean;
+  /** Which carbons carry the phosphates (from 0), when not the chain's ends. */
+  on?: number[];
+}
+
+/** What one step makes (+) or uses (−), per glucose (glycolysis) or per acetyl-CoA (krebs). */
+export interface StepYield {
+  ATP?: number;
+  GTP?: number;
+  NADH?: number;
+  FADH2?: number;
+  CO2?: number;
+  H2O?: number;
+}
+
+/** One step: its enzyme, what goes in and comes out, and its yield. */
+export interface PathwayStep {
+  enzyme: string;
+  from: Metabolite[];
+  to: Metabolite[];
+  yields: StepYield;
+  /** ETC complexes: protons pumped out per pair of electrons (to the intermembrane space). */
+  protons?: number;
+  /** A note under the step (ETC: "NADH → NAD⁺"). */
+  note?: string;
+}
+
+const m = (name: string, short: string, carbons: number, phosphates = 0, coa = false) => ({
+  name,
+  short,
+  carbons,
+  phosphates,
+  ...(coa ? { coa } : {}),
+});
+
+const GLC = m('glucose', 'Glc', 6);
+const G6P = m('glucose 6-phosphate', 'G6P', 6, 1);
+const F6P = m('fructose 6-phosphate', 'F6P', 6, 1);
+const FBP = m('fructose 1,6-bisphosphate', 'F1,6BP', 6, 2);
+const DHAP = m('dihydroxyacetone phosphate', 'DHAP', 3, 1);
+const G3P = m('glyceraldehyde 3-phosphate', 'G3P', 3, 1);
+const BPG = m('1,3-bisphosphoglycerate', '1,3BPG', 3, 2);
+const PG3 = m('3-phosphoglycerate', '3PG', 3, 1);
+const PG2 = { ...m('2-phosphoglycerate', '2PG', 3, 1), on: [1] };
+const PEP = { ...m('phosphoenolpyruvate', 'PEP', 3, 1), on: [1] };
+const PYR = m('pyruvate', 'pyruvate', 3);
+const ACOA = m('acetyl-CoA', 'acetyl-CoA', 2, 0, true);
+const OAA = m('oxaloacetate', 'OAA', 4);
+const CIT = m('citrate', 'citrate', 6);
+const ICIT = m('isocitrate', 'isocitrate', 6);
+const AKG = m('α-ketoglutarate', 'α-KG', 5);
+const SCOA = m('succinyl-CoA', 'succinyl-CoA', 4, 0, true);
+const SUCC = m('succinate', 'succinate', 4);
+const FUM = m('fumarate', 'fumarate', 4);
+const MAL = m('malate', 'malate', 4);
+
+/**
+ * The pathways' steps (Grade 13+ biochemistry): glycolysis per glucose (steps 6–10 run twice,
+ * once for each G3P), the citric acid cycle per acetyl-CoA, and the electron transport chain
+ * per pair of electrons.
+ */
+export const PATHWAYS: Record<PathwayName, PathwayStep[]> = {
+  glycolysis: [
+    { enzyme: 'hexokinase', from: [GLC], to: [G6P], yields: { ATP: -1 } },
+    { enzyme: 'phosphoglucose isomerase', from: [G6P], to: [F6P], yields: {} },
+    { enzyme: 'phosphofructokinase-1', from: [F6P], to: [FBP], yields: { ATP: -1 } },
+    { enzyme: 'aldolase', from: [FBP], to: [DHAP, G3P], yields: {} },
+    { enzyme: 'triose phosphate isomerase', from: [DHAP], to: [G3P], yields: {} },
+    { enzyme: 'G3P dehydrogenase', from: [G3P], to: [BPG], yields: { NADH: 2 } },
+    { enzyme: 'phosphoglycerate kinase', from: [BPG], to: [PG3], yields: { ATP: 2 } },
+    { enzyme: 'phosphoglycerate mutase', from: [PG3], to: [PG2], yields: {} },
+    { enzyme: 'enolase', from: [PG2], to: [PEP], yields: { H2O: 2 } },
+    { enzyme: 'pyruvate kinase', from: [PEP], to: [PYR], yields: { ATP: 2 } },
+  ],
+  krebs: [
+    { enzyme: 'citrate synthase', from: [ACOA, OAA], to: [CIT], yields: {} },
+    { enzyme: 'aconitase', from: [CIT], to: [ICIT], yields: {} },
+    { enzyme: 'isocitrate dehydrogenase', from: [ICIT], to: [AKG], yields: { NADH: 1, CO2: 1 } },
+    {
+      enzyme: 'α-ketoglutarate dehydrogenase',
+      from: [AKG],
+      to: [SCOA],
+      yields: { NADH: 1, CO2: 1 },
+    },
+    { enzyme: 'succinyl-CoA synthetase', from: [SCOA], to: [SUCC], yields: { GTP: 1 } },
+    { enzyme: 'succinate dehydrogenase', from: [SUCC], to: [FUM], yields: { FADH2: 1 } },
+    { enzyme: 'fumarase', from: [FUM], to: [MAL], yields: {} },
+    { enzyme: 'malate dehydrogenase', from: [MAL], to: [OAA], yields: { NADH: 1 } },
+  ],
+  etc: [
+    { enzyme: 'Complex I', from: [], to: [], yields: {}, protons: 4, note: 'NADH → NAD⁺' },
+    {
+      enzyme: 'Complex II',
+      from: [],
+      to: [],
+      yields: {},
+      protons: 0,
+      note: 'FADH₂ → FAD (succinate → fumarate)',
+    },
+    { enzyme: 'Complex III', from: [], to: [], yields: {}, protons: 4, note: 'QH₂ → Q' },
+    {
+      enzyme: 'Complex IV',
+      from: [],
+      to: [],
+      yields: { H2O: 1 },
+      protons: 2,
+      note: '½O₂ + 2H⁺ → H₂O',
+    },
+    {
+      enzyme: 'ATP synthase',
+      from: [],
+      to: [],
+      yields: {},
+      note: 'H⁺ flow back in: ADP + Pᵢ → ATP (4 H⁺ each)',
+    },
+  ],
+};
+
+/** H⁺ through ATP synthase for each ATP (with the phosphate carried in). */
+export const PROTONS_PER_ATP = 4;
+
+/** The yields of the first `upTo` steps of a pathway (all of them by default), added. */
+export function pathwayTally(name: PathwayName, upTo?: number): Required<StepYield> {
+  const out = { ATP: 0, GTP: 0, NADH: 0, FADH2: 0, CO2: 0, H2O: 0 };
+  for (const s of PATHWAYS[name].slice(0, upTo ?? PATHWAYS[name].length))
+    for (const [k, v] of Object.entries(s.yields)) out[k as keyof StepYield] += v ?? 0;
+  return out;
+}
+
+/** The names a yield is written with ("FADH₂", "CO₂"). */
+export const YIELD_NAMES: Record<keyof StepYield, string> = {
+  ATP: 'ATP',
+  GTP: 'GTP',
+  NADH: 'NADH',
+  FADH2: 'FADH₂',
+  CO2: 'CO₂',
+  H2O: 'H₂O',
+};
+
+/** A `pathwayStep` card figure (112 × 76): one step's molecules and what it makes or uses. */
+export interface PathwayStepCard {
+  kind: 'pathwayStep';
+  pathway: 'glycolysis' | 'krebs';
+  /** The step, from 1. */
+  step: number;
+}
+
+export const PATHWAY_CARD_W = 112;
+export const PATHWAY_CARD_H = 76;

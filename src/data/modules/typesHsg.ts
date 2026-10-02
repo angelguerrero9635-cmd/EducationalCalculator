@@ -5,6 +5,7 @@
  */
 
 import type { DnaLongGene } from './typesHs2e';
+import type { PathwayName } from './typesHe3g';
 
 // ─── H31 macromolecules (explore) ────────────────────────────────────────────
 
@@ -61,6 +62,9 @@ export type EnergyProcess =
 export interface EnergyScene {
   process?: EnergyProcess;
   lit?: EnergySubstance;
+  /** HC57 (college): a pathway's steps in detail, one lit (`typesHe3g.ts`). */
+  detail?: PathwayName;
+  step?: number;
 }
 
 /** The substances each process takes in or gives out (the arrows it lights). */

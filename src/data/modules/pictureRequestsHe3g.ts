@@ -93,4 +93,34 @@ export const HE3G_REQUESTS: PictureRequest[] = [
       'g.he-energyProfile-bomb-octane',
     ],
   },
+  {
+    ...ask(
+      'HC57',
+      'organelleEnergy',
+      'A pathway step by step (glycolysis, the citric acid cycle, the electron transport chain): each step’s enzyme, substrate and product with their carbons, what it makes or uses, tallied; and a stage card drawing one step',
+      {
+        [`${C}biochemistry#2`]:
+          'Glycolysis sequence: each stage a pathwayStep card (glycolysis, steps 1–10).',
+        [`${C}biochemistry#2~krebs`]:
+          'Citric acid cycle sequence: each stage a pathwayStep card (krebs, steps 1–8).',
+        [`${C}biochemistry#2~atp-yield`]:
+          'The ETC detail (per NADH 2.5 ATP, per FADH₂ 1.5) on an organelleEnergy explore page linked from it, or as its figure once HE-E2 gives calculators a layout figure.',
+        [`${C}biochemistry#2~beta-oxidation`]:
+          'The citric acid cycle detail (3 NADH, 1 FADH₂, 1 GTP per acetyl-CoA) beside it, as for ~atp-yield.',
+      },
+      [
+        'From C-P20. Types and the pathway data (PATHWAYS, pathwayTally, PROTONS_PER_ATP) in typesHe3g.ts; the detail drawn by layouts/pathwayFigure.tsx (routed by one line in ExploreLayout.tsx when a scene sets energy.detail), the card by layouts/pathwayCard.tsx (registered in CardFigure.tsx and layouts/types.ts).',
+        "Fields: explore figure { kind: 'organelleEnergy' } with scene energy: { detail: 'glycolysis' | 'krebs' | 'etc', step? } (step lights that row, fades the later ones and tallies to it). Card figure { kind: 'pathwayStep', pathway: 'glycolysis' | 'krebs', step } (112 × 76): carbons as dots, phosphates orange, CoA a tag, an aldolase split as two 3C chains, chips for ATP, GTP, NADH, FADH₂ and CO₂ made (+) or used (− dashed).",
+        "Example (biochemistry#2): stages: [{ label: 'Hexokinase: glucose → glucose 6-phosphate (uses ATP)', figure: { kind: 'pathwayStep', pathway: 'glycolysis', step: 1 } }, …]. Example scene: { label: 'The first NADH', lines: […], energy: { detail: 'glycolysis', step: 6 } }.",
+        'Layout check (harness/layoutFiguresHe3g.ts): glycolysis nets 2 ATP and 2 NADH per glucose; a turn makes 3 NADH, 1 FADH₂, 1 GTP, 2 CO₂ and ends at OAA; carbon in = carbon out + CO₂ at every step; 10 H⁺ ÷ 4 = 2.5 ATP per NADH, 6 ÷ 4 = 1.5 per FADH₂; cards one pathway, steps in order; a scene’s step in range.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-organelleEnergy-glycolysis',
+      'g.he-organelleEnergy-krebs-etc',
+      'g.he-pathwayStep-glycolysis',
+      'g.he-pathwayStep-krebs',
+    ],
+  },
 ];

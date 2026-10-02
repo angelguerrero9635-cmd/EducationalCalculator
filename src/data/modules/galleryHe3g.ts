@@ -4,7 +4,8 @@
  *
  * HC43 `gasPiston` `pv` and `real`: the laws of thermodynamics (docs/plans/he.physics.md P27,
  * he.chemistry.md P11) and real gases (he.chemistry.md P10). HC44 `energyProfile` free energy,
- * mechanisms and the bomb calorimeter (he.biology.md P2, he.chemistry.md P15).
+ * mechanisms and the bomb calorimeter (he.biology.md P2, he.chemistry.md P15). HC57 the
+ * pathway detail and stage cards of metabolism (he.chemistry.md P20).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1296,6 +1297,161 @@ const bombOctane = bombDemo(
   [0.5, 114.23, 8, 3, -4.5, 298.15],
 );
 
+// ── HC57: the pathway detail (organelleEnergy) and the pathwayStep cards (biochemistry#2) ──
+
+const PATHWAY_DETAIL: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-organelleEnergy-glycolysis',
+  title: 'Glycolysis step by step',
+  use: 'Use this for where glycolysis uses and makes ATP and NADH, step by step.',
+  assumptions: [
+    'Counted per glucose: after aldolase splits the 6C sugar, steps 6–10 run twice.',
+    'Two ATP go in (steps 1 and 3) and four come out (steps 7 and 10): 2 ATP net, with 2 NADH.',
+  ],
+  figure: { kind: 'organelleEnergy' },
+  scenes: [
+    {
+      label: 'The whole pathway',
+      lines: ['Glucose (6C) becomes two pyruvate (3C) in the cytoplasm: 2 ATP and 2 NADH net.'],
+      energy: { detail: 'glycolysis' },
+    },
+    {
+      label: 'The investment',
+      lines: [
+        'Hexokinase spends the first ATP to trap glucose in the cell as glucose 6-phosphate.',
+      ],
+      energy: { detail: 'glycolysis', step: 1 },
+    },
+    {
+      label: 'The split',
+      lines: ['Aldolase cuts fructose 1,6-bisphosphate into two three-carbon sugars.'],
+      energy: { detail: 'glycolysis', step: 4 },
+    },
+    {
+      label: 'The first NADH',
+      lines: [
+        'G3P dehydrogenase passes electrons to NAD⁺: one NADH for each G3P, two per glucose.',
+      ],
+      energy: { detail: 'glycolysis', step: 6 },
+    },
+    {
+      label: 'The payoff',
+      lines: ['Pyruvate kinase makes the last two ATP: four made, two spent, 2 net.'],
+      energy: { detail: 'glycolysis', step: 10 },
+    },
+  ],
+};
+
+const KREBS_DETAIL: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-organelleEnergy-krebs-etc',
+  title: 'The citric acid cycle and the electron transport chain',
+  use: 'Use this for where NADH, FADH₂ and CO₂ form, and how they become ATP.',
+  assumptions: [
+    'One turn per acetyl-CoA: 3 NADH, 1 FADH₂, 1 GTP and 2 CO₂; two turns per glucose.',
+    'About 10 H⁺ are pumped per NADH and 6 per FADH₂; ATP synthase uses 4 H⁺ per ATP: 2.5 and 1.5.',
+  ],
+  figure: { kind: 'organelleEnergy' },
+  scenes: [
+    {
+      label: 'One turn of the cycle',
+      lines: [
+        'Acetyl-CoA (2C) joins oxaloacetate (4C); two carbons leave as CO₂ and the cycle comes back to oxaloacetate.',
+      ],
+      energy: { detail: 'krebs' },
+    },
+    {
+      label: 'The first CO₂',
+      lines: ['Isocitrate dehydrogenase removes a carbon as CO₂ and makes NADH.'],
+      energy: { detail: 'krebs', step: 3 },
+    },
+    {
+      label: 'FADH₂',
+      lines: ['Succinate dehydrogenase, in the inner membrane, hands its electrons to FAD.'],
+      energy: { detail: 'krebs', step: 6 },
+    },
+    {
+      label: 'The electron transport chain',
+      lines: [
+        'Complexes I, III and IV pump H⁺ out as electrons pass to O₂; ATP synthase lets them back in.',
+      ],
+      energy: { detail: 'etc' },
+    },
+    {
+      label: 'ATP synthase',
+      lines: ['The H⁺ flowing back turn ATP synthase: about 4 H⁺ for each ATP.'],
+      energy: { detail: 'etc', step: 5 },
+    },
+  ],
+};
+
+const card = (pathway: 'glycolysis' | 'krebs', step: number) =>
+  ({ kind: 'pathwayStep', pathway, step }) as const;
+
+const GLYCOLYSIS_SEQUENCE: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.he-pathwayStep-glycolysis',
+  title: 'Glycolysis, from glucose',
+  use: 'Use this for the steps and enzymes of glycolysis in order.',
+  assumptions: [
+    'Each card draws the carbons as dots and phosphates in orange; under it, what the step makes or uses per glucose.',
+    'Steps 6–10 run twice per glucose, once for each three-carbon sugar.',
+  ],
+  question: 'Put the steps of glycolysis in order.',
+  stages: [
+    {
+      label: 'Hexokinase: glucose → glucose 6-phosphate (uses ATP)',
+      figure: card('glycolysis', 1),
+    },
+    { label: 'Phosphoglucose isomerase: → fructose 6-phosphate', figure: card('glycolysis', 2) },
+    {
+      label: 'Phosphofructokinase-1: → fructose 1,6-bisphosphate (uses ATP)',
+      figure: card('glycolysis', 3),
+    },
+    { label: 'Aldolase: → DHAP and glyceraldehyde 3-phosphate', figure: card('glycolysis', 4) },
+    {
+      label: 'Triose phosphate isomerase: DHAP → glyceraldehyde 3-phosphate',
+      figure: card('glycolysis', 5),
+    },
+    {
+      label: 'G3P dehydrogenase: → 1,3-bisphosphoglycerate (makes NADH)',
+      figure: card('glycolysis', 6),
+    },
+    {
+      label: 'Phosphoglycerate kinase: → 3-phosphoglycerate (makes ATP)',
+      figure: card('glycolysis', 7),
+    },
+    { label: 'Phosphoglycerate mutase: → 2-phosphoglycerate', figure: card('glycolysis', 8) },
+    { label: 'Enolase: → phosphoenolpyruvate', figure: card('glycolysis', 9) },
+    { label: 'Pyruvate kinase: → pyruvate (makes ATP)', figure: card('glycolysis', 10) },
+  ],
+};
+
+const KREBS_SEQUENCE: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.he-pathwayStep-krebs',
+  title: 'The citric acid cycle, from acetyl-CoA and oxaloacetate',
+  use: 'Use this for the citric acid cycle in order, and where NADH, FADH₂, GTP and CO₂ form.',
+  assumptions: [
+    'Each card draws the carbons as dots, CoA as a tag; under it, what the step makes per acetyl-CoA.',
+    'The last step makes oxaloacetate again, ready for the next acetyl-CoA.',
+  ],
+  question: 'Put the steps of the citric acid cycle in order.',
+  stages: [
+    { label: 'Citrate synthase: acetyl-CoA + oxaloacetate → citrate', figure: card('krebs', 1) },
+    { label: 'Aconitase: → isocitrate', figure: card('krebs', 2) },
+    { label: 'Isocitrate dehydrogenase: → α-ketoglutarate (NADH, CO₂)', figure: card('krebs', 3) },
+    {
+      label: 'α-Ketoglutarate dehydrogenase: → succinyl-CoA (NADH, CO₂)',
+      figure: card('krebs', 4),
+    },
+    { label: 'Succinyl-CoA synthetase: → succinate (GTP)', figure: card('krebs', 5) },
+    { label: 'Succinate dehydrogenase: → fumarate (FADH₂)', figure: card('krebs', 6) },
+    { label: 'Fumarase: → malate', figure: card('krebs', 7) },
+    { label: 'Malate dehydrogenase: → oxaloacetate (NADH)', figure: card('krebs', 8) },
+  ],
+};
+
 export const HE3G_GALLERY_MODULES: ModuleDef[] = [
   pvIsothermal,
   pvChemistry,
@@ -1317,4 +1473,9 @@ export const HE3G_GALLERY_MODULES: ModuleDef[] = [
   bombOctane,
 ];
 
-export const HE3G_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HE3G_GALLERY_LAYOUTS: LayoutDef[] = [
+  PATHWAY_DETAIL,
+  KREBS_DETAIL,
+  GLYCOLYSIS_SEQUENCE,
+  KREBS_SEQUENCE,
+];

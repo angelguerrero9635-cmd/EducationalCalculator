@@ -21,6 +21,8 @@ import { MoleculeCard } from './chemFigures';
 import { CondensedCardView, condensedWidth } from './condensedCard';
 import { SkeletalCardView } from './skeletalCard';
 import { SKELETAL_CARD_H, SKELETAL_CARD_W } from '@/data/modules/typesHe1c';
+import { PATHWAY_CARD_H, PATHWAY_CARD_W } from '@/data/modules/typesHe3g';
+import { PathwayCard } from './pathwayCard';
 import {
   CellPartsCard,
   DotPlotCard,
@@ -79,6 +81,8 @@ export function figureWidth(f: Spec): number {
       return SKELETAL_CARD_W;
     case 'replication':
       return REPLICATION_W;
+    case 'pathwayStep':
+      return PATHWAY_CARD_W; // HC57
     case 'reflexArc':
     case 'flowerCycle':
       return hs3dCardSize(f)![0];
@@ -112,7 +116,9 @@ export function CardFigureView({
           ? REPLICATION_H
           : figure.kind === 'skeletal'
             ? SKELETAL_CARD_H
-            : S);
+            : figure.kind === 'pathwayStep'
+              ? PATHWAY_CARD_H
+              : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -229,6 +235,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <StrobeCardView f={f} ink={ink} />;
     case 'replication':
       return <ReplicationCard f={f} ink={ink} />;
+    case 'pathwayStep':
+      return <PathwayCard f={f} ink={ink} />; // HC57
     case 'reflexArc':
     case 'flowerCycle':
       return <Hs3dCardView f={f} ink={ink} />;
