@@ -1757,6 +1757,242 @@ const continuous = (() => {
   });
 })();
 
+// ─── HC1 beam, stirrups: shear reinforcement (concrete-design#1) ─────────────
+
+const stirrups = (() => {
+  const vars: VariableDef[] = [
+    val('bw', 'b_w', 'Web width', 'in', 200, { min: 1 }),
+    val('d', 'd', 'Effective depth', 'in', 200, { min: 1 }),
+    val('fc', 'f′_c', 'Concrete strength', 'psi', 20000, { min: 100 }),
+    val('Vc', 'V_c', 'Concrete’s shear strength', 'kip', 1e4),
+    val('Vu', 'V_u', 'Factored shear', 'kip', 1e4),
+    val('Vs', 'V_s', 'Shear the stirrups carry', 'kip', 1e4),
+    val('Av', 'A_v', 'Stirrup legs’ area', 'in²', 20, { min: 0.01 }),
+    val('fy', 'f_yt', 'Stirrup yield strength', 'ksi', 200, { min: 1 }),
+    val('s', 's', 'Stirrup spacing', 'in', 200),
+    val('smax', 's_max', 'Largest spacing allowed', 'in', 100),
+  ];
+  const sy = symbolsOf(vars);
+  const [bw, d, fc, Vu, Av, fy] = [12, 20, 4000, 50, 0.22, 60];
+  const Vc = (2 * Math.sqrt(fc) * bw * d) / 1000;
+  const Vs = Vu / 0.75 - Vc;
+  return demo('g.he-beam-stirrups', 'Stirrups along a concrete beam: their spacing', {
+    use: 'Use this for “A 12 × 20 in beam (f′c = 4000 psi) carries V_u = 50 kips. How far apart must #3 stirrups be?”',
+    assumptions: [
+      'Normal-weight concrete (λ = 1), vertical stirrups, φ = 0.75 for shear; 1000 lb to a kip.',
+      'The picture draws a 20 ft span under a uniform load, V_u at the supports.',
+    ],
+    variables: vars,
+    relations: [
+      rel(
+        'V_c = 2√f′_c b_wd',
+        '{Vc} = 2 × √{fc} × {bw} × {d} ÷ 1000',
+        ['Vc', 'fc', 'bw', 'd'],
+        (x) => x.Vc! - (2 * Math.sqrt(x.fc!) * x.bw! * x.d!) / 1000,
+        {
+          Vc: [
+            (x) => (2 * Math.sqrt(x.fc!) * x.bw! * x.d!) / 1000,
+            '2 × √{fc} × {bw} × {d} ÷ 1000',
+            'ACI’s simple concrete shear strength: 2√f′c (psi) over the web’s b_w × d, in pounds, then kips.',
+          ],
+          fc: [
+            (x) => (x.bw! * x.d! === 0 ? undefined : ((1000 * x.Vc!) / (2 * x.bw! * x.d!)) ** 2),
+            '(1000 × {Vc} ÷ (2 × {bw} × {d}))²',
+            'Get √f′c alone, then square it.',
+          ],
+          bw: [
+            (x) =>
+              x.fc! * x.d! === 0 ? undefined : (1000 * x.Vc!) / (2 * Math.sqrt(x.fc!) * x.d!),
+            '1000 × {Vc} ÷ (2 × √{fc} × {d})',
+            'Divide by everything else on the right.',
+          ],
+          d: [
+            (x) =>
+              x.fc! * x.bw! === 0 ? undefined : (1000 * x.Vc!) / (2 * Math.sqrt(x.fc!) * x.bw!),
+            '1000 × {Vc} ÷ (2 × √{fc} × {bw})',
+            'Divide by everything else on the right.',
+          ],
+        },
+      ),
+      rel(
+        'V_s = V_u ÷ 0.75 − V_c',
+        '{Vs} = {Vu} ÷ 0.75 − {Vc}',
+        ['Vs', 'Vu', 'Vc'],
+        (x) => x.Vs! - (x.Vu! / 0.75 - x.Vc!),
+        {
+          Vs: [
+            (x) => x.Vu! / 0.75 - x.Vc!,
+            '{Vu} ÷ 0.75 − {Vc}',
+            'The strength needed is V_u ÷ φ; the stirrups carry what the concrete doesn’t.',
+          ],
+          Vu: [
+            (x) => 0.75 * (x.Vs! + x.Vc!),
+            '0.75 × ({Vs} + {Vc})',
+            'Add the two strengths, then multiply by φ = 0.75.',
+          ],
+          Vc: [
+            (x) => x.Vu! / 0.75 - x.Vs!,
+            '{Vu} ÷ 0.75 − {Vs}',
+            'Take the stirrups’ share off V_u ÷ φ.',
+          ],
+        },
+      ),
+      monomial(
+        's = A_vf_ytd ÷ V_s',
+        's',
+        [
+          ['Av', 1],
+          ['fy', 1],
+          ['d', 1],
+        ],
+        [['Vs', 1]],
+        'Each stirrup crossing a 45° crack carries A_v f_yt; d ÷ s of them cross it.',
+        sy,
+      ),
+      monomial(
+        's_max = d ÷ 2',
+        'smax',
+        [['d', 1]],
+        [['2', 1]],
+        'Stirrups at most d ÷ 2 apart, so every crack crosses one.',
+        sy,
+      ),
+    ],
+    example: { bw, d, fc, Vc, Vu, Vs, Av, fy, s: (Av * fy * d) / Vs, smax: d / 2 },
+    startWith: ['bw', 'd', 'fc', 'Vu', 'Av', 'fy'],
+    representation: {
+      kind: 'beam',
+      length: 240,
+      units: { force: 'kip', length: 'in' },
+      supports: [
+        { at: 0, kind: 'pin' },
+        { at: 240, kind: 'roller' },
+      ],
+      stirrups: { spacing: 's', depth: 'd', max: 'smax', shear: 'Vu' },
+    },
+  });
+})();
+
+// ─── HC1 beam, plate: a circular plate under pressure (advanced-solid-mechanics#4) ─
+
+function plateDemo(id: string, title: string, use: string, f: number) {
+  const vars: VariableDef[] = [
+    val('E', 'E', 'Modulus', 'MPa', 1e6, { min: 1 }),
+    val('nu', 'ν', 'Poisson’s ratio', undefined, 0.49, { min: 0.01 }),
+    val('t', 't', 'Thickness', 'mm', 1000, { min: 0.01 }),
+    val('D', 'D', 'Flexural rigidity', 'N·mm', 1e15, { scientific: true }),
+    val('p', 'p', 'Pressure', 'MPa', 1000),
+    val('a', 'a', 'Radius', 'mm', 1e5, { min: 0.1 }),
+    val('f', 'f', 'Edge factor (1 clamped)', undefined, 10, { min: 1 }),
+    val('w', 'w_max', 'Deflection at the center', 'mm', 1e5),
+    val('sig', 'σ_max', 'Stress at the clamped edge', 'MPa', 1e6),
+  ];
+  const s = symbolsOf(vars);
+  const [E, nu, t, p, a] = [200000, 0.3, 10, 0.1, 200];
+  const D = (E * t ** 3) / (12 * (1 - nu ** 2));
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'A thin circular plate (t much less than a), small deflections, steel.',
+      'f is 1 for a clamped edge, (5 + ν) ÷ (1 + ν) for a simply supported one; N, mm and MPa.',
+    ],
+    variables: vars,
+    relations: [
+      rel(
+        'D = Et³ ÷ (12(1 − ν²))',
+        '{D} = {E} × {t}³ ÷ (12 × (1 − {nu}²))',
+        ['D', 'E', 't', 'nu'],
+        (x) => x.D! - (x.E! * x.t! ** 3) / (12 * (1 - x.nu! ** 2)),
+        {
+          D: [
+            (x) => (x.E! * x.t! ** 3) / (12 * (1 - x.nu! ** 2)),
+            '{E} × {t}³ ÷ (12 × (1 − {nu}²))',
+            'A plate’s bending stiffness: like EI per width, t³ ÷ 12, with 1 − ν² for the sideways hold.',
+          ],
+          E: [
+            (x) => (x.t === 0 ? undefined : (12 * (1 - x.nu! ** 2) * x.D!) / x.t! ** 3),
+            '12 × (1 − {nu}²) × {D} ÷ {t}³',
+            'Multiply D by 12(1 − ν²), then divide by t³.',
+          ],
+          t: [
+            (x) => (x.E === 0 ? undefined : Math.cbrt((12 * (1 - x.nu! ** 2) * x.D!) / x.E!)),
+            '∛(12 × (1 − {nu}²) × {D} ÷ {E})',
+            'Get t³ alone, then take the cube root.',
+          ],
+        },
+      ),
+      monomial(
+        'w_max = f × pa⁴ ÷ (64D)',
+        'w',
+        [
+          ['f', 1],
+          ['p', 1],
+          ['a', 4],
+        ],
+        [
+          ['64', 1],
+          ['D', 1],
+        ],
+        'Integrating the plate equation with the edge held: pa⁴ ÷ (64D) clamped, f times that when simply supported.',
+        s,
+      ),
+      monomial(
+        'σ_max = 3pa² ÷ (4t²)',
+        'sig',
+        [
+          ['3', 1],
+          ['p', 1],
+          ['a', 2],
+        ],
+        [
+          ['4', 1],
+          ['t', 2],
+        ],
+        'At a clamped edge the bending stress is 3pa² ÷ (4t²).',
+        s,
+      ),
+    ],
+    example: {
+      E,
+      nu,
+      t,
+      D,
+      p,
+      a,
+      f,
+      w: (f * p * a ** 4) / (64 * D),
+      sig: (3 * p * a * a) / (4 * t * t),
+    },
+    startWith: ['E', 'nu', 't', 'p', 'a', 'f'],
+    representation: {
+      kind: 'beam',
+      mode: 'plate',
+      plate: {
+        radius: 'a',
+        thickness: 't',
+        pressure: 'p',
+        edge: 'f',
+        deflection: 'w',
+        stress: 'sig',
+      },
+    },
+  });
+}
+
+const plateClamped = plateDemo(
+  'g.he-beam-plate',
+  'A circular plate under pressure, clamped at its edge',
+  'Use this for “A 10 mm steel plate, 400 mm across and clamped round its edge, takes 100 kPa. How far does its center sag?”',
+  1,
+);
+
+const plateSimple = plateDemo(
+  'g.he-beam-plate-simple',
+  'The same plate resting on its edge: four times the sag',
+  'Use this for “The same plate simply supported round its edge: how far does its center sag now?”',
+  5.3 / 1.3,
+);
+
 export const HE1A_GALLERY_MODULES: ModuleDef[] = [
   point,
   pointEdge,
@@ -1783,6 +2019,9 @@ export const HE1A_GALLERY_MODULES: ModuleDef[] = [
   influenceShear,
   influenceContinuous,
   continuous,
+  stirrups,
+  plateClamped,
+  plateSimple,
 ];
 
 export const HE1A_GALLERY_LAYOUTS: LayoutDef[] = [];
