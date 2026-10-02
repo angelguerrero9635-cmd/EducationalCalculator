@@ -43,6 +43,81 @@ and each strand's skills sit together within a grade.
 
 ## Resolved
 
+### College taxonomy gaps (2026-10-02, the eight college direction plans)
+
+The college direction plans (`docs/plans/he.*.md`) listed textbook chapters no course topic
+held; `docs/HE_TAXONOMY_GAPS.md` merged them, and the owner authorized the needed ones
+(`docs/HE_NEEDS.md`, decision 13). **75 topics appended** to 41 courses, **5 courses added**
+(22 topics), **1 prerequisite added**. Topics are only appended, never reordered or renamed,
+since a page id is `<course>#<index>`; each new topic's index is in the gaps file. Plan letters:
+M math, P physics, C chemistry, EG earth and geography, ME mechanical, ACC aero-civil-chemical.
+
+- **Math (M):** `calc-1` mean value theorem and curve sketching; linear approximation,
+  Newton's method and L'Hôpital (merged: all three are tangent-line ideas of Vol. 1 ch. 4);
+  antiderivatives and initial-value problems. `calc-2` moments, centroids and hydrostatic
+  force; numerical integration (trapezoid and Simpson). `calc-3` vector-valued functions, arc
+  length and curvature; cylindrical and spherical coordinates with change of variables.
+  `diff-eq` Fourier series and PDEs. `linear-algebra` linear transformations, kernel and range,
+  change of basis; symmetric matrices, quadratic forms and the SVD.
+- **Physics (P):** `university-1` gravitation; fluid mechanics; temperature, heat and kinetic
+  theory; first and second laws of thermodynamics (University Physics Vol. 2 ch. 1–4 sit here,
+  not in `university-2`, whose title is Electricity & Magnetism; many first-semester courses
+  teach heat after mechanics. The title "Mechanics" stays). `university-3` geometric optics,
+  atomic structure, condensed matter physics, particle physics and cosmology.
+  `classical-mechanics` noninertial frames. `quantum` the hydrogen atom (`physical-2#2` teaches
+  it for chemistry).
+- **Chemistry (C):** `gen-chem-1` intermolecular forces, liquids and solids. `gen-chem-2`
+  solutions and colligative properties, solubility equilibria, nuclear chemistry. `organic-1`
+  mass spectrometry and structure determination (MS merged with the IR–NMR–MS puzzles),
+  alcohols, ethers and epoxides, radical halogenation. `organic-2` conjugated dienes,
+  Diels–Alder and UV; enolates and alpha substitution; biomolecules; synthetic polymers.
+  `analytical` gravimetric analysis, sampling and quality assurance (merged: both are the
+  analytical process), kinetic methods. `physical-1` statistical thermodynamics, chemical
+  potential and solutions, kinetic theory of gases. `physical-2` multi-electron atoms and term
+  symbols, variational and perturbation methods, magnetic resonance. `biochemistry`
+  carbohydrates, lipids and membranes; nucleic acids and the flow of genetic information;
+  gluconeogenesis, glycogen and amino-acid metabolism. `inorganic` descriptive main-group
+  chemistry, hard and soft acids and bases, electronic spectra (Tanabe–Sugano), organometallic
+  chemistry and catalysis, bioinorganic chemistry.
+- **Earth and geography (EG):** `physical-geology` geologic structures (the proposed
+  Structural Geology course, as Earle's intro chapter); `mineralogy` igneous, sedimentary and
+  metamorphic petrology (the proposed Petrology and Sedimentology course; stratigraphy stays
+  `historical-geology#0`); `meteorology` severe weather; `oceanography` biological
+  oceanography; `physical-geography` soils; `human-geography` political geography and
+  development; `climatology` paleoclimate proxies; `remote-sensing` active remote sensing.
+- **Classical and mechanical (ME):** `mechanics-of-materials` stress transformation, combined
+  loading and pressure vessels; `materials-science` fracture and creep, composite materials;
+  `thermodynamics` gas mixtures and psychrometrics; `fluid-mechanics` pumps and turbomachinery
+  (also takes ACC's pump system curve and NPSH); `heat-transfer` transient conduction, mass
+  transfer by diffusion; `manufacturing` welding and joining; `numerical-methods` eigenvalue
+  methods, finite differences for PDEs; `finite-element-analysis` isoparametric 2D elements
+  (CST and Q4).
+- **Aerospace, civil and chemical (ACC):** `structural-analysis` deflections (appended as `#4`:
+  the plan asked for it between determinate and indeterminate structures, but appending keeps
+  the page ids); `compressible-flow` Fanno and Rayleigh flow; `propulsion` electric propulsion;
+  `orbital-mechanics` spacecraft attitude dynamics (the proposed course, as a topic: orbital
+  mechanics texts teach attitude dynamics in the same course); `soil-mechanics` permeability
+  and seepage, lateral earth pressure; `hydraulics-hydrology` culverts; `reaction-engineering`
+  nonisothermal reactors.
+- **New courses:** `he.engineering.engineering-economics` (Classical, beside the other courses
+  every discipline shares; ACC and ME: FE Civil and FE Mechanical test it),
+  `he.engineering.construction` (Civil; ACC: CPM scheduling and earthwork are on FE Civil),
+  `he.engineering.mechanisms` (Mechanical; ME: linkages, cams and gear trains had no course),
+  `he.engineering.measurements` (Mechanical; ME: FE Mechanical measurements and
+  instrumentation), `he.engineering.aircraft-design` (Aerospace; ACC: aerospace had no design
+  course, as Civil and Chemical have).
+- **Prerequisite:** `transportation` now lists Statics beside Calculus I (ACC: the geometric and
+  pavement topics assume it).
+- **Not added:** exponential growth as a differential equation (`diff-eq#0` owns it); exact
+  equations (a problem type of `diff-eq#0`) and existence and uniqueness (stays in assumptions);
+  descriptive general chemistry (`inorganic#1`, coordination chemistry, and the new
+  `inorganic#4`); voltammetry and amperometry (part of `analytical#4`, electroanalytical
+  methods); mass spectrometry in Analytical (the new `organic-1#5`, and GC–MS under
+  `analytical#3`); signaling in Biochemistry (`cell-molecular#1`, signal transduction); coasts
+  and glaciers (inside `physical-geology#3`, surface processes); pumps in Hydraulics & Hydrology
+  (the new `fluid-mechanics#6`, which Hydraulics lists first); the Ethics course (nothing to
+  calculate). The new topics and courses have no pages yet.
+
 ### Grades 9–12 topics without a skill (added after Grades 9–12 were built)
 
 The eight direction plans and the eight lesson reviews listed textbook units no skill held; the

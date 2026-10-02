@@ -236,7 +236,7 @@ describe('nodeContext', () => {
 
 describe('courseSummary', () => {
   it('counts topics', () => {
-    expect(courseSummary(getNode('he.math.calc-1') as never)).toBe('5 topics');
+    expect(courseSummary(getNode('he.math.calc-1') as never)).toBe('8 topics');
     expect(courseSummary(getNode('he.engineering.statics') as never)).toBe('5 topics');
   });
 });
