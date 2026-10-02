@@ -76,4 +76,30 @@ export const HE3K_REQUESTS: PictureRequest[] = [
       'g.he-lamina-along-sparse',
     ],
   },
+  {
+    ...ask(
+      'HC87',
+      'rocket',
+      'A painted rocket (white body lit from the left, red nose and fins, bell nozzle, flame) with a cut-away tank filled to the propellant share, v_e out of the nozzle and Δv beside it; a bar of m₀ split into propellant and dry mass; Δv against the mass ratio as a curve with the rocket’s point; the exit plane and F split into ṁv_e and (p_e − p_a)A_e; two stages with the first stage’s tanks dropped and Δv₁ + Δv₂ = Δv',
+      [
+        'he.engineering.propulsion#1',
+        'he.engineering.propulsion#1~thrust',
+        'he.engineering.propulsion#1~staging',
+      ],
+      [
+        'From ACC-P11. A new kind (typesHe3k.ts, reps/Rocket.tsx, the sums in reps/he3kMath.ts).',
+        'Fields: { kind: "rocket", Isp?, m0?, mf?, dv?, fraction? (1 − m_f ÷ m₀, checked), ratio? (m₀ ÷ m_f, checked), g? (from the page, default 9.81), thrust?: { mdot, ve, pe, pa, Ae, F?, Isp?, mv? (ṁv_e to F’s unit, default 0.001: N to kN), pA? (p × A to F’s unit, default 1: kPa·m² = kN) }, stages?: [{ Isp, m0, mf, dv? }, { Isp, m0, mf, dv? }] (with dv the total) }. Masses in one unit (t); Δv in m/s.',
+        'propulsion#1 main: { kind: "rocket", Isp: "Isp", m0: "m0", mf: "mf", dv: "dv", fraction: "zeta", g: 9.81 }. ~thrust: { kind: "rocket", thrust: { mdot: "mdot", ve: "ve", pe: "pe", pa: "pa", Ae: "Ae", F: "F", Isp: "Isp" }, g: 9.81 } (F in kN, p in kPa). ~staging: { kind: "rocket", stages: [{ Isp: "Isp1", m0: "m01", mf: "mf1", dv: "dv1" }, { Isp: "Isp2", m0: "m02", mf: "mf2", dv: "dv2" }], dv: "dv", g: 9.81 }.',
+        'Check (harness/picturesHe3k.ts): the propellant bar ÷ the whole is 1 − m_f ÷ m₀ (and the fraction value); Δv by the rocket equation, growing with the mass ratio; F = ṁv_e + (p_e − p_a)A_e and I_sp = F ÷ (ṁg); each stage’s Δv, Δv₁ + Δv₂ = Δv, stage 2 no heavier than stage 1 at burnout. m_f ≥ m₀ (or stage 2 heavier) draws faded with the reason in the caption.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-rocket-mass',
+      'g.he-rocket-mass-high',
+      'g.he-rocket-thrust',
+      'g.he-rocket-thrust-high',
+      'g.he-rocket-stages',
+    ],
+  },
 ];

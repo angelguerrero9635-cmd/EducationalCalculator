@@ -2319,7 +2319,8 @@ export function repIssues(
       out.push(...waterfallDecibelsIssues(rep, val)); // HC91, decibels only
       break;
     case 'lamina':
-      // In formula units, as the picture draws them (HC86).
+    case 'rocket':
+      // In formula units, as the picture draws them (HC86, HC87).
       out.push(
         ...he3kIssues(rep, (x) =>
           ((v) =>

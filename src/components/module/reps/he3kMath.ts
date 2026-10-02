@@ -80,3 +80,26 @@ export function drawnFiberShare(Vf: number, n = 200) {
 /** E₁ by the rule of mixtures (along) and E₂ by the inverse rule (across). */
 export const ruleOfMixtures = (Ef: number, Em: number, Vf: number) => Ef * Vf + Em * (1 - Vf);
 export const inverseRule = (Ef: number, Em: number, Vf: number) => 1 / (Vf / Ef + (1 - Vf) / Em);
+
+// ─── HC87: rocket ────────────────────────────────────────────────────────────
+
+/** The ideal Δv: I_sp g ln(m₀ ÷ m_f) (undefined unless m₀ > m_f > 0). */
+export const rocketDv = (Isp: number, g: number, m0: number, mf: number) =>
+  m0 > 0 && mf > 0 ? Isp * g * Math.log(m0 / mf) : undefined;
+
+/** The mass bar's two parts, `width` long in all: propellant (m₀ − m_f) and dry (m_f). */
+export const massBar = (m0: number, mf: number, width: number) => ({
+  prop: (width * Math.max(0, m0 - mf)) / m0,
+  dry: (width * Math.min(mf, m0)) / m0,
+});
+
+/** Thrust F = ṁv_e·mv + (p_e − p_a)A_e·pA, each part in the force's unit. */
+export const thrustParts = (
+  mdot: number,
+  ve: number,
+  pe: number,
+  pa: number,
+  Ae: number,
+  mv = 0.001,
+  pA = 1,
+) => ({ momentum: mdot * ve * mv, pressure: (pe - pa) * Ae * pA });

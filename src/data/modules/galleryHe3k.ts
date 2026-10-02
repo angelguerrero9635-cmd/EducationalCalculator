@@ -615,6 +615,288 @@ const laminaSpecific: ModuleDef = {
   },
 };
 
+/** A page limit: `a` below `b` (checked, never solved). */
+const below = (a: string, b: string, words: string): Relation => ({
+  id: `${a} < ${b}`,
+  constraint: true,
+  display: words,
+  vars: [a, b],
+  residual: (v) => (v[a]! <= v[b]! ? 0 : 1),
+  solve: {},
+});
+
+// ─── HC87: a rocket (propulsion#1) ───────────────────────────────────────────
+
+const G0 = 9.81;
+
+const withLimits = (r: ReturnType<typeof rules>, limits: Relation[]) => ({
+  relations: [...limits, ...r.relations],
+  steps: { ...r.steps, ...Object.fromEntries(limits.map((l) => [l.id, {}])) },
+});
+
+/** Δv = I_sp g ln(m₀ ÷ m_f) for the ids given, each solvable. */
+const rocketEq = (id: string, dv: string, Isp: string, m0: string, mf: string) =>
+  rule(
+    id,
+    `{${dv}} = {${Isp}} × 9.81 × ln({${m0}} ÷ {${mf}})`,
+    [dv, Isp, m0, mf],
+    (v) => v[dv]! - v[Isp]! * G0 * Math.log(v[m0]! / v[mf]!),
+    {
+      [dv]: [
+        (v) => (v[m0]! > 0 && v[mf]! > 0 ? v[Isp]! * G0 * Math.log(v[m0]! / v[mf]!) : undefined),
+        `{${Isp}} × 9.81 × ln({${m0}} ÷ {${mf}})`,
+        'Integrate m dv = −v_e dm from m₀ to m_f; v_e is I_sp times g.',
+      ],
+      [Isp]: [
+        (v) => div(v[dv]!, G0 * Math.log(v[m0]! / v[mf]!)),
+        `{${dv}} ÷ (9.81 × ln({${m0}} ÷ {${mf}}))`,
+        'Divide Δv by g times the log of the mass ratio.',
+      ],
+      [m0]: [
+        (v) => v[mf]! * Math.exp(v[dv]! / (v[Isp]! * G0)),
+        `{${mf}} × e^({${dv}} ÷ ({${Isp}} × 9.81))`,
+        'Undo the log: the mass ratio is e to the Δv ÷ v_e.',
+      ],
+      [mf]: [
+        (v) => v[m0]! / Math.exp(v[dv]! / (v[Isp]! * G0)),
+        `{${m0}} ÷ e^({${dv}} ÷ ({${Isp}} × 9.81))`,
+        'Undo the log: divide m₀ by e to the Δv ÷ v_e.',
+      ],
+    },
+  );
+
+const FRACTION = rule(
+  'ζ = 1 − m_f ÷ m₀',
+  '{zeta} = 1 − {mf} ÷ {m0}',
+  ['zeta', 'mf', 'm0'],
+  (v) => v.zeta! - (1 - v.mf! / v.m0!),
+  {
+    zeta: [
+      (v) => (v.m0! > 0 ? 1 - v.mf! / v.m0! : undefined),
+      '1 − {mf} ÷ {m0}',
+      'The share of the starting mass that is propellant.',
+    ],
+    mf: [(v) => v.m0! * (1 - v.zeta!), '{m0} × (1 − {zeta})', 'What is left is the dry share.'],
+    m0: [(v) => div(v.mf!, 1 - v.zeta!), '{mf} ÷ (1 − {zeta})', 'Divide m_f by the dry share.'],
+  },
+);
+
+const ROCKET_ASSUMPTIONS = [
+  'Ideal Δv: no gravity or drag losses.',
+  'The exhaust speed is constant; g = 9.81 m/s² defines I_sp.',
+];
+
+function rocketMass(id: string, title: string, Isp: number, m0: number, mf: number): ModuleDef {
+  return {
+    id,
+    title,
+    use: 'Use this for a rocket’s Δv from I_sp and its masses, or the propellant a Δv needs.',
+    assumptions: ROCKET_ASSUMPTIONS,
+    variables: [
+      q('Isp', 'I_sp', 'Specific impulse', 's', 100, 500, 0.1),
+      q('m0', 'm_0', 'Initial mass', 't', 0.001, 1e5, 0.001),
+      q('mf', 'm_f', 'Final (dry) mass', 't', 0.001, 1e5, 0.001),
+      q('zeta', 'ζ', 'Propellant fraction', undefined, 0, 0.999, 0.001),
+      q('dv', 'Δv', 'Ideal velocity change', 'm/s', 0, 30000, 1),
+    ],
+    ...withLimits(rules(rocketEq('Δv = I_sp g ln(m₀ ÷ m_f)', 'dv', 'Isp', 'm0', 'mf'), FRACTION), [
+      below('mf', 'm0', '{mf} is at most {m0}: the rocket can’t gain mass'),
+    ]),
+    example: { Isp, m0, mf, zeta: 1 - mf / m0, dv: Isp * G0 * Math.log(m0 / mf) },
+    startWith: ['Isp', 'm0', 'mf'],
+    representation: {
+      kind: 'rocket',
+      Isp: 'Isp',
+      m0: 'm0',
+      mf: 'mf',
+      dv: 'dv',
+      fraction: 'zeta',
+      g: G0,
+    },
+  };
+}
+
+const rocketMain = rocketMass(
+  'g.he-rocket-mass',
+  'The rocket equation: 300 s, 50 t down to 15 t',
+  300,
+  50,
+  15,
+);
+
+const rocketHigh = rocketMass(
+  'g.he-rocket-mass-high',
+  'A hydrogen stage at 450 s, 92% propellant',
+  450,
+  100,
+  8,
+);
+
+const thrustRule = rule(
+  'F = ṁv_e + (p_e − p_a)A_e',
+  '{F} = {mdot} × {ve} ÷ 1000 + ({pe} − {pa}) × {Ae}',
+  ['F', 'mdot', 've', 'pe', 'pa', 'Ae'],
+  (v) => v.F! - (v.mdot! * v.ve! * 0.001 + (v.pe! - v.pa!) * v.Ae!),
+  {
+    F: [
+      (v) => v.mdot! * v.ve! * 0.001 + (v.pe! - v.pa!) * v.Ae!,
+      '{mdot} × {ve} ÷ 1000 + ({pe} − {pa}) × {Ae}',
+      'Momentum thrust in kN, plus the exit pressure’s push over the outside pressure, kPa × m².',
+    ],
+    mdot: [
+      (v) => div((v.F! - (v.pe! - v.pa!) * v.Ae!) * 1000, v.ve!),
+      '({F} − ({pe} − {pa}) × {Ae}) × 1000 ÷ {ve}',
+      'Take the pressure term from F, then divide by v_e.',
+    ],
+    ve: [
+      (v) => div((v.F! - (v.pe! - v.pa!) * v.Ae!) * 1000, v.mdot!),
+      '({F} − ({pe} − {pa}) × {Ae}) × 1000 ÷ {mdot}',
+      'Take the pressure term from F, then divide by ṁ.',
+    ],
+    pe: [
+      (v) => (div(v.F! - v.mdot! * v.ve! * 0.001, v.Ae!) ?? NaN) + v.pa!,
+      '({F} − {mdot} × {ve} ÷ 1000) ÷ {Ae} + {pa}',
+      'Take the momentum thrust from F, divide by A_e and add p_a.',
+    ],
+    pa: [
+      (v) => v.pe! - (div(v.F! - v.mdot! * v.ve! * 0.001, v.Ae!) ?? NaN),
+      '{pe} − ({F} − {mdot} × {ve} ÷ 1000) ÷ {Ae}',
+      'Take the momentum thrust from F, divide by A_e, and take that from p_e.',
+    ],
+    Ae: [
+      (v) => pos((v.F! - v.mdot! * v.ve! * 0.001) / (v.pe! - v.pa!)),
+      '({F} − {mdot} × {ve} ÷ 1000) ÷ ({pe} − {pa})',
+      'Take the momentum thrust from F, then divide by the pressure difference.',
+    ],
+  },
+);
+
+const ispRule = rule(
+  'I_sp = F ÷ (ṁg)',
+  '{Isp} = {F} × 1000 ÷ ({mdot} × 9.81)',
+  ['Isp', 'F', 'mdot'],
+  (v) => v.Isp! * v.mdot! * G0 - v.F! * 1000,
+  {
+    Isp: [
+      (v) => div(v.F! * 1000, v.mdot! * G0),
+      '{F} × 1000 ÷ ({mdot} × 9.81)',
+      'Thrust in newtons over the weight of propellant burned each second.',
+    ],
+    F: [
+      (v) => (v.Isp! * v.mdot! * G0) / 1000,
+      '{Isp} × {mdot} × 9.81 ÷ 1000',
+      'F = I_sp ṁ g, in kN.',
+    ],
+    mdot: [
+      (v) => div(v.F! * 1000, v.Isp! * G0),
+      '{F} × 1000 ÷ ({Isp} × 9.81)',
+      'Divide the thrust in newtons by I_sp g.',
+    ],
+  },
+);
+
+function rocketThrust(id: string, title: string, pa: number): ModuleDef {
+  const v: Values = { mdot: 250, ve: 2900, pe: 70, pa, Ae: 1 };
+  v.F = 250 * 2900 * 0.001 + (70 - pa) * 1;
+  v.Isp = (v.F * 1000) / (250 * G0);
+  return {
+    id,
+    title,
+    use: 'Use this for a rocket’s thrust with the pressure term, and its specific impulse.',
+    assumptions: [
+      'Steady flow; the exit pressure is uniform over A_e.',
+      'g = 9.81 m/s² defines I_sp.',
+    ],
+    variables: [
+      q('mdot', 'ṁ', 'Mass flow', 'kg/s', 0.001, 1e5, 0.1),
+      q('ve', 'v_e', 'Exhaust speed', 'm/s', 1, 10000, 1),
+      q('pe', 'p_e', 'Exit pressure', 'kPa', 0, 10000, 0.001),
+      q('pa', 'p_a', 'Outside pressure', 'kPa', 0, 200, 0.001),
+      q('Ae', 'A_e', 'Exit area', 'm²', 0.0001, 100, 0.0001),
+      q('F', 'F', 'Thrust', 'kN', -1e5, 1e6, 0.1),
+      q('Isp', 'I_sp', 'Specific impulse', 's', -1e4, 10000, 0.1),
+    ],
+    ...rules(thrustRule, ispRule),
+    example: v,
+    startWith: ['mdot', 've', 'pe', 'pa', 'Ae'],
+    representation: {
+      kind: 'rocket',
+      thrust: { mdot: 'mdot', ve: 've', pe: 'pe', pa: 'pa', Ae: 'Ae', F: 'F', Isp: 'Isp' },
+      g: G0,
+    },
+  };
+}
+
+const rocketThrustSea = rocketThrust(
+  'g.he-rocket-thrust',
+  'Thrust at sea level: an over-expanded nozzle pulls back',
+  101.325,
+);
+
+const rocketThrustVacuum = rocketThrust(
+  'g.he-rocket-thrust-high',
+  'The same engine high up, at 1.2 kPa: the pressure term pushes',
+  1.2,
+);
+
+const rocketStages: ModuleDef = {
+  id: 'g.he-rocket-stages',
+  title: 'Two stages: drop the empty tanks, add the Δv',
+  use: 'Use this for the total Δv of a two-stage rocket, each stage by the rocket equation.',
+  assumptions: [
+    ...ROCKET_ASSUMPTIONS,
+    'Stage 1’s structure is dropped at burnout; stage 2’s m₀ is what is left.',
+  ],
+  variables: [
+    q('Isp1', 'I_sp1', 'Specific impulse, stage 1', 's', 100, 500, 0.1),
+    q('m01', 'm_01', 'Mass at lift-off', 't', 0.001, 1e5, 0.001),
+    q('mf1', 'm_f1', 'Mass at stage 1 burnout', 't', 0.001, 1e5, 0.001),
+    q('Isp2', 'I_sp2', 'Specific impulse, stage 2', 's', 100, 500, 0.1),
+    q('m02', 'm_02', 'Mass at stage 2 ignition', 't', 0.001, 1e5, 0.001),
+    q('mf2', 'm_f2', 'Mass at stage 2 burnout', 't', 0.001, 1e5, 0.001),
+    q('dv1', 'Δv_1', 'Δv of stage 1', 'm/s', 0, 30000, 1),
+    q('dv2', 'Δv_2', 'Δv of stage 2', 'm/s', 0, 30000, 1),
+    q('dv', 'Δv', 'Total Δv', 'm/s', 0, 60000, 1),
+  ],
+  ...withLimits(
+    rules(
+      rocketEq('Δv₁ = I_sp1 g ln(m₀₁ ÷ m_f1)', 'dv1', 'Isp1', 'm01', 'mf1'),
+      rocketEq('Δv₂ = I_sp2 g ln(m₀₂ ÷ m_f2)', 'dv2', 'Isp2', 'm02', 'mf2'),
+      sumRule(
+        'Δv = Δv₁ + Δv₂',
+        'dv',
+        [
+          ['dv1', 1],
+          ['dv2', 1],
+        ],
+        'Each stage adds its own Δv.',
+      ),
+    ),
+    [
+      below('mf1', 'm01', '{mf1} is at most {m01}'),
+      below('mf2', 'm02', '{mf2} is at most {m02}'),
+      below('m02', 'mf1', 'Stage 2 ({m02}) is what is left of {mf1} when stage 1 drops'),
+    ],
+  ),
+  example: (() => {
+    const v: Values = { Isp1: 300, m01: 120, mf1: 50, Isp2: 340, m02: 30, mf2: 10 };
+    v.dv1 = 300 * G0 * Math.log(120 / 50);
+    v.dv2 = 340 * G0 * Math.log(30 / 10);
+    v.dv = v.dv1 + v.dv2;
+    return v;
+  })(),
+  startWith: ['Isp1', 'm01', 'mf1', 'Isp2', 'm02', 'mf2'],
+  representation: {
+    kind: 'rocket',
+    stages: [
+      { Isp: 'Isp1', m0: 'm01', mf: 'mf1', dv: 'dv1' },
+      { Isp: 'Isp2', m0: 'm02', mf: 'mf2', dv: 'dv2' },
+    ],
+    dv: 'dv',
+    g: G0,
+  },
+};
+
 export const HE3K_GALLERY_MODULES: ModuleDef[] = [
   linkBudget,
   linkMargin,
@@ -625,6 +907,11 @@ export const HE3K_GALLERY_MODULES: ModuleDef[] = [
   laminaSpecific,
   laminaDense,
   laminaSparse,
+  rocketMain,
+  rocketHigh,
+  rocketThrustSea,
+  rocketThrustVacuum,
+  rocketStages,
 ];
 
 export const HE3K_GALLERY_LAYOUTS: LayoutDef[] = [];
