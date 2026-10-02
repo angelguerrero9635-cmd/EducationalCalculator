@@ -1,0 +1,725 @@
+{
+  "id": "libretexts-fleming-physical",
+  "curriculum": "Fleming, Physical Chemistry",
+  "publisher": "Patrick Fleming; LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Patrick Fleming, Physical Chemistry, LibreTexts. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter and section titles as listed on LibreTexts (fetched at its 5 s Crawl-delay); topics are our mapping; examples, ranges and notation in our words from the problem pages read for question records. No text, problem or number copied. The exercise pages (n.E) were empty or redirected when fetched, so no records come from this book. Licence tags seen on chapter pages: license:ccbyncsa.",
+  "books": [
+    {
+      "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)",
+      "units": [
+        {
+          "n": "1",
+          "title": "The Basics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/01%3A_The_Basics",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "The System and the Surroundings",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/01%3A_The_Basics/1.01%3A_The_System_and_the_Surroundings"
+            },
+            {
+              "n": "1.2",
+              "title": "Pressure and Molar Volume",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/01%3A_The_Basics/1.02%3A_Pressure_and_Molar_Volume"
+            },
+            {
+              "n": "1.3",
+              "title": "Temperature",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/01%3A_The_Basics/1.03%3A_Temperature"
+            },
+            {
+              "n": "1.4",
+              "title": "The Zeroth Law of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/01%3A_The_Basics/1.04%3A_The_Zeroth_Law_of_Thermodynamics"
+            },
+            {
+              "n": "1.5",
+              "title": "Work and Energy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/01%3A_The_Basics/1.05%3A_Work_and_Energy"
+            },
+            {
+              "n": "1.E",
+              "title": "The Basics (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/01%3A_The_Basics/1.E%3A_The_Basics_(Exercises)"
+            },
+            {
+              "n": "1.S",
+              "title": "The Basics (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/01%3A_The_Basics/1.S%3A_The_Basics_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Gases",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases",
+          "topics": ["he.chemistry.gen-chem-1#2"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "The Empirical Gas Laws",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.01%3A_The_Empirical_Gas_Laws"
+            },
+            {
+              "n": "2.2",
+              "title": "The Ideal Gas Law",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.02%3A_The_Ideal_Gas_Law"
+            },
+            {
+              "n": "2.3",
+              "title": "The Kinetic Molecular Theory of Gases",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.03%3A_The_Kinetic_Molecular_Theory_of_Gases"
+            },
+            {
+              "n": "2.4",
+              "title": "Kinetic Energy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.04%3A_Kinetic_Energy"
+            },
+            {
+              "n": "2.5",
+              "title": "Graham’s Law of Effusion",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.05%3A_Grahams_Law_of_Effusion"
+            },
+            {
+              "n": "2.6",
+              "title": "Collisions with Other Molecules",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.06%3A_Collisions_with_Other_Molecules"
+            },
+            {
+              "n": "2.7",
+              "title": "Real Gases",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.07%3A_Real_Gases"
+            },
+            {
+              "n": "2.E",
+              "title": "Gases (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.E%3A_Gases_(Exercises)"
+            },
+            {
+              "n": "2.S",
+              "title": "Gases (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/02%3A_Gases/2.S%3A_Gases_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "First Law of Thermodynamics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics",
+          "topics": ["he.chemistry.physical-1#0", "he.chemistry.gen-chem-1#3"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Prelude to Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.01%3A_Prelude_to_Thermodynamics"
+            },
+            {
+              "n": "3.2",
+              "title": "Work and Heat",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.02%3A_Work_and_Heat"
+            },
+            {
+              "n": "3.3",
+              "title": "Reversible and Irreversible Pathways",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.03%3A_Reversible_and_Irreversible_Pathways"
+            },
+            {
+              "n": "3.4",
+              "title": "Calorimetry",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.04%3A_Calorimetry"
+            },
+            {
+              "n": "3.5",
+              "title": "Temperature Dependence of Enthalpy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.05%3A_Temperature_Dependence_of_Enthalpy"
+            },
+            {
+              "n": "3.6",
+              "title": "Reaction Enthalpies",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.06%3A_Reaction_Enthalpies"
+            },
+            {
+              "n": "3.7",
+              "title": "Lattice Energy and the Born-Haber Cycle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.07%3A_Lattice_Energy_and_the_Born-Haber_Cycle"
+            },
+            {
+              "n": "3.E",
+              "title": "First Law of Thermodynamics (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.E%3A_First_Law_of_Thermodynamics_(Exercises)"
+            },
+            {
+              "n": "3.S",
+              "title": "First Law of Thermodynamics (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/03%3A_First_Law_of_Thermodynamics/3.S%3A_First_Law_of_Thermodynamics_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Putting the First Law to Work",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Prelude to Putting the First Law to Work",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work/4.01%3A_Prelude_to_Putting_the_First_Law_to_Work"
+            },
+            {
+              "n": "4.2",
+              "title": "Total and Exact Differentials",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work/4.02%3A_Total_and_Exact_Differentials"
+            },
+            {
+              "n": "4.3",
+              "title": "Compressibility and Expansivity",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work/4.03%3A_Compressibility_and_Expansivity"
+            },
+            {
+              "n": "4.4",
+              "title": "The Joule Experiment",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work/4.04%3A_The_Joule_Experiment"
+            },
+            {
+              "n": "4.5",
+              "title": "The Joule-Thomson Effect",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work/4.05%3A_The_Joule-Thomson_Effect"
+            },
+            {
+              "n": "4.6",
+              "title": "Useful Definitions and Relationships",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work/4.06%3A_Useful_Definitions_and_Relationships"
+            },
+            {
+              "n": "4.E",
+              "title": "Putting the First Law to Work (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work/4.E%3A_Putting_the_First_Law_to_Work_(Exercises)"
+            },
+            {
+              "n": "4.S",
+              "title": "Putting the First Law to Work (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/04%3A_Putting_the_First_Law_to_Work/4.S%3A_Putting_the_First_Law_to_Work_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "The Second Law",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Introduction to the Second Law",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.01%3A_Introduction_to_the_Second_Law"
+            },
+            {
+              "n": "5.2",
+              "title": "Heat Engines and the Carnot Cycle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.02%3A_Heat_Engines_and_the_Carnot_Cycle"
+            },
+            {
+              "n": "5.3",
+              "title": "Entropy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.03%3A_Entropy"
+            },
+            {
+              "n": "5.4",
+              "title": "Calculating Entropy Changes",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.04%3A_Calculating_Entropy_Changes"
+            },
+            {
+              "n": "5.5",
+              "title": "Comparing the System and the Surroundings",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.05%3A_Comparing_the_System_and_the_Surroundings"
+            },
+            {
+              "n": "5.6",
+              "title": "Entropy and Disorder",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.06%3A_Entropy_and_Disorder"
+            },
+            {
+              "n": "5.7",
+              "title": "The Third Law of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.07%3A_The_Third_Law_of_Thermodynamics"
+            },
+            {
+              "n": "5.8",
+              "title": "Adiabatic Compressibility",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.08%3A_Adiabatic_Compressibility"
+            },
+            {
+              "n": "5.E",
+              "title": "The Second Law (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.E%3A_The_Second_Law_(Exercises)"
+            },
+            {
+              "n": "5.S",
+              "title": "The Second Law (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/05%3A_The_Second_Law/5.S%3A_The_Second_Law_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Putting the Second Law to Work",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Free Energy Functions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.01%3A_Free_Energy_Functions"
+            },
+            {
+              "n": "6.2",
+              "title": "Combining the First and Second Laws - Maxwell's Relations",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.02%3A_Combining_the_First_and_Second_Laws_-_Maxwell's_Relations"
+            },
+            {
+              "n": "6.3",
+              "title": "ΔA, ΔG, and Maximum Work",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.03%3A_A_G_and_Maximum_Work"
+            },
+            {
+              "n": "6.4",
+              "title": "Volume Dependence of Helmholtz Energy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.04%3A_Volume_Dependence_of_Helmholtz_Energy"
+            },
+            {
+              "n": "6.5",
+              "title": "Pressure Dependence of Gibbs Energy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.05%3A_Pressure_Dependence_of_Gibbs_Energy"
+            },
+            {
+              "n": "6.6",
+              "title": "Temperature Dependence of A and G",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.06%3A_Temperature_Dependence_of_A_and_G"
+            },
+            {
+              "n": "6.7",
+              "title": "When Two Variables Change at Once",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.07%3A_When_Two_Variables_Change_at_Once"
+            },
+            {
+              "n": "6.8",
+              "title": "The Difference between Cp and Cv",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.08%3A_The_Difference_between_Cp_and_Cv"
+            },
+            {
+              "n": "6.E",
+              "title": "Putting the Second Law to Work (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.E%3A_Putting_the_Second_Law_to_Work_(Exercises)"
+            },
+            {
+              "n": "6.S",
+              "title": "Putting the Second Law to Work (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/06%3A_Putting_the_Second_Law_to_Work/6.S%3A_Putting_the_Second_Law_to_Work_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Mixtures and Solutions",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions",
+          "topics": ["he.chemistry.physical-1#1"],
+          "notes": "Mixtures, chemical potential, colligative properties: plan gap \"chemical potential and solutions\".",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Thermodynamics of Mixing",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.01%3A_Thermodynamics_of_Mixing"
+            },
+            {
+              "n": "7.2",
+              "title": "Partial Molar Volume",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.02%3A_Partial_Molar_Volume"
+            },
+            {
+              "n": "7.3",
+              "title": "Chemical Potential",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.03%3A_Chemical_Potential"
+            },
+            {
+              "n": "7.4",
+              "title": "The Gibbs-Duhem Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.04%3A_The_Gibbs-Duhem_Equation"
+            },
+            {
+              "n": "7.5",
+              "title": "Non-ideality in Gases - Fugacity",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.05%3A_Non-ideality_in_Gases_-_Fugacity"
+            },
+            {
+              "n": "7.6",
+              "title": "Colligative Properties",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.06%3A_Colligative_Properties"
+            },
+            {
+              "n": "7.7",
+              "title": "Solubility",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.07%3A_Solubility"
+            },
+            {
+              "n": "7.8",
+              "title": "Non-ideality in Solutions - Activity",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.08%3A_Non-ideality_in_Solutions_-_Activity"
+            },
+            {
+              "n": "7.E",
+              "title": "Mixtures and Solutions (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.E%3A_Mixtures_and_Solutions_(Exercises)"
+            },
+            {
+              "n": "7.S",
+              "title": "Mixtures and Solutions (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/07%3A_Mixtures_and_Solutions/7.S%3A_Mixtures_and_Solutions_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Phase Equilibrium",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium",
+          "topics": ["he.chemistry.physical-1#1"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Prelude to Phase Equilibrium",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.01%3A_Prelude_to_Phase_Equilibrium"
+            },
+            {
+              "n": "8.2",
+              "title": "Single Component Phase Diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.02%3A_Single_Component_Phase_Diagrams"
+            },
+            {
+              "n": "8.3",
+              "title": "Criterion for Phase Equilibrium",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.03%3A_Criterion_for_Phase_Equilibrium"
+            },
+            {
+              "n": "8.4",
+              "title": "The Clapeyron Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.04%3A_The_Clapeyron_Equation"
+            },
+            {
+              "n": "8.5",
+              "title": "The Clausius-Clapeyron Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.05%3A_The_Clausius-Clapeyron_Equation"
+            },
+            {
+              "n": "8.6",
+              "title": "Phase Diagrams for Binary Mixtures",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.06%3A_Phase_Diagrams_for_Binary_Mixtures"
+            },
+            {
+              "n": "8.7",
+              "title": "Liquid-Vapor Systems - Raoult’s Law",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.07%3A_Liquid-Vapor_Systems_-_Raoults_Law"
+            },
+            {
+              "n": "8.8",
+              "title": "Non-ideality - Henry's Law and Azeotropes",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.08%3A_Non-ideality_-_Henry's_Law_and_Azeotropes"
+            },
+            {
+              "n": "8.9",
+              "title": "Solid-Liquid Systems - Eutectic Points",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.09%3A_Solid-Liquid_Systems_-_Eutectic_Points"
+            },
+            {
+              "n": "8.10",
+              "title": "Cooling Curves",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.10%3A_Cooling_Curves"
+            },
+            {
+              "n": "8.E",
+              "title": "Phase Equilibrium (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.E%3A_Phase_Equilibrium_(Exercises)"
+            },
+            {
+              "n": "8.S",
+              "title": "Phase Equilibrium (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/08%3A_Phase_Equilibrium/8.S%3A_Phase_Equilibrium_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Chemical Equilibria",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria",
+          "topics": ["he.chemistry.physical-1#2"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Prelude to Chemical Equilibria",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.01%3A_Prelude_to_Chemical_Equilibria"
+            },
+            {
+              "n": "9.2",
+              "title": "Chemical Potential",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.02%3A_Chemical_Potential"
+            },
+            {
+              "n": "9.3",
+              "title": "Activities and Fugacities",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.03%3A_Activities_and_Fugacities"
+            },
+            {
+              "n": "9.4",
+              "title": "Pressure Dependence of Kp - Le Châtelier's Principle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.04%3A_Pressure_Dependence_of_Kp_-_Le_Chatelier's_Principle"
+            },
+            {
+              "n": "9.5",
+              "title": "Degree of Dissociation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.05%3A_Degree_of_Dissociation"
+            },
+            {
+              "n": "9.6",
+              "title": "Temperature Dependence of Equilibrium Constants - the van ’t Hoff Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.06%3A_Temperature_Dependence_of_Equilibrium_Constants_-_the_van_t_Hoff_Equation"
+            },
+            {
+              "n": "9.7",
+              "title": "The Dumas Bulb Method for Measuring Decomposition Equilibrium",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.07%3A_The_Dumas_Bulb_Method_for_Measuring_Decomposition_Equilibrium"
+            },
+            {
+              "n": "9.8",
+              "title": "Acid-Base Equilibria",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.08%3A_Acid-Base_Equilibria"
+            },
+            {
+              "n": "9.9",
+              "title": "Buffers",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.09%3A_Buffers"
+            },
+            {
+              "n": "9.10",
+              "title": "Solubility of Ionic Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.10%3A_Solubility_of_Ionic_Compounds"
+            },
+            {
+              "n": "9.E",
+              "title": "Chemical Equilibria (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.E%3A_Chemical_Equilibria_(Exercises)"
+            },
+            {
+              "n": "9.S",
+              "title": "Chemical Equilibria (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/09%3A_Chemical_Equilibria/9.S%3A_Chemical_Equilibria_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Electrochemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/10%3A_Electrochemistry",
+          "topics": ["he.chemistry.gen-chem-2#4", "he.chemistry.physical-1#2"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Electricity",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/10%3A_Electrochemistry/10.01%3A_Electricity"
+            },
+            {
+              "n": "10.2",
+              "title": "The connection to ΔG",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/10%3A_Electrochemistry/10.02%3A_The_connection_to_G"
+            },
+            {
+              "n": "10.3",
+              "title": "Half Cells and Standard Reduction Potentials",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/10%3A_Electrochemistry/10.03%3A_Half_Cells_and_Standard_Reduction_Potentials"
+            },
+            {
+              "n": "10.4",
+              "title": "Entropy of Electrochemical Cells",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/10%3A_Electrochemistry/10.04%3A_Entropy_of_Electrochemical_Cells"
+            },
+            {
+              "n": "10.5",
+              "title": "Concentration Cells",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/10%3A_Electrochemistry/10.05%3A_Concentration_Cells"
+            },
+            {
+              "n": "10.E",
+              "title": "Electrochemistry (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/10%3A_Electrochemistry/10.E%3A_Electrochemistry_(Exercises)"
+            },
+            {
+              "n": "10.S",
+              "title": "Electrochemistry (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/10%3A_Electrochemistry/10.S%3A_Electrochemistry_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Chemical Kinetics I",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I",
+          "topics": ["he.chemistry.physical-1#3", "he.chemistry.gen-chem-2#0"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Reaction Rate",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.01%3A_Reaction_Rate"
+            },
+            {
+              "n": "11.2",
+              "title": "Measuring Reaction Rates",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.02%3A_Measuring_Reaction_Rates"
+            },
+            {
+              "n": "11.3",
+              "title": "Rate Laws",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.03%3A_Rate_Laws"
+            },
+            {
+              "n": "11.4",
+              "title": "0th order Rate Law",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.04%3A_0th_order_Rate_Law"
+            },
+            {
+              "n": "11.5",
+              "title": "1st order rate law",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.05%3A_1st_order_rate_law"
+            },
+            {
+              "n": "11.6",
+              "title": "2nd order Rate Laws",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.06%3A_2nd_order_Rate_Laws"
+            },
+            {
+              "n": "11.7",
+              "title": "The Method of Initial Rates",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.07%3A_The_Method_of_Initial_Rates"
+            },
+            {
+              "n": "11.8",
+              "title": "The Method of Half-Lives",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.08%3A_The_Method_of_Half-Lives"
+            },
+            {
+              "n": "11.9",
+              "title": "Temperature Dependence",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.09%3A_Temperature_Dependence"
+            },
+            {
+              "n": "11.10",
+              "title": "Collision Theory",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.10%3A_Collision_Theory"
+            },
+            {
+              "n": "11.11",
+              "title": "Transition State Theory",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.11%3A_Transition_State_Theory"
+            },
+            {
+              "n": "11.E",
+              "title": "Chemical Kinetics I (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.E%3A_Chemical_Kinetics_I_(Exercises)"
+            },
+            {
+              "n": "11.S",
+              "title": "Chemical Kinetics I (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/11%3A_Chemical_Kinetics_I/11.S%3A_Chemical_Kinetics_I_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Chemical Kinetics II",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II",
+          "topics": ["he.chemistry.physical-1#3", "he.chemistry.biochemistry#1"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Reaction Mechanisms",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.01%3A_Reaction_Mechanisms"
+            },
+            {
+              "n": "12.2",
+              "title": "Concentration Profiles for Some Simple Mechanisms",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.02%3A_Concentration_Profiles_for_Some_Simple_Mechanisms"
+            },
+            {
+              "n": "12.3",
+              "title": "The Connection between Reaction Mechanisms and Reaction Rate Laws",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.03%3A_The_Connection_between_Reaction_Mechanisms_and_Reaction_Rate_Laws"
+            },
+            {
+              "n": "12.4",
+              "title": "The Rate Determining Step Approximation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.04%3A_The_Rate_Determining_Step_Approximation"
+            },
+            {
+              "n": "12.5",
+              "title": "The Steady-State Approximation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.05%3A_The_Steady-State_Approximation"
+            },
+            {
+              "n": "12.6",
+              "title": "The Equilibrium Approximation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.06%3A_The_Equilibrium_Approximation"
+            },
+            {
+              "n": "12.7",
+              "title": "The Lindemann Mechanism",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.07%3A_The_Lindemann_Mechanism"
+            },
+            {
+              "n": "12.8",
+              "title": "The Michaelis-Menten Mechanism",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.08%3A_The_Michaelis-Menten_Mechanism"
+            },
+            {
+              "n": "12.9",
+              "title": "Chain Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.09%3A_Chain_Reactions"
+            },
+            {
+              "n": "12.10",
+              "title": "Catalysis",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.10%3A_Catalysis"
+            },
+            {
+              "n": "12.11",
+              "title": "Oscillating Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.11%3A_Oscillating_Reactions"
+            },
+            {
+              "n": "12.E",
+              "title": "Chemical Kinetics II (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.E%3A_Chemical_Kinetics_II_(Exercises)"
+            },
+            {
+              "n": "12.S",
+              "title": "Chemical Kinetics II (Summary)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Physical_Chemistry_(Fleming)/12%3A_Chemical_Kinetics_II/12.S%3A_Chemical_Kinetics_II_(Summary)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "mit-ocw-5.35-2012",
+  "curriculum": "MIT OCW 5.35 Introduction to Experimental Chemistry",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2012",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Keith Nelson and Mariusz Twardowski. 5.35 Introduction to Experimental Chemistry. Fall 2012. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Module",
+    "lesson": "Week"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-35-introduction-to-experimental-chemistry-fall-2012/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Module and week topics from the labs page; pre-lab sheets not read for problems.",
+  "books": [
+    {
+      "course": "5.35",
+      "url": "https://ocw.mit.edu/courses/5-35-introduction-to-experimental-chemistry-fall-2012/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Module 1: Spectroscopy",
+          "topics": [
+            "he.chemistry.analytical#2",
+            "he.chemistry.physical-2#4",
+            "he.chemistry.organic-1#4"
+          ],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Introduction to electronic spectroscopy (UV-vis)",
+              "topics": ["he.chemistry.analytical#2", "he.chemistry.physical-2#4"]
+            },
+            {
+              "n": "2",
+              "title": "IR spectroscopy",
+              "topics": ["he.chemistry.physical-2#4", "he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "3",
+              "title": "IR spectroscopy of proteins",
+              "topics": ["he.chemistry.biochemistry#0"]
+            },
+            {
+              "n": "4",
+              "title": "15 MHz NMR",
+              "topics": ["he.chemistry.organic-1#4"]
+            },
+            {
+              "n": "5",
+              "title": "300 MHz NMR",
+              "topics": ["he.chemistry.organic-1#4"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Module 2: Synthesis of coordination compounds and kinetics",
+          "topics": ["he.chemistry.inorganic#1", "he.chemistry.gen-chem-2#0"],
+          "lessons": []
+        }
+      ]
+    }
+  ]
+}

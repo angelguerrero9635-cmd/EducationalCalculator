@@ -1,0 +1,185 @@
+{
+  "id": "libretexts-nocera-inorganic-ii",
+  "curriculum": "Nocera, Principles of Inorganic Chemistry II (MIT 5.04)",
+  "publisher": "Daniel Nocera; LibreTexts",
+  "edition": "LibreTexts edition (lecture notes, problem sets, exams)",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Daniel Nocera, Principles of Inorganic Chemistry II, LibreTexts. License: CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture or set"
+  },
+  "sourceUrl": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter and section titles as listed on LibreTexts (fetched at its 5 s Crawl-delay); topics are our mapping; examples, ranges and notation in our words from the problem pages read for question records. No text, problem or number copied. Stands in for MIT OCW 5.03/5.04, which are not on OCW (searched the OCW sitemap). Graduate-leaning. Licence tags seen on chapter pages: license:ccbyncsa.",
+  "books": [
+    {
+      "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Chapters",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters",
+          "topics": [
+            "he.chemistry.inorganic#0",
+            "he.chemistry.inorganic#2",
+            "he.chemistry.physical-2#3"
+          ],
+          "examples": [
+            "symmetry operations as matrices; group tables",
+            "reducible representations, reduction, SALCs by projection operators",
+            "Hückel for linear and cyclic π systems",
+            "octahedral σ and π MO diagrams; angular overlap"
+          ],
+          "notation": [
+            "Schoenflies point groups; Mulliken symbols (a₁g, t₂g)",
+            "Γ_red reduced with the reduction formula"
+          ],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Symmetry Elements and Operations",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.01%3A_Untitled_Chapter_2"
+            },
+            {
+              "n": "1.2",
+              "title": "Operator Properties and Mathematical Groups",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.02%3A_Untitled_Chapter_3"
+            },
+            {
+              "n": "1.3",
+              "title": "Irreducible Representations and Character Tables",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.03%3A_Untitled_Chapter_4"
+            },
+            {
+              "n": "1.4",
+              "title": "Molecular Point Groups 1",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.04%3A_Untitled_Chapter_5"
+            },
+            {
+              "n": "1.5",
+              "title": "Molecular Point Groups 2",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.05%3A_New_Page"
+            },
+            {
+              "n": "1.6",
+              "title": "LCAO and Hückel Theory 1 (Eigenfunctions)",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.06%3A_New_Page"
+            },
+            {
+              "n": "1.7",
+              "title": "Hückel Theory 2 (Eigenvalues)",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.07%3A_New_Page"
+            },
+            {
+              "n": "1.8",
+              "title": "N-dimensional cyclic systems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.08%3A_New_Page"
+            },
+            {
+              "n": "1.9",
+              "title": "Band Theory in Solids",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.09%3A_New_Page"
+            },
+            {
+              "n": "1.10",
+              "title": "General electronic considerations of metal-ligand complexes",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.10%3A_General_electronic_considerations_of_metal-ligand_complexes"
+            },
+            {
+              "n": "1.11",
+              "title": "Frontier molecular orbitals of σ-donor, π-donor and π-acceptor ligands",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.11%3A_Frontier_molecular_orbitals_of_-donor_-donor_and_-acceptor_ligands"
+            },
+            {
+              "n": "1.12",
+              "title": "Octahedral ML₆ Sigma Complexes",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.12%3A_Octahedral_ML_Sigma_Complexes"
+            },
+            {
+              "n": "1.13",
+              "title": "Octahedral ML₆ π complexes",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.13%3A_Octahedral_ML__complexes"
+            },
+            {
+              "n": "1.14",
+              "title": "Angular Overlap Method and M-L Diatomics",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/01%3A_Chapters/1.14%3A_Angular_Overlap_Method_and_M-L_Diatomics"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Assignments",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/02%3A_Assignments",
+          "topics": ["he.chemistry.inorganic#0", "he.chemistry.inorganic#2"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Problem set 1",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/02%3A_Assignments/2.01%3A_New_Page"
+            },
+            {
+              "n": "2.2",
+              "title": "Problem Set 2",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/02%3A_Assignments/2.02%3A_New_Page"
+            },
+            {
+              "n": "2.3",
+              "title": "Problem Set 3",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/02%3A_Assignments/2.03%3A_New_Page"
+            },
+            {
+              "n": "2.4",
+              "title": "Problem Set 4",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/02%3A_Assignments/2.04%3A_New_Page"
+            },
+            {
+              "n": "2.5",
+              "title": "Problem Set 5",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/02%3A_Assignments/2.05%3A_New_Page"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Exams",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/03%3A_Exams",
+          "topics": [
+            "he.chemistry.inorganic#0",
+            "he.chemistry.inorganic#1",
+            "he.chemistry.inorganic#2"
+          ],
+          "examples": [
+            "assign modes to irreps; IR/Raman activity",
+            "Tanabe–Sugano assignment of d–d bands",
+            "fragment MO diagrams of metal complexes"
+          ],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Exam 1",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/03%3A_Exams/3.01%3A_New_Page"
+            },
+            {
+              "n": "3.2",
+              "title": "Exam 2",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/03%3A_Exams/3.02%3A_New_Page"
+            },
+            {
+              "n": "3.3",
+              "title": "Exam 3",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Principles_of_Inorganic_Chemistry_II_(Nocera)/03%3A_Exams/3.03%3A_New_Page"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

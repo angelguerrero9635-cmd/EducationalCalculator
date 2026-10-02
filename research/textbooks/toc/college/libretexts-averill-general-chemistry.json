@@ -1,0 +1,1170 @@
+{
+  "id": "libretexts-averill-general-chemistry",
+  "curriculum": "Averill and Eldredge, General Chemistry: Principles, Patterns, and Applications",
+  "publisher": "Bruce Averill, Patricia Eldredge (Saylor Foundation); LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Bruce Averill and Patricia Eldredge, General Chemistry: Principles, Patterns, and Applications. LibreTexts. License: CC BY-NC-SA 3.0 (page link)."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter and section titles as listed on LibreTexts (fetched at its 5 s Crawl-delay); topics are our mapping; examples, ranges and notation in our words from the problem pages read for question records. No text, problem or number copied. Chosen for general chemistry numerical problem types not derived from OpenStax (Averill is a Saylor/Flat World text). Licence tags seen on chapter pages: license:ccbyncsa.",
+  "books": [
+    {
+      "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction to Chemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry",
+          "topics": [],
+          "notes": "Introduction (Grade 10 level).",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Introduction",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.01%3A_Introduction"
+            },
+            {
+              "n": "1.2",
+              "title": "Chemistry in the Modern World",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.02%3A_Chemistry_in_the_Modern_World"
+            },
+            {
+              "n": "1.3",
+              "title": "The Scientific Method",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.03%3A_The_Scientific_Method"
+            },
+            {
+              "n": "1.4",
+              "title": "A Description of Matter",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.04%3A_A_Description_of_Matter"
+            },
+            {
+              "n": "1.5",
+              "title": "A Brief History of Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.05%3A_A_Brief_History_of_Chemistry"
+            },
+            {
+              "n": "1.6",
+              "title": "The Atom",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.06%3A_The_Atom"
+            },
+            {
+              "n": "1.7",
+              "title": "Isotopes and Atomic Masses",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.07%3A_Isotopes_and_Atomic_Masses"
+            },
+            {
+              "n": "1.8",
+              "title": "Introduction to the Periodic Table",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.08%3A_Introduction_to_the_Periodic_Table"
+            },
+            {
+              "n": "1.9",
+              "title": "Essential Elements for Life",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.09%3A_Essential_Elements_for_Life"
+            },
+            {
+              "n": "1.10",
+              "title": "Essential Skills 1",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/01%3A_Introduction_to_Chemistry/1.10%3A_Essential_Skills_1"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Molecules, Ions, and Chemical Formulas",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/02%3A_Molecules_Ions_and_Chemical_Formulas",
+          "topics": [],
+          "notes": "Formulas and nomenclature (Grade 10 level).",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Chemical Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/02%3A_Molecules_Ions_and_Chemical_Formulas/2.01%3A_Chemical_Compounds"
+            },
+            {
+              "n": "2.2",
+              "title": "Chemical Formulas",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/02%3A_Molecules_Ions_and_Chemical_Formulas/2.02%3A_Chemical_Formulas"
+            },
+            {
+              "n": "2.3",
+              "title": "Naming Ionic Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/02%3A_Molecules_Ions_and_Chemical_Formulas/2.03%3A_Naming_Ionic_Compounds"
+            },
+            {
+              "n": "2.4",
+              "title": "Naming Covalent Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/02%3A_Molecules_Ions_and_Chemical_Formulas/2.04%3A_Naming_Covalent_Compounds"
+            },
+            {
+              "n": "2.5",
+              "title": "Acids and Bases",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/02%3A_Molecules_Ions_and_Chemical_Formulas/2.05%3A_Acids_and_Bases"
+            },
+            {
+              "n": "2.6",
+              "title": "Industrially Important Chemicals",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/02%3A_Molecules_Ions_and_Chemical_Formulas/2.06%3A_Industrially_Important_Chemicals"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Chemical Reactions",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/03%3A_Chemical_Reactions",
+          "topics": ["he.chemistry.gen-chem-1#1"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "The Mole and Molar Masses",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/03%3A_Chemical_Reactions/3.01%3A_The_Mole_and_Molar_Masses"
+            },
+            {
+              "n": "3.2",
+              "title": "Determining Empirical and Molecular Formulas",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/03%3A_Chemical_Reactions/3.02%3A_Determining_Empirical_and_Molecular_Formulas"
+            },
+            {
+              "n": "3.3",
+              "title": "Chemical Equations",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/03%3A_Chemical_Reactions/3.03%3A_Chemical_Equations"
+            },
+            {
+              "n": "3.4",
+              "title": "Mass Relationships in Chemical Equations",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/03%3A_Chemical_Reactions/3.04%3A_Mass_Relationships_in_Chemical_Equations"
+            },
+            {
+              "n": "3.5",
+              "title": "Types of Chemical Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/03%3A_Chemical_Reactions/3.05%3A_Types_of_Chemical_Reactions"
+            },
+            {
+              "n": "3.6",
+              "title": "Chemical Reactions in the Atmosphere",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/03%3A_Chemical_Reactions/3.06%3A_Chemical_Reactions_in_the_Atmosphere"
+            },
+            {
+              "n": "3.7",
+              "title": "Essential Skills 2",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/03%3A_Chemical_Reactions/3.07%3A__Essential_Skills_2"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Reactions in Aqueous Solution",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution",
+          "topics": ["he.chemistry.gen-chem-1#1"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Aqueous Solutions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.01%3A_Aqueous_Solutions"
+            },
+            {
+              "n": "4.2",
+              "title": "Solution Concentrations",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.02%3A_Solution_Concentrations"
+            },
+            {
+              "n": "4.3",
+              "title": "Stoichiometry of Reactions in Solution",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.03%3A__Stoichiometry_of_Reactions_in_Solution"
+            },
+            {
+              "n": "4.4",
+              "title": "Ionic Equations",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.04%3A_Ionic_Equations"
+            },
+            {
+              "n": "4.5",
+              "title": "Precipitation Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.05%3A_Precipitation_Reactions"
+            },
+            {
+              "n": "4.6",
+              "title": "Acids and Bases",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.06%3A_Acids_and_Bases"
+            },
+            {
+              "n": "4.7",
+              "title": "Acid Base Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.07%3A_Acid_Base_Reactions"
+            },
+            {
+              "n": "4.8",
+              "title": "The Chemistry of Acid Rain",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.08%3A_The_Chemistry_of_Acid_Rain"
+            },
+            {
+              "n": "4.9",
+              "title": "Quantitative Analysis Using Titration",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.09%3A__Quantitative_Analysis_Using_Titration"
+            },
+            {
+              "n": "4.10",
+              "title": "Oxidation-Reduction Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.10%3A__Oxidation-Reduction_Reactions"
+            },
+            {
+              "n": "4.11",
+              "title": "Essential Skills 3",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/04%3A_Reactions_in_Aqueous_Solution/4.11%3A_Essential_Skills_3"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Energy Changes in Chemical Reactions",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions",
+          "topics": ["he.chemistry.gen-chem-1#3"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Energy Changes in Chemical Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.01%3A_Energy_Changes_in_Chemical_Reactions"
+            },
+            {
+              "n": "5.2",
+              "title": "Enthalpy and Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.02%3A_Enthalpy_and_Reactions"
+            },
+            {
+              "n": "5.3",
+              "title": "Hess's Law",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.03%3A_Hess's_Law"
+            },
+            {
+              "n": "5.4",
+              "title": "Heats of Formation",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.04%3A__Heats_of_Formation"
+            },
+            {
+              "n": "5.5",
+              "title": "Enthalpies of Solution",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.05%3A_Enthalpies_of_Solution"
+            },
+            {
+              "n": "5.6",
+              "title": "Calorimetry",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.06%3A_Calorimetry"
+            },
+            {
+              "n": "5.7",
+              "title": "Thermochemistry and Nutrition",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.07%3A_Thermochemistry_and_Nutrition"
+            },
+            {
+              "n": "5.8",
+              "title": "Energy Sources and the Environment",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.08%3A_Energy_Sources_and_the_Environment"
+            },
+            {
+              "n": "5.9",
+              "title": "Essential Skills 4",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/05%3A_Energy_Changes_in_Chemical_Reactions/5.09%3A__Essential_Skills_4"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "The Structure of Atoms",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/06%3A_The_Structure_of_Atoms",
+          "topics": ["he.chemistry.gen-chem-1#0"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Waves and Electromagnetic Radiation",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/06%3A_The_Structure_of_Atoms/6.01%3A__Waves_and_Electromagnetic_Radiation"
+            },
+            {
+              "n": "6.2",
+              "title": "Quantization of Energy",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/06%3A_The_Structure_of_Atoms/6.02%3A__Quantization_of_Energy"
+            },
+            {
+              "n": "6.3",
+              "title": "Atomic Spectra and Models of the Atom",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/06%3A_The_Structure_of_Atoms/6.03%3A_Atomic_Spectra_and_Models_of_the_Atom"
+            },
+            {
+              "n": "6.4",
+              "title": "Wave - Particle Duality",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/06%3A_The_Structure_of_Atoms/6.04%3A_Wave_-_Particle_Duality"
+            },
+            {
+              "n": "6.5",
+              "title": "Atomic Orbitals and Their Energies",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/06%3A_The_Structure_of_Atoms/6.05%3A_Atomic_Orbitals_and_Their_Energies"
+            },
+            {
+              "n": "6.6",
+              "title": "Building Up The Periodic Table",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/06%3A_The_Structure_of_Atoms/6.06%3A_Building_Up_The_Periodic_Table"
+            },
+            {
+              "n": "6.7",
+              "title": "Electronic Structure of the Transition Metals",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/06%3A_The_Structure_of_Atoms/6.07%3A__Electronic_Structure_of_the_Transition_Metals"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "The Periodic Table and Periodic Trends",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/07%3A_The_Periodic_Table_and_Periodic_Trends",
+          "topics": ["he.chemistry.gen-chem-1#0"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "The History of the Periodic Table",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/07%3A_The_Periodic_Table_and_Periodic_Trends/7.01%3A__The_History_of_the_Periodic_Table"
+            },
+            {
+              "n": "7.2",
+              "title": "Sizes of Atoms and Ions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/07%3A_The_Periodic_Table_and_Periodic_Trends/7.02%3A_Sizes_of_Atoms_and_Ions"
+            },
+            {
+              "n": "7.3",
+              "title": "The Chemical Families",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/07%3A_The_Periodic_Table_and_Periodic_Trends/7.03%3A_The_Chemical_Families"
+            },
+            {
+              "n": "7.4",
+              "title": "Trace Elements in Biological Systems",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/07%3A_The_Periodic_Table_and_Periodic_Trends/7.04%3A_Trace_Elements_in_Biological_Systems"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Ionic versus Covalent Bonding",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding",
+          "topics": ["he.chemistry.gen-chem-1#4"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "What is a Chemical Bond?",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.01%3A_What_is_a_Chemical_Bond"
+            },
+            {
+              "n": "8.2",
+              "title": "Ionic Bonding",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.02%3A_Ionic_Bonding"
+            },
+            {
+              "n": "8.3",
+              "title": "Lattice Energies in Ionic Solids",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.03%3A_Lattice_Energies_in_Ionic_Solids"
+            },
+            {
+              "n": "8.4",
+              "title": "Lewis Electron Dot Symbols",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.04%3A_Lewis_Electron_Dot_Symbols"
+            },
+            {
+              "n": "8.5",
+              "title": "Lewis Structures",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.05%3A_Lewis_Structures"
+            },
+            {
+              "n": "8.6",
+              "title": "Exceptions to the Octet Rule",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.06%3A_Exceptions_to_the_Octet_Rule"
+            },
+            {
+              "n": "8.7",
+              "title": "Lewis Acids and Bases",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.07%3A_Lewis_Acids_and_Bases"
+            },
+            {
+              "n": "8.8",
+              "title": "Properties of Covalent Bonds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.08%3A_Properties_of_Covalent_Bonds"
+            },
+            {
+              "n": "8.9",
+              "title": "Properties of Polar Covalent Bonds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.09%3A_Properties_of_Polar_Covalent_Bonds"
+            },
+            {
+              "n": "8.10",
+              "title": "Metallic Bonding",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.10%3A_Metallic_Bonding"
+            },
+            {
+              "n": "8.11",
+              "title": "Molecular Representations",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/08%3A_Ionic_versus_Covalent_Bonding/8.11%3A_Molecular_Representations"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Molecular Geometry and Covalent Bonding Models",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/09%3A_Molecular_Geometry_and_Covalent_Bonding_Models",
+          "topics": ["he.chemistry.gen-chem-1#4"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Molecular Geometry",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/09%3A_Molecular_Geometry_and_Covalent_Bonding_Models/9.01%3A_Molecular_Geometry"
+            },
+            {
+              "n": "9.2",
+              "title": "VSEPR - Molecular Geometry",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/09%3A_Molecular_Geometry_and_Covalent_Bonding_Models/9.02%3A_VSEPR_-_Molecular_Geometry"
+            },
+            {
+              "n": "9.3",
+              "title": "Hybrid Orbitals",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/09%3A_Molecular_Geometry_and_Covalent_Bonding_Models/9.03%3A_Hybrid_Orbitals"
+            },
+            {
+              "n": "9.4",
+              "title": "Delocalized Bonding and Molecular Orbitals",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/09%3A_Molecular_Geometry_and_Covalent_Bonding_Models/9.04%3A_Delocalized_Bonding_and_Molecular_Orbitals"
+            },
+            {
+              "n": "9.5",
+              "title": "Polyatomic Systems, Multiple Bonds, Resonance",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/09%3A_Molecular_Geometry_and_Covalent_Bonding_Models/9.05%3A__Polyatomic_Systems_Multiple_Bonds_Resonance"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Gases",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases",
+          "topics": ["he.chemistry.gen-chem-1#2"],
+          "examples": [
+            "moles, mass, volume at STP",
+            "volumes corrected to STP",
+            "gas stoichiometry for a balloon",
+            "partial pressures; pressure after combustion"
+          ],
+          "ranges": ["P in kPa, torr, mmHg, atm; T in °C and °F"],
+          "notation": ["STP 0 °C and 1 atm, 22.4 L/mol"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Gaseous Elements and Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.01%3A_Gaseous_Elements_and_Compounds"
+            },
+            {
+              "n": "10.2",
+              "title": "Gas Pressure",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.02%3A_Gas_Pressure"
+            },
+            {
+              "n": "10.3",
+              "title": "The Ideal Gas Law",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.03%3A_The_Ideal_Gas_Law"
+            },
+            {
+              "n": "10.4",
+              "title": "The Combined Gas Law",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.04%3A_The_Combined_Gas_Law"
+            },
+            {
+              "n": "10.5",
+              "title": "Gas Mixtures",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.05%3A_Gas_Mixtures"
+            },
+            {
+              "n": "10.6",
+              "title": "Stoichiometry Involving Gases",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.06%3A_Stoichiometry_Involving_Gases"
+            },
+            {
+              "n": "10.7",
+              "title": "The Kinetic Theory of Gases",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.07%3A_The_Kinetic_Theory_of_Gases"
+            },
+            {
+              "n": "10.8",
+              "title": "Real Gases",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.08%3A_Real_Gases"
+            },
+            {
+              "n": "10.9",
+              "title": "Essential Skills 5",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/10%3A_Gases/10.09%3A_Essential_Skills_5"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Fluids",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids",
+          "topics": [],
+          "notes": "Liquids and intermolecular forces: plan gap.",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Introduction",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.01%3A_Introduction"
+            },
+            {
+              "n": "11.2",
+              "title": "Intermolecular forces",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.02%3A_Intermolecular_forces"
+            },
+            {
+              "n": "11.3",
+              "title": "Unique Properties of Liquids",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.03%3A_Unique_Properties_of_Liquids"
+            },
+            {
+              "n": "11.4",
+              "title": "Vapor Pressure",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.04%3A_Vapor_Pressure"
+            },
+            {
+              "n": "11.5",
+              "title": "Changes of State",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.05%3A_Changes_of_State"
+            },
+            {
+              "n": "11.6",
+              "title": "Critical Temperature and Pressure",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.06%3A_Critical_Temperature_and_Pressure"
+            },
+            {
+              "n": "11.7",
+              "title": "Phase Diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.07%3A_Phase_Diagrams"
+            },
+            {
+              "n": "11.8",
+              "title": "Liquid Crystals",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.08%3A_Liquid_Crystals"
+            },
+            {
+              "n": "11.9",
+              "title": "Essential Skills 6",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/11%3A_Fluids/11.09%3A_Essential_Skills_6"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Solids",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids",
+          "topics": ["he.chemistry.inorganic#3"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Crystalline and Amorphous Solids",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.01%3A_Crystalline_and_Amorphous_Solids"
+            },
+            {
+              "n": "12.2",
+              "title": "The Arrangement of Atoms in Crystalline Solids",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.02%3A_The_Arrangement_of_Atoms_in_Crystalline_Solids"
+            },
+            {
+              "n": "12.3",
+              "title": "Structures of Simple Binary Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.03%3A_Structures_of_Simple_Binary_Compounds"
+            },
+            {
+              "n": "12.4",
+              "title": "Defects in Crystals",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.04%3A_Defects_in_Crystals"
+            },
+            {
+              "n": "12.5",
+              "title": "Bonding and Properties of Solids",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.05%3A_Bonding_and_Properties_of_Solids"
+            },
+            {
+              "n": "12.6",
+              "title": "Metals and Semiconductors",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.06%3A_Metals_and_Semiconductors"
+            },
+            {
+              "n": "12.7",
+              "title": "Superconductors",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.07%3A_Superconductors"
+            },
+            {
+              "n": "12.8",
+              "title": "Polymers",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.08%3A_Polymers"
+            },
+            {
+              "n": "12.9",
+              "title": "Modern Materials",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/12%3A_Solids/12.09%3A_Modern_Materials"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Solutions",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions",
+          "topics": [],
+          "notes": "Solutions and colligative properties: plan gap.",
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Factors Affecting Solution Formation",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions/13.01%3A_Factors_Affecting_Solution_Formation"
+            },
+            {
+              "n": "13.2",
+              "title": "Solubility and Molecular Structure",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions/13.02%3A_Solubility_and_Molecular_Structure"
+            },
+            {
+              "n": "13.3",
+              "title": "Units of Concentration",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions/13.03%3A_Units_of_Concentration"
+            },
+            {
+              "n": "13.4",
+              "title": "Effects of Temperature and Pressure on Solubility",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions/13.04%3A_Effects_of_Temperature_and_Pressure_on_Solubility"
+            },
+            {
+              "n": "13.5",
+              "title": "Colligative Properties of Solutions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions/13.05%3A_Colligative_Properties_of_Solutions"
+            },
+            {
+              "n": "13.6",
+              "title": "Aggregate Particles",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions/13.06%3A_Aggregate_Particles"
+            },
+            {
+              "n": "13.7",
+              "title": "Aggregate Particles in Aqueous Solution",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/13%3A_Solutions/13.07%3A_Aggregate_Particles_in_Aqueous_Solution"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Chemical Kinetics",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics",
+          "topics": ["he.chemistry.gen-chem-2#0"],
+          "examples": [
+            "rate expressions from coefficients",
+            "orders from doubling and from initial rates",
+            "integrated-law plots",
+            "t½ to decide order",
+            "Arrhenius"
+          ],
+          "ranges": ["k 10⁻⁴–1", "Eₐ 15–90 kJ/mol (some kcal/mol)"],
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Preview to Chemical Equilibria",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.01%3A_Preview_to_Chemical_Equilibria"
+            },
+            {
+              "n": "14.2",
+              "title": "Factors that Affect Reaction Rates",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.02%3A_Factors_that_Affect_Reaction_Rates"
+            },
+            {
+              "n": "14.3",
+              "title": "Reaction Rates and Rate Laws",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.03%3A_Reaction_Rates_and_Rate_Laws"
+            },
+            {
+              "n": "14.4",
+              "title": "Methods of Determining Reaction Order",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.04%3A_Methods_of_Determining_Reaction_Order"
+            },
+            {
+              "n": "14.5",
+              "title": "Using Graphs to Determine Rate Laws, Rate Constants and Reaction Orders",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.05%3A_Using_Graphs_to_Determine_Rate_Laws_Rate_Constants_and_Reaction_Orders"
+            },
+            {
+              "n": "14.6",
+              "title": "Half Lives and Radioactive Decay Kinetics",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.06%3A_Half_Lives_and_Radioactive_Decay_Kinetics"
+            },
+            {
+              "n": "14.7",
+              "title": "Reaction Rates - A Microscopic View",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.07%3A_Reaction_Rates_-_A_Microscopic_View"
+            },
+            {
+              "n": "14.8",
+              "title": "The Collision Model of Chemical Kinetics",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.08%3A_The_Collision_Model_of_Chemical_Kinetics"
+            },
+            {
+              "n": "14.9",
+              "title": "Catalysis",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/14%3A_Chemical_Kinetics/14.09%3A_Catalysis"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Chemical Equilibrium",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/15%3A_Chemical_Equilibrium",
+          "topics": ["he.chemistry.gen-chem-2#1"],
+          "examples": [
+            "ICE tables with Kp",
+            "K and Kp from equilibrium data",
+            "Q vs K under stresses"
+          ],
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "The Concept of Chemical Equilibrium",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/15%3A_Chemical_Equilibrium/15.01%3A_The_Concept_of_Chemical_Equilibrium"
+            },
+            {
+              "n": "15.2",
+              "title": "The Equilibrium Constant",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/15%3A_Chemical_Equilibrium/15.02%3A_The_Equilibrium_Constant"
+            },
+            {
+              "n": "15.3",
+              "title": "Solving Equilibrium Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/15%3A_Chemical_Equilibrium/15.03%3A_Solving_Equilibrium_Problems"
+            },
+            {
+              "n": "15.4",
+              "title": "Non-equilibrium Conditions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/15%3A_Chemical_Equilibrium/15.04%3A_Non-equilibrium_Conditions"
+            },
+            {
+              "n": "15.5",
+              "title": "Factors That Affect Equilibrium",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/15%3A_Chemical_Equilibrium/15.05%3A_Factors_That_Affect_Equilibrium"
+            },
+            {
+              "n": "15.6",
+              "title": "Controlling the Products of Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/15%3A_Chemical_Equilibrium/15.06%3A_Controlling_the_Products_of_Reactions"
+            },
+            {
+              "n": "15.7",
+              "title": "Essential Skills 7",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/15%3A_Chemical_Equilibrium/15.07%3A_Essential_Skills_7"
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Aqueous Acid–Base Equilibriums",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/16%3A_Aqueous_AcidBase_Equilibriums",
+          "topics": ["he.chemistry.gen-chem-2#2"],
+          "examples": [
+            "pH of weak acids and bases from tabulated K",
+            "buffers and added acid or base"
+          ],
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "The Autoionization of Water",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/16%3A_Aqueous_AcidBase_Equilibriums/16.01%3A_The_Autoionization_of_Water"
+            },
+            {
+              "n": "16.2",
+              "title": "A Qualitative Description of  Acid-Base Equilibria",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/16%3A_Aqueous_AcidBase_Equilibriums/16.02%3A_A_Qualitative_Description_of__Acid-Base_Equilibria"
+            },
+            {
+              "n": "16.3",
+              "title": "Molecular Structure and Acid-Base Strength",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/16%3A_Aqueous_AcidBase_Equilibriums/16.03%3A_Molecular_Structure_and_Acid-Base_Strength"
+            },
+            {
+              "n": "16.4",
+              "title": "Quantitative Aspects of Acid-Base Equilibria",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/16%3A_Aqueous_AcidBase_Equilibriums/16.04%3A_Quantitative_Aspects_of_Acid-Base_Equilibria"
+            },
+            {
+              "n": "16.5",
+              "title": "Acid-Base Titrations",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/16%3A_Aqueous_AcidBase_Equilibriums/16.05%3A_Acid-Base_Titrations"
+            },
+            {
+              "n": "16.6",
+              "title": "Buffers",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/16%3A_Aqueous_AcidBase_Equilibriums/16.06%3A_Buffers"
+            }
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Solubility and Complexation Equilibria",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/17%3A_Solubility_and_Complexation_Equilibria",
+          "topics": ["he.chemistry.gen-chem-2#1", "he.chemistry.inorganic#1"],
+          "examples": ["molar solubility from Ksp; ion concentrations"],
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Introduction",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/17%3A_Solubility_and_Complexation_Equilibria/17.01%3A_Introduction"
+            },
+            {
+              "n": "17.2",
+              "title": "Determining the Solubility of Ionic Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/17%3A_Solubility_and_Complexation_Equilibria/17.02%3A_Determining_the_Solubility_of_Ionic_Compounds"
+            },
+            {
+              "n": "17.3",
+              "title": "Factors That Affect Solubility",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/17%3A_Solubility_and_Complexation_Equilibria/17.03%3A_Factors_That_Affect_Solubility"
+            },
+            {
+              "n": "17.4",
+              "title": "The Formation of Complex Ions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/17%3A_Solubility_and_Complexation_Equilibria/17.04%3A_The_Formation_of_Complex_Ions"
+            },
+            {
+              "n": "17.5",
+              "title": "Solubility and pH",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/17%3A_Solubility_and_Complexation_Equilibria/17.05%3A_Solubility_and_pH"
+            },
+            {
+              "n": "17.6",
+              "title": "Qualitative Analysis Using Selective Precipitation",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/17%3A_Solubility_and_Complexation_Equilibria/17.06%3A_Qualitative_Analysis_Using_Selective_Precipitation"
+            }
+          ]
+        },
+        {
+          "n": "18",
+          "title": "Chemical Thermodynamics",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics",
+          "topics": ["he.chemistry.gen-chem-2#3"],
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "Thermodynamics and Work",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics/18.01%3A_Thermodynamics_and_Work"
+            },
+            {
+              "n": "18.2",
+              "title": "The First Law of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics/18.02%3A_The_First_Law_of_Thermodynamics"
+            },
+            {
+              "n": "18.3",
+              "title": "The Second Law of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics/18.03%3A_The_Second_Law_of_Thermodynamics"
+            },
+            {
+              "n": "18.4",
+              "title": "Entropy Changes and the Third Law of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics/18.04%3A_Entropy_Changes_and_the_Third_Law_of_Thermodynamics"
+            },
+            {
+              "n": "18.5",
+              "title": "Free Energy",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics/18.05%3A_Free_Energy"
+            },
+            {
+              "n": "18.6",
+              "title": "Spontaneity and Equilibrium",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics/18.06%3A_Spontaneity_and_Equilibrium"
+            },
+            {
+              "n": "18.7",
+              "title": "Comparing Thermodynamics and Kinetics",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics/18.07%3A_Comparing_Thermodynamics_and_Kinetics"
+            },
+            {
+              "n": "18.8",
+              "title": "Thermodynamics and Life",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/18%3A_Chemical_Thermodynamics/18.08%3A_Thermodynamics_and_Life"
+            }
+          ]
+        },
+        {
+          "n": "19",
+          "title": "Electrochemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry",
+          "topics": ["he.chemistry.gen-chem-2#4"],
+          "examples": ["cell diagrams; E°cell", "ΔG° from E°", "electrolysis mass and gas volume"],
+          "lessons": [
+            {
+              "n": "19.1",
+              "title": "Introduction",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry/19.01%3A_Introduction"
+            },
+            {
+              "n": "19.2",
+              "title": "Describing Electrochemical Cells",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry/19.02%3A_Describing_Electrochemical_Cells"
+            },
+            {
+              "n": "19.3",
+              "title": "Standard Potentials",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry/19.03%3A_Standard_Potentials"
+            },
+            {
+              "n": "19.4",
+              "title": "Comparing Strengths of Oxidants and Reductants",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry/19.04%3A_Comparing_Strengths_of_Oxidants_and_Reductants"
+            },
+            {
+              "n": "19.5",
+              "title": "Electrochemical Cells and Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry/19.05%3A_Electrochemical_Cells_and_Thermodynamics"
+            },
+            {
+              "n": "19.6",
+              "title": "Commercial Galvanic Cells",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry/19.06%3A_Commercial_Galvanic_Cells"
+            },
+            {
+              "n": "19.7",
+              "title": "Corrosion",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry/19.07%3A_Corrosion"
+            },
+            {
+              "n": "19.8",
+              "title": "Electrolysis",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/19%3A_Electrochemistry/19.08%3A_Electrolysis"
+            }
+          ]
+        },
+        {
+          "n": "20",
+          "title": "Periodic Trends and the s-Block Elements",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements",
+          "topics": [],
+          "notes": "Descriptive main-group chemistry: plan gap.",
+          "lessons": [
+            {
+              "n": "20.1",
+              "title": "Introduction",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements/20.01%3A_Introduction"
+            },
+            {
+              "n": "20.2",
+              "title": "Overview of Periodic Trends",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements/20.02%3A_Overview_of_Periodic_Trends"
+            },
+            {
+              "n": "20.3",
+              "title": "The Chemistry of Hydrogen",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements/20.03%3A_The_Chemistry_of_Hydrogen"
+            },
+            {
+              "n": "20.4",
+              "title": "The Alkali Metals (Group 1)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements/20.04%3A_The_Alkali_Metals_(Group_1)"
+            },
+            {
+              "n": "20.5",
+              "title": "The Alkaline Earth Metals (Group 2)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements/20.05%3A_The_Alkaline_Earth_Metals_(Group_2)"
+            },
+            {
+              "n": "20.6",
+              "title": "The s-Block Elements in Biology",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements/20.06%3A_The_s-Block_Elements_in_Biology"
+            },
+            {
+              "n": "20.E",
+              "title": "Periodic Trends and the s-Block Elements (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/20%3A_Periodic_Trends_and_the_s-Block_Elements/20.E%3A_Periodic_Trends_and_the_s-Block_Elements_(Exercises)"
+            }
+          ]
+        },
+        {
+          "n": "21",
+          "title": "The p-Block Elements",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements",
+          "topics": [],
+          "notes": "Descriptive main-group chemistry: plan gap.",
+          "lessons": [
+            {
+              "n": "21.1",
+              "title": "The Elements of Group 13",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements/21.01%3A_The_Elements_of_Group_13"
+            },
+            {
+              "n": "21.2",
+              "title": "The Elements of Group 14",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements/21.02%3A_The_Elements_of_Group_14"
+            },
+            {
+              "n": "21.3",
+              "title": "The Elements of Group 15 (The Pnicogens)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements/21.03%3A_The_Elements_of_Group_15_(The_Pnicogens)"
+            },
+            {
+              "n": "21.4",
+              "title": "The Elements of Group 16 (The Chalcogens)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements/21.04%3A_The_Elements_of_Group_16_(The_Chalcogens)"
+            },
+            {
+              "n": "21.5",
+              "title": "The Elements of Group 17 (The Halogens)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements/21.05%3A_The_Elements_of_Group_17_(The_Halogens)"
+            },
+            {
+              "n": "21.6",
+              "title": "The Elements of Group 18 (The Noble Gases)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements/21.06%3A_The_Elements_of_Group_18_(The_Noble_Gases)"
+            },
+            {
+              "n": "21.E",
+              "title": "The p-Block Elements (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/21%3A_The_p-Block_Elements/21.E%3A_The_p-Block_Elements_(Exercises)"
+            }
+          ]
+        },
+        {
+          "n": "22",
+          "title": "The d-Block Elements",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/22%3A_The_d-Block_Elements",
+          "topics": ["he.chemistry.inorganic#1", "he.chemistry.inorganic#2"],
+          "lessons": [
+            {
+              "n": "22.1",
+              "title": "General Trends among the Transition Metals",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/22%3A_The_d-Block_Elements/22.01%3A_General_Trends_among_the_Transition_Metals"
+            },
+            {
+              "n": "22.2",
+              "title": "A Brief Survey of Transition-Metal Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/22%3A_The_d-Block_Elements/22.02%3A_A_Brief_Survey_of_Transition-Metal_Chemistry"
+            },
+            {
+              "n": "22.3",
+              "title": "Metallurgy",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/22%3A_The_d-Block_Elements/22.03%3A_Metallurgy"
+            },
+            {
+              "n": "22.4",
+              "title": "Coordination Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/22%3A_The_d-Block_Elements/22.04%3A_Coordination_Compounds"
+            },
+            {
+              "n": "22.5",
+              "title": "Crystal Field Theory",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/22%3A_The_d-Block_Elements/22.05%3A_Crystal_Field_Theory"
+            },
+            {
+              "n": "22.6",
+              "title": "Transition Metals in Biology",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/22%3A_The_d-Block_Elements/22.06%3A_Transition_Metals_in_Biology"
+            }
+          ]
+        },
+        {
+          "n": "23",
+          "title": "Organic Compounds",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds",
+          "topics": [],
+          "notes": "Organic survey (covered by organic-1/2 at depth).",
+          "lessons": [
+            {
+              "n": "23.1",
+              "title": "Organic Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds/23.01%3A_Organic_Compounds"
+            },
+            {
+              "n": "23.2",
+              "title": "Functional Groups and Classes of Organic Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds/23.02%3A_Functional_Groups_and_Classes_of_Organic_Compounds"
+            },
+            {
+              "n": "23.3",
+              "title": "Isomers of Organic Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds/23.03%3A_Isomers_of_Organic_Compounds"
+            },
+            {
+              "n": "23.4",
+              "title": "Reactivity of Organic Molecules",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds/23.04%3A_Reactivity_of_Organic_Molecules"
+            },
+            {
+              "n": "23.5",
+              "title": "Common Classes of Organic Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds/23.05%3A_Common_Classes_of_Organic_Reactions"
+            },
+            {
+              "n": "23.6",
+              "title": "Common Classes of Organic Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds/23.06%3A_Common_Classes_of_Organic_Compounds"
+            },
+            {
+              "n": "23.7",
+              "title": "The Molecules of Life",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/23%3A_Organic_Compounds/23.07%3A_The_Molecules_of_Life"
+            }
+          ]
+        },
+        {
+          "n": "24",
+          "title": "Nuclear Chemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry",
+          "topics": [],
+          "notes": "Nuclear chemistry: plan gap.",
+          "lessons": [
+            {
+              "n": "24.1",
+              "title": "Introduction",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.01%3A_Introduction"
+            },
+            {
+              "n": "24.2",
+              "title": "The Components of the Nucleus",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.02%3A_The_Components_of_the_Nucleus"
+            },
+            {
+              "n": "24.3",
+              "title": "Nuclear Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.03%3A_Nuclear_Reactions"
+            },
+            {
+              "n": "24.4",
+              "title": "The Interaction of Nuclear Radiation with Matter",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.04%3A_The_Interaction_of_Nuclear_Radiation_with_Matter"
+            },
+            {
+              "n": "24.5",
+              "title": "Thermodynamic Stability of the Atomic Nucleus",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.05%3A_Thermodynamic_Stability_of_the_Atomic_Nucleus"
+            },
+            {
+              "n": "24.6",
+              "title": "Applied Nuclear Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.06%3A_Applied_Nuclear_Chemistry"
+            },
+            {
+              "n": "24.7",
+              "title": "The Origin of the Elements",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.07%3A_The_Origin_of_the_Elements"
+            },
+            {
+              "n": "24.E",
+              "title": "Nuclear Chemistry (Exercises)",
+              "url": "https://chem.libretexts.org/Bookshelves/General_Chemistry/Book%3A_General_Chemistry%3A_Principles_Patterns_and_Applications_(Averill)/24%3A_Nuclear_Chemistry/24.E%3A_Nuclear_Chemistry_(Exercises)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
