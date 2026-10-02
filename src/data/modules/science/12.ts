@@ -1459,7 +1459,7 @@ const reserves: ModuleDef = {
   use: 'Use this for “400 billion barrels of oil are used at 12.5 billion a year. How many years will they last?”',
   unitSystems: ['metric'],
   assumptions: [
-    'Use and reserves stay the same.',
+    'The yearly use stays the same, and no new reserves are found.',
     'Reserves are the amount that can be recovered at today’s prices with today’s technology.',
     'Nonrenewable resources form over millions of years, far slower than they are used.',
   ],

@@ -2884,9 +2884,12 @@ const sinRoot = (v: Values, which: 1 | -1) => {
   const r = [(-v.b! - Math.sqrt(d)) / (2 * v.a), (-v.b! + Math.sqrt(d)) / (2 * v.a)];
   return which < 0 ? Math.min(...r) : Math.max(...r);
 };
-/** The check line of a root, with the sign the root takes when a is negative. */
+/**
+ * The check line of a root, with the sign the root takes when a is negative: the root as its
+ * box shows it (1/3, not 0.3333) and −b as 0 when b is 0, as the step writes them.
+ */
 const rootCheck = (v: Values, s: string, which: 1 | -1) =>
-  `${fmt(v[s]!)} = (−${par(v.b!)} ${which * Math.sign(v.a!) < 0 ? '−' : '+'} √(${par(v.b!)}² − 4 × ${par(v.a!)} × ${par(v.c!)})) ÷ (2 × ${par(v.a!)})`;
+  `${formatNumber(v[s]!, { fraction: 12, improper: true })} = (${v.b === 0 ? '0' : `−${par(v.b!)}`} ${which * Math.sign(v.a!) < 0 ? '−' : '+'} √(${par(v.b!)}² − 4 × ${par(v.a!)} × ${par(v.c!)})) ÷ (2 × ${par(v.a!)})`;
 /** The angles from 0° up to 360° whose sine is s, said after its step. */
 const sinAngles = (s: number | undefined) => {
   if (s === undefined) return '';
@@ -3350,7 +3353,13 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
           (v) => rootCheck(v, 's1', -1),
         ),
         's1',
-        { note: (v) => sinAngles(v.s1) },
+        {
+          note: (v) => sinAngles(v.s1),
+          how: (v) =>
+            v.a! < 0
+              ? 'The smaller root: a is negative, so dividing by 2a swaps the two, and it takes + √.'
+              : 'The quadratic formula in s = sin x: the smaller root.',
+        },
       ),
       withStep(
         withCheck(
@@ -3369,7 +3378,13 @@ const MATH_12_TRIG_EQUATIONS: ModuleDef[] = [
           (v) => rootCheck(v, 's2', 1),
         ),
         's2',
-        { note: (v) => sinAngles(v.s2) },
+        {
+          note: (v) => sinAngles(v.s2),
+          how: (v) =>
+            v.a! < 0
+              ? 'The larger root takes − √ when a is negative; when b² − 4ac = 0 the two are the same.'
+              : 'And the larger root; when b² − 4ac = 0 the two are the same.',
+        },
       ),
     ),
     example: { a: 2, b: -1, c: -1, s1: -0.5, s2: 1 },

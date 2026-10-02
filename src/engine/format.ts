@@ -560,7 +560,8 @@ const PROPER = new Set(
     'Wien Ohm Coulomb Hooke Snell Punnett Mendel Hardy Richter Pascal Bohr Avogadro Boyle ' +
     'Charles Gay-Lussac Dalton Graham Hess Planck Einstein Mercator Pythagoras Heron Euler ' +
     'Venn Pacific Atlantic Mohs Fujita Saffir-Simpson Milankovitch Simpson Hardy-Weinberg Lewis ' +
-    'Bronsted Arrhenius Le Chatelier Faraday Ampere Joule Watt Hertz Gauss Tesla Lenz'
+    'Bronsted Arrhenius Le Chatelier Faraday Ampere Joule Watt Hertz Gauss Tesla Lenz ' +
+    'Lorentz Boltzmann Stefan'
   ).split(' '),
 );
 
