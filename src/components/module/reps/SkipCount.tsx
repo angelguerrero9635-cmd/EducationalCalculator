@@ -40,8 +40,13 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // A number keeps the count fixed too (4 quarters in a minute): nothing to drag or type.
   const countVar = typeof spec.count === 'string' ? spec.count : undefined;
   // How many jumps fit in the total (a quotient): 100 ÷ 3 is 33 jumps and 1/3 of a jump.
+  // (Only with the total and the jump known: never the example's numbers behind a "?".)
   const quotient =
-    !countVar && spec.count === undefined && !spec.second && rep.known(spec.total)
+    !countVar &&
+    spec.count === undefined &&
+    !spec.second &&
+    rep.known(spec.total) &&
+    (!stepVar || rep.known(stepVar))
       ? rep.shown(spec.total) / (stepVar ? rep.shown(stepVar) : (spec.step as number))
       : undefined;
   const part =

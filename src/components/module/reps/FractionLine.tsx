@@ -471,7 +471,7 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     // the nearest whole mark instead, so the denominator is never let go.
                     const wholeMark = rep.snapTo(dragVar, Math.round(at / b) * b - dragOthers);
                     const tries = [value, wholeMark].map((v) => ({ ...pins, [dragVar]: v }));
-                    calc.set(tries.find((u) => calc.fits(u)) ?? tries[0]!, rep.slide(dragVar));
+                    calc.set(tries.find((u) => calc.fitsHeld(u)) ?? tries[0]!, rep.slide(dragVar));
                   }}
                 />
               ) : null}

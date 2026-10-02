@@ -141,7 +141,17 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     ids[i + 1] && !compare && typeof spec.total === 'string' ? [spec.total] : [];
                   const tries = [[...others, ...total], others, []];
                   const updates = tries.map((pins) => ({ ...rep.pin(pins), [id]: value }));
-                  calc.set(updates.find((u) => calc.fits(u)) ?? updates[0]!, rep.slide(id));
+                  // A drag never changes a typed value it does not send: the last part sends
+                  // the grown total along (a typed total would otherwise refuse the move).
+                  if (!compare && typeof spec.total === 'string' && rep.known(spec.total)) {
+                    const grown = rep.shown(spec.total) - shown[i]! + value / rep.factor(id);
+                    updates.splice(1, 0, {
+                      ...rep.pin(others),
+                      [id]: value,
+                      [spec.total]: grown * rep.factor(spec.total),
+                    });
+                  }
+                  calc.set(updates.find((u) => calc.fitsHeld(u)) ?? updates[0]!, rep.slide(id));
                 }}
               />
             );
