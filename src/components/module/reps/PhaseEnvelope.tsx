@@ -107,8 +107,12 @@ function TieLine({
   // The y₁ label turns back toward the liquid dot where it would run past the plot's edge.
   const wy = wide(yText, chart.value);
   const yOut = xLeft ? bx + 8 + wy > r - 2 : bx - 8 - wy < l + 2;
-  const yToLeft = xLeft === yOut;
-  const yAt = { x: bx + (yToLeft ? -8 : 8), y: flip ? yy - 9 : yy + 18 };
+  // Txy: turning back would put y₁ on the dew curve, so it slides in from the edge instead.
+  const yToLeft = !flip && xLeft === yOut;
+  const yAt = {
+    x: flip && xLeft ? Math.min(bx + 8, r - 2 - wy) : bx + (yToLeft ? -8 : 8),
+    y: flip ? yy - 12 : yy + 18,
+  };
   // The x₁ label: beside its dot, lifted a row where it would meet the level text or z₁.
   const wx = wide(xText, chart.value);
   const xx = ax + (xLeft ? -8 : 8);
