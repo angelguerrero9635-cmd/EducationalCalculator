@@ -16,8 +16,12 @@ import {
   type SeesawOption,
 } from './typesHs3a';
 import {
+  he2eChargesVars,
   he2eInductionVars,
+  isHe2eCharges,
   isHe2eInduction,
+  type ChargesDistribution,
+  type ChargesGauss,
   type InductionField,
   type InductionRails,
 } from './typesHe2e';
@@ -558,6 +562,8 @@ export type HskSpec =
   | RayDiagramSpec
   | ChargesSpec
   | ChargePlatesSpec
+  | ChargesGauss // HC29 (typesHe2e.ts)
+  | ChargesDistribution
   | InductionSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
@@ -629,6 +635,7 @@ export function hskSpecVars(r: HskSpec): string[] {
     case 'heatEngine':
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
     case 'charges':
+      if (isHe2eCharges(r)) return he2eChargesVars(r); // HC29
       return r.mode === 'plates'
         ? [...ids(r.voltage, r.gap, r.field, r.charge, r.force), ...launchVars(r.launch)]
         : [

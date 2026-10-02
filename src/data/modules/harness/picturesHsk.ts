@@ -292,6 +292,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'charges': {
+      if ('gauss' in rep || 'distribution' in rep) break; // HC29: picturesHe2e.ts
       if (rep.mode === 'plates') {
         out.push(...platesIssues(rep, si));
         break;

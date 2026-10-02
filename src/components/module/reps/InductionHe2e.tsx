@@ -5,7 +5,7 @@
  * circles Ampère's law gives; a "?" box draws nothing for its value. Flat diagrams with copper
  * wire and steel rails painted.
  */
-import { useMemo, useRef, type ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { View } from 'react-native';
 import Svg, { Circle, Defs, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
@@ -17,7 +17,17 @@ import { Canvas, Caption, ChartText, DragHandle, useFrozen } from './common';
 import { arrowAt, pathOf } from './fieldLines';
 import { arrowHead } from './graphKit';
 import { CurvedArrow } from './hs3aKit';
-import { inside, Lab, labW, n3, PageMark, useHe2e } from './he2eKit';
+import {
+  ids,
+  inside,
+  Lab,
+  labW,
+  n3,
+  PageMark,
+  ProfileGraph,
+  useHe2e,
+  useScaleDrag,
+} from './he2eKit';
 import {
   loopAxial,
   loopsField,
@@ -40,7 +50,6 @@ type Field<S extends InductionField['source']> = Extract<InductionField, { sourc
   kind: 'induction';
   fixed?: boolean;
 };
-type Reader = ReturnType<typeof useHe2e>;
 
 export function InductionHe2e({ spec, calc }: { spec: Spec; calc: Calculator }) {
   if ('rails' in spec) return <RailsView spec={spec} calc={calc} />;
@@ -112,34 +121,6 @@ function WireEnd({
     </G>
   );
 }
-
-/** A drag along a line from an origin: the value scales with the handle's distance. */
-function useScaleDrag(
-  r: Reader,
-  calc: Calculator,
-  id: string | number | undefined,
-  pins: string[],
-) {
-  const start = useRef({ value: 0, px: 1 });
-  return (px: number) =>
-    typeof id !== 'string'
-      ? undefined
-      : {
-          onStart: () => {
-            start.current = { value: r.rep.val(id), px: Math.max(8, px) };
-          },
-          onMove: (d: number) => {
-            const k = Math.max(0.05, (start.current.px + d) / start.current.px);
-            calc.set(
-              { ...r.rep.pin(pins), [id]: r.rep.snapTo(id, start.current.value * k) },
-              r.rep.slide(id),
-            );
-          },
-        };
-}
-
-const ids = (...xs: (string | number | undefined)[]) =>
-  xs.filter((x): x is string => typeof x === 'string');
 
 // ─── A long straight wire ─────────────────────────────────────────────────────
 
@@ -364,11 +345,13 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
                 />
                 {thick ? (
                   <Lab
-                    x={O.x - Math.max(ap, 9) - 6}
+                    x={Math.max(
+                      4,
+                      O.x - Math.max(ap, 9) - 6 - labW('a', R.say(spec.radius, a, 'm')),
+                    )}
                     y={O.y + Math.max(ap, 9) + 14}
                     sym="a"
                     value={R.say(spec.radius, a, 'm')}
-                    anchor="end"
                   />
                 ) : null}
                 {okR ? (
@@ -400,7 +383,8 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
                   />
                 ) : null}
                 {thick ? (
-                  <WireGraph
+                  <ProfileGraph
+                    yName="B"
                     x0={34}
                     y0={topH + 10}
                     x1={w - 14}
@@ -442,59 +426,6 @@ function gridIn(rad: number, step: number): [number, number][] {
     for (let j = -n; j <= n; j++)
       if (Math.hypot(i * step, j * step) <= rad - 5) out.push([i * step, j * step]);
   return out.length ? out : [[0, 0]];
-}
-
-/** B against r for a thick wire: a straight rise to the surface, then 1/r; the point at r. */
-function WireGraph({
-  x0,
-  y0,
-  x1,
-  y1,
-  a,
-  r,
-  shape,
-}: {
-  x0: number;
-  y0: number;
-  x1: number;
-  y1: number;
-  a: number;
-  r?: number;
-  shape: (x: number) => number;
-}) {
-  const c = usePalette();
-  const xmax = Math.max(a, r ?? 0) * 2.6 || 1;
-  const peak = shape(a) || 1;
-  const X = (x: number) => x0 + ((x1 - x0) * x) / xmax;
-  const Y = (b: number) => y1 - ((y1 - y0) * b) / (peak * 1.12);
-  const pts: [number, number][] = Array.from({ length: 81 }, (_, i) => {
-    const x = (xmax * i) / 80;
-    return [X(x), Y(shape(x))];
-  });
-  return (
-    <G>
-      <Line x1={x0} y1={y1} x2={x1} y2={y1} stroke={c.chartInk} strokeWidth={1.2} />
-      <Line x1={x0} y1={y1} x2={x0} y2={y0} stroke={c.chartInk} strokeWidth={1.2} />
-      <Path d={pathOf(pts)} stroke={c.he2eField} strokeWidth={2.2} fill="none" />
-      <Line
-        x1={X(a)}
-        y1={y1}
-        x2={X(a)}
-        y2={Y(peak)}
-        stroke={c.chartMuted}
-        strokeDasharray={chart.dashFine}
-      />
-      <Lab x={X(a)} y={y1 + 14} sym="a" anchor="middle" />
-      {r !== undefined ? (
-        <G>
-          <Circle cx={X(r)} cy={Y(shape(r))} r={4} fill={c.he2eSurface} />
-          {Math.abs(X(r) - X(a)) > 14 ? <Lab x={X(r)} y={y1 + 14} sym="r" anchor="middle" /> : null}
-        </G>
-      ) : null}
-      <Lab x={x1} y={y1 - 6} sym="r" anchor="end" />
-      <Lab x={x0 - 6} y={y0 + 10} sym="B" anchor="end" />
-    </G>
-  );
 }
 
 // ─── A loop on its axis ───────────────────────────────────────────────────────

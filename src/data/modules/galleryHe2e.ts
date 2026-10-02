@@ -5,6 +5,10 @@
  * HC19: `induction` field sources (a long wire, two wires, a thick wire inside and outside, a
  * loop on its axis and far along it, a coil in a uniform field, a solenoid, a toroid, charging
  * plates) and a rod on rails, from the physics (P-P13, P-P14) and electrical (EC-P31) plans.
+ *
+ * HC29: `charges` Gauss surfaces (a ball outside and inside, a line charge with k and with ε₀, a
+ * sheet) and distributions (a ring, a disk and a disk close in, a charge over a grounded plane),
+ * from P-P10, P-P24 and EC-P31 (line).
  */
 import type { Values, VariableDef } from '@/engine/types';
 
@@ -36,6 +40,7 @@ type Demo = Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] };
 function demo({ rules, ...m }: Demo): ModuleDef {
   return {
     unitSystems: ['metric'],
+    workedFigures: 3,
     ...m,
     relations: rules.map((r) => ({
       id: r.id,
@@ -64,6 +69,11 @@ const vr = (
 ): VariableDef => ({ id, symbol, name, ...(unit ? { unit } : {}), min, max, ...more });
 
 const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
+/** A length, radius or resistance worked out: only a positive one. */
+const posDiv = (a: number, b: number) => {
+  const v = div(a, b);
+  return v !== undefined && v > 0 ? v : undefined;
+};
 /** A positive root, or nothing (a radius of 0 would divide by 0 in the check line). */
 const sqrtOf = (x: number) => (x > 0 ? Math.sqrt(x) : undefined);
 
@@ -106,7 +116,7 @@ const wireRule = (B: string, I: string, r: string) =>
         'Ampère’s law, solved for the current.',
       ],
       [r]: [
-        (x) => div(MU0 * x[I]!, 2 * Math.PI * x[B]!),
+        (x) => posDiv(MU0 * x[I]!, 2 * Math.PI * x[B]!),
         `${MU} × {${I}} ÷ (2π × {${B}})`,
         'Ampère’s law, solved for the distance.',
       ],
@@ -148,7 +158,7 @@ const wire = demo({
           'Ampère’s law: H round the circle is the current.',
         ],
         r: [
-          (x) => div(x.I!, 2 * Math.PI * x.H!),
+          (x) => posDiv(x.I!, 2 * Math.PI * x.H!),
           '{I} ÷ (2π × {H})',
           'Ampère’s law, solved for r.',
         ],
@@ -251,7 +261,7 @@ const thickInside = demo({
           'Solve for the current.',
         ],
         r: [
-          (x) => div(x.B! * 2 * Math.PI * x.a! ** 2, MU0 * x.I!),
+          (x) => posDiv(x.B! * 2 * Math.PI * x.a! ** 2, MU0 * x.I!),
           `{B} × 2π × {a}² ÷ (${MU} × {I})`,
           'Solve for the distance.',
         ],
@@ -540,7 +550,7 @@ const solenoid = demo({
     rule('n = N ÷ ℓ', '{n} = {N} ÷ {l}', ['n', 'N', 'l'], (x) => x.n! * x.l! - x.N!, {
       n: [(x) => div(x.N!, x.l!), '{N} ÷ {l}', 'Turns per meter of length.'],
       N: [(x) => x.n! * x.l!, '{n} × {l}', 'Turns per meter times the length.'],
-      l: [(x) => div(x.N!, x.n!), '{N} ÷ {n}', 'Solve for the length.'],
+      l: [(x) => posDiv(x.N!, x.n!), '{N} ÷ {n}', 'Solve for the length.'],
     }),
     rule('B = μ₀nI', `{B} = ${MU} × {n} × {I}`, ['B', 'n', 'I'], (x) => x.B! - MU0 * x.n! * x.I!, {
       B: [(x) => MU0 * x.n! * x.I!, `${MU} × {n} × {I}`, 'Ampère’s law for the solenoid.'],
@@ -554,7 +564,7 @@ const solenoid = demo({
       (x) => x.L! * x.l! - MU0 * x.N! ** 2 * x.A!,
       {
         L: [
-          (x) => div(MU0 * x.N! ** 2 * x.A!, x.l!),
+          (x) => posDiv(MU0 * x.N! ** 2 * x.A!, x.l!),
           `${MU} × {N}² × {A} ÷ {l}`,
           'N turns each with flux μ₀nIA, per amp.',
         ],
@@ -572,7 +582,7 @@ const solenoid = demo({
       (x) => x.U! - 0.5 * x.L! * x.I! ** 2,
       {
         U: [(x) => 0.5 * x.L! * x.I! ** 2, '½ × {L} × {I}²', 'The energy stored in the field.'],
-        L: [(x) => div(2 * x.U!, x.I! ** 2), '2 × {U} ÷ {I}²', 'Solve for the inductance.'],
+        L: [(x) => posDiv(2 * x.U!, x.I! ** 2), '2 × {U} ÷ {I}²', 'Solve for the inductance.'],
       },
     ),
   ],
@@ -637,7 +647,7 @@ const toroid = demo({
           'Solve for the current.',
         ],
         r: [
-          (x) => div(MU0 * x.N! * x.I!, 2 * Math.PI * x.B!),
+          (x) => posDiv(MU0 * x.N! * x.I!, 2 * Math.PI * x.B!),
           `${MU} × {N} × {I} ÷ (2π × {B})`,
           'Solve for the radius.',
         ],
@@ -786,14 +796,14 @@ const rails = demo({
       {
         e: [(x) => x.B! * x.L! * x.v!, '{B} × {L} × {v}', 'Faraday: the flux grows at BLv.'],
         B: [(x) => div(x.e!, x.L! * x.v!), '{e} ÷ ({L} × {v})', 'Solve for the field.'],
-        L: [(x) => div(x.e!, x.B! * x.v!), '{e} ÷ ({B} × {v})', 'Solve for the rod’s length.'],
+        L: [(x) => posDiv(x.e!, x.B! * x.v!), '{e} ÷ ({B} × {v})', 'Solve for the rod’s length.'],
         v: [(x) => div(x.e!, x.B! * x.L!), '{e} ÷ ({B} × {L})', 'Solve for the speed.'],
       },
     ),
     rule('I = ε ÷ R', '{I} = {e} ÷ {R}', ['I', 'e', 'R'], (x) => x.I! * x.R! - x.e!, {
       I: [(x) => div(x.e!, x.R!), '{e} ÷ {R}', 'Ohm’s law round the loop.'],
       e: [(x) => x.I! * x.R!, '{I} × {R}', 'Ohm’s law: the emf drives I through R.'],
-      R: [(x) => div(x.e!, x.I!), '{e} ÷ {I}', 'Solve for the resistance.'],
+      R: [(x) => posDiv(x.e!, x.I!), '{e} ÷ {I}', 'Solve for the resistance.'],
     }),
     rule(
       'F = BIL',
@@ -826,6 +836,497 @@ const rails = demo({
   },
 });
 
+// ─── HC29: Gauss surfaces and continuous distributions ────────────────────────
+
+/** k = 8.99 × 10⁹ N·m²/C², the physics plan's value. */
+const K = 8.99e9;
+const KS = '8.99 × 10⁹';
+
+const coulombs = (id: string, symbol: string, name: string, shown: 'nC' | 'μC') =>
+  vr(id, symbol, name, 'C', -1e-3, 1e-3, {
+    units: ['nC', 'μC', 'C'],
+    shownIn: shown,
+    scientific: true,
+  });
+const perMeter = (id: string, symbol: string, name: string, unit: string) =>
+  vr(id, symbol, name, unit, -1e-3, 1e-3, { scientific: true });
+const newtonsPerC = (id: string, symbol: string, name: string) =>
+  vr(id, symbol, name, 'N/C', -1e15, 1e15, { scientific: true });
+
+const sphereAssumptions = [
+  'The charge is spread evenly through the ball, so E points straight out and is the same all over a sphere of radius r.',
+  'Gauss’s law: E × 4πr² = Q_enc ÷ ε₀, with 1 ÷ ε₀ = 4πk and k = 8.99 × 10⁹ N·m²/C².',
+];
+
+const sphereOut = demo({
+  id: 'g.he-charges-gauss-sphere',
+  title: 'Gauss’s law: a charged ball, outside it',
+  use: 'Use this for “A 10 cm ball holds 2 μC spread evenly. Find E 30 cm from its center.”',
+  assumptions: [
+    ...sphereAssumptions,
+    'Outside (r ≥ R) the sphere takes in all of Q: the ball acts as a point charge.',
+  ],
+  variables: [
+    coulombs('Q', 'Q', 'Charge', 'μC'),
+    meters('r', 'r', 'Distance from the center', 'm'),
+    newtonsPerC('E', 'E', 'Field at r'),
+    vr('Phi', 'Φ', 'Flux through the sphere', 'N·m²/C', -1e12, 1e12, { scientific: true }),
+    meters('R', 'R', 'Ball radius', 'm'),
+  ],
+  standalone: {
+    vars: ['R'],
+    why: 'The ball’s radius only places its surface on the picture; outside it, E depends on Q and r alone.',
+  },
+  rules: [
+    rule(
+      'E = kQ ÷ r²',
+      `{E} = ${KS} × {Q} ÷ {r}²`,
+      ['E', 'Q', 'r'],
+      (x) => x.E! * x.r! ** 2 - K * x.Q!,
+      {
+        E: [
+          (x) => div(K * x.Q!, x.r! ** 2),
+          `${KS} × {Q} ÷ {r}²`,
+          'Gauss’s law on a sphere of radius r round all of Q.',
+        ],
+        Q: [(x) => (x.E! * x.r! ** 2) / K, `{E} × {r}² ÷ (${KS})`, 'Solve for the charge.'],
+        r: [(x) => sqrtOf((K * x.Q!) / x.E!), `√(${KS} × {Q} ÷ {E})`, 'Solve for the distance.'],
+      },
+    ),
+    rule(
+      'Φ = Q ÷ ε₀',
+      `{Phi} = 4π × ${KS} × {Q}`,
+      ['Phi', 'Q'],
+      (x) => x.Phi! - 4 * Math.PI * K * x.Q!,
+      {
+        Phi: [
+          (x) => 4 * Math.PI * K * x.Q!,
+          `4π × ${KS} × {Q}`,
+          'Gauss’s law: the flux is the charge inside over ε₀.',
+        ],
+        Q: [(x) => x.Phi! / (4 * Math.PI * K), `{Phi} ÷ (4π × ${KS})`, 'Solve for the charge.'],
+      },
+    ),
+  ],
+  example: { Q: 2e-6, r: 0.3, E: (K * 2e-6) / 0.09, Phi: 4 * Math.PI * K * 2e-6, R: 0.1 },
+  startWith: ['Q', 'R', 'r'],
+  representation: {
+    kind: 'charges',
+    gauss: { shape: 'sphere', Q: 'Q', R: 'R', r: 'r', E: 'E', flux: 'Phi', region: 'outside' },
+    k: K,
+  },
+});
+
+const sphereIn = demo({
+  id: 'g.he-charges-gauss-sphere-inside',
+  title: 'Gauss’s law: inside a charged ball',
+  use: 'Use this for “A 10 cm ball holds 2 μC spread evenly. Find E 5 cm from its center.”',
+  assumptions: [
+    ...sphereAssumptions,
+    'Inside (r ≤ R) the sphere takes in the share (r/R)³ of Q, so E grows straight with r.',
+  ],
+  variables: [
+    coulombs('Q', 'Q', 'Charge', 'μC'),
+    meters('R', 'R', 'Ball radius', 'm'),
+    meters('r', 'r', 'Distance from the center', 'm'),
+    coulombs('Qe', 'Q_enc', 'Charge inside r', 'μC'),
+    newtonsPerC('E', 'E', 'Field at r'),
+  ],
+  rules: [
+    rule(
+      'Q_enc = Q(r ÷ R)³',
+      '{Qe} = {Q} × ({r} ÷ {R})³',
+      ['Qe', 'Q', 'r', 'R'],
+      (x) => x.Qe! * x.R! ** 3 - x.Q! * x.r! ** 3,
+      {
+        Qe: [
+          (x) => div(x.Q! * x.r! ** 3, x.R! ** 3),
+          '{Q} × ({r} ÷ {R})³',
+          'The sphere of radius r holds the share (r/R)³ of the ball.',
+        ],
+        Q: [
+          (x) => div(x.Qe! * x.R! ** 3, x.r! ** 3),
+          '{Qe} × ({R} ÷ {r})³',
+          'Solve for the whole charge.',
+        ],
+      },
+    ),
+    rule(
+      'E = kQ_enc ÷ r²',
+      `{E} = ${KS} × {Qe} ÷ {r}²`,
+      ['E', 'Qe', 'r'],
+      (x) => x.E! * x.r! ** 2 - K * x.Qe!,
+      {
+        E: [
+          (x) => div(K * x.Qe!, x.r! ** 2),
+          `${KS} × {Qe} ÷ {r}²`,
+          'Gauss’s law on the sphere of radius r: only the charge inside counts.',
+        ],
+        Qe: [(x) => (x.E! * x.r! ** 2) / K, `{E} × {r}² ÷ (${KS})`, 'Solve for the charge inside.'],
+      },
+    ),
+  ],
+  example: { Q: 2e-6, R: 0.1, r: 0.05, Qe: 2.5e-7, E: (K * 2.5e-7) / 0.0025 },
+  startWith: ['Q', 'R', 'r'],
+  representation: {
+    kind: 'charges',
+    gauss: { shape: 'sphere', Q: 'Q', R: 'R', r: 'r', E: 'E', enclosed: 'Qe', region: 'inside' },
+    k: K,
+  },
+});
+
+const lineK = demo({
+  id: 'g.he-charges-gauss-line',
+  title: 'Gauss’s law: a long line of charge',
+  use: 'Use this for “A long wire carries 5 nC/m. Find E 20 cm from it.”',
+  assumptions: [
+    'A long straight line of charge: E points straight out from it and is the same all round a cylinder of radius r.',
+    'Gauss’s law on a cylinder of length ℓ: E × 2πrℓ = λℓ ÷ ε₀, so E = 2kλ ÷ r. No flux leaves the flat ends.',
+  ],
+  variables: [
+    perMeter('lam', 'λ', 'Charge per length', 'C/m'),
+    meters('r', 'r', 'Distance from the line', 'cm'),
+    newtonsPerC('E', 'E', 'Field at r'),
+  ],
+  rules: [
+    rule(
+      'E = 2kλ ÷ r',
+      `{E} = 2 × ${KS} × {lam} ÷ {r}`,
+      ['E', 'lam', 'r'],
+      (x) => x.E! * x.r! - 2 * K * x.lam!,
+      {
+        E: [
+          (x) => div(2 * K * x.lam!, x.r!),
+          `2 × ${KS} × {lam} ÷ {r}`,
+          'Gauss’s law on a cylinder round the line.',
+        ],
+        lam: [
+          (x) => (x.E! * x.r!) / (2 * K),
+          `{E} × {r} ÷ (2 × ${KS})`,
+          'Solve for the charge per length.',
+        ],
+        r: [
+          (x) => posDiv(2 * K * x.lam!, x.E!),
+          `2 × ${KS} × {lam} ÷ {E}`,
+          'Solve for the distance.',
+        ],
+      },
+    ),
+  ],
+  example: { lam: 5e-9, r: 0.2, E: (2 * K * 5e-9) / 0.2 },
+  startWith: ['lam', 'r'],
+  representation: { kind: 'charges', gauss: { shape: 'line', Q: 'lam', r: 'r', E: 'E' }, k: K },
+});
+
+const lineEps = demo({
+  id: 'g.he-charges-gauss-line-eps',
+  title: 'Gauss’s law: E of a line charge (with ε₀)',
+  use: 'Use this for “Find E 0.1 m from a line charge of 1 nC/m.”',
+  assumptions: [
+    'An infinite line charge: E is radial and the same all round a cylinder of radius r.',
+    'Gauss’s law on the cylinder: E × 2πrℓ = λℓ ÷ ε₀, with ε₀ = 8.85 × 10⁻¹² F/m.',
+  ],
+  variables: [
+    perMeter('lam', 'λ', 'Charge per length', 'C/m'),
+    meters('r', 'r', 'Distance from the line', 'm'),
+    vr('E', 'E', 'Field at r', 'V/m', -1e15, 1e15, { scientific: true }),
+  ],
+  rules: [
+    rule(
+      'E = λ ÷ (2πε₀r)',
+      `{E} = {lam} ÷ (2π × ${EPS} × {r})`,
+      ['E', 'lam', 'r'],
+      (x) => x.E! * 2 * Math.PI * EPS0 * x.r! - x.lam!,
+      {
+        E: [
+          (x) => div(x.lam!, 2 * Math.PI * EPS0 * x.r!),
+          `{lam} ÷ (2π × ${EPS} × {r})`,
+          'Gauss’s law on the cylinder round the line.',
+        ],
+        lam: [
+          (x) => x.E! * 2 * Math.PI * EPS0 * x.r!,
+          `{E} × 2π × ${EPS} × {r}`,
+          'Solve for the charge per length.',
+        ],
+        r: [
+          (x) => posDiv(x.lam!, 2 * Math.PI * EPS0 * x.E!),
+          `{lam} ÷ (2π × ${EPS} × {E})`,
+          'Solve for the distance.',
+        ],
+      },
+    ),
+  ],
+  example: { lam: 1e-9, r: 0.1, E: 1e-9 / (2 * Math.PI * EPS0 * 0.1) },
+  startWith: ['lam', 'r'],
+  representation: {
+    kind: 'charges',
+    gauss: { shape: 'line', Q: 'lam', r: 'r', E: 'E' },
+    eps0: EPS0,
+  },
+});
+
+const plane = demo({
+  id: 'g.he-charges-gauss-plane',
+  title: 'Gauss’s law: a charged sheet',
+  use: 'Use this for “A large sheet carries 8.85 nC/m². Find E near it, and between two opposite sheets.”',
+  assumptions: [
+    'A large flat sheet with even σ: E is square to it, the same on both sides and at every distance.',
+    'Gauss’s law on a pillbox through the sheet: E × 2A = σA ÷ ε₀, so E = σ ÷ (2ε₀), ε₀ = 8.85 × 10⁻¹².',
+    'Two opposite sheets: their fields add between them (σ ÷ ε₀) and cancel outside.',
+  ],
+  variables: [
+    perMeter('s', 'σ', 'Charge per area', 'C/m²'),
+    newtonsPerC('E', 'E', 'Field of one sheet'),
+    newtonsPerC('Eb', 'E_b', 'Field between two opposite sheets'),
+  ],
+  rules: [
+    rule('E = σ ÷ (2ε₀)', `{E} = {s} ÷ (2 × ${EPS})`, ['E', 's'], (x) => x.E! * 2 * EPS0 - x.s!, {
+      E: [
+        (x) => x.s! / (2 * EPS0),
+        `{s} ÷ (2 × ${EPS})`,
+        'Gauss’s law on the pillbox: flux out of both faces.',
+      ],
+      s: [(x) => x.E! * 2 * EPS0, `{E} × 2 × ${EPS}`, 'Solve for σ.'],
+    }),
+    rule('E_b = σ ÷ ε₀', `{Eb} = {s} ÷ (${EPS})`, ['Eb', 's'], (x) => x.Eb! * EPS0 - x.s!, {
+      Eb: [(x) => x.s! / EPS0, `{s} ÷ (${EPS})`, 'Between opposite sheets the two fields add.'],
+      s: [(x) => x.Eb! * EPS0, `{Eb} × ${EPS}`, 'Solve for σ.'],
+    }),
+  ],
+  example: { s: 8.85e-9, E: 500, Eb: 1000 },
+  startWith: ['s'],
+  representation: {
+    kind: 'charges',
+    gauss: { shape: 'plane', Q: 's', E: 'E', between: 'Eb' },
+    eps0: EPS0,
+  },
+});
+
+const ringV = (Q: number, R: number, z: number) => (K * Q) / Math.hypot(z, R);
+const ringE = (Q: number, R: number, z: number) => (K * Q * z) / Math.hypot(z, R) ** 3;
+
+const ring = demo({
+  id: 'g.he-charges-ring',
+  title: 'A charged ring: V and E on its axis',
+  use: 'Use this for “A 30 cm ring holds 10 nC. Find V and E 40 cm along its axis.”',
+  assumptions: [
+    'The charge is spread evenly round a thin ring; P is on the axis, z from the center.',
+    'Every piece is the same distance √(z² + R²) from P, so V = kQ ÷ √(z² + R²) (a sum of scalars).',
+    'On the axis the sideways parts of dE cancel; E is the slope of V: E = kQz ÷ (z² + R²)^(3/2).',
+  ],
+  variables: [
+    coulombs('Q', 'Q', 'Charge', 'nC'),
+    meters('R', 'R', 'Ring radius', 'm'),
+    meters('z', 'z', 'Distance along the axis', 'm', 0.001),
+    vr('V', 'V', 'Potential at P', 'V', -1e12, 1e12),
+    newtonsPerC('E', 'E_z', 'Field along the axis'),
+  ],
+  rules: [
+    rule(
+      'V = kQ ÷ √(z² + R²)',
+      `{V} = ${KS} × {Q} ÷ √({z}² + {R}²)`,
+      ['V', 'Q', 'z', 'R'],
+      (x) => x.V! * Math.hypot(x.z!, x.R!) - K * x.Q!,
+      {
+        V: [
+          (x) => ringV(x.Q!, x.R!, x.z!),
+          `${KS} × {Q} ÷ √({z}² + {R}²)`,
+          'Every piece of the ring is √(z² + R²) from P.',
+        ],
+        Q: [
+          (x) => (x.V! * Math.hypot(x.z!, x.R!)) / K,
+          `{V} × √({z}² + {R}²) ÷ (${KS})`,
+          'Solve for the charge.',
+        ],
+      },
+    ),
+    rule(
+      'E_z = kQz ÷ (z² + R²)^(3/2)',
+      `{E} = ${KS} × {Q} × {z} ÷ (√({z}² + {R}²))³`,
+      ['E', 'Q', 'z', 'R'],
+      (x) => x.E! * Math.hypot(x.z!, x.R!) ** 3 - K * x.Q! * x.z!,
+      {
+        E: [
+          (x) => ringE(x.Q!, x.R!, x.z!),
+          `${KS} × {Q} × {z} ÷ (√({z}² + {R}²))³`,
+          'The parts along the axis add; the sideways parts cancel.',
+        ],
+        Q: [
+          (x) => div(x.E! * Math.hypot(x.z!, x.R!) ** 3, K * x.z!),
+          `{E} × (√({z}² + {R}²))³ ÷ (${KS} × {z})`,
+          'Solve for the charge.',
+        ],
+      },
+    ),
+  ],
+  example: { Q: 1e-8, R: 0.3, z: 0.4, V: ringV(1e-8, 0.3, 0.4), E: ringE(1e-8, 0.3, 0.4) },
+  startWith: ['Q', 'R', 'z'],
+  representation: {
+    kind: 'charges',
+    distribution: 'ring',
+    charge: 'Q',
+    radius: 'R',
+    z: 'z',
+    potential: 'V',
+    field: 'E',
+    k: K,
+  },
+});
+
+const diskE = (s: number, R: number, z: number) => 2 * Math.PI * K * s * (1 - z / Math.hypot(z, R));
+
+const diskDemo = (id: string, title: string, use: string, z: number) =>
+  demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'An even σ on a flat disk; P is on the axis, z > 0 from the center.',
+      'The disk is rings from the center to R; on the axis each ring’s sideways parts cancel, and the rings add.',
+      'Close in (z ≪ R) E nears a sheet’s 2πkσ = σ ÷ (2ε₀); far away the disk acts as a point charge.',
+    ],
+    variables: [
+      perMeter('s', 'σ', 'Charge per area', 'C/m²'),
+      meters('R', 'R', 'Disk radius', 'm'),
+      meters('z', 'z', 'Distance along the axis', 'm'),
+      newtonsPerC('Es', 'E_sheet', 'Sheet limit 2πkσ'),
+      newtonsPerC('E', 'E_z', 'Field along the axis'),
+    ],
+    rules: [
+      rule(
+        'E_sheet = 2πkσ',
+        `{Es} = 2π × ${KS} × {s}`,
+        ['Es', 's'],
+        (x) => x.Es! - 2 * Math.PI * K * x.s!,
+        {
+          Es: [
+            (x) => 2 * Math.PI * K * x.s!,
+            `2π × ${KS} × {s}`,
+            'The field of a sheet with the same σ.',
+          ],
+          s: [(x) => x.Es! / (2 * Math.PI * K), `{Es} ÷ (2π × ${KS})`, 'Solve for σ.'],
+        },
+      ),
+      rule(
+        'E_z = 2πkσ(1 − z ÷ √(z² + R²))',
+        '{E} = {Es} × (1 − {z} ÷ √({z}² + {R}²))',
+        ['E', 'Es', 'z', 'R'],
+        (x) => x.E! - x.Es! * (1 - x.z! / Math.hypot(x.z!, x.R!)),
+        {
+          E: [
+            (x) => x.Es! * (1 - x.z! / Math.hypot(x.z!, x.R!)),
+            '{Es} × (1 − {z} ÷ √({z}² + {R}²))',
+            'The rings from the center to R added up.',
+          ],
+          Es: [
+            (x) => div(x.E!, 1 - x.z! / Math.hypot(x.z!, x.R!)),
+            '{E} ÷ (1 − {z} ÷ √({z}² + {R}²))',
+            'Solve for the sheet’s field.',
+          ],
+        },
+      ),
+    ],
+    example: { s: 1e-6, R: 0.3, z, Es: 2 * Math.PI * K * 1e-6, E: diskE(1e-6, 0.3, z) },
+    startWith: ['s', 'R', 'z'],
+    representation: {
+      kind: 'charges',
+      distribution: 'disk',
+      charge: 's',
+      radius: 'R',
+      z: 'z',
+      sheet: 'Es',
+      field: 'E',
+      k: K,
+    },
+  });
+
+const disk = diskDemo(
+  'g.he-charges-disk',
+  'A charged disk: E on its axis',
+  'Use this for “A 30 cm disk carries 1 μC/m². Find E 40 cm along its axis.”',
+  0.4,
+);
+const diskNear = diskDemo(
+  'g.he-charges-disk-near',
+  'A charged disk close in: nearly a sheet',
+  'Use this for “How close to a sheet’s field is a 30 cm disk’s field 1 cm from its center?”',
+  0.01,
+);
+
+const image = demo({
+  id: 'g.he-charges-image',
+  title: 'The method of images: a charge over a grounded plane',
+  use: 'Use this for “A 1 nC charge sits 5 cm above a grounded plane. Find the force on it and σ under it.”',
+  assumptions: [
+    'The plane is a grounded conductor (V = 0). An image −q at d below gives V = 0 on the plane, so above it the field is that of q and −q.',
+    'The force on q is the image’s pull across 2d: F = kq² ÷ (2d)², toward the plane.',
+    'The induced σ = ε₀E at the plane; under the charge σ₀ = −q ÷ (2πd²), and it adds to −q.',
+  ],
+  variables: [
+    coulombs('q', 'q', 'Charge', 'nC'),
+    meters('d', 'd', 'Height above the plane', 'cm'),
+    vr('F', 'F', 'Force toward the plane', 'N', 0, 1e9, { scientific: true }),
+    vr('s0', 'σ₀', 'Induced charge per area under q', 'C/m²', -1e3, 1e3, { scientific: true }),
+    coulombs('Qi', 'Q_ind', 'Induced charge in all', 'nC'),
+  ],
+  rules: [
+    rule(
+      'F = kq² ÷ (2d)²',
+      `{F} = ${KS} × {q}² ÷ (2 × {d})²`,
+      ['F', 'q', 'd'],
+      (x) => x.F! * 4 * x.d! ** 2 - K * x.q! ** 2,
+      {
+        F: [
+          (x) => div(K * x.q! ** 2, 4 * x.d! ** 2),
+          `${KS} × {q}² ÷ (2 × {d})²`,
+          'Coulomb’s law between q and its image 2d away.',
+        ],
+        d: [
+          (x) => (x.F! > 0 ? Math.sqrt((K * x.q! ** 2) / x.F!) / 2 : undefined),
+          `√(${KS} × {q}² ÷ {F}) ÷ 2`,
+          'Solve for the height.',
+        ],
+      },
+    ),
+    rule(
+      'σ₀ = −q ÷ (2πd²)',
+      '{s0} = −{q} ÷ (2π × {d}²)',
+      ['s0', 'q', 'd'],
+      (x) => x.s0! * 2 * Math.PI * x.d! ** 2 + x.q!,
+      {
+        s0: [
+          (x) => div(-x.q!, 2 * Math.PI * x.d! ** 2),
+          '−{q} ÷ (2π × {d}²)',
+          'σ = ε₀E with the field of q and its image at the plane.',
+        ],
+        q: [(x) => -x.s0! * 2 * Math.PI * x.d! ** 2, '−{s0} × 2π × {d}²', 'Solve for the charge.'],
+      },
+    ),
+    rule('Q_ind = −q', '{Qi} = −{q}', ['Qi', 'q'], (x) => x.Qi! + x.q!, {
+      Qi: [(x) => -x.q!, '−{q}', 'All the field lines from q end on the plane.'],
+      q: [(x) => -x.Qi!, '−{Qi}', 'The charge is minus the induced charge.'],
+    }),
+  ],
+  example: {
+    q: 1e-9,
+    d: 0.05,
+    F: (K * 1e-18) / 0.01,
+    s0: -1e-9 / (2 * Math.PI * 0.0025),
+    Qi: -1e-9,
+  },
+  startWith: ['q', 'd'],
+  representation: {
+    kind: 'charges',
+    distribution: 'image',
+    charge: 'q',
+    z: 'd',
+    force: 'F',
+    density: 's0',
+    induced: 'Qi',
+    k: K,
+  },
+});
+
 export const HE2E_GALLERY_MODULES: ModuleDef[] = [
   wire,
   pair,
@@ -838,6 +1339,15 @@ export const HE2E_GALLERY_MODULES: ModuleDef[] = [
   toroid,
   plates,
   rails,
+  sphereOut,
+  sphereIn,
+  lineK,
+  lineEps,
+  plane,
+  ring,
+  disk,
+  diskNear,
+  image,
 ];
 
 export const HE2E_GALLERY_LAYOUTS: LayoutDef[] = [];

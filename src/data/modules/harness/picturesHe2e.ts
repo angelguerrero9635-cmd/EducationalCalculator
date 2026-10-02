@@ -23,7 +23,13 @@ import {
   wireForce,
 } from '@/components/module/reps/he2eMath';
 
-import { isHe2eInduction, type InductionField, type InductionRails } from '../typesHe2e';
+import {
+  isHe2eInduction,
+  type ChargesDistribution,
+  type ChargesGauss,
+  type InductionField,
+  type InductionRails,
+} from '../typesHe2e';
 
 type Val = (id: string) => number | undefined;
 type X = number | string | undefined;
@@ -54,7 +60,7 @@ export const isHe2e = (rep: { kind: string }) =>
 export function he2eIssues(rep: { kind: string }, val: Val): string[] {
   if (rep.kind === 'induction')
     return inductionIssues(rep as unknown as InductionField | InductionRails, val);
-  return [];
+  return chargesIssues(rep as unknown as ChargesGauss | ChargesDistribution, val);
 }
 
 function inductionIssues(rep: InductionField | InductionRails, val: Val): string[] {
@@ -170,5 +176,74 @@ function inductionIssues(rep: InductionField | InductionRails, val: Val): string
   return out;
 }
 
-// HC29 checks follow (charges).
-export const he2eCharges = { electricOf, gaussOf, fluxOf, imageOf, diskOf, ringOf };
+function chargesIssues(rep: ChargesGauss | ChargesDistribution, val: Val): string[] {
+  const out: string[] = [];
+  const same = checker('charges', val, out);
+  const o = electricOf(rep);
+  if ('gauss' in rep) {
+    const g = rep.gauss;
+    const [Q, r, R] = [read(val, g.Q), read(val, g.r), read(val, g.R)];
+    if (Q === undefined) return out;
+    if (g.shape === 'plane') {
+      const p = gaussOf('plane', o, Q, 1);
+      same(g.E, p.E, 'E = σ/(2ε₀)');
+      same(g.between, Q / o.eps0, 'E between = σ/ε₀');
+      // Gauss on the drawn pillbox: E × (both faces) = Q_enc/ε₀.
+      if (!near(p.E * p.area, fluxOf(p.enc, o.eps0))) out.push('charges: pillbox flux ≠ Q_enc/ε₀');
+      return out;
+    }
+    if (r === undefined || (g.R !== undefined && R === undefined)) return out;
+    if (!(r > 0)) out.push(`charges: r = ${r} is not positive`);
+    if (R !== undefined && !(R > 0)) out.push(`charges: R = ${R} is not positive`);
+    // A page's rule for one side of R (the picture fades the other side and keeps the rule).
+    const p = gaussOf(g.shape, o, Q, r, g.region === 'outside' ? undefined : R);
+    const enc = g.region === 'inside' && R ? Q * (r / R) ** (g.shape === 'sphere' ? 3 : 2) : p.enc;
+    const E =
+      g.region === 'inside' && R
+        ? g.shape === 'sphere'
+          ? (o.k * Q * r) / R ** 3
+          : (2 * o.k * Q * r) / (R * R)
+        : p.E;
+    same(g.E, E, g.shape === 'sphere' ? 'E = kQ_enc/r²' : 'E = 2kλ/r');
+    same(g.enclosed, enc, 'Q_enc');
+    same(g.flux, fluxOf(enc, o.eps0), 'Φ = Q_enc/ε₀');
+    // Gauss on the drawn surface: E × area = Q_enc/ε₀ (the line's cylinder 1 m long).
+    const area = g.shape === 'sphere' ? 4 * Math.PI * r * r : 2 * Math.PI * r;
+    if (r > 0 && !near(E * area, fluxOf(enc, o.eps0), Math.abs(Q) / o.eps0))
+      out.push('charges: E × area ≠ Q_enc/ε₀ on the drawn surface');
+    return out;
+  }
+  const [q, z, R] = [read(val, rep.charge), read(val, rep.z), read(val, rep.radius)];
+  if (q === undefined || z === undefined) return out;
+  switch (rep.distribution) {
+    case 'ring': {
+      if (R === undefined) break;
+      const v = ringOf(o.k, q, R, z);
+      same(rep.potential, v.V, 'V = kQ/√(z² + R²)');
+      same(rep.field, v.E, 'E_z = kQz/(z² + R²)^(3/2)', R > 0 ? (o.k * Math.abs(q)) / (R * R) : 0);
+      break;
+    }
+    case 'disk': {
+      if (R === undefined) break;
+      const v = diskOf(o.k, q, R, z);
+      same(rep.sheet, v.sheet, 'the sheet limit 2πkσ');
+      same(rep.field, v.E, 'E_z = 2πkσ(1 − z/√(z² + R²))', v.sheet);
+      break;
+    }
+    case 'image': {
+      if (!(z > 0)) out.push(`charges: the charge's height ${z} is not above the plane`);
+      const v = imageOf(o.k, q, z);
+      // The image is −q at −d: its field and q's meet the plane square (no sideways part).
+      if (v.image !== -q || v.at !== -z) out.push('charges: the image is not −q at −d');
+      const ex = (x: number) =>
+        q * x * (1 / Math.hypot(x, z) ** 3) + v.image * x * (1 / Math.hypot(x, z) ** 3);
+      if ([0.5, 1, 2].some((k) => Math.abs(ex(k * z)) > 1e-9 * Math.abs(q / (z * z))))
+        out.push('charges: the field meets the plane at a slant');
+      same(rep.force, v.F, 'F = kq²/(2d)²');
+      same(rep.density, v.sigma0, 'σ₀ = −q/(2πd²)');
+      same(rep.induced, v.total, 'induced charge −q');
+      break;
+    }
+  }
+  return out;
+}

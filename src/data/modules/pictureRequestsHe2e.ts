@@ -67,4 +67,38 @@ export const HE2E_REQUESTS: PictureRequest[] = [
       'g.he-induction-rails',
     ],
   },
+  {
+    ...ask(
+      'HC29',
+      'charges',
+      'Gauss surfaces (a charged ball, a line charge, a sheet) with E on the surface and the enclosed charge shaded; a ring or disk with dE from opposite pieces on its axis; a charge over a grounded plane and its image',
+      {
+        [`${UP2}#0`]: '"shape":"sphere"',
+        [`${UP2}#0~line`]: '"shape":"line"',
+        [`${UP2}#0~plane`]: '"shape":"plane"',
+        [`${EM}#0`]: '"distribution":"ring"',
+        [`${EM}#0~disk`]: '"distribution":"disk"',
+        [`${EM}#0~images`]: '"distribution":"image"',
+        [`${EMAG}#1~gauss-line`]: '"shape":"line"',
+      },
+      [
+        'From P-P10, P-P24, EC-P31 (line charge). Options on `charges` (typesHe2e.ts, drawn by reps/ChargesHe2e.tsx from he2eMath.ts); a spec without them draws as before. Values SI in the page’s formula units (C, C/m, C/m², m, N/C); the constant from `k` (default 8.99 × 10⁹) or `eps0` for pages that write ε₀ (one sets the other). A "?" box draws nothing for its value.',
+        'Fields: { kind: "charges", k? | eps0?, gauss: { shape: "sphere" | "line" | "plane", Q (Q, λ or σ), r?, R? (a ball or solid cylinder; the sphere adds an E(r) graph), E?, flux?, enclosed?, between? (plane: σ/ε₀ between two opposite sheets, drawn edge-on beside), region?: "inside" | "outside" (the page’s rule for one side of R; r on the other draws faded with the reason) } } | { kind: "charges", k? | eps0?, distribution: "ring" | "disk" | "image", charge (Q, σ or q), z (axial distance, or the height d), radius? (ring, disk), field? (E_z), potential? (ring V), sheet? (disk 2πkσ, dashed beside E), force?, density? (σ₀), induced? }. Drags: r on the Gaussian sphere and cylinder, z on the axis.',
+        'Harness (picturesHe2e.ts): E (signed) from each surface’s rule, Q_enc and Φ = Q_enc/ε₀; E × area = Q_enc/ε₀ on the drawn surface (sphere, cylinder, pillbox); between = σ/ε₀; the ring’s V and E_z; the disk’s E_z and 2πkσ; the image is −q at −d and the field meets the plane square; F = kq²/(2d)², σ₀ = −q/(2πd²), induced −q.',
+        'Example (university-2#0 main): { kind: "charges", gauss: { shape: "sphere", Q: "Q", R: "R", r: "r", E: "E", flux: "Phi", region: "outside" }, k: 8.99e9 }; inside the ball: region "inside" with enclosed. electromagnetism#0~images: { kind: "charges", distribution: "image", charge: "q", z: "d", force: "F", density: "s0", induced: "Qi", k: 8.99e9 }. Each gallery demo is a full page to copy.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-charges-gauss-sphere',
+      'g.he-charges-gauss-sphere-inside',
+      'g.he-charges-gauss-line',
+      'g.he-charges-gauss-line-eps',
+      'g.he-charges-gauss-plane',
+      'g.he-charges-ring',
+      'g.he-charges-disk',
+      'g.he-charges-disk-near',
+      'g.he-charges-image',
+    ],
+  },
 ];

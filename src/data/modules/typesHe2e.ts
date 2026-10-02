@@ -148,3 +148,80 @@ export function he2eInductionVars(r: InductionField | InductionRails): string[] 
 /** Whether an `induction` spec is one of the HC19 options. */
 export const isHe2eInduction = (r: object): r is InductionField | InductionRails =>
   'rails' in r || (r as { mode?: string }).mode === 'field';
+
+// ─── HC29 charges: Gauss surfaces and continuous distributions ───────────────
+
+interface ElectricConstants {
+  /** k in N·m²/C² (default 8.99 × 10⁹); or give `eps0` instead. One sets the other. */
+  k?: number;
+  /** ε₀ in C²/(N·m²), for pages that write ε₀ (then k = 1/(4πε₀)). */
+  eps0?: number;
+  fixed?: boolean;
+}
+
+/**
+ * `charges` `gauss`: a charge and a dashed Gaussian surface at r with E arrows on it and the
+ * enclosed charge shaded.
+ *
+ * - `sphere`: Q (C) in a ball of radius R (a point charge without R), a sphere at r;
+ *   E = kQ_enc/r² with Q_enc = Q(r/R)³ inside, Q outside, and an E(r) graph under it. `flux`
+ *   Φ = Q_enc/ε₀, `enclosed` Q_enc.
+ * - `line`: λ (C/m) on a long rod (or a solid cylinder of radius R), a cylinder of radius r;
+ *   E = 2kλ_enc/r = λ_enc/(2πε₀r).
+ * - `plane`: σ (C/m²) on a sheet, a pillbox through it; E = σ/(2ε₀) either side, the same at
+ *   every distance; `between` names σ/ε₀ between two opposite sheets (drawn edge-on beside).
+ *
+ * `region` is the page's rule for one side of R (sphere, line); r on the other side draws faded
+ * with the reason.
+ */
+export interface ChargesGauss extends ElectricConstants {
+  kind: 'charges';
+  mode?: undefined;
+  gauss: {
+    shape: 'sphere' | 'line' | 'plane';
+    Q: NumOrVar;
+    r?: NumOrVar;
+    R?: NumOrVar;
+    E?: string;
+    flux?: string;
+    enclosed?: string;
+    between?: string;
+    region?: 'inside' | 'outside';
+  };
+}
+
+/**
+ * `charges` `distribution`: a ring (charge Q, radius R) or a disk (σ, radius R) in perspective
+ * with a point P on its axis at z: dE from two opposite pieces, their sideways parts cancelling,
+ * and E_z summed (`field`); a ring's `potential` V = kQ/√(z² + R²); a disk's `sheet` limit
+ * 2πkσ drawn dashed beside E. `image`: a charge q (C) at height z = d over a grounded plane, the
+ * image −q dashed at −d, field lines meeting the plane square, the induced σ shaded; `force`
+ * F = kq²/(2d)² toward the plane, `density` σ₀ = −q/(2πd²) under it, `induced` −q.
+ */
+export interface ChargesDistribution extends ElectricConstants {
+  kind: 'charges';
+  mode?: undefined;
+  distribution: 'ring' | 'disk' | 'image';
+  charge: NumOrVar;
+  z: NumOrVar;
+  radius?: NumOrVar;
+  field?: string;
+  potential?: string;
+  sheet?: string;
+  force?: string;
+  density?: string;
+  induced?: string;
+}
+
+/** The variables an HC29 option reads. */
+export function he2eChargesVars(r: ChargesGauss | ChargesDistribution): string[] {
+  if ('gauss' in r) {
+    const g = r.gauss;
+    return ids(g.Q, g.r, g.R, g.E, g.flux, g.enclosed, g.between);
+  }
+  return ids(r.charge, r.z, r.radius, r.field, r.potential, r.sheet, r.force, r.density, r.induced);
+}
+
+/** Whether a `charges` spec is one of the HC29 options. */
+export const isHe2eCharges = (r: object): r is ChargesGauss | ChargesDistribution =>
+  'gauss' in r || 'distribution' in r;

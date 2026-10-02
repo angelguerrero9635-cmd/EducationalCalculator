@@ -3,12 +3,15 @@
  * values in SI (a "?" box is unknown, and its value is not drawn), labels with an italic symbol
  * and an upright value, and the into-the-page and out-of-the-page marks. Flat.
  */
-import { Circle, G, Line, TSpan } from 'react-native-svg';
+import { useRef } from 'react';
+import { Circle, G, Line, Path, TSpan } from 'react-native-svg';
 
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { ChartText } from './common';
+import { pathOf } from './fieldLines';
 import { fig3, Ital, textW } from './he1dText';
 import { useReader } from './hs3aKit';
 
@@ -21,14 +24,31 @@ type X = number | string | undefined;
  */
 export function useHe2e(calc: Calculator) {
   const r = useReader(calc);
-  /** The shown text of a field, or `value` to 3 figures with `unit`. */
-  const say = (x: X, value: number, unit: string) =>
-    typeof x === 'string' ? r.rep.value(x) : `${fig3(value)}${unit ? ` ${unit}` : ''}`;
+  /** A field's text in the unit shown, to 4 figures (10 nC, not 1 × 10¹ nC), or `value` with `unit`. */
+  const say = (x: X, value: number, unit: string) => {
+    if (typeof x !== 'string') return `${fig3(value)}${unit ? ` ${unit}` : ''}`;
+    if (!r.rep.known(x)) return '?';
+    const v = r.rep.shown(x);
+    const u = r.rep.unit(x);
+    if (u === '°') return `${fig(v, 4)}°`;
+    return `${fig(v, 4)}${u ? ` ${u}` : ''}`;
+  };
   /** A worked value: the page's box when it names one (and it is known), else ours. */
-  const out = (id: string | undefined, value: number, unit: string, ok: boolean) =>
-    !ok ? '?' : id && r.rep.known(id) ? r.rep.value(id) : `${fig3(value)} ${unit}`;
+  const out = (id: string | undefined, value: number, unit: string, ok: boolean) => {
+    if (!ok) return '?';
+    if (!id || !r.rep.known(id)) return `${fig3(value)} ${unit}`;
+    // The page's value in its shown unit, to 3 figures as a worked value reads.
+    const u = r.rep.unit(id);
+    return `${fig3(r.rep.shown(id))}${u ? ` ${u}` : ''}`;
+  };
   return { ...r, say, out };
 }
+
+/** A number to `n` significant figures, × 10ⁿ when small or large. */
+const fig = (x: number, n: number) =>
+  formatNumber(Number(x.toPrecision(n)), {
+    scientific: Math.abs(x) >= 1e6 || (x !== 0 && Math.abs(x) < 1e-3),
+  });
 
 /** A number for a caption's working: 3 figures, × 10ⁿ when small or large. */
 export const n3 = (x: number) => fig3(x);
@@ -118,3 +138,95 @@ export function PageMark({
     </G>
   );
 }
+
+/**
+ * A field against r through a charged or current-carrying body of radius a (B of a thick wire,
+ * E of a charged ball): the rise to the surface, the fall beyond, the point at r.
+ */
+export function ProfileGraph({
+  yName,
+  x0,
+  y0,
+  x1,
+  y1,
+  a,
+  r,
+  aName = 'a',
+  shape,
+  color,
+}: {
+  yName: string;
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  a: number;
+  r?: number;
+  /** The surface's letter (a for a wire, R for a ball). */
+  aName?: string;
+  shape: (x: number) => number;
+  color?: string;
+}) {
+  const c = usePalette();
+  const xmax = Math.max(a, r ?? 0) * 2.6 || 1;
+  const peak = shape(a) || 1;
+  const X = (x: number) => x0 + ((x1 - x0) * x) / xmax;
+  const Y = (b: number) => y1 - ((y1 - y0) * b) / (peak * 1.12);
+  const pts: [number, number][] = Array.from({ length: 81 }, (_, i) => {
+    const x = (xmax * i) / 80;
+    return [X(x), Y(shape(x))];
+  });
+  return (
+    <G>
+      <Line x1={x0} y1={y1} x2={x1} y2={y1} stroke={c.chartInk} strokeWidth={1.2} />
+      <Line x1={x0} y1={y1} x2={x0} y2={y0} stroke={c.chartInk} strokeWidth={1.2} />
+      <Path d={pathOf(pts)} stroke={color ?? c.he2eField} strokeWidth={2.2} fill="none" />
+      <Line
+        x1={X(a)}
+        y1={y1}
+        x2={X(a)}
+        y2={Y(peak)}
+        stroke={c.chartMuted}
+        strokeDasharray={chart.dashFine}
+      />
+      <Lab x={X(a)} y={y1 + 14} sym={aName} anchor="middle" />
+      {r !== undefined ? (
+        <G>
+          <Circle cx={X(r)} cy={Y(shape(r))} r={4} fill={c.he2eSurface} />
+          {Math.abs(X(r) - X(a)) > 14 ? <Lab x={X(r)} y={y1 + 14} sym="r" anchor="middle" /> : null}
+        </G>
+      ) : null}
+      <Lab x={x1} y={y1 - 6} sym="r" anchor="end" />
+      <Lab x={x0 - 6} y={y0 + 10} sym={yName} anchor="end" />
+    </G>
+  );
+}
+
+/** A drag along a line from an origin: the value scales with the handle's distance. */
+export function useScaleDrag(
+  r: ReturnType<typeof useHe2e>,
+  calc: Calculator,
+  id: string | number | undefined,
+  pins: string[],
+) {
+  const start = useRef({ value: 0, px: 1 });
+  return (px: number) =>
+    typeof id !== 'string'
+      ? undefined
+      : {
+          onStart: () => {
+            start.current = { value: r.rep.val(id), px: Math.max(8, px) };
+          },
+          onMove: (d: number) => {
+            const k = Math.max(0.05, (start.current.px + d) / start.current.px);
+            calc.set(
+              { ...r.rep.pin(pins), [id]: r.rep.snapTo(id, start.current.value * k) },
+              r.rep.slide(id),
+            );
+          },
+        };
+}
+
+/** The variable ids among number-or-variable fields. */
+export const ids = (...xs: (string | number | undefined)[]) =>
+  xs.filter((x): x is string => typeof x === 'string');

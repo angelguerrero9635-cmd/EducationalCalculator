@@ -7,6 +7,8 @@ import type { HskSpec } from '@/data/modules/typesHsk';
 import type { Calculator } from '../useCalculator';
 import { ChargePlates } from './ChargePlates';
 import { Charges } from './Charges';
+import { ChargesHe2e } from './ChargesHe2e';
+import { isHe2eCharges } from '@/data/modules/typesHe2e';
 import { ChargesPotential } from './ChargesPotential';
 import { PlatesLaunch } from './PlatesLaunch';
 import { CircularMotion } from './CircularMotion';
@@ -38,6 +40,7 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
     case 'heatEngine':
       return <HeatEngine spec={spec} calc={calc} />;
     case 'charges':
+      if (isHe2eCharges(spec)) return <ChargesHe2e spec={spec} calc={calc} />; // HC29
       if (spec.mode === 'plates')
         return spec.launch ? (
           <PlatesLaunch spec={spec} calc={calc} />
