@@ -13,6 +13,29 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Grades 11–12 new pages: one lesson-reviewer and one page-reviewer, 32 pages
+
+- Found (lesson): ranges that were absurd or excluded normal answers (a stream 100 km deep,
+  seafloor only to 12 Myr, K–Ar rejecting its own top R); values with no rearrangement (the
+  carts' masses, the crate's weight); limits refused only by a range ("Greatest kinetic energy
+  would have to be −1.68 eV") instead of a sentence; ratios that did not say which over which;
+  decimals where exact forms belong (4√26, √2); `p^4` beside `0.5⁴`; a use line promising
+  f⁻¹(x).
+- Found (pages): x^(2/3) drawn from 0 only under "Domain: all real numbers"; carets in
+  captions; an axis number cut off by a fixed margin; a handle showing a wavelength not typed;
+  faded bars drawn from the example's p while p was "?"; a volcano cut by the board's edge;
+  strobe dots that overlapped; two orbit labels touching.
+- Fixed: all of the above in the page data and the pictures (limits with messages, the
+  rearrangements, exact values, the window for odd roots, `leftFor` sizing a plot's margin from
+  its numbers, binomial bars waiting for n and p, a least gap between strobe dots, the stripe
+  map hatched past its 12 Myr record).
+- Not fixed: the motion-diagram sort still puts its groups under six cards, so a phone scrolls
+  between card and group; the sort layout has no side-by-side or sticky-groups option.
+- Evidence gaps the reviewers named: the dump has no "find each value" walkthrough for the
+  `startWith` values (the momentum masses had none and nobody saw it); `drags.md` makes one
+  40 px drag, where a drag to each end would have caught the runaway values; and no screenshot
+  shows a page with one box "?", where a picture drawing the example's numbers would show.
+
 ## Grades 9–12 pages: two page reviews, placements, and the testing change
 
 - **Setup.**
