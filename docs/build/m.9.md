@@ -278,3 +278,12 @@ Gallery demos built from these pages that no longer pass (the lead's to retire):
 
 The histogram gained `count` (the list's length value): only the first n of `data` are binned,
 as on the dot and box plots; without it every entry is binned, as before.
+
+### Pages the reviewers proposed
+
+| Page                         | What it teaches                                                                                                                                                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `m.9.data-displays~dot-plot` | a dot plot from a typed list (5 to 12 values, one data group): the least and greatest, the range R = max − min, the dots at each value and the tallest stack f (the mode named), the median and the mean, both marked |
+
+The mean and the work lines of the sum are one rule (`listMean`) the histogram page shares; the
+harness reads "most dots at one value of …" (the tallest stack).
