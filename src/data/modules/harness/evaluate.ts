@@ -4,6 +4,7 @@
  * 6 in 743"). A new phrase in a module's step text is taught here. Test-only.
  */
 import { parseNumber, plainDigits } from '@/engine/format';
+import { SIGMA } from '@/engine/latex';
 
 import type { Walkthrough } from '../buildSteps';
 import { HSB_PHRASES } from './phrasesHsb';
@@ -376,7 +377,36 @@ export function setAngleUnit(unit: 'degrees' | 'radians') {
   angleUnit = unit;
 }
 
+/**
+ * Each sum with its limits ("Σ from k = 1 to 8 of (3k − 1)", E5) worked out term by term, as
+ * its value in brackets ("(100)"); a sum whose limits are not whole numbers in order, or whose
+ * terms can't be read, is left as written (so the line can't be evaluated).
+ */
+export function expandSums(text: string): string {
+  return text.replace(SIGMA, (whole, ...args) => {
+    const { si, lo, hi, sb } = args[args.length - 1] as Record<string, string>;
+    const [a, b] = [toNum(lo!.replace(/−/g, '-')), toNum(hi!.replace(/−/g, '-'))];
+    if (!Number.isInteger(a) || !Number.isInteger(b) || b < a || b - a > 10000) return whole;
+    // The index letter alone (not inside a word or a name like k₁); after a number or a
+    // bracket it multiplies (3k is 3 × k).
+    const index = new RegExp(String.raw`(?<![\p{L}_])${si}(?![\p{L}_₀-₉])`, 'gu');
+    let total = 0;
+    for (let k = a; k <= b; k++) {
+      const term = evaluate(
+        sb!.replace(
+          index,
+          (_m, at: number, all: string) => `${/[\d)]$/.test(all.slice(0, at)) ? ' × ' : ''}(${k})`,
+        ),
+      );
+      if (term === undefined) return whole;
+      total += term;
+    }
+    return `(${total})`;
+  });
+}
+
 export function evaluate(text: string, clampRoots = false): number | undefined {
+  if (text.includes('Σ from ')) text = expandSums(text);
   const degrees = angleUnit === 'degrees' || text.includes('°');
   let s = text
     // A repeating decimal (0.1666…) is its exact value, 1/6.

@@ -23,6 +23,31 @@ per review; each line names the finding and what the engine now does about it.
   gallery.ts; a demo stays where it is the only place an option is shown (the unit circle's
   linked graph and `arc`, `window`, the emission `lines`, the hydrogen-bond mode, …).
 
+## Σ with limits (E5)
+
+- **The sigma page could only say its sum in words** (m.11 series~sigma: "the sum from k = 1
+  to 8 of (3k − 1)" lived in the `use` line; the steps went straight to a₁, aₙ and Sₙ). → Step
+  text writes a sum with its limits as "Σ from k = 1 to {n} of ({c}k + {e})": the index is one
+  letter, each limit one token (a number, a letter, a value slot), the body a bracket (one
+  bracket deep, maybe raised: (x − 5)²) or one term (k², 2^k). `toLatex` (standard band) draws
+  it `\sum_{k=1}^{n}{(3k − 1)}`, the index italic; `parseMath` gives a `sum` node that
+  `MathLine` stacks (upper limit, Σ, lower limit) before its body, and `fromLatex` reads it
+  back. `spokenMath` gives screen readers "the sum from k = 1 to 8 of (3k − 1)" (step lines and
+  assumptions).
+- **The harness couldn't check a sum.** → `expandSums` (in `evaluate`) adds the terms one by
+  one, the index put into the body (3k is 3 × k); limits that are not whole numbers in order
+  leave the line unread. A check line's "k = 1" no longer splits it into three sides, and a
+  line or sentence saying "Σ … = N" must add up to N. Changing the sigma page's body to
+  (c + 1)k failed its check on every sample.
+- m.11 series~sigma: the first step opens "S = Σ from k = 1 to 8 of (3k − 1) adds the terms for
+  k = 1 to 8", and the check adds the terms: "Σ from k = 1 to 8 of (3k − 1) = 100".
+- Not changed: Σ without limits in formulas (X² = Σ(O − E)² ÷ E, S = Σ(x − x̄)², MSB =
+  nΣ(x̄ᵢ − x̄)² ÷ 2), where the sum runs over the data; the induction pages' "1 + 3 + … +
+  (2n − 1)", as the proofs are stated; and the Riemann pages' "Σi² = …" assumptions, which are
+  plain text (not typeset), where the long form reads worse.
+- Tests: `latex.test.ts` "draws a sum with its limits as Σ" and "says a sum … for a screen
+  reader", `harness/__tests__/evaluate.test.ts` "adds a sum with its limits term by term".
+
 ## Solver open items: silent clears, rounding chains (E29), circular fills (E21)
 
 - **A newer value cleared an older one with no reason** (m.10 modeling-density main r = 0.01

@@ -344,6 +344,12 @@ const poly = (cs: number[], show: (x: number) => string = fmt) =>
     }),
     show,
   );
+/** The sum on the sigma page with its numbers: Σ from k = 1 to 8 of (3k − 1). */
+const sigmaOf = (v: Values) =>
+  `Σ from k = 1 to ${v.n === undefined ? 'n' : fmt(v.n)} of (${terms([
+    [v.c!, 'k'],
+    [v.e!, ''],
+  ])})`;
 /** x − r as written: x − 2, x + 4, x. */
 const lin = (r: number, show: (x: number) => string = fmt) =>
   r === 0 ? 'x' : `x ${r < 0 ? '+' : '−'} ${show(Math.abs(r))}`;
@@ -2144,7 +2150,9 @@ export const MATH_11_MODULES: ModuleDef[] = [
         '{a1} = {c} × 1 + {e}',
         (v) => v.c! + v.e!,
         '{c} × 1 + {e}',
-        'Put k = 1 into ck + e.',
+        // The sum to find, in Σ notation with the student's numbers, opens the steps.
+        (v) =>
+          `S = ${sigmaOf(v)} adds the terms for k = 1 to ${v.n === undefined ? 'n' : fmt(v.n)}. Put k = 1 into ck + e.`,
       ),
       derive(
         'aₙ = c × n + e',
@@ -2163,6 +2171,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => (v.n! * (v.a1! + v.an!)) / 2,
         '{n} × ({a1} + {an}) ÷ 2',
         'n ÷ 2 pairs of first plus last, as in any arithmetic series.',
+        // The check adds the terms one by one, as the Σ says.
+        { check: (v) => `${sigmaOf(v)} = ${fmt(v.S!)}` },
       ),
     ],
     example: { c: 3, e: -1, n: 8, a1: 2, an: 23, S: 100 },

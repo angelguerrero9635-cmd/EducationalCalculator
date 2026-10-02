@@ -1,4 +1,12 @@
-import { fromLatex, parseMath, splitLine, toLatex, withoutOuterBrackets } from '../latex';
+import { renderTemplate } from '../format';
+import {
+  fromLatex,
+  parseMath,
+  splitLine,
+  spokenMath,
+  toLatex,
+  withoutOuterBrackets,
+} from '../latex';
 
 const both = (plain: string, band: Parameters<typeof toLatex>[1], symbols: string[] = []) => {
   const tex = toLatex(plain, band, symbols);
@@ -117,6 +125,54 @@ describe('toLatex', () => {
     expect(both('x = −√3/2 ≈ −0.866', 'standard')).toBe('x = −$\\frac{\\sqrt{3}}{2}$ ≈ −0.866');
     expect(both('(−3 + √17)/4', 'standard')).toBe('$\\frac{−3 + \\sqrt{17}}{4}$');
     expect(both('1/2 ÷ (−3/2)', 'standard')).toBe('$\\frac{1}{2}$ ÷ (−$\\frac{3}{2}$)');
+  });
+
+  it('draws a sum with its limits as Σ, and reads it back (E5)', () => {
+    expect(both('S = Σ from k = 1 to 8 of (3k − 1)', 'standard', ['S'])).toBe(
+      '$\\mathit{S}$ = $\\sum_{\\mathit{k}=1}^{8}{(3\\mathit{k} − 1)}$',
+    );
+    // Letters in the limits and the body, a bracket raised to a power, one term, a sentence.
+    expect(both('Σ from k = 1 to n of (ck + e) adds the terms.', 'standard', ['c', 'e', 'n'])).toBe(
+      '$\\sum_{\\mathit{k}=1}^{\\mathit{n}}{(\\mathit{c}\\mathit{k} + \\mathit{e})}$ adds the terms.',
+    );
+    expect(both('Σ from i = 1 to 5 of (x − 4)² = 10', 'standard', ['x'])).toBe(
+      '$\\sum_{\\mathit{i}=1}^{5}{{(\\mathit{x} − 4)}^{2}}$ = 10',
+    );
+    expect(both('Σ from k = 0 to 6 of 2^k = 127', 'standard')).toBe(
+      '$\\sum_{\\mathit{k}=0}^{6}{\\pow{2}{\\mathit{k}}}$ = 127',
+    );
+    expect(both('Σ from k = −2 to 2 of k³ = 0', 'standard')).toContain(
+      '\\sum_{\\mathit{k}=−2}^{2}',
+    );
+    // Value slots in the limits and the body, filled before typesetting.
+    const vars = [
+      { id: 'n', symbol: 'n', name: 'n' },
+      { id: 'c', symbol: 'c', name: 'c' },
+      { id: 'e', symbol: 'e', name: 'e' },
+    ];
+    const line = renderTemplate('Σ from k = 1 to {n} of ({c}k + {e})', vars, { n: 8, c: 3, e: 2 });
+    expect(line).toBe('Σ from k = 1 to 8 of (3k + 2)');
+    expect(both(line, 'standard')).toBe('$\\sum_{\\mathit{k}=1}^{8}{(3\\mathit{k} + 2)}$');
+    // Only high school and college draw it; the parse gives the limits and the body.
+    expect(toLatex('Σ from k = 1 to 8 of k', 'middle')).toBeUndefined();
+    const [sum] = parseMath('\\sum_{k=1}^{8}{(3k − 1)}');
+    expect(sum).toEqual({
+      t: 'sum',
+      lower: [{ t: 'text', s: 'k=1' }],
+      upper: [{ t: 'text', s: '8' }],
+      body: [{ t: 'text', s: '(3k − 1)' }],
+    });
+    expect(() => parseMath('\\sum{k}')).toThrow();
+  });
+
+  it('says a sum with its limits in words for a screen reader (E5)', () => {
+    expect(spokenMath('S = Σ from k = 1 to 8 of (3k − 1)')).toBe(
+      'S = the sum from k = 1 to 8 of (3k − 1)',
+    );
+    expect(spokenMath('Σ from k = 1 to 8 of (3k − 1) = 100')).toBe(
+      'The sum from k = 1 to 8 of (3k − 1) = 100',
+    );
+    expect(spokenMath('χ² = Σ (O − E)² ÷ E')).toBe('χ² = Σ (O − E)² ÷ E');
   });
 
   it('parses the commands it draws, and refuses others', () => {

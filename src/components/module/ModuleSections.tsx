@@ -15,6 +15,7 @@ import {
   type ModuleDef,
 } from '@/data/modules';
 import { dollarsOf, formatNumber } from '@/engine/format';
+import { spokenMath } from '@/engine/latex';
 import { font, space, usePalette } from '@/theme';
 
 import { FormulaSection } from './FormulaSection';
@@ -122,7 +123,9 @@ function ModuleView({ module }: { module: ModuleDef }) {
         {module.assumptions.map((a) => (
           <View key={a} style={styles.bullet}>
             <Text style={[styles.dot, { color: c.textMuted }]}>•</Text>
-            <Text style={[styles.bulletText, { color: c.text }]}>{a}</Text>
+            <Text style={[styles.bulletText, { color: c.text }]} accessibilityLabel={spokenMath(a)}>
+              {a}
+            </Text>
           </View>
         ))}
       </View>
