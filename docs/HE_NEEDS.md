@@ -122,6 +122,29 @@ line** with the free variable ("V′(x) = 12x² − 240x + 900") checked at samp
   quantum#0, #3, thermal-statistical#0, #1, classical-mechanics#0~atwood, #1); ME the
   thermodynamics#2–3, numerical-methods#0, #3 and ASM#2 topics; ACC reaction-engineering#1,
   propulsion#1, process-control#0, flight-mechanics#0~range; C none (assumptions and `how` only).
+- **Status: done for the steps and the harness; typesetting partly (2026-10-02).** Write each
+  calculus line in a step's `work` (or a relation's `check`), one clause per " → ", ", so " or
+  "; ", with the page's numbers put in; `college/forms.ts` writes the forms (`polyForm`,
+  `polyDerivative`, `expForm`, `termsForm`). `harness/calculus.ts` reads them in order and
+  checks each numerically: a form (`f(x) = x³ − 4x`, `y(t) = 50e^(−0.2t)`, `f(x, y) = …`); a
+  derivative form (`f′(x) = 3x² − 4`, `f″(x)`, `dy/dx = …`, `d²y/dx²`, `d/dx (…) = …`,
+  `f_x(x, y)`, `f_xy`, `∂f/∂x`, `∂f ÷ ∂y`, `∂²f/∂x∂y`) by central differences of the stated
+  function at sample points; a value (`f′(2) = 3(2)² − 4 = 8`, `f_x(1, 2) = 4`, `∂f/∂x at
+(1, 2)`, `dy/dx at x = 2 = 14`, `y(3) = 50e^(−0.6) = 27.44`, `y′(0) = 1`); a definite
+  integral with its antiderivative (`∫ from 0 to 2 of x² dx = [x³ ÷ 3] from 0 to 2 = 8 ÷ 3`:
+  quadrature, F(b) − F(a) and F′ = the integrand) and an indefinite one (`∫ 3x² dx = x³ + C`);
+  a limit (`lim x → 2 of (x² − 4) ÷ (x − 2) = 4`, `lim as h → 0 of …`, `x → 0⁺`, `x → ∞`) by
+  evaluating near the point; an ODE with its closed-form solution, either order (`y′ = −0.2y`
+  and `y(t) = 50e^(−0.2t)`; `y″ + 2y′ + 5y = 0` with `e^(−t)(2cos(2t) + 1.5sin(2t))`, critical
+  `(1 + 3t)e^(−2t)`, overdamped `2e^(−t) − e^(−4t)`; `T′ = −0.1(T − 20)`). `evaluate` reads
+  `[F] from a to b` and `lim …` anywhere, so a substituted line or check may use them. A clause
+  in letters (a rule, "W = ∫P dV") is not checked; Grades 9–12 primes (x′, A′) are names. The
+  sampling test reports a wrong clause as an error and an unreadable one as a harness finding.
+  No page was built: the unit tests cover each form (`harness/__tests__/calculus.test.ts`).
+  **Left:** typesetting: ∫ with limits and ∂U ÷ ∂P are drawn (HE-E7); d/dx and dy/dx written
+  with "/", the evaluation bar of `[F] from a to b` and "lim" with x → a under it show as text
+  until `latex.ts` and `MathLine` gain those nodes; D_u f and ∇f lines are vector lines, read with
+  HE-E16 (linear algebra in steps).
 
 ### HE-E7 Symbols and typesetting
 
