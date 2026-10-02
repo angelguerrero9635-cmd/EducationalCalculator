@@ -87,6 +87,36 @@ export const HE3H_REQUESTS: PictureRequest[] = [
   },
   {
     ...ask(
+      'HC41',
+      'elementChain',
+      'Finite elements: nodes in a row joined by springs or painted steel bars, fixed nodes hatched, nodal loads and reactions as arrows, each node’s displacement as an arrow to one scale, element numbers with k above and the element force (T or C) under; mesh: a plate cut into n_x × n_y quadrilaterals with its nodes and the node and DOF counts',
+      [
+        `${E}finite-element-analysis#0`,
+        `${E}finite-element-analysis#0~bar`,
+        `${E}finite-element-analysis#0~fixed-fixed`,
+        `${E}finite-element-analysis#3~count`,
+        `${E}structural-analysis#3`,
+      ],
+      [
+        'From ME-P25 and ACC-P14’s `axial` sketch (bars in series with nodes; the rest of ACC-P14 is HC1 beam). A new kind (typesHe3h.ts, reps/ElementChain.tsx, the sums in reps/elementChainMath.ts). On the FEA pages it sits beside the existing matrixGrid rowReduce (a page has one picture: the lesson chat picks, or puts the matrix in the steps).',
+        "Fields: { kind: 'elementChain', mode?: 'chain' | 'mesh', elements?: [{ type?: 'spring' | 'bar', k?, A?, L?, force? }], fixed?: [node numbers from 1], loads?: [{ node, F, negate? }], reactions?: [{ node, R }], disp?: [{ node, u }], stress?, nx?, ny?, nodes?, dof?, dofPerNode? (default 2), more? }. Units by each variable (k in N/mm, kN/mm, N/m, kN/m; F and R in N or kN; u in mm or m); a fixed number in N/mm, N and mm.",
+        "Example (finite-element-analysis#0): { kind: 'elementChain', elements: [{ type: 'spring', k: 'k1', force: 'f1' }, { type: 'spring', k: 'k2', force: 'f2' }], fixed: [1], loads: [{ node: 3, F: 'F' }], reactions: [{ node: 1, R: 'R1' }], disp: [{ node: 2, u: 'u2' }, { node: 3, u: 'u3' }] }. ~bar: { elements: [{ type: 'bar', k: 'k', A: 'A', L: 'L', force: 'f' }], loads: [{ node: 1, F: 'f', negate: true }, { node: 2, F: 'f' }], disp: [{ node: 1, u: 'u1' }, { node: 2, u: 'u2' }], stress: 'sigma', more: ['E'] }. ~fixed-fixed: { elements: two springs, fixed: [1, 3], loads: [{ node: 2, F: 'F' }], reactions: [{ node: 1, R: 'R1' }, { node: 3, R: 'R3' }], disp: [{ node: 2, u: 'u2' }] }. structural-analysis#3: { elements: [{ type: 'bar', k: 'k1', A: 'A1', L: 'L1' }, { type: 'bar', k: 'k2', A: 'A2', L: 'L2' }], fixed: [1], loads: [{ node: 3, F: 'P' }], disp: [{ node: 2, u: 'u2' }, { node: 3, u: 'u3' }], more: ['E'] }. #3~count: { mode: 'mesh', nx: 'nx', ny: 'ny', nodes: 'nodes', dof: 'dof' }.",
+        'Draws: bars as thick as their areas among the bars; an element force not on the page worked out as k(u_j − u_i), with T or C; the caption gives each force and says each free node balances. Mesh: every node dotted (the grid to scale, square cells), the left edge fixed, a load on the right, Nodes = (n_x + 1)(n_y + 1) and DOF = 2 × nodes on the picture and in the caption.',
+        'The harness (harness/picturesHe3h.ts) checks: each element force equals k(u_j − u_i) from the nodes drawn; every node balances (its load or reaction plus the right element’s force less the left one’s is zero); the mesh’s node and DOF counts.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-elementChain-springs',
+      'g.he-elementChain-bar',
+      'g.he-elementChain-fixed-fixed',
+      'g.he-elementChain-axial',
+      'g.he-elementChain-mesh',
+      'g.he-elementChain-mesh-fine',
+    ],
+  },
+  {
+    ...ask(
       'HC52',
       'fatigueDiagram',
       'Fatigue, flat and from the values: the Goodman diagram with the load line through the point to the Goodman line and n; the S–N line on log–log axes from 10³ to 10⁶, flat at S_e after, with the page’s stress read across to its life; Basquin’s line over reversals; a Miner damage bar',

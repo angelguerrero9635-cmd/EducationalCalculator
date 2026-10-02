@@ -33,7 +33,16 @@ export function useHe3hReader(calc: Calculator) {
    * value worked out here (`worked`, in `unit`) when the page has no field for it.
    */
   const label = (x: NumOrVar | undefined, fallback: string, worked?: number, unit = '') => {
-    if (isVar(x)) return rep.known(x) ? rep.label(x) : undefined;
+    if (isVar(x)) {
+      if (!rep.known(x)) return undefined;
+      // A value the page writes in powers of ten (1.0 × 10⁸ N/m) reads so here too.
+      const vd = rep.variable(x);
+      if (vd.scientific && !rep.typed(x)) {
+        const u = unitOf(x);
+        return `${vd.symbol} = ${sigText(rep.val(x), 4)}${u ? ` ${u}` : ''}`;
+      }
+      return rep.label(x);
+    }
     const v = x ?? worked;
     if (v === undefined || !Number.isFinite(v)) return undefined;
     return `${fallback} = ${sigText(v, 3)}${unit ? ` ${unit}` : ''}`;

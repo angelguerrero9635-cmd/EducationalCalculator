@@ -8,6 +8,9 @@
  * HC59: `shaft` (ME-P6): a solid and a hollow shaft in torsion, sizing for power and speed,
  * bending with torsion, and a long thin rod twisting tens of degrees.
  *
+ * HC41: `elementChain` (ME-P25, ACC-P14 `axial`): springs in series, one bar element, a load
+ * between two walls, two bars in series, and node and DOF counts of a mesh (and a finer one).
+ *
  * HC52: `fatigueDiagram` (ME-P17, ACC-P37 S–N part): Goodman (safe and failing), the S–N line
  * (mid life and low cycle), Basquin's law, Miner's rule.
  */
@@ -1377,6 +1380,481 @@ const fatigueMiner: ModuleDef = (() => {
   };
 })();
 
+// ─── HC41: element chains and meshes (finite-element-analysis#0, #3; structural-analysis#3) ──
+
+const FE_ASSUMPTIONS = [
+  'Axial springs or bars only, loaded at the nodes; small displacements.',
+  'Each element’s force is its stiffness times its stretch, k(u_j − u_i).',
+];
+
+const kVar = (id: string, symbol: string, name: string, unit = 'N/mm') =>
+  q(id, symbol, name, unit, 0.000001, 1e12, 0.01);
+const forceVar = (id: string, symbol: string, name: string, unit = 'N') =>
+  q(id, symbol, name, unit, -1e9, 1e9, 0.1);
+const uVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'mm', -1e6, 1e6, 0.0001);
+
+/** a = b (one value carried to another, a node's balance), both ways. */
+const sameRule = (a: string, b: string, display: string, how: string) =>
+  rule(display, `{${a}} = {${b}}`, [a, b], (v) => v[a]! - v[b]!, {
+    [a]: [(v) => v[b]!, `{${b}}`, how],
+    [b]: [(v) => v[a]!, `{${a}}`, how],
+  });
+
+const chainSprings: ModuleDef = {
+  id: 'g.he-elementChain-springs',
+  title: 'Two springs in series by the direct stiffness method',
+  use: 'Use this for the nodal displacements, element forces and reaction of two springs in series with a load at the end.',
+  assumptions: [...FE_ASSUMPTIONS, 'Node 1 is fixed; the load F acts at node 3.'],
+  variables: [
+    kVar('k1', 'k₁', 'Stiffness of spring 1'),
+    kVar('k2', 'k₂', 'Stiffness of spring 2'),
+    forceVar('F', 'F', 'Load at node 3'),
+    uVar('u2', 'u₂', 'Displacement of node 2'),
+    uVar('u3', 'u₃', 'Displacement of node 3'),
+    forceVar('f1', 'f₁', 'Force in spring 1'),
+    forceVar('f2', 'f₂', 'Force in spring 2'),
+    forceVar('R1', 'R₁', 'Reaction at node 1'),
+  ],
+  ...rules(
+    sameRule(
+      'f2',
+      'F',
+      'f₂ = F (node 3 balances)',
+      'Node 3 balances: the spring on its left carries the whole load.',
+    ),
+    sameRule(
+      'f1',
+      'f2',
+      'f₁ = f₂ (node 2 balances)',
+      'Node 2 has no load, so the two springs pull it equally.',
+    ),
+    rule('f₁ = k₁u₂', '{f1} = {k1} × {u2}', ['f1', 'k1', 'u2'], (v) => v.f1! - v.k1! * v.u2!, {
+      f1: [(v) => v.k1! * v.u2!, '{k1} × {u2}', 'Spring 1 stretches by u₂ (node 1 stays put).'],
+      u2: [
+        (v) => div(v.f1!, v.k1!),
+        '{f1} ÷ {k1}',
+        'The stretch of spring 1 is its force over its stiffness.',
+      ],
+      k1: [(v) => div(v.f1!, v.u2!), '{f1} ÷ {u2}', 'Divide the force by the stretch.'],
+    }),
+    rule(
+      'f₂ = k₂(u₃ − u₂)',
+      '{f2} = {k2} × ({u3} − {u2})',
+      ['f2', 'k2', 'u3', 'u2'],
+      (v) => v.f2! - v.k2! * (v.u3! - v.u2!),
+      {
+        f2: [
+          (v) => v.k2! * (v.u3! - v.u2!),
+          '{k2} × ({u3} − {u2})',
+          'Spring 2 stretches by the difference of its nodes.',
+        ],
+        u3: [
+          (v) => fin(v.u2! + v.f2! / v.k2!),
+          '{u2} + {f2} ÷ {k2}',
+          'Node 3 moves u₂ plus spring 2’s stretch.',
+        ],
+        u2: [
+          (v) => fin(v.u3! - v.f2! / v.k2!),
+          '{u3} − {f2} ÷ {k2}',
+          'Take spring 2’s stretch from u₃.',
+        ],
+        k2: [
+          (v) => div(v.f2!, v.u3! - v.u2!),
+          '{f2} ÷ ({u3} − {u2})',
+          'Divide the force by the stretch.',
+        ],
+      },
+    ),
+    rule('R₁ = −f₁', '{R1} = −{f1}', ['R1', 'f1'], (v) => v.R1! + v.f1!, {
+      R1: [(v) => -v.f1!, '−{f1}', 'The wall holds node 1 back against spring 1’s pull.'],
+      f1: [(v) => -v.R1!, '−{R1}', 'The spring pulls as hard as the wall holds.'],
+    }),
+  ),
+  example: { k1: 1000, k2: 500, F: 2000, u2: 2, u3: 6, f1: 2000, f2: 2000, R1: -2000 },
+  startWith: ['k1', 'k2', 'F'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'elementChain',
+    elements: [
+      { type: 'spring', k: 'k1', force: 'f1' },
+      { type: 'spring', k: 'k2', force: 'f2' },
+    ],
+    fixed: [1],
+    loads: [{ node: 3, F: 'F' }],
+    reactions: [{ node: 1, R: 'R1' }],
+    disp: [
+      { node: 2, u: 'u2' },
+      { node: 3, u: 'u3' },
+    ],
+  },
+};
+
+const chainBar: ModuleDef = {
+  id: 'g.he-elementChain-bar',
+  title: 'One bar element: its stiffness, force and stress',
+  use: 'Use this for a bar element’s stiffness AE ÷ L, and its force and stress from the nodes’ displacements.',
+  assumptions: [...FE_ASSUMPTIONS, 'One bar of one material and area.'],
+  variables: [
+    q('A', 'A', 'Cross-section area', 'mm²', 0.0001, 1e8, 0.01),
+    q('E', 'E', 'Elastic modulus', 'GPa', 0.001, 1500, 0.1),
+    q('L', 'L', 'Length', 'mm', 0.001, 1e7, 0.1),
+    kVar('k', 'k', 'Element stiffness'),
+    uVar('u1', 'u₁', 'Displacement of node 1'),
+    uVar('u2', 'u₂', 'Displacement of node 2'),
+    forceVar('f', 'f', 'Element force'),
+    q('sigma', 'σ', 'Stress', 'MPa', -1e6, 1e6, 0.01),
+  ],
+  ...rules(
+    rule(
+      'k = AE ÷ L',
+      '{k} = {A} × {E} × 1,000 ÷ {L}',
+      ['k', 'A', 'E', 'L'],
+      (v) => v.k! * v.L! - v.A! * v.E! * 1000,
+      {
+        k: [
+          (v) => div(v.A! * v.E! * 1000, v.L!),
+          '{A} × {E} × 1,000 ÷ {L}',
+          'A bar is a spring of stiffness AE ÷ L; × 1,000 turns GPa into N/mm².',
+        ],
+        A: [
+          (v) => div(v.k! * v.L!, v.E! * 1000),
+          '{k} × {L} ÷ ({E} × 1,000)',
+          'Turn the rule round for the area.',
+        ],
+        E: [
+          (v) => div(v.k! * v.L!, v.A! * 1000),
+          '{k} × {L} ÷ ({A} × 1,000)',
+          'Turn the rule round for E, in GPa.',
+        ],
+        L: [
+          (v) => div(v.A! * v.E! * 1000, v.k!),
+          '{A} × {E} × 1,000 ÷ {k}',
+          'Turn the rule round for the length.',
+        ],
+      },
+    ),
+    rule(
+      'f = k(u₂ − u₁)',
+      '{f} = {k} × ({u2} − {u1})',
+      ['f', 'k', 'u2', 'u1'],
+      (v) => v.f! - v.k! * (v.u2! - v.u1!),
+      {
+        f: [
+          (v) => v.k! * (v.u2! - v.u1!),
+          '{k} × ({u2} − {u1})',
+          'The bar’s force is its stiffness times its stretch.',
+        ],
+        u2: [(v) => fin(v.u1! + v.f! / v.k!), '{u1} + {f} ÷ {k}', 'Add the stretch f ÷ k to u₁.'],
+        u1: [
+          (v) => fin(v.u2! - v.f! / v.k!),
+          '{u2} − {f} ÷ {k}',
+          'Take the stretch f ÷ k from u₂.',
+        ],
+        k: [
+          (v) => div(v.f!, v.u2! - v.u1!),
+          '{f} ÷ ({u2} − {u1})',
+          'Divide the force by the stretch.',
+        ],
+      },
+    ),
+    rule('σ = f ÷ A', '{sigma} = {f} ÷ {A}', ['sigma', 'f', 'A'], (v) => v.sigma! * v.A! - v.f!, {
+      sigma: [(v) => div(v.f!, v.A!), '{f} ÷ {A}', 'Stress is force over area (N/mm² is MPa).'],
+      f: [(v) => v.sigma! * v.A!, '{sigma} × {A}', 'Force is stress times area.'],
+    }),
+  ),
+  example: { A: 100, E: 200, L: 1000, k: 20000, u1: 0.02, u2: 0.12, f: 2000, sigma: 20 },
+  startWith: ['A', 'E', 'L', 'u1', 'u2'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'elementChain',
+    elements: [{ type: 'bar', k: 'k', A: 'A', L: 'L', force: 'f' }],
+    loads: [
+      { node: 1, F: 'f', negate: true },
+      { node: 2, F: 'f' },
+    ],
+    disp: [
+      { node: 1, u: 'u1' },
+      { node: 2, u: 'u2' },
+    ],
+    stress: 'sigma',
+    more: ['E'],
+  },
+};
+
+const chainFixedFixed: ModuleDef = {
+  id: 'g.he-elementChain-fixed-fixed',
+  title: 'A load between two walls: one spring stretches, one squeezes',
+  use: 'Use this for a node loaded between two fixed ends: its displacement and both reactions.',
+  assumptions: [...FE_ASSUMPTIONS, 'Nodes 1 and 3 are fixed; the load F acts at node 2.'],
+  variables: [
+    kVar('k1', 'k₁', 'Stiffness of spring 1'),
+    kVar('k2', 'k₂', 'Stiffness of spring 2'),
+    forceVar('F', 'F', 'Load at node 2'),
+    uVar('u2', 'u₂', 'Displacement of node 2'),
+    forceVar('R1', 'R₁', 'Reaction at node 1'),
+    forceVar('R3', 'R₃', 'Reaction at node 3'),
+  ],
+  ...rules(
+    rule(
+      'u₂ = F ÷ (k₁ + k₂)',
+      '{u2} = {F} ÷ ({k1} + {k2})',
+      ['u2', 'F', 'k1', 'k2'],
+      (v) => v.u2! * (v.k1! + v.k2!) - v.F!,
+      {
+        u2: [
+          (v) => div(v.F!, v.k1! + v.k2!),
+          '{F} ÷ ({k1} + {k2})',
+          'Both springs resist node 2’s move, so their stiffnesses add.',
+        ],
+        F: [
+          (v) => v.u2! * (v.k1! + v.k2!),
+          '{u2} × ({k1} + {k2})',
+          'The load is the move times the springs’ total stiffness.',
+        ],
+        k1: [
+          (v) => fin(v.F! / v.u2! - v.k2!),
+          '{F} ÷ {u2} − {k2}',
+          'The total stiffness F ÷ u₂, less k₂.',
+        ],
+        k2: [
+          (v) => fin(v.F! / v.u2! - v.k1!),
+          '{F} ÷ {u2} − {k1}',
+          'The total stiffness F ÷ u₂, less k₁.',
+        ],
+      },
+    ),
+    rule('R₁ = −k₁u₂', '{R1} = −{k1} × {u2}', ['R1', 'k1', 'u2'], (v) => v.R1! + v.k1! * v.u2!, {
+      R1: [
+        (v) => -v.k1! * v.u2!,
+        '−{k1} × {u2}',
+        'Spring 1 stretches by u₂ and pulls node 1; the wall pulls back.',
+      ],
+      u2: [(v) => div(-v.R1!, v.k1!), '−{R1} ÷ {k1}', 'Turn the rule round for u₂.'],
+      k1: [(v) => div(-v.R1!, v.u2!), '−{R1} ÷ {u2}', 'Turn the rule round for k₁.'],
+    }),
+    rule('R₃ = −k₂u₂', '{R3} = −{k2} × {u2}', ['R3', 'k2', 'u2'], (v) => v.R3! + v.k2! * v.u2!, {
+      R3: [
+        (v) => -v.k2! * v.u2!,
+        '−{k2} × {u2}',
+        'Spring 2 is squeezed by u₂ and pushes node 3; the wall pushes back.',
+      ],
+      u2: [(v) => div(-v.R3!, v.k2!), '−{R3} ÷ {k2}', 'Turn the rule round for u₂.'],
+      k2: [(v) => div(-v.R3!, v.u2!), '−{R3} ÷ {u2}', 'Turn the rule round for k₂.'],
+    }),
+  ),
+  example: { k1: 1000, k2: 2000, F: 3000, u2: 1, R1: -1000, R3: -2000 },
+  startWith: ['k1', 'k2', 'F'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'elementChain',
+    elements: [
+      { type: 'spring', k: 'k1' },
+      { type: 'spring', k: 'k2' },
+    ],
+    fixed: [1, 3],
+    loads: [{ node: 2, F: 'F' }],
+    reactions: [
+      { node: 1, R: 'R1' },
+      { node: 3, R: 'R3' },
+    ],
+    disp: [{ node: 2, u: 'u2' }],
+  },
+};
+
+const chainAxial: ModuleDef = {
+  id: 'g.he-elementChain-axial',
+  title: 'Two steel bars in series: displacements by the stiffness method',
+  use: 'Use this for the node displacements of two bars in series, fixed at one end and loaded at the other.',
+  assumptions: [...FE_ASSUMPTIONS, 'Node 1 is fixed; one material; the load P acts at node 3.'],
+  variables: [
+    q('E', 'E', 'Elastic modulus', 'GPa', 0.001, 1500, 0.1),
+    q('A1', 'A₁', 'Area of bar 1', 'mm²', 0.0001, 1e8, 0.01),
+    q('L1', 'L₁', 'Length of bar 1', 'mm', 0.001, 1e7, 0.1),
+    q('A2', 'A₂', 'Area of bar 2', 'mm²', 0.0001, 1e8, 0.01),
+    q('L2', 'L₂', 'Length of bar 2', 'mm', 0.001, 1e7, 0.1),
+    kVar('k1', 'k₁', 'Stiffness of bar 1', 'N/m'),
+    kVar('k2', 'k₂', 'Stiffness of bar 2', 'N/m'),
+    forceVar('P', 'P', 'Load at node 3', 'kN'),
+    uVar('u2', 'u₂', 'Displacement of node 2'),
+    uVar('u3', 'u₃', 'Displacement of node 3'),
+  ].map((v) => (v.id === 'k1' || v.id === 'k2' ? { ...v, scientific: true } : v)),
+  ...rules(
+    ...(['1', '2'] as const).map((i) =>
+      rule(
+        `k${i} = A${i}E ÷ L${i}`,
+        `{k${i}} = {A${i}} × {E} × 10⁶ ÷ {L${i}}`,
+        [`k${i}`, `A${i}`, 'E', `L${i}`],
+        (v) => v[`k${i}`]! * v[`L${i}`]! - v[`A${i}`]! * v.E! * 1e6,
+        {
+          [`k${i}`]: [
+            (v) => div(v[`A${i}`]! * v.E! * 1e6, v[`L${i}`]!),
+            `{A${i}} × {E} × 10⁶ ÷ {L${i}}`,
+            'AE ÷ L in N/mm (× 1,000 for GPa), then × 1,000 again for N/m.',
+          ],
+          [`A${i}`]: [
+            (v) => div(v[`k${i}`]! * v[`L${i}`]!, v.E! * 1e6),
+            `{k${i}} × {L${i}} ÷ ({E} × 10⁶)`,
+            'Turn the rule round for the area.',
+          ],
+          [`L${i}`]: [
+            (v) => div(v[`A${i}`]! * v.E! * 1e6, v[`k${i}`]!),
+            `{A${i}} × {E} × 10⁶ ÷ {k${i}}`,
+            'Turn the rule round for the length.',
+          ],
+        },
+      ),
+    ),
+    rule(
+      'u₂ = P ÷ k₁',
+      '{u2} = {P} × 10⁶ ÷ {k1}',
+      ['u2', 'P', 'k1'],
+      (v) => v.u2! * v.k1! - v.P! * 1e6,
+      {
+        u2: [
+          (v) => div(v.P! * 1e6, v.k1!),
+          '{P} × 10⁶ ÷ {k1}',
+          'Bar 1 carries all of P (node 2 balances); its stretch is P ÷ k₁, × 10⁶ for kN and N/m to mm.',
+        ],
+        P: [(v) => (v.u2! * v.k1!) / 1e6, '{u2} × {k1} ÷ 10⁶', 'Turn the rule round for P, in kN.'],
+        k1: [(v) => div(v.P! * 1e6, v.u2!), '{P} × 10⁶ ÷ {u2}', 'Turn the rule round for k₁.'],
+      },
+    ),
+    rule(
+      'u₃ = u₂ + P ÷ k₂',
+      '{u3} = {u2} + {P} × 10⁶ ÷ {k2}',
+      ['u3', 'u2', 'P', 'k2'],
+      (v) => v.u3! - v.u2! - (v.P! * 1e6) / v.k2!,
+      {
+        u3: [
+          (v) => fin(v.u2! + (v.P! * 1e6) / v.k2!),
+          '{u2} + {P} × 10⁶ ÷ {k2}',
+          'Bar 2 also carries P: node 3 moves u₂ plus bar 2’s stretch.',
+        ],
+        u2: [
+          (v) => fin(v.u3! - (v.P! * 1e6) / v.k2!),
+          '{u3} − {P} × 10⁶ ÷ {k2}',
+          'Take bar 2’s stretch from u₃.',
+        ],
+        k2: [
+          (v) => div(v.P! * 1e6, v.u3! - v.u2!),
+          '{P} × 10⁶ ÷ ({u3} − {u2})',
+          'Divide P by bar 2’s stretch.',
+        ],
+      },
+    ),
+  ),
+  example: {
+    E: 200,
+    A1: 1000,
+    L1: 2000,
+    A2: 500,
+    L2: 2000,
+    k1: 1e8,
+    k2: 5e7,
+    P: 30,
+    u2: 0.3,
+    u3: 0.9,
+  },
+  startWith: ['E', 'A1', 'L1', 'A2', 'L2', 'P'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'elementChain',
+    elements: [
+      { type: 'bar', k: 'k1', A: 'A1', L: 'L1' },
+      { type: 'bar', k: 'k2', A: 'A2', L: 'L2' },
+    ],
+    fixed: [1],
+    loads: [{ node: 3, F: 'P' }],
+    disp: [
+      { node: 2, u: 'u2' },
+      { node: 3, u: 'u3' },
+    ],
+    more: ['E'],
+  },
+};
+
+function meshDemo(id: string, title: string, use: string, nx: number, ny: number): ModuleDef {
+  const nodes = (nx + 1) * (ny + 1);
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      'A rectangular plate cut into n_x × n_y four-node quadrilaterals.',
+      'Plane stress: two displacements, u and v, at each node.',
+    ],
+    variables: [
+      q('nx', 'n_x', 'Elements along the plate', undefined, 1, 1000, 1, { integer: true }),
+      q('ny', 'n_y', 'Elements up the plate', undefined, 1, 1000, 1, { integer: true }),
+      q('nodes', 'Nodes', 'Number of nodes', undefined, 4, 1e7, 1, { integer: true }),
+      q('dof', 'DOF', 'Degrees of freedom', undefined, 8, 2e7, 1, { integer: true }),
+    ],
+    ...rules(
+      rule(
+        'nodes = (n_x + 1)(n_y + 1)',
+        '{nodes} = ({nx} + 1) × ({ny} + 1)',
+        ['nodes', 'nx', 'ny'],
+        (v) => v.nodes! - (v.nx! + 1) * (v.ny! + 1),
+        {
+          nodes: [
+            (v) => (v.nx! + 1) * (v.ny! + 1),
+            '({nx} + 1) × ({ny} + 1)',
+            'A row of n elements has n + 1 nodes, in each direction.',
+          ],
+          nx: [
+            (v) => fin(v.nodes! / (v.ny! + 1) - 1),
+            '{nodes} ÷ ({ny} + 1) − 1',
+            'Divide by the nodes up the plate, then take one away.',
+          ],
+          ny: [
+            (v) => fin(v.nodes! / (v.nx! + 1) - 1),
+            '{nodes} ÷ ({nx} + 1) − 1',
+            'Divide by the nodes along the plate, then take one away.',
+          ],
+        },
+      ),
+      rule(
+        'DOF = 2 × nodes',
+        '{dof} = 2 × {nodes}',
+        ['dof', 'nodes'],
+        (v) => v.dof! - 2 * v.nodes!,
+        {
+          dof: [(v) => 2 * v.nodes!, '2 × {nodes}', 'Each node moves two ways, u and v.'],
+          nodes: [(v) => v.dof! / 2, '{dof} ÷ 2', 'Two degrees of freedom to a node.'],
+        },
+      ),
+    ),
+    example: { nx, ny, nodes, dof: 2 * nodes },
+    startWith: ['nx', 'ny'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'elementChain',
+      mode: 'mesh',
+      nx: 'nx',
+      ny: 'ny',
+      nodes: 'nodes',
+      dof: 'dof',
+    },
+  };
+}
+
+const chainMesh = meshDemo(
+  'g.he-elementChain-mesh',
+  'Counting nodes and degrees of freedom in a mesh',
+  'Use this for the number of nodes and degrees of freedom of an n_x × n_y quadrilateral mesh.',
+  10,
+  5,
+);
+
+const chainMeshFine = meshDemo(
+  'g.he-elementChain-mesh-fine',
+  'A finer mesh: twice the elements each way, nearly four times the work',
+  'Use this to see how refining a mesh grows the number of unknowns.',
+  20,
+  10,
+);
+
 export const HE3H_GALLERY_MODULES: ModuleDef[] = [
   exchangerCounter,
   exchangerParallel,
@@ -1395,6 +1873,12 @@ export const HE3H_GALLERY_MODULES: ModuleDef[] = [
   fatigueSnLow,
   fatigueBasquin,
   fatigueMiner,
+  chainSprings,
+  chainBar,
+  chainFixedFixed,
+  chainAxial,
+  chainMesh,
+  chainMeshFine,
 ];
 
 export const HE3H_GALLERY_LAYOUTS: LayoutDef[] = [];

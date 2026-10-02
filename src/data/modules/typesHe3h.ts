@@ -1,6 +1,6 @@
 /**
- * College picture kinds of round 3, group H (docs/RENDERINGS_HE.md): HC40 `heatExchanger`, HC52
- * `fatigueDiagram`, HC59 `shaft`.
+ * College picture kinds of round 3, group H (docs/RENDERINGS_HE.md): HC40 `heatExchanger`, HC41
+ * `elementChain`, HC52 `fatigueDiagram`, HC59 `shaft`.
  * Kept apart from `types.ts` so its union only names them. A `NumOrVar` is a fixed number or a
  * variable id; a variable is read in its own unit and turned into the kind's base unit
  * (`reps/he3hUnits.ts`: W for heat rates, W/K for capacity rates, m² for areas); a fixed number
@@ -138,13 +138,82 @@ export interface FatigueDiagramSpec {
   more?: string[];
 }
 
-export type He3hSpec = HeatExchangerSpec | ShaftSpec | FatigueDiagramSpec;
+// ─── HC41: finite elements in a row, and a 2-D mesh ──────────────────────────
+
+/** One element of a chain, between node i and node i + 1. */
+export interface ChainElement {
+  /** A spring (zigzag) or a bar (painted steel, as thick as its A among the bars). */
+  type?: 'spring' | 'bar';
+  /** Stiffness (N/mm, kN/mm, N/m, kN/m by its unit). */
+  k?: NumOrVar;
+  /** A bar's area (any unit; only compared between bars) and length. */
+  A?: NumOrVar;
+  L?: NumOrVar;
+  /** The element's axial force (N, kN), tension positive; worked out from k and the nodes' u. */
+  force?: NumOrVar;
+}
+
+/**
+ * Finite elements (ME-P25, ACC-P14 `axial`). `chain` (the default): nodes in a row joined by
+ * springs or bars, fixed nodes hatched as walls, nodal loads and reactions as arrows, each node's
+ * displacement as an arrow above it to one scale, element numbers on the elements, k above and
+ * the element force (T or C) under each. `mesh`: a plate cut into n_x × n_y quadrilaterals, its
+ * nodes dotted, the node and DOF counts. Forces by unit (N, kN), displacements (mm, m), stiffness
+ * (N/mm, N/m …); fixed numbers in N, mm and N/mm.
+ */
+export interface ElementChainSpec {
+  kind: 'elementChain';
+  mode?: 'chain' | 'mesh';
+  elements?: ChainElement[];
+  /** Fixed nodes, numbered from 1 (displacement 0 unless a `disp` says otherwise). */
+  fixed?: number[];
+  /** Loads at nodes; `negate` draws −F (a bar's end forces from one value). */
+  loads?: { node: number; F: NumOrVar; negate?: boolean }[];
+  /** Reactions at fixed nodes. */
+  reactions?: { node: number; R: NumOrVar }[];
+  /** Nodal displacements. */
+  disp?: { node: number; u: NumOrVar }[];
+  /** A bar's stress σ = f ÷ A (MPa), said beside it. */
+  stress?: NumOrVar;
+  /** `mesh`: elements along and up, the node and DOF counts, DOF per node (2 in 2-D). */
+  nx?: NumOrVar;
+  ny?: NumOrVar;
+  nodes?: NumOrVar;
+  dof?: NumOrVar;
+  dofPerNode?: number;
+  /** Further values said in the caption. */
+  more?: string[];
+}
+
+export type He3hSpec = HeatExchangerSpec | ShaftSpec | FatigueDiagramSpec | ElementChainSpec;
 
 const ids = (xs: (NumOrVar | NumOrVar[] | undefined)[]) =>
   xs.flat().filter((x): x is string => typeof x === 'string');
 
 /** The variable ids a group H picture reads (for the module tests). */
 export function he3hSpecVars(r: He3hSpec): string[] {
+  if (r.kind === 'elementChain') {
+    const {
+      kind: _k,
+      mode: _m,
+      elements,
+      loads,
+      reactions,
+      disp,
+      fixed: _f,
+      dofPerNode: _d,
+      more,
+      ...rest
+    } = r;
+    return ids([
+      ...Object.values(rest),
+      ...(elements ?? []).flatMap((e) => [e.k, e.A, e.L, e.force]),
+      ...(loads ?? []).map((x) => x.F),
+      ...(reactions ?? []).map((x) => x.R),
+      ...(disp ?? []).map((x) => x.u),
+      ...(more ?? []),
+    ]);
+  }
   if (r.kind === 'fatigueDiagram') {
     const { kind: _k, mode: _m, blocks, more, ...rest } = r;
     return ids([

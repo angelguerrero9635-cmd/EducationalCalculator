@@ -29,7 +29,20 @@ import {
   snLine,
 } from '@/components/module/reps/fatigueMath';
 
-import type { FatigueDiagramSpec, HeatExchangerSpec, He3hSpec, ShaftSpec } from '../typesHe3h';
+import {
+  elementForce,
+  meshCounts,
+  nodeDisplacements,
+  nodeImbalance,
+} from '@/components/module/reps/elementChainMath';
+
+import type {
+  ElementChainSpec,
+  FatigueDiagramSpec,
+  HeatExchangerSpec,
+  He3hSpec,
+  ShaftSpec,
+} from '../typesHe3h';
 
 type Val = (x: string | number) => number | undefined;
 type NumOrVar = number | string | undefined;
@@ -51,6 +64,8 @@ export function he3hIssues(rep: He3hSpec, val: Val, byId: Map<string, VariableDe
       return shaftIssues(rep, get);
     case 'fatigueDiagram':
       return fatigueIssues(rep, get);
+    case 'elementChain':
+      return chainIssues(rep, get);
   }
   return [];
 }
@@ -204,5 +219,61 @@ function fatigueIssues(spec: FatigueDiagramSpec, get: Get): string[] {
   const [Sf, N] = [s(spec.Sf), get(spec.N)];
   if (Sf !== undefined && N !== undefined && Sf >= Se && !near(N, lifeAt(Sf, a, b)))
     out.push(`N ${N} is not read off the line at S_f (${lifeAt(Sf, a, b)})`);
+  return out;
+}
+
+function chainIssues(spec: ElementChainSpec, get: Get): string[] {
+  const out: string[] = [];
+  if (spec.mode === 'mesh') {
+    const [nx, ny] = [get(spec.nx), get(spec.ny)];
+    if (nx === undefined || ny === undefined) return out;
+    const { nodes, dof } = meshCounts(nx, ny, spec.dofPerNode ?? 2);
+    const [np, dp] = [get(spec.nodes), get(spec.dof)];
+    if (np !== undefined && np !== nodes) out.push(`${np} nodes, but the mesh drawn has ${nodes}`);
+    if (dp !== undefined && dp !== dof) out.push(`${dp} DOF, but the mesh drawn has ${dof}`);
+    return out;
+  }
+  const els = spec.elements ?? [];
+  const count = els.length + 1;
+  const u = nodeDisplacements(
+    count,
+    spec.fixed ?? [],
+    (spec.disp ?? []).map((x) => ({ node: x.node, u: get(x.u, 'length') })),
+  );
+  const forces = els.map((e, i) => {
+    const k = get(e.k, 'stiffness');
+    const fromK =
+      k !== undefined && u[i] !== undefined && u[i + 1] !== undefined
+        ? elementForce(k, u[i]!, u[i + 1]!)
+        : undefined;
+    const given = get(e.force, 'force');
+    if (given !== undefined && fromK !== undefined && !near(given, fromK))
+      out.push(`element ${i + 1}'s force ${given} is not k(u_j − u_i) = ${fromK}`);
+    return given ?? fromK;
+  });
+  for (let node = 1; node <= count; node++) {
+    let F = 0;
+    let known = true;
+    for (const l of spec.loads ?? [])
+      if (l.node === node) {
+        const v = get(l.F, 'force');
+        if (v === undefined) known = false;
+        else F += l.negate ? -v : v;
+      }
+    for (const r of spec.reactions ?? [])
+      if (r.node === node) {
+        const v = get(r.R, 'force');
+        if (v === undefined) known = false;
+        else F += v;
+      }
+    const fixedHere = (spec.fixed ?? []).includes(node);
+    if (fixedHere && !(spec.reactions ?? []).some((r) => r.node === node)) continue;
+    const left = node > 1 ? forces[node - 2] : 0;
+    const right = node < count ? forces[node - 1] : 0;
+    if (!known || left === undefined || right === undefined) continue;
+    const off = nodeImbalance(F, left, right);
+    if (Math.abs(off) > 2e-3 * Math.max(1, Math.abs(F), Math.abs(left), Math.abs(right)))
+      out.push(`node ${node} doesn't balance: its load and the element forces leave ${off}`);
+  }
   return out;
 }

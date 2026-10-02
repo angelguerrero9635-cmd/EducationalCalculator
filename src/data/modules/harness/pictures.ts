@@ -2318,7 +2318,8 @@ export function repIssues(
     case 'heatExchanger':
     case 'shaft':
     case 'fatigueDiagram':
-      out.push(...he3hIssues(rep, val, byId)); // HC40, HC52, HC59
+    case 'elementChain':
+      out.push(...he3hIssues(rep, val, byId)); // HC40, HC41, HC52, HC59
       break;
     case 'projectile':
     case 'induction':
