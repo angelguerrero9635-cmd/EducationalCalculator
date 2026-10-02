@@ -90,7 +90,7 @@ const triangleVars: VariableDef[] = [
 
 const slopeRel = rel(
   'θ = tan⁻¹(2h ÷ L)',
-  '{theta} = tan⁻¹(2{h} ÷ {L})',
+  '{theta} = tan⁻¹(2 × {h} ÷ {L})',
   ['theta', 'h', 'L'],
   (x) => x.theta! - atanD((2 * x.h!) / x.L!),
   {
@@ -127,7 +127,7 @@ const triangle = demo('g.he-truss-joints', 'Member forces by the method of joint
     }),
     rel(
       'F_AC = −P ÷ (2 sin θ)',
-      '{FAC} = −{P} ÷ (2 sin {theta})',
+      '{FAC} = −{P} ÷ (2 × sin({theta}))',
       ['FAC', 'P', 'theta'],
       (x) => x.FAC! + x.P! / (2 * sinD(x.theta!)),
       {
@@ -145,7 +145,7 @@ const triangle = demo('g.he-truss-joints', 'Member forces by the method of joint
     ),
     rel(
       'F_AB = P ÷ (2 tan θ)',
-      '{FAB} = {P} ÷ (2 tan {theta})',
+      '{FAB} = {P} ÷ (2 × tan({theta}))',
       ['FAB', 'P', 'theta'],
       (x) => x.FAB! - x.P! / (2 * tanD(x.theta!)),
       {
@@ -219,11 +219,11 @@ const sections = demo(
     ],
     variables: sectionVars,
     relations: [
-      rel('R = 3P ÷ 2', '{R} = 3{P} ÷ 2', ['R', 'P'], (x) => x.R! - (3 * x.P!) / 2, {
+      rel('R = 3P ÷ 2', '{R} = 3 × {P} ÷ 2', ['R', 'P'], (x) => x.R! - (3 * x.P!) / 2, {
         R: [(x) => (3 * x.P!) / 2, '3 × {P} ÷ 2', 'Three loads of P, shared by two supports.'],
         P: [(x) => (2 * x.R!) / 3, '2 × {R} ÷ 3', 'Each support carries one and a half loads.'],
       }),
-      rel('x = 2a', '{x} = 2{d}', ['x', 'd'], (x) => x.x! - 2 * x.d!, {
+      rel('x = 2a', '{x} = 2 × {d}', ['x', 'd'], (x) => x.x! - 2 * x.d!, {
         x: [(x) => 2 * x.d!, '2 × {d}', 'The cut joint is the second lower joint, two panels in.'],
         d: [(x) => x.x! / 2, '{x} ÷ 2', 'Two panels reach the cut joint.'],
       }),
@@ -243,7 +243,7 @@ const sections = demo(
       ),
       rel(
         'M = Rx − P(x − a)',
-        '{M} = {R}{x} − {P}({x} − {d})',
+        '{M} = {R} × {x} − {P} × ({x} − {d})',
         ['M', 'R', 'x', 'P', 'd'],
         (x) => x.M! - (x.R! * x.x! - x.P! * (x.x! - x.d!)),
         {
@@ -273,7 +273,7 @@ const sections = demo(
       }),
       rel(
         'F_d = V ÷ sin θ',
-        '{Fd} = {V} ÷ sin {theta}',
+        '{Fd} = {V} ÷ sin({theta})',
         ['Fd', 'V', 'theta'],
         (x) => x.Fd! - x.V! / sinD(x.theta!),
         {
@@ -345,7 +345,7 @@ function midspan(
     relations: [
       rel(
         'R = (n − 1)P ÷ 2',
-        '{R} = ({n} − 1){P} ÷ 2',
+        '{R} = ({n} − 1) × {P} ÷ 2',
         ['R', 'n', 'P'],
         (x) => x.R! - ((x.n! - 1) * x.P!) / 2,
         {
@@ -363,7 +363,7 @@ function midspan(
       ),
       rel(
         'M = R(nd ÷ 2) − Pd·n(n − 2) ÷ 8',
-        '{M} = {R}({n}{d} ÷ 2) − {P}{d}{n}({n} − 2) ÷ 8',
+        '{M} = {R} × {n} × {d} ÷ 2 − {P} × {d} × {n} × ({n} − 2) ÷ 8',
         ['M', 'R', 'n', 'd', 'P'],
         (x) => x.M! - ((x.R! * x.n! * x.d!) / 2 - (x.P! * x.d! * x.n! * (x.n! - 2)) / 8),
         {
@@ -428,7 +428,7 @@ function determinacy(id: string, title: string, use: string, r: number): ModuleD
       v('deg', 'D', 'Degree of indeterminacy', undefined, -10, 10, { integer: true }),
     ],
     relations: [
-      rel('m = 4n − 3', '{m} = 4{n} − 3', ['m', 'n'], (x) => x.m! - (4 * x.n! - 3), {
+      rel('m = 4n − 3', '{m} = 4 × {n} − 3', ['m', 'n'], (x) => x.m! - (4 * x.n! - 3), {
         m: [
           (x) => 4 * x.n! - 3,
           '4 × {n} − 3',
@@ -436,13 +436,13 @@ function determinacy(id: string, title: string, use: string, r: number): ModuleD
         ],
         n: [(x) => (x.m! + 3) / 4, '({m} + 3) ÷ 4', 'Undo m = 4n − 3.'],
       }),
-      rel('j = 2n', '{j} = 2{n}', ['j', 'n'], (x) => x.j! - 2 * x.n!, {
+      rel('j = 2n', '{j} = 2 × {n}', ['j', 'n'], (x) => x.j! - 2 * x.n!, {
         j: [(x) => 2 * x.n!, '2 × {n}', 'n + 1 lower joints and n − 1 upper ones.'],
         n: [(x) => x.j! / 2, '{j} ÷ 2', 'Half the joints.'],
       }),
       rel(
         'degree = m + r − 2j',
-        '{deg} = {m} + {r} − 2{j}',
+        '{deg} = {m} + {r} − 2 × {j}',
         ['deg', 'm', 'r', 'j'],
         (x) => x.deg! - (x.m! + x.r! - 2 * x.j!),
         {
@@ -498,17 +498,17 @@ const deflection = demo('g.he-truss-deflection', 'The apex deflection by the uni
     v('delta', 'δ', 'Apex deflection', 'mm', 0, 1e4),
   ],
   relations: [
-    rel('F_incl = −5P ÷ 6', '{Fi} = −5{P} ÷ 6', ['Fi', 'P'], (x) => x.Fi! + (5 * x.P!) / 6, {
+    rel('F_incl = −5P ÷ 6', '{Fi} = −5 × {P} ÷ 6', ['Fi', 'P'], (x) => x.Fi! + (5 * x.P!) / 6, {
       Fi: [(x) => (-5 * x.P!) / 6, '−5 × {P} ÷ 6', 'At the apex: 2F sin θ = −P with sin θ = 0.6.'],
       P: [(x) => (-6 * x.Fi!) / 5, '−6 × {Fi} ÷ 5', 'Undo F = −5P ÷ 6.'],
     }),
-    rel('F_bot = 2P ÷ 3', '{Fb} = 2{P} ÷ 3', ['Fb', 'P'], (x) => x.Fb! - (2 * x.P!) / 3, {
+    rel('F_bot = 2P ÷ 3', '{Fb} = 2 × {P} ÷ 3', ['Fb', 'P'], (x) => x.Fb! - (2 * x.P!) / 3, {
       Fb: [(x) => (2 * x.P!) / 3, '2 × {P} ÷ 3', 'At a support: R ÷ tan θ with tan θ = 0.75.'],
       P: [(x) => (3 * x.Fb!) / 2, '3 × {Fb} ÷ 2', 'Undo F = 2P ÷ 3.'],
     }),
     rel(
       'δ = ΣFfL ÷ (AE)',
-      '{delta} = 1000(2{Fi}(−5 ÷ 6)(5) + {Fb}(2 ÷ 3)(8)) ÷ ({A}{E})',
+      '{delta} = 1000 × (2 × {Fi} × (−5 ÷ 6) × 5 + {Fb} × (2 ÷ 3) × 8) ÷ ({A} × {E})',
       ['delta', 'Fi', 'Fb', 'A', 'E'],
       (x) => x.delta! - (1000 * ((-25 / 3) * x.Fi! + (16 / 3) * x.Fb!)) / (x.A! * x.E!),
       {
@@ -584,7 +584,7 @@ function element(
     relations: [
       rel(
         'δ = Δu cos θ + Δv sin θ',
-        '{delta} = {du} cos {theta} + {dv} sin {theta}',
+        '{delta} = {du} × cos({theta}) + {dv} × sin({theta})',
         ['delta', 'du', 'dv', 'theta'],
         (x) => x.delta! - (x.du! * Math.cos(x.theta! * D) + x.dv! * sinD(x.theta!)),
         {
@@ -602,7 +602,7 @@ function element(
       ),
       rel(
         'f = (AE ÷ L)δ',
-        '{f} = {A}{E}{delta} ÷ (1000{L})',
+        '{f} = {A} × {E} × {delta} ÷ (1000 × {L})',
         ['f', 'A', 'E', 'delta', 'L'],
         (x) => x.f! - (x.A! * x.E! * x.delta!) / (1000 * x.L!),
         {
@@ -620,7 +620,7 @@ function element(
       ),
       rel(
         'σ = f ÷ A',
-        '{sigma} = 1000{f} ÷ {A}',
+        '{sigma} = 1000 × {f} ÷ {A}',
         ['sigma', 'f', 'A'],
         (x) => x.sigma! - (1000 * x.f!) / x.A!,
         {

@@ -254,3 +254,8 @@ College card figure `skeletal` (HC2, `layouts/skeletalCard.tsx`, `typesHe1c.ts`)
 112 × 76 from a SMILES-like spec (`CC(=O)OCC`, `c1cc[nH]c1`, `C[C@H](O)CC`), its group lit
 (`carboxyl`, `ester`, `amide`, `nitrile`, `aldehyde`, `ketone`, `hydroxyl`, `amine`, … or atom
 numbers), the parent chain numbered, and CIP ranks with R or S on `center`.
+
+College card figure `trussJoint` (HC27, `layouts/trussJointCard.tsx`, `typesHe2i.ts`): `{ kind:
+'trussJoint', members, load?, support? }`, one truss joint at 96 × 72: its members (directions in
+degrees, 0 right, 90 up), a load pushing in along its direction, a pin or roller under it. It
+never marks the zero-force members (statics#1~zero-force asks which they are).

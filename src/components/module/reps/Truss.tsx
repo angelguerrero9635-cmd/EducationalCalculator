@@ -355,7 +355,7 @@ function TrussFrame({ spec, calc }: { spec: TrussSpec; calc: Calculator }) {
     }
     if (sp.kind === 'pin' && spec.counts) {
       // The pin's second reaction, counted in r (zero under vertical loads).
-      const hx = left ? x - 46 : x + 46;
+      const hx = left ? x - 34 : x + 34;
       reactionEls.push(
         <Arrow
           key={`rx${i}`}
@@ -566,7 +566,15 @@ function TrussFrame({ spec, calc }: { spec: TrussSpec; calc: Calculator }) {
     });
     if (show) {
       const text = typeof id === 'string' ? valueLabel(id)! : `δ = ${fmt(deflect.delta)} mm`;
-      place('delta', [[X(J.x) + 12 + labelW(text) / 2, Y(J.y) + drop + 16]], text, c.beamDeflect);
+      place(
+        'delta',
+        [
+          [X(J.x), Y(J.y) + drop + 22],
+          [X(J.x), Y(J.y) + drop + 40],
+        ],
+        text,
+        c.beamDeflect,
+      );
     }
   }
 
@@ -747,7 +755,7 @@ function TrussElement({ spec, calc }: { spec: TrussSpec; calc: Calculator }) {
   const [xmin, xmax] = span(len, 0);
   const [ymin, ymax] = span(len, 1);
   const top = 40;
-  const BH = top + (ymax - ymin) + 74;
+  const BH = top + (ymax - ymin) + 62;
   const ox = (BW - (xmax - xmin)) / 2 - xmin;
   const oy = top + ymax;
   const P = (x: number, y: number) => [ox + x, oy - y] as const;
@@ -771,7 +779,9 @@ function TrussElement({ spec, calc }: { spec: TrussSpec; calc: Calculator }) {
           !placed.some((b) => hits(b, boxAt(x, y, text))) &&
           x - labelW(text) / 2 > 2 &&
           x + labelW(text) / 2 < BW - 2,
-      ) ?? spots[0]!;
+      ) ??
+      spots.find(([x]) => x - labelW(text) / 2 > 2 && x + labelW(text) / 2 < BW - 2) ??
+      spots[0]!;
     placed.push(boxAt(spot[0], spot[1], text));
     els.push(
       <HeLabel key={key} x={spot[0]} y={spot[1]} text={text} color={color} w={BW} size={SIZE} />,
@@ -824,12 +834,26 @@ function TrussElement({ spec, calc }: { spec: TrussSpec; calc: Calculator }) {
       els.push(
         <Arrow key="delta" x1={n2x} y1={n2y} x2={fx} y2={fy} color={c.beamDeflect} width={3} />,
       );
+    // The arrows are kept clear of the labels.
+    for (const [x1, y1, x2, y2] of [
+      [n2x, n2y, ux, uy],
+      [ux, uy, mx, my],
+      [n2x, n2y, fx, fy],
+    ])
+      placed.push({
+        x1: Math.min(x1!, x2!) - 4,
+        y1: Math.min(y1!, y2!) - 4,
+        x2: Math.max(x1!, x2!) + 4,
+        y2: Math.max(y1!, y2!) + 4,
+      });
     const duText = label(e.du, 'Δu', du, 'mm');
     put(
       'dul',
       [
         [(n2x + ux) / 2, n2y + (mv > 0 ? 18 : -10)],
         [(n2x + ux) / 2, n2y + (mv > 0 ? -10 : 18)],
+        [n2x - (mu >= 0 ? 1 : -1) * (14 + half(duText)), n2y + 18],
+        [n2x + (mu >= 0 ? 1 : -1) * half(duText), n2y + 34],
       ],
       duText,
       c.trussTension,
@@ -841,6 +865,8 @@ function TrussElement({ spec, calc }: { spec: TrussSpec; calc: Calculator }) {
       [
         [ux + side * (10 + half(dvText)), (uy + my) / 2 + 4],
         [ux - side * (10 + half(dvText)), (uy + my) / 2 + 4],
+        [ux - side * half(dvText), Math.min(uy, my) - 10],
+        [ux - side * half(dvText), Math.max(uy, my) + 18],
       ],
       dvText,
       c.trussCompression,
@@ -855,6 +881,7 @@ function TrussElement({ spec, calc }: { spec: TrussSpec; calc: Calculator }) {
         [fx - nx * 18, fy - ny * 18 + 4],
         [fx + nx * 18, fy + ny * 18 + 4],
         [tx, ty - 14],
+        [Math.min(BW - 4 - half(dText), Math.max(4 + half(dText), fx)), Math.min(fy, my) - 18],
       ],
       dText,
       c.beamDeflect,

@@ -46,6 +46,6 @@ export const HE2I_REQUESTS: PictureRequest[] = [
       "advanced-solid-mechanics#2~truss: statics#1's 8 m by 3 m truss with deflect: { joint: 'C', delta: 'delta', A: 'A', E: 'E' } and members tied to F_incl and F_bot: δ = ΣFfL ÷ (AE) = 105 kN·m ÷ (AE) = 0.525 mm, the moved apex dashed (g.he-truss-deflection).",
       "finite-element-analysis#2: { kind: 'truss', mode: 'element', element: { L: 'L', theta: 'theta', du: 'du', dv: 'dv', delta: 'delta', A: 'A', E: 'E', f: 'f', sigma: 'sigma' } }: element 1 between nodes 1 and 2, θ marked, node 2 moved by Δu then Δv (drawn larger, the factor in the caption), δ along the bar = 0.533 mm, f = 26.65 kN, σ = 53.3 MPa (g.he-truss-element; θ = 120° in g.he-truss-element-steep).",
       'Harness (truss): every joint balances with the drawn forces, reactions and loads; zero-force members are exactly 0; a page force matches the drawn one in size and, when negative, is compression; m, j, r and m + r − 2j match the drawing; the cut chord force × h equals the moment about the cut joint, and F_d sin θ = V; R = (n − 1)P ÷ 2; δ = ΣFfL ÷ (AE); δ = Δu cos θ + Δv sin θ, f = (AE ÷ L)δ, σ = f ÷ A. Cards: members at least 25° apart, the load’s arrow off every member, no member into the support.',
-    ],
+    ].join(' '),
   },
 ];
