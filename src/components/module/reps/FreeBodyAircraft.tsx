@@ -390,7 +390,7 @@ export function FreeBodyAircraft({
 
   function front() {
     const H = 300;
-    const phi = Math.min(85, Math.max(0, num(a.phi)));
+    const phi = Math.min(89, Math.max(0, num(a.phi)));
     const hasW = a.weight !== undefined;
     const W = hasW ? Math.max(0, num(a.weight)) : 1;
     const V = num(a.speed);

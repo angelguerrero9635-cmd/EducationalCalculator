@@ -233,10 +233,7 @@ export interface CmTangential {
 
 /** `circularMotion` with one college mode (HC35). */
 export type CircularMotionHe2fSpec = { kind: 'circularMotion'; fixed?: boolean } & (
-  | CmHohmann
-  | CmVisViva
-  | CmPair
-  | CmTangential
+  CmHohmann | CmVisViva | CmPair | CmTangential
 );
 
 /** The college pictures of group HE2F. */
@@ -261,8 +258,20 @@ export function he2fSpecVars(r: He2fSpec): string[] {
   if (r.kind === 'circularMotion') {
     switch (r.mode) {
       case 'hohmann':
-        return ids(r.mu, r.r1, r.r2, r.a, r.v1, r.vp, r.va, r.v2, r.dv1, r.dv2, r.vinf, r.tof)
-          .concat(ids(r.bodyRadius));
+        return ids(
+          r.mu,
+          r.r1,
+          r.r2,
+          r.a,
+          r.v1,
+          r.vp,
+          r.va,
+          r.v2,
+          r.dv1,
+          r.dv2,
+          r.vinf,
+          r.tof,
+        ).concat(ids(r.bodyRadius));
       case 'visViva':
         return ids(r.mu, r.rp, r.ra, r.r, r.a, r.v, r.bodyRadius);
       case 'pair':

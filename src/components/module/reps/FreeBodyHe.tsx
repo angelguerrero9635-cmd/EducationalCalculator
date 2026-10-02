@@ -24,7 +24,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useRep } from './common';
 import { FreeBodyAircraft } from './FreeBodyAircraft';
 import { bankOf, capstan, ladderOf, pulleyOf, tipOf } from './he2fMath';
-import { fmt, Tag, tagW, tipLabel, valueText } from './he2fKit';
+import { fmt, Tag, tipLabel, valueText } from './he2fKit';
 import { formulaOnly, RAD, Vec } from './hskKit';
 import { Metal, TopLight, url, usePaintIds } from './paint';
 
@@ -469,8 +469,10 @@ function LadderView({ spec, l, calc }: { spec: FreeBodyHe2fSpec; l: FbLadder; ca
           // "L sin θ" just under the wall line; N_f's label beside its tip, or by the foot.
           const armY = T.y + 15;
           const nfY = Math.abs(NfTip + 12 - armY) < 22 ? F.y - 10 : NfTip + 12;
-          // θ's glyph inside the angle, clear of the floor at low angles.
-          const glyph = Math.max(40, 8 / Math.sin(Math.max(th, 0.05) / 2));
+          // θ's glyph inside the angle; at low angles far enough out to clear the floor and rails.
+          const low = deg < 40;
+          const glyph = low ? Math.max(34, 24 / Math.tan(th)) : 34;
+          const arcR = low ? glyph - 12 : 26;
           const handle = !spec.fixed && typeof l.angle === 'string' && rep.known(l.angle);
           return (
             <>
@@ -551,13 +553,13 @@ function LadderView({ spec, l, calc }: { spec: FreeBodyHe2fSpec; l: FbLadder; ca
                   );
                 })}
                 <Path
-                  d={`M ${F.x + 26} ${F.y} A 26 26 0 0 0 ${F.x + 26 * u.x} ${F.y + 26 * u.y}`}
+                  d={`M ${F.x + arcR} ${F.y} A ${arcR} ${arcR} 0 0 0 ${F.x + arcR * u.x} ${F.y + arcR * u.y}`}
                   stroke={c.chartInk}
                   fill="none"
                 />
                 <Tag
-                  x={F.x + glyph * Math.cos(th / 2)}
-                  y={F.y - glyph * Math.sin(th / 2) + 4}
+                  x={low ? F.x + glyph : F.x + glyph * Math.cos(th / 2)}
+                  y={low ? F.y - 4 : F.y - glyph * Math.sin(th / 2) + 4}
                   text="θ"
                   chip={false}
                   bold={false}

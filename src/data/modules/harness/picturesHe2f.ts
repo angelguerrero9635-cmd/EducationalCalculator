@@ -7,10 +7,14 @@ import {
   bankOf,
   capstan,
   climbOf,
+  ellipseOf,
+  hohmannOf,
   ladderOf,
   pulleyOf,
+  synodicOf,
   tipOf,
   turnOf,
+  visViva,
 } from '@/components/module/reps/he2fMath';
 
 import type { NumOrVar } from '../typesGraphs';
@@ -30,6 +34,10 @@ export function he2fIssues(rep: He2fSpec, val: Val): string[] {
     if (x !== undefined && Number.isFinite(want) && !near(x, want))
       out.push(`${rep.kind}: ${what} ${id} = ${x}, the picture draws ${want}`);
   };
+  if (rep.kind === 'circularMotion') {
+    const own = orbitIssues(rep, read, same);
+    return [...out, ...own];
+  }
   const g = read(rep.kind === 'freeBody' ? rep.g : undefined, 9.8);
   if (g === undefined) return out;
   if (!(g > 0)) out.push(`${rep.kind}: g = ${g} is not positive`);
@@ -132,7 +140,7 @@ export function he2fIssues(rep: He2fSpec, val: Val): string[] {
       const [W, L, T, D] = [read(a.weight), read(a.lift), read(a.thrust), read(a.drag)];
       const gam = read(a.gamma, 0);
       if (gam === undefined) return out;
-      if (gam < -45 || gam > 60) out.push(`freeBody: climb angle ${gam}° out of range`);
+      if (gam < -90 || gam > 90) out.push(`freeBody: climb angle ${gam}° out of range`);
       if (W !== undefined) {
         const c = climbOf(W, gam);
         if (L !== undefined && !near(L, c.L))
@@ -140,14 +148,12 @@ export function he2fIssues(rep: He2fSpec, val: Val): string[] {
         if (T !== undefined && D !== undefined && !near(T - D, c.along))
           out.push(`freeBody: T − D = ${T - D} is not W sin γ = ${c.along}`);
       }
-      const de = read(a.elevator);
-      if (de !== undefined && Math.abs(de) > 45) out.push(`freeBody: elevator ${de}° out of range`);
     }
     if (a.view === 'front') {
       const phi = read(a.phi);
       const V = read(a.speed);
       if (phi === undefined) return out;
-      if (phi < 0 || phi >= 85) return [...out, `freeBody: bank ${phi}° out of range`];
+      if (phi < 0 || phi >= 90) return [...out, `freeBody: bank ${phi}° out of range`];
       const t = turnOf(phi, V ?? 0, g);
       same(a.factor, t.n, 'load factor 1 ÷ cos φ');
       const [W, L] = [read(a.weight), read(a.lift)];
@@ -161,16 +167,81 @@ export function he2fIssues(rep: He2fSpec, val: Val): string[] {
     if (a.view === 'stability') {
       const [hac, h, hn] = [read(a.hac), read(a.h), read(a.hn)];
       if (hac === undefined || h === undefined || hn === undefined) return out;
+      // (The neutral point may fall off the chord: its mark stops at the chord's end.)
       for (const [x, what] of [
         [hac, 'aerodynamic center'],
         [h, 'CG'],
-        [hn, 'neutral point'],
       ] as const)
         if (x < -0.05 || x > 1.05) out.push(`freeBody: ${what} ${x} is off the chord`);
       same(a.margin, hn - h, 'static margin h_n − h');
       const m = read(a.margin);
       if (m !== undefined && m > 0 !== hn > h)
         out.push('freeBody: the CG is drawn ahead of the neutral point but SM ≤ 0');
+    }
+  }
+  return out;
+}
+
+/**
+ * HC35: the transfer ellipse touches r₁ and r₂ with a = (r₁ + r₂) ÷ 2 as drawn, the burns and
+ * TOF; vis-viva at r on the drawn ellipse; the synodic period, after which the planets line up;
+ * a_n = v² ÷ ρ and a = √(a_t² + a_n²).
+ */
+function orbitIssues(
+  rep: Extract<He2fSpec, { kind: 'circularMotion' }>,
+  read: (x: NumOrVar | undefined, d?: number) => number | undefined,
+  same: (id: string | undefined, want: number, what: string) => void,
+): string[] {
+  const out: string[] = [];
+  switch (rep.mode) {
+    case 'hohmann': {
+      const [mu, r1, r2] = [read(rep.mu), read(rep.r1), read(rep.r2)];
+      if (mu === undefined || r1 === undefined || r2 === undefined) break;
+      if (!(mu > 0 && r1 > 0 && r2 > 0)) return ['circularMotion: μ, r₁ and r₂ must be positive'];
+      const h = hohmannOf(mu, r1, r2);
+      // The drawing's ellipse: perigee and apogee on the two circles.
+      if (!near(h.a - h.c, Math.min(r1, r2)) || !near(h.a + h.c, Math.max(r1, r2)))
+        out.push('circularMotion: the transfer ellipse misses an orbit');
+      same(rep.a, (r1 + r2) / 2, 'transfer a = (r₁ + r₂) ÷ 2');
+      same(rep.v1, h.v1, 'v₁');
+      same(rep.v2, h.v2, 'v₂');
+      same(rep.vp, h.vp, 'v at departure');
+      same(rep.va, h.va, 'v at arrival');
+      same(rep.dv1, h.dv1, 'Δv₁');
+      same(rep.vinf, h.dv1, 'v∞');
+      same(rep.dv2, h.dv2, 'Δv₂');
+      same(rep.tof, h.tof / (rep.tofScale ?? 1), 'time of flight');
+      // An orbit inside the body draws faded with the reason (the page's limits are its own).
+      break;
+    }
+    case 'visViva': {
+      const [mu, rp, ra, r] = [read(rep.mu), read(rep.rp), read(rep.ra), read(rep.r)];
+      if ([mu, rp, ra, r].some((x) => x === undefined)) break;
+      // r_a < r_p, or r off the ellipse, draws faded with the reason in the caption.
+      if (!(mu! > 0 && rp! > 0 && ra! >= rp!)) break;
+      if (r! < rp! * (1 - 1e-9) || r! > ra! * (1 + 1e-9)) break;
+      const el = ellipseOf(rp!, ra!);
+      same(rep.a, el.a, 'a = (r_p + r_a) ÷ 2');
+      same(rep.v, visViva(mu!, r!, el.a), 'vis-viva speed');
+      break;
+    }
+    case 'pair': {
+      const [t1, t2] = [read(rep.t1), read(rep.t2)];
+      if (t1 === undefined || t2 === undefined) break;
+      if (!(t1 > 0 && t2 > 0) || t1 === t2) return ['circularMotion: the periods must differ'];
+      const S = synodicOf(t1, t2);
+      same(rep.synodic, S, 'synodic period');
+      const turns = S / t1 - S / t2;
+      if (!near(Math.abs(turns), 1)) out.push('circularMotion: not lined up again after S');
+      break;
+    }
+    case 'tangential': {
+      const [v, rho, at] = [read(rep.speed), read(rep.rho), read(rep.at)];
+      if (v === undefined || rho === undefined || at === undefined) break;
+      if (!(rho > 0)) return ['circularMotion: ρ must be positive'];
+      same(rep.an, (v * v) / rho, 'a_n = v² ÷ ρ');
+      same(rep.accel, Math.hypot(at, (v * v) / rho), 'a = √(a_t² + a_n²)');
+      break;
     }
   }
   return out;

@@ -29,6 +29,7 @@ const CM = 'he.physics.classical-mechanics';
 const STAT = 'he.engineering.statics';
 const DYN = 'he.engineering.dynamics';
 const FM = 'he.engineering.flight-mechanics';
+const OM = 'he.engineering.orbital-mechanics';
 
 export const HE2F_REQUESTS: PictureRequest[] = [
   {
@@ -103,6 +104,40 @@ export const HE2F_REQUESTS: PictureRequest[] = [
       'g.he-free-body-aircraft-stability',
       'g.he-free-body-aircraft-unstable',
       'g.he-free-body-aircraft-elevator',
+    ],
+  },
+  {
+    ...ask(
+      'HC35',
+      'circularMotion',
+      'Orbits and path coordinates on `circularMotion`: a Hohmann transfer, vis-viva on an ellipse, two planets’ angles, n–t acceleration on a curve',
+      {
+        [`${CM}#2~hohmann`]: '"hohmann"',
+        [`${OM}#0~vis-viva`]: '"visViva"',
+        [`${OM}#2`]: '"hohmann"',
+        [`${OM}#3`]: '"planets"',
+        [`${OM}#3~synodic`]: '"pair"',
+        [`${DYN}#0~nt`]: '"tangential"',
+      },
+      [
+        'From P-P3 (transfer), ACC-P12, ME-P28. Drawn by reps/CircularOrbits.tsx (types in typesHe2f.ts, arithmetic in he2fMath.ts, check in harness/picturesHe2f.ts); the K–12 modes draw as before. μ (GM) comes from the page, as a number or a value, in the units of r and v (km³/s² with km and km/s); orbits are to scale, Earth painted and to scale with `bodyRadius`; the Sun and planets of an interplanetary transfer are not to scale and the picture says so.',
+        'Fields: `{ kind: "circularMotion", mode: "hohmann", mu, r1, r2, a?, v1?, vp?, va?, v2?, dv1?, dv2?, vinf?, tof?, tofScale? (3600 for hours, 86,400 for days), body?: "earth" | "sun", bodyRadius?, planets?: [from, to] }` (both circles dashed, the transfer half solid from perigee over the top, the other half faint, Δv₁ (or v∞) and Δv₂ arrows on one scale, TOF at the top, r₁, r₂ and a = (r₁ + r₂) ÷ 2 under it). `{ mode: "visViva", mu, rp, ra, r, a?, v?, body?, bodyRadius? }` (the point where the distance is r, on the way out, r dashed from the focus, v along the orbit to a scale of v_p). `{ mode: "pair", t1, t2, synodic?, time?, planets? }` (radii by T^(2/3), lined up at t = 0, drawn at `time` or after S, each angle and its laps). `{ mode: "tangential", speed, rho, at, an?, accel? }` (v, a_t, a_n toward the center of curvature, a with its parallelogram; ρ drawn one length).',
+        'Harness: the ellipse touches r₁ at perigee and r₂ at apogee with a = (r₁ + r₂) ÷ 2; v₁, v_p, v_a, v₂, Δv₁ (v∞), Δv₂ and TOF; r between r_p and r_a and v by vis-viva; 1 ÷ S = 1 ÷ T₁ − 1 ÷ T₂ and one lap gained over S; a_n = v² ÷ ρ, a = √(a_t² + a_n²).',
+        'Examples: orbital-mechanics#2 main: { kind: "circularMotion", mode: "hohmann", mu: 398600, r1: "r1", r2: "r2", a: "a", v1: "v1", vp: "vp", va: "va", v2: "v2", dv1: "dv1", dv2: "dv2", tof: "tof", tofScale: 3600, bodyRadius: 6378 }. #3 main: { mode: "hohmann", mu: 1.32712e11, r1: "r1", r2: "r2", vinf: "vinf", tof: "tof", tofScale: 86400, body: "sun", planets: ["earth", "mars"] }. #0~vis-viva: { mode: "visViva", mu: 398600, rp: "rp", ra: "ra", r: "r", a: "a", v: "v", bodyRadius: 6378 }. #3~synodic: { mode: "pair", t1: "T1", t2: "T2", synodic: "S", planets: ["earth", "mars"] }. dynamics#0~nt: { mode: "tangential", speed: "v", rho: "rho", at: "at", an: "an", accel: "a" }. classical-mechanics#2~hohmann: as the g.he-circular-motion-hohmann-gm demo, mu: "GM".',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-circular-motion-hohmann',
+      'g.he-circular-motion-hohmann-wide',
+      'g.he-circular-motion-hohmann-gm',
+      'g.he-circular-motion-hohmann-mars',
+      'g.he-circular-motion-vis-viva',
+      'g.he-circular-motion-vis-viva-apogee',
+      'g.he-circular-motion-pair',
+      'g.he-circular-motion-pair-jupiter',
+      'g.he-circular-motion-nt',
+      'g.he-circular-motion-nt-braking',
     ],
   },
 ];

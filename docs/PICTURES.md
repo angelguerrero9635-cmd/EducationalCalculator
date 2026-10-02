@@ -401,6 +401,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `hrDiagram`        | `mass`, `luminosity?`, `lifetime?`       | a main-sequence star placed by mass, L = M^3.5; 3, 10, 30 M☉ marked (H103)    |
 | `circularMotion`   | kepler `starMass`                        | round another star: a³ = M × T², star, closest and farthest labels (H110)     |
 | `circularMotion`   | kepler `eccentricity` to 0.97            | long comet ellipses such as Halley's Comet (e = 0.967) (H110)                 |
+| `circularMotion`   | `mode: 'hohmann'`, `mu`, `r1`, `r2`, …   | two orbits, the transfer half-ellipse, Δv₁ or v∞, Δv₂, TOF; or Sun (HC35)     |
+| `circularMotion`   | `mode: 'visViva'`, `rp`, `ra`, `r`       | the point at r on the ellipse, r from the focus, v = √(μ(2/r − 1/a)) (HC35)   |
+| `circularMotion`   | `mode: 'pair'`, `t1`, `t2`               | two planets lined up at t = 0 and again after S, each angle and laps (HC35)   |
+| `circularMotion`   | `mode: 'tangential'`, `rho`, `at`, …     | n–t: v, a_t, a_n = v²/ρ to the center of curvature, a = their sum (HC35)      |
 | `rotor`            | `hollow: true`                           | the hollow ball (c = ⅔, a shell cut open) in the compare row (H111)           |
 | `normalCurve`      | `f.tailsFrom: id`                        | one tail or two as the Hₐ value says (1, 3, 4 right; 0, 6 both) (H112)        |
 | `pascalTriangle`   | `fraction.b`, `fraction.r`               | exactly k of r: C(a, k) × C(b, r − k) ÷ C(a + b, r), to 60 (H113)             |

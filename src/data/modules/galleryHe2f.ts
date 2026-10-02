@@ -9,11 +9,16 @@
  * HC25: the `freeBody` aircraft (level, stall, climb, a turn, a steep turn and the bank for a
  * standard-rate turn, static stability stable and unstable, the elevator to trim), from the
  * flight-mechanics plan.
+ *
+ * HC35: `circularMotion` orbits and path coordinates (Hohmann transfers round Earth, with GM as
+ * a value, out to r₂ ÷ r₁ = 11.9 and Earth to Mars round the Sun; vis-viva on an ellipse and at
+ * apogee; two planets' synodic period; n–t components speeding up and braking).
  */
 import type { Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
+import type { PlanetName } from './typesPhysics8';
 
 type Fn = (x: Values) => number | number[] | undefined;
 
@@ -804,7 +809,7 @@ const levelD = (W: number, rho: number, V: number, S: number, CD0: number, K: nu
 const aircraftLevel = demo({
   id: 'g.he-free-body-aircraft-level',
   title: 'Free body: an airplane in steady, level flight',
-  use: 'Use this for “A 50,000 N airplane flies level at 80 m/s where ρ = 1.0 kg/m³ (S = 20 m², C_D0 = 0.025, K = 0.05). Find C_L and the thrust required.”',
+  use: 'Use this for “A 50,000 N airplane flies level at 80 m/s where ρ = 1 kg/m³ (S = 20 m², C_D0 = 0.025, K = 0.05). Find C_L and the thrust required.”',
   assumptions: [
     'Steady, level, unaccelerated flight: L = W and T = D.',
     'A parabolic drag polar, C_D = C_D0 + KC_L².',
@@ -1354,6 +1359,641 @@ const aircraftElevator = demo({
   },
 });
 
+// ─── HC35 circularMotion: orbits and path coordinates ───────────────────────
+
+const MU_E = 398600;
+const MU_S = 1.32712e11;
+/** A radius round Earth: from its surface (6378 km) out to the Moon's distance and beyond. */
+const km = (id: string, symbol: string, name: string, more: Partial<VariableDef> = {}) =>
+  vr(id, symbol, name, 'km', 6400, 5e5, { step: 1, ...more });
+const kms = (id: string, symbol: string, name: string) =>
+  vr(id, symbol, name, 'km/s', -1000, 1000, { derived: true });
+
+/** A Hohmann transfer round Earth (μ = 398,600 km³/s²), every speed and the time of flight. */
+function hohmannEarth(id: string, r2: number, title: string, use: string): ModuleDef {
+  const r1 = 6778;
+  const mu = MU_E;
+  const a = (r1 + r2) / 2;
+  const sq = Math.sqrt;
+  const ex = {
+    r1,
+    r2,
+    a,
+    v1: sq(mu / r1),
+    vp: sq(mu * (2 / r1 - 1 / a)),
+    va: sq(mu * (2 / r2 - 1 / a)),
+    v2: sq(mu / r2),
+  };
+  const example = {
+    ...ex,
+    dv1: ex.vp - ex.v1,
+    dv2: ex.v2 - ex.va,
+    tof: (Math.PI * sq(a ** 3 / mu)) / 3600,
+  };
+  const circ = (v: string, r: string, which: string): Rule =>
+    rule(
+      `${which} = √(μ ÷ r)`,
+      `{${v}} = √(398600 ÷ {${r}})`,
+      [v, r],
+      (x) => x[v]! ** 2 * x[r]! - mu,
+      {
+        [v]: [
+          (x) => sq(mu / x[r]!),
+          `√(398600 ÷ {${r}})`,
+          'A circular orbit’s speed: gravity is the centripetal force.',
+        ],
+        [r]: [(x) => mu / x[v]! ** 2, `398600 ÷ {${v}}²`, 'Undo v = √(μ ÷ r) for r.'],
+      },
+    );
+  const vis = (v: string, r: string, which: string): Rule =>
+    rule(
+      `${which} = √(μ(2 ÷ r − 1 ÷ a))`,
+      `{${v}} = √(398600 × (2 ÷ {${r}} − 1 ÷ {a}))`,
+      [v, r, 'a'],
+      (x) => x[v]! ** 2 - mu * (2 / x[r]! - 1 / x.a!),
+      {
+        [v]: [
+          (x) => (2 / x[r]! > 1 / x.a! ? sq(mu * (2 / x[r]! - 1 / x.a!)) : undefined),
+          `√(398600 × (2 ÷ {${r}} − 1 ÷ {a}))`,
+          'Vis-viva on the transfer ellipse at that end.',
+        ],
+        a: [
+          (x) => div(1, 2 / x[r]! - x[v]! ** 2 / mu),
+          `1 ÷ (2 ÷ {${r}} − {${v}}² ÷ 398600)`,
+          'Undo vis-viva for a.',
+        ],
+      },
+    );
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Coplanar circular orbits; two impulsive burns; μ = 398,600 km³/s² for Earth.',
+      'The transfer is half an ellipse with perigee on r₁ and apogee on r₂.',
+      'Radii are from Earth’s center, not altitudes.',
+    ],
+    variables: [
+      km('r1', 'r₁', 'Inner orbit radius'),
+      km('r2', 'r₂', 'Outer orbit radius'),
+      km('a', 'a', 'Transfer semi-major axis', { derived: true }),
+      kms('v1', 'v₁', 'Speed on the inner orbit'),
+      kms('vp', 'v_p', 'Transfer speed at perigee'),
+      kms('va', 'v_a', 'Transfer speed at apogee'),
+      kms('v2', 'v₂', 'Speed on the outer orbit'),
+      kms('dv1', 'Δv₁', 'First burn'),
+      kms('dv2', 'Δv₂', 'Second burn'),
+      vr('tof', 'TOF', 'Time of flight', 'h', 0, 1e7, { derived: true }),
+    ],
+    rules: [
+      rule(
+        'a = (r₁ + r₂) ÷ 2',
+        '{a} = ({r1} + {r2}) ÷ 2',
+        ['a', 'r1', 'r2'],
+        (x) => 2 * x.a! - x.r1! - x.r2!,
+        {
+          a: [
+            (x) => (x.r1! + x.r2!) / 2,
+            '({r1} + {r2}) ÷ 2',
+            'The transfer ellipse spans from r₁ to r₂.',
+          ],
+          r1: [(x) => 2 * x.a! - x.r2!, '2 × {a} − {r2}', 'Undo a = (r₁ + r₂) ÷ 2 for r₁.'],
+          r2: [(x) => 2 * x.a! - x.r1!, '2 × {a} − {r1}', 'Undo a = (r₁ + r₂) ÷ 2 for r₂.'],
+        },
+      ),
+      circ('v1', 'r1', 'v₁'),
+      vis('vp', 'r1', 'v_p'),
+      vis('va', 'r2', 'v_a'),
+      circ('v2', 'r2', 'v₂'),
+      rule(
+        'Δv₁ = v_p − v₁',
+        '{dv1} = {vp} − {v1}',
+        ['dv1', 'vp', 'v1'],
+        (x) => x.dv1! - x.vp! + x.v1!,
+        {
+          dv1: [
+            (x) => x.vp! - x.v1!,
+            '{vp} − {v1}',
+            'The first burn speeds up from the circle onto the ellipse.',
+          ],
+          vp: [(x) => x.v1! + x.dv1!, '{v1} + {dv1}', 'Add the burn to the circular speed.'],
+        },
+      ),
+      rule(
+        'Δv₂ = v₂ − v_a',
+        '{dv2} = {v2} − {va}',
+        ['dv2', 'v2', 'va'],
+        (x) => x.dv2! - x.v2! + x.va!,
+        {
+          dv2: [(x) => x.v2! - x.va!, '{v2} − {va}', 'The second burn circularizes at apogee.'],
+          va: [(x) => x.v2! - x.dv2!, '{v2} − {dv2}', 'Take the burn from the circular speed.'],
+        },
+      ),
+      rule(
+        'TOF = π√(a³ ÷ μ)',
+        '{tof} = π × √({a}³ ÷ 398600) ÷ 3600',
+        ['tof', 'a'],
+        (x) => x.tof! * 3600 - Math.PI * sq(x.a! ** 3 / mu),
+        {
+          tof: [
+            (x) => (Math.PI * sq(x.a! ** 3 / mu)) / 3600,
+            'π × √({a}³ ÷ 398600) ÷ 3600',
+            'Half the transfer orbit’s period, in hours.',
+          ],
+          a: [
+            (x) => Math.cbrt(mu * ((x.tof! * 3600) / Math.PI) ** 2),
+            '∛(398600 × ({tof} × 3600 ÷ π)²)',
+            'Undo the half period for a.',
+          ],
+        },
+      ),
+    ],
+    example,
+    startWith: ['r1', 'r2'],
+    representation: {
+      kind: 'circularMotion',
+      mode: 'hohmann',
+      mu: MU_E,
+      r1: 'r1',
+      r2: 'r2',
+      a: 'a',
+      v1: 'v1',
+      vp: 'vp',
+      va: 'va',
+      v2: 'v2',
+      dv1: 'dv1',
+      dv2: 'dv2',
+      tof: 'tof',
+      tofScale: 3600,
+      bodyRadius: 6378,
+    },
+  });
+}
+
+const hohmannGeo = hohmannEarth(
+  'g.he-circular-motion-hohmann',
+  42164,
+  'Orbits: a Hohmann transfer from low orbit to geostationary',
+  'Use this for “Find Δv₁, Δv₂ and the time of flight from a 6778 km orbit to geostationary, 42,164 km.”',
+);
+
+const hohmannWide = hohmannEarth(
+  'g.he-circular-motion-hohmann-wide',
+  80658,
+  'Orbits: a Hohmann transfer at r₂ ÷ r₁ = 11.9',
+  'Use this for “At what ratio of radii does a Hohmann transfer stop being the cheapest two-burn transfer?”',
+);
+
+const hp = (() => {
+  const [GM, r1, r2] = [398600, 6700, 42164];
+  const dv1 = Math.sqrt(GM / r1) * (Math.sqrt((2 * r2) / (r1 + r2)) - 1);
+  const dv2 = Math.sqrt(GM / r2) * (1 - Math.sqrt((2 * r1) / (r1 + r2)));
+  const t = (Math.PI * Math.sqrt(((r1 + r2) / 2) ** 3 / GM)) / 3600;
+  return { GM, r1, r2, dv1, dv2, dvt: dv1 + dv2, t };
+})();
+
+const hohmannPhysics = demo({
+  id: 'g.he-circular-motion-hohmann-gm',
+  title: 'Orbits: a Hohmann transfer with GM as a value',
+  use: 'Use this for “With GM = 398,600 km³/s², what total Δv takes a craft from 6700 km to 42,164 km, and how long is the coast?”',
+  assumptions: [
+    'Two impulsive, tangential burns between coplanar circular orbits.',
+    'GM, r and v in km³/s², km and km/s; the time in hours.',
+  ],
+  variables: [
+    vr('GM', 'GM', 'Gravitational parameter', 'km³/s²', 1, 1e12, { step: 1 }),
+    km('r1', 'r₁', 'Inner orbit radius'),
+    km('r2', 'r₂', 'Outer orbit radius'),
+    kms('dv1', 'Δv₁', 'First burn'),
+    kms('dv2', 'Δv₂', 'Second burn'),
+    kms('dvt', 'Δv', 'Total Δv'),
+    vr('t', 't', 'Transfer time', 'h', 0, 1e9, { derived: true }),
+  ],
+  rules: [
+    rule(
+      'Δv₁ = √(GM ÷ r₁)(√(2r₂ ÷ (r₁ + r₂)) − 1)',
+      '{dv1} = √({GM} ÷ {r1}) × (√(2 × {r2} ÷ ({r1} + {r2})) − 1)',
+      ['dv1', 'GM', 'r1', 'r2'],
+      (x) => x.dv1! - Math.sqrt(x.GM! / x.r1!) * (Math.sqrt((2 * x.r2!) / (x.r1! + x.r2!)) - 1),
+      {
+        dv1: [
+          (x) => Math.sqrt(x.GM! / x.r1!) * (Math.sqrt((2 * x.r2!) / (x.r1! + x.r2!)) - 1),
+          '√({GM} ÷ {r1}) × (√(2 × {r2} ÷ ({r1} + {r2})) − 1)',
+          'Perigee speed on the ellipse less the circular speed.',
+        ],
+        GM: [
+          (x) => (x.dv1! / (Math.sqrt((2 * x.r2!) / (x.r1! + x.r2!)) - 1)) ** 2 * x.r1!,
+          '({dv1} ÷ (√(2 × {r2} ÷ ({r1} + {r2})) − 1))² × {r1}',
+          'Undo the first burn for GM.',
+        ],
+      },
+    ),
+    rule(
+      'Δv₂ = √(GM ÷ r₂)(1 − √(2r₁ ÷ (r₁ + r₂)))',
+      '{dv2} = √({GM} ÷ {r2}) × (1 − √(2 × {r1} ÷ ({r1} + {r2})))',
+      ['dv2', 'GM', 'r1', 'r2'],
+      (x) => x.dv2! - Math.sqrt(x.GM! / x.r2!) * (1 - Math.sqrt((2 * x.r1!) / (x.r1! + x.r2!))),
+      {
+        dv2: [
+          (x) => Math.sqrt(x.GM! / x.r2!) * (1 - Math.sqrt((2 * x.r1!) / (x.r1! + x.r2!))),
+          '√({GM} ÷ {r2}) × (1 − √(2 × {r1} ÷ ({r1} + {r2})))',
+          'Circular speed at r₂ less the apogee speed on the ellipse.',
+        ],
+      },
+    ),
+    rule(
+      'Δv = Δv₁ + Δv₂',
+      '{dvt} = {dv1} + {dv2}',
+      ['dvt', 'dv1', 'dv2'],
+      (x) => x.dvt! - x.dv1! - x.dv2!,
+      {
+        dvt: [(x) => x.dv1! + x.dv2!, '{dv1} + {dv2}', 'The two burns add up.'],
+        dv2: [(x) => x.dvt! - x.dv1!, '{dvt} − {dv1}', 'Take the first burn from the total.'],
+      },
+    ),
+    rule(
+      't = π√(((r₁ + r₂) ÷ 2)³ ÷ GM)',
+      '{t} = π × √((({r1} + {r2}) ÷ 2)³ ÷ {GM}) ÷ 3600',
+      ['t', 'r1', 'r2', 'GM'],
+      (x) => x.t! * 3600 - Math.PI * Math.sqrt(((x.r1! + x.r2!) / 2) ** 3 / x.GM!),
+      {
+        t: [
+          (x) => (Math.PI * Math.sqrt(((x.r1! + x.r2!) / 2) ** 3 / x.GM!)) / 3600,
+          'π × √((({r1} + {r2}) ÷ 2)³ ÷ {GM}) ÷ 3600',
+          'Half the period of the transfer ellipse, in hours.',
+        ],
+        GM: [
+          (x) => (Math.PI / (x.t! * 3600)) ** 2 * ((x.r1! + x.r2!) / 2) ** 3,
+          '(π ÷ ({t} × 3600))² × (({r1} + {r2}) ÷ 2)³',
+          'Undo the half period for GM.',
+        ],
+      },
+    ),
+  ],
+  example: hp,
+  startWith: ['GM', 'r1', 'r2'],
+  representation: {
+    kind: 'circularMotion',
+    mode: 'hohmann',
+    mu: 'GM',
+    r1: 'r1',
+    r2: 'r2',
+    dv1: 'dv1',
+    dv2: 'dv2',
+    tof: 't',
+    tofScale: 3600,
+    bodyRadius: 6378,
+  },
+});
+
+const mars = (() => {
+  const [r1, r2, rp] = [1.496e8, 2.279e8, 6678];
+  const vinf = Math.sqrt(MU_S * (2 / r1 - 2 / (r1 + r2))) - Math.sqrt(MU_S / r1);
+  const vc = Math.sqrt(MU_E / rp);
+  const dv = Math.sqrt(vinf ** 2 + (2 * MU_E) / rp) - vc;
+  const tof = (Math.PI * Math.sqrt(((r1 + r2) / 2) ** 3 / MU_S)) / 86400;
+  return { r1, r2, vinf, rp, vc, dv, tof };
+})();
+
+const hohmannMars = demo({
+  id: 'g.he-circular-motion-hohmann-mars',
+  title: 'Orbits: Earth to Mars on a Hohmann transfer round the Sun',
+  use: 'Use this for “Leaving a 300 km parking orbit for Mars, what are v∞, the departure burn and the flight time?”',
+  assumptions: [
+    'Circular, coplanar planet orbits; patched conics (only the Sun’s pull between the planets).',
+    'μ_Sun = 1.32712 × 10¹¹ km³/s², μ_Earth = 398,600 km³/s².',
+    'The departure burn turns the parking orbit’s speed into a hyperbola leaving at v∞.',
+  ],
+  variables: [
+    km('r1', 'r₁', 'Earth’s orbit radius', { min: 5e7, max: 5e9 }),
+    km('r2', 'r₂', 'Mars’s orbit radius', { min: 5e7, max: 5e9 }),
+    kms('vinf', 'v∞', 'Hyperbolic excess speed'),
+    km('rp', 'r_p', 'Parking orbit radius'),
+    kms('vc', 'v_c', 'Parking orbit speed'),
+    kms('dv', 'Δv', 'Departure burn'),
+    vr('tof', 'TOF', 'Time of flight', 'd', 0, 1e9, { derived: true }),
+  ],
+  rules: [
+    rule(
+      'v∞ = √(μ_S(2 ÷ r₁ − 2 ÷ (r₁ + r₂))) − √(μ_S ÷ r₁)',
+      '{vinf} = √(1.32712 × 10¹¹ × (2 ÷ {r1} − 2 ÷ ({r1} + {r2}))) − √(1.32712 × 10¹¹ ÷ {r1})',
+      ['vinf', 'r1', 'r2'],
+      (x) =>
+        x.vinf! - Math.sqrt(MU_S * (2 / x.r1! - 2 / (x.r1! + x.r2!))) + Math.sqrt(MU_S / x.r1!),
+      {
+        vinf: [
+          (x) => Math.sqrt(MU_S * (2 / x.r1! - 2 / (x.r1! + x.r2!))) - Math.sqrt(MU_S / x.r1!),
+          '√(1.32712 × 10¹¹ × (2 ÷ {r1} − 2 ÷ ({r1} + {r2}))) − √(1.32712 × 10¹¹ ÷ {r1})',
+          'The transfer’s perihelion speed less Earth’s own speed round the Sun.',
+        ],
+      },
+    ),
+    rule(
+      'v_c = √(μ_E ÷ r_p)',
+      '{vc} = √(398600 ÷ {rp})',
+      ['vc', 'rp'],
+      (x) => x.vc! ** 2 * x.rp! - MU_E,
+      {
+        vc: [
+          (x) => Math.sqrt(MU_E / x.rp!),
+          '√(398600 ÷ {rp})',
+          'The parking orbit’s circular speed.',
+        ],
+        rp: [(x) => MU_E / x.vc! ** 2, '398600 ÷ {vc}²', 'Undo v_c = √(μ ÷ r) for r_p.'],
+      },
+    ),
+    rule(
+      'Δv = √(v∞² + 2μ_E ÷ r_p) − v_c',
+      '{dv} = √({vinf}² + 2 × 398600 ÷ {rp}) − {vc}',
+      ['dv', 'vinf', 'rp', 'vc'],
+      (x) => x.dv! - Math.sqrt(x.vinf! ** 2 + (2 * MU_E) / x.rp!) + x.vc!,
+      {
+        dv: [
+          (x) => Math.sqrt(x.vinf! ** 2 + (2 * MU_E) / x.rp!) - x.vc!,
+          '√({vinf}² + 2 × 398600 ÷ {rp}) − {vc}',
+          'The hyperbola’s speed at the parking radius less the circular speed.',
+        ],
+      },
+    ),
+    rule(
+      'TOF = π√(((r₁ + r₂) ÷ 2)³ ÷ μ_S)',
+      '{tof} = π × √((({r1} + {r2}) ÷ 2)³ ÷ (1.32712 × 10¹¹)) ÷ 86400',
+      ['tof', 'r1', 'r2'],
+      (x) => x.tof! * 86400 - Math.PI * Math.sqrt(((x.r1! + x.r2!) / 2) ** 3 / MU_S),
+      {
+        tof: [
+          (x) => (Math.PI * Math.sqrt(((x.r1! + x.r2!) / 2) ** 3 / MU_S)) / 86400,
+          'π × √((({r1} + {r2}) ÷ 2)³ ÷ (1.32712 × 10¹¹)) ÷ 86400',
+          'Half the transfer orbit’s period, in days.',
+        ],
+      },
+    ),
+  ],
+  example: mars,
+  startWith: ['r1', 'r2', 'rp'],
+  representation: {
+    kind: 'circularMotion',
+    mode: 'hohmann',
+    mu: MU_S,
+    r1: 'r1',
+    r2: 'r2',
+    vinf: 'vinf',
+    tof: 'tof',
+    tofScale: 86400,
+    body: 'sun',
+    planets: ['earth', 'mars'],
+  },
+});
+
+function visVivaDemo(id: string, r: number, title: string, use: string): ModuleDef {
+  const [rp, ra] = [6778, 42164];
+  const a = (rp + ra) / 2;
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Two-body motion round Earth, μ = 398,600 km³/s²; radii from Earth’s center.',
+      'Vis-viva holds anywhere on the orbit: v² = μ(2 ÷ r − 1 ÷ a).',
+    ],
+    variables: [
+      km('rp', 'r_p', 'Perigee radius'),
+      km('ra', 'r_a', 'Apogee radius'),
+      km('a', 'a', 'Semi-major axis', { derived: true }),
+      km('r', 'r', 'Distance from Earth’s center'),
+      vr('v', 'v', 'Speed there', 'km/s', 0, 1000, { derived: true }),
+    ],
+    rules: [
+      rule(
+        'a = (r_p + r_a) ÷ 2',
+        '{a} = ({rp} + {ra}) ÷ 2',
+        ['a', 'rp', 'ra'],
+        (x) => 2 * x.a! - x.rp! - x.ra!,
+        {
+          a: [
+            (x) => (x.rp! + x.ra!) / 2,
+            '({rp} + {ra}) ÷ 2',
+            'The major axis runs from perigee to apogee.',
+          ],
+          ra: [(x) => 2 * x.a! - x.rp!, '2 × {a} − {rp}', 'Undo a = (r_p + r_a) ÷ 2 for r_a.'],
+          rp: [(x) => 2 * x.a! - x.ra!, '2 × {a} − {ra}', 'Undo a = (r_p + r_a) ÷ 2 for r_p.'],
+        },
+      ),
+      rule(
+        'v² = μ(2 ÷ r − 1 ÷ a)',
+        '{v}² = 398600 × (2 ÷ {r} − 1 ÷ {a})',
+        ['v', 'r', 'a'],
+        (x) => x.v! ** 2 - MU_E * (2 / x.r! - 1 / x.a!),
+        {
+          v: [
+            (x) => (2 / x.r! > 1 / x.a! ? Math.sqrt(MU_E * (2 / x.r! - 1 / x.a!)) : undefined),
+            '√(398600 × (2 ÷ {r} − 1 ÷ {a}))',
+            'Energy per kilogram is the same all round the orbit.',
+          ],
+          r: [
+            (x) => 2 / (x.v! ** 2 / MU_E + 1 / x.a!),
+            '2 ÷ ({v}² ÷ 398600 + 1 ÷ {a})',
+            'Undo vis-viva for r.',
+          ],
+        },
+      ),
+    ],
+    example: { rp, ra, a, r, v: Math.sqrt(MU_E * (2 / r - 1 / a)) },
+    startWith: ['rp', 'ra', 'r'],
+    representation: {
+      kind: 'circularMotion',
+      mode: 'visViva',
+      mu: MU_E,
+      rp: 'rp',
+      ra: 'ra',
+      r: 'r',
+      a: 'a',
+      v: 'v',
+      bodyRadius: 6378,
+    },
+  });
+}
+
+const visVivaMain = visVivaDemo(
+  'g.he-circular-motion-vis-viva',
+  20000,
+  'Orbits: the speed anywhere on an ellipse (vis-viva)',
+  'Use this for “On a 6778 by 42,164 km transfer orbit, how fast is the craft at 20,000 km?”',
+);
+
+const visVivaApogee = visVivaDemo(
+  'g.he-circular-motion-vis-viva-apogee',
+  42164,
+  'Orbits: the slowest point, at apogee',
+  'Use this for “How fast is the craft at apogee, 42,164 km?”',
+);
+
+function pairDemo(
+  id: string,
+  t2: number,
+  planets: [PlanetName, PlanetName],
+  title: string,
+  use: string,
+): ModuleDef {
+  const t1 = 365.25;
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Circular orbits at steady speeds; the inner planet is faster.',
+      'They line up again when the inner one has gained one whole lap: 1 ÷ S = 1 ÷ T₁ − 1 ÷ T₂.',
+    ],
+    variables: [
+      vr('T1', 'T₁', 'Inner planet’s period', 'd', 1, 1e6, { step: 0.01 }),
+      vr('T2', 'T₂', 'Outer planet’s period', 'd', 1, 1e6, { step: 0.01 }),
+      vr('S', 'S', 'Synodic period', 'd', 0.01, 1e9, { derived: true }),
+    ],
+    rules: [
+      rule(
+        '1 ÷ S = 1 ÷ T₁ − 1 ÷ T₂',
+        '1 ÷ {S} = 1 ÷ {T1} − 1 ÷ {T2}',
+        ['S', 'T1', 'T2'],
+        (x) => x.T1! * x.T2! - x.S! * (x.T2! - x.T1!),
+        {
+          S: [
+            (x) => (x.T2! > x.T1! ? 1 / (1 / x.T1! - 1 / x.T2!) : undefined),
+            '1 ÷ (1 ÷ {T1} − 1 ÷ {T2})',
+            'The inner planet gains 1 ÷ T₁ − 1 ÷ T₂ laps a day: one lap takes S.',
+          ],
+          T2: [
+            (x) => div(1, 1 / x.T1! - 1 / x.S!),
+            '1 ÷ (1 ÷ {T1} − 1 ÷ {S})',
+            'Undo the synodic period for T₂.',
+          ],
+          T1: [
+            (x) => 1 / (1 / x.S! + 1 / x.T2!),
+            '1 ÷ (1 ÷ {S} + 1 ÷ {T2})',
+            'Undo the synodic period for T₁.',
+          ],
+        },
+      ),
+    ],
+    example: { T1: t1, T2: t2, S: 1 / (1 / t1 - 1 / t2) },
+    startWith: ['T1', 'T2'],
+    representation: {
+      kind: 'circularMotion',
+      mode: 'pair',
+      t1: 'T1',
+      t2: 'T2',
+      synodic: 'S',
+      planets,
+    },
+  });
+}
+
+const pairMars = pairDemo(
+  'g.he-circular-motion-pair',
+  687,
+  ['earth', 'mars'],
+  'Orbits: the synodic period of Earth and Mars',
+  'Use this for “Launch windows to Mars open when the planets line up the same way again. How often is that?”',
+);
+
+const pairJupiter = pairDemo(
+  'g.he-circular-motion-pair-jupiter',
+  4332.6,
+  ['earth', 'jupiter'],
+  'Orbits: Earth and slow Jupiter, S just over a year',
+  'Use this for “Why does Jupiter come to opposition only a month later each year?”',
+);
+
+function ntDemo(
+  id: string,
+  v: number,
+  rho: number,
+  at: number,
+  title: string,
+  use: string,
+): ModuleDef {
+  const an = (v * v) / rho;
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'a_t changes the speed; a_n = v² ÷ ρ turns the velocity toward the center of curvature.',
+      'They are at right angles, so a = √(a_t² + a_n²).',
+    ],
+    variables: [
+      vr('v', 'v', 'Speed', 'm/s', 0.01, 1e4, { step: 0.1 }),
+      vr('rho', 'ρ', 'Radius of curvature', 'm', 0.01, 1e7, { step: 0.1 }),
+      vr('at', 'a_t', 'Tangential acceleration', 'm/s²', -1e4, 1e4, { step: 0.1 }),
+      vr('an', 'a_n', 'Normal acceleration', 'm/s²', 0, 1e9, { derived: true }),
+      vr('a', 'a', 'Acceleration', 'm/s²', 0, 1e9, { derived: true }),
+    ],
+    rules: [
+      rule(
+        'a_n = v² ÷ ρ',
+        '{an} = {v}² ÷ {rho}',
+        ['an', 'v', 'rho'],
+        (x) => x.an! * x.rho! - x.v! ** 2,
+        {
+          an: [
+            (x) => x.v! ** 2 / x.rho!,
+            '{v}² ÷ {rho}',
+            'The normal part turns the path: v² ÷ ρ.',
+          ],
+          rho: [(x) => div(x.v! ** 2, x.an!), '{v}² ÷ {an}', 'Undo a_n = v² ÷ ρ for ρ.'],
+          v: [(x) => Math.sqrt(x.an! * x.rho!), '√({an} × {rho})', 'Undo a_n = v² ÷ ρ for v.'],
+        },
+      ),
+      rule(
+        'a = √(a_t² + a_n²)',
+        '{a} = √({at}² + {an}²)',
+        ['a', 'at', 'an'],
+        (x) => x.a! ** 2 - x.at! ** 2 - x.an! ** 2,
+        {
+          a: [
+            (x) => Math.hypot(x.at!, x.an!),
+            '√({at}² + {an}²)',
+            'The two parts are at right angles.',
+          ],
+          an: [
+            (x) => (x.a! >= Math.abs(x.at!) ? Math.sqrt(x.a! ** 2 - x.at! ** 2) : undefined),
+            '√({a}² − {at}²)',
+            'Undo the right-angle sum for a_n.',
+          ],
+        },
+      ),
+    ],
+    example: { v, rho, at, an, a: Math.hypot(at, an) },
+    startWith: ['v', 'rho', 'at'],
+    representation: {
+      kind: 'circularMotion',
+      mode: 'tangential',
+      speed: 'v',
+      rho: 'rho',
+      at: 'at',
+      an: 'an',
+      accel: 'a',
+    },
+  });
+}
+
+const ntMain = ntDemo(
+  'g.he-circular-motion-nt',
+  20,
+  100,
+  3,
+  'Path coordinates: speeding up round a bend',
+  'Use this for “A car at 20 m/s speeds up at 3 m/s² on a curve of radius 100 m. Find its acceleration.”',
+);
+
+const ntBraking = ntDemo(
+  'g.he-circular-motion-nt-braking',
+  30,
+  50,
+  -6,
+  'Path coordinates: braking hard in a tight bend',
+  'Use this for “At 30 m/s on a 50 m curve a driver brakes at 6 m/s². How big is the acceleration?”',
+);
+
 export const HE2F_GALLERY_MODULES: ModuleDef[] = [
   pulleyTable,
   pulleyTableEng,
@@ -1377,6 +2017,16 @@ export const HE2F_GALLERY_MODULES: ModuleDef[] = [
   aircraftStability,
   aircraftUnstable,
   aircraftElevator,
+  hohmannGeo,
+  hohmannWide,
+  hohmannPhysics,
+  hohmannMars,
+  visVivaMain,
+  visVivaApogee,
+  pairMars,
+  pairJupiter,
+  ntMain,
+  ntBraking,
 ];
 
 export const HE2F_GALLERY_LAYOUTS: LayoutDef[] = [];
