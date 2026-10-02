@@ -58,14 +58,14 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Camouflage and survival icons (tree frog, warbler, white hare, thick fur, blubber, camel hump, cactus stem)',
     kind: 'icon',
     pages: ['s.3.adaptation-fossils~survive-where', 's.3.adaptation-fossils~camouflage'],
-    status: 'drawn',
-    gallery: ['g.icons-survival'],
+    status: 'placed',
+    gallery: [],
     uses: {
       's.3.adaptation-fossils~survive-where': '"icon":"camel hump"',
       's.3.adaptation-fossils~camouflage': '"icon":"warbler"',
     },
     notes:
-      'The lesson chat builds this sort page. Tracker: the camel hump and cactus stem are on ~survive-where; the camouflage page (tree frog, warbler, white hare, thick fur, blubber) is not built yet.',
+      'Placed: the camel hump and cactus stem are on ~survive-where; the tree frog, warbler, white hare, thick fur and blubber on the ~camouflage sort (blends in or stays warm). The demo g.icons-survival is retired.',
   },
   {
     id: 'R02',

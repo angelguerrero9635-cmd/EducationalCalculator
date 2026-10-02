@@ -348,3 +348,12 @@ listed here once):
   whole, and a value with its own display (`figures`, `sigFigs`, `integer`, a fraction) keeps
   it; the working lines and the check keep their extra figures, as a worked answer is rounded
   only at the end.
+
+### Drawn parts placed
+
+| Page                                  | Entry | What it teaches                                                                                                                                                   |
+| ------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `s.9.inheritance-patterns~codominant` | H35   | codominance in roan cattle: red, roan and white calves of 4 from the parents' Cᴿ counts, both colors showing (not a blend)                                        |
+| `s.9.biotechnology~deletion`          | H36   | a one-base deletion: the codon holding it and every codon after read in a shifted frame, L − 1 bases left and ⌊(L − 1) ÷ 3⌋ whole codons, so the end stop is lost |
+| `s.9.ecosystem-dynamics~numbers`      | H40   | a pyramid of numbers: trees × caterpillars per tree, then ÷ caterpillars per warbler; one oak feeds thousands, so the tiers need not narrow upward                |
+| `s.9.ecosystem-dynamics~biomass`      | H40   | an ocean pyramid of biomass standing upside down: k = Z ÷ P, zooplankton outweighing fast-dividing phytoplankton at one moment                                    |

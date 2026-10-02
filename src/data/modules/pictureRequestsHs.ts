@@ -34,29 +34,29 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H01',
       'functionGraph',
       'Graph of y = f(x) for each function family, with its features marked',
-      [
-        'm.9.function-notation',
-        'm.9.piecewise-functions',
-        'm.9.exponential-functions',
-        'm.9.quadratic-functions',
-        'm.9.quadratic-formula',
-        'm.11.function-transformations',
-        'm.11.polynomial-functions',
-        'm.11.polynomial-equations',
-        'm.11.inverse-functions',
-        'm.11.radical-functions',
-        'm.11.logarithms',
-        'm.11.exp-log-equations',
-        'm.11.rational-functions',
-        'm.11.trig-graphs',
-        'm.12.inverse-trig',
-        'm.12.limits-intro',
-        's.9.population-ecology',
-      ],
+      {
+        'm.9.function-notation': '"functionGraph"',
+        'm.9.piecewise-functions': '"functionGraph"',
+        'm.9.exponential-functions': '"functionGraph"',
+        'm.9.quadratic-functions': '"functionGraph"',
+        'm.9.quadratic-formula': '"functionGraph"',
+        'm.11.function-transformations': '"functionGraph"',
+        'm.11.polynomial-functions': '"functionGraph"',
+        'm.11.polynomial-equations': '"functionGraph"',
+        'm.11.inverse-functions': '"functionGraph"',
+        'm.11.radical-functions~graph': '"index":2',
+        'm.11.radical-functions~cube-root': '"index":3',
+        'm.11.logarithms': '"functionGraph"',
+        'm.11.exp-log-equations': '"functionGraph"',
+        'm.11.rational-functions': '"functionGraph"',
+        'm.11.trig-graphs': '"functionGraph"',
+        'm.12.inverse-trig': '"functionGraph"',
+        'm.12.limits-intro': '"functionGraph"',
+        's.9.population-ecology': '"functionGraph"',
+      },
     ),
-    status: 'drawn',
+    status: 'placed',
     gallery: [
-      'g.m11-radical-functions-cube',
       'g.m11-rational-functions-slant',
       'g.m11-rational-functions-shift',
       'g.m9-piecewise-functions-step',
@@ -66,7 +66,7 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ],
     notes:
       "Families: linear, absolute value, piecewise (pieces with open or closed ends), quadratic, exponential, logistic, logarithmic, square and cube root, polynomial, rational (asymptotes, holes), sine, cosine, tangent, inverse trig. Marks: zeros, y-intercept, vertex and axis, extrema, asymptotes, domain and range on the axes, a traced point with a handle, a second curve (the parent dashed, or f and its inverse with y = x), a shaded region, a limit approached from both sides, a secant turning into a tangent. DRAWN. Spec (typesFunctionGraph.ts): the family and its fields, each a number or a variable id: { family: 'linear', m, b }; { family: 'absolute', a?, h?, k? }; { family: 'quadratic', form: 'standard', a, b, c } | { form: 'vertex', a?, h, k } | { form: 'factored', a?, p, q }; { family: 'exponential', a?, b, h?, k? } or with r for base e; { family: 'logistic', K, start, r }; { family: 'log', a?, b? (ln when left out), h?, k? }; { family: 'root', index: 2 | 3, a?, h?, k? }; { family: 'polynomial', coefficients: [...] } or { a?, zeros: [{ x, times? }] }; { family: 'rational', a?, zeros: [...], poles: [...], k? } (a zero equal to a pole is a hole); { family: 'piecewise', pieces: [{ f, from?, to?, ends?: '[)' }] }; { family: 'sin' | 'cos' | 'tan', a?, b?, h?, k? }; { family: 'arcsin' | 'arccos' | 'arctan', a?, k? }. Options: at { x, y? } (traced point, dragged along the curve), marks ['zeros', 'intercept', 'vertex', 'extrema', 'asymptotes', 'domain', 'range', 'midline', 'amplitude', 'period'], shows { vertex: { x, y }, zeros: [...], intercept, va, ha, period, amplitude } (module values the harness checks against the graph), parent, inverse, other (a second family) with crossing { x, y? }, shade 'above' | 'below' | { from, to }, limit { x }, secant { x, h, slope? }, name, input, axes { x, y } (names with units), window { x?, y? }, xMin, keep, fixed. Asymptotes, holes and piece ends are always drawn; labels are exact (fractions, surds, multiples of pi) and decimals appear only after ≈ in the caption. Example (m.9.quadratic-functions): representation: { kind: 'functionGraph', family: 'quadratic', form: 'vertex', a: 'a', h: 'h', k: 'k', at: { x: 'x', y: 'y' }, marks: ['vertex', 'zeros', 'intercept'] }. Relation displays: write × between a number and a bracket, and ÷ after a bracketed numerator (the harness reads (…)/n as a fraction)." +
-      ' Tracker: every family and mark is on a page but the cube root (index 3; its demo stays): m.11.radical-functions graphs √ only, so this stays drawn. m.9.absolute-value is dropped from the pages: it solves |x − h| = d on the number line (H17), and the absolute-value graph is on m.9.piecewise-functions~absolute-function and m.11.function-transformations.',
+      ' Placed (parts by page in `uses`): every family and mark is on a page; the square root (index 2) is m.11.radical-functions~graph (the skill’s main page solves √(ax + b) = c on a plot) and the cube root (index 3) m.11.radical-functions~cube-root, whose demo is retired. m.9.absolute-value is dropped from the pages: it solves |x − h| = d on the number line (H17), and the absolute-value graph is on m.9.piecewise-functions~absolute-function and m.11.function-transformations.',
   },
   {
     ...ask(
@@ -91,17 +91,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H03',
       'histogram',
       'Histogram with bins from the data, and probability bars with the expected value',
-      ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
+      {
+        'm.9.data-displays': '"counts"',
+        'm.9.data-displays~histogram-from-list': '"relative":true',
+        'm.11.probability-distributions': '"binomial"',
+        'm.12.sampling-distributions~counts': '"binomial"',
+      },
     ),
-    status: 'drawn',
-    gallery: [
-      'g.m9-data-displays-histogram',
-      'g.m9-data-displays-frequency',
-      'g.m9-data-displays-bimodal',
-    ],
+    status: 'placed',
+    gallery: ['g.m9-data-displays-frequency'],
     notes:
       'Shape words (symmetric, skewed left or right, uniform, bimodal) in the caption; mean and median marked; binomial bars from n and p. Drawn (group HB). Fields: data (numbers or ids) or counts (ids per bin); start, width, end (bins left end in, right end out); relative; mean and median (true to work them out, or a variable id; from counts the mean is estimated from the midpoints); shape (true names it: symmetric, skewed left or right, uniform, bimodal; or a word); axis; lit (a 1-based bin, or a value k); probability { values, probs, mean? } (E(X) marked, a list not adding to 1 draws faded with the reason); binomial { n 1–40, p, mean?, sd? }; keep; fixed. Count and probability bars drag by their tops (derived ones don\'t). The harness recounts the data into the bins and checks the heights sum to the count, or to 1. Example: { kind: "histogram", counts: ["f1", "f2", "f3", "f4", "f5", "f6"], start: 0, width: 5, lit: 3, mean: true, shape: true, axis: "Wait (min)" }; binomial: { kind: "histogram", binomial: { n: "n", p: "p", mean: "E", sd: "S" }, lit: "k", axis: "Successes (k)" }.' +
-      ' Tracker: still drawn. The histogram is drawn from bin counts (m.9.data-displays), probability and binomial bars are placed; bins from a list of values (`data`), the median mark and `relative` heights are on no page yet (their demos stay).',
+      ' Placed (parts by page in `uses`): bins from counts on m.9.data-displays, probability and binomial bars on the m.11 and m.12 pages; bins from a typed list (`data` with its length `count`, new), the median mark and `relative` heights on m.9.data-displays~histogram-from-list (the data and bimodal demos retired; the frequency demo stays for `lit` as a bin).',
   },
   {
     ...ask(
@@ -226,13 +227,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H10',
       'polarGrid',
       'Polar grid with a point (r, θ) and polar curves (circle, rose, cardioid, spiral)',
-      ['m.12.polar', 'm.12.parametric'],
+      {
+        'm.12.polar': '"polarGrid"',
+        'm.12.parametric': '"parametric"',
+        'm.12.polar~circle': '"shape":"circle"',
+        'm.12.polar~spiral': '"shape":"spiral"',
+      },
     ),
-    status: 'drawn',
-    gallery: ['g.m12-polar-circle', 'g.m12-polar-spiral', 'g.m12-parametric-projectile'],
+    status: 'placed',
+    gallery: ['g.m12-parametric-projectile'],
     notes:
       "Parametric mode: a path traced as t grows, with direction arrows and the point at t. Drawn: kind polarGrid (typesHsd.ts). Polar mode: rings at nice radii and rays every 30°, labelled in degrees or (show: 'radians') π/6, …; point { r, theta, x, y } (θ in degrees; a negative r lands on the opposite ray; x and y checked as r cos θ and r sin θ); curve { shape: 'circle' (r = a, or r = a cos θ with fn), 'rose' (a, n; n or 2n petals), 'cardioid' (a, b: r = a + b cos θ, a limaçon when b ≠ a), 'spiral' (r = aθ, θ in radians, turns) } with the point on it (r checked). Parametric mode: parametric { family: 'line' (x0, y0, a, b), 'ellipse' (h, k, a, b; t in degrees), 'projectile' (v, angle, y0; g = 9.8), t, range: [t₀, t₁], x, y } traces the path solid up to t and dashed after, with arrows the way t runs (x and y checked). Drag the point: θ (and r with no curve), or along the path to set t. Examples: { kind: 'polarGrid', curve: { shape: 'rose', a: 'a', n: 'n' }, point: { r: 'r', theta: 't' } }; { kind: 'polarGrid', parametric: { family: 'line', x0: 'p', y0: 'q', a: 'a', b: 'b', t: 't', range: [-2, 4], x: 'x', y: 'y' } }." +
-      ' Tracker: still drawn. The point, the rose, the limaçon and the parametric line and ellipse are placed (the projectile path is the projectile kind on m.12.parametric~projectile); the polar circle (r = a cos θ) and the spiral are on no page.',
+      ' Placed (parts by page in `uses`): the point, the rose, the limaçon and the parametric line and ellipse were placed; the polar circle r = a cos θ is on m.12.polar~circle and the spiral on m.12.polar~spiral (their demos retired). The projectile path is the projectile kind on m.12.parametric~projectile, so the parametric projectile demo stays as the only place that family is shown.',
   },
   {
     ...ask(
@@ -563,26 +569,34 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H35',
       'punnettSquare',
       'Dihybrid 4 × 4 square, incomplete dominance and codominance colors, sex-linked alleles on X',
-      ['s.9.inheritance-patterns'],
+      {
+        's.9.inheritance-patterns': '"punnettSquare"',
+        's.9.inheritance-patterns~codominant': '"pattern":"codominant"',
+      },
     ),
-    status: 'drawn',
-    gallery: ['g.s9-inheritance-patterns-codominant'],
+    status: 'placed',
+    gallery: [],
     notes:
       'Pedigree: sex-linked carriers (half-shaded). Drawn (group HG, reps/PunnettHs.tsx, boxes from punnettMath.ts). An optional field on punnettSquare; without it the Grade 7 square is unchanged. first/second stay the parents’ counts of dominant alleles. inheritance: { pattern: "dihybrid", firstB, secondB (the second gene’s counts), letterB: "Y", names?: [both dominant, first only, second only, neither] } draws the parents’ four gametes each way and 16 boxes colored by phenotype with a counted key (9:3:3:1); dominant = boxes of 16 with both dominant traits, recessive? = neither. { pattern: "incomplete" | "codominant", alleles?: ["R", "W"] (drawn Cᴿ, Cᵂ with letter "C"), names?: ["red", "pink", "white"], middle?: the heterozygote boxes } colors red, pink (a blend) or red patches on white (roan); dominant = first-allele homozygotes, recessive? = second-allele homozygotes. { pattern: "xLinked", carriers?: id } takes first = mother (0–2 Xᴬ), second = father (0–1): Xᴬ/Xᵃ and Y across the top, each box a daughter or son, the affected filled, carrier daughters half-shaded; dominant = boxes without the trait, recessive? = with it. The harness recounts each from the parents (product rule, sons from the mother). Example: { kind: "punnettSquare", first: "m", second: "f", dominant: "t", recessive: "r", letter: "B", inheritance: { pattern: "xLinked", carriers: "k" } }. Pedigrees needed no change: X-linked genotypes are written "XᴮXᵇ", "XᵇY" with carriers half-filled (family.carriers); the harness now checks every pedigree’s genotypes against its symbols and parents (no male carriers of X-linked alleles, a son’s X from his mother).' +
-      ' Tracker: still drawn. Dihybrid, incomplete dominance, X-linked squares and the X-linked pedigree are placed; codominance (`pattern: "codominant"`) is on no page.',
+      ' Placed (parts by page in `uses`): dihybrid, incomplete dominance, X-linked squares and the X-linked pedigree were placed; codominance (`pattern: "codominant"`, roan cattle) is on s.9.inheritance-patterns~codominant, and its demo is retired.',
   },
   {
     ...ask(
       'H36',
       'dnaStrand',
       'DNA ladder from a base sequence, its complement, the mRNA, codons and the amino acids',
-      ['s.9.dna-protein-synthesis', 's.9.biotechnology'],
+      {
+        's.9.dna-protein-synthesis': '"dnaStrand"',
+        's.9.biotechnology': '"type":"substitution"',
+        's.9.biotechnology~frameshift': '"type":"insertion"',
+        's.9.biotechnology~deletion': '"type":"deletion"',
+      },
     ),
-    status: 'drawn',
-    gallery: ['g.s9-biotechnology-nonsense', 'g.s9-biotechnology-deletion'],
+    status: 'placed',
+    gallery: ['g.s9-biotechnology-nonsense'],
     notes:
       'A mutation (substitution, insertion, deletion) lit in the sequence and its effect on the protein. Drawn (group HG, reps/DnaStrand.tsx, the standard codon table and rules in dnaMath.ts). Calculator picture { kind: "dnaStrand", sequence: the template strand, up to 12 of A T G C, drawn 3′ to 5′ ("TACCGGTTCATT"), length?: bases drawn (number or variable), show?: ["mrna", "protein"] (default both), mutation?: { type: "substitution" | "insertion" | "deletion", at: base number (number or variable), base?: the new base (a substitution defaults to the transition A↔G, C↔T; an insertion to A) }, codons?: a variable holding the complete codons (checked); or percentA: a variable and pairs?: 10 for Chargaff’s rule (a ladder of whole pairs, A = T, G = C; a percent that isn’t whole bases draws faded) }. The ladder shows both backbones, 2 hydrogen bonds per A–T rung and 3 per G–C; the mRNA (U for T) with codons bracketed; amino acid chips from the codon table, Stop in outline. With a mutation the changed base is ringed (a caret where a base was deleted), the protein is shown before and after with changed amino acids lit, and the caption names silent, missense, nonsense or frameshift. The harness checks the codon table (64 codons, 6 for Leu, Ser, Arg, 3 stops, AUG = Met), the transcription, the codon count, the mutation position and length, and Chargaff’s counts. Step text may say “the codon holding base {p}” (⌈p ÷ 3⌉, phrasesHsg.ts). Example: representation: { kind: "dnaStrand", sequence: "TACCGGTTCATT", mutation: { type: "substitution", at: "p" } }.' +
-      ' Tracker: still drawn. Substitution and insertion are placed (s.9.biotechnology, ~frameshift); a deletion is on no page.',
+      ' Placed (parts by page in `uses`): substitution and insertion on s.9.biotechnology and ~frameshift, the deletion on s.9.biotechnology~deletion (its demo retired). The nonsense demo stays: a substitution to a chosen base (`base`) is on no page.',
   },
   {
     ...ask(
@@ -631,17 +645,19 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H40',
       'energyPyramid',
       'Pyramids of energy, biomass and numbers; succession stages; the nitrogen cycle as an explore figure',
-      ['s.9.ecosystem-dynamics'],
+      {
+        's.9.ecosystem-dynamics': '"measure":"energy"',
+        's.9.ecosystem-dynamics~numbers': '"measure":"numbers"',
+        's.9.ecosystem-dynamics~biomass': '"measure":"biomass"',
+        's.9.ecosystem-dynamics~succession': '"bare rock"',
+        's.9.ecosystem-dynamics~nitrogen': '"nitrogenCycle"',
+      },
     ),
-    status: 'drawn',
-    gallery: [
-      'g.s9-ecosystem-dynamics-biomass',
-      'g.s9-ecosystem-dynamics-numbers',
-      'g.s9-ecosystem-dynamics-ocean',
-    ],
+    status: 'placed',
+    gallery: ['g.s9-ecosystem-dynamics-biomass'],
     notes:
       'Drawn (group HH). energyPyramid takes an optional measure: "energy" (default, unchanged) | "biomass" | "numbers". Biomass and numbers draw no share passed up unless percent is set (the harness then skips the 10% check), so a pyramid of numbers or an ocean biomass pyramid can stand upside down, to scale. Example: { kind: "energyPyramid", measure: "numbers", levels: ["N1", "N2", "N3"], names: ["oak tree", "caterpillars", "songbirds"] }; { kind: "energyPyramid", measure: "biomass", levels: ["B1", "B2", "B3"], percent: "p", names: [...] }. Succession: sequence stages with card icons { kind: "icon", icon: "bare rock" } ("lichens on rock", "mosses and thin soil", "grasses and flowers", "shrubs", "young trees", "mature forest"). Nitrogen cycle: explore figure { kind: "nitrogenCycle" }, each scene nitrogen: { process?: "fixation" | "lightning" | "nitrification" | "assimilation" | "eating" | "ammonification" | "denitrification" } (none: the whole cycle, unnamed arrows); example scene { label: "Fixation", lines: [...], nitrogen: { process: "fixation" } }.' +
-      ' Tracker: still drawn. The energy pyramid, the succession stages (~succession) and the nitrogen cycle (~nitrogen) are placed; pyramids of biomass and numbers (`measure`) are on no page.',
+      ' Placed (parts by page in `uses`): the energy pyramid, the succession stages (~succession) and the nitrogen cycle (~nitrogen) were placed; the pyramid of numbers (oak trees, upside down) is on s.9.ecosystem-dynamics~numbers and the upside-down ocean pyramid of biomass on ~biomass (the numbers and ocean demos retired). The meadow biomass demo stays: biomass with `percent` passed up is on no page.',
   },
   {
     ...ask(
@@ -735,13 +751,16 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H48',
       'vsepr',
       'Ball-and-stick shapes with bond angles and dipole arrows; hydrogen bonds between water molecules',
-      ['s.10.molecular-shape'],
+      {
+        's.10.molecular-shape': '"polar":true',
+        's.10.molecular-shape~hydrogen-bonds': '"mode":"hbonds"',
+      },
     ),
-    status: 'drawn',
-    gallery: ['g.s10-molecular-shape-hydrogen-bonds', 'g.s10-molecular-shape-hydrogen-bonds-four'],
+    status: 'placed',
+    gallery: [],
     notes:
       "Drawn (group HI): kind vsepr (typesHsi.ts, reps/Vsepr.tsx, geometry in reps/vseprGeo.ts). mode 'shape' (default) { bonded (2–4), lone (0–2; 2 to 4 domains in all), angle? (checked), polar? }: a ball-and-stick example molecule for the shape (linear CO₂ 180°, trigonal planar BF₃ 120°, bent SO₂ 119°, tetrahedral CH₄ 109.5°, trigonal pyramidal NH₃ 107°, bent H₂O 104.5°), lone pairs as lobes with their two dots, the angle as a true 3-D arc between two bonds, four-domain shapes turned a little so no atom hides another; with polar, crossed bond-dipole arrows toward the more electronegative atom and the net dipole beside the molecule (none when the dipoles cancel; the caption says polar or nonpolar). mode 'hbonds' { molecules (2–5), bonds? (checked, molecules − 1) }: water molecules around a middle one, dotted hydrogen bonds from an H to an O's lone pair (two accepted, two donated), δ− and δ+ on the middle molecule. The step phrase \"bond angle with {b} bonded atoms and {l} lone pairs\" is taught to the harness. No handles: give the page `sliders: true`. Examples: { kind: 'vsepr', bonded: 'b', lone: 'l', angle: 'a', polar: true } with d = b + l; { kind: 'vsepr', mode: 'hbonds', molecules: 'n', bonds: 'k' }." +
-      ' Tracker: still drawn. The shapes, angles and dipoles are placed; hydrogen bonds between molecules (`mode: "hbonds"`) are on no page.',
+      ' Placed (parts by page in `uses`): the shapes, angles and dipoles on s.10.molecular-shape; hydrogen bonds between water molecules (`mode: "hbonds"`, 1 to 4 around the middle one) on s.10.molecular-shape~hydrogen-bonds, and both demos are retired.',
   },
   {
     ...ask(
@@ -1073,17 +1092,17 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H74',
       'rockLayers',
       'Absolute ages on layers, an igneous intrusion cutting across, index fossils',
-      ['s.12.radiometric-dating'],
+      {
+        's.12.radiometric-dating~bracket': '"bracket":2',
+        's.12.radiometric-dating~potassium': '"sample"',
+        's.12.radiometric-dating~cross-cutting': '"intrusion"',
+      },
     ),
-    status: 'drawn',
-    gallery: [
-      'g.s12-radiometric-dating-half-life',
-      'g.s12-radiometric-dating-young',
-      'g.s12-radiometric-dating-bracket',
-    ],
+    status: 'placed',
+    gallery: ['g.s12-radiometric-dating-young'],
     notes:
       'Drawn (group HL) as an optional `dating` field on rockLayers (the Grade 3 fossils page is unchanged; a spec with `dating` draws the dated cliff instead): { kind: "rockLayers", dating: { layers: [{ rock: "sandstone" | "shale" | "limestone" | "siltstone" | "conglomerate" | "ash" | "lava", age?: id or number (million years), fossil?: "trilobite" | "ammonite" | "fern" }] (top to bottom, 3 to 8), intrusion?: { through: index of the highest layer the dike cuts, age? }, bracket?: index of the layer whose age is bracketed by the nearest ages above and below (a dike that cuts it makes it older than the dike; one that stops below makes it younger), sample?: { parent: percent id, layer: index (−1 for the dike), parentName, daughterName, halfLives?: id } } }; the sample is 100 atoms, parent and daughter counted from the rounded percent. Example: layers [{ rock: "sandstone", fossil: "ammonite" }, { rock: "shale" }, { rock: "ash", age: "t" }, { rock: "limestone", fossil: "trilobite" }, { rock: "siltstone" }], sample { parent: "P", layer: 2, parentName: "potassium-40", daughterName: "argon-40", halfLives: "n" } with P = 100 × (1/2)^n and t = n × T. The harness checks superposition (dated ages rise downward), cross-cutting (the dike is younger than what it cuts and older than what it doesn’t reach), a non-empty bracket and P against the half-lives; pages keep the ages in order with constraint rules.' +
-      ' Tracker: still drawn. Absolute ages, the bracketed layer and index fossils are placed (~bracket, ~potassium); an igneous intrusion cutting across (`intrusion`) is on no page.',
+      ' Placed (parts by page in `uses`): absolute ages, the bracketed layer and index fossils on ~bracket and ~potassium; the igneous intrusion cutting across (`intrusion`) on s.12.radiometric-dating~cross-cutting, where the dike narrows the shale’s bracket. The half-life and bracket demos are retired; the young-ash demo stays (its conglomerate is on no page).',
   },
   {
     ...ask(

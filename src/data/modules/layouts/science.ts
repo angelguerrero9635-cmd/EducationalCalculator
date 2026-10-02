@@ -1832,6 +1832,42 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   },
   {
     kind: 'sort',
+    id: 's.3.adaptation-fossils~camouflage',
+    title: 'Hide or stay warm?',
+    use: 'Use this to sort how each body part helps an animal survive where it lives.',
+    assumptions: [
+      'Camouflage is a color or pattern that matches the place an animal lives.',
+      'Animals in cold places need ways to keep their body heat in.',
+    ],
+    question: 'How does it help the animal survive?',
+    bins: [
+      {
+        id: 'hide',
+        label: 'Blends in',
+        why: 'Its colors match where it lives, so hunters and prey find it hard to see.',
+      },
+      { id: 'warm', label: 'Stays warm', why: 'It holds body heat in where it is cold.' },
+    ],
+    cards: [
+      {
+        label: 'Green tree frog on a leaf',
+        bin: 'hide',
+        figure: { kind: 'icon', icon: 'tree frog' },
+      },
+      { label: 'Brown warbler on bark', bin: 'hide', figure: { kind: 'icon', icon: 'warbler' } },
+      { label: 'White hare in snow', bin: 'hide', figure: { kind: 'icon', icon: 'white hare' } },
+      { label: 'Stick insect on a twig', bin: 'hide' },
+      { label: 'Thick, shaggy fur', bin: 'warm', figure: { kind: 'icon', icon: 'thick fur' } },
+      {
+        label: 'Blubber, a thick fat layer of a seal',
+        bin: 'warm',
+        figure: { kind: 'icon', icon: 'blubber' },
+      },
+      { label: 'Fluffed-up feathers of a winter bird', bin: 'warm' },
+    ],
+  },
+  {
+    kind: 'sort',
     id: 's.3.animal-groups~group-jobs',
     title: 'How a group helps',
     use: 'Use this to sort how living in a group helps.',

@@ -4363,6 +4363,111 @@ const MATH_12_POLAR: ModuleDef[] = [
       point: { r: 'r', theta: 't' },
     },
   },
+  {
+    id: 'm.12.polar~circle',
+    title: 'Circles through the pole',
+    use: 'Use this for “Graph r = 6 cos θ: find r at θ = 60°, the center and the radius.”',
+    assumptions: [
+      'r = a cos θ is a circle through the pole with diameter |a| along the x-axis.',
+      'Times r: r² = ar cos θ, so x² + y² = ax, a circle centered at (a/2, 0) with radius |a|/2.',
+      'The whole circle is drawn as θ runs from 0° to 180°; past 90° r is negative.',
+    ],
+    variables: [
+      real('a', 'a', 'Diameter a', -20, 20),
+      deg('t', 'θ', 'Angle', 0, 360),
+      real('r', 'r', 'Directed distance r', -20, 20),
+      real('h', 'h', 'Center x-coordinate', -10, 10),
+      V('R', 'R', 'Radius', { min: 0, max: 10, step: 0.01, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'r = a cos θ',
+        '{r} = {a} × cos({t}°)',
+        ['r', 'a', 't'],
+        (v) => v.r! - v.a! * cosd(v.t!),
+        {
+          r: [
+            (v) => exact(v.a! * cosd(v.t!)),
+            '{a} × cos({t}°)',
+            'Put θ into the curve’s equation.',
+          ],
+          a: [
+            (v) => (cosd(v.t!) === 0 ? undefined : exact(v.r! / cosd(v.t!))),
+            '{r} ÷ cos({t}°)',
+            'Divide r by cos θ.',
+          ],
+        },
+      ),
+      rel('h = a ÷ 2', '{h} = {a} ÷ 2', ['h', 'a'], (v) => v.h! - v.a! / 2, {
+        h: [
+          (v) => exact(v.a! / 2),
+          '{a} ÷ 2',
+          'The center is halfway along the diameter from the pole, on the x-axis.',
+        ],
+        a: [(v) => exact(2 * v.h!), '2 × {h}', 'The diameter is twice the center’s distance.'],
+      }),
+      rel('R = |a| ÷ 2', '{R} = |{a}| ÷ 2', ['R', 'a'], (v) => v.R! - Math.abs(v.a!) / 2, {
+        R: [(v) => exact(Math.abs(v.a!) / 2), '|{a}| ÷ 2', 'The radius is half the diameter.'],
+      }),
+    ),
+    example: { a: 6, t: 60, r: 3, h: 3, R: 3 },
+    startWith: ['a', 't'],
+    representation: {
+      kind: 'polarGrid',
+      curve: { shape: 'circle', a: 'a', fn: 'cos' },
+      point: { r: 'r', theta: 't' },
+    },
+  },
+  {
+    id: 'm.12.polar~spiral',
+    title: 'The spiral r = aθ',
+    use: 'Use this for “Graph r = 0.5θ: find r at θ = 270°” or “At what angle is r = 6?”',
+    assumptions: [
+      'In r = aθ, θ is in radians: θ° × π/180, so r grows by 2πa every turn.',
+      'With a > 0 the spiral winds out counterclockwise from the pole as θ grows.',
+      'Two turns are drawn, θ from 0° to 720°.',
+    ],
+    variables: [
+      V('a', 'a', 'Growth a', { min: 0.1, max: 5, step: 0.01 }),
+      deg('t', 'θ', 'Angle', 0, 720),
+      V('r', 'r', 'Distance r', { min: 0, max: 70, step: 0.01 }),
+      V('g', 'G', 'Growth per turn', { min: 0, max: 40, step: 0.01, derived: true }),
+    ],
+    ...rels(
+      rel('r = aθ', '{r} = {a} × {t} × π/180', ['r', 'a', 't'], (v) => v.r! - v.a! * v.t! * RAD, {
+        r: [
+          (v) => exact(v.a! * v.t! * RAD),
+          '{a} × {t} × π/180',
+          'Change θ to radians, then multiply by a.',
+        ],
+        t: [
+          (v) => (v.a! > 0 ? exact(v.r! / v.a! / RAD) : undefined),
+          '{r} ÷ {a} × 180/π',
+          'Divide r by a for θ in radians, then change it to degrees.',
+        ],
+        a: [
+          (v) => (v.t! > 0 ? exact(v.r! / (v.t! * RAD)) : undefined),
+          '{r} ÷ ({t} × π/180)',
+          'Divide r by θ in radians.',
+        ],
+      }),
+      rel('G = 2πa', '{g} = 2π × {a}', ['g', 'a'], (v) => v.g! - 2 * Math.PI * v.a!, {
+        g: [
+          (v) => exact(2 * Math.PI * v.a!),
+          '2π × {a}',
+          'One turn adds 2π to θ, so r grows by 2π × a: the rings are evenly spaced.',
+        ],
+      }),
+    ),
+    example: { a: 0.5, t: 270, r: 0.75 * Math.PI, g: Math.PI },
+    startWith: ['a', 't'],
+    representation: {
+      kind: 'polarGrid',
+      curve: { shape: 'spiral', a: 'a' },
+      point: { r: 'r', theta: 't' },
+      show: 'radians',
+    },
+  },
 ];
 
 // ── Parametric equations ──

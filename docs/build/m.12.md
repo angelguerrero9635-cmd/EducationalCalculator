@@ -502,3 +502,10 @@ One tail and its complement rather than a sign box: `normalCurve`'s `shade` can'
 as on the main page; its caption says "The population is normal", which the page's n ≥ 30 case
 doesn't need (a wording for the component). Example: bags of rice, μ = 2 kg, σ = 0.12 kg,
 n = 36, x̄ = 2.03 kg → SE = 0.02, Σx = 73.08 kg, z = 1.5, P = 0.0668. No new step phrases.
+
+### Drawn parts placed
+
+| Page                | Entry | What it teaches                                                                                                                        |
+| ------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `m.12.polar~circle` | H10   | r = a cos θ, a circle through the pole: r at θ (or a from a point), the center (a ÷ 2, 0) and radius \|a\| ÷ 2 from x² + y² = ax       |
+| `m.12.polar~spiral` | H10   | the spiral r = aθ with θ in radians: r at θ, θ from r, a from a point, and the even spacing 2πa per turn; the grid labelled in radians |

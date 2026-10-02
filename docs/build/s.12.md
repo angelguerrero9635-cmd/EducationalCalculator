@@ -334,3 +334,9 @@ assumption says so. Its step writes ln and ÷ k as work lines (T = ln(1.8) ÷ 0.
 the same"); an option `growth: id` cutting the bar into slices growing by g% and marking T
 before y would draw this page's idea. Same units as `~reserves`; no new step phrases or unit
 labels.
+
+### Drawn parts placed
+
+| Page                                    | Entry | What it teaches                                                                                                                                                                   |
+| --------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `s.12.radiometric-dating~cross-cutting` | H74   | cross-cutting with superposition: a dated dike that stops under the shale makes the shale younger than it, so its bracket is w = i − a, narrowed by d = b − i; ages kept in order |
