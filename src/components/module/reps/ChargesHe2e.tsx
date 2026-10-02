@@ -140,6 +140,8 @@ function SphereView({ spec, calc }: { spec: ChargesGauss; calc: Calculator }) {
           const arrows = Array.from({ length: 8 }, (_, i) => (i * Math.PI) / 4 + Math.PI / 8);
           const ra = -Math.PI / 8 + Math.PI / 4; // the r line, between two arrows
           const dragAt = drag(rp);
+          const rW = labW('r', H.say(g.r, r, 'm'));
+          const rShort = rp * 0.45 < rW / 2 + 14;
           const tip = {
             x: C.x + Math.cos(arrows[0]!) * (rp + 34),
             y: C.y - Math.sin(arrows[0]!) * (rp + 34),
@@ -235,12 +237,20 @@ function SphereView({ spec, calc }: { spec: ChargesGauss; calc: Calculator }) {
                   anchor="middle"
                 />
                 {okr ? (
+                  // Along the r line, or past its end (the handle) when r is too short to hold it.
                   <Lab
-                    x={C.x + Math.cos(-ra) * rp * 0.55}
-                    y={C.y - Math.sin(-ra) * rp * 0.55 + 16}
+                    x={
+                      rShort
+                        ? inside(C.x + Math.cos(-ra) * rp + 14, rW, w)
+                        : C.x + Math.cos(-ra) * rp * 0.55
+                    }
+                    y={
+                      rShort ? C.y - Math.sin(-ra) * rp + 28 : C.y - Math.sin(-ra) * rp * 0.55 + 16
+                    }
                     sym="r"
                     value={H.say(g.r, r, 'm')}
-                    anchor="middle"
+                    anchor={rShort ? 'start' : 'middle'}
+                    chip={rShort}
                   />
                 ) : null}
                 {okr ? (
@@ -443,7 +453,7 @@ function LineView({ spec, calc }: { spec: ChargesGauss; calc: Calculator }) {
                       )),
                     )
                   : null}
-                <Lab x={8} y={C.y - Rp - 8} sym="λ" value={H.say(g.Q, lam, 'C/m')} />
+                <Lab x={8} y={C.y - Rp - 8} sym="λ" value={H.say(g.Q, lam, 'C/m')} chip />
                 {R !== undefined && okR ? (
                   <Lab x={8} y={C.y + Rp + 18} sym="R" value={H.say(g.R, R, 'm')} />
                 ) : null}
@@ -595,7 +605,7 @@ function PlaneView({ spec, calc }: { spec: ChargesGauss; calc: Calculator }) {
                     />
                   ))
                 : null}
-              <Lab x={C.x - half} y={C.y + 40} sym="σ" value={H.say(g.Q, sig, 'C/m²')} />
+              <Lab x={C.x - half} y={C.y + 40} sym="σ" value={H.say(g.Q, sig, 'C/m²')} chip />
               <Lab x={C.x + rx + 6} y={C.y - hh - 16} sym="E" value={Esay} bold />
               {two ? (
                 <G>
@@ -882,12 +892,14 @@ function AxisView({ spec, calc }: { spec: ChargesDistribution; calc: Calculator 
                   </G>
                 ) : null}
                 {okZ ? (
+                  // Over the point, but clear of the disk or ring when the point is close to it.
                   <Lab
-                    x={inside(P.x - 10, labW('E_z', Esay), w)}
+                    x={inside(Math.max(P.x - 10, C.x + Rpx * 0.25 + 10), labW('E_z', Esay), w)}
                     y={C.y - 52}
                     sym="E_z"
                     value={Esay}
                     bold
+                    chip
                   />
                 ) : null}
               </Svg>
@@ -1056,6 +1068,7 @@ function ImageView({ spec, calc }: { spec: ChargesDistribution; calc: Calculator
                     sym="d"
                     value={H.say(spec.z, d, 'm')}
                     anchor="end"
+                    chip
                   />
                   <Lab x={X - 8} y={(yi + yP) / 2 + 10} sym="d" anchor="end" />
                 </G>
@@ -1070,6 +1083,7 @@ function ImageView({ spec, calc }: { spec: ChargesDistribution; calc: Calculator
                 sym="q"
                 value={H.say(spec.charge, q, 'C')}
                 anchor="middle"
+                chip
               />
               {ok && q !== 0 ? (
                 <G>
@@ -1087,6 +1101,7 @@ function ImageView({ spec, calc }: { spec: ChargesDistribution; calc: Calculator
                     sym="F"
                     value={Fsay}
                     bold
+                    chip
                     color={c.forceApplied}
                   />
                 </G>

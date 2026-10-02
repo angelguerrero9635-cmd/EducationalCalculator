@@ -4,7 +4,7 @@
  * and an upright value, and the into-the-page and out-of-the-page marks. Flat.
  */
 import { useRef } from 'react';
-import { Circle, G, Line, Path, TSpan } from 'react-native-svg';
+import { Circle, G, Line, Path, Rect, TSpan } from 'react-native-svg';
 
 import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
@@ -64,8 +64,9 @@ export function Lab({
   value,
   anchor = 'start',
   color,
-  size = chart.small,
+  size = chart.label,
   bold = false,
+  chip = false,
 }: {
   x: number;
   y: number;
@@ -75,10 +76,12 @@ export function Lab({
   color?: string;
   size?: number;
   bold?: boolean;
+  /** On a card-coloured chip, for a label that must sit over many lines (inside a coil). */
+  chip?: boolean;
 }) {
   const c = usePalette();
   const endsSub = /_[A-Za-z0-9]+$/.test(sym);
-  return (
+  const text = (
     <ChartText
       halo
       x={x}
@@ -96,10 +99,27 @@ export function Lab({
       ) : null}
     </ChartText>
   );
+  if (!chip) return text;
+  const wd = labW(sym, value, size);
+  const left = anchor === 'start' ? x : anchor === 'end' ? x - wd : x - wd / 2;
+  return (
+    <G>
+      <Rect
+        x={left - 4}
+        y={y - size}
+        width={wd + 8}
+        height={size + 6}
+        rx={3}
+        fill={c.card}
+        opacity={0.92}
+      />
+      {text}
+    </G>
+  );
 }
 
 /** A label's width in px (for keeping labels apart and inside the canvas). */
-export const labW = (sym: string, value: string | undefined, size: number = chart.small) =>
+export const labW = (sym: string, value: string | undefined, size: number = chart.label) =>
   textW(sym.replace(/_/g, '') + (value === undefined ? '' : ` = ${value}`), size);
 
 /** Keeps a start-anchored label of width `wd` inside [4, w − 4]. */
