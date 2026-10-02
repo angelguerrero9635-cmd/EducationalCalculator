@@ -5,6 +5,63 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## HE-E7, HE-E8, HE-E10, HE-E25: college symbols, number range, harness phrases, layout text
+
+Engine work the college plans asked for before their pages are built (`docs/HE_NEEDS.md`). Each
+change was checked against every step line in the review dumps (about 61,600 K–12 lines): no
+number shown, no value the harness reads and no line of a page below Grade 9 changed; the
+Grades 9–12 lines that changed were wrong before (below).
+
+- **Symbols (HE-E7).** `toLatex` typesets "∫ from a to b of (body) dx" as ∫ with its limits
+  (`\int`, drawn by `MathLine` like Σ), keeps letters with combining marks (ṁ, Q̇, x̂, p̂, x̄,
+  F⃗) and subscripts of several letters, Greek or in two parts (σ_max, T_wall, T_h,in) whole,
+  stacks ∂U ÷ ∂P, and raises an exponent with a bracket inside ((P₂ ÷ P₁)^((k − 1)/k),
+  10^(1.5 × (−4))). `subscripts.ts` takes marks and primes on the base, 8-character subscripts
+  and a comma part. `spokenMath` says the integral, ∂, ∇, floor and ceiling, dotted, hatted,
+  barred and arrowed letters, and subscripts ("T sub wall", never an underscore).
+- **K–12 fixes found on the way.** A stacked division drew a function's name alone over its
+  bracket (m.10.law-sines-cosines and its five types: 9 × sin(80°) ÷ sin(35°) was "sin" under
+  "(80°)"; m.10.right-triangle-trig~elevation, m.11.logarithms~change-of-base log₁₀ 12 ÷ log₁₀ 2,
+  m.11.exp-log-equations~continuous, m.11.pythagorean-identities~tangent, m.12.conics c ÷ max(a,
+  b), m.12.induction~divisible f(n) ÷ 3, s.11.circuits~parallel, s.11.dynamics-vectors ~incline
+  and ~rope, s.12.resource-management~growing-use ln(1.8) ÷ 0.02, the P(A ∩ B) ÷ P(A) lines): the
+  function now stays whole. Marked symbols (p̂, x̄, d̄) were upright beside italic letters and
+  kept a division inline (m.9.data-displays and ~standard-deviation, ~histogram-from-list;
+  m.11.normal-distribution~margin; m.12.sampling-distributions and its types, confidence-intervals
+  and its types, hypothesis-testing and its types, anova~groups; s.10.measurement~accuracy): now
+  italic like every symbol, divisions stacked. `1/n₁^2` read as 1/n then a stray "₁^2"
+  (s.10.electrons-in-atoms~emission, s.11.modern-physics~hydrogen-lines). (a² + b²)^(n ÷ 2) showed
+  a raw caret (m.12.polar~de-moivre); s.12.earth-interior~magnitude 10^(1.5 × (−4)) too. The
+  sequence hint lowered a whole label ("gives off co₂", "loads nadh", "prophase i", "an arc from
+  a": s.9.cellular-energy~stages, s.9.mitosis-meiosis~cell-cycle and ~meiosis, m.10.constructions,
+  m.10.proofs, s.8.em-spectrum~spectrum-order): it now uses `lowerFirst`. A fraction of a letter
+  with a subscript split the subscript off (`1/R₁` drew 1/R then "₁"; s.11.circuits~parallel,
+  ~series, ~mixed; s.10.gas-laws~charles, ~gay-lussac, ~effusion, ~partial-pressure;
+  s.11.rotation~seesaw `τ/F₁`; s.11.optics~critical `n₂/n₁`; s.11.modern-physics~relativity,
+  ~photoelectric; s.12.cosmology `1/H₀`; s.10 acids-bases ~titration,
+  atomic-structure~average-mass, molarity~percent-mass, nuclear-chemistry,
+  phase-colligative~vapor-pressure, thermochemistry~heating-curve), and a letter's power was drawn
+  outside its fraction (`E/A²` as (E/A)²: s.11.oscillations, ~hooke): both now stack right; `1/2²`
+  keeps its old drawing. Screen readers heard "A underscore ft" on typeset lines with a subscript;
+  they now hear "A sub ft" (spoken labels only, every page with an underscore subscript).
+- **Number range (HE-E10).** Values under 10⁻⁴ compare relative to their size in the harness
+  (half a percent); the solver's zero floor for a scientific value with no step is 10⁻⁴⁵;
+  "1.5 × 10^37" parses exactly; new `decimals` and `signed` display options with `figuresIn`,
+  `logDecimals`, `signedText` and `engineering`; scientific notation never wraps between its
+  parts on screen.
+- **Harness phrases (HE-E8).** `phrasesHe.ts`: n!!, phasors (∠ and j), dB, dBm and dBi, the sign
+  words (tension, compression, sagging, hogging, heat in and out, work in and out), label words,
+  LMTD; `evaluate.ts`: integrals with limits by Gauss–Legendre quadrature, log as base 10, log₂,
+  logs without brackets, a number before a function multiplying it, min and max. Seven K–12
+  lines that could not be read now can (β = 70 dB, ln 1.5); none changed value.
+- **Layout text (HE-E25).** `code: true` on sorts and sequences (a code font, exactly as
+  written, no copy-editing checks); `signed: true` on sequences (signed spans and a net total);
+  the reading check counts a formula as one word.
+- Tested: the engine and harness unit suites; by id m.10.law-sines-cosines,
+  m.12.hypothesis-testing, m.9.data-displays~standard-deviation, s.11.modern-physics,
+  s.10.electrons-in-atoms, s.10.acids-bases, s.10.mole, s.11.electrostatics, s.11.optics,
+  s.11.circular-gravitation, s.11.circuits, s.12.starlight-spectra; `layouts.test.ts` in full.
+
 ## E30: checks with ln, log or e^ printed worked-out values with their extra figures
 
 - **A check whose right side has a logarithm or e to a power kept its extra figures**

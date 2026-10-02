@@ -143,13 +143,13 @@ export const spokenMath = (line: string) =>
 /** One pattern for everything inside a line that is drawn as math, by band. */
 function atomPattern(band: MathBand): RegExp {
   const letters = letterBand(band);
-  const side = letters ? String.raw`${PART}|${NOT_UNIT}\p{L}` : PART;
+  const side = letters ? String.raw`${PART}|${NOT_UNIT}\p{L}${SUB}` : PART;
   return new RegExp(
     [
       // Mixed number: a whole, one space, a fraction.
       String.raw`(?<![\d/.,])(?<mw>${INT}) (?<mn>${INT})\/(?<md>${INT})${END}`,
       // Fraction: numbers (3/4, 8/?), or from Grade 6 letters one letter over a number (r/100).
-      String.raw`(?<![\d/.,?\p{L}_])(?<fn>${side})\/(?<fd>${side})${END}(?![\p{L}\p{M}₀-₉_])`,
+      String.raw`(?<![\d/.,?\p{L}_])(?<fn>${side})\/(?<fd>${side})${END}(?![\p{L}\p{M}₀-₉_^])(?!(?<=\p{L}\p{M}*[₀-₉]*)[⁰¹²³⁴⁵⁶⁷⁸⁹⁻])`,
       // Power of a bracket: (1 + 0.1)³.
       ...(letters ? [String.raw`\((?<gb>[^()]*)\)(?<ge>${SUP})`] : []),
       // Power of a number, or from Grade 6 letters of one letter (10³, x²; never cm²).

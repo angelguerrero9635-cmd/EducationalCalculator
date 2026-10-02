@@ -231,6 +231,20 @@ describe('toLatex', () => {
     ]);
   });
 
+  it('a fraction of letters with subscripts, and a power binding before a fraction', () => {
+    expect(both('1/R = 1/R₁ + 1/R₂', 'standard', ['R', 'R₁', 'R₂'])).toBe(
+      '$\\frac{1}{\\mathit{R}}$ = $\\frac{1}{\\mathit{R₁}}$ + $\\frac{1}{\\mathit{R₂}}$',
+    );
+    expect(both('k = 2 × E/A²', 'standard', ['k', 'E', 'A'])).toBe(
+      '$\\mathit{k}$ = 2 × $\\mathit{E}$/${\\mathit{A}}^{2}$',
+    );
+    // A number over a number keeps its old drawing (1/2² is (1/2)² on the page as before).
+    expect(both('E = 13.6 × (1/2² − 1/3²)', 'standard', ['E'])).toContain('\\frac{1}{2}');
+    expect(both('n₂ = 1/√(1/n₁^2 − E/13.6)', 'standard', ['n₂', 'n₁', 'E'])).toContain(
+      '\\pow{\\mathit{n₁}}{2}',
+    );
+  });
+
   it('a function stays whole over or under a division bar', () => {
     expect(both('b = 9 × sin(80°) ÷ sin(35°)', 'standard', ['b'])).toBe(
       '$\\mathit{b}$ = 9 × $\\divfrac{sin(80°)}{sin(35°)}$',
