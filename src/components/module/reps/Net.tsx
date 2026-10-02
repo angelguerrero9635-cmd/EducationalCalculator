@@ -303,7 +303,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         fill={c.chartInk}
                         textAnchor="middle"
                       >
-                        {n(triangle)}
+                        {lab(triangle)}
                       </ChartText>
                     ))}
                     {/* The triangle's height beside it (its upright side, when right-angled). */}
@@ -322,13 +322,13 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       i === 1 ? null : (
                         <ChartText
                           key={`e${i}`}
-                          {...fitLabel(X(f.x + f.w / 2), `${n(f.tw)}${unit}`, chart.tiny, w)}
+                          {...fitLabel(X(f.x + f.w / 2), `${lab(f.tw)}${unit}`, chart.tiny, w)}
                           y={Y(H) - 5}
                           fontSize={chart.tiny}
                           fontWeight="700"
                           fill={c.chartInk}
                         >
-                          {rightTri && i === 0 ? '' : `${n(f.tw)}${unit}`}
+                          {rightTri && i === 0 ? '' : `${lab(f.tw)}${unit}`}
                         </ChartText>
                       ),
                     )}

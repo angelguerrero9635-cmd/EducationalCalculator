@@ -25,7 +25,8 @@
 // leaves no "?", the box cleared. The picture's text (svg text and caption) must not then
 // show the example's value of a box now "?" (**ERROR**, naming the value and the text it is
 // in). A number that is also a known box's value, or an axis tick (a bare number, percent,
-// degrees or imaginary tick in a run of evenly spaced ones), is not flagged; 0 is never matched.
+// degrees or imaginary tick in a run of evenly spaced ones, or two a round step apart on that
+// step), is not flagged; 0 is never matched.
 // Nor is a text that reads the same when the "?" box is typed with another number (the same
 // first edit, then the box moved a step of its own size, or doubled or halved, in its range): it
 // does not come from that box ("n = 2" on a ladder, the unit circle's π/4 family, "2V", the
@@ -243,10 +244,19 @@ function tickValues(texts) {
       .map((t) => parseShown(t.replace(/[%°iπ]$/, ''))),
   ).filter(Number.isFinite);
   const has = (x) => bare.some((y) => Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x)));
+  // Two bare numbers a round step apart (1, 2 or 5 × 10ⁿ), both on that step, are ticks too (a
+  // line numbered 100, 200 only).
+  const round = (d) => {
+    const m = d / 10 ** Math.floor(Math.log10(d) + 1e-9);
+    return [1, 2, 5].some((k) => Math.abs(m - k) < 1e-9);
+  };
+  const onStep = (x, d) => Math.abs(x / d - Math.round(x / d)) < 1e-9;
   return bare.filter((p) =>
     bare.some((q) => {
       const d = q - p;
-      return d !== 0 && (has(p + 2 * d) || has(p - d));
+      if (d === 0) return false;
+      if (has(p + 2 * d) || has(p - d)) return true;
+      return round(Math.abs(d)) && onStep(p, Math.abs(d)) && onStep(q, Math.abs(d));
     }),
   );
 }
