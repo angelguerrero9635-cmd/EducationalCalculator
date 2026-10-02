@@ -30,25 +30,14 @@
         {
           "n": "1–5",
           "title": "Control volumes, time scales, flow profiles, reactor models and residence time",
-          "topics": [
-            "he.engineering.environmental#0"
-          ],
-          "examples": [
-            "mixing chamber balance",
-            "stirred tank with a source"
-          ]
+          "topics": ["he.engineering.environmental#0"],
+          "examples": ["mixing chamber balance", "stirred tank with a source"]
         },
         {
           "n": "6–14",
           "title": "Diffusion, point sources, boundaries, turbulent diffusion, continuous releases, dispersion",
-          "topics": [
-            "he.engineering.environmental#2"
-          ],
-          "examples": [
-            "puff released aloft",
-            "spill in a hallway",
-            "stack plume"
-          ],
+          "topics": ["he.engineering.environmental#2"],
+          "examples": ["puff released aloft", "spill in a hallway", "stack plume"],
           "notation": "C(x, t) = M ÷ (A√(4πDt)) …; Péclet number"
         },
         {
@@ -60,12 +49,8 @@
         {
           "n": "24–26",
           "title": "Particle and colloid transport; lake physics",
-          "topics": [
-            "he.engineering.environmental#0"
-          ],
-          "examples": [
-            "settling basin for site runoff"
-          ]
+          "topics": ["he.engineering.environmental#0"],
+          "examples": ["settling basin for site runoff"]
         }
       ]
     }

@@ -34,17 +34,13 @@
           "n": "2",
           "title": "Geometric Design (Design)",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Design",
-          "topics": [
-            "he.engineering.transportation#1"
-          ]
+          "topics": ["he.engineering.transportation#1"]
         },
         {
           "n": "3",
           "title": "Sight Distance",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Sight_Distance",
-          "topics": [
-            "he.engineering.transportation#1"
-          ],
+          "topics": ["he.engineering.transportation#1"],
           "examples": [
             "braking distance on a grade",
             "friction from a skid",
@@ -58,9 +54,7 @@
           "n": "4",
           "title": "Grade",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Grade",
-          "topics": [
-            "he.engineering.transportation#1"
-          ],
+          "topics": ["he.engineering.transportation#1"],
           "examples": [
             "maximum acceleration from tractive effort",
             "maximum grade at speed",
@@ -72,9 +66,7 @@
           "n": "5",
           "title": "Horizontal Curves",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Horizontal_Curves",
-          "topics": [
-            "he.engineering.transportation#1"
-          ],
+          "topics": ["he.engineering.transportation#1"],
           "examples": [
             "minimum radius",
             "stationing of PC and PT",
@@ -86,9 +78,7 @@
           "n": "6",
           "title": "Vertical Curves",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Vertical_Curves",
-          "topics": [
-            "he.engineering.transportation#1"
-          ],
+          "topics": ["he.engineering.transportation#1"],
           "examples": [
             "sag curve elevations and low point",
             "clearance under a railroad",
@@ -107,47 +97,30 @@
           "n": "8",
           "title": "Traffic Flow",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Traffic_Flow",
-          "topics": [
-            "he.engineering.transportation#0"
-          ],
-          "examples": [
-            "time- and space-mean speed",
-            "flow, density, headway from a count"
-          ],
+          "topics": ["he.engineering.transportation#0"],
+          "examples": ["time- and space-mean speed", "flow, density, headway from a count"],
           "notation": "q = kv̄_s; h_t = 1 ÷ q; Greenshields parabolic model"
         },
         {
           "n": "9",
           "title": "Queueing and Traffic Flow; Shockwaves",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Shockwaves",
-          "topics": [
-            "he.engineering.transportation#0"
-          ],
-          "examples": [
-            "queue behind a blocked road",
-            "rolling roadblock"
-          ]
+          "topics": ["he.engineering.transportation#0"],
+          "examples": ["queue behind a blocked road", "rolling roadblock"]
         },
         {
           "n": "10",
           "title": "Queueing",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Queueing",
-          "topics": [
-            "he.engineering.transportation#3"
-          ],
-          "examples": [
-            "M/M/1 waiting and probabilities",
-            "toll booth"
-          ],
+          "topics": ["he.engineering.transportation#3"],
+          "examples": ["M/M/1 waiting and probabilities", "toll booth"],
           "notes": "Queueing theory is not a plan row."
         },
         {
           "n": "11",
           "title": "Traffic Signals; Metering; Traffic Control Devices",
           "url": "https://en.wikibooks.org/wiki/Fundamentals_of_Transportation/Traffic_Signals",
-          "topics": [
-            "he.engineering.transportation#3"
-          ],
+          "topics": ["he.engineering.transportation#3"],
           "examples": [
             "D/D/1 at a signal",
             "HCM uniform and random delay",

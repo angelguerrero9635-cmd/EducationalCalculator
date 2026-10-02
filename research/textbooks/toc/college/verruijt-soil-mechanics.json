@@ -22,30 +22,22 @@
         {
           "n": "2",
           "title": "Classification",
-          "topics": [
-            "he.engineering.soil-mechanics#0"
-          ]
+          "topics": ["he.engineering.soil-mechanics#0"]
         },
         {
           "n": "3",
           "title": "Particles, Water, Air",
-          "topics": [
-            "he.engineering.soil-mechanics#0"
-          ]
+          "topics": ["he.engineering.soil-mechanics#0"]
         },
         {
           "n": "4",
           "title": "Stresses in Soils",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "5",
           "title": "Stresses in Layer",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "6",
@@ -74,58 +66,42 @@
         {
           "n": "14",
           "title": "Compression",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "15",
           "title": "Consolidation",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "18",
           "title": "Consolidation Coefficient",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "20",
           "title": "Shear Strength",
-          "topics": [
-            "he.engineering.soil-mechanics#3"
-          ]
+          "topics": ["he.engineering.soil-mechanics#3"]
         },
         {
           "n": "21",
           "title": "Triaxial Test",
-          "topics": [
-            "he.engineering.soil-mechanics#3"
-          ]
+          "topics": ["he.engineering.soil-mechanics#3"]
         },
         {
           "n": "22",
           "title": "Shear Test",
-          "topics": [
-            "he.engineering.soil-mechanics#3"
-          ]
+          "topics": ["he.engineering.soil-mechanics#3"]
         },
         {
           "n": "25",
           "title": "Undrained Behaviour",
-          "topics": [
-            "he.engineering.soil-mechanics#3"
-          ]
+          "topics": ["he.engineering.soil-mechanics#3"]
         },
         {
           "n": "28",
           "title": "Boussinesq",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "33",
@@ -148,23 +124,17 @@
         {
           "n": "40",
           "title": "Strip Footing",
-          "topics": [
-            "he.engineering.soil-mechanics#4"
-          ]
+          "topics": ["he.engineering.soil-mechanics#4"]
         },
         {
           "n": "41",
           "title": "Prandtl",
-          "topics": [
-            "he.engineering.soil-mechanics#4"
-          ]
+          "topics": ["he.engineering.soil-mechanics#4"]
         },
         {
           "n": "43",
           "title": "Brinch Hansen",
-          "topics": [
-            "he.engineering.soil-mechanics#4"
-          ]
+          "topics": ["he.engineering.soil-mechanics#4"]
         },
         {
           "n": "46",

@@ -27,162 +27,125 @@
           "n": "0.2",
           "title": "Mathematical Statements",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_intro-statements.html",
-          "topics": [
-            "he.engineering.discrete-math#0"
-          ],
+          "topics": ["he.engineering.discrete-math#0"],
           "notes": "20 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "0.3",
           "title": "Sets",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_intro-sets.html",
-          "topics": [
-            "he.engineering.discrete-math#1"
-          ],
+          "topics": ["he.engineering.discrete-math#1"],
           "notes": "30 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "0.4",
           "title": "Functions",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_intro-functions.html",
-          "topics": [
-            "he.engineering.discrete-math#1"
-          ],
+          "topics": ["he.engineering.discrete-math#1"],
           "notes": "30 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "1.1",
           "title": "Additive and Multiplicative Principles",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_counting-addmult.html",
-          "topics": [
-            "he.engineering.discrete-math#2"
-          ],
+          "topics": ["he.engineering.discrete-math#2"],
           "notes": "14 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "1.2",
           "title": "Binomial Coefficients",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_counting-binom.html",
-          "topics": [
-            "he.engineering.discrete-math#2"
-          ],
+          "topics": ["he.engineering.discrete-math#2"],
           "notes": "13 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "1.3",
           "title": "Combinations and Permutations",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_counting-combperm.html",
-          "topics": [
-            "he.engineering.discrete-math#2"
-          ],
+          "topics": ["he.engineering.discrete-math#2"],
           "notes": "14 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "1.5",
           "title": "Stars and Bars",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_stars-and-bars.html",
-          "topics": [
-            "he.engineering.discrete-math#2"
-          ],
+          "topics": ["he.engineering.discrete-math#2"],
           "notes": "11 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "1.6",
           "title": "Advanced Counting Using PIE",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_advPIE.html",
-          "topics": [
-            "he.engineering.discrete-math#2"
-          ],
+          "topics": ["he.engineering.discrete-math#2"],
           "notes": "14 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "2.1–2.3",
           "title": "Describing sequences; arithmetic and geometric sequences; polynomial fitting",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_seq_intro.html",
-          "topics": [
-            "he.engineering.discrete-math#4"
-          ]
+          "topics": ["he.engineering.discrete-math#4"]
         },
         {
           "n": "2.4",
           "title": "Solving Recurrence Relations",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_recurrence.html",
-          "topics": [
-            "he.engineering.discrete-math#4"
-          ],
+          "topics": ["he.engineering.discrete-math#4"],
           "notes": "13 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "2.5",
           "title": "Induction",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_seq-induction.html",
-          "topics": [
-            "he.engineering.discrete-math#0",
-            "he.engineering.discrete-math#4"
-          ],
+          "topics": ["he.engineering.discrete-math#0", "he.engineering.discrete-math#4"],
           "notes": "29 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "3.1",
           "title": "Propositional Logic",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_propositional.html",
-          "topics": [
-            "he.engineering.discrete-math#0"
-          ],
+          "topics": ["he.engineering.discrete-math#0"],
           "notes": "21 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "3.2",
           "title": "Proofs",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html",
-          "topics": [
-            "he.engineering.discrete-math#0"
-          ],
+          "topics": ["he.engineering.discrete-math#0"],
           "notes": "21 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "4.1",
           "title": "Definitions (graphs)",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_gt-intro.html",
-          "topics": [
-            "he.engineering.discrete-math#3"
-          ],
+          "topics": ["he.engineering.discrete-math#3"],
           "notes": "16 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "4.2",
           "title": "Trees",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_trees.html",
-          "topics": [
-            "he.engineering.discrete-math#3"
-          ],
+          "topics": ["he.engineering.discrete-math#3"],
           "notes": "16 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "4.3",
           "title": "Planar Graphs",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_planar.html",
-          "topics": [
-            "he.engineering.discrete-math#3"
-          ],
+          "topics": ["he.engineering.discrete-math#3"],
           "notes": "15 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "4.5",
           "title": "Euler Paths and Circuits",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_paths.html",
-          "topics": [
-            "he.engineering.discrete-math#3"
-          ],
+          "topics": ["he.engineering.discrete-math#3"],
           "notes": "12 exercises (interactive WeBWorK items show sample values)."
         },
         {
           "n": "4.4, 4.6",
           "title": "Coloring; matching in bipartite graphs",
           "url": "https://discrete.openmathbooks.org/dmoi3/sec_coloring.html",
-          "topics": [
-            "he.engineering.discrete-math#3"
-          ]
+          "topics": ["he.engineering.discrete-math#3"]
         },
         {
           "n": "5",

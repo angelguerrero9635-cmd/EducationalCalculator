@@ -30,13 +30,8 @@
         {
           "n": "1–13",
           "title": "Conduction: plane and radial walls, generation, fins, 2-D, transient, semi-infinite",
-          "topics": [
-            "he.engineering.transport-phenomena#1"
-          ],
-          "examples": [
-            "composite cylinder with generation",
-            "lab fin data"
-          ]
+          "topics": ["he.engineering.transport-phenomena#1"],
+          "examples": ["composite cylinder with generation", "lab fin data"]
         },
         {
           "n": "14–19",

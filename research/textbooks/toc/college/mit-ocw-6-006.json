@@ -29,24 +29,17 @@
         {
           "n": "1–2",
           "title": "Algorithmic thinking; peak finding; models of computation",
-          "topics": [
-            "he.engineering.data-structures#3"
-          ]
+          "topics": ["he.engineering.data-structures#3"]
         },
         {
           "n": "3–7",
           "title": "Insertion and merge sort; heaps; BSTs; AVL trees; counting and radix sort; lower bounds",
-          "topics": [
-            "he.engineering.data-structures#1",
-            "he.engineering.data-structures#2"
-          ]
+          "topics": ["he.engineering.data-structures#1", "he.engineering.data-structures#2"]
         },
         {
           "n": "8–10",
           "title": "Hashing: chaining, table doubling, Karp–Rabin, open addressing",
-          "topics": [
-            "he.engineering.data-structures#2"
-          ]
+          "topics": ["he.engineering.data-structures#2"]
         },
         {
           "n": "11–12",
@@ -57,10 +50,7 @@
         {
           "n": "13–18",
           "title": "BFS, DFS, topological sort; shortest paths (Dijkstra, Bellman–Ford)",
-          "topics": [
-            "he.engineering.data-structures#1",
-            "he.engineering.networks#2"
-          ]
+          "topics": ["he.engineering.data-structures#1", "he.engineering.networks#2"]
         },
         {
           "n": "19–",

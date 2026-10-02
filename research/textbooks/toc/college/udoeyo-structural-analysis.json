@@ -26,54 +26,32 @@
         {
           "n": "1",
           "title": "Introduction to Structural Analysis",
-          "topics": [
-            "he.engineering.structural-analysis#0"
-          ]
+          "topics": ["he.engineering.structural-analysis#0"]
         },
         {
           "n": "2",
           "title": "Structural Loads and Loading System",
-          "topics": [
-            "he.engineering.steel-design#0",
-            "he.engineering.structural-analysis#0"
-          ],
-          "examples": [
-            "governing LRFD combination",
-            "dead load on a beam from tributary width"
-          ],
+          "topics": ["he.engineering.steel-design#0", "he.engineering.structural-analysis#0"],
+          "examples": ["governing LRFD combination", "dead load on a beam from tributary width"],
           "notation": "LRFD 1.4D; 1.2D + 1.6L + 0.5(L_r or S or R); ASD set"
         },
         {
           "n": "3",
           "title": "Equilibrium, Support Reactions, Determinacy and Stability of Beams and Frames",
-          "topics": [
-            "he.engineering.structural-analysis#0"
-          ],
-          "examples": [
-            "classify sixteen structures",
-            "reactions with hinges"
-          ]
+          "topics": ["he.engineering.structural-analysis#0"],
+          "examples": ["classify sixteen structures", "reactions with hinges"]
         },
         {
           "n": "4",
           "title": "Internal Forces in Beams and Frames",
-          "topics": [
-            "he.engineering.structural-analysis#0"
-          ],
-          "examples": [
-            "shear and moment diagrams"
-          ]
+          "topics": ["he.engineering.structural-analysis#0"],
+          "examples": ["shear and moment diagrams"]
         },
         {
           "n": "5",
           "title": "Internal Forces in Plane Trusses",
-          "topics": [
-            "he.engineering.structural-analysis#0"
-          ],
-          "examples": [
-            "truss classification",
-            "method of joints"
-          ]
+          "topics": ["he.engineering.structural-analysis#0"],
+          "examples": ["truss classification", "method of joints"]
         },
         {
           "n": "6",
@@ -96,50 +74,31 @@
         {
           "n": "9",
           "title": "Influence Lines for Statically Determinate Structures",
-          "topics": [
-            "he.engineering.structural-analysis#1"
-          ],
-          "examples": [
-            "IL for shear and moment",
-            "beam with overhangs"
-          ]
+          "topics": ["he.engineering.structural-analysis#1"],
+          "examples": ["IL for shear and moment", "beam with overhangs"]
         },
         {
           "n": "10",
           "title": "Force Method of Analysis of Indeterminate Structures",
-          "topics": [
-            "he.engineering.structural-analysis#2"
-          ],
-          "examples": [
-            "two-span beams by consistent deformation"
-          ]
+          "topics": ["he.engineering.structural-analysis#2"],
+          "examples": ["two-span beams by consistent deformation"]
         },
         {
           "n": "11",
           "title": "Slope-Deflection Method",
-          "topics": [
-            "he.engineering.structural-analysis#2"
-          ],
-          "examples": [
-            "end moments; support settlement"
-          ]
+          "topics": ["he.engineering.structural-analysis#2"],
+          "examples": ["end moments; support settlement"]
         },
         {
           "n": "12",
           "title": "Moment Distribution Method",
-          "topics": [
-            "he.engineering.structural-analysis#2"
-          ],
-          "examples": [
-            "continuous beams"
-          ]
+          "topics": ["he.engineering.structural-analysis#2"],
+          "examples": ["continuous beams"]
         },
         {
           "n": "13",
           "title": "Influence Lines for Statically Indeterminate Structures",
-          "topics": [
-            "he.engineering.structural-analysis#1"
-          ]
+          "topics": ["he.engineering.structural-analysis#1"]
         }
       ]
     }

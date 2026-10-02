@@ -30,29 +30,19 @@
         {
           "n": "1–2",
           "title": "Processes and systems; math review",
-          "topics": [
-            "he.engineering.process-control#0"
-          ]
+          "topics": ["he.engineering.process-control#0"]
         },
         {
           "n": "3–13",
           "title": "Blending tank; two tanks in series (first-order and interacting responses)",
-          "topics": [
-            "he.engineering.process-control#0"
-          ],
-          "examples": [
-            "first-order step table",
-            "sketch in time constants"
-          ],
+          "topics": ["he.engineering.process-control#0"],
+          "examples": ["first-order step table", "sketch in time constants"],
           "notation": "τ, K; y/y∞ = 1 − e^(−t/τ)"
         },
         {
           "n": "14–20",
           "title": "Operability; heated tank; proportional and PI control",
-          "topics": [
-            "he.engineering.process-control#1",
-            "he.engineering.process-control#2"
-          ],
+          "topics": ["he.engineering.process-control#1", "he.engineering.process-control#2"],
           "examples": [
             "P-controller faceplate and offset",
             "heated block model",
@@ -62,30 +52,19 @@
         {
           "n": "21–26",
           "title": "Exothermic reactor: multiple steady states, linearization",
-          "topics": [
-            "he.engineering.process-control#0"
-          ],
-          "examples": [
-            "linearize about each steady state"
-          ]
+          "topics": ["he.engineering.process-control#0"],
+          "examples": ["linearize about each steady state"]
         },
         {
           "n": "27–31",
           "title": "Higher-order overdamped systems; Bode stability; margins",
-          "topics": [
-            "he.engineering.process-control#3"
-          ],
-          "examples": [
-            "Bode tuning by gain and phase margin",
-            "model from a step test"
-          ]
+          "topics": ["he.engineering.process-control#3"],
+          "examples": ["Bode tuning by gain and phase margin", "model from a step test"]
         },
         {
           "n": "32–39",
           "title": "Cascade and feedforward control",
-          "topics": [
-            "he.engineering.process-control#3"
-          ]
+          "topics": ["he.engineering.process-control#3"]
         }
       ]
     }

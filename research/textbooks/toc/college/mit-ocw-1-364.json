@@ -30,20 +30,13 @@
         {
           "n": "1–6",
           "title": "Design and safety factors; site investigation; sampling; classification; in situ tests",
-          "topics": [
-            "he.engineering.soil-mechanics#0"
-          ]
+          "topics": ["he.engineering.soil-mechanics#0"]
         },
         {
           "n": "7–16",
           "title": "Spread foundations; bearing capacity; strength parameters; settlements on sand and clay",
-          "topics": [
-            "he.engineering.soil-mechanics#4",
-            "he.engineering.soil-mechanics#2"
-          ],
-          "examples": [
-            "footings from SPT/CPT data"
-          ]
+          "topics": ["he.engineering.soil-mechanics#4", "he.engineering.soil-mechanics#2"],
+          "examples": ["footings from SPT/CPT data"]
         },
         {
           "n": "17–27",

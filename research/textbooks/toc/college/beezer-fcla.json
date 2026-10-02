@@ -1,252 +1,232 @@
 {
- "id": "beezer-fcla",
- "curriculum": "A First Course in Linear Algebra",
- "publisher": "Robert A. Beezer (University of Puget Sound)",
- "edition": "web edition (linear.pugetsound.edu)",
- "subject": "math",
- "level": "college",
- "content": "full",
- "license": {
-  "name": "GFDL",
-  "url": "https://www.gnu.org/licenses/fdl.html",
-  "attribution": "Robert A. Beezer, A First Course in Linear Algebra, http://linear.pugetsound.edu. Licensed under the GNU Free Documentation License (home page)."
- },
- "terms": "GFDL: chapter list only (GFDL is not one of the licences under which question text is recorded).",
- "sourceUrl": "http://linear.pugetsound.edu/html/fcla.html",
- "retrieved": "2026-10-02",
- "notes": "linear.ups.edu (the brief's URL) did not resolve; the book is at linear.pugetsound.edu. Section abbreviations (SLE, RREF, …) are the book's own. robots.txt absent (404). Linear transformations and representations come late (chapters LT, R), after eigenvalues.",
- "books": [
-  {
-   "title": "A First Course in Linear Algebra",
-   "url": "http://linear.pugetsound.edu/html/fcla.html",
-   "units": [
+  "id": "beezer-fcla",
+  "curriculum": "A First Course in Linear Algebra",
+  "publisher": "Robert A. Beezer (University of Puget Sound)",
+  "edition": "web edition (linear.pugetsound.edu)",
+  "subject": "math",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "GFDL",
+    "url": "https://www.gnu.org/licenses/fdl.html",
+    "attribution": "Robert A. Beezer, A First Course in Linear Algebra, http://linear.pugetsound.edu. Licensed under the GNU Free Documentation License (home page)."
+  },
+  "terms": "GFDL: chapter list only (GFDL is not one of the licences under which question text is recorded).",
+  "sourceUrl": "http://linear.pugetsound.edu/html/fcla.html",
+  "retrieved": "2026-10-02",
+  "notes": "linear.ups.edu (the brief's URL) did not resolve; the book is at linear.pugetsound.edu. Section abbreviations (SLE, RREF, …) are the book's own. robots.txt absent (404). Linear transformations and representations come late (chapters LT, R), after eigenvalues.",
+  "books": [
     {
-     "n": "SLE",
-     "title": "Systems of Linear Equations",
-     "topics": [
-      "he.math.linear-algebra#0"
-     ],
-     "sections": [
-      {
-       "n": "SLE.1",
-       "title": "What is Linear Algebra?"
-      },
-      {
-       "n": "SLE.2",
-       "title": "Solving Systems of Linear Equations"
-      },
-      {
-       "n": "SLE.3",
-       "title": "Reduced Row-Echelon Form"
-      },
-      {
-       "n": "SLE.4",
-       "title": "Types of Solution Sets"
-      },
-      {
-       "n": "SLE.5",
-       "title": "Homogeneous Systems of Equations"
-      },
-      {
-       "n": "SLE.6",
-       "title": "Nonsingular Matrices"
-      }
-     ]
-    },
-    {
-     "n": "V",
-     "title": "Vectors",
-     "topics": [
-      "he.math.linear-algebra#1"
-     ],
-     "sections": [
-      {
-       "n": "V.1",
-       "title": "Vector Operations"
-      },
-      {
-       "n": "V.2",
-       "title": "Linear Combinations"
-      },
-      {
-       "n": "V.3",
-       "title": "Spanning Sets"
-      },
-      {
-       "n": "V.4",
-       "title": "Linear Independence"
-      },
-      {
-       "n": "V.5",
-       "title": "Linear Dependence and Spans"
-      },
-      {
-       "n": "V.6",
-       "title": "Orthogonality",
-       "topics": [
-        "he.math.linear-algebra#4"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "M",
-     "title": "Matrices",
-     "topics": [
-      "he.math.linear-algebra#0"
-     ],
-     "sections": [
-      {
-       "n": "M.1",
-       "title": "Matrix Operations"
-      },
-      {
-       "n": "M.2",
-       "title": "Matrix Multiplication"
-      },
-      {
-       "n": "M.3",
-       "title": "Matrix Inverses and Systems of Linear Equations"
-      },
-      {
-       "n": "M.4",
-       "title": "Matrix Inverses and Nonsingular Matrices"
-      },
-      {
-       "n": "M.5",
-       "title": "Column and Row Spaces"
-      },
-      {
-       "n": "M.6",
-       "title": "Four Subsets"
-      }
-     ]
-    },
-    {
-     "n": "VS",
-     "title": "Vector Spaces",
-     "topics": [
-      "he.math.linear-algebra#1"
-     ],
-     "sections": [
-      {
-       "n": "VS.1",
-       "title": "Vector Spaces"
-      },
-      {
-       "n": "VS.2",
-       "title": "Subspaces"
-      },
-      {
-       "n": "VS.3",
-       "title": "Linear Independence and Spanning Sets"
-      },
-      {
-       "n": "VS.4",
-       "title": "Bases"
-      },
-      {
-       "n": "VS.5",
-       "title": "Dimension"
-      },
-      {
-       "n": "VS.6",
-       "title": "Properties of Dimension"
-      }
-     ]
-    },
-    {
-     "n": "D",
-     "title": "Determinants",
-     "topics": [
-      "he.math.linear-algebra#2"
-     ],
-     "sections": [
-      {
-       "n": "D.1",
-       "title": "Determinant of a Matrix"
-      },
-      {
-       "n": "D.2",
-       "title": "Properties of Determinants of Matrices"
-      }
-     ]
-    },
-    {
-     "n": "E",
-     "title": "Eigenvalues",
-     "topics": [
-      "he.math.linear-algebra#3"
-     ],
-     "sections": [
-      {
-       "n": "E.1",
-       "title": "Eigenvalues and Eigenvectors"
-      },
-      {
-       "n": "E.2",
-       "title": "Properties of Eigenvalues and Eigenvectors"
-      },
-      {
-       "n": "E.3",
-       "title": "Similarity and Diagonalization"
-      }
-     ]
-    },
-    {
-     "n": "LT",
-     "title": "Linear Transformations",
-     "topics": [
-      "he.math.linear-algebra#1"
-     ],
-     "sections": [
-      {
-       "n": "LT.1",
-       "title": "Linear Transformations"
-      },
-      {
-       "n": "LT.2",
-       "title": "Injective Linear Transformations"
-      },
-      {
-       "n": "LT.3",
-       "title": "Surjective Linear Transformations"
-      },
-      {
-       "n": "LT.4",
-       "title": "Invertible Linear Transformations"
-      }
-     ]
-    },
-    {
-     "n": "R",
-     "title": "Representations",
-     "topics": [
-      "he.math.linear-algebra#1"
-     ],
-     "sections": [
-      {
-       "n": "R.1",
-       "title": "Vector Representations"
-      },
-      {
-       "n": "R.2",
-       "title": "Matrix Representations"
-      },
-      {
-       "n": "R.3",
-       "title": "Change of Basis"
-      },
-      {
-       "n": "R.4",
-       "title": "Orthonormal Diagonalization",
-       "topics": [
-        "he.math.linear-algebra#4"
-       ]
-      }
-     ]
+      "title": "A First Course in Linear Algebra",
+      "url": "http://linear.pugetsound.edu/html/fcla.html",
+      "units": [
+        {
+          "n": "SLE",
+          "title": "Systems of Linear Equations",
+          "topics": ["he.math.linear-algebra#0"],
+          "sections": [
+            {
+              "n": "SLE.1",
+              "title": "What is Linear Algebra?"
+            },
+            {
+              "n": "SLE.2",
+              "title": "Solving Systems of Linear Equations"
+            },
+            {
+              "n": "SLE.3",
+              "title": "Reduced Row-Echelon Form"
+            },
+            {
+              "n": "SLE.4",
+              "title": "Types of Solution Sets"
+            },
+            {
+              "n": "SLE.5",
+              "title": "Homogeneous Systems of Equations"
+            },
+            {
+              "n": "SLE.6",
+              "title": "Nonsingular Matrices"
+            }
+          ]
+        },
+        {
+          "n": "V",
+          "title": "Vectors",
+          "topics": ["he.math.linear-algebra#1"],
+          "sections": [
+            {
+              "n": "V.1",
+              "title": "Vector Operations"
+            },
+            {
+              "n": "V.2",
+              "title": "Linear Combinations"
+            },
+            {
+              "n": "V.3",
+              "title": "Spanning Sets"
+            },
+            {
+              "n": "V.4",
+              "title": "Linear Independence"
+            },
+            {
+              "n": "V.5",
+              "title": "Linear Dependence and Spans"
+            },
+            {
+              "n": "V.6",
+              "title": "Orthogonality",
+              "topics": ["he.math.linear-algebra#4"]
+            }
+          ]
+        },
+        {
+          "n": "M",
+          "title": "Matrices",
+          "topics": ["he.math.linear-algebra#0"],
+          "sections": [
+            {
+              "n": "M.1",
+              "title": "Matrix Operations"
+            },
+            {
+              "n": "M.2",
+              "title": "Matrix Multiplication"
+            },
+            {
+              "n": "M.3",
+              "title": "Matrix Inverses and Systems of Linear Equations"
+            },
+            {
+              "n": "M.4",
+              "title": "Matrix Inverses and Nonsingular Matrices"
+            },
+            {
+              "n": "M.5",
+              "title": "Column and Row Spaces"
+            },
+            {
+              "n": "M.6",
+              "title": "Four Subsets"
+            }
+          ]
+        },
+        {
+          "n": "VS",
+          "title": "Vector Spaces",
+          "topics": ["he.math.linear-algebra#1"],
+          "sections": [
+            {
+              "n": "VS.1",
+              "title": "Vector Spaces"
+            },
+            {
+              "n": "VS.2",
+              "title": "Subspaces"
+            },
+            {
+              "n": "VS.3",
+              "title": "Linear Independence and Spanning Sets"
+            },
+            {
+              "n": "VS.4",
+              "title": "Bases"
+            },
+            {
+              "n": "VS.5",
+              "title": "Dimension"
+            },
+            {
+              "n": "VS.6",
+              "title": "Properties of Dimension"
+            }
+          ]
+        },
+        {
+          "n": "D",
+          "title": "Determinants",
+          "topics": ["he.math.linear-algebra#2"],
+          "sections": [
+            {
+              "n": "D.1",
+              "title": "Determinant of a Matrix"
+            },
+            {
+              "n": "D.2",
+              "title": "Properties of Determinants of Matrices"
+            }
+          ]
+        },
+        {
+          "n": "E",
+          "title": "Eigenvalues",
+          "topics": ["he.math.linear-algebra#3"],
+          "sections": [
+            {
+              "n": "E.1",
+              "title": "Eigenvalues and Eigenvectors"
+            },
+            {
+              "n": "E.2",
+              "title": "Properties of Eigenvalues and Eigenvectors"
+            },
+            {
+              "n": "E.3",
+              "title": "Similarity and Diagonalization"
+            }
+          ]
+        },
+        {
+          "n": "LT",
+          "title": "Linear Transformations",
+          "topics": ["he.math.linear-algebra#1"],
+          "sections": [
+            {
+              "n": "LT.1",
+              "title": "Linear Transformations"
+            },
+            {
+              "n": "LT.2",
+              "title": "Injective Linear Transformations"
+            },
+            {
+              "n": "LT.3",
+              "title": "Surjective Linear Transformations"
+            },
+            {
+              "n": "LT.4",
+              "title": "Invertible Linear Transformations"
+            }
+          ]
+        },
+        {
+          "n": "R",
+          "title": "Representations",
+          "topics": ["he.math.linear-algebra#1"],
+          "sections": [
+            {
+              "n": "R.1",
+              "title": "Vector Representations"
+            },
+            {
+              "n": "R.2",
+              "title": "Matrix Representations"
+            },
+            {
+              "n": "R.3",
+              "title": "Change of Basis"
+            },
+            {
+              "n": "R.4",
+              "title": "Orthonormal Diagonalization",
+              "topics": ["he.math.linear-algebra#4"]
+            }
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

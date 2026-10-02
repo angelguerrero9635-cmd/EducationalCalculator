@@ -89,25 +89,19 @@
           "n": "heat-transfer",
           "title": "Screencasts: heat transfer (132 videos): Conduction; One-dimensional steady-state; One-dimensional steady-state: Heat Transfer Fins; One-dimensional steady-state: Conduction and generation; Transient conduction; Convection; External flow; Internal flow; Free convection; Heat exchangers; Parallel and counter flow; Other; Radiation",
           "url": "https://learncheme.com/screencasts/heat-transfer/",
-          "topics": [
-            "he.engineering.transport-phenomena#1"
-          ]
+          "topics": ["he.engineering.transport-phenomena#1"]
         },
         {
           "n": "fluid-mechanics",
           "title": "Screencasts: fluid mechanics (162 videos): What is a Fluid?; Introduction to Viscosity; Non-Newtonian Fluids Part 1; Surface Tension Part 1; Buoyancy/floatation; Manometry; Rigid body motion; Conservation of momentum; Conservation of Energy; Bernoulli equation; Differential analysis of fluid flow; Coordinate Transformations Part 1; Simple viscous flow; Viscous flow in pipes; Losses and Friction Factors Part 1; Flow between parallel plates, through ducts, and along a plate; Flow around objects; Fluid kinematics",
           "url": "https://learncheme.com/screencasts/fluid-mechanics/",
-          "topics": [
-            "he.engineering.transport-phenomena#0"
-          ]
+          "topics": ["he.engineering.transport-phenomena#0"]
         },
         {
           "n": "catalysis",
           "title": "Screencasts: catalysis (35 videos): Introduction; Selectivity and equilibrium; Adsorption/desorption; Reaction kinetics; Mass transfer/diffusion",
           "url": "https://learncheme.com/screencasts/catalysis/",
-          "topics": [
-            "he.engineering.reaction-engineering#3"
-          ]
+          "topics": ["he.engineering.reaction-engineering#3"]
         }
       ]
     }

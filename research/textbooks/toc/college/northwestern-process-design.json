@@ -22,9 +22,7 @@
         {
           "n": "1",
           "title": "Design basis: product and feed, market and capacity, site, block flow diagram",
-          "topics": [
-            "he.engineering.process-design#0"
-          ]
+          "topics": ["he.engineering.process-design#0"]
         },
         {
           "n": "2",
@@ -44,17 +42,12 @@
         {
           "n": "4",
           "title": "Process economics: equipment sizing, capital, production cost and revenue, economic analysis, sensitivity and optimization",
-          "topics": [
-            "he.engineering.process-design#1",
-            "he.engineering.process-design#2"
-          ]
+          "topics": ["he.engineering.process-design#1", "he.engineering.process-design#2"]
         },
         {
           "n": "5",
           "title": "Other considerations: materials, safety, hazards, environment, controls, location and layout",
-          "topics": [
-            "he.engineering.process-design#3"
-          ]
+          "topics": ["he.engineering.process-design#3"]
         },
         {
           "n": "6",

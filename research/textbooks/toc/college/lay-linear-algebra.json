@@ -1,357 +1,333 @@
 {
- "id": "lay-linear-algebra",
- "curriculum": "Linear Algebra and Its Applications",
- "publisher": "David C. Lay, Steven R. Lay, Judi J. McDonald (Pearson)",
- "edition": "6th edition (2021)",
- "subject": "math",
- "level": "college",
- "content": "titles",
- "license": {
-  "name": "All rights reserved",
-  "url": "https://www.pearson.com/en-us/subject-catalog/p/linear-algebra-and-its-applications/P200000006235/9780136880929",
-  "attribution": "Titles only, from the publisher's public table of contents; no other content."
- },
- "terms": "Commercial: chapter and section titles only.",
- "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/linear-algebra-and-its-applications/P200000006235/9780136880929",
- "retrieved": "2026-10-02",
- "notes": "Titles from the Pearson product page's table of contents. robots.txt of pearson.com read (catalog pages allowed). Lay puts linear transformations in chapter 1 and determinants in chapter 3, before vector spaces.",
- "books": [
-  {
-   "title": "Linear Algebra and Its Applications, 6th ed.",
-   "url": "https://www.pearson.com/en-us/subject-catalog/p/linear-algebra-and-its-applications/P200000006235/9780136880929",
-   "units": [
+  "id": "lay-linear-algebra",
+  "curriculum": "Linear Algebra and Its Applications",
+  "publisher": "David C. Lay, Steven R. Lay, Judi J. McDonald (Pearson)",
+  "edition": "6th edition (2021)",
+  "subject": "math",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "All rights reserved",
+    "url": "https://www.pearson.com/en-us/subject-catalog/p/linear-algebra-and-its-applications/P200000006235/9780136880929",
+    "attribution": "Titles only, from the publisher's public table of contents; no other content."
+  },
+  "terms": "Commercial: chapter and section titles only.",
+  "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/linear-algebra-and-its-applications/P200000006235/9780136880929",
+  "retrieved": "2026-10-02",
+  "notes": "Titles from the Pearson product page's table of contents. robots.txt of pearson.com read (catalog pages allowed). Lay puts linear transformations in chapter 1 and determinants in chapter 3, before vector spaces.",
+  "books": [
     {
-     "n": "1",
-     "title": "Linear Equations in Linear Algebra",
-     "topics": [
-      "he.math.linear-algebra#0"
-     ],
-     "sections": [
-      {
-       "n": "1.1",
-       "title": "Systems of Linear Equations"
-      },
-      {
-       "n": "1.2",
-       "title": "Row Reduction and Echelon Forms"
-      },
-      {
-       "n": "1.3",
-       "title": "Vector Equations",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "1.4",
-       "title": "The Matrix Equation Ax = b"
-      },
-      {
-       "n": "1.5",
-       "title": "Solution Sets of Linear Systems"
-      },
-      {
-       "n": "1.6",
-       "title": "Applications of Linear Systems"
-      },
-      {
-       "n": "1.7",
-       "title": "Linear Independence",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "1.8",
-       "title": "Introduction to Linear Transformations",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "1.9",
-       "title": "The Matrix of a Linear Transformation",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "1.10",
-       "title": "Linear Models in Business, Science, and Engineering"
-      }
-     ]
-    },
-    {
-     "n": "2",
-     "title": "Matrix Algebra",
-     "topics": [
-      "he.math.linear-algebra#0"
-     ],
-     "sections": [
-      {
-       "n": "2.1",
-       "title": "Matrix Operations"
-      },
-      {
-       "n": "2.2",
-       "title": "The Inverse of a Matrix"
-      },
-      {
-       "n": "2.3",
-       "title": "Characterizations of Invertible Matrices"
-      },
-      {
-       "n": "2.4",
-       "title": "Partitioned Matrices"
-      },
-      {
-       "n": "2.5",
-       "title": "Matrix Factorizations"
-      },
-      {
-       "n": "2.6",
-       "title": "The Leontief Input-Output Model"
-      },
-      {
-       "n": "2.7",
-       "title": "Applications to Computer Graphics"
-      },
-      {
-       "n": "2.8",
-       "title": "Subspaces of Rn",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "2.9",
-       "title": "Dimension and Rank",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Determinants",
-     "topics": [
-      "he.math.linear-algebra#2"
-     ],
-     "sections": [
-      {
-       "n": "3.1",
-       "title": "Introduction to Determinants"
-      },
-      {
-       "n": "3.2",
-       "title": "Properties of Determinants"
-      },
-      {
-       "n": "3.3",
-       "title": "Cramer's Rule, Volume, and Linear Transformations"
-      }
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Vector Spaces",
-     "topics": [
-      "he.math.linear-algebra#1"
-     ],
-     "sections": [
-      {
-       "n": "4.1",
-       "title": "Vector Spaces and Subspaces"
-      },
-      {
-       "n": "4.2",
-       "title": "Null Spaces, Column Spaces, and Linear Transformations"
-      },
-      {
-       "n": "4.3",
-       "title": "Linearly Independent Sets; Bases"
-      },
-      {
-       "n": "4.4",
-       "title": "Coordinate Systems"
-      },
-      {
-       "n": "4.5",
-       "title": "The Dimension of a Vector Space"
-      },
-      {
-       "n": "4.6",
-       "title": "Change of Basis"
-      },
-      {
-       "n": "4.7",
-       "title": "Digital Signal Processing"
-      },
-      {
-       "n": "4.8",
-       "title": "Applications to Difference Equations"
-      }
-     ]
-    },
-    {
-     "n": "5",
-     "title": "Eigenvalues and Eigenvectors",
-     "topics": [
-      "he.math.linear-algebra#3"
-     ],
-     "sections": [
-      {
-       "n": "5.1",
-       "title": "Eigenvectors and Eigenvalues"
-      },
-      {
-       "n": "5.2",
-       "title": "The Characteristic Equation"
-      },
-      {
-       "n": "5.3",
-       "title": "Diagonalization"
-      },
-      {
-       "n": "5.4",
-       "title": "Eigenvectors and Linear Transformations"
-      },
-      {
-       "n": "5.5",
-       "title": "Complex Eigenvalues"
-      },
-      {
-       "n": "5.6",
-       "title": "Discrete Dynamical Systems"
-      },
-      {
-       "n": "5.7",
-       "title": "Applications to Differential Equations"
-      },
-      {
-       "n": "5.8",
-       "title": "Iterative Estimates for Eigenvalues"
-      },
-      {
-       "n": "5.9",
-       "title": "Markov Chains"
-      }
-     ]
-    },
-    {
-     "n": "6",
-     "title": "Orthogonality and Least Squares",
-     "topics": [
-      "he.math.linear-algebra#4"
-     ],
-     "sections": [
-      {
-       "n": "6.1",
-       "title": "Inner Product, Length, and Orthogonality"
-      },
-      {
-       "n": "6.2",
-       "title": "Orthogonal Sets"
-      },
-      {
-       "n": "6.3",
-       "title": "Orthogonal Projections"
-      },
-      {
-       "n": "6.4",
-       "title": "The Gram–Schmidt Process"
-      },
-      {
-       "n": "6.5",
-       "title": "Least-Squares Problems"
-      },
-      {
-       "n": "6.6",
-       "title": "Machine Learning and Linear Models"
-      },
-      {
-       "n": "6.7",
-       "title": "Inner Product Spaces"
-      },
-      {
-       "n": "6.8",
-       "title": "Applications of Inner Product Spaces"
-      }
-     ]
-    },
-    {
-     "n": "7",
-     "title": "Symmetric Matrices and Quadratic Forms",
-     "topics": [],
-     "note": "no college topic: symmetric matrices, quadratic forms, SVD (plan gap)",
-     "sections": [
-      {
-       "n": "7.1",
-       "title": "Diagonalization of Symmetric Matrices",
-       "topics": []
-      },
-      {
-       "n": "7.2",
-       "title": "Quadratic Forms",
-       "topics": []
-      },
-      {
-       "n": "7.3",
-       "title": "Constrained Optimization",
-       "topics": []
-      },
-      {
-       "n": "7.4",
-       "title": "The Singular Value Decomposition",
-       "topics": []
-      },
-      {
-       "n": "7.5",
-       "title": "Applications to Image Processing and Statistics",
-       "topics": []
-      }
-     ]
-    },
-    {
-     "n": "8",
-     "title": "The Geometry of Vector Spaces",
-     "topics": [],
-     "note": "no college topic: affine and convex geometry",
-     "sections": [
-      {
-       "n": "8.1",
-       "title": "Affine Combinations",
-       "topics": []
-      },
-      {
-       "n": "8.2",
-       "title": "Affine Independence",
-       "topics": []
-      },
-      {
-       "n": "8.3",
-       "title": "Convex Combinations",
-       "topics": []
-      },
-      {
-       "n": "8.4",
-       "title": "Hyperplanes",
-       "topics": []
-      },
-      {
-       "n": "8.5",
-       "title": "Polytopes",
-       "topics": []
-      },
-      {
-       "n": "8.6",
-       "title": "Curves and Surfaces",
-       "topics": []
-      }
-     ]
+      "title": "Linear Algebra and Its Applications, 6th ed.",
+      "url": "https://www.pearson.com/en-us/subject-catalog/p/linear-algebra-and-its-applications/P200000006235/9780136880929",
+      "units": [
+        {
+          "n": "1",
+          "title": "Linear Equations in Linear Algebra",
+          "topics": ["he.math.linear-algebra#0"],
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Systems of Linear Equations"
+            },
+            {
+              "n": "1.2",
+              "title": "Row Reduction and Echelon Forms"
+            },
+            {
+              "n": "1.3",
+              "title": "Vector Equations",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "1.4",
+              "title": "The Matrix Equation Ax = b"
+            },
+            {
+              "n": "1.5",
+              "title": "Solution Sets of Linear Systems"
+            },
+            {
+              "n": "1.6",
+              "title": "Applications of Linear Systems"
+            },
+            {
+              "n": "1.7",
+              "title": "Linear Independence",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "1.8",
+              "title": "Introduction to Linear Transformations",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "1.9",
+              "title": "The Matrix of a Linear Transformation",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "1.10",
+              "title": "Linear Models in Business, Science, and Engineering"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Matrix Algebra",
+          "topics": ["he.math.linear-algebra#0"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Matrix Operations"
+            },
+            {
+              "n": "2.2",
+              "title": "The Inverse of a Matrix"
+            },
+            {
+              "n": "2.3",
+              "title": "Characterizations of Invertible Matrices"
+            },
+            {
+              "n": "2.4",
+              "title": "Partitioned Matrices"
+            },
+            {
+              "n": "2.5",
+              "title": "Matrix Factorizations"
+            },
+            {
+              "n": "2.6",
+              "title": "The Leontief Input-Output Model"
+            },
+            {
+              "n": "2.7",
+              "title": "Applications to Computer Graphics"
+            },
+            {
+              "n": "2.8",
+              "title": "Subspaces of Rn",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "2.9",
+              "title": "Dimension and Rank",
+              "topics": ["he.math.linear-algebra#1"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Determinants",
+          "topics": ["he.math.linear-algebra#2"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Introduction to Determinants"
+            },
+            {
+              "n": "3.2",
+              "title": "Properties of Determinants"
+            },
+            {
+              "n": "3.3",
+              "title": "Cramer's Rule, Volume, and Linear Transformations"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Vector Spaces",
+          "topics": ["he.math.linear-algebra#1"],
+          "sections": [
+            {
+              "n": "4.1",
+              "title": "Vector Spaces and Subspaces"
+            },
+            {
+              "n": "4.2",
+              "title": "Null Spaces, Column Spaces, and Linear Transformations"
+            },
+            {
+              "n": "4.3",
+              "title": "Linearly Independent Sets; Bases"
+            },
+            {
+              "n": "4.4",
+              "title": "Coordinate Systems"
+            },
+            {
+              "n": "4.5",
+              "title": "The Dimension of a Vector Space"
+            },
+            {
+              "n": "4.6",
+              "title": "Change of Basis"
+            },
+            {
+              "n": "4.7",
+              "title": "Digital Signal Processing"
+            },
+            {
+              "n": "4.8",
+              "title": "Applications to Difference Equations"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Eigenvalues and Eigenvectors",
+          "topics": ["he.math.linear-algebra#3"],
+          "sections": [
+            {
+              "n": "5.1",
+              "title": "Eigenvectors and Eigenvalues"
+            },
+            {
+              "n": "5.2",
+              "title": "The Characteristic Equation"
+            },
+            {
+              "n": "5.3",
+              "title": "Diagonalization"
+            },
+            {
+              "n": "5.4",
+              "title": "Eigenvectors and Linear Transformations"
+            },
+            {
+              "n": "5.5",
+              "title": "Complex Eigenvalues"
+            },
+            {
+              "n": "5.6",
+              "title": "Discrete Dynamical Systems"
+            },
+            {
+              "n": "5.7",
+              "title": "Applications to Differential Equations"
+            },
+            {
+              "n": "5.8",
+              "title": "Iterative Estimates for Eigenvalues"
+            },
+            {
+              "n": "5.9",
+              "title": "Markov Chains"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Orthogonality and Least Squares",
+          "topics": ["he.math.linear-algebra#4"],
+          "sections": [
+            {
+              "n": "6.1",
+              "title": "Inner Product, Length, and Orthogonality"
+            },
+            {
+              "n": "6.2",
+              "title": "Orthogonal Sets"
+            },
+            {
+              "n": "6.3",
+              "title": "Orthogonal Projections"
+            },
+            {
+              "n": "6.4",
+              "title": "The Gram–Schmidt Process"
+            },
+            {
+              "n": "6.5",
+              "title": "Least-Squares Problems"
+            },
+            {
+              "n": "6.6",
+              "title": "Machine Learning and Linear Models"
+            },
+            {
+              "n": "6.7",
+              "title": "Inner Product Spaces"
+            },
+            {
+              "n": "6.8",
+              "title": "Applications of Inner Product Spaces"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Symmetric Matrices and Quadratic Forms",
+          "topics": [],
+          "note": "no college topic: symmetric matrices, quadratic forms, SVD (plan gap)",
+          "sections": [
+            {
+              "n": "7.1",
+              "title": "Diagonalization of Symmetric Matrices",
+              "topics": []
+            },
+            {
+              "n": "7.2",
+              "title": "Quadratic Forms",
+              "topics": []
+            },
+            {
+              "n": "7.3",
+              "title": "Constrained Optimization",
+              "topics": []
+            },
+            {
+              "n": "7.4",
+              "title": "The Singular Value Decomposition",
+              "topics": []
+            },
+            {
+              "n": "7.5",
+              "title": "Applications to Image Processing and Statistics",
+              "topics": []
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "The Geometry of Vector Spaces",
+          "topics": [],
+          "note": "no college topic: affine and convex geometry",
+          "sections": [
+            {
+              "n": "8.1",
+              "title": "Affine Combinations",
+              "topics": []
+            },
+            {
+              "n": "8.2",
+              "title": "Affine Independence",
+              "topics": []
+            },
+            {
+              "n": "8.3",
+              "title": "Convex Combinations",
+              "topics": []
+            },
+            {
+              "n": "8.4",
+              "title": "Hyperplanes",
+              "topics": []
+            },
+            {
+              "n": "8.5",
+              "title": "Polytopes",
+              "topics": []
+            },
+            {
+              "n": "8.6",
+              "title": "Curves and Surfaces",
+              "topics": []
+            }
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

@@ -31,41 +31,26 @@
           "n": "1",
           "title": "Equilibrium states; aircraft performance",
           "url": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/pages/calendar/",
-          "topics": [
-            "he.engineering.flight-mechanics#0"
-          ],
-          "examples": [
-            "glide range and minimum sink"
-          ]
+          "topics": ["he.engineering.flight-mechanics#0"],
+          "examples": ["glide range and minimum sink"]
         },
         {
           "n": "2",
           "title": "Static stability; wing and tail contributions",
-          "topics": [
-            "he.engineering.flight-mechanics#1"
-          ],
-          "examples": [
-            "tail incidence and CG limits from C_m0 > 0, C_mα < 0",
-            "trim α and δe"
-          ],
+          "topics": ["he.engineering.flight-mechanics#1"],
+          "examples": ["tail incidence and CG limits from C_m0 > 0, C_mα < 0", "trim α and δe"],
           "notation": "h CG position as a fraction of c̄; h_n neutral point; V_H tail volume; dε/dα downwash gradient"
         },
         {
           "n": "3–5",
           "title": "Coordinate systems, Euler angles, quaternions; aircraft dynamics",
-          "topics": [
-            "he.engineering.flight-mechanics#2"
-          ],
-          "examples": [
-            "Euler angle histories in maneuvers"
-          ]
+          "topics": ["he.engineering.flight-mechanics#2"],
+          "examples": ["Euler angle histories in maneuvers"]
         },
         {
           "n": "6–8",
           "title": "Longitudinal and lateral dynamics; approximate mode models",
-          "topics": [
-            "he.engineering.flight-mechanics#2"
-          ],
+          "topics": ["he.engineering.flight-mechanics#2"],
           "examples": [
             "short-period and phugoid roots from derivatives",
             "Dutch roll, spiral, roll modes"
@@ -75,13 +60,8 @@
         {
           "n": "9–13",
           "title": "Longitudinal control; state-space control; autopilots",
-          "topics": [
-            "he.engineering.flight-mechanics#3"
-          ],
-          "examples": [
-            "pitch-attitude autopilot to place short-period roots",
-            "altitude hold"
-          ]
+          "topics": ["he.engineering.flight-mechanics#3"],
+          "examples": ["pitch-attitude autopilot to place short-period roots", "altitude hold"]
         },
         {
           "n": "14–17",

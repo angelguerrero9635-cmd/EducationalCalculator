@@ -31,12 +31,8 @@
           "n": "1–2",
           "title": "Aerospace structures and materials",
           "url": "https://ocw.mit.edu/courses/16-001-unified-engineering-materials-and-structures-fall-2021/pages/calendar/",
-          "topics": [
-            "he.engineering.aerospace-structures#1"
-          ],
-          "examples": [
-            "grid-fin material selection"
-          ]
+          "topics": ["he.engineering.aerospace-structures#1"],
+          "examples": ["grid-fin material selection"]
         },
         {
           "n": "3–7",
@@ -47,22 +43,14 @@
         {
           "n": "8–10",
           "title": "Stress, strain, constitutive response",
-          "topics": [
-            "he.engineering.aerospace-structures#0"
-          ],
-          "examples": [
-            "rotating turbine blade"
-          ]
+          "topics": ["he.engineering.aerospace-structures#0"],
+          "examples": ["rotating turbine blade"]
         },
         {
           "n": "11–13",
           "title": "Beams: bending, deflection, beam-columns and buckling",
-          "topics": [
-            "he.engineering.aerospace-structures#2"
-          ],
-          "examples": [
-            "beam-column with transverse load"
-          ]
+          "topics": ["he.engineering.aerospace-structures#2"],
+          "examples": ["beam-column with transverse load"]
         }
       ]
     }

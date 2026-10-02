@@ -32,9 +32,7 @@
         {
           "n": "II",
           "title": "Figure of the Earth",
-          "topics": [
-            "he.engineering.surveying#3"
-          ]
+          "topics": ["he.engineering.surveying#3"]
         },
         {
           "n": "III",
@@ -48,23 +46,17 @@
         {
           "n": "IV",
           "title": "Geodetic Systems",
-          "topics": [
-            "he.engineering.surveying#3"
-          ]
+          "topics": ["he.engineering.surveying#3"]
         },
         {
           "n": "V",
           "title": "Physical Geodesy",
-          "topics": [
-            "he.engineering.surveying#3"
-          ]
+          "topics": ["he.engineering.surveying#3"]
         },
         {
           "n": "VI",
           "title": "Satellite Geodesy",
-          "topics": [
-            "he.engineering.surveying#3"
-          ]
+          "topics": ["he.engineering.surveying#3"]
         },
         {
           "n": "VII",
@@ -75,9 +67,7 @@
         {
           "n": "VIII",
           "title": "The World Geodetic System",
-          "topics": [
-            "he.engineering.surveying#3"
-          ]
+          "topics": ["he.engineering.surveying#3"]
         }
       ]
     }

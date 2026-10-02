@@ -27,9 +27,7 @@
           "n": "1",
           "title": "Introduction; units; significant figures; chemistry review",
           "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Units",
-          "topics": [
-            "he.engineering.material-energy-balances#0"
-          ]
+          "topics": ["he.engineering.material-energy-balances#0"]
         },
         {
           "n": "2",
@@ -49,36 +47,23 @@
           "n": "3",
           "title": "Multiple components; multiple processes",
           "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Problem_Solving_with_Multiple_Components",
-          "topics": [
-            "he.engineering.material-energy-balances#1"
-          ],
-          "examples": [
-            "mixture densities",
-            "book plant (limiting input)"
-          ],
+          "topics": ["he.engineering.material-energy-balances#1"],
+          "examples": ["mixture densities", "book plant (limiting input)"],
           "notation": "degrees-of-freedom table before solving"
         },
         {
           "n": "4",
           "title": "Recycle: why, how to analyze, a simple system with recycle",
           "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/How_to_Analyze_a_Recycle_System",
-          "topics": [
-            "he.engineering.material-energy-balances#1"
-          ],
-          "examples": [
-            "cleaning process with recycle"
-          ]
+          "topics": ["he.engineering.material-energy-balances#1"],
+          "examples": ["cleaning process with recycle"]
         },
         {
           "n": "5",
           "title": "Mole balances; reactions with recycle; atom balances",
           "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Reactions_with_Recycle",
-          "topics": [
-            "he.engineering.material-energy-balances#2"
-          ],
-          "examples": [
-            "ethylene hydrogenation with membrane separator and purge"
-          ],
+          "topics": ["he.engineering.material-energy-balances#2"],
+          "examples": ["ethylene hydrogenation with membrane separator and purge"],
           "notation": "extent of reaction ξ; fractional conversion"
         },
         {
@@ -94,9 +79,7 @@
           "n": "7",
           "title": "Steady-state energy balance; unsteady mass and energy balances",
           "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Steady_state_energy_balance",
-          "topics": [
-            "he.engineering.material-energy-balances#3"
-          ]
+          "topics": ["he.engineering.material-energy-balances#3"]
         },
         {
           "n": "App.",

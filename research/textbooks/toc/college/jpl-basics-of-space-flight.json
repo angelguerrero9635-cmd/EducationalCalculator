@@ -23,42 +23,31 @@
           "n": "1",
           "title": "The Solar System",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter1-1/",
-          "topics": [
-            "he.engineering.orbital-mechanics#3"
-          ]
+          "topics": ["he.engineering.orbital-mechanics#3"]
         },
         {
           "n": "2",
           "title": "Reference Systems",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter2-1/",
-          "topics": [
-            "he.engineering.orbital-mechanics#1"
-          ]
+          "topics": ["he.engineering.orbital-mechanics#1"]
         },
         {
           "n": "3",
           "title": "Gravity & Mechanics",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter3-1/",
-          "topics": [
-            "he.engineering.orbital-mechanics#0"
-          ]
+          "topics": ["he.engineering.orbital-mechanics#0"]
         },
         {
           "n": "4",
           "title": "Trajectories",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter4-1/",
-          "topics": [
-            "he.engineering.orbital-mechanics#2",
-            "he.engineering.orbital-mechanics#3"
-          ]
+          "topics": ["he.engineering.orbital-mechanics#2", "he.engineering.orbital-mechanics#3"]
         },
         {
           "n": "5",
           "title": "Planetary Orbits",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter5-1/",
-          "topics": [
-            "he.engineering.orbital-mechanics#1"
-          ]
+          "topics": ["he.engineering.orbital-mechanics#1"]
         },
         {
           "n": "6",
@@ -120,9 +109,7 @@
           "n": "14",
           "title": "Launch",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter14-1/",
-          "topics": [
-            "he.engineering.propulsion#1"
-          ]
+          "topics": ["he.engineering.propulsion#1"]
         },
         {
           "n": "15",
@@ -135,9 +122,7 @@
           "n": "16",
           "title": "Encounter",
           "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter16-1/",
-          "topics": [
-            "he.engineering.orbital-mechanics#3"
-          ]
+          "topics": ["he.engineering.orbital-mechanics#3"]
         },
         {
           "n": "17",

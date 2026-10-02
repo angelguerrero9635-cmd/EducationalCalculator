@@ -1,773 +1,699 @@
 {
- "id": "clp-calculus",
- "curriculum": "CLP Calculus (CLP-1 to CLP-4) with problem books",
- "publisher": "Joel Feldman, Andrew Rechnitzer, Elyse Yeager (University of British Columbia)",
- "edition": "web/PDF editions as posted 2024–2026",
- "subject": "math",
- "level": "college",
- "content": "full",
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "attribution": "Joel Feldman, Andrew Rechnitzer and Elyse Yeager, CLP Calculus, UBC. Licensed CC BY-NC-SA 4.0 (https://personal.math.ubc.ca/~CLP/about/)."
- },
- "terms": "CC BY-NC-SA 4.0: section lists and problem types only; no question text recorded.",
- "sourceUrl": "https://personal.math.ubc.ca/~CLP/",
- "retrieved": "2026-10-02",
- "notes": "Sections from each book's HTML front page. Problem books are staged (Stage 1 concept, Stage 2 routine, Stage 3 harder) and mark UBC final-exam items with (*). CLP writes log x for the natural logarithm. robots.txt: none at personal.math.ubc.ca (404).",
- "books": [
-  {
-   "title": "CLP-1 Differential Calculus",
-   "url": "https://personal.math.ubc.ca/~CLP/CLP1/",
-   "units": [
-    {
-     "n": "0",
-     "title": "The basics",
-     "topics": [],
-     "note": "precalculus review; no college topic",
-     "sections": [
-      {
-       "n": "0.1",
-       "title": "Numbers",
-       "topics": [],
-       "note": "precalculus review"
-      },
-      {
-       "n": "0.2",
-       "title": "Sets",
-       "topics": [],
-       "note": "precalculus review"
-      },
-      {
-       "n": "0.3",
-       "title": "Other Important Sets",
-       "topics": [],
-       "note": "precalculus review"
-      },
-      {
-       "n": "0.4",
-       "title": "Functions",
-       "topics": [],
-       "note": "precalculus review"
-      },
-      {
-       "n": "0.5",
-       "title": "Parsing Formulas",
-       "topics": [],
-       "note": "precalculus review"
-      },
-      {
-       "n": "0.6",
-       "title": "Inverse Functions",
-       "topics": [],
-       "note": "precalculus review"
-      }
-     ]
-    },
-    {
-     "n": "1",
-     "title": "Limits",
-     "topics": [
-      "he.math.calc-1#0"
-     ],
-     "sections": [
-      {
-       "n": "1.1",
-       "title": "Drawing Tangents and a First Limit"
-      },
-      {
-       "n": "1.2",
-       "title": "Another Limit and Computing Velocity"
-      },
-      {
-       "n": "1.3",
-       "title": "The Limit of a Function"
-      },
-      {
-       "n": "1.4",
-       "title": "Calculating Limits with Limit Laws"
-      },
-      {
-       "n": "1.5",
-       "title": "Limits at Infinity"
-      },
-      {
-       "n": "1.6",
-       "title": "Continuity"
-      },
-      {
-       "n": "1.7",
-       "title": "(Optional) Making the Informal a Little More Formal"
-      },
-      {
-       "n": "1.8",
-       "title": "(Optional) Making Infinite Limits a Little More Formal"
-      },
-      {
-       "n": "1.9",
-       "title": "(Optional) Proving the Arithmetic of Limits"
-      }
-     ],
-     "notation": [
-      "log x means the natural logarithm (base e) throughout CLP",
-      "British spellings: optimisation, centre"
-     ]
-    },
-    {
-     "n": "2",
-     "title": "Derivatives",
-     "topics": [
-      "he.math.calc-1#1"
-     ],
-     "sections": [
-      {
-       "n": "2.1",
-       "title": "Revisiting Tangent Lines"
-      },
-      {
-       "n": "2.2",
-       "title": "Definition of the Derivative"
-      },
-      {
-       "n": "2.3",
-       "title": "Interpretations of the Derivative"
-      },
-      {
-       "n": "2.4",
-       "title": "Arithmetic of Derivatives - a Differentiation Toolbox"
-      },
-      {
-       "n": "2.5",
-       "title": "Proofs of the Arithmetic of Derivatives"
-      },
-      {
-       "n": "2.6",
-       "title": "Using the Arithmetic of Derivatives – Examples"
-      },
-      {
-       "n": "2.7",
-       "title": "Derivatives of Exponential Functions"
-      },
-      {
-       "n": "2.8",
-       "title": "Derivatives of Trigonometric Functions"
-      },
-      {
-       "n": "2.9",
-       "title": "One More Tool – the Chain Rule"
-      },
-      {
-       "n": "2.10",
-       "title": "The Natural Logarithm"
-      },
-      {
-       "n": "2.11",
-       "title": "Implicit Differentiation"
-      },
-      {
-       "n": "2.12",
-       "title": "Inverse Trigonometric Functions"
-      },
-      {
-       "n": "2.13",
-       "title": "The Mean Value Theorem",
-       "topics": [],
-       "note": "no college topic: mean value theorem"
-      },
-      {
-       "n": "2.14",
-       "title": "Higher Order Derivatives"
-      },
-      {
-       "n": "2.15",
-       "title": "(Optional) Is lim f′(x) equal to f′(c)?"
-      }
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Applications of derivatives",
-     "topics": [
-      "he.math.calc-1#2"
-     ],
-     "sections": [
-      {
-       "n": "3.1",
-       "title": "Velocity and Acceleration",
-       "topics": [
-        "he.math.calc-1#1"
-       ]
-      },
-      {
-       "n": "3.2",
-       "title": "Related Rates"
-      },
-      {
-       "n": "3.3",
-       "title": "Exponential Growth and Decay",
-       "topics": [
-        "he.math.diff-eq#0"
-       ]
-      },
-      {
-       "n": "3.4",
-       "title": "Taylor Polynomials",
-       "topics": [
-        "he.math.calc-2#4"
-       ]
-      },
-      {
-       "n": "3.5",
-       "title": "Optimisation"
-      },
-      {
-       "n": "3.6",
-       "title": "Sketching Graphs"
-      },
-      {
-       "n": "3.7",
-       "title": "L’Hôpital’s Rule, Indeterminate Forms",
-       "topics": [
-        "he.math.calc-1#1"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Towards Integral Calculus",
-     "topics": [
-      "he.math.calc-1#3"
-     ],
-     "sections": [
-      {
-       "n": "4.1",
-       "title": "Introduction to Antiderivatives"
-      }
-     ]
-    }
-   ]
+  "id": "clp-calculus",
+  "curriculum": "CLP Calculus (CLP-1 to CLP-4) with problem books",
+  "publisher": "Joel Feldman, Andrew Rechnitzer, Elyse Yeager (University of British Columbia)",
+  "edition": "web/PDF editions as posted 2024–2026",
+  "subject": "math",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Joel Feldman, Andrew Rechnitzer and Elyse Yeager, CLP Calculus, UBC. Licensed CC BY-NC-SA 4.0 (https://personal.math.ubc.ca/~CLP/about/)."
   },
-  {
-   "title": "CLP-2 Integral Calculus",
-   "url": "https://personal.math.ubc.ca/~CLP/CLP2/",
-   "units": [
+  "terms": "CC BY-NC-SA 4.0: section lists and problem types only; no question text recorded.",
+  "sourceUrl": "https://personal.math.ubc.ca/~CLP/",
+  "retrieved": "2026-10-02",
+  "notes": "Sections from each book's HTML front page. Problem books are staged (Stage 1 concept, Stage 2 routine, Stage 3 harder) and mark UBC final-exam items with (*). CLP writes log x for the natural logarithm. robots.txt: none at personal.math.ubc.ca (404).",
+  "books": [
     {
-     "n": "1",
-     "title": "Integration",
-     "topics": [],
-     "note": "split between Calculus I (#3, #4) and Calculus II",
-     "sections": [
-      {
-       "n": "1.1",
-       "title": "Definition of the Integral",
-       "topics": [
-        "he.math.calc-1#3"
-       ]
-      },
-      {
-       "n": "1.2",
-       "title": "Basic properties of the definite integral",
-       "topics": [
-        "he.math.calc-1#3"
-       ]
-      },
-      {
-       "n": "1.3",
-       "title": "The Fundamental Theorem of Calculus",
-       "topics": [
-        "he.math.calc-1#3"
-       ]
-      },
-      {
-       "n": "1.4",
-       "title": "Substitution",
-       "topics": [
-        "he.math.calc-1#4"
-       ]
-      },
-      {
-       "n": "1.5",
-       "title": "Area between curves",
-       "topics": [
-        "he.math.calc-2#2"
-       ]
-      },
-      {
-       "n": "1.6",
-       "title": "Volumes",
-       "topics": [
-        "he.math.calc-2#2"
-       ]
-      },
-      {
-       "n": "1.7",
-       "title": "Integration by parts",
-       "topics": [
-        "he.math.calc-2#0"
-       ],
-       "examples": [
-        "atmosphere mass with exponential density",
-        "∫ x log x, ∫ x² sin x, ∫ arccos y (Stage 2 exam items)"
-       ]
-      },
-      {
-       "n": "1.8",
-       "title": "Trigonometric Integrals",
-       "topics": [
-        "he.math.calc-2#0"
-       ]
-      },
-      {
-       "n": "1.9",
-       "title": "Trigonometric Substitution",
-       "topics": [
-        "he.math.calc-2#0"
-       ]
-      },
-      {
-       "n": "1.10",
-       "title": "Partial Fractions",
-       "topics": [
-        "he.math.calc-2#0"
-       ]
-      },
-      {
-       "n": "1.11",
-       "title": "Numerical Integration",
-       "topics": [],
-       "note": "no college topic: numerical integration"
-      },
-      {
-       "n": "1.12",
-       "title": "Improper Integrals",
-       "topics": [
-        "he.math.calc-2#1"
-       ]
-      },
-      {
-       "n": "1.13",
-       "title": "More Integration Examples",
-       "topics": [
-        "he.math.calc-2#0"
-       ]
-      }
-     ]
+      "title": "CLP-1 Differential Calculus",
+      "url": "https://personal.math.ubc.ca/~CLP/CLP1/",
+      "units": [
+        {
+          "n": "0",
+          "title": "The basics",
+          "topics": [],
+          "note": "precalculus review; no college topic",
+          "sections": [
+            {
+              "n": "0.1",
+              "title": "Numbers",
+              "topics": [],
+              "note": "precalculus review"
+            },
+            {
+              "n": "0.2",
+              "title": "Sets",
+              "topics": [],
+              "note": "precalculus review"
+            },
+            {
+              "n": "0.3",
+              "title": "Other Important Sets",
+              "topics": [],
+              "note": "precalculus review"
+            },
+            {
+              "n": "0.4",
+              "title": "Functions",
+              "topics": [],
+              "note": "precalculus review"
+            },
+            {
+              "n": "0.5",
+              "title": "Parsing Formulas",
+              "topics": [],
+              "note": "precalculus review"
+            },
+            {
+              "n": "0.6",
+              "title": "Inverse Functions",
+              "topics": [],
+              "note": "precalculus review"
+            }
+          ]
+        },
+        {
+          "n": "1",
+          "title": "Limits",
+          "topics": ["he.math.calc-1#0"],
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Drawing Tangents and a First Limit"
+            },
+            {
+              "n": "1.2",
+              "title": "Another Limit and Computing Velocity"
+            },
+            {
+              "n": "1.3",
+              "title": "The Limit of a Function"
+            },
+            {
+              "n": "1.4",
+              "title": "Calculating Limits with Limit Laws"
+            },
+            {
+              "n": "1.5",
+              "title": "Limits at Infinity"
+            },
+            {
+              "n": "1.6",
+              "title": "Continuity"
+            },
+            {
+              "n": "1.7",
+              "title": "(Optional) Making the Informal a Little More Formal"
+            },
+            {
+              "n": "1.8",
+              "title": "(Optional) Making Infinite Limits a Little More Formal"
+            },
+            {
+              "n": "1.9",
+              "title": "(Optional) Proving the Arithmetic of Limits"
+            }
+          ],
+          "notation": [
+            "log x means the natural logarithm (base e) throughout CLP",
+            "British spellings: optimisation, centre"
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Derivatives",
+          "topics": ["he.math.calc-1#1"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Revisiting Tangent Lines"
+            },
+            {
+              "n": "2.2",
+              "title": "Definition of the Derivative"
+            },
+            {
+              "n": "2.3",
+              "title": "Interpretations of the Derivative"
+            },
+            {
+              "n": "2.4",
+              "title": "Arithmetic of Derivatives - a Differentiation Toolbox"
+            },
+            {
+              "n": "2.5",
+              "title": "Proofs of the Arithmetic of Derivatives"
+            },
+            {
+              "n": "2.6",
+              "title": "Using the Arithmetic of Derivatives – Examples"
+            },
+            {
+              "n": "2.7",
+              "title": "Derivatives of Exponential Functions"
+            },
+            {
+              "n": "2.8",
+              "title": "Derivatives of Trigonometric Functions"
+            },
+            {
+              "n": "2.9",
+              "title": "One More Tool – the Chain Rule"
+            },
+            {
+              "n": "2.10",
+              "title": "The Natural Logarithm"
+            },
+            {
+              "n": "2.11",
+              "title": "Implicit Differentiation"
+            },
+            {
+              "n": "2.12",
+              "title": "Inverse Trigonometric Functions"
+            },
+            {
+              "n": "2.13",
+              "title": "The Mean Value Theorem",
+              "topics": [],
+              "note": "no college topic: mean value theorem"
+            },
+            {
+              "n": "2.14",
+              "title": "Higher Order Derivatives"
+            },
+            {
+              "n": "2.15",
+              "title": "(Optional) Is lim f′(x) equal to f′(c)?"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Applications of derivatives",
+          "topics": ["he.math.calc-1#2"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Velocity and Acceleration",
+              "topics": ["he.math.calc-1#1"]
+            },
+            {
+              "n": "3.2",
+              "title": "Related Rates"
+            },
+            {
+              "n": "3.3",
+              "title": "Exponential Growth and Decay",
+              "topics": ["he.math.diff-eq#0"]
+            },
+            {
+              "n": "3.4",
+              "title": "Taylor Polynomials",
+              "topics": ["he.math.calc-2#4"]
+            },
+            {
+              "n": "3.5",
+              "title": "Optimisation"
+            },
+            {
+              "n": "3.6",
+              "title": "Sketching Graphs"
+            },
+            {
+              "n": "3.7",
+              "title": "L’Hôpital’s Rule, Indeterminate Forms",
+              "topics": ["he.math.calc-1#1"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Towards Integral Calculus",
+          "topics": ["he.math.calc-1#3"],
+          "sections": [
+            {
+              "n": "4.1",
+              "title": "Introduction to Antiderivatives"
+            }
+          ]
+        }
+      ]
     },
     {
-     "n": "2",
-     "title": "Applications of Integration",
-     "topics": [
-      "he.math.calc-2#2"
-     ],
-     "sections": [
-      {
-       "n": "2.1",
-       "title": "Work",
-       "examples": [
-        "springs by Hooke's law",
-        "lifting a cable",
-        "work from a work function"
-       ],
-       "ranges": [
-        "k about 50 N/m; stretches 5–50 cm; cables 5 m, 8 kg"
-       ]
-      },
-      {
-       "n": "2.2",
-       "title": "Averages",
-       "topics": [
-        "he.math.calc-1#3"
-       ]
-      },
-      {
-       "n": "2.3",
-       "title": "Centre of Mass and Torque",
-       "topics": [],
-       "note": "no college topic: centre of mass"
-      },
-      {
-       "n": "2.4",
-       "title": "Separable Differential Equations",
-       "topics": [
-        "he.math.diff-eq#0"
-       ]
-      }
-     ]
+      "title": "CLP-2 Integral Calculus",
+      "url": "https://personal.math.ubc.ca/~CLP/CLP2/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Integration",
+          "topics": [],
+          "note": "split between Calculus I (#3, #4) and Calculus II",
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Definition of the Integral",
+              "topics": ["he.math.calc-1#3"]
+            },
+            {
+              "n": "1.2",
+              "title": "Basic properties of the definite integral",
+              "topics": ["he.math.calc-1#3"]
+            },
+            {
+              "n": "1.3",
+              "title": "The Fundamental Theorem of Calculus",
+              "topics": ["he.math.calc-1#3"]
+            },
+            {
+              "n": "1.4",
+              "title": "Substitution",
+              "topics": ["he.math.calc-1#4"]
+            },
+            {
+              "n": "1.5",
+              "title": "Area between curves",
+              "topics": ["he.math.calc-2#2"]
+            },
+            {
+              "n": "1.6",
+              "title": "Volumes",
+              "topics": ["he.math.calc-2#2"]
+            },
+            {
+              "n": "1.7",
+              "title": "Integration by parts",
+              "topics": ["he.math.calc-2#0"],
+              "examples": [
+                "atmosphere mass with exponential density",
+                "∫ x log x, ∫ x² sin x, ∫ arccos y (Stage 2 exam items)"
+              ]
+            },
+            {
+              "n": "1.8",
+              "title": "Trigonometric Integrals",
+              "topics": ["he.math.calc-2#0"]
+            },
+            {
+              "n": "1.9",
+              "title": "Trigonometric Substitution",
+              "topics": ["he.math.calc-2#0"]
+            },
+            {
+              "n": "1.10",
+              "title": "Partial Fractions",
+              "topics": ["he.math.calc-2#0"]
+            },
+            {
+              "n": "1.11",
+              "title": "Numerical Integration",
+              "topics": [],
+              "note": "no college topic: numerical integration"
+            },
+            {
+              "n": "1.12",
+              "title": "Improper Integrals",
+              "topics": ["he.math.calc-2#1"]
+            },
+            {
+              "n": "1.13",
+              "title": "More Integration Examples",
+              "topics": ["he.math.calc-2#0"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Applications of Integration",
+          "topics": ["he.math.calc-2#2"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Work",
+              "examples": [
+                "springs by Hooke's law",
+                "lifting a cable",
+                "work from a work function"
+              ],
+              "ranges": ["k about 50 N/m; stretches 5–50 cm; cables 5 m, 8 kg"]
+            },
+            {
+              "n": "2.2",
+              "title": "Averages",
+              "topics": ["he.math.calc-1#3"]
+            },
+            {
+              "n": "2.3",
+              "title": "Centre of Mass and Torque",
+              "topics": [],
+              "note": "no college topic: centre of mass"
+            },
+            {
+              "n": "2.4",
+              "title": "Separable Differential Equations",
+              "topics": ["he.math.diff-eq#0"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Sequences and series",
+          "topics": ["he.math.calc-2#3"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Sequences"
+            },
+            {
+              "n": "3.2",
+              "title": "Series"
+            },
+            {
+              "n": "3.3",
+              "title": "Convergence Tests",
+              "examples": [
+                "divergence, comparison, limit comparison, ratio and integral tests on mixed lists",
+                "p-values for Σ 1/(n (log n)^p)"
+              ]
+            },
+            {
+              "n": "3.4",
+              "title": "Absolute and Conditional Convergence"
+            },
+            {
+              "n": "3.5",
+              "title": "Power Series",
+              "topics": ["he.math.calc-2#4"]
+            },
+            {
+              "n": "3.6",
+              "title": "Taylor Series",
+              "topics": ["he.math.calc-2#4"]
+            },
+            {
+              "n": "3.7",
+              "title": "Optional — Rational and irrational numbers",
+              "topics": [],
+              "note": "optional; no topic"
+            }
+          ]
+        }
+      ]
     },
     {
-     "n": "3",
-     "title": "Sequences and series",
-     "topics": [
-      "he.math.calc-2#3"
-     ],
-     "sections": [
-      {
-       "n": "3.1",
-       "title": "Sequences"
-      },
-      {
-       "n": "3.2",
-       "title": "Series"
-      },
-      {
-       "n": "3.3",
-       "title": "Convergence Tests",
-       "examples": [
-        "divergence, comparison, limit comparison, ratio and integral tests on mixed lists",
-        "p-values for Σ 1/(n (log n)^p)"
-       ]
-      },
-      {
-       "n": "3.4",
-       "title": "Absolute and Conditional Convergence"
-      },
-      {
-       "n": "3.5",
-       "title": "Power Series",
-       "topics": [
-        "he.math.calc-2#4"
-       ]
-      },
-      {
-       "n": "3.6",
-       "title": "Taylor Series",
-       "topics": [
-        "he.math.calc-2#4"
-       ]
-      },
-      {
-       "n": "3.7",
-       "title": "Optional — Rational and irrational numbers",
-       "topics": [],
-       "note": "optional; no topic"
-      }
-     ]
+      "title": "CLP-3 Multivariable Calculus",
+      "url": "https://personal.math.ubc.ca/~CLP/CLP3/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Vectors and Geometry in Two and Three Dimensions",
+          "topics": ["he.math.calc-3#0"],
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Points"
+            },
+            {
+              "n": "1.2",
+              "title": "Vectors"
+            },
+            {
+              "n": "1.3",
+              "title": "Equations of Lines in 2d"
+            },
+            {
+              "n": "1.4",
+              "title": "Equations of Planes in 3d"
+            },
+            {
+              "n": "1.5",
+              "title": "Equations of Lines in 3d"
+            },
+            {
+              "n": "1.6",
+              "title": "Curves and their Tangent Vectors"
+            },
+            {
+              "n": "1.7",
+              "title": "Sketching Surfaces in 3d"
+            },
+            {
+              "n": "1.8",
+              "title": "Cylinders"
+            },
+            {
+              "n": "1.9",
+              "title": "Quadric Surfaces"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Partial Derivatives",
+          "topics": ["he.math.calc-3#1"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Limits"
+            },
+            {
+              "n": "2.2",
+              "title": "Partial Derivatives"
+            },
+            {
+              "n": "2.3",
+              "title": "Higher Order Derivatives"
+            },
+            {
+              "n": "2.4",
+              "title": "The Chain Rule"
+            },
+            {
+              "n": "2.5",
+              "title": "Tangent Planes and Normal Lines"
+            },
+            {
+              "n": "2.6",
+              "title": "Linear Approximations and Error"
+            },
+            {
+              "n": "2.7",
+              "title": "Directional Derivatives and the Gradient"
+            },
+            {
+              "n": "2.8",
+              "title": "A First Look at Partial Differential Equations"
+            },
+            {
+              "n": "2.9",
+              "title": "Maximum and Minimum Values"
+            },
+            {
+              "n": "2.10",
+              "title": "Lagrange Multipliers"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Multiple Integrals",
+          "topics": ["he.math.calc-3#2"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Double Integrals"
+            },
+            {
+              "n": "3.2",
+              "title": "Double Integrals in Polar Coordinates"
+            },
+            {
+              "n": "3.3",
+              "title": "Applications of Double Integrals"
+            },
+            {
+              "n": "3.4",
+              "title": "Surface Area"
+            },
+            {
+              "n": "3.5",
+              "title": "Triple Integrals"
+            },
+            {
+              "n": "3.6",
+              "title": "Triple Integrals in Cylindrical Coordinates"
+            },
+            {
+              "n": "3.7",
+              "title": "Triple Integrals in Spherical Coordinates"
+            },
+            {
+              "n": "3.8",
+              "title": "Optional — Integrals in General Coordinates"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "CLP-4 Vector Calculus",
+      "url": "https://personal.math.ubc.ca/~CLP/CLP4/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Curves",
+          "topics": ["he.math.calc-3#0"],
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Derivatives, Velocity, Etc."
+            },
+            {
+              "n": "1.2",
+              "title": "Reparametrization"
+            },
+            {
+              "n": "1.3",
+              "title": "Curvature"
+            },
+            {
+              "n": "1.4",
+              "title": "Curves in Three Dimensions"
+            },
+            {
+              "n": "1.5",
+              "title": "A Compendium of Curve Formula"
+            },
+            {
+              "n": "1.6",
+              "title": "Integrating Along a Curve",
+              "topics": ["he.math.calc-3#3"]
+            },
+            {
+              "n": "1.7",
+              "title": "Sliding on a Curve"
+            },
+            {
+              "n": "1.8",
+              "title": "Optional — Polar Coordinates",
+              "topics": ["he.math.calc-2#5"]
+            },
+            {
+              "n": "1.9",
+              "title": "Optional — Central Forces",
+              "topics": [],
+              "note": "optional physics or geometry application; no topic"
+            },
+            {
+              "n": "1.10",
+              "title": "Optional — Planetary Motion",
+              "topics": [],
+              "note": "optional physics or geometry application; no topic"
+            },
+            {
+              "n": "1.11",
+              "title": "Optional — The Astroid",
+              "topics": [],
+              "note": "optional physics or geometry application; no topic"
+            },
+            {
+              "n": "1.12",
+              "title": "Optional — Parametrizing Circles",
+              "topics": [],
+              "note": "optional physics or geometry application; no topic"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Vector Fields",
+          "topics": ["he.math.calc-3#3"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Definitions and First Examples"
+            },
+            {
+              "n": "2.2",
+              "title": "Optional — Field Lines"
+            },
+            {
+              "n": "2.3",
+              "title": "Conservative Vector Fields"
+            },
+            {
+              "n": "2.4",
+              "title": "Line Integrals"
+            },
+            {
+              "n": "2.5",
+              "title": "Optional — The Pendulum",
+              "topics": [],
+              "note": "optional physics or geometry application; no topic"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Surface Integrals",
+          "topics": ["he.math.calc-3#3"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Parametrized Surfaces"
+            },
+            {
+              "n": "3.2",
+              "title": "Tangent Planes"
+            },
+            {
+              "n": "3.3",
+              "title": "Surface Integrals"
+            },
+            {
+              "n": "3.4",
+              "title": "Interpretation of Flux Integrals"
+            },
+            {
+              "n": "3.5",
+              "title": "Orientation of Surfaces"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Integral Theorems",
+          "topics": ["he.math.calc-3#4"],
+          "sections": [
+            {
+              "n": "4.1",
+              "title": "Gradient, Divergence and Curl"
+            },
+            {
+              "n": "4.2",
+              "title": "The Divergence Theorem"
+            },
+            {
+              "n": "4.3",
+              "title": "Green’s Theorem"
+            },
+            {
+              "n": "4.4",
+              "title": "Stokes’ Theorem"
+            },
+            {
+              "n": "4.5",
+              "title": "Optional — Which Vector Fields Obey ∇×F = 0"
+            },
+            {
+              "n": "4.6",
+              "title": "Really Optional — More Interpretation of Div and Curl"
+            },
+            {
+              "n": "4.7",
+              "title": "Optional — A Generalized Stokes’ Theorem"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "True/False and Other Short Questions",
+          "topics": ["he.math.calc-3#4"],
+          "note": "problem-book chapter of short conceptual questions"
+        }
+      ]
     }
-   ]
-  },
-  {
-   "title": "CLP-3 Multivariable Calculus",
-   "url": "https://personal.math.ubc.ca/~CLP/CLP3/",
-   "units": [
-    {
-     "n": "1",
-     "title": "Vectors and Geometry in Two and Three Dimensions",
-     "topics": [
-      "he.math.calc-3#0"
-     ],
-     "sections": [
-      {
-       "n": "1.1",
-       "title": "Points"
-      },
-      {
-       "n": "1.2",
-       "title": "Vectors"
-      },
-      {
-       "n": "1.3",
-       "title": "Equations of Lines in 2d"
-      },
-      {
-       "n": "1.4",
-       "title": "Equations of Planes in 3d"
-      },
-      {
-       "n": "1.5",
-       "title": "Equations of Lines in 3d"
-      },
-      {
-       "n": "1.6",
-       "title": "Curves and their Tangent Vectors"
-      },
-      {
-       "n": "1.7",
-       "title": "Sketching Surfaces in 3d"
-      },
-      {
-       "n": "1.8",
-       "title": "Cylinders"
-      },
-      {
-       "n": "1.9",
-       "title": "Quadric Surfaces"
-      }
-     ]
-    },
-    {
-     "n": "2",
-     "title": "Partial Derivatives",
-     "topics": [
-      "he.math.calc-3#1"
-     ],
-     "sections": [
-      {
-       "n": "2.1",
-       "title": "Limits"
-      },
-      {
-       "n": "2.2",
-       "title": "Partial Derivatives"
-      },
-      {
-       "n": "2.3",
-       "title": "Higher Order Derivatives"
-      },
-      {
-       "n": "2.4",
-       "title": "The Chain Rule"
-      },
-      {
-       "n": "2.5",
-       "title": "Tangent Planes and Normal Lines"
-      },
-      {
-       "n": "2.6",
-       "title": "Linear Approximations and Error"
-      },
-      {
-       "n": "2.7",
-       "title": "Directional Derivatives and the Gradient"
-      },
-      {
-       "n": "2.8",
-       "title": "A First Look at Partial Differential Equations"
-      },
-      {
-       "n": "2.9",
-       "title": "Maximum and Minimum Values"
-      },
-      {
-       "n": "2.10",
-       "title": "Lagrange Multipliers"
-      }
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Multiple Integrals",
-     "topics": [
-      "he.math.calc-3#2"
-     ],
-     "sections": [
-      {
-       "n": "3.1",
-       "title": "Double Integrals"
-      },
-      {
-       "n": "3.2",
-       "title": "Double Integrals in Polar Coordinates"
-      },
-      {
-       "n": "3.3",
-       "title": "Applications of Double Integrals"
-      },
-      {
-       "n": "3.4",
-       "title": "Surface Area"
-      },
-      {
-       "n": "3.5",
-       "title": "Triple Integrals"
-      },
-      {
-       "n": "3.6",
-       "title": "Triple Integrals in Cylindrical Coordinates"
-      },
-      {
-       "n": "3.7",
-       "title": "Triple Integrals in Spherical Coordinates"
-      },
-      {
-       "n": "3.8",
-       "title": "Optional — Integrals in General Coordinates"
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "title": "CLP-4 Vector Calculus",
-   "url": "https://personal.math.ubc.ca/~CLP/CLP4/",
-   "units": [
-    {
-     "n": "1",
-     "title": "Curves",
-     "topics": [
-      "he.math.calc-3#0"
-     ],
-     "sections": [
-      {
-       "n": "1.1",
-       "title": "Derivatives, Velocity, Etc."
-      },
-      {
-       "n": "1.2",
-       "title": "Reparametrization"
-      },
-      {
-       "n": "1.3",
-       "title": "Curvature"
-      },
-      {
-       "n": "1.4",
-       "title": "Curves in Three Dimensions"
-      },
-      {
-       "n": "1.5",
-       "title": "A Compendium of Curve Formula"
-      },
-      {
-       "n": "1.6",
-       "title": "Integrating Along a Curve",
-       "topics": [
-        "he.math.calc-3#3"
-       ]
-      },
-      {
-       "n": "1.7",
-       "title": "Sliding on a Curve"
-      },
-      {
-       "n": "1.8",
-       "title": "Optional — Polar Coordinates",
-       "topics": [
-        "he.math.calc-2#5"
-       ]
-      },
-      {
-       "n": "1.9",
-       "title": "Optional — Central Forces",
-       "topics": [],
-       "note": "optional physics or geometry application; no topic"
-      },
-      {
-       "n": "1.10",
-       "title": "Optional — Planetary Motion",
-       "topics": [],
-       "note": "optional physics or geometry application; no topic"
-      },
-      {
-       "n": "1.11",
-       "title": "Optional — The Astroid",
-       "topics": [],
-       "note": "optional physics or geometry application; no topic"
-      },
-      {
-       "n": "1.12",
-       "title": "Optional — Parametrizing Circles",
-       "topics": [],
-       "note": "optional physics or geometry application; no topic"
-      }
-     ]
-    },
-    {
-     "n": "2",
-     "title": "Vector Fields",
-     "topics": [
-      "he.math.calc-3#3"
-     ],
-     "sections": [
-      {
-       "n": "2.1",
-       "title": "Definitions and First Examples"
-      },
-      {
-       "n": "2.2",
-       "title": "Optional — Field Lines"
-      },
-      {
-       "n": "2.3",
-       "title": "Conservative Vector Fields"
-      },
-      {
-       "n": "2.4",
-       "title": "Line Integrals"
-      },
-      {
-       "n": "2.5",
-       "title": "Optional — The Pendulum",
-       "topics": [],
-       "note": "optional physics or geometry application; no topic"
-      }
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Surface Integrals",
-     "topics": [
-      "he.math.calc-3#3"
-     ],
-     "sections": [
-      {
-       "n": "3.1",
-       "title": "Parametrized Surfaces"
-      },
-      {
-       "n": "3.2",
-       "title": "Tangent Planes"
-      },
-      {
-       "n": "3.3",
-       "title": "Surface Integrals"
-      },
-      {
-       "n": "3.4",
-       "title": "Interpretation of Flux Integrals"
-      },
-      {
-       "n": "3.5",
-       "title": "Orientation of Surfaces"
-      }
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Integral Theorems",
-     "topics": [
-      "he.math.calc-3#4"
-     ],
-     "sections": [
-      {
-       "n": "4.1",
-       "title": "Gradient, Divergence and Curl"
-      },
-      {
-       "n": "4.2",
-       "title": "The Divergence Theorem"
-      },
-      {
-       "n": "4.3",
-       "title": "Green’s Theorem"
-      },
-      {
-       "n": "4.4",
-       "title": "Stokes’ Theorem"
-      },
-      {
-       "n": "4.5",
-       "title": "Optional — Which Vector Fields Obey ∇×F = 0"
-      },
-      {
-       "n": "4.6",
-       "title": "Really Optional — More Interpretation of Div and Curl"
-      },
-      {
-       "n": "4.7",
-       "title": "Optional — A Generalized Stokes’ Theorem"
-      }
-     ]
-    },
-    {
-     "n": "5",
-     "title": "True/False and Other Short Questions",
-     "topics": [
-      "he.math.calc-3#4"
-     ],
-     "note": "problem-book chapter of short conceptual questions"
-    }
-   ]
-  }
- ]
+  ]
 }

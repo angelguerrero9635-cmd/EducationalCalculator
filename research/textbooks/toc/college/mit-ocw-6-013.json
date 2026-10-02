@@ -29,18 +29,12 @@
         {
           "n": "L1–L6",
           "title": "Maxwell’s equations; media and boundaries; plane waves; Poynting; forces and motors",
-          "topics": [
-            "he.engineering.electromagnetics#1",
-            "he.engineering.electromagnetics#2"
-          ]
+          "topics": ["he.engineering.electromagnetics#1", "he.engineering.electromagnetics#2"]
         },
         {
           "n": "L7–",
           "title": "Transmission lines; resonators; waveguides; antennas and arrays; optics",
-          "topics": [
-            "he.engineering.electromagnetics#0",
-            "he.engineering.electromagnetics#3"
-          ],
+          "topics": ["he.engineering.electromagnetics#0", "he.engineering.electromagnetics#3"],
           "examples": [
             "|V(z)| pattern → VSWR and load",
             "stub matching",

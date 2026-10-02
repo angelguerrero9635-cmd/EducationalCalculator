@@ -1,300 +1,234 @@
 {
- "id": "mit-ocw-18-06sc",
- "curriculum": "MIT OCW 18.06SC Linear Algebra (and 18.06 Spring 2010 exams)",
- "publisher": "MIT OpenCourseWare (Gilbert Strang)",
- "edition": "Fall 2011 (scholar course); exams also from 18.06 Spring 2010",
- "subject": "math",
- "level": "college",
- "content": "full",
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "attribution": "Gilbert Strang. 18.06SC Linear Algebra. Fall 2011. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
- },
- "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
- "sourceUrl": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",
- "retrieved": "2026-10-02",
- "notes": "Sessions from the course navigation (Strang's lecture order: elimination and the four subspaces first, then orthogonality, determinants, eigenvalues, positive definiteness and SVD). The exam 3 and final PDFs of 18.06SC have no text layer; question types for those were taken from 18.06 Spring 2010 (ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/).",
- "books": [
-  {
-   "title": "18.06SC Linear Algebra (Fall 2011)",
-   "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",
-   "units": [
+  "id": "mit-ocw-18-06sc",
+  "curriculum": "MIT OCW 18.06SC Linear Algebra (and 18.06 Spring 2010 exams)",
+  "publisher": "MIT OpenCourseWare (Gilbert Strang)",
+  "edition": "Fall 2011 (scholar course); exams also from 18.06 Spring 2010",
+  "subject": "math",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Gilbert Strang. 18.06SC Linear Algebra. Fall 2011. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+  "sourceUrl": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",
+  "retrieved": "2026-10-02",
+  "notes": "Sessions from the course navigation (Strang's lecture order: elimination and the four subspaces first, then orthogonality, determinants, eigenvalues, positive definiteness and SVD). The exam 3 and final PDFs of 18.06SC have no text layer; question types for those were taken from 18.06 Spring 2010 (ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/).",
+  "books": [
     {
-     "n": "I",
-     "title": "Ax = b and the Four Subspaces",
-     "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/ax-b-and-the-four-subspaces/",
-     "topics": [
-      "he.math.linear-algebra#0"
-     ],
-     "sections": [
-      {
-       "n": "I.1",
-       "title": "The Geometry of Linear Equations",
-       "topics": [
-        "he.math.linear-algebra#0"
-       ]
-      },
-      {
-       "n": "I.2",
-       "title": "An Overview of Key Ideas",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "I.3",
-       "title": "Elimination with Matrices",
-       "topics": [
-        "he.math.linear-algebra#0"
-       ]
-      },
-      {
-       "n": "I.4",
-       "title": "Multiplication and Inverse Matrices",
-       "topics": [
-        "he.math.linear-algebra#0"
-       ]
-      },
-      {
-       "n": "I.5",
-       "title": "Factorization into A = LU",
-       "topics": [
-        "he.math.linear-algebra#0"
-       ]
-      },
-      {
-       "n": "I.6",
-       "title": "Transposes, Permutations, Vector Spaces",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "I.7",
-       "title": "Column Space and Nullspace",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "I.8",
-       "title": "Solving Ax = 0: Pivot Variables, Special Solutions",
-       "topics": [
-        "he.math.linear-algebra#0",
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "I.9",
-       "title": "Solving Ax = b: Row Reduced Form R",
-       "topics": [
-        "he.math.linear-algebra#0"
-       ]
-      },
-      {
-       "n": "I.10",
-       "title": "Independence, Basis and Dimension",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "I.11",
-       "title": "The Four Fundamental Subspaces",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "I.12",
-       "title": "Matrix Spaces; Rank 1; Small World Graphs",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "I.13",
-       "title": "Graphs, Networks, Incidence Matrices",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "Exam 1",
-       "title": "Exam 1",
-       "examples": [
-        "deduce m, n, r from solvability",
-        "elimination matrices, A⁻¹ and L",
-        "bases for a parameter matrix",
-        "rref facts"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "II",
-     "title": "Least Squares, Determinants and Eigenvalues",
-     "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/least-squares-determinants-and-eigenvalues/",
-     "topics": [
-      "he.math.linear-algebra#4"
-     ],
-     "sections": [
-      {
-       "n": "II.1",
-       "title": "Orthogonal Vectors and Subspaces",
-       "topics": [
-        "he.math.linear-algebra#4"
-       ]
-      },
-      {
-       "n": "II.2",
-       "title": "Projections onto Subspaces",
-       "topics": [
-        "he.math.linear-algebra#4"
-       ]
-      },
-      {
-       "n": "II.3",
-       "title": "Projection Matrices and Least Squares",
-       "topics": [
-        "he.math.linear-algebra#4"
-       ]
-      },
-      {
-       "n": "II.4",
-       "title": "Orthogonal Matrices and Gram-Schmidt",
-       "topics": [
-        "he.math.linear-algebra#4"
-       ]
-      },
-      {
-       "n": "II.5",
-       "title": "Properties of Determinants",
-       "topics": [
-        "he.math.linear-algebra#2"
-       ]
-      },
-      {
-       "n": "II.6",
-       "title": "Determinant Formulas and Cofactors",
-       "topics": [
-        "he.math.linear-algebra#2"
-       ]
-      },
-      {
-       "n": "II.7",
-       "title": "Cramer's Rule, Inverse Matrix and Volume",
-       "topics": [
-        "he.math.linear-algebra#2"
-       ]
-      },
-      {
-       "n": "II.8",
-       "title": "Eigenvalues and Eigenvectors",
-       "topics": [
-        "he.math.linear-algebra#3"
-       ]
-      },
-      {
-       "n": "II.9",
-       "title": "Diagonalization and Powers of A",
-       "topics": [
-        "he.math.linear-algebra#3"
-       ]
-      },
-      {
-       "n": "II.10",
-       "title": "Differential Equations and exp(At)",
-       "topics": [
-        "he.math.linear-algebra#3",
-        "he.math.diff-eq#3"
-       ]
-      },
-      {
-       "n": "II.11",
-       "title": "Markov Matrices; Fourier Series",
-       "topics": [
-        "he.math.linear-algebra#3"
-       ]
-      },
-      {
-       "n": "Exam 2",
-       "title": "Exam 2",
-       "examples": [
-        "determinants of orthonormal columns",
-        "least-squares line",
-        "projection matrices and Gram–Schmidt",
-        "determinant degree in an entry"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "III",
-     "title": "Positive Definite Matrices and Applications",
-     "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/positive-definite-matrices-and-applications/",
-     "topics": [
-      "he.math.linear-algebra#3"
-     ],
-     "note": "SVD, complex matrices, pseudoinverse: plan gaps",
-     "sections": [
-      {
-       "n": "III.1",
-       "title": "Symmetric Matrices and Positive Definiteness",
-       "topics": [
-        "he.math.linear-algebra#3"
-       ]
-      },
-      {
-       "n": "III.2",
-       "title": "Complex Matrices; Fast Fourier Transform (FFT)",
-       "topics": [],
-       "note": "no college topic: Complex Matrices; Fast Fourier Transform (FFT)"
-      },
-      {
-       "n": "III.3",
-       "title": "Positive Definite Matrices and Minima",
-       "topics": [
-        "he.math.linear-algebra#3"
-       ]
-      },
-      {
-       "n": "III.4",
-       "title": "Similar Matrices and Jordan Form",
-       "topics": [
-        "he.math.linear-algebra#3"
-       ]
-      },
-      {
-       "n": "III.5",
-       "title": "Singular Value Decomposition",
-       "topics": [],
-       "note": "no college topic: Singular Value Decomposition"
-      },
-      {
-       "n": "III.6",
-       "title": "Linear Transformations and their Matrices",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "III.7",
-       "title": "Change of Basis; Image Compression",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "III.8",
-       "title": "Left and Right Inverses; Pseudoinverse",
-       "topics": [],
-       "note": "no college topic: Left and Right Inverses; Pseudoinverse"
-      }
-     ]
+      "title": "18.06SC Linear Algebra (Fall 2011)",
+      "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",
+      "units": [
+        {
+          "n": "I",
+          "title": "Ax = b and the Four Subspaces",
+          "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/ax-b-and-the-four-subspaces/",
+          "topics": ["he.math.linear-algebra#0"],
+          "sections": [
+            {
+              "n": "I.1",
+              "title": "The Geometry of Linear Equations",
+              "topics": ["he.math.linear-algebra#0"]
+            },
+            {
+              "n": "I.2",
+              "title": "An Overview of Key Ideas",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "I.3",
+              "title": "Elimination with Matrices",
+              "topics": ["he.math.linear-algebra#0"]
+            },
+            {
+              "n": "I.4",
+              "title": "Multiplication and Inverse Matrices",
+              "topics": ["he.math.linear-algebra#0"]
+            },
+            {
+              "n": "I.5",
+              "title": "Factorization into A = LU",
+              "topics": ["he.math.linear-algebra#0"]
+            },
+            {
+              "n": "I.6",
+              "title": "Transposes, Permutations, Vector Spaces",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "I.7",
+              "title": "Column Space and Nullspace",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "I.8",
+              "title": "Solving Ax = 0: Pivot Variables, Special Solutions",
+              "topics": ["he.math.linear-algebra#0", "he.math.linear-algebra#1"]
+            },
+            {
+              "n": "I.9",
+              "title": "Solving Ax = b: Row Reduced Form R",
+              "topics": ["he.math.linear-algebra#0"]
+            },
+            {
+              "n": "I.10",
+              "title": "Independence, Basis and Dimension",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "I.11",
+              "title": "The Four Fundamental Subspaces",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "I.12",
+              "title": "Matrix Spaces; Rank 1; Small World Graphs",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "I.13",
+              "title": "Graphs, Networks, Incidence Matrices",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "Exam 1",
+              "title": "Exam 1",
+              "examples": [
+                "deduce m, n, r from solvability",
+                "elimination matrices, A⁻¹ and L",
+                "bases for a parameter matrix",
+                "rref facts"
+              ]
+            }
+          ]
+        },
+        {
+          "n": "II",
+          "title": "Least Squares, Determinants and Eigenvalues",
+          "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/least-squares-determinants-and-eigenvalues/",
+          "topics": ["he.math.linear-algebra#4"],
+          "sections": [
+            {
+              "n": "II.1",
+              "title": "Orthogonal Vectors and Subspaces",
+              "topics": ["he.math.linear-algebra#4"]
+            },
+            {
+              "n": "II.2",
+              "title": "Projections onto Subspaces",
+              "topics": ["he.math.linear-algebra#4"]
+            },
+            {
+              "n": "II.3",
+              "title": "Projection Matrices and Least Squares",
+              "topics": ["he.math.linear-algebra#4"]
+            },
+            {
+              "n": "II.4",
+              "title": "Orthogonal Matrices and Gram-Schmidt",
+              "topics": ["he.math.linear-algebra#4"]
+            },
+            {
+              "n": "II.5",
+              "title": "Properties of Determinants",
+              "topics": ["he.math.linear-algebra#2"]
+            },
+            {
+              "n": "II.6",
+              "title": "Determinant Formulas and Cofactors",
+              "topics": ["he.math.linear-algebra#2"]
+            },
+            {
+              "n": "II.7",
+              "title": "Cramer's Rule, Inverse Matrix and Volume",
+              "topics": ["he.math.linear-algebra#2"]
+            },
+            {
+              "n": "II.8",
+              "title": "Eigenvalues and Eigenvectors",
+              "topics": ["he.math.linear-algebra#3"]
+            },
+            {
+              "n": "II.9",
+              "title": "Diagonalization and Powers of A",
+              "topics": ["he.math.linear-algebra#3"]
+            },
+            {
+              "n": "II.10",
+              "title": "Differential Equations and exp(At)",
+              "topics": ["he.math.linear-algebra#3", "he.math.diff-eq#3"]
+            },
+            {
+              "n": "II.11",
+              "title": "Markov Matrices; Fourier Series",
+              "topics": ["he.math.linear-algebra#3"]
+            },
+            {
+              "n": "Exam 2",
+              "title": "Exam 2",
+              "examples": [
+                "determinants of orthonormal columns",
+                "least-squares line",
+                "projection matrices and Gram–Schmidt",
+                "determinant degree in an entry"
+              ]
+            }
+          ]
+        },
+        {
+          "n": "III",
+          "title": "Positive Definite Matrices and Applications",
+          "url": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/positive-definite-matrices-and-applications/",
+          "topics": ["he.math.linear-algebra#3"],
+          "note": "SVD, complex matrices, pseudoinverse: plan gaps",
+          "sections": [
+            {
+              "n": "III.1",
+              "title": "Symmetric Matrices and Positive Definiteness",
+              "topics": ["he.math.linear-algebra#3"]
+            },
+            {
+              "n": "III.2",
+              "title": "Complex Matrices; Fast Fourier Transform (FFT)",
+              "topics": [],
+              "note": "no college topic: Complex Matrices; Fast Fourier Transform (FFT)"
+            },
+            {
+              "n": "III.3",
+              "title": "Positive Definite Matrices and Minima",
+              "topics": ["he.math.linear-algebra#3"]
+            },
+            {
+              "n": "III.4",
+              "title": "Similar Matrices and Jordan Form",
+              "topics": ["he.math.linear-algebra#3"]
+            },
+            {
+              "n": "III.5",
+              "title": "Singular Value Decomposition",
+              "topics": [],
+              "note": "no college topic: Singular Value Decomposition"
+            },
+            {
+              "n": "III.6",
+              "title": "Linear Transformations and their Matrices",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "III.7",
+              "title": "Change of Basis; Image Compression",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "III.8",
+              "title": "Left and Right Inverses; Pseudoinverse",
+              "topics": [],
+              "note": "no college topic: Left and Right Inverses; Pseudoinverse"
+            }
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

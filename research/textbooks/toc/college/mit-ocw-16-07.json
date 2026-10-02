@@ -37,12 +37,8 @@
         {
           "n": "L14",
           "title": "Variable mass systems: the rocket equation",
-          "topics": [
-            "he.engineering.propulsion#1"
-          ],
-          "examples": [
-            "two-stage optimum split"
-          ]
+          "topics": ["he.engineering.propulsion#1"],
+          "examples": ["two-stage optimum split"]
         },
         {
           "n": "L15–L18",

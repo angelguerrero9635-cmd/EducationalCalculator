@@ -27,9 +27,7 @@
           "n": "series",
           "title": "Series Circuits and Voltage Dividers",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_series.pdf",
-          "topics": [
-            "he.engineering.circuits-1#0"
-          ],
+          "topics": ["he.engineering.circuits-1#0"],
           "examples": [
             "Three-battery, one-lamp circuit",
             "Leeds & Northrup resistance box design",
@@ -46,9 +44,7 @@
           "n": "parallel",
           "title": "Parallel Circuits and Current Dividers",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_parallel.pdf",
-          "topics": [
-            "he.engineering.circuits-1#0"
-          ],
+          "topics": ["he.engineering.circuits-1#0"],
           "examples": [
             "Resistor network",
             "Three-source, one-lamp circuit",
@@ -65,9 +61,7 @@
           "n": "seriesparallel",
           "title": "Series-Parallel Circuits",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_seriesparallel.pdf",
-          "topics": [
-            "he.engineering.circuits-1#0"
-          ],
+          "topics": ["he.engineering.circuits-1#0"],
           "examples": [
             "Building custom resistance values",
             "Two different LED circuits",
@@ -84,9 +78,7 @@
           "n": "kvl",
           "title": "Kirchhoff's Voltage Law",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_kvl.pdf",
-          "topics": [
-            "he.engineering.circuits-1#0"
-          ],
+          "topics": ["he.engineering.circuits-1#0"],
           "examples": [
             "Tracing KVL loops in a series circuit",
             "Tracing KVL loops in a multi-source circuit",
@@ -103,10 +95,7 @@
           "n": "kcl",
           "title": "Kirchhoff's Current Law",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_kcl.pdf",
-          "topics": [
-            "he.engineering.circuits-1#0",
-            "he.engineering.circuits-1#1"
-          ],
+          "topics": ["he.engineering.circuits-1#0", "he.engineering.circuits-1#1"],
           "examples": [
             "Paralleled current sources",
             "Currents in resistor networks",
@@ -122,9 +111,7 @@
           "n": "thevenin_norton",
           "title": "Thevenin's and Norton's Theorems",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_thevenin_norton.pdf",
-          "topics": [
-            "he.engineering.circuits-1#2"
-          ],
+          "topics": ["he.engineering.circuits-1#2"],
           "examples": [
             "Testing sources under load",
             "Thévenin and Norton equivalents of a single-source network",
@@ -139,9 +126,7 @@
           "n": "super",
           "title": "Superposition Theorem",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_super.pdf",
-          "topics": [
-            "he.engineering.circuits-1#2"
-          ],
+          "topics": ["he.engineering.circuits-1#2"],
           "examples": [
             "Two-source, three-resistor network",
             "Wind turbine and battery network",
@@ -155,22 +140,15 @@
           "n": "maxpower",
           "title": "Maximum Power Transfer Theorem",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_maxpower.pdf",
-          "topics": [
-            "he.engineering.circuits-1#2"
-          ],
-          "examples": [
-            "Series resistance",
-            "Battery bank short-circuit current"
-          ],
+          "topics": ["he.engineering.circuits-1#2"],
+          "examples": ["Series resistance", "Battery bank short-circuit current"],
           "notes": "9 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
         },
         {
           "n": "capacitor",
           "title": "Capacitors and Capacitive Circuits",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_capacitor.pdf",
-          "topics": [
-            "he.engineering.circuits-1#4"
-          ],
+          "topics": ["he.engineering.circuits-1#4"],
           "examples": [
             "Air capacitor gap",
             "Defibrillator capacitor",
@@ -187,10 +165,7 @@
           "n": "opamp",
           "title": "Operational Amplifiers",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_opamp.pdf",
-          "topics": [
-            "he.engineering.circuits-1#3",
-            "he.engineering.electronics#3"
-          ],
+          "topics": ["he.engineering.circuits-1#3", "he.engineering.electronics#3"],
           "examples": [
             "Empirically determining open-loop gain",
             "Voltage follower simulation program",
@@ -207,9 +182,7 @@
           "n": "phasor",
           "title": "Phasor Mathematics",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_phasor.pdf",
-          "topics": [
-            "he.engineering.circuits-2#0"
-          ],
+          "topics": ["he.engineering.circuits-2#0"],
           "examples": [
             "Practice: complex number calculations",
             "Adding sine waves",
@@ -225,9 +198,7 @@
           "n": "rxz",
           "title": "Resistance, Reactance, and Impedance",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_rxz.pdf",
-          "topics": [
-            "he.engineering.circuits-2#0"
-          ],
+          "topics": ["he.engineering.circuits-2#0"],
           "examples": [
             "Resistances and reactances expressed as impedances",
             "Imperfect inductor",
@@ -243,9 +214,7 @@
           "n": "ac_s",
           "title": "Series AC Circuits",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_ac_s.pdf",
-          "topics": [
-            "he.engineering.circuits-2#0"
-          ],
+          "topics": ["he.engineering.circuits-2#0"],
           "examples": [
             "Series RL impedances",
             "Series RC impedances",
@@ -262,9 +231,7 @@
           "n": "powerfactor",
           "title": "Efficiency and Power Factor",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_powerfactor.pdf",
-          "topics": [
-            "he.engineering.circuits-2#1"
-          ],
+          "topics": ["he.engineering.circuits-2#1"],
           "examples": [
             "Three AC loads",
             "Power factor from wattmeter",
@@ -281,9 +248,7 @@
           "n": "filters",
           "title": "Elementary Filter Circuits",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_filters.pdf",
-          "topics": [
-            "he.engineering.circuits-2#2"
-          ],
+          "topics": ["he.engineering.circuits-2#2"],
           "examples": [
             "Practice: complex number calculations",
             "Frequency response of an RC network",
@@ -300,9 +265,7 @@
           "n": "resonance",
           "title": "Resonance",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_resonance.pdf",
-          "topics": [
-            "he.engineering.circuits-2#2"
-          ],
+          "topics": ["he.engineering.circuits-2#2"],
           "examples": [
             "Series LC impedance",
             "Series LC circuit calculations",
@@ -315,9 +278,7 @@
           "n": "transformer",
           "title": "Transformers",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_transformer.pdf",
-          "topics": [
-            "he.engineering.circuits-2#3"
-          ],
+          "topics": ["he.engineering.circuits-2#3"],
           "examples": [
             "Basic transformer calculations",
             "Autotransformer currents",
@@ -331,9 +292,7 @@
           "n": "polyphase",
           "title": "Polyphase AC",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_polyphase.pdf",
-          "topics": [
-            "he.engineering.circuits-2#4"
-          ],
+          "topics": ["he.engineering.circuits-2#4"],
           "examples": [
             "Total power dissipation",
             "Balanced Delta source and Delta load",
@@ -350,22 +309,15 @@
           "n": "pn",
           "title": "PN Junctions and Diodes",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_pn.pdf",
-          "topics": [
-            "he.engineering.electronics#0"
-          ],
-          "examples": [
-            "Voltages and currents in simple diode circuits",
-            "LED resistor sizing"
-          ],
+          "topics": ["he.engineering.electronics#0"],
+          "examples": ["Voltages and currents in simple diode circuits", "LED resistor sizing"],
           "notes": "13 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
         },
         {
           "n": "rectifier",
           "title": "Rectifier Circuits",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_rectifier.pdf",
-          "topics": [
-            "he.engineering.electronics#0"
-          ],
+          "topics": ["he.engineering.electronics#0"],
           "examples": [
             "Line-powered rectifier",
             "Rectified peak voltage and ripple frequency",
@@ -377,35 +329,23 @@
           "n": "bjt",
           "title": "Bipolar Junction Transistors",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_bjt.pdf",
-          "topics": [
-            "he.engineering.electronics#1"
-          ],
-          "examples": [
-            "DC bias calculations",
-            "BJT circuit calculations"
-          ],
+          "topics": ["he.engineering.electronics#1"],
+          "examples": ["DC bias calculations", "BJT circuit calculations"],
           "notes": "16 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
         },
         {
           "n": "fet",
           "title": "Field-Effect Transistors",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_fet.pdf",
-          "topics": [
-            "he.engineering.electronics#1"
-          ],
-          "examples": [
-            "Drain current calculation",
-            "ESD test jig"
-          ],
+          "topics": ["he.engineering.electronics#1"],
+          "examples": ["Drain current calculation", "ESD test jig"],
           "notes": "21 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
         },
         {
           "n": "bjtamp",
           "title": "Single-Stage BJT Amplifiers",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_bjtamp.pdf",
-          "topics": [
-            "he.engineering.electronics#2"
-          ],
+          "topics": ["he.engineering.electronics#2"],
           "examples": [
             "Emitter-follower calculations",
             "Common-collector output voltage",
@@ -422,9 +362,7 @@
           "n": "number",
           "title": "Digital Numeration",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_number.pdf",
-          "topics": [
-            "he.engineering.digital-logic#0"
-          ],
+          "topics": ["he.engineering.digital-logic#0"],
           "examples": [
             "Counting in binary, octal, and hexadecimal",
             "Binary to decimal and hex conversions",
@@ -441,9 +379,7 @@
           "n": "comblogic",
           "title": "Combinational Logic",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_comblogic.pdf",
-          "topics": [
-            "he.engineering.digital-logic#1"
-          ],
+          "topics": ["he.engineering.digital-logic#1"],
           "examples": [
             "Using Python to evaluate combinational logic expressions",
             "Using Python to evaluate a combinational function diagram",
@@ -460,9 +396,7 @@
           "n": "latchlogic",
           "title": "Latching Logic",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_latchlogic.pdf",
-          "topics": [
-            "he.engineering.digital-logic#2"
-          ],
+          "topics": ["he.engineering.digital-logic#2"],
           "examples": [
             "Timing diagram for an SR latch",
             "Timing diagram for an enabled SR latch",
@@ -476,9 +410,7 @@
           "n": "counter",
           "title": "Digital Counters",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_counter.pdf",
-          "topics": [
-            "he.engineering.digital-logic#2"
-          ],
+          "topics": ["he.engineering.digital-logic#2"],
           "examples": [
             "Determining up/down counter state",
             "Frequency division",
@@ -492,9 +424,7 @@
           "n": "analogdigital",
           "title": "Analog-Digital Conversion",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_analogdigital.pdf",
-          "topics": [
-            "he.engineering.embedded-systems#0"
-          ],
+          "topics": ["he.engineering.embedded-systems#0"],
           "examples": [
             "R-2R ladder voltage calculations",
             "ADC0804 signal values",
@@ -507,21 +437,15 @@
           "n": "serialcomm",
           "title": "Serial Data Communication",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_serialcomm.pdf",
-          "topics": [
-            "he.engineering.embedded-systems#2"
-          ],
-          "examples": [
-            "Manchester data frame with a specified bit rate"
-          ],
+          "topics": ["he.engineering.embedded-systems#2"],
+          "examples": ["Manchester data frame with a specified bit rate"],
           "notes": "18 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
         },
         {
           "n": "tline",
           "title": "Transmission Lines",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_tline.pdf",
-          "topics": [
-            "he.engineering.electromagnetics#0"
-          ],
+          "topics": ["he.engineering.electromagnetics#0"],
           "examples": [
             "Echo time calculations",
             "TDR spreadsheet",
@@ -534,9 +458,7 @@
           "n": "antenna",
           "title": "Radio Antennas",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_antenna.pdf",
-          "topics": [
-            "he.engineering.electromagnetics#3"
-          ],
+          "topics": ["he.engineering.electromagnetics#3"],
           "examples": [
             "Antenna dimensions",
             "Transmitter power and field strength",
@@ -548,10 +470,7 @@
           "n": "linkbudget",
           "title": "RF Link Budgets",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_linkbudget.pdf",
-          "topics": [
-            "he.engineering.electromagnetics#3",
-            "he.engineering.communication-systems#2"
-          ],
+          "topics": ["he.engineering.electromagnetics#3", "he.engineering.communication-systems#2"],
           "examples": [
             "Power ratio and dB conversions",
             "Power and loss calculations",
@@ -568,9 +487,7 @@
           "n": "modulation",
           "title": "Introduction to Modulation",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_modulation.pdf",
-          "topics": [
-            "he.engineering.communication-systems#0"
-          ],
+          "topics": ["he.engineering.communication-systems#0"],
           "examples": [
             "Oscillographs comparing sinusoids",
             "Telephony up/down converter circuits",
@@ -582,9 +499,7 @@
           "n": "tcpip",
           "title": "Internet Protocols",
           "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_tcpip.pdf",
-          "topics": [
-            "he.engineering.networks#1"
-          ],
+          "topics": ["he.engineering.networks#1"],
           "examples": [
             "IP address space",
             "PLC transmitting ASCII message via UDP",

@@ -1,141 +1,125 @@
 {
- "id": "boyce-diprima",
- "curriculum": "Elementary Differential Equations (and Boundary Value Problems)",
- "publisher": "William E. Boyce, Richard C. DiPrima, Douglas B. Meade (Wiley)",
- "edition": "12th edition (2021)",
- "subject": "math",
- "level": "college",
- "content": "titles",
- "license": {
-  "name": "All rights reserved",
-  "url": "https://www.wiley.com/en-us/Elementary+Differential+Equations,+12th+Edition-p-9781119777731",
-  "attribution": "Titles only, from the publisher's public table of contents; no other content."
- },
- "terms": "Commercial: chapter and section titles only.",
- "sourceUrl": "https://www.wiley.com/en-us/Elementary+Differential+Equations,+12th+Edition-p-9781119777731",
- "retrieved": "2026-10-02",
- "notes": "Brief contents (chapters 1–9) and the sections of chapters 1–2 from Wiley's public 'Table of Contents (PDF)' excerpt (media.wiley.com). This is the Elementary Differential Equations edition; the Boundary Value Problems edition adds Fourier series, PDEs and Sturm–Liouville chapters. robots.txt of wiley.com allows product pages.",
- "books": [
-  {
-   "title": "Elementary Differential Equations and Boundary Value Problems, 12th ed.",
-   "url": "https://www.wiley.com/en-us/Elementary+Differential+Equations,+12th+Edition-p-9781119777731",
-   "units": [
+  "id": "boyce-diprima",
+  "curriculum": "Elementary Differential Equations (and Boundary Value Problems)",
+  "publisher": "William E. Boyce, Richard C. DiPrima, Douglas B. Meade (Wiley)",
+  "edition": "12th edition (2021)",
+  "subject": "math",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "All rights reserved",
+    "url": "https://www.wiley.com/en-us/Elementary+Differential+Equations,+12th+Edition-p-9781119777731",
+    "attribution": "Titles only, from the publisher's public table of contents; no other content."
+  },
+  "terms": "Commercial: chapter and section titles only.",
+  "sourceUrl": "https://www.wiley.com/en-us/Elementary+Differential+Equations,+12th+Edition-p-9781119777731",
+  "retrieved": "2026-10-02",
+  "notes": "Brief contents (chapters 1–9) and the sections of chapters 1–2 from Wiley's public 'Table of Contents (PDF)' excerpt (media.wiley.com). This is the Elementary Differential Equations edition; the Boundary Value Problems edition adds Fourier series, PDEs and Sturm–Liouville chapters. robots.txt of wiley.com allows product pages.",
+  "books": [
     {
-     "n": "1",
-     "title": "Introduction",
-     "topics": [
-      "he.math.diff-eq#0"
-     ],
-     "sections": [
-      {
-       "n": "1.1",
-       "title": "Some Basic Mathematical Models; Direction Fields"
-      },
-      {
-       "n": "1.2",
-       "title": "Solutions of Some Differential Equations"
-      },
-      {
-       "n": "1.3",
-       "title": "Classification of Differential Equations"
-      }
-     ]
-    },
-    {
-     "n": "2",
-     "title": "First-Order Differential Equations",
-     "topics": [
-      "he.math.diff-eq#0"
-     ],
-     "sections": [
-      {
-       "n": "2.1",
-       "title": "Linear Differential Equations; Method of Integrating Factors"
-      },
-      {
-       "n": "2.2",
-       "title": "Separable Differential Equations"
-      },
-      {
-       "n": "2.3",
-       "title": "Modeling with First-Order Differential Equations"
-      },
-      {
-       "n": "2.4",
-       "title": "Differences Between Linear and Nonlinear Differential Equations"
-      },
-      {
-       "n": "2.5",
-       "title": "Autonomous Differential Equations and Population Dynamics"
-      },
-      {
-       "n": "2.6",
-       "title": "Exact Differential Equations and Integrating Factors"
-      },
-      {
-       "n": "2.7",
-       "title": "Numerical Approximations: Euler's Method"
-      },
-      {
-       "n": "2.8",
-       "title": "The Existence and Uniqueness Theorem"
-      },
-      {
-       "n": "2.9",
-       "title": "First-Order Difference Equations"
-      }
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Second-Order Linear Differential Equations",
-     "topics": [
-      "he.math.diff-eq#1"
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Higher-Order Linear Differential Equations",
-     "topics": [
-      "he.math.diff-eq#1"
-     ]
-    },
-    {
-     "n": "5",
-     "title": "Series Solutions of Second-Order Linear Equations",
-     "topics": [
-      "he.math.diff-eq#4"
-     ]
-    },
-    {
-     "n": "6",
-     "title": "The Laplace Transform",
-     "topics": [
-      "he.math.diff-eq#2"
-     ]
-    },
-    {
-     "n": "7",
-     "title": "Systems of First-Order Linear Equations",
-     "topics": [
-      "he.math.diff-eq#3"
-     ]
-    },
-    {
-     "n": "8",
-     "title": "Numerical Methods",
-     "topics": [],
-     "note": "no college topic: numerical ODE methods (taxonomy has them under engineering numerical-methods#4)"
-    },
-    {
-     "n": "9",
-     "title": "Nonlinear Differential Equations and Stability",
-     "topics": [
-      "he.math.diff-eq#3"
-     ],
-     "note": "nonlinear systems: beyond 'Systems of ODEs'"
+      "title": "Elementary Differential Equations and Boundary Value Problems, 12th ed.",
+      "url": "https://www.wiley.com/en-us/Elementary+Differential+Equations,+12th+Edition-p-9781119777731",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction",
+          "topics": ["he.math.diff-eq#0"],
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Some Basic Mathematical Models; Direction Fields"
+            },
+            {
+              "n": "1.2",
+              "title": "Solutions of Some Differential Equations"
+            },
+            {
+              "n": "1.3",
+              "title": "Classification of Differential Equations"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "First-Order Differential Equations",
+          "topics": ["he.math.diff-eq#0"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Linear Differential Equations; Method of Integrating Factors"
+            },
+            {
+              "n": "2.2",
+              "title": "Separable Differential Equations"
+            },
+            {
+              "n": "2.3",
+              "title": "Modeling with First-Order Differential Equations"
+            },
+            {
+              "n": "2.4",
+              "title": "Differences Between Linear and Nonlinear Differential Equations"
+            },
+            {
+              "n": "2.5",
+              "title": "Autonomous Differential Equations and Population Dynamics"
+            },
+            {
+              "n": "2.6",
+              "title": "Exact Differential Equations and Integrating Factors"
+            },
+            {
+              "n": "2.7",
+              "title": "Numerical Approximations: Euler's Method"
+            },
+            {
+              "n": "2.8",
+              "title": "The Existence and Uniqueness Theorem"
+            },
+            {
+              "n": "2.9",
+              "title": "First-Order Difference Equations"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Second-Order Linear Differential Equations",
+          "topics": ["he.math.diff-eq#1"]
+        },
+        {
+          "n": "4",
+          "title": "Higher-Order Linear Differential Equations",
+          "topics": ["he.math.diff-eq#1"]
+        },
+        {
+          "n": "5",
+          "title": "Series Solutions of Second-Order Linear Equations",
+          "topics": ["he.math.diff-eq#4"]
+        },
+        {
+          "n": "6",
+          "title": "The Laplace Transform",
+          "topics": ["he.math.diff-eq#2"]
+        },
+        {
+          "n": "7",
+          "title": "Systems of First-Order Linear Equations",
+          "topics": ["he.math.diff-eq#3"]
+        },
+        {
+          "n": "8",
+          "title": "Numerical Methods",
+          "topics": [],
+          "note": "no college topic: numerical ODE methods (taxonomy has them under engineering numerical-methods#4)"
+        },
+        {
+          "n": "9",
+          "title": "Nonlinear Differential Equations and Stability",
+          "topics": ["he.math.diff-eq#3"],
+          "note": "nonlinear systems: beyond 'Systems of ODEs'"
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

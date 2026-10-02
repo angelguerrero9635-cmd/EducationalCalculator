@@ -36,9 +36,7 @@
         {
           "n": "L14–L20",
           "title": "Laminar and turbulent flow; pipe flow, friction factor, minor losses; pipe systems and pumps",
-          "topics": [
-            "he.engineering.hydraulics-hydrology#1"
-          ],
+          "topics": ["he.engineering.hydraulics-hydrology#1"],
           "examples": [
             "tank draining through an orifice and a pipe",
             "sewer capacity before a basement floods",
@@ -52,9 +50,7 @@
         {
           "n": "L21–end",
           "title": "Open-channel flow: Manning and Chezy, specific energy, critical flow, hydraulic jumps, gradually varied flow",
-          "topics": [
-            "he.engineering.hydraulics-hydrology#0"
-          ],
+          "topics": ["he.engineering.hydraulics-hydrology#0"],
           "examples": [
             "natural creek capacity",
             "flood plains",

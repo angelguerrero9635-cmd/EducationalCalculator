@@ -1,535 +1,456 @@
 {
- "id": "lebl-diffyqs",
- "curriculum": "Notes on Diffy Qs: Differential Equations for Engineers",
- "publisher": "Jiří Lebl (Oklahoma State University)",
- "edition": "version 6.11 (May 2026)",
- "subject": "math",
- "level": "college",
- "content": "full",
- "license": {
-  "name": "CC BY-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-sa/4.0/",
-  "attribution": "Jiří Lebl, Notes on Diffy Qs, https://www.jirka.org/diffyqs/. Dual licensed CC BY-NC-SA 4.0 and CC BY-SA 4.0; used here under CC BY-SA 4.0."
- },
- "terms": "Dual licence; recorded under CC BY-SA 4.0, so exercise text may be copied with attribution (answers omitted).",
- "sourceUrl": "https://www.jirka.org/diffyqs/",
- "retrieved": "2026-10-02",
- "notes": "Sections from the HTML edition's table of contents. Examples summarise each section's exercises (read for the question records). robots.txt disallows only /cgi-bin.",
- "books": [
-  {
-   "title": "Notes on Diffy Qs: Differential Equations for Engineers",
-   "url": "https://www.jirka.org/diffyqs/html/diffyqs.html",
-   "units": [
+  "id": "lebl-diffyqs",
+  "curriculum": "Notes on Diffy Qs: Differential Equations for Engineers",
+  "publisher": "Jiří Lebl (Oklahoma State University)",
+  "edition": "version 6.11 (May 2026)",
+  "subject": "math",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "Jiří Lebl, Notes on Diffy Qs, https://www.jirka.org/diffyqs/. Dual licensed CC BY-NC-SA 4.0 and CC BY-SA 4.0; used here under CC BY-SA 4.0."
+  },
+  "terms": "Dual licence; recorded under CC BY-SA 4.0, so exercise text may be copied with attribution (answers omitted).",
+  "sourceUrl": "https://www.jirka.org/diffyqs/",
+  "retrieved": "2026-10-02",
+  "notes": "Sections from the HTML edition's table of contents. Examples summarise each section's exercises (read for the question records). robots.txt disallows only /cgi-bin.",
+  "books": [
     {
-     "n": "0",
-     "title": "Introduction",
-     "topics": [
-      "he.math.diff-eq#0"
-     ],
-     "sections": [
-      {
-       "n": "0.1",
-       "title": "Notes about these notes",
-       "url": "https://www.jirka.org/diffyqs/html/notes_section.html",
-       "topics": [],
-       "note": "front matter"
-      },
-      {
-       "n": "0.2",
-       "title": "Introduction to differential equations",
-       "url": "https://www.jirka.org/diffyqs/html/introde_section.html",
-       "examples": [
-        "verify a function solves an ODE",
-        "fit constants to initial conditions",
-        "exponential growth from two census values"
-       ]
-      },
-      {
-       "n": "0.3",
-       "title": "Classification of differential equations",
-       "url": "https://www.jirka.org/diffyqs/html/classification_section.html",
-       "examples": [
-        "classify ODE/PDE, order, linear, homogeneous, autonomous"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "1",
-     "title": "First-order equations",
-     "topics": [
-      "he.math.diff-eq#0"
-     ],
-     "notation": [
-      "x′ or dx/dt with t the independent variable in most chapters"
-     ],
-     "sections": [
-      {
-       "n": "1.1",
-       "title": "Integrals as solutions",
-       "url": "https://www.jirka.org/diffyqs/html/integralsols_section.html",
-       "examples": [
-        "y′ = f(x) with an initial value"
-       ]
-      },
-      {
-       "n": "1.2",
-       "title": "Slope fields",
-       "url": "https://www.jirka.org/diffyqs/html/slopefields_section.html",
-       "examples": [
-        "sketch slope fields",
-        "existence and uniqueness (Picard)"
-       ]
-      },
-      {
-       "n": "1.3",
-       "title": "Separable equations",
-       "url": "https://www.jirka.org/diffyqs/html/separable_section.html",
-       "examples": [
-        "separable IVPs, implicit solutions"
-       ]
-      },
-      {
-       "n": "1.4",
-       "title": "Linear equations and the integrating factor",
-       "url": "https://www.jirka.org/diffyqs/html/intfactor_section.html",
-       "examples": [
-        "integrating factor",
-        "mixing tanks"
-       ],
-       "ranges": [
-        "tank volumes 10–100 L, concentrations 0.1–1 kg/L"
-       ]
-      },
-      {
-       "n": "1.5",
-       "title": "Substitution",
-       "url": "https://www.jirka.org/diffyqs/html/substitution_section.html",
-       "examples": [
-        "Bernoulli and homogeneous equations"
-       ]
-      },
-      {
-       "n": "1.6",
-       "title": "Autonomous equations",
-       "url": "https://www.jirka.org/diffyqs/html/auteq_section.html",
-       "examples": [
-        "phase diagrams, logistic with harvesting"
-       ]
-      },
-      {
-       "n": "1.7",
-       "title": "Numerical methods: Euler’s method",
-       "url": "https://www.jirka.org/diffyqs/html/numer_section.html",
-       "examples": [
-        "Euler steps and error halving"
-       ]
-      },
-      {
-       "n": "1.8",
-       "title": "Exact equations",
-       "url": "https://www.jirka.org/diffyqs/html/exact_section.html",
-       "note": "exact equations: a plan gap, filed under #0"
-      },
-      {
-       "n": "1.9",
-       "title": "First-order linear PDEs",
-       "url": "https://www.jirka.org/diffyqs/html/fopde_section.html",
-       "topics": [],
-       "note": "no college topic: PDEs"
-      }
-     ]
-    },
-    {
-     "n": "2",
-     "title": "Higher-order linear ODEs",
-     "topics": [
-      "he.math.diff-eq#1"
-     ],
-     "sections": [
-      {
-       "n": "2.1",
-       "title": "Second-order linear ODEs",
-       "url": "https://www.jirka.org/diffyqs/html/solinear_section.html",
-       "examples": [
-        "superposition, Wronskian, reduction of order"
-       ]
-      },
-      {
-       "n": "2.2",
-       "title": "Constant-coefficient second-order linear ODEs",
-       "url": "https://www.jirka.org/diffyqs/html/sec_ccsol.html",
-       "examples": [
-        "characteristic roots real, repeated, complex",
-        "Euler's formula"
-       ]
-      },
-      {
-       "n": "2.3",
-       "title": "Higher-order linear ODEs",
-       "url": "https://www.jirka.org/diffyqs/html/sec_hol.html"
-      },
-      {
-       "n": "2.4",
-       "title": "Mechanical vibrations",
-       "url": "https://www.jirka.org/diffyqs/html/sec_mv.html",
-       "examples": [
-        "mass–spring–damper, damping regimes"
-       ],
-       "ranges": [
-        "m 0.1–10 kg, k 1–100 N/m"
-       ],
-       "notation": [
-        "mx″ + cx′ + kx = F(t); ω₀ = √(k/m)"
-       ]
-      },
-      {
-       "n": "2.5",
-       "title": "Nonhomogeneous equations",
-       "url": "https://www.jirka.org/diffyqs/html/sec_nonhom.html",
-       "examples": [
-        "undetermined coefficients, variation of parameters"
-       ]
-      },
-      {
-       "n": "2.6",
-       "title": "Forced oscillations and resonance",
-       "url": "https://www.jirka.org/diffyqs/html/forcedo_section.html",
-       "examples": [
-        "steady periodic solution, practical resonance"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Systems of ODEs",
-     "topics": [
-      "he.math.diff-eq#3"
-     ],
-     "notation": [
-      "vectors with arrows, x⃗′ = P x⃗ + f⃗"
-     ],
-     "sections": [
-      {
-       "n": "3.1",
-       "title": "Introduction to systems of ODEs",
-       "url": "https://www.jirka.org/diffyqs/html/sec_introtosys.html",
-       "examples": [
-        "write systems for tanks and masses; reduce order"
-       ]
-      },
-      {
-       "n": "3.2",
-       "title": "Matrices and linear systems",
-       "url": "https://www.jirka.org/diffyqs/html/sec_matrix.html",
-       "topics": [
-        "he.math.linear-algebra#0"
-       ],
-       "note": "matrix review inside the ODE book"
-      },
-      {
-       "n": "3.3",
-       "title": "Linear systems of ODEs",
-       "url": "https://www.jirka.org/diffyqs/html/linsystems_section.html"
-      },
-      {
-       "n": "3.4",
-       "title": "Eigenvalue method",
-       "url": "https://www.jirka.org/diffyqs/html/eigenmethod_section.html",
-       "examples": [
-        "x′ = Ax with real and complex eigenvalues"
-       ]
-      },
-      {
-       "n": "3.5",
-       "title": "Two-dimensional systems and their vector fields",
-       "url": "https://www.jirka.org/diffyqs/html/sec_twodimaut.html",
-       "examples": [
-        "classify saddles, nodes, spirals, centers"
-       ]
-      },
-      {
-       "n": "3.6",
-       "title": "Second-order systems and applications",
-       "url": "https://www.jirka.org/diffyqs/html/sol_section.html",
-       "examples": [
-        "normal modes of coupled masses"
-       ]
-      },
-      {
-       "n": "3.7",
-       "title": "Repeated eigenvalues",
-       "url": "https://www.jirka.org/diffyqs/html/sec_multeigen.html"
-      },
-      {
-       "n": "3.8",
-       "title": "Matrix exponentials",
-       "url": "https://www.jirka.org/diffyqs/html/sec_matexp.html"
-      },
-      {
-       "n": "3.9",
-       "title": "Nonhomogeneous systems",
-       "url": "https://www.jirka.org/diffyqs/html/nonhomogsys_section.html"
-      }
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Fourier series and PDEs",
-     "topics": [],
-     "note": "Fourier series and PDEs: not in the taxonomy (plan gap).",
-     "sections": [
-      {
-       "n": "4.1",
-       "title": "Boundary value problems",
-       "url": "https://www.jirka.org/diffyqs/html/bvp_section.html",
-       "topics": []
-      },
-      {
-       "n": "4.2",
-       "title": "The trigonometric series",
-       "url": "https://www.jirka.org/diffyqs/html/ts_section.html",
-       "topics": []
-      },
-      {
-       "n": "4.3",
-       "title": "More on the Fourier series",
-       "url": "https://www.jirka.org/diffyqs/html/moreonfourier_section.html",
-       "topics": []
-      },
-      {
-       "n": "4.4",
-       "title": "Sine and cosine series",
-       "url": "https://www.jirka.org/diffyqs/html/sec_scs.html",
-       "topics": []
-      },
-      {
-       "n": "4.5",
-       "title": "Applications of Fourier series",
-       "url": "https://www.jirka.org/diffyqs/html/appoffourier_section.html",
-       "topics": []
-      },
-      {
-       "n": "4.6",
-       "title": "PDEs, separation of variables, and the heat equation",
-       "url": "https://www.jirka.org/diffyqs/html/heateq_section.html",
-       "topics": []
-      },
-      {
-       "n": "4.7",
-       "title": "One-dimensional wave equation",
-       "url": "https://www.jirka.org/diffyqs/html/we_section.html",
-       "topics": []
-      },
-      {
-       "n": "4.8",
-       "title": "D’Alembert solution of the wave equation",
-       "url": "https://www.jirka.org/diffyqs/html/dalemb_section.html",
-       "topics": []
-      },
-      {
-       "n": "4.9",
-       "title": "Steady state temperature and the Laplacian",
-       "url": "https://www.jirka.org/diffyqs/html/dirich_section.html",
-       "topics": []
-      },
-      {
-       "n": "4.10",
-       "title": "Dirichlet problem in the circle and the Poisson kernel",
-       "url": "https://www.jirka.org/diffyqs/html/dirichdisc_section.html",
-       "topics": []
-      }
-     ]
-    },
-    {
-     "n": "5",
-     "title": "More on eigenvalue problems",
-     "topics": [],
-     "note": "eigenvalue/boundary problems: not in the taxonomy",
-     "sections": [
-      {
-       "n": "5.1",
-       "title": "Sturm–Liouville problems",
-       "url": "https://www.jirka.org/diffyqs/html/slproblems_section.html",
-       "topics": []
-      },
-      {
-       "n": "5.2",
-       "title": "Higher-order eigenvalue problems",
-       "url": "https://www.jirka.org/diffyqs/html/sec_appeig.html",
-       "topics": []
-      },
-      {
-       "n": "5.3",
-       "title": "Steady periodic solutions",
-       "url": "https://www.jirka.org/diffyqs/html/sps_section.html",
-       "topics": []
-      }
-     ]
-    },
-    {
-     "n": "6",
-     "title": "The Laplace transform",
-     "topics": [
-      "he.math.diff-eq#2"
-     ],
-     "notation": [
-      "Appendix B: table of Laplace transforms",
-      "u(t − a) step, δ(t − a) impulse"
-     ],
-     "sections": [
-      {
-       "n": "6.1",
-       "title": "The Laplace transform",
-       "url": "https://www.jirka.org/diffyqs/html/laplace_section.html",
-       "examples": [
-        "transforms from the definition and table"
-       ]
-      },
-      {
-       "n": "6.2",
-       "title": "Transforms of derivatives and ODEs",
-       "url": "https://www.jirka.org/diffyqs/html/transformsofders_section.html",
-       "examples": [
-        "solve IVPs with partial fractions"
-       ]
-      },
-      {
-       "n": "6.3",
-       "title": "Convolution",
-       "url": "https://www.jirka.org/diffyqs/html/convolution_section.html"
-      },
-      {
-       "n": "6.4",
-       "title": "Dirac delta and impulse response",
-       "url": "https://www.jirka.org/diffyqs/html/diracdelta_section.html"
-      },
-      {
-       "n": "6.5",
-       "title": "Solving PDEs with the Laplace transform",
-       "url": "https://www.jirka.org/diffyqs/html/laplacepde_section.html",
-       "topics": [],
-       "note": "no college topic: PDEs"
-      }
-     ]
-    },
-    {
-     "n": "7",
-     "title": "Power-series methods",
-     "topics": [
-      "he.math.diff-eq#4"
-     ],
-     "sections": [
-      {
-       "n": "7.1",
-       "title": "Power series",
-       "url": "https://www.jirka.org/diffyqs/html/powerseries_section.html"
-      },
-      {
-       "n": "7.2",
-       "title": "Series solutions of linear second-order ODEs",
-       "url": "https://www.jirka.org/diffyqs/html/seriessols_section.html",
-       "examples": [
-        "recurrence for coefficients about an ordinary point"
-       ]
-      },
-      {
-       "n": "7.3",
-       "title": "Singular points and the method of Frobenius",
-       "url": "https://www.jirka.org/diffyqs/html/frobenius_section.html"
-      }
-     ]
-    },
-    {
-     "n": "8",
-     "title": "Nonlinear systems",
-     "topics": [
-      "he.math.diff-eq#3"
-     ],
-     "note": "nonlinear systems go beyond 'Systems of ODEs' (plan)",
-     "sections": [
-      {
-       "n": "8.1",
-       "title": "Linearization, critical points, and equilibria",
-       "url": "https://www.jirka.org/diffyqs/html/linearization_section.html"
-      },
-      {
-       "n": "8.2",
-       "title": "Stability and classification of isolated critical points",
-       "url": "https://www.jirka.org/diffyqs/html/nlinstability_section.html"
-      },
-      {
-       "n": "8.3",
-       "title": "Applications of nonlinear systems",
-       "url": "https://www.jirka.org/diffyqs/html/nlinapps_section.html"
-      },
-      {
-       "n": "8.4",
-       "title": "Limit cycles",
-       "url": "https://www.jirka.org/diffyqs/html/limitcycles_section.html"
-      },
-      {
-       "n": "8.5",
-       "title": "Chaos",
-       "url": "https://www.jirka.org/diffyqs/html/sec_chaos.html",
-       "topics": [],
-       "note": "no college topic: chaos"
-      }
-     ]
-    },
-    {
-     "n": "A",
-     "title": "Linear algebra",
-     "topics": [
-      "he.math.linear-algebra#0"
-     ],
-     "sections": [
-      {
-       "n": "A.1",
-       "title": "Vectors, mappings, and matrices",
-       "url": "https://www.jirka.org/diffyqs/html/vecsandmaps_section.html",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "A.2",
-       "title": "Matrix algebra",
-       "url": "https://www.jirka.org/diffyqs/html/matalg_section.html"
-      },
-      {
-       "n": "A.3",
-       "title": "Elimination",
-       "url": "https://www.jirka.org/diffyqs/html/elim_section.html"
-      },
-      {
-       "n": "A.4",
-       "title": "Subspaces, dimension, and the kernel",
-       "url": "https://www.jirka.org/diffyqs/html/subspaces_section.html",
-       "topics": [
-        "he.math.linear-algebra#1"
-       ]
-      },
-      {
-       "n": "A.5",
-       "title": "Inner product and projections",
-       "url": "https://www.jirka.org/diffyqs/html/innerproduct_section.html",
-       "topics": [
-        "he.math.linear-algebra#4"
-       ]
-      },
-      {
-       "n": "A.6",
-       "title": "Determinant",
-       "url": "https://www.jirka.org/diffyqs/html/det_section.html",
-       "topics": [
-        "he.math.linear-algebra#2"
-       ]
-      }
-     ]
+      "title": "Notes on Diffy Qs: Differential Equations for Engineers",
+      "url": "https://www.jirka.org/diffyqs/html/diffyqs.html",
+      "units": [
+        {
+          "n": "0",
+          "title": "Introduction",
+          "topics": ["he.math.diff-eq#0"],
+          "sections": [
+            {
+              "n": "0.1",
+              "title": "Notes about these notes",
+              "url": "https://www.jirka.org/diffyqs/html/notes_section.html",
+              "topics": [],
+              "note": "front matter"
+            },
+            {
+              "n": "0.2",
+              "title": "Introduction to differential equations",
+              "url": "https://www.jirka.org/diffyqs/html/introde_section.html",
+              "examples": [
+                "verify a function solves an ODE",
+                "fit constants to initial conditions",
+                "exponential growth from two census values"
+              ]
+            },
+            {
+              "n": "0.3",
+              "title": "Classification of differential equations",
+              "url": "https://www.jirka.org/diffyqs/html/classification_section.html",
+              "examples": ["classify ODE/PDE, order, linear, homogeneous, autonomous"]
+            }
+          ]
+        },
+        {
+          "n": "1",
+          "title": "First-order equations",
+          "topics": ["he.math.diff-eq#0"],
+          "notation": ["x′ or dx/dt with t the independent variable in most chapters"],
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Integrals as solutions",
+              "url": "https://www.jirka.org/diffyqs/html/integralsols_section.html",
+              "examples": ["y′ = f(x) with an initial value"]
+            },
+            {
+              "n": "1.2",
+              "title": "Slope fields",
+              "url": "https://www.jirka.org/diffyqs/html/slopefields_section.html",
+              "examples": ["sketch slope fields", "existence and uniqueness (Picard)"]
+            },
+            {
+              "n": "1.3",
+              "title": "Separable equations",
+              "url": "https://www.jirka.org/diffyqs/html/separable_section.html",
+              "examples": ["separable IVPs, implicit solutions"]
+            },
+            {
+              "n": "1.4",
+              "title": "Linear equations and the integrating factor",
+              "url": "https://www.jirka.org/diffyqs/html/intfactor_section.html",
+              "examples": ["integrating factor", "mixing tanks"],
+              "ranges": ["tank volumes 10–100 L, concentrations 0.1–1 kg/L"]
+            },
+            {
+              "n": "1.5",
+              "title": "Substitution",
+              "url": "https://www.jirka.org/diffyqs/html/substitution_section.html",
+              "examples": ["Bernoulli and homogeneous equations"]
+            },
+            {
+              "n": "1.6",
+              "title": "Autonomous equations",
+              "url": "https://www.jirka.org/diffyqs/html/auteq_section.html",
+              "examples": ["phase diagrams, logistic with harvesting"]
+            },
+            {
+              "n": "1.7",
+              "title": "Numerical methods: Euler’s method",
+              "url": "https://www.jirka.org/diffyqs/html/numer_section.html",
+              "examples": ["Euler steps and error halving"]
+            },
+            {
+              "n": "1.8",
+              "title": "Exact equations",
+              "url": "https://www.jirka.org/diffyqs/html/exact_section.html",
+              "note": "exact equations: a plan gap, filed under #0"
+            },
+            {
+              "n": "1.9",
+              "title": "First-order linear PDEs",
+              "url": "https://www.jirka.org/diffyqs/html/fopde_section.html",
+              "topics": [],
+              "note": "no college topic: PDEs"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Higher-order linear ODEs",
+          "topics": ["he.math.diff-eq#1"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Second-order linear ODEs",
+              "url": "https://www.jirka.org/diffyqs/html/solinear_section.html",
+              "examples": ["superposition, Wronskian, reduction of order"]
+            },
+            {
+              "n": "2.2",
+              "title": "Constant-coefficient second-order linear ODEs",
+              "url": "https://www.jirka.org/diffyqs/html/sec_ccsol.html",
+              "examples": ["characteristic roots real, repeated, complex", "Euler's formula"]
+            },
+            {
+              "n": "2.3",
+              "title": "Higher-order linear ODEs",
+              "url": "https://www.jirka.org/diffyqs/html/sec_hol.html"
+            },
+            {
+              "n": "2.4",
+              "title": "Mechanical vibrations",
+              "url": "https://www.jirka.org/diffyqs/html/sec_mv.html",
+              "examples": ["mass–spring–damper, damping regimes"],
+              "ranges": ["m 0.1–10 kg, k 1–100 N/m"],
+              "notation": ["mx″ + cx′ + kx = F(t); ω₀ = √(k/m)"]
+            },
+            {
+              "n": "2.5",
+              "title": "Nonhomogeneous equations",
+              "url": "https://www.jirka.org/diffyqs/html/sec_nonhom.html",
+              "examples": ["undetermined coefficients, variation of parameters"]
+            },
+            {
+              "n": "2.6",
+              "title": "Forced oscillations and resonance",
+              "url": "https://www.jirka.org/diffyqs/html/forcedo_section.html",
+              "examples": ["steady periodic solution, practical resonance"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Systems of ODEs",
+          "topics": ["he.math.diff-eq#3"],
+          "notation": ["vectors with arrows, x⃗′ = P x⃗ + f⃗"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Introduction to systems of ODEs",
+              "url": "https://www.jirka.org/diffyqs/html/sec_introtosys.html",
+              "examples": ["write systems for tanks and masses; reduce order"]
+            },
+            {
+              "n": "3.2",
+              "title": "Matrices and linear systems",
+              "url": "https://www.jirka.org/diffyqs/html/sec_matrix.html",
+              "topics": ["he.math.linear-algebra#0"],
+              "note": "matrix review inside the ODE book"
+            },
+            {
+              "n": "3.3",
+              "title": "Linear systems of ODEs",
+              "url": "https://www.jirka.org/diffyqs/html/linsystems_section.html"
+            },
+            {
+              "n": "3.4",
+              "title": "Eigenvalue method",
+              "url": "https://www.jirka.org/diffyqs/html/eigenmethod_section.html",
+              "examples": ["x′ = Ax with real and complex eigenvalues"]
+            },
+            {
+              "n": "3.5",
+              "title": "Two-dimensional systems and their vector fields",
+              "url": "https://www.jirka.org/diffyqs/html/sec_twodimaut.html",
+              "examples": ["classify saddles, nodes, spirals, centers"]
+            },
+            {
+              "n": "3.6",
+              "title": "Second-order systems and applications",
+              "url": "https://www.jirka.org/diffyqs/html/sol_section.html",
+              "examples": ["normal modes of coupled masses"]
+            },
+            {
+              "n": "3.7",
+              "title": "Repeated eigenvalues",
+              "url": "https://www.jirka.org/diffyqs/html/sec_multeigen.html"
+            },
+            {
+              "n": "3.8",
+              "title": "Matrix exponentials",
+              "url": "https://www.jirka.org/diffyqs/html/sec_matexp.html"
+            },
+            {
+              "n": "3.9",
+              "title": "Nonhomogeneous systems",
+              "url": "https://www.jirka.org/diffyqs/html/nonhomogsys_section.html"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Fourier series and PDEs",
+          "topics": [],
+          "note": "Fourier series and PDEs: not in the taxonomy (plan gap).",
+          "sections": [
+            {
+              "n": "4.1",
+              "title": "Boundary value problems",
+              "url": "https://www.jirka.org/diffyqs/html/bvp_section.html",
+              "topics": []
+            },
+            {
+              "n": "4.2",
+              "title": "The trigonometric series",
+              "url": "https://www.jirka.org/diffyqs/html/ts_section.html",
+              "topics": []
+            },
+            {
+              "n": "4.3",
+              "title": "More on the Fourier series",
+              "url": "https://www.jirka.org/diffyqs/html/moreonfourier_section.html",
+              "topics": []
+            },
+            {
+              "n": "4.4",
+              "title": "Sine and cosine series",
+              "url": "https://www.jirka.org/diffyqs/html/sec_scs.html",
+              "topics": []
+            },
+            {
+              "n": "4.5",
+              "title": "Applications of Fourier series",
+              "url": "https://www.jirka.org/diffyqs/html/appoffourier_section.html",
+              "topics": []
+            },
+            {
+              "n": "4.6",
+              "title": "PDEs, separation of variables, and the heat equation",
+              "url": "https://www.jirka.org/diffyqs/html/heateq_section.html",
+              "topics": []
+            },
+            {
+              "n": "4.7",
+              "title": "One-dimensional wave equation",
+              "url": "https://www.jirka.org/diffyqs/html/we_section.html",
+              "topics": []
+            },
+            {
+              "n": "4.8",
+              "title": "D’Alembert solution of the wave equation",
+              "url": "https://www.jirka.org/diffyqs/html/dalemb_section.html",
+              "topics": []
+            },
+            {
+              "n": "4.9",
+              "title": "Steady state temperature and the Laplacian",
+              "url": "https://www.jirka.org/diffyqs/html/dirich_section.html",
+              "topics": []
+            },
+            {
+              "n": "4.10",
+              "title": "Dirichlet problem in the circle and the Poisson kernel",
+              "url": "https://www.jirka.org/diffyqs/html/dirichdisc_section.html",
+              "topics": []
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "More on eigenvalue problems",
+          "topics": [],
+          "note": "eigenvalue/boundary problems: not in the taxonomy",
+          "sections": [
+            {
+              "n": "5.1",
+              "title": "Sturm–Liouville problems",
+              "url": "https://www.jirka.org/diffyqs/html/slproblems_section.html",
+              "topics": []
+            },
+            {
+              "n": "5.2",
+              "title": "Higher-order eigenvalue problems",
+              "url": "https://www.jirka.org/diffyqs/html/sec_appeig.html",
+              "topics": []
+            },
+            {
+              "n": "5.3",
+              "title": "Steady periodic solutions",
+              "url": "https://www.jirka.org/diffyqs/html/sps_section.html",
+              "topics": []
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "The Laplace transform",
+          "topics": ["he.math.diff-eq#2"],
+          "notation": [
+            "Appendix B: table of Laplace transforms",
+            "u(t − a) step, δ(t − a) impulse"
+          ],
+          "sections": [
+            {
+              "n": "6.1",
+              "title": "The Laplace transform",
+              "url": "https://www.jirka.org/diffyqs/html/laplace_section.html",
+              "examples": ["transforms from the definition and table"]
+            },
+            {
+              "n": "6.2",
+              "title": "Transforms of derivatives and ODEs",
+              "url": "https://www.jirka.org/diffyqs/html/transformsofders_section.html",
+              "examples": ["solve IVPs with partial fractions"]
+            },
+            {
+              "n": "6.3",
+              "title": "Convolution",
+              "url": "https://www.jirka.org/diffyqs/html/convolution_section.html"
+            },
+            {
+              "n": "6.4",
+              "title": "Dirac delta and impulse response",
+              "url": "https://www.jirka.org/diffyqs/html/diracdelta_section.html"
+            },
+            {
+              "n": "6.5",
+              "title": "Solving PDEs with the Laplace transform",
+              "url": "https://www.jirka.org/diffyqs/html/laplacepde_section.html",
+              "topics": [],
+              "note": "no college topic: PDEs"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Power-series methods",
+          "topics": ["he.math.diff-eq#4"],
+          "sections": [
+            {
+              "n": "7.1",
+              "title": "Power series",
+              "url": "https://www.jirka.org/diffyqs/html/powerseries_section.html"
+            },
+            {
+              "n": "7.2",
+              "title": "Series solutions of linear second-order ODEs",
+              "url": "https://www.jirka.org/diffyqs/html/seriessols_section.html",
+              "examples": ["recurrence for coefficients about an ordinary point"]
+            },
+            {
+              "n": "7.3",
+              "title": "Singular points and the method of Frobenius",
+              "url": "https://www.jirka.org/diffyqs/html/frobenius_section.html"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Nonlinear systems",
+          "topics": ["he.math.diff-eq#3"],
+          "note": "nonlinear systems go beyond 'Systems of ODEs' (plan)",
+          "sections": [
+            {
+              "n": "8.1",
+              "title": "Linearization, critical points, and equilibria",
+              "url": "https://www.jirka.org/diffyqs/html/linearization_section.html"
+            },
+            {
+              "n": "8.2",
+              "title": "Stability and classification of isolated critical points",
+              "url": "https://www.jirka.org/diffyqs/html/nlinstability_section.html"
+            },
+            {
+              "n": "8.3",
+              "title": "Applications of nonlinear systems",
+              "url": "https://www.jirka.org/diffyqs/html/nlinapps_section.html"
+            },
+            {
+              "n": "8.4",
+              "title": "Limit cycles",
+              "url": "https://www.jirka.org/diffyqs/html/limitcycles_section.html"
+            },
+            {
+              "n": "8.5",
+              "title": "Chaos",
+              "url": "https://www.jirka.org/diffyqs/html/sec_chaos.html",
+              "topics": [],
+              "note": "no college topic: chaos"
+            }
+          ]
+        },
+        {
+          "n": "A",
+          "title": "Linear algebra",
+          "topics": ["he.math.linear-algebra#0"],
+          "sections": [
+            {
+              "n": "A.1",
+              "title": "Vectors, mappings, and matrices",
+              "url": "https://www.jirka.org/diffyqs/html/vecsandmaps_section.html",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "A.2",
+              "title": "Matrix algebra",
+              "url": "https://www.jirka.org/diffyqs/html/matalg_section.html"
+            },
+            {
+              "n": "A.3",
+              "title": "Elimination",
+              "url": "https://www.jirka.org/diffyqs/html/elim_section.html"
+            },
+            {
+              "n": "A.4",
+              "title": "Subspaces, dimension, and the kernel",
+              "url": "https://www.jirka.org/diffyqs/html/subspaces_section.html",
+              "topics": ["he.math.linear-algebra#1"]
+            },
+            {
+              "n": "A.5",
+              "title": "Inner product and projections",
+              "url": "https://www.jirka.org/diffyqs/html/innerproduct_section.html",
+              "topics": ["he.math.linear-algebra#4"]
+            },
+            {
+              "n": "A.6",
+              "title": "Determinant",
+              "url": "https://www.jirka.org/diffyqs/html/det_section.html",
+              "topics": ["he.math.linear-algebra#2"]
+            }
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

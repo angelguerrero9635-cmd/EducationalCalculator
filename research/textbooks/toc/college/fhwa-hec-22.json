@@ -26,9 +26,7 @@
         {
           "n": "3",
           "title": "Urban Hydrology",
-          "topics": [
-            "he.engineering.hydraulics-hydrology#2"
-          ],
+          "topics": ["he.engineering.hydraulics-hydrology#2"],
           "examples": [
             "weighted C",
             "t_c by flow segments",
@@ -40,53 +38,32 @@
         {
           "n": "4",
           "title": "Pavement Drainage",
-          "topics": [
-            "he.engineering.hydraulics-hydrology#3"
-          ],
-          "examples": [
-            "gutter spread",
-            "inlet interception",
-            "sag inlets",
-            "median ditch inlets"
-          ],
+          "topics": ["he.engineering.hydraulics-hydrology#3"],
+          "examples": ["gutter spread", "inlet interception", "sag inlets", "median ditch inlets"],
           "notes": "Gutter and inlet design: not a plan row."
         },
         {
           "n": "5",
           "title": "Roadside and Median Channels",
-          "topics": [
-            "he.engineering.hydraulics-hydrology#0"
-          ],
-          "examples": [
-            "lined trapezoidal channel capacity"
-          ]
+          "topics": ["he.engineering.hydraulics-hydrology#0"],
+          "examples": ["lined trapezoidal channel capacity"]
         },
         {
           "n": "6",
           "title": "Structures (inlets, access holes, junctions)",
-          "topics": [
-            "he.engineering.hydraulics-hydrology#3"
-          ]
+          "topics": ["he.engineering.hydraulics-hydrology#3"]
         },
         {
           "n": "7",
           "title": "Storm Drains",
-          "topics": [
-            "he.engineering.hydraulics-hydrology#3"
-          ],
-          "examples": [
-            "pipe size for a flow",
-            "full-flow capacity",
-            "HGL and EGL computation"
-          ],
+          "topics": ["he.engineering.hydraulics-hydrology#3"],
+          "examples": ["pipe size for a flow", "full-flow capacity", "HGL and EGL computation"],
           "notation": "Q = (K_Q ÷ n)D^2.67 S^0.5"
         },
         {
           "n": "8",
           "title": "Detention and Retention Facilities",
-          "topics": [
-            "he.engineering.hydraulics-hydrology#3"
-          ],
+          "topics": ["he.engineering.hydraulics-hydrology#3"],
           "examples": [
             "storage by three methods",
             "stage–storage",
@@ -104,9 +81,7 @@
         {
           "n": "10",
           "title": "Urban Water Quality Practices",
-          "topics": [
-            "he.engineering.environmental#1"
-          ]
+          "topics": ["he.engineering.environmental#1"]
         }
       ]
     }

@@ -29,48 +29,29 @@
         {
           "n": "1–5",
           "title": "Power; first-order transients and converters; sinusoidal steady state, complex power",
-          "topics": [
-            "he.engineering.circuits-2#1",
-            "he.engineering.power-systems#0"
-          ]
+          "topics": ["he.engineering.circuits-2#1", "he.engineering.power-systems#0"]
         },
         {
           "n": "6–8",
           "title": "Transmission lines; polyphase circuits",
-          "topics": [
-            "he.engineering.power-systems#0",
-            "he.engineering.circuits-2#4"
-          ],
-          "examples": [
-            "power over a line from δ"
-          ]
+          "topics": ["he.engineering.power-systems#0", "he.engineering.circuits-2#4"],
+          "examples": ["power over a line from δ"]
         },
         {
           "n": "9–11",
           "title": "Transformers and per-unit; symmetrical components; faults and protection",
-          "topics": [
-            "he.engineering.power-systems#1",
-            "he.engineering.power-systems#2"
-          ]
+          "topics": ["he.engineering.power-systems#1", "he.engineering.power-systems#2"]
         },
         {
           "n": "12–13",
           "title": "HVDC; protection; load flow",
-          "topics": [
-            "he.engineering.power-systems#0"
-          ]
+          "topics": ["he.engineering.power-systems#0"]
         },
         {
           "n": "14–",
           "title": "Electromechanics: forces, magnetic circuits, DC, synchronous and induction machines; power electronics",
-          "topics": [
-            "he.engineering.power-systems#1"
-          ],
-          "examples": [
-            "PM DC machine",
-            "lift magnet",
-            "induction-motor equivalent circuit"
-          ]
+          "topics": ["he.engineering.power-systems#1"],
+          "examples": ["PM DC machine", "lift magnet", "induction-motor equivalent circuit"]
         }
       ]
     }

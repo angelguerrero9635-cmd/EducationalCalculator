@@ -61,18 +61,13 @@
           "n": "4",
           "title": "Propulsion activities (grades 6–12): drag equation, forces in a climb, climb vectors",
           "url": "https://www.grc.nasa.gov/www/k-12/BGP/BGPindex.html",
-          "topics": [
-            "he.engineering.aerodynamics#1",
-            "he.engineering.flight-mechanics#0"
-          ]
+          "topics": ["he.engineering.aerodynamics#1", "he.engineering.flight-mechanics#0"]
         },
         {
           "n": "5",
           "title": "Beginner's Guide to Model Rockets (thrust, stability, flight)",
           "url": "https://www.grc.nasa.gov/www/k-12/airplane/shortr.html",
-          "topics": [
-            "he.engineering.propulsion#1"
-          ]
+          "topics": ["he.engineering.propulsion#1"]
         },
         {
           "n": "6",

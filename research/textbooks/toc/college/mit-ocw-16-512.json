@@ -31,9 +31,7 @@
           "n": "1–6",
           "title": "Nozzles and thrust; ideal and off-design nozzles; particles",
           "url": "https://ocw.mit.edu/courses/16-512-rocket-propulsion-fall-2005/pages/calendar/",
-          "topics": [
-            "he.engineering.propulsion#2"
-          ]
+          "topics": ["he.engineering.propulsion#2"]
         },
         {
           "n": "7–11",
@@ -44,16 +42,12 @@
         {
           "n": "12–15",
           "title": "Equilibrium thermochemistry; non-equilibrium flows; propellant selection",
-          "topics": [
-            "he.engineering.propulsion#3"
-          ]
+          "topics": ["he.engineering.propulsion#3"]
         },
         {
           "n": "16–24",
           "title": "Solid and liquid propellants; injection; combustion stability; pressurization and pump cycles",
-          "topics": [
-            "he.engineering.propulsion#3"
-          ]
+          "topics": ["he.engineering.propulsion#3"]
         },
         {
           "n": "25–30",
@@ -64,10 +58,7 @@
         {
           "n": "31–37",
           "title": "Control; orbital mechanics and staging; LEO and GEO performance; low-thrust maneuvers",
-          "topics": [
-            "he.engineering.propulsion#1",
-            "he.engineering.orbital-mechanics#2"
-          ]
+          "topics": ["he.engineering.propulsion#1", "he.engineering.orbital-mechanics#2"]
         }
       ]
     }

@@ -31,26 +31,15 @@
           "n": "1–5",
           "title": "Rocket equation, gravity loss, staging; orbital mechanics; non-chemical rockets",
           "url": "https://ocw.mit.edu/courses/16-50-introduction-to-propulsion-systems-spring-2012/pages/lecture-notes/",
-          "topics": [
-            "he.engineering.propulsion#1",
-            "he.engineering.orbital-mechanics#3"
-          ],
-          "examples": [
-            "3-stage solid launcher",
-            "chemical vs electric Earth–Mars"
-          ],
+          "topics": ["he.engineering.propulsion#1", "he.engineering.orbital-mechanics#3"],
+          "examples": ["3-stage solid launcher", "chemical vs electric Earth–Mars"],
           "ranges": "I_sp 250–460 s chemical; ε 0.1"
         },
         {
           "n": "6–8",
           "title": "Thermal rocket models; nozzle flow; area ratio; nozzle types",
-          "topics": [
-            "he.engineering.propulsion#2",
-            "he.engineering.compressible-flow#2"
-          ],
-          "examples": [
-            "two-position nozzle"
-          ]
+          "topics": ["he.engineering.propulsion#2", "he.engineering.compressible-flow#2"],
+          "examples": ["two-position nozzle"]
         },
         {
           "n": "9",
@@ -61,12 +50,8 @@
         {
           "n": "10–12",
           "title": "Reacting gases; nozzle flow of reacting gases",
-          "topics": [
-            "he.engineering.propulsion#3"
-          ],
-          "examples": [
-            "O/F sweep with an equilibrium code"
-          ]
+          "topics": ["he.engineering.propulsion#3"],
+          "examples": ["O/F sweep with an equilibrium code"]
         },
         {
           "n": "13–16",
@@ -77,9 +62,7 @@
         {
           "n": "17–23",
           "title": "Aircraft engines: turbojet, matching, turbofan, inlets, exhaust nozzles",
-          "topics": [
-            "he.engineering.propulsion#0"
-          ],
+          "topics": ["he.engineering.propulsion#0"],
           "examples": [
             "UAV turbojet design point",
             "turbofan with limited fan pressure ratio",
@@ -90,17 +73,13 @@
         {
           "n": "24–33",
           "title": "Compressors, turbines, cooling, matching, structures, vibration",
-          "topics": [
-            "he.engineering.propulsion#0"
-          ],
+          "topics": ["he.engineering.propulsion#0"],
           "notes": "Turbomachinery detail beyond the topic."
         },
         {
           "n": "34–38",
           "title": "Combustors; pollutants; noise; rotordynamics",
-          "topics": [
-            "he.engineering.propulsion#3"
-          ]
+          "topics": ["he.engineering.propulsion#3"]
         }
       ]
     }
