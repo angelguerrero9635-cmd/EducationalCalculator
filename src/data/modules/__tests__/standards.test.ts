@@ -93,6 +93,59 @@ function equalsJoinsWords(line: string): boolean {
   return bareNumber && phrase;
 }
 
+/**
+ * Things counted one by one, as a plural: a value named for them ("Warblers fed", "Oak trees",
+ * "Number of students") or measured in them (people) is a count, and a count is whole.
+ */
+const COUNT_NOUNS =
+  'people|persons|students|children|kids|adults|players|members|visitors|customers|workers|patients|voters|individuals|immigrants|emigrants|births|deaths|animals|birds|fish|insects|beetles|bees|frogs|tadpoles|dogs|cats|puppies|cows|calves|sheep|goats|horses|pigs|chickens|deer|rabbits|hares|wolves|foxes|owls|hawks|mice|shrews|warblers|caterpillars|grasshoppers|organisms|offspring|plants|trees|seeds|flowers|bacteria|cells|eggs|chromosomes|copies|atoms|molecules|particles|electrons|protons|neutrons|ions|coins|pennies|nickels|dimes|cards|books|boxes|bags|cans|jars|marbles|beads|balls|blocks|cubes|counters|tickets|items|objects|apples|pears|plums|bananas|grapes|cookies|muffins|pencils|crayons|stickers|toys|cars|buses|trucks|bikes|houses|chairs|tables|stamps|games|groups|teams|bins|packs|pictures|beakers|bulbs|washers|trials|successes|outcomes';
+const COUNT_WORD = new RegExp(`^(?:${COUNT_NOUNS})$`, 'i');
+/** A population is a count of individuals; its standard deviation or proportion is not. */
+const POPULATION = /^population(?!\s+(?:standard|proportion|mean|density|growth))/i;
+
+/** Whether a value counts things: its unit is a count noun, or its name leads with one. */
+function countsThings(v: ModuleDef['variables'][number]): boolean {
+  if (v.unit && COUNT_WORD.test(v.unit)) return true;
+  // A rate or a ratio ("Zooplankton per gram", "Daughter atoms per parent atom") and an
+  // expected value ("Expected successes E(X)") are not counts.
+  if (/\bper\b|^expected\b/i.test(v.name)) return false;
+  if (POPULATION.test(v.name)) return true;
+  // The leading noun phrase: "Warblers fed", "Oak trees", "Number of groups".
+  const words = v.name.replace(/^(?:number of|how many)\s+/i, '').split(/\s+/);
+  return words.slice(0, 2).some((w) => COUNT_WORD.test(w.replace(/[,:;’']+$/, '')));
+}
+
+/** Values named for counted things that are rightly not whole, with the reason. */
+const HALF_PICTURES = 'a scaled picture graph draws half pictures';
+const FITTING_GROUPS = 'how many groups fit is a quotient of fractions (3 groups and 1/3 of one)';
+const PARTICLES = 'an Avogadro-sized count in scientific notation, to its significant figures';
+const AVERAGE_CASES = 'R₀ is an average over many cases (2.5 people)';
+const RATE_POPULATION =
+  'worked back from birth and death rates read to a tenth; rounded, the rate rules would no longer check';
+const COUNT_ALLOWED: Record<string, string> = {
+  'm.3.scaled-graphs~picture-graph p1': HALF_PICTURES,
+  'm.3.scaled-graphs~picture-graph p2': HALF_PICTURES,
+  'm.3.scaled-graphs~picture-graph p3': HALF_PICTURES,
+  'm.3.scaled-graphs~picture-more p1': HALF_PICTURES,
+  'm.3.scaled-graphs~picture-more p2': HALF_PICTURES,
+  'm.6.divide-fractions~how-many-fit g': FITTING_GROUPS,
+  'g.r4d-fit g': FITTING_GROUPS,
+  's.10.mole N': PARTICLES,
+  's.10.mole~gas-volume N': PARTICLES,
+  's.9.immune-disease~herd-immunity R0': AVERAGE_CASES,
+  'g.s9-immune-disease-herd-immunity R0': AVERAGE_CASES,
+  'g.s9-immune-disease-herd-immunity-measles R0': AVERAGE_CASES,
+  'he.geography.human-geography#0 Pop': RATE_POPULATION,
+  'g.r4f-waterfall Pop': RATE_POPULATION,
+  // Found when this check came in, in a file being edited elsewhere; fix and remove.
+  's.9.biotechnology~pcr N': 'to fix: N₀ × 2ⁿ is always whole, so mark it integer',
+  's.9.population-ecology N': 'to fix: round the logistic model to whole individuals',
+  's.9.population-ecology~doubling N': 'to fix: N₀ × 2^g is not whole when g is not',
+  's.9.immune-disease~herd-immunity V': 'to fix: round up in the rule, not only in a note',
+  'g.s9-immune-disease-herd-immunity V': 'to fix with s.9.immune-disease~herd-immunity',
+  'g.s9-immune-disease-herd-immunity-measles V': 'to fix with s.9.immune-disease~herd-immunity',
+};
+
 /** Everything a student reads in a module, by where it is shown. */
 function studentText(m: ModuleDef) {
   const example = m.example;
@@ -334,6 +387,16 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
     expect(
       m.variables.filter((v) => v.integer && !v.unit && MEASURE.test(v.name)).map((v) => v.name),
     ).toEqual([]);
+  });
+
+  it('keeps a count of things whole', () => {
+    // "857.1429 warblers": a value named for things counted one by one (warblers, calves,
+    // cards, people, groups) is `integer`, and a rule that shares them out floors or rounds
+    // (⌊N₂ ÷ b⌋), since the engine refuses a worked-out count that isn't whole.
+    const bad = m.variables
+      .filter((v) => !v.integer && countsThings(v) && !COUNT_ALLOWED[`${m.id} ${v.id}`])
+      .map((v) => `${v.id}: “${v.name}”${v.unit ? ` (${v.unit})` : ''} is not whole`);
+    expect(bad).toEqual([]);
   });
 
   it('names a convertible value by what it measures, not by its unit', () => {

@@ -48,13 +48,21 @@ describeOrSkip('review dump', () => {
       // The sentences a rule can say when numbers conflict (read from its code), for the reviewer.
       // Sentences only (with a space): never a typeof word such as 'string'. A message built by
       // a helper has no sentence in its code, so it is also asked with each example value pushed
-      // far out (× 10⁶, ÷ 10⁶, negated).
+      // far out (× 10⁶, ÷ 10⁶, negated). A sentence built from the values (a template) is
+      // never printed as code: it shows as said at those values, or "(depends on the values)".
       const says = m.relations.flatMap((r) => {
         if (!r.message) return [];
-        const quoted = (r.message.toString().match(/(['`])(?:(?!\1).)+\1/g) ?? []).filter((q) =>
+        const sentences = (r.message.toString().match(/(['`])(?:(?!\1).)+\1/g) ?? []).filter((q) =>
           q.includes(' '),
         );
+        const quoted = sentences.filter((q) => !q.includes('${'));
         const asked = new Set<string>();
+        try {
+          const said = r.message(m.example as Values);
+          if (said) asked.add(`'${said}'`);
+        } catch {
+          // a message that needs values the example lacks
+        }
         for (const id of r.vars) {
           const x = m.example[id];
           if (typeof x !== 'number') continue;
@@ -67,7 +75,10 @@ describeOrSkip('review dump', () => {
             }
           }
         }
-        const all = [...new Set([...quoted, ...asked])];
+        const templated = sentences.length > quoted.length && asked.size === 0;
+        const all = [
+          ...new Set([...quoted, ...asked, ...(templated ? ['(depends on the values)'] : [])]),
+        ];
         return all.length ? [`${r.id}: ${all.join(' / ')}`] : [];
       });
       if (says.length) lines.push(`messages: ${says.join(' | ')}`);

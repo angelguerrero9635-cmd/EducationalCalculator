@@ -13,6 +13,27 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Reviewer tooling: three guards the Grades 9–12 reviewers asked for
+
+- **A count is whole** (`standards.test.ts`). A value whose unit is a count noun (people) or
+  whose name leads with one (warblers, oak trees, number of groups, population) must be
+  `integer`; rates, ratios ("per") and expected values are exempt, and true non-counts are
+  allowlisted with a reason. It catches the old "857.1429 warblers". Over every page it found
+  18: m.10 population density (and its two gallery copies) now rounds N = D × A to whole
+  people; 8 were rightly not whole (half pictures, fitting groups, Avogadro-sized particles,
+  R₀, a census population worked back from rates); 4 in science/9.ts and the 2 herd-immunity
+  demos are listed in the test to fix (PCR copies, logistic and doubling populations, people
+  to vaccinate).
+- **Messages print sentences** (`dump.review.test.ts`). A message built from the values printed
+  its compiled template (`${(0, format_1.formatNumber)…}`); it now prints the sentence said at
+  the example's values, or "(depends on the values)".
+- **No silent empty questions** (`review-questions.mjs`). "0 questions for 0 of 0 skills" came
+  from page ids in the prefix (`s.9.x~y` matched no skill): a page id now stands for its
+  skill. Each skill with none says why: no file for its grade, or the file's count of
+  questions with none filed under it, and what that file's questions are filed under. s.9.: 42
+  questions for 12 of 17 skills; m.12.: 2 for 2 of 20 (math/12.jsonl holds 3 questions, 2
+  filed under m.11).
+
 ## Grades 11–12 new pages: one lesson-reviewer and one page-reviewer, 32 pages
 
 - Found (lesson): ranges that were absurd or excluded normal answers (a stream 100 km deep,

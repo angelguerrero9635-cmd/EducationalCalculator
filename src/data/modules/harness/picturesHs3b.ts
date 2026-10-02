@@ -142,7 +142,8 @@ export function hs3bIssues(
       break;
     }
     case 'circle': {
-      // Population: not negative, and D = N ÷ A in the formula's units.
+      // Population: not negative, and D = N ÷ A in the formula's units (N to the nearest
+      // whole person when it is worked out as D × A).
       const pop = rep.population;
       if (!pop) break;
       const N = formula(pop.people);
@@ -151,7 +152,13 @@ export function hs3bIssues(
         rep.area ? formula(rep.area) : undefined,
         pop.density && formula(pop.density),
       ];
-      if (N !== undefined && A !== undefined && typeof D === 'number' && off(D * A, N))
+      if (
+        N !== undefined &&
+        A !== undefined &&
+        typeof D === 'number' &&
+        off(D * A, N) &&
+        Math.abs(D * A - N) > 0.5
+      )
         out.push(`density ${D} × area ${A} is not the population ${N}`);
       break;
     }
