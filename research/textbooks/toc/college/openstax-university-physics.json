@@ -1,0 +1,1796 @@
+{
+ "id": "openstax-university-physics",
+ "curriculum": "University Physics, Volumes 1–3",
+ "publisher": "OpenStax (Rice University)",
+ "edition": "Volumes 1–3 (2016), web edition",
+ "subject": "physics",
+ "level": "college",
+ "content": "titles",
+ "license": {
+  "name": "CC BY-NC-SA 4.0",
+  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "attribution": "Access for free at openstax.org. © Rice University, OpenStax. Titles only."
+ },
+ "terms": "OpenStax: titles only; no exercise, example or number recorded (no-LLM statement).",
+ "sourceUrl": "https://openstax.org/details/books/university-physics-volume-1",
+ "retrieved": "2026-10-02",
+ "notes": "Titles only. Section titles from the book's sitemap (https://openstax.org/rex/sitemaps/<slug>.xml), restored from the page slugs (capitals and apostrophes ours); chapter titles are the book's. Nothing under /books/ was fetched. Licence from the OpenStax CMS record: CC BY-NC-SA 4.0 for all three volumes (the physics plan's 'CC BY 4.0, read from mirrors' is wrong). Every OpenStax book also carries the no-LLM statement (sources/hs-b.md).",
+ "books": [
+  {
+   "title": "University Physics Volume 1",
+   "url": "https://openstax.org/details/books/university-physics-volume-1",
+   "units": [
+    {
+     "n": "1",
+     "title": "Units and Measurement",
+     "topics": [],
+     "note": "units and measurement (no topic)",
+     "sections": [
+      {
+       "n": "1.1",
+       "title": "The Scope and Scale of Physics",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/1-1-the-scope-and-scale-of-physics"
+      },
+      {
+       "n": "1.2",
+       "title": "Units and Standards",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/1-2-units-and-standards"
+      },
+      {
+       "n": "1.3",
+       "title": "Unit Conversion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/1-3-unit-conversion"
+      },
+      {
+       "n": "1.4",
+       "title": "Dimensional Analysis",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/1-4-dimensional-analysis"
+      },
+      {
+       "n": "1.5",
+       "title": "Estimates and Fermi Calculations",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/1-5-estimates-and-fermi-calculations"
+      },
+      {
+       "n": "1.6",
+       "title": "Significant Figures",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/1-6-significant-figures"
+      },
+      {
+       "n": "1.7",
+       "title": "Solving Problems in Physics",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/1-7-solving-problems-in-physics"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Vectors",
+     "topics": [
+      "he.physics.university-1#0"
+     ],
+     "sections": [
+      {
+       "n": "2.1",
+       "title": "Scalars and Vectors",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/2-1-scalars-and-vectors"
+      },
+      {
+       "n": "2.2",
+       "title": "Coordinate Systems and Components of a Vector",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/2-2-coordinate-systems-and-components-of-a-vector"
+      },
+      {
+       "n": "2.3",
+       "title": "Algebra of Vectors",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/2-3-algebra-of-vectors"
+      },
+      {
+       "n": "2.4",
+       "title": "Products of Vectors",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/2-4-products-of-vectors"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Motion Along a Straight Line",
+     "topics": [
+      "he.physics.university-1#0"
+     ],
+     "sections": [
+      {
+       "n": "3.1",
+       "title": "Position Displacement and Average Velocity",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/3-1-position-displacement-and-average-velocity"
+      },
+      {
+       "n": "3.2",
+       "title": "Instantaneous Velocity and Speed",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/3-2-instantaneous-velocity-and-speed"
+      },
+      {
+       "n": "3.3",
+       "title": "Average and Instantaneous Acceleration",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/3-3-average-and-instantaneous-acceleration"
+      },
+      {
+       "n": "3.4",
+       "title": "Motion with Constant Acceleration",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/3-4-motion-with-constant-acceleration"
+      },
+      {
+       "n": "3.5",
+       "title": "Free Fall",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/3-5-free-fall"
+      },
+      {
+       "n": "3.6",
+       "title": "Finding Velocity and Displacement from Acceleration",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/3-6-finding-velocity-and-displacement-from-acceleration"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Motion in Two and Three Dimensions",
+     "topics": [
+      "he.physics.university-1#0"
+     ],
+     "sections": [
+      {
+       "n": "4.1",
+       "title": "Displacement and Velocity Vectors",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/4-1-displacement-and-velocity-vectors"
+      },
+      {
+       "n": "4.2",
+       "title": "Acceleration Vector",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/4-2-acceleration-vector"
+      },
+      {
+       "n": "4.3",
+       "title": "Projectile Motion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/4-3-projectile-motion"
+      },
+      {
+       "n": "4.4",
+       "title": "Uniform and Nonuniform Circular Motion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/4-4-uniform-and-nonuniform-circular-motion"
+      },
+      {
+       "n": "4.5",
+       "title": "Relative Motion in One and Two Dimensions",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/4-5-relative-motion-in-one-and-two-dimensions"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Newton's Laws of Motion",
+     "topics": [
+      "he.physics.university-1#1"
+     ],
+     "sections": [
+      {
+       "n": "5.1",
+       "title": "Forces",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/5-1-forces"
+      },
+      {
+       "n": "5.2",
+       "title": "Newton’s First Law",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/5-2-newtons-first-law"
+      },
+      {
+       "n": "5.3",
+       "title": "Newton’s Second Law",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/5-3-newtons-second-law"
+      },
+      {
+       "n": "5.4",
+       "title": "Mass and Weight",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/5-4-mass-and-weight"
+      },
+      {
+       "n": "5.5",
+       "title": "Newton’s Third Law",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/5-5-newtons-third-law"
+      },
+      {
+       "n": "5.6",
+       "title": "Common Forces",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/5-6-common-forces"
+      },
+      {
+       "n": "5.7",
+       "title": "Drawing Free Body Diagrams",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/5-7-drawing-free-body-diagrams"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Applications of Newton's Laws",
+     "topics": [
+      "he.physics.university-1#1"
+     ],
+     "sections": [
+      {
+       "n": "6.1",
+       "title": "Solving Problems with Newton’s Laws",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/6-1-solving-problems-with-newtons-laws"
+      },
+      {
+       "n": "6.2",
+       "title": "Friction",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/6-2-friction"
+      },
+      {
+       "n": "6.3",
+       "title": "Centripetal Force",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/6-3-centripetal-force"
+      },
+      {
+       "n": "6.4",
+       "title": "Drag Force and Terminal Speed",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/6-4-drag-force-and-terminal-speed"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Work and Kinetic Energy",
+     "topics": [
+      "he.physics.university-1#2"
+     ],
+     "sections": [
+      {
+       "n": "7.1",
+       "title": "Work",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/7-1-work"
+      },
+      {
+       "n": "7.2",
+       "title": "Kinetic Energy",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/7-2-kinetic-energy"
+      },
+      {
+       "n": "7.3",
+       "title": "Work Energy Theorem",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/7-3-work-energy-theorem"
+      },
+      {
+       "n": "7.4",
+       "title": "Power",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/7-4-power"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Potential Energy and Conservation of Energy",
+     "topics": [
+      "he.physics.university-1#2"
+     ],
+     "sections": [
+      {
+       "n": "8.1",
+       "title": "Potential Energy of a System",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/8-1-potential-energy-of-a-system"
+      },
+      {
+       "n": "8.2",
+       "title": "Conservative and Non Conservative Forces",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/8-2-conservative-and-non-conservative-forces"
+      },
+      {
+       "n": "8.3",
+       "title": "Conservation of Energy",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/8-3-conservation-of-energy"
+      },
+      {
+       "n": "8.4",
+       "title": "Potential Energy Diagrams and Stability",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/8-4-potential-energy-diagrams-and-stability"
+      },
+      {
+       "n": "8.5",
+       "title": "Sources of Energy",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/8-5-sources-of-energy"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Linear Momentum and Collisions",
+     "topics": [
+      "he.physics.university-1#3"
+     ],
+     "sections": [
+      {
+       "n": "9.1",
+       "title": "Linear Momentum",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/9-1-linear-momentum"
+      },
+      {
+       "n": "9.2",
+       "title": "Impulse and Collisions",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/9-2-impulse-and-collisions"
+      },
+      {
+       "n": "9.3",
+       "title": "Conservation of Linear Momentum",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/9-3-conservation-of-linear-momentum"
+      },
+      {
+       "n": "9.4",
+       "title": "Types of Collisions",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/9-4-types-of-collisions"
+      },
+      {
+       "n": "9.5",
+       "title": "Collisions in Multiple Dimensions",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/9-5-collisions-in-multiple-dimensions"
+      },
+      {
+       "n": "9.6",
+       "title": "Center of Mass",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/9-6-center-of-mass"
+      },
+      {
+       "n": "9.7",
+       "title": "Rocket Propulsion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/9-7-rocket-propulsion"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Fixed-Axis Rotation",
+     "topics": [
+      "he.physics.university-1#4"
+     ],
+     "sections": [
+      {
+       "n": "10.1",
+       "title": "Rotational Variables",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/10-1-rotational-variables"
+      },
+      {
+       "n": "10.2",
+       "title": "Rotation with Constant Angular Acceleration",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/10-2-rotation-with-constant-angular-acceleration"
+      },
+      {
+       "n": "10.3",
+       "title": "Relating Angular and Translational Quantities",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/10-3-relating-angular-and-translational-quantities"
+      },
+      {
+       "n": "10.4",
+       "title": "Moment of Inertia and Rotational Kinetic Energy",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/10-4-moment-of-inertia-and-rotational-kinetic-energy"
+      },
+      {
+       "n": "10.5",
+       "title": "Calculating Moments of Inertia",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/10-5-calculating-moments-of-inertia"
+      },
+      {
+       "n": "10.6",
+       "title": "Torque",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/10-6-torque"
+      },
+      {
+       "n": "10.7",
+       "title": "Newton’s Second Law for Rotation",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/10-7-newtons-second-law-for-rotation"
+      },
+      {
+       "n": "10.8",
+       "title": "Work and Power for Rotational Motion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/10-8-work-and-power-for-rotational-motion"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Angular Momentum",
+     "topics": [
+      "he.physics.university-1#4"
+     ],
+     "sections": [
+      {
+       "n": "11.1",
+       "title": "Rolling Motion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/11-1-rolling-motion"
+      },
+      {
+       "n": "11.2",
+       "title": "Angular Momentum",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/11-2-angular-momentum"
+      },
+      {
+       "n": "11.3",
+       "title": "Conservation of Angular Momentum",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/11-3-conservation-of-angular-momentum"
+      },
+      {
+       "n": "11.4",
+       "title": "Precession of a Gyroscope",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/11-4-precession-of-a-gyroscope"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Static Equilibrium and Elasticity",
+     "topics": [
+      "he.physics.university-1#4"
+     ],
+     "sections": [
+      {
+       "n": "12.1",
+       "title": "Conditions for Static Equilibrium",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/12-1-conditions-for-static-equilibrium"
+      },
+      {
+       "n": "12.2",
+       "title": "Examples of Static Equilibrium",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/12-2-examples-of-static-equilibrium"
+      },
+      {
+       "n": "12.3",
+       "title": "Stress Strain and Elastic Modulus",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/12-3-stress-strain-and-elastic-modulus"
+      },
+      {
+       "n": "12.4",
+       "title": "Elasticity and Plasticity",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/12-4-elasticity-and-plasticity"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Gravitation",
+     "topics": [],
+     "note": "no college topic: gravitation (plan gap: no UP1 topic)",
+     "sections": [
+      {
+       "n": "13.1",
+       "title": "Newton’s Law of Universal Gravitation",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/13-1-newtons-law-of-universal-gravitation"
+      },
+      {
+       "n": "13.2",
+       "title": "Gravitation Near Earth’s Surface",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/13-2-gravitation-near-earths-surface"
+      },
+      {
+       "n": "13.3",
+       "title": "Gravitational Potential Energy and Total Energy",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/13-3-gravitational-potential-energy-and-total-energy"
+      },
+      {
+       "n": "13.4",
+       "title": "Satellite Orbits and Energy",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/13-4-satellite-orbits-and-energy"
+      },
+      {
+       "n": "13.5",
+       "title": "Kepler’s Laws of Planetary Motion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/13-5-keplers-laws-of-planetary-motion"
+      },
+      {
+       "n": "13.6",
+       "title": "Tidal Forces",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/13-6-tidal-forces"
+      },
+      {
+       "n": "13.7",
+       "title": "Einstein’s Theory of Gravity",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/13-7-einsteins-theory-of-gravity"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Fluid Mechanics",
+     "topics": [],
+     "note": "no college topic: fluid mechanics (plan gap)",
+     "sections": [
+      {
+       "n": "14.1",
+       "title": "Fluids Density and Pressure",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/14-1-fluids-density-and-pressure"
+      },
+      {
+       "n": "14.2",
+       "title": "Measuring Pressure",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/14-2-measuring-pressure"
+      },
+      {
+       "n": "14.3",
+       "title": "Pascal’s Principle and Hydraulics",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/14-3-pascals-principle-and-hydraulics"
+      },
+      {
+       "n": "14.4",
+       "title": "Archimedes’ Principle and Buoyancy",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/14-4-archimedes-principle-and-buoyancy"
+      },
+      {
+       "n": "14.5",
+       "title": "Fluid Dynamics",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/14-5-fluid-dynamics"
+      },
+      {
+       "n": "14.6",
+       "title": "Bernoulli’s Equation",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/14-6-bernoullis-equation"
+      },
+      {
+       "n": "14.7",
+       "title": "Viscosity and Turbulence",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/14-7-viscosity-and-turbulence"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Oscillations",
+     "topics": [
+      "he.physics.university-1#5"
+     ],
+     "sections": [
+      {
+       "n": "15.1",
+       "title": "Simple Harmonic Motion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/15-1-simple-harmonic-motion"
+      },
+      {
+       "n": "15.2",
+       "title": "Energy in Simple Harmonic Motion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/15-2-energy-in-simple-harmonic-motion"
+      },
+      {
+       "n": "15.3",
+       "title": "Comparing Simple Harmonic Motion and Circular Motion",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/15-3-comparing-simple-harmonic-motion-and-circular-motion"
+      },
+      {
+       "n": "15.4",
+       "title": "Pendulums",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/15-4-pendulums"
+      },
+      {
+       "n": "15.5",
+       "title": "Damped Oscillations",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/15-5-damped-oscillations"
+      },
+      {
+       "n": "15.6",
+       "title": "Forced Oscillations",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/15-6-forced-oscillations"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Waves",
+     "topics": [
+      "he.physics.university-3#0"
+     ],
+     "sections": [
+      {
+       "n": "16.1",
+       "title": "Traveling Waves",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/16-1-traveling-waves"
+      },
+      {
+       "n": "16.2",
+       "title": "Mathematics of Waves",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/16-2-mathematics-of-waves"
+      },
+      {
+       "n": "16.3",
+       "title": "Wave Speed on a Stretched String",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/16-3-wave-speed-on-a-stretched-string"
+      },
+      {
+       "n": "16.4",
+       "title": "Energy and Power of a Wave",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/16-4-energy-and-power-of-a-wave"
+      },
+      {
+       "n": "16.5",
+       "title": "Interference of Waves",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/16-5-interference-of-waves"
+      },
+      {
+       "n": "16.6",
+       "title": "Standing Waves and Resonance",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/16-6-standing-waves-and-resonance"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "title": "Sound",
+     "topics": [
+      "he.physics.university-3#0"
+     ],
+     "sections": [
+      {
+       "n": "17.1",
+       "title": "Sound Waves",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/17-1-sound-waves"
+      },
+      {
+       "n": "17.2",
+       "title": "Speed of Sound",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/17-2-speed-of-sound"
+      },
+      {
+       "n": "17.3",
+       "title": "Sound Intensity",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/17-3-sound-intensity"
+      },
+      {
+       "n": "17.4",
+       "title": "Normal Modes of a Standing Sound Wave",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/17-4-normal-modes-of-a-standing-sound-wave"
+      },
+      {
+       "n": "17.5",
+       "title": "Sources of Musical Sound",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/17-5-sources-of-musical-sound"
+      },
+      {
+       "n": "17.6",
+       "title": "Beats",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/17-6-beats"
+      },
+      {
+       "n": "17.7",
+       "title": "The Doppler Effect",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/17-7-the-doppler-effect"
+      },
+      {
+       "n": "17.8",
+       "title": "Shock Waves",
+       "url": "https://openstax.org/books/university-physics-volume-1/pages/17-8-shock-waves"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "University Physics Volume 2",
+   "url": "https://openstax.org/details/books/university-physics-volume-2",
+   "units": [
+    {
+     "n": "1",
+     "title": "Temperature and Heat",
+     "topics": [
+      "he.physics.thermal-statistical#0"
+     ],
+     "sections": [
+      {
+       "n": "1.1",
+       "title": "Temperature and Thermal Equilibrium",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/1-1-temperature-and-thermal-equilibrium"
+      },
+      {
+       "n": "1.2",
+       "title": "Thermometers and Temperature Scales",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/1-2-thermometers-and-temperature-scales"
+      },
+      {
+       "n": "1.3",
+       "title": "Thermal Expansion",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/1-3-thermal-expansion"
+      },
+      {
+       "n": "1.4",
+       "title": "Heat Transfer Specific Heat and Calorimetry",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/1-4-heat-transfer-specific-heat-and-calorimetry"
+      },
+      {
+       "n": "1.5",
+       "title": "Phase Changes",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/1-5-phase-changes"
+      },
+      {
+       "n": "1.6",
+       "title": "Mechanisms of Heat Transfer",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/1-6-mechanisms-of-heat-transfer"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "The Kinetic Theory of Gases",
+     "topics": [
+      "he.physics.thermal-statistical#0"
+     ],
+     "sections": [
+      {
+       "n": "2.1",
+       "title": "Molecular Model of an Ideal Gas",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/2-1-molecular-model-of-an-ideal-gas"
+      },
+      {
+       "n": "2.2",
+       "title": "Pressure Temperature and Rms Speed",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/2-2-pressure-temperature-and-rms-speed"
+      },
+      {
+       "n": "2.3",
+       "title": "Heat Capacity and Equipartition of Energy",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/2-3-heat-capacity-and-equipartition-of-energy"
+      },
+      {
+       "n": "2.4",
+       "title": "Distribution of Molecular Speeds",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/2-4-distribution-of-molecular-speeds"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "The First Law of Thermodynamics",
+     "topics": [
+      "he.physics.thermal-statistical#0"
+     ],
+     "sections": [
+      {
+       "n": "3.1",
+       "title": "Thermodynamic Systems",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/3-1-thermodynamic-systems"
+      },
+      {
+       "n": "3.2",
+       "title": "Work Heat and Internal Energy",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/3-2-work-heat-and-internal-energy"
+      },
+      {
+       "n": "3.3",
+       "title": "First Law of Thermodynamics",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/3-3-first-law-of-thermodynamics"
+      },
+      {
+       "n": "3.4",
+       "title": "Thermodynamic Processes",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/3-4-thermodynamic-processes"
+      },
+      {
+       "n": "3.5",
+       "title": "Heat Capacities of an Ideal Gas",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/3-5-heat-capacities-of-an-ideal-gas"
+      },
+      {
+       "n": "3.6",
+       "title": "Adiabatic Processes for an Ideal Gas",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/3-6-adiabatic-processes-for-an-ideal-gas"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "The Second Law of Thermodynamics",
+     "topics": [
+      "he.physics.thermal-statistical#1"
+     ],
+     "sections": [
+      {
+       "n": "4.1",
+       "title": "Reversible and Irreversible Processes",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/4-1-reversible-and-irreversible-processes"
+      },
+      {
+       "n": "4.2",
+       "title": "Heat Engines",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/4-2-heat-engines"
+      },
+      {
+       "n": "4.3",
+       "title": "Refrigerators and Heat Pumps",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/4-3-refrigerators-and-heat-pumps"
+      },
+      {
+       "n": "4.4",
+       "title": "Statements of the Second Law of Thermodynamics",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/4-4-statements-of-the-second-law-of-thermodynamics"
+      },
+      {
+       "n": "4.5",
+       "title": "The Carnot Cycle",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/4-5-the-carnot-cycle"
+      },
+      {
+       "n": "4.6",
+       "title": "Entropy",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/4-6-entropy"
+      },
+      {
+       "n": "4.7",
+       "title": "Entropy on a Microscopic Scale",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/4-7-entropy-on-a-microscopic-scale"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Electric Charges and Fields",
+     "topics": [
+      "he.physics.university-2#0"
+     ],
+     "sections": [
+      {
+       "n": "5.1",
+       "title": "Electric Charge",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/5-1-electric-charge"
+      },
+      {
+       "n": "5.2",
+       "title": "Conductors Insulators and Charging by Induction",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/5-2-conductors-insulators-and-charging-by-induction"
+      },
+      {
+       "n": "5.3",
+       "title": "Coulombs Law",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/5-3-coulombs-law"
+      },
+      {
+       "n": "5.4",
+       "title": "Electric Field",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/5-4-electric-field"
+      },
+      {
+       "n": "5.5",
+       "title": "Calculating Electric Fields of Charge Distributions",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/5-5-calculating-electric-fields-of-charge-distributions"
+      },
+      {
+       "n": "5.6",
+       "title": "Electric Field Lines",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/5-6-electric-field-lines"
+      },
+      {
+       "n": "5.7",
+       "title": "Electric Dipoles",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/5-7-electric-dipoles"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Gauss's Law",
+     "topics": [
+      "he.physics.university-2#0"
+     ],
+     "sections": [
+      {
+       "n": "6.1",
+       "title": "Electric Flux",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/6-1-electric-flux"
+      },
+      {
+       "n": "6.2",
+       "title": "Explaining Gauss’s Law",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/6-2-explaining-gausss-law"
+      },
+      {
+       "n": "6.3",
+       "title": "Applying Gauss’s Law",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/6-3-applying-gausss-law"
+      },
+      {
+       "n": "6.4",
+       "title": "Conductors in Electrostatic Equilibrium",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/6-4-conductors-in-electrostatic-equilibrium"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Electric Potential",
+     "topics": [
+      "he.physics.university-2#1"
+     ],
+     "sections": [
+      {
+       "n": "7.1",
+       "title": "Electric Potential Energy",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/7-1-electric-potential-energy"
+      },
+      {
+       "n": "7.2",
+       "title": "Electric Potential and Potential Difference",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/7-2-electric-potential-and-potential-difference"
+      },
+      {
+       "n": "7.3",
+       "title": "Calculations of Electric Potential",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/7-3-calculations-of-electric-potential"
+      },
+      {
+       "n": "7.4",
+       "title": "Determining Field from Potential",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/7-4-determining-field-from-potential"
+      },
+      {
+       "n": "7.5",
+       "title": "Equipotential Surfaces and Conductors",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/7-5-equipotential-surfaces-and-conductors"
+      },
+      {
+       "n": "7.6",
+       "title": "Applications of Electrostatics",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/7-6-applications-of-electrostatics"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Capacitance",
+     "topics": [
+      "he.physics.university-2#1"
+     ],
+     "sections": [
+      {
+       "n": "8.1",
+       "title": "Capacitors and Capacitance",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/8-1-capacitors-and-capacitance"
+      },
+      {
+       "n": "8.2",
+       "title": "Capacitors in Series and in Parallel",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/8-2-capacitors-in-series-and-in-parallel"
+      },
+      {
+       "n": "8.3",
+       "title": "Energy Stored in a Capacitor",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/8-3-energy-stored-in-a-capacitor"
+      },
+      {
+       "n": "8.4",
+       "title": "Capacitor with a Dielectric",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/8-4-capacitor-with-a-dielectric"
+      },
+      {
+       "n": "8.5",
+       "title": "Molecular Model of a Dielectric",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/8-5-molecular-model-of-a-dielectric"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Current and Resistance",
+     "topics": [
+      "he.physics.university-2#2"
+     ],
+     "sections": [
+      {
+       "n": "9.1",
+       "title": "Electrical Current",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/9-1-electrical-current"
+      },
+      {
+       "n": "9.2",
+       "title": "Model of Conduction in Metals",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/9-2-model-of-conduction-in-metals"
+      },
+      {
+       "n": "9.3",
+       "title": "Resistivity and Resistance",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/9-3-resistivity-and-resistance"
+      },
+      {
+       "n": "9.4",
+       "title": "Ohm’s Law",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/9-4-ohms-law"
+      },
+      {
+       "n": "9.5",
+       "title": "Electrical Energy and Power",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/9-5-electrical-energy-and-power"
+      },
+      {
+       "n": "9.6",
+       "title": "Superconductors",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/9-6-superconductors"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Direct-Current Circuits",
+     "topics": [
+      "he.physics.university-2#2"
+     ],
+     "sections": [
+      {
+       "n": "10.1",
+       "title": "Electromotive Force",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/10-1-electromotive-force"
+      },
+      {
+       "n": "10.2",
+       "title": "Resistors in Series and Parallel",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/10-2-resistors-in-series-and-parallel"
+      },
+      {
+       "n": "10.3",
+       "title": "Kirchhoff’s Rules",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/10-3-kirchhoffs-rules"
+      },
+      {
+       "n": "10.4",
+       "title": "Electrical Measuring Instruments",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/10-4-electrical-measuring-instruments"
+      },
+      {
+       "n": "10.5",
+       "title": "RC Circuits",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/10-5-rc-circuits"
+      },
+      {
+       "n": "10.6",
+       "title": "Household Wiring and Electrical Safety",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/10-6-household-wiring-and-electrical-safety"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Magnetic Forces and Fields",
+     "topics": [
+      "he.physics.university-2#3"
+     ],
+     "sections": [
+      {
+       "n": "11.1",
+       "title": "Magnetism and Its Historical Discoveries",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/11-1-magnetism-and-its-historical-discoveries"
+      },
+      {
+       "n": "11.2",
+       "title": "Magnetic Fields and Lines",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/11-2-magnetic-fields-and-lines"
+      },
+      {
+       "n": "11.3",
+       "title": "Motion of a Charged Particle in a Magnetic Field",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/11-3-motion-of-a-charged-particle-in-a-magnetic-field"
+      },
+      {
+       "n": "11.4",
+       "title": "Magnetic Force on a Current Carrying Conductor",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/11-4-magnetic-force-on-a-current-carrying-conductor"
+      },
+      {
+       "n": "11.5",
+       "title": "Force and Torque on a Current Loop",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/11-5-force-and-torque-on-a-current-loop"
+      },
+      {
+       "n": "11.6",
+       "title": "The Hall Effect",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/11-6-the-hall-effect"
+      },
+      {
+       "n": "11.7",
+       "title": "Applications of Magnetic Forces and Fields",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/11-7-applications-of-magnetic-forces-and-fields"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Sources of Magnetic Fields",
+     "topics": [
+      "he.physics.university-2#3"
+     ],
+     "sections": [
+      {
+       "n": "12.1",
+       "title": "The Biot Savart Law",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/12-1-the-biot-savart-law"
+      },
+      {
+       "n": "12.2",
+       "title": "Magnetic Field Due to a Thin Straight Wire",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/12-2-magnetic-field-due-to-a-thin-straight-wire"
+      },
+      {
+       "n": "12.3",
+       "title": "Magnetic Force Between Two Parallel Currents",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/12-3-magnetic-force-between-two-parallel-currents"
+      },
+      {
+       "n": "12.4",
+       "title": "Magnetic Field of a Current Loop",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/12-4-magnetic-field-of-a-current-loop"
+      },
+      {
+       "n": "12.5",
+       "title": "Ampère’s Law",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/12-5-amperes-law"
+      },
+      {
+       "n": "12.6",
+       "title": "Solenoids and Toroids",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/12-6-solenoids-and-toroids"
+      },
+      {
+       "n": "12.7",
+       "title": "Magnetism in Matter",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/12-7-magnetism-in-matter"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Electromagnetic Induction",
+     "topics": [
+      "he.physics.university-2#3"
+     ],
+     "sections": [
+      {
+       "n": "13.1",
+       "title": "Faraday’s Law",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/13-1-faradays-law"
+      },
+      {
+       "n": "13.2",
+       "title": "Lenz’s Law",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/13-2-lenzs-law"
+      },
+      {
+       "n": "13.3",
+       "title": "Motional Emf",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/13-3-motional-emf"
+      },
+      {
+       "n": "13.4",
+       "title": "Induced Electric Fields",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/13-4-induced-electric-fields"
+      },
+      {
+       "n": "13.5",
+       "title": "Eddy Currents",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/13-5-eddy-currents"
+      },
+      {
+       "n": "13.6",
+       "title": "Electric Generators and Back Emf",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/13-6-electric-generators-and-back-emf"
+      },
+      {
+       "n": "13.7",
+       "title": "Applications of Electromagnetic Induction",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/13-7-applications-of-electromagnetic-induction"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Inductance",
+     "topics": [
+      "he.physics.university-2#4"
+     ],
+     "sections": [
+      {
+       "n": "14.1",
+       "title": "Mutual Inductance",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/14-1-mutual-inductance"
+      },
+      {
+       "n": "14.2",
+       "title": "Self Inductance and Inductors",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/14-2-self-inductance-and-inductors"
+      },
+      {
+       "n": "14.3",
+       "title": "Energy in a Magnetic Field",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/14-3-energy-in-a-magnetic-field"
+      },
+      {
+       "n": "14.4",
+       "title": "RL Circuits",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/14-4-rl-circuits",
+       "topics": [
+        "he.physics.university-2#2"
+       ]
+      },
+      {
+       "n": "14.5",
+       "title": "Oscillations in an LC Circuit",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/14-5-oscillations-in-an-lc-circuit"
+      },
+      {
+       "n": "14.6",
+       "title": "RLC Series Circuits",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/14-6-rlc-series-circuits"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Alternating-Current Circuits",
+     "topics": [
+      "he.physics.university-2#4"
+     ],
+     "sections": [
+      {
+       "n": "15.1",
+       "title": "AC Sources",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/15-1-ac-sources"
+      },
+      {
+       "n": "15.2",
+       "title": "Simple AC Circuits",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/15-2-simple-ac-circuits"
+      },
+      {
+       "n": "15.3",
+       "title": "RLC Series Circuits with AC",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/15-3-rlc-series-circuits-with-ac"
+      },
+      {
+       "n": "15.4",
+       "title": "Power in an AC Circuit",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/15-4-power-in-an-ac-circuit"
+      },
+      {
+       "n": "15.5",
+       "title": "Resonance in an AC Circuit",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/15-5-resonance-in-an-ac-circuit"
+      },
+      {
+       "n": "15.6",
+       "title": "Transformers",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/15-6-transformers"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Electromagnetic Waves",
+     "topics": [
+      "he.physics.university-3#0"
+     ],
+     "sections": [
+      {
+       "n": "16.1",
+       "title": "Maxwells Equations and Electromagnetic Waves",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves"
+      },
+      {
+       "n": "16.2",
+       "title": "Plane Electromagnetic Waves",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/16-2-plane-electromagnetic-waves"
+      },
+      {
+       "n": "16.3",
+       "title": "Energy Carried by Electromagnetic Waves",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/16-3-energy-carried-by-electromagnetic-waves"
+      },
+      {
+       "n": "16.4",
+       "title": "Momentum and Radiation Pressure",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/16-4-momentum-and-radiation-pressure"
+      },
+      {
+       "n": "16.5",
+       "title": "The Electromagnetic Spectrum",
+       "url": "https://openstax.org/books/university-physics-volume-2/pages/16-5-the-electromagnetic-spectrum"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "University Physics Volume 3",
+   "url": "https://openstax.org/details/books/university-physics-volume-3",
+   "units": [
+    {
+     "n": "1",
+     "title": "The Nature of Light",
+     "topics": [
+      "he.physics.university-3#1"
+     ],
+     "sections": [
+      {
+       "n": "1.1",
+       "title": "The Propagation of Light",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/1-1-the-propagation-of-light",
+       "topics": [
+        "he.physics.university-3#0"
+       ]
+      },
+      {
+       "n": "1.2",
+       "title": "The Law of Reflection",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/1-2-the-law-of-reflection",
+       "note": "reflection and refraction (geometric optics, plan gap)",
+       "topics": []
+      },
+      {
+       "n": "1.3",
+       "title": "Refraction",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/1-3-refraction",
+       "note": "geometric optics (plan gap)",
+       "topics": []
+      },
+      {
+       "n": "1.4",
+       "title": "Total Internal Reflection",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/1-4-total-internal-reflection",
+       "note": "geometric optics (plan gap)",
+       "topics": []
+      },
+      {
+       "n": "1.5",
+       "title": "Dispersion",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/1-5-dispersion",
+       "note": "geometric optics (plan gap)",
+       "topics": []
+      },
+      {
+       "n": "1.6",
+       "title": "Huygens’s Principle",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/1-6-huygenss-principle",
+       "topics": [],
+       "note": "ray optics (plan gap)"
+      },
+      {
+       "n": "1.7",
+       "title": "Polarization",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/1-7-polarization",
+       "topics": [
+        "he.physics.university-3#0"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Geometric Optics and Image Formation",
+     "topics": [],
+     "note": "no college topic: geometric optics (plan gap)",
+     "sections": [
+      {
+       "n": "2.1",
+       "title": "Images Formed by Plane Mirrors",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/2-1-images-formed-by-plane-mirrors"
+      },
+      {
+       "n": "2.2",
+       "title": "Spherical Mirrors",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/2-2-spherical-mirrors"
+      },
+      {
+       "n": "2.3",
+       "title": "Images Formed by Refraction",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/2-3-images-formed-by-refraction"
+      },
+      {
+       "n": "2.4",
+       "title": "Thin Lenses",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/2-4-thin-lenses"
+      },
+      {
+       "n": "2.5",
+       "title": "The Eye",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/2-5-the-eye"
+      },
+      {
+       "n": "2.6",
+       "title": "The Camera",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/2-6-the-camera"
+      },
+      {
+       "n": "2.7",
+       "title": "The Simple Magnifier",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/2-7-the-simple-magnifier"
+      },
+      {
+       "n": "2.8",
+       "title": "Microscopes and Telescopes",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/2-8-microscopes-and-telescopes"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Interference",
+     "topics": [
+      "he.physics.university-3#1"
+     ],
+     "sections": [
+      {
+       "n": "3.1",
+       "title": "Young’s Double Slit Interference",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/3-1-youngs-double-slit-interference"
+      },
+      {
+       "n": "3.2",
+       "title": "Mathematics of Interference",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/3-2-mathematics-of-interference"
+      },
+      {
+       "n": "3.3",
+       "title": "Multiple Slit Interference",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/3-3-multiple-slit-interference"
+      },
+      {
+       "n": "3.4",
+       "title": "Interference in Thin Films",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/3-4-interference-in-thin-films"
+      },
+      {
+       "n": "3.5",
+       "title": "The Michelson Interferometer",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/3-5-the-michelson-interferometer"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Diffraction",
+     "topics": [
+      "he.physics.university-3#1"
+     ],
+     "sections": [
+      {
+       "n": "4.1",
+       "title": "Single Slit Diffraction",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/4-1-single-slit-diffraction"
+      },
+      {
+       "n": "4.2",
+       "title": "Intensity in Single Slit Diffraction",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/4-2-intensity-in-single-slit-diffraction"
+      },
+      {
+       "n": "4.3",
+       "title": "Double Slit Diffraction",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/4-3-double-slit-diffraction"
+      },
+      {
+       "n": "4.4",
+       "title": "Diffraction Gratings",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/4-4-diffraction-gratings"
+      },
+      {
+       "n": "4.5",
+       "title": "Circular Apertures and Resolution",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/4-5-circular-apertures-and-resolution"
+      },
+      {
+       "n": "4.6",
+       "title": "X Ray Diffraction",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/4-6-x-ray-diffraction"
+      },
+      {
+       "n": "4.7",
+       "title": "Holography",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/4-7-holography"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Relativity",
+     "topics": [
+      "he.physics.university-3#2"
+     ],
+     "sections": [
+      {
+       "n": "5.1",
+       "title": "Invariance of Physical Laws",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-1-invariance-of-physical-laws"
+      },
+      {
+       "n": "5.2",
+       "title": "Relativity of Simultaneity",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-2-relativity-of-simultaneity"
+      },
+      {
+       "n": "5.3",
+       "title": "Time Dilation",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-3-time-dilation"
+      },
+      {
+       "n": "5.4",
+       "title": "Length Contraction",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-4-length-contraction"
+      },
+      {
+       "n": "5.5",
+       "title": "The Lorentz Transformation",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-5-the-lorentz-transformation"
+      },
+      {
+       "n": "5.6",
+       "title": "Relativistic Velocity Transformation",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-6-relativistic-velocity-transformation"
+      },
+      {
+       "n": "5.7",
+       "title": "Doppler Effect for Light",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-7-doppler-effect-for-light"
+      },
+      {
+       "n": "5.8",
+       "title": "Relativistic Momentum",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-8-relativistic-momentum"
+      },
+      {
+       "n": "5.9",
+       "title": "Relativistic Energy",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/5-9-relativistic-energy"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Photons and Matter Waves",
+     "topics": [
+      "he.physics.university-3#3"
+     ],
+     "sections": [
+      {
+       "n": "6.1",
+       "title": "Blackbody Radiation",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/6-1-blackbody-radiation"
+      },
+      {
+       "n": "6.2",
+       "title": "Photoelectric Effect",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/6-2-photoelectric-effect"
+      },
+      {
+       "n": "6.3",
+       "title": "The Compton Effect",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/6-3-the-compton-effect"
+      },
+      {
+       "n": "6.4",
+       "title": "Bohr’s Model of the Hydrogen Atom",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/6-4-bohrs-model-of-the-hydrogen-atom"
+      },
+      {
+       "n": "6.5",
+       "title": "de Broglie’s Matter Waves",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/6-5-de-broglies-matter-waves"
+      },
+      {
+       "n": "6.6",
+       "title": "Wave Particle Duality",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/6-6-wave-particle-duality"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Quantum Mechanics",
+     "topics": [
+      "he.physics.university-3#3"
+     ],
+     "sections": [
+      {
+       "n": "7.1",
+       "title": "Wave Functions",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/7-1-wave-functions"
+      },
+      {
+       "n": "7.2",
+       "title": "The Heisenberg Uncertainty Principle",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/7-2-the-heisenberg-uncertainty-principle"
+      },
+      {
+       "n": "7.3",
+       "title": "The Schrödinger Equation",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/7-3-the-schrodinger-equation"
+      },
+      {
+       "n": "7.4",
+       "title": "The Quantum Particle in a Box",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/7-4-the-quantum-particle-in-a-box"
+      },
+      {
+       "n": "7.5",
+       "title": "The Quantum Harmonic Oscillator",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/7-5-the-quantum-harmonic-oscillator"
+      },
+      {
+       "n": "7.6",
+       "title": "The Quantum Tunneling of Particles through Potential Barriers",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/7-6-the-quantum-tunneling-of-particles-through-potential-barriers"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Atomic Structure",
+     "topics": [],
+     "note": "no college topic: atomic structure (plan gap)",
+     "sections": [
+      {
+       "n": "8.1",
+       "title": "The Hydrogen Atom",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/8-1-the-hydrogen-atom"
+      },
+      {
+       "n": "8.2",
+       "title": "Orbital Magnetic Dipole Moment of the Electron",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/8-2-orbital-magnetic-dipole-moment-of-the-electron"
+      },
+      {
+       "n": "8.3",
+       "title": "Electron Spin",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/8-3-electron-spin"
+      },
+      {
+       "n": "8.4",
+       "title": "The Exclusion Principle and the Periodic Table",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/8-4-the-exclusion-principle-and-the-periodic-table"
+      },
+      {
+       "n": "8.5",
+       "title": "Atomic Spectra and X Rays",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/8-5-atomic-spectra-and-x-rays"
+      },
+      {
+       "n": "8.6",
+       "title": "Lasers",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/8-6-lasers"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Condensed Matter Physics",
+     "topics": [],
+     "note": "no college topic: condensed matter (plan gap)",
+     "sections": [
+      {
+       "n": "9.1",
+       "title": "Types of Molecular Bonds",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/9-1-types-of-molecular-bonds"
+      },
+      {
+       "n": "9.2",
+       "title": "Molecular Spectra",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/9-2-molecular-spectra"
+      },
+      {
+       "n": "9.3",
+       "title": "Bonding in Crystalline Solids",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/9-3-bonding-in-crystalline-solids"
+      },
+      {
+       "n": "9.4",
+       "title": "Free Electron Model of Metals",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/9-4-free-electron-model-of-metals"
+      },
+      {
+       "n": "9.5",
+       "title": "Band Theory of Solids",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/9-5-band-theory-of-solids"
+      },
+      {
+       "n": "9.6",
+       "title": "Semiconductors and Doping",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/9-6-semiconductors-and-doping"
+      },
+      {
+       "n": "9.7",
+       "title": "Semiconductor Devices",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/9-7-semiconductor-devices"
+      },
+      {
+       "n": "9.8",
+       "title": "Superconductivity",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/9-8-superconductivity"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Nuclear Physics",
+     "topics": [
+      "he.physics.university-3#4"
+     ],
+     "sections": [
+      {
+       "n": "10.1",
+       "title": "Properties of Nuclei",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/10-1-properties-of-nuclei"
+      },
+      {
+       "n": "10.2",
+       "title": "Nuclear Binding Energy",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/10-2-nuclear-binding-energy"
+      },
+      {
+       "n": "10.3",
+       "title": "Radioactive Decay",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/10-3-radioactive-decay"
+      },
+      {
+       "n": "10.4",
+       "title": "Nuclear Reactions",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/10-4-nuclear-reactions"
+      },
+      {
+       "n": "10.5",
+       "title": "Fission",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/10-5-fission"
+      },
+      {
+       "n": "10.6",
+       "title": "Nuclear Fusion",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/10-6-nuclear-fusion"
+      },
+      {
+       "n": "10.7",
+       "title": "Medical Applications and Biological Effects of Nuclear Radiation",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/10-7-medical-applications-and-biological-effects-of-nuclear-radiation"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Particle Physics and Cosmology",
+     "topics": [],
+     "note": "no college topic: particle physics and cosmology (plan gap)",
+     "sections": [
+      {
+       "n": "11.1",
+       "title": "Introduction to Particle Physics",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/11-1-introduction-to-particle-physics"
+      },
+      {
+       "n": "11.2",
+       "title": "Particle Conservation Laws",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/11-2-particle-conservation-laws"
+      },
+      {
+       "n": "11.3",
+       "title": "Quarks",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/11-3-quarks"
+      },
+      {
+       "n": "11.4",
+       "title": "Particle Accelerators and Detectors",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/11-4-particle-accelerators-and-detectors"
+      },
+      {
+       "n": "11.5",
+       "title": "The Standard Model",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/11-5-the-standard-model"
+      },
+      {
+       "n": "11.6",
+       "title": "The Big Bang",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/11-6-the-big-bang"
+      },
+      {
+       "n": "11.7",
+       "title": "Evolution of the Early Universe",
+       "url": "https://openstax.org/books/university-physics-volume-3/pages/11-7-evolution-of-the-early-universe"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

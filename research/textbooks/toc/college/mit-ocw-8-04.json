@@ -1,0 +1,73 @@
+{
+ "id": "mit-ocw-8-04",
+ "curriculum": "MIT OCW 8.04 Quantum Physics I",
+ "publisher": "MIT OpenCourseWare (Barton Zwiebach)",
+ "edition": "Spring 2016",
+ "subject": "physics",
+ "level": "college",
+ "content": "full",
+ "license": {
+  "name": "CC BY-NC-SA 4.0",
+  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "attribution": "Barton Zwiebach. 8.04 Quantum Physics I. Spring 2016. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+ },
+ "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+ "sourceUrl": "https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2016/",
+ "retrieved": "2026-10-02",
+ "notes": "Problem sets 2 and 5 and the 2015 final exam. Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
+ "books": [
+  {
+   "title": "8.04 Quantum Physics I (Spring 2016)",
+   "url": "https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2016/",
+   "units": [
+    {
+     "n": "PS2",
+     "title": "Problem Set 2",
+     "url": "https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2016/6e6dbe0a93bddc9ecf93eb173e514e15_MIT8_04S16_ps2_2016.pdf",
+     "topics": [
+      "he.physics.university-3#3",
+      "he.physics.quantum#0"
+     ],
+     "examples": [
+      "de Broglie wavelength formulas (non-relativistic and relativistic electrons)",
+      "Bohr radius, Compton wavelength and classical electron radius: ratios",
+      "plane waves for matter particles: which complex form works"
+     ]
+    },
+    {
+     "n": "PS5",
+     "title": "Problem Set 5",
+     "url": "https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2016/fcad31ce526fc0b219362cc29def5314_MIT8_04S16_ps5_2016.pdf",
+     "topics": [
+      "he.physics.quantum#0",
+      "he.physics.quantum#1"
+     ],
+     "examples": [
+      "Gaussian wavefunction: uncertainties and their product",
+      "particle in a box exercises: energies, expectation values, time evolution",
+      "step potential on the infinite line: stationary states and reflection",
+      "wall plus half of a finite well: bound-state condition"
+     ]
+    },
+    {
+     "n": "F15",
+     "title": "Final exam (2015)",
+     "url": "https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2016/47367602c26c4559e9c267f8694203bf_MIT8_04S16_FinalTest_2015.pdf",
+     "topics": [
+      "he.physics.quantum#0",
+      "he.physics.quantum#2",
+      "he.physics.quantum#1"
+     ],
+     "examples": [
+      "virial theorem for 1-D potentials from ⟨[H, Ω]⟩ = 0",
+      "hydrogen state with ℓ = m = n − 1: wavefunction, most probable radius, angular localization",
+      "scattering phase shift: incoming and outgoing wave packets, time delay",
+      "Mach–Zehnder interferometer with beam splitters: bomb-detection probabilities",
+      "infinite square well with an extra circular dimension: energy levels and degeneracies",
+      "transmission through two delta-function barriers: resonance condition"
+     ]
+    }
+   ]
+  }
+ ]
+}

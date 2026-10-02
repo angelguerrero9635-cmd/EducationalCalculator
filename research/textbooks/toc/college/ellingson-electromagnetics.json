@@ -1,0 +1,176 @@
+{
+ "id": "ellingson-electromagnetics",
+ "curriculum": "Electromagnetics, Vols 1–2 (Open Electromagnetics Project)",
+ "publisher": "Steven W. Ellingson (Virginia Tech Publishing)",
+ "edition": "Vol. 1 (2018), Vol. 2 (2020); problem manuals v1.2 and v1.0",
+ "subject": "physics",
+ "level": "college",
+ "content": "full",
+ "license": {
+  "name": "CC BY-SA 4.0",
+  "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "attribution": "Ellingson, Steven W. (2018/2020) Electromagnetics, Vols. 1–2. Blacksburg, VA: Virginia Tech Publishing. https://doi.org/10.21061/electromagnetics-vol-1, -vol-2. CC BY-SA 4.0."
+ },
+ "terms": "CC BY-SA 4.0: problem text may be copied with attribution (cover image CC BY-SA 2.0, not used).",
+ "sourceUrl": "https://doi.org/10.21061/electromagnetics-vol-1",
+ "retrieved": "2026-10-02",
+ "notes": "Chapters from the books' contents. Shared source: physics owns the file (order M, P, …); the electrical and computer group references the same id for he.engineering.electromagnetics (transmission lines, waveguides, fibre, antennas left without physics topics here). Vol. 2 licence CC BY-SA 4.0 confirmed on its VTechWorks page (resolves open point 4). robots.txt of vtechworks: Crawl-delay 2, kept.",
+ "books": [
+  {
+   "title": "Electromagnetics, Vol. 1",
+   "url": "https://doi.org/10.21061/electromagnetics-vol-1",
+   "units": [
+    {
+     "n": "1",
+     "title": "Preliminary Concepts",
+     "topics": [],
+     "note": "phasors, units, spectrum (prerequisite)",
+     "notation": [
+      "phasors with ẽ notation; e^(jωt) convention (j, not i)",
+      "SI units; ε, μ, σ named permittivity, permeability, conductivity"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Electric and Magnetic Fields",
+     "topics": [
+      "he.physics.electromagnetism#0"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Transmission Lines",
+     "topics": [],
+     "note": "transmission lines: engineering electromagnetics (he.engineering.electromagnetics#0), not a physics topic"
+    },
+    {
+     "n": "4",
+     "title": "Vector Analysis",
+     "topics": [
+      "he.math.calc-3#4"
+     ],
+     "note": "vector calculus review"
+    },
+    {
+     "n": "5",
+     "title": "Electrostatics",
+     "topics": [
+      "he.physics.electromagnetism#0"
+     ],
+     "examples": [
+      "Coulomb and Gauss's law for point, line, sheet and shell charges",
+      "potential differences",
+      "capacitance of parallel-plate and coaxial structures"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Steady Current and Conductivity",
+     "topics": [
+      "he.physics.university-2#2"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Magnetostatics",
+     "topics": [
+      "he.physics.electromagnetism#1"
+     ],
+     "examples": [
+      "Ampère's law for wires, coils, toroids, sheets",
+      "inductance and magnetic energy"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Time-Varying Fields",
+     "topics": [
+      "he.physics.electromagnetism#2"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Plane Waves in Lossless Media",
+     "topics": [
+      "he.physics.electromagnetism#3"
+     ],
+     "examples": [
+      "plane-wave direction, impedance, power density"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Electromagnetics, Vol. 2",
+   "url": "https://doi.org/10.21061/electromagnetics-vol-2",
+   "units": [
+    {
+     "n": "1",
+     "title": "Preliminary Concepts",
+     "topics": [],
+     "note": "review"
+    },
+    {
+     "n": "2",
+     "title": "Magnetostatics Redux",
+     "topics": [
+      "he.physics.electromagnetism#1"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Wave Propagation in General Media",
+     "topics": [
+      "he.physics.electromagnetism#3"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Current Flow in Imperfect Conductors",
+     "topics": [
+      "he.physics.electromagnetism#3"
+     ],
+     "note": "skin effect and wire impedance"
+    },
+    {
+     "n": "5",
+     "title": "Wave Reflection and Transmission",
+     "topics": [
+      "he.physics.electromagnetism#3"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Waveguides",
+     "topics": [],
+     "note": "waveguides: engineering electromagnetics"
+    },
+    {
+     "n": "7",
+     "title": "Transmission Lines Redux",
+     "topics": [],
+     "note": "engineering electromagnetics"
+    },
+    {
+     "n": "8",
+     "title": "Optical Fiber",
+     "topics": [],
+     "note": "engineering electromagnetics"
+    },
+    {
+     "n": "9",
+     "title": "Radiation",
+     "topics": [
+      "he.physics.electromagnetism#3"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Antennas",
+     "topics": [],
+     "note": "antennas: engineering electromagnetics (#3)"
+    }
+   ]
+  }
+ ]
+}

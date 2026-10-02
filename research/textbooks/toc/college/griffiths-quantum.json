@@ -1,0 +1,121 @@
+{
+ "id": "griffiths-quantum",
+ "curriculum": "Introduction to Quantum Mechanics",
+ "publisher": "David J. Griffiths, Darrell F. Schroeter (Cambridge University Press)",
+ "edition": "3rd edition (2018)",
+ "subject": "physics",
+ "level": "college",
+ "content": "titles",
+ "license": {
+  "name": "All rights reserved",
+  "url": "https://www.cambridge.org/highereducation/books/introduction-to-quantum-mechanics/",
+  "attribution": "Titles only, from the publisher's or author's public table of contents; no other content."
+ },
+ "terms": "Commercial: part and chapter titles only.",
+ "sourceUrl": "https://www.cambridge.org/highereducation/books/introduction-to-quantum-mechanics/",
+ "retrieved": "2026-10-02",
+ "notes": "Titles from cambridge.org as indexed by a web search; assets.cambridge.org reset our connections, so nothing there was read.",
+ "books": [
+  {
+   "title": "Introduction to Quantum Mechanics, 3rd ed.",
+   "url": "https://www.cambridge.org/highereducation/books/introduction-to-quantum-mechanics/",
+   "units": [
+    {
+     "n": "I",
+     "title": "Theory",
+     "topics": [],
+     "note": "part heading",
+     "sections": [
+      {
+       "n": "1",
+       "title": "The Wave Function",
+       "topics": [
+        "he.physics.quantum#0"
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Time-Independent Schrödinger Equation",
+       "topics": [
+        "he.physics.quantum#1"
+       ]
+      },
+      {
+       "n": "3",
+       "title": "Formalism",
+       "topics": [
+        "he.physics.quantum#0"
+       ]
+      },
+      {
+       "n": "4",
+       "title": "Quantum Mechanics in Three Dimensions",
+       "topics": [
+        "he.physics.quantum#1",
+        "he.physics.quantum#2"
+       ]
+      },
+      {
+       "n": "5",
+       "title": "Identical Particles",
+       "topics": [],
+       "note": "no college topic: identical particles (plan gap)"
+      },
+      {
+       "n": "6",
+       "title": "Symmetries and Conservation Laws",
+       "topics": [],
+       "note": "no college topic: symmetries"
+      }
+     ]
+    },
+    {
+     "n": "II",
+     "title": "Applications",
+     "topics": [],
+     "note": "part heading",
+     "sections": [
+      {
+       "n": "7",
+       "title": "Time-Independent Perturbation Theory",
+       "topics": [
+        "he.physics.quantum#3"
+       ]
+      },
+      {
+       "n": "8",
+       "title": "The Variational Principle",
+       "topics": [],
+       "note": "no college topic: variational method"
+      },
+      {
+       "n": "9",
+       "title": "The WKB Approximation",
+       "topics": [],
+       "note": "no college topic: WKB"
+      },
+      {
+       "n": "10",
+       "title": "Scattering",
+       "topics": [],
+       "note": "no college topic: scattering"
+      },
+      {
+       "n": "11",
+       "title": "Quantum Dynamics",
+       "topics": [
+        "he.physics.quantum#3"
+       ]
+      },
+      {
+       "n": "12",
+       "title": "Afterword",
+       "topics": [],
+       "note": "no topic"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
