@@ -7,7 +7,14 @@
 import type { NumOrVar } from './typesGraphs';
 import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
-import { orbitalMoVars, vseprHe3eVars, type OrbitalMoSpec, type VseprHe3eSpec } from './typesHe3e';
+import {
+  moleMapHe3eVars,
+  orbitalMoVars,
+  vseprHe3eVars,
+  type MoleMapHe3e,
+  type OrbitalMoSpec,
+  type VseprHe3eSpec,
+} from './typesHe3e';
 
 /** One conversion factor in a chain: `top` `topUnit` over `bottom` `bottomUnit` (1000 m / 1 km). */
 export interface ChainFactor {
@@ -229,7 +236,8 @@ export type VseprSpec =
  * `second` adds a second substance of a balanced reaction: its moles by the mole ratio
  * (`ratio`: [coefficient of the first, of the second]) and its mass. Every value is checked.
  */
-export interface MoleMapSpec {
+/** College HC74: `solution` and `gas` boxes (`typesHe3e.ts`). */
+export interface MoleMapSpec extends MoleMapHe3e {
   kind: 'moleMap';
   moles: NumOrVar;
   mass?: NumOrVar;
@@ -277,6 +285,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         r.volume,
         ...(r.second ? [...r.second.ratio, r.second.moles, r.second.mass, r.second.molarMass] : []),
         ...moleMapHs2dVars(r),
+        ...moleMapHe3eVars(r),
       );
     case 'vsepr':
       if (r.mode === 'expanded' || r.mode === 'complex') return vseprHe3eVars(r); // HC72

@@ -15,6 +15,13 @@ import {
   peakHeight,
 } from '@/components/module/reps/instrumentTraceMath';
 import { diatomicMOs, frost, heteronuclear, secular } from '@/components/module/reps/orbitalMoMath';
+import {
+  combustion,
+  combustionAtoms,
+  gasVolume,
+  litres,
+  R_LATM,
+} from '@/components/module/reps/moleHe3eMath';
 import { parseSmiles } from '@/components/module/reps/skeletalMath';
 import {
   angleBetween,
@@ -27,8 +34,8 @@ import {
 } from '@/components/module/reps/vseprHe3eMath';
 
 import type { LayoutDef } from '../layouts';
-import type { InstrumentTraceSpec, IrCard, OrbitalMoSpec } from '../typesHe3e';
-import type { VseprSpec } from '../typesHsi';
+import type { CombustionTrain, InstrumentTraceSpec, IrCard, OrbitalMoSpec } from '../typesHe3e';
+import type { MoleMapSpec, VseprSpec } from '../typesHsi';
 
 type Val = (x: string | number) => number | undefined;
 
@@ -292,5 +299,74 @@ export function vseprHe3eIssues(rep: VseprSpec, val: Val): string[] {
   const cn = rep.coordination === undefined ? undefined : val(rep.coordination);
   if (cn !== undefined && cn !== total)
     out.push(`vsepr: ${total} ligands drawn, the coordination number shows ${cn}`);
+  return out;
+}
+
+/** HC74: each box's arithmetic, n = CV, V = n ÷ C and V = nRT ÷ P (units from the variables). */
+export function moleMapHe3eIssues(
+  rep: MoleMapSpec,
+  val: Val,
+  unitOf: (id: string) => string | undefined,
+): string[] {
+  const out: string[] = [];
+  const opt = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  const L = (x: string | number) => {
+    const v = val(x);
+    return v === undefined ? undefined : litres(v, typeof x === 'string' ? unitOf(x) : 'L');
+  };
+  const near3 = (a: number, b: number) => Math.abs(a - b) <= 1e-3 * Math.max(1e-12, Math.abs(b));
+  const n1 = val(rep.moles);
+  const n2 = rep.second ? val(rep.second.moles) : undefined;
+  const s1 = rep.solution?.first;
+  const s2 = rep.solution?.second;
+  if (s2 && !rep.second) out.push('moleMap: a second solution box needs a second substance');
+  for (const [s, n, what] of [
+    [s1, n1, 'first'],
+    [s2, n2, 'second'],
+  ] as const) {
+    if (!s) continue;
+    const C = val(s.molarity);
+    const V = L(s.volume);
+    if (C !== undefined && C <= 0) out.push(`moleMap: ${what} solution at ${C} M`);
+    if (C !== undefined && V !== undefined && n !== undefined && !near3(n, C * V))
+      out.push(`moleMap: ${what} solution n = ${n}, C × V = ${C * V}`);
+  }
+  const g = rep.gas;
+  if (g) {
+    const n = (g.of ?? 'second') === 'first' ? n1 : n2;
+    const [T, P, V] = [val(g.temperature), val(g.pressure), val(g.volume)];
+    const R = opt(g.R) ?? R_LATM;
+    if (T !== undefined && T <= 0) out.push(`moleMap: gas at ${T} K`);
+    if (n !== undefined && T !== undefined && P !== undefined && V !== undefined && P > 0)
+      if (!near3(V, gasVolume(n, T, P, R)))
+        out.push(`moleMap: gas V = ${V} L, nRT ÷ P = ${gasVolume(n, T, P, R)} L`);
+  }
+  return out;
+}
+
+/** HC74 `combustion`: each element's moles and ratio; the formula's combustion balances. */
+export function combustionIssues(t: CombustionTrain, val: Val): string[] {
+  const out: string[] = [];
+  const [m, co2, h2o] = [val(t.sample), val(t.co2), val(t.h2o)];
+  if (m === undefined || co2 === undefined || h2o === undefined) return out;
+  const r = combustion(m, co2, h2o, t.masses ?? {});
+  const same = (x: string | number | undefined, want: number, what: string) => {
+    const got = x === undefined ? undefined : val(x);
+    if (got !== undefined && !near(got, want, 1e-3))
+      out.push(`combustion: ${what} ${String(x)} = ${got}, the picture draws ${want}`);
+  };
+  if (r.mO < -0.01 * m) out.push(`combustion: C and H weigh ${m - r.mO} g, more than the sample`);
+  same(t.carbon, r.nC, 'n_C');
+  same(t.hydrogen, r.nH, 'n_H');
+  same(t.oxygenMass, r.mO, 'm_O');
+  same(t.oxygen, r.nO, 'n_O');
+  same(t.hPerC, r.hPerC, 'H per C');
+  same(t.oPerC, r.oPerC, 'O per C');
+  if (r.formula && r.equation) {
+    const { before, after } = combustionAtoms([r.formula.x, r.formula.y, r.formula.z], r.equation);
+    for (const el of ['C', 'H', 'O'] as const)
+      if (before[el] !== after[el])
+        out.push(`combustion: ${el} does not balance (${before[el]} → ${after[el]})`);
+  }
   return out;
 }

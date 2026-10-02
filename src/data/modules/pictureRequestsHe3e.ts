@@ -113,4 +113,31 @@ export const HE3E_REQUESTS: PictureRequest[] = [
       'g.he-vsepr-complex-trans',
     ],
   },
+  {
+    ...ask(
+      'HC74',
+      'moleMap',
+      'Mole-map boxes for a solution (M × L → mol) and a gas (V = nRT ÷ P at any T and P) at either end of the chain; and the combustion train with the CₓHᵧO_z formula worked out from the values',
+      {
+        [`${C}gen-chem-1#1~solution-stoich`]: 'moleMap solution boxes at both ends',
+        [`${C}gen-chem-1#2~gas-stoich`]: 'moleMap gas box for the product',
+        [`${C}gen-chem-1#1`]: 'reaction combustion (replaces the interim bars)',
+      },
+      [
+        'From C-P24 (typesHe3e.ts MoleMapHe3e and CombustionTrain, reps/MoleMapHe3e.tsx, reps/CombustionTrain.tsx, the sums in reps/moleHe3eMath.ts; one dispatch line each in reps/hsi.tsx and reps/index.tsx). Off unless a page sets solution, gas or combustion; the Grades 9–12 mole map, limiting map and reaction are unchanged.',
+        "Fields: moleMap { …, solution?: { first?: { molarity, volume }, second?: { molarity, volume } } (volume in mL or L by its variable’s unit), gas?: { temperature (K), pressure (atm), volume (L), R? (default 0.08206), of?: 'first' | 'second' (default second) } }; the chain is outer box → moles → ratio (second.ratio) → moles → outer box, an outer box being the solution, the gas or the mass. reaction { kind: 'reaction', reactants: [], products: [], combustion: { sample (g), co2 (g), h2o (g), carbon? (n_C), hydrogen? (n_H), oxygenMass? (m_O), oxygen? (n_O), hPerC?, oPerC?, masses? ({ co2, h2o, c, h, o } molar masses; defaults 44.01, 18.02, 12.01, 1.008, 16.00) } }.",
+        "Example (gen-chem-1#1~solution-stoich): { kind: 'moleMap', moles: 'n1', formula: 'H2SO4', second: { formula: 'NaOH', ratio: [1, 'r'], moles: 'n2' }, solution: { first: { molarity: 'C1', volume: 'V1' }, second: { molarity: 'C2', volume: 'V2' } } }. Example (gen-chem-1#2~gas-stoich): { kind: 'moleMap', moles: 'n1', mass: 'm', formula: 'KClO3', second: { formula: 'O2', ratio: [1, 'r'], moles: 'n2' }, gas: { temperature: 'T', pressure: 'P', volume: 'V' } }. Example (gen-chem-1#1): { kind: 'reaction', reactants: [], products: [], combustion: { sample: 'm', co2: 'mCO2', h2o: 'mH2O', carbon: 'nC', hydrogen: 'nH', oxygenMass: 'mO', oxygen: 'nO', hPerC: 'rH', oPerC: 'rO' } }.",
+        'Demos are metric only (unitSystems). The train is painted (glass tubes, the furnace and its coil, the absorbers’ granules); the map and the bars are flat. A formula no multiplier up to 6 makes whole, or C and H heavier than the sample, is named instead of a formula.',
+        'Checks (harness/picturesHe3e.ts): n = CV and V = n ÷ C (mL or L), V = nRT ÷ P, with the ratio check of the Grades 9–12 map; n_C, n_H, m_O, n_O and the ratios from the masses; m_O not below zero; C, H and O balance in the drawn combustion.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-moleMap-solution',
+      'g.he-moleMap-gas',
+      'g.he-moleMap-gas-solution',
+      'g.he-reaction-combustion',
+      'g.he-reaction-combustion-hydrocarbon',
+    ],
+  },
 ];

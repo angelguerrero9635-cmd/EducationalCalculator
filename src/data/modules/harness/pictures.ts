@@ -84,7 +84,13 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
-import { instrumentTraceIssues, orbitalMoIssues, vseprHe3eIssues } from './picturesHe3e';
+import {
+  combustionIssues,
+  instrumentTraceIssues,
+  moleMapHe3eIssues,
+  orbitalMoIssues,
+  vseprHe3eIssues,
+} from './picturesHe3e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1980,6 +1986,8 @@ export function repIssues(
       out.push(...chemHsiIssues(filledChem(rep, val), (x) => val(x)));
       out.push(...chemHs2dIssues(rep, (x) => val(x)));
       if (rep.kind === 'reaction' && rep.many) out.push(...reactionManyIssues());
+      if (rep.kind === 'reaction' && rep.combustion)
+        out.push(...combustionIssues(rep.combustion, val)); // HC74
       break;
     case 'lineSystem': {
       // H106: a parabola in the system (a line with `square`) is checked on its own.
@@ -2230,6 +2238,8 @@ export function repIssues(
       if (rep.kind === 'orbitalDiagram' && rep.mode === 'mo')
         out.push(...orbitalMoIssues(rep, val)); // HC70
       if (rep.kind === 'vsepr') out.push(...vseprHe3eIssues(rep, val)); // HC72
+      if (rep.kind === 'moleMap')
+        out.push(...moleMapHe3eIssues(rep, val, (id) => byId.get(id)?.unit)); // HC74
       if (rep.kind === 'moleMap') out.push(...moleMapHs2dIssues(rep, (id) => val(id)));
       break;
     case 'gasPiston':

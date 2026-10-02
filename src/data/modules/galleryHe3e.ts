@@ -6,6 +6,7 @@
  * sort's `ir` cards.
  * HC70: `orbitalDiagram` mode `mo` (C-P3): diatomic MOs, a heteronuclear pair, Frost circles.
  * HC72: `vsepr` modes `expanded` (5–6 domains) and `complex` (C-P13).
+ * HC74: `moleMap` solution and gas boxes, `reaction` `combustion` (C-P24).
  */
 import { diatomicMOs, frost, heteronuclear } from '@/components/module/reps/orbitalMoMath';
 import { domainAngleOf } from '@/components/module/reps/vseprHe3eMath';
@@ -1219,6 +1220,329 @@ const HC72_DEMOS: ModuleDef[] = [
   ),
 ];
 
-export const HE3E_GALLERY_MODULES: ModuleDef[] = [...HC55_DEMOS, ...HC70_DEMOS, ...HC72_DEMOS];
+// ─── HC74 moleMap boxes (gen-chem-1#1~solution-stoich, #2~gas-stoich) and combustion (#1) ──
+
+/** n = C × V with V in mL. */
+const molarityRule = (n: string, C: string, V: string): Rule => ({
+  relation: {
+    id: `${n} = ${C} × ${V} ÷ 1000`,
+    display: `{${n}} = {${C}} × {${V}} ÷ 1000`,
+    vars: [n, C, V],
+    residual: (v) => 1000 * v[n]! - v[C]! * v[V]!,
+    solve: {
+      [n]: (v) => (v[C]! * v[V]!) / 1000,
+      [C]: (v) => div(1000 * v[n]!, v[V]!),
+      [V]: (v) => div(1000 * v[n]!, v[C]!),
+    },
+  },
+  steps: {
+    [n]: st(`{${C}} × {${V}} ÷ 1000`, 'Molarity times the volume in litres (mL ÷ 1000).'),
+    [C]: st(`1000 × {${n}} ÷ {${V}}`, 'Moles per litre of solution.'),
+    [V]: st(`1000 × {${n}} ÷ {${C}}`, 'Moles over molarity gives litres; × 1000 for mL.'),
+  },
+});
+
+const ratioRule: Rule = product('n₂ = r × n₁', 'n2', 'r', 'n1', [
+  'The mole ratio from the balanced equation carries the moles across.',
+  'Divide the second’s moles by the first’s.',
+  'Divide the second’s moles by the ratio.',
+]);
+
+const gasRule = (n: string): Rule => ({
+  relation: {
+    id: 'V = nRT ÷ P',
+    display: `{V} = {${n}} × 0.08206 × {T} ÷ {P}`,
+    vars: ['V', n, 'T', 'P'],
+    residual: (v) => v.V! * v.P! - v[n]! * 0.08206 * v.T!,
+    solve: {
+      V: (v) => div(v[n]! * 0.08206 * v.T!, v.P!),
+      [n]: (v) => div(v.V! * v.P!, 0.08206 * v.T!),
+      T: (v) => div(v.V! * v.P!, v[n]! * 0.08206),
+      P: (v) => div(v[n]! * 0.08206 * v.T!, v.V!),
+    },
+  },
+  steps: {
+    V: st(`{${n}} × 0.08206 × {T} ÷ {P}`, 'The ideal gas law solved for V.'),
+    [n]: st(`{V} × {P} ÷ (0.08206 × {T})`, 'PV ÷ RT counts the moles of gas.'),
+    T: st(`{V} × {P} ÷ ({${n}} × 0.08206)`, 'Solve PV = nRT for T: PV ÷ nR.'),
+    P: st(`{${n}} × 0.08206 × {T} ÷ {V}`, 'Solve PV = nRT for P: nRT ÷ V.'),
+  },
+});
+
+const molarityVar = (id: string, symbol: string, name: string) =>
+  quantity(id, symbol, name, 'M', 0.0001, 20, 0.001);
+const mlVar = (id: string, symbol: string, name: string) =>
+  quantity(id, symbol, name, 'mL', 0.01, 10000, 0.01);
+const molVar = (id: string, symbol: string, name: string) =>
+  quantity(id, symbol, name, 'mol', 1e-9, 1000, 1e-6, { figures: 4 });
+const ratioVar = quantity('r', 'r', 'Mole ratio (second per first)', undefined, 0.1, 10, 0.001, {
+  allowed: [1, 2, 3, 0.5, 1 / 3, 1.5, 2 / 3],
+});
+
+const solutionDemo: ModuleDef = {
+  id: 'g.he-moleMap-solution',
+  unitSystems: ['metric'],
+  title: 'Titration stoichiometry: solution to moles to solution',
+  use: 'Use this for “What volume of 0.100 M NaOH reacts with 25.00 mL of 0.150 M H₂SO₄?”',
+  assumptions: [
+    'H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O: 2 mol of base for each mol of acid.',
+    'Moles of a solute = molarity × litres of solution.',
+  ],
+  variables: [
+    molarityVar('C1', 'C₁', 'Acid concentration'),
+    mlVar('V1', 'V₁', 'Acid volume'),
+    molVar('n1', 'n₁', 'Moles of acid'),
+    ratioVar,
+    molVar('n2', 'n₂', 'Moles of base'),
+    molarityVar('C2', 'C₂', 'Base concentration'),
+    mlVar('V2', 'V₂', 'Base volume'),
+  ],
+  ...rules(molarityRule('n1', 'C1', 'V1'), ratioRule, molarityRule('n2', 'C2', 'V2')),
+  example: { C1: 0.15, V1: 25, n1: 0.00375, r: 2, n2: 0.0075, C2: 0.1, V2: 75 },
+  startWith: ['C1', 'V1', 'C2', 'r'],
+  representation: {
+    kind: 'moleMap',
+    moles: 'n1',
+    formula: 'H2SO4',
+    second: { formula: 'NaOH', ratio: [1, 'r'], moles: 'n2' },
+    solution: {
+      first: { molarity: 'C1', volume: 'V1' },
+      second: { molarity: 'C2', volume: 'V2' },
+    },
+  },
+};
+
+const gasDemo: ModuleDef = {
+  id: 'g.he-moleMap-gas',
+  unitSystems: ['metric'],
+  title: 'Gas stoichiometry: grams to moles to litres of gas at T and P',
+  use: 'Use this for “What volume of O₂ at 25 °C and 1.00 atm comes from 5.00 g of KClO₃?”',
+  assumptions: [
+    '2KClO₃ → 2KCl + 3O₂: 3 mol of O₂ for every 2 mol of KClO₃ (r = 1.5).',
+    'O₂ behaves as an ideal gas; R = 0.08206 L·atm/(mol·K), T in kelvin.',
+  ],
+  variables: [
+    quantity('m', 'm', 'Mass of KClO₃', 'g', 0.001, 10000, 0.01),
+    molVar('n1', 'n₁', 'Moles of KClO₃'),
+    ratioVar,
+    molVar('n2', 'n₂', 'Moles of O₂'),
+    quantity('T', 'T', 'Temperature', 'K', 1, 3000, 0.01),
+    quantity('P', 'P', 'Pressure', 'atm', 0.001, 100, 0.01),
+    quantity('V', 'V', 'Volume of O₂', 'L', 1e-6, 1e5, 0.001),
+  ],
+  ...rules(
+    {
+      relation: {
+        id: 'n₁ = m ÷ 122.55',
+        display: '{n1} = {m} ÷ 122.55',
+        vars: ['n1', 'm'],
+        residual: (v) => v.n1! * 122.55 - v.m!,
+        solve: { n1: (v) => v.m! / 122.55, m: (v) => v.n1! * 122.55 },
+      },
+      steps: {
+        n1: st('{m} ÷ 122.55', 'Grams over the molar mass of KClO₃, 122.55 g/mol.'),
+        m: st('{n1} × 122.55', 'Moles times the molar mass of KClO₃.'),
+      },
+    },
+    ratioRule,
+    gasRule('n2'),
+  ),
+  example: (() => {
+    const n1 = 5 / 122.55;
+    const n2 = n1 * 1.5;
+    return { m: 5, n1, r: 1.5, n2, T: 298.15, P: 1, V: (n2 * 0.08206 * 298.15) / 1 };
+  })(),
+  startWith: ['m', 'r', 'T', 'P'],
+  representation: {
+    kind: 'moleMap',
+    moles: 'n1',
+    mass: 'm',
+    formula: 'KClO3',
+    second: { formula: 'O2', ratio: [1, 'r'], moles: 'n2' },
+    gas: { temperature: 'T', pressure: 'P', volume: 'V' },
+  },
+};
+
+const gasToSolutionDemo: ModuleDef = {
+  id: 'g.he-moleMap-gas-solution',
+  unitSystems: ['metric'],
+  title: 'A gas into a solution: CO₂ taken up by NaOH',
+  use: 'Use this for “What volume of 0.250 M NaOH takes up 0.500 L of CO₂ at 0 °C and 1.00 atm?”',
+  assumptions: [
+    'CO₂ + 2NaOH → Na₂CO₃ + H₂O: 2 mol of NaOH for each mol of CO₂.',
+    'CO₂ behaves as an ideal gas; R = 0.08206 L·atm/(mol·K).',
+  ],
+  variables: [
+    quantity('V', 'V', 'Volume of CO₂', 'L', 1e-6, 1e5, 0.001),
+    quantity('T', 'T', 'Temperature', 'K', 1, 3000, 0.01),
+    quantity('P', 'P', 'Pressure', 'atm', 0.001, 100, 0.01),
+    molVar('n1', 'n₁', 'Moles of CO₂'),
+    ratioVar,
+    molVar('n2', 'n₂', 'Moles of NaOH'),
+    molarityVar('C2', 'C₂', 'NaOH concentration'),
+    mlVar('V2', 'V₂', 'NaOH volume'),
+  ],
+  ...rules(gasRule('n1'), ratioRule, molarityRule('n2', 'C2', 'V2')),
+  example: (() => {
+    const n1 = (0.5 * 1) / (0.08206 * 273.15);
+    const n2 = 2 * n1;
+    return { V: 0.5, T: 273.15, P: 1, n1, r: 2, n2, C2: 0.25, V2: (1000 * n2) / 0.25 };
+  })(),
+  startWith: ['V', 'T', 'P', 'r', 'C2'],
+  representation: {
+    kind: 'moleMap',
+    moles: 'n1',
+    formula: 'CO2',
+    second: { formula: 'NaOH', ratio: [1, 'r'], moles: 'n2' },
+    gas: { temperature: 'T', pressure: 'P', volume: 'V', of: 'first' },
+    solution: { second: { molarity: 'C2', volume: 'V2' } },
+  },
+};
+
+/** Combustion analysis: n_C, n_H, m_O, n_O and the ratios to C. */
+const combustionRules = rules(
+  {
+    relation: {
+      id: 'n_C = m_CO₂ ÷ 44.01',
+      display: '{nC} = {mCO2} ÷ 44.01',
+      vars: ['nC', 'mCO2'],
+      residual: (v) => v.nC! * 44.01 - v.mCO2!,
+      solve: { nC: (v) => v.mCO2! / 44.01, mCO2: (v) => v.nC! * 44.01 },
+    },
+    steps: {
+      nC: st('{mCO2} ÷ 44.01', 'Each mol of CO₂ holds one mol of C.'),
+      mCO2: st('{nC} × 44.01', 'Moles of C as grams of CO₂.'),
+    },
+  },
+  {
+    relation: {
+      id: 'n_H = 2m_H₂O ÷ 18.02',
+      display: '{nH} = 2 × {mH2O} ÷ 18.02',
+      vars: ['nH', 'mH2O'],
+      residual: (v) => v.nH! * 18.02 - 2 * v.mH2O!,
+      solve: { nH: (v) => (2 * v.mH2O!) / 18.02, mH2O: (v) => (v.nH! * 18.02) / 2 },
+    },
+    steps: {
+      nH: st('2 × {mH2O} ÷ 18.02', 'Each mol of H₂O holds two mol of H.'),
+      mH2O: st('{nH} × 18.02 ÷ 2', 'Half the moles of H, as grams of water.'),
+    },
+  },
+  {
+    relation: {
+      id: 'm_O = m − 12.01n_C − 1.008n_H',
+      display: '{mO} = {m} − 12.01 × {nC} − 1.008 × {nH}',
+      vars: ['mO', 'm', 'nC', 'nH'],
+      residual: (v) => v.mO! - (v.m! - 12.01 * v.nC! - 1.008 * v.nH!),
+      solve: {
+        mO: (v) => v.m! - 12.01 * v.nC! - 1.008 * v.nH!,
+        m: (v) => v.mO! + 12.01 * v.nC! + 1.008 * v.nH!,
+      },
+    },
+    steps: {
+      mO: st('{m} − 12.01 × {nC} − 1.008 × {nH}', 'O is what is left of the sample’s mass.'),
+      m: st('{mO} + 12.01 × {nC} + 1.008 × {nH}', 'Add the masses of C, H and O.'),
+    },
+  },
+  {
+    relation: {
+      id: 'n_O = m_O ÷ 16',
+      display: '{nO} = {mO} ÷ 16',
+      vars: ['nO', 'mO'],
+      residual: (v) => v.nO! * 16 - v.mO!,
+      solve: { nO: (v) => v.mO! / 16, mO: (v) => v.nO! * 16 },
+    },
+    steps: {
+      nO: st('{mO} ÷ 16', 'Grams of O over 16 g/mol.'),
+      mO: st('{nO} × 16', 'Moles of O as grams.'),
+    },
+  },
+  quotient('H per C', 'rH', 'nH', 'nC', [
+    'Moles of H for each mole of C.',
+    'The ratio times the moles of C.',
+    'Moles of H over the ratio.',
+  ]),
+  quotient('O per C', 'rO', 'nO', 'nC', [
+    'Moles of O for each mole of C.',
+    'The ratio times the moles of C.',
+    'Moles of O over the ratio.',
+  ]),
+);
+
+const combustionDemo = (
+  id: string,
+  title: string,
+  [m, mCO2, mH2O]: [number, number, number],
+  use: string,
+): ModuleDef => {
+  const nC = mCO2 / 44.01;
+  const nH = (2 * mH2O) / 18.02;
+  const mO = m - 12.01 * nC - 1.008 * nH;
+  const nO = mO / 16;
+  return {
+    id,
+    title,
+    use,
+    unitSystems: ['metric'],
+    assumptions: [
+      'All the C ends in CO₂ and all the H in H₂O; O is what is left of the mass (the O₂ used can’t be weighed in).',
+      'Ratios within 0.05 of a whole number round; otherwise multiply all by 2, 3 … until they are whole.',
+    ],
+    variables: [
+      quantity('m', 'm', 'Sample mass', 'g', 0.001, 100, 0.0001),
+      quantity('mCO2', 'm_CO₂', 'CO₂ mass', 'g', 0.0001, 1000, 0.0001),
+      quantity('mH2O', 'm_H₂O', 'H₂O mass', 'g', 0.0001, 1000, 0.0001),
+      molVar('nC', 'n_C', 'Moles of C'),
+      molVar('nH', 'n_H', 'Moles of H'),
+      quantity('mO', 'm_O', 'Mass of O', 'g', 0, 100, 0.0001, { figures: 4 }),
+      quantity('nO', 'n_O', 'Moles of O', 'mol', 0, 100, 1e-6, { figures: 4 }),
+      quantity('rH', 'r_H', 'H per C', undefined, 0, 10, 0.01, { figures: 3 }),
+      quantity('rO', 'r_O', 'O per C', undefined, 0, 10, 0.01, { figures: 3 }),
+    ],
+    ...combustionRules,
+    example: { m, mCO2, mH2O, nC, nH, mO, nO, rH: nH / nC, rO: nO / nC },
+    startWith: ['m', 'mCO2', 'mH2O'],
+    representation: {
+      kind: 'reaction',
+      reactants: [],
+      products: [],
+      combustion: {
+        sample: 'm',
+        co2: 'mCO2',
+        h2o: 'mH2O',
+        carbon: 'nC',
+        hydrogen: 'nH',
+        oxygenMass: 'mO',
+        oxygen: 'nO',
+        hPerC: 'rH',
+        oPerC: 'rO',
+      },
+    },
+  };
+};
+
+const HC74_DEMOS: ModuleDef[] = [
+  solutionDemo,
+  gasDemo,
+  gasToSolutionDemo,
+  combustionDemo(
+    'g.he-reaction-combustion',
+    'Combustion analysis: CH₂O from the CO₂ and H₂O',
+    [0.25, 0.3664, 0.15],
+    'Use this for “0.2500 g of a C, H, O compound gives 0.3664 g CO₂ and 0.1500 g H₂O. Find its empirical formula.”',
+  ),
+  combustionDemo(
+    'g.he-reaction-combustion-hydrocarbon',
+    'A hydrocarbon: no O left, the ratio × 3 gives C₃H₈',
+    [0.1, 0.2994, 0.1635],
+    'Use this for “0.1000 g of a hydrocarbon gives 0.2994 g CO₂ and 0.1635 g H₂O. Find its empirical formula.”',
+  ),
+];
+
+export const HE3E_GALLERY_MODULES: ModuleDef[] = [
+  ...HC55_DEMOS,
+  ...HC70_DEMOS,
+  ...HC72_DEMOS,
+  ...HC74_DEMOS,
+];
 
 export const HE3E_GALLERY_LAYOUTS: LayoutDef[] = [irBands];

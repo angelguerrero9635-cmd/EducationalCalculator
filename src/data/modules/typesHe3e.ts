@@ -236,3 +236,79 @@ export type VseprHe3eSpec = VseprExpandedSpec | VseprComplexSpec;
 export function vseprHe3eVars(r: VseprHe3eSpec): string[] {
   return r.mode === 'expanded' ? ids(r.bonded, r.lone, r.angle, r.domains) : ids(r.coordination);
 }
+
+// ─── HC74: moleMap boxes and the combustion train ────────────────────────────
+
+/** A solution: its molarity (M) and volume (mL or L, by the variable's unit). */
+export interface MoleSolution {
+  molarity: NumOrVar;
+  volume: NumOrVar;
+}
+
+/**
+ * College boxes on `moleMap` (HC74, C-P24), off unless a page sets one. With either, the map is
+ * a chain: the first substance's outer box above its moles, the mole ratio across (`second`),
+ * the second substance's outer box below its moles. An outer box is a solution, a gas, or the
+ * mass (as before).
+ *
+ * - `solution: { first?, second? }`: a molarity box, C × V → mol (first) or mol ÷ C → V
+ *   (second), the volume in mL or L by its variable's unit.
+ * - `gas: { temperature (K), pressure (atm), volume (L), R?, of? }`: a gas box for the second
+ *   substance (or the first with `of: 'first'`), V = nRT ÷ P at any T and P; R from the page
+ *   (default 0.08206 L·atm/(mol·K)).
+ *
+ * Each factor's arithmetic is checked: n = CV, V = n ÷ C, V = nRT ÷ P.
+ */
+export interface MoleMapHe3e {
+  solution?: { first?: MoleSolution; second?: MoleSolution };
+  gas?: {
+    temperature: NumOrVar;
+    pressure: NumOrVar;
+    volume: NumOrVar;
+    R?: NumOrVar;
+    of?: 'first' | 'second';
+  };
+}
+
+export function moleMapHe3eVars(r: MoleMapHe3e): string[] {
+  const s = r.solution;
+  const g = r.gas;
+  return [
+    ...ids(s?.first?.molarity, s?.first?.volume, s?.second?.molarity, s?.second?.volume),
+    ...(g ? ids(g.temperature, g.pressure, g.volume, g.R) : []),
+  ];
+}
+
+/**
+ * `combustion` on `reaction` (HC74): combustion analysis of a C, H (and O) compound. A train
+ * drawn in its glass: O₂ in, the furnace tube with the sample boat (`sample`, g), the H₂O
+ * absorber and then the CO₂ absorber, each with the mass it gained (`h2o`, `co2`); under it the
+ * moles of C, H and O as bars with their ratio to C, the CₓHᵧO_z formula worked out from the
+ * values (ratios within 0.05 of whole round, else × 2 … 6) and its balanced combustion. A page
+ * with `combustion` passes empty `reactants` and `products`. `carbon` (n_C = m_CO₂ ÷ M_CO₂),
+ * `hydrogen` (n_H = 2m_H₂O ÷ M_H₂O), `oxygenMass` (m − 12.01n_C − 1.008n_H), `oxygen`
+ * (m_O ÷ 16.00), `hPerC` and `oPerC` are checked; `masses` overrides the molar masses.
+ */
+export interface CombustionTrain {
+  sample: NumOrVar;
+  co2: NumOrVar;
+  h2o: NumOrVar;
+  carbon?: NumOrVar;
+  hydrogen?: NumOrVar;
+  oxygenMass?: NumOrVar;
+  oxygen?: NumOrVar;
+  hPerC?: NumOrVar;
+  oPerC?: NumOrVar;
+  masses?: { co2?: number; h2o?: number; c?: number; h?: number; o?: number };
+}
+
+export interface ReactionHe3e {
+  combustion?: CombustionTrain;
+}
+
+export function reactionHe3eVars(r: ReactionHe3e): string[] {
+  const t = r.combustion;
+  return t
+    ? ids(t.sample, t.co2, t.h2o, t.carbon, t.hydrogen, t.oxygenMass, t.oxygen, t.hPerC, t.oPerC)
+    : [];
+}
