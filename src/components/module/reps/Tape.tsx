@@ -132,26 +132,31 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 onMove={(dx) => {
                   const value = rep.snapTo(id, (start.current + dx / scale) * rep.factor(id));
                   // Moving the line between two parts: the next part gives way and the total
-                  // stays (price up, money left down). The last part grows the total. When the
-                  // page's rules leave that no room (a part fixed by a rule, a total that is a
-                  // start value), the total follows, then only the dragged part is held: the
-                  // handle always moves something.
+                  // stays (price up, money left down). The last part grows the total.
                   const others = ids.filter((v) => v !== id && v !== ids[i + 1]);
                   const total =
                     ids[i + 1] && !compare && typeof spec.total === 'string' ? [spec.total] : [];
-                  const tries = [[...others, ...total], others, []];
-                  const updates = tries.map((pins) => ({ ...rep.pin(pins), [id]: value }));
-                  // A drag never changes a typed value it does not send: the last part sends
-                  // the grown total along (a typed total would otherwise refuse the move).
+                  const first = { ...rep.pin([...others, ...total]), [id]: value };
+                  // A worked-out part moves the typed value behind it (the engine's own way).
+                  if (!rep.typed(id)) return calc.set(first, rep.slide(id));
+                  // A typed part: when that would change a typed value it does not send, only
+                  // the typed values hold still (a worked-out part gives way), then nothing
+                  // else, then the grown total is sent along: the handle always moves something
+                  // and never changes a typed value it does not send.
+                  const updates = [
+                    first,
+                    { ...rep.pinTyped([...others, ...total]), [id]: value },
+                    { ...rep.pinTyped(others), [id]: value },
+                  ];
                   if (!compare && typeof spec.total === 'string' && rep.known(spec.total)) {
                     const grown = rep.shown(spec.total) - shown[i]! + value / rep.factor(id);
-                    updates.splice(1, 0, {
-                      ...rep.pin(others),
+                    updates.push({
+                      ...rep.pinTyped(others),
                       [id]: value,
                       [spec.total]: grown * rep.factor(spec.total),
                     });
                   }
-                  calc.set(updates.find((u) => calc.fitsHeld(u)) ?? updates[0]!, rep.slide(id));
+                  calc.set(updates.find((u) => calc.fitsHeld(u)) ?? first, rep.slide(id));
                 }}
               />
             );
