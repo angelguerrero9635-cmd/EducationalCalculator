@@ -35,7 +35,8 @@
 // Gallery demos (g.…) are opened under /gallery, every other page under /skill. A page whose
 // check fails is one ERROR line; the run goes on (and restarts its server if it stopped). The
 // reports are rewritten after each page. PORT picks the server's port (runs side by side). A
-// renderer hung for 30 s (a solver search on every move) is an ERROR too, and a new page opens.
+// renderer that answers nothing for 3 minutes (a solver search on every move) is an ERROR too,
+// and the run goes on in a new page.
 // Uses the globally installed Playwright and the pre-installed Chromium; serves dist/ itself.
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -675,20 +676,36 @@ const flush = () => {
  * ERROR line, not the end of the run, and a server that stopped answering is started again.
  */
 async function guarded(id, run) {
+  // A renderer frozen in a drag (a solver search on every move) answers no call, and mouse
+  // moves and evaluations take no timeout: a watchdog gives the page up after WATCHDOG ms.
+  let timer;
+  const watchdog = new Promise((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`Timeout: the page answered nothing for ${WATCHDOG / 1000} s`)),
+      WATCHDOG,
+    );
+  });
   try {
-    await run();
+    const work = run();
+    work.catch(() => {});
+    await Promise.race([work, watchdog]);
   } catch (e) {
     const msg = String(e?.message ?? e).split('\n')[0];
     errors.push(`- **ERROR** ${id}: the check failed: ${msg}`);
     lines.push(`- **ERROR** ${id}: the check failed: ${msg}`);
     if (/ERR_CONNECTION_REFUSED|ECONNREFUSED/.test(msg)) await serve();
-    // A renderer hung in a drag (a solver search on every move) stays hung: a new page.
+    // A renderer hung in a drag (a solver search on every move) stays hung: a new page (the
+    // hung one is closed if it answers, else left behind).
     if (/Timeout|timeout/.test(msg)) {
-      await page.close().catch(() => {});
+      const old = page;
       page = await freshPage();
+      Promise.race([old.close(), new Promise((r) => setTimeout(r, 10000))]).catch(() => {});
     }
+  } finally {
+    clearTimeout(timer);
   }
 }
+const WATCHDOG = 180000;
 for (const id of ids) {
   await guarded(id, () => checkPage(id));
   flush();
