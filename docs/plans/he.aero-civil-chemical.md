@@ -20,14 +20,14 @@ Every id below starts `he.engineering.`; it is left off inside the blocks (`aero
   `<courseId>#<i>~<slug>`. A topic's main page is a calculator unless marked (sort, sequence,
   explore). No pilot exists in this group (`college.ts` has none); the model is
   `he.engineering.circuits-1#0` (values with name, symbol and unit; one relation per line; a
-  picture whose labels are the values). With ~290 pages here, split `college.ts` into
+  picture whose labels are the values). With 254 pages here, split `college.ts` into
   `src/data/modules/college/<field>.ts` (aerospace, civil, chemical) before building; the lead decides.
 - **Word rules.** The Grades 9–12 rules hold for college: sentences ≤ 35 words, ≤ 10 values a
   page, every value named first with its symbol ("Overflow rate (v₀)"), 2–4 assumptions of ≤ 20
   words. College vocabulary is the textbook's (lift coefficient, effective stress, extent of
   reaction); no simplification of the term, one plain gloss at first use in the assumption.
-- **Notation.** Textbook symbols with Unicode subscripts (C_L as C_L where no subscript glyph
-  exists; σ′ for effective stress; ṁ, ṅ, Q̇ dotted, need N14). `ln` is natural log, `log` is
+- **Notation.** Textbook symbols with Unicode subscripts (C_L typed with an underscore where no subscript glyph
+  exists, typeset as C_{L}; σ′ for effective stress; ṁ, ṅ, Q̇ dotted, need N14). `ln` is natural log, `log` is
   base 10, always written out. Angles in degrees in inputs; a step converts to radians in its
   own line where a formula needs it (thin-airfoil theory, Ackeret, Prandtl–Meyer). Answers to 4
   significant figures; examples quoted to 3–4.
@@ -49,7 +49,7 @@ Every id below starts `he.engineering.`; it is left off inside the blocks (`aero
 - **Calculus and linear algebra in steps.** No symbolic engine: every derivative, integral or
   ODE result is the closed form the textbook derives, and the step names it in one line
   ("For a first-order reaction in a PFR, ∫ dX ÷ (k(1 − X)) from 0 to X gives τ = −ln(1 − X) ÷ k"),
-  then substitutes. ODE responses (first- and second-order step responses, BOD, plume decay) are
+  then substitutes. ODE responses (first- and second-order step responses, BOD) are
   their closed-form solutions. Matrices stop at 2 × 2 solved by Cramer's rule (`matrixGrid`
   determinant mode). Implicit relations (Kepler's equation, the area–Mach relation, Prandtl–Meyer,
   θ–β–M, Manning normal depth) use the solver's root finder; the step shows the trial values
