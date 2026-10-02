@@ -227,13 +227,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H10',
       'polarGrid',
       'Polar grid with a point (r, θ) and polar curves (circle, rose, cardioid, spiral)',
-      ['m.12.polar', 'm.12.parametric'],
+      {
+        'm.12.polar': '"polarGrid"',
+        'm.12.parametric': '"parametric"',
+        'm.12.polar~circle': '"shape":"circle"',
+        'm.12.polar~spiral': '"shape":"spiral"',
+      },
     ),
-    status: 'drawn',
-    gallery: ['g.m12-polar-circle', 'g.m12-polar-spiral', 'g.m12-parametric-projectile'],
+    status: 'placed',
+    gallery: ['g.m12-parametric-projectile'],
     notes:
       "Parametric mode: a path traced as t grows, with direction arrows and the point at t. Drawn: kind polarGrid (typesHsd.ts). Polar mode: rings at nice radii and rays every 30°, labelled in degrees or (show: 'radians') π/6, …; point { r, theta, x, y } (θ in degrees; a negative r lands on the opposite ray; x and y checked as r cos θ and r sin θ); curve { shape: 'circle' (r = a, or r = a cos θ with fn), 'rose' (a, n; n or 2n petals), 'cardioid' (a, b: r = a + b cos θ, a limaçon when b ≠ a), 'spiral' (r = aθ, θ in radians, turns) } with the point on it (r checked). Parametric mode: parametric { family: 'line' (x0, y0, a, b), 'ellipse' (h, k, a, b; t in degrees), 'projectile' (v, angle, y0; g = 9.8), t, range: [t₀, t₁], x, y } traces the path solid up to t and dashed after, with arrows the way t runs (x and y checked). Drag the point: θ (and r with no curve), or along the path to set t. Examples: { kind: 'polarGrid', curve: { shape: 'rose', a: 'a', n: 'n' }, point: { r: 'r', theta: 't' } }; { kind: 'polarGrid', parametric: { family: 'line', x0: 'p', y0: 'q', a: 'a', b: 'b', t: 't', range: [-2, 4], x: 'x', y: 'y' } }." +
-      ' Tracker: still drawn. The point, the rose, the limaçon and the parametric line and ellipse are placed (the projectile path is the projectile kind on m.12.parametric~projectile); the polar circle (r = a cos θ) and the spiral are on no page.',
+      ' Placed (parts by page in `uses`): the point, the rose, the limaçon and the parametric line and ellipse were placed; the polar circle r = a cos θ is on m.12.polar~circle and the spiral on m.12.polar~spiral (their demos retired). The projectile path is the projectile kind on m.12.parametric~projectile, so the parametric projectile demo stays as the only place that family is shown.',
   },
   {
     ...ask(
