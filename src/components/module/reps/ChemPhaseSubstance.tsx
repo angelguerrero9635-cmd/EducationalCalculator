@@ -260,16 +260,14 @@ export function ChemPhaseSubstance({ spec, calc }: { spec: Spec; calc: Calculato
     }
     /** A point's name beside it, turned to the other side where it would leave the plot. */
     const label = (x: number, y: number, text: string, side: 'start' | 'end', dy = -8) => {
+      // Slid in from the plot's edge where it would leave it (turning it to the other side
+      // put it on a neighbouring point's label).
       const tw = [...text].length * chart.label * 0.6;
-      const anchor =
-        side === 'start' && x + 8 + tw > r
-          ? 'end'
-          : side === 'end' && x - 8 - tw < l
-            ? 'start'
-            : side;
+      const anchor = side;
+      const tx = side === 'start' ? Math.min(x + 8, r - 2 - tw) : Math.max(x - 8, l + 2 + tw);
       return (
         <ChartText
-          x={x + (anchor === 'start' ? 8 : -8)}
+          x={tx}
           y={y + dy}
           textAnchor={anchor}
           fontSize={chart.label}
@@ -514,14 +512,10 @@ export function ChemPhaseSubstance({ spec, calc }: { spec: Spec; calc: Calculato
             >
               1 K
             </ChartText>
-            {/* Beside the rise, or over the triangle where it would leave the plot. */}
+            {/* Beside the rise, or left of the triangle, under the line, where it would leave the plot. */}
             <ChartText
-              x={slopeFits ? tri1.bq[0] + 8 : r - 4}
-              y={
-                slopeFits
-                  ? (tri1.bq[1] + tri1.cq[1]) / 2 + 4
-                  : Math.min(tri1.bq[1], tri1.cq[1], tri1.a[1]) - 10
-              }
+              x={slopeFits ? tri1.bq[0] + 8 : tri1.a[0] - 8}
+              y={slopeFits ? (tri1.bq[1] + tri1.cq[1]) / 2 + 4 : tri1.a[1] + 18}
               textAnchor={slopeFits ? 'start' : 'end'}
               fontSize={chart.value}
               fontWeight="700"
