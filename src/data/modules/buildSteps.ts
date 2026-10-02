@@ -480,11 +480,15 @@ export function buildSteps(
       ? base.result.slice(v.symbol.length + 3)
       : undefined;
     if (!text || !t.exact) {
+      // K–5 hears it as a child does ("12 is the only number that works here."); Grade 6 on
+      // reads the rules ("Only 12 fits every rule here: no other number works.").
+      const pinnedHow =
+        band === 'early' || band === 'elementary'
+          ? `${pinnedValue ?? 'This'} is the only number that works here.`
+          : `Only ${pinnedValue ?? 'one number'} fits every rule here: no other number works.`;
       return {
         ...base,
-        how: t.pinned
-          ? `Only ${pinnedValue ?? 'one number'} fits every rule here: no other number works.`
-          : 'Try numbers until both sides match.',
+        how: t.pinned ? pinnedHow : 'Try numbers until both sides match.',
         heading,
         lead,
         lines: [],
@@ -500,8 +504,16 @@ export function buildSteps(
     // are rounded, can miss the answer as printed: it then takes more figures.
     const misses = (line: string) => {
       const x = evaluatePrinted(line);
-      const want = working[t.id];
-      if (x === undefined || want === undefined) return undefined;
+      const exact = working[t.id];
+      if (x === undefined || exact === undefined) return undefined;
+      // The answer as the step prints it: to the page's figures when the value is shown that
+      // way (103 nm for 102.57), else the value itself. A line within 10⁻³ of the exact value
+      // can still miss the printed one (1240 ÷ 12.1 = 102.48 is "102", not the "103" shown).
+      const shown =
+        figures !== undefined && withWorkedFigures(v, figures).worked !== undefined
+          ? Number(parseNumber(significant(exact, figures)))
+          : exact;
+      const want = Number.isFinite(shown) ? shown : exact;
       // (true as printed: the answer it shows, to the page's figures, or within 10⁻³)
       return (
         !agreeIn(x, want, line) &&

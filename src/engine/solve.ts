@@ -477,6 +477,48 @@ function outOfReach(
     // No open value moves it: a lookup (dice pairs for a sum) read as flat at the probes, not a
     // rule that can't be met.
     if (hi - lo <= tol) continue;
+    // The corners bound the rule only when it is a straight line in each value across this box
+    // too, not only at the fixed probes: a greatest common factor, or "(m + d) % 60", happens
+    // to read straight there and would be called out of reach (g = 6 with b = 18: "the first
+    // number would be 0.7059"; "the minutes it takes −25"). Inside points must come out as the
+    // corners predict, each on its own grid (a whole number's at whole numbers).
+    const predicted = (p: Values) =>
+      corners.reduce((sum, c, k) => {
+        let w = 1;
+        open.forEach((id, i) => {
+          const v = byId.get(id)!;
+          const span = v.max! - v.min!;
+          const t = span > 0 ? (p[id]! - v.min!) / span : 0;
+          w *= (k >> i) & 1 ? t : 1 - t;
+        });
+        return sum + w * c;
+      }, 0);
+    const pointAt = (ts: number[]): Values => {
+      const p: Values = { ...values };
+      open.forEach((id, i) => {
+        const v = byId.get(id)!;
+        let x = v.min! + ts[i]! * (v.max! - v.min!);
+        if (v.integer) {
+          const f = (v.unitFactor ?? 1) * (v.multipleOf ?? 1);
+          x = Math.min(v.max!, Math.max(v.min!, Math.round(x / f) * f));
+        }
+        p[id] = x;
+      });
+      return p;
+    };
+    const inside = [
+      open.map(() => 0.5),
+      ...open.flatMap((_, i) => [
+        open.map((__, j) => (j === i ? 0.25 : 0.5)),
+        open.map((__, j) => (j === i ? 0.75 : 0.5)),
+      ]),
+      ...[1, 2, 3].map((n) => open.map((_, i) => (((n * 37 + i * 53) % 89) + 5) / 100)),
+    ].map(pointAt);
+    const straight = inside.every((p) => {
+      const x = at(p);
+      return Number.isFinite(x) && Math.abs(x - predicted(p)) <= 1e-7 * (1 + size);
+    });
+    if (!straight) continue;
     // One value left to find: the range it would have to break.
     if (open.length === 1) {
       const v = byId.get(open[0]!)!;
@@ -1241,13 +1283,21 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         return false;
       const fn = rel.solve?.[id];
       if (fn?.length === 0) return false;
+      // Only the values explained so far are handed over: a rearrangement that reads a value
+      // its rule doesn't name ("f = C(b, r) when k = 0", which falls back to the full count,
+      // C(a, k) × C(b, r − k), when k isn't 0) would otherwise explain f before a is.
+      const others: Values = {};
+      for (const v of explained) if (v !== id && v in known) others[v] = known[v]!;
       // (no rearrangement: worked out numerically, as the solver does)
-      if (!fn) return holds(rel, known, system.variables);
-      const others = { ...known };
-      delete others[id];
-      const out = fn(others);
-      const xs = out === undefined ? [] : Array.isArray(out) ? out : [out];
-      return xs.some((x) => closeTo(x, known[id]!, floorOf(byId.get(id))));
+      if (!fn) return holds(rel, { ...others, [id]: known[id]! }, system.variables);
+      try {
+        const out = fn(others);
+        const xs = out === undefined ? [] : Array.isArray(out) ? out : [out];
+        return xs.some((x) => closeTo(x, known[id]!, floorOf(byId.get(id))));
+      } catch {
+        // (a rearrangement that needs a value not explained yet)
+        return false;
+      }
     });
   const explained = new Set(Object.keys(known).filter((id) => !filled.includes(id)));
   const everything = new Set(Object.keys(known));
