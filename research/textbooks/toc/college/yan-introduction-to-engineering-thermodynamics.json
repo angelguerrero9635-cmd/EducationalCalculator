@@ -1,0 +1,322 @@
+{
+  "id": "yan-introduction-to-engineering-thermodynamics",
+  "curriculum": "Introduction to Engineering Thermodynamics",
+  "publisher": "BCcampus (LibreTexts Engineering edition)",
+  "edition": "LibreTexts edition (pressbooks.bccampus.ca returned 403)",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Introduction to Engineering Thermodynamics by Claire Yu Yan (UBC Okanagan), BCcampus; Engineering LibreTexts. CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY-NC-SA 4.0): chapters and sections. The chapter reviews are summaries with no problems; the BCcampus practice problems were not reachable (403). No question records.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Basic Concepts and Definitions",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/01%3A_Basic_Concepts_and_Definitions",
+          "topics": ["he.engineering.thermodynamics#0"],
+          "lessons": [
+            {
+              "n": "1.01",
+              "title": "Chapter introduction and learning objectives",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/01%3A_Basic_Concepts_and_Definitions/1.01%3A_Chapter_introduction_and_learning_objectives"
+            },
+            {
+              "n": "1.02",
+              "title": "What is thermodynamics about",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/01%3A_Basic_Concepts_and_Definitions/1.02%3A_What_is_thermodynamics_about"
+            },
+            {
+              "n": "1.03",
+              "title": "System and surroundings",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/01%3A_Basic_Concepts_and_Definitions/1.03%3A_System_and_surroundings"
+            },
+            {
+              "n": "1.04",
+              "title": "Extensive and intensive properties",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/01%3A_Basic_Concepts_and_Definitions/1.04%3A_Extensive_and_intensive_properties"
+            },
+            {
+              "n": "1.05",
+              "title": "State process and cycle",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/01%3A_Basic_Concepts_and_Definitions/1.05%3A_State_process_and_cycle"
+            },
+            {
+              "n": "1.06",
+              "title": "Chapter review",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/01%3A_Basic_Concepts_and_Definitions/1.06%3A_Chapter_review"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Thermodynamic Properties of a Pure Substance",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/02%3A_Thermodynamic_Properties_of_a_Pure_Substance",
+          "topics": ["he.engineering.thermodynamics#0"],
+          "examples": [
+            "phase of a state from tables",
+            "quality and mixture properties",
+            "linear interpolation"
+          ],
+          "notation": ["v in m³/kg; P in kPa"],
+          "lessons": [
+            {
+              "n": "2.01",
+              "title": "Chapter introduction and learning objectives",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/02%3A_Thermodynamic_Properties_of_a_Pure_Substance/2.01%3A_Chapter_introduction_and_learning_objectives"
+            },
+            {
+              "n": "2.02",
+              "title": "Pure substance",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/02%3A_Thermodynamic_Properties_of_a_Pure_Substance/2.02%3A_Pure_substance"
+            },
+            {
+              "n": "2.03",
+              "title": "Thermodynamic properties",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/02%3A_Thermodynamic_Properties_of_a_Pure_Substance/2.03%3A_Thermodynamic_properties"
+            },
+            {
+              "n": "2.04",
+              "title": "Phase diagrams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/02%3A_Thermodynamic_Properties_of_a_Pure_Substance/2.04%3A_Phase_diagrams"
+            },
+            {
+              "n": "2.05",
+              "title": "Thermodynamic tables",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/02%3A_Thermodynamic_Properties_of_a_Pure_Substance/2.05%3A_Thermodynamic_tables"
+            },
+            {
+              "n": "2.06",
+              "title": "Chapter review",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/02%3A_Thermodynamic_Properties_of_a_Pure_Substance/2.06%3A_Chapter_review"
+            },
+            {
+              "n": "2.07",
+              "title": "Key Equations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/02%3A_Thermodynamic_Properties_of_a_Pure_Substance/2.07%3A_Key_Equations"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Ideal and Real Gasses",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/03%3A_Ideal_and_Real_Gasses",
+          "topics": ["he.engineering.thermodynamics#0"],
+          "examples": ["ideal-gas mass in a tank", "compressibility factor"],
+          "lessons": [
+            {
+              "n": "3.01",
+              "title": "Chapter introduction and learning objectives",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/03%3A_Ideal_and_Real_Gasses/3.01%3A_Chapter_introduction_and_learning_objectives"
+            },
+            {
+              "n": "3.02",
+              "title": "Ideal gas and ideal gas equation of state",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/03%3A_Ideal_and_Real_Gasses/3.02%3A_Ideal_gas_and_ideal_gas_equation_of_state"
+            },
+            {
+              "n": "3.03",
+              "title": "Real gas and compressibility factor",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/03%3A_Ideal_and_Real_Gasses/3.03%3A_Real_gas_and_compressibility_factor"
+            },
+            {
+              "n": "3.04",
+              "title": "Chapter Review",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/03%3A_Ideal_and_Real_Gasses/3.04%3A_Chapter_Review"
+            },
+            {
+              "n": "3.05",
+              "title": "Key Equations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/03%3A_Ideal_and_Real_Gasses/3.05%3A_Key_Equations"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "The First Law of Thermodynamics for Closed Systems",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/04%3A_The_First_Law_of_Thermodynamics_for_Closed_Systems",
+          "topics": ["he.engineering.thermodynamics#1"],
+          "examples": ["boundary work for polytropic processes", "first law for closed systems"],
+          "notation": ["work done by the system positive"],
+          "lessons": [
+            {
+              "n": "4.01",
+              "title": "Chapter introduction and learning objectives",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/04%3A_The_First_Law_of_Thermodynamics_for_Closed_Systems/4.01%3A_Chapter_introduction_and_learning_objectives"
+            },
+            {
+              "n": "4.02",
+              "title": "Internal energy in a system",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/04%3A_The_First_Law_of_Thermodynamics_for_Closed_Systems/4.02%3A_Internal_energy_in_a_system"
+            },
+            {
+              "n": "4.03",
+              "title": "Heat transfer across a boundary",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/04%3A_The_First_Law_of_Thermodynamics_for_Closed_Systems/4.03%3A_Heat_transfer_across_a_boundary"
+            },
+            {
+              "n": "4.04",
+              "title": "Work",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/04%3A_The_First_Law_of_Thermodynamics_for_Closed_Systems/4.04%3A_Work"
+            },
+            {
+              "n": "4.05",
+              "title": "The first law of thermodynamics for closed systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/04%3A_The_First_Law_of_Thermodynamics_for_Closed_Systems/4.05%3A_The_first_law_of_thermodynamics_for_closed_systems"
+            },
+            {
+              "n": "4.06",
+              "title": "Chapter review",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/04%3A_The_First_Law_of_Thermodynamics_for_Closed_Systems/4.06%3A_Chapter_review"
+            },
+            {
+              "n": "4.07",
+              "title": "Key equations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/04%3A_The_First_Law_of_Thermodynamics_for_Closed_Systems/4.07%3A_Key_equations"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "The First Law of Thermodynamics for a Control Volume",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/05%3A_The_First_Law_of_Thermodynamics_for_a_Control_Volume",
+          "topics": ["he.engineering.thermodynamics#1"],
+          "examples": [
+            "nozzles, turbines, compressors, throttles, mixing chambers, heat exchangers"
+          ],
+          "lessons": [
+            {
+              "n": "5.01",
+              "title": "Chapter introduction and learning objectives",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/05%3A_The_First_Law_of_Thermodynamics_for_a_Control_Volume/5.01%3A_Chapter_introduction_and_learning_objectives"
+            },
+            {
+              "n": "5.02",
+              "title": "Enthalpy",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/05%3A_The_First_Law_of_Thermodynamics_for_a_Control_Volume/5.02%3A_Enthalpy"
+            },
+            {
+              "n": "5.03",
+              "title": "Mass and energy conservation equations in a control volume",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/05%3A_The_First_Law_of_Thermodynamics_for_a_Control_Volume/5.03%3A_Mass_and_energy_conservation_equations_in_a_control_volume"
+            },
+            {
+              "n": "5.04",
+              "title": "Applications of the mass and energy conservation equations in steady flow devices",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/05%3A_The_First_Law_of_Thermodynamics_for_a_Control_Volume/5.04%3A_Applications_of_the_mass_and_energy_conservation_equations_in_steady_flow_devices"
+            },
+            {
+              "n": "5.05",
+              "title": "Chapter review",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/05%3A_The_First_Law_of_Thermodynamics_for_a_Control_Volume/5.05%3A_Chapter_review"
+            },
+            {
+              "n": "5.06",
+              "title": "Key equations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/05%3A_The_First_Law_of_Thermodynamics_for_a_Control_Volume/5.06%3A_Key_equations"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Entropy and the Second Law of Thermodynamics",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics",
+          "topics": ["he.engineering.thermodynamics#2", "he.engineering.thermodynamics#3"],
+          "examples": [
+            "Carnot efficiency and COP",
+            "entropy change and generation",
+            "isentropic efficiency"
+          ],
+          "lessons": [
+            {
+              "n": "6.01",
+              "title": "Chapter introduction and learning objectives",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.01%3A_Chapter_introduction_and_learning_objectives"
+            },
+            {
+              "n": "6.02",
+              "title": "Heat engine",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.02%3A_Heat_engine"
+            },
+            {
+              "n": "6.03",
+              "title": "Refrigerator and heat pump",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.03%3A_Refrigerator_and_heat_pump"
+            },
+            {
+              "n": "6.04",
+              "title": "The second law of thermodynamics- Kelvin-Planck and Clausius statements",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.04%3A_The_second_law_of_thermodynamics-_Kelvin-Planck_and_Clausius_statements"
+            },
+            {
+              "n": "6.05",
+              "title": "Carnot cycles",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.05%3A_Carnot_cycles"
+            },
+            {
+              "n": "6.06",
+              "title": "Entropy and entropy generation",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.06%3A_Entropy_and_entropy_generation"
+            },
+            {
+              "n": "6.07",
+              "title": "The second law of thermodynamics for closed systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.07%3A_The_second_law_of_thermodynamics_for_closed_systems"
+            },
+            {
+              "n": "6.08",
+              "title": "Specific entropy of a state",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.08%3A_Specific_entropy_of_a_state"
+            },
+            {
+              "n": "6.09",
+              "title": "Applications of the second law of thermodynamics in closed systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.09%3A_Applications_of_the_second_law_of_thermodynamics_in_closed_systems"
+            },
+            {
+              "n": "6.10",
+              "title": "The second law of thermodynamics for open systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.10%3A_The_second_law_of_thermodynamics_for_open_systems"
+            },
+            {
+              "n": "6.11",
+              "title": "Applications of the second law of thermodynamics in open systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.11%3A_Applications_of_the_second_law_of_thermodynamics_in_open_systems"
+            },
+            {
+              "n": "6.12",
+              "title": "Chapter review",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.12%3A_Chapter_review"
+            },
+            {
+              "n": "6.13",
+              "title": "Key equations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/06%3A_Entropy_and_the_Second_Law_of_Thermodynamics/6.13%3A_Key_equations"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Appendices",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introduction_to_Engineering_Thermodynamics_(Yan)/07%3A_Appendices",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": []
+        }
+      ]
+    }
+  ]
+}

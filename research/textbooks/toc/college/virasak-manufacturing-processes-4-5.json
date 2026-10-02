@@ -1,0 +1,220 @@
+{
+  "id": "virasak-manufacturing-processes-4-5",
+  "curriculum": "Manufacturing Processes 4-5",
+  "publisher": "Linn-Benton Community College / Open Oregon (Workforce LibreTexts edition)",
+  "edition": "LibreTexts edition (openoregon.pressbooks.pub returned 403)",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Manufacturing Processes 4-5 (Virasak; the author as LibreTexts names the book), Workforce LibreTexts. CC BY 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY 4.0): chapters and units. Review questions sit inside the unit pages, which were not fetched; no question records from this book.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Milling Machines",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/01%3A_Milling_Machines",
+          "topics": ["he.engineering.manufacturing#1"],
+          "examples": ["spindle speed from cutting speed", "milling feed rate"],
+          "notation": ["U.S. customary: SFM, IPM"],
+          "lessons": [
+            {
+              "n": "01.1",
+              "title": "Milling Machines",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/01%3A_Milling_Machines/01.1%3A_Milling_Machines"
+            },
+            {
+              "n": "01.2",
+              "title": "Unit 1: Tramming the Head",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/01%3A_Milling_Machines/01.2%3A_Unit_1%3A_Tramming_the_Head"
+            },
+            {
+              "n": "01.3",
+              "title": "Unit 2: Speeds, Feeds, and Tapping",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/01%3A_Milling_Machines/01.3%3A_Unit_2%3A_Speeds%2C_Feeds%2C_and_Tapping"
+            },
+            {
+              "n": "01.4",
+              "title": "Unit 3: Sine Bar",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/01%3A_Milling_Machines/01.4%3A_Unit_3%3A_Sine_Bar"
+            },
+            {
+              "n": "01.5",
+              "title": "Unit 4: Offset Boring Head",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/01%3A_Milling_Machines/01.5%3A_Unit_4%3A_Offset_Boring_Head"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Lathe Machines",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/02%3A_Lathe_Machines",
+          "topics": ["he.engineering.manufacturing#1"],
+          "examples": ["lathe rpm, feed, depth", "taper turning"],
+          "lessons": [
+            {
+              "n": "02.1",
+              "title": "Chapter 2: Lathe Machine",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/02%3A_Lathe_Machines/02.1%3A_Chapter_2%3A_Lathe_Machine"
+            },
+            {
+              "n": "02.2",
+              "title": "Unit 2: Speed and Feed",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/02%3A_Lathe_Machines/02.2%3A_Unit_2%3A_Speed_and_Feed"
+            },
+            {
+              "n": "02.3",
+              "title": "Unit 3: Chucks",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/02%3A_Lathe_Machines/02.3%3A_Unit_3%3A_Chucks"
+            },
+            {
+              "n": "02.4",
+              "title": "Unit 4: Turning",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/02%3A_Lathe_Machines/02.4%3A_Unit_4%3A_Turning"
+            },
+            {
+              "n": "02.5",
+              "title": "Unit 5: Tapping",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/02%3A_Lathe_Machines/02.5%3A_Unit_5%3A_Tapping"
+            },
+            {
+              "n": "02.6",
+              "title": "Unit 6: Lathe Threading",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/02%3A_Lathe_Machines/02.6%3A_Unit_6%3A_Lathe_Threading"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Drill Presses",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/03%3A_Drill_Presses",
+          "topics": ["he.engineering.manufacturing#1"],
+          "examples": ["drill rpm"],
+          "lessons": [
+            {
+              "n": "03.1",
+              "title": "Chapter 3: Drill Press",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/03%3A_Drill_Presses/03.1%3A_Chapter_3%3A_Drill_Press"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Bandsaws",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/04%3A_Bandsaws",
+          "topics": ["he.engineering.manufacturing#1"],
+          "lessons": [
+            {
+              "n": "04.1",
+              "title": "Chapter 4: Bandsaw",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/04%3A_Bandsaws/04.1%3A_Chapter_4%3A_Bandsaw"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Surface Grinders",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/05%3A_Surface_Grinders",
+          "topics": ["he.engineering.manufacturing#1"],
+          "lessons": [
+            {
+              "n": "05.1",
+              "title": "Chapter 5: Surface Grinder",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/05%3A_Surface_Grinders/05.1%3A_Chapter_5%3A_Surface_Grinder"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Heat Treating",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/06%3A_Heat_Treating",
+          "topics": ["he.engineering.materials-science#2", "he.engineering.materials-science#3"],
+          "examples": ["hardening and tempering", "Rockwell and Brinell tests"],
+          "lessons": [
+            {
+              "n": "06.1",
+              "title": "Chapter 6: Heat Treating",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/06%3A_Heat_Treating/06.1%3A_Chapter_6%3A_Heat_Treating"
+            },
+            {
+              "n": "06.2",
+              "title": "Unit 2: Hardness Testing",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/06%3A_Heat_Treating/06.2%3A_Unit_2%3A_Hardness_Testing"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Lean Manufacturing",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/07%3A_Lean_Manufacturing",
+          "topics": [],
+          "notes": "Lean manufacturing: no topic in this group.",
+          "lessons": [
+            {
+              "n": "07.1",
+              "title": "Chapter 7: Lean Manufacturing",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/07%3A_Lean_Manufacturing/07.1%3A_Chapter_7%3A_Lean_Manufacturing"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "CNC",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/08%3A_CNC",
+          "topics": ["he.engineering.manufacturing#1"],
+          "notes": "CNC programming (G-code): no topic of its own.",
+          "lessons": [
+            {
+              "n": "08.1",
+              "title": "Chapter 8: CNC",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/08%3A_CNC/08.1%3A_Chapter_8%3A_CNC"
+            },
+            {
+              "n": "08.2",
+              "title": "Unit 2: CNC Machine Tool Programmable Axes and Position Dimensioning Systems",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/08%3A_CNC/08.2%3A_Unit_2%3A_CNC_Machine_Tool_Programmable_Axes_and_Position_Dimensioning_Systems"
+            },
+            {
+              "n": "08.3",
+              "title": "Unit 3: Vertical Milling Center Machine Motion",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/08%3A_CNC/08.3%3A_Unit_3%3A_Vertical_Milling_Center_Machine_Motion"
+            },
+            {
+              "n": "08.4",
+              "title": "Unit 4: CNC Language and Structure",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/08%3A_CNC/08.4%3A_Unit_4%3A_CNC_Language_and_Structure"
+            },
+            {
+              "n": "08.5",
+              "title": "Unit 5: CNC Operation",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/08%3A_CNC/08.5%3A_Unit_5%3A_CNC_Operation"
+            },
+            {
+              "n": "08.6",
+              "title": "Unit 6: Haas Control",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/08%3A_CNC/08.6%3A_Unit_6%3A_Haas_Control"
+            },
+            {
+              "n": "08.7",
+              "title": "Unit 7: Mastercam",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Manufacturing_Processes_4-5_(Virasak)/08%3A_CNC/08.7%3A_Unit_7%3A_Mastercam"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "mit-ocw-12-340",
+  "curriculum": "MIT OCW 12.340 Global Warming Science",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2012",
+  "subject": "geography",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Kerry Emanuel, Sara Seager, Daniel Cziczo and David McGee. 12.340 Global Warming Science, Spring 2012. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Kerry Emanuel, Sara Seager, Daniel Cziczo and David McGee. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: LEC # TOPICS KEY DATES 1 Introduction 2 The Origin of Earth’s Atmosphere and Oceans 3 Paleoclimate I & Paleoclimate II Problem set 1 out 4 The Instrumental Record 5 Atmospheric Composition and Greenhouse Gases Problem set 1 due 6 Radiative Transfer I 7 Radiative Transfer II Problem set 2 out 8 Radiative-Convective Equilibrium I 9 Radiative-Convective Equilibrium II Problem set 2 due Problem set 3 out 10 The Circulation of the Atmosphere and Oceans I 11 The Circulation of the Atmosphere and Oceans II 12 Non-CO 2 Greenhouse Gases 13 The Earth’s Carbon Cycle Problem set 3 due Problem set 4 out 14 Aerosols 15 Climate Sensitivity, Forcings, and Feedbacks 16 Solar and Orbital Variability 17 Cloud, Water Vapor, Ice Albedo, and Other Feedbacks Problem set 4 due Problem set 5 out Presentation of Term Project 18 Climate Models I: General Concept, History, and Design 19 Climate Models II: Parameter Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit12_340s12_ps1",
+          "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/resources/mit12_340s12_ps1/",
+          "topics": ["he.earth-science.historical-geology#3", "he.geography.climatology#2"],
+          "examples": [
+            "carbon-isotope mass balance for the PETM: carbon added from volcanoes or methane for a −3 ‰ shift",
+            "read ice and sediment core temperature series: warmer-than-today intervals, how fast climate changes, regional against global",
+            "why δ18O of foraminifera and of ice move opposite ways over glacial cycles"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.340-PS1-Q2, OCW-12.340-PS1-Q1, OCW-12.340-PS1-Q3"
+        },
+        {
+          "n": "2",
+          "title": "mit12_340s12_ps2",
+          "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/resources/mit12_340s12_ps2/",
+          "topics": ["he.geography.climatology#0", "he.geography.climatology#3"],
+          "examples": [
+            "N-layer model: show T_ground = (N + 1)^(1/4) T_e",
+            "derive Wien's law and the Stefan–Boltzmann constant from Planck's law",
+            "surface temperature of three planets: bare rock, one opaque layer, one leaky layer; absorptivity for 288 K"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.340-PS2-Q1, OCW-12.340-PS2-Q3, OCW-12.340-PS2-Q4"
+        },
+        {
+          "n": "3",
+          "title": "mit12_340s12_ps4",
+          "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/resources/mit12_340s12_ps4/",
+          "topics": ["he.geography.climatology#3"],
+          "examples": [
+            "global warming potential over 20, 100 and 500 years of a gas with a given half-life and absorption"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.340-PS4-Q4"
+        },
+        {
+          "n": "4",
+          "title": "mit12_340s12_ps5",
+          "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/resources/mit12_340s12_ps5/",
+          "topics": [
+            "he.geography.climatology#3",
+            "he.earth-science.meteorology#1",
+            "he.geography.climatology#2"
+          ],
+          "examples": [
+            "describe the three Milankovitch cycles; sum precession and obliquity sine terms on summer insolation at 60°N",
+            "percent rise in saturation vapour per 1 °C from Clausius–Clapeyron; forcing or feedback",
+            "surface irradiance change from aerosol optical depth (Beer's law); AOD to offset 2 W/m² of forcing"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.340-PS5-Q1, OCW-12.340-PS5-Q2, OCW-12.340-PS5-Q3"
+        }
+      ]
+    }
+  ]
+}

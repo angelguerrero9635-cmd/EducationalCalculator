@@ -1,0 +1,512 @@
+{
+  "id": "wierzbicki-structural-mechanics",
+  "curriculum": "Structural Mechanics",
+  "publisher": "MIT (LibreTexts Engineering edition)",
+  "edition": "LibreTexts edition of MIT 2.080J notes",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Structural Mechanics by Tomasz Wierzbicki (MIT), Engineering LibreTexts. CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY-NC-SA 4.0): chapters and sections. No exercise sections; problem types come from OCW 2.080J (TOC mit-ocw-2-080j).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)",
+      "units": [
+        {
+          "n": "1",
+          "title": "The Concept of Strain",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain",
+          "topics": ["he.engineering.advanced-solid-mechanics#0"],
+          "lessons": [
+            {
+              "n": "1.01",
+              "title": "One-dimensional Strain",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.01%3A_One-dimensional_Strain"
+            },
+            {
+              "n": "1.02",
+              "title": "Extension to the 3-D case",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.02%3A_Extension_to_the_3-D_case"
+            },
+            {
+              "n": "1.03",
+              "title": "Description of Strain in the Cylindrical Coordinate System",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.03%3A_Description_of_Strain_in_the_Cylindrical_Coordinate_System"
+            },
+            {
+              "n": "1.04",
+              "title": "Kinematics of the Elementary Beam Theory",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.04%3A_Kinematics_of_the_Elementary_Beam_Theory"
+            },
+            {
+              "n": "1.05",
+              "title": "Euler-Bernoulli Hypothesis",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.05%3A_Euler-Bernoulli_Hypothesis"
+            },
+            {
+              "n": "1.06",
+              "title": " Strain-Displacement Relation of Thin Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.06%3A__Strain-Displacement_Relation_of_Thin_Plates"
+            },
+            {
+              "n": "1.07",
+              "title": "Advanced Topic- Derivation of the Strain-Displacement Relation for Thin Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.07%3A_Advanced_Topic-_Derivation_of_the_Strain-Displacement_Relation_for_Thin_Plates"
+            },
+            {
+              "n": "1.08",
+              "title": "Expanded Form of Strain-Displacement Relation",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.08%3A_Expanded_Form_of_Strain-Displacement_Relation"
+            },
+            {
+              "n": "1.09",
+              "title": "Moderately Large Deflections of Beams and Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.09%3A_Moderately_Large_Deflections_of_Beams_and_Plates"
+            },
+            {
+              "n": "1.10",
+              "title": "Strain-Displacement Relations for Circulate Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/01%3A_The_Concept_of_Strain/1.10%3A_Strain-Displacement_Relations_for_Circulate_Plates"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "The Concept of Stress, Generalized Stresses and Equilibrium",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium",
+          "topics": [
+            "he.engineering.advanced-solid-mechanics#0",
+            "he.engineering.advanced-solid-mechanics#4"
+          ],
+          "lessons": [
+            {
+              "n": "2.01",
+              "title": "Stress Tensor",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.01%3A_Stress_Tensor"
+            },
+            {
+              "n": "2.02",
+              "title": "Advanced Topic - Local Equilibrium from the Principle of Virtual Work",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.02%3A_Advanced_Topic_-_Local_Equilibrium_from_the_Principle_of_Virtual_Work"
+            },
+            {
+              "n": "2.03",
+              "title": "Generalized Forces and Bending Moments in Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.03%3A_Generalized_Forces_and_Bending_Moments_in_Plates"
+            },
+            {
+              "n": "2.04",
+              "title": "Advanced Topic - Principle of Virtual Work for Beams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.04%3A_Advanced_Topic_-_Principle_of_Virtual_Work_for_Beams"
+            },
+            {
+              "n": "2.05",
+              "title": "Derivation of Equation of Equilibrium for Beams from the Principle of Virtual Work",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.05%3A_Derivation_of_Equation_of_Equilibrium_for_Beams_from_the_Principle_of_Virtual_Work"
+            },
+            {
+              "n": "2.06",
+              "title": "Advanced Topic - Mathematical Theory of Beams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.06%3A_Advanced_Topic_-_Mathematical_Theory_of_Beams"
+            },
+            {
+              "n": "2.07",
+              "title": "Equilibrium in the Theory of Moderately Large Deflections of Beams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.07%3A_Equilibrium_in_the_Theory_of_Moderately_Large_Deflections_of_Beams"
+            },
+            {
+              "n": "2.08",
+              "title": "Equilibrium of Rectangular Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.08%3A_Equilibrium_of_Rectangular_Plates"
+            },
+            {
+              "n": "2.09",
+              "title": "Circular Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/02%3A_The_Concept_of_Stress%2C_Generalized_Stresses_and_Equilibrium/2.09%3A_Circular_Plates"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Development of Constitutive Equations of Continuum, Beams and Plates",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/03%3A_Development_of_Constitutive_Equations_of_Continuum%2C_Beams_and_Plates",
+          "topics": ["he.engineering.advanced-solid-mechanics#1"],
+          "lessons": [
+            {
+              "n": "3.01",
+              "title": "Prologue to  Development of Constitutive Equations for Continuum, Beams and Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/03%3A_Development_of_Constitutive_Equations_of_Continuum%2C_Beams_and_Plates/3.01%3A_Prologue_to__Development_of_Constitutive_Equations_for_Continuum%2C_Beams_and_Plates"
+            },
+            {
+              "n": "3.02",
+              "title": "Elasticity Law in 3-D Continuum",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/03%3A_Development_of_Constitutive_Equations_of_Continuum%2C_Beams_and_Plates/3.02%3A_Elasticity_Law_in_3-D_Continuum"
+            },
+            {
+              "n": "3.03",
+              "title": "Specification to the 2-D Continuum",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/03%3A_Development_of_Constitutive_Equations_of_Continuum%2C_Beams_and_Plates/3.03%3A_Specification_to_the_2-D_Continuum"
+            },
+            {
+              "n": "3.04",
+              "title": "Hook’s Law in Generalized Quantities for Beams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/03%3A_Development_of_Constitutive_Equations_of_Continuum%2C_Beams_and_Plates/3.04%3A_Hook%E2%80%99s_Law_in_Generalized_Quantities_for_Beams"
+            },
+            {
+              "n": "3.05",
+              "title": "Inconsistencies in the Elementary Beam Theory",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/03%3A_Development_of_Constitutive_Equations_of_Continuum%2C_Beams_and_Plates/3.05%3A_Inconsistencies_in_the_Elementary_Beam_Theory"
+            },
+            {
+              "n": "3.06",
+              "title": "Derivation of Constitutive Equations for Plates (Advanced)",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/03%3A_Development_of_Constitutive_Equations_of_Continuum%2C_Beams_and_Plates/3.06%3A_Derivation_of_Constitutive_Equations_for_Plates_(Advanced)"
+            },
+            {
+              "n": "3.07",
+              "title": "Stress Formula for Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/03%3A_Development_of_Constitutive_Equations_of_Continuum%2C_Beams_and_Plates/3.07%3A_Stress_Formula_for_Plates"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Solution Method for Beam Deflections",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/04%3A_Solution_Method_for_Beam_Deflections",
+          "topics": ["he.engineering.mechanics-of-materials#4"],
+          "lessons": [
+            {
+              "n": "4.01",
+              "title": "Governing Equations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/04%3A_Solution_Method_for_Beam_Deflections/4.01%3A_Governing_Equations"
+            },
+            {
+              "n": "4.02",
+              "title": "General Properties of the Beam Governing Equation- General and Particular Solutions",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/04%3A_Solution_Method_for_Beam_Deflections/4.02%3A_General_Properties_of_the_Beam_Governing_Equation-_General_and_Particular_Solutions"
+            },
+            {
+              "n": "4.03",
+              "title": "Statically Determined Beams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/04%3A_Solution_Method_for_Beam_Deflections/4.03%3A_Statically_Determined_Beams"
+            },
+            {
+              "n": "4.04",
+              "title": "Continuity Conditions, an Example",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/04%3A_Solution_Method_for_Beam_Deflections/4.04%3A_Continuity_Conditions%2C_an_Example"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Moderately Large Deflection Theory of Beams",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/05%3A_Moderately_Large_Deflection_Theory_of_Beams",
+          "topics": ["he.engineering.advanced-solid-mechanics#4"],
+          "notes": "Moderately large deflections (nonlinear).",
+          "lessons": [
+            {
+              "n": "5.01",
+              "title": "General Formulation",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/05%3A_Moderately_Large_Deflection_Theory_of_Beams/5.01%3A_General_Formulation"
+            },
+            {
+              "n": "5.02",
+              "title": "Solution for a Beam on Roller Support",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/05%3A_Moderately_Large_Deflection_Theory_of_Beams/5.02%3A_Solution_for_a_Beam_on_Roller_Support"
+            },
+            {
+              "n": "5.03",
+              "title": "Solution for a Beam with Fixed Axial Displacements",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/05%3A_Moderately_Large_Deflection_Theory_of_Beams/5.03%3A_Solution_for_a_Beam_with_Fixed_Axial_Displacements"
+            },
+            {
+              "n": "5.04",
+              "title": "Galerkin Method of Solving Non-linear Differential Equation",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/05%3A_Moderately_Large_Deflection_Theory_of_Beams/5.04%3A_Galerkin_Method_of_Solving_Non-linear_Differential_Equation"
+            },
+            {
+              "n": "5.05",
+              "title": "Generalization to Arbitrary Non-linear Problems in Plates and Shells",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/05%3A_Moderately_Large_Deflection_Theory_of_Beams/5.05%3A_Generalization_to_Arbitrary_Non-linear_Problems_in_Plates_and_Shells"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Bending Response of Plates and Optimum Design",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design",
+          "topics": ["he.engineering.advanced-solid-mechanics#4"],
+          "lessons": [
+            {
+              "n": "6.01",
+              "title": "Beam Deflection Equation",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.01%3A_Beam_Deflection_Equation"
+            },
+            {
+              "n": "6.02",
+              "title": "Deflections of Circular Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.02%3A_Deflections_of_Circular_Plates"
+            },
+            {
+              "n": "6.03",
+              "title": "Equivalence of Square and Circular Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.03%3A_Equivalence_of_Square_and_Circular_Plates"
+            },
+            {
+              "n": "6.04",
+              "title": "Design Concept for Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.04%3A_Design_Concept_for_Plates"
+            },
+            {
+              "n": "6.05",
+              "title": "Sandwich Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.05%3A_Sandwich_Plates"
+            },
+            {
+              "n": "6.06",
+              "title": "Stiffened Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.06%3A_Stiffened_Plates"
+            },
+            {
+              "n": "6.07",
+              "title": "Plates versus Grillages",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.07%3A_Plates_versus_Grillages"
+            },
+            {
+              "n": "6.08",
+              "title": "The Concept of Equivalent Thickness",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.08%3A_The_Concept_of_Equivalent_Thickness"
+            },
+            {
+              "n": "6.09",
+              "title": "Shear Lag",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/06%3A_Bending_Response_of_Plates_and_Optimum_Design/6.09%3A_Shear_Lag"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Energy Methods in Elasticity",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/07%3A_Energy_Methods_in_Elasticity",
+          "topics": ["he.engineering.advanced-solid-mechanics#2"],
+          "lessons": [
+            {
+              "n": "7.01",
+              "title": "The Concept of Potential Energy",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/07%3A_Energy_Methods_in_Elasticity/7.01%3A_The_Concept_of_Potential_Energy"
+            },
+            {
+              "n": "7.02",
+              "title": "Equivalence of the Minimum Potential Energy and Principle of Virtual Work",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/07%3A_Energy_Methods_in_Elasticity/7.02%3A_Equivalence_of_the_Minimum_Potential_Energy_and_Principle_of_Virtual_Work"
+            },
+            {
+              "n": "7.03",
+              "title": "Two Formulations for Beams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/07%3A_Energy_Methods_in_Elasticity/7.03%3A_Two_Formulations_for_Beams"
+            },
+            {
+              "n": "7.04",
+              "title": "Fourier Series Expansion and the Ritz Method",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/07%3A_Energy_Methods_in_Elasticity/7.04%3A_Fourier_Series_Expansion_and_the_Ritz_Method"
+            },
+            {
+              "n": "7.05",
+              "title": "Solution by Taylor expansion",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/07%3A_Energy_Methods_in_Elasticity/7.05%3A_Solution_by_Taylor_expansion"
+            },
+            {
+              "n": "7.06",
+              "title": "Castigliano Theorem",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/07%3A_Energy_Methods_in_Elasticity/7.06%3A_Castigliano_Theorem"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Stability of Elastic Structures",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/08%3A_Stability_of_Elastic_Structures",
+          "topics": ["he.engineering.mechanics-of-materials#5"],
+          "lessons": [
+            {
+              "n": "8.01",
+              "title": "Prelude to Stability of Elastic Structures",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/08%3A_Stability_of_Elastic_Structures/8.01%3A_Prelude_to_Stability_of_Elastic_Structures"
+            },
+            {
+              "n": "8.02",
+              "title": "Trefftz Condition for Stability",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/08%3A_Stability_of_Elastic_Structures/8.02%3A_Trefftz_Condition_for_Stability"
+            },
+            {
+              "n": "8.03",
+              "title": "Stability of Elastic Column Using the Energy Method",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/08%3A_Stability_of_Elastic_Structures/8.03%3A_Stability_of_Elastic_Column_Using_the_Energy_Method"
+            },
+            {
+              "n": "8.04",
+              "title": "Effect of Structural Imperfections",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/08%3A_Stability_of_Elastic_Structures/8.04%3A_Effect_of_Structural_Imperfections"
+            },
+            {
+              "n": "8.05",
+              "title": "Stability in Tension",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/08%3A_Stability_of_Elastic_Structures/8.05%3A_Stability_in_Tension"
+            },
+            {
+              "n": "8.06",
+              "title": "Plastic Buckling of Columns",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/08%3A_Stability_of_Elastic_Structures/8.06%3A_Plastic_Buckling_of_Columns"
+            },
+            {
+              "n": "8.07",
+              "title": "Mode Transition (Advanced)",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/08%3A_Stability_of_Elastic_Structures/8.07%3A_Mode_Transition_(Advanced)"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Advanced Topic in Column Buckling",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/09%3A_Advanced_Topic_in_Column_Buckling",
+          "topics": ["he.engineering.mechanics-of-materials#5"],
+          "lessons": [
+            {
+              "n": "9.01",
+              "title": "The Tallest Column",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/09%3A_Advanced_Topic_in_Column_Buckling/9.01%3A_The_Tallest_Column"
+            },
+            {
+              "n": "9.02",
+              "title": "Deflection Behavior for Beam with Compressive Axial Loads and Transverse Loads",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/09%3A_Advanced_Topic_in_Column_Buckling/9.02%3A_Deflection_Behavior_for_Beam_with_Compressive_Axial_Loads_and_Transverse_Loads"
+            },
+            {
+              "n": "9.03",
+              "title": "Snap-through of a Two Bar System",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/09%3A_Advanced_Topic_in_Column_Buckling/9.03%3A_Snap-through_of_a_Two_Bar_System"
+            },
+            {
+              "n": "9.04",
+              "title": "Dynamic Snap-Through",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/09%3A_Advanced_Topic_in_Column_Buckling/9.04%3A_Dynamic_Snap-Through"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Buckling of Plates and Sections",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/10%3A_Buckling_of_Plates_and_Sections",
+          "topics": ["he.engineering.advanced-solid-mechanics#4"],
+          "notes": "Plate buckling (no taxonomy topic beyond columns).",
+          "lessons": [
+            {
+              "n": "10.01",
+              "title": "Governing Equations and Boundary Conditions",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/10%3A_Buckling_of_Plates_and_Sections/10.01%3A_Governing_Equations_and_Boundary_Conditions"
+            },
+            {
+              "n": "10.02",
+              "title": "Buckling of a Simply Supported Plate",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/10%3A_Buckling_of_Plates_and_Sections/10.02%3A_Buckling_of_a_Simply_Supported_Plate"
+            },
+            {
+              "n": "10.03",
+              "title": "Effect of Boundary Conditions",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/10%3A_Buckling_of_Plates_and_Sections/10.03%3A_Effect_of_Boundary_Conditions"
+            },
+            {
+              "n": "10.04",
+              "title": "Buckling of Sections",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/10%3A_Buckling_of_Plates_and_Sections/10.04%3A_Buckling_of_Sections"
+            },
+            {
+              "n": "10.05",
+              "title": "Post-buckling Response of Plates (Advanced)",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/10%3A_Buckling_of_Plates_and_Sections/10.05%3A_Post-buckling_Response_of_Plates_(Advanced)"
+            },
+            {
+              "n": "10.06",
+              "title": "Ultimate Strength of Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/10%3A_Buckling_of_Plates_and_Sections/10.06%3A_Ultimate_Strength_of_Plates"
+            },
+            {
+              "n": "10.07",
+              "title": "Effect of Initial Imperfection",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/10%3A_Buckling_of_Plates_and_Sections/10.07%3A_Effect_of_Initial_Imperfection"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Fundamental Concepts in Structural Plasticity",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity",
+          "topics": ["he.engineering.advanced-solid-mechanics#3"],
+          "lessons": [
+            {
+              "n": "11.01",
+              "title": "Hardening Curve and Yield Curve",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.01%3A_Hardening_Curve_and_Yield_Curve"
+            },
+            {
+              "n": "11.02",
+              "title": "Loading//Unloading Condition",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.02%3A_Loading%2F%2FUnloading_Condition"
+            },
+            {
+              "n": "11.03",
+              "title": "Incompressibility",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.03%3A_Incompressibility"
+            },
+            {
+              "n": "11.04",
+              "title": "Yield Condition",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.04%3A_Yield_Condition"
+            },
+            {
+              "n": "11.05",
+              "title": "Isotropic and Kinematic Hardening",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.05%3A_Isotropic_and_Kinematic_Hardening"
+            },
+            {
+              "n": "11.06",
+              "title": "Flow Rule",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.06%3A_Flow_Rule"
+            },
+            {
+              "n": "11.07",
+              "title": "Derivation of the Yield Condition from First Principles (Advanced)",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.07%3A_Derivation_of_the_Yield_Condition_from_First_Principles_(Advanced)"
+            },
+            {
+              "n": "11.08",
+              "title": "Tresca Yield Condition",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.08%3A_Tresca_Yield_Condition"
+            },
+            {
+              "n": "11.09",
+              "title": "Experimental Validation",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.09%3A_Experimental_Validation"
+            },
+            {
+              "n": "11.10",
+              "title": "Example of the Design against First Yield",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Structural_Mechanics_(Wierzbicki)/11%3A_Fundamental_Concepts_in_Structural_Plasticity/11.10%3A_Example_of_the_Design_against_First_Yield"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

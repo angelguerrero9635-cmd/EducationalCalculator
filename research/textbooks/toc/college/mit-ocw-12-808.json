@@ -1,0 +1,53 @@
+{
+  "id": "mit-ocw-12-808",
+  "curriculum": "MIT OCW 12.808 Introduction to Observational Physical Oceanography",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Raffaele Ferrari and Terrence Joyce. 12.808 Introduction to Observational Physical Oceanography, Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-808-introduction-to-observational-physical-oceanography-fall-2004/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-808-introduction-to-observational-physical-oceanography-fall-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Raffaele Ferrari and Terrence Joyce. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: WEEK # TOPICS KEY DATES 1 Some Physical Properties of Sea Water Problem set 1 out 2 Rotation 101: Some Basics Problem set 1 due 3 Rotation 101 (cont.): Effects of Rotation on a Sphere: f- and β-planes Earth’s Gravity Field and Sea Level 4 Ekman Layers, Friction and Geostrophic Flow Problem set 2 out 5 Wind-Driven Circulation: Stommel’s Gyre and Sverdrup’s Balance Problem set 2 due 6 Stress in the Ocean 7 Observations of the Gulf Stream in the N. Atlantic Problem set 3 out 8 Global Hydrographic Climatology Problem set 3 due 9 Equatorial Twists to Mid-Latitude Dynamics 10 The Large Scale Thermohaline Circulation: Some Thermodynamics Problem set 4 out 11 The Thermohaline Circulation Problem set 4 due 12 Another Wrinkle on Observations of the Abyssal Ocean: Geothermal Heating and Hydrothermal Vents 13 Tidal Forces Problem set 5 out 14 Introduction to “Waves” and Time Dependent Motion Problem Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-808-introduction-to-observational-physical-oceanography-fall-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "problem_set_1a",
+          "url": "https://ocw.mit.edu/courses/12-808-introduction-to-observational-physical-oceanography-fall-2004/resources/problem_set_1a/",
+          "topics": ["he.earth-science.oceanography#1", "he.geography.climatology#1"],
+          "examples": [
+            "temperature of maximum density and freezing point against salinity: which pond freezes first",
+            "zonal wind of a parcel moved in latitude and height keeping angular momentum"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-12.808-PS1-P2, OCW-12.808-PS1-P1"
+        },
+        {
+          "n": "2",
+          "title": "problem_set_2b",
+          "url": "https://ocw.mit.edu/courses/12-808-introduction-to-observational-physical-oceanography-fall-2004/resources/problem_set_2b/",
+          "topics": ["he.earth-science.oceanography#2"],
+          "examples": [
+            "Ekman and Sverdrup transports across a latitude from wind stress and its curl",
+            "geostrophic velocity between CTD stations with a level of no motion; volume transport"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-12.808-PS2-P1, OCW-12.808-PS2-P2"
+        }
+      ]
+    }
+  ]
+}

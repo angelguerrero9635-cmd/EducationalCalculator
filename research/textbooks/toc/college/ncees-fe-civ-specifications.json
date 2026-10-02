@@ -1,0 +1,642 @@
+{
+  "id": "ncees-fe-civ-specifications",
+  "curriculum": "NCEES FE Civil CBT exam specifications",
+  "publisher": "NCEES",
+  "edition": "Effective beginning with the July 2020 examinations",
+  "subject": "civil",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "© NCEES; free to view (all rights reserved)",
+    "url": "https://ncees.org/exams/fe-exam/",
+    "attribution": "Fundamentals of Engineering (FE) Civil CBT Exam Specifications, NCEES."
+  },
+  "terms": {
+    "unit": "Knowledge area",
+    "lesson": "Subtopic"
+  },
+  "sourceUrl": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+  "retrieved": "2026-10-02",
+  "notes": "Topic list and question counts per knowledge area only, as the brief allows (110 questions in all). No exam items, practice exams or Reference Handbook content were read. Fetched from ncees.org (robots.txt: Crawl-delay 10, disallows /*?, /calendar/action*, /events/action*, /cdn-cgi*), 10 s between requests. Topic mapping is ours.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+      "units": [
+        {
+          "n": "1",
+          "title": "Mathematics and Statistics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.numerical-methods#0",
+            "he.engineering.numerical-methods#1",
+            "he.engineering.numerical-methods#2",
+            "he.engineering.numerical-methods#3",
+            "he.engineering.numerical-methods#4",
+            "he.math.calc-1#0",
+            "he.math.calc-1#1",
+            "he.math.calc-1#2",
+            "he.math.calc-1#3",
+            "he.math.calc-1#4",
+            "he.math.diff-eq#0",
+            "he.math.diff-eq#1",
+            "he.math.diff-eq#2",
+            "he.math.diff-eq#3",
+            "he.math.diff-eq#4",
+            "he.math.linear-algebra#0",
+            "he.math.linear-algebra#1",
+            "he.math.linear-algebra#2",
+            "he.math.linear-algebra#3",
+            "he.math.linear-algebra#4"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "1.A",
+              "title": "Analytic geometry",
+              "url": null
+            },
+            {
+              "n": "1.B",
+              "title": "Single-variable calculus",
+              "url": null
+            },
+            {
+              "n": "1.C",
+              "title": "Vector operations",
+              "url": null
+            },
+            {
+              "n": "1.D",
+              "title": "Statistics (e.g., distributions, mean, mode, standard deviation, confidence interval, regression and curve fitting)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Ethics and Professional Practice",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "2.A",
+              "title": "Codes of ethics (professional and technical societies)",
+              "url": null
+            },
+            {
+              "n": "2.B",
+              "title": "Professional liability",
+              "url": null
+            },
+            {
+              "n": "2.C",
+              "title": "Licensure",
+              "url": null
+            },
+            {
+              "n": "2.D",
+              "title": "Contracts and contract law",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "3",
+          "title": "Engineering Economics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "3.A",
+              "title": "Time value of money (e.g., equivalence, present worth, equivalent annual worth, future worth, rate of return)",
+              "url": null
+            },
+            {
+              "n": "3.B",
+              "title": "Cost (e.g., fixed, variable, direct and indirect labor, incremental, average, sunk)",
+              "url": null
+            },
+            {
+              "n": "3.C",
+              "title": "Analyses (e.g., break-even, benefit-cost, life cycle, sustainability, renewable energy)",
+              "url": null
+            },
+            {
+              "n": "3.D",
+              "title": "Uncertainty (e.g., expected value and risk)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "4",
+          "title": "Statics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.statics#0",
+            "he.engineering.statics#1",
+            "he.engineering.statics#2",
+            "he.engineering.statics#3",
+            "he.engineering.statics#4"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "4.A",
+              "title": "Resultants of force systems",
+              "url": null
+            },
+            {
+              "n": "4.B",
+              "title": "Equivalent force systems",
+              "url": null
+            },
+            {
+              "n": "4.C",
+              "title": "Equilibrium of rigid bodies",
+              "url": null
+            },
+            {
+              "n": "4.D",
+              "title": "Frames and trusses",
+              "url": null
+            },
+            {
+              "n": "4.E",
+              "title": "Centroid of area",
+              "url": null
+            },
+            {
+              "n": "4.F",
+              "title": "Area moments of inertia",
+              "url": null
+            },
+            {
+              "n": "4.G",
+              "title": "Static friction",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Dynamics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.dynamics#0",
+            "he.engineering.dynamics#1",
+            "he.engineering.dynamics#2",
+            "he.engineering.dynamics#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "5.A",
+              "title": "Kinematics (e.g., particles, rigid bodies)",
+              "url": null
+            },
+            {
+              "n": "5.B",
+              "title": "Mass moments of inertia",
+              "url": null
+            },
+            {
+              "n": "5.C",
+              "title": "Force acceleration (e.g., particles, rigid bodies)",
+              "url": null
+            },
+            {
+              "n": "5.D",
+              "title": "Work, energy, and power (e.g., particles, rigid bodies)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Mechanics of Materials",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.mechanics-of-materials#0",
+            "he.engineering.mechanics-of-materials#1",
+            "he.engineering.mechanics-of-materials#2",
+            "he.engineering.mechanics-of-materials#3",
+            "he.engineering.mechanics-of-materials#4",
+            "he.engineering.mechanics-of-materials#5"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "6.A",
+              "title": "Shear and moment diagrams",
+              "url": null
+            },
+            {
+              "n": "6.B",
+              "title": "Stresses and strains (e.g., diagrams, axial, torsion, bending, shear, thermal)",
+              "url": null
+            },
+            {
+              "n": "6.C",
+              "title": "Deformations (e.g., axial, torsion, bending, thermal)",
+              "url": null
+            },
+            {
+              "n": "6.D",
+              "title": "Combined stresses, principal stresses, and Mohr's circle",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Materials",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.materials-science#0",
+            "he.engineering.materials-science#1",
+            "he.engineering.materials-science#2",
+            "he.engineering.materials-science#3"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "7.A",
+              "title": "Mix design of concrete and asphalt",
+              "url": null
+            },
+            {
+              "n": "7.B",
+              "title": "Test methods and specifications of metals, concrete, aggregates, asphalt, and wood",
+              "url": null
+            },
+            {
+              "n": "7.C",
+              "title": "Physical and mechanical properties of metals, concrete, aggregates, asphalt, and wood",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Fluid Mechanics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.fluid-mechanics#0",
+            "he.engineering.fluid-mechanics#1",
+            "he.engineering.fluid-mechanics#2",
+            "he.engineering.fluid-mechanics#3",
+            "he.engineering.fluid-mechanics#4",
+            "he.engineering.fluid-mechanics#5"
+          ],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "8.A",
+              "title": "Flow measurement",
+              "url": null
+            },
+            {
+              "n": "8.B",
+              "title": "Fluid properties",
+              "url": null
+            },
+            {
+              "n": "8.C",
+              "title": "Fluid statics",
+              "url": null
+            },
+            {
+              "n": "8.D",
+              "title": "Energy, impulse, and momentum of fluids",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Surveying",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.surveying#0",
+            "he.engineering.surveying#1",
+            "he.engineering.surveying#2",
+            "he.engineering.surveying#3"
+          ],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "9.A",
+              "title": "Angles, distances, and trigonometry",
+              "url": null
+            },
+            {
+              "n": "9.B",
+              "title": "Area computations",
+              "url": null
+            },
+            {
+              "n": "9.C",
+              "title": "Earthwork and volume computations",
+              "url": null
+            },
+            {
+              "n": "9.D",
+              "title": "Coordinate systems (e.g., state plane, latitude/longitude)",
+              "url": null
+            },
+            {
+              "n": "9.E",
+              "title": "Leveling (e.g., differential, elevations, percent grades)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Water Resources and Environmental Engineering",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.hydraulics-hydrology#0",
+            "he.engineering.hydraulics-hydrology#1",
+            "he.engineering.hydraulics-hydrology#2",
+            "he.engineering.hydraulics-hydrology#3",
+            "he.engineering.environmental#0",
+            "he.engineering.environmental#1",
+            "he.engineering.environmental#2",
+            "he.engineering.environmental#3"
+          ],
+          "questions": "10–15",
+          "lessons": [
+            {
+              "n": "10.A",
+              "title": "Basic hydrology (e.g., infiltration, rainfall, runoff, watersheds)",
+              "url": null
+            },
+            {
+              "n": "10.B",
+              "title": "Basic hydraulics (e.g., Manning equation, Bernoulli theorem, open-channel flow)",
+              "url": null
+            },
+            {
+              "n": "10.C",
+              "title": "Pumps",
+              "url": null
+            },
+            {
+              "n": "10.D",
+              "title": "Water distribution systems",
+              "url": null
+            },
+            {
+              "n": "10.E",
+              "title": "Flood control (e.g., dams, routing, spillways)",
+              "url": null
+            },
+            {
+              "n": "10.F",
+              "title": "Stormwater (e.g., detention, routing, quality)",
+              "url": null
+            },
+            {
+              "n": "10.G",
+              "title": "Collection systems (e.g., wastewater, stormwater)",
+              "url": null
+            },
+            {
+              "n": "10.H",
+              "title": "Groundwater (e.g., flow, wells, drawdown)",
+              "url": null
+            },
+            {
+              "n": "10.I",
+              "title": "Water quality (e.g., ground and surface, basic water chemistry)",
+              "url": null
+            },
+            {
+              "n": "10.J",
+              "title": "Testing and standards (e.g., water, wastewater, air, noise)",
+              "url": null
+            },
+            {
+              "n": "10.K",
+              "title": "Water and wastewater treatment (e.g., biological processes, softening, drinking water treatment)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Structural Engineering",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.structural-analysis#0",
+            "he.engineering.structural-analysis#1",
+            "he.engineering.structural-analysis#2",
+            "he.engineering.structural-analysis#3",
+            "he.engineering.steel-design#0",
+            "he.engineering.steel-design#1",
+            "he.engineering.steel-design#2",
+            "he.engineering.steel-design#3",
+            "he.engineering.concrete-design#0",
+            "he.engineering.concrete-design#1",
+            "he.engineering.concrete-design#2",
+            "he.engineering.concrete-design#3"
+          ],
+          "questions": "10–15",
+          "lessons": [
+            {
+              "n": "11.A",
+              "title": "Analysis of statically determinant beams, columns, trusses, and frames",
+              "url": null
+            },
+            {
+              "n": "11.B",
+              "title": "Deflection of statically determinant beams, trusses, and frames",
+              "url": null
+            },
+            {
+              "n": "11.C",
+              "title": "Column analysis (e.g., buckling, boundary conditions)",
+              "url": null
+            },
+            {
+              "n": "11.D",
+              "title": "Structural determinacy and stability analysis of beams, trusses, and frames",
+              "url": null
+            },
+            {
+              "n": "11.E",
+              "title": "Elementary statically indeterminate structures",
+              "url": null
+            },
+            {
+              "n": "11.F",
+              "title": "Loads, load combinations, and load paths (e.g., dead, live, lateral, influence lines and moving loads, tributary areas)",
+              "url": null
+            },
+            {
+              "n": "11.G",
+              "title": "Design of steel components (e.g., codes and design philosophies, beams, columns, tension members, connections)",
+              "url": null
+            },
+            {
+              "n": "11.H",
+              "title": "Design of reinforced concrete components (e.g., codes and design philosophies, beams, columns)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Geotechnical Engineering",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.soil-mechanics#0",
+            "he.engineering.soil-mechanics#1",
+            "he.engineering.soil-mechanics#2",
+            "he.engineering.soil-mechanics#3",
+            "he.engineering.soil-mechanics#4"
+          ],
+          "questions": "10–15",
+          "lessons": [
+            {
+              "n": "12.A",
+              "title": "Index properties and soil classifications",
+              "url": null
+            },
+            {
+              "n": "12.B",
+              "title": "Phase relations",
+              "url": null
+            },
+            {
+              "n": "12.C",
+              "title": "Laboratory and field tests",
+              "url": null
+            },
+            {
+              "n": "12.D",
+              "title": "Effective stress",
+              "url": null
+            },
+            {
+              "n": "12.E",
+              "title": "Stability of retaining structures (e.g., active/passive/at-rest pressure)",
+              "url": null
+            },
+            {
+              "n": "12.F",
+              "title": "Shear strength",
+              "url": null
+            },
+            {
+              "n": "12.G",
+              "title": "Bearing capacity",
+              "url": null
+            },
+            {
+              "n": "12.H",
+              "title": "Foundation types (e.g., spread footings, deep foundations, wall footings, mats)",
+              "url": null
+            },
+            {
+              "n": "12.I",
+              "title": "Consolidation and differential settlement",
+              "url": null
+            },
+            {
+              "n": "12.J",
+              "title": "Slope stability (e.g., fills, embankments, cuts, dams)",
+              "url": null
+            },
+            {
+              "n": "12.K",
+              "title": "Soil stabilization (e.g., chemical additives, geosynthetics)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Transportation Engineering",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [
+            "he.engineering.transportation#0",
+            "he.engineering.transportation#1",
+            "he.engineering.transportation#2",
+            "he.engineering.transportation#3"
+          ],
+          "questions": "9–14",
+          "lessons": [
+            {
+              "n": "13.A",
+              "title": "Geometric design (e.g., streets, highways, intersections)",
+              "url": null
+            },
+            {
+              "n": "13.B",
+              "title": "Pavement system design (e.g., thickness, subgrade, drainage, rehabilitation)",
+              "url": null
+            },
+            {
+              "n": "13.C",
+              "title": "Traffic capacity and flow theory",
+              "url": null
+            },
+            {
+              "n": "13.D",
+              "title": "Traffic control devices",
+              "url": null
+            },
+            {
+              "n": "13.E",
+              "title": "Transportation planning (e.g., travel forecast modeling, safety, trip generation)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Construction Engineering",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Civil-CBT-specs-1.pdf",
+          "topics": [],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "14.A",
+              "title": "Project administration (e.g., documents, management, procurement, project delivery methods)",
+              "url": null
+            },
+            {
+              "n": "14.B",
+              "title": "Construction operations and methods (e.g., safety, equipment, productivity analysis, temporary erosion control)",
+              "url": null
+            },
+            {
+              "n": "14.C",
+              "title": "Project controls (e.g., earned value, scheduling, allocation of resources, activity relationships)",
+              "url": null
+            },
+            {
+              "n": "14.D",
+              "title": "Construction estimating",
+              "url": null
+            },
+            {
+              "n": "14.E",
+              "title": "Interpretation of engineering drawings",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        }
+      ]
+    }
+  ]
+}

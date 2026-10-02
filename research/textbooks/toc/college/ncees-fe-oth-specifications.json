@@ -1,0 +1,676 @@
+{
+  "id": "ncees-fe-oth-specifications",
+  "curriculum": "NCEES FE Other Disciplines CBT exam specifications",
+  "publisher": "NCEES",
+  "edition": "Effective beginning with the July 2020 examinations",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "© NCEES; free to view (all rights reserved)",
+    "url": "https://ncees.org/exams/fe-exam/",
+    "attribution": "Fundamentals of Engineering (FE) Other Disciplines CBT Exam Specifications, NCEES."
+  },
+  "terms": {
+    "unit": "Knowledge area",
+    "lesson": "Subtopic"
+  },
+  "sourceUrl": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+  "retrieved": "2026-10-02",
+  "notes": "Topic list and question counts per knowledge area only, as the brief allows (110 questions in all). No exam items, practice exams or Reference Handbook content were read. Fetched from ncees.org (robots.txt: Crawl-delay 10, disallows /*?, /calendar/action*, /events/action*, /cdn-cgi*), 10 s between requests. Topic mapping is ours.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+      "units": [
+        {
+          "n": "1",
+          "title": "Mathematics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.numerical-methods#0",
+            "he.engineering.numerical-methods#1",
+            "he.engineering.numerical-methods#2",
+            "he.engineering.numerical-methods#3",
+            "he.engineering.numerical-methods#4",
+            "he.math.calc-1#0",
+            "he.math.calc-1#1",
+            "he.math.calc-1#2",
+            "he.math.calc-1#3",
+            "he.math.calc-1#4",
+            "he.math.diff-eq#0",
+            "he.math.diff-eq#1",
+            "he.math.diff-eq#2",
+            "he.math.diff-eq#3",
+            "he.math.diff-eq#4",
+            "he.math.linear-algebra#0",
+            "he.math.linear-algebra#1",
+            "he.math.linear-algebra#2",
+            "he.math.linear-algebra#3",
+            "he.math.linear-algebra#4"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "1.A",
+              "title": "Analytic geometry and trigonometry",
+              "url": null
+            },
+            {
+              "n": "1.B",
+              "title": "Differential equations",
+              "url": null
+            },
+            {
+              "n": "1.C",
+              "title": "Numerical methods (e.g., algebraic equations, roots of equations, approximations, precision limits, convergence)",
+              "url": null
+            },
+            {
+              "n": "1.D",
+              "title": "Linear algebra (e.g., matrix operations)",
+              "url": null
+            },
+            {
+              "n": "1.E",
+              "title": "Single-variable calculus",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Probability and Statistics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "2.A",
+              "title": "Estimation (e.g., point, confidence intervals)",
+              "url": null
+            },
+            {
+              "n": "2.B",
+              "title": "Expected value and expected error in decision making",
+              "url": null
+            },
+            {
+              "n": "2.C",
+              "title": "Sample distributions and sizes (e.g., significance, hypothesis testing, non-normal distributions)",
+              "url": null
+            },
+            {
+              "n": "2.D",
+              "title": "Goodness of fit (e.g., correlation coefficient, standard errors, R2)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "3",
+          "title": "Chemistry",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.chemistry.gen-chem-1#0",
+            "he.chemistry.gen-chem-1#1",
+            "he.chemistry.gen-chem-1#2",
+            "he.chemistry.gen-chem-1#3",
+            "he.chemistry.gen-chem-1#4",
+            "he.chemistry.gen-chem-2#0",
+            "he.chemistry.gen-chem-2#1",
+            "he.chemistry.gen-chem-2#2",
+            "he.chemistry.gen-chem-2#3",
+            "he.chemistry.gen-chem-2#4"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "3.A",
+              "title": "Oxidation and reduction (e.g., reactions, corrosion control)",
+              "url": null
+            },
+            {
+              "n": "3.B",
+              "title": "Acids and bases (e.g., pH, buffers)",
+              "url": null
+            },
+            {
+              "n": "3.C",
+              "title": "Chemical reactions (e.g., stoichiometry, equilibrium, bioconversion)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Instrumentation and Controls",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.control-systems#0",
+            "he.engineering.control-systems#1",
+            "he.engineering.control-systems#2",
+            "he.engineering.control-systems#3",
+            "he.engineering.control-systems#4",
+            "he.engineering.bioinstrumentation#0",
+            "he.engineering.bioinstrumentation#1",
+            "he.engineering.bioinstrumentation#2",
+            "he.engineering.bioinstrumentation#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "4.A",
+              "title": "Sensors (e.g., temperature, pressure, motion, pH, chemical constituents)",
+              "url": null
+            },
+            {
+              "n": "4.B",
+              "title": "Data acquisition (e.g., logging, sampling rate, sampling range, filtering, amplification, signal interface, signal processing, analog/digital [A/D], digital/analog [D/A], digital)",
+              "url": null
+            },
+            {
+              "n": "4.C",
+              "title": "Logic diagrams",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Engineering Ethics and Societal Impacts",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "5.A",
+              "title": "Codes of ethics (e.g., identifying and solving ethical dilemmas)",
+              "url": null
+            },
+            {
+              "n": "5.B",
+              "title": "Public protection issues (e.g., licensing boards)",
+              "url": null
+            },
+            {
+              "n": "5.C",
+              "title": "Societal impacts (e.g., economic, sustainability, life-cycle analysis, environmental, public safety)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "6",
+          "title": "Safety, Health, and Environment",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "6.A",
+              "title": "Industrial hygiene (e.g., carcinogens, toxicology, exposure limits, radiation exposure, biohazards, half-life)",
+              "url": null
+            },
+            {
+              "n": "6.B",
+              "title": "Basic safety equipment (e.g., pressure-relief valves, emergency shutoffs, fire prevention and control, personal protective equipment)",
+              "url": null
+            },
+            {
+              "n": "6.C",
+              "title": "Gas detection and monitoring (e.g., O2, CO, CO2, CH4, H2S, radon)",
+              "url": null
+            },
+            {
+              "n": "6.D",
+              "title": "Electrical safety",
+              "url": null
+            },
+            {
+              "n": "6.E",
+              "title": "Confined space entry and ventilation rates",
+              "url": null
+            },
+            {
+              "n": "6.F",
+              "title": "Hazard communications (e.g., SDS, proper labeling, concentrations, fire ratings, safety equipment)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "7",
+          "title": "Engineering Economics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "7.A",
+              "title": "Time value of money (e.g., present worth, annual worth, future worth, rate of return)",
+              "url": null
+            },
+            {
+              "n": "7.B",
+              "title": "Cost analysis (e.g., incremental, average, sunk, estimating)",
+              "url": null
+            },
+            {
+              "n": "7.C",
+              "title": "Economic analyses (e.g., break-even, benefit-cost, optimal economic life)",
+              "url": null
+            },
+            {
+              "n": "7.D",
+              "title": "Uncertainty (e.g., expected value and risk)",
+              "url": null
+            },
+            {
+              "n": "7.E",
+              "title": "Project selection (e.g., comparison of projects with unequal lives, lease/buy/make, depreciation, discounted cash flow, decision trees)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "8",
+          "title": "Statics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.statics#0",
+            "he.engineering.statics#1",
+            "he.engineering.statics#2",
+            "he.engineering.statics#3",
+            "he.engineering.statics#4"
+          ],
+          "questions": "9–14",
+          "lessons": [
+            {
+              "n": "8.A",
+              "title": "Vector analysis",
+              "url": null
+            },
+            {
+              "n": "8.B",
+              "title": "Force systems (e.g., resultants, concurrent, distributed)",
+              "url": null
+            },
+            {
+              "n": "8.C",
+              "title": "Force couple systems",
+              "url": null
+            },
+            {
+              "n": "8.D",
+              "title": "Equilibrium of rigid bodies (e.g., support reactions)",
+              "url": null
+            },
+            {
+              "n": "8.E",
+              "title": "Internal forces in rigid bodies (e.g., trusses, frames, machines)",
+              "url": null
+            },
+            {
+              "n": "8.F",
+              "title": "Area properties (e.g., centroids, moments of inertia, radius of gyration, parallel axis theorem)",
+              "url": null
+            },
+            {
+              "n": "8.G",
+              "title": "Static friction",
+              "url": null
+            },
+            {
+              "n": "8.H",
+              "title": "Free-body diagrams",
+              "url": null
+            },
+            {
+              "n": "8.I",
+              "title": "Weight and mass computations (e.g., slug, lbm, lbf, kg, N, ton, dyne, g, gc)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Dynamics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.dynamics#0",
+            "he.engineering.dynamics#1",
+            "he.engineering.dynamics#2",
+            "he.engineering.dynamics#3"
+          ],
+          "questions": "9–14",
+          "lessons": [
+            {
+              "n": "9.A",
+              "title": "Particle and rigid-body kinematics",
+              "url": null
+            },
+            {
+              "n": "9.B",
+              "title": "Linear motion (e.g., force, mass, acceleration)",
+              "url": null
+            },
+            {
+              "n": "9.C",
+              "title": "Angular motion (e.g., torque, inertia, acceleration)",
+              "url": null
+            },
+            {
+              "n": "9.D",
+              "title": "Mass moment of inertia",
+              "url": null
+            },
+            {
+              "n": "9.E",
+              "title": "Impulse and momentum (e.g., linear, angular)",
+              "url": null
+            },
+            {
+              "n": "9.F",
+              "title": "Work, energy, and power",
+              "url": null
+            },
+            {
+              "n": "9.G",
+              "title": "Dynamic friction",
+              "url": null
+            },
+            {
+              "n": "9.H",
+              "title": "Vibrations (e.g., natural frequency)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Strength of Materials",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.mechanics-of-materials#0",
+            "he.engineering.mechanics-of-materials#1",
+            "he.engineering.mechanics-of-materials#2",
+            "he.engineering.mechanics-of-materials#3",
+            "he.engineering.mechanics-of-materials#4",
+            "he.engineering.mechanics-of-materials#5"
+          ],
+          "questions": "9–14",
+          "lessons": [
+            {
+              "n": "10.A",
+              "title": "Stress types (e.g., normal, shear)",
+              "url": null
+            },
+            {
+              "n": "10.B",
+              "title": "Combined loading–principle of superposition",
+              "url": null
+            },
+            {
+              "n": "10.C",
+              "title": "Stress and strain caused by axial loads, bending loads, torsion, or transverse shear forces",
+              "url": null
+            },
+            {
+              "n": "10.D",
+              "title": "Shear and moment diagrams",
+              "url": null
+            },
+            {
+              "n": "10.E",
+              "title": "Analysis of beams, trusses, frames, and columns",
+              "url": null
+            },
+            {
+              "n": "10.F",
+              "title": "Loads and deformations (e.g., axial-extension, torque-angle of twist, moment-rotation)",
+              "url": null
+            },
+            {
+              "n": "10.G",
+              "title": "Stress transformation and principal stresses, including stress-based yielding and fracture criteria (e.g., Mohr's circle, maximum normal stress, Tresca, von Mises)",
+              "url": null
+            },
+            {
+              "n": "10.H",
+              "title": "Material failure (e.g., Euler buckling, creep, fatigue, brittle fracture, stress concentration factors, factor of safety, and allowable stress)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Materials",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.materials-science#0",
+            "he.engineering.materials-science#1",
+            "he.engineering.materials-science#2",
+            "he.engineering.materials-science#3"
+          ],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "11.A",
+              "title": "Physical (phase diagrams) properties of materials (e.g., alloy phase diagrams, phase equilibrium, and phase change)",
+              "url": null
+            },
+            {
+              "n": "11.B",
+              "title": "Mechanical properties of materials",
+              "url": null
+            },
+            {
+              "n": "11.C",
+              "title": "Chemical properties of materials",
+              "url": null
+            },
+            {
+              "n": "11.D",
+              "title": "Thermal properties of materials",
+              "url": null
+            },
+            {
+              "n": "11.E",
+              "title": "Electrical properties of materials",
+              "url": null
+            },
+            {
+              "n": "11.F",
+              "title": "Material selection",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Fluid Mechanics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.fluid-mechanics#0",
+            "he.engineering.fluid-mechanics#1",
+            "he.engineering.fluid-mechanics#2",
+            "he.engineering.fluid-mechanics#3",
+            "he.engineering.fluid-mechanics#4",
+            "he.engineering.fluid-mechanics#5"
+          ],
+          "questions": "12–18",
+          "lessons": [
+            {
+              "n": "12.A",
+              "title": "Fluid properties (e.g., Newtonian, non-Newtonian, liquids and gases)",
+              "url": null
+            },
+            {
+              "n": "12.B",
+              "title": "Dimensionless numbers (e.g., Reynolds number, Froude number, Mach number)",
+              "url": null
+            },
+            {
+              "n": "12.C",
+              "title": "Laminar and turbulent flow",
+              "url": null
+            },
+            {
+              "n": "12.D",
+              "title": "Fluid statics (e.g., hydrostatic head)",
+              "url": null
+            },
+            {
+              "n": "12.E",
+              "title": "Energy, impulse, and momentum equations (e.g., Bernoulli equation)",
+              "url": null
+            },
+            {
+              "n": "12.F",
+              "title": "Pipe and duct flow and friction losses (e.g., pipes, valves, fittings, laminar, transitional and turbulent flow)",
+              "url": null
+            },
+            {
+              "n": "12.G",
+              "title": "Open-channel flow (e.g., Manning's equation, drag)",
+              "url": null
+            },
+            {
+              "n": "12.H",
+              "title": "Fluid transport systems (e.g., series and parallel operations)",
+              "url": null
+            },
+            {
+              "n": "12.I",
+              "title": "Flow measurement (e.g., pitot tube, venturi meter, weir)",
+              "url": null
+            },
+            {
+              "n": "12.J",
+              "title": "Turbomachinery (e.g., pumps, turbines, fans, compressors)",
+              "url": null
+            },
+            {
+              "n": "12.K",
+              "title": "Ideal gas law (e.g., mixtures of nonreactive gases)",
+              "url": null
+            },
+            {
+              "n": "12.L",
+              "title": "Real gas law (e.g., z factor)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Basic Electrical Engineering",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.circuits-1#0",
+            "he.engineering.circuits-1#1",
+            "he.engineering.circuits-1#2",
+            "he.engineering.circuits-1#3",
+            "he.engineering.circuits-1#4"
+          ],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "13.A",
+              "title": "Electrical fundamentals (e.g., charge, current, voltage, resistance, power, energy)",
+              "url": null
+            },
+            {
+              "n": "13.B",
+              "title": "Current and voltage laws (e.g., Kirchhoff, Ohm)",
+              "url": null
+            },
+            {
+              "n": "13.C",
+              "title": "AC and DC circuits (e.g., real and imaginary components, complex numbers, power factor, reactance and impedance, series, parallel, capacitance and inductance, RLC circuits)",
+              "url": null
+            },
+            {
+              "n": "13.D",
+              "title": "Measuring devices (e.g., voltmeter, ammeter, wattmeter)",
+              "url": null
+            },
+            {
+              "n": "13.E",
+              "title": "Three-phase power (e.g., motor efficiency, balanced loads, power equation)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Thermodynamics and Heat Transfer",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Other-Disciplines-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.thermodynamics#0",
+            "he.engineering.thermodynamics#1",
+            "he.engineering.thermodynamics#2",
+            "he.engineering.thermodynamics#3",
+            "he.engineering.heat-transfer#0",
+            "he.engineering.heat-transfer#1",
+            "he.engineering.heat-transfer#2",
+            "he.engineering.heat-transfer#3"
+          ],
+          "questions": "9–14",
+          "lessons": [
+            {
+              "n": "14.A",
+              "title": "Thermodynamic laws (e.g., first law, second law)",
+              "url": null
+            },
+            {
+              "n": "14.B",
+              "title": "Thermodynamic equilibrium",
+              "url": null
+            },
+            {
+              "n": "14.C",
+              "title": "Thermodynamic properties (e.g., entropy, enthalpy, heat capacity)",
+              "url": null
+            },
+            {
+              "n": "14.D",
+              "title": "Thermodynamic processes (e.g., isothermal, adiabatic, reversible, irreversible)",
+              "url": null
+            },
+            {
+              "n": "14.E",
+              "title": "Heat transfer (e.g., conduction, convection, radiation)",
+              "url": null
+            },
+            {
+              "n": "14.F",
+              "title": "Mass and energy balances",
+              "url": null
+            },
+            {
+              "n": "14.G",
+              "title": "Property and phase diagrams (e.g., T-s, P-h, P-v)",
+              "url": null
+            },
+            {
+              "n": "14.H",
+              "title": "Combustion and combustion products (e.g., CO, CO2, NOX, ash, particulates)",
+              "url": null
+            },
+            {
+              "n": "14.I",
+              "title": "Psychrometrics (e.g., relative humidity, wet bulb)",
+              "url": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,647 @@
+{
+  "id": "johnson-introduction-to-geology",
+  "curriculum": "An Introduction to Geology",
+  "publisher": "OpenGeology / Salt Lake Community College (LibreTexts Geosciences edition)",
+  "edition": "LibreTexts edition",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "An Introduction to Geology by Chris Johnson, Matthew D. Affolter, Paul Inkenbrandt and Cam Mosher; LibreTexts Geosciences edition. CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)",
+  "retrieved": "2026-10-02",
+  "notes": "CC BY-NC-SA 4.0: titles and mapping (topic order; the plan asked for the rock and mineral tables' names only, which these titles cover). opengeology.org/textbook (robots.txt allows) was read for its home page only.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Understanding Science",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/01%3A_Understanding_Science",
+          "topics": [],
+          "notes": "Nature of science.",
+          "lessons": [
+            {
+              "n": "1.01",
+              "title": "What is Science",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/01%3A_Understanding_Science/1.01%3A_What_is_Science"
+            },
+            {
+              "n": "1.02",
+              "title": "The Scientific Method",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/01%3A_Understanding_Science/1.02%3A_The_Scientific_Method"
+            },
+            {
+              "n": "1.03",
+              "title": "Early Scientific Thought",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/01%3A_Understanding_Science/1.03%3A_Early_Scientific_Thought"
+            },
+            {
+              "n": "1.04",
+              "title": "Foundations of Modern Geology",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/01%3A_Understanding_Science/1.04%3A_Foundations_of_Modern_Geology"
+            },
+            {
+              "n": "1.05",
+              "title": "The Study of Geology",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/01%3A_Understanding_Science/1.05%3A_The_Study_of_Geology"
+            },
+            {
+              "n": "1.06",
+              "title": "Science Denial and Evaluating Sources",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/01%3A_Understanding_Science/1.06%3A_Science_Denial_and_Evaluating_Sources"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Plate Tectonics",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics",
+          "topics": ["he.earth-science.physical-geology#1"],
+          "lessons": [
+            {
+              "n": "2.01",
+              "title": "Alfred Wegeners Continental Drift Hypothesis",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics/2.01%3A_Alfred_Wegeners_Continental_Drift_Hypothesis"
+            },
+            {
+              "n": "2.02",
+              "title": "Layers of the Earth",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics/2.02%3A_Layers_of_the_Earth"
+            },
+            {
+              "n": "2.03",
+              "title": "Convergent Boundaries",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics/2.03%3A_Convergent_Boundaries"
+            },
+            {
+              "n": "2.04",
+              "title": "Divergent Boundaries",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics/2.04%3A_Divergent_Boundaries"
+            },
+            {
+              "n": "2.05",
+              "title": "Transform Boudaries",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics/2.05%3A_Transform_Boudaries"
+            },
+            {
+              "n": "2.06",
+              "title": "The Wilson Cycle",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics/2.06%3A_The_Wilson_Cycle"
+            },
+            {
+              "n": "2.07",
+              "title": "Hotspots",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics/2.07%3A_Hotspots"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Minerals",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals",
+          "topics": ["he.earth-science.physical-geology#0", "he.earth-science.mineralogy#1"],
+          "lessons": [
+            {
+              "n": "3.01",
+              "title": "Prelude to Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals/3.01%3A_Prelude_to_Minerals"
+            },
+            {
+              "n": "3.02",
+              "title": "Chemistry of Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals/3.02%3A_Chemistry_of_Minerals"
+            },
+            {
+              "n": "3.03",
+              "title": "Formation of Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals/3.03%3A_Formation_of_Minerals"
+            },
+            {
+              "n": "3.04",
+              "title": "Silicate Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals/3.04%3A_Silicate_Minerals"
+            },
+            {
+              "n": "3.05",
+              "title": "Non-Silicate Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals/3.05%3A_Non-Silicate_Minerals"
+            },
+            {
+              "n": "3.06",
+              "title": "Identifying Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals/3.06%3A_Identifying_Minerals"
+            },
+            {
+              "n": "3.0S",
+              "title": "Summary",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals/3.0S%3A_3.S%3A_Summary"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Igneous Processes and Volcanoes",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/04%3A_Igneous_Processes_and_Volcanoes",
+          "topics": ["he.earth-science.physical-geology#0", "he.earth-science.physical-geology#2"],
+          "lessons": [
+            {
+              "n": "4.01",
+              "title": "Classification of Igneous Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/04%3A_Igneous_Processes_and_Volcanoes/4.01%3A_Classification_of_Igneous_Rocks"
+            },
+            {
+              "n": "4.02",
+              "title": "Bowens Reaction Series",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/04%3A_Igneous_Processes_and_Volcanoes/4.02%3A_Bowens_Reaction_Series"
+            },
+            {
+              "n": "4.03",
+              "title": "Magma Generation",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/04%3A_Igneous_Processes_and_Volcanoes/4.03%3A_Magma_Generation"
+            },
+            {
+              "n": "4.04",
+              "title": "Partial Melting and Crystallization",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/04%3A_Igneous_Processes_and_Volcanoes/4.04%3A_Partial_Melting_and_Crystallization"
+            },
+            {
+              "n": "4.05",
+              "title": "Volcanism",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/04%3A_Igneous_Processes_and_Volcanoes/4.05%3A_Volcanism"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Weathering Erosion and Sedimentary Rocks",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/05%3A_Weathering_Erosion_and_Sedimentary_Rocks",
+          "topics": ["he.earth-science.physical-geology#0", "he.earth-science.physical-geology#3"],
+          "lessons": [
+            {
+              "n": "5.01",
+              "title": "The Unique Properties of Water",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/05%3A_Weathering_Erosion_and_Sedimentary_Rocks/5.01%3A_The_Unique_Properties_of_Water"
+            },
+            {
+              "n": "5.02",
+              "title": "Weathering and Erosion",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/05%3A_Weathering_Erosion_and_Sedimentary_Rocks/5.02%3A_Weathering_and_Erosion"
+            },
+            {
+              "n": "5.03",
+              "title": "Sedimentary Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/05%3A_Weathering_Erosion_and_Sedimentary_Rocks/5.03%3A_Sedimentary_Rocks"
+            },
+            {
+              "n": "5.04",
+              "title": "Sedimentary Structures",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/05%3A_Weathering_Erosion_and_Sedimentary_Rocks/5.04%3A_Sedimentary_Structures"
+            },
+            {
+              "n": "5.05",
+              "title": "Depositional Environments",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/05%3A_Weathering_Erosion_and_Sedimentary_Rocks/5.05%3A_Depositional_Environments"
+            },
+            {
+              "n": "5.0S",
+              "title": "Weathering Erosion and Sedimentary Rocks (Summary)",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/05%3A_Weathering_Erosion_and_Sedimentary_Rocks/5.0S%3A_5.S%3A_Weathering_Erosion_and_Sedimentary_Rocks_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Metamorphic Rocks",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/06%3A_Metamorphic_Rocks",
+          "topics": ["he.earth-science.physical-geology#0"],
+          "lessons": [
+            {
+              "n": "6.01",
+              "title": "Prelude to Metamorphic Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/06%3A_Metamorphic_Rocks/6.01%3A_Prelude_to_Metamorphic_Rocks"
+            },
+            {
+              "n": "6.02",
+              "title": "Metamorphic Processes",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/06%3A_Metamorphic_Rocks/6.02%3A_Metamorphic_Processes"
+            },
+            {
+              "n": "6.03",
+              "title": "Metamorphic Textures",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/06%3A_Metamorphic_Rocks/6.03%3A_Metamorphic_Textures"
+            },
+            {
+              "n": "6.04",
+              "title": "Metamorphic Grade",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/06%3A_Metamorphic_Rocks/6.04%3A_Metamorphic_Grade"
+            },
+            {
+              "n": "6.05",
+              "title": "Metamorphic Environments",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/06%3A_Metamorphic_Rocks/6.05%3A_Metamorphic_Environments"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Geologic Time",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/07%3A_Geologic_Time",
+          "topics": [
+            "he.earth-science.historical-geology#0",
+            "he.earth-science.historical-geology#1",
+            "he.earth-science.historical-geology#2"
+          ],
+          "lessons": [
+            {
+              "n": "7.01",
+              "title": "Relative Dating",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/07%3A_Geologic_Time/7.01%3A_Relative_Dating"
+            },
+            {
+              "n": "7.02",
+              "title": "Absolute Dating",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/07%3A_Geologic_Time/7.02%3A_Absolute_Dating"
+            },
+            {
+              "n": "7.03",
+              "title": "Fossils and Evolution",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/07%3A_Geologic_Time/7.03%3A_Fossils_and_Evolution"
+            },
+            {
+              "n": "7.04",
+              "title": "Correlation",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/07%3A_Geologic_Time/7.04%3A_Correlation"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Earth History",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History",
+          "topics": ["he.earth-science.historical-geology#3"],
+          "lessons": [
+            {
+              "n": "8.01",
+              "title": "Origin of the Universe",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History/8.01%3A_Origin_of_the_Universe"
+            },
+            {
+              "n": "8.02",
+              "title": "Origin of the Solar SystemThe Nebular Hypothesis",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History/8.02%3A_Origin_of_the_Solar_SystemThe_Nebular_Hypothesis"
+            },
+            {
+              "n": "8.03",
+              "title": "Hadean Eon",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History/8.03%3A_Hadean_Eon"
+            },
+            {
+              "n": "8.04",
+              "title": "Archean Eon",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History/8.04%3A_Archean_Eon"
+            },
+            {
+              "n": "8.05",
+              "title": "Proterozoic Eon",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History/8.05%3A_Proterozoic_Eon"
+            },
+            {
+              "n": "8.06",
+              "title": "Paleozoic",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History/8.06%3A_Paleozoic"
+            },
+            {
+              "n": "8.07",
+              "title": "Mesozoic",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History/8.07%3A_Mesozoic"
+            },
+            {
+              "n": "8.08",
+              "title": "Cenozoic",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History/8.08%3A_Cenozoic"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Crustal Deformation and Earthquakes",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes",
+          "topics": ["he.earth-science.physical-geology#2", "he.earth-science.geophysics#0"],
+          "notes": "Stress and strain, folds, faults (gap), earthquakes.",
+          "lessons": [
+            {
+              "n": "9.01",
+              "title": "Stress and Strain",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.01%3A_Stress_and_Strain"
+            },
+            {
+              "n": "9.02",
+              "title": "Deformation",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.02%3A_Deformation"
+            },
+            {
+              "n": "9.03",
+              "title": "Geological Maps",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.03%3A_Geological_Maps"
+            },
+            {
+              "n": "9.04",
+              "title": "Folds",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.04%3A_Folds"
+            },
+            {
+              "n": "9.05",
+              "title": "Faults",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.05%3A_Faults"
+            },
+            {
+              "n": "9.06",
+              "title": "Earthquake Essentials",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.06%3A_Earthquake_Essentials"
+            },
+            {
+              "n": "9.07",
+              "title": "Measuring Earthquakes",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.07%3A_Measuring_Earthquakes"
+            },
+            {
+              "n": "9.08",
+              "title": "Earthquake Risk",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.08%3A_Earthquake_Risk"
+            },
+            {
+              "n": "9.09",
+              "title": "Case Studies",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes/9.09%3A_Case_Studies"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Mass Wasting",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/10%3A_Mass_Wasting",
+          "topics": ["he.earth-science.physical-geology#3"],
+          "lessons": [
+            {
+              "n": "10.01",
+              "title": "Slope Strength",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/10%3A_Mass_Wasting/10.01%3A_Slope_Strength"
+            },
+            {
+              "n": "10.02",
+              "title": "Mass-Wasting Triggers and Mitigation",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/10%3A_Mass_Wasting/10.02%3A_Mass-Wasting_Triggers_and_Mitigation"
+            },
+            {
+              "n": "10.03",
+              "title": "Landslide Classification and Identification",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/10%3A_Mass_Wasting/10.03%3A_Landslide_Classification_and_Identification"
+            },
+            {
+              "n": "10.04",
+              "title": "Examples of Landslides",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/10%3A_Mass_Wasting/10.04%3A_Examples_of_Landslides"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Water",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water",
+          "topics": [
+            "he.earth-science.hydrology#0",
+            "he.earth-science.hydrology#1",
+            "he.earth-science.hydrology#2"
+          ],
+          "lessons": [
+            {
+              "n": "11.01",
+              "title": "Prelude to Water",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.01%3A_Prelude_to_Water"
+            },
+            {
+              "n": "11.02",
+              "title": "Properties of Water",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.02%3A_Properties_of_Water"
+            },
+            {
+              "n": "11.03",
+              "title": "Water Cycle",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.03%3A_Water_Cycle"
+            },
+            {
+              "n": "11.04",
+              "title": "Water Basin and Budgets",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.04%3A_Water_Basin_and_Budgets"
+            },
+            {
+              "n": "11.05",
+              "title": "Water Use and Distribution",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.05%3A_Water_Use_and_Distribution"
+            },
+            {
+              "n": "11.06",
+              "title": "Water Law",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.06%3A_Water_Law"
+            },
+            {
+              "n": "11.07",
+              "title": "Surface Water",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.07%3A_Surface_Water"
+            },
+            {
+              "n": "11.08",
+              "title": "Groundwater",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.08%3A_Groundwater"
+            },
+            {
+              "n": "11.09",
+              "title": "Water Contamination",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.09%3A_Water_Contamination"
+            },
+            {
+              "n": "11.10",
+              "title": "Karst",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/11%3A_Water/11.10%3A_Karst"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": " Coastlines",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/12%3A__Coastlines",
+          "topics": ["he.earth-science.oceanography#3", "he.earth-science.physical-geology#3"],
+          "lessons": [
+            {
+              "n": "12.01",
+              "title": "Waves and Wave Processes",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/12%3A__Coastlines/12.01%3A_Waves_and_Wave_Processes"
+            },
+            {
+              "n": "12.02",
+              "title": "Shoreline Features",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/12%3A__Coastlines/12.02%3A_Shoreline_Features"
+            },
+            {
+              "n": "12.03",
+              "title": "Current and Tides",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/12%3A__Coastlines/12.03%3A_Current_and_Tides"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Deserts",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/13%3A_Deserts",
+          "topics": ["he.geography.physical-geography#2", "he.geography.physical-geography#1"],
+          "lessons": [
+            {
+              "n": "13.01",
+              "title": "Prelude to Deserts",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/13%3A_Deserts/13.01%3A_Prelude_to_Deserts"
+            },
+            {
+              "n": "13.02",
+              "title": "The Origin of Deserts",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/13%3A_Deserts/13.02%3A_The_Origin_of_Deserts"
+            },
+            {
+              "n": "13.03",
+              "title": "Desert Weathering and Erosion",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/13%3A_Deserts/13.03%3A_Desert_Weathering_and_Erosion"
+            },
+            {
+              "n": "13.04",
+              "title": "Desert Landforms",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/13%3A_Deserts/13.04%3A_Desert_Landforms"
+            },
+            {
+              "n": "13.05",
+              "title": "The Great Basin and the Basin and Range",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/13%3A_Deserts/13.05%3A_The_Great_Basin_and_the_Basin_and_Range"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Glaciers",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/14%3A_Glaciers",
+          "topics": ["he.earth-science.physical-geology#3"],
+          "lessons": [
+            {
+              "n": "14.01",
+              "title": "Prelude to Galciers",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/14%3A_Glaciers/14.01%3A_Prelude_to_Galciers"
+            },
+            {
+              "n": "14.02",
+              "title": "Types of Glaciers",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/14%3A_Glaciers/14.02%3A_Types_of_Glaciers"
+            },
+            {
+              "n": "14.03",
+              "title": "Glacier Formation and Movement",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/14%3A_Glaciers/14.03%3A_Glacier_Formation_and_Movement"
+            },
+            {
+              "n": "14.04",
+              "title": "Glacial Budget",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/14%3A_Glaciers/14.04%3A_Glacial_Budget"
+            },
+            {
+              "n": "14.05",
+              "title": "Glacial Landforms",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/14%3A_Glaciers/14.05%3A_Glacial_Landforms"
+            },
+            {
+              "n": "14.06",
+              "title": "Ice Age Glaciations",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/14%3A_Glaciers/14.06%3A_Ice_Age_Glaciations"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Global Climate Change",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/15%3A_Global_Climate_Change",
+          "topics": [
+            "he.geography.climatology#0",
+            "he.geography.climatology#2",
+            "he.geography.climatology#3"
+          ],
+          "lessons": [
+            {
+              "n": "15.01",
+              "title": "Global Climate Change",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/15%3A_Global_Climate_Change/15.01%3A_Global_Climate_Change"
+            },
+            {
+              "n": "15.02",
+              "title": "Earths Temperature",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/15%3A_Global_Climate_Change/15.02%3A_Earths_Temperature"
+            },
+            {
+              "n": "15.03",
+              "title": "Evidence of Recent Climate Change",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/15%3A_Global_Climate_Change/15.03%3A_Evidence_of_Recent_Climate_Change"
+            },
+            {
+              "n": "15.04",
+              "title": "Prehistoric Climate Change",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/15%3A_Global_Climate_Change/15.04%3A_Prehistoric_Climate_Change"
+            },
+            {
+              "n": "15.05",
+              "title": "Anthropogenic Causes of Climate Change",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/15%3A_Global_Climate_Change/15.05%3A_Anthropogenic_Causes_of_Climate_Change"
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Energy and Mineral Resources",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/16%3A_Energy_and_Mineral_Resources",
+          "topics": [],
+          "notes": "Energy and mineral resources: no topic.",
+          "lessons": [
+            {
+              "n": "16.01",
+              "title": "Prelude to Energy and Mineral Resources",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/16%3A_Energy_and_Mineral_Resources/16.01%3A_Prelude_to_Energy_and_Mineral_Resources"
+            },
+            {
+              "n": "16.02",
+              "title": "Mining",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/16%3A_Energy_and_Mineral_Resources/16.02%3A_Mining"
+            },
+            {
+              "n": "16.03",
+              "title": "Fossil Fuels",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/16%3A_Energy_and_Mineral_Resources/16.03%3A_Fossil_Fuels"
+            },
+            {
+              "n": "16.04",
+              "title": "Mineral Resources",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/16%3A_Energy_and_Mineral_Resources/16.04%3A_Mineral_Resources"
+            },
+            {
+              "n": "16.0S",
+              "title": "Summary",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/16%3A_Energy_and_Mineral_Resources/16.0S%3A_16.S%3A_Summary"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

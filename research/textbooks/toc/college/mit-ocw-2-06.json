@@ -1,0 +1,189 @@
+{
+  "id": "mit-ocw-2-06",
+  "curriculum": "MIT OCW 2.06 Fluid Dynamics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2013",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Kripa K. Varanasi. 2.06 Fluid Dynamics, Spring 2013. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Kripa K. Varanasi. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # TOPICS SUPPLEMENTARY NOTES KEY DATES L1 Fluid Statics: Pressure Distribution, Forces on Surfaces with Examples L2 Buoyancy Forces on Surfaces R1 Recitation 1 L3 Fluids Undergoing Constant Acceleration; Introduction to Surface Tension L4 Surface Tension and Capillarity Note on Surface Tension (PDF) Problem Set 1 Due R2 Recitation 2 L5 Open Systems: Control Volume Formulation, Conservation of Mass and Momentum Contact Lens Example (PDF) Problem Set 2 Due R3 Recitation 3 L6 Examples of Use of Control Volume Formulation, Bernoulli Equation Q1 Quiz 1. Covers Lectures 1–4 and Problem Sets 1–2. L7 Momentum Equation, Examples Using Momentum Equation L8 Differential Forms: Mass Conservation, Substantial Derivative, Euler Equations Vector Operator Notes (PDF) Problem Set 3 Due R4 Recitation 4 L9 Differential Forms: Viscous Fluids and the Navier-Stokes Equation L10 Navier-Stokes Examples: Bea Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit2_06s13_pracprbquiz1",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s13_pracprbquiz1/",
+          "topics": ["he.engineering.fluid-mechanics#0"],
+          "examples": [
+            "floating pier anchored to a block: rope tension and when the block lifts",
+            "force on a curved semicircular tunnel wall under the sea",
+            "pore size of a membrane from the pressure a piston needs (capillary pressure)"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.06-PQ1-1, OCW-2.06-PQ1-2, OCW-2.06-PQ1-3"
+        },
+        {
+          "n": "2",
+          "title": "mit2_06s13_pracprbquiz2",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s13_pracprbquiz2/",
+          "topics": ["he.engineering.fluid-mechanics#2", "he.engineering.fluid-mechanics#1"],
+          "examples": [
+            "lava flow down a spreading slope: speed and depth from continuity",
+            "oil leaking from a holed tanker: outflow and time to stop",
+            "thrust of a water-jet surfboard",
+            "vacuum cleaner inlet: streamlines, flow rate and suction pressure"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-2.06-PQ2-1, OCW-2.06-PQ2-2, OCW-2.06-PQ2-3, OCW-2.06-PQ2-4"
+        },
+        {
+          "n": "3",
+          "title": "mit2_06s13_ps1",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s13_ps1/",
+          "topics": ["he.engineering.fluid-mechanics#0"],
+          "examples": [
+            "air pressure in a tank from a mercury manometer, and the reverse",
+            "depth at which an L-shaped hinged gate opens",
+            "depth of oil held by a floating semicircular boom",
+            "water force on a triangular dam and its line of action; tipping check",
+            "water level after a floating ice block melts"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-2.06-PS1-1, OCW-2.06-PS1-2, OCW-2.06-PS1-3, OCW-2.06-PS1-4, OCW-2.06-PS1-5"
+        },
+        {
+          "n": "4",
+          "title": "mit2_06s13_ps2",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s13_ps2/",
+          "topics": ["he.engineering.fluid-mechanics#0"],
+          "examples": [
+            "U-tube accelerometer: level difference against acceleration",
+            "air volume to raise a sunken ship with a balloon",
+            "angle of a helium balloon tethered in an accelerating train",
+            "diameter after two soap bubbles merge",
+            "force to squeeze a non-wetting liquid film between plates",
+            "pressure inside a soap bubble",
+            "work from a tidal float on a lever"
+          ],
+          "lessons": [],
+          "notes": "7 question record(s): OCW-2.06-PS2-1, OCW-2.06-PS2-2, OCW-2.06-PS2-3, OCW-2.06-PS2-4, OCW-2.06-PS2-5, OCW-2.06-PS2-7, OCW-2.06-PS2-6"
+        },
+        {
+          "n": "5",
+          "title": "mit2_06s13_ps3",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s13_ps3/",
+          "topics": ["he.engineering.fluid-mechanics#2"],
+          "examples": [
+            "force of a 2-D jet on an inclined plate and the split of the flow",
+            "force of a fire-hose jet on a wall",
+            "mass flow in and out; air speed change in a heated pipe"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.06-PS3-1, OCW-2.06-PS3-2, OCW-2.06-PS3-4"
+        },
+        {
+          "n": "6",
+          "title": "mit2_06s13_ps4",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s13_ps4/",
+          "topics": [
+            "he.engineering.fluid-mechanics#1",
+            "he.engineering.fluid-mechanics#2",
+            "he.engineering.fluid-mechanics#0"
+          ],
+          "examples": [
+            "divergence of 2-D velocity fields and streamlines",
+            "force on an orifice cap at a pipe end",
+            "free-surface shape in a spinning can",
+            "height of a jet from a pressurized tank",
+            "jet split by a block: the force and the flow split",
+            "radial velocity in a nozzle from an axial velocity that grows linearly"
+          ],
+          "lessons": [],
+          "notes": "6 question record(s): OCW-2.06-PS4-1, OCW-2.06-PS4-2, OCW-2.06-PS4-3, OCW-2.06-PS4-5, OCW-2.06-PS4-4, OCW-2.06-PS4-6"
+        },
+        {
+          "n": "7",
+          "title": "mit2_06s13_ps5",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s13_ps5/",
+          "topics": ["he.engineering.fluid-mechanics#4"],
+          "examples": [
+            "flow between concentric cylinders, outer one sliding",
+            "settling speed of a piston leaking through a thin gap"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.06-PS5-1, OCW-2.06-PS5-3"
+        },
+        {
+          "n": "8",
+          "title": "mit2_06s13_quiz1",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s13_quiz1/",
+          "topics": ["he.engineering.fluid-mechanics#0"],
+          "examples": [
+            "air pressure between two liquid columns and when lowered into water",
+            "barometer height with and without surface tension",
+            "height at which a hydrophobic hole lets water through, and the acceleration that does it",
+            "true or false on buoyancy, pressure forces and drops"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-2.06-Q1-1, OCW-2.06-Q1-2, OCW-2.06-Q1-4, OCW-2.06-Q1-3"
+        },
+        {
+          "n": "9",
+          "title": "mit2_06s14_rec1prob",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s14_rec1prob/",
+          "topics": ["he.engineering.fluid-mechanics#0"],
+          "examples": ["air pressure as mercury is pumped into a closed tank"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.06-R1-1"
+        },
+        {
+          "n": "10",
+          "title": "mit2_06s14_rec2prob",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s14_rec2prob/",
+          "topics": ["he.engineering.fluid-mechanics#0"],
+          "examples": ["angle of a hinged floating spar with a tip weight"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.06-R2-1"
+        },
+        {
+          "n": "11",
+          "title": "mit2_06s14_rec4prob",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s14_rec4prob/",
+          "topics": ["he.engineering.fluid-mechanics#4", "he.engineering.fluid-mechanics#2"],
+          "examples": [
+            "mass held still by a jet deflected by a cart",
+            "pressure rise and loss at a sudden expansion (Borda–Carnot)"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.06-R4-1, OCW-2.06-R4-2"
+        },
+        {
+          "n": "12",
+          "title": "mit2_06s14_rec5prob",
+          "url": "https://ocw.mit.edu/courses/2-06-fluid-dynamics-spring-2013/resources/mit2_06s14_rec5prob/",
+          "topics": ["he.engineering.fluid-mechanics#5", "he.engineering.fluid-mechanics#4"],
+          "examples": [
+            "speed of a free plate between two viscous films",
+            "v(x, y) in a boundary layer from u by continuity"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.06-R5-1, OCW-2.06-R5-2"
+        }
+      ]
+    }
+  ]
+}

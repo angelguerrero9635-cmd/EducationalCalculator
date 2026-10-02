@@ -1,0 +1,76 @@
+{
+  "id": "mit-ocw-11-520",
+  "curriculum": "MIT OCW 11.520 A Workshop on Geographic Information Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2005",
+  "subject": "geography",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Joseph Ferreira. 11.520 A Workshop on Geographic Information Systems, Fall 2005. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/11-520-a-workshop-on-geographic-information-systems-fall-2005/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/11-520-a-workshop-on-geographic-information-systems-fall-2005/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Joseph Ferreira. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # TOPICS KEY DATES Lec 1 Introduction to the Class and GIS GIS Principles and Methods WinAthena Introduction (Required for Students who did not do CRN Computing Orientation) Lab 1 ArcGIS Basics (Introduction to ArcGIS, Paper Output) Lec 2 GIS Principles and Methods Lab 2 Thematic Mapping in ArcMap (Symbolization, Exploratory vs. Explanatory Mapping) Homework set 1 assigned Lec 3 Database Fundamentals (Relational Basics, Queries, Joins), Coordinate Systems, and Projections Lab exercise 1 due Lab 3 Database Operations in ArcGIS (Spatial Selection, Query Selection, Tabular Joins, Spatial Joins) Lab exercise 2 due Lec 4 More on Database Management: Introduction to SQL Geodatabase Handling One-to-Many Relationships Lab 4 Database Aggregation, SQL, and Charts Lab exercise 3 due Lec 5 Creating and Maintaining Geospatial Databases Homework set 1 due Homework set 2 assigned Lec 6 Making Sense Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/11-520-a-workshop-on-geographic-information-systems-fall-2005/",
+      "units": [
+        {
+          "n": "1",
+          "title": "exam05",
+          "url": "https://ocw.mit.edu/courses/11-520-a-workshop-on-geographic-information-systems-fall-2005/resources/exam05/",
+          "topics": [
+            "he.geography.gis#0",
+            "he.geography.gis#2",
+            "he.geography.gis#3",
+            "he.geography.gis#1",
+            "he.geography.human-geography#1",
+            "he.geography.cartography#2"
+          ],
+          "examples": [
+            "attribute queries on a polygon layer: largest drop, largest value of a type, towns drawn as several polygons",
+            "choropleth of density with 5 quantile classes, plus 3 km buffers round points",
+            "distance from each point to its nearest point of another layer; mean by category",
+            "population density from population and area; count units above a threshold",
+            "pros and cons of equal-interval against quantile classes",
+            "read a scattergram of road miles against area; compare with density",
+            "spatial join of points to polygons; count points per polygon",
+            "straight-line distance raster to the nearest point; the farthest cell"
+          ],
+          "lessons": [],
+          "notes": "8 question record(s): OCW-11.520-T05-I1, OCW-11.520-T05-I2, OCW-11.520-T05-II1A, OCW-11.520-T05-II1B, OCW-11.520-T05-II1D, OCW-11.520-T05-II2, OCW-11.520-T05-II3, OCW-11.520-T05-II4"
+        },
+        {
+          "n": "2",
+          "title": "exam_sample",
+          "url": "https://ocw.mit.edu/courses/11-520-a-workshop-on-geographic-information-systems-fall-2005/resources/exam_sample/",
+          "topics": [
+            "he.geography.cartography#0",
+            "he.geography.cartography#1",
+            "he.geography.cartography#2",
+            "he.geography.cartography#3",
+            "he.geography.gis#2",
+            "he.geography.gis#3"
+          ],
+          "examples": [
+            "join a table by key; mean and standard deviation of a field for a selected subset",
+            "select polygons crossed by lines; sum attributes for the two groups and compare",
+            "why a vote-count map with natural breaks misleads; choose field, symbols and classes for a better map",
+            "why local agencies use state-plane coordinates, and how an equal-area conic changes a lat/lon map",
+            "why the mean of county percentages differs from the overall percentage"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-11.520-T04-I2, OCW-11.520-T04-I3, OCW-11.520-T04-I4, OCW-11.520-T04-II2, OCW-11.520-T04-II3"
+        }
+      ]
+    }
+  ]
+}

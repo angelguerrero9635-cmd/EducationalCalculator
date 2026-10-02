@@ -1,0 +1,355 @@
+{
+  "id": "nrcan-fundamentals-of-remote-sensing",
+  "curriculum": "Fundamentals of Remote Sensing (tutorial)",
+  "publisher": "Canada Centre for Remote Sensing, Natural Resources Canada",
+  "edition": "PDF edition (undated, c. 2008)",
+  "subject": "geography",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "Government of Canada terms: non-commercial reproduction without alteration",
+    "url": "https://natural-resources.canada.ca/terms-conditions",
+    "attribution": "Fundamentals of Remote Sensing, Canada Centre for Remote Sensing, Natural Resources Canada."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://natural-resources.canada.ca/maps-tools-and-publications/satellite-imagery-elevation-data-and-air-photos/tutorial-fundamentals-remote-sensing/9309",
+  "retrieved": "2026-10-02",
+  "notes": "Section titles from the tutorial PDF's contents. Each chapter ends with 'Did you know?' and 'Whiz Quiz and Answers'; the quizzes are recorded as types (NRCAN-FRS-*). The brief listed the Open Government Licence – Canada; the page's terms read instead as non-commercial, unaltered reproduction, so content is type only.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction",
+          "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
+          "topics": ["he.geography.remote-sensing#0"],
+          "examples": [
+            "c = λν conversions",
+            "scattering and atmospheric windows",
+            "spectral response of vegetation"
+          ],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "What is Remote Sensing?",
+              "url": null
+            },
+            {
+              "n": "1.2",
+              "title": "Electromagnetic Radiation",
+              "url": null
+            },
+            {
+              "n": "1.3",
+              "title": "Electromagnetic Spectrum",
+              "url": null
+            },
+            {
+              "n": "1.4",
+              "title": "Interactions with the Atmosphere",
+              "url": null
+            },
+            {
+              "n": "1.5",
+              "title": "Radiation - Target",
+              "url": null
+            },
+            {
+              "n": "1.6",
+              "title": "Passive vs. Active Sensing",
+              "url": null
+            },
+            {
+              "n": "1.7",
+              "title": "Characteristics of Images",
+              "url": null
+            },
+            {
+              "n": "1.8",
+              "title": "Endnotes",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Sensors",
+          "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
+          "topics": ["he.geography.remote-sensing#0"],
+          "examples": [
+            "resolutions (spatial, spectral, radiometric, temporal)",
+            "2ⁿ grey levels",
+            "orbits"
+          ],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "On the Ground, In the Air, In Space",
+              "url": null
+            },
+            {
+              "n": "2.2",
+              "title": "Satellite Characteristics",
+              "url": null
+            },
+            {
+              "n": "2.3",
+              "title": "Pixel Size, and Scale",
+              "url": null
+            },
+            {
+              "n": "2.4",
+              "title": "Spectral Resolution",
+              "url": null
+            },
+            {
+              "n": "2.5",
+              "title": "Radiometric Resolution",
+              "url": null
+            },
+            {
+              "n": "2.6",
+              "title": "Temporal Resolution",
+              "url": null
+            },
+            {
+              "n": "2.7",
+              "title": "Cameras and Aerial Photography",
+              "url": null
+            },
+            {
+              "n": "2.8",
+              "title": "Multispectral Scanning",
+              "url": null
+            },
+            {
+              "n": "2.9",
+              "title": "Thermal Imaging",
+              "url": null
+            },
+            {
+              "n": "2.10",
+              "title": "Geometric Distortion",
+              "url": null
+            },
+            {
+              "n": "2.11",
+              "title": "Weather Satellites",
+              "url": null
+            },
+            {
+              "n": "2.12",
+              "title": "Land Observation Satellites",
+              "url": null
+            },
+            {
+              "n": "2.13",
+              "title": "Marine Observation Satellites",
+              "url": null
+            },
+            {
+              "n": "2.14",
+              "title": "Other Sensors",
+              "url": null
+            },
+            {
+              "n": "2.15",
+              "title": "Data Reception",
+              "url": null
+            },
+            {
+              "n": "2.16",
+              "title": "Endnotes",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Microwaves",
+          "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
+          "topics": [],
+          "notes": "Radar (active remote sensing): a taxonomy gap.",
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Introduction",
+              "url": null
+            },
+            {
+              "n": "3.2",
+              "title": "Radar Basic",
+              "url": null
+            },
+            {
+              "n": "3.3",
+              "title": "Viewing Geometry & Spatial Resolution",
+              "url": null
+            },
+            {
+              "n": "3.4",
+              "title": "Image distortion",
+              "url": null
+            },
+            {
+              "n": "3.5",
+              "title": "Target interaction",
+              "url": null
+            },
+            {
+              "n": "3.6",
+              "title": "Image Properties",
+              "url": null
+            },
+            {
+              "n": "3.7",
+              "title": "Advanced Applications",
+              "url": null
+            },
+            {
+              "n": "3.8",
+              "title": "Polarimetry",
+              "url": null
+            },
+            {
+              "n": "3.9",
+              "title": "Airborne vs Spaceborne",
+              "url": null
+            },
+            {
+              "n": "3.10",
+              "title": "Airborne & Spaceborne Systems",
+              "url": null
+            },
+            {
+              "n": "3.11",
+              "title": "Endnotes",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Image Interpretation and Analysis",
+          "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
+          "topics": ["he.geography.remote-sensing#1", "he.geography.remote-sensing#2"],
+          "examples": [
+            "visual interpretation elements",
+            "file size of a scene",
+            "contrast stretch and classification"
+          ],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Introduction",
+              "url": null
+            },
+            {
+              "n": "4.2",
+              "title": "Visual interpretation",
+              "url": null
+            },
+            {
+              "n": "4.3",
+              "title": "Digital processing",
+              "url": null
+            },
+            {
+              "n": "4.4",
+              "title": "Preprocessing",
+              "url": null
+            },
+            {
+              "n": "4.5",
+              "title": "Enhancement",
+              "url": null
+            },
+            {
+              "n": "4.6",
+              "title": "Transformations",
+              "url": null
+            },
+            {
+              "n": "4.7",
+              "title": "Classification",
+              "url": null
+            },
+            {
+              "n": "4.8",
+              "title": "Integration",
+              "url": null
+            },
+            {
+              "n": "4.9",
+              "title": "Endnotes",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Applications",
+          "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
+          "topics": ["he.geography.remote-sensing#3", "he.geography.remote-sensing#2"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Introduction",
+              "url": null
+            },
+            {
+              "n": "5.2",
+              "title": "Agriculture",
+              "url": null
+            },
+            {
+              "n": "5.3",
+              "title": "Forestry",
+              "url": null
+            },
+            {
+              "n": "5.4",
+              "title": "Geology",
+              "url": null
+            },
+            {
+              "n": "5.5",
+              "title": "Hydrology",
+              "url": null
+            },
+            {
+              "n": "5.6",
+              "title": "Sea Ice",
+              "url": null
+            },
+            {
+              "n": "5.7",
+              "title": "Land Cover",
+              "url": null
+            },
+            {
+              "n": "5.8",
+              "title": "Mapping",
+              "url": null
+            },
+            {
+              "n": "5.9",
+              "title": "Oceans & Coastal",
+              "url": null
+            },
+            {
+              "n": "5.10",
+              "title": "Endnotes",
+              "url": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,265 @@
+{
+  "id": "campbell-shin-essentials-of-gis",
+  "curriculum": "Essentials of Geographic Information Systems",
+  "publisher": "Saylor Academy (LibreTexts Geosciences edition)",
+  "edition": "v1.0 (2012)",
+  "subject": "geography",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 3.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+    "attribution": "Essentials of Geographic Information Systems, Jonathan Campbell and Michael Shin, Saylor Academy 2012; LibreTexts Geosciences edition. CC BY-NC-SA 3.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)",
+  "retrieved": "2026-10-02",
+  "notes": "CC BY-NC-SA 3.0: titles and mapping; the section exercises are recorded as types from the Saylor copy (saylordotorg.github.io, no robots.txt).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/01%3A_Introduction",
+          "topics": ["he.geography.gis#0"],
+          "lessons": [
+            {
+              "n": "1.01",
+              "title": "Spatial Thinking",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/01%3A_Introduction/1.01%3A_Spatial_Thinking"
+            },
+            {
+              "n": "1.02",
+              "title": "Geographic Concepts",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/01%3A_Introduction/1.02%3A_Geographic_Concepts"
+            },
+            {
+              "n": "1.03",
+              "title": "Geographic Information Systems for Today and Beyond",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/01%3A_Introduction/1.03%3A_Geographic_Information_Systems_for_Today_and_Beyond"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Map Anatomy",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/02%3A_Map_Anatomy",
+          "topics": [
+            "he.geography.cartography#0",
+            "he.geography.cartography#1",
+            "he.geography.cartography#3"
+          ],
+          "lessons": [
+            {
+              "n": "2.01",
+              "title": "Maps and Map Types",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/02%3A_Map_Anatomy/2.01%3A_Maps_and_Map_Types"
+            },
+            {
+              "n": "2.02",
+              "title": "Map Scale Coordinate Systems and Map Projections",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/02%3A_Map_Anatomy/2.02%3A_Map_Scale_Coordinate_Systems_and_Map_Projections"
+            },
+            {
+              "n": "2.03",
+              "title": "Map Abstraction",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/02%3A_Map_Anatomy/2.03%3A_Map_Abstraction"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Data Information and Where to Find Them",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/03%3A_Data_Information_and_Where_to_Find_Them",
+          "topics": ["he.geography.gis#0"],
+          "lessons": [
+            {
+              "n": "3.01",
+              "title": "Data and Information",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/03%3A_Data_Information_and_Where_to_Find_Them/3.01%3A_Data_and_Information"
+            },
+            {
+              "n": "3.02",
+              "title": "Data about Data",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/03%3A_Data_Information_and_Where_to_Find_Them/3.02%3A_Data_about_Data"
+            },
+            {
+              "n": "3.03",
+              "title": "Finding Data",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/03%3A_Data_Information_and_Where_to_Find_Them/3.03%3A_Finding_Data"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Data Models for GIS",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/04%3A_Data_Models_for_GIS",
+          "topics": ["he.geography.gis#0", "he.geography.remote-sensing#0"],
+          "lessons": [
+            {
+              "n": "4.01",
+              "title": "Raster Data Models",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/04%3A_Data_Models_for_GIS/4.01%3A_Raster_Data_Models"
+            },
+            {
+              "n": "4.02",
+              "title": "Vector Data Models",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/04%3A_Data_Models_for_GIS/4.02%3A_Vector_Data_Models"
+            },
+            {
+              "n": "4.03",
+              "title": "Satellite Imagery and Aerial Photography",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/04%3A_Data_Models_for_GIS/4.03%3A_Satellite_Imagery_and_Aerial_Photography"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Geospatial Data Management",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/05%3A_Geospatial_Data_Management",
+          "topics": ["he.geography.gis#0"],
+          "lessons": [
+            {
+              "n": "5.01",
+              "title": "Geographic Data Acquisition",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/05%3A_Geospatial_Data_Management/5.01%3A_Geographic_Data_Acquisition"
+            },
+            {
+              "n": "5.02",
+              "title": "Geospatial Database Management",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/05%3A_Geospatial_Data_Management/5.02%3A_Geospatial_Database_Management"
+            },
+            {
+              "n": "5.03",
+              "title": "File Formats",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/05%3A_Geospatial_Data_Management/5.03%3A_File_Formats"
+            },
+            {
+              "n": "5.04",
+              "title": "Data Quality",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/05%3A_Geospatial_Data_Management/5.04%3A_Data_Quality"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Data Characteristics and Visualization",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/06%3A_Data_Characteristics_and_Visualization",
+          "topics": ["he.geography.cartography#2", "he.geography.gis#3"],
+          "lessons": [
+            {
+              "n": "6.01",
+              "title": "Descriptions and Summaries",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/06%3A_Data_Characteristics_and_Visualization/6.01%3A_Descriptions_and_Summaries"
+            },
+            {
+              "n": "6.02",
+              "title": "Searches and Queries",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/06%3A_Data_Characteristics_and_Visualization/6.02%3A_Searches_and_Queries"
+            },
+            {
+              "n": "6.03",
+              "title": "Data Classification",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/06%3A_Data_Characteristics_and_Visualization/6.03%3A_Data_Classification"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Geospatial Analysis I- Vector Operations",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/07%3A_Geospatial_Analysis_I-_Vector_Operations",
+          "topics": ["he.geography.gis#1", "he.geography.gis#2"],
+          "lessons": [
+            {
+              "n": "7.01",
+              "title": "Single Layer Analysis",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/07%3A_Geospatial_Analysis_I-_Vector_Operations/7.01%3A_Single_Layer_Analysis"
+            },
+            {
+              "n": "7.02",
+              "title": "Multiple Layer Analysis",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/07%3A_Geospatial_Analysis_I-_Vector_Operations/7.02%3A_Multiple_Layer_Analysis"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Geospatial Analysis II- Raster Data",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/08%3A_Geospatial_Analysis_II-_Raster_Data",
+          "topics": ["he.geography.gis#2", "he.geography.gis#3"],
+          "lessons": [
+            {
+              "n": "8.01",
+              "title": "Basic Geoprocessing with Rasters",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/08%3A_Geospatial_Analysis_II-_Raster_Data/8.01%3A_Basic_Geoprocessing_with_Rasters"
+            },
+            {
+              "n": "8.02",
+              "title": "Scale of Analysis",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/08%3A_Geospatial_Analysis_II-_Raster_Data/8.02%3A_Scale_of_Analysis"
+            },
+            {
+              "n": "8.03",
+              "title": "Surface Analysis- Spatial Interpolation",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/08%3A_Geospatial_Analysis_II-_Raster_Data/8.03%3A_Surface_Analysis-_Spatial_Interpolation"
+            },
+            {
+              "n": "8.04",
+              "title": "Surface Analysis- Terrain Mapping",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/08%3A_Geospatial_Analysis_II-_Raster_Data/8.04%3A_Surface_Analysis-_Terrain_Mapping"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Cartographic Principles",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/09%3A_Cartographic_Principles",
+          "topics": ["he.geography.cartography#3"],
+          "lessons": [
+            {
+              "n": "9.01",
+              "title": "Color",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/09%3A_Cartographic_Principles/9.01%3A_Color"
+            },
+            {
+              "n": "9.02",
+              "title": "Symbology",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/09%3A_Cartographic_Principles/9.02%3A_Symbology"
+            },
+            {
+              "n": "9.03",
+              "title": "Cartographic Design",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/09%3A_Cartographic_Principles/9.03%3A_Cartographic_Design"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "GIS Project Management",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/10%3A_GIS_Project_Management",
+          "topics": [],
+          "notes": "Project management: no topic.",
+          "lessons": [
+            {
+              "n": "10.01",
+              "title": "Project Management Basics",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/10%3A_GIS_Project_Management/10.01%3A_Project_Management_Basics"
+            },
+            {
+              "n": "10.02",
+              "title": "GIS Project Management Tools and Techniques",
+              "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/10%3A_GIS_Project_Management/10.02%3A_GIS_Project_Management_Tools_and_Techniques"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "crossCheckUrl": "https://saylordotorg.github.io/text_essentials-of-geographic-information-systems/"
+}
