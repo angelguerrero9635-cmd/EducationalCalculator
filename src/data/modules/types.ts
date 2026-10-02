@@ -50,6 +50,7 @@ import type { He2cSpec } from './typesHe2c';
 import type { BeamSpec } from './typesHe1a';
 import type { BodeSpec } from './typesHe2a';
 import type { He2hSpec } from './typesHe2h';
+import type { WaterfallDecibels } from './typesHe3k';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -540,6 +541,8 @@ export type Representation =
       total: string;
       /** Subtotals listed under the chart (e.g. natural increase, net migration). */
       caption?: string[];
+      /** College budgets in dB on a level axis (HC91, `typesHe3k.ts`). */
+      decibels?: true | WaterfallDecibels;
     }
   /**
    * Rectangle with side lengths and a value written inside. Drag the corner. `extent` is the

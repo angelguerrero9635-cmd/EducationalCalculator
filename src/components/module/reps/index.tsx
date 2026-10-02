@@ -200,6 +200,7 @@ import { Duct } from './Duct';
 import { SupersonicFlow } from './SupersonicFlow';
 import { FieldPlot } from './FieldPlot';
 import { ThermalWall } from './ThermalWall';
+import { WaterfallDecibels } from './WaterfallDecibels';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -575,6 +576,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'pictureGraph':
       return <PictureGraph spec={spec} calc={calc} />;
     case 'waterfall':
+      if (spec.decibels) return <WaterfallDecibels spec={spec} calc={calc} />; // HC91
       return <Waterfall spec={spec} calc={calc} />;
     case 'hundredChart':
       return <HundredChart spec={spec} calc={calc} />;

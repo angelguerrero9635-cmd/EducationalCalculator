@@ -49,6 +49,7 @@ import { hs3aSpecVars } from '../typesHs3a';
 import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
+import { waterfallDecibelsVars } from '../typesHe3k';
 import { he2hSpecVars } from '../typesHe2h';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
@@ -418,7 +419,12 @@ function representationVars(r: Representation): string[] {
         ...(r.key ? [r.key] : []),
       ];
     case 'waterfall':
-      return [...r.items.map((b) => b.var), r.total, ...(r.caption ?? [])];
+      return [
+        ...r.items.map((b) => b.var),
+        r.total,
+        ...(r.caption ?? []),
+        ...waterfallDecibelsVars(r.decibels), // HC91
+      ];
     case 'rectangle':
       return [
         ...[r.length, r.width, r.inside, r.around],
