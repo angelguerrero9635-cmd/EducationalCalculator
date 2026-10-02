@@ -22,24 +22,28 @@ import {
   problemTypes,
   TOPIC_TYPE_IDS,
   topicOf,
+  topicKey,
   topicPageId,
 } from '@/data/selectors';
+import { prerenderIds } from '@/data/prerender';
 import { COURSES } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { space, usePalette } from '@/theme';
 
 /**
  * Pre-render every course topic page and every topic problem type (web static rendering): the
- * type's `index` segment is "<i>~<slug>".
+ * type's `index` segment is "<i>~<slug>". A review build's PRERENDER_PREFIX ("he.geography.")
+ * limits them as it limits skill pages.
  */
 export function generateStaticParams(): { id: string; index: string }[] {
-  return [
-    ...COURSES.flatMap((c) => c.topics.map((_, i) => ({ id: c.id, index: String(i) }))),
-    ...TOPIC_TYPE_IDS.map((id) => {
-      const [course = '', index = ''] = id.split('#');
-      return { id: course, index };
-    }),
+  const keys = [
+    ...COURSES.flatMap((c) => c.topics.map((_, i) => topicKey(c.id, i))),
+    ...TOPIC_TYPE_IDS,
   ];
+  return prerenderIds(keys).map((key) => {
+    const [id = '', index = ''] = key.split('#');
+    return { id, index };
+  });
 }
 
 /** A course topic's lesson, or one of its problem types, laid out like a skill page. */

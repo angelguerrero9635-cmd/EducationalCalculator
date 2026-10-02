@@ -50,6 +50,13 @@ const server = spawn('node', ['scripts/verify-ssr.mjs', '--serve', String(port)]
   stdio: 'ignore',
 });
 const base = `http://localhost:${port}`;
+/** A page's address: a college topic page (`<courseId>#<i>[~slug]`) is its course's topic page. */
+const pageUrl = (id) => {
+  const [course, index] = id.split('#');
+  return index === undefined
+    ? `${base}/skill/${encodeURIComponent(id)}`
+    : `${base}/course/${encodeURIComponent(course)}/topic/${encodeURIComponent(index)}`;
+};
 for (let i = 0; i < 50; i++) {
   try {
     await fetch(base);
@@ -547,11 +554,11 @@ const lines = [
 ];
 let scenes = 0;
 for (const id of ids) {
-  await page.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
+  await page.goto(pageUrl(id), { waitUntil: 'networkidle' });
   await page.waitForTimeout(300);
   // Every scene of an exploration, light and then dark.
   const n = await page.locator('[data-testid^="scene-"]').count();
-  if (n) await dark.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
+  if (n) await dark.goto(pageUrl(id), { waitUntil: 'networkidle' });
   for (const [p, suffix] of n
     ? [
         [page, ''],
@@ -649,7 +656,7 @@ for (const id of ids) {
   await checkUnknowns(id);
 }
 for (const id of unknownsOnly) {
-  await page.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
+  await page.goto(pageUrl(id), { waitUntil: 'networkidle' });
   await checkUnknowns(id);
 }
 lines.push('', '## Errors', '', ...(errors.length ? errors : ['None.']));
