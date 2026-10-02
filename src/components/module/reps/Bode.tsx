@@ -153,9 +153,13 @@ export function Bode({ spec, calc }: { spec: BodeSpec; calc: Calculator }) {
           ) =>
             ws
               .map((x, i) => {
-                const v = f(x);
-                const yy = y(v);
-                return `${i ? 'L' : 'M'} ${sx(x).toFixed(2)} ${clampY(yy, a, b).toFixed(2)}`;
+                const yy = y(f(x));
+                const out = yy < a || yy > b;
+                // A run past the edge is not drawn along the edge: the curve stops at it.
+                const prev = i ? y(f(ws[i - 1]!)) : yy;
+                const prevOut = prev < a || prev > b;
+                const op = i && !(out && prevOut) ? 'L' : 'M';
+                return `${op} ${sx(x).toFixed(2)} ${clampY(yy, a, b).toFixed(2)}`;
               })
               .join(' ');
           // The panel names keep their room from the corner names.
@@ -371,7 +375,7 @@ export function Bode({ spec, calc }: { spec: BodeSpec; calc: Calculator }) {
                   <Tag
                     key={`dl${v}`}
                     x={x0 - 5}
-                    y={sy(v) + 4}
+                    y={Math.min(sy(v) + 4, m1 - 2)}
                     anchor="end"
                     text={nf(v)}
                     chip={false}
@@ -384,7 +388,7 @@ export function Bode({ spec, calc }: { spec: BodeSpec; calc: Calculator }) {
                       <Tag
                         key={`pl${v}`}
                         x={x0 - 5}
-                        y={py(v) + 4}
+                        y={Math.min(py(v) + 4, p1 - 2)}
                         anchor="end"
                         text={`${nf(v)}°`}
                         chip={false}
@@ -397,7 +401,7 @@ export function Bode({ spec, calc }: { spec: BodeSpec; calc: Calculator }) {
                   <Tag
                     key={`xl${f}`}
                     x={sx(f)}
-                    y={h - B + 15}
+                    y={h - B + 16}
                     anchor="middle"
                     text={decadeText(f)}
                     chip={false}
