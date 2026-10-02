@@ -78,6 +78,7 @@ import { TriangleAngles } from './TriangleAngles';
 import { RightTriangle } from './RightTriangle';
 import { PictureGraph } from './PictureGraph';
 import { SeriesCircuit } from './SeriesCircuit';
+import { NetSchematic } from './NetSchematic';
 import { TenFrame } from './TenFrame';
 import { ValueTable } from './ValueTable';
 import { Waterfall } from './Waterfall';
@@ -410,6 +411,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'orbit':
       return <Orbit spec={spec} calc={calc} />;
     case 'circuit':
+      if ('net' in spec) return <NetSchematic spec={spec} calc={calc} />; // HC7
       if (spec.mixed) return <CircuitMixed spec={spec} m={spec.mixed} calc={calc} />;
       return <Circuit spec={spec} calc={calc} />;
     case 'spectrum':
@@ -547,6 +549,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'cubeTrains':
       return <CubeTrains spec={spec} calc={calc} />;
     case 'seriesCircuit':
+      if ('net' in spec) return <NetSchematic spec={spec} calc={calc} />; // HC7
       return <SeriesCircuit spec={spec} calc={calc} />;
     case 'doubleNumberLine':
       return <DoubleNumberLine spec={spec} calc={calc} />;

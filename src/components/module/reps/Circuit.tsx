@@ -11,7 +11,7 @@ import { Canvas, Caption, ChartText, DragHandle, fitLabel, niceCeil, useRep } fr
 import { Glass, Metal, Sheen, usePaintIds } from './paint';
 import { Battery, Bulb, KnifeSwitch, Meter } from './physicsArt';
 
-type Spec = Extract<Representation, { kind: 'circuit' }>;
+type Spec = Extract<Representation, { kind: 'circuit'; wiring: unknown }>;
 /** Pixels of vertical drag per step of the voltage. */
 const PX_PER_STEP = 8;
 

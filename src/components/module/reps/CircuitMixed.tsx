@@ -12,7 +12,7 @@ import { formulaOnly, sig, SubLabel } from './hskKit';
 import { Battery, Meter } from './physicsArt';
 import { Metal, Sheen, TopLight, url, usePaintIds } from './paint';
 
-type Spec = Extract<Representation, { kind: 'circuit' }>;
+type Spec = Extract<Representation, { kind: 'circuit'; wiring: unknown }>;
 
 /**
  * A mixed series-parallel circuit (H68): a battery, an ammeter and three resistors in copper

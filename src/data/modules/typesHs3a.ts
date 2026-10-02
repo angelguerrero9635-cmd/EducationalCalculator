@@ -10,6 +10,7 @@
  * from `typesHsk.ts`.
  */
 import type { NumOrVar } from './typesGraphs';
+import type * as He1h from './typesHe1h';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -102,6 +103,13 @@ export type OscillatorSpec = { kind: 'oscillator'; fixed?: boolean } & (
       angular?: string;
       top?: string;
       energy?: string;
+      /** College options (HC11, typesHe1h.ts): any one draws OscillatorHe.tsx. */
+      damping?: He1h.OscDamping;
+      phase?: He1h.OscPhase;
+      forcing?: He1h.OscForcing;
+      transmit?: He1h.OscTransmit;
+      coupled?: He1h.OscCoupled;
+      springs?: He1h.OscSprings;
     }
   | {
       mode: 'hang';

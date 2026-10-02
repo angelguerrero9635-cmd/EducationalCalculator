@@ -9,7 +9,7 @@ import type { Calculator } from '../useCalculator';
 import { Chip } from './Circuit';
 import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
 
-type Spec = Extract<Representation, { kind: 'seriesCircuit' }>;
+type Spec = Extract<Representation, { kind: 'seriesCircuit'; source: string }>;
 /** Pixels of vertical drag per variable step. */
 const PX_PER_STEP = 8;
 /** Resistor symbols and battery plates: a little heavier than chart lines, lighter than wire. */

@@ -348,6 +348,11 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `energyTrack`      | `spring: { k, compression, … }`          | spring launcher, rough patch (heat fd), ramp; start and now bars (H63)        |
 | `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
+| `seriesCircuit`    | `net: { topology, elements, … }`         | a schematic in textbook symbols; node V, mesh and branch I; KCL, KVL (HC7)    |
+| `circuit`          | `net` (the same renderer)                | capacitor networks (Q, V at each), two batteries, internal r (HC7)            |
+| `oscillator`       | `damping`, `phase`                       | dashpot; decaying trace in its envelope, log-dec crests; x₀, v₀, φ (HC11)     |
+| `oscillator`       | `forcing`, `transmit`                    | F₀ sin ωt; X ÷ δ_st or TR against r, the point, √2 marked (HC11)              |
+| `oscillator`       | `coupled`, `springs`                     | two blocks, mode arrows, beat traces; springs in series or parallel (HC11)    |
 | `spectrum`         | `lines`, `photon`                        | H, He, Na lines, emission or absorption, shifted by z; E = hf (H70)           |
 | `spectrum`         | `lines.line: 'rest'`                     | the lab line the rest value names (the nearest line): any Balmer line (H105)  |
 | `collision`        | `type: 'general'`, `lost`                | v₁′ given, v₂′ from momentum; each cart's KE; KE lost (H102)                  |

@@ -67,6 +67,7 @@ import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { sectionIssues } from './picturesHe1b';
 import { gasMixtureIssues } from './picturesHs3e';
+import { netIssues, oscillatorIssues } from './picturesHe1h';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2137,10 +2138,17 @@ export function repIssues(
       }
       break;
     }
+    case 'seriesCircuit':
+      if ('net' in rep) out.push(...netIssues(rep, siOf(val, byId), byId)); // HC7
+      break;
     case 'spectrum':
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
+      if ('net' in rep) {
+        out.push(...netIssues(rep, siOf(val, byId), byId)); // HC7
+        break;
+      }
       if (hsk.physicsHsOption(rep)) out.push(...hsk.physicsHsIssues(rep, (id) => val(id)));
       else out.push(...physics8Issues(rep, (id) => val(id)));
       break;
@@ -2256,6 +2264,7 @@ export function repIssues(
     case 'pendulum':
     case 'capacitor':
       out.push(...hs3aIssues(rep, siOf(val, byId)));
+      if (rep.kind === 'oscillator') out.push(...oscillatorIssues(rep, siOf(val, byId), byId)); // HC11
       break;
     case 'section':
       out.push(...sectionIssues(rep, siOf(val, byId), byId));

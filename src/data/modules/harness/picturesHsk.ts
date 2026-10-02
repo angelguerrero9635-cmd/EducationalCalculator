@@ -449,7 +449,7 @@ export const mapSi = (x: number | undefined, factor = 1) => (x === undefined ? x
 
 type Physics8 = Extract<
   Representation,
-  { kind: 'spectrum' | 'circuit' | 'electromagnet' | 'orbit' }
+  { kind: 'spectrum' | 'circuit' | 'electromagnet' | 'orbit'; net?: undefined }
 >;
 
 /** Whether a Grade 8 physics picture carries a group-HK option (checked here instead). */
