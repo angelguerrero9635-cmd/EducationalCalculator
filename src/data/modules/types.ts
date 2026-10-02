@@ -697,6 +697,8 @@ export type Representation =
       r?: string | true;
       leastSquares?: 'beside' | 'fit';
       residualOf?: { point: number | string; residual?: string };
+      /** HC97: the points from a value group, x₁, y₁, x₂, y₂ … (typesHe4a.ts ScatterHe4a). */
+      pointsFrom?: string;
     }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at

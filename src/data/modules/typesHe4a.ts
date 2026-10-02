@@ -85,6 +85,20 @@ export const matrixMoveVars = (r: MatrixMoveHe4a): string[] =>
     r.area,
   );
 
+// ─── HC97: scatter points from a value group ─────────────────────────────────
+
+/**
+ * HC97 (M-P13), `scatter` `pointsFrom: '<group>'` (drawn by ScatterPointsHe4a.tsx, which hands
+ * Scatter the points): the variables with that `group`, in their order, read as pairs x₁, y₁,
+ * x₂, y₂, … (a value past its data set's `countedBy` count is left out; a pair with a "?" is not
+ * drawn). `points` is then ignored (pass []), and the axes grow to hold every point. With
+ * `leastSquares: 'fit'` and `residuals`, the page's slope and intercept are checked against
+ * the typed points, as `fit` checks fixed ones.
+ */
+export interface ScatterHe4a {
+  pointsFrom?: string;
+}
+
 /** Every variable id the matrixGrid options above name (for the module tests). */
 export function matrixGridHe4aVars(r: object): string[] {
   const m = r as Partial<RowReduceHe4a & MatrixRouthHe4a> & { mode?: string };

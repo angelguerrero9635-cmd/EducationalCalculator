@@ -16,6 +16,10 @@ import {
   type M2,
 } from '@/components/module/reps/matrixHe4a';
 
+import { axisFor, groupIds, pointsOf } from '@/components/module/reps/scatterHe4a';
+import type { VariableDef } from '@/engine/types';
+
+import type { Representation } from '../types';
 import type { TransformationSpec } from '../typesGraphs';
 import type { MatrixGridSpec } from '../typesHsd';
 
@@ -151,4 +155,44 @@ export function matrixMoveIssues(
       out.push(`the image's area is ${polygonArea(img)}, not ${area}`);
   }
   return out;
+}
+
+type ScatterSpec = Extract<Representation, { kind: 'scatter' }>;
+
+/**
+ * HC97: the scatter plot the values make (points read from the group, axes grown to hold them),
+ * to check as any scatter plot; and the group itself: there, and in x, y pairs.
+ */
+export function scatterPointsHe4a(
+  rep: ScatterSpec,
+  byId: Map<string, VariableDef>,
+  val: Val,
+): { rep: ScatterSpec; issues: string[] } {
+  const issues: string[] = [];
+  const group = rep.pointsFrom!;
+  const vars = [...byId.values()];
+  const all = vars.filter((v) => v.group === group);
+  if (!all.length) issues.push(`no values in group ${group}`);
+  if (all.length % 2) issues.push(`group ${group} has ${all.length} values, not x, y pairs`);
+  const get = (id: string) => val(id);
+  if (groupIds(group, vars, get).length % 2)
+    issues.push(`the count leaves group ${group} with half a point`);
+  if (rep.points.length) issues.push('points and pointsFrom together (pointsFrom wins)');
+  const points = pointsOf(group, vars, get);
+  return {
+    issues,
+    rep: {
+      ...rep,
+      pointsFrom: undefined,
+      points,
+      x: axisFor(
+        rep.x,
+        points.map((p) => p[0]),
+      ),
+      y: axisFor(
+        rep.y,
+        points.map((p) => p[1]),
+      ),
+    },
+  };
 }

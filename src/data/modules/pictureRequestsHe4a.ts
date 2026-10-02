@@ -69,4 +69,17 @@ export const HE4A_REQUESTS: PictureRequest[] = [
       'Example (linear-algebra#2~volume, the 2-D case): { kind: "transformation", figure: [[0, 0], [1, 0], [1, 1], [0, 1]], move: "matrix", matrix: [["a", "b"], ["c", "d"]], det: "D", area: "S" } ([[3, 1], [1, 2]] → area 5). The page’s 3-D box stays `vectorDiagram` `space` with `volume`.',
     ].join(' '),
   },
+  {
+    id: 'HC97',
+    kind: 'scatter',
+    what: 'A scatter plot whose points are the page’s typed values, with the least-squares line and its residuals',
+    pages: [`${M}linear-algebra#4`],
+    status: 'drawn',
+    gallery: ['g.he-scatter-points-from', 'g.he-scatter-points-from-eight'],
+    notes: [
+      'From M-P13 (HE-math-P13). An option on `scatter` (ScatterPointsHe4a.tsx reads the points and hands them to Scatter; every existing scatter page unchanged).',
+      'Fields: pointsFrom: "<group>" — the variables with that `group`, in the page’s order, read as x₁, y₁, x₂, y₂, … (a value past its data set’s `countedBy` count is left out; a pair with a "?" is not drawn); pass points: []. The axes grow to hold every point, with half a grid step to spare at an edge. Everything else is Scatter’s: leastSquares: "fit" (slope and intercept checked against the typed points, no handles), residuals: "segments" | "plot", r, residualOf. The harness checks the group is there in x, y pairs, then runs the scatter checks on the points the values make.',
+      'Example (linear-algebra#4): variables x1, y1, …, x4, y4 with group: "P"; { kind: "scatter", x: { label: "x", min: 0, max: 4 }, y: { label: "y", min: 0, max: 5 }, points: [], pointsFrom: "P", slope: "m", intercept: "b", leastSquares: "fit", residuals: "segments" } ((0, 1), (1, 2), (2, 2), (3, 4) → AᵀA = [[14, 6], [6, 4]], Aᵀb = (18, 9), m = 0.9, b = 0.9, error 0.70; the demo’s equation shows the normal equations).',
+    ].join(' '),
+  },
 ];

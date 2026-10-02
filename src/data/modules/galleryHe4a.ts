@@ -4,6 +4,7 @@
  * HC94: `matrixGrid` `rowReduce` with `inverse` ([A | I]) and `tally` (det by row reduction).
  * HC190: `matrixGrid` `mode: 'routh'`.
  * HC95: `transformation` `move: 'matrix'` with `eigen`.
+ * HC97: `scatter` `pointsFrom` (least squares from typed points).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -689,6 +690,186 @@ const eigenComplex = page({
   },
 });
 
+// ── HC97: least squares from typed points (linear-algebra#4) ──
+
+/** linear-algebra#4 main: the least-squares line by the normal equations, the points typed. */
+function leastSquaresDemo(id: string, title: string, use: string, pts: [number, number][]) {
+  const n = pts.length;
+  const xs = pts.map((_, i) => `x${i + 1}`);
+  const ys = pts.map((_, i) => `y${i + 1}`);
+  const sum = (f: (i: number) => number) => pts.reduce((s, _, i) => s + f(i), 0);
+  const sx = sum((i) => pts[i]![0]);
+  const sy = sum((i) => pts[i]![1]);
+  const sxx = sum((i) => pts[i]![0] ** 2);
+  const sxy = sum((i) => pts[i]![0] * pts[i]![1]);
+  const m = (n * sxy - sx * sy) / (n * sxx - sx ** 2);
+  const b = (sy - m * sx) / n;
+  const E = sum((i) => (pts[i]![1] - m * pts[i]![0] - b) ** 2);
+  const ex: Values = { sx, sy, sxx, sxy, m, b, E };
+  pts.forEach(([x, y], i) => {
+    ex[xs[i]!] = x;
+    ex[ys[i]!] = y;
+  });
+  const total = (
+    id2: string,
+    name: string,
+    term: (i: number) => string,
+    f: (v: Values, i: number) => number,
+    how: string,
+  ) => {
+    const text = pts.map((_, i) => term(i)).join(' + ');
+    const vars = [
+      ...new Set(pts.flatMap((_, i) => [...term(i).matchAll(/\{(\w+)\}/g)].map((x) => x[1]!))),
+    ];
+    return rule(
+      name,
+      `{${id2}} = ${text}`,
+      [id2, ...vars],
+      (v) => v[id2]! - pts.reduce((s, _, i) => s + f(v, i), 0),
+      {
+        [id2]: [(v) => pts.reduce((s, _, i) => s + f(v, i), 0), text, how],
+      },
+    );
+  };
+  const point = (i: number) =>
+    [
+      num(xs[i]!, `x${sub(i + 1)}`, `Point ${i + 1}, x`, undefined, -1e4, 1e4, {
+        step: 0.01,
+        group: 'P',
+      }),
+      num(ys[i]!, `y${sub(i + 1)}`, `Point ${i + 1}, y`, undefined, -1e4, 1e4, {
+        step: 0.01,
+        group: 'P',
+      }),
+    ] as VariableDef[];
+  const residual = (i: number) => `({${ys[i]}} − {m} × {${xs[i]}} − {b})²`;
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A’s rows are (xᵢ, 1) and b holds the yᵢ: AᵀA x̂ = Aᵀb gives the slope m and intercept b.',
+      'Ax̂ is the projection of b onto Col A, so the residual is square to every column.',
+      'The least-squares line makes the sum of the squared residuals as small as any line can.',
+    ],
+    variables: [
+      ...pts.flatMap((_, i) => point(i)),
+      num('sxx', 'Σx²', 'Top left of AᵀA', undefined, 0, 1e9, { derived: true }),
+      num('sx', 'Σx', 'Sum of the x values', undefined, -1e6, 1e6, { derived: true }),
+      num('sxy', 'Σxy', 'First entry of Aᵀb', undefined, -1e9, 1e9, { derived: true }),
+      num('sy', 'Σy', 'Sum of the y values', undefined, -1e6, 1e6, { derived: true }),
+      num('m', 'm', 'Slope', undefined, -1e6, 1e6, { derived: true }),
+      num('b', 'b', 'Intercept', undefined, -1e7, 1e7, { derived: true }),
+      num('E', '‖b − Ax̂‖²', 'Squared error', undefined, 0, 1e12, { derived: true }),
+    ],
+    rules: [
+      total(
+        'sx',
+        'Σx',
+        (i) => `{${xs[i]}}`,
+        (v, i) => v[xs[i]!]!,
+        'Add the x values: the off-diagonal of AᵀA.',
+      ),
+      total(
+        'sy',
+        'Σy',
+        (i) => `{${ys[i]}}`,
+        (v, i) => v[ys[i]!]!,
+        'Add the y values: the second entry of Aᵀb.',
+      ),
+      total(
+        'sxx',
+        'Σx²',
+        (i) => `{${xs[i]}}²`,
+        (v, i) => v[xs[i]!]! ** 2,
+        'Add the squares of the x values: the top left of AᵀA.',
+      ),
+      total(
+        'sxy',
+        'Σxy',
+        (i) => `{${xs[i]}} × {${ys[i]}}`,
+        (v, i) => v[xs[i]!]! * v[ys[i]!]!,
+        'Add each x times its y: the first entry of Aᵀb.',
+      ),
+      rule(
+        'm from the normal equations',
+        `{m} = (${n} × {sxy} − {sx} × {sy}) ÷ (${n} × {sxx} − {sx}²)`,
+        ['m', 'sxy', 'sx', 'sy', 'sxx'],
+        (v) => v.m! * (n * v.sxx! - v.sx! ** 2) - (n * v.sxy! - v.sx! * v.sy!),
+        {
+          m: [
+            (v) => div(n * v.sxy! - v.sx! * v.sy!, n * v.sxx! - v.sx! ** 2),
+            `(${n} × {sxy} − {sx} × {sy}) ÷ (${n} × {sxx} − {sx}²)`,
+            'Solve the 2 × 2 normal equations AᵀA x̂ = Aᵀb for the slope (Cramer’s rule).',
+          ],
+        },
+      ),
+      rule(
+        'b = (Σy − mΣx) ÷ n',
+        `{b} = ({sy} − {m} × {sx}) ÷ ${n}`,
+        ['b', 'sy', 'm', 'sx'],
+        (v) => n * v.b! - (v.sy! - v.m! * v.sx!),
+        {
+          b: [
+            (v) => (v.sy! - v.m! * v.sx!) / n,
+            `({sy} − {m} × {sx}) ÷ ${n}`,
+            'The second normal equation: the line passes through the mean point.',
+          ],
+        },
+      ),
+      total(
+        'E',
+        'E = Σ residual²',
+        residual,
+        (v, i) => (v[ys[i]!]! - v.m! * v[xs[i]!]! - v.b!) ** 2,
+        'Square each residual, actual minus predicted, and add.',
+      ),
+    ],
+    example: ex,
+    startWith: pts.flatMap((_, i) => [xs[i]!, ys[i]!]),
+    equation: `[[{sxx}, {sx}; {sx}, ${n}]] [[{m}; {b}]] = [[{sxy}; {sy}]]`,
+    representation: {
+      kind: 'scatter',
+      x: { label: 'x', min: 0, max: 4 },
+      y: { label: 'y', min: 0, max: 5 },
+      points: [],
+      pointsFrom: 'P',
+      slope: 'm',
+      intercept: 'b',
+      leastSquares: 'fit',
+      residuals: 'segments',
+    },
+  });
+}
+
+const leastSquares4 = leastSquaresDemo(
+  'g.he-scatter-points-from',
+  'Least squares by the normal equations',
+  'Use this for “Find the least-squares line through (0, 1), (1, 2), (2, 2), (3, 4).”',
+  [
+    [0, 1],
+    [1, 2],
+    [2, 2],
+    [3, 4],
+  ],
+);
+
+const leastSquares8 = leastSquaresDemo(
+  'g.he-scatter-points-from-eight',
+  'Least squares through eight typed points',
+  'Use this for “Fit a line by least squares to the eight readings (1, 2.1), (2, 2.9), …, (8, 8.9).”',
+  [
+    [1, 2.1],
+    [2, 2.9],
+    [3, 4.2],
+    [4, 4.8],
+    [5, 6.1],
+    [6, 6.8],
+    [7, 8.2],
+    [8, 8.9],
+  ],
+);
+
 export const HE4A_GALLERY_MODULES: ModuleDef[] = [
   inverse3,
   inverse4,
@@ -702,6 +883,8 @@ export const HE4A_GALLERY_MODULES: ModuleDef[] = [
   eigenShear,
   areaDemo,
   eigenComplex,
+  leastSquares4,
+  leastSquares8,
 ];
 
 export const HE4A_GALLERY_LAYOUTS: LayoutDef[] = [];
