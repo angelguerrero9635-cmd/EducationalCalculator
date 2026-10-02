@@ -237,6 +237,7 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
     case 'flowerCycle':
       return <Hs3dCardView f={f} ink={ink} />;
     case 'code':
+    case 'graph':
       return <He3dCardView f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;

@@ -1,7 +1,7 @@
 /**
  * College pictures, round 3, group D (docs/RENDERINGS_HE.md): the computing and signals
  * pictures. HC48 the `codeTrace` explore figure and the `code` card figure; HC49
- * `timingDiagram`.
+ * `timingDiagram`; HC50 `graph` (and its card).
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -48,7 +48,7 @@ export interface CodeCard {
 export const HE3D_SCENE_FIELD = { codeTrace: 'trace' } as const;
 
 export type He3dFigure = CodeTraceFigure;
-export type He3dCard = CodeCard;
+export type He3dCard = CodeCard | GraphCard;
 
 /** A code card's size: 7.2 px a character at 12 px, 16 px a line, a 6 px margin. */
 export const CODE_CHAR_W = 7.2;
@@ -124,9 +124,84 @@ export interface TimingDiagramSpec {
   total?: NumOrVar;
 }
 
+// ─── HC50: graphs and trees ──────────────────────────────────────────────────
+
+/** A vertex at a fixed place in a unit box (x right, y down, 0 to 1). */
+export interface GraphVertex {
+  name: string;
+  x: number;
+  y: number;
+}
+
+/** An edge: its cost (a variable id or a number) written on it; dashed for a reported distance. */
+export interface GraphEdge {
+  from: string;
+  to: string;
+  cost?: NumOrVar;
+  dashed?: boolean;
+}
+
+/**
+ * A graph or tree from the page's values:
+ *
+ * - `graph` (default): the page's fixed embedding (`vertices`, `edges`) with costs written, or,
+ *   when the page's V and E don't match it, a connected planar graph of V vertices and E edges
+ *   (a stacked triangulation, straight edges, no crossings); `degrees` writes each vertex's
+ *   degree in it; `best` lights the cheapest path and checks its cost against the page's.
+ * - `tree`: a complete binary tree of n nodes level by level (dots to 32 a level, then a filled
+ *   bar), the height h_min bracketed, and the levels to h with their room (2^(h+1) − 1 nodes).
+ * - `code`: a prefix code tree from codeword lengths, 0 left and 1 right, each leaf its symbol,
+ *   codeword and p; the Kraft sum said (no tree past 1).
+ */
+export interface GraphSpec {
+  kind: 'graph';
+  mode?: 'graph' | 'tree' | 'code';
+  vertices?: GraphVertex[];
+  edges?: GraphEdge[];
+  /** `graph`: vertices, edges, degree sum, average degree and faces. */
+  V?: NumOrVar;
+  E?: NumOrVar;
+  degreeSum?: NumOrVar;
+  average?: NumOrVar;
+  F?: NumOrVar;
+  degrees?: boolean;
+  /** The cheapest path from `from` to `to`, lit; `cost` is the page's value for it. */
+  best?: { from: string; to: string; cost?: NumOrVar };
+  /** `tree`: nodes n, least height h_min, a height h, most nodes and most leaves at h. */
+  n?: NumOrVar;
+  hmin?: NumOrVar;
+  h?: NumOrVar;
+  most?: NumOrVar;
+  leaves?: NumOrVar;
+  /** `code`: each symbol's codeword length and probability, names, L and the Kraft sum. */
+  lengths?: NumOrVar[];
+  probs?: NumOrVar[];
+  names?: string[];
+  L?: NumOrVar;
+  kraft?: NumOrVar;
+}
+
+/**
+ * A card figure: a small fixed graph (sort cards, sequence stages). `degrees` writes each
+ * vertex's degree in it instead of its name; `lit` vertices and edges are drawn in the
+ * highlight and heavy (a done set, a path); `dist` writes a distance beside each vertex
+ * (Dijkstra's labels; "∞" for one not reached). Default 96 × 64; `wide` is 168 × 104.
+ */
+export interface GraphCard {
+  kind: 'graph';
+  vertices: GraphVertex[];
+  edges: { from: string; to: string; cost?: number; lit?: boolean }[];
+  lit?: string[];
+  degrees?: boolean;
+  dist?: Record<string, number | '∞'>;
+  wide?: boolean;
+}
+
+export const graphCardSize = (f: GraphCard): [number, number] => (f.wide ? [168, 104] : [96, 64]);
+
 // ─── The group's calculator pictures ─────────────────────────────────────────
 
-export type He3dSpec = TimingDiagramSpec;
+export type He3dSpec = TimingDiagramSpec | GraphSpec;
 
 const ids = (xs: unknown[]): string[] =>
   xs.flat(4).filter((x): x is string => typeof x === 'string');
@@ -138,5 +213,24 @@ export function he3dSpecVars(r: He3dSpec): string[] {
       const { kind: _k, mode: _m, byte: _b, ...rest } = r;
       return ids(Object.values(rest));
     }
+    case 'graph':
+      return ids([
+        r.V,
+        r.E,
+        r.degreeSum,
+        r.average,
+        r.F,
+        r.best?.cost,
+        r.n,
+        r.hmin,
+        r.h,
+        r.most,
+        r.leaves,
+        r.lengths ?? [],
+        r.probs ?? [],
+        r.L,
+        r.kraft,
+        (r.edges ?? []).map((e) => e.cost),
+      ]);
   }
 }

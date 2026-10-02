@@ -1,14 +1,24 @@
 /**
  * Harness checks for the college round 3 group D pictures (docs/RENDERINGS_HE.md): HC48 code
- * traces and code cards, HC49 timing diagrams. Test-only.
+ * traces and code cards, HC49 timing diagrams, HC50 graphs and graph cards. Test-only.
  */
 import { TIME_UNITS } from '@/components/module/reps/he3dTime';
+import {
+  cheapestPath,
+  degreesOf,
+  dijkstra,
+  leastHeight,
+  planarGraph,
+  prefixCode,
+  treeLevels,
+} from '@/components/module/reps/graphMath';
 import { HERTZ, METRES, uartFrame } from '@/components/module/reps/timingMath';
 
 import type { CardFigure, LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 import type { NumOrVar } from '../typesGraphs';
-import type { CodeTraceFigure, CodeTraceScene, TimingDiagramSpec } from '../typesHe3d';
+import type { CodeTraceFigure, CodeTraceScene, GraphSpec, TimingDiagramSpec } from '../typesHe3d';
+import { graphCardSize } from '../typesHe3d';
 
 type Get = (x: NumOrVar) => number | undefined;
 type UnitOf = (x: NumOrVar) => string | undefined;
@@ -38,6 +48,8 @@ export function he3dIssues(rep: Representation, get: Get, unitOf: UnitOf): strin
   switch (rep.kind) {
     case 'timingDiagram':
       return timingIssues(rep, get, unitOf);
+    case 'graph':
+      return graphIssues(rep, get, unitOf);
     default:
       return [];
   }
@@ -181,6 +193,147 @@ export function testHolds(text: string): boolean | undefined {
   }
 }
 
+/** HC50: degree sum = 2E, the drawn V and E, Euler's faces, the cheapest path's cost, tree and code sums. */
+function graphIssues(s: GraphSpec, get: Get, unitOf: UnitOf): string[] {
+  const out: string[] = [];
+  const { v } = reader(get, unitOf);
+  if (s.mode === 'tree') {
+    const [n, hmin, h, most, leaves] = [v(s.n), v(s.hmin), v(s.h), v(s.most), v(s.leaves)];
+    if (n !== undefined && hmin !== undefined && n >= 1 && hmin !== leastHeight(n)) {
+      out.push(`tree: h_min ${hmin} for ${n} nodes, drawn ${leastHeight(n)}`);
+    }
+    if (n !== undefined && n >= 1) {
+      const levels = treeLevels(n, leastHeight(n) + 1);
+      if (levels.reduce((a, b) => a + b, 0) !== Math.round(n)) out.push(`tree: levels miss nodes`);
+    }
+    if (h !== undefined && most !== undefined && !near(most, 2 ** (h + 1) - 1)) {
+      out.push(`tree: most nodes ${most} ≠ 2^(h + 1) − 1`);
+    }
+    if (h !== undefined && leaves !== undefined && !near(leaves, 2 ** h)) {
+      out.push(`tree: most leaves ${leaves} ≠ 2^h`);
+    }
+    return out;
+  }
+  if (s.mode === 'code') {
+    const lengths = (s.lengths ?? []).map(v);
+    const probs = (s.probs ?? []).map(v);
+    if (lengths.some((l) => l === undefined)) return out;
+    const ls = lengths as number[];
+    const { kraft, codes } = prefixCode(ls);
+    const K = v(s.kraft);
+    if (K !== undefined && !near(K, kraft)) out.push(`code: Kraft sum ${K}, drawn ${kraft}`);
+    if (codes) {
+      for (let i = 0; i < codes.length; i++) {
+        if (codes[i]!.length !== ls[i]) out.push(`code: codeword ${codes[i]} for length ${ls[i]}`);
+        for (let j = 0; j < codes.length; j++) {
+          if (i !== j && codes[j]!.startsWith(codes[i]!)) {
+            out.push(`code: ${codes[i]} starts ${codes[j]}`);
+          }
+        }
+      }
+    }
+    const L = v(s.L);
+    if (L !== undefined && probs.every((p) => p !== undefined) && probs.length === ls.length) {
+      const sum = probs.reduce((a, p, i) => a + p! * ls[i]!, 0);
+      if (!near(L, sum)) out.push(`code: L ${L} ≠ Σ p l = ${sum}`);
+    }
+    return out;
+  }
+  const [V, E, sum, avg, F] = [v(s.V), v(s.E), v(s.degreeSum), v(s.average), v(s.F)];
+  if (E !== undefined && sum !== undefined && !near(sum, 2 * E))
+    out.push(`graph: degree sum ${sum} ≠ 2E`);
+  if (V !== undefined && E !== undefined && avg !== undefined && !near(avg * V, 2 * E)) {
+    out.push(`graph: average degree ${avg} ≠ 2E ÷ V`);
+  }
+  if (V !== undefined && E !== undefined && F !== undefined && !near(V - E + F, 2)) {
+    out.push(`graph: V − E + F = ${V - E + F}, not 2`);
+  }
+  const fits =
+    s.vertices &&
+    s.edges &&
+    (V === undefined || V === s.vertices.length) &&
+    (E === undefined || E === s.edges.length);
+  if (fits) {
+    const names = s.vertices!.map((x) => x.name);
+    for (const e of s.edges!) {
+      if (!names.includes(e.from) || !names.includes(e.to)) {
+        out.push(`graph: edge ${e.from}–${e.to} names no vertex`);
+      }
+    }
+    const deg = degreesOf(names, s.edges!);
+    const total = [...deg.values()].reduce((a, b) => a + b, 0);
+    if (total !== 2 * s.edges!.length) out.push(`graph: drawn degree sum ${total} ≠ 2E`);
+    if (s.best) {
+      const costs = s.edges!.map((e) => (e.cost === undefined ? 1 : v(e.cost)));
+      if (costs.every((c) => c !== undefined)) {
+        const edges = s.edges!.map((e, i) => ({ from: e.from, to: e.to, cost: costs[i]! }));
+        const best = cheapestPath(names, edges, s.best.from, s.best.to);
+        const want = v(s.best.cost);
+        if (!best) out.push(`graph: no path from ${s.best.from} to ${s.best.to}`);
+        else if (want !== undefined && !near(best.cost, want)) {
+          out.push(`graph: the lit path costs ${best.cost}, the page says ${want}`);
+        }
+      }
+    }
+  } else if (V !== undefined && E !== undefined) {
+    const g = planarGraph(V, E);
+    if (g) {
+      if (g.pos.length !== V || g.edges.length !== E)
+        out.push(`graph: drew ${g.pos.length}, ${g.edges.length}`);
+      const keys = new Set(g.edges.map(([a, b]) => `${Math.min(a, b)}-${Math.max(a, b)}`));
+      if (keys.size !== g.edges.length) out.push('graph: a repeated edge');
+    }
+  }
+  return out;
+}
+
+/** A graph card: edges name vertices, vertices apart, Dijkstra labels right, a degree list matches. */
+export function graphCardIssues(f: CardFigure, where: string): string[] {
+  if (f.kind !== 'graph') return [];
+  const out: string[] = [];
+  const names = f.vertices.map((x) => x.name);
+  for (const e of f.edges) {
+    if (!names.includes(e.from) || !names.includes(e.to))
+      out.push(`${where}: edge ${e.from}–${e.to}`);
+  }
+  const [w, h] = graphCardSize(f);
+  const m = f.wide ? 16 : 11;
+  const r = f.wide ? 10 : 8;
+  const px = f.vertices.map((p) => [m + p.x * (w - 2 * m), m + p.y * (h - 2 * m)] as const);
+  px.forEach((a, i) =>
+    px.slice(i + 1).forEach((b, j) => {
+      if (Math.hypot(a[0] - b[0], a[1] - b[1]) < 2 * r + 4) {
+        out.push(`${where}: vertices ${names[i]} and ${names[i + 1 + j]} touch`);
+      }
+    }),
+  );
+  if (f.dist) {
+    const src = Object.entries(f.dist).find(([, d]) => d === 0)?.[0];
+    if (src) {
+      const { dist } = dijkstra(
+        names,
+        f.edges.map((e) => ({ from: e.from, to: e.to, cost: e.cost ?? 1 })),
+        src,
+      );
+      for (const [n, d] of Object.entries(f.dist)) {
+        const want = dist.get(n);
+        if (d !== '∞' && want !== undefined && Math.abs(want - d) > 1e-9) {
+          out.push(`${where}: ${n} labelled ${d}, its distance is ${want}`);
+        }
+      }
+    }
+  }
+  if (f.degrees) {
+    const list = /^Degrees ([\d, ]+)$/.exec(where);
+    if (list) {
+      const said = list[1]!.split(/,\s*/).map(Number).sort();
+      const deg = [...degreesOf(names, f.edges).values()].sort();
+      if (said.join() !== deg.join()) out.push(`${where}: drawn degrees ${deg.join(', ')}`);
+    }
+  }
+  return out;
+}
+
 /** A code trace scene: the lit lines exist and aren't blank, each row fills the table, the test agrees. */
 export function codeTraceIssues(f: CodeTraceFigure, s: CodeTraceScene, where: string): string[] {
   const out: string[] = [];
@@ -235,11 +388,22 @@ export function he3dFigureIssues(l: LayoutDef): string[] {
   }
   if (l.kind === 'sort') {
     for (const card of l.cards)
-      if (card.figure) out.push(...codeCardIssues(card.figure, card.label));
-    for (const bin of l.bins) if (bin.figure) out.push(...codeCardIssues(bin.figure, bin.label));
+      if (card.figure)
+        out.push(
+          ...codeCardIssues(card.figure, card.label),
+          ...graphCardIssues(card.figure, card.label),
+        );
+    for (const bin of l.bins)
+      if (bin.figure)
+        out.push(
+          ...codeCardIssues(bin.figure, bin.label),
+          ...graphCardIssues(bin.figure, bin.label),
+        );
   }
   if (l.kind === 'sequence') {
-    for (const st of l.stages) if (st.figure) out.push(...codeCardIssues(st.figure, st.label));
+    for (const st of l.stages)
+      if (st.figure)
+        out.push(...codeCardIssues(st.figure, st.label), ...graphCardIssues(st.figure, st.label));
   }
   return out;
 }

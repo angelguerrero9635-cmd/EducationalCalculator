@@ -254,3 +254,9 @@ College card figure `skeletal` (HC2, `layouts/skeletalCard.tsx`, `typesHe1c.ts`)
 112 × 76 from a SMILES-like spec (`CC(=O)OCC`, `c1cc[nH]c1`, `C[C@H](O)CC`), its group lit
 (`carboxyl`, `ester`, `amide`, `nitrile`, `aldehyde`, `ketone`, `hydroxyl`, `amine`, … or atom
 numbers), the parent chain numbered, and CIP ranks with R or S on `center`.
+
+College card figure `graph` (HC50, `reps/GraphDiagram.tsx` `GraphCardView`, `typesHe3d.ts`):
+`{ kind: 'graph', vertices: [{ name, x, y }] (a unit box), edges: [{ from, to, cost?, lit? }],
+lit?, degrees?, dist?, wide? }`, a small fixed graph at 96 × 64 (`wide`: 168 × 104) with
+costs on the edges, each vertex's name or degree in it, lit vertices and edges heavy in the
+highlight, and Dijkstra's distances beside the vertices; for Euler sorts and Dijkstra stages.

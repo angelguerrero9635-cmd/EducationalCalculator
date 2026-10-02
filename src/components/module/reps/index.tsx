@@ -172,6 +172,7 @@ import { DnaStrand } from './DnaStrand';
 import { Neuron } from './Neuron';
 import { Skeletal } from './Skeletal';
 import { TimingDiagram } from './TimingDiagram';
+import { GraphDiagram } from './GraphDiagram';
 import { Hs2eView } from './Hs2eView';
 import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
@@ -388,6 +389,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <ThermalWall spec={spec} calc={calc} />;
     case 'timingDiagram':
       return <TimingDiagram spec={spec} calc={calc} />;
+    case 'graph':
+      return <GraphDiagram spec={spec} calc={calc} />;
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':

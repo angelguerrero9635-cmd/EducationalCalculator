@@ -620,6 +620,7 @@ function representationVars(r: Representation): string[] {
     case 'thermalWall':
       return he2cSpecVars(r);
     case 'timingDiagram':
+    case 'graph':
       return he3dSpecVars(r);
     case 'projectile':
     case 'induction':

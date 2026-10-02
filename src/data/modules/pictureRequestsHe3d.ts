@@ -82,4 +82,38 @@ export const HE3D_REQUESTS: PictureRequest[] = [
       'g.he-timing-diagram-link-lan',
     ],
   },
+  {
+    ...ask(
+      'HC50',
+      'graph',
+      'Graphs: a fixed embedding with degrees or costs and the cheapest path lit; a planar graph of any V and E; a complete binary tree; a prefix code tree; graph cards',
+      {
+        'he.engineering.discrete-math#3': '"graph"',
+        'he.engineering.data-structures#1': '"tree"',
+        [`${NET}#2`]: '"best"',
+        [`${NET}#2~dijkstra`]: '"kind":"graph"',
+        'he.engineering.communication-systems#3~code-length': '"code"',
+      },
+      [
+        'From EC-P22. Drawn by reps/GraphDiagram.tsx (sums in reps/graphMath.ts, shared with the harness); the card by GraphCardView through layouts/he3dCards.tsx; types in typesHe3d.ts (GraphSpec, GraphCard).',
+        'Fields: mode "graph" (default) | "tree" | "code". graph: vertices [{ name, x, y }] in a unit box (y down) and edges [{ from, to, cost?, dashed? }] (a fixed embedding; cost a variable id or number), V, E, degreeSum, average, F, degrees (true: each degree in a badge in the widest gap between its edges), best { from, to, cost } (the cheapest path lit heavy, its cost checked against the page). When the page’s V and E don’t match the embedding, a connected planar graph of V vertices and E edges is drawn (a stacked triangulation, straight edges, each vertex its degree; up to 16 vertices; past 3V − 6 the caption says no simple planar graph exists). tree: n, hmin, h, most, leaves (levels 0 to max(h_min, h), dots to 32 a level, then a filled bar). code: lengths [ids], probs [ids], names, L, kraft (canonical prefix code; 0 left, 1 right; an unused branch dashed; no tree past a Kraft sum of 1).',
+        'Card figure { kind: "graph", vertices, edges: [{ from, to, cost?, lit? }], lit?, degrees?, dist?, wide? } at 96 × 64 (wide 168 × 104): ~euler cards (degrees: true, the label “Degrees 3, 3, 2, 2” is checked against the drawing) and ~dijkstra stages (wide, the stage’s router and the link it was reached by lit; spans the cost of that link, totalLabel “Distance to D”).',
+        'Harness (picturesHe3d.ts): degree sum = 2E (drawn and the page’s), average = 2E ÷ V, V − E + F = 2, edges name vertices, the cheapest path’s cost = the page’s; h_min = ⌈log₂(n + 1)⌉ − 1, levels hold n, most = 2^(h + 1) − 1, leaves = 2^h; codewords as long as the lengths, none a prefix of another, Kraft sum and L = Σ pᵢlᵢ; card vertices apart, Dijkstra labels and degree lists.',
+        'Step text: the Bellman–Ford minimum “min(2 + 6, 7 + 3, 4 + 5)” is taught to the harness in harness/phrasesHe3d.ts.',
+        'Example (discrete-math#3 main): { kind: "graph", vertices: the prism, edges: its 9, V: "V", E: "E", degreeSum: "sum", average: "avg", F: "F", degrees: true }; networks#2 main: the X, A, B, C, Z embedding with link costs and dashed reported distances and best: { from: "X", to: "Z", cost: "D" }. Each gallery demo is the page to copy.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-graph-planar',
+      'g.he-graph-planar-max',
+      'g.he-graph-tree',
+      'g.he-graph-tree-full',
+      'g.he-graph-code-tree',
+      'g.he-graph-code-tree-unused',
+      'g.he-graph-routing',
+      'g.he-graph-dijkstra',
+      'g.he-graph-card-euler',
+    ],
+  },
 ];

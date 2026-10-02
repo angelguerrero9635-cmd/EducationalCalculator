@@ -8,12 +8,16 @@
  * HC49: `timingDiagram`, one demo per mode (digital-logic#2, embedded-systems#1, ~pwm,
  * embedded-systems#2, networks#3) and one at the edge of a range for the register, the timer,
  * the UART and the link.
+ *
+ * HC50: `graph` (discrete-math#3, data-structures#1, communication-systems#3~code-length,
+ * networks#2) with an edge case each, and graph cards on a sequence (networks#2~dijkstra) and
+ * a sort (discrete-math#3~euler).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
-import type { TimingDiagramSpec } from './typesHe3d';
+import type { GraphSpec, TimingDiagramSpec } from './typesHe3d';
 
 type Fn = (x: Values) => number | number[] | undefined;
 
@@ -810,6 +814,504 @@ const linkLan = demo({
   representation: linkSpec,
 });
 
+// ─── HC50: discrete-math#3, degrees and faces ─────────────────────────────────
+
+const count = (id: string, symbol: string, name: string, min = 0, max = 100) =>
+  vr(id, symbol, name, undefined, min, max, { integer: true });
+
+const planarVars = () => [
+  count('V', 'V', 'Vertices', 1, 16),
+  count('E', 'E', 'Edges', 0, 42),
+  count('sum', 'Σ deg', 'Degree sum', 0, 84),
+  vr('avg', 'd̄', 'Average degree', undefined, 0, 15, { step: 0.01 }),
+  count('F', 'F', 'Faces', 1, 40),
+];
+
+const planarRules = (): Rule[] => [
+  rule('degree sum = 2E', '{sum} = 2 × {E}', ['sum', 'E'], (x) => x.sum! - 2 * x.E!, {
+    sum: [(x) => 2 * x.E!, '2 × {E}', 'Each edge has two ends, so it adds 1 to two degrees.'],
+    E: [(x) => x.sum! / 2, '{sum} ÷ 2', 'Each edge counts twice in the degree sum.'],
+  }),
+  rule(
+    'average degree = 2E ÷ V',
+    '{avg} = {sum} ÷ {V}',
+    ['avg', 'sum', 'V'],
+    (x) => x.avg! * x.V! - x.sum!,
+    {
+      avg: [(x) => div(x.sum!, x.V!), '{sum} ÷ {V}', 'The degree sum shared over the vertices.'],
+      sum: [(x) => x.avg! * x.V!, '{avg} × {V}', 'The average times the number of vertices.'],
+      V: [(x) => div(x.sum!, x.avg!), '{sum} ÷ {avg}', 'The degree sum over the average degree.'],
+    },
+  ),
+  rule('V − E + F = 2', '{V} − {E} + {F} = 2', ['V', 'E', 'F'], (x) => x.V! - x.E! + x.F! - 2, {
+    F: [(x) => 2 - x.V! + x.E!, '2 − {V} + {E}', 'Euler’s formula for a connected planar graph.'],
+    E: [(x) => x.V! + x.F! - 2, '{V} + {F} − 2', 'Euler’s formula, solved for the edges.'],
+    V: [(x) => 2 + x.E! - x.F!, '2 + {E} − {F}', 'Euler’s formula, solved for the vertices.'],
+  }),
+];
+
+const planarLimit = limit(
+  'a simple planar graph has at most 3V − 6 edges',
+  '{E} ≤ 3 × {V} − 6',
+  ['E', 'V'],
+  (x) => x.V! < 3 || x.E! <= 3 * x.V! - 6,
+  'A simple planar graph on V ≥ 3 vertices has at most 3V − 6 edges.',
+);
+
+const PRISM_V = [
+  { name: 'A', x: 0.5, y: 0 },
+  { name: 'B', x: 0.05, y: 1 },
+  { name: 'C', x: 0.95, y: 1 },
+  { name: 'D', x: 0.5, y: 0.4 },
+  { name: 'E', x: 0.34, y: 0.76 },
+  { name: 'F', x: 0.66, y: 0.76 },
+];
+const PRISM_E = ['AB', 'BC', 'CA', 'DE', 'EF', 'FD', 'AD', 'BE', 'CF'].map((p) => ({
+  from: p[0]!,
+  to: p[1]!,
+}));
+
+const planar = demo({
+  id: 'g.he-graph-planar',
+  title: 'Graph: degrees and faces',
+  use: 'Use this for “A connected planar graph has 6 vertices and 9 edges. How many faces?”',
+  assumptions: [
+    'The graph is simple (no loops or repeated edges), connected and drawn with no crossings.',
+    'Faces include the outer, unbounded one.',
+    'For V ≥ 3, a simple planar graph has at most 3V − 6 edges.',
+  ],
+  variables: planarVars(),
+  rules: planarRules(),
+  limits: [planarLimit],
+  example: { V: 6, E: 9, sum: 18, avg: 3, F: 5 },
+  startWith: ['V', 'E'],
+  representation: {
+    kind: 'graph',
+    vertices: PRISM_V,
+    edges: PRISM_E,
+    V: 'V',
+    E: 'E',
+    degreeSum: 'sum',
+    average: 'avg',
+    F: 'F',
+    degrees: true,
+  },
+});
+
+// The edge: as many edges as a planar graph on 7 vertices can have, 3V − 6 = 15.
+const planarMax = demo({
+  id: 'g.he-graph-planar-max',
+  title: 'Graph: the most edges a planar graph can have',
+  use: 'Use this for “Can a planar graph with 7 vertices have 15 edges? How many faces then?”',
+  assumptions: [
+    'The graph is simple, connected and drawn with no crossings.',
+    'At 3V − 6 edges every face, the outer one too, is a triangle.',
+  ],
+  variables: planarVars(),
+  rules: planarRules(),
+  limits: [planarLimit],
+  example: { V: 7, E: 15, sum: 30, avg: 30 / 7, F: 10 },
+  startWith: ['V', 'E'],
+  representation: {
+    kind: 'graph',
+    V: 'V',
+    E: 'E',
+    degreeSum: 'sum',
+    average: 'avg',
+    F: 'F',
+    degrees: true,
+  },
+});
+
+// ─── HC50: data-structures#1, a binary tree's height ─────────────────────────
+
+const treeVars = () => [
+  count('n', 'n', 'Nodes', 1, 1000000),
+  vr('hmin', 'h_min', 'Least height', undefined, 0, 20, { integer: true, derived: true }),
+  count('h', 'h', 'Height', 0, 20),
+  count('most', 'nodes', 'Most nodes at h', 1, 2097151),
+  count('leaves', 'leaves', 'Most leaves at h', 1, 1048576),
+];
+
+const treeRules = (): Rule[] => [
+  rule(
+    'h_min = ⌈log₂(n + 1)⌉ − 1',
+    '{hmin} = ⌈ln({n} + 1) ÷ ln(2)⌉ − 1',
+    ['hmin', 'n'],
+    (x) => x.hmin! - (Math.ceil(Math.log2(x.n! + 1) - 1e-12) - 1),
+    {
+      hmin: [
+        (x) => Math.ceil(Math.log2(x.n! + 1) - 1e-12) - 1,
+        '⌈ln({n} + 1) ÷ ln(2)⌉ − 1',
+        'Filled level by level, a tree of height h holds up to 2^(h + 1) − 1 nodes.',
+      ],
+    },
+  ),
+  rule(
+    'most nodes = 2^(h + 1) − 1',
+    '{most} = 2^({h} + 1) − 1',
+    ['most', 'h'],
+    (x) => x.most! - (2 ** (x.h! + 1) - 1),
+    {
+      most: [
+        (x) => 2 ** (x.h! + 1) - 1,
+        '2^({h} + 1) − 1',
+        'Levels 0 to h hold 1 + 2 + 4 + … + 2^h nodes.',
+      ],
+      h: [(x) => Math.log2(x.most! + 1) - 1, 'ln({most} + 1) ÷ ln(2) − 1', 'Undo the power of 2.'],
+    },
+  ),
+  rule('most leaves = 2^h', '{leaves} = 2^{h}', ['leaves', 'h'], (x) => x.leaves! - 2 ** x.h!, {
+    leaves: [(x) => 2 ** x.h!, '2^{h}', 'The last level doubles h times from the root.'],
+    h: [(x) => Math.log2(x.leaves!), 'ln({leaves}) ÷ ln(2)', 'Undo the power of 2.'],
+  }),
+];
+
+/** The room at a height h is a second question beside the least height for n nodes. */
+const TREE_STANDALONE = {
+  vars: ['h', 'most', 'leaves'],
+  why: 'The room at a height h (its most nodes and leaves) is asked beside the least height for n nodes.',
+};
+
+const treeSpec: GraphSpec = {
+  kind: 'graph',
+  mode: 'tree',
+  n: 'n',
+  hmin: 'hmin',
+  h: 'h',
+  most: 'most',
+  leaves: 'leaves',
+};
+
+const binaryTree = demo({
+  id: 'g.he-graph-tree',
+  title: 'Graph: a binary tree’s least height',
+  use: 'Use this for “What is the least height of a binary tree with 100 nodes?”',
+  assumptions: [
+    'Height counts edges from the root: a single node has height 0.',
+    'The least height comes from filling every level before starting the next.',
+  ],
+  variables: treeVars(),
+  rules: treeRules(),
+  standalone: TREE_STANDALONE,
+  example: { n: 100, hmin: 6, h: 6, most: 127, leaves: 64 },
+  startWith: ['n', 'h'],
+  representation: treeSpec,
+});
+
+// The edge: a full tree, every level filled (127 = 2⁷ − 1 nodes).
+const fullTree = demo({
+  id: 'g.he-graph-tree-full',
+  title: 'Graph: a full binary tree',
+  use: 'Use this for “How many nodes does a full binary tree of height 6 hold?”',
+  assumptions: [
+    'Height counts edges from the root: a single node has height 0.',
+    'A full tree fills its last level too.',
+  ],
+  variables: treeVars(),
+  rules: treeRules(),
+  standalone: TREE_STANDALONE,
+  example: { n: 127, hmin: 6, h: 6, most: 127, leaves: 64 },
+  startWith: ['n', 'h'],
+  representation: treeSpec,
+});
+
+// ─── HC50: communication-systems#3~code-length, a prefix code ─────────────────
+
+const codeVars = () => [
+  ...[1, 2, 3, 4].map((i) => count(`l${i}`, `l${'₁₂₃₄'[i - 1]}`, `Length of symbol ${i}`, 1, 8)),
+  ...[1, 2, 3, 4].map((i) =>
+    vr(`p${i}`, `p${'₁₂₃₄'[i - 1]}`, `Probability of symbol ${i}`, undefined, 0, 1, {
+      step: 0.001,
+    }),
+  ),
+  vr('L', 'L', 'Average length', 'bits', 0, 8, { step: 0.001 }),
+  vr('K', 'K', 'Kraft sum', undefined, 0, 2, { step: 0.0001 }),
+];
+
+const codeRules = (): Rule[] => [
+  rule(
+    'L = Σ pᵢlᵢ',
+    '{L} = {p1} × {l1} + {p2} × {l2} + {p3} × {l3} + {p4} × {l4}',
+    ['L', 'p1', 'l1', 'p2', 'l2', 'p3', 'l3', 'p4', 'l4'],
+    (x) => x.L! - (x.p1! * x.l1! + x.p2! * x.l2! + x.p3! * x.l3! + x.p4! * x.l4!),
+    {
+      L: [
+        (x) => x.p1! * x.l1! + x.p2! * x.l2! + x.p3! * x.l3! + x.p4! * x.l4!,
+        '{p1} × {l1} + {p2} × {l2} + {p3} × {l3} + {p4} × {l4}',
+        'Each codeword’s length, weighted by how often it is sent.',
+      ],
+    },
+  ),
+  rule(
+    'K = Σ 2^(−lᵢ)',
+    '{K} = 2^(−{l1}) + 2^(−{l2}) + 2^(−{l3}) + 2^(−{l4})',
+    ['K', 'l1', 'l2', 'l3', 'l4'],
+    (x) => x.K! - (2 ** -x.l1! + 2 ** -x.l2! + 2 ** -x.l3! + 2 ** -x.l4!),
+    {
+      K: [
+        (x) => 2 ** -x.l1! + 2 ** -x.l2! + 2 ** -x.l3! + 2 ** -x.l4!,
+        '2^(−{l1}) + 2^(−{l2}) + 2^(−{l3}) + 2^(−{l4})',
+        'A codeword of length l uses up 2^(−l) of the tree.',
+      ],
+    },
+  ),
+];
+
+const kraftLimit = limit(
+  'the Kraft sum is at most 1',
+  '{K} ≤ 1',
+  ['K'],
+  (x) => x.K! <= 1 + 1e-9,
+  'No prefix code has these lengths: the Kraft sum is past 1.',
+);
+
+const codeSpec: GraphSpec = {
+  kind: 'graph',
+  mode: 'code',
+  lengths: ['l1', 'l2', 'l3', 'l4'],
+  probs: ['p1', 'p2', 'p3', 'p4'],
+  names: ['A', 'B', 'C', 'D'],
+  L: 'L',
+  kraft: 'K',
+};
+
+const codeTree = demo({
+  id: 'g.he-graph-code-tree',
+  title: 'Graph: a prefix code tree',
+  use: 'Use this for “Codewords of lengths 1, 2, 3 and 3 bits are sent with probabilities 1/2, 1/4, 1/8 and 1/8. Find the average length.”',
+  assumptions: [
+    'A prefix code: no codeword starts another, so each symbol is a leaf.',
+    'Lengths fit a prefix code exactly when the Kraft sum is at most 1.',
+  ],
+  variables: codeVars(),
+  rules: codeRules(),
+  limits: [kraftLimit],
+  example: { l1: 1, l2: 2, l3: 3, l4: 3, p1: 0.5, p2: 0.25, p3: 0.125, p4: 0.125, L: 1.75, K: 1 },
+  startWith: ['l1', 'l2', 'l3', 'l4', 'p1', 'p2', 'p3', 'p4'],
+  representation: codeSpec,
+});
+
+// The edge: a Kraft sum below 1, so one branch is left unused.
+const codeTreeSpare = demo({
+  id: 'g.he-graph-code-tree-unused',
+  title: 'Graph: a prefix code with a branch to spare',
+  use: 'Use this for “Codewords of lengths 1, 2, 3 and 4 bits: is it a prefix code, and what is its average length?”',
+  assumptions: [
+    'A prefix code: no codeword starts another, so each symbol is a leaf.',
+    'A Kraft sum below 1 leaves a branch unused: a shorter code exists.',
+  ],
+  variables: codeVars(),
+  rules: codeRules(),
+  limits: [kraftLimit],
+  example: { l1: 1, l2: 2, l3: 3, l4: 4, p1: 0.5, p2: 0.25, p3: 0.15, p4: 0.1, L: 1.85, K: 0.9375 },
+  startWith: ['l1', 'l2', 'l3', 'l4', 'p1', 'p2', 'p3', 'p4'],
+  representation: codeSpec,
+});
+
+// ─── HC50: networks#2, a distance-vector update ───────────────────────────────
+
+const routing = demo({
+  id: 'g.he-graph-routing',
+  title: 'Graph: a distance-vector update',
+  use: 'Use this for “Router X’s links cost 2, 7, 4 to A, B, C, which report distances 6, 3, 5. Find X’s distance.”',
+  assumptions: [
+    'Each neighbour reports its own distance to the destination Z (dashed).',
+    'X takes the cheapest link cost plus reported distance (Bellman–Ford).',
+  ],
+  variables: [
+    vr('cA', 'c_A', 'Link cost to A', undefined, 0.1, 1000, { step: 1 }),
+    vr('cB', 'c_B', 'Link cost to B', undefined, 0.1, 1000, { step: 1 }),
+    vr('cC', 'c_C', 'Link cost to C', undefined, 0.1, 1000, { step: 1 }),
+    vr('DA', 'D_A', 'A’s distance to Z', undefined, 0, 1000, { step: 1 }),
+    vr('DB', 'D_B', 'B’s distance to Z', undefined, 0, 1000, { step: 1 }),
+    vr('DC', 'D_C', 'C’s distance to Z', undefined, 0, 1000, { step: 1 }),
+    vr('D', 'D', 'X’s distance to Z', undefined, 0, 2000, { step: 1, derived: true }),
+  ],
+  rules: [
+    rule(
+      'D = min(c_A + D_A, c_B + D_B, c_C + D_C)',
+      '{D} = min({cA} + {DA}, {cB} + {DB}, {cC} + {DC})',
+      ['D', 'cA', 'DA', 'cB', 'DB', 'cC', 'DC'],
+      (x) => x.D! - Math.min(x.cA! + x.DA!, x.cB! + x.DB!, x.cC! + x.DC!),
+      {
+        D: [
+          (x) => Math.min(x.cA! + x.DA!, x.cB! + x.DB!, x.cC! + x.DC!),
+          'min({cA} + {DA}, {cB} + {DB}, {cC} + {DC})',
+          'Each route is a link cost plus that neighbour’s distance; take the cheapest.',
+        ],
+      },
+    ),
+  ],
+  example: { cA: 2, cB: 7, cC: 4, DA: 6, DB: 3, DC: 5, D: 8 },
+  startWith: ['cA', 'cB', 'cC', 'DA', 'DB', 'DC'],
+  representation: {
+    kind: 'graph',
+    vertices: [
+      { name: 'X', x: 0, y: 0.5 },
+      { name: 'A', x: 0.5, y: 0 },
+      { name: 'B', x: 0.5, y: 0.5 },
+      { name: 'C', x: 0.5, y: 1 },
+      { name: 'Z', x: 1, y: 0.5 },
+    ],
+    edges: [
+      { from: 'X', to: 'A', cost: 'cA' },
+      { from: 'X', to: 'B', cost: 'cB' },
+      { from: 'X', to: 'C', cost: 'cC' },
+      { from: 'A', to: 'Z', cost: 'DA', dashed: true },
+      { from: 'B', to: 'Z', cost: 'DB', dashed: true },
+      { from: 'C', to: 'Z', cost: 'DC', dashed: true },
+    ],
+    best: { from: 'X', to: 'Z', cost: 'D' },
+  },
+});
+
+// ─── HC50: networks#2~dijkstra (graph cards on a sequence) ────────────────────
+
+const DJ_V = [
+  { name: 'S', x: 0, y: 0.5 },
+  { name: 'A', x: 0.33, y: 0 },
+  { name: 'B', x: 0.33, y: 1 },
+  { name: 'C', x: 0.67, y: 0 },
+  { name: 'D', x: 1, y: 0.5 },
+];
+const DJ_E: [string, string, number][] = [
+  ['S', 'A', 1],
+  ['S', 'B', 4],
+  ['A', 'B', 2],
+  ['A', 'C', 5],
+  ['B', 'C', 1],
+  ['C', 'D', 3],
+  ['B', 'D', 6],
+];
+/** The graph with `v` lit and the edge that reached it (from `via`) lit. */
+const djCard = (v: string, via?: string) => ({
+  kind: 'graph' as const,
+  wide: true,
+  vertices: DJ_V,
+  edges: DJ_E.map(([from, to, cost]) => ({
+    from,
+    to,
+    cost,
+    ...(via && ((from === via && to === v) || (from === v && to === via)) ? { lit: true } : {}),
+  })),
+  lit: [v],
+});
+
+const dijkstraStages: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.he-graph-dijkstra',
+  title: 'Dijkstra’s order',
+  use: 'Use this for “In what order does Dijkstra’s algorithm finalise the routers from S?”',
+  assumptions: [
+    'Each step finalises the unvisited router with the smallest distance so far.',
+    'A router’s distance is the one it was reached at, through the lit link.',
+  ],
+  question: 'Put the routers in the order Dijkstra’s algorithm finalises them.',
+  stages: [
+    { label: 'S at 0, the start', span: 0, figure: djCard('S') },
+    { label: 'A at 1, from S', span: 1, figure: djCard('A', 'S') },
+    { label: 'B at 3, through A', span: 2, figure: djCard('B', 'A') },
+    { label: 'C at 4, through B', span: 1, figure: djCard('C', 'B') },
+    { label: 'D at 7, through C', span: 3, figure: djCard('D', 'C') },
+  ],
+  unit: 'cost',
+  totalLabel: 'Distance to D',
+};
+
+// ─── HC50: discrete-math#3~euler (graph cards on a sort) ──────────────────────
+
+const g = (pts: [string, number, number][], edges: string[]) => ({
+  kind: 'graph' as const,
+  degrees: true,
+  vertices: pts.map(([name, x, y]) => ({ name, x, y })),
+  edges: edges.map((e) => ({ from: e[0]!, to: e[1]! })),
+});
+const SQUARE: [string, number, number][] = [
+  ['a', 0, 0],
+  ['b', 1, 0],
+  ['c', 1, 1],
+  ['d', 0, 1],
+];
+
+const eulerCards: LayoutDef = {
+  kind: 'sort',
+  id: 'g.he-graph-card-euler',
+  title: 'Euler circuit, Euler path or neither',
+  use: 'Use this for “A connected graph has degrees 3, 3, 2, 2. Does it have an Euler path?”',
+  assumptions: [
+    'Each graph is connected; each vertex shows its degree.',
+    'An Euler path uses every edge once; a circuit also ends where it starts.',
+  ],
+  question: 'Count the odd degrees: which does the graph have?',
+  bins: [
+    { id: 'circuit', label: 'Euler circuit', why: 'No odd degrees: every visit in has a way out.' },
+    {
+      id: 'path',
+      label: 'Euler path, no circuit',
+      why: 'Two odd degrees: start at one, end at the other.',
+    },
+    { id: 'neither', label: 'Neither', why: 'More than two odd degrees: some edge is left over.' },
+  ],
+  cards: [
+    { label: 'Degrees 2, 2, 2, 2', bin: 'circuit', figure: g(SQUARE, ['ab', 'bc', 'cd', 'da']) },
+    {
+      label: 'Degrees 4, 2, 2, 2, 2',
+      bin: 'circuit',
+      figure: g(
+        [
+          ['m', 0.5, 0.5],
+          ['a', 0, 0],
+          ['b', 0, 1],
+          ['c', 1, 0],
+          ['d', 1, 1],
+        ],
+        ['ma', 'mb', 'ab', 'mc', 'md', 'cd'],
+      ),
+    },
+    { label: 'Degrees 3, 3, 2, 2', bin: 'path', figure: g(SQUARE, ['ab', 'bc', 'cd', 'da', 'ac']) },
+    {
+      label: 'Degrees 1, 1, 2, 2',
+      bin: 'path',
+      figure: g(
+        [
+          ['a', 0, 1],
+          ['b', 0.33, 0],
+          ['c', 0.67, 1],
+          ['d', 1, 0],
+        ],
+        ['ab', 'bc', 'cd'],
+      ),
+    },
+    {
+      label: 'Degrees 3, 3, 3, 3',
+      bin: 'neither',
+      figure: g(
+        [
+          ['a', 0.5, 0],
+          ['b', 0, 1],
+          ['c', 1, 1],
+          ['d', 0.5, 0.62],
+        ],
+        ['ab', 'bc', 'ca', 'da', 'db', 'dc'],
+      ),
+    },
+    {
+      label: 'Degrees 3, 1, 1, 1',
+      bin: 'neither',
+      figure: g(
+        [
+          ['m', 0.5, 0.55],
+          ['a', 0.5, 0],
+          ['b', 0, 1],
+          ['c', 1, 1],
+        ],
+        ['ma', 'mb', 'mc'],
+      ),
+    },
+  ],
+};
+
 export const HE3D_GALLERY_MODULES: ModuleDef[] = [
   register,
   registerHold,
@@ -820,6 +1322,19 @@ export const HE3D_GALLERY_MODULES: ModuleDef[] = [
   uartLong,
   linkDemo,
   linkLan,
+  planar,
+  planarMax,
+  binaryTree,
+  fullTree,
+  codeTree,
+  codeTreeSpare,
+  routing,
 ];
 
-export const HE3D_GALLERY_LAYOUTS: LayoutDef[] = [traceWhile, traceFor, syntaxCards];
+export const HE3D_GALLERY_LAYOUTS: LayoutDef[] = [
+  traceWhile,
+  traceFor,
+  syntaxCards,
+  dijkstraStages,
+  eulerCards,
+];

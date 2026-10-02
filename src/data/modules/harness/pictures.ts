@@ -2316,6 +2316,7 @@ export function repIssues(
       out.push(...he2cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'timingDiagram':
+    case 'graph':
       out.push(
         ...he3dIssues(
           rep,
