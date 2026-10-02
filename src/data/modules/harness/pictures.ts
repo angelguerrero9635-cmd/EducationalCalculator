@@ -2348,6 +2348,7 @@ export function repIssues(
       break;
     case 'bode':
       out.push(...bodeIssues(rep, siOf(val, byId))); // HC22
+      break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21
       break;
