@@ -204,7 +204,7 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                     <SubLabel
                       x={ramp.x0 + 30}
                       y={floorY + 17}
-                      text={`θ = ${formatNumber(Number(theta.toFixed(1)))}°`}
+                      text={`θ = ${q(known(spec.incline), formatNumber(Number(theta.toFixed(1))))}°`}
                       anchor="start"
                       chip={false}
                     />
