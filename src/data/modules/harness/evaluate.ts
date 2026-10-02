@@ -430,6 +430,129 @@ const GL5: [number, number][] = [
 ];
 
 /**
+ * The names of functions in step text: never a letter standing for a value ("sin" is not
+ * s × i × n, "exp" holds no x).
+ */
+export const FUNCTION_NAMES = String.raw`(?:arc)?(?:sin|cos|tan|sec|csc|cot)h?|ln|log(?:₁₀|₂|_\d+)?|sqrt|abs|exp|min|max|floor|ceil|gcd|mod`;
+/**
+ * A letter in a form (HE-E6): one letter with its marks and subscript (x, t, x₀, T_s); a run
+ * of letters that is no function's name is a product of letters (2xy is 2 × x × y). A letter
+ * with a prime after it (y′) is a derivative, never the letter.
+ */
+const LETTER_OR_NAME = new RegExp(
+  String.raw`(${FUNCTION_NAMES})(?=[(⁻|\s₀-₉])|(\p{L}\p{M}*(?:[₀-₉]+|_[\p{L}\d]+)?)(?![′″‴])`,
+  'gu',
+);
+/** The letters standing for values in a form, function names, e and π left out. */
+export function lettersIn(form: string): string[] {
+  const out = new Set<string>();
+  for (const m of form.matchAll(LETTER_OR_NAME)) {
+    if (m[2] !== undefined && m[2] !== 'e' && m[2] !== 'π') out.add(m[2]);
+  }
+  return [...out];
+}
+/** A form with each named letter replaced by its value in brackets: 3x² at x = 2 is 3(2)². */
+export function plugIn(form: string, values: Record<string, number>): string {
+  return form.replace(LETTER_OR_NAME, (m, fn: string | undefined, letter: string | undefined) =>
+    fn === undefined && letter !== undefined && letter in values ? `(${values[letter]})` : m,
+  );
+}
+/**
+ * The products a form writes without a sign, made explicit once its letters are numbers:
+ * 3(2)², (x + 1)(x − 1), 50e^(…), 2cos(…), (1 + 3t)e^(−2t). (Not 1e-7, which is one number,
+ * nor sin⁻¹(…).)
+ */
+export const implicitTimes = (s: string) =>
+  s
+    .replace(/(?<!⁻)([\d)⁰¹²³⁴⁵⁶⁷⁸⁹])\s*\(/g, '$1 × (')
+    .replace(
+      new RegExp(
+        String.raw`([\d)⁰¹²³⁴⁵⁶⁷⁸⁹])(?=(?:${FUNCTION_NAMES})\(|e(?![-+]?\d)|π|√|∛|∜)`,
+        'g',
+      ),
+      '$1 × ',
+    );
+/** A form's value with its letters put in, or undefined when it can't be read there. */
+export function evaluateAt(form: string, values: Record<string, number>): number | undefined {
+  const x = evaluate(implicitTimes(plugIn(form, values)));
+  return x !== undefined && Number.isFinite(x) ? x : undefined;
+}
+
+/**
+ * Each antiderivative evaluated at its limits ("[x³ ÷ 3] from 0 to 2", HE-E6), as F(b) − F(a)
+ * in brackets. The bracket's one letter is its variable; one with no letter or several, or a
+ * limit that can't be read, is left as written.
+ */
+export const BRACKET_LIMITS = /\[([^[\]]+)\] from ([^\s()]+) to ([^\s(),;]+)/gu;
+export function expandBrackets(text: string): string {
+  return text.replace(BRACKET_LIMITS, (whole, body: string, lo: string, hi: string) => {
+    const letters = lettersIn(body);
+    const [a, b] = [evaluate(lo), evaluate(hi)];
+    if (letters.length !== 1 || a === undefined || b === undefined) return whole;
+    const [fa, fb] = [
+      evaluateAt(body, { [letters[0]!]: a }),
+      evaluateAt(body, { [letters[0]!]: b }),
+    ];
+    return fa === undefined || fb === undefined ? whole : `(${fb - fa})`;
+  });
+}
+
+/**
+ * A limit as the steps state it (HE-E6): "lim x → 2 of (x² − 4) ÷ (x − 2)", "lim as h → 0 of
+ * …", "lim (x → 0⁺) of …", "lim x → ∞ of …". Its body runs to the end of the side.
+ */
+export const LIMIT = /lim(?: as)? \(?(\p{L}) ?→ ?(−?∞|-?∞|[^\s()⁺⁻]+)([⁺⁻])?\)?(?: of)? (.+)$/u;
+/**
+ * The value a limit approaches, found by evaluating near the point: from both sides (or the
+ * one written, 0⁺), each extrapolated from h and h/2 (Richardson), and far out for ∞ (10⁵ and
+ * 10⁶). Undefined when the sides disagree, the values run off, or the body can't be read.
+ */
+export function limitOf(body: string, v: string, to: string, side?: '⁺' | '⁻') {
+  const f = (x: number) => evaluateAt(body, { [v]: x });
+  if (/∞/.test(to)) {
+    const s = /[−-]/.test(to) ? -1 : 1;
+    const [f1, f2] = [f(s * 1e5), f(s * 1e6)];
+    if (f1 === undefined || f2 === undefined) return undefined;
+    if (Math.abs(f1 - f2) > 1e-3 * Math.max(1, Math.abs(f2))) return undefined;
+    return f2 - (f1 - f2) / 9;
+  }
+  const a = evaluate(to);
+  if (a === undefined || !Number.isFinite(a)) return undefined;
+  const scale = Math.max(1, Math.abs(a));
+  const sides = side === '⁺' ? [1] : side === '⁻' ? [-1] : [1, -1];
+  const ends: number[] = [];
+  for (const s of sides) {
+    const at = (h: number) => f(a + s * h * scale);
+    // Smooth near the point: extrapolated from h and h/2, and h/100 agrees with it.
+    const [f1, f2, f3] = [at(1e-3), at(5e-4), at(1e-5)];
+    const end = f1 !== undefined && f2 !== undefined ? 2 * f2 - f1 : undefined;
+    if (
+      end !== undefined &&
+      f3 !== undefined &&
+      Math.abs(f3 - end) <= 1e-3 * Math.max(1, Math.abs(end))
+    ) {
+      ends.push(end);
+      continue;
+    }
+    // Slower (√x at 0⁺): values at 10⁻⁴, 10⁻⁶, 10⁻⁸ that close in; values that run off (1 ÷ x²
+    // at 0) have no limit.
+    const [g4, g6, g8] = [at(1e-4), at(1e-6), at(1e-8)];
+    if (g4 === undefined || g6 === undefined || g8 === undefined) return undefined;
+    const closing = Math.abs(g6 - g8) < Math.abs(g4 - g6);
+    if (!closing || Math.abs(g6 - g8) > 1e-2 * Math.max(1, Math.abs(g8))) return undefined;
+    ends.push(g8);
+  }
+  const L = ends.reduce((t, x) => t + x, 0) / ends.length;
+  return ends.every((x) => Math.abs(x - L) <= 1e-3 * Math.max(1, Math.abs(L))) ? L : undefined;
+}
+export function expandLimits(text: string): string {
+  const m = LIMIT.exec(text);
+  if (!m) return text;
+  const L = limitOf(m[4]!, m[1]!, m[2]!, m[3] as '⁺' | '⁻' | undefined);
+  return L === undefined ? text : `${text.slice(0, m.index)}(${L})`;
+}
+
+/**
  * Each integral with its limits ("∫ from 0 to 2 of (x² + 1) dx", "∫ from 0 to 0.5 of dX ÷
  * (0.2 × (1 − X))": HE-E6, HE-E8) worked out by quadrature at the page's values (5-point
  * Gauss–Legendre on 32 panels, never at the ends, so a root at 0 is fine), as its value in
@@ -442,18 +565,9 @@ export function expandIntegrals(text: string): string {
     const [a, b] = [evaluate(lo!), evaluate(hi!)];
     if (a === undefined || b === undefined || !Number.isFinite(a) || !Number.isFinite(b))
       return whole;
-    const v = (dv ?? dv2)!.slice(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const v = (dv ?? dv2)!.slice(1);
     const body = ib ?? `1 ÷ ${ib2}`;
-    // The variable alone (not inside a word or a name like x₁); after a number or a bracket it
-    // multiplies (3x is 3 × x).
-    const index = new RegExp(String.raw`(?<![\p{L}\p{M}_])${v}(?![\p{L}\p{M}_₀-₉])`, 'gu');
-    const f = (x: number) =>
-      evaluate(
-        body.replace(
-          index,
-          (_m, at: number, all: string) => `${/[\d)]$/.test(all.slice(0, at)) ? ' × ' : ''}(${x})`,
-        ),
-      );
+    const f = (x: number) => evaluateAt(body, { [v]: x });
     const panels = 32;
     const h = (b - a) / panels;
     let total = 0;
@@ -472,6 +586,9 @@ export function expandIntegrals(text: string): string {
 export function evaluate(text: string, clampRoots = false): number | undefined {
   if (text.includes('Σ from ')) text = expandSums(text);
   if (text.includes('∫ from ')) text = expandIntegrals(text);
+  // HE-E6: an antiderivative at its limits, and a limit worked out near its point.
+  if (text.includes('] from ')) text = expandBrackets(text);
+  if (text.includes('lim')) text = expandLimits(text);
   const degrees = angleUnit === 'degrees' || text.includes('°');
   let s = text
     // A repeating decimal (0.1666…) is its exact value, 1/6.

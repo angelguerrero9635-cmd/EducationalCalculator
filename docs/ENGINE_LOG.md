@@ -5,6 +5,52 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## HE-E6: calculus lines and notation in steps
+
+- **The solver is numeric, so a calculus page states closed forms, and nothing read them**: a
+  form line "V′(x) = 12x² − 240x + 900" was unreadable to the harness, an antiderivative at its
+  limits or a limit could not be checked, and a wrong derivative would pass. →
+  `harness/calculus.ts` reads a walkthrough's lines (and checks) in order, clause by clause
+  (" → ", ", so ", "; "), and checks each numerically, never symbolically: a **form** with its free
+  variable (`f(x) = …`, `y(t) = …`, `f(x, y) = …`); a **derivative form** (`f′(x)`, `f″(x)`,
+  `dy/dx`, `d²y/dx²`, `d/dx (…)`, `f_x(x, y)`, `f_xy`, `∂f/∂x`, `∂f ÷ ∂y`, `∂²f/∂x∂y`) against
+  central differences of the stated function at seven sample points (or read there, when the
+  function isn't stated); a **value** at a point (`f′(2) = 3(2)² − 4 = 8`, `f_x(1, 2)`,
+  `∂f/∂x at (1, 2)`, `dy/dx at x = 2`, `y(3)`, `y′(0)`) against every side that reads; a
+  **definite integral** with its antiderivative (`∫ from 0 to 2 of x² dx = [x³ ÷ 3] from 0 to 2 = 8 ÷ 3`:
+  quadrature, F(b) − F(a), and F′ = the integrand between the limits, so an antiderivative
+  right only at its ends fails) and an **indefinite** one (`∫ 3x² dx = x³ + C`); a **limit**
+  (`lim x → 2 of …`, `lim as h → 0 of …`, `x → 0⁺`, `x → ∞`); an **ODE** with its closed-form
+  solution (`y′ = −0.2y` with `y(t) = 50e^(−0.2t)`, `y″ + 2y′ + 5y = 0` with the under-,
+  critically and overdamped solutions), its residual within 2 parts in 1000 of its terms (a
+  frequency shown to 4 figures passes). A clause in letters (a rule: "f′(x) = n·c·xⁿ⁻¹",
+  "∫ from a to b of f(x) dx") is not checked.
+- **`evaluate` reads the new pieces anywhere** (substituted lines and checks too): `[F] from a
+to b` as F(b) − F(a) (its one letter is its variable), `lim … of …` evaluated near the point
+  (from both sides, extrapolated from h and h/2; slow ones like √x at 0⁺ from 10⁻⁴, 10⁻⁶, 10⁻⁸;
+  far out for ∞; sides that disagree or values that run off give no limit), and forms with
+  their letters put in (`evaluateAt`, `plugIn`, `implicitTimes`: 3(2)², 50e^(…), 2cos(…),
+  (1 + 3t)e^(−2t), 2xy; never 1e-7 or sin⁻¹). The ∫ integrand uses the same reading, so
+  `(50e^(−0.2t)) dt` reads now.
+- **Pages need to write form lines with their signs** → `college/forms.ts`: `termsForm`,
+  `polyForm([12, −240, 900])` = "12x² − 240x + 900", `polyDerivative`, `expForm(50, −0.2)` =
+  "50e^(−0.2t)". Put form lines in a step's `work` (or a relation's `check`); `how` is a
+  sentence and is not read.
+- **Grades 9–12 primes are names, not derivatives** (x′ and y″ for image points, A′ and C′ on
+  rotated conics). → the sampling test runs the checker only on college pages and lines with a
+  calculus mark (`CALCULUS_MARK`: ∫, ∂, lim, `] from … to`, d/dx, dy/dx, f′(…), f_x(…)); an ODE
+  is read only when its function is stated as a form in one variable; a substituted line with
+  numbers only ("f′(x) = 2 × 1 × 1.5") is a value at the page's point, not a form. K–12 step
+  text is unchanged (no step-building code changed); m.12 limits-intro, matrix-transformations,
+  polar-conics~rotated-equation and m.10 rigid-motions run clean.
+- **Left:** typesetting. `toLatex` already stacks ∂U ÷ ∂P and draws ∫ with limits; d/dx and
+  dy/dx written with "/", `[F] from a to b` (an evaluation bar) and `lim x → a` (a limit under
+  "lim") are shown as text until `latex.ts` and `MathLine` gain those nodes.
+- Tests: `harness/__tests__/calculus.test.ts` (each form right and wrong, the three damped
+  regimes, rules in letters and K–12 primes left alone, the forms `college/forms.ts` writes),
+  `evaluate.test.ts`; the pages by id: every `he.` page, m.12.limits-intro,
+  m.12.matrix-transformations, m.12.polar-conics~rotated-equation, m.10.rigid-motions.
+
 ## E31: college units, temperature differences, unit sets and constants (HE-E5, E26, E9)
 
 - **The college plans need about 300 units the registry lacked, and a temperature difference
