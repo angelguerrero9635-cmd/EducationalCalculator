@@ -609,13 +609,16 @@ const CARBON: {
   },
 ];
 
-/** The volcano's outgassing: up the right edge from its crater to the air (H103). */
+/**
+ * The volcano's outgassing: up the right edge from its crater into the air, whose box then
+ * reaches over it (it ended under the sun, H103).
+ */
 const VOLCANO: (typeof CARBON)[number] = {
   process: 'volcano',
-  a: [352, 172],
-  b: [352, 50],
+  a: [350, 172],
+  b: [347, 43],
   label: 'volcanoes',
-  at: [344, 66],
+  at: [341, 70],
   anchor: 'end',
 };
 
@@ -682,6 +685,9 @@ export function CarbonCycleFigure({
   );
   const lit = carbon.process;
   const ground = 222;
+  // With the volcano, the air reaches the right edge for its arrow and the sun moves left.
+  const airW = volcano ? 264 : 190;
+  const sun = volcano ? { x: 24, y: 22 } : { x: 336, y: 22 };
   return (
     <Board height={336}>
       <G>
@@ -698,17 +704,23 @@ export function CarbonCycleFigure({
         <Rect
           x={92}
           y={10}
-          width={190}
+          width={airW}
           height={30}
           rx={15}
           fill={c.chartSurface}
           stroke={c.chartGrid}
           strokeWidth={chart.strokeLight}
         />
-        <ChartText x={187} y={29} fontSize={chart.small} fontWeight="700" textAnchor="middle">
+        <ChartText
+          x={92 + airW / 2}
+          y={29}
+          fontSize={chart.small}
+          fontWeight="700"
+          textAnchor="middle"
+        >
           carbon dioxide in the air
         </ChartText>
-        <SunDisk x={336} y={22} r={10} ball={ids.sun} c={c} />
+        <SunDisk x={sun.x} y={sun.y} r={10} ball={ids.sun} c={c} />
         {/* Deep rock with coal and oil, the soil, and the ocean. */}
         <Rect x={0} y={264} width={BOARD} height={72} fill={c.rock5} />
         <Path

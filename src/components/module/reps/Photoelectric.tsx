@@ -79,6 +79,10 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
           const bar = { x: 16, y: plateY + 52, w: w - 32, h: 20 };
           const top = Math.max(E, phi) * 1.08 || 1;
           const bx = (v: number) => bar.x + (v / top) * bar.w;
+          const phiEnd = Math.max(
+            Math.min(bx(phi), bar.x + bar.w) - 4,
+            bar.x + `φ ${sig(phi)}`.length * chart.label * 0.58,
+          );
           // The wavelength strip, log scale.
           const strip = { x: 16, y: h - 44, w: w - 32 };
           const sx = (nm: number) =>
@@ -178,6 +182,8 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                     />
                   ) : null}
                   {/* The photon's energy: φ, then what is left as K_max. */}
+                  {/* φ's value ends at its line, but never starts left of the bar (it was cut
+                      off when a short wavelength made φ a sliver). */}
                   <Rect
                     x={bar.x}
                     y={bar.y}
@@ -209,7 +215,7 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                     {`photon energy ${sig(E)} eV`}
                   </ChartText>
                   <ChartText
-                    x={Math.min(bx(phi), bar.x + bar.w) - 4}
+                    x={phiEnd}
                     y={bar.y + bar.h + 16}
                     textAnchor="end"
                     fontSize={chart.label}
@@ -218,7 +224,7 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                   </ChartText>
                   {freed ? (
                     <ChartText
-                      x={bx(phi) + 4}
+                      x={Math.max(bx(phi) + 4, phiEnd + 8)}
                       y={bar.y + bar.h + 16}
                       fontSize={chart.label}
                       fill={c.physMinus}

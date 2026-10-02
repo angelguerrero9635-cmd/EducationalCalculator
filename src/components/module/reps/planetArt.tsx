@@ -168,6 +168,18 @@ export function Planet({
       </G>
       {/* Light from the top left. */}
       <Circle cx={x} cy={y} r={r} fill={url(ids.ball)} />
+      {name === 'earth' ? (
+        // A rim, so the white polar cap doesn't melt into a light page and read as cut off.
+        <Circle
+          cx={x}
+          cy={y}
+          r={r}
+          fill="none"
+          stroke={c.waterDeep}
+          strokeOpacity={0.7}
+          strokeWidth={1}
+        />
+      ) : null}
       {name === 'saturn' ? (
         <>
           {inner('front')}

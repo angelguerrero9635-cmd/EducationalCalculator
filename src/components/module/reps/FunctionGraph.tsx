@@ -562,6 +562,9 @@ export function FunctionGraph({
       square: !!spec.inverse,
     });
   const frozen = useFrozen<Window | undefined>(undefined);
+  // The window last drawn: a drag freezes it, so the scale doesn't grow under the finger and
+  // run the point away (a steep curve rescaled y, then x, on every move).
+  const drawn = useRef<Window | undefined>(undefined);
   const start = useRef<{ def?: HandleDef; x: number; y: number }>({ x: 0, y: 0 });
 
   // Values held while a handle moves: every other typed parameter, and the traced x.
@@ -602,6 +605,7 @@ export function FunctionGraph({
           const bottom = h - (named ? 40 : 24);
           const pw0 = w - L0 - 14;
           const win = frozen.value ?? live(pw0, bottom - top);
+          drawn.current = win;
           const yLabels = ticks(win.y[0], win.y[1], win.yStep).map((v) => tickText(v, win.piY));
           const L = Math.max(22, Math.max(...yLabels.map((s) => width(s, chart.label))) + 10);
           const R = 14;
@@ -614,6 +618,23 @@ export function FunctionGraph({
           const inX = (x: number) => x >= win.x[0] - 1e-9 && x <= win.x[1] + 1e-9;
           const inY = (y: number) => y >= win.y[0] - 1e-9 && y <= win.y[1] + 1e-9;
           const inWin = (x: number, y: number) => inX(x) && inY(y);
+          /**
+           * The farthest x toward `to` from `from` whose point on the curve stays in the window:
+           * the window is frozen while a point is dragged, and a handle that left it would
+           * unmount mid-drag and never release the window.
+           */
+          const reach = (from: number, to: number, snap: (x: number) => number) => {
+            // Checked after snapping to the box's step: a point snapped past the edge left too.
+            const ok = (x: number) => inWin(snap(x), main.f(snap(x)));
+            if (ok(to) || !ok(from)) return snap(to);
+            let [a, b] = [from, to];
+            for (let i = 0; i < 24; i++) {
+              const m = (a + b) / 2;
+              if (ok(m)) a = m;
+              else b = m;
+            }
+            return snap(a);
+          };
           const [wx0, wx1] = win.x;
           const piX = win.piX;
           const piY = win.piY;
@@ -1594,17 +1615,22 @@ export function FunctionGraph({
                   label={`the point on the curve`}
                   onStart={() => {
                     start.current = { x: atPt.x, y: atPt.y };
-                    frozen.freeze();
+                    frozen.freezeAt(drawn.current);
                   }}
                   onMove={(dx) => {
                     const id = spec.at!.x;
+                    // The window is frozen while dragging: stop at its edge, or the handle
+                    // would leave it, unmount mid-drag and never release the window.
+                    const k = conv ? fx : rep.factor(id);
+                    const xc = reach(
+                      start.current.x,
+                      start.current.x + dx / ux,
+                      (x) => rep.snapTo(id, x * k) / k,
+                    );
                     calc.set(
                       {
                         ...held([id]),
-                        [id]: rep.snapTo(
-                          id,
-                          (start.current.x + dx / ux) * (conv ? fx : rep.factor(id)),
-                        ),
+                        [id]: rep.snapTo(id, xc * k),
                       },
                       rep.slide(id),
                     );
@@ -1620,17 +1646,20 @@ export function FunctionGraph({
                   label="the second point Q"
                   onStart={() => {
                     start.current = { x: secQ.x, y: secQ.y };
-                    frozen.freeze();
+                    frozen.freezeAt(drawn.current);
                   }}
                   onMove={(dx) => {
                     const id = spec.secant!.h as string;
+                    const k = conv ? fx : rep.factor(id);
+                    const xc = reach(
+                      start.current.x,
+                      start.current.x + dx / ux,
+                      (x) => sec!.x + rep.snapTo(id, (x - sec!.x) * k) / k,
+                    );
                     calc.set(
                       {
                         ...held([id]),
-                        [id]: rep.snapTo(
-                          id,
-                          (start.current.x + dx / ux - sec!.x) * (conv ? fx : rep.factor(id)),
-                        ),
+                        [id]: rep.snapTo(id, (xc - sec!.x) * k),
                       },
                       rep.slide(id),
                     );
@@ -1647,13 +1676,14 @@ export function FunctionGraph({
                   label={def.name}
                   onStart={() => {
                     start.current = { def, x: def.x, y: def.y };
-                    frozen.freeze();
+                    frozen.freezeAt(drawn.current);
                   }}
                   onMove={(dx, dy) => {
                     const s = start.current;
                     if (!s.def) return;
                     const X = s.def.axis === 'y' ? s.x : s.x + dx / ux;
                     const Y = s.def.axis === 'x' ? s.y : s.y - dy / uy;
+                    if (!inWin(X, Y)) return;
                     const next = s.def.to(X, Y);
                     if (!next) return;
                     const moving = Object.values(hIds);

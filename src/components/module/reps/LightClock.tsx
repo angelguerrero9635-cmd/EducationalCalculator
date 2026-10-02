@@ -39,6 +39,10 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
   const t0 = spec.proper === undefined ? undefined : si(spec.proper);
   const L0 = spec.length === undefined ? undefined : si(spec.length);
   const all = [spec.speed, spec.proper, spec.length].every(known);
+  // A "?" box reads "?" on the picture, not the example's number behind it.
+  const q = (ok: boolean, text: string) => (ok ? text : '?');
+  const tOk = known(spec.proper) && known(spec.speed);
+  const lOk = known(spec.length) && known(spec.speed);
   const rod = L0 !== undefined;
   // The clock's height, frozen while the slant is dragged so the drawing doesn't jump.
   const live = { bg: beta * g };
@@ -121,7 +125,11 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
                   <SubLabel
                     x={rest}
                     y={base + 28}
-                    text={t0 !== undefined ? `Δt_0 = ${sig(t0)} s` : 'one tick: Δt_0'}
+                    text={
+                      t0 !== undefined
+                        ? `Δt_0 = ${q(known(spec.proper), sig(t0))} s`
+                        : 'one tick: Δt_0'
+                    }
                     w={w}
                   />
                   {/* Moving: the clock at the start, at the bounce and at the end. */}
@@ -199,7 +207,7 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
                     <SubLabel
                       x={w - 8}
                       y={58}
-                      text={`Δt = ${sig(g * t0, 4)} s`}
+                      text={`Δt = ${q(tOk, sig(g * t0, 4))} s`}
                       anchor="end"
                       w={w}
                     />
@@ -219,8 +227,16 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
                   {rod && L0 !== undefined ? (
                     <G>
                       {[
-                        { y: rodY, len: rodW, text: `L_0 = ${sig(L0)} m, at rest` },
-                        { y: rodY + 40, len: rodW / g, text: `L = ${sig(L0 / g, 4)} m, moving` },
+                        {
+                          y: rodY,
+                          len: rodW,
+                          text: `L_0 = ${q(known(spec.length), sig(L0))} m, at rest`,
+                        },
+                        {
+                          y: rodY + 40,
+                          len: rodW / g,
+                          text: `L = ${q(lOk, sig(L0 / g, 4))} m, moving`,
+                        },
                       ].map((r) => (
                         <G key={r.y}>
                           <Rect
@@ -293,9 +309,9 @@ export function LightClock({ spec, calc }: { spec: LightClockSpec; calc: Calcula
 
   function captionLines(): string[] {
     const out = [`Lorentz factor: γ = 1/√(1 − β²) = 1/√(1 − ${sig(beta)}²) = ${sig(g, 4)}`];
-    if (t0 !== undefined)
+    if (t0 !== undefined && tOk)
       out.push(`Moving clock: Δt = γΔt₀ = ${sig(g, 4)} × ${sig(t0)} = ${sig(g * t0, 4)} s`);
-    if (L0 !== undefined)
+    if (L0 !== undefined && lOk)
       out.push(`Moving length: L = L₀/γ = ${sig(L0)}/${sig(g, 4)} = ${sig(L0 / g, 4)} m`);
     out.push(
       'Light moves at c for every observer, so the longer slanted path takes longer: a moving clock ticks slowly.',

@@ -38,6 +38,10 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
   const dU = Q.value - W.value;
   const unit = Q.unit;
   const all = Q.known && W.known;
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const qs = Q.known ? sig(Q.value) : '?';
+  const ws = W.known ? sig(W.value) : '?';
+  const ds = all ? sig(dU) : '?';
   const big = Math.max(1e-12, Math.abs(Q.value), Math.abs(W.value), Math.abs(dU));
   const band = (x: number) => (Math.abs(x) < 1e-12 ? 0 : 5 + (26 * Math.abs(x)) / big);
   const spots = gasSpots(16, 29);
@@ -62,7 +66,7 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
           const qIn = Q.value >= 0;
           // Its label sits over the band when it fits left of the cylinder; on a phone it would
           // run under the glass ("Q = 500 J in"), so it goes under the cylinder's base instead.
-          const qText = `Q = ${sig(Q.value)} ${unit} ${qIn ? 'in' : 'out'}`;
+          const qText = `Q = ${qs} ${unit}${Q.known ? (qIn ? ' in' : ' out') : ''}`;
           const qFits = 8 + qText.length * chart.label * 0.58 + 6 <= left - 4;
           const heatPath = qIn
             ? `M 6 ${qy - qb / 2} L ${left - 14} ${qy - qb / 2} L ${left - 14} ${qy - qb / 2 - 6} L ${left - 1} ${qy} L ${left - 14} ${qy + qb / 2 + 6} L ${left - 14} ${qy + qb / 2} L 6 ${qy + qb / 2} Z`
@@ -81,12 +85,13 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
           const cols = [chartL + 8, chartL + 8 + colW + gap, chartL + 8 + 2 * (colW + gap)];
           const lo = Math.min(0, Q.value, dU);
           const hi = Math.max(0, Q.value, dU);
-          const [yTop, yBot] = [36, h - 58];
+          // The bottom leaves room for a value under a bar that goes down, above its name.
+          const [yTop, yBot] = [36, h - 74];
           const sy = (v: number) => yTop + ((hi - v) / (hi - lo || 1)) * (yBot - yTop);
           const bars = [
-            { a: 0, b: Q.value, color: qIn ? c.physHot : c.physCold, name: 'Q', v: Q.value },
-            { a: Q.value, b: dU, color: c.physWork, name: '−W', v: -W.value },
-            { a: 0, b: dU, color: c.chartHighlight, name: 'ΔU', v: dU },
+            { a: 0, b: Q.value, color: qIn ? c.physHot : c.physCold, name: 'Q', v: qs },
+            { a: Q.value, b: dU, color: c.physWork, name: '−W', v: W.known ? sig(-W.value) : '?' },
+            { a: 0, b: dU, color: c.chartHighlight, name: 'ΔU', v: ds },
           ];
           return (
             <Svg width={w} height={h}>
@@ -113,11 +118,7 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
                 <SubLabel
                   x={cx + Math.max(wb, 8) / 2 + 10}
                   y={wTop + 22}
-                  text={
-                    wOut
-                      ? `W = ${sig(W.value)} ${unit} by the gas`
-                      : `W = ${sig(W.value)} ${unit}: done on it`
-                  }
+                  text={wOut ? `W = ${ws} ${unit} by the gas` : `W = ${ws} ${unit}: done on it`}
                   anchor="start"
                   color={c.physWork}
                   w={chartL - 4}
@@ -242,7 +243,7 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
                         fontWeight="700"
                         fill={b.color}
                       >
-                        {sig(b.v)}
+                        {b.v}
                       </ChartText>
                       <ChartText
                         x={cols[i]! + colW / 2}
@@ -276,7 +277,7 @@ export function GasFirstLaw({ spec, calc }: { spec: GasPistonSpec; calc: Calcula
 
   function captionLines(): string[] {
     return [
-      `First law: ΔU = Q − W = ${sig(Q.value)} − ${par(sig(W.value))} = ${sig(dU)} ${unit}`,
+      `First law: ΔU = Q − W = ${qs} − ${W.known ? par(ws) : ws} = ${ds} ${unit}`,
       'Q is + when heat flows into the gas; W is + when the gas does work by pushing the piston out.',
       dU > 1e-12
         ? 'More energy came in than went out as work: the internal energy rises and the gas warms.'

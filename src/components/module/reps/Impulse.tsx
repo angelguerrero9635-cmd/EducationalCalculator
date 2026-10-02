@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Svg, { G, Line, Rect } from 'react-native-svg';
 
 import type { ImpulseSpec } from '@/data/modules/typesHs2c';
-import { usePalette } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
@@ -63,8 +63,20 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
           const k = (w - 2 * pad) / Math.max(1e-12, hi - lo);
           const x0 = pad - lo * k;
           const rows = [
-            { y: 32, x1: x0, x2: x0 + p0 * k, color: c.physCartA, text: `p_0 = mv_0 = ${sig(p0)}` },
-            { y: 66, x1: x0, x2: x0 + p1 * k, color: c.physCartB, text: `p = mv = ${sig(p1)}` },
+            {
+              y: 32,
+              x1: x0,
+              x2: x0 + p0 * k,
+              color: c.physCartA,
+              text: `p_0 = mv_0 = ${sig(p0)} kg·m/s`,
+            },
+            {
+              y: 66,
+              x1: x0,
+              x2: x0 + p1 * k,
+              color: c.physCartB,
+              text: `p = mv = ${sig(p1)} kg·m/s`,
+            },
             {
               y: 100,
               x1: x0 + p0 * k,
@@ -81,6 +93,14 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
           const main = box(Y0, Y1);
           const other = F2 !== undefined && dt2 ? box(Y0, plot.sy(F2)) : undefined;
           const inside = X1 - X0 > 110 && main.h > 22;
+          // The other Δt's label: in its dashed box when it fits there, else right of both
+          // boxes, else under its box (it ran over the F axis when the box was narrow).
+          const t2Text = F2 !== undefined && dt2 ? `same Δp over ${sig(dt2)} s: ${sig(F2)} N` : '';
+          const t2W = t2Text.length * chart.label * 0.6;
+          const t2End = dt2 ? plot.sx(dt2) : X0;
+          const t2In = t2End - 4 - t2W >= X0;
+          const t2Right = Math.max(t2End, X1) + 6;
+          const t2Out = !t2In && t2Right + t2W <= w - 4;
           return (
             <>
               <Svg width={w} height={h}>
@@ -142,16 +162,16 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
                   />
                   {other && F2 !== undefined && dt2 ? (
                     <SubLabel
-                      x={plot.sx(dt2) - 4}
+                      x={t2In ? t2End - 4 : t2Out ? t2Right : X0 + 4}
                       y={
-                        other.h > 20
+                        other.h > 20 && (t2In || t2Out)
                           ? other.y + other.h / 2 + 5
                           : F2 >= 0
                             ? other.y - 6
                             : other.y + other.h + 16
                       }
-                      anchor="end"
-                      text={`same Δp over ${sig(dt2)} s: ${sig(F2)} N`}
+                      anchor={t2In ? 'end' : 'start'}
+                      text={t2Text}
                       color={c.physCartA}
                       w={w}
                     />

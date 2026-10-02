@@ -162,6 +162,8 @@ export function useFrozen<T>(live: T) {
   return {
     value: frozen ? frozen.value : live,
     freeze: () => setFrozen({ value: live }),
+    /** Freeze at a value worked out while drawing (a chart window that needs the width). */
+    freezeAt: (value: T) => setFrozen({ value }),
     release: () => setFrozen(null),
   };
 }
@@ -319,7 +321,7 @@ export function useRep(calc: Calculator) {
     if (!withUnit || !unit || x === undefined) return shown;
     // $ goes before the number; ¢, % and ° go right after it; other units after a space.
     if (unit === '$') return dollarsOf(units.toDisplay(id, x), shown);
-    return `${shown}${['¢', '%', '°', '×'].includes(unit) ? '' : ' '}${unitFor(units.toDisplay(id, x), unit)}`;
+    return `${shown}${['¢', '%', '°', '′', '″', '×'].includes(unit) ? '' : ' '}${unitFor(units.toDisplay(id, x), unit)}`;
   };
   return {
     variable: (id: string) => byId.get(id)!,

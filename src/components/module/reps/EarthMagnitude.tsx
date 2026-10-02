@@ -136,7 +136,13 @@ export function EarthMagnitude({ spec, calc }: { spec: MagnitudeSpec; calc: Calc
                         textAnchor="middle"
                         fill={c.chartHighlight}
                       >
-                        {`${tenTo(dm)} = ${ratioText(amp)} × the shaking`}
+                        {
+                          // "10¹⁰ = 1 × 10¹⁰" says the power twice: a whole power that big
+                          // stands alone.
+                          Number.isInteger(round(dm, 2)) && amp >= 1e6
+                            ? `${tenTo(dm)} × the shaking`
+                            : `${tenTo(dm)} = ${ratioText(amp)} × the shaking`
+                        }
                       </ChartText>
                     </G>
                   ) : null}

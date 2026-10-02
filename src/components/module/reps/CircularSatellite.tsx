@@ -138,10 +138,12 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
                     color={c.forceWeight}
                   />
                   <SubLabel
-                    x={P.x + 18}
-                    y={P.y + 22}
+                    // Right-aligned below the satellite: placed after it, the label ran past the
+                    // edge and slid back under the solar panel.
+                    x={w - 4}
+                    y={P.y + 32}
+                    anchor="end"
                     text={`GM/r² = ${num(g)} m/s²`}
-                    anchor="start"
                     color={c.forceWeight}
                     w={w}
                   />
@@ -207,7 +209,14 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
                             (x): x is string => typeof x === 'string',
                           ),
                         ),
-                        [id]: rep.snapTo(id, drag.current * Math.max(0.2, (Rpx + out) / Rpx)),
+                        // Never dragged inside the body: an orbit there is not possible.
+                        [id]: rep.snapTo(
+                          id,
+                          Math.max(
+                            R !== undefined && R > 0 ? R * 1.01 : 0,
+                            drag.current * Math.max(0.2, (Rpx + out) / Rpx),
+                          ),
+                        ),
                       },
                       rep.slide(id),
                     );
