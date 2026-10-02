@@ -780,6 +780,362 @@ const slab = (() => {
   });
 })();
 
+// ─── HC1 beam, axial: a rod (mechanics-of-materials#0) ───────────────────────
+
+const axialRod = (() => {
+  const vars: VariableDef[] = [
+    val('P', 'P', 'Load', 'N', 1e8, { min: 1 }),
+    val('d', 'd', 'Diameter', 'mm', 1000, { min: 0.1 }),
+    val('A', 'A', 'Area', 'mm²', 1e6),
+    val('L', 'L', 'Length', 'mm', 1e5, { min: 1 }),
+    val('sig', 'σ', 'Stress', 'MPa', 1e5),
+    val('eps', 'ε', 'Strain', undefined, 1, { scientific: true }),
+    val('dl', 'δ', 'Elongation', 'mm', 1e4),
+    val('E', 'E', 'Modulus', 'MPa', 1e6, { min: 1 }),
+  ];
+  const s = symbolsOf(vars);
+  const [P, d, L, E] = [50000, 20, 2000, 200000];
+  const A = (Math.PI * d * d) / 4;
+  return demo('g.he-beam-axial-rod', 'A rod pulled: stress, strain and stretch', {
+    use: 'Use this for “A 20 mm steel rod 2 m long carries 50 kN. Find the stress, the strain and how much it stretches.”',
+    assumptions: [
+      'The load is axial through the centroid; the stress stays below the proportional limit.',
+      'N, mm and MPa throughout.',
+    ],
+    variables: vars,
+    relations: [
+      monomial(
+        'A = πd² ÷ 4',
+        'A',
+        [
+          ['π', 1],
+          ['d', 2],
+        ],
+        [['4', 1]],
+        'A round rod’s area is π times the diameter squared, over 4.',
+        s,
+      ),
+      monomial(
+        'σ = P ÷ A',
+        'sig',
+        [['P', 1]],
+        [['A', 1]],
+        'Stress is the load spread over the area.',
+        s,
+      ),
+      monomial(
+        'ε = δ ÷ L',
+        'eps',
+        [['dl', 1]],
+        [['L', 1]],
+        'Strain is the stretch per unit length.',
+        s,
+      ),
+      monomial(
+        'σ = Eε',
+        'sig',
+        [
+          ['E', 1],
+          ['eps', 1],
+        ],
+        [],
+        'Below the proportional limit, stress is the modulus times the strain (Hooke’s law).',
+        s,
+      ),
+    ],
+    example: { P, d, A, L, sig: P / A, eps: P / A / E, dl: (P / A / E) * L, E },
+    startWith: ['P', 'd', 'L', 'E'],
+    representation: {
+      kind: 'beam',
+      mode: 'axial',
+      axial: {
+        segments: [{ length: 'L', diameter: 'd', delta: 'dl' }],
+        load: 'P',
+        modulus: 'E',
+        total: 'dl',
+        stress: 'sig',
+      },
+    },
+  });
+})();
+
+// ─── HC1 beam, axial: a stepped bar (mechanics-of-materials#1) ───────────────
+
+const axialStepped = (() => {
+  const vars: VariableDef[] = [
+    val('P', 'P', 'Load', 'N', 1e8, { min: 1 }),
+    val('E', 'E', 'Modulus', 'MPa', 1e6, { min: 1 }),
+    val('L1', 'L₁', 'Length of segment 1', 'mm', 1e5, { min: 1 }),
+    val('A1', 'A₁', 'Area of segment 1', 'mm²', 1e6, { min: 0.01 }),
+    val('L2', 'L₂', 'Length of segment 2', 'mm', 1e5, { min: 1 }),
+    val('A2', 'A₂', 'Area of segment 2', 'mm²', 1e6, { min: 0.01 }),
+    val('d1', 'δ₁', 'Stretch of segment 1', 'mm', 1e4),
+    val('d2', 'δ₂', 'Stretch of segment 2', 'mm', 1e4),
+    val('d', 'δ', 'Total stretch', 'mm', 1e4),
+  ];
+  const s = symbolsOf(vars);
+  const [P, E, L1, A1, L2, A2] = [20000, 70000, 400, 400, 300, 200];
+  const d1 = (P * L1) / (A1 * E);
+  const d2 = (P * L2) / (A2 * E);
+  return demo('g.he-beam-axial-stepped', 'A stepped bar: each segment’s stretch and the total', {
+    use: 'Use this for “An aluminum bar, 400 mm of 400 mm² then 300 mm of 200 mm², carries 20 kN. How much does it stretch?”',
+    assumptions: [
+      'Both segments carry the whole load P; one material, E = 70 GPa for aluminum.',
+      'N, mm and MPa throughout.',
+    ],
+    variables: vars,
+    relations: [
+      monomial(
+        'δ₁ = PL₁ ÷ (A₁E)',
+        'd1',
+        [
+          ['P', 1],
+          ['L1', 1],
+        ],
+        [
+          ['A1', 1],
+          ['E', 1],
+        ],
+        'Segment 1 stretches by its force times its length over its area times E.',
+        s,
+      ),
+      monomial(
+        'δ₂ = PL₂ ÷ (A₂E)',
+        'd2',
+        [
+          ['P', 1],
+          ['L2', 1],
+        ],
+        [
+          ['A2', 1],
+          ['E', 1],
+        ],
+        'Segment 2 carries the same P over its own length and area.',
+        s,
+      ),
+      rel('δ = δ₁ + δ₂', '{d} = {d1} + {d2}', ['d', 'd1', 'd2'], (x) => x.d! - x.d1! - x.d2!, {
+        d: [
+          (x) => x.d1! + x.d2!,
+          '{d1} + {d2}',
+          'The segments stretch one after the other, so the stretches add.',
+        ],
+        d1: [(x) => x.d! - x.d2!, '{d} − {d2}', 'Take segment 2’s stretch off the total.'],
+        d2: [(x) => x.d! - x.d1!, '{d} − {d1}', 'Take segment 1’s stretch off the total.'],
+      }),
+    ],
+    example: { P, E, L1, A1, L2, A2, d1, d2, d: d1 + d2 },
+    startWith: ['P', 'E', 'L1', 'A1', 'L2', 'A2'],
+    representation: {
+      kind: 'beam',
+      mode: 'axial',
+      axial: {
+        segments: [
+          { length: 'L1', area: 'A1', delta: 'd1' },
+          { length: 'L2', area: 'A2', delta: 'd2' },
+        ],
+        load: 'P',
+        modulus: 'E',
+        total: 'd',
+        material: 'aluminum',
+      },
+    },
+  });
+})();
+
+// ─── HC1 beam, axial: three segments, a load between (the edge: 3 segments) ──
+
+/** A segment's stretch δ = F × k ÷ E (k = L ÷ A, fixed), F = P or P + Q. */
+function stretch(id: string, sym: string, k: number, withQ: boolean, how: string) {
+  const F = (x: Values) => x.P! + (withQ ? x.Q! : 0);
+  const force = withQ ? '({P} + {Q})' : '{P}';
+  const parts: Record<string, [(x: Values) => number | undefined, string, string]> = {
+    [id]: [(x) => (F(x) * k) / x.E!, `${force} × ${k} ÷ {E}`, how],
+    E: [
+      (x) => (x[id] === 0 ? undefined : (F(x) * k) / x[id]!),
+      `${force} × ${k} ÷ {${id}}`,
+      'Swap E and the stretch: divide the force times L ÷ A by the stretch.',
+    ],
+    P: [
+      (x) => (x[id]! * x.E!) / k - (withQ ? x.Q! : 0),
+      withQ ? `{${id}} × {E} ÷ ${k} − {Q}` : `{${id}} × {E} ÷ ${k}`,
+      'Multiply the stretch by E, divide by L ÷ A, then take off any other load it carries.',
+    ],
+  };
+  if (withQ)
+    parts.Q = [
+      (x) => (x[id]! * x.E!) / k - x.P!,
+      `{${id}} × {E} ÷ ${k} − {P}`,
+      'Multiply the stretch by E, divide by L ÷ A, then take off P.',
+    ];
+  return rel(
+    `${sym} = ${withQ ? '(P + Q)' : 'P'} × ${k} ÷ E`,
+    `{${id}} = ${force} × ${k} ÷ {E}`,
+    withQ ? [id, 'P', 'Q', 'E'] : [id, 'P', 'E'],
+    (x) => x[id]! - (F(x) * k) / x.E!,
+    parts,
+  );
+}
+
+const axialThree = (() => {
+  const vars: VariableDef[] = [
+    val('P', 'P', 'Load at the end', 'kN', 1e5),
+    val('Q', 'Q', 'Load where segments 2 and 3 meet', 'kN', 1e5),
+    val('E', 'E', 'Modulus', 'GPa', 1000, { min: 1 }),
+    val('d1', 'δ₁', 'Stretch of segment 1', 'mm', 1e4),
+    val('d2', 'δ₂', 'Stretch of segment 2', 'mm', 1e4),
+    val('d3', 'δ₃', 'Stretch of segment 3', 'mm', 1e4),
+    val('d', 'δ', 'Total stretch', 'mm', 1e4),
+  ];
+  const [P, Q, E] = [20, 30, 200];
+  // δᵢ = FᵢLᵢ ÷ (AᵢE) with kN, mm, mm² and GPa: kN × mm ÷ (mm² × GPa) = mm.
+  const [k1, k2, k3] = [300 / 600, 400 / 400, 300 / 200];
+  const d1 = ((P + Q) * k1) / E;
+  const d2 = ((P + Q) * k2) / E;
+  const d3 = (P * k3) / E;
+  return demo('g.he-beam-axial-three', 'Three segments with a load between: the stretch adds up', {
+    use: 'Use this for “A steel bar of three segments carries 30 kN where the last two meet and 20 kN at its end. How much does it stretch?”',
+    assumptions: [
+      'Segments 300 mm of 600 mm², 400 mm of 400 mm² and 300 mm of 200 mm², one material.',
+      'Segments 1 and 2 carry P + Q, segment 3 only P; kN, mm, mm² and GPa give mm.',
+    ],
+    variables: vars,
+    relations: [
+      stretch(
+        'd1',
+        'δ₁',
+        k1,
+        true,
+        'Segment 1 carries P + Q: its stretch is (P + Q) × L₁ ÷ (A₁E), with L₁ ÷ A₁ = 0.5 per mm.',
+      ),
+      stretch('d2', 'δ₂', k2, true, 'Segment 2 also carries P + Q, over L₂ ÷ A₂ = 1 per mm.'),
+      stretch('d3', 'δ₃', k3, false, 'Segment 3 carries only P, over L₃ ÷ A₃ = 1.5 per mm.'),
+      rel(
+        'δ = δ₁ + δ₂ + δ₃',
+        '{d} = {d1} + {d2} + {d3}',
+        ['d', 'd1', 'd2', 'd3'],
+        (x) => x.d! - x.d1! - x.d2! - x.d3!,
+        {
+          d: [
+            (x) => x.d1! + x.d2! + x.d3!,
+            '{d1} + {d2} + {d3}',
+            'The segments stretch one after another, so the stretches add.',
+          ],
+          d1: [
+            (x) => x.d! - x.d2! - x.d3!,
+            '{d} − {d2} − {d3}',
+            'Take the other two stretches off the total.',
+          ],
+          d2: [
+            (x) => x.d! - x.d1! - x.d3!,
+            '{d} − {d1} − {d3}',
+            'Take the other two stretches off the total.',
+          ],
+          d3: [
+            (x) => x.d! - x.d1! - x.d2!,
+            '{d} − {d1} − {d2}',
+            'Take the other two stretches off the total.',
+          ],
+        },
+      ),
+    ],
+    example: { P, Q, E, d1, d2, d3, d: d1 + d2 + d3 },
+    startWith: ['P', 'Q', 'E'],
+    representation: {
+      kind: 'beam',
+      mode: 'axial',
+      units: { force: 'kN', length: 'mm' },
+      axial: {
+        segments: [
+          { length: 300, area: 600, delta: 'd1' },
+          { length: 400, area: 400, delta: 'd2', load: 'Q' },
+          { length: 300, area: 200, delta: 'd3' },
+        ],
+        load: 'P',
+        modulus: 'E',
+        total: 'd',
+      },
+    },
+  });
+})();
+
+// ─── HC1 beam, axial: a restrained bar heated (mechanics-of-materials#1~thermal) ─
+
+const axialThermal = (() => {
+  const vars: VariableDef[] = [
+    val('a', 'α', 'Expansion coefficient', '/°C', 1e-3, { scientific: true, min: 1e-7 }),
+    val('dT', 'ΔT', 'Temperature rise', '°C', 1000, { min: 0.1 }),
+    val('L', 'L', 'Length', 'mm', 1e5, { min: 1 }),
+    val('E', 'E', 'Modulus', 'MPa', 1e6, { min: 1 }),
+    val('dL', 'δ_T', 'Free growth', 'mm', 1000),
+    val('sig', 'σ', 'Stress', 'MPa', 0, { min: -1e5 }),
+  ];
+  const s = symbolsOf(vars);
+  const [a, dT, L, E] = [12e-6, 40, 1000, 200000];
+  return demo('g.he-beam-axial-thermal', 'A bar held between walls and heated: thermal stress', {
+    use: 'Use this for “A steel bar held between two walls warms by 40 °C. What stress builds up?”',
+    assumptions: [
+      'The walls don’t move; the bar stays elastic and doesn’t buckle.',
+      'Compression is negative; N, mm and MPa.',
+    ],
+    variables: vars,
+    relations: [
+      monomial(
+        'δ_T = αΔTL',
+        'dL',
+        [
+          ['a', 1],
+          ['dT', 1],
+          ['L', 1],
+        ],
+        [],
+        'Free, the bar would grow by α for each degree, for each unit of its length.',
+        s,
+      ),
+      rel(
+        'σ = −EαΔT',
+        '{sig} = −{E} × {a} × {dT}',
+        ['sig', 'E', 'a', 'dT'],
+        (x) => x.sig! + x.E! * x.a! * x.dT!,
+        {
+          sig: [
+            (x) => -x.E! * x.a! * x.dT!,
+            '−{E} × {a} × {dT}',
+            'The walls squeeze back the strain αΔT the bar would take, so σ = −E × αΔT.',
+          ],
+          E: [
+            (x) => (x.a! * x.dT! === 0 ? undefined : -x.sig! / (x.a! * x.dT!)),
+            '−{sig} ÷ ({a} × {dT})',
+            'Divide −σ by the strain αΔT.',
+          ],
+          a: [
+            (x) => (x.E! * x.dT! === 0 ? undefined : -x.sig! / (x.E! * x.dT!)),
+            '−{sig} ÷ ({E} × {dT})',
+            'Divide −σ by E times ΔT.',
+          ],
+          dT: [
+            (x) => (x.E! * x.a! === 0 ? undefined : -x.sig! / (x.E! * x.a!)),
+            '−{sig} ÷ ({E} × {a})',
+            'Divide −σ by E times α.',
+          ],
+        },
+      ),
+    ],
+    example: { a, dT, L, E, dL: a * dT * L, sig: -E * a * dT },
+    startWith: ['a', 'dT', 'L', 'E'],
+    representation: {
+      kind: 'beam',
+      mode: 'axial',
+      axial: {
+        segments: [{ length: 'L' }],
+        walls: true,
+        temperature: 'dT',
+        expansion: 'dL',
+        stress: 'sig',
+      },
+    },
+  });
+})();
+
 export const HE1A_GALLERY_MODULES: ModuleDef[] = [
   point,
   pointEdge,
@@ -790,6 +1146,10 @@ export const HE1A_GALLERY_MODULES: ModuleDef[] = [
   fixedFixed,
   deflection,
   slab,
+  axialRod,
+  axialStepped,
+  axialThree,
+  axialThermal,
 ];
 
 export const HE1A_GALLERY_LAYOUTS: LayoutDef[] = [];
