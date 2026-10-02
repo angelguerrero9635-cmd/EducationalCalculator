@@ -728,8 +728,10 @@ async function guarded(id, run) {
       WATCHDOG,
     );
   });
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  let work;
   try {
-    const work = run();
+    work = run();
     work.catch(() => {});
     await Promise.race([work, watchdog]);
   } catch (e) {
@@ -737,12 +739,13 @@ async function guarded(id, run) {
     errors.push(`- **ERROR** ${id}: the check failed: ${msg}`);
     lines.push(`- **ERROR** ${id}: the check failed: ${msg}`);
     if (/ERR_CONNECTION_REFUSED|ECONNREFUSED/.test(msg)) await serve();
-    // A renderer hung in a drag (a solver search on every move) stays hung: a new page (the
-    // hung one is closed if it answers, else left behind).
+    // A renderer hung in a drag (a solver search on every move) stays hung: it is closed, the
+    // given-up check is let run into the closed page and end (so it never drives the next
+    // page), and a new page opens.
     if (/Timeout|timeout/.test(msg)) {
-      const old = page;
+      await Promise.race([page.close(), wait(15000)]).catch(() => {});
+      await Promise.race([work, wait(30000)]).catch(() => {});
       page = await freshPage();
-      Promise.race([old.close(), new Promise((r) => setTimeout(r, 10000))]).catch(() => {});
     }
   } finally {
     clearTimeout(timer);
