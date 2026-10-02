@@ -458,9 +458,18 @@ const chiOfTable = (v: Values) => {
     : undefined;
 };
 
-/** The other direction's chance, after a tail area: 1 − P. */
-const complement = (P: number | undefined, what: string) =>
-  P === undefined ? '' : `→ ${what}: 1 − ${fmt(P)} = ${fmt(1 - P)}`;
+/**
+ * The other direction's chance, after a tail area: 1 − P, with P as its box shows it (0.06681,
+ * not 0.0668) and 1 − P to the same places, so the line is exact as printed.
+ */
+const complement = (P: number | undefined, what: string) => {
+  if (P === undefined) return '';
+  const shown = formatNumber(P);
+  const places = /^0\.\d+$/.test(shown) ? shown.length - 2 : undefined;
+  const rest =
+    places === undefined ? fmt(1 - P) : formatNumber(Number((1 - Number(shown)).toFixed(places)));
+  return `→ ${what}: 1 − ${shown} = ${rest}`;
+};
 
 const MATH_12_STATS: ModuleDef[] = [
   // ── m.12.hypothesis-testing (S-IC.5, S-IC.6) ──

@@ -1418,7 +1418,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Dividing by a decimal asks how many of it fit.',
       'Write both in tenths (1.2 is 12 tenths, 0.3 is 3 tenths), or in hundredths when either has two places. Then divide.',
-      'Dividends to 999, divisors from 0.01 to 0.99, whole-number answers to 999 (21 ÷ 0.2 = 105).',
+      'Divisors from 0.01 to 0.99, whole-number answers to 999 (21 ÷ 0.2 = 105), so dividends to 989.01.',
     ],
     variables: [
       {
@@ -1426,7 +1426,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         symbol: 'n',
         name: 'Dividend',
         min: 0.01,
-        max: 999,
+        // The biggest quotient times the biggest divisor, 999 × 0.99: a bigger one has no answer.
+        max: 989.01,
         step: 0.01,
         multipleOf: 0.01,
       },
@@ -1589,7 +1590,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             .slice(0, 4)
             .map((v) => (v.id === 'b' || v.id === 'd' ? { ...v, allowed: undefined } : v)),
           whole('w2', 'w₂', 'Second whole number', 0, 10),
-          ...fractions(op).slice(4, 7),
+          // Any denominators 2 to 12: 11 and 12 need 132.
+          ...fractions(op)
+            .slice(4, 7)
+            .map((v) => ({ ...v, max: 132 })),
           add
             ? { ...whole('s', 's', 'Parts added', 2, 288), derived: true }
             : { ...whole('s', 's', 'Parts left', 0, 287), derived: true },
@@ -2020,7 +2024,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       whole('a', 'a', 'Numerator', 1, 12),
       { ...whole('b', 'b', 'Denominator', 2, 12), allowed: BOTTOMS },
       { id: 'o', symbol: 'o', name: 'One part', min: 0, max: 30, fraction: 12, derived: true },
-      { id: 'p', symbol: 'p', name: 'Product', min: 0, max: 60, fraction: 12 },
+      { id: 'p', symbol: 'p', name: 'Product', min: 1 / 12, max: 60, fraction: 12 },
       { id: 'k', symbol: 'k', name: 'The rest', min: 0, max: 59, fraction: 12, derived: true },
     ],
     relations: [
