@@ -39,6 +39,11 @@ describe('matching', () => {
     ['Write 3/5 as a decimal and a percent.', 'm.6.percent'],
     ['The water rose from 50 mL to 62 mL. What is the object’s density?', 's.6.density'],
     ['How many inches are in 2.5 feet?', 'm.5.convert-units'],
+    // A college topic page (HE-E1): the topic key is the owner.
+    [
+      'A country has a crude birth rate of 12 and a crude death rate of 8 per 1,000. Find its doubling time.',
+      'he.geography.human-geography#0',
+    ],
   ])('%s → %s', (problem, skill) => {
     const top = matchProblem(problem, 3).map((r) => moduleOwner(r.id));
     expect(top).toContain(skill);

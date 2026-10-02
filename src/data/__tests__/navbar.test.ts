@@ -30,6 +30,17 @@ describe('parentOf (navigation bar back button)', () => {
     expect(parentOf('course/[id]/index', { id: 'he.math.calc-1' }).label).toBe('Math');
   });
 
+  it('goes from a topic’s problem type to its topic', () => {
+    const params = { id: 'he.geography.human-geography', index: '0~rates' };
+    expect(parentOf('course/[id]/topic/[index]', params)).toEqual({
+      label: 'Population and migration',
+      target: {
+        pathname: '/course/[id]/topic/[index]',
+        params: { id: 'he.geography.human-geography', index: '0' },
+      },
+    });
+  });
+
   it('falls back to Home for unknown pages', () => {
     expect(parentOf('grade/[grade]', { grade: '3' }).label).toBe('Home');
     expect(parentOf('skill/[id]', { id: 'nope' }).label).toBe('Home');

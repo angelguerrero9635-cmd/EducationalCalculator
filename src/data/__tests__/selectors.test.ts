@@ -310,6 +310,16 @@ describe('college topic problem types (HE-E1)', () => {
   const ids = [...MODULES.map((m) => m.id), ...LAYOUTS.map((l) => l.id)];
   const topicTypes = ids.filter((id) => /#\d+~/.test(id));
 
+  it('lists the human-geography topic’s problem types, calculators and layouts alike', () => {
+    expect(problemTypes('he.geography.human-geography#0').map((t) => t.id)).toEqual([
+      'he.geography.human-geography#0~rates',
+      'he.geography.human-geography#0~transition',
+    ]);
+    expect(search('demographic transition').map((r) => r.key)).toContain(
+      'he.geography.human-geography#0~transition',
+    );
+  });
+
   it('parses topic keys', () => {
     expect(topicOf('he.math.calc-1#1')).toMatchObject({
       key: 'he.math.calc-1#1',

@@ -160,10 +160,7 @@ export const R4F_GALLERY_MODULES: ModuleDef[] = [
       N: 8000,
       M: 6000,
       P: 14000,
-      CBR: 18,
-      CDR: 2,
       RNI: 1.6,
-      Td: 43.75,
     },
   ),
   // Q49: tally tables with icons: the fruit page's example and its top row (20), the weather
