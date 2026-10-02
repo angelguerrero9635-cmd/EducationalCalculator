@@ -9,10 +9,12 @@ import { DecayChart } from './DecayChart';
 import { EnergyLadder } from './EnergyLadder';
 import { EnergyProfile } from './EnergyProfile';
 import { EquilibriumChart } from './EquilibriumChart';
+import { EquilibriumGibbs } from './EquilibriumGibbs';
 import { GasFirstLaw } from './GasFirstLaw';
 import { GasMixture } from './GasMixture';
 import { GasPiston } from './GasPiston';
 import { PhScale } from './PhScale';
+import { isPhHe3f, PhScaleHe3f } from './PhScaleHe3f';
 
 export function HsjView({ spec, calc }: { spec: HsjSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -27,8 +29,10 @@ export function HsjView({ spec, calc }: { spec: HsjSpec; calc: Calculator }) {
         <EnergyProfile spec={spec} calc={calc} />
       );
     case 'equilibriumChart':
+      if ('gibbs' in spec) return <EquilibriumGibbs spec={spec} calc={calc} />;
       return <EquilibriumChart spec={spec} calc={calc} />;
     case 'phScale':
+      if (isPhHe3f(spec)) return <PhScaleHe3f spec={spec} calc={calc} />;
       return <PhScale spec={spec} calc={calc} />;
     case 'decayChart':
       return <DecayChart spec={spec} calc={calc} />;
