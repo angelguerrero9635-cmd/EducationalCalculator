@@ -1,5 +1,6 @@
 import type { Representation } from '@/data/modules';
 import { drawnByHe1d } from '@/data/modules/typesHe1d';
+import { isHe2fSpec } from '@/data/modules/typesHe2f';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
@@ -191,6 +192,7 @@ import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
+import { He2fView } from './He2fView';
 import { Hs2cView } from './Hs2cView';
 import { Hs3aView } from './Hs3aView';
 import { Section } from './Section';
@@ -231,6 +233,7 @@ export const representationTitle = (r: Representation) =>
       : 'Diagram';
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
+  if (isHe2fSpec(spec)) return <He2fView spec={spec} calc={calc} />; // HC20, HC25, HC35
   switch (spec.kind) {
     case 'none':
       return null; // H105: an equation-only page (ModuleSections leaves out the section)

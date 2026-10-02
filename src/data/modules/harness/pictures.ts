@@ -72,6 +72,8 @@ import { bodeIssues, complexPlaneHe2aIssues } from './picturesHe2a';
 import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { ampIssues, deviceIssues } from './picturesHe2d';
+import { he2fIssues } from './picturesHe2f';
+import { isHe2fSpec } from '../typesHe2f';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { he1fIssues } from './picturesHe1f';
@@ -2271,6 +2273,7 @@ export function repIssues(
     case 'collision':
     case 'circularMotion':
     case 'freeBody':
+      if (isHe2fSpec(rep)) return [...out, ...he2fIssues(rep, siOf(val, byId))]; // HC20, HC25, HC35
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
       out.push(...hs3aOptionIssues(rep, siOf(val, byId)));
       break;

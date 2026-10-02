@@ -387,6 +387,11 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `motionGraph`      | `acceleration: −9.8` (a number)          | free fall's gravity drawn with no value for it; the 9–12 v–t graph (H105)     |
 | `projectile`       | `angle: 0` (a number)                    | a launch angle that never changes (level off a ledge): no handle (H105)       |
 | `freeBody`         | `displacement`, `work` (floor)           | d bracketed, F cos θ dashed; W = Fd cos θ in the caption (H102)               |
+| `freeBody`         | `pulley: { layout, m1, m2, mu?, … }`     | table or Atwood: each block's FBD on one scale, a beside it; T₁ ≠ T₂ (HC20)   |
+| `freeBody`         | `ladder`, `tip`                          | ladder on a smooth wall, lever arms dashed; a crate that tips or slips (HC20) |
+| `freeBody`         | `drum`, `banked`                         | rope round a drum, T₂ = T₁e^(μβ); a car on a bank, N's parts dashed (HC20)    |
+| `freeBody`         | `aircraft` `view: 'side'`, `'front'`     | L, W, T, D (T, D magnified), climb γ, α, δe inset; bank φ, L cos φ (HC25)     |
+| `freeBody`         | `aircraft` `view: 'stability'`           | AC, CG and neutral point on the mean chord, the static margin bracket (HC25)  |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
 | `gasPiston`        | `mixture: { gases, total?, fraction? }`  | 24 particles shared by partial pressure, colored by gas; stacked P bar (H108) |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
@@ -402,6 +407,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `hrDiagram`        | `mass`, `luminosity?`, `lifetime?`       | a main-sequence star placed by mass, L = M^3.5; 3, 10, 30 M☉ marked (H103)    |
 | `circularMotion`   | kepler `starMass`                        | round another star: a³ = M × T², star, closest and farthest labels (H110)     |
 | `circularMotion`   | kepler `eccentricity` to 0.97            | long comet ellipses such as Halley's Comet (e = 0.967) (H110)                 |
+| `circularMotion`   | `mode: 'hohmann'`, `mu`, `r1`, `r2`, …   | two orbits, the transfer half-ellipse, Δv₁ or v∞, Δv₂, TOF; or Sun (HC35)     |
+| `circularMotion`   | `mode: 'visViva'`, `rp`, `ra`, `r`       | the point at r on the ellipse, r from the focus, v = √(μ(2/r − 1/a)) (HC35)   |
+| `circularMotion`   | `mode: 'pair'`, `t1`, `t2`               | two planets lined up at t = 0 and again after S, each angle and laps (HC35)   |
+| `circularMotion`   | `mode: 'tangential'`, `rho`, `at`, …     | n–t: v, a_t, a_n = v²/ρ to the center of curvature, a = their sum (HC35)      |
 | `rotor`            | `hollow: true`                           | the hollow ball (c = ⅔, a shell cut open) in the compare row (H111)           |
 | `normalCurve`      | `f.tailsFrom: id`                        | one tail or two as the Hₐ value says (1, 3, 4 right; 0, 6 both) (H112)        |
 | `pascalTriangle`   | `fraction.b`, `fraction.r`               | exactly k of r: C(a, k) × C(b, r − k) ÷ C(a + b, r), to 60 (H113)             |

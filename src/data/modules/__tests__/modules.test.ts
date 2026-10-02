@@ -36,6 +36,7 @@ import { hs3cSpecVars } from '../typesHs3c';
 import { he1gSpecVars } from '../typesHe1g';
 import { he1fSpecVars } from '../typesHe1f';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
+import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
 import { he1hSpecVars } from '../typesHe1h';
 import { he2dSpecVars } from '../typesHe2d';
 import { hs2cSpecVars } from '../typesHs2c';
@@ -48,6 +49,7 @@ import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesH
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
+  if (isHe2fSpec(r)) return he2fSpecVars(r); // HC20, HC25, HC35
   switch (r.kind) {
     case 'none':
       return [];
