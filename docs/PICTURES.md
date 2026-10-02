@@ -315,6 +315,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `normalCurve`      | `intervals.count` (a value)              | how many simulated intervals, 20 to 100, typed; none drawn while ? (H105)     |
 | `normalCurve`      | `meanName`                               | the mean's symbol when it is a number: μ_d for a mean difference              |
 | `membrane`         | `counter`                                | a pump's second particle the other way (K⁺ in as Na⁺ goes out), own arrow     |
+| `membrane`         | `potential: { value, ions? }`; `psi`     | ± charges ∝ V, voltmeter, ions on one scale; Ψ each side, water to lower Ψ    |
 | `termsChart`       | `far`                                    | past 30 terms: the first six, a break, the nth lit (a₁₀₀) (H93)               |
 | `termsChart`       | `type: 'recursive'`, `plus`              | aₙ = k × aₙ₋₁ + c from the one before, an arrow to each next (H93)            |
 | `termsChart`       | `lit`, `litTerm`, `powers`               | a second lit term (B1 beside B2); terms as powers, 2² = 4 (H93)               |

@@ -168,6 +168,7 @@ import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
 import { AlgebraTilesHs2g } from './AlgebraTilesHs2g';
 import { Membrane } from './Membrane';
+import { MembraneHe3g } from './MembraneHe3g';
 import { DnaStrand } from './DnaStrand';
 import { Neuron } from './Neuron';
 import { Skeletal } from './Skeletal';
@@ -268,6 +269,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <MatrixGrid spec={spec} calc={calc} />
       );
     case 'membrane':
+      if (spec.potential || spec.psi) return <MembraneHe3g spec={spec} calc={calc} />; // HC79
       return <Membrane spec={spec} calc={calc} />;
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;

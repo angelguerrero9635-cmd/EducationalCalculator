@@ -1,6 +1,7 @@
 /**
  * College pictures of round 3, group G (docs/RENDERINGS_HE.md): HC43 `gasPiston` options `pv`
- * and `real`, HC44 `energyProfile` options, HC57 the pathway detail and card. Kept apart from the shared type files, which name these with one line each. A
+ * and `real`, HC44 `energyProfile` options, HC57 the pathway detail and card,
+ * HC79 `membrane` options `potential` and `psi`. Kept apart from the shared type files, which name these with one line each. A
  * `NumOrVar` is a fixed number or a variable id; values are read in the variable's own unit.
  */
 import type { NumOrVar } from './typesGraphs';
@@ -332,3 +333,64 @@ export interface PathwayStepCard {
 
 export const PATHWAY_CARD_W = 112;
 export const PATHWAY_CARD_H = 76;
+
+// ─── HC79: membrane `potential` and `psi` ────────────────────────────────────
+
+/** An ion on both sides of a membrane: its name and each side's concentration (any one unit). */
+export interface MembraneIon {
+  name: string;
+  outside: NumOrVar;
+  inside: NumOrVar;
+}
+
+/**
+ * HC79 `potential`: the membrane potential `value` (mV, inside relative to outside). + charges
+ * line the positive face and − the other, in proportion to |V| (one pair per 10 mV, at most 8 a
+ * side); a voltmeter with a reference electrode outside and a micropipette inside reads V.
+ * `ions` (up to three) draws each side's ions as dots, all on one scale so the busier side has
+ * 40, each ion its own color and named in the key. Without `ions` the membrane's own `outside`
+ * and `inside` counts are drawn.
+ */
+export interface MembranePotential {
+  value: NumOrVar;
+  ions?: MembraneIon[];
+}
+
+/**
+ * HC79 `psi`: water potential Ψ (MPa) written on each side, and water's arrow through an
+ * aquaporin toward the lower Ψ (two-way when equal). `solute` (Ψₛ, MPa) draws each side's solute
+ * as dots, one per 0.025 MPa (at most 40); `pressure` (Ψₚ) is written under Ψ.
+ */
+export interface MembranePsi {
+  outside: NumOrVar;
+  inside: NumOrVar;
+  solute?: { outside?: NumOrVar; inside?: NumOrVar };
+  pressure?: { outside?: NumOrVar; inside?: NumOrVar };
+}
+
+/** The variable ids the HC79 options read (for the module tests). */
+export function membraneHe3gVars(r: {
+  potential?: MembranePotential;
+  psi?: MembranePsi;
+}): string[] {
+  const out: string[] = [];
+  if (r.potential)
+    out.push(
+      ...ids([
+        r.potential.value,
+        ...(r.potential.ions ?? []).flatMap((i) => [i.outside, i.inside]),
+      ]),
+    );
+  if (r.psi)
+    out.push(
+      ...ids([
+        r.psi.outside,
+        r.psi.inside,
+        r.psi.solute?.outside,
+        r.psi.solute?.inside,
+        r.psi.pressure?.outside,
+        r.psi.pressure?.inside,
+      ]),
+    );
+  return out;
+}

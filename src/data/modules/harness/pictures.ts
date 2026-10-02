@@ -65,7 +65,7 @@ import { hs3bCenter, hs3bIssues, hs3bVal } from './picturesHs3b';
 import { he1dIssues, he1dScaleIssues } from './picturesHe1d';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
-import { energyHe3gIssues, gasHe3gIssues } from './picturesHe3g';
+import { energyHe3gIssues, gasHe3gIssues, membraneHe3gIssues } from './picturesHe3g';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { sectionIssues } from './picturesHe1b';
 import { he1aIssues } from './picturesHe1a';
@@ -2204,6 +2204,7 @@ export function repIssues(
     case 'membrane':
     case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
+      if (rep.kind === 'membrane') out.push(...membraneHe3gIssues(rep, siOf(val, byId))); // HC79
       break;
     case 'macromolecules':
     case 'cellDivision':

@@ -123,4 +123,26 @@ export const HE3G_REQUESTS: PictureRequest[] = [
       'g.he-pathwayStep-krebs',
     ],
   },
+  {
+    ...ask(
+      'HC79',
+      'membrane',
+      'A membrane potential: + and − charges along the faces in proportion to |V|, a voltmeter with a micropipette, ions as dots on one scale; water potential Ψ on each side with water’s arrow toward the lower Ψ',
+      [`${B}cell-molecular#0`, `${B}cell-molecular#0~goldman`, `${B}principles-2#2`],
+      [
+        'From B-P5. Types in typesHe3g.ts (two fields on MembraneSpec in typesHsg.ts), drawn by reps/MembraneHe3g.tsx (rules in reps/membraneHe3gMath.ts), routed by one line in reps/index.tsx; Bilayer and Protein are now exported from reps/Membrane.tsx.',
+        "Fields: potential: { value (mV, inside relative to outside), ions?: [{ name, outside, inside }] (up to three, any one unit) } — one pair of charges per 10 mV (8 a side at most), + on the outside when V < 0; ions drawn on one scale so the busier side has 40 dots, named in a key. psi: { outside, inside (Ψ, MPa), solute?: { outside?, inside? } (Ψₛ: one dot per 0.025 MPa), pressure?: { outside?, inside? } (Ψₚ) }. The membrane's own outside and inside counts are drawn only without ions or psi (pass 0). transport 'facilitated' draws a channel; psi draws an aquaporin.",
+        "Example (cell-molecular#0): { kind: 'membrane', transport: 'facilitated', outside: 0, inside: 0, particle: 'K⁺', potential: { value: 'E', ions: [{ name: 'K⁺', outside: 'Co', inside: 'Ci' }] } }. ~goldman: transport 'diffusion', potential: { value: 'Vm', ions: K⁺, Na⁺, Cl⁻ }. Example (principles-2#2): { kind: 'membrane', transport: 'osmosis', outside: 0, inside: 0, psi: { outside: 'psiOut', inside: 'psi', solute: { outside: 'psiOut', inside: 'psiS' }, pressure: { inside: 'psiP' } } } (the demo names the solution's Ψ and the cell's; the plan's 'cell's Ψ' value is the other side).",
+        'Harness (harness/picturesHe3g.ts): V’s sign matches the + face, charges per 10 mV within 8, at most 40 ion dots a side, no negative concentration; water toward the lower Ψ (two-way when equal), Ψ = Ψₛ + Ψₚ, Ψₛ ≤ 0.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-membrane-nernst',
+      'g.he-membrane-nernst-sodium',
+      'g.he-membrane-goldman',
+      'g.he-membrane-psi',
+      'g.he-membrane-psi-out',
+    ],
+  },
 ];

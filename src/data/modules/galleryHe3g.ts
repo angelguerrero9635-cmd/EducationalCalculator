@@ -5,7 +5,8 @@
  * HC43 `gasPiston` `pv` and `real`: the laws of thermodynamics (docs/plans/he.physics.md P27,
  * he.chemistry.md P11) and real gases (he.chemistry.md P10). HC44 `energyProfile` free energy,
  * mechanisms and the bomb calorimeter (he.biology.md P2, he.chemistry.md P15). HC57 the
- * pathway detail and stage cards of metabolism (he.chemistry.md P20).
+ * pathway detail and stage cards of metabolism (he.chemistry.md P20). HC79 `membrane` potential
+ * and water potential (he.biology.md P5).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1452,6 +1453,235 @@ const KREBS_SEQUENCE: LayoutDef = {
   ],
 };
 
+// ── HC79: membrane potential and water potential (cell-molecular#0, principles-2#2) ──
+
+const mM = (id: string, symbol: string, name: string) =>
+  quantity(id, symbol, name, 'mM', 0.001, 1000, 0.001);
+
+/** E = (61.5 mV ÷ z) log(C_o ÷ C_i) at 37 °C, inside relative to outside. */
+const nernstDemo = (id: string, title: string, ion: string, [z, Co, Ci]: number[]): ModuleDef => {
+  const E = (61.5 / z!) * Math.log10(Co! / Ci!);
+  return demo({
+    id,
+    title,
+    use: `Use this for the equilibrium potential of an ion (Nernst), as for ${ion} across a cell membrane.`,
+    assumptions: [
+      'Only this ion can cross; E is the inside relative to the outside.',
+      'At 37 °C, RT ÷ F × ln 10 is 61.5 mV (58 mV at 20 °C).',
+    ],
+    variables: [
+      quantity('z', 'z', 'Charge of the ion', undefined, -1, 2, 1, { allowed: [-1, 1, 2] }),
+      mM('Co', 'C(out)', 'Concentration outside'),
+      mM('Ci', 'C(in)', 'Concentration inside'),
+      quantity('E', 'E', 'Equilibrium potential', 'mV', -500, 500, 0.1),
+    ],
+    ...rules({
+      relation: {
+        id: 'E = (61.5 ÷ z) log(C(out) ÷ C(in))',
+        display: '{E} = 61.5 ÷ {z} × log₁₀({Co} ÷ {Ci})',
+        vars: ['E', 'z', 'Co', 'Ci'],
+        residual: (x) => x.E! - (61.5 / x.z!) * Math.log10(x.Co! / x.Ci!),
+        solve: {
+          E: (x) =>
+            x.Co! > 0 && x.Ci! > 0 ? (61.5 / x.z!) * Math.log10(x.Co! / x.Ci!) : undefined,
+          Co: (x) => x.Ci! * 10 ** ((x.E! * x.z!) / 61.5),
+          Ci: (x) => x.Co! / 10 ** ((x.E! * x.z!) / 61.5),
+        },
+      },
+      steps: {
+        E: st(
+          '61.5 ÷ {z} × log₁₀({Co} ÷ {Ci})',
+          'The Nernst equation at 37 °C: 61.5 mV ÷ z per tenfold ratio.',
+        ),
+        Co: st('{Ci} × 10^({E} × {z} ÷ 61.5)', 'Undo the log: the ratio is 10^(Ez ÷ 61.5).'),
+        Ci: st('{Co} ÷ 10^({E} × {z} ÷ 61.5)', 'Undo the log, then divide.'),
+      },
+    }),
+    example: { z: z!, Co: Co!, Ci: Ci!, E },
+    startWith: ['z', 'Co', 'Ci'],
+    representation: {
+      kind: 'membrane',
+      transport: 'facilitated',
+      outside: 0,
+      inside: 0,
+      particle: ion,
+      potential: { value: 'E', ions: [{ name: ion, outside: 'Co', inside: 'Ci' }] },
+    },
+  });
+};
+
+const nernstK = nernstDemo(
+  'g.he-membrane-nernst',
+  'The potassium equilibrium potential: K⁺ 5 mM out, 140 mM in',
+  'K⁺',
+  [1, 5, 140],
+);
+const nernstNa = nernstDemo(
+  'g.he-membrane-nernst-sodium',
+  'Sodium pulls the other way: Na⁺ 145 mM out, 15 mM in',
+  'Na⁺',
+  [1, 145, 15],
+);
+
+/** Goldman: V_m = 61.5 log((K_o + P_Na Na_o + P_Cl Cl_i) ÷ (K_i + P_Na Na_i + P_Cl Cl_o)). */
+const goldman = (() => {
+  const v = { Ko: 5, Ki: 140, Nao: 145, Nai: 15, Clo: 110, Cli: 10, PNa: 0.04, PCl: 0.45 };
+  const top = (x: Values) => x.Ko! + x.PNa! * x.Nao! + x.PCl! * x.Cli!;
+  const bot = (x: Values) => x.Ki! + x.PNa! * x.Nai! + x.PCl! * x.Clo!;
+  const Vm = 61.5 * Math.log10(top(v) / bot(v));
+  return demo({
+    id: 'g.he-membrane-goldman',
+    title: 'The resting potential from K⁺, Na⁺ and Cl⁻ (Goldman)',
+    use: "Use this for 'With these K⁺, Na⁺ and Cl⁻ levels and permeabilities 1, 0.04 and 0.45, what is the resting potential?'.",
+    assumptions: [
+      'Permeabilities are relative to K⁺ (P(K) = 1); 61.5 mV at 37 °C.',
+      'Chloride’s inside and outside swap places because its charge is −1.',
+    ],
+    variables: [
+      mM('Ko', 'K(out)', 'K⁺ outside'),
+      mM('Ki', 'K(in)', 'K⁺ inside'),
+      mM('Nao', 'Na(out)', 'Na⁺ outside'),
+      mM('Nai', 'Na(in)', 'Na⁺ inside'),
+      mM('Clo', 'Cl(out)', 'Cl⁻ outside'),
+      mM('Cli', 'Cl(in)', 'Cl⁻ inside'),
+      quantity('PNa', 'P(Na)', 'Na⁺ permeability (K⁺ = 1)', undefined, 0, 100, 0.001),
+      quantity('PCl', 'P(Cl)', 'Cl⁻ permeability (K⁺ = 1)', undefined, 0, 100, 0.001),
+      quantity('Vm', 'V(m)', 'Resting potential', 'mV', -500, 500, 0.1),
+    ],
+    ...rules({
+      relation: {
+        id: 'Goldman',
+        display:
+          '{Vm} = 61.5 × log₁₀(({Ko} + {PNa} × {Nao} + {PCl} × {Cli}) ÷ ({Ki} + {PNa} × {Nai} + {PCl} × {Clo}))',
+        vars: ['Vm', 'Ko', 'Ki', 'Nao', 'Nai', 'Clo', 'Cli', 'PNa', 'PCl'],
+        residual: (x) => x.Vm! - 61.5 * Math.log10(top(x) / bot(x)),
+        solve: {
+          Vm: (x) => (top(x) > 0 && bot(x) > 0 ? 61.5 * Math.log10(top(x) / bot(x)) : undefined),
+        },
+      },
+      steps: {
+        Vm: st(
+          '61.5 × log₁₀(({Ko} + {PNa} × {Nao} + {PCl} × {Cli}) ÷ ({Ki} + {PNa} × {Nai} + {PCl} × {Clo}))',
+          'Weight each ion by its permeability; chloride’s sides swap because it is negative.',
+        ),
+      },
+    }),
+    example: { ...v, Vm },
+    startWith: ['Ko', 'Ki', 'Nao', 'Nai', 'Clo', 'Cli', 'PNa', 'PCl'],
+    representation: {
+      kind: 'membrane',
+      transport: 'diffusion',
+      outside: 0,
+      inside: 0,
+      potential: {
+        value: 'Vm',
+        ions: [
+          { name: 'K⁺', outside: 'Ko', inside: 'Ki' },
+          { name: 'Na⁺', outside: 'Nao', inside: 'Nai' },
+          { name: 'Cl⁻', outside: 'Clo', inside: 'Cli' },
+        ],
+      },
+    },
+  });
+})();
+
+/** principles-2#2: Ψₛ = −iCRT, Ψ = Ψₛ + Ψₚ for the cell; ΔΨ = Ψ(solution) − Ψ(cell). */
+const psiDemo = (id: string, title: string, psiOut: number): ModuleDef => {
+  const [i, C, T, psiP] = [1, 0.15, 295, 0.2];
+  const psiS = -i * C * 0.00831 * T;
+  const psi = psiS + psiP;
+  return demo({
+    id,
+    title,
+    use: 'Use this for a plant cell’s water potential and which way water moves between it and a solution.',
+    assumptions: [
+      'Ψₛ = −iCRT with R = 0.00831 L·MPa/(mol·K); Ψ = Ψₛ + Ψₚ.',
+      'Water moves from higher Ψ to lower Ψ; ΔΨ = Ψ(solution) − Ψ(cell) > 0 means into the cell.',
+      'The solution is in an open beaker: its Ψ is all solute potential (Ψₚ = 0).',
+    ],
+    variables: [
+      quantity('i', 'i', 'Ionization constant', undefined, 1, 3, 1, { allowed: [1, 2, 3] }),
+      quantity('C', 'C', 'Molarity of the cell’s solute', 'M', 0.001, 5, 0.001),
+      quantity('T', 'T', 'Temperature', 'K', 273, 323, 1),
+      quantity('psiS', 'Ψₛ', 'Solute potential', 'MPa', -50, 0, 0.001),
+      quantity('psiP', 'Ψₚ', 'Pressure potential', 'MPa', -2, 2, 0.01),
+      quantity('psi', 'Ψ', 'Cell’s water potential', 'MPa', -50, 2, 0.001),
+      quantity('psiOut', 'Ψ(sol)', 'Solution’s water potential', 'MPa', -50, 0, 0.001),
+      quantity('dPsi', 'ΔΨ', 'Solution minus cell', 'MPa', -50, 50, 0.001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Ψₛ = −iCRT',
+          display: '{psiS} = −{i} × {C} × 0.00831 × {T}',
+          vars: ['psiS', 'i', 'C', 'T'],
+          residual: (x) => x.psiS! + x.i! * x.C! * 0.00831 * x.T!,
+          solve: {
+            psiS: (x) => -x.i! * x.C! * 0.00831 * x.T!,
+            C: (x) => div(-x.psiS!, x.i! * 0.00831 * x.T!),
+            T: (x) => div(-x.psiS!, x.i! * x.C! * 0.00831),
+          },
+        },
+        steps: {
+          psiS: st(
+            '−{i} × {C} × 0.00831 × {T}',
+            'Dissolved particles lower the water potential: −iCRT.',
+          ),
+          C: st('−{psiS} ÷ ({i} × 0.00831 × {T})', 'Divide −Ψₛ by iRT.'),
+          T: st('−{psiS} ÷ ({i} × {C} × 0.00831)', 'Divide −Ψₛ by iCR.'),
+        },
+      },
+      sum('psi', 'psiS', 'psiP', 'Ψ = Ψₛ + Ψₚ', 'Add the wall’s pressure to the solute potential.'),
+      {
+        relation: {
+          id: 'ΔΨ = Ψ(sol) − Ψ',
+          display: '{dPsi} = {psiOut} − {psi}',
+          vars: ['dPsi', 'psiOut', 'psi'],
+          residual: (x) => x.dPsi! - x.psiOut! + x.psi!,
+          solve: {
+            dPsi: (x) => x.psiOut! - x.psi!,
+            psiOut: (x) => x.dPsi! + x.psi!,
+            psi: (x) => x.psiOut! - x.dPsi!,
+          },
+        },
+        steps: {
+          dPsi: st(
+            '{psiOut} − {psi}',
+            'Positive: the solution is higher, so water moves into the cell.',
+          ),
+          psiOut: st('{dPsi} + {psi}', 'Add the difference to the cell’s Ψ.'),
+          psi: st('{psiOut} − {dPsi}', 'Take the difference from the solution’s Ψ.'),
+        },
+      },
+    ),
+    example: { i, C, T, psiS, psiP, psi, psiOut, dPsi: psiOut - psi },
+    startWith: ['i', 'C', 'T', 'psiP', 'psiOut'],
+    representation: {
+      kind: 'membrane',
+      transport: 'osmosis',
+      outside: 0,
+      inside: 0,
+      psi: {
+        outside: 'psiOut',
+        inside: 'psi',
+        solute: { outside: 'psiOut', inside: 'psiS' },
+        pressure: { inside: 'psiP' },
+      },
+    },
+  });
+};
+
+const psiIn = psiDemo(
+  'g.he-membrane-psi',
+  'A plant cell in a dilute solution: water moves in',
+  -0.1,
+);
+const psiOutDemo = psiDemo(
+  'g.he-membrane-psi-out',
+  'The same cell in a strong solution: water moves out',
+  -0.5,
+);
+
 export const HE3G_GALLERY_MODULES: ModuleDef[] = [
   pvIsothermal,
   pvChemistry,
@@ -1471,6 +1701,11 @@ export const HE3G_GALLERY_MODULES: ModuleDef[] = [
   stepsThree,
   bombNaphthalene,
   bombOctane,
+  nernstK,
+  nernstNa,
+  goldman,
+  psiIn,
+  psiOutDemo,
 ];
 
 export const HE3G_GALLERY_LAYOUTS: LayoutDef[] = [

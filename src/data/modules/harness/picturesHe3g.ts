@@ -16,6 +16,14 @@ import { profileAt } from '@/components/module/reps/energyModel';
 
 import type { NumOrVar } from '../typesGraphs';
 import type { EnergyProfileSpec, GasPistonSpec } from '../typesHsj';
+import type { MembraneSpec } from '../typesHsg';
+import {
+  chargesFor,
+  ionDots,
+  positiveFace,
+  soluteDots,
+  waterFlow,
+} from '@/components/module/reps/membraneHe3gMath';
 
 type Val = (id: string) => number | undefined;
 
@@ -170,5 +178,54 @@ export function energyHe3gIssues(rep: EnergyProfileSpec, val: Val): string[] {
   const hi = num(st.highest);
   if (hi !== undefined && !near(hi, Math.max(...tops), 1e-2))
     out.push(`steps: highest ${hi} is not ${Math.max(...tops)}`);
+  return out;
+}
+
+/** HC79: V's sign matches the charges; the ion dots fit; water toward the lower Ψ; Ψ = Ψₛ + Ψₚ. */
+export function membraneHe3gIssues(rep: MembraneSpec, val: Val): string[] {
+  const out: string[] = [];
+  const num = reader(val);
+  if (rep.potential) {
+    const V = num(rep.potential.value);
+    if (V !== undefined) {
+      const face = positiveFace(V);
+      // The inside is negative exactly when + charges line the outside.
+      if (V < 0 !== (face === 'outside')) out.push(`membrane: V ${V} mV with + on the ${face}`);
+      if (chargesFor(V) > 8) out.push('membrane: more than 8 charges a side');
+      if (Math.abs(V) >= 10 && chargesFor(V) === 0)
+        out.push(`membrane: V ${V} mV draws no charges`);
+    }
+    const ions = (rep.potential.ions ?? []).map((i) => ({
+      outside: num(i.outside),
+      inside: num(i.inside),
+    }));
+    if ((rep.potential.ions ?? []).length > 3) out.push('membrane: more than three ions');
+    if (ions.length && ions.every((i) => i.outside !== undefined && i.inside !== undefined)) {
+      if (ions.some((i) => i.outside! < 0 || i.inside! < 0))
+        out.push('membrane: a negative concentration');
+      const d = ionDots(ions as { outside: number; inside: number }[]);
+      for (const side of [d.outside, d.inside])
+        if (side.reduce((a, b) => a + b, 0) > 40) out.push('membrane: more than 40 dots a side');
+    }
+  }
+  if (rep.psi) {
+    const [o, i] = [num(rep.psi.outside), num(rep.psi.inside)];
+    if (o !== undefined && i !== undefined) {
+      const f = waterFlow(o, i);
+      const want = o === i ? 'both' : i < o ? 'in' : 'out';
+      if (f !== want) out.push(`membrane: water ${f}, expected ${want} (toward the lower Ψ)`);
+    }
+    for (const where of ['outside', 'inside'] as const) {
+      const [psi, s, p] = [
+        num(rep.psi[where]),
+        num(rep.psi.solute?.[where]),
+        num(rep.psi.pressure?.[where]),
+      ];
+      if (psi !== undefined && s !== undefined && p !== undefined && !near(psi, s + p, 1e-2))
+        out.push(`membrane: Ψ ${where} ${psi} is not Ψₛ + Ψₚ = ${s + p}`);
+      if (s !== undefined && s > 1e-9) out.push(`membrane: Ψₛ ${where} ${s} is above 0`);
+      if (s !== undefined && soluteDots(s) > 40) out.push(`membrane: Ψₛ ${where} past 40 dots`);
+    }
+  }
   return out;
 }
