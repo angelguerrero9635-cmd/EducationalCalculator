@@ -568,7 +568,7 @@ export function SupersonicFlow({ spec, calc }: { spec: SupersonicFlowSpec; calc:
           {lab(spec.M1, 'M∞') ?? 'M∞'}
         </ChartText>
         <ChartText x={BW - 8} y={20} fontSize={chart.label} textAnchor="end" fill={c.chartMuted}>
-          shocks solid, fans fine
+          shocks solid, fans in fine lines
         </ChartText>
       </G>
     );
