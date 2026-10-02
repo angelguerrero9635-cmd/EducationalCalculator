@@ -412,7 +412,8 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }
                 />
               ) : null}
-              {unitPoint && spec.unitRate && inView(sx(1), sy(unitPoint.k)) ? (
+              {/* Mid-drag (the axes held) the handle stays mounted past them, kept on the picture. */}
+              {unitPoint && spec.unitRate && (inView(sx(1), sy(unitPoint.k)) || axes.frozen) ? (
                 <DragHandle
                   testID={`drag-${spec.unitRate}`}
                   x={sx(1)}
