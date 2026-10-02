@@ -66,6 +66,7 @@ import { he1dIssues, he1dScaleIssues } from './picturesHe1d';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
+import { he4bIssues } from './picturesHe4b'; // HC96–HC171, group B
 import { sectionIssues } from './picturesHe1b';
 import { he1aIssues } from './picturesHe1a';
 import { bodeIssues, complexPlaneHe2aIssues } from './picturesHe2a';
@@ -2203,6 +2204,7 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
+      out.push(...he4bIssues(rep, val, byId)); // HC96, HC100, HC108, HC171
       break;
     case 'membrane':
     case 'dnaStrand':
@@ -2359,6 +2361,7 @@ export function repIssues(
     case 'capacitor':
       out.push(...hs3aIssues(rep, siOf(val, byId)));
       if (rep.kind === 'oscillator') out.push(...oscillatorIssues(rep, siOf(val, byId), byId)); // HC11
+      out.push(...he4bIssues(rep, val, byId)); // HC102, HC106, HC107
       break;
     case 'section':
       out.push(...sectionIssues(rep, siOf(val, byId), byId));

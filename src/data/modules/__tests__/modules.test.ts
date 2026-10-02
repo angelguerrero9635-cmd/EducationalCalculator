@@ -47,6 +47,7 @@ import { he1hSpecVars } from '../typesHe1h';
 import { he2dSpecVars } from '../typesHe2d';
 import { hs2cSpecVars } from '../typesHs2c';
 import { hs3aSpecVars } from '../typesHs3a';
+import { he4bSpecVars } from '../typesHe4b'; // HC96–HC171, group B
 import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
@@ -554,6 +555,7 @@ function representationVars(r: Representation): string[] {
         ...hs2gSpecVars(r),
         ...hs3bSpecVars(r),
         ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
+        ...he4bSpecVars(r), // HC96, HC100, HC108, HC171
       ];
     case 'membrane':
     case 'dnaStrand':
@@ -645,7 +647,7 @@ function representationVars(r: Representation): string[] {
     case 'oscillator':
     case 'pendulum':
     case 'capacitor':
-      return [...hs3aSpecVars(r), ...he1hSpecVars(r)];
+      return [...hs3aSpecVars(r), ...he1hSpecVars(r), ...he4bSpecVars(r)]; // HC102, HC106, HC107
     case 'section':
       return he1bSpecVars(r);
     case 'beam':

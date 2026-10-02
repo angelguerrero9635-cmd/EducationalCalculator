@@ -286,6 +286,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `transformation`   | `about: 'center'`                        | turns about the figure's own center; point symmetry pairs through it (H106)   |
 | `rectangle`        | `bounds: { error, least?, greatest? }`   | (l ± e) by (w ± e) dashed, the band between shaded, a corner close-up (H106)  |
 | `vectorDiagram`    | `space`, `z`; `cross`, `w`, `points`     | x, y, z axes, turnable: u × v, θ, areas, the box of u, v, w; PQ, M (H106)     |
+| `vectorDiagram`    | `project: { proj?, perp?, k? }`          | u onto v: projᵥ u along v, u − projᵥ u dashed, right angle; in space (HC96)   |
+| `vectorDiagram`    | `masses`, `centerOfMass`                 | balls sized by mass on a rod, a fulcrum at x_cm; ⊕ on a plane (HC100)         |
+| `vectorDiagram`    | `forces: { list, equilibrium? }`         | 2–4 forces at a point, angles to level; tip to tail: closes, or R (HC171)     |
 | `polarGrid`        | `curve.shape: 'conic'`, `k, m, n, fn`    | r = k ÷ (m − n cos θ): focus at the pole, directrix, PF ÷ PD = e at P (H106)  |
 | `conicGraph`       | `conic: 'turned'`, `A, B, C, F`; `angle` | Ax² + Bxy + Cy² = 1 with x′, y′ at θ, A′x′² + C′y′² = 1, its shape (H106)     |
 | `functionGraph`    | `riemann: { n, to, from?, side?, sum? }` | n rectangles of equal width under the curve, right, left or middle; S (H106)  |

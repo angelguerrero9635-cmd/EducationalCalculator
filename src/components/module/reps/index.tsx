@@ -1,6 +1,7 @@
 import type { Representation } from '@/data/modules';
 import { drawnByHe1d } from '@/data/modules/typesHe1d';
 import { isHe2fSpec } from '@/data/modules/typesHe2f';
+import { isVectorHe4b } from '@/data/modules/typesHe4b'; // HC96–HC171, group B
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
@@ -165,6 +166,7 @@ import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
 import { ComplexPowers } from './ComplexPowers';
 import { VectorDiagram } from './VectorDiagram';
+import { VectorHe4b } from './VectorHe4b'; // HC96, HC100, HC108, HC171
 import { AlgebraTiles } from './AlgebraTiles';
 import { AlgebraTilesHs2g } from './AlgebraTilesHs2g';
 import { Membrane } from './Membrane';
@@ -337,6 +339,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <ComplexPlane spec={spec} calc={calc} />
       );
     case 'vectorDiagram':
+      if (isVectorHe4b(spec)) return <VectorHe4b spec={spec} calc={calc} />; // HC96, HC100, HC108, HC171
       if (spec.space) return <VectorSpace spec={spec} calc={calc} />; // H106
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':

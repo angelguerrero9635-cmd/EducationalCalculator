@@ -13,6 +13,7 @@ import type {
 } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
 import type { ComplexPlaneHe2a } from './typesHe2a'; // HC14
+import type { VectorDiagramHe4b } from './typesHe4b'; // HC96, HC100, HC108, HC171
 import type { ConicTurnedHs3b, PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
 
 /** A trig function of the unit circle. */
@@ -124,7 +125,7 @@ export interface VectorOf {
  * draws k times the first vector; `angle` marks the angle between two vectors, with the dot
  * product's sign. Physics pages pass `unit` (m/s, N) and `axes` names. Drag a vector's tip.
  */
-export interface VectorDiagramSpec extends VectorDiagramHs3b {
+export interface VectorDiagramSpec extends VectorDiagramHs3b, VectorDiagramHe4b {
   kind: 'vectorDiagram';
   vectors: [VectorOf] | [VectorOf, VectorOf];
   sum?: 'tipToTail' | 'parallelogram';
