@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { standingOf } from './hskMath';
-import { sig, SubLabel } from './hskKit';
+import { sig, SubLabel, worked } from './hskKit';
 import { Glass, Sheen, url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'wave' }>;
@@ -32,6 +32,7 @@ export function WaveStanding({ spec, s, calc }: { spec: Spec; s: StandingWave; c
   const v = s.speed !== undefined ? si(s.speed) : undefined;
   const st = standingOf(s.medium, n, L);
   const all = [s.harmonic, s.length, s.speed].every(known);
+  const lOkDrawn = known(s.harmonic) && known(s.length);
   const lengthUnit = typeof s.length === 'string' ? (rep.variable(s.length).unit ?? 'm') : 'm';
   // Displacement along the length (x from 0 to 1), as a fraction of the amplitude.
   const shape = (x: number) =>
@@ -209,7 +210,7 @@ export function WaveStanding({ spec, s, calc }: { spec: Spec; s: StandingWave; c
                     <SubLabel
                       x={(X(half[0]) + X(half[1])) / 2}
                       y={13}
-                      text={`λ/2 = ${sig(st.lambda / 2)} ${lengthUnit}`}
+                      text={`λ/2 = ${lOkDrawn ? sig(st.lambda / 2) : '?'} ${lengthUnit}`}
                       size={chart.label}
                       w={w}
                     />
@@ -222,7 +223,7 @@ export function WaveStanding({ spec, s, calc }: { spec: Spec; s: StandingWave; c
               <SubLabel
                 x={w / 2}
                 y={h - 10}
-                text={`L = ${sig(L)} ${lengthUnit},  n = ${n}`}
+                text={`L = ${known(s.length) ? sig(L) : '?'} ${lengthUnit},  n = ${known(s.harmonic) ? n : '?'}`}
                 size={chart.label}
                 w={w}
               />
@@ -239,21 +240,25 @@ export function WaveStanding({ spec, s, calc }: { spec: Spec; s: StandingWave; c
       return [
         `A pipe closed at one end has only odd harmonics (1, 3, 5, …): a node at the closed end and an antinode at the open end. n = ${n} can’t fit.`,
       ];
-    const out = [
+    // A "?" value: the rules only, never worked with the example's numbers behind the "?".
+    const lOk = known(s.harmonic) && known(s.length);
+    const out = worked(
+      lOk,
       s.medium === 'closed'
         ? `λ = 4L/n = 4 × ${sig(L)}/${n} = ${sig(st.lambda)} ${lengthUnit}`
         : `λ = 2L/n = 2 × ${sig(L)}/${n} = ${sig(st.lambda)} ${lengthUnit}`,
-    ];
-    if (v !== undefined)
-      out.push(`f = v/λ = ${sig(v)}/${sig(st.lambda)} = ${sig(v / st.lambda)} Hz`);
-    out.push(
-      `${st.nodes.length} ${st.nodes.length === 1 ? 'node' : 'nodes'} (N, no motion) and ${st.antinodes.length} ${st.antinodes.length === 1 ? 'antinode' : 'antinodes'} (A, the most motion).`,
-      s.medium === 'string'
-        ? 'The fixed ends are nodes.'
-        : s.medium === 'open'
-          ? 'Both open ends are antinodes: the air moves most there.'
-          : 'The closed end is a node, the open end an antinode.',
     );
+    if (v !== undefined)
+      out.push(...worked(all, `f = v/λ = ${sig(v)}/${sig(st.lambda)} = ${sig(v / st.lambda)} Hz`));
+    if (known(s.harmonic))
+      out.push(
+        `${st.nodes.length} ${st.nodes.length === 1 ? 'node' : 'nodes'} (N, no motion) and ${st.antinodes.length} ${st.antinodes.length === 1 ? 'antinode' : 'antinodes'} (A, the most motion).`,
+        s.medium === 'string'
+          ? 'The fixed ends are nodes.'
+          : s.medium === 'open'
+            ? 'Both open ends are antinodes: the air moves most there.'
+            : 'The closed end is a node, the open end an antinode.',
+      );
     return out;
   }
 }

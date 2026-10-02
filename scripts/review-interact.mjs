@@ -26,7 +26,8 @@
 // show the example's value of a box now "?" (**ERROR**, naming the value and the text it is
 // in). A number that is also a known box's value, or an axis tick (a bare number, percent,
 // degrees or imaginary tick in a run of evenly spaced ones, or two on a shared round step at
-// most 5 steps apart: 100 and 300), is not flagged; 0 is never matched.
+// most 5 steps apart: 100 and 300), is not flagged; 0 is never matched, nor a number written
+// onto π or a root ("2π√(m/k)"): a formula's.
 // Nor is a text that reads the same when the "?" box is typed with another number (the same
 // first edit, then the box moved a step of its own size, or doubled or halved, in its range): it
 // does not come from that box ("n = 2" on a ladder, the unit circle's π/4 family, "2V", the
@@ -152,6 +153,8 @@ function numbersIn(s) {
   for (let m = re.exec(s); m; m = re.exec(s)) {
     const prev = s[m.index - 1] ?? '';
     if (/[A-Za-z_\d.]/.test(prev)) continue;
+    // A number written onto π or a root ("2π√(m/k)", "4π") is a formula's, not a value.
+    if (/^[π√]/.test(s.slice(m.index + m[0].length))) continue;
     const mant = m[1] + (m[2] ?? '');
     const value = parseShown(m[0].replace(/\s+/g, ' '));
     if (Number.isFinite(value)) out.push({ text: m[0], mant, value: Math.abs(value), at: m.index });
