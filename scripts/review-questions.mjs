@@ -4,7 +4,9 @@
 //
 // Reads research/questions/<subject>/<grade>.jsonl (NAEP, public domain; Illustrative
 // Mathematics, CC BY 4.0) and writes <out>/questions.md: for every skill id under the prefix,
-// its questions with choices, answer, type and picture, and at the end the skills with none.
+// its questions with choices, answer, type and picture, and at the end the skills with none,
+// each with why: no file for its grade, or a file whose questions are all filed elsewhere.
+// A page id in the prefix (m.9.data-displays~compare, he.x#0) stands for its skill.
 // A question is filed by the grade that took the test; its `skillId` can be an earlier grade,
 // so every file is read. Reference only: lesson text stays original (CLAUDE.md).
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -20,6 +22,12 @@ if (!prefixes.length) {
   console.log('Give --prefix, e.g. --prefix m.4. or --prefix s.K.,s.1.');
   process.exit(2);
 }
+// A page id stands for its skill (the review passes the pages in scope): "s.9.x~y" → "s.9.x".
+const skillOf = (p) => p.replace(/[~#].*$/, '');
+const mapped = prefixes.filter((p) => skillOf(p) !== p);
+const inScope = (id) =>
+  typeof id === 'string' &&
+  prefixes.some((p) => (skillOf(p) !== p ? id === skillOf(p) : id.startsWith(p)));
 const out = flag('--out', '.review');
 mkdirSync(out, { recursive: true });
 
@@ -34,7 +42,7 @@ const records = existsSync(root)
             readFileSync(join(root, d.name, f), 'utf8')
               .split('\n')
               .filter((l) => l.trim())
-              .map((l) => JSON.parse(l)),
+              .map((l) => ({ ...JSON.parse(l), file: join(root, d.name, f) })),
           ),
       )
   : [];
@@ -56,13 +64,13 @@ const skills = new Map();
     const row = /^\s+\["([^"]+)", "((?:[^"\\]|\\.)*)"/.exec(line);
     if (subject && grade && row) {
       const id = `${subject}.${grade}.${row[1]}`;
-      if (prefixes.some((p) => id.startsWith(p))) skills.set(id, row[2]);
+      if (inScope(id)) skills.set(id, row[2]);
     }
   }
 }
 for (const r of records) {
   for (const id of [r.skillId, ...(r.alsoSkills ?? [])]) {
-    if (prefixes.some((p) => id?.startsWith(p)) && !skills.has(id)) skills.set(id, '');
+    if (inScope(id) && !skills.has(id)) skills.set(id, '');
   }
 }
 
@@ -91,10 +99,37 @@ const lines = [
 ];
 const empty = [];
 let count = 0;
+// Why a skill has none: its grade's file is missing, or the file's questions are all filed
+// under other skills (the filter is skillId or alsoSkills equal to the skill's id).
+const subjectDir = { m: 'math', s: 'science' };
+const why = (id) => {
+  const [subject, grade] = id.split('.');
+  const file = subjectDir[subject] && join(root, subjectDir[subject], `${grade}.jsonl`);
+  if (!file) return 'not a K–12 skill: no question files';
+  if (!existsSync(file)) return `no file ${file}, and no other grade's question names it`;
+  const inFile = records.filter((r) => r.file === file);
+  return `${file} has ${inFile.length} question${inFile.length === 1 ? '' : 's'}, none with skillId or alsoSkills ${id}`;
+};
+// What each such file's questions are filed under, once per file.
+const filedIn = new Map();
 for (const [id, title] of [...skills].sort(([a], [b]) => a.localeCompare(b))) {
   const qs = bySkill.get(id) ?? [];
   if (!qs.length) {
-    empty.push(`- ${id}${title ? ` — ${title}` : ''}`);
+    empty.push(`- ${id}${title ? ` — ${title}` : ''}: ${why(id)}`);
+    const [subject, grade] = id.split('.');
+    const file = subjectDir[subject] && join(root, subjectDir[subject], `${grade}.jsonl`);
+    if (file && existsSync(file) && !filedIn.has(file)) {
+      const tally = new Map();
+      for (const r of records.filter((q) => q.file === file))
+        tally.set(r.skillId, (tally.get(r.skillId) ?? 0) + 1);
+      filedIn.set(
+        file,
+        [...tally]
+          .sort((a, b) => b[1] - a[1])
+          .map(([s, n]) => `${s} (${n})`)
+          .join(', '),
+      );
+    }
     continue;
   }
   lines.push(`## ${id}${title ? ` — ${title}` : ''} (${qs.length})`, '');
@@ -112,7 +147,26 @@ for (const [id, title] of [...skills].sort(([a], [b]) => a.localeCompare(b))) {
   lines.push('');
 }
 lines.push('## Skills with no released questions', '', ...(empty.length ? empty : ['(none)']), '');
+if (filedIn.size) {
+  lines.push('Those files’ questions are filed under:', '');
+  for (const [file, list] of filedIn) lines.push(`- ${file}: ${list || '(none)'}`);
+  lines.push('');
+}
+if (mapped.length)
+  lines.splice(
+    5,
+    0,
+    `Page ids read as their skills: ${mapped.map((p) => `${p} → ${skillOf(p)}`).join(', ')}.`,
+    '',
+  );
+if (!skills.size)
+  lines.push(
+    `No skill matches ${prefixes.join(', ')} in src/data/taxonomy.ts or the question files.`,
+    '',
+  );
 writeFileSync(join(out, 'questions.md'), lines.join('\n'));
 console.log(
   `${count} questions for ${skills.size - empty.length} of ${skills.size} skills in ${join(out, 'questions.md')}`,
 );
+for (const line of empty) console.log(`  none ${line.slice(2)}`);
+if (!skills.size) console.log(`  No skill matches ${prefixes.join(', ')}.`);
