@@ -5,9 +5,9 @@
  * Everything a student sees is checked: assumptions, names, number sentences, the
  * step-by-step from the example, titles and "use" lines.
  */
-import { getUnit } from '@/engine/units';
 import { renderTemplate } from '@/engine/format';
 import { solve } from '@/engine/solve';
+import { unitHere } from '@/engine/unitContext';
 
 import { TESTED_MODULES, gradeBand, gradeOf, wordRule } from '..';
 import { agree, buildSteps } from '../buildSteps';
@@ -404,9 +404,7 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
     const UNIT_WORD =
       /^(?:seconds|minutes|hours|days|liters|milliliters|grams|kilograms|meters|centimeters|millimeters|kilometers|inches|feet|yards|miles|pounds|ounces|gallons|quarts|cups|newtons|joules|watts|volts|amperes|amps)\b/i;
     expect(
-      m.variables
-        .filter((v) => v.unit && getUnit(v.unit) && UNIT_WORD.test(v.name))
-        .map((v) => v.name),
+      m.variables.filter((v) => unitHere(v) && UNIT_WORD.test(v.name)).map((v) => v.name),
     ).toEqual([]);
   });
 
