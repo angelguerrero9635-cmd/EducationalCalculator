@@ -100,6 +100,7 @@ import {
   vseprHe3eIssues,
 } from './picturesHe3e';
 import { he3cIssues } from './picturesHe3c';
+import { he3dIssues } from './picturesHe3d';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2388,6 +2389,18 @@ export function repIssues(
     case 'fatigueDiagram':
     case 'elementChain':
       out.push(...he3hIssues(rep, val, byId)); // HC40, HC41, HC52, HC59
+      break;
+    case 'timingDiagram':
+    case 'graph':
+    case 'scheduleChart':
+    case 'bitFields':
+      out.push(
+        ...he3dIssues(
+          rep,
+          (x) => (typeof x === 'number' ? x : (val(x) ?? NaN) * (byId.get(x)?.unitFactor ?? 1)),
+          (x) => (typeof x === 'string' ? byId.get(x)?.unit : undefined),
+        ),
+      );
       break;
     case 'projectile':
     case 'induction':

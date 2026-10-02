@@ -51,6 +51,7 @@ import type { BarFlows, Hs2eSpec } from './typesHs2e';
 import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
 import type { SoilProfileSpec, SurveySpec, TrussSpec } from './typesHe2i';
+import type { He3dSpec } from './typesHe3d';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
 import type { He2cSpec } from './typesHe2c';
 import type { He3hSpec } from './typesHe3h';
@@ -1208,6 +1209,8 @@ export type Representation =
   | SoilProfileSpec
   /** College round 2, group I (HC32): a traverse, leveling, curvature, heights. */
   | SurveySpec
+  /** College round 3, group D (`typesHe3d.ts`): timing diagrams, graphs, schedules, bit fields. */
+  | He3dSpec
   /** College round 1, group A: the `beam` (HC1; specs in `typesHe1a.ts`). */
   | BeamSpec
   /** College round 2, group A: the Bode plot (HC22; `typesHe2a.ts`). */

@@ -275,3 +275,8 @@ College card figure `projection` (HC78, `layouts/projectionCard.tsx`, `typesHe3m
 formulas (Mercator, Lambert conformal conic, stereographic, Albers, Mollweide, Gall–Peters,
 azimuthal equidistant, equirectangular, Winkel tripel, cylindrical equal-area): the outline, the
 graticule every 30°, hand-written land shapes shaded, and Tissot dots that show what it keeps.
+College card figure `graph` (HC50, `reps/GraphDiagram.tsx` `GraphCardView`, `typesHe3d.ts`):
+`{ kind: 'graph', vertices: [{ name, x, y }] (a unit box), edges: [{ from, to, cost?, lit? }],
+lit?, degrees?, dist?, wide? }`, a small fixed graph at 96 × 64 (`wide`: 168 × 104) with
+costs on the edges, each vertex's name or degree in it, lit vertices and edges heavy in the
+highlight, and Dijkstra's distances beside the vertices; for Euler sorts and Dijkstra stages.

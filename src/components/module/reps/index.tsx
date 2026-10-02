@@ -177,6 +177,10 @@ import { Skeletal } from './Skeletal';
 import { Truss } from './Truss';
 import { SoilProfile } from './SoilProfile';
 import { Survey } from './Survey';
+import { TimingDiagram } from './TimingDiagram';
+import { GraphDiagram } from './GraphDiagram';
+import { ScheduleChart } from './ScheduleChart';
+import { BitFields } from './BitFields';
 import { Hs2eView } from './Hs2eView';
 import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
@@ -438,6 +442,14 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FatigueDiagram spec={spec} calc={calc} />; // HC52
     case 'elementChain':
       return <ElementChain spec={spec} calc={calc} />; // HC41
+    case 'timingDiagram':
+      return <TimingDiagram spec={spec} calc={calc} />;
+    case 'graph':
+      return <GraphDiagram spec={spec} calc={calc} />;
+    case 'scheduleChart':
+      return <ScheduleChart spec={spec} calc={calc} />;
+    case 'bitFields':
+      return <BitFields spec={spec} calc={calc} />;
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':

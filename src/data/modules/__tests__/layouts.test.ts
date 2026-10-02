@@ -13,6 +13,7 @@ import { HSL_SCENE_FIELD } from '../typesHsl';
 import { HS2F_SCENE_FIELD } from '../typesHs2f';
 import { HS3C_SCENE_FIELD } from '../typesHs3c';
 import { HS3D_SCENE_FIELD } from '../typesHs3d';
+import { HE3D_SCENE_FIELD } from '../typesHe3d';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
@@ -20,6 +21,7 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   ...HS2F_SCENE_FIELD,
   ...HS3C_SCENE_FIELD,
   ...HS3D_SCENE_FIELD,
+  ...HE3D_SCENE_FIELD,
   parts: 'part',
   position: 'position',
   clock: 'time',

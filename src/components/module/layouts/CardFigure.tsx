@@ -37,6 +37,7 @@ import {
 } from './cardFiguresR3h';
 import { DIVISION_H, DIVISION_W, DivisionCard } from './divisionCard';
 import { hs3dCardSize, Hs3dCardView } from './hs3dCards';
+import { he3dCardSize, He3dCardView } from './he3dCards';
 import { Hs2bCardView, hs2bFigureSize } from './cardFiguresHs2b';
 import { StrobeCardView } from './strobeCard';
 import { STROBE_W } from '@/data/modules/layouts/strobeCard';
@@ -54,6 +55,8 @@ export function figureWidth(f: Spec): number {
   if (r3h) return r3h;
   const hs2b = hs2bFigureSize(f);
   if (hs2b) return hs2b[0];
+  const he3d = he3dCardSize(f);
+  if (he3d) return he3d[0];
   switch (f.kind) {
     case 'bar':
       return Math.max(S, 16 + (f.length + (f.units === 'offset' ? 2 : 0)) * 8 + 24);
@@ -116,6 +119,7 @@ export function CardFigureView({
   const h =
     hs2bFigureSize(figure)?.[1] ??
     hs3dCardSize(figure)?.[1] ??
+    he3dCardSize(figure)?.[1] ??
     (figure.kind === 'polygon' && figure.marks
       ? MARKED
       : figure.kind === 'cellDivision'
@@ -250,6 +254,9 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
     case 'reflexArc':
     case 'flowerCycle':
       return <Hs3dCardView f={f} ink={ink} />;
+    case 'code':
+    case 'graph':
+      return <He3dCardView f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;
