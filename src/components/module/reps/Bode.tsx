@@ -25,7 +25,7 @@ import {
 } from './bodeMath';
 import { decadeText, linearTicks } from './functionGraphHe1dMath';
 import { arrowHead } from './graphKit';
-import { nf, nf3, place, Tag, tagWidth, type Box } from './he2aKit';
+import { boxAt, nf, nf3, place, Tag, tagWidth, type Box } from './he2aKit';
 
 /** A nice tick step for a span shown in about `n` ticks, from the given choices. */
 const stepOf = (span: number, n: number, choices: number[]) =>
@@ -158,7 +158,11 @@ export function Bode({ spec, calc }: { spec: BodeSpec; calc: Calculator }) {
                 return `${i ? 'L' : 'M'} ${sx(x).toFixed(2)} ${clampY(yy, a, b).toFixed(2)}`;
               })
               .join(' ');
-          const taken: Box[] = [];
+          // The panel names keep their room from the corner names.
+          const taken: Box[] = [
+            boxAt(x0 + 4, m0 - 8, tagWidth('', 'dB'), 'start'),
+            boxAt(x0 + 4, p0 - 8, tagWidth('', 'phase (°)'), 'start'),
+          ];
           const decades = Array.from({ length: W.hi - W.lo + 1 }, (_, i) => 10 ** (W.lo + i));
           const minors = decades
             .slice(0, -1)

@@ -1006,11 +1006,11 @@ function rcFilter(
     variables: [
       num('R', 'R', 'Resistance', 'kΩ', 0.001, 10000, { step: 0.1 }),
       num('C', 'C', 'Capacitance', 'μF', 0.0001, 10000, { step: 0.01 }),
-      num('fc', 'f_c', 'Cutoff frequency', 'Hz', 0.001, 1e9),
-      num('f', 'f', 'Frequency', 'Hz', 0.01, 1e9, { step: 1 }),
-      num('H', '|H|', 'Gain (ratio)', undefined, 0, 1),
-      num('G', 'G', 'Gain', 'dB', -400, 0),
-      num('phi', 'φ', 'Phase', '°', high ? 0 : -90, high ? 90 : 0),
+      num('fc', 'f_c', 'Cutoff frequency', 'Hz', 0.001, 1e6),
+      num('f', 'f', 'Frequency', 'Hz', 0.01, 1e12, { step: 1 }),
+      num('H', '|H|', 'Gain (ratio)', undefined, 0.000001, 1),
+      num('G', 'G', 'Gain', 'dB', -120, 0),
+      num('phi', 'φ', 'Phase', '°', high ? 0 : -89.999, high ? 89.999 : 0),
     ],
     rules: [
       rule(
@@ -1444,6 +1444,7 @@ const opAmp = page({
     num('SR', 'SR', 'Slew rate', 'V/μs', 0.01, 10000, { step: 0.1 }),
     num('Vp', 'V_p', 'Output peak', 'V', 0.01, 1000, { step: 0.5 }),
     num('fmax', 'f_max', 'Full-power frequency', 'kHz', 0.00001, 1e9),
+    num('flim', 'f_full', 'Full-swing bandwidth', 'kHz', 0.00001, 1e9),
   ],
   rules: [
     quotient('f_3dB = GBW/G', 'f3', 'GBW', 'G', [
@@ -1469,8 +1470,29 @@ const opAmp = page({
         ],
       },
     ),
+    rule(
+      'f_full = min(f_3dB, f_max)',
+      '{flim} = min({f3}, {fmax})',
+      ['flim', 'f3', 'fmax'],
+      (v) => v.flim! - Math.min(v.f3!, v.fmax!),
+      {
+        flim: [
+          (v) => Math.min(v.f3!, v.fmax!),
+          'min({f3}, {fmax})',
+          'A full swing needs both: the smaller limit wins.',
+        ],
+      },
+    ),
   ],
-  example: { GBW: 1000, G: 20, f3: 50, SR: 0.5, Vp: 10, fmax: 500 / (TWO_PI * 10) },
+  example: {
+    GBW: 1000,
+    G: 20,
+    f3: 50,
+    SR: 0.5,
+    Vp: 10,
+    fmax: 500 / (TWO_PI * 10),
+    flim: 500 / (TWO_PI * 10),
+  },
   startWith: ['GBW', 'G', 'SR', 'Vp'],
   representation: {
     kind: 'bode',
