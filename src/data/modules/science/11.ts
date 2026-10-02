@@ -4605,7 +4605,7 @@ const modernPages: ModuleDef[] = [
       assumptions: [
         'Light comes in photons of E = hc/λ = 1240/λ eV, with λ in nm.',
         'One photon frees at most one electron; the work function φ is the least energy that takes.',
-        'Below the threshold wavelength λ₀ = 1240/φ no electron leaves, however bright the light.',
+        'Past the threshold wavelength λ₀ = 1240/φ (longer waves, less energy per photon) no electron leaves, however bright the light.',
       ],
       variables: [
         q('l', 'λ', 'Wavelength of the light', 'nm', 10, 2000, 0.1, { units: ['nm'] }),

@@ -1834,7 +1834,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.3.adaptation-fossils~camouflage',
     title: 'Hide or stay warm?',
-    use: 'Use this to sort how each body part helps an animal survive where it lives.',
+    use: 'Use this to sort how an animal’s color, fur, fat or feathers help it survive where it lives.',
     assumptions: [
       'Camouflage is a color or pattern that matches the place an animal lives.',
       'Animals in cold places need ways to keep their body heat in.',
@@ -1844,7 +1844,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       {
         id: 'hide',
         label: 'Blends in',
-        why: 'Its colors match where it lives, so hunters and prey find it hard to see.',
+        why: 'Its colors match where it lives, so other animals find it hard to see.',
       },
       { id: 'warm', label: 'Stays warm', why: 'It holds body heat in where it is cold.' },
     ],

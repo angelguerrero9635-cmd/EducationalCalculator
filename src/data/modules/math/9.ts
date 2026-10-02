@@ -5267,6 +5267,15 @@ const listRule = (
           work: (v) => {
             const s = [...firstValues(LIST_IDS, v)].sort((a, b) => a - b);
             if (inOrder) return [`In order: ${s.map(fmt).join(', ')}`];
+            if (word === 'median') {
+              const k = s.length;
+              return k % 2
+                ? [`${(k - 1) / 2} values on each side of the middle one: ${fmt(s[(k - 1) / 2]!)}`]
+                : [
+                    `The middle two are ${fmt(s[k / 2 - 1]!)} and ${fmt(s[k / 2]!)}.`,
+                    `(${fmt(s[k / 2 - 1]!)} + ${fmt(s[k / 2]!)}) ÷ 2 = ${fmt(v[id]!)}`,
+                  ];
+            }
             if (word === 'first quartile' || word === 'third quartile') {
               const half = halfOf(s, word === 'third quartile');
               return [
