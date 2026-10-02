@@ -243,6 +243,13 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `repeat: { every, count, avg? }`         | one-dose family summed into a sawtooth, C_ss,avg dashed (HC10)                |
 | `functionGraph`    | `family: 'power'`, `exponent`            | a·(x − h)^z + k with a real exponent from a value (HC10)                      |
 | `functionGraph`    | `family: 'erfc'`, `Cs, C0, width`        | C_s − (C_s − C₀)·erf(x ÷ w): a diffusion profile, C₀ dashed (HC10)            |
+| `functionGraph`    | `area: { from, to, value?, signed? }`    | under f shaded, ∫f written; signed: + and − parts in two fills (HC12)         |
+| `functionGraph`    | `between: { from?, to?, value? }`        | f and `other` shaded from the crossings, the area between written (HC12)      |
+| `functionGraph`    | `strip: { at, dir? }`                    | one upright (dx) or flat (dy) slice of the shaded region (HC12)               |
+| `functionGraph`    | `level: { y, label?, at? }`              | a dashed level (an energy, a half-power line), crossings ringed (HC12)        |
+| `functionGraph`    | `accumulation: { from, x, value? }`      | a panel with F(x) = ∫f from `from`, its point and tangent f(x) (HC12)         |
+| `functionGraph`    | `family: 'levenspiel'`                   | F_A0 ÷ (−r_A) against X: the CSTR rectangle and the PFR area (HC12)           |
+| `functionGraph`    | `family: 'equalArea'`                    | P_max sin δ, the P_m line, A₁ and A₂ shaded at δ_cr (HC12)                    |
 | `lineSystem`       | `lines[i].square`, `solutions`           | y = ax² + mx + b: a parabola and a line, 0–2 crossings ringed, shading (H106) |
 | `polygon`          | `apothem`, `angle`, `area`               | the n triangles, the apothem square to a side, θ = 180° ÷ n, K = ½aP (H106)   |
 | `venn`             | `chances.one`                            | one event: circle A in the rectangle, P(not A) = 1 − P(A) outside (H106)      |

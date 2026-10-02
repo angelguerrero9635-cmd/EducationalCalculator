@@ -654,6 +654,7 @@ export function he1eXs(spec: FunctionGraphSpec, main: Curve, other: Curve | unde
   const r = regionOf(spec, main, other, get);
   if (r) xs.push(r.from, r.to);
   if (spec.strip) xs.push(get(spec.strip.at, 0));
+  for (const id of spec.level?.at ?? []) xs.push(get(id, 0));
   if (spec.accumulation) xs.push(get(spec.accumulation.from, 0), get(spec.accumulation.x, 0));
   return xs.filter(Number.isFinite);
 }
@@ -680,7 +681,14 @@ export function he1eYs(spec: FunctionGraphSpec, main: Curve, other: Curve | unde
   }
   const d = dosesOf(spec, get);
   if (d) for (const t0 of d.times) ys.push(main.f(t0) * 1.08);
-  if (spec.level) ys.push(get(spec.level.y, 0));
+  if (spec.level) {
+    ys.push(get(spec.level.y, 0));
+    // Between the named crossings, the curve's floor (a well's bottom) in view too.
+    const at = (spec.level.at ?? []).map((id) => get(id, 0)).sort((p, q) => p - q);
+    if (at.length >= 2)
+      for (let i = 0; i <= 60; i++)
+        ys.push(main.f(at[0]! + ((at[at.length - 1]! - at[0]!) * i) / 60));
+  }
   const r = regionOf(spec, main, other, get);
   if (r) for (const x of [r.from, r.to, (r.from + r.to) / 2]) ys.push(r.lower(x), r.upper(x));
   return ys.filter((v) => Number.isFinite(v) && Math.abs(v) < 1e6);

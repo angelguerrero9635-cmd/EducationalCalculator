@@ -2,6 +2,7 @@
  * College gallery demos, round 1, group E (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC10: `functionGraph` families expr, hill, bateman, a repeated dose, a real power and erfc.
+ * HC12: regions (area, signed, between, strip, level, accumulation), Levenspiel and equal area.
  */
 import { erf } from '@/components/module/reps/functionGraphHe1e';
 import type { Relation, Values, VariableDef } from '@/engine/types';
@@ -693,6 +694,597 @@ const CARBURIZE = page({
   },
 });
 
+// ── HC12: regions ──
+
+/** F(x) = px³ ÷ 3 + qx² ÷ 2 + rx, an antiderivative of px² + qx + r. */
+const antiQuad = (v: Values, x: number) => (v.p! * x ** 3) / 3 + (v.q! * x ** 2) / 2 + v.r! * x;
+
+/** ∫ from a to b of (px² + qx + r) dx, shaded (signed: the parts above and below apart). */
+function definite(id: string, title: string, use: string, typed: Values, signed: boolean) {
+  const exactly = { fraction: 12, improper: true } as const;
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'F′ = f (the Fundamental Theorem, part 2): any antiderivative gives F(b) − F(a).',
+      'Area below the axis counts negative; a > b flips the sign.',
+    ],
+    variables: [
+      num('p', 'p', 'x² coefficient', -50, 50, { step: 0.5 }),
+      num('q', 'q', 'x coefficient', -50, 50, { step: 0.5 }),
+      num('r', 'r', 'Constant term', -50, 50, { step: 0.5 }),
+      num('a', 'a', 'Lower limit', -100, 100, { step: 0.5 }),
+      num('b', 'b', 'Upper limit', -100, 100, { step: 0.5 }),
+      num('Fa', 'F(a)', 'Antiderivative at a', -1e8, 1e8, { derived: true, ...exactly }),
+      num('Fb', 'F(b)', 'Antiderivative at b', -1e8, 1e8, { derived: true, ...exactly }),
+      num('I', 'I', 'Integral', -1e8, 1e8, { derived: true, ...exactly }),
+    ],
+    rules: [
+      derive(
+        'F(a)',
+        'Fa',
+        ['p', 'q', 'r', 'a'],
+        '{Fa} = {p} × {a}³ ÷ 3 + {q} × {a}² ÷ 2 + {r} × {a}',
+        (v) => antiQuad(v, v.a!),
+        '{p} × {a}³ ÷ 3 + {q} × {a}² ÷ 2 + {r} × {a}',
+        'An antiderivative of px² + qx + r is px³ ÷ 3 + qx² ÷ 2 + rx: put in a.',
+      ),
+      derive(
+        'F(b)',
+        'Fb',
+        ['p', 'q', 'r', 'b'],
+        '{Fb} = {p} × {b}³ ÷ 3 + {q} × {b}² ÷ 2 + {r} × {b}',
+        (v) => antiQuad(v, v.b!),
+        '{p} × {b}³ ÷ 3 + {q} × {b}² ÷ 2 + {r} × {b}',
+        'The same antiderivative at b.',
+      ),
+      derive(
+        'I = F(b) − F(a)',
+        'I',
+        ['Fb', 'Fa'],
+        '{I} = {Fb} − {Fa}',
+        (v) => v.Fb! - v.Fa!,
+        '{Fb} − {Fa}',
+        'The integral is the change in the antiderivative from a to b.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['Fa', (v) => antiQuad(v, v.a!)],
+      ['Fb', (v) => antiQuad(v, v.b!)],
+      ['I', (v) => v.Fb! - v.Fa!],
+    ),
+    startWith: ['p', 'q', 'r', 'a', 'b'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 'p',
+      b: 'q',
+      c: 'r',
+      area: { from: 'a', to: 'b', value: 'I', ...(signed ? { signed: true } : {}) },
+    },
+  });
+}
+
+const AREA = definite(
+  'g.he-functionGraph-area',
+  'A definite integral, shaded',
+  'Use this for “Evaluate the integral of x² + 1 from 1 to 3.”',
+  { p: 1, q: 0, r: 1, a: 1, b: 3 },
+  false,
+);
+const SIGNED = definite(
+  'g.he-functionGraph-signed',
+  'Signed area: above the axis counts +, below counts −',
+  'Use this for “Evaluate the integral of x² − 1 from 0 to 2, and say why it is less than the area.”',
+  { p: 1, q: 0, r: -1, a: 0, b: 2 },
+  true,
+);
+
+/** The crossings of y = mx + c and y = x²: x² − mx − c = 0. */
+const crossAt = (v: Values, sign: -1 | 1) => (v.m! + sign * Math.sqrt(v.m! ** 2 + 4 * v.c!)) / 2;
+
+const BETWEEN = page({
+  id: 'g.he-functionGraph-between',
+  title: 'The area between a line and a parabola',
+  use: 'Use this for “Find the area between y = x + 2 and y = x².”',
+  assumptions: [
+    'The line is above the parabola between the crossings, so the area is ∫(line − parabola) dx.',
+    'The line meets the parabola twice: m² + 4c > 0.',
+  ],
+  variables: [
+    num('m', 'm', 'Slope of the line', -20, 20, { step: 0.5 }),
+    num('c', 'c', 'Intercept of the line', -20, 100, { step: 0.5 }),
+    num('x1', 'x₁', 'Left crossing', -100, 100, { derived: true }),
+    num('x2', 'x₂', 'Right crossing', -100, 100, { derived: true }),
+    num('A', 'A', 'Area between', 0, 1e7, { derived: true, fraction: 12, improper: true }),
+  ],
+  rules: [
+    derive(
+      'x1',
+      'x1',
+      ['m', 'c'],
+      '{x1} = ({m} − √({m}² + 4 × {c})) ÷ 2',
+      (v) => fin(crossAt(v, -1)),
+      '({m} − √({m}² + 4 × {c})) ÷ 2',
+      'Set mx + c = x², so x² − mx − c = 0; the quadratic formula’s smaller root.',
+    ),
+    derive(
+      'x2',
+      'x2',
+      ['m', 'c'],
+      '{x2} = ({m} + √({m}² + 4 × {c})) ÷ 2',
+      (v) => fin(crossAt(v, 1)),
+      '({m} + √({m}² + 4 × {c})) ÷ 2',
+      'The larger root of x² − mx − c = 0.',
+    ),
+    derive(
+      'A',
+      'A',
+      ['x1', 'x2'],
+      '{A} = ({x2} − {x1})³ ÷ 6',
+      (v) => (v.x2! - v.x1!) ** 3 / 6,
+      '({x2} − {x1})³ ÷ 6',
+      'Between the roots, mx + c − x² = (x − x₁)(x₂ − x), whose integral is (x₂ − x₁)³ ÷ 6.',
+    ),
+    limit(
+      'two-crossings',
+      '{m}² + 4 × {c} > 0',
+      (v) => v.m! ** 2 + 4 * v.c! > 0,
+      'The line must cross the parabola twice to close a region.',
+    ),
+  ],
+  example: example(
+    { m: 1, c: 2 },
+    ['x1', (v) => crossAt(v, -1)],
+    ['x2', (v) => crossAt(v, 1)],
+    ['A', (v) => (v.x2! - v.x1!) ** 3 / 6],
+  ),
+  startWith: ['m', 'c'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'linear',
+    m: 'm',
+    b: 'c',
+    other: { family: 'quadratic', form: 'standard', a: 1, b: 0, c: 0 },
+    between: { value: 'A' },
+  },
+});
+
+const STRIP = page({
+  id: 'g.he-functionGraph-strip',
+  title: 'A region between y = x² and y = kx, sliced',
+  use: 'Use this for “Find the double integral of x over the region between y = x² and y = 2x.”',
+  assumptions: [
+    'Type I: for each x from 0 to k, y runs from x² up to kx (one upright slice).',
+    'k > 0, so the line is above the parabola between the crossings 0 and k.',
+  ],
+  variables: [
+    num('k', 'k', 'Slope of the line', 0.1, 10, { step: 0.1 }),
+    num('xm', 'x', 'A slice’s x (the middle)', 0, 5, { derived: true }),
+    num('I', 'I', 'Double integral of x', 0, 1e6, { derived: true, fraction: 12, improper: true }),
+  ],
+  rules: [
+    derive(
+      'slice',
+      'xm',
+      ['k'],
+      '{xm} = {k} ÷ 2',
+      (v) => v.k! / 2,
+      '{k} ÷ 2',
+      'One slice in the middle of 0 to k shows the inner integral, from x² up to kx.',
+    ),
+    derive(
+      'I',
+      'I',
+      ['k'],
+      '{I} = {k}⁴ ÷ 12',
+      (v) => v.k! ** 4 / 12,
+      '{k}⁴ ÷ 12',
+      'Inside, ∫ x dy from x² to kx is x(kx − x²). Outside, ∫ (kx² − x³) dx from 0 to k is k⁴ ÷ 3 − k⁴ ÷ 4.',
+    ),
+  ],
+  example: example({ k: 1 }, ['xm', (v) => v.k! / 2], ['I', (v) => v.k! ** 4 / 12]),
+  startWith: ['k'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'linear',
+    m: 'k',
+    b: 0,
+    other: { family: 'quadratic', form: 'standard', a: 1, b: 0, c: 0 },
+    between: {},
+    strip: { at: 'xm' },
+  },
+});
+
+// ── HC12: a level line ──
+
+const potential = (v: Values) => v.a! * v.x! ** 3 - v.b! * v.x! ** 2;
+
+const POTENTIAL = page({
+  id: 'g.he-functionGraph-level',
+  title: 'A potential curve and an energy level',
+  use: 'Use this for “With U(x) = x³ − 3x² J and E = −1 J, where can the particle be, and how fast?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Energy is conserved: K = E − U, so the particle moves only where U ≤ E.',
+    'The turning points are where the level E meets U(x).',
+  ],
+  variables: [
+    num('a', 'a', 'Cubic coefficient (J/m³)', -100, 100, { step: 0.5 }),
+    num('b', 'b', 'Square coefficient (J/m²)', -100, 100, { step: 0.5 }),
+    num('x', 'x', 'Position', -10, 10, { unit: 'm', step: 0.1 }),
+    num('U', 'U', 'Potential energy', -1e6, 1e6, { unit: 'J' }),
+    num('E', 'E', 'Total energy', -1e6, 1e6, { unit: 'J', step: 0.5 }),
+    num('K', 'K', 'Kinetic energy', 0, 1e6, { unit: 'J' }),
+  ],
+  rules: [
+    rule('U', '{U} = {a} × {x}³ − {b} × {x}²', ['U', 'a', 'x', 'b'], (v) => v.U! - potential(v), {
+      U: [potential, '{a} × {x}³ − {b} × {x}²', 'Put the position into U(x).'],
+      a: [
+        (v) => div(v.U! + v.b! * v.x! ** 2, v.x! ** 3),
+        '({U} + {b} × {x}²) ÷ {x}³',
+        'Add bx², then divide by x³.',
+      ],
+      b: [
+        (v) => div(v.a! * v.x! ** 3 - v.U!, v.x! ** 2),
+        '({a} × {x}³ − {U}) ÷ {x}²',
+        'Move U across, then divide by x².',
+      ],
+    }),
+    rule('K', '{K} = {E} − {U}', ['K', 'E', 'U'], (v) => v.K! - (v.E! - v.U!), {
+      K: [(v) => v.E! - v.U!, '{E} − {U}', 'The energy not stored as U is kinetic.'],
+      E: [(v) => v.K! + v.U!, '{K} + {U}', 'The total is kinetic plus potential.'],
+      U: [(v) => v.E! - v.K!, '{E} − {K}', 'Take the kinetic energy from the total.'],
+    }),
+  ],
+  example: example({ a: 1, b: 3, x: 1, E: -1 }, ['U', potential], ['K', (v) => v.E! - v.U!]),
+  startWith: ['x', 'a', 'b', 'E'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'expr',
+    expr: 'a * x^3 - b * x^2',
+    name: 'U',
+    at: { x: 'x', y: 'U' },
+    level: { y: 'E', label: 'E' },
+    axes: { x: 'Position x (m)', y: 'Energy (J)' },
+  },
+});
+
+/** The turning radii: the roots of εr² + GMr − h² ÷ 2 = 0 (ε < 0). */
+const turnAt = (v: Values, sign: -1 | 1) => {
+  const root = Math.sqrt(v.GM! ** 2 + 2 * v.eps! * v.h! ** 2);
+  // The nearer root as h² ÷ (GM + √…): the same root, with no cancellation when GM is large.
+  return sign > 0 ? v.h! ** 2 / (v.GM! + root) : (-v.GM! - root) / (2 * v.eps!);
+};
+
+const TURNING = page({
+  id: 'g.he-functionGraph-level-turning',
+  title: 'An orbit’s turning points on the effective potential',
+  use: 'Use this for “An orbit has ε = −20.82 km²/s² and h = 59,500 km²/s. How close and how far does it go?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Per unit mass, U_eff = −GM ÷ r + h² ÷ (2r²); the radial motion stops where U_eff = ε.',
+    'A bound orbit: ε < 0, and above the well’s floor, so there are two turning points.',
+  ],
+  variables: [
+    num('GM', 'GM', 'Gravitational parameter (km³/s²)', 1, 1e9, { step: 100 }),
+    num('eps', 'ε', 'Energy per mass (km²/s²)', -1e6, -0.000001, { step: 0.01 }),
+    num('h', 'h', 'Angular momentum per mass (km²/s)', 1, 1e9, { step: 100 }),
+    num('rmin', 'r_min', 'Closest distance', 0, 1e9, { unit: 'km', derived: true }),
+    num('rmax', 'r_max', 'Farthest distance', 0, 1e9, { unit: 'km', derived: true }),
+  ],
+  rules: [
+    derive(
+      'rmin',
+      'rmin',
+      ['GM', 'eps', 'h'],
+      '{rmin} = {h}² ÷ ({GM} + √({GM}² + 2 × {eps} × {h}²))',
+      (v) => fin(turnAt(v, 1)),
+      '{h}² ÷ ({GM} + √({GM}² + 2 × {eps} × {h}²))',
+      'Set U_eff = ε and multiply by r²: εr² + GMr − h² ÷ 2 = 0. The nearer root, written so nothing cancels.',
+    ),
+    derive(
+      'rmax',
+      'rmax',
+      ['GM', 'eps', 'h'],
+      '{rmax} = (−{GM} − √({GM}² + 2 × {eps} × {h}²)) ÷ (2 × {eps})',
+      (v) => fin(turnAt(v, -1)),
+      '(−{GM} − √({GM}² + 2 × {eps} × {h}²)) ÷ (2 × {eps})',
+      'The other root of the same quadratic is the farther turning point.',
+    ),
+    limit(
+      'bound',
+      '{GM}² + 2 × {eps} × {h}² > 0',
+      (v) => v.GM! ** 2 + 2 * v.eps! * v.h! ** 2 > 0,
+      'Below the floor of the well: no orbit has this energy and angular momentum.',
+    ),
+  ],
+  example: example(
+    { GM: 398600, eps: -20.82, h: 59500 },
+    ['rmin', (v) => turnAt(v, 1)],
+    ['rmax', (v) => turnAt(v, -1)],
+  ),
+  startWith: ['GM', 'eps', 'h'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'expr',
+    expr: '-GM / r + h^2 / (2 * r^2)',
+    of: 'r',
+    from: 0,
+    name: 'U_eff',
+    input: 'r',
+    level: { y: 'eps', label: 'ε', at: ['rmin', 'rmax'] },
+    axes: { x: 'Distance r (km)', y: 'Energy per mass (km²/s²)' },
+  },
+});
+
+// ── HC12: accumulation ──
+
+const areaSoFar = (v: Values) => (v.m! * (v.x! ** 2 - v.a! ** 2)) / 2 + v.c! * (v.x! - v.a!);
+
+const ACCUMULATION = page({
+  id: 'g.he-functionGraph-accumulation',
+  title: 'The area function F(x) and its slope',
+  use: 'Use this for “F(x) is the integral of 2t + 1 from 0 to x. Find F(3) and F′(3).”',
+  assumptions: [
+    'F(x) = ∫ from a to x of f(t) dt collects the signed area as x moves.',
+    'The Fundamental Theorem, part 1: F′(x) = f(x).',
+  ],
+  variables: [
+    num('m', 'm', 'Slope of f', -20, 20, { step: 0.5 }),
+    num('c', 'c', 'Intercept of f', -20, 20, { step: 0.5 }),
+    num('a', 'a', 'Start', -20, 20, { step: 0.5 }),
+    num('x', 'x', 'End', -20, 20, { step: 0.1 }),
+    num('F', 'F(x)', 'Area so far', -1e6, 1e6, { derived: true }),
+    num('Fp', 'F′(x)', 'Slope of F at x', -1e6, 1e6),
+  ],
+  rules: [
+    derive(
+      'F',
+      'F',
+      ['m', 'c', 'a', 'x'],
+      '{F} = {m} × ({x}² − {a}²) ÷ 2 + {c} × ({x} − {a})',
+      (v) => areaSoFar(v),
+      '{m} × ({x}² − {a}²) ÷ 2 + {c} × ({x} − {a})',
+      'An antiderivative of mt + c is mt² ÷ 2 + ct: take its value at x minus its value at a.',
+    ),
+    rule(
+      'Fp',
+      '{Fp} = {m} × {x} + {c}',
+      ['Fp', 'm', 'x', 'c'],
+      (v) => v.Fp! - (v.m! * v.x! + v.c!),
+      {
+        Fp: [
+          (v) => v.m! * v.x! + v.c!,
+          '{m} × {x} + {c}',
+          'F′(x) = f(x): the slope of the area function is the height of f at x.',
+        ],
+        x: [
+          (v) => div(v.Fp! - v.c!, v.m!),
+          '({Fp} − {c}) ÷ {m}',
+          'Find where f reaches that height.',
+        ],
+        c: [(v) => v.Fp! - v.m! * v.x!, '{Fp} − {m} × {x}', 'Take mx from the height.'],
+      },
+    ),
+  ],
+  example: example({ m: 2, c: 1, a: 0, x: 3 }, ['F', areaSoFar], ['Fp', (v) => v.m! * v.x! + v.c!]),
+  startWith: ['x', 'm', 'c', 'a'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'linear',
+    m: 'm',
+    b: 'c',
+    input: 't',
+    at: { x: 'x', y: 'Fp' },
+    accumulation: { from: 'a', x: 'x', value: 'F' },
+  },
+});
+
+// ── HC12: presets ──
+
+const vCstr = (v: Values) => (v.FA0! * v.X!) / (v.k! * v.CA0! * (1 - v.X!));
+const vPfr = (v: Values) => (v.FA0! / (v.k! * v.CA0!)) * -Math.log(1 - v.X!);
+
+const LEVENSPIEL = page({
+  id: 'g.he-functionGraph-levenspiel',
+  title: 'Levenspiel plot: which reactor is smaller',
+  use: 'Use this for “For a first-order reaction at 80% conversion, which is smaller, a CSTR or a PFR?”',
+  workedFigures: 3,
+  unitSystems: ['metric'],
+  assumptions: [
+    'First order, liquid phase (constant density), isothermal: −r_A = kC_A0(1 − X).',
+    'A CSTR runs at the exit rate (the rectangle); a PFR passes every rate on the way (the area).',
+  ],
+  variables: [
+    num('FA0', 'F_A0', 'Feed rate of A', 0.01, 10000, { unit: 'mol/min', step: 1 }),
+    num('k', 'k', 'Rate constant (per min)', 0.001, 100, { step: 0.01 }),
+    num('CA0', 'C_A0', 'Feed concentration', 0.001, 100, { unit: 'mol/L', step: 0.1 }),
+    num('X', 'X', 'Conversion', 0.01, 0.99, { step: 0.01 }),
+    num('Vc', 'V_CSTR', 'CSTR volume', 0, 1e9, { unit: 'L', derived: true }),
+    num('Vp', 'V_PFR', 'PFR volume', 0, 1e9, { unit: 'L', derived: true }),
+  ],
+  rules: [
+    derive(
+      'Vc',
+      'Vc',
+      ['FA0', 'k', 'CA0', 'X'],
+      '{Vc} = {FA0} × {X} ÷ ({k} × {CA0} × (1 − {X}))',
+      (v) => fin(vCstr(v)),
+      '{FA0} × {X} ÷ ({k} × {CA0} × (1 − {X}))',
+      'A CSTR works at the exit rate: V = F_A0X ÷ (−r_A) at X, the rectangle.',
+    ),
+    derive(
+      'Vp',
+      'Vp',
+      ['FA0', 'k', 'CA0', 'X'],
+      '{Vp} = {FA0} ÷ ({k} × {CA0}) × (−ln(1 − {X}))',
+      (v) => fin(vPfr(v)),
+      '{FA0} ÷ ({k} × {CA0}) × (−ln(1 − {X}))',
+      'A PFR adds up F_A0 dX ÷ (−r_A) from 0 to X, the area under the curve.',
+    ),
+  ],
+  example: example({ FA0: 20, k: 0.2, CA0: 2, X: 0.8 }, ['Vc', vCstr], ['Vp', vPfr]),
+  startWith: ['FA0', 'k', 'CA0', 'X'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'levenspiel',
+    FA0: 'FA0',
+    k: 'k',
+    CA0: 'CA0',
+    X: 'X',
+    cstr: 'Vc',
+    pfr: 'Vp',
+    input: 'X',
+    name: 'F_A0/(−r_A)',
+    axes: { x: 'Conversion X', y: 'F_A0 ÷ (−r_A) (L)' },
+  },
+});
+
+const RAD = Math.PI / 180;
+const d0Of = (v: Values) => Math.asin(v.pm! / v.pmax!) / RAD;
+const dcOf = (v: Values) => {
+  const d0 = v.d0! * RAD;
+  return Math.acos((Math.PI - 2 * d0) * Math.sin(d0) - Math.cos(d0)) / RAD;
+};
+const tcrOf = (v: Values) =>
+  Math.sqrt((4 * v.H! * (v.dc! - v.d0!) * RAD) / (2 * Math.PI * v.f! * v.pm!));
+
+const EQUAL_AREA = page({
+  id: 'g.he-functionGraph-equalarea',
+  title: 'Equal-area criterion: the critical clearing angle',
+  use: 'Use this for “Find the critical clearing time for a generator with H = 5 s delivering 1 pu with P_max = 2 pu.”',
+  workedFigures: 3,
+  unitSystems: ['metric'],
+  assumptions: [
+    'The fault drops the power sent to 0 until cleared; the same line returns after.',
+    'Damping is ignored: the rotor speeds up over A₁ and must give it all back over A₂.',
+  ],
+  variables: [
+    num('pm', 'P_m', 'Mechanical power (pu)', 0.01, 10, { step: 0.05 }),
+    num('pmax', 'P_max', 'Largest power sent (pu)', 0.01, 20, { step: 0.05 }),
+    num('H', 'H', 'Inertia constant', 1, 20, { unit: 's', step: 0.5 }),
+    num('f', 'f', 'Frequency', 1, 100, { unit: 'Hz', step: 1 }),
+    num('d0', 'δ₀', 'Starting angle', 0, 90, { unit: '°', derived: true }),
+    num('dc', 'δ_cr', 'Critical clearing angle', 0, 180, { unit: '°', derived: true }),
+    num('dmax', 'δ_max', 'Largest swing angle', 90, 180, { unit: '°', derived: true }),
+    num('tcr', 't_cr', 'Critical clearing time', 0, 100, { unit: 's', derived: true }),
+  ],
+  rules: [
+    derive(
+      'd0',
+      'd0',
+      ['pm', 'pmax'],
+      '{d0} = sin⁻¹({pm} ÷ {pmax})',
+      (v) => fin(d0Of(v)),
+      'sin⁻¹({pm} ÷ {pmax})',
+      'Before the fault the power sent matches P_m: P_max sin δ₀ = P_m.',
+    ),
+    derive(
+      'dc',
+      'dc',
+      ['d0'],
+      '{dc} = cos⁻¹((π − 2 × {d0} × π ÷ 180) × sin({d0}°) − cos({d0}°))',
+      (v) => fin(dcOf(v)),
+      'cos⁻¹((π − 2 × {d0} × π ÷ 180) × sin({d0}°) − cos({d0}°))',
+      'A₁ = A₂ gives cos δ_cr = (π − 2δ₀) sin δ₀ − cos δ₀, with δ₀ in radians inside the bracket.',
+    ),
+    derive(
+      'dmax',
+      'dmax',
+      ['d0'],
+      '{dmax} = 180 − {d0}',
+      (v) => 180 - v.d0!,
+      '180 − {d0}',
+      'The swing can go as far as where the sine falls back to P_m: 180° − δ₀.',
+    ),
+    derive(
+      'tcr',
+      'tcr',
+      ['H', 'dc', 'd0', 'f', 'pm'],
+      '{tcr} = √(4 × {H} × ({dc} − {d0}) × π ÷ 180 ÷ (2 × π × {f} × {pm}))',
+      (v) => fin(tcrOf(v)),
+      '√(4 × {H} × ({dc} − {d0}) × π ÷ 180 ÷ (2 × π × {f} × {pm}))',
+      'With no power out, the angle grows as δ₀ + (πfP_m ÷ (2H))t²: solve for the time to reach δ_cr.',
+    ),
+    limit(
+      'pm-under-pmax',
+      '{pm} < {pmax}',
+      (v) => v.pm! < v.pmax!,
+      'P_m must be less than P_max to run at all.',
+    ),
+  ],
+  example: example(
+    { pm: 1, pmax: 2, H: 5, f: 60 },
+    ['d0', d0Of],
+    ['dc', dcOf],
+    ['dmax', (v) => 180 - v.d0!],
+    ['tcr', tcrOf],
+  ),
+  startWith: ['pm', 'pmax', 'H', 'f'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'equalArea',
+    pm: 'pm',
+    pmax: 'pmax',
+    dc: 'dc',
+    d0: 'd0',
+    dmax: 'dmax',
+    name: 'P',
+    input: 'δ',
+    axes: { x: 'Rotor angle δ (°)', y: 'Power P (pu)' },
+  },
+});
+
+// ── HC12: an area under a real power (its edge, n = 0, is a constant force) ──
+
+const workOf = (v: Values) => (v.c! * (v.x2! ** (v.n! + 1) - v.x1! ** (v.n! + 1))) / (v.n! + 1);
+
+const POWER_WORK = page({
+  id: 'g.he-functionGraph-area-power',
+  title: 'Work by a force F = cxⁿ, the area under it',
+  use: 'Use this for “A force F = 30x² N acts from 1 m to 2 m. How much work does it do?”',
+  workedFigures: 3,
+  unitSystems: ['metric'],
+  assumptions: [
+    'The force acts along the motion, so the work is the area under F from x₁ to x₂.',
+    'x ≥ 0 here, so xⁿ is defined for every n.',
+  ],
+  variables: [
+    num('c', 'c', 'Force constant (N/mⁿ)', -1000, 1000, { step: 1 }),
+    num('n', 'n', 'Power', 0, 4, { integer: true }),
+    num('x1', 'x₁', 'Start', 0, 100, { unit: 'm', step: 0.1 }),
+    num('x2', 'x₂', 'End', 0, 100, { unit: 'm', step: 0.1 }),
+    num('W', 'W', 'Work', -1e12, 1e12, { unit: 'J', derived: true }),
+  ],
+  rules: [
+    derive(
+      'W',
+      'W',
+      ['c', 'n', 'x1', 'x2'],
+      '{W} = {c} × ({x2}^({n} + 1) − {x1}^({n} + 1)) ÷ ({n} + 1)',
+      (v) => fin(workOf(v)),
+      '{c} × ({x2}^({n} + 1) − {x1}^({n} + 1)) ÷ ({n} + 1)',
+      'The power rule: ∫cxⁿ dx = cxⁿ⁺¹ ÷ (n + 1); take its value at x₂ minus at x₁.',
+    ),
+  ],
+  example: example({ c: 30, n: 2, x1: 1, x2: 2 }, ['W', workOf]),
+  startWith: ['c', 'n', 'x1', 'x2'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'power',
+    a: 'c',
+    exponent: 'n',
+    name: 'F',
+    area: { from: 'x1', to: 'x2', value: 'W' },
+    xMin: 0,
+    axes: { x: 'Position x (m)', y: 'Force F (N)' },
+  },
+});
+
 export const HE1E_GALLERY_MODULES: ModuleDef[] = [
   EXPR_STEP,
   EXPR_PARTS,
@@ -703,6 +1295,16 @@ export const HE1E_GALLERY_MODULES: ModuleDef[] = [
   SPECIES_AREA,
   HEART_RATE,
   CARBURIZE,
+  AREA,
+  SIGNED,
+  BETWEEN,
+  STRIP,
+  POTENTIAL,
+  TURNING,
+  ACCUMULATION,
+  LEVENSPIEL,
+  EQUAL_AREA,
+  POWER_WORK,
 ];
 
 export const HE1E_GALLERY_LAYOUTS: LayoutDef[] = [];

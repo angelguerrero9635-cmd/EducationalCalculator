@@ -183,6 +183,15 @@ export function he1eIssues(rep: Representation, val: Val): string[] {
     for (const p of levelCrossings(c, y, -60, 60))
       if (!(Math.abs(c.f(p.x) - y) <= 1e-6 * Math.max(1, Math.abs(y))))
         out.push(`level: ring at ${p.x} is not a root (f = ${c.f(p.x)})`);
+    for (const id of rep.level.at ?? []) {
+      const x = num(id);
+      if (x === undefined) continue;
+      // (within the value's own rounding: a steep curve moves a lot for 1e-9 of x)
+      const slope = Math.abs((c.f(x * (1 + 1e-7)) - c.f(x * (1 - 1e-7))) / (2e-7 * x || 1));
+      const slack = Number.isFinite(slope) ? slope * 1e-9 * Math.max(1, Math.abs(x)) : 0;
+      if (!(Math.abs(c.f(x) - y) <= 1e-6 * Math.max(1, Math.abs(y)) + slack))
+        out.push(`level: ${id} = ${x} gives f = ${c.f(x)}, not ${y}`);
+    }
   }
   if (rep.accumulation) {
     const [a, x] = [v(rep.accumulation.from, 0), v(rep.accumulation.x, 0)];

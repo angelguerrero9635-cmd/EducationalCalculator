@@ -139,8 +139,11 @@ export interface FunctionGraphHe1e {
   between?: { from?: NumOrVar; to?: NumOrVar; value?: string };
   /** HC12: one representative slice of the region at `at`: upright (dx, default) or flat (dy). */
   strip?: { at: NumOrVar; dir?: 'x' | 'y' };
-  /** HC12: a level line y = `y` (an energy E, a half-power line), its crossings ringed. */
-  level?: { y: NumOrVar; label?: string };
+  /**
+   * HC12: a level line y = `y` (an energy E, a half-power line), its crossings ringed; `at` names
+   * the crossings the module works out (checked as roots, and kept in view).
+   */
+  level?: { y: NumOrVar; label?: string; at?: string[] };
   /**
    * HC12: a second panel under the graph, F(x) = ∫ from `from` to x of f, its point at `x`
    * traced with the tangent of slope f(x); `value` is the module's F(x) (checked). The main graph
@@ -157,7 +160,7 @@ export function functionGraphHe1eVars(r: FunctionGraphHe1e & { family: string })
     ...ids(r.repeat?.every, r.repeat?.count, r.repeat?.avg, r.feature?.x, r.feature?.y),
     ...ids(r.area?.from, r.area?.to, r.area?.value),
     ...ids(r.between?.from, r.between?.to, r.between?.value),
-    ...ids(r.strip?.at, r.level?.y),
+    ...ids(r.strip?.at, r.level?.y, ...(r.level?.at ?? [])),
     ...ids(r.accumulation?.from, r.accumulation?.x, r.accumulation?.value),
   ];
 }
