@@ -91,6 +91,12 @@ exploration) and `drags.md` (every handle dragged, the values before and after).
 before opening a browser: check each scene shows what its lines say, and each drag keeps the
 relations true (a point stays on its line, a total still adds up). A value that becomes `?`
 after a drag is an error: the drag cleared a number the student typed.
+Under each 40 px drag, `drags.md` drags the handle toward each end: an **ERROR** there is a
+runaway, a handle that unmounted or left the picture, a value out of its range, a page error,
+an "impossible" sentence after release, or a picture that changed when the dragged value was
+typed back. `unknowns.md` makes each first edit (a box typed again, which empties the rest)
+and flags a number in the picture or its caption that is the example's value of a box now
+`?`; check those pages' pictures with one box `?` instead of re-testing that by hand.
 
 **Q. What each number means (student).** Read every label on the page, the picture's too, as
 a sentence: "Beakers with 1/8 L: 2" says two beakers; "At 1/8 L: 2" reads as two liters. Report

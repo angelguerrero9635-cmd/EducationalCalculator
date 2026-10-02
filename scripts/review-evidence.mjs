@@ -17,7 +17,8 @@
 // --all-shots: screenshot the text-only sorts and sequences too (skipped by default: the
 //   layout test covers their data and their look never changes).
 // --interact all: run scenes and drags on every page, not only on pages whose picture kind has
-//   not been dragged before (.review/interact-kinds.json).
+//   not been dragged before (.review/interact-kinds.json). The "?" check (unknowns.md) runs on
+//   every page with a picture either way.
 //
 // Writes into the output folder:
 //   dump.txt        every module's definition and walkthroughs (dump.review.test.ts)
@@ -25,7 +26,9 @@
 //   shots/          full-page screenshots at 390 px for every module, plus a few at 1024 px
 //                   and a few in dark mode, with the layout checks (review-shots.mjs)
 //   scenes/         every scene of every exploration, light and dark (-dark.png); drags.md:
-//                   every handle dragged, with the values before and after
+//                   every handle dragged, with the values before and after, then toward each
+//                   end (runaways, a handle unmounting); unknowns.md: the picture after a
+//                   first edit leaves boxes "?" (no example numbers for them)
 //                   (review-interact.mjs)
 //   questions.md    released test and practice questions for the section's skills
 //                   (review-questions.mjs, from research/questions/)
@@ -227,9 +230,18 @@ if (stage !== 'lesson') {
     interactMode === 'all'
       ? ids
       : ids.filter((id) => !textOnly.has(id) && !(kinds.get(id) in dragged));
-  interact = interactIds.length
-    ? run('scenes and drags', 'node', ['scripts/review-interact.mjs', '--out', out, ...interactIds])
-    : 'no pages with a picture kind not dragged before';
+  // The "?" check on every other page with a picture: it is per page, not per kind.
+  const unknownIds = ids.filter((id) => !textOnly.has(id) && !interactIds.includes(id));
+  interact =
+    interactIds.length || unknownIds.length
+      ? run('scenes, drags and unknowns', 'node', [
+          'scripts/review-interact.mjs',
+          '--out',
+          out,
+          ...interactIds,
+          ...(unknownIds.length ? ['--unknowns-only', unknownIds.join(',')] : []),
+        ])
+      : 'no pages with a picture';
   for (const id of interactIds) dragged[kinds.get(id) ?? '?'] = id;
   writeFileSync(join('.review', 'interact-kinds.json'), JSON.stringify(dragged, null, 2));
 
@@ -285,7 +297,7 @@ writeFileSync(
     ...(stage !== 'lesson'
       ? [
           `- Screenshots: ${join(out, 'shots')}/<id>-390.png (all but text-only sorts and sequences), -1024.png (first ${wide}), dark for the first ${dark}`,
-          `- Scenes and drags: ${join(out, 'scenes')}/<id>-<n>.png, ${join(out, 'drags.md')} (${last(interact)})`,
+          `- Scenes and drags: ${join(out, 'scenes')}/<id>-<n>.png, ${join(out, 'drags.md')}, and "?" boxes drawn with the example's numbers: ${join(out, 'unknowns.md')} (${last(interact)})`,
           `- Contact sheets: ${join(out, 'sheets')}/sheet<n>.png, one page per picture kind (${last(sheets)})`,
         ]
       : ['- (lesson stage: no screenshots, scenes or sheets)']),

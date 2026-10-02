@@ -182,8 +182,10 @@ the assumptions and a table or diagram.
    `node scripts/review-evidence.mjs --prefix <ids> --stage page [--changed]` builds the web
    export for the pages in scope only when `dist/` is stale (10 s, not minutes), takes the
    screenshots with the layout checks (text-only sorts and sequences skipped), the scenes and
-   drags for picture kinds not dragged before, and the contact sheets, and writes
-   `.review/evidence.md`. Then `page-reviewer` (`.claude/agents/page-reviewer.md`) reads them
+   drags for picture kinds not dragged before (`drags.md`: each handle 40 px, then toward each
+   end for runaways and handles that vanish), the "?" check on every page with a picture
+   (`unknowns.md`: no example numbers drawn for a box a first edit left "?"), and the contact
+   sheets, and writes `.review/evidence.md`. Then `page-reviewer` (`.claude/agents/page-reviewer.md`) reads them
    and runs one browser session: classroom use, tutoring, layout, art, interaction. It fixes
    small layout issues itself. `--edges` on either stage is an edge-case review (fewer samples,
    most at the boundaries; the dump walks every opening value at each end).
