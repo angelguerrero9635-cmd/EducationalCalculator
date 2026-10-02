@@ -878,6 +878,10 @@ function wholeSolutions(
     const candidates = wholeValues(byIdOf(system, id))!.filter(
       (x) => x >= b.lo - 1e-9 && x <= b.hi + 1e-9,
     );
+    // The value it had first: a drag's solve finds the page as it was in one try, not after
+    // 20,000 (the `or` inequality's test result h = 0 first, every b, e and f under it).
+    const was = candidates.indexOf(previous[id]!);
+    if (was > 0) candidates.unshift(...candidates.splice(was, 1));
     for (const x of candidates) {
       if (budget.left <= 0) {
         exhausted = true;
