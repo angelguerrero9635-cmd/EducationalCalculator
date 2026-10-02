@@ -106,13 +106,14 @@ function ImpedancePlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Calculat
   const polar = 'modulus' in spec.z;
   const z = (() => {
     if ('modulus' in spec.z) {
-      const [r, t] = [num(spec.z.modulus), num(spec.z.argument)];
+      // A "?" part is drawn as 0 and never labelled (aOk and bOk say which parts are known).
+      const [r, t] = [num(spec.z.modulus) ?? 0, num(spec.z.argument) ?? 0];
       const ok = known(spec.z.modulus) && known(spec.z.argument);
       return { a: r * Math.cos(t * RAD), b: r * Math.sin(t * RAD), aOk: ok, bOk: ok };
     }
     return {
-      a: num(spec.z.re),
-      b: num(spec.z.im),
+      a: num(spec.z.re) ?? 0,
+      b: num(spec.z.im) ?? 0,
       aOk: known(spec.z.re),
       bOk: known(spec.z.im),
     };

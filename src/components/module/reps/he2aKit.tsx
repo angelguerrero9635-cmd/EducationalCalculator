@@ -29,6 +29,7 @@ export const nf3 = (x: number) => {
 
 /** "30 + j40", "10 − j20", "j6", "8" (the imaginary unit written j or i). */
 export function rectText(a: number, b: number, unit = 'j'): string {
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return '?';
   const [re, im] = [Number(a.toPrecision(4)), Number(b.toPrecision(4))];
   const imPart = (x: number) => `${unit}${nf(Math.abs(x))}`;
   if (Math.abs(im) < 1e-12) return nf(re);
