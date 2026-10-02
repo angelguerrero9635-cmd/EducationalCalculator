@@ -51,6 +51,7 @@ import { HS3B_GALLERY_LAYOUTS, HS3B_GALLERY_MODULES } from './galleryHs3b';
 import { HS3C_GALLERY_LAYOUTS, HS3C_GALLERY_MODULES } from './galleryHs3c';
 import { HS3D_GALLERY_LAYOUTS, HS3D_GALLERY_MODULES } from './galleryHs3d';
 import { HS3E_GALLERY_LAYOUTS, HS3E_GALLERY_MODULES } from './galleryHs3e';
+import { HS5_GALLERY_LAYOUTS, HS5_GALLERY_MODULES } from './galleryHs5';
 import { R3I_GALLERY_LAYOUTS, R3I_GALLERY_MODULES } from './galleryR3i';
 import { R3J_GALLERY_LAYOUTS, R3J_GALLERY_MODULES } from './galleryR3j';
 import { R2C_GALLERY_MODULES } from './galleryR2c';
@@ -1113,6 +1114,7 @@ const EVERY_GALLERY_MODULE: ModuleDef[] = [
   ...HS3C_GALLERY_MODULES,
   ...HS3D_GALLERY_MODULES,
   ...HS3E_GALLERY_MODULES,
+  ...HS5_GALLERY_MODULES,
 ];
 
 /**
@@ -1155,6 +1157,7 @@ const EVERY_GALLERY_LAYOUT: LayoutDef[] = [
   ...HS3C_GALLERY_LAYOUTS,
   ...HS3D_GALLERY_LAYOUTS,
   ...HS3E_GALLERY_LAYOUTS,
+  ...HS5_GALLERY_LAYOUTS,
   ...S4A_GALLERY_LAYOUTS,
   {
     id: 'g.push',

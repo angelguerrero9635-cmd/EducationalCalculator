@@ -2146,4 +2146,44 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "P26. A sort bin can set `color`, a theme color name: a stripe down the bin's side and a swatch before its name. The gastrula icon's colors: ectoderm 'bioAmino', mesoderm 'organDeep', endoderm 'bioSugar'. The harness checks every bin or none has a color, and no two share one. For the page, add to each bin: { id: 'ecto', color: 'bioAmino' }, { id: 'meso', color: 'organDeep' }, { id: 'endo', color: 'bioSugar' }.",
   },
+  // ── Round 5 (H115–H117): docs/HS_NEEDS.md P27–P29 ──
+  {
+    ...ask(
+      'H115',
+      'reserve',
+      'A reserve whose use grows by g% a year: each slice larger than the last, empty at T beside the steady Q ÷ r',
+      ['s.12.resource-management~growing-use'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s12-resource-management-growing-use-growth',
+      'g.s12-resource-management-growing-use-fast',
+    ],
+    notes:
+      "P27. New `growth` (g, in %) and `lasts` (T): the bar is cut into each year's use r × eᵏᵗ (k = g ÷ 100), every slice larger than the last, the first lit, and labelled \"empty after T = … years\"; under it the same reserve at steady use, equal slices, \"empty after y = … years\"; and a years line to y with T marked. Without `growth` the picture is as before. The harness checks T = ln(1 + kQ ÷ r) ÷ k, that the growing slices add to Q, and that T is no longer than Q ÷ r. Spec for the page: { kind: 'reserve', reserve: 'Q', rate: 'r', years: 'y', growth: 'g', lasts: 'T' }.",
+  },
+  {
+    ...ask(
+      'H116',
+      'photoelectric',
+      'A value shown as ? draws nothing: no example φ, Kₘₐₓ or λ₀ faded behind it',
+      ['s.11.modern-physics~photoelectric'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s11-modern-physics-photoelectric-blank'],
+    notes:
+      "P28. New `blank: true`. With φ unknown the plate reads \"φ = ?\" and there is no φ split, no electrons, no Kₘₐₓ and no λ₀ on the strip; the bar is an empty outline as long as E. With λ unknown the rays are grey and dashed, λ and E read \"?\" and there is no λ marker. The caption asks for what is missing. Without `blank` the picture fades with the example's values as before. The harness checks that `blank` has a variable to leave unknown. Spec for the page: { kind: 'photoelectric', wavelength: 'l', workFunction: 'p', energy: 'E', kinetic: 'K', threshold: 'z', blank: true }.",
+  },
+  {
+    ...ask(
+      'H117',
+      'sort',
+      'Sort groups in reach on a phone: the groups right under the picked card',
+      ['s.11.kinematics-1d~motion-diagrams'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s11-kinematics-1d-motion-diagrams-pick-bar'],
+    notes:
+      'P29. New sort option `pickBar: true`: while a card is picked, a full-width row of its groups (each a 44 px button, with the bin\'s swatch when it has a `color`) opens right under it, and a "Look again" hint about that card shows there too, so the student never scrolls between card and group. The groups below still collect the cards and show the counts. No fixed positioning, so it works the same on iOS and the web. Sorts without it don\'t change. For the page: add pickBar: true to the sort.',
+  },
 ];

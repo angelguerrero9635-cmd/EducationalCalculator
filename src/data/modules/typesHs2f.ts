@@ -134,6 +134,13 @@ export interface ReserveSpec {
   rate: NumOrVar;
   /** The years it lasts, when the page works it out. */
   years?: NumOrVar;
+  /**
+   * Use that grows by this many percent a year (H115): the bar's slices grow (r × eᵏᵗ, k = g ÷
+   * 100), it empties after T years, and the same reserve at steady use is drawn under it.
+   */
+  growth?: NumOrVar;
+  /** With `growth`, the years it lasts as use grows (T), when the page works it out. */
+  lasts?: NumOrVar;
 }
 
 /** The group F picture kinds of their own (listed in `types.ts`). */
@@ -148,7 +155,7 @@ export function hs2fSpecVars(r: Hs2fSpec): string[] {
   const ids = (xs: (NumOrVar | undefined)[]) =>
     xs.filter((x): x is string => typeof x === 'string');
   if (r.kind === 'streamChannel') return ids([r.width, r.depth, r.speed, r.area, r.discharge]);
-  if (r.kind === 'reserve') return ids([r.reserve, r.rate, r.years]);
+  if (r.kind === 'reserve') return ids([r.reserve, r.rate, r.years, r.growth, r.lasts]);
   if (r.kind === 'hrDiagram') return ids([r.mass, r.luminosity, r.lifetime]);
   switch (r.mode) {
     case 'magnitude':

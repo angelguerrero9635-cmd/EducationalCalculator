@@ -16,6 +16,7 @@ import {
   balanceTemp,
   SOLAR_CONSTANT,
 } from '@/components/module/reps/earthModelHs2f';
+import { growthLifetime, usedBy } from '@/components/module/reps/reserveGrowth';
 
 import type { Representation } from '../types';
 
@@ -93,6 +94,19 @@ export function hs2fIssues(rep: Representation, val: (id: string) => number | un
     const y = num(rep.years);
     if (q !== undefined && r !== undefined && r > 0 && y !== undefined && !near(y, q / r, 1e-4))
       out.push(`lasts ${y} years, but ${q} ÷ ${r} = ${q / r}`);
+    // Growing use: slices r × eᵏᵗ add to Q after T = ln(1 + kQ ÷ r) ÷ k, sooner than Q ÷ r.
+    const g = num(rep.growth);
+    if (g !== undefined && g < 0) out.push(`use grows ${g}% a year, not 0 or more`);
+    const t = num(rep.lasts);
+    if (q !== undefined && r !== undefined && r > 0 && g !== undefined && g >= 0) {
+      const want = growthLifetime(q, r, g);
+      if (t !== undefined && !near(t, want, 1e-4))
+        out.push(`lasts ${t} years as use grows ${g}%, but ln(1 + kQ ÷ r) ÷ k = ${want}`);
+      if (!near(usedBy(r, g, want), q, 1e-6))
+        out.push(`the growing slices add to ${usedBy(r, g, want)}, not ${q}`);
+      if (want > (q / r) * (1 + 1e-9))
+        out.push(`growing use lasts ${want} years, longer than ${q / r}`);
+    }
   }
   if (rep.kind === 'rockLayers' && 'dating' in rep && rep.dating.sample?.second) {
     const { share, name } = rep.dating.sample.second;
