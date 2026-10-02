@@ -1,6 +1,7 @@
 import type { Representation } from '@/data/modules';
 import { drawnByHe1d } from '@/data/modules/typesHe1d';
 import { isHe2fSpec } from '@/data/modules/typesHe2f';
+import { isHe3lSpec } from '@/data/modules/typesHe3l';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
@@ -207,6 +208,9 @@ import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { He2fView } from './He2fView';
+import { RayHe3l } from './RayHe3l';
+import { PhaseSpace } from './PhaseSpace';
+import { WaveHe3l } from './WaveHe3l';
 import { Hs2cView } from './Hs2cView';
 import { Hs3aView } from './Hs3aView';
 import { Section } from './Section';
@@ -306,6 +310,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'collision':
     case 'circularMotion':
     case 'freeBody':
+      if (isHe3lSpec(spec)) return <RayHe3l spec={spec} calc={calc} />; // HC68
       return <HskView spec={spec} calc={calc} />;
     case 'impulse':
     case 'powerLift':
@@ -376,6 +381,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <VelocityProfile spec={spec} calc={calc} />;
     case 'potentialWell':
       return <PotentialWell spec={spec} calc={calc} />;
+    case 'phaseSpace':
+      return <PhaseSpace spec={spec} calc={calc} />; // HC69
     case 'unitCell':
       return <UnitCell spec={spec} calc={calc} />;
     case 'globe':
@@ -648,6 +655,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'protractor':
       return <Protractor spec={spec} calc={calc} />;
     case 'wave':
+      if (isHe3lSpec(spec)) return <WaveHe3l spec={spec} calc={calc} />; // HC93
       if (spec.standing) return <WaveStanding spec={spec} s={spec.standing} calc={calc} />;
       if (spec.doppler) return <WaveDoppler d={spec.doppler} calc={calc} />;
       return <Wave spec={spec} calc={calc} />;
