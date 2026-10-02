@@ -1840,6 +1840,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'Animals in cold places need ways to keep their body heat in.',
     ],
     question: 'How does it help the animal survive?',
+    pickBar: true,
     bins: [
       {
         id: 'hide',
@@ -1855,15 +1856,27 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         figure: { kind: 'icon', icon: 'tree frog' },
       },
       { label: 'Brown warbler on bark', bin: 'hide', figure: { kind: 'icon', icon: 'warbler' } },
-      { label: 'White hare in snow', bin: 'hide', figure: { kind: 'icon', icon: 'white hare' } },
-      { label: 'Stick insect on a twig', bin: 'hide' },
+      {
+        label: 'White coat of a hare in snow',
+        bin: 'hide',
+        figure: { kind: 'icon', icon: 'white hare' },
+      },
+      {
+        label: 'Stick insect on a twig',
+        bin: 'hide',
+        figure: { kind: 'icon', icon: 'stick insect' },
+      },
       { label: 'Thick, shaggy fur', bin: 'warm', figure: { kind: 'icon', icon: 'thick fur' } },
       {
         label: 'Blubber, a thick fat layer of a seal',
         bin: 'warm',
         figure: { kind: 'icon', icon: 'blubber' },
       },
-      { label: 'Fluffed-up feathers of a winter bird', bin: 'warm' },
+      {
+        label: 'Fluffed-up feathers of a winter bird',
+        bin: 'warm',
+        figure: { kind: 'icon', icon: 'fluffed bird' },
+      },
     ],
   },
   {

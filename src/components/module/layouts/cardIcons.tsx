@@ -40,7 +40,9 @@ export const MATERIAL_ICONS = [
   'tree frog',
   'warbler',
   'white hare',
+  'stick insect',
   'thick fur',
+  'fluffed bird',
   'blubber',
   'camel hump',
   'cactus stem',
@@ -543,6 +545,68 @@ export function MaterialIcon({ icon, ink }: { icon: MaterialIconName; ink: strin
           {flake(44, 17, 1.8)}
           {hare(c.snow, true)}
           <Path d="M 0 41 Q 12 37 24 40 T 48 39 V 48 H 0 Z" fill={c.snow} {...o(1)} />
+        </>
+      );
+      break;
+    case 'stick insect': {
+      // A twig from the lower left to the upper right, a leaf at its tip, and the insect lying
+      // along it: a thin body the twig's color, six legs held close, two antennae.
+      const twig = 'M 2 42 C 12 36 22 28 32 20 C 36 17 40 13 44 9';
+      art = (
+        <>
+          <Path d={twig} fill="none" {...o(5.2)} />
+          <Path d={twig} fill="none" stroke={c.bark} strokeWidth={3.4} strokeLinecap="round" />
+          <Path d="M 20 30 C 18 27 15 25 12 25" fill="none" {...o(3)} />
+          <Path d="M 20 30 C 18 27 15 25 12 25" fill="none" stroke={c.bark} strokeWidth={1.8} />
+          {lit('M 44 9 C 41 3 34 2 31 6 C 34 9 39 11 44 9 Z', c.life, 0.9)}
+          <Path d="M 44 9 C 40 7 36 6 33 5.5" fill="none" stroke={c.lifeDeep} strokeWidth={0.7} />
+          <G transform="translate(0 -4.5)">
+            <Path
+              d="M 13 30 L 10 35 M 17 27 L 15 33 M 22 23 L 21 29 M 15 28 L 13 23 M 19 25 L 19 20 M 25 21 L 27 16"
+              fill="none"
+              stroke={c.wood}
+              strokeWidth={1.1}
+              strokeLinecap="round"
+            />
+            {lit(
+              'M 9 34 C 14 29 20 24 27 19 C 28.5 18 30.5 19 29.5 20.5 C 23 25 17 30 11 36 Z',
+              c.wood,
+              0.9,
+            )}
+            <Path d="M 29 19 L 34 14 M 29.5 20 L 36 17.5" fill="none" {...o(0.7)} />
+            {eye(28.5, 19.6, 0.7)}
+          </G>
+        </>
+      );
+      break;
+    }
+    case 'fluffed bird':
+      // A small bird puffed up round against the cold, its feathers standing out, on snow.
+      art = (
+        <>
+          {flake(8, 6)}
+          {flake(40, 10, 1.8)}
+          {flake(14, 16, 1.8)}
+          <Path d="M 0 41 Q 12 37 24 40 T 48 39 V 48 H 0 Z" fill={c.snow} {...o(1)} />
+          <Path
+            d="M 21 40.5 L 19 35 M 21 40.5 L 23 35 M 29 40.5 L 27 35 M 29 40.5 L 31 35"
+            fill="none"
+            {...o(1.4)}
+          />
+          <Path d="M 36 26 L 46 20 L 45 27 L 40 31 Z" fill={c.feather} {...o(0.9)} />
+          {lit(
+            'M 25 36 C 15 36 10 30 10.5 22 C 11 14 18 9 26 9.5 C 34 10 39 16 38.5 24 C 38 32 33 36 25 36 Z',
+            c.featherLight,
+          )}
+          <Path
+            d="M 13 25 Q 15 27 13 30 M 17 29 Q 19 31 17 34 M 22 31 Q 24 33 22 36 M 28 31 Q 30 33 28 36 M 33 28 Q 35 30 33 33 M 36 22 Q 38 24 36 27"
+            fill="none"
+            stroke={c.feather}
+            strokeWidth={1}
+            strokeLinecap="round"
+          />
+          <Path d="M 11 19 L 4 17.5 L 11 15.5 Z" fill={c.rock6} {...o(0.7)} />
+          {eye(15.5, 15.5, 1.1)}
         </>
       );
       break;

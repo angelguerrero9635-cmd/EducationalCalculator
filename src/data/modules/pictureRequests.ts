@@ -55,7 +55,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
   },
   {
     id: 'R01b',
-    what: 'Camouflage and survival icons (tree frog, warbler, white hare, thick fur, blubber, camel hump, cactus stem)',
+    what: 'Camouflage and survival icons (tree frog, warbler, white hare, stick insect, thick fur, fluffed bird, blubber, camel hump, cactus stem)',
     kind: 'icon',
     pages: ['s.3.adaptation-fossils~survive-where', 's.3.adaptation-fossils~camouflage'],
     status: 'placed',
@@ -65,7 +65,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.3.adaptation-fossils~camouflage': '"icon":"warbler"',
     },
     notes:
-      'Placed: the camel hump and cactus stem are on ~survive-where; the tree frog, warbler, white hare, thick fur and blubber on the ~camouflage sort (blends in or stays warm). The demo g.icons-survival is retired.',
+      'Placed: the camel hump and cactus stem are on ~survive-where; the tree frog, warbler, white hare, stick insect, thick fur, fluffed bird and blubber on the ~camouflage sort (blends in or stays warm). The demo g.icons-survival is retired.',
   },
   {
     id: 'R02',
