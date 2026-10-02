@@ -6,7 +6,7 @@
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/math12.ts`.
  */
 import { betaI, chiCdf, invPhi, Phi, tCdf, tStar } from '@/components/module/reps/statMath';
-import { formatNumber, superscript } from '@/engine/format';
+import { formatNumber, scientific, superscript } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -198,6 +198,21 @@ const twoTail = (P: string, z: string) =>
     'Hₐ says “not equal”, so both tails past |z| count as at least as extreme.',
   );
 
+/**
+ * The argument of invNorm in the z step: "{P}" (or "1 − {P}" for a right tail) as the page
+ * prints P, or the tail written out in figures when P prints as 0 or 1 (P = 0.99998 reads 1,
+ * and invNorm(1 − 1) is nothing to work out): invNorm(2 × 10⁻⁵).
+ */
+const invNormArg = (P: string, complement: boolean) => (v: Values) => {
+  const p = v[P];
+  const plain = complement ? `invNorm(1 − {${P}})` : `invNorm({${P}})`;
+  if (p === undefined || !(p > 0 && p < 1)) return plain;
+  const tail = complement ? 1 - p : p;
+  if (tail < 0.0005) return `invNorm(${scientific(tail, 4)})`;
+  if (tail > 0.9995) return `invNorm(1 − ${scientific(1 - tail, 4)})`;
+  return plain;
+};
+
 /** P = Φ(z): the tail left of z. */
 const leftTail = (
   P: string,
@@ -208,7 +223,7 @@ const leftTail = (
     [P]: [(v) => Phi(v[z]!), `Φ({${z}})`, how],
     [z]: [
       (v) => (inOpen(v[P]!) === undefined ? undefined : invPhi(v[P]!)),
-      `invNorm({${P}})`,
+      invNormArg(P, false),
       'invNorm undoes Φ: the z with that area to its left.',
     ],
   });
@@ -256,7 +271,7 @@ const rightTail = (P: string, z: string, how: string) =>
     [P]: [(v) => 1 - Phi(v[z]!), `1 − Φ({${z}})`, how],
     [z]: [
       (v) => (inOpen(v[P]!) === undefined ? undefined : invPhi(1 - v[P]!)),
-      `invNorm(1 − {${P}})`,
+      invNormArg(P, true),
       'The area left of z is 1 minus the right tail.',
     ],
   });
@@ -1268,17 +1283,20 @@ const MATH_12_STATS: ModuleDef[] = [
       'x̄ is close to normal when the population is normal or n ≥ 30 (the central limit theorem).',
       'Samples are random and less than 10% of the population.',
     ],
+    // Heights: a mean to 100 m and a spread from 1 mm. A mean a hundred million standard
+    // errors wide (100000 cm with σ = 0.01 cm, n = 1000) left x̄'s twelve shown figures too
+    // coarse for z, and the curve's shaded area missed P by 2 × 10⁻⁴.
     variables: [
-      V('m', 'μ', 'Population mean', { unit: 'cm', min: 0.1, max: 100000, step: 0.5 }),
+      V('m', 'μ', 'Population mean', { unit: 'cm', min: 0.1, max: 10000, step: 0.5 }),
       V('s', 'σ', 'Population standard deviation', {
         unit: 'cm',
-        min: 0.01,
-        max: 10000,
+        min: 0.1,
+        max: 1000,
         step: 0.1,
       }),
       V('n', 'n', 'Sample size', { integer: true, min: 2, max: 1000 }),
-      V('E', 'SE', 'Standard error of x̄', { unit: 'cm', min: 0.0001, max: 10000, step: 0.01 }),
-      V('x', 'x̄', 'A sample mean', { unit: 'cm', min: 0.1, max: 100000, step: 0.1 }),
+      V('E', 'SE', 'Standard error of x̄', { unit: 'cm', min: 0.001, max: 1000, step: 0.01 }),
+      V('x', 'x̄', 'A sample mean', { unit: 'cm', min: 0.1, max: 10000, step: 0.1 }),
       V('z', 'z', 'z-score of x̄', { min: -50, max: 50, step: 0.01 }),
       prob('P', 'P', 'Chance the sample mean is at most x̄'),
     ],
@@ -1454,15 +1472,19 @@ const MATH_12_STATS: ModuleDef[] = [
       'The mean x̄ centers on μ and spreads by σ ÷ √n; the total centers on nμ and spreads by √n × σ.',
       'The mean is over x̄ exactly when the total is over n × x̄, so both chances are the same.',
     ],
+    // Weights to a tonne: a mean a hundred million standard errors out (100000 kg with
+    // σ = 0.001 kg and n in the thousands) left x̄'s twelve shown figures too coarse for z.
     variables: [
-      V('m', 'μ', 'Population mean', { unit: 'kg', min: 0.001, max: 100000, step: 0.01 }),
+      V('m', 'μ', 'Population mean', { unit: 'kg', min: 0.001, max: 1000, step: 0.01 }),
       V('s', 'σ', 'Population standard deviation', {
         unit: 'kg',
         min: 0.001,
-        max: 10000,
+        max: 1000,
         step: 0.001,
       }),
-      V('n', 'n', 'Sample size', { integer: true, min: 2, max: 10000 }),
+      // To 5000: a whole-number range the solver searches, so a total and a chance typed with
+      // μ and σ find n (or are refused) instead of leaving it "?".
+      V('n', 'n', 'Sample size', { integer: true, min: 2, max: 5000 }),
       V('E', 'SE', 'Standard error of x̄', {
         unit: 'kg',
         min: 0.00001,
@@ -1470,7 +1492,7 @@ const MATH_12_STATS: ModuleDef[] = [
         step: 0.0001,
         derived: true,
       }),
-      V('x', 'x̄', 'A sample mean', { unit: 'kg', min: 0.001, max: 100000, step: 0.001 }),
+      V('x', 'x̄', 'A sample mean', { unit: 'kg', min: 0.001, max: 1000, step: 0.001 }),
       V('M', 'μ_ΣX', 'Mean of the total', {
         unit: 'kg',
         min: 0.002,
@@ -1494,7 +1516,9 @@ const MATH_12_STATS: ModuleDef[] = [
         step: 0.01,
         derived: true,
       }),
-      prob('P', 'P', 'Chance the sample mean is more than x̄', { derived: true }),
+      // Typed too: a chance gives the cutoff, x̄ = μ + z × SE with z = invNorm(1 − P), and its
+      // total (the top 5% of bag averages are above what weight?).
+      prob('P', 'P', 'Chance the sample mean is more than x̄'),
     ],
     ...rels(
       seMean('E', 's', 'n'),
@@ -1545,8 +1569,9 @@ const MATH_12_STATS: ModuleDef[] = [
       z: 1.5,
       P: 1 - Phi(1.5),
     },
-    // x̄ before n: a total typed next works out x̄ = Σx ÷ n (n would come out not whole).
-    startWith: ['m', 's', 'x', 'n'],
+    // x̄ first: it is the value found from a total or a chance typed next (Σx ÷ n; μ + z × SE
+    // with z = invNorm(1 − P)), where the oldest input moves; n would come out not whole.
+    startWith: ['x', 'm', 's', 'n'],
     // The total's center, spread and value, under the curve of the means.
     pictureLabels: ['M', 'S', 'T'],
     unitSystems: ['metric'],

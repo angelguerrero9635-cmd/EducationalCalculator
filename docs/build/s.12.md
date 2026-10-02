@@ -340,3 +340,17 @@ labels.
 | Page                                    | Entry | What it teaches                                                                                                                                                                   |
 | --------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `s.12.radiometric-dating~cross-cutting` | H74   | cross-cutting with superposition: a dated dike that stops under the shale makes the shale younger than it, so its bracket is w = i − a, narrowed by d = b − i; ages kept in order |
+
+### Leftovers: reserves with growing use
+
+`s.12.resource-management~growing-use`: T is typed too. The expiration-time rule solves
+backwards from eᵏᵀ = 1 + kQ ÷ r: the reserve that lasts T years, Q = r(eᵏᵀ − 1) ÷ k, and the
+use it allows, r = kQ ÷ (eᵏᵀ − 1), each with a how line; k has no rearrangement (T = ln(1 +
+kQ ÷ r) ÷ k has k on both sides), so from Q, r and T the solver finds it by trial ("Try numbers
+until both sides match") and g = k × 100 follows from the percent rule, which now solves both
+ways. Q opens first, so a T typed after the example gives the reserve needed (600 → 369 billion
+barrels for 20 years at 15 a year and 2%). T from 0.01 years (at 0 the reserve would be 0, below
+its range). The picture's `growth` and `lasts` are untouched and its check (slices add to Q,
+T ≤ Q ÷ r) still holds. The `expirationTime` wrapper, which adds the ln work lines to the T
+step, keeps the rule's other steps now (it replaced them before, so Q and r read as found by
+trial). SEEDs 1–3 pass.

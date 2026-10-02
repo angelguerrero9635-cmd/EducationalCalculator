@@ -1588,7 +1588,11 @@ const reserves: ModuleDef = {
   representation: { kind: 'reserve', reserve: 'Q', rate: 'r', years: 'y' },
 };
 
-/** T = ln(1 + kQ ÷ r) ÷ k, with its stages written out: ln of one number, then ÷ k. */
+/**
+ * T = ln(1 + kQ ÷ r) ÷ k, with its stages written out: ln of one number, then ÷ k. Backwards,
+ * eᵏᵀ − 1 is the growth added up: Q = r(eᵏᵀ − 1) ÷ k is the reserve that lasts T years and
+ * r = kQ ÷ (eᵏᵀ − 1) the use it allows. k (so g) has no rearrangement: it is found by trial.
+ */
 const lastsFor = rule(
   'T = ln(1 + kQ ÷ r) ÷ k',
   '{T} = ln(1 + {k} × {Q} ÷ {r}) ÷ {k}',
@@ -1599,12 +1603,23 @@ const lastsFor = rule(
       'ln(1 + {k} × {Q} ÷ {r}) ÷ {k}',
       'The growing use adds up to Q when eᵏᵀ = 1 + kQ ÷ r; take ln of both sides and divide by k.',
     ],
+    Q: [
+      (v) => (v.k! > 0 ? (v.r! * (Math.exp(v.k! * v.T!) - 1)) / v.k! : undefined),
+      '{r} × (e^({k} × {T}) − 1) ÷ {k}',
+      'Undo the ln: eᵏᵀ = 1 + kQ ÷ r, so the reserve that lasts T years is r(eᵏᵀ − 1) ÷ k.',
+    ],
+    r: [
+      (v) => (v.k! > 0 && v.T! > 0 ? div(v.k! * v.Q!, Math.exp(v.k! * v.T!) - 1) : undefined),
+      '{k} × {Q} ÷ (e^({k} × {T}) − 1)',
+      'From eᵏᵀ = 1 + kQ ÷ r: the use this year that makes Q last T years is kQ ÷ (eᵏᵀ − 1).',
+    ],
   },
 );
 const sig = (x: number) => fmt(Number(x.toPrecision(6)));
 const expirationTime: Rel = {
   ...lastsFor,
   steps: {
+    ...lastsFor.steps,
     T: {
       ...lastsFor.steps.T!,
       work: (v) => {
@@ -1648,12 +1663,13 @@ const growingUse: ModuleDef = {
       step: 0.0001,
       derived: true,
     }),
+    // Typed too: the reserve (or use) that lasts T years, and the growth that empties Q in T
+    // years, found by trial from Q, r and T.
     V('T', 'T', 'Years it lasts as use grows', {
       unit: 'years',
-      min: 0,
+      min: 0.01,
       max: 10000000,
       step: 0.01,
-      derived: true,
     }),
     V('y', 'y', 'Years it lasts at this year’s use', {
       unit: 'years',
@@ -1666,6 +1682,7 @@ const growingUse: ModuleDef = {
   ...rels(
     rule('k = g ÷ 100', '{k} = {g} ÷ 100', (v) => v.k! - v.g! / 100, {
       k: [(v) => v.g! / 100, '{g} ÷ 100', 'A percent is a number of hundredths.'],
+      g: [(v) => v.k! * 100, '{k} × 100', 'A decimal as a percent: 100 times as many hundredths.'],
     }),
     expirationTime,
     quotient('y', 'Q', 'r', 'y = Q ÷ r', [

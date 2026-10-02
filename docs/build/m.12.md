@@ -509,3 +509,24 @@ n = 36, x̄ = 2.03 kg → SE = 0.02, Σx = 73.08 kg, z = 1.5, P = 0.0668. No new
 | ------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `m.12.polar~circle` | H10   | r = a cos θ, a circle through the pole: r at θ (or a from a point), the center (a ÷ 2, 0) and radius \|a\| ÷ 2 from x² + y² = ax       |
 | `m.12.polar~spiral` | H10   | the spiral r = aθ with θ in radians: r at θ, θ from r, a from a point, and the even spacing 2πa per turn; the grid labelled in radians |
+
+### Leftovers: the sampling pages
+
+- `m.12.sampling-distributions` (main): the sampler's SEED=3 run found the curve's shaded area
+  2 × 10⁻⁴ off P. The picture is checked from the values as the boxes show them (12 figures),
+  and μ = 100000 cm with σ = 0.01 cm and n = 1000 puts x̄ a hundred million standard errors
+  out, so its twelve figures were too coarse for z. Ranges narrowed to heights: μ and x̄ to
+  10000 cm, σ from 0.1 cm to 1000 cm (SE 0.001 to 1000). SEEDs 1–5 pass.
+- `leftTail` and `rightTail` (the z step of every page that types a chance): the argument of
+  invNorm is written out in figures when P prints as 0 or 1 (P = 0.99998 reads 1, and
+  "invNorm(1 − 1)" is nothing to work out): invNorm(2 × 10⁻⁵), or invNorm(1 − 2 × 10⁻⁵) for a
+  tail near 1. The harness already read invNorm(p).
+- `m.12.sampling-distributions~clt-sums`: P is typed too, the reverse question of OpenStax
+  7.3 (the top 5% of bag averages are above what weight?): z = invNorm(1 − P) from the
+  right-tail rule, then x̄ = μ + z × SE and Σx = n × x̄. x̄ now opens first in `startWith`, so a
+  chance or a total typed after the example moves the cutoff, not μ (the oldest input is the
+  one recalculated). n to 5000 (was 10000): a whole-number range the solver searches, so μ, σ, a
+  total and a chance typed together find n or are refused instead of leaving it "?". μ, σ and
+  x̄ to 1000 kg (were 100000 and 10000): the same twelve-figure limit as the main page's, met
+  at μ = 21.4 t with σ = 1 g. Still 10 values; the use line is unchanged (the reverse question
+  would not fit it naturally).
