@@ -1,0 +1,80 @@
+{
+  "id": "mit-ocw-6-02",
+  "curriculum": "MIT OpenCourseWare 6.02 Introduction to EECS II: Digital Communication Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2012",
+  "subject": "electrical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Hari Balakrishnan, George Verghese. 6.02 Introduction to EECS II: Digital Communication Systems. Fall 2012. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/6-02-introduction-to-eecs-ii-digital-communication-systems-fall-2012/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/6-02-introduction-to-eecs-ii-digital-communication-systems-fall-2012/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/6-02-introduction-to-eecs-ii-digital-communication-systems-fall-2012/pages/calendar/"
+  ],
+  "notes": "Lecture list from the calendar; problem sets 1, 2, 5, 7 and quiz 1 read.",
+  "books": [
+    {
+      "course": "he.engineering.communication-systems",
+      "title": "6.02 Introduction to EECS II: Digital Communication Systems (Fall 2012)",
+      "url": "https://ocw.mit.edu/courses/6-02-introduction-to-eecs-ii-digital-communication-systems-fall-2012/",
+      "units": [
+        {
+          "n": "1–2",
+          "title": "Information, entropy; source coding (Huffman, LZW)",
+          "topics": [
+            "he.engineering.communication-systems#3"
+          ],
+          "examples": [
+            "entropy of messages",
+            "Huffman code for book words"
+          ]
+        },
+        {
+          "n": "3–7",
+          "title": "Binary symmetric channels; error correction; Hamming and linear block codes; convolutional codes, Viterbi",
+          "topics": [
+            "he.engineering.communication-systems#3"
+          ],
+          "examples": [
+            "(n, k, d) code properties",
+            "block decoding error probability"
+          ]
+        },
+        {
+          "n": "8–13",
+          "title": "Noise, SNR, BER; signals on a channel; LTI channel models; ISI and eye diagrams; filters; Fourier",
+          "topics": [
+            "he.engineering.communication-systems#1",
+            "he.engineering.communication-systems#2",
+            "he.engineering.signals-systems#1"
+          ],
+          "examples": [
+            "eye diagrams",
+            "convolution through a channel"
+          ]
+        },
+        {
+          "n": "14–",
+          "title": "Modulation; MAC protocols (TDMA, Aloha); packet switching and routing; reliable transport",
+          "topics": [
+            "he.engineering.communication-systems#0",
+            "he.engineering.networks#2",
+            "he.engineering.networks#1"
+          ],
+          "examples": [
+            "TDMA throughput",
+            "slotted Aloha"
+          ]
+        }
+      ]
+    }
+  ]
+}
