@@ -159,7 +159,7 @@ function ReserveSteady({ spec, calc }: { spec: ReserveSpec; calc: Calculator }) 
                 <HaloText
                   x={X1}
                   y={AXIS + 20}
-                  text={formatNumber(round(y))}
+                  text={yearsKnown ? formatNumber(round(y)) : '?'}
                   c={c}
                   size={chart.label}
                   bold

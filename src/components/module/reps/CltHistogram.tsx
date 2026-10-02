@@ -29,8 +29,16 @@ export function CltHistogram({ spec, calc }: { spec: HistogramSpec; calc: Calcul
   const known = [clt.mean, clt.n, clt.samples].every((v) => typeof v === 'number' || rep.known(v));
   const [mu, n, m] = [get(clt.mean), Math.round(get(clt.n)), Math.round(get(clt.samples))];
   const model = useMemo(() => cltModel(mu, n, m, clt.seed), [mu, n, m, clt.seed]);
+  // Each value reads "?" while its box is "?", and nothing is worked from the example's.
+  const has = (v: number | string) => typeof v === 'number' || rep.known(v);
+  const muText = has(clt.mean) ? num(mu) : '?';
   const lines: string[] = [];
   if (model.problem) lines.push(model.problem);
+  else if (!known)
+    lines.push(
+      `Population: wait times skewed right, mean μ = ${muText}, σ = ${muText}`,
+      `${has(clt.samples) ? formatNumber(m) : '?'} samples of n = ${has(clt.n) ? n : '?'}: their means pile up around μ, spread σ/√n`,
+    );
   else
     lines.push(
       `Population: wait times skewed right, mean μ = ${num(mu)}, σ = ${num(mu)}`,
@@ -87,7 +95,7 @@ export function CltHistogram({ spec, calc }: { spec: HistogramSpec; calc: Calcul
                   strokeWidth={1}
                 />
                 <ChartText x={w - R} y={16} textAnchor="end" fontWeight="600">
-                  {`population: skewed right, μ = σ = ${num(mu)}`}
+                  {`population: skewed right, μ = σ = ${muText}`}
                 </ChartText>
                 {yTicks.map((t) => (
                   <G key={`y${t}`}>
@@ -130,7 +138,7 @@ export function CltHistogram({ spec, calc }: { spec: HistogramSpec; calc: Calcul
                   strokeDasharray={chart.dash}
                 />
                 <ChartText x={sx(mu) + 4} y={T + 2} fontWeight="700">
-                  {`μ = ${num(mu)}`}
+                  {`μ = ${muText}`}
                 </ChartText>
               </G>
               <Line

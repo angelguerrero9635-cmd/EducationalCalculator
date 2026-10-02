@@ -341,6 +341,28 @@ function Ionic({
   const formula = `${metal}${ion.metals > 1 ? ion.metals : ''}${nonmetal}${ion.nonmetals > 1 ? ion.nonmetals : ''}`;
 
   const art = (w: number, h: number): ReactNode => {
+    // A "?" charge picks no ions: the example's pair (and its charges) is not drawn behind it.
+    if (!pick.known)
+      return (
+        <Svg width={w} height={h}>
+          <ChartText x={8} y={18} fontSize={chart.label} fill={c.chartMuted}>
+            Atoms
+          </ChartText>
+          <ChartText x={8} y={138} fontSize={chart.label} fill={c.chartMuted}>
+            Ions
+          </ChartText>
+          <ChartText
+            x={w / 2}
+            y={h / 2}
+            fontSize={SYM}
+            fontWeight="700"
+            textAnchor="middle"
+            fill={c.chartMuted}
+          >
+            ?
+          </ChartText>
+        </Svg>
+      );
     const sp = (w - 40) / order.length;
     const X = (i: number) => 20 + sp * (i + 0.5);
     const y1 = 70;
@@ -503,10 +525,17 @@ function Ionic({
                   : `The charges pick the ions (1, 2, 3: ${(spec.charges.metals ?? METALS_BY_CHARGE).join(', ')} and ${(spec.charges.nonmetals ?? NONMETALS_BY_CHARGE).join(', ')}).`,
               ]
             : []),
-          `Each ${elementName(metal).toLowerCase()} atom gives ${vm} electron${vm > 1 ? 's' : ''} (lit); each ${elementName(nonmetal).toLowerCase()} atom takes ${ion.take} to fill its octet.`,
-          balanced
-            ? `${na} × ${vm} = ${nb} × ${ion.take} = ${na * vm} electrons move; the smallest whole-number ratio gives ${subscript(formula)}.`
-            : `${va} × ${vm} ≠ ${vb} × ${ion.take}: those ions' charges do not balance${va + vb > 6 ? ' (or there are more than 6)' : ''}, so the formula unit ${subscript(formula)} is drawn faded.`,
+          ...(!pick.known
+            ? []
+            : [
+                `Each ${elementName(metal).toLowerCase()} atom gives ${vm} electron${vm > 1 ? 's' : ''} (lit); each ${elementName(nonmetal).toLowerCase()} atom takes ${ion.take} to fill its octet.`,
+                // The numbers of ions wait for their boxes (a "?" count reads nothing).
+                !(ar?.known ?? true) || !(br?.known ?? true)
+                  ? `The ions balance when the electrons given equal the electrons taken: ${subscript(formula)}.`
+                  : balanced
+                    ? `${na} × ${vm} = ${nb} × ${ion.take} = ${na * vm} electrons move; the smallest whole-number ratio gives ${subscript(formula)}.`
+                    : `${va} × ${vm} ≠ ${vb} × ${ion.take}: those ions' charges do not balance${va + vb > 6 ? ' (or there are more than 6)' : ''}, so the formula unit ${subscript(formula)} is drawn faded.`,
+              ]),
           'The ions’ opposite charges hold them together: an ionic bond.',
         ].join(' · ')}
       </Caption>

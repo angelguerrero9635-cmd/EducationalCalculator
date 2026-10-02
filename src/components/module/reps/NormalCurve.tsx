@@ -37,7 +37,12 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
   const get = (v: number | string | undefined) =>
     v === undefined ? undefined : typeof v === 'number' ? v : rep.shown(v);
   const known = (v: number | string | undefined) => typeof v !== 'string' || rep.known(v);
-  const model = normalModel(spec, get);
+  // Simulated intervals wait for their level, n and count: a "?" draws none (the example's
+  // draws would read "19 of 20 … (95%)" behind a "?").
+  const intervalsKnown =
+    !spec.intervals ||
+    (known(spec.intervals.level) && known(spec.intervals.n) && known(spec.intervals.count));
+  const model = normalModel(intervalsKnown ? spec : { ...spec, intervals: undefined }, get);
   const frozen = useFrozen({ window: model.window });
   const [x0, x1] = frozen.value.window;
   const chi = model.df !== undefined;
@@ -125,10 +130,12 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
       known(spec.interval.margin)
     )
       lines.push(
-        `Interval: ${num(ce)} ± ${num(e)}, from ${num(ce - e)} to ${num(ce + e)}${model.area !== undefined && !spec.shade ? `, the middle ${prob4(model.area)} of the curve` : ''}.`,
+        `Interval: ${num(ce)} ± ${num(e)}, from ${num(ce - e)} to ${num(ce + e)}${model.area !== undefined && !spec.shade && curveKnown ? `, the middle ${prob4(model.area)} of the curve` : ''}.`,
       );
     else lines.push('Type the estimate and the margin of error to draw the interval.');
   }
+  if (spec.intervals && !intervalsKnown)
+    lines.push('Type the level, the sample size and the number of samples to draw the intervals.');
   if (spec.intervals && model.intervals) {
     const hits = model.intervals.filter((i) => i.hit).length;
     const n = model.intervals.length;
@@ -151,11 +158,14 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
     lines.push(tailWords(spec.test.tail, (id) => (rep.known(id) ? rep.shown(id) : undefined)));
   if (spec.test && !model.problem) {
     const z = get(spec.test.stat);
-    const alpha = get(spec.test.alpha);
+    // A "?" α reads as the letter, not the example's 0.05 and its critical values.
+    const alpha = known(spec.test.alpha) ? get(spec.test.alpha) : undefined;
     const zc = model.critical?.map((x) => (x - model.m) / model.s);
     if (zc)
       lines.push(
-        `Red outline: the rejection region, area α = ${num(alpha!)}, past ${Z} = ${zc.map(num).join(` and ${Z} = `)}.`,
+        alpha !== undefined
+          ? `Red outline: the rejection region, area α = ${num(alpha)}, past ${Z} = ${zc.map(num).join(` and ${Z} = `)}.`
+          : 'Red outline: the rejection region, area α.',
       );
     if (z !== undefined && model.pValue !== undefined && known(spec.test.stat))
       lines.push(
@@ -163,9 +173,9 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
       );
   }
   if (chi && !model.problem) {
-    const alpha = get(spec.chiSquare!.alpha);
-    if (model.critical)
-      lines.push(`Critical value at α = ${num(alpha!)}: χ² = ${num(model.critical[0]!)}.`);
+    const alpha = known(spec.chiSquare!.alpha) ? get(spec.chiSquare!.alpha) : undefined;
+    if (model.critical && alpha !== undefined)
+      lines.push(`Critical value at α = ${num(alpha)}: χ² = ${num(model.critical[0]!)}.`);
     if (model.stat !== undefined && model.pValue !== undefined && known(spec.chiSquare!.stat))
       lines.push(
         `${sym(spec.chiSquare!.stat, 'χ²')} = ${num(model.stat)}: p = P(χ² ≥ ${num(model.stat)}) = ${prob4(model.pValue)}${decision(model.pValue, alpha)}`,
@@ -285,8 +295,11 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
             return closed ? `${d}L${sx(hi)},${axisY}Z` : d;
           };
           const op = curveKnown ? 1 : 0.35;
-          const shadeKnown =
-            !spec.shade || (known(spec.shade.from) && known(spec.shade.to) && curveKnown);
+          // An interval's middle area waits for the interval and the curve, as a shade does.
+          const shadeKnown = spec.shade
+            ? known(spec.shade.from) && known(spec.shade.to) && curveKnown
+            : !spec.interval ||
+              (known(spec.interval.center) && known(spec.interval.margin) && curveKnown);
           const region = (s: Span, fill: string, opacity: number, key: string) => (
             <Path
               key={key}
@@ -434,9 +447,10 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
                 ) : null}
                 {model.stat !== undefined && model.stat >= x0 && model.stat <= x1
                   ? (() => {
+                      const statKnown = known(chi ? spec.chiSquare!.stat : spec.test?.stat);
                       const text = chi
-                        ? `${sym(spec.chiSquare!.stat, 'χ²')} = ${num(model.stat)}`
-                        : `${Z} = ${num((model.stat - model.m) / model.s)}`;
+                        ? `${sym(spec.chiSquare!.stat, 'χ²')} = ${statKnown ? num(model.stat) : '?'}`
+                        : `${Z} = ${statKnown ? num((model.stat - model.m) / model.s) : '?'}`;
                       const y = Math.max(T - 12, sy(model.pdf(model.stat)) - 30);
                       return (
                         <ChartText

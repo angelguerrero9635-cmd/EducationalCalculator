@@ -9,7 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, useRep } from './common';
 import { MathText } from './hsdText';
-import { entryText, multiply, opText, reduceSteps, type Matrix } from './matrices';
+import { entryText, multiply, opText, reduceSteps } from './matrices';
 import { autoRowOps } from './hs2h';
 
 export const ROW_H = 24;
@@ -142,9 +142,14 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
     const [i, j] = C
       ? [Math.min(entry[0], C.length - 1), Math.min(entry[1], C[0]!.length - 1)]
       : entry;
-    const terms = C ? A[i]!.map((x, k) => [x, B[k]![j]!] as const) : [];
-    const par = (x: number) => (x < 0 ? `(${entryText(x)})` : entryText(x));
-    const sum = `c${sub(i + 1)}${sub(j + 1)} = ${terms.map(([x, y]) => `${par(x)} × ${par(y)}`).join(' + ')} = ${C ? entryText(C[i]![j]!) : '?'}`;
+    // A "?" entry reads "?", and AB reads "?" until every entry is typed: the picture never
+    // works the example's numbers behind a "?".
+    const textOf = (v: number | string) => (isKnown(v) ? entryText(num(v)) : '?');
+    const aCells = spec.a.map((r) => r.map(textOf));
+    const bCells = spec.b.map((r) => r.map(textOf));
+    const terms = C ? aCells[i]!.map((x, k) => [x, bCells[k]![j]!] as const) : [];
+    const par = (t: string) => (t.startsWith('−') ? `(${t})` : t);
+    const sum = `c${sub(i + 1)}${sub(j + 1)} = ${terms.map(([x, y]) => `${par(x)} × ${par(y)}`).join(' + ')} = ${C && known ? entryText(C[i]![j]!) : '?'}`;
     const lines = C
       ? [
           `A is ${A.length} × ${A[0]!.length} and B is ${B.length} × ${B[0]!.length}, so AB is ${C.length} × ${C[0]!.length}.`,
@@ -152,10 +157,7 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
           'Tap an entry of AB to see its row and column.',
         ]
       : ['A’s columns must match B’s rows: these can’t be multiplied.'];
-    const cells = (m: Matrix) => m.map((r) => r.map(entryText));
-    const aCells = cells(A);
-    const bCells = cells(B);
-    const cCells = C ? cells(C) : [];
+    const cCells = C ? C.map((r) => r.map((x) => (known ? entryText(x) : '?'))) : [];
     const wA = cellWidth(aCells) * (A[0]?.length ?? 0) + 16;
     const wB = cellWidth(bCells) * (B[0]?.length ?? 0) + 16;
     const wC = C ? cellWidth(cCells) * C[0]!.length + 16 : 0;
