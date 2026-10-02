@@ -130,6 +130,57 @@ function page(m: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
   };
 }
 
+/**
+ * The x step of y = a(x − h)² + k, x ≥ h, with the inverse as a rule after the answer:
+ * "f⁻¹(x) = 1 + √((x − 3) ÷ 2)".
+ */
+const inverseNote = (r: Rule): Rule => ({
+  ...r,
+  steps: {
+    ...r.steps,
+    x: {
+      ...r.steps.x!,
+      note: (v) => {
+        const [a, h, k] = [v.a!, v.h!, v.k!];
+        const top = k === 0 ? 'x' : k > 0 ? `x − ${formatNumber(k)}` : `x + ${formatNumber(-k)}`;
+        const inside =
+          a === 1 ? top : `(${top}) ÷ ${a < 0 ? `(${formatNumber(a)})` : formatNumber(a)}`;
+        return `(in general, f⁻¹(x) = ${h === 0 ? '' : `${formatNumber(h)} + `}√(${inside}))`;
+      },
+    },
+  },
+});
+
+// ── A point on the terminal side: r, sin θ and cos θ exact (4√26, √26/26) ──
+
+const POINT_R = V('r', 'r', 'Distance from the origin', {
+  min: 0,
+  max: 30,
+  derived: true,
+  exact: true,
+});
+const POINT_SIN = V('s', 'sin θ', 'sin θ', {
+  min: -1,
+  max: 1,
+  derived: true,
+  fraction: 100,
+  exact: true,
+});
+const POINT_COS = V('c', 'cos θ', 'cos θ', {
+  min: -1,
+  max: 1,
+  derived: true,
+  fraction: 100,
+  exact: true,
+});
+/** r shown as a root (2√5, √34/2), not a plain decimal: bracket it after ÷. */
+const overRoot = (r: number) => Math.abs(r * 1000 - Math.round(r * 1000)) > 1e-6;
+/** "4 ÷ (2√5)" or "4 ÷ 5": a coordinate over r, as the step writes it. */
+const overR = (a: number, r: number) => {
+  const shown = formatNumber(r, POINT_R);
+  return `${fmt(a)} ÷ ${overRoot(r) ? `(${shown})` : shown}`;
+};
+
 // ── Statistics helpers ──
 
 /** C(n, k) for whole 0 ≤ k ≤ n, else nothing (so the solver never reads it as a flat 0). */
@@ -1142,24 +1193,41 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => (v.k! > v.n! ? undefined : atLeast(v.n!, v.p!, v.k!)),
         (v) => {
           const { js, rest } = atLeastBars(v.n!, v.k!);
-          const sum = js.map((j) => `${choose(v.n!, j)} × {p}^${j} × (1 − {p})^${v.n! - j}`);
+          const sum = js.map(
+            (j) => `${choose(v.n!, j)} × {p}${sup(j)} × (1 − {p})${sup(v.n! - j)}`,
+          );
           return rest ? `1 − (${sum.join(' + ')})` : sum.join(' + ');
         },
-        (v) =>
-          atLeastBars(v.n!, v.k!).rest
-            ? 'Fewer bars lie below k: add P(0) up to P(k − 1), the chance of fewer than k, and take it from 1.'
-            : 'Add the bars from k up to n: each is the orders of j successes, C(n, j), times the chance of one order.',
+        (v) => {
+          const { js, rest } = atLeastBars(v.n!, v.k!);
+          // The orders C(n, j) each bar uses, said before the line multiplies by them.
+          const c = (j: number) => `C(${v.n!}, ${j}) = ${fmt(choose(v.n!, j))}`;
+          const orders =
+            js.length <= 3
+              ? js.map(c).join(', ')
+              : `${c(js[0]!)}, ${c(js[1]!)}, …, ${c(js[js.length - 1]!)}`;
+          return rest
+            ? `Fewer bars lie below k: add P(0) up to P(k − 1), the chance of fewer than k, and take it from 1. Orders: ${orders}.`
+            : `Add the bars from k up to n: each is the orders of j successes, C(n, j), times the chance of one order. Orders: ${orders}.`;
+        },
         {
           check: (v) => {
             const { js, rest } = atLeastBars(v.n!, v.k!);
             const sum = js
-              .map((j) => `${choose(v.n!, j)} × ${fmt(v.p!)}^${j} × (1 − ${fmt(v.p!)})^${v.n! - j}`)
+              .map(
+                (j) =>
+                  `${choose(v.n!, j)} × ${fmt(v.p!)}${sup(j)} × (1 − ${fmt(v.p!)})${sup(v.n! - j)}`,
+              )
               .join(' + ');
             return `${fmt(v.P!)} = ${rest ? `1 − (${sum})` : sum}`;
           },
           work: (v) => {
             const { js, rest } = atLeastBars(v.n!, v.k!);
-            const bars = js.map((j) => fmt(Number(binomialPmf(v.n!, v.p!, j).toPrecision(4))));
+            // To 4 decimals, as the picture's bars and caption write them (tiny ones to 4 figures).
+            const bars = js.map((j) => {
+              const b = binomialPmf(v.n!, v.p!, j);
+              return fmt(Number(b >= 0.001 ? b.toFixed(4) : b.toPrecision(4)));
+            });
             return js.length > 1 || rest
               ? [rest ? `P = 1 − (${bars.join(' + ')})` : `P = ${bars.join(' + ')}`]
               : [];
@@ -2384,7 +2452,13 @@ export const MATH_11_MODULES: ModuleDef[] = [
       V('h', 'h', 'Shift right', { min: -10, max: 10, step: 0.5 }),
       V('p', 'p', 'x on the parent', { min: 0, max: 25, step: 0.5 }),
       V('Y', 'Y', 'y of the point, √p', { min: 0, max: 5, derived: true }),
-      V('X', 'X', 'x of the moved point', { min: -60, max: 60, derived: true }),
+      V('X', 'X', 'x of the moved point', {
+        min: -60,
+        max: 60,
+        derived: true,
+        fraction: 12,
+        improper: true,
+      }),
     ],
     rules: [
       derive(
@@ -3037,37 +3111,39 @@ export const MATH_11_MODULES: ModuleDef[] = [
         (v) => v.x! >= v.h!,
         'Only x ≥ h is kept: take an x at or right of the vertex.',
       ),
-      rule(
-        'y = a(x − h)² + k, x ≥ h',
-        '{y} = {a} × ({x} − {h})² + {k}',
-        ['y', 'a', 'x', 'h', 'k'],
-        (v) => v.y! - (v.a! * (v.x! - v.h!) ** 2 + v.k!),
-        {
-          y: [
-            (v) => exact(v.a! * (v.x! - v.h!) ** 2 + v.k!),
-            '{a} × ({x} − {h})² + {k}',
-            'Put x into f: take h away, square, multiply by a, then add k.',
-          ],
-          x: [
-            (v) => {
-              const q = (v.y! - v.k!) / v.a!;
-              return !v.a || q < 0 ? undefined : exact(v.h! + Math.sqrt(q));
-            },
-            '{h} + √(({y} − {k}) ÷ {a})',
-            'The inverse undoes f in reverse: take k away, divide by a, take the positive root (x ≥ h), then add h.',
-          ],
-          ...never('a', 'h', 'k'),
-        },
-        {
-          message: (v) =>
-            v.a !== undefined &&
-            v.y !== undefined &&
-            v.k !== undefined &&
-            v.a !== 0 &&
-            (v.y - v.k) / v.a < 0
-              ? 'f never reaches that output: (y − k) ÷ a is negative, and a square is never negative.'
-              : undefined,
-        },
+      inverseNote(
+        rule(
+          'y = a(x − h)² + k, x ≥ h',
+          '{y} = {a} × ({x} − {h})² + {k}',
+          ['y', 'a', 'x', 'h', 'k'],
+          (v) => v.y! - (v.a! * (v.x! - v.h!) ** 2 + v.k!),
+          {
+            y: [
+              (v) => exact(v.a! * (v.x! - v.h!) ** 2 + v.k!),
+              '{a} × ({x} − {h})² + {k}',
+              'Put x into f: take h away, square, multiply by a, then add k.',
+            ],
+            x: [
+              (v) => {
+                const q = (v.y! - v.k!) / v.a!;
+                return !v.a || q < 0 ? undefined : exact(v.h! + Math.sqrt(q));
+              },
+              '{h} + √(({y} − {k}) ÷ {a})',
+              'The inverse undoes f in reverse: take k away, divide by a, take the positive root (x ≥ h), then add h.',
+            ],
+            ...never('a', 'h', 'k'),
+          },
+          {
+            message: (v) =>
+              v.a !== undefined &&
+              v.y !== undefined &&
+              v.k !== undefined &&
+              v.a !== 0 &&
+              (v.y - v.k) / v.a < 0
+                ? 'f never reaches that output: (y − k) ÷ a is negative, and a square is never negative.'
+                : undefined,
+          },
+        ),
       ),
     ],
     example: { a: 2, h: 1, k: 3, x: 3, y: 11 },
@@ -3393,7 +3469,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     example: { a: 1, p: 2, q: 3, x: 8, y: 4 },
     startWith: ['x', 'a', 'p', 'q'],
-    equation: 'y = {a}·x^({p}/{q})',
+    equation: 'y = {a}·x^{{p}/{q}}',
     representation: {
       kind: 'functionGraph',
       family: 'power',
@@ -3401,7 +3477,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
       p: 'p',
       q: 'q',
       at: { x: 'x', y: 'y' },
-      marks: ['vertex', 'asymptotes', 'domain'],
+      // No key point: (0, 0) of x^(2/3) is neither a start nor a center.
+      marks: ['asymptotes', 'domain'],
     },
   }),
 
@@ -4935,9 +5012,9 @@ export const MATH_11_MODULES: ModuleDef[] = [
     variables: [
       V('x', 'x', 'x of the point', { min: -20, max: 20, step: 0.5 }),
       V('y', 'y', 'y of the point', { min: -20, max: 20, step: 0.5 }),
-      V('r', 'r', 'Distance from the origin', { min: 0, max: 30, derived: true }),
-      V('s', 'sin θ', 'sin θ', { min: -1, max: 1, derived: true, fraction: 100 }),
-      V('c', 'cos θ', 'cos θ', { min: -1, max: 1, derived: true, fraction: 100 }),
+      POINT_R,
+      POINT_SIN,
+      POINT_COS,
       V('t', 'tan θ', 'tan θ', { min: -1000, max: 1000, derived: true, fraction: 100 }),
     ],
     rules: [
@@ -4963,8 +5040,9 @@ export const MATH_11_MODULES: ModuleDef[] = [
         ['y', 'r'],
         '{s} = {y} ÷ {r}',
         (v) => (v.r ? v.y! / v.r : undefined),
-        '{y} ÷ {r}',
+        (v) => (overRoot(v.r!) ? '{y} ÷ ({r})' : '{y} ÷ {r}'),
         'The y of the unit point: the point scaled by 1/r.',
+        { check: (v) => `${formatNumber(v.s!, POINT_SIN)} = ${overR(v.y!, v.r!)}` },
       ),
       derive(
         'cos θ = x ÷ r',
@@ -4972,8 +5050,9 @@ export const MATH_11_MODULES: ModuleDef[] = [
         ['x', 'r'],
         '{c} = {x} ÷ {r}',
         (v) => (v.r ? v.x! / v.r : undefined),
-        '{x} ÷ {r}',
+        (v) => (overRoot(v.r!) ? '{x} ÷ ({r})' : '{x} ÷ {r}'),
         'The x of the unit point.',
+        { check: (v) => `${formatNumber(v.c!, POINT_COS)} = ${overR(v.x!, v.r!)}` },
       ),
       derive(
         'tan θ = y ÷ x',

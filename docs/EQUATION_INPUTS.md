@@ -156,7 +156,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.11.complex-numbers                    | `({a} + {b}i)({c} + {d}i) = {p} + {q}i`                           | today                                                    |
 | m.11.polynomial-functions               | `P({r}) = {R}` (remainder theorem)                                | today                                                    |
 | m.11.binomial-theorem                   | `({a}x + {b})^{n}`; term: `C({n}, {k})`                           | today (H82: an exponent on a bracket)                    |
-| m.11.radical-functions                  | `√({a}x + {b}) = {c}`                                             | today (H83: radical bar over a group)                    |
+| m.11.radical-functions                  | `√({a}x + {b}) = {c}`; `y = {a}·x^{{p}/{q}}`                      | today (H83: radical bar over a group)                    |
 | m.11.logarithms                         | `log_{b}({x}) = {y}` beside `{b}^{y} = {x}`                       | today (H85: subscript box)                               |
 | m.11.exp-log-equations                  | `{a} × {b}^x = {c}`; `{A} = {P}e^{{r}{t}}`                        | today (H81: letter or group exponent)                    |
 | m.11.unit-circle                        | `{d}° = {p}/{q}π`                                                 | today                                                    |

@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { sig, SubLabel, Vec } from './hskKit';
-import { axisOf, makePlot, PlotFrame } from './hsjPlot';
+import { axisOf, leftFor, makePlot, PlotFrame } from './hsjPlot';
 
 /** A signed number in brackets for substituting: (−2). */
 const par = (s: string) => (s.startsWith('−') ? `(${s})` : s);
@@ -86,7 +86,12 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
             },
           ];
           const gh = h - TOP;
-          const plot = makePlot(w, gh, win.value.t, win.value.f, { L: 52, R: 16, T: 10, B: 40 });
+          const plot = makePlot(w, gh, win.value.t, win.value.f, {
+            L: leftFor(win.value.f, 52),
+            R: 16,
+            T: 10,
+            B: 40,
+          });
           const [X0, X1] = [plot.sx(0), plot.sx(dt)];
           const [Y0, Y1] = [plot.sy(0), plot.sy(F)];
           const box = (a: number, b: number) => ({ y: Math.min(a, b), h: Math.abs(a - b) });

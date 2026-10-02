@@ -33,6 +33,15 @@ export const ticksOf = (a: Axis) =>
     Number((a.lo + i * a.step).toFixed(9)),
   );
 
+/**
+ * A left margin wide enough for the y-axis numbers ("−100,000") beside the turned axis name,
+ * and at least `least`.
+ */
+export function leftFor(y: Axis, least = 50, text: (v: number) => string = formatNumber): number {
+  const widest = Math.max(...ticksOf(y).map((v) => text(v).length));
+  return Math.max(least, Math.ceil(22 + widest * chart.label * 0.6 + 5));
+}
+
 export interface Plot {
   sx: (x: number) => number;
   sy: (y: number) => number;

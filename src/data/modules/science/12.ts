@@ -5,7 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/science12.ts`.
  */
-import { formatNumber as fmt } from '@/engine/format';
+import { formatNumber as fmt, scientific } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -367,8 +367,18 @@ const magnitude: ModuleDef = {
     mag('M1', 'M₁', 'Magnitude of the first quake'),
     mag('M2', 'M₂', 'Magnitude of the second quake'),
     V('d', 'ΔM', 'Difference in magnitude', { min: -10, max: 10, step: 0.1, derived: true }),
-    V('A', 'A', 'Amplitude ratio', { min: 1e-10, max: 1e10, step: 0.01, derived: true }),
-    V('E', 'E', 'Energy ratio', { min: 1e-15, max: 1e15, step: 0.01, derived: true }),
+    V('A', 'A', 'Shaking, second quake ÷ first', {
+      min: 1e-10,
+      max: 1e10,
+      step: 0.01,
+      derived: true,
+    }),
+    V('E', 'E', 'Energy, second quake ÷ first', {
+      min: 1e-15,
+      max: 1e15,
+      step: 0.01,
+      derived: true,
+    }),
   ],
   ...rels(
     difference('d', 'M2', 'M1', 'ΔM = M₂ − M₁', [
@@ -420,19 +430,19 @@ const spreading: ModuleDef = {
     'A kilometer per million years is a millimeter per year.',
   ],
   variables: [
-    V('x', 'x', 'Distance from the ridge', { unit: 'km', min: 1, max: 1000, step: 1 }),
-    V('t', 't', 'Age of the rock', { unit: 'million years', min: 0.1, max: 12, step: 0.01 }),
+    V('x', 'x', 'Distance from the ridge', { unit: 'km', min: 1, max: 5000, step: 1 }),
+    V('t', 't', 'Age of the rock', { unit: 'million years', min: 0.01, max: 200, step: 0.01 }),
     V('v', 'v', 'Spreading rate, one side', {
       unit: 'mm/yr',
-      min: 0.1,
-      max: 10000,
-      step: 0.1,
+      min: 0.005,
+      max: 500000,
+      step: 0.001,
       derived: true,
     }),
     V('w', 'w', 'Full spreading rate', {
       unit: 'mm/yr',
-      min: 0.2,
-      max: 20000,
+      min: 0.01,
+      max: 1000000,
       step: 0.1,
       derived: true,
     }),
@@ -622,8 +632,16 @@ const coralDays: ModuleDef = {
 // ── Weathering, erosion and deposition (the main page is an explore) ──
 
 /** A stream's size or flow, 0.01–100,000 in its unit. */
-const flow = (id: string, symbol: string, name: string, unit: string, derived = false) =>
-  V(id, symbol, name, { unit, min: 0.01, max: 100000, step: 0.01, derived });
+/** A stream measurement: from a trickle to the Amazon (about 2 × 10⁵ m³/s). */
+const flow = (
+  id: string,
+  symbol: string,
+  name: string,
+  unit: string,
+  min: number,
+  max: number,
+  derived = false,
+) => V(id, symbol, name, { unit, min, max, step: min < 0.01 ? min : 0.01, derived });
 
 const discharge: ModuleDef = {
   id: 's.12.surface-processes~discharge',
@@ -636,11 +654,11 @@ const discharge: ModuleDef = {
     'A stream carries more sediment, and erodes faster, when its discharge rises in a flood.',
   ],
   variables: [
-    flow('w', 'w', 'Width of the water', 'm'),
-    flow('d', 'd', 'Depth of the water', 'm'),
-    flow('v', 'v', 'Flow speed', 'm/s'),
-    flow('A', 'A', 'Cross-section area', 'm²', true),
-    flow('Q', 'Q', 'Discharge', 'm³/s', true),
+    flow('w', 'w', 'Width of the water', 'm', 0.1, 50000),
+    flow('d', 'd', 'Depth of the water', 'm', 0.01, 100),
+    flow('v', 'v', 'Flow speed', 'm/s', 0.01, 10),
+    flow('A', 'A', 'Cross-section area', 'm²', 0.001, 5000000, true),
+    flow('Q', 'Q', 'Discharge', 'm³/s', 0.00001, 1000000, true),
   ],
   ...rels(
     product('A', 'w', 'd', 'A = w × d', [
@@ -923,10 +941,10 @@ const potassium: ModuleDef = {
     'Potassium-40 has a half-life of 1,250 million years: 10.7% of its decays make argon-40 and 89.3% make calcium-40.',
     'Argon is a gas that escapes molten rock but is trapped once the ash cools, so the clock starts at the eruption.',
     'Only the argon is counted: rock is already full of calcium-40, so the new calcium cannot be told apart.',
-    'Nothing on Earth is older than about 4,570 million years, so R is at most about 1.25.',
+    'Nothing on Earth is older than about 4,570 million years, so R is at most about 1.24.',
   ],
   variables: [
-    V('R', 'R', 'Argon-40 atoms per potassium-40 atom', { min: 0.0001, max: 1.25, step: 0.0001 }),
+    V('R', 'R', 'Argon-40 atoms per potassium-40 atom', { min: 0.0001, max: 1.24, step: 0.0001 }),
     V('P', 'P', 'Potassium-40 left', {
       unit: '%',
       min: 7.9,
@@ -1316,18 +1334,26 @@ const energyBalance: ModuleDef = {
         'The share of the sunlight not absorbed.',
       ],
     }),
-    rule(
-      'Tₑ = ∜(F ÷ σ)',
-      '{T} = ∜({F} ÷ (5.67 × 10⁻⁸))',
-      (v) => v.T! - (Math.max(0, v.F!) / SIGMA) ** 0.25,
-      {
-        T: [
-          (v) => (v.F! >= 0 ? (v.F! / SIGMA) ** 0.25 : undefined),
-          '∜({F} ÷ (5.67 × 10⁻⁸))',
-          'The temperature whose infrared, σTₑ⁴, carries away F.',
-        ],
-        F: [(v) => SIGMA * v.T! ** 4, '5.67 × 10⁻⁸ × {T}^4', 'A surface at Tₑ sends out σTₑ⁴.'],
+    ((r: Rel): Rel => ({
+      ...r,
+      steps: {
+        ...r.steps,
+        T: { ...r.steps.T!, work: (v) => [`Tₑ = ∜(${scientific(v.F! / SIGMA, 3)})`] },
       },
+    }))(
+      rule(
+        'Tₑ = ∜(F ÷ σ)',
+        '{T} = ∜({F} ÷ (5.67 × 10⁻⁸))',
+        (v) => v.T! - (Math.max(0, v.F!) / SIGMA) ** 0.25,
+        {
+          T: [
+            (v) => (v.F! >= 0 ? (v.F! / SIGMA) ** 0.25 : undefined),
+            '∜({F} ÷ (5.67 × 10⁻⁸))',
+            'The temperature whose infrared, σTₑ⁴, carries away F.',
+          ],
+          F: [(v) => SIGMA * v.T! ** 4, '5.67 × 10⁻⁸ × {T}^4', 'A surface at Tₑ sends out σTₑ⁴.'],
+        },
+      ),
     ),
   ),
   example: {
@@ -1922,6 +1948,7 @@ const lifetime: ModuleDef = {
     'On the main sequence a star’s luminosity grows about as its mass to the power 3.5.',
     'Its life there is its fuel (its mass) over the rate it burns it (its luminosity): the Sun’s 10¹⁰ years ÷ M^2.5.',
     'Masses and luminosities are in Suns.',
+    'Stars under about 0.8 M☉ outlive the universe so far.',
   ],
   variables: [
     V('M', 'M', 'Mass', { unit: 'M☉', min: 0.08, max: 50, step: 0.01 }),

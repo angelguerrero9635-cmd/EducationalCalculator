@@ -69,8 +69,10 @@ export function HrMass({ spec, calc }: { spec: HrMassSpec; calc: Calculator }) {
     </G>
   );
   const name = spec.name ?? 'The star';
+  // The powers raised, never a caret: M^3.5 is M³ × √M and M^2.5 is M² × √M.
+  const ms = sig(m);
   const caption = on
-    ? `${name}: ${sig(m)} M☉ on the main sequence shines L = ${sig(m)}^3.5 = ${sig(l)} L☉, at about ${formatNumber(Math.round(t / 10) * 10)} K. It burns hydrogen in its core for t = 10¹⁰ ÷ ${sig(m)}^2.5 = ${years(life)} years: more mass, a much shorter life.`
+    ? `${name}: ${ms} M☉ on the main sequence shines L = ${ms}³ × √${ms} = ${sig(l)} L☉, at about ${formatNumber(Math.round(t / 10) * 10)} K. It burns hydrogen in its core for t = 10¹⁰ ÷ (${ms}² × √${ms}) = ${years(life)} years: more mass, a much shorter life.`
     : 'Type the mass to place the star on the main sequence.';
   return (
     <HrDiagram

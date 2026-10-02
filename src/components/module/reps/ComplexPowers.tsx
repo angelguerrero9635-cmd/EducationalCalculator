@@ -59,8 +59,12 @@ export function ComplexPowers({ spec, calc }: { spec: ComplexPlaneSpec; calc: Ca
     );
   } else {
     const shown = pts.slice(0, 6).map((p) => complexText(p.a, p.b));
+    // The roots' modulus as a root sign over |z| (∛8, ∜(4√2)), never a caret.
+    const rt = magnitudeText(z.a, z.b).split(' ≈')[0]!;
+    const sign = n === 2 ? '√' : n === 3 ? '∛' : n === 4 ? '∜' : `${sup(n)}√`;
+    const rootText = `${sign}${rt.includes('√') ? `(${rt})` : rt}`;
     lines.push(
-      `The ${n} roots of z = ${complexText(z.a, z.b)}: modulus ${short(r)}^(1/${n}) = ${short(rho)}, arguments (${short(t)}° + 360°k) ÷ ${n} = ${pts
+      `The ${n} roots of z = ${complexText(z.a, z.b)}: modulus ${rootText} = ${short(rho)}, arguments (${short(t)}° + 360°k) ÷ ${n} = ${pts
         .slice(0, 6)
         .map((p) => `${short(p.deg)}°`)
         .join(', ')}${n > 6 ? ', …' : ''}`,

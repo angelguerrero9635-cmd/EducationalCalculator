@@ -66,8 +66,14 @@ export const NORMAL_CHRONS: [number, number][] = [
   [11.59, 11.66],
 ];
 
-/** How far back the stripes are drawn, million years. */
-export const STRIPE_RECORD = 12;
+/** How far back the stripes are drawn, million years (the end of `NORMAL_CHRONS`). */
+export const CHRON_RECORD = 12;
+
+/**
+ * How far back the map reaches, million years: the oldest seafloor is about 180 million years
+ * old. Past `CHRON_RECORD` the seafloor is drawn hatched, its stripes not drawn.
+ */
+export const STRIPE_RECORD = 200;
 
 /** The field's polarity when rock of this age cooled at the ridge. */
 export const polarityAt = (age: number): 'normal' | 'reversed' =>
@@ -76,7 +82,7 @@ export const polarityAt = (age: number): 'normal' | 'reversed' =>
 /** The ages the stripe map spans either side of the ridge: at least 1.25 times the rock's. */
 export function stripeWindow(age: number): number {
   const want = Math.max(1, age * 1.25);
-  const nice = [1, 1.5, 2, 3, 4, 5, 6, 8, 10, STRIPE_RECORD];
+  const nice = [1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 30, 40, 50, 60, 80, 100, 150, 200];
   return nice.find((n) => n >= want) ?? STRIPE_RECORD;
 }
 

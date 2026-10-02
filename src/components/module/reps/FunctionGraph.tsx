@@ -457,8 +457,15 @@ export function FunctionGraph({
           Math.max(main.period ?? 2 * Math.PI, Math.PI),
       ]
     : [];
+  // A power with an odd root (x^(2/3)) is defined for every x: show both sides of its key
+  // point, as far left as the values of interest reach right (it was drawn from 0 only).
+  const everyX = main.family === 'power' && main.key && main.domain.some((i) => i.lo === -Infinity);
+  const mirrored = everyX
+    ? keyXs.filter((v) => Math.abs(v) < 60).map((v) => 2 * main.key!.x - v)
+    : [];
   const xs = [
     ...keyXs.filter((v) => Math.abs(v) < 60),
+    ...mirrored.filter((v) => Math.abs(v) < 60),
     ...zeros0.map((z) => z.x),
     ...ext0.map((e) => e.x),
     ...cross0.map((p) => p.x),

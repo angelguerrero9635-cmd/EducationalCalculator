@@ -10,6 +10,12 @@ import type { HistModel } from './histModel';
 
 const num = (x: number) => formatNumber(Number(x.toFixed(4)));
 
+/**
+ * Decimals for probability bars' labels, and for the caption's terms so the two read the same:
+ * 4 (as the steps write them) for up to 6 bars, then 3, then 2 when the bars crowd.
+ */
+export const probDecimals = (bars: number) => (bars <= 6 ? 4 : bars <= 8 ? 3 : 2);
+
 export interface HistRange {
   /** The bar indices lit. */
   lit: number[];
@@ -42,11 +48,12 @@ export function rangeOf(
             ? `X ≤ ${num(to)}`
             : 'any X';
     const terms = lit.map((i) => `P(${num(model.bars[i]!.lo)})`);
-    const values = lit.map((i) => model.bars[i]!.h.toFixed(4));
+    const d = probDecimals(model.bars.length);
+    const values = lit.map((i) => model.bars[i]!.h.toFixed(d));
     const caption = !lit.length
       ? `P(${event}) = 0: no bar is in the range.`
       : lit.length <= 6
-        ? `P(${event}) = ${terms.join(' + ')} = ${values.join(' + ')} = ${sum.toFixed(4)}, the lit bars.`
+        ? `P(${event}) = ${terms.join(' + ')} = ${values.join(' + ')} ${d < 4 && lit.length > 1 ? '≈' : '='} ${sum.toFixed(4)}, the lit bars.`
         : `P(${event}) = the sum of the ${lit.length} lit bars = ${sum.toFixed(4)}.`;
     return { lit, sum, caption };
   }
