@@ -202,14 +202,12 @@ const pictureTexts = () =>
     }
     return out;
   });
-/** A text's shape: its numbers as "#" ("Dollar bills ($# each): #"), and the numbers in order. */
-const shapeOf = (t) => {
-  const nums = numbersIn(t).map((n) => n.text);
-  let shape = t;
-  for (const n of nums) shape = shape.replace(n, '#');
-  shape = shape.replace(/\?/g, '#'); // a "?" is a number slot too
-  return { shape, nums };
-};
+/**
+ * A text's shape: its numbers and "?"s as "#" ("Dollar bills ($# each): #"), and those tokens in
+ * order (a "?" holds a number's slot, so "? × 1" and "2 × 1" line up).
+ */
+const TOKEN = /\?|\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/g;
+const shapeOf = (t) => ({ shape: t.replace(TOKEN, '#'), nums: t.match(TOKEN) ?? [] });
 /**
  * Whether the number `num` of text `t` is still drawn after a box was varied: the same text is
  * there, or a text of the same shape whose number in that slot is unchanged ("Dollar bills
