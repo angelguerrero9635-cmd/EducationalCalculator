@@ -1,4 +1,4 @@
-import { evaluate, expandSums } from '../evaluate';
+import { evaluate, expandSums, shownClose } from '../evaluate';
 
 it('reads floor, gcd, mod, remainders and radians', () => {
   expect(evaluate('⌊23 ÷ 4⌋')).toBe(5);
@@ -40,4 +40,18 @@ it('adds a sum with its limits term by term, so a wrong sum fails (E5)', () => {
   // Limits that are not whole numbers in order leave the sum unread.
   expect(evaluate('Σ from k = 1.5 to 8 of k')).toBeUndefined();
   expect(evaluate('Σ from k = 8 to 1 of k')).toBeUndefined();
+});
+
+it('compares tiny values relative to their size, down to 10⁻³⁵ (HE-E10)', () => {
+  expect(shownClose(1.616e-35, 1.6162e-35)).toBe(true);
+  expect(shownClose(1.6e-35, 3.2e-35)).toBe(false);
+  expect(shownClose(6.626e-34, 6.63e-34)).toBe(true);
+  expect(shownClose(1.8e-5, 1.9e-5)).toBe(false);
+  // Zero against rounding dust, and values from 10⁻⁴ up, keep the old tolerance.
+  expect(shownClose(0, 1e-17)).toBe(true);
+  expect(shownClose(0.0005, 0.0006)).toBe(true);
+  expect(shownClose(1.5e37, 1.5004e37)).toBe(true);
+  expect(shownClose(1.5e37, 1.6e37)).toBe(false);
+  expect(evaluate('6.626 × 10⁻³⁴ × 3 × 10⁸ ÷ (5 × 10⁻⁷)')).toBeCloseTo(3.9756e-19, 30);
+  expect(evaluate('1.5 × 10³⁷ ÷ 10³⁰')).toBeCloseTo(1.5e7, 0);
 });

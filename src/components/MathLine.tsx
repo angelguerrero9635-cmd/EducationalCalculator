@@ -1,6 +1,7 @@
 import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 
 import { Text } from '@/components/Text';
+import { keepNumbersWhole } from '@/engine/format';
 import {
   splitLine,
   spokenMath,
@@ -44,27 +45,55 @@ export function MathLine({
         style={style}
         {...(spoken !== `${text}${after ?? ''}` ? { accessibilityLabel: spoken } : {})}
       >
-        {after ? `${text}${after}` : text}
+        {keepNumbersWhole(after ? `${text}${after}` : text)}
       </Text>
     );
   const flat = StyleSheet.flatten(style) ?? {};
   const size = flat.fontSize ?? font.body;
+  const pieces = [...splitLine(tex), ...(after ? [{ t: 'text' as const, s: after }] : [])];
   return (
     <View style={styles.line} accessible accessibilityLabel={spoken}>
-      {[...splitLine(tex), ...(after ? [{ t: 'text' as const, s: after }] : [])].flatMap(
-        (piece, i) =>
-          piece.t === 'text'
-            ? // Word by word, so a long line wraps like text.
-              (piece.s.match(/\S+\s*|\s+/g) ?? []).map((word, k) => (
-                <Text key={`${i}-${k}`} style={style}>
-                  {word}
-                </Text>
-              ))
-            : [<MathNodes key={i} nodes={piece.nodes} style={style} size={size} />],
-      )}
+      {pieces.flatMap((piece, i) => {
+        if (piece.t === 'math') {
+          // A power of ten is drawn on the same line as its "4.7 ×" (HE-E10): never split.
+          const lead = i > 0 && tenPower(piece.nodes) ? leadOf(pieces[i - 1]!) : undefined;
+          const math = <MathNodes key={i} nodes={piece.nodes} style={style} size={size} />;
+          return lead
+            ? [
+                <View key={i} style={styles.row}>
+                  <Text style={style}>{lead}</Text>
+                  {math}
+                </View>,
+              ]
+            : [math];
+        }
+        // Word by word, so a long line wraps like text (a number and its "× 10" kept whole).
+        const next = pieces[i + 1];
+        const lead = next?.t === 'math' && tenPower(next.nodes) ? leadOf(piece) : undefined;
+        const body = lead ? piece.s.slice(0, piece.s.length - lead.length) : piece.s;
+        return (keepNumbersWhole(body).match(WORDS) ?? []).map((word, k) => (
+          <Text key={`${i}-${k}`} style={style}>
+            {word}
+          </Text>
+        ));
+      })}
     </View>
   );
 }
+
+/** Words for wrapping: a no-break space (U+00A0) stays inside its word. */
+const WORDS = /[^ \t\n]+[ \t\n]*|[ \t\n]+/g;
+
+/** Math that starts with a power of ten (10⁻⁶ drawn raised). */
+const tenPower = (nodes: MathNode[]) => {
+  const first = nodes[0];
+  return first?.t === 'sup' && first.base.length === 1 && plainText(first.base[0]!) === '10';
+};
+const plainText = (n: MathNode) => (n.t === 'text' ? n.s : '');
+
+/** The "4.7 × " at the end of a text piece, kept with the power of ten after it. */
+const leadOf = (piece: { t: string; s?: string }) =>
+  piece.t === 'text' ? /(?:^|\s)(−?\d[\d,]*(?:\.\d+)? × )$/.exec(piece.s ?? '')?.[1] : undefined;
 
 function MathNodes({
   nodes,

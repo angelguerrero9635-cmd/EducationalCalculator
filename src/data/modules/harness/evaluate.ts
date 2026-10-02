@@ -612,6 +612,10 @@ export function evaluateAll(text: string): number[] {
  * the numbers came from) widens the tolerance by its largest number.
  */
 export const shownClose = (a: number, b: number, text = '') => {
+  // Tiny values (below 10⁻⁴, shown in scientific notation down to 10⁻³⁵: HE-E10) compare relative to
+  // their size, to half a percent: an absolute floor would let any two of them pass.
+  const scale = Math.max(Math.abs(a), Math.abs(b));
+  if (a !== 0 && b !== 0 && a > 0 === b > 0 && scale < 1e-4) return Math.abs(a - b) <= 5e-3 * scale;
   const largest = Math.max(0, ...(text.match(/\d+(\.\d+)?/g) ?? []).map(Number));
   return Math.abs(a - b) <= 2e-3 * Math.max(Math.abs(a), Math.abs(b)) + 1e-3 + 1e-4 * largest;
 };

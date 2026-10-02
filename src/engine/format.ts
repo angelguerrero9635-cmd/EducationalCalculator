@@ -32,6 +32,8 @@ export function formatNumber(
     | 'sigFigs'
     | 'figures'
     | 'exact'
+    | 'decimals'
+    | 'signed'
   > & {
     /**
      * A worked-out value's significant figures on a page that sets them (Grades 9–12 science:
@@ -47,11 +49,22 @@ export function formatNumber(
     values?: Values;
   },
 ): string {
+  // A charge or signed change: +3, −1 (HE-E10).
+  if (variable?.signed && x > 0 && Number.isFinite(x)) {
+    const shown = formatNumber(x, { ...variable, signed: false });
+    return /^[0-9]/.test(shown) && shown !== '0' ? `+${shown}` : shown;
+  }
   if (variable?.exact) {
     const e = exactText(x, variable, variable.values);
     if (e) return e;
   }
   if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
+  // A fixed count of decimals (pH 2.60), between 10⁻⁴ and 10⁷ where a decimal is shown.
+  if (variable?.decimals !== undefined && Number.isFinite(x) && Math.abs(x) < 1e7) {
+    const text = (x * (1 + 1e-12)).toFixed(variable.decimals);
+    if (Number(text) !== 0 || x === 0 || Math.abs(x) >= 1e-4)
+      return minus(withSeparators(/^-0(?:\.0*)?$/.test(text) ? text.slice(1) : text));
+  }
   if (variable?.full && x !== 0 && Number.isFinite(x)) {
     const e = Math.floor(Math.log10(Math.abs(x)) + 1e-12);
     const a = Number((Math.abs(x) / 10 ** e).toPrecision(12));
@@ -235,6 +248,55 @@ export function significant(x: number, sig: number): string {
   return minus(`${x < 0 ? '-' : ''}${withSeparators(text)}`);
 }
 
+/**
+ * The significant figures of a number as written (HE-E10): "0.0250" → 3, "2.5 × 10⁻³" → 2,
+ * "1,200" → 2 (a whole number's trailing zeros only hold the place), "1200." → 4, "7" → 1.
+ * Undefined for text that is not a number.
+ */
+export function figuresIn(text: string): number | undefined {
+  const t = text.trim().replace(/^[−+-]/, '');
+  const m =
+    /^(\d[\d,]*\.?\d*|\.\d+)(?:\s*[×x*]\s*10(?:\^\(?[−-]?\d+\)?|[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)|e[-+]?\d+)?$/i.exec(
+      t,
+    );
+  if (!m) return undefined;
+  const digits = m[1]!.replace(/,/g, '');
+  const point = digits.includes('.');
+  const all = digits.replace('.', '').replace(/^0+/, '');
+  if (all === '') return 1;
+  return point ? all.length : all.replace(/0+$/, '').length || 1;
+}
+
+/**
+ * The decimals of a log (pH, pKa, log₁₀ K) from its value's significant figures: as many
+ * decimals as the concentration has figures ([H⁺] = 2.5 × 10⁻³ M, 2 figures → pH 2.60).
+ */
+export const logDecimals = (figures: number) => Math.max(0, Math.round(figures));
+
+/**
+ * x with its sign always written (HE-E10): "+3", "−1", "0", as a charge, an oxidation state or
+ * a signed span (ATP per step) is written.
+ */
+export const signedText = (x: number, variable?: Parameters<typeof formatNumber>[1]) =>
+  formatNumber(x, { ...variable, signed: true });
+
+/**
+ * x in engineering notation (HE-E10): the exponent a multiple of 3, the mantissa 1 to 999,
+ * "47 × 10³", "2.2 × 10⁻⁹"; up to `figures` significant figures (default 4).
+ */
+export function engineering(x: number, figures = 4): string {
+  if (x === 0 || !Number.isFinite(x)) return formatNumber(x);
+  let n = Math.floor(Math.log10(Math.abs(x)) + 1e-12);
+  let m = Number((x / 10 ** n).toPrecision(figures));
+  if (Math.abs(m) >= 10) {
+    m /= 10;
+    n += 1;
+  }
+  const e = Math.floor(n / 3) * 3;
+  const mantissa = Number((m * 10 ** (n - e)).toPrecision(figures));
+  return minus(e === 0 ? String(mantissa) : `${mantissa} × 10${raised(e)}`);
+}
+
 export function scientific(x: number, figures = 5, zeros = false): string {
   if (x === 0) return '0';
   let n = Math.floor(Math.log10(Math.abs(x)));
@@ -320,6 +382,14 @@ export const dollarsOf = (x: number, num: string) => {
   return `about ${dollars(withSeparators((cents / 100).toFixed(2)))}`;
 };
 
+/**
+ * Scientific notation kept on one line (HE-E10): "6.626 × 10⁻³⁴" never wraps between its
+ * mantissa and its power of ten (no-break spaces around the ×). For drawing only: step text
+ * and the harness keep plain spaces.
+ */
+export const keepNumbersWhole = (text: string) =>
+  text.replace(/(\d) × (?=10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹])/g, '$1\u00A0×\u00A0');
+
 /** Thousands separators from 1,000 ("12,500.5"), the way students read numbers in class. */
 const withSeparators = (s: string) =>
   s.replace(
@@ -368,8 +438,9 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
         : Number(
             [...sci[3]!].map((c) => (c === '⁻' ? '-' : String(SUPERSCRIPT.indexOf(c)))).join(''),
           );
-    // (a bare power of ten, "10⁶" or "10^6", is 1 × 10⁶)
-    return Number(sci[1] ?? 1) * 10 ** exp;
+    // (a bare power of ten, "10⁶" or "10^6", is 1 × 10⁶; read as "1.5e37", so the digits are
+    // exact: 1.5 × 10³⁷, never 1.4999… × 10³⁷)
+    return Number(`${sci[1] ?? 1}e${exp}`);
   }
   // A repeating decimal: "0.333…", "0.1666...", "2.0909…" (the last block written twice or more).
   const rep = /^([-+]?)(\d*)\.(\d+)(?:…|\.\.\.)$/.exec(cleaned);
@@ -465,7 +536,8 @@ export function renderTemplate(
     // An exact sum (2 − √3, but not (√6 + √2)/4, already one bracket) reads as one number
     // only in brackets: 3 × (2 − √3).
     const sum = / [+−] /.test(s) && !/^\([^()]*\)\/\d+$/.test(s);
-    return (x < 0 || s.includes(' × 10') || sum) && needs ? `(${s})` : s;
+    // (a signed value, +3, reads as one number in brackets too: 2 − (+3))
+    return (x < 0 || s.startsWith('+') || s.includes(' × 10') || sum) && needs ? `(${s})` : s;
   });
   if (!values) return filled;
   // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0; a

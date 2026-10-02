@@ -61,6 +61,13 @@ export interface VariableDef {
   /** A worked-out value under half the step reads "< 0.0001" in its box (a p-value), never 0. */
   belowStep?: boolean;
   /**
+   * Exactly this many decimals, trailing zeros kept (pH 2.60; HE-E10): a log of a measured
+   * value has as many decimals as the value has significant figures (`logDecimals`).
+   */
+  decimals?: number;
+  /** A plus sign on a positive value (+3, −1, 0): a charge, an oxidation state, a signed change. */
+  signed?: boolean;
+  /**
    * A fraction whose decimal repeats shows its repeating digits and "…" (1/3 → 0.333…,
    * 1/6 → 0.1666…) when the block is at most 6 digits; boxes take the same.
    */
