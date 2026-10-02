@@ -1,4 +1,4 @@
-# Direction plan: higher education, Chemistry (9 courses, 43 topics)
+# Direction plan: higher education, Chemistry (9 courses, 42 topics)
 
 Written from the brief (`he-plan-brief.md`), `src/data/taxonomy.ts` (`COURSES`, the `chem(…)`
 rows), `docs/MODULE_GUIDE.md` ("Standards"), `docs/LAYOUTS.md`, `docs/PICTURES.md`, the trackers
@@ -12,7 +12,7 @@ from `research/` or from any textbook.
 ## Decisions
 
 - **Ids.** A topic page is `he.chemistry.<course>#<i>` (0-based, the taxonomy's topic order); a
-  problem type `he.chemistry.<course>#<i>~<slug>`. 154 pages is too many for `college.ts`: put
+  problem type `he.chemistry.<course>#<i>~<slug>`. 153 pages is too many for `college.ts`: put
   them in `src/data/modules/college/chemistry.ts` (and `layouts/collegeChemistry.ts` for sorts
   and sequences), exported into `COLLEGE_MODULES`. The lead decides; nothing below depends on it.
 - **Prerequisite pages, never rebuilt.** Grade 10 already has the mole map, stoichiometry,
@@ -56,7 +56,7 @@ from `research/` or from any textbook.
   sequences** with text cards (formulas with subscripts, the `condensed` card where its groups
   fit), each with a calculator problem type where a quantity is honest (unsaturation, pKₐ
   equilibria, rotation, yield). No calculator invents a number to make a page.
-- **Layouts: 36 pages.** Sorts 26, sequences 10 (listed per topic). One right bin per card and
+- **Layouts: 36 pages.** Sorts 24, sequences 12 (listed per topic). One right bin per card and
   one right order per sequence was checked for every card below. Explore figures are not used
   yet; two are requested (P18 symmetry, P20 pathways) to upgrade sorts later.
 - **Data tables (engine need E3).** Many college pages pick a substance and read its constant
@@ -70,8 +70,8 @@ from `research/` or from any textbook.
   every "Tests ask" table lists the common exam and textbook question types for the topic
   (OpenStax end-of-chapter kinds, MIT OCW exam kinds, AP Chemistry free-response kinds as the
   bridge level), read for their kinds only. Marks are against those types.
-- **Page count:** 43 main + 111 problem types = **154 pages** (118 calculators, 36 layouts);
-  28 wait on an engine or picture need (⏳).
+- **Page count:** 42 main + 111 problem types = **153 pages** (117 calculators, 36 layouts);
+  24 wait on an engine or picture need (⏳).
 
 ## General Chemistry I — `he.chemistry.gen-chem-1`
 

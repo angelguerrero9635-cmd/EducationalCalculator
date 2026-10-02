@@ -1484,8 +1484,8 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 ## Part 3. Pictures for the pictures chat
 
-Ids are `HE-earth-geography-P<n>`. Options on drawn kinds come first where one fits; 15 are options
-on existing kinds, 16 are new kinds, 1 is a layout figure and 1 an explore figure. Every value a
+Ids are `HE-earth-geography-P<n>`. Options on drawn kinds come first where one fits: 16 are options
+on existing kinds (P6 also as a sequence header figure), 16 are new kinds and 1 is an explore figure. Every value a
 picture reads is a variable id or a number (`NumOrVar`), as in `typesHsl.ts`.
 
 1. **P1 `ternary` (new kind).** Pages: `he.earth-science.physical-geology#0`,
