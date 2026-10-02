@@ -1,0 +1,325 @@
+{
+  "id": "libretexts-biochemistry-free-for-all",
+  "curriculum": "Ahern, Rajagopal and Tan, Biochemistry Free For All",
+  "publisher": "Kevin Ahern, Indira Rajagopal, Taralyn Tan (Oregon State University); LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Kevin Ahern, Indira Rajagopal and Taralyn Tan, Biochemistry Free For All, LibreTexts. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. The publisher's site open.oregonstate.education answered 403 (CloudFront \"Request blocked\") at robots.txt, so it was not fetched; the LibreTexts edition of the same book (licence tag ccbyncsa on each chapter) was read for titles. Chapter titles only; the book has no end-of-chapter problems. K_m, k_cat and ΔG°′ ranges were therefore taken from the OCW problem sets (5.07SC, 7.05) instead. Licence tags seen on chapter pages: license:ccbyncsa.",
+  "books": [
+    {
+      "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)",
+      "units": [
+        {
+          "n": "1",
+          "title": "In The Beginning",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/01%3A_In_The_Beginning",
+          "topics": ["he.chemistry.gen-chem-2#2"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Introduction - Basic Biology",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/01%3A_In_The_Beginning/1.01%3A_Introduction_-_Basic_Biology"
+            },
+            {
+              "n": "1.2",
+              "title": "Introduction - Basic Chemistry",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/01%3A_In_The_Beginning/1.02%3A_Introduction_-_Basic_Chemistry"
+            },
+            {
+              "n": "1.3",
+              "title": "Introduction - Water and Buffers",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/01%3A_In_The_Beginning/1.03%3A_Introduction_-_Water_and_Buffers"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Structure and Function",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/02%3A_Structure_and_Function",
+          "topics": ["he.chemistry.biochemistry#0"],
+          "notes": "The chapter page lists only its prelude as a child page; the publisher site (open.oregonstate.education) was not reachable to compare.",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Prelude to Structure and Function",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/02%3A_Structure_and_Function/2.01%3A_Prelude_to_Structure_and_Function"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Membranes",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/03%3A_Membranes",
+          "topics": ["he.biology.cell-molecular#0"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Basic Concepts in Membranes",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/03%3A_Membranes/3.01%3A_Basic_Concepts_in_Membranes"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Catalysis",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/04%3A_Catalysis",
+          "topics": ["he.chemistry.biochemistry#1"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Basic Principles of Catalysis",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/04%3A_Catalysis/4.01%3A_Basic_Principles_of_Catalysis"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Energy",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/05%3A_Energy",
+          "topics": ["he.chemistry.biochemistry#3"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Basics of Energy",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/05%3A_Energy/5.01%3A_Basics_of_Energy"
+            },
+            {
+              "n": "5.3",
+              "title": "Energy - Photophosphorylation",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/05%3A_Energy/5.03%3A_Energy_-_Photophosphorylation"
+            },
+            {
+              "n": "5.2",
+              "title": "Electron Transport and Oxidative Phosphorylation",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/05%3A_Energy/5.2%3A_Electron_Transport_and_Oxidative_Phosphorylation"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Metabolism",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/06%3A_Metabolism",
+          "topics": ["he.chemistry.biochemistry#2"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Metabolism - Sugars",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/06%3A_Metabolism/6.01%3A_Metabolism_-_Sugars"
+            },
+            {
+              "n": "6.2",
+              "title": "Citric Acid Cycle & Related Pathways",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/06%3A_Metabolism/6.02%3A_Citric_Acid_Cycle__Related_Pathways"
+            },
+            {
+              "n": "6.3",
+              "title": "Fats and Fatty Acids",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/06%3A_Metabolism/6.03%3A_Fats_and_Fatty_Acids"
+            },
+            {
+              "n": "6.4",
+              "title": "Other Lipids",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/06%3A_Metabolism/6.04%3A_Other_Lipids"
+            },
+            {
+              "n": "6.5",
+              "title": "Amino Acids and the Urea Cycle",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/06%3A_Metabolism/6.05%3A_Amino_Acids_and_the_Urea_Cycle"
+            },
+            {
+              "n": "6.6",
+              "title": "Nucleotides",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/06%3A_Metabolism/6.06%3A_Nucleotides"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Information Processing",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing",
+          "topics": [
+            "he.biology.genetics#2",
+            "he.biology.cell-molecular#2",
+            "he.biology.cell-molecular#1"
+          ],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Prelude to Information Processing",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.01%3A_Prelude_to_Information_Processing"
+            },
+            {
+              "n": "7.2",
+              "title": "Genes and Genomes",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.02%3A_Genes_and_Genomes"
+            },
+            {
+              "n": "7.3",
+              "title": "DNA Replication",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.03%3A_DNA_Replication"
+            },
+            {
+              "n": "7.4",
+              "title": "DNA Repair",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.04%3A_DNA_Repair"
+            },
+            {
+              "n": "7.5",
+              "title": "Transcription",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.05%3A_Transcription"
+            },
+            {
+              "n": "7.6",
+              "title": "RNA Processing",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.06%3A_RNA_Processing"
+            },
+            {
+              "n": "7.7",
+              "title": "Translation",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.07%3A_Translation"
+            },
+            {
+              "n": "7.8",
+              "title": "Gene Expression",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.08%3A_Gene_Expression"
+            },
+            {
+              "n": "7.9",
+              "title": "Signaling",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/07%3A_Information_Processing/7.09%3A_Signaling"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Basic Techniques",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques",
+          "topics": [],
+          "notes": "Lab techniques (chromatography, electrophoresis, PCR, CRISPR): partly analytical#3; no topic of its own.",
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Cell Lysis",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.01%3A_Cell_Lysis"
+            },
+            {
+              "n": "8.2",
+              "title": "Fractionation and Chromatography Techniques",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.02%3A_Fractionation_and_Chromatography_Techniques"
+            },
+            {
+              "n": "8.3",
+              "title": "Electrophoresis",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.03%3A_Electrophoresis"
+            },
+            {
+              "n": "8.4",
+              "title": "Detection, identification and quantitation of specific nucleic acids and proteins",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.04%3A_Detection_identification_and_quantitation_of_specific_nucleic_acids_and_proteins"
+            },
+            {
+              "n": "8.5",
+              "title": "Transcriptomics",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.05%3A_Transcriptomics"
+            },
+            {
+              "n": "8.6",
+              "title": "Isolating Genes",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.06%3A_Isolating_Genes"
+            },
+            {
+              "n": "8.7",
+              "title": "Polymerase Chain Reaction (PCR)",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.07%3A_Polymerase_Chain_Reaction_(PCR)"
+            },
+            {
+              "n": "8.8",
+              "title": "Reverse Transcription",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.08%3A_Reverse_Transcription"
+            },
+            {
+              "n": "8.9",
+              "title": "FRET",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.09%3A_FRET"
+            },
+            {
+              "n": "8.10",
+              "title": "Genome Editing (CRISPR)",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.10%3A_Genome_Editing_(CRISPR)"
+            },
+            {
+              "n": "8.11",
+              "title": "Protein Cleavage",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.11%3A_Protein_Cleavage"
+            },
+            {
+              "n": "8.12",
+              "title": "Membrane Dynamics (FRAP)",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/08%3A_Basic_Techniques/8.12%3A_Membrane_Dynamics_(FRAP)"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "9",
+          "title": "Chapter 10",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/09%3A_Chapter_10",
+          "topics": [],
+          "notes": "Placeholder chapter on LibreTexts.",
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Section 1-",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/09%3A_Chapter_10/9.01%3A_Section_1-"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "10",
+          "title": "Chapter 11",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/10%3A_Chapter_11",
+          "topics": [],
+          "notes": "Placeholder chapter on LibreTexts.",
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Section 1-",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/10%3A_Chapter_11/10.01%3A_Section_1-"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "11",
+          "title": "Point by Point",
+          "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/11%3A_Point_by_Point",
+          "topics": [],
+          "notes": "Summary (\"Point by Point\").",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "In the Beginning",
+              "url": "https://bio.libretexts.org/Bookshelves/Biochemistry/Book%3A_Biochemistry_Free_For_All_(Ahern_Rajagopal_and_Tan)/11%3A_Point_by_Point/11.01%3A_In_the_Beginning"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Ahern, Rajagopal and Tan, Biochemistry Free For All"
+    }
+  ]
+}

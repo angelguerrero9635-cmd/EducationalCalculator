@@ -30,34 +30,20 @@
         {
           "n": "L1–L5",
           "title": "Design process; materials, loads and safety; wind and earthquake loads",
-          "topics": [
-            "he.engineering.steel-design#0"
-          ],
-          "examples": [
-            "code wind pressure profile",
-            "seismic base shear"
-          ]
+          "topics": ["he.engineering.steel-design#0"],
+          "examples": ["code wind pressure profile", "seismic base shear"]
         },
         {
           "n": "L6–L13",
           "title": "Reinforced-concrete beams for flexure and shear; bond, anchorage, serviceability",
-          "topics": [
-            "he.engineering.concrete-design#0",
-            "he.engineering.concrete-design#1"
-          ],
-          "examples": [
-            "parking-structure beam",
-            "cantilever beam flexure and stirrups"
-          ],
-          "notation": "ACI 318 of the time; f′c in psi; #3 stirrups"
+          "topics": ["he.engineering.concrete-design#0", "he.engineering.concrete-design#1"],
+          "examples": ["parking-structure beam", "cantilever beam flexure and stirrups"],
+          "notation": ["ACI 318 of the time; f′c in psi; #3 stirrups"]
         },
         {
           "n": "L14–L20",
           "title": "Reinforced-concrete columns; prestressing; slabs",
-          "topics": [
-            "he.engineering.concrete-design#2",
-            "he.engineering.concrete-design#3"
-          ]
+          "topics": ["he.engineering.concrete-design#2", "he.engineering.concrete-design#3"]
         },
         {
           "n": "L21–end",

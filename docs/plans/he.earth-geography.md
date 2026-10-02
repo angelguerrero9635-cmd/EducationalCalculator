@@ -90,6 +90,7 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 | density or specific gravity of a mineral from a sample | ~density   | Solves         |
 | igneous, sedimentary or metamorphic from a texture     | ~textures  | Solves         |
 | order of crystallization (Bowen's series)              | ~bowen     | Solves         |
+| metamorphic grade sequence (like ~bowen)               | [new-page] | No             |
 
 - **Main — BUILD `…#0` (⏳):** the IUGS QAP classification. Picture: new `ternary` (P1) with
   `fields: 'qap'`; interim `bars` (Q′, A′, P′). Values: quartz Q, alkali feldspar A, plagioclase P,
@@ -156,6 +157,7 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 | distance to a quake from the S − P lag                | ~lag       | Solves         |
 | yearly rate and 30-year chance from Gutenberg–Richter | ~frequency | Solves         |
 | volcano type from magma and shape                     | ~volcanoes | Solves         |
+| intensity scale sort                                  | [new-page] | No             |
 
 - **Main — BUILD `…#2` (⏳):** moment magnitude. Picture: new `earthLayers` mode `rupture` (P5); interim
   `earthLayers` mode `magnitude` (m1 fixed 6.0, m2 = Mw). Values: rigidity μ (GPa, 10–70; default
@@ -181,13 +183,16 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 #### #3 Surface processes
 
-| Question type                                    | Page                                       | Mark           |
-| ------------------------------------------------ | ------------------------------------------ | -------------- |
-| factor of safety of a soil slope                 | main                                       | Solves (⏳ P4) |
-| shear stress under a glacier; thickness for flow | ~glacier                                   | Solves (⏳ P4) |
-| settling speed and time of silt and clay         | ~settling                                  | Solves         |
-| landform → agent (water, ice, wind, gravity)     | ~agents                                    | Solves         |
-| stream discharge Q = Av                          | Refresh `s.12.surface-processes~discharge` | cross-listed   |
+| Question type                                               | Page                                       | Mark           |
+| ----------------------------------------------------------- | ------------------------------------------ | -------------- |
+| factor of safety of a soil slope                            | main                                       | Solves (⏳ P4) |
+| shear stress under a glacier; thickness for flow            | ~glacier                                   | Solves (⏳ P4) |
+| settling speed and time of silt and clay                    | ~settling                                  | Solves         |
+| landform → agent (water, ice, wind, gravity)                | ~agents                                    | Solves         |
+| stream discharge Q = Av                                     | Refresh `s.12.surface-processes~discharge` | cross-listed   |
+| chemical-weathering sort                                    | [new-page]                                 | No             |
+| erosion and deposition speeds by grain size (chart reading) | [new-page]                                 | No             |
+| mass-wasting type sort (slump, slide, flow, fall)           | [new-page]                                 | No             |
 
 - **Main — BUILD `…#3` (⏳):** an infinite slope. Picture: `freeBody` incline with the new `slab` option
   (P4); interim `freeBody` incline. Values: cohesion c (kPa, 0–100), unit weight γ (kN/m³, 10–25),
@@ -256,8 +261,9 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 | ------------------------------------- | ---------------- | ------ |
 | age from the daughter-to-parent ratio | main             | Solves |
 | age from an isochron's slope          | ~isochron        | Solves |
-| K–Ar age with the branching decay     | ~potassium-argon | Solves |
+| K–Ar age with the branching decay     | ~potassium-argon | Partly |
 | radiocarbon age from activity         | ~radiocarbon     | Solves |
+| magnetostratigraphy                   | [new-page]       | No     |
 
 - **Main — BUILD `…#1`:** `decayChart` (halfLife, time, start 100, left; parent "U-238", daughter
   "Pb-206"). Values: half-life t½ (Ma, 0.001–50,000), decay constant λ (per Myr), daughter-to-parent
@@ -309,6 +315,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | order the eons and eras, with their lengths    | main       | Solves |
 | which eon an event belongs to                  | ~events    | Solves |
 | the faint young Sun: how cold without more CO₂ | ~faint-sun | Solves |
+| isotope mixing                                 | [new-page] | No     |
 
 - **Main — BUILD `…#3` (sequence, spans in Myr, sum "Earth's history"):** Hadean 600; Archean
   1,500; Proterozoic 1,961; Paleozoic 287; Mesozoic 186; Cenozoic 66 (sum 4,600). Sentence: "The
@@ -340,6 +347,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | d-spacing of a cubic plane (hkl); its 2θ peak | ~cubic-d         | Solves (⏳ P8) |
 | density of a mineral from its unit cell       | ~cell-density    | Solves (⏳ P8) |
 | crystal system from axes and angles           | ~crystal-systems | Solves         |
+| plane and space groups                        | [new-page]       | No             |
 
 - **Main — BUILD `…#0` (⏳):** Bragg's law. Picture: `rayDiagram` mode `bragg` (P7); interim `table`
   (2θ = 20°, 30°, 40°, 50° → d). Values: order n (whole, 1–4), X-ray wavelength λ (Å, 0.5–3;
@@ -366,9 +374,11 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 | Question type                                        | Page             | Mark           |
 | ---------------------------------------------------- | ---------------- | -------------- |
-| formula from an oxide analysis; forsterite content   | main             | Solves         |
+| formula from an oxide analysis; forsterite content   | main             | Partly         |
 | plagioclase An content; coupled substitution balance | ~plagioclase     | Solves (⏳ P1) |
 | mineral class from a formula                         | ~mineral-classes | Solves         |
+| Mohs hardness bracket (a sort or a number line)      | [new-page]       | No             |
+| radius ratio and coordination number                 | [new-page]       | No             |
 
 - **Main — BUILD `…#1`:** `table` (oxide, wt %, moles, oxygens, cations per 4 O). Values: SiO₂,
   MgO, FeO (wt %, 0–100, sum ≤ 100), oxygen moles (derived), normalizing factor (derived), Si, Mg, Fe
@@ -396,6 +406,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | birefringence from a color and a thickness      | main       | Solves (⏳ P9) |
 | relief from refractive index                    | ~relief    | Solves         |
 | isotropic or anisotropic under crossed polars   | ~isotropic | Solves         |
+| optic sign                                      | [new-page] | No             |
 
 - **Main — BUILD `…#2` (⏳):** retardation. Picture: new `michelLevy` (P9); interim `bars` (Γ against
   the 550, 1,100, 1,650 nm order lines). Values: thickness t (μm, 1–100; a standard section is 30),
@@ -425,6 +436,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | thickness between two pressure levels           | main               | Solves (⏳ P10) |
 | pressure at an altitude; altitude of a pressure | ~pressure-altitude | Solves          |
 | layer of the atmosphere from a feature          | ~layers            | Solves          |
+| column mass m = Δp ÷ g                          | [new-page]         | No              |
 
 - **Main — BUILD `…#0` (⏳):** the hypsometric equation. Picture: `atmosphereLayers` mode `thickness`
   (P10); interim `functionGraph` exponential (p against z). Values: lower pressure p₁ (hPa, 100–
@@ -450,6 +462,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | lifting condensation level; temperature at cloud base | ~lcl       | Solves (⏳ P12) |
 | saturation vapor pressure, RH and mixing ratio        | ~humidity  | Solves (⏳ P11) |
 | stable, conditionally unstable or unstable air        | ~stability | Solves          |
+| psychrometer                                          | [new-page] | No              |
 
 - **Main — BUILD `…#1` (⏳):** potential temperature. Picture: `atmosphereLayers` mode `adiabat` (P11);
   interim `functionGraph` power (θ against p). Values: temperature T (K, 180–330), pressure p (hPa,
@@ -505,12 +518,14 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #3 Weather systems and forecasting
 
-| Question type                                          | Page           | Mark   |
-| ------------------------------------------------------ | -------------- | ------ |
-| geostrophic wind from isobar spacing                   | main           | Solves |
-| Coriolis parameter at a latitude                       | main           | Solves |
-| tornado wind from its pressure drop; is Coriolis small | ~cyclostrophic | Solves |
-| front type from the weather as it passes               | ~fronts        | Solves |
+| Question type                                                         | Page           | Mark   |
+| --------------------------------------------------------------------- | -------------- | ------ |
+| geostrophic wind from isobar spacing                                  | main           | Solves |
+| Coriolis parameter at a latitude                                      | main           | Solves |
+| tornado wind from its pressure drop; is Coriolis small                | ~cyclostrophic | Solves |
+| front type from the weather as it passes                              | ~fronts        | Solves |
+| wind components ↔ direction and speed (atan2 bearing, engine need E4) | [new-page]     | No     |
+| station model / METAR decoding (sort or explore)                      | [new-page]     | No     |
 
 - **Main — BUILD `…#3`:** `atmosphereLayers` mode `pressure` (high, low, distance, hemisphere).
   Values: high and low pressures (hPa, 870–1,085), distance between centres Δn (km, 50–5,000),
@@ -540,11 +555,12 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #0 Ocean basins
 
-| Question type                                    | Page       | Mark   |
-| ------------------------------------------------ | ---------- | ------ |
-| depth from an echo sounder's two-way time        | main       | Solves |
-| seafloor depth from crust age (ridge subsidence) | ~age-depth | Solves |
-| active or passive margin                         | ~margins   | Solves |
+| Question type                                                          | Page       | Mark   |
+| ---------------------------------------------------------------------- | ---------- | ------ |
+| depth from an echo sounder's two-way time                              | main       | Solves |
+| seafloor depth from crust age (ridge subsidence)                       | ~age-depth | Solves |
+| active or passive margin                                               | ~margins   | Solves |
+| marine sediment sort (terrigenous, clay, siliceous and carbonate ooze) | [new-page] | No     |
 
 - **Main — BUILD `…#0`:** `oceanProfile` mode `profile` (depth, over). Values: two-way time t (s,
   0–15), sound speed v (m/s, 1,450–1,550; default 1,500), depth d (m, 0–11,000), the part of the floor
@@ -593,9 +609,10 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | Question type                                  | Page       | Mark            |
 | ---------------------------------------------- | ---------- | --------------- |
 | geostrophic current from the sea-surface slope | main       | Solves (⏳ P14) |
-| Ekman transport and coastal upwelling          | ~ekman     | Solves          |
-| volume transport of a current in sverdrups     | ~transport | Solves (⏳ E1)  |
+| Ekman transport and coastal upwelling          | ~ekman     | Partly          |
+| volume transport of a current in sverdrups     | ~transport | Partly (⏳ E1)  |
 | gyres, western intensification, the conveyor   | ~gyres     | Solves          |
+| thermal wind                                   | [new-page] | No              |
 
 - **Main — BUILD `…#2` (⏳):** `oceanProfile` mode `slope` (P14); interim `vectorDiagram` (the
   pressure-gradient and Coriolis arrows, equal and opposite). Values: sea-surface rise Δη (m, 0–3),
@@ -682,12 +699,14 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #1 Surface runoff
 
-| Question type                                        | Page          | Mark            |
-| ---------------------------------------------------- | ------------- | --------------- |
-| peak discharge by the rational method                | main          | Solves (⏳ P18) |
-| storm runoff depth by the SCS curve number           | ~curve-number | Solves          |
-| channel velocity and discharge by Manning's equation | ~manning      | Solves          |
-| lag between rain peak and flow peak (hydrograph)     | ~hydrograph   | Solves          |
+| Question type                                         | Page          | Mark            |
+| ----------------------------------------------------- | ------------- | --------------- |
+| peak discharge by the rational method                 | main          | Solves (⏳ P18) |
+| storm runoff depth by the SCS curve number            | ~curve-number | Solves          |
+| channel velocity and discharge by Manning's equation  | ~manning      | Partly          |
+| lag between rain peak and flow peak (hydrograph)      | ~hydrograph   | Solves          |
+| candidate sort: Hortonian or saturation-excess runoff | [new-page]    | No              |
+| D8 flow direction on a small grid                     | [new-page]    | No              |
 
 - **Main — BUILD `…#1` (⏳):** the rational method. Picture: new `catchment` (P18); interim `percentBar`
   (C as the share that runs off). Values: runoff coefficient C (0.05–0.95), rainfall intensity i
@@ -713,13 +732,14 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #2 Groundwater flow (Darcy's law)
 
-| Question type                                       | Page       | Mark            |
-| --------------------------------------------------- | ---------- | --------------- |
-| flow through an aquifer; seepage speed; travel time | main       | Solves (⏳ P17) |
-| hydraulic conductivity from a permeameter           | main       | Solves (⏳ P17) |
-| hydraulic head from elevation and pressure          | ~head      | Solves (⏳ P17) |
-| well yield from two observation wells (Thiem)       | ~thiem     | Solves (⏳ P17) |
-| aquifer or aquitard                                 | ~materials | Solves          |
+| Question type                                                     | Page       | Mark            |
+| ----------------------------------------------------------------- | ---------- | --------------- |
+| flow through an aquifer; seepage speed; travel time               | main       | Solves (⏳ P17) |
+| hydraulic conductivity from a permeameter                         | main       | Solves (⏳ P17) |
+| hydraulic head from elevation and pressure                        | ~head      | Solves (⏳ P17) |
+| well yield from two observation wells (Thiem)                     | ~thiem     | Solves (⏳ P17) |
+| aquifer or aquitard                                               | ~materials | Solves          |
+| layered K (harmonic and weighted means) and transmissivity T = Kb | [new-page] | No              |
 
 - **Main — BUILD `…#2` (⏳):** Darcy's law. Picture: new `aquifer` mode `section` (P17); interim
   `functionGraph` linear (head against distance). Values: hydraulic conductivity K (m/day, 10⁻⁶–
@@ -772,11 +792,12 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #0 Seismology
 
-| Question type                                         | Page            | Mark            |
-| ----------------------------------------------------- | --------------- | --------------- |
-| depth to a layer from a refraction crossover distance | main            | Solves (⏳ P20) |
-| reflection time at an offset; normal moveout          | ~reflection     | Solves (⏳ P20) |
-| critical angle; refraction of a seismic ray           | ~critical-angle | Solves (⏳ P21) |
+| Question type                                                 | Page            | Mark            |
+| ------------------------------------------------------------- | --------------- | --------------- |
+| depth to a layer from a refraction crossover distance         | main            | Solves (⏳ P20) |
+| reflection time at an offset; normal moveout                  | ~reflection     | Solves (⏳ P20) |
+| critical angle; refraction of a seismic ray                   | ~critical-angle | Solves (⏳ P21) |
+| locate an epicentre by triangulation (three distance circles) | [new-page]      | No              |
 
 - **Main — BUILD `…#0` (⏳):** two-layer refraction. Picture: new `refraction` (P20); interim
   `functionGraph` two lines (direct t = x ÷ v₁, head wave t = tᵢ + x ÷ v₂). Values: upper speed v₁
@@ -799,7 +820,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 | Question type                                         | Page           | Mark            |
 | ----------------------------------------------------- | -------------- | --------------- |
-| free-air and Bouguer corrections; the Bouguer anomaly | main           | Solves          |
+| free-air and Bouguer corrections; the Bouguer anomaly | main           | Partly          |
 | anomaly over a buried sphere                          | ~sphere        | Solves (⏳ P22) |
 | depth of a mountain's root (Airy isostasy)            | ~isostasy      | Solves (⏳ P22) |
 | paleolatitude from magnetic inclination               | ~paleolatitude | Solves (⏳ P3)  |
@@ -885,7 +906,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | ------------------------------------------- | ------------ | -------------- |
 | noon sun angle at a latitude on a date      | main         | Solves (⏳ P3) |
 | day length at a latitude on a date          | main         | Solves (⏳ P3) |
-| the Sun's declination on a day of the year  | ~declination | Solves         |
+| the Sun's declination on a day of the year  | ~declination | Partly         |
 | daily sunlight at the top of the atmosphere | ~insolation  | Solves (⏳ P3) |
 
 - **Main — BUILD `…#0` (⏳):** `globe` mode `sun` (P3); interim `functionGraph` (day length against
@@ -993,7 +1014,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | Question type                                      | Page         | Mark            |
 | -------------------------------------------------- | ------------ | --------------- |
 | natural increase, net migration, population change | main (pilot) | Solves          |
-| CBR, CDR, RNI; doubling time by the rule of 70     | ~rates       | Solves          |
+| CBR, CDR, RNI; doubling time by the rule of 70     | ~rates       | Partly          |
 | population after t years; exact doubling time      | ~doubling    | Solves          |
 | which city draws more migrants (gravity model)     | ~gravity     | Solves          |
 | dependency ratio from age groups                   | ~dependency  | Solves (⏳ P29) |
@@ -1029,7 +1050,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | ---------------------------------------------- | ----------------- | ------ |
 | expected size of the nth city (rank–size rule) | main              | Solves |
 | density at a distance from the centre          | ~density-gradient | Solves |
-| a city's yearly growth rate; its doubling time | ~growth-rate      | Solves |
+| a city's yearly growth rate; its doubling time | ~growth-rate      | Partly |
 | concentric, sector or multiple-nuclei model    | ~models           | Solves |
 
 - **Main — BUILD `…#1`:** `bars` (expected and actual size, the largest city beside them). Values:
@@ -1052,12 +1073,13 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #2 Economic geography
 
-| Question type                                      | Page      | Mark   |
-| -------------------------------------------------- | --------- | ------ |
-| location quotient of an industry                   | main      | Solves |
-| land rent at a distance from market (von Thünen)   | ~bid-rent | Solves |
-| least-cost site: at the mine or the market (Weber) | ~weber    | Solves |
-| economic sector of a job                           | ~sectors  | Solves |
+| Question type                                              | Page       | Mark   |
+| ---------------------------------------------------------- | ---------- | ------ |
+| location quotient of an industry                           | main       | Solves |
+| land rent at a distance from market (von Thünen)           | ~bid-rent  | Solves |
+| least-cost site: at the mine or the market (Weber)         | ~weber     | Partly |
+| economic sector of a job                                   | ~sectors   | Solves |
+| HDI from its three indices (development is a taxonomy gap) | [new-page] | No     |
 
 - **Main — BUILD `…#2`:** `percentBar` with `second` (the local share as a band, the national share
   dashed). Values: local jobs in the industry eᵢ, all local jobs e, national jobs in it Eᵢ, all
@@ -1129,11 +1151,13 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #1 Scale and coordinate systems
 
-| Question type                                 | Page          | Mark           |
-| --------------------------------------------- | ------------- | -------------- |
-| ground distance from a map distance and scale | main          | Solves         |
-| great-circle distance between two places      | ~great-circle | Solves (⏳ P3) |
-| degrees–minutes–seconds to decimal degrees    | ~dms          | Solves         |
+| Question type                                             | Page          | Mark           |
+| --------------------------------------------------------- | ------------- | -------------- |
+| ground distance from a map distance and scale             | main          | Solves         |
+| great-circle distance between two places                  | ~great-circle | Partly (⏳ P3) |
+| degrees–minutes–seconds to decimal degrees                | ~dms          | Solves         |
+| grid and alphanumeric references, a bridge to coordinates | [new-page]    | No             |
+| time zones from longitude (15° an hour)                   | [new-page]    | No             |
 
 - **Main — BUILD `…#1`:** `doubleNumberLine` (map cm over ground m or km). Values: map distance
   (cm, 0.01–200), scale denominator (whole, 100–100,000,000), ground distance (m, unit menu km, mi).
@@ -1154,7 +1178,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 | Question type                                | Page          | Mark   |
 | -------------------------------------------- | ------------- | ------ |
-| equal-interval class breaks; a value's class | main          | Solves |
+| equal-interval class breaks; a value's class | main          | Partly |
 | rates, not counts, on a choropleth           | ~normalize    | Solves |
 | proportional-symbol radius                   | ~proportional | Solves |
 | best map type for a data set                 | ~map-types    | Solves |
@@ -1182,6 +1206,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | ------------------------------------------- | ----------------- | ------ |
 | color scheme for a data set                 | main              | Solves |
 | visual variable for nominal or ordered data | ~visual-variables | Solves |
+| generalization operators (sort)             | [new-page]        | No     |
 
 - **Main — BUILD `…#3` (sort):** bins Sequential, Diverging, Qualitative. Cards: elevation above sea
   level; percent change in population (+ and −); land-use classes; temperature anomaly from the
@@ -1205,6 +1230,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | rows, columns, cells and file size of a raster  | main        | Solves (⏳ P25) |
 | vector or raster for a data set                 | ~data-model | Solves          |
 | point, line or polygon for a feature at a scale | ~geometry   | Solves          |
+| topology tables                                 | [new-page]  | No              |
 
 - **Main — BUILD `…#0` (⏳):** raster size. Picture: new `rasterGrid` (P25); interim `rectangle` with
   `grid` at a coarse cell. Values: extent width and height (km, 0.01–20,000), cell size c (m, 0.1–
@@ -1227,7 +1253,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | ------------------------------------------- | --------- | --------------- |
 | area of a polygon from its vertices         | main      | Solves (⏳ P26) |
 | area inside a buffer round a line or point  | ~buffer   | Solves (⏳ P26) |
-| straight-line and grid (Manhattan) distance | ~distance | Solves          |
+| straight-line and grid (Manhattan) distance | ~distance | Partly          |
 
 - **Main — BUILD `…#1` (⏳):** the shoelace formula. Picture: `coordinatePlane` option `polygon` (P26);
   interim `coordinatePlane` `plot` of the four points. Values: x₁, y₁ … x₄, y₄ (m, −10⁶–10⁶), area
@@ -1245,10 +1271,14 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #2 Geoprocessing
 
-| Question type                      | Page              | Mark            |
-| ---------------------------------- | ----------------- | --------------- |
-| slope and aspect of a DEM cell     | main              | Solves (⏳ P25) |
-| weighted-overlay suitability score | ~weighted-overlay | Solves          |
+| Question type                            | Page              | Mark            |
+| ---------------------------------------- | ----------------- | --------------- |
+| slope and aspect of a DEM cell           | main              | Partly (⏳ P25) |
+| weighted-overlay suitability score       | ~weighted-overlay | Solves          |
+| select by location and attribute         | [new-page]        | No              |
+| overlay (intersect) and summarize area   | [new-page]        | No              |
+| spatial join and point-in-polygon counts | [new-page]        | No              |
+| cost distance on a small grid            | [new-page]        | No              |
 
 - **Main — BUILD `…#2` (⏳):** slope from a 3 × 3 window. Picture: `rasterGrid` mode `window` (P25);
   interim `vectorDiagram` (the gradient's east and north parts). Values: cell size c (m), elevations
@@ -1269,6 +1299,7 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | nearest-neighbor index and its z-score           | main         | Solves (⏳ P27) |
 | clustering from quadrat counts (variance ÷ mean) | ~quadrat     | Solves          |
 | mean center and standard distance                | ~mean-center | Solves (⏳ P26) |
+| Moran's I                                        | [new-page]   | No              |
 
 - **Main — BUILD `…#3` (⏳):** nearest-neighbor analysis. Picture: `sample` option `pattern` (P27); interim
   `normalCurve` (the z-score). Values: points n (whole, 2–10,000), area A (km²), observed mean
@@ -1299,6 +1330,8 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 | surface temperature with a one-layer greenhouse    | main                                          | Solves (⏳ P13) |
 | peak wavelength of the Sun's and Earth's radiation | ~wien                                         | Solves          |
 | balance temperature with no greenhouse             | Refresh `s.12.climate-systems~energy-balance` | cross-listed    |
+| urban heat island                                  | [new-page]                                    | No              |
+| global energy-budget flows                         | [new-page]                                    | No              |
 
 - **Main — BUILD `…#0` (⏳):** `atmosphereLayers` mode `balance` with the `layer` option (P13; until then
   the mode draws Tₑ only). Values: sunlight S (W/m², 0–3,000), albedo α (0–1), absorbed F (W/m²),
@@ -1314,11 +1347,12 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #1 General circulation
 
-| Question type                                         | Page      | Mark           |
-| ----------------------------------------------------- | --------- | -------------- |
-| wind of air carried poleward keeping angular momentum | main      | Solves (⏳ P3) |
-| Coriolis parameter; inertial circle radius and period | ~coriolis | Solves         |
-| which cell holds the trades, westerlies, ITCZ         | ~cells    | Solves         |
+| Question type                                                             | Page       | Mark           |
+| ------------------------------------------------------------------------- | ---------- | -------------- |
+| wind of air carried poleward keeping angular momentum                     | main       | Solves (⏳ P3) |
+| Coriolis parameter; inertial circle radius and period                     | ~coriolis  | Solves         |
+| which cell holds the trades, westerlies, ITCZ                             | ~cells     | Solves         |
+| the radiation surplus and deficit by latitude that drives the circulation | [new-page] | No             |
 
 - **Main — BUILD `…#1` (⏳):** `globe` mode `momentum` (P3); interim `table` (φ = 10, 20, 30, 40° → u).
   Values: latitude φ (°, 0–60), Earth's rim speed ΩR (464.6 m/s), eastward wind u (m/s). Relation:
@@ -1359,12 +1393,14 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #3 Climate models
 
-| Question type                                       | Page      | Mark   |
-| --------------------------------------------------- | --------- | ------ |
-| CO₂ forcing and equilibrium warming                 | main      | Solves |
-| warming after t years of a slow response            | ~response | Solves |
-| warming with feedbacks from the no-feedback warming | ~feedback | Solves |
-| cost of a finer model grid                          | ~grid     | Solves |
+| Question type                                       | Page       | Mark   |
+| --------------------------------------------------- | ---------- | ------ |
+| CO₂ forcing and equilibrium warming                 | main       | Solves |
+| warming after t years of a slow response            | ~response  | Solves |
+| warming with feedbacks from the no-feedback warming | ~feedback  | Solves |
+| cost of a finer model grid                          | ~grid      | Solves |
+| GWP                                                 | [new-page] | No     |
+| cumulative-carbon (TCRE) budget                     | [new-page] | No     |
 
 - **Main — BUILD `…#3`:** `functionGraph` log (ΔF against C). Values: starting CO₂ C₀ (ppm, 180–
   2,000; 280), CO₂ C (ppm), forcing ΔF (W/m²), sensitivity parameter λ (K per W/m², 0.3–1.5; 0.8),
@@ -1393,12 +1429,15 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 #### #0 Electromagnetic radiation and sensors
 
-| Question type                                         | Page         | Mark            |
-| ----------------------------------------------------- | ------------ | --------------- |
-| ground pixel size and swath from altitude and angles  | main         | Solves (⏳ P30) |
-| frequency and photon energy of a band                 | ~wavelength  | Solves          |
-| orbital period and orbits a day of a satellite        | ~orbit       | Solves          |
-| spatial, spectral, radiometric or temporal resolution | ~resolutions | Solves          |
+| Question type                                                | Page         | Mark            |
+| ------------------------------------------------------------ | ------------ | --------------- |
+| ground pixel size and swath from altitude and angles         | main         | Solves (⏳ P30) |
+| frequency and photon energy of a band                        | ~wavelength  | Solves          |
+| orbital period and orbits a day of a satellite               | ~orbit       | Solves          |
+| spatial, spectral, radiometric or temporal resolution        | ~resolutions | Solves          |
+| atmospheric scattering and windows (sort)                    | [new-page]   | No              |
+| spectral sampling arithmetic                                 | [new-page]   | No              |
+| Planck radiance and brightness temperature for thermal bands | [new-page]   | No              |
 
 - **Main — BUILD `…#0` (⏳):** sensor geometry. Picture: new `sensorGeometry` (P30); interim
   `triangleSolver` (half the swath over the altitude). Values: altitude H (km, 100–40,000),
@@ -1422,9 +1461,11 @@ share: 89.5 }`. Values: Ar/K ratio (0–10), age t (Ma), K-40 left (%). Relation
 
 | Question type                                      | Page         | Mark            |
 | -------------------------------------------------- | ------------ | --------------- |
-| linear contrast stretch of a pixel                 | main         | Solves          |
+| linear contrast stretch of a pixel                 | main         | Partly          |
 | radiance and top-of-atmosphere reflectance from DN | ~reflectance | Solves          |
 | NDVI of a pixel                                    | ~ndvi        | Solves (⏳ P31) |
+| colour composites (band to RGB)                    | [new-page]   | No              |
+| georeferencing and resampling                      | [new-page]   | No              |
 
 - **Main — BUILD `…#1`:** `functionGraph` linear (output against input brightness, clipped at 0 and
   255). Values: pixel value DN (0–255), image minimum and maximum (DN), stretched value. Relation:

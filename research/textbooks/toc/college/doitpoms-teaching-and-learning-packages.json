@@ -1,0 +1,225 @@
+{
+  "id": "doitpoms-teaching-and-learning-packages",
+  "curriculum": "DoITPoMS Teaching and Learning Packages (materials science)",
+  "publisher": "University of Cambridge, Department of Materials Science and Metallurgy",
+  "edition": "Website read 2026-10-02 (question pages of 27 packages)",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "DoITPoMS, University of Cambridge, https://www.doitpoms.ac.uk. CC BY-NC-SA 4.0 (site footer: 'Except where otherwise noted')."
+  },
+  "terms": {
+    "unit": "Teaching and Learning Package",
+    "lesson": "Page"
+  },
+  "sourceUrl": "https://www.doitpoms.ac.uk/tlplib/",
+  "retrieved": "2026-10-02",
+  "notes": "Licence read in the site footer: CC BY-NC-SA 4.0 (the plan said CC BY-NC-SA 2.0 UK). robots.txt disallows the tlplib intro and tag listing pages; only question pages were fetched. Units here are the packages read (a subset of ~80). Questions recorded as types (DOIT-*).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://www.doitpoms.ac.uk/tlplib/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Atomic Scale Structure of Materials",
+          "url": "https://www.doitpoms.ac.uk/tlplib/atomic-scale-structure/index.php",
+          "topics": ["he.engineering.materials-science#0", "he.engineering.materials-science#1"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Crystallography",
+          "url": "https://www.doitpoms.ac.uk/tlplib/crystallography3/index.php",
+          "topics": ["he.engineering.materials-science#0"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Miller Indices",
+          "url": "https://www.doitpoms.ac.uk/tlplib/miller_indices/index.php",
+          "topics": ["he.engineering.materials-science#0"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Diffusion",
+          "url": "https://www.doitpoms.ac.uk/tlplib/diffusion/index.php",
+          "topics": ["he.engineering.materials-science#1"],
+          "lessons": []
+        },
+        {
+          "n": "5",
+          "title": "Introduction to Dislocations",
+          "url": "https://www.doitpoms.ac.uk/tlplib/dislocations/index.php",
+          "topics": ["he.engineering.materials-science#1"],
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "Solid Solutions",
+          "url": "https://www.doitpoms.ac.uk/tlplib/solid-solutions/index.php",
+          "topics": ["he.engineering.materials-science#2"],
+          "lessons": []
+        },
+        {
+          "n": "7",
+          "title": "Phase Diagrams and Solidification",
+          "url": "https://www.doitpoms.ac.uk/tlplib/phase-diagrams/index.php",
+          "topics": ["he.engineering.materials-science#2"],
+          "lessons": []
+        },
+        {
+          "n": "8",
+          "title": "Solidification of Alloys",
+          "url": "https://www.doitpoms.ac.uk/tlplib/solidification_alloys/index.php",
+          "topics": ["he.engineering.materials-science#2"],
+          "lessons": []
+        },
+        {
+          "n": "9",
+          "title": "Steel (making and life-cycle energy)",
+          "url": "https://www.doitpoms.ac.uk/tlplib/steel/index.php",
+          "topics": ["he.engineering.materials-science#2", "he.engineering.manufacturing#0"],
+          "lessons": []
+        },
+        {
+          "n": "10",
+          "title": "The Jominy End Quench Test",
+          "url": "https://www.doitpoms.ac.uk/tlplib/jominy/index.php",
+          "topics": ["he.engineering.materials-science#2"],
+          "lessons": []
+        },
+        {
+          "n": "11",
+          "title": "Mechanical Properties",
+          "url": "https://www.doitpoms.ac.uk/tlplib/mechanical_properties/index.php",
+          "topics": ["he.engineering.materials-science#3"],
+          "lessons": []
+        },
+        {
+          "n": "12",
+          "title": "Mechanical Testing of Metals",
+          "url": "https://www.doitpoms.ac.uk/tlplib/mechanical_testing_metals/index.php",
+          "topics": ["he.engineering.materials-science#3"],
+          "lessons": []
+        },
+        {
+          "n": "13",
+          "title": "Slip in Single Crystals",
+          "url": "https://www.doitpoms.ac.uk/tlplib/slip/index.php",
+          "topics": ["he.engineering.materials-science#3"],
+          "lessons": []
+        },
+        {
+          "n": "14",
+          "title": "Work Hardening",
+          "url": "https://www.doitpoms.ac.uk/tlplib/work_harden/index.php",
+          "topics": ["he.engineering.materials-science#3"],
+          "lessons": []
+        },
+        {
+          "n": "15",
+          "title": "Brittle Fracture",
+          "url": "https://www.doitpoms.ac.uk/tlplib/brittle_fracture/index.php",
+          "topics": ["he.engineering.materials-science#3"],
+          "lessons": []
+        },
+        {
+          "n": "16",
+          "title": "Creep Deformation of Metals",
+          "url": "https://www.doitpoms.ac.uk/tlplib/creep/index.php",
+          "topics": ["he.engineering.materials-science#3"],
+          "lessons": []
+        },
+        {
+          "n": "17",
+          "title": "Thermal Expansion",
+          "url": "https://www.doitpoms.ac.uk/tlplib/thermal-expansion/index.php",
+          "topics": ["he.engineering.mechanics-of-materials#1"],
+          "lessons": []
+        },
+        {
+          "n": "18",
+          "title": "Fibre Composites",
+          "url": "https://www.doitpoms.ac.uk/tlplib/fibre_composites/index.php",
+          "topics": ["he.engineering.mechanics-of-materials#1"],
+          "lessons": []
+        },
+        {
+          "n": "19",
+          "title": "Beam Bending",
+          "url": "https://www.doitpoms.ac.uk/tlplib/beam_bending/index.php",
+          "topics": [
+            "he.engineering.mechanics-of-materials#3",
+            "he.engineering.mechanics-of-materials#2"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "20",
+          "title": "Mechanics of Cellular Materials (honeycombs)",
+          "url": "https://www.doitpoms.ac.uk/tlplib/deformation/index.php",
+          "topics": ["he.engineering.materials-science#3"],
+          "lessons": []
+        },
+        {
+          "n": "21",
+          "title": "Tensors",
+          "url": "https://www.doitpoms.ac.uk/tlplib/tensors/index.php",
+          "topics": ["he.engineering.advanced-solid-mechanics#0"],
+          "lessons": []
+        },
+        {
+          "n": "22",
+          "title": "Metal Forming I (stress, strain, yield)",
+          "url": "https://www.doitpoms.ac.uk/tlplib/metal-forming-1/index.php",
+          "topics": ["he.engineering.advanced-solid-mechanics#3"],
+          "lessons": []
+        },
+        {
+          "n": "23",
+          "title": "Metal Forming II (processes)",
+          "url": "https://www.doitpoms.ac.uk/tlplib/metal-forming-2/index.php",
+          "topics": ["he.engineering.manufacturing#0"],
+          "lessons": []
+        },
+        {
+          "n": "24",
+          "title": "Metal Forming III (work and upper-bound analysis)",
+          "url": "https://www.doitpoms.ac.uk/tlplib/metal-forming-3/index.php",
+          "topics": ["he.engineering.manufacturing#0"],
+          "lessons": []
+        },
+        {
+          "n": "25",
+          "title": "Casting",
+          "url": "https://www.doitpoms.ac.uk/tlplib/casting/index.php",
+          "topics": ["he.engineering.manufacturing#0"],
+          "lessons": []
+        },
+        {
+          "n": "26",
+          "title": "Additive Manufacturing",
+          "url": "https://www.doitpoms.ac.uk/tlplib/add_manuf/index.php",
+          "topics": ["he.engineering.manufacturing#2"],
+          "lessons": []
+        },
+        {
+          "n": "27",
+          "title": "Finite Element Method",
+          "url": "https://www.doitpoms.ac.uk/tlplib/fem/index.php",
+          "topics": [
+            "he.engineering.finite-element-analysis#1",
+            "he.engineering.finite-element-analysis#3"
+          ],
+          "lessons": []
+        }
+      ],
+      "title": "DoITPoMS Teaching and Learning Packages (materials science)"
+    }
+  ]
+}

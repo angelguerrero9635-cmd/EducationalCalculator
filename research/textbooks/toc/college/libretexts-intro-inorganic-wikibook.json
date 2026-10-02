@@ -1,0 +1,798 @@
+{
+  "id": "libretexts-intro-inorganic-wikibook",
+  "curriculum": "Introduction to Inorganic Chemistry (Wikibook)",
+  "publisher": "Wikibooks contributors; LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "Introduction to Inorganic Chemistry, Wikibooks; LibreTexts edition. License: CC BY-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter and section titles as listed on LibreTexts (fetched at its 5 s Crawl-delay); topics are our mapping; examples, ranges and notation in our words from the problem pages read for question records. No text, problem or number copied. Its source, the Wikibook, is CC BY-SA; pages carry license:ccbysa. Licence tags seen on chapter pages: license:ccbysa.",
+  "books": [
+    {
+      "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Review of Chemical Bonding",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/01%3A_Review_of_Chemical_Bonding",
+          "topics": ["he.chemistry.gen-chem-1#4"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Prelude to Chemical Bonding",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/01%3A_Review_of_Chemical_Bonding/1.01%3A_Prelude_to_Chemical_Bonding"
+            },
+            {
+              "n": "1.2",
+              "title": "Valence Bond Theory- Lewis Dot Structures, the Octet Rule, Formal Charge, Resonance, and the Isoelectronic Principle",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/01%3A_Review_of_Chemical_Bonding/1.02%3A_Valence_Bond_Theory-_Lewis_Dot_Structures_the_Octet_Rule_Formal_Charge_Resonance_and_the_Isoelectronic_Principle"
+            },
+            {
+              "n": "1.3",
+              "title": "The Shapes of Molecules (VSEPR Theory) and Orbital Hybridization",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/01%3A_Review_of_Chemical_Bonding/1.03%3A_The_Shapes_of_Molecules_(VSEPR_Theory)_and_Orbital_Hybridization"
+            },
+            {
+              "n": "1.4",
+              "title": "Bond Polarity and Bond Strength",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/01%3A_Review_of_Chemical_Bonding/1.04%3A_Bond_Polarity_and_Bond_Strength"
+            },
+            {
+              "n": "1.5",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/01%3A_Review_of_Chemical_Bonding/1.05%3A_Discussion_Questions"
+            },
+            {
+              "n": "1.6",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/01%3A_Review_of_Chemical_Bonding/1.06%3A_Problems"
+            },
+            {
+              "n": "1.7",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/01%3A_Review_of_Chemical_Bonding/1.07%3A_References"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Molecular Orbital Theory",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory",
+          "topics": ["he.chemistry.gen-chem-1#4", "he.chemistry.physical-2#3"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Prelude to Molecular Orbital Theory",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.01%3A_Prelude_to_Molecular_Orbital_Theory"
+            },
+            {
+              "n": "2.2",
+              "title": "Constructing Molecular Orbitals from Atomic Orbitals",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.02%3A_Constructing_Molecular_Orbitals_from_Atomic_Orbitals"
+            },
+            {
+              "n": "2.3",
+              "title": "Orbital Symmetry",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.03%3A_Orbital_Symmetry"
+            },
+            {
+              "n": "2.4",
+              "title": "σ, π, and δ orbitals",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.04%3A___and__orbitals"
+            },
+            {
+              "n": "2.5",
+              "title": "Diatomic Molecules",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.05%3A_Diatomic_Molecules"
+            },
+            {
+              "n": "2.6",
+              "title": "Orbital Filling",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.06%3A_Orbital_Filling"
+            },
+            {
+              "n": "2.7",
+              "title": "Periodic Trends in π Bonding",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.07%3A_Periodic_Trends_in__Bonding"
+            },
+            {
+              "n": "2.8",
+              "title": "Three-center Bonding",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.08%3A_Three-center_Bonding"
+            },
+            {
+              "n": "2.9",
+              "title": "Building up the MOs of More Complex Molecules- NH₃, P₄",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.09%3A_Building_up_the_MOs_of_More_Complex_Molecules-_NH_P"
+            },
+            {
+              "n": "2.10",
+              "title": "Homology of σ and π orbitals in MO diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.10%3A_Homology_of__and__orbitals_in_MO_diagrams"
+            },
+            {
+              "n": "2.11",
+              "title": "Chains and Rings of π-Conjugated Systems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.11%3A_Chains_and_Rings_of_-Conjugated_Systems"
+            },
+            {
+              "n": "2.12",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.12%3A_Discussion_Questions"
+            },
+            {
+              "n": "2.13",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.13%3A_Problems"
+            },
+            {
+              "n": "2.14",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/02%3A_Molecular_Orbital_Theory/2.14%3A_References"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Acid-Base Chemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry",
+          "topics": [],
+          "notes": "Acid–base (HSAB, ECW): plan gap \"hard and soft acids and bases\".",
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Prelude to Acid-Base Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry/3.01%3A_Prelude_to_Acid-Base_Chemistry"
+            },
+            {
+              "n": "3.2",
+              "title": "Brønsted and Lewis Acids and Bases",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry/3.02%3A_Brnsted_and_Lewis_Acids_and_Bases"
+            },
+            {
+              "n": "3.3",
+              "title": "Hard and Soft Acids and Bases",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry/3.03%3A_Hard_and_Soft_Acids_and_Bases"
+            },
+            {
+              "n": "3.4",
+              "title": "The Electrostatic-Covalent (ECW) Model for Acid-Base Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry/3.04%3A_The_Electrostatic-Covalent_(ECW)_Model_for_Acid-Base_Reactions"
+            },
+            {
+              "n": "3.5",
+              "title": "Frustrated Lewis Pairs",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry/3.05%3A_Frustrated_Lewis_Pairs"
+            },
+            {
+              "n": "3.6",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry/3.06%3A_Discussion_Questions"
+            },
+            {
+              "n": "3.7",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry/3.07%3A_Problems"
+            },
+            {
+              "n": "3.8",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/03%3A_Acid-Base_Chemistry/3.08%3A_References"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "4",
+          "title": "Redox Stability and Redox Reactions",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions",
+          "topics": ["he.chemistry.gen-chem-2#4"],
+          "notes": "Latimer, Frost and Pourbaix diagrams go beyond gen-chem-2#4.",
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Prelude to Redox Stability and Redox Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.01%3A_Prelude_to_Redox_Stability_and_Redox_Reactions"
+            },
+            {
+              "n": "4.2",
+              "title": "Balancing Redox Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.02%3A_Balancing_Redox_Reactions"
+            },
+            {
+              "n": "4.3",
+              "title": "Electrochemical Potentials",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.03%3A_Electrochemical_Potentials"
+            },
+            {
+              "n": "4.4",
+              "title": "Latimer and Frost Diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.04%3A_Latimer_and_Frost_Diagrams"
+            },
+            {
+              "n": "4.5",
+              "title": "Redox Reactions with Coupled Equilibria",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.05%3A_Redox_Reactions_with_Coupled_Equilibria"
+            },
+            {
+              "n": "4.6",
+              "title": "Pourbaix Diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.06%3A_Pourbaix_Diagrams"
+            },
+            {
+              "n": "4.7",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.07%3A_Discussion_Questions"
+            },
+            {
+              "n": "4.8",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.08%3A_Problems"
+            },
+            {
+              "n": "4.9",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/04%3A_Redox_Stability_and_Redox_Reactions/4.09%3A_References"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Coordination Chemistry and Crystal Field Theory",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory",
+          "topics": ["he.chemistry.inorganic#1", "he.chemistry.inorganic#2"],
+          "examples": [
+            "shape and magnetism of complexes",
+            "d-electron count and splitting diagrams",
+            "configurations from magnetic moments (spin-only)",
+            "compare CFSE of pairs",
+            "chelate effect",
+            "colour from the spectrochemical series"
+          ],
+          "notation": ["Δₒ, Δ_t; μ in BM; t₂g, e_g"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Prelude to Coordination Chemistry and Crystal Field Theory",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.01%3A_Prelude_to_Coordination_Chemistry_and_Crystal_Field_Theory"
+            },
+            {
+              "n": "5.2",
+              "title": "Counting Electrons in Transition Metal Complexes",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.02%3A_Counting_Electrons_in_Transition_Metal_Complexes"
+            },
+            {
+              "n": "5.3",
+              "title": "Crystal Field Theory",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.03%3A_Crystal_Field_Theory"
+            },
+            {
+              "n": "5.4",
+              "title": "Spectrochemical Series",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.04%3A_Spectrochemical_Series"
+            },
+            {
+              "n": "5.5",
+              "title": "π-Bonding between Metals and Ligands",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.05%3A_-Bonding_between_Metals_and_Ligands"
+            },
+            {
+              "n": "5.6",
+              "title": "Crystal Field Stabilization Energy, Pairing, and Hund's Rule",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.06%3A_Crystal_Field_Stabilization_Energy_Pairing_and_Hund's_Rule"
+            },
+            {
+              "n": "5.7",
+              "title": "Non-octahedral Complexes",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.07%3A_Non-octahedral_Complexes"
+            },
+            {
+              "n": "5.8",
+              "title": "Jahn-Teller Effect",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.08%3A_Jahn-Teller_Effect"
+            },
+            {
+              "n": "5.9",
+              "title": "Tetrahedral Complexes",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.09%3A_Tetrahedral_Complexes"
+            },
+            {
+              "n": "5.10",
+              "title": "Stability of Transition Metal Complexes",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.10%3A_Stability_of_Transition_Metal_Complexes"
+            },
+            {
+              "n": "5.11",
+              "title": "Chelate and Macrocyclic Effects",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.11%3A__Chelate_and_Macrocyclic_Effects"
+            },
+            {
+              "n": "5.12",
+              "title": "Ligand Substitution Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.12%3A_Ligand_Substitution_Reactions"
+            },
+            {
+              "n": "5.13",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.13%3A_Discussion_Questions"
+            },
+            {
+              "n": "5.14",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.14%3A_Problems"
+            },
+            {
+              "n": "5.15",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/05%3A_Coordination_Chemistry_and_Crystal_Field_Theory/5.15%3A_References"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Metals and Alloys- Structure, Bonding, Electronic and Magnetic Properties",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties",
+          "topics": ["he.chemistry.inorganic#3"],
+          "examples": ["packing fractions of sc, bcc, fcc, hcp", "Bravais lattice equivalences"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Prelude to Metals and Alloys",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.01%3A_Prelude_to_Metals_and_Alloys"
+            },
+            {
+              "n": "6.2",
+              "title": "Unit Cells and Crystal Structures",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.02%3A_Unit_Cells_and_Crystal_Structures"
+            },
+            {
+              "n": "6.3",
+              "title": "Bravais Lattices",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.03%3A_Bravais_Lattices"
+            },
+            {
+              "n": "6.4",
+              "title": "Crystal Structures of Metals",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.04%3A_Crystal_Structures_of_Metals"
+            },
+            {
+              "n": "6.5",
+              "title": "Bonding in Metals",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.05%3A_Bonding_in_Metals"
+            },
+            {
+              "n": "6.6",
+              "title": "Conduction in Metals",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.06%3A_Conduction_in_Metals"
+            },
+            {
+              "n": "6.7",
+              "title": "Atomic Orbitals and Magnetism",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.07%3A_Atomic_Orbitals_and_Magnetism"
+            },
+            {
+              "n": "6.8",
+              "title": "Ferro-, Ferri- and Antiferromagnetism",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.08%3A_Ferro-_Ferri-_and_Antiferromagnetism"
+            },
+            {
+              "n": "6.9",
+              "title": "Hard and Soft Magnets",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.09%3A_Hard_and_Soft_Magnets"
+            },
+            {
+              "n": "6.10",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.10%3A_Discussion_Questions"
+            },
+            {
+              "n": "6.11",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.11%3A_Problems"
+            },
+            {
+              "n": "6.12",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/06%3A_Metals_and_Alloys-_Structure_Bonding_Electronic_and_Magnetic_Properties/6.12%3A_References"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Metals and Alloys - Mechanical Properties",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties",
+          "topics": [],
+          "notes": "Mechanical properties of alloys: no chemistry topic (materials science).",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Defects in Metallic Crystals",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties/7.01%3A_Defects_in_Metallic_Crystals"
+            },
+            {
+              "n": "7.2",
+              "title": "Work Hardening, Alloying, and Annealing",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties/7.02%3A_Work_Hardening_Alloying_and_Annealing"
+            },
+            {
+              "n": "7.3",
+              "title": "Malleability of Metals and Alloys",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties/7.03%3A_Malleability_of_Metals_and_Alloys"
+            },
+            {
+              "n": "7.4",
+              "title": "Iron and Steel",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties/7.04%3A_Iron_and_Steel"
+            },
+            {
+              "n": "7.5",
+              "title": "Amorphous Alloys",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties/7.05%3A_Amorphous_Alloys"
+            },
+            {
+              "n": "7.6",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties/7.06%3A_Discussion_Questions"
+            },
+            {
+              "n": "7.7",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties/7.07%3A_Problems"
+            },
+            {
+              "n": "7.8",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/07%3A_Metals_and_Alloys_-_Mechanical_Properties/7.08%3A_References"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "8",
+          "title": "Ionic and Covalent Solids - Structures",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures",
+          "topics": ["he.chemistry.inorganic#3"],
+          "examples": [
+            "structure type from close-packed layer sequences",
+            "formula and coordination from unit-cell sections"
+          ],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Prelude to Ionic and Covalent Solids - Structures",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.01%3A_Prelude_to_Ionic_and_Covalent_Solids_-_Structures"
+            },
+            {
+              "n": "8.2",
+              "title": "Close-packing and Interstitial Sites",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.02%3A_Close-packing_and_Interstitial_Sites"
+            },
+            {
+              "n": "8.3",
+              "title": "Structures Related to NaCl and NiAs",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.03%3A_Structures_Related_to_NaCl_and_NiAs"
+            },
+            {
+              "n": "8.4",
+              "title": "Tetrahedral Structures",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.04%3A_Tetrahedral_Structures"
+            },
+            {
+              "n": "8.5",
+              "title": "Layered Structures and Intercalation Reactions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.05%3A_Layered_Structures_and_Intercalation_Reactions"
+            },
+            {
+              "n": "8.6",
+              "title": "Bonding in TiS₂, MoS₂, and Pyrite Structures",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.06%3A_Bonding_in_TiS_MoS_and_Pyrite_Structures"
+            },
+            {
+              "n": "8.7",
+              "title": "Spinel, Perovskite, and Rutile Structures",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.07%3A_Spinel_Perovskite_and_Rutile_Structures"
+            },
+            {
+              "n": "8.8",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.08%3A_Discussion_Questions"
+            },
+            {
+              "n": "8.9",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.09%3A_Problems"
+            },
+            {
+              "n": "8.10",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/08%3A_Ionic_and_Covalent_Solids_-_Structures/8.10%3A_References"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Ionic and Covalent Solids - Energetics",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics",
+          "topics": ["he.chemistry.inorganic#3"],
+          "examples": [
+            "Born–Haber cycles with the Kapustinskii equation",
+            "stability of hypothetical salts from lattice energies"
+          ],
+          "ranges": ["lattice constants 3–5 Å", "ΔH steps −350 to +1450 kJ/mol"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Ionic Radii and Radius Ratios",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.01%3A_Ionic_Radii_and_Radius_Ratios"
+            },
+            {
+              "n": "9.2",
+              "title": "Structure Maps",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.02%3A_Structure_Maps"
+            },
+            {
+              "n": "9.3",
+              "title": "Energetics of Crystalline Solids- The Ionic Model",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.03%3A_Energetics_of_Crystalline_Solids-_The_Ionic_Model"
+            },
+            {
+              "n": "9.4",
+              "title": "Born-Haber Cycles for NaCl and Silver Halides",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.04%3A_Born-Haber_Cycles_for_NaCl_and_Silver_Halides"
+            },
+            {
+              "n": "9.5",
+              "title": "Kapustinskii Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.05%3A_Kapustinskii_Equation"
+            },
+            {
+              "n": "9.6",
+              "title": "Discovery of Noble Gas Compounds",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.06%3A_Discovery_of_Noble_Gas_Compounds"
+            },
+            {
+              "n": "9.7",
+              "title": "Stabilization of High and Low Oxidation States",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.07%3A_Stabilization_of_High_and_Low_Oxidation_States"
+            },
+            {
+              "n": "9.8",
+              "title": "Alkalides and Electrides",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.08%3A_Alkalides_and_Electrides"
+            },
+            {
+              "n": "9.9",
+              "title": "Resonance Energy of Metals",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.09%3A_Resonance_Energy_of_Metals"
+            },
+            {
+              "n": "9.10",
+              "title": "Prelude to Ionic and Covalent Solids - Energetics",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.10%3A_Prelude_to_Ionic_and_Covalent_Solids_-_Energetics"
+            },
+            {
+              "n": "9.11",
+              "title": "The Strange Case of the Alkali Oxides",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.11%3A_The_Strange_Case_of_the_Alkali_Oxides"
+            },
+            {
+              "n": "9.12",
+              "title": "Lattice Energies and Solubility",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.12%3A_Lattice_Energies_and_Solubility"
+            },
+            {
+              "n": "9.13",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.13%3A_Discussion_Questions"
+            },
+            {
+              "n": "9.14",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.14%3A_Problems"
+            },
+            {
+              "n": "9.15",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/09%3A_Ionic_and_Covalent_Solids_-_Energetics/9.15%3A_References"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Electronic Properties of Materials - Superconductors and Semiconductors",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors",
+          "topics": ["he.chemistry.inorganic#3"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Prelude to Electronic Properties of Materials - Superconductors and Semiconductors",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.01%3A_Prelude_to_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors"
+            },
+            {
+              "n": "10.2",
+              "title": "Metal-Insulator Transitions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.02%3A_Metal-Insulator_Transitions"
+            },
+            {
+              "n": "10.3",
+              "title": "Superconductors",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.03%3A_Superconductors"
+            },
+            {
+              "n": "10.4",
+              "title": "Periodic Trends- Metals, Semiconductors, and Insulators",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.04%3A_Periodic_Trends-_Metals_Semiconductors_and_Insulators"
+            },
+            {
+              "n": "10.5",
+              "title": "Semiconductors- Band Gaps, Colors, Conductivity and Doping",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.05%3A_Semiconductors-_Band_Gaps_Colors_Conductivity_and_Doping"
+            },
+            {
+              "n": "10.6",
+              "title": "Semiconductor p-n Junctions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.06%3A_Semiconductor_p-n_Junctions"
+            },
+            {
+              "n": "10.7",
+              "title": "Diodes, LEDs and Solar Cells",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.07%3A_Diodes_LEDs_and_Solar_Cells"
+            },
+            {
+              "n": "10.8",
+              "title": "Amorphous Semiconductors",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.08%3A_Amorphous_Semiconductors"
+            },
+            {
+              "n": "10.9",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.09%3A_Discussion_Questions"
+            },
+            {
+              "n": "10.10",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.10%3A_Problems"
+            },
+            {
+              "n": "10.11",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/10%3A_Electronic_Properties_of_Materials_-_Superconductors_and_Semiconductors/10.11%3A_References"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Basic Science of Nanomaterials",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials",
+          "topics": [],
+          "notes": "Nanomaterials: no topic.",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Prelude to Basic Science of Nanomaterials",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.01%3A_Prelude_to_Basic_Science_of_Nanomaterials"
+            },
+            {
+              "n": "11.2",
+              "title": "Physics and Length Scales- Cavity Laser, Coulomb Blockade, Nanoscale Magnets",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.02%3A_Physics_and_Length_Scales-_Cavity_Laser_Coulomb_Blockade_Nanoscale_Magnets"
+            },
+            {
+              "n": "11.3",
+              "title": "Semiconductor Quantum Dots",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.03%3A_Semiconductor_Quantum_Dots"
+            },
+            {
+              "n": "11.4",
+              "title": "Synthesis of Semiconductor Nanocrystals",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.04%3A__Synthesis_of_Semiconductor_Nanocrystals"
+            },
+            {
+              "n": "11.5",
+              "title": "Surface Energy",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.05%3A_Surface_Energy"
+            },
+            {
+              "n": "11.6",
+              "title": "Nanoscale Metal Particles",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.06%3A_Nanoscale_Metal_Particles"
+            },
+            {
+              "n": "11.7",
+              "title": "Applications of Nanomaterials",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.07%3A_Applications_of_Nanomaterials"
+            },
+            {
+              "n": "11.8",
+              "title": "Discussion Questions",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.08%3A_Discussion_Questions"
+            },
+            {
+              "n": "11.9",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.09%3A_Problems"
+            },
+            {
+              "n": "11.10",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/11%3A_Basic_Science_of_Nanomaterials/11.10%3A_References"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "12",
+          "title": "Resources for Students and Teachers",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/12%3A_Resources_for_Students_and_Teachers",
+          "topics": [],
+          "notes": "Resources and appendices.",
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "VIPEr- Virtual Inorganic Pedagogical Electronic Resource- A Community for Teachers and Students of Inorganic Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/12%3A_Resources_for_Students_and_Teachers/12.01%3A_VIPEr-_Virtual_Inorganic_Pedagogical_Electronic_Resource-_A_Community_for_Teachers_and_Students_of_Inorganic_Chemistry"
+            },
+            {
+              "n": "12.2",
+              "title": "Beloit College/University of Wisconsin Video Lab Manual",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/12%3A_Resources_for_Students_and_Teachers/12.02%3A_Beloit_College_University_of_Wisconsin_Video_Lab_Manual"
+            },
+            {
+              "n": "12.3",
+              "title": "Atomic and Molecular Orbitals (University of Liverpool)",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/12%3A_Resources_for_Students_and_Teachers/12.03%3A_Atomic_and_Molecular_Orbitals_(University_of_Liverpool)"
+            },
+            {
+              "n": "12.4",
+              "title": "Interactive 3D Crystal Structures (University of Liverpool)",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/12%3A_Resources_for_Students_and_Teachers/12.04%3A_Interactive_3D_Crystal_Structures_(University_of_Liverpool)"
+            },
+            {
+              "n": "12.5",
+              "title": "Appendix 1- Periodic Tables",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/12%3A_Resources_for_Students_and_Teachers/12.05%3A_Appendix_1-_Periodic_Tables"
+            },
+            {
+              "n": "12.6",
+              "title": "Appendix 2- Selected Thermodynamic Values",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/12%3A_Resources_for_Students_and_Teachers/12.06%3A_Appendix_2-_Selected_Thermodynamic_Values"
+            },
+            {
+              "n": "12.7",
+              "title": "Appendix 3- Bond Enthalpies",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/12%3A_Resources_for_Students_and_Teachers/12.07%3A_Appendix_3-_Bond_Enthalpies"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "13",
+          "title": "Metals and Alloys - Mechanical Properties",
+          "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/13%3A_Metals_and_Alloys_-_Mechanical_Properties",
+          "topics": [],
+          "notes": "No taxonomy topic.",
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Prelude to Metals and Alloys - Mechanical Properties",
+              "url": "https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Introduction_to_Inorganic_Chemistry_(Wikibook)/13%3A_Metals_and_Alloys_-_Mechanical_Properties/13.01%3A_Prelude_to_Metals_and_Alloys_-_Mechanical_Properties"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Introduction to Inorganic Chemistry (Wikibook)"
+    }
+  ]
+}

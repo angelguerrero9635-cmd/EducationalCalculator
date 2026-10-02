@@ -1,0 +1,704 @@
+{
+  "id": "moore-mechanics-map",
+  "curriculum": "Mechanics Map",
+  "publisher": "Penn State (LibreTexts Engineering edition)",
+  "edition": "LibreTexts edition (mechanicsmap.psu.edu reset the connection; read on LibreTexts)",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "Mechanics Map by Jacob Moore and contributors, Engineering LibreTexts. CC BY-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY-SA 4.0, per page licence line): chapters and sections; chapter homework problems recorded with text in classical.jsonl (MM-*). A 2nd-edition LibreTexts copy also exists (Mechanics_Map_(Moore_2nd_Edition)); not read.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Basics of Newtonian Mechanics",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics",
+          "topics": ["he.engineering.statics#0"],
+          "lessons": [
+            {
+              "n": "1.00",
+              "title": "Video Introduction to Chapter 1",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.00%3A_Video_Introduction_to_Chapter_1"
+            },
+            {
+              "n": "1.01",
+              "title": "Bodies",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.01%3A_Bodies"
+            },
+            {
+              "n": "1.02",
+              "title": "Forces",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.02%3A_Forces"
+            },
+            {
+              "n": "1.03",
+              "title": "Moments",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.03%3A_Moments"
+            },
+            {
+              "n": "1.04",
+              "title": "Free Body Diagrams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.04%3A_Free_Body_Diagrams"
+            },
+            {
+              "n": "1.05",
+              "title": "Newton's First Law",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.05%3A_Newton's_First_Law"
+            },
+            {
+              "n": "1.06",
+              "title": "Newton's Second Law",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.06%3A_Newton's_Second_Law"
+            },
+            {
+              "n": "1.07",
+              "title": "Newton's Third Law",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.07%3A_Newton's_Third_Law"
+            },
+            {
+              "n": "1.08",
+              "title": "Chapter 1 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/01%3A_Basics_of_Newtonian_Mechanics/1.08%3A_Chapter_1_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Static Equilibrium in Concurrent Force Systems",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/02%3A_Static_Equilibrium_in_Concurrent_Force_Systems",
+          "topics": ["he.engineering.statics#0"],
+          "examples": [
+            "normal forces on a barrel in a handcart",
+            "two-cable and three-cable systems"
+          ],
+          "lessons": [
+            {
+              "n": "2.00",
+              "title": "Chapter 2 Video Introduction",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/02%3A_Static_Equilibrium_in_Concurrent_Force_Systems/2.00%3A_Chapter_2_Video_Introduction"
+            },
+            {
+              "n": "2.01",
+              "title": "Static Equilibrium",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/02%3A_Static_Equilibrium_in_Concurrent_Force_Systems/2.01%3A_Static_Equilibrium"
+            },
+            {
+              "n": "2.02",
+              "title": "Point Forces as Vectors",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/02%3A_Static_Equilibrium_in_Concurrent_Force_Systems/2.02%3A_Point_Forces_as_Vectors"
+            },
+            {
+              "n": "2.03",
+              "title": "Principle of Transmissibility",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/02%3A_Static_Equilibrium_in_Concurrent_Force_Systems/2.03%3A_Principle_of_Transmissibility"
+            },
+            {
+              "n": "2.04",
+              "title": "Concurrent Forces",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/02%3A_Static_Equilibrium_in_Concurrent_Force_Systems/2.04%3A_Concurrent_Forces"
+            },
+            {
+              "n": "2.05",
+              "title": "Equilibrium Analysis for Concurrent Force Systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/02%3A_Static_Equilibrium_in_Concurrent_Force_Systems/2.05%3A_Equilibrium_Analysis_for_Concurrent_Force_Systems"
+            },
+            {
+              "n": "2.06",
+              "title": "Chapter 2 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/02%3A_Static_Equilibrium_in_Concurrent_Force_Systems/2.06%3A_Chapter_2_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Static Equilibrium in Rigid Body Systems",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems",
+          "topics": ["he.engineering.statics#0"],
+          "examples": [
+            "moment by scalar, Varignon and vector methods",
+            "moment about an axis",
+            "2-D and 3-D rigid-body reactions"
+          ],
+          "lessons": [
+            {
+              "n": "3.00",
+              "title": "Video Introduction to Chapter 3",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems/3.00%3A_Video_Introduction_to_Chapter_3"
+            },
+            {
+              "n": "3.01",
+              "title": "Moment of a Force about a Point (Scalar Calculation)",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems/3.01%3A_Moment_of_a_Force_about_a_Point_(Scalar_Calculation)"
+            },
+            {
+              "n": "3.02",
+              "title": "Varignon's Theorem",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems/3.02%3A_Varignon's_Theorem"
+            },
+            {
+              "n": "3.03",
+              "title": "Couples",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems/3.03%3A_Couples"
+            },
+            {
+              "n": "3.04",
+              "title": "Moment about a Point (Vector)",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems/3.04%3A_Moment_about_a_Point_(Vector)"
+            },
+            {
+              "n": "3.05",
+              "title": "Moment of a Force About an Axis",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems/3.05%3A_Moment_of_a_Force_About_an_Axis"
+            },
+            {
+              "n": "3.06",
+              "title": "Equilibrium Analysis for a Rigid Body",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems/3.06%3A_Equilibrium_Analysis_for_a_Rigid_Body"
+            },
+            {
+              "n": "3.07",
+              "title": "Chapter 3 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/03%3A_Static_Equilibrium_in_Rigid_Body_Systems/3.07%3A_Chapter_3_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Statically Equivalent Systems",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/04%3A_Statically_Equivalent_Systems",
+          "topics": ["he.engineering.statics#0", "he.engineering.statics#2"],
+          "examples": [
+            "equivalent force–couple systems",
+            "equivalent point load of a distributed force"
+          ],
+          "lessons": [
+            {
+              "n": "4.00",
+              "title": "Video Introduction to Chapter 4",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/04%3A_Statically_Equivalent_Systems/4.00%3A_Video_Introduction_to_Chapter_4"
+            },
+            {
+              "n": "4.01",
+              "title": "Statically Equivalent Systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/04%3A_Statically_Equivalent_Systems/4.01%3A_Statically_Equivalent_Systems"
+            },
+            {
+              "n": "4.02",
+              "title": "Resolution of a Force into a Force and a Couple",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/04%3A_Statically_Equivalent_Systems/4.02%3A_Resolution_of_a_Force_into_a_Force_and_a_Couple"
+            },
+            {
+              "n": "4.03",
+              "title": "Equivalent Force Couple System",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/04%3A_Statically_Equivalent_Systems/4.03%3A_Equivalent_Force_Couple_System"
+            },
+            {
+              "n": "4.04",
+              "title": "Distributed Forces",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/04%3A_Statically_Equivalent_Systems/4.04%3A_Distributed_Forces"
+            },
+            {
+              "n": "4.05",
+              "title": "Equivalent Point Load",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/04%3A_Statically_Equivalent_Systems/4.05%3A_Equivalent_Point_Load"
+            },
+            {
+              "n": "4.06",
+              "title": "Chapter 4 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/04%3A_Statically_Equivalent_Systems/4.06%3A_Chapter_4_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Engineering Structures",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures",
+          "topics": ["he.engineering.statics#1"],
+          "examples": [
+            "method of joints and sections",
+            "frames and machines (shelf, can crusher, suspension)"
+          ],
+          "lessons": [
+            {
+              "n": "5.00",
+              "title": "Video Introduction to Chapter 5",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.00%3A_Video_Introduction_to_Chapter_5"
+            },
+            {
+              "n": "5.01",
+              "title": "Structures",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.01%3A_Structures"
+            },
+            {
+              "n": "5.02",
+              "title": "Two-Force Members",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.02%3A_Two-Force_Members"
+            },
+            {
+              "n": "5.03",
+              "title": "Trusses",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.03%3A_Trusses"
+            },
+            {
+              "n": "5.04",
+              "title": "Method of Joints",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.04%3A_Method_of_Joints"
+            },
+            {
+              "n": "5.05",
+              "title": "Method of Sections",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.05%3A_Method_of_Sections"
+            },
+            {
+              "n": "5.06",
+              "title": "Frames and Machines",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.06%3A_Frames_and_Machines"
+            },
+            {
+              "n": "5.07",
+              "title": "Analysis of Frames and Machines",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.07%3A_Analysis_of_Frames_and_Machines"
+            },
+            {
+              "n": "5.08",
+              "title": "Chapter 5 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/05%3A_Engineering_Structures/5.08%3A_Chapter_5_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Friction and Friction Applications",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications",
+          "topics": ["he.engineering.statics#4"],
+          "examples": ["slip or tip", "wedges, power screws, bearings, discs and belts"],
+          "lessons": [
+            {
+              "n": "6.00",
+              "title": "Video Introduction to Chapter 6",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.00%3A_Video_Introduction_to_Chapter_6"
+            },
+            {
+              "n": "6.01",
+              "title": "Dry Friction",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.01%3A_Dry_Friction"
+            },
+            {
+              "n": "6.02",
+              "title": "Slipping vs Tipping",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.02%3A_Slipping_vs_Tipping"
+            },
+            {
+              "n": "6.03",
+              "title": "Wedges",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.03%3A_Wedges"
+            },
+            {
+              "n": "6.04",
+              "title": "Power Screws",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.04%3A_Power_Screws"
+            },
+            {
+              "n": "6.05",
+              "title": "Bearing Friction",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.05%3A_Bearing_Friction"
+            },
+            {
+              "n": "6.06",
+              "title": "Disc Friction",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.06%3A_Disc_Friction"
+            },
+            {
+              "n": "6.07",
+              "title": "Belt Friction",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.07%3A_Belt_Friction"
+            },
+            {
+              "n": "6.08",
+              "title": "Chapter 6 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/06%3A_Friction_and_Friction_Applications/6.08%3A_Chapter_6_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Particle Kinematics",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics",
+          "topics": ["he.engineering.dynamics#0"],
+          "examples": [
+            "constant acceleration",
+            "motion graphs",
+            "n–t and polar coordinates",
+            "dependent and relative motion"
+          ],
+          "notation": ["n–t: e_t along velocity"],
+          "lessons": [
+            {
+              "n": "7.00",
+              "title": "Video Introduction to Chapter 7",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.00%3A_Video_Introduction_to_Chapter_7"
+            },
+            {
+              "n": "7.01",
+              "title": "One-Dimensional Continuous Motion",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.01%3A_One-Dimensional_Continuous_Motion"
+            },
+            {
+              "n": "7.02",
+              "title": "One-Dimensional Noncontinuous Motion",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.02%3A_One-Dimensional_Noncontinuous_Motion"
+            },
+            {
+              "n": "7.03",
+              "title": "Two-Dimensional Kinematics with Rectangular Coordinates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.03%3A_Two-Dimensional_Kinematics_with_Rectangular_Coordinates"
+            },
+            {
+              "n": "7.04",
+              "title": "Two-Dimensional Kinematics with Normal-Tangential Coordinates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.04%3A_Two-Dimensional_Kinematics_with_Normal-Tangential_Coordinates"
+            },
+            {
+              "n": "7.05",
+              "title": "Two-Dimensional Motion with Polar Coordinates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.05%3A_Two-Dimensional_Motion_with_Polar_Coordinates"
+            },
+            {
+              "n": "7.06",
+              "title": "Dependent Motion Systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.06%3A_Dependent_Motion_Systems"
+            },
+            {
+              "n": "7.07",
+              "title": "Relative Motion Systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.07%3A_Relative_Motion_Systems"
+            },
+            {
+              "n": "7.08",
+              "title": "Chapter 7 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/07%3A_Particle_Kinematics/7.08%3A_Chapter_7_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Newton's Second Law for Particles",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/08%3A_Newton's_Second_Law_for_Particles",
+          "topics": ["he.engineering.dynamics#1"],
+          "lessons": [
+            {
+              "n": "8.00",
+              "title": "Video Introduction to Chapter 8",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/08%3A_Newton's_Second_Law_for_Particles/8.00%3A_Video_Introduction_to_Chapter_8"
+            },
+            {
+              "n": "8.01",
+              "title": "One-Dimensional Equations of Motion",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/08%3A_Newton's_Second_Law_for_Particles/8.01%3A_One-Dimensional_Equations_of_Motion"
+            },
+            {
+              "n": "8.02",
+              "title": "Equations of Motion in Rectangular Coordinates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/08%3A_Newton's_Second_Law_for_Particles/8.02%3A_Equations_of_Motion_in_Rectangular_Coordinates"
+            },
+            {
+              "n": "8.03",
+              "title": "Equations of Motion in Normal-Tangential Coordinates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/08%3A_Newton's_Second_Law_for_Particles/8.03%3A_Equations_of_Motion_in_Normal-Tangential_Coordinates"
+            },
+            {
+              "n": "8.04",
+              "title": "Equations of Motion in Polar Coordinates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/08%3A_Newton's_Second_Law_for_Particles/8.04%3A_Equations_of_Motion_in_Polar_Coordinates"
+            },
+            {
+              "n": "8.05",
+              "title": "Chapter 8 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/08%3A_Newton's_Second_Law_for_Particles/8.05%3A_Chapter_8_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Work and Energy in Particles",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/09%3A_Work_and_Energy_in_Particles",
+          "topics": ["he.engineering.dynamics#2"],
+          "examples": ["skid distance", "power on an incline", "bungee spring constant"],
+          "lessons": [
+            {
+              "n": "9.00",
+              "title": "Video Introduction to Chapter 9",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/09%3A_Work_and_Energy_in_Particles/9.00%3A_Video_Introduction_to_Chapter_9"
+            },
+            {
+              "n": "9.01",
+              "title": "Conservation of Energy for Particles",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/09%3A_Work_and_Energy_in_Particles/9.01%3A_Conservation_of_Energy_for_Particles"
+            },
+            {
+              "n": "9.02",
+              "title": "Power and Efficiency for Particles",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/09%3A_Work_and_Energy_in_Particles/9.02%3A_Power_and_Efficiency_for_Particles"
+            },
+            {
+              "n": "9.03",
+              "title": "Conservation of Energy for Systems of Particles",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/09%3A_Work_and_Energy_in_Particles/9.03%3A_Conservation_of_Energy_for_Systems_of_Particles"
+            },
+            {
+              "n": "9.04",
+              "title": "Chapter 9 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/09%3A_Work_and_Energy_in_Particles/9.04%3A_Chapter_9_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Impulse and Momentum in Particles",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/10%3A_Impulse_and_Momentum_in_Particles",
+          "topics": ["he.engineering.dynamics#2"],
+          "examples": [
+            "impulse from a force–time graph",
+            "restitution",
+            "2-D collisions",
+            "steady-flow devices"
+          ],
+          "lessons": [
+            {
+              "n": "10.00",
+              "title": "Video Introduction to Chapter 10",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/10%3A_Impulse_and_Momentum_in_Particles/10.00%3A_Video_Introduction_to_Chapter_10"
+            },
+            {
+              "n": "10.01",
+              "title": "Impulse-Momentum Equations for a Particle",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/10%3A_Impulse_and_Momentum_in_Particles/10.01%3A_Impulse-Momentum_Equations_for_a_Particle"
+            },
+            {
+              "n": "10.02",
+              "title": "Surface Collisions and the Coefficient of Restitution",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/10%3A_Impulse_and_Momentum_in_Particles/10.02%3A_Surface_Collisions_and_the_Coefficient_of_Restitution"
+            },
+            {
+              "n": "10.03",
+              "title": "One-Dimensional Particle Collisions",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/10%3A_Impulse_and_Momentum_in_Particles/10.03%3A_One-Dimensional_Particle_Collisions"
+            },
+            {
+              "n": "10.04",
+              "title": "Two-Dimensional Particle Collisions",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/10%3A_Impulse_and_Momentum_in_Particles/10.04%3A_Two-Dimensional_Particle_Collisions"
+            },
+            {
+              "n": "10.05",
+              "title": "Steady-Flow Devices",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/10%3A_Impulse_and_Momentum_in_Particles/10.05%3A_Steady-Flow_Devices"
+            },
+            {
+              "n": "10.06",
+              "title": "Chapter 10 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/10%3A_Impulse_and_Momentum_in_Particles/10.06%3A_Chapter_10_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Rigid Body Kinematics",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/11%3A_Rigid_Body_Kinematics",
+          "topics": ["he.engineering.dynamics#3"],
+          "examples": [
+            "fixed-axis rotation",
+            "belt and gear trains",
+            "absolute and relative motion"
+          ],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Fixed-Axis Rotation in Rigid Bodies",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/11%3A_Rigid_Body_Kinematics/11.1%3A_Fixed-Axis_Rotation_in_Rigid_Bodies"
+            },
+            {
+              "n": "11.2",
+              "title": "Belt- and Gear-Driven Systems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/11%3A_Rigid_Body_Kinematics/11.2%3A_Belt-_and_Gear-Driven_Systems"
+            },
+            {
+              "n": "11.3",
+              "title": "Absolute Motion Analysis",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/11%3A_Rigid_Body_Kinematics/11.3%3A_Absolute_Motion_Analysis"
+            },
+            {
+              "n": "11.4",
+              "title": "Relative Motion Analysis",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/11%3A_Rigid_Body_Kinematics/11.4%3A_Relative_Motion_Analysis"
+            },
+            {
+              "n": "11.5",
+              "title": "Rotating Frame Analysis",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/11%3A_Rigid_Body_Kinematics/11.5%3A_Rotating_Frame_Analysis"
+            },
+            {
+              "n": "11.6",
+              "title": "Chapter 11 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/11%3A_Rigid_Body_Kinematics/11.6%3A_Chapter_11_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Newton's Second Law for Rigid Bodies",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/12%3A_Newton's_Second_Law_for_Rigid_Bodies",
+          "topics": ["he.engineering.dynamics#3"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Rigid Body Translation",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/12%3A_Newton's_Second_Law_for_Rigid_Bodies/12.1%3A_Rigid_Body_Translation"
+            },
+            {
+              "n": "12.2",
+              "title": "Fixed-Axis Rotation",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/12%3A_Newton's_Second_Law_for_Rigid_Bodies/12.2%3A_Fixed-Axis_Rotation"
+            },
+            {
+              "n": "12.3",
+              "title": "Rigid-Body General Planar Motion",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/12%3A_Newton's_Second_Law_for_Rigid_Bodies/12.3%3A_Rigid-Body_General_Planar_Motion"
+            },
+            {
+              "n": "12.4",
+              "title": "Multi-Body General Planar Motion",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/12%3A_Newton's_Second_Law_for_Rigid_Bodies/12.4%3A_Multi-Body_General_Planar_Motion"
+            },
+            {
+              "n": "12.5",
+              "title": "Chapter 12 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/12%3A_Newton's_Second_Law_for_Rigid_Bodies/12.5%3A_Chapter_12_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Work and Energy in Rigid Bodies",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/13%3A_Work_and_Energy_in_Rigid_Bodies",
+          "topics": ["he.engineering.dynamics#3"],
+          "lessons": [
+            {
+              "n": "13.01",
+              "title": "Conservation of Energy for Rigid Bodies",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/13%3A_Work_and_Energy_in_Rigid_Bodies/13.01%3A_Conservation_of_Energy_for_Rigid_Bodies"
+            },
+            {
+              "n": "13.02",
+              "title": "Power and Efficiency in Rigid Bodies",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/13%3A_Work_and_Energy_in_Rigid_Bodies/13.02%3A_Power_and_Efficiency_in_Rigid_Bodies"
+            },
+            {
+              "n": "13.03",
+              "title": "Chapter 13 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/13%3A_Work_and_Energy_in_Rigid_Bodies/13.03%3A_Chapter_13_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Impulse and Momentum in Rigid Bodies",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/14%3A_Impulse_and_Momentum_in_Rigid_Bodies",
+          "topics": ["he.engineering.dynamics#3"],
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Impulse-Momentum Equations for a Rigid Body",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/14%3A_Impulse_and_Momentum_in_Rigid_Bodies/14.1%3A_Impulse-Momentum_Equations_for_a_Rigid_Body"
+            },
+            {
+              "n": "14.2",
+              "title": "Rigid Body Surface Collisions",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/14%3A_Impulse_and_Momentum_in_Rigid_Bodies/14.2%3A_Rigid_Body_Surface_Collisions"
+            },
+            {
+              "n": "14.3",
+              "title": "Chapter 14 Homework Problems",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/14%3A_Impulse_and_Momentum_in_Rigid_Bodies/14.3%3A_Chapter_14_Homework_Problems"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Vibrations with One Degree of Freedom",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/15%3A_Vibrations_with_One_Degree_of_Freedom",
+          "topics": [
+            "he.engineering.vibrations#0",
+            "he.engineering.vibrations#1",
+            "he.engineering.vibrations#2"
+          ],
+          "examples": [
+            "undamped and viscous-damped free vibration",
+            "Coulomb damping",
+            "forced response"
+          ],
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "Undamped Free Vibrations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/15%3A_Vibrations_with_One_Degree_of_Freedom/15.1%3A_Undamped_Free_Vibrations"
+            },
+            {
+              "n": "15.2",
+              "title": "Viscous Damped Free Vibrations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/15%3A_Vibrations_with_One_Degree_of_Freedom/15.2%3A_Viscous_Damped_Free_Vibrations"
+            },
+            {
+              "n": "15.3",
+              "title": "Friction (Coulomb) Damped Free Vibrations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/15%3A_Vibrations_with_One_Degree_of_Freedom/15.3%3A_Friction_(Coulomb)_Damped_Free_Vibrations"
+            },
+            {
+              "n": "15.4",
+              "title": "Undamped Harmonic Forced Vibrations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/15%3A_Vibrations_with_One_Degree_of_Freedom/15.4%3A_Undamped_Harmonic_Forced_Vibrations"
+            },
+            {
+              "n": "15.5",
+              "title": "Viscous Damped Harmonic Forced Vibrations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/15%3A_Vibrations_with_One_Degree_of_Freedom/15.5%3A_Viscous_Damped_Harmonic_Forced_Vibrations"
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Appendix 1 - Vector and Matrix Math",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/16%3A_Appendix_1_-_Vector_and_Matrix_Math",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "17",
+          "title": "Appendix 2 - Moment Integrals",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_Map_(Moore_et_al.)/17%3A_Appendix_2_-_Moment_Integrals",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Mechanics Map"
+    }
+  ]
+}

@@ -29,39 +29,24 @@
         {
           "n": "1",
           "title": "Basics of information",
-          "topics": [
-            "he.engineering.digital-logic#0"
-          ],
-          "examples": [
-            "bits from clues",
-            "variable-length codes"
-          ]
+          "topics": ["he.engineering.digital-logic#0"],
+          "examples": ["bits from clues", "variable-length codes"]
         },
         {
           "n": "2–4",
           "title": "Digital abstraction; combinational logic; CMOS; canonical forms and simplification",
-          "topics": [
-            "he.engineering.digital-logic#1"
-          ]
+          "topics": ["he.engineering.digital-logic#1"]
         },
         {
           "n": "5–7",
           "title": "Sequential logic; storage; FSMs; metastability",
-          "topics": [
-            "he.engineering.digital-logic#2",
-            "he.engineering.digital-logic#3"
-          ],
-          "examples": [
-            "mux latch timing",
-            "lock FSM"
-          ]
+          "topics": ["he.engineering.digital-logic#2", "he.engineering.digital-logic#3"],
+          "examples": ["mux latch timing", "lock FSM"]
         },
         {
           "n": "8–9",
           "title": "Pipelining; multipliers",
-          "topics": [
-            "he.engineering.computer-architecture#2"
-          ]
+          "topics": ["he.engineering.computer-architecture#2"]
         },
         {
           "n": "10–14",
@@ -70,17 +55,12 @@
             "he.engineering.computer-architecture#0",
             "he.engineering.computer-architecture#1"
           ],
-          "examples": [
-            "trace a recursive procedure"
-          ]
+          "examples": ["trace a recursive procedure"]
         },
         {
           "n": "15–17",
           "title": "Memory hierarchy; caches; virtual memory",
-          "topics": [
-            "he.engineering.computer-architecture#3",
-            "he.engineering.operating-systems#2"
-          ]
+          "topics": ["he.engineering.computer-architecture#3", "he.engineering.operating-systems#2"]
         },
         {
           "n": "18–",
@@ -89,10 +69,7 @@
             "he.engineering.operating-systems#0",
             "he.engineering.computer-architecture#2"
           ],
-          "examples": [
-            "semaphores for trains",
-            "pipeline stalls and bypasses"
-          ]
+          "examples": ["semaphores for trains", "pipeline stalls and bypasses"]
         }
       ]
     }

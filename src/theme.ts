@@ -431,6 +431,17 @@ const light = {
   h2eNerve: '#E8B923',
   h2eAntigenA: '#2E9E5B',
   h2eAntigenB: '#E08A1C',
+  /**
+   * College HC5 and HC13 (group F): a burner's flame and its core, activated sludge, a membrane
+   * sheet, an organic solvent layer; a blood vessel's wall and the blood in it.
+   */
+  cvFlame: '#F08A24',
+  cvFlameCore: '#FFD45C',
+  cvSludge: '#9C7A4E',
+  cvMembrane: '#3D8F7A',
+  cvSolvent: '#F3E3A0',
+  profileWall: '#E9A8A0',
+  profileBlood: '#C9393F',
   /** Chemistry (HS group I): a unit struck through when it cancels in a chain. */
   unitCancel: '#D9480F',
   /** Bohr models: protons, neutrons and electrons. */
@@ -472,6 +483,18 @@ const light = {
   skeletalN: '#1D4ED8',
   skeletalS: '#A16207',
   skeletalHalogen: '#15803D',
+  /**
+   * HC1 beam (college): loads, reactions, the shear and moment diagrams, the bent shape;
+   * concrete and its bars.
+   */
+  beamLoad: '#C2410C',
+  beamReaction: '#1D4ED8',
+  beamShear: '#0E7490',
+  beamMoment: '#7C3AED',
+  beamDeflect: '#BE185D',
+  beamConcrete: '#CFCBC2',
+  beamConcreteDark: '#8C877D',
+  beamRebar: '#6B4F3A',
   /** H106: a town's land and its outline on a population map. */
   populationLand: '#DDEFD6',
   populationEdge: '#4F8A3C',
@@ -830,6 +853,13 @@ const dark: Palette = {
   h2eNerve: '#F2CC4A',
   h2eAntigenA: '#4CC07A',
   h2eAntigenB: '#F2A64A',
+  cvFlame: '#F59A3C',
+  cvFlameCore: '#FFE08A',
+  cvSludge: '#7E6240',
+  cvMembrane: '#4FB39A',
+  cvSolvent: '#8C7C3A',
+  profileWall: '#9E5A55',
+  profileBlood: '#B83238',
   unitCancel: '#F08A4B',
   atomProton: '#D9573F',
   atomNeutron: '#7D8693',
@@ -861,6 +891,14 @@ const dark: Palette = {
   skeletalN: '#93C5FD',
   skeletalS: '#FACC15',
   skeletalHalogen: '#86EFAC',
+  beamLoad: '#FB8A4C',
+  beamReaction: '#6EA3FF',
+  beamShear: '#22D3EE',
+  beamMoment: '#B794F6',
+  beamDeflect: '#F472B6',
+  beamConcrete: '#67635B',
+  beamConcreteDark: '#45423C',
+  beamRebar: '#B08C70',
   populationLand: '#1F3320',
   populationEdge: '#7CC46A',
   boundsBand: 'rgba(245, 160, 74, 0.22)',

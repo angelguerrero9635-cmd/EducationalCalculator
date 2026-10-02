@@ -1,0 +1,102 @@
+{
+  "id": "dibiase-nature-of-geographic-information",
+  "curriculum": "The Nature of Geographic Information",
+  "publisher": "Penn State University (LibreTexts Geosciences edition)",
+  "edition": "LibreTexts edition",
+  "subject": "geography",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 3.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+    "attribution": "The Nature of Geographic Information by David DiBiase et al., Penn State; LibreTexts Geosciences edition. CC BY-NC-SA 3.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)",
+  "retrieved": "2026-10-02",
+  "notes": "CC BY-NC-SA 3.0: chapter titles and mapping. Each chapter is one LibreTexts page (no sections). The Penn State e-Education copy (www.e-education.psu.edu/natureofgeoinfo, robots.txt Crawl-delay 10) was read only for its home page; its practice quizzes need a Penn State login and were not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Data and Information",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/01%3A_Data_and_Information",
+          "topics": ["he.geography.gis#0"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Scales and Transformations",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/02%3A_Scales_and_Transformations",
+          "topics": ["he.geography.cartography#0", "he.geography.cartography#1"],
+          "notes": "Scale, coordinate systems, datums, projections.",
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Census Data and Thematic Maps",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/03%3A_Census_Data_and_Thematic_Maps",
+          "topics": ["he.geography.cartography#2"],
+          "notes": "Census data and thematic maps (classification, normalization).",
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "TIGER Topology and Geocoding",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/04%3A_TIGER_Topology_and_Geocoding",
+          "topics": ["he.geography.gis#0"],
+          "notes": "TIGER topology and geocoding.",
+          "lessons": []
+        },
+        {
+          "n": "5",
+          "title": "Land Surveying and GPS",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/05%3A_Land_Surveying_and_GPS",
+          "topics": ["he.geography.cartography#1"],
+          "notes": "Land surveying and GPS.",
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "National Spatial Data Infrastructure I",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/06%3A_National_Spatial_Data_Infrastructure_I",
+          "topics": ["he.geography.gis#0", "he.geography.physical-geography#2"],
+          "notes": "National spatial data infrastructure: topographic and elevation data.",
+          "lessons": []
+        },
+        {
+          "n": "7",
+          "title": "National Spatial Data Infrastructure II",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/07%3A_National_Spatial_Data_Infrastructure_II",
+          "topics": ["he.geography.gis#0"],
+          "lessons": []
+        },
+        {
+          "n": "8",
+          "title": "Remotely Sensed Image Data",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/08%3A_Remotely_Sensed_Image_Data",
+          "topics": [
+            "he.geography.remote-sensing#0",
+            "he.geography.remote-sensing#1",
+            "he.geography.remote-sensing#2"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "9",
+          "title": "Integrating Geographic Data",
+          "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Nature_of_Geographic_Information_(DiBiase)/09%3A_Integrating_Geographic_Data",
+          "topics": ["he.geography.gis#2"],
+          "lessons": []
+        }
+      ],
+      "title": "The Nature of Geographic Information"
+    }
+  ]
+}

@@ -7,3 +7,5 @@ dist
 coverage
 docs/SLIDERS.md
 src/data/matchCorpus.json
+# Prettier re-indents list paragraphs holding "[[a, b], [c, d]]" matrices on every run (never stable).
+docs/plans/he.math.md

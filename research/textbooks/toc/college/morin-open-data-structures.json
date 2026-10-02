@@ -26,108 +26,68 @@
         {
           "n": "1",
           "title": "Introduction (interfaces, math background, model of computation)",
-          "topics": [
-            "he.engineering.data-structures#0",
-            "he.engineering.data-structures#3"
-          ]
+          "topics": ["he.engineering.data-structures#0", "he.engineering.data-structures#3"]
         },
         {
           "n": "2",
           "title": "Array-Based Lists",
-          "topics": [
-            "he.engineering.data-structures#0"
-          ],
-          "examples": [
-            "rotate an array",
-            "amortized resizing"
-          ],
-          "notation": "0-based arrays; amortized O(1)"
+          "topics": ["he.engineering.data-structures#0"],
+          "examples": ["rotate an array", "amortized resizing"],
+          "notation": ["0-based arrays; amortized O(1)"]
         },
         {
           "n": "3",
           "title": "Linked Lists",
-          "topics": [
-            "he.engineering.data-structures#0"
-          ],
-          "examples": [
-            "reverse a list",
-            "second-last element"
-          ]
+          "topics": ["he.engineering.data-structures#0"],
+          "examples": ["reverse a list", "second-last element"]
         },
         {
           "n": "4",
           "title": "Skiplists",
-          "topics": [
-            "he.engineering.data-structures#2"
-          ]
+          "topics": ["he.engineering.data-structures#2"]
         },
         {
           "n": "5",
           "title": "Hash Tables",
-          "topics": [
-            "he.engineering.data-structures#2"
-          ],
-          "examples": [
-            "bad hash for sequential keys"
-          ]
+          "topics": ["he.engineering.data-structures#2"],
+          "examples": ["bad hash for sequential keys"]
         },
         {
           "n": "6",
           "title": "Binary Trees",
-          "topics": [
-            "he.engineering.data-structures#1"
-          ],
-          "examples": [
-            "n − 1 edges proof",
-            "traversal numbering"
-          ]
+          "topics": ["he.engineering.data-structures#1"],
+          "examples": ["n − 1 edges proof", "traversal numbering"]
         },
         {
           "n": "7–9",
           "title": "Random BSTs (treaps), scapegoat trees, red-black trees",
-          "topics": [
-            "he.engineering.data-structures#1"
-          ]
+          "topics": ["he.engineering.data-structures#1"]
         },
         {
           "n": "10",
           "title": "Heaps",
-          "topics": [
-            "he.engineering.data-structures#1"
-          ],
-          "examples": [
-            "heap insert and remove traces",
-            "d-ary heap indices"
-          ],
-          "notation": "Eytzinger layout: children 2i + 1, 2i + 2"
+          "topics": ["he.engineering.data-structures#1"],
+          "examples": ["heap insert and remove traces", "d-ary heap indices"],
+          "notation": ["Eytzinger layout: children 2i + 1, 2i + 2"]
         },
         {
           "n": "11",
           "title": "Sorting Algorithms",
-          "topics": [
-            "he.engineering.data-structures#2"
-          ],
-          "examples": [
-            "merge-sort and heap-sort traces",
-            "worst-case quicksort input"
-          ]
+          "topics": ["he.engineering.data-structures#2"],
+          "examples": ["merge-sort and heap-sort traces", "worst-case quicksort input"]
         },
         {
           "n": "12",
           "title": "Graphs",
-          "topics": [
-            "he.engineering.data-structures#1"
-          ],
-          "examples": [
-            "adjacency list and matrix",
-            "BFS and DFS order"
-          ]
+          "topics": ["he.engineering.data-structures#1"],
+          "examples": ["adjacency list and matrix", "BFS and DFS order"]
         },
         {
           "n": "13–14",
           "title": "Data structures for integers; external memory",
           "topics": [],
-          "notes": "Beyond the course topics."
+          "notes": "Beyond the course topics.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

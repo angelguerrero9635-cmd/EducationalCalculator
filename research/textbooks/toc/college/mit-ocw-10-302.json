@@ -30,19 +30,15 @@
         {
           "n": "1–13",
           "title": "Conduction: plane and radial walls, generation, fins, 2-D, transient, semi-infinite",
-          "topics": [
-            "he.engineering.transport-phenomena#1"
-          ],
-          "examples": [
-            "composite cylinder with generation",
-            "lab fin data"
-          ]
+          "topics": ["he.engineering.transport-phenomena#1"],
+          "examples": ["composite cylinder with generation", "lab fin data"]
         },
         {
           "n": "14–19",
           "title": "Radiation: blackbody exchange, gray surfaces",
           "topics": [],
-          "notes": "Radiation: he.engineering.heat-transfer#2."
+          "notes": "Radiation: he.engineering.heat-transfer#2.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "20–",

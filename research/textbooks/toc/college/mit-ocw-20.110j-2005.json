@@ -1,0 +1,106 @@
+{
+  "id": "mit-ocw-20.110j-2005",
+  "curriculum": "MIT OCW 20.110J / 2.772J / 5.601J Thermodynamics of Biomolecular Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2005",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Linda Griffith, Kimberly Hamad-Schifferli, Moungi Bawendi and Robert Field. 20.110J / 2.772J / 5.601J Thermodynamics of Biomolecular Systems. Fall 2005. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Set",
+    "lesson": "Problem set"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/20-110j-thermodynamics-of-biomolecular-systems-fall-2005/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Problem sets read for types (OCW-20.110-F05-*). Biological engineering course cross-listed with 5.60; serves physical-1 and he.engineering.biotransport.",
+  "books": [
+    {
+      "course": "20.110J / 2.772J / 5.601J",
+      "url": "https://ocw.mit.edu/courses/20-110j-thermodynamics-of-biomolecular-systems-fall-2005/",
+      "units": [
+        {
+          "n": "PS",
+          "title": "Problem sets 1–10",
+          "topics": [
+            "he.chemistry.physical-1#0",
+            "he.chemistry.physical-1#1",
+            "he.chemistry.physical-1#2"
+          ],
+          "examples": [
+            "van der Waals vs ideal pressure",
+            "reversible vs irreversible work, q, ΔU, ΔH, ΔS, ΔG for an ideal gas",
+            "entropy of heating plus phase change via a reversible path",
+            "ΔG = ΔG° + RT ln Q for ATP",
+            "ΔH_sub, ΔH_vap and triple point from vapour pressures",
+            "freezing-point depression"
+          ],
+          "ranges": ["T 270–1700 K", "P 1–500 bar", "Cp 20–80 J/(mol·K)", "ΔG°′ −30 kJ/mol"],
+          "notation": [
+            "bar standard state; Kp vs Kc conversion",
+            "μ_i chemical potential; dG = V dP − S dT + Σμᵢ dnᵢ"
+          ],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Systems, equations of state, gas equilibrium, first law",
+              "topics": ["he.chemistry.physical-1#0", "he.chemistry.physical-1#2"]
+            },
+            {
+              "n": "2",
+              "title": "State functions and cycles; heat transfer; respiration thermochemistry",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "3",
+              "title": "Entropy changes, spontaneity, free energy",
+              "topics": ["he.chemistry.physical-1#0"]
+            },
+            {
+              "n": "4",
+              "title": "Chemical equilibrium, ATP hydrolysis, van ’t Hoff",
+              "topics": ["he.chemistry.physical-1#2", "he.chemistry.biochemistry#3"]
+            },
+            {
+              "n": "5",
+              "title": "Statistical thermodynamics of small systems; ligand binding",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "6",
+              "title": "Third-law entropies; Clausius–Clapeyron; triple points",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "7",
+              "title": "Regular solutions, phase separation, colligative properties",
+              "topics": ["he.chemistry.physical-1#1"]
+            },
+            {
+              "n": "8",
+              "title": "Partitioning; polymer mixing and size",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "9",
+              "title": "Polymer elasticity; activity and pH; buffers",
+              "topics": ["he.chemistry.physical-1#2"]
+            },
+            {
+              "n": "10",
+              "title": "Debye length; titration; peptide charge; DNA melting; helix–coil",
+              "topics": ["he.chemistry.physical-1#2", "he.chemistry.biochemistry#0"]
+            }
+          ]
+        }
+      ],
+      "title": "20.110J / 2.772J / 5.601J"
+    }
+  ]
+}

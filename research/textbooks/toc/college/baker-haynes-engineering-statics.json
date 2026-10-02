@@ -1,0 +1,573 @@
+{
+  "id": "baker-haynes-engineering-statics",
+  "curriculum": "Engineering Statics: Open and Interactive",
+  "publisher": "Daniel W. Baker and William Haynes (self-published, PreTeXt)",
+  "edition": "Online edition read 2026-10-02",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Engineering Statics: Open and Interactive by Daniel W. Baker and William Haynes, https://engineeringstatics.org. CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://engineeringstatics.org/",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY-NC-SA 4.0): chapter and section list from the book's own table of contents; exercises (Numbas) recorded as types in research/questions/college/classical.jsonl (ES-*). robots.txt returns 404 (no rules).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://engineeringstatics.org/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction to Statics",
+          "url": "https://engineeringstatics.org/Chapter_01.html",
+          "topics": ["he.engineering.statics#0"],
+          "notation": ["SI and U.S. customary; g = 9.81 m/s²"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Newton’s Laws of Motion",
+              "url": "https://engineeringstatics.org/newtons-laws.html"
+            },
+            {
+              "n": "1.2",
+              "title": "Units",
+              "url": "https://engineeringstatics.org/Chapter_01-units.html"
+            },
+            {
+              "n": "1.3",
+              "title": "Forces",
+              "url": "https://engineeringstatics.org/Chapter_01-forces.html"
+            },
+            {
+              "n": "1.4",
+              "title": "Problem Solving",
+              "url": "https://engineeringstatics.org/Chapter_01-problem-solving.html"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Forces and Other Vectors",
+          "url": "https://engineeringstatics.org/Chapter_02.html",
+          "topics": ["he.engineering.statics#0"],
+          "examples": [
+            "components from magnitude and angle",
+            "resultant of three forces by components",
+            "unit vectors, dot and cross products"
+          ],
+          "ranges": ["forces 10–1,000 N or lb"],
+          "notation": ["angles from +x counterclockwise or from an axis with a sense"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Vectors",
+              "url": "https://engineeringstatics.org/Chapter_02-vectors.html"
+            },
+            {
+              "n": "2.2",
+              "title": "One-Dimensional Vectors",
+              "url": "https://engineeringstatics.org/Chapter_02-one-dimensional-vectors.html"
+            },
+            {
+              "n": "2.3",
+              "title": "2D Coordinate Systems & Vectors",
+              "url": "https://engineeringstatics.org/cartesian-coords-2d.html"
+            },
+            {
+              "n": "2.4",
+              "title": "3D Coordinate Systems & Vectors",
+              "url": "https://engineeringstatics.org/coordinates-3d.html"
+            },
+            {
+              "n": "2.5",
+              "title": "Unit Vectors",
+              "url": "https://engineeringstatics.org/Chapter_02-unit-vectors.html"
+            },
+            {
+              "n": "2.6",
+              "title": "Vector Addition",
+              "url": "https://engineeringstatics.org/vector_algebra_2D.html"
+            },
+            {
+              "n": "2.7",
+              "title": "Dot Products",
+              "url": "https://engineeringstatics.org/dot_products_2D.html"
+            },
+            {
+              "n": "2.8",
+              "title": "Cross Products",
+              "url": "https://engineeringstatics.org/cross-product-math.html"
+            },
+            {
+              "n": "2.9",
+              "title": "Exercises (Ch. 2)",
+              "url": "https://engineeringstatics.org/Chapter_02-11.html"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Equilibrium of Particles",
+          "url": "https://engineeringstatics.org/Chapter_03.html",
+          "topics": ["he.engineering.statics#0"],
+          "examples": [
+            "two-cable tensions",
+            "ring held by ropes with slopes",
+            "smooth cylinder in a trough",
+            "3-D cable systems"
+          ],
+          "ranges": ["loads 10–5,000 N"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Equilibrium",
+              "url": "https://engineeringstatics.org/ch3-intro.html"
+            },
+            {
+              "n": "3.2",
+              "title": "Particles",
+              "url": "https://engineeringstatics.org/ch3-1d-particles.html"
+            },
+            {
+              "n": "3.3",
+              "title": "1D Particle Equilibrium",
+              "url": "https://engineeringstatics.org/CH03-1d-particles.html"
+            },
+            {
+              "n": "3.4",
+              "title": "2D Particle Equilibrium",
+              "url": "https://engineeringstatics.org/CH03-2d-particles.html"
+            },
+            {
+              "n": "3.5",
+              "title": "3D Particle Equilibrium",
+              "url": "https://engineeringstatics.org/ch3-3d-particles.html"
+            },
+            {
+              "n": "3.6",
+              "title": "Exercises (Ch. 3)",
+              "url": "https://engineeringstatics.org/Chapter_03-7.html"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Moments and Static Equivalence",
+          "url": "https://engineeringstatics.org/Chapter_04.html",
+          "topics": ["he.engineering.statics#0"],
+          "examples": [
+            "moment by r × F and by Varignon",
+            "moment of a couple",
+            "equivalent force–couple system"
+          ],
+          "notation": ["counterclockwise moments positive"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Moment of Force",
+              "url": "https://engineeringstatics.org/moment-of-force.html"
+            },
+            {
+              "n": "4.2",
+              "title": "Scalar Addition of Moments",
+              "url": "https://engineeringstatics.org/scalar-components-moments.html"
+            },
+            {
+              "n": "4.3",
+              "title": "Varignon’s Theorem",
+              "url": "https://engineeringstatics.org/varignons-theorem.html"
+            },
+            {
+              "n": "4.4",
+              "title": "3D Moments",
+              "url": "https://engineeringstatics.org/Chapter_04-moments-in-three-dimensions.html"
+            },
+            {
+              "n": "4.5",
+              "title": "Couples",
+              "url": "https://engineeringstatics.org/Chapter_04-couples.html"
+            },
+            {
+              "n": "4.6",
+              "title": "Equivalent Transformations",
+              "url": "https://engineeringstatics.org/equivalent-tranformations.html"
+            },
+            {
+              "n": "4.7",
+              "title": "Statically Equivalent Systems",
+              "url": "https://engineeringstatics.org/statically-equivalent-systems.html"
+            },
+            {
+              "n": "4.8",
+              "title": "Exercises (Ch. 4)",
+              "url": "https://engineeringstatics.org/Chapter_04-10.html"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Rigid Body Equilibrium",
+          "url": "https://engineeringstatics.org/Chapter_05.html",
+          "topics": ["he.engineering.statics#0"],
+          "notes": "Statically equivalent systems and 3-D bodies sit beyond the plan's ~reactions page.",
+          "examples": [
+            "pin-and-roller reactions",
+            "cantilever reactions",
+            "three-force bodies",
+            "car on a slope"
+          ],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Degree of Freedom",
+              "url": "https://engineeringstatics.org/Chapter_05-degree-of-freedom.html"
+            },
+            {
+              "n": "5.2",
+              "title": "Free-Body Diagrams",
+              "url": "https://engineeringstatics.org/Chapter_05-free-body-diagrams.html"
+            },
+            {
+              "n": "5.3",
+              "title": "Equations of Equilibrium",
+              "url": "https://engineeringstatics.org/Chapter_05-equations-of-equilibrium.html"
+            },
+            {
+              "n": "5.4",
+              "title": "2D Rigid Body Equilibrium",
+              "url": "https://engineeringstatics.org/Chapter_05-2d-rigid-body-equilibrium.html"
+            },
+            {
+              "n": "5.5",
+              "title": "3D Rigid Body Equilibrium",
+              "url": "https://engineeringstatics.org/Chapter_05-3d-rigid-body-equilibrium.html"
+            },
+            {
+              "n": "5.6",
+              "title": "Stability and Determinacy",
+              "url": "https://engineeringstatics.org/Chapter_05-stability-and-determinacy.html"
+            },
+            {
+              "n": "5.7",
+              "title": "Equilibrium Examples",
+              "url": "https://engineeringstatics.org/Chapter_05-equilibrium-examples-.html"
+            },
+            {
+              "n": "5.8",
+              "title": "Exercises (Ch. 5)",
+              "url": "https://engineeringstatics.org/Chapter_05-10.html"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Equilibrium of Structures",
+          "url": "https://engineeringstatics.org/Chapter_06.html",
+          "topics": ["he.engineering.statics#1"],
+          "examples": [
+            "method of joints",
+            "method of sections (Howe, Pratt)",
+            "zero-force members",
+            "A-frames and pliers"
+          ],
+          "ranges": ["kN and kips"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Structures",
+              "url": "https://engineeringstatics.org/Chapter_06-structures.html"
+            },
+            {
+              "n": "6.2",
+              "title": "Interactions between members",
+              "url": "https://engineeringstatics.org/Chapter_06-interactions-between-members.html"
+            },
+            {
+              "n": "6.3",
+              "title": "Trusses",
+              "url": "https://engineeringstatics.org/Chapter_06-trusses.html"
+            },
+            {
+              "n": "6.4",
+              "title": "Method of Joints",
+              "url": "https://engineeringstatics.org/method-of-joints.html"
+            },
+            {
+              "n": "6.5",
+              "title": "Method of Sections",
+              "url": "https://engineeringstatics.org/method-of-sections.html"
+            },
+            {
+              "n": "6.6",
+              "title": "Frames and Machines",
+              "url": "https://engineeringstatics.org/frames-and-machines.html"
+            },
+            {
+              "n": "6.7",
+              "title": "Summary",
+              "url": "https://engineeringstatics.org/Chapter_06-summary.html"
+            },
+            {
+              "n": "6.8",
+              "title": "Exercises (Ch. 6)",
+              "url": "https://engineeringstatics.org/Chapter_06-10.html"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Centroids and Centers of Gravity",
+          "url": "https://engineeringstatics.org/Chapter_07.html",
+          "topics": ["he.engineering.statics#2"],
+          "notes": "Also fluid statics (7.9) — he.engineering.fluid-mechanics#0 ~gate.",
+          "examples": [
+            "composite centroid by table",
+            "centroid by integration (vertical or horizontal strips)",
+            "distributed-load reactions"
+          ],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Weighted Averages",
+              "url": "https://engineeringstatics.org/weghted-average.html"
+            },
+            {
+              "n": "7.2",
+              "title": "Center of Gravity",
+              "url": "https://engineeringstatics.org/Chapter_07-center-of-gravity.html"
+            },
+            {
+              "n": "7.3",
+              "title": "Center of Mass",
+              "url": "https://engineeringstatics.org/Chapter_07-center-of-mass.html"
+            },
+            {
+              "n": "7.4",
+              "title": "Centroids",
+              "url": "https://engineeringstatics.org/Chapter_07-centroids.html"
+            },
+            {
+              "n": "7.5",
+              "title": "Centroids using Composite Parts",
+              "url": "https://engineeringstatics.org/composite-parts.html"
+            },
+            {
+              "n": "7.6",
+              "title": "Average Value of a Function",
+              "url": "https://engineeringstatics.org/Chapter_07-average-value-of-a-function.html"
+            },
+            {
+              "n": "7.7",
+              "title": "Centroids using Integration",
+              "url": "https://engineeringstatics.org/centroids-by-integration.html"
+            },
+            {
+              "n": "7.8",
+              "title": "Distributed Loads",
+              "url": "https://engineeringstatics.org/distributed-loads.html"
+            },
+            {
+              "n": "7.9",
+              "title": "Fluid Statics",
+              "url": "https://engineeringstatics.org/Chapter_07-fluid-statics.html"
+            },
+            {
+              "n": "7.10",
+              "title": "Exercises (Ch. 7)",
+              "url": "https://engineeringstatics.org/Chapter_07-12.html"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Internal Forces",
+          "url": "https://engineeringstatics.org/Chapter_08.html",
+          "topics": ["he.engineering.mechanics-of-materials#3"],
+          "examples": [
+            "internal forces at a point",
+            "V and M diagrams by section cuts, graphical and integration methods"
+          ],
+          "notation": ["positive shear and moment sign convention (8.2)"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Internal Forces",
+              "url": "https://engineeringstatics.org/Chapter_08-internal-forces.html"
+            },
+            {
+              "n": "8.2",
+              "title": "Sign Conventions",
+              "url": "https://engineeringstatics.org/VM_sign_convention.html"
+            },
+            {
+              "n": "8.3",
+              "title": "Internal Forces at a Point",
+              "url": "https://engineeringstatics.org/internal_force_at_point.html"
+            },
+            {
+              "n": "8.4",
+              "title": "Shear and Bending Moment Diagrams",
+              "url": "https://engineeringstatics.org/VM_diagrams.html"
+            },
+            {
+              "n": "8.5",
+              "title": "Relations between Loading, Shear and Moment",
+              "url": "https://engineeringstatics.org/VM_relations.html"
+            },
+            {
+              "n": "8.6",
+              "title": "Section Cut Method",
+              "url": "https://engineeringstatics.org/section_cut_method.html"
+            },
+            {
+              "n": "8.7",
+              "title": "Graphical Method",
+              "url": "https://engineeringstatics.org/graphical_method.html"
+            },
+            {
+              "n": "8.8",
+              "title": "Integration Method",
+              "url": "https://engineeringstatics.org/integration_method.html"
+            },
+            {
+              "n": "8.9",
+              "title": "Geogebra Interactives",
+              "url": "https://engineeringstatics.org/Chapter_08-geogebra-interactives.html"
+            },
+            {
+              "n": "8.10",
+              "title": "Summary",
+              "url": "https://engineeringstatics.org/Chapter_08-summary.html"
+            },
+            {
+              "n": "8.11",
+              "title": "Exercises (Ch. 8)",
+              "url": "https://engineeringstatics.org/Chapter_08-13.html"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Friction",
+          "url": "https://engineeringstatics.org/Chapter_09.html",
+          "topics": ["he.engineering.statics#4"],
+          "examples": [
+            "slip or tip",
+            "range of P on an incline",
+            "wedges, screws, belts, bearings and discs"
+          ],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Dry Friction",
+              "url": "https://engineeringstatics.org/Chapter_09-dry-friction.html"
+            },
+            {
+              "n": "9.2",
+              "title": "Slipping vs. Tipping",
+              "url": "https://engineeringstatics.org/Chapter_09-slipping-vs--tipping.html"
+            },
+            {
+              "n": "9.3",
+              "title": "Wedges",
+              "url": "https://engineeringstatics.org/Chapter_09-block-and-wedge-friction.html"
+            },
+            {
+              "n": "9.4",
+              "title": "Screw Threads",
+              "url": "https://engineeringstatics.org/Chapter_09-screw-friction.html"
+            },
+            {
+              "n": "9.5",
+              "title": "Flexible Belts",
+              "url": "https://engineeringstatics.org/Chapter_09-flexible-belt-friction.html"
+            },
+            {
+              "n": "9.6",
+              "title": "Journal Bearings",
+              "url": "https://engineeringstatics.org/Chapter_09-journal-bearing-friction.html"
+            },
+            {
+              "n": "9.7",
+              "title": "Rotating Discs",
+              "url": "https://engineeringstatics.org/Chapter_09-disc-friction.html"
+            },
+            {
+              "n": "9.8",
+              "title": "Exercises (Ch. 9)",
+              "url": "https://engineeringstatics.org/Chapter_09-10.html"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Moments of Inertia",
+          "url": "https://engineeringstatics.org/Chapter_10.html",
+          "topics": ["he.engineering.statics#3"],
+          "notes": "Mass moment of inertia (10.8) supports dynamics#3.",
+          "examples": [
+            "I by the parallel-axis theorem",
+            "composite T, U and box sections",
+            "built-up steel sections from tables",
+            "polar moment and radius of gyration"
+          ],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Integral Properties of Shapes",
+              "url": "https://engineeringstatics.org/Chapter_10-integral-properties-of-shapes.html"
+            },
+            {
+              "n": "10.2",
+              "title": "Moments of Inertia of Common Shapes",
+              "url": "https://engineeringstatics.org/MOI-common-shapes.html"
+            },
+            {
+              "n": "10.3",
+              "title": "Parallel Axis Theorem",
+              "url": "https://engineeringstatics.org/parallel-axis-theorem-section.html"
+            },
+            {
+              "n": "10.4",
+              "title": "Composite Shapes",
+              "url": "https://engineeringstatics.org/Chapter_10-moment-of-inertia-of-composite-shapes.html"
+            },
+            {
+              "n": "10.5",
+              "title": "Polar Moment of Inertia",
+              "url": "https://engineeringstatics.org/polar-moment.html"
+            },
+            {
+              "n": "10.6",
+              "title": "Radius of Gyration",
+              "url": "https://engineeringstatics.org/radius-of-gyration-sec.html"
+            },
+            {
+              "n": "10.7",
+              "title": "Products of Inertia",
+              "url": "https://engineeringstatics.org/products-of-inertia.html"
+            },
+            {
+              "n": "10.8",
+              "title": "Mass Moment of Inertia",
+              "url": "https://engineeringstatics.org/Chapter_10-mass-moment-of-inertia.html"
+            },
+            {
+              "n": "10.9",
+              "title": "Exercises (Ch. 10)",
+              "url": "https://engineeringstatics.org/Chapter_10-11.html"
+            }
+          ]
+        }
+      ],
+      "title": "Engineering Statics: Open and Interactive"
+    }
+  ]
+}

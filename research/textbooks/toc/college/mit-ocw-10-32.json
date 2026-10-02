@@ -30,52 +30,33 @@
         {
           "n": "1–2",
           "title": "Introduction; flash calculations",
-          "topics": [
-            "he.engineering.separations#0",
-            "he.engineering.chemical-thermodynamics#2"
-          ],
-          "examples": [
-            "phase state and bubble point of a ternary"
-          ]
+          "topics": ["he.engineering.separations#0", "he.engineering.chemical-thermodynamics#2"],
+          "examples": ["phase state and bubble point of a ternary"]
         },
         {
           "n": "3–10",
           "title": "Cascades; McCabe–Thiele; multiple feeds and side streams; multicomponent distillation; column design; packed columns",
-          "topics": [
-            "he.engineering.separations#0",
-            "he.engineering.separations#1"
-          ],
+          "topics": ["he.engineering.separations#0", "he.engineering.separations#1"],
           "examples": [
             "two-feed column",
             "ethanol–water azeotrope",
             "R_min and N_min",
             "packed stripper"
           ],
-          "notation": "q-line; Fenske; Underwood; HETP"
+          "notation": ["q-line; Fenske; Underwood; HETP"]
         },
         {
           "n": "11–16",
           "title": "Membrane processes; tubular membranes; membrane system design; electrodialysis",
-          "topics": [
-            "he.engineering.separations#3"
-          ],
-          "examples": [
-            "RO of pulping liquor",
-            "ultrafiltration of whey",
-            "RO with salt leakage"
-          ],
-          "notation": "J_w = A(ΔP − Δπ); rejection; concentration polarization"
+          "topics": ["he.engineering.separations#3"],
+          "examples": ["RO of pulping liquor", "ultrafiltration of whey", "RO with salt leakage"],
+          "notation": ["J_w = A(ΔP − Δπ); rejection; concentration polarization"]
         },
         {
           "n": "17–23",
           "title": "Adsorption; mass-transfer effects; chromatography",
-          "topics": [
-            "he.engineering.separations#2"
-          ],
-          "examples": [
-            "adsorber scale-up (LUB)",
-            "plates from a chromatogram"
-          ],
+          "topics": ["he.engineering.separations#2"],
+          "examples": ["adsorber scale-up (LUB)", "plates from a chromatogram"],
           "notes": "Adsorption and chromatography have no topic; filed under separations#2."
         }
       ]

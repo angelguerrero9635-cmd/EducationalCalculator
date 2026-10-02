@@ -1,0 +1,187 @@
+{
+  "id": "fundamentals-drawings-and-specifications",
+  "curriculum": "Fundamentals: Drawings and Specifications",
+  "publisher": "Workforce LibreTexts (from the BC trades Fundamentals series)",
+  "edition": "LibreTexts edition",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Fundamentals: Drawings and Specifications, Workforce LibreTexts. CC BY 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY 4.0): chapters and sections (robots.txt: Crawl-delay 5). Self-tests recorded with text (FDS-*), no answer keys.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications",
+      "units": [
+        {
+          "n": "1",
+          "title": "Describe the drafting tools and materials used in drawing plans",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/1%3A_Describe_the_drafting_tools_and_materials_used_in_drawing_plans",
+          "topics": ["he.engineering.cad-graphics#0"],
+          "notes": "Drafting tools.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Tools",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/1%3A_Describe_the_drafting_tools_and_materials_used_in_drawing_plans/1.1%3A_Tools"
+            },
+            {
+              "n": "1.2",
+              "title": "Drafting Materials",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/1%3A_Describe_the_drafting_tools_and_materials_used_in_drawing_plans/1.2%3A_Drafting_Materials"
+            },
+            {
+              "n": "1.3",
+              "title": "Computer drafting printing",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/1%3A_Describe_the_drafting_tools_and_materials_used_in_drawing_plans/1.3%3A_Computer_drafting_printing"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Describe lines lettering and dimensioning in drawings",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/2%3A_Describe_lines_lettering_and_dimensioning_in_drawings",
+          "topics": ["he.engineering.cad-graphics#0", "he.engineering.cad-graphics#1"],
+          "examples": ["line types", "size and location dimensions", "sections"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Line styles and types",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/2%3A_Describe_lines_lettering_and_dimensioning_in_drawings/2.1%3A_Line_styles_and_types"
+            },
+            {
+              "n": "2.2",
+              "title": "Standard lettering",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/2%3A_Describe_lines_lettering_and_dimensioning_in_drawings/2.2%3A_Standard_lettering"
+            },
+            {
+              "n": "2.4",
+              "title": "Principles of Dimensioning",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/2%3A_Describe_lines_lettering_and_dimensioning_in_drawings/2.4%3A_Principles_of_Dimensioning"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Use scale rulers to determine actual dimensions from drawings",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/3%3A_Use_scale_rulers_to_determine_actual_dimensions_from_drawings",
+          "topics": ["he.engineering.cad-graphics#3"],
+          "examples": ["reading a scale ruler", "length at a drawing scale"],
+          "lessons": [
+            {
+              "n": "3.0",
+              "title": "Prelude to Scales",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/3%3A_Use_scale_rulers_to_determine_actual_dimensions_from_drawings/3.0%3A_Prelude_to_Scales"
+            },
+            {
+              "n": "3.2",
+              "title": "Metric Scales",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/3%3A_Use_scale_rulers_to_determine_actual_dimensions_from_drawings/3.2%3A_Metric_Scales"
+            },
+            {
+              "n": "3.3",
+              "title": "Obtain dimensions from drawings",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/3%3A_Use_scale_rulers_to_determine_actual_dimensions_from_drawings/3.3%3A_Obtain_dimensions_from_drawings"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Describe drawing projections",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/4%3A_Describe_drawing_projections",
+          "topics": ["he.engineering.cad-graphics#0"],
+          "examples": ["isometric, oblique and perspective", "plan and elevation views"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Types of views used in drawings",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/4%3A_Describe_drawing_projections/4.1%3A_Types_of_views_used_in_drawings"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Interpret mechanical drawings",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/5%3A_Interpret_mechanical_drawings",
+          "topics": ["he.engineering.cad-graphics#3"],
+          "examples": ["title block, specifications, bill of materials"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Basic layout of a drawing",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/5%3A_Interpret_mechanical_drawings/5.1%3A_Basic_layout_of_a_drawing"
+            },
+            {
+              "n": "5.2",
+              "title": "Specifications",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/5%3A_Interpret_mechanical_drawings/5.2%3A_Specifications"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Creating drawings and sketches",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/6%3A_Creating_drawings_and_sketches",
+          "topics": ["he.engineering.cad-graphics#3"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Creating Drawings and Sketches",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/6%3A_Creating_drawings_and_sketches/6.1%3A_Creating_Drawings_and_Sketches"
+            },
+            {
+              "n": "6.2",
+              "title": "Make isometric sketches of simple rectangular objects",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/6%3A_Creating_drawings_and_sketches/6.2%3A_Make_isometric_sketches_of_simple_rectangular_objects"
+            },
+            {
+              "n": "6.3",
+              "title": "Sketching Figures with Non-isometric Lines",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/6%3A_Creating_drawings_and_sketches/6.3%3A_Sketching_Figures_with_Non-isometric_Lines"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Exercises",
+          "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/7%3A_Exercises",
+          "topics": ["he.engineering.cad-graphics#0"],
+          "notes": "Sketching practice.",
+          "lessons": [
+            {
+              "n": "7.01",
+              "title": "Practice 1: Make orthographic sketches",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/7%3A_Exercises/7.01%3A_Practice_1%3A_Make_orthographic_sketches"
+            },
+            {
+              "n": "7.02",
+              "title": "Practical 2: Make an orthographic three-view fully dimensioned sketch of a simple object",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/7%3A_Exercises/7.02%3A_Practical_2%3A_Make_an_orthographic_three-view_fully_dimensioned_sketch_of_a_simple_object"
+            },
+            {
+              "n": "7.03",
+              "title": "Practice 3: Make Isometric Sketches",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/7%3A_Exercises/7.03%3A_Practice_3%3A_Make_Isometric_Sketches"
+            },
+            {
+              "n": "7.04",
+              "title": "Answers",
+              "url": "https://workforce.libretexts.org/Bookshelves/Manufacturing/Fundamentals_-_Drawings_and_Specifications/7%3A_Exercises/7.04%3A_Answers"
+            }
+          ]
+        }
+      ],
+      "title": "Fundamentals: Drawings and Specifications"
+    }
+  ]
+}

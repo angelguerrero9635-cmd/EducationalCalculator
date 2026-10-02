@@ -1,0 +1,67 @@
+{
+  "id": "mit-ocw-12-201",
+  "curriculum": "MIT OCW 12.201 Essentials of Geophysics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Robert Van Der Hilst. 12.201 Essentials of Geophysics, Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Robert Van Der Hilst. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: WEEK # TOPICS 1 The Earth in the Solar System 2-4 The Earth’s Gravitational Field 5-8 The Magnetic Field of the Earth 9-12 Seismology 13-14 Geodynamics Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "hw2",
+          "url": "https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/resources/hw2/",
+          "topics": ["he.earth-science.geophysics#1"],
+          "examples": [
+            "anomaly of a buried horizontal cylinder; reduce station gravity (free-air, Bouguer) to locate a tunnel",
+            "gravity against radius inside a planet: uniform density, then a two-layer core and mantle",
+            "gravity anomaly over a buried sphere against horizontal distance; two spheres; non-uniqueness"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.201-PS2-P1, OCW-12.201-PS2-P3, OCW-12.201-PS2-P4"
+        },
+        {
+          "n": "2",
+          "title": "hw3",
+          "url": "https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/resources/hw3/",
+          "topics": ["he.earth-science.geophysics#1", "he.earth-science.physical-geology#1"],
+          "examples": [
+            "dipole part of the geomagnetic field from Gauss coefficients; tilt of the dipole axis; secular change",
+            "virtual geomagnetic pole from a site's inclination and declination; continental drift since"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-12.201-PS3-P1, OCW-12.201-PS3-P3"
+        },
+        {
+          "n": "3",
+          "title": "hw5",
+          "url": "https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/resources/hw5/",
+          "topics": ["he.earth-science.geophysics#0"],
+          "examples": [
+            "Rayleigh and Love waves: existence in a half-space, dispersion, which a blast makes",
+            "pick P, S and converted phases on a three-component seismogram"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-12.201-PS5-P1, OCW-12.201-PS5-P2"
+        }
+      ],
+      "title": "MIT OCW 12.201 Essentials of Geophysics"
+    }
+  ]
+}

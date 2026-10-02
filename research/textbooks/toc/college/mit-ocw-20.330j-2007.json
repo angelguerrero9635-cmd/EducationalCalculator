@@ -1,0 +1,147 @@
+{
+  "id": "mit-ocw-20.330j-2007",
+  "curriculum": "MIT OCW 20.330J / 2.793J / 6.023J Fields, Forces and Flows in Biological Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2007",
+  "subject": "bio",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Jongyoon Han and Scott Manalis. 20.330J / 2.793J / 6.023J Fields, Forces and Flows in Biological Systems. Spring 2007. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/20-330j-fields-forces-and-flows-in-biological-systems-spring-2007/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Problem sets 1, 4 and 10 read for the records.",
+  "books": [
+    {
+      "course": "20.330J / 2.793J / 6.023J",
+      "url": "https://ocw.mit.edu/courses/20-330j-fields-forces-and-flows-in-biological-systems-spring-2007/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Fluids",
+          "topics": ["he.engineering.biotransport#1"],
+          "examples": [
+            "bead settling near a wall",
+            "irrotational vs rotational fields",
+            "Laplace pressure of droplets"
+          ],
+          "notation": ["Re = ρUL/μ", "Δp = 2γ/r"],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Introduction to fluid flow",
+              "topics": ["he.engineering.biotransport#1"]
+            },
+            {
+              "n": "2",
+              "title": "Drag forces and viscosity",
+              "topics": ["he.engineering.biotransport#1"]
+            },
+            {
+              "n": "3–5",
+              "title": "Conservation of momentum; Navier–Stokes equation",
+              "topics": ["he.engineering.biotransport#1"]
+            },
+            {
+              "n": "6",
+              "title": "Reynolds number, scaling",
+              "topics": ["he.engineering.biotransport#1"]
+            },
+            {
+              "n": "7",
+              "title": "Poiseuille flow",
+              "topics": ["he.engineering.biotransport#1"]
+            },
+            {
+              "n": "8",
+              "title": "External viscous flows; Bernoulli",
+              "topics": ["he.engineering.biotransport#1"]
+            },
+            {
+              "n": "9",
+              "title": "Porous media, poroelasticity",
+              "topics": ["he.engineering.biomechanics#3"]
+            },
+            {
+              "n": "10",
+              "title": "Cellular fluid mechanics",
+              "topics": ["he.engineering.tissue-engineering#1"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Fields",
+          "topics": ["he.engineering.bioinstrumentation#0"],
+          "examples": ["cyclotron frequency and field for a protein ion", "Debye length"],
+          "notation": ["κ⁻¹ Debye length", "ω_c = zeB/m"],
+          "lessons": [
+            {
+              "n": "11–12",
+              "title": "Electromagnetic theory; Maxwell equations",
+              "topics": ["he.engineering.bioinstrumentation#0"]
+            },
+            {
+              "n": "14–15",
+              "title": "Quasielectrostatics; fields in aqueous media",
+              "topics": ["he.engineering.bioinstrumentation#0"]
+            },
+            {
+              "n": "16",
+              "title": "Debye layer",
+              "topics": ["he.engineering.biotransport#2"]
+            },
+            {
+              "n": "17–20",
+              "title": "Poisson and Laplace equations",
+              "topics": ["he.engineering.bioinstrumentation#0"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Transport",
+          "topics": ["he.engineering.biotransport#0", "he.engineering.biotransport#2"],
+          "lessons": [
+            {
+              "n": "21–25",
+              "title": "Diffusion, flux, steady and unsteady diffusion",
+              "topics": ["he.engineering.biotransport#0"]
+            },
+            {
+              "n": "26",
+              "title": "Cell-surface binding (electrical analogy)",
+              "topics": ["he.biology.cell-molecular#1"]
+            },
+            {
+              "n": "28–30",
+              "title": "Convection–diffusion equation",
+              "topics": ["he.engineering.biotransport#2"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Electrokinetics",
+          "topics": ["he.engineering.biotransport#2"],
+          "examples": ["electroosmotic pumping pressure against capillary radius"],
+          "lessons": [
+            {
+              "n": "31+",
+              "title": "Electrokinetic phenomena",
+              "topics": ["he.engineering.biotransport#2"]
+            }
+          ]
+        }
+      ],
+      "title": "20.330J / 2.793J / 6.023J"
+    }
+  ]
+}

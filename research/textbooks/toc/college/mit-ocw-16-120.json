@@ -31,60 +31,44 @@
           "n": "1–3",
           "title": "Basics: energy equation, entropy, shock thickness, nondimensional parameters",
           "url": "https://ocw.mit.edu/courses/16-120-compressible-flow-spring-2003/pages/calendar/",
-          "topics": [
-            "he.engineering.compressible-flow#0",
-            "he.engineering.compressible-flow#1"
-          ]
+          "topics": ["he.engineering.compressible-flow#0", "he.engineering.compressible-flow#1"]
         },
         {
           "n": "4–5",
           "title": "Quasi-1-D isentropic flow, choking, corrected flow; converging–diverging nozzles and starting",
-          "topics": [
-            "he.engineering.compressible-flow#0",
-            "he.engineering.compressible-flow#2"
-          ],
-          "notation": "corrected flow and flow function; A/A*"
+          "topics": ["he.engineering.compressible-flow#0", "he.engineering.compressible-flow#2"],
+          "notation": ["corrected flow and flow function; A/A*"]
         },
         {
           "n": "6–8",
           "title": "Generalized 1-D flow with friction, heat and mass addition; ramjets and scramjets",
           "topics": [],
-          "notes": "Fanno and Rayleigh flow: taxonomy gap (the plan proposes a topic or folding into Nozzle flow)."
+          "notes": "Fanno and Rayleigh flow: taxonomy gap (the plan proposes a topic or folding into Nozzle flow).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "9–11",
           "title": "Swirling and compound-compressible flow",
           "topics": [],
-          "notes": "Graduate; no taxonomy topic."
+          "notes": "Graduate; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "12–13",
           "title": "Disturbance types and characteristic speeds",
-          "topics": [
-            "he.engineering.compressible-flow#3"
-          ]
+          "topics": ["he.engineering.compressible-flow#3"]
         },
         {
           "n": "14–17",
           "title": "Shocks, deflagrations, detonations, Crocco’s theorem",
-          "topics": [
-            "he.engineering.compressible-flow#1"
-          ],
-          "examples": [
-            "shock structure by Navier–Stokes",
-            "weak-shock entropy rise"
-          ]
+          "topics": ["he.engineering.compressible-flow#1"],
+          "examples": ["shock structure by Navier–Stokes", "weak-shock entropy rise"]
         },
         {
           "n": "18–26",
           "title": "Linear and nonlinear 2-D compressible flow: slender bodies, transonic and hypersonic",
-          "topics": [
-            "he.engineering.compressible-flow#3"
-          ],
-          "examples": [
-            "2-D supersonic inlet contour",
-            "transonic small-disturbance equation"
-          ]
+          "topics": ["he.engineering.compressible-flow#3"],
+          "examples": ["2-D supersonic inlet contour", "transonic small-disturbance equation"]
         }
       ]
     }

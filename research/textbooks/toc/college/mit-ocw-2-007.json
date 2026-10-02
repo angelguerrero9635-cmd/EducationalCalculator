@@ -1,0 +1,128 @@
+{
+  "id": "mit-ocw-2-007",
+  "curriculum": "MIT OCW 2.007 Design and Manufacturing I",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2009",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Daniel Frey and David Gossard. 2.007 Design and Manufacturing I, Spring 2009. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Daniel Frey and David Gossard. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # LECTURE CONTENTS LAB ACTIVITies KEY DATES 1 Course introduction, contest overview Explore kit and contest 2 Problem definition and design 3 Actuators - DC motors, servomotors, pneumatics Build a simple car and preliminary strategy HW 1 out 4 Creating CAD components 1 5 Creating CAD components 2 Design concept 6 Mechanisms (2D kinematic analysis) Design of most critical module HW 1 due HW 2 out 7 Creating CAD assemblies 8 Mechanisms (synthesis of 4 bar mechanisms) Fabrication of most critical module 9 Creating CAD assemblies 2 HW 2 due 10 Quiz 1 Fabrication of most critical module Quiz 1 due 11 Creating CAD drawings 12 Gears - basics, terminology, involute curve Demonstration of most critical module HW 3 out 13 Gears - strength, gear trains 14 Microcontrollers Integration of design 15 Lab time 16 Sensors Demonstration of integrated machine HW 3 due 17 Lab time 18 Belts / chains / ca Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit2_007s09_hw01",
+          "url": "https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/resources/mit2_007s09_hw01/",
+          "topics": ["he.engineering.statics#4"],
+          "examples": ["capstan: tension to raise and to lower a weight"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.007-HW1-2"
+        },
+        {
+          "n": "2",
+          "title": "mit2_007s09_hw02",
+          "url": "https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/resources/mit2_007s09_hw02/",
+          "topics": [
+            "he.engineering.cad-graphics#3",
+            "he.engineering.cad-graphics#2",
+            "he.engineering.machine-design#3"
+          ],
+          "examples": [
+            "assembly with concentric and coincident mates",
+            "gear ratio for servos to climb a ramp",
+            "parametric solid model of a car chassis and wheels",
+            "window-glass linkage: links, pins and motion"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-2.007-HW2-2, OCW-2.007-HW2-3, OCW-2.007-HW2-4, OCW-2.007-HW2-1"
+        },
+        {
+          "n": "3",
+          "title": "mit2_007s09_hw03",
+          "url": "https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/resources/mit2_007s09_hw03/",
+          "topics": [
+            "he.engineering.cad-graphics#3",
+            "he.engineering.thermodynamics#1",
+            "he.engineering.machine-design#3"
+          ],
+          "examples": [
+            "energy to fill a bottle with compressed air and the work it gives back",
+            "engineering drawing of a part: three aligned views and dimensions",
+            "spur gears of a diametral pitch: pitch diameters and centre distance"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.007-HW3-2, OCW-2.007-HW3-3, OCW-2.007-HW3-4"
+        },
+        {
+          "n": "4",
+          "title": "mit2_007s09_exam01a",
+          "url": "https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/resources/mit2_007s09_exam01a/",
+          "topics": [
+            "he.engineering.cad-graphics#2",
+            "he.engineering.statics#4",
+            "he.engineering.cad-graphics#0"
+          ],
+          "examples": [
+            "drum brake: braking torque from the cylinder force",
+            "isometric sketch from three views",
+            "name features of a part (rib, boss, fillet)"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.007-E1A-5, OCW-2.007-E1A-6, OCW-2.007-E1A-7"
+        },
+        {
+          "n": "5",
+          "title": "mit2_007s09_exam01b",
+          "url": "https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/resources/mit2_007s09_exam01b/",
+          "topics": [
+            "he.engineering.cad-graphics#3",
+            "he.engineering.statics#4",
+            "he.engineering.cad-graphics#0"
+          ],
+          "examples": [
+            "degrees of freedom of a mechanism",
+            "holding force of a rope wrapped once around a pipe",
+            "synthesize a four-bar for three positions",
+            "three-view drawing from an isometric"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-2.007-E1B-2, OCW-2.007-E1B-5, OCW-2.007-E1B-6, OCW-2.007-E1B-8"
+        },
+        {
+          "n": "6",
+          "title": "mit2_007s09_exam02a",
+          "url": "https://ocw.mit.edu/courses/2-007-design-and-manufacturing-i-spring-2009/resources/mit2_007s09_exam02a/",
+          "topics": [
+            "he.engineering.cad-graphics#1",
+            "he.engineering.machine-design#3",
+            "he.engineering.machine-design#0"
+          ],
+          "examples": [
+            "centre distance and speed of two catalogue gears",
+            "conjugate action and the involute profile",
+            "hydraulic cylinder: stresses and factor of safety",
+            "match gear and spring types to pictures",
+            "three-view drawing with dimensions on the best view"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-2.007-E2A-10, OCW-2.007-E2A-4, OCW-2.007-E2A-6, OCW-2.007-E2A-9, OCW-2.007-E2A-11"
+        }
+      ],
+      "title": "MIT OCW 2.007 Design and Manufacturing I"
+    }
+  ]
+}

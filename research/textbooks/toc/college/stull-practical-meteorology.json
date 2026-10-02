@@ -1,0 +1,1353 @@
+{
+  "id": "stull-practical-meteorology",
+  "curriculum": "Practical Meteorology: An Algebra-based Survey of Atmospheric Science",
+  "publisher": "University of British Columbia",
+  "edition": "version 1.02b (2017)",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Roland Stull, Practical Meteorology: An Algebra-based Survey of Atmospheric Science, v1.02b, University of British Columbia, 2017. CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+  "retrieved": "2026-10-02",
+  "notes": "Section titles from the book's contents PDF (prmet102/Ch00-TOC-v102b.pdf). Each chapter ends with Homework Exercises in four kinds (B broaden with web data, A apply 'plug and chug', E evaluate and analyze, S synthesize); A exercises are recorded as types (STULL-*). The cover photo is © Warren Faidley (excluded from the licence).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Atmospheric Basics",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#0"],
+          "examples": [
+            "wind components ↔ direction and speed",
+            "pressure at a height (hypsometric)",
+            "ideal-gas density",
+            "hydrostatic Δp",
+            "thickness between levels"
+          ],
+          "ranges": ["T −40 to 50 °C", "p 10–100 kPa", "z to 30 km"],
+          "notation": [
+            "pressure in kPa (not hPa)",
+            "T in °C and K; virtual temperature T_v",
+            "U east, V north"
+          ],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Introduction",
+              "url": null
+            },
+            {
+              "n": "1.2",
+              "title": "Meteorological Conventions",
+              "url": null
+            },
+            {
+              "n": "1.3",
+              "title": "Earth Frameworks Reviewed",
+              "url": null
+            },
+            {
+              "n": "1.4",
+              "title": "Thermodynamic State",
+              "url": null
+            },
+            {
+              "n": "1.5",
+              "title": "Atmospheric Structure",
+              "url": null
+            },
+            {
+              "n": "1.6",
+              "title": "Equation of State– Ideal Gas Law",
+              "url": null
+            },
+            {
+              "n": "1.7",
+              "title": "Hydrostatic Equilibrium",
+              "url": null
+            },
+            {
+              "n": "1.8",
+              "title": "Hypsometric Equation",
+              "url": null
+            },
+            {
+              "n": "1.9",
+              "title": "Process Terminology",
+              "url": null
+            },
+            {
+              "n": "1.10",
+              "title": "Pressure Instruments",
+              "url": null
+            },
+            {
+              "n": "1.11",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "1.12",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Solar and Infrared Radiation",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [
+            "he.geography.climatology#0",
+            "he.geography.physical-geography#0",
+            "he.geography.remote-sensing#0"
+          ],
+          "examples": [
+            "Julian day, declination, insolation",
+            "sunrise and twilight times",
+            "Wien and Stefan–Boltzmann",
+            "kinematic fluxes"
+          ],
+          "ranges": ["latitudes 0–90°", "T 200–6,000 K"],
+          "notation": ["δ_s declination; Φ latitude", "W·m⁻²; kinematic K·m·s⁻¹"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Orbital Factors",
+              "url": null
+            },
+            {
+              "n": "2.2",
+              "title": "Flux",
+              "url": null
+            },
+            {
+              "n": "2.3",
+              "title": "Radiation principles",
+              "url": null
+            },
+            {
+              "n": "2.4",
+              "title": "Surface Radiation Budget",
+              "url": null
+            },
+            {
+              "n": "2.5",
+              "title": "Actinometers",
+              "url": null
+            },
+            {
+              "n": "2.6",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "2.7",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Thermodynamics",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#1"],
+          "examples": [
+            "dry adiabat final temperature",
+            "potential temperature from z or p",
+            "first law with heat added"
+          ],
+          "ranges": ["Δz 0–12 km", "p 20–100 kPa"],
+          "notation": ["θ = T(P₀/P)^0.28571", "Γ_d = 9.8 K/km"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Internal Energy",
+              "url": null
+            },
+            {
+              "n": "3.2",
+              "title": "First Law of Thermodynamics",
+              "url": null
+            },
+            {
+              "n": "3.3",
+              "title": "Frameworks",
+              "url": null
+            },
+            {
+              "n": "3.4",
+              "title": "Heat Budget of an Unsaturated Air Parcel",
+              "url": null
+            },
+            {
+              "n": "3.5",
+              "title": "Heat Budget at a Fixed Location",
+              "url": null
+            },
+            {
+              "n": "3.6",
+              "title": "Heat Budget at Earth’s Surface",
+              "url": null
+            },
+            {
+              "n": "3.7",
+              "title": "Apparent Temperature Indices",
+              "url": null
+            },
+            {
+              "n": "3.8",
+              "title": "Temperature Sensors",
+              "url": null
+            },
+            {
+              "n": "3.9",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "3.10",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Water Vapor",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#1"],
+          "examples": [
+            "e_s by Clausius–Clapeyron and Tetens",
+            "RH, r, q, T_d, LCL",
+            "psychrometer",
+            "moist lapse rate"
+          ],
+          "ranges": ["T −30 to 45 °C"],
+          "notation": ["e, e_s in kPa; r in g/kg", "z_LCL = a(T − T_d), a = 0.125 km/°C"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Vapor Pressure at Saturation",
+              "url": null
+            },
+            {
+              "n": "4.2",
+              "title": "Moisture Variables",
+              "url": null
+            },
+            {
+              "n": "4.3",
+              "title": "Total Water",
+              "url": null
+            },
+            {
+              "n": "4.4",
+              "title": "Lagrangian Budgets",
+              "url": null
+            },
+            {
+              "n": "4.5",
+              "title": "Water Budget at a Fixed Location",
+              "url": null
+            },
+            {
+              "n": "4.6",
+              "title": "Humidity Instruments",
+              "url": null
+            },
+            {
+              "n": "4.7",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "4.8",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Atmospheric Stability",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#1"],
+          "examples": ["stability on thermo diagrams", "Brunt–Väisälä frequency"],
+          "notation": ["skew-T, emagram, tephigram, Stüve"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Building a Thermo-diagram",
+              "url": null
+            },
+            {
+              "n": "5.2",
+              "title": "Types Of Thermo Diagrams",
+              "url": null
+            },
+            {
+              "n": "5.3",
+              "title": "More on the Skew-T",
+              "url": null
+            },
+            {
+              "n": "5.4",
+              "title": "Guide for Identification of Thermo Diagrams",
+              "url": null
+            },
+            {
+              "n": "5.5",
+              "title": "Thermo-diagram Applications",
+              "url": null
+            },
+            {
+              "n": "5.6",
+              "title": "An Air Parcel & Its Environment",
+              "url": null
+            },
+            {
+              "n": "5.7",
+              "title": "Flow Stability",
+              "url": null
+            },
+            {
+              "n": "5.8",
+              "title": "Tropopause Height and Mixed-layer Depth",
+              "url": null
+            },
+            {
+              "n": "5.9",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "5.10",
+              "title": "Homework Exercises",
+              "url": null
+            },
+            {
+              "n": "5.11",
+              "title": "Large-size Thermo Diagrams",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Clouds",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#2"],
+          "examples": [
+            "moisture or cooling to saturate",
+            "cloud genus from description",
+            "fog formation"
+          ],
+          "notation": ["WMO and USA cloud symbols; oktas"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Processes Causing Saturation",
+              "url": null
+            },
+            {
+              "n": "6.2",
+              "title": "Cloud Identification",
+              "url": null
+            },
+            {
+              "n": "6.3",
+              "title": "Cloud Organization",
+              "url": null
+            },
+            {
+              "n": "6.4",
+              "title": "Cloud Classification",
+              "url": null
+            },
+            {
+              "n": "6.5",
+              "title": "Sky Cover (Cloud Amount)",
+              "url": null
+            },
+            {
+              "n": "6.6",
+              "title": "Cloud Sizes",
+              "url": null
+            },
+            {
+              "n": "6.7",
+              "title": "Fractal Cloud Shapes",
+              "url": null
+            },
+            {
+              "n": "6.8",
+              "title": "Fog",
+              "url": null
+            },
+            {
+              "n": "6.9",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "6.10",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Precipitation Processes",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#2"],
+          "examples": [
+            "droplets per raindrop",
+            "Köhler critical radius",
+            "CCN activation",
+            "rain-rate class"
+          ],
+          "ranges": ["radii 1 µm – 5 mm"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Supersaturation & Water Availability",
+              "url": null
+            },
+            {
+              "n": "7.2",
+              "title": "Nucleation of Liquid Droplets",
+              "url": null
+            },
+            {
+              "n": "7.3",
+              "title": "Nucleation of Ice Crystals",
+              "url": null
+            },
+            {
+              "n": "7.4",
+              "title": "Liquid Droplet Growth by Diffusion",
+              "url": null
+            },
+            {
+              "n": "7.5",
+              "title": "Ice Growth by Diffusion",
+              "url": null
+            },
+            {
+              "n": "7.6",
+              "title": "Collision and Collection",
+              "url": null
+            },
+            {
+              "n": "7.7",
+              "title": "Precipitation Characteristics",
+              "url": null
+            },
+            {
+              "n": "7.8",
+              "title": "Precipitation Measurement",
+              "url": null
+            },
+            {
+              "n": "7.9",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "7.10",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Satellites and Radar",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.geography.remote-sensing#0", "he.earth-science.meteorology#2"],
+          "examples": [
+            "blackbody radiance and brightness temperature",
+            "satellite period from altitude",
+            "radar range, Doppler, Z–R rain rate"
+          ],
+          "ranges": ["dBZ 10–60", "PRF 50–1,600 s⁻¹"],
+          "notation": ["Z in mm⁶/m³ and dBZ"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Radiative Transfer for Satellites",
+              "url": null
+            },
+            {
+              "n": "8.2",
+              "title": "Weather Satellites",
+              "url": null
+            },
+            {
+              "n": "8.3",
+              "title": "Weather Radars",
+              "url": null
+            },
+            {
+              "n": "8.4",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "8.5",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Weather Reports and Map Analysis",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#3"],
+          "examples": [
+            "sea-level pressure reduction",
+            "METAR and station plots",
+            "isopleth analysis"
+          ],
+          "notation": ["station model"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Sea-level Pressure Reduction",
+              "url": null
+            },
+            {
+              "n": "9.2",
+              "title": "Meteorological Reports & Observations",
+              "url": null
+            },
+            {
+              "n": "9.3",
+              "title": "Synoptic Weather Maps",
+              "url": null
+            },
+            {
+              "n": "9.4",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "9.5",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Atmospheric Forces and Winds",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#3"],
+          "examples": [
+            "pressure-gradient and Coriolis force",
+            "geostrophic and gradient wind",
+            "boundary-layer wind"
+          ],
+          "ranges": ["f_c ≈ 10⁻⁴ s⁻¹", "G 1–60 m/s"],
+          "notation": ["f_c = 2Ω sin φ"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Winds and Weather Maps",
+              "url": null
+            },
+            {
+              "n": "10.2",
+              "title": "Newton’s 2nd Law",
+              "url": null
+            },
+            {
+              "n": "10.3",
+              "title": "Horizontal Forces",
+              "url": null
+            },
+            {
+              "n": "10.4",
+              "title": "Equations of Horizontal Motion",
+              "url": null
+            },
+            {
+              "n": "10.5",
+              "title": "Horizontal Winds",
+              "url": null
+            },
+            {
+              "n": "10.6",
+              "title": "Horizontal Motion",
+              "url": null
+            },
+            {
+              "n": "10.7",
+              "title": "Vertical Forces and Motion",
+              "url": null
+            },
+            {
+              "n": "10.8",
+              "title": "Conservation of Air Mass",
+              "url": null
+            },
+            {
+              "n": "10.9",
+              "title": "Kinematics",
+              "url": null
+            },
+            {
+              "n": "10.10",
+              "title": "Measuring Winds",
+              "url": null
+            },
+            {
+              "n": "10.11",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "10.12",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "General Circulation",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.geography.climatology#1"],
+          "examples": [
+            "insolation and net radiation by latitude",
+            "thermal wind",
+            "Rossby radius and waves",
+            "vorticity"
+          ],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Key Terms",
+              "url": null
+            },
+            {
+              "n": "11.2",
+              "title": "A Simple Description of the Global Circulation",
+              "url": null
+            },
+            {
+              "n": "11.3",
+              "title": "Radiative Differential Heating",
+              "url": null
+            },
+            {
+              "n": "11.4",
+              "title": "Pressure Profiles",
+              "url": null
+            },
+            {
+              "n": "11.5",
+              "title": "Geostrophic Wind & Geostrophic Adjustment",
+              "url": null
+            },
+            {
+              "n": "11.6",
+              "title": "Thermal Wind Effect",
+              "url": null
+            },
+            {
+              "n": "11.7",
+              "title": "Explaining the General Circulation",
+              "url": null
+            },
+            {
+              "n": "11.8",
+              "title": "Jet Streams",
+              "url": null
+            },
+            {
+              "n": "11.9",
+              "title": "Types of Vorticity",
+              "url": null
+            },
+            {
+              "n": "11.10",
+              "title": "Horizontal Circulation",
+              "url": null
+            },
+            {
+              "n": "11.11",
+              "title": "Extratropical Ridges & Troughs (Rossby Waves)",
+              "url": null
+            },
+            {
+              "n": "11.12",
+              "title": "Three-band Global Circulation",
+              "url": null
+            },
+            {
+              "n": "11.13",
+              "title": "Ekman Spiral of Ocean Currents",
+              "url": null
+            },
+            {
+              "n": "11.14",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "11.15",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Fronts and AirMasses",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#3"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Anticyclones or Highs",
+              "url": null
+            },
+            {
+              "n": "12.2",
+              "title": "Airmasses",
+              "url": null
+            },
+            {
+              "n": "12.3",
+              "title": "Surface Fronts",
+              "url": null
+            },
+            {
+              "n": "12.4",
+              "title": "Geostrophic Adjustment – Part 3",
+              "url": null
+            },
+            {
+              "n": "12.5",
+              "title": "Frontogenesis",
+              "url": null
+            },
+            {
+              "n": "12.6",
+              "title": "Occluded Fronts and Mid-tropospheric Fronts",
+              "url": null
+            },
+            {
+              "n": "12.7",
+              "title": "Bent-back Fronts & Sting Jets",
+              "url": null
+            },
+            {
+              "n": "12.8",
+              "title": "Upper-tropospheric Fronts",
+              "url": null
+            },
+            {
+              "n": "12.9",
+              "title": "Drylines",
+              "url": null
+            },
+            {
+              "n": "12.10",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "12.11",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Extratropical Cyclones",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#3"],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Cyclone Characteristics",
+              "url": null
+            },
+            {
+              "n": "13.2",
+              "title": "Midlatitude Cyclone Evolution - A Case Study",
+              "url": null
+            },
+            {
+              "n": "13.3",
+              "title": "Lee Cyclogenesis",
+              "url": null
+            },
+            {
+              "n": "13.4",
+              "title": "Spin-up of Cyclonic Rotation",
+              "url": null
+            },
+            {
+              "n": "13.5",
+              "title": "Ascent",
+              "url": null
+            },
+            {
+              "n": "13.6",
+              "title": "Tendency of Sea-level Pressure",
+              "url": null
+            },
+            {
+              "n": "13.7",
+              "title": "Cyclone Self Development",
+              "url": null
+            },
+            {
+              "n": "13.8",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "13.9",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Thunderstorm Fundamentals",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [],
+          "notes": "Thunderstorms, hazards, tropical cyclones, regional winds, boundary layer, dispersion, optics: no topic (severe weather is partly a gap).",
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Thunderstorm Characteristics",
+              "url": null
+            },
+            {
+              "n": "14.2",
+              "title": "Thunderstorm Formation",
+              "url": null
+            },
+            {
+              "n": "14.3",
+              "title": "High Humidity in the ABL",
+              "url": null
+            },
+            {
+              "n": "14.4",
+              "title": "Instability, CAPE & Updrafts",
+              "url": null
+            },
+            {
+              "n": "14.5",
+              "title": "Wind Shear in the Environment",
+              "url": null
+            },
+            {
+              "n": "14.6",
+              "title": "Triggering vs. Convective Inhibition",
+              "url": null
+            },
+            {
+              "n": "14.7",
+              "title": "Thunderstorm Forecasting",
+              "url": null
+            },
+            {
+              "n": "14.8",
+              "title": "Storm Case Study",
+              "url": null
+            },
+            {
+              "n": "14.9",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "14.10",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "15",
+          "title": "Thunderstorm Hazards",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [],
+          "notes": "Thunderstorms, hazards, tropical cyclones, regional winds, boundary layer, dispersion, optics: no topic (severe weather is partly a gap).",
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "Precipitation and Hail",
+              "url": null
+            },
+            {
+              "n": "15.2",
+              "title": "Gust Fronts and Downbursts",
+              "url": null
+            },
+            {
+              "n": "15.3",
+              "title": "Lightning and Thunder",
+              "url": null
+            },
+            {
+              "n": "15.4",
+              "title": "Tornadoes",
+              "url": null
+            },
+            {
+              "n": "15.5",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "15.6",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "16",
+          "title": "Tropical Cyclones",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [],
+          "notes": "Thunderstorms, hazards, tropical cyclones, regional winds, boundary layer, dispersion, optics: no topic (severe weather is partly a gap).",
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "Tropical Cyclone Structure",
+              "url": null
+            },
+            {
+              "n": "16.2",
+              "title": "Intensity & Geographic distribution",
+              "url": null
+            },
+            {
+              "n": "16.3",
+              "title": "Evolution",
+              "url": null
+            },
+            {
+              "n": "16.4",
+              "title": "Dynamics",
+              "url": null
+            },
+            {
+              "n": "16.5",
+              "title": "Thermodynamics",
+              "url": null
+            },
+            {
+              "n": "16.6",
+              "title": "A Tropical Cyclone Model",
+              "url": null
+            },
+            {
+              "n": "16.7",
+              "title": "Climatology",
+              "url": null
+            },
+            {
+              "n": "16.8",
+              "title": "Hazards",
+              "url": null
+            },
+            {
+              "n": "16.9",
+              "title": "Tropical Cyclone Forecasting",
+              "url": null
+            },
+            {
+              "n": "16.10",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "16.11",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "17",
+          "title": "Regional Winds",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [],
+          "notes": "Thunderstorms, hazards, tropical cyclones, regional winds, boundary layer, dispersion, optics: no topic (severe weather is partly a gap).",
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Wind Frequency",
+              "url": null
+            },
+            {
+              "n": "17.2",
+              "title": "Wind-Turbine Power Generation",
+              "url": null
+            },
+            {
+              "n": "17.3",
+              "title": "Thermally Driven Circulations",
+              "url": null
+            },
+            {
+              "n": "17.4",
+              "title": "Open-Channel Hydraulics",
+              "url": null
+            },
+            {
+              "n": "17.5",
+              "title": "Gap Winds",
+              "url": null
+            },
+            {
+              "n": "17.6",
+              "title": "Coastally Trapped Low-level (Barrier) Jets",
+              "url": null
+            },
+            {
+              "n": "17.7",
+              "title": "Mountain Waves",
+              "url": null
+            },
+            {
+              "n": "17.8",
+              "title": "Streamlines, Streaklines, and Trajectories",
+              "url": null
+            },
+            {
+              "n": "17.9",
+              "title": "Bernoulli’s Equation",
+              "url": null
+            },
+            {
+              "n": "17.10",
+              "title": "Downslope Winds",
+              "url": null
+            },
+            {
+              "n": "17.11",
+              "title": "Canopy Flows",
+              "url": null
+            },
+            {
+              "n": "17.12",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "17.13",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "18",
+          "title": "Atmospheric Boundary Layer",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [],
+          "notes": "Thunderstorms, hazards, tropical cyclones, regional winds, boundary layer, dispersion, optics: no topic (severe weather is partly a gap).",
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "Static Stability — A Review",
+              "url": null
+            },
+            {
+              "n": "18.2",
+              "title": "Boundary-layer Formation",
+              "url": null
+            },
+            {
+              "n": "18.3",
+              "title": "ABL Structure and Evolution",
+              "url": null
+            },
+            {
+              "n": "18.4",
+              "title": "Temperature",
+              "url": null
+            },
+            {
+              "n": "18.5",
+              "title": "Wind",
+              "url": null
+            },
+            {
+              "n": "18.6",
+              "title": "Turbulence",
+              "url": null
+            },
+            {
+              "n": "18.7",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "18.8",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "19",
+          "title": "Pollutant Dispersion",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [],
+          "notes": "Thunderstorms, hazards, tropical cyclones, regional winds, boundary layer, dispersion, optics: no topic (severe weather is partly a gap).",
+          "lessons": [
+            {
+              "n": "19.1",
+              "title": "Dispersion Factors",
+              "url": null
+            },
+            {
+              "n": "19.2",
+              "title": "Air Quality Standards",
+              "url": null
+            },
+            {
+              "n": "19.3",
+              "title": "Turbulence Statistics",
+              "url": null
+            },
+            {
+              "n": "19.4",
+              "title": "Dispersion Statistics",
+              "url": null
+            },
+            {
+              "n": "19.5",
+              "title": "Taylor’s Statistical Theory",
+              "url": null
+            },
+            {
+              "n": "19.6",
+              "title": "Dispersion In Neutral & Stable Boundary Layers",
+              "url": null
+            },
+            {
+              "n": "19.8",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "19.9",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "20",
+          "title": "Numerical Weather Prediction (NWP)",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": ["he.earth-science.meteorology#3"],
+          "lessons": [
+            {
+              "n": "20.1",
+              "title": "Scientific Basis of Forecasting",
+              "url": null
+            },
+            {
+              "n": "20.2",
+              "title": "Grid Points",
+              "url": null
+            },
+            {
+              "n": "20.3",
+              "title": "Finite-Difference Equations",
+              "url": null
+            },
+            {
+              "n": "20.4",
+              "title": "Numerical Errors & Instability",
+              "url": null
+            },
+            {
+              "n": "20.5",
+              "title": "The Numerical Forecast Process",
+              "url": null
+            },
+            {
+              "n": "20.6",
+              "title": "Nonlinear Dynamics And Chaos",
+              "url": null
+            },
+            {
+              "n": "20.7",
+              "title": "Forecast Quality & Verification",
+              "url": null
+            },
+            {
+              "n": "20.8",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "20.9",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "21",
+          "title": "Natural Climate Processes",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [
+            "he.geography.climatology#0",
+            "he.geography.climatology#2",
+            "he.geography.climatology#3"
+          ],
+          "examples": [
+            "radiation input for an albedo",
+            "effective temperature",
+            "one-layer greenhouse surface temperature",
+            "feedback factor and gain"
+          ],
+          "ranges": ["albedo 0.1–0.7", "forcing ~4 W/m²"],
+          "notation": ["T_e; feedback f, gain G"],
+          "lessons": [
+            {
+              "n": "21.1",
+              "title": "Radiative Balance",
+              "url": null
+            },
+            {
+              "n": "21.2",
+              "title": "Astronomical Influences",
+              "url": null
+            },
+            {
+              "n": "21.3",
+              "title": "Tectonic Influences",
+              "url": null
+            },
+            {
+              "n": "21.4",
+              "title": "Feedbacks",
+              "url": null
+            },
+            {
+              "n": "21.5",
+              "title": "Gaia Hypothesis & Daisyworld",
+              "url": null
+            },
+            {
+              "n": "21.6",
+              "title": "GCMs",
+              "url": null
+            },
+            {
+              "n": "21.7",
+              "title": "Present Climate",
+              "url": null
+            },
+            {
+              "n": "21.8",
+              "title": "Natural Oscillations",
+              "url": null
+            },
+            {
+              "n": "21.9",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "21.10",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "22",
+          "title": "Atmospheric Optics",
+          "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
+          "topics": [],
+          "notes": "Thunderstorms, hazards, tropical cyclones, regional winds, boundary layer, dispersion, optics: no topic (severe weather is partly a gap).",
+          "lessons": [
+            {
+              "n": "22.1",
+              "title": "Ray Geometry",
+              "url": null
+            },
+            {
+              "n": "22.2",
+              "title": "Liquid-Drop Optics",
+              "url": null
+            },
+            {
+              "n": "22.3",
+              "title": "Ice Crystal Optics",
+              "url": null
+            },
+            {
+              "n": "22.4",
+              "title": "Scattering",
+              "url": null
+            },
+            {
+              "n": "22.5",
+              "title": "Diffraction & Interference",
+              "url": null
+            },
+            {
+              "n": "22.6",
+              "title": "Mirages",
+              "url": null
+            },
+            {
+              "n": "22.7",
+              "title": "Review",
+              "url": null
+            },
+            {
+              "n": "22.8",
+              "title": "Homework Exercises",
+              "url": null
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Practical Meteorology: An Algebra-based Survey of Atmospheric Science"
+    }
+  ]
+}

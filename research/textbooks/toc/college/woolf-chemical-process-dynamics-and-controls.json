@@ -26,9 +26,7 @@
         {
           "n": "1",
           "title": "Overview",
-          "topics": [
-            "he.engineering.process-control#1"
-          ]
+          "topics": ["he.engineering.process-control#1"]
         },
         {
           "n": "2",
@@ -41,9 +39,7 @@
         {
           "n": "3",
           "title": "Sensors and Actuators (valves, fail-safe positions)",
-          "topics": [
-            "he.engineering.process-control#1"
-          ]
+          "topics": ["he.engineering.process-control#1"]
         },
         {
           "n": "4",
@@ -57,58 +53,47 @@
           "n": "5",
           "title": "Logical Modeling",
           "topics": [],
-          "notes": "Boolean logic and alarms: no topic."
+          "notes": "Boolean logic and alarms: no topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "6",
           "title": "Modeling Case Studies",
-          "topics": [
-            "he.engineering.process-control#0"
-          ]
+          "topics": ["he.engineering.process-control#0"]
         },
         {
           "n": "7",
           "title": "Mathematics for Control Systems (Laplace)",
-          "topics": [
-            "he.engineering.process-control#0"
-          ]
+          "topics": ["he.engineering.process-control#0"]
         },
         {
           "n": "8",
           "title": "Optimization",
           "topics": [],
-          "notes": "No topic."
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "9",
           "title": "PID Control (block diagrams, P/I/D, classical tuning, Bode tuning, optimization tuning, downsides)",
-          "topics": [
-            "he.engineering.process-control#1",
-            "he.engineering.process-control#2"
-          ],
+          "topics": ["he.engineering.process-control#1", "he.engineering.process-control#2"],
           "examples": [
             "Ziegler–Nichols from K_u and P_u",
             "robustness from ISE and ISC",
             "diagnosing a P response"
           ],
-          "notation": "K_c, T_i, T_d; Cohen–Coon; IMC"
+          "notation": ["K_c, T_i, T_d; Cohen–Coon; IMC"]
         },
         {
           "n": "10",
           "title": "Dynamical Systems Analysis (fixed points, linearization, eigenvalues, phase plane, root locus, Routh)",
-          "topics": [
-            "he.engineering.process-control#3"
-          ],
-          "examples": [
-            "Routh array of a cubic"
-          ]
+          "topics": ["he.engineering.process-control#3"],
+          "examples": ["Routh array of a cubic"]
         },
         {
           "n": "11",
           "title": "Control Architectures (feedback, feedforward, cascade, ratio, level, temperature, reactors)",
-          "topics": [
-            "he.engineering.process-control#3"
-          ],
+          "topics": ["he.engineering.process-control#3"],
           "examples": [
             "ratio dilution",
             "air–fuel ratio",
@@ -120,13 +105,15 @@
           "n": "12",
           "title": "MIMO Control",
           "topics": [],
-          "notes": "No topic."
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "13–14",
           "title": "Statistics and Design of Experiments",
           "topics": [],
-          "notes": "No topic."
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

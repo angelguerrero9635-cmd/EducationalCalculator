@@ -1,0 +1,726 @@
+{
+  "id": "libretexts-peverati-live-pchem",
+  "curriculum": "Peverati, The Live Textbook of Physical Chemistry",
+  "publisher": "Roberto Peverati (Florida Tech); LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "Roberto Peverati, The Live Textbook of Physical Chemistry, LibreTexts. License: CC BY-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter and section titles as listed on LibreTexts (fetched at its 5 s Crawl-delay); topics are our mapping; examples, ranges and notation in our words from the problem pages read for question records. No text, problem or number copied. No exercise pages in this book; titles and order only (a CC BY-SA cross-check of the physical chemistry sequence). Licence tags seen on chapter pages: license:ccbysa.",
+  "books": [
+    {
+      "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Systems and Variables",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/01%3A_Systems_and_Variables",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Thermodynamic Systems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/01%3A_Systems_and_Variables/1.01%3A_Thermodynamic_Systems"
+            },
+            {
+              "n": "1.2",
+              "title": "Thermodynamic Variables",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/01%3A_Systems_and_Variables/1.02%3A_Thermodynamic_Variables"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Zeroth Law of Thermodynamics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/02%3A_Zeroth_Law_of_Thermodynamics",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "What is Thermodynamics?",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/02%3A_Zeroth_Law_of_Thermodynamics/2.01%3A_What_is_Thermodynamics"
+            },
+            {
+              "n": "2.2",
+              "title": "The Zeroth Law of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/02%3A_Zeroth_Law_of_Thermodynamics/2.02%3A_The_Zeroth_Law_of_Thermodynamics"
+            },
+            {
+              "n": "2.3",
+              "title": "Calculation of Heat",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/02%3A_Zeroth_Law_of_Thermodynamics/2.03%3A_Calculation_of_Heat"
+            },
+            {
+              "n": "2.4",
+              "title": "Calculation of Work",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/02%3A_Zeroth_Law_of_Thermodynamics/2.04%3A_Calculation_of_Work"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "First Law of Thermodynamics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/03%3A_First_Law_of_Thermodynamics",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Calculation of Internal Energy Changes",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/03%3A_First_Law_of_Thermodynamics/3.01%3A_Calculation_of_Internal_Energy_Changes"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Thermochemistry",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/04%3A_Thermochemistry",
+          "topics": ["he.chemistry.physical-1#0", "he.chemistry.gen-chem-1#3"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Reaction Enthalpies",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/04%3A_Thermochemistry/4.01%3A_Reaction_Enthalpies"
+            },
+            {
+              "n": "4.2",
+              "title": "Standard Enthalpies of Formation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/04%3A_Thermochemistry/4.02%3A_Standard_Enthalpies_of_Formation"
+            },
+            {
+              "n": "4.3",
+              "title": "Hess's Law",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/04%3A_Thermochemistry/4.03%3A_Hess's_Law"
+            },
+            {
+              "n": "4.4",
+              "title": "Calculations of Enthalpies of Reaction at   T ≠ 298 K",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/04%3A_Thermochemistry/4.04%3A_Calculations_of_Enthalpies_of_Reaction_at___T__298_K"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Thermodynamic Cycles",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/05%3A_Thermodynamic_Cycles",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Carnot Cycle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/05%3A_Thermodynamic_Cycles/5.01%3A_Carnot_Cycle"
+            },
+            {
+              "n": "5.2",
+              "title": "Energy, Heat, and Work in the Carnot Cycle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/05%3A_Thermodynamic_Cycles/5.02%3A_Energy_Heat_and_Work_in_the_Carnot_Cycle"
+            },
+            {
+              "n": "5.3",
+              "title": "Efficiency of a Carnot Cycle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/05%3A_Thermodynamic_Cycles/5.03%3A_Efficiency_of_a_Carnot_Cycle"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Second Law of Thermodynamics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/06%3A_Second_Law_of_Thermodynamics",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Entropy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/06%3A_Second_Law_of_Thermodynamics/6.01%3A_Entropy"
+            },
+            {
+              "n": "6.2",
+              "title": "Irreversible Cycles",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/06%3A_Second_Law_of_Thermodynamics/6.02%3A_Irreversible_Cycles"
+            },
+            {
+              "n": "6.3",
+              "title": "The Second Law of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/06%3A_Second_Law_of_Thermodynamics/6.03%3A_The_Second_Law_of_Thermodynamics"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Calculation of Entropy and the Third Law of Thermodynamics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/07%3A_Calculation_of_Entropy_and_the_Third_Law_of_Thermodynamics",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Calculation of  ΔSsys",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/07%3A_Calculation_of_Entropy_and_the_Third_Law_of_Thermodynamics/7.01%3A_Calculation_of__Ssys"
+            },
+            {
+              "n": "7.2",
+              "title": "Calculation of ΔSsurr",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/07%3A_Calculation_of_Entropy_and_the_Third_Law_of_Thermodynamics/7.02%3A_Calculation_of_Ssurr"
+            },
+            {
+              "n": "7.3",
+              "title": "Clausius Theorem",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/07%3A_Calculation_of_Entropy_and_the_Third_Law_of_Thermodynamics/7.03%3A_Clausius_Theorem"
+            },
+            {
+              "n": "7.4",
+              "title": "The Third Law of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/07%3A_Calculation_of_Entropy_and_the_Third_Law_of_Thermodynamics/7.04%3A_The_Third_Law_of_Thermodynamics"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Thermodynamic Potentials",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/08%3A_Thermodynamic_Potentials",
+          "topics": ["he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Fundamental Equation of Thermodynamics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/08%3A_Thermodynamic_Potentials/8.01%3A_Fundamental_Equation_of_Thermodynamics"
+            },
+            {
+              "n": "8.2",
+              "title": "Thermodynamic Potentials",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/08%3A_Thermodynamic_Potentials/8.02%3A_Thermodynamic_Potentials"
+            },
+            {
+              "n": "8.3",
+              "title": "Free Energies",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/08%3A_Thermodynamic_Potentials/8.03%3A_Free_Energies"
+            },
+            {
+              "n": "8.4",
+              "title": "Maxwell Relations",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/08%3A_Thermodynamic_Potentials/8.04%3A_Maxwell_Relations"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Gibbs Free Energy",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/09%3A_Gibbs_Free_Energy",
+          "topics": ["he.chemistry.physical-1#0", "he.chemistry.physical-1#2"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Gibbs Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/09%3A_Gibbs_Free_Energy/9.01%3A_Gibbs_Equation"
+            },
+            {
+              "n": "9.2",
+              "title": "Temperature Dependence of ΔG",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/09%3A_Gibbs_Free_Energy/9.02%3A_Temperature_Dependence_of_G"
+            },
+            {
+              "n": "9.3",
+              "title": "Pressure Dependence of ΔG",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/09%3A_Gibbs_Free_Energy/9.03%3A_Pressure_Dependence_of_G"
+            },
+            {
+              "n": "9.4",
+              "title": "Composition Dependence of ΔG",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/09%3A_Gibbs_Free_Energy/9.04%3A_Composition_Dependence_of_G"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Chemical Equilibrium",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/10%3A_Chemical_Equilibrium",
+          "topics": ["he.chemistry.physical-1#2"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Reaction Quotient and Equilibrium Constant",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/10%3A_Chemical_Equilibrium/10.01%3A_Reaction_Quotient_and_Equilibrium_Constant"
+            },
+            {
+              "n": "10.2",
+              "title": "Temperature Dependence of Keq",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/10%3A_Chemical_Equilibrium/10.02%3A_Temperature_Dependence_of_Keq"
+            },
+            {
+              "n": "10.3",
+              "title": "Pressure and Composition Dependence of Keq",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/10%3A_Chemical_Equilibrium/10.03%3A_Pressure_and_Composition_Dependence_of_Keq"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Ideal and Non-Ideal Gases",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/11%3A_Ideal_and_Non-Ideal_Gases",
+          "topics": ["he.chemistry.gen-chem-1#2", "he.chemistry.physical-1#0"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "The Ideal Gas Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/11%3A_Ideal_and_Non-Ideal_Gases/11.01%3A_The_Ideal_Gas_Equation"
+            },
+            {
+              "n": "11.2",
+              "title": "Behaviors of Non-Ideal Gases",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/11%3A_Ideal_and_Non-Ideal_Gases/11.02%3A_Behaviors_of_Non-Ideal_Gases"
+            },
+            {
+              "n": "11.3",
+              "title": "Critical Phenomena",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/11%3A_Ideal_and_Non-Ideal_Gases/11.03%3A_Critical_Phenomena"
+            },
+            {
+              "n": "11.4",
+              "title": "Fugacity",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/11%3A_Ideal_and_Non-Ideal_Gases/11.04%3A_Fugacity"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Phase Equilibrium",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/12%3A_Phase_Equilibrium",
+          "topics": ["he.chemistry.physical-1#1"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Phase Stability",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/12%3A_Phase_Equilibrium/12.01%3A_Phase_Stability"
+            },
+            {
+              "n": "12.2",
+              "title": "Gibbs Phase Rule",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/12%3A_Phase_Equilibrium/12.02%3A_Gibbs_Phase_Rule"
+            },
+            {
+              "n": "12.3",
+              "title": "PT Phase Diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/12%3A_Phase_Equilibrium/12.03%3A_PT_Phase_Diagrams"
+            },
+            {
+              "n": "12.4",
+              "title": "The Clausius-Clapeyron Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/12%3A_Phase_Equilibrium/12.04%3A_The_Clausius-Clapeyron_Equation"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Multi-Component Phase Diagrams",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/13%3A_Multi-Component_Phase_Diagrams",
+          "topics": ["he.chemistry.physical-1#1"],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Raoult’s Law and Phase Diagrams of Ideal Solutions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/13%3A_Multi-Component_Phase_Diagrams/13.01%3A_Raoults_Law_and_Phase_Diagrams_of_Ideal_Solutions"
+            },
+            {
+              "n": "13.2",
+              "title": "Phase Diagrams of Non-Ideal Solutions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/13%3A_Multi-Component_Phase_Diagrams/13.02%3A_Phase_Diagrams_of_Non-Ideal_Solutions"
+            },
+            {
+              "n": "13.3",
+              "title": "Phase Diagrams of 2-Components/2-Condensed Phases Systems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/13%3A_Multi-Component_Phase_Diagrams/13.03%3A_Phase_Diagrams_of_2-Components_2-Condensed_Phases_Systems"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Properties of Solutions",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/14%3A_Properties_of_Solutions",
+          "topics": ["he.chemistry.physical-1#1"],
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Activity",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/14%3A_Properties_of_Solutions/14.01%3A_Activity"
+            },
+            {
+              "n": "14.2",
+              "title": "Colligative Properties",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/14%3A_Properties_of_Solutions/14.02%3A_Colligative_Properties"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Chemical Kinetics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/15%3A_Chemical_Kinetics",
+          "topics": ["he.chemistry.physical-1#3"],
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "Differential and integrated rate laws",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/15%3A_Chemical_Kinetics/15.01%3A_Differential_and_integrated_rate_laws"
+            },
+            {
+              "n": "15.2",
+              "title": "Complex Rate Laws",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/15%3A_Chemical_Kinetics/15.02%3A_Complex_Rate_Laws"
+            },
+            {
+              "n": "15.3",
+              "title": "Experimental Methods for Determination of Reaction Orders",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/15%3A_Chemical_Kinetics/15.03%3A_Experimental_Methods_for_Determination_of_Reaction_Orders"
+            },
+            {
+              "n": "15.4",
+              "title": "Temperature Dependence of the Rate Coefficients",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/15%3A_Chemical_Kinetics/15.04%3A_Temperature_Dependence_of_the_Rate_Coefficients"
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "The Motivation for Quantum Mechanics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/16%3A_The_Motivation_for_Quantum_Mechanics",
+          "topics": ["he.chemistry.physical-2#0"],
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "Introduction",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/16%3A_The_Motivation_for_Quantum_Mechanics/16.01%3A_Introduction"
+            },
+            {
+              "n": "16.2",
+              "title": "Quantum Mechanics is Bizarre",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/16%3A_The_Motivation_for_Quantum_Mechanics/16.02%3A_Quantum_Mechanics_is_Bizarre"
+            },
+            {
+              "n": "16.3",
+              "title": "The Ultraviolet Catastrophe",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/16%3A_The_Motivation_for_Quantum_Mechanics/16.03%3A_The_Ultraviolet_Catastrophe"
+            },
+            {
+              "n": "16.4",
+              "title": "The Photoelectric Effect",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/16%3A_The_Motivation_for_Quantum_Mechanics/16.04%3A_The_Photoelectric_Effect"
+            },
+            {
+              "n": "16.5",
+              "title": "Wave-Particle Duality",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/16%3A_The_Motivation_for_Quantum_Mechanics/16.05%3A_Wave-Particle_Duality"
+            }
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Classical Mechanics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/17%3A_Classical_Mechanics",
+          "topics": [],
+          "notes": "Classical mechanics formulations: no chemistry topic.",
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Newtonian Formulation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/17%3A_Classical_Mechanics/17.01%3A_Newtonian_Formulation"
+            },
+            {
+              "n": "17.2",
+              "title": "Lagrangian Formulation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/17%3A_Classical_Mechanics/17.02%3A_Lagrangian_Formulation"
+            },
+            {
+              "n": "17.3",
+              "title": "Hamiltonian Mechanics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/17%3A_Classical_Mechanics/17.03%3A_Hamiltonian_Mechanics"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "18",
+          "title": "The Schrödinger Equation",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/18%3A_The_Schrodinger_Equation",
+          "topics": ["he.chemistry.physical-2#0"],
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "The Time-Independent Schrödinger Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/18%3A_The_Schrodinger_Equation/18.01%3A_The_Time-Independent_Schrodinger_Equation"
+            },
+            {
+              "n": "18.2",
+              "title": "The Time-Dependent Schrödinger Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/18%3A_The_Schrodinger_Equation/18.02%3A_The_Time-Dependent_Schrodinger_Equation"
+            }
+          ]
+        },
+        {
+          "n": "19",
+          "title": "Analytically Soluble Models",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/19%3A_Analytically_Soluble_Models",
+          "topics": ["he.chemistry.physical-2#1"],
+          "lessons": [
+            {
+              "n": "19.1",
+              "title": "The Free Particles",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/19%3A_Analytically_Soluble_Models/19.01%3A_The_Free_Particles"
+            }
+          ]
+        },
+        {
+          "n": "20",
+          "title": "The Hydrogen Atom",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/20%3A_The_Hydrogen_Atom",
+          "topics": ["he.chemistry.physical-2#2"],
+          "lessons": []
+        },
+        {
+          "n": "21",
+          "title": "Operators and Mathematical Background",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/21%3A_Operators_and_Mathematical_Background",
+          "topics": ["he.chemistry.physical-2#0"],
+          "lessons": [
+            {
+              "n": "21.1",
+              "title": "Operators in Quantum Mechanics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/21%3A_Operators_and_Mathematical_Background/21.01%3A_Operators_in_Quantum_Mechanics"
+            },
+            {
+              "n": "21.2",
+              "title": "Eigenfunctions and Eigenvalues",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/21%3A_Operators_and_Mathematical_Background/21.02%3A_Eigenfunctions_and_Eigenvalues"
+            },
+            {
+              "n": "21.3",
+              "title": "Common Operators in Quantum Mechanics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/21%3A_Operators_and_Mathematical_Background/21.03%3A_Common_Operators_in_Quantum_Mechanics"
+            }
+          ]
+        },
+        {
+          "n": "22",
+          "title": "Spin",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/22%3A_Spin",
+          "topics": [],
+          "notes": "Spin and Stern–Gerlach: no topic of its own.",
+          "lessons": [
+            {
+              "n": "22.1",
+              "title": "Stern-Gerlach Experiment",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/22%3A_Spin/22.01%3A_Stern-Gerlach_Experiment"
+            },
+            {
+              "n": "22.2",
+              "title": "Sequential Stern-Gerlach Experiments",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/22%3A_Spin/22.02%3A_Sequential_Stern-Gerlach_Experiments"
+            },
+            {
+              "n": "22.3",
+              "title": "Spin Operators",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/22%3A_Spin/22.03%3A_Spin_Operators"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "23",
+          "title": "Postulates of Quantum Mechanics",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/23%3A_Postulates_of_Quantum_Mechanics",
+          "topics": ["he.chemistry.physical-2#0"],
+          "lessons": [
+            {
+              "n": "23.1",
+              "title": "Postulate 1- The Wave Function Postulate",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/23%3A_Postulates_of_Quantum_Mechanics/23.01%3A_Postulate_1-_The_Wave_Function_Postulate"
+            },
+            {
+              "n": "23.2",
+              "title": "Postulate 2- Experimental Observables",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/23%3A_Postulates_of_Quantum_Mechanics/23.02%3A_Postulate_2-_Experimental_Observables"
+            },
+            {
+              "n": "23.3",
+              "title": "Postulate 3- Individual Measurements",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/23%3A_Postulates_of_Quantum_Mechanics/23.03%3A_Postulate_3-_Individual_Measurements"
+            },
+            {
+              "n": "23.4",
+              "title": "Postulate 4- Expectation Values and Collapse of the Wavefunction",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/23%3A_Postulates_of_Quantum_Mechanics/23.04%3A_Postulate_4-_Expectation_Values_and_Collapse_of_the_Wavefunction"
+            },
+            {
+              "n": "23.5",
+              "title": "Postulate 5- Time Evolution",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/23%3A_Postulates_of_Quantum_Mechanics/23.05%3A_Postulate_5-_Time_Evolution"
+            },
+            {
+              "n": "23.6",
+              "title": "Postulate 6- Pauli Exclusion Principle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/23%3A_Postulates_of_Quantum_Mechanics/23.06%3A_Postulate_6-_Pauli_Exclusion_Principle"
+            }
+          ]
+        },
+        {
+          "n": "24",
+          "title": "Quantum Weirdness",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/24%3A_Quantum_Weirdness",
+          "topics": ["he.chemistry.physical-2#0", "he.chemistry.physical-2#1"],
+          "lessons": [
+            {
+              "n": "24.1",
+              "title": "The Double-slit Experiment",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/24%3A_Quantum_Weirdness/24.01%3A_The_Double-slit_Experiment"
+            },
+            {
+              "n": "24.2",
+              "title": "Heisenberg's Uncertainty Principle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/24%3A_Quantum_Weirdness/24.02%3A_Heisenberg's_Uncertainty_Principle"
+            },
+            {
+              "n": "24.3",
+              "title": "Tunneling",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/24%3A_Quantum_Weirdness/24.03%3A_Tunneling"
+            }
+          ]
+        },
+        {
+          "n": "25",
+          "title": "Many-Electron Atoms",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/25%3A_Many-Electron_Atoms",
+          "topics": [],
+          "notes": "Many-electron atoms: plan gap.",
+          "lessons": [
+            {
+              "n": "25.1",
+              "title": "Many-Electron Wave Functions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/25%3A_Many-Electron_Atoms/25.01%3A_Many-Electron_Wave_Functions"
+            },
+            {
+              "n": "25.2",
+              "title": "Approximated Hamiltonians",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/25%3A_Many-Electron_Atoms/25.02%3A_Approximated_Hamiltonians"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "26",
+          "title": "Introduction to Molecules",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/26%3A_Introduction_to_Molecules",
+          "topics": ["he.chemistry.physical-2#3"],
+          "lessons": [
+            {
+              "n": "26.1",
+              "title": "The Molecular Hamiltonian",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/26%3A_Introduction_to_Molecules/26.01%3A_The_Molecular_Hamiltonian"
+            },
+            {
+              "n": "26.2",
+              "title": "The Born-Oppenheimer Approximation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/26%3A_Introduction_to_Molecules/26.02%3A_The_Born-Oppenheimer_Approximation"
+            },
+            {
+              "n": "26.3",
+              "title": "Solving the Electronic Eigenvalue Problem",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/26%3A_Introduction_to_Molecules/26.03%3A_Solving_the_Electronic_Eigenvalue_Problem"
+            }
+          ]
+        },
+        {
+          "n": "27",
+          "title": "The Chemical Bond in Diatomic Molecules",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/27%3A_The_Chemical_Bond_in_Diatomic_Molecules",
+          "topics": ["he.chemistry.physical-2#3"],
+          "lessons": [
+            {
+              "n": "27.1",
+              "title": "The Chemical Bond in the Hydrogen Molecular Cation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/27%3A_The_Chemical_Bond_in_Diatomic_Molecules/27.01%3A_The_Chemical_Bond_in_the_Hydrogen_Molecular_Cation"
+            },
+            {
+              "n": "27.2",
+              "title": "The Chemical Bond in the Hydrogen Molecule",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/27%3A_The_Chemical_Bond_in_Diatomic_Molecules/27.02%3A_The_Chemical_Bond_in_the_Hydrogen_Molecule"
+            }
+          ]
+        },
+        {
+          "n": "28",
+          "title": "The Chemical Bond in Polyatomic Molecules",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/28%3A_The_Chemical_Bond_in_Polyatomic_Molecules",
+          "topics": ["he.chemistry.physical-2#3"],
+          "lessons": [
+            {
+              "n": "28.1",
+              "title": "The Chemical Bond in the Water Molecule Using a Minimal Basis",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/28%3A_The_Chemical_Bond_in_Polyatomic_Molecules/28.01%3A_The_Chemical_Bond_in_the_Water_Molecule_Using_a_Minimal_Basis"
+            },
+            {
+              "n": "28.2",
+              "title": "Hartree-Fock Calculation for Water",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/28%3A_The_Chemical_Bond_in_Polyatomic_Molecules/28.02%3A_Hartree-Fock_Calculation_for_Water"
+            },
+            {
+              "n": "28.3",
+              "title": "Shapes and Energies of Molecular Orbitals",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/28%3A_The_Chemical_Bond_in_Polyatomic_Molecules/28.03%3A_Shapes_and_Energies_of_Molecular_Orbitals"
+            }
+          ]
+        },
+        {
+          "n": "29",
+          "title": "Spectroscopy",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/29%3A_Spectroscopy",
+          "topics": ["he.chemistry.physical-2#4"],
+          "lessons": [
+            {
+              "n": "29.1",
+              "title": "Rotational Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/29%3A_Spectroscopy/29.01%3A_Rotational_Spectroscopy"
+            },
+            {
+              "n": "29.2",
+              "title": "Vibrational Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/29%3A_Spectroscopy/29.02%3A_Vibrational_Spectroscopy"
+            },
+            {
+              "n": "29.3",
+              "title": "Electronic Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/29%3A_Spectroscopy/29.03%3A_Electronic_Spectroscopy"
+            }
+          ]
+        },
+        {
+          "n": "30",
+          "title": "Appendix",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/30%3A_Appendix",
+          "topics": [],
+          "notes": "Data appendix.",
+          "lessons": [
+            {
+              "n": "30.1",
+              "title": "Thermodynamic Data of Inorganic Substances at 298 K",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/30%3A_Appendix/30.01%3A_Thermodynamic_Data_of_Inorganic_Substances_at_298_K"
+            },
+            {
+              "n": "30.2",
+              "title": "Thermodynamic Data of Organic Substances at 298 K",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/The_Live_Textbook_of_Physical_Chemistry_(Peverati)/30%3A_Appendix/30.02%3A_Thermodynamic_Data_of_Organic_Substances_at_298_K"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Peverati, The Live Textbook of Physical Chemistry"
+    }
+  ]
+}

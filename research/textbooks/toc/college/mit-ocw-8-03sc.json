@@ -1,79 +1,76 @@
 {
- "id": "mit-ocw-8-03sc",
- "curriculum": "MIT OCW 8.03SC Physics III: Vibrations and Waves",
- "publisher": "MIT OpenCourseWare (Yen-Jie Lee)",
- "edition": "Fall 2016 (scholar course)",
- "subject": "physics",
- "level": "college",
- "content": "full",
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "attribution": "Yen-Jie Lee. 8.03SC Physics III: Vibrations and Waves. Fall 2016. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
- },
- "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
- "sourceUrl": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/",
- "retrieved": "2026-10-02",
- "notes": "Exams 1 and 2 and Practice Final Exam 1 (oscillators, driven and coupled oscillators, waves on strings, electromagnetic waves, interference). Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
- "books": [
-  {
-   "title": "8.03SC Physics III: Vibrations and Waves (Fall 2016 (scholar course))",
-   "url": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/",
-   "units": [
+  "id": "mit-ocw-8-03sc",
+  "curriculum": "MIT OCW 8.03SC Physics III: Vibrations and Waves",
+  "publisher": "MIT OpenCourseWare (Yen-Jie Lee)",
+  "edition": "Fall 2016 (scholar course)",
+  "subject": "physics",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Yen-Jie Lee. 8.03SC Physics III: Vibrations and Waves. Fall 2016. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+  "sourceUrl": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/",
+  "retrieved": "2026-10-02",
+  "notes": "Exams 1 and 2 and Practice Final Exam 1 (oscillators, driven and coupled oscillators, waves on strings, electromagnetic waves, interference). Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
+  "books": [
     {
-     "n": "E1",
-     "title": "Exam 1: oscillators and coupled systems",
-     "url": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/bb747516d5ca5d639a4dad828a6afc81_MIT8_03SCF16_Exam1.pdf",
-     "topics": [
-      "he.physics.university-1#5",
-      "he.physics.university-3#0",
-      "he.physics.classical-mechanics#4",
-      "he.physics.university-2#4"
-     ],
-     "examples": [
-      "classify damping from a measured x(t) graph",
-      "beat period of two superposed cosines",
-      "symmetry matrix of a three-mass chain with mirror symmetry",
-      "mechanical–electrical analogy: mass and spring constant in an LC circuit",
-      "vibration-isolation table: driven damped oscillator excited through the floor; amplitude response",
-      "three coupled masses (springs and pendulums): normal-mode frequencies and vectors"
-     ]
-    },
-    {
-     "n": "E2",
-     "title": "Exam 2: waves",
-     "url": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/ef55f1f8db2442af4042c26b1367a091_MIT8_03SCF16_Exam2.pdf",
-     "topics": [
-      "he.physics.university-3#0",
-      "he.physics.electromagnetism#3"
-     ],
-     "examples": [
-      "short questions: boundary condition of an EM wave at a conductor and similar",
-      "plasma waves: dispersion relation, allowed frequencies, group and phase velocity",
-      "plane wave E-field: propagation direction, ω and λ, B-field and Poynting vector",
-      "string with a fixed end and a free ring: normal modes and initial-shape decomposition"
-     ]
-    },
-    {
-     "n": "PF1",
-     "title": "Practice Final Exam 1",
-     "url": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/e1505e91bb8d20e0ddc5ed35b080fe0a_MIT8_03SCF16_PracticeFinalExam1.pdf",
-     "topics": [
-      "he.physics.electromagnetism#3",
-      "he.physics.classical-mechanics#4",
-      "he.physics.university-3#1",
-      "he.physics.university-3#0"
-     ],
-     "examples": [
-      "TE mode in a rectangular waveguide: boundary conditions, cutoff",
-      "two masses coupled by an elastic band to walls: normal modes",
-      "optical fibre acceptance angle (total internal reflection)",
-      "N-slit pattern: read slit number, spacing and width from an intensity graph",
-      "struck string: normal modes and amplitudes from an initial velocity profile (Fourier)",
-      "oscillating charge on a spring: radiated field and power (Larmor)"
-     ]
+      "title": "8.03SC Physics III: Vibrations and Waves (Fall 2016 (scholar course))",
+      "url": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/",
+      "units": [
+        {
+          "n": "E1",
+          "title": "Exam 1: oscillators and coupled systems",
+          "url": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/bb747516d5ca5d639a4dad828a6afc81_MIT8_03SCF16_Exam1.pdf",
+          "topics": [
+            "he.physics.university-1#5",
+            "he.physics.university-3#0",
+            "he.physics.classical-mechanics#4",
+            "he.physics.university-2#4"
+          ],
+          "examples": [
+            "classify damping from a measured x(t) graph",
+            "beat period of two superposed cosines",
+            "symmetry matrix of a three-mass chain with mirror symmetry",
+            "mechanical–electrical analogy: mass and spring constant in an LC circuit",
+            "vibration-isolation table: driven damped oscillator excited through the floor; amplitude response",
+            "three coupled masses (springs and pendulums): normal-mode frequencies and vectors"
+          ]
+        },
+        {
+          "n": "E2",
+          "title": "Exam 2: waves",
+          "url": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/ef55f1f8db2442af4042c26b1367a091_MIT8_03SCF16_Exam2.pdf",
+          "topics": ["he.physics.university-3#0", "he.physics.electromagnetism#3"],
+          "examples": [
+            "short questions: boundary condition of an EM wave at a conductor and similar",
+            "plasma waves: dispersion relation, allowed frequencies, group and phase velocity",
+            "plane wave E-field: propagation direction, ω and λ, B-field and Poynting vector",
+            "string with a fixed end and a free ring: normal modes and initial-shape decomposition"
+          ]
+        },
+        {
+          "n": "PF1",
+          "title": "Practice Final Exam 1",
+          "url": "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/e1505e91bb8d20e0ddc5ed35b080fe0a_MIT8_03SCF16_PracticeFinalExam1.pdf",
+          "topics": [
+            "he.physics.electromagnetism#3",
+            "he.physics.classical-mechanics#4",
+            "he.physics.university-3#1",
+            "he.physics.university-3#0"
+          ],
+          "examples": [
+            "TE mode in a rectangular waveguide: boundary conditions, cutoff",
+            "two masses coupled by an elastic band to walls: normal modes",
+            "optical fibre acceptance angle (total internal reflection)",
+            "N-slit pattern: read slit number, spacing and width from an intensity graph",
+            "struck string: normal modes and amplitudes from an initial velocity profile (Fourier)",
+            "oscillating charge on a spring: radiated field and power (Larmor)"
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

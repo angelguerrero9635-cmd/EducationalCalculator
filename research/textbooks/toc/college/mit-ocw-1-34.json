@@ -31,24 +31,21 @@
           "n": "1–15",
           "title": "Hazardous-waste rules; contaminant transport; NAPLs; site characterization; remediation technologies; risk",
           "topics": [],
-          "notes": "Site remediation: no taxonomy topic (nearest environmental#3)."
+          "notes": "Site remediation: no taxonomy topic (nearest environmental#3).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "16–23",
           "title": "Solid and hazardous waste disposal; landfill design, leachate and gas, hydrology, liners, closure",
-          "topics": [
-            "he.engineering.environmental#3"
-          ],
-          "examples": [
-            "Thornthwaite cover water balance",
-            "where your trash goes"
-          ]
+          "topics": ["he.engineering.environmental#3"],
+          "examples": ["Thornthwaite cover water balance", "where your trash goes"]
         },
         {
           "n": "24–25",
           "title": "Brownfields; practice",
           "topics": [],
-          "notes": "No taxonomy topic."
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

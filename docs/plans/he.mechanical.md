@@ -114,7 +114,7 @@ Courses in scope (field, id, topics):
 #### #0 — Force vectors and equilibrium
 
 - **Asks:** two-cable tensions holding a weight (main); resultant of 3 forces by components
-  (~components); moment of a force about a point (~moment); beam reactions (~reactions).
+  (~components); moment of a force about a point (~moment); beam reactions (~reactions); [new-page] free-body diagram builder (a sort of forces onto a body) (No: MM-C1-1); [new-page] moment about an axis (u · r × F) (No: MM-C3-8); [new-page] equivalent force–couple system (R = ΣF, M = Σr × F) (No: MM-C4-1, ES-C4-11); [new-page] components along oblique axes (law of sines) (No: ES-C2-5); [new-page] cantilever reactions (ΣF, ΣM at the wall) (No: ES-C5-7).
 - **Main — calculator:** a weight hung from two cables. Values: weight W (0–10⁶ N), cable angles
   θ₁, θ₂ above level (0.1–89.9°), tensions T₁, T₂ (N). Relations: ΣFₓ = 0: T₂ cos θ₂ = T₁ cos θ₁;
   ΣF_y = 0: T₁ sin θ₁ + T₂ sin θ₂ = W; solved form T₁ = W cos θ₂ ÷ sin(θ₁ + θ₂), T₂ = W cos θ₁ ÷
@@ -192,7 +192,7 @@ Courses in scope (field, id, topics):
 #### #3 — Moments of inertia
 
 - **Asks:** I of a rectangle about its centroid and a parallel axis (main); composite T-section
-  (~composite); polar moment of a circle or tube (~polar); radius of gyration (~gyration).
+  (~composite); polar moment of a circle or tube (~polar); radius of gyration (~gyration; re-marked Partly: ES-C10-5).
 - **Main — calculator:** Values b, h (mm), d (axis offset), Ī = bh³ ÷ 12, A, I = Ī + Ad² (mm⁴).
   Assumptions: d is measured from the centroid; the parallel-axis theorem only adds to the
   centroidal I. Example: b = 50, h = 100, d = 150 mm → Ī = 4.167 × 10⁶, Ad² = 112.5 × 10⁶,
@@ -204,12 +204,12 @@ Courses in scope (field, id, topics):
   1.021 × 10⁶ mm⁴. ⏳ P3.
 - **~gyration:** k = √(I ÷ A). Example: I = 2 × 10⁶ mm⁴, A = 2000 mm² → k = 31.62 mm (feeds
   `mechanics-of-materials#5~slenderness`).
-- **Verdict:** 4 pages; the four types Solve.
+- **Verdict:** 4 pages; the four types Solve. Re-marked from the research items: ~gyration Partly (`research/questions/college/marks/mechanical.md`).
 
 #### #4 — Friction
 
 - **Asks:** force to push a crate up a slope and to hold it (main); slip or tip (~tip); belt
-  or rope on a drum (~belt).
+  or rope on a drum (~belt); [new-page] ladder against a wall (statics with friction) (No: MM-C3-11); [new-page] disk and collar friction (No: MM-C6-9); [new-page] block-on-block friction (No: ES-C9-6).
 - **Main — calculator:** Values W (N), θ (0–89°), μ_s (0–1.5), P_up, P_hold (N). Relations:
   P_up = W(sin θ + μ_s cos θ); P_hold = W(sin θ − μ_s cos θ) (0 when tan θ ≤ μ_s: it holds by
   itself). Assumptions: P acts along the slope; friction is at its limit μ_sN; impending
@@ -231,7 +231,7 @@ Courses in scope (field, id, topics):
 #### #0 — Particle kinematics
 
 - **Asks:** v and a from s(t) (main); normal and tangential acceleration on a curve (~nt);
-  launch speed for a target (~projectile); relative velocity (~relative).
+  launch speed for a target (~projectile); relative velocity (~relative); [new-page] motion graphs from piecewise constant acceleration (No: MM-C7-3); [new-page] dependent motion (pulley constraints) (No: MM-C7-8).
 - **Main — calculator:** s(t) = c₃t³ + c₂t² + c₁t + c₀. Values c₃…c₀, time t (0–100 s),
   s (m), v (m/s), a (m/s²) (8). Relations: v = 3c₃t² + 2c₂t + c₁; a = 6c₃t + 2c₂ (the calc-1#1
   power rule term by term). Example: s = 2t³ − 9t² + 12t + 5, t = 3 s → s = 14 m, v = 12 m/s,
@@ -259,7 +259,7 @@ Courses in scope (field, id, topics):
 #### #2 — Work–energy and impulse–momentum
 
 - **Asks:** spring compression after a rough patch (main); input power with efficiency
-  (~power); average force from impulse (~impulse); restitution (~restitution).
+  (~power); average force from impulse (~impulse; re-marked Partly: MM-C10-1, OCW-2.003SC-PS3-2); restitution (~restitution).
 - **Main — calculator:** Values m, v₀, μ_k, rough length d, spring k, compression x, heat
   W_f (J). Relations: ½mv₀² = μ_kmgd + ½kx²; W_f = μ_kmgd. Example: 2 kg at 5 m/s, μ_k = 0.25,
   d = 2 m, k = 800 N/m → W_f = 9.81 J, x = 0.1949 m. Picture: `energyTrack` `spring` with the
@@ -270,12 +270,12 @@ Courses in scope (field, id, topics):
   Picture `impulse`.
 - **~restitution:** v₁′ = ((m₁ − em₂)v₁ + (1 + e)m₂v₂) ÷ (m₁ + m₂), and v₂′ likewise. Example:
   2 kg at 6 m/s into 3 kg at rest, e = 0.5 → 0.6 and 3.6 m/s. Picture `collision` `general`.
-- **Verdict:** 4 pages; the four types Solve.
+- **Verdict:** 4 pages; the four types Solve. Re-marked from the research items: ~impulse Partly (`research/questions/college/marks/mechanical.md`).
 
 #### #3 — Rigid-body dynamics
 
 - **Asks:** pulley with inertia and a hanging mass (main); rolling down a slope (~rolling);
-  ladder or link by its instantaneous center (~ic); flywheel energy (~flywheel).
+  ladder or link by its instantaneous center (~ic); flywheel energy (~flywheel); [new-page] angular momentum conservation of a particle (No: OCW-2.003SC-PS4-5).
 - **Main — calculator:** Values pulley mass M, radius r, I = ½Mr² (disk), hanging m, a, α, T.
   Relations: a = mg ÷ (m + I ÷ r²); α = a ÷ r; T = m(g − a). Example: M = 4 kg, r = 0.2 m, m = 2 kg
   → I = 0.08 kg·m², a = 4.905 m/s², α = 24.5 rad/s², T = 9.81 N. Picture: `rotor` with torque and
@@ -300,7 +300,7 @@ Courses in scope (field, id, topics):
 
 - **Asks:** stress, strain and elongation of a rod (main); bolt in single or double shear
   (~shear); diameter change by Poisson (~poisson); size a member for a factor of safety
-  (~safety); principal stresses and Mohr's circle (~mohr); pressure vessel (~vessel).
+  (~safety); principal stresses and Mohr's circle (~mohr); pressure vessel (~vessel); [new-page] shrink and press fits (thin-wall compatibility) (No: ROY-2.2-4).
 - **Main — calculator:** Values load P (N), diameter d (mm), area A, length L, stress σ, strain
   ε, elongation δ, modulus E (8). Relations: A = πd² ÷ 4; σ = P ÷ A; ε = δ ÷ L; σ = Eε.
   Assumptions: the load is axial through the centroid; stress below the proportional limit.
@@ -341,7 +341,7 @@ Courses in scope (field, id, topics):
 #### #2 — Torsion
 
 - **Asks:** max shear and twist of a solid shaft (main); hollow shaft (~hollow); diameter for
-  a power and speed (~power).
+  a power and speed (~power); [new-page] composite and statically indeterminate shafts (No: ROY-2.3-7).
 - **Main — calculator:** Values T (N·m), d, L (mm), G, J, τ_max, φ (rad and °). Relations:
   J = πd⁴ ÷ 32; τ_max = T(d ÷ 2) ÷ J; φ = TL ÷ (GJ). Example: 2 kN·m, d = 50 mm, L = 1.5 m, G = 77 GPa
   → J = 613,592 mm⁴, τ_max = 81.49 MPa, φ = 0.0635 rad = 3.64°. ⏳ P6 (`shaft`).
@@ -354,7 +354,7 @@ Courses in scope (field, id, topics):
 #### #3 — Bending and shear
 
 - **Asks:** bending stress (main); shear and moment at a point and the maxima (~diagrams);
-  shear stress at the neutral axis (~shear-stress); pick a section by S (~modulus).
+  shear stress at the neutral axis (~shear-stress); pick a section by S (~modulus); [new-page] eccentric axial load (P/A ± Mc/I) (No: SOM-14.1).
 - **Main — calculator:** rectangle b × h under M. Values M (N·m), b, h, I, c, σ_max (6). Relations:
   I = bh³ ÷ 12; c = h ÷ 2; σ = Mc ÷ I. Example: 20 kN·m, 100 × 200 mm → I = 66.67 × 10⁶ mm⁴,
   σ = 30 MPa. ⏳ P3 with the linear stress block.
@@ -370,7 +370,7 @@ Courses in scope (field, id, topics):
 
 #### #4 — Beam deflection
 
-- **Asks:** cantilever tip deflection and slope (main); simply supported, uniform load (~udl);
+- **Asks:** cantilever tip deflection and slope (main; re-marked Partly: OCW-2.002-HW1-2); simply supported, uniform load (~udl);
   superposition (~superpose); deflection at any x by integration (~curve).
 - **Main — calculator:** Values P, L, E, I, δ_max, θ_max. Relations: δ = PL³ ÷ (3EI);
   θ = PL² ÷ (2EI). Example: 5 kN, 2 m, 200 GPa, 8 × 10⁶ mm⁴ → δ = 8.333 mm, θ = 0.00625 rad.
@@ -380,7 +380,7 @@ Courses in scope (field, id, topics):
 - **~superpose:** δ = PL³ ÷ (3EI) + wL⁴ ÷ (8EI). Example: main plus 2 kN/m → 8.333 + 2.5 = 10.83 mm.
 - **~curve:** from EIy″ = M(x): y(x) = Px²(3L − x) ÷ (6EI) (downward). Example: x = 1 m → 2.604 mm.
   Picture: `functionGraph` `family: 'polynomial'` coefficients in x (existing), the point at x.
-- **Verdict:** 4 pages; the four types Solve (propped cantilevers are Partly, through FEA#2).
+- **Verdict:** 4 pages; the four types Solve (propped cantilevers are Partly, through FEA#2). Re-marked from the research items: main Partly (`research/questions/college/marks/mechanical.md`).
 
 #### #5 — Column buckling
 
@@ -405,7 +405,7 @@ Courses in scope (field, id, topics):
 #### #0 — Crystal structures
 
 - **Asks:** density from the unit cell (main); packing factor (~apf); X-ray peak by Bragg's law
-  for a plane (~bragg).
+  for a plane (~bragg); [new-page] Miller indices: zone rule h·u + k·v + l·w = 0 and plane intersections (No: DOIT-MILLER-INDICES-2).
 - **Main — calculator:** Values structure atoms n (`allowed: [1, 2, 4]`, SC, BCC, FCC), radius R
   (nm), edge a (nm), molar mass A (g/mol), density ρ (g/cm³). Relations: a = 2R, 4R ÷ √3 or 2√2R
   (by n); ρ = nA ÷ (a³N_A). Example: FCC copper, R = 0.128 nm, A = 63.55 → a = 0.3620 nm,
@@ -419,7 +419,7 @@ Courses in scope (field, id, topics):
 
 - **Asks:** carbon content at a depth after carburizing (main); D at a temperature
   (~arrhenius); vacancies (~vacancies); steady flux, Fick's first law (~flux); defect types
-  (~defects).
+  (~defects); [new-page] grain-boundary volume fraction (≈ 3d/D) (No: DOIT-ATOMIC-SCALE-STRUCTURE-6); [new-page] dislocation line energy ≈ Gb²/2 (No: DOIT-DISLOCATIONS-7).
 - **Main — calculator:** Values C₀, C_s (wt%), depth x (mm), D (m²/s), time t (h), z, C_x (7).
   Relations: z = x ÷ (2√(Dt)); (C_x − C₀) ÷ (C_s − C₀) = 1 − erf(z). Example: 0.20 → 1.00 wt%,
   x = 0.5 mm, D = 1.6 × 10⁻¹¹, 10 h → z = 0.329, erf = 0.359, C_x = 0.713 wt%. Needs erf and its
@@ -437,7 +437,7 @@ Courses in scope (field, id, topics):
 #### #2 — Phase diagrams
 
 - **Asks:** phase fractions by the lever rule (main); eutectic microconstituents (~eutectic);
-  pearlite and proeutectoid ferrite in a steel (~steel).
+  pearlite and proeutectoid ferrite in a steel (~steel); [new-page] Scheil solidification (partition coefficient) (No: DOIT-SOLIDIFICATION-ALLOYS-6).
 - **Main — calculator:** Values alloy C₀, liquid C_L, solid C_α (wt%), W_L, W_α (5). Relations:
   W_L = (C_α − C₀) ÷ (C_α − C_L); W_α = 1 − W_L. Assumptions: the alloy is inside the two-phase
   region; C_L and C_α are read on the tie line at T. Example: 35, 31.5, 42.5 → W_L = 0.682,
@@ -451,7 +451,7 @@ Courses in scope (field, id, topics):
 #### #3 — Mechanical properties
 
 - **Asks:** tensile strength, elongation and reduction of area (main); true stress and strain
-  (~true); resilience (~resilience); critical crack size (~fracture).
+  (~true); resilience (~resilience); critical crack size (~fracture); [new-page] Schmid factor and resolved shear stress (No: DOIT-SLIP-1); [new-page] power-law hardening σ = Kεⁿ and the necking strain ε = n (No: ROY-1.4-4); [new-page] Paris-law crack growth (No: ROY-6.5-5).
 - **Main — calculator:** Values d₀, F_max, L₀, L_f, d_f, UTS, %EL, %RA (8). Relations: UTS =
   F_max ÷ (πd₀² ÷ 4); %EL = (L_f − L₀) ÷ L₀; %RA = 1 − (d_f ÷ d₀)². Example: 12.8 mm, 50 kN, 50 → 62 mm,
   d_f = 9.0 mm → 388.6 MPa, 24 %, 50.6 %. ⏳ P5.
@@ -473,7 +473,7 @@ Courses in scope (field, id, topics):
 
 - **Asks:** how many times a loop runs and the sum it builds (main); the last index and range
   of an integer type (~int-range); which language a line is (~syntax); trace a while loop
-  (~trace).
+  (~trace; re-marked Partly: OCW-6.0001-WHILE-1, OCW-2.086-A1-2).
 - **Main — calculator:** MATLAB `a:s:b` and Python `range(a, b + s, s)` give the same terms here.
   Values start a, step s, stop b, count n, last term ℓ, sum S (6). Relations: n = ⌊(b − a) ÷ s⌋ + 1;
   ℓ = a + (n − 1)s; S = n(a + ℓ) ÷ 2. Assumptions: s > 0 and whole numbers; Python's stop is
@@ -487,7 +487,7 @@ Courses in scope (field, id, topics):
   `a == b`. Sentence: "MATLAB counts from 1 with ( ); Python counts from 0 with [ ]."
 - **~trace — explore:** ⏳ P24 `codeTrace`. Scenes: a while loop doubling x from 1 until x > 20,
   each scene one pass with the variables table (1, 2, 4, 8, 16, 32) and the test that ends it.
-- **Verdict:** 4 pages; counting and syntax types Solve; tracing waits on P24.
+- **Verdict:** 4 pages; counting and syntax types Solve; tracing waits on P24. Re-marked from the research items: ~trace Partly (`research/questions/college/marks/mechanical.md`).
 
 #### #1 — Vectorized computation
 
@@ -548,7 +548,7 @@ Courses in scope (field, id, topics):
 #### #0 — Orthographic and isometric projection
 
 - **Asks:** which view is the top view; hidden and center lines; first- vs third-angle; true
-  length on an isometric projection.
+  length on an isometric projection; [new-page] section views and cutting-plane lines (No: FDS-ST2-9).
 - **Main — explore:** ⏳ P22 figure `orthographic` (a stepped block with a hole). Scenes: the
   glass box unfolding; front view lit; top view lit, placed above the front (third angle);
   right view lit; a hidden edge dashed; the hole's center lines; the isometric view on 120° axes.
@@ -595,7 +595,7 @@ Courses in scope (field, id, topics):
 #### #3 — Assemblies and drawings
 
 - **Asks:** degrees of freedom of a linkage (main); drawing scale (~scale); what belongs on a
-  part or an assembly drawing (~drawing-sort).
+  part or an assembly drawing (~drawing-sort); [new-page] four-bar synthesis and Grashof check (No: OCW-2.007-E1B-2).
 - **Main — calculator:** Gruebler: M = 3(n − 1) − 2j₁ − j₂. Values links n (with the ground),
   full joints j₁ (pins, sliders), half joints j₂, mobility M. Example: four-bar, n = 4, j₁ = 4 →
   M = 1; a five-bar → 2. ⏳ P29 `linkage`; interim `none`.
@@ -630,7 +630,7 @@ Courses in scope (field, id, topics):
 #### #1 — Solving linear systems
 
 - **Asks:** Gaussian elimination on 3 × 3 (main); one Gauss–Seidel sweep (~gauss-seidel);
-  condition number and ill-conditioning (~condition).
+  condition number and ill-conditioning (~condition); [new-page] operation counts (n³) for elimination, LU and inverse (No: KAW-sle_ludecomposition-4).
 - **Main — calculator:** `matrixGrid` `rowReduce` with typed entries (existing, `steps: 'echelon'`).
   Example: 2x + y − z = 1; x + 3y + 2z = 13; 3x − y + z = 4 → (1, 2, 3).
 - **~gauss-seidel:** 2 × 2: x₁ = (b₁ − a₁₂y₀) ÷ a₁₁; y₁ = (b₂ − a₂₁x₁) ÷ a₂₂. Values a₁₁, a₁₂, a₂₁, a₂₂,
@@ -643,7 +643,7 @@ Courses in scope (field, id, topics):
 #### #2 — Interpolation and curve fitting
 
 - **Asks:** quadratic (Lagrange) interpolation (main); linear interpolation in a table (~linear);
-  least-squares line and r² (~least-squares).
+  least-squares line and r² (~least-squares); [new-page] linear and quadratic splines (No: KAW-05inp_spline-3).
 - **Main — calculator:** Values x₀, y₀, x₁, y₁, x₂, y₂, x, y (8). Relation: Lagrange's three-term sum.
   Example: (1, 2), (2, 3), (4, 11) at x = 3 → 6. ⏳ P9 `through`; interim `functionGraph`
   quadratic.
@@ -655,7 +655,7 @@ Courses in scope (field, id, topics):
 #### #3 — Numerical integration
 
 - **Asks:** composite trapezoid and Simpson (main); integral of tabulated data (~data); error
-  estimate (~error); two-point Gauss (~gauss).
+  estimate (~error); two-point Gauss (~gauss); [new-page] Simpson's 3/8 rule (No: KAW-07int_simpson3by8-3).
 - **Main — calculator:** f(x) = kx^p. Values k, p (0–5, whole), a, b, n (even), h, trapezoid T,
   Simpson S, exact I, error (10). Example: x³ on [0, 2], n = 4 → T = 4.25, S = 4 (exact for a
   cubic), error 6.25 %. Picture: `functionGraph` `riemann` (existing, middle); ⏳ P9 `trapezoid`.
@@ -668,7 +668,7 @@ Courses in scope (field, id, topics):
 #### #4 — Numerical ODE solvers (Euler, Runge–Kutta)
 
 - **Asks:** n Euler steps against the exact answer (main); one RK4 step (~rk4); Heun (~heun);
-  step size for stability (~stability).
+  step size for stability (~stability); [new-page] finite differences for a boundary-value problem (tridiagonal system) (No: KAW-08ode_finitediff-2).
 - **Main — calculator:** dy/dt = ky. Values y₀, k, h, steps n, t, y_Euler, y_exact, error (8).
   Relations: y_Euler = y₀(1 + kh)ⁿ; y_exact = y₀e^(knh). Example: y₀ = 10, k = −0.5, h = 0.5, n = 4 →
   3.164 vs 3.679, error 14.0 %. Picture: `functionGraph` exponential; ⏳ P9 `euler` steps.
@@ -689,7 +689,7 @@ Courses in scope (field, id, topics):
 #### #0 — Stress and strain tensors
 
 - **Asks:** principal stresses and τ_max when one principal is known (main); invariants of a
-  full tensor (~invariants); octahedral stresses (~octahedral); strain rosette (~rosette).
+  full tensor (~invariants); octahedral stresses (~octahedral); strain rosette (~rosette); [new-page] rotation (transformation) matrices for tensors (No: DOIT-TENSORS-2); [new-page] equilibrium equations (∂σ/∂x + ∂τ/∂y = 0) (No: ROY-3.2-1).
 - **Main — calculator:** τ_yz = τ_zx = 0, so σ_z is principal. Values σₓ, σ_y, σ_z, τₓ_y, σ₁, σ₂,
   σ₃, τ_max (8). Relations: in-plane σ_avg ± R; order the three; τ_max = (σ₁ − σ₃) ÷ 2. Example: 60,
   20, −30, 15 MPa → in plane 65 and 15 → σ₁ = 65, σ₂ = 15, σ₃ = −30, τ_max = 47.5 MPa. Ordering three
@@ -705,7 +705,7 @@ Courses in scope (field, id, topics):
 
 #### #1 — Generalized Hooke's law
 
-- **Asks:** three strains and the volume change from three stresses (main); G, K and λ from E
+- **Asks:** three strains and the volume change from three stresses (main; re-marked Partly: ROY-3.1-3, ROY-3.4-2); G, K and λ from E
   and ν (~constants); plane strain's σ_z (~plane-strain).
 - **Main — calculator:** Values E, ν, σₓ, σ_y, σ_z, εₓ, ε_y, ε_z, volumetric e (9). Relations:
   εₓ = (σₓ − ν(σ_y + σ_z)) ÷ E (and the other two); e = εₓ + ε_y + ε_z. Example: steel, 100, 50, 0 MPa →
@@ -713,7 +713,7 @@ Courses in scope (field, id, topics):
 - **~constants:** G = E ÷ (2(1 + ν)); K = E ÷ (3(1 − 2ν)); λ = Eν ÷ ((1 + ν)(1 − 2ν)). Example: 200 GPa,
   0.3 → 76.9, 166.7, 115.4 GPa. A limit line: ν < 0.5.
 - **~plane-strain:** σ_z = ν(σₓ + σ_y). Example: 100, 50 → 45 MPa.
-- **Verdict:** 3 pages; the three types Solve (anisotropic stiffness is Partly).
+- **Verdict:** 3 pages; the three types Solve (anisotropic stiffness is Partly). Re-marked from the research items: main Partly (`research/questions/college/marks/mechanical.md`).
 
 #### #2 — Energy methods
 
@@ -731,7 +731,7 @@ Courses in scope (field, id, topics):
 #### #3 — Plasticity and failure criteria
 
 - **Asks:** yield and plastic moments, shape factor (main); von Mises and Tresca from three
-  principal stresses (~yield).
+  principal stresses (~yield); [new-page] pressure-dependent (Drucker–Prager) yield (No: OCW-3.032-PS5-4).
 - **Main — calculator:** rectangle. Values b, h, σ_Y, S = bh² ÷ 6, Z = bh² ÷ 4, M_Y, M_p, shape factor
   f (8). Example: 50 × 100 mm, 250 MPa → M_Y = 20.83 kN·m, M_p = 31.25 kN·m, f = 1.5. ⏳ P3 plastic
   block and P5 elastic–perfectly plastic.
@@ -859,7 +859,7 @@ Courses in scope (field, id, topics):
 
 - **Asks:** heat for a constant-pressure heating of air (main); polytropic boundary work
   (~polytropic); turbine power (~steady-flow); nozzle exit speed (~nozzle); mixing chamber
-  (~mixing).
+  (~mixing); [new-page] combustion: adiabatic flame temperature (not in the taxonomy topics) (No: OCW-16.050-PS8-1).
 - **Main — calculator:** Values m, P, T₁, T₂, V₁, V₂, W, ΔU, Q (9; R and c_v for air in the
   assumption). Relations: V = mRT ÷ P (each state); W = P(V₂ − V₁); ΔU = mc_v(T₂ − T₁); Q = ΔU + W.
   Example: 0.5 kg, 200 kPa, 300 → 500 K → V₁ = 0.2153, V₂ = 0.3588 m³, W = 28.7 kJ, ΔU = 71.8 kJ,
@@ -879,7 +879,7 @@ Courses in scope (field, id, topics):
 
 - **Asks:** Carnot limit and entropy generated by an engine (main); Δs of an ideal gas
   (~entropy); compressor with an isentropic efficiency (~isentropic); a hot block in a lake
-  (~block); possible or impossible devices (~possible).
+  (~block); possible or impossible devices (~possible); [new-page] isothermal compression work (w = RT ln p₂/p₁) (No: OCW-16.050-PS4-6).
 - **Main — calculator:** Values T_H, T_L (K), Q_H, W, Q_L, η, η_Carnot, S_gen (8). Relations:
   Q_H = W + Q_L; η = W ÷ Q_H; η_C = 1 − T_L ÷ T_H; S_gen = Q_L ÷ T_L − Q_H ÷ T_H. Example: 800 K, 300 K,
   1000 kJ, 400 kJ → η = 0.40, η_C = 0.625, Q_L = 600 kJ, S_gen = 0.75 kJ/K. Picture: `heatEngine`
@@ -925,7 +925,7 @@ Courses in scope (field, id, topics):
 #### #0 — Fluid statics
 
 - **Asks:** pressure at a depth, gauge and absolute (main); differential manometer
-  (~manometer); force on a submerged gate (~gate); buoyancy (~buoyancy).
+  (~manometer); force on a submerged gate (~gate); buoyancy (~buoyancy); [new-page] fluid in rigid-body acceleration (tan θ = a/g) (No: OCW-2.06-PS2-1); [new-page] surface tension and Laplace pressure (Δp = 4σ/R for a bubble) (No: OCW-2.06-PS2-5).
 - **Main — calculator:** Values P_atm, ρ, h, P_gauge, P_abs (5). Relations: P_gauge = ρgh;
   P_abs = P_atm + P_gauge. Example: water, 15 m → 147.2 kPa gauge, 248.5 kPa absolute. ⏳ P12 `tank`.
 - **~manometer:** ΔP = (ρ_m − ρ)gh. Example: mercury under water, 0.12 m → 14.83 kPa. ⏳ P12.
@@ -949,7 +949,7 @@ Courses in scope (field, id, topics):
 #### #2 — Control-volume analysis
 
 - **Asks:** force of a jet on a vane (main); tank level rate (~continuity); pump power with
-  losses (~pump).
+  losses (~pump); [new-page] velocity fields (divergence, streamlines) (No: OCW-2.06-PS4-5).
 - **Main — calculator:** Values ρ, V, A, ṁ, turning angle θ, Fₓ, F_y (7). Relations: ṁ = ρVA;
   Fₓ = ṁV(1 − cos θ); F_y = ṁV sin θ. Assumptions: a fixed vane; speed unchanged on it; atmospheric
   pressure all round. Example: 20 m/s, 0.002 m² → ṁ = 40 kg/s; flat plate (90°) 800 N; θ = 120° →
@@ -1014,7 +1014,7 @@ Courses in scope (field, id, topics):
 #### #0 — Conduction
 
 - **Asks:** heat loss through a layered wall with convection (main); insulated pipe (~cylinder);
-  lumped cooling and the Biot check (~lumped); pin fin (~fin).
+  lumped cooling and the Biot check (~lumped); pin fin (~fin); [new-page] conduction shape factors (S): sphere in an infinite medium (No: AHTT-2.15).
 - **Main — calculator:** per m² of wall. Values T_in, T_out, h_i, L₁, k₁, L₂, k₂, h_o, R″, q″ (10).
   Relations: R″ = 1 ÷ h_i + L₁ ÷ k₁ + L₂ ÷ k₂ + 1 ÷ h_o; q″ = (T_in − T_out) ÷ R″. Example: 20 °C in, −10 °C
   out, h = 10 and 25 W/(m²·K), 0.2 m brick (k = 0.72), 50 mm foam (0.04) → R″ = 1.668 m²·K/W,
@@ -1147,7 +1147,7 @@ Courses in scope (field, id, topics):
 #### #0 — Free vibration
 
 - **Asks:** natural frequency and amplitude from start conditions (main); from static deflection
-  (~static); springs in series and parallel (~springs); compound pendulum (~compound).
+  (~static); springs in series and parallel (~springs); compound pendulum (~compound); [new-page] effective spring mass (M + m/3) (No: OCW-2.003SC-PS11-4).
 - **Main — calculator:** Values m, k, ω_n, f_n, T, x₀, v₀, X (8). Relations: ω_n = √(k ÷ m); f_n = ω_n ÷ 2π;
   T = 1 ÷ f_n; X = √(x₀² + (v₀ ÷ ω_n)²). Example: 2 kg, 800 N/m, 0.03 m, 0.8 m/s → 20 rad/s, 3.18 Hz,
   0.314 s, X = 0.05 m. Picture: `oscillator` `swing` with `position` (existing).
@@ -1203,7 +1203,7 @@ Courses in scope (field, id, topics):
 #### #0 — Casting and forming
 
 - **Asks:** solidification time (main); riser size (~riser); can a rolling pass take this draft
-  (~rolling); flow stress and forming force (~flow-stress); which process family (~families).
+  (~rolling); flow stress and forming force (~flow-stress); which process family (~families); [new-page] upper-bound forming analysis (No: DOIT-METAL-FORMING-3-3); [new-page] injection moulding (pressure, clamp force, cooling time t ∝ h²/α) (No: OCW-2.008-HW1-2).
 - **Main — calculator:** Values V (cm³), A (cm²), modulus M = V ÷ A, mold constant B (min/cm²), t (min).
   Relation: t = BM² (Chvorinov, n = 2). Example: 10 cm cube, B = 2.0 → M = 1.667 cm, t = 5.56 min.
   ⏳ P30 (`casting`); interim `table` of cube, sphere, plate of equal V.
@@ -1256,7 +1256,7 @@ Courses in scope (field, id, topics):
 #### #3 — Tolerances
 
 - **Asks:** clearance of a hole–shaft fit (main); stack-up worst case and RSS (~stack); process
-  capability (~capability); fit type (~fit-type).
+  capability (~capability); fit type (~fit-type); [new-page] design for assembly (Boothroyd index) (No: OCW-2.008-HW3-1).
 - **Main — calculator:** Values basic size, hole ES, EI, shaft es, ei (mm), C_max, C_min (7).
   Relations: C_max = ES − ei; C_min = EI − es (negative is interference; the caption names the
   fit). Example: 25 mm H7/g6 typed as +0.021/0 and −0.007/−0.020 → C_max = 0.041, C_min = 0.007 mm

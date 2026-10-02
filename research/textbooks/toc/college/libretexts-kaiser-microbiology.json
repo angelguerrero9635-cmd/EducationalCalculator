@@ -1,0 +1,245 @@
+{
+  "id": "libretexts-kaiser-microbiology",
+  "curriculum": "Kaiser, Microbiology",
+  "publisher": "Gary Kaiser (Community College of Baltimore County); LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Gary Kaiser, Microbiology, LibreTexts Biology. License: CC BY 4.0."
+  },
+  "terms": {
+    "unit": "Unit",
+    "lesson": "Chapter"
+  },
+  "sourceUrl": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Unit pages tagged license:ccby. The companion \"Exercises: Microbiology (Kaiser)\" pages carry no licence tag; exercises 2.E, 3.E, 4.E, 10.E, 11.E, 13.E, 17.E and 18.E were read for the records (type only). Licence tags seen on chapter pages: license:ccby.",
+  "books": [
+    {
+      "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)",
+      "units": [
+        {
+          "n": "Unit 1: Introduction to Microbiology and Prokaryotic Cell Anatomy",
+          "title": "Unit 1: Introduction to Microbiology and Prokaryotic Cell Anatomy",
+          "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_1%3A_Introduction_to_Microbiology_and_Prokaryotic_Cell_Anatomy",
+          "topics": ["he.biology.microbiology#0"],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Fundamentals of Microbiology",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_1%3A_Introduction_to_Microbiology_and_Prokaryotic_Cell_Anatomy/1%3A_Fundamentals_of_Microbiology"
+            },
+            {
+              "n": "2",
+              "title": "The Prokaryotic Cell - Bacteria",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_1%3A_Introduction_to_Microbiology_and_Prokaryotic_Cell_Anatomy/2%3A_The_Prokaryotic_Cell_-_Bacteria"
+            }
+          ]
+        },
+        {
+          "n": "Unit 2: Bacterial Genetics and the Chemical Control of Bacteria",
+          "title": "Unit 2: Bacterial Genetics and the Chemical Control of Bacteria",
+          "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_2%3A_Bacterial_Genetics_and_the_Chemical_Control_of_Bacteria",
+          "topics": ["he.biology.microbiology#2", "he.biology.microbiology#1"],
+          "lessons": [
+            {
+              "n": "3",
+              "title": "Bacterial Genetics",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_2%3A_Bacterial_Genetics_and_the_Chemical_Control_of_Bacteria/3%3A_Bacterial_Genetics"
+            },
+            {
+              "n": "4",
+              "title": "Using Antibiotics and Chemical Agents to Control Bacteria",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_2%3A_Bacterial_Genetics_and_the_Chemical_Control_of_Bacteria/4%3A_Using_Antibiotics_and_Chemical_Agents_to_Control_Bacteria"
+            }
+          ]
+        },
+        {
+          "n": "Unit 3: Bacterial Pathogenesis",
+          "title": "Unit 3: Bacterial Pathogenesis",
+          "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_3%3A_Bacterial_Pathogenesis",
+          "topics": ["he.biology.microbiology#3"],
+          "lessons": [
+            {
+              "n": "",
+              "title": "Overview of Microbial Pathogenesis",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_3%3A_Bacterial_Pathogenesis/1%3A_Overview_of_Microbial_Pathogenesis"
+            }
+          ]
+        },
+        {
+          "n": "Unit 4: Eukaryotic Microorganisms and Viruses",
+          "title": "Unit 4: Eukaryotic Microorganisms and Viruses",
+          "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_4%3A_Eukaryotic_Microorganisms_and_Viruses",
+          "topics": ["he.biology.microbiology#0"],
+          "lessons": [
+            {
+              "n": "7",
+              "title": "The Eukaryotic Cell",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_4%3A_Eukaryotic_Microorganisms_and_Viruses/07%3A_The_Eukaryotic_Cell"
+            },
+            {
+              "n": "8",
+              "title": "Fungi",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_4%3A_Eukaryotic_Microorganisms_and_Viruses/08%3A_Fungi"
+            },
+            {
+              "n": "9",
+              "title": "Protozoa",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_4%3A_Eukaryotic_Microorganisms_and_Viruses/09%3A_Protozoa"
+            },
+            {
+              "n": "10",
+              "title": "Viruses",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_4%3A_Eukaryotic_Microorganisms_and_Viruses/10%3A_Viruses"
+            }
+          ]
+        },
+        {
+          "n": "Unit 5: Innate Immunity",
+          "title": "Unit 5: Innate Immunity",
+          "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_5%3A_Innate_Immunity",
+          "topics": ["he.biology.microbiology#3"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "The Innate Immune System: An Overview",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_5%3A_Innate_Immunity/11.1%3A_The_Innate_Immune_System%3A_An_Overview"
+            },
+            {
+              "n": "11.2",
+              "title": "Defense Cells in the Blood: The Leukocytes",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_5%3A_Innate_Immunity/11.2%3A_Defense_Cells_in_the_Blood%3A_The_Leukocytes"
+            },
+            {
+              "n": "11.3",
+              "title": "Defense Cells in the Tissue - Dendritic Cells, Macrophages, and Mast Cells",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_5%3A_Innate_Immunity/11.3%3A_Defense_Cells_in_the_Tissue_-_Dendritic_Cells_Macrophages_and_Mast_Cells"
+            },
+            {
+              "n": "11.3",
+              "title": "Immediate Innate Immunity",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_5%3A_Innate_Immunity/11.3%3A_Immediate_Innate_Immunity"
+            },
+            {
+              "n": "11.4",
+              "title": "Early Induced Innate Immunity",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_5%3A_Innate_Immunity/11.4%3A_Early_Induced_Innate_Immunity"
+            },
+            {
+              "n": "11.E",
+              "title": "Innate Immunity (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_5%3A_Innate_Immunity/11.E%3A_Innate_Immunity_(Exercises)"
+            }
+          ]
+        },
+        {
+          "n": "Unit 6: Adaptive Immunity",
+          "title": "Unit 6: Adaptive Immunity",
+          "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_6%3A_Adaptive_Immunity",
+          "topics": ["he.biology.microbiology#3"],
+          "lessons": [
+            {
+              "n": "12",
+              "title": "Introduction to Adaptive Immunity",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_6%3A_Adaptive_Immunity/12%3A_Introduction_to_Adaptive_Immunity"
+            },
+            {
+              "n": "13",
+              "title": "Humoral Immunity",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_6%3A_Adaptive_Immunity/13%3A_Humoral_Immunity"
+            },
+            {
+              "n": "14",
+              "title": "Cell-Mediated Immunity",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_6%3A_Adaptive_Immunity/14%3A_Cell-Mediated_Immunity"
+            },
+            {
+              "n": "15",
+              "title": "Immunodeficiency",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_6%3A_Adaptive_Immunity/15%3A_Immunodeficiency"
+            },
+            {
+              "n": "16",
+              "title": "Hypersensitivities",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_6%3A_Adaptive_Immunity/16%3A_Hypersensitivities"
+            }
+          ]
+        },
+        {
+          "n": "Unit 7: Microbial Genetics and Microbial Metabolism",
+          "title": "Unit 7: Microbial Genetics and Microbial Metabolism",
+          "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_7%3A_Microbial_Genetics_and_Microbial_Metabolism",
+          "topics": ["he.biology.microbiology#1", "he.biology.microbiology#2"],
+          "lessons": [
+            {
+              "n": "17",
+              "title": "Bacterial Growth and Energy Production",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Unit_7%3A_Microbial_Genetics_and_Microbial_Metabolism/17%3A_Bacterial_Growth_and_Energy_Production"
+            }
+          ]
+        },
+        {
+          "n": "Bacteria",
+          "title": "Bacteria",
+          "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria",
+          "topics": [],
+          "notes": "Index page of bacteria; not a chapter.",
+          "lessons": [
+            {
+              "n": "",
+              "title": "No image available Clostridium tetani",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Clostridium_tetani"
+            },
+            {
+              "n": "",
+              "title": "No image available Escherichia coli",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Escherichia_coli"
+            },
+            {
+              "n": "",
+              "title": "No image available Haemophilus influenzae",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Haemophilus_influenzae"
+            },
+            {
+              "n": "",
+              "title": "No image available Helicobacter pylori",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Helicobacter_pylori"
+            },
+            {
+              "n": "",
+              "title": "No image available Neisseria gonorrhoeae",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Neisseria_gonorrhoeae"
+            },
+            {
+              "n": "",
+              "title": "No image available Neisseria meningitidis",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Neisseria_meningitidis"
+            },
+            {
+              "n": "",
+              "title": "No image available Streptococcus pneumoniae",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Streptococcus_pneumoniae"
+            },
+            {
+              "n": "",
+              "title": "No image available Streptococcus pyogenes",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Streptococcus_pyogenes"
+            },
+            {
+              "n": "",
+              "title": "No image available Vibrio cholerae",
+              "url": "https://bio.libretexts.org/Bookshelves/Microbiology/Microbiology_(Kaiser)/Bacteria/Vibrio_cholerae"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Kaiser, Microbiology"
+    }
+  ]
+}

@@ -1,0 +1,718 @@
+{
+  "id": "ncees-fe-che-specifications",
+  "curriculum": "NCEES FE Chemical CBT exam specifications",
+  "publisher": "NCEES",
+  "edition": "Effective beginning with the July 2020 examinations",
+  "subject": "chemical",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "© NCEES; free to view (all rights reserved)",
+    "url": "https://ncees.org/exams/fe-exam/",
+    "attribution": "Fundamentals of Engineering (FE) Chemical CBT Exam Specifications, NCEES."
+  },
+  "terms": {
+    "unit": "Knowledge area",
+    "lesson": "Subtopic"
+  },
+  "sourceUrl": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+  "retrieved": "2026-10-02",
+  "notes": "Topic list and question counts per knowledge area only, as the brief allows (110 questions in all). No exam items, practice exams or Reference Handbook content were read. Fetched from ncees.org (robots.txt: Crawl-delay 10, disallows /*?, /calendar/action*, /events/action*, /cdn-cgi*), 10 s between requests. Topic mapping is ours.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+      "units": [
+        {
+          "n": "1",
+          "title": "Mathematics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.numerical-methods#0",
+            "he.engineering.numerical-methods#1",
+            "he.engineering.numerical-methods#2",
+            "he.engineering.numerical-methods#3",
+            "he.engineering.numerical-methods#4",
+            "he.math.calc-1#0",
+            "he.math.calc-1#1",
+            "he.math.calc-1#2",
+            "he.math.calc-1#3",
+            "he.math.calc-1#4",
+            "he.math.diff-eq#0",
+            "he.math.diff-eq#1",
+            "he.math.diff-eq#2",
+            "he.math.diff-eq#3",
+            "he.math.diff-eq#4",
+            "he.math.linear-algebra#0",
+            "he.math.linear-algebra#1",
+            "he.math.linear-algebra#2",
+            "he.math.linear-algebra#3",
+            "he.math.linear-algebra#4"
+          ],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "1.A",
+              "title": "Analytic geometry, logarithms, and trigonometry",
+              "url": null
+            },
+            {
+              "n": "1.B",
+              "title": "Calculus (e.g., single-variable, integral, differential)",
+              "url": null
+            },
+            {
+              "n": "1.C",
+              "title": "Differential equations (e.g., ordinary, partial, Laplace)",
+              "url": null
+            },
+            {
+              "n": "1.D",
+              "title": "Numerical methods (e.g., error propagation, Taylor’s series, curve fitting, Newton-Raphson, Fourier series)",
+              "url": null
+            },
+            {
+              "n": "1.E",
+              "title": "Algebra (e.g., fundamentals, matrix algebra, systems of equations)",
+              "url": null
+            },
+            {
+              "n": "1.F",
+              "title": "Accuracy, precision, and significant figures",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Probability and Statistics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "2.A",
+              "title": "Probability distributions (e.g., discrete, continuous, normal, binomial)",
+              "url": null
+            },
+            {
+              "n": "2.B",
+              "title": "Expected value (weighted average) in decision making",
+              "url": null
+            },
+            {
+              "n": "2.C",
+              "title": "Hypothesis testing and design of experiments (e.g., t-test, outlier testing, analysis of the variance)",
+              "url": null
+            },
+            {
+              "n": "2.D",
+              "title": "Measures of central tendencies and dispersions (e.g., mean, mode, standard deviation, confidence intervals)",
+              "url": null
+            },
+            {
+              "n": "2.E",
+              "title": "Regression and curve fitting",
+              "url": null
+            },
+            {
+              "n": "2.F",
+              "title": "Statistical control (e.g., control limits)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "3",
+          "title": "Engineering Sciences",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.dynamics#1",
+            "he.engineering.dynamics#2",
+            "he.engineering.circuits-1#0"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "3.A",
+              "title": "Basic dynamics (e.g., friction, force, mass, acceleration, momentum)",
+              "url": null
+            },
+            {
+              "n": "3.B",
+              "title": "Work, energy, and power (as applied to particles or rigid bodies)",
+              "url": null
+            },
+            {
+              "n": "3.C",
+              "title": "Electricity, current, and voltage laws (e.g., charge, energy, current, voltage, power, Kirchhoff's law, Ohm's law)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Materials Science",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.materials-science#0",
+            "he.engineering.materials-science#1",
+            "he.engineering.materials-science#2",
+            "he.engineering.materials-science#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "4.A",
+              "title": "Chemical, electrical, mechanical, and physical properties (e.g., effect of temperature, pressure, stress, strain, failure)",
+              "url": null
+            },
+            {
+              "n": "4.B",
+              "title": "Material types and compatibilities (e.g., engineered materials, ferrous and nonferrous metals)",
+              "url": null
+            },
+            {
+              "n": "4.C",
+              "title": "Corrosion mechanisms and control",
+              "url": null
+            },
+            {
+              "n": "4.D",
+              "title": "Polymers, ceramics, and composites",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Chemistry and Biology",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.chemistry.gen-chem-1#0",
+            "he.chemistry.gen-chem-1#1",
+            "he.chemistry.gen-chem-1#2",
+            "he.chemistry.gen-chem-1#3",
+            "he.chemistry.gen-chem-1#4",
+            "he.chemistry.gen-chem-2#0",
+            "he.chemistry.gen-chem-2#1",
+            "he.chemistry.gen-chem-2#2",
+            "he.chemistry.gen-chem-2#3",
+            "he.chemistry.gen-chem-2#4"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "5.A",
+              "title": "Inorganic chemistry (e.g., molarity, normality, molality, acids, bases, redox reactions, valence, solubility product, pH, pK, electrochemistry, periodic table)",
+              "url": null
+            },
+            {
+              "n": "5.B",
+              "title": "Organic chemistry (e.g., nomenclature, structure, balanced equations, reactions, synthesis)",
+              "url": null
+            },
+            {
+              "n": "5.C",
+              "title": "Analytical chemistry (e.g., wet chemistry and instrumental chemistry)",
+              "url": null
+            },
+            {
+              "n": "5.D",
+              "title": "Biochemistry, microbiology, and molecular biology (e.g., organization and function of the cell; Krebs, glycolysis, Calvin cycles; enzymes and protein chemistry; genetics; protein synthesis, translation, transcription)",
+              "url": null
+            },
+            {
+              "n": "5.E",
+              "title": "Bioprocessing (e.g., fermentation, biological treatment systems, aerobic, anaerobic process, nutrient removal)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Fluid Mechanics/Dynamics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.fluid-mechanics#0",
+            "he.engineering.fluid-mechanics#1",
+            "he.engineering.fluid-mechanics#2",
+            "he.engineering.fluid-mechanics#3",
+            "he.engineering.fluid-mechanics#4",
+            "he.engineering.fluid-mechanics#5"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "6.A",
+              "title": "Fluid properties",
+              "url": null
+            },
+            {
+              "n": "6.B",
+              "title": "Dimensionless numbers (e.g., Reynolds number)",
+              "url": null
+            },
+            {
+              "n": "6.C",
+              "title": "Mechanical energy balance (e.g., pipes, valves, fittings, pressure losses across packed beds, pipe networks)",
+              "url": null
+            },
+            {
+              "n": "6.D",
+              "title": "Bernoulli equation (hydrostatic pressure, velocity head)",
+              "url": null
+            },
+            {
+              "n": "6.E",
+              "title": "Laminar and turbulent flow",
+              "url": null
+            },
+            {
+              "n": "6.F",
+              "title": "Flow measurement (e.g., orifices, Venturi meters)",
+              "url": null
+            },
+            {
+              "n": "6.G",
+              "title": "Pumps, turbines, compressors, and vacuum systems",
+              "url": null
+            },
+            {
+              "n": "6.H",
+              "title": "Compressible flow and non-Newtonian fluids",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Thermodynamics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.chemical-thermodynamics#0",
+            "he.engineering.chemical-thermodynamics#1",
+            "he.engineering.chemical-thermodynamics#2",
+            "he.engineering.chemical-thermodynamics#3"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "7.A",
+              "title": "Thermodynamic properties of pure components and mixtures (e.g., specific volume, internal energy, enthalpy, entropy, free energy, ideal gas law)",
+              "url": null
+            },
+            {
+              "n": "7.B",
+              "title": "Properties data and phase diagrams of pure components and mixtures (e.g., steam tables, psychrometric charts, T-s, P-h, x-y, T-x-y)",
+              "url": null
+            },
+            {
+              "n": "7.C",
+              "title": "Thermodynamic laws (e.g., first law, second law)",
+              "url": null
+            },
+            {
+              "n": "7.D",
+              "title": "Thermodynamic processes (e.g., isothermal, adiabatic, isentropic, phase changes)",
+              "url": null
+            },
+            {
+              "n": "7.E",
+              "title": "Cyclic processes and efficiencies (e.g., power, refrigeration, heat pump)",
+              "url": null
+            },
+            {
+              "n": "7.F",
+              "title": "Phase equilibrium (e.g., fugacity, activity coefficient, Raoult's law)",
+              "url": null
+            },
+            {
+              "n": "7.G",
+              "title": "Chemical equilibrium",
+              "url": null
+            },
+            {
+              "n": "7.H",
+              "title": "Heats of reaction and mixing",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Material/Energy Balances",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.material-energy-balances#0",
+            "he.engineering.material-energy-balances#1",
+            "he.engineering.material-energy-balances#2",
+            "he.engineering.material-energy-balances#3"
+          ],
+          "questions": "10–15",
+          "lessons": [
+            {
+              "n": "8.A",
+              "title": "Steady-state mass balance",
+              "url": null
+            },
+            {
+              "n": "8.B",
+              "title": "Unsteady-state mass balance",
+              "url": null
+            },
+            {
+              "n": "8.C",
+              "title": "Steady-state energy balance",
+              "url": null
+            },
+            {
+              "n": "8.D",
+              "title": "Unsteady-state energy balance",
+              "url": null
+            },
+            {
+              "n": "8.E",
+              "title": "Recycle/bypass processes",
+              "url": null
+            },
+            {
+              "n": "8.F",
+              "title": "Reactive systems (e.g., combustion)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Heat Transfer",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.heat-transfer#0",
+            "he.engineering.heat-transfer#1",
+            "he.engineering.heat-transfer#2",
+            "he.engineering.heat-transfer#3"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "9.A",
+              "title": "Conductive heat transfer",
+              "url": null
+            },
+            {
+              "n": "9.B",
+              "title": "Convective heat transfer (natural and forced)",
+              "url": null
+            },
+            {
+              "n": "9.C",
+              "title": "Radiation heat transfer",
+              "url": null
+            },
+            {
+              "n": "9.D",
+              "title": "Heat-transfer coefficients (e.g., overall, local, fouling)",
+              "url": null
+            },
+            {
+              "n": "9.E",
+              "title": "Heat-transfer equipment, operation, and design (e.g., double pipe, shell and tube, fouling, number of transfer units, log-mean temperature difference, flow configuration)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Mass Transfer and Separation",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.separations#0",
+            "he.engineering.separations#1",
+            "he.engineering.separations#2",
+            "he.engineering.separations#3",
+            "he.engineering.transport-phenomena#0",
+            "he.engineering.transport-phenomena#1",
+            "he.engineering.transport-phenomena#2",
+            "he.engineering.transport-phenomena#3"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "10.A",
+              "title": "Molecular diffusion (e.g., steady and unsteady state, physical property estimation)",
+              "url": null
+            },
+            {
+              "n": "10.B",
+              "title": "Convective mass transfer (e.g., mass-transfer coefficient, eddy diffusion)",
+              "url": null
+            },
+            {
+              "n": "10.C",
+              "title": "Separation systems (e.g., distillation, absorption, extraction, membrane processes, adsorption)",
+              "url": null
+            },
+            {
+              "n": "10.D",
+              "title": "Equilibrium stage methods (e.g., graphical methods, McCabe-Thiele, efficiency)",
+              "url": null
+            },
+            {
+              "n": "10.E",
+              "title": "Continuous contact methods (e.g., number of transfer units, height equivalent to a theoretical plate, height of transfer unit, number of theoretical plates)",
+              "url": null
+            },
+            {
+              "n": "10.F",
+              "title": "Humidification, drying, and evaporation",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Solids Handling",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [],
+          "questions": "3–5",
+          "lessons": [
+            {
+              "n": "11.A",
+              "title": "Particle properties (e.g., surface and bulk forces, particle size distribution)",
+              "url": null
+            },
+            {
+              "n": "11.B",
+              "title": "Processing (e.g., crushing, grinding, crystallization)",
+              "url": null
+            },
+            {
+              "n": "11.C",
+              "title": "Transportation and storage (e.g., belts, pneumatic, slurries, tanks, hoppers)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "12",
+          "title": "Chemical Reaction Engineering",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.reaction-engineering#0",
+            "he.engineering.reaction-engineering#1",
+            "he.engineering.reaction-engineering#2",
+            "he.engineering.reaction-engineering#3"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "12.A",
+              "title": "Reaction rates and order",
+              "url": null
+            },
+            {
+              "n": "12.B",
+              "title": "Rate constant (e.g., Arrhenius function)",
+              "url": null
+            },
+            {
+              "n": "12.C",
+              "title": "Conversion, yield, and selectivity",
+              "url": null
+            },
+            {
+              "n": "12.D",
+              "title": "Type of reactions (e.g., series, parallel, forward, reverse, homogeneous, heterogeneous, biological)",
+              "url": null
+            },
+            {
+              "n": "12.E",
+              "title": "Reactor types (e.g., batch, semibatch, continuous stirred tank, plug flow, gas phase, liquid phase)",
+              "url": null
+            },
+            {
+              "n": "12.F",
+              "title": "Catalysis (e.g., mechanisms, biocatalysis, physical properties)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Economics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "13.A",
+              "title": "Time value of money (e.g., present worth, annual worth, future worth, rate of return)",
+              "url": null
+            },
+            {
+              "n": "13.B",
+              "title": "Economic analyses (e.g., break-even, benefit-cost, optimal economic life)",
+              "url": null
+            },
+            {
+              "n": "13.C",
+              "title": "Uncertainty (e.g., expected value and risk)",
+              "url": null
+            },
+            {
+              "n": "13.D",
+              "title": "Project selection (e.g., comparison of projects with unequal lives, lease/buy/make, depreciation, discounted cash flow)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "14",
+          "title": "Process Design",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.process-design#0",
+            "he.engineering.process-design#1",
+            "he.engineering.process-design#2",
+            "he.engineering.process-design#3"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "14.A",
+              "title": "Process flow diagrams and piping and instrumentation diagrams",
+              "url": null
+            },
+            {
+              "n": "14.B",
+              "title": "Equipment selection (e.g., sizing and scale-up)",
+              "url": null
+            },
+            {
+              "n": "14.C",
+              "title": "Equipment and facilities cost estimation (e.g., cost indices, equipment costing)",
+              "url": null
+            },
+            {
+              "n": "14.D",
+              "title": "Process design and optimization (e.g., sustainability, efficiency, green engineering, inherently safer design, evaluation of specifications, product design)",
+              "url": null
+            },
+            {
+              "n": "14.E",
+              "title": "Design standards (e.g., regulatory, ASTM, ISO, OSHA)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Process Control",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.process-control#0",
+            "he.engineering.process-control#1",
+            "he.engineering.process-control#2",
+            "he.engineering.process-control#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "15.A",
+              "title": "Dynamics (e.g., first- and second-order processes, gains and time constants, stability, damping, and transfer functions)",
+              "url": null
+            },
+            {
+              "n": "15.B",
+              "title": "Control strategies (e.g., feedback, feedforward, cascade, ratio, PID controller tuning, alarms, other safety equipment)",
+              "url": null
+            },
+            {
+              "n": "15.C",
+              "title": "Control loop design and hardware (e.g., matching measured and manipulated variables, sensors, control valves, conceptual process control, distributed control system [DCS] programming, programmable logic controller [PLC] programming, interlocks)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Safety, Health, and Environment",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": ["he.engineering.process-design#3"],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "16.A",
+              "title": "Hazardous properties of materials, including SDS (e.g., corrosivity, flammability, toxicity, reactivity, handling, storage, transportation)",
+              "url": null
+            },
+            {
+              "n": "16.B",
+              "title": "Industrial hygiene (e.g., toxicity, noise, PPE, ergonomics)",
+              "url": null
+            },
+            {
+              "n": "16.C",
+              "title": "Process safety, risk assessment, and hazard analysis (e.g., layer of protection analysis, hazard and operability [HAZOP] studies, fault and event tree analysis, dispersion modeling)",
+              "url": null
+            },
+            {
+              "n": "16.D",
+              "title": "Overpressure and underpressure protection (e.g., relief, redundant control, inherently safe)",
+              "url": null
+            },
+            {
+              "n": "16.E",
+              "title": "Waste minimization, waste treatment, and regulation (e.g., air, water, solids, RCRA, CWA, other EPA, OSHA)",
+              "url": null
+            },
+            {
+              "n": "16.F",
+              "title": "Reactivity hazards (e.g., inerting, runaway reactions, compatibility)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Ethics and Professional Practice",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Che-CBT-specs.pdf",
+          "topics": [],
+          "questions": "3–5",
+          "lessons": [
+            {
+              "n": "17.A",
+              "title": "Codes of ethics (professional and technical societies)",
+              "url": null
+            },
+            {
+              "n": "17.B",
+              "title": "Agreements, contracts, and contract law (e.g., noncompete, nondisclosure, memorandum of understanding)",
+              "url": null
+            },
+            {
+              "n": "17.C",
+              "title": "Public health, safety, and welfare (e.g., public protection issues, licensing, professional liability, regulatory issues)",
+              "url": null
+            },
+            {
+              "n": "17.D",
+              "title": "Intellectual property (e.g., copyright, trade secrets, patents, trademarks)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "NCEES FE Chemical CBT exam specifications"
+    }
+  ]
+}

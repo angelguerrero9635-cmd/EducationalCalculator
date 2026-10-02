@@ -53,36 +53,25 @@
             "two CSTR layouts",
             "parallel CSTR feed split"
           ],
-          "notation": "τ = V ÷ v₀; X; Levenspiel F_A0 ÷ (−r_A)"
+          "notation": ["τ = V ÷ v₀; X; Levenspiel F_A0 ÷ (−r_A)"]
         },
         {
           "n": "10–11",
           "title": "Non-ideal mixing and residence-time distribution; nonisothermal reactors and stability",
-          "topics": [
-            "he.engineering.reaction-engineering#1"
-          ],
-          "examples": [
-            "tracer RTD",
-            "runaway explosion"
-          ],
+          "topics": ["he.engineering.reaction-engineering#1"],
+          "examples": ["tracer RTD", "runaway explosion"],
           "notes": "RTD and nonisothermal reactors: plan gaps."
         },
         {
           "n": "12–15",
           "title": "Data analysis; chemostats; binding kinetics; gene expression dynamics",
-          "topics": [
-            "he.engineering.reaction-engineering#0"
-          ]
+          "topics": ["he.engineering.reaction-engineering#0"]
         },
         {
           "n": "16–",
           "title": "Catalysis; mass transfer and reaction",
-          "topics": [
-            "he.engineering.reaction-engineering#3"
-          ],
-          "examples": [
-            "Eley–Rideal rate law"
-          ]
+          "topics": ["he.engineering.reaction-engineering#3"],
+          "examples": ["Eley–Rideal rate law"]
         }
       ]
     }

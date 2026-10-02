@@ -34,32 +34,27 @@
             "he.engineering.structural-analysis#3",
             "he.engineering.structural-analysis#2"
           ],
-          "examples": [
-            "fixed-end actions with shear deformation and settlement"
-          ]
+          "examples": ["fixed-end actions with shear deformation and settlement"]
         },
         {
           "n": "6–9",
           "title": "Center of twist; cables and cable-stayed systems; beam on elastic foundation",
-          "topics": [
-            "he.engineering.structural-analysis#0"
-          ],
-          "examples": [
-            "cable-stayed mast",
-            "infinite beam on springs"
-          ]
+          "topics": ["he.engineering.structural-analysis#0"],
+          "examples": ["cable-stayed mast", "infinite beam on springs"]
         },
         {
           "n": "10–13",
           "title": "Nonlinear truss analysis; elastic stability of trusses and frames",
           "topics": [],
-          "notes": "Stability: nearest aerospace-structures#2 / mechanics-of-materials#5."
+          "notes": "Stability: nearest aerospace-structures#2 / mechanics-of-materials#5.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "15–27",
           "title": "Active structural control; state-space formulation; LQR",
           "topics": [],
-          "notes": "Control: no civil topic (nearest control-systems)."
+          "notes": "Control: no civil topic (nearest control-systems).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

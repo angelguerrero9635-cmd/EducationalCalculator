@@ -1,0 +1,108 @@
+{
+  "id": "mit-ocw-2-092",
+  "curriculum": "MIT OCW 2.092 Finite Element Analysis of Solids and Fluids I",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2009",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Klaus-Jürgen Bathe. 2.092 Finite Element Analysis of Solids and Fluids I, Fall 2009. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Klaus-Jürgen Bathe. Units are the problem sets, labs and exams read (type only; no solutions fetched). No calendar text captured. Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit2_092f09_hw1",
+          "url": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/resources/mit2_092f09_hw1/",
+          "topics": ["he.engineering.finite-element-analysis#0"],
+          "examples": ["truss stiffness matrix with no supports: rigid-body modes"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.092-HW1-1"
+        },
+        {
+          "n": "2",
+          "title": "mit2_092f09_hw4",
+          "url": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/resources/mit2_092f09_hw4/",
+          "topics": ["he.engineering.finite-element-analysis#2"],
+          "examples": ["linear truss analysis compared with the hand solution"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.092-HW4-1"
+        },
+        {
+          "n": "3",
+          "title": "mit2_092f09_hw5",
+          "url": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/resources/mit2_092f09_hw5/",
+          "topics": ["he.engineering.finite-element-analysis#2"],
+          "examples": ["force–deflection curve of a snap-through toggle"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.092-HW5-1"
+        },
+        {
+          "n": "4",
+          "title": "mit2_092f09_hw6",
+          "url": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/resources/mit2_092f09_hw6/",
+          "topics": ["he.engineering.finite-element-analysis#3"],
+          "examples": [
+            "mesh convergence of a cantilever under pressure (9-node elements)",
+            "temperature in a beam with four meshes"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.092-HW6-1, OCW-2.092-HW6-2"
+        },
+        {
+          "n": "5",
+          "title": "mit2_092f09_hw7",
+          "url": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/resources/mit2_092f09_hw7/",
+          "topics": [
+            "he.engineering.finite-element-analysis#3",
+            "he.engineering.numerical-methods#4"
+          ],
+          "examples": [
+            "fill-in during Gauss elimination of a four-node model",
+            "steps until central difference blows up just above the critical step"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.092-HW7-2, OCW-2.092-HW7-3"
+        },
+        {
+          "n": "6",
+          "title": "mit2_092f09_exam1",
+          "url": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/resources/mit2_092f09_exam1/",
+          "topics": [
+            "he.engineering.finite-element-analysis#0",
+            "he.engineering.finite-element-analysis#1"
+          ],
+          "examples": [
+            "interpolation functions of a 4-node plane-stress element",
+            "spinning rod modelled by two bar elements"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.092-Q1-1, OCW-2.092-Q1-2"
+        },
+        {
+          "n": "7",
+          "title": "mit2_092f09_hw8",
+          "url": "https://ocw.mit.edu/courses/2-092-finite-element-analysis-of-solids-and-fluids-i-fall-2009/resources/mit2_092f09_hw8/",
+          "topics": ["he.engineering.vibrations#3"],
+          "examples": ["eigenvalues and modes of a 3 × 3 generalized eigenproblem"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.092-HW8-4"
+        }
+      ],
+      "title": "MIT OCW 2.092 Finite Element Analysis of Solids and Fluids I"
+    }
+  ]
+}

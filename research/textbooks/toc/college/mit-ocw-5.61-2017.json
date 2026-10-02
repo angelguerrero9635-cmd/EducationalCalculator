@@ -1,0 +1,244 @@
+{
+  "id": "mit-ocw-5.61-2017",
+  "curriculum": "MIT OCW 5.61 Physical Chemistry",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2017",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Robert Field. 5.61 Physical Chemistry. Fall 2017. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Calendar and resource titles; problem sets 1–9 and exams 1–3 read for types. The course is more formal (operators, matrices) than a typical physical chemistry II.",
+  "books": [
+    {
+      "course": "5.61",
+      "url": "https://ocw.mit.edu/courses/5-61-physical-chemistry-fall-2017/",
+      "units": [
+        {
+          "n": "L",
+          "title": "Lectures",
+          "topics": [
+            "he.chemistry.physical-2#0",
+            "he.chemistry.physical-2#1",
+            "he.chemistry.physical-2#2",
+            "he.chemistry.physical-2#3",
+            "he.chemistry.physical-2#4"
+          ],
+          "examples": [
+            "photon momentum, photons per pulse, photoelectric h and φ from a plot",
+            "PIB and HO eigenstates, superposition measurement, ⟨x⟩(t)",
+            "ladder-operator integrals and selection rules",
+            "LCAO-MO of H₂⁺ and diatomics; Hückel π energies and delocalization",
+            "quantum defects of Rydberg series"
+          ],
+          "ranges": ["λ 266–1064 nm", "vibrational ωe 780–2360 cm⁻¹", "Re 1–2 Å"],
+          "notation": [
+            "ħ, a and a† ladder operators, N̂ = a†a",
+            "energies in cm⁻¹ for spectroscopy, hartree for atoms",
+            "σx = (⟨x²⟩ − ⟨x⟩²)^½"
+          ],
+          "notes": "Perturbation theory, helium and many-electron atoms, DVR (L15–16, 22–23, 27, 32, 35) have no taxonomy topic (plan gap \"variational and perturbation methods\").",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Quantum mechanics: historical background, photoelectric effect, Compton scattering",
+              "topics": ["he.chemistry.physical-2#0"]
+            },
+            {
+              "n": "2",
+              "title": "Wave nature of the electron and the internal structure of an atom",
+              "topics": ["he.chemistry.physical-2#0"]
+            },
+            {
+              "n": "3",
+              "title": "Two-slit experiment: quantum weirdness",
+              "topics": ["he.chemistry.physical-2#0"]
+            },
+            {
+              "n": "4",
+              "title": "Classical wave equation and separation of variables",
+              "topics": ["he.chemistry.physical-2#0"]
+            },
+            {
+              "n": "5",
+              "title": "Free particle and particle in a 1-D box",
+              "topics": ["he.chemistry.physical-2#1"]
+            },
+            {
+              "n": "6",
+              "title": "3-D box and separation of variables",
+              "topics": ["he.chemistry.physical-2#1"]
+            },
+            {
+              "n": "7",
+              "title": "Classical harmonic oscillator",
+              "topics": ["he.chemistry.physical-2#1"]
+            },
+            {
+              "n": "8",
+              "title": "Quantum harmonic oscillator",
+              "topics": ["he.chemistry.physical-2#1"]
+            },
+            {
+              "n": "9",
+              "title": "Creation and annihilation operators",
+              "topics": ["he.chemistry.physical-2#1"]
+            },
+            {
+              "n": "10",
+              "title": "Time-dependent Schrödinger equation",
+              "topics": ["he.chemistry.physical-2#0"]
+            },
+            {
+              "n": "11",
+              "title": "Wavepacket dynamics for HO and PIB",
+              "topics": ["he.chemistry.physical-2#1"]
+            },
+            {
+              "n": "12",
+              "title": "Review; postulates",
+              "topics": ["he.chemistry.physical-2#0"]
+            },
+            {
+              "n": "13",
+              "title": "From Hij integrals to H matrices I",
+              "topics": ["he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "14",
+              "title": "From Hij integrals to H matrices II",
+              "topics": ["he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "15",
+              "title": "Non-degenerate perturbation theory I",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "16",
+              "title": "Non-degenerate perturbation theory II",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "17",
+              "title": "Rigid rotor I: orbital angular momentum",
+              "topics": ["he.chemistry.physical-2#4"]
+            },
+            {
+              "n": "18",
+              "title": "Rigid rotor II: commutation rules",
+              "topics": ["he.chemistry.physical-2#4"]
+            },
+            {
+              "n": "19",
+              "title": "Spectroscopy: probing molecules with light",
+              "topics": ["he.chemistry.physical-2#4"]
+            },
+            {
+              "n": "20",
+              "title": "Hydrogen atom I",
+              "topics": ["he.chemistry.physical-2#2"]
+            },
+            {
+              "n": "21",
+              "title": "Hydrogen atom II: Rydberg states",
+              "topics": ["he.chemistry.physical-2#2"]
+            },
+            {
+              "n": "22",
+              "title": "Helium atom",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "23",
+              "title": "Many-electron atoms",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "24",
+              "title": "MO theory I: variational principle and matrix mechanics",
+              "topics": ["he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "25",
+              "title": "MO theory II: H₂⁺, A₂, AB diatomics",
+              "topics": ["he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "26",
+              "title": "Qualitative MO theory: Hückel",
+              "topics": ["he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "27",
+              "title": "Non-degenerate perturbation theory III",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "28",
+              "title": "Electronic structure: basis sets",
+              "topics": ["he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "29",
+              "title": "Electronic structure: correlation",
+              "topics": ["he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "30",
+              "title": "Time-dependent perturbation theory I",
+              "topics": ["he.chemistry.physical-2#4"]
+            },
+            {
+              "n": "31",
+              "title": "Time-dependent perturbation theory II: two-level problem",
+              "topics": ["he.chemistry.physical-2#4"]
+            },
+            {
+              "n": "32",
+              "title": "Intermolecular interactions by perturbation theory",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "33",
+              "title": "Electronic spectroscopy: Franck–Condon",
+              "topics": ["he.chemistry.physical-2#4"]
+            },
+            {
+              "n": "34",
+              "title": "Electronic spectroscopy and photochemistry",
+              "topics": ["he.chemistry.physical-2#4"]
+            },
+            {
+              "n": "35",
+              "title": "δ-functions, eigenfunctions of x, DVR",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "36",
+              "title": "Two-level systems: density matrix, rotating-wave approximation",
+              "topics": ["he.chemistry.physical-2#4"]
+            }
+          ]
+        }
+      ],
+      "title": "5.61"
+    }
+  ]
+}

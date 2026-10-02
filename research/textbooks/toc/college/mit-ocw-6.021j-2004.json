@@ -1,0 +1,164 @@
+{
+  "id": "mit-ocw-6.021j-2004",
+  "curriculum": "MIT OCW 6.021J Quantitative Physiology: Cells and Tissues",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Dennis Freeman. 6.021J Quantitative Physiology: Cells and Tissues. Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/6-021j-quantitative-physiology-cells-and-tissues-fall-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Homework 1–9 read for the records.",
+  "books": [
+    {
+      "course": "6.021J",
+      "url": "https://ocw.mit.edu/courses/6-021j-quantitative-physiology-cells-and-tissues-fall-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Diffusion and osmosis",
+          "topics": ["he.engineering.biotransport#0", "he.biology.cell-molecular#0"],
+          "examples": [
+            "diffusion time across a synaptic cleft",
+            "point-source profile and time of peak",
+            "two-compartment membrane time constants",
+            "cell volume in hypo- and hypertonic baths"
+          ],
+          "notation": ["J = −D ∂c/∂x", "c = n₀/√(4πDt)·e^(−x²/4Dt)", "π = RT Σc"],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Introduction to cellular transport",
+              "topics": ["he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "2",
+              "title": "Macroscopic and microscopic laws of diffusion",
+              "topics": ["he.engineering.biotransport#0"]
+            },
+            {
+              "n": "3",
+              "title": "Continuity and diffusion equations",
+              "topics": ["he.engineering.biotransport#0"]
+            },
+            {
+              "n": "4–5",
+              "title": "Diffusion in cells: models and experiments",
+              "topics": ["he.engineering.biotransport#0", "he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "6",
+              "title": "Osmosis: van 't Hoff's law",
+              "topics": ["he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "7",
+              "title": "Osmosis in cells: equilibrium",
+              "topics": ["he.biology.cell-molecular#0"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Carrier-mediated and ion transport",
+          "topics": ["he.biology.cell-molecular#0"],
+          "examples": [
+            "Nernst potentials and membrane equivalent circuits",
+            "resting potential with a 3:2 pump"
+          ],
+          "notation": ["V_n = (RT/z_nF) ln(c_o/c_i)"],
+          "lessons": [
+            {
+              "n": "8–10",
+              "title": "Chemical transport; four-state carrier models",
+              "topics": ["he.biology.cell-molecular#0", "he.engineering.biotransport#2"]
+            },
+            {
+              "n": "11",
+              "title": "Glucose regulation",
+              "topics": ["he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "12–15",
+              "title": "Ion transport: Nernst–Planck and models",
+              "topics": ["he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "16",
+              "title": "Active transport",
+              "topics": ["he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "17",
+              "title": "Electrical properties of cells",
+              "topics": ["he.biology.cell-molecular#0", "he.biology.anatomy-physiology#2"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Action potentials",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "examples": [
+            "conduction velocity against fibre radius",
+            "space constant",
+            "node currents along a myelinated axon"
+          ],
+          "lessons": [
+            {
+              "n": "18–19",
+              "title": "Core conductor model",
+              "topics": ["he.biology.anatomy-physiology#2"]
+            },
+            {
+              "n": "20–25",
+              "title": "Hodgkin–Huxley model: space, voltage and current clamp; threshold",
+              "topics": ["he.biology.anatomy-physiology#2"]
+            },
+            {
+              "n": "26–27",
+              "title": "Cable model",
+              "topics": ["he.biology.anatomy-physiology#2"]
+            },
+            {
+              "n": "29–30",
+              "title": "Myelinated fibres and saltatory conduction",
+              "topics": ["he.biology.anatomy-physiology#2"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Ion channels",
+          "topics": ["he.biology.cell-molecular#0", "he.biology.anatomy-physiology#2"],
+          "examples": [
+            "single-channel conductance and reversal potential",
+            "open probability from rate constants"
+          ],
+          "lessons": [
+            {
+              "n": "31",
+              "title": "Patch clamp",
+              "topics": ["he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "32–35",
+              "title": "Ion channels: two-state, four-gate, gating currents, multi-state models",
+              "topics": ["he.biology.cell-molecular#0"]
+            }
+          ]
+        }
+      ],
+      "title": "6.021J"
+    }
+  ]
+}

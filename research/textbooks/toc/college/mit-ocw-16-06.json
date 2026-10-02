@@ -29,35 +29,23 @@
         {
           "n": "L1–L4",
           "title": "Why control; block diagrams; modeling; Mason’s rule",
-          "topics": [
-            "he.engineering.control-systems#0"
-          ]
+          "topics": ["he.engineering.control-systems#0"]
         },
         {
           "n": "L5–L9",
           "title": "Dynamic response; time-domain specifications; zeros; Routh; steady-state error",
-          "topics": [
-            "he.engineering.control-systems#1",
-            "he.engineering.control-systems#2"
-          ]
+          "topics": ["he.engineering.control-systems#1", "he.engineering.control-systems#2"]
         },
         {
           "n": "L10–L15",
           "title": "PID; root locus rules; lead and lag compensation",
-          "topics": [
-            "he.engineering.control-systems#4",
-            "he.engineering.control-systems#2"
-          ]
+          "topics": ["he.engineering.control-systems#4", "he.engineering.control-systems#2"]
         },
         {
           "n": "L16–",
           "title": "Frequency response design; Bode; Nyquist; margins",
-          "topics": [
-            "he.engineering.control-systems#3"
-          ],
-          "examples": [
-            "compensator for a plant with an RHP zero"
-          ]
+          "topics": ["he.engineering.control-systems#3"],
+          "examples": ["compensator for a plant with an RHP zero"]
         }
       ]
     }

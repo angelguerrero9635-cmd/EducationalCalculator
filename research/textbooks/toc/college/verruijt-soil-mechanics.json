@@ -6,13 +6,17 @@
   "subject": "civil",
   "level": "college",
   "content": "titles",
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://geo.verruijt.net/software.html",
+    "attribution": "Delft University of Technology (author’s site)"
+  },
   "terms": {
     "unit": "Chapter"
   },
   "sourceUrl": "https://geo.verruijt.net/software.html",
   "retrieved": "2026-10-02",
-  "notes": "Chapter titles from the PDF bookmarks (55 chapters; selected chapters listed). Free to download; no licence stated, so titles and problem types only. Every chapter ends with short problems, answered in \"Answers to Problems\". Uses the Dutch logarithmic compression constant C₁₀ beside C_c. Chapters without a topic (permeability, flow nets, lateral earth pressure, sheet piles, slopes, piles) are the gaps the plan lists.",
+  "notes": "Chapter titles from the PDF bookmarks (55 chapters; selected chapters listed). Free to download; no licence stated, so titles and problem types only. Every chapter ends with short problems, answered in \"Answers to Problems\". Uses the Dutch logarithmic compression constant C₁₀ beside C_c. Chapters without a topic (permeability, flow nets, lateral earth pressure, sheet piles, slopes, piles) are the gaps the plan lists. No licence is stated: titles only.",
   "books": [
     {
       "course": "he.engineering.soil-mechanics",
@@ -22,161 +26,140 @@
         {
           "n": "2",
           "title": "Classification",
-          "topics": [
-            "he.engineering.soil-mechanics#0"
-          ]
+          "topics": ["he.engineering.soil-mechanics#0"]
         },
         {
           "n": "3",
           "title": "Particles, Water, Air",
-          "topics": [
-            "he.engineering.soil-mechanics#0"
-          ]
+          "topics": ["he.engineering.soil-mechanics#0"]
         },
         {
           "n": "4",
           "title": "Stresses in Soils",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "5",
           "title": "Stresses in Layer",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "6",
           "title": "Darcy's Law",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "7",
           "title": "Permeability",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "8",
           "title": "Groundwater Flow",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "10",
           "title": "Flow Net",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "14",
           "title": "Compression",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "15",
           "title": "Consolidation",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "18",
           "title": "Consolidation Coefficient",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "20",
           "title": "Shear Strength",
-          "topics": [
-            "he.engineering.soil-mechanics#3"
-          ]
+          "topics": ["he.engineering.soil-mechanics#3"]
         },
         {
           "n": "21",
           "title": "Triaxial Test",
-          "topics": [
-            "he.engineering.soil-mechanics#3"
-          ]
+          "topics": ["he.engineering.soil-mechanics#3"]
         },
         {
           "n": "22",
           "title": "Shear Test",
-          "topics": [
-            "he.engineering.soil-mechanics#3"
-          ]
+          "topics": ["he.engineering.soil-mechanics#3"]
         },
         {
           "n": "25",
           "title": "Undrained Behaviour",
-          "topics": [
-            "he.engineering.soil-mechanics#3"
-          ]
+          "topics": ["he.engineering.soil-mechanics#3"]
         },
         {
           "n": "28",
           "title": "Boussinesq",
-          "topics": [
-            "he.engineering.soil-mechanics#2"
-          ]
+          "topics": ["he.engineering.soil-mechanics#2"]
         },
         {
           "n": "33",
           "title": "Rankine",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "34",
           "title": "Coulomb",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "36",
           "title": "Sheet Pile Walls",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "40",
           "title": "Strip Footing",
-          "topics": [
-            "he.engineering.soil-mechanics#4"
-          ]
+          "topics": ["he.engineering.soil-mechanics#4"]
         },
         {
           "n": "41",
           "title": "Prandtl",
-          "topics": [
-            "he.engineering.soil-mechanics#4"
-          ]
+          "topics": ["he.engineering.soil-mechanics#4"]
         },
         {
           "n": "43",
           "title": "Brinch Hansen",
-          "topics": [
-            "he.engineering.soil-mechanics#4"
-          ]
+          "topics": ["he.engineering.soil-mechanics#4"]
         },
         {
           "n": "46",
           "title": "Slope Stability",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "49",
           "title": "Pile Foundations",
           "topics": [],
-          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations)."
+          "notes": "Taxonomy gap (permeability and seepage, lateral earth pressure, slopes or deep foundations).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

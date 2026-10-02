@@ -1,0 +1,94 @@
+{
+  "id": "mit-ocw-2-002",
+  "curriculum": "MIT OCW 2.002 Mechanics and Materials II",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2004",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "David Parks and Lallit Anand. 2.002 Mechanics and Materials II, Spring 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): David Parks and Lallit Anand. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # TOPICS KEY DATES Elasticity and Solid Mechanics 1 Course Outline Material Behavior under Uniaxial Loading Displacement and Strain Stress and Equilibrium Stress-­strain 2 Applications: Beam Bending, Buckling and Vibration 3 Mechanisms of Elasticity and Viscoelasticity Homework 1 out 4 Lab 1: Beam Bending, Buckling and Vibration 5 3-D Linear Thermo-elasticity: Strain-displacement, Stress-strain-temperature, and Stress-equilibrium 6 Simple States of Elastic Stress, Strain, and Displacement Homework 1 due Homework 2 out 7 Lab 2: Engineering Polymers: Viscoelasticity, Strength, and Ductility 8 Limits to Elasticity: Strength and Multi­-axial Yield Condition Boundary Conditions and Boundary Value Problems 9 Elasticity of Composite Materials Applications Homework 2 due 10 Lab 3: Stress Concentration Plasticity and Creep 11 Uniaxial Elastic­-plastic Behavior Elastic-­plastic Beam­-bending 1 Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "hw1",
+          "url": "https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/resources/hw1/",
+          "topics": ["he.engineering.mechanics-of-materials#4"],
+          "examples": ["tip deflection of a microcantilever under a surface load"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.002-HW1-2"
+        },
+        {
+          "n": "2",
+          "title": "hw2",
+          "url": "https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/resources/hw2/",
+          "topics": ["he.engineering.materials-science#0"],
+          "examples": ["density of a crystal from its unit cell"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.002-HW2-3"
+        },
+        {
+          "n": "3",
+          "title": "hw3",
+          "url": "https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/resources/hw3/",
+          "topics": [
+            "he.engineering.advanced-solid-mechanics#1",
+            "he.engineering.advanced-solid-mechanics#3"
+          ],
+          "examples": [
+            "onset of yield in the layer by von Mises",
+            "stresses in a thin surface layer bonded to a substrate"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.002-HW3-2, OCW-2.002-HW3-5"
+        },
+        {
+          "n": "4",
+          "title": "hw4",
+          "url": "https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/resources/hw4/",
+          "topics": ["he.engineering.advanced-solid-mechanics#3"],
+          "examples": [
+            "first-yield moment of a square section bent about its diagonal",
+            "limit-to-yield moment ratio (shape factor) of the diamond section",
+            "residual stresses after unloading from the limit moment"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.002-HW4-1, OCW-2.002-HW4-3, OCW-2.002-HW4-5"
+        },
+        {
+          "n": "5",
+          "title": "practice_quiz1",
+          "url": "https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/resources/practice_quiz1/",
+          "topics": ["he.engineering.mechanics-of-materials#1"],
+          "examples": ["thermal stresses in an aluminium–polycarbonate laminate"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.002-PQ1-3"
+        },
+        {
+          "n": "6",
+          "title": "practice_quiz2",
+          "url": "https://ocw.mit.edu/courses/2-002-mechanics-and-materials-ii-spring-2004/resources/practice_quiz2/",
+          "topics": ["he.engineering.materials-science#3"],
+          "examples": ["fatigue crack growth and final fracture of a part"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.002-PQ2-4"
+        }
+      ],
+      "title": "MIT OCW 2.002 Mechanics and Materials II"
+    }
+  ]
+}

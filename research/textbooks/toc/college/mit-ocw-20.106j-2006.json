@@ -1,0 +1,166 @@
+{
+  "id": "mit-ocw-20.106j-2006",
+  "curriculum": "MIT OCW 20.106J / 1.084J Systems Microbiology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2006",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "David Schauer and Edward DeLong. 20.106J / 1.084J Systems Microbiology. Fall 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/20-106j-systems-microbiology-fall-2006/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Problem sets 1–4 and the two practice exams read for the records.",
+  "books": [
+    {
+      "course": "20.106J / 1.084J",
+      "url": "https://ocw.mit.edu/courses/20-106j-systems-microbiology-fall-2006/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Microbial cells, energy and growth",
+          "topics": ["he.biology.microbiology#0", "he.biology.microbiology#1"],
+          "examples": [
+            "Reynolds number of a swimming cell",
+            "ΔE°′ and ΔG°′ = −nFΔE°′ for donor–acceptor pairs",
+            "cells after a lag and set generation time",
+            "CFU from a dilution series"
+          ],
+          "notation": ["ΔG°′ = −nFΔE°′ with F = 96.5 kJ/(V·mol)"],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Early Earth and microbial evolution",
+              "topics": ["he.biology.evolution#2"]
+            },
+            {
+              "n": "2",
+              "title": "Cell structure and function",
+              "topics": ["he.biology.microbiology#0"]
+            },
+            {
+              "n": "3",
+              "title": "Biological energy conservation",
+              "topics": ["he.biology.microbiology#1"]
+            },
+            {
+              "n": "4",
+              "title": "Microbial growth",
+              "topics": ["he.biology.microbiology#1"]
+            },
+            {
+              "n": "5",
+              "title": "Metabolic regulation",
+              "topics": ["he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "6",
+              "title": "Virology",
+              "topics": ["he.biology.microbiology#0"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Information flow, genetics and genomics",
+          "topics": ["he.biology.microbiology#2"],
+          "examples": ["Hfr entry times to a circular map", "reads needed to close a genome"],
+          "lessons": [
+            {
+              "n": "7",
+              "title": "Information flow in biological systems",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "8",
+              "title": "Regulation of cell activity",
+              "topics": ["he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "9",
+              "title": "Genetic exchange in bacteria",
+              "topics": ["he.biology.microbiology#2"]
+            },
+            {
+              "n": "10",
+              "title": "Experimental evolution",
+              "topics": ["he.biology.evolution#0"]
+            },
+            {
+              "n": "11–12",
+              "title": "Genomics I–II",
+              "topics": ["he.biology.microbiology#2"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Metabolic diversity and ecology",
+          "topics": ["he.biology.microbiology#1", "he.biology.ecology#2"],
+          "lessons": [
+            {
+              "n": "13–14",
+              "title": "Metabolic diversity I–II",
+              "topics": ["he.biology.microbiology#1"]
+            },
+            {
+              "n": "15",
+              "title": "Microbial ecology",
+              "topics": ["he.biology.ecology#2"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Microbes and hosts",
+          "topics": ["he.biology.microbiology#3"],
+          "lessons": [
+            {
+              "n": "16",
+              "title": "Microbial growth control",
+              "topics": ["he.biology.microbiology#1"]
+            },
+            {
+              "n": "17",
+              "title": "Microbe–host interactions",
+              "topics": ["he.biology.microbiology#3"]
+            },
+            {
+              "n": "18–19",
+              "title": "Immunology I–II",
+              "topics": ["he.biology.microbiology#3"]
+            },
+            {
+              "n": "20",
+              "title": "Diagnostic microbiology",
+              "topics": ["he.biology.microbiology#3"]
+            },
+            {
+              "n": "21",
+              "title": "Person-to-person transmission",
+              "topics": ["he.biology.microbiology#3"]
+            },
+            {
+              "n": "22",
+              "title": "Epidemiology",
+              "topics": ["he.biology.microbiology#3"]
+            },
+            {
+              "n": "23",
+              "title": "Animal- and arthropod-transmitted diseases",
+              "topics": ["he.biology.microbiology#3"]
+            }
+          ]
+        }
+      ],
+      "title": "20.106J / 1.084J"
+    }
+  ]
+}

@@ -6,13 +6,17 @@
   "subject": "chemical",
   "level": "college",
   "content": "titles",
-  "license": null,
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://processdesign.mccormick.northwestern.edu/index.php/Main_Page",
+    "attribution": "Northwestern University (student-contributed wiki)"
+  },
   "terms": {
     "unit": "Part"
   },
   "sourceUrl": "https://processdesign.mccormick.northwestern.edu/index.php/Main_Page",
   "retrieved": "2026-10-02",
-  "notes": "Page titles from the main page; no licence statement found (to confirm), so titles only. Robots.txt absent (404).",
+  "notes": "Page titles from the main page; no licence statement found (to confirm), so titles only. Robots.txt absent (404). No licence is stated: titles only.",
   "books": [
     {
       "course": "he.engineering.process-design",
@@ -22,9 +26,7 @@
         {
           "n": "1",
           "title": "Design basis: product and feed, market and capacity, site, block flow diagram",
-          "topics": [
-            "he.engineering.process-design#0"
-          ]
+          "topics": ["he.engineering.process-design#0"]
         },
         {
           "n": "2",
@@ -39,28 +41,25 @@
           "n": "3",
           "title": "Process simulation: property packages, unit models",
           "topics": [],
-          "notes": "Simulation software: no topic."
+          "notes": "Simulation software: no topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         },
         {
           "n": "4",
           "title": "Process economics: equipment sizing, capital, production cost and revenue, economic analysis, sensitivity and optimization",
-          "topics": [
-            "he.engineering.process-design#1",
-            "he.engineering.process-design#2"
-          ]
+          "topics": ["he.engineering.process-design#1", "he.engineering.process-design#2"]
         },
         {
           "n": "5",
           "title": "Other considerations: materials, safety, hazards, environment, controls, location and layout",
-          "topics": [
-            "he.engineering.process-design#3"
-          ]
+          "topics": ["he.engineering.process-design#3"]
         },
         {
           "n": "6",
           "title": "Design projects 2014–2015 (student reports)",
           "topics": [],
-          "notes": "Case studies."
+          "notes": "Case studies.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
         }
       ]
     }

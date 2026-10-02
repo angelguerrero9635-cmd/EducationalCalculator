@@ -30,42 +30,30 @@
         {
           "n": "1–2",
           "title": "Water supply and wastewater; quality parameters and standards",
-          "topics": [
-            "he.engineering.environmental#0",
-            "he.engineering.environmental#1"
-          ]
+          "topics": ["he.engineering.environmental#0", "he.engineering.environmental#1"]
         },
         {
           "n": "3–4",
           "title": "Reactor tanks: mixed and plug flow, first-order kinetics, tanks in series, residence-time distribution",
-          "topics": [
-            "he.engineering.environmental#1"
-          ],
-          "examples": [
-            "BOD removal in a tank",
-            "PFR vs CSTR volume for toxic organics"
-          ],
+          "topics": ["he.engineering.environmental#1"],
+          "examples": ["BOD removal in a tank", "PFR vs CSTR volume for toxic organics"],
           "notes": "Also he.engineering.reaction-engineering#1."
         },
         {
           "n": "5–7",
           "title": "Sedimentation and flocculation; filtration",
-          "topics": [
-            "he.engineering.environmental#0"
-          ],
+          "topics": ["he.engineering.environmental#0"],
           "examples": [
             "settling-column analysis",
             "basin sizing by overflow rate",
             "filter collector efficiency"
           ],
-          "ranges": "overflow 20–40 m/d; detention 2–4 h; filtration 5–15 m/h"
+          "ranges": ["overflow 20–40 m/d; detention 2–4 h; filtration 5–15 m/h"]
         },
         {
           "n": "8–12",
           "title": "Softening; adsorption and ion exchange; air stripping; disinfection",
-          "topics": [
-            "he.engineering.environmental#0"
-          ],
+          "topics": ["he.engineering.environmental#0"],
           "examples": [
             "lime–soda doses",
             "Freundlich isotherm",
@@ -76,15 +64,13 @@
         {
           "n": "13–22",
           "title": "Screening and primary treatment; biological kinetics; ponds; activated sludge; trickling filters; nutrients; sludge",
-          "topics": [
-            "he.engineering.environmental#1"
-          ],
+          "topics": ["he.engineering.environmental#1"],
           "examples": [
             "grit chamber with a proportional weir",
             "activated sludge by Monod constants",
             "facultative lagoon"
           ],
-          "notation": "θ_c SRT; Y yield; k_d decay; MLVSS"
+          "notation": ["θ_c SRT; Y yield; k_d decay; MLVSS"]
         }
       ]
     }

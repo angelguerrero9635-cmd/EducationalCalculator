@@ -1,0 +1,172 @@
+{
+  "id": "mcgraw-molles-sher-ecology-9e",
+  "curriculum": "Molles and Sher, Ecology: Concepts and Applications",
+  "publisher": "McGraw Hill",
+  "edition": "9th edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": null,
+    "part": "Section"
+  },
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://www.mheducation.com/highered/product/ecology-concepts-applications-molles-sher/M9781260722208.html",
+    "attribution": "McGraw Hill"
+  },
+  "sourceUrl": "https://www.mheducation.com/highered/product/ecology-concepts-applications-molles-sher/M9781260722208.html",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page.  No licence is stated: titles only.",
+  "books": [
+    {
+      "url": "https://www.mheducation.com/highered/product/ecology-concepts-applications-molles-sher/M9781260722208.html",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction to Ecology: Historical Foundations and Developing Frontiers",
+          "topics": [],
+          "part": "Section I: Natural History and Evolution",
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "2",
+          "title": "Life on Land",
+          "topics": ["he.biology.principles-2#4"],
+          "part": "Section I: Natural History and Evolution"
+        },
+        {
+          "n": "3",
+          "title": "Life in Water",
+          "topics": ["he.biology.principles-2#4"],
+          "part": "Section I: Natural History and Evolution"
+        },
+        {
+          "n": "4",
+          "title": "Population Genetics and Natural Selection",
+          "topics": ["he.biology.evolution#0", "he.biology.genetics#3"],
+          "part": "Section I: Natural History and Evolution"
+        },
+        {
+          "n": "5",
+          "title": "Temperature Relations",
+          "topics": ["he.biology.principles-2#3"],
+          "part": "Section II: Adaptations to the Environment"
+        },
+        {
+          "n": "6",
+          "title": "Water Relations",
+          "topics": ["he.biology.principles-2#2"],
+          "part": "Section II: Adaptations to the Environment"
+        },
+        {
+          "n": "7",
+          "title": "Energy and Nutrient Relations",
+          "topics": ["he.biology.ecology#2"],
+          "part": "Section II: Adaptations to the Environment"
+        },
+        {
+          "n": "8",
+          "title": "Social Relations",
+          "topics": [],
+          "part": "Section II: Adaptations to the Environment",
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "9",
+          "title": "Population Distribution and Abundance",
+          "topics": ["he.biology.ecology#0"],
+          "part": "Section III: Population Ecology"
+        },
+        {
+          "n": "10",
+          "title": "Population Dynamics",
+          "topics": ["he.biology.ecology#0"],
+          "part": "Section III: Population Ecology"
+        },
+        {
+          "n": "11",
+          "title": "Population Growth",
+          "topics": ["he.biology.ecology#0"],
+          "part": "Section III: Population Ecology"
+        },
+        {
+          "n": "12",
+          "title": "Life Histories",
+          "topics": ["he.biology.ecology#0"],
+          "part": "Section III: Population Ecology"
+        },
+        {
+          "n": "13",
+          "title": "Species Interactions and Competition",
+          "topics": ["he.biology.ecology#1"],
+          "part": "Section IV: Interactions"
+        },
+        {
+          "n": "14",
+          "title": "Exploitative Interactions: Predation, Herbivory, Parasitism, and Disease",
+          "topics": ["he.biology.ecology#1"],
+          "part": "Section IV: Interactions"
+        },
+        {
+          "n": "15",
+          "title": "Mutualism",
+          "topics": ["he.biology.ecology#1"],
+          "part": "Section IV: Interactions"
+        },
+        {
+          "n": "16",
+          "title": "Species Abundance and Diversity",
+          "topics": ["he.biology.ecology#3"],
+          "part": "Section V: Communities and Ecosystems"
+        },
+        {
+          "n": "17",
+          "title": "Species Interactions and Community Structure",
+          "topics": ["he.biology.ecology#1"],
+          "part": "Section V: Communities and Ecosystems"
+        },
+        {
+          "n": "18",
+          "title": "Primary and Secondary Production",
+          "topics": ["he.biology.ecology#2"],
+          "part": "Section V: Communities and Ecosystems"
+        },
+        {
+          "n": "19",
+          "title": "Nutrient Cycling and Retention",
+          "topics": ["he.biology.ecology#2"],
+          "part": "Section V: Communities and Ecosystems"
+        },
+        {
+          "n": "20",
+          "title": "Succession and Stability",
+          "topics": ["he.biology.ecology#1"],
+          "part": "Section V: Communities and Ecosystems"
+        },
+        {
+          "n": "21",
+          "title": "Landscape Ecology",
+          "topics": ["he.biology.ecology#3"],
+          "part": "Section VI: Large-Scale Ecology"
+        },
+        {
+          "n": "22",
+          "title": "Geographic Ecology",
+          "topics": ["he.biology.ecology#3"],
+          "part": "Section VI: Large-Scale Ecology"
+        },
+        {
+          "n": "23",
+          "title": "Global Ecology",
+          "topics": ["he.biology.ecology#2"],
+          "part": "Section VI: Large-Scale Ecology"
+        }
+      ],
+      "title": "Molles and Sher, Ecology: Concepts and Applications"
+    }
+  ]
+}

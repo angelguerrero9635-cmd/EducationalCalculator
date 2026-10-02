@@ -1,139 +1,122 @@
 {
- "id": "mit-ocw-8-01sc",
- "curriculum": "MIT OCW 8.01SC Classical Mechanics",
- "publisher": "MIT OpenCourseWare (Deepto Chakrabarty, Peter Dourmashkin, Michelle Tomasik, Anna Frebel, Vladan Vuletic)",
- "edition": "Fall 2016 (scholar course)",
- "subject": "physics",
- "level": "college",
- "content": "full",
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "attribution": "Deepto Chakrabarty, Peter Dourmashkin, Michelle Tomasik, Anna Frebel, and Vladan Vuletic. 8.01SC Classical Mechanics. Fall 2016. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
- },
- "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
- "sourceUrl": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/",
- "retrieved": "2026-10-02",
- "notes": "Problem sets 1, 2, 4–7, 10 and 12 of the course's twelve (its weekly order: kinematics, Newton's laws, circular motion, momentum, energy, rotation, angular momentum). Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
- "books": [
-  {
-   "title": "8.01SC Classical Mechanics (Fall 2016 (scholar course))",
-   "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/",
-   "units": [
+  "id": "mit-ocw-8-01sc",
+  "curriculum": "MIT OCW 8.01SC Classical Mechanics",
+  "publisher": "MIT OpenCourseWare (Deepto Chakrabarty, Peter Dourmashkin, Michelle Tomasik, Anna Frebel, Vladan Vuletic)",
+  "edition": "Fall 2016 (scholar course)",
+  "subject": "physics",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Deepto Chakrabarty, Peter Dourmashkin, Michelle Tomasik, Anna Frebel, and Vladan Vuletic. 8.01SC Classical Mechanics. Fall 2016. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+  "sourceUrl": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/",
+  "retrieved": "2026-10-02",
+  "notes": "Problem sets 1, 2, 4–7, 10 and 12 of the course's twelve (its weekly order: kinematics, Newton's laws, circular motion, momentum, energy, rotation, angular momentum). Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
+  "books": [
     {
-     "n": "PS1",
-     "title": "Problem Set 1: one-dimensional kinematics",
-     "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/96231b21bccffc0c17c7d98629a52eb2_MIT8_01F16_pset1_new.pdf",
-     "topics": [
-      "he.physics.university-1#0"
-     ],
-     "examples": [
-      "car and bicycle: constant-velocity and accelerating motions, when and where they meet",
-      "elevator trip with acceleration, constant-speed and deceleration phases: position and velocity graphs",
-      "rocket accelerating upward then a stone released from it: height, time of flight",
-      "projectile thrown over a person to be caught at a distance: launch speed and angle",
-      "two cans thrown up at different times to meet at a given height"
-     ]
-    },
-    {
-     "n": "PS2",
-     "title": "Problem Set 2: two-dimensional kinematics and Newton's laws",
-     "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/1ebafbf9c9cca8e1ab191ad5ad9026e0_MIT8_01F16_pset2.pdf",
-     "topics": [
-      "he.physics.university-1#1"
-     ],
-     "examples": [
-      "stacked blocks with static friction: largest push for which they move together",
-      "bucket hanging from an accelerating truck: rope angle and tension"
-     ]
-    },
-    {
-     "n": "PS4",
-     "title": "Problem Set 4: circular motion and Newton's laws",
-     "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/ff43aae2332b3882ac4a4727301cec56_MIT8_01F16_pset4.pdf",
-     "topics": [
-      "he.physics.university-1#1"
-     ],
-     "examples": [
-      "block on an incline tied over a pulley to a hanging block: static friction range",
-      "velocity-dependent resistive force: integrate Newton's law for v(t) and distance",
-      "tension in a massive rotating rope with an end mass",
-      "rope over a fixed rod with friction (capstan): tension ratio, slipping mass",
-      "linear drag at low speed: terminal velocity and v(t)",
-      "two pulleys, two strings, two blocks: constraint and accelerations"
-     ]
-    },
-    {
-     "n": "PS5",
-     "title": "Problem Set 5: momentum and impulse",
-     "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/ebe813c4c1e0a146933380112612a58f_MIT8_01F16_pset5.pdf",
-     "topics": [
-      "he.physics.university-1#3"
-     ],
-     "examples": [
-      "bullet embedded in a block: speed after, energy lost",
-      "acrobat grabs a clown in mid-air: speed after and maximum height",
-      "centre of mass of a uniform and a non-uniform rod",
-      "two particles attracting with an inverse-cube force: momentum and energy"
-     ]
-    },
-    {
-     "n": "PS6",
-     "title": "Problem Set 6: momentum flow and centre of mass",
-     "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/44b46fb9ae75796759884a9a7f7bd167_MIT8_01F16_pset6.pdf",
-     "topics": [
-      "he.physics.university-1#0",
-      "he.physics.university-1#3"
-     ],
-     "examples": [
-      "rowing across a river: relative velocity, landing point, time",
-      "astronauts playing catch: speeds after throwing and catching",
-      "two-stage rocket in empty space: final speed (rocket equation)",
-      "raindrop gaining mass as it falls: variable-mass equation"
-     ]
-    },
-    {
-     "n": "PS7",
-     "title": "Problem Set 7: work and energy",
-     "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/15aa14b5647ea989a352a972dc4b3dfe_MIT8_01F16_pset7.pdf",
-     "topics": [
-      "he.physics.university-1#2"
-     ],
-     "examples": [
-      "object sliding down an incline with friction: speed by the work–energy theorem",
-      "collision then sliding on a rough surface: distance from energy and momentum"
-     ]
-    },
-    {
-     "n": "PS10",
-     "title": "Problem Set 10: rotational dynamics",
-     "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/878cc2b018e6280e47318e3659631d4b_MIT8_01F16_pset10.pdf",
-     "topics": [
-      "he.physics.university-1#4"
-     ],
-     "examples": [
-      "moments of inertia of a disc and a washer",
-      "compound pulley of two discs with hanging masses: angular acceleration",
-      "rod hinged to a wall held by a cable: tension and hinge force (static equilibrium)",
-      "person standing on a slope: normal forces on each foot"
-     ]
-    },
-    {
-     "n": "PS12",
-     "title": "Problem Set 12: angular momentum",
-     "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/4f3af212f682f52a6151aef53415d5b2_MIT8_01F16_pset12.pdf",
-     "topics": [
-      "he.physics.university-1#4"
-     ],
-     "examples": [
-      "rolling bicycle wheel: velocities of points on the rim",
-      "ball rolling without slipping inside a ring: angular speeds",
-      "cube sliding into a low ridge and tipping: minimum speed (angular momentum)",
-      "yo-yo rolling on an incline pulled by its string",
-      "billiard ball struck: rolling begins after sliding; final speed"
-     ]
+      "title": "8.01SC Classical Mechanics (Fall 2016 (scholar course))",
+      "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/",
+      "units": [
+        {
+          "n": "PS1",
+          "title": "Problem Set 1: one-dimensional kinematics",
+          "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/96231b21bccffc0c17c7d98629a52eb2_MIT8_01F16_pset1_new.pdf",
+          "topics": ["he.physics.university-1#0"],
+          "examples": [
+            "car and bicycle: constant-velocity and accelerating motions, when and where they meet",
+            "elevator trip with acceleration, constant-speed and deceleration phases: position and velocity graphs",
+            "rocket accelerating upward then a stone released from it: height, time of flight",
+            "projectile thrown over a person to be caught at a distance: launch speed and angle",
+            "two cans thrown up at different times to meet at a given height"
+          ]
+        },
+        {
+          "n": "PS2",
+          "title": "Problem Set 2: two-dimensional kinematics and Newton's laws",
+          "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/1ebafbf9c9cca8e1ab191ad5ad9026e0_MIT8_01F16_pset2.pdf",
+          "topics": ["he.physics.university-1#1"],
+          "examples": [
+            "stacked blocks with static friction: largest push for which they move together",
+            "bucket hanging from an accelerating truck: rope angle and tension"
+          ]
+        },
+        {
+          "n": "PS4",
+          "title": "Problem Set 4: circular motion and Newton's laws",
+          "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/ff43aae2332b3882ac4a4727301cec56_MIT8_01F16_pset4.pdf",
+          "topics": ["he.physics.university-1#1"],
+          "examples": [
+            "block on an incline tied over a pulley to a hanging block: static friction range",
+            "velocity-dependent resistive force: integrate Newton's law for v(t) and distance",
+            "tension in a massive rotating rope with an end mass",
+            "rope over a fixed rod with friction (capstan): tension ratio, slipping mass",
+            "linear drag at low speed: terminal velocity and v(t)",
+            "two pulleys, two strings, two blocks: constraint and accelerations"
+          ]
+        },
+        {
+          "n": "PS5",
+          "title": "Problem Set 5: momentum and impulse",
+          "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/ebe813c4c1e0a146933380112612a58f_MIT8_01F16_pset5.pdf",
+          "topics": ["he.physics.university-1#3"],
+          "examples": [
+            "bullet embedded in a block: speed after, energy lost",
+            "acrobat grabs a clown in mid-air: speed after and maximum height",
+            "centre of mass of a uniform and a non-uniform rod",
+            "two particles attracting with an inverse-cube force: momentum and energy"
+          ]
+        },
+        {
+          "n": "PS6",
+          "title": "Problem Set 6: momentum flow and centre of mass",
+          "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/44b46fb9ae75796759884a9a7f7bd167_MIT8_01F16_pset6.pdf",
+          "topics": ["he.physics.university-1#0", "he.physics.university-1#3"],
+          "examples": [
+            "rowing across a river: relative velocity, landing point, time",
+            "astronauts playing catch: speeds after throwing and catching",
+            "two-stage rocket in empty space: final speed (rocket equation)",
+            "raindrop gaining mass as it falls: variable-mass equation"
+          ]
+        },
+        {
+          "n": "PS7",
+          "title": "Problem Set 7: work and energy",
+          "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/15aa14b5647ea989a352a972dc4b3dfe_MIT8_01F16_pset7.pdf",
+          "topics": ["he.physics.university-1#2"],
+          "examples": [
+            "object sliding down an incline with friction: speed by the work–energy theorem",
+            "collision then sliding on a rough surface: distance from energy and momentum"
+          ]
+        },
+        {
+          "n": "PS10",
+          "title": "Problem Set 10: rotational dynamics",
+          "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/878cc2b018e6280e47318e3659631d4b_MIT8_01F16_pset10.pdf",
+          "topics": ["he.physics.university-1#4"],
+          "examples": [
+            "moments of inertia of a disc and a washer",
+            "compound pulley of two discs with hanging masses: angular acceleration",
+            "rod hinged to a wall held by a cable: tension and hinge force (static equilibrium)",
+            "person standing on a slope: normal forces on each foot"
+          ]
+        },
+        {
+          "n": "PS12",
+          "title": "Problem Set 12: angular momentum",
+          "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/4f3af212f682f52a6151aef53415d5b2_MIT8_01F16_pset12.pdf",
+          "topics": ["he.physics.university-1#4"],
+          "examples": [
+            "rolling bicycle wheel: velocities of points on the rim",
+            "ball rolling without slipping inside a ring: angular speeds",
+            "cube sliding into a low ridge and tipping: minimum speed (angular momentum)",
+            "yo-yo rolling on an incline pulled by its string",
+            "billiard ball struck: rolling begins after sliding; final speed"
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

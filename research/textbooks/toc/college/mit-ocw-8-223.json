@@ -1,88 +1,80 @@
 {
- "id": "mit-ocw-8-223",
- "curriculum": "MIT OCW 8.223 Classical Mechanics II",
- "publisher": "MIT OpenCourseWare (Matthew Evans)",
- "edition": "January IAP 2017",
- "subject": "physics",
- "level": "college",
- "content": "full",
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "attribution": "Matthew Evans. 8.223 Classical Mechanics II. January IAP 2017. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
- },
- "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
- "sourceUrl": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/",
- "retrieved": "2026-10-02",
- "notes": "The four problem sets of the IAP course (Lagrangian mechanics, central forces, small oscillations, Hamiltonian mechanics). Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
- "books": [
-  {
-   "title": "8.223 Classical Mechanics II (January IAP 2017)",
-   "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/",
-   "units": [
+  "id": "mit-ocw-8-223",
+  "curriculum": "MIT OCW 8.223 Classical Mechanics II",
+  "publisher": "MIT OpenCourseWare (Matthew Evans)",
+  "edition": "January IAP 2017",
+  "subject": "physics",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Matthew Evans. 8.223 Classical Mechanics II. January IAP 2017. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+  "sourceUrl": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/",
+  "retrieved": "2026-10-02",
+  "notes": "The four problem sets of the IAP course (Lagrangian mechanics, central forces, small oscillations, Hamiltonian mechanics). Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
+  "books": [
     {
-     "n": "PS1",
-     "title": "Problem Set 1",
-     "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/f4d3219d4de1b3db2d77c87c76c8720a_MIT8_223IAP17_pset1.pdf",
-     "topics": [
-      "he.physics.classical-mechanics#0"
-     ],
-     "examples": [
-      "pendulum equation of motion from the Euler–Lagrange equation; small-angle solution",
-      "derive N Euler–Lagrange equations from the principle of least action",
-      "free-particle Lagrangian under a Galilean transformation",
-      "projectile from L = ½mv² − mgz: equations of motion and landing time"
-     ]
-    },
-    {
-     "n": "PS2",
-     "title": "Problem Set 2",
-     "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/677724fac336d5381f18f3355097bbb2_MIT8_223IAP17_pset2.pdf",
-     "topics": [
-      "he.physics.classical-mechanics#0",
-      "he.physics.classical-mechanics#2"
-     ],
-     "examples": [
-      "energy conservation from the Lagrangian; when E ≠ T + U",
-      "two-body Lagrangian: total momentum conserved via CM coordinates",
-      "pendulum hanging from a sliding sled: Lagrangian, EOM, response to an impulse",
-      "flyball governor rotating at constant Ω: Lagrangian and equations of motion",
-      "least-time path (brachistochrone) by the calculus of variations"
-     ]
-    },
-    {
-     "n": "PS3",
-     "title": "Problem Set 3",
-     "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/0c7f9715e2e0b47c1f0440aa03a6bedf_MIT8_223IAP17_pset3.pdf",
-     "topics": [
-      "he.physics.classical-mechanics#4",
-      "he.physics.classical-mechanics#2"
-     ],
-     "examples": [
-      "virial theorem for a harmonic oscillator by direct averaging",
-      "cross-section for back-scattering off a hard sphere",
-      "small oscillations of the flyball governor about equilibrium",
-      "damped and driven oscillator: regimes and steady-state amplitude and phase"
-     ]
-    },
-    {
-     "n": "PS4",
-     "title": "Problem Set 4",
-     "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/883108e5d6d4bae2cb0da1cd4460cea9_MIT8_223IAP17_pset4.pdf",
-     "topics": [
-      "he.physics.classical-mechanics#1",
-      "he.physics.classical-mechanics#2",
-      "he.physics.classical-mechanics#0"
-     ],
-     "examples": [
-      "Hamiltonian and Hamilton's equations of a harmonic oscillator; phase-space trajectories",
-      "Hamiltonian of the Kepler problem in spherical coordinates; conserved momenta, reduction to r",
-      "fundamental Poisson brackets",
-      "check a canonical transformation and find its generating function",
-      "mass on a string winding around a fixed spool: Lagrangian and conserved quantities"
-     ]
+      "title": "8.223 Classical Mechanics II (January IAP 2017)",
+      "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/",
+      "units": [
+        {
+          "n": "PS1",
+          "title": "Problem Set 1",
+          "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/f4d3219d4de1b3db2d77c87c76c8720a_MIT8_223IAP17_pset1.pdf",
+          "topics": ["he.physics.classical-mechanics#0"],
+          "examples": [
+            "pendulum equation of motion from the Euler–Lagrange equation; small-angle solution",
+            "derive N Euler–Lagrange equations from the principle of least action",
+            "free-particle Lagrangian under a Galilean transformation",
+            "projectile from L = ½mv² − mgz: equations of motion and landing time"
+          ]
+        },
+        {
+          "n": "PS2",
+          "title": "Problem Set 2",
+          "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/677724fac336d5381f18f3355097bbb2_MIT8_223IAP17_pset2.pdf",
+          "topics": ["he.physics.classical-mechanics#0", "he.physics.classical-mechanics#2"],
+          "examples": [
+            "energy conservation from the Lagrangian; when E ≠ T + U",
+            "two-body Lagrangian: total momentum conserved via CM coordinates",
+            "pendulum hanging from a sliding sled: Lagrangian, EOM, response to an impulse",
+            "flyball governor rotating at constant Ω: Lagrangian and equations of motion",
+            "least-time path (brachistochrone) by the calculus of variations"
+          ]
+        },
+        {
+          "n": "PS3",
+          "title": "Problem Set 3",
+          "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/0c7f9715e2e0b47c1f0440aa03a6bedf_MIT8_223IAP17_pset3.pdf",
+          "topics": ["he.physics.classical-mechanics#4", "he.physics.classical-mechanics#2"],
+          "examples": [
+            "virial theorem for a harmonic oscillator by direct averaging",
+            "cross-section for back-scattering off a hard sphere",
+            "small oscillations of the flyball governor about equilibrium",
+            "damped and driven oscillator: regimes and steady-state amplitude and phase"
+          ]
+        },
+        {
+          "n": "PS4",
+          "title": "Problem Set 4",
+          "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/883108e5d6d4bae2cb0da1cd4460cea9_MIT8_223IAP17_pset4.pdf",
+          "topics": [
+            "he.physics.classical-mechanics#1",
+            "he.physics.classical-mechanics#2",
+            "he.physics.classical-mechanics#0"
+          ],
+          "examples": [
+            "Hamiltonian and Hamilton's equations of a harmonic oscillator; phase-space trajectories",
+            "Hamiltonian of the Kepler problem in spherical coordinates; conserved momenta, reduction to r",
+            "fundamental Poisson brackets",
+            "check a canonical transformation and find its generating function",
+            "mass on a string winding around a fixed spool: Lagrangian and conserved quantities"
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

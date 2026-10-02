@@ -1,0 +1,225 @@
+{
+  "id": "mit-ocw-7.03-2004",
+  "curriculum": "MIT OCW 7.03 Genetics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Chris Kaiser, Gerald Fink, Leona Samson and Michelle Mischke. 7.03 Genetics. Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/7-03-genetics-fall-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Exams 2004, 2002 and 2000 and problem sets 6–7 read for the records (the 2001 exams are scanned without text).",
+  "books": [
+    {
+      "course": "7.03",
+      "url": "https://ocw.mit.edu/courses/7-03-genetics-fall-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Transmission genetics and mapping",
+          "topics": ["he.biology.genetics#0", "he.biology.genetics#1"],
+          "examples": [
+            "three-point test cross: order, distances, interference",
+            "tetrads PD/NPD/TT and distance",
+            "pedigree risk with linked traits"
+          ],
+          "ranges": ["progeny 100–1000", "tetrads 50–100", "distances 2–30 cM"],
+          "notation": [
+            "cM = 100 × recombinants/total",
+            "distance from tetrads = 100 × (½TT + NPD)/total"
+          ],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Physical structure of the gene",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "2",
+              "title": "The complementation test and gene function",
+              "topics": ["he.biology.genetics#0"]
+            },
+            {
+              "n": "3",
+              "title": "Mendelian genetics",
+              "topics": ["he.biology.genetics#0"]
+            },
+            {
+              "n": "4",
+              "title": "Probability and pedigrees",
+              "topics": ["he.biology.genetics#0"]
+            },
+            {
+              "n": "5",
+              "title": "Chromosomes and sex linkage",
+              "topics": ["he.biology.genetics#0"]
+            },
+            {
+              "n": "6",
+              "title": "Recombination and genetic maps",
+              "topics": ["he.biology.genetics#1"]
+            },
+            {
+              "n": "7",
+              "title": "Three-factor crosses",
+              "topics": ["he.biology.genetics#1"]
+            },
+            {
+              "n": "8",
+              "title": "Tetrad analysis",
+              "topics": ["he.biology.genetics#1"]
+            },
+            {
+              "n": "9",
+              "title": "Phage genetics",
+              "topics": ["he.biology.microbiology#2"]
+            },
+            {
+              "n": "10",
+              "title": "Gene structure and DNA analysis",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "11",
+              "title": "Mutations and suppressors",
+              "topics": ["he.biology.genetics#2"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Bacterial genetics and gene regulation",
+          "topics": ["he.biology.microbiology#2", "he.biology.cell-molecular#2"],
+          "examples": [
+            "cotransduction frequency and gene order",
+            "F′ merodiploids: dominance and cis/trans",
+            "linear regulatory pathways from epistasis"
+          ],
+          "lessons": [
+            {
+              "n": "12",
+              "title": "Bacterial genetics: transposition",
+              "topics": ["he.biology.microbiology#2"]
+            },
+            {
+              "n": "13",
+              "title": "Transduction",
+              "topics": ["he.biology.microbiology#2"]
+            },
+            {
+              "n": "14",
+              "title": "Complementation in bacteria: plasmids",
+              "topics": ["he.biology.microbiology#2"]
+            },
+            {
+              "n": "15",
+              "title": "Recombinant DNA",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "16",
+              "title": "Prokaryotic regulation: negative control",
+              "topics": ["he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "17",
+              "title": "Positive control",
+              "topics": ["he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "18",
+              "title": "Regulatory circuits",
+              "topics": ["he.biology.cell-molecular#2"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Eukaryotic genomes and mouse genetics",
+          "topics": ["he.biology.genetics#2", "he.biology.cell-molecular#2"],
+          "lessons": [
+            {
+              "n": "19–22",
+              "title": "Eukaryotic genes and genomes I–IV",
+              "topics": ["he.biology.genetics#2", "he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "23–24",
+              "title": "Transgenes and gene targeting in mice I–II",
+              "topics": ["he.biology.genetics#2"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Human and population genetics",
+          "topics": ["he.biology.genetics#3", "he.biology.evolution#0", "he.biology.genetics#1"],
+          "examples": [
+            "q, 2pq from incidence",
+            "mutation rate at mutation–selection balance",
+            "heterozygote advantage",
+            "risk to children of first cousins",
+            "LOD score at θ"
+          ],
+          "notation": [
+            "μ = s q² (recessive)",
+            "F = inbreeding coefficient",
+            "LOD = log₁₀ [L(θ)/L(0.5)]"
+          ],
+          "lessons": [
+            {
+              "n": "25",
+              "title": "Population genetics: Hardy–Weinberg",
+              "topics": ["he.biology.genetics#3"]
+            },
+            {
+              "n": "26",
+              "title": "Mutation and selection",
+              "topics": ["he.biology.evolution#0"]
+            },
+            {
+              "n": "27",
+              "title": "Inbreeding",
+              "topics": ["he.biology.genetics#3"]
+            },
+            {
+              "n": "28",
+              "title": "Human polymorphisms",
+              "topics": ["he.biology.genetics#1"]
+            },
+            {
+              "n": "29–30",
+              "title": "Statistical evaluation of linkage I–II",
+              "topics": ["he.biology.genetics#1"]
+            },
+            {
+              "n": "31",
+              "title": "Complex traits",
+              "topics": ["he.biology.genetics#0"]
+            },
+            {
+              "n": "32–33",
+              "title": "Chromosome anomalies I–II",
+              "topics": ["he.biology.principles-1#3"]
+            },
+            {
+              "n": "34–35",
+              "title": "Genetics of cancer I–II",
+              "topics": ["he.biology.cell-molecular#3"]
+            }
+          ]
+        }
+      ],
+      "title": "7.03"
+    }
+  ]
+}

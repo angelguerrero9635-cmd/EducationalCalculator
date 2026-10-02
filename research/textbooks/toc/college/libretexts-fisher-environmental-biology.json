@@ -1,0 +1,440 @@
+{
+  "id": "libretexts-fisher-environmental-biology",
+  "curriculum": "Fisher (ed.), Environmental Biology",
+  "publisher": "Open Oregon Educational Resources; LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Matthew R. Fisher (ed.), Environmental Biology, Open Oregon Educational Resources, LibreTexts Biology. License: CC BY 4.0 (parts CC BY 3.0)."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter pages tagged license:ccby; pages link CC BY 3.0 and 4.0. The chapter-resource review questions of chapters 3–5 were read for the records (type only). Licence tags seen on chapter pages: license:ccby.",
+  "books": [
+    {
+      "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Environmental Science",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/01%3A_Environmental_Science",
+          "topics": [],
+          "notes": "Environmental science and ethics: no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "The Earth, Humans, & the Environment",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/01%3A_Environmental_Science/1.01%3A_The_Earth_Humans__the_Environment"
+            },
+            {
+              "n": "1.2",
+              "title": "The Process of Science",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/01%3A_Environmental_Science/1.02%3A_The_Process_of_Science"
+            },
+            {
+              "n": "1.3",
+              "title": "Environment and Sustainability",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/01%3A_Environmental_Science/1.03%3A_Environment_and_Sustainability"
+            },
+            {
+              "n": "1.4",
+              "title": "Environmental Ethics",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/01%3A_Environmental_Science/1.04%3A_Environmental_Ethics"
+            },
+            {
+              "n": "1.5",
+              "title": "Environmental Justice and Indigenous Struggles",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/01%3A_Environmental_Science/1.05%3A_Environmental_Justice_and_Indigenous_Struggles"
+            },
+            {
+              "n": "1.S",
+              "title": "Environmental Science (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/01%3A_Environmental_Science/1.0S%3A_1.S%3A__Environmental_Science_(Summary)"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "2",
+          "title": "Matter, Energy, & Life",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/02%3A_Matter_Energy__Life",
+          "topics": ["he.biology.principles-1#2"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Matter",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/02%3A_Matter_Energy__Life/2.01%3A_Matter"
+            },
+            {
+              "n": "2.2",
+              "title": "Energy",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/02%3A_Matter_Energy__Life/2.02%3A_Energy"
+            },
+            {
+              "n": "2.3",
+              "title": "A Cell is the Smallest Unit of Life",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/02%3A_Matter_Energy__Life/2.03%3A_A_Cell_is_the_Smallest_Unit_of_Life"
+            },
+            {
+              "n": "2.4",
+              "title": "Energy Enters Ecosystems Through Photosynthesis",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/02%3A_Matter_Energy__Life/2.04%3A_Energy_Enters_Ecosystems_Through_Photosynthesis"
+            },
+            {
+              "n": "2.S",
+              "title": "Matter, Energy, & Life (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/02%3A_Matter_Energy__Life/2.0S%3A_2.S%3A__Matter_Energy__Life_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Ecosystems and the Biosphere",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/03%3A_Ecosystems_and_the_Biosphere",
+          "topics": ["he.biology.ecology#2", "he.biology.principles-2#4"],
+          "examples": [
+            "what a secondary consumer eats; biomagnification",
+            "which process turns nitrate into N₂",
+            "two variables that set a biome"
+          ],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Energy Flow through Ecosystems",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/03%3A_Ecosystems_and_the_Biosphere/3.01%3A_Energy_Flow_through_Ecosystems"
+            },
+            {
+              "n": "3.2",
+              "title": "Biogeochemical Cycles",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/03%3A_Ecosystems_and_the_Biosphere/3.02%3A_Biogeochemical_Cycles"
+            },
+            {
+              "n": "3.3",
+              "title": "Terrestrial Biomes",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/03%3A_Ecosystems_and_the_Biosphere/3.03%3A_Terrestrial_Biomes"
+            },
+            {
+              "n": "3.4",
+              "title": "Aquatic Biomes",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/03%3A_Ecosystems_and_the_Biosphere/3.04%3A_Aquatic_Biomes"
+            },
+            {
+              "n": "3.5",
+              "title": "Chapter Resources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/03%3A_Ecosystems_and_the_Biosphere/3.05%3A_Chapter_Resources"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Community and Population Ecology",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/04%3A_Community__Population_Ecology",
+          "topics": ["he.biology.ecology#0", "he.biology.ecology#1"],
+          "examples": [
+            "mark–recapture estimate",
+            "survivorship types",
+            "exponential vs logistic growth"
+          ],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Population Demographics and Dynamics",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/04%3A_Community__Population_Ecology/4.01%3A_Population_Demographics_and_Dynamics"
+            },
+            {
+              "n": "4.2",
+              "title": "Population Growth and Regulation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/04%3A_Community__Population_Ecology/4.02%3A_Population_Growth_and_Regulation"
+            },
+            {
+              "n": "4.3",
+              "title": "The Human Population",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/04%3A_Community__Population_Ecology/4.03%3A_The_Human_Population"
+            },
+            {
+              "n": "4.4",
+              "title": "Community Ecology",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/04%3A_Community__Population_Ecology/4.04%3A_Community_Ecology"
+            },
+            {
+              "n": "4.5",
+              "title": "Chapter Resources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/04%3A_Community__Population_Ecology/4.05%3A_Chapter_Resources"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Conservation & Biodiversity",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/05%3A_Conservation__Biodiversity",
+          "topics": [
+            "he.biology.ecology#3",
+            "he.biology.principles-2#1",
+            "he.biology.principles-2#0"
+          ],
+          "examples": [
+            "endemic species",
+            "causes of biodiversity loss",
+            "conditions for natural selection"
+          ],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Introduction to Biodiversity",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/05%3A_Conservation__Biodiversity/5.01%3A_Introduction_to_Biodiversity"
+            },
+            {
+              "n": "5.2",
+              "title": "Origin of Biodiversity",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/05%3A_Conservation__Biodiversity/5.02%3A_Origin_of_Biodiversity"
+            },
+            {
+              "n": "5.3",
+              "title": "Importance of Biodiversity",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/05%3A_Conservation__Biodiversity/5.03%3A_Importance_of_Biodiversity"
+            },
+            {
+              "n": "5.4",
+              "title": "Threats to Biodiversity",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/05%3A_Conservation__Biodiversity/5.04%3A_Threats_to_Biodiversity"
+            },
+            {
+              "n": "5.5",
+              "title": "Preserving Biodiversity",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/05%3A_Conservation__Biodiversity/5.05%3A_Preserving_Biodiversity"
+            },
+            {
+              "n": "5.6",
+              "title": "Chapter Resources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/05%3A_Conservation__Biodiversity/5.06%3A_Chapter_Resources"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Environmental Hazards & Human Health",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/06%3A_Environmental_Hazards__Human_Health",
+          "topics": [],
+          "notes": "Environmental health: no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "The Impacts of Environmental Conditions",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/06%3A_Environmental_Hazards__Human_Health/6.01%3A_The_Impacts_of_Environmental_Conditions"
+            },
+            {
+              "n": "6.2",
+              "title": "Environmental Health",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/06%3A_Environmental_Hazards__Human_Health/6.02%3A_Environmental_Health"
+            },
+            {
+              "n": "6.3",
+              "title": "Environmental Toxicology",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/06%3A_Environmental_Hazards__Human_Health/6.03%3A_Environmental_Toxicology"
+            },
+            {
+              "n": "6.4",
+              "title": "Bioremediation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/06%3A_Environmental_Hazards__Human_Health/6.04%3A_Bioremediation"
+            },
+            {
+              "n": "6.5",
+              "title": "Case Study - The Love Canal Disaster",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/06%3A_Environmental_Hazards__Human_Health/6.05%3A_Case_Study_-_The_Love_Canal_Disaster"
+            },
+            {
+              "n": "6.S",
+              "title": "Environmental Hazards & Human Health (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/06%3A_Environmental_Hazards__Human_Health/6.0S%3A_6.S%3A_Environmental_Hazards__Human_Health_(Summary)"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "7",
+          "title": "Water Availability and Use",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/07%3A_Water_Availability_and_Use",
+          "topics": [],
+          "notes": "Water resources: no biology topic (earth science).",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Water Cycle and Fresh Water Supply",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/07%3A_Water_Availability_and_Use/7.01%3A_Water_Cycle_and_Fresh_Water_Supply"
+            },
+            {
+              "n": "7.2",
+              "title": "Water Supply Problems and Solutions",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/07%3A_Water_Availability_and_Use/7.02%3A_Water_Supply_Problems_and_Solutions"
+            },
+            {
+              "n": "7.3",
+              "title": "Water Pollution",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/07%3A_Water_Availability_and_Use/7.03%3A_Water_Pollution"
+            },
+            {
+              "n": "7.4",
+              "title": "Water Treatment",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/07%3A_Water_Availability_and_Use/7.04%3A_Water_Treatment"
+            },
+            {
+              "n": "7.5",
+              "title": "Case Study - The Aral Sea - Going, Going, Gone",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/07%3A_Water_Availability_and_Use/7.05%3A_Case_Study_-_The_Aral_Sea_-_Going_Going_Gone"
+            },
+            {
+              "n": "7.6",
+              "title": "Chapter Resources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/07%3A_Water_Availability_and_Use/7.06%3A_Chapter_Resources"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "8",
+          "title": "Food & Hunger",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/08%3A_Food__Hunger",
+          "topics": [],
+          "notes": "Food security: no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Food Security",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/08%3A_Food__Hunger/8.01%3A_Food_Security"
+            },
+            {
+              "n": "8.2",
+              "title": "Biotechnology and Genetic Engineering",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/08%3A_Food__Hunger/8.02%3A_Biotechnology_and_Genetic_Engineering"
+            },
+            {
+              "n": "8.3",
+              "title": "Chapter Resources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/08%3A_Food__Hunger/8.03%3A_Chapter_Resources"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "9",
+          "title": "Conventional & Sustainable Agriculture",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/09%3A_Conventional__Sustainable_Agriculture",
+          "topics": ["he.biology.principles-2#2"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Soil Profiles and Processes",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/09%3A_Conventional__Sustainable_Agriculture/9.01%3A_Soil_Profiles_and_Processes"
+            },
+            {
+              "n": "9.2",
+              "title": "Soil-Plant Interactions",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/09%3A_Conventional__Sustainable_Agriculture/9.02%3A_Soil-Plant_Interactions"
+            },
+            {
+              "n": "9.3",
+              "title": "Conventional Agriculture",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/09%3A_Conventional__Sustainable_Agriculture/9.03%3A_Conventional_Agriculture"
+            },
+            {
+              "n": "9.4",
+              "title": "Pests and Pesticides",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/09%3A_Conventional__Sustainable_Agriculture/9.04%3A_Pests_and_Pesticides"
+            },
+            {
+              "n": "9.5",
+              "title": "Sustainable Agriculture",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/09%3A_Conventional__Sustainable_Agriculture/9.05%3A_Sustainable_Agriculture"
+            },
+            {
+              "n": "9.S",
+              "title": "Conventional & Sustainable Agriculture (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/09%3A_Conventional__Sustainable_Agriculture/9.0S%3A_9.S%3A_Conventional__Sustainable_Agriculture_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Air Pollution, Climate Change, & Ozone Depletion",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/10%3A_Air_Pollution_Climate_Change__Ozone_Depletion",
+          "topics": ["he.biology.ecology#3"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Atmospheric Pollution",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/10%3A_Air_Pollution_Climate_Change__Ozone_Depletion/10.01%3A_Atmospheric_Pollution"
+            },
+            {
+              "n": "10.2",
+              "title": "Ozone Depletion",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/10%3A_Air_Pollution_Climate_Change__Ozone_Depletion/10.02%3A_Ozone_Depletion"
+            },
+            {
+              "n": "10.3",
+              "title": "Acid Rain",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/10%3A_Air_Pollution_Climate_Change__Ozone_Depletion/10.03%3A_Acid_Rain"
+            },
+            {
+              "n": "10.4",
+              "title": "Climate Change",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/10%3A_Air_Pollution_Climate_Change__Ozone_Depletion/10.04%3A_Climate_Change"
+            },
+            {
+              "n": "10.5",
+              "title": "Chapter Resources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/10%3A_Air_Pollution_Climate_Change__Ozone_Depletion/10.05%3A_Chapter_Resources"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Conventional & Sustainable Energy",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/11%3A_Conventional__Sustainable_Energy",
+          "topics": [],
+          "notes": "Energy resources: no biology topic.",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Challenges and Impacts of Energy Use",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/11%3A_Conventional__Sustainable_Energy/11.01%3A_Challenges_and_Impacts_of_Energy_Use"
+            },
+            {
+              "n": "11.2",
+              "title": "Non-Renewable Energy Sources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/11%3A_Conventional__Sustainable_Energy/11.02%3A_Non-Renewable_Energy_Sources"
+            },
+            {
+              "n": "11.3",
+              "title": "Renewable Energy Sources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/11%3A_Conventional__Sustainable_Energy/11.03%3A_Renewable_Energy_Sources"
+            },
+            {
+              "n": "11.4",
+              "title": "Chapter Resources",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/11%3A_Conventional__Sustainable_Energy/11.04%3A_Chapter_Resources"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "12",
+          "title": "Appendix",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Environmental_Biology_(Fisher)/12%3A_Appendix",
+          "topics": [],
+          "notes": "Appendix.",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Fisher (ed.), Environmental Biology"
+    }
+  ]
+}

@@ -27,17 +27,13 @@
           "n": "1",
           "title": "Routh–Hurwitz Criterion",
           "url": "https://en.wikibooks.org/wiki/Control_Systems/Routh-Hurwitz_Criterion",
-          "topics": [
-            "he.engineering.control-systems#2"
-          ]
+          "topics": ["he.engineering.control-systems#2"]
         },
         {
           "n": "2",
           "title": "Root Locus",
           "url": "https://en.wikibooks.org/wiki/Control_Systems/Root_Locus",
-          "topics": [
-            "he.engineering.control-systems#2"
-          ]
+          "topics": ["he.engineering.control-systems#2"]
         }
       ]
     }

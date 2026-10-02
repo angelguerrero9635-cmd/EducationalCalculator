@@ -1,0 +1,198 @@
+{
+  "id": "pearson-tortora-microbiology-14e",
+  "curriculum": "Tortora, Funke, Case, Weber and Bair, Microbiology: An Introduction",
+  "publisher": "Pearson",
+  "edition": "14th edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": null,
+    "part": "Part"
+  },
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://www.pearson.com/en-us/subject-catalog/p/microbiology-an-introduction/P200000009851/9780138200398",
+    "attribution": "Pearson"
+  },
+  "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/microbiology-an-introduction/P200000009851/9780138200398",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page.  No licence is stated: titles only.",
+  "books": [
+    {
+      "url": "https://www.pearson.com/en-us/subject-catalog/p/microbiology-an-introduction/P200000009851/9780138200398",
+      "units": [
+        {
+          "n": "1",
+          "title": "The Microbial World and You",
+          "topics": ["he.biology.microbiology#0"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "2",
+          "title": "Chemical Principles",
+          "topics": ["he.biology.principles-1#0"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "3",
+          "title": "Observing Microorganisms Through a Microscope",
+          "topics": ["he.biology.microbiology#0"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "4",
+          "title": "Functional Anatomy of Prokaryotic and Eukaryotic Cells",
+          "topics": ["he.biology.microbiology#0"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "5",
+          "title": "Microbial Metabolism",
+          "topics": ["he.biology.microbiology#1"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "6",
+          "title": "Microbial Growth",
+          "topics": ["he.biology.microbiology#1"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "7",
+          "title": "The Control of Microbial Growth",
+          "topics": ["he.biology.microbiology#1"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "8",
+          "title": "Microbial Genetics",
+          "topics": ["he.biology.microbiology#2"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "9",
+          "title": "Biotechnology and DNA Technology",
+          "topics": ["he.biology.genetics#2"],
+          "part": "Part One: Fundamentals of Microbiology"
+        },
+        {
+          "n": "10",
+          "title": "Classification of Microorganisms",
+          "topics": ["he.biology.principles-2#1"],
+          "part": "Part Two: A Survey of the Microbial World"
+        },
+        {
+          "n": "11",
+          "title": "The Prokaryotes: Domains Bacteria and Archaea",
+          "topics": ["he.biology.microbiology#0"],
+          "part": "Part Two: A Survey of the Microbial World"
+        },
+        {
+          "n": "12",
+          "title": "The Eukaryotes: Fungi, Algae, Protozoa, and Helminths",
+          "topics": ["he.biology.microbiology#0"],
+          "part": "Part Two: A Survey of the Microbial World"
+        },
+        {
+          "n": "13",
+          "title": "Viruses, Viroids, and Prions",
+          "topics": ["he.biology.microbiology#0"],
+          "part": "Part Two: A Survey of the Microbial World"
+        },
+        {
+          "n": "14",
+          "title": "Principles of Disease and Epidemiology",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Three: Interaction between Microbe and Host"
+        },
+        {
+          "n": "15",
+          "title": "Microbial Mechanisms of Pathogenicity",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Three: Interaction between Microbe and Host"
+        },
+        {
+          "n": "16",
+          "title": "Innate Immunity: Nonspecific Defenses of the Host",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Three: Interaction between Microbe and Host"
+        },
+        {
+          "n": "17",
+          "title": "Adaptive Immunity: Specific Defenses of the Host",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Three: Interaction between Microbe and Host"
+        },
+        {
+          "n": "18",
+          "title": "Practical Applications of Immunology",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Three: Interaction between Microbe and Host"
+        },
+        {
+          "n": "19",
+          "title": "Disorders Associated with the Immune System",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Three: Interaction between Microbe and Host"
+        },
+        {
+          "n": "20",
+          "title": "Antimicrobial Drugs",
+          "topics": ["he.biology.microbiology#1"],
+          "part": "Part Three: Interaction between Microbe and Host"
+        },
+        {
+          "n": "21",
+          "title": "Microbial Diseases of the Skin and Eyes",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Four: Microorganisms and Human Disease"
+        },
+        {
+          "n": "22",
+          "title": "Microbial Diseases of the Nervous System",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Four: Microorganisms and Human Disease"
+        },
+        {
+          "n": "23",
+          "title": "Microbial Diseases of the Cardiovascular and Lymphoid Systems",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Four: Microorganisms and Human Disease"
+        },
+        {
+          "n": "24",
+          "title": "Microbial Diseases of the Respiratory System",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Four: Microorganisms and Human Disease"
+        },
+        {
+          "n": "25",
+          "title": "Microbial Diseases of the Digestive System",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Four: Microorganisms and Human Disease"
+        },
+        {
+          "n": "26",
+          "title": "Microbial Disease of the Urinary and Genital Systems",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Part Four: Microorganisms and Human Disease"
+        },
+        {
+          "n": "27",
+          "title": "Environmental Microbiology",
+          "topics": ["he.biology.ecology#2"],
+          "part": "Part Five: Environmental and Applied Microbiology"
+        },
+        {
+          "n": "28",
+          "title": "Applied and Industrial Microbiology",
+          "topics": ["he.biology.microbiology#1"],
+          "part": "Part Five: Environmental and Applied Microbiology"
+        }
+      ],
+      "title": "Tortora, Funke, Case, Weber and Bair, Microbiology: An Introduction"
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "id": "patera-math-numerics-and-programming",
+  "curriculum": "Math, Numerics, and Programming (for Mechanical Engineers)",
+  "publisher": "MIT (LibreTexts Engineering edition)",
+  "edition": "LibreTexts edition of the MIT 2.086 text",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Math, Numerics, and Programming (for Mechanical Engineers) by Masayuki Yano, James Douglass Penn, George Konidaris and Anthony T. Patera (MIT), Engineering LibreTexts. CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY-NC-SA 4.0): chapter list (units hold the chapters; numbering runs through the units). Problem types come from OCW 2.086.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Motivation",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/01%3A_Unit_I_-_(Numerical)_Calculus._Elementary_Programming_Concepts/01%3A_Motivation",
+          "topics": ["he.engineering.engineering-programming#0"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Interpolation",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/01%3A_Unit_I_-_(Numerical)_Calculus._Elementary_Programming_Concepts/02%3A_Interpolation",
+          "topics": ["he.engineering.numerical-methods#2"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Differentiation",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/01%3A_Unit_I_-_(Numerical)_Calculus._Elementary_Programming_Concepts/03%3A_Differentiation",
+          "topics": ["he.engineering.numerical-methods#3"],
+          "notes": "Differentiation.",
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Elements of a Program and Matlab Basics",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/01%3A_Unit_I_-_(Numerical)_Calculus._Elementary_Programming_Concepts/04%3A_Elements_of_a_Program_and_Matlab_Basics",
+          "topics": [
+            "he.engineering.engineering-programming#0",
+            "he.engineering.engineering-programming#1"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "5",
+          "title": "Matlab Arrays",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/01%3A_Unit_I_-_(Numerical)_Calculus._Elementary_Programming_Concepts/05%3A_Matlab_Arrays",
+          "topics": ["he.engineering.engineering-programming#1"],
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "Functions in Matlab",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/01%3A_Unit_I_-_(Numerical)_Calculus._Elementary_Programming_Concepts/06%3A_Functions_in_Matlab",
+          "topics": ["he.engineering.engineering-programming#3"],
+          "lessons": []
+        },
+        {
+          "n": "7",
+          "title": "Integration",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/01%3A_Unit_I_-_(Numerical)_Calculus._Elementary_Programming_Concepts/07%3A_Integration",
+          "topics": ["he.engineering.numerical-methods#3"],
+          "lessons": []
+        },
+        {
+          "n": "8",
+          "title": "Introduction",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/08%3A_Introduction",
+          "topics": [],
+          "notes": "Unit introduction.",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "9",
+          "title": "Introduction to Random Variables",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/09%3A_Introduction_to_Random_Variables",
+          "topics": [],
+          "notes": "Probability: no topic in this group.",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "10",
+          "title": "Statistical Estimation- the Normal Density",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/10%3A_Statistical_Estimation-_the_Normal_Density",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "11",
+          "title": "Monte Carlo- Areas and Volumes",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/11%3A_Monte_Carlo-_Areas_and_Volumes",
+          "topics": ["he.engineering.engineering-programming#3"],
+          "notes": "Monte Carlo.",
+          "lessons": []
+        },
+        {
+          "n": "12",
+          "title": "Monte Carlo- General Integration Procedures",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/12%3A_Monte_Carlo-_General_Integration_Procedures",
+          "topics": ["he.engineering.engineering-programming#3"],
+          "lessons": []
+        },
+        {
+          "n": "13",
+          "title": "Statistical Estimation- the Normal Density",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/13%3A_Statistical_Estimation-_the_Normal_Density",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "14",
+          "title": "Monte Carlo- Failure Probabilities",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/02%3A_Unit_II_-_Monte_Carlo_Methods/14%3A_Monte_Carlo-_Failure_Probabilities",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "15",
+          "title": "Motivation",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/03%3A_Unit_III_-_Linear_Algebra_1_-_Matrices_Least_Squares_and_Regression/15%3A_Motivation",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "16",
+          "title": "Matrices and Vectors - Definitions and Operations",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/03%3A_Unit_III_-_Linear_Algebra_1_-_Matrices_Least_Squares_and_Regression/16%3A_Matrices_and_Vectors_-_Definitions_and_Operations",
+          "topics": ["he.engineering.engineering-programming#1"],
+          "lessons": []
+        },
+        {
+          "n": "17",
+          "title": "Least Squares",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/03%3A_Unit_III_-_Linear_Algebra_1_-_Matrices_Least_Squares_and_Regression/17%3A_Least_Squares",
+          "topics": ["he.engineering.numerical-methods#2"],
+          "lessons": []
+        },
+        {
+          "n": "18",
+          "title": "Matlab Linear Algebra (Briefly)",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/03%3A_Unit_III_-_Linear_Algebra_1_-_Matrices_Least_Squares_and_Regression/18%3A_Matlab_Linear_Algebra_(Briefly)",
+          "topics": ["he.engineering.engineering-programming#1"],
+          "lessons": []
+        },
+        {
+          "n": "19",
+          "title": "Regression - Statistical Inference",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/03%3A_Unit_III_-_Linear_Algebra_1_-_Matrices_Least_Squares_and_Regression/19%3A_Regression_-_Statistical_Inference",
+          "topics": ["he.engineering.numerical-methods#2"],
+          "lessons": []
+        },
+        {
+          "n": "20",
+          "title": "Motivation",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/04%3A_Unit_IV_-_(Numerical)_Differential_Equations/20%3A_Motivation",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "21",
+          "title": "Initial Value Problems",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/04%3A_Unit_IV_-_(Numerical)_Differential_Equations/21%3A_Initial_Value_Problems",
+          "topics": ["he.engineering.numerical-methods#4"],
+          "lessons": []
+        },
+        {
+          "n": "22",
+          "title": "Boundary Value Problems",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/04%3A_Unit_IV_-_(Numerical)_Differential_Equations/22%3A_Boundary_Value_Problems",
+          "topics": ["he.engineering.numerical-methods#4"],
+          "lessons": []
+        },
+        {
+          "n": "23",
+          "title": "Partial Differential Equations",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/04%3A_Unit_IV_-_(Numerical)_Differential_Equations/23%3A_Partial_Differential_Equations",
+          "topics": [],
+          "notes": "PDEs: no topic in this group.",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "24",
+          "title": "Motivation",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/05%3A_Unit_V_-_(Numerical)_Linear_Algebra_2_-_Solution_of_Linear_Systems/24%3A_Motivation",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "25",
+          "title": "Linear Systems",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/05%3A_Unit_V_-_(Numerical)_Linear_Algebra_2_-_Solution_of_Linear_Systems/25%3A_Linear_Systems",
+          "topics": ["he.engineering.numerical-methods#1"],
+          "lessons": []
+        },
+        {
+          "n": "26",
+          "title": "Gaussian Elimination and Back Substitution",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/05%3A_Unit_V_-_(Numerical)_Linear_Algebra_2_-_Solution_of_Linear_Systems/26%3A_Gaussian_Elimination_and_Back_Substitution",
+          "topics": ["he.engineering.numerical-methods#1"],
+          "lessons": []
+        },
+        {
+          "n": "27",
+          "title": "Gaussian Elimination - Sparse Matrices",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/05%3A_Unit_V_-_(Numerical)_Linear_Algebra_2_-_Solution_of_Linear_Systems/27%3A_Gaussian_Elimination_-_Sparse_Matrices",
+          "topics": ["he.engineering.numerical-methods#1"],
+          "lessons": []
+        },
+        {
+          "n": "28",
+          "title": "Sparse Matrices in Matlab",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/05%3A_Unit_V_-_(Numerical)_Linear_Algebra_2_-_Solution_of_Linear_Systems/28%3A_Sparse_Matrices_in_Matlab",
+          "topics": ["he.engineering.engineering-programming#1"],
+          "lessons": []
+        },
+        {
+          "n": "29",
+          "title": "Newton Iteration",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Math_Numerics_and_Programming_(for_Mechanical_Engineers)/06%3A_Unit_VI_-_Nonlinear_Equations/29%3A_Newton_Iteration",
+          "topics": ["he.engineering.numerical-methods#0"],
+          "lessons": []
+        }
+      ],
+      "title": "Math, Numerics, and Programming (for Mechanical Engineers)"
+    }
+  ]
+}

@@ -1,256 +1,204 @@
 {
- "id": "libretexts-physics",
- "curriculum": "LibreTexts Physics: Cline, Variational Principles; Fitzpatrick, Introductory Quantum Mechanics",
- "publisher": "LibreTexts (Douglas Cline, University of Rochester; Richard Fitzpatrick, UT Austin)",
- "edition": "LibreTexts editions (2026)",
- "subject": "physics",
- "level": "college",
- "content": "full",
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "attribution": "Both books carry the LibreTexts tags license:ccbyncsa, licenseversion:40 (book pages)."
- },
- "terms": "CC BY-NC-SA 4.0: chapter lists only; no exercise recorded.",
- "sourceUrl": "https://phys.libretexts.org/Bookshelves/Classical_Mechanics/Variational_Principles_in_Classical_Mechanics_(Cline)",
- "retrieved": "2026-10-02",
- "notes": "Chapter titles from the LibreTexts book pages (robots.txt: Crawl-delay 5, kept). The Fitzpatrick thermodynamics book URL tried returned 404 and was not pursued. Tatum's books were not reached.",
- "books": [
-  {
-   "title": "Variational Principles in Classical Mechanics (Cline)",
-   "url": "https://phys.libretexts.org/Bookshelves/Classical_Mechanics/Variational_Principles_in_Classical_Mechanics_(Cline)",
-   "units": [
-    {
-     "n": "1",
-     "title": "A brief History of Classical Mechanics",
-     "topics": [],
-     "note": "history / probability review"
-    },
-    {
-     "n": "2",
-     "title": "Review of Newtonian Mechanics",
-     "topics": [
-      "he.physics.university-1#1"
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Linear Oscillators",
-     "topics": [
-      "he.physics.classical-mechanics#4"
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Nonlinear Systems and Chaos",
-     "topics": [],
-     "note": "no college topic: nonlinear dynamics and chaos"
-    },
-    {
-     "n": "5",
-     "title": "Calculus of Variations",
-     "topics": [
-      "he.physics.classical-mechanics#0"
-     ]
-    },
-    {
-     "n": "6",
-     "title": "Lagrangian Dynamics",
-     "topics": [
-      "he.physics.classical-mechanics#0"
-     ]
-    },
-    {
-     "n": "7",
-     "title": "Symmetries, Invariance and the Hamiltonian",
-     "topics": [
-      "he.physics.classical-mechanics#1"
-     ]
-    },
-    {
-     "n": "8",
-     "title": "Hamiltonian Mechanics",
-     "topics": [
-      "he.physics.classical-mechanics#1"
-     ]
-    },
-    {
-     "n": "9",
-     "title": "Hamilton's Action Principle",
-     "topics": [
-      "he.physics.classical-mechanics#1"
-     ]
-    },
-    {
-     "n": "10",
-     "title": "Nonconservative Systems",
-     "topics": [
-      "he.physics.classical-mechanics#0"
-     ]
-    },
-    {
-     "n": "11",
-     "title": "Conservative two-body Central Forces",
-     "topics": [
-      "he.physics.classical-mechanics#2"
-     ]
-    },
-    {
-     "n": "12",
-     "title": "Non-inertial Reference Frames",
-     "topics": [
-      "he.physics.classical-mechanics#3"
-     ]
-    },
-    {
-     "n": "13",
-     "title": "Rigid-body Rotation",
-     "topics": [
-      "he.physics.classical-mechanics#3"
-     ]
-    },
-    {
-     "n": "14",
-     "title": "Coupled Linear Oscillators",
-     "topics": [
-      "he.physics.classical-mechanics#4"
-     ]
-    },
-    {
-     "n": "15",
-     "title": "Advanced Hamiltonian Mechanics",
-     "topics": [
-      "he.physics.classical-mechanics#1"
-     ]
-    },
-    {
-     "n": "16",
-     "title": "Analytical Formulations for Continuous Systems",
-     "topics": [],
-     "note": "no college topic: continuum mechanics"
-    },
-    {
-     "n": "17",
-     "title": "Relativistic Mechanics",
-     "topics": [
-      "he.physics.university-3#2"
-     ]
-    },
-    {
-     "n": "18",
-     "title": "The Transition to Quantum Physics",
-     "topics": [
-      "he.physics.quantum#0"
-     ]
-    },
-    {
-     "n": "19",
-     "title": "Mathematical Methods for Classical Mechanics",
-     "topics": [],
-     "note": "mathematical methods"
-    }
-   ]
+  "id": "libretexts-physics",
+  "curriculum": "LibreTexts Physics: Cline, Variational Principles; Fitzpatrick, Introductory Quantum Mechanics",
+  "publisher": "LibreTexts (Douglas Cline, University of Rochester; Richard Fitzpatrick, UT Austin)",
+  "edition": "LibreTexts editions (2026)",
+  "subject": "physics",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Both books carry the LibreTexts tags license:ccbyncsa, licenseversion:40 (book pages)."
   },
-  {
-   "title": "Introductory Quantum Mechanics (Fitzpatrick)",
-   "url": "https://phys.libretexts.org/Bookshelves/Quantum_Mechanics/Introductory_Quantum_Mechanics_(Fitzpatrick)",
-   "units": [
+  "terms": "CC BY-NC-SA 4.0: chapter lists only; no exercise recorded.",
+  "sourceUrl": "https://phys.libretexts.org/Bookshelves/Classical_Mechanics/Variational_Principles_in_Classical_Mechanics_(Cline)",
+  "retrieved": "2026-10-02",
+  "notes": "Chapter titles from the LibreTexts book pages (robots.txt: Crawl-delay 5, kept). The Fitzpatrick thermodynamics book URL tried returned 404 and was not pursued. Tatum's books were not reached.",
+  "books": [
     {
-     "n": "1",
-     "title": "Probability Theory",
-     "topics": [],
-     "note": "history / probability review"
+      "title": "Variational Principles in Classical Mechanics (Cline)",
+      "url": "https://phys.libretexts.org/Bookshelves/Classical_Mechanics/Variational_Principles_in_Classical_Mechanics_(Cline)",
+      "units": [
+        {
+          "n": "1",
+          "title": "A brief History of Classical Mechanics",
+          "topics": [],
+          "note": "history / probability review"
+        },
+        {
+          "n": "2",
+          "title": "Review of Newtonian Mechanics",
+          "topics": ["he.physics.university-1#1"]
+        },
+        {
+          "n": "3",
+          "title": "Linear Oscillators",
+          "topics": ["he.physics.classical-mechanics#4"]
+        },
+        {
+          "n": "4",
+          "title": "Nonlinear Systems and Chaos",
+          "topics": [],
+          "note": "no college topic: nonlinear dynamics and chaos"
+        },
+        {
+          "n": "5",
+          "title": "Calculus of Variations",
+          "topics": ["he.physics.classical-mechanics#0"]
+        },
+        {
+          "n": "6",
+          "title": "Lagrangian Dynamics",
+          "topics": ["he.physics.classical-mechanics#0"]
+        },
+        {
+          "n": "7",
+          "title": "Symmetries, Invariance and the Hamiltonian",
+          "topics": ["he.physics.classical-mechanics#1"]
+        },
+        {
+          "n": "8",
+          "title": "Hamiltonian Mechanics",
+          "topics": ["he.physics.classical-mechanics#1"]
+        },
+        {
+          "n": "9",
+          "title": "Hamilton's Action Principle",
+          "topics": ["he.physics.classical-mechanics#1"]
+        },
+        {
+          "n": "10",
+          "title": "Nonconservative Systems",
+          "topics": ["he.physics.classical-mechanics#0"]
+        },
+        {
+          "n": "11",
+          "title": "Conservative two-body Central Forces",
+          "topics": ["he.physics.classical-mechanics#2"]
+        },
+        {
+          "n": "12",
+          "title": "Non-inertial Reference Frames",
+          "topics": ["he.physics.classical-mechanics#3"]
+        },
+        {
+          "n": "13",
+          "title": "Rigid-body Rotation",
+          "topics": ["he.physics.classical-mechanics#3"]
+        },
+        {
+          "n": "14",
+          "title": "Coupled Linear Oscillators",
+          "topics": ["he.physics.classical-mechanics#4"]
+        },
+        {
+          "n": "15",
+          "title": "Advanced Hamiltonian Mechanics",
+          "topics": ["he.physics.classical-mechanics#1"]
+        },
+        {
+          "n": "16",
+          "title": "Analytical Formulations for Continuous Systems",
+          "topics": [],
+          "note": "no college topic: continuum mechanics"
+        },
+        {
+          "n": "17",
+          "title": "Relativistic Mechanics",
+          "topics": ["he.physics.university-3#2"]
+        },
+        {
+          "n": "18",
+          "title": "The Transition to Quantum Physics",
+          "topics": ["he.physics.quantum#0"]
+        },
+        {
+          "n": "19",
+          "title": "Mathematical Methods for Classical Mechanics",
+          "topics": [],
+          "note": "mathematical methods"
+        }
+      ]
     },
     {
-     "n": "2",
-     "title": "Wave-Particle Duality",
-     "topics": [
-      "he.physics.university-3#3"
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Fundamentals of Quantum Mechanics",
-     "topics": [
-      "he.physics.quantum#0"
-     ]
-    },
-    {
-     "n": "4",
-     "title": "One-Dimensional Potentials",
-     "topics": [
-      "he.physics.quantum#1"
-     ]
-    },
-    {
-     "n": "5",
-     "title": "Multi-Particle Systems",
-     "topics": [
-      "he.physics.quantum#0"
-     ]
-    },
-    {
-     "n": "6",
-     "title": "Three-Dimensional Quantum Mechanics",
-     "topics": [
-      "he.physics.quantum#1"
-     ]
-    },
-    {
-     "n": "7",
-     "title": "Orbital Angular Momentum",
-     "topics": [
-      "he.physics.quantum#2"
-     ]
-    },
-    {
-     "n": "8",
-     "title": "Central Potentials",
-     "topics": [
-      "he.physics.quantum#1"
-     ]
-    },
-    {
-     "n": "9",
-     "title": "Spin Angular Momentum",
-     "topics": [
-      "he.physics.quantum#2"
-     ]
-    },
-    {
-     "n": "10",
-     "title": "Addition of Angular Momentum",
-     "topics": [
-      "he.physics.quantum#2"
-     ]
-    },
-    {
-     "n": "11",
-     "title": "Time-Independent Perturbation Theory",
-     "topics": [
-      "he.physics.quantum#3"
-     ]
-    },
-    {
-     "n": "12",
-     "title": "Time-Dependent Perturbation Theory",
-     "topics": [
-      "he.physics.quantum#3"
-     ]
-    },
-    {
-     "n": "13",
-     "title": "Variational Methods",
-     "topics": [],
-     "note": "no college topic: variational methods (plan gap)"
-    },
-    {
-     "n": "14",
-     "title": "Scattering Theory",
-     "topics": [],
-     "note": "no college topic: scattering"
+      "title": "Introductory Quantum Mechanics (Fitzpatrick)",
+      "url": "https://phys.libretexts.org/Bookshelves/Quantum_Mechanics/Introductory_Quantum_Mechanics_(Fitzpatrick)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Probability Theory",
+          "topics": [],
+          "note": "history / probability review"
+        },
+        {
+          "n": "2",
+          "title": "Wave-Particle Duality",
+          "topics": ["he.physics.university-3#3"]
+        },
+        {
+          "n": "3",
+          "title": "Fundamentals of Quantum Mechanics",
+          "topics": ["he.physics.quantum#0"]
+        },
+        {
+          "n": "4",
+          "title": "One-Dimensional Potentials",
+          "topics": ["he.physics.quantum#1"]
+        },
+        {
+          "n": "5",
+          "title": "Multi-Particle Systems",
+          "topics": ["he.physics.quantum#0"]
+        },
+        {
+          "n": "6",
+          "title": "Three-Dimensional Quantum Mechanics",
+          "topics": ["he.physics.quantum#1"]
+        },
+        {
+          "n": "7",
+          "title": "Orbital Angular Momentum",
+          "topics": ["he.physics.quantum#2"]
+        },
+        {
+          "n": "8",
+          "title": "Central Potentials",
+          "topics": ["he.physics.quantum#1"]
+        },
+        {
+          "n": "9",
+          "title": "Spin Angular Momentum",
+          "topics": ["he.physics.quantum#2"]
+        },
+        {
+          "n": "10",
+          "title": "Addition of Angular Momentum",
+          "topics": ["he.physics.quantum#2"]
+        },
+        {
+          "n": "11",
+          "title": "Time-Independent Perturbation Theory",
+          "topics": ["he.physics.quantum#3"]
+        },
+        {
+          "n": "12",
+          "title": "Time-Dependent Perturbation Theory",
+          "topics": ["he.physics.quantum#3"]
+        },
+        {
+          "n": "13",
+          "title": "Variational Methods",
+          "topics": [],
+          "note": "no college topic: variational methods (plan gap)"
+        },
+        {
+          "n": "14",
+          "title": "Scattering Theory",
+          "topics": [],
+          "note": "no college topic: scattering"
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }
