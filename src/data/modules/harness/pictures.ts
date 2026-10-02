@@ -1129,6 +1129,7 @@ export function repIssues(
     }
     case 'rectangle':
       out.push(...hs3bIssues(rep, val, byId)); // H106: bounds
+      out.push(...he3cIssues(rep, val, byId)); // HC67: grow
       break;
     case 'grid100': {
       // Tenths × tenths: columns and rows of one grid, the overlap the product (Grid100.tsx);
@@ -2203,7 +2204,8 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
-      if (rep.kind === 'polarGrid') out.push(...he3cIssues(rep, val, byId)); // HC53
+      if (rep.kind === 'polarGrid' || rep.kind === 'conicGraph')
+        out.push(...he3cIssues(rep, val, byId)); // HC53, HC67
       break;
     case 'membrane':
     case 'dnaStrand':

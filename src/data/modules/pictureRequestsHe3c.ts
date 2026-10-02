@@ -108,4 +108,32 @@ export const HE3C_REQUESTS: PictureRequest[] = [
       'g.he-termsChart-alternating',
     ],
   },
+  {
+    ...ask(
+      'HC67',
+      'rectangle',
+      'The product rule as a growing rectangle (strips u′Δt × v and u × v′Δt, the corner second order), and on a circle the area under the arc split into a triangle and a sector (trig substitution) and the tangent at a point',
+      {
+        [`${M}calc-1#1~product-quotient`]: 'rectangle grow',
+        [`${M}calc-1#1~implicit`]: 'conicGraph circle tangent',
+        [`${M}calc-2#0~trig-sub`]: 'conicGraph circle under',
+      },
+      [
+        'From M-P18. Options on rectangle and the conicGraph circle (typesHe3c.ts; drawn by reps/RectangleGrowHe3c.tsx and reps/ConicCircleHe3c.tsx, sums in reps/growCircleHe3cMath.ts); each is off unless a page sets it.',
+        "rectangle fields: grow: { du, dv, dt?, product?, quotient? } with length u (across) and width v (up): the u × v rectangle to scale with uv inside, a strip u′Δt wide by v on the right and one u by v′Δt on top (outside and filled when the side grows, inside, dashed and hatched when it shrinks), the corner u′v′Δt² grey when both grow; Δt is the page's or one that makes the wider strip a quarter of the shorter side; the caption gives the strips' areas, the corner as second order, (uv)′ = u′v + uv′ worked and with quotient (u/v)′ = (u′v − uv′) ÷ v². Drawn for u, v > 0 (a note otherwise). Pass fixed: true (no corner handle).",
+        'conicGraph circle fields: under: { to, triangle?, sector?, integral?, angle? } (b = to across from the center: the triangle (center, foot, arc point) amber with its value beside it, the sector between the vertical radius and the radius to the arc point violet with its value outside the arc, θ = sin⁻¹(b ÷ r) marked; the caption works θ, ½·b·√(r² − b²), ½r²θ and their sum); tangent: true | { slope?, intercept? } (with point: the tangent line across the window, the radius to the point dashed, a right-angle mark; the caption gives −(x₀ − h) ÷ (y₀ − k) and y = mx + c, or x = x₀ when vertical). With either, the 45° radius is left out.',
+        "Examples. ~product-quotient: { kind: 'rectangle', length: 'u', width: 'v', extent: 4, grow: { du: 'du', dv: 'dv', product: 'P', quotient: 'Q' }, fixed: true }. ~trig-sub: { kind: 'conicGraph', conic: 'circle', h: 0, k: 0, r: 'r', under: { to: 'b', triangle: 'T', sector: 'S', integral: 'I', angle: 't' }, fixed: true } (add the page limit b ≤ r; the plan's page can add T, S and θ or pass under: { to: 'b', integral: 'I' }). ~implicit: { kind: 'conicGraph', conic: 'circle', h: 0, k: 0, r: 'r', point: { x: 'x0', y: 'y0' }, tangent: { slope: 'm', intercept: 'c' }, fixed: true }.",
+        'The harness (harness/picturesHe3c.ts) checks (uv)′ and (u/v)′, a page Δt short enough that the corner is small; the triangle, sector, θ and triangle + sector with 0 ≤ b ≤ r; the tangent slope and intercept.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-rectangle-grow',
+      'g.he-rectangle-grow-both',
+      'g.he-conicGraph-under',
+      'g.he-conicGraph-under-quarter',
+      'g.he-conicGraph-tangent',
+      'g.he-conicGraph-tangent-steep',
+    ],
+  },
 ];

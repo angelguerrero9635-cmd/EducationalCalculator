@@ -77,6 +77,7 @@ import { CubeRoot } from './CubeRoot';
 import { ParallelAngles } from './ParallelAngles';
 import { TriangleAngles } from './TriangleAngles';
 import { RightTriangle } from './RightTriangle';
+import { RectangleGrowHe3c } from './RectangleGrowHe3c';
 import { RightTriangleRatesHe3c } from './RightTriangleRatesHe3c';
 import { PictureGraph } from './PictureGraph';
 import { SeriesCircuit } from './SeriesCircuit';
@@ -545,6 +546,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return spec.flows ? <BarsFlows spec={spec} calc={calc} /> : <Bars spec={spec} calc={calc} />;
     case 'rectangle':
       if (spec.bounds) return <RectangleBounds spec={spec} calc={calc} />; // H106
+      if (spec.grow) return <RectangleGrowHe3c spec={spec} calc={calc} />; // HC67
       return <RectangleDiagram spec={spec} calc={calc} />;
     case 'grid100':
       return <Grid100 spec={spec} calc={calc} />;

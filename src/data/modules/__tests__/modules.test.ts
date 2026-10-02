@@ -51,8 +51,10 @@ import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
 import { he2hSpecVars } from '../typesHe2h';
 import {
+  conicGraphHe3cVars,
   curvedSolidHe3cVars,
   polarGridHe3cVars,
+  rectangleHe3cVars,
   rightTriangleHe3cVars,
   termsChartHe3cVars,
 } from '../typesHe3c';
@@ -429,6 +431,7 @@ function representationVars(r: Representation): string[] {
       return [
         ...[r.length, r.width, r.inside, r.around],
         ...[r.bounds?.error, r.bounds?.least, r.bounds?.greatest], // H106
+        ...rectangleHe3cVars(r), // HC67
       ].filter((x): x is string => !!x);
     case 'grid100':
       return [
@@ -567,6 +570,7 @@ function representationVars(r: Representation): string[] {
         ...hs3bSpecVars(r),
         ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
         ...(r.kind === 'polarGrid' ? polarGridHe3cVars(r) : []), // HC53
+        ...(r.kind === 'conicGraph' && r.conic === 'circle' ? conicGraphHe3cVars(r) : []), // HC67
       ];
     case 'membrane':
     case 'dnaStrand':

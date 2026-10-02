@@ -14,7 +14,7 @@ import type {
 import type { NumOrVar } from './typesGraphs';
 import type { ComplexPlaneHe2a } from './typesHe2a'; // HC14
 import type { ConicTurnedHs3b, PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
-import type { CycloidPathHe3c, ParametricHe3c, PolarGridHe3c } from './typesHe3c'; // HC53
+import type { ConicGraphHe3c, CycloidPathHe3c, ParametricHe3c, PolarGridHe3c } from './typesHe3c'; // HC53, HC67
 
 /** A trig function of the unit circle. */
 export type TrigFn = 'sin' | 'cos' | 'tan';
@@ -238,7 +238,7 @@ export type ConicGraphSpec = {
   keep?: string[];
   fixed?: boolean;
 } & (
-  | { conic: 'circle'; r: NumOrVar }
+  | ({ conic: 'circle'; r: NumOrVar } & ConicGraphHe3c) // HC67: area under the arc, tangent
   | { conic: 'parabola'; p: NumOrVar; axis?: 'vertical' | 'horizontal' }
   | { conic: 'ellipse'; a: NumOrVar; b: NumOrVar }
   | { conic: 'hyperbola'; a: NumOrVar; b: NumOrVar; axis?: 'horizontal' | 'vertical' }

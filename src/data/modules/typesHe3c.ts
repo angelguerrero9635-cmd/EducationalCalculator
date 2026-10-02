@@ -112,6 +112,45 @@ export function termsChartHe3cVars(r: TermsChartHe3c): string[] {
   return ids(r.bounds?.low, r.bounds?.high, r.next, r.ratio);
 }
 
+// ─── HC67: the product rule's rectangle; a circle's area and tangent ────────
+
+/**
+ * `rectangle` `grow`: the u × v rectangle (u = `length` across, v = `width` up) growing for a
+ * short time Δt — a strip u′Δt wide by v on the right, a strip u by v′Δt on top (inside and
+ * hatched when the rate is negative), the corner u′v′Δt² apart as second order. Δt is chosen to
+ * show (or `dt`). The caption works (uv)′ = u′v + uv′ (`product`, checked) and, with
+ * `quotient`, (u/v)′ = (u′v − uv′) ÷ v² (checked). Drawn for u, v > 0; a note otherwise.
+ */
+export interface RectangleHe3c {
+  grow?: { du: NumOrVar; dv: NumOrVar; dt?: NumOrVar; product?: string; quotient?: string };
+}
+
+/**
+ * `conicGraph` circle options. `under`: the region under the upper arc from the center's x to
+ * x = h + `to`, split into the triangle (center, foot, arc point) and the sector between the
+ * vertical radius and the radius to the arc point; θ = sin⁻¹(to ÷ r) marked. `triangle`,
+ * `sector`, `angle` (degrees) and `integral` (their sum, ∫ √(r² − x²) dx) are checked.
+ * `tangent` (with `point`): the tangent line there, square to the radius; `slope`
+ * (−(x₀ − h) ÷ (y₀ − k)) and `intercept` are checked.
+ */
+export interface ConicGraphHe3c {
+  under?: { to: NumOrVar; triangle?: string; sector?: string; integral?: string; angle?: string };
+  tangent?: true | { slope?: string; intercept?: string };
+}
+
+/** The variable ids the HC67 options name (for the module tests). */
+export function rectangleHe3cVars(r: RectangleHe3c): string[] {
+  const g = r.grow;
+  return ids(g?.du, g?.dv, g?.dt, g?.product, g?.quotient);
+}
+
+/** The variable ids the HC67 options name (for the module tests). */
+export function conicGraphHe3cVars(r: ConicGraphHe3c): string[] {
+  const u = r.under;
+  const t = r.tangent && r.tangent !== true ? r.tangent : undefined;
+  return ids(u?.to, u?.triangle, u?.sector, u?.integral, u?.angle, t?.slope, t?.intercept);
+}
+
 /** The variable ids the HC54 options name (for the module tests). */
 export function rightTriangleHe3cVars(r: RightTriangleHe3c): string[] {
   return ids(r.rates?.a, r.rates?.b, r.rates?.c);

@@ -47,7 +47,7 @@ import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
 import type { He2cSpec } from './typesHe2c';
-import type { CurvedSolidHe3c, RightTriangleHe3c } from './typesHe3c'; // HC54
+import type { CurvedSolidHe3c, RectangleHe3c, RightTriangleHe3c } from './typesHe3c'; // HC54, HC67
 import type { BeamSpec } from './typesHe1a';
 import type { BodeSpec } from './typesHe2a';
 import type { He2hSpec } from './typesHe2h';
@@ -558,7 +558,8 @@ export type Representation =
       /** Draw it as a real roof in perspective: slate shingles, a gutter and rain falling. */
       roof?: boolean;
       extent: number;
-    } & RectangleHs3b)
+    } & RectangleHs3b &
+      RectangleHe3c) // HC67: grow
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
   | {
       kind: 'grid100';

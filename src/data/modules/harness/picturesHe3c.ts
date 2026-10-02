@@ -1,6 +1,7 @@
 /**
  * Picture checks for the college round 3 group C options (`typesHe3c.ts`): HC53 `polarGrid`
- * areas, regions, tangent and traced length; HC54 related rates and pumping work; HC66 series charts. What each draws must agree with the page's
+ * areas, regions, tangent and traced length; HC54 related rates and pumping work; HC66 series charts; HC67
+ * the product rule's rectangle and a circle's area under the arc and tangent. What each draws must agree with the page's
  * values. Called from `repIssues` in `pictures.ts`. Test-only.
  */
 import { CURVE_FIELDS, PATH_FIELDS } from '@/components/module/reps/polar';
@@ -10,6 +11,12 @@ import {
   polarTangent,
   regionArea,
 } from '@/components/module/reps/polarHe3cMath';
+import {
+  circleTangent,
+  productRate,
+  quotientRate,
+  underArc,
+} from '@/components/module/reps/growCircleHe3cMath';
 import {
   coneRise,
   coneSurface,
@@ -102,6 +109,47 @@ export function he3cIssues(
           out.push(`the sum ${want} is outside the band ${lo} to ${hi}`);
       }
     }
+  }
+  if (rep.kind === 'rectangle' && rep.grow) {
+    // HC67: the strips add to the product's change to first order: (uv)′ = u′v + uv′.
+    const [u, v, du, dv] = [get(rep.length), get(rep.width), get(rep.grow.du), get(rep.grow.dv)];
+    if (u !== undefined && v !== undefined && du !== undefined && dv !== undefined) {
+      check(rep.grow.product, productRate(u, v, du, dv), '(uv)′');
+      const q = quotientRate(u, v, du, dv);
+      if (q !== undefined) check(rep.grow.quotient, q, '(u/v)′');
+      // Δt small: the corner is under a tenth of the strips together.
+      const dt = get(rep.grow.dt);
+      if (dt !== undefined && Math.abs(du * dv * dt) > 0.1 * (Math.abs(du * v) + Math.abs(u * dv)))
+        out.push(`Δt = ${dt} is too long: the corner is not small beside the strips`);
+    }
+  }
+  if (rep.kind === 'conicGraph' && rep.conic === 'circle') {
+    // HC67: triangle + sector is the integral; the tangent is square to the radius.
+    const [h, k, r] = [get(rep.h ?? 0), get(rep.k ?? 0), get(rep.r)];
+    const b = get(rep.under?.to);
+    if (rep.under && r !== undefined && b !== undefined) {
+      if (b < 0 || b > Math.abs(r) * (1 + 1e-9)) out.push(`b = ${b} is outside 0 to r = ${r}`);
+      else {
+        const U = underArc(Math.abs(r), b);
+        check(rep.under.triangle, U.triangle, 'the triangle');
+        check(rep.under.sector, U.sector, 'the sector');
+        check(rep.under.integral, U.integral, 'triangle + sector');
+        check(rep.under.angle, (U.theta * 180) / Math.PI, 'θ');
+      }
+    }
+    if (rep.tangent && !rep.point) out.push('tangent needs a point');
+    const [x0, y0] = [get(rep.point?.x), get(rep.point?.y)];
+    if (rep.tangent && rep.tangent !== true && h !== undefined && k !== undefined)
+      if (x0 !== undefined && y0 !== undefined) {
+        const t = circleTangent(h, k, x0, y0);
+        if (t.slope === undefined) {
+          if (get(rep.tangent.slope) !== undefined)
+            out.push('the tangent is vertical but a slope is given');
+        } else {
+          check(rep.tangent.slope, t.slope, 'the tangent slope');
+          check(rep.tangent.intercept, t.intercept!, 'the tangent intercept');
+        }
+      }
   }
   if (rep.kind === 'curvedSolid') {
     const [R, H] = [get(rep.radius), get(rep.height)];

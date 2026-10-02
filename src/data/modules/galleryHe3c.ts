@@ -4,6 +4,7 @@
  * HC53: `polarGrid` areas, regions, tangent and the cycloid (calc-2#5, calc-3#2).
  * HC54: `rightTriangle` rates and `curvedSolid` fill and slab (calc-1#2, calc-2#2).
  * HC66: `termsChart` series: n·rⁿ, cⁿ ÷ n!, alternating signs, bounds (calc-2#3).
+ * HC67: `rectangle` grow; `conicGraph` circle under and tangent (calc-1#1, calc-2#0).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1246,6 +1247,294 @@ const HC66: ModuleDef[] = [
   alternating,
 ];
 
-export const HE3C_GALLERY_MODULES: ModuleDef[] = [...HC53, ...HC54, ...HC66];
+// ─── HC67: the product rule's rectangle; a circle's area and tangent ─────────
+
+/** calc-1#1~product-quotient: (uv)′ = u′v + uv′ and (u/v)′ = (u′v − uv′) ÷ v² from a table. */
+function productRule(id: string, title: string, use: string, ex: Values) {
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'u, u′, v and v′ are the values at one x = a (from a table).',
+      'In a short time Δt the u × v rectangle gains a strip u′Δt × v and a strip u × v′Δt; the corner u′v′Δt² vanishes faster than Δt.',
+      'The quotient rule needs v ≠ 0.',
+    ],
+    variables: [
+      num('u', 'u', 'u at a', undefined, -1000, 1000, { step: 0.1 }),
+      num('du', 'u′', 'u′ at a', undefined, -1000, 1000, { step: 0.1 }),
+      num('v', 'v', 'v at a', undefined, -1000, 1000, { step: 0.1 }),
+      num('dv', 'v′', 'v′ at a', undefined, -1000, 1000, { step: 0.1 }),
+      num('P', 'P′', 'Product’s slope', undefined, -2e6, 2e6),
+      num('Q', 'Q′', 'Quotient’s slope', undefined, -1e9, 1e9),
+    ],
+    rules: [
+      rule(
+        'P′ = u′v + uv′',
+        '{P} = {du} × {v} + {u} × {dv}',
+        ['P', 'du', 'v', 'u', 'dv'],
+        (v) => v.P! - v.du! * v.v! - v.u! * v.dv!,
+        {
+          P: [
+            (v) => v.du! * v.v! + v.u! * v.dv!,
+            '{du} × {v} + {u} × {dv}',
+            'The product rule: each strip is one factor’s change times the other factor.',
+          ],
+          du: [
+            (v) => div(v.P! - v.u! * v.dv!, v.v!),
+            '({P} − {u} × {dv}) ÷ {v}',
+            'Take u·v′ from P′, then divide by v.',
+          ],
+          dv: [
+            (v) => div(v.P! - v.du! * v.v!, v.u!),
+            '({P} − {du} × {v}) ÷ {u}',
+            'Take u′·v from P′, then divide by u.',
+          ],
+        },
+      ),
+      rule(
+        'Q′ = (u′v − uv′) ÷ v²',
+        '{Q} = ({du} × {v} − {u} × {dv}) ÷ {v}²',
+        ['Q', 'du', 'v', 'u', 'dv'],
+        (v) => v.Q! * v.v! ** 2 - (v.du! * v.v! - v.u! * v.dv!),
+        {
+          Q: [
+            (v) => div(v.du! * v.v! - v.u! * v.dv!, v.v! ** 2),
+            '({du} × {v} − {u} × {dv}) ÷ {v}²',
+            'The quotient rule: low d-high minus high d-low, over the bottom squared.',
+          ],
+        },
+      ),
+    ],
+    example: ex,
+    startWith: ['u', 'du', 'v', 'dv'],
+    representation: {
+      kind: 'rectangle',
+      length: 'u',
+      width: 'v',
+      extent: 4,
+      grow: { du: 'du', dv: 'dv', product: 'P', quotient: 'Q' },
+      fixed: true,
+    },
+  });
+}
+
+const prodEx = (u: number, du: number, v: number, dv: number) => ({
+  u,
+  du,
+  v,
+  dv,
+  P: du * v + u * dv,
+  Q: (du * v - u * dv) / (v * v),
+});
+
+/** calc-2#0~trig-sub: ∫ from 0 to b of √(r² − x²) dx = triangle + sector. */
+function trigSub(id: string, title: string, use: string, ex: Values) {
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'x = r sin θ turns √(r² − x²) dx into r² cos² θ dθ.',
+      'The area under the arc from 0 to b is the triangle (½ · b · √(r² − b²)) plus the sector (½ r² θ), θ = sin⁻¹(b ÷ r).',
+      'θ in degrees here; the sector uses it in radians, θ × π ÷ 180.',
+    ],
+    variables: [
+      num('r', 'r', 'Radius', undefined, 0.1, 100, { step: 0.1 }),
+      num('b', 'b', 'Upper limit', undefined, 0.01, 100, { step: 0.01 }),
+      num('t', 'θ', 'Angle at b', '°', 0.01, 90),
+      num('T', 'T', 'Triangle', undefined, 0, 1e4),
+      num('S', 'S', 'Sector', undefined, 0, 1e4),
+      num('I', 'I', 'Integral', undefined, 0, 1e4),
+    ],
+    rules: [
+      rule(
+        'θ = sin⁻¹(b/r)',
+        '{t} = sin⁻¹({b} ÷ {r})',
+        ['t', 'b', 'r'],
+        (v) => Math.sin(v.t! * RAD) * v.r! - v.b!,
+        {
+          t: [
+            (v) => (v.b! <= v.r! ? Math.asin(v.b! / v.r!) / RAD : undefined),
+            'sin⁻¹({b} ÷ {r})',
+            'x = r sin θ, so at x = b, sin θ = b ÷ r.',
+          ],
+          b: [
+            (v) => v.r! * Math.sin(v.t! * RAD),
+            '{r} × sin({t})',
+            'Undo the substitution: b = r sin θ.',
+          ],
+        },
+      ),
+      rule(
+        'T = ½·b·√(r² − b²)',
+        '{T} = ½ × {b} × √({r}² − {b}²)',
+        ['T', 'b', 'r'],
+        (v) => v.T! - 0.5 * v.b! * Math.sqrt(Math.max(0, v.r! ** 2 - v.b! ** 2)),
+        {
+          T: [
+            (v) => (v.b! <= v.r! ? 0.5 * v.b! * Math.sqrt(v.r! ** 2 - v.b! ** 2) : undefined),
+            '½ × {b} × √({r}² − {b}²)',
+            'Half the base b times the height of the arc above x = b.',
+          ],
+        },
+      ),
+      rule(
+        'S = ½r²θ',
+        '{S} = ½ × {r}² × {t} × π ÷ 180',
+        ['S', 'r', 't'],
+        (v) => v.S! - 0.5 * v.r! ** 2 * v.t! * RAD,
+        {
+          S: [
+            (v) => 0.5 * v.r! ** 2 * v.t! * RAD,
+            '½ × {r}² × {t} × π ÷ 180',
+            'A sector is ½r²θ with θ in radians.',
+          ],
+        },
+      ),
+      rule('I = T + S', '{I} = {T} + {S}', ['I', 'T', 'S'], (v) => v.I! - v.T! - v.S!, {
+        I: [
+          (v) => v.T! + v.S!,
+          '{T} + {S}',
+          'The region under the arc is the triangle and the sector together.',
+        ],
+        S: [(v) => v.I! - v.T!, '{I} − {T}', 'Take the triangle from the whole.'],
+      }),
+      atMost('b', 'r', '{b} ≤ {r}', 'b is past the circle: it must be at most r.'),
+    ],
+    example: ex,
+    startWith: ['r', 'b'],
+    representation: {
+      kind: 'conicGraph',
+      conic: 'circle',
+      h: 0,
+      k: 0,
+      r: 'r',
+      under: { to: 'b', triangle: 'T', sector: 'S', integral: 'I', angle: 't' },
+      fixed: true,
+    },
+  });
+}
+
+const subEx = (r: number, b: number) => {
+  const t = Math.asin(b / r) / RAD;
+  const T = 0.5 * b * Math.sqrt(Math.max(0, r * r - b * b));
+  const S = 0.5 * r * r * t * RAD;
+  return { r, b, t, T, S, I: T + S };
+};
+
+/** calc-1#1~implicit: x² + y² = r² at (x₀, y₀), slope −x₀ ÷ y₀ and the tangent line. */
+function implicitTangent(id: string, title: string, use: string, ex: Values) {
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Differentiate x² + y² = r² with y a function of x: 2x + 2y·(dy/dx) = 0.',
+      'So dy/dx = −x ÷ y: the tangent is square to the radius (y₀ ≠ 0).',
+    ],
+    variables: [
+      num('x0', 'x₀', 'Point’s x', undefined, -100, 100, { step: 0.1 }),
+      num('y0', 'y₀', 'Point’s y', undefined, -100, 100, { step: 0.1 }),
+      num('r', 'r', 'Radius', undefined, 0.01, 200),
+      num('m', 'm', 'Slope dy/dx', undefined, -1e5, 1e5),
+      num('c', 'c', 'Tangent’s y-intercept', undefined, -1e7, 1e7),
+    ],
+    rules: [
+      rule(
+        'r = √(x₀² + y₀²)',
+        '{r} = √({x0}² + {y0}²)',
+        ['r', 'x0', 'y0'],
+        (v) => v.r! ** 2 - v.x0! ** 2 - v.y0! ** 2,
+        {
+          r: [
+            (v) => Math.hypot(v.x0!, v.y0!),
+            '√({x0}² + {y0}²)',
+            'The point is on the circle: its distance from the center.',
+          ],
+        },
+      ),
+      rule('m = −x₀ ÷ y₀', '{m} = −{x0} ÷ {y0}', ['m', 'x0', 'y0'], (v) => v.m! * v.y0! + v.x0!, {
+        m: [
+          (v) => div(-v.x0!, v.y0!),
+          '−{x0} ÷ {y0}',
+          'Solve 2x + 2y·(dy/dx) = 0 for dy/dx at the point.',
+        ],
+        x0: [(v) => -v.m! * v.y0!, '−{m} × {y0}', 'Multiply the slope by −y₀.'],
+      }),
+      rule(
+        'c = y₀ − m·x₀',
+        '{c} = {y0} − {m} × {x0}',
+        ['c', 'y0', 'm', 'x0'],
+        (v) => v.c! - v.y0! + v.m! * v.x0!,
+        {
+          c: [
+            (v) => v.y0! - v.m! * v.x0!,
+            '{y0} − {m} × {x0}',
+            'The tangent y = mx + c passes through the point.',
+          ],
+        },
+      ),
+    ],
+    example: ex,
+    startWith: ['x0', 'y0'],
+    representation: {
+      kind: 'conicGraph',
+      conic: 'circle',
+      h: 0,
+      k: 0,
+      r: 'r',
+      point: { x: 'x0', y: 'y0' },
+      tangent: { slope: 'm', intercept: 'c' },
+      fixed: true,
+    },
+  });
+}
+
+const tanEx = (x0: number, y0: number) => {
+  const m = -x0 / y0;
+  return { x0, y0, r: Math.hypot(x0, y0), m, c: y0 - m * x0 };
+};
+
+const HC67: ModuleDef[] = [
+  productRule(
+    'g.he-rectangle-grow',
+    'The product and quotient rules from a table',
+    'Use this for “f(2) = 3, f′(2) = −1, g(2) = 4, g′(2) = 5. Find (fg)′(2) and (f/g)′(2).”',
+    prodEx(3, -1, 4, 5),
+  ),
+  productRule(
+    'g.he-rectangle-grow-both',
+    'Both factors growing',
+    'Use this for “u = 2 and v = 3 grow at 0.5 and 1 per second. How fast does uv grow?”',
+    prodEx(2, 0.5, 3, 1),
+  ),
+  trigSub(
+    'g.he-conicGraph-under',
+    'Trig substitution as triangle plus sector',
+    'Use this for “Evaluate ∫ from 0 to 1 of √(4 − x²) dx.”',
+    subEx(2, 1),
+  ),
+  trigSub(
+    'g.he-conicGraph-under-quarter',
+    'A quarter circle by trig substitution',
+    'Use this for “Evaluate ∫ from 0 to 3 of √(9 − x²) dx.”',
+    subEx(3, 3),
+  ),
+  implicitTangent(
+    'g.he-conicGraph-tangent',
+    'Implicit slope on a circle',
+    'Use this for “Find dy/dx on x² + y² = 25 at (3, 4), and the tangent line.”',
+    tanEx(3, 4),
+  ),
+  implicitTangent(
+    'g.he-conicGraph-tangent-steep',
+    'A tangent near the side of a circle',
+    'Use this for “Find the tangent to x² + y² = r² at (4.9, 1).”',
+    tanEx(4.9, 1),
+  ),
+];
+
+export const HE3C_GALLERY_MODULES: ModuleDef[] = [...HC53, ...HC54, ...HC66, ...HC67];
 
 export const HE3C_GALLERY_LAYOUTS: LayoutDef[] = [];
