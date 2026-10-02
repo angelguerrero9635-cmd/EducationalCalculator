@@ -13,7 +13,7 @@ import { usePaintIds } from './paint';
 import { niceStep } from './Plot';
 import { correlation, leastSquares, squaredResiduals, strength, twoPlaces } from './stats';
 
-type Spec = Extract<Representation, { kind: 'scatter' }>;
+type Spec = Exclude<Extract<Representation, { kind: 'scatter' }>, { classes: unknown }>; // HC139 apart
 type Axis = Spec['x'];
 
 const ticks = (a: Axis) => {

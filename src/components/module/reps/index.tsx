@@ -161,6 +161,7 @@ import { MatrixReduceHe4a } from './MatrixReduceHe4a'; // HC94
 import { MatrixRouthHe4a } from './MatrixRouthHe4a'; // HC190
 import { TransformationMatrixHe4a } from './TransformationMatrixHe4a'; // HC95
 import { ScatterPointsHe4a } from './ScatterPointsHe4a'; // HC97
+import { ScatterClassesHe4a } from './ScatterClassesHe4a'; // HC139
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
@@ -497,6 +498,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'curvedSolid':
       return <CurvedSolid spec={spec} calc={calc} />;
     case 'scatter':
+      if ('classes' in spec) return <ScatterClassesHe4a spec={spec} calc={calc} />; // HC139
       if (spec.pointsFrom) return <ScatterPointsHe4a spec={spec} calc={calc} />; // HC97
       return <Scatter spec={spec} calc={calc} />;
     case 'rootSquare':

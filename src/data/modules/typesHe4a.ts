@@ -99,6 +99,32 @@ export interface ScatterHe4a {
   pointsFrom?: string;
 }
 
+// ─── HC139: scatter classes (minimum distance in feature space) ──────────────
+
+/**
+ * HC139 (EG-P32): `scatter` with `classes` (drawn by ScatterClassesHe4a.tsx): a feature space
+ * (red reflectance across, near infrared up, or any two features), each class mean a named
+ * star, the pixel a ringed dot with a segment to each mean labelled with its length, the
+ * nearest segment lit and the caption naming the class. No line of fit.
+ * - `classes`: each class's name and mean (numbers fixed in the page's assumptions, or values).
+ * - `pixel`: the pixel's two features (values); a "?" draws no pixel and no segments.
+ * - `distances`: the page's distance to each class, in the order of `classes` (checked:
+ *   Euclidean); `points`: other pixels drawn faint (optional).
+ */
+export interface ScatterClassesSpec {
+  kind: 'scatter';
+  x: { label: string; min: number; max: number; step?: number };
+  y: { label: string; min: number; max: number; step?: number };
+  classes: { name: string; x: NumOrVar; y: NumOrVar }[];
+  pixel: { x: NumOrVar; y: NumOrVar };
+  distances?: string[];
+  points?: [number, number][];
+}
+
+/** Every variable id a classes scatter names. */
+export const scatterClassesVars = (r: ScatterClassesSpec): string[] =>
+  ids(...r.classes.flatMap((k) => [k.x, k.y]), r.pixel.x, r.pixel.y, ...(r.distances ?? []));
+
 /** Every variable id the matrixGrid options above name (for the module tests). */
 export function matrixGridHe4aVars(r: object): string[] {
   const m = r as Partial<RowReduceHe4a & MatrixRouthHe4a> & { mode?: string };

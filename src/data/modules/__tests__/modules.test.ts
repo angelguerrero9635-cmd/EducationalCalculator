@@ -50,7 +50,7 @@ import { hs3aSpecVars } from '../typesHs3a';
 import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
-import { matrixGridHe4aVars } from '../typesHe4a'; // HC94, HC190
+import { matrixGridHe4aVars, scatterClassesVars } from '../typesHe4a'; // HC94, HC190, HC139
 import { he2hSpecVars } from '../typesHe2h';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
@@ -476,6 +476,7 @@ function representationVars(r: Representation): string[] {
     case 'leafCount':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'scatter':
+      if ('classes' in r) return scatterClassesVars(r); // HC139
       return [
         ...[r.slope, r.intercept, r.r, r.residualOf?.residual, r.residualOf?.point].filter(
           (x): x is string => typeof x === 'string',

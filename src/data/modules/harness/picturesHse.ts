@@ -24,7 +24,10 @@ const close = (a: number, b: number, tol = 1e-6) =>
   Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
 
 /** H18: r, the least-squares line and one point's residual agree with the points. */
-export function scatterIssues(rep: Of<'scatter'>, val: Val): string[] {
+export function scatterIssues(
+  rep: Exclude<Of<'scatter'>, { classes: unknown }>, // HC139: checked apart
+  val: Val,
+): string[] {
   const out: string[] = [];
   if (typeof rep.r === 'string') {
     const r = val(rep.r);

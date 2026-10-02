@@ -21,6 +21,7 @@ import type { VariableDef } from '@/engine/types';
 
 import type { Representation } from '../types';
 import type { TransformationSpec } from '../typesGraphs';
+import type { ScatterClassesSpec } from '../typesHe4a';
 import type { MatrixGridSpec } from '../typesHsd';
 
 type Val = (id: string | number) => number | undefined;
@@ -157,7 +158,7 @@ export function matrixMoveIssues(
   return out;
 }
 
-type ScatterSpec = Extract<Representation, { kind: 'scatter' }>;
+type ScatterSpec = Exclude<Extract<Representation, { kind: 'scatter' }>, { classes: unknown }>;
 
 /**
  * HC97: the scatter plot the values make (points read from the group, axes grown to hold them),
@@ -195,4 +196,34 @@ export function scatterPointsHe4a(
       ),
     },
   };
+}
+
+/** HC139: each distance is the Euclidean length from the pixel to that class's mean. */
+export function scatterClassesIssues(rep: ScatterClassesSpec, val: Val): string[] {
+  const out: string[] = [];
+  if (rep.classes.length < 2 || rep.classes.length > 6)
+    out.push(`${rep.classes.length} classes (2 to 6)`);
+  if (new Set(rep.classes.map((k) => k.name)).size !== rep.classes.length)
+    out.push('two classes share a name');
+  if (rep.distances && rep.distances.length !== rep.classes.length)
+    out.push(`${rep.distances.length} distances for ${rep.classes.length} classes`);
+  const means = rep.classes.map((k) => [val(k.x), val(k.y)]);
+  for (const [i, [x, y]] of means.entries()) {
+    const k = rep.classes[i]!;
+    if (x !== undefined && (x < rep.x.min || x > rep.x.max))
+      out.push(`${k.name}'s mean is off the x axis`);
+    if (y !== undefined && (y < rep.y.min || y > rep.y.max))
+      out.push(`${k.name}'s mean is off the y axis`);
+  }
+  const [px, py] = [val(rep.pixel.x), val(rep.pixel.y)];
+  if (px === undefined || py === undefined) return out;
+  rep.distances?.forEach((id, i) => {
+    const [x, y] = means[i] ?? [];
+    const got = val(id);
+    if (x === undefined || y === undefined || got === undefined) return;
+    const want = Math.hypot(px - x, py - y);
+    if (!near(got, want, 1e-3))
+      out.push(`distance to ${rep.classes[i]!.name} is ${got}, not ${want}`);
+  });
+  return out;
 }

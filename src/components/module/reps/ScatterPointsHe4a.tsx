@@ -9,7 +9,7 @@ import { useRep } from './common';
 import { Scatter } from './Scatter';
 import { axisFor, pointsOf } from './scatterHe4a';
 
-type Spec = Extract<Representation, { kind: 'scatter' }>;
+type Spec = Exclude<Extract<Representation, { kind: 'scatter' }>, { classes: unknown }>;
 
 export function ScatterPointsHe4a({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);

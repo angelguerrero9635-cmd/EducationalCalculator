@@ -38,6 +38,7 @@ import type { He2bSpec } from './typesHe2b';
 import type { GlobeSpec } from './typesHe2k';
 import type { He2jSpec } from './typesHe2j';
 import type { FieldPlotSpec } from './typesHe2g';
+import type { ScatterClassesSpec } from './typesHe4a'; // HC139
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1112,6 +1113,7 @@ export type Representation =
   | FunctionMachineSpec
   | MappingSpec
   | TransformationSpec
+  | ScatterClassesSpec // HC139: minimum distance in feature space (typesHe4a.ts)
   /** Grades 9–12: the graph of any function family (spec in `typesFunctionGraph.ts`). */
   | FunctionGraphSpec
   /** Grade 7 life science: energy pyramid, generations (specs in `typesLife.ts`). */

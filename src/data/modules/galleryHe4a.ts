@@ -5,6 +5,7 @@
  * HC190: `matrixGrid` `mode: 'routh'`.
  * HC95: `transformation` `move: 'matrix'` with `eigen`.
  * HC97: `scatter` `pointsFrom` (least squares from typed points).
+ * HC139: `scatter` `classes` (minimum distance in feature space).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -870,6 +871,83 @@ const leastSquares8 = leastSquaresDemo(
   ],
 );
 
+// ── HC139: minimum-distance classification (remote-sensing#2~min-distance) ──
+
+/** The class means fixed in the page's assumptions: (red, near infrared) reflectance. */
+const CLASS_MEANS = [
+  { id: 'dW', name: 'Water', x: 0.05, y: 0.03 },
+  { id: 'dV', name: 'Vegetation', x: 0.06, y: 0.45 },
+  { id: 'dS', name: 'Soil', x: 0.2, y: 0.28 },
+];
+
+/** remote-sensing#2~min-distance: a pixel's distance to each class mean; the nearest wins. */
+function minDistanceDemo(id: string, title: string, use: string, red: number, nir: number) {
+  const distanceRule = (k: (typeof CLASS_MEANS)[number]) => {
+    const expr = `√(({R} − ${k.x})² + ({N} − ${k.y})²)`;
+    return rule(
+      `${k.id} = distance to ${k.name.toLowerCase()}`,
+      `{${k.id}} = ${expr}`,
+      [k.id, 'R', 'N'],
+      (v) => v[k.id]! ** 2 - ((v.R! - k.x) ** 2 + (v.N! - k.y) ** 2),
+      {
+        [k.id]: [
+          (v) => Math.hypot(v.R! - k.x, v.N! - k.y),
+          expr,
+          `Pythagoras in feature space, from the pixel to the ${k.name.toLowerCase()} mean (${k.x}, ${k.y}).`,
+        ],
+      },
+    );
+  };
+  const ex: Values = { R: red, N: nir };
+  for (const k of CLASS_MEANS) ex[k.id] = Math.hypot(red - k.x, nir - k.y);
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Class means (red, near infrared): water (0.05, 0.03), vegetation (0.06, 0.45), soil (0.20, 0.28).',
+      'Distance is straight-line (Euclidean) in the plane of the two bands.',
+      'The pixel goes to the class whose mean is nearest.',
+    ],
+    variables: [
+      num('R', 'ρ_red', 'Pixel’s red reflectance', undefined, 0, 1, { step: 0.001 }),
+      num('N', 'ρ_NIR', 'Pixel’s near-infrared reflectance', undefined, 0, 1, { step: 0.001 }),
+      ...CLASS_MEANS.map((k) =>
+        num(k.id, `d_${k.name[0]!}`, `Distance to ${k.name.toLowerCase()}`, undefined, 0, 2, {
+          derived: true,
+        }),
+      ),
+    ],
+    rules: CLASS_MEANS.map(distanceRule),
+    example: ex,
+    startWith: ['R', 'N'],
+    representation: {
+      kind: 'scatter',
+      x: { label: 'Red reflectance', min: 0, max: 0.5, step: 0.1 },
+      y: { label: 'Near-infrared reflectance', min: 0, max: 0.5, step: 0.1 },
+      classes: CLASS_MEANS.map((k) => ({ name: k.name, x: k.x, y: k.y })),
+      pixel: { x: 'R', y: 'N' },
+      distances: CLASS_MEANS.map((k) => k.id),
+    },
+  });
+}
+
+const minDistance = minDistanceDemo(
+  'g.he-scatter-classes',
+  'Minimum-distance classification',
+  'Use this for “A pixel has red 0.10 and NIR 0.40. Which class mean is nearest?”',
+  0.1,
+  0.4,
+);
+
+const minDistanceClose = minDistanceDemo(
+  'g.he-scatter-classes-close',
+  'Minimum distance: a pixel between two classes',
+  'Use this for “A pixel reads red 0.20, NIR 0.10. Is it water or soil by minimum distance?”',
+  0.2,
+  0.1,
+);
+
 export const HE4A_GALLERY_MODULES: ModuleDef[] = [
   inverse3,
   inverse4,
@@ -885,6 +963,8 @@ export const HE4A_GALLERY_MODULES: ModuleDef[] = [
   eigenComplex,
   leastSquares4,
   leastSquares8,
+  minDistance,
+  minDistanceClose,
 ];
 
 export const HE4A_GALLERY_LAYOUTS: LayoutDef[] = [];

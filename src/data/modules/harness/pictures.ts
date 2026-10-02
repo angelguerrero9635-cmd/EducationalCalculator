@@ -86,7 +86,12 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
-import { matrixGridHe4aIssues, matrixMoveIssues, scatterPointsHe4a } from './picturesHe4a';
+import {
+  matrixGridHe4aIssues,
+  matrixMoveIssues,
+  scatterClassesIssues,
+  scatterPointsHe4a,
+} from './picturesHe4a';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1825,6 +1830,10 @@ export function repIssues(
       break;
     }
     case 'scatter': {
+      if ('classes' in rep) {
+        out.push(...scatterClassesIssues(rep, val)); // HC139
+        break;
+      }
       if (rep.pointsFrom) {
         const p = scatterPointsHe4a(rep, byId, val); // HC97: the points the values make
         out.push(...p.issues, ...(p.rep.points.length ? repIssues(p.rep, shown, byId) : []));

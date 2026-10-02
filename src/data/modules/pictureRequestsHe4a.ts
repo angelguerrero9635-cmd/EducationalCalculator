@@ -82,4 +82,17 @@ export const HE4A_REQUESTS: PictureRequest[] = [
       'Example (linear-algebra#4): variables x1, y1, …, x4, y4 with group: "P"; { kind: "scatter", x: { label: "x", min: 0, max: 4 }, y: { label: "y", min: 0, max: 5 }, points: [], pointsFrom: "P", slope: "m", intercept: "b", leastSquares: "fit", residuals: "segments" } ((0, 1), (1, 2), (2, 2), (3, 4) → AᵀA = [[14, 6], [6, 4]], Aᵀb = (18, 9), m = 0.9, b = 0.9, error 0.70; the demo’s equation shows the normal equations).',
     ].join(' '),
   },
+  {
+    id: 'HC139',
+    kind: 'scatter',
+    what: 'Minimum-distance classification: class means as named stars in feature space (red across, NIR up), the pixel’s segment to each with its length, the nearest lit',
+    pages: ['he.geography.remote-sensing#2~min-distance'],
+    status: 'drawn',
+    gallery: ['g.he-scatter-classes', 'g.he-scatter-classes-close'],
+    notes: [
+      'From EG-P32 (HE-earth-geography-P32). A `scatter` with `classes` (typesHe4a.ts ScatterClassesSpec, its own member of the union since it has no line of fit; drawn by ScatterClassesHe4a.tsx; every existing scatter page unchanged). It replaces the interim `coordinatePlane`.',
+      'Fields: kind: "scatter"; x, y: { label, min, max, step? } (one scale on both axes when the ranges allow, so equal lengths look equal); classes: { name, x, y }[] (2–6 means, numbers fixed in the assumptions or values); pixel: { x, y } (values; a "?" draws no pixel and no segments); distances?: string[] (in the order of classes, checked Euclidean); points?: [x, y][] (other pixels, faint). Drawn: each mean a star named beside it, the pixel a ringed dot, a dashed segment to each mean with its length, the nearest solid and lit with its star and name; a short segment’s length goes with the class name. Labels are placed clear of the stars, the pixel and each other. Caption: each distance worked, √((0.1 − 0.05)² + (0.4 − 0.03)²) = 0.373, and "Nearest: vegetation (0.064), so the pixel is classed vegetation" (a tie to 3 figures is said, not decided).',
+      'Example (remote-sensing#2~min-distance): { kind: "scatter", x: { label: "Red reflectance", min: 0, max: 0.5, step: 0.1 }, y: { label: "Near-infrared reflectance", min: 0, max: 0.5, step: 0.1 }, classes: [{ name: "Water", x: 0.05, y: 0.03 }, { name: "Vegetation", x: 0.06, y: 0.45 }, { name: "Soil", x: 0.2, y: 0.28 }], pixel: { x: "R", y: "N" }, distances: ["dW", "dV", "dS"] } ((0.10, 0.40) → 0.373, 0.064, 0.156: vegetation).',
+    ].join(' '),
+  },
 ];
