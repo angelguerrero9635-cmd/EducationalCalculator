@@ -115,4 +115,19 @@ export const HE4D_REQUESTS: PictureRequest[] = [
       'g.he-molecule-card-point-groups',
     ],
   },
+  {
+    ...ask(
+      'HC115',
+      'macromolecules',
+      'macromolecules level: one polypeptide in four views two to a row (its sequence, its helix and sheet with the hydrogen bonds, its fold with a disulfide bond, two chains packed), the same residues in each keeping their colour; `level` 1–4 lights one view, the others faded',
+      ['he.chemistry.biochemistry#0~levels', 'he.chemistry.biochemistry#0~dimensions'],
+      [
+        'From C-P21. New field on the calculator macromolecules spec (typesHs2e.ts MacroCalcSpec): level?: NumOrVar (1–4), with macro: "protein" and count the residues (up to 36 drawn, the count written). Pages without `level` draw the H100 chain as before.',
+        '~levels is a sort today: its cards can stay text, or an explore page later can pass the same picture per scene. ~dimensions: { kind: "macromolecules", macro: "protein", count: "n", level: 2 } (18 residues, 2.70 nm, 5.0 turns as an α-helix).',
+        'Checks (harness/picturesHe4d.ts proteinLevelIssues): level whole 1–4 on a protein; every view draws the same residues (each chain of the fourth).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-macromolecules-level', 'g.he-macromolecules-level-quaternary'],
+  },
 ];

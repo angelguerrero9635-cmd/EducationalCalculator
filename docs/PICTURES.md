@@ -406,6 +406,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `orbitalDiagram`   | `mode: 'radial'`, `Z`, `n`, `l`          | P(r) = r²R² in a₀, area 1; radial nodes, ⟨r⟩ dashed, r_mp ringed (HC109)      |
 | `orbitalDiagram`   | `mode: 'crystalField'`, `d`, `split`     | d boxes split by Δ beside P to scale, high or low spin; CFSE, μ (HC110)       |
 | `beaker`           | `cuvette: { path, absorbance, … }`       | lamp, cuvette of path b, beam narrowing to T × its width; A, %T, εbc (HC112)  |
+| `macromolecules`   | `level` (protein)                        | sequence, helix and sheet, fold, 2 chains; the same residues; one lit (HC115) |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
 | `energyTrack`      | `spring: { k, compression, … }`          | spring launcher, rough patch (heat fd), ramp; start and now bars (H63)        |

@@ -13,6 +13,7 @@ import { MacroFigure } from '../layouts/macroFigure';
 import type { Calculator } from '../useCalculator';
 import { Caption, useRep } from './common';
 import { reader } from './graphKit';
+import { ProteinLevels } from './ProteinLevels';
 
 type Spec = Extract<Representation, { kind: 'macromolecules' }>;
 
@@ -23,6 +24,11 @@ const MONOMERS: Record<Spec['macro'], string> = {
 };
 
 export function Macromolecules({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  if (spec.level !== undefined) return <ProteinLevels spec={spec} calc={calc} />; // HC115
+  return <Chain spec={spec} calc={calc} />;
+}
+
+function Chain({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const n = reader(rep)(spec.count);
   const total = n.known ? Math.max(2, Math.round(n.value)) : 2;

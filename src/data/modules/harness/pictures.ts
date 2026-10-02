@@ -84,7 +84,7 @@ import { he3fIssues } from './picturesHe3f';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import { he2jIssues } from './picturesHe2j';
-import { cuvetteIssues, orbitalHe4dIssues, siHe4d } from './picturesHe4d';
+import { cuvetteIssues, orbitalHe4dIssues, proteinLevelIssues, siHe4d } from './picturesHe4d';
 import { isOrbitalHe4d } from '../typesHe4d';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
@@ -2223,6 +2223,7 @@ export function repIssues(
     case 'macromolecules':
     case 'cellDivision':
       out.push(...hs2eIssues(rep, (id) => val(id)));
+      if (rep.kind === 'macromolecules') out.push(...proteinLevelIssues(rep, siHe4d(val, byId))); // HC115
       break;
     case 'neuron':
       out.push(...neuronIssues(rep, (id) => val(id)));

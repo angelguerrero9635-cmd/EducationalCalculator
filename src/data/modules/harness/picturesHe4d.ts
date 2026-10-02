@@ -23,7 +23,10 @@ import { beamHalf, cuvetteAbsorbance } from '@/components/module/reps/cuvetteMat
 
 import { maps, SYMMETRY_MOLECULES } from '@/components/module/reps/symmetryMath';
 
+import { drawnOf, levelBeads, residuesPerChain } from '@/components/module/reps/proteinLevelsMath';
+
 import type { LayoutDef } from '../layouts';
+import type { MacroCalcSpec } from '../typesHs2e';
 import type { BeakerCuvette, LewisHe4dSpec, OrbitalHe4dSpec } from '../typesHe4d';
 
 type Val = (x: string | number) => number | undefined;
@@ -199,5 +202,22 @@ export function symmetryFigureIssues(l: LayoutDef): string[] {
     if (!e) out.push(`${at}: ${sc.molecule} has no element ${sc.element}`);
     else if (!maps(m, e)) out.push(`${at}: ${e.name} does not map ${sc.molecule} onto itself`);
   }
+  return out;
+}
+
+/** HC115: the level is 1–4 and every view draws the same residues (each chain of the fourth). */
+export function proteinLevelIssues(rep: MacroCalcSpec, val: Val): string[] {
+  const out: string[] = [];
+  if (rep.level === undefined) return out;
+  if (rep.macro !== 'protein') out.push(`level on a ${rep.macro}: only a protein has four levels`);
+  const lv = read(val, rep.level);
+  if (lv !== undefined && (!Number.isInteger(lv) || lv < 1 || lv > 4))
+    out.push(`level ${lv} (1 to 4)`);
+  const n = read(val, rep.count);
+  if (n === undefined) return out;
+  const counts = [1, 2, 3, 4].map((k) => residuesPerChain(levelBeads(k, n)));
+  if (new Set(counts).size !== 1) out.push(`residues per view ${counts.join(', ')} differ`);
+  if (counts[0] !== drawnOf(n)) out.push(`${counts[0]} residues drawn for ${drawnOf(n)}`);
+  if (levelBeads(4, n).length !== 2 * counts[0]!) out.push('the two chains differ in length');
   return out;
 }

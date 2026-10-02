@@ -953,6 +953,76 @@ const pointGroupCards: LayoutDef = {
   ).map(([label, formula, bin]) => ({ label, bin, figure: { kind: 'molecule', formula } })),
 };
 
+// ── HC115: a protein's levels of structure (biochemistry#0~levels, ~dimensions) ──
+
+const levelsDemo = (id: string, title: string, n: number, rise: number, level: number): ModuleDef =>
+  demo({
+    id,
+    title,
+    use: 'Use this for the length of a helix or strand of n residues, and which level of structure it is.',
+    assumptions: [
+      'An α-helix rises 0.15 nm a residue, 3.6 residues a turn; a β-strand 0.34 nm a residue.',
+      'The same chain is drawn at every level: sequence, helix and sheet, fold, chains packed.',
+    ],
+    variables: [
+      quantity('n', 'n', 'Residues', undefined, 2, 1000, 1, { integer: true }),
+      quantity('rise', 'rise', 'Rise per residue', 'nm', 0.05, 1, 0.01),
+      quantity('len', 'length', 'Length', 'nm', 0.1, 1000, 0.01),
+      quantity('turns', 'turns', 'Helix turns', undefined, 0.5, 300, 0.1),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'length = n × rise',
+          display: '{len} = {n} × {rise}',
+          vars: ['len', 'n', 'rise'],
+          residual: (x) => x.len! - x.n! * x.rise!,
+          solve: {
+            len: (x) => x.n! * x.rise!,
+            n: (x) => div(x.len!, x.rise!),
+            rise: (x) => div(x.len!, x.n!),
+          },
+        },
+        steps: {
+          len: st('{n} × {rise}', 'Each residue adds its rise along the axis.'),
+          n: st('{len} ÷ {rise}', 'Divide the length by the rise per residue.'),
+          rise: st('{len} ÷ {n}', 'Divide the length by the residues.'),
+        },
+      },
+      {
+        relation: {
+          id: 'turns = n ÷ 3.6',
+          display: '{turns} = {n} ÷ 3.6',
+          vars: ['turns', 'n'],
+          residual: (x) => x.turns! * 3.6 - x.n!,
+          solve: { turns: (x) => x.n! / 3.6, n: (x) => x.turns! * 3.6 },
+        },
+        steps: {
+          turns: st('{n} ÷ 3.6', 'An α-helix takes 3.6 residues a turn.'),
+          n: st('{turns} × 3.6', 'Each turn holds 3.6 residues.'),
+        },
+      },
+    ),
+    example: { n, rise, len: n * rise, turns: n / 3.6 },
+    startWith: ['n', 'rise'],
+    representation: { kind: 'macromolecules', macro: 'protein', count: 'n', level },
+  });
+
+const levelsHelix = levelsDemo(
+  'g.he-macromolecules-level',
+  'A protein’s levels: 18 residues and the helix they make',
+  18,
+  0.15,
+  2,
+);
+const levelsPacked = levelsDemo(
+  'g.he-macromolecules-level-quaternary',
+  'Two chains of 40 residues packed: quaternary structure',
+  40,
+  0.34,
+  4,
+);
+
 export const HE4D_GALLERY_MODULES: ModuleDef[] = [
   ladderHe,
   ladderHigh,
@@ -966,6 +1036,8 @@ export const HE4D_GALLERY_MODULES: ModuleDef[] = [
   formalTriiodide,
   cuvette,
   cuvetteDark,
+  levelsHelix,
+  levelsPacked,
 ];
 
 export const HE4D_GALLERY_LAYOUTS: LayoutDef[] = [symmetryExplore, symmetryEdge, pointGroupCards];
