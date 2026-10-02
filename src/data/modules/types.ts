@@ -47,6 +47,7 @@ import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
 import type { He2cSpec } from './typesHe2c';
+import type { He3hSpec } from './typesHe3h';
 import type { BeamSpec } from './typesHe1a';
 import type { BodeSpec } from './typesHe2a';
 import type { He2hSpec } from './typesHe2h';
@@ -1154,6 +1155,8 @@ export type Representation =
   | PhaseEnvelopeSpec
   /** College round 2, group C: HC17 property diagram, HC23 thermal wall (`typesHe2c.ts`). */
   | He2cSpec
+  /** College round 3, group H: HC40 heat exchanger, … (`typesHe3h.ts`). */
+  | He3hSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
   /** College round 2, group F: freeBody and circularMotion options (`typesHe2f.ts`). */

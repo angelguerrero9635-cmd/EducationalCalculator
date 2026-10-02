@@ -84,6 +84,7 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
+import { he3hIssues } from './picturesHe3h';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2313,6 +2314,9 @@ export function repIssues(
     case 'propertyDiagram':
     case 'thermalWall':
       out.push(...he2cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'heatExchanger':
+      out.push(...he3hIssues(rep, val, byId)); // HC40
       break;
     case 'projectile':
     case 'induction':
