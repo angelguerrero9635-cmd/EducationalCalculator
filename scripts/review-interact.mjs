@@ -850,7 +850,11 @@ async function checkPage(id) {
     const notes = [];
     // Nothing moved: a value that snaps (a turn in 90° steps) may need a longer drag.
     if (!live && before.every((b, i) => after[i]?.value === b.value)) {
-      await dragBy(x + 40, y - 30, 80, -60);
+      // From where the handle is now (it may not have moved: pressing where the pointer was
+      // left would grab nothing).
+      const again = await page.locator(`[data-testid="${h}"]`).first().boundingBox();
+      const [ax, ay] = again ? [again.x + again.width / 2, again.y + again.height / 2] : [x, y];
+      await dragBy(ax, ay, 120, -90);
       after = await boxes();
       live = (await picture()) !== shape;
       if (live) notes.push('moves in steps (a longer drag)');
