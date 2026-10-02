@@ -86,7 +86,7 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
-import { matrixGridHe4aIssues } from './picturesHe4a';
+import { matrixGridHe4aIssues, matrixMoveIssues } from './picturesHe4a';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1897,6 +1897,10 @@ export function repIssues(
       break;
     }
     case 'transformation': {
+      if (rep.move === 'matrix') {
+        out.push(...matrixMoveIssues(rep, val)); // HC95
+        break;
+      }
       if (rep.figure.length < 2 || rep.figure.length > 6)
         out.push(`figure with ${rep.figure.length} corners (2 to 6 are labelled A–F)`);
       const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));

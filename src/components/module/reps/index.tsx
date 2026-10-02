@@ -159,6 +159,7 @@ import { UnitCircleHs2g } from './UnitCircleHs2g';
 import { MatrixDeterminant } from './MatrixDeterminant';
 import { MatrixReduceHe4a } from './MatrixReduceHe4a'; // HC94
 import { MatrixRouthHe4a } from './MatrixRouthHe4a'; // HC190
+import { TransformationMatrixHe4a } from './TransformationMatrixHe4a'; // HC95
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
@@ -439,6 +440,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'mapping':
       return <Mapping spec={spec} calc={calc} />;
     case 'transformation':
+      if (spec.move === 'matrix') return <TransformationMatrixHe4a spec={spec} calc={calc} />; // HC95
       return <Transformation spec={spec} calc={calc} />;
     case 'tape':
       return 'ratio' in spec ? (

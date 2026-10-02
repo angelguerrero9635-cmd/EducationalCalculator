@@ -52,6 +52,39 @@ export interface MatrixRouthHe4a {
   limit?: { kMax?: string; omega?: string };
 }
 
+// ─── HC95: transformation move 'matrix' with eigen ───────────────────────────
+
+/**
+ * HC95 (M-P12): `transformation` `move: 'matrix'` (drawn by TransformationMatrixHe4a.tsx). The
+ * figure (the unit square [[0, 0], [1, 0], [1, 1], [0, 1]] on the pages) dashed and its image
+ * under A = [[a, b], [c, d]] filled, the unit circle dashed and its image ellipse, all to one
+ * scale on a grid. No handles.
+ * - `circle`: false leaves out the circle and the ellipse (default drawn).
+ * - `eigen`: each real eigenvector's line through the origin dashed, a unit vector v on it and
+ *   Av = λv along it labelled λ; complex eigenvalues are said in the caption. `values` names
+ *   λ₁ ≥ λ₂ (checked).
+ * - `det`: the page's det A = ad − bc; `area`: the image's area, |det A| × the figure's (both
+ *   checked; the caption works |det A|).
+ * `image` and `then` are not read.
+ */
+export interface MatrixMoveHe4a {
+  move: 'matrix';
+  matrix: [[NumOrVar, NumOrVar], [NumOrVar, NumOrVar]];
+  circle?: boolean;
+  eigen?: true | { values?: [string, string] };
+  det?: string;
+  area?: string;
+}
+
+/** Every variable id `move: 'matrix'` names. */
+export const matrixMoveVars = (r: MatrixMoveHe4a): string[] =>
+  ids(
+    ...r.matrix.flat(),
+    ...(typeof r.eigen === 'object' ? (r.eigen.values ?? []) : []),
+    r.det,
+    r.area,
+  );
+
 /** Every variable id the matrixGrid options above name (for the module tests). */
 export function matrixGridHe4aVars(r: object): string[] {
   const m = r as Partial<RowReduceHe4a & MatrixRouthHe4a> & { mode?: string };

@@ -49,4 +49,24 @@ export const HE4A_REQUESTS: PictureRequest[] = [
       'Example (~routh-count): { kind: "matrixGrid", mode: "routh", coefficients: [1, "a2", "a1", "a0"], column: [1, "a2", "b1", "a0"] } (s³ + s² + 2s + 8 → 1, 1, −6, 8: 2 changes).',
     ].join(' '),
   },
+  {
+    id: 'HC95',
+    kind: 'transformation',
+    what: 'A 2 × 2 matrix as a map: the unit square and unit circle and their images, the eigenvector lines with v and Av = λv, the area scale |det A|',
+    pages: [`${M}linear-algebra#3`, `${M}linear-algebra#2~volume`],
+    status: 'drawn',
+    gallery: [
+      'g.he-transformation-matrix-eigen',
+      'g.he-transformation-matrix-shear',
+      'g.he-transformation-matrix-area',
+      'g.he-transformation-matrix-complex',
+    ],
+    notes: [
+      'From M-P12 (HE-math-P12). A new `transformation` move (typesHe4a.ts MatrixMoveHe4a, drawn by TransformationMatrixHe4a.tsx; the other moves unchanged).',
+      'Fields: move: "matrix"; matrix: [[a, b], [c, d]] (values or numbers); figure (the unit square [[0, 0], [1, 0], [1, 1], [0, 1]]; any 2–8 corners); circle?: false (leaves out the unit circle and its ellipse); eigen?: true | { values?: [λ₁, λ₂] } (each real eigenvector’s line dashed through the origin, a unit v and Av = λv along it labelled λ; λ₁ ≥ λ₂ checked; a repeated λ is named twice; complex eigenvalues are said in the caption); det?: string (ad − bc, checked); area?: string (the image’s area, checked, |det A| × the figure’s). The view is sized from what is drawn, one scale on both axes; no handles. A "?" entry draws only the square and the circle.',
+      'Caption: the columns as the images of (1, 0) and (0, 1), the area |det A| worked, a flip when det A < 0, and A(1, 1) = (5, 5) = 5(1, 1) for each eigenvector (or tr² − 4 det < 0).',
+      'Example (linear-algebra#3): { kind: "transformation", figure: [[0, 0], [1, 0], [1, 1], [0, 1]], move: "matrix", matrix: [["a", "b"], ["c", "d"]], eigen: { values: ["l1", "l2"] }, det: "D" } ([[4, 1], [2, 3]] → λ = 5 along (1, 1), 2 along (1, −2)).',
+      'Example (linear-algebra#2~volume, the 2-D case): { kind: "transformation", figure: [[0, 0], [1, 0], [1, 1], [0, 1]], move: "matrix", matrix: [["a", "b"], ["c", "d"]], det: "D", area: "S" } ([[3, 1], [1, 2]] → area 5). The page’s 3-D box stays `vectorDiagram` `space` with `volume`.',
+    ].join(' '),
+  },
 ];

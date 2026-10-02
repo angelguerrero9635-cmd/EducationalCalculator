@@ -7,12 +7,16 @@
 import { det } from '@/components/module/reps/determinant';
 import { multiply } from '@/components/module/reps/matrices';
 import {
+  eigen2,
   inverseByRows,
+  polygonArea,
   routhArray,
   signChanges,
   tallyDet,
+  type M2,
 } from '@/components/module/reps/matrixHe4a';
 
+import type { TransformationSpec } from '../typesGraphs';
 import type { MatrixGridSpec } from '../typesHsd';
 
 type Val = (id: string | number) => number | undefined;
@@ -100,6 +104,51 @@ export function matrixGridHe4aIssues(rep: MatrixGridSpec, val: Val): string[] {
     if (t.triangular && !near(t.det, D)) out.push(`the tally gives ${t.det}, det A = ${D}`);
     const got = rep.tally.value ? val(rep.tally.value) : undefined;
     if (got !== undefined && !near(got, D)) out.push(`det A = ${got}, the matrix gives ${D}`);
+  }
+  return out;
+}
+
+/** HC95: Av = λv on each drawn eigen line, λ₁ ≥ λ₂ as named; the image's area is |det A| × the figure's. */
+export function matrixMoveIssues(
+  rep: Extract<TransformationSpec, { move: 'matrix' }>,
+  val: Val,
+): string[] {
+  const out: string[] = [];
+  if (rep.figure.length < 2 || rep.figure.length > 8)
+    out.push(`a figure with ${rep.figure.length} corners (2 to 8)`);
+  const m = rep.matrix.flat().map((x) => val(x));
+  if (m.some((x) => x === undefined)) return out;
+  const [a, b, c, d] = m as M2;
+  const e = eigen2([a, b, c, d]);
+  for (const { lambda, v } of e.pairs) {
+    const Av = [a * v[0] + b * v[1], c * v[0] + d * v[1]];
+    if (Math.hypot(v[0], v[1]) < 1e-12) out.push('an eigenvector of length 0');
+    if (!near(Av[0]!, lambda * v[0]) || !near(Av[1]!, lambda * v[1]))
+      out.push(`A(${v}) = (${Av}) is not ${lambda}(${v})`);
+  }
+  if (typeof rep.eigen === 'object' && rep.eigen.values) {
+    const ls = e.pairs.map((p) => p.lambda);
+    const want = ls.length === 1 ? [ls[0]!, ls[0]!] : ls;
+    rep.eigen.values.forEach((id, i) => {
+      const got = val(id);
+      if (got === undefined) return;
+      if (!want.length) out.push(`λ${i + 1} = ${got}, but A has no real eigenvalues`);
+      else if (!near(got, want[i]!)) out.push(`λ${i + 1} = ${got}, A gives ${want[i]}`);
+    });
+  }
+  const D = a * d - b * c;
+  const got = rep.det ? val(rep.det) : undefined;
+  if (got !== undefined && !near(got, D)) out.push(`det A = ${got}, ad − bc = ${D}`);
+  const fig = rep.figure.map(([x, y]) => [val(x), val(y)]);
+  if (fig.flat().every((x) => x !== undefined)) {
+    const pts = fig as [number, number][];
+    const img = pts.map(([x, y]) => [a * x + b * y, c * x + d * y] as [number, number]);
+    const before = polygonArea(pts);
+    if (before > 0 && !near(polygonArea(img) / before, Math.abs(D)))
+      out.push(`the area ratio is ${polygonArea(img) / before}, |det A| = ${Math.abs(D)}`);
+    const area = rep.area ? val(rep.area) : undefined;
+    if (area !== undefined && !near(area, polygonArea(img)))
+      out.push(`the image's area is ${polygonArea(img)}, not ${area}`);
   }
   return out;
 }

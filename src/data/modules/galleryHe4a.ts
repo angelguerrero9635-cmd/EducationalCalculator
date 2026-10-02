@@ -3,6 +3,7 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC94: `matrixGrid` `rowReduce` with `inverse` ([A | I]) and `tally` (det by row reduction).
  * HC190: `matrixGrid` `mode: 'routh'`.
+ * HC95: `transformation` `move: 'matrix'` with `eigen`.
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -459,6 +460,235 @@ const routhQuartic = page({
   },
 });
 
+// ── HC95: a 2 × 2 matrix as a map of the plane (linear-algebra#3, #2~volume) ──
+
+const UNIT_SQUARE: [number, number][] = [
+  [0, 0],
+  [1, 0],
+  [1, 1],
+  [0, 1],
+];
+
+const entry2 = (id: string, symbol: string, where: string) =>
+  num(id, symbol, `A, ${where}`, undefined, -1000, 1000, { step: 0.01, group: 'A' });
+
+const ENTRIES = [
+  entry2('a', 'a', 'row 1, column 1'),
+  entry2('b', 'b', 'row 1, column 2'),
+  entry2('c', 'c', 'row 2, column 1'),
+  entry2('d', 'd', 'row 2, column 2'),
+];
+
+const traceRule = rule(
+  'tr A = a + d',
+  '{tr} = {a} + {d}',
+  ['tr', 'a', 'd'],
+  (v) => v.tr! - v.a! - v.d!,
+  {
+    tr: [(v) => v.a! + v.d!, '{a} + {d}', 'The trace is the sum of the diagonal entries.'],
+  },
+);
+
+const detRule = rule(
+  'det A = ad − bc',
+  '{D} = {a} × {d} − {b} × {c}',
+  ['D', 'a', 'b', 'c', 'd'],
+  (v) => v.D! - (v.a! * v.d! - v.b! * v.c!),
+  {
+    D: [
+      (v) => v.a! * v.d! - v.b! * v.c!,
+      '{a} × {d} − {b} × {c}',
+      'Down the main diagonal, minus the other diagonal.',
+    ],
+  },
+);
+
+const discRule = rule(
+  'Δ = tr² − 4 det',
+  '{disc} = {tr}² − 4 × {D}',
+  ['disc', 'tr', 'D'],
+  (v) => v.disc! - (v.tr! ** 2 - 4 * v.D!),
+  {
+    disc: [
+      (v) => v.tr! ** 2 - 4 * v.D!,
+      '{tr}² − 4 × {D}',
+      'The discriminant of λ² − (tr A)λ + det A = 0 says whether the eigenvalues are real.',
+    ],
+  },
+);
+
+const traceVars = [
+  num('tr', 'tr A', 'Trace of A', undefined, -2000, 2000, { derived: true }),
+  num('D', 'det A', 'Determinant of A', undefined, -2e6, 2e6, { derived: true }),
+  num('disc', 'Δ', 'Discriminant tr² − 4 det', undefined, -1e7, 1e7, { derived: true }),
+];
+
+/** linear-algebra#3 main: eigenvalues and eigenvectors, drawn as the lines A keeps. */
+function eigenDemo(
+  id: string,
+  title: string,
+  use: string,
+  [a, b, c, d]: [number, number, number, number],
+) {
+  const tr = a + d;
+  const D = a * d - b * c;
+  const disc = tr ** 2 - 4 * D;
+  const l1 = (tr + Math.sqrt(disc)) / 2;
+  const l2 = (tr - Math.sqrt(disc)) / 2;
+  const lambdaRule = (l: string, sign: 1 | -1) =>
+    rule(
+      `${l} = (tr ${sign > 0 ? '+' : '−'} √Δ) ÷ 2`,
+      `{${l}} = ({tr} ${sign > 0 ? '+' : '−'} √{disc}) ÷ 2`,
+      [l, 'tr', 'disc'],
+      (v) => 2 * v[l]! - (v.tr! + sign * Math.sqrt(Math.max(0, v.disc!))),
+      {
+        [l]: [
+          (v) => (v.disc! < 0 ? undefined : (v.tr! + sign * Math.sqrt(v.disc!)) / 2),
+          `({tr} ${sign > 0 ? '+' : '−'} √{disc}) ÷ 2`,
+          'The quadratic formula on λ² − (tr A)λ + det A = 0.',
+        ],
+      },
+    );
+  const slopeRule = (p: string, l: string) =>
+    rule(
+      `${p} = (${l} − a) ÷ b`,
+      `{${p}} = ({${l}} − {a}) ÷ {b}`,
+      [p, l, 'a', 'b'],
+      (v) => v[p]! * v.b! - (v[l]! - v.a!),
+      {
+        [p]: [
+          (v) => div(v[l]! - v.a!, v.b!),
+          `({${l}} − {a}) ÷ {b}`,
+          'Row 1 of (A − λI)v = 0 is (a − λ)x + by = 0: with x = 1, y = (λ − a) ÷ b.',
+        ],
+      },
+    );
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Av = λv means A only stretches v: the line along v maps onto itself.',
+      'λ² − (tr A)λ + det A = 0; real eigenvalues need a discriminant of 0 or more.',
+      'Each eigenvector is written v = (1, p), so b must not be 0.',
+    ],
+    variables: [
+      ...ENTRIES,
+      ...traceVars,
+      num('l1', 'λ₁', 'Larger eigenvalue', undefined, -2000, 2000, { derived: true }),
+      num('l2', 'λ₂', 'Smaller eigenvalue', undefined, -2000, 2000, { derived: true }),
+      num('p1', 'p₁', 'Slope of v₁ = (1, p₁)', undefined, -1e6, 1e6, { derived: true }),
+      num('p2', 'p₂', 'Slope of v₂ = (1, p₂)', undefined, -1e6, 1e6, { derived: true }),
+    ],
+    rules: [
+      traceRule,
+      detRule,
+      discRule,
+      lambdaRule('l1', 1),
+      lambdaRule('l2', -1),
+      slopeRule('p1', 'l1'),
+      slopeRule('p2', 'l2'),
+    ],
+    example: { a, b, c, d, tr, D, disc, l1, l2, p1: (l1 - a) / b, p2: (l2 - a) / b },
+    startWith: ['a', 'b', 'c', 'd'],
+    equation: '[[{a}, {b}; {c}, {d}]] [[1; {p1}]] = {l1} [[1; {p1}]]',
+    representation: {
+      kind: 'transformation',
+      figure: UNIT_SQUARE,
+      move: 'matrix',
+      matrix: [
+        ['a', 'b'],
+        ['c', 'd'],
+      ],
+      eigen: { values: ['l1', 'l2'] },
+      det: 'D',
+    },
+  });
+}
+
+const eigenMain = eigenDemo(
+  'g.he-transformation-matrix-eigen',
+  'Eigenvectors: the lines a matrix keeps',
+  'Use this for “Find the eigenvalues and eigenvectors of [[4, 1], [2, 3]].”',
+  [4, 1, 2, 3],
+);
+
+const eigenShear = eigenDemo(
+  'g.he-transformation-matrix-shear',
+  'A shear: one repeated eigenvalue, one line',
+  'Use this for “Find the eigenvalues and eigenvectors of the shear [[1, 1], [0, 1]].”',
+  [1, 1, 0, 1],
+);
+
+/** linear-algebra#2~volume in 2-D: the unit square's image has area |det A|. */
+const areaDemo = page({
+  id: 'g.he-transformation-matrix-area',
+  title: 'det A as an area scale',
+  use: 'Use this for “The matrix [[3, 1], [1, 2]] maps the unit square to a parallelogram. Find its area.”',
+  assumptions: [
+    'A sends (1, 0) and (0, 1) to its columns, so the unit square goes to the parallelogram on them.',
+    'Every area is multiplied by |det A|; a negative det A also flips the figure over.',
+    'The unit circle goes to an ellipse with area π|det A|.',
+  ],
+  variables: [
+    ...ENTRIES,
+    num('D', 'det A', 'Determinant of A', undefined, -2e6, 2e6, { derived: true }),
+    num('S', 'S', 'Area of the image square', undefined, 0, 2e6, { derived: true }),
+  ],
+  rules: [
+    detRule,
+    rule('S = |det A|', '{S} = |{D}|', ['S', 'D'], (v) => v.S! - Math.abs(v.D!), {
+      S: [
+        (v) => Math.abs(v.D!),
+        '|{D}|',
+        'The unit square has area 1, so the image has area |det A| × 1.',
+      ],
+    }),
+  ],
+  example: { a: 3, b: 1, c: 1, d: 2, D: 5, S: 5 },
+  startWith: ['a', 'b', 'c', 'd'],
+  equation: 'det [[{a}, {b}; {c}, {d}]] = {D}',
+  representation: {
+    kind: 'transformation',
+    figure: UNIT_SQUARE,
+    move: 'matrix',
+    matrix: [
+      ['a', 'b'],
+      ['c', 'd'],
+    ],
+    det: 'D',
+    area: 'S',
+  },
+});
+
+/** linear-algebra#3~complex at the edge: no real eigenvector, a turn with a stretch. */
+const eigenComplex = page({
+  id: 'g.he-transformation-matrix-complex',
+  title: 'No real eigenvectors: a turn and a stretch',
+  use: 'Use this for “Does [[1, −1], [1, 1]] have real eigenvalues? What does it do to the plane?”',
+  assumptions: [
+    'λ² − (tr A)λ + det A = 0 has no real roots when tr² − 4 det < 0.',
+    'Then no line through the origin maps onto itself: A turns every direction.',
+    '[[a, −b], [b, a]] turns by θ with tan θ = b ÷ a and stretches by √(a² + b²).',
+  ],
+  variables: [...ENTRIES, ...traceVars],
+  rules: [traceRule, detRule, discRule],
+  example: { a: 1, b: -1, c: 1, d: 1, tr: 2, D: 2, disc: -4 },
+  startWith: ['a', 'b', 'c', 'd'],
+  equation: 'λ² − {tr}λ + {D} = 0',
+  representation: {
+    kind: 'transformation',
+    figure: UNIT_SQUARE,
+    move: 'matrix',
+    matrix: [
+      ['a', 'b'],
+      ['c', 'd'],
+    ],
+    eigen: true,
+    det: 'D',
+  },
+});
+
 export const HE4A_GALLERY_MODULES: ModuleDef[] = [
   inverse3,
   inverse4,
@@ -468,6 +698,10 @@ export const HE4A_GALLERY_MODULES: ModuleDef[] = [
   routhLimit,
   routhCount,
   routhQuartic,
+  eigenMain,
+  eigenShear,
+  areaDemo,
+  eigenComplex,
 ];
 
 export const HE4A_GALLERY_LAYOUTS: LayoutDef[] = [];

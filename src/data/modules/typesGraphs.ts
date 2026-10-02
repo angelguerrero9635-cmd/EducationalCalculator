@@ -7,6 +7,7 @@
 import type { LineSystemHs2a, ShadeSign } from './typesHs2a';
 import type { LineSystemHs3b, TransformationHs3b } from './typesHs3b';
 import { secondMoveVars, type SecondMove } from './typesHsf';
+import { matrixMoveVars, type MatrixMoveHe4a } from './typesHe4a'; // HC95
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -152,6 +153,7 @@ export type TransformationSpec = {
     | { move: 'reflect'; mirror: Mirror; slope?: string }
     | { move: 'rotate'; angle: NumOrVar; center?: [NumOrVar, NumOrVar] }
     | { move: 'dilate'; factor: NumOrVar; center?: [NumOrVar, NumOrVar] }
+    | MatrixMoveHe4a // HC95
   );
 
 /** The variable ids a spec above names (for the module tests). */
@@ -180,6 +182,7 @@ export function graphSpecVars(
     case 'mapping':
       return ids(...r.pairs.flatMap((p) => [p.x, p.y]));
     case 'transformation': {
+      if (r.move === 'matrix') return [...ids(...r.figure.flat()), ...matrixMoveVars(r)]; // HC95
       const move =
         r.move === 'translate'
           ? [r.right, r.up]

@@ -21,7 +21,11 @@ export interface MoveValues {
 const clean = (x: number) => Number(x.toFixed(9));
 
 /** Where a point goes under the move (the picture and the harness agree on this). */
-export function imageOf(p: Pt, move: TransformationSpec['move'], v: MoveValues): Pt {
+export function imageOf(
+  p: Pt,
+  move: Exclude<TransformationSpec['move'], 'matrix'>,
+  v: MoveValues,
+): Pt {
   const [x, y] = p;
   const [cx, cy] = v.center;
   switch (move) {

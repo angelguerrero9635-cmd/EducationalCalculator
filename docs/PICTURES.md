@@ -361,6 +361,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `scale`            | `before`; `hanging`                      | two scales, before and after, gas bubbles labelled; a spring scale in N       |
 | `transformation`   | `then`, `image2`; `symmetry`             | a second move from A′ (dashed) to A″; lines of symmetry and the turn order    |
 | `transformation`   | `move: 'reflect'`, `slope`               | a value 1 or −1 picks the mirror y = x or y = −x (H105)                       |
+| `transformation`   | `move: 'matrix'`, `eigen`, `det`, `area` | unit square and circle under A; eigen lines, v and Av = λv; area (HC95)       |
 | `scaleCopy`        | `center`; `splitter`                     | a dilation from any center with rays; DE ∥ BC cutting a triangle's sides      |
 | `coordinatePlane`  | `midpoint`, `partition`; `polygon`       | M with equal halves ticked; P at m : n; side slopes, parallel and right marks |
 | `circle`           | `sector`; `views`: `sector`, `radian`    | a sector by its angle (° or radians), arc and area; radius-long arcs around   |

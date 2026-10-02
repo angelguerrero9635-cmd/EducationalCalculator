@@ -125,3 +125,58 @@ export function signChanges(rows: RouthRow[]): number {
   for (let i = 1; i < col.length; i++) if (Math.sign(col[i]!) !== Math.sign(col[i - 1]!)) changes++;
   return changes;
 }
+
+// ─── HC95: a 2 × 2 matrix's eigenvalues and eigenvectors ─────────────────────
+
+export type M2 = [number, number, number, number];
+
+/**
+ * λ² − (tr A)λ + det A = 0: the real eigenvalues (larger first) with a direction for each, or
+ * none when the discriminant is negative. `all` marks A = λI (every direction stretches by λ).
+ */
+export function eigen2([a, b, c, d]: M2) {
+  const tr = a + d;
+  const det = a * d - b * c;
+  const disc = tr * tr - 4 * det;
+  const scale = Math.max(1, Math.abs(tr), Math.abs(det));
+  if (disc < -1e-9 * scale * scale) return { tr, det, disc, pairs: [], all: false };
+  const r = Math.sqrt(Math.max(0, disc));
+  const ls = r < 1e-9 * scale ? [tr / 2] : [(tr + r) / 2, (tr - r) / 2];
+  const all = ls.length === 1 && Math.abs(b) < 1e-12 && Math.abs(c) < 1e-12;
+  const dir = (l: number): [number, number] => {
+    // A row of A − λI that isn't 0 gives the direction square to it.
+    if (Math.abs(b) > 1e-12 || Math.abs(l - a) > 1e-12) return [b, l - a];
+    if (Math.abs(c) > 1e-12 || Math.abs(l - d) > 1e-12) return [l - d, c];
+    return [1, 0];
+  };
+  const pairs = all
+    ? [
+        { lambda: ls[0]!, v: [1, 0] as [number, number] },
+        { lambda: ls[0]!, v: [0, 1] as [number, number] },
+      ]
+    : ls.map((l) => ({ lambda: l, v: dir(l) }));
+  return { tr, det, disc, pairs, all };
+}
+
+/** A direction in its simplest whole form when it has one ((2, −4) → (1, −2)), else unit length. */
+export function niceDirection([x, y]: [number, number]): [number, number] {
+  const whole = (t: number) => Math.abs(t - Math.round(t)) < 1e-9;
+  if (whole(x) && whole(y)) {
+    let [p, q] = [Math.abs(Math.round(x)), Math.abs(Math.round(y))];
+    while (q) [p, q] = [q, p % q];
+    const s = (x < 0 || (x === 0 && y < 0) ? -1 : 1) / (p || 1);
+    return [Math.round(x * s) || 0, Math.round(y * s) || 0];
+  }
+  const n = Math.hypot(x, y) || 1;
+  const s = x < 0 || (Math.abs(x) < 1e-12 && y < 0) ? -1 : 1;
+  return [(s * x) / n, (s * y) / n];
+}
+
+/** A polygon's area (shoelace). */
+export const polygonArea = (pts: [number, number][]) =>
+  Math.abs(
+    pts.reduce((s, [x, y], i) => {
+      const [u, v] = pts[(i + 1) % pts.length]!;
+      return s + x * v - u * y;
+    }, 0),
+  ) / 2;
