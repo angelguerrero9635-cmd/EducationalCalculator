@@ -57,6 +57,7 @@ import type { He2cSpec } from './typesHe2c';
 import type { He3hSpec } from './typesHe3h';
 import type { CurvedSolidHe3c, RectangleHe3c, RightTriangleHe3c } from './typesHe3c'; // HC54, HC67
 import type { He3gSpec } from './typesHe3g';
+import type { He3jSpec } from './typesHe3j';
 import type { BeamSpec } from './typesHe1a';
 import type { BodeSpec } from './typesHe2a';
 import type { He2hSpec } from './typesHe2h';
@@ -1218,6 +1219,8 @@ export type Representation =
   | BeamSpec
   /** College round 2, group A: the Bode plot (HC22; `typesHe2a.ts`). */
   | BodeSpec
+  /** College round 3, group J: HC60, HC61, HC88, HC89, HC90 (`typesHe3j.ts`). */
+  | He3jSpec
   /** College round 2, group H: HC24 wing, HC30 duct, HC31 supersonicFlow (`typesHe2h.ts`). */
   | He2hSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */

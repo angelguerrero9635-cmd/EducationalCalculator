@@ -107,6 +107,7 @@ import {
 } from './picturesHe3e';
 import { he3cIssues } from './picturesHe3c';
 import { he3dIssues } from './picturesHe3d';
+import { he3jIssues } from './picturesHe3j';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2326,6 +2327,10 @@ export function repIssues(
       break;
     case 'streamChannel':
     case 'reserve':
+      if ('mode' in rep) {
+        out.push(...he3jIssues(rep, siOf(val, byId))); // HC88
+        break;
+      }
       out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'geologicClock':
@@ -2460,6 +2465,12 @@ export function repIssues(
       break;
     case 'phaseSpace':
       out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC69
+      break;
+    case 'roadCurve':
+    case 'connection':
+    case 'hydrograph':
+    case 'blockDiagram':
+      out.push(...he3jIssues(rep, siOf(val, byId))); // HC60, HC61, HC89, HC90
       break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21

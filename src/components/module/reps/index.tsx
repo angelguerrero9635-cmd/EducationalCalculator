@@ -201,6 +201,11 @@ import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
+import { StreamChannelHe } from './StreamChannelHe';
+import { RoadCurve } from './RoadCurve';
+import { BlockDiagram } from './BlockDiagram';
+import { Hydrograph } from './Hydrograph';
+import { Connection } from './Connection';
 import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
 import { InstrumentTrace } from './InstrumentTrace';
@@ -390,6 +395,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <HslPicture spec={spec} calc={calc} />;
     case 'streamChannel':
     case 'reserve':
+      if ('mode' in spec) return <StreamChannelHe spec={spec} calc={calc} />; // HC88
       return <Hs2fPicture spec={spec} calc={calc} />;
     case 'geologicClock':
     case 'coralSection':
@@ -403,6 +409,14 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <ControlVolume spec={spec} calc={calc} />;
     case 'bode':
       return <Bode spec={spec} calc={calc} />; // HC22
+    case 'roadCurve':
+      return <RoadCurve spec={spec} calc={calc} />; // HC60
+    case 'blockDiagram':
+      return <BlockDiagram spec={spec} calc={calc} />; // HC90
+    case 'hydrograph':
+      return <Hydrograph spec={spec} calc={calc} />; // HC89
+    case 'connection':
+      return <Connection spec={spec} calc={calc} />; // HC61
     case 'velocityProfile':
       return <VelocityProfile spec={spec} calc={calc} />;
     case 'potentialWell':
