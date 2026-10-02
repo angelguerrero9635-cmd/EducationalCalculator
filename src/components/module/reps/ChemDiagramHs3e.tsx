@@ -6,6 +6,7 @@ import type { ChemDiagramHs3eSpec } from '@/data/modules/typesHs3e';
 
 import type { Calculator } from '../useCalculator';
 import { ChemCell } from './ChemCell';
+import { ChemCellHe3f } from './ChemCellHe3f';
 import { ChemPhase } from './ChemPhase';
 import { ChemPhaseSubstance } from './ChemPhaseSubstance';
 import { ChemRate } from './ChemRate';
@@ -20,6 +21,7 @@ export function ChemDiagramHs3e({ spec, calc }: { spec: ChemDiagramHs3eSpec; cal
       if (!('times' in spec)) return <ChemRateHe2k spec={spec} calc={calc} />;
       return <ChemRate spec={spec} calc={calc} />;
     case 'cell':
+      if (!('cathode' in spec)) return <ChemCellHe3f spec={spec} calc={calc} />;
       return <ChemCell spec={spec} calc={calc} />;
   }
 }

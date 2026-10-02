@@ -85,6 +85,7 @@ export function chemDiagramHs3eIssues(rep: ChemDiagramHs3eSpec, num: Num): strin
       break;
     }
     case 'cell': {
+      if (!('cathode' in rep)) break;
       const [ec, ea] = [num(rep.cathode), num(rep.anode)];
       for (const [e, what] of [
         [ec, 'cathode'],

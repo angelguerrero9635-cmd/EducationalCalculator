@@ -7,6 +7,14 @@
 import type { NumOrVar } from './typesGraphs';
 import { ladderVars, type EnergyLadderSpec } from './typesHs2d';
 import { gasMixtureVars, type GasMixture } from './typesHs3e';
+import {
+  gibbsVars,
+  phScaleHe3fVars,
+  polyproticVars,
+  type EquilibriumGibbsSpec,
+  type PhPolyprotic,
+  type PhScaleHe3fSpec,
+} from './typesHe3f';
 
 // ─── H51 gasPiston ───────────────────────────────────────────────────────────
 
@@ -230,6 +238,8 @@ export type PhScaleSpec =
       equivalence?: NumOrVar;
       keep?: string[];
       fixed?: boolean;
+      /** College (HC71): a polyprotic acid (`typesHe3f.ts`). */
+      polyprotic?: PhPolyprotic;
     };
 
 // ─── H56 electrochemicalCell (explore figure) ───────────────────────────────
@@ -290,7 +300,15 @@ export type DecayChartSpec =
   | { kind: 'decayChart'; mode: 'equation'; left: Nuclide[]; right: Nuclide[] };
 
 export type HsjSpec =
-  GasPistonSpec | EnergyProfileSpec | EquilibriumChartSpec | PhScaleSpec | DecayChartSpec;
+  | GasPistonSpec
+  | EnergyProfileSpec
+  | EquilibriumChartSpec
+  | PhScaleSpec
+  | DecayChartSpec
+  /** College (HC58): G against the extent (`typesHe3f.ts`). */
+  | EquilibriumGibbsSpec
+  /** College (HC71, HC73): buffer, amino acid, pKₐ ladder (`typesHe3f.ts`). */
+  | PhScaleHe3fSpec;
 
 /** Every variable id a group J picture refers to (for the module tests). */
 export function hsjSpecVars(r: HsjSpec): string[] {
@@ -327,6 +345,7 @@ export function hsjSpecVars(r: HsjSpec): string[] {
           )
         : ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst);
     case 'equilibriumChart':
+      if ('gibbs' in r) return gibbsVars(r);
       return ids(
         ...r.species.flatMap((s) => [s.start, s.eq]),
         r.K,
@@ -336,15 +355,20 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.stress?.Q,
       );
     case 'phScale':
+      if (r.mode === 'buffer' || r.mode === 'aminoAcid' || r.mode === 'pka')
+        return phScaleHe3fVars(r);
       return r.mode === 'titration'
-        ? ids(
-            r.acid.concentration,
-            r.acid.volume,
-            r.acid.Ka,
-            r.base.concentration,
-            r.added,
-            r.equivalence,
-          )
+        ? [
+            ...ids(
+              r.acid.concentration,
+              r.acid.volume,
+              r.acid.Ka,
+              r.base.concentration,
+              r.added,
+              r.equivalence,
+            ),
+            ...polyproticVars(r.polyprotic),
+          ]
         : ids(r.pH, r.hydrogen, r.hydroxide, r.pOH);
     case 'decayChart': {
       if (r.mode !== 'equation') return ids(r.halfLife, r.time, r.start, r.left, r.halves);

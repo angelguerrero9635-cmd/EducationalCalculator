@@ -385,6 +385,12 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `chemDiagram`      | `mode: 'phase'`, `substance`             | any substance, log P: Clausius–Clapeyron vapor curve, F = C − P + 2 (HC8)     |
 | `chemDiagram`      | `rate`: `integrated`, `arrhenius`        | order 0/1/2 with half-lives and ln[A] or 1/[A] line; ln k vs 1/T (HC34)       |
 | `chemDiagram`      | `mode: 'rate'`, `consecutive`            | A → B → C, B's peak at tₘₐₓ, the sum [A]₀ dotted; `notation: 'C'` (HC34)      |
+| `chemDiagram`      | `cell`: `metals`, `concentrations`       | ion dots by M, meter E; E° → E shift −(RT ÷ nF) ln Q, Q; one metal (HC56)     |
+| `chemDiagram`      | `mode: 'cell'`, `electrolysis`           | DC supply, plating cell, e⁻ counted: Q = It, Q ÷ F, ÷ z, m = nM (HC56)        |
+| `equilibriumChart` | `mode: 'gibbs'`, `gibbs`                 | G against ξ, minimum at K, Q's tangent = ΔG; ΔG against log Q below (HC58)    |
+| `phScale`          | titration `polyprotic: { pKa }`          | 2–3 equivalence points 1 : 2 : 3, each half-way point at its pKₐ (HC71)       |
+| `phScale`          | `mode: 'buffer'`, `'aminoAcid'`          | HH curve, pKₐ ± 1 band, HA and A⁻ bars; amino acid curve and pI (HC71)        |
+| `phScale`          | `mode: 'pka'`                            | pKₐ ladder −10 to 50, two acids lit, arrow to the weaker; log K (HC73)        |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |

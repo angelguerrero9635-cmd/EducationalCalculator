@@ -119,6 +119,7 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'equilibriumChart': {
+      if ('gibbs' in rep) break;
       const species = rep.species.map((s) => ({
         coef: s.coef,
         sign: s.side === 'product' ? (1 as const) : (-1 as const),
@@ -160,6 +161,8 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'phScale': {
+      if (rep.mode === 'buffer' || rep.mode === 'aminoAcid' || rep.mode === 'pka') break;
+      if (rep.mode === 'titration' && rep.polyprotic) break;
       if (rep.mode === 'titration') {
         const [ca, va, cb] = [
           num(rep.acid.concentration),

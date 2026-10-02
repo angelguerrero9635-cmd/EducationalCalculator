@@ -78,6 +78,7 @@ import { skeletalIssues } from './picturesHe1c';
 import { soilProfileIssues, surveyIssues, trussIssues } from './picturesHe2i';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
+import { he3fIssues } from './picturesHe3f';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import { he2jIssues } from './picturesHe2j';
@@ -2244,6 +2245,7 @@ export function repIssues(
     case 'phScale':
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
+      out.push(...he3fIssues(rep, val, byId));
       if (rep.kind === 'gasPiston') out.push(...gasEnergyIssues(rep, siOf(val, byId)));
       if (rep.kind === 'gasPiston')
         out.push(...gasMixtureIssues(rep.mixture, (x) => (x === undefined ? undefined : val(x))));
@@ -2251,6 +2253,7 @@ export function repIssues(
     case 'chemDiagram':
       out.push(...chemDiagramIssues(rep, (id) => val(id)));
       if (rep.mode === 'phase') out.push(...phaseSubstanceIssues(rep.substance, val));
+      out.push(...he3fIssues(rep, val, byId));
       if (rep.mode === 'rate' && !('times' in rep))
         out.push(
           ...chemRateHe2kIssues(rep, val, (x) =>
