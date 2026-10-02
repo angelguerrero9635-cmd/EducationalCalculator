@@ -27,13 +27,8 @@
           "n": "1",
           "title": "lab6_1",
           "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab6_1/",
-          "topics": [
-            "he.earth-science.hydrology#1",
-            "he.geography.gis#2"
-          ],
-          "examples": [
-            "flow direction, flow accumulation and watershed from a DEM"
-          ],
+          "topics": ["he.earth-science.hydrology#1", "he.geography.gis#2"],
+          "examples": ["flow direction, flow accumulation and watershed from a DEM"],
           "lessons": [],
           "notes": "1 question record(s): OCW-1.963-LAB6"
         },
@@ -41,10 +36,7 @@
           "n": "2",
           "title": "lab1_1",
           "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab1_1/",
-          "topics": [
-            "he.geography.gis#2",
-            "he.geography.remote-sensing#2"
-          ],
+          "topics": ["he.geography.gis#2", "he.geography.remote-sensing#2"],
           "examples": [
             "contours from a DEM at a set interval; find wetlands from imagery, DEM and contours"
           ],
@@ -55,12 +47,8 @@
           "n": "3",
           "title": "lab3_1",
           "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab3_1/",
-          "topics": [
-            "he.geography.cartography#3"
-          ],
-          "examples": [
-            "assemble a finished map: scale bar, legend, north arrow, title, neatline"
-          ],
+          "topics": ["he.geography.cartography#3"],
+          "examples": ["assemble a finished map: scale bar, legend, north arrow, title, neatline"],
           "lessons": [],
           "notes": "1 question record(s): OCW-1.963-LAB3"
         },
@@ -68,9 +56,7 @@
           "n": "4",
           "title": "lab4_1",
           "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab4_1/",
-          "topics": [
-            "he.geography.cartography#0"
-          ],
+          "topics": ["he.geography.cartography#0"],
           "examples": [
             "re-project data from geographic coordinates to an equal-area projection; define a missing projection"
           ],
@@ -81,12 +67,8 @@
           "n": "5",
           "title": "lab5_1",
           "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab5_1/",
-          "topics": [
-            "he.geography.gis#2"
-          ],
-          "examples": [
-            "DEM surface analysis: contours, hillshade, slope"
-          ],
+          "topics": ["he.geography.gis#2"],
+          "examples": ["DEM surface analysis: contours, hillshade, slope"],
           "lessons": [],
           "notes": "1 question record(s): OCW-1.963-LAB5"
         },
@@ -94,9 +76,7 @@
           "n": "6",
           "title": "lab7_1",
           "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab7_1/",
-          "topics": [
-            "he.geography.gis#2"
-          ],
+          "topics": ["he.geography.gis#2"],
           "examples": [
             "site selection by buffering rail lines and selecting zoning and land-use classes (vector overlay)"
           ],
@@ -107,9 +87,7 @@
           "n": "7",
           "title": "lab8_1",
           "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab8_1/",
-          "topics": [
-            "he.geography.gis#2"
-          ],
+          "topics": ["he.geography.gis#2"],
           "examples": [
             "least-cost path across a cost-distance raster built from slope and land cover"
           ],

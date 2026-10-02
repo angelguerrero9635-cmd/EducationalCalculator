@@ -44,9 +44,7 @@
           "n": "2",
           "title": "problem_set_2",
           "url": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/resources/problem_set_2/",
-          "topics": [
-            "he.earth-science.geophysics#0"
-          ],
+          "topics": ["he.earth-science.geophysics#0"],
           "examples": [
             "reflection and transmission coefficients against incidence angle at an interface (Zoeppritz)"
           ],
@@ -57,9 +55,7 @@
           "n": "3",
           "title": "problem_set_3",
           "url": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/resources/problem_set_3/",
-          "topics": [
-            "he.earth-science.geophysics#0"
-          ],
+          "topics": ["he.earth-science.geophysics#0"],
           "examples": [
             "travel time for a linear velocity gradient: circular rays; T against distance"
           ],
@@ -70,10 +66,7 @@
           "n": "4",
           "title": "problem_set_4",
           "url": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/resources/problem_set_4/",
-          "topics": [
-            "he.earth-science.geophysics#3",
-            "he.earth-science.geophysics#0"
-          ],
+          "topics": ["he.earth-science.geophysics#3", "he.earth-science.geophysics#0"],
           "examples": [
             "group and phase velocity of Rayleigh waves from peak and trough times at two stations",
             "receiver function: Ps − P delay for a converter at depth; depth from a measured delay"

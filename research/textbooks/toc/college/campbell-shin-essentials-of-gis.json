@@ -27,9 +27,7 @@
           "n": "1",
           "title": "Introduction",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/01%3A_Introduction",
-          "topics": [
-            "he.geography.gis#0"
-          ],
+          "topics": ["he.geography.gis#0"],
           "lessons": [
             {
               "n": "1.01",
@@ -79,9 +77,7 @@
           "n": "3",
           "title": "Data Information and Where to Find Them",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/03%3A_Data_Information_and_Where_to_Find_Them",
-          "topics": [
-            "he.geography.gis#0"
-          ],
+          "topics": ["he.geography.gis#0"],
           "lessons": [
             {
               "n": "3.01",
@@ -104,10 +100,7 @@
           "n": "4",
           "title": "Data Models for GIS",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/04%3A_Data_Models_for_GIS",
-          "topics": [
-            "he.geography.gis#0",
-            "he.geography.remote-sensing#0"
-          ],
+          "topics": ["he.geography.gis#0", "he.geography.remote-sensing#0"],
           "lessons": [
             {
               "n": "4.01",
@@ -130,9 +123,7 @@
           "n": "5",
           "title": "Geospatial Data Management",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/05%3A_Geospatial_Data_Management",
-          "topics": [
-            "he.geography.gis#0"
-          ],
+          "topics": ["he.geography.gis#0"],
           "lessons": [
             {
               "n": "5.01",
@@ -160,10 +151,7 @@
           "n": "6",
           "title": "Data Characteristics and Visualization",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/06%3A_Data_Characteristics_and_Visualization",
-          "topics": [
-            "he.geography.cartography#2",
-            "he.geography.gis#3"
-          ],
+          "topics": ["he.geography.cartography#2", "he.geography.gis#3"],
           "lessons": [
             {
               "n": "6.01",
@@ -186,10 +174,7 @@
           "n": "7",
           "title": "Geospatial Analysis I- Vector Operations",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/07%3A_Geospatial_Analysis_I-_Vector_Operations",
-          "topics": [
-            "he.geography.gis#1",
-            "he.geography.gis#2"
-          ],
+          "topics": ["he.geography.gis#1", "he.geography.gis#2"],
           "lessons": [
             {
               "n": "7.01",
@@ -207,10 +192,7 @@
           "n": "8",
           "title": "Geospatial Analysis II- Raster Data",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/08%3A_Geospatial_Analysis_II-_Raster_Data",
-          "topics": [
-            "he.geography.gis#2",
-            "he.geography.gis#3"
-          ],
+          "topics": ["he.geography.gis#2", "he.geography.gis#3"],
           "lessons": [
             {
               "n": "8.01",
@@ -238,9 +220,7 @@
           "n": "9",
           "title": "Cartographic Principles",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Essentials_of_Geographic_Information_Systems_(Campbell_and_Shin)/09%3A_Cartographic_Principles",
-          "topics": [
-            "he.geography.cartography#3"
-          ],
+          "topics": ["he.geography.cartography#3"],
           "lessons": [
             {
               "n": "9.01",

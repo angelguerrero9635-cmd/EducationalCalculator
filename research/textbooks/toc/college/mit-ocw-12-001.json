@@ -43,9 +43,7 @@
           "n": "2",
           "title": "mit12_001f13_lab4-platete-in",
           "url": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/resources/mit12_001f13_lab4-platete-in/",
-          "topics": [
-            "he.earth-science.physical-geology#1"
-          ],
+          "topics": ["he.earth-science.physical-geology#1"],
           "examples": [
             "classify plate boundaries from maps of quakes, volcanoes, topography or seafloor age"
           ],
@@ -56,12 +54,8 @@
           "n": "3",
           "title": "mit12_001f13_lab5parti",
           "url": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/resources/mit12_001f13_lab5parti/",
-          "topics": [
-            "he.earth-science.geophysics#0"
-          ],
-          "examples": [
-            "S-wave speed against stretch on a slinky; fit the power n in β = (σ/ρ)^n"
-          ],
+          "topics": ["he.earth-science.geophysics#0"],
+          "examples": ["S-wave speed against stretch on a slinky; fit the power n in β = (σ/ρ)^n"],
           "lessons": [],
           "notes": "1 question record(s): OCW-12.001-LAB5-Q1"
         },
@@ -69,9 +63,7 @@
           "n": "4",
           "title": "mit12_001f13_lab7-riv-instr",
           "url": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/resources/mit12_001f13_lab7-riv-instr/",
-          "topics": [
-            "he.earth-science.hydrology#3"
-          ],
+          "topics": ["he.earth-science.hydrology#3"],
           "examples": [
             "chance of a given flood in the next N years from its recurrence interval",
             "flood frequency from a gauge's annual peaks: rank, recurrence interval RI = (n + 1)/r, plot and read the 100-year flood"

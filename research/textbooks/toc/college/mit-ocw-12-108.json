@@ -27,10 +27,7 @@
           "n": "1",
           "title": "assignments",
           "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/assignments/",
-          "topics": [
-            "he.earth-science.mineralogy#1",
-            "he.earth-science.mineralogy#0"
-          ],
+          "topics": ["he.earth-science.mineralogy#1", "he.earth-science.mineralogy#0"],
           "examples": [
             "point group from combining a 4-bar axis with a perpendicular 2-fold",
             "radius ratio and preferred coordination of Si, Al, Mg, Ca, Na with oxygen; Pauling's second rule in spinel, olivine, perovskite",
@@ -43,9 +40,7 @@
           "n": "2",
           "title": "lab7_diffraction",
           "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab7_diffraction/",
-          "topics": [
-            "he.earth-science.mineralogy#0"
-          ],
+          "topics": ["he.earth-science.mineralogy#0"],
           "examples": [
             "d-spacing and 2θ of (100) and (201) in orthorhombic forsterite for Cu Kα",
             "d-spacings of three peaks from their 2θ (Bragg) for two candidate cells",
@@ -58,12 +53,8 @@
           "n": "3",
           "title": "lab12_hardness",
           "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab12_hardness/",
-          "topics": [
-            "he.earth-science.mineralogy#1"
-          ],
-          "examples": [
-            "Knoop hardness of the Mohs minerals and its plot against Mohs number"
-          ],
+          "topics": ["he.earth-science.mineralogy#1"],
+          "examples": ["Knoop hardness of the Mohs minerals and its plot against Mohs number"],
           "lessons": [],
           "notes": "1 question record(s): OCW-12.108-LAB12-Q1"
         },
@@ -71,10 +62,7 @@
           "n": "4",
           "title": "lab13_optics1",
           "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab13_optics1/",
-          "topics": [
-            "he.earth-science.mineralogy#2",
-            "he.earth-science.mineralogy#0"
-          ],
+          "topics": ["he.earth-science.mineralogy#2", "he.earth-science.mineralogy#0"],
           "examples": [
             "behaviour of quartz, feldspars and micas on rotating the stage in plane and crossed polars",
             "which crystal systems are isotropic, uniaxial or biaxial"
@@ -86,12 +74,8 @@
           "n": "5",
           "title": "lab16_optics4",
           "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab16_optics4/",
-          "topics": [
-            "he.earth-science.mineralogy#2"
-          ],
-          "examples": [
-            "optic sign and 2V of a biaxial mineral from an interference figure"
-          ],
+          "topics": ["he.earth-science.mineralogy#2"],
+          "examples": ["optic sign and 2V of a biaxial mineral from an interference figure"],
           "lessons": [],
           "notes": "1 question record(s): OCW-12.108-LAB16-Q1"
         },
@@ -99,9 +83,7 @@
           "n": "6",
           "title": "lab2_plane_sym",
           "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab2_plane_sym/",
-          "topics": [
-            "he.earth-science.mineralogy#0"
-          ],
+          "topics": ["he.earth-science.mineralogy#0"],
           "examples": [
             "multiplicity of general and special positions in plane group p4m",
             "point group of pictured objects; mirror angles that make 1m–6mm with a letter motif",

@@ -27,10 +27,7 @@
           "n": "1",
           "title": "11-205f19_pset1",
           "url": "https://ocw.mit.edu/courses/11-205-introduction-to-spatial-analysis-fall-2019/resources/11-205f19_pset1/",
-          "topics": [
-            "he.geography.cartography#2",
-            "he.geography.gis#2"
-          ],
+          "topics": ["he.geography.cartography#2", "he.geography.gis#2"],
           "examples": [
             "chart of speakers by language group with counts and percents",
             "choropleth of the percent of a group by block group (normalize counts by population) with an interpretation",

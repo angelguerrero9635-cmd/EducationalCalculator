@@ -27,9 +27,7 @@
           "n": "1",
           "title": "Atmospheric Basics",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#0"
-          ],
+          "topics": ["he.earth-science.meteorology#0"],
           "examples": [
             "wind components ↔ direction and speed",
             "pressure at a height (hypsometric)",
@@ -37,11 +35,7 @@
             "hydrostatic Δp",
             "thickness between levels"
           ],
-          "ranges": [
-            "T −40 to 50 °C",
-            "p 10–100 kPa",
-            "z to 30 km"
-          ],
+          "ranges": ["T −40 to 50 °C", "p 10–100 kPa", "z to 30 km"],
           "notation": [
             "pressure in kPa (not hPa)",
             "T in °C and K; virtual temperature T_v",
@@ -125,14 +119,8 @@
             "Wien and Stefan–Boltzmann",
             "kinematic fluxes"
           ],
-          "ranges": [
-            "latitudes 0–90°",
-            "T 200–6,000 K"
-          ],
-          "notation": [
-            "δ_s declination; Φ latitude",
-            "W·m⁻²; kinematic K·m·s⁻¹"
-          ],
+          "ranges": ["latitudes 0–90°", "T 200–6,000 K"],
+          "notation": ["δ_s declination; Φ latitude", "W·m⁻²; kinematic K·m·s⁻¹"],
           "lessons": [
             {
               "n": "2.1",
@@ -175,22 +163,14 @@
           "n": "3",
           "title": "Thermodynamics",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#1"
-          ],
+          "topics": ["he.earth-science.meteorology#1"],
           "examples": [
             "dry adiabat final temperature",
             "potential temperature from z or p",
             "first law with heat added"
           ],
-          "ranges": [
-            "Δz 0–12 km",
-            "p 20–100 kPa"
-          ],
-          "notation": [
-            "θ = T(P₀/P)^0.28571",
-            "Γ_d = 9.8 K/km"
-          ],
+          "ranges": ["Δz 0–12 km", "p 20–100 kPa"],
+          "notation": ["θ = T(P₀/P)^0.28571", "Γ_d = 9.8 K/km"],
           "lessons": [
             {
               "n": "3.1",
@@ -248,22 +228,15 @@
           "n": "4",
           "title": "Water Vapor",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#1"
-          ],
+          "topics": ["he.earth-science.meteorology#1"],
           "examples": [
             "e_s by Clausius–Clapeyron and Tetens",
             "RH, r, q, T_d, LCL",
             "psychrometer",
             "moist lapse rate"
           ],
-          "ranges": [
-            "T −30 to 45 °C"
-          ],
-          "notation": [
-            "e, e_s in kPa; r in g/kg",
-            "z_LCL = a(T − T_d), a = 0.125 km/°C"
-          ],
+          "ranges": ["T −30 to 45 °C"],
+          "notation": ["e, e_s in kPa; r in g/kg", "z_LCL = a(T − T_d), a = 0.125 km/°C"],
           "lessons": [
             {
               "n": "4.1",
@@ -311,16 +284,9 @@
           "n": "5",
           "title": "Atmospheric Stability",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#1"
-          ],
-          "examples": [
-            "stability on thermo diagrams",
-            "Brunt–Väisälä frequency"
-          ],
-          "notation": [
-            "skew-T, emagram, tephigram, Stüve"
-          ],
+          "topics": ["he.earth-science.meteorology#1"],
+          "examples": ["stability on thermo diagrams", "Brunt–Väisälä frequency"],
+          "notation": ["skew-T, emagram, tephigram, Stüve"],
           "lessons": [
             {
               "n": "5.1",
@@ -383,17 +349,13 @@
           "n": "6",
           "title": "Clouds",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#2"
-          ],
+          "topics": ["he.earth-science.meteorology#2"],
           "examples": [
             "moisture or cooling to saturate",
             "cloud genus from description",
             "fog formation"
           ],
-          "notation": [
-            "WMO and USA cloud symbols; oktas"
-          ],
+          "notation": ["WMO and USA cloud symbols; oktas"],
           "lessons": [
             {
               "n": "6.1",
@@ -451,18 +413,14 @@
           "n": "7",
           "title": "Precipitation Processes",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#2"
-          ],
+          "topics": ["he.earth-science.meteorology#2"],
           "examples": [
             "droplets per raindrop",
             "Köhler critical radius",
             "CCN activation",
             "rain-rate class"
           ],
-          "ranges": [
-            "radii 1 µm – 5 mm"
-          ],
+          "ranges": ["radii 1 µm – 5 mm"],
           "lessons": [
             {
               "n": "7.1",
@@ -520,22 +478,14 @@
           "n": "8",
           "title": "Satellites and Radar",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.geography.remote-sensing#0",
-            "he.earth-science.meteorology#2"
-          ],
+          "topics": ["he.geography.remote-sensing#0", "he.earth-science.meteorology#2"],
           "examples": [
             "blackbody radiance and brightness temperature",
             "satellite period from altitude",
             "radar range, Doppler, Z–R rain rate"
           ],
-          "ranges": [
-            "dBZ 10–60",
-            "PRF 50–1,600 s⁻¹"
-          ],
-          "notation": [
-            "Z in mm⁶/m³ and dBZ"
-          ],
+          "ranges": ["dBZ 10–60", "PRF 50–1,600 s⁻¹"],
+          "notation": ["Z in mm⁶/m³ and dBZ"],
           "lessons": [
             {
               "n": "8.1",
@@ -568,17 +518,13 @@
           "n": "9",
           "title": "Weather Reports and Map Analysis",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#3"
-          ],
+          "topics": ["he.earth-science.meteorology#3"],
           "examples": [
             "sea-level pressure reduction",
             "METAR and station plots",
             "isopleth analysis"
           ],
-          "notation": [
-            "station model"
-          ],
+          "notation": ["station model"],
           "lessons": [
             {
               "n": "9.1",
@@ -611,21 +557,14 @@
           "n": "10",
           "title": "Atmospheric Forces and Winds",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#3"
-          ],
+          "topics": ["he.earth-science.meteorology#3"],
           "examples": [
             "pressure-gradient and Coriolis force",
             "geostrophic and gradient wind",
             "boundary-layer wind"
           ],
-          "ranges": [
-            "f_c ≈ 10⁻⁴ s⁻¹",
-            "G 1–60 m/s"
-          ],
-          "notation": [
-            "f_c = 2Ω sin φ"
-          ],
+          "ranges": ["f_c ≈ 10⁻⁴ s⁻¹", "G 1–60 m/s"],
+          "notation": ["f_c = 2Ω sin φ"],
           "lessons": [
             {
               "n": "10.1",
@@ -693,9 +632,7 @@
           "n": "11",
           "title": "General Circulation",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.geography.climatology#1"
-          ],
+          "topics": ["he.geography.climatology#1"],
           "examples": [
             "insolation and net radiation by latitude",
             "thermal wind",
@@ -784,9 +721,7 @@
           "n": "12",
           "title": "Fronts and AirMasses",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#3"
-          ],
+          "topics": ["he.earth-science.meteorology#3"],
           "lessons": [
             {
               "n": "12.1",
@@ -849,9 +784,7 @@
           "n": "13",
           "title": "Extratropical Cyclones",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#3"
-          ],
+          "topics": ["he.earth-science.meteorology#3"],
           "lessons": [
             {
               "n": "13.1",
@@ -1238,9 +1171,7 @@
           "n": "20",
           "title": "Numerical Weather Prediction (NWP)",
           "url": "https://www.eoas.ubc.ca/books/Practical_Meteorology/",
-          "topics": [
-            "he.earth-science.meteorology#3"
-          ],
+          "topics": ["he.earth-science.meteorology#3"],
           "lessons": [
             {
               "n": "20.1",
@@ -1304,13 +1235,8 @@
             "one-layer greenhouse surface temperature",
             "feedback factor and gain"
           ],
-          "ranges": [
-            "albedo 0.1–0.7",
-            "forcing ~4 W/m²"
-          ],
-          "notation": [
-            "T_e; feedback f, gain G"
-          ],
+          "ranges": ["albedo 0.1–0.7", "forcing ~4 W/m²"],
+          "notation": ["T_e; feedback f, gain G"],
           "lessons": [
             {
               "n": "21.1",

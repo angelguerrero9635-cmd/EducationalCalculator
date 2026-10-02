@@ -36,13 +36,8 @@
             "share of geological time for an age range",
             "thickness from a deposition rate"
           ],
-          "ranges": [
-            "ages 65–4,570 Ma",
-            "rate 1 mm/yr over 30 Myr"
-          ],
-          "notation": [
-            "ka, Ma, Ga for ages"
-          ],
+          "ranges": ["ages 65–4,570 Ma", "rate 1 mm/yr over 30 Myr"],
+          "notation": ["ka, Ma, Ga for ages"],
           "lessons": [
             {
               "n": "1.01",
@@ -85,20 +80,14 @@
           "n": "2",
           "title": "Minerals",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/02%3A_Minerals",
-          "topics": [
-            "he.earth-science.physical-geology#0",
-            "he.earth-science.mineralogy#1"
-          ],
+          "topics": ["he.earth-science.physical-geology#0", "he.earth-science.mineralogy#1"],
           "examples": [
             "electron shells and ion charge",
             "mineral group from the anion",
             "Si : O ratio by counting tetrahedra",
             "ferromagnesian or not"
           ],
-          "notation": [
-            "formulas with (Mg,Fe) for substitution",
-            "SiO₄⁴⁻ tetrahedron"
-          ],
+          "notation": ["formulas with (Mg,Fe) for substitution", "SiO₄⁴⁻ tetrahedron"],
           "lessons": [
             {
               "n": "2.01",
@@ -141,19 +130,14 @@
           "n": "3",
           "title": "Intrusive Igneous Rocks",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/03%3A_Intrusive_Igneous_Rocks",
-          "topics": [
-            "he.earth-science.physical-geology#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#0"],
           "examples": [
             "rock-cycle time from step durations",
             "phenocrysts from Bowen's series cut-off",
             "rock name from ferromagnesian share",
             "dyke, sill, stock or batholith"
           ],
-          "ranges": [
-            "oxide shares SiO₂ 45–75 %",
-            "crystallization 700–1,300 °C"
-          ],
+          "ranges": ["oxide shares SiO₂ 45–75 %", "crystallization 700–1,300 °C"],
           "lessons": [
             {
               "n": "3.01",
@@ -191,18 +175,13 @@
           "n": "4",
           "title": "Volcanism",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/04%3A_Volcanism",
-          "topics": [
-            "he.earth-science.physical-geology#2"
-          ],
+          "topics": ["he.earth-science.physical-geology#2"],
           "examples": [
             "oceanic crust thickness from melt fraction",
             "lava-flow advance rate",
             "hazard types for a volcano"
           ],
-          "ranges": [
-            "melt 10 % of a 60 km zone",
-            "flow fronts km per day"
-          ],
+          "ranges": ["melt 10 % of a 60 km zone", "flow fronts km per day"],
           "lessons": [
             {
               "n": "4.01",
@@ -245,14 +224,9 @@
           "n": "5",
           "title": "Weathering and Soil",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/05%3A_Weathering_and_Soil",
-          "topics": [
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.physical-geology#3"],
           "notes": "Weathering and soils (soils are a taxonomy gap: no physical-geography soil topic).",
-          "examples": [
-            "weathering process for a mineral change",
-            "soil order distribution"
-          ],
+          "examples": ["weathering process for a mineral change", "soil order distribution"],
           "lessons": [
             {
               "n": "5.01",
@@ -295,18 +269,13 @@
           "n": "6",
           "title": "Sediments and Sedimentary Rocks",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/06%3A_Sediments_and_Sedimentary_Rocks",
-          "topics": [
-            "he.earth-science.physical-geology#0",
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.physical-geology#0", "he.earth-science.physical-geology#3"],
           "examples": [
             "sandstone naming (arenite, wacke)",
             "settling and clast size",
             "depositional environment from a rock"
           ],
-          "notation": [
-            "Wentworth grain sizes"
-          ],
+          "notation": ["Wentworth grain sizes"],
           "lessons": [
             {
               "n": "6.01",
@@ -344,16 +313,12 @@
           "n": "7",
           "title": "Metamorphism and Metamorphic Rocks",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/07%3A_Metamorphism_and_Metamorphic_Rocks",
-          "topics": [
-            "he.earth-science.physical-geology#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#0"],
           "examples": [
             "metamorphic rock from a description",
             "depth of grades for a geothermal gradient"
           ],
-          "ranges": [
-            "geothermal gradient 15–60 °C/km"
-          ],
+          "ranges": ["geothermal gradient 15–60 °C/km"],
           "lessons": [
             {
               "n": "7.01",
@@ -410,15 +375,8 @@
             "magnetic polarity with a fossil bracket",
             "one-year geological calendar"
           ],
-          "ranges": [
-            "⁴⁰K left 0.91–0.95",
-            "¹⁴C left 0.55",
-            "ages 0.78–4,570 Ma"
-          ],
-          "notation": [
-            "Ma for ages",
-            "decay curves read graphically, not λ"
-          ],
+          "ranges": ["⁴⁰K left 0.91–0.95", "¹⁴C left 0.55", "ages 0.78–4,570 Ma"],
+          "notation": ["Ma for ages", "decay curves read graphically, not λ"],
           "lessons": [
             {
               "n": "8.01",
@@ -461,19 +419,13 @@
           "n": "9",
           "title": "Earths Interior",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/09%3A_Earths_Interior",
-          "topics": [
-            "he.earth-science.geophysics#0",
-            "he.earth-science.geophysics#1"
-          ],
+          "topics": ["he.earth-science.geophysics#0", "he.earth-science.geophysics#1"],
           "examples": [
             "P-wave arrival time from distance",
             "magnetic dip and latitude",
             "rock density from mineral shares; isostasy"
           ],
-          "ranges": [
-            "P speed 5 km/s; distances 120–390 km",
-            "densities 2.63–3.4 g/cm³"
-          ],
+          "ranges": ["P speed 5 km/s; distances 120–390 km", "densities 2.63–3.4 g/cm³"],
           "lessons": [
             {
               "n": "9.01",
@@ -506,20 +458,14 @@
           "n": "10",
           "title": "Plate Tectonics",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/10%3A_Plate_Tectonics",
-          "topics": [
-            "he.earth-science.physical-geology#1"
-          ],
+          "topics": ["he.earth-science.physical-geology#1"],
           "examples": [
             "plate rate from hotspot ages and distances",
             "transform motion between ridge segments",
             "naming plates and boundaries"
           ],
-          "ranges": [
-            "ages 10–65 Ma; distances 1,000–4,900 km; rates 5–10 cm/yr"
-          ],
-          "notation": [
-            "rates in cm/yr"
-          ],
+          "ranges": ["ages 10–65 Ma; distances 1,000–4,900 km; rates 5–10 cm/yr"],
+          "notation": ["rates in cm/yr"],
           "lessons": [
             {
               "n": "10.01",
@@ -557,20 +503,14 @@
           "n": "11",
           "title": "Earthquakes",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/11%3A_Earthquakes",
-          "topics": [
-            "he.earth-science.physical-geology#2"
-          ],
+          "topics": ["he.earth-science.physical-geology#2"],
           "examples": [
             "moment magnitude from length, width, slip (online tool)",
             "Mercalli intensity from reports",
             "energy ratio between magnitudes"
           ],
-          "ranges": [
-            "L 0.4–1,100 km; W 0.2–120 km; slip 0.5–10 m"
-          ],
-          "notation": [
-            "Mw; Roman-numeral MMI"
-          ],
+          "ranges": ["L 0.4–1,100 km; W 0.2–120 km; slip 0.5–10 m"],
+          "notation": ["Mw; Roman-numeral MMI"],
           "lessons": [
             {
               "n": "11.01",
@@ -655,13 +595,8 @@
             "stream gradient from elevations",
             "recurrence interval and yearly chance from a rank"
           ],
-          "ranges": [
-            "ocean 1.338 × 10⁹ km³; flux 1,580 km³/day",
-            "65-year record"
-          ],
-          "notation": [
-            "Ri = (n + 1)/m"
-          ],
+          "ranges": ["ocean 1.338 × 10⁹ km³; flux 1,580 km³/day", "65-year record"],
+          "notation": ["Ri = (n + 1)/m"],
           "lessons": [
             {
               "n": "13.01",
@@ -699,20 +634,14 @@
           "n": "14",
           "title": "Groundwater",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/14%3A_Groundwater",
-          "topics": [
-            "he.earth-science.hydrology#2"
-          ],
+          "topics": ["he.earth-science.hydrology#2"],
           "examples": [
             "groundwater speed between two wells (Darcy)",
             "aquifer or aquitard",
             "cone of depression"
           ],
-          "ranges": [
-            "K 3 × 10⁻⁴ m/s; heads 77–83 m over 70 m"
-          ],
-          "notation": [
-            "K in m/s; gradient as Δh/L"
-          ],
+          "ranges": ["K 3 × 10⁻⁴ m/s; heads 77–83 m over 70 m"],
+          "notation": ["K in m/s; gradient as Δh/L"],
           "lessons": [
             {
               "n": "14.01",
@@ -745,9 +674,7 @@
           "n": "15",
           "title": "Mass Wasting",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/15%3A_Mass_Wasting",
-          "topics": [
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.physical-geology#3"],
           "examples": [
             "resolve gravity into shear and normal force",
             "strength loss and failure",
@@ -822,19 +749,14 @@
           "n": "17",
           "title": "Shorelines",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/17%3A_Shorelines",
-          "topics": [
-            "he.earth-science.oceanography#3",
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.oceanography#3", "he.earth-science.physical-geology#3"],
           "examples": [
             "wave steepness from amplitude and wavelength",
             "wave refraction sketch",
             "wave base from wavelength",
             "isostatic and eustatic sea-level change"
           ],
-          "ranges": [
-            "amplitudes 0.27–14.8 m; wavelengths 8.5–212 m"
-          ],
+          "ranges": ["amplitudes 0.27–14.8 m; wavelengths 8.5–212 m"],
           "lessons": [
             {
               "n": "17.01",
@@ -986,9 +908,7 @@
           "n": "21",
           "title": "Geological History of Western Canada",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/21%3A_Geological_History_of_Western_Canada",
-          "topics": [
-            "he.earth-science.historical-geology#3"
-          ],
+          "topics": ["he.earth-science.historical-geology#3"],
           "notes": "Regional history (western Canada).",
           "lessons": [
             {
@@ -1027,9 +947,7 @@
           "n": "22",
           "title": "The Origin of Earth and the Solar System",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Physical_Geology_(Earle)/22%3A_The_Origin_of_Earth_and_the_Solar_System",
-          "topics": [
-            "he.earth-science.historical-geology#3"
-          ],
+          "topics": ["he.earth-science.historical-geology#3"],
           "notes": "Origin of Earth and the solar system.",
           "lessons": [
             {

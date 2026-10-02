@@ -66,9 +66,7 @@
           "n": "2",
           "title": "Plate Tectonics",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/02%3A_Plate_Tectonics",
-          "topics": [
-            "he.earth-science.physical-geology#1"
-          ],
+          "topics": ["he.earth-science.physical-geology#1"],
           "lessons": [
             {
               "n": "2.01",
@@ -111,10 +109,7 @@
           "n": "3",
           "title": "Minerals",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/03%3A_Minerals",
-          "topics": [
-            "he.earth-science.physical-geology#0",
-            "he.earth-science.mineralogy#1"
-          ],
+          "topics": ["he.earth-science.physical-geology#0", "he.earth-science.mineralogy#1"],
           "lessons": [
             {
               "n": "3.01",
@@ -157,10 +152,7 @@
           "n": "4",
           "title": "Igneous Processes and Volcanoes",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/04%3A_Igneous_Processes_and_Volcanoes",
-          "topics": [
-            "he.earth-science.physical-geology#0",
-            "he.earth-science.physical-geology#2"
-          ],
+          "topics": ["he.earth-science.physical-geology#0", "he.earth-science.physical-geology#2"],
           "lessons": [
             {
               "n": "4.01",
@@ -193,10 +185,7 @@
           "n": "5",
           "title": "Weathering Erosion and Sedimentary Rocks",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/05%3A_Weathering_Erosion_and_Sedimentary_Rocks",
-          "topics": [
-            "he.earth-science.physical-geology#0",
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.physical-geology#0", "he.earth-science.physical-geology#3"],
           "lessons": [
             {
               "n": "5.01",
@@ -234,9 +223,7 @@
           "n": "6",
           "title": "Metamorphic Rocks",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/06%3A_Metamorphic_Rocks",
-          "topics": [
-            "he.earth-science.physical-geology#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#0"],
           "lessons": [
             {
               "n": "6.01",
@@ -301,9 +288,7 @@
           "n": "8",
           "title": "Earth History",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/08%3A_Earth_History",
-          "topics": [
-            "he.earth-science.historical-geology#3"
-          ],
+          "topics": ["he.earth-science.historical-geology#3"],
           "lessons": [
             {
               "n": "8.01",
@@ -351,10 +336,7 @@
           "n": "9",
           "title": "Crustal Deformation and Earthquakes",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/09%3A_Crustal_Deformation_and_Earthquakes",
-          "topics": [
-            "he.earth-science.physical-geology#2",
-            "he.earth-science.geophysics#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#2", "he.earth-science.geophysics#0"],
           "notes": "Stress and strain, folds, faults (gap), earthquakes.",
           "lessons": [
             {
@@ -408,9 +390,7 @@
           "n": "10",
           "title": "Mass Wasting",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/10%3A_Mass_Wasting",
-          "topics": [
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.physical-geology#3"],
           "lessons": [
             {
               "n": "10.01",
@@ -500,10 +480,7 @@
           "n": "12",
           "title": " Coastlines",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/12%3A__Coastlines",
-          "topics": [
-            "he.earth-science.oceanography#3",
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.oceanography#3", "he.earth-science.physical-geology#3"],
           "lessons": [
             {
               "n": "12.01",
@@ -526,10 +503,7 @@
           "n": "13",
           "title": "Deserts",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/13%3A_Deserts",
-          "topics": [
-            "he.geography.physical-geography#2",
-            "he.geography.physical-geography#1"
-          ],
+          "topics": ["he.geography.physical-geography#2", "he.geography.physical-geography#1"],
           "lessons": [
             {
               "n": "13.01",
@@ -562,9 +536,7 @@
           "n": "14",
           "title": "Glaciers",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Book%3A_An_Introduction_to_Geology_(Johnson_Affolter_Inkenbrandt_and_Mosher)/14%3A_Glaciers",
-          "topics": [
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.physical-geology#3"],
           "lessons": [
             {
               "n": "14.01",

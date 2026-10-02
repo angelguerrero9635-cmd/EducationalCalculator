@@ -1,0 +1,199 @@
+{
+  "id": "baumback-introduction-to-drafting-and-autodesk-inventor",
+  "curriculum": "Introduction to Drafting and Autodesk Inventor",
+  "publisher": "BCcampus (Workforce LibreTexts edition)",
+  "edition": "LibreTexts edition",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Introduction to Drafting and Autodesk Inventor by Wally Baumback (BCcampus), Workforce LibreTexts. CC BY."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (licence line 'CC BY', no version; the Module 26 test page says 'not declared' and was not used). Parts and modules listed; generic CAD items from the competency tests recorded with text (BAUM-*).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Part 1",
+          "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/01%3A_Part_1",
+          "topics": ["he.engineering.cad-graphics#2"],
+          "lessons": [
+            {
+              "n": "1.01",
+              "title": "Module 1 Projects",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/01%3A_Part_1/1.01%3A_Module_1_Projects"
+            },
+            {
+              "n": "1.02",
+              "title": "Module 2 Inventors User Interface",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/01%3A_Part_1/1.02%3A_Module_2_Inventors_User_Interface"
+            },
+            {
+              "n": "1.03",
+              "title": "Module 3 Viewing the 2D Sketch and 3D Model",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/01%3A_Part_1/1.03%3A_Module_3_Viewing_the_2D_Sketch_and_3D_Model"
+            },
+            {
+              "n": "1.04",
+              "title": "Module 4 Sketching Lines",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/01%3A_Part_1/1.04%3A_Module_4_Sketching_Lines"
+            },
+            {
+              "n": "1.05",
+              "title": "Module 5 Extruding  Part 1",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/01%3A_Part_1/1.05%3A_Module_5_Extruding__Part_1"
+            },
+            {
+              "n": "1.06",
+              "title": "Module 6 Competency Test No. 1 Open Book",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/01%3A_Part_1/1.06%3A_Module_6_Competency_Test_No._1_Open_Book"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Part 2",
+          "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/02%3A_Part_2",
+          "topics": ["he.engineering.cad-graphics#2"],
+          "lessons": [
+            {
+              "n": "2.01",
+              "title": "Module 7 Extruding  Part 2",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/02%3A_Part_2/2.01%3A_Module_7_Extruding__Part_2"
+            },
+            {
+              "n": "2.02",
+              "title": "Module 8 Multiview Drawings",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/02%3A_Part_2/2.02%3A_Module_8_Multiview_Drawings"
+            },
+            {
+              "n": "2.03",
+              "title": "Module 9 Visualizing 3D Models",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/02%3A_Part_2/2.03%3A_Module_9_Visualizing_3D_Models"
+            },
+            {
+              "n": "2.04",
+              "title": "Module 10 2D Sketching Planes",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/02%3A_Part_2/2.04%3A_Module_10_2D_Sketching_Planes"
+            },
+            {
+              "n": "2.05",
+              "title": "Module 11 Competency Test No. 2 Open Book",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/02%3A_Part_2/2.05%3A_Module_11_Competency_Test_No._2_Open_Book"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Part 3",
+          "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/03%3A_Part_3",
+          "topics": ["he.engineering.cad-graphics#2"],
+          "lessons": [
+            {
+              "n": "3.01",
+              "title": "Module 12 Circles",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/03%3A_Part_3/3.01%3A_Module_12_Circles"
+            },
+            {
+              "n": "3.02",
+              "title": "Module 13 Arcs",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/03%3A_Part_3/3.02%3A_Module_13_Arcs"
+            },
+            {
+              "n": "3.03",
+              "title": "Module 14 Revolving",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/03%3A_Part_3/3.03%3A_Module_14_Revolving"
+            },
+            {
+              "n": "3.04",
+              "title": "Module 15 Fillet and Chamfer Features",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/03%3A_Part_3/3.04%3A_Module_15_Fillet_and_Chamfer_Features"
+            },
+            {
+              "n": "3.05",
+              "title": "Module 16 Competency Test No.3 Open Book",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/03%3A_Part_3/3.05%3A_Module_16_Competency_Test_No.3_Open_Book"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Part 4",
+          "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/04%3A_Part_4",
+          "topics": ["he.engineering.cad-graphics#2", "he.engineering.cad-graphics#1"],
+          "lessons": [
+            {
+              "n": "4.01",
+              "title": "Module 17 Angles",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/04%3A_Part_4/4.01%3A_Module_17_Angles"
+            },
+            {
+              "n": "4.02",
+              "title": "Module 18 Editing Geometry",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/04%3A_Part_4/4.02%3A_Module_18_Editing_Geometry"
+            },
+            {
+              "n": "4.03",
+              "title": "Module 19 Work Features",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/04%3A_Part_4/4.03%3A_Module_19_Work_Features"
+            },
+            {
+              "n": "4.04",
+              "title": "Module 20 Modifying Solid Models",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/04%3A_Part_4/4.04%3A_Module_20_Modifying_Solid_Models"
+            },
+            {
+              "n": "4.05",
+              "title": "Module 21 Competency Test No. 4 Open Book",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/04%3A_Part_4/4.05%3A_Module_21_Competency_Test_No._4_Open_Book"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Part 5",
+          "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/05%3A_Part_5",
+          "topics": ["he.engineering.cad-graphics#3"],
+          "lessons": [
+            {
+              "n": "5.01",
+              "title": "Module 22 Assemblies",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/05%3A_Part_5/5.01%3A_Module_22_Assemblies"
+            },
+            {
+              "n": "5.02",
+              "title": "Module 23 Presentation Files",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/05%3A_Part_5/5.02%3A_Module_23_Presentation_Files"
+            },
+            {
+              "n": "5.03",
+              "title": "Module 24 2D Drawings  Part 1",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/05%3A_Part_5/5.03%3A_Module_24_2D_Drawings__Part_1"
+            },
+            {
+              "n": "5.04",
+              "title": "Module 25 2D Drawings  Part 2",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/05%3A_Part_5/5.04%3A_Module_25_2D_Drawings__Part_2"
+            },
+            {
+              "n": "5.05",
+              "title": "Module 26 Competency Test No. 5 Open Book",
+              "url": "https://workforce.libretexts.org/Bookshelves/Drafting_and_Design_Technology/Introduction_to_Drafting_and_Autodesk_Inventor_(Baumback)/05%3A_Part_5/5.05%3A_Module_26_Competency_Test_No._5_Open_Book"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

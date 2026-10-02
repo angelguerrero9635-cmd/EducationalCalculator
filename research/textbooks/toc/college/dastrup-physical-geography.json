@@ -27,9 +27,7 @@
           "n": "1",
           "title": "Introduction to Geographic Science",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Physical_Geography_and_Natural_Disasters_(Dastrup)/01%3A_Introduction_to_Geographic_Science",
-          "topics": [
-            "he.geography.cartography#1"
-          ],
+          "topics": ["he.geography.cartography#1"],
           "notes": "Geographic science, literacy, mapping technology.",
           "lessons": [
             {
@@ -63,9 +61,7 @@
           "n": "2",
           "title": "Universe and Solar System",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Physical_Geography_and_Natural_Disasters_(Dastrup)/02%3A_Universe_and_Solar_System",
-          "topics": [
-            "he.geography.physical-geography#0"
-          ],
+          "topics": ["he.geography.physical-geography#0"],
           "lessons": [
             {
               "n": "2.01",
@@ -155,10 +151,7 @@
           "n": "4",
           "title": "Tectonic Forces",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Physical_Geography_and_Natural_Disasters_(Dastrup)/04%3A_Tectonic_Forces",
-          "topics": [
-            "he.earth-science.physical-geology#2",
-            "he.geography.physical-geography#2"
-          ],
+          "topics": ["he.earth-science.physical-geology#2", "he.geography.physical-geography#2"],
           "lessons": [
             {
               "n": "4.01",
@@ -201,10 +194,7 @@
           "n": "5",
           "title": "Weathering Erosion and Deposition",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Physical_Geography_and_Natural_Disasters_(Dastrup)/05%3A_Weathering_Erosion_and_Deposition",
-          "topics": [
-            "he.earth-science.physical-geology#3",
-            "he.geography.physical-geography#2"
-          ],
+          "topics": ["he.earth-science.physical-geology#3", "he.geography.physical-geography#2"],
           "notes": "Weathering, soil formation (soils are a taxonomy gap), mass wasting, wind and glaciers.",
           "lessons": [
             {
@@ -291,10 +281,7 @@
           "n": "7",
           "title": "Oceans and Coastal Environments",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Physical_Geography_and_Natural_Disasters_(Dastrup)/07%3A_Oceans_and_Coastal_Environments",
-          "topics": [
-            "he.earth-science.oceanography#2",
-            "he.earth-science.oceanography#3"
-          ],
+          "topics": ["he.earth-science.oceanography#2", "he.earth-science.oceanography#3"],
           "lessons": [
             {
               "n": "7.01",
@@ -375,9 +362,7 @@
           "n": "9",
           "title": "Weather Processes and Systems",
           "url": "https://geo.libretexts.org/Bookshelves/Geography_(Physical)/Physical_Geography_and_Natural_Disasters_(Dastrup)/09%3A_Weather_Processes_and_Systems",
-          "topics": [
-            "he.earth-science.meteorology#3"
-          ],
+          "topics": ["he.earth-science.meteorology#3"],
           "notes": "Air masses, fronts, cyclones, thunderstorms, hurricanes (severe weather is partly a gap).",
           "lessons": [
             {

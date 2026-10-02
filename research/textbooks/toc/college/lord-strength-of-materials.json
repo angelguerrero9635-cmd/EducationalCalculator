@@ -1,0 +1,137 @@
+{
+  "id": "lord-strength-of-materials",
+  "curriculum": "Strength of Materials",
+  "publisher": "Virginia Tech Publishing (Engineering Mechanics OER)",
+  "edition": "Online edition read 2026-10-02",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Strength of Materials by James K. Lord, Amy Richardson, Sneha Davison and David A. Dillard (Virginia Tech Publishing). CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://engineeringmechanicsoer.github.io/StrengthBook/",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY-NC-SA 4.0): chapter list. Transformation (12) and vessels (13) are chapters of their own, as the plan asked to check. Combined loads (14) has no topic of its own (closest: machine-design#2). Problem set recorded as types (SOM-*). robots.txt: 404.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://engineeringmechanicsoer.github.io/StrengthBook/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Statics Review",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%201.html",
+          "topics": ["he.engineering.statics#0"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Stress",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%202.html",
+          "topics": ["he.engineering.mechanics-of-materials#0"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Strain",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%203.html",
+          "topics": ["he.engineering.mechanics-of-materials#0"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Mechanical Properties of Materials",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%204.html",
+          "topics": [
+            "he.engineering.mechanics-of-materials#0",
+            "he.engineering.materials-science#3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "5",
+          "title": "Axial Loading",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%205.html",
+          "topics": ["he.engineering.mechanics-of-materials#1"],
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "Torsion",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%206.html",
+          "topics": ["he.engineering.mechanics-of-materials#2"],
+          "lessons": []
+        },
+        {
+          "n": "7",
+          "title": "Beams",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%207.html",
+          "topics": ["he.engineering.mechanics-of-materials#3"],
+          "lessons": []
+        },
+        {
+          "n": "8",
+          "title": "Geometric Properties",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%208.html",
+          "topics": ["he.engineering.statics#2", "he.engineering.statics#3"],
+          "lessons": []
+        },
+        {
+          "n": "9",
+          "title": "Bending Loads",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%209.html",
+          "topics": ["he.engineering.mechanics-of-materials#3"],
+          "lessons": []
+        },
+        {
+          "n": "10",
+          "title": "Shear Loading in Beams",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%2010.html",
+          "topics": ["he.engineering.mechanics-of-materials#3"],
+          "lessons": []
+        },
+        {
+          "n": "11",
+          "title": "Beam Deflection",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%2011.html",
+          "topics": ["he.engineering.mechanics-of-materials#4"],
+          "lessons": []
+        },
+        {
+          "n": "12",
+          "title": "Stress Transformation",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%2012.html",
+          "topics": ["he.engineering.mechanics-of-materials#0"],
+          "lessons": []
+        },
+        {
+          "n": "13",
+          "title": "Thin-Walled Pressure Vessels",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%2013.html",
+          "topics": ["he.engineering.mechanics-of-materials#0"],
+          "lessons": []
+        },
+        {
+          "n": "14",
+          "title": "Combined Loads",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%2014.html",
+          "topics": ["he.engineering.machine-design#2", "he.engineering.mechanics-of-materials#3"],
+          "lessons": []
+        },
+        {
+          "n": "15",
+          "title": "Columns",
+          "url": "https://engineeringmechanicsoer.github.io/StrengthBook/Chapter%2015.html",
+          "topics": ["he.engineering.mechanics-of-materials#5"],
+          "lessons": []
+        }
+      ]
+    }
+  ]
+}

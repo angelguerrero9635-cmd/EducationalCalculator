@@ -1,0 +1,265 @@
+{
+  "id": "kaw-holistic-numerical-methods",
+  "curriculum": "Holistic Numerical Methods",
+  "publisher": "University of South Florida (Autar Kaw et al.)",
+  "edition": "Website read 2026-10-02 (chapters 03–08 sampled)",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-ND 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "attribution": "Holistic Numerical Methods by Autar Kaw et al., University of South Florida, https://nm.mathforcollege.com. CC BY-NC-ND 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://nm.mathforcollege.com/",
+  "retrieved": "2026-10-02",
+  "notes": "Licence read on the site: CC BY-NC-ND 4.0 (the plan said CC BY-NC-SA 3.0 US). Sections listed are the ones fetched (robots.txt: Allow /). Chapters 01–02 (introduction, differentiation) and 09–10 were not fetched. Multiple-choice tests recorded as types in classical.jsonl (KAW-*).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://nm.mathforcollege.com/",
+      "units": [
+        {
+          "n": "3",
+          "title": "Nonlinear Equations",
+          "url": "https://nm.mathforcollege.com/",
+          "topics": ["he.engineering.numerical-methods#0"],
+          "examples": [
+            "bisection steps",
+            "Newton–Raphson step and relative error",
+            "secant step",
+            "false position"
+          ],
+          "notation": ["|ε_a| as a percent"],
+          "lessons": [
+            {
+              "n": "03.01",
+              "title": "Quadratic equations",
+              "url": "https://nm.mathforcollege.com/chapter-03-01-quadratic-equations"
+            },
+            {
+              "n": "03.04",
+              "title": "Newton raphson method",
+              "url": "https://nm.mathforcollege.com/chapter-03-04-newton-raphson-method"
+            },
+            {
+              "n": "03.02",
+              "title": "Cubic equations",
+              "url": "https://nm.mathforcollege.com/chapter-03.02-cubic-equations"
+            },
+            {
+              "n": "03.03",
+              "title": "Bisection method",
+              "url": "https://nm.mathforcollege.com/chapter-03.03-bisection-method"
+            },
+            {
+              "n": "03.05",
+              "title": "Secant method",
+              "url": "https://nm.mathforcollege.com/chapter-03.05-secant-method"
+            },
+            {
+              "n": "03.06",
+              "title": "False position",
+              "url": "https://nm.mathforcollege.com/chapter-03.06-false-position"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Simultaneous Linear Equations",
+          "url": "https://nm.mathforcollege.com/",
+          "topics": ["he.engineering.numerical-methods#1"],
+          "examples": [
+            "naive and pivoted Gaussian elimination with chopping",
+            "LU decomposition",
+            "Gauss–Seidel sweeps and diagonal dominance"
+          ],
+          "lessons": [
+            {
+              "n": "04.06",
+              "title": "Gaussian elimination",
+              "url": "https://nm.mathforcollege.com/chapter-04-06-gaussian-elimination"
+            },
+            {
+              "n": "04.07",
+              "title": "Lu decomposition method",
+              "url": "https://nm.mathforcollege.com/chapter-04-07-lu-decomposition-method"
+            },
+            {
+              "n": "04.08",
+              "title": "Gauss seidel method",
+              "url": "https://nm.mathforcollege.com/chapter-04-08-gauss-seidel-method"
+            },
+            {
+              "n": "04.11",
+              "title": "Cholesky and ldl",
+              "url": "https://nm.mathforcollege.com/chapter-04-11-cholesky-and-ldl"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Interpolation",
+          "url": "https://nm.mathforcollege.com/",
+          "topics": ["he.engineering.numerical-methods#2"],
+          "examples": [
+            "direct, Newton divided-difference and Lagrange interpolation",
+            "linear, quadratic and cubic splines"
+          ],
+          "ranges": ["rocket velocity t = 0–30 s"],
+          "lessons": [
+            {
+              "n": "05.01",
+              "title": "Background of interpolation",
+              "url": "https://nm.mathforcollege.com/chapter-05-01-background-of-interpolation"
+            },
+            {
+              "n": "05.03",
+              "title": "Newton divided difference method",
+              "url": "https://nm.mathforcollege.com/chapter-05-03-newton-divided-difference-method"
+            },
+            {
+              "n": "05.05",
+              "title": "Spline method",
+              "url": "https://nm.mathforcollege.com/chapter-05-05-spline-method"
+            },
+            {
+              "n": "05.02",
+              "title": "Direct method",
+              "url": "https://nm.mathforcollege.com/chapter-05.02-direct-method"
+            },
+            {
+              "n": "05.04",
+              "title": "Lagrange method",
+              "url": "https://nm.mathforcollege.com/chapter-05.04-lagrange-method"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Regression",
+          "url": "https://nm.mathforcollege.com/",
+          "topics": ["he.engineering.numerical-methods#2"],
+          "examples": [
+            "least-squares line and r²",
+            "exponential and power models by linearization"
+          ],
+          "lessons": [
+            {
+              "n": "06.03",
+              "title": "Linear regression",
+              "url": "https://nm.mathforcollege.com/chapter-06-03-linear-regression"
+            },
+            {
+              "n": "06.04",
+              "title": "Nonlinear regression",
+              "url": "https://nm.mathforcollege.com/chapter-06-04-nonlinear-regression"
+            },
+            {
+              "n": "06.05",
+              "title": "Adequacy of regression models",
+              "url": "https://nm.mathforcollege.com/chapter-06-05-adequacy-of-regression-models"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Integration",
+          "url": "https://nm.mathforcollege.com/",
+          "topics": ["he.engineering.numerical-methods#3"],
+          "examples": [
+            "trapezoid, Simpson 1/3 and 3/8",
+            "Romberg",
+            "Gauss quadrature",
+            "discrete data"
+          ],
+          "lessons": [
+            {
+              "n": "07.01",
+              "title": "Primer on integral calculus",
+              "url": "https://nm.mathforcollege.com/chapter-07-01-primer-on-integral-calculus"
+            },
+            {
+              "n": "07.04",
+              "title": "Romberg method",
+              "url": "https://nm.mathforcollege.com/chapter-07-04-romberg-method"
+            },
+            {
+              "n": "07.05",
+              "title": "Gauss quadrature",
+              "url": "https://nm.mathforcollege.com/chapter-07-05-gauss-quadrature"
+            },
+            {
+              "n": "07.06",
+              "title": "Discrete data integration",
+              "url": "https://nm.mathforcollege.com/chapter-07-06-discrete-data-integration"
+            },
+            {
+              "n": "07.08",
+              "title": "Simpsons 3 8 rule of integration 2",
+              "url": "https://nm.mathforcollege.com/chapter-07-08-simpsons-3-8-rule-of-integration-2"
+            },
+            {
+              "n": "07.02",
+              "title": "Trapezoidal rule",
+              "url": "https://nm.mathforcollege.com/chapter-07.02-trapezoidal-rule"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Ordinary Differential Equations",
+          "url": "https://nm.mathforcollege.com/",
+          "topics": ["he.engineering.numerical-methods#4"],
+          "examples": [
+            "Euler",
+            "Heun, midpoint, Ralston",
+            "RK4",
+            "shooting and finite differences for BVPs"
+          ],
+          "lessons": [
+            {
+              "n": "08.01",
+              "title": "Primer on ordinary differential equations",
+              "url": "https://nm.mathforcollege.com/chapter-08-01-primer-on-ordinary-differential-equations"
+            },
+            {
+              "n": "08.02",
+              "title": "Eulers method",
+              "url": "https://nm.mathforcollege.com/chapter-08-02-eulers-method"
+            },
+            {
+              "n": "08.03",
+              "title": "Runge kutta 2nd order method",
+              "url": "https://nm.mathforcollege.com/chapter-08-03-runge-kutta-2nd-order-method"
+            },
+            {
+              "n": "08.04",
+              "title": "Runge kutta 4th order method",
+              "url": "https://nm.mathforcollege.com/chapter-08-04-runge-kutta-4th-order-method"
+            },
+            {
+              "n": "08.05",
+              "title": "Higher order coupled ordinary differential equations",
+              "url": "https://nm.mathforcollege.com/chapter-08-05-higher-order-coupled-ordinary-differential-equations"
+            },
+            {
+              "n": "08.06",
+              "title": "Shooting method",
+              "url": "https://nm.mathforcollege.com/chapter-08-06-shooting-method"
+            },
+            {
+              "n": "08.07",
+              "title": "Finite difference method",
+              "url": "https://nm.mathforcollege.com/chapter-08-07-finite-difference-method"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -27,10 +27,7 @@
           "n": "1",
           "title": "mit12_340s12_ps1",
           "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/resources/mit12_340s12_ps1/",
-          "topics": [
-            "he.earth-science.historical-geology#3",
-            "he.geography.climatology#2"
-          ],
+          "topics": ["he.earth-science.historical-geology#3", "he.geography.climatology#2"],
           "examples": [
             "carbon-isotope mass balance for the PETM: carbon added from volcanoes or methane for a −3 ‰ shift",
             "read ice and sediment core temperature series: warmer-than-today intervals, how fast climate changes, regional against global",
@@ -43,10 +40,7 @@
           "n": "2",
           "title": "mit12_340s12_ps2",
           "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/resources/mit12_340s12_ps2/",
-          "topics": [
-            "he.geography.climatology#0",
-            "he.geography.climatology#3"
-          ],
+          "topics": ["he.geography.climatology#0", "he.geography.climatology#3"],
           "examples": [
             "N-layer model: show T_ground = (N + 1)^(1/4) T_e",
             "derive Wien's law and the Stefan–Boltzmann constant from Planck's law",
@@ -59,9 +53,7 @@
           "n": "3",
           "title": "mit12_340s12_ps4",
           "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/resources/mit12_340s12_ps4/",
-          "topics": [
-            "he.geography.climatology#3"
-          ],
+          "topics": ["he.geography.climatology#3"],
           "examples": [
             "global warming potential over 20, 100 and 500 years of a gas with a given half-life and absorption"
           ],

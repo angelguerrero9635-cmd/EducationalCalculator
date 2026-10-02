@@ -27,10 +27,7 @@
           "n": "1",
           "title": "lab2a",
           "url": "https://ocw.mit.edu/courses/12-163-surface-processes-and-landscape-evolution-fall-2004/resources/lab2a/",
-          "topics": [
-            "he.earth-science.hydrology#1",
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.hydrology#1", "he.earth-science.physical-geology#3"],
           "examples": [
             "from a measured velocity profile in a gravel channel: slope, mean velocity, bed shear stress, shear velocity, roughness, friction factor and Manning's n"
           ],
@@ -41,12 +38,8 @@
           "n": "2",
           "title": "lab2c",
           "url": "https://ocw.mit.edu/courses/12-163-surface-processes-and-landscape-evolution-fall-2004/resources/lab2c/",
-          "topics": [
-            "he.earth-science.hydrology#1"
-          ],
-          "examples": [
-            "units of Chezy's C and Manning's n"
-          ],
+          "topics": ["he.earth-science.hydrology#1"],
+          "examples": ["units of Chezy's C and Manning's n"],
           "lessons": [],
           "notes": "1 question record(s): OCW-12.163-LAB2C-Q1"
         }

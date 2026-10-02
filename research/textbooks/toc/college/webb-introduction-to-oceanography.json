@@ -27,9 +27,7 @@
           "n": "1",
           "title": "Introduction to the Oceans",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/01%3A_Introduction_to_the_Oceans",
-          "topics": [
-            "he.earth-science.oceanography#0"
-          ],
+          "topics": ["he.earth-science.oceanography#0"],
           "lessons": [
             {
               "n": "1.01",
@@ -57,10 +55,7 @@
           "n": "2",
           "title": "Getting our Bearings",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/02%3A_Getting_our_Bearings",
-          "topics": [
-            "he.geography.cartography#0",
-            "he.geography.cartography#1"
-          ],
+          "topics": ["he.geography.cartography#0", "he.geography.cartography#1"],
           "notes": "Latitude and longitude, speed units, map projections (an oceanographer's review).",
           "lessons": [
             {
@@ -89,10 +84,7 @@
           "n": "3",
           "title": "The Origin and Structure of Earth",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/03%3A_The_Origin_and_Structure_of_Earth",
-          "topics": [
-            "he.earth-science.geophysics#0",
-            "he.earth-science.oceanography#0"
-          ],
+          "topics": ["he.earth-science.geophysics#0", "he.earth-science.oceanography#0"],
           "lessons": [
             {
               "n": "3.01",
@@ -115,10 +107,7 @@
           "n": "4",
           "title": "Plate Tectonics and Marine Geology",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/04%3A_Plate_Tectonics_and_Marine_Geology",
-          "topics": [
-            "he.earth-science.physical-geology#1",
-            "he.earth-science.oceanography#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#1", "he.earth-science.oceanography#0"],
           "notes": "Plate tectonics and marine geology: ridges, trenches, hot spots, reefs, vents.",
           "lessons": [
             {
@@ -182,9 +171,7 @@
           "n": "5",
           "title": "Chemical Oceanography",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/05%3A_Chemical_Oceanography",
-          "topics": [
-            "he.earth-science.oceanography#1"
-          ],
+          "topics": ["he.earth-science.oceanography#1"],
           "notes": "Chemical oceanography: salinity patterns, O₂, CO₂ and pH, nutrients, element classes (residence time).",
           "lessons": [
             {
@@ -228,10 +215,7 @@
           "n": "6",
           "title": "Physical Oceanography",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/06%3A_Physical_Oceanography",
-          "topics": [
-            "he.earth-science.oceanography#1",
-            "he.earth-science.oceanography#3"
-          ],
+          "topics": ["he.earth-science.oceanography#1", "he.earth-science.oceanography#3"],
           "notes": "Physical properties: pressure, temperature, density, sound, light.",
           "lessons": [
             {
@@ -332,9 +316,7 @@
           "n": "9",
           "title": "Ocean Circulation",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/09%3A_Ocean_Circulation",
-          "topics": [
-            "he.earth-science.oceanography#2"
-          ],
+          "topics": ["he.earth-science.oceanography#2"],
           "lessons": [
             {
               "n": "9.01",
@@ -347,9 +329,7 @@
           "n": "10",
           "title": "Waves",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/10%3A_Waves",
-          "topics": [
-            "he.earth-science.oceanography#3"
-          ],
+          "topics": ["he.earth-science.oceanography#3"],
           "lessons": [
             {
               "n": "10.01",
@@ -377,9 +357,7 @@
           "n": "11",
           "title": "Tides",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/11%3A_Tides",
-          "topics": [
-            "he.earth-science.oceanography#3"
-          ],
+          "topics": ["he.earth-science.oceanography#3"],
           "lessons": [
             {
               "n": "11.01",
@@ -392,9 +370,7 @@
           "n": "12",
           "title": "Ocean Sediments",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/12%3A_Ocean_Sediments",
-          "topics": [
-            "he.earth-science.oceanography#0"
-          ],
+          "topics": ["he.earth-science.oceanography#0"],
           "notes": "Marine sediments.",
           "lessons": [
             {
@@ -433,10 +409,7 @@
           "n": "13",
           "title": "Coastal Oceanography",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/13%3A_Coastal_Oceanography",
-          "topics": [
-            "he.earth-science.oceanography#3",
-            "he.earth-science.physical-geology#3"
-          ],
+          "topics": ["he.earth-science.oceanography#3", "he.earth-science.physical-geology#3"],
           "lessons": [
             {
               "n": "13.01",
@@ -449,10 +422,7 @@
           "n": "14",
           "title": "Ice",
           "url": "https://geo.libretexts.org/Bookshelves/Oceanography/Introduction_to_Oceanography_(Webb)/14%3A_Ice",
-          "topics": [
-            "he.earth-science.oceanography#1",
-            "he.geography.climatology#2"
-          ],
+          "topics": ["he.earth-science.oceanography#1", "he.geography.climatology#2"],
           "lessons": [
             {
               "n": "14.01",

@@ -1,0 +1,81 @@
+{
+  "id": "mit-ocw-6-0001",
+  "curriculum": "MIT OCW 6.0001 Introduction to Computer Science and Programming in Python",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2016",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Ana Bell, Eric Grimson and John Guttag. 6.0001 Introduction to Computer Science and Programming in Python, Fall 2016. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Ana Bell, Eric Grimson and John Guttag. Units are the problem sets, labs and exams read (type only; no solutions fetched). No calendar text captured. Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit6_0001f16_ps1",
+          "url": "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/resources/mit6_0001f16_ps1/",
+          "topics": [
+            "he.engineering.engineering-programming#3",
+            "he.engineering.numerical-methods#0"
+          ],
+          "examples": [
+            "months to save a down payment with a monthly return",
+            "saving rate by bisection search to reach a goal in 36 months",
+            "the same with a semi-annual raise"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-6.0001-PS1-A, OCW-6.0001-PS1-B, OCW-6.0001-PS1-C"
+        },
+        {
+          "n": "2",
+          "title": "for-loops",
+          "url": "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/resources/for-loops/",
+          "topics": ["he.engineering.engineering-programming#0"],
+          "examples": ["sum built by a for loop over a range with a step"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-6.0001-FOR-1"
+        },
+        {
+          "n": "3",
+          "title": "while-loops",
+          "url": "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/resources/while-loops/",
+          "topics": ["he.engineering.engineering-programming#0"],
+          "examples": ["trace a while loop over user input"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-6.0001-WHILE-1"
+        },
+        {
+          "n": "4",
+          "title": "for-loops-with-strings",
+          "url": "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/resources/for-loops-with-strings/",
+          "topics": ["he.engineering.engineering-programming#0"],
+          "examples": ["compare two strings character by character in a loop"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-6.0001-STR-1"
+        },
+        {
+          "n": "5",
+          "title": "black-box-and-glass-box-testing",
+          "url": "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/resources/black-box-and-glass-box-testing/",
+          "topics": ["he.engineering.engineering-programming#3"],
+          "examples": ["glass-box test cases for a function with a bug"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-6.0001-TEST-1"
+        }
+      ]
+    }
+  ]
+}

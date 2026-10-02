@@ -27,9 +27,7 @@
           "n": "1",
           "title": "ps2",
           "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/ps2/",
-          "topics": [
-            "he.earth-science.hydrology#2"
-          ],
+          "topics": ["he.earth-science.hydrology#2"],
           "examples": [
             "falling-head permeameter: derive head against time from Darcy's law and mass balance",
             "layered aquifer: equivalent horizontal and vertical K, transmissivity and flow per unit width"
@@ -41,9 +39,7 @@
           "n": "2",
           "title": "ps5",
           "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/ps5/",
-          "topics": [
-            "he.earth-science.hydrology#2"
-          ],
+          "topics": ["he.earth-science.hydrology#2"],
           "examples": [
             "estimate K from heads in a line of wells and a plume's travel; time for a solute to reach a well (advection, sorption retardation)",
             "steady pumping well at the centre of a circular island in a lake: head and drawdown with radius (Thiem with a constant-head boundary)"
@@ -55,10 +51,7 @@
           "n": "3",
           "title": "final_20041",
           "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/final_20041/",
-          "topics": [
-            "he.earth-science.hydrology#2",
-            "he.earth-science.hydrology#1"
-          ],
+          "topics": ["he.earth-science.hydrology#2", "he.earth-science.hydrology#1"],
           "examples": [
             "explain the difference between paired terms (dispersivity and dispersion coefficient, effective and total stress, isotherms)",
             "injection well near a no-flow boundary and a constant-head lake: place image wells; is the head change larger or smaller",
@@ -73,9 +66,7 @@
           "n": "4",
           "title": "labassn",
           "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/labassn/",
-          "topics": [
-            "he.earth-science.hydrology#2"
-          ],
+          "topics": ["he.earth-science.hydrology#2"],
           "examples": [
             "field Darcy test: how a constant-head permeameter, a seepage meter and a differential head sampler give K, q and dh/dz"
           ],
@@ -86,9 +77,7 @@
           "n": "5",
           "title": "bangladesh_pset1",
           "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/bangladesh_pset1/",
-          "topics": [
-            "he.earth-science.hydrology#0"
-          ],
+          "topics": ["he.earth-science.hydrology#0"],
           "examples": [
             "lumped bucket model of an irrigated aquifer: dry-season head change from pond, river and pumping fluxes"
           ],

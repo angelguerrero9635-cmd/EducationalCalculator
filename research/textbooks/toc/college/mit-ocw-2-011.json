@@ -45,10 +45,7 @@
           "n": "2",
           "title": "hw3",
           "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/hw3/",
-          "topics": [
-            "he.earth-science.oceanography#1",
-            "he.earth-science.oceanography#2"
-          ],
+          "topics": ["he.earth-science.oceanography#1", "he.earth-science.oceanography#2"],
           "examples": [
             "describe temperature and salinity with depth from Atlantic sections",
             "potential temperature of air aloft and water at depth; read sigma-t from a T–S diagram",
@@ -62,12 +59,8 @@
           "n": "3",
           "title": "hw4",
           "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/hw4/",
-          "topics": [
-            "he.earth-science.oceanography#3"
-          ],
-          "examples": [
-            "frequency or wavelength of sound in air and water"
-          ],
+          "topics": ["he.earth-science.oceanography#3"],
+          "examples": ["frequency or wavelength of sound in air and water"],
           "lessons": [],
           "notes": "1 question record(s): OCW-2.011-HW4-P2"
         },
@@ -75,10 +68,7 @@
           "n": "4",
           "title": "hw7",
           "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/hw7/",
-          "topics": [
-            "he.earth-science.oceanography#2",
-            "he.geography.climatology#1"
-          ],
+          "topics": ["he.earth-science.oceanography#2", "he.geography.climatology#1"],
           "examples": [
             "Coriolis deflection of a thrown ball in each hemisphere and at the equator",
             "sketch Ekman transport, sea-surface slope and geostrophic flow round Antarctica"
@@ -90,9 +80,7 @@
           "n": "5",
           "title": "exams",
           "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/exams/",
-          "topics": [
-            "he.earth-science.oceanography#2"
-          ],
+          "topics": ["he.earth-science.oceanography#2"],
           "examples": [
             "describe a circumpolar current; model a passage as a channel for its velocity profile and transport"
           ],

@@ -27,9 +27,7 @@
           "n": "1",
           "title": "What is Historical Geology",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/01%3A_What_is_Historical_Geology",
-          "topics": [
-            "he.earth-science.historical-geology#0"
-          ],
+          "topics": ["he.earth-science.historical-geology#0"],
           "lessons": [
             {
               "n": "1.01",
@@ -62,9 +60,7 @@
           "n": "2",
           "title": "Planet Earth - An Introduction",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/02%3A_Planet_Earth_-_An_Introduction",
-          "topics": [
-            "he.earth-science.historical-geology#3"
-          ],
+          "topics": ["he.earth-science.historical-geology#3"],
           "lessons": [
             {
               "n": "2.01",
@@ -92,9 +88,7 @@
           "n": "3",
           "title": "Minerals",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/03%3A_Minerals",
-          "topics": [
-            "he.earth-science.mineralogy#1"
-          ],
+          "topics": ["he.earth-science.mineralogy#1"],
           "lessons": [
             {
               "n": "3.01",
@@ -132,9 +126,7 @@
           "n": "4",
           "title": "The Rock Cycle",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/04%3A_The_Rock_Cycle",
-          "topics": [
-            "he.earth-science.physical-geology#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#0"],
           "lessons": [
             {
               "n": "4.01",
@@ -167,9 +159,7 @@
           "n": "5",
           "title": "Plate Tectonics",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/05%3A_Plate_Tectonics",
-          "topics": [
-            "he.earth-science.physical-geology#1"
-          ],
+          "topics": ["he.earth-science.physical-geology#1"],
           "lessons": [
             {
               "n": "5.01",
@@ -197,9 +187,7 @@
           "n": "6",
           "title": "Geologic Environments and Structures",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/06%3A_Geologic_Environments_and_Structures",
-          "topics": [
-            "he.earth-science.historical-geology#0"
-          ],
+          "topics": ["he.earth-science.historical-geology#0"],
           "notes": "Sedimentary environments; deformation (structures are a gap).",
           "lessons": [
             {
@@ -233,10 +221,7 @@
           "n": "7",
           "title": "Geologic and Topographic Mapping",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/07%3A_Geologic_and_Topographic_Mapping",
-          "topics": [
-            "he.geography.cartography#1",
-            "he.geography.physical-geography#2"
-          ],
+          "topics": ["he.geography.cartography#1", "he.geography.physical-geography#2"],
           "notes": "Geologic and topographic maps, contour lines.",
           "lessons": [
             {
@@ -270,9 +255,7 @@
           "n": "8",
           "title": "Taphonomy - The Science of Death and Decay",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/08%3A_Taphonomy_-_The_Science_of_Death_and_Decay",
-          "topics": [
-            "he.earth-science.historical-geology#2"
-          ],
+          "topics": ["he.earth-science.historical-geology#2"],
           "lessons": [
             {
               "n": "8.01",
@@ -332,9 +315,7 @@
           "n": "10",
           "title": "The PreCambrian",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/10%3A_The_PreCambrian",
-          "topics": [
-            "he.earth-science.historical-geology#3"
-          ],
+          "topics": ["he.earth-science.historical-geology#3"],
           "lessons": [
             {
               "n": "10.01",
@@ -357,9 +338,7 @@
           "n": "11",
           "title": "The Paleozoic Era",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/11%3A_The_Paleozoic_Era",
-          "topics": [
-            "he.earth-science.historical-geology#3"
-          ],
+          "topics": ["he.earth-science.historical-geology#3"],
           "lessons": [
             {
               "n": "11.01",
@@ -382,9 +361,7 @@
           "n": "12",
           "title": "The Mesozoic Era",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/12%3A_The_Mesozoic_Era",
-          "topics": [
-            "he.earth-science.historical-geology#3"
-          ],
+          "topics": ["he.earth-science.historical-geology#3"],
           "lessons": [
             {
               "n": "12.01",
@@ -407,9 +384,7 @@
           "n": "13",
           "title": "The Cenozoic Era",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Introduction_to_Historical_Geology_(Johnson_et_al.)/13%3A_The_Cenozoic_Era",
-          "topics": [
-            "he.earth-science.historical-geology#3"
-          ],
+          "topics": ["he.earth-science.historical-geology#3"],
           "lessons": [
             {
               "n": "13.01",

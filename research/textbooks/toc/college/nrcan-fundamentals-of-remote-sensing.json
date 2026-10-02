@@ -27,9 +27,7 @@
           "n": "1",
           "title": "Introduction",
           "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
-          "topics": [
-            "he.geography.remote-sensing#0"
-          ],
+          "topics": ["he.geography.remote-sensing#0"],
           "examples": [
             "c = λν conversions",
             "scattering and atmospheric windows",
@@ -82,9 +80,7 @@
           "n": "2",
           "title": "Sensors",
           "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
-          "topics": [
-            "he.geography.remote-sensing#0"
-          ],
+          "topics": ["he.geography.remote-sensing#0"],
           "examples": [
             "resolutions (spatial, spectral, radiometric, temporal)",
             "2ⁿ grey levels",
@@ -241,10 +237,7 @@
           "n": "4",
           "title": "Image Interpretation and Analysis",
           "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
-          "topics": [
-            "he.geography.remote-sensing#1",
-            "he.geography.remote-sensing#2"
-          ],
+          "topics": ["he.geography.remote-sensing#1", "he.geography.remote-sensing#2"],
           "examples": [
             "visual interpretation elements",
             "file size of a scene",
@@ -302,10 +295,7 @@
           "n": "5",
           "title": "Applications",
           "url": "https://natural-resources.canada.ca/sites/nrcan/files/earthsciences/pdf/resource/tutor/fundam/pdf/fundamentals_e.pdf",
-          "topics": [
-            "he.geography.remote-sensing#3",
-            "he.geography.remote-sensing#2"
-          ],
+          "topics": ["he.geography.remote-sensing#3", "he.geography.remote-sensing#2"],
           "lessons": [
             {
               "n": "5.1",

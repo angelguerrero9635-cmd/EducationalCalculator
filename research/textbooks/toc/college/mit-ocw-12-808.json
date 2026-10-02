@@ -27,10 +27,7 @@
           "n": "1",
           "title": "problem_set_1a",
           "url": "https://ocw.mit.edu/courses/12-808-introduction-to-observational-physical-oceanography-fall-2004/resources/problem_set_1a/",
-          "topics": [
-            "he.earth-science.oceanography#1",
-            "he.geography.climatology#1"
-          ],
+          "topics": ["he.earth-science.oceanography#1", "he.geography.climatology#1"],
           "examples": [
             "temperature of maximum density and freezing point against salinity: which pond freezes first",
             "zonal wind of a parcel moved in latitude and height keeping angular momentum"
@@ -42,9 +39,7 @@
           "n": "2",
           "title": "problem_set_2b",
           "url": "https://ocw.mit.edu/courses/12-808-introduction-to-observational-physical-oceanography-fall-2004/resources/problem_set_2b/",
-          "topics": [
-            "he.earth-science.oceanography#2"
-          ],
+          "topics": ["he.earth-science.oceanography#2"],
           "examples": [
             "Ekman and Sverdrup transports across a latitude from wind stress and its curl",
             "geostrophic velocity between CTD stations with a level of no motion; volume transport"

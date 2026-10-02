@@ -1,0 +1,750 @@
+{
+  "id": "ncees-fe-me-specifications",
+  "curriculum": "NCEES FE Mechanical CBT exam specifications",
+  "publisher": "NCEES",
+  "edition": "Effective beginning with the July 2020 examinations",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "© NCEES; free to view (all rights reserved)",
+    "url": "https://ncees.org/exams/fe-exam/",
+    "attribution": "Fundamentals of Engineering (FE) Mechanical CBT Exam Specifications, NCEES."
+  },
+  "terms": {
+    "unit": "Knowledge area",
+    "lesson": "Subtopic"
+  },
+  "sourceUrl": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+  "retrieved": "2026-10-02",
+  "notes": "Topic list and question counts per knowledge area only, as the brief allows (110 questions in all). No exam items, practice exams or Reference Handbook content were read. Fetched from ncees.org (robots.txt: Crawl-delay 10, disallows /*?, /calendar/action*, /events/action*, /cdn-cgi*), 10 s between requests. Topic mapping is ours.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+      "units": [
+        {
+          "n": "1",
+          "title": "Mathematics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.numerical-methods#0",
+            "he.engineering.numerical-methods#1",
+            "he.engineering.numerical-methods#2",
+            "he.engineering.numerical-methods#3",
+            "he.engineering.numerical-methods#4",
+            "he.math.calc-1#0",
+            "he.math.calc-1#1",
+            "he.math.calc-1#2",
+            "he.math.calc-1#3",
+            "he.math.calc-1#4",
+            "he.math.diff-eq#0",
+            "he.math.diff-eq#1",
+            "he.math.diff-eq#2",
+            "he.math.diff-eq#3",
+            "he.math.diff-eq#4",
+            "he.math.linear-algebra#0",
+            "he.math.linear-algebra#1",
+            "he.math.linear-algebra#2",
+            "he.math.linear-algebra#3",
+            "he.math.linear-algebra#4"
+          ],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "1.A",
+              "title": "Analytic geometry",
+              "url": null
+            },
+            {
+              "n": "1.B",
+              "title": "Calculus (e.g., differential, integral, single-variable, multivariable)",
+              "url": null
+            },
+            {
+              "n": "1.C",
+              "title": "Ordinary differential equations (e.g., homogeneous, nonhomogeneous, Laplace transforms)",
+              "url": null
+            },
+            {
+              "n": "1.D",
+              "title": "Linear algebra (e.g., matrix operations, vector analysis)",
+              "url": null
+            },
+            {
+              "n": "1.E",
+              "title": "Numerical methods (e.g., approximations, precision limits, error propagation, Taylor's series, Newton's method)",
+              "url": null
+            },
+            {
+              "n": "1.F",
+              "title": "Algorithm and logic development (e.g., flowcharts, pseudocode)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Probability and Statistics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "2.A",
+              "title": "Probability distributions (e.g., normal, binomial, empirical, discrete, continuous)",
+              "url": null
+            },
+            {
+              "n": "2.B",
+              "title": "Measures of central tendencies and dispersions (e.g., mean, mode, standard deviation, confidence intervals)",
+              "url": null
+            },
+            {
+              "n": "2.C",
+              "title": "Expected value (weighted average) in decision making",
+              "url": null
+            },
+            {
+              "n": "2.D",
+              "title": "Regression (linear, multiple), curve fitting, and goodness of fit (e.g., correlation coefficient, least squares)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "3",
+          "title": "Ethics and Professional Practice",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "3.A",
+              "title": "Codes of ethics (e.g., NCEES Model Law, professional and technical societies, ethical and legal considerations)",
+              "url": null
+            },
+            {
+              "n": "3.B",
+              "title": "Public health, safety, and welfare",
+              "url": null
+            },
+            {
+              "n": "3.C",
+              "title": "Intellectual property (e.g., copyright, trade secrets, patents, trademarks)",
+              "url": null
+            },
+            {
+              "n": "3.D",
+              "title": "Societal considerations (e.g., economic, sustainability, life-cycle analysis, environmental)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "4",
+          "title": "Engineering Economics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "4.A",
+              "title": "Time value of money (e.g., equivalence, present worth, equivalent annual worth, future worth, rate of return, annuities)",
+              "url": null
+            },
+            {
+              "n": "4.B",
+              "title": "Cost types and breakdowns (e.g., fixed, variable, incremental, average, sunk)",
+              "url": null
+            },
+            {
+              "n": "4.C",
+              "title": "Economic analyses (e.g., cost-benefit, break-even, minimum cost, overhead, life cycle)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics)."
+        },
+        {
+          "n": "5",
+          "title": "Electricity and Magnetism",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.circuits-1#0",
+            "he.engineering.circuits-1#1",
+            "he.engineering.circuits-1#2",
+            "he.engineering.circuits-1#3",
+            "he.engineering.circuits-1#4"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "5.A",
+              "title": "Electrical fundamentals (e.g., charge, current, voltage, resistance, power, energy, magnetic flux)",
+              "url": null
+            },
+            {
+              "n": "5.B",
+              "title": "DC circuit analysis (e.g., Kirchhoff's laws, Ohm's law, series, parallel)",
+              "url": null
+            },
+            {
+              "n": "5.C",
+              "title": "AC circuit analysis (e.g., resistors, capacitors, inductors)",
+              "url": null
+            },
+            {
+              "n": "5.D",
+              "title": "Motors and generators",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Statics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.statics#0",
+            "he.engineering.statics#1",
+            "he.engineering.statics#2",
+            "he.engineering.statics#3",
+            "he.engineering.statics#4"
+          ],
+          "questions": "9–14",
+          "lessons": [
+            {
+              "n": "6.A",
+              "title": "Resultants of force systems",
+              "url": null
+            },
+            {
+              "n": "6.B",
+              "title": "Concurrent force systems",
+              "url": null
+            },
+            {
+              "n": "6.C",
+              "title": "Equilibrium of rigid bodies",
+              "url": null
+            },
+            {
+              "n": "6.D",
+              "title": "Frames and trusses",
+              "url": null
+            },
+            {
+              "n": "6.E",
+              "title": "Centroids and moments of inertia",
+              "url": null
+            },
+            {
+              "n": "6.F",
+              "title": "Static friction",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Dynamics, Kinematics, and Vibrations",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.dynamics#0",
+            "he.engineering.dynamics#1",
+            "he.engineering.dynamics#2",
+            "he.engineering.dynamics#3",
+            "he.engineering.vibrations#0",
+            "he.engineering.vibrations#1",
+            "he.engineering.vibrations#2",
+            "he.engineering.vibrations#3"
+          ],
+          "questions": "10–15",
+          "lessons": [
+            {
+              "n": "7.A",
+              "title": "Kinematics of particles",
+              "url": null
+            },
+            {
+              "n": "7.B",
+              "title": "Kinetic friction",
+              "url": null
+            },
+            {
+              "n": "7.C",
+              "title": "Newton’s second law for particles",
+              "url": null
+            },
+            {
+              "n": "7.D",
+              "title": "Work-energy of particles",
+              "url": null
+            },
+            {
+              "n": "7.E",
+              "title": "Impulse-momentum of particles",
+              "url": null
+            },
+            {
+              "n": "7.F",
+              "title": "Kinematics of rigid bodies",
+              "url": null
+            },
+            {
+              "n": "7.G",
+              "title": "Kinematics of mechanisms",
+              "url": null
+            },
+            {
+              "n": "7.H",
+              "title": "Newton’s second law for rigid bodies",
+              "url": null
+            },
+            {
+              "n": "7.I",
+              "title": "Work-energy of rigid bodies",
+              "url": null
+            },
+            {
+              "n": "7.J",
+              "title": "Impulse-momentum of rigid bodies",
+              "url": null
+            },
+            {
+              "n": "7.K",
+              "title": "Free and forced vibrations",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Mechanics of Materials",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.mechanics-of-materials#0",
+            "he.engineering.mechanics-of-materials#1",
+            "he.engineering.mechanics-of-materials#2",
+            "he.engineering.mechanics-of-materials#3",
+            "he.engineering.mechanics-of-materials#4",
+            "he.engineering.mechanics-of-materials#5"
+          ],
+          "questions": "9–14",
+          "lessons": [
+            {
+              "n": "8.A",
+              "title": "Shear and moment diagrams",
+              "url": null
+            },
+            {
+              "n": "8.B",
+              "title": "Stress transformations and Mohr's circle",
+              "url": null
+            },
+            {
+              "n": "8.C",
+              "title": "Stress and strain caused by axial loads",
+              "url": null
+            },
+            {
+              "n": "8.D",
+              "title": "Stress and strain caused by bending loads",
+              "url": null
+            },
+            {
+              "n": "8.E",
+              "title": "Stress and strain caused by torsional loads",
+              "url": null
+            },
+            {
+              "n": "8.F",
+              "title": "Stress and strain caused by shear",
+              "url": null
+            },
+            {
+              "n": "8.G",
+              "title": "Stress and strain caused by temperature changes",
+              "url": null
+            },
+            {
+              "n": "8.H",
+              "title": "Combined loading",
+              "url": null
+            },
+            {
+              "n": "8.I",
+              "title": "Deformations",
+              "url": null
+            },
+            {
+              "n": "8.J",
+              "title": "Column buckling",
+              "url": null
+            },
+            {
+              "n": "8.K",
+              "title": "Statically indeterminate systems",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Material Properties and Processing",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.materials-science#0",
+            "he.engineering.materials-science#1",
+            "he.engineering.materials-science#2",
+            "he.engineering.materials-science#3",
+            "he.engineering.manufacturing#0",
+            "he.engineering.manufacturing#1",
+            "he.engineering.manufacturing#2",
+            "he.engineering.manufacturing#3"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "9.A",
+              "title": "Properties (e.g., chemical, electrical, mechanical, physical, thermal)",
+              "url": null
+            },
+            {
+              "n": "9.B",
+              "title": "Stress-strain diagrams",
+              "url": null
+            },
+            {
+              "n": "9.C",
+              "title": "Ferrous metals",
+              "url": null
+            },
+            {
+              "n": "9.D",
+              "title": "Nonferrous metals",
+              "url": null
+            },
+            {
+              "n": "9.E",
+              "title": "Engineered materials (e.g., composites, polymers)",
+              "url": null
+            },
+            {
+              "n": "9.F",
+              "title": "Manufacturing processes",
+              "url": null
+            },
+            {
+              "n": "9.G",
+              "title": "Phase diagrams, phase transformation, and heat treating",
+              "url": null
+            },
+            {
+              "n": "9.H",
+              "title": "Materials selection",
+              "url": null
+            },
+            {
+              "n": "9.I",
+              "title": "Corrosion mechanisms and control",
+              "url": null
+            },
+            {
+              "n": "9.J",
+              "title": "Failure mechanisms (e.g., thermal failure, fatigue, fracture, creep)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Fluid Mechanics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.fluid-mechanics#0",
+            "he.engineering.fluid-mechanics#1",
+            "he.engineering.fluid-mechanics#2",
+            "he.engineering.fluid-mechanics#3",
+            "he.engineering.fluid-mechanics#4",
+            "he.engineering.fluid-mechanics#5"
+          ],
+          "questions": "10–15",
+          "lessons": [
+            {
+              "n": "10.A",
+              "title": "Fluid properties",
+              "url": null
+            },
+            {
+              "n": "10.B",
+              "title": "Fluid statics",
+              "url": null
+            },
+            {
+              "n": "10.C",
+              "title": "Energy, impulse, and momentum",
+              "url": null
+            },
+            {
+              "n": "10.D",
+              "title": "Internal flow",
+              "url": null
+            },
+            {
+              "n": "10.E",
+              "title": "External flow",
+              "url": null
+            },
+            {
+              "n": "10.F",
+              "title": "Compressible flow (e.g., Mach number, isentropic flow relationships, normal shock)",
+              "url": null
+            },
+            {
+              "n": "10.G",
+              "title": "Power and efficiency",
+              "url": null
+            },
+            {
+              "n": "10.H",
+              "title": "Performance curves",
+              "url": null
+            },
+            {
+              "n": "10.I",
+              "title": "Scaling laws for fans, pumps, and compressors",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Thermodynamics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.thermodynamics#0",
+            "he.engineering.thermodynamics#1",
+            "he.engineering.thermodynamics#2",
+            "he.engineering.thermodynamics#3"
+          ],
+          "questions": "10–15",
+          "lessons": [
+            {
+              "n": "11.A",
+              "title": "Properties of ideal gases and pure substances B Energy transfers",
+              "url": null
+            },
+            {
+              "n": "11.C",
+              "title": "Laws of thermodynamics",
+              "url": null
+            },
+            {
+              "n": "11.D",
+              "title": "Processes",
+              "url": null
+            },
+            {
+              "n": "11.E",
+              "title": "Performance of components",
+              "url": null
+            },
+            {
+              "n": "11.F",
+              "title": "Power cycles",
+              "url": null
+            },
+            {
+              "n": "11.G",
+              "title": "Refrigeration and heat pump cycles",
+              "url": null
+            },
+            {
+              "n": "11.H",
+              "title": "Nonreacting mixtures of gases",
+              "url": null
+            },
+            {
+              "n": "11.I",
+              "title": "Psychrometrics",
+              "url": null
+            },
+            {
+              "n": "11.J",
+              "title": "Heating, ventilation, and air-conditioning (HVAC) processes",
+              "url": null
+            },
+            {
+              "n": "11.K",
+              "title": "Combustion and combustion products",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Heat Transfer",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.heat-transfer#0",
+            "he.engineering.heat-transfer#1",
+            "he.engineering.heat-transfer#2",
+            "he.engineering.heat-transfer#3"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "12.A",
+              "title": "Conduction",
+              "url": null
+            },
+            {
+              "n": "12.B",
+              "title": "Convection",
+              "url": null
+            },
+            {
+              "n": "12.C",
+              "title": "Radiation",
+              "url": null
+            },
+            {
+              "n": "12.D",
+              "title": "Transient processes",
+              "url": null
+            },
+            {
+              "n": "12.E",
+              "title": "Heat exchangers",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Measurements, Instrumentation, and Controls",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.control-systems#0",
+            "he.engineering.control-systems#1",
+            "he.engineering.control-systems#2",
+            "he.engineering.control-systems#3",
+            "he.engineering.control-systems#4",
+            "he.engineering.bioinstrumentation#0",
+            "he.engineering.bioinstrumentation#1",
+            "he.engineering.bioinstrumentation#2",
+            "he.engineering.bioinstrumentation#3"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "13.A",
+              "title": "Sensors and transducers",
+              "url": null
+            },
+            {
+              "n": "13.B",
+              "title": "Control systems (e.g., feedback, block diagrams)",
+              "url": null
+            },
+            {
+              "n": "13.C",
+              "title": "Dynamic system response",
+              "url": null
+            },
+            {
+              "n": "13.D",
+              "title": "Measurement uncertainty (e.g., error propagation, accuracy, precision, significant figures)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Mechanical Design and Analysis",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Mechanical-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.machine-design#0",
+            "he.engineering.machine-design#1",
+            "he.engineering.machine-design#2",
+            "he.engineering.machine-design#3",
+            "he.engineering.manufacturing#3",
+            "he.engineering.cad-graphics#1"
+          ],
+          "questions": "10–15",
+          "lessons": [
+            {
+              "n": "14.A",
+              "title": "Stress analysis of machine elements",
+              "url": null
+            },
+            {
+              "n": "14.B",
+              "title": "Failure theories and analysis",
+              "url": null
+            },
+            {
+              "n": "14.C",
+              "title": "Deformation and stiffness",
+              "url": null
+            },
+            {
+              "n": "14.D",
+              "title": "Springs",
+              "url": null
+            },
+            {
+              "n": "14.E",
+              "title": "Pressure vessels and piping",
+              "url": null
+            },
+            {
+              "n": "14.F",
+              "title": "Bearings",
+              "url": null
+            },
+            {
+              "n": "14.G",
+              "title": "Power screws",
+              "url": null
+            },
+            {
+              "n": "14.H",
+              "title": "Power transmission",
+              "url": null
+            },
+            {
+              "n": "14.I",
+              "title": "Joining methods (e.g., welding, adhesives, mechanical fasteners)",
+              "url": null
+            },
+            {
+              "n": "14.J",
+              "title": "Manufacturability (e.g., limits, fits)",
+              "url": null
+            },
+            {
+              "n": "14.K",
+              "title": "Quality and reliability",
+              "url": null
+            },
+            {
+              "n": "14.L",
+              "title": "Components (e.g., hydraulic, pneumatic, electromechanical)",
+              "url": null
+            },
+            {
+              "n": "14.M",
+              "title": "Engineering drawing interpretations and geometric dimensioning and tolerancing (GD&T)",
+              "url": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

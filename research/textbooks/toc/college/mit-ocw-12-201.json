@@ -27,9 +27,7 @@
           "n": "1",
           "title": "hw2",
           "url": "https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/resources/hw2/",
-          "topics": [
-            "he.earth-science.geophysics#1"
-          ],
+          "topics": ["he.earth-science.geophysics#1"],
           "examples": [
             "anomaly of a buried horizontal cylinder; reduce station gravity (free-air, Bouguer) to locate a tunnel",
             "gravity against radius inside a planet: uniform density, then a two-layer core and mantle",
@@ -42,10 +40,7 @@
           "n": "2",
           "title": "hw3",
           "url": "https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/resources/hw3/",
-          "topics": [
-            "he.earth-science.geophysics#1",
-            "he.earth-science.physical-geology#1"
-          ],
+          "topics": ["he.earth-science.geophysics#1", "he.earth-science.physical-geology#1"],
           "examples": [
             "dipole part of the geomagnetic field from Gauss coefficients; tilt of the dipole axis; secular change",
             "virtual geomagnetic pole from a site's inclination and declination; continental drift since"
@@ -57,9 +52,7 @@
           "n": "3",
           "title": "hw5",
           "url": "https://ocw.mit.edu/courses/12-201-essentials-of-geophysics-fall-2004/resources/hw5/",
-          "topics": [
-            "he.earth-science.geophysics#0"
-          ],
+          "topics": ["he.earth-science.geophysics#0"],
           "examples": [
             "Rayleigh and Love waves: existence in a half-space, dispersion, which a blast makes",
             "pick P, S and converted phases on a three-component seismogram"

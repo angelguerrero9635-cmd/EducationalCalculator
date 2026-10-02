@@ -45,10 +45,7 @@
           "n": "2",
           "title": "midterm_exam",
           "url": "https://ocw.mit.edu/courses/12-090-the-environment-of-the-earths-surface-spring-2007/resources/midterm_exam/",
-          "topics": [
-            "he.earth-science.hydrology#2",
-            "he.geography.physical-geography#2"
-          ],
+          "topics": ["he.earth-science.hydrology#2", "he.geography.physical-geography#2"],
           "examples": [
             "draw a self-consistent contour map with saddles, four outflowing streams and their divides",
             "factors that set groundwater flow through a cubic metre of regolith"

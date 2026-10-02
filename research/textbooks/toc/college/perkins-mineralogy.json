@@ -27,9 +27,7 @@
           "n": "1",
           "title": "Introduction",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/01%3A_Introduction",
-          "topics": [
-            "he.earth-science.mineralogy#1"
-          ],
+          "topics": ["he.earth-science.mineralogy#1"],
           "lessons": [
             {
               "n": "1.01",
@@ -57,9 +55,7 @@
           "n": "2",
           "title": "Mineral Chemistry",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/02%3A_Mineral_Chemistry",
-          "topics": [
-            "he.earth-science.mineralogy#1"
-          ],
+          "topics": ["he.earth-science.mineralogy#1"],
           "notes": "Mineral chemistry: ions, bonding, compositional variation (solid solution, formula recalculation).",
           "lessons": [
             {
@@ -98,10 +94,7 @@
           "n": "3",
           "title": "Mineral Properties",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties",
-          "topics": [
-            "he.earth-science.mineralogy#1",
-            "he.earth-science.physical-geology#0"
-          ],
+          "topics": ["he.earth-science.mineralogy#1", "he.earth-science.physical-geology#0"],
           "notes": "Properties: hardness, density and specific gravity, cleavage.",
           "lessons": [
             {
@@ -160,9 +153,7 @@
           "n": "4",
           "title": "Crystals and Crystallization",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/04%3A_Crystals_and_Crystallization",
-          "topics": [
-            "he.earth-science.mineralogy#0"
-          ],
+          "topics": ["he.earth-science.mineralogy#0"],
           "lessons": [
             {
               "n": "4.01",
@@ -195,9 +186,7 @@
           "n": "5",
           "title": "Optical Mineralogy",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy",
-          "topics": [
-            "he.earth-science.mineralogy#2"
-          ],
+          "topics": ["he.earth-science.mineralogy#2"],
           "notes": "Optical mineralogy: polarization, petrographic microscope, uniaxial and biaxial, interference figures.",
           "lessons": [
             {
@@ -241,9 +230,7 @@
           "n": "6",
           "title": "Igneous Rocks and Silicate Minerals",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals",
-          "topics": [
-            "he.earth-science.physical-geology#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#0"],
           "lessons": [
             {
               "n": "6.01",
@@ -286,9 +273,7 @@
           "n": "7",
           "title": "Sedimentary Minerals and Sedimentary Rocks",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/07%3A_Sedimentary_Minerals_and_Sedimentary_Rocks",
-          "topics": [
-            "he.earth-science.physical-geology#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#0"],
           "lessons": [
             {
               "n": "7.01",
@@ -326,9 +311,7 @@
           "n": "8",
           "title": "Metamorphic Minerals and Metamorphic Rocks",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks",
-          "topics": [
-            "he.earth-science.physical-geology#0"
-          ],
+          "topics": ["he.earth-science.physical-geology#0"],
           "lessons": [
             {
               "n": "8.01",
@@ -400,9 +383,7 @@
           "n": "10",
           "title": "Crystal Morphology and Symmetry",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/10%3A_Crystal_Morphology_and_Symmetry",
-          "topics": [
-            "he.earth-science.mineralogy#0"
-          ],
+          "topics": ["he.earth-science.mineralogy#0"],
           "notes": "Symmetry, stereo diagrams, point groups, crystal systems.",
           "lessons": [
             {
@@ -436,9 +417,7 @@
           "n": "11",
           "title": "Crystallography",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography",
-          "topics": [
-            "he.earth-science.mineralogy#0"
-          ],
+          "topics": ["he.earth-science.mineralogy#0"],
           "notes": "Unit cells, lattices, space groups, Miller indices.",
           "lessons": [
             {
@@ -507,10 +486,7 @@
           "n": "12",
           "title": "X-ray Diffraction and Mineral Analysis",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/12%3A_X-ray_Diffraction_and_Mineral_Analysis",
-          "topics": [
-            "he.earth-science.mineralogy#0",
-            "he.earth-science.mineralogy#1"
-          ],
+          "topics": ["he.earth-science.mineralogy#0", "he.earth-science.mineralogy#1"],
           "notes": "X-ray diffraction (Bragg) and mineral analysis.",
           "lessons": [
             {
@@ -529,10 +505,7 @@
           "n": "13",
           "title": "Crystal Structures",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures",
-          "topics": [
-            "he.earth-science.mineralogy#0",
-            "he.earth-science.mineralogy#1"
-          ],
+          "topics": ["he.earth-science.mineralogy#0", "he.earth-science.mineralogy#1"],
           "notes": "Crystal structures: closest packing, Pauling's rules, silicate structures.",
           "lessons": [
             {
@@ -581,9 +554,7 @@
           "n": "14",
           "title": "Mineral Descriptions",
           "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions",
-          "topics": [
-            "he.earth-science.mineralogy#1"
-          ],
+          "topics": ["he.earth-science.mineralogy#1"],
           "lessons": [
             {
               "n": "14.01",

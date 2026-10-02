@@ -27,95 +27,63 @@
           "n": "1.01",
           "title": "Weather",
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.01%3A_Weather",
-          "topics": [
-            "he.geography.climatology#0"
-          ],
-          "examples": [
-            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
-          ],
+          "topics": ["he.geography.climatology#0"],
+          "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
           "lessons": []
         },
         {
           "n": "1.02",
           "title": "Observations",
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.02%3A_Observations",
-          "topics": [
-            "he.geography.climatology#2"
-          ],
-          "examples": [
-            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
-          ],
+          "topics": ["he.geography.climatology#2"],
+          "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
           "lessons": []
         },
         {
           "n": "1.03",
           "title": "Paleoclimate",
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.03%3A_Paleoclimate",
-          "topics": [
-            "he.geography.climatology#2",
-            "he.earth-science.historical-geology#3"
-          ],
-          "examples": [
-            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
-          ],
+          "topics": ["he.geography.climatology#2", "he.earth-science.historical-geology#3"],
+          "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
           "lessons": []
         },
         {
           "n": "1.04",
           "title": "Theory",
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.04%3A_Theory",
-          "topics": [
-            "he.geography.climatology#0"
-          ],
-          "examples": [
-            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
-          ],
+          "topics": ["he.geography.climatology#0"],
+          "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
           "lessons": []
         },
         {
           "n": "1.05",
           "title": "Carbon",
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.05%3A_Carbon",
-          "topics": [
-            "he.geography.climatology#3"
-          ],
-          "examples": [
-            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
-          ],
+          "topics": ["he.geography.climatology#3"],
+          "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
           "lessons": []
         },
         {
           "n": "1.06",
           "title": "Processes",
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.06%3A_Processes",
-          "topics": [
-            "he.geography.climatology#1",
-            "he.geography.climatology#3"
-          ],
+          "topics": ["he.geography.climatology#1", "he.geography.climatology#3"],
           "lessons": []
         },
         {
           "n": "1.07",
           "title": "Models",
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.07%3A_Models",
-          "topics": [
-            "he.geography.climatology#3"
-          ],
-          "examples": [
-            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
-          ],
+          "topics": ["he.geography.climatology#3"],
+          "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
           "lessons": []
         },
         {
           "n": "1.08",
           "title": "Impacts",
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.08%3A_Impacts",
-          "topics": [
-            "he.geography.climatology#3"
-          ],
-          "examples": [
-            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
-          ],
+          "topics": ["he.geography.climatology#3"],
+          "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
           "lessons": []
         },
         {
@@ -140,9 +108,7 @@
           "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.11%3A_Solutions",
           "topics": [],
           "notes": "Economics, ethics and solutions: no topic.",
-          "examples": [
-            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
-          ],
+          "examples": ["chapter questions (list at the chapter end): recorded as types (SCHM-*)"],
           "lessons": []
         }
       ]
