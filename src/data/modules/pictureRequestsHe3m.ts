@@ -81,4 +81,31 @@ export const HE3M_REQUESTS: PictureRequest[] = [
       'g.he-refraction-gpr-wet',
     ],
   },
+  {
+    ...ask(
+      'HC77',
+      'coordinatePlane',
+      'GIS options of coordinatePlane: a polygon shaded with each shoelace cross term listed and the area worked; a line’s buffer with round ends (the 2rL strip and the two half-discs apart, a scale bar); points with their mean centre and standard-distance circle',
+      {
+        'he.geography.gis#1': '"shoelace"',
+        'he.geography.gis#1~buffer': '"buffer"',
+        'he.geography.gis#3~mean-center': '"center"',
+      },
+      [
+        'From EG-P26 (`coordinatePlane` options `polygon`, `buffer`, `center`; `polygon` already names the Grades 9–12 corners, so the college option is `shoelace` beside it). Drawn by CoordinatePlaneHe3m.tsx on a plane sized to the figure with equal scales; off unless a page sets one, so every existing plane is unchanged.',
+        'Fields: { kind: "coordinatePlane", x, y, polygon: [[x, y], …] (3–6 corners in order), shoelace: { area? }, extent, quadrants } (x, y the first corner); { x: <L id>, y: <r id>, buffer: { area? } } (a buffer has no corner to place: the plane’s one point is the outline’s corner (L, r), which drags L and r; L = 0 draws a point’s buffer); { x, y (the first point), center: { points: [[x, y], …], x? (x̄), y? (ȳ), sd? } }. extent and quadrants are required by the type but the plane sizes itself to the figure.',
+        'gis#1 main: { x: "x1", y: "y1", polygon: [["x1", "y1"], ["x2", "y2"], ["x3", "y3"], ["x4", "y4"]], shoelace: { area: "area" }, extent: 10, quadrants: 4 } (a limit should refuse corners whose sides cross: the demo’s does); ~buffer: { x: "L", y: "r", buffer: { area: "A" }, extent: 10, quadrants: 1 }; gis#3~mean-center: { x: "x1", y: "y1", center: { points: [["x1", "y1"], ["x2", "y2"], ["x3", "y3"]], x: "mx", y: "my", sd: "sd" }, extent: 10, quadrants: 4 }.',
+        'Checks (harness/picturesHe3m.ts, planeGisIssues): one option set; sides don’t cross; ½|Σ terms| is the area; A = 2rL + πr² and strip + ends equal it; x̄, ȳ the means and SD the root mean square distance.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-coordinatePlane-shoelace',
+      'g.he-coordinatePlane-shoelace-triangle',
+      'g.he-coordinatePlane-buffer',
+      'g.he-coordinatePlane-buffer-wide',
+      'g.he-coordinatePlane-center',
+      'g.he-coordinatePlane-center-spread',
+    ],
+  },
 ];

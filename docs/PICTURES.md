@@ -367,6 +367,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `markedFigure`     | `quadrilateral.across: [p, q]`           | a rhombus from its diagonals AC (level) and BD, not a side and angle (H105)   |
 | `circleTheorems`   | `theorem`: `cyclic`, `arcAngle`          | an inscribed quadrilateral; an angle from two arcs, inside or outside         |
 | `coordinatePlane`  | `fit`                                    | sized to the points: 5, 10 or 20 each way, up to `extent`                     |
+| `coordinatePlane`  | `shoelace`, `buffer`, `center` (HC77)    | polygon area by cross terms; a line's buffer 2rL + πr²; mean centre, SD ring  |
 | `factorTree`       | `root: { index, outside, inside }`       | equal pairs (or threes) ringed and brought out of the root: √72 = 6√2         |
 | `powerScale`       | `log`                                    | a log₁₀ scale under the 1–10 ruler: log₁₀ 470,000 = 5 + 0.672                 |
 | `punnettSquare`    | `inheritance` (Grade 9)                  | dihybrid 4 × 4 by phenotype; incomplete, codominant; X-linked with carriers   |

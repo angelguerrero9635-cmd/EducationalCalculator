@@ -9,6 +9,7 @@ import { View } from 'react-native';
 import Svg, { Circle, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -27,6 +28,10 @@ import {
 type Spec = Extract<Representation, { kind: 'coordinatePlane' }>;
 type Palette = ReturnType<typeof usePalette>;
 type Pt = [number, number];
+
+/** A coordinate or term in full; a negative one bracketed after an operator. */
+const num = (x: number) => formatNumber(x);
+const par = (x: number) => (x < 0 ? `(${num(x)})` : num(x));
 
 const SUB = ['₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
 
@@ -253,7 +258,7 @@ function PointsView({ spec, calc }: { spec: Spec; calc: Calculator }) {
             />
             <HeLabel
               x={p.X(mc[0])}
-              y={p.Y(mc[1]) - 12}
+              y={p.Y(mc[1] + sd) - 6}
               text={`(x̄, ȳ) = (${r.bare(spec.center?.x, mc[0])}, ${r.bare(spec.center?.y, mc[1])})`}
               w={w}
             />
@@ -264,7 +269,7 @@ function PointsView({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const dx = x - cx;
           const dy = y - cy;
           const right = dx >= 0;
-          const text = `${names[i]}(${n3(x)}, ${n3(y)})`;
+          const text = `${names[i]}(${num(x)}, ${num(y)})`;
           return (
             <G key={i}>
               <Circle cx={p.X(x)} cy={p.Y(y)} r={5} fill={c.chartHighlight} />
@@ -297,12 +302,12 @@ function PointsView({ spec, calc }: { spec: Spec; calc: Calculator }) {
       const j = (i + 1) % pts.length;
       const [x2, y2] = pts[j]!;
       lines.push(
-        `x${SUB[i]}y${SUB[j]} − x${SUB[j]}y${SUB[i]} = ${n3(x1)} × ${n3(y2)} − ${n3(x2)} × ${n3(y1)} = ${n3(terms[i]!)}`,
+        `x${SUB[i]}y${SUB[j]} − x${SUB[j]}y${SUB[i]} = ${num(x1)} × ${par(y2)} − ${par(x2)} × ${par(y1)} = ${num(terms[i]!)}`,
       );
     });
     const area = shoelaceArea(pts);
     lines.push(
-      `Area = ½|${terms.map(n3).join(' + ').replace(/\+ −/g, '− ')}| = ${r.text(spec.shoelace?.area, area, unit ? `${unit}²` : '')}.`,
+      `Area = ½|${terms.map(num).join(' + ').replace(/\+ −/g, '− ')}| = ${r.text(spec.shoelace?.area, area, unit ? `${unit}²` : '')}.`,
     );
     if (crossed)
       lines.push(
@@ -312,11 +317,17 @@ function PointsView({ spec, calc }: { spec: Spec; calc: Calculator }) {
   if (center && mc && sd !== undefined) {
     const n = pts.length;
     lines.push(
-      `x̄ = (${pts.map((q) => n3(q[0])).join(' + ')}) ÷ ${n} = ${n3(mc[0])}; ȳ = (${pts.map((q) => n3(q[1])).join(' + ')}) ÷ ${n} = ${n3(mc[1])}.`,
+      `x̄ = (${pts
+        .map((q) => num(q[0]))
+        .join(' + ')
+        .replace(/\+ −/g, '− ')}) ÷ ${n} = ${num(mc[0])}; ȳ = (${pts
+        .map((q) => num(q[1]))
+        .join(' + ')
+        .replace(/\+ −/g, '− ')}) ÷ ${n} = ${num(mc[1])}.`,
     );
     const sq = pts.reduce((a, [x, y]) => a + (x - mc[0]) ** 2 + (y - mc[1]) ** 2, 0);
     lines.push(
-      `SD = √(Σ((x − x̄)² + (y − ȳ)²) ÷ ${n}) = √(${n3(sq)} ÷ ${n}) = ${r.text(spec.center?.sd, sd)}: about two-thirds of a spread-out set lie within it.`,
+      `SD = √(Σ((x − x̄)² + (y − ȳ)²) ÷ ${n}) = √(${num(sq)} ÷ ${n}) = ${r.text(spec.center?.sd, sd)}: about two-thirds of a spread-out set lie within it.`,
     );
   }
   return (

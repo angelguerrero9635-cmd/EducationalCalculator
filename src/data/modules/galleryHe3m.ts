@@ -4,8 +4,16 @@
  *
  * HC75: the `aquifer` kind (EG-P17): section, head and well.
  * HC76: the `refraction` kind (EG-P20): refraction, reflection and gpr.
+ * HC77: the GIS options of `coordinatePlane` (EG-P26): shoelace, buffer, center.
  */
 import { thiemRate } from '@/components/module/reps/aquiferMath';
+import {
+  bufferArea,
+  meanCenter,
+  shoelaceArea,
+  sidesCross,
+  standardDistance,
+} from '@/components/module/reps/gisMath';
 import {
   criticalAngle,
   crossoverOf,
@@ -743,6 +751,300 @@ const REFRACTION_DEMOS: ModuleDef[] = [
   gprWet,
 ];
 
-export const HE3M_GALLERY_MODULES: ModuleDef[] = [...AQUIFER_DEMOS, ...REFRACTION_DEMOS];
+// ─── HC77 coordinatePlane GIS options (EG-P26) ───────────────────────────────
+
+const SUBS = ['₁', '₂', '₃', '₄', '₅', '₆'];
+
+/** Vertex coordinates x₁, y₁, … as values. */
+const vertexVars = (n: number, unit: string): VariableDef[] =>
+  Array.from({ length: n }, (_, i) => [
+    quantity(`x${i + 1}`, `x${SUBS[i]}`, `x of corner ${i + 1}`, unit, -1e6, 1e6, 1),
+    quantity(`y${i + 1}`, `y${SUBS[i]}`, `y of corner ${i + 1}`, unit, -1e6, 1e6, 1),
+  ]).flat();
+
+const cornersOf = (n: number, v: Values) =>
+  Array.from({ length: n }, (_, i) => [v[`x${i + 1}`]!, v[`y${i + 1}`]!] as [number, number]);
+
+/** Area = ½|Σ(xᵢyᵢ₊₁ − xᵢ₊₁yᵢ)|. */
+const shoelaceRule = (n: number): Rule => {
+  const vs = Array.from({ length: n }, (_, i) => [`x${i + 1}`, `y${i + 1}`]).flat();
+  const terms = Array.from({ length: n }, (_, i) => {
+    const j = (i % n) + 1;
+    const k = ((i + 1) % n) + 1;
+    return `{x${j}} × {y${k}} − {x${k}} × {y${j}}`;
+  });
+  return {
+    relation: {
+      id: 'area = ½|Σ(xᵢyᵢ₊₁ − xᵢ₊₁yᵢ)|',
+      display: `{area} = ½ × |${terms.join(' + ')}|`,
+      vars: ['area', ...vs],
+      residual: (v) => v.area! - shoelaceArea(cornersOf(n, v)),
+      solve: { area: (v) => shoelaceArea(cornersOf(n, v)) },
+    },
+    steps: {
+      area: st(
+        `|${terms.join(' + ')}| ÷ 2`,
+        'Cross-multiply each corner with the next, add, and halve the size of the sum.',
+      ),
+    },
+  };
+};
+
+const shoelaceDemo = (id: string, title: string, corners: [number, number][]): ModuleDef => {
+  const n = corners.length;
+  const example: Values = Object.fromEntries(
+    corners.flatMap(([x, y], i) => [
+      [`x${i + 1}`, x],
+      [`y${i + 1}`, y],
+    ]),
+  );
+  return {
+    id,
+    title,
+    use: 'Use this for the area of a parcel or polygon from its vertices.',
+    assumptions: [
+      'The vertices go in order round the edge, which does not cross itself.',
+      'Projected coordinates in metres, so the area comes out in square metres.',
+    ],
+    variables: [...vertexVars(n, 'm'), quantity('area', 'A', 'Area', 'm²', 0.01, 1e13, 1)],
+    ...rules(
+      shoelaceRule(n),
+      limit(
+        'sides do not cross',
+        Array.from({ length: n }, (_, i) => `{x${i + 1}} {y${i + 1}}`).join(' '),
+        (v) => !sidesCross(cornersOf(n, v)) && shoelaceArea(cornersOf(n, v)) > 0,
+        'Put the corners in order round the edge, so no two sides cross.',
+      ),
+    ),
+    example: { ...example, area: shoelaceArea(corners) },
+    startWith: Object.keys(example),
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x1',
+      y: 'y1',
+      polygon: corners.map((_, i) => [`x${i + 1}`, `y${i + 1}`] as [string, string]),
+      shoelace: { area: 'area' },
+      extent: 10,
+      quadrants: 4,
+    },
+  };
+};
+
+/** gis#1 main: the plan's parcel moved 100 m east and 50 m north (no zero corner): 120,000 m². */
+const planeShoelace = shoelaceDemo(
+  'g.he-coordinatePlane-shoelace',
+  'Area of a parcel from its corners',
+  [
+    [100, 50],
+    [600, 150],
+    [500, 450],
+    [200, 350],
+  ],
+);
+/** Three corners round the origin, two below the x-axis: negative cross terms. */
+const planeShoelaceTriangle = shoelaceDemo(
+  'g.he-coordinatePlane-shoelace-triangle',
+  'A triangle across the axes',
+  [
+    [-200, -100],
+    [300, -50],
+    [50, 350],
+  ],
+);
+
+/** A = 2rL + πr². */
+const bufferRule: Rule = {
+  relation: {
+    id: 'A = 2rL + πr²',
+    display: '{A} = 2 × {r} × {L} + π × {r}²',
+    vars: ['A', 'r', 'L'],
+    residual: (v) => v.A! - bufferArea(v.L!, v.r!),
+    solve: {
+      A: (v) => bufferArea(v.L!, v.r!),
+      L: (v) => {
+        const L = div(v.A! - Math.PI * v.r! * v.r!, 2 * v.r!);
+        return L !== undefined && L >= 0 ? L : undefined;
+      },
+      r: (v) => pos((-2 * v.L! + Math.sqrt(4 * v.L! * v.L! + 4 * Math.PI * v.A!)) / (2 * Math.PI)),
+    },
+  },
+  steps: {
+    A: st(
+      '2 × {r} × {L} + π × {r}²',
+      'A strip 2r wide along the line, plus the two round ends: one circle.',
+    ),
+    L: st(
+      '({A} − π × {r}²) ÷ (2 × {r})',
+      'Take the round ends off the area, then divide by the strip’s width.',
+    ),
+    r: st(
+      '(−2 × {L} + √(4 × {L}² + 4π × {A})) ÷ (2π)',
+      'Solve πr² + 2Lr − A = 0 for its positive root.',
+    ),
+  },
+};
+
+const bufferDemo = (id: string, title: string, L: number, r: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the area inside a buffer round a line or a point.',
+  assumptions: [
+    'The buffer has round ends, so a line’s buffer is a strip plus one circle.',
+    'A point’s buffer is a circle: L = 0.',
+  ],
+  variables: [
+    quantity('L', 'L', 'Line length', 'm', 0, 1e7, 1),
+    quantity('r', 'r', 'Buffer radius', 'm', 0.01, 1e5, 1),
+    quantity('A', 'A', 'Buffer area', 'm²', 0.0001, 1e13, 1),
+  ],
+  ...rules(bufferRule),
+  example: { L, r, A: bufferArea(L, r) },
+  startWith: ['L', 'r'],
+  representation: {
+    kind: 'coordinatePlane',
+    x: 'L',
+    y: 'r',
+    buffer: { area: 'A' },
+    extent: 10,
+    quadrants: 1,
+  },
+});
+
+/** gis#1~buffer: a 2 km road, 100 m → 400,000 + 31,416 = 431,416 m². */
+const planeBuffer = bufferDemo(
+  'g.he-coordinatePlane-buffer',
+  'The area within 100 m of a road',
+  2000,
+  100,
+);
+/** A short line in a wide buffer: the round ends are most of it. */
+const planeBufferWide = bufferDemo(
+  'g.he-coordinatePlane-buffer-wide',
+  'A wide buffer round a short line',
+  50,
+  200,
+);
+
+/** x̄ = Σx ÷ n (and ȳ). */
+const meanRule = (axis: 'x' | 'y', n: number): Rule => {
+  const vs = Array.from({ length: n }, (_, i) => `${axis}${i + 1}`);
+  const id = axis === 'x' ? 'mx' : 'my';
+  return {
+    relation: {
+      id: `${axis}̄ = Σ${axis} ÷ n`,
+      display: `{${id}} = (${vs.map((v) => `{${v}}`).join(' + ')}) ÷ ${n}`,
+      vars: [id, ...vs],
+      residual: (v) => v[id]! - vs.reduce((a, k) => a + v[k]!, 0) / n,
+      solve: { [id]: (v) => vs.reduce((a, k) => a + v[k]!, 0) / n },
+    },
+    steps: {
+      [id]: st(
+        `(${vs.map((v) => `{${v}}`).join(' + ')}) ÷ ${n}`,
+        `Add the ${axis}-coordinates and divide by the number of points.`,
+      ),
+    },
+  };
+};
+
+/** SD = √(Σ((x − x̄)² + (y − ȳ)²) ÷ n). */
+const sdRule = (n: number): Rule => {
+  const terms = Array.from(
+    { length: n },
+    (_, i) => `({x${i + 1}} − {mx})² + ({y${i + 1}} − {my})²`,
+  );
+  const vs = Array.from({ length: n }, (_, i) => [`x${i + 1}`, `y${i + 1}`]).flat();
+  return {
+    relation: {
+      id: 'SD = √(Σ((x − x̄)² + (y − ȳ)²) ÷ n)',
+      display: `{sd} = √((${terms.join(' + ')}) ÷ ${n})`,
+      vars: ['sd', 'mx', 'my', ...vs],
+      residual: (v) => v.sd! - standardDistance(cornersOf(n, v)),
+      solve: { sd: (v) => standardDistance(cornersOf(n, v)) },
+    },
+    steps: {
+      sd: st(
+        `√((${terms.join(' + ')}) ÷ ${n})`,
+        'Square each point’s distance from the mean centre, average them, and take the root.',
+      ),
+    },
+  };
+};
+
+const centerDemo = (id: string, title: string, pts: [number, number][]): ModuleDef => {
+  const n = pts.length;
+  const [mx, my] = meanCenter(pts);
+  const example: Values = Object.fromEntries(
+    pts.flatMap(([x, y], i) => [
+      [`x${i + 1}`, x],
+      [`y${i + 1}`, y],
+    ]),
+  );
+  return {
+    id,
+    title,
+    use: 'Use this for the mean centre of a set of points and their standard distance.',
+    assumptions: [
+      'Projected coordinates in kilometres; each point counts the same.',
+      'The standard distance is the root of the points’ mean squared distance from the centre.',
+    ],
+    variables: [
+      ...vertexVars(n, 'km').map((v) => ({
+        ...v,
+        name: v.name.replace('corner', 'point'),
+      })),
+      quantity('mx', 'x̄', 'Mean centre x', 'km', -1e6, 1e6, 0.01),
+      quantity('my', 'ȳ', 'Mean centre y', 'km', -1e6, 1e6, 0.01),
+      quantity('sd', 'SD', 'Standard distance', 'km', 0, 1e7, 0.01),
+    ],
+    ...rules(meanRule('x', n), meanRule('y', n), sdRule(n)),
+    example: { ...example, mx, my, sd: standardDistance(pts) },
+    startWith: Object.keys(example),
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x1',
+      y: 'y1',
+      center: {
+        points: pts.map((_, i) => [`x${i + 1}`, `y${i + 1}`] as [string, string]),
+        x: 'mx',
+        y: 'my',
+        sd: 'sd',
+      },
+      extent: 10,
+      quadrants: 4,
+    },
+  };
+};
+
+/** gis#3~mean-center: (2, 1), (4, 5), (9, 3) → (5, 3), SD = √(34 ÷ 3) = 3.37. */
+const planeCenter = centerDemo('g.he-coordinatePlane-center', 'Mean centre and standard distance', [
+  [2, 1],
+  [4, 5],
+  [9, 3],
+]);
+/** Points nearly in a line, one far out: the centre sits off every point. */
+const planeCenterSpread = centerDemo(
+  'g.he-coordinatePlane-center-spread',
+  'A far point pulls the centre',
+  [
+    [-6, -2],
+    [3, 1],
+    [18, 4],
+  ],
+);
+
+const GIS_DEMOS: ModuleDef[] = [
+  planeShoelace,
+  planeShoelaceTriangle,
+  planeBuffer,
+  planeBufferWide,
+  planeCenter,
+  planeCenterSpread,
+];
+
+export const HE3M_GALLERY_MODULES: ModuleDef[] = [
+  ...AQUIFER_DEMOS,
+  ...REFRACTION_DEMOS,
+  ...GIS_DEMOS,
+];
 
 export const HE3M_GALLERY_LAYOUTS: LayoutDef[] = [];
