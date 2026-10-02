@@ -1,0 +1,188 @@
+{
+  "id": "mit-ocw-2-003sc",
+  "curriculum": "MIT OCW 2.003SC Engineering Dynamics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2011",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "J. Kim Vandiver and David Gossard. 2.003SC Engineering Dynamics, Fall 2011. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): J. Kim Vandiver and David Gossard. Units are the problem sets, labs and exams read (type only; no solutions fetched). No calendar text captured. Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit2_003scf11_pset1",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset1/",
+          "topics": ["he.engineering.dynamics#0", "he.engineering.vibrations#0"],
+          "examples": [
+            "does a spring–mass on an incline have a natural frequency that depends on the angle",
+            "kicked ball: horizontal speed at the top, height and range"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.003SC-PS1-1, OCW-2.003SC-PS1-7"
+        },
+        {
+          "n": "2",
+          "title": "mit2_003scf11_pset2",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset2/",
+          "topics": ["he.engineering.dynamics#0"],
+          "examples": [
+            "ball guided on a circle by a rotating arm (polar coordinates)",
+            "normal and tangential acceleration of a box sliding on a parabola",
+            "velocity of a rotor-blade tip of a moving helicopter"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.003SC-PS2-1, OCW-2.003SC-PS2-2, OCW-2.003SC-PS2-3"
+        },
+        {
+          "n": "3",
+          "title": "mit2_003scf11_pset3",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset3/",
+          "topics": ["he.engineering.dynamics#2"],
+          "examples": [
+            "cart speeds after a girl leaps from one cart onto another",
+            "how far a free ramp moves as a crate slides down",
+            "speed of a towed mass from a winch force–time graph"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.003SC-PS3-2, OCW-2.003SC-PS3-3, OCW-2.003SC-PS3-4"
+        },
+        {
+          "n": "4",
+          "title": "mit2_003scf11_pset4",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset4/",
+          "topics": [
+            "he.engineering.dynamics#3",
+            "he.engineering.vibrations#0",
+            "he.engineering.vibrations#3"
+          ],
+          "examples": [
+            "equations of motion of two masses with springs and a dashpot",
+            "natural frequency of a pendulum with a torsional spring",
+            "spin rate of a mass on a string pulled through a hole",
+            "velocity of a rim point of a spool pulled by a cable"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-2.003SC-PS4-1, OCW-2.003SC-PS4-5, OCW-2.003SC-PS4-3, OCW-2.003SC-PS4-4"
+        },
+        {
+          "n": "5",
+          "title": "mit2_003scf11_pset5",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset5/",
+          "topics": ["he.engineering.dynamics#3"],
+          "examples": [
+            "acceleration of welded cylinders unwound by a hanging string",
+            "wheel rolling down a hill: does it slip, and its acceleration"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.003SC-PS5-6, OCW-2.003SC-PS5-7"
+        },
+        {
+          "n": "6",
+          "title": "mit2_003scf11_pset6",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset6/",
+          "topics": ["he.engineering.dynamics#3"],
+          "examples": ["particle sticks to a pivoted rod: swing after impact"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.003SC-PS6-3"
+        },
+        {
+          "n": "7",
+          "title": "mit2_003scf11_quiz1",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_quiz1/",
+          "topics": ["he.engineering.dynamics#1"],
+          "examples": [
+            "acceleration of one of two connected carts",
+            "normal force on a skateboard at a point of a curved ramp"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.003SC-Q1-3, OCW-2.003SC-Q1-4"
+        },
+        {
+          "n": "8",
+          "title": "mit2_003scf11_pset9",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset9/",
+          "topics": [
+            "he.engineering.vibrations#0",
+            "he.engineering.vibrations#2",
+            "he.engineering.vibrations#1"
+          ],
+          "examples": [
+            "equation of motion about the unstretched and the static positions",
+            "free response with damping from initial conditions",
+            "natural frequencies of a block hung by two strings (bifilar)",
+            "natural frequency of a hoop swinging on a knife edge",
+            "steady amplitude and phase under a harmonic force"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-2.003SC-PS9-1, OCW-2.003SC-PS9-2, OCW-2.003SC-PS9-4, OCW-2.003SC-PS9-5, OCW-2.003SC-PS9-6"
+        },
+        {
+          "n": "9",
+          "title": "mit2_003scf11_pset10",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset10/",
+          "topics": [
+            "he.engineering.vibrations#3",
+            "he.engineering.vibrations#1",
+            "he.engineering.vibrations#2",
+            "he.engineering.vibrations#0"
+          ],
+          "examples": [
+            "cart with a pivoted rod: equations and natural frequencies",
+            "damping ratio of a light-station structure from a decay record",
+            "isolation table: floor vibration passed to the optics",
+            "largest amplitude before a top mass slips on a vibrating mass",
+            "recoil motion of a spring-damped rail car firing a shell",
+            "stiffness and inertia of a hinged object from its frequency and a static test"
+          ],
+          "lessons": [],
+          "notes": "6 question record(s): OCW-2.003SC-PS10-1, OCW-2.003SC-PS10-2, OCW-2.003SC-PS10-3, OCW-2.003SC-PS10-4, OCW-2.003SC-PS10-5, OCW-2.003SC-PS10-6"
+        },
+        {
+          "n": "10",
+          "title": "mit2_003scf11_pset11",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_pset11/",
+          "topics": ["he.engineering.vibrations#1", "he.engineering.vibrations#0"],
+          "examples": [
+            "natural frequency of a cart on a spring with mass",
+            "vibration of a pump with an unbalanced rotor"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.003SC-PS11-3, OCW-2.003SC-PS11-4"
+        },
+        {
+          "n": "11",
+          "title": "mit2_003scf11_final",
+          "url": "https://ocw.mit.edu/courses/2-003sc-engineering-dynamics-fall-2011/resources/mit2_003scf11_final/",
+          "topics": [
+            "he.engineering.vibrations#3",
+            "he.engineering.vibrations#1",
+            "he.engineering.vibrations#0"
+          ],
+          "examples": [
+            "choose an isolation bearing for a machine",
+            "cylinder rolling on a cart with springs and a damper: equations of motion",
+            "natural frequencies and modes of two cylinders and three springs",
+            "torsional natural frequency of a ship propeller on its shaft"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-2.003SC-F-1, OCW-2.003SC-F-2, OCW-2.003SC-F-3, OCW-2.003SC-F-4"
+        }
+      ]
+    }
+  ]
+}

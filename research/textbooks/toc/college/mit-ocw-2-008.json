@@ -1,0 +1,120 @@
+{
+  "id": "mit-ocw-2-008",
+  "curriculum": "MIT OCW 2.008 Design and Manufacturing II",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2025",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Jung-Hoon Chun and Josh Ramos. 2.008 Design and Manufacturing II, Spring 2025. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Jung-Hoon Chun and Josh Ramos. Units are the problem sets, labs and exams read (type only; no solutions fetched). No calendar text captured. Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit2_008_s25_hw1_pdf",
+          "url": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/resources/mit2_008_s25_hw1_pdf/",
+          "topics": ["he.engineering.manufacturing#0"],
+          "examples": [
+            "features showing a lid was thermoformed, and its cycle",
+            "injection moulding a toy part: fill pressure, clamping force and cooling time",
+            "thermoplastic or thermoset, and which suits injection moulding"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.008-HW1-1, OCW-2.008-HW1-2, OCW-2.008-HW1-3"
+        },
+        {
+          "n": "2",
+          "title": "mit2_008_s25_hw2_pdf",
+          "url": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/resources/mit2_008_s25_hw2_pdf/",
+          "topics": ["he.engineering.manufacturing#1"],
+          "examples": [
+            "Merchant's circle: name the cutting forces and find the shear angle",
+            "milling time and process plan for a phone housing",
+            "turning a shaft from 25 to 20 mm: speed, removal rate and time"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.008-HW2-1, OCW-2.008-HW2-2, OCW-2.008-HW2-3"
+        },
+        {
+          "n": "3",
+          "title": "mit2_008_s25_hw3_pdf",
+          "url": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/resources/mit2_008_s25_hw3_pdf/",
+          "topics": ["he.engineering.manufacturing#3", "he.engineering.manufacturing#0"],
+          "examples": [
+            "brazing against soldering and choosing a joining method",
+            "design-for-assembly review of a motor drive",
+            "temperature to shrink-fit a ring onto a shaft"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.008-HW3-1, OCW-2.008-HW3-2, OCW-2.008-HW3-3"
+        },
+        {
+          "n": "4",
+          "title": "mit2_008_s25_hw4_pdf",
+          "url": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/resources/mit2_008_s25_hw4_pdf/",
+          "topics": ["he.engineering.manufacturing#3"],
+          "examples": [
+            "Cp, Cpk and the fraction out of spec of a pocket diameter",
+            "bearing press fit: interference limits from tolerances",
+            "will rings fit bodies: worst-case and statistical stack"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.008-HW4-1, OCW-2.008-HW4-2, OCW-2.008-HW4-3"
+        },
+        {
+          "n": "5",
+          "title": "mit2_008_s25_hw7_pdf",
+          "url": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/resources/mit2_008_s25_hw7_pdf/",
+          "topics": ["he.engineering.manufacturing#0", "he.engineering.manufacturing#2"],
+          "examples": [
+            "how a brass valve body was cast (parting line, cores)",
+            "pour velocity and fill time of a sand mould; solidification time",
+            "stamping against additive manufacture for a car panel"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.008-HW7-2, OCW-2.008-HW7-3, OCW-2.008-HW7-4"
+        },
+        {
+          "n": "6",
+          "title": "mit2_008_s25_quiz1_pdf",
+          "url": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/resources/mit2_008_s25_quiz1_pdf/",
+          "topics": [
+            "he.engineering.manufacturing#0",
+            "he.engineering.manufacturing#3",
+            "he.engineering.manufacturing#1"
+          ],
+          "examples": [
+            "injection moulding a toy brick: flow-path ratio, clamping force and cavities",
+            "limits, Cp = Cpk and the process mean and σ of a stud diameter",
+            "peak cutting power and force when grooving aluminium"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.008-Q1-2, OCW-2.008-Q1-4, OCW-2.008-Q1-5"
+        },
+        {
+          "n": "7",
+          "title": "mit2_008_s25_quiz2_part_a_pdf",
+          "url": "https://ocw.mit.edu/courses/2-008-design-and-manufacturing-ii-spring-2025/resources/mit2_008_s25_quiz2_part_a_pdf/",
+          "topics": ["he.engineering.manufacturing#0"],
+          "examples": ["springback rises or falls with thickness, yield and modulus"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.008-Q2A-1"
+        }
+      ]
+    }
+  ]
+}
