@@ -1,0 +1,219 @@
+{
+ "id": "mit-ocw-18-01sc",
+ "curriculum": "MIT OCW 18.01SC Single Variable Calculus",
+ "publisher": "MIT OpenCourseWare (David Jerison)",
+ "edition": "Fall 2010 (scholar course)",
+ "subject": "math",
+ "level": "college",
+ "content": "full",
+ "license": {
+  "name": "CC BY-NC-SA 4.0",
+  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "attribution": "David Jerison. 18.01SC Single Variable Calculus. Fall 2010. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+ },
+ "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+ "sourceUrl": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/",
+ "retrieved": "2026-10-02",
+ "notes": "Units and parts from the course navigation. One course spans the taxonomy's Calculus I and most of Calculus II (series appear only as Taylor series). Examples are the exam problem kinds recorded in research/questions/college/math.jsonl. robots.txt: Allow /.",
+ "books": [
+  {
+   "title": "18.01SC Single Variable Calculus (Fall 2010)",
+   "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/",
+   "units": [
+    {
+     "n": "1",
+     "title": "Differentiation",
+     "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/",
+     "topics": [
+      "he.math.calc-1#1"
+     ],
+     "sections": [
+      {
+       "n": "1A",
+       "title": "Definition and Basic Rules",
+       "topics": [
+        "he.math.calc-1#0",
+        "he.math.calc-1#1"
+       ]
+      },
+      {
+       "n": "1B",
+       "title": "Implicit Differentiation and Inverse Functions"
+      },
+      {
+       "n": "Exam 1",
+       "title": "Exam 1",
+       "examples": [
+        "derivative computations including a 5th derivative",
+        "implicit tangent line",
+        "product rule proof from the definition",
+        "differentiability of a piecewise function"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Applications of Differentiation",
+     "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/unit-2-applications-of-differentiation/",
+     "topics": [
+      "he.math.calc-1#2"
+     ],
+     "sections": [
+      {
+       "n": "2A",
+       "title": "Approximation and Curve Sketching",
+       "topics": [
+        "he.math.calc-1#1",
+        "he.math.calc-1#2"
+       ]
+      },
+      {
+       "n": "2B",
+       "title": "Optimization, Related Rates and Newton's Method",
+       "topics": [
+        "he.math.calc-1#2"
+       ]
+      },
+      {
+       "n": "2C",
+       "title": "Mean Value Theorem, Antiderivatives and Differential Equations",
+       "topics": [],
+       "note": "no college topic: mean value theorem; antiderivatives as a topic"
+      },
+      {
+       "n": "Exam 2",
+       "title": "Exam 2",
+       "examples": [
+        "quadratic approximation",
+        "conical pile related rates",
+        "curve sketch of x − 3x^(1/3)",
+        "least-metal tank",
+        "Newton's method failure",
+        "inequality proof"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "The Definite Integral and its Applications",
+     "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/unit-3-the-definite-integral-and-its-applications/",
+     "topics": [
+      "he.math.calc-1#3"
+     ],
+     "sections": [
+      {
+       "n": "3A",
+       "title": "Definition of the Definite Integral and First Fundamental Theorem"
+      },
+      {
+       "n": "3B",
+       "title": "Second Fundamental Theorem, Areas, Volumes",
+       "topics": [
+        "he.math.calc-1#3",
+        "he.math.calc-2#2"
+       ]
+      },
+      {
+       "n": "3C",
+       "title": "Average Value, Probability and Numerical Integration",
+       "topics": [
+        "he.math.calc-1#3"
+       ]
+      },
+      {
+       "n": "Exam 3",
+       "title": "Exam 3",
+       "examples": [
+        "area between parabolas in y",
+        "washer volume set-up",
+        "Riemann-sum limit",
+        "centroid and Pappus",
+        "mixing tank ODE"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Techniques of Integration",
+     "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/unit-4-techniques-of-integration/",
+     "topics": [
+      "he.math.calc-2#0"
+     ],
+     "sections": [
+      {
+       "n": "4A",
+       "title": "Trigonometric Powers, Trigonometric Substitution and Completing the Square"
+      },
+      {
+       "n": "4B",
+       "title": "Partial Fractions, Integration by Parts, Arc Length, and Surface Area",
+       "topics": [
+        "he.math.calc-2#0",
+        "he.math.calc-2#2"
+       ]
+      },
+      {
+       "n": "4C",
+       "title": "Parametric Equations and Polar Coordinates",
+       "topics": [
+        "he.math.calc-2#5"
+       ]
+      },
+      {
+       "n": "Exam 4",
+       "title": "Exam 4",
+       "examples": [
+        "parts, trig powers, partial fractions, trig substitution",
+        "arc length and surface area set-ups"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Exploring the Infinite",
+     "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/unit-5-exploring-the-infinite/",
+     "topics": [
+      "he.math.calc-2#4"
+     ],
+     "sections": [
+      {
+       "n": "5A",
+       "title": "L'Hospital's Rule and Improper Integrals",
+       "topics": [
+        "he.math.calc-1#1",
+        "he.math.calc-2#1"
+       ]
+      },
+      {
+       "n": "5B",
+       "title": "Taylor Series",
+       "topics": [
+        "he.math.calc-2#4"
+       ]
+      },
+      {
+       "n": "Final",
+       "title": "Final Exam",
+       "topics": [
+        "he.math.calc-1#1",
+        "he.math.calc-1#2",
+        "he.math.calc-1#3",
+        "he.math.calc-2#0",
+        "he.math.calc-2#2",
+        "he.math.calc-2#4",
+        "he.math.calc-2#5"
+       ],
+       "examples": [
+        "15 problems across the course: derivatives, sketching, optimization, related rates, integrals, trapezoid rule, decay ODE, arc length, Taylor series with error bound"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

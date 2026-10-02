@@ -1,0 +1,295 @@
+{
+ "id": "strang-ila",
+ "curriculum": "Introduction to Linear Algebra",
+ "publisher": "Gilbert Strang (Wellesley-Cambridge Press)",
+ "edition": "6th edition (2023)",
+ "subject": "math",
+ "level": "college",
+ "content": "titles",
+ "license": {
+  "name": "All rights reserved",
+  "url": "https://math.mit.edu/~gs/linearalgebra/ila6/indexila6.html",
+  "attribution": "Titles only, from the publisher's public table of contents; no other content."
+ },
+ "terms": "Commercial: chapter and section titles only.",
+ "sourceUrl": "https://math.mit.edu/~gs/linearalgebra/ila6/indexila6.html",
+ "retrieved": "2026-10-02",
+ "notes": "Titles from the free 'Table of Contents and Preface' PDF on the author's page. robots.txt: Crawl-delay 5, kept.",
+ "books": [
+  {
+   "title": "Introduction to Linear Algebra, 6th ed.",
+   "url": "https://math.mit.edu/~gs/linearalgebra/ila6/indexila6.html",
+   "units": [
+    {
+     "n": "1",
+     "title": "Vectors and Matrices",
+     "topics": [
+      "he.math.linear-algebra#1"
+     ],
+     "sections": [
+      {
+       "n": "1.1",
+       "title": "Vectors and Linear Combinations"
+      },
+      {
+       "n": "1.2",
+       "title": "Lengths and Angles from Dot Products",
+       "topics": [
+        "he.math.linear-algebra#4"
+       ]
+      },
+      {
+       "n": "1.3",
+       "title": "Matrices and Their Column Spaces"
+      },
+      {
+       "n": "1.4",
+       "title": "Matrix Multiplication AB and CR",
+       "topics": [
+        "he.math.linear-algebra#0"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Solving Linear Equations Ax = b",
+     "topics": [
+      "he.math.linear-algebra#0"
+     ],
+     "sections": [
+      {
+       "n": "2.1",
+       "title": "Elimination and Back Substitution"
+      },
+      {
+       "n": "2.2",
+       "title": "Elimination Matrices and Inverse Matrices"
+      },
+      {
+       "n": "2.3",
+       "title": "Matrix Computations and A = LU"
+      },
+      {
+       "n": "2.4",
+       "title": "Permutations and Transposes"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "The Four Fundamental Subspaces",
+     "topics": [
+      "he.math.linear-algebra#1"
+     ],
+     "sections": [
+      {
+       "n": "3.1",
+       "title": "Vector Spaces and Subspaces"
+      },
+      {
+       "n": "3.2",
+       "title": "Computing the Nullspace by Elimination: A = CR"
+      },
+      {
+       "n": "3.3",
+       "title": "The Complete Solution to Ax = b",
+       "topics": [
+        "he.math.linear-algebra#0"
+       ]
+      },
+      {
+       "n": "3.4",
+       "title": "Independence, Basis, and Dimension"
+      },
+      {
+       "n": "3.5",
+       "title": "Dimensions of the Four Subspaces"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Orthogonality",
+     "topics": [
+      "he.math.linear-algebra#4"
+     ],
+     "sections": [
+      {
+       "n": "4.1",
+       "title": "Orthogonality of Vectors and Subspaces"
+      },
+      {
+       "n": "4.2",
+       "title": "Projections onto Lines and Subspaces"
+      },
+      {
+       "n": "4.3",
+       "title": "Least Squares Approximations"
+      },
+      {
+       "n": "4.4",
+       "title": "Orthonormal Bases and Gram-Schmidt"
+      },
+      {
+       "n": "4.5",
+       "title": "The Pseudoinverse of a Matrix",
+       "topics": [],
+       "note": "no college topic: pseudoinverse"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Determinants",
+     "topics": [
+      "he.math.linear-algebra#2"
+     ],
+     "sections": [
+      {
+       "n": "5.1",
+       "title": "3 by 3 Determinants and Cofactors"
+      },
+      {
+       "n": "5.2",
+       "title": "Computing and Using Determinants"
+      },
+      {
+       "n": "5.3",
+       "title": "Areas and Volumes by Determinants"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Eigenvalues and Eigenvectors",
+     "topics": [
+      "he.math.linear-algebra#3"
+     ],
+     "sections": [
+      {
+       "n": "6.1",
+       "title": "Introduction to Eigenvalues: Ax = λx"
+      },
+      {
+       "n": "6.2",
+       "title": "Diagonalizing a Matrix"
+      },
+      {
+       "n": "6.3",
+       "title": "Symmetric Positive Definite Matrices"
+      },
+      {
+       "n": "6.4",
+       "title": "Complex Numbers and Vectors and Matrices"
+      },
+      {
+       "n": "6.5",
+       "title": "Solving Linear Differential Equations",
+       "topics": [
+        "he.math.linear-algebra#3",
+        "he.math.diff-eq#3"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "The Singular Value Decomposition (SVD)",
+     "topics": [],
+     "note": "no college topic: SVD (plan gap)",
+     "sections": [
+      {
+       "n": "7.1",
+       "title": "Singular Values and Singular Vectors",
+       "topics": []
+      },
+      {
+       "n": "7.2",
+       "title": "Image Processing by Linear Algebra",
+       "topics": []
+      },
+      {
+       "n": "7.3",
+       "title": "Principal Component Analysis (PCA by the SVD)",
+       "topics": []
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Linear Transformations",
+     "topics": [
+      "he.math.linear-algebra#1"
+     ],
+     "note": "linear transformations: plan gap, filed under #1",
+     "sections": [
+      {
+       "n": "8.1",
+       "title": "The Idea of a Linear Transformation"
+      },
+      {
+       "n": "8.2",
+       "title": "The Matrix of a Linear Transformation"
+      },
+      {
+       "n": "8.3",
+       "title": "The Search for a Good Basis"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Linear Algebra in Optimization",
+     "topics": [],
+     "note": "no college topic: optimization",
+     "sections": [
+      {
+       "n": "9.1",
+       "title": "Minimizing a Multivariable Function",
+       "topics": []
+      },
+      {
+       "n": "9.2",
+       "title": "Backpropagation and Stochastic Gradient Descent",
+       "topics": []
+      },
+      {
+       "n": "9.3",
+       "title": "Constraints, Lagrange Multipliers, Minimum Norms",
+       "topics": []
+      },
+      {
+       "n": "9.4",
+       "title": "Linear Programming, Game Theory, and Duality",
+       "topics": []
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Learning from Data",
+     "topics": [],
+     "note": "no college topic: data science",
+     "sections": [
+      {
+       "n": "10.1",
+       "title": "Piecewise Linear Learning Functions",
+       "topics": []
+      },
+      {
+       "n": "10.2",
+       "title": "Creating and Experimenting",
+       "topics": []
+      },
+      {
+       "n": "10.3",
+       "title": "Mean, Variance, and Covariance",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

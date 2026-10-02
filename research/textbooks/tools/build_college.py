@@ -15,7 +15,8 @@ research/questions/validate_college.py). Checks, for every table of contents:
   level ("college"), content ("titles" or "full"), license {name, url, attribution}, terms,
   sourceUrl, retrieved (YYYY-MM-DD), notes and books;
 - every unit has `topics` (a section without `topics` inherits its unit's); every topic id is a
-  real `<courseId>#<i>` of COURSES; an empty `topics` list carries a `note` (a taxonomy gap);
+  real `<courseId>#<i>` of COURSES; an empty `topics` list carries a `note` (a taxonomy gap; a section may
+  share the note of a unit that has no topic either);
 - a "titles" file holds titles only: no `examples`, `ranges` or `notation` anywhere;
 - `examples`, `ranges` and `notation` are lists of strings where present.
 
@@ -119,6 +120,9 @@ def check(tocs, fields, topics, errors):
             for u in b.get("units", []):
                 if "topics" not in u:
                     errors.append(f"{p}: book {bi} unit {u.get('n')} {u.get('title')!r}: no topics")
+        # Sections with no topic inside a unit with no topic share the unit's note.
+        covered = {id(s) for b in t["books"] for u in b.get("units", [])
+                   if u.get("topics") == [] and u.get("note") for s, _, _ in walk(u, None, [])}
         for bi, b, node, tps, trail in nodes_of(t):
             where = f"{p}: {label(trail)!r}"
             if not node.get("title"):
@@ -131,7 +135,7 @@ def check(tocs, fields, topics, errors):
             for tid in tps:
                 if tid not in topics:
                     errors.append(f"{where}: unknown topic {tid}")
-            if "topics" in node and not node["topics"] and not node.get("note"):
+            if "topics" in node and not node["topics"] and not node.get("note") and id(node) not in covered:
                 errors.append(f"{where}: empty topics needs a note (the taxonomy gap)")
             for k in DETAIL:
                 if k in node:

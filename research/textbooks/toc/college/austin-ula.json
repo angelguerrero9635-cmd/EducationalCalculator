@@ -1,0 +1,307 @@
+{
+ "id": "austin-ula",
+ "curriculum": "Understanding Linear Algebra",
+ "publisher": "David Austin (Grand Valley State University)",
+ "edition": "2025 web edition",
+ "subject": "math",
+ "level": "college",
+ "content": "full",
+ "license": {
+  "name": "CC BY 4.0",
+  "url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "© David Austin 2017–2025. Understanding Linear Algebra. Licensed CC BY 4.0 (home page, 'License')."
+ },
+ "terms": "CC BY 4.0: exercise text may be copied with attribution.",
+ "sourceUrl": "https://understandinglinearalgebra.org/home.html",
+ "retrieved": "2026-10-02",
+ "notes": "Sections from the online table of contents; examples summarise the exercises read for the question records. robots.txt absent (404). Notation: vectors as bold v, rref, nul(A), col(A), Sage cells for computation.",
+ "books": [
+  {
+   "title": "Understanding Linear Algebra",
+   "url": "https://understandinglinearalgebra.org/ula.html",
+   "units": [
+    {
+     "n": "1",
+     "title": "Systems of equations",
+     "topics": [
+      "he.math.linear-algebra#0"
+     ],
+     "sections": [
+      {
+       "n": "1.1",
+       "title": "What can we expect",
+       "url": "https://understandinglinearalgebra.org/sec-expect.html",
+       "examples": [
+        "count solutions from the size of a system"
+       ]
+      },
+      {
+       "n": "1.2",
+       "title": "Finding solutions to linear systems",
+       "url": "https://understandinglinearalgebra.org/sec-finding-solutions.html",
+       "examples": [
+        "augmented matrix to rref"
+       ]
+      },
+      {
+       "n": "1.3",
+       "title": "Computation with Sage",
+       "url": "https://understandinglinearalgebra.org/sec-sage-introduction.html"
+      },
+      {
+       "n": "1.4",
+       "title": "Pivots and their influence on solution spaces",
+       "url": "https://understandinglinearalgebra.org/sec-pivots.html",
+       "examples": [
+        "consistency and uniqueness from pivot positions"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Vectors, matrices, and linear combinations",
+     "topics": [
+      "he.math.linear-algebra#1"
+     ],
+     "sections": [
+      {
+       "n": "2.1",
+       "title": "Vectors and linear combinations",
+       "url": "https://understandinglinearalgebra.org/sec-vectors-lin-combs.html",
+       "examples": [
+        "weights for a combination; nutrition vectors"
+       ]
+      },
+      {
+       "n": "2.2",
+       "title": "Matrix multiplication and linear combinations",
+       "url": "https://understandinglinearalgebra.org/sec-matrices-lin-combs.html",
+       "topics": [
+        "he.math.linear-algebra#0"
+       ]
+      },
+      {
+       "n": "2.3",
+       "title": "The span of a set of vectors",
+       "url": "https://understandinglinearalgebra.org/sec-span.html"
+      },
+      {
+       "n": "2.4",
+       "title": "Linear independence",
+       "url": "https://understandinglinearalgebra.org/sec-linear-dep.html"
+      },
+      {
+       "n": "2.5",
+       "title": "Matrix transformations",
+       "url": "https://understandinglinearalgebra.org/sec-linear-trans.html",
+       "note": "linear transformations: plan gap, filed under #1"
+      },
+      {
+       "n": "2.6",
+       "title": "The geometry of matrix transformations",
+       "url": "https://understandinglinearalgebra.org/sec-transforms-geom.html"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Invertibility, bases, and coordinate systems",
+     "topics": [
+      "he.math.linear-algebra#1"
+     ],
+     "note": "Austin teaches determinants after invertibility and bases, before eigenvalues.",
+     "sections": [
+      {
+       "n": "3.1",
+       "title": "Invertibility",
+       "url": "https://understandinglinearalgebra.org/sec-matrix-inverse.html",
+       "topics": [
+        "he.math.linear-algebra#0"
+       ]
+      },
+      {
+       "n": "3.2",
+       "title": "Bases and coordinate systems",
+       "url": "https://understandinglinearalgebra.org/sec-bases.html"
+      },
+      {
+       "n": "3.3",
+       "title": "Image compression",
+       "url": "https://understandinglinearalgebra.org/sec-jpeg.html",
+       "note": "application (JPEG, change of basis)"
+      },
+      {
+       "n": "3.4",
+       "title": "Determinants",
+       "url": "https://understandinglinearalgebra.org/sec-determinants.html",
+       "topics": [
+        "he.math.linear-algebra#2"
+       ],
+       "examples": [
+        "det by row operations",
+        "parameter making a matrix singular"
+       ]
+      },
+      {
+       "n": "3.5",
+       "title": "Subspaces",
+       "url": "https://understandinglinearalgebra.org/sec-subspaces.html",
+       "examples": [
+        "null and column space bases from rref"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Eigenvalues and eigenvectors",
+     "topics": [
+      "he.math.linear-algebra#3"
+     ],
+     "sections": [
+      {
+       "n": "4.1",
+       "title": "An introduction to eigenvalues and eigenvectors",
+       "url": "https://understandinglinearalgebra.org/sec-eigen-intro.html"
+      },
+      {
+       "n": "4.2",
+       "title": "Finding eigenvalues and eigenvectors",
+       "url": "https://understandinglinearalgebra.org/sec-eigen-find.html"
+      },
+      {
+       "n": "4.3",
+       "title": "Diagonalization, similarity, and powers of a matrix",
+       "url": "https://understandinglinearalgebra.org/sec-eigen-diag.html"
+      },
+      {
+       "n": "4.4",
+       "title": "Dynamical systems",
+       "url": "https://understandinglinearalgebra.org/sec-dynamical.html",
+       "examples": [
+        "classify discrete dynamical systems; population models"
+       ]
+      },
+      {
+       "n": "4.5",
+       "title": "Markov chains and Google’s PageRank algorithm",
+       "url": "https://understandinglinearalgebra.org/sec-stochastic.html",
+       "examples": [
+        "steady states of migration chains"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Linear algebra and computing",
+     "topics": [
+      "he.math.linear-algebra#0"
+     ],
+     "sections": [
+      {
+       "n": "5.1",
+       "title": "Gaussian elimination revisited",
+       "url": "https://understandinglinearalgebra.org/sec-gaussian-revisited.html",
+       "examples": [
+        "LU factorization and forward/back substitution"
+       ]
+      },
+      {
+       "n": "5.2",
+       "title": "Finding eigenvectors numerically",
+       "url": "https://understandinglinearalgebra.org/sec-power-method.html",
+       "topics": [
+        "he.math.linear-algebra#3"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Orthogonality and Least Squares",
+     "topics": [
+      "he.math.linear-algebra#4"
+     ],
+     "sections": [
+      {
+       "n": "6.1",
+       "title": "The dot product",
+       "url": "https://understandinglinearalgebra.org/sec-dot-product.html"
+      },
+      {
+       "n": "6.2",
+       "title": "Orthogonal complements and the matrix transpose",
+       "url": "https://understandinglinearalgebra.org/sec-transpose.html"
+      },
+      {
+       "n": "6.3",
+       "title": "Orthogonal bases and projections",
+       "url": "https://understandinglinearalgebra.org/sec-orthogonal-bases.html"
+      },
+      {
+       "n": "6.4",
+       "title": "Finding orthogonal bases",
+       "url": "https://understandinglinearalgebra.org/sec-gram-schmidt.html",
+       "examples": [
+        "Gram–Schmidt and QR"
+       ]
+      },
+      {
+       "n": "6.5",
+       "title": "Orthogonal least squares",
+       "url": "https://understandinglinearalgebra.org/sec-least-squares.html",
+       "examples": [
+        "least-squares line and quadratic through data"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Singular value decompositions",
+     "topics": [],
+     "note": "SVD chapter: the plan's Linear Algebra gap (ULA 7).",
+     "sections": [
+      {
+       "n": "7.1",
+       "title": "Symmetric matrices and variance",
+       "url": "https://understandinglinearalgebra.org/sec-symmetric-matrices.html",
+       "topics": [],
+       "note": "no college topic: symmetric matrices"
+      },
+      {
+       "n": "7.2",
+       "title": "Quadratic forms",
+       "url": "https://understandinglinearalgebra.org/sec-quadratic-forms.html",
+       "topics": [],
+       "note": "no college topic: quadratic forms"
+      },
+      {
+       "n": "7.3",
+       "title": "Principal Component Analysis",
+       "url": "https://understandinglinearalgebra.org/sec-pca.html",
+       "topics": [],
+       "note": "no college topic: PCA"
+      },
+      {
+       "n": "7.4",
+       "title": "Singular Value Decompositions",
+       "url": "https://understandinglinearalgebra.org/sec-svd-intro.html",
+       "topics": [],
+       "note": "no college topic: SVD"
+      },
+      {
+       "n": "7.5",
+       "title": "Using Singular Value Decompositions",
+       "url": "https://understandinglinearalgebra.org/sec-svd-uses.html",
+       "topics": [],
+       "note": "no college topic: SVD"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
