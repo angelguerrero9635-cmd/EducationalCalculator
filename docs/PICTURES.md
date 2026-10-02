@@ -403,6 +403,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
+| `motionGraph`      | `polynomial: { c0, c1, c2, c3, at }`     | x–t, v–t, a–t on one time axis; tangent of slope v at t; v = 0 ringed (HC99)  |
 | `energyTrack`      | `spring: { k, compression, … }`          | spring launcher, rough patch (heat fd), ramp; start and now bars (H63)        |
 | `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
 | `wave`             | `em: { amplitude, … }`, `line`           | E and B (or H) in step, E₀, B₀, λ, S; a line's envelope and VSWR (HC93)       |
